@@ -209,8 +209,9 @@ extern "C"
       LOG(LDEBUG, (curFile.m_urls[i]));
     }
 
-    g_currentRequest.reset(HttpRequest::GetFile(
-        curFile.m_urls, curFile.m_pathOnSdcard, curFile.m_fileSize,
+    g_currentRequest.reset(HttpRequest::Download(
+        curFile.m_urls, curFile.m_pathOnSdcard,
+        curFile.m_fileName, curFile.m_fileSize,
         onFinish, onProgress,
         512 * 1024, false));
   }

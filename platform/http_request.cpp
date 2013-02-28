@@ -432,4 +432,14 @@ HttpRequest * HttpRequest::GetFile(vector<string> const & urls,
   }
 }
 
+#ifndef OMIM_OS_ANDROID
+HttpRequest * HttpRequest::Download(vector<string> const & urls, string const & filePath,
+                                    string const & fileName, int64_t fileSize,
+                                    CallbackT const & onFinish, CallbackT const & onProgress,
+                                    int64_t chunkSize, bool doCleanOnCancel)
+{
+  return GetFile(urls, filePath, fileSize, onFinish, onProgress, chunkSize, doCleanOnCancel);
+}
+#endif
+
 } // namespace downloader

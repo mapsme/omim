@@ -50,14 +50,24 @@ public:
                                 CallbackT const & onFinish,
                                 CallbackT const & onProgress = CallbackT());
 
-  /// Download file to filePath.
+  /// @name Download file from urls to filePath.
   /// @param[in]  fileSize  Correct file size (needed for resuming and reserving).
+  //@{
+  /// Using cross-platform downloader.
   static HttpRequest * GetFile(vector<string> const & urls,
                                string const & filePath, int64_t fileSize,
                                CallbackT const & onFinish,
                                CallbackT const & onProgress = CallbackT(),
                                int64_t chunkSize = 512 * 1024,
                                bool doCleanOnCancel = true);
+
+  /// Using native downloader for Android (default is cross-platform).
+  /// @param[in]  fileName  Using as title for downloading UI.
+  static HttpRequest * Download(vector<string> const & urls, string const & filePath,
+                                string const & fileName, int64_t fileSize,
+                                CallbackT const & onFinish, CallbackT const & onProgress,
+                                int64_t chunkSize, bool doCleanOnCancel);
+  //@}
 };
 
 } // namespace downloader

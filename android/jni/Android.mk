@@ -99,6 +99,7 @@ LOCAL_SRC_FILES := \
 	com/mapswithme/platform/Language.cpp \
 	com/mapswithme/platform/PThreadImpl.cpp \
 	com/mapswithme/utils/StringUtils.cpp \
+  com/mapswithme/platform/Downloader.cpp \
 	nv_thread/nv_thread.cpp \
 	nv_event/nv_event_queue.cpp \
 	nv_event/nv_event.cpp \
