@@ -202,6 +202,8 @@ namespace ftype
             m_params.AddHouseName(v);
         if (k == "addr:flats")
             m_params.flats = v;
+        if (k == "ele")
+            m_params.ele = v;
 
         // get population rank
         if (k == "population")

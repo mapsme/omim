@@ -107,6 +107,7 @@ struct FeatureParamsBase
   StringNumericOptimal house;
   string ref;
   string flats;
+  string ele;
   int8_t layer;
   uint8_t rank;
 

@@ -182,9 +182,14 @@ bool FeatureBuilder1::PreSerialize()
       m_Params.name.AddString(intCode, m_Params.flats);
     }
 
+    // For peaks, show elevation as text label
+    if (m_Params.name.IsEmpty() && !m_Params.ele.empty())
+      m_Params.name.AddString(defaultCode, m_Params.ele);
+
     m_Params.house.Clear();
     m_Params.ref.clear();
     m_Params.flats.clear();
+    m_Params.ele.clear();
     break;
 
   case GEOM_LINE:
@@ -195,8 +200,13 @@ bool FeatureBuilder1::PreSerialize()
     if (!checkHighway.IsEqualV(m_Params.m_Types))
       m_Params.ref = string();
 
+    // For contours, show elevation as text label
+    if (m_Params.name.IsEmpty() && !m_Params.ele.empty())
+      m_Params.name.AddString(defaultCode, m_Params.ele);
+
     m_Params.rank = 0;
     m_Params.house.Clear();
+    m_Params.ele.clear();
     break;
   }
 
