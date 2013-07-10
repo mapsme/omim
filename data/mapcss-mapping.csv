@@ -950,3 +950,6 @@ office|lawyer;[office=lawyer];;name;int_name;949;
 office;[office];;name;int_name;950;
 landuse|residential|rural;[landuse=residential][residential=rural];;name;int_name;951;
 landuse|residential|urban;[landuse=residential][residential=urban];;name;int_name;952;
+contour|elevation_minor;[contour=elevation][contour_ext=elevation_minor];;ele;name;953;
+contour|elevation_medium;[contour=elevation][contour_ext=elevation_medium];;ele;name;954;
+contour|elevation_major;[contour=elevation][contour_ext=elevation_major];;ele;name;955;

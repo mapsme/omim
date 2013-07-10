@@ -8020,6 +8020,495 @@ cont {
   }
 }
 cont {
+  name: "contour-elevation_major"
+  element {
+    scale: 10
+    lines {
+      width: 0.1
+      color: 0xFF0000
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0xFF0000
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 11
+    lines {
+      width: 0.1
+      color: 0xFF0000
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0xFF0000
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 12
+    lines {
+      width: 0.1
+      color: 0xFF0000
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0xFF0000
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 13
+    lines {
+      width: 0.1
+      color: 0xFF0000
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0xFF0000
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 14
+    lines {
+      width: 0.1
+      color: 0xFF0000
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0xFF0000
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 15
+    lines {
+      width: 0.1
+      color: 0xFF0000
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0xFF0000
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 16
+    lines {
+      width: 0.1
+      color: 0xFF0000
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0xFF0000
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 17
+    lines {
+      width: 0.1
+      color: 0xFF0000
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0xFF0000
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 18
+    lines {
+      width: 0.1
+      color: 0xFF0000
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0xFF0000
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 19
+    lines {
+      width: 0.1
+      color: 0xFF0000
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0xFF0000
+      }
+      priority: 16000
+    }
+  }
+}
+cont {
+  name: "contour-elevation_medium"
+  element {
+    scale: 10
+    lines {
+      width: 0.1
+      color: 0x008800
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0x008800
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 11
+    lines {
+      width: 0.1
+      color: 0x008800
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0x008800
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 12
+    lines {
+      width: 0.1
+      color: 0x008800
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0x008800
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 13
+    lines {
+      width: 0.1
+      color: 0x008800
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0x008800
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 14
+    lines {
+      width: 0.1
+      color: 0x008800
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0x008800
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 15
+    lines {
+      width: 0.1
+      color: 0x008800
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0x008800
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 16
+    lines {
+      width: 0.1
+      color: 0x008800
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0x008800
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 17
+    lines {
+      width: 0.1
+      color: 0x008800
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0x008800
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 18
+    lines {
+      width: 0.1
+      color: 0x008800
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0x008800
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 19
+    lines {
+      width: 0.1
+      color: 0x008800
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0x008800
+      }
+      priority: 16000
+    }
+  }
+}
+cont {
+  name: "contour-elevation_minor"
+  element {
+    scale: 10
+    lines {
+      width: 0.1
+      color: 0x000000
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0x000000
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 11
+    lines {
+      width: 0.1
+      color: 0x000000
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0x000000
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 12
+    lines {
+      width: 0.1
+      color: 0x000000
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0x000000
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 13
+    lines {
+      width: 0.1
+      color: 0x000000
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0x000000
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 14
+    lines {
+      width: 0.1
+      color: 0x000000
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0x000000
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 15
+    lines {
+      width: 0.1
+      color: 0x000000
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0x000000
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 16
+    lines {
+      width: 0.1
+      color: 0x000000
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0x000000
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 17
+    lines {
+      width: 0.1
+      color: 0x000000
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0x000000
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 18
+    lines {
+      width: 0.1
+      color: 0x000000
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0x000000
+      }
+      priority: 16000
+    }
+  }
+  element {
+    scale: 19
+    lines {
+      width: 0.1
+      color: 0x000000
+      priority: 1000
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 0xFFFFFF
+        stroke_color: 0x000000
+      }
+      priority: 16000
+    }
+  }
+}
+cont {
   name: "earthquake:damage-spontaneous_camp"
   element {
     scale: 14

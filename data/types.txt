@@ -950,3 +950,6 @@ office|lawyer
 office
 landuse|residential|rural
 landuse|residential|urban
+contour|elevation_minor
+contour|elevation_medium
+contour|elevation_major

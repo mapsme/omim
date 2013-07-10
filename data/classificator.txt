@@ -146,6 +146,11 @@ world  +
             underground  -
             {}
         {}
+    contour  +
+        elevation_major  -
+        elevation_medium  -
+        elevation_minor  -
+        {}
     earthquake:damage  +
         spontaneous_camp  -
         {}

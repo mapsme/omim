@@ -7107,3 +7107,28 @@ line|z18-[lit]::lit
 
 *[highway][area?]
 {fill-color: eval(prop("color")); width: 0; casing-width: 0}
+
+
+line|z10-[contour=elevation][contour_ext=elevation_minor]
+{
+	width: .1;
+	color: black;
+}
+line|z10-[contour=elevation][contour_ext=elevation_medium]
+{
+	width: .1;
+	color: green;
+}
+line|z10-[contour=elevation][contour_ext=elevation_major]
+{
+	width: .1;
+	color: red;
+}
+line|z10-[contour=elevation]
+{
+	text: name;
+	text-color: white;
+	text-halo-color: eval(prop("color"));
+	text-halo-radius: 2;
+	font-size: 10;
+}
