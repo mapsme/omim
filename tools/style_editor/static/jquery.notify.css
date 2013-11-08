@@ -1,0 +1,8 @@
+.notification-outer iframe { height: 80px; border:0px; }
+.notification-icon { display:inline-block; width:32px; height:32px; background-repeat: no-repeat; margin:5px 0 5px 5px; zoom: 1; *display: inline; }
+.notification-title { display:inline-block; font-weight: bold; width: 273px; zoom: 1; *display: inline; margin-right:4px;}
+.notification-text { display:inline-block; width: 250px; padding: 4px; vertical-align:top; zoom: 1; *display: inline;}
+.notification-outer { font-size: 13px; position: fixed; width:300px; right:10px; background-color: white; min-height: 60px; font-family:sans-serif; border: 1px solid gray; border-radius: 4px;}
+.notification-header { border-bottom: 1px solid lightgray; padding: 2px 4px 2px 4px; }
+.notification-close { display:inline-block; float:right; width: 14px; height:13px; cursor:pointer; zoom: 1; *display: inline;   background-image:url(data:image/gif;base64,R0lGODlhDgANALMAAAAAAP////f39/Pz8+fn5+Dg4NjY2MvLy8PDw7+/v7e3t7CwsKioqJycnJiYmP///yH5BAEAAA8ALAAAAAAOAA0AAARNMEgpyBgzh5Gab0qhEcxnGpNQmiYhGR4hKMygNosQLJ/tKr2AafEyiUwJScG48+QEqEMQ1igMeAUCTzHhsYKSAbDhcJAZIo1hzEDoJBEAOw==); }
+.notification-close:hover { background-image:url(data:image/gif;base64,R0lGODlhDgANALMAAAAAAP///+VLS+ZSUulnZ+t1de2Bge+Pj/CWlvKkpPW7u/fJyfnV1fzq6v3x8f///yH5BAEAAA8ALAAAAAAOAA0AAARNMEjpWGszh3aGH8aiMcRnKpNTmiYjKR7jGESjDoUTFJ/tGr2AqfAyiUwHycK48+QcqEQQNlg0eAsGzzDhsYKSBnAgEJAJIo1iTEDoJBEAOw==); }

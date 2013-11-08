@@ -1,0 +1,49 @@
+
+<html>
+<head>
+<title></title>
+<script src="jquery-2.0.3.min.js"></script>
+<style>
+.mw-heading {content:"˄"}
+.mw-heading-collapsed {content:"˅"; color:red}
+
+</style>
+</head>
+<body>
+<h1 class="mw-heading">test heading</h1>
+<div class="mw-body">
+<p>tttest</p>
+</div>
+<h1 class="mw-heading">test heading</h1>
+<div class="mw-body">
+<p>tttest</p>
+</div>
+<h1 class="mw-heading">test heading</h1>
+<div class="mw-body">
+<p>tttest</p>
+</div>
+<h1 class="mw-heading">test heading</h1>
+<div class="mw-body">
+<p>tttest</p>
+</div>
+<h1 class="mw-heading">test heading</h1>
+<div class="mw-body">
+<p>tttest</p>
+</div>
+<h1 class="mw-heading">test heading</h1>
+<div class="mw-body">
+<p>tttest</p>
+</div>
+
+<script language="javascript">
+$(".mw-body").hide();
+$(".mw-heading").click(function(){
+    $(this).next().toggle();
+    $(this).toggleClass("mw-heading-collapsed");
+});
+</script>
+
+
+
+</body>
+</html>

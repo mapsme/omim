@@ -1,0 +1,83 @@
+
+<html><head><title>MapCSS editor with syntax highlighting</title>
+<link rel="stylesheet" href="leaflet/leaflet.css" />
+<link rel="stylesheet" type="text/css" href="jquery.notify.css" />
+<script src="leaflet/leaflet.js"></script>
+<script src="jquery-2.0.3.min.js"></script>
+<!-- script src='jquery-notify.js'></script -->
+</head>
+<body>
+<table width="100%" height="100%" cellspacing=0 cellpadding=0>
+<tr>
+    <td rowspan="2" width=50%>
+    <div id="map" style="height:100%; width:100%"></div>
+    </td>
+    <td valign="top">
+            <button onclick="update_mwm('ru');">Update style</button>
+            <b>z<span id="zoomlevel">xx</span></b> |
+            <span id="ed_message"></span>
+            <div id="editor" style="height: 90%; width: 50%; min-height: 500px;">
+canvas{fill-color:white}
+way[highway]{color:red; width:1}
+            </div>
+    </td>
+</tr>
+</table>
+
+<script src="src/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="src/mode-mapcss.js" type="text/javascript" charset="utf-8"></script>
+<script>
+window.onload = function() {
+    editor = ace.edit("editor");
+    var MapcssMode = require("ace/mode/mapcss").Mode;
+        editor.getSession().setMode(new MapcssMode());
+        editor.getSession().on('change', function(){changed=true;});
+};
+</script>
+
+
+<script>
+    changed = true;
+        var map = new L.Map('map', {
+            center: new L.LatLng(53.9, 27.55), // Minsk
+            zoom: 12
+        });
+
+    //kosmo = new L.TileLayer('http://{s}.tile.osmosnimki.ru/kosmo/{z}/{x}/{y}.png', {maxZoom: 18});
+    //kosmo = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 18});
+
+   // kosm = new L.TileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 18});
+   // map.addLayer(kosm);
+    iteration = 1;
+    kosmo = new L.TileLayer('/mwm/en/{z}/{x}/{y}.png?'+iteration, {maxZoom: 18});
+    map.addLayer(kosmo);
+
+    function mapdrag() {
+        $("#zoomlevel").html(map.getZoom());
+    }
+    map.on("moveend", mapdrag);
+    mapdrag();
+
+    function rerender() {
+        map.removeLayer(kosmo);
+        kosmo = new L.TileLayer('/mwm/en/{z}/{x}/{y}.png?'+iteration, {maxZoom: 18});
+        iteration = iteration + 1;
+        map.addLayer(kosmo);
+    };
+
+    function update_mwm(lang) {
+        if (changed){
+            $("#ed_message").html("recompiling stylesheet...");
+            $.post('/compile_style', {"mapcss": editor.getSession().getValue(), "action": "save"}, function(data) {
+                $("#ed_message").html("done.");
+                changed = false;
+                rerender();
+            });
+        }
+        else {
+            rerender();
+        }
+    };
+</script>
+</body>
+</html>
