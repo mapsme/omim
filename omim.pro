@@ -32,7 +32,7 @@ SUBDIRS = 3party \
           gui \
           storage storage/storage_tests \
           search search/search_tests \
-          map map/map_tests map/benchmark_tool map/mwm_tests\
+          map map/map_tests map/benchmark_tool map/mwm_tests map/kmz2ini \
           drape_frontend drape_frontend/drape_frontend_tests \
           generator generator/generator_tests \
           generator/generator_tool \
@@ -43,7 +43,7 @@ SUBDIRS = 3party \
           qt \
           drape_head \
           map_server \
-          yopme_desktop
+          yopme_desktop \
 } else {
   # libraries which are used on mobile devices
   SUBDIRS = 3party \

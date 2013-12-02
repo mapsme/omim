@@ -99,7 +99,9 @@ protected:
   bool SesameOpen(search::SearchParams const & params);
 
   model::FeaturesFetcher m_model;
+public:
   ScalesProcessor m_scales;
+protected:
   Navigator m_navigator;
   Animator m_animator;
 
