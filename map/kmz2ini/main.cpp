@@ -3,6 +3,7 @@
 #include "../../map/framework.hpp"
 
 #include "../../platform/platform.hpp"
+#include "../../platform/settings.hpp"
 
 #include "../../base/logging.hpp"
 
@@ -58,6 +59,8 @@ int main(int argc, char ** argv)
       double const scale = bmk->GetScale();
       f.ShowRectExVisibleScale(f.m_scales.GetRectForDrawScale(scale, bmk->GetOrg()));
 
+      Settings::Set("ShouldShowAppStoreRate", false);
+      Settings::Set("ShouldShowFacebookDialog", false);
       f.SaveState();
 
       string str;
