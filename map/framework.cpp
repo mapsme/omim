@@ -761,7 +761,7 @@ void Framework::CheckMinMaxVisibleScale(m2::RectD & rect, int maxScale/* = -1*/)
   int const worldS = scales::GetUpperWorldScale();
 
   int scale = m_scales.GetDrawTileScale(rect);
-  if (scale > worldS /*&& !IsCountryLoaded(c)*/)
+  if (scale > worldS && !IsCountryLoaded(c))
   {
     // country is not loaded - limit on world scale
     rect = m_scales.GetRectForDrawScale(worldS, c);
