@@ -4,6 +4,7 @@
 #include "platform/settings.hpp"
 
 #include "coding/file_reader.hpp"
+#include "coding/mmap_reader.hpp"
 
 #include <ifaddrs.h>
 
@@ -64,8 +65,7 @@ bool Platform::GetFileSizeByName(string const & fileName, uint64_t & size) const
 
 ModelReader * Platform::GetReader(string const & file, string const & searchScope) const
 {
-  return new FileReader(ReadPathForFile(file, searchScope),
-                        READER_CHUNK_LOG_SIZE, READER_CHUNK_LOG_COUNT);
+  return new MmapReader(ReadPathForFile(file, searchScope));
 }
 
 int Platform::VideoMemoryLimit() const

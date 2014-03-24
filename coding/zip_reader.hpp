@@ -1,15 +1,16 @@
 #pragma once
 
-#include "coding/file_reader.hpp"
+#include "mmap_reader.hpp"
 
 #include "base/exception.hpp"
 
 #include "std/function.hpp"
 
 
-class ZipFileReader : public FileReader
+class ZipFileReader : public MmapReader
 {
-private:
+  typedef MmapReader BaseT;
+
   uint64_t m_uncompressedFileSize;
 
 public:
@@ -22,8 +23,7 @@ public:
   DECLARE_EXCEPTION(InvalidZipException, OpenException);
 
   /// @param[in] logPageSize, logPageCount default values are equal with FileReader constructor.
-  ZipFileReader(string const & container, string const & file,
-                uint32_t logPageSize = 10, uint32_t logPageCount = 4);
+  ZipFileReader(string const & container, string const & file);
 
   /// @note Size() returns compressed file size inside zip
   uint64_t UncompressedSize() const { return m_uncompressedFileSize; }

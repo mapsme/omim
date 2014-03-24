@@ -57,10 +57,19 @@ unique_ptr<MwmInfo> Index::CreateInfo(platform::LocalCountryFile const & localFi
 
 unique_ptr<MwmSet::MwmValueBase> Index::CreateValue(MwmInfo & info) const
 {
-  unique_ptr<MwmValue> p(new MwmValue(info.GetLocalFile()));
-  p->SetTable(dynamic_cast<MwmInfoEx &>(info));
-  ASSERT(p->GetHeader().IsMWMSuitable(), ());
-  return unique_ptr<MwmSet::MwmValueBase>(move(p));
+  try
+  {
+    unique_ptr<MwmValue> p(new MwmValue(info.GetLocalFile()));
+    p->SetTable(dynamic_cast<MwmInfoEx &>(info));
+    ASSERT(p->GetHeader().IsMWMSuitable(), ());
+    return unique_ptr<MwmSet::MwmValueBase>(move(p));
+  }
+  catch (Reader::Exception const & ex)
+  {
+    LOG(LERROR, ("Can't create reader:", ex.Msg()));
+  }
+
+  return nullptr;
 }
 
 pair<MwmSet::MwmHandle, MwmSet::RegResult> Index::RegisterMap(LocalCountryFile const & localFile)

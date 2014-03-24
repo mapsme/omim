@@ -11,6 +11,7 @@ class MmapReader : public ModelReader
 
   class MmapData;
   shared_ptr<MmapData> m_data;
+
   uint64_t m_offset;
   uint64_t m_size;
 

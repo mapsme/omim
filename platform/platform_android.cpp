@@ -4,6 +4,8 @@
 #include "platform/settings.hpp"
 
 #include "coding/zip_reader.hpp"
+#include "coding/file_reader.hpp"
+#include "coding/mmap_reader.hpp"
 #include "coding/file_name_utils.hpp"
 
 #include "base/logging.hpp"
@@ -136,7 +138,7 @@ ModelReader * Platform::GetReader(string const & file, string const & searchScop
       {
         try
         {
-          return new ZipFileReader(m_extResFiles[j], file, logPageSize, logPageCount);
+          return new ZipFileReader(m_extResFiles[j], file);
         }
         catch (Reader::OpenException const &)
         {
@@ -148,7 +150,7 @@ ModelReader * Platform::GetReader(string const & file, string const & searchScop
     {
       string const path = m_writableDir + file;
       if (IsFileExistsByFullPath(path))
-        return new FileReader(path, logPageSize, logPageCount);
+        return new MmapReader(path);
       break;
     }
 

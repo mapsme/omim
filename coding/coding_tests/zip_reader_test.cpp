@@ -1,10 +1,12 @@
 #include "testing/testing.hpp"
 
 #include "coding/zip_reader.hpp"
+#include "coding/file_reader.hpp"
 #include "coding/file_writer.hpp"
 
 #include "base/logging.hpp"
 #include "base/macros.hpp"
+
 
 static char const zipBytes[] = "PK\003\004\n\0\0\0\0\0\222\226\342>\302\032"
 "x\372\005\0\0\0\005\0\0\0\b\0\034\0te"
@@ -17,6 +19,7 @@ static char const zipBytes[] = "PK\003\004\n\0\0\0\0\0\222\226\342>\302\032"
 "\0\003\303>\017Nux\v\0\001\004\365\001\0\0"
 "\004P\0\0\0PK\005\006\0\0\0\0\001\0\001"
 "\0N\0\0\0G\0\0\0\0\0";
+
 
 UNIT_TEST(ZipReaderSmoke)
 {

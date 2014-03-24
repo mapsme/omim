@@ -3,7 +3,6 @@
 #include "std/target_os.hpp"
 #include "std/cstring.hpp"
 
-// @TODO we don't support windows at the moment
 #ifndef OMIM_OS_WINDOWS
   #include <unistd.h>
   #include <sys/mman.h>
@@ -15,6 +14,7 @@
   #endif
 #endif
 
+
 class MmapReader::MmapData
 {
   int m_fd;
@@ -25,7 +25,6 @@ public:
 
   MmapData(string const & fileName)
   {
-    // @TODO add windows support
 #ifndef OMIM_OS_WINDOWS
     m_fd = open(fileName.c_str(), O_RDONLY | O_NONBLOCK);
     if (m_fd == -1)
@@ -47,7 +46,6 @@ public:
 
   ~MmapData()
   {
-    // @TODO add windows support
 #ifndef OMIM_OS_WINDOWS
     munmap(m_memory, m_size);
     close(m_fd);

@@ -4,6 +4,7 @@
 #include "coding/zip_reader.hpp"
 #include "coding/internal/file_data.hpp"
 #include "coding/file_writer.hpp"
+#include "coding/file_reader.hpp"
 #include "coding/constants.hpp"
 
 #include "std/string.hpp"
