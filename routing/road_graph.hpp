@@ -16,8 +16,8 @@ class Route;
 class RoadPos
 {
 public:
-  RoadPos() : m_featureId(0), m_pointId(0) {}
-  RoadPos(uint32_t featureId, bool bForward, size_t pointId);
+  RoadPos() : m_featureId(0), m_pointId(0), m_endCoordinates(0, 0) {}
+  RoadPos(uint32_t featureId, bool bForward, size_t pointId, m2::PointD const & p = m2::PointD::Zero());
 
   uint32_t GetFeatureId() const { return m_featureId >> 1; }
   bool IsForward() const { return (m_featureId & 1) != 0; }
@@ -37,11 +37,14 @@ public:
     return false;
   }
 
+  m2::PointD const & GetEndCoordinates() const { return m_endCoordinates; }
+
 private:
   friend string DebugPrint(RoadPos const & r);
 
   uint32_t m_featureId;
   uint32_t m_pointId;
+  m2::PointD m_endCoordinates;
 };
 
 /// The turn from the old to the new road.

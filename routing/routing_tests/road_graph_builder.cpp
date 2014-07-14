@@ -35,13 +35,13 @@ void RoadGraphMockSource::AddRoad(RoadInfo & rd)
 
     if (i > 0)
     {
-      t.m_pos = RoadPos(id, true, i - 1);
+      t.m_pos = RoadPos(id, true, i - 1, rd.m_points[i]);
       j->second.push_back(t);
     }
 
     if (rd.m_bothSides && (i < count - 1))
     {
-      t.m_pos = RoadPos(id, false, i);
+      t.m_pos = RoadPos(id, false, i, rd.m_points[i]);
       j->second.push_back(t);
     }
   }

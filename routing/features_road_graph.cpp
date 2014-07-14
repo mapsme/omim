@@ -15,7 +15,7 @@ namespace routing
 {
 
 uint32_t const READ_ROAD_SCALE = 13;
-double const READ_CROSS_RADIUS = 10.0;
+double const READ_CROSS_RADIUS = 1.0;
 double const DEFAULT_SPEED_MS = 15.0;
 
 
@@ -69,6 +69,7 @@ public:
     size_t const count = ft.GetPointsCount();
 
     PossibleTurn t;
+    t.m_speed = speed;
     t.m_startPoint = ft.GetPoint(0);
     t.m_endPoint = ft.GetPoint(count - 1);
 
@@ -83,14 +84,14 @@ public:
       if (i > 0)
       {
         ++m_count;
-        t.m_pos = RoadPos(fID.m_offset, true, i - 1);
+        t.m_pos = RoadPos(fID.m_offset, true, i - 1, p);
         m_turns.push_back(t);
       }
 
       if (!isOneWay && (i < count - 1))
       {
         ++m_count;
-        t.m_pos = RoadPos(fID.m_offset, false, i);
+        t.m_pos = RoadPos(fID.m_offset, false, i, p);
         m_turns.push_back(t);
       }
     }
@@ -130,11 +131,13 @@ void FeaturesRoadGraph::GetPossibleTurns(RoadPos const & pos, vector<PossibleTur
   int const inc = isForward ? -1 : 1;
 
   int startID = pos.GetPointId();
+  ASSERT_GREATER(count, 1, ());
   ASSERT_LESS(startID, count, ());
   if (!isForward)
     ++startID;
 
   PossibleTurn thisTurn;
+  thisTurn.m_speed = speed;
   thisTurn.m_startPoint = ft.GetPoint(0);
   thisTurn.m_endPoint = ft.GetPoint(count - 1);
 
@@ -159,14 +162,14 @@ void FeaturesRoadGraph::GetPossibleTurns(RoadPos const & pos, vector<PossibleTur
                             READ_ROAD_SCALE);
 
     // Skip if there are no turns on point
-    if (crossLoader.GetCount() > 0 || noOptimize)
+    if (/*crossLoader.GetCount() > 0 ||*/ noOptimize)
     {
       // Push turn points for this feature.
       if (isForward)
       {
         if (i > 0)
         {
-          thisTurn.m_pos = RoadPos(ftId, true, i - 1);
+          thisTurn.m_pos = RoadPos(ftId, true, i - 1, pt);
           turns.push_back(thisTurn);
         }
       }
@@ -174,7 +177,7 @@ void FeaturesRoadGraph::GetPossibleTurns(RoadPos const & pos, vector<PossibleTur
       {
         if (!isOneWay && (i != count - 1))
         {
-          thisTurn.m_pos = RoadPos(ftId, false, i);
+          thisTurn.m_pos = RoadPos(ftId, false, i, pt);
           turns.push_back(thisTurn);
         }
       }
@@ -199,7 +202,7 @@ void FeaturesRoadGraph::GetPossibleTurns(RoadPos const & pos, vector<PossibleTur
       for (int i = pos.GetPointId(); i > 0; --i)
         distance += CalcDistanceMeters(ft.GetPoint(i), ft.GetPoint(i - 1));
 
-      thisTurn.m_pos = RoadPos(ftId, true, count - 2);
+      thisTurn.m_pos = RoadPos(ftId, true, count - 2, ft.GetPoint(count - 1));
       thisTurn.m_metersCovered = distance;
       thisTurn.m_secondsCovered = distance / DEFAULT_SPEED_MS;
       turns.push_back(thisTurn);
@@ -210,7 +213,7 @@ void FeaturesRoadGraph::GetPossibleTurns(RoadPos const & pos, vector<PossibleTur
       for (size_t i = pos.GetPointId(); i < count - 1; ++i)
         distance += CalcDistanceMeters(ft.GetPoint(i), ft.GetPoint(i + 1));
 
-      thisTurn.m_pos = RoadPos(ftId, false, 0);
+      thisTurn.m_pos = RoadPos(ftId, false, 0, ft.GetPoint(0));
       thisTurn.m_metersCovered = distance;
       thisTurn.m_secondsCovered = distance / DEFAULT_SPEED_MS;
       turns.push_back(thisTurn);

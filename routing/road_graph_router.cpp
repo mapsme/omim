@@ -17,6 +17,8 @@ class Point2RoadPos
 {
   m2::PointD m_point;
   double m_minDist;
+  m2::PointD m_posBeg;
+  m2::PointD m_posEnd;
   size_t m_segIdx;
   bool m_isOneway;
   FeatureID m_fID;
@@ -43,7 +45,9 @@ public:
     for (size_t i = 0; i < count; ++i)
     {
       m2::DistanceToLineSquare<m2::PointD> segDist;
-      segDist.SetBounds(ft.GetPoint(i), ft.GetPoint(i + 1));
+      m2::PointD const & p1 = ft.GetPoint(i);
+      m2::PointD const & p2 = ft.GetPoint(i + 1);
+      segDist.SetBounds(p1, p2);
       double const d = segDist(m_point);
       if (d < m_minDist)
       {
@@ -51,6 +55,8 @@ public:
         m_segIdx = i;
         m_fID = ft.GetID();
         m_isOneway = m_vehicleModel->IsOneWay(ft);
+        m_posBeg = p1;
+        m_posEnd = p2;
       }
     }
   }
@@ -64,9 +70,9 @@ public:
   {
     if (m_fID.IsValid())
     {
-      res.push_back(RoadPos(m_fID.m_offset, true, m_segIdx));
+      res.push_back(RoadPos(m_fID.m_offset, true, m_segIdx, m_posEnd));
       if (!m_isOneway)
-        res.push_back(RoadPos(m_fID.m_offset, false, m_segIdx));
+        res.push_back(RoadPos(m_fID.m_offset, false, m_segIdx, m_posBeg));
     }
   }
 };
