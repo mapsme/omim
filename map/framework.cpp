@@ -12,6 +12,7 @@
 
 #include "../routing/route.hpp"
 #include "../routing/dijkstra_router.hpp"
+#include "../routing/astar_router.hpp"
 
 #include "../search/search_engine.hpp"
 #include "../search/result.hpp"
@@ -1214,7 +1215,7 @@ void Framework::DeleteRoutes()
 
 routing::IRouter * Framework::CreateRouter()
 {
-  return new routing::DijkstraRouter(&m_model.GetIndex());
+  return new routing::AStarRouter(&m_model.GetIndex());
 }
 
 void Framework::RestoreSesame()
