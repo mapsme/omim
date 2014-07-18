@@ -201,6 +201,11 @@ public:
     ASSERT(m_bPointsParsed, ());
     return m_points[i];
   }
+  inline m2::PointD const * GetPointsData() const
+  {
+    ASSERT(m_bPointsParsed, ());
+    return m_points.data();
+  }
 
   template <typename FunctorT>
   void ForEachPoint(FunctorT f, int scale) const

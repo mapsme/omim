@@ -4,7 +4,6 @@
 
 #include "../indexer/index.hpp"
 #include "../indexer/classificator.hpp"
-#include "../indexer/feature_data.hpp"
 #include "../indexer/ftypes_matcher.hpp"
 
 #include "../geometry/distance_on_sphere.hpp"
@@ -14,13 +13,15 @@
 namespace routing
 {
 
-uint32_t const READ_ROAD_SCALE = 13;
-double const READ_CROSS_RADIUS = 1.0;
+uint32_t const FEATURE_CACHE_SIZE = 16;
+uint32_t const READ_ROAD_SCALE = 14;
+double const READ_CROSS_RADIUS = 0.1;
 double const DEFAULT_SPEED_MS = 15.0;
 
 
 FeaturesRoadGraph::FeaturesRoadGraph(Index const * pIndex, size_t mwmID)
-  : m_pIndex(pIndex), m_mwmID(mwmID), m_vehicleModel(new CarModel())
+  : m_pIndex(pIndex), m_mwmID(mwmID), m_vehicleModel(new CarModel()), m_cache(FEATURE_CACHE_SIZE),
+    m_cacheMiss(0), m_cacheAccess(0)
 {
 }
 
@@ -55,27 +56,31 @@ public:
     if (m_featureID == fID.m_offset || fID.m_mwm != m_graph.GetMwmID())
       return;
 
+    /// @todo remove overhead with type and speed checks (now speed loads in cache creation)
+    // check type to skip not line objects
     feature::TypesHolder types(ft);
     if (types.GetGeoType() != feature::GEOM_LINE)
       return;
 
+    // skip roads with null speed
     double const speed = m_graph.GetSpeed(ft);
     if (speed <= 0.0)
       return;
 
-    ft.ParseGeometry(FeatureType::BEST_GEOMETRY);
+    // load feature from cache
+    FeaturesRoadGraph::CachedFeature const & fc = m_graph.GetCachedFeature(fID.m_offset);
+    ASSERT_EQUAL(speed, fc.m_speed, ());
 
-    bool const isOneWay = m_graph.IsOneWay(ft);
-    size_t const count = ft.GetPointsCount();
+    size_t const count = fc.m_points.size();
 
     PossibleTurn t;
-    t.m_speed = speed;
-    t.m_startPoint = ft.GetPoint(0);
-    t.m_endPoint = ft.GetPoint(count - 1);
+    t.m_speed = fc.m_speed;
+    t.m_startPoint = fc.m_points[0];
+    t.m_endPoint = fc.m_points[count - 1];
 
     for (size_t i = 0; i < count; ++i)
     {
-      m2::PointD const & p = ft.GetPoint(i);
+      m2::PointD const & p = fc.m_points[i];
 
       /// @todo Is this a correct way to compare?
       if (!m2::AlmostEqual(m_point, p))
@@ -88,7 +93,7 @@ public:
         m_turns.push_back(t);
       }
 
-      if (!isOneWay && (i < count - 1))
+      if (!fc.m_isOneway && (i < count - 1))
       {
         ++m_count;
         t.m_pos = RoadPos(fID.m_offset, false, i, p);
@@ -116,18 +121,14 @@ void FeaturesRoadGraph::LoadFeature(uint32_t id, FeatureType & ft)
 
 void FeaturesRoadGraph::GetPossibleTurns(RoadPos const & pos, vector<PossibleTurn> & turns, bool noOptimize /*= true*/)
 {
-  uint32_t const ftId = pos.GetFeatureId();
-  FeatureType ft;
-  LoadFeature(ftId, ft);
+  uint32_t const ftID = pos.GetFeatureId();
+  CachedFeature const & fc = GetCachedFeature(ftID);
 
-  double const speed = GetSpeed(ft);
-
-  if (speed <= 0.0)
+  if (fc.m_speed <= 0.0)
     return;
 
-  int const count = static_cast<int>(ft.GetPointsCount());
+  int const count = static_cast<int>(fc.m_points.size());
   bool const isForward = pos.IsForward();
-  bool const isOneWay = IsOneWay(ft);
   int const inc = isForward ? -1 : 1;
 
   int startID = pos.GetPointId();
@@ -137,9 +138,9 @@ void FeaturesRoadGraph::GetPossibleTurns(RoadPos const & pos, vector<PossibleTur
     ++startID;
 
   PossibleTurn thisTurn;
-  thisTurn.m_speed = speed;
-  thisTurn.m_startPoint = ft.GetPoint(0);
-  thisTurn.m_endPoint = ft.GetPoint(count - 1);
+  thisTurn.m_speed = fc.m_speed;
+  thisTurn.m_startPoint = fc.m_points[0];
+  thisTurn.m_endPoint = fc.m_points[count - 1];
 
   double distance = 0.0;
   double time = 0.0;
@@ -148,15 +149,15 @@ void FeaturesRoadGraph::GetPossibleTurns(RoadPos const & pos, vector<PossibleTur
     ASSERT_GREATER(i - inc, -1, ());
     ASSERT_LESS(i - inc, count, ());
 
-    double const segmentDistance = CalcDistanceMeters(ft.GetPoint(i), ft.GetPoint(i - inc));
+    double const segmentDistance = CalcDistanceMeters(fc.m_points[i], fc.m_points[i - inc]);
     distance += segmentDistance;
-    time += segmentDistance / speed;
+    time += segmentDistance / fc.m_speed;
 
-    m2::PointD const & pt = ft.GetPoint(i);
+    m2::PointD const & pt = fc.m_points[i];
 
     // Find possible turns to point[i] from other features.
     size_t const last = turns.size();
-    CrossFeaturesLoader crossLoader(ftId, *this, pt, turns);
+    CrossFeaturesLoader crossLoader(ftID, *this, pt, turns);
     m_pIndex->ForEachInRect(crossLoader,
                             MercatorBounds::RectByCenterXYAndSizeInMeters(pt, READ_CROSS_RADIUS),
                             READ_ROAD_SCALE);
@@ -169,15 +170,15 @@ void FeaturesRoadGraph::GetPossibleTurns(RoadPos const & pos, vector<PossibleTur
       {
         if (i > 0)
         {
-          thisTurn.m_pos = RoadPos(ftId, true, i - 1, pt);
+          thisTurn.m_pos = RoadPos(ftID, true, i - 1, pt);
           turns.push_back(thisTurn);
         }
       }
       else
       {
-        if (!isOneWay && (i != count - 1))
+        if (!fc.m_isOneway && (i != count - 1))
         {
-          thisTurn.m_pos = RoadPos(ftId, false, i, pt);
+          thisTurn.m_pos = RoadPos(ftID, false, i, pt);
           turns.push_back(thisTurn);
         }
       }
@@ -193,27 +194,27 @@ void FeaturesRoadGraph::GetPossibleTurns(RoadPos const & pos, vector<PossibleTur
   }
 
   // Check cycle
-  if (m2::AlmostEqual(ft.GetPoint(0), ft.GetPoint(count - 1)))
+  if (m2::AlmostEqual(fc.m_points[0], fc.m_points[count - 1]))
   {
     /// @todo calculate distance and speed
     if (isForward)
     {
       double distance = 0;
       for (int i = pos.GetPointId(); i > 0; --i)
-        distance += CalcDistanceMeters(ft.GetPoint(i), ft.GetPoint(i - 1));
+        distance += CalcDistanceMeters(fc.m_points[i], fc.m_points[i - 1]);
 
-      thisTurn.m_pos = RoadPos(ftId, true, count - 2, ft.GetPoint(count - 1));
+      thisTurn.m_pos = RoadPos(ftID, true, count - 2, fc.m_points[count - 1]);
       thisTurn.m_metersCovered = distance;
       thisTurn.m_secondsCovered = distance / DEFAULT_SPEED_MS;
       turns.push_back(thisTurn);
     }
-    else if (!isOneWay)
+    else if (!fc.m_isOneway)
     {
       double distance = 0;
       for (size_t i = pos.GetPointId(); i < count - 1; ++i)
-        distance += CalcDistanceMeters(ft.GetPoint(i), ft.GetPoint(i + 1));
+        distance += CalcDistanceMeters(fc.m_points[i], fc.m_points[i + 1]);
 
-      thisTurn.m_pos = RoadPos(ftId, false, 0, ft.GetPoint(0));
+      thisTurn.m_pos = RoadPos(ftID, false, 0, fc.m_points[0]);
       thisTurn.m_metersCovered = distance;
       thisTurn.m_secondsCovered = distance / DEFAULT_SPEED_MS;
       turns.push_back(thisTurn);
@@ -223,6 +224,8 @@ void FeaturesRoadGraph::GetPossibleTurns(RoadPos const & pos, vector<PossibleTur
 
 void FeaturesRoadGraph::ReconstructPath(RoadPosVectorT const & positions, Route & route)
 {
+  LOG(LINFO, ("Cache miss: ", GetCacheMiss() * 100, " Access count: ", m_cacheAccess));
+
   size_t count = positions.size();
   if (count < 2)
     return;
@@ -284,5 +287,27 @@ double FeaturesRoadGraph::GetSpeed(FeatureType const & ft) const
   return m_vehicleModel->GetSpeed(ft);
 }
 
+FeaturesRoadGraph::CachedFeature const & FeaturesRoadGraph::GetCachedFeature(uint32_t const ftId)
+{
+  bool found = false;
+  CachedFeature & f = m_cache.Find(ftId, found);
+
+  if (!found)
+  {
+    FeatureType ft;
+    LoadFeature(ftId, ft);
+
+    ft.ParseGeometry(FeatureType::BEST_GEOMETRY);
+
+    f.m_isOneway = IsOneWay(ft);
+    f.m_speed = GetSpeed(ft);
+    f.m_points = vector<m2::PointD>(ft.GetPointsData(), ft.GetPointsData() + ft.GetPointsCount());
+    ASSERT_EQUAL(f.m_points.size(), ft.GetPointsCount(), ());
+    m_cacheMiss++;
+  }
+  m_cacheAccess++;
+
+  return f;
+}
 
 } // namespace routing
