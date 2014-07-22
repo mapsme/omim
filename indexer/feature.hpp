@@ -201,10 +201,10 @@ public:
     ASSERT(m_bPointsParsed, ());
     return m_points[i];
   }
-  inline m2::PointD const * GetPointsData() const
+  inline void SwapPoints(buffer_vector<m2::PointD, 32> & points) const
   {
     ASSERT(m_bPointsParsed, ());
-    return m_points.data();
+    return m_points.swap(points);
   }
 
   template <typename FunctorT>

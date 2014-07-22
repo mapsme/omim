@@ -1215,7 +1215,7 @@ void Framework::DeleteRoutes()
 
 routing::IRouter * Framework::CreateRouter()
 {
-  return new routing::AStarRouter(&m_model.GetIndex());
+  return new routing::DijkstraRouter(&m_model.GetIndex());
 }
 
 void Framework::RestoreSesame()

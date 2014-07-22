@@ -45,7 +45,7 @@ class MwmSet
 public:
   typedef size_t MwmId;
 
-  explicit MwmSet(size_t cacheSize = 5);
+  explicit MwmSet(size_t cacheSize = 10);
   virtual ~MwmSet() = 0;
 
   class MwmValueBase

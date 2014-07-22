@@ -20,15 +20,16 @@ class IVehicleModel;
 
 class FeaturesRoadGraph : public IRoadGraph
 {
-public:
   struct CachedFeature
   {
     CachedFeature() : m_speed(0), m_isOneway(false) {}
 
-    vector<m2::PointD> m_points;
+    buffer_vector<m2::PointD, 32> m_points;
     double m_speed;
     bool m_isOneway;
   };
+
+  CachedFeature const & GetCachedFeature(uint32_t const ftId, FeatureType & ft, bool fullLoad);
 
 public:
   FeaturesRoadGraph(Index const * pIndex, size_t mwmID);
@@ -39,8 +40,6 @@ public:
   static uint32_t GetStreetReadScale();
 
   inline size_t GetMwmID() const { return m_mwmID; }
-
-  CachedFeature const & GetCachedFeature(uint32_t const ftId);
 
   double GetCacheMiss() const { return (double)m_cacheMiss / (double)m_cacheAccess; }
 

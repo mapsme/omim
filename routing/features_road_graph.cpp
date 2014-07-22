@@ -13,9 +13,9 @@
 namespace routing
 {
 
-uint32_t const FEATURE_CACHE_SIZE = 16;
-uint32_t const READ_ROAD_SCALE = 14;
-double const READ_CROSS_RADIUS = 0.1;
+uint32_t const FEATURE_CACHE_SIZE = 10;
+uint32_t const READ_ROAD_SCALE = 13;
+double const READ_CROSS_EPSILON = 1.0E-4;
 double const DEFAULT_SPEED_MS = 15.0;
 
 uint32_t indexFound = 0;
@@ -55,7 +55,7 @@ public:
     return m_count;
   }
 
-  void operator()(FeatureType const & ft)
+  void operator()(FeatureType & ft)
   {
     FeatureID const fID = ft.GetID();
     if (m_featureID == fID.m_offset || fID.m_mwm != m_graph.GetMwmID())
@@ -73,7 +73,7 @@ public:
       return;
 
     // load feature from cache
-    FeaturesRoadGraph::CachedFeature const & fc = m_graph.GetCachedFeature(fID.m_offset);
+    FeaturesRoadGraph::CachedFeature const & fc = m_graph.GetCachedFeature(fID.m_offset, ft, false);
     ASSERT_EQUAL(speed, fc.m_speed, ());
 
     size_t const count = fc.m_points.size();
@@ -131,7 +131,8 @@ void FeaturesRoadGraph::LoadFeature(uint32_t id, FeatureType & ft)
 void FeaturesRoadGraph::GetPossibleTurns(RoadPos const & pos, vector<PossibleTurn> & turns, bool noOptimize /*= true*/)
 {
   uint32_t const ftID = pos.GetFeatureId();
-  CachedFeature const & fc = GetCachedFeature(ftID);
+  FeatureType ft;
+  CachedFeature const fc = GetCachedFeature(ftID, ft, true);
 
   if (fc.m_speed <= 0.0)
     return;
@@ -168,7 +169,8 @@ void FeaturesRoadGraph::GetPossibleTurns(RoadPos const & pos, vector<PossibleTur
     size_t const last = turns.size();
     CrossFeaturesLoader crossLoader(ftID, *this, pt, turns);
     m_pIndex->ForEachInRect(crossLoader,
-                            MercatorBounds::RectByCenterXYAndSizeInMeters(pt, READ_CROSS_RADIUS),
+                            m2::RectD(pt.x - READ_CROSS_EPSILON, pt.y - READ_CROSS_EPSILON,
+                                      pt.x + READ_CROSS_EPSILON, pt.y + READ_CROSS_EPSILON),
                             READ_ROAD_SCALE);
 
     indexCheck++;
@@ -303,22 +305,22 @@ double FeaturesRoadGraph::GetSpeed(FeatureType const & ft) const
   return m_vehicleModel->GetSpeed(ft);
 }
 
-FeaturesRoadGraph::CachedFeature const & FeaturesRoadGraph::GetCachedFeature(uint32_t const ftId)
+FeaturesRoadGraph::CachedFeature const & FeaturesRoadGraph::GetCachedFeature(
+    uint32_t const ftId, FeatureType & ft, bool fullLoad)
 {
   bool found = false;
   CachedFeature & f = m_cache.Find(ftId, found);
 
   if (!found)
   {
-    FeatureType ft;
-    LoadFeature(ftId, ft);
-
-    ft.ParseGeometry(FeatureType::BEST_GEOMETRY);
+    if (fullLoad)
+      LoadFeature(ftId, ft);
+    else
+      ft.ParseGeometry(FeatureType::BEST_GEOMETRY);
 
     f.m_isOneway = IsOneWay(ft);
     f.m_speed = GetSpeed(ft);
-    f.m_points = vector<m2::PointD>(ft.GetPointsData(), ft.GetPointsData() + ft.GetPointsCount());
-    ASSERT_EQUAL(f.m_points.size(), ft.GetPointsCount(), ());
+    ft.SwapPoints(f.m_points);
     m_cacheMiss++;
   }
   m_cacheAccess++;
