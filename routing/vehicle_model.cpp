@@ -8,30 +8,32 @@
 namespace routing
 {
 
+static double const kph2mps = 0.2777777777777778;
+
 VehicleModel::SpeedForType const s_carLimits[] = {
-  { {"highway", "motorway"},       90 },
-  { {"highway", "trunk"},          85 },
-  { {"highway", "motorway_link"},  75 },
-  { {"highway", "trunk_link"},     70 },
-  { {"highway", "primary"},        65 },
-  { {"highway", "primary_link"},   60 },
-  { {"highway", "secondary"},      55 },
-  { {"highway", "secondary_link"}, 50 },
-  { {"highway", "tertiary"},       40 },
-  { {"highway", "tertiary_link"},  30 },
-  { {"highway", "residential"},    25 },
-  { {"highway", "pedestrian"},     25 },
-  { {"highway", "unclassified"},   25 },
-  { {"highway", "service"},        15 },
-  { {"highway", "living_street"},  10 },
-  { {"highway", "road"},           10 },
-  { {"highway", "track"},          5  },
+  { {"highway", "motorway"},       90 * kph2mps },
+  { {"highway", "trunk"},          85 * kph2mps },
+  { {"highway", "motorway_link"},  75 * kph2mps },
+  { {"highway", "trunk_link"},     70 * kph2mps },
+  { {"highway", "primary"},        65 * kph2mps },
+  { {"highway", "primary_link"},   60 * kph2mps },
+  { {"highway", "secondary"},      55 * kph2mps },
+  { {"highway", "secondary_link"}, 50 * kph2mps },
+  { {"highway", "tertiary"},       40 * kph2mps },
+  { {"highway", "tertiary_link"},  30 * kph2mps },
+  { {"highway", "residential"},    25 * kph2mps },
+  { {"highway", "pedestrian"},     25 * kph2mps },
+  { {"highway", "unclassified"},   25 * kph2mps },
+  { {"highway", "service"},        15 * kph2mps },
+  { {"highway", "living_street"},  10 * kph2mps },
+  { {"highway", "road"},           10 * kph2mps },
+  { {"highway", "track"},          5  * kph2mps },
   /// @todo: Add to classificator
-  //{ {"highway", "shuttle_train"},  10 },
-  //{ {"highway", "ferry"},          5  },
-  //{ {"highway", "default"},        10 },
+  //{ {"highway", "shuttle_train"},  10 * kph2mps },
+  //{ {"highway", "ferry"},          5 * kph2mps  },
+  //{ {"highway", "default"},        10 * kph2mps },
   /// @todo: check type
-  //{ {"highway", "construction"},   40 },
+  //{ {"highway", "construction"},   40 * kph2mps },
 };
 
 
