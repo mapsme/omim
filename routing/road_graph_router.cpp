@@ -9,6 +9,8 @@
 
 #include "../geometry/distance.hpp"
 
+#include "../base/timer.hpp"
+
 
 namespace routing
 {
@@ -128,8 +130,13 @@ void RoadGraphRouter::CalculateRoute(m2::PointD const & startPt, ReadyCallback c
   if (startPos.empty() || !IsMyMWM(mwmID))
     return;
 
+  my::Timer timer;
+  timer.Reset();
+
   vector<RoadPos> routePos;
   CalculateRoute(startPos, routePos);
+
+  LOG(LINFO, ("Route calculation time: ", timer.ElapsedSeconds()));
 
   Route route(GetName());
   m_pRoadGraph->ReconstructPath(routePos, route);
