@@ -18,6 +18,11 @@ uint32_t const READ_ROAD_SCALE = 14;
 double const READ_CROSS_RADIUS = 0.1;
 double const DEFAULT_SPEED_MS = 15.0;
 
+uint32_t indexFound = 0;
+uint32_t indexCheck = 0;
+uint32_t crossFound = 0;
+uint32_t crossCheck = 0;
+
 
 FeaturesRoadGraph::FeaturesRoadGraph(Index const * pIndex, size_t mwmID)
   : m_pIndex(pIndex), m_mwmID(mwmID), m_vehicleModel(new CarModel()), m_cache(FEATURE_CACHE_SIZE),
@@ -82,9 +87,13 @@ public:
     {
       m2::PointD const & p = fc.m_points[i];
 
+      crossCheck++;
+
       /// @todo Is this a correct way to compare?
       if (!m2::AlmostEqual(m_point, p))
         continue;
+
+      crossFound++;
 
       if (i > 0)
       {
@@ -162,6 +171,11 @@ void FeaturesRoadGraph::GetPossibleTurns(RoadPos const & pos, vector<PossibleTur
                             MercatorBounds::RectByCenterXYAndSizeInMeters(pt, READ_CROSS_RADIUS),
                             READ_ROAD_SCALE);
 
+    indexCheck++;
+
+    if (crossLoader.GetCount() > 0)
+      indexFound++;
+
     // Skip if there are no turns on point
     if (/*crossLoader.GetCount() > 0 ||*/ noOptimize)
     {
@@ -225,6 +239,8 @@ void FeaturesRoadGraph::GetPossibleTurns(RoadPos const & pos, vector<PossibleTur
 void FeaturesRoadGraph::ReconstructPath(RoadPosVectorT const & positions, Route & route)
 {
   LOG(LINFO, ("Cache miss: ", GetCacheMiss() * 100, " Access count: ", m_cacheAccess));
+  LOG(LINFO, ("Index check: ", indexCheck, " Index found: ", indexFound, " (", 100.0 * (double)indexFound / (double)indexCheck, "%)"));
+  LOG(LINFO, ("Cross check: ", crossCheck, " Cross found: ", crossFound, " (", 100.0 * (double)crossFound / (double)crossCheck, "%)"));
 
   size_t count = positions.size();
   if (count < 2)
