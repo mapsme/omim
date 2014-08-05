@@ -61,6 +61,7 @@ int main(int argc, char ** argv)
 
       Settings::Set("ShouldShowAppStoreRate", false);
       Settings::Set("ShouldShowFacebookDialog", false);
+      Settings::Set("ZoomButtonsEnabled", false);
       f.SaveState();
 
       string str;
