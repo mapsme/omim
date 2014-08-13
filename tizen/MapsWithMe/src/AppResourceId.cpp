@@ -106,12 +106,13 @@ const wchar_t* IDS_USE_WIFI_RECOMMENDATION_TEXT = L"IDS_USE_WIFI_RECOMMENDATION_
 const wchar_t* IDS_VERSION = L"IDS_VERSION";
 const wchar_t* IDS_VISIBLE = L"IDS_VISIBLE";
 // main form
-const wchar_t * IDB_MY_POSITION_NORMAL = L"main_form_menu/my-position-normal.png";
+const wchar_t * IDB_MY_POSITION_NORMAL = L"main_form_menu/my_position.png";
 const wchar_t * IDB_MY_POSITION_PRESSED = L"main_form_menu/my-position-pressed.png";
 const wchar_t * IDB_MY_POSITION_SEARCH = L"main_form_menu/my-position-search.png";
+const wchar_t * IDB_MY_POSITION_FOLLOW = L"main_form_menu/my-position-follow.png";
 const wchar_t * IDB_SEARCH = L"main_form_menu/search.png";
 const wchar_t * IDB_STAR = L"main_form_menu/star.png";
-const wchar_t * IDB_MENU = L"main_form_menu/menu.png";
+const wchar_t * IDB_MENU = L"main_form_menu/settings.png";
 //main menu
 const wchar_t * IDB_MWM_PRO = L"main_menu/MWMProIcon.png";
 const wchar_t * IDB_DOWNLOAD_MAP = L"main_menu/IconMap.png";

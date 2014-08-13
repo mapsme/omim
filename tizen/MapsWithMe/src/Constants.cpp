@@ -10,7 +10,7 @@ Color const green = Color(21, 199, 131);
 Color const blue = Color(0, 186, 255);
 Color const black = Color(0x00,0x00,0x00);
 Color const red = Color(0xFF,0x00,0x00);
-Color const mainMenuGray = Color(65,68,81);
+Color const mainMenuGray = Color(0x1D,0x1f,0x29);
 
 int const topHght = 27; //margin from top to text
 int const btwWdth = 20; //margin between texts

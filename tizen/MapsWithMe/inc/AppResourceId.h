@@ -108,6 +108,7 @@ extern const wchar_t* IDS_VERSION;
 extern const wchar_t * IDB_MY_POSITION_NORMAL;
 extern const wchar_t * IDB_MY_POSITION_PRESSED;
 extern const wchar_t * IDB_MY_POSITION_SEARCH;
+extern const wchar_t * IDB_MY_POSITION_FOLLOW;
 extern const wchar_t * IDB_SEARCH;
 extern const wchar_t * IDB_STAR;
 extern const wchar_t * IDB_MENU;

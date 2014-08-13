@@ -59,13 +59,14 @@ CustomItem * CreateFeatureItem(Result const & val, double itemWidth)
   CustomItem * pItem = new CustomItem();
 
   pItem->Construct(FloatDimension(itemWidth, lstItmHght), LIST_ANNEX_STYLE_NORMAL);
+  pItem->SetBackgroundColor(LIST_ITEM_DRAWING_STATUS_NORMAL, mainMenuGray);
   FloatRectangle imgRect(btwWdth, topHght, imgWdth, imgHght);
-  pItem->AddElement(imgRect, 0, *GetBitmap(IDB_SINGLE_RESULT), null, null);
+  //pItem->AddElement(imgRect, 0, *GetBitmap(IDB_SINGLE_RESULT), null, null);
   int txtWdht = itemWidth - btwWdth - imgWdth - backWdth;
-  pItem->AddElement(FloatRectangle(btwWdth + imgWdth + btwWdth, 15, txtWdht, imgHght), 1, val.GetString(), mainFontSz, white, white, white);
-  pItem->AddElement(FloatRectangle(btwWdth + imgWdth + btwWdth, 60.0f, txtWdht, imgHght), 2, val.GetRegionString(), minorFontSz, white, white, white);
+  pItem->AddElement(FloatRectangle(btwWdth, 15, txtWdht, imgHght), 1, val.GetString(), mainFontSz, white, white, white);
+  pItem->AddElement(FloatRectangle(btwWdth, 60.0f, txtWdht, imgHght), 2, val.GetRegionString(), minorFontSz, gray, gray, gray);
   String feature = val.GetFeatureType();
-  pItem->AddElement(FloatRectangle(itemWidth - backWdth, 10, backWdth, imgHght), 3, GetFeature(feature), minorFontSz, gray, gray, gray);
+  pItem->AddElement(FloatRectangle(itemWidth - backWdth, 15, backWdth, imgHght), 3, GetFeature(feature), mediumFontSz, gray, gray, gray);
   double lat, lon;
   GetFramework()->GetCurrentPosition(lat, lon);
   double north = 0;
@@ -73,7 +74,7 @@ CustomItem * CreateFeatureItem(Result const & val, double itemWidth)
   double azimut;
   GetFramework()->GetDistanceAndAzimut(val.GetFeatureCenter(), lat, lon, north, distance, azimut);
   String dist(distance.c_str());
-  pItem->AddElement(FloatRectangle(itemWidth - backWdth, 50, backWdth, imgHght), 4, dist, minorFontSz, gray, gray, gray);
+  pItem->AddElement(FloatRectangle(itemWidth - backWdth, 60.0f, backWdth, imgHght), 4, dist, mainFontSz, gray, gray, gray);
 
   return pItem;
 }
@@ -84,6 +85,7 @@ CustomItem * CreateSuggestionItem(String const & val, double itemWidth)
   CustomItem * pItem = new CustomItem();
 
   pItem->Construct(FloatDimension(itemWidth, lstItmHght), LIST_ANNEX_STYLE_NORMAL);
+  pItem->SetBackgroundColor(LIST_ITEM_DRAWING_STATUS_NORMAL, green);
   FloatRectangle imgRect(btwWdth, topHght, imgWdth, imgHght);
   pItem->AddElement(imgRect, 0, *GetBitmap(IDB_SUGGESTION_RESULT), null, null);
   pItem->AddElement(FloatRectangle(btwWdth + imgWdth + btwWdth, topHght, itemWidth, imgHght), 1, itemText, mainFontSz, white, white, white);
@@ -176,6 +178,7 @@ ListItemBase * SearchForm::CreateItem (int index, float itemWidth)
       String itemText = GetString(IDS_NO_SEARCH_RESULTS_FOUND);
       CustomItem * pItem = new CustomItem();
       pItem->Construct(FloatDimension(itemWidth, lstItmHght), LIST_ANNEX_STYLE_NORMAL);
+      pItem->SetBackgroundColor(LIST_ITEM_DRAWING_STATUS_NORMAL, mainMenuGray);
       pItem->AddElement(FloatRectangle(btwWdth, topHght, itemWidth, imgHght), 0, itemText, mainFontSz, white, white, white);
       return pItem;
     }

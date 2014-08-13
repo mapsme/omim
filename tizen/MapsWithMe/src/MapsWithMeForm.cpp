@@ -78,7 +78,6 @@ result MapsWithMeForm::OnInitializing(void)
   footerItem3.Construct(ID_MENU);
   footerItem3.SetIcon(FOOTER_ITEM_STATUS_NORMAL, GetBitmap(IDB_MENU));
 
-
   pFooter->AddItem(footerItem);
   pFooter->AddItem(footerItem1);
   pFooter->AddItem(footerItem2);
@@ -486,7 +485,7 @@ ListItemBase * MapsWithMeForm::CreateItem (int index, float itemWidth)
   pItem->Construct(Dimension(itemWidth,112), style);
   Color const white(0xFF, 0xFF, 0xFF);
   Color const green(0, 0xFF, 0);
-  FloatRectangle const rectImg(20.0f, 27.0f, 60, 60.0f);
+  FloatRectangle const rectImg(20.0f, 0, 60.0f, 120.0f);
   FloatRectangle const rectTxt(100, 25, 650, 50);
 
   int fontSize = mediumFontSz;
