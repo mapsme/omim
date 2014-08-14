@@ -34,6 +34,10 @@
 	<text id="IDS_BOOKMARK_COLOR">Couleur du signet</text>
 	<!-- Bookmarks - dialog title -->
 	<text id="IDS_BOOKMARKS">Signets</text>
+	<!-- Add bookmark dialog - bookmark name -->
+	<text id="IDS_NAME">Nom</text>
+	<!-- Add bookmark dialog - bookmark set, Bookmarks dialog - Bookmark set cell -->
+	<text id="IDS_SET">Groupe</text>
 	<!-- Settings button in system menu -->
 	<text id="IDS_SETTINGS">Réglages</text>
 	<!-- Show bookmarks from this category on a map or not -->
@@ -73,6 +77,8 @@
 	<text id="IDS_POLICE">police/gendarmerie</text>
 	<!-- String in search result list, when nothing found -->
 	<text id="IDS_NO_SEARCH_RESULTS_FOUND">Aucun résultat trouvé</text>
+	<!-- Notes field in Bookmarks view -->
+	<text id="IDS_DESCRIPTION">Notes</text>
 	<!-- resource for context menu -->
 	<text id="IDS_EDIT">Modifier</text>
 	<!-- Warning message when doing search around current position -->

@@ -2094,7 +2094,7 @@
 
   [name]
     en = Name
-    tags = ios
+    tags = ios,tizen
     comment = Add bookmark dialog - bookmark name
     cs = Název
     es = Nombre
@@ -2165,7 +2165,7 @@
 
   [set]
     en = Set
-    tags = ios
+    tags = ios,tizen
     comment = Add bookmark dialog - bookmark set, Bookmarks dialog - Bookmark set cell
     cs = Skupina
     de = Gruppe
@@ -2930,7 +2930,7 @@
 
   [description]
     en = Notes
-    tags = ios,android
+    tags = ios,android,tizen
     comment = Notes field in Bookmarks view
     cs = Poznámky
     de = Notizen

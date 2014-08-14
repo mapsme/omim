@@ -10,6 +10,7 @@
 #include "CategoryForm.hpp"
 #include "SharePositionForm.hpp"
 #include "LicenseForm.hpp"
+#include "PlacePageSettingsForm.hpp"
 #include "../../../platform/tizen_utils.hpp"
 #include "../../../base/logging.hpp"
 
@@ -30,6 +31,7 @@ const wchar_t * FORM_SELECT_COLOR = L"FormSelectColor";
 const wchar_t * FORM_CATEGORY = L"FormCategory";
 const wchar_t * FORM_SHARE_POSITION = L"FormSharePosition";
 const wchar_t * FORM_LICENSE = L"FormLicense";
+const wchar_t * FORM_PLACE_PAGE_SETTINGS = L"FormPlacePageSettings";
 
 FormFactory::FormFactory(void)
 {
@@ -117,6 +119,13 @@ Tizen::Ui::Controls::Form * FormFactory::CreateFormN(String const & formId, Scen
   {
     LicenseForm * pForm = new LicenseForm();
     pForm->Initialize();
+    pNewForm = pForm;
+  }
+  else if (formId == FORM_PLACE_PAGE_SETTINGS)
+  {
+    PlacePageSettingsForm * pForm = new PlacePageSettingsForm();
+    pForm->Initialize();
+    pSceneManager->AddSceneEventListener(sceneId, *pForm);
     pNewForm = pForm;
   }
 

@@ -32,6 +32,8 @@
 	<text id="IDS_BOOKMARK_COLOR">Colore del Segnalibro</text>
 	<!-- Bookmarks - dialog title -->
 	<text id="IDS_BOOKMARKS">Segnalibri</text>
+	<!-- Add bookmark dialog - bookmark set, Bookmarks dialog - Bookmark set cell -->
+	<text id="IDS_SET">Seleziona</text>
 	<!-- Settings button in system menu -->
 	<text id="IDS_SETTINGS">Impostazioni</text>
 	<!-- Show bookmarks from this category on a map or not -->
@@ -71,6 +73,8 @@
 	<text id="IDS_POLICE">posto di polizia</text>
 	<!-- String in search result list, when nothing found -->
 	<text id="IDS_NO_SEARCH_RESULTS_FOUND">Nessun risultato trovato</text>
+	<!-- Notes field in Bookmarks view -->
+	<text id="IDS_DESCRIPTION">Note</text>
 	<!-- resource for context menu -->
 	<text id="IDS_EDIT">Copia link</text>
 	<!-- Warning message when doing search around current position -->

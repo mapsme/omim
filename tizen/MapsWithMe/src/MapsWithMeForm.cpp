@@ -342,6 +342,11 @@ void MapsWithMeForm::HideBookMarkPanel()
   m_userMarkPanel->Disable();
 }
 
+void MapsWithMeForm::UpdateBookMarkPanelState()
+{
+  m_userMarkPanel->UpdateState();
+}
+
 void MapsWithMeForm::CreateBookMarkSplitPanel()
 {
   SetActionBarsVisible(FORM_ACTION_BAR_FOOTER, false);
@@ -469,6 +474,7 @@ void MapsWithMeForm::UpdateButtons()
   footerItem.Construct(ID_GPS);
   footerItem.SetIcon(FOOTER_ITEM_STATUS_NORMAL, GetBitmap(m_locationEnabled ? IDB_MY_POSITION_PRESSED : IDB_MY_POSITION_NORMAL));
   pFooter->SetItemAt (0, footerItem);
+  UpdateBookMarkPanelState();
   UpdateBookMarkSplitPanelState();
   if (m_searchBarEnabled)
     ShowSearchBar();

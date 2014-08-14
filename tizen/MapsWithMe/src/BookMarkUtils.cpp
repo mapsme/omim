@@ -300,6 +300,20 @@ String BookMarkManager::GetBookMarkMessage() const
   return pBM->GetDescription().c_str();
 }
 
+void BookMarkManager::SetCurBookMarkName(Tizen::Base::String const & sName)
+{
+  Bookmark const * pBM = GetCurBookMark();
+  if (pBM)
+  {
+    Framework * pFW = GetFramework();
+    BookmarkAndCategory bmAndCat = pFW->FindBookmark(pBM);
+    BookmarkData data = pBM->GetData();
+    data.SetName(FromTizenString(sName));
+    pFW->ReplaceBookmark(bmAndCat.first, bmAndCat.second, data);
+    pFW->GetBmCategory(bmAndCat.first)->SaveToKMLFile();
+  }
+}
+
 void BookMarkManager::SetBookMarkMessage(Tizen::Base::String const & s)
 {
   Bookmark const * pBM = GetCurBookMark();

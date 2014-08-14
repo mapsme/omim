@@ -14,6 +14,7 @@ extern const wchar_t * SCENE_SELECT_COLOR;
 extern const wchar_t * SCENE_CATEGORY;
 extern const wchar_t * SCENE_SHARE_POSITION;
 extern const wchar_t * SCENE_LICENSE;
+extern const wchar_t * SCENE_PLACE_PAGE_SETTINGS;
 
 class SceneRegister
 {

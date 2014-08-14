@@ -18,6 +18,7 @@ const wchar_t * SCENE_SELECT_COLOR = L"ScnSelectColor";
 const wchar_t * SCENE_CATEGORY = L"ScnCategory";
 const wchar_t * SCENE_SHARE_POSITION = L"ScnSharePosition";
 const wchar_t * SCENE_LICENSE = L"ScnLicense";
+const wchar_t * SCENE_PLACE_PAGE_SETTINGS = L"ScnPlacePageSettings";
 
 SceneRegister::SceneRegister(void)
 {
@@ -50,4 +51,5 @@ SceneRegister::RegisterAllScenes(void)
   pSceneManager->RegisterScene(SCENE_CATEGORY, FORM_CATEGORY, PANEL_BLANK);
   pSceneManager->RegisterScene(SCENE_SHARE_POSITION, FORM_SHARE_POSITION, PANEL_BLANK);
   pSceneManager->RegisterScene(SCENE_LICENSE, FORM_LICENSE, PANEL_BLANK);
+  pSceneManager->RegisterScene(SCENE_PLACE_PAGE_SETTINGS, FORM_PLACE_PAGE_SETTINGS, PANEL_BLANK);
 }

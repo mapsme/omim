@@ -31,7 +31,7 @@ UserMarkPanel::~UserMarkPanel(void)
 bool UserMarkPanel::Construct(const Tizen::Graphics::FloatRectangle& rect)
 {
   Panel::Construct(rect);
-  SetBackgroundColor(green);
+  SetBackgroundColor(white_bkg);
   m_pButton = new Button;
   m_pButton->Construct(FloatRectangle(rect.width - btnSz - btwWdth, btwWdth, btnSz, btnSz));
 
@@ -39,9 +39,15 @@ bool UserMarkPanel::Construct(const Tizen::Graphics::FloatRectangle& rect)
   m_pButton->AddActionEventListener(*this);
   AddControl(m_pButton);
 
+  m_pEditButton = new Button;
+  m_pEditButton->Construct(FloatRectangle(rect.width - btnSz - btwWdth - editBtnSz, 0, editBtnSz, editBtnSz));
+  m_pEditButton->SetActionId(ID_EDIT);
+  m_pEditButton->AddActionEventListener(*this);
+  AddControl(m_pEditButton);
+
   m_pLabel = new Label();
-  m_pLabel->Construct(Rectangle(btwWdth, btwWdth, rect.width - 2 * btnSz - btwWdth, markPanelHeight - 2 * btwWdth), "");
-  m_pLabel->SetTextColor(white);
+  m_pLabel->Construct(Rectangle(btwWdth, btwWdth, rect.width - btnSz - btwWdth - editBtnSz, markPanelHeight - 2 * btwWdth), "");
+  m_pLabel->SetTextColor(txt_main_black);
   m_pLabel->AddTouchEventListener(*this);
   m_pLabel->SetTextHorizontalAlignment(ALIGNMENT_LEFT);
   m_pLabel->SetTextVerticalAlignment(ALIGNMENT_TOP);
@@ -66,10 +72,6 @@ void  UserMarkPanel::OnTouchPressed (Tizen::Ui::Control const & source,
 
 void UserMarkPanel::Enable()
 {
-  String res = GetMarkName(GetCurMark());
-   res.Append("\n");
-   res.Append(GetMarkType(GetCurMark()));
-  m_pLabel->SetText(res);
   SetShowState(true);
   UpdateState();
   Invalidate(true);
@@ -97,6 +99,13 @@ void UserMarkPanel::OnActionPerformed(Tizen::Ui::Control const & source, int act
       UpdateState();
       break;
     }
+    case ID_EDIT:
+    {
+      SceneManager * pSceneManager = SceneManager::GetInstance();
+      pSceneManager->GoForward(ForwardSceneTransition(SCENE_PLACE_PAGE_SETTINGS,
+          SCENE_TRANSITION_ANIMATION_TYPE_LEFT, SCENE_HISTORY_OPTION_ADD_HISTORY, SCENE_DESTROY_OPTION_KEEP));
+      break;
+    }
   }
 }
 
@@ -111,11 +120,25 @@ void UserMarkPanel::UpdateState()
   {
     m_pButton->SetNormalBackgroundBitmap(*GetBitmap(IDB_PLACE_PAGE_BUTTON_SELECTED));
     m_pButton->SetPressedBackgroundBitmap(*GetBitmap(IDB_PLACE_PAGE_BUTTON_SELECTED));
+    m_pEditButton->SetShowState(true);
+    m_pEditButton->SetNormalBackgroundBitmap(*GetBitmap(IDB_PLACE_PAGE_EDIT_BUTTON));
+    m_pEditButton->SetPressedBackgroundBitmap(*GetBitmap(IDB_PLACE_PAGE_EDIT_BUTTON));
   }
   else
   {
     m_pButton->SetNormalBackgroundBitmap(*GetBitmap(IDB_PLACE_PAGE_BUTTON));
     m_pButton->SetPressedBackgroundBitmap(*GetBitmap(IDB_PLACE_PAGE_BUTTON));
+    m_pEditButton->SetShowState(false);
   }
+
+  BookMarkManager & mngr = GetBMManager();
+  String res = GetMarkName(GetCurMark());
+  res.Append("\n");
+  if (IsBookMark(GetCurMark()))
+    res.Append(mngr.GetCurrentCategoryName());
+  else
+    res.Append(GetMarkType(GetCurMark()));
+  m_pLabel->SetText(res);
+
   Invalidate(true);
 }

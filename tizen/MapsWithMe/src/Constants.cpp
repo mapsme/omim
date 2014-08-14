@@ -4,7 +4,13 @@ using namespace Tizen::Graphics;
 
 namespace consts
 {
+
+Color const txt_main_white = Color(0xFF,0xFF,0xFF);
+Color const txt_main_black = Color(0x00,0x00,0x00);
+Color const txt_add_light = Color(0xBC,0xBD,0xC2);
+Color const txt_add_dark = Color(0x4,0x4,0x4);
 Color const white = Color(0xFF,0xFF,0xFF);
+Color const white_bkg = Color(0xFF,0xFF,0xFF);
 Color const gray = Color(0xB0,0xB0,0xB0);
 Color const green = Color(21, 199, 131);
 Color const blue = Color(0, 186, 255);
@@ -26,13 +32,13 @@ int const searchBarHeight = 112; //search bar on main form
 int const markPanelHeight = 1.5 * lstItmHght;
 int const btnSz = 55;
 
-int const editBtnSz = btnSz - 15;
+int const editBtnSz = 80;
 int const headerItemHeight = markPanelHeight;
 int const settingsItemHeight = 2 * lstItmHght;
 int const groupItemHeight = lstItmHght;
 int const messageItemHeight = 2 * lstItmHght;
 int const headerSettingsHeight = headerItemHeight + settingsItemHeight;
-int const allItemsHeight = headerItemHeight + settingsItemHeight + groupItemHeight + messageItemHeight;
+int const allItemsHeight = headerItemHeight + settingsItemHeight/* + groupItemHeight + messageItemHeight*/;
 
 const char * BM_COLOR_RED = "placemark-red";
 const char * BM_COLOR_YELLOW = "placemark-yellow";

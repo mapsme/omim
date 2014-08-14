@@ -32,6 +32,10 @@
 	<text id="IDS_BOOKMARK_COLOR">Color del marcador</text>
 	<!-- Bookmarks - dialog title -->
 	<text id="IDS_BOOKMARKS">Marcadores</text>
+	<!-- Add bookmark dialog - bookmark name -->
+	<text id="IDS_NAME">Nombre</text>
+	<!-- Add bookmark dialog - bookmark set, Bookmarks dialog - Bookmark set cell -->
+	<text id="IDS_SET">Grupo</text>
 	<!-- Settings button in system menu -->
 	<text id="IDS_SETTINGS">Ajustes</text>
 	<!-- Measurement units title in settings activity -->
@@ -69,6 +73,8 @@
 	<text id="IDS_POLICE">policía</text>
 	<!-- String in search result list, when nothing found -->
 	<text id="IDS_NO_SEARCH_RESULTS_FOUND">No se han encontrado resultados</text>
+	<!-- Notes field in Bookmarks view -->
+	<text id="IDS_DESCRIPTION">Notas</text>
 	<!-- Warning message when doing search around current position -->
 	<text id="IDS_UNKNOWN_CURRENT_POSITION">Tu ubicación aún no ha sido determinada</text>
 	<!-- Share one specific bookmark using SMS, %1$@ contains ge0:// and %2$@ http://ge0.me link. @NOTE non-ascii symbols in the link will make 70 bytes sms instead of 140 -->

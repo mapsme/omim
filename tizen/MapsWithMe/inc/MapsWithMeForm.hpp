@@ -99,6 +99,7 @@ public:
   void CreateBookMarkPanel();
   void ShowBookMarkPanel();
   void HideBookMarkPanel();
+  void UpdateBookMarkPanelState();
   bool m_bookMarkPanelEnabled;
 
   void CreateBookMarkSplitPanel();

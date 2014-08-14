@@ -52,6 +52,7 @@ public:
   EColor GetCurBookMarkColor() const;
   void ActivateBookMark(UserMarkCopy * pCopy);
   void AddCurMarkToBookMarks();
+  void SetCurBookMarkName(Tizen::Base::String const & sName);
   Tizen::Base::String GetBookMarkMessage() const;
   void SetBookMarkMessage(Tizen::Base::String const & s);
   Tizen::Base::String GetCurrentCategoryName() const;

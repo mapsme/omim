@@ -34,6 +34,10 @@
 	<text id="IDS_BOOKMARK_COLOR">Колір мiтки</text>
 	<!-- Bookmarks - dialog title -->
 	<text id="IDS_BOOKMARKS">Мітки</text>
+	<!-- Add bookmark dialog - bookmark name -->
+	<text id="IDS_NAME">Iм\&#39;я</text>
+	<!-- Add bookmark dialog - bookmark set, Bookmarks dialog - Bookmark set cell -->
+	<text id="IDS_SET">Група</text>
 	<!-- Settings button in system menu -->
 	<text id="IDS_SETTINGS">Налаштування</text>
 	<!-- Show bookmarks from this category on a map or not -->
@@ -73,6 +77,8 @@
 	<text id="IDS_POLICE">міліція</text>
 	<!-- String in search result list, when nothing found -->
 	<text id="IDS_NO_SEARCH_RESULTS_FOUND">Результатів не знайдено</text>
+	<!-- Notes field in Bookmarks view -->
+	<text id="IDS_DESCRIPTION">Примiтки</text>
 	<!-- resource for context menu -->
 	<text id="IDS_EDIT">Редаґувати</text>
 	<!-- Warning message when doing search around current position -->

@@ -4,7 +4,12 @@
 
 namespace consts
 {
+extern Tizen::Graphics::Color const txt_main_white;
+extern Tizen::Graphics::Color const txt_main_black;
+extern Tizen::Graphics::Color const txt_add_light;
+extern Tizen::Graphics::Color const txt_add_dark;
 extern Tizen::Graphics::Color const white;
+extern Tizen::Graphics::Color const white_bkg;
 extern Tizen::Graphics::Color const gray;
 extern Tizen::Graphics::Color const green;
 extern Tizen::Graphics::Color const black;

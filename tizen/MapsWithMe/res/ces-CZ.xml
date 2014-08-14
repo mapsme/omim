@@ -32,6 +32,10 @@
 	<text id="IDS_BOOKMARK_COLOR">Barva záložky</text>
 	<!-- Bookmarks - dialog title -->
 	<text id="IDS_BOOKMARKS">Záložky</text>
+	<!-- Add bookmark dialog - bookmark name -->
+	<text id="IDS_NAME">Název</text>
+	<!-- Add bookmark dialog - bookmark set, Bookmarks dialog - Bookmark set cell -->
+	<text id="IDS_SET">Skupina</text>
 	<!-- Settings button in system menu -->
 	<text id="IDS_SETTINGS">Nastavení</text>
 	<!-- Show bookmarks from this category on a map or not -->
@@ -71,6 +75,8 @@
 	<text id="IDS_POLICE">policie</text>
 	<!-- String in search result list, when nothing found -->
 	<text id="IDS_NO_SEARCH_RESULTS_FOUND">Žádné výsledky</text>
+	<!-- Notes field in Bookmarks view -->
+	<text id="IDS_DESCRIPTION">Poznámky</text>
 	<!-- resource for context menu -->
 	<text id="IDS_EDIT">Upravit</text>
 	<!-- Warning message when doing search around current position -->

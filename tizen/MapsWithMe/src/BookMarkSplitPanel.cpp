@@ -42,52 +42,32 @@ bool BookMarkSplitPanel::Construct(const Tizen::Graphics::FloatRectangle& rect)
   firstRect.height /=2;
   m_pFirstPanel->Construct(firstRect);
 
-  m_pFirstPanel->SetBackgroundColor(green);
+  m_pFirstPanel->SetBackgroundColor(white_bkg);
   m_pButton = new Button;
   m_pButton->Construct(FloatRectangle(btwWdth, btwWdth, rect.width - 2 * btwWdth, lstItmHght - 2 * btwWdth));
-  m_pButton->SetColor(BUTTON_STATUS_NORMAL ,green);
-  m_pButton->SetColor(BUTTON_STATUS_PRESSED ,green);
+  m_pButton->SetColor(BUTTON_STATUS_NORMAL, white_bkg);
+  m_pButton->SetColor(BUTTON_STATUS_PRESSED, white_bkg);
   m_pButton->SetText(GetString(IDS_SHARE));
-  m_pButton->SetTextColor(white);
+  m_pButton->SetTextColor(black);
   m_pButton->SetActionId(ID_SHARE_BUTTON);
   m_pButton->AddActionEventListener(*this);
 
   m_pLabel = new Label();
-  m_pLabel->Construct(Rectangle(btwWdth, btwWdth, rect.width - 2 * btnSz - btwWdth, markPanelHeight - 2 * btwWdth), GetHeaderText());
+  m_pLabel->Construct(Rectangle(btwWdth, btwWdth, rect.width - btnSz - btwWdth - editBtnSz, markPanelHeight - 2 * btwWdth), GetHeaderText());
   m_pLabel->SetTextHorizontalAlignment(ALIGNMENT_LEFT);
   m_pLabel->SetTextVerticalAlignment(ALIGNMENT_TOP);
-  m_pLabel->SetTextColor(white);
+  m_pLabel->SetTextColor(txt_main_black);
   m_pLabel->AddTouchEventListener(*this);
 
   m_pList = new ListView();
   m_pList->Construct(firstRect, true, SCROLL_STYLE_FIXED);
   m_pList->SetItemProvider(*this);
   m_pList->AddListViewItemEventListener(*this);
-  m_pList->SetBackgroundColor(green);
-
-  m_pMessageEdit = new EditArea();
-  m_pMessageEdit->Construct(Rectangle(0, allItemsHeight - messageItemHeight + btwWdth,
-      rect.width - btnSz - btwWdth, messageItemHeight - 2 * btwWdth));
-  m_pMessageEdit->SetShowState(false);
-  m_pMessageEdit->AddTextEventListener(*this);
-  m_pMessageEdit->SetMargin(EDIT_MARGIN_TYPE_HORIZONTAL, 0);
-  m_pMessageEdit->SetMargin(EDIT_MARGIN_TYPE_VERTICAL, 0);
-  m_pMessageEdit->SetColor(EDIT_STATUS_NORMAL, green);
-  m_pMessageEdit->SetColor(EDIT_STATUS_PRESSED, green);
-  m_pMessageEdit->SetColor(EDIT_STATUS_HIGHLIGHTED, green);
-  m_pMessageEdit->SetTextColor(EDIT_TEXT_COLOR_NORMAL, white);
-  m_pMessageEdit->SetTextColor(EDIT_TEXT_COLOR_HIGHLIGHTED, white);
-
-  m_pDummyMessageEdit = new EditArea();
-  m_pDummyMessageEdit->Construct(Rectangle(0, headerSettingsHeight + btwWdth,
-      rect.width - btnSz - btwWdth, messageItemHeight - 2 * btwWdth));
-  m_pDummyMessageEdit->SetShowState(false);
+  m_pList->SetBackgroundColor(white_bkg);
 
   m_pFirstPanel->AddControl(m_pButton);
   m_pFirstPanel->AddControl(m_pList);
   m_pFirstPanel->AddControl(m_pLabel);
-  m_pFirstPanel->AddControl(m_pMessageEdit);
-  m_pFirstPanel->AddControl(m_pDummyMessageEdit);
 
   m_pSecondPanel = new Panel();
   m_pSecondPanel->Construct(rect);
@@ -147,7 +127,6 @@ void BookMarkSplitPanel::OnActionPerformed(Tizen::Ui::Control const & source, in
       SceneManager * pSceneManager = SceneManager::GetInstance();
       pSceneManager->GoForward(ForwardSceneTransition(SCENE_SHARE_POSITION,
           SCENE_TRANSITION_ANIMATION_TYPE_LEFT, SCENE_HISTORY_OPTION_ADD_HISTORY, SCENE_DESTROY_OPTION_KEEP), pList);
-      //
       break;
     }
   }
@@ -163,7 +142,8 @@ Tizen::Ui::Controls::ListItemBase * BookMarkSplitPanel::CreateHeaderItem (float 
   if (IsBookMark())
   {
     FloatRectangle editRect = imgRect;
-    editRect.x -= btnSz;
+    editRect.x -= (editBtnSz);
+    editRect.y = 0;
     editRect.height = editBtnSz;
     editRect.width = editBtnSz;
     pItem->AddElement(editRect, EDIT_BUTTON, *GetBitmap(IDB_PLACE_PAGE_EDIT_BUTTON), null, null);
@@ -173,9 +153,9 @@ Tizen::Ui::Controls::ListItemBase * BookMarkSplitPanel::CreateHeaderItem (float 
   {
     pItem->AddElement(imgRect, STAR_BUTTON, *GetBitmap(IDB_PLACE_PAGE_BUTTON), null, null);
   }
-
   return pItem;
 }
+
 Tizen::Ui::Controls::ListItemBase * BookMarkSplitPanel::CreateSettingsItem (float itemWidth)
 {
   BookMarkManager & mngr = GetBMManager();
@@ -192,38 +172,13 @@ Tizen::Ui::Controls::ListItemBase * BookMarkSplitPanel::CreateSettingsItem (floa
     pItem->AddElement(colorImgRect, COLOR_IMG, *GetBitmap(GetColorPPBM(color)), null, null);
   }
   FloatRectangle txtRect = imgRect;
-  txtRect.width = itemWidth - 2 * imgWdth - 4 * btwWdth;
-  txtRect.x = imgWdth + 2 * btwWdth;
-  pItem->AddElement(txtRect, DISTANCE_TXT, GetDistanceText(), mainFontSz, white, white, white);
-  txtRect.x = btwWdth;
+  txtRect.width = itemWidth - 3 * imgWdth - 4 * btwWdth;
+  txtRect.x = 2 * imgWdth + 2 * btwWdth;
+  pItem->AddElement(txtRect, DISTANCE_TXT, GetDistanceText(), mainFontSz, txt_main_black, txt_main_black, txt_main_black);
   txtRect.y += imgHght;
-  txtRect.width = itemWidth - 2 * btwWdth;
-  pItem->AddElement(txtRect, COUNTRY_TXT, GetCountryText(), mediumFontSz, white, white, white);
+  pItem->AddElement(txtRect, POSITION_LAT_TXT, GetLocationLatText(), mainFontSz, txt_main_black, txt_main_black, txt_main_black);
   txtRect.y += imgHght;
-  pItem->AddElement(txtRect, POSITION_TXT, GetLocationText(), mainFontSz, white, white, white);
-
-
-  return pItem;
-}
-Tizen::Ui::Controls::ListItemBase * BookMarkSplitPanel::CreateGroupItem (float itemWidth)
-{
-  CustomItem * pItem = new CustomItem();
-  pItem->Construct(FloatDimension(itemWidth, groupItemHeight), LIST_ANNEX_STYLE_NORMAL);
-
-  FloatRectangle imgRect(itemWidth - editBtnSz - btwWdth, btwWdth, editBtnSz, editBtnSz);
-  pItem->AddElement(imgRect, EDIT_BUTTON, *GetBitmap(IDB_PLACE_PAGE_EDIT_BUTTON), null, null);
-  pItem->AddElement(FloatRectangle(btwWdth, topHght, itemWidth, imgHght), GROUP_TXT, GetGroupText(), mainFontSz, white, white, white);
-
-  return pItem;
-}
-Tizen::Ui::Controls::ListItemBase * BookMarkSplitPanel::CreateMessageItem (float itemWidth)
-{
-  CustomItem * pItem = new CustomItem();
-  pItem->Construct(FloatDimension(itemWidth, messageItemHeight), LIST_ANNEX_STYLE_NORMAL);
-
-  FloatRectangle imgRect(itemWidth - editBtnSz - btwWdth, btwWdth, editBtnSz, editBtnSz);
-  pItem->AddElement(imgRect, EDIT_BUTTON, *GetBitmap(IDB_PLACE_PAGE_EDIT_BUTTON), null, null);
-
+  pItem->AddElement(txtRect, POSITION_LON_TXT, GetLocationLonText(), mainFontSz, txt_main_black, txt_main_black, txt_main_black);
   return pItem;
 }
 
@@ -233,8 +188,6 @@ Tizen::Ui::Controls::ListItemBase * BookMarkSplitPanel::CreateItem (int index, f
   {
     case HEADER_ITEM: return CreateHeaderItem(itemWidth);
     case SETTINGS_ITEM: return CreateSettingsItem(itemWidth);
-    case GROUP_ITEM: return CreateGroupItem(itemWidth);
-    case MESSAGE_ITEM: return CreateMessageItem(itemWidth);
   };
 
   return 0;
@@ -248,13 +201,6 @@ void BookMarkSplitPanel::UpdateState()
   m_pList->UpdateList();
   UpdateCompass();
   m_pButton->SetPosition(btwWdth, listSz + btwWdth);
-  m_pDummyMessageEdit->SetFocus();
-  m_pMessageEdit->SetShowState(IsBookMark());
-  BookMarkManager & mngr = GetBMManager();
-  if (!mngr.GetBookMarkMessage().IsEmpty())
-    m_pMessageEdit->SetText(mngr.GetBookMarkMessage());
-  else
-    m_pMessageEdit->SetText(GetString(IDS_BOOKMARKS));
   SetDividerPosition(listSz + lstItmHght);
   Invalidate(true);
 }
@@ -267,28 +213,31 @@ bool  BookMarkSplitPanel::DeleteItem (int index, Tizen::Ui::Controls::ListItemBa
 }
 int BookMarkSplitPanel::GetItemCount(void)
 {
-  return IsBookMark() ? 4 : 2;
+  return 2;
 }
 // IListViewItemEventListener
 void BookMarkSplitPanel::OnListViewItemStateChanged(Tizen::Ui::Controls::ListView & listView, int index, int elementId, Tizen::Ui::Controls::ListItemStatus status)
 {
-  if (index == HEADER_ITEM && elementId == STAR_BUTTON)
+  if (index == HEADER_ITEM)
   {
-    BookMarkManager & mngr = GetBMManager();
-    if (IsBookMark())
+    if (elementId == STAR_BUTTON)
     {
-      mngr.RemoveCurBookMark();
+      BookMarkManager & mngr = GetBMManager();
+      if (IsBookMark())
+      {
+        mngr.RemoveCurBookMark();
+      }
+      else
+      {
+        mngr.AddCurMarkToBookMarks();
+      }
     }
-    else
+    if (elementId == EDIT_BUTTON)
     {
-      mngr.AddCurMarkToBookMarks();
+      SceneManager * pSceneManager = SceneManager::GetInstance();
+      pSceneManager->GoForward(ForwardSceneTransition(SCENE_PLACE_PAGE_SETTINGS,
+          SCENE_TRANSITION_ANIMATION_TYPE_LEFT, SCENE_HISTORY_OPTION_ADD_HISTORY, SCENE_DESTROY_OPTION_KEEP));
     }
-  }
-  if (index == GROUP_ITEM)
-  {
-    SceneManager * pSceneManager = SceneManager::GetInstance();
-    pSceneManager->GoForward(ForwardSceneTransition(SCENE_SELECT_BM_CATEGORY,
-        SCENE_TRANSITION_ANIMATION_TYPE_LEFT, SCENE_HISTORY_OPTION_ADD_HISTORY, SCENE_DESTROY_OPTION_KEEP));
   }
   if (index == SETTINGS_ITEM && elementId == COLOR_IMG)
   {
@@ -302,9 +251,13 @@ void BookMarkSplitPanel::OnListViewItemStateChanged(Tizen::Ui::Controls::ListVie
 
 Tizen::Base::String BookMarkSplitPanel::GetHeaderText() const
 {
+  BookMarkManager & mngr = GetBMManager();
   String res = GetMarkName(GetCurMark());
   res.Append("\n");
-  res.Append(GetMarkType(GetCurMark()));
+  if (IsBookMark())
+    res.Append(mngr.GetCurrentCategoryName());
+  else
+    res.Append(GetMarkType(GetCurMark()));
   return res;
 }
 
@@ -313,12 +266,7 @@ Tizen::Base::String BookMarkSplitPanel::GetDistanceText() const
   return GetDistance(GetCurMark());
 }
 
-Tizen::Base::String BookMarkSplitPanel::GetCountryText() const
-{
-  return GetMarkCountry(GetCurMark());
-}
-
-Tizen::Base::String BookMarkSplitPanel::GetLocationText() const
+Tizen::Base::String BookMarkSplitPanel::GetLocationLatText() const
 {
   if (!GetCurMark())
     return "";
@@ -327,18 +275,21 @@ Tizen::Base::String BookMarkSplitPanel::GetLocationText() const
   ostringstream os;
   os << std::fixed;
   os << std::setprecision(7);
-  os << lat << ", " << lon;
+  os << lat;
   return os.str().c_str();
 }
 
-Tizen::Base::String BookMarkSplitPanel::GetGroupText() const
+Tizen::Base::String BookMarkSplitPanel::GetLocationLonText() const
 {
-  return GetBMManager().GetCurrentCategoryName();
-}
-
-Tizen::Base::String BookMarkSplitPanel::GetMessageText() const
-{
-  return GetBMManager().GetBookMarkMessage();
+  if (!GetCurMark())
+    return "";
+  double lat, lon;
+  GetCurMark()->GetLatLon(lat, lon);
+  ostringstream os;
+  os << std::fixed;
+  os << std::setprecision(7);
+  os << lon;
+  return os.str().c_str();
 }
 
 bool BookMarkSplitPanel::IsBookMark() const
@@ -349,17 +300,6 @@ bool BookMarkSplitPanel::IsBookMark() const
 UserMark const * BookMarkSplitPanel::GetCurMark() const
 {
   return GetBMManager().GetCurMark();
-}
-
-void BookMarkSplitPanel::OnTextValueChangeCanceled (Tizen::Ui::Control const & source)
-{
-  UpdateState();
-}
-
-void BookMarkSplitPanel::OnTextValueChanged (Tizen::Ui::Control const & source)
-{
-  GetBMManager().SetBookMarkMessage(m_pMessageEdit->GetText());
-  UpdateState();
 }
 
 namespace
@@ -374,20 +314,16 @@ void AngleIn2Pi(double & angle)
 }
 }
 
-
 void BookMarkSplitPanel::UpdateCompass()
 {
   Tizen::Graphics::Canvas * pCanvas =  m_pList->GetCanvasN();
   if (pCanvas)
   {
-    pCanvas->FillRectangle(consts::green, Rectangle(2, headerItemHeight + 2, 500, 500));
-    Bitmap const * pBTM_Back = GetBitmap(IDB_PLACE_PAGE_COMPASS_BACKGROUND);
-    int const imgBackHeighDiv2 = pBTM_Back->GetHeight() / 2;
+    pCanvas->FillRectangle(consts::white_bkg, Rectangle(2, headerItemHeight + 2, 500, 500));
     Bitmap const * pBTM = GetBitmap(IDB_PLACE_PAGE_COMPASS);
     int const imgHeighDiv2 = pBTM->GetHeight() / 2;
     int const centerX = btwWdth + imgHeighDiv2;
     int const centerY = headerItemHeight + btwWdth + imgHeighDiv2;
-    pCanvas->DrawBitmap(Point(centerX - imgBackHeighDiv2, centerY - imgBackHeighDiv2), * pBTM_Back);
     double const dAzimut = GetAzimuth(GetCurMark(), m_northAzimuth);
     double dRotateAngle = dAzimut - (math::pi / 2);
     AngleIn2Pi(dRotateAngle);
