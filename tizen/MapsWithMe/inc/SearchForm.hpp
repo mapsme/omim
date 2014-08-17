@@ -62,6 +62,8 @@ private:
   bool IsShowCategories() const;
   void Search(Tizen::Base::String const & val);
 
+  void SearchOnMap();
+
 private:
   search::Results m_curResults;
   Tizen::Ui::Controls::SearchBar * m_searchBar;

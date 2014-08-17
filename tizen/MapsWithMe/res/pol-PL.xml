@@ -111,4 +111,6 @@
 	<text id="IDS_BECOME_A_PRO">Uaktualnij</text>
 	<text id="IDS_PREF_ZOOM_TITLE">Przyciski powiększania</text>
 	<text id="IDS_PREF_ZOOM_SUMMARY">Wyświetl na ekranie</text>
+	<!-- 1st search button-like result -->
+	<text id="IDS_SEARCH_ON_MAP">Szukaj na mapie</text>
 </string_table>

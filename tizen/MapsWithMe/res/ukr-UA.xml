@@ -113,4 +113,6 @@
 	<text id="IDS_BECOME_A_PRO">Купити PRO</text>
 	<text id="IDS_PREF_ZOOM_TITLE">Кнопки трансфокації</text>
 	<text id="IDS_PREF_ZOOM_SUMMARY">Відображення на екрані</text>
+	<!-- 1st search button-like result -->
+	<text id="IDS_SEARCH_ON_MAP">Шукати на карті</text>
 </string_table>

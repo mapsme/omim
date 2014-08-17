@@ -109,4 +109,6 @@
 	<text id="IDS_BECOME_A_PRO">Aggiorna</text>
 	<text id="IDS_PREF_ZOOM_TITLE">Pulsanti per lo zoom</text>
 	<text id="IDS_PREF_ZOOM_SUMMARY">Condividi la mia location</text>
+	<!-- 1st search button-like result -->
+	<text id="IDS_SEARCH_ON_MAP">Cerca sulla mappa</text>
 </string_table>

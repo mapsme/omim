@@ -106,6 +106,7 @@ extern const wchar_t* IDS_POLICE;
 extern const wchar_t* IDS_POST;
 extern const wchar_t* IDS_PREF_ZOOM_SUMMARY;
 extern const wchar_t* IDS_PREF_ZOOM_TITLE;
+extern const wchar_t* IDS_SEARCH_ON_MAP;
 extern const wchar_t* IDS_SET;
 extern const wchar_t* IDS_SETTINGS;
 extern const wchar_t* IDS_SHARE;

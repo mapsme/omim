@@ -84,7 +84,6 @@ CustomItem * CreateFeatureItem(Result const & val, double itemWidth)
   pItem->Construct(FloatDimension(itemWidth, lstItmHght), LIST_ANNEX_STYLE_NORMAL);
   pItem->SetBackgroundColor(LIST_ITEM_DRAWING_STATUS_NORMAL, mainMenuGray);
   FloatRectangle imgRect(btwWdth, topHght, imgWdth, imgHght);
-  //pItem->AddElement(imgRect, 0, *GetBitmap(IDB_SINGLE_RESULT), null, null);
   int txtWdht = itemWidth - btwWdth - imgWdth - backWdth;
   pItem->AddElement(FloatRectangle(btwWdth, 15, txtWdht, imgHght), 1, val.GetString(), mainFontSz, white, white, white);
   pItem->AddElement(FloatRectangle(btwWdth, 60.0f, txtWdht, imgHght), 2, val.GetRegionString(), minorFontSz, gray, gray, gray);
@@ -116,10 +115,19 @@ CustomItem * CreateSuggestionItem(String const & val, double itemWidth)
   return pItem;
 }
 
+CustomItem * CreateSearchOnMapItem(double itemWidth)
+{
+  String itemText = GetString(IDS_SEARCH_ON_MAP);
+  CustomItem * pItem = new CustomItem();
+  pItem->Construct(FloatDimension(itemWidth, lstItmHght), LIST_ANNEX_STYLE_NORMAL);
+  pItem->SetBackgroundColor(LIST_ITEM_DRAWING_STATUS_NORMAL, green);
+  pItem->AddElement(FloatRectangle(btwWdth, topHght, itemWidth, imgHght), 1, itemText, mainFontSz, white, white, white);
+  return pItem;
+}
+
 CustomItem * CreateCategoryItem(int i, double itemWidth)
 {
   CustomItem * pItem = new CustomItem();
-
   pItem->Construct(FloatDimension(itemWidth, lstItmHght), LIST_ANNEX_STYLE_NORMAL);
   pItem->SetBackgroundColor(LIST_ITEM_DRAWING_STATUS_NORMAL, black);
   FloatRectangle imgRect(btwWdth, topHght, imgWdth, imgHght);
@@ -127,6 +135,17 @@ CustomItem * CreateCategoryItem(int i, double itemWidth)
   pItem->AddElement(FloatRectangle(btwWdth + imgWdth + btwWdth, topHght, itemWidth, imgHght), 1, GetCategories()[i], mainFontSz, white, white, white);
 
   return pItem;
+}
+
+bool IsHaveSuggestions(search::Results const &  curResults)
+{
+  for (size_t i = 0; i < curResults.GetCount(); ++i)
+  {
+    Result res = curResults.GetResult(i);
+    if (res.GetResultType() == Result::RESULT_SUGGEST_FROM_FEATURE || res.GetResultType() == Result::RESULT_SUGGEST_PURE)
+      return true;
+  }
+  return false;
 }
 
 } // detail
@@ -220,11 +239,24 @@ ListItemBase * SearchForm::CreateItem (int index, float itemWidth)
     }
     else
     {
-      Result const & res = m_curResults.GetResult(index);
-      if (res.GetResultType() == Result::RESULT_SUGGEST_PURE)
-        return CreateSuggestionItem(res.GetString(), itemWidth);
+      if (IsHaveSuggestions(m_curResults))
+      {
+        Result const & res = m_curResults.GetResult(index);
+        if (res.GetResultType() == Result::RESULT_SUGGEST_FROM_FEATURE || res.GetResultType() == Result::RESULT_SUGGEST_PURE)
+          return CreateSuggestionItem(res.GetString(), itemWidth);
+        else
+          return CreateFeatureItem(res, itemWidth);
+      }
       else
-        return CreateFeatureItem(res, itemWidth);
+      {
+        if (index == 0)
+          return CreateSearchOnMapItem(itemWidth);
+        else
+        {
+          Result const & res = m_curResults.GetResult(index - 1);
+          return CreateFeatureItem(res, itemWidth);
+        }
+      }
     }
   }
 }
@@ -241,18 +273,37 @@ void SearchForm::OnListViewItemStateChanged(Tizen::Ui::Controls::ListView & list
   {
     if (m_curResults.GetCount() > 0)
     {
-      Result res = m_curResults.GetResult(index);
-      if (res.GetResultType() == Result::RESULT_SUGGEST_PURE)
+      if (IsHaveSuggestions(m_curResults))
       {
-        m_searchBar->SetText(res.GetString());
-        Search(GetSearchString());
-        Invalidate(true);
+        Result res = m_curResults.GetResult(index);
+        if (res.GetResultType() == Result::RESULT_SUGGEST_FROM_FEATURE || res.GetResultType() == Result::RESULT_SUGGEST_PURE)
+        {
+          String s = res.GetString();
+          s.Append(L" ");
+          m_searchBar->SetText(s);
+          Search(GetSearchString());
+          Invalidate(true);
+        }
+        else
+        {
+          GetFramework()->ShowSearchResult(res);
+          SceneManager * pSceneManager = SceneManager::GetInstance();
+          pSceneManager->GoBackward(BackwardSceneTransition(SCENE_TRANSITION_ANIMATION_TYPE_RIGHT));
+        }
       }
       else
       {
-        GetFramework()->ShowSearchResult(res);
-        SceneManager * pSceneManager = SceneManager::GetInstance();
-        pSceneManager->GoBackward(BackwardSceneTransition(SCENE_TRANSITION_ANIMATION_TYPE_RIGHT));
+        if (index == 0)
+        {
+          SearchOnMap();
+        }
+        else
+        {
+          Result res = m_curResults.GetResult(index - 1);
+          GetFramework()->ShowSearchResult(res);
+          SceneManager * pSceneManager = SceneManager::GetInstance();
+          pSceneManager->GoBackward(BackwardSceneTransition(SCENE_TRANSITION_ANIMATION_TYPE_RIGHT));
+        }
       }
     }
   }
@@ -280,7 +331,12 @@ int SearchForm::GetItemCount(void)
     if (m_curResults.GetCount() == 0)
       return 1;
     else
-      return m_curResults.GetCount();
+    {
+      if (IsHaveSuggestions(m_curResults))
+        return m_curResults.GetCount();
+      else
+        return m_curResults.GetCount() + 1;
+    }
   }
 }
 
@@ -319,25 +375,30 @@ bool SearchForm::IsShowCategories() const
   return GetSearchString().IsEmpty();
 }
 
+void SearchForm::SearchOnMap()
+{
+  search::SearchParams params;
+  params.m_query = FromTizenString(GetSearchString());
+  Tizen::Locales::LanguageCode language;
+  if (m_searchBar->GetCurrentLanguage(language) == E_SUCCESS)
+    params.SetInputLanguage(CodeFromISO369_2to_1(GetLanguageCode(language)));
+  double lat, lon;
+  GetFramework()->GetCurrentPosition(lat, lon);
+  params.SetPosition(lat, lon);
+
+  GetFramework()->StartInteractiveSearch(params);
+  ArrayList * pList = new ArrayList;
+  pList->Construct();
+  pList->Add(new String(GetSearchString()));
+  SceneManager * pSceneManager = SceneManager::GetInstance();
+  pSceneManager->GoBackward(BackwardSceneTransition(SCENE_TRANSITION_ANIMATION_TYPE_RIGHT), pList);
+}
+
 void SearchForm::OnKeypadActionPerformed (Tizen::Ui::Control & source, Tizen::Ui::KeypadAction keypadAction)
 {
   if (keypadAction == KEYPAD_ACTION_SEARCH)
   {
-    search::SearchParams params;
-    params.m_query = FromTizenString(GetSearchString());
-    Tizen::Locales::LanguageCode language;
-    if (m_searchBar->GetCurrentLanguage(language) == E_SUCCESS)
-      params.SetInputLanguage(CodeFromISO369_2to_1(GetLanguageCode(language)));
-    double lat, lon;
-    GetFramework()->GetCurrentPosition(lat, lon);
-    params.SetPosition(lat, lon);
-
-    GetFramework()->StartInteractiveSearch(params);
-    ArrayList * pList = new ArrayList;
-    pList->Construct();
-    pList->Add(new String(GetSearchString()));
-    SceneManager * pSceneManager = SceneManager::GetInstance();
-    pSceneManager->GoBackward(BackwardSceneTransition(SCENE_TRANSITION_ANIMATION_TYPE_RIGHT), pList);
+    SearchOnMap();
   }
 }
 

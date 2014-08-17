@@ -107,6 +107,7 @@ const wchar_t* IDS_POLICE = L"IDS_POLICE";
 const wchar_t* IDS_POST = L"IDS_POST";
 const wchar_t* IDS_PREF_ZOOM_SUMMARY = L"IDS_PREF_ZOOM_SUMMARY";
 const wchar_t* IDS_PREF_ZOOM_TITLE = L"IDS_PREF_ZOOM_TITLE";
+const wchar_t* IDS_SEARCH_ON_MAP = L"IDS_SEARCH_ON_MAP";
 const wchar_t* IDS_SET = L"IDS_SET";
 const wchar_t* IDS_SETTINGS = L"IDS_SETTINGS";
 const wchar_t* IDS_SHARE = L"IDS_SHARE";

@@ -4331,7 +4331,7 @@
     tr = Satın Al
 
   [search_on_map]
-    tags = ios
+    tags = ios,tizen
     comment = 1st search button-like result
     en = Search on map
     ru = Искать на карте

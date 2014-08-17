@@ -111,4 +111,6 @@
 	<text id="IDS_BECOME_A_PRO">Provést upgrade</text>
 	<text id="IDS_PREF_ZOOM_TITLE">Tlačítka přiblížení/oddálení</text>
 	<text id="IDS_PREF_ZOOM_SUMMARY">Zobrazit na obrazovce</text>
+	<!-- 1st search button-like result -->
+	<text id="IDS_SEARCH_ON_MAP">Hledat na mapě</text>
 </string_table>

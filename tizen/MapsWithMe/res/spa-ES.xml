@@ -107,4 +107,6 @@
 	<text id="IDS_BECOME_A_PRO">Obtener PRO</text>
 	<text id="IDS_PREF_ZOOM_TITLE">Botones de zoom</text>
 	<text id="IDS_PREF_ZOOM_SUMMARY">Visualización en la pantalla</text>
+	<!-- 1st search button-like result -->
+	<text id="IDS_SEARCH_ON_MAP">Buscar en mapa</text>
 </string_table>
