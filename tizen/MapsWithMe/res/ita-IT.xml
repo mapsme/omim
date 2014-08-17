@@ -23,6 +23,7 @@
 	<text id="IDS_NO_WIFI_ASK_CELLULAR_DOWNLOAD">Non è stata rilevata alcuna connessione WiFi. Vuoi utilizzare i dati cellulare (GPRS, EDGE o 3G) per scaricare %s?</text>
 	<!-- Settings/Downloader - No internet connection dialog message -->
 	<text id="IDS_USE_WIFI_RECOMMENDATION_TEXT">Ti consigliamo di utilizzare il WiFi per scaricare mappe di grandi dimensioni</text>
+	<text id="IDS_CLOSE">Chiudi</text>
 	<text id="IDS_DOWNLOAD">Carica</text>
 	<!-- Show popup notification on top of the map when country download has failed. -->
 	<text id="IDS_DOWNLOAD_COUNTRY_FAILED">Il trasferimento di %s non è riuscito</text>
@@ -111,4 +112,8 @@
 	<text id="IDS_PREF_ZOOM_SUMMARY">Condividi la mia location</text>
 	<!-- 1st search button-like result -->
 	<text id="IDS_SEARCH_ON_MAP">Cerca sulla mappa</text>
+	<!-- Text in menu -->
+	<text id="IDS_COPYRIGHT">Copyright</text>
+	<!-- About text -->
+	<text id="IDS_ABOUT_TEXT">MAPS.ME offre le più veloci mappe offline di tutte le città, di tutti i paesi del mondo. Viaggia con piena fiducia: ovunque ti trovi, MAPS.ME ti aiuta a localizzarti sulla mappa, trovare ristoranti, hotel, banche, distributori di benzina ecc.., e non richiede la connessione a internet.\n\nLavoriamo sempre su nuove funzionalità e ci piacerebbe sapere da te in cosa potremmo migliorare MAPS.ME. Se avessi problemi con l\&#39;app, non esitare a contattarci a support@maps.me. Rispondiamo ad ogni richiesta!\n\nTi piace MAPS.ME e vuoi sostenerci? Ci sono alcuni modi semplici e assolutamente gratuiti:\n\n- Invia una recensione al tuo App Market\n- Metti mi piace sulla nostra pagina di Facebook http://www.facebook.com/mapswithme\n- O semplicemente fai pubblicità a MAPS.ME con la tua mamma, i tuoi amici e colleghi :)\n\nGrazie per essere stato con noi. Apprezziamo molto il tuo supporto!\n\nP.S. Prendiamo i dati delle mappe da OpenStreetMap, un progetto di mappatura simile a Wikipedia, che permette agli utenti di creare e modificare le mappe. Se vedi che manca qualcosa o se c\&#39;è qualcosa di sbagliato sulla mappa, puoi correggere le mappe direttamente su http://openstreetmap.org, e le modifiche appariranno nella prossima versione dell\&#39;app MAPS.ME.</text>
 </string_table>

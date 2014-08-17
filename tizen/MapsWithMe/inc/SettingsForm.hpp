@@ -24,6 +24,7 @@ private:
   static const int ID_METER_CHECKED = 301;
   static const int ID_FOOT_CHECKED = 302;
   static const int ID_ABOUT_CHECKED = 401;
+  static const int ID_COPYRIGHT_CHECKED = 501;
 
   MapsWithMeForm * m_pMainForm;
 };

@@ -25,6 +25,7 @@
 	<text id="IDS_NO_WIFI_ASK_CELLULAR_DOWNLOAD">Pas de connexion WiFi. Désirez-vous télécharger par le réseau de téléphone mobile (GPRS, EDGE ou 3G) ?</text>
 	<!-- Settings/Downloader - No internet connection dialog message -->
 	<text id="IDS_USE_WIFI_RECOMMENDATION_TEXT">Nous recommandons d\&#39;utiliser le WiFi pour télécharger de grandes cartes</text>
+	<text id="IDS_CLOSE">Fermer</text>
 	<text id="IDS_DOWNLOAD">Télécharger</text>
 	<!-- Show popup notification on top of the map when country download has failed. -->
 	<text id="IDS_DOWNLOAD_COUNTRY_FAILED">%s : échec du téléchargement</text>
@@ -121,4 +122,8 @@
 	<text id="IDS_AGREE">Je suis d\&#39;accord</text>
 	<!-- Show on first launch -->
 	<text id="IDS_DISAGREE">Je ne suis pas d\&#39;accord</text>
+	<!-- Text in menu -->
+	<text id="IDS_COPYRIGHT">Copyright</text>
+	<!-- About text -->
+	<text id="IDS_ABOUT_TEXT">MAPS.ME offre la possibilité de consulter hors-ligne le plus rapidement possible les cartes de toutes les villes, de tous les pays du monde. Voyagez en toute confiance : où que vous soyez, MAPS.ME permet de vous situer sur la carte, de trouver le restaurant le plus proche, un hôtel, une banque, une station d\&#39;essence, etc. Cela ne nécessite aucune connexion Internet.\n\nNous travaillons toujours sur de nouvelles fonctionnalités et nous aimerions avoir votre avis sur la manière d\&#39;améliorer MAPS.ME. Si vous avez des problèmes avec l\&#39;application, n\&#39;hésitez pas à nous contacter à l\&#39;adresse suivante : support@maps.me. Nous répondons à toutes les demandes !\n\nAimez-vous MAPS.ME et souhaitez-vous nous soutenir ? Il existe des moyens simples et tout à fait gratuits:\n\n- Publier un avis sur votre App Market\n- Aimez notre page Facebook www.facebook.com/mapswithme\n- Ou parlez tout simplement de MAPS.ME à votre mère, à vos amis et à vos collègues :)\n\nNous vous remercions de votre fidélité. Nous apprécions énormément votre soutien !\n\nP.S. Nous prenons les données cartographiques de OpenStreetMap, un projet de cartographie similaire à Wikipédia, qui permet aux utilisateurs de créer et de modifier des cartes. Si vous voyez une omission ou une erreur sur la carte, vous pouvez la corriger directement à l\&#39;adresse suivante : http://openstreetmap.org, et vos modifications apparaîtront lors de la sortie de la prochaine version de l\&#39;application MAPS.ME.</text>
 </string_table>

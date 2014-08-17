@@ -60,53 +60,63 @@ result SettingsForm::OnInitializing(void)
   pAboutButton->SetActionId(ID_ABOUT_CHECKED);
   pAboutButton->AddActionEventListener(*this);
 
+  Button * pCopyRightButton = static_cast<Button *>(GetControl(IDC_COPYRIGHT_BUTTON, true));
+  pCopyRightButton->SetActionId(ID_COPYRIGHT_CHECKED);
+  pCopyRightButton->AddActionEventListener(*this);
+
   SetFormBackEventListener(this);
   return E_SUCCESS;
 }
 
 void SettingsForm::OnActionPerformed(Tizen::Ui::Control const & source, int actionId)
 {
-    switch(actionId)
+  switch(actionId)
+  {
+    case ID_METER_CHECKED:
     {
-      case ID_METER_CHECKED:
-      {
-        Settings::Set("Units", Settings::Metric);
-        ::Framework * pFramework = tizen::Framework::GetInstance();
-        pFramework->SetupMeasurementSystem();
-        break;
-      }
-      case ID_FOOT_CHECKED:
-      {
-        Settings::Set("Units", Settings::Foot);
-        ::Framework * pFramework = tizen::Framework::GetInstance();
-        pFramework->SetupMeasurementSystem();
-        break;
-      }
-      case ID_SCALE_CHECKED:
-      {
-        Settings::Set("ScaleButtons", true);
-        break;
-      }
-      case ID_SCALE_UNCHECKED:
-      {
-        Settings::Set("ScaleButtons", false);
-        break;
-      }
-      case ID_ABOUT_CHECKED:
-      {
-        SceneManager * pSceneManager = SceneManager::GetInstance();
-        pSceneManager->GoForward(ForwardSceneTransition(SCENE_ABOUT, SCENE_TRANSITION_ANIMATION_TYPE_LEFT, SCENE_HISTORY_OPTION_ADD_HISTORY, SCENE_DESTROY_OPTION_DESTROY));
-        break;
-      }
-      case ID_BUTTON_BACK:
-      {
-        SceneManager * pSceneManager = SceneManager::GetInstance();
-        m_pMainForm->UpdateButtons();
-        pSceneManager->GoBackward(BackwardSceneTransition(SCENE_TRANSITION_ANIMATION_TYPE_RIGHT));
-        break;
-      }
+      Settings::Set("Units", Settings::Metric);
+      ::Framework * pFramework = tizen::Framework::GetInstance();
+      pFramework->SetupMeasurementSystem();
+      break;
     }
-    Invalidate(true);
+    case ID_FOOT_CHECKED:
+    {
+      Settings::Set("Units", Settings::Foot);
+      ::Framework * pFramework = tizen::Framework::GetInstance();
+      pFramework->SetupMeasurementSystem();
+      break;
+    }
+    case ID_SCALE_CHECKED:
+    {
+      Settings::Set("ScaleButtons", true);
+      break;
+    }
+    case ID_SCALE_UNCHECKED:
+    {
+      Settings::Set("ScaleButtons", false);
+      break;
+    }
+    case ID_ABOUT_CHECKED:
+    {
+      SceneManager * pSceneManager = SceneManager::GetInstance();
+      pSceneManager->GoForward(ForwardSceneTransition(SCENE_ABOUT, SCENE_TRANSITION_ANIMATION_TYPE_LEFT, SCENE_HISTORY_OPTION_ADD_HISTORY, SCENE_DESTROY_OPTION_DESTROY));
+      break;
+    }
+    case ID_COPYRIGHT_CHECKED:
+    {
+      SceneManager * pSceneManager = SceneManager::GetInstance();
+      pSceneManager->GoForward(ForwardSceneTransition(SCENE_COPYRIGHT, SCENE_TRANSITION_ANIMATION_TYPE_LEFT, SCENE_HISTORY_OPTION_ADD_HISTORY, SCENE_DESTROY_OPTION_DESTROY));
+      break;
+    }
+    case ID_BUTTON_BACK:
+    {
+      SceneManager * pSceneManager = SceneManager::GetInstance();
+      m_pMainForm->UpdateButtons();
+      pSceneManager->GoBackward(BackwardSceneTransition(SCENE_TRANSITION_ANIMATION_TYPE_RIGHT));
+      break;
+    }
+  }
+  Invalidate(true);
 }
 
 void SettingsForm::OnFormBackRequested(Tizen::Ui::Controls::Form & source)

@@ -23,6 +23,7 @@
 	<text id="IDS_NO_WIFI_ASK_CELLULAR_DOWNLOAD">Nenalezeno připojení k WiFi. Chceš použít mobilní sítě (GPRS, EDGE nebo 3G) pro stažení %s?</text>
 	<!-- Settings/Downloader - No internet connection dialog message -->
 	<text id="IDS_USE_WIFI_RECOMMENDATION_TEXT">Doporučujeme použít WiFi pro stahování větších map</text>
+	<text id="IDS_CLOSE">Zavřít</text>
 	<text id="IDS_DOWNLOAD">Stáhnout</text>
 	<!-- Show popup notification on top of the map when country download has failed. -->
 	<text id="IDS_DOWNLOAD_COUNTRY_FAILED">Stahování selhalo: %s</text>
@@ -113,4 +114,8 @@
 	<text id="IDS_PREF_ZOOM_SUMMARY">Zobrazit na obrazovce</text>
 	<!-- 1st search button-like result -->
 	<text id="IDS_SEARCH_ON_MAP">Hledat na mapě</text>
+	<!-- Text in menu -->
+	<text id="IDS_COPYRIGHT">Autorská práva</text>
+	<!-- About text -->
+	<text id="IDS_ABOUT_TEXT">MAPS.ME nabízí nejrychlejší offline mapy všech měst a zemí po celém světě. Cestujte s naprostou důvěrou: kdekoliv jste, MAPS.ME vám pomůže se najít na mapě, najít nejbližší restauraci, hotel, banku, benzínovou pumpu atd. Nevyžaduje připojení k internetu.\n\nNeustále pracujeme na nových funkcích a rádi bychom slyšeli váš názor, jak můžeme vylepšit MAPS.ME. Pokud máte s touto aplikací jakékoliv problémy, pak nás neváhejte kontaktovat na support@maps.me. Odpovídáme na každý požadavek!\n\nLíbí se vám MAPS.ME a chtěli byste nás podpořit? Existuje několik snadných způsobů zcela zdarma:\n\n- napište recenzi ve svém obchodě s aplikacemi\n- označte naši stránku http://www.facebook.com/mapswithme pomocí To se mi líbí\n- nebo jen řekněte o MAPS.ME své mámě, kamarádům a kolegům :)\n\nDěkujeme, že jste s námi. Velmi oceňujeme vaši podporu!\n\nP.S. Mapová data získáváme z OpenStreetMap, což je mapový projekt podobný Wikipedii, který umožňuje uživatelům vytvářet a upravovat mapy. Pokud zjistíte, že na mapě něco chybí nebo je špatně, pak můžete mapy opravit přímo na http://openstreetmap.org, a vaše změny se objeví v příští verzi MAPS.ME.</text>
 </string_table>

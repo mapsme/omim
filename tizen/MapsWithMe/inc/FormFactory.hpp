@@ -16,6 +16,7 @@ extern const wchar_t * FORM_CATEGORY;
 extern const wchar_t * FORM_SHARE_POSITION;
 extern const wchar_t * FORM_LICENSE;
 extern const wchar_t * FORM_PLACE_PAGE_SETTINGS;
+extern const wchar_t * FORM_COPYRIGHT;
 
 class FormFactory
   : public Tizen::Ui::Scenes::IFormFactory

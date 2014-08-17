@@ -23,6 +23,7 @@
 	<text id="IDS_NO_WIFI_ASK_CELLULAR_DOWNLOAD">Não detetada uma ligação WiFi. Pretende utilizar os dados por pacotes (GPRS, EDGE or 3G) para descarregar %s?</text>
 	<!-- Settings/Downloader - No internet connection dialog message -->
 	<text id="IDS_USE_WIFI_RECOMMENDATION_TEXT">Recomendamos a utilização de WiFi para descarregar grandes mapas</text>
+	<text id="IDS_CLOSE">Fechar</text>
 	<text id="IDS_DOWNLOAD">Descarga</text>
 	<!-- Show popup notification on top of the map when country download has failed. -->
 	<text id="IDS_DOWNLOAD_COUNTRY_FAILED">%s descarga falhou</text>
@@ -113,4 +114,8 @@
 	<text id="IDS_PREF_ZOOM_SUMMARY">Mostrar no ecrã</text>
 	<!-- 1st search button-like result -->
 	<text id="IDS_SEARCH_ON_MAP">Pesquisar no mapa</text>
+	<!-- Text in menu -->
+	<text id="IDS_COPYRIGHT">Direitos de Autor</text>
+	<!-- About text -->
+	<text id="IDS_ABOUT_TEXT">A MAPS.ME oferece os mapas offline mais rápidos de todas as cidades, de todos os países do mundo. Viaje com plena confiança: onde estiver, a MAPS.ME ajuda a localizar-se no mapa, a encontrar o restaurante, hotel, banco, posto de gasolina mais próximos, etc. Não requer ligação à Internet.\n\nEstamos sempre a trabalhar em novas funcionalidades e gostaríamos de saber a sua opinião sobre como poderíamos melhorar a MAPS.ME. Se tiver algum problema com a app, não hesite em contactar-nos em support@maps.me. Respondemos a cada pedido!\n\nGosta da MAPS.ME e quer apoiar-nos? Há algumas maneiras simples e absolutamente gratuitas:\n\n- publique um comentário no seu App Market\n- faça \&quot;gosto\&quot; na nossa página do Facebook http://www.facebook.com/mapswithme\n- ou fale da MAPS.ME à sua mãe, amigos e colegas :)\n\nObrigado por estar connosco. Agradecemos imenso o seu apoio!\n\nP. S. Tiramos os dados do OpenStreetMap, um projeto de mapeamento semelhante à Wikipedia, que permite aos utilizadores criarem e editarem mapas. Se vir que algo está em falta ou errado no mapa, pode corrigir diretamente os mapas em http://openstreetmap.org e as suas alterações irão aparecer na app MAPS.ME com o lançamento da próxima versão.</text>
 </string_table>

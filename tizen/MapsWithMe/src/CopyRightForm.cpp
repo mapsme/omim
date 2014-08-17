@@ -1,42 +1,44 @@
-#include "AboutForm.hpp"
+#include "CopyRightForm.hpp"
 #include "SceneRegister.hpp"
 #include "MapsWithMeForm.hpp"
 #include "AppResourceId.h"
+#include "Utils.hpp"
 #include "../../../base/logging.hpp"
 #include "../../../platform/settings.hpp"
 #include "../../../platform/tizen_utils.hpp"
-
+#include <FWeb.h>
 #include <FAppApp.h>
 #include <FApp.h>
-#include "Utils.hpp"
 
 using namespace Tizen::Base;
 using namespace Tizen::Ui;
 using namespace Tizen::Ui::Controls;
 using namespace Tizen::Ui::Scenes;
-using namespace Tizen::App;
+using namespace Tizen::Web::Controls;
 
-AboutForm::AboutForm()
+CopyRightForm::CopyRightForm()
 {
 }
 
-AboutForm::~AboutForm(void)
+CopyRightForm::~CopyRightForm(void)
 {
 }
 
-bool AboutForm::Initialize(void)
+bool CopyRightForm::Initialize(void)
 {
-  Construct(IDF_ABOUT_FORM);
+  Construct(IDF_USED_LICENSES_FORM);
   return true;
 }
 
-result AboutForm::OnInitializing(void)
+result CopyRightForm::OnInitializing(void)
 {
-  Label * pCurrentVersionLabel = static_cast<Label*>(GetControl(IDC_VERSION_LABEL, true));
 
-  //  version
-  String const strVersion = App::GetInstance()->GetAppVersion();
-  pCurrentVersionLabel->SetText(FormatString1(IDS_VERSION, strVersion));
+  //  web page
+  Web * pWeb = static_cast<Web *>(GetControl(IDC_WEB, true));
+  Tizen::Base::String url = "file://";
+  url += (Tizen::App::App::GetInstance()->GetAppDataPath());
+  url += "copyright.html";
+  pWeb->LoadUrl(url);
 
   Button * pButtonBack = static_cast<Button *>(GetControl(IDC_CLOSE_BUTTON, true));
   pButtonBack->SetActionId(ID_CLOSE);
@@ -46,7 +48,7 @@ result AboutForm::OnInitializing(void)
   return E_SUCCESS;
 }
 
-void AboutForm::OnActionPerformed(Tizen::Ui::Control const & source, int actionId)
+void CopyRightForm::OnActionPerformed(Tizen::Ui::Control const & source, int actionId)
 {
   switch(actionId)
   {
@@ -60,7 +62,7 @@ void AboutForm::OnActionPerformed(Tizen::Ui::Control const & source, int actionI
   Invalidate(true);
 }
 
-void AboutForm::OnFormBackRequested(Tizen::Ui::Controls::Form & source)
+void CopyRightForm::OnFormBackRequested(Tizen::Ui::Controls::Form & source)
 {
   SceneManager * pSceneManager = SceneManager::GetInstance();
   pSceneManager->GoBackward(BackwardSceneTransition(SCENE_TRANSITION_ANIMATION_TYPE_RIGHT));
