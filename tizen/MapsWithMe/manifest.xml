@@ -12,16 +12,16 @@
     <Apps>
         <ApiVersion>2.2</ApiVersion>
         <Privileges>
-            <Privilege>http://tizen.org/privilege/web.service</Privilege>
             <Privilege>http://tizen.org/privilege/location</Privilege>
-            <Privilege>http://tizen.org/privilege/application.launch</Privilege>
+            <Privilege>http://tizen.org/privilege/web.service</Privilege>
             <Privilege>http://tizen.org/privilege/http</Privilege>
+            <Privilege>http://tizen.org/privilege/application.launch</Privilege>
         </Privileges>
         <UiApp HwAcceleration="On" LaunchingHistoryVisible="True" Main="True" MenuIconVisible="True" Name="MapsWithMe">
             <UiScalability BaseScreenSize="Normal" CoordinateSystem="Logical" LogicalCoordinate="720"/>
             <UiTheme SystemTheme="White"/>
             <DisplayNames>
-                <DisplayName Locale="eng-GB">MapsWithMe</DisplayName>
+                <DisplayName Locale="eng-GB">MAPS.ME</DisplayName>
             </DisplayNames>
             <Icons>
                 <Icon Section="MainMenu">Pro.png</Icon>
