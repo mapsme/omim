@@ -135,6 +135,23 @@ const wchar_t * IDB_SHARE = L"main_menu/IconShare.png";
 //search
 const wchar_t * IDB_SINGLE_RESULT = L"search/single-result.png";
 const wchar_t * IDB_SUGGESTION_RESULT = L"search/suggestion-result.png";
+const wchar_t * IDB_SEARCH_ATM = L"search/atm.png";
+const wchar_t * IDB_SEARCH_BANK = L"search/bank.png";
+const wchar_t * IDB_SEARCH_ENTERTAINMENT = L"search/entertainment.png";
+const wchar_t * IDB_SEARCH_FOOD = L"search/food.png";
+const wchar_t * IDB_SEARCH_FUEL = L"search/fuel.png";
+const wchar_t * IDB_SEARCH_GAS = L"search/gas.png";
+const wchar_t * IDB_SEARCH_HOSPITAL = L"search/hospital.png";
+const wchar_t * IDB_SEARCH_HOTEL = L"search/hotel.png";
+const wchar_t * IDB_SEARCH_PARKING = L"search/parking.png";
+const wchar_t * IDB_SEARCH_PHARMACY = L"search/pharmacy.png";
+const wchar_t * IDB_SEARCH_POLICE = L"search/police.png";
+const wchar_t * IDB_SEARCH_POST = L"search/post.png";
+const wchar_t * IDB_SEARCH_SHOP = L"search/shop.png";
+const wchar_t * IDB_SEARCH_SIGHTS = L"search/sights.png";
+const wchar_t * IDB_SEARCH_TOILET = L"search/toilet.png";
+const wchar_t * IDB_SEARCH_TOURISM = L"search/tourism.png";
+const wchar_t * IDB_SEARCH_TRANSPORT = L"search/transport.png";
 //place page
 const wchar_t * IDB_PLACE_PAGE_BUTTON = L"PlacePage/PlacePageBookmarkButton.png";
 const wchar_t * IDB_PLACE_PAGE_BUTTON_SELECTED = L"PlacePage/PlacePageBookmarkButtonSelected.png";

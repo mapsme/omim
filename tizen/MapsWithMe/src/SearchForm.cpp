@@ -35,22 +35,45 @@ CategoriesT const & GetCategories()
   if (vr.empty())
   {
     vr.push_back(GetString(IDS_FOOD));
-    vr.push_back(GetString(IDS_SHOP));
     vr.push_back(GetString(IDS_HOTEL));
     vr.push_back(GetString(IDS_TOURISM));
+    vr.push_back(GetString(IDS_TRANSPORT));
+    vr.push_back(GetString(IDS_FUEL));
+    vr.push_back(GetString(IDS_SHOP));
     vr.push_back(GetString(IDS_ENTERTAINMENT));
     vr.push_back(GetString(IDS_ATM));
     vr.push_back(GetString(IDS_BANK));
-    vr.push_back(GetString(IDS_TRANSPORT));
-    vr.push_back(GetString(IDS_FUEL));
     vr.push_back(GetString(IDS_PARKING));
+    vr.push_back(GetString(IDS_TOILET));
     vr.push_back(GetString(IDS_PHARMACY));
     vr.push_back(GetString(IDS_HOSPITAL));
-    vr.push_back(GetString(IDS_TOILET));
     vr.push_back(GetString(IDS_POST));
     vr.push_back(GetString(IDS_POLICE));
   }
   return vr;
+}
+
+Tizen::Graphics::Bitmap const * GetCategoryBitMap(int i)
+{
+  switch (i)
+  {
+    case 0: return GetBitmap(IDB_SEARCH_FOOD);
+    case 1: return GetBitmap(IDB_SEARCH_HOTEL);
+    case 2: return GetBitmap(IDB_SEARCH_TOURISM);
+    case 3: return GetBitmap(IDB_SEARCH_TRANSPORT);
+    case 4: return GetBitmap(IDB_SEARCH_FUEL);
+    case 5: return GetBitmap(IDB_SEARCH_SHOP);
+    case 6: return GetBitmap(IDB_SEARCH_ENTERTAINMENT);
+    case 7: return GetBitmap(IDB_SEARCH_ATM);
+    case 8: return GetBitmap(IDB_SEARCH_BANK);
+    case 9: return GetBitmap(IDB_SEARCH_PARKING);
+    case 10: return GetBitmap(IDB_SEARCH_TOILET);
+    case 11: return GetBitmap(IDB_SEARCH_PHARMACY);
+    case 12: return GetBitmap(IDB_SEARCH_HOSPITAL);
+    case 13: return GetBitmap(IDB_SEARCH_POST);
+    case 14: return GetBitmap(IDB_SEARCH_POLICE);
+  }
+  return 0;
 }
 
 CustomItem * CreateFeatureItem(Result const & val, double itemWidth)
@@ -89,6 +112,19 @@ CustomItem * CreateSuggestionItem(String const & val, double itemWidth)
   FloatRectangle imgRect(btwWdth, topHght, imgWdth, imgHght);
   pItem->AddElement(imgRect, 0, *GetBitmap(IDB_SUGGESTION_RESULT), null, null);
   pItem->AddElement(FloatRectangle(btwWdth + imgWdth + btwWdth, topHght, itemWidth, imgHght), 1, itemText, mainFontSz, white, white, white);
+
+  return pItem;
+}
+
+CustomItem * CreateCategoryItem(int i, double itemWidth)
+{
+  CustomItem * pItem = new CustomItem();
+
+  pItem->Construct(FloatDimension(itemWidth, lstItmHght), LIST_ANNEX_STYLE_NORMAL);
+  pItem->SetBackgroundColor(LIST_ITEM_DRAWING_STATUS_NORMAL, black);
+  FloatRectangle imgRect(btwWdth, topHght, imgWdth, imgHght);
+  pItem->AddElement(imgRect, 0, *GetCategoryBitMap(i), null, null);
+  pItem->AddElement(FloatRectangle(btwWdth + imgWdth + btwWdth, topHght, itemWidth, imgHght), 1, GetCategories()[i], mainFontSz, white, white, white);
 
   return pItem;
 }
@@ -169,7 +205,7 @@ ListItemBase * SearchForm::CreateItem (int index, float itemWidth)
 {
   if(IsShowCategories())
   {
-    return CreateSuggestionItem(GetCategories()[index], itemWidth);
+    return CreateCategoryItem(index, itemWidth);
   }
   else
   {

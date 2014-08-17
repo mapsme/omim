@@ -134,6 +134,23 @@ extern const wchar_t * IDB_SHARE;
 //search
 extern const wchar_t * IDB_SINGLE_RESULT;
 extern const wchar_t * IDB_SUGGESTION_RESULT;
+extern const wchar_t * IDB_SEARCH_ATM;
+extern const wchar_t * IDB_SEARCH_BANK;
+extern const wchar_t * IDB_SEARCH_ENTERTAINMENT;
+extern const wchar_t * IDB_SEARCH_FOOD;
+extern const wchar_t * IDB_SEARCH_FUEL;
+extern const wchar_t * IDB_SEARCH_GAS;
+extern const wchar_t * IDB_SEARCH_HOSPITAL;
+extern const wchar_t * IDB_SEARCH_HOTEL;
+extern const wchar_t * IDB_SEARCH_PARKING;
+extern const wchar_t * IDB_SEARCH_PHARMACY;
+extern const wchar_t * IDB_SEARCH_POLICE;
+extern const wchar_t * IDB_SEARCH_POST;
+extern const wchar_t * IDB_SEARCH_SHOP;
+extern const wchar_t * IDB_SEARCH_SIGHTS;
+extern const wchar_t * IDB_SEARCH_TOILET;
+extern const wchar_t * IDB_SEARCH_TOURISM;
+extern const wchar_t * IDB_SEARCH_TRANSPORT;
 //place page
 extern const wchar_t * IDB_PLACE_PAGE_BUTTON;
 extern const wchar_t * IDB_PLACE_PAGE_BUTTON_SELECTED;
