@@ -3,6 +3,7 @@
 #include <FUi.h>
 #include <FUiITouchEventListener.h>
 #include <FLocations.h>
+#include <FUixSensor.h>
 #include "../../../map/user_mark.hpp"
 #include "TouchProcessor.hpp"
 
@@ -26,8 +27,9 @@ class MapsWithMeForm
   , public Tizen::Ui::Controls::IFormMenuEventListener
   , public Tizen::Ui::Controls::ISearchBarEventListener
   , public Tizen::Ui::ITextEventListener
-{
-public:
+  , public Tizen::Uix::Sensor::ISensorEventListener
+  {
+  public:
   MapsWithMeForm();
   virtual ~MapsWithMeForm(void);
 
@@ -51,20 +53,16 @@ public:
   virtual void  OnTouchReleased (Tizen::Ui::Control const & source,
       Tizen::Graphics::Point const & currentPosition,
       Tizen::Ui::TouchEventInfo const & touchInfo){}
-
   // IActionEventListener
   virtual void OnActionPerformed(Tizen::Ui::Control const & source, int actionId);
-
   // ILocationProviderListener
   virtual void OnLocationUpdated(Tizen::Locations::Location const & location);
   virtual void OnLocationUpdateStatusChanged(Tizen::Locations::LocationServiceStatus status);
   virtual void OnAccuracyChanged(Tizen::Locations::LocationAccuracy accuracy);
-
   // IFormBackEventListener
   virtual void OnFormBackRequested(Tizen::Ui::Controls::Form & source);
   // IFormMenuEventListener
   virtual void OnFormMenuRequested(Tizen::Ui::Controls::Form & source);
-
   //IListViewItemProvider
   virtual Tizen::Ui::Controls::ListItemBase * CreateItem (int index, float itemWidth);
   virtual bool  DeleteItem (int index, Tizen::Ui::Controls::ListItemBase * pItem, float itemWidth);
@@ -76,18 +74,23 @@ public:
   virtual void OnListViewItemLongPressed(Tizen::Ui::Controls::ListView & listView, int index, int elementId, bool & invokeListViewItemCallback){}
   // ISceneEventListener
   virtual void OnSceneActivatedN(const Tizen::Ui::Scenes::SceneId & previousSceneId,
-                   const Tizen::Ui::Scenes::SceneId & currentSceneId, Tizen::Base::Collection::IList * pArgs);
+      const Tizen::Ui::Scenes::SceneId & currentSceneId, Tizen::Base::Collection::IList * pArgs);
   virtual void OnSceneDeactivated(const Tizen::Ui::Scenes::SceneId & currentSceneId,
-                  const Tizen::Ui::Scenes::SceneId & nextSceneId){}
+      const Tizen::Ui::Scenes::SceneId & nextSceneId){}
   // ISearchBarEventListener
   virtual void OnSearchBarModeChanged(Tizen::Ui::Controls::SearchBar & source, Tizen::Ui::Controls::SearchBarMode mode);
   // ITextEventListener
   virtual void OnTextValueChangeCanceled(const Tizen::Ui::Control & source){}
   virtual void OnTextValueChanged(const Tizen::Ui::Control & source);
-
   //IUserMarkListener
   void OnUserMark(UserMarkCopy * pCopy);
   void OnDismissListener();
+  // ISensorEventListener
+  virtual void OnDataReceived (Tizen::Uix::Sensor::SensorType sensorType, Tizen::Uix::Sensor::SensorData & sensorData, result r);
+
+  void OnGPSPressed();
+  void StartLocation();
+  void StopLocation();
 
   void UpdateButtons();
 
@@ -114,8 +117,15 @@ public:
   bool m_searchBarEnabled;
   Tizen::Base::String m_searchText;
 
-private:
-  bool m_locationEnabled;
+  private:
+
+  enum ELocationStatus
+  {
+    lst_default,
+    lst_search,
+    lst_selected,
+    lst_follow
+  } m_locationStatus;
 
   enum EEventIDs
   {
@@ -137,6 +147,7 @@ private:
   };
 
   Tizen::Locations::LocationProvider * m_pLocProvider;
+  Tizen::Uix::Sensor::SensorManager m_sensorManager;
 
   Tizen::Ui::Controls::Button * m_pButtonScalePlus;
   Tizen::Ui::Controls::Button * m_pButtonScaleMinus;
@@ -152,4 +163,4 @@ private:
   tizen::Framework * m_pFramework;
 
   TouchProcessor m_touchProcessor;
-};
+  };

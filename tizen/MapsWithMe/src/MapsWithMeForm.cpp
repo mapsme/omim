@@ -11,6 +11,7 @@
 
 #include "../../../map/framework.hpp"
 #include "../../../gui/controller.hpp"
+#include "../../../anim/controller.hpp"
 #include "../../../platform/tizen_utils.hpp"
 #include "../../../platform/settings.hpp"
 #include "../../../std/bind.hpp"
@@ -30,6 +31,7 @@ using namespace Tizen::Base::Collection;
 using namespace Tizen::Base::Utility;
 using namespace Tizen::Locations;
 using namespace Tizen::App;
+using namespace Tizen::Uix::Sensor;
 using namespace consts;
 
 MapsWithMeForm::MapsWithMeForm()
@@ -93,7 +95,7 @@ result MapsWithMeForm::OnInitializing(void)
   m_pButtonScaleMinus->SetActionId(ID_BUTTON_SCALE_MINUS);
   m_pButtonScaleMinus->AddActionEventListener(*this);
 
-  m_locationEnabled = false;
+  m_locationStatus = lst_default;
 
   SetFormBackEventListener(this);
   SetFormMenuEventListener(this);
@@ -113,11 +115,104 @@ result MapsWithMeForm::OnInitializing(void)
   pinManager.ConnectUserMarkListener(bind(&MapsWithMeForm::OnUserMark, this, _1));
   pinManager.ConnectDismissListener(bind(&MapsWithMeForm::OnDismissListener, this));
 
+  m_sensorManager.Construct();
+
   AddTouchEventListener(m_touchProcessor);
 
   UpdateButtons();
 
   return E_SUCCESS;
+}
+
+
+void MapsWithMeForm::OnGPSPressed()
+{
+  ::Framework * pf = tizen::Framework::GetInstance();
+  ::Framework & f = *pf;
+  shared_ptr<location::State> ls = f.GetLocationState();
+
+  if (!ls->HasPosition())
+  {
+    if (!ls->IsFirstPosition())
+    {
+      ls->OnStartLocation();
+      StartLocation();
+      m_locationStatus = lst_search;
+      return;
+    }
+  }
+  else
+  {
+    if (!ls->IsCentered())
+    {
+      ls->AnimateToPositionAndEnqueueLocationProcessMode(location::ELocationCenterOnly);
+      return;
+    }
+    else
+    {
+      if (ls->HasCompass())
+      {
+        if (ls->GetCompassProcessMode() != location::ECompassFollow)
+        {
+          if (ls->IsCentered())
+            ls->StartCompassFollowing();
+          else
+            ls->AnimateToPositionAndEnqueueFollowing();
+          m_locationStatus = lst_follow;
+          return;
+        }
+        else
+        {
+          anim::Controller *animController = f.GetAnimController();
+          animController->Lock();
+
+          f.GetInformationDisplay().locationState()->StopCompassFollowing();
+
+          double startAngle = f.GetNavigator().Screen().GetAngle();
+          double endAngle = 0;
+
+          f.GetAnimator().RotateScreen(startAngle, endAngle);
+
+          animController->Unlock();
+
+          f.Invalidate();
+        }
+      }
+    }
+  }
+
+  ls->OnStopLocation();
+  StopLocation();
+  m_locationStatus = lst_default;
+}
+
+void MapsWithMeForm::StartLocation()
+{
+  ::Framework * pFramework = tizen::Framework::GetInstance();
+  LocationCriteria criteria;
+  criteria.SetAccuracy(LOC_ACCURACY_FINEST);
+  if (m_pLocProvider == 0)
+  {
+    m_pLocProvider = new LocationProvider();
+    m_pLocProvider->Construct(criteria, *this);
+  }
+  int updateInterval = 1;
+  m_pLocProvider->StartLocationUpdatesByInterval(updateInterval);
+  pFramework->StartLocation();
+
+  if (m_sensorManager.IsAvailable(SENSOR_TYPE_MAGNETIC))
+    m_sensorManager.AddSensorListener(*this, SENSOR_TYPE_MAGNETIC, 100, true);
+}
+
+void MapsWithMeForm::StopLocation()
+{
+  ::Framework * pFramework = tizen::Framework::GetInstance();
+  m_pLocProvider->StopLocationUpdates();
+  delete m_pLocProvider;
+  m_pLocProvider = 0;
+  pFramework->StopLocation();
+  if (m_sensorManager.IsAvailable(SENSOR_TYPE_MAGNETIC))
+    m_sensorManager.RemoveSensorListener(*this);
 }
 
 void MapsWithMeForm::OnActionPerformed(Tizen::Ui::Control const & source, int actionId)
@@ -127,28 +222,7 @@ void MapsWithMeForm::OnActionPerformed(Tizen::Ui::Control const & source, int ac
   {
     case ID_GPS:
     {
-      m_locationEnabled = !m_locationEnabled;
-      if (m_locationEnabled)
-      {
-        LocationCriteria criteria;
-        criteria.SetAccuracy(LOC_ACCURACY_FINEST);
-        if (m_pLocProvider == 0)
-        {
-          m_pLocProvider = new LocationProvider();
-          m_pLocProvider->Construct(criteria, *this);
-        }
-        int updateInterval = 1;
-        m_pLocProvider->StartLocationUpdatesByInterval(updateInterval);
-        pFramework->StartLocation();
-      }
-      else
-      {
-        m_pLocProvider->StopLocationUpdates();
-        delete m_pLocProvider;
-        m_pLocProvider = 0;
-        pFramework->StopLocation();
-
-      }
+      OnGPSPressed();
       UpdateButtons();
       break;
     }
@@ -231,6 +305,35 @@ void MapsWithMeForm::OnLocationUpdated(const Tizen::Locations::Location& locatio
 
   pFramework->OnLocationUpdate(info);
   Draw();
+
+  if (m_locationStatus == lst_search)
+  {
+    m_locationStatus = lst_selected;
+    UpdateButtons();
+  }
+}
+
+namespace
+{
+void AngleIn2Pi_(double & angle)
+{
+  double const pi2 = 2.0 * math::pi;
+  if (angle <= 0.0)
+    angle += pi2;
+  else if (angle > pi2)
+    angle -= pi2;
+}
+}
+void MapsWithMeForm::OnDataReceived(Tizen::Uix::Sensor::SensorType sensorType, Tizen::Uix::Sensor::SensorData & sensorData, result r)
+{
+  ::Framework * pFramework = tizen::Framework::GetInstance();
+  MagneticSensorData & data = static_cast< MagneticSensorData& >(sensorData);
+  double dNorthAzmuth = atan2(data.y, data.x) - (math::pi / 2);
+  AngleIn2Pi_(dNorthAzmuth);
+  location::CompassInfo info;
+  info.m_timestamp = 0;
+  info.m_magneticHeading = dNorthAzmuth;
+  pFramework->OnCompassUpdate(info);
 }
 
 void MapsWithMeForm::OnLocationUpdateStatusChanged(Tizen::Locations::LocationServiceStatus status)
@@ -472,7 +575,17 @@ void MapsWithMeForm::UpdateButtons()
   Footer* pFooter = GetFooter();
   FooterItem footerItem;
   footerItem.Construct(ID_GPS);
-  footerItem.SetIcon(FOOTER_ITEM_STATUS_NORMAL, GetBitmap(m_locationEnabled ? IDB_MY_POSITION_PRESSED : IDB_MY_POSITION_NORMAL));
+
+  Tizen::Graphics::Bitmap const * btm_location = 0;
+  switch (m_locationStatus)
+  {
+    case lst_default: btm_location = GetBitmap(IDB_MY_POSITION_NORMAL); break;
+    case lst_follow: btm_location = GetBitmap(IDB_MY_POSITION_FOLLOW); break;
+    case lst_search: btm_location = GetBitmap(IDB_MY_POSITION_SEARCH); break;
+    case lst_selected: btm_location = GetBitmap(IDB_MY_POSITION_PRESSED); break;
+  }
+  if (btm_location)
+    footerItem.SetIcon(FOOTER_ITEM_STATUS_NORMAL, btm_location);
   pFooter->SetItemAt (0, footerItem);
   UpdateBookMarkPanelState();
   UpdateBookMarkSplitPanelState();
