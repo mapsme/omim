@@ -79,7 +79,7 @@
 	<!-- String in search result list, when nothing found -->
 	<text id="IDS_NO_SEARCH_RESULTS_FOUND">Результатів не знайдено</text>
 	<!-- Notes field in Bookmarks view -->
-	<text id="IDS_DESCRIPTION">Примiтки</text>
+	<text id="IDS_DESCRIPTION">Додати примітку</text>
 	<!-- resource for context menu -->
 	<text id="IDS_EDIT">Редаґувати</text>
 	<!-- Warning message when doing search around current position -->
