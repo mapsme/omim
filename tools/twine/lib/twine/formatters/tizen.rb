@@ -18,6 +18,17 @@ module Twine
         'ces-CZ' => 'cs',
         'pol-PL' => 'pl',
         'por-PT' => 'pt',
+        'ara-AE' => 'ar',
+        'bul-BG' => 'bg',
+        'dan-DK' => 'da',
+        'fin-FI' => 'fi',
+        'hun-HU' => 'hu',
+        'jpn-JP' => 'ja',
+        'kor-KR' => 'ko',
+        'nld-NL' => 'nl',
+        'nob-NO' => 'nb',
+        'swe-SE' => 'sv',
+        'tur-TR' => 'tr',
         'ukr-UA' => 'uk'
       ]
       DEFAULT_LANG_CODES = Hash[
