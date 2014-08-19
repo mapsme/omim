@@ -29,6 +29,8 @@ module Twine
         'nob-NO' => 'nb',
         'swe-SE' => 'sv',
         'tur-TR' => 'tr',
+        'zho-CN' => 'zh-Hans',
+        'zho-HK' => 'zh-Hant',
         'ukr-UA' => 'uk'
       ]
       DEFAULT_LANG_CODES = Hash[

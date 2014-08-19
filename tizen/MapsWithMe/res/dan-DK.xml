@@ -116,6 +116,12 @@
 	<text id="IDS_PREF_ZOOM_SUMMARY">Vis på skærmen</text>
 	<!-- 1st search button-like result -->
 	<text id="IDS_SEARCH_ON_MAP">Søg på kort</text>
+	<!-- Show on first launch. -->
+	<text id="IDS_MAPS_LICENCE_INFO">Denne app benytter geografiske data (såsom kort, forretningsinformationer, interesseområder, landegrænser og regioner osv.) taget fra OpenStreetMap-projektet. Vi garanterer ikke for at disse OpenStreetMap-data stemmer overens, er nøjagtige, fuldstændige og anvendelige.</text>
+	<!-- Show on first launch. -->
+	<text id="IDS_AGREE">Jeg accepterer</text>
+	<!-- Show on first launch -->
+	<text id="IDS_DISAGREE">Jeg accepterer ikke</text>
 	<!-- Text in menu -->
 	<text id="IDS_COPYRIGHT">Copyright</text>
 	<!-- About text -->

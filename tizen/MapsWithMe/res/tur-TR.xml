@@ -116,6 +116,12 @@
 	<text id="IDS_PREF_ZOOM_SUMMARY">Ekranda göster</text>
 	<!-- 1st search button-like result -->
 	<text id="IDS_SEARCH_ON_MAP">Haritada Ara</text>
+	<!-- Show on first launch. -->
+	<text id="IDS_MAPS_LICENCE_INFO">Bu uygulama OpenStreetMap projesinden alınan jeografik verileri (haritalar, iş listeleri, ilgi noktaları, ülke be bölge sınırları, v.b kapsayan) kullanmaktadır. OpenStreetMap verilerine dair hiç bir tutarlılık, doğruluk, eksizsizlik veya uygulanabirliği üzerine garanti vermiyoruz.</text>
+	<!-- Show on first launch. -->
+	<text id="IDS_AGREE">Kabul ediyorum</text>
+	<!-- Show on first launch -->
+	<text id="IDS_DISAGREE">Kabul etmiyorum</text>
 	<!-- Text in menu -->
 	<text id="IDS_COPYRIGHT">Telif hakkı</text>
 	<!-- About text -->

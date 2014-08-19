@@ -114,6 +114,12 @@
 	<text id="IDS_PREF_ZOOM_SUMMARY">Zobrazit na obrazovce</text>
 	<!-- 1st search button-like result -->
 	<text id="IDS_SEARCH_ON_MAP">Hledat na mapě</text>
+	<!-- Show on first launch. -->
+	<text id="IDS_MAPS_LICENCE_INFO">Tyto aplikace používají geografická data (včetně map, seznamu obchodů, bodů zájmů, hranic zemí a regionů atd.) převzatých z projektu OpenStreetMap. Nezaručujeme žádnou konzistenci, přesnost, úplnost nebo použitelnost dat OpenStreetMap.</text>
+	<!-- Show on first launch. -->
+	<text id="IDS_AGREE">Souhlasím</text>
+	<!-- Show on first launch -->
+	<text id="IDS_DISAGREE">Nesouhlasím</text>
 	<!-- Text in menu -->
 	<text id="IDS_COPYRIGHT">Autorská práva</text>
 	<!-- About text -->

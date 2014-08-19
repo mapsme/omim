@@ -114,6 +114,12 @@
 	<text id="IDS_PREF_ZOOM_SUMMARY">Wyświetl na ekranie</text>
 	<!-- 1st search button-like result -->
 	<text id="IDS_SEARCH_ON_MAP">Szukaj na mapie</text>
+	<!-- Show on first launch. -->
+	<text id="IDS_MAPS_LICENCE_INFO">Niniejsza aplikacja korzysta z danych geograficznych (włącznie z mapami, wpisami biznesowymi, ciekawymi punktami turystycznymi, granicami krajów i regionów itp.), pobieranych z projektu OpenStreetMap. Nie gwarantujemy zgodności, dokładności, kompletności czy możliwości zastosowania danych OpenStreetMap.</text>
+	<!-- Show on first launch. -->
+	<text id="IDS_AGREE">Zgadzam się</text>
+	<!-- Show on first launch -->
+	<text id="IDS_DISAGREE">Nie zgadzam się</text>
 	<!-- Text in menu -->
 	<text id="IDS_COPYRIGHT">Prawo autorskie</text>
 	<!-- About text -->

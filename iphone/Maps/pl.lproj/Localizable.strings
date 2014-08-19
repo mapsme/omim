@@ -564,13 +564,13 @@
 "choose_destination" = "Wybierz miejsce docelowe…";
 
 /* Show on first launch. */
-"maps_licence_info" = "This applications uses geographical data (including maps, business listings, points of interest, borders of countries and regions, etc.) taken from the OpenStreetMap project. We do not warrant any consistency, accuracy, completeness or applicability of the OpenStreetMap data.";
+"maps_licence_info" = "Niniejsza aplikacja korzysta z danych geograficznych (włącznie z mapami, wpisami biznesowymi, ciekawymi punktami turystycznymi, granicami krajów i regionów itp.), pobieranych z projektu OpenStreetMap. Nie gwarantujemy zgodności, dokładności, kompletności czy możliwości zastosowania danych OpenStreetMap.";
 
 /* Show on first launch. */
-"agree" = "I agree";
+"agree" = "Zgadzam się";
 
 /* Show on first launch */
-"disagree" = "I disagree";
+"disagree" = "Nie zgadzam się";
 
 /* text of notification */
 "download_map_notification" = "Pobierz mapę miejsca, w którym się zajdujesz";

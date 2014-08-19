@@ -349,6 +349,12 @@
 	<string name="choose_starting_point">Start auswählen…</string>
 	<!-- button in the interface -->
 	<string name="choose_destination">Ziel auswählen…</string>
+	<!-- Show on first launch. -->
+	<string name="maps_licence_info">Diese App nutzt geographische Daten (einschließlich Landkarten, Brancheneinträge, Sehenswürdigkeiten, Landesgrenzen, Grenzen von Regionen, etc.), die aus dem OpenStreetMap-Projekt entnommen wurden. Wir garantieren weder für Einheitlichkeit, Genauigkeit, Vollständigkeit oder Verwendbarkeit des OpenStreetMap-Datenmaterials.</string>
+	<!-- Show on first launch. -->
+	<string name="agree">Ich bin einverstanden</string>
+	<!-- Show on first launch -->
+	<string name="disagree">Ich bin nicht einverstanden</string>
 	<!-- text of notification -->
 	<string name="download_map_notification">Laden Sie die Karte des Ortes herunter, in dem Sie sich befinden</string>
 	<!-- text of notification -->

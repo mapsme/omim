@@ -564,13 +564,13 @@
 "choose_destination" = "Vælg din destination…";
 
 /* Show on first launch. */
-"maps_licence_info" = "This applications uses geographical data (including maps, business listings, points of interest, borders of countries and regions, etc.) taken from the OpenStreetMap project. We do not warrant any consistency, accuracy, completeness or applicability of the OpenStreetMap data.";
+"maps_licence_info" = "Denne app benytter geografiske data (såsom kort, forretningsinformationer, interesseområder, landegrænser og regioner osv.) taget fra OpenStreetMap-projektet. Vi garanterer ikke for at disse OpenStreetMap-data stemmer overens, er nøjagtige, fuldstændige og anvendelige.";
 
 /* Show on first launch. */
-"agree" = "I agree";
+"agree" = "Jeg accepterer";
 
 /* Show on first launch */
-"disagree" = "I disagree";
+"disagree" = "Jeg accepterer ikke";
 
 /* text of notification */
 "download_map_notification" = "Download kortet over det sted, hvor du befinder dig";

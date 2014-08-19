@@ -564,13 +564,13 @@
 "choose_destination" = "Zvolte cíl…";
 
 /* Show on first launch. */
-"maps_licence_info" = "This applications uses geographical data (including maps, business listings, points of interest, borders of countries and regions, etc.) taken from the OpenStreetMap project. We do not warrant any consistency, accuracy, completeness or applicability of the OpenStreetMap data.";
+"maps_licence_info" = "Tyto aplikace používají geografická data (včetně map, seznamu obchodů, bodů zájmů, hranic zemí a regionů atd.) převzatých z projektu OpenStreetMap. Nezaručujeme žádnou konzistenci, přesnost, úplnost nebo použitelnost dat OpenStreetMap.";
 
 /* Show on first launch. */
-"agree" = "I agree";
+"agree" = "Souhlasím";
 
 /* Show on first launch */
-"disagree" = "I disagree";
+"disagree" = "Nesouhlasím";
 
 /* text of notification */
 "download_map_notification" = "Stáhněte si mapu místa, kde právě jste";

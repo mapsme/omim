@@ -564,13 +564,13 @@
 "choose_destination" = "Bestemming kiezen…";
 
 /* Show on first launch. */
-"maps_licence_info" = "This applications uses geographical data (including maps, business listings, points of interest, borders of countries and regions, etc.) taken from the OpenStreetMap project. We do not warrant any consistency, accuracy, completeness or applicability of the OpenStreetMap data.";
+"maps_licence_info" = "Deze applicaties maken gebruik van geografische gegevens (waaronder kaarten, bedrijfsvermeldingen, bezienswaardigheden, grenzen van landen en regio's enz.) die afkomstig zijn uit het OpenStreetMap-project. Wij kunnen de consistentie, nauwkeurigheid, volledigheid of toepasbaarheid van de OpenStreetMap-gegevens niet garanderen.";
 
 /* Show on first launch. */
-"agree" = "I agree";
+"agree" = "Ik ga akkoord";
 
 /* Show on first launch */
-"disagree" = "I disagree";
+"disagree" = "Ik ga niet akkoord";
 
 /* text of notification */
 "download_map_notification" = "Download de kaart van de plaats waar u bent";

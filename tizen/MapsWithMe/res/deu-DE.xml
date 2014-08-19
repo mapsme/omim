@@ -110,6 +110,12 @@
 	<text id="IDS_PREF_ZOOM_SUMMARY">Auf dem Bildschirm anzeigen</text>
 	<!-- 1st search button-like result -->
 	<text id="IDS_SEARCH_ON_MAP">Auf der Landkarte suchen</text>
+	<!-- Show on first launch. -->
+	<text id="IDS_MAPS_LICENCE_INFO">Diese App nutzt geographische Daten (einschließlich Landkarten, Brancheneinträge, Sehenswürdigkeiten, Landesgrenzen, Grenzen von Regionen, etc.), die aus dem OpenStreetMap-Projekt entnommen wurden. Wir garantieren weder für Einheitlichkeit, Genauigkeit, Vollständigkeit oder Verwendbarkeit des OpenStreetMap-Datenmaterials.</text>
+	<!-- Show on first launch. -->
+	<text id="IDS_AGREE">Ich bin einverstanden</text>
+	<!-- Show on first launch -->
+	<text id="IDS_DISAGREE">Ich bin nicht einverstanden</text>
 	<!-- Text in menu -->
 	<text id="IDS_COPYRIGHT">Copyright</text>
 	<!-- About text -->

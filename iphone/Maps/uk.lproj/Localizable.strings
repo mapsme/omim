@@ -564,13 +564,13 @@
 "choose_destination" = "Виберіть місце призначення…";
 
 /* Show on first launch. */
-"maps_licence_info" = "This applications uses geographical data (including maps, business listings, points of interest, borders of countries and regions, etc.) taken from the OpenStreetMap project. We do not warrant any consistency, accuracy, completeness or applicability of the OpenStreetMap data.";
+"maps_licence_info" = "Ця програма використовує географічні дані (включаючи карти, довідники, пам'ятки, кордони країн та регіонів, ін.). Вони повнiстю взятi iз проекту OpenStreetMap. Ми не гарантуємо послідовнiсть, точності, повноти та придатності даних OpenStreetMap.";
 
 /* Show on first launch. */
-"agree" = "I agree";
+"agree" = "Я згоден";
 
 /* Show on first launch */
-"disagree" = "I disagree";
+"disagree" = "Я не згоден";
 
 /* text of notification */
 "download_map_notification" = "Завантажуйте карту тієї місцевості, де ви знаходитесь";

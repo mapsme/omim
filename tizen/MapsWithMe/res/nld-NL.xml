@@ -111,6 +111,12 @@
 	<text id="IDS_PREF_ZOOM_SUMMARY">Weergave op het scherm</text>
 	<!-- 1st search button-like result -->
 	<text id="IDS_SEARCH_ON_MAP">Op kaart zoeken</text>
+	<!-- Show on first launch. -->
+	<text id="IDS_MAPS_LICENCE_INFO">Deze applicaties maken gebruik van geografische gegevens (waaronder kaarten, bedrijfsvermeldingen, bezienswaardigheden, grenzen van landen en regio\&#39;s enz.) die afkomstig zijn uit het OpenStreetMap-project. Wij kunnen de consistentie, nauwkeurigheid, volledigheid of toepasbaarheid van de OpenStreetMap-gegevens niet garanderen.</text>
+	<!-- Show on first launch. -->
+	<text id="IDS_AGREE">Ik ga akkoord</text>
+	<!-- Show on first launch -->
+	<text id="IDS_DISAGREE">Ik ga niet akkoord</text>
 	<!-- Text in menu -->
 	<text id="IDS_COPYRIGHT">Auteursrechten</text>
 	<!-- About text -->

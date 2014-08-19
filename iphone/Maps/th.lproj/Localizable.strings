@@ -564,13 +564,13 @@
 "choose_destination" = "เลือกจุดหมาย…";
 
 /* Show on first launch. */
-"maps_licence_info" = "This applications uses geographical data (including maps, business listings, points of interest, borders of countries and regions, etc.) taken from the OpenStreetMap project. We do not warrant any consistency, accuracy, completeness or applicability of the OpenStreetMap data.";
+"maps_licence_info" = "แอปพลิเคชันนี้ใช้ข้อมูลทางภูมิศาสตร์ (รวมถึงแผนที่ รายชื่อธุรกิจ จุดที่น่าสนใจ พรมแดนประเทศและภูมิภาคต่าง ๆ) โดยนำมาจากโครงการ OpenStreetMap เราไม่รับประกันความสอดคล้อง ความถูกต้อง ความครบถ้วนสมบูรณ์ หรือการใช้งานได้ของข้อมูล OpenStreetMap";
 
 /* Show on first launch. */
-"agree" = "I agree";
+"agree" = "ฉันตกลง";
 
 /* Show on first launch */
-"disagree" = "I disagree";
+"disagree" = "ฉันไม่ตกลง";
 
 /* text of notification */
 "download_map_notification" = "ดาวน์โหลดแผนที่เกี่ยวกับสถานที่ที่คุณอยู่";

@@ -564,13 +564,13 @@
 "choose_destination" = "Varış noktası seçin…";
 
 /* Show on first launch. */
-"maps_licence_info" = "This applications uses geographical data (including maps, business listings, points of interest, borders of countries and regions, etc.) taken from the OpenStreetMap project. We do not warrant any consistency, accuracy, completeness or applicability of the OpenStreetMap data.";
+"maps_licence_info" = "Bu uygulama OpenStreetMap projesinden alınan jeografik verileri (haritalar, iş listeleri, ilgi noktaları, ülke be bölge sınırları, v.b kapsayan) kullanmaktadır. OpenStreetMap verilerine dair hiç bir tutarlılık, doğruluk, eksizsizlik veya uygulanabirliği üzerine garanti vermiyoruz.";
 
 /* Show on first launch. */
-"agree" = "I agree";
+"agree" = "Kabul ediyorum";
 
 /* Show on first launch */
-"disagree" = "I disagree";
+"disagree" = "Kabul etmiyorum";
 
 /* text of notification */
 "download_map_notification" = "Bulunduğun yerin haritasını indir";

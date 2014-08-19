@@ -335,6 +335,12 @@
 	<string name="choose_starting_point">Elegir punto de partida…</string>
 	<!-- button in the interface -->
 	<string name="choose_destination">Elige un destino…</string>
+	<!-- Show on first launch. -->
+	<string name="maps_licence_info">Esta aplicación usa datos geográficos (como mapas, directorios de empresas, sitios de interés, fronteras de países y regiones, etc.) que obtiene del proyecto OpenStreetMap. No garantizamos la coherencia, exactitud, integridad o aplicabilidad de los datos OpenStreetMap.</string>
+	<!-- Show on first launch. -->
+	<string name="agree">Acepto</string>
+	<!-- Show on first launch -->
+	<string name="disagree">No acepto</string>
 	<!-- text of notification -->
 	<string name="download_map_notification">Descarga el mapa del lugar en que te encuentras</string>
 	<!-- text of notification -->

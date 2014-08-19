@@ -114,6 +114,12 @@
 	<text id="IDS_PREF_ZOOM_SUMMARY">Mutassa a kijelzőn</text>
 	<!-- 1st search button-like result -->
 	<text id="IDS_SEARCH_ON_MAP">Keresés a térképen</text>
+	<!-- Show on first launch. -->
+	<text id="IDS_MAPS_LICENCE_INFO">Ez az alkalmazás az OpenStreetMap projekt adatai alapján használ földrajzi adatokat (pl. térképek, vállalkozások, látnivalók, ország- és területi határok stb.). Nem garantáljuk az OpenStreetMap adatok állandóságát, pontosságát vagy használhatóságát.</text>
+	<!-- Show on first launch. -->
+	<text id="IDS_AGREE">Egyetértek</text>
+	<!-- Show on first launch -->
+	<text id="IDS_DISAGREE">Nem értek egyet</text>
 	<!-- Text in menu -->
 	<text id="IDS_COPYRIGHT">Szerzői jog</text>
 	<!-- About text -->

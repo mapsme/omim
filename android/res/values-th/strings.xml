@@ -356,6 +356,12 @@
 	<string name="choose_starting_point">เลือกจุดเริ่มต้น…</string>
 	<!-- button in the interface -->
 	<string name="choose_destination">เลือกจุดหมาย…</string>
+	<!-- Show on first launch. -->
+	<string name="maps_licence_info">แอปพลิเคชันนี้ใช้ข้อมูลทางภูมิศาสตร์ (รวมถึงแผนที่ รายชื่อธุรกิจ จุดที่น่าสนใจ พรมแดนประเทศและภูมิภาคต่าง ๆ) โดยนำมาจากโครงการ OpenStreetMap เราไม่รับประกันความสอดคล้อง ความถูกต้อง ความครบถ้วนสมบูรณ์ หรือการใช้งานได้ของข้อมูล OpenStreetMap</string>
+	<!-- Show on first launch. -->
+	<string name="agree">ฉันตกลง</string>
+	<!-- Show on first launch -->
+	<string name="disagree">ฉันไม่ตกลง</string>
 	<!-- text of notification -->
 	<string name="download_map_notification">ดาวน์โหลดแผนที่เกี่ยวกับสถานที่ที่คุณอยู่</string>
 	<!-- text of notification -->

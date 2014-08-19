@@ -349,6 +349,12 @@
 	<string name="choose_starting_point">Виберіть початкову точку…</string>
 	<!-- button in the interface -->
 	<string name="choose_destination">Виберіть місце призначення…</string>
+	<!-- Show on first launch. -->
+	<string name="maps_licence_info">Ця програма використовує географічні дані (включаючи карти, довідники, пам\&#39;ятки, кордони країн та регіонів, ін.). Вони повнiстю взятi iз проекту OpenStreetMap. Ми не гарантуємо послідовнiсть, точності, повноти та придатності даних OpenStreetMap.</string>
+	<!-- Show on first launch. -->
+	<string name="agree">Я згоден</string>
+	<!-- Show on first launch -->
+	<string name="disagree">Я не згоден</string>
 	<!-- text of notification -->
 	<string name="download_map_notification">Завантажуйте карту тієї місцевості, де ви знаходитесь</string>
 	<!-- text of notification -->

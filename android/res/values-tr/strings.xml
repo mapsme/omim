@@ -358,6 +358,12 @@
 	<string name="choose_starting_point">Başlangıç noktası seçin…</string>
 	<!-- button in the interface -->
 	<string name="choose_destination">Varış noktası seçin…</string>
+	<!-- Show on first launch. -->
+	<string name="maps_licence_info">Bu uygulama OpenStreetMap projesinden alınan jeografik verileri (haritalar, iş listeleri, ilgi noktaları, ülke be bölge sınırları, v.b kapsayan) kullanmaktadır. OpenStreetMap verilerine dair hiç bir tutarlılık, doğruluk, eksizsizlik veya uygulanabirliği üzerine garanti vermiyoruz.</string>
+	<!-- Show on first launch. -->
+	<string name="agree">Kabul ediyorum</string>
+	<!-- Show on first launch -->
+	<string name="disagree">Kabul etmiyorum</string>
 	<!-- text of notification -->
 	<string name="download_map_notification">Bulunduğun yerin haritasını indir</string>
 	<!-- text of notification -->

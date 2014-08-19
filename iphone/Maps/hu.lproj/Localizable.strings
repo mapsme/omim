@@ -564,13 +564,13 @@
 "choose_destination" = "Válasszon úti célt…";
 
 /* Show on first launch. */
-"maps_licence_info" = "This applications uses geographical data (including maps, business listings, points of interest, borders of countries and regions, etc.) taken from the OpenStreetMap project. We do not warrant any consistency, accuracy, completeness or applicability of the OpenStreetMap data.";
+"maps_licence_info" = "Ez az alkalmazás az OpenStreetMap projekt adatai alapján használ földrajzi adatokat (pl. térképek, vállalkozások, látnivalók, ország- és területi határok stb.). Nem garantáljuk az OpenStreetMap adatok állandóságát, pontosságát vagy használhatóságát.";
 
 /* Show on first launch. */
-"agree" = "I agree";
+"agree" = "Egyetértek";
 
 /* Show on first launch */
-"disagree" = "I disagree";
+"disagree" = "Nem értek egyet";
 
 /* text of notification */
 "download_map_notification" = "Töltsd le annak a helynek a térképét, ahol most vagy";

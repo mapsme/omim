@@ -341,6 +341,12 @@
 	<string name="choose_starting_point">Scegli il punto di partenza…</string>
 	<!-- button in the interface -->
 	<string name="choose_destination">Scegli la destinazione…</string>
+	<!-- Show on first launch. -->
+	<string name="maps_licence_info">Questa applicazione utilizza i dati geografici (tra cui mappe, annunci di attività commerciali, punti di interesse, confini di paesi e regioni, ecc.) tratti dal progetto OpenStreetMap. Non garantiamo alcuna coerenza, accuratezza, completezza o applicabilità dei dati OpenStreetMap.</string>
+	<!-- Show on first launch. -->
+	<string name="agree">Sono d\&#39;accordo</string>
+	<!-- Show on first launch -->
+	<string name="disagree">Non sono d\&#39;accordo</string>
 	<!-- text of notification -->
 	<string name="download_map_notification">Scarica la mappa del luogo in cui ti trovi</string>
 	<!-- text of notification -->

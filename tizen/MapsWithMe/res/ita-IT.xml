@@ -112,6 +112,12 @@
 	<text id="IDS_PREF_ZOOM_SUMMARY">Condividi la mia location</text>
 	<!-- 1st search button-like result -->
 	<text id="IDS_SEARCH_ON_MAP">Cerca sulla mappa</text>
+	<!-- Show on first launch. -->
+	<text id="IDS_MAPS_LICENCE_INFO">Questa applicazione utilizza i dati geografici (tra cui mappe, annunci di attività commerciali, punti di interesse, confini di paesi e regioni, ecc.) tratti dal progetto OpenStreetMap. Non garantiamo alcuna coerenza, accuratezza, completezza o applicabilità dei dati OpenStreetMap.</text>
+	<!-- Show on first launch. -->
+	<text id="IDS_AGREE">Sono d\&#39;accordo</text>
+	<!-- Show on first launch -->
+	<text id="IDS_DISAGREE">Non sono d\&#39;accordo</text>
 	<!-- Text in menu -->
 	<text id="IDS_COPYRIGHT">Copyright</text>
 	<!-- About text -->

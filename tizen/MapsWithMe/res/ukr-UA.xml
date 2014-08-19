@@ -116,6 +116,12 @@
 	<text id="IDS_PREF_ZOOM_SUMMARY">Відображення на екрані</text>
 	<!-- 1st search button-like result -->
 	<text id="IDS_SEARCH_ON_MAP">Шукати на карті</text>
+	<!-- Show on first launch. -->
+	<text id="IDS_MAPS_LICENCE_INFO">Ця програма використовує географічні дані (включаючи карти, довідники, пам\&#39;ятки, кордони країн та регіонів, ін.). Вони повнiстю взятi iз проекту OpenStreetMap. Ми не гарантуємо послідовнiсть, точності, повноти та придатності даних OpenStreetMap.</text>
+	<!-- Show on first launch. -->
+	<text id="IDS_AGREE">Я згоден</text>
+	<!-- Show on first launch -->
+	<text id="IDS_DISAGREE">Я не згоден</text>
 	<!-- Text in menu -->
 	<text id="IDS_COPYRIGHT">Копірайт</text>
 	<!-- About text -->

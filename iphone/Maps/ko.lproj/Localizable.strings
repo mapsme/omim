@@ -564,13 +564,13 @@
 "choose_destination" = "목적지 선택";
 
 /* Show on first launch. */
-"maps_licence_info" = "This applications uses geographical data (including maps, business listings, points of interest, borders of countries and regions, etc.) taken from the OpenStreetMap project. We do not warrant any consistency, accuracy, completeness or applicability of the OpenStreetMap data.";
+"maps_licence_info" = "이 애플리케이션은 OpenStreetMap 프로젝트에서 찍은 지리적 데이터(지도, 업체 정보, 관심 지점, 국경와 지역의 경계 포함)를 사용합니다. 우리는 OpenStreetMap 데이터의 일관성, 정확성, 완전성 또는 적용 가능성을 보증하지 않습니다.";
 
 /* Show on first launch. */
-"agree" = "I agree";
+"agree" = "동의함";
 
 /* Show on first launch */
-"disagree" = "I disagree";
+"disagree" = "동의 안 함";
 
 /* text of notification */
 "download_map_notification" = "당신이 있는 장소의지도를 다운로드 하십시오";

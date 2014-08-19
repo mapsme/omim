@@ -564,13 +564,13 @@
 "choose_destination" = "Selecione o destino…";
 
 /* Show on first launch. */
-"maps_licence_info" = "This applications uses geographical data (including maps, business listings, points of interest, borders of countries and regions, etc.) taken from the OpenStreetMap project. We do not warrant any consistency, accuracy, completeness or applicability of the OpenStreetMap data.";
+"maps_licence_info" = "Estas aplicações utilizam dados geográficos (incluindo mapas, listas de empresas, pontos de interesse, fronteiras de países e regiões, etc.) tirados do projecto OpenStreetMap. Não garantimos qualquer consistência, precisão, completude ou aplicabilidade dos dados OpenStreetMap.";
 
 /* Show on first launch. */
-"agree" = "I agree";
+"agree" = "Aceito";
 
 /* Show on first launch */
-"disagree" = "I disagree";
+"disagree" = "Não aceito";
 
 /* text of notification */
 "download_map_notification" = "Descarregue o mapa do local onde estiver";
