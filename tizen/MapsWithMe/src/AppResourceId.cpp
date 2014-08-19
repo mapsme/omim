@@ -135,6 +135,7 @@ const wchar_t * IDB_MY_POSITION_FOLLOW = L"main_form_menu/my-position-follow.png
 const wchar_t * IDB_SEARCH = L"main_form_menu/search.png";
 const wchar_t * IDB_STAR = L"main_form_menu/star.png";
 const wchar_t * IDB_MENU = L"main_form_menu/settings.png";
+const wchar_t * IDB_BACKGROUND = L"main_form_menu/gradient.png";
 //main menu
 const wchar_t * IDB_MWM_PRO = L"main_menu/MWMProIcon.png";
 const wchar_t * IDB_DOWNLOAD_MAP = L"main_menu/IconMap.png";

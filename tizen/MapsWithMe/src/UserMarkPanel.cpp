@@ -51,6 +51,7 @@ bool UserMarkPanel::Construct(const Tizen::Graphics::FloatRectangle& rect)
   m_pLabel->AddTouchEventListener(*this);
   m_pLabel->SetTextHorizontalAlignment(ALIGNMENT_LEFT);
   m_pLabel->SetTextVerticalAlignment(ALIGNMENT_TOP);
+  m_pLabel->SetTextConfig(mainFontSz ,LABEL_TEXT_STYLE_NORMAL);
   AddControl(m_pLabel);
 
   UpdateState();

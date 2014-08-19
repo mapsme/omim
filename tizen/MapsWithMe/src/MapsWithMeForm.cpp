@@ -70,23 +70,25 @@ result MapsWithMeForm::OnInitializing(void)
   FooterItem footerItem;
   footerItem.Construct(ID_GPS);
   footerItem.SetIcon(FOOTER_ITEM_STATUS_NORMAL, GetBitmap(IDB_MY_POSITION_NORMAL));
+  footerItem.SetBackgroundBitmap(FOOTER_ITEM_STATUS_NORMAL, GetBitmap(IDB_BACKGROUND));
   FooterItem footerItem1;
   footerItem1.Construct(ID_SEARCH);
   footerItem1.SetIcon(FOOTER_ITEM_STATUS_NORMAL, GetBitmap(IDB_SEARCH));
+  footerItem1.SetBackgroundBitmap(FOOTER_ITEM_STATUS_NORMAL, GetBitmap(IDB_BACKGROUND));
   FooterItem footerItem2;
   footerItem2.Construct(ID_STAR);
   footerItem2.SetIcon(FOOTER_ITEM_STATUS_NORMAL, GetBitmap(IDB_STAR));
+  footerItem2.SetBackgroundBitmap(FOOTER_ITEM_STATUS_NORMAL, GetBitmap(IDB_BACKGROUND));
   FooterItem footerItem3;
   footerItem3.Construct(ID_MENU);
   footerItem3.SetIcon(FOOTER_ITEM_STATUS_NORMAL, GetBitmap(IDB_MENU));
+  footerItem3.SetBackgroundBitmap(FOOTER_ITEM_STATUS_NORMAL, GetBitmap(IDB_BACKGROUND));
 
   pFooter->AddItem(footerItem);
   pFooter->AddItem(footerItem1);
   pFooter->AddItem(footerItem2);
   pFooter->AddItem(footerItem3);
   pFooter->AddActionEventListener(*this);
-
-  pFooter->SetItemColor(FOOTER_ITEM_STATUS_NORMAL, mainMenuGray);
 
   m_pButtonScalePlus = static_cast<Button *>(GetControl(IDC_ZOOM_IN, true));
   m_pButtonScalePlus->SetActionId(ID_BUTTON_SCALE_PLUS);

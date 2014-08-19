@@ -134,6 +134,7 @@ extern const wchar_t * IDB_MY_POSITION_FOLLOW;
 extern const wchar_t * IDB_SEARCH;
 extern const wchar_t * IDB_STAR;
 extern const wchar_t * IDB_MENU;
+extern const wchar_t * IDB_BACKGROUND;
 // main menu
 extern const wchar_t * IDB_MWM_PRO;
 extern const wchar_t * IDB_DOWNLOAD_MAP;
