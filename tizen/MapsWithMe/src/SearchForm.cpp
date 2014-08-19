@@ -275,7 +275,7 @@ void SearchForm::OnListViewItemStateChanged(Tizen::Ui::Controls::ListView & list
     {
       if (IsHaveSuggestions(m_curResults))
       {
-        Result res = m_curResults.GetResult(index);
+        Result const & res = m_curResults.GetResult(index);
         if (res.GetResultType() == Result::RESULT_SUGGEST_FROM_FEATURE || res.GetResultType() == Result::RESULT_SUGGEST_PURE)
         {
           String s = res.GetString();
@@ -299,7 +299,7 @@ void SearchForm::OnListViewItemStateChanged(Tizen::Ui::Controls::ListView & list
         }
         else
         {
-          Result res = m_curResults.GetResult(index - 1);
+          Result const & res = m_curResults.GetResult(index - 1);
           GetFramework()->ShowSearchResult(res);
           SceneManager * pSceneManager = SceneManager::GetInstance();
           pSceneManager->GoBackward(BackwardSceneTransition(SCENE_TRANSITION_ANIMATION_TYPE_RIGHT));

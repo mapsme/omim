@@ -8,6 +8,7 @@
 #include "BookMarkUtils.hpp"
 
 #include "../../../map/framework.hpp"
+#include "../../../map/measurement_utils.hpp"
 #include "../../../platform/settings.hpp"
 #include "../../../platform/tizen_utils.hpp"
 #include "../../../base/logging.hpp"
@@ -175,10 +176,12 @@ Tizen::Ui::Controls::ListItemBase * BookMarkSplitPanel::CreateSettingsItem (floa
   txtRect.width = itemWidth - 3 * imgWdth - 4 * btwWdth;
   txtRect.x = 2 * imgWdth + 2 * btwWdth;
   pItem->AddElement(txtRect, DISTANCE_TXT, GetDistanceText(), mainFontSz, txt_main_black, txt_main_black, txt_main_black);
+  String latText, lonText;
+  GetLocationLatLonText(latText, lonText);
   txtRect.y += imgHght;
-  pItem->AddElement(txtRect, POSITION_LAT_TXT, GetLocationLatText(), mainFontSz, txt_main_black, txt_main_black, txt_main_black);
+  pItem->AddElement(txtRect, POSITION_LAT_TXT, latText, mainFontSz, txt_main_black, txt_main_black, txt_main_black);
   txtRect.y += imgHght;
-  pItem->AddElement(txtRect, POSITION_LON_TXT, GetLocationLonText(), mainFontSz, txt_main_black, txt_main_black, txt_main_black);
+  pItem->AddElement(txtRect, POSITION_LON_TXT, lonText, mainFontSz, txt_main_black, txt_main_black, txt_main_black);
   return pItem;
 }
 
@@ -266,30 +269,16 @@ Tizen::Base::String BookMarkSplitPanel::GetDistanceText() const
   return GetDistance(GetCurMark());
 }
 
-Tizen::Base::String BookMarkSplitPanel::GetLocationLatText() const
+void BookMarkSplitPanel::GetLocationLatLonText(Tizen::Base::String & latText, Tizen::Base::String & lonText) const
 {
   if (!GetCurMark())
-    return "";
+    return;
   double lat, lon;
   GetCurMark()->GetLatLon(lat, lon);
-  ostringstream os;
-  os << std::fixed;
-  os << std::setprecision(7);
-  os << lat;
-  return os.str().c_str();
-}
-
-Tizen::Base::String BookMarkSplitPanel::GetLocationLonText() const
-{
-  if (!GetCurMark())
-    return "";
-  double lat, lon;
-  GetCurMark()->GetLatLon(lat, lon);
-  ostringstream os;
-  os << std::fixed;
-  os << std::setprecision(7);
-  os << lon;
-  return os.str().c_str();
+  string lat_str, lon_str;
+  MeasurementUtils::FormatLatLon(lat, lon, lat_str, lon_str);
+  latText = lat_str.c_str();
+  lonText = lon_str.c_str();
 }
 
 bool BookMarkSplitPanel::IsBookMark() const

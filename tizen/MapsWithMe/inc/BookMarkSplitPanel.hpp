@@ -63,8 +63,7 @@ public:
 
   Tizen::Base::String GetHeaderText() const;
   Tizen::Base::String GetDistanceText() const;
-  Tizen::Base::String GetLocationLatText() const;
-  Tizen::Base::String GetLocationLonText() const;
+  void GetLocationLatLonText(Tizen::Base::String & latText, Tizen::Base::String & lonText) const;
 
   void UpdateState();
   UserMark const * GetCurMark() const;
