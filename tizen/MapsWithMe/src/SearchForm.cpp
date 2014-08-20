@@ -386,6 +386,7 @@ void SearchForm::SearchOnMap()
   GetFramework()->GetCurrentPosition(lat, lon);
   params.SetPosition(lat, lon);
 
+  GetFramework()->ShowAllSearchResults();
   GetFramework()->StartInteractiveSearch(params);
   ArrayList * pList = new ArrayList;
   pList->Construct();

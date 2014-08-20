@@ -54,6 +54,16 @@ bool UserMarkPanel::Construct(const Tizen::Graphics::FloatRectangle& rect)
   m_pLabel->SetTextConfig(mainFontSz ,LABEL_TEXT_STYLE_NORMAL);
   AddControl(m_pLabel);
 
+  m_pArrowLabel = new Label();
+  Bitmap const * pBitmap = GetBitmap(IDB_PLACE_PAGE_ARROW);
+  int const width = pBitmap->GetWidth();
+  int const height = pBitmap->GetHeight();
+  m_pArrowLabel->Construct(Rectangle((rect.width - width) / 2, markPanelHeight - height, width, height), "");
+  m_pArrowLabel->SetTextColor(txt_main_black);
+  m_pArrowLabel->SetBackgroundBitmap(*GetBitmap(IDB_PLACE_PAGE_ARROW));
+  m_pArrowLabel->AddTouchEventListener(*this);
+  AddControl(m_pArrowLabel);
+
   UpdateState();
   return true;
 }

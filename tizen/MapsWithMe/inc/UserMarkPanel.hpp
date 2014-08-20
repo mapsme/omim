@@ -44,8 +44,10 @@ public:
 private:
   MapsWithMeForm * m_pMainForm;
   Tizen::Ui::Controls::Label * m_pLabel;
+  Tizen::Ui::Controls::Label * m_pArrowLabel;
   Tizen::Ui::Controls::Button * m_pButton;
   Tizen::Ui::Controls::Button * m_pEditButton;
+
   enum EActions
   {
     ID_STAR,

@@ -168,6 +168,7 @@ const wchar_t * IDB_PLACE_PAGE_EDIT_BUTTON = L"PlacePage/PlacePageEditButton.png
 const wchar_t * IDB_PLACE_PAGE_COMPASS = L"PlacePage/CompassArrow.png";
 const wchar_t * IDB_PLACE_PAGE_COMPASS_BACKGROUND = L"PlacePage/CompassBackground.png";
 const wchar_t * IDB_PLACE_PAGE_COLOR_SELECTOR = L"PlacePage/ColorSelectorBackgound.png";
+const wchar_t * IDB_PLACE_PAGE_ARROW = L"PlacePage/Arrow.png";
 //color
 const wchar_t * IDB_COLOR_BLUE = L"PlacePage/Color/blue.png";
 const wchar_t * IDB_COLOR_PP_BLUE = L"PlacePage/Color/blue_pp.png";

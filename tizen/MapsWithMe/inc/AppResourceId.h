@@ -167,6 +167,7 @@ extern const wchar_t * IDB_PLACE_PAGE_EDIT_BUTTON;
 extern const wchar_t * IDB_PLACE_PAGE_COMPASS;
 extern const wchar_t * IDB_PLACE_PAGE_COMPASS_BACKGROUND;
 extern const wchar_t * IDB_PLACE_PAGE_COLOR_SELECTOR;
+extern const wchar_t * IDB_PLACE_PAGE_ARROW;
 //color
 extern const wchar_t * IDB_COLOR_BLUE;
 extern const wchar_t * IDB_COLOR_PP_BLUE;
