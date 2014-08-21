@@ -336,6 +336,17 @@ void MapsWithMeForm::OnDataReceived(Tizen::Uix::Sensor::SensorType sensorType, T
   info.m_timestamp = 0;
   info.m_magneticHeading = dNorthAzmuth;
   pFramework->OnCompassUpdate(info);
+
+  // Next part of code just to enable auto follow mode in
+  // release version
+  // I think it's a compiler optimization bug.
+  // In debug version averything is ok.
+  static int count = 0;
+  if (count <= 0)
+  {
+    LOG(LINFO, ("Maps.me"));
+    count++;
+  }
 }
 
 void MapsWithMeForm::OnLocationUpdateStatusChanged(Tizen::Locations::LocationServiceStatus status)
