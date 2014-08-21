@@ -56,4 +56,5 @@ int const deleteWidth = 200;
 int const DoubleClickTimeout = 200;
 
 const char * SETTINGS_MAP_LICENSE = "map_license_agreement";
+const char * SHOW_DEG = "show_deg";
 }

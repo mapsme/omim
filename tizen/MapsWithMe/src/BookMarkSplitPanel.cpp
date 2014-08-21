@@ -17,6 +17,7 @@
 #include <FUixSensor.h>
 
 using namespace Tizen::Base;
+using namespace Tizen::Ui;
 using namespace Tizen::Ui::Controls;
 using namespace Tizen::Ui::Scenes;
 using namespace Tizen::Graphics;
@@ -244,14 +245,48 @@ void BookMarkSplitPanel::OnListViewItemStateChanged(Tizen::Ui::Controls::ListVie
           SCENE_TRANSITION_ANIMATION_TYPE_LEFT, SCENE_HISTORY_OPTION_ADD_HISTORY, SCENE_DESTROY_OPTION_KEEP));
     }
   }
-  if (index == SETTINGS_ITEM && elementId == COLOR_IMG)
+  if (index == SETTINGS_ITEM)
   {
-    SceneManager * pSceneManager = SceneManager::GetInstance();
-    pSceneManager->GoForward(ForwardSceneTransition(SCENE_SELECT_COLOR,
-        SCENE_TRANSITION_ANIMATION_TYPE_LEFT, SCENE_HISTORY_OPTION_ADD_HISTORY, SCENE_DESTROY_OPTION_KEEP));
+    if (elementId == COLOR_IMG)
+    {
+      SceneManager * pSceneManager = SceneManager::GetInstance();
+      pSceneManager->GoForward(ForwardSceneTransition(SCENE_SELECT_COLOR,
+          SCENE_TRANSITION_ANIMATION_TYPE_LEFT, SCENE_HISTORY_OPTION_ADD_HISTORY, SCENE_DESTROY_OPTION_KEEP));
+    }
+    if (elementId == POSITION_LAT_TXT || elementId == POSITION_LON_TXT)
+    {
+      bool bShowDeg = true;
+      Settings::Get(SHOW_DEG, bShowDeg);
+      bShowDeg = !bShowDeg;
+      Settings::Set(SHOW_DEG, bShowDeg);
+    }
   }
 
   UpdateState();
+}
+
+void BookMarkSplitPanel::OnListViewItemLongPressed(Tizen::Ui::Controls::ListView & listView, int index, int elementId, bool & invokeListViewItemCallback)
+{
+  if (index == SETTINGS_ITEM)
+  {
+    if (elementId == POSITION_LAT_TXT || elementId == POSITION_LON_TXT)
+    {
+      Tizen::Base::String latText;
+      Tizen::Base::String lonText;
+      GetLocationLatLonText(latText, lonText);
+      latText.Append(", ");
+      latText.Append(lonText);
+
+      Clipboard* pClipboard = Clipboard::GetInstance();
+      ClipboardItem item;
+      item.Construct(Tizen::Ui::CLIPBOARD_DATA_TYPE_TEXT, latText);
+      pClipboard->CopyItem(item);
+
+      String message = GetString(IDS_COPIED_TO_CLIPBOARD);
+      message.Replace("%1$s", latText);
+      MessageBoxOk("", message);
+    }
+  }
 }
 
 Tizen::Base::String BookMarkSplitPanel::GetHeaderText() const
@@ -277,10 +312,15 @@ void BookMarkSplitPanel::GetLocationLatLonText(Tizen::Base::String & latText, Ti
     return;
   double lat, lon;
   GetCurMark()->GetLatLon(lat, lon);
+  bool bShowDeg = true;
+  Settings::Get(SHOW_DEG, bShowDeg);
   string lat_str, lon_str;
-  MeasurementUtils::FormatLatLon(lat, lon, lat_str, lon_str);
-  latText = lat_str.c_str();
+  if (bShowDeg)
+    MeasurementUtils::FormatLatLon(lat, lon, lat_str, lon_str);
+  else
+    MeasurementUtils::FormatLatLonAsDMS(lat, lon, lat_str, lon_str);
   lonText = lon_str.c_str();
+  latText = lat_str.c_str();
 }
 
 bool BookMarkSplitPanel::IsBookMark() const

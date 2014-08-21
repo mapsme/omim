@@ -104,6 +104,8 @@
 	<text id="IDS_EMAIL">E-Mail</text>
 	<!-- Copy Link -->
 	<text id="IDS_COPY_LINK">Copy Link</text>
+	<!-- Text for message when used successfully copied something -->
+	<text id="IDS_COPIED_TO_CLIPBOARD">Copied to Clipboard: %1$s</text>
 	<!-- Used for bookmark editing -->
 	<text id="IDS_DONE">Done</text>
 	<!-- Prints version number in About dialog -->

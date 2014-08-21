@@ -104,6 +104,8 @@
 	<text id="IDS_EMAIL">Електронна пошта</text>
 	<!-- Copy Link -->
 	<text id="IDS_COPY_LINK">Копіювати посилання</text>
+	<!-- Text for message when used successfully copied something -->
+	<text id="IDS_COPIED_TO_CLIPBOARD">Скопіювати в буфер обміну: %1$s</text>
 	<!-- Used for bookmark editing -->
 	<text id="IDS_DONE">Готово</text>
 	<!-- Prints version number in About dialog -->

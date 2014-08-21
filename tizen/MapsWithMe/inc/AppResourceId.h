@@ -77,6 +77,7 @@ extern const wchar_t* IDS_BOOKMARK_SHARE_SMS;
 extern const wchar_t* IDS_CANCEL;
 extern const wchar_t* IDS_CANCEL_DOWNLOAD;
 extern const wchar_t* IDS_CLOSE;
+extern const wchar_t* IDS_COPIED_TO_CLIPBOARD;
 extern const wchar_t* IDS_COPYRIGHT;
 extern const wchar_t* IDS_COPY_LINK;
 extern const wchar_t* IDS_DELETE;

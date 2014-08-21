@@ -104,6 +104,8 @@
 	<text id="IDS_EMAIL">البريد الالكتروني</text>
 	<!-- Copy Link -->
 	<text id="IDS_COPY_LINK">نسخ الرابط</text>
+	<!-- Text for message when used successfully copied something -->
+	<text id="IDS_COPIED_TO_CLIPBOARD">تم النسخ الى الحافظة: %1$s</text>
 	<!-- Used for bookmark editing -->
 	<text id="IDS_DONE">تم</text>
 	<!-- Prints version number in About dialog -->

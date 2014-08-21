@@ -40,7 +40,6 @@ extern int const messageItemHeight;
 extern int const headerSettingsHeight;
 extern int const allItemsHeight;
 
-
 extern const char * BM_COLOR_RED;
 extern const char * BM_COLOR_YELLOW;
 extern const char * BM_COLOR_BLUE;
@@ -58,4 +57,6 @@ extern int const deleteWidth;
 extern int const DoubleClickTimeout;
 
 extern const char * SETTINGS_MAP_LICENSE;
+
+extern const char * SHOW_DEG;
 }//consts

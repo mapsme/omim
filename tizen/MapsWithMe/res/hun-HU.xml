@@ -102,6 +102,8 @@
 	<text id="IDS_EMAIL">Email</text>
 	<!-- Copy Link -->
 	<text id="IDS_COPY_LINK">Hivatkozás másolása</text>
+	<!-- Text for message when used successfully copied something -->
+	<text id="IDS_COPIED_TO_CLIPBOARD">A vágólapra másolva: %1$s</text>
 	<!-- Used for bookmark editing -->
 	<text id="IDS_DONE">Kész</text>
 	<!-- Prints version number in About dialog -->
