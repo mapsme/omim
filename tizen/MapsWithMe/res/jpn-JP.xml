@@ -17,6 +17,8 @@
 	<text id="IDS_KILOMETRES">キロメートル</text>
 	<!-- Choose measurement on first launch alert - choose imperial system button -->
 	<text id="IDS_MILES">マイル</text>
+	<!-- View and button titles for accessibility -->
+	<text id="IDS_MY_POSITION">現在地</text>
 	<!-- Settings/Downloader - No internet connection dialog title -->
 	<text id="IDS_NO_INTERNET_CONNECTION_DETECTED">インターネットに接続されていません</text>
 	<!-- Settings/Downloader - 3G download warning dialog title -->

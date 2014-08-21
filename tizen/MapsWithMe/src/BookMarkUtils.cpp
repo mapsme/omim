@@ -53,6 +53,10 @@ String GetMarkName(UserMark const * pUserMark)
     Bookmark const * pSearch = static_cast<Bookmark const *>(pUserMark);
     return pSearch->GetName().c_str();
   }
+  else if (pUserMark->GetMarkType() == UserMark::MY_POSITION)
+  {
+    return GetString(IDS_MY_POSITION);
+  }
   else
   {
     return GetAdressInfo(pUserMark).GetPinName().c_str();

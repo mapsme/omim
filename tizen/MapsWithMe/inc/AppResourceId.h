@@ -101,6 +101,7 @@ extern const wchar_t* IDS_MEASUREMENT_UNITS;
 extern const wchar_t* IDS_MEASUREMENT_UNITS_SUMMARY;
 extern const wchar_t* IDS_MESSAGE;
 extern const wchar_t* IDS_MILES;
+extern const wchar_t* IDS_MY_POSITION;
 extern const wchar_t* IDS_MY_POSITION_SHARE_EMAIL;
 extern const wchar_t* IDS_MY_POSITION_SHARE_EMAIL_SUBJECT;
 extern const wchar_t* IDS_MY_POSITION_SHARE_SMS;

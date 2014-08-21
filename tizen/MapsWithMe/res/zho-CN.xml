@@ -17,6 +17,8 @@
 	<text id="IDS_KILOMETRES">千米</text>
 	<!-- Choose measurement on first launch alert - choose imperial system button -->
 	<text id="IDS_MILES">英里</text>
+	<!-- View and button titles for accessibility -->
+	<text id="IDS_MY_POSITION">我的位置</text>
 	<!-- Settings/Downloader - No internet connection dialog title -->
 	<text id="IDS_NO_INTERNET_CONNECTION_DETECTED">未检测到互联网连接</text>
 	<!-- Settings/Downloader - 3G download warning dialog title -->

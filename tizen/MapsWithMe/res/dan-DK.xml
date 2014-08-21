@@ -19,6 +19,8 @@
 	<text id="IDS_MB">MB</text>
 	<!-- Choose measurement on first launch alert - choose imperial system button -->
 	<text id="IDS_MILES">Mil</text>
+	<!-- View and button titles for accessibility -->
+	<text id="IDS_MY_POSITION">Min position</text>
 	<!-- Settings/Downloader - No internet connection dialog title -->
 	<text id="IDS_NO_INTERNET_CONNECTION_DETECTED">Ingen internetforbindelse registreret</text>
 	<!-- Settings/Downloader - 3G download warning dialog title -->

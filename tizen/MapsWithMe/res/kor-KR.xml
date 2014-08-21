@@ -17,6 +17,8 @@
 	<text id="IDS_KILOMETRES">킬로미터</text>
 	<!-- Choose measurement on first launch alert - choose imperial system button -->
 	<text id="IDS_MILES">마일</text>
+	<!-- View and button titles for accessibility -->
+	<text id="IDS_MY_POSITION">나의 위치</text>
 	<!-- Settings/Downloader - No internet connection dialog title -->
 	<text id="IDS_NO_INTERNET_CONNECTION_DETECTED">인터넷이 연결되지 않았습니다.</text>
 	<!-- Settings/Downloader - 3G download warning dialog title -->

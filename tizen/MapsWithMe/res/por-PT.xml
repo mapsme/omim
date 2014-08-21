@@ -17,6 +17,8 @@
 	<text id="IDS_KILOMETRES">Quilómetros</text>
 	<!-- Choose measurement on first launch alert - choose imperial system button -->
 	<text id="IDS_MILES">Milhas</text>
+	<!-- View and button titles for accessibility -->
+	<text id="IDS_MY_POSITION">A minha posição</text>
 	<!-- Settings/Downloader - No internet connection dialog title -->
 	<text id="IDS_NO_INTERNET_CONNECTION_DETECTED">Não foi detetada uma ligação à Internet</text>
 	<!-- Settings/Downloader - 3G download warning dialog title -->

@@ -583,6 +583,7 @@
 
   [my_position]
     en = My Position
+    tags = tizen
     comment = View and button titles for accessibility
     cs = Moje poloha
     de = Mein Standort
