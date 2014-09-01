@@ -3,15 +3,19 @@
 #include "generator/feature_merger.hpp"
 #include "generator/generate_info.hpp"
 
-#include "geometry/polygon.hpp"
-#include "geometry/region2d.hpp"
-#include "geometry/tree4d.hpp"
+#include "storage/country_info.hpp"
 
 #include "indexer/scales.hpp"
+
+#include "platform/platform.hpp"
+
+#include "geometry/polygon.hpp"
+#include "geometry/tree4d.hpp"
 
 #include "base/logging.hpp"
 
 #include "defines.hpp"
+
 
 namespace
 {
@@ -180,11 +184,28 @@ class WorldMapGenerator
   FeatureMergeProcessor m_merger;
   WaterBoundaryChecker m_boundaryChecker;
 
+  storage::CountryInfoGetter m_countryInfo;
+
+  void PatchNames(FeatureBuilder1 & fb) const
+  {
+    string const name = fb.GetName(StringUtf8Multilang::DEFAULT_CODE);
+    if (name.empty())
+      return;
+
+    storage::CountryInfo info;
+    m_countryInfo.GetRegionInfo(fb.GetKeyPoint(), info);
+
+    int8_t const lang = StringUtf8Multilang::GetLangIndex(info.m_flag);
+    if (lang != StringUtf8Multilang::UNSUPPORTED_LANGUAGE_CODE && fb.GetName(lang).empty())
+      fb.AddName(lang, name);
+  }
+
 public:
   explicit WorldMapGenerator(feature::GenerateInfo const & info)
       : m_worldBucket(info),
         m_merger(POINT_COORD_BITS - (scales::GetUpperScale() - scales::GetUpperWorldScale()) / 2),
-        m_boundaryChecker(info)
+        m_boundaryChecker(info),
+        m_countryInfo(GetPlatform().GetReader(PACKED_POLYGONS_FILE), GetPlatform().GetReader(COUNTRIES_FILE))
   {
     // Do not strip last types for given tags,
     // for example, do not cut 'admin_level' in  'boundary-administrative-XXX'.
@@ -232,7 +253,10 @@ public:
     }
 
     if (feature::PreprocessForWorldMap(fb))
+    {
+      PatchNames(fb);
       m_worldBucket.PushSure(fb);
+    }
   }
 
   void DoMerge() { m_merger.DoMerge(m_worldBucket); }

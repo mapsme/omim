@@ -33,5 +33,7 @@ namespace storage
 
     static void FileName2FullName(string & fName);
     static void FullName2GroupAndMap(string const & fName, string & group, string & map);
+
+    friend string DebugPrint(CountryInfo const & info);
   };
 }

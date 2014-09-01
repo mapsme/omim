@@ -158,8 +158,8 @@ public:
 
   uint64_t GetWayIDForRouting() const;
 
-
   bool AddName(string const & lang, string const & name);
+  void AddName(int8_t lang, string const & name);
 
   int GetMinFeatureDrawScale() const;
 

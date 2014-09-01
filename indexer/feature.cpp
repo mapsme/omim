@@ -298,7 +298,7 @@ void FeatureType::GetPreferredNames(string & defaultName, string & intName) cons
     defaultName.swap(intName);
   else
   {
-    // filter out similar intName
+    // Filter intName that is similar to defaultName.
     if (!intName.empty() && defaultName.find(intName) != string::npos)
       intName.clear();
   }
