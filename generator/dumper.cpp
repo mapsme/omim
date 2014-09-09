@@ -117,7 +117,7 @@ namespace feature
 
     void operator()(FeatureType & f, uint32_t)
     {
-      f.ForEachNameRef(*this);
+      f.ForEachName(*this);
     }
   };
 

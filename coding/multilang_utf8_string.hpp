@@ -32,7 +32,30 @@ class StringUtf8Multilang
 {
   string m_s;
 
-  size_t GetNextIndex(size_t i) const;
+  void GetNextIndex(size_t & i) const;
+  uint32_t ReadOffset(size_t & i) const;
+
+  /// Should be MAX_SUPPORTED_LANGUAGES-1.
+  static char const UTF8_GET_LANG_MASK = 0x3F;
+  static char const INDEX_IS_NEXT = 0xFE;
+  static char const STRING_IS_NEXT = 0xFF;
+  static char const NOT_UTF8_FIRST = 0x80;
+
+  enum ByteType { UTF8, LANG, INDEX, STRING };
+  inline static ByteType GetType(char c)
+  {
+    // UTF-8 first byte is always 0xxxxxxx or 11xxxxxx
+    // 10xxxxxx is a "language byte"
+    if (static_cast<char>(c & 0xC0) == NOT_UTF8_FIRST)
+      return LANG;
+
+    switch (c)
+    {
+    case INDEX_IS_NEXT: return INDEX;
+    case STRING_IS_NEXT: return STRING;
+    default: return UTF8;
+    }
+  }
 
 public:
   static int8_t const UNSUPPORTED_LANGUAGE_CODE = -1;
@@ -50,38 +73,131 @@ public:
 
   inline void Clear() { m_s.clear(); }
   inline bool IsEmpty() const { return m_s.empty(); }
+  inline void Swap(StringUtf8Multilang & r) { m_s.swap(r.m_s); }
 
-  void AddString(int8_t lang, string const & utf8s);
-  void AddString(string const & lang, string const & utf8s)
+  class Builder
   {
-    int8_t const l = GetLangIndex(lang);
-    if (l >= 0)
-      AddString(l, utf8s);
+    string m_s;
+    enum OperationT { NONE, LANG, STRING, INDEX };
+    OperationT m_last;
+
+  public:
+    Builder() : m_last(NONE) {}
+
+    Builder & AddLanguage(int8_t lang);
+    inline Builder & AddLanguage(string const & lang)
+    {
+      return AddLanguage(GetLangIndex(lang));
+    }
+    Builder & AddIndex(uint32_t index);
+    Builder & AddString(string const & utf8s);
+
+    inline Builder & AddFullString(int8_t lang, string const & s)
+    {
+      return AddLanguage(lang).AddString(s);
+    }
+    inline Builder & AddFullString(string const & lang, string const & s)
+    {
+      return AddFullString(GetLangIndex(lang), s);
+    }
+
+    void Clear();
+    void AssignTo(StringUtf8Multilang & s);
+  };
+
+  inline void MakeFrom(Builder & b)
+  {
+    b.AssignTo(*this);
   }
 
-  template <class T>
-  void ForEachRef(T & functor) const
+  template <class FnT>
+  void ForEachToken(FnT & fn) const
   {
     size_t i = 0;
     size_t const sz = m_s.size();
+
     while (i < sz)
     {
-      size_t const next = GetNextIndex(i);
-      if (!functor((m_s[i] & 0x3F), m_s.substr(i + 1, next - i - 1)))
-        return;
+      size_t next = i;
+
+      switch (GetType(m_s[i]))
+      {
+      case LANG:
+        // check for stop processing
+        if (!fn.Language(m_s[i] & UTF8_GET_LANG_MASK))
+          return;
+        ++next;
+        break;
+
+      case INDEX:
+        ++next;
+        fn.Index(ReadOffset(next));
+        break;
+
+      case STRING:
+        ++next;
+        ++i;
+        // break - continue parse string
+
+      case UTF8:
+        GetNextIndex(next);
+        fn.String(m_s.substr(i, next - i));
+        break;
+      }
+
       i = next;
     }
   }
 
-  bool GetString(int8_t lang, string & utf8s) const;
-  bool GetString(string const & lang, string & utf8s) const
+  template <class FnT> class BaseProcessor
   {
-    int8_t const l = GetLangIndex(lang);
-    if (l >= 0)
-      return GetString(l, utf8s);
-    else
-      return false;
-  }
+    FnT & m_fn;
+
+    string m_str;
+    int8_t m_lang;
+
+    bool EmitString()
+    {
+      bool res = true;
+      if (!m_str.empty())
+      {
+        ASSERT_GREATER_OR_EQUAL(m_lang, 0, ());
+        res = m_fn(m_lang, m_str);
+        m_str.clear();
+      }
+      return res;
+    }
+
+  public:
+    BaseProcessor(FnT & fn) : m_fn(fn) {}
+    ~BaseProcessor()
+    {
+      (void)EmitString();
+    }
+
+    bool Language(int8_t lang)
+    {
+      if (!EmitString())
+        return false;
+
+      m_lang = lang;
+      return true;
+    }
+
+    void Index(uint32_t index)
+    {
+      ASSERT(false, ());
+    }
+
+    void String(string const & s)
+    {
+      if (!m_str.empty())
+        m_str += ' ';
+      m_str += s;
+    }
+  };
+
+  bool GetString(int8_t lang, string & s) const;
 
   int8_t FindString(string const & utf8s) const;
 

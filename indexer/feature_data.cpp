@@ -96,10 +96,10 @@ bool FeatureParamsBase::CheckValid() const
 
 string FeatureParamsBase::DebugString() const
 {
-  string utf8name;
-  name.GetString(0, utf8name);
+  // Do not get name here (we need external strings in for it).
+  // It's received from FeatureType.
 
-  return ("'" + utf8name + "' Layer:" + DebugPrint(layer) +
+  return ("Layer:" + DebugPrint(layer) +
           (rank != 0 ? " Rank:" + DebugPrint(rank) : "") +
           (!house.IsEmpty() ? " House:" + house.Get() : "") +
           (!ref.empty() ? " Ref:" + ref : "") + " ");
@@ -125,15 +125,6 @@ struct IsBadChar
 
 }
 
-bool FeatureParams::AddName(string const & lang, string const & s)
-{
-  if (IsDummyName(s))
-    return false;
-
-  name.AddString(lang, s);
-  return true;
-}
-
 bool FeatureParams::AddHouseName(string const & s)
 {
   if (IsDummyName(s) || name.FindString(s) != StringUtf8Multilang::UNSUPPORTED_LANGUAGE_CODE)
@@ -147,7 +138,8 @@ bool FeatureParams::AddHouseName(string const & s)
   string dummy;
   if (!name.GetString(StringUtf8Multilang::DEFAULT_CODE, dummy))
   {
-    name.AddString(StringUtf8Multilang::DEFAULT_CODE, s);
+    StringUtf8Multilang::Builder builder;
+    name.MakeFrom(builder.AddFullString(StringUtf8Multilang::DEFAULT_CODE, s));
     return true;
   }
 

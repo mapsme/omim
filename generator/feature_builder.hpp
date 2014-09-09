@@ -6,6 +6,8 @@
 
 #include "../coding/file_reader.hpp"
 
+#include "../defines.hpp"
+
 #include "../std/bind.hpp"
 
 
@@ -156,6 +158,12 @@ public:
     return s;
   }
 
+  template <class ToDo> void ForEachName(ToDo & toDo) const
+  {
+    StringUtf8Multilang::BaseProcessor<ToDo> processor(toDo);
+    m_params.name.ForEachToken(processor);
+  }
+
   /// @name For diagnostic use only.
   //@{
   bool operator== (FeatureBuilder1 const &) const;
@@ -229,6 +237,41 @@ public:
   bool PreSerialize(buffers_holder_t const & data);
   void Serialize(buffers_holder_t & data, serial::CodingParams const & params);
   //@}
+
+private:
+  template <class FnT> class DoReplaceStrings
+  {
+    FnT & m_fn;
+
+  public:
+    StringUtf8Multilang::Builder m_builder;
+
+    DoReplaceStrings(FnT & fn) : m_fn(fn) {}
+
+    bool operator() (int8_t lang, string const & s)
+    {
+      m_builder.AddLanguage(lang);
+      strings::Tokenize(s, FEATURE_NAME_SPLITTER, bind<void>(ref(*this), _1));
+      return true;
+    }
+
+    void operator() (string const & s)
+    {
+      int const ind = m_fn(s);
+      if (ind >= 0)
+        m_builder.AddIndex(ind);
+      else
+        m_builder.AddString(s);
+    }
+  };
+
+public:
+  template <class FnT> void ReplaceStringsWithIndex(FnT & fn)
+  {
+    DoReplaceStrings<FnT> doReplace(fn);
+    ForEachName(doReplace);
+    m_params.name.MakeFrom(doReplace.m_builder);
+  }
 };
 
 namespace feature

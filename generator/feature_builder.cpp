@@ -181,7 +181,10 @@ bool FeatureBuilder1::PreSerialize()
 
     // Store ref's in name field (used in "highway-motorway_junction").
     if (m_params.name.IsEmpty() && !m_params.ref.empty())
-      m_params.name.AddString(StringUtf8Multilang::DEFAULT_CODE, m_params.ref);
+    {
+      StringUtf8Multilang::Builder builder;
+      m_params.name.MakeFrom(builder.AddFullString(StringUtf8Multilang::DEFAULT_CODE, m_params.ref));
+    }
 
     m_params.ref.clear();
     break;
@@ -403,7 +406,8 @@ void FeatureBuilder1::SetCoastCell(int64_t iCell, string const & strCell)
   m_coastCell = iCell;
 
   ASSERT ( m_params.name.IsEmpty(), () );
-  m_params.name.AddString(0, strCell);
+  StringUtf8Multilang::Builder builder;
+  m_params.name.MakeFrom(builder.AddFullString(0, strCell));
 }
 
 string DebugPrint(FeatureBuilder1 const & f)

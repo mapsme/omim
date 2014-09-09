@@ -322,7 +322,7 @@ public:
     MakeValue(f, types, pos, inserter.m_val);
 
     // add names of the feature
-    if (!f.ForEachNameRef(inserter))
+    if (!f.ForEachName(inserter))
     {
       if (skipIndex.SkipEmptyNameFeature(types))
       {

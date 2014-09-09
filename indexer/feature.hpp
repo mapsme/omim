@@ -60,33 +60,37 @@ public:
     return (Header() & feature::HEADER_HAS_NAME) != 0;
   }
 
-  // Array with 64 strings ??? Use ForEachName instead!
-  /*
-  class GetNamesFn
-  {
-  public:
-    string m_names[64];
-    char m_langs[64];
-    size_t m_size;
+protected:
+  string GetString(uint32_t ind) const;
 
-    GetNamesFn() : m_size(0) {}
-    bool operator() (char lang, string const & name)
+  template <class FnT> class StringResolver : public StringUtf8Multilang::BaseProcessor<FnT>
+  {
+    typedef StringUtf8Multilang::BaseProcessor<FnT> BaseT;
+    FeatureBase const & m_ft;
+
+  public:
+    StringResolver(FnT & fn, FeatureBase const & ft)
+      : BaseT(fn), m_ft(ft)
     {
-      m_names[m_size++] = name;
-      m_langs[m_size] = lang;
-      return true;
+    }
+
+    void Index(uint32_t index)
+    {
+      BaseT::String(m_ft.GetString(index));
     }
   };
-  */
 
-  template <class T>
-  inline bool ForEachNameRef(T & functor) const
+public:
+  template <class FnT>
+  inline bool ForEachName(FnT & fn) const
   {
     if (!HasName())
       return false;
 
     ParseCommon();
-    m_params.name.ForEachRef(functor);
+
+    StringResolver<FnT> resolver(fn, *this);
+    m_params.name.ForEachToken(resolver);
     return true;
   }
 

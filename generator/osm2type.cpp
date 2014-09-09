@@ -100,6 +100,8 @@ namespace ftype
     {
       set<string> m_savedNames;
 
+      StringUtf8Multilang::Builder m_builder;
+
       size_t & m_count;
       FeatureParams & m_params;
 
@@ -110,6 +112,10 @@ namespace ftype
         : m_count(count), m_params(params)
       {
         m_count = 0;
+      }
+      ~do_find_name()
+      {
+        m_params.name.MakeFrom(m_builder);
       }
 
       bool GetLangByKey(string const & k, string & lang)
@@ -157,7 +163,7 @@ namespace ftype
           // Needed for better search matching
           QByteArray const normBytes = QString::fromUtf8(
                 v.c_str()).normalized(QString::NormalizationForm_KC).toUtf8();
-          m_params.AddName(lang, normBytes.constData());
+          m_builder.AddFullString(lang, normBytes.constData());
         }
 
         // get layer

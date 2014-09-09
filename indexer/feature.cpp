@@ -46,6 +46,11 @@ void FeatureBase::ParseCommon() const
   }
 }
 
+string FeatureBase::GetString(uint32_t ind) const
+{
+  return m_pLoader->GetString(ind);
+}
+
 feature::EGeomType FeatureBase::GetFeatureType() const
 {
   switch (Header() & HEADER_GEOTYPE_MASK)
@@ -140,7 +145,11 @@ string FeatureType::DebugString(int scale) const
 {
   ParseAll(scale);
 
-  string s = base_type::DebugString();
+  string name;
+  (void)GetName(0, name);
+
+  string s = "Name:" + name;
+  s += base_type::DebugString();
 
   s += "Points:";
   Points2String(s, m_points);
@@ -209,7 +218,7 @@ struct BestMatchedLangNames
   string m_intName;
   string m_englishName;
 
-  bool operator()(int8_t code, string const & name)
+  bool operator() (int8_t code, string const & name)
   {
     static int8_t defaultCode = StringUtf8Multilang::GetLangIndex("default");
     static int8_t const nativeCode = StringUtf8Multilang::GetLangIndex(languages::GetCurrentNorm());
@@ -236,10 +245,9 @@ struct BestMatchedLangNames
 
 void FeatureType::GetPreferredNames(string & defaultName, string & intName) const
 {
-  ParseCommon();
-
   BestMatchedLangNames matcher;
-  ForEachNameRef(matcher);
+  if (!ForEachName(matcher))
+    return;
 
   defaultName.swap(matcher.m_defaultName);
 
@@ -265,7 +273,7 @@ void FeatureType::GetReadableName(string & name) const
   ParseCommon();
 
   BestMatchedLangNames matcher;
-  ForEachNameRef(matcher);
+  ForEachName(matcher);
 
   if (!matcher.m_nativeName.empty())
     name.swap(matcher.m_nativeName);
@@ -283,13 +291,32 @@ string FeatureType::GetHouseNumber() const
   return m_params.house.Get();
 }
 
+namespace
+{
+  class AssignName
+  {
+    int8_t m_lang;
+    string & m_s;
+
+  public:
+    AssignName(int8_t lang, string & s) : m_lang(lang), m_s(s) { }
+
+    bool operator() (int8_t lang, string const & s)
+    {
+      if (m_lang == lang)
+      {
+        m_s = s;
+        return false;
+      }
+      return true;
+    }
+  };
+}
+
 bool FeatureType::GetName(int8_t lang, string & name) const
 {
-  if (!HasName())
-    return false;
-
-  ParseCommon();
-  return m_params.name.GetString(lang, name);
+  AssignName doAssign(lang, name);
+  return ForEachName(doAssign) && !name.empty();
 }
 
 uint8_t FeatureType::GetRank() const

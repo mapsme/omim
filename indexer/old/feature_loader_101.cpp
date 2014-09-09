@@ -168,7 +168,9 @@ void LoaderImpl::ParseCommon()
     string name;
     name.resize(ReadVarUint<uint32_t>(source) + 1);
     source.Read(&name[0], name.size());
-    m_pF->m_params.name.AddString(StringUtf8Multilang::DEFAULT_CODE, name);
+
+    StringUtf8Multilang::Builder builder;
+    m_pF->m_params.name.MakeFrom(builder.AddFullString(StringUtf8Multilang::DEFAULT_CODE, name));
   }
 
   if (h & HEADER_HAS_POINT)

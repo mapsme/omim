@@ -167,6 +167,111 @@ void FeaturesCollector::operator() (FeatureBuilder1 const & fb)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+// FeaturesCollector1 implementation
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+namespace
+{
+  typedef pair<string, uint32_t> StringCountT;
+
+  class InsertIfMany
+  {
+    vector<StringCountT> & m_vec;
+  public:
+    InsertIfMany(vector<StringCountT> & vec) : m_vec(vec) {}
+    void operator() (StringCountT const & r)
+    {
+      if (r.second > 1)
+        m_vec.push_back(r);
+    }
+  };
+
+  struct GreaterByMemory
+  {
+    bool operator() (StringCountT const & r1, StringCountT const & r2) const
+    {
+      return (r1.first.size() * r1.second > r2.first.size() * r2.second);
+    }
+  };
+
+  template <class IterT> size_t AccumulateMemory(IterT b, IterT e)
+  {
+    size_t sz = 0;
+    while (b != e)
+    {
+      sz += b->first.size() * (b->second - 1);
+      ++b;
+    }
+    return sz;
+  }
+
+  class InsertToMap
+  {
+    map<string, uint32_t> & m_map;
+  public:
+    InsertToMap(map<string, uint32_t> & m) : m_map(m) {}
+    void operator() (string const & s)
+    {
+      /// @todo Probably we can tune this constant better
+      /// according to position of a token in a string.
+      if (s.size() >= 4)
+        ++m_map[s];
+    }
+  };
+}
+
+FeaturesCollector1::~FeaturesCollector1()
+{
+  // Sort by memory.
+  vector<StringCountT> vec;
+  for_each(m_strings.begin(), m_strings.end(), InsertIfMany(vec));
+  sort(vec.begin(), vec.end(), GreaterByMemory());
+
+  if (!vec.empty())
+    LOG(LINFO, ("First external string:", vec[0], vec[0].first.size() * vec[0].second));
+
+  if (vec.size() > MAX_EXTERNAL_STRINGS)
+  {
+    // For statistics only ...
+    StringCountT const & last = vec[MAX_EXTERNAL_STRINGS];
+    LOG(LINFO, ("After last external string:", last, last.first.size() * last.second));
+
+    LOG(LINFO, ("External strings, possible saved bytes:",
+                AccumulateMemory(vec.begin() + MAX_EXTERNAL_STRINGS, vec.end())));
+
+    vec.resize(MAX_EXTERNAL_STRINGS);
+  }
+
+  // For statistics only ...
+  LOG(LINFO, ("External strings, saved bytes:",
+              AccumulateMemory(vec.begin(), vec.end())));
+
+  // Write to the temporary file for later use (FeaturesCollector2).
+  FileWriter w(m_datFile.GetName() + STRINGS_FILE_EXTENSION);
+  for (size_t i = 0; i < vec.size(); ++i)
+  {
+    size_t const count = vec[i].first.size();
+    WriteVarUint(w, static_cast<uint32_t>(count));
+    w.Write(&(vec[i].first[0]), count);
+  }
+}
+
+void FeaturesCollector1::operator() (FeatureBuilder1 const & f)
+{
+  BaseT::operator ()(f);
+
+  f.ForEachName(*this);
+}
+
+bool FeaturesCollector1::operator() (char, string const & s)
+{
+  ASSERT(!s.empty(), ());
+
+  strings::Tokenize(s, FEATURE_NAME_SPLITTER, InsertToMap(m_strings));
+  return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 // Generate functions implementations.
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -258,8 +363,8 @@ public:
 
 class MainFeaturesEmitter
 {
-  typedef WorldMapGenerator<FeaturesCollector> WorldGenerator;
-  typedef CountryMapGenerator<Polygonizer<FeaturesCollector> > CountriesGenerator;
+  typedef WorldMapGenerator<FeaturesCollector1> WorldGenerator;
+  typedef CountryMapGenerator<Polygonizer<FeaturesCollector1> > CountriesGenerator;
   unique_ptr<CountriesGenerator> m_countries;
   unique_ptr<WorldGenerator> m_world;
 

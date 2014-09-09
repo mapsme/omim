@@ -36,5 +36,10 @@
 
 #define DRAWING_RULES_BIN_FILE "drules_proto.bin"
 
-/// How many langs we're supporting on indexing stage
+/// @name We can use 6 bits, because first 2 bits will be reserved as 10 (diff with utf-8 first byte).
+//@{
 #define MAX_SUPPORTED_LANGUAGES 64
+// 2 bytes for VarUint
+#define MAX_EXTERNAL_STRINGS (1 << 14)
+#define FEATURE_NAME_SPLITTER " \t"
+//@}

@@ -132,7 +132,7 @@ UNIT_TEST(OsmType_Combined)
   TEST(params.IsTypeExist(GetType(arrT)), ());
 
   string s;
-  params.name.GetString(0, s);
+  TEST(params.name.GetString(0, s), ());
   TEST_EQUAL(s, arr[5][1], ());
 
   TEST_EQUAL(params.house.Get(), "84", ());

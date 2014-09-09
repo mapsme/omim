@@ -2,78 +2,97 @@
 
 #include "../multilang_utf8_string.hpp"
 
+#include "../../base/string_utils.hpp"
+
+#include "../../defines.hpp"
+
 #include "../../3party/utfcpp/source/utf8.h"
 
 
 namespace
 {
-  struct lang_string
+  class InsertTokens
   {
-    char const * m_lang;
-    char const * m_str;
+    StringUtf8Multilang::Builder & m_builder;
+  public:
+    InsertTokens(StringUtf8Multilang::Builder & builder) : m_builder(builder) {}
+    void operator() (string const & s)
+    {
+      int i;
+      if (strings::to_int(s, i))
+        m_builder.AddIndex(i);
+      else
+        m_builder.AddString(s);
+    }
   };
 
-  void TestMultilangString(lang_string const * arr, size_t count)
+  class AddToMap
   {
-    StringUtf8Multilang s;
+    map<string, string> m_res;
 
-    for (size_t i = 0; i < count; ++i)
+  public:
+    bool operator() (int8_t l, string const & s)
     {
-      string src(arr[i].m_str);
-      TEST(utf8::is_valid(src.begin(), src.end()), ());
-
-      s.AddString(arr[i].m_lang, src);
-
-      string comp;
-      TEST(s.GetString(arr[i].m_lang, comp), ());
-      TEST_EQUAL(src, comp, ());
+      string const lang = StringUtf8Multilang::GetLangByCode(l);
+      TEST(!lang.empty(), ());
+      TEST(m_res.insert(make_pair(lang, s)).second, ());
+      return true;
     }
 
-    for (size_t i = 0; i < count; ++i)
+    void Check(string const & lang, char const * s) const
     {
-      string comp;
-      TEST(s.GetString(arr[i].m_lang, comp), ());
-      TEST_EQUAL(arr[i].m_str, comp, ());
-    }
+      map<string, string>::const_iterator i = m_res.find(lang);
+      TEST(i != m_res.end(), ());
 
-    string test;
-    TEST(!s.GetString("xxx", test), ());
+      size_t const count = strlen(s);
+      TEST_EQUAL(i->second.size(), count, (s, i->second));
+      TEST(equal(s, s + count, i->second.begin()), (s, i->second));
+    }
+  };
+
+  class GetStrings : public StringUtf8Multilang::BaseProcessor<AddToMap>
+  {
+    typedef StringUtf8Multilang::BaseProcessor<AddToMap> BaseT;
+  public:
+    GetStrings(AddToMap & m) : BaseT(m) {}
+    void Index(uint32_t index)
+    {
+      BaseT::String(strings::to_string(index));
+    }
+  };
+
+  void AddTestString(string const & lang, string const & s, StringUtf8Multilang::Builder & builder)
+  {
+    TEST(utf8::is_valid(s.begin(), s.end()), ());
+
+    strings::Tokenize(s, FEATURE_NAME_SPLITTER, InsertTokens(builder.AddLanguage(lang)));
   }
 }
-
-lang_string gArr[] = { {"default", "default"},
-                      {"en", "abcd"},
-                      {"ru", "\xD0\xA0\xD0\xB0\xD1\x88\xD0\xBA\xD0\xB0"},
-                      {"be", "\xE2\x82\xAC\xF0\xA4\xAD\xA2"} };
 
 UNIT_TEST(MultilangString_Smoke)
 {
-  StringUtf8Multilang s;
+  char const * sEn = "XXX 666 YYY 777 ZZZ";
+  char const * sRu = "14 ыыы яяя 88";
+  char const * sBe = "Купалауская";
+  char const * sInt = "16000";
 
-  TestMultilangString(gArr, ARRAY_SIZE(gArr));
-}
+  StringUtf8Multilang::Builder builder;
+  AddTestString("en", sEn, builder);
+  AddTestString("ru", sRu, builder);
+  AddTestString("be", sBe, builder);
+  AddTestString("int_name", sInt, builder);
 
-class LangChecker
-{
-  size_t m_index;
-
-public:
-  LangChecker() : m_index(0) {}
-  bool operator() (char lang, string const & utf8s)
+  AddToMap theMap;
   {
-    TEST_EQUAL(lang, StringUtf8Multilang::GetLangIndex(gArr[m_index].m_lang), ());
-    TEST_EQUAL(utf8s, gArr[m_index].m_str, ());
-    ++m_index;
-    return true;
+    StringUtf8Multilang s;
+    s.MakeFrom(builder);
+
+    GetStrings doGet(theMap);
+    s.ForEachToken(doGet);
   }
-};
 
-UNIT_TEST(MultilangString_ForEach)
-{
-  StringUtf8Multilang s;
-  for (size_t i = 0; i < ARRAY_SIZE(gArr); ++i)
-    s.AddString(gArr[i].m_lang, gArr[i].m_str);
-
-  LangChecker doClass;
-  s.ForEachRef(doClass);
+  theMap.Check("en", sEn);
+  theMap.Check("ru", sRu);
+  theMap.Check("be", sBe);
+  theMap.Check("int_name", sInt);
 }

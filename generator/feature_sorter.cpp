@@ -87,17 +87,64 @@ namespace feature
 
     vector<FileWriter*> m_geoFile, m_trgFile;
 
+    string m_stringsPath;
+    class ExternalStrings
+    {
+      map<string, int> m_map;
+
+    public:
+      void AddString(string const & s, int ind)
+      {
+        m_map[s] = ind;
+      }
+      void Clear() { m_map.clear(); }
+
+      int operator() (string const & s) const
+      {
+        map<string, int>::const_iterator i = m_map.find(s);
+        return (i != m_map.end() ? i->second : -1);
+      }
+
+    } m_extStrings;
+
     DataHeader m_header;
 
   public:
-    FeaturesCollector2(string const & fName, DataHeader const & header)
-      : FeaturesCollector(fName + DATA_FILE_TAG), m_writer(fName), m_header(header)
+    FeaturesCollector2(string const & srcPath, string const & resPath, DataHeader const & header)
+      : FeaturesCollector(resPath + DATA_FILE_TAG), m_writer(resPath),
+        m_stringsPath(srcPath + STRINGS_FILE_EXTENSION), m_header(header)
     {
+      // Read external strings to the map
+      try
+      {
+        ReaderSource<FileReader> src((FileReader(m_stringsPath)));
+
+        int ind = 0;
+        string str;
+        while (src.Size() > 0)
+        {
+          uint32_t const count = ReadVarUint<uint32_t>(src);
+          str.resize(count);
+          src.Read(&str[0], count);
+
+          m_extStrings.AddString(str, ind++);
+        }
+
+        ASSERT_LESS_OR_EQUAL(ind, MAX_EXTERNAL_STRINGS, ());
+      }
+      catch (RootException const & ex)
+      {
+        LOG(LWARNING, ("Error in external strings reading:", ex.Msg()));
+        m_extStrings.Clear();
+        m_stringsPath.clear();  // mark that file isn't exist
+      }
+
+      // Prepare geometry files
       for (size_t i = 0; i < m_header.GetScalesCount(); ++i)
       {
         string const postfix = strings::to_string(i);
-        m_geoFile.push_back(new FileWriter(fName + GEOMETRY_FILE_TAG + postfix));
-        m_trgFile.push_back(new FileWriter(fName + TRIANGLE_FILE_TAG + postfix));
+        m_geoFile.push_back(new FileWriter(resPath + GEOMETRY_FILE_TAG + postfix));
+        m_trgFile.push_back(new FileWriter(resPath + TRIANGLE_FILE_TAG + postfix));
       }
     }
 
@@ -116,9 +163,15 @@ namespace feature
         ver::WriteVersion(w);
       }
 
+      // write strings
+      if (!m_stringsPath.empty())
+      {
+        m_writer.Write(m_stringsPath, STRINGS_FILE_TAG);
+        FileWriter::DeleteFileX(m_stringsPath);
+      }
+
       // assume like we close files
       m_datFile.Flush();
-
       m_writer.Write(m_datFile.GetName(), DATA_FILE_TAG);
 
       for (size_t i = 0; i < m_header.GetScalesCount(); ++i)
@@ -491,6 +544,8 @@ namespace feature
 
       if (fb.PreSerialize(holder.m_buffer))
       {
+        fb.ReplaceStringsWithIndex(m_extStrings);
+
         fb.Serialize(holder.m_buffer, m_header.GetDefCodingParams());
 
         WriteFeatureBase(holder.m_buffer.m_buffer, fb);
@@ -571,7 +626,7 @@ namespace feature
       }
 
       // Transform features from row format to optimized format.
-      FeaturesCollector2 collector(datFilePath, header);
+      FeaturesCollector2 collector(srcFilePath, datFilePath, header);
 
       for (size_t i = 0; i < midPoints.m_vec.size(); ++i)
       {

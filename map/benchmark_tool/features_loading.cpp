@@ -25,6 +25,11 @@ namespace
 
     int m_scale;
 
+    struct ProcessNames
+    {
+      bool operator() (int8_t, string const &) { return true; }
+    };
+
   public:
     Accumulator(Result & res) : m_res(res) {}
 
@@ -42,9 +47,15 @@ namespace
 
       m_timer.Reset();
 
+      // 1. Get drawing rules
       drule::KeysT keys;
       (void)feature::GetDrawRule(ft, m_scale, keys);
 
+      // 2. Read names (including external)
+      ProcessNames processor;
+      ft.ForEachName(processor);
+
+      // 3. Read outer geometry
       if (!keys.empty())
       {
         // Call this function to load feature's inner data and geometry.

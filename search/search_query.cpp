@@ -982,7 +982,7 @@ public:
 void Query::GetBestMatchName(FeatureType const & f, string & name) const
 {
   impl::BestNameFinder bestNameFinder(name, m_keywordsScorer);
-  (void)f.ForEachNameRef(bestNameFinder);
+  (void)f.ForEachName(bestNameFinder);
 }
 
 

@@ -49,7 +49,9 @@ UNIT_TEST(FBuilder_ManyTypes)
 
   params.AddHouseNumber("75");
   params.AddHouseName("Best House");
-  params.name.AddString(0, "Name");
+
+  StringUtf8Multilang::Builder builder;
+  params.name.MakeFrom(builder.AddFullString(0, "Name"));
 
   fb1.SetParams(params);
   fb1.SetCenter(m2::PointD(0, 0));
@@ -94,8 +96,8 @@ UNIT_TEST(FBuilder_RemoveUselessNames)
   AddTypes(params, arr2);
   params.FinishAddingTypes();
 
-  params.name.AddString(0, "Name");
-  params.name.AddString(8, "Имя");
+  StringUtf8Multilang::Builder builder;
+  params.name.MakeFrom(builder.AddFullString(0, "Name").AddFullString(8, "Имя"));
 
   FeatureBuilder1 fb1;
   fb1.SetParams(params);

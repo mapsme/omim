@@ -220,7 +220,6 @@ public:
 
   FeatureParams() : m_geomType(0xFF) {}
 
-  bool AddName(string const & lang, string const & s);
   bool AddHouseName(string const & s);
   bool AddHouseNumber(string const & s);
   /// @name Used in storing full street address only.
