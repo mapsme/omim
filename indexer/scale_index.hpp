@@ -1,7 +1,7 @@
 #pragma once
 
-#include "data_factory.hpp"
 #include "interval_index_iface.hpp"
+#include "feature_shared_info.hpp"
 
 #include "../coding/var_serial_vector.hpp"
 

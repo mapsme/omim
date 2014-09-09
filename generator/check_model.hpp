@@ -3,5 +3,6 @@
 
 namespace check_model
 {
-  void ReadFeatures(string const & fName);
+  /// @param[in] fPath  Full path for MWM file.
+  void ReadFeatures(string const & fPath);
 }

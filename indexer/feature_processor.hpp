@@ -16,12 +16,9 @@ namespace feature
   template <class ToDo>
   void ForEachFromDat(ModelReaderPtr reader, ToDo & toDo)
   {
-    FilesContainerR container(reader);
+    feature::SharedLoadInfo info(reader);
+    FeaturesVector featureSource(info);
 
-    DataHeader header;
-    header.Load(container.GetReader(HEADER_FILE_TAG));
-
-    FeaturesVector featureSource(container, header);
     featureSource.ForEachOffset(bind<void>(ref(toDo), _1, _2));
   }
 

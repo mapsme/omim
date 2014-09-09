@@ -274,8 +274,7 @@ void Query::UpdateViewportOffsets(MWMVectorT const & mwmInfo, m2::RectD const & 
 
           covering::IntervalsT const & interval = cov.Get(header.GetLastScale());
 
-          ScaleIndex<ModelReaderPtr> index(pMwm->m_cont.GetReader(INDEX_FILE_TAG),
-                                           pMwm->m_factory);
+          ScaleIndex<ModelReaderPtr> index(pMwm->m_info.GetGeometryIndexReader(), pMwm->m_factory);
 
           for (size_t i = 0; i < interval.size(); ++i)
           {
@@ -1617,7 +1616,7 @@ void Query::SearchAddress(Results & res)
     Index::MwmLock mwmLock(*m_pIndex, mwmId);
     MwmValue * pMwm = mwmLock.GetValue();
     if (pMwm &&
-        pMwm->m_cont.IsReaderExist(SEARCH_INDEX_FILE_TAG) &&
+        pMwm->m_info.IsSearchIndexExists() &&
         pMwm->GetHeader().GetType() == FHeaderT::world)
     {
       impl::Locality city;
@@ -1786,7 +1785,7 @@ namespace impl
 
   public:
     DoFindLocality(Query & q, MwmValue * pMwm, int8_t lang)
-      : m_query(q), m_vector(pMwm->m_cont, pMwm->GetHeader()), m_lang(lang)
+      : m_query(q), m_vector(pMwm->m_info), m_lang(lang)
     {
       m_arrEn[0] = q.GetLanguage(LANG_EN);
       m_arrEn[1] = q.GetLanguage(LANG_INTERNATIONAL);
@@ -1900,11 +1899,11 @@ void Query::SearchLocality(MwmValue * pMwm, impl::Locality & res1, impl::Region 
 
   serial::CodingParams cp(GetCPForTrie(pMwm->GetHeader().GetDefCodingParams()));
 
-  ModelReaderPtr searchReader = pMwm->m_cont.GetReader(SEARCH_INDEX_FILE_TAG);
+  ModelReaderPtr searchReader = pMwm->m_info.GetSearchIndexReader();
   unique_ptr<TrieIterator> const pTrieRoot(::trie::reader::ReadTrie(
-                                     SubReaderWrapper<Reader>(searchReader.GetPtr()),
-                                     trie::ValueReader(cp),
-                                     trie::EdgeValueReader()));
+                                           SubReaderWrapper<Reader>(searchReader.GetPtr()),
+                                           trie::ValueReader(cp),
+                                           trie::EdgeValueReader()));
 
   for (size_t i = 0; i < pTrieRoot->m_edge.size(); ++i)
   {
@@ -2070,7 +2069,7 @@ void Query::SearchInMWM(Index::MwmLock const & mwmLock, Params const & params,
 {
   if (MwmValue * pMwm = mwmLock.GetValue())
   {
-    if (pMwm->m_cont.IsReaderExist(SEARCH_INDEX_FILE_TAG))
+    if (pMwm->m_info.IsSearchIndexExists())
     {
       FHeaderT const & header = pMwm->GetHeader();
 
@@ -2081,11 +2080,11 @@ void Query::SearchInMWM(Index::MwmLock const & mwmLock, Params const & params,
 
       serial::CodingParams cp(GetCPForTrie(header.GetDefCodingParams()));
 
-      ModelReaderPtr searchReader = pMwm->m_cont.GetReader(SEARCH_INDEX_FILE_TAG);
+      ModelReaderPtr searchReader = pMwm->m_info.GetSearchIndexReader();
       unique_ptr<TrieIterator> const pTrieRoot(::trie::reader::ReadTrie(
-                                         SubReaderWrapper<Reader>(searchReader.GetPtr()),
-                                         trie::ValueReader(cp),
-                                         trie::EdgeValueReader()));
+                                               SubReaderWrapper<Reader>(searchReader.GetPtr()),
+                                               trie::ValueReader(cp),
+                                               trie::EdgeValueReader()));
 
       MwmSet::MwmId const mwmId = mwmLock.GetID();
       FeaturesFilter filter((vID == DEFAULT_V || isWorld) ? 0 : &m_offsetsInViewport[vID][mwmId], m_cancel);

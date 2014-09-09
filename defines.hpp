@@ -3,6 +3,8 @@
 #define DATA_FILE_EXTENSION ".mwm"
 #define DATA_FILE_EXTENSION_TMP ".mwm.tmp"
 #define FONT_FILE_EXTENSION ".ttf"
+#define STRINGS_FILE_EXTENSION ".strings"
+
 #define DATA_FILE_TAG "dat"
 #define GEOMETRY_FILE_TAG "geom"
 #define TRIANGLE_FILE_TAG "trg"
@@ -10,6 +12,7 @@
 #define SEARCH_INDEX_FILE_TAG "sdx"
 #define HEADER_FILE_TAG "header"
 #define VERSION_FILE_TAG "version"
+#define STRINGS_FILE_TAG "strings"
 
 #define READY_FILE_EXTENSION ".ready"
 #define RESUME_FILE_EXTENSION ".resume3"

@@ -4,6 +4,8 @@
 #include "../../base/macros.hpp"
 #include "../../base/stl_add.hpp"
 
+#include "../../defines.hpp"
+
 #include "../../std/string.hpp"
 
 

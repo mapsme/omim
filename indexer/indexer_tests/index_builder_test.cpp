@@ -20,15 +20,13 @@ UNIT_TEST(BuildIndexTest)
   Platform & p = GetPlatform();
   classificator::Load();
 
-  FilesContainerR originalContainer(p.GetReader("minsk-pass" DATA_FILE_EXTENSION));
+  ModelReaderPtr reader = p.GetReader("minsk-pass" DATA_FILE_EXTENSION);
 
   // Build index.
   vector<char> serialIndex;
   {
-    feature::DataHeader header;
-    header.Load(originalContainer.GetReader(HEADER_FILE_TAG));
-
-    FeaturesVector featuresVector(originalContainer, header);
+    feature::SharedLoadInfo info(reader);
+    FeaturesVector featuresVector(info);
 
     MemWriter<vector<char> > serialWriter(serialIndex);
     indexer::BuildIndex(ScaleIndexBase::NUM_BUCKETS,
@@ -44,7 +42,9 @@ UNIT_TEST(BuildIndexTest)
 
   // Copy original mwm file and replace index in it.
   {
+    FilesContainerR originalContainer(reader);
     FilesContainerW containerWriter(filePath);
+
     vector<string> tags;
     originalContainer.ForEachTag(MakeBackInsertFunctor(tags));
     for (size_t i = 0; i < tags.size(); ++i)

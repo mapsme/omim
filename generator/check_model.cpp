@@ -19,21 +19,18 @@ namespace check_model
     }
   };
 
-  void ReadFeatures(string const & fName)
+  void ReadFeatures(string const & fPath)
   {
     try
     {
-      FilesContainerR cont(fName);
+      feature::SharedLoadInfo info(fPath);
+      FeaturesVector vec(info);
 
-      feature::DataHeader header;
-      header.Load(cont.GetReader(HEADER_FILE_TAG));
-
-      FeaturesVector vec(cont, header);
       vec.ForEachOffset(DoFullRead());
     }
     catch (RootException const & e)
     {
-      LOG(LERROR, ("Can't open or read file", fName));
+      LOG(LERROR, ("Can't open or read file", fPath));
     }
   }
 }

@@ -1,7 +1,7 @@
 #include "api.hpp"
 
 #include "../../indexer/classificator_loader.hpp"
-#include "../../indexer/data_factory.hpp"
+#include "../../indexer/feature_shared_info.hpp"
 
 #include "../../platform/platform.hpp"
 
@@ -31,12 +31,12 @@ int main(int argc, char ** argv)
 
   if (FLAGS_print_scales)
   {
-    feature::DataHeader h;
-    LoadMapHeader(GetPlatform().GetReader(FLAGS_input), h);
+    feature::DataHeader header;
+    LoadMapHeader(GetPlatform().GetReader(FLAGS_input), header);
 
     cout << "Scales with geometry: ";
-    for (size_t i = 0; i < h.GetScalesCount(); ++i)
-      cout << h.GetScale(i) << " ";
+    for (size_t i = 0; i < header.GetScalesCount(); ++i)
+      cout << header.GetScale(i) << " ";
     cout << endl;
     return 0;
   }

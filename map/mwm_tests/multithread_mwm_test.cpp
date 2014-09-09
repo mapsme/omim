@@ -4,6 +4,8 @@
 
 #include "../../base/thread.hpp"
 
+#include "../../defines.hpp"
+
 
 namespace
 {

@@ -143,9 +143,9 @@ void LocalityFinder::RecreateCache(Cache & cache, m2::RectD rect) const
       int const scale = header.GetLastScale();   // scales::GetUpperWorldScale()
       covering::IntervalsT const & interval = cov.Get(scale);
 
-      ScaleIndex<ModelReaderPtr> index(pMwm->m_cont.GetReader(INDEX_FILE_TAG), pMwm->m_factory);
+      ScaleIndex<ModelReaderPtr> index(pMwm->m_info.GetGeometryIndexReader(), pMwm->m_factory);
 
-      FeaturesVector loader(pMwm->m_cont, header);
+      FeaturesVector loader(pMwm->m_info);
 
       cache.m_rect = rect;
       for (size_t i = 0; i < interval.size(); ++i)

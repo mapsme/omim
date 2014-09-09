@@ -364,13 +364,13 @@ public:
   }
 };
 
-void BuildSearchIndex(FilesContainerR const & cont, CategoriesHolder const & catHolder,
+void BuildSearchIndex(string const & fPath, CategoriesHolder const & catHolder,
                       Writer & writer, string const & tmpFilePath)
 {
   {
-    feature::DataHeader header;
-    header.Load(cont.GetReader(HEADER_FILE_TAG));
-    FeaturesVector featuresV(cont, header);
+    feature::SharedLoadInfo info(fPath);
+    feature::DataHeader const & header = info.GetHeader();
+    FeaturesVector featuresV(info);
 
     serial::CodingParams cp(search::GetCPForTrie(header.GetDefCodingParams()));
 
@@ -396,7 +396,7 @@ void BuildSearchIndex(FilesContainerR const & cont, CategoriesHolder const & cat
 
 }
 
-bool indexer::BuildSearchIndexFromDatFile(string const & fName, bool forceRebuild)
+bool indexer::BuildSearchIndexFromDatFile(string const & fName)
 {
   LOG(LINFO, ("Start building search index. Bits = ", search::POINT_CODING_BITS));
 
@@ -407,16 +407,11 @@ bool indexer::BuildSearchIndexFromDatFile(string const & fName, bool forceRebuil
     string const tmpFile = pl.WritablePathForFile(fName + ".search_index_2.tmp");
 
     {
-      FilesContainerR readCont(datFile);
-
-      if (!forceRebuild && readCont.IsReaderExist(SEARCH_INDEX_FILE_TAG))
-        return true;
-
       FileWriter writer(tmpFile);
 
       CategoriesHolder catHolder(pl.GetReader(SEARCH_CATEGORIES_FILE_NAME));
 
-      BuildSearchIndex(readCont, catHolder, writer,
+      BuildSearchIndex(datFile, catHolder, writer,
                        pl.WritablePathForFile(fName + ".search_index_1.tmp"));
 
       LOG(LINFO, ("Search index size = ", writer.Size()));

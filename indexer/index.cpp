@@ -12,14 +12,13 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 MwmValue::MwmValue(string const & name)
-  : m_cont(GetPlatform().GetReader(name))
+  : m_info(GetPlatform().GetReader(name)), m_factory(m_info.GetHeader())
 {
-  m_factory.Load(m_cont);
 }
 
 string MwmValue::GetFileName() const
 {
-  string s = m_cont.GetFileName();
+  string s = m_info.GetFileName();
   my::GetNameFromFullPath(s);
   my::GetNameWithoutExt(s);
   return s;
@@ -162,7 +161,7 @@ void Index::UpdateMwmInfo(MwmId id)
 Index::FeaturesLoaderGuard::FeaturesLoaderGuard(Index const & parent, MwmId id)
   : m_lock(parent, id),
     /// @note This guard is suitable when mwm is loaded
-    m_vector(m_lock.GetValue()->m_cont, m_lock.GetValue()->GetHeader())
+    m_vector(m_lock.GetValue()->m_info)
 {
 }
 

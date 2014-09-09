@@ -17,12 +17,10 @@ namespace indexer
       FileWriter writer = writeCont.GetWriter(INDEX_FILE_TAG);
 
       // Second - open container for reading.
-      FilesContainerR readCont(datFile);
+      feature::SharedLoadInfo info(datFile);
+      feature::DataHeader const & header = info.GetHeader();
 
-      feature::DataHeader header;
-      header.Load(readCont.GetReader(HEADER_FILE_TAG));
-
-      FeaturesVector featuresVector(readCont, header);
+      FeaturesVector featuresVector(info);
 
       BuildIndex(header.GetLastScale() + 1, header.GetLastScale(), featuresVector, writer, tmpFile);
     }

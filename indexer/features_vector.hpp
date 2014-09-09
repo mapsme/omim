@@ -10,22 +10,22 @@
 class FeaturesVector
 {
 public:
-  FeaturesVector(FilesContainerR const & cont, feature::DataHeader const & header)
-    : m_LoadInfo(cont, header), m_RecordReader(m_LoadInfo.GetDataReader(), 256)
+  FeaturesVector(feature::SharedLoadInfo const & loadInfo)
+    : m_loadInfo(loadInfo), m_recordReader(loadInfo.GetDataReader(), 256)
   {
   }
 
   void Get(uint64_t pos, FeatureType & ft) const
   {
     uint32_t offset;
-    m_RecordReader.ReadRecord(pos, m_buffer, offset);
+    m_recordReader.ReadRecord(pos, m_buffer, offset);
 
-    ft.Deserialize(m_LoadInfo.GetLoader(), &m_buffer[offset]);
+    ft.Deserialize(m_loadInfo.GetLoader(), &m_buffer[offset]);
   }
 
   template <class ToDo> void ForEachOffset(ToDo toDo) const
   {
-    m_RecordReader.ForEachRecord(DoGetFeatures<ToDo>(m_LoadInfo, toDo));
+    m_recordReader.ForEachRecord(DoGetFeatures<ToDo>(m_loadInfo, toDo));
   }
 
 private:
@@ -50,7 +50,7 @@ private:
   };
 
 private:
-  feature::SharedLoadInfo m_LoadInfo;
-  VarRecordReader<FilesContainerR::ReaderT, &VarRecordSizeReaderVarint> m_RecordReader;
+  feature::SharedLoadInfo const & m_loadInfo;
+  VarRecordReader<FilesContainerR::ReaderT, &VarRecordSizeReaderVarint> m_recordReader;
   mutable vector<char> m_buffer;
 };

@@ -5,7 +5,7 @@
 #include "../indexer/feature_processor.hpp"
 #include "../indexer/classificator.hpp"
 #include "../indexer/feature_impl.hpp"
-#include "../indexer/data_factory.hpp"
+#include "../indexer/feature_shared_info.hpp"
 
 #include "../base/string_utils.hpp"
 

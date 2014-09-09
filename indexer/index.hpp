@@ -1,10 +1,10 @@
 #pragma once
 #include "cell_id.hpp"
-#include "data_factory.hpp"
 #include "mwm_set.hpp"
 #include "feature_covering.hpp"
 #include "features_vector.hpp"
 #include "scale_index.hpp"
+#include "feature_shared_info.hpp"
 
 #include "../coding/file_container.hpp"
 
@@ -18,12 +18,13 @@
 class MwmValue : public MwmSet::MwmValueBase
 {
 public:
-  FilesContainerR m_cont;
+  feature::SharedLoadInfo m_info;
   IndexFactory m_factory;
 
-  explicit MwmValue(string const & name);
+  /// @param[in] fName The name of MWM file with extension (without path).
+  explicit MwmValue(string const & fName);
 
-  inline feature::DataHeader const & GetHeader() const { return m_factory.GetHeader(); }
+  inline feature::DataHeader const & GetHeader() const { return m_info.GetHeader(); }
 
   /// @return MWM file name without extension.
   string GetFileName() const;
@@ -119,8 +120,8 @@ private:
         covering::IntervalsT const & interval = cov.Get(lastScale);
 
         // prepare features reading
-        FeaturesVector fv(pValue->m_cont, header);
-        ScaleIndex<ModelReaderPtr> index(pValue->m_cont.GetReader(INDEX_FILE_TAG),
+        FeaturesVector fv(pValue->m_info);
+        ScaleIndex<ModelReaderPtr> index(pValue->m_info.GetGeometryIndexReader(),
                                          pValue->m_factory);
 
         // iterate through intervals
@@ -180,7 +181,7 @@ private:
 
         // Use last coding scale for covering (see index_builder.cpp).
         covering::IntervalsT const & interval = cov.Get(lastScale);
-        ScaleIndex<ModelReaderPtr> index(pValue->m_cont.GetReader(INDEX_FILE_TAG),
+        ScaleIndex<ModelReaderPtr> index(pValue->m_info.GetGeometryIndexReader(),
                                          pValue->m_factory);
 
         // iterate through intervals
@@ -262,7 +263,7 @@ private:
     MwmValue * pValue = lock.GetValue();
     if (pValue)
     {
-      FeaturesVector featureReader(pValue->m_cont, pValue->GetHeader());
+      FeaturesVector featureReader(pValue->m_info);
       while (result < features.size() && id == features[result].m_mwm)
       {
         FeatureID const & featureId = features[result];

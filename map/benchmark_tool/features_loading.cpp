@@ -4,7 +4,6 @@
 
 #include "../feature_vec_model.hpp"
 
-#include "../../indexer/data_factory.hpp"
 #include "../../indexer/feature_visibility.hpp"
 
 #include "../../platform/platform.hpp"

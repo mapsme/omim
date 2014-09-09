@@ -4,5 +4,6 @@
 
 namespace indexer
 {
-  bool BuildSearchIndexFromDatFile(string const & fName, bool forceRebuild = false);
+  /// @param[in] fName The name of MWM file with extension (without path).
+  bool BuildSearchIndexFromDatFile(string const & fName);
 }
