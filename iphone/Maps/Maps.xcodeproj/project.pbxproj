@@ -165,8 +165,6 @@
 		EE026F0611D6AC0D00645242 /* classificator.txt in Resources */ = {isa = PBXBuildFile; fileRef = EE026F0511D6AC0D00645242 /* classificator.txt */; };
 		EE164811135CEE4A003B8A3E /* 06_code2000.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EE164810135CEE49003B8A3E /* 06_code2000.ttf */; };
 		EE583CBB12F773F00042CBE3 /* unicode_blocks.txt in Resources */ = {isa = PBXBuildFile; fileRef = EE583CBA12F773F00042CBE3 /* unicode_blocks.txt */; };
-		EE7F29811219ECA300EB67A9 /* RenderBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = EE7F297D1219ECA300EB67A9 /* RenderBuffer.mm */; };
-		EE7F29821219ECA300EB67A9 /* RenderContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = EE7F297E1219ECA300EB67A9 /* RenderContext.mm */; };
 		EEA61601134C496A003A9827 /* 01_dejavusans.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EEA615E5134C4968003A9827 /* 01_dejavusans.ttf */; };
 		EEA61602134C496A003A9827 /* 02_wqy-microhei.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EEA615E6134C4968003A9827 /* 02_wqy-microhei.ttf */; };
 		EEA61603134C496A003A9827 /* 03_jomolhari-id-a3d.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EEA615E7134C4968003A9827 /* 03_jomolhari-id-a3d.ttf */; };
@@ -537,12 +535,17 @@
 		EDC5C541175F2CA600420E92 /* ShareActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShareActionSheet.h; path = Classes/ShareActionSheet.h; sourceTree = "<group>"; };
 		EDC5C542175F2CA600420E92 /* ShareActionSheet.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; name = ShareActionSheet.mm; path = Classes/ShareActionSheet.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		EE026F0511D6AC0D00645242 /* classificator.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = classificator.txt; path = ../../data/classificator.txt; sourceTree = SOURCE_ROOT; };
-		EE16192B126E374500622BD0 /* RenderContext.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; name = RenderContext.hpp; path = Classes/RenderContext.hpp; sourceTree = SOURCE_ROOT; };
+		EE1201FF11CD464100ABDD5D /* libbase.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libbase.a; sourceTree = SOURCE_ROOT; };
+		EE12020011CD464100ABDD5D /* libcoding.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libcoding.a; sourceTree = SOURCE_ROOT; };
+		EE12020211CD464100ABDD5D /* libexpat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libexpat.a; sourceTree = SOURCE_ROOT; };
+		EE12020311CD464100ABDD5D /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libfreetype.a; sourceTree = SOURCE_ROOT; };
+		EE12020411CD464100ABDD5D /* libgeometry.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgeometry.a; sourceTree = SOURCE_ROOT; };
+		EE12020511CD464100ABDD5D /* libindexer.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libindexer.a; sourceTree = SOURCE_ROOT; };
+		EE12020611CD464100ABDD5D /* libmap.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libmap.a; sourceTree = SOURCE_ROOT; };
+		EE12020811CD464100ABDD5D /* libgraphics.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgraphics.a; sourceTree = SOURCE_ROOT; };
 		EE164810135CEE49003B8A3E /* 06_code2000.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = 06_code2000.ttf; path = ../../data/06_code2000.ttf; sourceTree = SOURCE_ROOT; };
 		EE583CBA12F773F00042CBE3 /* unicode_blocks.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = unicode_blocks.txt; path = ../../data/unicode_blocks.txt; sourceTree = "<group>"; };
-		EE7F297C1219ECA300EB67A9 /* RenderBuffer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; name = RenderBuffer.hpp; path = Classes/RenderBuffer.hpp; sourceTree = SOURCE_ROOT; };
-		EE7F297D1219ECA300EB67A9 /* RenderBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; name = RenderBuffer.mm; path = Classes/RenderBuffer.mm; sourceTree = SOURCE_ROOT; };
-		EE7F297E1219ECA300EB67A9 /* RenderContext.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; name = RenderContext.mm; path = Classes/RenderContext.mm; sourceTree = SOURCE_ROOT; };
+		EE5A34E5156FCB9500E34FFE /* libgui.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgui.a; sourceTree = SOURCE_ROOT; };
 		EEA615E5134C4968003A9827 /* 01_dejavusans.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = 01_dejavusans.ttf; path = ../../data/01_dejavusans.ttf; sourceTree = SOURCE_ROOT; };
 		EEA615E6134C4968003A9827 /* 02_wqy-microhei.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "02_wqy-microhei.ttf"; path = "../../data/02_wqy-microhei.ttf"; sourceTree = SOURCE_ROOT; };
 		EEA615E7134C4968003A9827 /* 03_jomolhari-id-a3d.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "03_jomolhari-id-a3d.ttf"; path = "../../data/03_jomolhari-id-a3d.ttf"; sourceTree = SOURCE_ROOT; };
@@ -830,10 +833,6 @@
 				B0FBFA2A1A515B4C0086819E /* TableViewController.m */,
 				978F9251183BD530000D6C7C /* NavigationController.h */,
 				978F9252183BD530000D6C7C /* NavigationController.mm */,
-				EE7F297C1219ECA300EB67A9 /* RenderBuffer.hpp */,
-				EE7F297D1219ECA300EB67A9 /* RenderBuffer.mm */,
-				EE16192B126E374500622BD0 /* RenderContext.hpp */,
-				EE7F297E1219ECA300EB67A9 /* RenderContext.mm */,
 				46F26CD610F623BA00ECCA39 /* EAGLView.h */,
 				46F26CD710F623BA00ECCA39 /* EAGLView.mm */,
 				1D3623240D0F684500981E51 /* MapsAppDelegate.h */,
@@ -2105,7 +2104,6 @@
 				EED10A4511F78D120095FAD4 /* MapViewController.mm in Sources */,
 				F61579341AC2CE9A0032D8E9 /* MWMRateAlert.mm in Sources */,
 				A3CC2CD41A1C723900B832E1 /* LocationPredictor.mm in Sources */,
-				EE7F29811219ECA300EB67A9 /* RenderBuffer.mm in Sources */,
 				6C93FAEC1AD8063900A2C4AE /* MWMWatchNotification.mm in Sources */,
 				F62404FB1AAF3DB200B58DB6 /* UILabel+RuntimeAttributes.mm in Sources */,
 				F6588E2C1B15C26700EE1E58 /* MWMTextView.mm in Sources */,
@@ -2119,7 +2117,6 @@
 				F6C9343C1AE4F94A00DDC624 /* MWMAnimator.mm in Sources */,
 				977E26B919E2E64200BA2219 /* MapsObservers.mm in Sources */,
 				F66A8FB01B09F268001B9C97 /* MWMPlacePage.mm in Sources */,
-				EE7F29821219ECA300EB67A9 /* RenderContext.mm in Sources */,
 				34BC72251B0DECAE0012A34B /* MWMSideMenuButton.mm in Sources */,
 				F6ED13911B1EF96B0095C6DE /* MWMBookmarkDescriptionViewController.mm in Sources */,
 				F64F19991AB81A00006EAF7E /* MWMAlertViewController.mm in Sources */,
@@ -2285,232 +2282,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		A32B6D4E1A14A7B700E54A65 /* Drape Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUNDLE_IDENTIFIER = com.mapswithme.full.release;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 4.4.1;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Statistics";
-				GCC_ENABLE_PASCAL_STRINGS = NO;
-				GCC_FAST_MATH = YES;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
-				GCC_OPTIMIZATION_LEVEL = 3;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Maps_Prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					NDEBUG,
-					RELEASE,
-					_RELEASE,
-					TARGET_OS_IPHONE,
-					"NS_BLOCK_ASSERTIONS=1",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				GCC_UNROLL_LOOPS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_LABEL = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					../../3party/boost,
-					../../,
-				);
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LIBRARY_SEARCH_PATHS = (
-					"\"$(SRCROOT)/../../../omim-iphone-release-drape-$(CURRENT_ARCH)/out/release\"",
-					"$(PROJECT_DIR)/MyTracker",
-					"$(PROJECT_DIR)/Statistics",
-				);
-				OTHER_CFLAGS = "-Wall";
-				OTHER_CPLUSPLUSFLAGS = (
-					"$(OTHER_CFLAGS)",
-					"-DUSE_DRAPE",
-				);
-				OTHER_LDFLAGS = (
-					"-lstats_client",
-					"-lmap",
-					"-lrender",
-					"-lsearch",
-					"-lgui",
-					"-ldrape_frontend",
-					"-ldrape",
-					"-lgraphics",
-					"-lstorage",
-					"-lrouting",
-					"-lindexer",
-					"-lanim",
-					"-lplatform",
-					"-lgeometry",
-					"-lcoding",
-					"-lbase",
-					"-lfreetype",
-					"-lfribidi",
-					"-lzlib",
-					"-ljansson",
-					"-ltomcrypt",
-					"-lexpat",
-					"-lprotobuf",
-					"-losrm",
-					"-lsuccinct",
-					"-ObjC",
-				);
-				PRODUCT_NAME = "maps.me drape rel";
-				SDKROOT = iphoneos;
-				STRIP_INSTALLED_PRODUCT = NO;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-			};
-			name = "Drape Release";
-		};
-		A32B6D4F1A14A7B700E54A65 /* Drape Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_ENTITLEMENTS = Entitlements/me.maps.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/PushNotifications",
-					"$(PROJECT_DIR)/Statistics",
-				);
-				INFOPLIST_FILE = MAPSME.plist;
-				PROVISIONING_PROFILE = "";
-			};
-			name = "Drape Release";
-		};
-		A32B6D5F1A14C16500E54A65 /* Drape Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUNDLE_IDENTIFIER = com.mapswithme.full.debug;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 4.4.1;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Statistics";
-				GCC_ENABLE_PASCAL_STRINGS = NO;
-				GCC_FAST_MATH = YES;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Maps_Prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					DEBUG,
-					_DEBUG,
-					TARGET_OS_IPHONE,
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_LABEL = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					../../3party/boost,
-					../../,
-				);
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LIBRARY_SEARCH_PATHS = (
-					"\"$(SRCROOT)/../../../omim-iphone-debug-drape-$(CURRENT_ARCH)/out/debug\"",
-					"$(PROJECT_DIR)/MyTracker",
-					"$(PROJECT_DIR)/Statistics",
-				);
-				ONLY_ACTIVE_ARCH = YES;
-				OTHER_CFLAGS = "-Wall";
-				OTHER_CPLUSPLUSFLAGS = (
-					"$(OTHER_CFLAGS)",
-					"-DUSE_DRAPE",
-				);
-				OTHER_LDFLAGS = (
-					"-lstats_client",
-					"-lmap",
-					"-lrender",
-					"-ldrape_frontend",
-					"-ldrape",
-					"-lsearch",
-					"-lgui",
-					"-lgraphics",
-					"-lstorage",
-					"-lrouting",
-					"-lindexer",
-					"-lanim",
-					"-lplatform",
-					"-lgeometry",
-					"-lcoding",
-					"-lbase",
-					"-lfreetype",
-					"-lfribidi",
-					"-lzlib",
-					"-ljansson",
-					"-ltomcrypt",
-					"-lexpat",
-					"-lprotobuf",
-					"-losrm",
-					"-lsuccinct",
-					"-ObjC",
-				);
-				PRODUCT_NAME = "maps.me drape dbg";
-				SDKROOT = iphoneos;
-				STRIP_INSTALLED_PRODUCT = NO;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-			};
-			name = "Drape Debug";
-		};
-		A32B6D601A14C16500E54A65 /* Drape Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_ENTITLEMENTS = Entitlements/me.maps.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/PushNotifications",
-					"$(PROJECT_DIR)/Statistics",
-				);
-				INFOPLIST_FILE = MAPSME.plist;
-				PROVISIONING_PROFILE = "";
-			};
-			name = "Drape Debug";
-		};
 		F6D434601AD2AB97007C7728 /* Simulator */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2553,20 +2324,6 @@
 			};
 			name = Debug;
 		};
-		F6D434631AD2AB97007C7728 /* Drape Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "maps.me WatchKit Extension/Entitlements/me.maps.watchkitextension.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				INFOPLIST_FILE = "$(SRCROOT)/maps.me WatchKit Extension/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
-				PRODUCT_NAME = "$(TARGET_NAME) WatchKit Extension";
-				PROVISIONING_PROFILE = "";
-				SKIP_INSTALL = YES;
-			};
-			name = "Drape Debug";
-		};
 		F6D434641AD2AB97007C7728 /* AdHoc */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2594,20 +2351,6 @@
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
-		};
-		F6D434661AD2AB97007C7728 /* Drape Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "maps.me WatchKit Extension/Entitlements/me.maps.watchkitextension.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				INFOPLIST_FILE = "$(SRCROOT)/maps.me WatchKit Extension/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
-				PRODUCT_NAME = "$(TARGET_NAME) WatchKit Extension";
-				PROVISIONING_PROFILE = "";
-				SKIP_INSTALL = YES;
-			};
-			name = "Drape Release";
 		};
 		F6D434671AD2AB97007C7728 /* Production Full */ = {
 			isa = XCBuildConfiguration;
@@ -2736,41 +2479,6 @@
 			};
 			name = Debug;
 		};
-		F6D4346B1AD2AB97007C7728 /* Drape Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IBSC_MODULE = maps_me_beta_WatchKit_Extension;
-				INFOPLIST_FILE = "$(SRCROOT)/maps.me WatchKit App/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = 4;
-				"TARGETED_DEVICE_FAMILY[sdk=iphonesimulator*]" = "1,4";
-			};
-			name = "Drape Debug";
-		};
 		F6D4346C1AD2AB97007C7728 /* AdHoc */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2840,41 +2548,6 @@
 				"TARGETED_DEVICE_FAMILY[sdk=iphonesimulator*]" = "1,4";
 			};
 			name = Release;
-		};
-		F6D4346E1AD2AB97007C7728 /* Drape Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IBSC_MODULE = maps_me_beta_WatchKit_Extension;
-				INFOPLIST_FILE = "$(SRCROOT)/maps.me WatchKit App/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = 4;
-				"TARGETED_DEVICE_FAMILY[sdk=iphonesimulator*]" = "1,4";
-			};
-			name = "Drape Release";
 		};
 		F6D4346F1AD2AB97007C7728 /* Production Full */ = {
 			isa = XCBuildConfiguration;
@@ -2968,10 +2641,9 @@
 				OTHER_LDFLAGS = (
 					"-lstats_client",
 					"-lmap",
-					"-lrender",
 					"-lsearch",
-					"-lgui",
-					"-lgraphics",
+					"-ldrape_frontend",
+					"-ldrape",
 					"-lstorage",
 					"-lrouting",
 					"-lindexer",
@@ -3076,10 +2748,9 @@
 				OTHER_LDFLAGS = (
 					"-lstats_client",
 					"-lmap",
-					"-lrender",
 					"-lsearch",
-					"-lgui",
-					"-lgraphics",
+					"-ldrape_frontend",
+					"-ldrape",
 					"-lstorage",
 					"-lrouting",
 					"-lindexer",
@@ -3187,10 +2858,9 @@
 				OTHER_LDFLAGS = (
 					"-lstats_client",
 					"-lmap",
-					"-lrender",
 					"-lsearch",
-					"-lgui",
-					"-lgraphics",
+					"-ldrape_frontend",
+					"-ldrape",
 					"-lstorage",
 					"-lrouting",
 					"-lindexer",
@@ -3299,10 +2969,9 @@
 				OTHER_LDFLAGS = (
 					"-lstats_client",
 					"-lmap",
-					"-lrender",
 					"-lsearch",
-					"-lgui",
-					"-lgraphics",
+					"-ldrape_frontend",
+					"-ldrape",
 					"-lstorage",
 					"-lrouting",
 					"-lindexer",
@@ -3410,10 +3079,9 @@
 				OTHER_LDFLAGS = (
 					"-lstats_client",
 					"-lmap",
-					"-lrender",
 					"-lsearch",
-					"-lgui",
-					"-lgraphics",
+					"-ldrape_frontend",
+					"-ldrape",
 					"-lstorage",
 					"-lrouting",
 					"-lindexer",
@@ -3519,10 +3187,9 @@
 				OTHER_LDFLAGS = (
 					"-lstats_client",
 					"-lmap",
-					"-lrender",
 					"-lsearch",
-					"-lgui",
-					"-lgraphics",
+					"-ldrape_frontend",
+					"-ldrape",
 					"-lstorage",
 					"-lrouting",
 					"-lindexer",
@@ -3578,10 +3245,8 @@
 				FAAB411A149BA83500C245B1 /* Simulator */,
 				FACFE54515F8F35600CE8B20 /* Simulator Release */,
 				FAAB411C149BA84700C245B1 /* Debug */,
-				A32B6D601A14C16500E54A65 /* Drape Debug */,
 				FAAB411E149BA85500C245B1 /* AdHoc */,
 				FABB561F149CD957006969C0 /* Release */,
-				A32B6D4F1A14A7B700E54A65 /* Drape Release */,
 				FAAB4120149BA86000C245B1 /* Production Full */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -3593,10 +3258,8 @@
 				FAAB4119149BA83500C245B1 /* Simulator */,
 				FACFE54415F8F35600CE8B20 /* Simulator Release */,
 				FAAB411B149BA84700C245B1 /* Debug */,
-				A32B6D5F1A14C16500E54A65 /* Drape Debug */,
 				FAAB411D149BA85500C245B1 /* AdHoc */,
 				FABB561E149CD957006969C0 /* Release */,
-				A32B6D4E1A14A7B700E54A65 /* Drape Release */,
 				FAAB411F149BA86000C245B1 /* Production Full */,
 			);
 			defaultConfigurationIsVisible = 0;

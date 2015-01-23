@@ -2,8 +2,6 @@
 
 #include "../core/jni_helper.hpp"
 
-#include "../../../nv_event/nv_event.hpp"
-
 #include "platform/settings.hpp"
 
 #include "base/logging.hpp"
@@ -184,7 +182,8 @@ namespace android
 
   void Platform::RunOnGuiThreadImpl(TFunctor const & fn, bool blocking)
   {
-    postMWMEvent(new TFunctor(fn), blocking);
+    ///@TODO
+    //postMWMEvent(new TFunctor(fn), blocking);
   }
 }
 

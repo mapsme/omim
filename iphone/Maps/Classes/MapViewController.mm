@@ -18,10 +18,8 @@
 #import "../../Common/CustomAlertView.h"
 
 #include "Framework.h"
-#include "RenderContext.hpp"
 
 #include "../../../anim/controller.hpp"
-#include "../../../gui/controller.hpp"
 #include "../Statistics/Statistics.h"
 
 #include "../../../map/country_status_display.hpp"
@@ -372,8 +370,8 @@ typedef NS_OPTIONS(NSUInteger, MapInfoView)
 
   if ([event allTouches].count == 1)
   {
-    if (f.GetGuiController()->OnTapStarted(m_Pt1))
-      return;
+    //if (f.GetGuiController()->OnTapStarted(m_Pt1))
+    //  return;
     self.userTouchesAction = UserTouchesActionDrag;
 
     // Start long-tap timer
@@ -402,8 +400,9 @@ typedef NS_OPTIONS(NSUInteger, MapInfoView)
 
   Framework & f = GetFramework();
 
-  if (f.GetGuiController()->OnTapMoved(m_Pt1))
-    return;
+  ///@TODO UVR
+//  if (f.GetGuiController()->OnTapMoved(m_Pt1))
+//    return;
 
   if (m_isSticking)
   {
@@ -463,8 +462,9 @@ typedef NS_OPTIONS(NSUInteger, MapInfoView)
     // TapCount could be zero if it was a single long (or moving) tap.
     if (tapCount < 2)
     {
-      if (f.GetGuiController()->OnTapEnded(m_Pt1))
-        return;
+      ///@TODO UVR
+//      if (f.GetGuiController()->OnTapEnded(m_Pt1))
+//        return;
     }
 
     if (tapCount == 1)
@@ -647,8 +647,8 @@ typedef NS_OPTIONS(NSUInteger, MapInfoView)
     SEL locationStateModeSelector = @selector(onLocationStateModeChanged:);
     LocationStateModeFnT locationStateModeFn = (LocationStateModeFnT)[self methodForSelector:locationStateModeSelector];
 
-    f.GetLocationState()->AddStateModeListener(bind(locationStateModeFn, self, locationStateModeSelector, _1));
-
+    ///@TODO UVR
+//    f.GetLocationState()->AddStateModeListener(bind(locationStateModeFn, self, locationStateModeSelector, _1));
     m_predictor = [[LocationPredictor alloc] initWithObserver:self];
 
     m_StickyThreshold = 10;
@@ -663,10 +663,12 @@ typedef NS_OPTIONS(NSUInteger, MapInfoView)
     if (!f.LoadState())
       f.SetMaxWorldRect();
 
-    f.Invalidate();
+    ///@TODO UVR
+    //f.Invalidate();
     f.LoadBookmarks();
 
-    f.GetCountryStatusDisplay()->SetDownloadCountryListener([](storage::TIndex const & idx, int opt)
+    ///@TODO UVR
+    /*f.GetCountryStatusDisplay()->SetDownloadCountryListener([](storage::TIndex const & idx, int opt)
     {
       ActiveMapsLayout & layout = GetFramework().GetCountryTree().GetActiveMapLayout();
       if (opt == -1)
@@ -707,7 +709,7 @@ typedef NS_OPTIONS(NSUInteger, MapInfoView)
 
         layout.DownloadMap(idx, static_cast<TMapOptions>(opt));
       }
-    });
+    });*/
 
     f.SetRouteBuildingListener([self, &f](routing::IRouter::ResultCode code, vector<storage::TIndex> const & absentCountries, vector<storage::TIndex> const & absentRoutes)
     {
@@ -1050,7 +1052,8 @@ typedef NS_OPTIONS(NSUInteger, MapInfoView)
   framework.GetBalloonManager().RemovePin();
   framework.GetBalloonManager().Dismiss();
   framework.GetBookmarkManager().UserMarksClear(UserMarkContainer::API_MARK);
-  framework.Invalidate();
+  ///@TODO UVR
+  //framework.Invalidate();
 }
 
 - (void)setupMeasurementSystem
@@ -1067,9 +1070,10 @@ NSInteger compareAddress(id l, id r, void * context)
 
 - (void)invalidate
 {
-  Framework & f = GetFramework();
-  if (!f.SetUpdatesEnabled(true))
-    f.Invalidate();
+  ///@TODO UVR
+//  Framework & f = GetFramework();
+//  if (!f.SetUpdatesEnabled(true))
+//    f.Invalidate();
 }
 
 - (void)destroyPopover

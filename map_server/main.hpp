@@ -1,10 +1,4 @@
-#include "map_server/render_context.hpp"
-
 #include "map/framework.hpp"
-
-#include "render/render_policy.hpp"
-
-#include "platform/video_timer.hpp"
 
 #include <qjsonrpcservice.h>
 #include <QGLPixelBuffer>
@@ -16,8 +10,6 @@ class MwmRpcService : public QJsonRpcService
 private:
     Framework m_framework;
     QGLPixelBuffer * m_pixelBuffer;
-    RenderPolicy::Params m_rpParams;
-    EmptyVideoTimer m_videoTimer;
 public:
     MwmRpcService(QObject * parent = 0);
     ~MwmRpcService();

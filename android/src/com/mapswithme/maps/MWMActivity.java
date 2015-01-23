@@ -25,6 +25,8 @@ import android.text.style.AbsoluteSizeSpan;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -88,8 +90,14 @@ import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 
 public class MWMActivity extends BaseMwmFragmentActivity
-    implements LocationHelper.LocationListener, OnBalloonListener, View.OnTouchListener, BasePlacePageAnimationController.OnVisibilityChangedListener,
-    OnClickListener, Framework.RoutingListener, MapFragment.MapRenderingListener, CustomNavigateUpListener
+					 implements LocationHelper.LocationListener,
+								OnBalloonListener,
+								View.OnTouchListener,
+								BasePlacePageAnimationController.OnVisibilityChangedListener,
+								OnClickListener,
+								Framework.RoutingListener,
+								MapFragment.MapRenderingListener,
+								CustomNavigateUpListener
 {
   public static final String EXTRA_TASK = "map_task";
   private final static String TAG = "MWMActivity";
@@ -483,6 +491,22 @@ public class MWMActivity extends BaseMwmFragmentActivity
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState)
   {
+    // Use full-screen on Kindle Fire only
+    // TODO UVR
+    /*
+    if (Utils.isAmazonDevice())
+    {
+      getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
+      getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+    }
+    setContentView(R.layout.map);
+
+    SurfaceView surface = (SurfaceView)findViewById(R.id.map_surfaceview);
+    surface.setOnTouchListener(this);
+    SurfaceHolder holder = surface.getHolder();
+    holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
+    holder.addCallback(this);
+    */
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.activity_map);

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "gui/element.hpp"
-
 #include "geometry/point2d.hpp"
 
 #include "base/timer.hpp"
@@ -13,11 +11,9 @@
 #include "std/unique_ptr.hpp"
 #include "std/map.hpp"
 
-
 class Framework;
 class ScreenBase;
 
-namespace graphics { class DisplayList; }
 namespace anim { class Task;}
 
 namespace location
@@ -48,14 +44,14 @@ namespace location
   // Class, that handles position and compass updates,
   // centers, scales and rotates map according to this updates
   // and draws location and compass marks.
-  class State : public gui::Element
+  class State
   {
-    typedef gui::Element TBase;
 
   public:
-    struct Params : TBase::Params
+    struct Params
     {
-      graphics::Color m_locationAreaColor;
+      ///@TODO UVR
+      //graphics::Color m_locationAreaColor;
       Framework * m_framework;
       Params();
     };
@@ -117,7 +113,7 @@ namespace location
 
     void OnCompassTaped();
 
-    void OnSize(m2::RectD const & oldPixelRect);
+    void OnSize();
 
     /// @name GPS location updates routine.
     //@{
@@ -131,9 +127,9 @@ namespace location
 
     /// @name Override from graphics::OverlayElement and gui::Element.
     //@{
-    virtual m2::RectD GetBoundRect() const { return m2::RectD(); }
+    ///@TODO UVR
+    //virtual m2::RectD GetBoundRect() const { return m2::RectD(); }
 
-    void draw(graphics::OverlayRenderer * r, math::Matrix<double, 3, 3> const & m) const;
     bool hitTest(m2::PointD const & /*pt*/) const { return false; }
 
     void cache();
@@ -149,14 +145,6 @@ namespace location
 
     void CallPositionChangedListeners(m2::PointD const & pt);
     void CallStateModeListeners();
-
-#ifndef USE_DRAPE
-    void CachePositionArrow();
-    void CacheRoutingArrow();
-    void CacheLocationMark();
-
-    void CacheArrow(graphics::DisplayList * dl, string const & iconName);
-#endif // USE_DRAPE
 
     bool IsRotationActive() const;
     bool IsInRouting() const;
@@ -206,13 +194,6 @@ namespace location
 
     /// @name Compass Rendering Parameters
     //@{
-#ifndef USE_DRAPE
-    unique_ptr<graphics::DisplayList> m_positionArrow;
-    unique_ptr<graphics::DisplayList> m_locationMarkDL;
-    unique_ptr<graphics::DisplayList> m_positionMarkDL;
-    unique_ptr<graphics::DisplayList> m_routingArrow;
-#endif // USE_DRAPE
-    graphics::Color m_locationAreaColor;
     //@}
 
     /// @name Rotation mode animation

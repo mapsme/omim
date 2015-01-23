@@ -10,7 +10,6 @@
 
 class Framework;
 class PaintEvent;
-namespace graphics { class Screen; }
 
 class BookmarkManager : private noncopyable
 {
@@ -23,7 +22,6 @@ class BookmarkManager : private noncopyable
 
   vector<UserMarkContainer * > m_userMarkLayers;
 
-  graphics::Screen * m_bmScreen;
   mutable double m_lastScale;
 
   typedef vector<BookmarkCategory *>::iterator CategoryIter;
@@ -83,7 +81,8 @@ public:
   void UserMarksClear(UserMarkContainer::Type type, size_t skipCount = 0);
   UserMarkContainer::Controller & UserMarksGetController(UserMarkContainer::Type type);
 
-  void SetScreen(graphics::Screen * screen);
+  ///@TODO UVR
+  //void SetScreen(graphics::Screen * screen);
   void ResetScreen();
 
   void SetRouteTrack(RouteTrack & track);

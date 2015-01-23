@@ -239,7 +239,7 @@ static BOOL keyboardLoaded = NO;
     } completion:nil];
     [self.searchBar.textField resignFirstResponder];
   }
-  GetFramework().Invalidate();
+
   _state = state;
   [self.delegate searchViewDidEnterState:state];
 }

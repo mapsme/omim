@@ -5,12 +5,8 @@ TEMPLATE = app
 
 DEFINES += QJSONRPC_BUILD
 
-DEPENDENCIES = map render gui routing search storage indexer graphics platform anim geometry coding base \
+DEPENDENCIES = map drape_frontend routing search storage indexer drape platform anim geometry coding base \
                osrm bzip2 freetype expat fribidi tomcrypt jansson protobuf qjsonrpc gflags stats_client zlib succinct
-
-drape {
-  DEPENDENCIES *= drape_frontend drape
-}
 
 ROOT_DIR = ..
 include($$ROOT_DIR/common.pri)
@@ -29,9 +25,8 @@ macx* {
 }
 win32* : LIBS *= -lshell32
 
-SOURCES += main.cpp \
-    render_context.cpp \
+SOURCES += \
+    main.cpp \
 
 HEADERS += \
     main.hpp \
-    render_context.hpp \

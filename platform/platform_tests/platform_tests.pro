@@ -37,4 +37,3 @@ SOURCES += \
     location_test.cpp \
     measurement_tests.cpp \
     platform_test.cpp \
-    video_timer_test.cpp \

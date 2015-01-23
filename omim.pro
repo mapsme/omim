@@ -10,7 +10,6 @@ greaterThan(QT_VER_MAJ, 4) {
 
 TEMPLATE = subdirs
 CONFIG += ordered
-#CONFIG += drape_device
 
 HEADERS += defines.hpp
 
@@ -48,7 +47,7 @@ SUBDIRS = 3party \
           integration_tests \
           pedestrian_routing_benchmarks \
           search/integration_tests \
-} else:drape_device {
+} else {
   # libraries which are used on mobile devices with drape engine
   SUBDIRS = 3party \
             base \
@@ -64,26 +63,10 @@ SUBDIRS = 3party \
             gui \
             render \
             search \
+            stats \
             drape_frontend \
             map \
-            stats \
-} else {
-  # libraries which are used on mobile devices
-  SUBDIRS = 3party \
-            base \
-            coding \
-            geometry \
-            platform \
-            anim \
-            indexer \
-            routing \
-            storage \
-            graphics \
-            gui \
-            render \
-            search \
-            map \
-            stats \
+            stats/client \
 }
 
 win32 {
