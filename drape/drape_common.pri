@@ -41,7 +41,8 @@ SOURCES += \
     $$DRAPE_DIR/stipple_pen_resource.cpp \
     $$DRAPE_DIR/texture_of_colors.cpp \
     $$DRAPE_DIR/glyph_manager.cpp \
-    $$DRAPE_DIR/utils/vertex_decl.cpp
+    $$DRAPE_DIR/utils/vertex_decl.cpp \
+    $$DRAPE_DIR/utils/projection.cpp \
 
 HEADERS += \
     $$ROOT_DIR/sdf_image/sdf_image.h \
@@ -88,4 +89,5 @@ HEADERS += \
     $$DRAPE_DIR/glsl_types.hpp \
     $$DRAPE_DIR/glsl_func.hpp \
     $$DRAPE_DIR/glyph_manager.hpp \
-    $$DRAPE_DIR/utils/vertex_decl.hpp
+    $$DRAPE_DIR/utils/vertex_decl.hpp \
+    $$DRAPE_DIR/utils/projection.hpp \
