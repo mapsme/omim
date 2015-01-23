@@ -33,7 +33,6 @@ HEADERS += \
     alfa_animation_task.hpp \
     user_mark_container.hpp \
     user_mark.hpp \
-    user_mark_dl_cache.hpp \
     anim_phase_chain.hpp \
     pin_click_manager.hpp \
     routing_session.hpp \
@@ -66,7 +65,7 @@ SOURCES += \
     track.cpp \
     alfa_animation_task.cpp \
     user_mark_container.cpp \
-    user_mark_dl_cache.cpp \
+    user_mark.cpp \
     anim_phase_chain.cpp \
     pin_click_manager.cpp \
     routing_session.cpp \

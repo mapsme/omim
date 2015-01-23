@@ -875,7 +875,7 @@ typedef NS_OPTIONS(NSUInteger, MapInfoView)
 
 - (void)backToApiApp:(id)sender
 {
-  NSURL * url = [NSURL URLWithString:[NSString stringWithUTF8String:GetFramework().GetApiDataHolder().GetGlobalBackUrl().c_str()]];
+  NSURL * url = [NSURL URLWithString:[NSString stringWithUTF8String:GetFramework().GetApiDataHolder().m_globalBackUrl.c_str()]];
   [[UIApplication sharedApplication] openURL:url];
 }
 
@@ -1023,7 +1023,7 @@ typedef NS_OPTIONS(NSUInteger, MapInfoView)
 
     [self.view insertSubview:self.searchView aboveSubview:self.apiBar];
 
-    self.apiTitleLabel.text = [NSString stringWithUTF8String:GetFramework().GetApiDataHolder().GetAppTitle().c_str()];
+    self.apiTitleLabel.text = [NSString stringWithUTF8String:GetFramework().GetApiDataHolder().m_appTitle.c_str()];
   }
   else
   {
@@ -1051,9 +1051,8 @@ typedef NS_OPTIONS(NSUInteger, MapInfoView)
   Framework & framework = GetFramework();
   framework.GetBalloonManager().RemovePin();
   framework.GetBalloonManager().Dismiss();
-  framework.GetBookmarkManager().UserMarksClear(UserMarkContainer::API_MARK);
-  ///@TODO UVR
-  //framework.Invalidate();
+  UserMarkControllerGuard guard(framework.GetBookmarkManager(), UserMarkType::API_MARK);
+  guard.m_controller.Clear();
 }
 
 - (void)setupMeasurementSystem
