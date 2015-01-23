@@ -16,8 +16,6 @@ HEADERS += \
     navigator.hpp \
     information_display.hpp \
     location_state.hpp \
-    benchmark_provider.hpp \
-    benchmark_engine.hpp \
     ruler.hpp \
     bookmark.hpp \
     geourl_process.hpp \
@@ -47,8 +45,6 @@ SOURCES += \
     navigator.cpp \
     information_display.cpp \
     location_state.cpp \
-    benchmark_provider.cpp \
-    benchmark_engine.cpp \
     ruler.cpp \
     address_finder.cpp \
     geourl_process.cpp \
@@ -74,7 +70,5 @@ SOURCES += \
     navigator_utils.cpp \
 
 !iphone*:!tizen*:!android* {
-  HEADERS += qgl_render_context.hpp
-  SOURCES += qgl_render_context.cpp
   QT += opengl
 }
