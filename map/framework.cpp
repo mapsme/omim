@@ -1,20 +1,7 @@
-#include "framework.hpp"
-#include "benchmark_provider.hpp"
-#include "benchmark_engine.hpp"
-#include "geourl_process.hpp"
-#include "navigator_utils.hpp"
-#include "ge0_parser.hpp"
+#include "map/framework.hpp"
 
-#include "render/cpu_drawer.hpp"
-#include "render/gpu_drawer.hpp"
-
-#ifndef USE_DRAPE
-  #include "render/feature_processor.hpp"
-  #include "render/drawer.hpp"
-  #include "render/proto_to_styles.hpp"
-#else
-  #include "../drape_frontend/visual_params.hpp"
-#endif // USE_DRAPE
+#include "map/geourl_process.hpp"
+#include "map/ge0_parser.hpp"
 
 #include "defines.hpp"
 
@@ -29,6 +16,8 @@
 #include "search/search_engine.hpp"
 #include "search/search_query_factory.hpp"
 
+#include "drape_frontend/visual_params.hpp"
+
 #include "indexer/categories_holder.hpp"
 #include "indexer/classificator_loader.hpp"
 #include "indexer/feature.hpp"
@@ -42,8 +31,6 @@
 //@}
 
 #include "anim/controller.hpp"
-
-#include "gui/controller.hpp"
 
 #include "platform/local_country_file_utils.hpp"
 #include "platform/measurement_utils.hpp"
@@ -60,8 +47,6 @@
 
 #include "geometry/angles.hpp"
 #include "geometry/distance_on_sphere.hpp"
-
-#include "graphics/depth_constants.hpp"
 
 #include "base/math.hpp"
 #include "base/timer.hpp"
@@ -140,13 +125,12 @@ void Framework::OnLocationUpdate(GpsInfo const & info)
   double distanceFromBegin = 0.0;
   MatchLocationToRoute(rInfo, routeMatchingInfo, hasDistanceFromBegin, distanceFromBegin);
 
-  shared_ptr<State> const & state = GetLocationState();
-  state->OnLocationUpdate(rInfo, m_routingSession.IsNavigable(), routeMatchingInfo);
+  ///@TODO UVR
+  //shared_ptr<State> const & state = GetLocationState();
+  //state->OnLocationUpdate(rInfo, m_routingSession.IsNavigable());
 
-  if (state->IsModeChangeViewport())
-    UpdateUserViewportChanged();
-
-  m_bmManager.UpdateRouteDistanceFromBegin(hasDistanceFromBegin ? distanceFromBegin : 0.0);
+  //if (state->IsModeChangeViewport())
+  //  UpdateUserViewportChanged();
 }
 
 void Framework::OnCompassUpdate(CompassInfo const & info)
@@ -158,12 +142,14 @@ void Framework::OnCompassUpdate(CompassInfo const & info)
   CompassInfo const & rInfo = info;
 #endif
 
-  GetLocationState()->OnCompassUpdate(rInfo);
+  ///@TODO UVR
+  //GetLocationState()->OnCompassUpdate(rInfo);
 }
 
 void Framework::StopLocationFollow()
 {
-  GetLocationState()->StopLocationFollow();
+  ///@TODO UVR
+  //GetLocationState()->StopLocationFollow();
 }
 
 InformationDisplay & Framework::GetInformationDisplay()
@@ -187,27 +173,18 @@ m2::PointD Framework::GetWidgetSize(InformationDisplay::WidgetType widget) const
 }
 
 Framework::Framework()
-  : m_navigator(m_scales),
-    m_animator(this),
+  : m_animator(this),
     m_queryMaxScaleMode(false),
     m_width(0),
     m_height(0),
     m_countryTree(*this),
-    m_guiController(new gui::Controller),
     m_animController(new anim::Controller),
     m_informationDisplay(this),
-    m_benchmarkEngine(0),
     m_bmManager(*this),
     m_balloonManager(*this),
     m_fixedSearchResults(0),
     m_locationChangedSlotID(-1)
 {
-  // Checking whether we should enable benchmark.
-  bool isBenchmarkingEnabled = false;
-  (void)Settings::Get("IsBenchmarking", isBenchmarkingEnabled);
-  if (isBenchmarkingEnabled)
-    m_benchmarkEngine = new BenchmarkEngine(this);
-
   m_ParsedMapApi.SetController(&m_bmManager.UserMarksGetController(UserMarkContainer::API_MARK));
 
   // Init strings bundle.
@@ -234,10 +211,9 @@ Framework::Framework()
   m_stringsBundle.SetDefaultString("routing_failed_route_not_found", "There is no route found between the selected origin and destination.Please select a different start or end point.");
   m_stringsBundle.SetDefaultString("routing_failed_internal_error", "Internal error occurred. Please try to delete and download the map again. If problem persist please contact us at support@maps.me.");
 
-  m_guiController->SetStringsBundle(&m_stringsBundle);
-
   // Init information display.
-  m_informationDisplay.setController(m_guiController.get());
+  ///@TODO UVR
+  //m_informationDisplay.setController(m_guiController.get());
 
 #ifdef DRAW_TOUCH_POINTS
   m_informationDisplay.enableDebugPoints(true);
@@ -285,7 +261,6 @@ Framework::Framework()
 
 Framework::~Framework()
 {
-  delete m_benchmarkEngine;
   m_model.SetOnMapDeregisteredCallback(nullptr);
 }
 
@@ -368,11 +343,6 @@ bool Framework::IsSingleFrameRendererInited() const
   return m_cpuDrawer != nullptr;
 }
 
-double Framework::GetVisualScale() const
-{
-  return m_scales.GetVisualScale();
-}
-
 void Framework::DeleteCountry(storage::TIndex const & index, MapOptions opt)
 {
   switch (opt)
@@ -387,7 +357,8 @@ void Framework::DeleteCountry(storage::TIndex const & index, MapOptions opt)
       // OnMapDeregistered call.
       if (m_model.DeregisterMap(countryFile))
       {
-        InvalidateRect(GetCountryBounds(countryFile.GetNameWithoutExt()), true /* doForceUpdate */);
+        ///@TODO UVR
+        //InvalidateRect(GetCountryBounds(countryFile.GetNameWithoutExt()), true /* doForceUpdate */);
       }
       // TODO (@ldragunov, @gorshenin): rewrite routing session to use MwmHandles. Thus,
       // it won' be needed to reset it after maps update.
@@ -450,7 +421,7 @@ void Framework::UpdateLatestCountryFile(LocalCountryFile const & localFile)
   auto result = m_model.RegisterMap(localFile);
   MwmSet::MwmHandle const & handle = result.first;
   if (handle.IsAlive())
-    InvalidateRect(handle.GetInfo()->m_limitRect, true /* doForceUpdate */);
+    //InvalidateRect(handle.GetInfo()->m_limitRect, true /* doForceUpdate */);
 
   GetSearchEngine()->ClearViewportsCache();
 }
@@ -556,7 +527,7 @@ void Framework::ShowBookmark(BookmarkAndCategory const & bnc)
   if (scale == -1.0)
     scale = scales::GetUpperComfortScale();
 
-  ShowRectExVisibleScale(m_scales.GetRectForDrawScale(scale, bmk->GetOrg()));
+  ShowRectExVisibleScale(df::GetRectForDrawScale(scale, bmk->GetOrg()));
   Bookmark * mark = GetBmCategory(bnc.first)->GetBookmark(bnc.second);
   ActivateUserMark(mark);
   m_balloonManager.OnShowMark(mark);
@@ -646,56 +617,12 @@ bool Framework::AddBookmarksFile(string const & filePath)
 
 void Framework::PrepareToShutdown()
 {
-#ifndef USE_DRAPE
-  SetRenderPolicy(0);
-#else
-  m_drapeEngine.Destroy();
-#endif // USE_DRAPE
+  DestroyDrapeEngine();
 }
 
 void Framework::SetMaxWorldRect()
 {
   m_navigator.SetFromRect(m2::AnyRectD(m_model.GetWorldRect()));
-}
-
-bool Framework::NeedRedraw() const
-{
-  // Checking this here allows to avoid many dummy "IsInitialized" flags in client code.
-#ifndef USE_DRAPE
-  return (m_renderPolicy && m_renderPolicy->NeedRedraw());
-#else
-  return false;
-#endif // USE_DRAPE
-}
-
-void Framework::SetNeedRedraw(bool flag)
-{
-#ifndef USE_DRAPE
-  m_renderPolicy->GetWindowHandle()->setNeedRedraw(flag);
-  //if (!flag)
-  //  m_doForceUpdate = false;
-#endif // USE_DRAPE
-}
-
-void Framework::Invalidate(bool doForceUpdate)
-{
-  InvalidateRect(MercatorBounds::FullRect(), doForceUpdate);
-}
-
-void Framework::InvalidateRect(m2::RectD const & rect, bool doForceUpdate)
-{
-#ifndef USE_DRAPE
-  if (m_renderPolicy)
-  {
-    ASSERT ( rect.IsValid(), () );
-    m_renderPolicy->SetForceUpdate(doForceUpdate);
-    m_renderPolicy->SetInvalidRect(m2::AnyRectD(rect));
-    m_renderPolicy->GetWindowHandle()->invalidate();
-  }
-#else
-  if (!m_drapeEngine.IsNull())
-    m_drapeEngine->UpdateCoverage(m_navigator.Screen());
-#endif // USE_DRAPE
 }
 
 void Framework::SaveState()
@@ -705,28 +632,11 @@ void Framework::SaveState()
 
 bool Framework::LoadState()
 {
-  m2::AnyRectD rect;
-  if (!Settings::Get("ScreenClipRect", rect))
-    return false;
-
-  // additional check for valid rect
-  m2::RectD r = rect.GetGlobalRect();
-  if (!m_scales.GetWorldRect().IsRectInside(r))
-    return false;
-
-  CheckMinMaxVisibleScale(r);
-
-  double const dx = r.SizeX();
-  double const dy = r.SizeY();
-
-  m2::AnyRectD safeRect(r.Center(), rect.Angle(), m2::RectD(-dx/2, -dy/2, dx/2, dy/2));
-  m_navigator.SetFromRect(safeRect);
-
-#ifdef USE_DRAPE
+  bool r = m_navigator.LoadState();
+  LOG(LINFO, ("Navigator state loaded = ", r, " Rect = ", m_navigator.Screen().ClipRect()));
   if (!m_drapeEngine.IsNull())
     m_drapeEngine->UpdateCoverage(m_navigator.Screen());
-#endif
-  return true;
+  return r;
 }
 //@}
 
@@ -736,41 +646,22 @@ void Framework::OnSize(int w, int h)
   if (w < 2) w = 2;
   if (h < 2) h = 2;
 
-  m2::RectD oldPixelRect = m_navigator.Screen().PixelRect();
-
-#ifndef USE_DRAPE
-  m_navigator.OnSize(0, 0, w, h);
-  if (m_renderPolicy)
-  {
-    // if gui controller not initialized, than we work in mode "Without gui"
-    // and no need to set gui layout. We will not render it.
-    if (m_guiController->GetCacheScreen())
-      m_informationDisplay.SetWidgetPivotsByDefault(w, h);
-    m_renderPolicy->OnSize(w, h);
-  }
-#else
   if (!m_drapeEngine.IsNull())
   {
     double vs = df::VisualParams::Instance().GetVisualScale();
     m_navigator.OnSize(0, 0, vs * w, vs * h);
-    //m_navigator.OnSize(0, 0, w, h);
     m_drapeEngine->Resize(w, h);
     m_drapeEngine->UpdateCoverage(m_navigator.Screen());
   }
-#endif // USE_DRAPE
 
   m_width = w;
   m_height = h;
-  GetLocationState()->OnSize(oldPixelRect);
+  ///@TODO UVR
+  //GetLocationState()->OnSize();
 }
 
 bool Framework::SetUpdatesEnabled(bool doEnable)
 {
-#ifndef USE_DRAPE
-  if (m_renderPolicy)
-    return m_renderPolicy->GetWindowHandle()->setUpdatesEnabled(doEnable);
-  else
-#endif // USE_DRAPE
     return false;
 }
 
@@ -778,48 +669,6 @@ int Framework::GetDrawScale() const
 {
   return m_navigator.GetDrawScale();
 }
-
-#ifndef USE_DRAPE
-RenderPolicy::TRenderFn Framework::DrawModelFn()
-{
-  bool const isTiling = m_renderPolicy->IsTiling();
-  return bind(&Framework::DrawModel, this, _1, _2, _3, _4, isTiling);
-}
-
-void Framework::DrawModel(shared_ptr<PaintEvent> const & e,
-                          ScreenBase const & screen,
-                          m2::RectD const & renderRect,
-                          int baseScale, bool isTilingQuery)
-{
-  m2::RectD selectRect;
-  m2::RectD clipRect;
-
-  double const inflationSize = m_scales.GetClipRectInflation();
-  screen.PtoG(m2::Inflate(m2::RectD(renderRect), inflationSize, inflationSize), clipRect);
-  screen.PtoG(m2::RectD(renderRect), selectRect);
-
-  int drawScale = m_scales.GetDrawTileScale(baseScale);
-  fwork::FeatureProcessor doDraw(clipRect, screen, e, drawScale);
-  if (m_queryMaxScaleMode)
-    drawScale = scales::GetUpperScale();
-
-  try
-  {
-    int const upperScale = scales::GetUpperScale();
-    if (isTilingQuery && drawScale <= upperScale)
-      m_model.ForEachFeature_TileDrawing(selectRect, doDraw, drawScale);
-    else
-      m_model.ForEachFeature(selectRect, doDraw, min(upperScale, drawScale));
-  }
-  catch (redraw_operation_cancelled const &)
-  {}
-
-  e->setIsEmptyDrawing(doDraw.IsEmptyDrawing());
-
-  if (m_navigator.Update(ElapsedSeconds()))
-    Invalidate();
-}
-#endif // USE_DRAPE
 
 bool Framework::IsCountryLoaded(m2::PointD const & pt) const
 {
@@ -831,64 +680,41 @@ bool Framework::IsCountryLoaded(m2::PointD const & pt) const
   return m_model.IsLoaded(fName);
 }
 
-#ifndef USE_DRAPE
-void Framework::BeginPaint(shared_ptr<PaintEvent> const & e)
-{
-  if (m_renderPolicy)
-    m_renderPolicy->BeginFrame(e, m_navigator.Screen());
-}
+///@TODO UVR
+//void Framework::DrawAdditionalInfo(shared_ptr<PaintEvent> const & e)
+//{
+//  // m_informationDisplay is set and drawn after the m_renderPolicy
+//  ASSERT ( m_renderPolicy, () );
 
-void Framework::EndPaint(shared_ptr<PaintEvent> const & e)
-{
-  if (m_renderPolicy)
-    m_renderPolicy->EndFrame(e, m_navigator.Screen());
-}
+//  Drawer * pDrawer = e->drawer();
+//  graphics::Screen * pScreen = pDrawer->screen();
 
-void Framework::DrawAdditionalInfo(shared_ptr<PaintEvent> const & e)
-{
-  // m_informationDisplay is set and drawn after the m_renderPolicy
-  ASSERT ( m_renderPolicy, () );
+//  pScreen->beginFrame();
 
-  graphics::Screen * pScreen = GPUDrawer::GetScreen(e->drawer());
+//  bool const isEmptyModel = m_renderPolicy->IsEmptyModel();
 
-  pScreen->beginFrame();
+//  if (isEmptyModel)
+//    m_informationDisplay.setEmptyCountryIndex(GetCountryIndex(GetViewportCenter()));
+//  else
+//    m_informationDisplay.setEmptyCountryIndex(storage::TIndex());
 
-  int const drawScale = GetDrawScale();
-  bool const isEmptyModel = m_renderPolicy->IsEmptyModel();
+//  bool const isCompassEnabled = my::Abs(ang::GetShortestDistance(m_navigator.Screen().GetAngle(), 0.0)) > my::DegToRad(3.0);
+//  bool const isCompasActionEnabled = m_informationDisplay.isCompassArrowEnabled() && m_navigator.InAction();
 
-  if (isEmptyModel)
-    m_informationDisplay.setEmptyCountryIndex(GetCountryIndex(GetViewportCenter()));
-  else
-    m_informationDisplay.setEmptyCountryIndex(storage::TIndex());
+//  m_informationDisplay.enableCompassArrow(isCompassEnabled || isCompasActionEnabled);
+//  m_informationDisplay.setCompassArrowAngle(m_navigator.Screen().GetAngle());
 
-  bool const isCompassEnabled = my::Abs(ang::GetShortestDistance(m_navigator.Screen().GetAngle(), 0.0)) > my::DegToRad(3.0);
-  bool const isCompasActionEnabled = m_informationDisplay.isCompassArrowEnabled() && m_navigator.InAction();
+//  int const drawScale = GetDrawScale();
+//  m_informationDisplay.setDebugInfo(0, drawScale);
 
-  m_informationDisplay.enableCompassArrow(isCompassEnabled || isCompasActionEnabled);
-  m_informationDisplay.setCompassArrowAngle(m_navigator.Screen().GetAngle());
+//  m_informationDisplay.enableRuler(drawScale > 4 && !m_informationDisplay.isCopyrightActive());
 
-  m_informationDisplay.enableRuler(!m_isFullScreenMode && (drawScale > 4 && !m_informationDisplay.isCopyrightActive()));
+//  pScreen->endFrame();
 
-  m_informationDisplay.setDebugInfo(0, drawScale);
-  pScreen->endFrame();
-
-  m_bmManager.DrawItems(e->drawer());
-  m_guiController->UpdateElements();
-  m_guiController->DrawFrame(pScreen);
-}
-
-void Framework::DoPaint(shared_ptr<PaintEvent> const & e)
-{
-  if (m_renderPolicy)
-  {
-    m_renderPolicy->DrawFrame(e, m_navigator.Screen());
-
-    // Don't render additional elements if guiController wasn't initialized.
-    if (m_guiController->GetCacheScreen() != NULL)
-      DrawAdditionalInfo(e);
-  }
-}
-#endif // USE_DRAPE
+//  m_bmManager.DrawItems(e);
+//  m_guiController->UpdateElements();
+//  m_guiController->DrawFrame(pScreen);
+//}
 
 m2::PointD const & Framework::GetViewportCenter() const
 {
@@ -898,7 +724,8 @@ m2::PointD const & Framework::GetViewportCenter() const
 void Framework::SetViewportCenter(m2::PointD const & pt)
 {
   m_navigator.CenterViewport(pt);
-  Invalidate();
+  if (!m_drapeEngine.IsNull())
+    m_drapeEngine->UpdateCoverage(m_navigator.Screen());
 }
 
 shared_ptr<MoveScreenTask> Framework::SetViewportCenterAnimated(m2::PointD const & endPt)
@@ -910,7 +737,7 @@ shared_ptr<MoveScreenTask> Framework::SetViewportCenterAnimated(m2::PointD const
 
 void Framework::CheckMinGlobalRect(m2::RectD & rect) const
 {
-  m2::RectD const minRect = m_scales.GetRectForDrawScale(scales::GetUpperStyleScale(), rect.Center());
+  m2::RectD const minRect = df::GetRectForDrawScale(scales::GetUpperStyleScale(), rect.Center());
   if (minRect.IsRectInside(rect))
     rect = minRect;
 }
@@ -922,30 +749,25 @@ void Framework::CheckMinMaxVisibleScale(m2::RectD & rect, int maxScale/* = -1*/)
   m2::PointD const c = rect.Center();
   int const worldS = scales::GetUpperWorldScale();
 
-  int scale = m_scales.GetDrawTileScale(rect);
+  int scale = df::GetDrawTileScale(rect);
   if (scale > worldS && !IsCountryLoaded(c))
   {
     // country is not loaded - limit on world scale
-    rect = m_scales.GetRectForDrawScale(worldS, c);
+    rect = df::GetRectForDrawScale(worldS, c);
     scale = worldS;
   }
 
   if (maxScale != -1 && scale > maxScale)
   {
     // limit on passed maximal scale
-    rect = m_scales.GetRectForDrawScale(maxScale, c);
+    rect = df::GetRectForDrawScale(maxScale, c);
   }
 }
 
 void Framework::ShowRect(double lat, double lon, double zoom)
 {
   m2::PointD center(MercatorBounds::FromLatLon(lat, lon));
-  ShowRect(center, zoom);
-}
-
-void Framework::ShowRect(m2::PointD const & pt, double zoom)
-{
-  ShowRectEx(m_scales.GetRectForDrawScale(zoom, pt));
+  ShowRectEx(df::GetRectForDrawScale(zoom, center));
 }
 
 void Framework::ShowRect(m2::RectD rect)
@@ -953,7 +775,8 @@ void Framework::ShowRect(m2::RectD rect)
   CheckMinGlobalRect(rect);
 
   m_navigator.SetFromRect(m2::AnyRectD(rect));
-  Invalidate();
+  ///@TODO UVR
+  //Invalidate();
 }
 
 void Framework::ShowRectEx(m2::RectD rect)
@@ -977,8 +800,16 @@ void Framework::ShowRectFixed(m2::RectD const & rect)
 
 void Framework::ShowRectFixedAR(m2::AnyRectD const & rect)
 {
-  navi::SetRectFixedAR(rect, m_scales, m_navigator);
-  Invalidate();
+  double const halfSize = df::VisualParams::Instance().GetTileSize() / 2.0;
+  m2::RectD etalonRect(-halfSize, -halfSize, halfSize, halfSize);
+
+  m2::PointD const pxCenter = m_navigator.Screen().PixelRect().Center();
+  etalonRect.Offset(pxCenter);
+
+  m_navigator.SetFromRects(rect, etalonRect);
+
+  ///@TODO UVR
+  //Invalidate();
 }
 
 void Framework::UpdateUserViewportChanged()
@@ -997,6 +828,17 @@ void Framework::UpdateSearchResults(search::Results const & results)
 {
   FillSearchResultsMarks(results);
   Invalidate();
+}
+
+void Framework::OnSearchResultsCallbackUI(search::Results const & results)
+{
+  if (IsISActive())
+  {
+    FillSearchResultsMarks(results);
+
+    ///@TODO UVR
+    //Invalidate();
+  }
 }
 
 void Framework::ClearAllCaches()
@@ -1034,7 +876,8 @@ void Framework::EnterForeground()
 void Framework::ShowAll()
 {
   SetMaxWorldRect();
-  Invalidate();
+  ///@TODO UVR
+  //Invalidate();
 }
 
 /// @name Drag implementation.
@@ -1047,90 +890,65 @@ m2::PointD Framework::GetPixelCenter() const
 void Framework::StartDrag(DragEvent const & e)
 {
   m_navigator.StartDrag(m_navigator.ShiftPoint(e.Pos()), ElapsedSeconds());
-  m_informationDisplay.locationState()->DragStarted();
+  ///@TODO UVR
+  //m_informationDisplay.locationState()->DragStarted();
 
-#ifndef USE_DRAPE
-  if (m_renderPolicy)
-    m_renderPolicy->StartDrag();
-#else
   if (!m_drapeEngine.IsNull())
     m_drapeEngine->UpdateCoverage(m_navigator.Screen());
-#endif // USE_DRAPE
 }
 
 void Framework::DoDrag(DragEvent const & e)
 {
   m_navigator.DoDrag(m_navigator.ShiftPoint(e.Pos()), ElapsedSeconds());
 
-#ifndef USE_DRAPE
-  if (m_renderPolicy)
-    m_renderPolicy->DoDrag();
-#else
   if (!m_drapeEngine.IsNull())
     m_drapeEngine->UpdateCoverage(m_navigator.Screen());
-#endif // USE_DRAPE
 }
 
 void Framework::StopDrag(DragEvent const & e)
 {
   m_navigator.StopDrag(m_navigator.ShiftPoint(e.Pos()), ElapsedSeconds(), true);
-  m_informationDisplay.locationState()->DragEnded();
+  ///@TODO UVR
+  //m_informationDisplay.locationState()->DragEnded();
 
-#ifndef USE_DRAPE
-  if (m_renderPolicy)
-  {
-    m_renderPolicy->StopDrag();
-    UpdateUserViewportChanged();
-  }
-#else
   if (!m_drapeEngine.IsNull())
     m_drapeEngine->UpdateCoverage(m_navigator.Screen());
-#endif // USE_DRAPE
 }
 
 void Framework::StartRotate(RotateEvent const & e)
 {
   m_navigator.StartRotate(e.Angle(), ElapsedSeconds());
-#ifndef USE_DRAPE
-  m_renderPolicy->StartRotate(e.Angle(), ElapsedSeconds());
-#else
   if (!m_drapeEngine.IsNull())
     m_drapeEngine->UpdateCoverage(m_navigator.Screen());
-#endif // USE_DRAPE
-  GetLocationState()->ScaleStarted();
+
+  ///@TODO UVR
+  //GetLocationState()->ScaleStarted();
 }
 
 void Framework::DoRotate(RotateEvent const & e)
 {
   m_navigator.DoRotate(e.Angle(), ElapsedSeconds());
-#ifndef USE_DRAPE
-  m_renderPolicy->DoRotate(e.Angle(), ElapsedSeconds());
-#else
   if (!m_drapeEngine.IsNull())
     m_drapeEngine->UpdateCoverage(m_navigator.Screen());
-#endif
 }
 
 void Framework::StopRotate(RotateEvent const & e)
 {
   m_navigator.StopRotate(e.Angle(), ElapsedSeconds());
-  shared_ptr<State> const & state = GetLocationState();
-  state->Rotated();
-  state->ScaleEnded();
-#ifndef USE_DRAPE
-  m_renderPolicy->StopRotate(e.Angle(), ElapsedSeconds());
-#else
+  ///@TODO UVR
+  //GetLocationState()->Rotated();
+  //GetLocationState()->ScaleEnded();
   if (!m_drapeEngine.IsNull())
     m_drapeEngine->UpdateCoverage(m_navigator.Screen());
-#endif
+
   UpdateUserViewportChanged();
 }
 
 void Framework::Move(double azDir, double factor)
 {
   m_navigator.Move(azDir, factor);
-
-  Invalidate();
+  if (!m_drapeEngine.IsNull())
+    m_drapeEngine->UpdateCoverage(m_navigator.Screen());
 }
 //@}
 
@@ -1139,14 +957,17 @@ void Framework::Move(double azDir, double factor)
 void Framework::ScaleToPoint(ScaleToPointEvent const & e, bool anim)
 {
   m2::PointD pt = m_navigator.ShiftPoint(e.Pt());
-  GetLocationState()->CorrectScalePoint(pt);
+  ///@TODO UVR
+  //GetLocationState()->CorrectScalePoint(pt);
 
   if (anim)
     m_animController->AddTask(m_navigator.ScaleToPointAnim(pt, e.ScaleFactor(), 0.25));
   else
     m_navigator.ScaleToPoint(pt, e.ScaleFactor(), 0);
 
-  Invalidate();
+  if (!m_drapeEngine.IsNull())
+    m_drapeEngine->UpdateCoverage(m_navigator.Screen());
+
   UpdateUserViewportChanged();
 }
 
@@ -1158,10 +979,13 @@ void Framework::ScaleDefault(bool enlarge)
 void Framework::Scale(double scale)
 {
   m2::PointD center = GetPixelCenter();
-  GetLocationState()->CorrectScalePoint(center);
+  ///@TODO UVR
+  //GetLocationState()->CorrectScalePoint(center);
   m_animController->AddTask(m_navigator.ScaleToPointAnim(center, scale, 0.25));
 
-  Invalidate();
+  if (!m_drapeEngine.IsNull())
+    m_drapeEngine->UpdateCoverage(m_navigator.Screen());
+
   UpdateUserViewportChanged();
 }
 
@@ -1170,23 +994,21 @@ void Framework::CalcScalePoints(ScaleEvent const & e, m2::PointD & pt1, m2::Poin
   pt1 = m_navigator.ShiftPoint(e.Pt1());
   pt2 = m_navigator.ShiftPoint(e.Pt2());
 
-  m_informationDisplay.locationState()->CorrectScalePoint(pt1, pt2);
+  ///@TODO UVR
+  //m_informationDisplay.locationState()->CorrectScalePoint(pt1, pt2);
 }
-
 void Framework::StartScale(ScaleEvent const & e)
 {
   m2::PointD pt1, pt2;
   CalcScalePoints(e, pt1, pt2);
 
-  GetLocationState()->ScaleStarted();
+  ///@TODO UVR
+  //GetLocationState()->ScaleStarted();
   m_navigator.StartScale(pt1, pt2, ElapsedSeconds());
-#ifndef USE_DRAPE
-  if (m_renderPolicy)
-    m_renderPolicy->StartScale();
-#else
+
   if (!m_drapeEngine.IsNull())
     m_drapeEngine->UpdateCoverage(m_navigator.Screen());
-#endif // USE_DRAPE
+
 }
 
 void Framework::DoScale(ScaleEvent const & e)
@@ -1195,16 +1017,12 @@ void Framework::DoScale(ScaleEvent const & e)
   CalcScalePoints(e, pt1, pt2);
 
   m_navigator.DoScale(pt1, pt2, ElapsedSeconds());
-#ifndef USE_DRAPE
-  if (m_renderPolicy)
-    m_renderPolicy->DoScale();
-#else
   if (!m_drapeEngine.IsNull())
     m_drapeEngine->UpdateCoverage(m_navigator.Screen());
-#endif // USE_DRAPE
 
-  if (m_navigator.IsRotatingDuringScale())
-    GetLocationState()->Rotated();
+  ///@TODO UVR
+//  if (m_navigator.IsRotatingDuringScale())
+//    GetLocationState()->Rotated();
 }
 
 void Framework::StopScale(ScaleEvent const & e)
@@ -1214,18 +1032,14 @@ void Framework::StopScale(ScaleEvent const & e)
 
   m_navigator.StopScale(pt1, pt2, ElapsedSeconds());
 
-#ifndef USE_DRAPE
-  if (m_renderPolicy)
+  if (!m_drapeEngine.IsNull())
   {
-    m_renderPolicy->StopScale();
+    m_drapeEngine->UpdateCoverage(m_navigator.Screen());
     UpdateUserViewportChanged();
   }
-#else
-  if (!m_drapeEngine.IsNull())
-    m_drapeEngine->UpdateCoverage(m_navigator.Screen());
-#endif // USE_DRAPE
 
-  GetLocationState()->ScaleEnded();
+  ///@TODO UVR
+  //GetLocationState()->ScaleEnded();
 }
 //@}
 
@@ -1289,16 +1103,17 @@ bool Framework::Search(search::SearchParams const & params)
 
 bool Framework::GetCurrentPosition(double & lat, double & lon) const
 {
-  shared_ptr<State> const & locationState = m_informationDisplay.locationState();
+  ///@TODO UVR
+  //shared_ptr<State> const & locationState = m_informationDisplay.locationState();
 
-  if (locationState->IsModeHasPosition())
-  {
-    m2::PointD const pos = locationState->Position();
-    lat = MercatorBounds::YToLat(pos.y);
-    lon = MercatorBounds::XToLon(pos.x);
-    return true;
-  }
-  else
+//  if (locationState->IsModeHasPosition())
+//  {
+//    m2::PointD const pos = locationState->Position();
+//    lat = MercatorBounds::YToLat(pos.y);
+//    lon = MercatorBounds::XToLon(pos.x);
+//    return true;
+//  }
+//  else
     return false;
 }
 
@@ -1362,7 +1177,7 @@ void Framework::ShowSearchResult(search::Result const & res)
   }
 
   StopLocationFollow();
-  ShowRectExVisibleScale(m_scales.GetRectForDrawScale(scale, center));
+  ShowRectExVisibleScale(df::GetRectForDrawScale(scale, center));
 
   search::AddressInfo info;
   info.MakeFrom(res);
@@ -1400,8 +1215,9 @@ size_t Framework::ShowAllSearchResults()
   FillSearchResultsMarks(results);
   m_fixedSearchResults = count;
 
-  shared_ptr<State> state = GetLocationState();
-  state->SetFixedZoom();
+  ///@TODO UVR
+  //shared_ptr<State> state = GetLocationState();
+  //state->SetFixedZoom();
   // Setup viewport according to results.
   m2::AnyRectD viewport = m_navigator.Screen().GlobalRect();
   m2::PointD const center = viewport.Center();
@@ -1436,8 +1252,9 @@ size_t Framework::ShowAllSearchResults()
       minInd = -1;
   }
 
-  if (minInd == -1)
-    Invalidate();
+  if (minInd == -1);
+    ///@TODO UVR
+    //Invalidate();
 
   return count;
 }
@@ -1474,7 +1291,8 @@ void Framework::CancelInteractiveSearch()
 
   m_fixedSearchResults = 0;
 
-  Invalidate();
+  ///@TODO UVR
+  //Invalidate();
 }
 
 bool Framework::GetDistanceAndAzimut(m2::PointD const & point,
@@ -1512,70 +1330,6 @@ bool Framework::GetDistanceAndAzimut(m2::PointD const & point,
   return (d < 25000.0);
 }
 
-#ifndef USE_DRAPE
-void Framework::SetRenderPolicy(RenderPolicy * renderPolicy)
-{
-  if (renderPolicy == nullptr)
-    m_bmManager.PrepareToShutdown();
-
-  m_bmManager.ResetScreen();
-  m_guiController->ResetRenderParams();
-  m_renderPolicy.reset();
-  m_renderPolicy.reset(renderPolicy);
-
-  if (m_renderPolicy)
-  {
-    m_renderPolicy->SetAnimController(m_animController.get());
-
-    m_renderPolicy->SetRenderFn(DrawModelFn());
-
-    m_scales.SetParams(m_renderPolicy->VisualScale(), m_renderPolicy->TileSize());
-
-    if (m_benchmarkEngine)
-      m_benchmarkEngine->Start();
-  }
-}
-
-void Framework::InitGuiSubsystem()
-{
-  if (m_renderPolicy)
-  {
-    gui::Controller::RenderParams rp(m_renderPolicy->Density(),
-                                     bind(&WindowHandle::invalidate,
-                                          m_renderPolicy->GetWindowHandle().get()),
-                                     m_renderPolicy->GetGlyphCache(),
-                                     m_renderPolicy->GetCacheScreen().get());
-
-    m_guiController->SetRenderParams(rp);
-    m_informationDisplay.setVisualScale(m_renderPolicy->VisualScale());
-    m_balloonManager.RenderPolicyCreated(m_renderPolicy->Density());
-
-    if (m_width != 0 && m_height != 0)
-      OnSize(m_width, m_height);
-
-    // init Bookmark manager
-    //@{
-    graphics::Screen::Params pr;
-    pr.m_resourceManager = m_renderPolicy->GetResourceManager();
-    pr.m_threadSlot = m_renderPolicy->GetResourceManager()->guiThreadSlot();
-    pr.m_renderContext = m_renderPolicy->GetRenderContext();
-
-    pr.m_storageType = graphics::EMediumStorage;
-    pr.m_textureType = graphics::ESmallTexture;
-
-    m_bmManager.SetScreen(m_renderPolicy->GetCacheScreen().get());
-    //@}
-
-    // Do full invalidate instead of any "pending" stuff.
-    Invalidate();
-  }
-}
-
-RenderPolicy * Framework::GetRenderPolicy() const
-{
-  return m_renderPolicy.get();
-}
-#else
 void Framework::CreateDrapeEngine(dp::RefPointer<dp::OGLContextFactory> contextFactory, float vs, int w, int h)
 {
   typedef df::MapDataProvider::TReadIDsFn TReadIDsFn;
@@ -1596,7 +1350,11 @@ void Framework::CreateDrapeEngine(dp::RefPointer<dp::OGLContextFactory> contextF
   m_drapeEngine.Reset(new df::DrapeEngine(contextFactory, df::Viewport(vs, 0, 0, w, h), df::MapDataProvider(idReadFn, featureReadFn)));
   OnSize(w, h);
 }
-#endif // USE_DRAPE
+
+void Framework::DestroyDrapeEngine()
+{
+  m_drapeEngine.Destroy();
+}
 
 void Framework::SetMapStyle(MapStyle mapStyle)
 {
@@ -1622,17 +1380,13 @@ void Framework::SetupMeasurementSystem()
                                              routing::turns::sound::LengthUnits::Meters);
 
   m_informationDisplay.measurementSystemChanged();
-  Invalidate();
+  ///@TODO UVR
+  //Invalidate();
 }
 
 string Framework::GetCountryCode(m2::PointD const & pt) const
 {
   return GetSearchEngine()->GetCountryCode(pt);
-}
-
-gui::Controller * Framework::GetGuiController() const
-{
-  return m_guiController.get();
 }
 
 anim::Controller * Framework::GetAnimController() const
@@ -1665,7 +1419,7 @@ bool Framework::ShowMapForURL(string const & url)
     if (parser.Parse(url, pt, zoom))
     {
       point = MercatorBounds::FromLatLon(pt.m_lat, pt.m_lon);
-      rect = m_scales.GetRectForDrawScale(zoom, point);
+      rect = df::GetRectForDrawScale(zoom, point);
       name = pt.m_name;
       result = NEED_CLICK;
     }
@@ -1676,8 +1430,8 @@ bool Framework::ShowMapForURL(string const & url)
 
     if (m_ParsedMapApi.SetUriAndParse(url))
     {
-      if (!m_ParsedMapApi.GetViewportRect(m_scales, rect))
-        rect = ScalesProcessor::GetWorldRect();
+      if (!m_ParsedMapApi.GetViewportRect(rect))
+        rect = df::GetWorldRect();
 
       if ((apiMark = m_ParsedMapApi.GetSinglePoint()))
         result = NEED_CLICK;
@@ -1692,7 +1446,7 @@ bool Framework::ShowMapForURL(string const & url)
     if (info.IsValid())
     {
       point = MercatorBounds::FromLatLon(info.m_lat, info.m_lon);
-      rect = m_scales.GetRectForDrawScale(info.m_zoom, point);
+      rect = df::GetRectForDrawScale(info.m_zoom, point);
       result = NEED_CLICK;
     }
   }
@@ -1748,7 +1502,8 @@ void Framework::DisconnectMyPositionUpdate()
 {
   if (m_locationChangedSlotID != -1)
   {
-    GetLocationState()->RemovePositionChangedListener(m_locationChangedSlotID);
+    ///@TODO UVR
+    //GetLocationState()->RemovePositionChangedListener(m_locationChangedSlotID);
     m_locationChangedSlotID = -1;
   }
 }
@@ -1758,90 +1513,80 @@ m2::RectD Framework::GetCurrentViewport() const
   return m_navigator.Screen().ClipRect();
 }
 
-bool Framework::IsBenchmarking() const
-{
-  return m_benchmarkEngine != 0;
-}
-
-#ifndef USE_DRAPE
 namespace
 {
 
-typedef shared_ptr<graphics::OverlayElement> OEPointerT;
+///@TODO UVR
+//OEPointerT GetClosestToPivot(list<OEPointerT> const & l, m2::PointD const & pxPoint)
+//{
+//  double dist = numeric_limits<double>::max();
+//  OEPointerT res;
 
-OEPointerT GetClosestToPivot(list<OEPointerT> const & l, m2::PointD const & pxPoint)
-{
-  double dist = numeric_limits<double>::max();
-  OEPointerT res;
+//  for (list<OEPointerT>::const_iterator it = l.begin(); it != l.end(); ++it)
+//  {
+//    double const curDist = pxPoint.SquareLength((*it)->pivot());
+//    if (curDist < dist)
+//    {
+//      dist = curDist;
+//      res = *it;
+//    }
+//  }
 
-  for (list<OEPointerT>::const_iterator it = l.begin(); it != l.end(); ++it)
-  {
-    double const curDist = pxPoint.SquareLength((*it)->pivot());
-    if (curDist < dist)
-    {
-      dist = curDist;
-      res = *it;
-    }
-  }
+//  return res;
+//}
 
-  return res;
 }
-
-}
-#endif // USE_DRAPE
 
 bool Framework::GetVisiblePOI(m2::PointD const & pxPoint, m2::PointD & pxPivot,
                               search::AddressInfo & info, feature::Metadata & metadata) const
 {
-#ifndef USE_DRAPE
-  ASSERT(m_renderPolicy, ());
-  graphics::OverlayElement::UserInfo ui;
+///@TODO UVR
+//  graphics::OverlayElement::UserInfo ui;
 
-  {
-    // It seems like we don't need to lock frame here.
-    // Overlay locking and storing items as shared_ptr is enough here.
-    //m_renderPolicy->FrameLock();
+//  {
+//    // It seems like we don't need to lock frame here.
+//    // Overlay locking and storing items as shared_ptr is enough here.
+//    //m_renderPolicy->FrameLock();
 
-    m2::PointD const pt = m_navigator.ShiftPoint(pxPoint);
-    double const halfSize = TOUCH_PIXEL_RADIUS * GetVisualScale();
+//    m2::PointD const pt = m_navigator.ShiftPoint(pxPoint);
+//    double const halfSize = TOUCH_PIXEL_RADIUS * GetVisualScale();
 
-    list<OEPointerT> candidates;
-    m2::RectD const rect(pt.x - halfSize, pt.y - halfSize,
-                         pt.x + halfSize, pt.y + halfSize);
+//    list<OEPointerT> candidates;
+//    m2::RectD const rect(pt.x - halfSize, pt.y - halfSize,
+//                         pt.x + halfSize, pt.y + halfSize);
 
-    graphics::Overlay * frameOverlay = m_renderPolicy->FrameOverlay();
-    frameOverlay->lock();
-    frameOverlay->selectOverlayElements(rect, candidates);
-    frameOverlay->unlock();
+//    graphics::Overlay * frameOverlay = m_renderPolicy->FrameOverlay();
+//    frameOverlay->lock();
+//    frameOverlay->selectOverlayElements(rect, candidates);
+//    frameOverlay->unlock();
 
-    OEPointerT elem = GetClosestToPivot(candidates, pt);
+//    OEPointerT elem = GetClosestToPivot(candidates, pt);
 
-    if (elem)
-      ui = elem->userInfo();
+//    if (elem)
+//      ui = elem->userInfo();
 
-    //m_renderPolicy->FrameUnlock();
-  }
+//    //m_renderPolicy->FrameUnlock();
+//  }
 
-  if (ui.IsValid())
-  {
-    Index::FeaturesLoaderGuard guard(m_model.GetIndex(), ui.m_featureID.m_mwmId);
+  //if (ui.IsValid())
+  //{
+    //Index::FeaturesLoaderGuard guard(m_model.GetIndex(), ui.m_featureID.m_mwmId);
 
-    FeatureType ft;
-    guard.GetFeatureByIndex(ui.m_featureID.m_index, ft);
+    //FeatureType ft;
+    //guard.GetFeatureByIndex(ui.m_featureID.m_index, ft);
 
-    ft.ParseMetadata();
-    metadata = ft.GetMetadata();
+    //ft.ParseMetadata();
+    //metadata = ft.GetMetadata();
 
     // @TODO experiment with other pivots
-    ASSERT_NOT_EQUAL(ft.GetFeatureType(), feature::GEOM_LINE, ());
-    m2::PointD const center = feature::GetCenter(ft);
+    //ASSERT_NOT_EQUAL(ft.GetFeatureType(), feature::GEOM_LINE, ());
+    //m2::PointD const center = feature::GetCenter(ft);
 
-    GetAddressInfo(ft, center, info);
+//    GetAddressInfo(ft, center, info);
 
-    pxPivot = GtoP(center);
-    return true;
-  }
-#endif // USE_DRAPE
+//    pxPivot = GtoP(center);
+//    return true;
+//  }
 
   return false;
 }
@@ -1914,10 +1659,10 @@ Navigator & Framework::GetNavigator()
   return m_navigator;
 }
 
-shared_ptr<State> const & Framework::GetLocationState() const
-{
-  return m_informationDisplay.locationState();
-}
+//shared_ptr<State> const & Framework::GetLocationState() const
+//{
+//  return m_informationDisplay.locationState();
+//}
 
 void Framework::ActivateUserMark(UserMark const * mark, bool needAnim)
 {
@@ -1948,27 +1693,29 @@ UserMark const * Framework::GetUserMarkWithoutLogging(m2::PointD const & pxPoint
 {
   DisconnectMyPositionUpdate();
   m2::AnyRectD rect;
-  m_navigator.GetTouchRect(pxPoint, TOUCH_PIXEL_RADIUS * GetVisualScale(), rect);
+  double vs = df::VisualParams::Instance().GetVisualScale();
+  m_navigator.GetTouchRect(pxPoint, TOUCH_PIXEL_RADIUS * vs, rect);
 
-  shared_ptr<State> const & locationState = GetLocationState();
-  if (locationState->IsModeHasPosition())
-  {
-    m2::PointD const & glPivot = locationState->Position();
-    if (rect.IsPointInside(glPivot))
-    {
-      search::AddressInfo info;
-      info.m_name = m_stringsBundle.GetString("my_position");
-      MyPositionMarkPoint * myPostition = UserMarkContainer::UserMarkForMyPostion();
-      m_locationChangedSlotID = locationState->AddPositionChangedListener(bind(&Framework::UpdateSelectedMyPosition, this, _1));
-      myPostition->SetPtOrg(glPivot);
-      myPostition->SetInfo(info);
-      return myPostition;
-    }
-  }
+  ///@TODO UVR
+  //shared_ptr<State> const & locationState = GetLocationState();
+//  if (locationState->IsModeHasPosition())
+//  {
+//    m2::PointD const & glPivot = locationState->Position();
+//    if (rect.IsPointInside(glPivot))
+//    {
+//      search::AddressInfo info;
+//      info.m_name = m_stringsBundle.GetString("my_position");
+//      MyPositionMarkPoint * myPostition = UserMarkContainer::UserMarkForMyPostion();
+//      m_locationChangedSlotID = locationState->AddPositionChangedListener(bind(&Framework::UpdateSelectedMyPosition, this, _1));
+//      myPostition->SetPtOrg(glPivot);
+//      myPostition->SetInfo(info);
+//      return myPostition;
+//    }
+//  }
 
   m2::AnyRectD bmSearchRect;
-  double const pxWidth  =  TOUCH_PIXEL_RADIUS * GetVisualScale();
-  double const pxHeight = (TOUCH_PIXEL_RADIUS + BM_TOUCH_PIXEL_INCREASE) * GetVisualScale();
+  double const pxWidth  =  TOUCH_PIXEL_RADIUS * vs;
+  double const pxHeight = (TOUCH_PIXEL_RADIUS + BM_TOUCH_PIXEL_INCREASE) * vs;
   m_navigator.GetTouchRect(pxPoint + m2::PointD(0, BM_TOUCH_PIXEL_INCREASE), pxWidth, pxHeight, bmSearchRect);
 
   UserMark const * mark = m_bmManager.FindNearestUserMark(
@@ -2114,48 +1861,56 @@ void Framework::UpdateSavedDataVersion()
 
 void Framework::BuildRoute(m2::PointD const & start, m2::PointD const & finish, uint32_t timeoutSec)
 {
-  ASSERT_THREAD_CHECKER(m_threadChecker, ("BuildRoute"));
+  //ASSERT_THREAD_CHECKER(m_threadChecker, ("BuildRoute"));
 
-  if (IsRoutingActive())
-    CloseRouting();
+  //shared_ptr<State> const & state = GetLocationState();
+  //if (!state->IsModeHasPosition())
+  //{
+  //  CallRouteBuilded(IRouter::NoCurrentPosition, vector<storage::TIndex>(),
+  //                   vector<storage::TIndex>());
+  //  return;
+  //}
 
-  SetLastUsedRouter(m_currentRouterType);
+  //if (IsRoutingActive())
+  //  CloseRouting();
 
-  auto readyCallback = [this](Route const & route, IRouter::ResultCode code)
-  {
-    ASSERT_THREAD_CHECKER(m_threadChecker, ("BuildRoute_ReadyCallback"));
+  //SetLastUsedRouter(m_currentRouterType);
 
-    vector<storage::TIndex> absentCountries;
-    vector<storage::TIndex> absentRoutingIndexes;
-    if (code == IRouter::NoError)
-    {
-      InsertRoute(route);
-      GetLocationState()->RouteBuilded();
-      ShowRectExVisibleScale(route.GetPoly().GetLimitRect());
-    }
-    else
-    {
-      for (string const & name : route.GetAbsentCountries())
-      {
-        storage::TIndex fileIndex = m_storage.FindIndexByFile(name);
-        if (m_storage.GetLatestLocalFile(fileIndex) && code != IRouter::FileTooOld)
-          absentRoutingIndexes.push_back(fileIndex);
-        else
-          absentCountries.push_back(fileIndex);
-      }
+  //auto readyCallback = [this](Route const & route, IRouter::ResultCode code)
+  //{
+  //  ASSERT_THREAD_CHECKER(m_threadChecker, ("BuildRoute_ReadyCallback"));
 
-      if (code != IRouter::NeedMoreMaps)
-        RemoveRoute();
-    }
-    CallRouteBuilded(code, absentCountries, absentRoutingIndexes);
-  };
+  //  vector<storage::TIndex> absentCountries;
+  //  vector<storage::TIndex> absentRoutingIndexes;
+  //  if (code == IRouter::NoError)
+  //  {
+  //    InsertRoute(route);
+  //    GetLocationState()->RouteBuilded();
+  //    ShowRectExVisibleScale(route.GetPoly().GetLimitRect());
+  //  }
+  //  else
+  //  {
+  //    for (string const & name : route.GetAbsentCountries())
+  //    {
+  //      storage::TIndex fileIndex = m_storage.FindIndexByFile(name);
+  //      if (m_storage.GetLatestLocalFile(fileIndex) && code != IRouter::FileTooOld)
+  //        absentRoutingIndexes.push_back(fileIndex);
+  //      else
+  //        absentCountries.push_back(fileIndex);
+  //    }
 
-  m_routingSession.BuildRoute(start, finish,
-                              [readyCallback](Route const & route, IRouter::ResultCode code)
-                              {
-                                GetPlatform().RunOnGuiThread(bind(readyCallback, route, code));
-                              },
-                              m_progressCallback, timeoutSec);
+  //    if (code != IRouter::NeedMoreMaps)
+  //      RemoveRoute();
+  //  }
+  //  CallRouteBuilded(code, absentCountries, absentRoutingIndexes);
+  //};
+
+  //m_routingSession.BuildRoute(state->Position(), destination,
+  //                            [readyCallback](Route const & route, IRouter::ResultCode code)
+  //                            {
+  //                              GetPlatform().RunOnGuiThread(bind(readyCallback, route, code));
+  //                            },
+  //                            m_progressCallback, timeoutSec);
 }
 
 void Framework::SetRouter(RouterType type)
@@ -2227,10 +1982,12 @@ void Framework::CloseRouting()
 {
   ASSERT_THREAD_CHECKER(m_threadChecker, ("CloseRouting"));
 
-  GetLocationState()->StopRoutingMode();
+  ///@TODO UVR
+  //GetLocationState()->StopRoutingMode();
   m_routingSession.Reset();
   RemoveRoute();
-  Invalidate();
+  ///@TODO UVR
+  //Invalidate();
 }
 
 void Framework::InsertRoute(Route const & route)
@@ -2243,23 +2000,30 @@ void Framework::InsertRoute(Route const & route)
     return;
   }
 
-  vector<double> turnsDistances;
-  if (m_currentRouterType == RouterType::Vehicle)
-  {
-    route.GetTurnsDistances(turnsDistances);
-  }
+  // @TODO UVR
+  //vector<double> turns;
+  //if (m_currentRouterType == RouterType::Vehicle)
+  //{
+  //  turns::TTurnsGeom const & turnsGeom = route.GetTurnsGeometry();
+  //  if (!turnsGeom.empty())
+  //  {
+  //    turns.reserve(turnsGeom.size());
+  //    for (size_t i = 0; i < turnsGeom.size(); i++)
+  //      turns.push_back(turnsGeom[i].m_mercatorDistance);
+  //  }
+  //}
 
   /// @todo Consider a style parameter for the route color.
-  graphics::Color routeColor;
-  if (m_currentRouterType == RouterType::Pedestrian)
-    routeColor = graphics::Color(5, 105, 175, 204);
-  else
-    routeColor = graphics::Color(30, 150, 240, 204);
+  //graphics::Color routeColor;
+  //if (m_currentRouterType == RouterType::Pedestrian)
+  //  routeColor = graphics::Color(5, 105, 175, 204);
+  //else
+  //  routeColor = graphics::Color(30, 150, 240, 204);
 
-  m_bmManager.SetRouteTrack(route.GetPoly(), turnsDistances, routeColor);
+  //m_bmManager.SetRouteTrack(route.GetPoly(), turns, routeColor);
 
-  m_informationDisplay.ResetRouteMatchingInfo();
-  Invalidate();
+  //m_informationDisplay.ResetRouteMatchingInfo();
+  //Invalidate();
 }
 
 void Framework::CheckLocationForRouting(GpsInfo const & info)
@@ -2267,17 +2031,18 @@ void Framework::CheckLocationForRouting(GpsInfo const & info)
   if (!IsRoutingActive())
     return;
 
-  m2::PointD const & position = GetLocationState()->Position();
-  if (m_routingSession.OnLocationPositionChanged(position, info) == RoutingSession::RouteNeedRebuild)
-  {
-    auto readyCallback = [this](Route const & route, IRouter::ResultCode code)
-    {
-      if (code == IRouter::NoError)
-        GetPlatform().RunOnGuiThread(bind(&Framework::InsertRoute, this, route));
-    };
+  ///@TODO UVR
+  //m2::PointD const & position = GetLocationState()->Position();
+  //if (m_routingSession.OnLocationPositionChanged(position, info) == RoutingSession::RouteNeedRebuild)
+  //{
+  //  auto readyCallback = [this](Route const & route, IRouter::ResultCode code)
+  //  {
+  //    if (code == IRouter::NoError)
+  //      GetPlatform().RunOnGuiThread(bind(&Framework::InsertRoute, this, route));
+  //  };
 
-    m_routingSession.RebuildRoute(position, readyCallback, m_progressCallback, 0 /* timeoutSec */);
-  }
+  //  m_routingSession.RebuildRoute(position, readyCallback, m_progressCallback, 0 /* timeoutSec */);
+  //}
 }
 
 void Framework::MatchLocationToRoute(location::GpsInfo & location, location::RouteMatchingInfo & routeMatchingInfo,
