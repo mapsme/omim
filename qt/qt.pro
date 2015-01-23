@@ -1,8 +1,7 @@
 # Main application in qt.
 ROOT_DIR = ..
-DEPENDENCIES = map render gui routing search storage indexer graphics platform anim geometry coding base \
+DEPENDENCIES = map drape_frontend routing search storage indexer drape platform geometry coding base \
                freetype expat fribidi tomcrypt jansson protobuf osrm stats_client minizip succinct
-
 
 !linux* {
   DEPENDENCIES += opening_hours \
@@ -113,17 +112,11 @@ SOURCES += \
     preferences_dialog.cpp \
     search_panel.cpp \
     update_dialog.cpp \
-
-CONFIG(drape){
-  SOURCES += \
-    drape_surface.cpp \
     qtoglcontext.cpp \
     qtoglcontextfactory.cpp \
-}
 
 HEADERS += \
     mainwindow.hpp \
-    widgets.hpp \
     draw_widget.hpp \
     proxystyle.hpp \
     slider_ctrl.hpp \
@@ -132,12 +125,7 @@ HEADERS += \
     preferences_dialog.hpp \
     search_panel.hpp \
     update_dialog.hpp \
-
-CONFIG(drape){
-  HEADERS += \
-    drape_surface.hpp \
     qtoglcontext.hpp \
     qtoglcontextfactory.hpp \
-}
 
 RESOURCES += res/resources.qrc
