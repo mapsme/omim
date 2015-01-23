@@ -95,7 +95,10 @@
                        kStatValue : visible ? kStatVisible : kStatHidden
                      }];
     cell.imageView.image = [UIImage imageNamed:(visible ? @"ic_show_light" : @"ic_hide_light")];
-    cat->SetVisible(visible);
+    {
+      BookmarkCategory::Guard guard(*cat);
+      guard.m_controller.SetIsVisible(visible);
+    }
     cat->SaveToKMLFile();
   }
 }
@@ -122,7 +125,7 @@
     NSString * title = @(cat->GetName().c_str());
     cell.textLabel.text = [self truncateString:title toWidth:(self.tableView.width - 122) withFont:cell.textLabel.font];
     cell.imageView.image = [UIImage imageNamed:(cat->IsVisible() ? @"ic_show_light" : @"ic_hide_light")];
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld", cat->GetBookmarksCount() + cat->GetTracksCount()];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld", cat->GetUserMarkCount() + cat->GetTracksCount()];
   }
   return cell;
 }
