@@ -185,8 +185,6 @@ Framework::Framework()
     m_fixedSearchResults(0),
     m_locationChangedSlotID(-1)
 {
-  m_ParsedMapApi.SetController(&m_bmManager.UserMarksGetController(UserMarkContainer::API_MARK));
-
   // Init strings bundle.
   // @TODO. There are hardcoded strings below which are defined in strings.txt as well.
   // It's better to use strings form strings.txt intead of hardcoding them here.
@@ -521,16 +519,17 @@ void Framework::ShowBookmark(BookmarkAndCategory const & bnc)
   StopLocationFollow();
 
   // show ballon above
-  Bookmark const * bmk = m_bmManager.GetBmCategory(bnc.first)->GetBookmark(bnc.second);
+  Bookmark const * bmk = static_cast<Bookmark const *>(m_bmManager.GetBmCategory(bnc.first)->GetUserMark(bnc.second));
 
   double scale = bmk->GetScale();
   if (scale == -1.0)
     scale = scales::GetUpperComfortScale();
 
-  ShowRectExVisibleScale(df::GetRectForDrawScale(scale, bmk->GetOrg()));
-  Bookmark * mark = GetBmCategory(bnc.first)->GetBookmark(bnc.second);
-  ActivateUserMark(mark);
-  m_balloonManager.OnShowMark(mark);
+  ///@TODO UVR
+//  ShowRectExVisibleScale(df::GetRectForDrawScale(scale, bmk->GetOrg()));
+//  Bookmark * mark = GetBmCategory(bnc.first)->GetBookmark(bnc.second);
+//  ActivateUserMark(mark);
+//  m_balloonManager.OnShowMark(mark);
 }
 
 void Framework::ShowTrack(Track const & track)
@@ -775,8 +774,7 @@ void Framework::ShowRect(m2::RectD rect)
   CheckMinGlobalRect(rect);
 
   m_navigator.SetFromRect(m2::AnyRectD(rect));
-  ///@TODO UVR
-  //Invalidate();
+  UpdateEngineViewport();
 }
 
 void Framework::ShowRectEx(m2::RectD rect)
@@ -807,9 +805,13 @@ void Framework::ShowRectFixedAR(m2::AnyRectD const & rect)
   etalonRect.Offset(pxCenter);
 
   m_navigator.SetFromRects(rect, etalonRect);
+  UpdateEngineViewport();
+}
 
-  ///@TODO UVR
-  //Invalidate();
+void Framework::UpdateEngineViewport()
+{
+  if (!m_drapeEngine.IsNull())
+    m_drapeEngine->UpdateCoverage(m_navigator.Screen());
 }
 
 void Framework::UpdateUserViewportChanged()
@@ -833,12 +835,7 @@ void Framework::UpdateSearchResults(search::Results const & results)
 void Framework::OnSearchResultsCallbackUI(search::Results const & results)
 {
   if (IsISActive())
-  {
     FillSearchResultsMarks(results);
-
-    ///@TODO UVR
-    //Invalidate();
-  }
 }
 
 void Framework::ClearAllCaches()
@@ -876,8 +873,7 @@ void Framework::EnterForeground()
 void Framework::ShowAll()
 {
   SetMaxWorldRect();
-  ///@TODO UVR
-  //Invalidate();
+  UpdateEngineViewport();
 }
 
 /// @name Drag implementation.
@@ -1137,10 +1133,10 @@ void Framework::LoadSearchResultMetadata(search::Result & res) const
 
 void Framework::ShowSearchResult(search::Result const & res)
 {
-  UserMarkContainer::Type const type = UserMarkContainer::SEARCH_MARK;
-  m_bmManager.UserMarksSetVisible(type, true);
-  m_bmManager.UserMarksClear(type);
-  m_bmManager.UserMarksSetDrawable(type, false);
+  UserMarkControllerGuard guard(m_bmManager, UserMarkType::SEARCH_MARK);
+  guard.m_controller.SetIsDrawable(false);
+  guard.m_controller.Clear();
+  guard.m_controller.SetIsVisible(true);
 
   m_lastSearch.Clear();
   m_fixedSearchResults = 0;
@@ -1182,7 +1178,7 @@ void Framework::ShowSearchResult(search::Result const & res)
   search::AddressInfo info;
   info.MakeFrom(res);
 
-  SearchMarkPoint * mark = static_cast<SearchMarkPoint *>(m_bmManager.UserMarksAddMark(type, center));
+  SearchMarkPoint * mark = static_cast<SearchMarkPoint *>(guard.m_controller.CreateUserMark(center));
   mark->SetInfo(info);
 
   m_balloonManager.OnShowMark(mark);
@@ -1246,25 +1242,20 @@ size_t Framework::ShowAllSearchResults()
       viewport.SetSizesToIncludePoint(pt);
 
       ShowRectFixedAR(viewport);
+      ///@TODO UVR
       //StopLocationFollow();
     }
-    else
-      minInd = -1;
   }
-
-  if (minInd == -1);
-    ///@TODO UVR
-    //Invalidate();
 
   return count;
 }
 
 void Framework::FillSearchResultsMarks(search::Results const & results)
 {
-  UserMarkContainer::Type const type = UserMarkContainer::SEARCH_MARK;
-  m_bmManager.UserMarksSetVisible(type, true);
-  m_bmManager.UserMarksSetDrawable(type, true);
-  m_bmManager.UserMarksClear(type, m_fixedSearchResults);
+  UserMarkControllerGuard guard(m_bmManager, UserMarkType::SEARCH_MARK);
+  guard.m_controller.SetIsVisible(true);
+  guard.m_controller.SetIsDrawable(true);
+  guard.m_controller.Clear(m_fixedSearchResults);
 
   size_t const count = results.GetCount();
   for (size_t i = 0; i < count; ++i)
@@ -1278,7 +1269,7 @@ void Framework::FillSearchResultsMarks(search::Results const & results)
       info.MakeFrom(r);
 
       m2::PointD const pt = r.GetFeatureCenter();
-      SearchMarkPoint * mark = static_cast<SearchMarkPoint *>(m_bmManager.UserMarksAddMark(type, pt));
+      SearchMarkPoint * mark = static_cast<SearchMarkPoint *>(guard.m_controller.CreateUserMark(pt));
       mark->SetInfo(info);
     }
   }
@@ -1287,12 +1278,8 @@ void Framework::FillSearchResultsMarks(search::Results const & results)
 void Framework::CancelInteractiveSearch()
 {
   m_lastSearch.Clear();
-  m_bmManager.UserMarksClear(UserMarkContainer::SEARCH_MARK);
-
+  UserMarkControllerGuard(m_bmManager, UserMarkType::SEARCH_MARK).m_controller.Clear();
   m_fixedSearchResults = 0;
-
-  ///@TODO UVR
-  //Invalidate();
 }
 
 bool Framework::GetDistanceAndAzimut(m2::PointD const & point,
@@ -1349,6 +1336,11 @@ void Framework::CreateDrapeEngine(dp::RefPointer<dp::OGLContextFactory> contextF
 
   m_drapeEngine.Reset(new df::DrapeEngine(contextFactory, df::Viewport(vs, 0, 0, w, h), df::MapDataProvider(idReadFn, featureReadFn)));
   OnSize(w, h);
+}
+
+dp::RefPointer<df::DrapeEngine> Framework::GetDrapeEngine()
+{
+  return m_drapeEngine.GetRefPointer();
 }
 
 void Framework::DestroyDrapeEngine()
@@ -1426,18 +1418,22 @@ bool Framework::ShowMapForURL(string const & url)
   }
   else if (StartsWith(url, "mapswithme://") || StartsWith(url, "mwm://"))
   {
-    m_bmManager.UserMarksClear(UserMarkContainer::API_MARK);
+    UserMarkControllerGuard guard(m_bmManager, UserMarkType::API_MARK);
+    guard.m_controller.Clear();
 
-    if (m_ParsedMapApi.SetUriAndParse(url))
+    apiMark = url_scheme::ParseUrl(guard.m_controller, url, m_ParsedMapApi, rect);
+
+    if (m_ParsedMapApi.m_isValid)
     {
-      if (!m_ParsedMapApi.GetViewportRect(rect))
-        rect = df::GetWorldRect();
-
-      if ((apiMark = m_ParsedMapApi.GetSinglePoint()))
+      guard.m_controller.SetIsVisible(true);
+      guard.m_controller.SetIsDrawable(true);
+      if (apiMark)
         result = NEED_CLICK;
       else
         result = NO_NEED_CLICK;
     }
+    else
+      guard.m_controller.SetIsVisible(false);
   }
   else  // Actually, we can parse any geo url scheme with correct coordinates.
   {
@@ -1666,26 +1662,27 @@ Navigator & Framework::GetNavigator()
 
 void Framework::ActivateUserMark(UserMark const * mark, bool needAnim)
 {
-  if (mark != UserMarkContainer::UserMarkForMyPostion())
-    DisconnectMyPositionUpdate();
-  m_bmManager.ActivateMark(mark, needAnim);
+  ///@TODO UVR
+//  if (mark != UserMarkContainer::UserMarkForMyPostion())
+//    DisconnectMyPositionUpdate();
+//  m_bmManager.ActivateMark(mark, needAnim);
 }
 
 bool Framework::HasActiveUserMark() const
 {
-  return m_bmManager.UserMarkHasActive();
+  return false;
+  ///@TODO UVR
+  //return m_bmManager.UserMarkHasActive();
 }
 
 UserMark const * Framework::GetUserMark(m2::PointD const & pxPoint, bool isLongPress)
 {
   // The main idea is to calculate POI rank based on the frequency users are clicking them.
   UserMark const * mark = GetUserMarkWithoutLogging(pxPoint, isLongPress);
-
   alohalytics::TStringMap details {{"isLongPress", isLongPress ? "1" : "0"}};
   if (mark)
     mark->FillLogEvent(details);
   alohalytics::Stats::Instance().LogEvent("$GetUserMark", details);
-
   return mark;
 }
 
@@ -1777,9 +1774,9 @@ BookmarkAndCategory Framework::FindBookmark(UserMark const * mark) const
 
   ASSERT(result.first != empty.first, ());
   BookmarkCategory const * cat = GetBmCategory(result.first);
-  for (size_t i = 0; i < cat->GetBookmarksCount(); ++i)
+  for (size_t i = 0; i < cat->GetUserMarkCount(); ++i)
   {
-    if (mark == cat->GetBookmark(i))
+    if (mark == cat->GetUserMark(i))
     {
       result.second = i;
       break;
@@ -1829,7 +1826,7 @@ string Framework::CodeGe0url(double lat, double lon, double zoomLevel, string co
 
 string Framework::GenerateApiBackUrl(ApiMarkPoint const & point)
 {
-  string res = m_ParsedMapApi.GetGlobalBackUrl();
+  string res = m_ParsedMapApi.m_globalBackUrl;
   if (!res.empty())
   {
     double lat, lon;

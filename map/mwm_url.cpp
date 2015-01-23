@@ -24,58 +24,7 @@ static int const INVALID_LAT_VALUE = -1000;
 
 bool IsInvalidApiPoint(ApiPoint const & p) { return p.m_lat == INVALID_LAT_VALUE; }
 
-}  // unnames namespace
-
-ParsedMapApi::ParsedMapApi()
-  : m_controller(NULL)
-  , m_version(0)
-  , m_zoomLevel(0.0)
-  , m_goBackOnBalloonClick(false)
-{
-}
-
-void ParsedMapApi::SetController(UserMarkContainer::Controller * controller)
-{
-  m_controller = controller;
-}
-
-bool ParsedMapApi::SetUriAndParse(string const & url)
-{
-  Reset();
-  return Parse(url_scheme::Uri(url));
-}
-
-bool ParsedMapApi::IsValid() const
-{
-  ASSERT(m_controller != NULL,  ());
-  return m_controller->GetUserMarkCount() > 0;
-}
-
-bool ParsedMapApi::Parse(Uri const & uri)
-{
-  ASSERT(m_controller != NULL, ());
-
-  string const & scheme = uri.GetScheme();
-  if ((scheme != "mapswithme" && scheme != "mwm") || uri.GetPath() != "map")
-    return false;
-
-  vector<ApiPoint> points;
-  uri.ForEachKeyValue(bind(&ParsedMapApi::AddKeyValue, this, _1, _2, ref(points)));
-  points.erase(remove_if(points.begin(), points.end(), &IsInvalidApiPoint), points.end());
-
-  for (size_t i = 0; i < points.size(); ++i)
-  {
-    ApiPoint const & p = points[i];
-    m2::PointD glPoint(MercatorBounds::FromLatLon(p.m_lat, p.m_lon));
-    ApiMarkPoint * mark = static_cast<ApiMarkPoint *>(m_controller->CreateUserMark(glPoint));
-    mark->SetName(p.m_name);
-    mark->SetID(p.m_id);
-  }
-
-  return true;
-}
-
-void ParsedMapApi::AddKeyValue(string key, string const & value, vector<ApiPoint> & points)
+void ParseKeyValue(string key, string const & value, vector<ApiPoint> & points, ParsedMapApi & parsedApi)
 {
   strings::AsciiToLower(key);
 
@@ -116,8 +65,8 @@ void ParsedMapApi::AddKeyValue(string key, string const & value, vector<ApiPoint
   }
   else if (key == "z")
   {
-    if (!strings::to_double(value, m_zoomLevel))
-      m_zoomLevel = 0.0;
+    if (!strings::to_double(value, parsedApi.m_zoomLevel))
+      parsedApi.m_zoomLevel = 0.0;
   }
   else if (key == "n")
   {
@@ -137,67 +86,76 @@ void ParsedMapApi::AddKeyValue(string key, string const & value, vector<ApiPoint
   {
     // Fix missing :// in back url, it's important for iOS
     if (value.find("://") == string::npos)
-      m_globalBackUrl = value + "://";
+      parsedApi.m_globalBackUrl = value + "://";
     else
-      m_globalBackUrl = value;
+      parsedApi.m_globalBackUrl = value;
   }
   else if (key == "v")
   {
-    if (!strings::to_int(value, m_version))
-      m_version = 0;
+    if (!strings::to_int(value, parsedApi.m_version))
+      parsedApi.m_version = 0;
   }
   else if (key == "appname")
-  {
-    m_appTitle = value;
-  }
+    parsedApi.m_appTitle = value;
   else if (key == "balloonaction")
-  {
-    m_goBackOnBalloonClick = true;
-  }
+    parsedApi.m_goBackOnBalloonClick = true;
 }
 
-void ParsedMapApi::Reset()
-{
-  m_globalBackUrl.clear();
-  m_appTitle.clear();
-  m_version = 0;
-  m_zoomLevel = 0.0;
-  m_goBackOnBalloonClick = false;
-}
+}  // unnames namespace
 
-bool ParsedMapApi::GetViewportRect(m2::RectD & rect) const
+UserMark const * ParseUrl(UserMarksController & controller, string const & url,
+                          ParsedMapApi & apiData, m2::RectD & rect)
 {
-  ASSERT(m_controller != NULL, ());
-  size_t markCount = m_controller->GetUserMarkCount();
-  if (markCount == 1 && m_zoomLevel >= 1)
+  apiData = ParsedMapApi();
+  auto beforeReturnOnFail = [&apiData, &rect]
   {
-    double zoom = min(static_cast<double>(scales::GetUpperComfortScale()), m_zoomLevel);
-    rect = df::GetRectForDrawScale(zoom, m_controller->GetUserMark(0)->GetOrg());
-    return true;
-  }
-  else
+    apiData.m_isValid = false;
+    rect.MakeEmpty();
+  };
+
+  url_scheme::Uri uri = url_scheme::Uri(url);
+  string const & scheme = uri.GetScheme();
+  if ((scheme != "mapswithme" && scheme != "mwm") || uri.GetPath() != "map")
   {
-    m2::RectD result;
-    for (size_t i = 0; i < m_controller->GetUserMarkCount(); ++i)
-      result.Add(m_controller->GetUserMark(i)->GetOrg());
-
-    if (result.IsValid())
-    {
-      rect = result;
-      return true;
-    }
-
-    return false;
+    beforeReturnOnFail();
+    return nullptr;
   }
-}
 
-UserMark const * ParsedMapApi::GetSinglePoint() const
-{
-  ASSERT(m_controller != NULL, ());
-  if (m_controller->GetUserMarkCount() != 1)
-    return 0;
+  vector<ApiPoint> points;
+  uri.ForEachKeyValue(bind(&ParseKeyValue, _1, _2, ref(points), ref(apiData)));
+  points.erase(remove_if(points.begin(), points.end(), &IsInvalidApiPoint), points.end());
 
-  return m_controller->GetUserMark(0);
+  if (points.empty())
+  {
+    beforeReturnOnFail();
+    return nullptr;
+  }
+
+  apiData.m_isValid = true;
+  for (size_t i = 0; i < points.size(); ++i)
+  {
+    ApiPoint const & p = points[i];
+    m2::PointD glPoint(MercatorBounds::FromLatLon(p.m_lat, p.m_lon));
+
+    ApiMarkPoint * mark = static_cast<ApiMarkPoint *>(controller.CreateUserMark(glPoint));
+    mark->SetName(p.m_name);
+    mark->SetID(p.m_id);
+
+    rect.Add(glPoint);
+  }
+
+  ASSERT(controller.GetUserMarkCount() > 0, ());
+  if (controller.GetUserMarkCount() > 1)
+    return nullptr;
+
+  UserMark const * result = controller.GetUserMark(0);
+
+  double zoom = min(static_cast<double>(scales::GetUpperComfortScale()), apiData.m_zoomLevel);
+  rect = df::GetRectForDrawScale(zoom, result->GetOrg());
+  if (!rect.IsValid())
+    rect = df::GetWorldRect();
+
+  return result;
 }
 
 }
