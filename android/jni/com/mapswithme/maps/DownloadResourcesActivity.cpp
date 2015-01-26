@@ -82,7 +82,6 @@ extern "C"
   JNIEXPORT jint JNICALL
   Java_com_mapswithme_maps_DownloadResourcesActivity_getBytesToDownload(JNIEnv * env, jobject thiz)
   {
-    LOG(LINFO, ("getBytes start"));
     // clear all
     g_filesToDownload.clear();
     g_totalBytesToDownload = 0;
@@ -91,59 +90,45 @@ extern "C"
     Platform & pl = GetPlatform();
     string const path = pl.WritableDir();
 
-    LOG(LINFO, ("UVR : Try Open external resources"));
     ReaderStreamBuf buffer(pl.GetReader("external_resources.txt"));
     istream in(&buffer);
-    LOG(LINFO, ("UVR : Open external resources"));
 
     string name;
     int size;
     while (true)
     {
-      LOG(LINFO, ("UVR : read name"));
       in >> name;
-      LOG(LINFO, ("UVR : name readed = ", name));
       if (!in.good())
         break;
 
-      LOG(LINFO, ("UVR : read size"));
       in >> size;
-      LOG(LINFO, ("UVR : size readed = ", size));
       if (!in.good())
         break;
 
-      LOG(LINFO, ("UVR : Need to download call"));
       if (NeedToDownload(pl, name, size))
       {
-        LOG(LDEBUG, ("UVR : Should download", name, "sized", size, "bytes"));
-
         FileToDownload f;
         f.m_pathOnSdcard = path + name;
         f.m_fileName = name;
         f.m_fileSize = size;
 
-        LOG(LINFO, ("UVR : Push file to download"));
         g_filesToDownload.push_back(f);
         g_totalBytesToDownload += size;
       }
     }
 
-    LOG(LINFO, ("UVR : Try Has space"));
     int const res = HasSpaceForFiles(pl, path, g_totalBytesToDownload);
     switch (res)
     {
     case ERR_STORAGE_DISCONNECTED:
-      LOG(LWARNING, ("UVR : External file system is not available"));
+      LOG(LWARNING, ("External file system is not available"));
       break;
     case ERR_NOT_ENOUGH_FREE_SPACE:
-      LOG(LWARNING, ("UVR : Not enough space to extract files"));
+      LOG(LWARNING, ("Not enough space to extract files"));
       break;
     };
 
-    LOG(LINFO, ("UVR : Has space"));
     g_currentRequest.reset();
-
-    LOG(LINFO, ("UVR : Return = ", res));
     return res;
   }
 
