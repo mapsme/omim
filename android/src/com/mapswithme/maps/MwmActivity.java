@@ -162,6 +162,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
   @Override
   public void onRenderingInitialized()
   {
+	mRenderingInitialized = true;
+
     runOnUiThread(new Runnable()
     {
       @Override
@@ -293,11 +295,9 @@ public class MwmActivity extends BaseMwmFragmentActivity
     }
     setContentView(R.layout.map);
 
-    SurfaceView surface = (SurfaceView)findViewById(R.id.map_surfaceview);
-    surface.setOnTouchListener(this);
-    SurfaceHolder holder = surface.getHolder();
-    holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
-    holder.addCallback(this);
+    mSurfaceView = (SurfaceView)findViewById(R.id.map_surfaceview);
+    mSurfaceView.setOnTouchListener(this);
+    mSurfaceView.getHolder().addCallback(this);
     */
     super.onCreate(savedInstanceState);
 
