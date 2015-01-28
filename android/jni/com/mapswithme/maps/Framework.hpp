@@ -3,6 +3,7 @@
 #include <jni.h>
 
 #include "../../../../../drape/pointers.hpp"
+#include "../../../../../drape/oglcontextfactory.hpp"
 
 #include "../../../../../map/framework.hpp"
 
@@ -21,15 +22,13 @@
 #include "../../../../../std/shared_ptr.hpp"
 #include "../../../../../std/map.hpp"
 
-#include "../opengl/androidoglcontextfactory.hpp"
-
 namespace android
 {
   class Framework : public storage::CountryTree::CountryTreeListener,
                     public storage::ActiveMapsLayout::ActiveMapsListener
   {
   private:
-    dp::MasterPointer<AndroidOGLContextFactory> m_contextFactory;
+    dp::MasterPointer<dp::ThreadSafeFactory> m_contextFactory;
     ::Framework m_work;
 
     typedef shared_ptr<jobject> TJobject;
