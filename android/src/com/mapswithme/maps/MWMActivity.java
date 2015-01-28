@@ -141,6 +141,7 @@ public class MWMActivity extends BaseMwmFragmentActivity
   private TextView mTvTotalTime;
   private ImageView mIvTurn;
   private TextView mTvTurnDistance;
+  private SurfaceView mSurfaceView;
 
   private boolean mNeedCheckUpdate = true;
   private int mLocationStateModeListenerId = LocationState.SLOT_UNDEFINED;
@@ -259,19 +260,14 @@ public class MWMActivity extends BaseMwmFragmentActivity
   @Override
   public void onRenderingInitialized()
   {
-    runOnUiThread(new Runnable()
-    {
-      @Override
-      public void run()
-      {
-        // Run all checks in main thread after rendering is initialized.
-        checkMeasurementSystem();
-        checkUpdateMaps();
-        checkKitkatMigrationMove();
-        checkLiteMapsInPro();
-        checkUserMarkActivation();
-      }
-    });
+    mRenderingInitialized = true;
+
+    // Run all checks in main thread after rendering is initialized.
+    checkMeasurementSystem();
+    checkUpdateMaps();
+    checkKitkatMigrationMove();
+    checkLiteMapsInPro();
+    checkUserMarkActivation();
 
     runTasks();
   }
@@ -501,11 +497,9 @@ public class MWMActivity extends BaseMwmFragmentActivity
     }
     setContentView(R.layout.map);
 
-    SurfaceView surface = (SurfaceView)findViewById(R.id.map_surfaceview);
-    surface.setOnTouchListener(this);
-    SurfaceHolder holder = surface.getHolder();
-    holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
-    holder.addCallback(this);
+    mSurfaceView = (SurfaceView)findViewById(R.id.map_surfaceview);
+    mSurfaceView.setOnTouchListener(this);
+    mSurfaceView.getHolder().addCallback(this);
     */
     super.onCreate(savedInstanceState);
 
