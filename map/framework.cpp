@@ -1957,6 +1957,10 @@ void Framework::InsertRoute(Route const & route)
   RouteTrack track(route.GetPoly());
   track.SetName(route.GetName());
   // @TODO UVR
+  //float const visScale = df::VisualParams::Instance().GetVisualScale();
+
+  //RouteTrack track(route.GetPoly());
+  //track.SetName(route.GetName());
   //track.SetTurnsGeometry(route.GetTurnsGeometry());
 
   /// @todo Consider a style parameter for the route color.

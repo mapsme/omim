@@ -66,7 +66,7 @@ SUBDIRS = 3party \
             stats \
             drape_frontend \
             map \
-            stats/client \
+            stats \
 }
 
 win32 {
