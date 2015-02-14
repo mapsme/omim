@@ -68,10 +68,3 @@ SUBDIRS = 3party \
             map \
             stats \
 }
-
-win32 {
-  SUBDIRS -= \
-    drape drape/drape_tests \
-    drape_frontend drape_frontend/drape_frontend_tests \
-    drape_head
-}
