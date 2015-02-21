@@ -41,6 +41,7 @@ SOURCES += \
     map_data_provider.cpp \
     user_mark_shapes.cpp \
     user_marks_provider.cpp \
+    gui_skin.cpp \
 
 HEADERS += \
     engine_context.hpp \
@@ -79,3 +80,4 @@ HEADERS += \
     map_data_provider.hpp \
     user_mark_shapes.hpp \
     user_marks_provider.hpp \
+    gui_skin.hpp \
