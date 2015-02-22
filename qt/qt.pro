@@ -1,11 +1,8 @@
 # Main application in qt.
 ROOT_DIR = ..
-DEPENDENCIES = map drape_frontend routing search storage indexer drape platform anim geometry coding base \
-               bzip2 freetype expat fribidi tomcrypt jansson protobuf osrm stats_client zlib succinct
 
-drape {
-  DEPENDENCIES *= drape_frontend drape
-}
+DEPENDENCIES = map drape_frontend routing search storage indexer drape_gui drape platform anim geometry coding base \
+               bzip2 freetype expat fribidi tomcrypt jansson protobuf osrm stats_client zlib succinct
 
 include($$ROOT_DIR/common.pri)
 

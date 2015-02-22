@@ -27,8 +27,8 @@ SUBDIRS = 3party \
           platform/platform_tests \
           anim \
           qt_tstfrm \
-          drape \
-          drape/drape_tests \
+          drape drape/drape_tests \
+          drape_gui drape_gui/drape_gui_tests \
           graphics \
           gui \
           render render/render_tests \
@@ -56,6 +56,7 @@ SUBDIRS = 3party \
             drape \
             platform \
             anim \
+            drape_gui \
             indexer \
             routing \
             storage \
