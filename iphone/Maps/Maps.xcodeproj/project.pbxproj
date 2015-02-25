@@ -144,6 +144,7 @@
 		97FC99E019C1A2CD00C1CF98 /* resources-xxhdpi in Resources */ = {isa = PBXBuildFile; fileRef = 97FC99DB19C1A2CD00C1CF98 /* resources-xxhdpi */; };
 		A32B6D4C1A14980500E54A65 /* iosOGLContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = A32B6D491A14980500E54A65 /* iosOGLContext.mm */; };
 		A32B6D4D1A14980500E54A65 /* iosOGLContextFactory.mm in Sources */ = {isa = PBXBuildFile; fileRef = A32B6D4B1A14980500E54A65 /* iosOGLContextFactory.mm */; };
+		A3A65D511A9DD45B0057362E /* resources-default in Resources */ = {isa = PBXBuildFile; fileRef = A3A65D501A9DD45B0057362E /* resources-default */; };
 		A3CC2CD41A1C723900B832E1 /* LocationPredictor.mm in Sources */ = {isa = PBXBuildFile; fileRef = A3CC2CD21A1C723900B832E1 /* LocationPredictor.mm */; };
 		B00510FB1A11015900A61AA4 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 972CDCC51887F1B7006641CA /* CFNetwork.framework */; };
 		B00511021A1101E000A61AA4 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97C98655186C734000AF7E9E /* AVFoundation.framework */; };
@@ -509,6 +510,7 @@
 		A32B6D491A14980500E54A65 /* iosOGLContext.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iosOGLContext.mm; path = Platform/opengl/iosOGLContext.mm; sourceTree = "<group>"; };
 		A32B6D4A1A14980500E54A65 /* iosOGLContextFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iosOGLContextFactory.h; path = Platform/opengl/iosOGLContextFactory.h; sourceTree = "<group>"; };
 		A32B6D4B1A14980500E54A65 /* iosOGLContextFactory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iosOGLContextFactory.mm; path = Platform/opengl/iosOGLContextFactory.mm; sourceTree = "<group>"; };
+		A3A65D501A9DD45B0057362E /* resources-default */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "resources-default"; sourceTree = "<group>"; };
 		A3CC2CD21A1C723900B832E1 /* LocationPredictor.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LocationPredictor.mm; sourceTree = "<group>"; };
 		A3CC2CD31A1C723900B832E1 /* LocationPredictor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationPredictor.h; sourceTree = "<group>"; };
 		B00511031A1101F600A61AA4 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -1617,6 +1619,7 @@
 				978D4A30199A11E600D72CA7 /* faq.html */,
 				FAAEA7D0161BD26600CCD661 /* synonyms.txt */,
 				F7FDD822147F30CC005900FA /* drules_proto.bin */,
+				A3A65D501A9DD45B0057362E /* resources-default */,
 				97FC99D919C1A2CD00C1CF98 /* resources-mdpi */,
 				97FC99DA19C1A2CD00C1CF98 /* resources-xhdpi */,
 				97FC99DB19C1A2CD00C1CF98 /* resources-xxhdpi */,
@@ -1914,6 +1917,7 @@
 				EE026F0611D6AC0D00645242 /* classificator.txt in Resources */,
 				FA065FED128614C400FEA989 /* MainWindow-iPad.xib in Resources */,
 				FA46DA2C12D4166E00968C36 /* countries.txt in Resources */,
+				A3A65D511A9DD45B0057362E /* resources-default in Resources */,
 				EE583CBB12F773F00042CBE3 /* unicode_blocks.txt in Resources */,
 				EEFE7C1412F8C9E1006AF8C3 /* fonts_blacklist.txt in Resources */,
 				F64F199E1AB81A00006EAF7E /* MWMDefaultAlert.xib in Resources */,
@@ -2628,6 +2632,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					../../3party/boost,
+					../../3party/glm,
 					../../,
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
@@ -2643,6 +2648,7 @@
 					"-lmap",
 					"-lsearch",
 					"-ldrape_frontend",
+					"-ldrape_gui",
 					"-ldrape",
 					"-lstorage",
 					"-lrouting",
@@ -2734,6 +2740,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					../../3party/boost,
+					../../3party/glm,
 					../../,
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
@@ -2750,6 +2757,7 @@
 					"-lmap",
 					"-lsearch",
 					"-ldrape_frontend",
+					"-ldrape_gui",
 					"-ldrape",
 					"-lstorage",
 					"-lrouting",
@@ -2845,6 +2853,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					../../3party/boost,
+					../../3party/glm,
 					../../,
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
@@ -2860,6 +2869,7 @@
 					"-lmap",
 					"-lsearch",
 					"-ldrape_frontend",
+					"-ldrape_gui",
 					"-ldrape",
 					"-lstorage",
 					"-lrouting",
@@ -2956,6 +2966,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					../../3party/boost,
+					../../3party/glm,
 					../../,
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
@@ -2971,6 +2982,7 @@
 					"-lmap",
 					"-lsearch",
 					"-ldrape_frontend",
+					"-ldrape_gui",
 					"-ldrape",
 					"-lstorage",
 					"-lrouting",
@@ -3065,6 +3077,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					../../3party/boost,
+					../../3party/glm,
 					../../,
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
@@ -3081,6 +3094,7 @@
 					"-lmap",
 					"-lsearch",
 					"-ldrape_frontend",
+					"-ldrape_gui",
 					"-ldrape",
 					"-lstorage",
 					"-lrouting",
@@ -3174,6 +3188,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					../../3party/boost,
+					../../3party/glm,
 					../../,
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
@@ -3189,6 +3204,7 @@
 					"-lmap",
 					"-lsearch",
 					"-ldrape_frontend",
+					"-ldrape_gui",
 					"-ldrape",
 					"-lstorage",
 					"-lrouting",
