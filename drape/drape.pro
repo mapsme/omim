@@ -21,3 +21,4 @@ OTHER_FILES += \
     shaders/line_fragment_shader.fsh \
     shaders/text_fragment_shader.fsh \
     shaders/text_vertex_shader.vsh \
+    shaders/compass_vertex_shader.vsh
