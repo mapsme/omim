@@ -44,6 +44,7 @@ SOURCES += \
     $$DRAPE_DIR/utils/vertex_decl.cpp \
     $$DRAPE_DIR/utils/projection.cpp \
     $$DRAPE_DIR/utils/gpu_mem_tracker.cpp \
+    $$DRAPE_DIR/fribidi.cpp
 
 HEADERS += \
     $$DRAPE_DIR/data_buffer.hpp \
@@ -93,3 +94,4 @@ HEADERS += \
     $$DRAPE_DIR/utils/vertex_decl.hpp \
     $$DRAPE_DIR/utils/projection.hpp \
     $$DRAPE_DIR/utils/gpu_mem_tracker.hpp \
+    $$DRAPE_DIR/fribidi.hpp
