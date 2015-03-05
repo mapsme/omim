@@ -16,7 +16,6 @@ HEADERS += \
     navigator.hpp \
     information_display.hpp \
     location_state.hpp \
-    ruler.hpp \
     bookmark.hpp \
     geourl_process.hpp \
     country_status_display.hpp \
@@ -44,7 +43,6 @@ SOURCES += \
     navigator.cpp \
     information_display.cpp \
     location_state.cpp \
-    ruler.cpp \
     address_finder.cpp \
     geourl_process.cpp \
     bookmark.cpp \
