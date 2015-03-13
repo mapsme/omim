@@ -856,11 +856,17 @@ void Framework::EnterBackground()
 #endif
 
   dlg_settings::EnterBackground(my::Timer::LocalTime() - m_StartForegroundTime);
+
+  if (!m_drapeEngine.IsNull())
+    m_drapeEngine->SetRenderingEnabled(false);
 }
 
 void Framework::EnterForeground()
 {
   m_StartForegroundTime = my::Timer::LocalTime();
+
+  if (!m_drapeEngine.IsNull())
+    m_drapeEngine->SetRenderingEnabled(true);
 }
 
 void Framework::ShowAll()
