@@ -86,7 +86,7 @@
   }
 }
 
-- (void)dealloc
+- (void)deallocateNative
 {
   GetFramework().PrepareToShutdown();
   m_factory.Destroy();
