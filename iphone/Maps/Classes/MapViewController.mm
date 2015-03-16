@@ -533,6 +533,7 @@ typedef NS_OPTIONS(NSUInteger, MapInfoView)
 - (void)onTerminate
 {
   GetFramework().SaveState();
+  [(EAGLView *)self.view deallocateNative];
 }
 
 - (void)onEnterBackground
