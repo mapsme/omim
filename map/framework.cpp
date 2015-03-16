@@ -862,6 +862,8 @@ void Framework::EnterBackground()
 #ifndef OMIM_OS_ANDROID
   ClearAllCaches();
 #endif
+
+  ASSERT(!m_drapeEngine.IsNull(), ("Drape engine has not been initialized yet"));
   if (!m_drapeEngine.IsNull())
     m_drapeEngine->SetRenderingEnabled(false);
 }
@@ -870,6 +872,7 @@ void Framework::EnterForeground()
 {
   m_startForegroundTime = my::Timer::LocalTime();
 
+  ASSERT(!m_drapeEngine.IsNull(), ("Drape engine has not been initialized yet"));
   if (!m_drapeEngine.IsNull())
     m_drapeEngine->SetRenderingEnabled(true);
 }
