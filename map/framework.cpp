@@ -857,6 +857,7 @@ void Framework::EnterBackground()
 
   dlg_settings::EnterBackground(my::Timer::LocalTime() - m_StartForegroundTime);
 
+  ASSERT(!m_drapeEngine.IsNull(), ("Drape engine has not been initialized yet"));
   if (!m_drapeEngine.IsNull())
     m_drapeEngine->SetRenderingEnabled(false);
 }
@@ -865,6 +866,7 @@ void Framework::EnterForeground()
 {
   m_StartForegroundTime = my::Timer::LocalTime();
 
+  ASSERT(!m_drapeEngine.IsNull(), ("Drape engine has not been initialized yet"));
   if (!m_drapeEngine.IsNull())
     m_drapeEngine->SetRenderingEnabled(true);
 }
