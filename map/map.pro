@@ -11,57 +11,60 @@ INCLUDEPATH *= $$ROOT_DIR/3party/protobuf/src $$ROOT_DIR/3party/expat/lib $$ROOT
 include($$ROOT_DIR/common.pri)
 
 HEADERS += \
-    framework.hpp \
+    active_maps_layout.hpp \
+    alfa_animation_task.hpp \
+    anim_phase_chain.hpp \
+    animator.hpp \
+    bookmark.hpp \
+    bookmark_manager.hpp \
+    change_viewport_task.hpp \
+    compass_arrow.hpp \
+    country_tree.hpp \
+    events.hpp \
     feature_vec_model.hpp \
-    navigator.hpp \
+    ge0_parser.hpp \
+    geourl_process.hpp \
     information_display.hpp \
     location_state.hpp \
-    bookmark.hpp \
-    geourl_process.hpp \
-    rotate_screen_task.hpp \
-    compass_arrow.hpp \
-    animator.hpp \
     move_screen_task.hpp \
-    change_viewport_task.hpp \
     mwm_url.hpp \
-    bookmark_manager.hpp \
-    ge0_parser.hpp \
-    track.hpp \
-    alfa_animation_task.hpp \
-    user_mark_container.hpp \
-    user_mark.hpp \
-    anim_phase_chain.hpp \
+    navigator.hpp \
     pin_click_manager.hpp \
-    country_tree.hpp \
-    active_maps_layout.hpp \
-    navigator_utils.hpp \
+    route_track.hpp \
+    routing_session.hpp \
+    storage_bridge.hpp \
+    track.hpp \
+    user_mark.hpp \
+    user_mark_container.hpp \
+    framework.hpp \
 
 SOURCES += \
-    feature_vec_model.cpp \
+    ../api/src/c/api-client.c \
+    active_maps_layout.cpp \
+    address_finder.cpp \
+    alfa_animation_task.cpp \
+    anim_phase_chain.cpp \
+    animator.cpp \
+    bookmark.cpp \
+    bookmark_manager.cpp \
+    change_viewport_task.cpp \
+    compass_arrow.cpp \
+    country_tree.cpp \
     framework.cpp \
-    navigator.cpp \
+    ge0_parser.cpp \
+    geourl_process.cpp \
     information_display.cpp \
     location_state.cpp \
-    address_finder.cpp \
-    geourl_process.cpp \
-    bookmark.cpp \
-    rotate_screen_task.cpp \
-    compass_arrow.cpp \
-    animator.cpp \
     move_screen_task.cpp \
-    change_viewport_task.cpp \
     mwm_url.cpp \
-    bookmark_manager.cpp \
-    ge0_parser.cpp \
-    ../api/src/c/api-client.c \
-    track.cpp \
-    alfa_animation_task.cpp \
-    user_mark_container.cpp \
-    anim_phase_chain.cpp \
+    navigator.cpp \
     pin_click_manager.cpp \
-    country_tree.cpp \
-    active_maps_layout.cpp \
-    navigator_utils.cpp \
+    route_track.cpp \
+    routing_session.cpp \
+    storage_bridge.cpp \
+    track.cpp \
+    user_mark_container.cpp \
+    feature_vec_model.cpp \
 
 !iphone*:!tizen*:!android* {
   QT += opengl
