@@ -2,6 +2,7 @@
 
 #include "map/geourl_process.hpp"
 #include "map/ge0_parser.hpp"
+#include "map/storage_bridge.hpp"
 
 #include "defines.hpp"
 
@@ -162,7 +163,6 @@ Framework::Framework()
     m_queryMaxScaleMode(false),
     m_width(0),
     m_height(0),
-    m_countryTree(*this),
     m_animController(new anim::Controller),
     m_informationDisplay(this),
     m_bmManager(*this),
@@ -170,6 +170,9 @@ Framework::Framework()
     m_fixedSearchResults(0),
     m_locationChangedSlotID(-1)
 {
+  m_activeMaps.reset(new ActiveMapsLayout(*this));
+  m_globalCntTree = storage::CountryTree(m_activeMaps);
+  m_storageAccessor.Reset(new StorageBridge(m_activeMaps));
   // Init strings bundle.
   // @TODO. There are hardcoded strings below which are defined in strings.txt as well.
   // It's better to use strings form strings.txt intead of hardcoding them here.
@@ -1313,22 +1316,35 @@ bool Framework::GetDistanceAndAzimut(m2::PointD const & point,
 
 void Framework::CreateDrapeEngine(dp::RefPointer<dp::OGLContextFactory> contextFactory, float vs, int w, int h)
 {
-  typedef df::MapDataProvider::TReadIDsFn TReadIDsFn;
-  typedef df::MapDataProvider::TReadFeaturesFn TReadFeaturesFn;
-  typedef df::MapDataProvider::TReadIdCallback TReadIdCallback;
-  typedef df::MapDataProvider::TReadFeatureCallback TReadFeatureCallback;
+  using TReadIDsFn = df::MapDataProvider::TReadIDsFn;
+  using TReadFeaturesFn = df::MapDataProvider::TReadFeaturesFn;
+  using TReadIdCallback = df::MapDataProvider::TReadIdCallback;
+  using TReadFeatureCallback = df::MapDataProvider::TReadFeatureCallback;
+  using TResolveCountryFn = df::MapDataProvider::TResolveCountryFn;
 
-  TReadIDsFn idReadFn = [this](TReadIdCallback const & fn, m2::RectD const & r, int scale)
+  TReadIDsFn idReadFn = [this](TReadIdCallback const & fn, m2::RectD const & r, int scale) -> void
   {
     m_model.ForEachFeatureID(r, fn, scale);
   };
 
-  TReadFeaturesFn featureReadFn = [this](TReadFeatureCallback const & fn, vector<FeatureID> const & ids)
+  TReadFeaturesFn featureReadFn = [this](TReadFeatureCallback const & fn, vector<FeatureID> const & ids) -> void
   {
     m_model.ReadFeatures(fn, ids);
   };
 
-  m_drapeEngine.Reset(new df::DrapeEngine(contextFactory, df::Viewport(0, 0, w, h), df::MapDataProvider(idReadFn, featureReadFn), vs));
+  TResolveCountryFn resolveCountry = [this](m2::PointF const & pt) -> TIndex
+  {
+    return GetCountryIndex(m2::PointD(pt));
+  };
+
+  df::DrapeEngine::Params p(contextFactory,
+                            dp::MakeStackRefPointer(&m_stringsBundle),
+                            m_storageAccessor.GetRefPointer(),
+                            df::Viewport(0, 0, w, h),
+                            df::MapDataProvider(idReadFn, featureReadFn, resolveCountry),
+                            vs);
+
+  m_drapeEngine.Reset(new df::DrapeEngine(p));
   OnSize(w, h);
 }
 
