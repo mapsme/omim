@@ -18,7 +18,6 @@ HEADERS += \
     location_state.hpp \
     bookmark.hpp \
     geourl_process.hpp \
-    country_status_display.hpp \
     rotate_screen_task.hpp \
     compass_arrow.hpp \
     animator.hpp \
@@ -46,7 +45,6 @@ SOURCES += \
     address_finder.cpp \
     geourl_process.cpp \
     bookmark.cpp \
-    country_status_display.cpp \
     rotate_screen_task.cpp \
     compass_arrow.cpp \
     animator.cpp \

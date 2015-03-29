@@ -157,21 +157,6 @@ InformationDisplay & Framework::GetInformationDisplay()
   return m_informationDisplay;
 }
 
-CountryStatusDisplay * Framework::GetCountryStatusDisplay() const
-{
-  return m_informationDisplay.countryStatusDisplay().get();
-}
-
-void Framework::SetWidgetPivot(InformationDisplay::WidgetType widget, m2::PointD const & pivot)
-{
-  m_informationDisplay.SetWidgetPivot(widget, pivot);
-}
-
-m2::PointD Framework::GetWidgetSize(InformationDisplay::WidgetType widget) const
-{
-  return m_informationDisplay.GetWidgetSize(widget);
-}
-
 Framework::Framework()
   : m_animator(this),
     m_queryMaxScaleMode(false),
@@ -189,7 +174,7 @@ Framework::Framework()
   // @TODO. There are hardcoded strings below which are defined in strings.txt as well.
   // It's better to use strings form strings.txt intead of hardcoding them here.
   m_stringsBundle.SetDefaultString("country_status_added_to_queue", "^\nis added to the downloading queue");
-  m_stringsBundle.SetDefaultString("country_status_downloading", "Downloading\n^\n^%");
+  m_stringsBundle.SetDefaultString("country_status_downloading", "Downloading\n^\n^");
   m_stringsBundle.SetDefaultString("country_status_download", "Download map\n^ ^");
   m_stringsBundle.SetDefaultString("country_status_download_failed", "Downloading\n^\nhas failed");
   m_stringsBundle.SetDefaultString("country_status_download_without_routing", "Download map\nwithout routing (^ ^)");
@@ -453,14 +438,14 @@ void Framework::RegisterAllMaps()
     minFormat = min(minFormat, static_cast<int>(handle.GetInfo()->m_version.format));
   }
 
-  m_countryTree.Init(maps);
+  m_activeMaps->Init(maps);
 
   GetSearchEngine()->SupportOldFormat(minFormat < version::v3);
 }
 
 void Framework::DeregisterAllMaps()
 {
-  m_countryTree.Clear();
+  m_activeMaps->Clear();
   m_model.Clear();
   m_storage.Clear();
 }
