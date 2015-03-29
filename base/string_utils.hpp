@@ -49,6 +49,7 @@ size_t CountNormLowerSymbols(UniString const & s, UniString const & lowStr);
 
 void AsciiToLower(string & s);
 void Trim(string & s);
+void Trim(string & s, char const * anyOf);
 
 void MakeLowerCaseInplace(string & s);
 string MakeLowerCase(string const & s);

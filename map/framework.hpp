@@ -1,23 +1,23 @@
 #pragma once
 
+#include "map/active_maps_layout.hpp"
+#include "map/animator.hpp"
+#include "map/bookmark.hpp"
+#include "map/bookmark_manager.hpp"
+#include "map/country_tree.hpp"
 #include "map/events.hpp"
-#include "drape/oglcontextfactory.hpp"
-#include "drape_frontend/drape_engine.hpp"
 #include "map/feature_vec_model.hpp"
 #include "map/information_display.hpp"
 #include "map/location_state.hpp"
-#include "map/navigator.hpp"
-#include "map/animator.hpp"
-
-#include "map/bookmark.hpp"
-#include "map/bookmark_manager.hpp"
-#include "map/pin_click_manager.hpp"
-
-#include "map/mwm_url.hpp"
 #include "map/move_screen_task.hpp"
-#include "map/track.hpp"
+#include "map/mwm_url.hpp"
+#include "map/navigator.hpp"
+#include "map/pin_click_manager.hpp"
 #include "map/routing_session.hpp"
-#include "map/country_tree.hpp"
+#include "map/track.hpp"
+
+#include "drape_frontend/drape_engine.hpp"
+#include "drape/oglcontextfactory.hpp"
 
 #include "indexer/data_header.hpp"
 #include "indexer/map_style.hpp"
@@ -48,6 +48,8 @@ namespace search
 
 namespace anim { class Controller; }
 namespace routing { namespace turns{ class Settings; } }
+
+namespace gui { class StorageAccessor; }
 
 /// Uncomment line to make fixed position settings and
 /// build version for screenshots.
@@ -89,6 +91,7 @@ protected:
 
   typedef vector<BookmarkCategory *>::iterator CategoryIter;
 
+  dp::MasterPointer<gui::StorageAccessor> m_storageAccessor;
   dp::MasterPointer<df::DrapeEngine> m_drapeEngine;
 
   double m_StartForegroundTime;
@@ -101,7 +104,8 @@ protected:
   void StopLocationFollow();
 
   storage::Storage m_storage;
-  storage::CountryTree m_countryTree;
+  shared_ptr<storage::ActiveMapsLayout> m_activeMaps;
+  storage::CountryTree m_globalCntTree;
   unique_ptr<anim::Controller> m_animController;
   InformationDisplay m_informationDisplay;
 
@@ -222,7 +226,8 @@ public:
   inline m2::PointD GtoP(m2::PointD const & p) const { return m_navigator.GtoP(p); }
 
   storage::Storage & Storage() { return m_storage; }
-  storage::CountryTree & GetCountryTree() { return m_countryTree; }
+  shared_ptr<storage::ActiveMapsLayout> & GetActiveMaps() { return m_activeMaps; }
+  storage::CountryTree & GetCountryTree() { return m_globalCntTree; }
 
   /// @name GPS location updates routine.
   //@{

@@ -81,7 +81,7 @@ public:
   void RetryDownloading(TGroup const & group, int position);
   void RetryDownloading(TIndex const & index);
 
-  ///@{ For CountryStatusDisplay only
+  ///@{ For CountryStatus only
   TIndex const & GetCoreIndex(TGroup const & group, int position) const;
   string const GetFormatedCountryName(TIndex const & index) const;
   ///@}
@@ -91,13 +91,14 @@ public:
 
   void ShowMap(TGroup const & group, int position);
 
+  /// @param[in]  Sorted vector of current .mwm files.
+  void Init(vector<platform::CountryFile> const & maps);
+  void Clear();
+
 private:
   friend class CountryTree;
   Storage const & GetStorage() const;
   Storage & GetStorage();
-
-  void Init(vector<platform::CountryFile> const & files);
-  void Clear();
 
   void ShowMap(TIndex const & index);
 
