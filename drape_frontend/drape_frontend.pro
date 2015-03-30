@@ -37,6 +37,7 @@ SOURCES += \
     threads_commutator.cpp \
     tile_info.cpp \
     tile_key.cpp \
+    tile_tree.cpp \
     tile_utils.cpp \
     user_mark_shapes.cpp \
     user_marks_provider.cpp \
@@ -77,6 +78,7 @@ HEADERS += \
     threads_commutator.hpp \
     tile_info.hpp \
     tile_key.hpp \
+    tile_tree.hpp \
     tile_utils.hpp \
     user_mark_shapes.hpp \
     user_marks_provider.hpp \
