@@ -48,7 +48,9 @@ UniString Normalize(UniString const & s);
 size_t CountNormLowerSymbols(UniString const & s, UniString const & lowStr);
 
 void AsciiToLower(string & s);
+/// Remove space characters on left and right side of string s
 void Trim(string & s);
+/// Remove any characters that contain in "anyOf" on left and right side of string s
 void Trim(string & s, char const * anyOf);
 
 void MakeLowerCaseInplace(string & s);
