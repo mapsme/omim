@@ -1,8 +1,8 @@
 #include "map/framework.hpp"
 
-#include "map/geourl_process.hpp"
 #include "map/dialog_settings.hpp"
 #include "map/ge0_parser.hpp"
+#include "map/geourl_process.hpp"
 #include "map/storage_bridge.hpp"
 
 #include "defines.hpp"
@@ -1307,16 +1307,14 @@ void Framework::CreateDrapeEngine(dp::RefPointer<dp::OGLContextFactory> contextF
 {
   using TReadIDsFn = df::MapDataProvider::TReadIDsFn;
   using TReadFeaturesFn = df::MapDataProvider::TReadFeaturesFn;
-  using TReadIdCallback = df::MapDataProvider::TReadIdCallback;
-  using TReadFeatureCallback = df::MapDataProvider::TReadFeatureCallback;
   using TResolveCountryFn = df::MapDataProvider::TResolveCountryFn;
 
-  TReadIDsFn idReadFn = [this](TReadIdCallback const & fn, m2::RectD const & r, int scale) -> void
+  TReadIDsFn idReadFn = [this](df::MapDataProvider::TReadCallback<FeatureID> const & fn, m2::RectD const & r, int scale) -> void
   {
     m_model.ForEachFeatureID(r, fn, scale);
   };
 
-  TReadFeaturesFn featureReadFn = [this](TReadFeatureCallback const & fn, vector<FeatureID> const & ids) -> void
+  TReadFeaturesFn featureReadFn = [this](df::MapDataProvider::TReadCallback<FeatureType> const & fn, vector<FeatureID> const & ids) -> void
   {
     m_model.ReadFeatures(fn, ids);
   };
