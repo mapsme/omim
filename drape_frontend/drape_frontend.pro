@@ -41,6 +41,7 @@ SOURCES += \
     user_marks_provider.cpp \
     viewport.cpp \
     visual_params.cpp \
+    my_position.cpp
 
 HEADERS += \
     apply_feature_functors.hpp \
@@ -79,3 +80,4 @@ HEADERS += \
     user_marks_provider.hpp \
     viewport.hpp \
     visual_params.hpp \
+    my_position.hpp
