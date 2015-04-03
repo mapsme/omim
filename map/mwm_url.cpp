@@ -151,7 +151,7 @@ UserMark const * ParseUrl(UserMarksController & controller, string const & url,
   UserMark const * result = controller.GetUserMark(0);
 
   double zoom = min(static_cast<double>(scales::GetUpperComfortScale()), apiData.m_zoomLevel);
-  rect = df::GetRectForDrawScale(zoom, result->GetOrg());
+  rect = df::GetRectForDrawScale(zoom, result->GetPivot());
   if (!rect.IsValid())
     rect = df::GetWorldRect();
 
