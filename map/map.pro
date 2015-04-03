@@ -63,6 +63,7 @@ SOURCES += \
     routing_session.cpp \
     storage_bridge.cpp \
     track.cpp \
+    user_mark.cpp \
     user_mark_container.cpp \
     feature_vec_model.cpp \
 
