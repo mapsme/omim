@@ -40,6 +40,7 @@ SUBDIRS = 3party \
           generator/generator_tool \
           indexer/indexer_tests \
           graphics/graphics_tests \
+          feature_changeset_tests \
           gui/gui_tests \
           qt \
           drape_head \
@@ -50,6 +51,7 @@ SUBDIRS = 3party \
   SUBDIRS = 3party \
             base \
             coding \
+            feature_changeset \
             geometry \
             drape \
             platform \
@@ -68,6 +70,7 @@ SUBDIRS = 3party \
   SUBDIRS = 3party \
             base \
             coding \
+            feature_changeset \
             geometry \
             platform \
             anim \
