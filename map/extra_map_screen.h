@@ -21,7 +21,9 @@ public:
 
   typedef function<void (MapImage const &)> TImageReadyCallback;
 
-  ExtraMapScreen(Framework * framework, TImageReadyCallback imageReady);
+  ExtraMapScreen(Framework * framework);
+
+  void SetRenderAsyncCallback(TImageReadyCallback imageReady);
   void RenderAsync(m2::PointD const & center, size_t scale, size_t width, size_t height);
 
 private:

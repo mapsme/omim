@@ -53,6 +53,18 @@ namespace
 
 }
 
+void GlobalSetRenderAsyncCallback(std::function<void(ExtraMapScreen::MapImage const &)> f)
+{
+  if (g_framework)
+   frm()->SetRenderAsyncCallback(f);
+}
+
+void GlobalRenderAsync(m2::PointD const & center, size_t scale, size_t width, size_t height)
+{
+  if (g_framework)
+    frm()->RenderAsync(center, scale, width, height);
+}
+
 namespace android
 {
   void ShowAllSearchResultsImpl()
@@ -73,14 +85,17 @@ namespace android
      m_screenHeight(0)
   {
     ASSERT_EQUAL ( g_framework, 0, () );
-    g_framework = this;
 
     m_videoTimer = new VideoTimer(bind(&Framework::CallRepaint, this));
     m_activeMapsConnectionID = m_work.GetCountryTree().GetActiveMapLayout().AddListener(this);
+
+    g_framework = this;
   }
 
   Framework::~Framework()
   {
+    g_framework = 0;
+
     m_work.GetCountryTree().GetActiveMapLayout().RemoveListener(m_activeMapsConnectionID);
     delete m_videoTimer;
   }

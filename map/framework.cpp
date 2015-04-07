@@ -197,12 +197,11 @@ void Framework::GetMaps(vector<string> & maps) const
   }
 #endif
 }
-void f(ExtraMapScreen::MapImage const &){}
-// @todo set extra map ready callback here, in constructor of m_extraMapScreen
+
 Framework::Framework()
   : m_navigator(m_scales),
     m_animator(this),
-    m_extraMapScreen(this, f),
+    m_extraMapScreen(this),
     m_queryMaxScaleMode(false),
     m_width(0),
     m_height(0),

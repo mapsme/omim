@@ -189,6 +189,7 @@ LOCAL_SRC_FILES := \
 	com/mapswithme/maps/Lifecycle.cpp \
 	com/mapswithme/maps/LocationState.cpp \
 	com/mapswithme/maps/MapStorage.cpp \
+	com/mapswithme/maps/MapsMeService.cpp \
 	com/mapswithme/maps/DownloadResourcesActivity.cpp \
 	com/mapswithme/maps/SearchActivity.cpp \
 	com/mapswithme/maps/settings/StoragePathActivity.cpp \

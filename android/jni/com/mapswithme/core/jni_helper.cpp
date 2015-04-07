@@ -21,6 +21,10 @@ jclass g_indexClazz;
 // @TODO remove after refactoring. Needed for NVidia code
 void InitNVEvent(JavaVM * jvm);
 
+// @TODO remove after refactoring. Need for MapsMeService code
+void MapsMeService_Init(JNIEnv * env);
+void MapsMeService_UnInit(JNIEnv * env);
+
 extern "C"
 {
   JNIEXPORT jint JNICALL
@@ -48,12 +52,16 @@ extern "C"
     g_indexClazz = static_cast<jclass>(env->NewGlobalRef(env->FindClass("com/mapswithme/maps/MapStorage$Index")));
     ASSERT(g_indexClazz, ("Index class not found!"));
 
+    MapsMeService_Init(env);
+
     return JNI_VERSION_1_6;
   }
 
   JNIEXPORT void JNICALL
   JNI_OnUnload(JavaVM *, void *)
   {
+    MapsMeService_UnInit(jni::GetEnv());
+
     g_jvm = 0;
     jni::GetEnv()->DeleteGlobalRef(g_indexClazz);
   }

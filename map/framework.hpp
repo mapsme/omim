@@ -159,6 +159,15 @@ public:
   Framework();
   virtual ~Framework();
 
+  void SetRenderAsyncCallback(std::function<void(ExtraMapScreen::MapImage const &)> f)
+  {
+    m_extraMapScreen.SetRenderAsyncCallback(f);
+  }
+  void RenderAsync(m2::PointD const & center, size_t scale, size_t width, size_t height)
+  {
+    m_extraMapScreen.RenderAsync(center, scale, width, height);
+  }
+
   /// @name Process storage connecting/disconnecting.
   //@{
   /// @param[out] maps  File names without path.

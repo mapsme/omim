@@ -5,11 +5,15 @@
 // It should be redisigned.
 ExtraMapScreen::TImageReadyCallback g_imageReady = nullptr;
 
-ExtraMapScreen::ExtraMapScreen(Framework * framework, TImageReadyCallback imageReady)
+ExtraMapScreen::ExtraMapScreen(Framework * framework)
   : m_framework(framework)
 {
-  g_imageReady = imageReady;
   ASSERT(framework, ());
+}
+
+void ExtraMapScreen::SetRenderAsyncCallback(TImageReadyCallback imageReady)
+{
+  g_imageReady = imageReady;
 }
 
 void ExtraMapScreen::RenderAsync(m2::PointD const & center, size_t scale, size_t width, size_t height)

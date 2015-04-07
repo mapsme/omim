@@ -182,3 +182,6 @@ namespace android
 }
 
 extern android::Framework * g_framework;
+
+void GlobalSetRenderAsyncCallback(std::function<void(ExtraMapScreen::MapImage const &)> f);
+void GlobalRenderAsync(m2::PointD const & center, size_t scale, size_t width, size_t height);
