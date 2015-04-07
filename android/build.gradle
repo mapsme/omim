@@ -20,7 +20,7 @@ dependencies {
   // android support libs
   compile libSupportV4, libSupportV7
   // google play services
-  compile libGmsLocation, libGmsPlus, libGmsAnalytics
+  compile libGmsLocation, libGmsPlus, libGmsAnalytics, libGmsWear
   // 3-party
   compile libNineOldAndroids, libFacebookSdk
   compile fileTree(dir: '3rd_party', include: '*.jar', exclude: 'mrgsmanifest.jar')
