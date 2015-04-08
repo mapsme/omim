@@ -5,16 +5,31 @@ android {
   buildToolsVersion "22.0.1"
 
   defaultConfig {
-    applicationId "me.maps.mwmwear"
+    applicationId "com.mapswithme.maps.pro"
     minSdkVersion 20
     targetSdkVersion 22
     versionCode 1
     versionName "1.0"
   }
+
+  signingConfigs {
+    mapswithme {
+      storeFile file('../../tools/android/mapswithme.keystore')
+      storePassword 'M@q5W1thMe'
+      keyAlias 'mapswithme'
+      keyPassword 'M@q5W1thMe'
+    }
+  }
+
   buildTypes {
+    debug {
+      signingConfig signingConfigs.mapswithme
+    }
+
     release {
       minifyEnabled false
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+      signingConfig signingConfigs.mapswithme
     }
   }
 }

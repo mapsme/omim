@@ -77,6 +77,7 @@ import com.mapswithme.util.Utils;
 import com.mapswithme.util.Yota;
 import com.mapswithme.util.statistics.AlohaHelper;
 import com.mapswithme.util.statistics.Statistics;
+import com.mapswithme.wearable.WearableManager;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
@@ -154,7 +155,7 @@ public class MWMActivity extends BaseMwmFragmentActivity
 
   private LocationPredictor mLocationPredictor;
   private LikesManager mLikesManager;
-
+  private WearableManager mWearableManager;
 
   public static Intent createShowMapIntent(Context context, Index index, boolean doAutoDownload)
   {
@@ -591,6 +592,7 @@ public class MWMActivity extends BaseMwmFragmentActivity
 
     mLocationPredictor = new LocationPredictor(new Handler(), this);
     mLikesManager = new LikesManager(this);
+    mWearableManager = new WearableManager(this);
     restoreRoutingState(savedInstanceState);
   }
 
@@ -1023,6 +1025,7 @@ public class MWMActivity extends BaseMwmFragmentActivity
     mPlacePage.onResume();
     mLocationPredictor.resume();
     mLikesManager.showLikeDialogs();
+    mWearableManager.startCommunication();
   }
 
   @Override
@@ -1034,6 +1037,7 @@ public class MWMActivity extends BaseMwmFragmentActivity
     super.onPause();
     mLocationPredictor.pause();
     mLikesManager.cancelLikeDialogs();
+    mWearableManager.endCommunication();
   }
 
   private void updateExternalStorageState()

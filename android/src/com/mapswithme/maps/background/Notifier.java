@@ -1,27 +1,18 @@
 package com.mapswithme.maps.background;
 
-import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 
-import com.mapswithme.maps.BuildConfig;
 import com.mapswithme.maps.MWMActivity;
 import com.mapswithme.maps.MWMApplication;
 import com.mapswithme.maps.MapStorage.Index;
 import com.mapswithme.maps.R;
-import com.mapswithme.util.UiUtils;
-import com.mapswithme.util.Utils;
 import com.mapswithme.util.statistics.Statistics;
-
-import java.util.Calendar;
 
 public class Notifier
 {
