@@ -73,7 +73,8 @@ SOURCES += \
     geometry_pipeline.cpp \
     path_view.cpp \
     circled_symbol.cpp \
-    uniforms_holder.cpp
+    uniforms_holder.cpp \
+    ../drape/utils/stb_image.c \
 
 HEADERS += \
     opengl/opengl.hpp \

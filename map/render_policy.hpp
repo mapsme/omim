@@ -66,7 +66,6 @@ protected:
   void InitCacheScreen();
 
 public:
-
   struct Params
   {
     VideoTimer * m_videoTimer;

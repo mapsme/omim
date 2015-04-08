@@ -1,5 +1,8 @@
 #include "../../base/logging.hpp"
 
+#include "../../drape/utils/stb_image.h"
+#include "../../map/extra_map_screen.h"
+
 #include "../resource_manager.hpp"
 #include "../render_context.hpp"
 #include "../coordinates.hpp"
@@ -12,6 +15,10 @@
 #include "base_texture.hpp"
 #include "program.hpp"
 #include "opengl.hpp"
+
+// @todo(VB) this global value is a temprary hack to check something.
+// It should be redisigned.
+extern ExtraMapScreen::TImageReadyCallback g_imageReady;
 
 namespace graphics
 {
@@ -222,6 +229,34 @@ namespace graphics
       m_target->makeCurrent();
       OGLCHECK(glCopyTexImage2D(GL_TEXTURE_2D, 0, DATA_TRAITS::gl_pixel_format_type,
                                 0, 0, m_target->width(), m_target->height(), 0));
+
+      if (g_imageReady)
+      {
+        ExtraMapScreen::MapImage image;
+        image.m_width = m_target->width();
+        image.m_height = m_target->height();
+        image.m_bpp = 4;
+        image.m_bytes.resize(image.m_width * image.m_height * image.m_bpp);
+        glReadPixels(0, 0, image.m_width, image.m_height, DATA_TRAITS::gl_pixel_format_type,
+                     GL_UNSIGNED_BYTE, &image.m_bytes[0]);
+        g_imageReady(image);
+      }
+
+      /// Debug code. Saving tiles to flash memory
+      /*GLsizei const w = m_target->width(), h = m_target->height(), bpp = 4;
+      GLvoid * buf = malloc(w * h * bpp);
+      memset(buf, 0, w * h * bpp);
+      glReadPixels(0, 0, w, h, DATA_TRAITS::gl_pixel_format_type, GL_UNSIGNED_BYTE, buf);
+      uint32_t * bufInt = static_cast<uint32_t*>(buf);
+      LOG(LINFO, ("watch. glGetError()=", glGetError(), " glReadPixels() ", bufInt[0], " ", bufInt[1]));
+      static int counter = 0;
+      ++counter;
+      stringstream fileName;
+      fileName << "/sdcard/tile/tile_" << counter << ".bmp";
+
+      int res = stbi_write_bmp(fileName.str().c_str(), w, h, bpp, buf);
+      LOG(LINFO, ("watch. stbi_write_bmp(..., ", w, ", ", h, ", ", bpp, ") = ", res));
+      free(buf);*/
     }
 
     Renderer::ChangeFrameBuffer::ChangeFrameBuffer(shared_ptr<FrameBuffer> const & fb)

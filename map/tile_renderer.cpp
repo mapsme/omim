@@ -196,6 +196,7 @@ void TileRenderer::DrawTile(core::CommandsQueue::Environment const & env,
   m_renderFn(paintEvent, frameScreen, m2::RectD(renderRect), rectInfo.m_tileScale);
 
   drawer->endFrame();
+
   drawer->screen()->resetOverlay();
   drawer->screen()->copyFramebufferToImage(tileTarget);
 

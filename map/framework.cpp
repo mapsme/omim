@@ -197,11 +197,12 @@ void Framework::GetMaps(vector<string> & maps) const
   }
 #endif
 }
-
-
+void f(ExtraMapScreen::MapImage const &){}
+// @todo set extra map ready callback here, in constructor of m_extraMapScreen
 Framework::Framework()
   : m_navigator(m_scales),
     m_animator(this),
+    m_extraMapScreen(this, f),
     m_queryMaxScaleMode(false),
     m_width(0),
     m_height(0),
@@ -800,7 +801,25 @@ void Framework::DoPaint(shared_ptr<PaintEvent> const & e)
 {
   if (m_renderPolicy)
   {
-    m_renderPolicy->DrawFrame(e, m_navigator.Screen());
+    ScreenBase const & dispSB = m_navigator.Screen();
+    // Working on changing ScreenBase for android wear.
+
+    //ScreenBase watchSB(dispSB, dispSB.GetOrg(), dispSB.GetScale(), dispSB.GetAngle());
+    //m2::RectI pixelRect(dispSB.PixelRect());
+    //pixelRect.Inflate(-150, -300);
+    //m2::AnyRectD anyRect(dispSB.GlobalRect());
+    //anyRect.Inflate(-20, -30);
+    //ScreenBase watchSB(pixelRect, anyRect);
+    //watchSB.MoveG(m2::PointD(0, 0));
+    //watchSB.Rotate(1);
+    //m2::RectD clipRect = watchSB.ClipRect();
+    //clipRect.Inflate(-20, -30);
+    //m2::AnyRectD clipAnyRect(clipRect);
+    //watchSB.SetFromRect(clipAnyRect);
+    //m2::AnyRectD globalRect = watchSB.GlobalRect();
+    //globalRect.Inflate(-20, -30);
+    //watchSB.SetFromRect(globalRect);
+    m_renderPolicy->DrawFrame(e, dispSB);
 
     // Don't render additional elements if guiController wasn't initialized.
     if (m_guiController->GetCacheScreen() != NULL)

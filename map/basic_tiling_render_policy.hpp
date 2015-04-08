@@ -24,7 +24,6 @@ class QueuedRenderer;
 class BasicTilingRenderPolicy : public RenderPolicy
 {
 private:
-
   size_t CalculateTileSize(size_t screenWidth, size_t screenHeight);
 
 protected:
