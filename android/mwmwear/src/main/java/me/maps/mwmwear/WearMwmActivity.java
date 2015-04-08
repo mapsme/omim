@@ -32,6 +32,7 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class WearMwmActivity extends Activity implements LocationListener,
@@ -175,8 +176,8 @@ public class WearMwmActivity extends Activity implements LocationListener,
       @Override
       public void run()
       {
-        Node node = Wearable.NodeApi.getConnectedNodes(mGmsClient).await().getNodes().get(0);
-        mNodeId = node.getId();
+        List<Node> nodes = Wearable.NodeApi.getConnectedNodes(mGmsClient).await().getNodes();
+        mNodeId = (nodes == null || nodes.get(0) == null) ? "" : nodes.get(0).getId();
       }
     }).start();
   }
