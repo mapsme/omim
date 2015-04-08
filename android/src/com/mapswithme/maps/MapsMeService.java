@@ -46,19 +46,19 @@ public class MapsMeService
         {
             public String mName;
             public String mSuggestion;
-            public String mCountry;
+            public String mRegion;
             public String mAmenity;
             public double mLatitude;
             public double mLongitude;
             public int mType;
 
-            public static final int TYPE_SUGGESTION = 0;
-            public static final int TYPE_FEATURE = 1;
+            public static final int TYPE_SUGGESTION = 0; // keep it synchronous with MapsMeService.cpp
+            public static final int TYPE_FEATURE = 1; // keep it synchronous with MapsMeService.cpp
         }
 
         public interface Listener
         {
-            void onLookupComplete(LookupItem items[]);
+            void onLookupComplete(LookupItem[] items);
         }
 
         /*
