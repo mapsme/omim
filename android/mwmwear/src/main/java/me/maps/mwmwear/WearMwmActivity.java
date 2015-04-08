@@ -4,13 +4,13 @@ import android.app.Activity;
 import android.content.IntentSender;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.wearable.view.GridPagerAdapter;
+import android.support.wearable.view.GridViewPager;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
-import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -45,9 +45,11 @@ public class WearMwmActivity extends Activity implements LocationListener,
   private static final String KEY_IMAGE = "Image";
   private static final String KEY_SEARCH_RESULT = "SearchResult";
 
-  private GoogleApiClient mGmsClient;
-  private TextView mTextView;
   private String mNodeId;
+  private GoogleApiClient mGmsClient;
+
+  private GridViewPager mGrid;
+  private MainWearAdapter mAdapter;
 
   @Override
   protected void onCreate(Bundle savedInstanceState)
@@ -62,9 +64,37 @@ public class WearMwmActivity extends Activity implements LocationListener,
       @Override
       public void onLayoutInflated(WatchViewStub stub)
       {
-        mTextView = (TextView) stub.findViewById(R.id.text);
+        mGrid = (GridViewPager) stub.findViewById(R.id.vp__main);
+        mGrid.setAdapter(getAdapter());
+        mGrid.setOnPageChangeListener(new GridViewPager.OnPageChangeListener() {
+          @Override
+          public void onPageScrolled(int i, int i1, float v, float v1, int i2, int i3)
+          {
+
+          }
+
+          @Override
+          public void onPageSelected(int row, int column)
+          {
+            Log.d(TAG, "Page selected. row : " + row + ", column : " + column);
+          }
+
+          @Override
+          public void onPageScrollStateChanged(int i)
+          {
+
+          }
+        });
       }
     });
+  }
+
+  private GridPagerAdapter getAdapter()
+  {
+    if (mAdapter == null)
+      mAdapter = new MainWearAdapter(this);
+
+    return mAdapter;
   }
 
   @Override
@@ -150,8 +180,9 @@ public class WearMwmActivity extends Activity implements LocationListener,
   @Override
   public void onLocationChanged(Location location)
   {
-    Log.d(TAG, "onLocationChanged: " + location);
-    requestMapUpdate();
+    Log.d(TAG, "onLocationChanged: " + location + ", grid item : " + mGrid.getCurrentItem());
+    if (mGrid.getCurrentItem().y == MainWearAdapter.ARROW_FRAGMENT)
+      requestMapUpdate();
   }
 
   private void requestMapUpdate()
@@ -177,7 +208,7 @@ public class WearMwmActivity extends Activity implements LocationListener,
       public void run()
       {
         List<Node> nodes = Wearable.NodeApi.getConnectedNodes(mGmsClient).await().getNodes();
-        mNodeId = (nodes == null || nodes.get(0) == null) ? "" : nodes.get(0).getId();
+        mNodeId = (nodes == null || nodes.size() == 0) ? "" : nodes.get(0).getId();
       }
     }).start();
   }
@@ -187,7 +218,7 @@ public class WearMwmActivity extends Activity implements LocationListener,
   {
     for (DataEvent event : dataEventBuffer)
     {
-      Log.d(TAG, "Data changed. Event : " + event.getType() + ", event : " + event.toString());
+      Log.d(TAG, "Data changed. Event type: " + event.getType() + ", event : " + event.toString());
       if (event.getType() == DataEvent.TYPE_CHANGED)
       {
         // DataItem changed
@@ -207,13 +238,13 @@ public class WearMwmActivity extends Activity implements LocationListener,
             return;
           }
 
-          setBgFromAsset(asset);
+          setMapBgFromAsset(asset);
         }
       }
     }
   }
 
-  private void setBgFromAsset(final Asset asset)
+  private void setMapBgFromAsset(final Asset asset)
   {
     new Thread(new Runnable()
     {
@@ -231,12 +262,12 @@ public class WearMwmActivity extends Activity implements LocationListener,
 
         final Bitmap bitmap = BitmapFactory.decodeStream(assetStream);
 
-        mTextView.post(new Runnable()
+        mGrid.post(new Runnable()
         {
           @Override
           public void run()
           {
-            mTextView.setBackground(new BitmapDrawable(getResources(), bitmap));
+            mAdapter.getMapFragment().setBitmap(bitmap);
           }
         });
       }
