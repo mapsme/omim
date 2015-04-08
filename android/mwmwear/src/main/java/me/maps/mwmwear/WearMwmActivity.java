@@ -181,7 +181,7 @@ public class WearMwmActivity extends Activity implements LocationListener,
   public void onLocationChanged(Location location)
   {
     Log.d(TAG, "onLocationChanged: " + location + ", grid item : " + mGrid.getCurrentItem());
-    if (mGrid.getCurrentItem().y == MainWearAdapter.ARROW_FRAGMENT)
+    if (mGrid.getCurrentItem().y == MainWearAdapter.MAP_FRAGMENT)
       requestMapUpdate();
   }
 
@@ -261,6 +261,12 @@ public class WearMwmActivity extends Activity implements LocationListener,
         }
 
         final Bitmap bitmap = BitmapFactory.decodeStream(assetStream);
+        Wearable.DataApi.deleteDataItems(mGmsClient, Uri.parse("wear://" + mNodeId + PATH_IMAGE));
+        if (bitmap == null)
+        {
+          Log.d(TAG, "Decoded bitmap == null");
+          return;
+        }
 
         mGrid.post(new Runnable()
         {

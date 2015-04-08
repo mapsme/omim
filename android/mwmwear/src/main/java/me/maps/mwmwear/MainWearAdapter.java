@@ -5,8 +5,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.support.wearable.view.FragmentGridPagerAdapter;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
 
 import me.maps.mwmwear.fragment.ArrowFragment;
 import me.maps.mwmwear.fragment.MapFragment;
@@ -92,18 +90,6 @@ public class MainWearAdapter extends FragmentGridPagerAdapter
 //
 //    return mActivity.getDrawable(resId);
 //  }
-
-  @Override
-  protected void destroyItem(ViewGroup viewGroup, int i, int i1, Object o)
-  {
-
-  }
-
-  @Override
-  public boolean isViewFromObject(View view, Object o)
-  {
-    return false;
-  }
 
   public MapFragment getMapFragment()
   {

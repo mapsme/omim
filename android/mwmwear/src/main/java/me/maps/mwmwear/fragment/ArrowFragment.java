@@ -15,7 +15,6 @@ public class ArrowFragment extends Fragment
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
   {
-    final ViewGroup root = (ViewGroup) inflater.inflate(R.layout.activity_main, container,  false);
-    return root;
+    return inflater.inflate(R.layout.fragment_arrow, container, false);
   }
 }

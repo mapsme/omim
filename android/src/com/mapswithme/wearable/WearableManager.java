@@ -2,7 +2,7 @@ package com.mapswithme.wearable;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -15,12 +15,14 @@ import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.Wearable;
-import com.mapswithme.maps.R;
+import com.mapswithme.maps.MapsMeService;
+import com.mapswithme.maps.location.LocationHelper;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
+import java.util.Random;
 
-public class WearableManager implements MessageApi.MessageListener, DataApi.DataListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
+public class WearableManager implements MessageApi.MessageListener, DataApi.DataListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, MapsMeService.RenderService.Listener
 {
   private static final String PATH_IMAGE = "/image";
   private static final String KEY_IMAGE = "Image";
@@ -43,13 +45,13 @@ public class WearableManager implements MessageApi.MessageListener, DataApi.Data
         .addOnConnectionFailedListener(this)
         .build();
     mGmsClient.connect();
+    MapsMeService.RenderService.removeListener(this);
   }
-
 
   public void endCommunication()
   {
-    mGmsClient.disconnect();
-    Wearable.MessageApi.removeListener(mGmsClient, this);
+//    mGmsClient.disconnect();
+//    Wearable.MessageApi.removeListener(mGmsClient, this);
   }
 
   @Override
@@ -63,6 +65,7 @@ public class WearableManager implements MessageApi.MessageListener, DataApi.Data
   {
     Log.d(TAG, "WM Connected");
     Wearable.MessageApi.addListener(mGmsClient, this);
+    MapsMeService.RenderService.addListener(this);
   }
 
   @Override
@@ -83,18 +86,30 @@ public class WearableManager implements MessageApi.MessageListener, DataApi.Data
     Log.d(TAG, "Message received");
     if (messageEvent.getPath().equals(PATH_IMAGE))
     {
-      final PutDataMapRequest mapRequest = PutDataMapRequest.create(PATH_IMAGE);
-      mapRequest.getDataMap().putAsset(KEY_IMAGE, getBitmapAsset());
-      Wearable.DataApi.putDataItem(mGmsClient, mapRequest.asPutDataRequest());
+      final Location location = LocationHelper.INSTANCE.getLastLocation();
+      // TODO pass correct params from wearable's sensors
+      Random random = new Random();
+      MapsMeService.RenderService.renderMap(location.getLatitude() + random.nextDouble() / 100, location.getLongitude()  * random.nextDouble() / 100,
+          15, 320, 320, 180);
     }
   }
 
-  private Asset getBitmapAsset()
+  private Asset getBitmapAsset(Bitmap bitmap)
   {
-    // TODO pass correct drawable from core
-    final Bitmap bitmap = BitmapFactory.decodeResource(mActivity.get().getResources(), R.drawable.ic_direction);
+    Log.d(TAG, "Compress bitmap to PNG asset size : " + bitmap.getByteCount());
     final ByteArrayOutputStream stream = new ByteArrayOutputStream();
     bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+    Log.d(TAG, "Compressed PNG byte array :  " + stream.toByteArray().length);
     return Asset.createFromBytes(stream.toByteArray());
+  }
+
+  @Override
+  public void onRenderComplete(Bitmap bitmap)
+  {
+    final PutDataMapRequest mapRequest = PutDataMapRequest.create(PATH_IMAGE);
+    final Asset asset = getBitmapAsset(bitmap);
+    Log.d(TAG, "Asset size : " + asset.toString());
+    mapRequest.getDataMap().putAsset(KEY_IMAGE, asset);
+    Wearable.DataApi.putDataItem(mGmsClient, mapRequest.asPutDataRequest());
   }
 }
