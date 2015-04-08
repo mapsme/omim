@@ -1460,13 +1460,11 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../../../omim-iphone-release-drape-$(CURRENT_ARCH)/out/release\"";
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CFLAGS = (
-					"-Wall",
-					"-mno-thumb",
-				);
+				OTHER_CFLAGS = "-Wall";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
+					"-mno-thumb",
 					"-DUSE_DRAPE",
 				);
 				OTHER_LDFLAGS = (
@@ -1587,13 +1585,11 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../../../omim-iphone-debug-drape-$(CURRENT_ARCH)/out/debug\"";
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CFLAGS = (
-					"-Wall",
-					"-mno-thumb",
-				);
+				OTHER_CFLAGS = "-Wall";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
+					"-mno-thumb",
 					"-DUSE_DRAPE",
 				);
 				OTHER_LDFLAGS = (
@@ -1686,12 +1682,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../../../omim-iphone-debug-i386/out/debug\"";
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CFLAGS = (
-					"-Wall",
-					"-mno-thumb",
-				);
+				OTHER_CFLAGS = "-Wall";
 				OTHER_CODE_SIGN_FLAGS = "";
-				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"-lstats_client",
 					"-lmap",
@@ -1781,12 +1773,12 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../../../omim-iphone-debug-$(CURRENT_ARCH)/out/debug\"";
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CFLAGS = (
-					"-Wall",
+				OTHER_CFLAGS = "-Wall";
+				OTHER_CODE_SIGN_FLAGS = "";
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
 					"-mno-thumb",
 				);
-				OTHER_CODE_SIGN_FLAGS = "";
-				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"-lstats_client",
 					"-lmap",
@@ -1905,12 +1897,12 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../../../omim-iphone-production-$(CURRENT_ARCH)/out/production\"";
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CFLAGS = (
-					"-Wall",
+				OTHER_CFLAGS = "-Wall";
+				OTHER_CODE_SIGN_FLAGS = "";
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
 					"-mno-thumb",
 				);
-				OTHER_CODE_SIGN_FLAGS = "";
-				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"-lstats_client",
 					"-lmap",
@@ -2004,12 +1996,12 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../../../omim-iphone-production-$(CURRENT_ARCH)/out/production\"";
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CFLAGS = (
-					"-Wall",
+				OTHER_CFLAGS = "-Wall";
+				OTHER_CODE_SIGN_FLAGS = "";
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
 					"-mno-thumb",
 				);
-				OTHER_CODE_SIGN_FLAGS = "";
-				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"-lstats_client",
 					"-lmap",
@@ -2102,12 +2094,12 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../../../omim-iphone-release-$(CURRENT_ARCH)/out/release\"";
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CFLAGS = (
-					"-Wall",
+				OTHER_CFLAGS = "-Wall";
+				OTHER_CODE_SIGN_FLAGS = "";
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
 					"-mno-thumb",
 				);
-				OTHER_CODE_SIGN_FLAGS = "";
-				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"-lstats_client",
 					"-lmap",
@@ -2199,12 +2191,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../../../omim-iphone-release-i386/out/release\"";
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CFLAGS = (
-					"-Wall",
-					"-mno-thumb",
-				);
+				OTHER_CFLAGS = "-Wall";
 				OTHER_CODE_SIGN_FLAGS = "";
-				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"-lstats_client",
 					"-lmap",
