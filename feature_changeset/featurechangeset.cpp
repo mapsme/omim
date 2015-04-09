@@ -1,4 +1,4 @@
-#include "featurechangeset.h"
+#include "featurechangeset.hpp"
 
 #include "sqlite3.h"
 
@@ -46,11 +46,11 @@ namespace
   void InitStorage()
   {
     sqlite3 *db;
-    /* Open database */
+    // Open database
     if (sqlite3_open("changes.db", &db))
       throw edit::Exception(edit::STORAGE_ERROR, sqlite3_errmsg(db));
 
-    /* Create SQL statement */
+    // Create SQL statement
     char const *sql = "CREATE TABLE IF NOT EXISTS actions ("  \
     "id           TEXT    NOT NULL," \
     "created      INT     NOT NULL," \
@@ -60,8 +60,8 @@ namespace
     "state        INT," \
     "changes      BLOB );";
 
-    /* Execute SQL statement */
-    if( sqlite3_exec(db, sql, NULL, 0, NULL) != SQLITE_OK )
+    // Execute SQL statement
+    if (sqlite3_exec(db, sql, NULL, 0, NULL) != SQLITE_OK)
       throw edit::Exception(edit::STORAGE_ERROR, sqlite3_errmsg(db));
     sqlite3_close(db);
   }
@@ -87,11 +87,11 @@ namespace
   void SaveToStorage(edit::FeatureDiff const &diff)
   {
     sqlite3 *db;
-    /* Open database */
+    // Open database
     if (sqlite3_open("changes.db", &db))
       throw edit::Exception(edit::STORAGE_ERROR, sqlite3_errmsg(db));
 
-    /* Create SQL statement */
+    // Create SQL statement
     stringstream ss;
     ss << "INSERT INTO actions VALUES(";
     ss << '\'' << to_string(diff.id) << '\'';
@@ -103,8 +103,8 @@ namespace
       ss << hex << uppercase << setfill('0') << setw(2) << uint16_t(c & 0xFF);
     ss << "');";
 
-    /* Execute SQL statement */
-    if( sqlite3_exec(db, ss.str().c_str(), NULL, 0, NULL) != SQLITE_OK )
+    // Execute SQL statement
+    if (sqlite3_exec(db, ss.str().c_str(), NULL, 0, NULL) != SQLITE_OK)
       throw edit::Exception(edit::STORAGE_ERROR, sqlite3_errmsg(db));
     sqlite3_close(db);
   }
@@ -114,11 +114,11 @@ namespace
   {
 
     sqlite3 *db;
-    /* Open database */
+    // Open database
     if (sqlite3_open("changes.db", &db))
       throw edit::Exception(edit::STORAGE_ERROR, sqlite3_errmsg(db));
 
-    /* Create SQL statement */
+    // Create SQL statement
     string sql("SELECT * FROM actions WHERE id=? ORDER BY version ASC");
 
     sqlite3_stmt* stmt;
@@ -127,7 +127,7 @@ namespace
     string const & ssid = to_string(id);
     sqlite3_bind_text(stmt, 1, ssid.c_str(), static_cast<int>(ssid.size()), SQLITE_STATIC);
 
-    /* Execute SQL statement */
+    // Execute SQL statement
     int rc = 0;
     while ( rc != SQLITE_DONE)
     {
@@ -155,7 +155,8 @@ namespace
             ss.read((char *)header, sizeof(header));
             ss.read(buffer1, header[1]);
             ss.read(buffer2, header[2]);
-            diff.changes.emplace(static_cast<edit::EDataKey>(header[0] & 0x7F), edit::DataValue(string(buffer1, header[1]), string(buffer2, header[2])));
+            diff.changes.emplace(static_cast<edit::EDataKey>(header[0] & 0x7F)
+                                 , edit::DataValue(string(buffer1, header[1]), string(buffer2, header[2])));
           } while (!(header[0] & 0x80));
 
           break;
@@ -198,7 +199,8 @@ namespace edit
     SaveToStorage(nd);
   }
 
-  void FeatureChangeset::DeleteChange(MWMLink const & id) {
+  void FeatureChangeset::DeleteChange(MWMLink const & id)
+  {
     vector<edit::FeatureDiff> diffs;
     LoadFromStorage(id, diffs);
     edit::FeatureDiff nd(diffs.back(), TChanges());

@@ -1,5 +1,4 @@
-#ifndef FEATURECHANGESET_H
-#define FEATURECHANGESET_H
+#pragma once
 
 #include "../std/string.hpp"
 #include "../std/tuple.hpp"
@@ -73,7 +72,7 @@ namespace edit
 
     FeatureDiff() : id(0,0,0) {}
 
-    FeatureDiff(MWMLink const & _id) : id(_id)
+    FeatureDiff(MWMLink const & _id) : id(_id), version(0)
     {
       created = modified = system_clock::to_time_t(system_clock::now());
     }
@@ -95,7 +94,12 @@ namespace edit
       return *this;
     }
 
-    FeatureDiff & SetState(EState s) { state = s; modified = system_clock::to_time_t(system_clock::now()); return *this; }
+    FeatureDiff & SetState(EState s)
+    {
+      state = s;
+      modified = system_clock::to_time_t(system_clock::now());
+      return *this;
+    }
 
   };
 
@@ -113,4 +117,3 @@ namespace edit
     void UploadChangeset();
   };
 }
-#endif // FEATURECHANGESET_H

@@ -1,13 +1,4 @@
-//
-//  osm_entity.h
-//  feature_changeset
-//
-//  Created by Sergey Yershov on 09.04.15.
-//  Copyright (c) 2015 Sergey Yershov. All rights reserved.
-//
-
-#ifndef __feature_changeset__osm_entity__
-#define __feature_changeset__osm_entity__
+#pragma once
 
 #include "../std/string.hpp"
 #include "../std/vector.hpp"
@@ -75,5 +66,3 @@ namespace edit
 
 
 } // namespace edit
-
-#endif /* defined(__feature_changeset__osm_entity__) */

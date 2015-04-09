@@ -1,11 +1,3 @@
-//
-//  osm_entity.cpp
-//  feature_changeset
-//
-//  Created by Sergey Yershov on 09.04.15.
-//  Copyright (c) 2015 Sergey Yershov. All rights reserved.
-//
-
 #include "osm_entity.hpp"
 #include "../std/iostream.hpp"
 

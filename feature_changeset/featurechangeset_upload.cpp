@@ -1,4 +1,4 @@
-#include "featurechangeset.h"
+#include "featurechangeset.hpp"
 
 namespace edit
 {
