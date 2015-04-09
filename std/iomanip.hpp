@@ -12,6 +12,7 @@ using std::setfill;
 using std::hex;
 using std::fixed;
 using std::setprecision;
+using std::uppercase;
 
 
 #ifndef OMIM_OS_LINUX
