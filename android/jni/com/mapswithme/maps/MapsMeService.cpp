@@ -232,7 +232,7 @@ extern "C"
 
     g_renderServiceSkipCallbacks = false;
 
-    m2::PointD origin(originLongitude, originLatitude);
+    m2::PointD const origin = MercatorBounds::FromLatLon(originLatitude, originLongitude);
     GlobalRenderAsync(origin, static_cast<size_t>(scale), static_cast<size_t>(imageWidth), static_cast<size_t>(imageHeight));
   }
 

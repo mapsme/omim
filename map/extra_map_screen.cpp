@@ -18,6 +18,5 @@ void ExtraMapScreen::SetRenderAsyncCallback(TImageReadyCallback imageReady)
 
 void ExtraMapScreen::RenderAsync(m2::PointD const & center, size_t scale, size_t width, size_t height)
 {
-  m2::PointD centerMerc = MercatorBounds::FromLatLon(center.y, center.x);
-  m_framework->SetViewportCenter(centerMerc);
+  m_framework->SetViewportCenter(center);
 }
