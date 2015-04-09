@@ -1,6 +1,7 @@
 #include "../base/SRC_FIRST.hpp"
 
 #include "render_policy.hpp"
+
 #include "window_handle.hpp"
 #include "tiling_render_policy_st.hpp"
 #include "tiling_render_policy_mt.hpp"
@@ -11,6 +12,7 @@
 
 #include "../graphics/opengl/opengl.hpp"
 #include "../graphics/opengl/gl_render_context.hpp"
+#include "../graphics/opengl/renderbuffer.hpp"
 
 #include "../indexer/scales.hpp"
 #include "../indexer/drawing_rules.hpp"
@@ -34,7 +36,10 @@ RenderPolicy::RenderPolicy(Params const & p,
     m_doForceUpdate(false),
     m_density(p.m_density),
     m_visualScale(graphics::visualScale(p.m_density)),
-    m_skinName(p.m_skinName)
+    m_skinName(p.m_skinName),
+    m_useOffscreenRendering(p.m_useOffscreenRendering),
+    m_offscreenWidth(p.m_offscreenWidth),
+    m_offscreenHeight(p.m_offscreenHeight)
 {
   LOG(LDEBUG, ("each BaseRule will hold up to", idCacheSize, "cached values"));
   drule::rules().ResizeCaches(idCacheSize);
@@ -146,6 +151,11 @@ bool RenderPolicy::IsTiling() const
 shared_ptr<Drawer> const & RenderPolicy::GetDrawer() const
 {
   return m_drawer;
+}
+
+shared_ptr<Drawer> const & RenderPolicy::GetOffscreenDrawer() const
+{
+  return m_offscreenDrawer;
 }
 
 shared_ptr<WindowHandle> const & RenderPolicy::GetWindowHandle() const
@@ -260,6 +270,27 @@ Drawer * RenderPolicy::CreateDrawer(bool isDefaultFB,
   Drawer::Params dp;
 
   dp.m_frameBuffer = make_shared<graphics::gl::FrameBuffer>(isDefaultFB);
+  dp.m_resourceManager = m_resourceManager;
+  dp.m_threadSlot = m_resourceManager->guiThreadSlot();
+  dp.m_visualScale = VisualScale();
+  dp.m_storageType = storageType;
+  dp.m_textureType = textureType;
+  dp.m_renderContext = context;
+
+  return new Drawer(dp);
+}
+
+Drawer * RenderPolicy::CreateOffscreenDrawer(shared_ptr<graphics::RenderContext> context,
+                                             graphics::EStorageType storageType,
+                                             graphics::ETextureType textureType)
+{
+  Drawer::Params dp;
+
+  dp.m_frameBuffer = make_shared<graphics::gl::FrameBuffer>(false);
+  dp.m_frameBuffer->onSize(m_offscreenWidth, m_offscreenHeight);
+  dp.m_frameBuffer->setRenderTarget(make_shared<graphics::gl::RenderBuffer>(m_offscreenWidth, m_offscreenHeight, false));
+  dp.m_frameBuffer->setDepthBuffer(make_shared<graphics::gl::RenderBuffer>(m_offscreenWidth, m_offscreenHeight, true));
+
   dp.m_resourceManager = m_resourceManager;
   dp.m_threadSlot = m_resourceManager->guiThreadSlot();
   dp.m_visualScale = VisualScale();

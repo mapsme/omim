@@ -54,6 +54,8 @@ TilingRenderPolicyST::TilingRenderPolicyST(Params const & p)
   m_resourceManager->addFonts(fonts);
 
   m_drawer.reset(CreateDrawer(p.m_useDefaultFB, p.m_primaryRC, ESmallStorage, ESmallTexture));
+  if (m_useOffscreenRendering)
+    m_offscreenDrawer.reset(CreateOffscreenDrawer(p.m_primaryRC, ESmallStorage, ESmallTexture));
   InitCacheScreen();
   InitWindowsHandle(p.m_videoTimer, m_primaryRC);
 }

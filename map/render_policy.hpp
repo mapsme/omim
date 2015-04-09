@@ -54,6 +54,7 @@ protected:
   shared_ptr<graphics::RenderContext> m_primaryRC;
   shared_ptr<WindowHandle> m_windowHandle;
   shared_ptr<Drawer> m_drawer;
+  shared_ptr<Drawer> m_offscreenDrawer;
   TRenderFn m_renderFn;
   bool m_doForceUpdate;
   m2::AnyRectD m_invalidRect;
@@ -62,6 +63,9 @@ protected:
   string m_skinName;
   anim::Controller * m_controller;
   shared_ptr<graphics::Overlay> m_overlay;
+  bool m_useOffscreenRendering;
+  size_t m_offscreenWidth;
+  size_t m_offscreenHeight;
 
   void InitCacheScreen();
 
@@ -76,6 +80,9 @@ public:
     string m_skinName;
     size_t m_screenWidth;
     size_t m_screenHeight;
+    bool m_useOffscreenRendering = false;
+    size_t m_offscreenWidth = 0;
+    size_t m_offscreenHeight = 0;
   };
 
   /// constructor
@@ -127,6 +134,7 @@ public:
   m2::AnyRectD const & GetInvalidRect() const;
 
   shared_ptr<Drawer> const & GetDrawer() const;
+  shared_ptr<Drawer> const & GetOffscreenDrawer() const;
   shared_ptr<WindowHandle> const & GetWindowHandle() const;
   graphics::GlyphCache * GetGlyphCache() const;
 
@@ -162,12 +170,18 @@ public:
 
   graphics::Screen * CreateScreenWithParams(graphics::Screen::Params const & params) const;
 
+  size_t GetOffscreenWidth() const { return m_offscreenWidth; }
+  size_t GetOffscreenHeight() const { return m_offscreenHeight; }
+
 protected:
   void InitWindowsHandle(VideoTimer * timer, shared_ptr<graphics::RenderContext> context);
   Drawer * CreateDrawer(bool isDefaultFB,
                         shared_ptr<graphics::RenderContext> context,
                         graphics::EStorageType storageType,
                         graphics::ETextureType textureType);
+  Drawer * CreateOffscreenDrawer(shared_ptr<graphics::RenderContext> context,
+                                 graphics::EStorageType storageType,
+                                 graphics::ETextureType textureType);
 
   size_t GetLargeTextureSize(bool useNpot);
   size_t GetMediumTextureSize(bool useNpot);

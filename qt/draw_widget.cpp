@@ -280,6 +280,11 @@ namespace qt
     rpParams.m_primaryRC = primaryRC;
     rpParams.m_skinName = "basic.skn";
 
+    // TEMP: offscreen rendering test
+    //rpParams.m_useOffscreenRendering = true;
+    //rpParams.m_offscreenWidth = 150;
+    //rpParams.m_offscreenHeight = 150;
+
     try
     {
       m_framework->SetRenderPolicy(CreateRenderPolicy(rpParams));
@@ -333,6 +338,36 @@ namespace qt
       swapBuffers();
 
       m_framework->EndPaint(paintEvent);
+
+      // TEMP: offscreen rendering test
+      /*if (m_framework->GetRenderPolicy()->GetOffscreenDrawer() != nullptr)
+      {
+        shared_ptr<PaintEvent> offscreenPaintEvent(new PaintEvent(m_framework->GetRenderPolicy()->GetOffscreenDrawer().get()));
+
+        ScreenBase dispSB;
+        static bool init = false;
+        if (!init)
+        {
+          dispSB = m_framework->GetNavigator().Screen();
+          init = true;
+        }
+        offscreenPaintEvent->setOffscreenRect(dispSB);
+
+        m_framework->BeginPaint(offscreenPaintEvent);
+        m_framework->DoPaint(offscreenPaintEvent);
+
+        //int const CHANNELS_COUNT = 4;
+        //int x = 0, y = 0,
+        //    width = m_framework->GetRenderPolicy()->GetOffscreenWidth(),
+        //    height = m_framework->GetRenderPolicy()->GetOffscreenHeight();
+        //int dataLength = width * height * CHANNELS_COUNT;
+        //vector<unsigned char> rawData(dataLength);
+        //OGLCHECK(glPixelStorei(GL_PACK_ALIGNMENT, CHANNELS_COUNT));
+        //OGLCHECK(glReadPixels(x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, rawData.data()));
+
+        m_framework->EndPaint(offscreenPaintEvent);
+      }*/
+
       doneCurrent();
     }
 #endif // USE_DRAPE

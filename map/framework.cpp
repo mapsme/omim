@@ -752,13 +752,13 @@ bool Framework::IsCountryLoaded(m2::PointD const & pt) const
 void Framework::BeginPaint(shared_ptr<PaintEvent> const & e)
 {
   if (m_renderPolicy)
-    m_renderPolicy->BeginFrame(e, m_navigator.Screen());
+    m_renderPolicy->BeginFrame(e, e->isOffscreenRendering() ? e->getOffscreenRect() : m_navigator.Screen());
 }
 
 void Framework::EndPaint(shared_ptr<PaintEvent> const & e)
 {
   if (m_renderPolicy)
-    m_renderPolicy->EndFrame(e, m_navigator.Screen());
+    m_renderPolicy->EndFrame(e, e->isOffscreenRendering() ? e->getOffscreenRect() : m_navigator.Screen());
 }
 
 void Framework::DrawAdditionalInfo(shared_ptr<PaintEvent> const & e)
@@ -800,25 +800,7 @@ void Framework::DoPaint(shared_ptr<PaintEvent> const & e)
 {
   if (m_renderPolicy)
   {
-    ScreenBase const & dispSB = m_navigator.Screen();
-    // Working on changing ScreenBase for android wear.
-
-    //ScreenBase watchSB(dispSB, dispSB.GetOrg(), dispSB.GetScale(), dispSB.GetAngle());
-    //m2::RectI pixelRect(dispSB.PixelRect());
-    //pixelRect.Inflate(-150, -300);
-    //m2::AnyRectD anyRect(dispSB.GlobalRect());
-    //anyRect.Inflate(-20, -30);
-    //ScreenBase watchSB(pixelRect, anyRect);
-    //watchSB.MoveG(m2::PointD(0, 0));
-    //watchSB.Rotate(1);
-    //m2::RectD clipRect = watchSB.ClipRect();
-    //clipRect.Inflate(-20, -30);
-    //m2::AnyRectD clipAnyRect(clipRect);
-    //watchSB.SetFromRect(clipAnyRect);
-    //m2::AnyRectD globalRect = watchSB.GlobalRect();
-    //globalRect.Inflate(-20, -30);
-    //watchSB.SetFromRect(globalRect);
-    m_renderPolicy->DrawFrame(e, dispSB);
+    m_renderPolicy->DrawFrame(e, e->isOffscreenRendering() ? e->getOffscreenRect() : m_navigator.Screen());
 
     // Don't render additional elements if guiController wasn't initialized.
     if (m_guiController->GetCacheScreen() != NULL)

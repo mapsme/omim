@@ -53,6 +53,8 @@ class PaintEvent
   core::CommandsQueue::Environment const * m_env;
   bool m_isCancelled;
   bool m_isEmptyDrawing;
+  bool m_renderOffscreen;
+  ScreenBase m_offscreenRect;
 
 public:
   PaintEvent(Drawer * drawer, core::CommandsQueue::Environment const * env = 0);
@@ -62,6 +64,10 @@ public:
   bool isCancelled() const;
   bool isEmptyDrawing() const;
   void setIsEmptyDrawing(bool flag);
+
+  bool isOffscreenRendering() const;
+  ScreenBase const & getOffscreenRect() const;
+  void setOffscreenRect(ScreenBase const & offscreenRect);
 };
 
 class PaintOverlayEvent
