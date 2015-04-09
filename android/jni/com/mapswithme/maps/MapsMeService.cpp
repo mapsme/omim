@@ -7,7 +7,6 @@
 #include "Framework.hpp"
 
 // TODO
-// Almost all methods below leak java resources. Fix it.
 // Get rid of statics and globals and think about OOP principles here.
 
 //
@@ -52,69 +51,55 @@ namespace RenderServiceImpl
 {
   // Wrappers for Android Bitmap manipulations
 
+  jintArray createIntArray(JNIEnv * env, const int * data, int size)
+  {
+    jintArray const int_array = env->NewIntArray(size);
+    env->SetIntArrayRegion(int_array, 0, size, (jint *)data);
+    return int_array;
+  }
+
   jobject createBitmapConfig(JNIEnv * env, const char * config)
   {
-    LOG(LDEBUG, ("MapsMeService_RenderService_createBitmapConfig: config=", config));
-
     jclass const config_class = g_classBitmapConfig;
     jmethodID const midValueOf = env->GetStaticMethodID(config_class, "valueOf", "(Ljava/lang/String;)Landroid/graphics/Bitmap$Config;");
     jstring const config_name = jni::ToJavaString(env, config);
     jobject const bitmap_config = env->CallStaticObjectMethod(config_class, midValueOf, config_name);
+    env->DeleteLocalRef(config_name);
 
     return bitmap_config;
   }
 
-  jobject createBitmap(JNIEnv * env, int width, int height, jobject bitmap_config)
+  jobject createBitmap(JNIEnv * env, const int * colors, int width, int height, jobject bitmap_config)
   {
-    LOG(LDEBUG, ("MapsMeService_RenderService_createBitmap: width=", width, ", height=", height));
-
+    jintArray const int_array = createIntArray(env, colors, width * height);
     jclass const bitmap_class = g_classBitmap;
     jmethodID const midCreateBitmap = env->GetStaticMethodID(bitmap_class,
-        "createBitmap", "(IILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;");
-    jobject const bitmap = env->CallStaticObjectMethod(bitmap_class, midCreateBitmap, width, height, bitmap_config);
+        "createBitmap", "([IIIIILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;");
+    jobject const bitmap = env->CallStaticObjectMethod(bitmap_class, midCreateBitmap, int_array, 0, width, width, height, bitmap_config);
+    env->DeleteLocalRef(int_array);
 
     return bitmap;
   }
 
-  jintArray createIntArray(JNIEnv * env, int width, int height, const void * data)
-  {
-    LOG(LDEBUG, ("MapsMeService_RenderService_createIntArray: width=", width, ", height=", height));
-
-    jintArray const int_array = env->NewIntArray(width * height);
-    env->SetIntArrayRegion(int_array, 0, width * height, (jint *)data);
-
-    return int_array;
-  }
-
-  void bitmapSetPixels(JNIEnv * env, jobject bitmap, int width, int height, const void * data)
-  {
-    LOG(LDEBUG, ("MapsMeService_RenderService_bitmapSetPixels: width=", width, ", height=", height));
-
-    jclass const bitmap_class = g_classBitmap;
-    jmethodID const midSetPixels = env->GetMethodID(bitmap_class, "setPixels", "([IIIIIII)V");
-    jintArray const int_array = createIntArray(env, width, height, data);
-    env->CallVoidMethod(bitmap, midSetPixels, int_array, 0, width, 0, 0, width, height);
-  }
-
-  jobject createBitmap(JNIEnv * env, int width, int height, int bpp, const void * data)
+  jobject createBitmap(JNIEnv * env, ExtraMapScreen::MapImage const & mi)
   {
     // TODO
     // Support not only 4 bytes per pixel
     // Support images with width which is not a ratio of 4
-    if (bpp != sizeof(int))
-    {
-      LOG(LDEBUG, ("MapsMeService_RenderService_createBitmap: bpp is not 4"));
+    if (mi.m_bpp != sizeof(int))
       return nullptr;
-    }
-    if (width % sizeof(int) != 0)
-    {
-      LOG(LDEBUG, ("MapsMeService_RenderService_createBitmap: width is not x4"));
+    if (mi.m_width % sizeof(int) != 0)
       return nullptr;
-    }
+    if (mi.m_bytes.empty() || mi.m_bytes.size() != (mi.m_width * mi.m_height * mi.m_bpp))
+      return nullptr;
+
+    int const width = mi.m_width;
+    int const height = mi.m_height;
+    const int * const colors = reinterpret_cast<const int *>(&mi.m_bytes[0]);
 
     jobject const bitmap_config = createBitmapConfig(env, "ARGB_8888");
-    jobject const bitmap = createBitmap(env, width, height, bitmap_config);
-    bitmapSetPixels(env, bitmap, width, height, data);
+    jobject const bitmap = createBitmap(env, colors, width, height, bitmap_config);
+    env->DeleteLocalRef(bitmap_config);
 
     return bitmap;
   }
@@ -159,15 +144,9 @@ namespace RenderServiceImpl
       return;
     }
 
-    if (mi.m_bytes.empty())
-    {
-      LOG(LDEBUG, ("MapsMeService_RenderService_renderAsyncCallback: image is empty"));
-      return;
-    }
-
     JNIEnv * const env = jni::GetEnv();
 
-    jobject const bmp = createBitmap(env, mi.m_width, mi.m_height, mi.m_bpp, &mi.m_bytes[0]);
+    jobject const bmp = createBitmap(env, mi);
     if (nullptr == bmp)
     {
       LOG(LDEBUG, ("MapsMeService_RenderService_renderAsyncCallback: bitmap wasn't created"));
@@ -177,6 +156,8 @@ namespace RenderServiceImpl
     g_renderServiceSkipCallbacks = true;
 
     fireOnRenderComplete(env, listener, bmp);
+
+    env->DeleteLocalRef(bmp);
   }
 
 } // namespace RenderServiceImpl
@@ -242,8 +223,6 @@ extern "C"
 // LookupService functionality
 //
 
-#include <sstream>
-
 namespace
 {
 namespace LookupServiceImpl
@@ -251,25 +230,6 @@ namespace LookupServiceImpl
   // TODO
   // Support more than listener
   std::shared_ptr<jobject> g_lookupServicelistener;
-
-  // Debug helpers
-
-  std::string to_string(search::Result const & r)
-  {
-    std::ostringstream o;
-    o << "string:" << r.GetString() << ", region:" << r.GetRegionString() << ", feature_type:" << r.GetFeatureType();
-    if (r.IsSuggest()) o << ", suggestion:" << r.GetSuggestionString();
-    if (r.HasPoint()) o << ", latitude:" << r.GetFeatureCenter().y << ", longitude:" << r.GetFeatureCenter().x;
-    switch (r.GetResultType())
-    {
-    case search::Result::RESULT_FEATURE: o << ", result:RESULT_FEATURE"; break;
-    case search::Result::RESULT_LATLON: o << ", result:RESULT_LATLON"; break;
-    case search::Result::RESULT_SUGGEST_PURE: o << ", result:RESULT_SUGGEST_PURE"; break;
-    case search::Result::RESULT_SUGGEST_FROM_FEATURE: o << ", result:RESULT_SUGGEST_FROM_FEATURE"; break;
-    default: o << ", result:UNKNOWN"; break;
-    }
-    return o.str();
-  }
 
   // JNI helpers
 
@@ -293,18 +253,26 @@ namespace LookupServiceImpl
     jobject const obj = createLookupItem(env);
 
     jfieldID const nameId = env->GetFieldID(klass, "mName", "Ljava/lang/String;");
-    env->SetObjectField(obj, nameId, jni::ToJavaString(env, result.GetString()));
+    jstring str = jni::ToJavaString(env, result.GetString());
+    env->SetObjectField(obj, nameId, str);
+    env->DeleteLocalRef(str);
 
     jfieldID const regionId = env->GetFieldID(klass, "mRegion", "Ljava/lang/String;");
-    env->SetObjectField(obj, regionId, jni::ToJavaString(env, result.GetRegionString()));
+    str = jni::ToJavaString(env, result.GetRegionString());
+    env->SetObjectField(obj, regionId, str);
+    env->DeleteLocalRef(str);
 
     jfieldID const amenityId = env->GetFieldID(klass, "mAmenity", "Ljava/lang/String;");
-    env->SetObjectField(obj, amenityId, jni::ToJavaString(env, result.GetFeatureType()));
+    str = jni::ToJavaString(env, result.GetFeatureType());
+    env->SetObjectField(obj, amenityId, str);
+    env->DeleteLocalRef(str);
 
     if (result.IsSuggest())
     {
       jfieldID const suggestionId = env->GetFieldID(klass, "mSuggestion", "Ljava/lang/String;");
-      env->SetObjectField(obj, suggestionId, jni::ToJavaString(env, result.GetSuggestionString()));
+      str = jni::ToJavaString(env, result.GetSuggestionString());
+      env->SetObjectField(obj, suggestionId, str);
+      env->DeleteLocalRef(str);
     }
 
     jint const type = result.IsSuggest() ? TYPE_SUGGESTION : TYPE_FEATURE;
@@ -344,9 +312,12 @@ namespace LookupServiceImpl
     {
       jobject const item = createLookupItem(env, *i);
       if (nullptr == item)
+      {
+        env->DeleteLocalRef(arr);
         return nullptr;
-
+      }
       env->SetObjectArrayElement(arr, index, item);
+      env->DeleteLocalRef(item);
     }
 
     return arr;
@@ -398,6 +369,8 @@ namespace LookupServiceImpl
     }
 
     fireOnLookupComplete(env, listener, arr);
+
+    env->DeleteLocalRef(arr);
   }
 
 } // namespace LookupServiceImpl
@@ -463,19 +436,6 @@ extern "C"
       std::string str = jni::ToNativeString(env, language);
       params.SetInputLocale(str);
     }
-
-    /*
-    search::SearchParams params;
-    params.m_callback = lookupCallback;
-    params.SetForceSearch(true);
-    params.SetPosition(56.7603335116467, 36.7419941767122);
-    params.SetSearchMode(search::SearchParams::AROUND_POSITION);
-    params.m_query = "food";
-    params.SetInputLocale("");
-    */
-
-    LOG(LDEBUG, ("MapsMeService_LookupService_lookup: lat=", params.m_lat, "lon=", params.m_lon,
-                 ", query=", params.m_query));
 
     g_framework->Search(params);
   }
