@@ -5,6 +5,9 @@
 #include "../std/map.hpp"
 #include "../std/exception.hpp"
 #include "../std/chrono.hpp"
+#include "osm_data.hpp"
+
+using namespace osm;
 
 namespace edit
 {
@@ -32,10 +35,19 @@ namespace edit
 
   enum EDataKey
   {
+    LAT = 100, LON = 101, TYPE = 102,
     NAME = 1,
-    ADDR_HOUSENUMBER = 2,
-    ADDR_POSTCODE = 3,
-    ADDR_STREET = 4,
+    OPENING_HOURS = 6,
+    HOUSENUMBER = 2,
+    HOUSENAME = 7,
+    STREET = 4,
+    POSTCODE = 3,
+    PHONE = 8,
+    WEBSITE = 9,
+    EMAIL = 10,
+    OPERATOR = 11,
+    CUISINE = 12,
+    STARS = 13,
     ELE = 5
   };
 
