@@ -112,11 +112,11 @@ namespace osm
 
   public:
     void Add(OsmElement & element);
-    vector<OsmNodeRef> & GetNodes() const;
-    vector<OsmWayRef> & GetWays() const;
-    vector<OsmRelationRef> & GetRelations() const;
-    vector<OsmAreaRef> & GetAreas() const;
-    vector<OsmElementRef> & GetElements(OsmType type) const;
+    vector<OsmNodeRef> GetNodes() const;
+    vector<OsmWayRef> GetWays() const;
+    vector<OsmRelationRef> GetRelations() const;
+    vector<OsmAreaRef> GetAreas() const;
+    vector<OsmElementRef> GetElements(OsmType type) const;
     bool HasNode(OsmId id) const { return m_nodes.count(id); }
     bool HasWay(OsmId id) const { return m_ways.count(id); }
     bool HasRelation(OsmId id) const { return m_relations.count(id); }

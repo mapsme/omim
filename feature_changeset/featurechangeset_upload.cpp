@@ -198,16 +198,16 @@ namespace edit
   }
 
   bool find_closest_match(m2::PointD const & center, vector<pair<string, string>> const & tags,
-                          vector<std::reference_wrapper<OsmElement>> const & data, OsmElement *match)
+                          vector<std::reference_wrapper<OsmElement>> const & data, OsmElement * match)
   {
     double distance = 1.0L;
-    for (OsmElement &element : data)
+    for (OsmElement & element : data)
     {
       double sq_l = element.GetCenter().SquareLength(center);
       if( sq_l < distance && has_tags(element, tags) )
       {
         distance = sq_l;
-        match = &element;
+        *match = element;
       }
     }
     return distance < 1.0L;
@@ -262,7 +262,7 @@ namespace edit
         OsmData data;
         // downloaded data, search for nearest point
         data.BuildAreas();
-        OsmElement *closest;
+        OsmElement * closest = nullptr;
         if (!find_closest_match(center, typeTags, data.GetElements(OsmType::NODE), closest) &&
             !find_closest_match(center, typeTags, data.GetElements(OsmType::AREA), closest))
         {

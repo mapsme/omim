@@ -163,38 +163,38 @@ namespace osm
     oss << "</osm>";
   }
 
-  vector<OsmNodeRef> & OsmData::GetNodes() const
+  vector<OsmNodeRef> OsmData::GetNodes() const
   {
     vector<OsmNodeRef> result;
     for (pair<OsmId, OsmNodeRef> n : m_nodes)
       result.push_back(n.second);
-    return result;
+    return move(result);
   }
 
-  vector<OsmWayRef> & OsmData::GetWays() const
+  vector<OsmWayRef> OsmData::GetWays() const
   {
     vector<OsmWayRef> result;
     for (pair<OsmId, OsmWayRef> w : m_ways)
       result.push_back(w.second);
-    return result;
+    return move(result);
   }
 
-  vector<OsmRelationRef> & OsmData::GetRelations() const
+  vector<OsmRelationRef> OsmData::GetRelations() const
   {
     vector<OsmRelationRef> result;
     for (pair<OsmId, OsmRelationRef> r : m_relations)
       result.push_back(r.second);
-    return result;
+    return move(result);
   }
 
-  vector<OsmAreaRef> & OsmData::GetAreas() const
+  vector<OsmAreaRef> OsmData::GetAreas() const
   {
     vector<OsmAreaRef> result;
     // todo
-    return result;
+    return move(result);
   }
 
-  vector<OsmElementRef> & OsmData::GetElements(OsmType type) const
+  vector<OsmElementRef> OsmData::GetElements(OsmType type) const
   {
     vector<OsmElementRef> result;
     if( type == OsmType::NODE)
@@ -205,7 +205,7 @@ namespace osm
       for (OsmArea *a : GetAreas())
         result.push_back(a);
         */
-    return result;
+    return move(result);
   }
 
   void OsmChange::XML(ostream & oss, OsmId changeset) const
