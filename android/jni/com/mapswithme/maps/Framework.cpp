@@ -167,13 +167,14 @@ void SaveImage(char * p, int w, int h, string const & fileName)
 }
 
 void SendImageToAndroidWear(int wearWidth, int wearHeight,
-  int screenWidth, int screenHeight, string const & fileName)
+  int screenWidth, int screenHeight, string const & fileName, bool flip)
 {
   MapImage image = {0};
   int left = (screenWidth - wearWidth) / 2;
   int top = (screenHeight - wearHeight) / 2;
   ReadPixels(left, top, wearWidth, wearHeight, image);
-  FlipVertical(image.m_width, image.m_height, image.m_bpp, image.m_bytes.data());
+  if (flip)
+    FlipVertical(image.m_width, image.m_height, image.m_bpp, image.m_bytes.data());
   // SaveImage(image.m_bytes.data(), wearWidth, wearHeight, fileName);
   ConvertPixelFormat(image.m_width, image.m_height, image.m_bpp, image.m_bytes.data());
   g_imageReady(image);
@@ -417,19 +418,21 @@ namespace android
   {
     if (g_appInBackground)
     {
-      if (g_isFrameRequested && g_imageReady != nullptr
+      if (
+        g_isFrameRequested &&
+        g_imageReady != nullptr
         && m_work.GetRenderPolicy()->GetOffscreenDrawer() != nullptr)
       {
         shared_ptr<PaintEvent> offscreenPaintEvent(new PaintEvent(m_work.GetRenderPolicy()->GetOffscreenDrawer().get()));
         ScreenBase dispSB = m_work.GetNavigator().Screen();
-        offscreenPaintEvent->setOffscreenRect(dispSB);
+        int const w = m_work.GetRenderPolicy()->GetOffscreenWidth(),
+          h = m_work.GetRenderPolicy()->GetOffscreenHeight();
+        ScreenBase dispSBOff(m2::RectI(0, 0, w, h), dispSB.GlobalRect());
+        offscreenPaintEvent->setOffscreenRect(dispSBOff);
         m_work.BeginPaint(offscreenPaintEvent);
         m_work.DoPaint(offscreenPaintEvent);
 
-        SendImageToAndroidWear(m_work.GetRenderPolicy()->GetOffscreenWidth(),
-          m_work.GetRenderPolicy()->GetOffscreenHeight(),
-          m_screenWidth, m_screenHeight, string("tileBackground_"));
-
+        SendImageToAndroidWear(w, h, w, h, string("tileBackground_"), false);
         m_work.EndPaint(offscreenPaintEvent);
       }
     }
@@ -445,11 +448,13 @@ namespace android
         m_work.DoPaint(paintEvent);
 
         NVEventSwapBuffersEGL();
-        if (g_isFrameRequested && g_imageReady != nullptr)
+        if (
+          g_isFrameRequested &&
+          g_imageReady != nullptr)
         {
           SendImageToAndroidWear(m_work.GetRenderPolicy()->GetOffscreenWidth(),
             m_work.GetRenderPolicy()->GetOffscreenHeight(),
-            m_screenWidth, m_screenHeight, string("tileForeground_"));
+            m_screenWidth, m_screenHeight, string("tileForeground_"), true);
         }
         m_work.EndPaint(paintEvent);
       }

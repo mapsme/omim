@@ -198,19 +198,23 @@ int32_t NVEventAppMain(int32_t argc, char** argv)
           NVDEBUG("Focus lost event");
 
           renderFrame(false);
+          SetAppInBackground(true);
           break;
 
         case NV_EVENT_PAUSE:
           NVDEBUG("Pause event");
-
           renderFrame(false);
+          SetAppInBackground(true);
           break;
 
         case NV_EVENT_STOP:
           NVDEBUG("Stop event");
 
           // As per Google's recommendation, we release GLES resources here
-          ShutdownGLESResources();
+
+          // @todo check if the watch is connected. If not call ShutdownGLESResources(); here.
+          // ShutdownGLESResources();
+          SetAppInBackground(true);
           break;
         case NV_EVENT_QUIT:
           NVDEBUG("Quit event");
@@ -261,6 +265,7 @@ int32_t NVEventAppMain(int32_t argc, char** argv)
       // If these are already set up or we succeed at setting them all up now, then
       // we go ahead and render.
       renderFrame(true);
+      SetAppInBackground(false);
     }
   }
 
