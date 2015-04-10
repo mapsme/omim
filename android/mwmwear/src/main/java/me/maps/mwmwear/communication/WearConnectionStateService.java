@@ -1,4 +1,4 @@
-package me.maps.mwmwear;
+package me.maps.mwmwear.communication;
 
 import android.util.Log;
 

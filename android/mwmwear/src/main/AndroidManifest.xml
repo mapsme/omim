@@ -23,7 +23,7 @@
       </intent-filter>
     </activity>
 
-    <service android:name=".WearConnectionStateService">
+    <service android:name=".communication.WearConnectionStateService">
       <intent-filter>
         <action android:name="com.google.android.gms.wearable.BIND_LISTENER"/>
       </intent-filter>

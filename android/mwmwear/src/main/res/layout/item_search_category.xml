@@ -8,8 +8,8 @@
 
   <android.support.wearable.view.CircledImageView
       android:id="@+id/iv__category"
-      android:layout_width="48dp"
-      android:layout_height="48dp"
+      android:layout_width="@dimen/search_circle"
+      android:layout_height="@dimen/search_circle"
       android:layout_gravity="center"
       android:layout_marginRight="8dp"
       android:background="@drawable/bg_circle_search"

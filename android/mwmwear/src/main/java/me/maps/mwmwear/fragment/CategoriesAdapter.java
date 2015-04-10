@@ -61,7 +61,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
   @Override
   public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
   {
-    return new ViewHolder(new SelectableSearchLayout(parent.getContext()));
+    return new ViewHolder(new SelectableSearchLayout(parent.getContext(), R.layout.item_search_category, R.id.iv__category));
   }
 
   @Override

@@ -735,6 +735,7 @@ public class MWMActivity extends BaseMwmFragmentActivity
   public void onDestroy()
   {
     Framework.nativeClearBalloonListeners();
+    mWearableManager.endCommunication();
 
     super.onDestroy();
   }
@@ -891,7 +892,9 @@ public class MWMActivity extends BaseMwmFragmentActivity
     if (mPlacePage.getState() != State.HIDDEN)
       mPlacePage.refreshLocation(l);
 
+    Log.d("TEST", "Location updated");
     updateRoutingDistance();
+    mWearableManager.requestMapRender(l);
   }
 
   private void updateRoutingDistance()
@@ -1037,7 +1040,7 @@ public class MWMActivity extends BaseMwmFragmentActivity
     super.onPause();
     mLocationPredictor.pause();
     mLikesManager.cancelLikeDialogs();
-    mWearableManager.endCommunication();
+//    mWearableManager.endCommunication();
   }
 
   private void updateExternalStorageState()

@@ -2,39 +2,44 @@ package me.maps.mwmwear;
 
 import android.animation.Animator;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.support.wearable.view.WearableListView;
-import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 
+/**
+ * Layout animates itself by scaling down-up and applying alpha when it's centered and uncentered in WearableListView.
+ */
 public class SelectableSearchLayout extends LinearLayout implements WearableListView.OnCenterProximityListener
 {
   private static final int ANIMATION_MILLIS = 300;
-  private final TransitionDrawable mTransitionBg;
-
   private static final float REDUCED_SIZE = 0.8f;
   private static final float REDUCED_ALPHA = 0.6f;
+
+  private TransitionDrawable mTransitionBg;
   private boolean mIsCentered;
 
-  public SelectableSearchLayout(Context context)
+  SelectableSearchLayout(Context context)
   {
-    this(context, null, 0);
+    this(context, R.layout.item_search_category, R.id.iv__category);
   }
 
-  public SelectableSearchLayout(Context context, AttributeSet attrs)
+  /**
+   * @param context    context
+   * @param layoutId   id of layout to merge inflate to the view
+   * @param imageResId resource of image to apply bg transition
+   */
+  public SelectableSearchLayout(Context context, int layoutId, int imageResId)
   {
-    this(context, attrs, 0);
-  }
-
-  public SelectableSearchLayout(Context context, AttributeSet attrs, int defStyleAttr)
-  {
-    super(context, attrs, defStyleAttr);
-    View.inflate(context, R.layout.item_search_category, this);
+    super(context);
+    View.inflate(context, layoutId, this);
     setScaleX(REDUCED_SIZE);
     setScaleY(REDUCED_SIZE);
     setAlpha(REDUCED_ALPHA);
-    mTransitionBg = (TransitionDrawable) findViewById(R.id.iv__category).getBackground();
+    final Drawable drawable = findViewById(imageResId).getBackground();
+    if (drawable != null && drawable instanceof TransitionDrawable)
+      mTransitionBg = (TransitionDrawable) drawable;
   }
 
   @Override
@@ -50,7 +55,8 @@ public class SelectableSearchLayout extends LinearLayout implements WearableList
         @Override
         public void onAnimationStart(Animator animation)
         {
-          mTransitionBg.startTransition(ANIMATION_MILLIS);
+          if (mTransitionBg != null)
+            mTransitionBg.startTransition(ANIMATION_MILLIS);
         }
 
         @Override
@@ -77,7 +83,8 @@ public class SelectableSearchLayout extends LinearLayout implements WearableList
       setScaleX(1);
       setScaleY(1);
       setAlpha(1);
-      mTransitionBg.startTransition(1);
+      if (mTransitionBg != null)
+        mTransitionBg.startTransition(1);
     }
     mIsCentered = true;
   }
@@ -95,7 +102,8 @@ public class SelectableSearchLayout extends LinearLayout implements WearableList
         @Override
         public void onAnimationStart(Animator animation)
         {
-          mTransitionBg.reverseTransition(ANIMATION_MILLIS);
+          if (mTransitionBg != null)
+            mTransitionBg.reverseTransition(ANIMATION_MILLIS);
         }
 
         @Override
@@ -122,7 +130,8 @@ public class SelectableSearchLayout extends LinearLayout implements WearableList
       setScaleX(REDUCED_SIZE);
       setScaleY(REDUCED_SIZE);
       setAlpha(REDUCED_ALPHA);
-      mTransitionBg.reverseTransition(0);
+      if (mTransitionBg != null)
+        mTransitionBg.reverseTransition(0);
     }
     mIsCentered = false;
   }

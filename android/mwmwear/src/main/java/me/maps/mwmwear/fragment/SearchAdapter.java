@@ -1,6 +1,8 @@
 package me.maps.mwmwear.fragment;
 
+import android.location.Location;
 import android.support.v7.widget.RecyclerView;
+import android.support.wearable.view.WearableListView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,11 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.maps.mwmwear.R;
+import me.maps.mwmwear.SelectableSearchLayout;
+import me.maps.mwmwear.Utils;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder>
 {
   private final LayoutInflater mInflater;
   private List<SearchResult> mResults = new ArrayList<>();
+  private Location mCurrentLocation;
 
   public SearchAdapter(SearchFragment fragment)
   {
@@ -29,10 +34,15 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     notifyDataSetChanged();
   }
 
+  public SearchResult getSearchResult(int position)
+  {
+    return mResults.get(position);
+  }
+
   @Override
   public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
   {
-    return new ViewHolder(mInflater.inflate(R.layout.item_search, parent, false));
+    return new ViewHolder((new SelectableSearchLayout(parent.getContext(), R.layout.item_search, R.id.iv__distance)));
   }
 
   @Override
@@ -44,7 +54,22 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     holder.mName.setText(Html.fromHtml(r.mName));
     holder.mType.setText(r.mType);
-    holder.mDistance.setText(r.mDistance);
+    holder.mDistance.setText(calculateDistance(r));
+  }
+
+  private String calculateDistance(SearchResult r)
+  {
+    if (mCurrentLocation == null)
+      return "? m";
+    return formatDistanceInMeters(Utils.getDistanceMeters(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude(), r.mLat, r.mLon));
+  }
+
+  private String formatDistanceInMeters(double distanceMeters)
+  {
+    if (distanceMeters > 1000)
+      return String.format("%.1f", distanceMeters / 1000) + " km";
+    else
+      return String.format("%3.0f", distanceMeters) + " m";
   }
 
   @Override
@@ -53,7 +78,12 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     return mResults.size();
   }
 
-  public static class ViewHolder extends RecyclerView.ViewHolder
+  public void setCurrentLocation(Location location)
+  {
+    mCurrentLocation = location;
+  }
+
+  public static class ViewHolder extends WearableListView.ViewHolder
   {
     public TextView mName;
     public TextView mType;
@@ -72,20 +102,18 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
   {
     public String mName;
     public String mType;
-    public String mDistance;
-    public float mLat;
-    public float mLon;
+    public double mLat;
+    public double mLon;
 
-    public SearchResult(String name, String amenity, String distance)
+    public SearchResult(String name, String amenity)
     {
       mName = name;
       mType = amenity;
-      mDistance = distance;
     }
 
-    public SearchResult(String name, String amenity, String distance, float lat, float lon)
+    public SearchResult(String name, String amenity, double lat, double lon)
     {
-      this(name, amenity, distance);
+      this(name, amenity);
       mLat = lat;
       mLon = lon;
     }

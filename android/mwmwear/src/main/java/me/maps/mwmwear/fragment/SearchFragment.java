@@ -1,6 +1,7 @@
 package me.maps.mwmwear.fragment;
 
 import android.app.Fragment;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -10,10 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 import me.maps.mwmwear.R;
 import me.maps.mwmwear.WearMwmActivity;
+import me.maps.mwmwear.communication.SearchListener;
 
-public class SearchFragment extends Fragment implements WearableListView.ClickListener
+public class SearchFragment extends Fragment implements WearableListView.ClickListener, SearchListener
 {
   private WearableListView mListView;
   private SearchAdapter mSearchAdapter;
@@ -44,6 +48,14 @@ public class SearchFragment extends Fragment implements WearableListView.ClickLi
       return getSearchAdapter();
   }
 
+  @Override
+  public void onResume()
+  {
+    super.onResume();
+    mShowCategories = true;
+    mListView.setAdapter(getCurrentAdapter());
+  }
+
   private RecyclerView.Adapter getSearchAdapter()
   {
     if (mSearchAdapter == null)
@@ -68,15 +80,14 @@ public class SearchFragment extends Fragment implements WearableListView.ClickLi
   @Override
   public void onClick(WearableListView.ViewHolder viewHolder)
   {
-    Log.d("Wear", "Category Click");
     if (mShowCategories)
     {
-      // TODO get results
+      Log.d("TEST", "Show cat");
       if (getActivity() instanceof WearMwmActivity && viewHolder instanceof CategoriesAdapter.ViewHolder)
       {
         WearMwmActivity host = (WearMwmActivity) getActivity();
         CategoriesAdapter.ViewHolder catHolder = (CategoriesAdapter.ViewHolder) viewHolder;
-        host.getWearableManager().makeSearchCategoryRequest(catHolder.getCategoryQuery(host));
+        host.getWearableManager().makeSearchCategoryRequest(catHolder.getCategoryQuery(host), this);
       }
     }
     else
@@ -87,4 +98,42 @@ public class SearchFragment extends Fragment implements WearableListView.ClickLi
 
   @Override
   public void onTopEmptyRegionClick() {}
+
+  @Override
+  public void onSearchComplete(String query, final List<SearchAdapter.SearchResult> results)
+  {
+    mListView.post(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        mSearchAdapter.setResults(results);
+      }
+    });
+  }
+
+  @Override
+  public void onCategorySearchComplete(final String category, final List<SearchAdapter.SearchResult> results)
+  {
+    mListView.post(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        if (mShowCategories)
+        {
+          mShowCategories = false;
+          mListView.setAdapter(getSearchAdapter());
+        }
+        mSearchAdapter.setResults(results);
+      }
+    });
+  }
+
+  @Override
+  public void onLocationChanged(Location location)
+  {
+    mSearchAdapter.setCurrentLocation(location);
+    mSearchAdapter.notifyDataSetChanged();
+  }
 }

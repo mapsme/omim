@@ -1,4 +1,4 @@
-package me.maps.mwmwear;
+package me.maps.mwmwear.communication;
 
 import android.content.IntentSender;
 import android.graphics.Bitmap;
@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import me.maps.mwmwear.WearMwmActivity;
 import me.maps.mwmwear.fragment.SearchAdapter;
 
 public class WearableManager implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, DataApi.DataListener
@@ -53,6 +54,7 @@ public class WearableManager implements LocationListener, GoogleApiClient.Connec
   private static final String KEY_SEARCH_RESULT = "SearchResult";
 
   private final WeakReference<WearMwmActivity> mActivity;
+  private WeakReference<SearchListener> mListener;
 
   private String mNodeId;
   private GoogleApiClient mGmsClient;
@@ -75,10 +77,12 @@ public class WearableManager implements LocationListener, GoogleApiClient.Connec
   }
 
   // TODO add result listener
-  public void makeSearchCategoryRequest(String category)
+  public void makeSearchCategoryRequest(String category, SearchListener listener)
   {
+    Log.d("TEST", "Make search request");
+    mListener = new WeakReference<>(listener);
     Wearable.MessageApi.
-        sendMessage(mGmsClient, mNodeId, PATH_SEARCH_CATEGORY, new byte[0]).
+        sendMessage(mGmsClient, mNodeId, PATH_SEARCH_CATEGORY, category.getBytes()).
         setResultCallback(new ResultCallback<MessageApi.SendMessageResult>()
         {
           @Override
@@ -110,6 +114,7 @@ public class WearableManager implements LocationListener, GoogleApiClient.Connec
     Log.d(TAG, "onConnected: " + bundle);
     makeLocationRequest();
     Wearable.DataApi.deleteDataItems(mGmsClient, Uri.parse("wear://" + mNodeId + PATH_IMAGE));
+    Wearable.DataApi.deleteDataItems(mGmsClient, Uri.parse("wear://" + mNodeId + PATH_SEARCH_CATEGORY));
     Wearable.DataApi.addListener(mGmsClient, this);
   }
 
@@ -161,6 +166,8 @@ public class WearableManager implements LocationListener, GoogleApiClient.Connec
   public void onLocationChanged(Location location)
   {
     requestMapUpdate();
+    if (mListener != null)
+      mListener.get().onLocationChanged(location);
   }
 
   private void requestMapUpdate()
@@ -196,13 +203,13 @@ public class WearableManager implements LocationListener, GoogleApiClient.Connec
   {
     for (DataEvent event : dataEventBuffer)
     {
-      Log.d(TAG, "Data changed. Event type: " + event.getType() + ", event : " + event.toString());
       if (event.getType() == DataEvent.TYPE_CHANGED)
       {
         // DataItem changed
         final DataItem item = event.getDataItem();
         final DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
         final String path = item.getUri().getPath();
+        Log.d(TAG, "Data changed, path : " + path);
         if (path.equals(PATH_IMAGE))
         {
           Asset asset = dataMap.getAsset(KEY_IMAGE);
@@ -226,13 +233,12 @@ public class WearableManager implements LocationListener, GoogleApiClient.Connec
           {
             searchResults.add(new SearchAdapter.SearchResult(dataListItem.getString(KEY_SEARCH_NAME),
                 dataListItem.getString(KEY_SEARCH_AMENITY),
-                dataListItem.getString(KEY_SEARCH_DISTANCE),
-                dataListItem.getFloat(KEY_SEARCH_LAT),
-                dataListItem.getFloat(KEY_SEARCH_LON)));
-            Log.d(TAG, "DataListItem : " + dataListItem + ", result name : " + searchResults.get(searchResults.size()).mName);
+                dataListItem.getDouble(KEY_SEARCH_LAT),
+                dataListItem.getDouble(KEY_SEARCH_LON)));
           }
-          // TODO
-//          mActivity.get().onSearchResults(searchResults);
+
+          if (mListener != null)
+            mListener.get().onCategorySearchComplete("", searchResults);
         }
       }
     }

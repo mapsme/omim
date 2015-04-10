@@ -22,7 +22,6 @@ import com.mapswithme.maps.location.LocationHelper;
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class WearableManager implements MessageApi.MessageListener, DataApi.DataListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, MapsMeService.RenderService.Listener, MapsMeService.LookupService.Listener
 {
@@ -98,44 +97,23 @@ public class WearableManager implements MessageApi.MessageListener, DataApi.Data
     final String path = messageEvent.getPath();
     Log.d(TAG, "Message received, path : " + path);
     if (path.equals(PATH_IMAGE))
-    {
-      final Location location = LocationHelper.INSTANCE.getLastLocation();
-      // TODO pass correct params from wearable's sensors
-      Random random = new Random();
-      MapsMeService.RenderService.renderMap(location.getLatitude() + random.nextDouble() / 100, location.getLongitude()  * random.nextDouble() / 100,
-          15, 320, 320, 180);
-    }
+      requestMapRender(LocationHelper.INSTANCE.getLastLocation());
     else if (path.equals(PATH_SEARCH_CATEGORY))
     {
-      // TODO make search request, post a reply afterwards
-      // TODO remove hack
-      final PutDataMapRequest mapRequest = PutDataMapRequest.create(PATH_SEARCH_CATEGORY);
-      ArrayList<DataMap> dataList = new ArrayList<>();
-      DataMap dataItem = new DataMap();
-      dataItem.putString(KEY_SEARCH_NAME, "Name 1");
-      dataItem.putString(KEY_SEARCH_AMENITY, "Name 1");
-      dataItem.putString(KEY_SEARCH_DISTANCE, "Name 1");
-      dataItem.putFloat(KEY_SEARCH_LAT, .1f);
-      dataItem.putFloat(KEY_SEARCH_LON, .1f);
-      dataList.add(dataItem);
-      dataItem = new DataMap();
-      dataItem.putString(KEY_SEARCH_NAME, "Name 2");
-      dataItem.putString(KEY_SEARCH_AMENITY, "Name 2");
-      dataItem.putString(KEY_SEARCH_DISTANCE, "Name 2");
-      dataItem.putFloat(KEY_SEARCH_LAT, .1f);
-      dataItem.putFloat(KEY_SEARCH_LON, .1f);
-      dataList.add(dataItem);
-      dataItem = new DataMap();
-      dataItem.putString(KEY_SEARCH_NAME, "Name 3");
-      dataItem.putString(KEY_SEARCH_AMENITY, "Name 1");
-      dataItem.putString(KEY_SEARCH_DISTANCE, "Name 1");
-      dataItem.putFloat(KEY_SEARCH_LAT, .1f);
-      dataItem.putFloat(KEY_SEARCH_LON, .1f);
-      dataList.add(dataItem);
-      mapRequest.getDataMap().putDataMapArrayList(KEY_SEARCH_RESULT, dataList);
-      Log.d(TAG, "Reply to wearable with search results, size : " + dataList.size());
-      Wearable.DataApi.putDataItem(mGmsClient, mapRequest.asPutDataRequest());
+      // TODO get rid of hardcoded params
+      final String category = new String(messageEvent.getData());
+      MapsMeService.LookupService.lookup(LocationHelper.INSTANCE.getLastLocation().getLatitude(),
+          LocationHelper.INSTANCE.getLastLocation().getLongitude(),
+          25000, category, "en", 20);
     }
+  }
+
+  public void requestMapRender(Location location)
+  {
+    Log.d("Wear", "Request map render");
+    // TODO pass correct params from wearable's sensors
+    MapsMeService.RenderService.renderMap(location.getLatitude(), location.getLongitude(),
+        15, 320, 320, 180);
   }
 
   private Asset getBitmapAsset(Bitmap bitmap)
@@ -161,5 +139,20 @@ public class WearableManager implements MessageApi.MessageListener, DataApi.Data
   public void onLookupComplete(MapsMeService.LookupService.LookupItem[] items)
   {
     Log.d(TAG, "Lookup complete, items size : " + items.length);
+    final PutDataMapRequest mapRequest = PutDataMapRequest.create(PATH_SEARCH_CATEGORY);
+    ArrayList<DataMap> dataList = new ArrayList<>();
+    for (MapsMeService.LookupService.LookupItem lookupItem : items)
+    {
+
+      DataMap dataItem = new DataMap();
+      dataItem.putString(KEY_SEARCH_NAME, lookupItem.mName);
+      dataItem.putString(KEY_SEARCH_AMENITY, lookupItem.mAmenity);
+      dataItem.putDouble(KEY_SEARCH_LAT, lookupItem.mLatitude);
+      dataItem.putDouble(KEY_SEARCH_LON, lookupItem.mLongitude);
+      dataList.add(dataItem);
+    }
+    mapRequest.getDataMap().putDataMapArrayList(KEY_SEARCH_RESULT, dataList);
+    Log.d(TAG, "Reply to wearable with search results, size : " + dataList.size());
+    Wearable.DataApi.putDataItem(mGmsClient, mapRequest.asPutDataRequest());
   }
 }

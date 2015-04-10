@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<merge
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,23 +7,29 @@
     android:orientation="horizontal">
 
   <FrameLayout
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content">
+      android:layout_width="@dimen/search_circle"
+      android:layout_height="@dimen/search_circle"
+      android:layout_marginRight="8dp">
 
     <ImageView
         android:id="@+id/iv__distance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:contentDescription="@null"
-        android:scaleType="center"
-        android:src="@drawable/bg_search_green"/>
+        android:background="@drawable/bg_circle_search"
+        android:contentDescription="@null"/>
 
     <TextView
         android:id="@+id/tv__distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:ellipsize="end"
+        android:lines="1"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/search_title"/>
 
   </FrameLayout>
 
@@ -38,14 +44,20 @@
         android:id="@+id/tv__search_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ellipsize="end"/>
+        android:ellipsize="end"
+        android:lines="1"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/search_title"/>
 
     <TextView
         android:id="@+id/tv__search_subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ellipsize="end"/>
+        android:ellipsize="end"
+        android:lines="1"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/search_subtitle"/>
 
   </LinearLayout>
 
-</LinearLayout>
+</merge>

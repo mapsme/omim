@@ -7,6 +7,8 @@ import android.support.wearable.view.GridPagerAdapter;
 import android.support.wearable.view.GridViewPager;
 import android.support.wearable.view.WatchViewStub;
 
+import me.maps.mwmwear.communication.WearableManager;
+
 public class WearMwmActivity extends Activity
 {
   private static final String TAG = "Wear";
