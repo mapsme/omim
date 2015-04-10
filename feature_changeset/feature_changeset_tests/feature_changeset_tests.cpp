@@ -1,8 +1,8 @@
-#include "../testing/testing.hpp"
-#include "featurechangeset.hpp"
+#include "../../testing/testing.hpp"
+#include "../featurechangeset.hpp"
 
-#include "../std/chrono.hpp"
-#include "../std/thread.hpp"
+#include "../../std/chrono.hpp"
+#include "../../std/thread.hpp"
 
 
 
@@ -29,8 +29,8 @@ UNIT_TEST(Changes_Create)
     edit::MWMLink link(1,-2,3);
     edit::TChanges fc; // feature changes
     fc.emplace(edit::NAME, edit::DataValue("","Cool name"));
-    fc.emplace(edit::ADDR_STREET, edit::DataValue("","Lenina"));
-    fc.emplace(edit::ADDR_HOUSENUMBER, edit::DataValue("","8"));
+    fc.emplace(edit::STREET, edit::DataValue("","Lenina"));
+    fc.emplace(edit::HOUSENUMBER, edit::DataValue("","8"));
 
     changes.CreateChange(link, fc);
   }
@@ -50,16 +50,16 @@ UNIT_TEST(Changes_Modify)
       edit::MWMLink link(1,-2,3);
       edit::TChanges fc; // feature changes
       fc.emplace(edit::NAME, edit::DataValue("","Cool name"));
-      fc.emplace(edit::ADDR_STREET, edit::DataValue("","Lenina"));
-      fc.emplace(edit::ADDR_HOUSENUMBER, edit::DataValue("","8"));
+      fc.emplace(edit::STREET, edit::DataValue("","Lenina"));
+      fc.emplace(edit::HOUSENUMBER, edit::DataValue("","8"));
       changes.CreateChange(link, fc);
     }
     edit::FeatureChangeset changes;
     edit::MWMLink link(1,-2,3);
     edit::TChanges fc; // feature changes
     fc.emplace(edit::NAME, edit::DataValue("Cool name","Клевое имя"));
-    fc.emplace(edit::ADDR_STREET, edit::DataValue("Lenina","Ленина"));
-    fc.emplace(edit::ADDR_HOUSENUMBER, edit::DataValue("8","18"));
+    fc.emplace(edit::STREET, edit::DataValue("Lenina","Ленина"));
+    fc.emplace(edit::HOUSENUMBER, edit::DataValue("8","18"));
     changes.ModifyChange(link, fc);
   }
   catch (edit::Exception & e)
@@ -78,14 +78,14 @@ UNIT_TEST(Changes_Delete)
       edit::MWMLink link(1,-2,3);
       edit::TChanges fc; // feature changes
       fc.emplace(edit::NAME, edit::DataValue("","Cool name"));
-      fc.emplace(edit::ADDR_STREET, edit::DataValue("","Lenina"));
-      fc.emplace(edit::ADDR_HOUSENUMBER, edit::DataValue("","8"));
+      fc.emplace(edit::STREET, edit::DataValue("","Lenina"));
+      fc.emplace(edit::HOUSENUMBER, edit::DataValue("","8"));
       changes.CreateChange(link, fc);
 
       fc.clear();
       fc.emplace(edit::NAME, edit::DataValue("Cool name","Клевое имя"));
-      fc.emplace(edit::ADDR_STREET, edit::DataValue("Lenina","Ленина"));
-      fc.emplace(edit::ADDR_HOUSENUMBER, edit::DataValue("8","18"));
+      fc.emplace(edit::STREET, edit::DataValue("Lenina","Ленина"));
+      fc.emplace(edit::HOUSENUMBER, edit::DataValue("8","18"));
       changes.ModifyChange(link, fc);
     }
     edit::FeatureChangeset changes;
@@ -108,14 +108,14 @@ UNIT_TEST(Changes_Find)
       edit::MWMLink link(1,-2,3);
       edit::TChanges fc; // feature changes
       fc.emplace(edit::NAME, edit::DataValue("","Cool name"));
-      fc.emplace(edit::ADDR_STREET, edit::DataValue("","Lenina"));
-      fc.emplace(edit::ADDR_HOUSENUMBER, edit::DataValue("","8"));
+      fc.emplace(edit::STREET, edit::DataValue("","Lenina"));
+      fc.emplace(edit::HOUSENUMBER, edit::DataValue("","8"));
       changes.CreateChange(link, fc);
 
       fc.clear();
       fc.emplace(edit::NAME, edit::DataValue("Cool name","Клевое имя"));
-      fc.emplace(edit::ADDR_STREET, edit::DataValue("Lenina","Ленина"));
-      fc.emplace(edit::ADDR_HOUSENUMBER, edit::DataValue("8","18"));
+      fc.emplace(edit::STREET, edit::DataValue("Lenina","Ленина"));
+      fc.emplace(edit::HOUSENUMBER, edit::DataValue("8","18"));
       std::this_thread::sleep_for(std::chrono::seconds(1));
       changes.ModifyChange(link, fc);
       std::this_thread::sleep_for(std::chrono::seconds(1));

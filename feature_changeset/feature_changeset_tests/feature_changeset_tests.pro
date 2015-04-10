@@ -9,17 +9,23 @@ CONFIG += console warn_on
 CONFIG -= app_bundle
 TEMPLATE = app
 
-ROOT_DIR = ..
-DEPENDENCIES = base expat
+ROOT_DIR = ../..
+DEPENDENCIES = stats_client feature_changeset coding base expat
 
 include($$ROOT_DIR/common.pri)
 
 QT *= core
+
+macx-* {
+  LIBS *= "-framework Foundation"
+}
 
 INCLUDEPATH *= $$ROOT_DIR/3party/expat/lib
 
 HEADERS += \
 
 SOURCES += \
-    ../testing/testingmain.cpp \
-    ../feature_changeset/feature_changeset_tests.cpp \
+    ../../testing/testingmain.cpp \
+    feature_changeset_tests.cpp \
+    osm_data_tests.cpp \
+    osm_entity_tests.cpp \

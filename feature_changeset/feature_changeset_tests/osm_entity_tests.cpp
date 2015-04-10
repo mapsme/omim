@@ -6,11 +6,11 @@
 //  Copyright (c) 2015 Sergey Yershov. All rights reserved.
 //
 
-#include "../testing/testing.hpp"
-#include "osm_entity.hpp"
+#include "../../testing/testing.hpp"
+#include "../osm_entity.hpp"
 
-#include "../coding/parse_xml.hpp"
-#include "../generator/source_reader.hpp"
+#include "../../coding/parse_xml.hpp"
+#include "../../generator/source_reader.hpp"
 
 
 UNIT_TEST(OsmEntity_Base)

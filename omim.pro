@@ -19,6 +19,7 @@ HEADERS += defines.hpp
 SUBDIRS = 3party \
           base base/base_tests \
           coding coding/coding_tests \
+          feature_changeset feature_changeset/feature_changeset_tests \
           geometry \
           stats \
           indexer \
@@ -40,7 +41,6 @@ SUBDIRS = 3party \
           generator/generator_tool \
           indexer/indexer_tests \
           graphics/graphics_tests \
-          feature_changeset_tests \
           gui/gui_tests \
           qt \
           drape_head \
