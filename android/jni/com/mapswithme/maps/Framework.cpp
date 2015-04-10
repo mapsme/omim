@@ -290,13 +290,13 @@ namespace android
 
   void ReadPixels(int x, int y, int w, int h, MapImage & image)
   {
-      int dataLength = w * h * CHANNELS_COUNT;
-      OGLCHECK(glPixelStorei(GL_PACK_ALIGNMENT, CHANNELS_COUNT));
-      image.m_width = w;
-      image.m_height = h;
-      image.m_bpp = CHANNELS_COUNT;
-      image.m_bytes.resize(dataLength);
-      OGLCHECK(glReadPixels(x, y, image.m_width, image.m_height, GL_RGBA, GL_UNSIGNED_BYTE, image.m_bytes.data()));
+    int dataLength = w * h * CHANNELS_COUNT;
+    OGLCHECK(glPixelStorei(GL_PACK_ALIGNMENT, CHANNELS_COUNT));
+    image.m_width = w;
+    image.m_height = h;
+    image.m_bpp = CHANNELS_COUNT;
+    image.m_bytes.resize(dataLength);
+    OGLCHECK(glReadPixels(x, y, image.m_width, image.m_height, GL_RGBA, GL_UNSIGNED_BYTE, image.m_bytes.data()));
   }
 
   void SaveImage(char * p, int w, int h)
@@ -321,12 +321,15 @@ namespace android
       m_work.DoPaint(paintEvent);
 
       NVEventSwapBuffersEGL();
-      MapImage image = {0};
-      int w = m_work.GetRenderPolicy()->GetOffscreenWidth();
-      int h = m_work.GetRenderPolicy()->GetOffscreenHeight();
-      ReadPixels(0, 0, w, h, image);
-      g_imageReady(image);
-      SaveImage(image.m_bytes.data(), w, h);
+      if (g_imageReady != nullptr)
+      {
+        MapImage image = {0};
+        int w = m_work.GetRenderPolicy()->GetOffscreenWidth();
+        int h = m_work.GetRenderPolicy()->GetOffscreenHeight();
+        ReadPixels(0, 0, w, h, image);
+        g_imageReady(image);
+        //SaveImage(image.m_bytes.data(), w, h);
+      }
 
       m_work.EndPaint(paintEvent);
 
