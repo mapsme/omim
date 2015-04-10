@@ -181,7 +181,7 @@ namespace android
     // Fills mapobject's metadata from UserMark
     void InjectMetadata(JNIEnv * env, jclass clazz, jobject const mapObject, UserMark const * userMark);
 
-    void SetBackgroundRendering(bool backgroundRendering) { m_backgroundRendering = backgroundRendering; }
+    void SetAppInBackground(bool appInBackground) { m_appInBackground = appInBackground; }
     void SetAndroidWearConnected(bool androidWearConnected) { m_androidWearConnected = androidWearConnected; }
   public:
     virtual void ItemStatusChanged(int childPosition);

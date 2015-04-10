@@ -43,13 +43,13 @@ bool SetupGLESResources()
 void SetBackgroundRendering()
 {
   ASSERT(g_framework, ());
-  g_framework->SetBackgroundRendering(true);
+  g_framework->SetAppInBackground(true);
 }
 
 void SetForegroundRendering()
 {
   ASSERT(g_framework, ());
-  g_framework->SetBackgroundRendering(false);
+  g_framework->SetAppInBackground(false);
 }
 
 bool ShutdownGLESResources()

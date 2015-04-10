@@ -376,35 +376,14 @@ namespace android
     int top = screenHeight/2 - wearHeight/2;
     ReadPixels(left, top, wearWidth, wearHeight, image);
     FlipVertical(image.m_width, image.m_height, image.m_bpp, image.m_bytes.data());
+    SaveImage(image.m_bytes.data(), wearWidth, wearHeight, fileName);
     ConvertPixelFormat(image.m_width, image.m_height, image.m_bpp, image.m_bytes.data());
     g_imageReady(image);
-    //SaveImage(image.m_bytes.data(), wearWidth, wearHeight, fileName);
   }
 
   void Framework::DrawFrame()
   {
-    if (!m_appInBackground)
-    {
-      if (m_work.NeedRedraw())
-      {
-        m_work.SetNeedRedraw(false);
-
-        shared_ptr<PaintEvent> paintEvent(new PaintEvent(m_work.GetRenderPolicy()->GetDrawer().get()));
-
-        m_work.BeginPaint(paintEvent);
-        m_work.DoPaint(paintEvent);
-
-        NVEventSwapBuffersEGL();
-        if (m_androidWearConnected && g_imageReady != nullptr)
-        {
-          SendImageToAndroidWear(m_work.GetRenderPolicy()->GetOffscreenWidth(),
-            m_work.GetRenderPolicy()->GetOffscreenHeight(),
-            m_screenWidth, m_screenHeight, string("tileForeground_"));
-        }
-        m_work.EndPaint(paintEvent);
-      }
-    }
-    else
+    if (m_appInBackground)
     {
       if (m_androidWearConnected
         && g_imageReady != nullptr
@@ -424,6 +403,27 @@ namespace android
         }
 
         m_work.EndPaint(offscreenPaintEvent);
+      }
+    }
+    else
+    {
+      if (m_work.NeedRedraw())
+      {
+        m_work.SetNeedRedraw(false);
+
+        shared_ptr<PaintEvent> paintEvent(new PaintEvent(m_work.GetRenderPolicy()->GetDrawer().get()));
+
+        m_work.BeginPaint(paintEvent);
+        m_work.DoPaint(paintEvent);
+
+        NVEventSwapBuffersEGL();
+        if (m_androidWearConnected && g_imageReady != nullptr)
+        {
+          SendImageToAndroidWear(m_work.GetRenderPolicy()->GetOffscreenWidth(),
+            m_work.GetRenderPolicy()->GetOffscreenHeight(),
+            m_screenWidth, m_screenHeight, string("tileForeground_"));
+        }
+        m_work.EndPaint(paintEvent);
       }
     }
   }
