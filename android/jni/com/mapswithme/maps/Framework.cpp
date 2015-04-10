@@ -32,6 +32,10 @@
 #include "../../../../../base/math.hpp"
 #include "../../../../../base/logging.hpp"
 
+#include "../../../../../std/function.hpp"
+
+#include "../../../../../drape/utils/stb_image.h"
+
 namespace
 {
 const unsigned LONG_TOUCH_MS = 1000;
@@ -51,12 +55,16 @@ namespace
   return g_framework->NativeFramework();
 }
 
+
+typedef function<void (MapImage const &)> TImageReadyCallback;
+
+TImageReadyCallback g_imageReady = nullptr;
 }
 
-void GlobalSetRenderAsyncCallback(std::function<void(ExtraMapScreen::MapImage const &)> f)
+
+void GlobalSetRenderAsyncCallback(std::function<void(MapImage const &)> f)
 {
-  if (g_framework)
-   frm()->SetRenderAsyncCallback(f);
+  g_imageReady = f;
 }
 
 void GlobalRenderAsync(m2::PointD const & center, size_t scale, size_t width, size_t height)
@@ -187,6 +195,11 @@ namespace android
     rpParams.m_screenWidth = screenWidth;
     rpParams.m_screenHeight = screenHeight;
 
+    // TEMP: offscreen rendering test
+    rpParams.m_useOffscreenRendering = true;
+    rpParams.m_offscreenWidth = 320;
+    rpParams.m_offscreenHeight = 320;
+
     try
     {
       m_work.SetRenderPolicy(CreateRenderPolicy(rpParams));
@@ -273,6 +286,29 @@ namespace android
     m_work.OnSize(w, h);
   }
 
+  static int const CHANNELS_COUNT = 4;
+
+  void ReadPixels(int x, int y, int w, int h, MapImage & image)
+  {
+      int dataLength = w * h * CHANNELS_COUNT;
+      OGLCHECK(glPixelStorei(GL_PACK_ALIGNMENT, CHANNELS_COUNT));
+      image.m_width = w;
+      image.m_height = h;
+      image.m_bpp = CHANNELS_COUNT;
+      image.m_bytes.resize(dataLength);
+      OGLCHECK(glReadPixels(x, y, image.m_width, image.m_height, GL_RGBA, GL_UNSIGNED_BYTE, image.m_bytes.data()));
+  }
+
+  void SaveImage(char * p, int w, int h)
+  {
+    static int counter = 0;
+    ++counter;
+    stringstream fileName;
+    fileName << "/sdcard/tiles/tile_" << counter << ".bmp";
+    int res = stbi_write_bmp(fileName.str().c_str(), w, h, CHANNELS_COUNT, p);
+    LOG(LINFO, ("watch. stbi_write_bmp(..., ", w, ", ", h, ", ", CHANNELS_COUNT, ") = ", res));
+  }
+
   void Framework::DrawFrame()
   {
     if (m_work.NeedRedraw())
@@ -285,8 +321,38 @@ namespace android
       m_work.DoPaint(paintEvent);
 
       NVEventSwapBuffersEGL();
+      MapImage image = {0};
+      int w = m_work.GetRenderPolicy()->GetOffscreenWidth();
+      int h = m_work.GetRenderPolicy()->GetOffscreenHeight();
+      ReadPixels(0, 0, w, h, image);
+      g_imageReady(image);
+      SaveImage(image.m_bytes.data(), w, h);
 
       m_work.EndPaint(paintEvent);
+
+      // TEMP: offscreen rendering test
+      if (g_imageReady != nullptr && m_work.GetRenderPolicy()->GetOffscreenDrawer() != nullptr)
+      {
+        shared_ptr<PaintEvent> offscreenPaintEvent(new PaintEvent(m_work.GetRenderPolicy()->GetOffscreenDrawer().get()));
+
+        //static ScreenBase dispSB;
+        //static int init = 0;
+        //if (init < 100)
+        //{
+        //  dispSB = m_work.GetNavigator().Screen();
+        //  ++init;
+        //}
+        ScreenBase dispSB = m_work.GetNavigator().Screen();
+
+        offscreenPaintEvent->setOffscreenRect(dispSB);
+
+        m_work.BeginPaint(offscreenPaintEvent);
+        m_work.DoPaint(offscreenPaintEvent);
+
+        //Save offscreen image here
+
+        m_work.EndPaint(offscreenPaintEvent);
+      }
     }
   }
 

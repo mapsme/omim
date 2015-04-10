@@ -67,7 +67,6 @@ HEADERS += \
     country_tree.hpp \
     active_maps_layout.hpp \
     route_track.hpp \
-    extra_map_screen.h \
 
 SOURCES += \
     feature_vec_model.cpp \
@@ -125,7 +124,6 @@ SOURCES += \
     country_tree.cpp \
     active_maps_layout.cpp \
     route_track.cpp \
-    extra_map_screen.cpp \
 
 !iphone*:!tizen*:!android* {
   HEADERS += qgl_render_context.hpp

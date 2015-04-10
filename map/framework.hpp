@@ -12,7 +12,6 @@
 #include "information_display.hpp"
 #include "location_state.hpp"
 #include "navigator.hpp"
-#include "extra_map_screen.h"
 #include "animator.hpp"
 #include "scales_processor.hpp"
 
@@ -99,7 +98,6 @@ protected:
   ScalesProcessor m_scales;
   Navigator m_navigator;
   Animator m_animator;
-  ExtraMapScreen m_extraMapScreen;
 
   routing::RoutingSession m_routingSession;
 
@@ -159,13 +157,9 @@ public:
   Framework();
   virtual ~Framework();
 
-  void SetRenderAsyncCallback(std::function<void(ExtraMapScreen::MapImage const &)> f)
-  {
-    m_extraMapScreen.SetRenderAsyncCallback(f);
-  }
   void RenderAsync(m2::PointD const & center, size_t scale, size_t width, size_t height)
   {
-    m_extraMapScreen.RenderAsync(center, scale, width, height);
+    SetViewportCenter(center);
   }
 
   /// @name Process storage connecting/disconnecting.

@@ -127,7 +127,7 @@ namespace RenderServiceImpl
 
   // Framework's callback about render map
 
-  void renderAsyncCallback(ExtraMapScreen::MapImage const & mi)
+  void renderAsyncCallback(MapImage const & mi)
   {
     if (g_renderServiceSkipCallbacks)
     {

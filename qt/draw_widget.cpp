@@ -14,6 +14,8 @@
 #include "../platform/settings.hpp"
 #include "../platform/platform.hpp"
 
+#include "../drape/utils/stb_image.h"
+
 #include <QtCore/QLocale>
 
 #include <QtGui/QMouseEvent>
@@ -344,26 +346,36 @@ namespace qt
       {
         shared_ptr<PaintEvent> offscreenPaintEvent(new PaintEvent(m_framework->GetRenderPolicy()->GetOffscreenDrawer().get()));
 
-        ScreenBase dispSB;
-        static bool init = false;
-        if (!init)
-        {
-          dispSB = m_framework->GetNavigator().Screen();
-          init = true;
-        }
+        //static ScreenBase dispSB;
+        //static int init = 0;
+        //if (init < 100)
+        //{
+        //  dispSB = m_framework->GetNavigator().Screen();
+        //  ++init;
+        //}
+        ScreenBase dispSB = m_framework->GetNavigator().Screen();
         offscreenPaintEvent->setOffscreenRect(dispSB);
 
         m_framework->BeginPaint(offscreenPaintEvent);
         m_framework->DoPaint(offscreenPaintEvent);
 
-        //int const CHANNELS_COUNT = 4;
-        //int x = 0, y = 0,
-        //    width = m_framework->GetRenderPolicy()->GetOffscreenWidth(),
-        //    height = m_framework->GetRenderPolicy()->GetOffscreenHeight();
-        //int dataLength = width * height * CHANNELS_COUNT;
-        //vector<unsigned char> rawData(dataLength);
-        //OGLCHECK(glPixelStorei(GL_PACK_ALIGNMENT, CHANNELS_COUNT));
-        //OGLCHECK(glReadPixels(x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, rawData.data()));
+        int const CHANNELS_COUNT = 4;
+        int width = m_framework->GetRenderPolicy()->GetOffscreenWidth(),
+        height = m_framework->GetRenderPolicy()->GetOffscreenHeight();
+        int x = 0, y = 0;
+        int dataLength = width * height * CHANNELS_COUNT;
+        vector<unsigned char> rawData(dataLength);
+        OGLCHECK(glPixelStorei(GL_PACK_ALIGNMENT, CHANNELS_COUNT));
+        OGLCHECK(glReadPixels(x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, rawData.data()));
+        //=========
+        static int counter = 0;
+        ++counter;
+        stringstream fileName;
+        fileName << "/Users/vladimirbykoyanko/Documents/tiles/2/tile_" << counter << ".bmp";
+
+        int res = stbi_write_bmp(fileName.str().c_str(), width, height, CHANNELS_COUNT, rawData.data());
+        LOG(LINFO, ("watch. stbi_write_bmp(..., ", width, ", ", height, ", ", CHANNELS_COUNT, ") = ", res));
+        //=========
 
         m_framework->EndPaint(offscreenPaintEvent);
       }*/

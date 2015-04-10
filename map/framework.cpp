@@ -201,7 +201,6 @@ void Framework::GetMaps(vector<string> & maps) const
 Framework::Framework()
   : m_navigator(m_scales),
     m_animator(this),
-    m_extraMapScreen(this),
     m_queryMaxScaleMode(false),
     m_width(0),
     m_height(0),

@@ -16,11 +16,19 @@
 
 #include "../../../../../std/shared_ptr.hpp"
 #include "../../../../../std/map.hpp"
+#include "../../../../../std/vector.hpp"
 
 #include "../../../nv_event/nv_event.hpp"
 
 
 class CountryStatusDisplay;
+
+
+struct MapImage
+{
+  size_t m_width, m_height, m_bpp;
+  vector<char> m_bytes;
+};
 
 namespace android
 {
@@ -183,5 +191,5 @@ namespace android
 
 extern android::Framework * g_framework;
 
-void GlobalSetRenderAsyncCallback(std::function<void(ExtraMapScreen::MapImage const &)> f);
+void GlobalSetRenderAsyncCallback(std::function<void(MapImage const &)> f);
 void GlobalRenderAsync(m2::PointD const & center, size_t scale, size_t width, size_t height);
