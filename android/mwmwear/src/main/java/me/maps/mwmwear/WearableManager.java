@@ -29,8 +29,11 @@ import com.google.android.gms.wearable.Wearable;
 
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import me.maps.mwmwear.fragment.SearchAdapter;
 
 public class WearableManager implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, DataApi.DataListener
 {
@@ -39,6 +42,14 @@ public class WearableManager implements LocationListener, GoogleApiClient.Connec
   private static final long LOCATION_UPDATE_INTERVAL = 500;
   private static final String PATH_IMAGE = "/image";
   private static final String KEY_IMAGE = "Image";
+  private static final String PATH_SEARCH_CATEGORY = "/search/category";
+  private static final String PATH_SEARCH_QUERY = "/search/request";
+  private static final String KEY_SEARCH_QUERY = "Query";
+  private static final String KEY_SEARCH_NAME = "Name";
+  private static final String KEY_SEARCH_AMENITY = "Amenity";
+  private static final String KEY_SEARCH_DISTANCE = "Distance";
+  private static final String KEY_SEARCH_LAT = "Lat";
+  private static final String KEY_SEARCH_LON = "Lon";
   private static final String KEY_SEARCH_RESULT = "SearchResult";
 
   private final WeakReference<WearMwmActivity> mActivity;
@@ -61,6 +72,22 @@ public class WearableManager implements LocationListener, GoogleApiClient.Connec
   {
     Wearable.DataApi.removeListener(mGmsClient, this);
     mGmsClient.disconnect();
+  }
+
+  // TODO add result listener
+  public void makeSearchCategoryRequest(String category)
+  {
+    Wearable.MessageApi.
+        sendMessage(mGmsClient, mNodeId, PATH_SEARCH_CATEGORY, new byte[0]).
+        setResultCallback(new ResultCallback<MessageApi.SendMessageResult>()
+        {
+          @Override
+          public void onResult(MessageApi.SendMessageResult sendMessageResult)
+          {
+            final Status status = sendMessageResult.getStatus();
+            Log.d(TAG, "Send search message with status code: " + status.getStatusCode());
+          }
+        });
   }
 
   private void connectGms()
@@ -173,11 +200,11 @@ public class WearableManager implements LocationListener, GoogleApiClient.Connec
       if (event.getType() == DataEvent.TYPE_CHANGED)
       {
         // DataItem changed
-        DataItem item = event.getDataItem();
+        final DataItem item = event.getDataItem();
+        final DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
         final String path = item.getUri().getPath();
         if (path.equals(PATH_IMAGE))
         {
-          DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
           Asset asset = dataMap.getAsset(KEY_IMAGE);
           if (asset == null)
             throw new IllegalArgumentException("Image asset must be non-null.");
@@ -190,6 +217,22 @@ public class WearableManager implements LocationListener, GoogleApiClient.Connec
           }
 
           processBitmapAsset(asset);
+        }
+        else if (path.equals(PATH_SEARCH_CATEGORY))
+        {
+          List<DataMap> items = dataMap.getDataMapArrayList(KEY_SEARCH_RESULT);
+          List<SearchAdapter.SearchResult> searchResults = new ArrayList<>();
+          for (DataMap dataListItem : items)
+          {
+            searchResults.add(new SearchAdapter.SearchResult(dataListItem.getString(KEY_SEARCH_NAME),
+                dataListItem.getString(KEY_SEARCH_AMENITY),
+                dataListItem.getString(KEY_SEARCH_DISTANCE),
+                dataListItem.getFloat(KEY_SEARCH_LAT),
+                dataListItem.getFloat(KEY_SEARCH_LON)));
+            Log.d(TAG, "DataListItem : " + dataListItem + ", result name : " + searchResults.get(searchResults.size()).mName);
+          }
+          // TODO
+//          mActivity.get().onSearchResults(searchResults);
         }
       }
     }

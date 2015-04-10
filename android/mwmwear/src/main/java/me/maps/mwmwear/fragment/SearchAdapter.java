@@ -73,12 +73,21 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     public String mName;
     public String mType;
     public String mDistance;
+    public float mLat;
+    public float mLon;
 
     public SearchResult(String name, String amenity, String distance)
     {
       mName = name;
       mType = amenity;
       mDistance = distance;
+    }
+
+    public SearchResult(String name, String amenity, String distance, float lat, float lon)
+    {
+      this(name, amenity, distance);
+      mLat = lat;
+      mLon = lon;
     }
   }
 }

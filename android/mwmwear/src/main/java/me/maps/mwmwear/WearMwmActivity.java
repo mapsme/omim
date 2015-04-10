@@ -68,4 +68,9 @@ public class WearMwmActivity extends Activity
       }
     });
   }
+
+  public WearableManager getWearableManager()
+  {
+    return mWearableManager;
+  }
 }

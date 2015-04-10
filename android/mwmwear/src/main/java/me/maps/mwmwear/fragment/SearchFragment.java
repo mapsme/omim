@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import me.maps.mwmwear.R;
+import me.maps.mwmwear.WearMwmActivity;
 
 public class SearchFragment extends Fragment implements WearableListView.ClickListener
 {
@@ -67,8 +68,21 @@ public class SearchFragment extends Fragment implements WearableListView.ClickLi
   @Override
   public void onClick(WearableListView.ViewHolder viewHolder)
   {
-    // TODO make search request to mobile device OR display direction arrow
     Log.d("Wear", "Category Click");
+    if (mShowCategories)
+    {
+      // TODO get results
+      if (getActivity() instanceof WearMwmActivity && viewHolder instanceof CategoriesAdapter.ViewHolder)
+      {
+        WearMwmActivity host = (WearMwmActivity) getActivity();
+        CategoriesAdapter.ViewHolder catHolder = (CategoriesAdapter.ViewHolder) viewHolder;
+        host.getWearableManager().makeSearchCategoryRequest(catHolder.getCategoryQuery(host));
+      }
+    }
+    else
+    {
+      // TODO display arrow to search result
+    }
   }
 
   @Override

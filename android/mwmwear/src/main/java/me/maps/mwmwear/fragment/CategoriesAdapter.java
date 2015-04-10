@@ -1,5 +1,6 @@
 package me.maps.mwmwear.fragment;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.support.wearable.view.CircledImageView;
 import android.support.wearable.view.WearableListView;
@@ -13,7 +14,7 @@ import me.maps.mwmwear.SelectableSearchLayout;
 
 public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.ViewHolder>
 {
-  private static final int mCategories[] = {
+  public static final int mCategories[] = {
       R.string.food,
       R.string.hotel,
       R.string.tourism,
@@ -89,10 +90,14 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
 
     public ViewHolder(View v)
     {
-      // TODO add custom view implementing ProximityListener to animate center proximity
       super(v);
       mName = (TextView) v.findViewById(R.id.tv__category);
       mIcon = (CircledImageView) v.findViewById(R.id.iv__category);
+    }
+
+    public String getCategoryQuery(Context context)
+    {
+      return context.getString(mCategories[getPosition()]) + ' ';
     }
   }
 }
