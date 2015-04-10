@@ -299,6 +299,33 @@ namespace android
     OGLCHECK(glReadPixels(x, y, image.m_width, image.m_height, GL_RGBA, GL_UNSIGNED_BYTE, image.m_bytes.data()));
   }
 
+  void FlipVertical(unsigned int width, unsigned int height, unsigned int bytesPerItem, void * data)
+  {
+    // TODO
+    // We will make this method faster by copying rows by local blocks (1K for example) via memcpy
+    if (height <= 1)
+      return; // nothing to flip
+    unsigned int const rowBytes = width * bytesPerItem;
+    unsigned char * irow = reinterpret_cast<unsigned char *>(data);
+    unsigned char * jrow = irow + rowBytes * (height - 1);
+    while (irow < jrow)
+    {
+      unsigned char * i = irow;
+      unsigned char * j = jrow;
+      const unsigned char * const iend = irow + rowBytes;
+      while (i < iend)
+      {
+        unsigned char const tmp = *i;
+        *i = *j;
+        *j = tmp;
+        ++i;
+        ++j;
+      }
+      irow += rowBytes;
+      jrow -= rowBytes;
+    }
+  }
+
   void SaveImage(char * p, int w, int h)
   {
     static int counter = 0;
@@ -329,6 +356,7 @@ namespace android
         int left = m_screenWidth/2 - w/2;
         int top = m_screenHeight/2 - h/2;
         ReadPixels(left, top, w, h, image);
+        FlipVertical(image.m_width, image.m_height, image.m_bpp, image.m_bytes.data());
         g_imageReady(image);
         //SaveImage(image.m_bytes.data(), w, h);
       }
