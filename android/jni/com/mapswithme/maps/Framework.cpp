@@ -299,6 +299,36 @@ namespace android
     OGLCHECK(glReadPixels(x, y, image.m_width, image.m_height, GL_RGBA, GL_UNSIGNED_BYTE, image.m_bytes.data()));
   }
 
+  void ConvertPixelFormat(unsigned int width, unsigned int height, unsigned int bytesPerPixel, void * data)
+  {
+    // OpenGL returns pixels as:
+    // (alpha << 24) | (blue << 16) | (green << 8) | red
+    // Android.Bitmap takes pixels as:
+    // (alpha << 24) | (red << 16) | (green << 8) | blue
+    ASSERT(bytesPerPixel == 4, ());
+    unsigned int const rowBytes = width * bytesPerPixel;
+    unsigned char * irow = reinterpret_cast<unsigned char *>(data);
+    unsigned char * irowend = irow + rowBytes * height;
+    while (irow < irowend)
+    {
+      unsigned char * i = irow;
+      const unsigned char * const iend = irow + rowBytes;
+      while (i < iend)
+      {
+        unsigned char const r = *(i + 0);
+        unsigned char const g = *(i + 1);
+        unsigned char const b = *(i + 2);
+        unsigned char const a = *(i + 3);
+        *(i + 0) = b;
+        *(i + 1) = g;
+        *(i + 2) = r;
+        *(i + 3) = a;
+        i += 4;
+      }
+      irow += rowBytes;
+    }
+  }
+
   void FlipVertical(unsigned int width, unsigned int height, unsigned int bytesPerItem, void * data)
   {
     // TODO
@@ -357,8 +387,10 @@ namespace android
         int top = m_screenHeight/2 - h/2;
         ReadPixels(left, top, w, h, image);
         FlipVertical(image.m_width, image.m_height, image.m_bpp, image.m_bytes.data());
-        g_imageReady(image);
         //SaveImage(image.m_bytes.data(), w, h);
+        // Android.Bitmap takes pixels in different format than OpenGL returns, convert it
+        ConvertPixelFormat(image.m_width, image.m_height, image.m_bpp, image.m_bytes.data());
+        g_imageReady(image);
       }
 
       m_work.EndPaint(paintEvent);
