@@ -110,26 +110,47 @@ void ConvertPixelFormat(unsigned int width, unsigned int height, unsigned int by
 
 void FlipVertical(unsigned int width, unsigned int height, unsigned int bytesPerItem, void * data)
 {
-  // TODO
-  // We will make this method faster by copying rows by local blocks (1K for example) via memcpy
   if (height <= 1)
     return; // nothing to flip
+
   unsigned int const rowBytes = width * bytesPerItem;
   unsigned char * irow = reinterpret_cast<unsigned char *>(data);
   unsigned char * jrow = irow + rowBytes * (height - 1);
+
+  unsigned int const bufferLen = 512;
+  unsigned char buffer[bufferLen]; // temporary buffer for swap
+
   while (irow < jrow)
   {
     unsigned char * i = irow;
     unsigned char * j = jrow;
     const unsigned char * const iend = irow + rowBytes;
-    while (i < iend)
+
+    // copy by bufferLen blocks
+    unsigned char * in = i + bufferLen;
+    while (in <= iend)
     {
-      unsigned char const tmp = *i;
-      *i = *j;
-      *j = tmp;
-      ++i;
-      ++j;
+      // swap
+      memcpy(buffer, i, bufferLen);
+      memcpy(i, j, bufferLen);
+      memcpy(j, buffer, bufferLen);
+
+      i = in;
+      in += bufferLen;
+      j += bufferLen;
     }
+
+    // copy remaining part which is less than bufferLen
+    if (i < iend)
+    {
+      unsigned int const r = static_cast<unsigned int>(iend - i);
+
+      // swap
+      memcpy(buffer, i, r);
+      memcpy(i, j, r);
+      memcpy(j, buffer, r);
+    }
+
     irow += rowBytes;
     jrow -= rowBytes;
   }
