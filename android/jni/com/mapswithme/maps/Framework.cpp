@@ -55,21 +55,19 @@ namespace
   return g_framework->NativeFramework();
 }
 
-
 typedef function<void (MapImage const &)> TImageReadyCallback;
 
 TImageReadyCallback g_imageReady = nullptr;
 
-
 // todo use atomic_flag instead
-bool g_appInBackground = false;
-bool g_isFrameRequested = false;
+volatile bool g_appInBackground = false;
+volatile bool g_isFrameRequested = false;
 
 int const CHANNELS_COUNT = 4;
 
 void ReadPixels(int x, int y, int w, int h, MapImage & image)
 {
-  int dataLength = w * h * CHANNELS_COUNT;
+  int const dataLength = w * h * CHANNELS_COUNT;
   OGLCHECK(glPixelStorei(GL_PACK_ALIGNMENT, CHANNELS_COUNT));
   image.m_width = w;
   image.m_height = h;
@@ -162,7 +160,7 @@ void SaveImage(char * p, int w, int h, string const & fileName)
   ++counter;
   stringstream fileNameSS;
   fileNameSS << "/sdcard/tiles/" << fileName << counter << ".bmp";
-  int res = stbi_write_bmp(fileNameSS.str().c_str(), w, h, CHANNELS_COUNT, p);
+  int const res = stbi_write_bmp(fileNameSS.str().c_str(), w, h, CHANNELS_COUNT, p);
   LOG(LINFO, ("watch. stbi_write_bmp(..., ", w, ", ", h, ", ", CHANNELS_COUNT, ") = ", res));
 }
 
@@ -170,8 +168,8 @@ void SendImageToAndroidWear(int wearWidth, int wearHeight,
   int screenWidth, int screenHeight, string const & fileName, bool flip)
 {
   MapImage image = {0};
-  int left = (screenWidth - wearWidth) / 2;
-  int top = (screenHeight - wearHeight) / 2;
+  int const left = (screenWidth - wearWidth) / 2;
+  int const top = (screenHeight - wearHeight) / 2;
   ReadPixels(left, top, wearWidth, wearHeight, image);
   if (flip)
     FlipVertical(image.m_width, image.m_height, image.m_bpp, image.m_bytes.data());
@@ -180,7 +178,7 @@ void SendImageToAndroidWear(int wearWidth, int wearHeight,
   g_imageReady(image);
   g_isFrameRequested = false;
 }
-}
+} // namespace
 
 void GlobalSetRenderAsyncCallback(std::function<void(MapImage const &)> f)
 {
@@ -275,7 +273,7 @@ namespace android
   void Framework::SetBestDensity(int densityDpi, RenderPolicy::Params & params)
   {
     typedef pair<int, graphics::EDensity> P;
-    P dens[] = {
+    P const dens[] = {
         P(120, graphics::EDensityLDPI),
         P(160, graphics::EDensityMDPI),
         P(240, graphics::EDensityHDPI),
@@ -424,15 +422,19 @@ namespace android
         && m_work.GetRenderPolicy()->GetOffscreenDrawer() != nullptr)
       {
         shared_ptr<PaintEvent> offscreenPaintEvent(new PaintEvent(m_work.GetRenderPolicy()->GetOffscreenDrawer().get()));
+
         ScreenBase dispSB = m_work.GetNavigator().Screen();
-        int const w = m_work.GetRenderPolicy()->GetOffscreenWidth(),
-          h = m_work.GetRenderPolicy()->GetOffscreenHeight();
+
+        int const w = m_work.GetRenderPolicy()->GetOffscreenWidth();
+        int const h = m_work.GetRenderPolicy()->GetOffscreenHeight();
         ScreenBase dispSBOff(m2::RectI(0, 0, w, h), dispSB.GlobalRect());
         offscreenPaintEvent->setOffscreenRect(dispSBOff);
+
         m_work.BeginPaint(offscreenPaintEvent);
         m_work.DoPaint(offscreenPaintEvent);
 
         SendImageToAndroidWear(w, h, w, h, string("tileBackground_"), false);
+
         m_work.EndPaint(offscreenPaintEvent);
       }
     }
@@ -456,6 +458,7 @@ namespace android
             m_work.GetRenderPolicy()->GetOffscreenHeight(),
             m_screenWidth, m_screenHeight, string("tileForeground_"), true);
         }
+
         m_work.EndPaint(paintEvent);
       }
     }
@@ -1012,7 +1015,6 @@ T const * CastMark(UserMark const * data)
 {
   return static_cast<T const *>(data);
 }
-
 
 //============ GLUE CODE for com.mapswithme.maps.Framework class =============//
 /*            ____
