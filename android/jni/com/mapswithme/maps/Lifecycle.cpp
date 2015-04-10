@@ -40,6 +40,18 @@ bool SetupGLESResources()
   return true;
 }
 
+void SetBackgroundRendering()
+{
+  ASSERT(g_framework, ());
+  g_framework->SetBackgroundRendering(true);
+}
+
+void SetForegroundRendering()
+{
+  ASSERT(g_framework, ());
+  g_framework->SetBackgroundRendering(false);
+}
+
 bool ShutdownGLESResources()
 {
   if (!s_glesLoaded)

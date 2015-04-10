@@ -90,7 +90,9 @@ namespace android
      m_wasLongClick(false),
      m_densityDpi(0),
      m_screenWidth(0),
-     m_screenHeight(0)
+     m_screenHeight(0),
+     m_appInBackground(false),
+     m_androidWearConnected(true)
   {
     ASSERT_EQUAL ( g_framework, 0, () );
 
@@ -356,65 +358,70 @@ namespace android
     }
   }
 
-  void SaveImage(char * p, int w, int h)
+  void SaveImage(char * p, int w, int h, string const & fileName)
   {
     static int counter = 0;
     ++counter;
-    stringstream fileName;
-    fileName << "/sdcard/tiles/tile_" << counter << ".bmp";
-    int res = stbi_write_bmp(fileName.str().c_str(), w, h, CHANNELS_COUNT, p);
+    stringstream fileNameSS;
+    fileNameSS << "/sdcard/tiles/" << fileName << counter << ".bmp";
+    int res = stbi_write_bmp(fileNameSS.str().c_str(), w, h, CHANNELS_COUNT, p);
     LOG(LINFO, ("watch. stbi_write_bmp(..., ", w, ", ", h, ", ", CHANNELS_COUNT, ") = ", res));
+  }
+
+  void SendImageToAndroidWear(int wearWidth, int wearHeight,
+    int screenWidth, int screenHeight, string const & fileName)
+  {
+    MapImage image = {0};
+    int left = screenWidth/2 - wearWidth/2;
+    int top = screenHeight/2 - wearHeight/2;
+    ReadPixels(left, top, wearWidth, wearHeight, image);
+    FlipVertical(image.m_width, image.m_height, image.m_bpp, image.m_bytes.data());
+    ConvertPixelFormat(image.m_width, image.m_height, image.m_bpp, image.m_bytes.data());
+    g_imageReady(image);
+    //SaveImage(image.m_bytes.data(), wearWidth, wearHeight, fileName);
   }
 
   void Framework::DrawFrame()
   {
-    if (m_work.NeedRedraw())
+    if (!m_appInBackground)
     {
-      m_work.SetNeedRedraw(false);
-
-      shared_ptr<PaintEvent> paintEvent(new PaintEvent(m_work.GetRenderPolicy()->GetDrawer().get()));
-
-      m_work.BeginPaint(paintEvent);
-      m_work.DoPaint(paintEvent);
-
-      NVEventSwapBuffersEGL();
-      if (g_imageReady != nullptr)
+      if (m_work.NeedRedraw())
       {
-        MapImage image = {0};
-        int w = m_work.GetRenderPolicy()->GetOffscreenWidth();
-        int h = m_work.GetRenderPolicy()->GetOffscreenHeight();
-        int left = m_screenWidth/2 - w/2;
-        int top = m_screenHeight/2 - h/2;
-        ReadPixels(left, top, w, h, image);
-        FlipVertical(image.m_width, image.m_height, image.m_bpp, image.m_bytes.data());
-        //SaveImage(image.m_bytes.data(), w, h);
-        // Android.Bitmap takes pixels in different format than OpenGL returns, convert it
-        ConvertPixelFormat(image.m_width, image.m_height, image.m_bpp, image.m_bytes.data());
-        g_imageReady(image);
+        m_work.SetNeedRedraw(false);
+
+        shared_ptr<PaintEvent> paintEvent(new PaintEvent(m_work.GetRenderPolicy()->GetDrawer().get()));
+
+        m_work.BeginPaint(paintEvent);
+        m_work.DoPaint(paintEvent);
+
+        NVEventSwapBuffersEGL();
+        if (m_androidWearConnected && g_imageReady != nullptr)
+        {
+          SendImageToAndroidWear(m_work.GetRenderPolicy()->GetOffscreenWidth(),
+            m_work.GetRenderPolicy()->GetOffscreenHeight(),
+            m_screenWidth, m_screenHeight, string("tileForeground_"));
+        }
+        m_work.EndPaint(paintEvent);
       }
-
-      m_work.EndPaint(paintEvent);
-
-      // TEMP: offscreen rendering test
-      if (g_imageReady != nullptr && m_work.GetRenderPolicy()->GetOffscreenDrawer() != nullptr)
+    }
+    else
+    {
+      if (m_androidWearConnected
+        && g_imageReady != nullptr
+        && m_work.GetRenderPolicy()->GetOffscreenDrawer() != nullptr)
       {
         shared_ptr<PaintEvent> offscreenPaintEvent(new PaintEvent(m_work.GetRenderPolicy()->GetOffscreenDrawer().get()));
-
-        //static ScreenBase dispSB;
-        //static int init = 0;
-        //if (init < 100)
-        //{
-        //  dispSB = m_work.GetNavigator().Screen();
-        //  ++init;
-        //}
         ScreenBase dispSB = m_work.GetNavigator().Screen();
-
         offscreenPaintEvent->setOffscreenRect(dispSB);
-
         m_work.BeginPaint(offscreenPaintEvent);
         m_work.DoPaint(offscreenPaintEvent);
 
-        //Save offscreen image here
+        if (g_imageReady != nullptr)
+        {
+          SendImageToAndroidWear(m_work.GetRenderPolicy()->GetOffscreenWidth(),
+          m_work.GetRenderPolicy()->GetOffscreenHeight(),
+          m_screenWidth, m_screenHeight, string("tileBackground_"));
+        }
 
         m_work.EndPaint(offscreenPaintEvent);
       }

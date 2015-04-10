@@ -86,6 +86,13 @@ namespace android
 
     bool InitRenderPolicyImpl(int densityDpi, int screenWidth, int screenHeight);
 
+    bool m_appInBackground;
+    // @todo(VB) probably this flag should be removed.
+    // Since if nobody asks to redraw, the redraw will not call.
+    // It's need to prevent calling
+    // of drawFrame just in case when application in background.
+    bool m_androidWearConnected;
+
   public:
     Framework();
     ~Framework();
@@ -174,6 +181,8 @@ namespace android
     // Fills mapobject's metadata from UserMark
     void InjectMetadata(JNIEnv * env, jclass clazz, jobject const mapObject, UserMark const * userMark);
 
+    void SetBackgroundRendering(bool backgroundRendering) { m_backgroundRendering = backgroundRendering; }
+    void SetAndroidWearConnected(bool androidWearConnected) { m_androidWearConnected = androidWearConnected; }
   public:
     virtual void ItemStatusChanged(int childPosition);
     virtual void ItemProgressChanged(int childPosition, storage::LocalAndRemoteSizeT const & sizes);
