@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.wearable.view.WearableListView
+    android:id="@+id/lv__categories"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/holo_red_dark">
+    android:background="@android:color/white"
+    android:paddingLeft="@dimen/display_padding_left"
+    android:paddingRight="@dimen/display_padding_right"
+    android:scrollbars="vertical"/>
 
-  <WearableListView
-      android:id="@+id/lv__categories"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:scrollbars="vertical"/>
-
-</RelativeLayout>

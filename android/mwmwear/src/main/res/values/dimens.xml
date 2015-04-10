@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <dimen name="search_title">18sp</dimen>
+
+  <dimen name="display_padding_left">20dp</dimen>
+  <dimen name="display_padding_top">14dp</dimen>
+  <dimen name="display_padding_right">16dp</dimen>
+  <dimen name="display_padding_bottom">20dp</dimen>
+</resources>

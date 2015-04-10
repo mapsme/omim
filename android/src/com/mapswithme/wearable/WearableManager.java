@@ -50,8 +50,8 @@ public class WearableManager implements MessageApi.MessageListener, DataApi.Data
 
   public void endCommunication()
   {
-//    mGmsClient.disconnect();
-//    Wearable.MessageApi.removeListener(mGmsClient, this);
+    mGmsClient.disconnect();
+    Wearable.MessageApi.removeListener(mGmsClient, this);
   }
 
   @Override

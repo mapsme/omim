@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.wearable.view.WearableListView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ public class SearchFragment extends Fragment implements WearableListView.ClickLi
   {
     mListView = (WearableListView) view.findViewById(R.id.lv__categories);
     mListView.setAdapter(getCurrentAdapter());
+    mListView.setGreedyTouchMode(true);
     mListView.setClickListener(this);
   }
 
@@ -66,6 +68,7 @@ public class SearchFragment extends Fragment implements WearableListView.ClickLi
   public void onClick(WearableListView.ViewHolder viewHolder)
   {
     // TODO make search request to mobile device OR display direction arrow
+    Log.d("Wear", "Category Click");
   }
 
   @Override

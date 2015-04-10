@@ -1,18 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="horizontal">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:background="?android:attr/selectableItemBackground"
+       android:clickable="true"
+       android:orientation="horizontal">
 
-  <ImageView
+  <android.support.wearable.view.CircledImageView
       android:id="@+id/iv__category"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"/>
+      android:layout_width="48dp"
+      android:layout_height="48dp"
+      android:layout_gravity="center"
+      android:layout_marginRight="8dp"
+      android:background="@drawable/bg_circle_search"
+      android:contentDescription="@null"
+      android:scaleType="centerInside"/>
 
   <TextView
       android:id="@+id/tv__category"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_weight="1"/>
+      android:layout_gravity="center_vertical"
+      android:layout_weight="1"
+      android:ellipsize="end"
+      android:lines="1"
+      android:textColor="@android:color/black"
+      android:textSize="@dimen/search_title"/>
 
-</LinearLayout>
+</merge>

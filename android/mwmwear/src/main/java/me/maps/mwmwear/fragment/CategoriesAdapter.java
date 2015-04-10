@@ -1,13 +1,15 @@
 package me.maps.mwmwear.fragment;
 
 import android.support.v7.widget.RecyclerView;
+import android.support.wearable.view.CircledImageView;
+import android.support.wearable.view.WearableListView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import me.maps.mwmwear.R;
+import me.maps.mwmwear.SelectableSearchLayout;
 
 public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.ViewHolder>
 {
@@ -58,7 +60,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
   @Override
   public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
   {
-    return new ViewHolder(mInflater.inflate(R.layout.item_search_category, parent, false));
+    return new ViewHolder(new SelectableSearchLayout(parent.getContext()));
   }
 
   @Override
@@ -80,16 +82,17 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
     return mCategories.length;
   }
 
-  public static class ViewHolder extends RecyclerView.ViewHolder
+  public static class ViewHolder extends WearableListView.ViewHolder
   {
     public TextView mName;
-    public ImageView mIcon;
+    public CircledImageView mIcon;
 
     public ViewHolder(View v)
     {
+      // TODO add custom view implementing ProximityListener to animate center proximity
       super(v);
       mName = (TextView) v.findViewById(R.id.tv__category);
-      mIcon = (ImageView) v.findViewById(R.id.iv__category);
+      mIcon = (CircledImageView) v.findViewById(R.id.iv__category);
     }
   }
 }
