@@ -178,6 +178,11 @@ void SendImageToAndroidWear(int wearWidth, int wearHeight,
   g_imageReady(image);
   g_isFrameRequested = false;
 }
+void GlobalRenderAsync()
+{
+  // @todo don't set this param to true if the watch is not connected
+  g_isFrameRequested = true;
+}
 } // namespace
 
 void GlobalSetRenderAsyncCallback(std::function<void(MapImage const &)> f)
@@ -189,7 +194,7 @@ void GlobalRenderAsync(m2::PointD const & center, size_t scale, size_t width, si
 {
   if (g_framework)
   {
-    g_isFrameRequested = true;
+    GlobalRenderAsync();
     frm()->RenderAsync(center, scale, width, height);
   }
 }
@@ -633,6 +638,7 @@ namespace android
       if (m_mask == 0x3)
       {
         m_work.StopScale(ScaleEvent(m_x1, m_y1, m_x2, m_y2));
+        GlobalRenderAsync();
 
         if (eventType == NV_MULTITOUCH_MOVE)
         {
@@ -660,6 +666,7 @@ namespace android
 
       if ((eventType == NV_MULTITOUCH_CANCEL) || (eventType == NV_MULTITOUCH_UP))
       {
+        GlobalRenderAsync();
         if (m_mask == 0x1)
           m_work.StopDrag(DragEvent(x1, y1));
         if (m_mask == 0x2)
