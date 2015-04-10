@@ -40,18 +40,6 @@ bool SetupGLESResources()
   return true;
 }
 
-void SetBackgroundRendering()
-{
-  ASSERT(g_framework, ());
-  g_framework->SetAppInBackground(true);
-}
-
-void SetForegroundRendering()
-{
-  ASSERT(g_framework, ());
-  g_framework->SetAppInBackground(false);
-}
-
 bool ShutdownGLESResources()
 {
   if (!s_glesLoaded)

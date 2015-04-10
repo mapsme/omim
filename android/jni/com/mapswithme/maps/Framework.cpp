@@ -59,8 +59,106 @@ namespace
 typedef function<void (MapImage const &)> TImageReadyCallback;
 
 TImageReadyCallback g_imageReady = nullptr;
+
+
+// todo use atomic_flag instead
+bool g_appInBackground = false;
+bool g_isFrameRequested = false;
+
+int const CHANNELS_COUNT = 4;
+
+void ReadPixels(int x, int y, int w, int h, MapImage & image)
+{
+  int dataLength = w * h * CHANNELS_COUNT;
+  OGLCHECK(glPixelStorei(GL_PACK_ALIGNMENT, CHANNELS_COUNT));
+  image.m_width = w;
+  image.m_height = h;
+  image.m_bpp = CHANNELS_COUNT;
+  image.m_bytes.resize(dataLength);
+  OGLCHECK(glReadPixels(x, y, image.m_width, image.m_height, GL_RGBA, GL_UNSIGNED_BYTE, image.m_bytes.data()));
 }
 
+void ConvertPixelFormat(unsigned int width, unsigned int height, unsigned int bytesPerPixel, void * data)
+{
+  // OpenGL returns pixels as:
+  // (alpha << 24) | (blue << 16) | (green << 8) | red
+  // Android.Bitmap takes pixels as:
+  // (alpha << 24) | (red << 16) | (green << 8) | blue
+  ASSERT(bytesPerPixel == 4, ());
+  unsigned int const rowBytes = width * bytesPerPixel;
+  unsigned char * irow = reinterpret_cast<unsigned char *>(data);
+  unsigned char * irowend = irow + rowBytes * height;
+  while (irow < irowend)
+  {
+    unsigned char * i = irow;
+    const unsigned char * const iend = irow + rowBytes;
+    while (i < iend)
+    {
+      unsigned char const r = *(i + 0);
+      unsigned char const g = *(i + 1);
+      unsigned char const b = *(i + 2);
+      unsigned char const a = *(i + 3);
+      *(i + 0) = b;
+      *(i + 1) = g;
+      *(i + 2) = r;
+      *(i + 3) = a;
+      i += 4;
+    }
+    irow += rowBytes;
+  }
+}
+
+void FlipVertical(unsigned int width, unsigned int height, unsigned int bytesPerItem, void * data)
+{
+  // TODO
+  // We will make this method faster by copying rows by local blocks (1K for example) via memcpy
+  if (height <= 1)
+    return; // nothing to flip
+  unsigned int const rowBytes = width * bytesPerItem;
+  unsigned char * irow = reinterpret_cast<unsigned char *>(data);
+  unsigned char * jrow = irow + rowBytes * (height - 1);
+  while (irow < jrow)
+  {
+    unsigned char * i = irow;
+    unsigned char * j = jrow;
+    const unsigned char * const iend = irow + rowBytes;
+    while (i < iend)
+    {
+      unsigned char const tmp = *i;
+      *i = *j;
+      *j = tmp;
+      ++i;
+      ++j;
+    }
+    irow += rowBytes;
+    jrow -= rowBytes;
+  }
+}
+
+void SaveImage(char * p, int w, int h, string const & fileName)
+{
+  static int counter = 0;
+  ++counter;
+  stringstream fileNameSS;
+  fileNameSS << "/sdcard/tiles/" << fileName << counter << ".bmp";
+  int res = stbi_write_bmp(fileNameSS.str().c_str(), w, h, CHANNELS_COUNT, p);
+  LOG(LINFO, ("watch. stbi_write_bmp(..., ", w, ", ", h, ", ", CHANNELS_COUNT, ") = ", res));
+}
+
+void SendImageToAndroidWear(int wearWidth, int wearHeight,
+  int screenWidth, int screenHeight, string const & fileName)
+{
+  MapImage image = {0};
+  int left = (screenWidth - wearWidth) / 2;
+  int top = (screenHeight - wearHeight) / 2;
+  ReadPixels(left, top, wearWidth, wearHeight, image);
+  FlipVertical(image.m_width, image.m_height, image.m_bpp, image.m_bytes.data());
+  // SaveImage(image.m_bytes.data(), wearWidth, wearHeight, fileName);
+  ConvertPixelFormat(image.m_width, image.m_height, image.m_bpp, image.m_bytes.data());
+  g_imageReady(image);
+  g_isFrameRequested = false;
+}
+}
 
 void GlobalSetRenderAsyncCallback(std::function<void(MapImage const &)> f)
 {
@@ -70,7 +168,15 @@ void GlobalSetRenderAsyncCallback(std::function<void(MapImage const &)> f)
 void GlobalRenderAsync(m2::PointD const & center, size_t scale, size_t width, size_t height)
 {
   if (g_framework)
+  {
+    g_isFrameRequested = true;
     frm()->RenderAsync(center, scale, width, height);
+  }
+}
+
+void SetAppInBackground(bool appInBackground)
+{
+  g_appInBackground = appInBackground;
 }
 
 namespace android
@@ -90,9 +196,7 @@ namespace android
      m_wasLongClick(false),
      m_densityDpi(0),
      m_screenWidth(0),
-     m_screenHeight(0),
-     m_appInBackground(false),
-     m_androidWearConnected(true)
+     m_screenHeight(0)
   {
     ASSERT_EQUAL ( g_framework, 0, () );
 
@@ -288,105 +392,11 @@ namespace android
     m_work.OnSize(w, h);
   }
 
-  static int const CHANNELS_COUNT = 4;
-
-  void ReadPixels(int x, int y, int w, int h, MapImage & image)
-  {
-    int dataLength = w * h * CHANNELS_COUNT;
-    OGLCHECK(glPixelStorei(GL_PACK_ALIGNMENT, CHANNELS_COUNT));
-    image.m_width = w;
-    image.m_height = h;
-    image.m_bpp = CHANNELS_COUNT;
-    image.m_bytes.resize(dataLength);
-    OGLCHECK(glReadPixels(x, y, image.m_width, image.m_height, GL_RGBA, GL_UNSIGNED_BYTE, image.m_bytes.data()));
-  }
-
-  void ConvertPixelFormat(unsigned int width, unsigned int height, unsigned int bytesPerPixel, void * data)
-  {
-    // OpenGL returns pixels as:
-    // (alpha << 24) | (blue << 16) | (green << 8) | red
-    // Android.Bitmap takes pixels as:
-    // (alpha << 24) | (red << 16) | (green << 8) | blue
-    ASSERT(bytesPerPixel == 4, ());
-    unsigned int const rowBytes = width * bytesPerPixel;
-    unsigned char * irow = reinterpret_cast<unsigned char *>(data);
-    unsigned char * irowend = irow + rowBytes * height;
-    while (irow < irowend)
-    {
-      unsigned char * i = irow;
-      const unsigned char * const iend = irow + rowBytes;
-      while (i < iend)
-      {
-        unsigned char const r = *(i + 0);
-        unsigned char const g = *(i + 1);
-        unsigned char const b = *(i + 2);
-        unsigned char const a = *(i + 3);
-        *(i + 0) = b;
-        *(i + 1) = g;
-        *(i + 2) = r;
-        *(i + 3) = a;
-        i += 4;
-      }
-      irow += rowBytes;
-    }
-  }
-
-  void FlipVertical(unsigned int width, unsigned int height, unsigned int bytesPerItem, void * data)
-  {
-    // TODO
-    // We will make this method faster by copying rows by local blocks (1K for example) via memcpy
-    if (height <= 1)
-      return; // nothing to flip
-    unsigned int const rowBytes = width * bytesPerItem;
-    unsigned char * irow = reinterpret_cast<unsigned char *>(data);
-    unsigned char * jrow = irow + rowBytes * (height - 1);
-    while (irow < jrow)
-    {
-      unsigned char * i = irow;
-      unsigned char * j = jrow;
-      const unsigned char * const iend = irow + rowBytes;
-      while (i < iend)
-      {
-        unsigned char const tmp = *i;
-        *i = *j;
-        *j = tmp;
-        ++i;
-        ++j;
-      }
-      irow += rowBytes;
-      jrow -= rowBytes;
-    }
-  }
-
-  void SaveImage(char * p, int w, int h, string const & fileName)
-  {
-    static int counter = 0;
-    ++counter;
-    stringstream fileNameSS;
-    fileNameSS << "/sdcard/tiles/" << fileName << counter << ".bmp";
-    int res = stbi_write_bmp(fileNameSS.str().c_str(), w, h, CHANNELS_COUNT, p);
-    LOG(LINFO, ("watch. stbi_write_bmp(..., ", w, ", ", h, ", ", CHANNELS_COUNT, ") = ", res));
-  }
-
-  void SendImageToAndroidWear(int wearWidth, int wearHeight,
-    int screenWidth, int screenHeight, string const & fileName)
-  {
-    MapImage image = {0};
-    int left = screenWidth/2 - wearWidth/2;
-    int top = screenHeight/2 - wearHeight/2;
-    ReadPixels(left, top, wearWidth, wearHeight, image);
-    FlipVertical(image.m_width, image.m_height, image.m_bpp, image.m_bytes.data());
-    SaveImage(image.m_bytes.data(), wearWidth, wearHeight, fileName);
-    ConvertPixelFormat(image.m_width, image.m_height, image.m_bpp, image.m_bytes.data());
-    g_imageReady(image);
-  }
-
   void Framework::DrawFrame()
   {
-    if (m_appInBackground)
+    if (g_appInBackground)
     {
-      if (m_androidWearConnected
-        && g_imageReady != nullptr
+      if (g_isFrameRequested && g_imageReady != nullptr
         && m_work.GetRenderPolicy()->GetOffscreenDrawer() != nullptr)
       {
         shared_ptr<PaintEvent> offscreenPaintEvent(new PaintEvent(m_work.GetRenderPolicy()->GetOffscreenDrawer().get()));
@@ -395,12 +405,9 @@ namespace android
         m_work.BeginPaint(offscreenPaintEvent);
         m_work.DoPaint(offscreenPaintEvent);
 
-        if (g_imageReady != nullptr)
-        {
-          SendImageToAndroidWear(m_work.GetRenderPolicy()->GetOffscreenWidth(),
+        SendImageToAndroidWear(m_work.GetRenderPolicy()->GetOffscreenWidth(),
           m_work.GetRenderPolicy()->GetOffscreenHeight(),
           m_screenWidth, m_screenHeight, string("tileBackground_"));
-        }
 
         m_work.EndPaint(offscreenPaintEvent);
       }
@@ -417,7 +424,7 @@ namespace android
         m_work.DoPaint(paintEvent);
 
         NVEventSwapBuffersEGL();
-        if (m_androidWearConnected && g_imageReady != nullptr)
+        if (g_isFrameRequested && g_imageReady != nullptr)
         {
           SendImageToAndroidWear(m_work.GetRenderPolicy()->GetOffscreenWidth(),
             m_work.GetRenderPolicy()->GetOffscreenHeight(),
