@@ -326,7 +326,9 @@ namespace android
         MapImage image = {0};
         int w = m_work.GetRenderPolicy()->GetOffscreenWidth();
         int h = m_work.GetRenderPolicy()->GetOffscreenHeight();
-        ReadPixels(0, 0, w, h, image);
+        int left = m_screenWidth/2 - w/2;
+        int top = m_screenHeight/2 - h/2;
+        ReadPixels(left, top, w, h, image);
         g_imageReady(image);
         //SaveImage(image.m_bytes.data(), w, h);
       }

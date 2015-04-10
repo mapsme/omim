@@ -81,7 +81,7 @@ namespace RenderServiceImpl
     return bitmap;
   }
 
-  jobject createBitmap(JNIEnv * env, ExtraMapScreen::MapImage const & mi)
+  jobject createBitmap(JNIEnv * env, MapImage const & mi)
   {
     // TODO
     // Support not only 4 bytes per pixel
