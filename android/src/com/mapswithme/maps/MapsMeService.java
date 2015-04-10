@@ -34,6 +34,11 @@ public class MapsMeService
                                             int imageWidth,
                                             int imageHeight,
                                             double rotationAngleDegrees);
+
+        /*
+         * Workarounds for render engine
+         */
+        public native static void allowRenderingInBackground(boolean allow);
     }
 
     /*

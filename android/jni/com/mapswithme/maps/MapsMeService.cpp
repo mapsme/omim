@@ -119,22 +119,10 @@ namespace RenderServiceImpl
   // Support more than listener
   std::shared_ptr<jobject> g_renderServicelistener;
 
-  // TODO
-  // Boolean flag below is required to filter callbacks from the Framework
-  // because Framework fires callback on every tile although we are interested only about
-  // the first tile. So, right after renderMap call take the first tile and skip all others.
-  volatile bool g_renderServiceSkipCallbacks = true;
-
   // Framework's callback about render map
 
   void renderAsyncCallback(MapImage const & mi)
   {
-    if (g_renderServiceSkipCallbacks)
-    {
-      LOG(LDEBUG, ("MapsMeService_RenderService_renderAsyncCallback: skipped tile image"));
-      return;
-    }
-
     LOG(LDEBUG, ("MapsMeService_RenderService_renderAsyncCallback"));
 
     std::shared_ptr<jobject> const listener = g_renderServicelistener;
@@ -152,8 +140,6 @@ namespace RenderServiceImpl
       LOG(LDEBUG, ("MapsMeService_RenderService_renderAsyncCallback: bitmap wasn't created"));
       return;
     }
-
-    g_renderServiceSkipCallbacks = true;
 
     fireOnRenderComplete(env, listener, bmp);
 
@@ -211,10 +197,17 @@ extern "C"
       return;
     }
 
-    g_renderServiceSkipCallbacks = false;
-
     m2::PointD const origin = MercatorBounds::FromLatLon(originLatitude, originLongitude);
     GlobalRenderAsync(origin, static_cast<size_t>(scale), static_cast<size_t>(imageWidth), static_cast<size_t>(imageHeight));
+  }
+
+  JNIEXPORT void JNICALL
+  Java_com_mapswithme_maps_MapsMeService_00024RenderService_allowRenderingInBackground(JNIEnv * env, jobject thiz,
+                                                jboolean allow)
+  {
+    LOG(LDEBUG, ("MapsMeService_RenderService_allowRenderingInBackground: ", allow));
+
+    SetAppInBackground(allow ? true : false);
   }
 
 } // extern "C"
