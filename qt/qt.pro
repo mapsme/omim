@@ -42,7 +42,7 @@ linux* {
   OTHER_RES.path = $$RESDIR
   OTHER_RES.files = ../data/copyright.html ../data/eula.html ../data/welcome.html \
                     ../data/countries.txt \
-                    ../data/languages.txt ../data/categories.txt \
+                    ../data/languages.txt ../data/categories.txt ../data/mapcss-mapping.csv \
                     ../data/packed_polygons.bin res/logo.png
   CLASSIFICATOR_RES.path = $$RESDIR
   CLASSIFICATOR_RES.files = ../data/classificator.txt \
@@ -90,7 +90,7 @@ macx-* {
   OTHER_RES.path = Contents/Resources
   OTHER_RES.files = ../data/copyright.html ../data/eula.html ../data/welcome.html \
                     ../data/countries.txt  \
-                    ../data/languages.txt ../data/categories.txt \
+                    ../data/languages.txt ../data/categories.txt ../data/mapcss-mapping.csv \
                     ../data/packed_polygons.bin
   CLASSIFICATOR_RES.path = Contents/Resources
   CLASSIFICATOR_RES.files = ../data/classificator.txt \
