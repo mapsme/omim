@@ -6,6 +6,7 @@
 
 - (void)shareCellDidPressShareButton:(PlacePageShareCell *)cell;
 - (void)shareCellDidPressApiButton:(PlacePageShareCell *)cell;
+- (void)shareCellDidPressEditButton:(PlacePageShareCell *)cell;
 
 @end
 

@@ -2,6 +2,7 @@
 #import "MapsAppDelegate.h"
 #import "EAGLView.h"
 #import "BookmarksRootVC.h"
+#import "AddressEditorVC.h"
 #import "UIKitCategories.h"
 #import "UIViewController+Navigation.h"
 #import "ShareActionSheet.h"
@@ -1147,6 +1148,12 @@ extern NSString * const kAlohalyticsTapEventKey = @"$onClick";
 {
   NSString * urlString = [NSString stringWithUTF8String:GetFramework().GenerateApiBackUrl(*point).c_str()];
   [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
+}
+
+- (void)placePageView:(PlacePageView *)placePage willOpenEditor:(PoiMarkPoint const *)mark
+{
+  AddressEditorVC * evc = [[AddressEditorVC alloc] initWithPoiMark:mark];
+  [self.navigationController pushViewController:evc animated:YES];
 }
 
 #pragma mark - BottomMenuDelegate

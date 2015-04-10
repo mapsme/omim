@@ -1093,6 +1093,17 @@ typedef NS_ENUM(NSUInteger, CellRow)
   [self updateBookmarkViewsAlpha:YES];
 }
 
+- (void)shareCellDidPressEditButton:(PlacePageShareCell *)cell
+{
+  // TODO(AlexZ): Now we silently ignore all Edit clicks for non-building types.
+  if ([self userMark]->GetMarkType() == UserMark::Type::POI)
+  {
+    PoiMarkPoint const * poi = static_cast<PoiMarkPoint const *>([self userMark]);
+    if (poi->GetInfo().IsBuilding())
+      [self.delegate placePageView:self willOpenEditor:poi];
+  }
+}
+
 - (void)shareCellDidPressApiButton:(PlacePageShareCell *)cell
 {
   [self.delegate placePageView:self willShareApiPoint:static_cast<ApiMarkPoint const *>([self userMark])];
