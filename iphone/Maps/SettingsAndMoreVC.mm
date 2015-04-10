@@ -10,6 +10,7 @@
 #import "WebViewController.h"
 #import "CommunityVC.h"
 #import "RichTextVC.h"
+#import "EditMapSettingsVC.h"
 #import "../../3party/Alohalytics/src/alohalytics_objc.h"
 
 
@@ -74,7 +75,8 @@ extern NSDictionary * const deviceNames = @{@"x86_64" : @"Simulator",
   self.items = @[@{@"Title" : @"",
                    @"Items" : @[@{@"Id" : @"Settings", @"Title" : L(@"settings"), @"Icon" : @"IconAppSettings"},
                                 @{@"Id" : @"Help", @"Title" : L(@"help"), @"Icon" : @"IconHelp"},
-                                @{@"Id" : @"ReportBug", @"Title" : L(@"report_a_bug"), @"Icon" : @"IconReportABug"}]},
+                                @{@"Id" : @"ReportBug", @"Title" : L(@"report_a_bug"), @"Icon" : @"IconReportABug"},
+                                @{@"Id" : @"EditMapSettings", @"Title" : L(@"edit_map"), @"Icon" : @"IconEditMap"}]},
                  @{@"Title" : @"",
                    @"Items" : @[@{@"Id" : @"Community", @"Title" : L(@"maps_me_community"), @"Icon" : @"IconSocial"},
                                 @{@"Id" : @"RateApp", @"Title" : L(@"rate_the_app"), @"Icon" : @"IconRate"}]},
@@ -166,6 +168,12 @@ extern NSDictionary * const deviceNames = @{@"x86_64" : @"Simulator",
     [Alohalytics logEvent:kAlohalyticsTapEventKey withValue:@"copyright"];
     [self copyright];
   }
+  else if ([itemId isEqualToString:@"EditMapSettings"])
+  {
+    [Alohalytics logEvent:kAlohalyticsTapEventKey withValue:@"editMapSettings"];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [self editMapSettings];
+  }
 }
 
 - (void)help
@@ -182,6 +190,12 @@ extern NSDictionary * const deviceNames = @{@"x86_64" : @"Simulator",
   RichTextVC * vc = [[RichTextVC alloc] initWithText:L(@"about_text")];
   vc.title = L(@"about_menu_title");
   [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (void)editMapSettings
+{
+  EditMapSettingsVC * editMapSettingsVC = [[EditMapSettingsVC alloc] initWithNibName:@"EditMapSettingsView" bundle:nil];
+  [self.navigationController pushViewController:editMapSettingsVC animated:YES];
 }
 
 - (void)copyright

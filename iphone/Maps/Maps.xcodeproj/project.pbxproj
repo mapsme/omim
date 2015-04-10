@@ -17,7 +17,9 @@
 		46F26CD810F623BA00ECCA39 /* EAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 46F26CD710F623BA00ECCA39 /* EAGLView.mm */; };
 		46F26D1F10F626CB00ECCA39 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46F26D1E10F626CB00ECCA39 /* QuartzCore.framework */; };
 		4A00DBDF1AB704C400113624 /* drules_proto_dark.bin in Resources */ = {isa = PBXBuildFile; fileRef = 4A00DBDE1AB704C400113624 /* drules_proto_dark.bin */; };
+		6BA5967B1AD7968200D88066 /* EditMapSettingsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6BA5967A1AD7968200D88066 /* EditMapSettingsView.xib */; };
 		6BBD66B41A695722005FF58D /* MRGService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6BBD66B21A695722005FF58D /* MRGService.framework */; };
+		6BD0980E1AD5E77E0048285C /* EditMapSettingsVC.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6BD0980D1AD5E77E0048285C /* EditMapSettingsVC.mm */; };
 		6BDCBF491AA758FE004DAE48 /* libFlurry_6.0.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6BDCBF481AA758FE004DAE48 /* libFlurry_6.0.0.a */; };
 		974386DD19373EA400FD5659 /* ToastView.m in Sources */ = {isa = PBXBuildFile; fileRef = 974386DC19373EA400FD5659 /* ToastView.m */; };
 		9746492718EEE2F8004B4658 /* ToolbarView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9746492618EEE2F8004B4658 /* ToolbarView.mm */; };
@@ -214,7 +216,10 @@
 		46F8A2EB10EB63040045521A /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = MapViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		4A00DBDE1AB704C400113624 /* drules_proto_dark.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; name = drules_proto_dark.bin; path = ../../data/drules_proto_dark.bin; sourceTree = "<group>"; };
 		6B948E1B1A25533C00229BD5 /* libAppsFlyerLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libAppsFlyerLib.a; path = Statistics/MRGService/ExternalLibs/AppsFlyer/libAppsFlyerLib.a; sourceTree = "<group>"; };
+		6BA5967A1AD7968200D88066 /* EditMapSettingsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = EditMapSettingsView.xib; path = Editor/EditMapSettingsView.xib; sourceTree = "<group>"; };
 		6BBD66B21A695722005FF58D /* MRGService.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MRGService.framework; path = Statistics/MRGService/MRGService.framework; sourceTree = "<group>"; };
+		6BD0980C1AD5E77E0048285C /* EditMapSettingsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EditMapSettingsVC.h; path = Editor/EditMapSettingsVC.h; sourceTree = "<group>"; };
+		6BD0980D1AD5E77E0048285C /* EditMapSettingsVC.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = EditMapSettingsVC.mm; path = Editor/EditMapSettingsVC.mm; sourceTree = "<group>"; };
 		6BDCBF481AA758FE004DAE48 /* libFlurry_6.0.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libFlurry_6.0.0.a; path = Statistics/libFlurry_6.0.0.a; sourceTree = "<group>"; };
 		772923C9184E0440008C1EDC /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/Localizable.strings; sourceTree = "<group>"; };
 		7794829519A4E66A005F57B9 /* sk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sk; path = sk.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -588,6 +593,7 @@
 				FA36B8011540388B004560CC /* Bookmarks */,
 				FA34BEC71338D6DB00FFB2A7 /* Common */,
 				976D86EE19C8777500C920EF /* Downloader */,
+				6B10A1991AD432DE0087B382 /* Editor */,
 				97354B6B196EDCE200352536 /* Login & sharing */,
 				FA6E1F1B124E6B2800F59149 /* Platform */,
 				080E96DDFE201D6D7F000001 /* Classes */,
@@ -663,6 +669,16 @@
 				FA87151A12B1518F00592DAF /* SystemConfiguration.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6B10A1991AD432DE0087B382 /* Editor */ = {
+			isa = PBXGroup;
+			children = (
+				6BA5967A1AD7968200D88066 /* EditMapSettingsView.xib */,
+				6BD0980C1AD5E77E0048285C /* EditMapSettingsVC.h */,
+				6BD0980D1AD5E77E0048285C /* EditMapSettingsVC.mm */,
+			);
+			name = Editor;
 			sourceTree = "<group>";
 		};
 		97354B6B196EDCE200352536 /* Login & sharing */ = {
@@ -1132,7 +1148,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0620;
+				LastUpgradeCheck = 0630;
 				ORGANIZATIONNAME = MapsWithMe;
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
@@ -1221,6 +1237,7 @@
 				97A5967F19B9CD47007A963F /* copyright.html in Resources */,
 				978F9247183B6671000D6C7C /* Main_iPhone.storyboard in Resources */,
 				FA459EB414327AF700B5BB3C /* WorldCoasts.mwm in Resources */,
+				6BA5967B1AD7968200D88066 /* EditMapSettingsView.xib in Resources */,
 				FA85F633145DDDC20090E1A0 /* packed_polygons.bin in Resources */,
 				FA99CB73147089B100689A9A /* Localizable.strings in Resources */,
 				F7FDD823147F30CC005900FA /* drules_proto.bin in Resources */,
@@ -1375,6 +1392,7 @@
 				97D092B1190A681F00FF645B /* PlacePageInfoCell.mm in Sources */,
 				B0FBFA271A515AFD0086819E /* ViewController.m in Sources */,
 				97A8001018B21395000C07A2 /* SearchBar.mm in Sources */,
+				6BD0980E1AD5E77E0048285C /* EditMapSettingsVC.mm in Sources */,
 				EDC5C543175F2CA600420E92 /* ShareActionSheet.mm in Sources */,
 				F64F199B1AB81A00006EAF7E /* MWMAlert.mm in Sources */,
 				9778E9A1191A663700AD850A /* BookmarkNameVC.mm in Sources */,
