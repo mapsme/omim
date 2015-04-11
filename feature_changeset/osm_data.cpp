@@ -57,12 +57,44 @@ namespace osm
 
   void OsmData::Add(OsmElement * element)
   {
-    if (element->Type() == OsmType::NODE)
-      m_nodes.emplace(element->Id(), *dynamic_cast<OsmNode*>(element));
-    else if (element->Type() == OsmType::WAY)
-      m_ways.emplace(element->Id(), *dynamic_cast<OsmWay*>(element));
-    else if (element->Type() == OsmType::RELATION)
-      m_relations.emplace(element->Id(), *dynamic_cast<OsmRelation*>(element));
+    OsmType const & type = element->Type();
+    OsmId key = element->Id();
+    if (key == 0)
+    {
+      // For new objects we create imaginary keys
+      key = -100000;
+      if (type == OsmType::NODE)
+        while (m_nodes.count(key)) key--;
+      else if (type == OsmType::WAY)
+        while (m_ways.count(key)) key--;
+      else if (type == OsmType::RELATION)
+        while (m_relations.count(key)) key--;
+    }
+
+    if (type == OsmType::NODE)
+      m_nodes.emplace(key, *dynamic_cast<OsmNode*>(element));
+    else if (type == OsmType::WAY)
+      m_ways.emplace(key, *dynamic_cast<OsmWay*>(element));
+    else if (type == OsmType::RELATION)
+      m_relations.emplace(key, *dynamic_cast<OsmRelation*>(element));
+  }
+
+  OsmId OsmData::UniqueId(OsmType type, bool newObj) const
+  {
+    OsmId maxId = 0;
+    if (type == OsmType::NODE)
+      for (pair<OsmId, OsmNode> const & p : m_nodes)
+        if ((!newObj && p.first > maxId) || (newObj && p.first < maxId))
+          maxId = p.first;
+    else if (type == OsmType::WAY)
+      for (pair<OsmId, OsmWay> const & p : m_ways)
+        if ((!newObj && p.first > maxId) || (newObj && p.first < maxId))
+          maxId = p.first;
+    else if (type == OsmType::RELATION)
+      for (pair<OsmId, OsmRelation> const & p : m_relations)
+        if ((!newObj && p.first > maxId) || (newObj && p.first < maxId))
+          maxId = p.first;
+    return newObj ? maxId - 1 : maxId + 1;
   }
 
   bool OsmData::BuildAreas()

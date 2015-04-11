@@ -123,6 +123,7 @@ namespace osm
     bool Empty() const { return m_nodes.empty() && m_ways.empty() && m_relations.empty(); }
     void InnerXML(ostream & oss, OsmId changeset = -1) const;
     void XML(ostream & oss) const;
+    OsmId UniqueId(OsmType type, bool newObj = true) const;
     bool BuildAreas();
   };
 
