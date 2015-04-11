@@ -6,6 +6,8 @@
 
 using namespace osm;
 
+extern string const OSM_SERVER_URL;
+
 class StringSequence
 {
   istringstream iss;
@@ -123,10 +125,9 @@ UNIT_TEST(OsmUpload)
   osc.Comment("Created an address");
   osc.Modify(&nd);
 
-  string const OSM_SERVER = "api06.dev.openstreetmap.org";
   string const user = "ZverikI";
   string const password = "qwerty12";
-  string const baseUrl = "http://" + OSM_SERVER + "/api/0.6/changeset/";
+  string const baseUrl = OSM_SERVER_URL + "/api/0.6/changeset/";
   alohalytics::HTTPClientPlatformWrapper create(baseUrl + "create");
   create.set_user_and_password(user, password);
   ostringstream oss;

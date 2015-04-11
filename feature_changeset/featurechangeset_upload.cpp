@@ -13,6 +13,9 @@
 #include "sqlite3.h"
 #include "../3party/Alohalytics/src/http_client.h"
 
+// TODO: Switch to production server when everything is ready.
+extern string const OSM_SERVER_URL = "http://api06.dev.openstreetmap.org";
+
 namespace
 {
   static const double kModifier = 1E7;
@@ -225,12 +228,6 @@ namespace
 
 namespace edit
 {
-  // TODO: change to api.openstreetmap.org eventually
-  string const OSM_SERVER = "http://api06.dev.openstreetmap.org/api/0.6/";
-  // TODO: proper authorization
-  string const OSM_USER = "ZverikI";
-  string const OSM_PASSWORD = "qwerty12";
-
   void LinkToChanges(MWMLink const & link, TChanges & changes)
   {
     if (!changes.count(EDataKey::LON))
@@ -307,7 +304,9 @@ namespace edit
 
   bool UploadChanges(OsmChange const & osc, OsmData & uploaded)
   {
-    string const baseUrl = OSM_SERVER + "changeset/";
+    string const user = "test";
+    string const password = "test";
+    string const baseUrl = OSM_SERVER_URL + "/api/0.6/changeset/";
     alohalytics::HTTPClientPlatformWrapper create(baseUrl + "create");
     // TODO: proper authorization
     create.set_user_and_password(OSM_USER, OSM_PASSWORD);
