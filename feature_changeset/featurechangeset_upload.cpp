@@ -103,7 +103,12 @@ namespace
       ReaderPtr<Reader>(GetPlatform().GetReader("mapcss-mapping.csv")).ReadAsString(csv_data);
     }
 
-    string const type_str = classif().GetFullObjectName(type);
+    string typeStr = classif().GetFullObjectName(type);
+    if (typeStr.empty())
+      return false; // TODO: Better handling for errors.
+    // Remove dummy '|' symbol. TODO: Politely ask Viktor to fix it.
+    typeStr.resize(typeStr.size() - 1);
+
     tags.clear();
     istringstream lines(csv_data);
     string line;
@@ -114,7 +119,7 @@ namespace
       string mapping_type, mapping_tags;
       getline(fields, mapping_type, ';');
       getline(fields, mapping_tags, ';');
-      if (!fields.fail() && mapping_type == type_str)
+      if (!fields.fail() && mapping_type == typeStr)
       {
         // found type, extract tags
         // amenity|parking;[amenity=parking][access?], [amenity=parking][!access];;name;int_name;26;
