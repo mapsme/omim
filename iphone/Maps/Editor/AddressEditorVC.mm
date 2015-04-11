@@ -134,7 +134,7 @@ extern NSString * kOSMPasswordKey;
   if (!changes.empty())
   {
     double lat, lon;
-    m_mark->GetLatLon(lat, lon);
+    m_mark->GetLatLon(lon, lat);
     edit::FeatureChangeset editedFields;
     // TODO: Temporarily hard-coded building type.
     uint32_t const buildingType = 70;
