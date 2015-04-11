@@ -121,7 +121,7 @@ namespace
       getline(fields, mapping_tags, ';');
       if (!fields.fail() && mapping_type == typeStr)
       {
-        // found type, extract tags
+        // Found type, extract tags. Example:
         // amenity|parking;[amenity=parking][access?], [amenity=parking][!access];;name;int_name;26;
         pair<string, string> tag;
         size_t start = 0;
@@ -175,11 +175,31 @@ namespace edit
 
   void AddNewTags(OsmElement *el, TChanges const & changes)
   {
+    // TODO: name
     if (changes.count(EDataKey::HOUSENUMBER))
       el->SetValue("addr:housenumber", changes.at(EDataKey::HOUSENUMBER).new_value);
     if (changes.count(EDataKey::STREET))
       el->SetValue("addr:street", changes.at(EDataKey::STREET).new_value);
-    // TODO: fill other tags
+    if (changes.count(EDataKey::HOUSENAME))
+      el->SetValue("addr:housename", changes.at(EDataKey::HOUSENAME).new_value);
+    if (changes.count(EDataKey::POSTCODE))
+      el->SetValue("addr:postcode", changes.at(EDataKey::POSTCODE).new_value);
+    if (changes.count(EDataKey::CUISINE))
+      el->SetValue("cuisine", changes.at(EDataKey::CUISINE).new_value);
+    if (changes.count(EDataKey::ELE))
+      el->SetValue("ele", changes.at(EDataKey::ELE).new_value);
+    if (changes.count(EDataKey::EMAIL))
+      el->SetValue("email", changes.at(EDataKey::EMAIL).new_value);
+    if (changes.count(EDataKey::WEBSITE))
+      el->SetValue("website", changes.at(EDataKey::WEBSITE).new_value);
+    if (changes.count(EDataKey::PHONE))
+      el->SetValue("phone", changes.at(EDataKey::PHONE).new_value);
+    if (changes.count(EDataKey::OPENING_HOURS))
+      el->SetValue("opening_hours", changes.at(EDataKey::OPENING_HOURS).new_value);
+    if (changes.count(EDataKey::OPERATOR))
+      el->SetValue("operator", changes.at(EDataKey::OPERATOR).new_value);
+    if (changes.count(EDataKey::STARS))
+      el->SetValue("stars", changes.at(EDataKey::STARS).new_value);
   }
 
   void FindChanges(FeatureDiff const & diff, OsmChange & osc)
@@ -204,8 +224,7 @@ namespace edit
     }
     else
     {
-      // modification or deletion: we need an original element.
-      // now we have tags, let's query bbox at point and find an object that matches tags
+      // Modification or deletion: we need an original element.
       alohalytics::HTTPClientPlatformWrapper create(OSM_SERVER_URL + GetBBoxQueryURL(center));
       if (create.RunHTTPRequest() && 200 == create.error_code())
       {
@@ -214,13 +233,12 @@ namespace edit
         OsmParser parser(data);
         StringSequence source(xml);
         ParseXMLSequence(source, parser);
-        // downloaded data, search for nearest point
         data.BuildAreas();
         OsmElement * closest = nullptr;
         if (!FindClosestMatch(center, typeTags, data.GetElements(OsmType::NODE), closest) &&
             !FindClosestMatch(center, typeTags, data.GetElements(OsmType::AREA), closest))
         {
-          // did not find relevant feature?
+          // TODO: what if did not find a relevant feature?
           return;
         }
         if (diff.state == FeatureDiff::EState::DELETED)
@@ -230,7 +248,7 @@ namespace edit
         else
         {
           OsmElement *modified(closest);
-          // TODO: we have an element, update its tags
+          AddNewTags(modified, changes);
           osc.Modify(modified);
         }
       };
