@@ -2,8 +2,12 @@
 #import "UIKitCategories.h"
 
 #include "../../../map/user_mark.hpp"
+#include "../../../feature_changeset/featurechangeset.hpp"
 
 #define TEXTFIELD_TAG 100
+
+extern NSString * kOSMLoginKey;
+extern NSString * kOSMPasswordKey;
 
 @interface AddressEditorVC()
 {
@@ -121,10 +125,26 @@
   cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
   NSString * streetName = ((UITextField *)[cell.contentView viewWithTag:TEXTFIELD_TAG]).text;
 
-  double lat, lon;
-  m_mark->GetLatLon(lat, lon);
-  // TODO: Save possibly edited fields.
-  // OSMEditor::SaveAddress()
+  edit::TChanges changes;
+  // TODO(AlexZ): Old value is always empty now (we always create, not modify).
+  if (houseNumber.length)
+    changes[edit::HOUSENUMBER] = {"", [houseNumber UTF8String]};
+  if (streetName.length)
+    changes[edit::STREET] = {"", [streetName UTF8String]};
+  if (!changes.empty())
+  {
+    double lat, lon;
+    m_mark->GetLatLon(lat, lon);
+    edit::FeatureChangeset editedFields;
+    // TODO: Temporarily hard-coded building type.
+    uint32_t const buildingType = 70;
+    editedFields.CreateChange(edit::MWMLink(lat, lon, buildingType), changes);
+    // TODO: What if user does not have login and password in the settings?
+    NSUserDefaults * settings = [NSUserDefaults standardUserDefaults];
+    string const user = [[settings objectForKey:kOSMLoginKey] UTF8String];
+    string const password = [[settings objectForKey:kOSMPasswordKey] UTF8String];
+    editedFields.UploadChangeset(user, password);
+  }
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField

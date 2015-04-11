@@ -3,6 +3,7 @@
 
 #include "../../../3party/Alohalytics/src/http_client.h"
 
+extern std::string const OSM_SERVER_URL;
 NSString * kOSMLoginKey = @"OSMLoginKey";
 NSString * kOSMPasswordKey = @"OSMPasswordKey";
 
@@ -46,7 +47,7 @@ NSString * kOSMPasswordKey = @"OSMPasswordKey";
   else
   {
     // Make simple api request to check if authentification works.
-    alohalytics::HTTPClientPlatformWrapper request("http://api.openstreetmap.org/api/0.6/permissions");
+    alohalytics::HTTPClientPlatformWrapper request(OSM_SERVER_URL + "/api/0.6/permissions");
     request.set_user_and_password([_loginTextField.text UTF8String], [_passwordTextField.text UTF8String]);
     message = @"Can't connect to OpenStreetMap server.";
     if (request.RunHTTPRequest())

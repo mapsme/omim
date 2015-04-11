@@ -1498,6 +1498,7 @@
 					"-DUSE_DRAPE",
 				);
 				OTHER_LDFLAGS = (
+          "-lfeature_changeset",
 					"-lstats_client",
 					"-lmap",
 					"-lsearch",
@@ -1554,6 +1555,7 @@
 					"$(PROJECT_DIR)/Statistics",
 				);
 				OTHER_LDFLAGS = (
+          "-lfeature_changeset",
 					"-lstats_client",
 					"-lmap",
 					"-lsearch",
@@ -1623,6 +1625,7 @@
 					"-DUSE_DRAPE",
 				);
 				OTHER_LDFLAGS = (
+          "-lfeature_changeset",
 					"-lstats_client",
 					"-lmap",
 					"-ldrape_frontend",
@@ -1715,6 +1718,7 @@
 				OTHER_CFLAGS = "-Wall";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_LDFLAGS = (
+          "-lfeature_changeset",
 					"-lstats_client",
 					"-lmap",
 					"-lsearch",
@@ -1810,6 +1814,7 @@
 					"-mno-thumb",
 				);
 				OTHER_LDFLAGS = (
+          "-lfeature_changeset",
 					"-lstats_client",
 					"-lmap",
 					"-lsearch",
@@ -1864,6 +1869,7 @@
 					"$(PROJECT_DIR)/Statistics",
 				);
 				OTHER_LDFLAGS = (
+          "-lfeature_changeset",
 					"-lstats_client",
 					"-lmap",
 					"-lsearch",
@@ -1934,6 +1940,7 @@
 					"-mno-thumb",
 				);
 				OTHER_LDFLAGS = (
+          "-lfeature_changeset",
 					"-lstats_client",
 					"-lmap",
 					"-lsearch",
@@ -2033,6 +2040,7 @@
 					"-mno-thumb",
 				);
 				OTHER_LDFLAGS = (
+          "-lfeature_changeset",
 					"-lstats_client",
 					"-lmap",
 					"-lsearch",
@@ -2131,6 +2139,7 @@
 					"-mno-thumb",
 				);
 				OTHER_LDFLAGS = (
+          "-lfeature_changeset",
 					"-lstats_client",
 					"-lmap",
 					"-lsearch",
@@ -2224,6 +2233,7 @@
 				OTHER_CFLAGS = "-Wall";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_LDFLAGS = (
+          "-lfeature_changeset",
 					"-lstats_client",
 					"-lmap",
 					"-lsearch",
