@@ -134,8 +134,3 @@ UNIT_TEST(Changes_Find)
     TEST(false, (e.what()));
   }
 }
-
-UNIT_TEST(Changes_Cleanup)
-{
-  std::remove("changes.db");
-}

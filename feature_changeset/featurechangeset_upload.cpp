@@ -18,76 +18,6 @@ extern string const OSM_SERVER_URL = "http://api06.dev.openstreetmap.org/api/0.6
 
 namespace
 {
-  static const double kModifier = 1E7;
-
-  edit::MWMLink from_string(string const & s)
-  {
-    edit::MWMLink link(double(int32_t(stol(s.substr(0,8),0,16))) / kModifier
-                       ,double(int32_t(stol(s.substr(8,8),0,16))) / kModifier
-                       ,stoi(s.substr(16,8),0,16));
-    link.key = stoi(s.substr(24,8),0,16);
-    return link;
-  }
-
-  void LoadAllFromStorage(vector<edit::FeatureDiff> & diffs)
-  {
-    sqlite3 *db;
-    // Open database
-    if (sqlite3_open("changes.db", &db))
-      throw edit::Exception(edit::STORAGE_ERROR, sqlite3_errmsg(db));
-
-    // Create SQL statement
-    string sql("SELECT * FROM actions ORDER BY version ASC");
-
-    sqlite3_stmt* stmt;
-    sqlite3_prepare_v2(db, sql.c_str(), static_cast<int>(sql.size()), &stmt, NULL);
-
-    // Execute SQL statement
-    int rc = 0;
-    while (rc != SQLITE_DONE)
-    {
-      switch (rc = sqlite3_step(stmt))
-      {
-        case SQLITE_ROW:
-        {
-          string s((char const *)sqlite3_column_text(stmt, 0), sqlite3_column_bytes(stmt, 0));
-          diffs.emplace_back(from_string(s));
-          edit::FeatureDiff & diff = diffs.back();
-
-          diff.created = sqlite3_column_int(stmt, 1);
-          diff.modified = sqlite3_column_int(stmt, 2);
-          diff.uploaded = (sqlite3_column_type(stmt, 3) == SQLITE_NULL) ? 0 : sqlite3_column_int(stmt, 3);
-          diff.version = sqlite3_column_int(stmt, 4);
-          diff.state = (edit::FeatureDiff::EState)sqlite3_column_int(stmt, 5);
-
-          istringstream ss(string((char const *)sqlite3_column_text(stmt, 6), sqlite3_column_bytes(stmt, 6)));
-
-          uint8_t header[3] = {0};
-          char buffer1[uint8_t(-1)] = {0};
-          char buffer2[uint8_t(-1)] = {0};
-          do
-          {
-            ss.read((char *)header, sizeof(header));
-            ss.read(buffer1, header[1]);
-            ss.read(buffer2, header[2]);
-            diff.changes.emplace(static_cast<edit::EDataKey>(header[0] & 0x7F)
-                                 , edit::DataValue(string(buffer1, header[1]), string(buffer2, header[2])));
-          } while (!(header[0] & 0x80));
-          break;
-        }
-        case SQLITE_DONE: break;
-        default:
-          throw edit::Exception(edit::STORAGE_ERROR, sqlite3_errmsg(db));
-      }
-    }
-    sqlite3_reset(stmt);
-    sqlite3_finalize(stmt);
-    sqlite3_close(db);
-  }
-}
-
-namespace
-{
   double const BBOX_RADIUS = 1e-5;
 
   class StringSequence
@@ -335,7 +265,7 @@ namespace edit
   {
     OsmChange osc;
     vector<FeatureDiff> changeset;
-    LoadAllFromStorage(changeset);
+    m_storage.LoadAllFromStorage(changeset);
     for (FeatureDiff & diff : changeset)
     {
       // TODO: error handling

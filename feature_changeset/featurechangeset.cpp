@@ -2,6 +2,8 @@
 
 #include "sqlite3.h"
 
+#include "platform/platform.hpp"
+
 #include "../std/iostream.hpp"
 #include "../std/sstream.hpp"
 #include "../std/iomanip.hpp"
@@ -10,7 +12,7 @@
 #include "../std/algorithm.hpp"
 
 
-namespace
+namespace edit
 {
   static const double kModifier = 1E7;
 
@@ -43,11 +45,11 @@ namespace
     return s;
   }
 
-  void InitStorage()
+  FeatureDiffStorage::FeatureDiffStorage(string const &pathname) : m_storagePathname(pathname)
   {
     sqlite3 *db;
     // Open database
-    if (sqlite3_open("changes.db", &db))
+    if (sqlite3_open(m_storagePathname.c_str(), &db))
       throw edit::Exception(edit::STORAGE_ERROR, sqlite3_errmsg(db));
 
     // Create SQL statement
@@ -84,11 +86,11 @@ namespace
     return ss.str();
   }
 
-  void SaveToStorage(edit::FeatureDiff const &diff)
+  void FeatureDiffStorage::SaveToStorage(edit::FeatureDiff const &diff)
   {
     sqlite3 *db;
     // Open database
-    if (sqlite3_open("changes.db", &db))
+    if (sqlite3_open(m_storagePathname.c_str(), &db))
       throw edit::Exception(edit::STORAGE_ERROR, sqlite3_errmsg(db));
 
     // Create SQL statement
@@ -110,12 +112,12 @@ namespace
   }
 
 
-  void LoadFromStorage(edit::MWMLink const & id, vector<edit::FeatureDiff> & diffs)
+  void FeatureDiffStorage::LoadFromStorage(edit::MWMLink const & id, vector<edit::FeatureDiff> & diffs)
   {
 
     sqlite3 *db;
     // Open database
-    if (sqlite3_open("changes.db", &db))
+    if (sqlite3_open(m_storagePathname.c_str(), &db))
       throw edit::Exception(edit::STORAGE_ERROR, sqlite3_errmsg(db));
 
     // Create SQL statement
@@ -171,14 +173,70 @@ namespace
     sqlite3_close(db);
   }
 
+void FeatureDiffStorage::LoadAllFromStorage(vector<edit::FeatureDiff> & diffs)
+{
+  sqlite3 *db;
+  // Open database
+  if (sqlite3_open(m_storagePathname.c_str(), &db))
+    throw edit::Exception(edit::STORAGE_ERROR, sqlite3_errmsg(db));
+
+  // Create SQL statement
+  string sql("SELECT * FROM actions ORDER BY version ASC");
+
+  sqlite3_stmt* stmt;
+  sqlite3_prepare_v2(db, sql.c_str(), static_cast<int>(sql.size()), &stmt, NULL);
+
+  // Execute SQL statement
+  int rc = 0;
+  while (rc != SQLITE_DONE)
+  {
+    switch (rc = sqlite3_step(stmt))
+    {
+      case SQLITE_ROW:
+      {
+        string s((char const *)sqlite3_column_text(stmt, 0), sqlite3_column_bytes(stmt, 0));
+        diffs.emplace_back(from_string(s));
+        edit::FeatureDiff & diff = diffs.back();
+
+        diff.created = sqlite3_column_int(stmt, 1);
+        diff.modified = sqlite3_column_int(stmt, 2);
+        diff.uploaded = (sqlite3_column_type(stmt, 3) == SQLITE_NULL) ? 0 : sqlite3_column_int(stmt, 3);
+        diff.version = sqlite3_column_int(stmt, 4);
+        diff.state = (edit::FeatureDiff::EState)sqlite3_column_int(stmt, 5);
+
+        istringstream ss(string((char const *)sqlite3_column_text(stmt, 6), sqlite3_column_bytes(stmt, 6)));
+
+        uint8_t header[3] = {0};
+        char buffer1[uint8_t(-1)] = {0};
+        char buffer2[uint8_t(-1)] = {0};
+        do
+        {
+          ss.read((char *)header, sizeof(header));
+          ss.read(buffer1, header[1]);
+          ss.read(buffer2, header[2]);
+          diff.changes.emplace(static_cast<edit::EDataKey>(header[0] & 0x7F)
+                               , edit::DataValue(string(buffer1, header[1]), string(buffer2, header[2])));
+        } while (!(header[0] & 0x80));
+        break;
+      }
+      case SQLITE_DONE: break;
+      default:
+        throw edit::Exception(edit::STORAGE_ERROR, sqlite3_errmsg(db));
+    }
+  }
+  sqlite3_reset(stmt);
+  sqlite3_finalize(stmt);
+  sqlite3_close(db);
+}
+
+
 } // anonymouse namespace
 
 namespace edit
 {
 
-  FeatureChangeset::FeatureChangeset()
+  FeatureChangeset::FeatureChangeset() : m_storage(GetPlatform().WritablePathForFile("diffstorage.db"))
   {
-    InitStorage();
   }
 
   void FeatureChangeset::CreateChange(MWMLink const & id, TChanges const &values)
@@ -188,30 +246,30 @@ namespace edit
     for (auto const & e : values) {
       fd.changes.insert(e);
     }
-    SaveToStorage(fd);
+    m_storage.SaveToStorage(fd);
   }
 
   void FeatureChangeset::ModifyChange(MWMLink const & id, TChanges const &values)
   {
     vector<edit::FeatureDiff> diffs;
-    LoadFromStorage(id, diffs);
+    m_storage.LoadFromStorage(id, diffs);
     edit::FeatureDiff nd(diffs.back(), values);
-    SaveToStorage(nd);
+    m_storage.SaveToStorage(nd);
   }
 
   void FeatureChangeset::DeleteChange(MWMLink const & id)
   {
     vector<edit::FeatureDiff> diffs;
-    LoadFromStorage(id, diffs);
+    m_storage.LoadFromStorage(id, diffs);
     edit::FeatureDiff nd(diffs.back(), TChanges());
     nd.SetState(edit::FeatureDiff::DELETED);
-    SaveToStorage(nd);
+    m_storage.SaveToStorage(nd);
   }
 
   bool FeatureChangeset::Find(MWMLink const & id, FeatureDiff * diff)
   {
     vector<edit::FeatureDiff> diffs;
-    LoadFromStorage(id, diffs);
+    m_storage.LoadFromStorage(id, diffs);
     if (diff)
       *diff = diffs.back();
     return !diffs.empty();

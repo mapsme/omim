@@ -115,9 +115,23 @@ namespace edit
 
   };
 
+  class FeatureDiffStorage
+  {
+      string m_storagePathname;
+  public:
+
+      FeatureDiffStorage(string const & pathname);
+      void InitStorage();
+
+      void LoadFromStorage(edit::MWMLink const & id, vector<edit::FeatureDiff> & diffs);
+      void SaveToStorage(edit::FeatureDiff const &diff);
+      void LoadAllFromStorage(vector<edit::FeatureDiff> & diffs);
+
+  };
+
   class FeatureChangeset
   {
-
+    FeatureDiffStorage m_storage;
   public:
     FeatureChangeset();
     void CreateChange(MWMLink const & id, TChanges const &values);

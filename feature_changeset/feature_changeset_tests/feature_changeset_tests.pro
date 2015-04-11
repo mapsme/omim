@@ -10,7 +10,7 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 ROOT_DIR = ../..
-DEPENDENCIES = stats_client feature_changeset coding base expat
+DEPENDENCIES = stats_client feature_changeset coding base expat platform
 
 include($$ROOT_DIR/common.pri)
 
