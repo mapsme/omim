@@ -23,23 +23,23 @@ UNIT_TEST(OsmData)
   OsmNode nd1(1, p1);
   OsmNode nd2(2, p2);
   OsmWay w1(1);
-  w1.Add(nd1);
-  w1.Add(nd2);
+  w1.Add(&nd1);
+  w1.Add(&nd2);
   w1.SetValue("highway", "primary");
   OsmNode nd3(3, p3);
   nd3.SetValue("amenity", "bench");
   OsmWay w2(2);
-  w2.Add(nd2);
-  w2.Add(nd3);
-  w2.Add(nd1);
-  w2.Add(nd2);
+  w2.Add(&nd2);
+  w2.Add(&nd3);
+  w2.Add(&nd1);
+  w2.Add(&nd2);
   OsmNode nd4(4);
   OsmWay w3(3);
-  w3.Add(nd2);
-  w3.Add(nd4);
+  w3.Add(&nd2);
+  w3.Add(&nd4);
   OsmRelation r1(1);
-  r1.Add(w3);
-  r1.Add(w2, "other");
+  r1.Add(&w3);
+  r1.Add(&w2, "other");
 
   // test accessors
   TEST(!w1.IsIncomplete(), ());
@@ -52,17 +52,17 @@ UNIT_TEST(OsmData)
 
   // now data
   OsmData data;
-  data.Add(nd1);
-  data.Add(nd2);
-  data.Add(nd3);
-  data.Add(nd4);
-  data.Add(w1);
-  data.Add(w2);
-  data.Add(w3);
-  data.Add(r1);
+  data.Add(&nd1);
+  data.Add(&nd2);
+  data.Add(&nd3);
+  data.Add(&nd4);
+  data.Add(&w1);
+  data.Add(&w2);
+  data.Add(&w3);
+  data.Add(&r1);
   data.BuildAreas();
   TEST(!w1.IsArea(), ());
-  TEST(w2.IsArea(), ());
+  TEST(data.GetWay(2)->IsArea(), ());
 
   // to xml...
   ostringstream oss;
@@ -72,7 +72,7 @@ UNIT_TEST(OsmData)
   cout << xml;
 
   // ...and back again
-/*  OsmData parsed;
+  OsmData parsed;
   OsmParser parser(parsed);
   StringSequence source(xml);
   ParseXMLSequence(source, parser);
@@ -80,9 +80,8 @@ UNIT_TEST(OsmData)
   TEST(parsed.HasNode(3), ());
   TEST(parsed.HasWay(2), ());
   TEST(parsed.HasRelation(1), ());
-  TEST(!parsed.GetWay(1).IsIncomplete(), ());
-  TEST(parsed.GetNode(3).GetValue("amenity") == "bench", ());
-  */
+  TEST(!parsed.GetWay(1)->IsIncomplete(), ());
+  TEST(parsed.GetNode(3)->GetValue("amenity") == "bench", ());
 }
 
 UNIT_TEST(OsmChange)
@@ -94,7 +93,7 @@ UNIT_TEST(OsmChange)
 
   OsmChange osc;
   osc.Comment("Created an address");
-  osc.Create(nd);
+  osc.Create(&nd);
 
   TEST(!osc.Empty(), ());
 
@@ -113,6 +112,8 @@ UNIT_TEST(OsmChange)
 
 UNIT_TEST(OsmUpload)
 {
+  return;
+
   m2::PointD p1(10, 10);
   OsmNode nd(4298639709, p1);
   nd.SetValue("addr:street", "улица Ильича");
@@ -120,7 +121,7 @@ UNIT_TEST(OsmUpload)
 
   OsmChange osc;
   osc.Comment("Created an address");
-  osc.Modify(nd);
+  osc.Modify(&nd);
 
   string const OSM_SERVER = "api06.dev.openstreetmap.org";
   string const user = "ZverikI";

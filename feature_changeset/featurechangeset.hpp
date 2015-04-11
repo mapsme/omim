@@ -37,18 +37,18 @@ namespace edit
   {
     LAT = 100, LON = 101, TYPE = 102,
     NAME = 1,
-    OPENING_HOURS = 6,
-    HOUSENUMBER = 2,
-    HOUSENAME = 7,
-    STREET = 4,
-    POSTCODE = 3,
-    PHONE = 8,
-    WEBSITE = 9,
-    EMAIL = 10,
-    OPERATOR = 11,
-    CUISINE = 12,
-    STARS = 13,
-    ELE = 5
+    OPENING_HOURS = 2,
+    HOUSENUMBER = 3,
+    HOUSENAME = 4,
+    STREET = 5,
+    POSTCODE = 6,
+    PHONE = 7,
+    WEBSITE = 8,
+    EMAIL = 9,
+    OPERATOR = 10,
+    CUISINE = 11,
+    STARS = 12,
+    ELE = 13
   };
 
   struct MWMLink

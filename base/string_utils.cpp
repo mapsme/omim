@@ -77,6 +77,28 @@ bool to_int64(char const * s, int64_t & i)
   return stop && *stop == 0;
 }
 
+bool to_uint32(char const * s, uint32_t & i)
+{
+  char * stop;
+#ifdef OMIM_OS_WINDOWS_NATIVE
+  i = _strtoui32(s, &stop, 10);
+#else
+  i = strtoul(s, &stop, 10);
+#endif
+  return stop && *stop == 0;
+}
+
+bool to_int32(char const * s, int32_t & i)
+{
+  char * stop;
+#ifdef OMIM_OS_WINDOWS_NATIVE
+  i = _strtoi32(s, &stop, 10);
+#else
+  i = strtol(s, &stop, 10);
+#endif
+  return stop && *stop == 0;
+}
+
 bool to_double(char const * s, double & d)
 {
   char * stop;

@@ -15,7 +15,7 @@ namespace osm
 
   class OsmElement
   {
-    friend class OsmData;
+    friend class OsmParser;
   protected:
     OsmId m_id = 0;
     uint32_t m_version = 1;
@@ -31,6 +31,7 @@ namespace osm
     inline uint32_t Version() const { return m_version; }
     virtual bool IsIncomplete() const = 0;
     virtual OsmType Type() const = 0;
+    OsmTags const & Tags() const { return m_tags; }
     // Equality.
     bool operator ==(OsmElement const & el) const { return Type() == el.Type() && m_id == el.m_id; }
     // Tags.
@@ -40,7 +41,6 @@ namespace osm
     // We use this point to match our features with OSM ones.
     virtual m2::PointD GetCenter() const = 0;
   };
-  typedef std::reference_wrapper<OsmElement> OsmElementRef;
 
   class OsmNode : public OsmElement
   {
@@ -54,8 +54,8 @@ namespace osm
     m2::PointD GetCenter() const override { return m_coords; }
     bool IsIncomplete() const override { return m_coords.IsAlmostZero(); }
     m2::PointD Coords() const { return m_coords; }
+    void Coords(m2::PointD coords) { m_coords = coords; }
   };
-  typedef std::reference_wrapper<OsmNode> OsmNodeRef;
 
   // An interface for areas: closed ways and multipolygons
   class OsmArea
@@ -67,25 +67,23 @@ namespace osm
     m2::RegionD const & Area() const { return m_area; }
     bool IsArea() const { return m_area.IsValid(); }
   };
-  typedef std::reference_wrapper<OsmArea> OsmAreaRef;
 
   class OsmWay : public OsmElement, public OsmArea
   {
-    vector<OsmNodeRef> m_nodes;
+    vector<OsmNode const *> m_nodes;
 
   public:
     OsmWay(OsmId id) : OsmElement(id) {}
     inline OsmType Type() const override { return OsmType::WAY; }
-    inline void Add(OsmNode & node) { m_nodes.push_back(std::ref(node)); }
+    inline void Add(OsmNode const * node) { m_nodes.push_back(node); }
     m2::PointD GetCenter() const override;
-    bool IsClosed() const { return m_nodes.size() > 3 && m_nodes[0].get() == m_nodes[m_nodes.size() - 1].get(); }
+    bool IsClosed() const { return m_nodes.size() > 3 && *(m_nodes[0]) == *(m_nodes[m_nodes.size() - 1]); }
     bool IsIncomplete() const override;
     bool BuildArea() override;
-    vector<OsmNodeRef> const & Nodes() const { return m_nodes; }
+    vector<OsmNode const *> const & Nodes() const { return m_nodes; }
   };
-  typedef std::reference_wrapper<OsmWay> OsmWayRef;
 
-  typedef pair<OsmElementRef, string> OsmMember;
+  typedef pair<OsmElement const *, string> OsmMember;
 
   class OsmRelation : public OsmElement, public OsmArea
   {
@@ -94,35 +92,34 @@ namespace osm
   public:
     OsmRelation(OsmId id) : OsmElement(id) {}
     inline OsmType Type() const override { return OsmType::RELATION; }
-    inline void Add(OsmElement & element, string const & role = "") { m_members.push_back(OsmMember(std::ref(element), role)); }
+    inline void Add(OsmElement const * element, string const & role = "") { m_members.push_back(OsmMember(element, role)); }
     m2::PointD GetCenter() const override;
     bool IsMultipolygon() const { return HasKey("type") && GetValue("type") == "multipolygon"; }
     bool IsIncomplete() const override;
     bool BuildArea() override;
     vector<OsmMember> const & Members() const { return m_members; }
   };
-  typedef std::reference_wrapper<OsmRelation> OsmRelationRef;
 
   // Just a storage for osm objects
   class OsmData
   {
-    map<OsmId, OsmNodeRef> m_nodes;
-    map<OsmId, OsmWayRef> m_ways;
-    map<OsmId, OsmRelationRef> m_relations;
+    map<OsmId, OsmNode> m_nodes;
+    map<OsmId, OsmWay> m_ways;
+    map<OsmId, OsmRelation> m_relations;
 
   public:
-    void Add(OsmElement & element);
-    vector<OsmNodeRef> GetNodes() const;
-    vector<OsmWayRef> GetWays() const;
-    vector<OsmRelationRef> GetRelations() const;
-    vector<OsmAreaRef> GetAreas() const;
-    vector<OsmElementRef> GetElements(OsmType type) const;
-    bool HasNode(OsmId id) const { return m_nodes.count(id); }
-    bool HasWay(OsmId id) const { return m_ways.count(id); }
-    bool HasRelation(OsmId id) const { return m_relations.count(id); }
-    OsmNode & GetNode(OsmId id) const { return m_nodes.at(id); }
-    OsmWay & GetWay(OsmId id) const { return m_ways.at(id); }
-    OsmRelation & GetRelation(OsmId id) const { return m_relations.at(id); }
+    void Add(OsmElement * element);
+    vector<OsmNode> GetNodes() const;
+    vector<OsmWay> GetWays() const;
+    vector<OsmRelation> GetRelations() const;
+    vector<OsmArea> GetAreas() const;
+    vector<OsmElement *> GetElements(OsmType type) const;
+    inline bool HasNode(OsmId id) const { return m_nodes.count(id); }
+    inline bool HasWay(OsmId id) const { return m_ways.count(id); }
+    inline bool HasRelation(OsmId id) const { return m_relations.count(id); }
+    inline OsmNode const * GetNode(OsmId id) const { return &m_nodes.at(id); }
+    inline OsmWay const * GetWay(OsmId id) const { return &m_ways.at(id); }
+    inline OsmRelation const * GetRelation(OsmId id) const { return &m_relations.at(id); }
     bool Empty() const { return m_nodes.empty() && m_ways.empty() && m_relations.empty(); }
     void InnerXML(ostream & oss, OsmId changeset = -1) const;
     void XML(ostream & oss) const;
@@ -137,9 +134,9 @@ namespace osm
     string m_comment;
 
   public:
-    void Create(OsmElement & el) { m_created.Add(el); }
-    void Modify(OsmElement & el) { m_modified.Add(el); }
-    void Delete(OsmElement & el) { m_deleted.Add(el); }
+    void Create(OsmElement * el) { m_created.Add(el); }
+    void Modify(OsmElement * el) { m_modified.Add(el); }
+    void Delete(OsmElement * el) { m_deleted.Add(el); }
     // todo: the same for ways and relations
     bool Empty() const { return m_created.Empty() && m_modified.Empty() && m_deleted.Empty(); }
     void Comment(string const & comment ) { m_comment = comment; }
@@ -151,19 +148,23 @@ namespace osm
   {
     OsmData & m_data;
     OsmElement *m_element;
+    OsmNode m_node;
+    OsmWay m_way;
+    OsmRelation m_relation;
     string m_key;
     string m_value;
     OsmId m_ref;
     string m_ref_type;
     string m_ref_role;
     string m_tagName;
+    m2::PointD m_coords;
 
   public:
-    OsmParser(OsmData & target) : m_data(target) {}
+    OsmParser(OsmData & target) : m_data(target), m_node(0), m_way(0), m_relation(0) {}
     bool Push(string const & element);
-    //OsmElement & FindRef();
-    //void Pop(string const & element);
-    //void AddAttr(string const & attr, string const & value);
+    OsmElement const * Find();
+    void Pop(string const & element);
+    void AddAttr(string const & attr, string const & value);
     void CharData(string const &) {}
   };
 }

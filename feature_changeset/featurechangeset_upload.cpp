@@ -141,25 +141,25 @@ namespace edit
     return true;
   }
 
-  bool has_tags(OsmElement const & element, vector<pair<string, string>> tags)
+  bool has_tags(OsmElement * element, vector<pair<string, string>> tags)
   {
     for (pair<string, string> tag : tags)
     {
-      if (!element.HasKey(tag.first))
+      if (!element->HasKey(tag.first))
         return false;
-      if (tag.second.length())
+      if (!tag.second.empty())
       {
         if (tag.second == "yes")
         {
-          if (!(element.GetValue(tag.first) == "yes" || element.GetValue(tag.first) == "true" || element.GetValue(tag.first) == "1"))
+          if (!(element->GetValue(tag.first) == "yes" || element->GetValue(tag.first) == "true" || element->GetValue(tag.first) == "1"))
             return false;
         }
         if (tag.second == "no")
         {
-          if (!(element.GetValue(tag.first) == "no" || element.GetValue(tag.first) == "false" || element.GetValue(tag.first) == "0"))
+          if (!(element->GetValue(tag.first) == "no" || element->GetValue(tag.first) == "false" || element->GetValue(tag.first) == "0"))
             return false;
         }
-        else if (element.GetValue(tag.first) != tag.second)
+        else if (element->GetValue(tag.first) != tag.second)
           return false;
       }
     }
@@ -198,16 +198,16 @@ namespace edit
   }
 
   bool find_closest_match(m2::PointD const & center, vector<pair<string, string>> const & tags,
-                          vector<std::reference_wrapper<OsmElement>> const & data, OsmElement * match)
+                          vector<OsmElement *> const & data, OsmElement * match)
   {
     double distance = 1.0L;
-    for (OsmElement & element : data)
+    for (OsmElement * element : data)
     {
-      double sq_l = element.GetCenter().SquareLength(center);
+      double sq_l = element->GetCenter().SquareLength(center);
       if( sq_l < distance && has_tags(element, tags) )
       {
         distance = sq_l;
-        *match = element;
+        *match = *element;
       }
     }
     return distance < 1.0L;
@@ -250,7 +250,7 @@ namespace edit
         if (tag.second.length())
           created.SetValue(tag.first, tag.second);
       add_new_tags(&created, changes);
-      osc.Create(created);
+      osc.Create(&created);
     }
     else
     {

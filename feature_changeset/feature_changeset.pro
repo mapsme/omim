@@ -6,7 +6,11 @@ ROOT_DIR = ..
 
 INCLUDEPATH *= $$ROOT_DIR/3party/protobuf/src $$ROOT_DIR/3party/expat/lib
 
+
 include($$ROOT_DIR/common.pri)
+
+QMAKE_CFLAGS_RELEASE -= -ffast-math
+QMAKE_CFLAGS_DEBUG -= -ffast-math
 
 SOURCES += featurechangeset.cpp \
     featurechangeset_upload.cpp \
