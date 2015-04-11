@@ -126,6 +126,6 @@ namespace edit
     bool Find(MWMLink const & id, FeatureDiff * diff = nullptr);
 
 
-    void UploadChangeset();
+    void UploadChangeset(string const & user, string const & password);
   };
 }

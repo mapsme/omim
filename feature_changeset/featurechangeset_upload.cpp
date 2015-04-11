@@ -302,10 +302,8 @@ namespace edit
     }
   }
 
-  bool UploadChanges(OsmChange const & osc, OsmData & uploaded)
+  bool upload_changes(OsmChange const & osc, OsmData & uploaded, string const & user, string const & password)
   {
-    string const user = "test";
-    string const password = "test";
     string const baseUrl = OSM_SERVER_URL + "/api/0.6/changeset/";
     alohalytics::HTTPClientPlatformWrapper create(baseUrl + "create");
     // TODO: proper authorization
@@ -313,6 +311,7 @@ namespace edit
     ostringstream oss;
     osc.ChangesetXML(oss);
     create.set_body_data(oss.str(), "text/xml", "PUT")
+        .set_user_and_password(user, password)
         .set_debug_mode(true);
     if (!create.RunHTTPRequest() || 200 != create.error_code())
       return false;
@@ -334,7 +333,7 @@ namespace edit
     return result;
   }
 
-  void FeatureChangeset::UploadChangeset()
+  void FeatureChangeset::UploadChangeset(string const & user, string const & password)
   {
     OsmChange osc;
     vector<FeatureDiff> changeset;
@@ -347,7 +346,7 @@ namespace edit
     if (!osc.Empty())
     {
       OsmData uploaded;
-      UploadChanges(osc, uploaded);
+      UploadChanges(osc, uploaded, user, password); // this modifies the osc, sets flags and stuff
       // TODO: create modified features from "uploaded" and send them somewhere
     }
   }
