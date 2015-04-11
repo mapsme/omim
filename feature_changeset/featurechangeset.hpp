@@ -72,13 +72,13 @@ namespace edit
         CREATED, MODIFIED, DELETED
     };
 
-    uint64_t version; // internal
-
     MWMLink id;
     time_t created;
     time_t modified;
     time_t uploaded = 0;
     EState state = CREATED;
+
+    uint64_t version; // internal
 
     TChanges changes;
 
