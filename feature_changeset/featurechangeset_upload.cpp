@@ -2,6 +2,7 @@
 
 #include "../base/string_utils.hpp"
 #include "../base/assert.hpp"
+#include "../coding/parse_xml.hpp"
 #include "../geometry/point2d.hpp"
 #include "../geometry/rect2d.hpp"
 #include "../indexer/classificator.hpp"
@@ -27,7 +28,6 @@ namespace
 
   void LoadAllFromStorage(vector<edit::FeatureDiff> & diffs)
   {
-
     sqlite3 *db;
     // Open database
     if (sqlite3_open("changes.db", &db))
@@ -41,7 +41,7 @@ namespace
 
     // Execute SQL statement
     int rc = 0;
-    while ( rc != SQLITE_DONE)
+    while (rc != SQLITE_DONE)
     {
       switch (rc = sqlite3_step(stmt))
       {
@@ -70,7 +70,6 @@ namespace
             diff.changes.emplace(static_cast<edit::EDataKey>(header[0] & 0x7F)
                                  , edit::DataValue(string(buffer1, header[1]), string(buffer2, header[2])));
           } while (!(header[0] & 0x80));
-
           break;
         }
         case SQLITE_DONE: break;
@@ -84,22 +83,20 @@ namespace
   }
 }
 
-namespace edit
+namespace
 {
-  string const OSM_SERVER = "api06.dev.openstreetmap.org";
   double const BBOX_RADIUS = 1e-5;
 
-  void link_to_changes(MWMLink const & link, TChanges & changes)
+  class StringSequence
   {
-    if (!changes.count(EDataKey::LON))
-      changes[EDataKey::LON] = { strings::to_string(link.lon), "" };
-    if (!changes.count(EDataKey::LAT))
-      changes[EDataKey::LAT] = { strings::to_string(link.lat), "" };
-    if (!changes.count(EDataKey::TYPE))
-      changes[EDataKey::TYPE] = { strings::to_string(link.type), "" };
-  }
+    istringstream iss;
 
-  bool strings_to_point(string const & lon, string const & lat, m2::PointD & pt)
+  public:
+    StringSequence(string const & str) : iss(istringstream(str)) {}
+    uint64_t Read(char * p, uint64_t size) { iss.read(p, size); return iss.gcount(); }
+  };
+
+  bool StringsToPoint(string const & lon, string const & lat, m2::PointD & pt)
   {
     double d_lon, d_lat;
     if (!strings::to_double(lon, d_lon) || !strings::to_double(lat, d_lat))
@@ -108,12 +105,12 @@ namespace edit
     return true;
   }
 
-  bool extract_tag_pair(string source, size_t & start, pair<string, string> & tag)
+  bool ExtractTagPair(string source, size_t & start, pair<string, string> & tag)
   {
-    size_t key_start = source.find('[', start);
+    size_t const key_start = source.find('[', start);
     if (key_start == string::npos)
       return false;
-    size_t comma = source.find(',', start);
+    size_t const comma = source.find(',', start);
     if (comma != string::npos && comma < key_start)
       return false;
     size_t key_end = source.find('=', key_start);
@@ -121,9 +118,9 @@ namespace edit
       key_end = source.find(']', key_start);
     if (key_end == string::npos || key_end - key_start <= 1)
       return false;
-    size_t value_end = source.find(']', key_end);
+    size_t const value_end = source.find(']', key_end);
 
-    string key = source.substr(key_start + 1, key_end - key_start - 1);
+    string const key = source.substr(key_start + 1, key_end - key_start - 1);
     string value;
     if (value_end != string::npos && value_end - key_end > 1)
       value = source.substr(key_end + 1, value_end - key_end - 1);
@@ -141,9 +138,9 @@ namespace edit
     return true;
   }
 
-  bool has_tags(OsmElement * element, vector<pair<string, string>> tags)
+  bool HasTags(OsmElement * element, vector<pair<string, string>> tags)
   {
-    for (pair<string, string> tag : tags)
+    for (pair<string, string> const & tag : tags)
     {
       if (!element->HasKey(tag.first))
         return false;
@@ -166,45 +163,47 @@ namespace edit
     return true;
   }
 
-  bool type_to_tags(uint32_t type, vector<pair<string, string>> & tags)
+  bool TypeToTags(uint32_t type, vector<pair<string, string>> & tags)
   {
-    string const type_str = classif().GetFullObjectName(type);
-    ModelReaderPtr reader = GetPlatform().GetReader("mapcss-mapping.csv", "wre");
     string csv_data;
-    reader.ReadAsString(csv_data);
+    {
+      ReaderPtr<Reader>(GetPlatform().GetReader("mapcss-mapping.csv")).ReadAsString(csv_data);
+    }
+
+    string const type_str = classif().GetFullObjectName(type);
     tags.clear();
     istringstream lines(csv_data);
     string line;
-    std::getline(lines, line);
+    getline(lines, line);
     while (!lines.fail() && tags.empty())
     {
       istringstream fields(line);
       string mapping_type, mapping_tags;
-      std::getline(fields, mapping_type, ';');
-      std::getline(fields, mapping_tags, ';');
+      getline(fields, mapping_type, ';');
+      getline(fields, mapping_tags, ';');
       if (!fields.fail() && mapping_type == type_str)
       {
         // found type, extract tags
         // amenity|parking;[amenity=parking][access?], [amenity=parking][!access];;name;int_name;26;
         pair<string, string> tag;
         size_t start = 0;
-        while (extract_tag_pair(mapping_tags, start, tag))
+        while (ExtractTagPair(mapping_tags, start, tag))
           tags.push_back(pair<string, string>(tag));
         break;
       }
-      std::getline(lines, line);
+      getline(lines, line);
     }
     return !tags.empty();
   }
 
-  bool find_closest_match(m2::PointD const & center, vector<pair<string, string>> const & tags,
+  bool FindClosestMatch(m2::PointD const & center, vector<pair<string, string>> const & tags,
                           vector<OsmElement *> const & data, OsmElement * match)
   {
     double distance = 1.0L;
     for (OsmElement * element : data)
     {
-      double sq_l = element->GetCenter().SquareLength(center);
-      if( sq_l < distance && has_tags(element, tags) )
+      double const sq_l = element->GetCenter().SquareLength(center);
+      if (sq_l < distance && HasTags(element, tags))
       {
         distance = sq_l;
         *match = *element;
@@ -213,82 +212,105 @@ namespace edit
     return distance < 1.0L;
   }
 
-  string get_bbox_query_url(m2::PointD const & center, double radius = BBOX_RADIUS)
+  string GetBBoxQueryURL(m2::PointD const & center, double radius = BBOX_RADIUS)
   {
-    m2::RectD rect = m2::Inflate(m2::RectD(center, center), radius, radius);
+    m2::RectD const rect = m2::Inflate(m2::RectD(center, center), radius, radius);
     ostringstream url;
-    m2::PointD lb = rect.LeftBottom();
-    m2::PointD rt = rect.RightTop();
-    url << OSM_SERVER << "/api/0.6/map?bbox=" << lb.x << ',' << lb.y << ',' << rt.x << rt.y;
+    m2::PointD const lb = rect.LeftBottom();
+    m2::PointD const rt = rect.RightTop();
+    url << "map?bbox=" << lb.x << ',' << lb.y << ',' << rt.x << rt.y;
     return url.str();
   }
+}
 
-  void add_new_tags(OsmElement *el, TChanges const & changes)
+namespace edit
+{
+  // TODO: change to api.openstreetmap.org eventually
+  string const OSM_SERVER = "http://api06.dev.openstreetmap.org/api/0.6/";
+  // TODO: proper authorization
+  string const OSM_USER = "ZverikI";
+  string const OSM_PASSWORD = "qwerty12";
+
+  void LinkToChanges(MWMLink const & link, TChanges & changes)
+  {
+    if (!changes.count(EDataKey::LON))
+      changes[EDataKey::LON] = { strings::to_string(link.lon), "" };
+    if (!changes.count(EDataKey::LAT))
+      changes[EDataKey::LAT] = { strings::to_string(link.lat), "" };
+    if (!changes.count(EDataKey::TYPE))
+      changes[EDataKey::TYPE] = { strings::to_string(link.type), "" };
+  }
+
+  void AddNewTags(OsmElement *el, TChanges const & changes)
   {
     if (changes.count(EDataKey::HOUSENUMBER))
       el->SetValue("addr:housenumber", changes.at(EDataKey::HOUSENUMBER).new_value);
     if (changes.count(EDataKey::STREET))
       el->SetValue("addr:street", changes.at(EDataKey::STREET).new_value);
-    // todo: fill other tags
+    // TODO: fill other tags
   }
 
-  void find_changes(FeatureDiff const & diff, OsmChange & osc)
+  void FindChanges(FeatureDiff const & diff, OsmChange & osc)
   {
     TChanges changes(diff.changes);
-    link_to_changes(diff.id, changes);
+    LinkToChanges(diff.id, changes);
     vector<pair<string, string>> typeTags;
     uint32_t old_type;
     CHECK(strings::to_uint32(changes[EDataKey::TYPE].old_value, old_type), ());
-    if (!type_to_tags(old_type, typeTags))
-      return; // cannot process this object. Notify?
+    if (!TypeToTags(old_type, typeTags))
+      return; // TODO: cannot process this object. Notify?
     m2::PointD center;
-    CHECK(strings_to_point(changes[EDataKey::LON].old_value, changes[EDataKey::LAT].old_value, center), ());
+    CHECK(StringsToPoint(changes[EDataKey::LON].old_value, changes[EDataKey::LAT].old_value, center), ());
     if (diff.state == FeatureDiff::EState::CREATED)
     {
       OsmNode created(center);
-      for (pair<string, string> tag : typeTags)
-        if (tag.second.length())
+      for (pair<string, string> const & tag : typeTags)
+        if (!tag.second.empty())
           created.SetValue(tag.first, tag.second);
-      add_new_tags(&created, changes);
+      AddNewTags(&created, changes);
       osc.Create(&created);
     }
     else
     {
       // modification or deletion: we need an original element.
       // now we have tags, let's query bbox at point and find an object that matches tags
-      downloader::HttpRequest::Get(get_bbox_query_url(center), [&](downloader::HttpRequest &req)
+      alohalytics::HTTPClientPlatformWrapper create(OSM_SERVER + GetBBoxQueryURL(center));
+      if (create.RunHTTPRequest() && 200 == create.error_code())
       {
-        // todo: parse req.Data() into OsmData
+        string const xml = create.server_response();
         OsmData data;
+        OsmParser parser(data);
+        StringSequence source(xml);
+        ParseXMLSequence(source, parser);
         // downloaded data, search for nearest point
         data.BuildAreas();
         OsmElement * closest = nullptr;
-        if (!find_closest_match(center, typeTags, data.GetElements(OsmType::NODE), closest) &&
-            !find_closest_match(center, typeTags, data.GetElements(OsmType::AREA), closest))
+        if (!FindClosestMatch(center, typeTags, data.GetElements(OsmType::NODE), closest) &&
+            !FindClosestMatch(center, typeTags, data.GetElements(OsmType::AREA), closest))
         {
           // did not find relevant feature?
           return;
         }
         if (diff.state == FeatureDiff::EState::DELETED)
         {
-          //osc.Delete(*closest);
+          osc.Delete(closest);
         }
         else
         {
           OsmElement *modified(closest);
-          // todo: we have an element, update its tags
-          //osc.Modify(*modified);
+          // TODO: we have an element, update its tags
+          osc.Modify(modified);
         }
-      });
+      };
     }
   }
 
-  bool upload_changes(OsmChange const & osc, OsmData & uploaded)
+  bool UploadChanges(OsmChange const & osc, OsmData & uploaded)
   {
-    string const user = "test";
-    string const password = "test";
-    string const baseUrl = "http://" + user + ":" + password + "@" + OSM_SERVER + "/api/0.6/changeset/";
+    string const baseUrl = OSM_SERVER + "changeset/";
     alohalytics::HTTPClientPlatformWrapper create(baseUrl + "create");
+    // TODO: proper authorization
+    create.set_user_and_password(OSM_USER, OSM_PASSWORD);
     ostringstream oss;
     osc.ChangesetXML(oss);
     create.set_body_data(oss.str(), "text/xml", "PUT")
@@ -304,10 +326,8 @@ namespace edit
     osc.XML(oss, changeset_id);
     create.set_body_data(oss.str(), "text/xml", "POST");
     bool result = create.RunHTTPRequest() && 200 == create.error_code();
-    if (result)
-    {
-      // maybe update uploaded list
-    }
+    // TODO: move correct data to "uploaded" and inform about failed?
+    // TODO: proper error handling
 
     create.set_url_requested(baseUrl + changesetID + "/close");
     create.set_body_data("", "text/xml", "PUT");
@@ -322,17 +342,14 @@ namespace edit
     LoadAllFromStorage(changeset);
     for (FeatureDiff & diff : changeset)
     {
-      // todo: error handling
-      find_changes(diff, osc);
+      // TODO: error handling
+      FindChanges(diff, osc);
     }
     if (!osc.Empty())
     {
       OsmData uploaded;
-      upload_changes(osc, uploaded); // this modifies the osc, sets flags and stuff
-      //for (OsmElement element : uploaded)
-      {
-        // todo: create modified features and send them somewhere
-      }
+      UploadChanges(osc, uploaded);
+      // TODO: create modified features from "uploaded" and send them somewhere
     }
   }
 }

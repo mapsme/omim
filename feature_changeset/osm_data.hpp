@@ -33,13 +33,13 @@ namespace osm
     virtual OsmType Type() const = 0;
     OsmTags const & Tags() const { return m_tags; }
     // Equality.
-    bool operator ==(OsmElement const & el) const { return Type() == el.Type() && m_id == el.m_id; }
+    bool operator==(OsmElement const & el) const { return Type() == el.Type() && m_id == el.m_id; }
     // Tags.
     bool HasKey(string const & key) const { return m_tags.count(key); }
-    string GetValue(string const & key) const { return m_tags.at(key); }
+    string const GetValue(string const & key) const { return m_tags.at(key); }
     void SetValue(string const & key, string const & value) { m_tags[key] = value; }
     // We use this point to match our features with OSM ones.
-    virtual m2::PointD GetCenter() const = 0;
+    virtual m2::PointD const GetCenter() const = 0;
   };
 
   class OsmNode : public OsmElement
@@ -51,9 +51,9 @@ namespace osm
     OsmNode(m2::PointD & coords) : OsmElement(0), m_coords(coords) {}
 
     inline OsmType Type() const override { return OsmType::NODE; }
-    m2::PointD GetCenter() const override { return m_coords; }
+    m2::PointD const GetCenter() const override { return m_coords; }
     bool IsIncomplete() const override { return m_coords.IsAlmostZero(); }
-    m2::PointD Coords() const { return m_coords; }
+    m2::PointD const & Coords() const { return m_coords; }
     void Coords(m2::PointD coords) { m_coords = coords; }
   };
 
@@ -76,7 +76,7 @@ namespace osm
     OsmWay(OsmId id) : OsmElement(id) {}
     inline OsmType Type() const override { return OsmType::WAY; }
     inline void Add(OsmNode const * node) { m_nodes.push_back(node); }
-    m2::PointD GetCenter() const override;
+    m2::PointD const GetCenter() const override;
     bool IsClosed() const { return m_nodes.size() > 3 && *(m_nodes[0]) == *(m_nodes[m_nodes.size() - 1]); }
     bool IsIncomplete() const override;
     bool BuildArea() override;
@@ -93,7 +93,7 @@ namespace osm
     OsmRelation(OsmId id) : OsmElement(id) {}
     inline OsmType Type() const override { return OsmType::RELATION; }
     inline void Add(OsmElement const * element, string const & role = "") { m_members.push_back(OsmMember(element, role)); }
-    m2::PointD GetCenter() const override;
+    m2::PointD const GetCenter() const override;
     bool IsMultipolygon() const { return HasKey("type") && GetValue("type") == "multipolygon"; }
     bool IsIncomplete() const override;
     bool BuildArea() override;

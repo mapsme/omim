@@ -2,8 +2,9 @@
 
 namespace osm
 {
-  m2::PointD OsmWay::GetCenter() const
+  m2::PointD const OsmWay::GetCenter() const
   {
+    CHECK(!m_nodes.empty() && !IsIncomplete(), ("Cannot get center of an empty or incomplete way"));
     m2::PointD result;
     for (OsmNode const * n : m_nodes)
       result += n->GetCenter();
@@ -29,19 +30,20 @@ namespace osm
     return false;
   }
 
-  m2::PointD OsmRelation::GetCenter() const
+  m2::PointD const OsmRelation::GetCenter() const
   {
     CHECK(IsMultipolygon(), ("OsmRelation::GetCenter is applicable only to multipolygons"));
-    // todo: return point inside m_area
+    CHECK(!m_members.empty() && !IsIncomplete(), ("Cannot get center of an empty or incomplete relation"));
+    // TODO: return point inside m_area?
     m2::PointD result;
-    for (OsmMember m : m_members)
+    for (OsmMember const & m : m_members)
       result += m.first->GetCenter();
     return result / m_members.size();
   }
 
   bool OsmRelation::IsIncomplete() const
   {
-    for (OsmMember m : m_members)
+    for (OsmMember const & m : m_members)
       if (m.first->IsIncomplete())
         return true;
     return false;
@@ -53,7 +55,7 @@ namespace osm
     return false;
   }
 
-  void OsmData::Add(OsmElement *element)
+  void OsmData::Add(OsmElement * element)
   {
     if (element->Type() == OsmType::NODE)
       m_nodes.emplace(element->Id(), *dynamic_cast<OsmNode*>(element));
@@ -95,7 +97,7 @@ namespace osm
 
   void write_tags(ostream & oss, OsmTags const & tags)
   {
-    for(pair<string, string> tag : tags)
+    for(pair<string, string> const & tag : tags)
     {
       if (tag.second.length())
       {
@@ -108,9 +110,9 @@ namespace osm
 
   void OsmData::InnerXML(ostream & oss, OsmId changeset) const
   {
-    for (pair<OsmId, OsmNode> pn : m_nodes)
+    for (pair<OsmId, OsmNode> const & pn : m_nodes)
     {
-      OsmNode n = pn.second;
+      OsmNode const & n = pn.second;
       oss << "<node id=\"" << n.Id() << "\" version=\"" << n.Version();
       if (changeset > 0)
         oss << "\" changeset=\"" << changeset;
@@ -120,9 +122,9 @@ namespace osm
       write_tags(oss, n.Tags());
       oss << "</node>";
     }
-    for (pair<OsmId, OsmWay> pw : m_ways)
+    for (pair<OsmId, OsmWay> const & pw : m_ways)
     {
-      OsmWay w = pw.second;
+      OsmWay const & w = pw.second;
       oss << "<way id=\"" << w.Id() << "\" version=\"" << w.Version();
       if (changeset > 0)
         oss << "\" changeset=\"" << changeset;
@@ -132,15 +134,15 @@ namespace osm
         oss << "<nd ref=\"" << n->Id() << "\" />";
       oss << "</way>";
     }
-    for (pair<OsmId, OsmRelation> pr : m_relations)
+    for (pair<OsmId, OsmRelation> const & pr : m_relations)
     {
-      OsmRelation r = pr.second;
+      OsmRelation const & r = pr.second;
       oss << "<relation id=\"" << r.Id() << "\" version=\"" << r.Version();
       if (changeset > 0)
         oss << "\" changeset=\"" << changeset;
       oss << "\">";
       write_tags(oss, r.Tags());
-      for(OsmMember m : r.Members())
+      for(OsmMember const & m : r.Members())
       {
         oss << "<member type=\"";
         if (m.first->Type() == OsmType::NODE)
@@ -158,8 +160,8 @@ namespace osm
 
   void OsmData::XML(ostream & oss) const
   {
-    //oss << "<?xml charset=\"utf-8\">\n";
-    oss << "<osm version=\"0.6\" generator=\"MAPS.MS\">\n";
+    //oss << "<?xml charset=\"utf-8\">";
+    oss << "<osm version=\"0.6\" generator=\"MAPS.MS\">";
     InnerXML(oss);
     oss << "</osm>";
   }
@@ -167,7 +169,7 @@ namespace osm
   vector<OsmNode> OsmData::GetNodes() const
   {
     vector<OsmNode> result;
-    for (pair<OsmId, OsmNode> n : m_nodes)
+    for (pair<OsmId, OsmNode> const & n : m_nodes)
       result.push_back(n.second);
     return move(result);
   }
@@ -175,7 +177,7 @@ namespace osm
   vector<OsmWay> OsmData::GetWays() const
   {
     vector<OsmWay> result;
-    for (pair<OsmId, OsmWay> w : m_ways)
+    for (pair<OsmId, OsmWay> const & w : m_ways)
       result.push_back(w.second);
     return move(result);
   }
@@ -183,7 +185,7 @@ namespace osm
   vector<OsmRelation> OsmData::GetRelations() const
   {
     vector<OsmRelation> result;
-    for (pair<OsmId, OsmRelation> r : m_relations)
+    for (pair<OsmId, OsmRelation> const & r : m_relations)
       result.push_back(r.second);
     return move(result);
   }
@@ -198,7 +200,7 @@ namespace osm
   vector<OsmElement *> OsmData::GetElements(OsmType type) const
   {
     vector<OsmElement *> result;
-    if( type == OsmType::NODE)
+    if (type == OsmType::NODE)
       for (OsmNode n : GetNodes())
         result.push_back(&n);
     /*
@@ -212,21 +214,21 @@ namespace osm
   void OsmChange::XML(ostream & oss, OsmId changeset) const
   {
     CHECK(changeset > 0, ("Changeset ID is needed for XML"));
-    //oss << "<?xml charset=\"utf-8\">\n";
-    oss << "<osmChange version=\"0.6\" generator=\"MAPS.MS\">\n";
-    oss << "<create>\n";
+    //oss << "<?xml charset=\"utf-8\">";
+    oss << "<osmChange version=\"0.6\" generator=\"MAPS.MS\">";
+    oss << "<create>";
     m_created.InnerXML(oss, changeset);
-    oss << "</create>\n<modify>\n";
+    oss << "</create><modify>";
     m_modified.InnerXML(oss, changeset);
-    oss << "</modify>\n<delete>\n";
+    oss << "</modify><delete>";
     m_deleted.InnerXML(oss, changeset);
-    oss << "</delete>\n";
+    oss << "</delete>";
     oss << "</osmChange>";
   }
 
   void OsmChange::ChangesetXML(ostream & oss) const
   {
-    //oss << "<?xml charset=\"utf-8\">\n";
+    //oss << "<?xml charset=\"utf-8\">";
     oss << "<osm><changeset>";
     OsmTags ctags;
     ctags["created_by"] = "MAPS.ME";
