@@ -57,7 +57,7 @@ public class WearableManager implements LocationListener, GoogleApiClient.Connec
   private WeakReference<SearchListener> mListener;
 
   private String mNodeId;
-  private GoogleApiClient mGmsClient;
+  private static GoogleApiClient mGmsClient;
 
   public WearableManager(WearMwmActivity activity)
   {
@@ -76,7 +76,6 @@ public class WearableManager implements LocationListener, GoogleApiClient.Connec
     mGmsClient.disconnect();
   }
 
-  // TODO add result listener
   public void makeSearchCategoryRequest(String category, SearchListener listener)
   {
     Log.d("TEST", "Make search request");
@@ -113,9 +112,15 @@ public class WearableManager implements LocationListener, GoogleApiClient.Connec
   {
     Log.d(TAG, "onConnected: " + bundle);
     makeLocationRequest();
+    cleanDataItems();
+    Wearable.DataApi.addListener(mGmsClient, this);
+  }
+
+  private void cleanDataItems()
+  {
     Wearable.DataApi.deleteDataItems(mGmsClient, Uri.parse("wear://" + mNodeId + PATH_IMAGE));
     Wearable.DataApi.deleteDataItems(mGmsClient, Uri.parse("wear://" + mNodeId + PATH_SEARCH_CATEGORY));
-    Wearable.DataApi.addListener(mGmsClient, this);
+    Wearable.DataApi.deleteDataItems(mGmsClient, Uri.parse("wear://" + mNodeId + PATH_SEARCH_QUERY));
   }
 
   private void makeLocationRequest()
@@ -170,7 +175,7 @@ public class WearableManager implements LocationListener, GoogleApiClient.Connec
       mListener.get().onLocationChanged(location);
   }
 
-  private void requestMapUpdate()
+  public void requestMapUpdate()
   {
     Wearable.MessageApi.
         sendMessage(mGmsClient, mNodeId, PATH_IMAGE, new byte[0]).
@@ -183,6 +188,11 @@ public class WearableManager implements LocationListener, GoogleApiClient.Connec
             Log.d(TAG, "Send message with status code: " + status.getStatusCode());
           }
         });
+  }
+
+  public static Location getLastLocation()
+  {
+    return LocationServices.FusedLocationApi.getLastLocation(mGmsClient);
   }
 
   private void initNodeId()
@@ -239,7 +249,12 @@ public class WearableManager implements LocationListener, GoogleApiClient.Connec
 
           if (mListener != null)
             mListener.get().onCategorySearchComplete("", searchResults);
+        } else if (path.equals(PATH_SEARCH_QUERY))
+        {
+          // TODO process voice search query
         }
+
+        cleanDataItems();
       }
     }
   }
@@ -261,7 +276,6 @@ public class WearableManager implements LocationListener, GoogleApiClient.Connec
         }
 
         final Bitmap bitmap = BitmapFactory.decodeStream(assetStream);
-        Wearable.DataApi.deleteDataItems(mGmsClient, Uri.parse("wear://" + mNodeId + PATH_IMAGE));
         if (bitmap == null)
         {
           Log.d(TAG, "Decoded bitmap == null");

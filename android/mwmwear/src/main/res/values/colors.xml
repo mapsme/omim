@@ -2,4 +2,7 @@
 <resources>
   <color name="bg_search_green">#4BAF50</color>
   <color name="bg_search_gray">#C2C2C2</color>
+
+  <color name="semitransparent_black">#60000000</color>
+  <color name="semitransparent_black_dark">#BB000000</color>
 </resources>

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.wearable.view.GridPagerAdapter;
 import android.support.wearable.view.GridViewPager;
 import android.support.wearable.view.WatchViewStub;
+import android.util.Log;
 
 import me.maps.mwmwear.communication.WearableManager;
 
@@ -33,6 +34,27 @@ public class WearMwmActivity extends Activity
       {
         mGrid = (GridViewPager) stub.findViewById(R.id.vp__main);
         mGrid.setAdapter(getAdapter());
+        mGrid.setOnPageChangeListener(new GridViewPager.OnPageChangeListener() {
+          @Override
+          public void onPageScrolled(int i, int i1, float v, float v1, int i2, int i3)
+          {
+
+          }
+
+          @Override
+          public void onPageSelected(int row, int column)
+          {
+            Log.d(TAG, "Grid column selected : " + column);
+            if (column == MainWearAdapter.MAP_FRAGMENT)
+              mWearableManager.requestMapUpdate();
+          }
+
+          @Override
+          public void onPageScrollStateChanged(int i)
+          {
+
+          }
+        });
       }
     });
   }
@@ -74,5 +96,21 @@ public class WearMwmActivity extends Activity
   public WearableManager getWearableManager()
   {
     return mWearableManager;
+  }
+
+  // TODO this is hack to add fragments to view pager dynamically & navigating to new fragment.
+  // check https://code.google.com/p/android/issues/detail?id=75309
+  public void resetAdapter()
+  {
+    mGrid.setAdapter(getAdapter());
+
+    Runnable dirtyHack = new Runnable()
+    {
+      @Override
+      public void run() {
+        mGrid.setCurrentItem(0, MainWearAdapter.ARROW_FRAGMENT);
+      }
+    };
+    mGrid.postDelayed(dirtyHack, 100);
   }
 }

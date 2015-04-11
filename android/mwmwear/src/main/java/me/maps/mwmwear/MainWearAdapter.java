@@ -1,28 +1,31 @@
 package me.maps.mwmwear;
 
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.support.wearable.view.FragmentGridPagerAdapter;
 import android.util.Log;
 
 import me.maps.mwmwear.fragment.ArrowFragment;
 import me.maps.mwmwear.fragment.MapFragment;
+import me.maps.mwmwear.fragment.SearchAdapter;
 import me.maps.mwmwear.fragment.SearchFragment;
 import me.maps.mwmwear.fragment.VoiceFragment;
 
-public class MainWearAdapter extends FragmentGridPagerAdapter
+public class MainWearAdapter extends FragmentGridPagerAdapter implements SearchFragment.SearchResultClickListener
 {
+  private static final int BASE_FRAGMENT_COUNT = 3; // 3 fragments are always visible
   public static final int MAP_FRAGMENT = 0;
   public static final int VOICE_FRAGMENT = 1;
-  public static final int SEARCH_FRAGMENT = 2;
-  public static final int ARROW_FRAGMENT = 3;
+  public static final int CATEGORIES_FRAGMENT = 2;
+//  public static final int SEARCH_FRAGMENT = 3; // not visible until category search is complete
+  public static final int ARROW_FRAGMENT = 3; // not visible until search result is clicked
   private static final String TAG = "Wear";
-  private Fragment[] mFragments = new Fragment[4];
+  private Fragment[] mFragments = new Fragment[5];
 
-  private final Activity mActivity;
+  private final WearMwmActivity mActivity;
+  private boolean mIsDirectionFragmentVisible;
 
-  MainWearAdapter(Activity activity)
+  MainWearAdapter(WearMwmActivity activity)
   {
     super(activity.getFragmentManager());
     mActivity = activity;
@@ -37,7 +40,8 @@ public class MainWearAdapter extends FragmentGridPagerAdapter
   @Override
   public int getColumnCount(int i)
   {
-    return 4;
+    Log.d("TEST", "Get column count : " + (BASE_FRAGMENT_COUNT + (mIsDirectionFragmentVisible ? 1 : 0)));
+    return BASE_FRAGMENT_COUNT + (mIsDirectionFragmentVisible ? 1 : 0);
   }
 
   @Override
@@ -61,9 +65,14 @@ public class MainWearAdapter extends FragmentGridPagerAdapter
       case VOICE_FRAGMENT:
         current = new VoiceFragment();
         break;
-      case SEARCH_FRAGMENT:
-        current = new SearchFragment();
+      case CATEGORIES_FRAGMENT:
+        final SearchFragment fragment = new SearchFragment();
+        fragment.setOnSearchClickListener(this);
+        current = fragment;
         break;
+//      case SEARCH_FRAGMENT:
+
+//        break;
       case ARROW_FRAGMENT:
         current = new ArrowFragment();
         break;
@@ -72,28 +81,20 @@ public class MainWearAdapter extends FragmentGridPagerAdapter
     }
   }
 
-//  @Override
-//  public Drawable getBackgroundForPage(int row, int column)
-//  {
-//    int resId = 0;
-//    switch (column)
-//    {
-//    case 0:
-////      resId = R.drawable.common_ic_googleplayservices;
-//      break;
-//    case 1:
-////      resId = R.drawable.close_button;
-//      break;
-//    case 2:
-////      resId = R.drawable.common_ic_googleplayservices;
-//    }
-//
-//    return mActivity.getDrawable(resId);
-//  }
-
   public MapFragment getMapFragment()
   {
     initFragment(MAP_FRAGMENT);
     return (MapFragment) mFragments[MAP_FRAGMENT];
+  }
+
+  @Override
+  public void onSearchResultClick(SearchAdapter.SearchResult result)
+  {
+    mIsDirectionFragmentVisible = true;
+    initFragment(ARROW_FRAGMENT);
+    final ArrowFragment arrowFragment = (ArrowFragment) mFragments[ARROW_FRAGMENT];
+    arrowFragment.setSearchResult(result);
+    mActivity.resetAdapter();
+    // TODO hide direction fragment on swipe back to search results
   }
 }

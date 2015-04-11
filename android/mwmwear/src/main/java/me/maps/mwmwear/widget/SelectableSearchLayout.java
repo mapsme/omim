@@ -1,4 +1,4 @@
-package me.maps.mwmwear;
+package me.maps.mwmwear.widget;
 
 import android.animation.Animator;
 import android.content.Context;
@@ -7,6 +7,8 @@ import android.graphics.drawable.TransitionDrawable;
 import android.support.wearable.view.WearableListView;
 import android.view.View;
 import android.widget.LinearLayout;
+
+import me.maps.mwmwear.R;
 
 /**
  * Layout animates itself by scaling down-up and applying alpha when it's centered and uncentered in WearableListView.

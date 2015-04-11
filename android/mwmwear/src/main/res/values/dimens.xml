@@ -8,4 +8,5 @@
   <dimen name="display_padding_right">16dp</dimen>
   <dimen name="display_padding_bottom">20dp</dimen>
   <dimen name="search_circle">54dp</dimen>
+  <dimen name="margin_direction_big">8dp</dimen>
 </resources>

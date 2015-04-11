@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.maps.mwmwear.R;
-import me.maps.mwmwear.SelectableSearchLayout;
+import me.maps.mwmwear.widget.SelectableSearchLayout;
 import me.maps.mwmwear.Utils;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder>
@@ -61,15 +61,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
   {
     if (mCurrentLocation == null)
       return "? m";
-    return formatDistanceInMeters(Utils.getDistanceMeters(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude(), r.mLat, r.mLon));
-  }
-
-  private String formatDistanceInMeters(double distanceMeters)
-  {
-    if (distanceMeters > 1000)
-      return String.format("%.1f", distanceMeters / 1000) + " km";
-    else
-      return String.format("%3.0f", distanceMeters) + " m";
+    final double distance = Utils.getDistanceMeters(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude(), r.mLat, r.mLon);
+    return Utils.formatDistanceInMeters(distance);
   }
 
   @Override

@@ -6,6 +6,15 @@ public class Utils
 
   private Utils() {}
 
+  public static String formatDistanceInMeters(double distanceMeters)
+  {
+    if (distanceMeters > 1000)
+      return String.format("%.1f", distanceMeters / 1000) + " km";
+    else
+      return String.format("%3.0f", distanceMeters) + " m";
+
+  }
+
   public static double getDistanceMeters(double latSource, double lonSource, double latDest, double lonDest)
   {
     return EARTH_RADIUS_METERS * distanceOnSphere(Math.toRadians(latSource), Math.toRadians(lonSource),

@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import me.maps.mwmwear.R;
-import me.maps.mwmwear.SelectableSearchLayout;
+import me.maps.mwmwear.widget.SelectableSearchLayout;
 
 public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.ViewHolder>
 {

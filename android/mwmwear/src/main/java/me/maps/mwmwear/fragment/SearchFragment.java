@@ -19,6 +19,12 @@ import me.maps.mwmwear.communication.SearchListener;
 
 public class SearchFragment extends Fragment implements WearableListView.ClickListener, SearchListener
 {
+  public interface SearchResultClickListener
+  {
+    void onSearchResultClick(SearchAdapter.SearchResult result);
+  }
+
+  private SearchResultClickListener mSearchClickListener;
   private WearableListView mListView;
   private SearchAdapter mSearchAdapter;
   private CategoriesAdapter mCategoriesAdapter;
@@ -40,6 +46,11 @@ public class SearchFragment extends Fragment implements WearableListView.ClickLi
     mListView.setClickListener(this);
   }
 
+  public void setOnSearchClickListener(SearchResultClickListener listener)
+  {
+    mSearchClickListener = listener;
+  }
+
   private RecyclerView.Adapter getCurrentAdapter()
   {
     if (mShowCategories)
@@ -56,7 +67,7 @@ public class SearchFragment extends Fragment implements WearableListView.ClickLi
     mListView.setAdapter(getCurrentAdapter());
   }
 
-  private RecyclerView.Adapter getSearchAdapter()
+  private SearchAdapter getSearchAdapter()
   {
     if (mSearchAdapter == null)
       mSearchAdapter = new SearchAdapter(this);
@@ -64,7 +75,7 @@ public class SearchFragment extends Fragment implements WearableListView.ClickLi
     return mSearchAdapter;
   }
 
-  private RecyclerView.Adapter getCategoriesAdapter()
+  private CategoriesAdapter getCategoriesAdapter()
   {
     if (mCategoriesAdapter == null)
       mCategoriesAdapter = new CategoriesAdapter(this);
@@ -78,11 +89,10 @@ public class SearchFragment extends Fragment implements WearableListView.ClickLi
   }
 
   @Override
-  public void onClick(WearableListView.ViewHolder viewHolder)
+  public void onClick(final WearableListView.ViewHolder viewHolder)
   {
     if (mShowCategories)
     {
-      Log.d("TEST", "Show cat");
       if (getActivity() instanceof WearMwmActivity && viewHolder instanceof CategoriesAdapter.ViewHolder)
       {
         WearMwmActivity host = (WearMwmActivity) getActivity();
@@ -90,9 +100,17 @@ public class SearchFragment extends Fragment implements WearableListView.ClickLi
         host.getWearableManager().makeSearchCategoryRequest(catHolder.getCategoryQuery(host), this);
       }
     }
-    else
+    else if (mSearchClickListener != null)
     {
-      // TODO display arrow to search result
+      Log.d("Wear", "Position : " + viewHolder.getPosition() + ", sR : " + getSearchAdapter().getSearchResult(viewHolder.getPosition()));
+      mListView.postDelayed(new Runnable()
+      {
+        @Override
+        public void run()
+        {
+          mSearchClickListener.onSearchResultClick(getSearchAdapter().getSearchResult(viewHolder.getPosition()));
+        }
+      }, 100);
     }
   }
 
@@ -133,7 +151,10 @@ public class SearchFragment extends Fragment implements WearableListView.ClickLi
   @Override
   public void onLocationChanged(Location location)
   {
-    mSearchAdapter.setCurrentLocation(location);
-    mSearchAdapter.notifyDataSetChanged();
+    if (!mShowCategories)
+    {
+      mSearchAdapter.setCurrentLocation(location);
+      mSearchAdapter.notifyDataSetChanged();
+    }
   }
 }
