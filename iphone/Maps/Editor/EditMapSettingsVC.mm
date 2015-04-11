@@ -47,7 +47,7 @@ NSString * kOSMPasswordKey = @"OSMPasswordKey";
   else
   {
     // Make simple api request to check if authentification works.
-    alohalytics::HTTPClientPlatformWrapper request(OSM_SERVER_URL + "/api/0.6/permissions");
+    alohalytics::HTTPClientPlatformWrapper request(OSM_SERVER_URL + "/permissions");
     request.set_user_and_password([_loginTextField.text UTF8String], [_passwordTextField.text UTF8String]);
     message = @"Can't connect to OpenStreetMap server.";
     if (request.RunHTTPRequest())

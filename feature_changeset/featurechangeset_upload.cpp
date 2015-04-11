@@ -14,7 +14,7 @@
 #include "../3party/Alohalytics/src/http_client.h"
 
 // TODO: Switch to production server when everything is ready.
-extern string const OSM_SERVER_URL = "http://api06.dev.openstreetmap.org";
+extern string const OSM_SERVER_URL = "http://api06.dev.openstreetmap.org/api/0.6";
 
 namespace
 {
@@ -221,7 +221,7 @@ namespace
     ostringstream url;
     m2::PointD const lb = rect.LeftBottom();
     m2::PointD const rt = rect.RightTop();
-    url << "map?bbox=" << lb.x << ',' << lb.y << ',' << rt.x << rt.y;
+    url << "/map?bbox=" << lb.x << ',' << lb.y << ',' << rt.x << rt.y;
     return url.str();
   }
 }
@@ -271,7 +271,7 @@ namespace edit
     {
       // modification or deletion: we need an original element.
       // now we have tags, let's query bbox at point and find an object that matches tags
-      alohalytics::HTTPClientPlatformWrapper create(OSM_SERVER + GetBBoxQueryURL(center));
+      alohalytics::HTTPClientPlatformWrapper create(OSM_SERVER_URL + GetBBoxQueryURL(center));
       if (create.RunHTTPRequest() && 200 == create.error_code())
       {
         string const xml = create.server_response();
@@ -302,12 +302,10 @@ namespace edit
     }
   }
 
-  bool upload_changes(OsmChange const & osc, OsmData & uploaded, string const & user, string const & password)
+  bool UploadChanges(OsmChange const & osc, OsmData & uploaded, string const & user, string const & password)
   {
-    string const baseUrl = OSM_SERVER_URL + "/api/0.6/changeset/";
+    string const baseUrl = OSM_SERVER_URL + "/changeset/";
     alohalytics::HTTPClientPlatformWrapper create(baseUrl + "create");
-    // TODO: proper authorization
-    create.set_user_and_password(OSM_USER, OSM_PASSWORD);
     ostringstream oss;
     osc.ChangesetXML(oss);
     create.set_body_data(oss.str(), "text/xml", "PUT")
