@@ -9,19 +9,8 @@
 
 class RouteTrack : public Track
 {
-  RouteTrack & operator=(RouteTrack const &) = delete;
-  RouteTrack(RouteTrack const &) = delete;
 public:
-  RouteTrack() {}
-  explicit RouteTrack(PolylineD const & polyline) : Track(polyline) {}
-  virtual ~RouteTrack();
-//  virtual void CreateDisplayList(graphics::Screen * dlScreen, MatrixT const & matrix, bool isScaleChanged,
-//                                int drawScale, double visualScale,
-//                                location::RouteMatchingInfo const & matchingInfo) const;
-//  virtual void Draw(graphics::Screen * pScreen, MatrixT const & matrix) const;
-  virtual RouteTrack * CreatePersistent();
-//  virtual void CleanUp() const;
-//  virtual bool HasDisplayLists() const;
+  explicit RouteTrack(PolylineD const & polyline) : Track(polyline, Params()) {}
 
   void SetTurnsGeometry(routing::turns::TTurnsGeom const & turnsGeom) { m_turnsGeom = turnsGeom; }
   
@@ -29,13 +18,7 @@ public:
                         dp::Anchor pos, double depth);
 
 private:
-  //void CreateDisplayListSymbols(graphics::Screen * dlScreen, PointContainerT const & pts) const;
-
-  //void CreateDisplayListArrows(graphics::Screen * dlScreen, MatrixT const & matrix, double visualScale) const;
   void DeleteClosestSegmentDisplayList() const;
-  //bool HasClosestSegmentDisplayList() const { return m_closestSegmentDL != nullptr; }
-  //void SetClosestSegmentDisplayList(graphics::DisplayList * dl) const { m_closestSegmentDL = dl; }
-  void Swap(RouteTrack & rhs);
 
   struct ClosingSymbol
   {
@@ -49,11 +32,8 @@ private:
   vector<ClosingSymbol> m_beginSymbols;
   vector<ClosingSymbol> m_endSymbols;
 
-
   routing::turns::TTurnsGeom m_turnsGeom;
   mutable location::RouteMatchingInfo m_relevantMatchedInfo;
-  /// @TODO UVR
-  //mutable graphics::DisplayList * m_closestSegmentDL = nullptr;
 };
 
 bool ClipArrowBodyAndGetArrowDirection(vector<m2::PointD> & ptsTurn, pair<m2::PointD, m2::PointD> & arrowDirection,

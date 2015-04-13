@@ -72,7 +72,7 @@ public:
   UserMarksController & UserMarksRequestController(UserMarkType type);
   void UserMarksReleaseController(UserMarksController & controller);
 
-  void SetRouteTrack(RouteTrack & track);
+  void SetRouteTrack(unique_ptr<RouteTrack> && track);
   void ResetRouteTrack();
 
 private:

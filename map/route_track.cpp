@@ -169,11 +169,6 @@ bool MergeArrows(vector<m2::PointD> & ptsCurrentTurn, vector<m2::PointD> const &
   }
 }
 
-RouteTrack::~RouteTrack()
-{
-  DeleteClosestSegmentDisplayList();
-}
-
 /*
 void RouteTrack::CreateDisplayListArrows(graphics::Screen * dlScreen, MatrixT const & matrix, double visualScale) const
 {
@@ -292,13 +287,6 @@ void RouteTrack::CreateDisplayListArrows(graphics::Screen * dlScreen, MatrixT co
 //  dlScreen->endFrame();
 //}
 
-RouteTrack * RouteTrack::CreatePersistent()
-{
-  RouteTrack * p = new RouteTrack();
-  Swap(*p);
-  return p;
-}
-
 void RouteTrack::DeleteClosestSegmentDisplayList() const
 {
 //  delete m_closestSegmentDL;
@@ -335,26 +323,4 @@ void RouteTrack::AddClosingSymbol(bool isBeginSymbol, string const & symbolName,
 //    pivot = pts.back();
 //    for_each(m_endSymbols.begin(), m_endSymbols.end(), symDrawer);
 //  }
-//}
-
-void RouteTrack::Swap(RouteTrack & rhs)
-{
-//  Track::Swap(rhs);
-//  swap(m_beginSymbols, rhs.m_beginSymbols);
-//  swap(m_endSymbols, rhs.m_endSymbols);
-//  m_turnsGeom.swap(rhs.m_turnsGeom);
-
-//  rhs.m_relevantMatchedInfo.Reset();
-//  m_relevantMatchedInfo.Reset();
-}
-
-//void RouteTrack::CleanUp() const
-//{
-//  Track::CleanUp();
-//  DeleteClosestSegmentDisplayList();
-//}
-
-//bool RouteTrack::HasDisplayLists() const
-//{
-//  return Track::HasDisplayLists() && m_closestSegmentDL != nullptr;
 //}
