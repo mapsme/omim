@@ -83,17 +83,23 @@ namespace osm
   {
     OsmId maxId = 0;
     if (type == OsmType::NODE)
+    {
       for (pair<OsmId, OsmNode> const & p : m_nodes)
         if ((!newObj && p.first > maxId) || (newObj && p.first < maxId))
           maxId = p.first;
+    }
     else if (type == OsmType::WAY)
+    {
       for (pair<OsmId, OsmWay> const & p : m_ways)
         if ((!newObj && p.first > maxId) || (newObj && p.first < maxId))
           maxId = p.first;
+    }
     else if (type == OsmType::RELATION)
+    {
       for (pair<OsmId, OsmRelation> const & p : m_relations)
         if ((!newObj && p.first > maxId) || (newObj && p.first < maxId))
           maxId = p.first;
+    }
     return newObj ? maxId - 1 : maxId + 1;
   }
 

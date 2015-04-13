@@ -247,9 +247,8 @@ namespace edit
         }
         else
         {
-          OsmElement *modified(closest);
-          AddNewTags(modified, changes);
-          osc.Modify(modified);
+          AddNewTags(closest, changes);
+          osc.Modify(closest);
         }
       };
     }
