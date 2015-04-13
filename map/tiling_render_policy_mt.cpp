@@ -86,4 +86,6 @@ void TilingRenderPolicyMT::SetRenderFn(TRenderFn const & renderFn)
                                                   m_primaryRC,
                                                   m_resourceManager,
                                                   0));
+
+  RenderPolicy::SetRenderFn(renderFn);
 }

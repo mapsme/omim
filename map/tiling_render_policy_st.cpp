@@ -120,4 +120,6 @@ void TilingRenderPolicyST::SetRenderFn(TRenderFn const & renderFn)
                                                   m_primaryRC,
                                                   m_resourceManager,
                                                   m_QueuedRenderer->GetPacketsQueue(cpuCores)));
+
+  RenderPolicy::SetRenderFn(renderFn);
 }

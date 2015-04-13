@@ -32,8 +32,8 @@ struct MapImage
 
 namespace android
 {
-  class Framework : public storage::CountryTree::CountryTreeListener,
-                    public storage::ActiveMapsLayout::ActiveMapsListener
+  class Framework : private storage::CountryTree::CountryTreeListener,
+                    private storage::ActiveMapsLayout::ActiveMapsListener
   {
   private:
     ::Framework m_work;
@@ -75,6 +75,8 @@ namespace android
     int m_densityDpi;
     int m_screenWidth;
     int m_screenHeight;
+    int m_offscreenWidth;
+    int m_offscreenHeight;
 
     void StartTouchTask(double x, double y, unsigned ms);
     bool KillTouchTask();
@@ -84,7 +86,7 @@ namespace android
 
     void SetBestDensity(int densityDpi, RenderPolicy::Params & params);
 
-    bool InitRenderPolicyImpl(int densityDpi, int screenWidth, int screenHeight);
+    bool InitRenderPolicyImpl(int densityDpi, int screenWidth, int screenHeight, int offscreenWidth, int offscreenHeight);
 
   public:
     Framework();
@@ -105,7 +107,7 @@ namespace android
 
     void Invalidate();
 
-    bool InitRenderPolicy(int densityDpi, int screenWidth, int screenHeight);
+    bool InitRenderPolicy(int densityDpi, int screenWidth, int screenHeight, int offscreenWidth, int offscreenHeight);
     void DeleteRenderPolicy();
 
     void SetMapStyle(MapStyle mapStyle);
@@ -113,6 +115,8 @@ namespace android
     void Resize(int w, int h);
 
     void DrawFrame();
+
+    void DrawFrameOffscreen(m2::PointD const & center, double scale, size_t width, size_t height);
 
     void Move(int mode, double x, double y);
     void Zoom(int mode, double x1, double y1, double x2, double y2);
@@ -174,8 +178,7 @@ namespace android
     // Fills mapobject's metadata from UserMark
     void InjectMetadata(JNIEnv * env, jclass clazz, jobject const mapObject, UserMark const * userMark);
 
-    void SetAppInBackground(bool appInBackground);
-  public:
+  private:
     virtual void ItemStatusChanged(int childPosition);
     virtual void ItemProgressChanged(int childPosition, storage::LocalAndRemoteSizeT const & sizes);
 
@@ -193,5 +196,3 @@ namespace android
 extern android::Framework * g_framework;
 
 void GlobalSetRenderAsyncCallback(std::function<void(MapImage const &)> f);
-void GlobalRenderAsync(m2::PointD const & center, size_t scale, size_t width, size_t height);
-void SetAppInBackground(bool appInBackground);

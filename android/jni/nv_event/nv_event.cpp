@@ -32,6 +32,8 @@
 #include <GLES2/gl2.h>
 //#include <EGL/egl.h>
 
+#include <mutex>
+
 #include "../nv_time/nv_time.hpp"
 #include "../nv_thread/nv_thread.hpp"
 #include "../nv_debug/nv_debug.hpp"
@@ -124,15 +126,35 @@ public:
     m_index(NULL)
   {}
 
-  bool QueryID(JNIEnv *env, jclass k)
+  bool QueryID(JNIEnv* env, jclass k)
   {
     m_index = env->GetMethodID(k, m_name, m_signature);
-    return true;
+    return (0 != m_index);
   }
 
-  bool CallBoolean()
+  bool CallBoolean() const
   {
-    JNIEnv* jniEnv = NVThreadGetCurrentJNIEnv();
+    JNIEnv* const jniEnv = NVThreadGetCurrentJNIEnv();
+
+    if (!jniEnv || !s_globalThiz)
+    {
+      __android_log_print(ANDROID_LOG_DEBUG, MODULE,  "Error: No valid JNI env in %s", m_name);
+      return false;
+    }
+
+    if (!m_index)
+    {
+      __android_log_print(ANDROID_LOG_DEBUG, MODULE,  "Error: No valid function pointer in %s", m_name);
+      return false;
+    }
+
+    return jniEnv->CallBooleanMethod(s_globalThiz, m_index);
+  }
+
+  template <typename P1, typename P2>
+  bool CallBoolean(P1 p1, P2 p2) const
+  {
+    JNIEnv* const jniEnv = NVThreadGetCurrentJNIEnv();
 
     if (!jniEnv || !s_globalThiz)
     {
@@ -144,13 +166,13 @@ public:
       __android_log_print(ANDROID_LOG_DEBUG, MODULE,  "Error: No valid function pointer in %s", m_name);
       return false;
     }
-//  __android_log_print(ANDROID_LOG_DEBUG, MODULE,  "Calling JNI up to %s", m_name);
-    return jniEnv->CallBooleanMethod(s_globalThiz, m_index);
+
+    return jniEnv->CallBooleanMethod(s_globalThiz, m_index, p1, p2);
   }
 
-  bool CallInt()
+  int CallInt() const
   {
-    JNIEnv* jniEnv = NVThreadGetCurrentJNIEnv();
+    JNIEnv* const jniEnv = NVThreadGetCurrentJNIEnv();
 
     if (!jniEnv || !s_globalThiz)
     {
@@ -161,15 +183,15 @@ public:
     if (!m_index)
     {
       __android_log_print(ANDROID_LOG_DEBUG, MODULE,  "Error: No valid function pointer in %s", m_name);
-      return false;
+      return 0;
     }
 
-    return (int)jniEnv->CallIntMethod(s_globalThiz, m_index);
+    return jniEnv->CallIntMethod(s_globalThiz, m_index);
   }
 
-  void CallVoid()
+  void CallVoid() const
   {
-    JNIEnv * jniEnv = NVThreadGetCurrentJNIEnv();
+    JNIEnv * const jniEnv = NVThreadGetCurrentJNIEnv();
 
     if (!jniEnv || !s_globalThiz)
     {
@@ -186,15 +208,16 @@ public:
     jniEnv->CallVoidMethod(s_globalThiz, m_index);
   }
 
-  const char* m_name;
-  const char* m_signature;
+private:
+  const char* const m_name;
+  const char* const m_signature;
   jmethodID m_index;
-
 };
 
 static MethodRef s_InitEGL("InitEGL", "()Z");
 static MethodRef s_CleanupEGL("CleanupEGL", "()Z");
 static MethodRef s_CreateSurfaceEGL("CreateSurfaceEGL", "()Z");
+static MethodRef s_CreateOffScreenSurfaceEGL("CreateOffScreenSurfaceEGL", "(II)Z");
 static MethodRef s_DestroySurfaceEGL("DestroySurfaceEGL", "()Z");
 static MethodRef s_SwapBuffersEGL("SwapBuffersEGL", "()Z");
 static MethodRef s_BindSurfaceAndContextEGL("BindSurfaceAndContextEGL", "()Z");
@@ -264,26 +287,29 @@ bool NVEventStatusEGLIsBound()
 
 static void NVEventInitInputFields(JNIEnv *env)
 {
-  jclass Motion_class = env->FindClass("android/view/MotionEvent");
-  jfieldID ACTION_DOWN_id = env->GetStaticFieldID(Motion_class, "ACTION_DOWN", "I");
-  jfieldID ACTION_UP_id = env->GetStaticFieldID(Motion_class, "ACTION_UP", "I");
-  jfieldID ACTION_CANCEL_id = env->GetStaticFieldID(Motion_class, "ACTION_CANCEL", "I");
-  jfieldID ACTION_POINTER_INDEX_SHIFT_id = env->GetStaticFieldID(Motion_class, "ACTION_POINTER_ID_SHIFT", "I");
-  jfieldID ACTION_POINTER_INDEX_MASK_id = env->GetStaticFieldID(Motion_class, "ACTION_POINTER_ID_MASK", "I");
+  jclass const Motion_class = env->FindClass("android/view/MotionEvent");
+  jfieldID const ACTION_DOWN_id = env->GetStaticFieldID(Motion_class, "ACTION_DOWN", "I");
+  jfieldID const ACTION_UP_id = env->GetStaticFieldID(Motion_class, "ACTION_UP", "I");
+  jfieldID const ACTION_CANCEL_id = env->GetStaticFieldID(Motion_class, "ACTION_CANCEL", "I");
+  jfieldID const ACTION_POINTER_INDEX_SHIFT_id = env->GetStaticFieldID(Motion_class, "ACTION_POINTER_ID_SHIFT", "I");
+  jfieldID const ACTION_POINTER_INDEX_MASK_id = env->GetStaticFieldID(Motion_class, "ACTION_POINTER_ID_MASK", "I");
+
   NVEVENT_ACTION_DOWN = env->GetStaticIntField(Motion_class, ACTION_DOWN_id);
   NVEVENT_ACTION_UP = env->GetStaticIntField(Motion_class, ACTION_UP_id);
   NVEVENT_ACTION_CANCEL = env->GetStaticIntField(Motion_class, ACTION_CANCEL_id);
   NVEVENT_ACTION_POINTER_INDEX_MASK = env->GetStaticIntField(Motion_class, ACTION_POINTER_INDEX_MASK_id);
   NVEVENT_ACTION_POINTER_INDEX_SHIFT = env->GetStaticIntField(Motion_class, ACTION_POINTER_INDEX_SHIFT_id);
 
-  jclass KeyCode_class = env->FindClass("android/view/KeyEvent");
-  jfieldID ACTION_KEY_UP_id = env->GetStaticFieldID(KeyCode_class, "ACTION_UP", "I");
+  jclass const KeyCode_class = env->FindClass("android/view/KeyEvent");
+  jfieldID const ACTION_KEY_UP_id = env->GetStaticFieldID(KeyCode_class, "ACTION_UP", "I");
+
   NVEVENT_ACTION_KEY_UP = env->GetStaticIntField(KeyCode_class, ACTION_KEY_UP_id);
 }
 
 static void* NVEventMainLoopThreadFunc(void*)
 {
   NVEventAppMain(0, NULL);
+
   __android_log_print(ANDROID_LOG_DEBUG, MODULE,  "NvEvent native app Main returned");
 
   // signal the condition variable to unblock
@@ -297,8 +323,7 @@ static void* NVEventMainLoopThreadFunc(void*)
   // we need to call finish.
   if (!s_javaPostedQuit)
   {
-    JNIEnv* env = NVThreadGetCurrentJNIEnv();
-    env->CallVoidMethod(s_globalThiz, s_finish.m_index);
+    s_finish.CallVoid();
   }
 
   return NULL;
@@ -399,6 +424,17 @@ bool NVEventCreateSurfaceEGL()
     return false;
 }
 
+bool NVEventCreateOffScreenSurfaceEGL(int width, int height)
+{
+  if (s_CreateOffScreenSurfaceEGL.CallBoolean(width, height))
+  {
+    SetAppFlag(NVEVENT_STATUS_EGL_HAS_SURFACE);
+    return true;
+  }
+  else
+    return false;
+}
+
 bool NVEventDestroySurfaceEGL()
 {
   if (!QueryAppFlag(NVEVENT_STATUS_EGL_HAS_SURFACE))
@@ -441,13 +477,39 @@ int NVEventGetErrorEGL()
   return s_GetErrorEGL.CallInt();
 }
 
+// TODO make it in normal way
+// Trick: if surface width/height are specified then create off-screen surface
+static int s_surfaceWidth = 0;
+static int s_surfaceHeight = 0;
+void PrepareWindowSurface()
+{
+  s_surfaceWidth = 0;
+  s_surfaceHeight = 0;
+}
+void PrepareOffScreenSurface(int width, int height)
+{
+  s_surfaceWidth = width;
+  s_surfaceHeight = height;
+}
+bool IsPreparedForOffscreen()
+{
+  return s_surfaceWidth != 0 && s_surfaceHeight != 0;
+}
+bool IsPreparedForWindow()
+{
+  return s_surfaceWidth == 0 && s_surfaceHeight == 0;
+}
+
 bool NVEventReadyToRenderEGL(bool allocateIfNeeded)
 {
   // If we have a bound context and surface, then EGL is ready
   if (!NVEventStatusEGLIsBound())
   {
     if (!allocateIfNeeded)
+    {
+      NVDEBUG("NVEventReadyToRenderEGL.NVEventInitEGL failed, allocateIfNeeded=false");
       return false;
+    }
 
     // If we have not bound the context and surface, do we even _have_ a surface?
     if (!NVEventStatusEGLHasSurface())
@@ -456,18 +518,40 @@ bool NVEventReadyToRenderEGL(bool allocateIfNeeded)
       if (!NVEventStatusEGLInitialized())
       {
         if (!NVEventInitEGL())
-        return false;
+        {
+          NVDEBUG("NVEventReadyToRenderEGL.NVEventInitEGL failed");
+          return false;
+        }
       }
 
-    // Create the rendering surface now that we have a context
-    if (!NVEventCreateSurfaceEGL())
-      return false;
-
+      // TODO make it in normal way
+      // Trick: if surface width/height are specified then create off-screen surface
+      if (IsPreparedForWindow())
+      {
+        // Create the rendering surface now that we have a context
+        if (!NVEventCreateSurfaceEGL())
+        {
+          NVDEBUG("NVEventReadyToRenderEGL.NVEventCreateSurfaceEGL failed");
+          return false;
+        }
+      }
+      else
+      {
+        // Create the OFF-SCREEN rendering surface now that we have a context
+        if (!NVEventCreateOffScreenSurfaceEGL(s_surfaceWidth, s_surfaceHeight))
+        {
+          NVDEBUG("NVEventReadyToRenderEGL.NVEventCreateOffScreenSurfaceEGL failed");
+          return false;
+        }
+      }
     }
 
     // We have a surface and context, so bind them
-    if (NVEventBindSurfaceAndContextEGL())
+    if (!NVEventBindSurfaceAndContextEGL())
+    {
+      NVDEBUG("NVEventReadyToRenderEGL.NVEventBindSurfaceAndContextEGL failed");
       return false;
+    }
   }
 
   return true;
@@ -505,7 +589,7 @@ static jboolean NVEventMultiTouchEvent(JNIEnv*  env, jobject  thiz, jint action,
   {
     NVEvent ev;
 
-    int actionOnly = action & (~NVEVENT_ACTION_POINTER_INDEX_MASK);
+    int const actionOnly = action & (~NVEVENT_ACTION_POINTER_INDEX_MASK);
 
     int maskOnly = 0;
 
@@ -595,12 +679,23 @@ static jboolean NVEventAccelerometerEvent(JNIEnv* env, jobject thiz, jfloat valu
 ///////////////////////////////////////////////////////////////////////////////
 // Java to Native app lifecycle callback functions
 
+static std::mutex s_nativeConstructionMutex;
+static size_t s_nativeRefCount = 0;
+
 static jboolean onDestroyNative(JNIEnv* env, jobject thiz);
-
-
 
 static jboolean onCreateNative(JNIEnv* env, jobject thiz)
 {
+  std::lock_guard<std::mutex> const l(s_nativeConstructionMutex);
+
+  if (s_nativeRefCount != 0)
+  {
+    ++s_nativeRefCount;
+
+    __android_log_print(ANDROID_LOG_DEBUG, MODULE,  "Native has already been created");
+    return JNI_TRUE;
+  }
+
   if (s_globalThiz)
     onDestroyNative(env, thiz);
 
@@ -628,8 +723,11 @@ static jboolean onCreateNative(JNIEnv* env, jobject thiz)
 
   __android_log_print(ANDROID_LOG_DEBUG, MODULE,  "Calling NVEventAppInit");
 
-  if (NVEventAppInit(0, NULL))
+  if (0 != NVEventAppInit(0, NULL))
   {
+    env->DeleteGlobalRef(s_globalThiz);
+    s_globalThiz = NULL;
+
     __android_log_print(ANDROID_LOG_DEBUG, MODULE,  "NVEventAppInit error");
     return JNI_FALSE;
   }
@@ -644,6 +742,7 @@ static jboolean onCreateNative(JNIEnv* env, jobject thiz)
 
   __android_log_print(ANDROID_LOG_DEBUG, MODULE,  "thread spawned");
 
+  ++s_nativeRefCount; // native has been successfully constructed
   return JNI_TRUE;
 }
 
@@ -736,6 +835,20 @@ static jboolean onStopNative(JNIEnv* env, jobject thiz)
 
 static jboolean onDestroyNative(JNIEnv* env, jobject thiz)
 {
+  std::lock_guard<std::mutex> const l(s_nativeConstructionMutex);
+
+  if (0 == s_nativeRefCount)
+  {
+    __android_log_print(ANDROID_LOG_DEBUG, MODULE,  "Error: native has not been created");
+    return JNI_FALSE;
+  }
+
+  if ((--s_nativeRefCount) != 0)
+  {
+    __android_log_print(ANDROID_LOG_DEBUG, MODULE,  "Native still has reference");
+    return JNI_TRUE;
+  }
+
   if (!env || !s_globalThiz)
   {
     __android_log_print(ANDROID_LOG_DEBUG, MODULE,  "Error: DestroyingRegisteredObjectInstance no TLS data!");
@@ -806,9 +919,37 @@ void postMWMEvent(void * pFn, bool blocking)
   ev.m_data.m_mwm.m_pFn = pFn;
 
   if (blocking)
-    (void) NVEventInsertBlocking(&ev);
+    NVEventInsertBlocking(&ev);
   else
     NVEventInsert(&ev);
+}
+
+static std::mutex s_renderFrameMutex; // protects renderFrame members
+static bool s_renderFrameValid = false;
+static RenderFrameRequest s_renderFrame;
+
+void postRenderFrameRequest(double x, double y, double scale, size_t width, size_t height)
+{
+  std::lock_guard<std::mutex> const l(s_renderFrameMutex);
+  s_renderFrame.m_x = x;
+  s_renderFrame.m_y = y;
+  s_renderFrame.m_scale = scale;
+  s_renderFrame.m_width = width;
+  s_renderFrame.m_height = height;
+  s_renderFrameValid = true;
+}
+
+bool getRenderFrameRequest(RenderFrameRequest & info)
+{
+  std::lock_guard<std::mutex> const l(s_renderFrameMutex);
+  if (s_renderFrameValid)
+  {
+    s_renderFrameValid = false;
+    info = s_renderFrame;
+    return true;
+  }
+  else
+    return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -825,13 +966,13 @@ char* NVEventLoadFile(const char* file)
 
 void InitNVEvent(JavaVM* vm)
 {
-  JNIEnv *env;
+  JNIEnv* env = nullptr;
 
   NVThreadInit(vm);
 
   NVDEBUG("InitNVEvent called");
 
-  if (vm->GetEnv((void**) &env, JNI_VERSION_1_4) != JNI_OK)
+  if (vm->GetEnv((void**)&env, JNI_VERSION_1_4) != JNI_OK)
   {
     NVDEBUG("Failed to get the environment using GetEnv()");
     return;
@@ -906,13 +1047,13 @@ void InitNVEvent(JavaVM* vm)
     }*/
   };
 
-  jclass k;
-  k = (env)->FindClass ("com/nvidia/devtech/NvEventQueueFragment");
+  jclass const k = (env)->FindClass ("com/nvidia/devtech/NvEventQueueFragment");
   (env)->RegisterNatives(k, methods, dimof(methods));
 
   s_InitEGL.QueryID(env, k);
   s_CleanupEGL.QueryID(env, k);
   s_CreateSurfaceEGL.QueryID(env, k);
+  s_CreateOffScreenSurfaceEGL.QueryID(env, k);
   s_DestroySurfaceEGL.QueryID(env, k);
   s_SwapBuffersEGL.QueryID(env, k);
   s_BindSurfaceAndContextEGL.QueryID(env, k);

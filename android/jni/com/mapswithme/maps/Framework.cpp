@@ -13,6 +13,8 @@
 #include "../../../../../map/measurement_utils.hpp"
 #include "../../../../../map/user_mark.hpp"
 
+#include "../../../../../indexer/scales.hpp"
+
 #include "../../../../../gui/controller.hpp"
 
 #include "../../../../../graphics/opengl/framebuffer.hpp"
@@ -59,18 +61,14 @@ typedef function<void (MapImage const &)> TImageReadyCallback;
 
 TImageReadyCallback g_imageReady = nullptr;
 
-// todo use atomic_flag instead
-volatile bool g_appInBackground = false;
-volatile bool g_isFrameRequested = false;
-
 int const CHANNELS_COUNT = 4;
 
-void ReadPixels(int x, int y, int w, int h, MapImage & image)
+void ReadPixels(int x, int y, int width, int height, MapImage & image)
 {
-  int const dataLength = w * h * CHANNELS_COUNT;
+  int const dataLength = width * height * CHANNELS_COUNT;
   OGLCHECK(glPixelStorei(GL_PACK_ALIGNMENT, CHANNELS_COUNT));
-  image.m_width = w;
-  image.m_height = h;
+  image.m_width = width;
+  image.m_height = height;
   image.m_bpp = CHANNELS_COUNT;
   image.m_bytes.resize(dataLength);
   OGLCHECK(glReadPixels(x, y, image.m_width, image.m_height, GL_RGBA, GL_UNSIGNED_BYTE, image.m_bytes.data()));
@@ -154,54 +152,38 @@ void FlipVertical(unsigned int width, unsigned int height, unsigned int bytesPer
   }
 }
 
-void SaveImage(char * p, int w, int h, string const & fileName)
+void SaveImage(char * p, int width, int height, string const & fileName)
 {
   static int counter = 0;
-  ++counter;
-  stringstream fileNameSS;
-  fileNameSS << "/sdcard/tiles/" << fileName << counter << ".bmp";
-  int const res = stbi_write_bmp(fileNameSS.str().c_str(), w, h, CHANNELS_COUNT, p);
-  LOG(LINFO, ("watch. stbi_write_bmp(..., ", w, ", ", h, ", ", CHANNELS_COUNT, ") = ", res));
+  string const filename = (stringstream() << "/sdcard/tiles2/" << fileName << (++counter) << ".bmp").str();
+  int const res = stbi_write_bmp(filename.c_str(), width, height, CHANNELS_COUNT, p);
+  LOG(LINFO, ("SaveImage: stbi_write_bmp(", filename ,", ", width, ", ", height, ", ", CHANNELS_COUNT, ") = ", res));
 }
 
-void SendImageToAndroidWear(int wearWidth, int wearHeight,
-  int screenWidth, int screenHeight, string const & fileName, bool flip)
+void SendImageToAndroidWear(int x, int y,
+                            int width, int height,
+                            bool flipVertical,
+                            string const & fileName)
 {
   MapImage image = {0};
-  int const left = (screenWidth - wearWidth) / 2;
-  int const top = (screenHeight - wearHeight) / 2;
-  ReadPixels(left, top, wearWidth, wearHeight, image);
-  if (flip)
+  ReadPixels(x, y, width, height, image);
+  if (flipVertical)
+  {
     FlipVertical(image.m_width, image.m_height, image.m_bpp, image.m_bytes.data());
-  // SaveImage(image.m_bytes.data(), wearWidth, wearHeight, fileName);
+  }
+  SaveImage(image.m_bytes.data(), width, height, fileName);
   ConvertPixelFormat(image.m_width, image.m_height, image.m_bpp, image.m_bytes.data());
-  g_imageReady(image);
-  g_isFrameRequested = false;
+  if (g_imageReady)
+  {
+    g_imageReady(image);
+  }
 }
-void GlobalRenderAsync()
-{
-  // @todo don't set this param to true if the watch is not connected
-  g_isFrameRequested = true;
-}
+
 } // namespace
 
 void GlobalSetRenderAsyncCallback(std::function<void(MapImage const &)> f)
 {
   g_imageReady = f;
-}
-
-void GlobalRenderAsync(m2::PointD const & center, size_t scale, size_t width, size_t height)
-{
-  if (g_framework)
-  {
-    GlobalRenderAsync();
-    frm()->RenderAsync(center, scale, width, height);
-  }
-}
-
-void SetAppInBackground(bool appInBackground)
-{
-  g_appInBackground = appInBackground;
 }
 
 namespace android
@@ -221,7 +203,9 @@ namespace android
      m_wasLongClick(false),
      m_densityDpi(0),
      m_screenWidth(0),
-     m_screenHeight(0)
+     m_screenHeight(0),
+     m_offscreenWidth(0),
+     m_offscreenHeight(0)
   {
     ASSERT_EQUAL ( g_framework, 0, () );
 
@@ -304,7 +288,7 @@ namespace android
     params.m_density = dens[bestRangeIndex].second;
   }
 
-  bool Framework::InitRenderPolicyImpl(int densityDpi, int screenWidth, int screenHeight)
+  bool Framework::InitRenderPolicyImpl(int densityDpi, int screenWidth, int screenHeight, int offscreenWidth, int offscreenHeight)
   {
     graphics::ResourceManager::Params rmParams;
 
@@ -326,10 +310,9 @@ namespace android
     rpParams.m_screenWidth = screenWidth;
     rpParams.m_screenHeight = screenHeight;
 
-    // TEMP: offscreen rendering test
     rpParams.m_useOffscreenRendering = true;
-    rpParams.m_offscreenWidth = 320;
-    rpParams.m_offscreenHeight = 320;
+    rpParams.m_offscreenWidth = offscreenWidth;
+    rpParams.m_offscreenHeight = offscreenHeight;
 
     try
     {
@@ -345,9 +328,9 @@ namespace android
     return true;
   }
 
-  bool Framework::InitRenderPolicy(int densityDpi, int screenWidth, int screenHeight)
+  bool Framework::InitRenderPolicy(int densityDpi, int screenWidth, int screenHeight, int offscreenWidth, int offscreenHeight)
   {
-    if (!InitRenderPolicyImpl(densityDpi, screenWidth, screenHeight))
+    if (!InitRenderPolicyImpl(densityDpi, screenWidth, screenHeight, offscreenWidth, offscreenHeight))
       return false;
 
     if (m_doLoadState)
@@ -361,6 +344,8 @@ namespace android
     m_densityDpi = densityDpi;
     m_screenWidth = screenWidth;
     m_screenHeight = screenHeight;
+    m_offscreenWidth = offscreenWidth;
+    m_offscreenHeight = offscreenHeight;
 
     return true;
   }
@@ -376,7 +361,7 @@ namespace android
     m_work.SetMapStyle(mapStyle);
 
     // construct new render policy
-    if (!InitRenderPolicyImpl(m_densityDpi, m_screenWidth, m_screenHeight))
+    if (!InitRenderPolicyImpl(m_densityDpi, m_screenWidth, m_screenHeight, m_offscreenWidth, m_offscreenHeight))
       return;
 
     m_work.SetUpdatesEnabled(true);
@@ -398,10 +383,10 @@ namespace android
 
     if (zoomToDownloadButton)
     {
-        m2::RectD const rect = m_work.GetCountryBounds(idx);
-        double const lon = MercatorBounds::XToLon(rect.Center().x);
-        double const lat = MercatorBounds::YToLat(rect.Center().y);
-        m_work.ShowRect(lat, lon, 10);
+      m2::RectD const rect = m_work.GetCountryBounds(idx);
+      double const lon = MercatorBounds::XToLon(rect.Center().x);
+      double const lat = MercatorBounds::YToLat(rect.Center().y);
+      m_work.ShowRect(lat, lon, 10);
     }
     else
       m_work.ShowCountry(idx);
@@ -417,55 +402,46 @@ namespace android
     m_work.OnSize(w, h);
   }
 
+  void Framework::DrawFrameOffscreen(m2::PointD const & center, double scale, size_t width, size_t height)
+  {
+    if (g_imageReady == nullptr)
+    {
+      return;
+    }
+
+    scale = my::clamp(scale, 1, scales::GetUpperScale());
+
+    m2::RectD const globalRect = scales::GetRectForLevel(scale, center);
+    double const hw = globalRect.SizeX() / 2.0;
+    double const hh = globalRect.SizeY() / 2.0;
+    m2::AnyRectD const gr(center, ang::AngleD(), m2::RectD(-hw, -hh, hw, hh));
+    ScreenBase const sb(m2::RectI(0, 0, width, height), gr);
+
+    if (m_work.GetRenderPolicy()->GetOffscreenDrawer() == nullptr)
+      return;
+
+    shared_ptr<PaintEvent> const paintEvent(new PaintEvent(m_work.GetRenderPolicy()->GetOffscreenDrawer().get()));
+    paintEvent->setOffscreenRect(sb);
+
+    m_work.DrawFullFrame(paintEvent, sb);
+
+    SendImageToAndroidWear(0, 0, width, height, false, "tile_");
+  }
+
   void Framework::DrawFrame()
   {
-    if (g_appInBackground)
+    if (m_work.NeedRedraw())
     {
-      if (
-        g_isFrameRequested &&
-        g_imageReady != nullptr
-        && m_work.GetRenderPolicy()->GetOffscreenDrawer() != nullptr)
-      {
-        shared_ptr<PaintEvent> offscreenPaintEvent(new PaintEvent(m_work.GetRenderPolicy()->GetOffscreenDrawer().get()));
+      m_work.SetNeedRedraw(false);
 
-        ScreenBase dispSB = m_work.GetNavigator().Screen();
+      shared_ptr<PaintEvent> const paintEvent(new PaintEvent(m_work.GetRenderPolicy()->GetDrawer().get()));
 
-        int const w = m_work.GetRenderPolicy()->GetOffscreenWidth();
-        int const h = m_work.GetRenderPolicy()->GetOffscreenHeight();
-        ScreenBase dispSBOff(m2::RectI(0, 0, w, h), dispSB.GlobalRect());
-        offscreenPaintEvent->setOffscreenRect(dispSBOff);
+      m_work.BeginPaint(paintEvent);
+      m_work.DoPaint(paintEvent);
 
-        m_work.BeginPaint(offscreenPaintEvent);
-        m_work.DoPaint(offscreenPaintEvent);
+      NVEventSwapBuffersEGL();
 
-        SendImageToAndroidWear(w, h, w, h, string("tileBackground_"), false);
-
-        m_work.EndPaint(offscreenPaintEvent);
-      }
-    }
-    else
-    {
-      if (m_work.NeedRedraw())
-      {
-        m_work.SetNeedRedraw(false);
-
-        shared_ptr<PaintEvent> paintEvent(new PaintEvent(m_work.GetRenderPolicy()->GetDrawer().get()));
-
-        m_work.BeginPaint(paintEvent);
-        m_work.DoPaint(paintEvent);
-
-        NVEventSwapBuffersEGL();
-        if (
-          g_isFrameRequested &&
-          g_imageReady != nullptr)
-        {
-          SendImageToAndroidWear(m_work.GetRenderPolicy()->GetOffscreenWidth(),
-            m_work.GetRenderPolicy()->GetOffscreenHeight(),
-            m_screenWidth, m_screenHeight, string("tileForeground_"), true);
-        }
-
-        m_work.EndPaint(paintEvent);
-      }
+      m_work.EndPaint(paintEvent);
     }
   }
 
@@ -638,8 +614,6 @@ namespace android
       if (m_mask == 0x3)
       {
         m_work.StopScale(ScaleEvent(m_x1, m_y1, m_x2, m_y2));
-        GlobalRenderAsync();
-
         if (eventType == NV_MULTITOUCH_MOVE)
         {
           if (mask == 0x1)
@@ -666,7 +640,6 @@ namespace android
 
       if ((eventType == NV_MULTITOUCH_CANCEL) || (eventType == NV_MULTITOUCH_UP))
       {
-        GlobalRenderAsync();
         if (m_mask == 0x1)
           m_work.StopDrag(DragEvent(x1, y1));
         if (m_mask == 0x2)
@@ -911,7 +884,9 @@ namespace android
   {
     m_javaActiveMapListeners.erase(slotID);
   }
+
   //////////////////////////////////////////////////////////////////////////////////////////
+
   void Framework::ItemStatusChanged(int childPosition)
   {
     if (m_javaCountryListener == NULL)

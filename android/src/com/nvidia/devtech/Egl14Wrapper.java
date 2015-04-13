@@ -152,6 +152,90 @@ public class Egl14Wrapper extends BaseEglWrapper
   }
 
   @Override
+  public boolean CreateOffScreenSurfaceEGL(int width, int height)
+  {
+    LogIt("Egl14Wrapper.CreateOffScreenSurfaceEGL");
+
+    if (!IsInitialized())
+      InitEGL();
+
+    if (!IsInitialized())
+    {
+      LogIt("createEGLSurface failed, cannot initialize EGL");
+      return false;
+    }
+
+    if (mDisplay == EGL14.EGL_NO_DISPLAY)
+    {
+      LogIt("createEGLSurface: display is null");
+      return false;
+    }
+    else if (mConfig == null)
+    {
+      LogIt("createEGLSurface: config is null");
+      return false;
+    }
+
+    int surfaceAttr[] = {EGL14.EGL_WIDTH, width, EGL14.EGL_HEIGHT, height, EGL14.EGL_NONE};
+
+    int choosenSurfaceConfigIndex = mChoosenConfigIndex;
+
+    while (true)
+    {
+      /// trying to create pixelbuffer surface with one of the EGL configs, recreating the mEglConfig if necessary
+      mSurface = EGL14.eglCreatePbufferSurface(mDisplay, mConfigs[choosenSurfaceConfigIndex], surfaceAttr, 0);
+
+      final boolean surfaceCreated = (mSurface != EGL14.EGL_NO_SURFACE);
+      final boolean surfaceValidated = surfaceCreated ? ValidateSurfaceSize() : false;
+
+      if (surfaceCreated && !surfaceValidated)
+        EGL14.eglDestroySurface(mDisplay, mSurface);
+
+      if (!surfaceCreated || !surfaceValidated)
+      {
+        LogIt("eglCreateWindowSurface failed for config : " + eglConfigToString(mConfigs[choosenSurfaceConfigIndex]));
+        choosenSurfaceConfigIndex += 1;
+        if (choosenSurfaceConfigIndex == mActualConfigsNumber[0])
+        {
+          mSurface = EGL14.EGL_NO_SURFACE;
+          LogIt("no eglConfigs left");
+          break;
+        }
+        else
+          LogIt("trying : " + eglConfigToString(mConfigs[choosenSurfaceConfigIndex]));
+      }
+      else
+        break;
+    }
+
+    if ((choosenSurfaceConfigIndex != mChoosenConfigIndex) && (mSurface != EGL14.EGL_NO_SURFACE))
+    {
+      LogIt("window surface is created for eglConfig : " + eglConfigToString(mConfigs[choosenSurfaceConfigIndex]));
+
+      // unbinding context
+      if (mDisplay != null)
+        EGL14.eglMakeCurrent(mDisplay, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_CONTEXT);
+
+      // destroying context
+      if (mContext != null)
+        EGL14.eglDestroyContext(mDisplay, mContext);
+
+      // recreating context with same eglConfig as eglWindowSurface has
+      mContext = EGL14.eglCreateContext(mDisplay, mConfigs[choosenSurfaceConfigIndex], EGL14.EGL_NO_CONTEXT, GetContextAttributes14(), 0);
+      if (mContext == EGL14.EGL_NO_CONTEXT)
+      {
+        LogEgl("context recreation failed with error ");
+        return false;
+      }
+
+      mChoosenConfigIndex = choosenSurfaceConfigIndex;
+      mConfig = mConfigs[mChoosenConfigIndex];
+    }
+
+    return true;
+  }
+
+  @Override
   public boolean CreateSurfaceEGL(SurfaceHolder holder)
   {
     if (holder == null)

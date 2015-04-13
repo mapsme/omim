@@ -15,6 +15,8 @@ abstract public class EglWrapper
 
   public abstract boolean CreateSurfaceEGL(SurfaceHolder holder);
 
+  public abstract boolean CreateOffScreenSurfaceEGL(int width, int height);
+
   public abstract boolean DestroySurfaceEGL();
 
   public abstract boolean SwapBuffersEGL();

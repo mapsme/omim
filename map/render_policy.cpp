@@ -6,6 +6,7 @@
 #include "tiling_render_policy_st.hpp"
 #include "tiling_render_policy_mt.hpp"
 #include "proto_to_styles.hpp"
+#include "scales_processor.hpp"
 
 #include "../anim/controller.hpp"
 #include "../anim/task.hpp"
@@ -129,6 +130,51 @@ void RenderPolicy::BeginFrame(shared_ptr<PaintEvent> const & e, ScreenBase const
 
 void RenderPolicy::EndFrame(shared_ptr<PaintEvent> const & e, ScreenBase const & s)
 {
+}
+
+void RenderPolicy::DrawFullFrame(shared_ptr<PaintEvent> const & e, ScreenBase const & s)
+{
+  m_resourceManager->updatePoolState();
+
+  Drawer * const drawer = e->drawer();
+  if (nullptr == drawer)
+    return;
+
+  graphics::Screen * const screen = drawer->screen();
+  if (nullptr == screen)
+    return;
+
+  uint const w = s.GetWidth();
+  uint const h = s.GetHeight();
+
+  m2::RectI const renderRect(0, 0, w, h);
+
+  shared_ptr<graphics::OverlayStorage> overlay(new graphics::OverlayStorage(m2::RectD(renderRect)));
+
+  screen->setOverlay(overlay);
+  screen->beginFrame();
+  screen->setClipRect(renderRect);
+  screen->clear(m_bgColor);
+  screen->applySharpStates();
+
+  ASSERT((m_renderFn != nullptr), ());
+  m_renderFn(e, s, m2::RectD(renderRect), ScalesProcessor(TileSize()).GetTileScaleBase(s));
+
+  screen->resetOverlay();
+  screen->clear(m_bgColor, false);
+
+  shared_ptr<graphics::Overlay> drawOverlay(new graphics::Overlay());
+  drawOverlay->merge(overlay);
+
+  overlay.reset();
+
+  math::Matrix<double, 3, 3> const m = math::Identity<double, 3>();
+  drawOverlay->forEach([&screen, &m](shared_ptr<graphics::OverlayElement> const & element)
+  {
+    element->draw(screen, m);
+  });
+
+  screen->endFrame();
 }
 
 bool RenderPolicy::NeedRedraw() const

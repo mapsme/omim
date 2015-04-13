@@ -30,15 +30,10 @@ public class MapsMeService
          */
         public native static void renderMap(double originLatitude,
                                             double originLongitude,
-                                            int scale,
+                                            double scale,
                                             int imageWidth,
                                             int imageHeight,
                                             double rotationAngleDegrees);
-
-        /*
-         * Workarounds for render engine
-         */
-        public native static void allowRenderingInBackground(boolean allow);
     }
 
     /*

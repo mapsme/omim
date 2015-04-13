@@ -440,6 +440,7 @@ bool NVEventCleanupEGL();
 @return true on success, false on failure
 */
 bool NVEventCreateSurfaceEGL();
+bool NVEventCreateOffScreenSurfaceEGL(int width, int height);
 
 /** Unbinds (if needed) and releases the app's EGLSurface
 @return true on success, false on failure
@@ -543,5 +544,16 @@ NVEventPlatformAppHandle NVEventGetPlatformAppHandle();
 void InitNVEvent(JavaVM * jvm);
 
 void postMWMEvent(void * pFn, bool blocking);
+
+typedef struct RenderFrameRequest
+{
+  double m_x, m_y;
+  double m_scale;
+  size_t m_width;
+  size_t m_height;
+} RenderFrameRequest;
+
+void postRenderFrameRequest(double x, double y, double scale, size_t width, size_t height);
+bool getRenderFrameRequest(RenderFrameRequest & request);
 
 #endif

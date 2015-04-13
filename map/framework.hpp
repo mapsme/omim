@@ -157,11 +157,6 @@ public:
   Framework();
   virtual ~Framework();
 
-  void RenderAsync(m2::PointD const & center, size_t scale, size_t width, size_t height)
-  {
-    SetViewportCenter(center);
-  }
-
   /// @name Process storage connecting/disconnecting.
   //@{
   /// @param[out] maps  File names without path.
@@ -377,8 +372,9 @@ public:
   virtual void BeginPaint(shared_ptr<PaintEvent> const & e);
   /// Function for calling from platform dependent-paint function.
   virtual void DoPaint(shared_ptr<PaintEvent> const & e);
-
   virtual void EndPaint(shared_ptr<PaintEvent> const & e);
+
+  void DrawFullFrame(shared_ptr<PaintEvent> const & e, ScreenBase const & s);
 #endif // USE_DRAPE
 
 private:

@@ -760,6 +760,12 @@ void Framework::EndPaint(shared_ptr<PaintEvent> const & e)
     m_renderPolicy->EndFrame(e, e->isOffscreenRendering() ? e->getOffscreenRect() : m_navigator.Screen());
 }
 
+void Framework::DrawFullFrame(shared_ptr<PaintEvent> const & e, ScreenBase const & s)
+{
+  if (m_renderPolicy)
+    m_renderPolicy->DrawFullFrame(e, s);
+}
+
 void Framework::DrawAdditionalInfo(shared_ptr<PaintEvent> const & e)
 {
   // m_informationDisplay is set and drawn after the m_renderPolicy

@@ -181,7 +181,7 @@ extern "C"
   Java_com_mapswithme_maps_MapsMeService_00024RenderService_renderMap(JNIEnv * env, jobject thiz,
                                               jdouble originLatitude,
                                               jdouble originLongitude,
-                                              jint scale,
+                                              jdouble scale,
                                               jint imageWidth,
                                               jint imageHeight,
                                               jdouble rotationAngleDegrees)
@@ -198,16 +198,7 @@ extern "C"
     }
 
     m2::PointD const origin = MercatorBounds::FromLatLon(originLatitude, originLongitude);
-    GlobalRenderAsync(origin, static_cast<size_t>(scale), static_cast<size_t>(imageWidth), static_cast<size_t>(imageHeight));
-  }
-
-  JNIEXPORT void JNICALL
-  Java_com_mapswithme_maps_MapsMeService_00024RenderService_allowRenderingInBackground(JNIEnv * env, jobject thiz,
-                                                jboolean allow)
-  {
-    LOG(LDEBUG, ("MapsMeService_RenderService_allowRenderingInBackground: ", allow));
-
-    SetAppInBackground(allow ? true : false);
+    postRenderFrameRequest(origin.x, origin.y, scale, static_cast<size_t>(imageWidth), static_cast<size_t>(imageHeight));
   }
 
 } // extern "C"

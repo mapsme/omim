@@ -240,6 +240,14 @@ public abstract class NvEventQueueFragment extends BaseMwmFragment implements Vi
     return true;
   }
 
+  @SuppressWarnings("UnusedDeclaration")
+  public boolean CreateOffScreenSurfaceEGL(int w, int h)
+  {
+    if (!mEglWrapper.CreateOffScreenSurfaceEGL(w, h))
+      return false;
+    return true;
+  }
+
   /**
    * Destroys the EGLSurface used for rendering. This function should not be
    * called by the inheriting activity, but can be overridden if needed.

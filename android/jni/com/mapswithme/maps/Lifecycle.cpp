@@ -16,32 +16,57 @@
 #define MODULE "MapsWithMe"
 #define NVDEBUG(args...) __android_log_print(ANDROID_LOG_DEBUG, MODULE, ## args)
 
+//
+//
+//
+
 static int32_t s_winWidth = 1;
 static int32_t s_winHeight = 1;
 static int32_t s_densityDpi = 1;
 
 static bool s_glesLoaded = false;
+static bool s_isAppInBackground = false;
 
-bool SetupGLESResources()
+static int32_t const OFFSCREEN_WIDTH = 520; // the best size for OpenGL which is larger than watch size
+static int32_t const OFFSCREEN_HEIGHT = 520; // the best size for OpenGL which is larger than watch size
+
+// TODO make it in normal way
+// Trick: if surface width/height are specified then create off-screen surface
+void PrepareWindowSurface();
+void PrepareOffScreenSurface(int width, int height);
+bool IsPreparedForOffscreen();
+bool IsPreparedForWindow();
+
+//
+//
+//
+
+static bool SetupGLESResources()
 {
+  NVDEBUG("SetupGLESResources");
+
   if (s_glesLoaded)
     return true;
 
-  if (!g_framework->InitRenderPolicy(s_densityDpi, s_winWidth, s_winHeight))
+  if (!g_framework->InitRenderPolicy(s_densityDpi, s_winWidth, s_winHeight, OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT))
   {
     NVEventReportUnsupported();
     return false;
   }
   else
+  {
     NVEventOnRenderingInitialized();
+  }
 
   s_glesLoaded = true;
 
   return true;
 }
 
-bool ShutdownGLESResources()
+static bool ShutdownGLESResources()
 {
+  NVDEBUG("ShutdownGLESResources");
+
   if (!s_glesLoaded)
     return true;
 
@@ -80,10 +105,13 @@ bool ShutdownGLESResources()
   return true;
 }
 
-bool renderFrame(bool allocateIfNeeded)
+static bool prepareForRender(bool allocateIfNeeded)
 {
   if (!NVEventReadyToRenderEGL(allocateIfNeeded))
+  {
+    NVDEBUG("prepareForRender: NVEventReadyToRenderEGL returned false");
     return false;
+  }
 
   // We've gotten this far, so EGL is ready for us.  Have we loaded our assets?
   // Note that we cannot use APP_STATUS_GLES_LOADED to imply that EGL is
@@ -96,13 +124,48 @@ bool renderFrame(bool allocateIfNeeded)
       return false;
 
     if (!SetupGLESResources())
+    {
+      NVDEBUG("prepareForRender: SetupGLESResources returned false");
       return false;
+    }
+  }
+
+  return true;
+}
+
+static bool renderFrame(bool allocateIfNeeded)
+{
+  if (!prepareForRender(allocateIfNeeded))
+  {
+    NVDEBUG("renderFrame: prepareForRender returned false");
+    return false;
   }
 
   g_framework->DrawFrame();
 
   return true;
 }
+
+static bool renderFrameOffscreen(m2::PointD const & center, double scale, size_t width, size_t height, bool allocateIfNeeded)
+{
+  if (!prepareForRender(allocateIfNeeded))
+  {
+    NVDEBUG("renderFrameOffscreen: prepareForRender returned false");
+    return false;
+  }
+
+  NVDEBUG("renderFrameOffscreen: begin");
+
+  g_framework->DrawFrameOffscreen(center, scale, width, height);
+
+  NVDEBUG("renderFrameOffscreen: end");
+
+  return true;
+}
+
+//
+//
+//
 
 // Add any initialization that requires the app Java classes
 // to be accessible (such as nv_shader_init, NvAPKInit, etc,
@@ -115,22 +178,28 @@ int32_t NVEventAppInit(int32_t argc, char** argv)
 int32_t NVEventAppMain(int32_t argc, char** argv)
 {
   s_glesLoaded = false;
+  s_isAppInBackground = true;
 
   NVDEBUG("Application entering main loop");
 
   while (NVEventStatusIsRunning())
   {
+    /* // debug code to emulate watch queries in background
+    static bool wasFG = false;
+    if (!s_isAppInBackground) wasFG = true;
+    if (wasFG && s_isAppInBackground) { static int c = 0;
+      if (0 == ((c++) % 500)) postRenderFrameRequest(37.5374, 67.5372, 15, 320, 320);
+    } */
+
     const NVEvent* ev = NULL;
+
     while (NVEventStatusIsRunning() &&
           (ev = NVEventGetNextEvent(NVEventStatusIsFocused() ? 1 : 100)))
     {
       switch (ev->m_type)
       {
         case NV_EVENT_KEY:
-          NVDEBUG( "Key event: 0x%02x %s",
-                 ev->m_data.m_key.m_code,
-                 (ev->m_data.m_key.m_action == NV_KEYACTION_DOWN) ? "down" : "up");
-
+          NVDEBUG("Key event: 0x%02x %s", ev->m_data.m_key.m_code, (ev->m_data.m_key.m_action == NV_KEYACTION_DOWN) ? "down" : "up");
           if ((ev->m_data.m_key.m_code == NV_KEYCODE_BACK))
           {
             renderFrame(false);
@@ -148,30 +217,32 @@ int32_t NVEventAppMain(int32_t argc, char** argv)
           ev = NULL;
           NVEventDoneWithEvent(false);
           break;
+
         case NV_EVENT_LONG_CLICK:
+          NVDEBUG("Long click event");
           break;
+
         case NV_EVENT_TOUCH:
           {
-              switch (ev->m_data.m_touch.m_action)
-              {
-              case NV_TOUCHACTION_DOWN:
-                g_framework->Move(0, ev->m_data.m_touch.m_x, ev->m_data.m_touch.m_y);
-                break;
-              case NV_TOUCHACTION_MOVE:
-                g_framework->Move(1, ev->m_data.m_touch.m_x, ev->m_data.m_touch.m_y);
-                break;
-              case NV_TOUCHACTION_UP:
-                g_framework->Move(2, ev->m_data.m_touch.m_x, ev->m_data.m_touch.m_y);
-                break;
-              }
+            switch (ev->m_data.m_touch.m_action)
+            {
+            case NV_TOUCHACTION_DOWN:
+              g_framework->Move(0, ev->m_data.m_touch.m_x, ev->m_data.m_touch.m_y);
+              break;
+            case NV_TOUCHACTION_MOVE:
+              g_framework->Move(1, ev->m_data.m_touch.m_x, ev->m_data.m_touch.m_y);
+              break;
+            case NV_TOUCHACTION_UP:
+              g_framework->Move(2, ev->m_data.m_touch.m_x, ev->m_data.m_touch.m_y);
+              break;
+            }
           }
           break;
 
         case NV_EVENT_MULTITOUCH:
           {
-            int maskOnly = (ev->m_data.m_multi.m_action & NV_MULTITOUCH_POINTER_MASK) >> (NV_MULTITOUCH_POINTER_SHIFT);
-            int action = ev->m_data.m_multi.m_action & NV_MULTITOUCH_ACTION_MASK;
-
+            int const maskOnly = (ev->m_data.m_multi.m_action & NV_MULTITOUCH_POINTER_MASK) >> (NV_MULTITOUCH_POINTER_SHIFT);
+            int const action = ev->m_data.m_multi.m_action & NV_MULTITOUCH_ACTION_MASK;
             g_framework->Touch(action, maskOnly, ev->m_data.m_multi.m_x1, ev->m_data.m_multi.m_y1,
                                                  ev->m_data.m_multi.m_x2, ev->m_data.m_multi.m_y2);
           }
@@ -179,14 +250,13 @@ int32_t NVEventAppMain(int32_t argc, char** argv)
 
         case NV_EVENT_SURFACE_CREATED:
         case NV_EVENT_SURFACE_SIZE:
+          NVDEBUG( "Surface create/resize event: %d x %d, density %d",
+              ev->m_data.m_size.m_w, ev->m_data.m_size.m_h, ev->m_data.m_size.m_density);
           s_winWidth = ev->m_data.m_size.m_w;
           s_winHeight = ev->m_data.m_size.m_h;
           s_densityDpi = ev->m_data.m_size.m_density;
-
           g_framework->Resize(s_winWidth, s_winHeight);
           g_framework->NativeFramework()->Invalidate(true);
-
-          NVDEBUG( "Surface create/resize event: %d x %d", s_winWidth, s_winHeight);
           break;
 
         case NV_EVENT_SURFACE_DESTROYED:
@@ -196,46 +266,64 @@ int32_t NVEventAppMain(int32_t argc, char** argv)
 
         case NV_EVENT_FOCUS_LOST:
           NVDEBUG("Focus lost event");
-
           renderFrame(false);
-          SetAppInBackground(true);
           break;
 
         case NV_EVENT_PAUSE:
           NVDEBUG("Pause event");
           renderFrame(false);
-          SetAppInBackground(true);
           break;
 
         case NV_EVENT_STOP:
           NVDEBUG("Stop event");
-
-          // As per Google's recommendation, we release GLES resources here
-
-          // @todo check if the watch is connected. If not call ShutdownGLESResources(); here.
-          // ShutdownGLESResources();
-          SetAppInBackground(true);
+          ShutdownGLESResources();
+          NVEventDestroySurfaceEGL();
+          ASSERT(!s_glesLoaded, ("GLES should not be load here"));
+          s_isAppInBackground = true;
           break;
+
         case NV_EVENT_QUIT:
           NVDEBUG("Quit event");
-
           break;
+
         case NV_EVENT_ACCEL:
-        case NV_EVENT_START:
-        case NV_EVENT_RESTART:
-        case NV_EVENT_RESUME:
-        case NV_EVENT_FOCUS_GAINED:
           NVDEBUG("%s event: no specific app action", NVEventGetEventStr(ev->m_type));
           break;
 
-        case NV_EVENT_MWM:
-        {
-          typedef function<void ()> FnT;
-          FnT * pFn = reinterpret_cast<FnT *>(ev->m_data.m_mwm.m_pFn);
-          (*pFn)();
-          delete pFn;
+        case NV_EVENT_START:
+        case NV_EVENT_RESTART:
+          NVDEBUG("Start/restart event %s", NVEventGetEventStr(ev->m_type));
+          if (s_glesLoaded && IsPreparedForOffscreen())
+          {
+            ShutdownGLESResources();
+            NVEventDestroySurfaceEGL();
+            ASSERT(!s_glesLoaded, ("GLES should not be load here"));
+          }
+          s_isAppInBackground = false;
+          NVDEBUG("Prepare window surface");
+          PrepareWindowSurface();
+          renderFrame(true);
           break;
-        }
+
+        case NV_EVENT_RESUME:
+          NVDEBUG("Resume event");
+          renderFrame(false);
+          break;
+
+        case NV_EVENT_FOCUS_GAINED:
+          NVDEBUG("Focus gained event");
+          renderFrame(false);
+          break;
+
+        case NV_EVENT_MWM:
+          {
+            NVDEBUG("MWM event");
+            typedef function<void ()> FnT;
+            FnT * const pFn = reinterpret_cast<FnT *>(ev->m_data.m_mwm.m_pFn);
+            (*pFn)();
+            delete pFn;
+            break;
+          }
 
         default:
           NVDEBUG("UNKNOWN event");
@@ -265,7 +353,23 @@ int32_t NVEventAppMain(int32_t argc, char** argv)
       // If these are already set up or we succeed at setting them all up now, then
       // we go ahead and render.
       renderFrame(true);
-      SetAppInBackground(false);
+    }
+
+    // Check is Android.Wear has requested a frame
+    RenderFrameRequest renderFrame;
+    if (getRenderFrameRequest(renderFrame))
+    {
+      double const x = renderFrame.m_x;
+      double const y = renderFrame.m_y;
+      double const scale = renderFrame.m_scale;
+      size_t const width = renderFrame.m_width;
+      size_t const height = renderFrame.m_height;
+      NVDEBUG("RenderFrame event: %g, %g (%d x %d), %g", x, y, width, height, scale);
+      if (!s_glesLoaded)
+      {
+        PrepareOffScreenSurface(OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);
+      }
+      renderFrameOffscreen(m2::PointD(x, y), scale, width, height, true);
     }
   }
 

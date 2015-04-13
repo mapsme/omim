@@ -97,6 +97,9 @@ public:
   /// ending frame
   virtual void EndFrame(shared_ptr<PaintEvent> const & e, ScreenBase const & s);
 
+  /// drawing single full frame
+  virtual void DrawFullFrame(shared_ptr<PaintEvent> const & e, ScreenBase const & s);
+
   /// processing resize request
   virtual void OnSize(int w, int h);
 
