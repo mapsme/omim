@@ -1,5 +1,5 @@
 #include "drape/glyph_manager.hpp"
-#include "drape/sdf_image.h"
+#include "drape/sdf_image.hpp"
 
 #include "platform/platform.hpp"
 
