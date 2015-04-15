@@ -82,7 +82,7 @@ HEADERS += \
     $$DRAPE_DIR/overlay_tree.hpp \
     $$DRAPE_DIR/pointers.hpp \
     $$DRAPE_DIR/render_bucket.hpp \
-    $$DRAPE_DIR/sdf_image.h \
+    $$DRAPE_DIR/sdf_image.hpp \
     $$DRAPE_DIR/shader.hpp \
     $$DRAPE_DIR/shader_def.hpp \
     $$DRAPE_DIR/stipple_pen_resource.hpp \
@@ -98,4 +98,4 @@ HEADERS += \
     $$DRAPE_DIR/utils/stb_image.h \
     $$DRAPE_DIR/utils/vertex_decl.hpp \
     $$DRAPE_DIR/vertex_array_buffer.hpp \
-    $$PWD/depth_constants.hpp
+    $$DRAPE_DIR/depth_constants.hpp

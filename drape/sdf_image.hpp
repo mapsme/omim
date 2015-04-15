@@ -28,10 +28,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "../base/buffer_vector.hpp"
+#include "base/buffer_vector.hpp"
 
-#include "../std/vector.hpp"
-#include "../std/function.hpp"
+#include "std/vector.hpp"
+#include "std/function.hpp"
 
 namespace dp
 {
@@ -78,4 +78,3 @@ private:
 };
 
 } // namespace dp
-

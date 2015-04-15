@@ -11,7 +11,7 @@
 #include "indexer/categories_holder.hpp"
 #include "indexer/feature_algo.hpp"
 
-#include "../search/search_common.hpp"    // for MAX_TOKENS constant
+#include "search/search_common.hpp"    // for MAX_TOKENS constant
 
 #include "defines.hpp"
 

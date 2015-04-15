@@ -15,9 +15,6 @@
 #include "std/vector.hpp"
 #include "std/target_os.hpp"
 
-//#include "../sparsehash/dense_hash_set.hpp"
-
-
 namespace search
 {
 namespace impl
