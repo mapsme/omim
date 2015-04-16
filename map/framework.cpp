@@ -174,7 +174,7 @@ Framework::Framework()
 {
   m_activeMaps.reset(new ActiveMapsLayout(*this));
   m_globalCntTree = storage::CountryTree(m_activeMaps);
-  m_storageAccessor.Reset(new StorageBridge(m_activeMaps));
+  m_storageAccessor = move(make_unique_dp<StorageBridge>(m_activeMaps));
 
   // Restore map style before classificator loading
   int mapStyle = MapStyleLight;
@@ -267,6 +267,11 @@ Framework::Framework()
 
 Framework::~Framework()
 {
+  // m_drapeEngine must be destroyed before m_storageAccessor
+  m_drapeEngine.reset();
+
+  m_activeMaps.reset();
+  m_storageAccessor.reset();
   m_model.SetOnMapDeregisteredCallback(nullptr);
 }
 
@@ -638,7 +643,7 @@ bool Framework::LoadState()
 {
   bool r = m_navigator.LoadState();
   LOG(LINFO, ("Navigator state loaded = ", r, " Rect = ", m_navigator.Screen().ClipRect()));
-  if (!m_drapeEngine.IsNull())
+  if (m_drapeEngine != nullptr)
     m_drapeEngine->UpdateCoverage(m_navigator.Screen());
   return r;
 }
@@ -650,7 +655,7 @@ void Framework::OnSize(int w, int h)
   if (w < 2) w = 2;
   if (h < 2) h = 2;
 
-  if (!m_drapeEngine.IsNull())
+  if (m_drapeEngine != nullptr)
   {
     m_navigator.OnSize(0, 0, w, h);
     m_drapeEngine->Resize(w, h);
@@ -730,7 +735,7 @@ m2::PointD const & Framework::GetViewportCenter() const
 void Framework::SetViewportCenter(m2::PointD const & pt)
 {
   m_navigator.CenterViewport(pt);
-  if (!m_drapeEngine.IsNull())
+  if (m_drapeEngine != nullptr)
     m_drapeEngine->UpdateCoverage(m_navigator.Screen());
 }
 
@@ -817,7 +822,7 @@ void Framework::ShowRectFixedAR(m2::AnyRectD const & rect)
 
 void Framework::UpdateEngineViewport()
 {
-  if (!m_drapeEngine.IsNull())
+  if (m_drapeEngine != nullptr)
     m_drapeEngine->UpdateCoverage(m_navigator.Screen());
 }
 
@@ -870,8 +875,8 @@ void Framework::EnterBackground()
   ClearAllCaches();
 #endif
 
-  ASSERT(!m_drapeEngine.IsNull(), ("Drape engine has not been initialized yet"));
-  if (!m_drapeEngine.IsNull())
+  ASSERT(m_drapeEngine != nullptr, ("Drape engine has not been initialized yet"));
+  if (m_drapeEngine != nullptr)
     m_drapeEngine->SetRenderingEnabled(false);
 }
 
@@ -879,8 +884,8 @@ void Framework::EnterForeground()
 {
   m_startForegroundTime = my::Timer::LocalTime();
 
-  ASSERT(!m_drapeEngine.IsNull(), ("Drape engine has not been initialized yet"));
-  if (!m_drapeEngine.IsNull())
+  ASSERT(m_drapeEngine != nullptr, ("Drape engine has not been initialized yet"));
+  if (m_drapeEngine != nullptr)
     m_drapeEngine->SetRenderingEnabled(true);
 }
 
@@ -903,7 +908,7 @@ void Framework::StartDrag(DragEvent const & e)
   ///@TODO UVR
   //m_informationDisplay.locationState()->DragStarted();
 
-  if (!m_drapeEngine.IsNull())
+  if (m_drapeEngine != nullptr)
     m_drapeEngine->UpdateCoverage(m_navigator.Screen());
 }
 
@@ -911,7 +916,7 @@ void Framework::DoDrag(DragEvent const & e)
 {
   m_navigator.DoDrag(m_navigator.ShiftPoint(e.Pos()), ElapsedSeconds());
 
-  if (!m_drapeEngine.IsNull())
+  if (m_drapeEngine != nullptr)
     m_drapeEngine->UpdateCoverage(m_navigator.Screen());
 }
 
@@ -921,14 +926,14 @@ void Framework::StopDrag(DragEvent const & e)
   ///@TODO UVR
   //m_informationDisplay.locationState()->DragEnded();
 
-  if (!m_drapeEngine.IsNull())
+  if (m_drapeEngine != nullptr)
     m_drapeEngine->UpdateCoverage(m_navigator.Screen());
 }
 
 void Framework::StartRotate(RotateEvent const & e)
 {
   m_navigator.StartRotate(e.Angle(), ElapsedSeconds());
-  if (!m_drapeEngine.IsNull())
+  if (m_drapeEngine != nullptr)
     m_drapeEngine->UpdateCoverage(m_navigator.Screen());
 
   ///@TODO UVR
@@ -938,7 +943,7 @@ void Framework::StartRotate(RotateEvent const & e)
 void Framework::DoRotate(RotateEvent const & e)
 {
   m_navigator.DoRotate(e.Angle(), ElapsedSeconds());
-  if (!m_drapeEngine.IsNull())
+  if (m_drapeEngine != nullptr)
     m_drapeEngine->UpdateCoverage(m_navigator.Screen());
 }
 
@@ -948,7 +953,7 @@ void Framework::StopRotate(RotateEvent const & e)
   ///@TODO UVR
   //GetLocationState()->Rotated();
   //GetLocationState()->ScaleEnded();
-  if (!m_drapeEngine.IsNull())
+  if (m_drapeEngine != nullptr)
     m_drapeEngine->UpdateCoverage(m_navigator.Screen());
 
   UpdateUserViewportChanged();
@@ -957,7 +962,7 @@ void Framework::StopRotate(RotateEvent const & e)
 void Framework::Move(double azDir, double factor)
 {
   m_navigator.Move(azDir, factor);
-  if (!m_drapeEngine.IsNull())
+  if (m_drapeEngine != nullptr)
     m_drapeEngine->UpdateCoverage(m_navigator.Screen());
 }
 //@}
@@ -975,7 +980,7 @@ void Framework::ScaleToPoint(ScaleToPointEvent const & e, bool anim)
   else
     m_navigator.ScaleToPoint(pt, e.ScaleFactor(), 0);
 
-  if (!m_drapeEngine.IsNull())
+  if (m_drapeEngine != nullptr)
     m_drapeEngine->UpdateCoverage(m_navigator.Screen());
 
   UpdateUserViewportChanged();
@@ -995,7 +1000,7 @@ void Framework::Scale(double scale)
   //m_animController->AddTask(m_navigator.ScaleToPointAnim(center, scale, 0.25));
   m_navigator.ScaleToPoint(center, scale, 0.0);
 
-  if (!m_drapeEngine.IsNull())
+  if (m_drapeEngine != nullptr)
     m_drapeEngine->UpdateCoverage(m_navigator.Screen());
 
   UpdateUserViewportChanged();
@@ -1018,7 +1023,7 @@ void Framework::StartScale(ScaleEvent const & e)
   //GetLocationState()->ScaleStarted();
   m_navigator.StartScale(pt1, pt2, ElapsedSeconds());
 
-  if (!m_drapeEngine.IsNull())
+  if (m_drapeEngine != nullptr)
     m_drapeEngine->UpdateCoverage(m_navigator.Screen());
 
 }
@@ -1029,7 +1034,7 @@ void Framework::DoScale(ScaleEvent const & e)
   CalcScalePoints(e, pt1, pt2);
 
   m_navigator.DoScale(pt1, pt2, ElapsedSeconds());
-  if (!m_drapeEngine.IsNull())
+  if (m_drapeEngine != nullptr)
     m_drapeEngine->UpdateCoverage(m_navigator.Screen());
 
   ///@TODO UVR
@@ -1044,7 +1049,7 @@ void Framework::StopScale(ScaleEvent const & e)
 
   m_navigator.StopScale(pt1, pt2, ElapsedSeconds());
 
-  if (!m_drapeEngine.IsNull())
+  if (m_drapeEngine != nullptr)
   {
     m_drapeEngine->UpdateCoverage(m_navigator.Screen());
     UpdateUserViewportChanged();
@@ -1345,7 +1350,7 @@ bool Framework::GetDistanceAndAzimut(m2::PointD const & point,
   return (d < 25000.0);
 }
 
-void Framework::CreateDrapeEngine(dp::RefPointer<dp::OGLContextFactory> contextFactory, float vs, int w, int h)
+void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory, float vs, int w, int h)
 {
   using TReadIDsFn = df::MapDataProvider::TReadIDsFn;
   using TReadFeaturesFn = df::MapDataProvider::TReadFeaturesFn;
@@ -1367,24 +1372,24 @@ void Framework::CreateDrapeEngine(dp::RefPointer<dp::OGLContextFactory> contextF
   };
 
   df::DrapeEngine::Params p(contextFactory,
-                            dp::MakeStackRefPointer(&m_stringsBundle),
-                            m_storageAccessor.GetRefPointer(),
+                            make_ref(&m_stringsBundle),
+                            make_ref<gui::StorageAccessor>(m_storageAccessor),
                             df::Viewport(0, 0, w, h),
                             df::MapDataProvider(idReadFn, featureReadFn, resolveCountry),
                             vs);
 
-  m_drapeEngine.Reset(new df::DrapeEngine(p));
+  m_drapeEngine = move(make_unique_dp<df::DrapeEngine>(p));
   OnSize(w, h);
 }
 
-dp::RefPointer<df::DrapeEngine> Framework::GetDrapeEngine()
+ref_ptr<df::DrapeEngine> Framework::GetDrapeEngine()
 {
-  return m_drapeEngine.GetRefPointer();
+  return make_ref<df::DrapeEngine>(m_drapeEngine);
 }
 
 void Framework::DestroyDrapeEngine()
 {
-  m_drapeEngine.Destroy();
+  m_drapeEngine.reset();
 }
 
 void Framework::SetMapStyle(MapStyle mapStyle)
