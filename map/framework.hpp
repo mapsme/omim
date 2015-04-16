@@ -91,8 +91,8 @@ protected:
 
   typedef vector<BookmarkCategory *>::iterator CategoryIter;
 
-  dp::MasterPointer<gui::StorageAccessor> m_storageAccessor;
-  dp::MasterPointer<df::DrapeEngine> m_drapeEngine;
+  drape_ptr<gui::StorageAccessor> m_storageAccessor;
+  drape_ptr<df::DrapeEngine> m_drapeEngine;
 
   double m_StartForegroundTime;
 
@@ -236,8 +236,8 @@ public:
   void OnCompassUpdate(location::CompassInfo const & info);
   //@}
 
-  void CreateDrapeEngine(dp::RefPointer<dp::OGLContextFactory> contextFactory, float vs, int w, int h);
-  dp::RefPointer<df::DrapeEngine> GetDrapeEngine();
+  void CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory, float vs, int w, int h);
+  ref_ptr<df::DrapeEngine> GetDrapeEngine();
   void DestroyDrapeEngine();
 
   void SetMapStyle(MapStyle mapStyle);
