@@ -468,17 +468,6 @@ bool NVEventSwapBuffersEGL();
 */
 int NVEventGetErrorEGL();
 
-/** Utility function: checks if EGl is completely ready to render, including
- initialization, surface creation and context/surface binding.
-@parm allocateIfNeeded If the parameter is false, then the function immediately returns if any
- part of the requirements have not already been satisfied.  If the parameter is
- true, then the function attempts to initialize any of the steps needed, failing
- and returning false only if a step cannot be completed at this time.
-@return The function returns true if EGL/GLES is ready to render/load content (i.e.
- a context and surface are bound) and false it not
-*/
-bool NVEventReadyToRenderEGL(bool allocateIfNeeded);
-
 /** Convenience conditional function to determine if the app is between onCreate
  and onDestroy callbacks (i.e. the app is in a running state).
 @return true if the application is between onCreate and onDestroy and false after

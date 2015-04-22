@@ -16,9 +16,10 @@
 #define MODULE "MapsWithMe"
 #define NVDEBUG(args...) __android_log_print(ANDROID_LOG_DEBUG, MODULE, ## args)
 
-//
-//
-//
+// Variables below are accessed from the NV thread and therefore do not require synchronization
+
+static int32_t const OFFSCREEN_WIDTH = 520; // the best size for OpenGL which is larger than watch size
+static int32_t const OFFSCREEN_HEIGHT = 520; // the best size for OpenGL which is larger than watch size
 
 static int32_t s_winWidth = 1;
 static int32_t s_winHeight = 1;
@@ -27,19 +28,90 @@ static int32_t s_densityDpi = 1;
 static bool s_glesLoaded = false;
 static bool s_isAppInBackground = false;
 
-static int32_t const OFFSCREEN_WIDTH = 520; // the best size for OpenGL which is larger than watch size
-static int32_t const OFFSCREEN_HEIGHT = 520; // the best size for OpenGL which is larger than watch size
+static int s_offscreenWidth = 0;
+static int s_offscreenHeight = 0;
 
-// TODO make it in normal way
-// Trick: if surface width/height are specified then create off-screen surface
-void PrepareWindowSurface();
-void PrepareOffScreenSurface(int width, int height);
-bool IsPreparedForOffscreen();
-bool IsPreparedForWindow();
+static void PrepareWindowSurface()
+{
+  s_offscreenWidth = 0;
+  s_offscreenHeight = 0;
+}
 
-//
-//
-//
+static void PrepareOffScreenSurface(int width, int height)
+{
+  s_offscreenWidth = width;
+  s_offscreenHeight = height;
+}
+
+static bool IsPreparedForOffscreen()
+{
+  return s_offscreenWidth != 0 && s_offscreenHeight != 0;
+}
+
+/** Utility function: checks if EGl is completely ready to render, including
+ initialization, surface creation and context/surface binding.
+@parm allocateIfNeeded If the parameter is false, then the function immediately returns if any
+ part of the requirements have not already been satisfied.  If the parameter is
+ true, then the function attempts to initialize any of the steps needed, failing
+ and returning false only if a step cannot be completed at this time.
+@return The function returns true if EGL/GLES is ready to render/load content (i.e.
+ a context and surface are bound) and false it not
+*/
+static bool GetReadyToRenderEGL(bool allocateIfNeeded)
+{
+  // If we have a bound context and surface, then EGL is ready
+  if (!NVEventStatusEGLIsBound())
+  {
+    if (!allocateIfNeeded)
+    {
+      NVDEBUG("NVEventReadyToRenderEGL.NVEventInitEGL failed, allocateIfNeeded=false");
+      return false;
+    }
+
+    // If we have not bound the context and surface, do we even _have_ a surface?
+    if (!NVEventStatusEGLHasSurface())
+    {
+      // No surface, so we need to check if EGL is set up at all
+      if (!NVEventStatusEGLInitialized())
+      {
+        if (!NVEventInitEGL())
+        {
+          NVDEBUG("NVEventReadyToRenderEGL.NVEventInitEGL failed");
+          return false;
+        }
+      }
+
+      // Trick: if surface width/height are specified then create off-screen surface
+      if (IsPreparedForOffscreen())
+      {
+        // Create the offscreen rendering surface now that we have a context
+        if (!NVEventCreateOffScreenSurfaceEGL(s_offscreenWidth, s_offscreenHeight))
+        {
+          NVDEBUG("NVEventReadyToRenderEGL.NVEventCreateOffScreenSurfaceEGL failed");
+          return false;
+        }
+      }
+      else
+      {
+        // Create the rendering surface now that we have a context
+        if (!NVEventCreateSurfaceEGL())
+        {
+          NVDEBUG("NVEventReadyToRenderEGL.NVEventCreateSurfaceEGL failed");
+          return false;
+        }
+      }
+    }
+
+    // We have a surface and context, so bind them
+    if (!NVEventBindSurfaceAndContextEGL())
+    {
+      NVDEBUG("NVEventReadyToRenderEGL.NVEventBindSurfaceAndContextEGL failed");
+      return false;
+    }
+  }
+
+  return true;
+}
 
 static bool SetupGLESResources()
 {
@@ -48,7 +120,10 @@ static bool SetupGLESResources()
   if (s_glesLoaded)
     return true;
 
-  if (!g_framework->InitRenderPolicy(s_densityDpi, s_winWidth, s_winHeight, OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT, s_isAppInBackground))
+  int32_t const width = s_isAppInBackground ? OFFSCREEN_WIDTH : s_winWidth;
+  int32_t const height = s_isAppInBackground ? OFFSCREEN_HEIGHT : s_winHeight;
+
+  if (!g_framework->InitRenderPolicy(s_densityDpi, width, height, OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT, s_isAppInBackground))
   {
     NVEventReportUnsupported();
     return false;
@@ -107,7 +182,7 @@ static bool ShutdownGLESResources()
 
 static bool prepareForRender(bool allocateIfNeeded)
 {
-  if (!NVEventReadyToRenderEGL(allocateIfNeeded))
+  if (!GetReadyToRenderEGL(allocateIfNeeded))
   {
     NVDEBUG("prepareForRender: NVEventReadyToRenderEGL returned false");
     return false;
@@ -163,10 +238,6 @@ static bool renderFrameOffscreen(double lat, double lon, double scale, size_t wi
   return true;
 }
 
-//
-//
-//
-
 // Add any initialization that requires the app Java classes
 // to be accessible (such as nv_shader_init, NvAPKInit, etc,
 // as listed in the docs)
@@ -177,10 +248,10 @@ int32_t NVEventAppInit(int32_t argc, char** argv)
 
 int32_t NVEventAppMain(int32_t argc, char** argv)
 {
+  NVDEBUG("Application entering main loop");
+
   s_glesLoaded = false;
   s_isAppInBackground = true;
-
-  NVDEBUG("Application entering main loop");
 
   while (NVEventStatusIsRunning())
   {
@@ -261,7 +332,8 @@ int32_t NVEventAppMain(int32_t argc, char** argv)
 
         case NV_EVENT_SURFACE_DESTROYED:
           NVDEBUG("Surface destroyed event");
-          NVEventDestroySurfaceEGL();
+          if (!IsPreparedForOffscreen())
+            NVEventDestroySurfaceEGL();
           break;
 
         case NV_EVENT_FOCUS_LOST:
@@ -364,16 +436,15 @@ int32_t NVEventAppMain(int32_t argc, char** argv)
       double const scale = renderFrame.m_scale;
       size_t const width = renderFrame.m_width;
       size_t const height = renderFrame.m_height;
+
       NVDEBUG("RenderFrame event: %g, %g (%d x %d), %g", lat, lon, width, height, scale);
+
       if (!s_glesLoaded)
-      {
         PrepareOffScreenSurface(OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);
-      }
+
       renderFrameOffscreen(lat, lon, scale, width, height, true);
     }
   }
-
-  NVDEBUG("cleanup!!!");
 
   if (s_glesLoaded)
   {
@@ -382,9 +453,9 @@ int32_t NVEventAppMain(int32_t argc, char** argv)
     ASSERT(!s_glesLoaded, ("GLES should not be load here"));
   }
 
-  s_isAppInBackground = false;
-
   NVEventCleanupEGL();
+
+  NVDEBUG("cleanup!!!");
 
   return 0;
 }

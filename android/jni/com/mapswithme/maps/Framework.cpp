@@ -155,7 +155,7 @@ void FlipVertical(unsigned int width, unsigned int height, unsigned int bytesPer
 void SaveImage(char * p, int width, int height, string const & fileName)
 {
   static int counter = 0;
-  string const filename = (stringstream() << "/sdcard/tiles2/" << fileName << (++counter) << ".bmp").str();
+  string const filename = (stringstream() << "/sdcard/tiles/" << fileName << (++counter) << ".bmp").str();
   int const res = stbi_write_bmp(filename.c_str(), width, height, CHANNELS_COUNT, p);
   LOG(LINFO, ("SaveImage: stbi_write_bmp(", filename ,", ", width, ", ", height, ", ", CHANNELS_COUNT, ") = ", res));
 }
@@ -167,16 +167,16 @@ void SendImageToAndroidWear(int x, int y,
 {
   MapImage image = {0};
   ReadPixels(x, y, width, height, image);
+
   if (flipVertical)
-  {
     FlipVertical(image.m_width, image.m_height, image.m_bpp, image.m_bytes.data());
-  }
+
   SaveImage(image.m_bytes.data(), width, height, fileName);
+
   ConvertPixelFormat(image.m_width, image.m_height, image.m_bpp, image.m_bytes.data());
+
   if (g_imageReady)
-  {
     g_imageReady(image);
-  }
 }
 
 } // namespace
@@ -473,9 +473,7 @@ namespace android
   void Framework::DrawFrameOffscreen(double lat, double lon, double scale, size_t width, size_t height)
   {
     if (g_imageReady == nullptr)
-    {
       return;
-    }
 
     scale = my::clamp(scale, 1, scales::GetUpperScale());
 
