@@ -766,6 +766,31 @@ void Framework::DrawFullFrame(shared_ptr<PaintEvent> const & e, ScreenBase const
     m_renderPolicy->DrawFullFrame(e, s);
 }
 
+void Framework::DrawFullFrame(shared_ptr<PaintEvent> const & e, m2::PointD const & center, double zoom, size_t width, size_t height)
+{
+  m2::RectD rect = m_scales.GetRectForDrawScale(zoom, center);
+
+  CheckMinGlobalRect(rect);
+
+  double const dx = rect.SizeX();
+  double const dy = rect.SizeY();
+
+  m2::AnyRectD const globalRect(rect.Center(), ang::AngleD(), m2::RectD(-dx/2, -dy/2, dx/2, dy/2));
+
+  m2::RectI const pixelRect(0, 0, width, height);
+
+  ScreenBase const sb(pixelRect, globalRect);
+
+  DrawFullFrame(e, sb);
+}
+
+void Framework::DrawFullFrame(shared_ptr<PaintEvent> const & e, double lat, double lon, double zoom, size_t width, size_t height)
+{
+  m2::PointD const center(MercatorBounds::FromLatLon(lat, lon));
+
+  DrawFullFrame(e, center, zoom, width, height);
+}
+
 void Framework::DrawAdditionalInfo(shared_ptr<PaintEvent> const & e)
 {
   // m_informationDisplay is set and drawn after the m_renderPolicy

@@ -547,13 +547,14 @@ void postMWMEvent(void * pFn, bool blocking);
 
 typedef struct RenderFrameRequest
 {
-  double m_x, m_y;
+  double m_lat;
+  double m_lon;
   double m_scale;
   size_t m_width;
   size_t m_height;
 } RenderFrameRequest;
 
-void postRenderFrameRequest(double x, double y, double scale, size_t width, size_t height);
+void postRenderFrameRequest(double lat, double lon, double scale, size_t width, size_t height);
 bool getRenderFrameRequest(RenderFrameRequest & request);
 
 #endif

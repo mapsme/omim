@@ -402,7 +402,7 @@ namespace android
     m_work.OnSize(w, h);
   }
 
-  void Framework::DrawFrameOffscreen(m2::PointD const & center, double scale, size_t width, size_t height)
+  void Framework::DrawFrameOffscreen(double lat, double lon, double scale, size_t width, size_t height)
   {
     if (g_imageReady == nullptr)
     {
@@ -411,19 +411,12 @@ namespace android
 
     scale = my::clamp(scale, 1, scales::GetUpperScale());
 
-    m2::RectD const globalRect = scales::GetRectForLevel(scale, center);
-    double const hw = globalRect.SizeX() / 2.0;
-    double const hh = globalRect.SizeY() / 2.0;
-    m2::AnyRectD const gr(center, ang::AngleD(), m2::RectD(-hw, -hh, hw, hh));
-    ScreenBase const sb(m2::RectI(0, 0, width, height), gr);
-
     if (m_work.GetRenderPolicy()->GetOffscreenDrawer() == nullptr)
       return;
 
     shared_ptr<PaintEvent> const paintEvent(new PaintEvent(m_work.GetRenderPolicy()->GetOffscreenDrawer().get()));
-    paintEvent->setOffscreenRect(sb);
 
-    m_work.DrawFullFrame(paintEvent, sb);
+    m_work.DrawFullFrame(paintEvent, lat, lon, scale, width, height);
 
     SendImageToAndroidWear(0, 0, width, height, false, "tile_");
   }

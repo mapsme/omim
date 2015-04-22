@@ -116,7 +116,7 @@ namespace android
 
     void DrawFrame();
 
-    void DrawFrameOffscreen(m2::PointD const & center, double scale, size_t width, size_t height);
+    void DrawFrameOffscreen(double lat, double lon, double scale, size_t width, size_t height);
 
     void Move(int mode, double x, double y);
     void Zoom(int mode, double x1, double y1, double x2, double y2);

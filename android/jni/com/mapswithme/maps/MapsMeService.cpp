@@ -197,8 +197,7 @@ extern "C"
       return;
     }
 
-    m2::PointD const origin = MercatorBounds::FromLatLon(originLatitude, originLongitude);
-    postRenderFrameRequest(origin.x, origin.y, scale, static_cast<size_t>(imageWidth), static_cast<size_t>(imageHeight));
+    postRenderFrameRequest(originLatitude, originLongitude, scale, static_cast<size_t>(imageWidth), static_cast<size_t>(imageHeight));
   }
 
 } // extern "C"

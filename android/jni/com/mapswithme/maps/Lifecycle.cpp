@@ -146,7 +146,7 @@ static bool renderFrame(bool allocateIfNeeded)
   return true;
 }
 
-static bool renderFrameOffscreen(m2::PointD const & center, double scale, size_t width, size_t height, bool allocateIfNeeded)
+static bool renderFrameOffscreen(double lat, double lon, double scale, size_t width, size_t height, bool allocateIfNeeded)
 {
   if (!prepareForRender(allocateIfNeeded))
   {
@@ -156,7 +156,7 @@ static bool renderFrameOffscreen(m2::PointD const & center, double scale, size_t
 
   NVDEBUG("renderFrameOffscreen: begin");
 
-  g_framework->DrawFrameOffscreen(center, scale, width, height);
+  g_framework->DrawFrameOffscreen(lat, lon, scale, width, height);
 
   NVDEBUG("renderFrameOffscreen: end");
 
@@ -188,7 +188,7 @@ int32_t NVEventAppMain(int32_t argc, char** argv)
     static bool wasFG = false;
     if (!s_isAppInBackground) wasFG = true;
     if (wasFG && s_isAppInBackground) { static int c = 0;
-      if (0 == ((c++) % 500)) postRenderFrameRequest(37.5374, 67.5372, 15, 320, 320);
+      if (0 == ((c++) % 500)) postRenderFrameRequest(55.7522200, 37.6155600, 15, 320, 320);
     } */
 
     const NVEvent* ev = NULL;
@@ -359,17 +359,17 @@ int32_t NVEventAppMain(int32_t argc, char** argv)
     RenderFrameRequest renderFrame;
     if (getRenderFrameRequest(renderFrame))
     {
-      double const x = renderFrame.m_x;
-      double const y = renderFrame.m_y;
+      double const lat = renderFrame.m_lat;
+      double const lon = renderFrame.m_lon;
       double const scale = renderFrame.m_scale;
       size_t const width = renderFrame.m_width;
       size_t const height = renderFrame.m_height;
-      NVDEBUG("RenderFrame event: %g, %g (%d x %d), %g", x, y, width, height, scale);
+      NVDEBUG("RenderFrame event: %g, %g (%d x %d), %g", lat, lon, width, height, scale);
       if (!s_glesLoaded)
       {
         PrepareOffScreenSurface(OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);
       }
-      renderFrameOffscreen(m2::PointD(x, y), scale, width, height, true);
+      renderFrameOffscreen(lat, lon, scale, width, height, true);
     }
   }
 

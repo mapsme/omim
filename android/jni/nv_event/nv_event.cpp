@@ -928,11 +928,11 @@ static std::mutex s_renderFrameMutex; // protects renderFrame members
 static bool s_renderFrameValid = false;
 static RenderFrameRequest s_renderFrame;
 
-void postRenderFrameRequest(double x, double y, double scale, size_t width, size_t height)
+void postRenderFrameRequest(double lat, double lon, double scale, size_t width, size_t height)
 {
   std::lock_guard<std::mutex> const l(s_renderFrameMutex);
-  s_renderFrame.m_x = x;
-  s_renderFrame.m_y = y;
+  s_renderFrame.m_lat = lat;
+  s_renderFrame.m_lon = lon;
   s_renderFrame.m_scale = scale;
   s_renderFrame.m_width = width;
   s_renderFrame.m_height = height;

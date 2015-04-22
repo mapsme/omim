@@ -375,6 +375,8 @@ public:
   virtual void EndPaint(shared_ptr<PaintEvent> const & e);
 
   void DrawFullFrame(shared_ptr<PaintEvent> const & e, ScreenBase const & s);
+  void DrawFullFrame(shared_ptr<PaintEvent> const & e, m2::PointD const & center, double zoom, size_t width, size_t height);
+  void DrawFullFrame(shared_ptr<PaintEvent> const & e, double lat, double lon, double zoom, size_t width, size_t height);
 #endif // USE_DRAPE
 
 private:
