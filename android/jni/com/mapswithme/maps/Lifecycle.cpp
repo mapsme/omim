@@ -375,6 +375,15 @@ int32_t NVEventAppMain(int32_t argc, char** argv)
 
   NVDEBUG("cleanup!!!");
 
+  if (s_glesLoaded)
+  {
+    ShutdownGLESResources();
+    NVEventDestroySurfaceEGL();
+    ASSERT(!s_glesLoaded, ("GLES should not be load here"));
+  }
+
+  s_isAppInBackground = false;
+
   NVEventCleanupEGL();
 
   return 0;
