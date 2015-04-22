@@ -768,7 +768,8 @@ void Framework::DrawFullFrame(shared_ptr<PaintEvent> const & e, ScreenBase const
 
 void Framework::DrawFullFrame(shared_ptr<PaintEvent> const & e, m2::PointD const & center, double zoom, size_t width, size_t height)
 {
-  m2::RectD rect = m_scales.GetRectForDrawScale(zoom, center);
+  // m2::RectD rect = m_scales.GetRectForDrawScale(zoom, center);
+  m2::RectD rect = scales::GetRectForLevel(zoom, center);
 
   CheckMinGlobalRect(rect);
 

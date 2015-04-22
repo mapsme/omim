@@ -48,7 +48,7 @@ static bool SetupGLESResources()
   if (s_glesLoaded)
     return true;
 
-  if (!g_framework->InitRenderPolicy(s_densityDpi, s_winWidth, s_winHeight, OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT))
+  if (!g_framework->InitRenderPolicy(s_densityDpi, s_winWidth, s_winHeight, OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT, s_isAppInBackground))
   {
     NVEventReportUnsupported();
     return false;
@@ -188,7 +188,7 @@ int32_t NVEventAppMain(int32_t argc, char** argv)
     static bool wasFG = false;
     if (!s_isAppInBackground) wasFG = true;
     if (wasFG && s_isAppInBackground) { static int c = 0;
-      if (0 == ((c++) % 500)) postRenderFrameRequest(55.7522200, 37.6155600, 15, 320, 320);
+      if (0 == ((c++) % 500)) postRenderFrameRequest(55.7975, 37.5374, 15, 320, 320);
     } */
 
     const NVEvent* ev = NULL;

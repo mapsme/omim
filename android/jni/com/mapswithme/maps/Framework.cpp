@@ -181,6 +181,71 @@ void SendImageToAndroidWear(int x, int y,
 
 } // namespace
 
+namespace
+{
+
+class BackgroundRenderPolicy : public RenderPolicy
+{
+public:
+  BackgroundRenderPolicy(RenderPolicy::Params const & p)
+    : RenderPolicy(p, 1)
+    , m_tileSize(ScalesProcessor::CalculateTileSize(p.m_offscreenWidth, p.m_offscreenHeight)) // we need only offscreen drawer
+  {
+    using namespace graphics;
+
+    ResourceManager::Params rmp = p.m_rmParams;
+
+    rmp.checkDeviceCaps();
+
+    bool const useNpot = rmp.canUseNPOTextures();
+
+    rmp.m_textureParams[ELargeTexture] = GetTextureParam(GetLargeTextureSize(useNpot), 1, rmp.m_texFormat, ELargeTexture);
+    rmp.m_textureParams[EMediumTexture] = GetTextureParam(GetMediumTextureSize(useNpot), 5, rmp.m_texFormat, EMediumTexture);
+    rmp.m_textureParams[ERenderTargetTexture] = GetTextureParam(TileSize(), 1, rmp.m_texRtFormat, ERenderTargetTexture);
+    rmp.m_textureParams[ESmallTexture] = GetTextureParam(GetSmallTextureSize(useNpot), 1, rmp.m_texFormat, ESmallTexture);
+
+    rmp.m_storageParams[ELargeStorage] = GetStorageParam(6000, 9000, 10, ELargeStorage);
+    rmp.m_storageParams[EMediumStorage] = GetStorageParam(6000, 9000, 1, EMediumStorage);
+    rmp.m_storageParams[ESmallStorage] = GetStorageParam(2000, 4000, 5, ESmallStorage);
+    rmp.m_storageParams[ETinyStorage] = GetStorageParam(100, 200, 5, ETinyStorage);
+
+    rmp.m_glyphCacheParams = ResourceManager::GlyphCacheParams("unicode_blocks.txt",
+                                                               "fonts_whitelist.txt",
+                                                               "fonts_blacklist.txt",
+                                                               2 * 1024 * 1024,
+                                                               Density());
+
+    rmp.m_renderThreadsCount = 0;
+    rmp.m_threadSlotsCount = 1;
+    rmp.m_useSingleThreadedOGL = true;
+
+    m_resourceManager.reset(new ResourceManager(rmp, SkinName(), Density()));
+
+    m_primaryRC->setResourceManager(m_resourceManager);
+    m_primaryRC->startThreadDrawing(m_resourceManager->guiThreadSlot());
+
+    Platform::FilesList fonts;
+    GetPlatform().GetFontNames(fonts);
+    m_resourceManager->addFonts(fonts);
+
+    m_drawer.reset(CreateDrawer(p.m_useDefaultFB, p.m_primaryRC, ESmallStorage, ESmallTexture));
+    m_offscreenDrawer.reset(CreateOffscreenDrawer(p.m_primaryRC, ESmallStorage, ESmallTexture)); // we need only offscreen drawer
+
+    InitCacheScreen();
+    InitWindowsHandle(p.m_videoTimer, p.m_primaryRC);
+  }
+  virtual size_t TileSize() const { return m_tileSize; }
+  virtual void DrawFrame(shared_ptr<PaintEvent> const & e, ScreenBase const & s)
+  {
+    // we draw Android.Wear only by call DrawFullFrame
+    ASSERT(false, ("Unexpected call"));
+  }
+private:
+  size_t const m_tileSize;
+};
+
+}
+
 void GlobalSetRenderAsyncCallback(std::function<void(MapImage const &)> f)
 {
   g_imageReady = f;
@@ -205,7 +270,8 @@ namespace android
      m_screenWidth(0),
      m_screenHeight(0),
      m_offscreenWidth(0),
-     m_offscreenHeight(0)
+     m_offscreenHeight(0),
+     m_background(false)
   {
     ASSERT_EQUAL ( g_framework, 0, () );
 
@@ -288,7 +354,7 @@ namespace android
     params.m_density = dens[bestRangeIndex].second;
   }
 
-  bool Framework::InitRenderPolicyImpl(int densityDpi, int screenWidth, int screenHeight, int offscreenWidth, int offscreenHeight)
+  bool Framework::InitRenderPolicyImpl(int densityDpi, int screenWidth, int screenHeight, int offscreenWidth, int offscreenHeight, bool background)
   {
     graphics::ResourceManager::Params rmParams;
 
@@ -316,7 +382,8 @@ namespace android
 
     try
     {
-      m_work.SetRenderPolicy(CreateRenderPolicy(rpParams));
+      RenderPolicy * rp = background ? (new BackgroundRenderPolicy(rpParams)) : CreateRenderPolicy(rpParams);
+      m_work.SetRenderPolicy(rp);
       m_work.InitGuiSubsystem();
     }
     catch (graphics::gl::platform_unsupported const & e)
@@ -328,9 +395,9 @@ namespace android
     return true;
   }
 
-  bool Framework::InitRenderPolicy(int densityDpi, int screenWidth, int screenHeight, int offscreenWidth, int offscreenHeight)
+  bool Framework::InitRenderPolicy(int densityDpi, int screenWidth, int screenHeight, int offscreenWidth, int offscreenHeight, bool background)
   {
-    if (!InitRenderPolicyImpl(densityDpi, screenWidth, screenHeight, offscreenWidth, offscreenHeight))
+    if (!InitRenderPolicyImpl(densityDpi, screenWidth, screenHeight, offscreenWidth, offscreenHeight, background))
       return false;
 
     if (m_doLoadState)
@@ -346,6 +413,7 @@ namespace android
     m_screenHeight = screenHeight;
     m_offscreenWidth = offscreenWidth;
     m_offscreenHeight = offscreenHeight;
+    m_background = background;
 
     return true;
   }
@@ -361,7 +429,7 @@ namespace android
     m_work.SetMapStyle(mapStyle);
 
     // construct new render policy
-    if (!InitRenderPolicyImpl(m_densityDpi, m_screenWidth, m_screenHeight, m_offscreenWidth, m_offscreenHeight))
+    if (!InitRenderPolicyImpl(m_densityDpi, m_screenWidth, m_screenHeight, m_offscreenWidth, m_offscreenHeight, m_background))
       return;
 
     m_work.SetUpdatesEnabled(true);
