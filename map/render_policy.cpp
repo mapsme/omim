@@ -347,24 +347,24 @@ Drawer * RenderPolicy::CreateOffscreenDrawer(shared_ptr<graphics::RenderContext>
   return new Drawer(dp);
 }
 
-size_t RenderPolicy::GetLargeTextureSize(bool useNpot)
+size_t RenderPolicy::GetLargeTextureSize(bool useNpot) const
 {
   UNUSED_VALUE(useNpot);
   return 512;
 }
 
-size_t RenderPolicy::GetMediumTextureSize(bool useNpot)
+size_t RenderPolicy::GetMediumTextureSize(bool useNpot) const
 {
-  uint32_t size = 256 * VisualScale();
+  uint32_t const size = 256 * VisualScale();
   if (useNpot)
     return size;
 
   return my::NextPowOf2(size);
 }
 
-size_t RenderPolicy::GetSmallTextureSize(bool useNpot)
+size_t RenderPolicy::GetSmallTextureSize(bool useNpot) const
 {
-  uint32_t size = 128 * VisualScale();
+  uint32_t const size = 128 * VisualScale();
   if (useNpot)
     return size;
 
