@@ -39,7 +39,7 @@
     // Correct retina display support in opengl renderbuffer
     self.contentScaleFactor = [self correctContentScale];
 
-    m_factory = move(make_unique_dp<dp::ThreadSafeFactory>(new iosOGLContextFactory(eaglLayer)));
+    m_factory = make_unique_dp<dp::ThreadSafeFactory>(new iosOGLContextFactory(eaglLayer));
   }
 
   NSLog(@"EAGLView initWithCoder Ended");
