@@ -77,7 +77,7 @@ namespace android
     int m_screenHeight;
     int m_offscreenWidth;
     int m_offscreenHeight;
-    bool m_background;
+    bool m_isInBackground;
 
     void StartTouchTask(double x, double y, unsigned ms);
     bool KillTouchTask();
@@ -87,7 +87,7 @@ namespace android
 
     void SetBestDensity(int densityDpi, RenderPolicy::Params & params);
 
-    bool InitRenderPolicyImpl(int densityDpi, int screenWidth, int screenHeight, int offscreenWidth, int offscreenHeight, bool background);
+    bool InitRenderPolicyImpl(int densityDpi, int screenWidth, int screenHeight, int offscreenWidth, int offscreenHeight, bool isInBackground);
 
   public:
     Framework();
@@ -108,7 +108,7 @@ namespace android
 
     void Invalidate();
 
-    bool InitRenderPolicy(int densityDpi, int screenWidth, int screenHeight, int offscreenWidth, int offscreenHeight, bool background);
+    bool InitRenderPolicy(int densityDpi, int screenWidth, int screenHeight, int offscreenWidth, int offscreenHeight, bool isInBackground);
     void DeleteRenderPolicy();
 
     void SetMapStyle(MapStyle mapStyle);

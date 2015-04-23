@@ -147,29 +147,30 @@ void RenderPolicy::DrawFullFrame(shared_ptr<PaintEvent> const & e, ScreenBase co
   uint const w = s.GetWidth();
   uint const h = s.GetHeight();
 
-  m2::RectI const renderRect(0, 0, w, h);
+  m2::RectI const renderRectI(0, 0, w, h);
+  m2::RectD const renderRectD(renderRectI);
 
-  shared_ptr<graphics::OverlayStorage> overlay(new graphics::OverlayStorage(m2::RectD(renderRect)));
+  shared_ptr<graphics::OverlayStorage> overlay(new graphics::OverlayStorage(renderRectD));
 
   screen->setOverlay(overlay);
   screen->beginFrame();
-  screen->setClipRect(renderRect);
+  screen->setClipRect(renderRectI);
   screen->clear(m_bgColor);
-  screen->applySharpStates();
 
   ASSERT((m_renderFn != nullptr), ());
-  m_renderFn(e, s, m2::RectD(renderRect), ScalesProcessor(TileSize()).GetTileScaleBase(s));
+  m_renderFn(e, s, renderRectD, ScalesProcessor(TileSize()).GetTileScaleBase(s));
 
+  screen->applySharpStates();
   screen->resetOverlay();
   screen->clear(m_bgColor, false);
 
-  shared_ptr<graphics::Overlay> drawOverlay(new graphics::Overlay());
-  drawOverlay->merge(overlay);
+  graphics::Overlay drawOverlay;
+  drawOverlay.merge(overlay);
 
   overlay.reset();
 
   math::Matrix<double, 3, 3> const m = math::Identity<double, 3>();
-  drawOverlay->forEach([&screen, &m](shared_ptr<graphics::OverlayElement> const & element)
+  drawOverlay.forEach([&screen, &m](shared_ptr<graphics::OverlayElement> const & element)
   {
     element->draw(screen, m);
   });

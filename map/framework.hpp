@@ -374,8 +374,6 @@ public:
   virtual void DoPaint(shared_ptr<PaintEvent> const & e);
   virtual void EndPaint(shared_ptr<PaintEvent> const & e);
 
-  void DrawFullFrame(shared_ptr<PaintEvent> const & e, ScreenBase const & s);
-  void DrawFullFrame(shared_ptr<PaintEvent> const & e, m2::PointD const & center, double zoom, size_t width, size_t height);
   void DrawFullFrame(shared_ptr<PaintEvent> const & e, double lat, double lon, double zoom, size_t width, size_t height);
 #endif // USE_DRAPE
 
@@ -388,6 +386,9 @@ private:
   m2::AnyRectD ToRotated(m2::RectD const & rect) const;
   void ShowRectFixed(m2::RectD const & rect);
   void ShowRectFixedAR(m2::AnyRectD const & rect);
+
+  void DrawFullFrame(shared_ptr<PaintEvent> const & e, ScreenBase const & s);
+  void DrawFullFrame(shared_ptr<PaintEvent> const & e, m2::PointD const & center, double zoom, size_t width, size_t height);
 
 public:
   /// Show rect for point and needed draw scale.

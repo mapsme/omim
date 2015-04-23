@@ -16,34 +16,37 @@
 #define MODULE "MapsWithMe"
 #define NVDEBUG(args...) __android_log_print(ANDROID_LOG_DEBUG, MODULE, ## args)
 
+namespace
+{
+
+int32_t const OFFSCREEN_WIDTH = 512; // the best size for OpenGL which is larger than watch size
+int32_t const OFFSCREEN_HEIGHT = 512; // the best size for OpenGL which is larger than watch size
+
 // Variables below are accessed from the NV thread and therefore do not require synchronization
 
-static int32_t const OFFSCREEN_WIDTH = 520; // the best size for OpenGL which is larger than watch size
-static int32_t const OFFSCREEN_HEIGHT = 520; // the best size for OpenGL which is larger than watch size
+int32_t s_winWidth = 1;
+int32_t s_winHeight = 1;
+int32_t s_densityDpi = 1;
 
-static int32_t s_winWidth = 1;
-static int32_t s_winHeight = 1;
-static int32_t s_densityDpi = 1;
+bool s_glesLoaded = false;
+bool s_isAppInBackground = false;
 
-static bool s_glesLoaded = false;
-static bool s_isAppInBackground = false;
+int s_offscreenWidth = 0;
+int s_offscreenHeight = 0;
 
-static int s_offscreenWidth = 0;
-static int s_offscreenHeight = 0;
-
-static void PrepareWindowSurface()
+void PrepareWindowSurface()
 {
   s_offscreenWidth = 0;
   s_offscreenHeight = 0;
 }
 
-static void PrepareOffScreenSurface(int width, int height)
+void PrepareOffScreenSurface(int width, int height)
 {
   s_offscreenWidth = width;
   s_offscreenHeight = height;
 }
 
-static bool IsPreparedForOffscreen()
+bool IsPreparedForOffscreen()
 {
   return s_offscreenWidth != 0 && s_offscreenHeight != 0;
 }
@@ -57,7 +60,7 @@ static bool IsPreparedForOffscreen()
 @return The function returns true if EGL/GLES is ready to render/load content (i.e.
  a context and surface are bound) and false it not
 */
-static bool GetReadyToRenderEGL(bool allocateIfNeeded)
+bool GetReadyToRenderEGL(bool allocateIfNeeded)
 {
   // If we have a bound context and surface, then EGL is ready
   if (!NVEventStatusEGLIsBound())
@@ -113,7 +116,7 @@ static bool GetReadyToRenderEGL(bool allocateIfNeeded)
   return true;
 }
 
-static bool SetupGLESResources()
+bool SetupGLESResources()
 {
   NVDEBUG("SetupGLESResources");
 
@@ -129,16 +132,14 @@ static bool SetupGLESResources()
     return false;
   }
   else
-  {
     NVEventOnRenderingInitialized();
-  }
 
   s_glesLoaded = true;
 
   return true;
 }
 
-static bool ShutdownGLESResources()
+bool ShutdownGLESResources()
 {
   NVDEBUG("ShutdownGLESResources");
 
@@ -180,7 +181,7 @@ static bool ShutdownGLESResources()
   return true;
 }
 
-static bool prepareForRender(bool allocateIfNeeded)
+bool prepareForRender(bool allocateIfNeeded)
 {
   if (!GetReadyToRenderEGL(allocateIfNeeded))
   {
@@ -208,7 +209,7 @@ static bool prepareForRender(bool allocateIfNeeded)
   return true;
 }
 
-static bool renderFrame(bool allocateIfNeeded)
+bool renderFrame(bool allocateIfNeeded)
 {
   if (!prepareForRender(allocateIfNeeded))
   {
@@ -221,7 +222,7 @@ static bool renderFrame(bool allocateIfNeeded)
   return true;
 }
 
-static bool renderFrameOffscreen(double lat, double lon, double scale, size_t width, size_t height, bool allocateIfNeeded)
+bool renderFrameOffscreen(double lat, double lon, double scale, size_t width, size_t height, bool allocateIfNeeded)
 {
   if (!prepareForRender(allocateIfNeeded))
   {
@@ -237,6 +238,8 @@ static bool renderFrameOffscreen(double lat, double lon, double scale, size_t wi
 
   return true;
 }
+
+} // namespace
 
 // Add any initialization that requires the app Java classes
 // to be accessible (such as nv_shader_init, NvAPKInit, etc,
@@ -277,15 +280,13 @@ int32_t NVEventAppMain(int32_t argc, char** argv)
             NVEventDoneWithEvent(true);
           }
           else
-          {
             NVEventDoneWithEvent(false);
-          }
-          ev = NULL;
+          ev = nullptr;
           break;
 
         case NV_EVENT_CHAR:
           NVDEBUG("Char event: 0x%02x", ev->m_data.m_char.m_unichar);
-          ev = NULL;
+          ev = nullptr;
           NVEventDoneWithEvent(false);
           break;
 
@@ -404,7 +405,7 @@ int32_t NVEventAppMain(int32_t argc, char** argv)
 
       // if we do not NULL out the event, then we return that
       // we handled it by default
-      if (ev)
+      if (nullptr != ev)
         NVEventDoneWithEvent(true);
     }
 
@@ -437,7 +438,7 @@ int32_t NVEventAppMain(int32_t argc, char** argv)
       size_t const width = renderFrame.m_width;
       size_t const height = renderFrame.m_height;
 
-      NVDEBUG("RenderFrame event: %g, %g (%d x %d), %g", lat, lon, width, height, scale);
+      NVDEBUG("RenderFrame event: %g, %g (%d x %d) %g", lat, lon, width, height, scale);
 
       if (!s_glesLoaded)
         PrepareOffScreenSurface(OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);

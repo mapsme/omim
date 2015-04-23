@@ -119,14 +119,14 @@ static int NVEVENT_ACTION_KEY_UP = 0;
 class MethodRef
 {
 public:
-  MethodRef(const char* name,
-            const char* signature) :
+  MethodRef(const char * name,
+            const char * signature) :
     m_name(name),
     m_signature(signature),
     m_index(NULL)
   {}
 
-  bool QueryID(JNIEnv* env, jclass k)
+  bool QueryID(JNIEnv * env, jclass k)
   {
     m_index = env->GetMethodID(k, m_name, m_signature);
     return (0 != m_index);
@@ -134,7 +134,7 @@ public:
 
   bool CallBoolean() const
   {
-    JNIEnv* const jniEnv = NVThreadGetCurrentJNIEnv();
+    JNIEnv * const jniEnv = NVThreadGetCurrentJNIEnv();
 
     if (!jniEnv || !s_globalThiz)
     {
@@ -154,7 +154,7 @@ public:
   template <typename P1, typename P2>
   bool CallBoolean(P1 p1, P2 p2) const
   {
-    JNIEnv* const jniEnv = NVThreadGetCurrentJNIEnv();
+    JNIEnv * const jniEnv = NVThreadGetCurrentJNIEnv();
 
     if (!jniEnv || !s_globalThiz)
     {
@@ -172,7 +172,7 @@ public:
 
   int CallInt() const
   {
-    JNIEnv* const jniEnv = NVThreadGetCurrentJNIEnv();
+    JNIEnv * const jniEnv = NVThreadGetCurrentJNIEnv();
 
     if (!jniEnv || !s_globalThiz)
     {
@@ -209,8 +209,8 @@ public:
   }
 
 private:
-  const char* const m_name;
-  const char* const m_signature;
+  const char * const m_name;
+  const char * const m_signature;
   jmethodID m_index;
 };
 
@@ -326,7 +326,7 @@ static void* NVEventMainLoopThreadFunc(void*)
     s_finish.CallVoid();
   }
 
-  return NULL;
+  return nullptr;
 }
 
 NVEventPlatformAppHandle NVEventGetPlatformAppHandle()
@@ -379,13 +379,13 @@ void NVEventDoneWithEvent(bool handled)
 
 static void NVEventInsert(NVEvent* ev)
 {
-  if(!s_appThreadExited)
+  if (!s_appThreadExited)
     s_eventQueue.Insert(ev);
 }
 
 static bool NVEventInsertBlocking(NVEvent* ev)
 {
-  if(!s_appThreadExited)
+  if (!s_appThreadExited)
     return s_eventQueue.InsertBlocking(ev);
 
   return false;
@@ -396,7 +396,7 @@ static bool NVEventInsertBlocking(NVEvent* ev)
 
 bool NVEventInitEGL()
 {
-  if(s_InitEGL.CallBoolean())
+  if (s_InitEGL.CallBoolean())
   {
     SetAppFlag(NVEVENT_STATUS_EGL_INITIALIZED);
     return true;
@@ -643,10 +643,10 @@ static jboolean onCreateNative(JNIEnv* env, jobject thiz)
 
   __android_log_print(ANDROID_LOG_DEBUG, MODULE,  "Calling NVEventAppInit");
 
-  if (0 != NVEventAppInit(0, NULL))
+  if (0 != NVEventAppInit(0, nullptr))
   {
     env->DeleteGlobalRef(s_globalThiz);
-    s_globalThiz = NULL;
+    s_globalThiz = nullptr;
 
     __android_log_print(ANDROID_LOG_DEBUG, MODULE,  "NVEventAppInit error");
     return JNI_FALSE;
@@ -695,7 +695,7 @@ static jboolean onSurfaceCreatedNative(JNIEnv* env, jobject thiz, int w, int h, 
   ev.m_data.m_size.m_w = w;
   ev.m_data.m_size.m_h = h;
   ev.m_data.m_size.m_density = density;
-  if ((w > 0) &&  (h > 0))
+  if ((w > 0) && (h > 0))
     SetAppFlag(NVEVENT_STATUS_HAS_REAL_SURFACE);
   else
     ClearAppFlag(NVEVENT_STATUS_HAS_REAL_SURFACE);
@@ -802,7 +802,7 @@ static jboolean onDestroyNative(JNIEnv* env, jobject thiz)
   }
 
   env->DeleteGlobalRef(s_globalThiz);
-  s_globalThiz = NULL;
+  s_globalThiz = nullptr;
 
   __android_log_print(ANDROID_LOG_DEBUG, MODULE,  "Released global thiz!");
 
@@ -844,7 +844,7 @@ void postMWMEvent(void * pFn, bool blocking)
     NVEventInsert(&ev);
 }
 
-static std::mutex s_renderFrameMutex; // protects renderFrame members
+static std::mutex s_renderFrameMutex;
 static bool s_renderFrameValid = false;
 static RenderFrameRequest s_renderFrame;
 
@@ -886,7 +886,7 @@ char* NVEventLoadFile(const char* file)
 
 void InitNVEvent(JavaVM* vm)
 {
-  JNIEnv* env = nullptr;
+  JNIEnv * env = nullptr;
 
   NVThreadInit(vm);
 

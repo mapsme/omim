@@ -152,18 +152,17 @@ void FlipVertical(unsigned int width, unsigned int height, unsigned int bytesPer
   }
 }
 
-void SaveImage(char * p, int width, int height, string const & fileName)
+void SaveImage(char * p, int width, int height)
 {
   static int counter = 0;
-  string const filename = (stringstream() << "/sdcard/tiles/" << fileName << (++counter) << ".bmp").str();
+  string const filename = (stringstream() << "/sdcard/tiles/tile_" << (++counter) << ".bmp").str();
   int const res = stbi_write_bmp(filename.c_str(), width, height, CHANNELS_COUNT, p);
   LOG(LINFO, ("SaveImage: stbi_write_bmp(", filename ,", ", width, ", ", height, ", ", CHANNELS_COUNT, ") = ", res));
 }
 
 void SendImageToAndroidWear(int x, int y,
                             int width, int height,
-                            bool flipVertical,
-                            string const & fileName)
+                            bool flipVertical)
 {
   MapImage image = {0};
   ReadPixels(x, y, width, height, image);
@@ -171,7 +170,7 @@ void SendImageToAndroidWear(int x, int y,
   if (flipVertical)
     FlipVertical(image.m_width, image.m_height, image.m_bpp, image.m_bytes.data());
 
-  SaveImage(image.m_bytes.data(), width, height, fileName);
+  SaveImage(image.m_bytes.data(), width, height);
 
   ConvertPixelFormat(image.m_width, image.m_height, image.m_bpp, image.m_bytes.data());
 
@@ -271,7 +270,7 @@ namespace android
      m_screenHeight(0),
      m_offscreenWidth(0),
      m_offscreenHeight(0),
-     m_background(false)
+     m_isInBackground(false)
   {
     ASSERT_EQUAL ( g_framework, 0, () );
 
@@ -354,7 +353,7 @@ namespace android
     params.m_density = dens[bestRangeIndex].second;
   }
 
-  bool Framework::InitRenderPolicyImpl(int densityDpi, int screenWidth, int screenHeight, int offscreenWidth, int offscreenHeight, bool background)
+  bool Framework::InitRenderPolicyImpl(int densityDpi, int screenWidth, int screenHeight, int offscreenWidth, int offscreenHeight, bool isInBackground)
   {
     graphics::ResourceManager::Params rmParams;
 
@@ -382,7 +381,7 @@ namespace android
 
     try
     {
-      RenderPolicy * rp = background ? (new BackgroundRenderPolicy(rpParams)) : CreateRenderPolicy(rpParams);
+      RenderPolicy * const rp = isInBackground ? (new BackgroundRenderPolicy(rpParams)) : CreateRenderPolicy(rpParams);
       m_work.SetRenderPolicy(rp);
       m_work.InitGuiSubsystem();
     }
@@ -395,9 +394,9 @@ namespace android
     return true;
   }
 
-  bool Framework::InitRenderPolicy(int densityDpi, int screenWidth, int screenHeight, int offscreenWidth, int offscreenHeight, bool background)
+  bool Framework::InitRenderPolicy(int densityDpi, int screenWidth, int screenHeight, int offscreenWidth, int offscreenHeight, bool isInBackground)
   {
-    if (!InitRenderPolicyImpl(densityDpi, screenWidth, screenHeight, offscreenWidth, offscreenHeight, background))
+    if (!InitRenderPolicyImpl(densityDpi, screenWidth, screenHeight, offscreenWidth, offscreenHeight, isInBackground))
       return false;
 
     if (m_doLoadState)
@@ -413,7 +412,7 @@ namespace android
     m_screenHeight = screenHeight;
     m_offscreenWidth = offscreenWidth;
     m_offscreenHeight = offscreenHeight;
-    m_background = background;
+    m_isInBackground = isInBackground;
 
     return true;
   }
@@ -429,7 +428,7 @@ namespace android
     m_work.SetMapStyle(mapStyle);
 
     // construct new render policy
-    if (!InitRenderPolicyImpl(m_densityDpi, m_screenWidth, m_screenHeight, m_offscreenWidth, m_offscreenHeight, m_background))
+    if (!InitRenderPolicyImpl(m_densityDpi, m_screenWidth, m_screenHeight, m_offscreenWidth, m_offscreenHeight, m_isInBackground))
       return;
 
     m_work.SetUpdatesEnabled(true);
@@ -484,7 +483,7 @@ namespace android
 
     m_work.DrawFullFrame(paintEvent, lat, lon, scale, width, height);
 
-    SendImageToAndroidWear(0, 0, width, height, false, "tile_");
+    SendImageToAndroidWear(0, 0, width, height, false);
   }
 
   void Framework::DrawFrame()
