@@ -100,6 +100,8 @@ bool NVEventQueue::insert(NVEvent const * ev)
 
 void NVEventQueue::Init()
 {
+  m_hasOnEmptyQueueEvent = false;
+
   m_nextInsertIndex = 0;
   m_headIndex = 0;
   pthread_mutex_init(&m_accessLock, NULL);
@@ -145,6 +147,7 @@ void NVEventQueue::Insert(const NVEvent* ev)
   // insert the event and unblock a waiter
   insert(ev);
   signal(&m_consumerSync);
+
   pthread_mutex_unlock(&m_accessLock);
 }
 
@@ -190,12 +193,22 @@ bool NVEventQueue::InsertBlocking(const NVEvent* ev)
   // next thread to potentially post a blocking event
   signal(&m_blockerSync);
   pthread_mutex_unlock(&m_accessLock);
-
   return handled;
 }
 
+void NVEventQueue::SetOnEmptyQueueEvent(NVEvent const * ev)
+{
+  pthread_mutex_lock(&m_accessLock);
 
-const NVEvent* NVEventQueue::RemoveOldest(int waitMSecs)
+  memcpy(&m_onEmptyQueueEvent, ev, sizeof(NVEvent));
+  m_hasOnEmptyQueueEvent = true;
+
+  signal(&m_consumerSync);
+
+  pthread_mutex_unlock(&m_accessLock);
+}
+
+NVEvent const * NVEventQueue::RemoveOldest(int waitMSecs)
 {
   pthread_mutex_lock(&m_accessLock);
 
@@ -211,54 +224,64 @@ const NVEvent* NVEventQueue::RemoveOldest(int waitMSecs)
 
   // Blocker is waiting - return it
   // And push the blocker pipeline forward
-  if(m_blockerState == PENDING_BLOCKER)
+  if (m_blockerState == PENDING_BLOCKER)
   {
     m_blockerState = PROCESSING_BLOCKER;
-    const NVEvent* ev = m_blocker;
+    NVEvent const * const ev = m_blocker;
     pthread_mutex_unlock(&m_accessLock);
-
     return ev;
   }
   else if (m_nextInsertIndex == m_headIndex)
   {
-    // We're empty - so what do we do?
-    if (waitMSecs == 0)
+    if (m_hasOnEmptyQueueEvent)
     {
-      goto no_event;
+      m_hasOnEmptyQueueEvent = false;
+      insert(&m_onEmptyQueueEvent);
     }
     else
     {
-      // wait for the specified time
-      wait(&m_consumerSync, &m_accessLock, (unsigned)waitMSecs);
-    }
+      // We're empty - so what do we do?
+      if (waitMSecs == 0)
+      {
+        pthread_mutex_unlock(&m_accessLock);
+        return nullptr;
+      }
+      else
+      {
+        // wait for the specified time
+        wait(&m_consumerSync, &m_accessLock, waitMSecs);
+      }
 
-    // check again after exiting cond waits, either we had a timeout
-    if(m_blockerState == PENDING_BLOCKER)
-    {
-      m_blockerState = PROCESSING_BLOCKER;
-      const NVEvent* ev = m_blocker;
-      pthread_mutex_unlock(&(m_accessLock));
-
-      return ev;
-    }
-    else if (m_nextInsertIndex == m_headIndex)
-    {
-      goto no_event;
+      // check again after exiting cond waits, either we had a timeout
+      if (m_blockerState == PENDING_BLOCKER)
+      {
+        m_blockerState = PROCESSING_BLOCKER;
+        NVEvent const * const ev = m_blocker;
+        pthread_mutex_unlock(&(m_accessLock));
+        return ev;
+      }
+      else if (m_nextInsertIndex == m_headIndex)
+      {
+        if (m_hasOnEmptyQueueEvent)
+        {
+          m_hasOnEmptyQueueEvent = false;
+          insert(&m_onEmptyQueueEvent);
+        }
+        else
+        {
+          pthread_mutex_unlock(&m_accessLock);
+          return nullptr;
+        }
+      }
     }
   }
 
-  {
-    // One way or another, we have an event...
-    NVEvent const * ev = m_events + m_headIndex;
-    m_headIndex = NVNextWrapped(m_headIndex);
+  // One way or another, we have an event...
+  NVEvent const * const ev = m_events + m_headIndex;
+  m_headIndex = NVNextWrapped(m_headIndex);
 
-    pthread_mutex_unlock(&m_accessLock);
-    return ev;
-  }
-	
-no_event:
   pthread_mutex_unlock(&m_accessLock);
-  return NULL;
+  return ev;
 }
 
 void NVEventQueue::DoneWithEvent(bool ret)

@@ -103,6 +103,8 @@ typedef enum NVEventType
   /** App-specific events */
   NV_EVENT_USER,
   NV_EVENT_MWM,
+  /** Render frame request event */
+  NV_EVENT_RENDER_FRAME,
   /* a dummy enum value used to compute num_events */
   NV_EVENT_NUM_EVENT_DUMMY_DONTUSEME,
   /* total number of events */
@@ -335,6 +337,17 @@ typedef struct NVEventMWM
   void * m_pFn;
 } NVEventMWM;
 
+/** Render frame event data
+*/
+typedef struct NVEventRenderFrame
+{
+  double m_lat;
+  double m_lon;
+  double m_scale;
+  size_t m_width;
+  size_t m_height;
+} NVEventRenderFrame;
+
 /** All-encompassing event structure
 */
 typedef struct NVEvent
@@ -359,6 +372,8 @@ typedef struct NVEvent
     /** Data for user/app events */
     NVEventUser m_user;
     NVEventMWM m_mwm;
+    /** Data for render frame request event */
+    NVEventRenderFrame m_renderFrame;
   } m_data;
 } NVEvent;
 
@@ -534,16 +549,6 @@ void InitNVEvent(JavaVM * jvm);
 
 void postMWMEvent(void * pFn, bool blocking);
 
-typedef struct RenderFrameRequest
-{
-  double m_lat;
-  double m_lon;
-  double m_scale;
-  size_t m_width;
-  size_t m_height;
-} RenderFrameRequest;
-
 void postRenderFrameRequest(double lat, double lon, double scale, size_t width, size_t height);
-bool getRenderFrameRequest(RenderFrameRequest & request);
 
 #endif

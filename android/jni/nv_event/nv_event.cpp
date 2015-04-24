@@ -360,10 +360,11 @@ const char* NVEventGetEventStr(NVEventType eventType)
     case NV_EVENT_USER:             return "NV_EVENT_USER";
     case NV_EVENT_LONG_CLICK:       return "NV_EVENT_LONG_CLICK";
     case NV_EVENT_MWM:              return "NV_EVENT_MWM";
+    case NV_EVENT_RENDER_FRAME:     return "NV_EVENT_RENDER_FRAME";
   }
 
   // update this if you end up having to edit something.
-  CT_ASSERT(NEED_TO_ADD_STRING_HERE, NV_EVENT_NUM_EVENTS == 19);
+  CT_ASSERT(NEED_TO_ADD_STRING_HERE, NV_EVENT_NUM_EVENTS == 20);
   return "unknown event type!";
 }
 
@@ -377,18 +378,23 @@ void NVEventDoneWithEvent(bool handled)
   return s_eventQueue.DoneWithEvent(handled);
 }
 
-static void NVEventInsert(NVEvent* ev)
+static void NVEventInsert(NVEvent const * ev)
 {
   if (!s_appThreadExited)
     s_eventQueue.Insert(ev);
 }
 
-static bool NVEventInsertBlocking(NVEvent* ev)
+static bool NVEventInsertBlocking(NVEvent const * ev)
 {
   if (!s_appThreadExited)
     return s_eventQueue.InsertBlocking(ev);
 
   return false;
+}
+
+static void NVEventSetOnEmptyQueueEvent(NVEvent const * ev)
+{
+  s_eventQueue.SetOnEmptyQueueEvent(ev);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -844,32 +850,16 @@ void postMWMEvent(void * pFn, bool blocking)
     NVEventInsert(&ev);
 }
 
-static std::mutex s_renderFrameMutex;
-static bool s_renderFrameValid = false;
-static RenderFrameRequest s_renderFrame;
-
 void postRenderFrameRequest(double lat, double lon, double scale, size_t width, size_t height)
 {
-  std::lock_guard<std::mutex> const l(s_renderFrameMutex);
-  s_renderFrame.m_lat = lat;
-  s_renderFrame.m_lon = lon;
-  s_renderFrame.m_scale = scale;
-  s_renderFrame.m_width = width;
-  s_renderFrame.m_height = height;
-  s_renderFrameValid = true;
-}
-
-bool getRenderFrameRequest(RenderFrameRequest & info)
-{
-  std::lock_guard<std::mutex> const l(s_renderFrameMutex);
-  if (s_renderFrameValid)
-  {
-    s_renderFrameValid = false;
-    info = s_renderFrame;
-    return true;
-  }
-  else
-    return false;
+  NVEvent ev;
+  ev.m_type = NV_EVENT_RENDER_FRAME;
+  ev.m_data.m_renderFrame.m_lat = lat;
+  ev.m_data.m_renderFrame.m_lon = lon;
+  ev.m_data.m_renderFrame.m_scale = scale;
+  ev.m_data.m_renderFrame.m_width = width;
+  ev.m_data.m_renderFrame.m_height = height;
+  NVEventSetOnEmptyQueueEvent(&ev);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

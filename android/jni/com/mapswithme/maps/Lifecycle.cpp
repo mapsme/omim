@@ -239,6 +239,17 @@ bool renderFrameOffscreen(double lat, double lon, double scale, size_t width, si
   return true;
 }
 
+int32_t const TIMEOUT_FOREGROUND_IN_FOCUS = 1; // msec
+int32_t const TIMEOUT_FOREGROUND_NOT_IN_FOCUS = 100; // msec
+
+int32_t GetEventQueueTimeout()
+{
+  if (s_isAppInBackground)
+    return NV_EVENT_WAIT_FOREVER;
+  else
+    return (NVEventStatusIsFocused() ? TIMEOUT_FOREGROUND_IN_FOCUS : TIMEOUT_FOREGROUND_NOT_IN_FOCUS);
+}
+
 } // namespace
 
 // Add any initialization that requires the app Java classes
@@ -268,7 +279,7 @@ int32_t NVEventAppMain(int32_t argc, char** argv)
     const NVEvent* ev = NULL;
 
     while (NVEventStatusIsRunning() &&
-          (ev = NVEventGetNextEvent(NVEventStatusIsFocused() ? 1 : 100)))
+          (ev = NVEventGetNextEvent(GetEventQueueTimeout())))
     {
       switch (ev->m_type)
       {
@@ -398,6 +409,23 @@ int32_t NVEventAppMain(int32_t argc, char** argv)
             break;
           }
 
+        case NV_EVENT_RENDER_FRAME:
+          {
+            double const lat = ev->m_data.m_renderFrame.m_lat;
+            double const lon = ev->m_data.m_renderFrame.m_lon;
+            double const scale = ev->m_data.m_renderFrame.m_scale;
+            size_t const width = ev->m_data.m_renderFrame.m_width;
+            size_t const height = ev->m_data.m_renderFrame.m_height;
+
+            NVDEBUG("RenderFrame event: %g, %g (%d x %d) %g", lat, lon, width, height, scale);
+
+            if (!s_glesLoaded)
+              PrepareOffScreenSurface(OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);
+
+            renderFrameOffscreen(lat, lon, scale, width, height, true);
+          }
+          break;
+
         default:
           NVDEBUG("UNKNOWN event");
           break;
@@ -426,24 +454,6 @@ int32_t NVEventAppMain(int32_t argc, char** argv)
       // If these are already set up or we succeed at setting them all up now, then
       // we go ahead and render.
       renderFrame(true);
-    }
-
-    // Check is Android.Wear has requested a frame
-    RenderFrameRequest renderFrame;
-    if (getRenderFrameRequest(renderFrame))
-    {
-      double const lat = renderFrame.m_lat;
-      double const lon = renderFrame.m_lon;
-      double const scale = renderFrame.m_scale;
-      size_t const width = renderFrame.m_width;
-      size_t const height = renderFrame.m_height;
-
-      NVDEBUG("RenderFrame event: %g, %g (%d x %d) %g", lat, lon, width, height, scale);
-
-      if (!s_glesLoaded)
-        PrepareOffScreenSurface(OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT);
-
-      renderFrameOffscreen(lat, lon, scale, width, height, true);
     }
   }
 

@@ -37,21 +37,31 @@ class NVEventQueue {
 public:
   void Init();
   void Shutdown();
+
   void Flush();
+
   void UnblockConsumer();
   void UnblockProducer();
+
   // Events are copied, so caller can reuse ev immediately
   void Insert(NVEvent const * ev);
   // Waits until the event is consumed.  Returns whether the
   // consumer indicates handling the event or ignoring it
   bool InsertBlocking(NVEvent const * ev);
 
+  // Set single event, which will be processed when queue will be empty
+  // Event is copied, so, caller can reuse ev immediately
+  // It is required for events like Android.Wear when application
+  // processes the event only when there is no another events in the queue
+  // Also, if were requested few render frames requests, the last will be handled
+  void SetOnEmptyQueueEvent(NVEvent const * ev);
+
   // Returned event is valid only until the next call to
   // RemoveOldest or until a call to DoneWithEvent
   // Calling RemoveOldest again without calling DoneWithEvent
   // indicates that the last event returned was NOT handled, and
   // thus InsertNewestAndWait for that even would return false
-  const NVEvent* RemoveOldest(int waitMSecs);
+  NVEvent const * RemoveOldest(int waitMSecs);
 
   // Indicates that all processing of the last event returned
   // from RemoveOldest is complete.  Also allows the app to indicate
@@ -59,7 +69,7 @@ public:
   // Do not dereference the last event pointer after calling this function
   void DoneWithEvent(bool ret);
 
-protected:
+private:
   bool insert(NVEvent const * ev);
 
   enum { QUEUE_ELEMS = 256 };
@@ -74,6 +84,7 @@ protected:
   NVEventSync     m_consumerSync;
 
   NVEvent m_events[QUEUE_ELEMS];
+
   NVEvent const * m_blocker;
   enum BlockerState
   {
@@ -84,6 +95,9 @@ protected:
   };
   BlockerState m_blockerState;
   bool m_blockerReturnVal;
+
+  NVEvent m_onEmptyQueueEvent;
+  bool m_hasOnEmptyQueueEvent;
 };
 
 #endif // #ifndef NV_EVENT_QUEUE
