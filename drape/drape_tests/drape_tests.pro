@@ -26,26 +26,27 @@ win32* : LIBS *= -lShell32
 macx-* : LIBS *= "-framework CoreLocation" "-framework Foundation"
 
 SOURCES += \
-    glfunctions.cpp \
-    testingmain.cpp \
-    failure_reporter.cpp \
-    glmock_functions.cpp \
-    buffer_tests.cpp \
-    uniform_value_tests.cpp \
     attribute_provides_tests.cpp \
-    compile_shaders_test.cpp \
     batcher_tests.cpp \
     bingind_info_tests.cpp \
-    stipple_pen_tests.cpp \
-    texture_of_colors_tests.cpp \
+    buffer_tests.cpp \
+    compile_shaders_test.cpp \
+    failure_reporter.cpp \
+    font_texture_tests.cpp \
+    fribidi_tests.cpp \
+    glfunctions.cpp \
+    glmock_functions.cpp \
     glyph_mng_tests.cpp \
     glyph_packer_test.cpp \
-    font_texture_tests.cpp \
     img.cpp \
-    fribidi_tests.cpp
+    pointers_tests.cpp \
+    stipple_pen_tests.cpp \
+    testingmain.cpp \
+    texture_of_colors_tests.cpp \
+    uniform_value_tests.cpp \
 
 HEADERS += \
-    glmock_functions.hpp \
-    memory_comparer.hpp \
-    img.hpp \
     dummy_texture.hpp \
+    glmock_functions.hpp \
+    img.hpp \
+    memory_comparer.hpp \
