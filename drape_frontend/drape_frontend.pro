@@ -24,6 +24,7 @@ SOURCES += \
     memory_feature_index.cpp \
     message_acceptor.cpp \
     message_queue.cpp \
+    navigator.cpp \
     path_symbol_shape.cpp \
     path_text_shape.cpp \
     poi_symbol_shape.cpp \
@@ -44,7 +45,8 @@ SOURCES += \
     user_marks_provider.cpp \
     viewport.cpp \
     visual_params.cpp \
-    my_position.cpp
+    my_position.cpp \
+    user_event_stream.cpp
 
 HEADERS += \
     apply_feature_functors.hpp \
@@ -65,6 +67,7 @@ HEADERS += \
     message_acceptor.hpp \
     message_queue.hpp \
     message_subclasses.hpp \
+    navigator.hpp \
     path_symbol_shape.hpp \
     path_text_shape.hpp \
     poi_symbol_shape.hpp \
@@ -86,4 +89,5 @@ HEADERS += \
     user_marks_provider.hpp \
     viewport.hpp \
     visual_params.hpp \
-    my_position.hpp
+    my_position.hpp \
+    user_event_stream.hpp
