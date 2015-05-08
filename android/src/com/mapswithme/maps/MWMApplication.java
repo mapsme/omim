@@ -3,6 +3,7 @@ package com.mapswithme.maps;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
@@ -42,6 +43,7 @@ public class MWMApplication extends android.app.Application implements ActiveCou
   private static MWMApplication mSelf;
 
   private boolean mAreStatsInitialised;
+  private Handler mMainLoopHandler;
 
   public MWMApplication()
   {
@@ -94,6 +96,8 @@ public class MWMApplication extends android.app.Application implements ActiveCou
   public void onCreate()
   {
     super.onCreate();
+
+    mMainLoopHandler = new Handler(getMainLooper());
 
     final String extStoragePath = getDataStoragePath();
     final String extTmpPath = getTempPath();
@@ -203,13 +207,24 @@ public class MWMApplication extends android.app.Application implements ActiveCou
     System.loadLibrary("mapswithme");
   }
 
+  public void runNativeFunctorOnUIThread(final long functionPointer)
+  {
+    mMainLoopHandler.post(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        nativeCallOnUIThread(functionPointer);
+      }
+    });
+  }
+
   private native void nativeInit(String apkPath, String storagePath,
                                  String tmpPath, String obbGooglePath,
                                  String flavorName, String buildType,
                                  boolean isYota, boolean isTablet);
 
-  public native boolean nativeIsBenchmarking();
-
+  private native void nativeCallOnUIThread(long functorPointer);
   private native void nativeAddLocalization(String name, String value);
 
   // Dealing with Settings

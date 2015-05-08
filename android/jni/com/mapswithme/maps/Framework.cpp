@@ -70,11 +70,6 @@ enum MultiTouchAction
   MULTITOUCH_CANCEL =  0x00000004
 };
 
-void ShowAllSearchResultsImpl()
-{
-  frm()->ShowAllSearchResults();
-}
-
 Framework::Framework()
  : m_mask(0),
    m_isCleanSingleClick(false),
@@ -99,7 +94,7 @@ void Framework::OnLocationError(int errorCode)
 
 void Framework::OnLocationUpdated(location::GpsInfo const & info)
 {
-  Platform::RunOnGuiThreadImpl(bind(&::Framework::OnLocationUpdate, ref(m_work), info));
+  m_work.OnLocationUpdate(info);
 }
 
 void Framework::OnCompassUpdated(location::CompassInfo const & info)
@@ -111,7 +106,7 @@ void Framework::OnCompassUpdated(location::CompassInfo const & info)
   if (fabs(ang::GetShortestDistance(m_lastCompass, info.m_bearing)) >= COMPASS_THRASHOLD)
   {
     m_lastCompass = info.m_bearing;
-    Platform::RunOnGuiThreadImpl(bind(&::Framework::OnCompassUpdate, ref(m_work), info));
+    m_work.OnCompassUpdate(info);
   }
 }
 
@@ -422,7 +417,7 @@ void Framework::ShowSearchResult(search::Result const & r)
 void Framework::ShowAllSearchResults()
 {
   m_doLoadState = false;
-  Platform::RunOnGuiThreadImpl(bind(&ShowAllSearchResultsImpl));
+  m_work.ShowAllSearchResults();
 }
 
 bool Framework::Search(search::SearchParams const & params)
@@ -1113,7 +1108,7 @@ extern "C"
   JNIEXPORT void JNICALL
   Java_com_mapswithme_maps_Framework_cleanSearchLayerOnMap(JNIEnv * env, jclass clazz)
   {
-    android::Platform::RunOnGuiThreadImpl(bind(&::Framework::CancelInteractiveSearch, frm()));
+    frm()->CancelInteractiveSearch();
   }
 
   JNIEXPORT void JNICALL
@@ -1172,7 +1167,7 @@ extern "C"
   JNIEXPORT void JNICALL
   Java_com_mapswithme_maps_Framework_nativeLoadBookmarks(JNIEnv * env, jclass thiz)
   {
-    android::Platform::RunOnGuiThreadImpl(bind(&::Framework::LoadBookmarks, frm()));
+    frm()->LoadBookmarks();
   }
 
   JNIEXPORT jboolean JNICALL
@@ -1190,19 +1185,19 @@ extern "C"
   JNIEXPORT void JNICALL
   Java_com_mapswithme_maps_Framework_nativeCloseRouting(JNIEnv * env, jclass thiz)
   {
-    android::Platform::RunOnGuiThreadImpl(bind(&::Framework::CloseRouting, frm()));
+    frm()->CloseRouting();
   }
 
   JNIEXPORT void JNICALL
   Java_com_mapswithme_maps_Framework_nativeBuildRoute(JNIEnv * env, jclass thiz, jdouble lat, jdouble lon)
   {
-    android::Platform::RunOnGuiThreadImpl(bind(&::Framework::BuildRoute, frm(), MercatorBounds::FromLatLon(lat, lon)));
+    frm()->BuildRoute(MercatorBounds::FromLatLon(lat, lon));
   }
 
   JNIEXPORT void JNICALL
   Java_com_mapswithme_maps_Framework_nativeFollowRoute(JNIEnv * env, jclass thiz)
   {
-    android::Platform::RunOnGuiThreadImpl(bind(&::Framework::FollowRoute, frm()));
+    frm()->FollowRoute();
   }
 
   JNIEXPORT jobject JNICALL
@@ -1369,6 +1364,6 @@ extern "C"
   Java_com_mapswithme_maps_Framework_setMapStyle(JNIEnv * env, jclass thiz, jint mapStyle)
   {
     MapStyle const val = static_cast<MapStyle>(mapStyle);
-    android::Platform::RunOnGuiThreadImpl(bind(&android::Framework::SetMapStyle, g_framework, val));
+    g_framework->SetMapStyle(val);
   }
 } // extern "C"

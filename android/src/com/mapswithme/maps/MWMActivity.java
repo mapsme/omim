@@ -506,9 +506,7 @@ public class MWMActivity extends BaseMwmFragmentActivity
     setContentView(R.layout.activity_map);
     initViews();
 
-    // Do not turn off the screen while benchmarking
-    if (MWMApplication.get().nativeIsBenchmarking())
-      getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    MWMApplication.get().onMwmCreate(this);
 
     Framework.nativeSetRoutingListener(this);
     Framework.nativeConnectBalloonListeners(this);
