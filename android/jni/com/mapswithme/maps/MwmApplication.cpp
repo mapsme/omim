@@ -18,8 +18,9 @@ extern "C"
       jstring apkPath, jstring storagePath, jstring tmpPath, jstring obbGooglePath,
       jstring flavorName, jstring buildType, jboolean isYota, jboolean isTablet)
   {
-    android::Platform::Instance().Initialize(
-        env, apkPath, storagePath, tmpPath, obbGooglePath, flavorName, buildType, isYota, isTablet);
+    android::Platform & platform = android::Platform::Instance();
+    platform.Initialize(env, apkPath, storagePath, tmpPath, obbGooglePath, flavorName, buildType, isYota, isTablet);
+    platform.InitAppMethodRefs(env, thiz);
 
     LOG(LDEBUG, ("Creating android::Framework instance ..."));
 
@@ -29,11 +30,10 @@ extern "C"
     LOG(LDEBUG, ("android::Framework created"));
   }
 
-  JNIEXPORT jboolean JNICALL
-  Java_com_mapswithme_maps_MwmApplication_nativeIsBenchmarking(JNIEnv * env, jobject thiz)
+  JNIEXPORT void JNICALL
+  Java_com_mapswithme_maps_MWMApplication_nativeCallOnUIThread(JNIEnv * env, jobject thiz, jlong functorPointer)
   {
-    ///@TODO UVR
-    return JNI_FALSE; //static_cast<jboolean>(g_framework->NativeFramework()->IsBenchmarking());
+    android::Platform::Instance().CallNativeFunctor(functorPointer);
   }
 
   JNIEXPORT jboolean JNICALL
