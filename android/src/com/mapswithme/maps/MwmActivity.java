@@ -300,8 +300,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     setContentView(R.layout.activity_map);
     initViews();
 
-    if (MwmApplication.get().nativeIsBenchmarking())
-      Utils.keepScreenOn(true, getWindow());
+    TtsPlayer.INSTANCE.init();
 
     // TODO consider implementing other model of listeners connection, without activities being bound
     Framework.nativeSetRoutingListener(this);
