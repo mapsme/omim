@@ -3,6 +3,7 @@ package com.mapswithme.maps;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Environment;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -36,8 +37,8 @@ public class MwmApplication extends android.app.Application implements ActiveCou
   private final Gson mGson = new Gson();
   private static SharedPreferences mPrefs;
 
-  private boolean mAreCountersInitialised;
-  private boolean mIsFrameworkInitialized;
+  private boolean mAreStatsInitialised;
+  private Handler mMainLoopHandler;
 
   public MwmApplication()
   {
@@ -91,28 +92,8 @@ public class MwmApplication extends android.app.Application implements ActiveCou
   {
     super.onCreate();
 
-    initParse();
-    mPrefs = getSharedPreferences(getString(R.string.pref_file_name), MODE_PRIVATE);
-  }
+    mMainLoopHandler = new Handler(getMainLooper());
 
-  public synchronized void initNativeCore()
-  {
-    if (mIsFrameworkInitialized)
-      return;
-
-    initPaths();
-    nativeInit(getApkPath(), getDataStoragePath(), getTempPath(), getObbGooglePath(),
-               BuildConfig.FLAVOR, BuildConfig.BUILD_TYPE,
-               Yota.isFirstYota(), UiUtils.isSmallTablet() || UiUtils.isBigTablet());
-    ActiveCountryTree.addListener(this);
-    initNativeStrings();
-    BookmarkManager.getIcons(); // init BookmarkManager (automatically loads bookmarks)
-    mIsFrameworkInitialized = true;
-  }
-
-  @SuppressWarnings("ResultOfMethodCallIgnored")
-  private void initPaths()
-  {
     final String extStoragePath = getDataStoragePath();
     final String extTmpPath = getTempPath();
 
@@ -181,13 +162,24 @@ public class MwmApplication extends android.app.Application implements ActiveCou
     System.loadLibrary("mapswithme");
   }
 
+  public void runNativeFunctorOnUIThread(final long functionPointer)
+  {
+    mMainLoopHandler.post(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        nativeCallOnUIThread(functionPointer);
+      }
+    });
+  }
+
   private native void nativeInit(String apkPath, String storagePath,
                                  String tmpPath, String obbGooglePath,
                                  String flavorName, String buildType,
                                  boolean isYota, boolean isTablet);
 
-  public native boolean nativeIsBenchmarking();
-
+  private native void nativeCallOnUIThread(long functorPointer);
   private native void nativeAddLocalization(String name, String value);
 
   /**
