@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Environment;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import com.google.gson.Gson;
@@ -40,6 +41,9 @@ public class MwmApplication extends Application
 
   private boolean mAreCountersInitialized;
   private boolean mIsFrameworkInitialized;
+
+  private boolean mAreStatsInitialised;
+  private Handler mMainLoopHandler;
 
   public MwmApplication()
   {
@@ -92,6 +96,7 @@ public class MwmApplication extends Application
   public void onCreate()
   {
     super.onCreate();
+    mMainLoopHandler = new Handler(getMainLooper());
 
     initParse();
     sPrefs = getSharedPreferences(getString(R.string.pref_file_name), MODE_PRIVATE);
@@ -184,13 +189,24 @@ public class MwmApplication extends Application
     System.loadLibrary("mapswithme");
   }
 
+  public void runNativeFunctorOnUIThread(final long functionPointer)
+  {
+    mMainLoopHandler.post(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        nativeCallOnUIThread(functionPointer);
+      }
+    });
+  }
+
   private native void nativeInit(String apkPath, String storagePath,
                                  String tmpPath, String obbGooglePath,
                                  String flavorName, String buildType,
                                  boolean isYota, boolean isTablet);
 
-  public native boolean nativeIsBenchmarking();
-
+  private native void nativeCallOnUIThread(long functorPointer);
   private native void nativeAddLocalization(String name, String value);
 
   /**
