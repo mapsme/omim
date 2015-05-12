@@ -207,14 +207,14 @@ public class MWMApplication extends android.app.Application implements ActiveCou
     System.loadLibrary("mapswithme");
   }
 
-  public void runNativeFunctorOnUIThread(final long functionPointer)
+  public void runNativeFunctorOnUiThread(final long functorPointer)
   {
     mMainLoopHandler.post(new Runnable()
     {
       @Override
       public void run()
       {
-        nativeCallOnUIThread(functionPointer);
+        runNativeFunctor(functorPointer);
       }
     });
   }
@@ -224,7 +224,7 @@ public class MWMApplication extends android.app.Application implements ActiveCou
                                  String flavorName, String buildType,
                                  boolean isYota, boolean isTablet);
 
-  private native void nativeCallOnUIThread(long functorPointer);
+  private native void runNativeFunctor(final long functorPointer);
   private native void nativeAddLocalization(String name, String value);
 
   // Dealing with Settings
