@@ -20,7 +20,7 @@ extern "C"
   {
     android::Platform & platform = android::Platform::Instance();
     platform.Initialize(env, apkPath, storagePath, tmpPath, obbGooglePath, flavorName, buildType, isYota, isTablet);
-    platform.InitAppMethodRefs(env, thiz);
+    platform.InitAppMethodRefs(thiz);
 
     LOG(LDEBUG, ("Creating android::Framework instance ..."));
 
@@ -31,7 +31,7 @@ extern "C"
   }
 
   JNIEXPORT void JNICALL
-  Java_com_mapswithme_maps_MWMApplication_nativeCallOnUIThread(JNIEnv * env, jobject thiz, jlong functorPointer)
+  Java_com_mapswithme_maps_MWMApplication_runNativeFunctor(JNIEnv * env, jobject thiz, jlong functorPointer)
   {
     android::Platform::Instance().CallNativeFunctor(functorPointer);
   }
