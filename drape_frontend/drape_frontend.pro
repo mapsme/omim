@@ -51,6 +51,7 @@ SOURCES += \
     visual_params.cpp \
     my_position.cpp \
     user_event_stream.cpp \
+    animation/modelview_angle_animation.cpp
 
 HEADERS += \
     animation/base_viewport_animation.hpp \
@@ -100,3 +101,4 @@ HEADERS += \
     visual_params.hpp \
     my_position.hpp \
     user_event_stream.hpp \
+    animation/modelview_angle_animation.hpp
