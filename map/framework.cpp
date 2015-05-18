@@ -820,6 +820,36 @@ void Framework::ClearAllCaches()
   GetSearchEngine()->ClearAllCaches();
 }
 
+void Framework::OnDownloadMapCallback(storage::TIndex const & countryIndex)
+{
+  m_activeMaps->DownloadMap(countryIndex, TMapOptions::EMapOnly);
+}
+
+void Framework::OnDownloadMapCallbackUI(storage::TIndex const & countryIndex)
+{
+  GetPlatform().RunOnGuiThread(bind(&Framework::OnDownloadMapCallback, this, countryIndex));
+}
+
+void Framework::OnDownloadMapRoutingCallback(storage::TIndex const & countryIndex)
+{
+  m_activeMaps->DownloadMap(countryIndex, TMapOptions::EMapWithCarRouting);
+}
+
+void Framework::OnDownloadMapRoutingCallbackUI(storage::TIndex const & countryIndex)
+{
+  GetPlatform().RunOnGuiThread(bind(&Framework::OnDownloadMapRoutingCallback, this, countryIndex));
+}
+
+void Framework::OnDownloadRetryCallback(storage::TIndex const & countryIndex)
+{
+  m_activeMaps->RetryDownloading(countryIndex);
+}
+
+void Framework::OnDownloadRetryCallbackUI(storage::TIndex const & countryIndex)
+{
+  GetPlatform().RunOnGuiThread(bind(&Framework::OnDownloadRetryCallback, this, countryIndex));
+}
+
 void Framework::MemoryWarning()
 {
   LOG(LINFO, ("MemoryWarning"));
@@ -1214,6 +1244,7 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
   using TReadFeaturesFn = df::MapDataProvider::TReadFeaturesFn;
   using TResolveCountryFn = df::MapDataProvider::TResolveCountryFn;
   using TIsCountryLoadedFn = df::MapDataProvider::TIsCountryLoadedFn;
+  using TDownloadFn = df::MapDataProvider::TDownloadFn;
 
   TReadIDsFn idReadFn = [this](df::MapDataProvider::TReadCallback<FeatureID> const & fn, m2::RectD const & r, int scale) -> void
   {
@@ -1232,11 +1263,16 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
 
   TIsCountryLoadedFn isCountryLoadedFn = bind(&Framework::IsCountryLoaded, this, _1);
 
+  TDownloadFn downloadMapFn = bind(&Framework::OnDownloadMapCallbackUI, this, _1);
+  TDownloadFn downloadMapRoutingFn = bind(&Framework::OnDownloadMapRoutingCallbackUI, this, _1);
+  TDownloadFn downloadRetryFn = bind(&Framework::OnDownloadRetryCallbackUI, this, _1);
+
   df::DrapeEngine::Params p(contextFactory,
                             make_ref(&m_stringsBundle),
                             make_ref(m_storageAccessor),
                             df::Viewport(0, 0, w, h),
-                            df::MapDataProvider(idReadFn, featureReadFn, resolveCountry,isCountryLoadedFn),
+                            df::MapDataProvider(idReadFn, featureReadFn, resolveCountry, isCountryLoadedFn,
+                                                downloadMapFn, downloadMapRoutingFn, downloadRetryFn),
                             vs);
 
   m_drapeEngine = make_unique_dp<df::DrapeEngine>(p);
