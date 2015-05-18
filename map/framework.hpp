@@ -284,13 +284,9 @@ private:
   void OnSearchResultsCallbackUI(search::Results const & results);
   void FillSearchResultsMarks(search::Results const & results);
 
-
   void OnDownloadMapCallback(storage::TIndex const & countryIndex);
-  void OnDownloadMapCallbackUI(storage::TIndex const & countryIndex);
   void OnDownloadMapRoutingCallback(storage::TIndex const & countryIndex);
-  void OnDownloadMapRoutingCallbackUI(storage::TIndex const & countryIndex);
   void OnDownloadRetryCallback(storage::TIndex const & countryIndex);
-  void OnDownloadRetryCallbackUI(storage::TIndex const & countryIndex);
 
 public:
   void UpdateUserViewportChanged();
