@@ -27,13 +27,13 @@ SUBDIRS = 3party \
           platform/platform_tests \
           anim \
           qt_tstfrm \
-          drape drape/drape_tests \
-          drape_gui drape_gui/drape_gui_tests \
           graphics \
           gui \
           render render/render_tests \
           storage storage/storage_tests \
           search search/search_tests \
+          drape drape/drape_tests \
+          drape_gui drape_gui/drape_gui_tests \
           drape_frontend drape_frontend/drape_frontend_tests \
           map map/map_tests map/benchmark_tool map/mwm_tests\
           generator generator/generator_tests \
@@ -53,10 +53,7 @@ SUBDIRS = 3party \
             base \
             coding \
             geometry \
-            drape \
             platform \
-            anim \
-            drape_gui \
             indexer \
             routing \
             storage \
@@ -64,7 +61,8 @@ SUBDIRS = 3party \
             gui \
             render \
             search \
-            stats \
+            drape \
+            drape_gui \
             drape_frontend \
             map \
             stats \
