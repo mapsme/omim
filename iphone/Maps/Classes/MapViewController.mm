@@ -704,7 +704,12 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 
 NSInteger compareAddress(id l, id r, void * context)
 {
-  return l < r;
+  if (l < r)
+    return NSOrderedAscending;
+  if (l > r)
+    return NSOrderedDescending;
+
+  return NSOrderedSame;
 }
 
 - (void)invalidate
