@@ -5,7 +5,6 @@ DEPENDENCIES = map drape_frontend routing search storage indexer drape_gui drape
 
 !linux* {
   DEPENDENCIES += opening_hours \
-
 }
 
 include($$ROOT_DIR/common.pri)
