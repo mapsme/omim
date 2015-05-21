@@ -51,6 +51,7 @@ SOURCES += \
     visual_params.cpp \
     my_position.cpp \
     user_event_stream.cpp \
+    my_position_controller.cpp
 
 HEADERS += \
     animation/base_interpolator.hpp \
@@ -99,3 +100,4 @@ HEADERS += \
     visual_params.hpp \
     my_position.hpp \
     user_event_stream.hpp \
+    my_position_controller.hpp
