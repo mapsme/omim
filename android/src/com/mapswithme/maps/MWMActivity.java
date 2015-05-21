@@ -144,7 +144,7 @@ public class MWMActivity extends BaseMwmFragmentActivity
   private SurfaceView mSurfaceView;
 
   private boolean mNeedCheckUpdate = true;
-  private int mLocationStateModeListenerId = LocationState.SLOT_UNDEFINED;
+
   // These flags are initialized to the invalid combination to force update on the first check
   // after launching.
   // These flags are static because the MWMActivity is recreated while screen orientation changing
@@ -230,8 +230,7 @@ public class MWMActivity extends BaseMwmFragmentActivity
    */
   public void invalidateLocationState()
   {
-    final int currentLocationMode = LocationState.INSTANCE.getLocationStateMode();
-    refreshLocationState(currentLocationMode);
+    onMyPositionModeChangedCallback(LocationState.INSTANCE.getLocationStateMode());
     LocationState.INSTANCE.invalidatePosition();
   }
 
@@ -766,8 +765,6 @@ public class MWMActivity extends BaseMwmFragmentActivity
     // Notify user about turned off location services
     if (errorCode == LocationHelper.ERROR_DENIED)
     {
-      LocationState.INSTANCE.turnOff();
-
       // Do not show this dialog on Kindle Fire - it doesn't have location services
       // and even wifi settings can't be opened programmatically
       if (!Utils.isAmazonDevice())
@@ -911,21 +908,10 @@ public class MWMActivity extends BaseMwmFragmentActivity
   }
 
   // Callback from native location state mode element processing.
-  public void onLocationStateModeChangedCallback(final int newMode)
+  public void onMyPositionModeChangedCallback(final int newMode)
   {
-    runOnUiThread(new Runnable()
-    {
-      @Override
-      public void run()
-      {
-        refreshLocationState(newMode);
-      }
-    });
-  }
-
-  private void refreshLocationState(int newMode)
-  {
-    LocationButtonImageSetter.setButtonViewFromState(newMode, mBtnLocation);
+    mLocationPredictor.myPositionModeChanged(newMode);
+    LocationButtonImageSetter.setButtonViewFromState(newMode, mLocationButton);
     switch (newMode)
     {
     case LocationState.UNKNOWN_POSITION:
@@ -941,12 +927,12 @@ public class MWMActivity extends BaseMwmFragmentActivity
 
   private void listenLocationStateModeUpdates()
   {
-    mLocationStateModeListenerId = LocationState.INSTANCE.addLocationStateModeListener(this);
+    LocationState.INSTANCE.setMyPositionModeListener(this);
   }
 
   private void stopWatchingCompassStatusUpdate()
   {
-    LocationState.INSTANCE.removeLocationStateModeListener(mLocationStateModeListenerId);
+    LocationState.INSTANCE.removeMyPositionModeListener();
   }
 
   @Override

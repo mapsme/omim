@@ -57,6 +57,8 @@ namespace qt
 
     void SetMapStyle(MapStyle mapStyle);
 
+    Q_SIGNAL void EngineCreated();
+
   protected:
     void OnActivateMark(unique_ptr<UserMarkCopy> pCopy);
 

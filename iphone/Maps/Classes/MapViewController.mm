@@ -230,25 +230,27 @@ typedef NS_OPTIONS(NSUInteger, MapInfoView)
     GetFramework().OnCompassUpdate(info);
 }
 
-- (void)onLocationStateModeChanged:(location::State::Mode)newMode
+- (void)onLocationStateModeChanged:(location::EMyPositionMode)newMode
 {
+  [m_predictor setMode:newMode];
+
   switch (newMode)
   {
-    case location::State::UnknownPosition:
+    case location::MODE_UNKNOWN_POSITION:
     {
       self.disableStandbyOnLocationStateMode = NO;
       [[MapsAppDelegate theApp].m_locationManager stop:self];
       break;
     }
-    case location::State::PendingPosition:
+    case location::MODE_PENDING_POSITION:
       self.disableStandbyOnLocationStateMode = NO;
       [[MapsAppDelegate theApp].m_locationManager start:self];
       break;
-    case location::State::NotFollow:
+    case location::MODE_NOT_FOLLOW:
       self.disableStandbyOnLocationStateMode = NO;
       break;
-    case location::State::Follow:
-    case location::State::RotateAndFollow:
+    case location::MODE_FOLLOW:
+    case location::MODE_ROTATE_AND_FOLLOW:
       self.disableStandbyOnLocationStateMode = YES;
       break;
   }
@@ -276,8 +278,7 @@ typedef NS_OPTIONS(NSUInteger, MapInfoView)
 
 - (void)onMyPositionClicked:(id)sender
 {
-  ///@TODO UVR
-  //GetFramework().GetLocationState()->SwitchToNextMode();
+  GetFramework().SwitchMyPositionNextMode();
 }
 
 - (IBAction)zoomInPressed:(id)sender
@@ -485,13 +486,6 @@ typedef NS_OPTIONS(NSUInteger, MapInfoView)
     SEL dismissSelector = @selector(dismissPlacePage);
     PlacePageDismissedFnT dismissFn = (PlacePageDismissedFnT)[self methodForSelector:dismissSelector];
     manager.ConnectDismissListener(bind(dismissFn, self, dismissSelector));
-
-    typedef void (*LocationStateModeFnT)(id, SEL, location::State::Mode);
-    SEL locationStateModeSelector = @selector(onLocationStateModeChanged:);
-    LocationStateModeFnT locationStateModeFn = (LocationStateModeFnT)[self methodForSelector:locationStateModeSelector];
-
-    ///@TODO UVR
-//    f.GetLocationState()->AddStateModeListener(bind(locationStateModeFn, self, locationStateModeSelector, _1));
     m_predictor = [[LocationPredictor alloc] initWithObserver:self];
 
     EAGLView * v = (EAGLView *)self.view;
@@ -503,6 +497,11 @@ typedef NS_OPTIONS(NSUInteger, MapInfoView)
     // restore previous screen position
     f.LoadState();
     f.LoadBookmarks();
+
+    using TLocationStateModeFn = void (*)(id, SEL, location::EMyPositionMode);
+    SEL locationStateModeSelector = @selector(onLocationStateModeChanged:);
+    TLocationStateModeFn locationStateModeFn = (TLocationStateModeFn)[self methodForSelector:locationStateModeSelector];
+    f.SetMyPositionModeListener(bind(locationStateModeFn, self, locationStateModeSelector, _1));
 
     ///@TODO UVR
     /*f.GetCountryStatusDisplay()->SetDownloadCountryListener([](storage::TIndex const & idx, int opt)
