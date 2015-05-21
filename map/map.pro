@@ -6,7 +6,7 @@ CONFIG += staticlib warn_on
 
 ROOT_DIR = ..
 
-INCLUDEPATH *= $$ROOT_DIR/3party/protobuf/src $$ROOT_DIR/3party/expat/lib $$ROOT_DIR/3party/freetype/include
+INCLUDEPATH *= $$ROOT_DIR/3party/protobuf/src $$ROOT_DIR/3party/expat/lib
 
 include($$ROOT_DIR/common.pri)
 
@@ -23,9 +23,6 @@ HEADERS += \
     feature_vec_model.hpp \
     ge0_parser.hpp \
     geourl_process.hpp \
-    information_display.hpp \
-    location_state.hpp \
-    move_screen_task.hpp \
     mwm_url.hpp \
     pin_click_manager.hpp \
     route_track.hpp \
@@ -51,9 +48,6 @@ SOURCES += \
     framework.cpp \
     ge0_parser.cpp \
     geourl_process.cpp \
-    information_display.cpp \
-    location_state.cpp \
-    move_screen_task.cpp \
     mwm_url.cpp \
     pin_click_manager.cpp \
     route_track.cpp \
