@@ -1,4 +1,3 @@
-#include "map/location_state.hpp"
 #include "map/routing_session.hpp"
 
 #include "indexer/mercator.hpp"

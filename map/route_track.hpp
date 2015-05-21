@@ -2,10 +2,10 @@
 
 #include "map/track.hpp"
 
+#include "platform/location.hpp"
+
 #include "routing/turns.hpp"
 #include "drape/drape_global.hpp"
-
-#include "map/location_state.hpp"
 
 class RouteTrack : public Track
 {

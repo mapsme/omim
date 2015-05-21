@@ -15,10 +15,7 @@
 
 #include "base/mutex.hpp"
 
-namespace location
-{
-class RouteMatchingInfo;
-}
+namespace location { class RouteMatchingInfo;}
 
 namespace routing
 {

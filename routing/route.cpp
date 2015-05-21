@@ -11,8 +11,6 @@
 
 #include "std/numeric.hpp"
 
-#include "map/location_state.hpp"
-
 
 namespace routing
 {
