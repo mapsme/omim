@@ -56,14 +56,16 @@ extern NSString * const kSearchResultPointKey;
 
 + (void)initSoftwareRenderer
 {
-  Framework & f = GetFramework();
-  if (!f.IsSingleFrameRendererInited())
-    f.InitSingleFrameRenderer(graphics::EDensityXHDPI);
+  // @TODO UVR
+  //Framework & f = GetFramework();
+  //if (!f.IsSingleFrameRendererInited())
+  //  f.InitSingleFrameRenderer(graphics::EDensityXHDPI);
 }
 
 + (void)releaseSoftwareRenderer
 {
-  GetFramework().ReleaseSingleFrameRenderer();
+  // @TODO UVR
+  //GetFramework().ReleaseSingleFrameRenderer();
 }
 
 + (UIImage *)getFrame:(CGSize)frameSize withZoomModifier:(int)zoomModifier
@@ -86,11 +88,13 @@ extern NSString * const kSearchResultPointKey;
   else
     symbols.m_showSearchResult = false;
 
-  FrameImage image;
-  [MWMFrameworkUtils initSoftwareRenderer];
-  f.DrawSingleFrame(center, zoomModifier, pxWidth, pxHeight, image, symbols);
-  NSData * imadeData = [NSData dataWithBytes:image.m_data.data() length:image.m_data.size()];
-  return [UIImage imageWithData:imadeData];
+  // @TODO UVR
+  //FrameImage image;
+  //[MWMFrameworkUtils initSoftwareRenderer];
+  //f.DrawSingleFrame(center, zoomModifier, pxWidth, pxHeight, image, symbols);
+  //NSData * imadeData = [NSData dataWithBytes:image.m_data.data() length:image.m_data.size()];
+  //return [UIImage imageWithData:imadeData];
+  return nil;
 }
 
 + (void)searchAroundCurrentLocation:(NSString *)query callback:(void(^)(NSMutableArray *result))reply
