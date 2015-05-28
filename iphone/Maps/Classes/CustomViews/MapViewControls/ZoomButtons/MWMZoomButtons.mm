@@ -53,13 +53,13 @@ extern NSString * const kAlohalyticsTapEventKey;
 - (void)zoomIn
 {
   [Alohalytics logEvent:kAlohalyticsTapEventKey withValue:@"+"];
-  [self zoom:2.0];
+  GetFramework().Scale(Framework::SCALE_MAG, true);
 }
 
 - (void)zoomOut
 {
   [Alohalytics logEvent:kAlohalyticsTapEventKey withValue:@"-"];
-  [self zoom:0.5];
+  GetFramework().Scale(Framework::SCALE_MIN, true);
 }
 
 #pragma mark - Actions
@@ -90,8 +90,8 @@ extern NSString * const kAlohalyticsTapEventKey;
   UIView * const superview = self.zoomView.superview;
   CGFloat const translation = -[sender translationInView:superview].y / superview.bounds.size.height;
 
-  CGFloat const scale = pow(2, translation);
-  [self zoom:scale];
+  CGFloat const scaleFactor = pow(2, translation);
+  GetFramework().Scale(scaleFactor, false);
 }
 
 #pragma mark - Properties
