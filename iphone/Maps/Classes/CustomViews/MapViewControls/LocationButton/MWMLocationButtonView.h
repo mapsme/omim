@@ -1,10 +1,10 @@
 #import <UIKit/UIKit.h>
 
-#include "map/location_state.hpp"
+#include "platform/location.hpp"
 
 @interface MWMLocationButtonView : UIButton
 
-@property (nonatomic) location::State::Mode locationState;
+@property (nonatomic) location::EMyPositionMode myPositionMode;
 
 - (instancetype)initWithFrame:(CGRect)frame __attribute__((unavailable("initWithFrame is not available")));
 - (instancetype)init __attribute__((unavailable("init is not available")));
