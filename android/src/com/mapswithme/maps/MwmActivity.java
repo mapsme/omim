@@ -1105,11 +1105,11 @@ public class MwmActivity extends BaseMwmFragmentActivity
       break;
     case R.id.map_button_plus:
       AlohaHelper.logClick(AlohaHelper.ZOOM_IN);
-      mMapFragment.nativeScale(3.0 / 2);
+      mMapFragment.nativeScalePlus();
       break;
     case R.id.map_button_minus:
       AlohaHelper.logClick(AlohaHelper.ZOOM_OUT);
-      mMapFragment.nativeScale(2 / 3.0);
+      mMapFragment.nativeScaleMinus();
       break;
     case R.id.yop_it:
       final double[] latLon = Framework.getScreenRectCenter();
