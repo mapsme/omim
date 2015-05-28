@@ -1827,8 +1827,8 @@ void Framework::SetRouter(RouterType type)
   {
     GetPlatform().RunOnGuiThread([this,pt]()
     {
-      m_bmManager.UserMarksGetController(UserMarkContainer::DEBUG_MARK).CreateUserMark(pt);
-      Invalidate();
+      UserMarkControllerGuard g(m_bmManager, UserMarkType::DEBUG_MARK);
+      g.m_controller.CreateUserMark(pt);
     });
   };
 #else
@@ -1871,8 +1871,8 @@ void Framework::SetRouter(RouterType type)
 
 void Framework::RemoveRoute()
 {
-  m_bmManager.UserMarksClear(UserMarkContainer::DEBUG_MARK);
-
+  UserMarkControllerGuard g(m_bmManager, UserMarkType::DEBUG_MARK);
+  g.m_controller.Clear();
   m_bmManager.ResetRouteTrack();
 }
 
@@ -1882,8 +1882,6 @@ void Framework::CloseRouting()
   //GetLocationState()->StopRoutingMode();
   m_routingSession.Reset();
   RemoveRoute();
-  ///@TODO UVR
-  //Invalidate();
 }
 
 void Framework::InsertRoute(Route const & route)
@@ -1897,8 +1895,8 @@ void Framework::InsertRoute(Route const & route)
   float const visScale = df::VisualParams::Instance().GetVisualScale();
 
   RouteTrack track(route.GetPoly());
-  track.SetName(route.GetName());
   // @TODO UVR
+  //track.SetName(route.GetName());
   //float const visScale = df::VisualParams::Instance().GetVisualScale();
 
   //RouteTrack track(route.GetPoly());

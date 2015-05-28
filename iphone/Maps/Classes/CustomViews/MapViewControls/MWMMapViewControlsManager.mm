@@ -24,6 +24,11 @@
 
 @implementation MWMMapViewControlsManager
 
+- (void)setMyPositionMode:(location::EMyPositionMode) mode
+{
+  [self.locationButton setMyPositionMode:mode];
+}
+
 - (instancetype)initWithParentController:(MapViewController *)controller
 {
   if (!controller)

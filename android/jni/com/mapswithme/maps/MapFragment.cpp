@@ -139,9 +139,15 @@ extern "C"
   }
 
   JNIEXPORT void JNICALL
-  Java_com_mapswithme_maps_MapFragment_nativeScale(JNIEnv * env, jobject thiz, jdouble k)
+  Java_com_mapswithme_maps_MapFragment_nativeScalePlus(JNIEnv * env, jobject thiz)
   {
-    g_framework->Scale(static_cast<double>(k));
+    g_framework->Scale(::Framework::SCALE_MAG);
+  }
+
+  JNIEXPORT void JNICALL
+  Java_com_mapswithme_maps_MapFragment_nativeScaleMinus(JNIEnv * env, jobject thiz)
+  {
+    g_framework->Scale(::Framework::SCALE_MIN);
   }
 
   JNIEXPORT jboolean JNICALL

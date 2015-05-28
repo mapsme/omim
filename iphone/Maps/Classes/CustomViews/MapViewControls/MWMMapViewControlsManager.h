@@ -23,5 +23,6 @@
 - (instancetype)initWithParentController:(MapViewController *)controller;
 - (void)setTopBound:(CGFloat)bound;
 - (void)setBottomBound:(CGFloat)bound;
+- (void)setMyPositionMode:(location::EMyPositionMode)mode;
 
 @end

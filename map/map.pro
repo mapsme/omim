@@ -12,13 +12,8 @@ include($$ROOT_DIR/common.pri)
 
 HEADERS += \
     active_maps_layout.hpp \
-    alfa_animation_task.hpp \
-    anim_phase_chain.hpp \
-    animator.hpp \
     bookmark.hpp \
     bookmark_manager.hpp \
-    change_viewport_task.hpp \
-    compass_arrow.hpp \
     country_tree.hpp \
     dialog_settings.hpp \
     feature_vec_model.hpp \
@@ -26,7 +21,6 @@ HEADERS += \
     geourl_process.hpp \
     mwm_url.hpp \
     pin_click_manager.hpp \
-    rotate_screen_task.hpp \
     route_track.hpp \
     routing_session.hpp \
     storage_bridge.hpp \
@@ -39,13 +33,8 @@ SOURCES += \
     ../api/src/c/api-client.c \
     active_maps_layout.cpp \
     address_finder.cpp \
-    alfa_animation_task.cpp \
-    anim_phase_chain.cpp \
-    animator.cpp \
     bookmark.cpp \
     bookmark_manager.cpp \
-    change_viewport_task.cpp \
-    compass_arrow.cpp \
     country_tree.cpp \
     dialog_settings.cpp \
     framework.cpp \
@@ -53,7 +42,6 @@ SOURCES += \
     geourl_process.cpp \
     mwm_url.cpp \
     pin_click_manager.cpp \
-    rotate_screen_task.cpp \
     route_track.cpp \
     routing_session.cpp \
     storage_bridge.cpp \

@@ -911,7 +911,7 @@ public class MWMActivity extends BaseMwmFragmentActivity
   public void onMyPositionModeChangedCallback(final int newMode)
   {
     mLocationPredictor.myPositionModeChanged(newMode);
-    LocationButtonImageSetter.setButtonViewFromState(newMode, mLocationButton);
+    LocationButtonImageSetter.setButtonViewFromState(newMode, mBtnLocation);
     switch (newMode)
     {
     case LocationState.UNKNOWN_POSITION:
@@ -1361,11 +1361,11 @@ public class MWMActivity extends BaseMwmFragmentActivity
       break;
     case R.id.map_button_plus:
       AlohaHelper.logClick(AlohaHelper.ZOOM_IN);
-      mMapFragment.nativeScale(3.0 / 2);
+      mMapFragment.nativeScalePlus();
       break;
     case R.id.map_button_minus:
       AlohaHelper.logClick(AlohaHelper.ZOOM_OUT);
-      mMapFragment.nativeScale(2 / 3.0);
+      mMapFragment.nativeScaleMinus();
       break;
     case R.id.btn__open_menu:
       AlohaHelper.logClick(AlohaHelper.TOOLBAR_MENU);
