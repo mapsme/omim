@@ -20,28 +20,18 @@ static NSString * const kMWMLocationButtonViewNibName = @"MWMLocationButton";
   {
     [[NSBundle mainBundle] loadNibNamed:kMWMLocationButtonViewNibName owner:self options:nil];
     [view addSubview:self.button];
-    [self configLocationListener];
   }
   return self;
 }
 
-- (void)configLocationListener
+- (void)setMyPositionMode:(location::EMyPositionMode)mode
 {
-  typedef void (*LocationStateModeFnT)(id, SEL, location::State::Mode);
-  SEL locationStateModeSelector = @selector(onLocationStateModeChanged:);
-  LocationStateModeFnT locationStateModeFn = (LocationStateModeFnT)[self methodForSelector:locationStateModeSelector];
-  
-  GetFramework().GetLocationState()->AddStateModeListener(bind(locationStateModeFn, self, locationStateModeSelector, _1));
-}
-
-- (void)onLocationStateModeChanged:(location::State::Mode)state
-{
-  self.button.locationState = state;
+  self.button.myPositionMode = mode;
 }
 
 - (IBAction)buttonPressed:(id)sender
 {
-  GetFramework().GetLocationState()->SwitchToNextMode();
+  GetFramework().SwitchMyPositionNextMode();
 }
 
 #pragma mark - Properties

@@ -16,7 +16,7 @@
   {
     self.defaultBounds = self.bounds;
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    self.locationState = location::State::UnknownPosition;
+    self.myPositionMode = location::MODE_UNKNOWN_POSITION;
   }
   return self;
 }
@@ -37,18 +37,19 @@
     self.minX = 2.0 * kViewControlsOffsetToBounds;
 }
 
-- (void)setImageNamed:(location::State::Mode)state
+- (void)setImageNamed:(location::EMyPositionMode)mode
 {
-  if (state == location::State::PendingPosition)
+  if (mode == location::MODE_PENDING_POSITION)
     [self setPendingPositionAnimation];
   else
   {
-    static NSDictionary * stateMap = @{@(location::State::UnknownPosition).stringValue : @"btn_white_unknow_position",
-                                       @(location::State::NotFollow).stringValue : @"btn_white_target_off_1",
-                                       @(location::State::Follow).stringValue : @"btn_white_target_on",
-                                       @(location::State::RotateAndFollow).stringValue : @"btn_white_direction"};
+    static NSDictionary * stateMap = @{@(location::State::MODE_UNKNOWN_POSITION).stringValue : @"btn_white_unknow_position",
+                                       @(location::State::MODE_NOT_FOLLOW).stringValue : @"btn_white_target_off_1",
+                                       @(location::State::MODE_FOLLOW).stringValue : @"btn_white_target_on",
+                                       @(location::State::MODE_ROTATE_AND_FOLLOW).stringValue : @"btn_white_direction"};
+
     [self.imageView stopAnimating];
-    NSString * const imageName = stateMap[@(state).stringValue];
+    NSString * const imageName = stateMap[@(mode).stringValue];
     self.highlighted = NO;
     [self setImage:[UIImage imageNamed:imageName] forState:UIControlStateNormal];
     [self setImage:[UIImage imageNamed:[imageName stringByAppendingString:@"_pressed"]]
@@ -76,14 +77,15 @@
   [self setAnimation:animationImages once:NO];
 }
 
-- (void)changeButtonFromState:(location::State::Mode)beginState toState:(location::State::Mode)endState
+- (void)changeButtonFromState:(location::EMyPositionMode)beginState toState:(location::EMyPositionMode)beginState
 {
   [self setImageNamed:endState];
-  static NSDictionary * stateMap = @{@(location::State::UnknownPosition).stringValue : @"noposition",
-                                     @(location::State::PendingPosition).stringValue : @"pending",
-                                     @(location::State::NotFollow).stringValue : @"notfollow",
-                                     @(location::State::Follow).stringValue : @"follow",
-                                     @(location::State::RotateAndFollow).stringValue : @"followandrotate"};
+<<<<<<< HEAD
+  static NSDictionary * stateMap = @{@(location::State::MODE_UNKNOWN_POSITION).stringValue : @"noposition",
+                                     @(location::State::MODE_PENDING_POSITION).stringValue : @"pending",
+                                     @(location::State::MODE_NOT_FOLLOW).stringValue : @"notfollow",
+                                     @(location::State::MODE_FOLLOW).stringValue : @"follow",
+                                     @(location::State::MODE_ROTATE_AND_FOLLOW).stringValue : @"followandrotate"};
   NSString * changeAnimation = [NSString stringWithFormat:@"%@_to_%@_",
                                 stateMap[@(beginState).stringValue], stateMap[@(endState).stringValue]];
   NSUInteger const animationImagesCount = 6;
@@ -101,20 +103,20 @@
     if (self.imageView.isAnimating)
       [self changeStateFinish];
     else
-      [self setImageNamed:self.locationState];
+      [self setImageNamed:self.myPositionMode];
   });
 }
 
 #pragma mark - Properties
 
-- (void)setLocationState:(location::State::Mode)locationState
+- (void)setMyPositionMode:(location::EMyPositionMode)mode
 {
-  if (_locationState == locationState)
-    [self setImageNamed:locationState];
+  if (_myPositionMode == mode)
+    [self setImageNamed:mode];
   else
   {
-    [self changeButtonFromState:_locationState toState:locationState];
-    _locationState = locationState;
+    [self changeButtonFromState:_myPositionMode toState:mode];
+    _myPositionMode = mode;
   }
 }
 
