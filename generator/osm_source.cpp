@@ -216,8 +216,8 @@ public:
 
     m_srcCoastsFile = info.GetIntermediateFileName(WORLD_COASTS_FILE_NAME, ".geom");
 
-    CHECK(!info.m_makeCoasts || !info.m_createWorld,
-          ("We can't do make_coasts and generate_world at the same time"));
+      CHECK(!info.m_makeCoasts || !info.m_createWorld,
+            ("We can't do make_coasts and generate_world at the same time"));
 
     if (info.m_makeCoasts)
     {
@@ -290,7 +290,26 @@ public:
       if (!m_coasts->Finish() && m_failOnCoasts)
         return false;
 
-      LOG(LINFO, ("Generating coastline polygons"));
+        LOG(LINFO, ("Count merged polygons."));
+
+        std::ofstream f("/tmp/merged_coastline.dump");
+        size_t regionsNum = 0;
+        m_coasts->GetRegionTree().ForEach([&regionsNum, &f](m2::RegionI const &region)
+        {
+          uint32_t sz = region.Data().size();
+          f.write((char *)&sz, sizeof(uint32_t));
+          f.write((char *)region.Data().data(), region.Data().size() * sizeof(m2::RegionI::ValueT));
+          regionsNum++;
+        });
+
+        uint32_t term = 0;
+        f.write((char *)&term, sizeof(uint32_t));
+        f.flush();
+        f.close();
+        LOG(LINFO, ("Merge polygons done.", regionsNum));
+
+        size_t const count = m_coasts->GetCellsCount();
+        LOG(LINFO, ("Generating coastline polygons"));
 
       size_t totalFeatures = 0;
       size_t totalPoints = 0;
@@ -299,39 +318,28 @@ public:
       vector<FeatureBuilder1> vecFb;
       m_coasts->GetFeatures(vecFb);
 
-      for (auto & fb : vecFb)
-      {
-        (*m_coastsHolder)(fb);
-
-        ++totalFeatures;
-        totalPoints += fb.GetPointsCount();
-        totalPolygons += fb.GetPolygonsCount();
+          for (size_t j = 0; j < vecFb.size(); ++j)
+            (*m_coastsHolder)(vecFb[j]);
+        }
       }
-      LOG(LINFO, ("Total features:", totalFeatures, "total polygons:", totalPolygons,
-                  "total points:", totalPoints));
-    }
-    else if (m_coastsHolder)
-    {
-      feature::ForEachFromDatRawFormat(m_srcCoastsFile, [this](FeatureBuilder1 const & fb, uint64_t)
+      else if (m_coastsHolder)
       {
-        if (m_coastsHolder)
-          (*m_coastsHolder)(fb);
-        if (m_countries)
-          (*m_countries)(fb);
-      });
+        CombinedEmitter<feature::FeaturesCollector, CountriesGenerator>
+        emitter(m_coastsHolder.get(), m_countries.get());
+        feature::ForEachFromDatRawFormat(m_srcCoastsFile, emitter);
+      }
+      return true;
     }
-    return true;
-  }
 
-  inline void GetNames(vector<string> & names) const
-  {
-    if (m_countries)
-      names = m_countries->Parent().Names();
-    else
-      names.clear();
-  }
-};
-}  // anonymous namespace
+    inline void GetNames(vector<string> & names) const
+    {
+      if (m_countries)
+        names = m_countries->Parent().Names();
+      else
+        names.clear();
+    }
+  };
+} // namespace anonymous
 
 
 template <typename TElement, typename TCache>
@@ -505,7 +513,7 @@ bool GenerateFeaturesImpl(feature::GenerateInfo & info)
     parser.Finish();
 
     // Stop if coasts are not merged and FLAG_fail_on_coasts is set
-    if (!bucketer.Finish())
+    if (!bucketer.Finish(info.m_needStopIfMergeCoastsFail))
       return false;
 
     bucketer.GetNames(info.m_bucketNames);

@@ -132,7 +132,7 @@ namespace
   };
 }
 
-bool CoastlineFeaturesGenerator::Finish()
+bool CoastlineFeaturesGenerator::Finish(bool needStopIfFail)
 {
   DoAddToTree doAdd(*this);
   m_merger.DoMerge(doAdd);

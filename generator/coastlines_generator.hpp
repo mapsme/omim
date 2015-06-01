@@ -24,9 +24,11 @@ public:
 
   void AddRegionToTree(FeatureBuilder1 const & fb);
 
+  TreeT const & GetRegionTree() const { return m_tree; }
+
   void operator() (FeatureBuilder1 const & fb);
   /// @return false if coasts are not merged and FLAG_fail_on_coasts is set
-  bool Finish();
+  bool Finish(bool needStopIfFail);
 
   void GetFeatures(vector<FeatureBuilder1> & vecFb);
 };
