@@ -240,7 +240,6 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
 {
   [self destroyPopover];
-  [self invalidate];
 }
 
 - (void)sendTouchType:(df::TouchEvent::ETouchType)type withEvent:(UIEvent *)event
@@ -322,7 +321,6 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
   [self showPopover];
-  [self invalidate];
 }
 
 - (void)didReceiveMemoryWarning
@@ -356,9 +354,6 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 {
   // Notify about entering foreground (should be called on the first launch too).
   GetFramework().EnterForeground();
-
-  if (self.isViewLoaded && self.view.window)
-    [self invalidate]; // only invalidate when map is displayed on the screen
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -712,14 +707,6 @@ NSInteger compareAddress(id l, id r, void * context)
   return NSOrderedSame;
 }
 
-- (void)invalidate
-{
-  ///@TODO UVR
-//  Framework & f = GetFramework();
-//  if (!f.SetUpdatesEnabled(true))
-//    f.Invalidate();
-}
-
 - (void)destroyPopover
 {
   self.popoverVC = nil;
@@ -742,7 +729,6 @@ NSInteger compareAddress(id l, id r, void * context)
 {
   [self.popoverVC dismissPopoverAnimated:YES];
   [self destroyPopover];
-  [self invalidate];
 }
 
 - (void)setRestoreRouteDestination:(m2::PointD)restoreRouteDestination
