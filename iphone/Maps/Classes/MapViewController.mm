@@ -297,7 +297,6 @@ typedef NS_OPTIONS(NSUInteger, MapInfoView)
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
 {
   [self destroyPopover];
-  [self invalidate];
 }
 
 - (void)sendTouchType:(df::TouchEvent::ETouchType)type withEvent:(UIEvent *)event
@@ -368,7 +367,6 @@ typedef NS_OPTIONS(NSUInteger, MapInfoView)
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
   [self showPopover];
-  [self invalidate];
 }
 
 - (void)didReceiveMemoryWarning
@@ -402,16 +400,12 @@ typedef NS_OPTIONS(NSUInteger, MapInfoView)
 {
   // Notify about entering foreground (should be called on the first launch too).
   GetFramework().EnterForeground();
-
-  if (self.isViewLoaded && self.view.window)
-    [self invalidate]; // only invalidate when map is displayed on the screen
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
   [super viewWillAppear:animated];
   [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
-  [self invalidate];
 }
 
 - (void)viewDidLoad
@@ -909,14 +903,6 @@ NSInteger compareAddress(id l, id r, void * context)
   return NSOrderedSame;
 }
 
-- (void)invalidate
-{
-  ///@TODO UVR
-//  Framework & f = GetFramework();
-//  if (!f.SetUpdatesEnabled(true))
-//    f.Invalidate();
-}
-
 - (void)destroyPopover
 {
   self.popoverVC = nil;
@@ -939,7 +925,6 @@ NSInteger compareAddress(id l, id r, void * context)
 {
   [self.popoverVC dismissPopoverAnimated:YES];
   [self destroyPopover];
-  [self invalidate];
 }
 
 - (void)updateInfoViews

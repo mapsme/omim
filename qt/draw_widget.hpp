@@ -61,9 +61,6 @@ namespace qt
 
     Q_SIGNAL void EngineCreated();
 
-  protected:
-    void OnActivateMark(unique_ptr<UserMarkCopy> pCopy);
-
     void CreateEngine();
 
   protected:

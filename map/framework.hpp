@@ -94,9 +94,6 @@ protected:
   shared_ptr<storage::ActiveMapsLayout> m_activeMaps;
   storage::CountryTree m_globalCntTree;
 
-  /// How many pixels around touch point are used to get bookmark or POI
-  static const int TOUCH_PIXEL_RADIUS = 20;
-
   /// This function is called by m_storage to notify that country downloading is finished.
   void UpdateAfterDownload(platform::LocalCountryFile const & localFile);
 
@@ -220,15 +217,18 @@ public:
 
   bool AddBookmarksFile(string const & filePath);
 
-  void ActivateUserMark(UserMark const * mark, bool needAnim = true);
-  bool HasActiveUserMark() const;
-  UserMark const * GetUserMarkWithoutLogging(m2::PointD const & pxPoint, bool isLongPress);
-  UserMark const * GetUserMark(m2::PointD const & pxPoint, bool isLongPress);
-  PoiMarkPoint * GetAddressMark(m2::PointD const & globalPoint) const;
   BookmarkAndCategory FindBookmark(UserMark const * mark) const;
-
   BookmarkManager & GetBookmarkManager() { return m_bmManager; }
+
+  void ActivateUserMark(UserMark const * mark, bool needAnim);
+  PoiMarkPoint * GetAddressMark(m2::PointD const & globalPoint) const;
+
+private:
+  void OnTapEvent(m2::PointD pxPoint, bool isLong, bool isMyPosition, FeatureID feature);
+  UserMark const * OnTapEventImpl(m2::PointD pxPoint, bool isLong, bool isMyPosition, FeatureID feature);
   //@}
+
+public:
 
   /// @name GPS location updates routine.
   //@{
@@ -238,8 +238,12 @@ public:
   void SwitchMyPositionNextMode();
   void InvalidateMyPosition();
   void SetMyPositionModeListener(location::TMyPositionModeChanged const & fn);
+
+private:
+  void OnUserPositionChanged(m2::PointD const & position);
   //@}
 
+public:
   void CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory, float vs, int w, int h);
   ref_ptr<df::DrapeEngine> GetDrapeEngine();
   void DestroyDrapeEngine();
@@ -363,7 +367,8 @@ private:
   void GetLocality(m2::PointD const & pt, search::AddressInfo & info) const;
 
 public:
-  bool GetVisiblePOI(m2::PointD const & pxPoint, m2::PointD & pxPivot, search::AddressInfo & info, feature::Metadata & metadata) const;
+  bool GetVisiblePOI(m2::PointD const & glbPoint, search::AddressInfo & info, feature::Metadata & metadata) const;
+  m2::PointD GetVisiblePOI(FeatureID id, search::AddressInfo & info, feature::Metadata & metadata) const;
   void FindClosestPOIMetadata(m2::PointD const & pt, feature::Metadata & metadata) const;
 
   void MemoryWarning();
