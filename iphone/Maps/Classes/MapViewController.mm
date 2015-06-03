@@ -422,15 +422,9 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
     typedef void (*UserMarkActivatedFnT)(id, SEL, unique_ptr<UserMarkCopy>);
     typedef void (*PlacePageDismissedFnT)(id, SEL);
 
-    PinClickManager & manager = f.GetBalloonManager();
-
     SEL userMarkSelector = @selector(onUserMarkClicked:);
     UserMarkActivatedFnT userMarkFn = (UserMarkActivatedFnT)[self methodForSelector:userMarkSelector];
-    manager.ConnectUserMarkListener(bind(userMarkFn, self, userMarkSelector, _1));
-
-    SEL dismissSelector = @selector(dismissPlacePage);
-    PlacePageDismissedFnT dismissFn = (PlacePageDismissedFnT)[self methodForSelector:dismissSelector];
-    manager.ConnectDismissListener(bind(dismissFn, self, dismissSelector));
+    f.SetUserMarkActivationListener(bind(userMarkFn, self, userMarkSelector, _1));
     m_predictor = [[LocationPredictor alloc] initWithObserver:self];
 
     EAGLView * v = (EAGLView *)self.view;
@@ -494,10 +488,11 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
       {
         case routing::IRouter::ResultCode::NoError:
         {
-          f.GetBalloonManager().RemovePin();
-          f.GetBalloonManager().Dismiss();
+          if (f.GetRouter() == routing::RouterType::Pedestrian)
+            [self countPedestrianRoute];
           self.controlsManager.routeBuildingProgress = 100.;
-          self.controlsManager.searchHidden = YES;
+          f.DiactivateUserMark();
+          [self.searchView setState:SearchViewStateHidden animated:YES];
           if (self.forceRoutingStateChange == ForceRoutingStateChangeStartFollowing)
             [self.controlsManager routingNavigation];
           else
@@ -540,6 +535,25 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 
   NSLog(@"MapViewController initWithCoder Ended");
   return self;
+}
+
+- (void)countPedestrianRoute
+{
+  if ([NSUserDefaults.standardUserDefaults boolForKey:kShownPedestrianAchieveToastKey])
+    return;
+  NSInteger pedestrianRoutesCount = [NSUserDefaults.standardUserDefaults integerForKey:kPedestrianRouteCountKey];
+  [NSUserDefaults.standardUserDefaults setInteger:++pedestrianRoutesCount forKey:kPedestrianRouteCountKey];
+  // We show pedestrian promotion dialog if user has built at least 3 routes and more than 1 day has passed since
+  // the first pedestrian navigation promotion.
+  if (pedestrianRoutesCount < 3)
+    return;
+  NSDate * firstToastDate = [NSUserDefaults.standardUserDefaults valueForKey:kFirstPedestrianToastDateKey];
+  NSTimeInterval const day = 24 * 60 * 60;
+  NSTimeInterval const timePassed = [NSDate.date timeIntervalSinceDate:firstToastDate];
+  if (timePassed < day)
+    return;
+  [NSUserDefaults.standardUserDefaults setBool:YES forKey:kShownPedestrianAchieveToastKey];
+  [self.alertController presentPedestrianToastAlert:NO];
 }
 
 #pragma mark - API bar
@@ -680,12 +694,12 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 
 - (void)countryDownloadingProgressChanged:(LocalAndRemoteSizeT const &)progress atPosition:(int)position inGroup:(ActiveMapsLayout::TGroup const &)group
 {
-  //if (self.searchView.state != SearchViewStateFullscreen)
-  //  return;
-  //CGFloat const normProgress = (CGFloat)progress.first / (CGFloat)progress.second;
-  //ActiveMapsLayout & activeMapLayout = GetFramework().GetCountryTree().GetActiveMapLayout();
-  //NSString * countryName = [NSString stringWithUTF8String:activeMapLayout.GetFormatedCountryName(activeMapLayout.GetCoreIndex(group, position)).c_str()];
-  //[self.searchView downloadProgress:normProgress countryName:countryName];
+  if (self.searchView.state != SearchViewStateFullscreen)
+    return;
+  CGFloat const normProgress = (CGFloat)progress.first / (CGFloat)progress.second;
+  ActiveMapsLayout & activeMapLayout = GetFramework().GetCountryTree().GetActiveMapLayout();
+  NSString * countryName = [NSString stringWithUTF8String:activeMapLayout.GetFormatedCountryName(activeMapLayout.GetCoreIndex(group, position)).c_str()];
+  [self.searchView downloadProgress:normProgress countryName:countryName];
 }
 
 #pragma mark - Public methods
@@ -714,12 +728,12 @@ NSInteger compareAddress(id l, id r, void * context)
 
 - (void)showPopover
 {
+  Framework & f = GetFramework();
   if (self.popoverVC)
-    GetFramework().GetBalloonManager().Hide();
+    f.DiactivateUserMark();
 
   double const sf = self.view.contentScaleFactor;
 
-  Framework & f = GetFramework();
   m2::PointD tmp = m2::PointD(f.GtoP(m2::PointD(m_popoverPos.x, m_popoverPos.y)));
 
   [self.popoverVC presentPopoverFromRect:CGRectMake(tmp.x / sf, tmp.y / sf, 1, 1) inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];

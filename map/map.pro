@@ -19,7 +19,6 @@ HEADERS += \
     ge0_parser.hpp \
     geourl_process.hpp \
     mwm_url.hpp \
-    pin_click_manager.hpp \
     route_track.hpp \
     routing_session.hpp \
     storage_bridge.hpp \
@@ -39,7 +38,6 @@ SOURCES += \
     ge0_parser.cpp \
     geourl_process.cpp \
     mwm_url.cpp \
-    pin_click_manager.cpp \
     route_track.cpp \
     routing_session.cpp \
     storage_bridge.cpp \
