@@ -472,15 +472,9 @@ typedef NS_OPTIONS(NSUInteger, MapInfoView)
     typedef void (*UserMarkActivatedFnT)(id, SEL, unique_ptr<UserMarkCopy>);
     typedef void (*PlacePageDismissedFnT)(id, SEL);
 
-    PinClickManager & manager = f.GetBalloonManager();
-
     SEL userMarkSelector = @selector(onUserMarkClicked:);
     UserMarkActivatedFnT userMarkFn = (UserMarkActivatedFnT)[self methodForSelector:userMarkSelector];
-    manager.ConnectUserMarkListener(bind(userMarkFn, self, userMarkSelector, _1));
-
-    SEL dismissSelector = @selector(dismissPlacePage);
-    PlacePageDismissedFnT dismissFn = (PlacePageDismissedFnT)[self methodForSelector:dismissSelector];
-    manager.ConnectDismissListener(bind(dismissFn, self, dismissSelector));
+    f.SetUserMarkActivationListener(bind(userMarkFn, self, userMarkSelector, _1));
     m_predictor = [[LocationPredictor alloc] initWithObserver:self];
 
     EAGLView * v = (EAGLView *)self.view;
@@ -549,8 +543,7 @@ typedef NS_OPTIONS(NSUInteger, MapInfoView)
       {
         case routing::IRouter::ResultCode::NoError:
         {
-          f.GetBalloonManager().RemovePin();
-          f.GetBalloonManager().Dismiss();
+          f.DiactivateUserMark();
           [self.searchView setState:SearchViewStateHidden animated:YES];
           [self performAfterDelay:0.3 block:^
            {
@@ -880,8 +873,7 @@ typedef NS_OPTIONS(NSUInteger, MapInfoView)
 - (void)cleanUserMarks
 {
   Framework & framework = GetFramework();
-  framework.GetBalloonManager().RemovePin();
-  framework.GetBalloonManager().Dismiss();
+  framework.DiactivateUserMark();
   UserMarkControllerGuard guard(framework.GetBookmarkManager(), UserMarkType::API_MARK);
   guard.m_controller.Clear();
 }
@@ -910,12 +902,12 @@ NSInteger compareAddress(id l, id r, void * context)
 
 - (void)showPopover
 {
+  Framework & f = GetFramework();
   if (self.popoverVC)
-    GetFramework().GetBalloonManager().Hide();
+    f.DiactivateUserMark();
 
   double const sf = self.view.contentScaleFactor;
 
-  Framework & f = GetFramework();
   m2::PointD tmp = m2::PointD(f.GtoP(m2::PointD(m_popoverPos.x, m_popoverPos.y)));
 
   [self.popoverVC presentPopoverFromRect:CGRectMake(tmp.x / sf, tmp.y / sf, 1, 1) inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];

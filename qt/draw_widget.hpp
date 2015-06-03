@@ -97,8 +97,6 @@ namespace qt
 
     bool m_emulatingLocation;
 
-    PinClickManager & GetBalloonManager() { return m_framework->GetBalloonManager(); }
-
     void InitRenderPolicy();
   };
 }

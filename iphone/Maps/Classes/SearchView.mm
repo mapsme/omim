@@ -346,8 +346,7 @@ static BOOL keyboardLoaded = NO;
 - (void)clearSearchResultsMode
 {
   Framework & framework = GetFramework();
-  framework.GetBalloonManager().RemovePin();
-  framework.GetBalloonManager().Dismiss();
+  framework.DiactivateUserMark();
   framework.CancelInteractiveSearch();
 }
 
