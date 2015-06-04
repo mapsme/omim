@@ -1734,44 +1734,56 @@ void Framework::UpdateSavedDataVersion()
 
 void Framework::BuildRoute(m2::PointD const & destination)
 {
-//  shared_ptr<State> const & state = GetLocationState();
-//  if (!state->IsModeHasPosition())
-//  {
-//    CallRouteBuilded(IRouter::NoCurrentPosition, vector<storage::TIndex>(),
-//                     vector<storage::TIndex>());
-//    return;
-//  }
+  ASSERT(m_drapeEngine != nullptr, ());
 
-//  if (IsRoutingActive())
-//    CloseRouting();
+  m2::PointD myPosition(MercatorBounds::LonToX(37.537866403232542), MercatorBounds::LatToY(55.796739740505075));
 
-//  m_routingSession.BuildRoute(state->Position(), destination,
-//    [this] (Route const & route, IRouter::ResultCode code)
-//    {
-//      vector<storage::TIndex> absentCountries;
-//      vector<storage::TIndex> absentRoutingIndexes;
-//      if (code == IRouter::NoError)
-//      {
-//        InsertRoute(route);
-//        GetLocationState()->RouteBuilded();
-//        ShowRectExVisibleScale(route.GetPoly().GetLimitRect());
-//      }
-//      else
-//      {
-//        for (string const & name : route.GetAbsentCountries())
-//        {
-//          storage::TIndex fileIndex = m_storage.FindIndexByFile(name);
-//          if (m_storage.GetLatestLocalFile(fileIndex))
-//            absentRoutingIndexes.push_back(fileIndex);
-//          else
-//            absentCountries.push_back(fileIndex);
-//        }
+  /*m2::PointD myPosition;
+  bool const hasPosition = m_drapeEngine->GetMyPosition(myPosition);
+  if (!hasPosition)
+  {
+    CallRouteBuilded(IRouter::NoCurrentPosition, vector<storage::TIndex>());
+    return;
+  }*/
 
-//        if (code != IRouter::NeedMoreMaps)
-//          RemoveRoute();
-//      }
-//      CallRouteBuilded(code, absentCountries, absentRoutingIndexes);
-//    });
+  if (IsRoutingActive())
+    CloseRouting();
+
+  m_routingSession.BuildRoute(myPosition, destination,
+                              [this] (Route const & route, IRouter::ResultCode code)
+  {
+    vector<storage::TIndex> absentFiles;
+    vector<storage::TIndex> absentRoutingIndexes;
+    if (code == IRouter::NoError)
+    {
+      InsertRoute(route);
+      m_drapeEngine->SetModelViewRect(route.GetPoly().GetLimitRect(), true, -1, true);
+    }
+    else
+    {
+      for (string const & name : route.GetAbsentCountries())
+      {
+          storage::TIndex fileIndex = m_storage.FindIndexByFile(name);
+          if (m_storage.GetLatestLocalFile(fileIndex))
+            absentRoutingIndexes.push_back(fileIndex);
+          else
+            absentCountries.push_back(fileIndex);
+        }
+
+        if (code != IRouter::NeedMoreMaps)
+          RemoveRoute();
+
+      RemoveRoute();
+    }
+    CallRouteBuilded(code, absentFiles);
+  });
+}
+
+void Framework::FollowRoute()
+{
+  /// Устанавливает начальный зум - высчитывание ректа ->DE
+  ///@TODO UVR
+  //GetLocationState()->StartRouteFollow();
 }
 
 void Framework::SetRouter(RouterType type)
@@ -1825,8 +1837,8 @@ void Framework::SetRouter(RouterType type)
 
 void Framework::RemoveRoute()
 {
-  UserMarkControllerGuard g(m_bmManager, UserMarkType::DEBUG_MARK);
-  g.m_controller.Clear();
+  //UserMarkControllerGuard g(m_bmManager, UserMarkType::DEBUG_MARK);
+  //g.m_controller.Clear();
   m_bmManager.ResetRouteTrack();
 }
 
@@ -1846,9 +1858,12 @@ void Framework::InsertRoute(Route const & route)
     return;
   }
 
-  float const visScale = df::VisualParams::Instance().GetVisualScale();
+  ASSERT(m_drapeEngine != nullptr, ());
+  m_drapeEngine->AddRoute(route.GetPoly(), dp::Color(110, 180, 240, 200));
 
-  RouteTrack track(route.GetPoly());
+  //float const visScale = df::VisualParams::Instance().GetVisualScale();
+
+  //RouteTrack track(route.GetPoly());
   // @TODO UVR
   //track.SetName(route.GetName());
   //float const visScale = df::VisualParams::Instance().GetVisualScale();
