@@ -55,7 +55,6 @@ void BookmarkManager::LoadState()
 
 void BookmarkManager::ClearItems()
 {
-  ResetRouteTrack();
   for_each(m_categories.begin(), m_categories.end(), DeleteFunctor());
   m_categories.clear();
 }
@@ -231,16 +230,6 @@ UserMarksController & BookmarkManager::UserMarksRequestController(UserMarkType t
 void BookmarkManager::UserMarksReleaseController(UserMarksController & controller)
 {
   FindUserMarksContainer(controller.GetType())->ReleaseController();
-}
-
-void BookmarkManager::SetRouteTrack(unique_ptr<RouteTrack> && track)
-{
-  m_routeTrack = move(track);
-}
-
-void BookmarkManager::ResetRouteTrack()
-{
-  m_routeTrack.reset();
 }
 
 UserMarkContainer const * BookmarkManager::FindUserMarksContainer(UserMarkType type) const

@@ -3,7 +3,6 @@
 #include "map/bookmark.hpp"
 #include "map/route_track.hpp"
 #include "map/user_mark_container.hpp"
-#include "map/route_track.hpp"
 
 #include "std/function.hpp"
 #include "std/unique_ptr.hpp"
@@ -14,7 +13,6 @@ class PaintEvent;
 
 class BookmarkManager : private noncopyable
 {
-  unique_ptr<RouteTrack> m_routeTrack;
   vector<BookmarkCategory *> m_categories;
   string m_lastCategoryUrl;
   string m_lastType;
@@ -70,9 +68,6 @@ public:
   bool UserMarksIsVisible(UserMarkType type) const;
   UserMarksController & UserMarksRequestController(UserMarkType type);
   void UserMarksReleaseController(UserMarksController & controller);
-
-  void SetRouteTrack(unique_ptr<RouteTrack> && track);
-  void ResetRouteTrack();
 
 private:
   UserMarkContainer const * FindUserMarksContainer(UserMarkType type) const;

@@ -1752,12 +1752,16 @@ void Framework::BuildRoute(m2::PointD const & destination)
   m_routingSession.BuildRoute(myPosition, destination,
                               [this] (Route const & route, IRouter::ResultCode code)
   {
+    double const routeScale = 1.2;
+
     vector<storage::TIndex> absentFiles;
     vector<storage::TIndex> absentRoutingIndexes;
     if (code == IRouter::NoError)
     {
       InsertRoute(route);
-      m_drapeEngine->SetModelViewRect(route.GetPoly().GetLimitRect(), true, -1, true);
+      m2::RectD routeRect = route.GetPoly().GetLimitRect();
+      routeRect.Scale(routeScale);
+      m_drapeEngine->SetModelViewRect(routeRect, true, -1, true);
     }
     else
     {
@@ -1837,15 +1841,12 @@ void Framework::SetRouter(RouterType type)
 
 void Framework::RemoveRoute()
 {
-  //UserMarkControllerGuard g(m_bmManager, UserMarkType::DEBUG_MARK);
-  //g.m_controller.Clear();
-  m_bmManager.ResetRouteTrack();
+  ASSERT(m_drapeEngine != nullptr, ());
+  m_drapeEngine->RemoveRoute();
 }
 
 void Framework::CloseRouting()
 {
-  ///@TODO UVR
-  //GetLocationState()->StopRoutingMode();
   m_routingSession.Reset();
   RemoveRoute();
 }
@@ -1861,12 +1862,9 @@ void Framework::InsertRoute(Route const & route)
   ASSERT(m_drapeEngine != nullptr, ());
   m_drapeEngine->AddRoute(route.GetPoly(), dp::Color(110, 180, 240, 200));
 
-  //float const visScale = df::VisualParams::Instance().GetVisualScale();
 
-  //RouteTrack track(route.GetPoly());
-  // @TODO UVR
+  // TODO(@kuznetsov): Some of this stuff we need
   //track.SetName(route.GetName());
-  //float const visScale = df::VisualParams::Instance().GetVisualScale();
 
   //RouteTrack track(route.GetPoly());
   //track.SetName(route.GetName());
@@ -1887,9 +1885,7 @@ void Framework::InsertRoute(Route const & route)
   //track.AddOutline(outlines, ARRAY_SIZE(outlines));
   //track.AddClosingSymbol(false, "route_to", graphics::EPosCenter, graphics::routingFinishDepth);
 
-  //m_bmManager.SetRouteTrack(track);
   //m_informationDisplay.ResetRouteMatchingInfo();
-  //Invalidate();
 }
 
 void Framework::CheckLocationForRouting(GpsInfo const & info)
