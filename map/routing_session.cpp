@@ -83,8 +83,7 @@ void RoutingSession::Reset()
   m_turnsSound.Reset();
 }
 
-RoutingSession::State RoutingSession::OnLocationPositionChanged(m2::PointD const & position,
-                                                                GpsInfo const & info)
+RoutingSession::State RoutingSession::OnLocationPositionChanged(GpsInfo const & info)
 {
   ASSERT(m_state != RoutingNotActive, ());
   ASSERT(m_router != nullptr, ());
@@ -115,14 +114,14 @@ RoutingSession::State RoutingSession::OnLocationPositionChanged(m2::PointD const
       m_state = RouteFinished;
     else
       m_state = OnRoute;
-    m_lastGoodPosition = position;
+    m_lastGoodPosition = m_userCurrentPosition;
   }
   else
   {
     // Distance from the last known projection on route
     // (check if we are moving far from the last known projection).
-    double const dist = m_route.GetCurrentSqDistance(position);
-    if (dist > m_lastDistance || my::AlmostEqualULPs(dist, m_lastDistance, 1 << 16))
+    double const dist = m_route.GetCurrentSqDistance(m_userCurrentPosition);
+    if (dist > m_lastDistance || my::AlmostEqual(dist, m_lastDistance, 1 << 16))
     {
       ++m_moveAwayCounter;
       m_lastDistance = dist;
@@ -229,6 +228,16 @@ void RoutingSession::MatchLocationToRoute(location::GpsInfo & location,
   m_route.MatchLocationToRoute(location, routeMatchingInfo);
 }
 
+void RoutingSession::SetUserCurrentPosition(m2::PointD const & position)
+{
+  m_userCurrentPosition = position;
+}
+
+m2::PointD const & RoutingSession::GetUserCurrentPosition() const
+{
+  return m_userCurrentPosition;
+}
+
 void RoutingSession::EnableTurnNotifications(bool enable)
 {
   threads::MutexGuard guard(m_routeSessionMutex);
@@ -249,4 +258,5 @@ void RoutingSession::SetTurnSoundNotificationsSettings(turns::sound::Settings co
   UNUSED_VALUE(guard);
   m_turnsSound.SetSettings(settings);
 }
+
 }

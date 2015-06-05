@@ -66,11 +66,14 @@ public:
   bool IsBuilding() const { return (m_state == RouteBuilding); }
   void Reset();
 
-  State OnLocationPositionChanged(m2::PointD const & position, location::GpsInfo const & info);
-  void GetRouteFollowingInfo(location::FollowingInfo & info);
+  State OnLocationPositionChanged(location::GpsInfo const & info);
+  void GetRouteFollowingInfo(location::FollowingInfo & info) const;
 
   void MatchLocationToRoute(location::GpsInfo & location,
                             location::RouteMatchingInfo & routeMatchingInfo) const;
+
+  void SetUserCurrentPosition(m2::PointD const & position);
+  m2::PointD const & GetUserCurrentPosition() const;
 
   // TODO (Dragunov) Make activation of the pedestrian routing
   void ActivateAdditionalFeatures() {}
@@ -112,6 +115,7 @@ private:
   double m_lastDistance;
   int m_moveAwayCounter;
   m2::PointD m_lastGoodPosition;
+  m2::PointD m_userCurrentPosition;
 
   // Sound turn notification parameters.
   turns::sound::TurnsSound m_turnsSound;
