@@ -121,8 +121,7 @@ void RoutingSession::Reset()
   m_passedDistanceOnRouteMeters = 0.0;
 }
 
-RoutingSession::State RoutingSession::OnLocationPositionChanged(m2::PointD const & position,
-                                                                GpsInfo const & info)
+RoutingSession::State RoutingSession::OnLocationPositionChanged(GpsInfo const & info)
 {
   ASSERT(m_state != RoutingNotActive, ());
   ASSERT(m_router != nullptr, ());
@@ -160,14 +159,14 @@ RoutingSession::State RoutingSession::OnLocationPositionChanged(m2::PointD const
     }
     else
       m_state = OnRoute;
-    m_lastGoodPosition = position;
+    m_lastGoodPosition = m_userCurrentPosition;
   }
   else
   {
     // Distance from the last known projection on route
     // (check if we are moving far from the last known projection).
-    double const dist = m_route.GetCurrentSqDistance(position);
-    if (dist > m_lastDistance || my::AlmostEqualULPs(dist, m_lastDistance, 1 << 16))
+    double const dist = m_route.GetCurrentSqDistance(m_userCurrentPosition);
+    if (dist > m_lastDistance || my::AlmostEqual(dist, m_lastDistance, 1 << 16))
     {
       ++m_moveAwayCounter;
       m_lastDistance = dist;
@@ -331,26 +330,21 @@ void RoutingSession::MatchLocationToRoute(location::GpsInfo & location,
   m_route.MatchLocationToRoute(location, routeMatchingInfo);
 }
 
-bool RoutingSession::GetMercatorDistanceFromBegin(double & distance) const
-{
-  if (m_state != State::OnRoute)
-  {
-    distance = 0.0;
-    return false;
-  }
-
-  threads::MutexGuard guard(m_routeSessionMutex);
-  UNUSED_VALUE(guard);
-
-  distance = m_route.GetMercatorDistanceFromBegin();
-  return true;
-}
-
 void RoutingSession::SetRoutingSettings(RoutingSettings const & routingSettings)
 {
   threads::MutexGuard guard(m_routeSessionMutex);
   UNUSED_VALUE(guard);
   m_routingSettings = routingSettings;
+}
+
+void RoutingSession::SetUserCurrentPosition(m2::PointD const & position)
+{
+  m_userCurrentPosition = position;
+}
+
+m2::PointD const & RoutingSession::GetUserCurrentPosition() const
+{
+  return m_userCurrentPosition;
 }
 
 void RoutingSession::EnableTurnNotifications(bool enable)
@@ -388,4 +382,5 @@ string RoutingSession::GetTurnNotificationsLocale() const
   UNUSED_VALUE(guard);
   return m_turnsSound.GetLocale();
 }
+
 }  // namespace routing
