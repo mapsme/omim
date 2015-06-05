@@ -142,7 +142,7 @@ void RoutingSession::Reset()
 RoutingSession::State RoutingSession::OnLocationPositionChanged(m2::PointD const & position,
                                                                 GpsInfo const & info,
                                                                 Index const & index)
-{
+ {
   ASSERT(m_state != RoutingNotActive, ());
   ASSERT(m_router != nullptr, ());
 
@@ -387,6 +387,16 @@ void RoutingSession::SetRoutingSettings(RoutingSettings const & routingSettings)
   threads::MutexGuard guard(m_routeSessionMutex);
   UNUSED_VALUE(guard);
   m_routingSettings = routingSettings;
+}
+
+void RoutingSession::SetUserCurrentPosition(m2::PointD const & position)
+{
+  m_userCurrentPosition = position;
+}
+
+m2::PointD const & RoutingSession::GetUserCurrentPosition() const
+{
+  return m_userCurrentPosition;
 }
 
 void RoutingSession::EnableTurnNotifications(bool enable)
