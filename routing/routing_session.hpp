@@ -94,7 +94,8 @@ public:
   void MatchLocationToRoute(location::GpsInfo & location,
                             location::RouteMatchingInfo & routeMatchingInfo) const;
 
-  bool GetMercatorDistanceFromBegin(double & distance) const;
+  void SetUserCurrentPosition(m2::PointD const & position);
+  m2::PointD const & GetUserCurrentPosition() const;
 
   void ActivateAdditionalFeatures() {}
 
@@ -152,6 +153,7 @@ private:
   double m_lastDistance;
   int m_moveAwayCounter;
   m2::PointD m_lastGoodPosition;
+  m2::PointD m_userCurrentPosition;
 
   // Sound turn notification parameters.
   turns::sound::TurnsSound m_turnsSound;
