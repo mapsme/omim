@@ -86,7 +86,6 @@ public:
   double GetDistance() const;
   double GetCurrentDistanceFromBegin() const;
   double GetCurrentDistanceToEnd() const;
-  double GetMercatorDistanceFromBegin() const;
   //@}
 
   void GetTurn(double & distance, turns::TurnItem & turn) const;
@@ -118,6 +117,8 @@ private:
   /// Call this fucnction when geometry have changed.
   void Update();
   double GetPolySegAngle(size_t ind) const;
+
+  double GetMercatorDistanceFromBegin() const;
 
 private:
   friend string DebugPrint(Route const & r);

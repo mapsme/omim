@@ -273,5 +273,4 @@ void RoutingSession::SetTurnSoundNotificationsSettings(turns::sound::Settings co
   UNUSED_VALUE(guard);
   m_turnsSound.SetSettings(settings);
 }
-
 }
