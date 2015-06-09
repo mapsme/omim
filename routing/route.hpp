@@ -118,6 +118,8 @@ private:
   double GetPolySegAngle(size_t ind) const;
   TTurns::const_iterator GetCurrentTurn() const;
 
+  double GetMercatorDistanceFromBegin() const;
+
 private:
   friend string DebugPrint(Route const & r);
 
