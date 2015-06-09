@@ -124,9 +124,14 @@ void Framework::OnLocationUpdate(GpsInfo const & info)
 #endif
   location::RouteMatchingInfo routeMatchingInfo;
   CheckLocationForRouting(rInfo);
-  MatchLocationToRoute(rInfo, routeMatchingInfo);
 
-  CallDrapeFunction(bind(&df::DrapeEngine::SetGpsInfo, _1, rInfo, m_routingSession.IsNavigable(), routeMatchingInfo));
+  bool hasDistanceFromBegin = false;
+  double distanceFromBegin = 0.0;
+  MatchLocationToRoute(rInfo, routeMatchingInfo, hasDistanceFromBegin, distanceFromBegin);
+
+  CallDrapeFunction(bind(&df::DrapeEngine::SetGpsInfo, _1, rInfo,
+                         m_routingSession.IsNavigable(), routeMatchingInfo,
+                         hasDistanceFromBegin, distanceFromBegin));
 }
 
 void Framework::OnCompassUpdate(CompassInfo const & info)
@@ -1739,8 +1744,6 @@ void Framework::BuildRoute(m2::PointD const & destination)
 {
   ASSERT(m_drapeEngine != nullptr, ());
 
-  //m2::PointD myPosition(MercatorBounds::LonToX(37.537866403232542), MercatorBounds::LatToY(55.796739740505075));
-
   m2::PointD myPosition;
   bool const hasPosition = m_drapeEngine->GetMyPosition(myPosition);
   if (!hasPosition)
@@ -1899,7 +1902,8 @@ void Framework::CheckLocationForRouting(GpsInfo const & info)
   if (!IsRoutingActive())
     return;
 
-  if (m_routingSession.OnLocationPositionChanged(info) == RoutingSession::RouteNeedRebuild)
+  RoutingSession::State state = m_routingSession.OnLocationPositionChanged(info);
+  if (state == RoutingSession::RouteNeedRebuild)
   {
     m2::PointD const & position = m_routingSession.GetUserCurrentPosition();
     m_routingSession.RebuildRoute(position, [this] (Route const & route, IRouter::ResultCode code)
@@ -1911,13 +1915,19 @@ void Framework::CheckLocationForRouting(GpsInfo const & info)
       }
     });
   }
+  else if (state == RoutingSession::RouteFinished)
+  {
+    RemoveRoute(false /* deactivateFollowing */);
+  }
 }
 
-void Framework::MatchLocationToRoute(location::GpsInfo & location, location::RouteMatchingInfo & routeMatchingInfo) const
+void Framework::MatchLocationToRoute(location::GpsInfo & location, location::RouteMatchingInfo & routeMatchingInfo,
+                                     bool & hasDistanceFromBegin, double & distanceFromBegin) const
 {
   if (!IsRoutingActive())
     return;
   m_routingSession.MatchLocationToRoute(location, routeMatchingInfo);
+  hasDistanceFromBegin = m_routingSession.GetMercatorDistanceFromBegin(distanceFromBegin);
 }
 
 void Framework::CallRouteBuilded(IRouter::ResultCode code, vector<storage::TIndex> const & absentCountries, vector<storage::TIndex> const & absentRoutingFiles)

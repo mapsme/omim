@@ -86,6 +86,7 @@ public:
   double GetDistance() const;
   double GetCurrentDistanceFromBegin() const;
   double GetCurrentDistanceToEnd() const;
+  double GetMercatorDistanceFromBegin() const;
   //@}
 
   void GetTurn(double & distance, turns::TurnItem & turn) const;

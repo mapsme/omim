@@ -75,6 +75,8 @@ public:
   void SetUserCurrentPosition(m2::PointD const & position);
   m2::PointD const & GetUserCurrentPosition() const;
 
+  bool GetMercatorDistanceFromBegin(double & distance) const;
+
   // TODO (Dragunov) Make activation of the pedestrian routing
   void ActivateAdditionalFeatures() {}
 
