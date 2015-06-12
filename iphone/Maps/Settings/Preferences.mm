@@ -28,10 +28,7 @@
     // get system locale preferences
     BOOL const isMetric = [[[NSLocale autoupdatingCurrentLocale] objectForKey:NSLocaleUsesMetricSystem] boolValue];
     if (isMetric)
-    {
       u = Settings::Metric;
-      [controller setupMeasurementSystem];
-    }      
     else
     {
       u = Settings::Foot;
@@ -42,8 +39,6 @@
 
     Settings::Set("Units", u);
   }
-  else
-    [controller setupMeasurementSystem];
 }
 
 @end

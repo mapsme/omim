@@ -878,11 +878,6 @@ typedef NS_OPTIONS(NSUInteger, MapInfoView)
   guard.m_controller.Clear();
 }
 
-- (void)setupMeasurementSystem
-{
-  GetFramework().SetupMeasurementSystem();
-}
-
 #pragma mark - Private methods
 
 NSInteger compareAddress(id l, id r, void * context)
