@@ -157,7 +157,6 @@ Settings::Units unitsForIndex(NSInteger index)
     Settings::Units units = unitsForIndex(indexPath.row);
     Settings::Set("Units", units);
     [tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionMetrics] withRowAnimation:UITableViewRowAnimationFade];
-    [[MapsAppDelegate theApp].m_mapViewController setupMeasurementSystem];
   }
 }
 
