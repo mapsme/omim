@@ -82,8 +82,6 @@ struct TurnGeom
   {
   }
 
-  bool operator==(TurnGeom const & other) const;
-
   uint32_t m_indexInRoute;
   uint32_t m_turnIndex;
   double m_mercatorDistance;
