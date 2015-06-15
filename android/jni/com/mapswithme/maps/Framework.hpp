@@ -10,7 +10,7 @@
 #include "../../../../../drape/pointers.hpp"
 #include "../../../../../drape/oglcontextfactory.hpp"
 
-#include "drape_gui/skin.hpp"
+#include "drape_frontend/gui/skin.hpp"
 
 #include "platform/location.hpp"
 
