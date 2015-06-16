@@ -14,7 +14,7 @@ DEPENDENCIES = map drape_frontend routing search storage drape indexer platform 
 }
 
 drape {
-  DEPENDENCIES *= drape_frontend drape_gui drape
+  DEPENDENCIES *= drape_frontend drape
 }
 
 include($$ROOT_DIR/common.pri)
