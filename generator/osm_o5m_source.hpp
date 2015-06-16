@@ -250,7 +250,7 @@ public:
     using TNodes = SubElements<int64_t>;
     using TTags = SubElements<KeyValue>;
 
-    TRefs Members() const
+    inline TRefs Members() const
     {
       return TRefs((type == EntityType::Relation) ? m_reader : nullptr, [this](Member * val)
       {
@@ -258,7 +258,7 @@ public:
       });
     }
 
-    TNodes Nodes() const
+    inline TNodes Nodes() const
     {
       return TNodes((type == EntityType::Way) ? m_reader : nullptr, [this](int64_t * val)
       {
@@ -266,7 +266,7 @@ public:
       });
     }
 
-    TTags Tags() const
+    inline TTags Tags() const
     {
       Members().Skip();
       Nodes().Skip();

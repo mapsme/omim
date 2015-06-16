@@ -291,36 +291,17 @@ public:
         return false;
 
         LOG(LINFO, ("Count merged polygons."));
-
-        std::ofstream f("/tmp/merged_coastline.dump");
-        size_t regionsNum = 0;
-        m_coasts->GetRegionTree().ForEach([&regionsNum, &f](m2::RegionI const &region)
-        {
-          uint32_t sz = region.Data().size();
-          f.write((char *)&sz, sizeof(uint32_t));
-          f.write((char *)region.Data().data(), region.Data().size() * sizeof(m2::RegionI::ValueT));
-          regionsNum++;
-        });
-
-        uint32_t term = 0;
-        f.write((char *)&term, sizeof(uint32_t));
-        f.flush();
-        f.close();
+        size_t regionsNum = m_coasts->DumpCoastlines(m_intermediateDir);
         LOG(LINFO, ("Merge polygons done.", regionsNum));
 
         size_t const count = m_coasts->GetCellsCount();
         LOG(LINFO, ("Generating coastline polygons"));
 
-      size_t totalFeatures = 0;
-      size_t totalPoints = 0;
-      size_t totalPolygons = 0;
+        list<FeatureBuilder1> vecFb;
+        m_coasts->GetFeatures(0, vecFb);
 
-      vector<FeatureBuilder1> vecFb;
-      m_coasts->GetFeatures(vecFb);
-
-          for (size_t j = 0; j < vecFb.size(); ++j)
-            (*m_coastsHolder)(vecFb[j]);
-        }
+        for (auto const & fb : vecFb)
+          (*m_coastsHolder)(fb);
       }
       else if (m_coastsHolder)
       {
