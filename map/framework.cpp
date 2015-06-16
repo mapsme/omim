@@ -1885,7 +1885,6 @@ void Framework::InsertRoute(Route const & route)
   }
   m_drapeEngine->AddRoute(route.GetPoly(), turns, dp::Color(110, 180, 240, 160));
 
-
   // TODO(@kuznetsov): Maybe we need some of this stuff
   //track.SetName(route.GetName());
 
