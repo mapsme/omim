@@ -7,14 +7,14 @@ TEMPLATE = app
 
 ROOT_DIR = ../..
 DEPENDENCIES = map drape_frontend routing search storage drape indexer platform geometry coding base \
-               freetype fribidi expat protobuf tomcrypt jansson osrm stats_client zlib succinct drape_gui
+               freetype fribidi expat protobuf tomcrypt jansson osrm stats_client zlib succinct
 
 !linux* {
   DEPENDENCIES *= opening_hours
 }
 
 drape {
-  DEPENDENCIES *= drape_frontend drape_gui drape
+  DEPENDENCIES *= drape_frontend drape
 }
 
 include($$ROOT_DIR/common.pri)
