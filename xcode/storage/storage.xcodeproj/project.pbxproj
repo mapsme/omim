@@ -124,6 +124,7 @@
 				6753430A1A3F5A2600A0A8C3 /* country_decl.hpp in Headers */,
 				674125221B4C05FA00A3E828 /* queued_country.hpp in Headers */,
 				6753431B1A3F5A2600A0A8C3 /* storage.hpp in Headers */,
+				672F454F1B396E9E00AB3F6A /* map_files_downloader.hpp in Headers */,
 				675343171A3F5A2600A0A8C3 /* index.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -185,6 +186,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6753430B1A3F5A2600A0A8C3 /* country_info.cpp in Sources */,
+				672F454D1B396E9E00AB3F6A /* http_map_files_downloader.cpp in Sources */,
 				6753430E1A3F5A2600A0A8C3 /* country.cpp in Sources */,
 				675343091A3F5A2600A0A8C3 /* country_decl.cpp in Sources */,
 				674125211B4C05FA00A3E828 /* queued_country.cpp in Sources */,

@@ -133,6 +133,9 @@
 		6753414C1A3F540F00A0A8C3 /* tree_structure.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 675340FA1A3F540F00A0A8C3 /* tree_structure.hpp */; };
 		6753414D1A3F540F00A0A8C3 /* types_mapping.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 675340FB1A3F540F00A0A8C3 /* types_mapping.cpp */; };
 		6753414E1A3F540F00A0A8C3 /* types_mapping.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 675340FC1A3F540F00A0A8C3 /* types_mapping.hpp */; };
+		67F4ED931B30818400F57AB0 /* map_style_reader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67F4ED901B30818400F57AB0 /* map_style_reader.cpp */; };
+		67F4ED941B30818400F57AB0 /* map_style_reader.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 67F4ED911B30818400F57AB0 /* map_style_reader.hpp */; };
+		67F4ED951B30818400F57AB0 /* map_style.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 67F4ED921B30818400F57AB0 /* map_style.hpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -278,6 +281,9 @@
 		675340FA1A3F540F00A0A8C3 /* tree_structure.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tree_structure.hpp; sourceTree = "<group>"; };
 		675340FB1A3F540F00A0A8C3 /* types_mapping.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = types_mapping.cpp; sourceTree = "<group>"; };
 		675340FC1A3F540F00A0A8C3 /* types_mapping.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = types_mapping.hpp; sourceTree = "<group>"; };
+		67F4ED901B30818400F57AB0 /* map_style_reader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = map_style_reader.cpp; sourceTree = "<group>"; };
+		67F4ED911B30818400F57AB0 /* map_style_reader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = map_style_reader.hpp; sourceTree = "<group>"; };
+		67F4ED921B30818400F57AB0 /* map_style.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = map_style.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -459,6 +465,9 @@
 				675340DF1A3F540F00A0A8C3 /* interval_index_builder.hpp */,
 				675340E01A3F540F00A0A8C3 /* interval_index_iface.hpp */,
 				675340E11A3F540F00A0A8C3 /* interval_index.hpp */,
+				67F4ED901B30818400F57AB0 /* map_style_reader.cpp */,
+				67F4ED911B30818400F57AB0 /* map_style_reader.hpp */,
+				67F4ED921B30818400F57AB0 /* map_style.hpp */,
 				675340E21A3F540F00A0A8C3 /* mercator.cpp */,
 				675340E31A3F540F00A0A8C3 /* mercator.hpp */,
 				675340E41A3F540F00A0A8C3 /* mwm_set.cpp */,
