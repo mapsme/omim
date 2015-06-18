@@ -1764,15 +1764,16 @@ void Framework::BuildRoute(m2::PointD const & destination)
   m_routingSession.BuildRoute(myPosition, destination,
                               [this] (Route const & route, IRouter::ResultCode code)
   {
-    double const routeScale = 1.5;
 
     vector<storage::TIndex> absentFiles;
     vector<storage::TIndex> absentRoutingIndexes;
     if (code == IRouter::NoError)
     {
+      double constexpr kRouteScaleMultiplierToShowWholeRoute = 1.5;
+
       InsertRoute(route);
       m2::RectD routeRect = route.GetPoly().GetLimitRect();
-      routeRect.Scale(routeScale);
+      routeRect.Scale(kRouteScaleMultiplierToShowWholeRoute);
       m_drapeEngine->SetModelViewRect(routeRect, true, -1, true);
     }
     else
