@@ -1764,7 +1764,7 @@ void Framework::BuildRoute(m2::PointD const & destination)
   m_routingSession.BuildRoute(myPosition, destination,
                               [this] (Route const & route, IRouter::ResultCode code)
   {
-    double const routeScale = 1.2;
+    double const routeScale = 1.5;
 
     vector<storage::TIndex> absentFiles;
     vector<storage::TIndex> absentRoutingIndexes;
