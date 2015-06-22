@@ -16,9 +16,6 @@
 
 #import "3party/Alohalytics/src/alohalytics_objc.h"
 
-#include "Framework.h"
-#include "map/information_display.hpp"
-
 static NSString * const kMWMSideMenuViewsNibName = @"MWMSideMenuViews";
 
 extern NSString * const kAlohalyticsTapEventKey;
@@ -139,20 +136,22 @@ extern NSString * const kAlohalyticsTapEventKey;
 
 - (void)setRulerPivot:(m2::PointD)pivot
 {
+  /// TODO (iOS developers)
   // Workaround for old ios when layoutSubviews are called in undefined order.
-  dispatch_async(dispatch_get_main_queue(), ^
-  {
-    GetFramework().GetInformationDisplay().SetWidgetPivot(InformationDisplay::WidgetType::Ruler, pivot);
-  });
+//  dispatch_async(dispatch_get_main_queue(), ^
+//  {
+//    GetFramework().GetInformationDisplay().SetWidgetPivot(InformationDisplay::WidgetType::Ruler, pivot);
+//  });
 }
 
 - (void)setCopyrightLabelPivot:(m2::PointD)pivot
 {
+  /// TODO (iOS developers)
   // Workaround for old ios when layoutSubviews are called in undefined order.
-  dispatch_async(dispatch_get_main_queue(), ^
-  {
-    GetFramework().GetInformationDisplay().SetWidgetPivot(InformationDisplay::WidgetType::CopyrightLabel, pivot);
-  });
+//  dispatch_async(dispatch_get_main_queue(), ^
+//  {
+//    GetFramework().GetInformationDisplay().SetWidgetPivot(InformationDisplay::WidgetType::CopyrightLabel, pivot);
+//  });
 }
 
 - (void)showMenu
