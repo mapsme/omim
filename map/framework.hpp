@@ -435,7 +435,7 @@ public:
   typedef function<void(routing::IRouter::ResultCode, vector<storage::TIndex> const &,
                         vector<storage::TIndex> const &)> TRouteBuildingCallback;
   void SetRouteBuildingListener(TRouteBuildingCallback const & callback) { m_routingCallback = callback; }
-  void FollowRoute() { GetLocationState()->StartRouteFollow(); }
+  void FollowRoute();
   void CloseRouting();
   void GetRouteFollowingInfo(location::FollowingInfo & info) { m_routingSession.GetRouteFollowingInfo(info); }
   m2::PointD GetRouteEndPoint() const { return m_routingSession.GetEndPoint(); }

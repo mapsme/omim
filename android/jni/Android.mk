@@ -79,8 +79,7 @@ LOCAL_SRC_FILES := \
 	com/mapswithme/maps/bookmarks/data/BookmarkManager.cpp \
 	com/mapswithme/maps/bookmarks/data/BookmarkCategory.cpp \
 	com/mapswithme/maps/MapFragment.cpp \
-	com/mapswithme/maps/MWMActivity.cpp \
-	com/mapswithme/maps/RenderActivity.cpp \
+	com/mapswithme/maps/RenderFragment.cpp \
 	com/mapswithme/maps/MWMApplication.cpp \
 	com/mapswithme/maps/LocationState.cpp \
 	com/mapswithme/maps/MapStorage.cpp \

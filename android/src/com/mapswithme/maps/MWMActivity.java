@@ -237,8 +237,6 @@ public class MWMActivity extends BaseMwmFragmentActivity
   @Override
   public void onRenderingInitialized()
   {
-    mRenderingInitialized = true;
-
     // Run all checks in main thread after rendering is initialized.
     checkMeasurementSystem();
     checkUpdateMaps();
@@ -463,26 +461,10 @@ public class MWMActivity extends BaseMwmFragmentActivity
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState)
   {
-    // Use full-screen on Kindle Fire only
-    // TODO UVR
-    /*
-    if (Utils.isAmazonDevice())
-    {
-      getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
-      getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-    }
-    setContentView(R.layout.map);
-
-    mSurfaceView = (SurfaceView)findViewById(R.id.map_surfaceview);
-    mSurfaceView.setOnTouchListener(this);
-    mSurfaceView.getHolder().addCallback(this);
-    */
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.activity_map);
     initViews();
-
-    MWMApplication.get().onMwmCreate(this);
 
     Framework.nativeSetRoutingListener(this);
     Framework.nativeConnectBalloonListeners(this);

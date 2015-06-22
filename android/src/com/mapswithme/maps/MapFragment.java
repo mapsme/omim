@@ -11,9 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mapswithme.maps.downloader.DownloadHelper;
-import com.nvidia.devtech.NvEventQueueFragment;
 
-public class MapFragment extends NvEventQueueFragment
+public class MapFragment extends RenderFragment
 {
   public interface MapRenderingListener
   {
@@ -64,9 +63,23 @@ public class MapFragment extends NvEventQueueFragment
   @Override
   protected void applyWidgetPivots()
   {
-    final Resources resources = getResources();
-    Framework.setWidgetPivot(Framework.MAP_WIDGET_RULER, mSurfaceWidth - resources.getDimensionPixelOffset(R.dimen.margin_right_ruler), mSurfaceHeight - resources.getDimensionPixelOffset(R.dimen.margin_bottom_ruler));
-    Framework.setWidgetPivot(Framework.MAP_WIDGET_COMPASS, resources.getDimensionPixelOffset(R.dimen.margin_left_compass), mSurfaceHeight - resources.getDimensionPixelOffset(R.dimen.margin_bottom_compass));
+    /// TODO (android developer)
+//    final Resources resources = getResources();
+//    // TODO need a delay here to make call work
+//    getView().postDelayed(new Runnable()
+//    {
+//      @Override
+//      public void run()
+//      {
+//        Framework.setWidgetPivot(Framework.MAP_WIDGET_RULER, mapWidth - resources.getDimensionPixelOffset(R.dimen.margin_right_ruler), mapHeight - resources.getDimensionPixelOffset(R.dimen.margin_bottom_ruler));
+//        Framework.setWidgetPivot(Framework.MAP_WIDGET_COMPASS, resources.getDimensionPixelOffset(R.dimen.margin_left_compass), mapHeight - resources.getDimensionPixelOffset(R.dimen.margin_bottom_compass));
+//      }
+//    }, 300);
+  }
+
+  public boolean isRenderingInitialized()
+  {
+    return mIsRenderingInitialized;
   }
 
   @Override

@@ -10,7 +10,6 @@
 #include "../platform/Platform.hpp"
 
 #include "map/framework.hpp"
-#include "map/information_display.hpp"
 #include "map/user_mark.hpp"
 
 #include "drape_frontend/visual_params.hpp"
@@ -49,7 +48,7 @@ namespace
   return g_framework->NativeFramework();
 }
 
-}
+} // namespace
 
 namespace android
 {
@@ -200,7 +199,7 @@ void Framework::Resize(int w, int h)
 
 void Framework::SetMapStyle(MapStyle mapStyle)
 {
-  //@TODO UVR
+  m_work.SetMapStyle(mapStyle);
 }
 
 Storage & Framework::Storage()
