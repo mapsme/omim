@@ -77,11 +77,6 @@
   NSLog(@"EAGLView initRenderPolicy Ended");
 }
 
-- (void)setMapStyle:(MapStyle)mapStyle
-{
-  //@TODO UVR
-}
-
 - (void)onSize:(int)width withHeight:(int)height
 {
   int w = width * self.contentScaleFactor;
