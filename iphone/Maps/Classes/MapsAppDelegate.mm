@@ -205,7 +205,7 @@ void InitLocalizedStrings()
   
   Framework & f = GetFramework();
   application.applicationIconBadgeNumber = f.GetCountryTree().GetActiveMapLayout().GetOutOfDateCount();
-  f.GetLocationState()->InvalidatePosition();
+  f.InvalidateMyPosition();
 
   return returnValue;
 }
