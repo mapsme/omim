@@ -318,20 +318,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState)
   {
-    // Use full-screen on Kindle Fire only
-    // TODO UVR
-    /*
-    if (Utils.isAmazonDevice())
-    {
-      getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
-      getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-    }
-    setContentView(R.layout.map);
-
-    mSurfaceView = (SurfaceView)findViewById(R.id.map_surfaceview);
-    mSurfaceView.setOnTouchListener(this);
-    mSurfaceView.getHolder().addCallback(this);
-    */
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.activity_map);
@@ -342,7 +328,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     // TODO consider implementing other model of listeners connection, without activities being bound
     Framework.nativeSetRoutingListener(this);
     Framework.nativeSetRouteProgressListener(this);
-    Framework.nativeSetBalloonListener(this);
+    Framework.nativeConnectBalloonListeners(this);
 
     processIntent(getIntent());
 
