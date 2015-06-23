@@ -230,8 +230,9 @@ public class MWMActivity extends BaseMwmFragmentActivity
    */
   public void invalidateLocationState()
   {
-    onMyPositionModeChangedCallback(LocationState.INSTANCE.getLocationStateMode());
-    LocationState.INSTANCE.invalidatePosition();
+    //TODO: call it after graphics initialization
+    //onMyPositionModeChangedCallback(LocationState.INSTANCE.getLocationStateMode());
+    //LocationState.INSTANCE.invalidatePosition();
   }
 
   @Override
