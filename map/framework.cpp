@@ -733,7 +733,8 @@ void Framework::Scale(double factor, m2::PointD const & pxPoint, bool isAnim)
 
 void Framework::TouchEvent(df::TouchEvent const & touch)
 {
-  m_drapeEngine->AddTouchEvent(touch);
+  if (m_drapeEngine)
+    m_drapeEngine->AddTouchEvent(touch);
 }
 
 int Framework::GetDrawScale() const
@@ -817,19 +818,33 @@ void Framework::ClearAllCaches()
   GetSearchEngine()->ClearAllCaches();
 }
 
+void Framework::SetDownloadCountryListener(TDownloadCountryListener const & listener)
+{
+  m_downloadCountryListener = listener;
+}
+
 void Framework::OnDownloadMapCallback(storage::TIndex const & countryIndex)
 {
-  m_activeMaps->DownloadMap(countryIndex, TMapOptions::EMap);
+  if (m_downloadCountryListener != nullptr)
+    m_downloadCountryListener(countryIndex, static_cast<int>(TMapOptions::EMap));
+  else
+    m_activeMaps->DownloadMap(countryIndex, TMapOptions::EMap);
 }
 
 void Framework::OnDownloadMapRoutingCallback(storage::TIndex const & countryIndex)
 {
-  m_activeMaps->DownloadMap(countryIndex, TMapOptions::EMapWithCarRouting);
+  if (m_downloadCountryListener != nullptr)
+    m_downloadCountryListener(countryIndex, static_cast<int>(TMapOptions::EMapWithCarRouting));
+  else
+    m_activeMaps->DownloadMap(countryIndex, TMapOptions::EMapWithCarRouting);
 }
 
 void Framework::OnDownloadRetryCallback(storage::TIndex const & countryIndex)
 {
-  m_activeMaps->RetryDownloading(countryIndex);
+  if (m_downloadCountryListener != nullptr)
+    m_downloadCountryListener(countryIndex, -1);
+  else
+    m_activeMaps->RetryDownloading(countryIndex);
 }
 
 void Framework::OnUpdateCountryIndex(storage::TIndex const & currentIndex, m2::PointF const & pt)
@@ -842,7 +857,9 @@ void Framework::OnUpdateCountryIndex(storage::TIndex const & currentIndex, m2::P
 void Framework::UpdateCountryInfo(storage::TIndex const & countryIndex, bool isCurrentCountry)
 {
   ASSERT(m_activeMaps != nullptr, ());
-  ASSERT(m_drapeEngine != nullptr, ());
+
+  if (!m_drapeEngine)
+    return;
 
   gui::CountryInfo countryInfo;
 
