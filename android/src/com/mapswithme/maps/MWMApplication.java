@@ -4,6 +4,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
@@ -44,6 +45,7 @@ public class MWMApplication extends android.app.Application implements ActiveCou
 
   private boolean mAreStatsInitialised;
   private Handler mMainLoopHandler;
+  private Object mMainQueueToken = new Object();
 
   public MWMApplication()
   {
@@ -209,7 +211,8 @@ public class MWMApplication extends android.app.Application implements ActiveCou
 
   public void runNativeFunctorOnUiThread(final long functorPointer)
   {
-    mMainLoopHandler.post(new Runnable()
+    //TODO(android developer) implement categories of messages
+    Message m = Message.obtain(mMainLoopHandler, new Runnable()
     {
       @Override
       public void run()
@@ -217,6 +220,13 @@ public class MWMApplication extends android.app.Application implements ActiveCou
         runNativeFunctor(functorPointer);
       }
     });
+    m.obj = mMainQueueToken;
+    mMainLoopHandler.sendMessage(m);
+  }
+
+  public void clearFunctorsOnUiThread()
+  {
+    mMainLoopHandler.removeCallbacksAndMessages(mMainQueueToken);
   }
 
   private native void nativeInit(String apkPath, String storagePath,

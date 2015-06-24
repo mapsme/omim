@@ -479,8 +479,7 @@ typedef NS_OPTIONS(NSUInteger, MapInfoView)
     TLocationStateModeFn locationStateModeFn = (TLocationStateModeFn)[self methodForSelector:locationStateModeSelector];
     f.SetMyPositionModeListener(bind(locationStateModeFn, self, locationStateModeSelector, _1));
 
-    ///@TODO UVR
-    /*f.GetCountryStatusDisplay()->SetDownloadCountryListener([](storage::TIndex const & idx, int opt)
+    f.SetDownloadCountryListener([](storage::TIndex const & idx, int opt)
     {
       ActiveMapsLayout & layout = GetFramework().GetCountryTree().GetActiveMapLayout();
       if (opt == -1)
@@ -521,7 +520,7 @@ typedef NS_OPTIONS(NSUInteger, MapInfoView)
 
         layout.DownloadMap(idx, static_cast<TMapOptions>(opt));
       }
-    });*/
+    });
 
     f.SetRouteBuildingListener([self, &f](routing::IRouter::ResultCode code, vector<storage::TIndex> const & absentCountries, vector<storage::TIndex> const & absentRoutes)
     {
