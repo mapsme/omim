@@ -15,6 +15,7 @@
 #include "std/utility.hpp"
 #include "std/fstream.hpp"
 #include "std/functional.hpp"
+#include "std/thread.hpp"
 
 #include "boost/geometry.hpp"
 #include "boost/geometry/geometries/point_xy.hpp"
@@ -302,21 +303,29 @@ public:
 
     TProcessResultFunc m_processResultFunc;
 
-    struct Task
+    struct Cell
     {
-      size_t cellId;
-      std::string subCell;
-      box cellBounds;
-      multi_polygon poly;
+      enum class EStage {Init, NeedSplit, Done} stage;
+      size_t id;
+      std::string suffix;
+      box bounds;
+      multi_polygon geom;
+    };
+
+    struct PolygonDesc
+    {
+      size_t level;
+      std::vector<size_t> covered;
     };
 
     std::mutex & m_mutexTasks;
-    std::list<Task> & m_listTasks;
+    std::list<Cell> & m_listTasks;
+    std::condition_variable & m_listCondVar;
+    size_t & m_inWork;
     std::mutex & m_mutexResult;
 
-    enum { kMaxPointsInCell = 20000 };
+    enum { kMaxPointsInCell = 20000, kMaxRegionsInCell = 500 };
 
-    typedef std::pair<bool, Task> TActualTask;
 
   public:
     static void Process(uint32_t numThreads, uint32_t baseScale, std::deque<polygon> const & polygons, TProcessResultFunc funcResult)
@@ -326,16 +335,18 @@ public:
       for (size_t i = 0; i < polygons.size(); ++i)
         rtree.insert(value(bg::return_envelope<box>(polygons[i]), i));
 
-      std::list<RegionMill::Task> listTasks = RegionMill::CreateCellsForScale(baseScale);
+      std::list<RegionMill::Cell> listTasks = RegionMill::CreateCellsForScale(baseScale);
       std::list<multi_polygon> listResult;
 
       std::vector<RegionMill> uniters;
       std::vector<std::thread> threads;
       std::mutex mutexTasks;
       std::mutex mutexResult;
+      std::condition_variable condVar;
+      size_t inWork = 0;
       for (uint32_t i = 0; i < numThreads; ++i)
       {
-        uniters.emplace_back(RegionMill(listTasks, mutexTasks, funcResult, mutexResult, polygons, rtree));
+        uniters.emplace_back(RegionMill(listTasks, mutexTasks, condVar, inWork, funcResult, mutexResult, polygons, rtree));
         threads.emplace_back(thread(uniters.back()));
       }
 
@@ -343,9 +354,42 @@ public:
         thread.join();
     }
 
+    static void CorrectAndCheckPolygon(polygon & p)
+    {
+      // correct orientation (ccw, cw), remove duplicate points
+      bg::correct(p);
+
+      bg::validity_failure_type failureType;
+
+      if (bg::is_valid(p, failureType))
+        return;
+
+      std::ostringstream message;
+      message << std::fixed << std::setprecision(7);
+      bg::failing_reason_policy<> policy_visitor(message);
+      is_valid(p, policy_visitor);
+      LOG(LINFO, ("Num points:", bg::num_points(p), "Error:", message.str()));
+
+      // correct self intersect geometry
+      if (failureType == bg::failure_self_intersections)
+      {
+        multi_polygon out;
+        bg::dissolve(p, out);
+        LOG(LINFO, ("After dissolve:", bg::num_points(out), "polygons:", bg::num_geometries(out)));
+        sort(out.begin(), out.end(), [](polygon const & p1, polygon const & p2) {return bg::num_points(p2) < bg::num_points(p1);});
+        bg::assign(p, out.front());
+      }
+      if (failureType == bg::failure_spikes)
+      {
+        bg::remove_spikes(p);
+        LOG(LINFO, ("After remove spikes:", bg::num_points(p), "polygons:", bg::num_geometries(p)));
+      }
+      LOG(LINFO, ("Fixed points:", bg::num_points(p), "polygons:", bg::num_geometries(p)));
+    }
+
   protected:
 
-    RegionMill(std::list<Task> & listTasks, std::mutex & mutexTasks,
+    RegionMill(std::list<Cell> & listTasks, std::mutex & mutexTasks, std::condition_variable & condVar, size_t & inWork,
                TProcessResultFunc funcResult, std::mutex & mutexResult,
                TContainer const &container, TIndex const & index)
     : m_container(container)
@@ -353,15 +397,17 @@ public:
     , m_processResultFunc(funcResult)
     , m_mutexTasks(mutexTasks)
     , m_listTasks(listTasks)
+    , m_listCondVar(condVar)
+    , m_inWork(inWork)
     , m_mutexResult(mutexResult)
     {}
 
-    static std::list<Task> CreateCellsForScale(uint32_t scale, uint32_t from = 0, uint32_t num = 0)
+    static std::list<Cell> CreateCellsForScale(uint32_t scale, uint32_t from = 0, uint32_t num = 0)
     {
       uint32_t numCells = 1 << scale;
       uint32_t cellSize = ((1 << POINT_COORD_BITS) - 1) / numCells;
 
-      std::list<Task> result;
+      std::list<Cell> result;
 
       uint32_t fromCell = from;
       uint32_t toCell = (num == 0) ? (numCells * numCells) : fromCell + num;
@@ -370,60 +416,17 @@ public:
       {
         uint32_t xCell = i % numCells;
         uint32_t yCell = i / numCells;
-        m2::PointD minPoint = PointU2PointD(m2::PointU((xCell * cellSize), (yCell * cellSize)), POINT_COORD_BITS);
-        m2::PointD maxPoint = PointU2PointD(m2::PointU((xCell * cellSize + cellSize), (yCell * cellSize + cellSize)), POINT_COORD_BITS);
+        m2::PointD minPoint = PointU2PointD(m2::PointU{(xCell * cellSize), (yCell * cellSize)}, POINT_COORD_BITS);
+        m2::PointD maxPoint = PointU2PointD(m2::PointU{(xCell * cellSize + cellSize), (yCell * cellSize + cellSize)}, POINT_COORD_BITS);
 
-        box cell(point(minPoint.x, minPoint.y) , point(maxPoint.x, maxPoint.y));
-        result.push_back({i, "", cell, {}});
+        box cell(point(minPoint.x, MercatorBounds::YToLat(minPoint.y)) , point(maxPoint.x, MercatorBounds::YToLat(maxPoint.y)));
+        result.push_back({Cell::EStage::Init, i, "", cell, {}});
       }
       return result;
     }
 
-    TActualTask GetTask()
+    void SplitCell(Cell const & cell, std::vector<Cell> & outCells)
     {
-      TActualTask task{false, Task()};
-
-      std::lock_guard<std::mutex> lock(m_mutexTasks);
-      if (m_listTasks.empty())
-        return task;
-      task = std::make_pair(true, m_listTasks.front());
-      m_listTasks.pop_front();
-      return std::move(task);
-    }
-
-    void PutTask(Task & task)
-    {
-      std::lock_guard<std::mutex> lock(m_mutexTasks);
-      m_listTasks.push_back(task);
-    }
-
-
-    bool MakeCellGeometry(Task & task)
-    {
-      multi_polygon poly;
-
-      // fetch regions from R-Tree by cell bounds
-      for (auto it = m_index.qbegin(bgi::intersects(task.cellBounds)); it != m_index.qend(); ++it)
-        poly.push_back(m_container[it->second]);
-
-      // clip regions by cell bounds and invert it
-      boost::geometry::intersection(task.cellBounds, poly, task.poly);
-      poly.swap(task.poly);
-      bg::clear(task.poly);
-      boost::geometry::difference(task.cellBounds, poly, task.poly);
-
-      if (bg::num_points(task.poly) > kMaxPointsInCell) {
-        PutTask(task);
-        return false;
-      }
-      return true;
-    }
-
-    bool SplitCellGeometry(Task & task)
-    {
-      if (bg::num_points(task.poly) <= kMaxPointsInCell)
-        return true;
-
       //  +-----+-----+
       //  |     |     |
       //  |  2  |  3  |
@@ -434,111 +437,206 @@ public:
       //  |     |     |
       //  +-----+-----+
       //
-      double middleX = (task.cellBounds.min_corner().x() + task.cellBounds.max_corner().x()) / 2;
-      double middleY = (task.cellBounds.min_corner().y() + task.cellBounds.max_corner().y()) / 2;
+      double middleX = (cell.bounds.min_corner().x() + cell.bounds.max_corner().x()) / 2;
+      double middleY = (cell.bounds.min_corner().y() + cell.bounds.max_corner().y()) / 2;
 
-      std::array<box, 4> quarters;
-      quarters[0] = task.cellBounds;
-      quarters[0].max_corner() = point(middleX, middleY);
-      quarters[1] = task.cellBounds;
-      quarters[1].min_corner().x(middleX);
-      quarters[1].max_corner().y(middleY);
-      quarters[2] = task.cellBounds;
-      quarters[2].min_corner().y(middleY);
-      quarters[2].max_corner().x(middleX);
-      quarters[3] = task.cellBounds;
-      quarters[3].min_corner() = point(middleX, middleY);
+      outCells.resize(4);
+      outCells[0].bounds = cell.bounds;
+      outCells[0].bounds.max_corner() = point(middleX, middleY);
+      outCells[1].bounds = cell.bounds;
+      outCells[1].bounds.min_corner().x(middleX);
+      outCells[1].bounds.max_corner().y(middleY);
+      outCells[2].bounds = cell.bounds;
+      outCells[2].bounds.min_corner().y(middleY);
+      outCells[2].bounds.max_corner().x(middleX);
+      outCells[3].bounds = cell.bounds;
+      outCells[3].bounds.min_corner() = point(middleX, middleY);
 
-      for (size_t i = 0; i < quarters.size(); ++i)
+      for (size_t i = 0; i < outCells.size(); ++i)
       {
-        Task newTask;
-        newTask.cellId = task.cellId;
-        newTask.cellBounds = quarters[i];
-        newTask.subCell = task.subCell + char('0'+i);
-        boost::geometry::intersection(newTask.cellBounds, task.poly, newTask.poly);
-        PutTask(newTask);
+        outCells[i].id = cell.id;
+        outCells[i].suffix = cell.suffix + char('0'+i);
       }
-      return false;
     }
-public:
+
+    void MakeCellGeometry(Cell const & src, std::vector<Cell> & result)
+    {
+      auto start = std::chrono::system_clock::now();
+      multi_polygon poly;
+      result.push_back(src);
+
+      Cell & task = result.front();
+      // fetch regions from R-Tree by cell bounds
+      for (auto it = m_index.qbegin(bgi::intersects(task.bounds)); it != m_index.qend(); ++it)
+        poly.emplace_back(m_container[it->second]);
+
+      if (poly.size() > kMaxRegionsInCell)
+      {
+        SplitCell(src, result);
+        for (Cell & cell : result)
+          cell.stage = Cell::EStage::Init;
+        return;
+      }
+
+      // arrange rings in right order
+      std::map<size_t, PolygonDesc> order;
+      for (size_t i = 0; i < poly.size(); ++i)
+      {
+        order[i].level = 0;
+        for (size_t j = 0; j < poly.size(); ++j)
+        {
+          if (i == j)
+            continue;
+
+          if (bg::covered_by(poly[i].outer()[0], poly[j])) {
+            order[i].covered.push_back(j);
+            order[i].level++;
+          }
+        }
+      }
+
+      for (auto & it : order)
+        it.second.covered.erase(std::remove_if(it.second.covered.begin(), it.second.covered.end(), [it, &order](size_t const & el){return (order[el].level != it.second.level-1);}), it.second.covered.end());
+
+      for (size_t i = 0; i < poly.size(); ++i)
+      {
+        // odd order
+        if (order[i].level & 0x01)
+        {
+          poly[order[i].covered.front()].inners().emplace_back(std::move(poly[i].outer()));
+          poly[i].outer().clear();
+        }
+      }
+
+      poly.erase(std::remove_if(poly.begin(), poly.end(), [](polygon const &p){ return (bg::num_points(p) == 0);}), poly.end());
+      for (size_t i = 0; i < poly.size(); ++i)
+        bg::correct(poly[i]);
+      auto stage1 = std::chrono::system_clock::now();
+
+      // clip regions by cell bounds and invert it
+      boost::geometry::intersection(task.bounds, poly, task.geom);
+      poly.swap(task.geom);
+      bg::clear(task.geom);
+      boost::geometry::difference(task.bounds, poly, task.geom);
+
+      task.stage = (bg::num_points(task.geom) > kMaxPointsInCell) ? Cell::EStage::NeedSplit : Cell::EStage::Done;
+
+      auto stage2 = std::chrono::system_clock::now();
+
+      stringstream sss;
+      sss << this_thread::get_id() << " cell: " << task.id << "-" << task.suffix << " polygons: " << task.geom.size()
+      << " points: " << bg::num_points(task.geom) << " create poly: "
+      << std::fixed << std::setprecision(7) << std::chrono::duration<double>(stage1 - start).count() << " sec."
+      << " make cell : " << std::chrono::duration<double>(stage2 - stage1).count() << " sec.";
+      LOG(LINFO, (sss.str()));
+    }
+
+    void SplitCellGeometry(Cell const & cell, std::vector<Cell> & outCells)
+    {
+      auto start = std::chrono::system_clock::now();
+      SplitCell(cell, outCells);
+
+      for (size_t i = 0; i < outCells.size(); ++i)
+      {
+        boost::geometry::intersection(outCells[i].bounds, cell.geom, outCells[i].geom);
+        outCells[i].stage = (bg::num_points(outCells[i].geom) > kMaxPointsInCell) ? Cell::EStage::NeedSplit : Cell::EStage::Done;
+      }
+      auto end = std::chrono::system_clock::now();
+
+      stringstream ss;
+      ss << this_thread::get_id() << " Split cell: " << cell.id << "-" << cell.suffix << " polygons: " << cell.geom.size()
+      << " points: " << bg::num_points(cell.geom);
+      ss << " done in " << std::fixed << std::setprecision(7) << std::chrono::duration<double>(end - start).count() << " sec.";
+      LOG(LINFO, (ss.str()));
+    }
+
+    void ProcessCell(Cell const & cell, std::vector<Cell> & outCells)
+    {
+      auto start = std::chrono::system_clock::now();
+      try
+      {
+        switch (cell.stage)
+        {
+          case Cell::EStage::Init:
+            MakeCellGeometry(cell, outCells);
+            break;
+          case Cell::EStage::NeedSplit:
+            SplitCellGeometry(cell, outCells);
+            break;
+          default:
+            break;
+        }
+      }
+      catch (std::exception & e)
+      {
+        stringstream ss;
+        ss << this_thread::get_id() << " cell: " << cell.id << "-" << cell.suffix << " failed: " << e.what();
+        LOG(LERROR, (ss.str()));
+        outCells.clear();
+        for (auto p : cell.geom)
+          CorrectAndCheckPolygon(p);
+      }
+      auto end = std::chrono::system_clock::now();
+
+      // store ready result
+      for (auto & cell : outCells)
+      {
+        if (cell.stage == Cell::EStage::Done && bg::num_points(cell.geom) != 0)
+        {
+          //        uncomment if need debug result polygon
+          //        std::stringstream fname;
+          //        fname << "./cell" << std::setfill('0') << std::setw(8) << cell.id << cell.suffix << ".poly";
+          //        ofstream file(fname.str().c_str());
+          //        file << cell.geom << std::endl;
+          stringstream name;
+          name << cell.id << cell.suffix;
+          std::lock_guard<std::mutex> lock(m_mutexResult);
+          m_processResultFunc(name.str(), cell.geom);
+        }
+      }
+      stringstream ss;
+      ss << this_thread::get_id() << " cell: " << cell.id << "-" << cell.suffix;
+      ss << " processed in " << std::fixed << std::setprecision(7) << std::chrono::duration<double>(end - start).count() << " sec.";
+      LOG(LINFO, (ss.str()));
+    }
+
+
+  public:
     void operator()()
     {
       for (;;)
       {
-        TActualTask task = GetTask();
-        if (!task.first)
-          break;
 
-        bool done = false;
-        auto start = std::chrono::system_clock::now();
-        try
-        {
-          done = (task.second.poly.empty()) ? MakeCellGeometry(task.second) : SplitCellGeometry(task.second);
-        }
-        catch (exception & e)
-        {
-          std::lock_guard<std::mutex> lock(m_mutexResult);
-          stringstream ss;
-          ss << "!!!!!!!!" << this_thread::get_id() << " cell: " << task.second.cellId << "-" << task.second.subCell << " failed: " << e.what();
-          LOG(LERROR, (ss.str()));
-        }
-        auto end = std::chrono::system_clock::now();
+        Cell currentCell;
+        std::unique_lock<std::mutex> lock(m_mutexTasks);
+        m_listCondVar.wait(lock, [this]{return (!m_listTasks.empty() || m_inWork == 0);});
+        if (m_listTasks.empty() && m_inWork == 0)
+          return;
 
-        if (done)
+        currentCell = m_listTasks.front();
+        m_listTasks.pop_front();
+        ++m_inWork;
+        lock.unlock();
+
+        std::vector<Cell> resultCells;
+
+        ProcessCell(currentCell, resultCells);
+
+        lock.lock();
+        // return to queue not ready cells
+        for (auto const & cell : resultCells)
         {
-          std::lock_guard<std::mutex> lock(m_mutexResult);
-          stringstream ss;
-          ss << this_thread::get_id() << " cell: " << task.second.cellId << "-" << task.second.subCell << " polygons out: " << task.second.poly.size()
-          << " points: " << bg::num_points(task.second.poly) << " done in " << std::chrono::duration<double>(end - start).count() << " sec.";
-          LOG(LINFO, (ss.str()));
-          if (!task.second.poly.empty())
+          if (cell.stage == Cell::EStage::NeedSplit || cell.stage == Cell::EStage::Init)
           {
-            stringstream name;
-            name << task.second.cellId << task.second.subCell;
-            m_processResultFunc(name.str(), task.second.poly);
-            std::stringstream fname;
-            fname << "./cell" << std::setfill('0') << std::setw(8) << task.second.cellId << task.second.subCell << ".poly";
-            ofstream file(fname.str().c_str());
-            file << task.second.poly << std::endl;
+            m_listTasks.push_back(cell);
           }
         }
-
+        --m_inWork;
+        m_listCondVar.notify_all();
       }
     }
   };
 
-  void CorrectAndCheckPolygon(polygon & p)
-  {
-    // correct orientation (ccw, cw), remove duplicate points
-    bg::correct(p);
-
-    bg::validity_failure_type failureType;
-
-    if (bg::is_valid(p, failureType))
-      return;
-
-    std::ostringstream message;
-    message << std::fixed << std::setprecision(7);
-    bg::failing_reason_policy<> policy_visitor(message);
-    is_valid(p, policy_visitor);
-    LOG(LINFO, ("Num points:", bg::num_points(p), "Error:", message.str()));
-
-    // correct self intersect geometry
-    if (failureType == bg::failure_self_intersections)
-    {
-      multi_polygon out;
-      bg::dissolve(p, out);
-      LOG(LINFO, ("After dissolve:", bg::num_points(out), "polygons:", bg::num_geometries(out)));
-      sort(out.begin(), out.end(), [](polygon const & p1, polygon const & p2) {return bg::num_points(p2) < bg::num_points(p1);});
-      bg::assign(p, out.front());
-    }
-    if (failureType == bg::failure_spikes)
-    {
-      bg::remove_spikes(p);
-      LOG(LINFO, ("After remove spikes:", bg::num_points(p), "polygons:", bg::num_geometries(p)));
-    }
-    LOG(LINFO, ("Fixed points:", bg::num_points(p), "polygons:", bg::num_geometries(p)));
-  }
 }
 
 size_t CoastlineFeaturesGenerator::DumpCoastlines(string const & intermediateDir) const
@@ -605,7 +703,7 @@ bool CoastlineFeaturesGenerator::GetFeature(CellIdT const & cell, FeatureBuilder
     {
       polygons.back().outer().emplace_back(point{p.x, p.y});
     }
-    CorrectAndCheckPolygon(polygons.back());
+    RegionMill::CorrectAndCheckPolygon(polygons.back());
   }
 
   uint32_t numThreads = thread::hardware_concurrency();
