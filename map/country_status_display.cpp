@@ -458,7 +458,12 @@ void CountryStatusDisplay::OnButtonClicked(gui::Element const * button)
 
   MapOptions options = MapOptions::Map;
   if (button == m_primaryButton.get())
-    options = SetOptions(options, MapOptions::CarRouting);
+  {
+    LocalAndRemoteSizeT const mapAndRoutingSize = m_activeMaps.GetRemoteCountrySizes(m_countryIdx);
+    bool const hasCarRouting = (mapAndRoutingSize.second != 0);
+    if (hasCarRouting)
+      options = SetOptions(options, MapOptions::CarRouting);
+  }
 
   ASSERT(m_downloadCallback, ());
   int opt = static_cast<int>(options);

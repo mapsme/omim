@@ -52,7 +52,7 @@ InformationDisplay::InformationDisplay(Framework * fw)
   InitDebugLabel();
   InitCopyright(fw);
 
-#ifndef DEBUG
+#if !defined(DEBUG) && !defined(BUILD_DESIGNER)
   enableDebugInfo(false);
 #endif
 
