@@ -3,12 +3,10 @@
 
 #include "indexer/point_to_int64.hpp"
 
-#include "geometry/region2d/binary_operators.hpp"
-
-#include "base/string_utils.hpp"
 #include "base/logging.hpp"
 
 #include "std/bind.hpp"
+#include "std/chrono.hpp"
 #include "std/condition_variable.hpp"
 #include "std/function.hpp"
 #include "std/thread.hpp"
@@ -18,74 +16,16 @@
 #include "std/thread.hpp"
 
 #include "boost/geometry.hpp"
-#include "boost/geometry/geometries/point_xy.hpp"
 #include "boost/geometry/algorithms/detail/overlay/turn_info.hpp"
 #include "boost/geometry/extensions/algorithms/dissolve.hpp"
-
-typedef m2::RegionI RegionT;
-typedef m2::PointI PointT;
-typedef m2::RectI RectT;
+#include "boost/geometry/geometries/point_xy.hpp"
 
 CoastlineFeaturesGenerator::CoastlineFeaturesGenerator(uint32_t coastType)
   : m_merger(POINT_COORD_BITS), m_coastType(coastType)
-{
-  string dumpName = (intermediateDir + "/merged_coastline_double.dump");
-  LOG(LINFO, ("Dump double coastsline into:", dumpName));
-  m_dumpStream.open(dumpName);
-}
+{}
 
 namespace
 {
-  m2::RectD GetLimitRect(RegionT const & rgn)
-  {
-    RectT r = rgn.GetRect();
-    return m2::RectD(r.minX(), r.minY(), r.maxX(), r.maxY());
-  }
-
-  inline PointT D2I(m2::PointD const & p)
-  {
-    m2::PointU const pu = PointD2PointU(p, POINT_COORD_BITS);
-    return PointT(static_cast<int32_t>(pu.x), static_cast<int32_t>(pu.y));
-  }
-
-  template <class TreeT> class DoCreateRegion
-  {
-    TreeT & m_tree;
-
-    RegionT m_rgn;
-    m2::PointD m_pt;
-    bool m_exist;
-
-  public:
-    DoCreateRegion(TreeT & tree) : m_tree(tree), m_exist(false) {}
-
-    bool operator()(m2::PointD const & p)
-    {
-      // This logic is to skip last polygon point (that is equal to first).
-
-      if (m_exist)
-      {
-        // add previous point to region
-        m_rgn.AddPoint(D2I(m_pt));
-      }
-      else
-        m_exist = true;
-
-      // save current point
-      m_pt = p;
-      return true;
-    }
-
-    void EndRegion()
-    {
-      m_tree.Add(m_rgn, GetLimitRect(m_rgn));
-
-      m_rgn = RegionT();
-      m_exist = false;
-    }
-  };
-
-
   class DoCreateDoubleRegion
   {
     m2::PointD m_pt;
@@ -98,7 +38,6 @@ namespace
     bool operator()(m2::PointD const & p)
     {
       // This logic is to skip last polygon point (that is equal to first).
-
       if (m_exist)
       {
         // add previous point to region
@@ -121,49 +60,42 @@ namespace
 
 }
 
-void CoastlineFeaturesGenerator::AddRegionToTree(FeatureBuilder1 const & fb)
+void CoastlineFeaturesGenerator::AddRegion(FeatureBuilder1 const & fb)
 {
   ASSERT ( fb.IsGeometryClosed(), () );
 
-  DoCreateRegion<TTree> createRgn(m_tree);
-  fb.ForEachGeometryPointEx(createRgn);
   DoCreateDoubleRegion region;
   fb.ForEachGeometryPointEx(region);
-  uint32_t sz = static_cast<uint32_t>(region.m_rgn.size());
-  m_dumpStream.write((char *)&sz, sizeof(uint32_t));
-  m_dumpStream.write((char *)region.m_rgn.data(), region.m_rgn.size() * sizeof(m2::PointD));
   m_regions.push_back(region.m_rgn);
 }
 
 void CoastlineFeaturesGenerator::operator()(FeatureBuilder1 const & fb)
 {
   if (fb.IsGeometryClosed())
-    AddRegionToTree(fb);
+    AddRegion(fb);
   else
     m_merger(fb);
 }
 
 namespace
 {
-  class DoAddToTree : public FeatureEmitterIFace
+  class MergedRegionSaver : public FeatureEmitterIFace
   {
     CoastlineFeaturesGenerator & m_rMain;
     size_t m_notMergedCoastsCount;
-    size_t m_totalNotMergedCoastsPoints;
 
   public:
-    DoAddToTree(CoastlineFeaturesGenerator & rMain)
-      : m_rMain(rMain), m_notMergedCoastsCount(0), m_totalNotMergedCoastsPoints(0) {}
+    MergedRegionSaver(CoastlineFeaturesGenerator & rMain)
+      : m_rMain(rMain), m_notMergedCoastsCount(0) {}
 
     virtual void operator() (FeatureBuilder1 const & fb)
     {
       if (fb.IsGeometryClosed())
-        m_rMain.AddRegionToTree(fb);
+        m_rMain.AddRegion(fb);
       else
       {
         LOG(LINFO, ("Not merged coastline", fb.GetOsmIdsString()));
         ++m_notMergedCoastsCount;
-        m_totalNotMergedCoastsPoints += fb.GetPointsCount();
       }
     }
 
@@ -176,125 +108,58 @@ namespace
     {
       return m_notMergedCoastsCount;
     }
-
-    size_t GetNotMergedCoastsPoints() const
-    {
-      return m_totalNotMergedCoastsPoints;
-    }
   };
 }
 
 bool CoastlineFeaturesGenerator::Finish(bool needStopIfFail, string const & intermediateDir)
 {
-  DoAddToTree doAdd(*this);
-  m_merger.DoMerge(doAdd);
+  MergedRegionSaver saver(*this);
+  m_merger.DoMerge(saver);
 
-  uint32_t term = 0;
-  m_dumpStream.write((char *)&term, sizeof(uint32_t));
-  m_dumpStream.flush();
-  m_dumpStream.close();
-
-  if (doAdd.HasNotMergedCoasts())
+  if (saver.HasNotMergedCoasts())
   {
     LOG(LINFO, ("Total not merged coasts:", doAdd.GetNotMergedCoastsCount()));
     LOG(LINFO, ("Total points in not merged coasts:", doAdd.GetNotMergedCoastsPoints()));
     return false;
   }
 
+  // dump merged coasts for experimental purposes
+  ofstream dumpStream;
+  string dumpName = (intermediateDir + "/merged_coastline_double.dump");
+  LOG(LINFO, ("Dump double coastsline into:", dumpName));
+  dumpStream.open(dumpName);
+
+  for (auto const & rgn : m_regions)
+  {
+    uint32_t sz = static_cast<uint32_t>(rgn.size());
+    dumpStream.write((char *)&sz, sizeof(uint32_t));
+    dumpStream.write((char *)rgn.data(), rgn.size() * sizeof(m2::PointD));
+  }
+
+  uint32_t term = 0;
+  dumpStream.write((char *)&term, sizeof(uint32_t));
+  dumpStream.flush();
+  dumpStream.close();
+
   return true;
 }
 
 namespace
 {
-class DoDifference
-{
-  RectT m_src;
-  vector<RegionT> m_res;
-  vector<m2::PointD> m_points;
-
-public:
-  DoDifference(RegionT const & rgn)
-  {
-    m_res.push_back(rgn);
-    m_src = rgn.GetRect();
-  }
-
-  void operator()(RegionT const & r)
-  {
-    // if r is fully inside source rect region,
-    // put it to the result vector without any intersection
-    if (m_src.IsRectInside(r.GetRect()))
-      m_res.push_back(r);
-    else
-      m2::IntersectRegions(m_res.front(), r, m_res);
-  }
-
-  void operator()(PointT const & p)
-  {
-    m_points.push_back(PointU2PointD(
-        m2::PointU(static_cast<uint32_t>(p.x), static_cast<uint32_t>(p.y)), POINT_COORD_BITS));
-  }
-
-  size_t GetPointsCount() const
-  {
-    size_t count = 0;
-    for (size_t i = 0; i < m_res.size(); ++i)
-      count += m_res[i].GetPointsCount();
-    return count;
-  }
-
-    void AssignGeometry(FeatureBuilder1 & fb)
-    {
-      for (size_t i = 0; i < m_res.size(); ++i)
-      {
-        m_points.clear();
-        m_points.reserve(m_res[i].Size() + 1);
-
-        m_res[i].ForEachPoint(ref(*this));
-
-        fb.AddPolygon(m_points);
-      }
-    }
-  };
-
   namespace bg = boost::geometry;
   namespace bgi = boost::geometry::index;
 
   typedef bg::model::d2::point_xy<double> point;
   typedef bg::model::box<point> box;
   typedef bg::model::polygon<point> polygon;
-  typedef std::pair<box, size_t> value;
-
-  typedef boost::geometry::model::multi_polygon<polygon, std::deque> multi_polygon;
-
-
-  std::ostream & operator << (std::ostream & s, multi_polygon const & multipolygon)
-  {
-    size_t ringNum = 1;
-    s << "multipolygon_" << multipolygon.size() << std::endl;
-    for (auto const & p : multipolygon)
-    {
-      s << ringNum++ << std::endl;
-      for(auto const & op : p.outer())
-        s << std::fixed << std::setprecision(7) << op.get<0>() << " " << my::RadToDeg(2.0 * atan(tanh(0.5 * my::DegToRad(op.get<1>())))) << std::endl;
-      s << "END" << std::endl;
-      for(auto const & ring : p.inners())
-      {
-        s << "!" << ringNum++ << (ring.size() < 3 ? "invalid" : "") << std::endl;
-        for(auto const & op : ring)
-          s << std::fixed << std::setprecision(7) << op.get<0>() << " " << my::RadToDeg(2.0 * atan(tanh(0.5 * my::DegToRad(op.get<1>())))) << std::endl;
-        s << "END" << std::endl;
-      }
-    }
-    s << "END" << std::endl;
-    return s;
-  }
+  typedef bg::model::multi_polygon<polygon, deque> multi_polygon;
+  typedef pair<box, size_t> value;
 
 
   class RegionMill
   {
     typedef bgi::rtree< value, bgi::quadratic<16>> TIndex;
-    typedef std::deque<polygon> TContainer;
+    typedef deque<polygon> TContainer;
 
     TContainer const & m_container;
     TIndex const & m_index;
@@ -307,7 +172,7 @@ public:
     {
       enum class EStage {Init, NeedSplit, Done} stage;
       size_t id;
-      std::string suffix;
+      string suffix;
       box bounds;
       multi_polygon geom;
     };
@@ -315,34 +180,34 @@ public:
     struct PolygonDesc
     {
       size_t level;
-      std::vector<size_t> covered;
+      vector<size_t> covered;
     };
 
-    std::mutex & m_mutexTasks;
-    std::list<Cell> & m_listTasks;
-    std::condition_variable & m_listCondVar;
+    mutex & m_mutexTasks;
+    list<Cell> & m_listTasks;
+    condition_variable & m_listCondVar;
     size_t & m_inWork;
-    std::mutex & m_mutexResult;
+    mutex & m_mutexResult;
 
     enum { kMaxPointsInCell = 20000, kMaxRegionsInCell = 500 };
 
 
   public:
-    static void Process(uint32_t numThreads, uint32_t baseScale, std::deque<polygon> const & polygons, TProcessResultFunc funcResult)
+    static void Process(uint32_t numThreads, uint32_t baseScale, deque<polygon> const & polygons, TProcessResultFunc funcResult)
     {
       TIndex rtree;
 
       for (size_t i = 0; i < polygons.size(); ++i)
         rtree.insert(value(bg::return_envelope<box>(polygons[i]), i));
 
-      std::list<RegionMill::Cell> listTasks = RegionMill::CreateCellsForScale(baseScale);
-      std::list<multi_polygon> listResult;
+      list<RegionMill::Cell> listTasks = RegionMill::CreateCellsForScale(baseScale);
+      list<multi_polygon> listResult;
 
-      std::vector<RegionMill> uniters;
-      std::vector<std::thread> threads;
-      std::mutex mutexTasks;
-      std::mutex mutexResult;
-      std::condition_variable condVar;
+      vector<RegionMill> uniters;
+      vector<thread> threads;
+      mutex mutexTasks;
+      mutex mutexResult;
+      condition_variable condVar;
       size_t inWork = 0;
       for (uint32_t i = 0; i < numThreads; ++i)
       {
@@ -364,8 +229,8 @@ public:
       if (bg::is_valid(p, failureType))
         return;
 
-      std::ostringstream message;
-      message << std::fixed << std::setprecision(7);
+      ostringstream message;
+      message << fixed << setprecision(7);
       bg::failing_reason_policy<> policy_visitor(message);
       is_valid(p, policy_visitor);
       LOG(LINFO, ("Num points:", bg::num_points(p), "Error:", message.str()));
@@ -389,8 +254,8 @@ public:
 
   protected:
 
-    RegionMill(std::list<Cell> & listTasks, std::mutex & mutexTasks, std::condition_variable & condVar, size_t & inWork,
-               TProcessResultFunc funcResult, std::mutex & mutexResult,
+    RegionMill(list<Cell> & listTasks, mutex & mutexTasks, condition_variable & condVar, size_t & inWork,
+               TProcessResultFunc funcResult, mutex & mutexResult,
                TContainer const &container, TIndex const & index)
     : m_container(container)
     , m_index(index)
@@ -402,12 +267,12 @@ public:
     , m_mutexResult(mutexResult)
     {}
 
-    static std::list<Cell> CreateCellsForScale(uint32_t scale, uint32_t from = 0, uint32_t num = 0)
+    static list<Cell> CreateCellsForScale(uint32_t scale, uint32_t from = 0, uint32_t num = 0)
     {
       uint32_t numCells = 1 << scale;
       uint32_t cellSize = ((1 << POINT_COORD_BITS) - 1) / numCells;
 
-      std::list<Cell> result;
+      list<Cell> result;
 
       uint32_t fromCell = from;
       uint32_t toCell = (num == 0) ? (numCells * numCells) : fromCell + num;
@@ -425,7 +290,7 @@ public:
       return result;
     }
 
-    void SplitCell(Cell const & cell, std::vector<Cell> & outCells)
+    void SplitCell(Cell const & cell, vector<Cell> & outCells)
     {
       //  +-----+-----+
       //  |     |     |
@@ -459,9 +324,9 @@ public:
       }
     }
 
-    void MakeCellGeometry(Cell const & src, std::vector<Cell> & result)
+    void MakeCellGeometry(Cell const & src, vector<Cell> & result)
     {
-      auto start = std::chrono::system_clock::now();
+      auto start = system_clock::now();
       multi_polygon poly;
       result.push_back(src);
 
@@ -470,6 +335,7 @@ public:
       for (auto it = m_index.qbegin(bgi::intersects(task.bounds)); it != m_index.qend(); ++it)
         poly.emplace_back(m_container[it->second]);
 
+      // split cell if too many polygons in it
       if (poly.size() > kMaxRegionsInCell)
       {
         SplitCell(src, result);
@@ -479,7 +345,7 @@ public:
       }
 
       // arrange rings in right order
-      std::map<size_t, PolygonDesc> order;
+      map<size_t, PolygonDesc> order;
       for (size_t i = 0; i < poly.size(); ++i)
       {
         order[i].level = 0;
@@ -488,7 +354,8 @@ public:
           if (i == j)
             continue;
 
-          if (bg::covered_by(poly[i].outer()[0], poly[j])) {
+          if (bg::covered_by(poly[i].outer()[0], poly[j]))
+          {
             order[i].covered.push_back(j);
             order[i].level++;
           }
@@ -496,22 +363,29 @@ public:
       }
 
       for (auto & it : order)
-        it.second.covered.erase(std::remove_if(it.second.covered.begin(), it.second.covered.end(), [it, &order](size_t const & el){return (order[el].level != it.second.level-1);}), it.second.covered.end());
+      {
+        it.second.covered.erase(remove_if(it.second.covered.begin(), it.second.covered.end(),
+                                          [it, &order](size_t const & el)
+                                          {return (order[el].level != it.second.level - 1);}),
+                                it.second.covered.end());
+      }
 
       for (size_t i = 0; i < poly.size(); ++i)
       {
         // odd order
         if (order[i].level & 0x01)
         {
-          poly[order[i].covered.front()].inners().emplace_back(std::move(poly[i].outer()));
+          poly[order[i].covered.front()].inners().emplace_back(move(poly[i].outer()));
           poly[i].outer().clear();
         }
       }
 
-      poly.erase(std::remove_if(poly.begin(), poly.end(), [](polygon const &p){ return (bg::num_points(p) == 0);}), poly.end());
+      poly.erase(remove_if(poly.begin(), poly.end(), [](polygon const & p)
+                           {return (bg::num_points(p) == 0);}),poly.end());
+
       for (size_t i = 0; i < poly.size(); ++i)
         bg::correct(poly[i]);
-      auto stage1 = std::chrono::system_clock::now();
+      auto stage1 = system_clock::now();
 
       // clip regions by cell bounds and invert it
       boost::geometry::intersection(task.bounds, poly, task.geom);
@@ -519,40 +393,45 @@ public:
       bg::clear(task.geom);
       boost::geometry::difference(task.bounds, poly, task.geom);
 
-      task.stage = (bg::num_points(task.geom) > kMaxPointsInCell) ? Cell::EStage::NeedSplit : Cell::EStage::Done;
+      task.stage = (bg::num_points(task.geom) > kMaxPointsInCell) ? Cell::EStage::NeedSplit
+                                                                  : Cell::EStage::Done;
 
-      auto stage2 = std::chrono::system_clock::now();
+      auto stage2 = system_clock::now();
 
       stringstream sss;
-      sss << this_thread::get_id() << " cell: " << task.id << "-" << task.suffix << " polygons: " << task.geom.size()
-      << " points: " << bg::num_points(task.geom) << " create poly: "
-      << std::fixed << std::setprecision(7) << std::chrono::duration<double>(stage1 - start).count() << " sec."
-      << " make cell : " << std::chrono::duration<double>(stage2 - stage1).count() << " sec.";
+      sss << this_thread::get_id() << " cell: " << task.id << "-" << task.suffix
+          << " polygons: " << task.geom.size() << " points: " << bg::num_points(task.geom)
+          << " create poly: " << fixed << setprecision(7)
+          << duration<double>(stage1 - start).count() << " sec."
+          << " make cell : " << duration<double>(stage2 - stage1).count() << " sec.";
       LOG(LINFO, (sss.str()));
     }
 
-    void SplitCellGeometry(Cell const & cell, std::vector<Cell> & outCells)
+    void SplitCellGeometry(Cell const & cell, vector<Cell> & outCells)
     {
-      auto start = std::chrono::system_clock::now();
+      auto start = system_clock::now();
       SplitCell(cell, outCells);
 
       for (size_t i = 0; i < outCells.size(); ++i)
       {
         boost::geometry::intersection(outCells[i].bounds, cell.geom, outCells[i].geom);
-        outCells[i].stage = (bg::num_points(outCells[i].geom) > kMaxPointsInCell) ? Cell::EStage::NeedSplit : Cell::EStage::Done;
+        outCells[i].stage = (bg::num_points(outCells[i].geom) > kMaxPointsInCell)
+                                ? Cell::EStage::NeedSplit
+                                : Cell::EStage::Done;
       }
-      auto end = std::chrono::system_clock::now();
+      auto end = system_clock::now();
 
       stringstream ss;
-      ss << this_thread::get_id() << " Split cell: " << cell.id << "-" << cell.suffix << " polygons: " << cell.geom.size()
-      << " points: " << bg::num_points(cell.geom);
-      ss << " done in " << std::fixed << std::setprecision(7) << std::chrono::duration<double>(end - start).count() << " sec.";
+      ss << this_thread::get_id() << " Split cell: " << cell.id << "-" << cell.suffix
+         << " polygons: " << cell.geom.size() << " points: " << bg::num_points(cell.geom);
+      ss << " done in " << fixed << setprecision(7) << duration<double>(end - start).count()
+         << " sec.";
       LOG(LINFO, (ss.str()));
     }
 
-    void ProcessCell(Cell const & cell, std::vector<Cell> & outCells)
+    void ProcessCell(Cell const & cell, vector<Cell> & outCells)
     {
-      auto start = std::chrono::system_clock::now();
+      auto start = system_clock::now();
       try
       {
         switch (cell.stage)
@@ -563,52 +442,48 @@ public:
           case Cell::EStage::NeedSplit:
             SplitCellGeometry(cell, outCells);
             break;
-          default:
+          case Cell::EStage::Done:
             break;
         }
       }
-      catch (std::exception & e)
+      catch (exception & e)
       {
         stringstream ss;
-        ss << this_thread::get_id() << " cell: " << cell.id << "-" << cell.suffix << " failed: " << e.what();
+        ss << this_thread::get_id() << " cell: " << cell.id << "-" << cell.suffix
+           << " failed: " << e.what();
         LOG(LERROR, (ss.str()));
         outCells.clear();
         for (auto p : cell.geom)
           CorrectAndCheckPolygon(p);
       }
-      auto end = std::chrono::system_clock::now();
+      auto end = system_clock::now();
 
       // store ready result
       for (auto & cell : outCells)
       {
         if (cell.stage == Cell::EStage::Done && bg::num_points(cell.geom) != 0)
         {
-          //        uncomment if need debug result polygon
-          //        std::stringstream fname;
-          //        fname << "./cell" << std::setfill('0') << std::setw(8) << cell.id << cell.suffix << ".poly";
-          //        ofstream file(fname.str().c_str());
-          //        file << cell.geom << std::endl;
           stringstream name;
           name << cell.id << cell.suffix;
-          std::lock_guard<std::mutex> lock(m_mutexResult);
+          lock_guard<mutex> lock(m_mutexResult);
           m_processResultFunc(name.str(), cell.geom);
         }
       }
       stringstream ss;
       ss << this_thread::get_id() << " cell: " << cell.id << "-" << cell.suffix;
-      ss << " processed in " << std::fixed << std::setprecision(7) << std::chrono::duration<double>(end - start).count() << " sec.";
+      ss << " processed in " << fixed << setprecision(7) << duration<double>(end - start).count()
+         << " sec.";
       LOG(LINFO, (ss.str()));
     }
-
 
   public:
     void operator()()
     {
+      // thread main loop
       for (;;)
       {
-
         Cell currentCell;
-        std::unique_lock<std::mutex> lock(m_mutexTasks);
+        unique_lock<mutex> lock(m_mutexTasks);
         m_listCondVar.wait(lock, [this]{return (!m_listTasks.empty() || m_inWork == 0);});
         if (m_listTasks.empty() && m_inWork == 0)
           return;
@@ -618,8 +493,7 @@ public:
         ++m_inWork;
         lock.unlock();
 
-        std::vector<Cell> resultCells;
-
+        vector<Cell> resultCells;
         ProcessCell(currentCell, resultCells);
 
         lock.lock();
@@ -627,9 +501,7 @@ public:
         for (auto const & cell : resultCells)
         {
           if (cell.stage == Cell::EStage::NeedSplit || cell.stage == Cell::EStage::Init)
-          {
             m_listTasks.push_back(cell);
-          }
         }
         --m_inWork;
         m_listCondVar.notify_all();
@@ -639,70 +511,15 @@ public:
 
 }
 
-size_t CoastlineFeaturesGenerator::DumpCoastlines(string const & intermediateDir) const
+void CoastlineFeaturesGenerator::MakePolygons(list<FeatureBuilder1> & vecFb)
 {
-  string dumpName = (intermediateDir + "/merged_coastline.dump");
-  LOG(LINFO, ("Dump coastsline into:", dumpName));
-  ofstream f(dumpName);
-  size_t regionsNum = 0;
-  GetRegionTree().ForEach([&regionsNum, &f](m2::RegionI const &region)
-  {
-    uint32_t sz = static_cast<uint32_t>(region.Data().size());
-    f.write((char *)&sz, sizeof(uint32_t));
-    f.write((char *)region.Data().data(), region.Data().size() * sizeof(m2::RegionI::ValueT));
-    regionsNum++;
-  });
-
-  uint32_t term = 0;
-  f.write((char *)&term, sizeof(uint32_t));
-  f.flush();
-  f.close();
-  return regionsNum;
-}
-
-
-bool CoastlineFeaturesGenerator::GetFeature(CellIdT const & cell, FeatureBuilder1 & fb)
-{
-  // get rect cell
-  double minX, minY, maxX, maxY;
-  CellIdConverter<MercatorBounds, CellIdT>::GetCellBounds(cell, minX, minY, maxX, maxY);
-
-    // create rect region
-    PointT arr[] = {D2I(m2::PointD(minX, minY)), D2I(m2::PointD(minX, maxY)),
-                    D2I(m2::PointD(maxX, maxY)), D2I(m2::PointD(maxX, minY))};
-    RegionT rectR(arr, arr + ARRAY_SIZE(arr));
-
-    // Do 'and' with all regions and accumulate the result, including bound region.
-    // In 'odd' parts we will have an ocean.
-    DoDifference doDiff(rectR);
-    m_index.ForEachInRect(GetLimitRect(rectR), bind<void>(ref(doDiff), _1));
-
-    // Check if too many points for feature.
-    if (cell.Level() < kHighLevel && doDiff.GetPointsCount() >= kMaxPoints)
-      return false;
-
-    m_ctx.processResultFunc(cell, doDiff);
-    return true;
-  }
-
-  void operator()()
-  {
-    // thread main loop
-    while (true)
-    {
-      unique_lock<mutex> lock(m_ctx.mutexTasks);
-      m_ctx.listCondVar.wait(lock, [this]{return (!m_ctx.listTasks.empty() || m_ctx.inWork == 0);});
-      if (m_ctx.listTasks.empty())
-        break;
 
   deque<polygon> polygons;
   for (auto const &region : m_regions)
   {
     polygons.push_back(polygon());
     for (auto const & p : region)
-    {
       polygons.back().outer().emplace_back(point{p.x, p.y});
-    }
     RegionMill::CorrectAndCheckPolygon(polygons.back());
   }
 

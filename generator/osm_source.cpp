@@ -290,16 +290,11 @@ public:
       if (!m_coasts->Finish() && m_failOnCoasts)
         return false;
 
-        LOG(LINFO, ("Count merged polygons."));
-        size_t regionsNum = m_coasts->DumpCoastlines(m_intermediateDir);
-        LOG(LINFO, ("Merge polygons done.", regionsNum));
-
-        size_t const count = m_coasts->GetCellsCount();
-        LOG(LINFO, ("Generating coastline polygons"));
-
+        LOG(LINFO, ("Create world water polygons start"));
         list<FeatureBuilder1> vecFb;
-        m_coasts->GetFeatures(0, vecFb);
+        m_coasts->MakePolygons(vecFb);
 
+        LOG(LINFO, ("World water polygons ready to save"));
         for (auto const & fb : vecFb)
           (*m_coastsHolder)(fb);
       }
