@@ -61,7 +61,7 @@ public class MapFragment extends RenderFragment
   }
 
   @Override
-  protected void applyWidgetPivots()
+  protected void applyWidgetPivots(final int mapHeight, final int mapWidth)
   {
     /// TODO (android developer)
 //    final Resources resources = getResources();
@@ -77,11 +77,6 @@ public class MapFragment extends RenderFragment
 //    }, 300);
   }
 
-  public boolean isRenderingInitialized()
-  {
-    return mIsRenderingInitialized;
-  }
-
   @Override
   public void onRenderingInitialized()
   {
@@ -91,8 +86,6 @@ public class MapFragment extends RenderFragment
       final MapRenderingListener listener = (MapRenderingListener) host;
       listener.onRenderingInitialized();
     }
-
-    super.OnRenderingInitialized();
   }
 
   @Override

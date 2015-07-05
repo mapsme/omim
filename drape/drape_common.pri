@@ -102,4 +102,4 @@ HEADERS += \
     $$DRAPE_DIR/utils/stb_image.h \
     $$DRAPE_DIR/utils/vertex_decl.hpp \
     $$DRAPE_DIR/vertex_array_buffer.hpp \
-    $$DRAPE_DIR/depth_constants.hpp
+    $$DRAPE_DIR/depth_constants.hpp \

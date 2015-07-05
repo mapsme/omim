@@ -86,7 +86,7 @@
   [self setAnimation:animationImages once:NO];
 }
 
-- (void)changeButtonFromState:(location::EMyPositionMode)beginState toState:(location::EMyPositionMode)beginState
+- (void)changeButtonFromState:(location::EMyPositionMode)beginState toState:(location::EMyPositionMode)endState
 {
   NSAssert1(beginState != endState, @"MWMLocationButtonView::(changeButtonFromState:toState:) states must be different! state:%@", @(beginState));
   [self setImageNamed:endState];
@@ -96,7 +96,7 @@
                                                  @(location::MODE_FOLLOW).stringValue : @"follow",
                                                  @(location::MODE_ROTATE_AND_FOLLOW).stringValue : @"followandrotate"};
   NSString const * const changeAnimation = [NSString stringWithFormat:@"%@_to_%@_", stateMap[@(beginState).stringValue], stateMap[@(endState).stringValue]];
-=
+
   static NSUInteger const animationImagesCount = 6;
   NSMutableArray * const animationImages = [NSMutableArray arrayWithCapacity:animationImagesCount];
   for (NSUInteger i = 0; i < animationImagesCount; ++i)

@@ -63,7 +63,6 @@ typedef NS_ENUM(NSUInteger, MWMPlacePageManagerState)
   self.state = MWMPlacePageManagerStateClosed;
   [self.placePage dismiss];
   [[MapsAppDelegate theApp].m_locationManager stop:self];
-  GetFramework().GetBalloonManager().RemovePin();
   m_userMark = nullptr;
   self.entity = nil;
   self.placePage = nil;
@@ -167,7 +166,7 @@ typedef NS_ENUM(NSUInteger, MWMPlacePageManagerState)
 
 - (void)buildRoute
 {
-  GetFramework().BuildRoute(m_userMark->GetUserMark()->GetOrg());
+  GetFramework().BuildRoute(m_userMark->GetUserMark()->GetPivot());
 }
 
 - (void)stopBuildingRoute
@@ -191,14 +190,15 @@ typedef NS_ENUM(NSUInteger, MWMPlacePageManagerState)
   Framework & f = GetFramework();
   BookmarkData data = BookmarkData(self.entity.title.UTF8String, f.LastEditedBMType());
   size_t const categoryIndex = f.LastEditedBMCategory();
-  size_t const bookmarkIndex = f.GetBookmarkManager().AddBookmark(categoryIndex, m_userMark->GetUserMark()->GetOrg(), data);
+  size_t const bookmarkIndex = f.GetBookmarkManager().AddBookmark(categoryIndex, m_userMark->GetUserMark()->GetPivot(), data);
   self.entity.bac = make_pair(categoryIndex, bookmarkIndex);
   self.entity.type = MWMPlacePageEntityTypeBookmark;
-  BookmarkCategory const * category = f.GetBmCategory(categoryIndex);
-  Bookmark const * bookmark = category->GetBookmark(bookmarkIndex);
+
+  BookmarkCategory::Guard guard(*f.GetBmCategory(categoryIndex));
+
+  UserMark const * bookmark = guard.m_controller.GetUserMark(bookmarkIndex);
   m_userMark.reset(new UserMarkCopy(bookmark, false));
-  f.ActivateUserMark(bookmark);
-  f.Invalidate();
+  f.ActivateUserMark(bookmark, false);
 }
 
 - (void)removeBookmark
@@ -208,15 +208,15 @@ typedef NS_ENUM(NSUInteger, MWMPlacePageManagerState)
   BookmarkAndCategory bookmarkAndCategory = f.FindBookmark(mark);
   self.entity.type = MWMPlacePageEntityTypeRegular;
   BookmarkCategory * category = f.GetBmCategory(bookmarkAndCategory.first);
-  PoiMarkPoint const * poi = f.GetAddressMark(mark->GetOrg());
+  PoiMarkPoint const * poi = f.GetAddressMark(mark->GetPivot());
   m_userMark.reset(new UserMarkCopy(poi, false));
-  f.ActivateUserMark(poi);
+  f.ActivateUserMark(poi, false);
   if (category)
   {
-    category->DeleteBookmark(bookmarkAndCategory.second);
+    BookmarkCategory::Guard guard(*category);
+    guard.m_controller.DeleteUserMark(bookmarkAndCategory.second);
     category->SaveToKMLFile();
   }
-  f.Invalidate();
 }
 
 - (void)reloadBookmark
@@ -259,7 +259,7 @@ typedef NS_ENUM(NSUInteger, MWMPlacePageManagerState)
   [[MapsAppDelegate theApp].m_locationManager getNorthRad:north];
   string distance;
   CLLocationCoordinate2D const coord = location.coordinate;
-  GetFramework().GetDistanceAndAzimut(m_userMark->GetUserMark()->GetOrg(), coord.latitude, coord.longitude, north, distance, azimut);
+  GetFramework().GetDistanceAndAzimut(m_userMark->GetUserMark()->GetPivot(), coord.latitude, coord.longitude, north, distance, azimut);
   return [NSString stringWithUTF8String:distance.c_str()];
 }
 
@@ -270,7 +270,7 @@ typedef NS_ENUM(NSUInteger, MWMPlacePageManagerState)
     return;
 
   CLLocationCoordinate2D const coord = location.coordinate;
-  CGFloat angle = ang::AngleTo(MercatorBounds::FromLatLon(coord.latitude, coord.longitude), m_userMark->GetUserMark()->GetOrg()) + info.m_bearing;
+  CGFloat angle = ang::AngleTo(MercatorBounds::FromLatLon(coord.latitude, coord.longitude), m_userMark->GetUserMark()->GetPivot()) + info.m_bearing;
   CGAffineTransform transform = CGAffineTransformMakeRotation(M_PI_2 - angle);
   [self.placePage setDirectionArrowTransform:transform];
   [self.directionView setDirectionArrowTransform:transform];

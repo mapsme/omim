@@ -73,7 +73,6 @@ using feature::Metadata;
       [self configureForBookmark:mark];
       break;
   }
-  GetFramework().ActivateUserMark(mark);
 }
 
 - (void)configureForBookmark:(UserMark const *)bookmark
@@ -83,7 +82,7 @@ using feature::Metadata;
   self.type = MWMPlacePageEntityTypeBookmark;
   BookmarkCategory * category = f.GetBmCategory(self.bac.first);
   BookmarkData const & data = static_cast<Bookmark const *>(bookmark)->GetData();
-  m2::PointD const & point = bookmark->GetOrg();
+  m2::PointD const & point = bookmark->GetPivot();
   Metadata metadata;
   search::AddressInfo info;
   f.FindClosestPOIMetadata(point, metadata);
@@ -105,7 +104,7 @@ using feature::Metadata;
 //Workaround for framework bug.
 //TODO: Make correct way to get search metadata.
   Metadata metadata;
-  GetFramework().FindClosestPOIMetadata(searchMark->GetOrg(), metadata);
+  GetFramework().FindClosestPOIMetadata(searchMark->GetPivot(), metadata);
   [self configureEntityWithMetadata:metadata addressInfo:searchMark->GetInfo()];
 }
 
@@ -328,7 +327,8 @@ using feature::Metadata;
   if (!category)
     return;
 
-  Bookmark * bookmark = category->GetBookmark(self.bac.second);
+  BookmarkCategory::Guard guard(*category);
+  Bookmark * bookmark = static_cast<Bookmark *>(guard.m_controller.GetUserMarkForEdit(self.bac.second));
   if (!bookmark)
     return;
   

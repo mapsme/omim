@@ -274,7 +274,10 @@ typedef NS_OPTIONS(NSUInteger, MapInfoView)
 
 - (void)onUserMarkClicked:(unique_ptr<UserMarkCopy>)mark
 {
-  [self.placePageManager showPlacePageWithUserMark:std::move(mark)];
+  if (mark == nullptr)
+    [self dismissPlacePage];
+  else
+    [self.placePageManager showPlacePageWithUserMark:std::move(mark)];
 }
 
 - (void)onMyPositionClicked:(id)sender
@@ -748,7 +751,7 @@ typedef NS_OPTIONS(NSUInteger, MapInfoView)
       break;
     case SearchViewStateFullscreen:
       self.controlsManager.hidden = YES;
-      GetFramework().ActivateUserMark(NULL);
+      GetFramework().DiactivateUserMark();
       break;
   }
 }
