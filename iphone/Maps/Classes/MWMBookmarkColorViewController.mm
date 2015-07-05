@@ -126,7 +126,6 @@ static NSString * const kBookmarkColorCellIdentifier = @"MWMBookmarkColorCell";
     return;
 
   [self.placePageManager reloadBookmark];
-  GetFramework().Invalidate();
 }
 
 @end
