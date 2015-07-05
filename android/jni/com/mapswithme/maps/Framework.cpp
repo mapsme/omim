@@ -587,7 +587,7 @@ void Framework::DownloadingProgressUpdate(ActiveMapsLayout::TGroup const & group
 // Fills mapobject's metadata from UserMark
 void Framework::InjectMetadata(JNIEnv * env, jclass const clazz, jobject const mapObject, UserMark const * userMark)
 {
-  feature::FeatureMetadata metadata;
+  feature::Metadata metadata;
   frm()->FindClosestPOIMetadata(userMark->GetPivot(), metadata);
 
   static jmethodID const addId = env->GetMethodID(clazz, "addMetadata", "(ILjava/lang/String;)V");
