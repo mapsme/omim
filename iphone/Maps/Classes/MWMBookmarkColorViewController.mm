@@ -124,8 +124,8 @@ static NSString * const kBookmarkColorCellIdentifier = @"MWMBookmarkColorCell";
   self.placePageManager.entity.bookmarkColor = kBookmarkColorsVariant[indexPath.row];
   if (!self.iPadOwnerNavigationController)
     return;
-  
-  GetFramework().Invalidate();
+
+  [self.placePageManager reloadBookmark];
 }
 
 @end
