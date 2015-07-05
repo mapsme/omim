@@ -140,6 +140,9 @@ void UserMarkContainer::ReleaseController()
   if (IsVisibleFlagDirty() || IsDrawableFlagDirty())
     engine->ChangeVisibilityUserMarksLayer(key, IsVisible() && IsDrawable());
 
+  m_flags[VisibleDirtyFlag] = false;
+  m_flags[DrawableDirtyFlag] = false;
+
   if (IsDirty())
   {
     if (GetUserPointCount() == 0 && GetUserLineCount() == 0)

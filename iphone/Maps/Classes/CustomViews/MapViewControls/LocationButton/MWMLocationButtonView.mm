@@ -77,10 +77,9 @@
   [self setAnimation:animationImages once:NO];
 }
 
-- (void)changeButtonFromState:(location::EMyPositionMode)beginState toState:(location::EMyPositionMode)beginState
+- (void)changeButtonFromState:(location::EMyPositionMode)beginState toState:(location::EMyPositionMode)endState
 {
   [self setImageNamed:endState];
-<<<<<<< HEAD
   static NSDictionary * stateMap = @{@(location::State::MODE_UNKNOWN_POSITION).stringValue : @"noposition",
                                      @(location::State::MODE_PENDING_POSITION).stringValue : @"pending",
                                      @(location::State::MODE_NOT_FOLLOW).stringValue : @"notfollow",
