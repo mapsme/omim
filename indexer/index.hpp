@@ -276,8 +276,18 @@ private:
     ASSERT_LESS(index, features.size(), ());
     size_t result = index;
     MwmId id = features[index].m_mwmId;
+
+    if (!id.IsAlive())
+    {
+      while (features[result].m_mwmId == id)
+        ++result;
+
+      return result;
+    }
+
     MwmHandle const handle(const_cast<Index &>(*this), id);
     MwmValue * const pValue = handle.GetValue<MwmValue>();
+
     if (pValue)
     {
       FeaturesVector featureReader(pValue->m_cont, pValue->GetHeader());
