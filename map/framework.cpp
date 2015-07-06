@@ -359,10 +359,8 @@ void Framework::DeleteCountry(storage::TIndex const & index, MapOptions opt)
       // m_model will notify us when latest map file will be deleted via
       // OnMapDeregistered call.
       if (m_model.DeregisterMap(countryFile))
-      {
-        ///@TODO UVR
-        //InvalidateRect(GetCountryBounds(countryFile.GetNameWithoutExt()), true /* doForceUpdate */);
-      }
+        InvalidateRect(GetCountryBounds(countryFile.GetNameWithoutExt()));
+
       // TODO (@ldragunov, @gorshenin): rewrite routing session to use MwmHandles. Thus,
       // it won' be needed to reset it after maps update.
       m_routingSession.Reset();
@@ -424,7 +422,7 @@ void Framework::UpdateLatestCountryFile(LocalCountryFile const & localFile)
   auto result = m_model.RegisterMap(localFile);
   MwmSet::MwmHandle const & handle = result.first;
   if (handle.IsAlive())
-    //InvalidateRect(handle.GetInfo()->m_limitRect, true /* doForceUpdate */);
+    InvalidateRect(handle()->m_limitRect);
 
   GetSearchEngine()->ClearViewportsCache();
 }
@@ -538,6 +536,11 @@ void Framework::ShowTrack(Track const & track)
 {
   StopLocationFollow();
   ShowRect(track.GetLimitRect());
+}
+
+void Framework::ClearBookmarks()
+{
+  m_bmManager.ClearItems();
 }
 
 namespace
@@ -752,41 +755,10 @@ bool Framework::IsCountryLoaded(m2::PointD const & pt) const
   return m_model.IsLoaded(fName);
 }
 
-///@TODO UVR
-//void Framework::DrawAdditionalInfo(shared_ptr<PaintEvent> const & e)
-//{
-//  // m_informationDisplay is set and drawn after the m_renderPolicy
-//  ASSERT ( m_renderPolicy, () );
-
-//  Drawer * pDrawer = e->drawer();
-//  graphics::Screen * pScreen = pDrawer->screen();
-
-//  pScreen->beginFrame();
-
-//  bool const isEmptyModel = m_renderPolicy->IsEmptyModel();
-
-//  if (isEmptyModel)
-//    m_informationDisplay.setEmptyCountryIndex(GetCountryIndex(GetViewportCenter()));
-//  else
-//    m_informationDisplay.setEmptyCountryIndex(storage::TIndex());
-
-//  bool const isCompassEnabled = my::Abs(ang::GetShortestDistance(m_navigator.Screen().GetAngle(), 0.0)) > my::DegToRad(3.0);
-//  bool const isCompasActionEnabled = m_informationDisplay.isCompassArrowEnabled() && m_navigator.InAction();
-
-//  m_informationDisplay.enableCompassArrow(isCompassEnabled || isCompasActionEnabled);
-//  m_informationDisplay.setCompassArrowAngle(m_navigator.Screen().GetAngle());
-
-//  int const drawScale = GetDrawScale();
-//  m_informationDisplay.setDebugInfo(0, drawScale);
-
-//  m_informationDisplay.enableRuler(drawScale > 4 && !m_informationDisplay.isCopyrightActive());
-
-//  pScreen->endFrame();
-
-//  m_bmManager.DrawItems(e);
-//  m_guiController->UpdateElements();
-//  m_guiController->DrawFrame(pScreen);
-//}
+void Framework::InvalidateRect(m2::RectD const & rect)
+{
+  CallDrapeFunction(bind(&df::DrapeEngine::InvalidateRect, _1, rect));
+}
 
 void Framework::UpdateUserViewportChanged()
 {
@@ -913,91 +885,6 @@ void Framework::EnterForeground()
     m_drapeEngine->SetRenderingEnabled(true);
 }
 
-/// @name Drag implementation.
-//@{
-
-//void Framework::StartDrag(DragEvent const & e)
-//{
-//  m_navigator.StartDrag(m_navigator.ShiftPoint(e.Pos()), ElapsedSeconds());
-//  ///@TODO UVR
-//  //m_informationDisplay.locationState()->DragStarted();
-//}
-
-//void Framework::DoDrag(DragEvent const & e)
-//{
-//  m_navigator.DoDrag(m_navigator.ShiftPoint(e.Pos()), ElapsedSeconds());
-//}
-
-//void Framework::StopDrag(DragEvent const & e)
-//{
-//  m_navigator.StopDrag(m_navigator.ShiftPoint(e.Pos()), ElapsedSeconds(), true);
-//  ///@TODO UVR
-//  //m_informationDisplay.locationState()->DragEnded();
-//}
-
-//@}
-
-/// @name Scaling.
-//@{
-//void Framework::ScaleToPoint(ScaleToPointEvent const & e, bool anim)
-//{
-  //m2::PointD pt = m_navigator.ShiftPoint(e.Pt());
-  ///@TODO UVR
-  //GetLocationState()->CorrectScalePoint(pt);
-  //m_navigator.ScaleToPoint(pt, e.ScaleFactor(), 0);
-//  UpdateUserViewportChanged();
-//}
-
-//void Framework::ScaleDefault(bool enlarge)
-//{
-//  Scale(enlarge ? 1.5 : 2.0/3.0);
-//}
-
-//void Framework::Scale(double scale)
-//{
-  //m2::PointD center = GetPixelCenter();
-  ///@TODO UVR
-  //GetLocationState()->CorrectScalePoint(center);
-  //m_navigator.ScaleToPoint(center, scale, 0.0);
-
-//  UpdateUserViewportChanged();
-//}
-
-//void Framework::StartScale(ScaleEvent const & e)
-//{
-//  m2::PointD pt1, pt2;
-//  CalcScalePoints(e, pt1, pt2);
-
-  ///@TODO UVR
-  //GetLocationState()->ScaleStarted();
-  //m_navigator.StartScale(pt1, pt2, ElapsedSeconds());
-//}
-
-//void Framework::DoScale(ScaleEvent const & e)
-//{
-//  m2::PointD pt1, pt2;
-//  CalcScalePoints(e, pt1, pt2);
-
-  //m_navigator.DoScale(pt1, pt2, ElapsedSeconds());
-
-  ///@TODO UVR
-//  if (m_navigator.IsRotatingDuringScale())
-//    GetLocationState()->Rotated();
-//}
-
-//void Framework::StopScale(ScaleEvent const & e)
-//{
-  //m2::PointD pt1, pt2;
-  //CalcScalePoints(e, pt1, pt2);
-
-  //m_navigator.StopScale(pt1, pt2, ElapsedSeconds());
-  //UpdateUserViewportChanged();
-
-  ///@TODO UVR
-  //GetLocationState()->ScaleEnded();
-//}
-//@}
-
 search::Engine * Framework::GetSearchEngine() const
 {
   if (!m_pSearchEngine)
@@ -1058,18 +945,13 @@ bool Framework::Search(search::SearchParams const & params)
 
 bool Framework::GetCurrentPosition(double & lat, double & lon) const
 {
-  ///@TODO UVR
-  //shared_ptr<State> const & locationState = m_informationDisplay.locationState();
-
-//  if (locationState->IsModeHasPosition())
-//  {
-//    m2::PointD const pos = locationState->Position();
-//    lat = MercatorBounds::YToLat(pos.y);
-//    lon = MercatorBounds::XToLon(pos.x);
-//    return true;
-//  }
-//  else
+  m2::PointD pos;
+  if (m_drapeEngine == nullptr || !m_drapeEngine->GetMyPosition(pos))
     return false;
+
+  lat = MercatorBounds::YToLat(pos.y);
+  lon = MercatorBounds::XToLon(pos.x);
+  return true;
 }
 
 void Framework::LoadSearchResultMetadata(search::Result & res) const
@@ -1201,8 +1083,7 @@ size_t Framework::ShowAllSearchResults()
       viewport.SetSizesToIncludePoint(pt);
 
       ShowRect(viewport);
-      ///@TODO UVR
-      //StopLocationFollow();
+      CallDrapeFunction(bind(&df::DrapeEngine::StopLocationFollow, _1));
     }
   }
 
@@ -1348,6 +1229,8 @@ void Framework::SetMapStyle(MapStyle mapStyle)
 {
   GetStyleReader().SetCurrentStyle(mapStyle);
   classificator::Load();
+  drule::LoadRules();
+  InvalidateRect(m_currentMovelView.ClipRect());
 
   alohalytics::TStringMap details {{"mapStyle", strings::to_string(static_cast<int>(mapStyle))}};
   alohalytics::Stats::Instance().LogEvent("MapStyle_Changed", details);
