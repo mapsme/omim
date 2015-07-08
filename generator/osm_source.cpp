@@ -292,7 +292,8 @@ public:
 
         LOG(LINFO, ("Create world water polygons start"));
         list<FeatureBuilder1> vecFb;
-        m_coasts->MakePolygons(vecFb);
+        if(needStopIfFail && !m_coasts->MakePolygons(vecFb))
+          return false;
 
         LOG(LINFO, ("World water polygons ready to save"));
         for (auto const & fb : vecFb)

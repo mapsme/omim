@@ -185,6 +185,7 @@ namespace
 
     mutex & m_mutexTasks;
     list<Cell> & m_listTasks;
+    list<Cell> m_errorCell;
     condition_variable & m_listCondVar;
     size_t & m_inWork;
     mutex & m_mutexResult;
@@ -193,7 +194,7 @@ namespace
 
 
   public:
-    static void Process(uint32_t numThreads, uint32_t baseScale, deque<polygon> const & polygons, TProcessResultFunc funcResult)
+    static bool Process(uint32_t numThreads, uint32_t baseScale, deque<polygon> const & polygons, TProcessResultFunc funcResult)
     {
       TIndex rtree;
 
@@ -201,7 +202,6 @@ namespace
         rtree.insert(value(bg::return_envelope<box>(polygons[i]), i));
 
       list<RegionMill::Cell> listTasks = RegionMill::CreateCellsForScale(baseScale);
-      list<multi_polygon> listResult;
 
       vector<RegionMill> uniters;
       vector<thread> threads;
@@ -217,6 +217,8 @@ namespace
 
       for (auto & thread : threads)
         thread.join();
+      // return true if listTask has no error cells
+      return listTasks.empty();
     }
 
     static void CorrectAndCheckPolygon(polygon & p)
@@ -233,23 +235,23 @@ namespace
       message << fixed << setprecision(7);
       bg::failing_reason_policy<> policy_visitor(message);
       is_valid(p, policy_visitor);
-      LOG(LINFO, ("Num points:", bg::num_points(p), "Error:", message.str()));
+      LOG(LWARNING, ("Num points:", bg::num_points(p), "Error:", message.str()));
 
       // correct self intersect geometry
       if (failureType == bg::failure_self_intersections)
       {
         multi_polygon out;
         bg::dissolve(p, out);
-        LOG(LINFO, ("After dissolve:", bg::num_points(out), "polygons:", bg::num_geometries(out)));
+        LOG(LWARNING, ("After dissolve:", bg::num_points(out), "polygons:", bg::num_geometries(out)));
         sort(out.begin(), out.end(), [](polygon const & p1, polygon const & p2) {return bg::num_points(p2) < bg::num_points(p1);});
         bg::assign(p, out.front());
       }
       if (failureType == bg::failure_spikes)
       {
         bg::remove_spikes(p);
-        LOG(LINFO, ("After remove spikes:", bg::num_points(p), "polygons:", bg::num_geometries(p)));
+        LOG(LWARNING, ("After remove spikes:", bg::num_points(p), "polygons:", bg::num_geometries(p)));
       }
-      LOG(LINFO, ("Fixed points:", bg::num_points(p), "polygons:", bg::num_geometries(p)));
+      LOG(LWARNING, ("Fixed points:", bg::num_points(p), "polygons:", bg::num_geometries(p)));
     }
 
   protected:
@@ -452,6 +454,7 @@ namespace
         ss << this_thread::get_id() << " cell: " << cell.id << "-" << cell.suffix
            << " failed: " << e.what();
         LOG(LERROR, (ss.str()));
+        m_errorCell.push_back(cell);
         outCells.clear();
         for (auto p : cell.geom)
           CorrectAndCheckPolygon(p);
@@ -486,7 +489,7 @@ namespace
         unique_lock<mutex> lock(m_mutexTasks);
         m_listCondVar.wait(lock, [this]{return (!m_listTasks.empty() || m_inWork == 0);});
         if (m_listTasks.empty() && m_inWork == 0)
-          return;
+          break;
 
         currentCell = m_listTasks.front();
         m_listTasks.pop_front();
@@ -506,16 +509,22 @@ namespace
         --m_inWork;
         m_listCondVar.notify_all();
       }
+
+      // return back cells with error into task queue
+      if (!m_errorCell.empty())
+      {
+        unique_lock<mutex> lock(m_mutexTasks);
+        m_listTasks.insert(m_listTasks.end(), m_errorCell.begin(), m_errorCell.end());
+      }
     }
   };
 
 }
 
-void CoastlineFeaturesGenerator::MakePolygons(list<FeatureBuilder1> & vecFb)
+bool CoastlineFeaturesGenerator::MakePolygons(list<FeatureBuilder1> & vecFb)
 {
-
   deque<polygon> polygons;
-  for (auto const &region : m_regions)
+  for (auto const & region : m_regions)
   {
     polygons.push_back(polygon());
     for (auto const & p : region)
@@ -525,7 +534,7 @@ void CoastlineFeaturesGenerator::MakePolygons(list<FeatureBuilder1> & vecFb)
 
   uint32_t numThreads = thread::hardware_concurrency();
   LOG(LINFO, ("Starting", numThreads, "threads."));
-  RegionMill::Process(numThreads, 5, polygons, [&vecFb, this](string const & name, multi_polygon & resultPolygon)
+  return RegionMill::Process(numThreads, 5, polygons, [&vecFb, this](string const & name, multi_polygon & resultPolygon)
   {
     vecFb.emplace_back();
     vecFb.back().SetCoastCell(1 /* value used as bool */, name);
@@ -535,14 +544,14 @@ void CoastlineFeaturesGenerator::MakePolygons(list<FeatureBuilder1> & vecFb)
       vector<m2::PointD> ring;
       // outer ring
       ring.resize(polygonPart.outer().size());
-      for (size_t i=0; i < polygonPart.outer().size(); ++i)
+      for (size_t i = 0; i < polygonPart.outer().size(); ++i)
         ring[i] = {polygonPart.outer()[i].x(), MercatorBounds::LatToY(polygonPart.outer()[i].y())};
       vecFb.back().AddPolygon(ring);
       // inner rings
       for (auto const & p : polygonPart.inners())
       {
         ring.resize(p.size());
-        for (size_t i=0; i < p.size(); ++i)
+        for (size_t i = 0; i < p.size(); ++i)
           ring[i] = {p[i].x(), MercatorBounds::LatToY(p[i].y())};
         vecFb.back().AddPolygon(ring);
       }

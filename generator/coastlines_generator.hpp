@@ -22,5 +22,5 @@ public:
   /// @return false if coasts are not merged and FLAG_fail_on_coasts is set
   bool Finish(bool needStopIfFail, string const & intermediateDir);
 
-  void MakePolygons(list<FeatureBuilder1> & vecFb);
+  bool MakePolygons(list<FeatureBuilder1> & vecFb);
 };
