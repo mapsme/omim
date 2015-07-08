@@ -1188,7 +1188,8 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
                             df::MapDataProvider(idReadFn, featureReadFn, updateCountryIndex, isCountryLoadedFn,
                                                 downloadMapFn, downloadMapRoutingFn, downloadRetryFn),
                             params.m_visualScale,
-                            move(params.m_widgetsInitInfo));
+                            move(params.m_widgetsInitInfo),
+                            GetStyleReader().GetCurrentStyleSuffix());
 
   m_drapeEngine = make_unique_dp<df::DrapeEngine>(move(p));
   AddViewportListener([this](ScreenBase const & screen)
@@ -1214,7 +1215,7 @@ void Framework::SetMapStyle(MapStyle mapStyle)
 {
   GetStyleReader().SetCurrentStyle(mapStyle);
   drule::LoadRules();
-  InvalidateRect(m_currentMovelView.ClipRect());
+  CallDrapeFunction(bind(&df::DrapeEngine::UpdateMapStyle, _1, GetStyleReader().GetCurrentStyleSuffix()));
 }
 
 MapStyle Framework::GetMapStyle() const

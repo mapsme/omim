@@ -57,6 +57,11 @@ MapStyle StyleReader::GetCurrentStyle()
   return static_cast<MapStyle>(mapStyle);
 }
 
+string StyleReader::GetCurrentStyleSuffix()
+{
+  return GetStyleSuffix(GetCurrentStyle());
+}
+
 ReaderPtr<Reader> StyleReader::GetDrawingRulesReader()
 {
   string const rulesFile = GetDrawingRulesFile(GetCurrentStyle());
