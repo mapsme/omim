@@ -111,6 +111,25 @@ namespace
   };
 }
 
+void DumpRegionsIntoFile(string const &fileName, list<vector<m2::PointD>> const & regions)
+{
+  ofstream dumpStream;
+  LOG(LINFO, ("Dump double coastsline into:", fileName));
+  dumpStream.open(fileName);
+
+  for (auto const & rgn : regions)
+  {
+    uint32_t sz = static_cast<uint32_t>(rgn.size());
+    dumpStream.write((char *)&sz, sizeof(uint32_t));
+    dumpStream.write((char *)rgn.data(), rgn.size() * sizeof(m2::PointD));
+  }
+
+  uint32_t term = 0;
+  dumpStream.write((char *)&term, sizeof(uint32_t));
+  dumpStream.flush();
+  dumpStream.close();
+}
+
 bool CoastlineFeaturesGenerator::Finish(bool needStopIfFail, string const & intermediateDir)
 {
   MergedRegionSaver saver(*this);
@@ -124,22 +143,8 @@ bool CoastlineFeaturesGenerator::Finish(bool needStopIfFail, string const & inte
   }
 
   // dump merged coasts for experimental purposes
-  ofstream dumpStream;
   string dumpName = (intermediateDir + "/merged_coastline_double.dump");
-  LOG(LINFO, ("Dump double coastsline into:", dumpName));
-  dumpStream.open(dumpName);
-
-  for (auto const & rgn : m_regions)
-  {
-    uint32_t sz = static_cast<uint32_t>(rgn.size());
-    dumpStream.write((char *)&sz, sizeof(uint32_t));
-    dumpStream.write((char *)rgn.data(), rgn.size() * sizeof(m2::PointD));
-  }
-
-  uint32_t term = 0;
-  dumpStream.write((char *)&term, sizeof(uint32_t));
-  dumpStream.flush();
-  dumpStream.close();
+  DumpRegionsIntoFile(dumpName, m_regions);
 
   return true;
 }
@@ -221,28 +226,34 @@ namespace
       return listTasks.empty();
     }
 
-    static void CorrectAndCheckPolygon(polygon & p)
+    static bool CorrectAndCheckPolygon(polygon & p)
     {
+      bool validPolygon = false;
       // correct orientation (ccw, cw), remove duplicate points
       bg::correct(p);
 
       bg::validity_failure_type failureType;
 
-      if (bg::is_valid(p, failureType))
-        return;
+      if ((validPolygon = bg::is_valid(p, failureType)))
+        return validPolygon;
 
       ostringstream message;
       message << fixed << setprecision(7);
       bg::failing_reason_policy<> policy_visitor(message);
       is_valid(p, policy_visitor);
-      LOG(LWARNING, ("Num points:", bg::num_points(p), "Error:", message.str()));
+      size_t pointsInSourcePolygon = bg::num_points(p);
+      LOG(LWARNING, ("Num points:", pointsInSourcePolygon, "Error:", message.str()));
 
       // correct self intersect geometry
       if (failureType == bg::failure_self_intersections)
       {
         multi_polygon out;
         bg::dissolve(p, out);
-        LOG(LWARNING, ("After dissolve:", bg::num_points(out), "polygons:", bg::num_geometries(out)));
+        size_t pointsInCorrectedPolygon = bg::num_points(out);
+        LOG(LWARNING, ("After dissolve:", pointsInCorrectedPolygon, "polygons:", bg::num_geometries(out)));
+        // if we lose more then 20 points for one polygon we sould stop the work
+        validPolygon = abs((int)pointsInSourcePolygon - (int)pointsInCorrectedPolygon) < 20;
+        // After dissolve we need select bigest result polygon. We sort results and get first polygon.
         sort(out.begin(), out.end(), [](polygon const & p1, polygon const & p2) {return bg::num_points(p2) < bg::num_points(p1);});
         bg::assign(p, out.front());
       }
@@ -250,8 +261,11 @@ namespace
       {
         bg::remove_spikes(p);
         LOG(LWARNING, ("After remove spikes:", bg::num_points(p), "polygons:", bg::num_geometries(p)));
+        validPolygon = true;
       }
       LOG(LWARNING, ("Fixed points:", bg::num_points(p), "polygons:", bg::num_geometries(p)));
+
+      return validPolygon;
     }
 
   protected:
@@ -523,14 +537,18 @@ namespace
 
 bool CoastlineFeaturesGenerator::MakePolygons(list<FeatureBuilder1> & vecFb)
 {
+  bool allPolygonsValid = true;
   deque<polygon> polygons;
   for (auto const & region : m_regions)
   {
     polygons.push_back(polygon());
     for (auto const & p : region)
       polygons.back().outer().emplace_back(point{p.x, p.y});
-    RegionMill::CorrectAndCheckPolygon(polygons.back());
+    allPolygonsValid &= RegionMill::CorrectAndCheckPolygon(polygons.back());
   }
+
+  if (!allPolygonsValid)
+    return false;
 
   uint32_t numThreads = thread::hardware_concurrency();
   LOG(LINFO, ("Starting", numThreads, "threads."));
