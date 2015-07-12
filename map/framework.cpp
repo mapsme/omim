@@ -422,7 +422,7 @@ void Framework::UpdateLatestCountryFile(LocalCountryFile const & localFile)
   auto result = m_model.RegisterMap(localFile);
   MwmSet::MwmHandle const & handle = result.first;
   if (handle.IsAlive())
-    InvalidateRect(handle()->m_limitRect);
+	InvalidateRect(handle.GetInfo()->m_limitRect);
 
   GetSearchEngine()->ClearViewportsCache();
 }
@@ -1664,7 +1664,7 @@ void Framework::BuildRoute(m2::PointD const & start, m2::PointD const & finish, 
   bool const hasPosition = m_drapeEngine->GetMyPosition(myPosition);
   if (!hasPosition)
   {
-    CallRouteBuilded(IRouter::NoCurrentPosition, vector<storage::TIndex>());
+    CallRouteBuilded(IRouter::NoCurrentPosition, vector<storage::TIndex>(), vector<storage::TIndex>());
     return;
   }
 
@@ -1680,7 +1680,7 @@ void Framework::BuildRoute(m2::PointD const & start, m2::PointD const & finish, 
     ASSERT_THREAD_CHECKER(m_threadChecker, ("BuildRoute_ReadyCallback"));
     double const routeScale = 1.5;
 
-    vector<storage::TIndex> absentFiles;
+    vector<storage::TIndex> absentCountries;
     vector<storage::TIndex> absentRoutingIndexes;
     if (code == IRouter::NoError)
     {
@@ -1703,11 +1703,9 @@ void Framework::BuildRoute(m2::PointD const & start, m2::PointD const & finish, 
         }
 
         if (code != IRouter::NeedMoreMaps)
-          RemoveRoute();
-
-      RemoveRoute(true /* deactivateFollowing */);
+          RemoveRoute(true /* deactivateFollowing */);
     }
-    CallRouteBuilded(code, absentFiles);
+    CallRouteBuilded(code, absentCountries, absentRoutingIndexes);
   });
 }
 
