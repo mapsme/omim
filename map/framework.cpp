@@ -409,7 +409,7 @@ void Framework::UpdateAfterDownload(LocalCountryFile const & localFile)
   // Add downloaded map.
   auto result = m_model.RegisterMap(localFile);
   MwmSet::MwmHandle const & handle = result.first;
-  InvalidateRect(handle()->m_limitRect);
+  InvalidateRect(handle.GetInfo()->m_limitRect);
 
   GetSearchEngine()->ClearViewportsCache();
 }
@@ -1640,7 +1640,7 @@ void Framework::BuildRoute(m2::PointD const & destination)
   bool const hasPosition = m_drapeEngine->GetMyPosition(myPosition);
   if (!hasPosition)
   {
-    CallRouteBuilded(IRouter::NoCurrentPosition, vector<storage::TIndex>());
+    CallRouteBuilded(IRouter::NoCurrentPosition, vector<storage::TIndex>(), vector<storage::TIndex>());
     return;
   }
 
@@ -1652,7 +1652,7 @@ void Framework::BuildRoute(m2::PointD const & destination)
                               [this] (Route const & route, IRouter::ResultCode code)
   {
 
-    vector<storage::TIndex> absentFiles;
+    vector<storage::TIndex> absentCountries;
     vector<storage::TIndex> absentRoutingIndexes;
     if (code == IRouter::NoError)
     {
@@ -1675,11 +1675,9 @@ void Framework::BuildRoute(m2::PointD const & destination)
         }
 
         if (code != IRouter::NeedMoreMaps)
-          RemoveRoute();
-
-      RemoveRoute(true /* deactivateFollowing */);
+          RemoveRoute(true /* deactivateFollowing */);
     }
-    CallRouteBuilded(code, absentFiles);
+    CallRouteBuilded(code, absentCountries, absentRoutingIndexes);
   });
 }
 

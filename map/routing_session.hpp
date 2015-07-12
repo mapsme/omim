@@ -67,7 +67,7 @@ public:
   void Reset();
 
   State OnLocationPositionChanged(location::GpsInfo const & info);
-  void GetRouteFollowingInfo(location::FollowingInfo & info) const;
+  void GetRouteFollowingInfo(location::FollowingInfo & info);
 
   void MatchLocationToRoute(location::GpsInfo & location,
                             location::RouteMatchingInfo & routeMatchingInfo) const;

@@ -13,6 +13,8 @@
 #include "indexer/scales.hpp"
 #include "indexer/mercator.hpp"
 
+#include "render/frame_image.hpp"
+
 #include "platform/location.hpp"
 
 
@@ -94,7 +96,7 @@ extern NSString * const kSearchResultPointKey;
     symbols.m_showSearchResult = false;
 
 
-  Framework::FrameImage image;
+  FrameImage image;
   [MWMFrameworkUtils initSoftwareRenderer:screenScale];
   f.DrawSingleFrame(center, zoomModifier, pxWidth, pxHeight, image, symbols);
   NSData * imadeData = [NSData dataWithBytes:image.m_data.data() length:image.m_data.size()];
