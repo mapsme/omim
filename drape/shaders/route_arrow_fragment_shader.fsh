@@ -1,4 +1,6 @@
-varying vec2 v_length;
+in vec2 v_length;
+
+out vec4 v_FragColor;
 
 uniform sampler2D u_colorTex;
 uniform vec4 u_textureRect;
@@ -22,9 +24,9 @@ void main(void)
     }
   }
 
-  vec4 color = texture2D(u_colorTex, uv);
+  vec4 color = texture(u_colorTex, uv);
   if (needDiscard)
     color.a = 0.0;
 
-  gl_FragColor = color;
+  v_FragColor = color;
 }

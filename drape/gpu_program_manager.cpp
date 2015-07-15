@@ -65,7 +65,12 @@ ref_ptr<Shader> GpuProgramManager::GetShader(int index, string const & source, S
   shader_map_t::iterator it = m_shaders.find(index);
   if (it == m_shaders.end())
   {
-    drape_ptr<Shader> shader = make_unique_dp<Shader>(source, t);
+#if defined(OMIM_OS_IPHONE) || defined(OMIM_OS_ANDROID)
+    string src = string(gpu::GLES_SHADERS_VERSION) + source;
+#else
+    string src = string(gpu::GL_SHADERS_VERSION) + source;
+#endif
+    drape_ptr<Shader> shader = make_unique_dp<Shader>(src, t);
     ref_ptr<Shader> result = make_ref(shader);
     m_shaders.emplace(index, move(shader));
     return result;

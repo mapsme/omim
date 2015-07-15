@@ -13,11 +13,11 @@ iosOGLContext::iosOGLContext(CAEAGLLayer * layer, iosOGLContext * contextToShare
 {
   if (contextToShareWith != NULL)
   {
-    m_nativeContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2
+    m_nativeContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3
                                            sharegroup: contextToShareWith->m_nativeContext.sharegroup];
   }
   else
-    m_nativeContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+    m_nativeContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
 }
 
 iosOGLContext::~iosOGLContext()

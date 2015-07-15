@@ -138,7 +138,7 @@ public:
   {
     TBase::TextureParams params;
     params.m_size = size;
-    params.m_format = TextureFormat::ALPHA;
+    params.m_format = TextureFormat::RED;
     params.m_minFilter = gl_const::GLLinear;
     params.m_magFilter = gl_const::GLLinear;
 

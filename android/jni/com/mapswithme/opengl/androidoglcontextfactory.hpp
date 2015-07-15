@@ -48,6 +48,8 @@ private:
   int m_surfaceHeight;
 
   bool m_windowSurfaceValid;
+
+  bool m_supportedES3;
 };
 
 } // namespace android

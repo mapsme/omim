@@ -6,6 +6,8 @@
 #include "base/stl_add.hpp"
 #include "base/assert.hpp"
 
+#include "base/logging.hpp"
+
 namespace dp
 {
 
@@ -59,12 +61,9 @@ void VertexArrayBuffer::RenderRange(IndicesRange const & range)
   if (!(m_staticBuffers.empty() && m_dynamicBuffers.empty()) && GetIndexCount() > 0)
   {
     ASSERT(m_program != nullptr, ("Somebody not call Build. It's very bad. Very very bad"));
-    /// if OES_vertex_array_object is supported than all bindings already saved in VAO
-    /// and we need only bind VAO. In Bind method have ASSERT("bind already called")
-    if (GLExtensionsList::Instance().IsSupported(GLExtensionsList::VertexArrayObject))
-      Bind();
-    else
-      BindStaticBuffers();
+    /// All bindings already saved in VAO and we need only bind VAO.
+    /// In Bind method have ASSERT("bind already called")
+    Bind();
 
     BindDynamicBuffers();
     GetIndexBuffer()->Bind();
@@ -76,9 +75,6 @@ void VertexArrayBuffer::Build(ref_ptr<GpuProgram> program)
 {
   ASSERT(m_VAO == 0 && m_program == nullptr, ("No-no-no! You can't rebuild VertexArrayBuffer"));
   m_program = program;
-  /// if OES_vertex_array_object not supported, than buffers will be bind on each Render call
-  if (!GLExtensionsList::Instance().IsSupported(GLExtensionsList::VertexArrayObject))
-    return;
 
   if (m_staticBuffers.empty())
     return;
@@ -219,14 +215,23 @@ void VertexArrayBuffer::ApplyMutation(ref_ptr<IndexBufferMutator> indexMutator,
   {
     ref_ptr<DataBuffer> buffer = GetDynamicBuffer(it->first);
     ASSERT(buffer != nullptr, ());
-    DataBufferMapper mapper(buffer);
     TMutateNodes const & nodes = it->second;
-
-    for (size_t i = 0; i < nodes.size(); ++i)
+    if (nodes.size() == 1)
     {
-      MutateNode const & node = nodes[i];
-      ASSERT_GREATER(node.m_region.m_count, 0, ());
-      mapper.UpdateData(node.m_data.get(), node.m_region.m_offset, node.m_region.m_count);
+      MutateNode const & node = nodes[0];
+      DataBufferMapper mapper(buffer, node.m_region.m_offset, node.m_region.m_count);
+      mapper.UpdateData(node.m_data.get(), 0, node.m_region.m_count);
+    }
+    else
+    {
+      //TODO calculate optimal mapping size
+      DataBufferMapper mapper(buffer, 0, buffer->GetBuffer()->GetCurrentSize());
+      for (size_t i = 0; i < nodes.size(); ++i)
+      {
+        MutateNode const & node = nodes[i];
+        ASSERT_GREATER(node.m_region.m_count, 0, ());
+        mapper.UpdateData(node.m_data.get(), node.m_region.m_offset, node.m_region.m_count);
+      }
     }
   }
 }

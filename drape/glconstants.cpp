@@ -1,38 +1,6 @@
 #include "drape/glconstants.hpp"
 #include "drape/glIncludes.hpp"
 
-#if !defined(GL_RGBA8_OES)
-  #define GL_RGBA8_OES 0x8058
-#endif
-
-#if !defined(GL_RGBA4_OES)
-  #define GL_RGBA4_OES 0x8056
-#endif
-
-#if !defined(GL_ALPHA8_OES)
-  #define GL_ALPHA8_OES 0x803C
-#endif
-
-#if !defined(GL_LUMINANCE8_OES)
-  #define GL_LUMINANCE8_OES 0x8040
-#endif
-
-#if !defined(GL_LUMINANCE8_ALPHA8_OES)
-  #define GL_LUMINANCE8_ALPHA8_OES 0x8045
-#endif
-
-#if !defined(GL_LUMINANCE8_ALPHA4_OES)
-  #define GL_LUMINANCE8_ALPHA4_OES 0x8043
-#endif
-
-#if defined(GL_WRITE_ONLY)
-  #define WRITE_ONLY_DEF GL_WRITE_ONLY
-#elif defined(GL_WRITE_ONLY_OES)
-  #define WRITE_ONLY_DEF GL_WRITE_ONLY_OES
-#else
-  #define WRITE_ONLY_DEF 0x88B9
-#endif
-
 namespace gl_const
 {
 
@@ -48,7 +16,7 @@ const glConst GLElementArrayBuffer  = GL_ELEMENT_ARRAY_BUFFER;
 const glConst GLBufferSize          = GL_BUFFER_SIZE;
 const glConst GLBufferUsage         = GL_BUFFER_USAGE;
 
-const glConst GLWriteOnly           = WRITE_ONLY_DEF;
+const glConst GLMapWriteBit         = GL_MAP_WRITE_BIT;
 
 const glConst GLStaticDraw          = GL_STATIC_DRAW;
 const glConst GLStreamDraw          = GL_STREAM_DRAW;
@@ -60,16 +28,7 @@ const glConst GLCurrentProgram      = GL_CURRENT_PROGRAM;
 
 const glConst GLRGBA                = GL_RGBA;
 const glConst GLRGB                 = GL_RGB;
-const glConst GLAlpha               = GL_ALPHA;
-const glConst GLLuminance           = GL_LUMINANCE;
-const glConst GLAlphaLuminance      = GL_LUMINANCE_ALPHA;
-
-const glConst GLRGBA8               = GL_RGBA8_OES;
-const glConst GLRGBA4               = GL_RGBA4_OES;
-const glConst GLAlpha8              = GL_ALPHA8_OES;
-const glConst GLLuminance8          = GL_LUMINANCE8_OES;
-const glConst GLAlphaLuminance8     = GL_LUMINANCE8_ALPHA8_OES;
-const glConst GLAlphaLuminance4     = GL_LUMINANCE8_ALPHA4_OES;
+const glConst GLRed                 = GL_RED;
 
 const glConst GL8BitOnChannel       = GL_UNSIGNED_BYTE;
 const glConst GL4BitOnChannel       = GL_UNSIGNED_SHORT_4_4_4_4;

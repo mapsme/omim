@@ -56,8 +56,8 @@ void const * IndexStorage::GetRawConst() const
 
 bool IndexStorage::IsSupported32bit()
 {
-  static bool const supports32bit = GLExtensionsList::Instance().IsSupported(GLExtensionsList::UintIndices);
-  return supports32bit;
+  // now we always use 32-bit indices
+  return true;
 }
 
 uint32_t IndexStorage::SizeOfIndex()

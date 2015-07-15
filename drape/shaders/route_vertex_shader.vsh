@@ -1,13 +1,13 @@
-attribute vec3 a_position;
-attribute vec2 a_normal;
-attribute vec3 a_length;
+in vec3 a_position;
+in vec2 a_normal;
+in vec3 a_length;
 
 uniform mat4 modelView;
 uniform mat4 projection;
 
 uniform vec2 u_halfWidth;
 
-varying vec2 v_length;
+out vec2 v_length;
 
 void main(void)
 {

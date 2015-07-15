@@ -251,7 +251,7 @@ void GLFunctions::glDisable(glConst mode) {}
 
 void GLFunctions::glUniformValueiv(int8_t location, int32_t * v, uint32_t size) {}
 
-void * GLFunctions::glMapBuffer(glConst target) { return 0; }
+void * GLFunctions::glMapBufferRange(glConst target, uint32_t offset, uint32_t length) { return nullptr; }
 
 void GLFunctions::glUnmapBuffer(glConst target) {}
 

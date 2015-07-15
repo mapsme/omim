@@ -61,7 +61,7 @@ public:
   static void glBufferData(glConst target, uint32_t size, void const * data, glConst usage);
   static void glBufferSubData(glConst target, uint32_t size, void const * data, uint32_t offset);
 
-  static void * glMapBuffer(glConst target);
+  static void * glMapBufferRange(glConst target, uint32_t offset, uint32_t length);
   static void glUnmapBuffer(glConst target);
 
   /// Shaders support

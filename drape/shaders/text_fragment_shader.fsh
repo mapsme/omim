@@ -1,7 +1,8 @@
+in vec2 v_colorTexCoord;
+in vec2 v_outlineColorTexCoord;
+in vec2 v_maskTexCoord;
 
-varying vec2 v_colorTexCoord;
-varying vec2 v_outlineColorTexCoord;
-varying vec2 v_maskTexCoord;
+out vec4 v_FragColor;
 
 uniform sampler2D u_colorTex;
 uniform sampler2D u_maskTex;
@@ -29,8 +30,8 @@ vec4 colorize(vec4 base, vec4 outline, float alpha)
   }
   if (alpha > OUTLINE_MIN_VALUE0)
   {
-    float oFactor = smoothstep(OUTLINE_MIN_VALUE0, OUTLINE_MIN_VALUE1, alpha);
-    return mix(base, outline, oFactor);
+    float oFactor2 = smoothstep(OUTLINE_MIN_VALUE0, OUTLINE_MIN_VALUE1, alpha);
+    return mix(base, outline, oFactor2);
   }
   return base;
 }
@@ -47,9 +48,9 @@ vec4 without_outline(vec4 base, float alpha)
 
 void main (void)
 {
-  vec4 base = texture2D(u_colorTex, v_colorTexCoord);
-  vec4 outline = texture2D(u_colorTex, v_outlineColorTexCoord);
-  float alpha = texture2D(u_maskTex, v_maskTexCoord).a;
+  vec4 base = texture(u_colorTex, v_colorTexCoord);
+  vec4 outline = texture(u_colorTex, v_outlineColorTexCoord);
+  float alpha = texture(u_maskTex, v_maskTexCoord).r;
 
   vec4 finalColor;
   if (outline.a > 0.1)
@@ -58,5 +59,5 @@ void main (void)
     finalColor = without_outline(base, 1.0 - alpha);
 
   finalColor.a *= u_opacity;
-  gl_FragColor = finalColor;
+  v_FragColor = finalColor;
 }

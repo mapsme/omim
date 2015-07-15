@@ -27,15 +27,15 @@ using testing::AnyNumber;
 using namespace dp;
 
 #if defined (OMIM_OS_MAC)
-  #define SHADERS_COMPILER "GLSLESCompiler_Series5.mac"
+  #define SHADERS_COMPILER "GLSLESCompiler_Series6.mac"
   #define MALI_SHADERS_COMPILER "mali_compiler/malisc"
   #define MALI_DIR "mali_compiler/"
 #elif defined (OMIM_OS_LINUX)
-  #define SHADERS_COMPILER "GLSLESCompiler_Series5"
+  #define SHADERS_COMPILER "GLSLESCompiler_Series6"
   #define MALI_SHADERS_COMPILER "mali_compiler/malisc"
   #define MALI_DIR "mali_compiler/"
 #elif defined (OMIM_OS_WINDOWS)
-  #define SHADERS_COMPILER "GLSLESCompiler_Series5.exe"
+  #define SHADERS_COMPILER "GLSLESCompiler_Series6.exe"
 #else
   #error "Define shaders compiler for your platform"
 #endif
@@ -203,29 +203,35 @@ UNIT_TEST(MALI_CompileShaders_Test)
   };
 
   vector<DriverSet> models(3);
-  models[0].m_driverName = "Mali-400_r4p0-00rel1";
-  models[1].m_driverName = "Mali-T600_r4p0-00rel0";
-  models[2].m_driverName = "Mali-T600_r4p1-00rel0";
+  models[0].m_driverName = "Mali-T600_r5p0-00rel0";
+  models[1].m_driverName = "Mali-T600_r5p1-00rel0";
+  models[2].m_driverName = "Mali-T600_r6p0-00rel0";
 
-  models[0].m_releases.push_back(make_pair("Mali-200", "r0p1"));
-  models[0].m_releases.push_back(make_pair("Mali-200", "r0p2"));
-  models[0].m_releases.push_back(make_pair("Mali-200", "r0p3"));
-  models[0].m_releases.push_back(make_pair("Mali-200", "r0p4"));
-  models[0].m_releases.push_back(make_pair("Mali-200", "r0p5"));
-  models[0].m_releases.push_back(make_pair("Mali-200", "r0p6"));
-  models[0].m_releases.push_back(make_pair("Mali-400", "r0p0"));
-  models[0].m_releases.push_back(make_pair("Mali-400", "r0p1"));
-  models[0].m_releases.push_back(make_pair("Mali-400", "r1p0"));
-  models[0].m_releases.push_back(make_pair("Mali-400", "r1p1"));
-  models[0].m_releases.push_back(make_pair("Mali-300", "r0p0"));
-  models[0].m_releases.push_back(make_pair("Mali-450", "r0p0"));
+  models[0].m_releases.push_back(make_pair("Mali-T600", "r0p0"));
+  models[0].m_releases.push_back(make_pair("Mali-T600", "r0p0_15dev0"));
+  models[0].m_releases.push_back(make_pair("Mali-T600", "r0p1"));
+  models[0].m_releases.push_back(make_pair("Mali-T620", "r0p1"));
+  models[0].m_releases.push_back(make_pair("Mali-T620", "r1p0"));
+  models[0].m_releases.push_back(make_pair("Mali-T620", "r1p1"));
+  models[0].m_releases.push_back(make_pair("Mali-T760", "r0p0"));
+  models[0].m_releases.push_back(make_pair("Mali-T760", "r0p1"));
+  models[0].m_releases.push_back(make_pair("Mali-T760", "r0p1_50rel0"));
+  models[0].m_releases.push_back(make_pair("Mali-T760", "r0p2"));
+  models[0].m_releases.push_back(make_pair("Mali-T760", "r0p3"));
+  models[0].m_releases.push_back(make_pair("Mali-T760", "r1p0"));
 
   models[1].m_releases.push_back(make_pair("Mali-T600", "r0p0"));
   models[1].m_releases.push_back(make_pair("Mali-T600", "r0p0_15dev0"));
   models[1].m_releases.push_back(make_pair("Mali-T600", "r0p1"));
   models[1].m_releases.push_back(make_pair("Mali-T620", "r0p1"));
   models[1].m_releases.push_back(make_pair("Mali-T620", "r1p0"));
-  models[1].m_releases.push_back(make_pair("Mali-T670", "r1p0"));
+  models[1].m_releases.push_back(make_pair("Mali-T620", "r1p1"));
+  models[1].m_releases.push_back(make_pair("Mali-T760", "r0p0"));
+  models[1].m_releases.push_back(make_pair("Mali-T760", "r0p1"));
+  models[1].m_releases.push_back(make_pair("Mali-T760", "r0p1_50rel0"));
+  models[1].m_releases.push_back(make_pair("Mali-T760", "r0p2"));
+  models[1].m_releases.push_back(make_pair("Mali-T760", "r0p3"));
+  models[1].m_releases.push_back(make_pair("Mali-T760", "r1p0"));
 
   models[2].m_releases.push_back(make_pair("Mali-T600", "r0p0"));
   models[2].m_releases.push_back(make_pair("Mali-T600", "r0p0_15dev0"));
@@ -233,8 +239,6 @@ UNIT_TEST(MALI_CompileShaders_Test)
   models[2].m_releases.push_back(make_pair("Mali-T620", "r0p1"));
   models[2].m_releases.push_back(make_pair("Mali-T620", "r1p0"));
   models[2].m_releases.push_back(make_pair("Mali-T620", "r1p1"));
-  models[2].m_releases.push_back(make_pair("Mali-T720", "r0p0"));
-  models[2].m_releases.push_back(make_pair("Mali-T720", "r1p0"));
   models[2].m_releases.push_back(make_pair("Mali-T760", "r0p0"));
   models[2].m_releases.push_back(make_pair("Mali-T760", "r0p1"));
   models[2].m_releases.push_back(make_pair("Mali-T760", "r0p1_50rel0"));

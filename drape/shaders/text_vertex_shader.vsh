@@ -1,15 +1,15 @@
-attribute vec4 a_position;
-attribute vec2 a_normal;
-attribute vec2 a_colorTexCoord;
-attribute vec2 a_outlineColorTexCoord;
-attribute vec2 a_maskTexCoord;
+in vec4 a_position;
+in vec2 a_normal;
+in vec2 a_colorTexCoord;
+in vec2 a_outlineColorTexCoord;
+in vec2 a_maskTexCoord;
 
 uniform mat4 modelView;
 uniform mat4 projection;
 
-varying vec2 v_colorTexCoord;
-varying vec2 v_maskTexCoord;
-varying vec2 v_outlineColorTexCoord;
+out vec2 v_colorTexCoord;
+out vec2 v_maskTexCoord;
+out vec2 v_outlineColorTexCoord;
 
 void main()
 {

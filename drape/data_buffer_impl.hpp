@@ -77,7 +77,7 @@ public:
     ASSERT(false, ("Binding is unavailable for CPU buffer"));
   }
 
-  void * Map() override
+  void * Map(uint32_t elementOffset, uint32_t elementCount) override
   {
     ASSERT(false, ("Mapping is unavailable for CPU buffer"));
     return nullptr;
@@ -118,9 +118,9 @@ public:
     m_buffer->Bind();
   }
 
-  void * Map() override
+  void * Map(uint32_t elementOffset, uint32_t elementCount) override
   {
-    return m_buffer->Map();
+    return m_buffer->Map(elementOffset, elementCount);
   }
 
   void Unmap() override

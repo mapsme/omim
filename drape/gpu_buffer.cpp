@@ -12,15 +12,6 @@
 namespace dp
 {
 
-namespace
-{
-  bool IsMapBufferSupported()
-  {
-    static bool const isSupported = GLExtensionsList::Instance().IsSupported(GLExtensionsList::MapBuffer);
-    return isSupported;
-  }
-}
-
 glConst glTarget(GPUBuffer::Target t)
 {
   if (t == GPUBuffer::ElementBuffer)
@@ -77,17 +68,16 @@ void GPUBuffer::Bind()
   GLFunctions::glBindBuffer(m_bufferID, glTarget(m_t));
 }
 
-void * GPUBuffer::Map()
+void * GPUBuffer::Map(uint32_t elementOffset, uint32_t elementCount)
 {
 #ifdef DEBUG
   ASSERT(m_isMapped == false, ());
   m_isMapped = true;
 #endif
-
-  if (IsMapBufferSupported())
-    return GLFunctions::glMapBuffer(glTarget(m_t));
-
-  return NULL;
+  uint32_t const elementSize = GetElementSize();
+  uint32_t const byteOffset = elementOffset * elementSize;
+  uint32_t const byteCount = elementCount * elementSize;
+  return GLFunctions::glMapBufferRange(glTarget(m_t), byteOffset, byteCount);
 }
 
 void GPUBuffer::UpdateData(void * gpuPtr, void const * data, uint32_t elementOffset, uint32_t elementCount)
@@ -104,19 +94,8 @@ void GPUBuffer::UpdateData(void * gpuPtr, void const * data, uint32_t elementOff
   ASSERT_LESS(byteOffset + byteCount, size, ());
 #endif
 
-  if (IsMapBufferSupported())
-  {
-    ASSERT(gpuPtr != NULL, ());
-    memcpy((uint8_t *)gpuPtr + byteOffset, data, byteCount);
-  }
-  else
-  {
-    ASSERT(gpuPtr == NULL, ());
-    if (byteOffset == 0 && byteCount == byteCapacity)
-      GLFunctions::glBufferData(glTarget(m_t), byteCount, data, gl_const::GLStaticDraw);
-    else
-      GLFunctions::glBufferSubData(glTarget(m_t), byteCount, data, byteOffset);
-  }
+  ASSERT(gpuPtr != NULL, ());
+  memcpy((uint8_t *)gpuPtr + byteOffset, data, byteCount);
 }
 
 void GPUBuffer::Unmap()
@@ -125,8 +104,7 @@ void GPUBuffer::Unmap()
   ASSERT(m_isMapped == true, ());
   m_isMapped = false;
 #endif
-  if (IsMapBufferSupported())
-    GLFunctions::glUnmapBuffer(glTarget(m_t));
+  GLFunctions::glUnmapBuffer(glTarget(m_t));
 }
 
 void GPUBuffer::Resize(void const * data, uint32_t elementCount)

@@ -71,7 +71,7 @@ MainWindow::MainWindow() : m_locationService(CreateDesktopLocationService(*this)
   format.setSwapInterval(1);
   format.setDepthBufferSize(16);
 
-  format.setProfile(QSurfaceFormat::CompatibilityProfile);
+  format.setProfile(QSurfaceFormat::CoreProfile);
   //format.setOption(QSurfaceFormat::DebugContext);
   m_pDrawWidget->setFormat(format);
   QWidget * w = QWidget::createWindowContainer(m_pDrawWidget, this);

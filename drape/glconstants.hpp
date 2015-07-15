@@ -22,7 +22,7 @@ extern const glConst GLBufferSize;
 extern const glConst GLBufferUsage;
 
 /// VBO Access
-extern const glConst GLWriteOnly;
+extern const glConst GLMapWriteBit;
 
 /// BufferUsage
 extern const glConst GLStaticDraw;
@@ -37,17 +37,7 @@ extern const glConst GLCurrentProgram;
 /// Texture layouts
 extern const glConst GLRGBA;
 extern const glConst GLRGB;
-extern const glConst GLAlpha;
-extern const glConst GLLuminance;
-extern const glConst GLAlphaLuminance;
-
-/// Texture layout size
-extern const glConst GLRGBA8;
-extern const glConst GLRGBA4;
-extern const glConst GLAlpha8;
-extern const glConst GLLuminance8;
-extern const glConst GLAlphaLuminance8;
-extern const glConst GLAlphaLuminance4;
+extern const glConst GLRed;
 
 /// Pixel type for texture upload
 extern const glConst GL8BitOnChannel;

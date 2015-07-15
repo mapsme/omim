@@ -10,10 +10,12 @@
 #include <android/native_window_jni.h>
 #include <android/native_window.h>
 
+#define EGL_OPENGL_ES3_BIT 0x00000040
+
 namespace android
 {
 
-static EGLint * getConfigAttributesList()
+static EGLint * getConfigAttributesList(bool supportedES3)
 {
   static EGLint attr_list[] = {
     EGL_RED_SIZE, 5,
@@ -25,7 +27,19 @@ static EGLint * getConfigAttributesList()
     EGL_SURFACE_TYPE, EGL_PBUFFER_BIT | EGL_WINDOW_BIT,
     EGL_NONE
   };
-  return attr_list;
+
+  static EGLint attr_list_es3[] = {
+    EGL_RED_SIZE, 5,
+    EGL_GREEN_SIZE, 6,
+    EGL_BLUE_SIZE, 5,
+    EGL_STENCIL_SIZE, 0,
+    EGL_DEPTH_SIZE, 16,
+    EGL_RENDERABLE_TYPE, EGL_OPENGL_ES3_BIT,
+    EGL_SURFACE_TYPE, EGL_PBUFFER_BIT | EGL_WINDOW_BIT,
+    EGL_NONE
+  };
+
+  return supportedES3 ? attr_list_es3 : attr_list;
 }
 
 AndroidOGLContextFactory::AndroidOGLContextFactory(JNIEnv * env, jobject jsurface)
@@ -40,6 +54,11 @@ AndroidOGLContextFactory::AndroidOGLContextFactory(JNIEnv * env, jobject jsurfac
   , m_surfaceHeight(0)
   , m_windowSurfaceValid(false)
 {
+  m_supportedES3 = gl3stubInit();
+
+  //TODO remove this assert after supporting old graphics library on ES2
+  ASSERT(m_supportedES3, ("OpenGL ES3 is not supported"));
+
   m_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
   if (m_display == EGL_NO_DISPLAY)
   {
@@ -186,7 +205,7 @@ dp::OGLContext * AndroidOGLContextFactory::getDrawContext()
   ASSERT(IsValid(), ());
   ASSERT(m_windowSurface != EGL_NO_SURFACE, ());
   if (m_drawContext == nullptr)
-    m_drawContext = new AndroidOGLContext(m_display, m_windowSurface, m_config, m_uploadContext);
+    m_drawContext = new AndroidOGLContext(m_supportedES3, m_display, m_windowSurface, m_config, m_uploadContext);
   return m_drawContext;
 }
 
@@ -195,7 +214,7 @@ dp::OGLContext * AndroidOGLContextFactory::getResourcesUploadContext()
   ASSERT(IsValid(), ());
   ASSERT(m_pixelbufferSurface != EGL_NO_SURFACE, ());
   if (m_uploadContext == nullptr)
-    m_uploadContext = new AndroidOGLContext(m_display, m_pixelbufferSurface, m_config, m_drawContext);
+    m_uploadContext = new AndroidOGLContext(m_supportedES3, m_display, m_pixelbufferSurface, m_config, m_drawContext);
   return m_uploadContext;
 }
 
@@ -213,7 +232,7 @@ bool AndroidOGLContextFactory::createWindowSurface()
 {
   EGLConfig configs[40];
   int count = 0;
-  VERIFY(eglChooseConfig(m_display, getConfigAttributesList(), configs, 40, &count) == EGL_TRUE, ());
+  VERIFY(eglChooseConfig(m_display, getConfigAttributesList(m_supportedES3), configs, 40, &count) == EGL_TRUE, ());
   ASSERT(count > 0, ("Didn't find any configs."));
 
   sort(&configs[0], &configs[count], ConfigComparator(m_display));

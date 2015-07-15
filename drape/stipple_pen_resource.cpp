@@ -164,7 +164,7 @@ ref_ptr<Texture::ResourceInfo> StipplePenIndex::MapResource(StipplePenKey const 
 
 void StipplePenIndex::UploadResources(ref_ptr<Texture> texture)
 {
-  ASSERT(texture->GetFormat() == dp::ALPHA, ());
+  ASSERT(texture->GetFormat() == dp::RED, ());
   if (m_pendingNodes.empty())
     return;
 
@@ -227,7 +227,7 @@ void StipplePenIndex::UploadResources(ref_ptr<Texture> texture)
 
     rawBuffer = SharedBufferManager::GetRawPointer(ptr);
     texture->UploadData(minX, minY, COLUMN_WIDTH, lineCount,
-                        dp::ALPHA, make_ref(rawBuffer));
+                        dp::RED, make_ref(rawBuffer));
 
     mng.freeSharedBuffer(reserveBufferSize, ptr);
   }

@@ -106,6 +106,11 @@ def writeDefinitionFile(programIndex):
         result += "extern int const %s;\n" % (programIndex[programName][2])
 
     result += "\n"
+
+    result += "extern char const * GL_SHADERS_VERSION;\n"
+    result += "extern char const * GLES_SHADERS_VERSION;\n"
+    result += "\n"
+
     result += "void InitGpuProgramsLib(map<int, ProgramInfo> & gpuIndex);\n\n"
     result += "#if defined(COMPILER_TESTS)\n"
     result += "extern vector<string> VertexEnum;\n"
@@ -135,6 +140,11 @@ def writeShader(outputFile, shaderFile, shaderDir):
             outputFile.write("  %s \\n\\\n" % (outputLine))
     outputFile.write("  \";\n\n")
 
+def writeShaderVersion(outputFile):
+    outputFile.write("  char const * GL_SHADERS_VERSION = \"#version 150 core \\n\";\n\n")
+    outputFile.write("  char const * GLES_SHADERS_VERSION = \"#version 300 es \\n\";\n\n")
+
+
 def writeShadersIndex(outputFile, shaderIndex):
     for shader in shaderIndex:
         outputFile.write("#define %s %s\n" % (formatShaderIndexName(shader), shaderIndex[shader]))
@@ -148,6 +158,8 @@ def writeImplementationFile(programsDef, shaderIndex, shaderDir, implFile, defFi
 
     file.write("namespace gpu\n")
     file.write("{\n\n")
+
+    writeShaderVersion(file)
 
     for shader in shaderIndex.keys():
         writeShader(file, shader, shaderDir)
@@ -196,10 +208,10 @@ def writeImplementationFile(programsDef, shaderIndex, shaderDir, implFile, defFi
     file.write("{\n")
     
     for s in vertexShaders:
-        file.write("  VertexEnum.push_back(string(%s));\n" % formatShaderSourceName(s))
+        file.write("  VertexEnum.push_back(string(GLES_SHADERS_VERSION) + string(%s));\n" % formatShaderSourceName(s))
     
     for s in fragmentShaders:
-        file.write("  FragmentEnum.push_back(string(%s));\n" % formatShaderSourceName(s))
+        file.write("  FragmentEnum.push_back(string(GLES_SHADERS_VERSION) + string(%s));\n" % formatShaderSourceName(s))
     
     file.write("}\n\n")
     file.write("#endif\n")

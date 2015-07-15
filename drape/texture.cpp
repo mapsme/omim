@@ -70,7 +70,7 @@ void Texture::Create(uint32_t width, uint32_t height, TextureFormat format, ref_
   if (pixelType == gl_const::GL4BitOnChannel)
     channelBitSize = 4;
 
-  if (layout == gl_const::GLAlpha)
+  if (layout == gl_const::GLRed)
     channelCount = 1;
 
   uint32_t bitCount = channelBitSize * channelCount * m_width * m_height;
@@ -161,19 +161,18 @@ uint32_t Texture::GetMaxTextureSize()
 
 void Texture::UnpackFormat(TextureFormat format, glConst & layout, glConst & pixelType)
 {
-  bool requiredFormat = false;//GLExtensionsList::Instance().IsSupported(GLExtensionsList::RequiredInternalFormat);
   switch (format)
   {
   case RGBA8:
-    layout = requiredFormat ? gl_const::GLRGBA8 : gl_const::GLRGBA;
+    layout = gl_const::GLRGBA;
     pixelType = gl_const::GL8BitOnChannel;
     break;
   case RGBA4:
-    layout = requiredFormat ? gl_const::GLRGBA4 : gl_const::GLRGBA;
+    layout = gl_const::GLRGBA;
     pixelType = gl_const::GL4BitOnChannel;
     break;
-  case ALPHA:
-    layout = requiredFormat ? gl_const::GLAlpha8 : gl_const::GLAlpha;
+  case RED:
+    layout = gl_const::GLRed;
     pixelType = gl_const::GL8BitOnChannel;
     break;
   default:

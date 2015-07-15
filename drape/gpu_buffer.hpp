@@ -23,7 +23,7 @@ public:
   void UploadData(void const * data, uint32_t elementCount);
   void Bind();
 
-  void * Map();
+  void * Map(uint32_t elementOffset, uint32_t elementCount);
   void UpdateData(void * gpuPtr, void const * data, uint32_t elementOffset, uint32_t elementCount);
   void Unmap();
 

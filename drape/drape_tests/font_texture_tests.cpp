@@ -36,7 +36,7 @@ namespace
 
     void glMemoryToQImage(int x, int y, int w, int h, glConst f, glConst t, void const * memory)
     {
-      TEST(f == gl_const::GLAlpha || f == gl_const::GLAlpha8, ());
+      TEST(f == gl_const::GLRed, ());
       TEST(t == gl_const::GLUnsignedByteType, ());
 
       uint8_t const * image = reinterpret_cast<uint8_t const *>(memory);
@@ -100,7 +100,7 @@ UNIT_TEST(UploadingGlyphs)
   while(index.HasAsyncRoutines());
 
   DummyTexture tex;
-  tex.Create(64, 64, dp::ALPHA, nullptr);
+  tex.Create(64, 64, dp::RED, nullptr);
   EXPECTGL(glTexSubImage2D(_, _, _, _, _, _, _)).WillOnce(Invoke(&r, &UploadedRender::glMemoryToQImage));
   index.UploadResources(make_ref(&tex));
 

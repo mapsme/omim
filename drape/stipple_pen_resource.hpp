@@ -124,7 +124,7 @@ public:
   StipplePenTexture(m2::PointU const & size)
     : m_index(size)
   {
-    TBase::TextureParams params{ size, TextureFormat::ALPHA, gl_const::GLNearest, gl_const::GLNearest };
+    TBase::TextureParams params{ size, TextureFormat::RED, gl_const::GLNearest, gl_const::GLNearest };
     TBase::Init(make_ref(&m_index), params);
   }
 

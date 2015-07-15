@@ -9,7 +9,7 @@ enum TextureFormat
 {
   RGBA8,
   RGBA4,
-  ALPHA,
+  RED,
   UNSPECIFIED
 };
 

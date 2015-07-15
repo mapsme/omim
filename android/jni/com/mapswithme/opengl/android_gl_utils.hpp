@@ -3,7 +3,6 @@
 #include "../../../../../base/src_point.hpp"
 
 #include <EGL/egl.h>
-#include <GLES2/gl2.h>
 
 namespace android
 {

@@ -55,7 +55,7 @@ typedef void (DP_APIENTRY *TglBindBufferFn)(GLenum target, GLuint buffer);
 typedef void (DP_APIENTRY *TglDeleteBuffersFn)(GLsizei n, GLuint const * buffers);
 typedef void (DP_APIENTRY *TglBufferDataFn)(GLenum target, GLsizeiptr size, GLvoid const * data, GLenum usage);
 typedef void (DP_APIENTRY *TglBufferSubDataFn)(GLenum target, GLintptr offset, GLsizeiptr size, GLvoid const * data);
-typedef void * (DP_APIENTRY *TglMapBufferFn)(GLenum target, GLenum access);
+typedef void * (DP_APIENTRY *TglMapBufferRangeFn)(GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access);
 typedef GLboolean(DP_APIENTRY *TglUnmapBufferFn)(GLenum target);
 
 typedef GLuint(DP_APIENTRY *TglCreateShaderFn)(GLenum type);
@@ -116,7 +116,7 @@ TglBindBufferFn glBindBufferFn = nullptr;
 TglDeleteBuffersFn glDeleteBuffersFn = nullptr;
 TglBufferDataFn glBufferDataFn = nullptr;
 TglBufferSubDataFn glBufferSubDataFn = nullptr;
-TglMapBufferFn glMapBufferFn = nullptr;
+TglMapBufferRangeFn glMapBufferRangeFn = nullptr;
 TglUnmapBufferFn glUnmapBufferFn = nullptr;
 
 /// Shaders
@@ -335,6 +335,8 @@ TFunc LoadExtension(string const & ext)
 }
 
   #define LOAD_GL_FUNC(type, func) LoadExtension<type>(#func);
+#elif defined(OMIM_OS_ANDROID)
+  #define LOAD_GL_FUNC(type, func) ::func
 #else
   #define LOAD_GL_FUNC(type, func) &::func
 #endif
@@ -347,47 +349,17 @@ void GLFunctions::Init()
     return;
 
   s_inited = true;
-  /// VAO
-#if defined(OMIM_OS_MAC)
-  glGenVertexArraysFn = &glGenVertexArraysAPPLE;
-  glBindVertexArrayFn = &glBindVertexArrayAPPLE;
-  glDeleteVertexArrayFn = &glDeleteVertexArraysAPPLE;
-  glMapBufferFn = &::glMapBuffer;
-  glUnmapBufferFn = &::glUnmapBuffer;
-#elif defined(OMIM_OS_LINUX)
-  glGenVertexArraysFn = &::glGenVertexArrays;
-  glBindVertexArrayFn = &::glBindVertexArray;
-  glDeleteVertexArrayFn = &::glDeleteVertexArrays;
-  glMapBufferFn = &::glMapBuffer;  // I don't know correct name for linux!
-  glUnmapBufferFn = &::glUnmapBuffer; // I don't know correct name for linux!
-#elif defined(OMIM_OS_ANDROID)
-  glGenVertexArraysFn = (TglGenVertexArraysFn)eglGetProcAddress("glGenVertexArraysOES");
-  glBindVertexArrayFn = (TglBindVertexArrayFn)eglGetProcAddress("glBindVertexArrayOES");
-  glDeleteVertexArrayFn = (TglDeleteVertexArrayFn)eglGetProcAddress("glDeleteVertexArraysOES");
-  glMapBufferFn = &::glMapBufferOES;
-  glUnmapBufferFn = &::glUnmapBufferOES;
-#elif defined(OMIM_OS_MOBILE)
-  glGenVertexArraysFn = &glGenVertexArraysOES;
-  glBindVertexArrayFn = &glBindVertexArrayOES;
-  glDeleteVertexArrayFn = &glDeleteVertexArraysOES;
-  glMapBufferFn = &::glMapBufferOES;
-  glUnmapBufferFn = &::glUnmapBufferOES;
-#elif defined(OMIM_OS_WINDOWS)
-  if (dp::GLExtensionsList::Instance().IsSupported(dp::GLExtensionsList::VertexArrayObject))
-  {
-    glGenVertexArraysFn = LOAD_GL_FUNC(TglGenVertexArraysFn, glGenVertexArrays);
-    glBindVertexArrayFn = LOAD_GL_FUNC(TglBindVertexArrayFn, glBindVertexArray);
-    glDeleteVertexArrayFn = LOAD_GL_FUNC(TglDeleteVertexArrayFn, glDeleteVertexArrays);
-  }
 
-  glMapBufferFn = LOAD_GL_FUNC(TglMapBufferFn, glMapBuffer);
+  glGenVertexArraysFn = LOAD_GL_FUNC(TglGenVertexArraysFn, glGenVertexArrays);
+  glBindVertexArrayFn = LOAD_GL_FUNC(TglBindVertexArrayFn, glBindVertexArray);
+  glDeleteVertexArrayFn = LOAD_GL_FUNC(TglDeleteVertexArrayFn, glDeleteVertexArrays);
+  glMapBufferRangeFn = LOAD_GL_FUNC(TglMapBufferRangeFn, glMapBufferRange);
   glUnmapBufferFn = LOAD_GL_FUNC(TglUnmapBufferFn, glUnmapBuffer);
-#endif
 
-  glClearColorFn = &::glClearColor;
-  glClearFn = &::glClear;
-  glViewportFn = &::glViewport;
-  glFlushFn = &::glFlush;
+  glClearColorFn = LOAD_GL_FUNC(TglClearColorFn, glClearColor);
+  glClearFn = LOAD_GL_FUNC(TglClearFn, glClear);
+  glViewportFn = LOAD_GL_FUNC(TglViewportFn, glViewport);
+  glFlushFn = LOAD_GL_FUNC(TglFlushFn, glFlush);
 
   glBindFramebufferFn = LOAD_GL_FUNC(TglBindFramebufferFn, glBindFramebuffer);
   glActiveTextureFn = LOAD_GL_FUNC(TglActiveTextureFn, glActiveTexture);
@@ -407,7 +379,7 @@ void GLFunctions::Init()
   glShaderSourceFn = LOAD_GL_FUNC(TglShaderSourceFn, glShaderSource);
 #else
   typedef void (DP_APIENTRY *glShaderSource_Type)(GLuint shaderID, GLsizei count, GLchar const ** string, GLint const * length);
-  glShaderSourceFn = reinterpret_cast<glShaderSource_Type>(&::glShaderSource);
+  glShaderSourceFn = reinterpret_cast<glShaderSource_Type>(LOAD_GL_FUNC(TglShaderSourceFn, glShaderSource));
 #endif
   glCompileShaderFn = LOAD_GL_FUNC(TglCompileShaderFn, glCompileShader);
   glDeleteShaderFn = LOAD_GL_FUNC(TglDeleteShaderFn, glDeleteShader);
@@ -453,20 +425,14 @@ void GLFunctions::AttachCache(thread::id const & threadId)
 
 bool GLFunctions::glHasExtension(string const & name)
 {
-  char const * extensions = reinterpret_cast<char const * >(glGetString(GL_EXTENSIONS));
-  GLCHECKCALL();
-  if (extensions == nullptr)
-    return false;
+  GLint n = 0;
+  glGetIntegerv(GL_NUM_EXTENSIONS, &n);
 
-  char const * extName = name.c_str();
-  char const * ptr = nullptr;
-  while ((ptr = strstr(extensions, extName)) != nullptr)
+  for (GLint i = 0; i < n; i++)
   {
-    char const * end = ptr + strlen(extName);
-    if (isspace(*end) || *end == '\0')
-        return true;
-
-    extensions = end;
+    string const extension = string(reinterpret_cast<char const * >(glGetStringi(GL_EXTENSIONS, i)));
+    if (extension == name)
+      return true;
   }
 
   return false;
@@ -646,10 +612,10 @@ void GLFunctions::glBufferSubData(glConst target, uint32_t size, void const * da
   GLCHECK(glBufferSubDataFn(target, offset, size, data));
 }
 
-void * GLFunctions::glMapBuffer(glConst target)
+void * GLFunctions::glMapBufferRange(glConst target, uint32_t offset, uint32_t length)
 {
-  ASSERT(glMapBufferFn != nullptr, ());
-  void * result = glMapBufferFn(target, gl_const::GLWriteOnly);
+  ASSERT(glMapBufferRangeFn != nullptr, ());
+  void * result = glMapBufferRangeFn(target, offset, length, gl_const::GLMapWriteBit);
   GLCHECKCALL();
   return result;
 }
@@ -920,7 +886,8 @@ void GLFunctions::glBindTexture(uint32_t textureID)
 
 void GLFunctions::glTexImage2D(int width, int height, glConst layout, glConst pixelType, void const * data)
 {
-  GLCHECK(::glTexImage2D(GL_TEXTURE_2D, 0, layout, width, height, 0, layout, pixelType, data));
+  // NOTE we can't create unsized GL_RED texture on OpenGL ES 3, so we use GL_R8 as workaround
+  GLCHECK(::glTexImage2D(GL_TEXTURE_2D, 0, layout == gl_const::GLRed ? GL_R8 : layout, width, height, 0, layout, pixelType, data));
 }
 
 void GLFunctions::glTexSubImage2D(int x, int y, int width, int height, glConst layout, glConst pixelType, void const * data)

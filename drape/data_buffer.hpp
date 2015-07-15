@@ -22,7 +22,7 @@ public:
   virtual void UpdateData(void * destPtr, void const * srcPtr, uint32_t elementOffset, uint32_t elementCount) = 0;
 
   virtual void Bind() = 0;
-  virtual void * Map() = 0;
+  virtual void * Map(uint32_t elementOffset, uint32_t elementCount) = 0;
   virtual void Unmap() = 0;
 };
 
@@ -43,7 +43,7 @@ private:
 class DataBufferMapper
 {
 public:
-  DataBufferMapper(ref_ptr<DataBuffer> buffer);
+  DataBufferMapper(ref_ptr<DataBuffer> buffer, uint32_t elementOffset, uint32_t elementCount);
   ~DataBufferMapper();
 
   void UpdateData(void const * data, uint32_t elementOffset, uint32_t elementCount);

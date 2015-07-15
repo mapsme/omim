@@ -26,11 +26,11 @@ void DataBuffer::MoveToGPU(GPUBuffer::Target target)
 }
 
 
-DataBufferMapper::DataBufferMapper(ref_ptr<DataBuffer> buffer)
+DataBufferMapper::DataBufferMapper(ref_ptr<DataBuffer> buffer, uint32_t elementOffset, uint32_t elementCount)
   : m_buffer(buffer)
 {
   m_buffer->GetBuffer()->Bind();
-  m_ptr = m_buffer->GetBuffer()->Map();
+  m_ptr = m_buffer->GetBuffer()->Map(elementOffset, elementCount);
 }
 
 DataBufferMapper::~DataBufferMapper()

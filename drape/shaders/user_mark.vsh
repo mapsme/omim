@@ -1,13 +1,13 @@
-attribute vec3 a_position;
-attribute vec2 a_normal;
-attribute vec2 a_colorTexCoords;
-attribute float a_animate;
+in vec3 a_position;
+in vec2 a_normal;
+in vec2 a_colorTexCoords;
+in float a_animate;
 
 uniform mat4 modelView;
 uniform mat4 projection;
 uniform float u_interpolationT;
 
-varying vec2 v_colorTexCoords;
+out vec2 v_colorTexCoords;
 
 void main(void)
 {

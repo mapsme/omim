@@ -36,7 +36,7 @@ void InitOpenGLTextures(int const w, int const h)
   EXPECTGL(glHasExtension(_)).WillRepeatedly(Return(true));
   EXPECTGL(glGenTexture()).WillOnce(Return(1));
   EXPECTGL(glBindTexture(1)).WillOnce(Return());
-  EXPECTGL(glTexImage2D(w, h, AnyOf(gl_const::GLRGBA, gl_const::GLRGBA8), gl_const::GL8BitOnChannel, NULL));
+  EXPECTGL(glTexImage2D(w, h, gl_const::GLRGBA, gl_const::GL8BitOnChannel, NULL));
   EXPECTGL(glTexParameter(gl_const::GLMinFilter, gl_const::GLLinear));
   EXPECTGL(glTexParameter(gl_const::GLMagFilter, gl_const::GLLinear));
   EXPECTGL(glTexParameter(gl_const::GLWrapS, gl_const::GLClampToEdge));
@@ -117,7 +117,7 @@ UNIT_TEST(ColorPalleteUploadingSingleRow)
     };
 
     MemoryComparer cmp(memoryEtalon, ARRAY_SIZE(memoryEtalon));
-    EXPECTGL(glTexSubImage2D(0, 0, 10, 2, AnyOf(gl_const::GLRGBA, gl_const::GLRGBA8), gl_const::GL8BitOnChannel, _))
+    EXPECTGL(glTexSubImage2D(0, 0, 10, 2, gl_const::GLRGBA, gl_const::GL8BitOnChannel, _))
         .WillOnce(Invoke(&cmp, &MemoryComparer::cmpSubImage));
 
     cp.UploadResources(make_ref(&texture));
@@ -143,7 +143,7 @@ UNIT_TEST(ColorPalleteUploadingSingleRow)
     };
 
     MemoryComparer cmp(memoryEtalon, ARRAY_SIZE(memoryEtalon));
-    EXPECTGL(glTexSubImage2D(10, 0, 10, 2, AnyOf(gl_const::GLRGBA, gl_const::GLRGBA8), gl_const::GL8BitOnChannel, _))
+    EXPECTGL(glTexSubImage2D(10, 0, 10, 2, gl_const::GLRGBA, gl_const::GL8BitOnChannel, _))
         .WillOnce(Invoke(&cmp, &MemoryComparer::cmpSubImage));
 
     cp.UploadResources(make_ref(&texture));
@@ -184,7 +184,7 @@ UNIT_TEST(ColorPalleteUploadingPartialyRow)
     };
 
     MemoryComparer cmp(memoryEtalon, ARRAY_SIZE(memoryEtalon));
-    EXPECTGL(glTexSubImage2D(0, 0, 12, 2, AnyOf(gl_const::GLRGBA, gl_const::GLRGBA8), gl_const::GL8BitOnChannel, _))
+    EXPECTGL(glTexSubImage2D(0, 0, 12, 2, gl_const::GLRGBA, gl_const::GL8BitOnChannel, _))
         .WillOnce(Invoke(&cmp, &MemoryComparer::cmpSubImage));
 
     cp.UploadResources(make_ref(&texture));
@@ -213,11 +213,11 @@ UNIT_TEST(ColorPalleteUploadingPartialyRow)
     };
 
     MemoryComparer cmp1(memoryEtalon1, ARRAY_SIZE(memoryEtalon1));
-    EXPECTGL(glTexSubImage2D(12, 0, 4, 2, AnyOf(gl_const::GLRGBA, gl_const::GLRGBA8), gl_const::GL8BitOnChannel, _))
+    EXPECTGL(glTexSubImage2D(12, 0, 4, 2, gl_const::GLRGBA, gl_const::GL8BitOnChannel, _))
         .WillOnce(Invoke(&cmp1, &MemoryComparer::cmpSubImage));
 
     MemoryComparer cmp2(memoryEtalon2, ARRAY_SIZE(memoryEtalon2));
-    EXPECTGL(glTexSubImage2D(0, 2, 4, 2, AnyOf(gl_const::GLRGBA, gl_const::GLRGBA8), gl_const::GL8BitOnChannel, _))
+    EXPECTGL(glTexSubImage2D(0, 2, 4, 2, gl_const::GLRGBA, gl_const::GL8BitOnChannel, _))
         .WillOnce(Invoke(&cmp2, &MemoryComparer::cmpSubImage));
 
     cp.UploadResources(make_ref(&texture));
@@ -251,7 +251,7 @@ UNIT_TEST(ColorPalleteUploadingMultipyRow)
     };
 
     MemoryComparer cmp(memoryEtalon, ARRAY_SIZE(memoryEtalon));
-    EXPECTGL(glTexSubImage2D(0, 0, 4, 2, AnyOf(gl_const::GLRGBA, gl_const::GLRGBA8), gl_const::GL8BitOnChannel, _))
+    EXPECTGL(glTexSubImage2D(0, 0, 4, 2, gl_const::GLRGBA, gl_const::GL8BitOnChannel, _))
         .WillOnce(Invoke(&cmp, &MemoryComparer::cmpSubImage));
 
     cp.UploadResources(make_ref(&texture));
@@ -291,11 +291,11 @@ UNIT_TEST(ColorPalleteUploadingMultipyRow)
     };
 
     MemoryComparer cmp1(memoryEtalon1, ARRAY_SIZE(memoryEtalon1));
-    EXPECTGL(glTexSubImage2D(4, 0, 4, 2, AnyOf(gl_const::GLRGBA, gl_const::GLRGBA8), gl_const::GL8BitOnChannel, _))
+    EXPECTGL(glTexSubImage2D(4, 0, 4, 2, gl_const::GLRGBA, gl_const::GL8BitOnChannel, _))
         .WillOnce(Invoke(&cmp1, &MemoryComparer::cmpSubImage));
 
     MemoryComparer cmp2(memoryEtalon2, ARRAY_SIZE(memoryEtalon2));
-    EXPECTGL(glTexSubImage2D(0, 2, 8, 4, AnyOf(gl_const::GLRGBA, gl_const::GLRGBA8), gl_const::GL8BitOnChannel, _))
+    EXPECTGL(glTexSubImage2D(0, 2, 8, 4, gl_const::GLRGBA, gl_const::GL8BitOnChannel, _))
         .WillOnce(Invoke(&cmp2, &MemoryComparer::cmpSubImage));
 
     cp.UploadResources(make_ref(&texture));

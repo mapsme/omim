@@ -3,11 +3,10 @@
 #include "std/target_os.hpp"
 
 #if defined(OMIM_OS_IPHONE)
-  #define USE_OPENGLES20_IF_AVAILABLE 1
-  #include <OpenGLES/ES2/gl.h>
-  #include <OpenGLES/ES2/glext.h>
+  #include <OpenGLES/ES3/gl.h>
+  #include <OpenGLES/ES3/glext.h>
 #elif defined(OMIM_OS_MAC)
-  #include <OpenGL/gl.h>
+  #include <OpenGL/gl3.h>
   #include <OpenGL/glext.h>
 #elif defined(OMIM_OS_WINDOWS)
   #include "std/windows.hpp"
@@ -16,9 +15,7 @@
   #include "3party/GL/glext.h"
 #elif defined(OMIM_OS_ANDROID)
   #include <EGL/egl.h>
-  #include <GLES2/gl2.h>
-  #define GL_GLEXT_PROTOTYPES
-  #include <GLES2/gl2ext.h>
+  #include "drape/android/gl3stub.h"
 #else
   #define GL_GLEXT_PROTOTYPES
   #include <GL/gl.h>

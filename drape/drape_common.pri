@@ -101,3 +101,9 @@ HEADERS += \
     $$DRAPE_DIR/utils/vertex_decl.hpp \
     $$DRAPE_DIR/vertex_array_buffer.hpp \
     $$DRAPE_DIR/depth_constants.hpp \
+
+android* {
+  SOURCES += $$DRAPE_DIR/android/gl3stub.c \
+
+  HEADERS += $$DRAPE_DIR/android/gl3stub.h \
+}

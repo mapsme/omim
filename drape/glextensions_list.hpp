@@ -10,11 +10,7 @@ class GLExtensionsList : private noncopyable
 public:
   enum ExtensionName
   {
-    VertexArrayObject,
     TextureNPOT,
-    RequiredInternalFormat,
-    MapBuffer,
-    UintIndices,
   };
 
   static GLExtensionsList & Instance();
