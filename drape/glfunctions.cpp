@@ -336,9 +336,9 @@ TFunc LoadExtension(string const & ext)
 
   #define LOAD_GL_FUNC(type, func) LoadExtension<type>(#func);
 #elif defined(OMIM_OS_ANDROID)
-  #define LOAD_GL_FUNC(type, func) ::func
+  #define LOAD_GL_FUNC(type, func) reinterpret_cast<type>(::func)
 #else
-  #define LOAD_GL_FUNC(type, func) &::func
+  #define LOAD_GL_FUNC(type, func) reinterpret_cast<type>(&::func)
 #endif
 
 
@@ -375,12 +375,7 @@ void GLFunctions::Init()
 
   /// Shaders
   glCreateShaderFn = LOAD_GL_FUNC(TglCreateShaderFn, glCreateShader);
-#ifdef OMIM_OS_WINDOWS
   glShaderSourceFn = LOAD_GL_FUNC(TglShaderSourceFn, glShaderSource);
-#else
-  typedef void (DP_APIENTRY *glShaderSource_Type)(GLuint shaderID, GLsizei count, GLchar const ** string, GLint const * length);
-  glShaderSourceFn = reinterpret_cast<glShaderSource_Type>(LOAD_GL_FUNC(TglShaderSourceFn, glShaderSource));
-#endif
   glCompileShaderFn = LOAD_GL_FUNC(TglCompileShaderFn, glCompileShader);
   glDeleteShaderFn = LOAD_GL_FUNC(TglDeleteShaderFn, glDeleteShader);
   glGetShaderivFn = LOAD_GL_FUNC(TglGetShaderivFn, glGetShaderiv);
