@@ -73,6 +73,7 @@ HEADERS += \
     preferred_languages.hpp \
     servers_list.hpp \
     settings.hpp \
+    video_timer.hpp
 
 SOURCES += \
     chunks_download_strategy.cpp \
@@ -87,3 +88,4 @@ SOURCES += \
     preferred_languages.cpp \
     servers_list.cpp \
     settings.cpp \
+    video_timer.cpp

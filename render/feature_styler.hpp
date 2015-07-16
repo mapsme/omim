@@ -6,72 +6,73 @@
 
 #include "std/vector.hpp"
 
-
 class FeatureType;
 class ScreenBase;
 namespace graphics { class GlyphCache; }
 
 namespace di
 {
-  struct DrawRule
-  {
-    drule::BaseRule const * m_rule;
-    double m_depth;
 
-    DrawRule() : m_rule(0), m_depth(0.0) {}
-    DrawRule(drule::BaseRule const * p, double depth);
+struct DrawRule
+{
+  drule::BaseRule const * m_rule;
+  double m_depth;
 
-    uint32_t GetID(size_t threadSlot) const;
-    void SetID(size_t threadSlot, uint32_t id) const;
-  };
+  DrawRule() : m_rule(0), m_depth(0.0) {}
+  DrawRule(drule::BaseRule const * p, double depth);
 
-  struct FeatureStyler
-  {
-    FeatureStyler() = default;
-    FeatureStyler(FeatureType const & f,
-                  int const zoom,
-                  double const visualScale,
-                  graphics::GlyphCache * glyphCache,
-                  ScreenBase const * convertor,
-                  m2::RectD const * rect);
+  uint32_t GetID(size_t threadSlot) const;
+  void SetID(size_t threadSlot, uint32_t id) const;
+};
 
-    typedef buffer_vector<di::DrawRule, 8> StylesContainerT;
-    StylesContainerT m_rules;
+struct FeatureStyler
+{
+  FeatureStyler() = default;
+  FeatureStyler(FeatureType const & f,
+                int const zoom,
+                double const visualScale,
+                graphics::GlyphCache * glyphCache,
+                ScreenBase const * convertor,
+                m2::RectD const * rect);
 
-    bool m_isCoastline;
-    bool m_hasLineStyles;
-    bool m_hasPointStyles;
-    bool m_hasPathText;
-    int m_geometryType;
+  typedef buffer_vector<di::DrawRule, 8> StylesContainerT;
+  StylesContainerT m_rules;
 
-    double m_visualScale;
+  bool m_isCoastline;
+  bool m_hasLineStyles;
+  bool m_hasPointStyles;
+  bool m_hasPathText;
+  int m_geometryType;
 
-    string m_primaryText;
-    string m_secondaryText;
-    string m_refText;
+  double m_visualScale;
 
-    typedef buffer_vector<double, 16> ClipIntervalsT;
-    ClipIntervalsT m_intervals;
+  string m_primaryText;
+  string m_secondaryText;
+  string m_refText;
 
-    typedef buffer_vector<double, 8> TextOffsetsT;
-    TextOffsetsT m_offsets;
+  typedef buffer_vector<double, 16> ClipIntervalsT;
+  ClipIntervalsT m_intervals;
 
-    uint8_t m_fontSize;
+  typedef buffer_vector<double, 8> TextOffsetsT;
+  TextOffsetsT m_offsets;
 
-    graphics::GlyphCache * m_glyphCache;
-    ScreenBase const * m_convertor;
-    m2::RectD const * m_rect;
+  uint8_t m_fontSize;
 
-    double m_popRank;
+  graphics::GlyphCache * m_glyphCache;
+  ScreenBase const * m_convertor;
+  m2::RectD const * m_rect;
 
-    bool IsEmpty() const;
+  double m_popRank;
 
-    string const GetPathName() const;
+  bool IsEmpty() const;
 
-    bool FilterTextSize(drule::BaseRule const * pRule) const;
+  string const GetPathName() const;
 
-  private:
-    uint8_t GetTextFontSize(drule::BaseRule const * pRule) const;
-    void LayoutTexts(double pathLength);
-  };
-}
+  bool FilterTextSize(drule::BaseRule const * pRule) const;
+
+private:
+  uint8_t GetTextFontSize(drule::BaseRule const * pRule) const;
+  void LayoutTexts(double pathLength);
+};
+
+} // namespace di

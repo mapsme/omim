@@ -12,6 +12,9 @@ class SymbolRuleProto;
 class CaptionDefProto;
 class CircleRuleProto;
 
+namespace rg
+{
+
 graphics::Color ConvertColor(uint32_t c);
 
 void ConvertStyle(LineDefProto const * pSrc, double scale, graphics::Pen::Info & dest);
@@ -21,3 +24,5 @@ void ConvertStyle(CircleRuleProto const * pSrc, double scale, graphics::Circle::
 void ConvertStyle(CaptionDefProto const * pSrc, double scale, graphics::FontDesc & dest, m2::PointD & offset);
 
 uint8_t GetFontSize(CaptionDefProto const * pSrc);
+
+} // namespace rg

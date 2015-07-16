@@ -7,35 +7,37 @@
 
 namespace di
 {
-  class AreaInfo
+
+class AreaInfo
+{
+  m2::PointD m_center;
+
+public:
+  vector<m2::PointD> m_path;
+
+  void reserve(size_t ptsCount)
   {
-    m2::PointD m_center;
+    m_path.reserve(ptsCount);
+  }
 
-  public:
-    vector<m2::PointD> m_path;
+  void swap(AreaInfo & r)
+  {
+    m_path.swap(r.m_path);
+    std::swap(m_center, r.m_center);
+  }
 
-    void reserve(size_t ptsCount)
-    {
-      m_path.reserve(ptsCount);
-    }
+  void push_back(m2::PointD const & pt)
+  {
+    m_path.push_back(pt);
+  }
 
-    void swap(AreaInfo & r)
-    {
-      m_path.swap(r.m_path);
-      std::swap(m_center, r.m_center);
-    }
+  size_t size() const { return m_path.size(); }
 
-    void push_back(m2::PointD const & pt)
-    {
-      m_path.push_back(pt);
-    }
+  void SetCenter(m2::PointD const & p) { m_center = p; }
+  m2::PointD GetCenter() const { return m_center; }
+};
 
-    size_t size() const { return m_path.size(); }
-
-    void SetCenter(m2::PointD const & p) { m_center = p; }
-    m2::PointD GetCenter() const { return m_center; }
-  };
-}
+} // namespace di
 
 inline void swap(di::AreaInfo & p1, di::AreaInfo & p2)
 {

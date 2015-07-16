@@ -16,29 +16,34 @@
 
 #include "std/bind.hpp"
 
+namespace rg
+{
+
 namespace
 {
-  class TileStructuresLockGuard
+
+class TileStructuresLockGuard
+{
+public:
+  TileStructuresLockGuard(TileCache & tileCache, TileSet & tileSet)
+    : m_tileCache(tileCache), m_tileSet(tileSet)
   {
-  public:
-    TileStructuresLockGuard(TileCache & tileCache, TileSet & tileSet)
-      : m_tileCache(tileCache), m_tileSet(tileSet)
-    {
-      m_tileSet.Lock();
-      m_tileCache.Lock();
-    }
+    m_tileSet.Lock();
+    m_tileCache.Lock();
+  }
 
-    ~TileStructuresLockGuard()
-    {
-      m_tileCache.Unlock();
-      m_tileSet.Unlock();
-    }
+  ~TileStructuresLockGuard()
+  {
+    m_tileCache.Unlock();
+    m_tileSet.Unlock();
+  }
 
-  private:
-    TileCache & m_tileCache;
-    TileSet & m_tileSet;
-  };
-}
+private:
+  TileCache & m_tileCache;
+  TileSet & m_tileSet;
+};
+
+} // namespace
 
 TileRenderer::TileSizeT TileRenderer::GetTileSizes() const
 {
@@ -47,21 +52,22 @@ TileRenderer::TileSizeT TileRenderer::GetTileSizes() const
   return make_pair(params.m_texWidth, params.m_texHeight);
 }
 
-TileRenderer::TileRenderer(
-    size_t tileSize,
+TileRenderer::TileRenderer(size_t tileSize,
     unsigned executorsCount,
     graphics::Color const & bgColor,
     RenderPolicy::TRenderFn const & renderFn,
     shared_ptr<graphics::RenderContext> const & primaryRC,
     shared_ptr<graphics::ResourceManager> const & rm,
     double visualScale,
-    graphics::PacketsQueue ** packetsQueues)
+    graphics::PacketsQueue ** packetsQueues,
+    TInvalidate const & fn)
   : m_queue(executorsCount)
   , m_tileSize(tileSize)
   , m_renderFn(renderFn)
   , m_bgColor(bgColor)
   , m_sequenceID(0)
   , m_isPaused(false)
+  , m_invalidateFn(fn)
 {
   m_resourceManager = rm;
 
@@ -148,7 +154,6 @@ void TileRenderer::DrawTile(core::CommandsQueue::Environment const & env,
                            Tiler::RectInfo const & rectInfo,
                            int sequenceID)
 {
-#ifndef USE_DRAPE
   if (m_isPaused)
     return;
 
@@ -202,12 +207,18 @@ void TileRenderer::DrawTile(core::CommandsQueue::Environment const & env,
   if (!env.IsCancelled())
   {
     if (glQueue)
+    {
+      //m_invalidateFn();
       glQueue->completeCommands();
+    }
   }
   else
   {
     if (glQueue)
+    {
+      //m_invalidateFn();
       glQueue->cancelCommands();
+    }
   }
 
   if (env.IsCancelled())
@@ -223,7 +234,6 @@ void TileRenderer::DrawTile(core::CommandsQueue::Environment const & env,
                  paintEvent->isEmptyDrawing(),
                  sequenceID));
   }
-#endif //USE_DRAPE
 }
 
 void TileRenderer::AddCommand(Tiler::RectInfo const & rectInfo, int sequenceID, core::CommandsQueue::Chain const & afterTileFns)
@@ -325,3 +335,5 @@ size_t TileRenderer::TileSize() const
 {
   return m_tileSize;
 }
+
+} // namespace rg

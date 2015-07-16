@@ -1,8 +1,10 @@
 #pragma once
 #include "geometry/rect2d.hpp"
 
-
 class ScreenBase;
+
+namespace rg
+{
 
 class ScalesProcessor
 {
@@ -49,3 +51,5 @@ public:
 
   double GetClipRectInflation() const;
 };
+
+} // namespace rg

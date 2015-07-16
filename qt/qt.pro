@@ -1,7 +1,7 @@
 # Main application in qt.
 ROOT_DIR = ..
 
-DEPENDENCIES = map drape_frontend routing search storage indexer drape platform geometry coding base \
+DEPENDENCIES = map drape_frontend render gui routing search storage indexer drape graphics platform geometry coding base \
                bzip2 freetype expat fribidi tomcrypt jansson protobuf osrm stats_client zlib succinct
 
 include($$ROOT_DIR/common.pri)
@@ -110,6 +110,8 @@ SOURCES += \
     update_dialog.cpp \
     qtoglcontext.cpp \
     qtoglcontextfactory.cpp \
+    rg_ogl_context.cpp \
+    engine_wrapper.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -123,5 +125,7 @@ HEADERS += \
     update_dialog.hpp \
     qtoglcontext.hpp \
     qtoglcontextfactory.hpp \
+    rg_ogl_context.hpp \
+    engine_wrapper.hpp
 
 RESOURCES += res/resources.qrc

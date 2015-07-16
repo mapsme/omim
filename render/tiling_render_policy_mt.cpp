@@ -10,6 +10,9 @@
 
 using namespace graphics;
 
+namespace rg
+{
+
 TilingRenderPolicyMT::TilingRenderPolicyMT(Params const & p)
   : BasicTilingRenderPolicy(p, false)
 {
@@ -72,7 +75,7 @@ void TilingRenderPolicyMT::SetRenderFn(TRenderFn const & renderFn)
                                         m_primaryRC,
                                         m_resourceManager,
                                         VisualScale(),
-                                        0));
+                                        0, TileRenderer::TInvalidate()));
 
   m_CoverageGenerator.reset(new CoverageGenerator(m_TileRenderer.get(),
                                                   m_windowHandle,
@@ -80,3 +83,5 @@ void TilingRenderPolicyMT::SetRenderFn(TRenderFn const & renderFn)
                                                   m_resourceManager,
                                                   0));
 }
+
+} // namespace rg

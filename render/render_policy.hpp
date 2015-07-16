@@ -1,5 +1,6 @@
 #pragma once
 
+#include "anim/controller.hpp"
 #include "gpu_drawer.hpp"
 
 #include "graphics/color.hpp"
@@ -11,15 +12,8 @@
 #include "std/function.hpp"
 #include "std/shared_ptr.hpp"
 
-
-class PaintEvent;
 class ScreenBase;
 class VideoTimer;
-
-namespace anim
-{
-  class Controller;
-}
 
 namespace graphics
 {
@@ -37,6 +31,10 @@ namespace anim
   class Task;
 }
 
+namespace rg
+{
+
+class PaintEvent;
 class WindowHandle;
 
 class RenderPolicy
@@ -114,11 +112,11 @@ public:
   /// the start point of rendering in renderpolicy.
   virtual void SetRenderFn(TRenderFn const & renderFn);
 
-  void SetAnimController(anim::Controller * controller);
-
   virtual bool IsTiling() const;
 
   virtual bool NeedRedraw() const;
+  void SetNeedRedraw(bool needRedraw);
+
   virtual bool IsEmptyModel() const;
 
   bool DoForceUpdate() const;
@@ -190,3 +188,5 @@ RenderPolicy * CreateRenderPolicy(RenderPolicy::Params const & params);
 
 graphics::GlyphCache::Params GetGlyphCacheParams(graphics::EDensity density, size_t cacheMaxSize = 2 * 1024 * 1024);
 graphics::ResourceManager::GlyphCacheParams GetResourceGlyphCacheParams(graphics::EDensity density, size_t cacheMaxSize = 2 * 1024 * 1024);
+
+} // namespace rg

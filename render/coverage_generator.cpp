@@ -12,6 +12,8 @@
 
 #include "std/bind.hpp"
 
+namespace rg
+{
 
 CoverageGenerator::CoverageGenerator(TileRenderer * tileRenderer,
                                      shared_ptr<WindowHandle> const & windowHandle,
@@ -711,4 +713,6 @@ void CoverageGenerator::CachedCoverageInfo::ResetDL()
   m_mainElements = nullptr;
   delete m_sharpElements;
   m_sharpElements = nullptr;
+}
+
 }

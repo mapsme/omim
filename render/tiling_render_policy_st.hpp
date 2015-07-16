@@ -2,6 +2,9 @@
 
 #include "basic_tiling_render_policy.hpp"
 
+namespace rg
+{
+
 class TilingRenderPolicyST : public BasicTilingRenderPolicy
 {
 public:
@@ -12,3 +15,5 @@ public:
 
   void SetRenderFn(TRenderFn const & renderFn);
 };
+
+} // namespace rg

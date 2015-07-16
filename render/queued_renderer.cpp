@@ -2,6 +2,9 @@
 
 #include "graphics/opengl/opengl.hpp"
 
+namespace rg
+{
+
 QueuedRenderer::QueuedRenderer(int pipelinesCount,
                                shared_ptr<graphics::RenderContext> const & rc)
 {
@@ -15,12 +18,7 @@ QueuedRenderer::QueuedRenderer(int pipelinesCount,
 
 QueuedRenderer::~QueuedRenderer()
 {
-/*  for (unsigned i = 0; i < m_PipelinesCount; ++i)
-    CancelQueuedCommands(i);*/
-
-  delete [] m_Pipelines;
-
-  LOG(LDEBUG, ("deleted QueuedRenderPolicy"));
+  delete[] m_Pipelines;
 }
 
 bool QueuedRenderer::NeedRedraw() const
@@ -122,9 +120,6 @@ bool QueuedRenderer::RenderQueuedCommands(int pipelineNum)
   }
 
   return res;
-
-//  if ((pipelineNum == 0) && (m_IsDebugging))
-//    graphics::gl::g_doLogOGLCalls = false;
 }
 
 void QueuedRenderer::PacketsPipeline::FillFrameCommands(list<graphics::Packet> & renderQueue, int maxFrames)
@@ -210,3 +205,5 @@ void QueuedRenderer::PrepareQueueCancellation(int pipelineNum)
 {
   m_Pipelines[pipelineNum].m_Queue.cancelFences();
 }
+
+} // namespace rg

@@ -25,7 +25,6 @@ SUBDIRS = 3party \
           routing routing/routing_tests \
           geometry/geometry_tests \
           platform/platform_tests \
-          anim \
           qt_tstfrm \
           graphics \
           gui \

@@ -8,12 +8,20 @@
 
 namespace graphics
 {
-  namespace gl
-  {
-    class BaseTexture;
-  }
-  class OverlayStorage;
+
+namespace gl
+{
+
+class BaseTexture;
+
 }
+
+class OverlayStorage;
+
+} // namespace graphics
+
+namespace rg
+{
 
 struct Tile
 {
@@ -41,3 +49,5 @@ struct LessRectInfo
 {
   bool operator()(Tile const * l, Tile const * r) const;
 };
+
+} // namespace rg

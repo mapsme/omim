@@ -5,6 +5,8 @@
 
 #include "base/logging.hpp"
 
+namespace rg
+{
 
 Tiler::RectInfo::RectInfo()
   : m_tileScale(0), m_x(0), m_y(0)
@@ -135,3 +137,5 @@ bool Tiler::isLeaf(RectInfo const & ri) const
 {
   return (ri.m_tileScale == m_tileScale);
 }
+
+} // namespace rg

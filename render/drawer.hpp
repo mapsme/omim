@@ -20,6 +20,9 @@ namespace di
 
 namespace graphics { class GlyphCache; }
 
+namespace rg
+{
+
 class Drawer
 {
   double m_visualScale;
@@ -85,3 +88,5 @@ public:
 
   void Draw(di::FeatureInfo const & fi);
 };
+
+} // namespace rg

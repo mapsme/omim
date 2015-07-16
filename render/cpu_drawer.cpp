@@ -88,7 +88,10 @@ TInfo const & GetInfo(FeatureID const & id, map<FeatureID, TInfo> & m)
   return m[id];
 }
 
-}
+} // namespace
+
+namespace rg
+{
 
 class CPUDrawer::CPUOverlayTree
 {
@@ -655,3 +658,5 @@ void CPUDrawer::CallTextRendererFn(ComplexShape const * shape, TPathTextRenderer
 
   fn(path, font, strings::MakeUniString(styler.GetPathName()));
 }
+
+} // namespace rg

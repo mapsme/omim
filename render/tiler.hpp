@@ -5,6 +5,8 @@
 
 #include "std/vector.hpp"
 
+namespace rg
+{
 
 class Tiler
 {
@@ -56,3 +58,5 @@ struct LessByScaleAndDistance
 
 bool operator<(Tiler::RectInfo const & l, Tiler::RectInfo const & r);
 bool operator==(Tiler::RectInfo const & l, Tiler::RectInfo const & r);
+
+} // namespace rg

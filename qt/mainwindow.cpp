@@ -87,6 +87,29 @@ MainWindow::MainWindow() : m_locationService(CreateDesktopLocationService(*this)
   setWindowIcon(QIcon(":/ui/logo.png"));
 
 #ifndef OMIM_OS_WINDOWS
+  QMenu * renderer = new QMenu(tr("Render"), this);
+  menuBar()->addMenu(renderer);
+
+  QAction * graphicsRenderer = new QAction(tr("Graphics"), this);
+  graphicsRenderer->setCheckable(true);
+  connect(graphicsRenderer, SIGNAL(triggered()), this, SLOT(OnGraphicsRenderer()));
+
+  QAction * drapeRenderer = new QAction(tr("Drape"), this);
+  drapeRenderer->setCheckable(true);
+  connect(drapeRenderer, SIGNAL(triggered()), this, SLOT(OnDrapeRenderer()));
+
+  QActionGroup * rendererGroup = new QActionGroup(this);
+  rendererGroup->addAction(graphicsRenderer);
+  rendererGroup->addAction(drapeRenderer);
+
+  renderer->addAction(graphicsRenderer);
+  renderer->addAction(drapeRenderer);
+
+  if (m_pDrawWidget->GetRenderer() == DrawWidget::RENDERER_GRAPHICS)
+    graphicsRenderer->setChecked(true);
+  else
+    drapeRenderer->setChecked(true);
+
   QMenu * helpMenu = new QMenu(tr("Help"), this);
   menuBar()->addMenu(helpMenu);
   helpMenu->addAction(tr("About"), this, SLOT(OnAbout()));
@@ -395,8 +418,18 @@ void MainWindow::ShowUpdateDialog()
   UpdateDialog dlg(this, m_pDrawWidget->GetFramework());
   dlg.ShowModal();
 }
-
 #endif // NO_DOWNLOADER
+
+
+void MainWindow::OnGraphicsRenderer()
+{
+  m_pDrawWidget->SetRenderer(DrawWidget::RENDERER_GRAPHICS);
+}
+
+void MainWindow::OnDrapeRenderer()
+{
+  m_pDrawWidget->SetRenderer(DrawWidget::RENDERER_DRAPE);
+}
 
 void MainWindow::CreateSearchBarAndPanel()
 {

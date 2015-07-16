@@ -12,8 +12,13 @@
 
 namespace graphics
 {
-  class ResourceManager;
-}
+
+class ResourceManager;
+
+} // namespace graphics
+
+namespace rg
+{
 
 class TileCache
 {
@@ -79,3 +84,5 @@ public:
   /// free up to weight spaces evicting unlocked elements from cache
   void FreeRoom(int weight);
 };
+
+} // namespace rg

@@ -11,7 +11,8 @@ public:
   using TRegisterThreadFn = QtRenderOGLContext::TRegisterThreadFn;
   using TSwapFn = QtRenderOGLContext::TSwapFn;
 
-  QtOGLContextFactory(QOpenGLContext * renderContext, QThread * thread,
+  QtOGLContextFactory(QOpenGLContext * renderContext, QSurface * surface,
+                      QThread * thread,
                       TRegisterThreadFn const & regFn, TSwapFn const & swapFn);
   ~QtOGLContextFactory();
 

@@ -1,5 +1,8 @@
 #include "tile_set.hpp"
 
+namespace rg
+{
+
 void TileSet::Lock()
 {
   m_mutex.Lock();
@@ -46,3 +49,5 @@ size_t TileSet::Size() const
 {
   return m_tiles.size();
 }
+
+} //namespace rg

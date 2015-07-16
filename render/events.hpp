@@ -5,6 +5,8 @@
 
 #include "base/commands_queue.hpp"
 
+namespace rg
+{
 
 class DragEvent
 {
@@ -45,7 +47,6 @@ public:
   inline double ScaleFactor() const { return m_factor; }
 };
 
-#ifndef USE_DRAPE
 class Drawer;
 
 class PaintEvent
@@ -79,4 +80,5 @@ private:
   Drawer * m_drawer;
   ScreenBase m_modelView;
 };
-#endif // USE_DRAPE
+
+} // namespace rg

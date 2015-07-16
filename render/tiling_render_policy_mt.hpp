@@ -4,12 +4,20 @@
 
 namespace graphics
 {
-  namespace gl
-  {
-    class RenderContext;
-  }
-  class ResourceManager;
-}
+
+namespace gl
+{
+
+class RenderContext;
+
+} // namespace gl
+
+class ResourceManager;
+
+} // namespace graphics
+
+namespace rg
+{
 
 class WindowHandle;
 
@@ -23,3 +31,5 @@ public:
 
   void SetRenderFn(TRenderFn const & renderFn);
 };
+
+} // namespace rg

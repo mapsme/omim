@@ -15,39 +15,39 @@ class ScreenBase;
 
 class redraw_operation_cancelled {};
 
-namespace fwork
+namespace rg
 {
-#ifndef USE_DRAPE
-  class FeatureProcessor
-  {
-    m2::RectD m_rect;
 
-    set<string> m_coasts;
+class FeatureProcessor
+{
+  m2::RectD m_rect;
 
-    ScreenBase const & m_convertor;
+  set<string> m_coasts;
 
-    shared_ptr<PaintEvent> m_paintEvent;
+  ScreenBase const & m_convertor;
 
-    int m_zoom;
-    bool m_hasNonCoast;
-    bool m_hasAnyFeature;
+  shared_ptr<PaintEvent> m_paintEvent;
 
-    graphics::GlyphCache * m_glyphCache;
+  int m_zoom;
+  bool m_hasNonCoast;
+  bool m_hasAnyFeature;
 
-    inline Drawer * GetDrawer() const { return m_paintEvent->drawer(); }
+  graphics::GlyphCache * m_glyphCache;
 
-    void PreProcessKeys(vector<drule::Key> & keys) const;
+  inline Drawer * GetDrawer() const { return m_paintEvent->drawer(); }
 
-  public:
+  void PreProcessKeys(vector<drule::Key> & keys) const;
 
-    FeatureProcessor(m2::RectD const & r,
-                     ScreenBase const & convertor,
-                     shared_ptr<PaintEvent> const & paintEvent,
-                     int scaleLevel);
+public:
 
-    bool operator() (FeatureType const & f);
+  FeatureProcessor(m2::RectD const & r,
+                   ScreenBase const & convertor,
+                   shared_ptr<PaintEvent> const & paintEvent,
+                   int scaleLevel);
 
-    bool IsEmptyDrawing() const;
-  };
-#endif //USE_DRAPE
-}
+  bool operator() (FeatureType const & f);
+
+  bool IsEmptyDrawing() const;
+};
+
+} // namespace rg

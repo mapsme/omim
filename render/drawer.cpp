@@ -7,6 +7,9 @@
 #include "base/buffer_vector.hpp"
 #include "base/macros.hpp"
 
+namespace rg
+{
+
 Drawer::Params::Params()
   : m_visualScale(1)
 {
@@ -216,3 +219,5 @@ void Drawer::Draw(di::FeatureInfo const & fi)
 
   DrawFeatureEnd(fi.m_id);
 }
+
+} // namespace rg

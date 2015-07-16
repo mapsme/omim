@@ -17,10 +17,6 @@
 #include "std/vector.hpp"
 #include "std/shared_ptr.hpp"
 
-class TileRenderer;
-class TileCache;
-class ScreenCoverage;
-
 namespace graphics
 {
   class Skin;
@@ -31,6 +27,13 @@ namespace graphics
   }
   class ResourceStyleCache;
 }
+
+namespace rg
+{
+
+class TileRenderer;
+class TileCache;
+class ScreenCoverage;
 
 /// Control class for TilingRenderPolicy. It processes request from the RenderPolicy
 /// to draw a specific ScreenBase by splitting it in tiles that is not rendered now and
@@ -182,3 +185,5 @@ private:
   shared_ptr<WindowHandle> m_windowHandle;
   shared_ptr<graphics::Screen> m_cacheScreen;
 };
+
+} // namespace rg

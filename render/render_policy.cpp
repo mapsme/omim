@@ -21,6 +21,9 @@
 #define WHITE_LIST_FILE "fonts_whitelist.txt"
 #define BLACK_LIST_FILE "fonts_blacklist.txt"
 
+namespace rg
+{
+
 RenderPolicy::~RenderPolicy()
 {
   LOG(LDEBUG, ("clearing cached drawing rules"));
@@ -31,12 +34,13 @@ RenderPolicy::~RenderPolicy()
 
 RenderPolicy::RenderPolicy(Params const & p,
                            size_t idCacheSize)
-  : m_bgColor(ConvertColor(drule::rules().GetBgColor())),
-    m_primaryRC(p.m_primaryRC),
-    m_doForceUpdate(false),
-    m_density(p.m_density),
-    m_visualScale(graphics::visualScale(p.m_density)),
-    m_skinName(p.m_skinName)
+  : m_bgColor(ConvertColor(drule::rules().GetBgColor()))
+  , m_primaryRC(p.m_primaryRC)
+  , m_doForceUpdate(false)
+  , m_density(p.m_density)
+  , m_visualScale(graphics::visualScale(p.m_density))
+  , m_skinName(p.m_skinName)
+  , m_controller(new anim::Controller())
 {
   LOG(LDEBUG, ("each BaseRule will hold up to", idCacheSize, "cached values"));
   drule::rules().ResizeCaches(idCacheSize);
@@ -134,6 +138,11 @@ bool RenderPolicy::NeedRedraw() const
       || IsAnimating();
 }
 
+void RenderPolicy::SetNeedRedraw(bool needRedraw)
+{
+  GetWindowHandle()->setNeedRedraw(needRedraw);
+}
+
 bool RenderPolicy::IsAnimating() const
 {
   return (m_controller->HasVisualTasks()
@@ -212,11 +221,6 @@ int RenderPolicy::InsertBenchmarkFence()
 
 void RenderPolicy::JoinBenchmarkFence(int fenceID)
 {
-}
-
-void RenderPolicy::SetAnimController(anim::Controller * controller)
-{
-  m_controller = controller;
 }
 
 void RenderPolicy::FrameLock()
@@ -350,4 +354,6 @@ graphics::ResourceManager::GlyphCacheParams GetResourceGlyphCacheParams(graphics
                                                      BLACK_LIST_FILE,
                                                      cacheMaxSize,
                                                      density);
+}
+
 }

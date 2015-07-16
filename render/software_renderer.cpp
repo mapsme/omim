@@ -29,6 +29,8 @@
 #include "3party/agg/agg_vcgen_stroke.cpp"
 #include "3party/agg/agg_vcgen_dash.cpp"
 
+namespace rg
+{
 
 #define BLENDER_TYPE agg::comp_op_src_over
 
@@ -157,14 +159,9 @@ SoftwareRenderer::SoftwareRenderer(graphics::GlyphCache::Params const & glyphCac
   pl.GetFontNames(fonts);
   m_glyphCache->addFonts(fonts);
 
-  string textureFileName;
-
-  graphics::SkinLoader loader([this, &textureFileName](m2::RectU const & rect, string const & symbolName, int32_t id, string const & fileName)
+  graphics::SkinLoader loader([this](m2::RectU const & rect, string const & symbolName, int32_t id)
   {
     UNUSED_VALUE(id);
-    if (textureFileName.empty())
-      textureFileName =  fileName;
-
     m_symbolsIndex[symbolName] = rect;
   });
 
@@ -172,7 +169,7 @@ SoftwareRenderer::SoftwareRenderer(graphics::GlyphCache::Params const & glyphCac
   if (!ParseXML(source, loader))
     LOG(LERROR, ("Error parsing skin"));
 
-  ASSERT(!textureFileName.empty(), ());
+  string textureFileName = "symbols.png";
   ReaderPtr<Reader> texReader(GetStyleReader().GetResourceReader(textureFileName, convert(density)));
   vector<uint8_t> textureData;
   LodePNG::loadFile(textureData, texReader);
@@ -706,3 +703,5 @@ void PathWrapper::Render(SoftwareRenderer::TSolidRenderer & renderer,
     }
   }
 }
+
+} // namespace rg

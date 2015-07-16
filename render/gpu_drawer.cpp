@@ -11,14 +11,19 @@
 
 namespace
 {
-  graphics::OverlayElement::UserInfo ToUserInfo(FeatureID const & id)
-  {
-    graphics::OverlayElement::UserInfo info;
-    info.m_offset = id.m_offset;
-    info.m_mwmID = id.m_mwmId;
-    return info;
-  }
+
+graphics::OverlayElement::UserInfo ToUserInfo(FeatureID const & id)
+{
+  graphics::OverlayElement::UserInfo info;
+  info.m_offset = id.m_offset;
+  info.m_mwmID = id.m_mwmId;
+  return info;
 }
+
+} // namespace
+
+namespace rg
+{
 
 GPUDrawer::GPUDrawer(Params const & params)
   : TBase(params)
@@ -260,23 +265,24 @@ void GPUDrawer::DrawPathNumber(di::PathInfo const & path,
 
 namespace
 {
-  struct DoMakeInvalidRule
+
+struct DoMakeInvalidRule
+{
+  size_t m_threadSlot;
+  uint32_t m_pipelineIDMask;
+
+  DoMakeInvalidRule(size_t threadSlot, uint8_t pipelineID)
+    : m_threadSlot(threadSlot), m_pipelineIDMask(pipelineID << 24)
+  {}
+
+  void operator() (int, int, int, drule::BaseRule * p)
   {
-    size_t m_threadSlot;
-    uint32_t m_pipelineIDMask;
+    if ((p->GetID(m_threadSlot) & 0xFF000000) == m_pipelineIDMask)
+      p->MakeEmptyID(m_threadSlot);
+  }
+};
 
-    DoMakeInvalidRule(size_t threadSlot, uint8_t pipelineID)
-      : m_threadSlot(threadSlot), m_pipelineIDMask(pipelineID << 24)
-    {}
-
-    void operator() (int, int, int, drule::BaseRule * p)
-    {
-      if ((p->GetID(m_threadSlot) & 0xFF000000) == m_pipelineIDMask)
-        p->MakeEmptyID(m_threadSlot);
-    }
-  };
-}
-
+} // namespace
 
 void GPUDrawer::ClearResourceCache(size_t threadSlot, uint8_t pipelineID)
 {
@@ -289,3 +295,5 @@ graphics::Screen * GPUDrawer::GetScreen(Drawer * drawer)
   ASSERT(dynamic_cast<GPUDrawer *>(drawer) != nullptr, ());
   return static_cast<GPUDrawer *>(drawer)->Screen();
 }
+
+} // namespace rg

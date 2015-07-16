@@ -4,6 +4,9 @@
 
 #include "std/shared_ptr.hpp"
 
+namespace rg
+{
+
 class Drawer;
 class YopmeRP : public RenderPolicy
 {
@@ -26,3 +29,5 @@ private:
   bool m_drawMyPosition;
   m2::PointD m_myPositionPoint; // in pixels
 };
+
+} // namespace rg

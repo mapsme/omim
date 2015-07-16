@@ -5,6 +5,8 @@
 #include "indexer/mercator.hpp"
 #include "indexer/scales.hpp"
 
+namespace rg
+{
 
 /// Note! Default tile size value should be equal with
 /// the default value in RenderPolicy::TileSize().
@@ -101,3 +103,5 @@ double ScalesProcessor::GetClipRectInflation() const
   /// @todo Why 24? Probably better to get some part of m_tileSize?
   return 24 * m_visualScale;
 }
+
+} // namespace rg

@@ -9,12 +9,13 @@
 #include "graphics/opengl/opengl.hpp"
 #include "graphics/render_context.hpp"
 
-
 using namespace graphics;
 
+namespace rg
+{
+
 TilingRenderPolicyST::TilingRenderPolicyST(Params const & p)
-  : BasicTilingRenderPolicy(p,
-                            true)
+  : BasicTilingRenderPolicy(p, true)
 {
   int cpuCores = GetPlatform().CpuCores();
 
@@ -102,7 +103,8 @@ void TilingRenderPolicyST::SetRenderFn(TRenderFn const & renderFn)
                                         m_primaryRC,
                                         m_resourceManager,
                                         VisualScale(),
-                                        queues));
+                                        queues,
+                                        bind(&WindowHandle::invalidate, m_windowHandle.get())));
 
   delete [] queues;
 
@@ -115,3 +117,5 @@ void TilingRenderPolicyST::SetRenderFn(TRenderFn const & renderFn)
                                                   m_resourceManager,
                                                   m_QueuedRenderer->GetPacketsQueue(cpuCores)));
 }
+
+} // namespace rg

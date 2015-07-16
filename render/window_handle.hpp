@@ -8,12 +8,17 @@
 #include "base/logging.hpp"
 
 #include "std/shared_ptr.hpp"
-
+#include "std/atomic.hpp"
 
 namespace graphics
 {
-  class RenderContext;
-}
+
+class RenderContext;
+
+} // namespace graphics
+
+namespace rg
+{
 
 class RenderPolicy;
 
@@ -23,15 +28,14 @@ class WindowHandle
   RenderPolicy * m_renderPolicy;
 
   bool m_hasPendingUpdates;
-  bool m_isUpdatesEnabled;
-  bool m_needRedraw;
+  atomic<bool> m_isUpdatesEnabled;
+  atomic<bool> m_needRedraw;
 
   VideoTimer * m_videoTimer;
   VideoTimer::TFrameFn m_frameFn;
   int m_stallsCount;
 
 public:
-
   WindowHandle();
   virtual ~WindowHandle();
 
@@ -54,3 +58,5 @@ public:
 
   void invalidate();
 };
+
+} // namespace rg

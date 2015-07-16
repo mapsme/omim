@@ -1,6 +1,6 @@
 #include "navigator_utils.hpp"
 
-namespace navi
+namespace rg
 {
 
 m2::AnyRectD ToRotated(m2::RectD const & rect, Navigator const & navigator)
@@ -24,4 +24,4 @@ void SetRectFixedAR(m2::AnyRectD const & rect, const ScalesProcessor & scales, N
   navigator.SetFromRects(rect, etalonRect);
 }
 
-} // namespace navi
+} // namespace rg

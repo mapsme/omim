@@ -2,6 +2,9 @@
 
 #include "render_policy.hpp"
 
+namespace rg
+{
+
 class SimpleRenderPolicy : public RenderPolicy
 {
 private:
@@ -14,3 +17,5 @@ public:
                  ScreenBase const & screenBase);
   graphics::Overlay * FrameOverlay() const;
 };
+
+} // namespace rg

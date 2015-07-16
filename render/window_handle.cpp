@@ -1,6 +1,9 @@
 #include "window_handle.hpp"
 #include "render_policy.hpp"
 
+namespace rg
+{
+
 WindowHandle::WindowHandle() :
   m_hasPendingUpdates(false),
   m_isUpdatesEnabled(true),
@@ -120,3 +123,5 @@ void WindowHandle::invalidate()
   else
     m_hasPendingUpdates = true;
 }
+
+} // namespace rg

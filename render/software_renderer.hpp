@@ -25,6 +25,8 @@
 #include "std/cstdint.hpp"
 #include "std/unique_ptr.hpp"
 
+namespace rg
+{
 
 class PathWrapper;
 
@@ -169,3 +171,5 @@ private:
   agg::path_storage  m_storage;
   vector<PathParams> m_params;
 };
+
+} // namespace rg

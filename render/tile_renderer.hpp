@@ -17,14 +17,21 @@
 
 namespace graphics
 {
-  class ResourceManager;
-  class PacketsQueue;
 
-  namespace gl
-  {
-    class RenderContext;
-  }
-}
+class ResourceManager;
+class PacketsQueue;
+
+namespace gl
+{
+
+class RenderContext;
+
+} // namespace gl
+
+} // namespace graphics
+
+namespace rg
+{
 
 class WindowHandle;
 class Drawer;
@@ -80,6 +87,8 @@ protected:
 
 public:
 
+  using TInvalidate = function<void ()>;
+
   /// constructor.
   TileRenderer(size_t tileSize,
                unsigned tasksCount,
@@ -88,7 +97,8 @@ public:
                shared_ptr<graphics::RenderContext> const & primaryRC,
                shared_ptr<graphics::ResourceManager> const & rm,
                double visualScale,
-               graphics::PacketsQueue ** packetsQueue);
+               graphics::PacketsQueue ** packetsQueue,
+               TInvalidate const & fn);
   /// destructor.
   virtual ~TileRenderer();
   void Shutdown();
@@ -120,4 +130,9 @@ public:
   void SetIsPaused(bool flag);
 
   size_t TileSize() const;
+
+private:
+  TInvalidate m_invalidateFn;
 };
+
+} //namespace rg

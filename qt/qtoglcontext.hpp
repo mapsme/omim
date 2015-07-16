@@ -16,7 +16,7 @@ public:
   using TRegisterThreadFn = function<void (QThread * thread)>;
   using TSwapFn = function<void ()>;
 
-  QtRenderOGLContext(QOpenGLContext * nativeContext, QThread * guiThread,
+  QtRenderOGLContext(QOpenGLContext * nativeContext, QSurface * surface, QThread * guiThread,
                      TRegisterThreadFn const & regFn, TSwapFn const & swapFn);
 
   void present() override;

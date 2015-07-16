@@ -37,6 +37,15 @@ SOURCES += \
     coverage_generator.cpp \
     scales_processor.cpp \
     yopme_render_policy.cpp \
+    anim/angle_interpolation.cpp \
+    anim/anyrect_interpolation.cpp \
+    anim/controller.cpp \
+    anim/segment_interpolation.cpp \
+    anim/task.cpp \
+    anim/value_interpolation.cpp \
+    engine.cpp \
+    navigator_utils.cpp \
+    navigator.cpp
 
 
 HEADERS += \
@@ -71,3 +80,12 @@ HEADERS += \
     coverage_generator.hpp \
     scales_processor.hpp \
     yopme_render_policy.hpp \
+    anim/angle_interpolation.hpp \
+    anim/anyrect_interpolation.hpp \
+    anim/controller.hpp \
+    anim/segment_interpolation.hpp \
+    anim/task.hpp \
+    anim/value_interpolation.hpp \
+    engine.hpp \
+    navigator_utils.hpp \
+    navigator.hpp

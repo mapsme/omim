@@ -10,19 +10,28 @@ class ScreenBase;
 
 namespace drule
 {
-  class BaseRule;
-}
+
+class BaseRule;
+
+} // namespace drule
 
 namespace graphics
 {
-  namespace gl
-  {
-    class FrameBuffer;
-    class BaseTexture;
-  }
 
-  class ResourceManager;
-}
+namespace gl
+{
+
+class FrameBuffer;
+class BaseTexture;
+
+} // namespace gl
+
+class ResourceManager;
+
+} // namespace graphics
+
+namespace rg
+{
 
 class GPUDrawer : public Drawer
 {
@@ -88,3 +97,5 @@ private:
 
   unique_ptr<graphics::Screen> const m_pScreen;
 };
+
+} // namespace rg

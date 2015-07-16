@@ -6,6 +6,9 @@
 
 #include "std/map.hpp"
 
+namespace rg
+{
+
 class TileSet
 {
 private:
@@ -17,7 +20,6 @@ private:
   threads::Mutex m_mutex;
 
 public:
-
   /// lock TileSet for multithreaded access.
   void Lock();
   /// unlock TileSet for multithreaded access.
@@ -36,3 +38,5 @@ public:
   /// get the size of TileSet
   size_t Size() const;
 };
+
+} // namespace rg

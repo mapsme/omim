@@ -2,9 +2,9 @@
 
 #include "base/assert.hpp"
 
-QtOGLContextFactory::QtOGLContextFactory(QOpenGLContext * renderContext, QThread * thread,
+QtOGLContextFactory::QtOGLContextFactory(QOpenGLContext * renderContext, QSurface * surface, QThread * thread,
                                          TRegisterThreadFn const & regFn, TSwapFn const & swapFn)
-  : m_drawContext(new QtRenderOGLContext(renderContext, thread, regFn, swapFn))
+  : m_drawContext(new QtRenderOGLContext(renderContext, surface, thread, regFn, swapFn))
   , m_uploadContext(nullptr)
 {
   m_uploadThreadSurface = new QOffscreenSurface(renderContext->screen());

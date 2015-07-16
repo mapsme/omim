@@ -5,8 +5,13 @@
 
 namespace graphics
 {
-  class RenderContext;
-}
+
+class RenderContext;
+
+} // namespace graphics
+
+namespace rg
+{
 
 /// Mixture-class for rendering policies, used on the
 /// devices that do not support OpenGL context sharing
@@ -67,3 +72,5 @@ public:
 
   graphics::PacketsQueue * GetPacketsQueue(int pipelineNum);
 };
+
+} // namespace rg

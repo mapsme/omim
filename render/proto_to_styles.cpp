@@ -4,14 +4,18 @@
 
 #include "std/algorithm.hpp"
 
-
 namespace
 {
-  double ConvertWidth(double w, double scale)
-  {
-    return max(w * scale, 1.0);
-  }
+
+double ConvertWidth(double w, double scale)
+{
+  return max(w * scale, 1.0);
 }
+
+} // namespace rg
+
+namespace rg
+{
 
 graphics::Color ConvertColor(uint32_t c)
 {
@@ -139,3 +143,5 @@ uint8_t GetFontSize(CaptionDefProto const * pSrc)
 {
   return pSrc->height();
 }
+
+} // namespace rg

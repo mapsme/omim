@@ -200,8 +200,6 @@ namespace graphics
       DataFormat m_texRtFormat;
       bool m_useSingleThreadedOGL;
 
-      size_t m_videoMemoryLimit;
-
       /// storages params
       vector<StoragePoolParams> m_storageParams;
 

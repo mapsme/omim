@@ -152,14 +152,28 @@ void Framework::SwitchMyPositionNextMode()
 
 void Framework::InvalidateMyPosition()
 {
-  ASSERT(m_drapeEngine != nullptr, ());
-  CallDrapeFunction(bind(&df::DrapeEngine::InvalidateMyPosition, _1));
+  if (IsDrapeEngineActive())
+  {
+    CallDrapeFunction(bind(&df::DrapeEngine::InvalidateMyPosition, _1));
+  }
+  else
+  {
+    ASSERT(IsRGEngineActive(), ());
+    // @TODO (UVR)
+  }
 }
 
 void Framework::SetMyPositionModeListener(location::TMyPositionModeChanged const & fn)
 {
-  ASSERT(m_drapeEngine != nullptr, ());
-  CallDrapeFunction(bind(&df::DrapeEngine::SetMyPositionModeListener, _1, fn));
+  if (IsDrapeEngineActive())
+  {
+    CallDrapeFunction(bind(&df::DrapeEngine::SetMyPositionModeListener, _1, fn));
+  }
+  else
+  {
+    ASSERT(IsRGEngineActive(), ());
+    // @TODO (UVR)
+  }
 }
 
 void Framework::OnUserPositionChanged(m2::PointD const & position)
@@ -246,6 +260,7 @@ Framework::Framework()
 
 Framework::~Framework()
 {
+  m_rgEngine.reset();
   m_drapeEngine.reset();
 
   m_storageBridge.reset();
@@ -409,7 +424,8 @@ void Framework::UpdateAfterDownload(LocalCountryFile const & localFile)
   // Add downloaded map.
   auto result = m_model.RegisterMap(localFile);
   MwmSet::MwmHandle const & handle = result.first;
-  InvalidateRect(handle.GetInfo()->m_limitRect);
+  if (handle.IsAlive())
+    InvalidateRect(handle.GetInfo()->m_limitRect);
 
   GetSearchEngine()->ClearViewportsCache();
 }
@@ -610,39 +626,40 @@ bool Framework::AddBookmarksFile(string const & filePath)
 
 void Framework::PrepareToShutdown()
 {
-  DestroyDrapeEngine();
+  if (IsDrapeEngineActive())
+    DestroyDrapeEngine();
+
+  if (IsRGEngineActive())
+    DestoreRGEngine();
 }
 
 void Framework::SaveState()
 {
-  Settings::Set("ScreenClipRect", m_currentMovelView.GlobalRect());
+  Settings::Set("ScreenClipRect", m_currentModelView.GlobalRect());
 }
 
 void Framework::LoadState()
 {
   m2::AnyRectD rect;
-  if (Settings::Get("ScreenClipRect", rect) &&
-      df::GetWorldRect().IsRectInside(rect.GetGlobalRect()))
-  {
-    CallDrapeFunction(bind(&df::DrapeEngine::SetModelViewAnyRect, _1, rect, false));
-  }
+  if (Settings::Get("ScreenClipRect", rect) && df::GetWorldRect().IsRectInside(rect.GetGlobalRect()))
+    ShowRect(rect, false);
   else
     ShowAll();
 }
 
 void Framework::ShowAll()
 {
-  CallDrapeFunction(bind(&df::DrapeEngine::SetModelViewAnyRect, _1, m2::AnyRectD(m_model.GetWorldRect()), false));
+  ShowRect(m2::AnyRectD(m_model.GetWorldRect()), false);
 }
 
 m2::PointD Framework::GetPixelCenter() const
 {
-  return m_currentMovelView.PixelRect().Center();
+  return m_currentModelView.PixelRect().Center();
 }
 
 m2::PointD const & Framework::GetViewportCenter() const
 {
-  return m_currentMovelView.GetOrg();
+  return m_currentModelView.GetOrg();
 }
 
 void Framework::SetViewportCenter(m2::PointD const & pt)
@@ -652,7 +669,7 @@ void Framework::SetViewportCenter(m2::PointD const & pt)
 
 m2::RectD Framework::GetCurrentViewport() const
 {
-  return m_currentMovelView.ClipRect();
+  return m_currentModelView.ClipRect();
 }
 
 void Framework::ShowRect(double lat, double lon, double zoom)
@@ -666,31 +683,46 @@ void Framework::ShowRect(m2::RectD const & rect, int maxScale)
   CallDrapeFunction(bind(&df::DrapeEngine::SetModelViewRect, _1, rect, true, maxScale, true));
 }
 
-void Framework::ShowRect(m2::AnyRectD const & rect)
+void Framework::ShowRect(m2::AnyRectD const & rect, bool isAnimated)
 {
-  CallDrapeFunction(bind(&df::DrapeEngine::SetModelViewAnyRect, _1, rect, true));
+  if (IsDrapeEngineActive())
+  {
+    CallDrapeFunction(bind(&df::DrapeEngine::SetModelViewAnyRect, _1, rect, isAnimated));
+  }
+  else
+  {
+    ASSERT(IsRGEngineActive(), ());
+    m_rgEngine->ShowRect(rect);
+  }
 }
 
 void Framework::GetTouchRect(m2::PointD const & center, uint32_t pxRadius, m2::AnyRectD & rect)
 {
-  m_currentMovelView.GetTouchRect(center, static_cast<double>(pxRadius), rect);
+  m_currentModelView.GetTouchRect(center, static_cast<double>(pxRadius), rect);
 }
 
 int Framework::AddViewportListener(TViewportChanged const & fn)
 {
-  ASSERT(m_drapeEngine, ());
+  if (!IsDrapeEngineActive())
+    return 0;
+
   return m_drapeEngine->AddModelViewListener(fn);
 }
 
 void Framework::RemoveViewportListener(int slotID)
 {
-  ASSERT(m_drapeEngine, ());
+  if (!IsDrapeEngineActive())
+    return;
+
   m_drapeEngine->RemoveModeViewListener(slotID);
 }
 
 void Framework::OnSize(int w, int h)
 {
-  CallDrapeFunction(bind(&df::DrapeEngine::Resize, _1, max(w, 2), max(h, 2)));
+  if (IsDrapeEngineActive())
+    CallDrapeFunction(bind(&df::DrapeEngine::Resize, _1, max(w, 2), max(h, 2)));
+  else if (IsRGEngineActive())
+    m_rgEngine->Resize(w, h);
 }
 
 namespace
@@ -716,7 +748,7 @@ void Framework::Scale(Framework::EScaleMode mode, m2::PointD const & pxPoint, bo
 
 void Framework::Scale(double factor, bool isAnim)
 {
-  Scale(factor, m_currentMovelView.PixelRect().Center(), isAnim);
+  Scale(factor, m_currentModelView.PixelRect().Center(), isAnim);
 }
 
 void Framework::Scale(double factor, m2::PointD const & pxPoint, bool isAnim)
@@ -731,7 +763,7 @@ void Framework::TouchEvent(df::TouchEvent const & touch)
 
 int Framework::GetDrawScale() const
 {
-  return df::GetDrawTileScale(m_currentMovelView);
+  return df::GetDrawTileScale(m_currentModelView);
 }
 
 bool Framework::IsCountryLoaded(m2::PointD const & pt) const
@@ -860,18 +892,18 @@ void Framework::EnterBackground()
 #endif
 
   dlg_settings::EnterBackground(my::Timer::LocalTime() - m_StartForegroundTime);
+  ASSERT(IsDrapeEngineActive() || IsRGEngineActive(), ());
 
-  ASSERT(m_drapeEngine != nullptr, ("Drape engine has not been initialized yet"));
-  if (m_drapeEngine != nullptr)
+  if (IsDrapeEngineActive())
     m_drapeEngine->SetRenderingEnabled(false);
 }
 
 void Framework::EnterForeground()
 {
   m_StartForegroundTime = my::Timer::LocalTime();
+  ASSERT(IsDrapeEngineActive() || IsRGEngineActive(), ());
 
-  ASSERT(m_drapeEngine != nullptr, ("Drape engine has not been initialized yet"));
-  if (m_drapeEngine != nullptr)
+  if (IsDrapeEngineActive())
     m_drapeEngine->SetRenderingEnabled(true);
 }
 
@@ -1041,7 +1073,7 @@ size_t Framework::ShowAllSearchResults()
   //shared_ptr<State> state = GetLocationState();
   //state->SetFixedZoom();
   // Setup viewport according to results.
-  m2::AnyRectD viewport = m_currentMovelView.GlobalRect();
+  m2::AnyRectD viewport = m_currentModelView.GlobalRect();
   m2::PointD const center = viewport.Center();
 
   double minDistance = numeric_limits<double>::max();
@@ -1193,7 +1225,7 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
   m_drapeEngine = make_unique_dp<df::DrapeEngine>(move(p));
   AddViewportListener([this](ScreenBase const & screen)
   {
-    m_currentMovelView = screen;
+    m_currentModelView = screen;
   });
   m_drapeEngine->SetTapEventInfoListener(bind(&Framework::OnTapEvent, this, _1, _2, _3, _4));
   m_drapeEngine->SetUserPositionListener(bind(&Framework::OnUserPositionChanged, this, _1));
@@ -1205,9 +1237,47 @@ ref_ptr<df::DrapeEngine> Framework::GetDrapeEngine()
   return make_ref(m_drapeEngine);
 }
 
+bool Framework::IsDrapeEngineActive() const
+{
+  return m_drapeEngine != nullptr;
+}
+
 void Framework::DestroyDrapeEngine()
 {
+  if (!IsRGEngineActive())
+    LOG(LWARNING, ("Attempt to destroy don't created engine"));
+
   m_drapeEngine.reset();
+}
+
+void Framework::CreateRGEngine(rg::Engine::Params && params)
+{
+  rg::Engine::TDrawFn drawFn = [this](rg::Engine::TParseFn const & parser, m2::RectD const & rect,
+                                      int drawScale, bool isTilingQuery)
+  {
+    if (isTilingQuery)
+      m_model.ForEachFeature_TileDrawing(rect, parser, drawScale);
+    else
+      m_model.ForEachFeature(rect, parser, drawScale);
+  };
+
+  rg::Engine::Params pp = move(params);
+  pp.m_drawFn = drawFn;
+  m_rgEngine.reset(new rg::Engine(move(pp)));
+  m_rgEngine->InitGui(m_stringsBundle);
+}
+
+bool Framework::IsRGEngineActive() const
+{
+  return m_rgEngine != nullptr;
+}
+
+void Framework::DestoreRGEngine()
+{
+  if (!IsRGEngineActive())
+    LOG(LWARNING, ("Attempt to destroy don't created engine"));
+
+  m_rgEngine.reset();
 }
 
 void Framework::SetMapStyle(MapStyle mapStyle)
@@ -1517,13 +1587,13 @@ UserMark const * Framework::OnTapEventImpl(m2::PointD pxPoint, bool isLong, bool
 
   m2::AnyRectD rect;
   uint32_t const touchRadius = vp.GetTouchRectRadius();
-  m_currentMovelView.GetTouchRect(pxPoint, touchRadius, rect);
+  m_currentModelView.GetTouchRect(pxPoint, touchRadius, rect);
 
   m2::AnyRectD bmSearchRect;
   double const bmAddition = BM_TOUCH_PIXEL_INCREASE * vp.GetVisualScale();
   double const pxWidth  =  touchRadius;
   double const pxHeight = touchRadius + bmAddition;
-  m_currentMovelView.GetTouchRect(pxPoint + m2::PointD(0, bmAddition),
+  m_currentModelView.GetTouchRect(pxPoint + m2::PointD(0, bmAddition),
                                   pxWidth, pxHeight, bmSearchRect);
   UserMark const * mark = m_bmManager.FindNearestUserMark(
         [&rect, &bmSearchRect](UserMarkType type) -> m2::AnyRectD const &
@@ -1554,7 +1624,7 @@ UserMark const * Framework::OnTapEventImpl(m2::PointD pxPoint, bool isLong, bool
   if (needMark)
   {
     PoiMarkPoint * poiMark = UserMarkContainer::UserMarkForPoi();
-    poiMark->SetPtOrg(m_currentMovelView.PtoG(pxPivot));
+    poiMark->SetPtOrg(m_currentModelView.PtoG(pxPivot));
     poiMark->SetInfo(info);
     poiMark->SetMetadata(move(metadata));
     return poiMark;

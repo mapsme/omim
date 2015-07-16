@@ -1,5 +1,8 @@
 #include "tile_cache.hpp"
 
+namespace rg
+{
+
 void TileCache::EntryValueTraits::Evict(Entry &val)
 {
   if (val.m_rm)
@@ -125,3 +128,5 @@ void TileCache::FreeRoom(int weight)
   ASSERT(m_isLocked, ("TileCache need to be locked on modify"));
   m_cache.FreeRoom(weight);
 }
+
+} // namespace rg

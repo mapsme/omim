@@ -7,6 +7,9 @@
 #include "std/list.hpp"
 #include "std/unique_ptr.hpp"
 
+namespace rg
+{
+
 class CPUDrawer : public Drawer
 {
   using TBase = Drawer;
@@ -188,3 +191,5 @@ private:
   map<FeatureID, string> m_roadNames;
   graphics::FontDesc m_roadNumberFont;
 };
+
+}

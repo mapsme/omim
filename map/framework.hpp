@@ -9,7 +9,8 @@
 #include "map/routing_session.hpp"
 #include "map/track.hpp"
 
-#include "drape_frontend/gui/skin.hpp"
+#include "render/engine.hpp"
+
 #include "drape_frontend/drape_engine.hpp"
 #include "drape_frontend/user_event_stream.hpp"
 
@@ -77,7 +78,7 @@ protected:
   mutable unique_ptr<search::Engine> m_pSearchEngine;
 
   model::FeaturesFetcher m_model;
-  ScreenBase m_currentMovelView;
+  ScreenBase m_currentModelView;
 
   routing::RoutingSession m_routingSession;
 
@@ -85,6 +86,7 @@ protected:
 
   drape_ptr<StorageBridge> m_storageBridge;
   drape_ptr<df::DrapeEngine> m_drapeEngine;
+  unique_ptr<rg::Engine> m_rgEngine;
 
   using TDrapeFunction = function<void (df::DrapeEngine *)>;
   void CallDrapeFunction(TDrapeFunction const & fn);
@@ -269,7 +271,12 @@ public:
 
   void CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory, DrapeCreationParams && params);
   ref_ptr<df::DrapeEngine> GetDrapeEngine();
+  bool IsDrapeEngineActive() const;
   void DestroyDrapeEngine();
+
+  void CreateRGEngine(rg::Engine::Params && params);
+  bool IsRGEngineActive() const;
+  void DestoreRGEngine();
 
   void SetMapStyle(MapStyle mapStyle);
   MapStyle GetMapStyle() const;
@@ -323,8 +330,8 @@ public:
 
   /// @name Manipulating with model view
   //@{
-  inline m2::PointD PtoG(m2::PointD const & p) const { return m_currentMovelView.PtoG(p); }
-  inline m2::PointD GtoP(m2::PointD const & p) const { return m_currentMovelView.GtoP(p); }
+  inline m2::PointD PtoG(m2::PointD const & p) const { return m_currentModelView.PtoG(p); }
+  inline m2::PointD GtoP(m2::PointD const & p) const { return m_currentModelView.GtoP(p); }
 
   void SaveState();
   void LoadState();
@@ -343,7 +350,7 @@ public:
   void ShowRect(double lat, double lon, double zoom);
   /// - Check minimal visible scale according to downloaded countries.
   void ShowRect(m2::RectD const & rect, int maxScale = -1);
-  void ShowRect(m2::AnyRectD const & rect);
+  void ShowRect(m2::AnyRectD const & rect, bool isAnimated = true);
 
   void GetTouchRect(m2::PointD const & center, uint32_t pxRadius, m2::AnyRectD & rect);
 

@@ -8,6 +8,8 @@
 
 #include "std/shared_ptr.hpp"
 
+namespace rg
+{
 
 class TileRenderer;
 class CoverageGenerator;
@@ -82,3 +84,5 @@ public:
   int InsertBenchmarkFence();
   void JoinBenchmarkFence(int fenceID);
 };
+
+} // namespace rg

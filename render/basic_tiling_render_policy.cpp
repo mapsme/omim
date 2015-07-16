@@ -8,6 +8,8 @@
 
 #include "indexer/scales.hpp"
 
+namespace rg
+{
 
 BasicTilingRenderPolicy::BasicTilingRenderPolicy(Params const & p,
                                                  bool doUseQueuedRenderer)
@@ -50,7 +52,6 @@ void BasicTilingRenderPolicy::CheckAnimationTransition()
 
 void BasicTilingRenderPolicy::DrawFrame(shared_ptr<PaintEvent> const & e, ScreenBase const & s)
 {
-#ifndef USE_DRAPE
   if (m_QueuedRenderer)
   {
     m_QueuedRenderer->DrawFrame();
@@ -92,7 +93,6 @@ void BasicTilingRenderPolicy::DrawFrame(shared_ptr<PaintEvent> const & e, Screen
   m_IsEmptyModel = m_CoverageGenerator->IsEmptyDrawing();
 
   pScreen->endFrame();
-#endif // USE_DRAPE
 }
 
 void BasicTilingRenderPolicy::EndFrame(shared_ptr<PaintEvent> const & e, ScreenBase const & s)
@@ -223,3 +223,5 @@ void BasicTilingRenderPolicy::JoinBenchmarkFence(int fenceID)
 {
   return m_CoverageGenerator->JoinBenchmarkFence(fenceID);
 }
+
+} // namespace rg

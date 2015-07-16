@@ -5,9 +5,9 @@
 
 #include "drape/glfunctions.hpp"
 
-QtRenderOGLContext::QtRenderOGLContext(QOpenGLContext * nativeContext, QThread * guiThread,
+QtRenderOGLContext::QtRenderOGLContext(QOpenGLContext * nativeContext, QSurface * surface, QThread * guiThread,
                                        TRegisterThreadFn const & regFn, TSwapFn const & swapFn)
-  : m_surface(nativeContext->surface())
+  : m_surface(surface)
   , m_ctx(nativeContext)
   , m_guiThread(guiThread)
   , m_regFn(regFn)

@@ -40,7 +40,6 @@ namespace qt
     virtual void OnLocationUpdated(location::GpsInfo const & info);
 
   protected:
-    string GetIniFile();
     void SaveState();
     void LoadState();
 
@@ -63,6 +62,9 @@ namespace qt
 #ifndef NO_DOWNLOADER
     void ShowUpdateDialog();
 #endif // NO_DOWNLOADER
+
+    void OnGraphicsRenderer();
+    void OnDrapeRenderer();
 
     void OnPreferences();
     void OnAbout();

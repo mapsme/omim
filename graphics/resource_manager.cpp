@@ -208,7 +208,6 @@ namespace
     : m_texFormat(graphics::Data4Bpp),
       m_texRtFormat(graphics::Data4Bpp),
       m_useSingleThreadedOGL(false),
-      m_videoMemoryLimit(0),
       m_renderThreadsCount(0),
       m_threadSlotsCount(0)
   {
@@ -274,16 +273,7 @@ namespace
       ReaderPtr<Reader> reader(GetStyleReader().GetResourceReader(skinFileName, convert(density)));
       reader.ReadAsString(m_skinBuffer);
 
-      size_t i = m_skinBuffer.find("file=\"", 0);
-      if (i == string::npos)
-        MYTHROW(RootException, ("Invalid skin file"));
-      i += strlen("file=\"");
-
-      size_t const j = m_skinBuffer.find('\"', i);
-      if (j == string::npos)
-        MYTHROW(RootException, ("Invalid skin file"));
-
-      string const textureFileName = m_skinBuffer.substr(i, j-i);
+      string const textureFileName = "symbols.png";
       m_staticTextures[textureFileName] = make_shared<TStaticTexture>(textureFileName, density);
     }
     catch (RootException const & ex)
@@ -410,11 +400,9 @@ namespace
   void ResourceManager::loadSkin(shared_ptr<ResourceManager> const & rm,
                                  shared_ptr<ResourceCache> & cache)
   {
-    SkinLoader loader([&rm, &cache](m2::RectU const & rect, string const & symbolName,
-                      int32_t id, string const & fileName)
+    cache = make_shared<ResourceCache>(rm, "symbols.png", 0);
+    SkinLoader loader([&cache](m2::RectU const & rect, string const & symbolName, int id)
     {
-      if (cache == nullptr)
-        cache.reset(new ResourceCache(rm, fileName, 0));
       Icon * icon = new Icon(rect, 0, Icon::Info(symbolName));
       cache->m_resources[id] = shared_ptr<Resource>(icon);
       cache->m_infos[&icon->m_info] = id;

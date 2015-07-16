@@ -19,66 +19,71 @@
 
 using namespace graphics;
 
+namespace rg
+{
+
 namespace
 {
-  const int DestinationDepthOffset = 10;
-  const int ApiPinDepth = maxDepth - 10;
-  const int MyLocationDepth = maxDepth;
-  const int ApiPinLength = 5.0;
 
-  class CrossElement : public OverlayElement
+const int DestinationDepthOffset = 10;
+const int ApiPinDepth = maxDepth - 10;
+const int MyLocationDepth = maxDepth;
+const int ApiPinLength = 5.0;
+
+class CrossElement : public OverlayElement
+{
+public:
+  CrossElement(OverlayElement::Params const & params)
+    : OverlayElement(params)
   {
-  public:
-    CrossElement(OverlayElement::Params const & params)
-      : OverlayElement(params)
+    setIsFrozen(true);
+  }
+
+  virtual m2::RectD GetBoundRect() const
+  {
+    m2::PointD const offset(ApiPinLength, ApiPinLength);
+    m2::PointD const & pt = pivot();
+    return m2::RectD(pt - offset, pt + offset);
+  }
+
+  void draw(OverlayRenderer * r, math::Matrix<double, 3, 3> const & m) const
+  {
+    Pen::Info outlineInfo(Color::White(), 5);
+    Pen::Info info(Color::Black(), 3);
+
+    uint32_t outlineID = r->mapInfo(outlineInfo);
+    uint32_t infoID = r->mapInfo(info);
+
+    m2::PointD const & pt = pivot();
+
+    m2::PointD firstLineOffset(ApiPinLength, ApiPinLength);
+    m2::PointD firstLine[2] =
     {
-      setIsFrozen(true);
-    }
+      pt - firstLineOffset,
+      pt + firstLineOffset
+    };
 
-    virtual m2::RectD GetBoundRect() const
+    m2::PointD secondLineOffset(ApiPinLength, -ApiPinLength);
+    m2::PointD secondLine[2] =
     {
-      m2::PointD const offset(ApiPinLength, ApiPinLength);
-      m2::PointD const & pt = pivot();
-      return m2::RectD(pt - offset, pt + offset);
-    }
+      pt - secondLineOffset,
+      pt + secondLineOffset
+    };
 
-    void draw(OverlayRenderer * r, math::Matrix<double, 3, 3> const & m) const
-    {
-      Pen::Info outlineInfo(Color::White(), 5);
-      Pen::Info info(Color::Black(), 3);
+    double d = depth();
+    r->drawPath(firstLine,  2, 0.0, outlineID, d - DestinationDepthOffset);
+    r->drawPath(secondLine, 2, 0.0, outlineID, d - DestinationDepthOffset);
+    r->drawPath(firstLine,  2, 0.0, infoID,    d);
+    r->drawPath(secondLine, 2, 0.0, infoID,    d);
+  }
 
-      uint32_t outlineID = r->mapInfo(outlineInfo);
-      uint32_t infoID = r->mapInfo(info);
+  void setTransformation(math::Matrix<double, 3, 3> const & m)
+  {
+    OverlayElement::setTransformation(m);
+  }
+};
 
-      m2::PointD const & pt = pivot();
-
-      m2::PointD firstLineOffset(ApiPinLength, ApiPinLength);
-      m2::PointD firstLine[2] =
-      {
-        pt - firstLineOffset,
-        pt + firstLineOffset
-      };
-
-      m2::PointD secondLineOffset(ApiPinLength, -ApiPinLength);
-      m2::PointD secondLine[2] =
-      {
-        pt - secondLineOffset,
-        pt + secondLineOffset
-      };
-
-      double d = depth();
-      r->drawPath(firstLine,  2, 0.0, outlineID, d - DestinationDepthOffset);
-      r->drawPath(secondLine, 2, 0.0, outlineID, d - DestinationDepthOffset);
-      r->drawPath(firstLine,  2, 0.0, infoID,    d);
-      r->drawPath(secondLine, 2, 0.0, infoID,    d);
-    }
-
-    void setTransformation(math::Matrix<double, 3, 3> const & m)
-    {
-      OverlayElement::setTransformation(m);
-    }
-  };
-}
+} // namespace
 
 YopmeRP::YopmeRP(RenderPolicy::Params const & p)
   : RenderPolicy(p, 1)
@@ -183,7 +188,6 @@ void YopmeRP::InsertOverlayCross(m2::PointD pivot, shared_ptr<OverlayStorage> co
 
 void YopmeRP::DrawFrame(shared_ptr<PaintEvent> const & e, ScreenBase const & s)
 {
-#ifndef USE_DRAPE
   shared_ptr<gl::BaseTexture> renderTarget;
 
   int width = m_offscreenDrawer->Screen()->width();
@@ -251,7 +255,6 @@ void YopmeRP::DrawFrame(shared_ptr<PaintEvent> const & e, ScreenBase const & s)
 
     pScreen->endFrame();
   }
-#endif // USE_DRAPE
 }
 
 void YopmeRP::OnSize(int w, int h)
@@ -273,3 +276,5 @@ void YopmeRP::SetDrawingMyLocation(bool isNeed, m2::PointD const & point)
   m_drawMyPosition = isNeed;
   m_myPositionPoint = point;
 }
+
+} // namespace rg

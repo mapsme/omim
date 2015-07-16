@@ -45,4 +45,3 @@ namespace anim
     Task::OnEnd(ts);
   }
 }
-

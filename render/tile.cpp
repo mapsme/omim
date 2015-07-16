@@ -2,6 +2,9 @@
 
 #include "graphics/opengl/base_texture.hpp"
 
+namespace rg
+{
+
 Tile::Tile()
 {}
 
@@ -26,3 +29,5 @@ bool LessRectInfo::operator()(Tile const * l, Tile const * r) const
 {
   return l->m_rectInfo < r->m_rectInfo;
 }
+
+} // namespace rg
