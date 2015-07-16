@@ -40,6 +40,7 @@ protected:
     dp::TextureFormat m_format;
     glConst m_minFilter;
     glConst m_magFilter;
+    bool m_usePixelBuffer;
   };
 
   void Init(ref_ptr<TIndexer> indexer, TextureParams const & params)
@@ -50,6 +51,7 @@ protected:
   void Init(ref_ptr<TIndexer> indexer, TextureParams const & params, ref_ptr<void> data)
   {
     m_indexer = indexer;
+    m_usePixelBuffer = params.m_usePixelBuffer;
     Create(params.m_size.x, params.m_size.y, params.m_format, data);
     SetFilterParams(params.m_minFilter, params.m_magFilter);
   }

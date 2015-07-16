@@ -22,10 +22,14 @@ m2::RectF const & Texture::ResourceInfo::GetTexRect() const
 //////////////////////////////////////////////////////////////////
 
 Texture::Texture()
-  : m_textureID(-1)
+  : m_usePixelBuffer(false)
+  , m_textureID(-1)
   , m_width(0)
   , m_height(0)
   , m_format(dp::UNSPECIFIED)
+  , m_pixelBufferID(-1)
+  , m_pixelBufferSize(0)
+  , m_pixelBufferElementSize(0)
 {
 }
 
@@ -61,22 +65,41 @@ void Texture::Create(uint32_t width, uint32_t height, TextureFormat format, ref_
   SetFilterParams(gl_const::GLLinear, gl_const::GLLinear);
   SetWrapMode(gl_const::GLClampToEdge, gl_const::GLClampToEdge);
 
+  uint32_t channelCount = 4;
+  if (layout == gl_const::GLRed)
+    channelCount = 1;
+  else if (layout == gl_const::GLRGB)
+    channelCount = 3;
+
+  if (m_usePixelBuffer)
+  {
+    float const pboPercent = 0.1f;
+    m_pixelBufferSize = static_cast<uint32_t>(pboPercent * m_width * m_height * channelCount);
+    m_pixelBufferElementSize = channelCount;
+    m_pixelBufferID = GLFunctions::glGenBuffer();
+    GLFunctions::glBindBuffer(m_pixelBufferID, gl_const::GLPixelBufferWrite);
+    GLFunctions::glBufferData(gl_const::GLPixelBufferWrite, m_pixelBufferSize, data.get(), gl_const::GLDynamicDraw);
+    GLFunctions::glBindBuffer(0, gl_const::GLPixelBufferWrite);
+  }
+
   GLFunctions::glFlush();
   GLFunctions::glBindTexture(0);
 
 #if defined(TRACK_GPU_MEM)
   uint32_t channelBitSize = 8;
-  uint32_t channelCount = 4;
   if (pixelType == gl_const::GL4BitOnChannel)
     channelBitSize = 4;
-
-  if (layout == gl_const::GLRed)
-    channelCount = 1;
 
   uint32_t bitCount = channelBitSize * channelCount * m_width * m_height;
   uint32_t memSize = bitCount >> 3;
   dp::GPUMemTracker::Inst().AddAllocated("Texture", m_textureID, memSize);
   dp::GPUMemTracker::Inst().SetUsed("Texture", m_textureID, memSize);
+
+  if (m_usePixelBuffer)
+  {
+    dp::GPUMemTracker::Inst().AddAllocated("PBO", m_pixelBufferID, m_pixelBufferSize);
+    dp::GPUMemTracker::Inst().SetUsed("PBO", m_pixelBufferID, m_pixelBufferSize);
+  }
 #endif
 }
 
@@ -87,8 +110,15 @@ void Texture::Destroy()
     GLFunctions::glDeleteTexture(m_textureID);
 #if defined(TRACK_GPU_MEM)
     dp::GPUMemTracker::Inst().RemoveDeallocated("Texture", m_textureID);
+    dp::GPUMemTracker::Inst().RemoveDeallocated("PBO", m_pixelBufferID);
 #endif
     m_textureID = -1;
+  }
+
+  if (m_pixelBufferID != -1)
+  {
+    GLFunctions::glDeleteBuffer(m_pixelBufferID);
+    m_pixelBufferID = -1;
   }
 }
 
@@ -116,7 +146,18 @@ void Texture::UploadData(uint32_t x, uint32_t y, uint32_t width, uint32_t height
 
   UnpackFormat(format, layout, pixelType);
 
-  GLFunctions::glTexSubImage2D(x, y, width, height, layout, pixelType, data.get());
+  uint32_t const mappingSize = height * width * m_pixelBufferElementSize;
+  if (m_usePixelBuffer && m_pixelBufferSize >= mappingSize)
+  {
+    GLFunctions::glBindBuffer(m_pixelBufferID, gl_const::GLPixelBufferWrite);
+    GLFunctions::glBufferSubData(gl_const::GLPixelBufferWrite, mappingSize, data.get(), 0);
+    GLFunctions::glTexSubImage2D(x, y, width, height, layout, pixelType, 0);
+    GLFunctions::glBindBuffer(0, gl_const::GLPixelBufferWrite);
+  }
+  else
+  {
+    GLFunctions::glTexSubImage2D(x, y, width, height, layout, pixelType, data.get());
+  }
 }
 
 TextureFormat Texture::GetFormat() const

@@ -73,15 +73,21 @@ public:
 protected:
   void Destroy();
 
+protected:
+  bool m_usePixelBuffer;
+
 private:
   void UnpackFormat(TextureFormat format, glConst & layout, glConst & pixelType);
   int32_t GetID() const;
 
-private:
   int32_t m_textureID;
   uint32_t m_width;
   uint32_t m_height;
   TextureFormat m_format;
+
+  int32_t m_pixelBufferID;
+  uint32_t m_pixelBufferSize;
+  uint32_t m_pixelBufferElementSize;
 };
 
 } // namespace dp

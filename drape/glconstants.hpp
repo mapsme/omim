@@ -16,6 +16,7 @@ extern const glConst GLMaxTextureSize;
 /// Buffer targets
 extern const glConst GLArrayBuffer;
 extern const glConst GLElementArrayBuffer;
+extern const glConst GLPixelBufferWrite;
 
 /// Buffer params
 extern const glConst GLBufferSize;

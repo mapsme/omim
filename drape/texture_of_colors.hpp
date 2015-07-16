@@ -70,6 +70,7 @@ public:
     params.m_format = TextureFormat::RGBA8;
     params.m_minFilter = gl_const::GLNearest;
     params.m_magFilter = gl_const::GLNearest;
+    params.m_usePixelBuffer = false;
 
     TBase::Init(make_ref(&m_pallete), params);
   }
