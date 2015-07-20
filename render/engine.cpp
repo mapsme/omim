@@ -208,7 +208,7 @@ void Engine::Touch(Engine::ETouchAction action, Engine::ETouchMask mask,
       if (mask == MASK_FIRST)
         StartDrag(DragEvent(pt1));
       else if (mask == MASK_SECOND)
-        StartDrag(DragEvent(pt1));
+        StartDrag(DragEvent(pt2));
       else if (mask == MASK_BOTH)
         StartScale(ScaleEvent(pt1, pt2));
     }

@@ -984,7 +984,7 @@ bool Framework::Search(search::SearchParams const & params)
 {
   if (params.m_query == ROUTING_SECRET_UNLOCKING_WORD)
   {
-    LOG(LINFO, ("Perrian routing mode enabled"));
+    LOG(LINFO, ("Pedestrian routing mode enabled"));
     SetRouter(RouterType::Pedestrian);
     return false;
   }
