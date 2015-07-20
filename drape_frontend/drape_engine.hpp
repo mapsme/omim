@@ -70,7 +70,7 @@ public:
 
   using TModelViewListenerFn = FrontendRenderer::TModelViewChanged;
   int AddModelViewListener(TModelViewListenerFn const & listener);
-  void RemoveModeViewListener(int slotID);
+  void RemoveModelViewListener(int slotID);
 
   void ClearUserMarksLayer(TileKey const & tileKey);
   void ChangeVisibilityUserMarksLayer(TileKey const & tileKey, bool isVisible);

@@ -354,7 +354,7 @@ public:
 
   void GetTouchRect(m2::PointD const & center, uint32_t pxRadius, m2::AnyRectD & rect);
 
-  using TViewportChanged = df::DrapeEngine::TModelViewListenerFn;
+  using TViewportChanged = function<void (ScreenBase const &)>;
   int AddViewportListener(TViewportChanged const & fn);
   void RemoveViewportListener(int slotID);
 

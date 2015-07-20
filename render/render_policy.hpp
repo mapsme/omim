@@ -94,6 +94,8 @@ public:
   /// processing resize request
   virtual void OnSize(int w, int h);
 
+  void AddAnimTask(shared_ptr<anim::Task> const & task);
+
   /// reacting on navigation actions
   /// @{
   virtual void StartDrag();

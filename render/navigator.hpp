@@ -8,6 +8,7 @@
 #include "base/matrix.hpp"
 
 #include "std/shared_ptr.hpp"
+#include "std/function.hpp"
 
 namespace rg
 {
@@ -16,7 +17,12 @@ namespace rg
 class Navigator
 {
 public:
+  using TScreenChangedFn = function<void (ScreenBase const &)>;
+
   Navigator(ScalesProcessor const & scales);
+
+  int AddViewportListener(TScreenChangedFn const & listener);
+  void RemoveViewportListener(int slotID);
 
   void SetFromRect(m2::AnyRectD const & r);
   void CenterViewport(m2::PointD const & p);
@@ -46,7 +52,6 @@ public:
   void StopRotate(double Angle, double timeInSec);
 
   void StartScale(m2::PointD const & pt1, m2::PointD const & pt2, double timeInSec);
-  void DoScale(m2::PointD const & org, m2::PointD const & p1, m2::PointD const & p2);
   void DoScale(m2::PointD const & pt1, m2::PointD const & pt2, double timeInSec);
   void StopScale(m2::PointD const & pt1, m2::PointD const & pt2, double timeInSec);
   bool IsRotatingDuringScale() const;
@@ -103,10 +108,6 @@ private:
   m2::PointD m_LastPt2;
   // Start value of rotation angle
   double m_StartAngle;
-  // Current screen speed in post-dragging animation.
-  double m_DragAnimationSpeed;
-  // Move direction of the screen in post-dragging animation.
-  double m_DragAnimationDirection;
   // Last update time.
   double m_LastUpdateTimeInSec;
   // Delta matrix which stores transformation between m_StartScreen and m_Screen.
@@ -124,6 +125,10 @@ private:
                  m2::PointD const & oldPt2,
                  bool skipMinScaleAndBordersCheck,
                  bool doRotateScreen);
+
+  void CallListeners();
+  map<int, TScreenChangedFn> m_listeners;
+  int m_currentSlot = 0;
 };
 
 } // namespace rg

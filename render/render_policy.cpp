@@ -74,6 +74,11 @@ void RenderPolicy::OnSize(int w, int h)
   m_drawer->OnSize(w, h);
 }
 
+void RenderPolicy::AddAnimTask(shared_ptr<anim::Task> const & task)
+{
+  m_controller->AddTask(task);
+}
+
 void RenderPolicy::StartDrag()
 {
   m_windowHandle->invalidate();

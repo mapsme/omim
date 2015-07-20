@@ -35,6 +35,17 @@ Navigator::Navigator(ScalesProcessor const & scales)
 {
 }
 
+void Navigator::RemoveViewportListener(int slotID)
+{
+  m_listeners.erase(slotID);
+}
+
+int Navigator::AddViewportListener(TScreenChangedFn const & listener)
+{
+  m_listeners[m_currentSlot] = listener;
+  return m_currentSlot++;
+}
+
 void Navigator::SetFromRects(m2::AnyRectD const & glbRect, m2::RectD const & pxRect)
 {
   m2::RectD const & worldR = m_scales.GetWorldRect();
@@ -47,6 +58,8 @@ void Navigator::SetFromRects(m2::AnyRectD const & glbRect, m2::RectD const & pxR
     m_StartScreen.SetFromRects(glbRect, pxRect);
     m_StartScreen = ScaleInto(m_StartScreen, worldR);
   }
+
+  CallListeners();
 }
 
 void Navigator::SetFromRect(m2::AnyRectD const & r)
@@ -61,6 +74,8 @@ void Navigator::SetFromRect(m2::AnyRectD const & r)
     m_StartScreen.SetFromRect(r);
     m_StartScreen = ScaleInto(m_StartScreen, worldR);
   }
+
+  CallListeners();
 }
 
 void Navigator::CenterViewport(m2::PointD const & p)
@@ -75,6 +90,8 @@ void Navigator::CenterViewport(m2::PointD const & p)
   m_Screen.SetOrg(pt);
   if (!m_InAction)
     m_StartScreen.SetOrg(pt);
+
+  CallListeners();
 }
 
 double Navigator::ComputeMoveSpeed(m2::PointD const & /*p0*/, m2::PointD const & /*p1*/) const
@@ -92,6 +109,8 @@ void Navigator::OnSize(int x0, int y0, int w, int h)
 
   m_StartScreen.OnSize(x0, y0, w, h);
   m_StartScreen = ShrinkAndScaleInto(m_StartScreen, worldR);
+
+  CallListeners();
 }
 
 m2::PointD Navigator::GtoP(m2::PointD const & pt) const
@@ -297,6 +316,7 @@ void Navigator::DoRotate(double a, double /*timeInSec*/)
   m_StartAngle = a;
   m_Screen = tmp;
   m_StartScreen = tmp;
+  CallListeners();
 }
 
 void Navigator::StopRotate(double a, double timeInSec)
@@ -347,6 +367,7 @@ void Navigator::DoDrag(m2::PointD const & pt, double /*timeInSec*/)
     m_StartPt1 = pt;
     m_LastPt1 = pt;
     m_Screen = tmp;
+    CallListeners();
   }
 }
 
@@ -545,7 +566,15 @@ bool Navigator::ScaleImpl(m2::PointD const & newPt1, m2::PointD const & newPt2,
     tmp = ScaleInto(tmp, worldR);
 
   m_Screen = tmp;
+  CallListeners();
   return true;
+}
+
+void Navigator::CallListeners()
+{
+  ScreenBase const & screen = Screen();
+  for (auto const & l: m_listeners)
+    l.second(screen);
 }
 
 void Navigator::DoScale(m2::PointD const & pt1, m2::PointD const & pt2, double /*timeInSec*/)
@@ -627,11 +656,13 @@ shared_ptr<anim::Task> Navigator::ScaleAnim(double scale)
 void Navigator::Rotate(double angle)
 {
   m_Screen.Rotate(angle);
+  CallListeners();
 }
 
 void Navigator::SetAngle(double angle)
 {
   m_Screen.SetAngle(angle);
+  CallListeners();
 }
 
 void Navigator::SetOrg(m2::PointD const & org)
@@ -639,13 +670,17 @@ void Navigator::SetOrg(m2::PointD const & org)
   ScreenBase tmp = m_Screen;
   tmp.SetOrg(org);
   if (CheckBorders(tmp))
+  {
     m_Screen = tmp;
+    CallListeners();
+  }
 }
 
 void Navigator::Move(double azDir, double factor)
 {
   m2::RectD const r = m_Screen.ClipRect();
   m_Screen.MoveG(m2::PointD(r.SizeX() * factor * cos(azDir), r.SizeY() * factor * sin(azDir)));
+  CallListeners();
 }
 
 bool Navigator::Update(double timeInSec)

@@ -212,7 +212,7 @@ void DrawWidget::initializeGL()
   }
 
   m_engineWrapper->Create(this);
-  m_framework->AddViewportListener(bind(&DrawWidget::OnViewportChanged, this, _1));
+  m_engineWrapper->SetViewportListener(bind(&DrawWidget::OnViewportChanged, this, _1));
   LoadState();
 
   emit EngineCreated();

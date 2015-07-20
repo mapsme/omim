@@ -18,7 +18,6 @@ Engine::Engine(Params && params)
   : m_navigator(m_scales)
   , m_drawFn(params.m_drawFn)
 {
-  m_animController.reset(new anim::Controller());
   RenderPolicy::Params rpParams = params.m_rpParams;
   rpParams.m_videoTimer->setFrameFn(bind(&Engine::DrawFrame, this));
 
@@ -32,6 +31,16 @@ Engine::Engine(Params && params)
 
 Engine::~Engine()
 {
+}
+
+void Engine::Scale(double factor, const m2::PointD & pxPoint, bool isAnim)
+{
+  if (isAnim)
+    m_renderPolicy->AddAnimTask(m_navigator.ScaleToPointAnim(pxPoint, factor, 0.25));
+  else
+    m_navigator.ScaleToPoint(pxPoint, factor, 0.0);
+
+  Invalidate();
 }
 
 void Engine::InitGui(StringsBundle const & bundle)
@@ -95,6 +104,21 @@ void Engine::DrawFrame()
 void Engine::ShowRect(m2::AnyRectD const & rect)
 {
   m_navigator.SetFromRect(rect);
+}
+
+int Engine::AddModelViewListener(TScreenChangedFn const & listener)
+{
+  return m_navigator.AddViewportListener(listener);
+}
+
+void Engine::RemoveModelViewListener(int slotID)
+{
+  m_navigator.RemoveViewportListener(slotID);
+}
+
+int Engine::GetDrawScale()
+{
+  return m_navigator.GetDrawScale();
 }
 
 void Engine::BeginPaint(shared_ptr<PaintEvent> const  & e)

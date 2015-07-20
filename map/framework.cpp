@@ -703,18 +703,23 @@ void Framework::GetTouchRect(m2::PointD const & center, uint32_t pxRadius, m2::A
 
 int Framework::AddViewportListener(TViewportChanged const & fn)
 {
-  if (!IsDrapeEngineActive())
-    return 0;
+  if (IsDrapeEngineActive())
+    return m_drapeEngine->AddModelViewListener(fn);
 
-  return m_drapeEngine->AddModelViewListener(fn);
+  ASSERT(IsRGEngineActive(), ());
+  return m_rgEngine->AddModelViewListener(fn);
 }
 
 void Framework::RemoveViewportListener(int slotID)
 {
-  if (!IsDrapeEngineActive())
+  if (IsDrapeEngineActive())
+  {
+    m_drapeEngine->RemoveModelViewListener(slotID);
     return;
+  }
 
-  m_drapeEngine->RemoveModeViewListener(slotID);
+  ASSERT(IsRGEngineActive(), ());
+  m_rgEngine->RemoveModelViewListener(slotID);
 }
 
 void Framework::OnSize(int w, int h)
@@ -753,7 +758,10 @@ void Framework::Scale(double factor, bool isAnim)
 
 void Framework::Scale(double factor, m2::PointD const & pxPoint, bool isAnim)
 {
-  CallDrapeFunction(bind(&df::DrapeEngine::Scale, _1, factor, pxPoint, isAnim));
+  if (IsDrapeEngineActive())
+    CallDrapeFunction(bind(&df::DrapeEngine::Scale, _1, factor, pxPoint, isAnim));
+  else if (IsRGEngineActive())
+    m_rgEngine->Scale(factor, pxPoint, isAnim);
 }
 
 void Framework::TouchEvent(df::TouchEvent const & touch)
@@ -763,7 +771,12 @@ void Framework::TouchEvent(df::TouchEvent const & touch)
 
 int Framework::GetDrawScale() const
 {
-  return df::GetDrawTileScale(m_currentModelView);
+  if (IsDrapeEngineActive())
+    return df::GetDrawTileScale(m_currentModelView);
+  else if (IsRGEngineActive())
+    return m_rgEngine->GetDrawScale();
+
+  return 0;
 }
 
 bool Framework::IsCountryLoaded(m2::PointD const & pt) const
@@ -1265,6 +1278,11 @@ void Framework::CreateRGEngine(rg::Engine::Params && params)
   pp.m_drawFn = drawFn;
   m_rgEngine.reset(new rg::Engine(move(pp)));
   m_rgEngine->InitGui(m_stringsBundle);
+
+  AddViewportListener([this](ScreenBase const & screen)
+  {
+    m_currentModelView = screen;
+  });
 }
 
 bool Framework::IsRGEngineActive() const

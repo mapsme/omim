@@ -23,6 +23,7 @@ class Engine
 public:
   using TParseFn = function<bool (FeatureType const &)>;
   using TDrawFn = function<void (TParseFn const &, m2::RectD const &, int, bool)>;
+  using TScreenChangedFn = function<void (ScreenBase const &)>;
 
   struct Params
   {
@@ -34,11 +35,17 @@ public:
   Engine(Params && params);
   ~Engine();
 
+  void Scale(double factor, m2::PointD const & pxPoint, bool isAnim);
+
   void InitGui(StringsBundle const & bundle);
   void Resize(int w, int h);
   void DrawFrame();
 
   void ShowRect(m2::AnyRectD const & rect);
+  int AddModelViewListener(TScreenChangedFn const & listener);
+  void RemoveModelViewListener(int slotID);
+
+  int GetDrawScale();
 
 private:
   void BeginPaint(shared_ptr<PaintEvent> const & e);
@@ -56,7 +63,6 @@ private:
 
 private:
   unique_ptr<gui::Controller> m_guiController; // can be nullptr if gui subsystem not initialized
-  unique_ptr<anim::Controller> m_animController;
   unique_ptr<RenderPolicy> m_renderPolicy;
 
   ScalesProcessor m_scales;

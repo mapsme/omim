@@ -8,6 +8,24 @@
 namespace qt
 {
 
+void EngineWrapper::SetViewportListener(Framework::TViewportChanged const & fn)
+{
+  if (!fn && m_viewportListenerSlot != -1)
+  {
+    m_framework.RemoveViewportListener(m_viewportListenerSlot);
+    m_viewportListenerSlot = -1;
+  }
+  else
+  {
+    m_viewportListenerSlot = m_framework.AddViewportListener(fn);
+  }
+}
+
+void EngineWrapper::Destroy()
+{
+  SetViewportListener(Framework::TViewportChanged());
+}
+
 DrapeEngineWrapper::DrapeEngineWrapper(Framework & framework)
   : EngineWrapper(framework)
   , m_rendererThread(nullptr)

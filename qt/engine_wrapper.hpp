@@ -23,13 +23,16 @@ public:
   EngineWrapper(Framework & framework) : m_framework(framework) {}
   virtual ~EngineWrapper() {}
 
+  void SetViewportListener(Framework::TViewportChanged const & fn);
+
   virtual void Create(QOpenGLWindow * window) = 0;
   virtual void Paint() = 0;
-  virtual void Destroy() = 0;
+  virtual void Destroy();
   virtual void Expose() {}
 
 protected:
   Framework & m_framework;
+  int m_viewportListenerSlot = -1;
 };
 
 class DrapeEngineWrapper : public QObject, public EngineWrapper

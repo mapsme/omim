@@ -126,7 +126,7 @@ int DrapeEngine::AddModelViewListener(TModelViewListenerFn const & listener)
   return currentSlotID;
 }
 
-void DrapeEngine::RemoveModeViewListener(int slotID)
+void DrapeEngine::RemoveModelViewListener(int slotID)
 {
   m_listeners.erase(slotID);
 }
