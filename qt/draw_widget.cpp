@@ -16,6 +16,7 @@
 #include <QtGui/QGuiApplication>
 
 #include <QtWidgets/QMenu>
+#include <QtWidgets/QMessageBox>
 
 #include <QtCore/QLocale>
 #include <QtCore/QDateTime>
@@ -68,13 +69,38 @@ void DummyDismiss() {}
 
 DrawWidget::DrawWidget()
   : m_framework(new Framework()),
-    m_oglInitialized(false),
     m_ratio(1.0),
     m_pScale(nullptr),
     m_enableScaleUpdate(true),
     m_emulatingLocation(false)
 {
+  int r = RENDERER_GRAPHICS;
+  Settings::Get("Renderer", r);
+  m_renderer = static_cast<ERenderer>(r);
+
   setSurfaceType(QSurface::OpenGLSurface);
+
+  QSurfaceFormat format = requestedFormat();
+
+  format.setMajorVersion(3);
+  format.setMinorVersion(2);
+
+  format.setAlphaBufferSize(0);
+  format.setBlueBufferSize(8);
+  format.setGreenBufferSize(8);
+  format.setRedBufferSize(8);
+  format.setStencilBufferSize(0);
+  format.setSamples(0);
+  format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
+  format.setSwapInterval(1);
+  format.setDepthBufferSize(16);
+
+  if (GetRenderer() == RENDERER_GRAPHICS)
+    format.setProfile(QSurfaceFormat::CompatibilityProfile);
+  else
+    format.setProfile(QSurfaceFormat::CoreProfile);
+
+  setFormat(format);
 
   m_framework->SetUserMarkActivationListener([](unique_ptr<UserMarkCopy> mark)
   {
@@ -85,15 +111,11 @@ DrawWidget::DrawWidget()
                                            vector<storage::TIndex> const &)
   {
   });
-
-  int r = RENDERER_GRAPHICS;
-  Settings::Get("Renderer", r);
-  SetRenderer(static_cast<ERenderer>(r));
 }
 
 DrawWidget::~DrawWidget()
 {
-  Settings::Set("Renderer", (int)m_renderer);
+  Settings::Set("Renderer", (int)GetRenderer());
   m_framework.reset();
 }
 
@@ -175,8 +197,20 @@ void DrawWidget::SliderReleased()
 
 void DrawWidget::initializeGL()
 {
-  m_oglInitialized = true;
   m_ratio = devicePixelRatio();
+
+  switch (GetRenderer())
+  {
+  case RENDERER_GRAPHICS:
+    m_engineWrapper.reset(new RGEngineWrapper(*m_framework));
+    break;
+  case RENDERER_DRAPE:
+    m_engineWrapper.reset(new DrapeEngineWrapper(*m_framework));
+    break;
+  default:
+    ASSERT(false, ());
+  }
+
   m_engineWrapper->Create(this);
   m_framework->AddViewportListener(bind(&DrawWidget::OnViewportChanged, this, _1));
   LoadState();
@@ -338,25 +372,11 @@ void DrawWidget::SetMapStyle(MapStyle mapStyle)
 
 void DrawWidget::SetRenderer(ERenderer renderer)
 {
-  PrepareShutdown();
-  m_engineWrapper.reset();
-  if (m_renderer != renderer || m_engineWrapper == nullptr)
+  if (m_renderer != renderer)
   {
     m_renderer = renderer;
-    if (m_renderer == RENDERER_GRAPHICS)
-      m_engineWrapper.reset(new RGEngineWrapper(*m_framework));
-    else if (m_renderer == RENDERER_DRAPE)
-      m_engineWrapper.reset(new DrapeEngineWrapper(*m_framework));
-    else
-      ASSERT(false, ());
-
-    if (m_oglInitialized)
-    {
-      if (QOpenGLContext::currentContext() == nullptr)
-        context()->makeCurrent(this);
-
-      m_engineWrapper->Create(this);
-    }
+    QMessageBox::warning(nullptr, "Restart app",
+                         "For apply this changes you have to restart application");
   }
 }
 
