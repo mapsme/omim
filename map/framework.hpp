@@ -9,8 +9,6 @@
 #include "map/routing_session.hpp"
 #include "map/track.hpp"
 
-#include "render/engine.hpp"
-
 #include "drape_frontend/drape_engine.hpp"
 #include "drape_frontend/user_event_stream.hpp"
 
@@ -21,6 +19,7 @@
 
 #include "search/search_engine.hpp"
 
+#include "render/engine.hpp"
 #include "render/frame_image.hpp"
 
 #include "storage/storage.hpp"

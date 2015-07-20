@@ -14,6 +14,15 @@
 namespace rg
 {
 
+namespace
+{
+
+unsigned const LONG_TOUCH_MS = 1000;
+unsigned const SHORT_TOUCH_MS = 250;
+double const DOUBLE_TOUCH_S = SHORT_TOUCH_MS / 1000.0;
+
+} // namespace
+
 Engine::Engine(Params && params)
   : m_navigator(m_scales)
   , m_drawFn(params.m_drawFn)
@@ -121,6 +130,221 @@ int Engine::GetDrawScale()
   return m_navigator.GetDrawScale();
 }
 
+void Engine::Touch(Engine::ETouchAction action, Engine::ETouchMask mask,
+                   m2::PointD const & pt1, m2::PointD const & pt2)
+{
+  if ((mask != MASK_FIRST) || (action == ACTION_CANCEL))
+  {
+    if (mask == MASK_FIRST && m_guiController)
+      m_guiController->OnTapCancelled(pt1);
+
+    m_isCleanSingleClick = false;
+    KillTouchTask();
+  }
+  else
+  {
+    ASSERT_EQUAL(mask, MASK_FIRST, ());
+
+    if (action == ACTION_DOWN)
+    {
+      KillTouchTask();
+
+      m_wasLongClick = false;
+      m_isCleanSingleClick = true;
+      m_lastTouch = pt1;
+
+      if (m_guiController && m_guiController->OnTapStarted(pt1))
+        return;
+
+      StartTouchTask(pt1, LONG_TOUCH_MS);
+    }
+
+    if (action == ACTION_MOVE)
+    {
+      double const minDist = m_renderPolicy->VisualScale() * 10.0;
+      if (m_lastTouch.SquareLength(pt1) > minDist * minDist)
+      {
+        m_isCleanSingleClick = false;
+        KillTouchTask();
+      }
+
+      if (m_guiController && m_guiController->OnTapMoved(pt1))
+        return;
+    }
+
+    if (action == ACTION_UP)
+    {
+      KillTouchTask();
+
+      if (m_guiController && m_guiController->OnTapEnded(pt1))
+        return;
+
+      if (!m_wasLongClick && m_isCleanSingleClick)
+      {
+        if (m_doubleClickTimer.ElapsedSeconds() <= DOUBLE_TOUCH_S)
+        {
+          // performing double-click
+          Scale(1.5 /* factor */, pt1, true);
+        }
+        else
+        {
+          // starting single touch task
+          StartTouchTask(pt1, SHORT_TOUCH_MS);
+
+          // starting double click
+          m_doubleClickTimer.Reset();
+        }
+      }
+      else
+        m_wasLongClick = false;
+    }
+  }
+
+  // general case processing
+  if (m_mask != mask)
+  {
+    if (m_mask == MASK_EMPTY)
+    {
+      if (mask == MASK_FIRST)
+        StartDrag(DragEvent(pt1));
+      else if (mask == MASK_SECOND)
+        StartDrag(DragEvent(pt1));
+      else if (mask == MASK_BOTH)
+        StartScale(ScaleEvent(pt1, pt2));
+    }
+    else if (m_mask == MASK_FIRST)
+    {
+      StopDrag(DragEvent(pt1));
+
+      if (mask == MASK_EMPTY)
+      {
+        if ((action != ACTION_UP) && (action != ACTION_CANCEL))
+          LOG(LWARNING, ("should be ACTION_UP or ACTION_CANCEL"));
+      }
+      else if (mask == MASK_SECOND)
+        StartDrag(DragEvent(pt2));
+      else if (mask == MASK_BOTH)
+        StartScale(ScaleEvent(pt1, pt2));
+    }
+    else if (m_mask == MASK_SECOND)
+    {
+      StopDrag(DragEvent(pt2));
+
+      if (mask == MASK_EMPTY)
+      {
+        if ((action != ACTION_UP) && (action != ACTION_CANCEL))
+          LOG(LWARNING, ("should be ACTION_UP or ACTION_CANCEL"));
+      }
+      else if (mask == MASK_FIRST)
+        StartDrag(DragEvent(pt1));
+      else if (mask == MASK_BOTH)
+        StartScale(ScaleEvent(pt1, pt2));
+    }
+    else if (m_mask == MASK_BOTH)
+    {
+      StopScale(ScaleEvent(m_touch1, m_touch2));
+
+      if (action == ACTION_MOVE)
+      {
+        if (mask == MASK_FIRST)
+          StartDrag(DragEvent(pt1));
+
+        if (mask == MASK_SECOND)
+          StartDrag(DragEvent(pt2));
+      }
+      else
+        mask = MASK_EMPTY;
+    }
+  }
+  else
+  {
+    if (action == ACTION_MOVE)
+    {
+      if (m_mask == MASK_FIRST)
+        DoDrag(DragEvent(pt1));
+      if (m_mask == MASK_SECOND)
+        DoDrag(DragEvent(pt2));
+      if (m_mask == MASK_BOTH)
+        DoScale(ScaleEvent(pt1, pt2));
+    }
+
+    if ((action == ACTION_CANCEL) || (action == ACTION_UP))
+    {
+      if (m_mask == MASK_FIRST)
+        StopDrag(DragEvent(pt1));
+      if (m_mask == MASK_SECOND)
+        StopDrag(DragEvent(pt2));
+      if (m_mask == MASK_BOTH)
+        StopScale(ScaleEvent(m_touch1, m_touch2));
+      mask = MASK_EMPTY;
+    }
+  }
+
+  m_touch1 = pt1;
+  m_touch2 = pt2;
+  m_mask = mask;
+}
+
+void Engine::StartDrag(DragEvent const & e)
+{
+  m_navigator.StartDrag(m_navigator.ShiftPoint(e.Pos()));
+  //m_informationDisplay.locationState()->DragStarted();
+  m_renderPolicy->StartDrag();
+}
+
+void Engine::DoDrag(DragEvent const & e)
+{
+  m_navigator.DoDrag(m_navigator.ShiftPoint(e.Pos()));
+  m_renderPolicy->DoDrag();
+}
+
+void Engine::StopDrag(DragEvent const & e)
+{
+  m_navigator.StopDrag(m_navigator.ShiftPoint(e.Pos()));
+  //m_informationDisplay.locationState()->DragEnded();
+  m_renderPolicy->StopDrag();
+}
+
+void Engine::StartScale(ScaleEvent const & e)
+{
+  m2::PointD pt1, pt2;
+  CalcScalePoints(e, pt1, pt2);
+
+  //GetLocationState()->ScaleStarted();
+  m_navigator.StartScale(pt1, pt2);
+  m_renderPolicy->StartScale();
+}
+
+void Engine::DoScale(ScaleEvent const & e)
+{
+  m2::PointD pt1, pt2;
+  CalcScalePoints(e, pt1, pt2);
+
+  m_navigator.DoScale(pt1, pt2);
+  m_renderPolicy->DoScale();
+  //if (m_navigator.IsRotatingDuringScale())
+  //  GetLocationState()->Rotated();
+}
+
+void Engine::StopScale(ScaleEvent const & e)
+{
+  m2::PointD pt1, pt2;
+  CalcScalePoints(e, pt1, pt2);
+
+  m_navigator.StopScale(pt1, pt2);
+  m_renderPolicy->StopScale();
+
+  //GetLocationState()->ScaleEnded();
+}
+
+void Engine::CalcScalePoints(ScaleEvent const & e, m2::PointD & pt1, m2::PointD & pt2) const
+{
+  pt1 = m_navigator.ShiftPoint(e.Pt1());
+  pt2 = m_navigator.ShiftPoint(e.Pt2());
+
+  //m_informationDisplay.locationState()->CorrectScalePoint(pt1, pt2);
+}
+
 void Engine::BeginPaint(shared_ptr<PaintEvent> const  & e)
 {
   m_renderPolicy->BeginFrame(e, m_navigator.Screen());
@@ -187,4 +411,22 @@ int Engine::GetHeight() const
   return m_navigator.Screen().PixelRect().SizeY();
 }
 
+void Engine::StartTouchTask(m2::PointD const & pt, unsigned ms)
+{
+  m_deferredTask.reset(new DeferredTask(bind(&Engine::OnProcessTouchTask, this, pt, ms),
+                                        milliseconds(ms)));
 }
+
+void Engine::KillTouchTask()
+{
+  m_deferredTask.reset();
+}
+
+void Engine::OnProcessTouchTask(m2::PointD const & pt, unsigned ms)
+{
+  m_wasLongClick = (ms == LONG_TOUCH_MS);
+  //GetPinClickManager().OnShowMark(m_work.GetUserMark(m2::PointD(x, y), m_wasLongClick));
+}
+
+}
+

@@ -19,7 +19,6 @@
 
 #include "Framework.h"
 
-#include "../../../render/anim/controller.hpp"
 #include "../Statistics/Statistics.h"
 
 #include "../../../map/dialog_settings.hpp"

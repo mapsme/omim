@@ -766,7 +766,25 @@ void Framework::Scale(double factor, m2::PointD const & pxPoint, bool isAnim)
 
 void Framework::TouchEvent(df::TouchEvent const & touch)
 {
-  CallDrapeFunction(bind(&df::DrapeEngine::AddTouchEvent, _1, touch));
+  if (IsDrapeEngineActive())
+    CallDrapeFunction(bind(&df::DrapeEngine::AddTouchEvent, _1, touch));
+  else if (IsRGEngineActive())
+  {
+    rg::Engine::ETouchMask mask = rg::Engine::MASK_EMPTY;
+    if (touch.m_touches[0].m_id != -1)
+      mask = rg::Engine::MASK_FIRST;
+    if (touch.m_touches[1].m_id != -1)
+    {
+      if (mask == rg::Engine::MASK_FIRST)
+        mask = rg::Engine::MASK_BOTH;
+      else
+        mask = rg::Engine::MASK_SECOND;
+    }
+
+    m2::PointD pt1 = touch.m_touches[0].m_location;
+    m2::PointD pt2 = touch.m_touches[1].m_location;
+    m_rgEngine->Touch(static_cast<rg::Engine::ETouchAction>(touch.m_type), mask, pt1, pt2);
+  }
 }
 
 int Framework::GetDrawScale() const
@@ -966,7 +984,7 @@ bool Framework::Search(search::SearchParams const & params)
 {
   if (params.m_query == ROUTING_SECRET_UNLOCKING_WORD)
   {
-    LOG(LINFO, ("Pedestrian routing mode enabled"));
+    LOG(LINFO, ("Perrian routing mode enabled"));
     SetRouter(RouterType::Pedestrian);
     return false;
   }
@@ -1283,6 +1301,8 @@ void Framework::CreateRGEngine(rg::Engine::Params && params)
   {
     m_currentModelView = screen;
   });
+
+  LoadState();
 }
 
 bool Framework::IsRGEngineActive() const
@@ -1295,6 +1315,7 @@ void Framework::DestoreRGEngine()
   if (!IsRGEngineActive())
     LOG(LWARNING, ("Attempt to destroy don't created engine"));
 
+  SaveState();
   m_rgEngine.reset();
 }
 

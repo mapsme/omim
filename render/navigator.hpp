@@ -43,17 +43,13 @@ public:
                     double pxWidth, double pxHeight,
                     m2::AnyRectD & glbRect) const;
 
-  void StartDrag(m2::PointD const & pt, double timeInSec);
-  void DoDrag(m2::PointD const & pt, double timeInSec);
-  void StopDrag(m2::PointD const & pt, double timeInSec, bool animate);
+  void StartDrag(m2::PointD const & pt);
+  void DoDrag(m2::PointD const & pt);
+  void StopDrag(m2::PointD const & pt);
 
-  void StartRotate(double Angle, double timeInSec);
-  void DoRotate(double Angle, double timeInSec);
-  void StopRotate(double Angle, double timeInSec);
-
-  void StartScale(m2::PointD const & pt1, m2::PointD const & pt2, double timeInSec);
-  void DoScale(m2::PointD const & pt1, m2::PointD const & pt2, double timeInSec);
-  void StopScale(m2::PointD const & pt1, m2::PointD const & pt2, double timeInSec);
+  void StartScale(m2::PointD const & pt1, m2::PointD const & pt2);
+  void DoScale(m2::PointD const & pt1, m2::PointD const & pt2);
+  void StopScale(m2::PointD const & pt1, m2::PointD const & pt2);
   bool IsRotatingDuringScale() const;
 
   void ScaleToPoint(m2::PointD const & pt, double factor, double timeInSec);
@@ -66,9 +62,6 @@ public:
   void SetOrg(m2::PointD const & org);
 
   void Move(double azDir, double factor);
-
-  // Returns true if another update is necessary, i.e. animation is not finished.
-  bool Update(double timeInSec);
 
   bool InAction() const;
 
@@ -106,12 +99,6 @@ private:
   m2::PointD m_StartPt2;
   // Second Last point for scaling.
   m2::PointD m_LastPt2;
-  // Start value of rotation angle
-  double m_StartAngle;
-  // Last update time.
-  double m_LastUpdateTimeInSec;
-  // Delta matrix which stores transformation between m_StartScreen and m_Screen.
-  math::Matrix<float, 3, 3> m_DeltaMatrix;
   // Flag, which indicates, whether we are in the middle of some action.
   bool m_InAction;
   // Should we check for threshold while scaling by two fingers.

@@ -302,43 +302,20 @@ ScreenBase const Navigator::ShrinkAndScaleInto(ScreenBase const & screen, m2::Re
   return res;
 }
 
-void Navigator::StartRotate(double a, double /*timeInSec*/)
-{
-  m_StartAngle = a;
-  m_StartScreen = m_Screen;
-  m_InAction = true;
-}
-
-void Navigator::DoRotate(double a, double /*timeInSec*/)
-{
-  ScreenBase tmp = m_StartScreen;
-  tmp.Rotate(a - m_StartAngle);
-  m_StartAngle = a;
-  m_Screen = tmp;
-  m_StartScreen = tmp;
-  CallListeners();
-}
-
-void Navigator::StopRotate(double a, double timeInSec)
-{
-  DoRotate(a, timeInSec);
-  m_InAction = false;
-}
-
 m2::PointD Navigator::ShiftPoint(m2::PointD const & pt) const
 {
   m2::RectD const & pxRect = m_Screen.PixelRect();
   return pt + m2::PointD(pxRect.minX(), pxRect.minY());
 }
 
-void Navigator::StartDrag(m2::PointD const & pt, double /*timeInSec*/)
+void Navigator::StartDrag(m2::PointD const & pt)
 {
   m_StartPt1 = m_LastPt1 = pt;
   m_StartScreen = m_Screen;
   m_InAction = true;
 }
 
-void Navigator::DoDrag(m2::PointD const & pt, double /*timeInSec*/)
+void Navigator::DoDrag(m2::PointD const & pt)
 {
   if (m_LastPt1 == pt)
     return;
@@ -371,9 +348,9 @@ void Navigator::DoDrag(m2::PointD const & pt, double /*timeInSec*/)
   }
 }
 
-void Navigator::StopDrag(m2::PointD const & pt, double timeInSec, bool /*animate*/)
+void Navigator::StopDrag(m2::PointD const & pt)
 {
-  DoDrag(pt, timeInSec);
+  DoDrag(pt);
   m_InAction = false;
 }
 
@@ -382,7 +359,7 @@ bool Navigator::InAction() const
   return m_InAction;
 }
 
-void Navigator::StartScale(m2::PointD const & pt1, m2::PointD const & pt2, double /*timeInSec*/)
+void Navigator::StartScale(m2::PointD const & pt1, m2::PointD const & pt2)
 {
   m_StartScreen = m_Screen;
   m_StartPt1 = m_LastPt1 = pt1;
@@ -577,7 +554,7 @@ void Navigator::CallListeners()
     l.second(screen);
 }
 
-void Navigator::DoScale(m2::PointD const & pt1, m2::PointD const & pt2, double /*timeInSec*/)
+void Navigator::DoScale(m2::PointD const & pt1, m2::PointD const & pt2)
 {
   if (m_LastPt1 == pt1 && m_LastPt2 == pt2)
     return;
@@ -628,9 +605,9 @@ void Navigator::DoScale(m2::PointD const & pt1, m2::PointD const & pt2, double /
   m_LastPt2 = pt2;
 }
 
-void Navigator::StopScale(m2::PointD const & pt1, m2::PointD const & pt2, double timeInSec)
+void Navigator::StopScale(m2::PointD const & pt1, m2::PointD const & pt2)
 {
-  DoScale(pt1, pt2, timeInSec);
+  DoScale(pt1, pt2);
 
   ASSERT_EQUAL(m_LastPt1, pt1, ());
   ASSERT_EQUAL(m_LastPt2, pt2, ());
@@ -681,12 +658,6 @@ void Navigator::Move(double azDir, double factor)
   m2::RectD const r = m_Screen.ClipRect();
   m_Screen.MoveG(m2::PointD(r.SizeX() * factor * cos(azDir), r.SizeY() * factor * sin(azDir)));
   CallListeners();
-}
-
-bool Navigator::Update(double timeInSec)
-{
-  m_LastUpdateTimeInSec = timeInSec;
-  return false;
 }
 
 int Navigator::GetDrawScale() const
