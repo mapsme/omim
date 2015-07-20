@@ -47,6 +47,10 @@ struct LineViewParams : CommonViewParams
   dp::LineJoin m_join;
   buffer_vector<uint8_t, 8> m_pattern;
   float m_baseGtoPScale;
+  dp::Color m_colorInner;
+  float m_widthInner;
+  float m_depthInner;
+  bool m_capOutline;
 };
 
 struct TextViewParams : CommonViewParams

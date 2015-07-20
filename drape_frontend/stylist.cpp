@@ -316,6 +316,11 @@ void Stylist::RaisePointStyleFlag()
   m_state |= PointStyleFlag;
 }
 
+size_t Stylist::GetRulesCount() const
+{
+  return m_rules.size();
+}
+
 CaptionDescription & Stylist::GetCaptionDescriptionImpl()
 {
   return m_captionDescriptor;

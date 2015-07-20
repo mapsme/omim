@@ -1,6 +1,7 @@
 #pragma once
 
 #include "drape_frontend/stylist.hpp"
+#include "drape_frontend/shape_view_params.hpp"
 #include "drape_frontend/tile_key.hpp"
 
 #include "drape/pointers.hpp"
@@ -9,6 +10,8 @@
 
 #include "geometry/point2d.hpp"
 #include "geometry/spline.hpp"
+
+#include "std/vector.hpp"
 
 class CircleRuleProto;
 class SymbolRuleProto;
@@ -84,7 +87,7 @@ class ApplyLineFeature : public BaseApplyFeature
   typedef BaseApplyFeature TBase;
 public:
   ApplyLineFeature(TInsertShapeFn const & insertShape, FeatureID const & id,
-                   CaptionDescription const & captions,
+                   CaptionDescription const & captions, size_t rulesCount,
                    double currentScaleGtoP, bool simplify, size_t pointsCount);
 
   void operator() (m2::PointD const & point);
@@ -99,6 +102,8 @@ private:
   m2::PointD m_lastAddedPoint;
   bool m_simplify;
   size_t m_initialPointsCount;
+
+  vector<pair<bool, LineViewParams>> m_lines;
 
 #ifdef CALC_FILTERED_POINTS
   int m_readedCount;

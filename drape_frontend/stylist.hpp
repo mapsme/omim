@@ -62,6 +62,8 @@ public:
 
   bool IsEmpty() const;
 
+  size_t GetRulesCount() const;
+
 private:
   friend bool InitStylist(FeatureType const &,
                           int const,

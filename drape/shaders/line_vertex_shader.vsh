@@ -1,13 +1,12 @@
-in vec3 a_position;
-in vec3 a_normal;
-in vec2 a_colorTexCoord;
+in vec4 a_position;
+in vec4 a_normal;
+in vec4 a_colorTexCoord;
 
 uniform mat4 modelView;
 uniform mat4 projection;
 
-out vec2 v_colorTexCoord;
-out vec2 v_maskTexCoord;
-out vec2 v_halfLength;
+out vec4 v_colorTexCoord;
+out vec4 v_halfLength;
 
 void main(void)
 {
@@ -21,7 +20,9 @@ void main(void)
     transformedAxisPos = transformedAxisPos + normalize(shiftPos - transformedAxisPos) * halfWidth;
   }
 
+  vec2 depth = (vec4(0.0, 0.0, a_position.w, 1.0) * projection).zw;
+  float innerDepth = 0.5 * depth.x / depth.y + 0.5;
   v_colorTexCoord = a_colorTexCoord;
-  v_halfLength = vec2(sign(a_normal.z) * halfWidth, abs(a_normal.z));
+  v_halfLength = vec4(sign(a_normal.z) * halfWidth, abs(a_normal.z), a_normal.w, innerDepth);
   gl_Position = vec4(transformedAxisPos, a_position.z, 1.0) * projection;
 }

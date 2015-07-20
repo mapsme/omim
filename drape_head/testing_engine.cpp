@@ -293,6 +293,10 @@ private:
     params.m_join = ParseJoin(json_object_get(object, "join"));
     params.m_cap = ParseCap(json_object_get(object, "cap"));
     params.m_baseGtoPScale = 1.0;
+    params.m_widthInner = params.m_width;
+    params.m_colorInner = params.m_color;
+    params.m_depthInner = params.m_depth;
+    params.m_capOutline = true;
 
     vector<m2::PointD> points;
     ParseGeometry(json_object_get(object, "geometry"), points);
@@ -463,6 +467,10 @@ void TestingEngine::DrawImpl()
   lvp.m_color = dp::Color::Red();
   lvp.m_width = 16.0f;
   lvp.m_join = dp::BevelJoin;
+  lvp.m_widthInner = lvp.m_width;
+  lvp.m_colorInner = lvp.m_color;
+  lvp.m_depthInner = lvp.m_depth;
+  lvp.m_capOutline = true;
   LineShape(spline, lvp).Draw(make_ref(m_batcher), make_ref(m_textures));
 
   {
@@ -491,9 +499,11 @@ void TestingEngine::DrawImpl()
     m2::SharedSpline spl1(path1);
 
     lvp.m_pattern = dp::TextureManager::TStipplePattern{8, 8};
-    lvp.m_join = dp::RoundJoin;
+    lvp.m_join = dp::BevelJoin;
     lvp.m_cap = dp::RoundCap;
     lvp.m_color = dp::Color::Black();
+    lvp.m_widthInner = lvp.m_width;
+    lvp.m_depthInner = lvp.m_depth;
     LineShape(spl1, lvp).Draw(make_ref(m_batcher), make_ref(m_textures));
   }
 
@@ -518,6 +528,8 @@ void TestingEngine::DrawImpl()
     lvpl.m_pattern.clear();
     lvpl.m_depth = -10.0f;
     lvpl.m_width = 2.0f;
+    lvpl.m_widthInner = lvpl.m_width;
+    lvpl.m_depthInner = lvpl.m_depth;
     LineShape(spl, lvpl).Draw(make_ref(m_batcher), make_ref(m_textures));
 
     DummyMutableLabel tt(m2::PointF(120.0f, 30.0f), "200 km");
@@ -537,6 +549,8 @@ void TestingEngine::DrawImpl()
       lvpl.m_pattern.clear();
       lvpl.m_depth = -10.0f;
       lvpl.m_width = 2.0f;
+      lvpl.m_widthInner = lvpl.m_width;
+      lvpl.m_depthInner = lvpl.m_depth;
       LineShape(spl, lvpl).Draw(make_ref(m_batcher), make_ref(m_textures));
     }
 
@@ -561,6 +575,10 @@ void TestingEngine::DrawRects()
   lvp.m_join = dp::RoundJoin;
   lvp.m_color = dp::Color::Red();
   lvp.m_width = 3.0f;
+  lvp.m_widthInner = lvp.m_width;
+  lvp.m_colorInner = lvp.m_color;
+  lvp.m_depthInner = lvp.m_depth;
+  lvp.m_capOutline = true;
 
   auto drawRectFn = [&lvp, this](m2::RectD const & r)
   {

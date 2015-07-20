@@ -61,7 +61,9 @@ typedef buffer_vector<TextDynamicVertex, 128> TTextDynamicVertexBuffer;
 
 struct LineVertex : BaseVertex
 {
-  using TNormal = glsl::vec3;
+  using TPosition = glsl::vec4;
+  using TNormal = glsl::vec4;
+  using TTexCoord = glsl::vec4;
 
   LineVertex();
   LineVertex(TPosition const & position, TNormal const & normal, TTexCoord const & color);

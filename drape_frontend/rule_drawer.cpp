@@ -69,7 +69,7 @@ void RuleDrawer::operator()(FeatureType const & f)
   }
   else if (s.LineStyleExists())
   {
-    ApplyLineFeature apply(insertShape, f.GetID(), s.GetCaptionDescription(), m_currentScaleGtoP,
+    ApplyLineFeature apply(insertShape, f.GetID(), s.GetCaptionDescription(), s.GetRulesCount(), m_currentScaleGtoP,
                            zoomLevel >= SIMPLIFY_BOTTOM && zoomLevel <= SIMPLIFY_TOP, f.GetPointsCount());
     f.ForEachPointRef(apply, zoomLevel);
 

@@ -1,5 +1,4 @@
 #include "drape_frontend/apply_feature_functors.hpp"
-#include "drape_frontend/shape_view_params.hpp"
 #include "drape_frontend/visual_params.hpp"
 
 #include "drape_frontend/area_shape.hpp"
@@ -104,7 +103,9 @@ void Extract(::LineDefProto const * lineRule,
 {
   float const scale = df::VisualParams::Instance().GetVisualScale();
   params.m_color = ToDrapeColor(lineRule->color());
+  params.m_colorInner = params.m_color;
   params.m_width = max(lineRule->width() * scale, 1.0);
+  params.m_widthInner = params.m_width;
 
   if (lineRule->has_dashdot())
   {
@@ -182,6 +183,15 @@ m2::PointF GetOffset(CaptionDefProto const * capRule)
 
   return result;
 }
+
+class DepthComparator
+{
+public:
+  bool operator()(pair<bool, LineViewParams> const & l, pair<bool, LineViewParams> const & r)
+  {
+     return l.second.m_depth < r.second.m_depth;
+  }
+};
 
 } // namespace
 
@@ -336,7 +346,7 @@ void ApplyAreaFeature::ProcessRule(Stylist::TRuleWrapper const & rule)
 // ============================================= //
 
 ApplyLineFeature::ApplyLineFeature(TInsertShapeFn const & insertShape, FeatureID const & id,
-                                   CaptionDescription const & captions,
+                                   CaptionDescription const & captions, size_t rulesCount,
                                    double currentScaleGtoP, bool simplify, size_t pointsCount)
   : TBase(insertShape, id, captions)
   , m_currentScaleGtoP(currentScaleGtoP)
@@ -347,6 +357,7 @@ ApplyLineFeature::ApplyLineFeature(TInsertShapeFn const & insertShape, FeatureID
   , m_readedCount(0)
 #endif
 {
+  m_lines.reserve(rulesCount);
 }
 
 void ApplyLineFeature::operator() (m2::PointD const & point)
@@ -433,8 +444,13 @@ void ApplyLineFeature::ProcessRule(Stylist::TRuleWrapper const & rule)
       LineViewParams params;
       Extract(pLineRule, params);
       params.m_depth = depth;
+      params.m_depthInner = params.m_depth;
       params.m_baseGtoPScale = m_currentScaleGtoP;
-      m_insertShape(make_unique_dp<LineShape>(m_spline, params));
+      params.m_capOutline = true;
+      if (!params.m_pattern.empty())
+        m_insertShape(make_unique_dp<LineShape>(m_spline, params));
+      else
+        m_lines.push_back(make_pair(true, params));
     }
   }
 }
@@ -444,6 +460,39 @@ void ApplyLineFeature::Finish()
 #ifdef CALC_FILTERED_POINTS
   LinesStat::Get().InsertLine(m_id, m_currentScaleGtoP, m_readedCount, m_spline->GetSize());
 #endif
+
+  if (m_lines.size() > 1)
+  {
+    DepthComparator comparator;
+    sort(m_lines.begin(), m_lines.end(), comparator);
+
+    for (size_t i = 0; i < m_lines.size(); i += 2)
+    {
+      if (i >= m_lines.size() - 1)
+        break;
+
+      // skip line which is completely under another
+      if (m_lines[i + 1].second.m_width > m_lines[i].second.m_width)
+      {
+        m_lines[i].first = false;
+        continue;
+      }
+
+      // merge two lines into one with border
+      m_lines[i].second.m_capOutline = (m_lines[i].second.m_cap == m_lines[i + 1].second.m_cap);
+      m_lines[i].second.m_cap = m_lines[i + 1].second.m_cap;
+      m_lines[i].second.m_join = m_lines[i + 1].second.m_join;
+      m_lines[i].second.m_widthInner = m_lines[i + 1].second.m_width;
+      m_lines[i].second.m_depthInner = m_lines[i + 1].second.m_depth;
+      m_lines[i].second.m_colorInner = m_lines[i + 1].second.m_color;
+      m_lines[i + 1].first = false;
+      ASSERT(m_lines[i].second.m_widthInner <= m_lines[i].second.m_width, ());
+    }
+  }
+
+  for (size_t i = 0; i < m_lines.size(); i++)
+    if (m_lines[i].first)
+      m_insertShape(make_unique_dp<LineShape>(m_spline, m_lines[i].second));
 
   string const & roadNumber = m_captions.GetRoadNumber();
   if (roadNumber.empty())

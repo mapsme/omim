@@ -182,6 +182,10 @@ void CacheUserLines(UserMarksProvider const * provider,
       params.m_color = line->GetColor(layerIndex);
       params.m_depth = line->GetLayerDepth(layerIndex);
       params.m_width = line->GetWidth(layerIndex);
+      params.m_widthInner = params.m_width;
+      params.m_colorInner = params.m_color;
+      params.m_depthInner = params.m_depth;
+      params.m_capOutline = true;
 
       LineShape(spline, params).Draw(batcher, textures);
     }

@@ -193,9 +193,9 @@ uint32_t TextDynamicVertex::GetDynamicStreamID()
 }
 
 LineVertex::LineVertex()
-  : m_position(0.0, 0.0, 0.0)
-  , m_normal(0.0, 0.0, 0.0)
-  , m_colorTexCoord(0.0, 0.0)
+  : m_position(0.0, 0.0, 0.0, 0.0)
+  , m_normal(0.0, 0.0, 0.0, 0.0)
+  , m_colorTexCoord(0.0, 0.0, 0.0, 0.0)
 {
 }
 

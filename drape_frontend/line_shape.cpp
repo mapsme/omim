@@ -122,15 +122,25 @@ protected:
 class SolidLineBuilder : public BaseLineBuilder<gpu::LineVertex>
 {
   using TBase = BaseLineBuilder<gpu::LineVertex>;
+  using TPosition = gpu::LineVertex::TPosition;
   using TNormal = gpu::LineVertex::TNormal;
+  using TTexCoord = gpu::LineVertex::TTexCoord;
 
 public:
-  SolidLineBuilder(dp::TextureManager::ColorRegion const & color, float const  pxHalfWidth)
+  SolidLineBuilder(dp::TextureManager::ColorRegion const & color,
+                   dp::TextureManager::ColorRegion const & colorInner,
+                   float const pxHalfWidth, float const pxHalfWidthInner,
+                   float const depthInner, bool capOutline)
     : TBase(color, pxHalfWidth)
+    , m_pxHalfWidthInner(pxHalfWidthInner)
+    , m_colorCoordInner(glsl::ToVec2(colorInner.GetTexRect().Center()))
+    , m_depthInner(depthInner)
+    , m_capOutline(capOutline)
   {
+    ASSERT(pxHalfWidthInner <= pxHalfWidth, ());
   }
 
-  dp::GLState GetState()
+  dp::GLState GetState() const
   {
     dp::GLState state(gpu::LINE_PROGRAM, dp::GLState::GeometryLayer);
     state.SetColorTexture(m_color.GetTexture());
@@ -143,25 +153,54 @@ public:
     UNUSED_VALUE(segment);
     UNUSED_VALUE(offsetFromStart);
 
-    m_geometry.emplace_back(V(pivot, TNormal(m_pxHalfWidth * normal, m_pxHalfWidth * GetSide(isLeft)), m_colorCoord));
+    float const side = GetSide(isLeft);
+    m_geometry.emplace_back(V(TPosition(pivot, m_depthInner),
+                              TNormal(m_pxHalfWidth * normal, m_pxHalfWidth * side, m_pxHalfWidthInner),
+                              TTexCoord(m_colorCoord, m_colorCoordInner)));
   }
 
   void SubmitJoin(glsl::vec3 const & pivot, vector<glsl::vec2> const & normals)
+  {
+    SubmitGeometry(pivot, normals, m_depthInner, m_pxHalfWidthInner, m_colorCoordInner);
+  }
+
+  void SubmitCap(glsl::vec3 const & pivot, vector<glsl::vec2> const & normals)
+  {
+    if (m_capOutline)
+      SubmitGeometry(pivot, normals, m_depthInner, m_pxHalfWidthInner, m_colorCoordInner);
+    else
+      SubmitGeometry(pivot, normals, m_depthInner, m_pxHalfWidth, m_colorCoordInner);
+  }
+
+  float GetSide(bool isLeft) const
+  {
+    return isLeft ? 1.0 : -1.0;
+  }
+
+private:
+  void SubmitGeometry(glsl::vec3 const & pivot, vector<glsl::vec2> const & normals,
+                      float depthInner, float pxHalfWidthInner, glsl::vec2 const & colorCoordInner)
   {
     size_t const trianglesCount = normals.size() / 3;
     for (int j = 0; j < trianglesCount; j++)
     {
       size_t baseIndex = 3 * j;
-      m_joinGeom.push_back(V(pivot, TNormal(normals[baseIndex + 0], m_pxHalfWidth), m_colorCoord));
-      m_joinGeom.push_back(V(pivot, TNormal(normals[baseIndex + 1], m_pxHalfWidth), m_colorCoord));
-      m_joinGeom.push_back(V(pivot, TNormal(normals[baseIndex + 2], m_pxHalfWidth), m_colorCoord));
+      m_joinGeom.push_back(V(TPosition(pivot, depthInner),
+                             TNormal(normals[baseIndex + 0], m_pxHalfWidth, pxHalfWidthInner),
+                             TTexCoord(m_colorCoord, colorCoordInner)));
+      m_joinGeom.push_back(V(TPosition(pivot, depthInner),
+                             TNormal(normals[baseIndex + 1], m_pxHalfWidth, pxHalfWidthInner),
+                             TTexCoord(m_colorCoord, colorCoordInner)));
+      m_joinGeom.push_back(V(TPosition(pivot, depthInner),
+                             TNormal(normals[baseIndex + 2], m_pxHalfWidth, pxHalfWidthInner),
+                             TTexCoord(m_colorCoord, colorCoordInner)));
     }
   }
 
-  float GetSide(bool isLeft)
-  {
-    return isLeft ? 1.0 : -1.0;
-  }
+  float m_pxHalfWidthInner;
+  glsl::vec2 const m_colorCoordInner;
+  float m_depthInner;
+  bool m_capOutline;
 };
 
 class DashedLineBuilder : public BaseLineBuilder<gpu::DashedLineVertex>
@@ -215,6 +254,11 @@ public:
       m_joinGeom.push_back(V(pivot, normals[baseIndex + 1], m_colorCoord, texCoord));
       m_joinGeom.push_back(V(pivot, normals[baseIndex + 2], m_colorCoord, texCoord));
     }
+  }
+
+  void SubmitCap(glsl::vec3 const & pivot, vector<glsl::vec2> const & normals)
+  {
+    SubmitJoin(pivot, normals);
   }
 
 private:
@@ -318,7 +362,7 @@ void LineShape::Draw(TBuilder & builder, ref_ptr<dp::Batcher> batcher) const
                        -segment.m_tangent,
                        halfWidth, true /* isStart */, normals);
 
-    builder.SubmitJoin(glsl::vec3(segment.m_points[StartPoint], m_params.m_depth), normals);
+    builder.SubmitCap(glsl::vec3(segment.m_points[StartPoint], m_params.m_depth), normals);
     normals.clear();
   }
 
@@ -331,7 +375,7 @@ void LineShape::Draw(TBuilder & builder, ref_ptr<dp::Batcher> batcher) const
                        segment.m_tangent,
                        halfWidth, false /* isStart */, normals);
 
-    builder.SubmitJoin(glsl::vec3(segment.m_points[EndPoint], m_params.m_depth), normals);
+    builder.SubmitCap(glsl::vec3(segment.m_points[EndPoint], m_params.m_depth), normals);
   }
 
   dp::GLState state = builder.GetState();
@@ -353,11 +397,17 @@ void LineShape::Draw(ref_ptr<dp::Batcher> batcher, ref_ptr<dp::TextureManager> t
 {
   dp::TextureManager::ColorRegion colorRegion;
   textures->GetColorRegion(m_params.m_color, colorRegion);
+
+  dp::TextureManager::ColorRegion colorRegionInner;
+  textures->GetColorRegion(m_params.m_colorInner, colorRegionInner);
+
   float const pxHalfWidth = m_params.m_width / 2.0f;
+  float const pxHalfWidthInner = m_params.m_widthInner / 2.0f;
 
   if (m_params.m_pattern.empty())
   {
-    SolidLineBuilder builder(colorRegion, pxHalfWidth);
+    SolidLineBuilder builder(colorRegion, colorRegionInner, pxHalfWidth,
+                             pxHalfWidthInner, m_params.m_depthInner, m_params.m_capOutline);
     Draw(builder, batcher);
   }
   else
