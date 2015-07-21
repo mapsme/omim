@@ -7,15 +7,25 @@ uniform sampler2D u_colorTex;
 uniform float u_opacity;
 
 const float aaPixelsCount = 2.0;
+const float outlineBorderSize = 1.0;
 
 void main(void)
 {
   vec4 color;
   float currentW = abs(v_halfLength.x);
-  if (currentW <= v_halfLength.z)
+  float w = currentW - v_halfLength.z;
+  if (w <= 0.0)
   {
 	color = texture(u_colorTex, v_colorTexCoord.zw);
 	gl_FragDepth = v_halfLength.w;
+  }
+  else if (w <= outlineBorderSize)
+  {
+	vec4 lineColor = texture(u_colorTex, v_colorTexCoord.zw);
+	vec4 outlineColor = texture(u_colorTex, v_colorTexCoord.xy);
+	float k = smoothstep(0.0, 1.0, clamp(w / outlineBorderSize, 0.0, 1.0));
+	color = mix(lineColor, outlineColor, k);
+	gl_FragDepth = gl_FragCoord.z;
   }
   else
   {

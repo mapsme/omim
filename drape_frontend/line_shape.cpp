@@ -161,15 +161,15 @@ public:
 
   void SubmitJoin(glsl::vec3 const & pivot, vector<glsl::vec2> const & normals)
   {
-    SubmitGeometry(pivot, normals, m_depthInner, m_pxHalfWidthInner, m_colorCoordInner);
+    SubmitGeometry(pivot, normals, m_pxHalfWidthInner, m_colorCoord, m_colorCoordInner);
   }
 
   void SubmitCap(glsl::vec3 const & pivot, vector<glsl::vec2> const & normals)
   {
     if (m_capOutline)
-      SubmitGeometry(pivot, normals, m_depthInner, m_pxHalfWidthInner, m_colorCoordInner);
+      SubmitGeometry(pivot, normals, m_pxHalfWidthInner, m_colorCoord, m_colorCoordInner);
     else
-      SubmitGeometry(pivot, normals, m_depthInner, m_pxHalfWidth, m_colorCoordInner);
+      SubmitGeometry(pivot, normals, m_pxHalfWidth, m_colorCoordInner, m_colorCoordInner);
   }
 
   float GetSide(bool isLeft) const
@@ -178,22 +178,22 @@ public:
   }
 
 private:
-  void SubmitGeometry(glsl::vec3 const & pivot, vector<glsl::vec2> const & normals,
-                      float depthInner, float pxHalfWidthInner, glsl::vec2 const & colorCoordInner)
+  void SubmitGeometry(glsl::vec3 const & pivot, vector<glsl::vec2> const & normals, float pxHalfWidthInner,
+                      glsl::vec2 const & colorCoord, glsl::vec2 const & colorCoordInner)
   {
     size_t const trianglesCount = normals.size() / 3;
     for (int j = 0; j < trianglesCount; j++)
     {
       size_t baseIndex = 3 * j;
-      m_joinGeom.push_back(V(TPosition(pivot, depthInner),
+      m_joinGeom.push_back(V(TPosition(pivot, m_depthInner),
                              TNormal(normals[baseIndex + 0], m_pxHalfWidth, pxHalfWidthInner),
-                             TTexCoord(m_colorCoord, colorCoordInner)));
-      m_joinGeom.push_back(V(TPosition(pivot, depthInner),
+                             TTexCoord(colorCoord, colorCoordInner)));
+      m_joinGeom.push_back(V(TPosition(pivot, m_depthInner),
                              TNormal(normals[baseIndex + 1], m_pxHalfWidth, pxHalfWidthInner),
-                             TTexCoord(m_colorCoord, colorCoordInner)));
-      m_joinGeom.push_back(V(TPosition(pivot, depthInner),
+                             TTexCoord(colorCoord, colorCoordInner)));
+      m_joinGeom.push_back(V(TPosition(pivot, m_depthInner),
                              TNormal(normals[baseIndex + 2], m_pxHalfWidth, pxHalfWidthInner),
-                             TTexCoord(m_colorCoord, colorCoordInner)));
+                             TTexCoord(colorCoord, colorCoordInner)));
     }
   }
 

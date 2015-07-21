@@ -466,7 +466,7 @@ void ApplyLineFeature::Finish()
     DepthComparator comparator;
     sort(m_lines.begin(), m_lines.end(), comparator);
 
-    for (size_t i = 0; i < m_lines.size(); i += 2)
+    for (size_t i = 0; i < m_lines.size();)
     {
       if (i >= m_lines.size() - 1)
         break;
@@ -475,6 +475,7 @@ void ApplyLineFeature::Finish()
       if (m_lines[i + 1].second.m_width > m_lines[i].second.m_width)
       {
         m_lines[i].first = false;
+        i++;
         continue;
       }
 
@@ -487,6 +488,7 @@ void ApplyLineFeature::Finish()
       m_lines[i].second.m_colorInner = m_lines[i + 1].second.m_color;
       m_lines[i + 1].first = false;
       ASSERT(m_lines[i].second.m_widthInner <= m_lines[i].second.m_width, ());
+      i += 2;
     }
   }
 
