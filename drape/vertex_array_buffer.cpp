@@ -216,22 +216,28 @@ void VertexArrayBuffer::ApplyMutation(ref_ptr<IndexBufferMutator> indexMutator,
     ref_ptr<DataBuffer> buffer = GetDynamicBuffer(it->first);
     ASSERT(buffer != nullptr, ());
     TMutateNodes const & nodes = it->second;
-    if (nodes.size() == 1)
+    ASSERT(!nodes.empty(), ());
+
+    uint32_t startOffset = buffer->GetBuffer()->GetCurrentSize();
+    uint32_t endOffset = 0;
+    for (size_t i = 0; i < nodes.size(); ++i)
     {
-      MutateNode const & node = nodes[0];
-      DataBufferMapper mapper(buffer, node.m_region.m_offset, node.m_region.m_count);
-      mapper.UpdateData(node.m_data.get(), 0, node.m_region.m_count);
+      MutateNode const & node = nodes[i];
+      if (node.m_region.m_offset < startOffset)
+        startOffset = node.m_region.m_offset;
+
+      uint32_t const offset = node.m_region.m_offset + node.m_region.m_count;
+      if (offset > endOffset)
+        endOffset = offset;
     }
-    else
+    ASSERT_LESS(startOffset, endOffset, ());
+
+    DataBufferMapper mapper(buffer, startOffset, endOffset - startOffset);
+    for (size_t i = 0; i < nodes.size(); ++i)
     {
-      //TODO calculate optimal mapping size
-      DataBufferMapper mapper(buffer, 0, buffer->GetBuffer()->GetCurrentSize());
-      for (size_t i = 0; i < nodes.size(); ++i)
-      {
-        MutateNode const & node = nodes[i];
-        ASSERT_GREATER(node.m_region.m_count, 0, ());
-        mapper.UpdateData(node.m_data.get(), node.m_region.m_offset, node.m_region.m_count);
-      }
+      MutateNode const & node = nodes[i];
+      ASSERT_GREATER(node.m_region.m_count, 0, ());
+      mapper.UpdateData(node.m_data.get(), node.m_region.m_offset - startOffset, node.m_region.m_count);
     }
   }
 }
