@@ -29,7 +29,6 @@ Texture::Texture()
   , m_format(dp::UNSPECIFIED)
   , m_pixelBufferID(-1)
   , m_pixelBufferSize(0)
-  , m_pixelBufferElementSize(0)
 {
 }
 
@@ -59,26 +58,20 @@ void Texture::Create(uint32_t width, uint32_t height, TextureFormat format, ref_
 
   glConst layout;
   glConst pixelType;
-  UnpackFormat(format, layout, pixelType);
+  uint32_t channelCount;
+  UnpackFormat(format, layout, pixelType, channelCount);
 
   GLFunctions::glTexImage2D(m_width, m_height, layout, pixelType, data.get());
   SetFilterParams(gl_const::GLLinear, gl_const::GLLinear);
   SetWrapMode(gl_const::GLClampToEdge, gl_const::GLClampToEdge);
 
-  uint32_t channelCount = 4;
-  if (layout == gl_const::GLRed)
-    channelCount = 1;
-  else if (layout == gl_const::GLRGB)
-    channelCount = 3;
-
   if (m_usePixelBuffer)
   {
     float const pboPercent = 0.1f;
     m_pixelBufferSize = static_cast<uint32_t>(pboPercent * m_width * m_height * channelCount);
-    m_pixelBufferElementSize = channelCount;
     m_pixelBufferID = GLFunctions::glGenBuffer();
     GLFunctions::glBindBuffer(m_pixelBufferID, gl_const::GLPixelBufferWrite);
-    GLFunctions::glBufferData(gl_const::GLPixelBufferWrite, m_pixelBufferSize, data.get(), gl_const::GLDynamicDraw);
+    GLFunctions::glBufferData(gl_const::GLPixelBufferWrite, m_pixelBufferSize, nullptr, gl_const::GLDynamicDraw);
     GLFunctions::glBindBuffer(0, gl_const::GLPixelBufferWrite);
   }
 
@@ -143,10 +136,11 @@ void Texture::UploadData(uint32_t x, uint32_t y, uint32_t width, uint32_t height
   ASSERT(format == m_format, ());
   glConst layout;
   glConst pixelType;
+  uint32_t channelCount;
 
-  UnpackFormat(format, layout, pixelType);
+  UnpackFormat(format, layout, pixelType, channelCount);
 
-  uint32_t const mappingSize = height * width * m_pixelBufferElementSize;
+  uint32_t const mappingSize = height * width * channelCount;
   if (m_usePixelBuffer && m_pixelBufferSize >= mappingSize)
   {
     GLFunctions::glBindBuffer(m_pixelBufferID, gl_const::GLPixelBufferWrite);
@@ -200,21 +194,24 @@ uint32_t Texture::GetMaxTextureSize()
   return GLFunctions::glGetInteger(gl_const::GLMaxTextureSize);
 }
 
-void Texture::UnpackFormat(TextureFormat format, glConst & layout, glConst & pixelType)
+void Texture::UnpackFormat(TextureFormat format, glConst & layout, glConst & pixelType, uint32_t & channelsCount)
 {
   switch (format)
   {
   case RGBA8:
     layout = gl_const::GLRGBA;
     pixelType = gl_const::GL8BitOnChannel;
+    channelsCount = 4;
     break;
   case RGBA4:
     layout = gl_const::GLRGBA;
     pixelType = gl_const::GL4BitOnChannel;
+    channelsCount = 4;
     break;
   case RED:
     layout = gl_const::GLRed;
     pixelType = gl_const::GL8BitOnChannel;
+    channelsCount = 1;
     break;
   default:
     ASSERT(false, ());

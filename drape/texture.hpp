@@ -77,7 +77,7 @@ protected:
   bool m_usePixelBuffer;
 
 private:
-  void UnpackFormat(TextureFormat format, glConst & layout, glConst & pixelType);
+  void UnpackFormat(TextureFormat format, glConst & layout, glConst & pixelType, uint32_t & channelsCount);
   int32_t GetID() const;
 
   int32_t m_textureID;
@@ -87,7 +87,6 @@ private:
 
   int32_t m_pixelBufferID;
   uint32_t m_pixelBufferSize;
-  uint32_t m_pixelBufferElementSize;
 };
 
 } // namespace dp
