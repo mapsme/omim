@@ -36,6 +36,8 @@ SOURCES += \
     proto_to_styles.cpp \
     queued_renderer.cpp \
     render_policy.cpp \
+    route_renderer.cpp \
+    route_shape.cpp \
     scales_processor.cpp \
     simple_render_policy.cpp \
     software_renderer.cpp \
@@ -66,7 +68,6 @@ HEADERS += \
     anim/value_interpolation.hpp \
     area_info.hpp \
     basic_tiling_render_policy.hpp \
-    country_status_display.hpp \
     coverage_generator.hpp \
     cpu_drawer.hpp \
     drawer.hpp \
@@ -78,8 +79,6 @@ HEADERS += \
     frame_image.hpp \
     geometry_processors.hpp \
     gpu_drawer.hpp \
-    information_display.hpp \
-    location_state.hpp \
     navigator.hpp \
     navigator_utils.hpp \
     path_info.hpp \
@@ -88,6 +87,8 @@ HEADERS += \
     queued_renderer.hpp \
     rect.h \
     render_policy.hpp \
+    route_renderer.hpp \
+    route_shape.hpp \
     scales_processor.hpp \
     simple_render_policy.hpp \
     software_renderer.hpp \
@@ -101,10 +102,3 @@ HEADERS += \
     tiling_render_policy_st.hpp \
     window_handle.hpp \
     yopme_render_policy.hpp \
-    alfa_animation_task.hpp \
-    compass_arrow.hpp \
-    ruler.hpp \
-    animator.hpp \
-    move_screen_task.hpp \
-    rotate_screen_task.hpp \
-    active_maps_bridge.hpp

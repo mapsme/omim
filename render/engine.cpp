@@ -41,6 +41,7 @@ Engine::Engine(Params && params)
 
   Resize(params.m_rpParams.m_screenWidth, params.m_rpParams.m_screenHeight);
 
+  m_routeRenderer.reset(new RouteRenderer());
 }
 
 Engine::~Engine()
@@ -52,6 +53,7 @@ Engine::~Engine()
     m_informationDisplay.reset();
   }
 
+  m_routeRenderer.reset();
   m_renderPolicy.reset();
 }
 
@@ -427,6 +429,7 @@ void Engine::BeginPaint(shared_ptr<PaintEvent> const  & e)
 void Engine::DoPaint(shared_ptr<PaintEvent> const & e)
 {
   m_renderPolicy->DrawFrame(e, m_navigator.Screen());
+  m_routeRenderer->Render(e, m_navigator.Screen());
 
   // Don't render additional elements if guiController wasn't initialized.
   if (m_guiController)
@@ -531,6 +534,24 @@ void Engine::OnProcessTouchTask(m2::PointD const & pt, unsigned ms)
 {
   m_wasLongClick = (ms == LONG_TOUCH_MS);
   //GetPinClickManager().OnShowMark(m_work.GetUserMark(m2::PointD(x, y), m_wasLongClick));
+}
+
+bool Engine::GetMyPosition(m2::PointD & myPosition)
+{
+  //TODO: implement my position
+  myPosition = m2::PointD(37.538384385965237, 67.536755563112848);
+  return true;
+}
+
+void Engine::AddRoute(m2::PolylineD const & routePolyline, vector<double> const & turns, graphics::Color const & color)
+{
+  m_routeRenderer->Setup(routePolyline, turns, color);
+  m_renderPolicy->SetNeedRedraw(true);
+}
+
+void Engine::RemoveRoute(bool deactivateFollowing)
+{
+  m_routeRenderer->Clear();
 }
 
 }

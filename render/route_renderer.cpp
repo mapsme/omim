@@ -1,14 +1,16 @@
-#include "drape_frontend/route_renderer.hpp"
+#include "render/route_renderer.hpp"
+#include "render/route_shape.hpp"
+#include "render/gpu_drawer.hpp"
 
-#include "drape/glsl_func.hpp"
-#include "drape/shader_def.hpp"
-#include "drape/utils/projection.hpp"
+#include "graphics/geometry_pipeline.hpp"
+#include "graphics/resource.hpp"
+#include "graphics/opengl/texture.hpp"
 
 #include "indexer/scales.hpp"
 
 #include "base/logging.hpp"
 
-namespace df
+namespace rg
 {
 
 namespace
@@ -19,7 +21,7 @@ float const halfWidthInPixel[] =
   // 1   2     3     4     5     6     7     8     9     10
   1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, 2.0f, 2.0f, 2.0f,
   //11   12    13    14    15     16    17      18     19
-  2.0f, 2.5f, 3.5f, 5.0f, 7.5f, 10.0f, 14.0f, 18.0f, 36.0f,
+  2.0f, 2.5f, 3.5f, 5.0f, 7.5f, 10.0f, 14.0f, 18.0f, 40.0f,
 };
 
 enum SegmentStatus
@@ -77,6 +79,14 @@ int FindNearestAvailableSegment(double start, double end, vector<RouteSegment> c
 
 void MergeAndClipBorders(vector<ArrowBorders> & borders)
 {
+  auto invalidBorders = [](ArrowBorders const & borders)
+  {
+    return borders.m_groupIndex == invalidGroup;
+  };
+
+  // initial clipping
+  borders.erase(remove_if(borders.begin(), borders.end(), invalidBorders), borders.end());
+
   if (borders.empty())
     return;
 
@@ -106,109 +116,165 @@ void MergeAndClipBorders(vector<ArrowBorders> & borders)
   borders[lastGroupIndex].m_endDistance = borders.back().m_endDistance;
 
   // clip groups
-  auto const iter = remove_if(borders.begin(), borders.end(), [](ArrowBorders const & borders)
-  {
-    return borders.m_groupIndex == invalidGroup;
-  });
-  borders.erase(iter, borders.end());
+  borders.erase(remove_if(borders.begin(), borders.end(), invalidBorders), borders.end());
+}
+
+float NormColor(uint8_t value)
+{
+  return static_cast<float>(value) / 255.0f;
 }
 
 }
-
-RouteGraphics::RouteGraphics(dp::GLState const & state,
-                             drape_ptr<dp::VertexArrayBuffer> && buffer,
-                             dp::Color const & color)
-  : m_state(state)
-  , m_buffer(move(buffer))
-  , m_color(color)
-{}
 
 RouteRenderer::RouteRenderer()
-  : m_distanceFromBegin(0.0)
-  , m_endOfRouteState(0, dp::GLState::OverlayLayer)
+  : m_displayList(nullptr)
+  , m_endOfRouteDisplayList(nullptr)
+  , m_distanceFromBegin(0.0)
+  , m_needClear(false)
+  , m_waitForConstruction(false)
 {}
 
-void RouteRenderer::Render(ScreenBase const & screen, ref_ptr<dp::GpuProgramManager> mng,
-                           dp::UniformValuesStorage const & commonUniforms)
+void RouteRenderer::Setup(m2::PolylineD const & routePolyline, vector<double> const & turns, graphics::Color const & color)
 {
-  // half width calculation
+  RouteShape::PrepareGeometry(routePolyline, m_routeData);
+  m_turns = turns;
+  m_color = color;
+  m_endOfRoutePoint = routePolyline.GetPoints().back();
+  m_waitForConstruction = true;
+}
+
+void RouteRenderer::ConstructRoute(graphics::Screen * dlScreen)
+{
+  // texture
+  uint32_t resID = dlScreen->findInfo(graphics::Icon::Info("route-arrow"));
+  graphics::Resource const * res = dlScreen->fromID(resID);
+  ASSERT(res != nullptr, ());
+  shared_ptr<graphics::gl::BaseTexture> texture = dlScreen->pipeline(res->m_pipelineID).texture();
+  float w = static_cast<float>(texture->width());
+  float h = static_cast<float>(texture->height());
+  m_arrowTextureRect = m2::RectF(res->m_texRect.minX() / w, res->m_texRect.minY() / h,
+                                 res->m_texRect.maxX() / w, res->m_texRect.maxY() / h);
+
+  // storage
+  size_t vbSize = m_routeData.m_geometry.size() * sizeof(graphics::gl::RouteVertex);
+  size_t ibSize = m_routeData.m_indices.size() * sizeof(unsigned short);
+
+  m_storage = graphics::gl::Storage(vbSize, ibSize);
+  void * vbPtr = m_storage.m_vertices->lock();
+  memcpy(vbPtr, m_routeData.m_geometry.data(), vbSize);
+  m_routeData.m_geometry.clear();
+
+  m_storage.m_vertices->unlock();
+  void * ibPtr = m_storage.m_indices->lock();
+  memcpy(ibPtr, m_routeData.m_indices.data(), ibSize);
+  m_storage.m_indices->unlock();
+  m_routeData.m_indices.clear();
+
+  // display lists
+  dlScreen->beginFrame();
+
+  m_displayList = dlScreen->createDisplayList();
+  dlScreen->setDisplayList(m_displayList);
+  dlScreen->drawRouteGeometry(texture, m_storage);
+
+  m_endOfRouteDisplayList = dlScreen->createDisplayList();
+  dlScreen->setDisplayList(m_endOfRouteDisplayList);
+  dlScreen->drawSymbol(m_endOfRoutePoint, "route_to", graphics::EPosCenter, 0);
+
+  dlScreen->setDisplayList(nullptr);
+  dlScreen->endFrame();
+}
+
+void RouteRenderer::ClearRoute(graphics::Screen * dlScreen)
+{
+  dlScreen->discardStorage(m_storage);
+  dlScreen->clearRouteGeometry();
+  m_storage = graphics::gl::Storage();
+
+  if (m_displayList != nullptr)
+  {
+    delete m_displayList;
+    m_displayList = nullptr;
+  }
+
+  if (m_endOfRouteDisplayList != nullptr)
+  {
+    delete m_endOfRouteDisplayList;
+    m_endOfRouteDisplayList = nullptr;
+  }
+
+  m_arrowBorders.clear();
+  m_routeSegments.clear();
+}
+
+float RouteRenderer::CalculateRouteHalfWidth(ScreenBase const & screen, double & zoom) const
+{
   float halfWidth = 0.0;
   double const zoomLevel = my::clamp(fabs(log(screen.GetScale()) / log(2.0)), 1.0, scales::UPPER_STYLE_SCALE);
-  double const truncedZoom = trunc(zoomLevel);
-  int const index = truncedZoom - 1.0;
-  float const lerpCoef = zoomLevel - truncedZoom;
+  zoom = trunc(zoomLevel);
+  int const index = zoom - 1.0;
+  float const lerpCoef = zoomLevel - zoom;
 
   if (index < scales::UPPER_STYLE_SCALE - 1)
     halfWidth = halfWidthInPixel[index] + lerpCoef * (halfWidthInPixel[index + 1] - halfWidthInPixel[index]);
   else
     halfWidth = halfWidthInPixel[index];
 
-  if (!m_routeGraphics.empty())
-  {
-    dp::GLState const & state = m_routeGraphics.front().m_state;
-
-    // set up uniforms
-    dp::UniformValuesStorage uniformStorage;
-    glsl::vec4 color = glsl::ToVec4(m_routeGraphics.front().m_color);
-    uniformStorage.SetFloatValue("u_color", color.r, color.g, color.b, color.a);
-    uniformStorage.SetFloatValue("u_halfWidth", halfWidth, halfWidth * screen.GetScale());
-    uniformStorage.SetFloatValue("u_clipLength", m_distanceFromBegin);
-
-    // set up shaders and apply uniforms
-    ref_ptr<dp::GpuProgram> prg = mng->GetProgram(state.GetProgramIndex());
-    prg->Bind();
-    dp::ApplyBlending(state, prg);
-    dp::ApplyUniforms(commonUniforms, prg);
-    dp::ApplyUniforms(uniformStorage, prg);
-
-    // render routes
-    for (RouteGraphics & graphics : m_routeGraphics)
-    {
-      ASSERT(graphics.m_state == state, ());
-      graphics.m_buffer->Render();
-    }
-
-    // render arrows
-    if (truncedZoom >= arrowAppearingZoomLevel)
-    {
-      // set up shaders and apply common uniforms
-      ref_ptr<dp::GpuProgram> prgArrow = mng->GetProgram(gpu::ROUTE_ARROW_PROGRAM);
-      prgArrow->Bind();
-      dp::ApplyState(state, prgArrow);
-      dp::ApplyUniforms(commonUniforms, prgArrow);
-
-      for (RouteGraphics & graphics : m_routeGraphics)
-        RenderArrow(prgArrow, graphics, halfWidth, screen);
-    }
-  }
-
-  // render end of route
-  if (m_endOfRouteBuffer != nullptr)
-  {
-    dp::UniformValuesStorage uniforms = commonUniforms;
-    uniforms.SetFloatValue("u_opacity", 1.0);
-    ref_ptr<dp::GpuProgram> eorProgram = mng->GetProgram(m_endOfRouteState.GetProgramIndex());
-    eorProgram->Bind();
-    dp::ApplyState(m_endOfRouteState, eorProgram);
-    dp::ApplyUniforms(uniforms, eorProgram);
-    m_endOfRouteBuffer->Render();
-  }
+  return halfWidth;
 }
 
-void RouteRenderer::RenderArrow(ref_ptr<dp::GpuProgram> prg, RouteGraphics const & graphics,
-                                float halfWidth, ScreenBase const & screen)
+void RouteRenderer::Render(shared_ptr<PaintEvent> const & e, ScreenBase const & screen)
+{
+  graphics::Screen * dlScreen = GPUDrawer::GetScreen(e->drawer());
+
+  // clearing
+  if (m_needClear)
+  {
+    ClearRoute(dlScreen);
+    m_needClear = false;
+  }
+
+  // construction
+  if (m_waitForConstruction)
+  {
+    ConstructRoute(dlScreen);
+    m_waitForConstruction = false;
+  }
+
+  if (m_displayList == nullptr)
+    return;
+
+  // rendering
+  dlScreen->clear(graphics::Color(), false, 1.0f, true);
+
+  double zoom = 0.0;
+  float const halfWidth = CalculateRouteHalfWidth(screen, zoom);
+
+  // set up uniforms
+  graphics::UniformsHolder uniforms;
+  uniforms.insertValue(graphics::ERouteColor, NormColor(m_color.r), NormColor(m_color.g),
+                       NormColor(m_color.b), NormColor(m_color.a));
+  uniforms.insertValue(graphics::ERouteHalfWidth, halfWidth, halfWidth * screen.GetScale());
+  uniforms.insertValue(graphics::ERouteClipLength, m_distanceFromBegin);
+
+  // render routes
+  dlScreen->applyRouteStates();
+  dlScreen->drawDisplayList(m_displayList, screen.GtoPMatrix(), &uniforms);
+
+  // render arrows
+  if (zoom >= arrowAppearingZoomLevel)
+    RenderArrow(dlScreen, halfWidth, screen);
+
+  dlScreen->applyStates();
+  dlScreen->drawDisplayList(m_endOfRouteDisplayList, screen.GtoPMatrix());
+}
+
+void RouteRenderer::RenderArrow(graphics::Screen * dlScreen, float halfWidth, ScreenBase const & screen)
 {
   double const arrowHalfWidth = halfWidth * arrowHeightFactor;
   double const glbArrowHalfWidth = arrowHalfWidth * screen.GetScale();
   double const arrowSize = 0.001;
   double const textureWidth = 2.0 * arrowHalfWidth * arrowAspect;
-
-  dp::UniformValuesStorage uniformStorage;
-  uniformStorage.SetFloatValue("u_halfWidth", arrowHalfWidth, glbArrowHalfWidth);
-  uniformStorage.SetFloatValue("u_textureRect", m_routeData.m_arrowTextureRect.minX(),
-                               m_routeData.m_arrowTextureRect.minY(),
-                               m_routeData.m_arrowTextureRect.maxX(),
-                               m_routeData.m_arrowTextureRect.maxY());
 
   // calculate arrows
   m_arrowBorders.clear();
@@ -218,6 +284,9 @@ void RouteRenderer::RenderArrow(ref_ptr<dp::GpuProgram> prg, RouteGraphics const
   array<float, 16> borders;
   borders.fill(0.0f);
   size_t const elementsCount = borders.size();
+
+  if (!m_arrowBorders.empty())
+    dlScreen->applyRouteArrowStates();
 
   size_t index = 0;
   for (size_t i = 0; i < m_arrowBorders.size(); i++)
@@ -231,43 +300,22 @@ void RouteRenderer::RenderArrow(ref_ptr<dp::GpuProgram> prg, RouteGraphics const
     if (index == elementsCount || i == m_arrowBorders.size() - 1)
     {
       index = 0;
-      uniformStorage.SetMatrix4x4Value("u_arrowBorders", borders.data());
+
+      graphics::UniformsHolder uniforms;
+      uniforms.insertValue(graphics::ERouteHalfWidth, arrowHalfWidth, glbArrowHalfWidth);
+      uniforms.insertValue(graphics::ERouteTextureRect, m_arrowTextureRect.minX(), m_arrowTextureRect.minY(),
+                           m_arrowTextureRect.maxX(), m_arrowTextureRect.maxY());
+      uniforms.insertValue(graphics::ERouteArrowBorders, math::Matrix<float, 4, 4>(borders.data()));
       borders.fill(0.0f);
 
-      dp::ApplyUniforms(uniformStorage, prg);
-      graphics.m_buffer->Render();
+      dlScreen->drawDisplayList(m_displayList, screen.GtoPMatrix(), &uniforms);
     }
   }
 }
 
-void RouteRenderer::AddRouteRenderBucket(dp::GLState const & state, drape_ptr<dp::RenderBucket> && bucket,
-                                         RouteData const & routeData, ref_ptr<dp::GpuProgramManager> mng)
-{
-  m_routeData = routeData;
-
-  m_routeGraphics.push_back(RouteGraphics());
-  RouteGraphics & route = m_routeGraphics.back();
-
-  route.m_state = state;
-  route.m_color = m_routeData.m_color;
-  route.m_buffer = bucket->MoveBuffer();
-  route.m_buffer->Build(mng->GetProgram(route.m_state.GetProgramIndex()));
-}
-
-void RouteRenderer::AddEndOfRouteRenderBucket(dp::GLState const & state, drape_ptr<dp::RenderBucket> && bucket,
-                                              ref_ptr<dp::GpuProgramManager> mng)
-{
-  m_endOfRouteState = state;
-  m_endOfRouteBuffer = bucket->MoveBuffer();
-  m_endOfRouteBuffer->Build(mng->GetProgram(m_endOfRouteState.GetProgramIndex()));
-}
-
 void RouteRenderer::Clear()
 {
-  m_routeGraphics.clear();
-  m_endOfRouteBuffer.reset();
-  m_arrowBorders.clear();
-  m_routeSegments.clear();
+  m_needClear = true;
 }
 
 void RouteRenderer::UpdateDistanceFromBegin(double distanceFromBegin)
@@ -320,7 +368,7 @@ void RouteRenderer::ApplyJoinsBounds(double joinsBoundsScalar, double glbHeadLen
 
 void RouteRenderer::CalculateArrowBorders(double arrowLength, double scale, double arrowTextureWidth, double joinsBoundsScalar)
 {
-  if (m_routeData.m_turns.empty())
+  if (m_turns.empty())
     return;
 
   double halfLen = 0.5 * arrowLength;
@@ -328,19 +376,19 @@ void RouteRenderer::CalculateArrowBorders(double arrowLength, double scale, doub
   double const glbTailLength = arrowTailSize * glbTextureWidth;
   double const glbHeadLength = arrowHeadSize * glbTextureWidth;
 
-  m_arrowBorders.reserve(m_routeData.m_turns.size() * arrowPartsCount);
+  m_arrowBorders.reserve(m_turns.size() * arrowPartsCount);
 
   double const halfTextureWidth = 0.5 * glbTextureWidth;
   if (halfLen < halfTextureWidth)
     halfLen = halfTextureWidth;
 
   // initial filling
-  for (size_t i = 0; i < m_routeData.m_turns.size(); i++)
+  for (size_t i = 0; i < m_turns.size(); i++)
   {
     ArrowBorders arrowBorders;
     arrowBorders.m_groupIndex = (int)i;
-    arrowBorders.m_startDistance = max(0.0, m_routeData.m_turns[i] - halfLen * 0.8);
-    arrowBorders.m_endDistance = min(m_routeData.m_length, m_routeData.m_turns[i] + halfLen * 1.2);
+    arrowBorders.m_startDistance = max(0.0, m_turns[i] - halfLen * 0.8);
+    arrowBorders.m_endDistance = min(m_routeData.m_length, m_turns[i] + halfLen * 1.2);
 
     if (arrowBorders.m_startDistance < m_distanceFromBegin)
       continue;
@@ -381,5 +429,4 @@ void RouteRenderer::CalculateArrowBorders(double arrowLength, double scale, doub
   }
 }
 
-} // namespace df
-
+} // namespace rg

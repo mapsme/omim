@@ -1829,10 +1829,11 @@ void Framework::UpdateSavedDataVersion()
 
 void Framework::BuildRoute(m2::PointD const & destination)
 {
-  ASSERT(m_drapeEngine != nullptr, ());
+  ASSERT(m_drapeEngine != nullptr || m_rgEngine != nullptr, ());
 
   m2::PointD myPosition;
-  bool const hasPosition = m_drapeEngine->GetMyPosition(myPosition);
+  bool const hasPosition = IsDrapeEngineActive() ? m_drapeEngine->GetMyPosition(myPosition) :
+                                                   m_rgEngine->GetMyPosition(myPosition);
   if (!hasPosition)
   {
     CallRouteBuilded(IRouter::NoCurrentPosition, vector<storage::TIndex>(), vector<storage::TIndex>());
@@ -1856,7 +1857,11 @@ void Framework::BuildRoute(m2::PointD const & destination)
       InsertRoute(route);
       m2::RectD routeRect = route.GetPoly().GetLimitRect();
       routeRect.Scale(kRouteScaleMultiplierToShowWholeRoute);
-      m_drapeEngine->SetModelViewRect(routeRect, true, -1, true);
+
+      if (IsDrapeEngineActive())
+        m_drapeEngine->SetModelViewRect(routeRect, true, -1, true);
+      else
+        m_rgEngine->ShowRect(m2::AnyRectD(routeRect));
     }
     else
     {
@@ -1878,11 +1883,18 @@ void Framework::BuildRoute(m2::PointD const & destination)
 
 void Framework::FollowRoute()
 {
-  ASSERT(m_drapeEngine != nullptr, ());
-  m_drapeEngine->MyPositionNextMode();
+  ASSERT(m_drapeEngine != nullptr || m_rgEngine != nullptr, ());
 
-  m2::PointD const & position = m_routingSession.GetUserCurrentPosition();
-  m_drapeEngine->SetModelViewCenter(position, scales::GetNavigationScale(), true);
+  if (IsDrapeEngineActive())
+  {
+    m_drapeEngine->MyPositionNextMode();
+    m2::PointD const & position = m_routingSession.GetUserCurrentPosition();
+    m_drapeEngine->SetModelViewCenter(position, scales::GetNavigationScale(), true);
+  }
+  else
+  {
+    //TODO(@kuznetsov)
+  }
 }
 
 void Framework::SetRouter(RouterType type)
@@ -1936,8 +1948,12 @@ void Framework::SetRouter(RouterType type)
 
 void Framework::RemoveRoute(bool deactivateFollowing)
 {
-  ASSERT(m_drapeEngine != nullptr, ());
-  m_drapeEngine->RemoveRoute(deactivateFollowing);
+  ASSERT(m_drapeEngine != nullptr || m_rgEngine != nullptr, ());
+
+  if (IsDrapeEngineActive())
+    m_drapeEngine->RemoveRoute(deactivateFollowing);
+  else
+    m_rgEngine->RemoveRoute(deactivateFollowing);
 }
 
 void Framework::CloseRouting()
@@ -1948,7 +1964,7 @@ void Framework::CloseRouting()
 
 void Framework::InsertRoute(Route const & route)
 {
-  ASSERT(m_drapeEngine != nullptr, ());
+  ASSERT(m_drapeEngine != nullptr || m_rgEngine != nullptr, ());
 
   if (route.GetPoly().GetSize() < 2)
   {
@@ -1964,31 +1980,23 @@ void Framework::InsertRoute(Route const & route)
     for (size_t i = 0; i < turnsGeom.size(); i++)
       turns.push_back(turnsGeom[i].m_mercatorDistance);
   }
-  m_drapeEngine->AddRoute(route.GetPoly(), turns, dp::Color(110, 180, 240, 160));
 
-  // TODO(@kuznetsov): Maybe we need some of this stuff
-  //track.SetName(route.GetName());
+  dp::Color routeColor;
+  if (m_currentRouterType == RouterType::Pedestrian)
+    routeColor = dp::Color(5, 105, 175, 160);
+  else
+    routeColor = dp::Color(110, 180, 240, 160);
 
-  //RouteTrack track(route.GetPoly());
-  //track.SetName(route.GetName());
-  //track.SetTurnsGeometry(route.GetTurnsGeometry());
-
-  /// @todo Consider a style parameter for the route color.
-  //graphics::Color routeColor;
-  //if (m_currentRouterType == RouterType::Pedestrian)
-  //  routeColor = graphics::Color(5, 105, 175, 255);
-  //else
-  //  routeColor = graphics::Color(110, 180, 240, 255);
-
-  //Track::TrackOutline outlines[]
-  //{
-  //  { 10.0f * visScale, routeColor }
-  //};
-
-  //track.AddOutline(outlines, ARRAY_SIZE(outlines));
-  //track.AddClosingSymbol(false, "route_to", graphics::EPosCenter, graphics::routingFinishDepth);
-
-  //m_informationDisplay.ResetRouteMatchingInfo();
+  if (IsDrapeEngineActive())
+  {
+    m_drapeEngine->AddRoute(route.GetPoly(), turns, routeColor);
+  }
+  else
+  {
+    graphics::Color c = graphics::Color(routeColor.GetRed(), routeColor.GetGreen(),
+                                        routeColor.GetBlue(), routeColor.GetAlfa());
+    m_rgEngine->AddRoute(route.GetPoly(), turns, c);
+  }
 }
 
 void Framework::CheckLocationForRouting(GpsInfo const & info)

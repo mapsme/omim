@@ -7,6 +7,9 @@
 #include "render/events.hpp"
 #include "render/animator.hpp"
 #include "render/active_maps_bridge.hpp"
+#include "render/route_renderer.hpp"
+
+#include "geometry/polyline2d.hpp"
 
 #include "platform/location.hpp"
 
@@ -85,6 +88,10 @@ public:
 
   void Touch(ETouchAction action, ETouchMask mask, m2::PointD const & pt1, m2::PointD const & pt2);
 
+  bool GetMyPosition(m2::PointD & myPosition);
+  void AddRoute(m2::PolylineD const & routePolyline, vector<double> const & turns, graphics::Color const & color);
+  void RemoveRoute(bool deactivateFollowing);
+
 private:
   void StartDrag(DragEvent const & e);
   void DoDrag(DragEvent const & e);
@@ -121,6 +128,7 @@ private:
   bool m_isFullScreenMode = false;
   unique_ptr<ActiveMapsBridge> m_mapsBridge;
   unique_ptr<Animator> m_animator;
+  unique_ptr<RouteRenderer> m_routeRenderer;
 
   ScalesProcessor m_scales;
   Navigator m_navigator;
