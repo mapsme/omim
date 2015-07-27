@@ -4,8 +4,6 @@
 
 #include "testing/testing.hpp"
 
-#include "map/qgl_render_context.hpp"
-
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
   #include <QtGui/QApplication>
 #else
@@ -183,7 +181,7 @@ public:
 
   void InitWithContextImpl(bool_tag<true> const &)
   {
-    test.Init(shared_ptr<qt::gl::RenderContext>(new qt::gl::RenderContext(this)));
+    test.Init(shared_ptr<rg::OGLContext>(new rg::OGLContext(context(), context()->surface())));
   }
 
   void InitWithContextImpl(bool_tag<false> const &)
@@ -192,7 +190,7 @@ public:
   void initializeGL()
   {
     tst::GLDrawWidget::initializeGL();
-    InitWithContextImpl(bool_tag<has_init_with_context<TTest, TTest, qt::gl::RenderContext>::value>());
+    InitWithContextImpl(bool_tag<has_init_with_context<TTest, TTest, rg::OGLContext>::value>());
   }
 };
 

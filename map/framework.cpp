@@ -21,6 +21,8 @@
 
 #include "drape_frontend/visual_params.hpp"
 
+#include "render/active_maps_bridge.hpp"
+
 #include "indexer/categories_holder.hpp"
 #include "indexer/classificator_loader.hpp"
 #include "indexer/drawing_rules.hpp"
@@ -98,7 +100,10 @@ pair<MwmSet::MwmHandle, MwmSet::RegResult> Framework::RegisterMap(
 
 void Framework::OnLocationError(TLocationError /*error*/)
 {
-  CallDrapeFunction(bind(&df::DrapeEngine::CancelMyPosition, _1));
+  if (IsDrapeEngineActive())
+    CallDrapeFunction(bind(&df::DrapeEngine::CancelMyPosition, _1));
+  else if (IsRGEngineActive())
+    m_rgEngine->OnLocationError();
 }
 
 void Framework::OnLocationUpdate(GpsInfo const & info)
@@ -129,8 +134,15 @@ void Framework::OnLocationUpdate(GpsInfo const & info)
 
   MatchLocationToRoute(rInfo, routeMatchingInfo);
 
-  CallDrapeFunction(bind(&df::DrapeEngine::SetGpsInfo, _1, rInfo,
-                         m_routingSession.IsNavigable(), routeMatchingInfo));
+  if (IsDrapeEngineActive())
+  {
+    CallDrapeFunction(bind(&df::DrapeEngine::SetGpsInfo, _1, rInfo,
+                           m_routingSession.IsNavigable(), routeMatchingInfo));
+  }
+  else if (IsRGEngineActive())
+  {
+    m_rgEngine->OnLocationUpdate(rInfo, m_routingSession.IsNavigable(), routeMatchingInfo);
+  }
 }
 
 void Framework::OnCompassUpdate(CompassInfo const & info)
@@ -142,12 +154,18 @@ void Framework::OnCompassUpdate(CompassInfo const & info)
   CompassInfo const & rInfo = info;
 #endif
 
-  CallDrapeFunction(bind(&df::DrapeEngine::SetCompassInfo, _1, rInfo));
+  if (IsDrapeEngineActive())
+    CallDrapeFunction(bind(&df::DrapeEngine::SetCompassInfo, _1, rInfo));
+  else if (IsRGEngineActive())
+    m_rgEngine->OnCompassUpdate(info);
 }
 
 void Framework::SwitchMyPositionNextMode()
 {
-  CallDrapeFunction(bind(&df::DrapeEngine::MyPositionNextMode, _1));
+  if (IsDrapeEngineActive())
+    CallDrapeFunction(bind(&df::DrapeEngine::MyPositionNextMode, _1));
+  else if (IsRGEngineActive())
+    m_rgEngine->SwitchMyPositionNextMode();
 }
 
 void Framework::InvalidateMyPosition()
@@ -159,7 +177,7 @@ void Framework::InvalidateMyPosition()
   else
   {
     ASSERT(IsRGEngineActive(), ());
-    // @TODO (UVR)
+    m_rgEngine->InvalidateMyPosition();
   }
 }
 
@@ -172,7 +190,7 @@ void Framework::SetMyPositionModeListener(location::TMyPositionModeChanged const
   else
   {
     ASSERT(IsRGEngineActive(), ());
-    // @TODO (UVR)
+    m_rgEngine->SetMyPositionModeListener(fn);
   }
 }
 
@@ -1281,6 +1299,71 @@ void Framework::DestroyDrapeEngine()
   m_drapeEngine.reset();
 }
 
+class Framework::ActiveMapsBridgeImpl : public rg::ActiveMapsBridge,
+                                        public ActiveMapsLayout::ActiveMapsListener
+{
+  Framework * m_framework;
+  int m_slotID;
+public:
+  ActiveMapsBridgeImpl(Framework * framework)
+    : m_framework(framework)
+  {
+    m_slotID = m_framework->GetActiveMaps()->AddListener(this);
+  }
+
+  ~ActiveMapsBridgeImpl()
+  {
+    m_framework->GetActiveMaps()->RemoveListener(m_slotID);
+  }
+
+  string GetCountryName(TIndex const & index) const { return m_framework->GetActiveMaps()->GetCountryName(index); }
+  TStatus GetCountryStatus(TIndex const & index) const { return m_framework->GetActiveMaps()->GetCountryStatus(index); }
+  LocalAndRemoteSizeT GetDownloadCountrySize(TIndex const & index) const
+  {
+    return m_framework->GetActiveMaps()->GetDownloadableCountrySize(index);
+  }
+  LocalAndRemoteSizeT GetRemoteCountrySize(TIndex const & index) const
+  {
+    return m_framework->GetActiveMaps()->GetRemoteCountrySizes(index);
+  }
+  void DownloadMap(TIndex const & index, int options)
+  {
+    if (options == -1)
+      m_framework->OnDownloadRetryCallback(index);
+    else if (static_cast<TMapOptions>(options) == TMapOptions::EMap)
+      m_framework->OnDownloadMapCallback(index);
+    else if (static_cast<TMapOptions>(options) == TMapOptions::EMapWithCarRouting)
+      m_framework->OnDownloadMapRoutingCallback(index);
+    else
+      ASSERT(false, ("Options = ", options));
+  }
+
+  bool IsCountryLoaded(m2::PointD const & pt) const
+  {
+    return m_framework->IsCountryLoaded(pt);
+  }
+  storage::TIndex GetCountryIndex(m2::PointD const & pt) const
+  {
+    return m_framework->GetCountryIndex(pt);
+  }
+
+  void CountryGroupChanged(ActiveMapsLayout::TGroup const &, int,
+                           ActiveMapsLayout::TGroup const &, int) {}
+  void CountryOptionsChanged(ActiveMapsLayout::TGroup const &, int,
+                             TMapOptions const &, TMapOptions const &) {}
+  void CountryStatusChanged(ActiveMapsLayout::TGroup const & group, int position,
+                            TStatus const & /*oldStatus*/, TStatus const & newStatus)
+  {
+    CallStatusListener(m_framework->GetActiveMaps()->GetCoreIndex(group, position), newStatus);
+  }
+
+  void DownloadingProgressUpdate(ActiveMapsLayout::TGroup const & group, int position,
+                                 LocalAndRemoteSizeT const & progress)
+  {
+    CallDownloadListener(m_framework->GetActiveMaps()->GetCoreIndex(group, position), progress);
+  }
+};
+
 void Framework::CreateRGEngine(rg::Engine::Params && params)
 {
   rg::Engine::TDrawFn drawFn = [this](rg::Engine::TParseFn const & parser, m2::RectD const & rect,
@@ -1294,6 +1377,7 @@ void Framework::CreateRGEngine(rg::Engine::Params && params)
 
   rg::Engine::Params pp = move(params);
   pp.m_drawFn = drawFn;
+  pp.m_mapsBrigde.reset(new ActiveMapsBridgeImpl(this));
   m_rgEngine.reset(new rg::Engine(move(pp)));
   m_rgEngine->InitGui(m_stringsBundle);
 
@@ -1301,6 +1385,8 @@ void Framework::CreateRGEngine(rg::Engine::Params && params)
   {
     m_currentModelView = screen;
   });
+
+  m_rgEngine->SetMyPositionListener(bind(&Framework::OnUserPositionChanged, this, _1));
 
   LoadState();
 }

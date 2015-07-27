@@ -5,6 +5,8 @@
 #include "base/thread.hpp"
 #include "base/threaded_list.hpp"
 
+#include "std/function.hpp"
+
 namespace anim
 {
   class Task;
@@ -26,6 +28,8 @@ namespace anim
     bool m_hasVisualTasks = false;
 
   public:
+
+    using TInvalidateFn = function<void()>;
 
     struct Guard
     {
@@ -52,5 +56,11 @@ namespace anim
     void PerformStep();
     // Getting current simulation time
     double GetCurrentTime() const;
+
+    void SetInvalidateFn(TInvalidateFn const & fn);
+    void CallInvalidate();
+
+  private:
+    TInvalidateFn m_invalidateFn;
   };
 }

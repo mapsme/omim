@@ -131,7 +131,10 @@ void DrawWidget::SetScaleControl(QScaleSlider * pScale)
 void DrawWidget::PrepareShutdown()
 {
   if (m_engineWrapper)
+  {
     m_engineWrapper->Destroy();
+    m_engineWrapper.reset();
+  }
 }
 
 void DrawWidget::UpdateAfterSettingsChanged()

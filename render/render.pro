@@ -9,83 +9,102 @@ include($$ROOT_DIR/common.pri)
 INCLUDEPATH *= $$ROOT_DIR/3party/protobuf/src $$ROOT_DIR/3party/expat/lib $$ROOT_DIR/3party/freetype/include
 
 SOURCES += \
-    software_renderer.cpp \
-    gpu_drawer.cpp \
-    cpu_drawer.cpp \
     agg_curves.cpp \
-    drawer.cpp \
-    feature_info.cpp \
-    feature_styler.cpp \
-    geometry_processors.cpp \
-    proto_to_styles.cpp \
-    text_engine.cpp \
-    default_font.cpp \
-    window_handle.cpp \
-    render_policy.cpp \
-    tiling_render_policy_st.cpp \
-    tiling_render_policy_mt.cpp \
-    simple_render_policy.cpp \
-    queued_renderer.cpp \
-    basic_tiling_render_policy.cpp \
-    tiler.cpp \
-    tile.cpp \
-    tile_cache.cpp \
-    tile_set.cpp \
-    tile_renderer.cpp \
-    feature_processor.cpp \
-    events.cpp \
-    coverage_generator.cpp \
-    scales_processor.cpp \
-    yopme_render_policy.cpp \
     anim/angle_interpolation.cpp \
     anim/anyrect_interpolation.cpp \
     anim/controller.cpp \
     anim/segment_interpolation.cpp \
     anim/task.cpp \
     anim/value_interpolation.cpp \
+    basic_tiling_render_policy.cpp \
+    country_status_display.cpp \
+    coverage_generator.cpp \
+    cpu_drawer.cpp \
+    default_font.cpp \
+    drawer.cpp \
     engine.cpp \
+    events.cpp \
+    feature_info.cpp \
+    feature_processor.cpp \
+    feature_styler.cpp \
+    geometry_processors.cpp \
+    gpu_drawer.cpp \
+    information_display.cpp \
+    location_state.cpp \
+    navigator.cpp \
     navigator_utils.cpp \
-    navigator.cpp
-
+    proto_to_styles.cpp \
+    queued_renderer.cpp \
+    render_policy.cpp \
+    scales_processor.cpp \
+    simple_render_policy.cpp \
+    software_renderer.cpp \
+    text_engine.cpp \
+    tile.cpp \
+    tile_cache.cpp \
+    tile_renderer.cpp \
+    tile_set.cpp \
+    tiler.cpp \
+    tiling_render_policy_mt.cpp \
+    tiling_render_policy_st.cpp \
+    window_handle.cpp \
+    yopme_render_policy.cpp \
+    alfa_animation_task.cpp \
+    compass_arrow.cpp \
+    ruler.cpp \
+    animator.cpp \
+    move_screen_task.cpp \
+    rotate_screen_task.cpp \
+    active_maps_bridge.cpp
 
 HEADERS += \
-    software_renderer.hpp \
-    gpu_drawer.hpp \
-    cpu_drawer.hpp \
-    frame_image.hpp \
-    drawer.hpp \
-    feature_info.hpp \
-    feature_styler.hpp \
-    path_info.hpp \
-    area_info.hpp \
-    geometry_processors.hpp \
-    proto_to_styles.hpp \
-    text_engine.h \
-    point.h \
-    rect.h \
-    window_handle.hpp \
-    render_policy.hpp \
-    tiling_render_policy_st.hpp \
-    tiling_render_policy_mt.hpp \
-    simple_render_policy.hpp \
-    queued_renderer.hpp \
-    basic_tiling_render_policy.hpp \
-    tiler.hpp \
-    tile.hpp \
-    tile_cache.hpp \
-    tile_set.hpp \
-    tile_renderer.hpp \
-    feature_processor.hpp \
-    events.hpp \
-    coverage_generator.hpp \
-    scales_processor.hpp \
-    yopme_render_policy.hpp \
     anim/angle_interpolation.hpp \
     anim/anyrect_interpolation.hpp \
     anim/controller.hpp \
     anim/segment_interpolation.hpp \
     anim/task.hpp \
     anim/value_interpolation.hpp \
+    area_info.hpp \
+    basic_tiling_render_policy.hpp \
+    country_status_display.hpp \
+    coverage_generator.hpp \
+    cpu_drawer.hpp \
+    drawer.hpp \
     engine.hpp \
+    events.hpp \
+    feature_info.hpp \
+    feature_processor.hpp \
+    feature_styler.hpp \
+    frame_image.hpp \
+    geometry_processors.hpp \
+    gpu_drawer.hpp \
+    information_display.hpp \
+    location_state.hpp \
+    navigator.hpp \
     navigator_utils.hpp \
-    navigator.hpp
+    path_info.hpp \
+    point.h \
+    proto_to_styles.hpp \
+    queued_renderer.hpp \
+    rect.h \
+    render_policy.hpp \
+    scales_processor.hpp \
+    simple_render_policy.hpp \
+    software_renderer.hpp \
+    text_engine.h \
+    tile.hpp \
+    tile_cache.hpp \
+    tile_renderer.hpp \
+    tile_set.hpp \
+    tiler.hpp \
+    tiling_render_policy_mt.hpp \
+    tiling_render_policy_st.hpp \
+    window_handle.hpp \
+    yopme_render_policy.hpp \
+    alfa_animation_task.hpp \
+    compass_arrow.hpp \
+    ruler.hpp \
+    animator.hpp \
+    move_screen_task.hpp \
+    rotate_screen_task.hpp \
+    active_maps_bridge.hpp

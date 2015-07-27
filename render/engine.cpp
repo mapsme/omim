@@ -1,8 +1,8 @@
 #include "render/engine.hpp"
 #include "render/feature_processor.hpp"
 #include "render/window_handle.hpp"
+#include "render/location_state.hpp"
 
-#include "anim/controller.hpp"
 #include "gui/controller.hpp"
 
 #include "platform/video_timer.hpp"
@@ -24,7 +24,8 @@ double const DOUBLE_TOUCH_S = SHORT_TOUCH_MS / 1000.0;
 } // namespace
 
 Engine::Engine(Params && params)
-  : m_navigator(m_scales)
+  : m_mapsBridge(move(params.m_mapsBrigde))
+  , m_navigator(m_scales)
   , m_drawFn(params.m_drawFn)
 {
   RenderPolicy::Params rpParams = params.m_rpParams;
@@ -35,11 +36,23 @@ Engine::Engine(Params && params)
   m_scales.SetParams(m_renderPolicy->VisualScale(), m_renderPolicy->TileSize());
   m_renderPolicy->GetWindowHandle()->setUpdatesEnabled(true);
 
+  m_animator.reset(new Animator(m_navigator, bind(&RenderPolicy::AddAnimTask, m_renderPolicy.get(), _1),
+                                m_mapsBridge.get()));
+
   Resize(params.m_rpParams.m_screenWidth, params.m_rpParams.m_screenHeight);
+
 }
 
 Engine::~Engine()
 {
+  if (m_guiController)
+  {
+    m_guiController->ResetRenderParams();
+    m_guiController.reset();
+    m_informationDisplay.reset();
+  }
+
+  m_renderPolicy.reset();
 }
 
 void Engine::Scale(double factor, const m2::PointD & pxPoint, bool isAnim)
@@ -60,11 +73,18 @@ void Engine::InitGui(StringsBundle const & bundle)
   gui::Controller::RenderParams rp(m_renderPolicy->Density(),
                                    bind(&WindowHandle::invalidate,
                                         m_renderPolicy->GetWindowHandle().get()),
+                                   bind(&RenderPolicy::AddAnimTask,
+                                        m_renderPolicy.get(), _1),
+                                   bind(&Navigator::Screen, &m_navigator),
                                    m_renderPolicy->GetGlyphCache(),
                                    m_renderPolicy->GetCacheScreen().get());
 
   m_guiController->SetRenderParams(rp);
-  //m_informationDisplay.setVisualScale(m_renderPolicy->VisualScale());
+
+  m_informationDisplay.reset(new InformationDisplay(m_mapsBridge.get(), m_animator.get()));
+  m_informationDisplay->setController(m_guiController.get());
+  m_informationDisplay->setVisualScale(m_renderPolicy->VisualScale());
+
   //m_balloonManager.RenderPolicyCreated(m_renderPolicy->Density());
 
   // init Bookmark manager
@@ -92,8 +112,12 @@ void Engine::Resize(int w, int h)
   m_navigator.OnSize(0, 0, w, h);
   // if gui controller not initialized, than we work in mode "Without gui"
   // and no need to set gui layout. We will not render it.
-  //if (m_guiController)
-  //  m_informationDisplay.SetWidgetPivotsByDefault(w, h);
+  if (m_guiController)
+  {
+    ASSERT(m_informationDisplay != nullptr, ());
+    m_informationDisplay->SetWidgetPivotsByDefault(w, h);
+  }
+
   m_renderPolicy->OnSize(w, h);
 }
 
@@ -123,6 +147,49 @@ int Engine::AddModelViewListener(TScreenChangedFn const & listener)
 void Engine::RemoveModelViewListener(int slotID)
 {
   m_navigator.RemoveViewportListener(slotID);
+}
+
+void Engine::SetMyPositionModeListener(location::TMyPositionModeChanged const & listener)
+{
+  if (m_informationDisplay)
+    m_informationDisplay->locationState()->AddStateModeListener(listener);
+}
+
+void Engine::SetMyPositionListener(TPositionListener const & fn)
+{
+  if (m_informationDisplay)
+    m_informationDisplay->locationState()->AddPositionChangedListener(fn);
+}
+
+void Engine::SwitchMyPositionNextMode()
+{
+  if (m_informationDisplay)
+    m_informationDisplay->locationState()->SwitchToNextMode();
+}
+
+void Engine::InvalidateMyPosition()
+{
+  if (m_informationDisplay)
+    m_informationDisplay->locationState()->InvalidatePosition();
+}
+
+void Engine::OnLocationError()
+{
+  if (m_informationDisplay)
+    m_informationDisplay->locationState()->TurnOff();
+}
+
+void Engine::OnLocationUpdate(location::GpsInfo const & info, bool isNavigable,
+                              location::RouteMatchingInfo const & /*routeInfo*/)
+{
+  if (m_informationDisplay)
+    m_informationDisplay->locationState()->OnLocationUpdate(info, isNavigable);
+}
+
+void Engine::OnCompassUpdate(location::CompassInfo const & info)
+{
+  if (m_informationDisplay)
+    m_informationDisplay->locationState()->OnCompassUpdate(info);
 }
 
 int Engine::GetDrawScale()
@@ -288,7 +355,8 @@ void Engine::Touch(Engine::ETouchAction action, Engine::ETouchMask mask,
 void Engine::StartDrag(DragEvent const & e)
 {
   m_navigator.StartDrag(m_navigator.ShiftPoint(e.Pos()));
-  //m_informationDisplay.locationState()->DragStarted();
+  if (m_informationDisplay)
+    m_informationDisplay->locationState()->DragStarted();
   m_renderPolicy->StartDrag();
 }
 
@@ -301,7 +369,8 @@ void Engine::DoDrag(DragEvent const & e)
 void Engine::StopDrag(DragEvent const & e)
 {
   m_navigator.StopDrag(m_navigator.ShiftPoint(e.Pos()));
-  //m_informationDisplay.locationState()->DragEnded();
+  if (m_informationDisplay)
+    m_informationDisplay->locationState()->DragEnded();
   m_renderPolicy->StopDrag();
 }
 
@@ -310,7 +379,8 @@ void Engine::StartScale(ScaleEvent const & e)
   m2::PointD pt1, pt2;
   CalcScalePoints(e, pt1, pt2);
 
-  //GetLocationState()->ScaleStarted();
+  if (m_informationDisplay)
+    m_informationDisplay->locationState()->ScaleStarted();
   m_navigator.StartScale(pt1, pt2);
   m_renderPolicy->StartScale();
 }
@@ -322,8 +392,8 @@ void Engine::DoScale(ScaleEvent const & e)
 
   m_navigator.DoScale(pt1, pt2);
   m_renderPolicy->DoScale();
-  //if (m_navigator.IsRotatingDuringScale())
-  //  GetLocationState()->Rotated();
+  if (m_navigator.IsRotatingDuringScale() && m_informationDisplay)
+    m_informationDisplay->locationState()->Rotated();
 }
 
 void Engine::StopScale(ScaleEvent const & e)
@@ -334,7 +404,8 @@ void Engine::StopScale(ScaleEvent const & e)
   m_navigator.StopScale(pt1, pt2);
   m_renderPolicy->StopScale();
 
-  //GetLocationState()->ScaleEnded();
+  if (m_informationDisplay)
+    m_informationDisplay->locationState()->ScaleEnded();
 }
 
 void Engine::CalcScalePoints(ScaleEvent const & e, m2::PointD & pt1, m2::PointD & pt2) const
@@ -342,7 +413,10 @@ void Engine::CalcScalePoints(ScaleEvent const & e, m2::PointD & pt1, m2::PointD 
   pt1 = m_navigator.ShiftPoint(e.Pt1());
   pt2 = m_navigator.ShiftPoint(e.Pt2());
 
-  //m_informationDisplay.locationState()->CorrectScalePoint(pt1, pt2);
+  if (!m_informationDisplay)
+    return;
+
+  m_informationDisplay->locationState()->CorrectScalePoint(pt1, pt2);
 }
 
 void Engine::BeginPaint(shared_ptr<PaintEvent> const  & e)
@@ -355,13 +429,44 @@ void Engine::DoPaint(shared_ptr<PaintEvent> const & e)
   m_renderPolicy->DrawFrame(e, m_navigator.Screen());
 
   // Don't render additional elements if guiController wasn't initialized.
-  //if (m_guiController)
-  //  DrawAdditionalInfo(e);
+  if (m_guiController)
+    DrawAdditionalInfo(e);
 }
 
 void Engine::EndPaint(shared_ptr<PaintEvent> const & e)
 {
   m_renderPolicy->EndFrame(e, m_navigator.Screen());
+}
+
+void Engine::DrawAdditionalInfo(shared_ptr<PaintEvent> const & e)
+{
+  ASSERT ( m_renderPolicy, () );
+  graphics::Screen * pScreen = GPUDrawer::GetScreen(e->drawer());
+
+  pScreen->beginFrame();
+
+  int const drawScale = GetDrawScale();
+  bool const isEmptyModel = m_renderPolicy->IsEmptyModel();
+
+  if (isEmptyModel)
+    m_informationDisplay->setEmptyCountryIndex(m_mapsBridge->GetCountryIndex(m_navigator.Screen().GetOrg()));
+  else
+    m_informationDisplay->setEmptyCountryIndex(storage::TIndex());
+
+  bool const isCompassEnabled = my::Abs(ang::GetShortestDistance(m_navigator.Screen().GetAngle(), 0.0)) > my::DegToRad(3.0);
+  bool const isCompasActionEnabled = m_informationDisplay->isCompassArrowEnabled() && m_navigator.InAction();
+
+  m_informationDisplay->enableCompassArrow(isCompassEnabled || isCompasActionEnabled);
+  m_informationDisplay->setCompassArrowAngle(m_navigator.Screen().GetAngle());
+
+  m_informationDisplay->enableRuler(!m_isFullScreenMode && (drawScale > 4 && !m_informationDisplay->isCopyrightActive()));
+
+  m_informationDisplay->setDebugInfo(0, drawScale);
+  pScreen->endFrame();
+
+  //m_bmManager.DrawItems(e->drawer());
+  m_guiController->UpdateElements();
+  m_guiController->DrawFrame(pScreen);
 }
 
 void Engine::DrawModel(shared_ptr<PaintEvent> const & e, ScreenBase const & screen,

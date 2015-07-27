@@ -7,7 +7,7 @@
 
 #include "graphics/display_list.hpp"
 
-#include "map/country_status_display.hpp"
+#include "render/country_status_display.hpp"
 #include "map/framework.hpp"
 
 
@@ -127,19 +127,19 @@ struct ImageViewTest
   }
 };
 
-struct CountryStatusDisplayTest
-{
-  shared_ptr<CountryStatusDisplay> m_countryStatus;
-  shared_ptr<Framework> m_framework;
-  m2::PointD m_pivot;
+//struct CountryStatusDisplayTest
+//{
+//  shared_ptr<rg::CountryStatusDisplay> m_countryStatus;
+//  shared_ptr<Framework> m_framework;
+//  m2::PointD m_pivot;
 
-  void Init(gui::Controller * c)
-  {
-    CountryStatusDisplay::Params p(m_framework->GetCountryTree().GetActiveMapLayout());
+//  void Init(gui::Controller * c)
+//  {
+//    rg::CountryStatusDisplay::Params p(m_framework->GetCountryTree().GetActiveMapLayout());
 
-    m_pivot = m2::PointD(400, 400);
+//    m_pivot = m2::PointD(400, 400);
 
-    m_framework.reset(new Framework());
+//    m_framework.reset(new Framework());
 
     ///@TODO (UVR)
 //    p.m_depth = graphics::maxDepth;
@@ -150,12 +150,12 @@ struct CountryStatusDisplayTest
 //    m_countryStatus->SetCountryIndex(storage::TIndex(1, 1, 1));
 //    m_countryStatus->setPivot(m_pivot);
 //    c->AddElement(m_countryStatus);
-  }
+//  }
 
-  void DoDraw(shared_ptr<graphics::Screen> const & p)
-  {
-  }
-};
+//  void DoDraw(shared_ptr<graphics::Screen> const & p)
+//  {
+//  }
+//};
 
 //UNIT_TEST_GUI(ButtonTest);
 //UNIT_TEST_GUI(TextViewTest);

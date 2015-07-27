@@ -107,4 +107,15 @@ namespace anim
   {
     return my::Timer::LocalTime();
   }
+
+  void Controller::SetInvalidateFn(TInvalidateFn const & fn)
+  {
+    m_invalidateFn = fn;
+  }
+
+  void Controller::CallInvalidate()
+  {
+    if (m_invalidateFn)
+      m_invalidateFn();
+  }
 }

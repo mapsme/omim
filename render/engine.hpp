@@ -1,10 +1,14 @@
 #pragma once
 
-
+#include "render/information_display.hpp"
 #include "render/scales_processor.hpp"
 #include "render/navigator.hpp"
 #include "render/render_policy.hpp"
 #include "render/events.hpp"
+#include "render/animator.hpp"
+#include "render/active_maps_bridge.hpp"
+
+#include "platform/location.hpp"
 
 #include "base/deferred_task.hpp"
 
@@ -34,6 +38,7 @@ public:
     RenderPolicy::Params m_rpParams;
     TDrawFn m_drawFn;
     bool m_initGui = true;
+    unique_ptr<ActiveMapsBridge> m_mapsBrigde;
   };
 
   Engine(Params && params);
@@ -48,6 +53,17 @@ public:
   void ShowRect(m2::AnyRectD const & rect);
   int AddModelViewListener(TScreenChangedFn const & listener);
   void RemoveModelViewListener(int slotID);
+
+  void SetMyPositionModeListener(location::TMyPositionModeChanged const & listener);
+
+  using TPositionListener = function<void (m2::PointD const &)>;
+  void SetMyPositionListener(TPositionListener const & fn);
+  void SwitchMyPositionNextMode();
+  void InvalidateMyPosition();
+  void OnLocationError();
+  void OnLocationUpdate(location::GpsInfo const & info, bool isNavigable,
+                        location::RouteMatchingInfo const & routeInfo);
+  void OnCompassUpdate(location::CompassInfo const & info);
 
   int GetDrawScale();
 
@@ -85,6 +101,8 @@ private:
   void DoPaint(shared_ptr<PaintEvent> const & e);
   void EndPaint(shared_ptr<PaintEvent> const & e);
 
+  void DrawAdditionalInfo(shared_ptr<PaintEvent> const & e);
+
   void DrawModel(shared_ptr<PaintEvent> const & e, ScreenBase const & screen,
                  m2::RectD const & renderRect, int baseScale);
 
@@ -94,9 +112,15 @@ private:
   int GetWidth() const;
   int GetHeight() const;
 
+  void SetFullScreenMode(bool enable) { m_isFullScreenMode = enable; }
+
 private:
   unique_ptr<gui::Controller> m_guiController; // can be nullptr if gui subsystem not initialized
   unique_ptr<RenderPolicy> m_renderPolicy;
+  unique_ptr<InformationDisplay> m_informationDisplay;
+  bool m_isFullScreenMode = false;
+  unique_ptr<ActiveMapsBridge> m_mapsBridge;
+  unique_ptr<Animator> m_animator;
 
   ScalesProcessor m_scales;
   Navigator m_navigator;
@@ -118,4 +142,4 @@ private:
   bool m_wasLongClick;
 };
 
-}
+} // namespace rg

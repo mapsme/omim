@@ -1,19 +1,21 @@
 #pragma once
 
 #include "anim/segment_interpolation.hpp"
+#include "render/navigator.hpp"
 
-class Framework;
+namespace rg
+{
 
 class MoveScreenTask : public anim::SegmentInterpolation
 {
 private:
 
-  Framework * m_framework;
+  Navigator & m_navigator;
   m2::PointD m_outPt;
 
 public:
 
-  MoveScreenTask(Framework * framework,
+  MoveScreenTask(Navigator & navigator,
                  m2::PointD const & startPt,
                  m2::PointD const & endPt,
                  double interval);
@@ -23,3 +25,5 @@ public:
 
   bool IsVisual() const;
 };
+
+}

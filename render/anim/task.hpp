@@ -35,9 +35,8 @@ namespace anim
 
     threads::Mutex m_mutex;
 
-    Controller * m_controller;
-
   protected:
+    Controller * m_controller;
 
     void SetState(EState state);
     friend class Controller;

@@ -208,6 +208,9 @@ void MainWindow::LocationStateModeChanged(location::EMyPositionMode mode)
     return;
   }
 
+
+  m_pMyPositionAction->setChecked(mode != location::MODE_UNKNOWN_POSITION);
+
   if (mode == location::MODE_UNKNOWN_POSITION)
     m_locationService->Stop();
 

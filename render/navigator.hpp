@@ -70,6 +70,7 @@ public:
   m2::PointD ShiftPoint(m2::PointD const & pt) const;
 
   int GetDrawScale() const;
+  ScalesProcessor const & GetScaleProcessor() const { return m_scales; }
 
 private:
   ScalesProcessor const & m_scales;

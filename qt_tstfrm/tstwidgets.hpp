@@ -1,5 +1,7 @@
 #pragma once
 
+#include "qt/rg_ogl_context.hpp"
+
 #include "graphics/opengl/texture.hpp"
 #include "graphics/opengl/renderbuffer.hpp"
 #include "graphics/opengl/framebuffer.hpp"
@@ -8,38 +10,42 @@
 
 #include "graphics/resource_manager.hpp"
 
-#include "map/qgl_render_context.hpp"
-
 #include "std/shared_ptr.hpp"
 
-#include <QtOpenGL/QGLWidget>
+#include <QtWidgets/QOpenGLWidget>
 
 namespace graphics
 {
-  namespace gl
-  {
-    class Screen;
-  }
-}
+
+namespace gl
+{
+
+class Screen;
+
+} // namespace gl
+
+} // namespace graphics
 
 namespace tst
 {
-  class GLDrawWidget : public QGLWidget
-  {
-  public:
 
-    shared_ptr<graphics::ResourceManager> m_resourceManager;
+class GLDrawWidget : public QOpenGLWidget
+{
+public:
 
-    shared_ptr<graphics::gl::FrameBuffer> m_primaryFrameBuffer;
-    shared_ptr<qt::gl::RenderContext> m_primaryContext;
-    shared_ptr<graphics::Screen> m_primaryScreen;
+  shared_ptr<graphics::ResourceManager> m_resourceManager;
 
-    virtual void initializeGL();
-    virtual void resizeGL(int w, int h);
-    virtual void paintGL();
+  shared_ptr<graphics::gl::FrameBuffer> m_primaryFrameBuffer;
+  shared_ptr<rg::OGLContext> m_primaryContext;
+  shared_ptr<graphics::Screen> m_primaryScreen;
 
-  public:
+  virtual void initializeGL();
+  virtual void resizeGL(int w, int h);
+  virtual void paintGL();
 
-    virtual void DoDraw(shared_ptr<graphics::Screen> const & screen) = 0;
-  };
-}
+public:
+
+  virtual void DoDraw(shared_ptr<graphics::Screen> const & screen) = 0;
+};
+
+} // namespace tst

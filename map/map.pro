@@ -45,7 +45,3 @@ SOURCES += \
     user_mark.cpp \
     user_mark_container.cpp \
     feature_vec_model.cpp \
-
-!iphone*:!tizen*:!android* {
-  QT += opengl
-}

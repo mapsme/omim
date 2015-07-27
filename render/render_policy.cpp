@@ -77,6 +77,7 @@ void RenderPolicy::OnSize(int w, int h)
 void RenderPolicy::AddAnimTask(shared_ptr<anim::Task> const & task)
 {
   m_controller->AddTask(task);
+  m_windowHandle->invalidate();
 }
 
 void RenderPolicy::StartDrag()
@@ -261,6 +262,8 @@ void RenderPolicy::InitWindowsHandle(VideoTimer * timer, shared_ptr<graphics::Re
   m_windowHandle->setUpdatesEnabled(false);
   m_windowHandle->setVideoTimer(timer);
   m_windowHandle->setRenderContext(context);
+
+  m_controller->SetInvalidateFn(bind(&WindowHandle::invalidate, m_windowHandle.get()));
 }
 
 GPUDrawer * RenderPolicy::CreateDrawer(bool isDefaultFB,

@@ -1,5 +1,4 @@
-#include "map/country_status_display.hpp"
-#include "map/framework.hpp"
+#include "render/country_status_display.hpp"
 
 #include "gui/controller.hpp"
 #include "gui/button.hpp"
@@ -19,35 +18,42 @@
 
 using namespace storage;
 
+namespace rg
+{
+
 CountryStatusDisplay::CountryStatusDisplay(Params const & p)
   : gui::Element(p)
   , m_activeMaps(p.m_activeMaps)
 {
-  m_activeMapsSlotID = m_activeMaps.AddListener(this);
   gui::Button::Params bp;
 
   bp.m_depth = depth();
-  bp.m_minWidth = 200;
-  bp.m_minHeight = 40;
+  bp.m_minWidth = 260;
+  bp.m_minHeight = 56;
   bp.m_position = graphics::EPosCenter;
 
-  auto createButtonFn = [this] (gui::Button::Params const & params)
+  auto createButtonFn = [this] (gui::Button::Params const & params,
+      graphics::Color const & activeButtonColor, graphics::Color const & pressedButtonColor)
   {
     gui::Button * result = new gui::Button(params);
     result->setIsVisible(false);
     result->setOnClickListener(bind(&CountryStatusDisplay::OnButtonClicked, this, _1));
 
-    result->setFont(EActive, graphics::FontDesc(16, graphics::Color(255, 255, 255, 255)));
-    result->setFont(EPressed, graphics::FontDesc(16, graphics::Color(255, 255, 255, 255)));
+    result->setFont(EActive, graphics::FontDesc(15, graphics::Color(255, 255, 255, 255)));
+    result->setFont(EPressed, graphics::FontDesc(15, graphics::Color(255, 255, 255, 255)));
 
-    result->setColor(EActive, graphics::Color(0, 0, 0, 0.6 * 255));
-    result->setColor(EPressed, graphics::Color(0, 0, 0, 0.4 * 255));
+    result->setColor(EActive, activeButtonColor);
+    result->setColor(EPressed, pressedButtonColor);
 
     return result;
   };
 
-  m_primaryButton.reset(createButtonFn(bp));
-  m_secondaryButton.reset(createButtonFn(bp));
+  m_primaryButton.reset(createButtonFn(bp, graphics::Color(32, 152, 82, 255),
+                                       graphics::Color(24, 128, 68, 255)));
+  uint8_t constexpr activeAlpha = static_cast<uint8_t>(0.44 * 255);
+  uint8_t constexpr pressedAlpha = static_cast<uint8_t>(0.72 * 255);
+  m_secondaryButton.reset(createButtonFn(bp, graphics::Color(0, 0, 0, activeAlpha),
+                                         graphics::Color(0, 0, 0, pressedAlpha)));
 
   gui::TextView::Params tp;
   tp.m_depth = depth();
@@ -58,39 +64,37 @@ CountryStatusDisplay::CountryStatusDisplay(Params const & p)
   m_label->setFont(gui::Element::EActive, graphics::FontDesc(18));
 
   setIsVisible(false);
+
+  ASSERT(m_activeMaps != nullptr, ());
+  m_activeMaps->SetStatusListener(bind(&CountryStatusDisplay::CountryStatusChanged, this, _1, _2));
+  m_activeMaps->SetDownloadListener(bind(&CountryStatusDisplay::DownloadingProgressUpdate, this, _1, _2));
 }
 
 CountryStatusDisplay::~CountryStatusDisplay()
 {
-  m_activeMaps.RemoveListener(m_activeMapsSlotID);
+  m_activeMaps->ResetListeners();
 }
 
 void CountryStatusDisplay::SetCountryIndex(TIndex const & idx)
 {
   if (m_countryIdx != idx)
   {
-    Lock();
     m_countryIdx = idx;
 
     if (m_countryIdx.IsValid())
     {
-      m_countryStatus = m_activeMaps.GetCountryStatus(m_countryIdx);
-      m_displayMapName = m_activeMaps.GetFormatedCountryName(m_countryIdx);
+      m_countryStatus = m_activeMaps->GetCountryStatus(m_countryIdx);
+      m_displayMapName = m_activeMaps->GetCountryName(m_countryIdx);
     }
 
     Repaint();
-    Unlock();
   }
 }
 
 void CountryStatusDisplay::setIsVisible(bool isVisible) const
 {
   if (isVisible && isVisible != TBase::isVisible())
-  {
-    Lock();
     Repaint();
-    Unlock();
-  }
 
   TBase::setIsVisible(isVisible);
 }
@@ -111,13 +115,11 @@ void CountryStatusDisplay::draw(graphics::OverlayRenderer * r,
 {
   if (isVisible())
   {
-    Lock();
     checkDirtyLayout();
 
     m_label->draw(r, m);
     m_primaryButton->draw(r, m);
     m_secondaryButton->draw(r, m);
-    Unlock();
   }
 }
 
@@ -209,33 +211,26 @@ bool CountryStatusDisplay::onTapCancelled(m2::PointD const & pt)
   return OnTapAction(bind(&gui::Button::onTapCancelled, _1, _2), pt);
 }
 
-void CountryStatusDisplay::CountryStatusChanged(ActiveMapsLayout::TGroup const & group, int position,
-                                                TStatus const & /*oldStatus*/, TStatus const & newStatus)
+void CountryStatusDisplay::CountryStatusChanged(storage::TIndex const & index, storage::TStatus const & newStatus)
 {
-  TIndex index = m_activeMaps.GetCoreIndex(group, position);
   if (m_countryIdx == index)
   {
-    Lock();
     m_countryStatus = newStatus;
     if (m_countryStatus == TStatus::EDownloading)
-      m_progressSize = m_activeMaps.GetDownloadableCountrySize(m_countryIdx);
+      m_progressSize = m_activeMaps->GetDownloadCountrySize(m_countryIdx);
     else
       m_progressSize = LocalAndRemoteSizeT(0, 0);
     Repaint();
-    Unlock();
   }
 }
 
-void CountryStatusDisplay::DownloadingProgressUpdate(ActiveMapsLayout::TGroup const & group, int position, LocalAndRemoteSizeT const & progress)
+void CountryStatusDisplay::DownloadingProgressUpdate(storage::TIndex const & index, storage::LocalAndRemoteSizeT const & progress)
 {
-  TIndex index = m_activeMaps.GetCoreIndex(group, position);
   if (m_countryIdx == index)
   {
-    Lock();
-    m_countryStatus = m_activeMaps.GetCountryStatus(index);
+    m_countryStatus = m_activeMaps->GetCountryStatus(index);
     m_progressSize = progress;
     Repaint();
-    Unlock();
   }
 }
 
@@ -326,22 +321,24 @@ void CountryStatusDisplay::SetContentForState()
 
 namespace
 {
-  void FormatMapSize(uint64_t sizeInBytes, string & units, uint64_t & sizeToDownload)
+
+void FormatMapSize(uint64_t sizeInBytes, string & units, uint64_t & sizeToDownload)
+{
+  int const mbInBytes = 1024 * 1024;
+  int const kbInBytes = 1024;
+  if (sizeInBytes < mbInBytes)
   {
-    int const mbInBytes = 1024 * 1024;
-    int const kbInBytes = 1024;
-    if (sizeInBytes < mbInBytes)
-    {
-      sizeToDownload = (sizeInBytes + kbInBytes / 2) / kbInBytes;
-      units = "KB";
-    }
-    else
-    {
-      sizeToDownload = (sizeInBytes + mbInBytes / 2) / mbInBytes;
-      units = "MB";
-    }
+    sizeToDownload = (sizeInBytes + kbInBytes / 2) / kbInBytes;
+    units = "KB";
+  }
+  else
+  {
+    sizeToDownload = (sizeInBytes + mbInBytes / 2) / mbInBytes;
+    units = "MB";
   }
 }
+
+} // namespace
 
 void CountryStatusDisplay::SetContentForDownloadPropose()
 {
@@ -349,7 +346,7 @@ void CountryStatusDisplay::SetContentForDownloadPropose()
   ASSERT(m_primaryButton->isVisible(), ());
   ASSERT(m_secondaryButton->isVisible(), ());
 
-  LocalAndRemoteSizeT mapAndRoutingSize = m_activeMaps.GetRemoteCountrySizes(m_countryIdx);
+  LocalAndRemoteSizeT mapAndRoutingSize = m_activeMaps->GetRemoteCountrySize(m_countryIdx);
 
   m_label->setText(m_displayMapName);
   uint64_t sizeToDownload;
@@ -358,7 +355,8 @@ void CountryStatusDisplay::SetContentForDownloadPropose()
   m_primaryButton->setText(FormatStatusMessage("country_status_download_routing", &sizeToDownload, &units));
 
   FormatMapSize(mapAndRoutingSize.first, units, sizeToDownload);
-  m_secondaryButton->setText(FormatStatusMessage("country_status_download", &sizeToDownload, &units));
+  m_secondaryButton->setText(FormatStatusMessage("country_status_download",
+                                                 &sizeToDownload, &units));
 }
 
 void CountryStatusDisplay::SetContentForProgress()
@@ -406,13 +404,15 @@ void CountryStatusDisplay::ComposeElementsForState()
   ASSERT(visibleCount > 0, ());
 
   m2::PointD const & pv = pivot();
+  size_t const emptySpace = 16 * visualScale();
   if (visibleCount == 1)
     m_label->setPivot(pv);
+
   else if (visibleCount == 2)
   {
     size_t const labelHeight = m_label->GetBoundRect().SizeY();
     size_t const buttonHeight = m_primaryButton->GetBoundRect().SizeY();
-    size_t const commonHeight = buttonHeight + labelHeight + 10 * visualScale();
+    size_t const commonHeight = buttonHeight + labelHeight + emptySpace;
 
     m_label->setPivot(m2::PointD(pv.x, pv.y - commonHeight / 2 + labelHeight / 2));
     m_primaryButton->setPivot(m2::PointD(pv.x, pv.y + commonHeight / 2 - buttonHeight / 2));
@@ -422,7 +422,6 @@ void CountryStatusDisplay::ComposeElementsForState()
     size_t const labelHeight = m_label->GetBoundRect().SizeY();
     size_t const primButtonHeight = m_primaryButton->GetBoundRect().SizeY();
     size_t const secButtonHeight = m_secondaryButton->GetBoundRect().SizeY();
-    size_t const emptySpace = 10 * visualScale();
 
     double const offsetFromCenter = (primButtonHeight / 2 + emptySpace);
 
@@ -451,12 +450,11 @@ void CountryStatusDisplay::OnButtonClicked(gui::Element const * button)
   if (button == m_primaryButton.get())
     options = SetOptions(options, TMapOptions::ECarRouting);
 
-  ASSERT(m_downloadCallback, ());
   int opt = static_cast<int>(options);
   if (IsStatusFailed())
     opt = -1;
 
-  m_downloadCallback(m_countryIdx, opt);
+  m_activeMaps->DownloadMap(m_countryIdx, opt);
 }
 
 void CountryStatusDisplay::Repaint() const
@@ -470,16 +468,4 @@ bool CountryStatusDisplay::IsStatusFailed() const
   return m_countryStatus == TStatus::EOutOfMemFailed || m_countryStatus == TStatus::EDownloadFailed;
 }
 
-void CountryStatusDisplay::Lock() const
-{
-#ifdef OMIM_OS_ANDROID
-  m_mutex.Lock();
-#endif
-}
-
-void CountryStatusDisplay::Unlock() const
-{
-#ifdef OMIM_OS_ANDROID
-  m_mutex.Unlock();
-#endif
-}
+} // namespace rg
