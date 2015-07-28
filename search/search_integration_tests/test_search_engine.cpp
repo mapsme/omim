@@ -5,8 +5,11 @@
 
 #include "search/search_query.hpp"
 #include "search/search_query_factory.hpp"
+#include "search/suggest.hpp"
 
 #include "platform/platform.hpp"
+
+#include "defines.hpp"
 
 #include "std/unique_ptr.hpp"
 
@@ -40,7 +43,7 @@ class TestSearchQueryFactory : public search::SearchQueryFactory
 };
 }  // namespace
 
-TestSearchEngine::TestSearchEngine(string const & locale)
+TestSearchEngine::TestSearchEngine(std::string const & locale)
   : m_platform(GetPlatform())
   , m_infoGetter(m_platform.GetReader(PACKED_POLYGONS_FILE), m_platform.GetReader(COUNTRIES_FILE))
   , m_engine(*this, m_platform.GetReader(SEARCH_CATEGORIES_FILE_NAME), m_infoGetter, locale,
