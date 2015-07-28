@@ -70,13 +70,13 @@ namespace integration
   shared_ptr<search::Engine> CreateSearchEngine(shared_ptr<model::FeaturesFetcher> featuresFetcher)
   {
     ASSERT(featuresFetcher, ());
-    search::Engine::IndexType const & index = featuresFetcher->GetIndex();
+    Index & index = featuresFetcher->GetIndex();
 
     Platform const & pl = GetPlatform();
     try
     {
       shared_ptr<search::Engine> searchEngine(new search::Engine(
-          &index, pl.GetReader(SEARCH_CATEGORIES_FILE_NAME), pl.GetReader(PACKED_POLYGONS_FILE),
+          index, pl.GetReader(SEARCH_CATEGORIES_FILE_NAME), pl.GetReader(PACKED_POLYGONS_FILE),
           pl.GetReader(COUNTRIES_FILE), languages::GetCurrentOrig(),
           make_unique<search::SearchQueryFactory>()));
       return searchEngine;
