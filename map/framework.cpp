@@ -1238,7 +1238,7 @@ search::Engine * Framework::GetSearchEngine() const
     try
     {
       m_pSearchEngine.reset(new search::Engine(
-          &m_model.GetIndex(), pl.GetReader(SEARCH_CATEGORIES_FILE_NAME),
+          const_cast<Index &>(m_model.GetIndex()), pl.GetReader(SEARCH_CATEGORIES_FILE_NAME),
           pl.GetReader(PACKED_POLYGONS_FILE), pl.GetReader(COUNTRIES_FILE),
           languages::GetCurrentOrig(), make_unique<search::SearchQueryFactory>()));
     }

@@ -30,10 +30,8 @@ class Engine
   typedef function<void (Results const &)> SearchCallbackT;
 
 public:
-  typedef Index IndexType;
-
   // Doesn't take ownership of @pIndex. Takes ownership of pCategories
-  Engine(IndexType const * pIndex, Reader * pCategoriesR, ModelReaderPtr polyR,
+  Engine(Index & index, Reader * pCategoriesR, ModelReaderPtr polyR,
          ModelReaderPtr countryR, string const & locale, unique_ptr<SearchQueryFactory> && factory);
   ~Engine();
 
