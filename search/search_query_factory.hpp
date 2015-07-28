@@ -12,7 +12,7 @@ public:
   virtual ~SearchQueryFactory() = default;
 
   virtual unique_ptr<Query> BuildSearchQuery(
-      Index const * index, CategoriesHolder const * categories,
+      Index & index, CategoriesHolder const * categories,
       Query::TStringsToSuggestVector const * stringsToSuggest,
       storage::CountryInfoGetter const * infoGetter)
   {
