@@ -135,6 +135,7 @@ void RouteRenderer::Setup(m2::PolylineD const & routePolyline, vector<double> co
   m_turns = turns;
   m_color = color;
   m_endOfRoutePoint = routePolyline.GetPoints().back();
+  m_distanceFromBegin = 0.0;
   m_waitForConstruction = true;
 }
 
@@ -200,6 +201,8 @@ void RouteRenderer::ClearRoute(graphics::Screen * dlScreen)
 
   m_arrowBorders.clear();
   m_routeSegments.clear();
+
+  m_distanceFromBegin = 0.0;
 }
 
 float RouteRenderer::CalculateRouteHalfWidth(ScreenBase const & screen, double & zoom) const

@@ -182,10 +182,13 @@ void Engine::OnLocationError()
 }
 
 void Engine::OnLocationUpdate(location::GpsInfo const & info, bool isNavigable,
-                              location::RouteMatchingInfo const & /*routeInfo*/)
+                              location::RouteMatchingInfo const & routeInfo)
 {
   if (m_informationDisplay)
     m_informationDisplay->locationState()->OnLocationUpdate(info, isNavigable);
+
+  if (routeInfo.HasDistanceFromBegin())
+    m_routeRenderer->UpdateDistanceFromBegin(routeInfo.GetDistanceFromBegin());
 }
 
 void Engine::OnCompassUpdate(location::CompassInfo const & info)
@@ -538,9 +541,12 @@ void Engine::OnProcessTouchTask(m2::PointD const & pt, unsigned ms)
 
 bool Engine::GetMyPosition(m2::PointD & myPosition)
 {
-  //TODO: implement my position
-  myPosition = m2::PointD(37.538384385965237, 67.536755563112848);
-  return true;
+  if (m_informationDisplay)
+  {
+    myPosition = m_informationDisplay->locationState()->Position();
+    return true;
+  }
+  return false;
 }
 
 void Engine::AddRoute(m2::PolylineD const & routePolyline, vector<double> const & turns, graphics::Color const & color)
