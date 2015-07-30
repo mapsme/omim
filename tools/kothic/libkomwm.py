@@ -41,6 +41,15 @@ def komap_mapswithme(options):
 
     # Build classificator tree from mapcss-mapping.csv file
     types_file = open(os.path.join(ddir, 'types.txt'), "w")
+    colors_file_name = os.path.join(ddir, 'colors.txt')
+    colors = set()
+    if os.path.exists(colors_file_name):
+        colors_in_file = open(colors_file_name, "r")
+        for colorLine in colors_in_file:
+            colors.add(int(colorLine))
+        colors_in_file.close()
+    colors_file = open(colors_file_name, "w")
+
     for row in csv.reader(open(os.path.join(ddir, 'mapcss-mapping.csv')), delimiter=';'):
         cl = row[0].replace("|", "-")
         pairs = [i.strip(']').split("=") for i in row[1].split(',')[0].split('[')]
@@ -73,6 +82,16 @@ def komap_mapswithme(options):
     for v in classificator.values():
         for t in v.keys():
             mapcss_mapping_tags.add(t)
+
+    def mwm_encode_color(st, prefix='', default='black'):
+        if prefix:
+            prefix += "-"
+        opacity = hex(255 - int(255 * float(st.get(prefix + "opacity", 1))))
+        color = whatever_to_hex(st.get(prefix + 'color', default))
+        color = color[1] + color[1] + color[3] + color[3] + color[5] + color[5]
+        result = int(opacity + color, 16)
+        colors.add(result)
+        return result
 
     # Parse style mapcss
     style = MapCSS(options.minzoom, options.maxzoom + 1)
@@ -359,6 +378,18 @@ def komap_mapswithme(options):
 
     visibility_file.close()
     classificator_file.close()
+
+    for c in sorted(colors):
+        colors_file.write("%d\n" % (c))
+    colors_file.close()
+
+    # print "build, sec: %s" % (atbuild.ElapsedSec())
+    # print "zstyle %s times, sec: %s" % (atzstyles.Count(), atzstyles.ElapsedSec())
+    # print "drcont %s times, sec: %s" % (atdrcont.Count(), atdrcont.ElapsedSec())
+    # print "line %s times, sec: %s" % (atline.Count(), atline.ElapsedSec())
+    # print "area %s times, sec: %s" % (atarea.Count(), atarea.ElapsedSec())
+    # print "node %s times, sec: %s" % (atnode.Count(), atnode.ElapsedSec())
+    # print "writing files, sec: %s" % (atwrite.ElapsedSec())
 
 # Main
 
