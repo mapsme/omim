@@ -541,7 +541,7 @@ void Engine::OnProcessTouchTask(m2::PointD const & pt, unsigned ms)
 
 bool Engine::GetMyPosition(m2::PointD & myPosition)
 {
-  if (m_informationDisplay)
+  if (m_informationDisplay && m_informationDisplay->locationState()->IsModeHasPosition())
   {
     myPosition = m_informationDisplay->locationState()->Position();
     return true;
@@ -558,6 +558,15 @@ void Engine::AddRoute(m2::PolylineD const & routePolyline, vector<double> const 
 void Engine::RemoveRoute(bool deactivateFollowing)
 {
   m_routeRenderer->Clear();
+
+  if (m_informationDisplay && deactivateFollowing)
+    m_informationDisplay->locationState()->StopRoutingMode();
+}
+
+void Engine::StartRouteFollow()
+{
+  if (m_informationDisplay)
+    m_informationDisplay->locationState()->StartRouteFollow();
 }
 
 }

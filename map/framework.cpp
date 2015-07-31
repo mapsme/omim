@@ -1893,9 +1893,7 @@ void Framework::FollowRoute()
   }
   else
   {
-    m_rgEngine->SwitchMyPositionNextMode();
-    m2::PointD const & position = m_routingSession.GetUserCurrentPosition();
-    m_rgEngine->Scale(scales::GetNavigationScale(), position, true);
+    m_rgEngine->StartRouteFollow();
   }
 }
 

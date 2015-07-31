@@ -91,6 +91,7 @@ public:
   bool GetMyPosition(m2::PointD & myPosition);
   void AddRoute(m2::PolylineD const & routePolyline, vector<double> const & turns, graphics::Color const & color);
   void RemoveRoute(bool deactivateFollowing);
+  void StartRouteFollow();
 
 private:
   void StartDrag(DragEvent const & e);
