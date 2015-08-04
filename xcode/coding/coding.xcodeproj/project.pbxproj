@@ -72,8 +72,8 @@
 		6753428C1A3F588C00A0A8C3 /* byte_stream.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 675342351A3F588B00A0A8C3 /* byte_stream.hpp */; };
 		6753428F1A3F588C00A0A8C3 /* coder_util.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 675342381A3F588B00A0A8C3 /* coder_util.hpp */; };
 		675342901A3F588C00A0A8C3 /* coder.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 675342391A3F588B00A0A8C3 /* coder.hpp */; };
-		675342911A3F588C00A0A8C3 /* compressed_bit_vector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6753423A1A3F588B00A0A8C3 /* compressed_bit_vector.cpp */; };
-		675342921A3F588C00A0A8C3 /* compressed_bit_vector.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 6753423B1A3F588B00A0A8C3 /* compressed_bit_vector.hpp */; };
+		675342911A3F588C00A0A8C3 /* old_compressed_bit_vector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6753423A1A3F588B00A0A8C3 /* old_compressed_bit_vector.cpp */; };
+		675342921A3F588C00A0A8C3 /* old_compressed_bit_vector.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 6753423B1A3F588B00A0A8C3 /* old_compressed_bit_vector.hpp */; };
 		675342931A3F588C00A0A8C3 /* compressed_varnum_vector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6753423C1A3F588B00A0A8C3 /* compressed_varnum_vector.cpp */; };
 		675342941A3F588C00A0A8C3 /* compressed_varnum_vector.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 6753423D1A3F588B00A0A8C3 /* compressed_varnum_vector.hpp */; };
 		675342951A3F588C00A0A8C3 /* constants.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 6753423E1A3F588B00A0A8C3 /* constants.hpp */; };
@@ -221,8 +221,8 @@
 		675342351A3F588B00A0A8C3 /* byte_stream.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = byte_stream.hpp; sourceTree = "<group>"; };
 		675342381A3F588B00A0A8C3 /* coder_util.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = coder_util.hpp; sourceTree = "<group>"; };
 		675342391A3F588B00A0A8C3 /* coder.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = coder.hpp; sourceTree = "<group>"; };
-		6753423A1A3F588B00A0A8C3 /* compressed_bit_vector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = compressed_bit_vector.cpp; sourceTree = "<group>"; };
-		6753423B1A3F588B00A0A8C3 /* compressed_bit_vector.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = compressed_bit_vector.hpp; sourceTree = "<group>"; };
+		6753423A1A3F588B00A0A8C3 /* old_compressed_bit_vector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = old_compressed_bit_vector.cpp; sourceTree = "<group>"; };
+		6753423B1A3F588B00A0A8C3 /* old_compressed_bit_vector.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = old_compressed_bit_vector.hpp; sourceTree = "<group>"; };
 		6753423C1A3F588B00A0A8C3 /* compressed_varnum_vector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = compressed_varnum_vector.cpp; sourceTree = "<group>"; };
 		6753423D1A3F588B00A0A8C3 /* compressed_varnum_vector.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = compressed_varnum_vector.hpp; sourceTree = "<group>"; };
 		6753423E1A3F588B00A0A8C3 /* constants.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = constants.hpp; sourceTree = "<group>"; };
@@ -425,8 +425,8 @@
 				675342351A3F588B00A0A8C3 /* byte_stream.hpp */,
 				675342381A3F588B00A0A8C3 /* coder_util.hpp */,
 				675342391A3F588B00A0A8C3 /* coder.hpp */,
-				6753423A1A3F588B00A0A8C3 /* compressed_bit_vector.cpp */,
-				6753423B1A3F588B00A0A8C3 /* compressed_bit_vector.hpp */,
+				6753423A1A3F588B00A0A8C3 /* old_compressed_bit_vector.cpp */,
+				6753423B1A3F588B00A0A8C3 /* old_compressed_bit_vector.hpp */,
 				6753423C1A3F588B00A0A8C3 /* compressed_varnum_vector.cpp */,
 				6753423D1A3F588B00A0A8C3 /* compressed_varnum_vector.hpp */,
 				6753423E1A3F588B00A0A8C3 /* constants.hpp */,
@@ -543,7 +543,7 @@
 				675342BF1A3F588C00A0A8C3 /* streams_common.hpp in Headers */,
 				6753428F1A3F588C00A0A8C3 /* coder_util.hpp in Headers */,
 				675342C31A3F588C00A0A8C3 /* trie_reader.hpp in Headers */,
-				675342921A3F588C00A0A8C3 /* compressed_bit_vector.hpp in Headers */,
+				675342921A3F588C00A0A8C3 /* old_compressed_bit_vector.hpp in Headers */,
 				670D04BE1B0BA92D0013A7AC /* file64_api.hpp in Headers */,
 				675342A11A3F588C00A0A8C3 /* file_sort.hpp in Headers */,
 				675342971A3F588C00A0A8C3 /* diff_patch_common.hpp in Headers */,
@@ -696,7 +696,7 @@
 				675342871A3F588C00A0A8C3 /* blob_indexer.cpp in Sources */,
 				675342D31A3F588C00A0A8C3 /* zip_reader.cpp in Sources */,
 				675342931A3F588C00A0A8C3 /* compressed_varnum_vector.cpp in Sources */,
-				675342911A3F588C00A0A8C3 /* compressed_bit_vector.cpp in Sources */,
+				675342911A3F588C00A0A8C3 /* old_compressed_bit_vector.cpp in Sources */,
 				6753429F1A3F588C00A0A8C3 /* file_reader.cpp in Sources */,
 				675342C51A3F588C00A0A8C3 /* uri.cpp in Sources */,
 				675342BB1A3F588C00A0A8C3 /* reader.cpp in Sources */,
