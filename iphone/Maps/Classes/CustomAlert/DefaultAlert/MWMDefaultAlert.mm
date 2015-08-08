@@ -97,7 +97,7 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
   [Statistics.instance logEvent:@"Disabled Location Alert - open"];
   RightButtonAction action = ^
   {
-    GetFramework().GetLocationState()->SwitchToNextMode();
+    GetFramework().SwitchMyPositionNextMode();
   };
   return [MWMDefaultAlert defaultAlertWithTitle:@"dialog_routing_location_turn_on" message:@"dialog_routing_location_unknown_turn_on" rightButtonTitle:@"turn_on" leftButtonTitle:@"later" rightButtonAction:action];
 }
