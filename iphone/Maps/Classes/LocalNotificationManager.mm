@@ -111,9 +111,9 @@ typedef void (^CompletionHandler)(UIBackgroundFetchResult);
   /// @todo Fix this logic after Framework -> CountryTree -> ActiveMapLayout refactoring.
   /// Call download via Framework.
   Framework & f = GetFramework();
-  f.GetCountryTree().GetActiveMapLayout().DownloadMap(index, MapOptions::Map);
+  f.GetActiveMaps()->DownloadMap(index, MapOptions::Map);
   double const defaultZoom = 10;
-  f.ShowRect(f.GetCountryBounds(index).Center(), defaultZoom);
+  f.ShowRect(f.GetCountryBounds(index), defaultZoom);
 }
 
 - (NSString *)flagStringForIndex:(TIndex)index
