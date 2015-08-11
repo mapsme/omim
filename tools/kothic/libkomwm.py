@@ -50,6 +50,22 @@ def komap_mapswithme(options):
         colors_in_file.close()
     colors_file = open(colors_file_name, "w")
 
+    patterns = []
+    def addPattern(dashes):
+        if dashes:
+            for pattern in patterns:
+                if (pattern == dashes):
+                    return
+            patterns.append(dashes)
+
+    patterns_file_name = os.path.join(ddir, 'patterns.txt')
+    if os.path.exists(patterns_file_name):
+        patterns_in_file = open(patterns_file_name, "r")
+        for patternsLine in patterns_in_file:
+            addPattern([float(x) for x in patternsLine.split()])
+        patterns_in_file.close()
+    patterns_file = open(patterns_file_name, "w")
+
     for row in csv.reader(open(os.path.join(ddir, 'mapcss-mapping.csv')), delimiter=';'):
         cl = row[0].replace("|", "-")
         pairs = [i.strip(']').split("=") for i in row[1].split(',')[0].split('[')]
@@ -221,6 +237,7 @@ def komap_mapswithme(options):
                             dr_line.priority = min(int(st.get('z-index', 0) + 999), 20000)
                             dashes = st.get('casing-dashes', st.get('dashes', []))
                             dr_line.dashdot.dd.extend(dashes)
+                            addPattern(dr_line.dashdot.dd)
                             dr_line.cap = dr_linecaps.get(st.get('casing-linecap', 'butt'), BUTTCAP)
                             dr_line.join = dr_linejoins.get(st.get('casing-linejoin', 'round'), ROUNDJOIN)
                             dr_element.lines.extend([dr_line])
@@ -244,6 +261,7 @@ def komap_mapswithme(options):
                             dr_line.color = mwm_encode_color(st)
                             for i in st.get('dashes', []):
                                 dr_line.dashdot.dd.extend([max(float(i), 1) * WIDTH_SCALE])
+                            addPattern(dr_line.dashdot.dd)
                             dr_line.cap = dr_linecaps.get(st.get('linecap', 'butt'), BUTTCAP)
                             dr_line.join = dr_linejoins.get(st.get('linejoin', 'round'), ROUNDJOIN)
                             dr_line.priority = min((int(st.get('z-index', 0)) + 1000), 20000)
@@ -382,6 +400,10 @@ def komap_mapswithme(options):
     for c in sorted(colors):
         colors_file.write("%d\n" % (c))
     colors_file.close()
+
+    for p in patterns:
+        patterns_file.write("%s\n" % (' '.join(str(elem) for elem in p)))
+    patterns_file.close()
 
     # print "build, sec: %s" % (atbuild.ElapsedSec())
     # print "zstyle %s times, sec: %s" % (atzstyles.Count(), atzstyles.ElapsedSec())
