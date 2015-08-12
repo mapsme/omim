@@ -232,7 +232,7 @@ typedef NS_ENUM(NSUInteger, MWMPlacePageManagerState)
     return;
 
   UserMark const * bookmark = bookmarkCategory->GetUserMark(bookmarkAndCategory.second);
-  ASSERT_EQUAL(bookmarkAndCategory, f.FindBookmark(bookmark), "");
+  ASSERT_EQUAL(bookmarkAndCategory, f.FindBookmark(bookmark), ());
 
   self.entity.type = MWMPlacePageEntityTypeRegular;
 
