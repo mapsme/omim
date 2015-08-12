@@ -52,10 +52,7 @@ def komap_mapswithme(options):
 
     patterns = []
     def addPattern(dashes):
-        if dashes:
-            for pattern in patterns:
-                if (pattern == dashes):
-                    return
+        if dashes and dashes not in patterns:
             patterns.append(dashes)
 
     patterns_file_name = os.path.join(ddir, 'patterns.txt')
