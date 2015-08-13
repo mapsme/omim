@@ -43,10 +43,10 @@
     [self setPendingPositionAnimation];
   else
   {
-    static NSDictionary * stateMap = @{@(location::State::MODE_UNKNOWN_POSITION).stringValue : @"btn_white_unknow_position",
-                                       @(location::State::MODE_NOT_FOLLOW).stringValue : @"btn_white_target_off_1",
-                                       @(location::State::MODE_FOLLOW).stringValue : @"btn_white_target_on",
-                                       @(location::State::MODE_ROTATE_AND_FOLLOW).stringValue : @"btn_white_direction"};
+    static NSDictionary * stateMap = @{@(location::MODE_UNKNOWN_POSITION).stringValue : @"btn_white_unknow_position",
+                                       @(location::MODE_NOT_FOLLOW).stringValue : @"btn_white_target_off_1",
+                                       @(location::MODE_FOLLOW).stringValue : @"btn_white_target_on",
+                                       @(location::MODE_ROTATE_AND_FOLLOW).stringValue : @"btn_white_direction"};
 
     [self.imageView stopAnimating];
     NSString * const imageName = stateMap[@(mode).stringValue];
@@ -80,11 +80,11 @@
 - (void)changeButtonFromState:(location::EMyPositionMode)beginState toState:(location::EMyPositionMode)endState
 {
   [self setImageNamed:endState];
-  static NSDictionary * stateMap = @{@(location::State::MODE_UNKNOWN_POSITION).stringValue : @"noposition",
-                                     @(location::State::MODE_PENDING_POSITION).stringValue : @"pending",
-                                     @(location::State::MODE_NOT_FOLLOW).stringValue : @"notfollow",
-                                     @(location::State::MODE_FOLLOW).stringValue : @"follow",
-                                     @(location::State::MODE_ROTATE_AND_FOLLOW).stringValue : @"followandrotate"};
+  static NSDictionary * stateMap = @{@(location::MODE_UNKNOWN_POSITION).stringValue : @"noposition",
+                                     @(location::MODE_PENDING_POSITION).stringValue : @"pending",
+                                     @(location::MODE_NOT_FOLLOW).stringValue : @"notfollow",
+                                     @(location::MODE_FOLLOW).stringValue : @"follow",
+                                     @(location::MODE_ROTATE_AND_FOLLOW).stringValue : @"followandrotate"};
   NSString * changeAnimation = [NSString stringWithFormat:@"%@_to_%@_",
                                 stateMap[@(beginState).stringValue], stateMap[@(endState).stringValue]];
   NSUInteger const animationImagesCount = 6;

@@ -780,29 +780,9 @@
 	<!-- Title for walking routes dialog after 3 built routes -->
 	<string name="share_walking_routes_congratulations">Selamat!</string>
 	<!-- Text for walking routes dialog after 3 built routes -->
-	<string name="share_walking_routes_mastering">Anda telah menguasai fungsi petunjuk berjalan. Bantu teman-teman Anda untuk menghemat waktu berjalan juga. Beri tahu mereka tentang MAPS.ME.</string>
+	<string name="share_walking_routes_mastering">Anda telah menguasai fungsi petunjuk berjalan. Bantu teman-teman Anda untuk menghemat waktu berjalan juga! Beri tahu mereka tentang MAPS.ME!</string>
 	<!-- Android notification about walking directions for update users -->
 	<string name="walking_notification_text">Maukah Anda mencobanya?</string>
 	<!-- Android notification with picture (rich) about walking directions for update users -->
 	<string name="walking_rich_notification_text">Petunjuk berjalan memberikan rute terpendek ke titik destinasi mana saja. Ayo coba sendiri dan bantu teman-teman Anda menghemat waktu perjalanan.</string>
-	<string name="rate_alert_title">Suka aplikasi ini?</string>
-	<string name="rate_alert_default_message">Terima kasih karena menggunakan MAPS.ME. Mohon beri peringkat untuk aplikasi ini. Masukan dari Anda membantu kami untuk menjadi lebih baik.</string>
-	<string name="rate_alert_five_star_message">Hore! Kami juga sangat menyukai Anda!</string>
-	<string name="rate_alert_four_star_message">Terima kasih, kami akan melakukan yang terbaik!</string>
-	<string name="rate_alert_less_than_four_star_message">Anda punya ide agar kami bisa membuatnya menjadi lebih baik?</string>
-	<string name="categories">Kategori</string>
-	<string name="history">Riwayat</string>
-	<string name="next_turn_then">Lalu</string>
-	<string name="closed">Tutup</string>
-	<string name="back_to">Kembali ke %s</string>
-	<string name="search_not_found">Maaf, saya tidak menemukan apa pun.</string>
-	<string name="search_not_found_query">Silakan coba kueri lainnya.</string>
-	<string name="search_not_found_map">Silakan unduh peta yang Anda gunakan dalam pencarian Anda.</string>
-	<string name="search_not_found_location">Unduh peta dari lokasi Anda saat ini.</string>
-	<string name="search_history_title">Riwayat Pencarian</string>
-	<string name="search_history_text">Akses kueri pencarian terbaru dengan cepat.</string>
-	<string name="update_maps_alert_title">Menelusuri peta kini lebih mudah</string>
-	<string name="update_maps_alert_message">Kami telah mengadakan peningkatan pada gaya peta: sekarang semua objek tampak lebih jelas dan mudah dipahami. Perbarui peta untuk menikmati seluruh manfaat dari desain baru ini.</string>
-	<string name="update_maps_alert_button_title">Perbarui peta</string>
-	<string name="clear_search">Bersihkan riwayat pencarian</string>
 </resources>

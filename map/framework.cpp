@@ -1720,7 +1720,10 @@ void Framework::FollowRoute()
   m_drapeEngine->MyPositionNextMode();
 
   m2::PointD const & position = m_routingSession.GetUserCurrentPosition();
-  m_drapeEngine->SetModelViewCenter(position, scales::GetNavigationScale(), true);
+  int const scale = (m_currentRouterType == RouterType::Pedestrian) ?
+                     scales::GetUpperComfortScale() :
+                     scales::GetNavigationScale();
+  m_drapeEngine->SetModelViewCenter(position, scale, true);
 }
 
 void Framework::SetRouter(RouterType type)
@@ -1775,15 +1778,6 @@ void Framework::RemoveRoute(bool deactivateFollowing)
   ASSERT_THREAD_CHECKER(m_threadChecker, ("RemoveRoute"));
   ASSERT(m_drapeEngine != nullptr, ());
   m_drapeEngine->RemoveRoute(deactivateFollowing);
-}
-
-void Framework::FollowRoute()
-{
-  int const scale = (m_currentRouterType == RouterType::Pedestrian) ?
-        scales::GetPedestrianNavigationScale() :
-        scales::GetNavigationScale();
-
-  GetLocationState()->StartRouteFollow(scale);
 }
 
 void Framework::CloseRouting()
