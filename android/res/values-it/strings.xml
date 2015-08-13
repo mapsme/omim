@@ -779,29 +779,9 @@
 	<!-- Title for walking routes dialog after 3 built routes -->
 	<string name="share_walking_routes_congratulations">Congratulazioni!</string>
 	<!-- Text for walking routes dialog after 3 built routes -->
-	<string name="share_walking_routes_mastering">Hai usufruito della funzione percorsi pedonali. Aiuta i tuoi amici a risparmiare tempo. Invitali a scoprire MAPS.ME.</string>
+	<string name="share_walking_routes_mastering">Hai usufruito della funzione percorsi pedonali. Aiuta i tuoi amici a risparmiare tempo. Invitali a scoprire MAPS.ME!</string>
 	<!-- Android notification about walking directions for update users -->
 	<string name="walking_notification_text">Vuoi provarli?</string>
 	<!-- Android notification with picture (rich) about walking directions for update users -->
 	<string name="walking_rich_notification_text">Indicano il percorso più veloce verso la tua destinazione. Provali tu stesso e aiuta i tuoi amici a risparmiare tempo.</string>
-	<string name="rate_alert_title">Ti piace l’app?</string>
-	<string name="rate_alert_default_message">Grazie per aver utilizzato MAPS.ME. Valuta l’app. Il tuo feedback ci permette di migliorare.</string>
-	<string name="rate_alert_five_star_message">Hooray! Anche noi amiamo i nostri utenti!</string>
-	<string name="rate_alert_four_star_message">Grazie, faremo del nostro meglio!</string>
-	<string name="rate_alert_less_than_four_star_message">Hai qualche idea su come migliorarla?</string>
-	<string name="categories">Categorie</string>
-	<string name="history">Cronologia</string>
-	<string name="next_turn_then">Poi</string>
-	<string name="closed">Chiuso</string>
-	<string name="back_to">Torna a %s</string>
-	<string name="search_not_found">Spiacente, non ho trovato nulla.</string>
-	<string name="search_not_found_query">Prova con un\&#39;altra ricerca.</string>
-	<string name="search_not_found_map">Scarica la mappa nella quale stai cercando.</string>
-	<string name="search_not_found_location">Scarica la mappa del luogo in cui ti trovi.</string>
-	<string name="search_history_title">Cerca nella cronologia</string>
-	<string name="search_history_text">Accedi velocemente alle stringhe di ricerca recenti.</string>
-	<string name="update_maps_alert_title">Esplorare le mappe è ora più semplice</string>
-	<string name="update_maps_alert_message">Abbiamo migliorato gli stili delle mappe: ora tutti gli oggetti sono più chiari. Aggiorna le mappe per ricevere il meglio del nuovo design.</string>
-	<string name="update_maps_alert_button_title">Aggiorna mappe</string>
-	<string name="clear_search">Cancella сronologia ricerche</string>
 </resources>
