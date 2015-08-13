@@ -781,29 +781,9 @@
 	<!-- Title for walking routes dialog after 3 built routes -->
 	<string name="share_walking_routes_congratulations">Gratulerer!</string>
 	<!-- Text for walking routes dialog after 3 built routes -->
-	<string name="share_walking_routes_mastering">Du mestret Gå-ruter funksjonen. Hjelp vennene dine å spare tid, også. Fortell dem om MAPS.ME.</string>
+	<string name="share_walking_routes_mastering">Du mestret Gå-ruter funksjonen. Hjelp vennene dine å spare tid, også! Fortell dem om MAPS.ME!</string>
 	<!-- Android notification about walking directions for update users -->
 	<string name="walking_notification_text">Vil du prøve dem?</string>
 	<!-- Android notification with picture (rich) about walking directions for update users -->
 	<string name="walking_rich_notification_text">De gir den korteste ruten til enhver destinasjon. Prøv dem selv og hjelp vennene dine å spare reisetid.</string>
-	<string name="rate_alert_title">Liker du appen?</string>
-	<string name="rate_alert_default_message">Takk for at du bruker MAPS.ME. Vi setter stor pris på om du rangerer appen. Tilbakemeldinger hjelper oss med å bli bedre.</string>
-	<string name="rate_alert_five_star_message">Hurra! Vi elsker deg også!</string>
-	<string name="rate_alert_four_star_message">Tusen takk, vi skal gjøre vårt beste!</string>
-	<string name="rate_alert_less_than_four_star_message">Noen tanker om hvordan vi kan forbedre den?</string>
-	<string name="categories">Kategorier</string>
-	<string name="history">Historikk</string>
-	<string name="next_turn_then">Deretter</string>
-	<string name="closed">Stengt</string>
-	<string name="back_to">Tilbake til %s</string>
-	<string name="search_not_found">Beklager, jeg fant ingenting.</string>
-	<string name="search_not_found_query">Vennligst prøv et annet søk.</string>
-	<string name="search_not_found_map">Vennligst last ned kartet du søker i.</string>
-	<string name="search_not_found_location">Last ned kartet til din nåværende beliggenhet.</string>
-	<string name="search_history_title">Søkehistorikk</string>
-	<string name="search_history_text">Vis de siste søkene raskt.</string>
-	<string name="update_maps_alert_title">Enklere utforsking på kartet</string>
-	<string name="update_maps_alert_message">Vi har forbedret utformingen på kartene: Nå vil alle objektene se tydeligere og mer brukervennlige ut. Oppdater kartene for å få det meste ut av den nye utformingen.</string>
-	<string name="update_maps_alert_button_title">Oppdater kart</string>
-	<string name="clear_search">Tøm søkehistorikk</string>
 </resources>
