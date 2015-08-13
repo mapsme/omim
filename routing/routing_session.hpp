@@ -77,7 +77,7 @@ public:
   bool IsOnRoute() const { return (m_state == OnRoute); }
   void Reset();
 
-  State OnLocationPositionChanged(m2::PointD const & position, location::GpsInfo const & info);
+  State OnLocationPositionChanged(location::GpsInfo const & info);
   void GetRouteFollowingInfo(location::FollowingInfo & info) const;
 
   void MatchLocationToRoute(location::GpsInfo & location,
