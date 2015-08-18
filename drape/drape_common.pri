@@ -48,6 +48,7 @@ SOURCES += \
     $$DRAPE_DIR/utils/projection.cpp \
     $$DRAPE_DIR/utils/vertex_decl.cpp \
     $$DRAPE_DIR/vertex_array_buffer.cpp \
+    $$DRAPE_DIR/hw_texture.cpp \
 
 HEADERS += \
     $$ROOT_DIR/sdf_image/sdf_image.h \
@@ -103,3 +104,9 @@ HEADERS += \
     $$DRAPE_DIR/utils/vertex_decl.hpp \
     $$DRAPE_DIR/vertex_array_buffer.hpp \
     $$DRAPE_DIR/depth_constants.hpp \
+    $$DRAPE_DIR/hw_texture.hpp \
+
+iphone*{
+    HEADERS += $$DRAPE_DIR/hw_texture_ios.hpp
+    OBJECTIVE_SOURCES += $$DRAPE_DIR/hw_texture_ios.mm
+}
