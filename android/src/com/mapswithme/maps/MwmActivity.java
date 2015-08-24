@@ -329,7 +329,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     // TODO consider implementing other model of listeners connection, without activities being bound
     Framework.nativeSetRoutingListener(this);
     Framework.nativeSetRouteProgressListener(this);
-    Framework.nativeConnectBalloonListeners(this);
+    Framework.nativeSetBalloonListener(this);
 
     mSearchController = new FloatingSearchToolbarController(this);
     mLocationPredictor = new LocationPredictor(new Handler(), this);
