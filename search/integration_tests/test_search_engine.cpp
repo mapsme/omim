@@ -44,7 +44,7 @@ class TestSearchQueryFactory : public search::SearchQueryFactory
 };
 }  // namespace
 
-TestSearchEngine::TestSearchEngine(std::string const & locale)
+TestSearchEngine::TestSearchEngine(string const & locale)
     : m_platform(GetPlatform()),
       m_engine(*this, m_platform.GetReader(SEARCH_CATEGORIES_FILE_NAME),
                m_platform.GetReader(PACKED_POLYGONS_FILE), m_platform.GetReader(COUNTRIES_FILE),
