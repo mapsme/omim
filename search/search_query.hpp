@@ -203,7 +203,7 @@ private:
   Result MakeResult(impl::PreResult2 const & r) const;
   void MakeResultHighlight(Result & res) const;
 
-  Index * m_index;
+  Index & m_index;
   CategoriesHolder const * m_pCategories;
   TStringsToSuggestVector const * m_pStringsToSuggest;
   storage::CountryInfoGetter const * m_pInfoGetter;

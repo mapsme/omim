@@ -1,14 +1,14 @@
-#include "search_query.hpp"
+#include "search/search_query.hpp"
 
-#include "feature_offset_match.hpp"
-#include "geometry_utils.hpp"
-#include "indexed_value.hpp"
-#include "latlon_match.hpp"
-#include "locality.hpp"
-#include "region.hpp"
-#include "search_common.hpp"
-#include "search_query_params.hpp"
-#include "search_string_intersection.hpp"
+#include "search/feature_offset_match.hpp"
+#include "search/geometry_utils.hpp"
+#include "search/indexed_value.hpp"
+#include "search/latlon_match.hpp"
+#include "search/locality.hpp"
+#include "search/region.hpp"
+#include "search/search_common.hpp"
+#include "search/search_query_params.hpp"
+#include "search/search_string_intersection.hpp"
 
 #include "storage/country_info.hpp"
 
@@ -56,17 +56,17 @@ using TCompareFunction2 = function<bool(impl::PreResult2 const &, impl::PreResul
 // Maximum result candidates count for each viewport/criteria.
 size_t const kPreResultsCount = 200;
 
-TCompareFunction1 g_arrCompare1[] = {
+TCompareFunction1 const g_arrCompare1[] = {
     &impl::PreResult1::LessPriority, &impl::PreResult1::LessRank,
 };
 
-TCompareFunction2 g_arrCompare2[] = {
+TCompareFunction2 const g_arrCompare2[] = {
     &impl::PreResult2::LessDistance, &impl::PreResult2::LessRank,
 };
 
 /// This indexes should match the initialization routine below.
-int g_arrLang1[] = {0, 1, 2, 2, 3};
-int g_arrLang2[] = {0, 0, 0, 1, 0};
+int const g_arrLang1[] = {0, 1, 2, 2, 3};
+int const g_arrLang2[] = {0, 0, 0, 1, 0};
 
 enum LangIndexT
 {
@@ -101,12 +101,17 @@ ftypes::Type GetLocalityIndex(feature::TypesHolder const & types)
   Type const type = IsLocalityChecker::Instance().GetType(types);
   switch (type)
   {
-  case TOWN:
-    return CITY;
-  case VILLAGE:
-    return NONE;
-  default:
-    return type;
+    case NONE:
+    case COUNTRY:
+    case STATE:
+    case CITY:
+      return type;
+    case TOWN:
+      return CITY;
+    case VILLAGE:
+      return NONE;
+    case LOCALITY_COUNT:
+      return type;
   }
 }
 
@@ -167,7 +172,7 @@ void Query::RetrievalCallback::OnFeaturesRetrieved(MwmSet::MwmId const & id, dou
 Query::Query(Index & index, CategoriesHolder const * pCategories,
              TStringsToSuggestVector const * pStringsToSuggest,
              storage::CountryInfoGetter const * pInfoGetter)
-  : m_index(&index)
+  : m_index(index)
   , m_pCategories(pCategories)
   , m_pStringsToSuggest(pStringsToSuggest)
   , m_pInfoGetter(pInfoGetter)
@@ -229,7 +234,7 @@ void Query::SetViewport(m2::RectD const & viewport, bool forceUpdate)
   Reset();
 
   TMWMVector mwmsInfo;
-  m_index->GetMwmsInfo(mwmsInfo);
+  m_index.GetMwmsInfo(mwmsInfo);
 
   SetViewportByIndex(mwmsInfo, viewport, CURRENT_V, forceUpdate);
 }
@@ -479,7 +484,6 @@ void Query::SetQuery(string const & query)
 
 void Query::Search(Results & res, size_t resCount)
 {
-  LOG(LINFO, ("Query::Search"));
   if (IsCancelled())
     return;
 
@@ -493,7 +497,6 @@ void Query::Search(Results & res, size_t resCount)
 
 void Query::SearchViewportPoints(Results & res)
 {
-  LOG(LINFO, ("Query::SearchViewportPoints"));
   LONG_OP(SearchAddress(res));
   LONG_OP(SearchFeaturesInViewport(CURRENT_V));
 
@@ -561,7 +564,7 @@ class EqualFeatureID
   ValueT const & m_val;
 
 public:
-  EqualFeatureID(ValueT const & v) : m_val(v) {}
+  explicit EqualFeatureID(ValueT const & v) : m_val(v) {}
   bool operator()(ValueT const & r) const { return (m_val.GetID() == r.GetID()); }
 };
 
@@ -588,7 +591,7 @@ class PreResult2Maker
   void LoadFeature(FeatureID const & id, FeatureType & f, string & name, string & country)
   {
     if (m_pFV.get() == 0 || m_pFV->GetId() != id.m_mwmId)
-      m_pFV.reset(new Index::FeaturesLoaderGuard(*m_query.m_index, id.m_mwmId));
+      m_pFV.reset(new Index::FeaturesLoaderGuard(m_query.m_index, id.m_mwmId));
 
     m_pFV->GetFeatureByIndex(id.m_index, f);
     f.SetID(id);
@@ -603,7 +606,7 @@ class PreResult2Maker
   }
 
 public:
-  PreResult2Maker(Query & q) : m_query(q) {}
+  explicit PreResult2Maker(Query & q) : m_query(q) {}
 
   impl::PreResult2 * operator()(impl::PreResult1 const & res)
   {
@@ -669,7 +672,7 @@ class HouseCompFactory
   }
 
 public:
-  HouseCompFactory(Query const & q) : m_query(q) {}
+  explicit HouseCompFactory(Query const & q) : m_query(q) {}
 
   struct CompT
   {
@@ -1208,12 +1211,12 @@ void Query::SearchAddress(Results & res)
 {
   // Find World.mwm and do special search there.
   TMWMVector mwmsInfo;
-  m_index->GetMwmsInfo(mwmsInfo);
+  m_index.GetMwmsInfo(mwmsInfo);
 
   for (shared_ptr<MwmInfo> & info : mwmsInfo)
   {
     MwmSet::MwmId mwmId(info);
-    Index::MwmHandle const mwmHandle = m_index->GetMwmHandleById(mwmId);
+    Index::MwmHandle const mwmHandle = m_index.GetMwmHandleById(mwmId);
     MwmValue const * pMwm = mwmHandle.GetValue<MwmValue>();
     if (pMwm && pMwm->m_cont.IsExist(SEARCH_INDEX_FILE_TAG) &&
         pMwm->GetHeader().GetType() == TFHeader::world)
@@ -1237,7 +1240,7 @@ void Query::SearchAddress(Results & res)
         {
           params.ProcessAddressTokens();
 
-          m2::PointD const cityCenter = GetLocalityCenter(*m_index, mwmId, city);
+          m2::PointD const cityCenter = GetLocalityCenter(m_index, mwmId, city);
           double const cityRadius = city.m_radius;
           m2::RectD const rect =
               MercatorBounds::RectByCenterXYAndSizeInMeters(cityCenter, cityRadius);
@@ -1356,7 +1359,7 @@ class DoFindLocality
     }
   }
 
-  bool IsBelong(Locality const & loc, Region const & r) const
+  bool InRegion(Locality const & loc, Region const & r) const
   {
     // check that locality and region are produced from different tokens
     vector<size_t> dummy;
@@ -1397,7 +1400,6 @@ public:
 
   void operator()(Query::TTrieValue const & v)
   {
-    LOG(LINFO, ("DoFindLocality::operator()"));
     if (m_query.IsCancelled())
       throw Query::CancelException();
 
@@ -1468,7 +1470,7 @@ public:
       vector<Region const *> belongs;
       for (size_t j = 0; j < regsCount; ++j)
       {
-        if (IsBelong(*i, regions[j]))
+        if (InRegion(*i, regions[j]))
           belongs.push_back(&regions[j]);
       }
 
@@ -1544,7 +1546,7 @@ void Query::SearchLocality(MwmValue const * pMwm, Locality & res1, Region & res2
 void Query::SearchFeatures()
 {
   TMWMVector mwmsInfo;
-  m_index->GetMwmsInfo(mwmsInfo);
+  m_index.GetMwmsInfo(mwmsInfo);
 
   SearchQueryParams params;
   InitParams(false /* localitySearch */, params);
@@ -1555,7 +1557,7 @@ void Query::SearchFeatures()
 void Query::SearchFeaturesInViewport(ViewportID viewportId)
 {
   TMWMVector mwmsInfo;
-  m_index->GetMwmsInfo(mwmsInfo);
+  m_index.GetMwmsInfo(mwmsInfo);
 
   SearchQueryParams params;
   InitParams(false /* localitySearch */, params);
@@ -1603,7 +1605,7 @@ void Query::SearchInMwms(TMWMVector const & mwmsInfo, SearchQueryParams const & 
 
   SearchQueryParams p = params;
   p.m_scale = GetQueryIndexScale(*viewport);
-  m_retrieval.Init(*m_index, mwmsInfo, *viewport, p, limits);
+  m_retrieval.Init(m_index, mwmsInfo, *viewport, p, limits);
 
   RetrievalCallback callback(*this, viewportId);
   m_retrieval.Go(callback);
