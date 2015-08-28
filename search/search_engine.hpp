@@ -31,7 +31,7 @@ class Engine
   Results m_searchResults;
 
 public:
-  // Doesn't take ownership of @pIndex. Takes ownership of pCategories
+  // Doesn't take ownership of index. Takes ownership of pCategories
   Engine(Index & index, Reader * pCategoriesR, ModelReaderPtr polyR,
          ModelReaderPtr countryR, string const & locale, unique_ptr<SearchQueryFactory> && factory);
   ~Engine();
