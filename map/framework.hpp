@@ -231,6 +231,8 @@ public:
   void ShowBookmark(BookmarkAndCategory const & bnc);
   void ShowTrack(Track const & track);
 
+  void ClearBookmarks();
+
   bool AddBookmarksFile(string const & filePath);
 
   BookmarkAndCategory FindBookmark(UserMark const * mark) const;
@@ -292,6 +294,8 @@ private:
   search::SearchParams m_lastSearch;
   uint8_t m_fixedSearchResults;
 
+  void OnSearchResultsCallback(search::Results const & results);
+  void OnSearchResultsCallbackUI(search::Results const & results);
   void FillSearchResultsMarks(search::Results const & results);
 
   void OnDownloadMapCallback(storage::TIndex const & countryIndex);
