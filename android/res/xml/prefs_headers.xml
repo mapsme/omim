@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+  <header android:id="@+id/group_map"
+          android:title="@string/prefs_group_map"
+          android:fragment="com.mapswithme.maps.settings.MapPrefsFragment"/>
+
+  <header android:id="@+id/group_misc"
+          android:title="@string/prefs_group_misc"
+          android:fragment="com.mapswithme.maps.settings.MiscPrefsFragment"/>
+
+  <header android:id="@+id/help"
+          android:title="@string/help"/>
+
+  <header android:id="@+id/feedback"
+          android:title="@string/contact_us"/>
+
+  <header android:id="@+id/report_bug"
+          android:title="@string/report_a_bug"/>
+
+  <header android:id="@+id/about"
+          android:title="@string/about_menu_title"/>
+</preference-headers>

@@ -19,16 +19,15 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.LocationState;
-import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.bookmarks.data.DistanceAndAzimut;
 import com.mapswithme.maps.bookmarks.data.MapObject;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.routing.RoutingInfo;
 import com.mapswithme.maps.routing.RoutingResultCodesProcessor;
+import com.mapswithme.util.Config;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.statistics.AlohaHelper;
 
@@ -40,8 +39,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class RoutingLayout extends FrameLayout implements View.OnClickListener
 {
-  private static final String IS_ROUTING_DISCLAIMER_APPROVED = "IsDisclaimerApproved";
-
   private WheelProgressView mWvProgress;
   private TextView mTvPlanning;
   private View mIvCancelRouteBuild;
@@ -361,11 +358,12 @@ public class RoutingLayout extends FrameLayout implements View.OnClickListener
 
   private void buildRoute()
   {
-    if (!MwmApplication.get().nativeGetBoolean(IS_ROUTING_DISCLAIMER_APPROVED, false))
+    if (!Config.isRoutingDisclaimerAccepted())
     {
       showRoutingDisclaimer();
       return;
     }
+
     if (!LocationState.isTurnedOn())
     {
       onMissingLocation();
@@ -409,7 +407,7 @@ public class RoutingLayout extends FrameLayout implements View.OnClickListener
           @Override
           public void onClick(DialogInterface dlg, int which)
           {
-            MwmApplication.get().nativeSetBoolean(IS_ROUTING_DISCLAIMER_APPROVED, true);
+            Config.acceptRoutingDisclaimer();
             dlg.dismiss();
             buildRoute();
           }

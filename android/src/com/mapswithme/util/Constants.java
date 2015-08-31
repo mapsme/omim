@@ -27,8 +27,15 @@ public final class Constants
     public static final String MAIL_MAPSME_SUBSCRIBE = "subscribe@maps.me";
     public static final String MAIL_MAPSME_RATING = "rating@maps.me";
 
+    public static final String WEB_SITE = "http://www.maps.me";
+    public static final String WEB_BLOG = "http://www.blog.maps.me";
+
+    public static final String COPYRIGHT = "file:///android_asset/copyright.html";
+    public static final String FAQ = "file:///android_asset/faq.html";
+
     private Url() {}
   }
+
 
   public static class Package
   {
