@@ -6,8 +6,8 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 ROOT_DIR = ../..
-DEPENDENCIES = generator_tests_support generator routing search storage stats_client indexer \
-               platform geometry coding base tess2 protobuf tomcrypt jansson
+DEPENDENCIES = generator routing search storage stats_client jansson indexer platform geometry coding base \
+               tess2 protobuf tomcrypt succinct
 
 DEPENDENCIES += opening_hours \
 
