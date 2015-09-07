@@ -7,7 +7,7 @@ TEMPLATE = app
 
 ROOT_DIR = ../..
 DEPENDENCIES = generator routing search storage stats_client jansson indexer platform geometry coding base \
-               tess2 protobuf tomcrypt
+               tess2 protobuf tomcrypt succinct
 
 !linux* {
   DEPENDENCIES += opening_hours \
