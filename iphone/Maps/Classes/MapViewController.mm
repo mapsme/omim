@@ -446,15 +446,10 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
     f.SetUserMarkActivationListener(bind(userMarkFn, self, userMarkSelector, _1));
     m_predictor = [[LocationPredictor alloc] initWithObserver:self];
 
-    EAGLView * v = (EAGLView *)self.view;
-    [v initRenderPolicy];
-
     self.forceRoutingStateChange = ForceRoutingStateChangeNone;
     self.userTouchesAction = UserTouchesActionNone;
     self.menuRestoreState = MWMSideMenuStateInactive;
 
-    // restore previous screen position
-    f.LoadState();
     f.LoadBookmarks();
 
     using TLocationStateModeFn = void (*)(id, SEL, location::EMyPositionMode);
