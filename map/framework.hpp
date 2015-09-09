@@ -80,6 +80,9 @@ class Framework
 #endif
 
 protected:
+  using TDrapeFunction = function<void (df::DrapeEngine *)>;
+  using TDownloadCountryListener = function<void(storage::TIndex const &, int)>;
+
   StringsBundle m_stringsBundle;
 
   mutable unique_ptr<search::Engine> m_pSearchEngine;
@@ -90,24 +93,20 @@ protected:
 
   routing::RoutingSession m_routingSession;
 
-  typedef vector<BookmarkCategory *>::iterator CategoryIter;
-
   drape_ptr<StorageBridge> m_storageBridge;
   drape_ptr<df::DrapeEngine> m_drapeEngine;
 
-  using TDrapeFunction = function<void (df::DrapeEngine *)>;
-  void CallDrapeFunction(TDrapeFunction const & fn);
-
   double m_startForegroundTime;
 
-  void StopLocationFollow();
-
-  using TDownloadCountryListener = function<void(storage::TIndex const &, int)>;
   TDownloadCountryListener m_downloadCountryListener;
 
   storage::Storage m_storage;
   shared_ptr<storage::ActiveMapsLayout> m_activeMaps;
   storage::CountryTree m_globalCntTree;
+
+  location::TMyPositionModeChanged m_myPositionListener;
+
+  BookmarkManager m_bmManager;
 
   /// This function is called by m_storage when latest local files
   /// were changed.
@@ -116,9 +115,11 @@ protected:
   /// This function is called by m_model when the map file is deregistered.
   void OnMapDeregistered(platform::LocalCountryFile const & localFile);
 
-  BookmarkManager m_bmManager;
-
   void ClearAllCaches();
+
+  void StopLocationFollow();
+
+  void CallDrapeFunction(TDrapeFunction const & fn);
 
 public:
   Framework();
