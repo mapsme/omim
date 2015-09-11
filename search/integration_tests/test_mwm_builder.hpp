@@ -1,5 +1,7 @@
 #pragma once
 
+#include "indexer/data_header.hpp"
+
 #include "geometry/point2d.hpp"
 
 #include "std/string.hpp"
@@ -19,16 +21,19 @@ class LocalCountryFile;
 class TestMwmBuilder
 {
 public:
-  TestMwmBuilder(platform::LocalCountryFile & file);
+  TestMwmBuilder(platform::LocalCountryFile & file, feature::DataHeader::MapType type);
 
   ~TestMwmBuilder();
 
   void AddPOI(m2::PointD const & p, string const & name, string const & lang);
 
+  void AddCity(m2::PointD const & p, string const & name, string const & lang);
+
   void Finish();
 
 private:
   platform::LocalCountryFile & m_file;
+  feature::DataHeader::MapType m_type;
   unique_ptr<feature::FeaturesCollector> m_collector;
   Classificator const & m_classificator;
 };
