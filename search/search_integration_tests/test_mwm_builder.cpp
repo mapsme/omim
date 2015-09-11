@@ -16,8 +16,9 @@
 
 #include "defines.hpp"
 
-TestMwmBuilder::TestMwmBuilder(platform::LocalCountryFile & file)
+TestMwmBuilder::TestMwmBuilder(platform::LocalCountryFile & file, feature::DataHeader::MapType type)
     : m_file(file),
+      m_type(type),
       m_collector(
           make_unique<feature::FeaturesCollector>(file.GetPath(MapOptions::Map) + EXTENSION_TMP)),
       m_classificator(classif())
@@ -41,6 +42,17 @@ void TestMwmBuilder::AddPOI(m2::PointD const & p, string const & name, string co
   (*m_collector)(fb);
 }
 
+void TestMwmBuilder::AddCity(m2::PointD const & p, string const & name, string const & lang)
+{
+  CHECK(m_collector, ("It's not possible to add features after call to Finish()."));
+  FeatureBuilder1 fb;
+  fb.SetCenter(p);
+  fb.SetType(m_classificator.GetTypeByPath({"place", "city"}));
+  fb.SetRank(100);
+  CHECK(fb.AddName(lang, name), ("Can't set feature name:", name, "(", lang, ")"));
+  (*m_collector)(fb);
+}
+
 void TestMwmBuilder::Finish()
 {
   CHECK(m_collector, ("Finish() already was called."));
@@ -48,8 +60,7 @@ void TestMwmBuilder::Finish()
   feature::GenerateInfo info;
   info.m_targetDir = m_file.GetDirectory();
   info.m_tmpDir = m_file.GetDirectory();
-  CHECK(GenerateFinalFeatures(info, m_file.GetCountryFile().GetNameWithoutExt(),
-                              feature::DataHeader::country),
+  CHECK(GenerateFinalFeatures(info, m_file.GetCountryFile().GetNameWithoutExt(), m_type),
         ("Can't sort features."));
   CHECK(feature::BuildOffsetsTable(m_file.GetPath(MapOptions::Map)), ("Can't build feature offsets table."));
   CHECK(indexer::BuildIndexFromDatFile(m_file.GetPath(MapOptions::Map),
