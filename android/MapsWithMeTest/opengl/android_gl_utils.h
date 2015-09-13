@@ -36,4 +36,3 @@ public:
 private:
   EGLDisplay m_display;
 };
-

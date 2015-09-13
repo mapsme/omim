@@ -113,5 +113,3 @@ void AndroidOGLContextFactory::createPixelbufferSurface()
 
   CHECK(m_pixelbufferSurface != EGL_NO_SURFACE, ());
 }
-
-

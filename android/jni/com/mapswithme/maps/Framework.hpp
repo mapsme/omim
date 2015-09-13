@@ -19,7 +19,8 @@
 #include "std/shared_ptr.hpp"
 #include "std/unique_ptr.hpp"
 
-#include "../../../nv_event/nv_event.hpp"
+#include "nv_event/nv_event.hpp"
+#include "VideoTimer.hpp"
 
 
 class CountryStatusDisplay;

@@ -4,7 +4,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.android.tools.build:gradle-experimental:0.1.0'
+    classpath 'com.android.tools.build:gradle-experimental:0.2.1'
   }
 }
 
@@ -58,17 +58,33 @@ model {
       versionName = propVersionName
       minSdkVersion.apiLevel = propMinSdkVersion.toInteger()
       targetSdkVersion.apiLevel = propTargetSdkVersion.toInteger()
-    }
 
-    gradle.projectsEvaluated {
-      applicationVariants.all { variant ->
-        def task = variant.name.capitalize()
-        def runTask = "run$task"
-        def installTask = "install$task"
-        project.task(type: Exec, "${runTask}", dependsOn: "${installTask}") {
-          def component = "$applicationId/com.mapswithme.maps.DownloadResourcesActivity"
-          executable "sh"
-          args "-c", "adb shell am start -n ${component}"
+      buildConfigFields.with {
+        create() {
+          type = "int"
+          name = "RATING_THRESHOLD"
+          value = "5"
+        }
+      }
+      buildConfigFields.with {
+        create() {
+          type = "String"
+          name = "SUPPORT_MAIL"
+          value = '"android@maps.me"'
+        }
+      }
+      buildConfigFields.with {
+        create() {
+          type = "String"
+          name = "STATISTICS_URL"
+          value = '"https://s.maps.me"'
+        }
+      }
+      buildConfigFields.with {
+        create() {
+          type = "String"
+          name = "REVIEW_URL"
+          value = '"market://details?id=com.mapswithme.maps.pro"'
         }
       }
     }
@@ -77,125 +93,57 @@ model {
   android.ndk {
     moduleName = "mapswithme"
 
+    // TODO return clang, when bug https://code.google.com/p/android/issues/detail?id=182582 will be fixed
     toolchain = "clang"
     toolchainVersion = "3.5"
     cppFlags += "-fexceptions"
     cppFlags += "-frtti"
-    CFlags += "-ffunction-sections -fdata-sections -Wno-extern-c-compat"
-    ldLibs += "log"
-    ldLibs += "GLESv2"
-    ldLibs += "atomic"
-    ldLibs += "l"
+    cppFlags += "-ffunction-sections"
+    cppFlags += "-fdata-sections"
+    cppFlags += "-Wno-extern-c-compat"
+    cppFlags += "-DOMIM_OS_ANDROID"
+    ldLibs += ["log", "GLESv2", "atomic", "z"]
+    ldLibs += ["map","render","gui","routing","search","storage","indexer","graphics","platform","anim","geometry","coding",
+               "base","expat","freetype","fribidi","minizip","jansson","tomcrypt","protobuf","osrm","stats_client","succinct","opening_hours"]
     stl = "c++_static"
 
-    String includeGl = "-I${file("/jni/opengl")}".toString()
-    String includeCore = "-I${file("/jni/com/mapswithme/core")}".toString()
-    String includeMaps = "-I${file("/jni/com/mapswithme/maps")}".toString()
-    String includePlatform = "-I${file("/jni/com/mapswithme/platform")}".toString()
-    String includeNvThread = "-I${file("/nv_thread")}".toString()
-    String includeNvEvent = "-I${file("/nv_event")}".toString()
-    String includeOmim = "-I${file("/..")}".toString()
-    String includeDrape = "-I${file("/../drape")}".toString()
-    String includeProtobuf = "-I${file("/../3party/protobuf/src")}".toString()
-    String includeBoost = "-I${file("/../3party/boost")}".toString()
+    String includeJni = "-I${file("jni")}".toString()
+    cppFlags += includeJni
 
-    cppFlags += includeBoost
-    cppFlags += includeProtobuf
-    cppFlags += includeCore
-    cppFlags += includeMaps
-    cppFlags += includePlatform
-    cppFlags += includeNvThread
-    cppFlags += includeNvEvent
-    cppFlags += includeOmim
-    cppFlags += includeGl
-    cppFlags += includeDrape
+    String includeOmim = "-I${file("./..")}".toString()
+    String includeDrape = "-I${file("./../drape")}".toString()
+    String includeProtobuf = "-I${file("./../3party/protobuf/src")}".toString()
+    String includeBoost = "-I${file("./../3party/boost")}".toString()
+    String includeMap = "-I${file("./../map")}".toString()
+    String includeCoding = "-I${file("./../coding")}".toString()
+    String includeGeometry = "-I${file("./../geometry")}".toString()
+    String includeAnim = "-I${file("./../anim")}".toString()
+    String includeBase = "-I${file("./../base")}".toString()
+    String includePlatform = "-I${file("./../platform")}".toString()
+    String includeGraphics = "-I${file("./../graphics")}".toString()
+    String includeIndexer = "-I${file("./../indexer")}".toString()
+    String includestorage = "-I${file("./../storage")}".toString()
+    String includesearch = "-I${file("./../search")}".toString()
+    String includerouting = "-I${file("./../routing")}".toString()
+    String includeexpat = "-I${file("./../3party/expat/lib")}".toString()
+    String includefreetype = "-I${file("./../3party/freetype")}".toString()
+    String includefribidi = "-I${file("./../3party/fribidi")}".toString()
+    String includezlib = "-I${file("./../3party/zlib")}".toString()
+    String includebzip2 = "-I${file("./../3party/bzip2")}".toString()
+    String includejansson = "-I${file("./../3party/jansson")}".toString()
+    String includetomcrypt = "-I${file("./../3party/tomcrypt")}".toString()
+    String includeprotobuf = "-I${file("./../3party/protobuf")}".toString()
+    String includeosrm = "-I${file("./../3party/osrm")}".toString()
+    String includestats_client = "-I${file("./../stats_client")}".toString()
+    String includesuccinct = "-I${file("./../3party/succinct")}".toString()
 
-    CFlags += includeBoost
-    CFlags += includeProtobuf
-    CFlags += includeCore
-    CFlags += includeMaps
-    CFlags += includePlatform
-    CFlags += includeNvThread
-    CFlags += includeNvEvent
-    CFlags += includeOmim
-    CFlags += includeGl
-    CFlags += includeDrape
+    cppFlags += [ includeOmim,includeBoost,includeProtobuf,includeDrape,
+                  includeMap,includeCoding,includeGeometry,includeAnim,
+                  includeBase,includePlatform,includeGraphics,includeIndexer,
+                  includejansson, includetomcrypt, includeprotobuf, includeosrm, includestats_client,
+                  includesuccinct,includestorage,includesearch,includerouting,includeexpat,
+                  includefreetype,includefribidi,includezlib,includebzip2]
 
-    //
-
-    String includeMap = "-I${file("/../map")}".toString()
-    String includeCoding = "-I${file("/../coding")}".toString()
-    String includegeometry = "-I${file("/../geometry")}".toString()
-    String includeanim = "-I${file("/../anim")}".toString()
-    String includebase = "-I${file("/../base")}".toString()
-    String includeplatform = "-I${file("/../platform")}".toString()
-    String includegraphics = "-I${file("/../graphics")}".toString()
-    String includeindexer = "-I${file("/../indexer")}".toString()
-    cppFlags += includeMap
-    cppFlags += includeCoding
-    cppFlags += includegeometry
-    cppFlags += includeanim
-    cppFlags += includebase
-    cppFlags += includeplatform
-    cppFlags += includegraphics
-    cppFlags += includeindexer
-
-    CFlags += includeMap
-    CFlags += includeCoding
-    CFlags += includegeometry
-    CFlags += includeanim
-    CFlags += includebase
-    CFlags += includeplatform
-    CFlags += includegraphics
-    CFlags += includeindexer
-    //
-
-    String includestorage = "-I${file("/../storage")}".toString()
-    String includesearch = "-I${file("/../search")}".toString()
-    String includerouting = "-I${file("/../routing")}".toString()
-    String includeexpat = "-I${file("/../3party/expat")}".toString()
-    String includefreetype = "-I${file("/../3party/freetype")}".toString()
-    String includefribidi = "-I${file("/../3party/fribidi")}".toString()
-    String includezlib = "-I${file("/../3party/zlib")}".toString()
-    String includebzip2 = "-I${file("/../3party/bzip2")}".toString()
-    cppFlags += includestorage
-    cppFlags += includesearch
-    cppFlags += includerouting
-    cppFlags += includeexpat
-    cppFlags += includefreetype
-    cppFlags += includefribidi
-    cppFlags += includezlib
-    cppFlags += includebzip2
-
-    CFlags += includestorage
-    CFlags += includesearch
-    CFlags += includerouting
-    CFlags += includeexpat
-    CFlags += includefreetype
-    CFlags += includefribidi
-    CFlags += includezlib
-    CFlags += includebzip2
-
-    String includejansson = "-I${file("/../3party/jansson")}".toString()
-    String includetomcrypt = "-I${file("/../3party/tomcrypt")}".toString()
-    String includeprotobuf = "-I${file("/../3party/protobuf")}".toString()
-    String includeosrm = "-I${file("/../3party/osrm")}".toString()
-    String includestats_client = "-I${file("/../stats_client")}".toString()
-    String includesuccinct = "-I${file("/../3party/succinct")}".toString()
-
-    cppFlags += includejansson
-    cppFlags += includetomcrypt
-    cppFlags += includeprotobuf
-    cppFlags += includeosrm
-    cppFlags += includestats_client
-    cppFlags += includesuccinct
-
-    CFlags += includejansson
-    CFlags += includetomcrypt
-    CFlags += includeprotobuf
-    CFlags += includeosrm
-    CFlags += includestats_client
-    CFlags += includesuccinct
   }
 
   // TODO: Fix a lot of lint errors in our code
@@ -203,37 +151,62 @@ model {
     abortOnError false
   }
 
+  /*
+  signingConfigs {
+    mapswithme {
+      storeFile file('../tools/android/mapswithme.keystore')
+      storePassword 'M@q5W1thMe'
+      keyAlias 'mapswithme'
+      keyPassword 'M@q5W1thMe'
+    }
+  }
+   */
+
   android.sources {
     main {
-      jni {
-        source {
-          srcDirs 'jni', '../map', '../gui', '../coding', '../geometry', '../anim', '../base',
-              '../platform', '../graphics', '../indexer', '../storage', '../search', '../routing',
-              '../3party/expat', '../3party/freetype', '../3party/fribidi', '../3party/zlib',
-              '../3party/bzip2', '../3party/jansson',
-              '../3party/tomcrypt', '../3party/protobuf', '../3party/osrm',
-              '../stats_client', '../3party/succinct'
-        }
-      }
-      assets {
+      java {
         source {
           srcDirs += 'src'
           srcDirs += '../3party/Alohalytics/src/android/java'
         }
       }
-  gradle.projectsEvaluated {
-    android.applicationVariants.all { variant ->
-      def task = variant.name.capitalize()
-      def runTask = "run$task"
-      def installTask = "install$task"
-      project.task(type: Exec, "${runTask}", dependsOn: "${installTask}") {
-        def component = "$applicationId/com.mapswithme.maps.DownloadResourcesActivity"
-        executable "sh"
-        args "-c", "adb shell am start -n ${component}"
+      jni {
+        source {
+          srcDirs 'jni'
+        }
+      }
+      jniLibs {
+        source {
+          srcDirs += 'libs'
+        }
+      }
+      manifest {
+        source {
+          srcDirs  +='.'
+        }
+      }
+      resources {
+        source {
+          srcDirs 'res'
+        }
+      }
+      res {
+        source {
+          srcDirs 'res'
+        }
+      }
+      assets {
+        source {
+          srcDirs += ['assets']
+        }
       }
     }
   }
 
+  android.aaptOptions {
+    noCompress 'txt', 'bin', 'skn', 'html', 'png', 'json', 'mwm', 'ttf'
+    ignoreAssetsPattern "!.svn:!.git:!.DS_Store:!*.scc:.*:<dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"
+  }
   signingConfigs {
     mapswithme {
       storeFile file('../tools/android/mapswithme.keystore')
@@ -261,8 +234,8 @@ model {
     debug {
       applicationIdSuffix = '.debug'   // Allows to install debug and release builds together
       versionNameSuffix = '-debug'
-      isJniDebuggable = true
-      isZipAlignEnabled = true
+      debuggable = true
+      zipAlignEnabled = true
       ndk.CFlags += "-DDEBUG"
       ndk.CFlags += "-D_DEBUG"
       ndk.cppFlags += "-DDEBUG"
@@ -270,8 +243,8 @@ model {
     }
 
     release {
-      isMinifyEnabled = true
-      shrinkResources = true
+//      minifyEnabled = true
+//      shrinkResources = true
 
       ndk.CFlags += "-DRELEASE"
       ndk.CFlags += "-D_RELEASE"
@@ -288,14 +261,22 @@ model {
     create("google") {
       applicationId = 'com.mapswithme.maps.pro'
       ndk.abiFilters += "armeabi-v7a"
+      ndk.ldFlags += "-L../../omim-android-production-armeabi-v7a-hard/out/production".toString()
+      ndk.ldFlags += "-L../../omim-android-production-armeabi-v7a-hard/out".toString()
+      ndk.ldFlags += "-Wl,--no-warn-mismatch"
+    }
+    create("hoohle") {
+      applicationId = 'com.mapswithme.maps.pro'
+      ndk.abiFilters += "x86"
+      ndk.ldFlags += "-L../../omim-android-production-x86/out/production".toString()
+      ndk.ldFlags += "-L../../omim-android-production-x86/out".toString()
     }
   }
 
   // You can modify the NDK configuration for each variant.
   components.android {
     binaries.beforeEach { binary ->
-      println("----------")
-      println(binary.name)
+      println "beforeEach " + binary.name
       binary.mergedNdkConfig.cppFlags.add(
           "-DVARIANT=\"" + binary.name + "\"")
     }
@@ -306,10 +287,12 @@ model {
 apply plugin: 'base'
 
 task cppLibsBuildDebug(type: Exec, description: 'Building DEBUG version of static C++ libraries') {
+  println "cppDebug"
   commandLine 'bash', '../tools/autobuild/android.sh', 'debug'
 }
 
 task cppLibsBuildRelease(type: Exec, description: 'Building RELEASE/PRODUCTION version of static C++ libraries') {
+  println "cppRelease"
   commandLine 'bash', '../tools/autobuild/android.sh', 'production'
 }
 
@@ -320,11 +303,13 @@ def NDK_BUILD = properties.getProperty('ndk.dir') + '/ndk-build'
 
 task ndkBuildDebug(type: Exec, dependsOn: 'cppLibsBuildDebug', description: 'Building DEBUG jni sources') {
   def clArgs = ([NDK_BUILD, '-j' + NUM_OF_PARALLEL_MAKE_TASKS] + propDebugNdkFlags.split(' ')).flatten()
+  println "ndkBuildDebug " + clArgs
   commandLine clArgs
 }
 
 task ndkBuildRelease(type: Exec, dependsOn: 'cppLibsBuildRelease', description: 'Building RELEASE/PRODUCTION jni sources') {
   def clArgs = ([NDK_BUILD, '-j' + NUM_OF_PARALLEL_MAKE_TASKS] + propReleaseNdkFlags.split(' ')).flatten()
+  println "ndkBuildRelease " + clArgs
   commandLine clArgs
 }
 
@@ -332,21 +317,16 @@ task ndkBuildClean(type: Exec, description: 'Clean native libraries') {
   commandLine NDK_BUILD, 'clean'
 }
 
-tasks.withType(JavaCompile) { compileTask ->
-  if (compileTask.name.contains('Release') || compileTask.name.contains('Beta')) {
-    compileTask.dependsOn ndkBuildRelease
-  } else {
-    compileTask.dependsOn ndkBuildDebug
-  }
-}
+//tasks.withType(JavaCompile) { compileTask ->
+//  println "JavaCompile " + compileTask.name
+//  sourceCompatibility = JavaVersion.VERSION_1_7
+//  targetCompatibility = JavaVersion.VERSION_1_7
 
-tasks.withType(JavaCompile) { compileTask ->
-  if (compileTask.name.contains('Release') || compileTask.name.contains('Beta')) {
-    compileTask.dependsOn ndkBuildRelease
-  } else {
-    compileTask.dependsOn ndkBuildDebug
-  }
-}
-
+//  if (compileTask.name.contains('Release') || compileTask.name.contains('Beta')) {
+//    compileTask.dependsOn ndkBuildRelease
+//  } else {
+//    compileTask.dependsOn ndkBuildDebug
+//  }
+//}
 
 clean.dependsOn 'ndkBuildClean'

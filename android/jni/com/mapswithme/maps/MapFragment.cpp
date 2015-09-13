@@ -1,22 +1,15 @@
 #include "Framework.hpp"
 #include "MapStorage.hpp"
 
-#include "../country/country_helper.hpp"
-
-#include "../core/jni_helper.hpp"
-
-#include "../platform/Platform.hpp"
-
-#include "../../../nv_event/nv_event.hpp"
-
-#include "map/country_status_display.hpp"
-
-#include "storage/index.hpp"
+#include "com/mapswithme/core/jni_helper.hpp"
+#include "com/mapswithme/country/country_helper.hpp"
+#include "com/mapswithme/platform/Platform.hpp"
+#include "nv_event/nv_event.hpp"
 
 #include "base/logging.hpp"
-
+#include "map/country_status_display.hpp"
 #include "platform/file_logging.hpp"
-
+#include "storage/index.hpp"
 
 extern "C"
 {
@@ -59,20 +52,23 @@ extern "C"
   }
 
 // Fixed optimization bug for x86 (reproduced on Asus ME302C).
-#pragma clang push_options
-#pragma clang optimize off
+//#pragma clang push_options
+//#pragma clang optimize off
 
   JNIEXPORT void JNICALL
   Java_com_mapswithme_maps_MapFragment_nativeCompassUpdated(JNIEnv * env, jobject thiz,
       jdouble magneticNorth, jdouble trueNorth, jboolean force)
   {
     location::CompassInfo info;
-    info.m_bearing = (trueNorth >= 0.0) ? trueNorth : magneticNorth;
+    if (trueNorth >= 0.0)
+      info.m_bearing = trueNorth;
+    else
+      info.m_bearing = magneticNorth;
 
     g_framework->OnCompassUpdated(info, force);
   }
 
-#pragma clang pop_options
+//#pragma clang pop_options
 
   JNIEXPORT jfloatArray JNICALL
   Java_com_mapswithme_maps_location_LocationHelper_nativeUpdateCompassSensor(

@@ -27,4 +27,3 @@ private:
   EGLDisplay m_display;
   // @}
 };
-
