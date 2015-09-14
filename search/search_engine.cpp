@@ -194,7 +194,6 @@ void Engine::SearchAsync()
   // Get current search params.
   SearchParams params;
   m2::RectD viewport;
-  bool isViewportSet = false;
 
   {
     threads::MutexGuard updateGuard(m_updateMutex);
