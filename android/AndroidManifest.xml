@@ -244,20 +244,10 @@
     </activity>
 
     <activity android:name="com.mapswithme.maps.settings.AboutActivity"
-              android:label="@string/about_menu_title"
-              android:parentActivityName="com.mapswithme.maps.MwmActivity">
-      <meta-data
-          android:name="android.support.PARENT_ACTIVITY"
-          android:value="com.mapswithme.maps.MwmActivity"/>
-    </activity>
+              android:label="@string/about_menu_title"/>
 
     <activity android:name="com.mapswithme.maps.WebContainerActivity"
-              android:configChanges="orientation|screenLayout|screenSize"
-              android:parentActivityName="com.mapswithme.maps.MwmActivity">
-      <meta-data
-          android:name="android.support.PARENT_ACTIVITY"
-          android:value="com.mapswithme.maps.MwmActivity"/>
-    </activity>
+              android:configChanges="orientation|screenLayout|screenSize"/>
 
     <!-- facebook -->
     <activity

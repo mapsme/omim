@@ -50,6 +50,8 @@ public enum Statistics
 
     public static class Settings
     {
+      public static final String WEB_SITE = "Setings. Go to website";
+      public static final String WEB_BLOG = "Setings. Go to blog";
       public static final String CONTACT_US = "Send mail at info@maps.me";
       public static final String SUBSCRIBE = "Settings. Subscribed";
       public static final String REPORT_BUG = "Settings. Bug reported";

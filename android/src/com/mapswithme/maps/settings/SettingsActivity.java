@@ -31,13 +31,9 @@ public class SettingsActivity extends PreferenceActivity
   {
     if (header.id == R.id.group_map)
       Statistics.INSTANCE.trackSimpleNamedEvent(Statistics.EventName.Settings.GROUP_MAP);
-    else
-
-    if (header.id == R.id.group_misc)
+    else if (header.id == R.id.group_misc)
       Statistics.INSTANCE.trackSimpleNamedEvent(Statistics.EventName.Settings.GROUP_MISC);
-    else
-
-    if (header.id == R.id.help)
+    else if (header.id == R.id.help)
     {
       Statistics.INSTANCE.trackSimpleNamedEvent(Statistics.EventName.Settings.HELP);
       AlohaHelper.logClick(AlohaHelper.Settings.HELP);
@@ -45,9 +41,7 @@ public class SettingsActivity extends PreferenceActivity
       WebContainerActivity.show(this, Constants.Url.FAQ, R.string.help);
       return;
     }
-    else
-
-    if (header.id == R.id.feedback)
+    else if (header.id == R.id.feedback)
     {
       Statistics.INSTANCE.trackSimpleNamedEvent(Statistics.EventName.Settings.CONTACT_US);
       AlohaHelper.logClick(AlohaHelper.Settings.CONTACT_US);
@@ -56,9 +50,7 @@ public class SettingsActivity extends PreferenceActivity
                         .setData(Utils.buildMailUri(Constants.Url.MAIL_MAPSME_INFO, "", "")));
       return;
     }
-    else
-
-    if (header.id == R.id.report_bug)
+    else if (header.id == R.id.report_bug)
     {
       Statistics.INSTANCE.trackSimpleNamedEvent(Statistics.EventName.Settings.REPORT_BUG);
       AlohaHelper.logClick(AlohaHelper.Settings.REPORT_BUG);
@@ -72,9 +64,7 @@ public class SettingsActivity extends PreferenceActivity
                         .setType("message/rfc822"));
       return;
     }
-    else
-
-    if (header.id == R.id.about)
+    else if (header.id == R.id.about)
     {
       Statistics.INSTANCE.trackSimpleNamedEvent(Statistics.EventName.Settings.ABOUT);
       AlohaHelper.logClick(AlohaHelper.Settings.ABOUT);

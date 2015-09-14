@@ -50,10 +50,16 @@ public class AboutFragment extends BaseMwmFragment
       switch (v.getId())
       {
         case R.id.web:
+          Statistics.INSTANCE.trackSimpleNamedEvent(Statistics.EventName.Settings.WEB_SITE);
+          AlohaHelper.logClick(AlohaHelper.Settings.WEB_SITE);
+
           startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Url.WEB_SITE)));
           break;
 
         case R.id.blog:
+          Statistics.INSTANCE.trackSimpleNamedEvent(Statistics.EventName.Settings.WEB_BLOG);
+          AlohaHelper.logClick(AlohaHelper.Settings.WEB_BLOG);
+
           startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Url.WEB_BLOG)));
           break;
 

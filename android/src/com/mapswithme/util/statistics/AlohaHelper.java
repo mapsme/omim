@@ -21,6 +21,8 @@ public class AlohaHelper
 
   public static class Settings
   {
+    public static final String WEB_SITE = "webSite";
+    public static final String WEB_BLOG = "webBlog";
     public static final String CONTACT_US = "contactUs";
     public static final String MAIL_SUBSCRIBE = "subscribeToNews";
     public static final String REPORT_BUG = "reportABug";
