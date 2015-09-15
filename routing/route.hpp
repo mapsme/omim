@@ -17,8 +17,19 @@ namespace location
   class RouteMatchingInfo;
 }
 
+class Index;
+
 namespace routing
 {
+
+/// Speed cameras structure. First is reference to point, second is a speed limit.
+struct SpeedCameraRestriction
+{
+  uint32_t m_index;
+  uint8_t m_maxSpeed;
+
+  SpeedCameraRestriction(uint32_t index, uint8_t maxSpeed) : m_index(index), m_maxSpeed(maxSpeed) {}
+};
 
 class Route
 {
@@ -27,12 +38,15 @@ public:
   typedef pair<uint32_t, double> TTimeItem;
   typedef vector<TTimeItem> TTimes;
 
+  static double constexpr kInvalidSpeedCameraDistance = -1;
+
   explicit Route(string const & router)
     : m_router(router), m_routingSettings(GetCarRoutingSettings()) {}
 
   template <class TIter>
   Route(string const & router, TIter beg, TIter end)
-    : m_router(router), m_routingSettings(GetCarRoutingSettings()), m_poly(beg, end)
+    : m_router(router), m_routingSettings(GetCarRoutingSettings()), m_poly(beg, end),
+      m_lastCheckedCamera(0)
   {
     Update();
   }
@@ -73,6 +87,7 @@ public:
   double GetMercatorDistanceFromBegin() const;
 
   void GetCurrentTurn(double & distanceToTurnMeters, turns::TurnItem & turn) const;
+  double GetCurrentCam(SpeedCameraRestriction & camera, Index const & index) const;
   /// @return true if GetNextTurn() returns a valid result in parameters, false otherwise.
   /// \param distanceToTurnMeters is a distance from current possition to the second turn.
   /// \param turn is information about the second turn.
@@ -124,6 +139,7 @@ private:
   TTimes m_times;
 
   mutable double m_currentTime;
+  mutable size_t m_lastCheckedCamera;
 };
 
 } // namespace routing
