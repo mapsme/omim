@@ -3,8 +3,6 @@
 #include "indexer/categories_holder.hpp"
 #include "indexer/scales.hpp"
 
-#include "storage/country_info.hpp"
-
 #include "search/search_query.hpp"
 #include "search/search_query_factory.hpp"
 
@@ -19,7 +17,7 @@ class TestQuery : public search::Query
 public:
   TestQuery(Index & index, CategoriesHolder const * categories,
             search::Query::TStringsToSuggestVector const * stringsToSuggest,
-            storage::CountryInfoGetter const * infoGetter)
+            storage::CountryInfoGetter const & infoGetter)
     : search::Query(index, categories, stringsToSuggest, infoGetter)
   {
   }
@@ -37,7 +35,7 @@ class TestSearchQueryFactory : public search::SearchQueryFactory
   unique_ptr<search::Query> BuildSearchQuery(
       Index & index, CategoriesHolder const * categories,
       search::Query::TStringsToSuggestVector const * stringsToSuggest,
-      storage::CountryInfoGetter const * infoGetter) override
+      storage::CountryInfoGetter const & infoGetter) override
   {
     return make_unique<TestQuery>(index, categories, stringsToSuggest, infoGetter);
   }
@@ -45,10 +43,10 @@ class TestSearchQueryFactory : public search::SearchQueryFactory
 }  // namespace
 
 TestSearchEngine::TestSearchEngine(string const & locale)
-    : m_platform(GetPlatform()),
-      m_engine(*this, m_platform.GetReader(SEARCH_CATEGORIES_FILE_NAME),
-               m_platform.GetReader(PACKED_POLYGONS_FILE), m_platform.GetReader(COUNTRIES_FILE),
-               locale, make_unique<TestSearchQueryFactory>())
+  : m_platform(GetPlatform())
+  , m_infoGetter(m_platform.GetReader(PACKED_POLYGONS_FILE), m_platform.GetReader(COUNTRIES_FILE))
+  , m_engine(*this, m_platform.GetReader(SEARCH_CATEGORIES_FILE_NAME), m_infoGetter, locale,
+             make_unique<TestSearchQueryFactory>())
 {
 }
 
