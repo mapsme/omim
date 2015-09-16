@@ -10,7 +10,7 @@
 #include "search/search_query_params.hpp"
 #include "search/search_string_intersection.hpp"
 
-#include "storage/country_info.hpp"
+#include "storage/country_info_getter.hpp"
 
 #include "indexer/categories_holder.hpp"
 #include "indexer/classificator.hpp"
@@ -200,11 +200,11 @@ void Query::RetrievalCallback::UnloadTable(MwmSet::MwmId const & id) { m_rankTab
 
 Query::Query(Index & index, CategoriesHolder const * pCategories,
              TStringsToSuggestVector const * pStringsToSuggest,
-             storage::CountryInfoGetter const * pInfoGetter)
+             storage::CountryInfoGetter const & infoGetter)
   : m_index(index)
   , m_pCategories(pCategories)
   , m_pStringsToSuggest(pStringsToSuggest)
-  , m_pInfoGetter(pInfoGetter)
+  , m_infoGetter(infoGetter)
 #ifdef HOUSE_SEARCH_TEST
   , m_houseDetector(&index)
 #endif
@@ -322,7 +322,7 @@ void Query::SetRankPivot(m2::PointD const & pivot)
   if (!m2::AlmostEqualULPs(pivot, m_pivot))
   {
     storage::CountryInfo ci;
-    m_pInfoGetter->GetRegionInfo(pivot, ci);
+    m_infoGetter.GetRegionInfo(pivot, ci);
     m_region.swap(ci.m_name);
   }
 
@@ -546,7 +546,7 @@ void Query::SearchViewportPoints(Results & res)
   {
     if (IsCancelled())
       break;
-    res.AddResultNoChecks((*(indV[i])).GeneratePointResult(m_pInfoGetter, m_pCategories,
+    res.AddResultNoChecks((*(indV[i])).GeneratePointResult(m_infoGetter, m_pCategories,
                                                            &m_prefferedTypes, m_currentLocaleCode));
   }
 }
@@ -662,7 +662,7 @@ public:
         else
         {
           storage::CountryInfo ci;
-          res2->m_region.GetRegion(m_query.m_pInfoGetter, ci);
+          res2->m_region.GetRegion(m_query.m_infoGetter, ci);
           if (ci.IsNotEmpty() && ci.m_name == m_query.GetPivotRegion())
             res2->m_rank *= 1.7;
         }
@@ -1014,7 +1014,7 @@ public:
 
 Result Query::MakeResult(impl::PreResult2 const & r) const
 {
-  Result res = r.GenerateFinalResult(m_pInfoGetter, m_pCategories,
+  Result res = r.GenerateFinalResult(m_infoGetter, m_pCategories,
                                      &m_prefferedTypes, m_currentLocaleCode);
   MakeResultHighlight(res);
 
@@ -1303,7 +1303,7 @@ void Query::SearchAddress(Results & res)
           TMWMVector regionMwms;
           auto regionMismatch = [this, &region](shared_ptr<MwmInfo> const & info)
           {
-            return !m_pInfoGetter->IsBelongToRegion(info->GetCountryName(), region.m_ids);
+            return !m_infoGetter.IsBelongToRegions(info->GetCountryName(), region.m_ids);
           };
           remove_copy_if(mwmsInfo.begin(), mwmsInfo.end(), back_inserter(regionMwms),
                          regionMismatch);
@@ -1375,7 +1375,7 @@ class DoFindLocality
       if (!i->m_enName.empty() && i->IsSuitable(m_query.m_tokens, m_query.m_prefix))
       {
         vector<size_t> vec;
-        m_query.m_pInfoGetter->GetMatchedRegions(i->m_enName, vec);
+        m_query.m_infoGetter.GetMatchedRegions(i->m_enName, vec);
         if (!vec.empty())
         {
           regions.push_back(Region());
@@ -1399,7 +1399,7 @@ class DoFindLocality
     if (dummy.empty())
     {
       // check that locality belong to region
-      return m_query.m_pInfoGetter->IsBelongToRegion(loc.m_center, r.m_ids);
+      return m_query.m_infoGetter.IsBelongToRegions(loc.m_center, r.m_ids);
     }
 
     return false;
