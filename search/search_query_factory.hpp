@@ -4,6 +4,11 @@
 
 #include "std/unique_ptr.hpp"
 
+namespace storage
+{
+class CountryInfoGetter;
+}
+
 namespace search
 {
 class SearchQueryFactory
@@ -14,7 +19,7 @@ public:
   virtual unique_ptr<Query> BuildSearchQuery(
       Index & index, CategoriesHolder const * categories,
       Query::TStringsToSuggestVector const * stringsToSuggest,
-      storage::CountryInfoGetter const * infoGetter)
+      storage::CountryInfoGetter const & infoGetter)
   {
     return make_unique<Query>(index, categories, stringsToSuggest, infoGetter);
   }

@@ -73,7 +73,7 @@ public:
 
   Query(Index & index, CategoriesHolder const * pCategories,
         TStringsToSuggestVector const * pStringsToSuggest,
-        storage::CountryInfoGetter const * pInfoGetter);
+        storage::CountryInfoGetter const & infoGetter);
 
   // TODO (@gorshenin): current cancellation logic is completely wrong
   // and broken by design. Fix it ASAP.
@@ -215,7 +215,7 @@ private:
   Index & m_index;
   CategoriesHolder const * m_pCategories;
   TStringsToSuggestVector const * m_pStringsToSuggest;
-  storage::CountryInfoGetter const * m_pInfoGetter;
+  storage::CountryInfoGetter const & m_infoGetter;
 
   string m_region;
   string const * m_query;
