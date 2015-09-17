@@ -546,8 +546,8 @@ void Query::SearchViewportPoints(Results & res)
   {
     if (IsCancelled())
       break;
-    res.AddResultNoChecks(
-        (*(indV[i])).GeneratePointResult(m_pCategories, &m_prefferedTypes, m_currentLocaleCode));
+    res.AddResultNoChecks((*(indV[i])).GeneratePointResult(m_pInfoGetter, m_pCategories,
+                                                           &m_prefferedTypes, m_currentLocaleCode));
   }
 }
 
