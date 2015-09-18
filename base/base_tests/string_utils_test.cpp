@@ -101,24 +101,20 @@ UNIT_TEST(MakeLowerCase)
   string s;
 
   s = "THIS_IS_UPPER";
-  strings::MakeLowerCaseInplace(s);
-  TEST_EQUAL(s, "this_is_upper", ());
+  TEST_EQUAL(strings::MakeLowerCase(s), "this_is_upper", ());
 
   s = "THIS_iS_MiXed";
-  strings::MakeLowerCaseInplace(s);
-  TEST_EQUAL(s, "this_is_mixed", ());
+  TEST_EQUAL(strings::MakeLowerCase(s), "this_is_mixed", ());
 
   s = "this_is_lower";
-  strings::MakeLowerCaseInplace(s);
-  TEST_EQUAL(s, "this_is_lower", ());
+  TEST_EQUAL(strings::MakeLowerCase(s), "this_is_lower", ());
 
   string const utf8("Hola! 99-\xD0\xA3\xD0\x9F\xD0\xAF\xD0\xA7\xD0\x9A\xD0\x90");
   TEST_EQUAL(strings::MakeLowerCase(utf8),
     "hola! 99-\xD1\x83\xD0\xBF\xD1\x8F\xD1\x87\xD0\xBA\xD0\xB0", ());
 
   s = "\xc3\x9f"; // es-cet
-  strings::MakeLowerCaseInplace(s);
-  TEST_EQUAL(s, "ss", ());
+  TEST_EQUAL(strings::MakeLowerCase(s), "ss", ());
 
   strings::UniChar const arr[] = {0x397, 0x10B4, 'Z'};
   strings::UniChar const carr[] = {0x3b7, 0x2d14, 'z'};
@@ -382,8 +378,7 @@ UNIT_TEST(Normalize)
   strings::UniChar const r[] = { 0x30, 0x2c, 'H', 0x649, 0x631, 0x6cc, 0x627, 0x644,
                                       0x31, 0x2044, 0x37 };
   strings::UniString result(&r[0], &r[0] + ARRAY_SIZE(r));
-  strings::NormalizeInplace(us);
-  TEST_EQUAL(us, result, ());
+  TEST_EQUAL(strings::Normalize(us), result, ());
 }
 
 UNIT_TEST(Normalize_Special)

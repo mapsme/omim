@@ -174,7 +174,7 @@ static size_t w(UniChar c, UniChar * buf)
   return 0;
 }
 
-void MakeLowerCaseInplace(UniString & s)
+UniString MakeLowerCase(UniString const & s)
 {
   size_t const size = s.size();
 
@@ -195,7 +195,7 @@ void MakeLowerCaseInplace(UniString & s)
     }
   }
 
-  s.swap(r);
+  return r;
 }
 
 size_t CountNormLowerSymbols(UniString const & s, UniString const & lowStr)
@@ -209,11 +209,7 @@ size_t CountNormLowerSymbols(UniString const & s, UniString const & lowStr)
     if (sIdx == size)
       return 0; // low_s has more length than s
 
-    UniString strCharNorm;
-    strCharNorm.push_back(s[sIdx++]);
-    MakeLowerCaseInplace(strCharNorm);
-    NormalizeInplace(strCharNorm);
-
+    UniString const strCharNorm = Normalize(MakeLowerCase(UniString(1, s[sIdx++])));
     for (size_t i = 0; i < strCharNorm.size(); ++i)
     {
       if (lowIdx >= lowSize)

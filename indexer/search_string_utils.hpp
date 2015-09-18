@@ -44,8 +44,7 @@ inline strings::UniString NormalizeAndSimplifyString(string const & s)
     }
   }
 
-  MakeLowerCaseInplace(uniString);
-  NormalizeInplace(uniString);
+  uniString = Normalize(MakeLowerCase(uniString));
 
   // Remove accents that can appear after NFKD normalization.
   uniString.erase_if([](UniChar const & c)

@@ -118,10 +118,9 @@ public:
 
 }
 
-ParsedNumber::ParsedNumber(string const & number, bool american) : m_fullN(number)
+ParsedNumber::ParsedNumber(string const & number, bool american)
+  : m_fullN(strings::MakeLowerCase(number))
 {
-  strings::MakeLowerCaseInplace(m_fullN);
-
   size_t curr = 0;
   m_startN = stoi(number, &curr, 10);
   m_endN = -1;

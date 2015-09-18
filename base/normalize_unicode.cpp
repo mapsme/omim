@@ -15,7 +15,7 @@ static void w(strings::UniString & r, uint16_t startIndex, int count)
     r.push_back(normSymbols[startIndex + i]);
 }
 
-void NormalizeInplace(strings::UniString & s)
+strings::UniString Normalize(strings::UniString const & s)
 {
   size_t const size = s.size();
 
@@ -4590,7 +4590,7 @@ void NormalizeInplace(strings::UniString & s)
     }
   }
 
-  s.swap(r);
+  return r;
 }
 
 }

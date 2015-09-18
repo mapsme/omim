@@ -84,34 +84,16 @@ bool to_double(char const * s, double & d)
   return stop && *stop == 0;
 }
 
-UniString MakeLowerCase(UniString const & s)
-{
-  UniString result(s);
-  MakeLowerCaseInplace(result);
-  return result;
-}
-
-void MakeLowerCaseInplace(string & s)
+string MakeLowerCase(string const & s)
 {
   UniString uniStr;
   utf8::unchecked::utf8to32(s.begin(), s.end(), back_inserter(uniStr));
-  MakeLowerCaseInplace(uniStr);
-  s.clear();
-  utf8::unchecked::utf32to8(uniStr.begin(), uniStr.end(), back_inserter(s));
-}
 
-string MakeLowerCase(string const & s)
-{
-  string result(s);
-  MakeLowerCaseInplace(result);
-  return result;
-}
+  uniStr = MakeLowerCase(uniStr);
 
-UniString Normalize(UniString const & s)
-{
-  UniString result(s);
-  NormalizeInplace(result);
-  return result;
+  string r;
+  utf8::unchecked::utf32to8(uniStr.begin(), uniStr.end(), back_inserter(r));
+  return r;
 }
 
 namespace
