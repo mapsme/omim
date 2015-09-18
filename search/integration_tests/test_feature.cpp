@@ -7,9 +7,9 @@
 
 #include "coding/multilang_utf8_string.hpp"
 
-#include "std/sstream.hpp"
-
 #include "base/assert.hpp"
+
+#include "std/sstream.hpp"
 
 TestFeature::TestFeature(m2::PointD const & center, string const & name, string const & lang)
   : m_center(center), m_name(name), m_lang(lang)
@@ -26,9 +26,7 @@ bool TestFeature::Matches(FeatureType const & feature) const
 {
   uint8_t const langIndex = StringUtf8Multilang::GetLangIndex(m_lang);
   string name;
-  if (!feature.GetName(langIndex, name) || m_name != name)
-    return false;
-  return true;
+  return feature.GetName(langIndex, name) && m_name == name;
 }
 
 TestPOI::TestPOI(m2::PointD const & center, string const & name, string const & lang)
