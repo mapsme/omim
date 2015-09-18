@@ -1,10 +1,13 @@
 #include "base/string_utils.hpp"
 #include "base/assert.hpp"
+#include "base/logging.hpp"
 
-#include "std/target_os.hpp"
-#include "std/iterator.hpp"
 #include "std/cmath.hpp"
 #include "std/iomanip.hpp"
+#include "std/iterator.hpp"
+#include "std/target_os.hpp"
+
+#include "utf8proc/utf8proc.h"
 
 #include <boost/algorithm/string.hpp> // boost::trim
 
@@ -93,6 +96,36 @@ string MakeLowerCase(string const & s)
 
   string r;
   utf8::unchecked::utf32to8(uniStr.begin(), uniStr.end(), back_inserter(r));
+  return r;
+}
+
+UniString Normalize(UniString const & s)
+{
+  utf8proc_option_t const opt = static_cast<utf8proc_option_t>(
+        UTF8PROC_COMPAT | UTF8PROC_DECOMPOSE | UTF8PROC_STRIPMARK | UTF8PROC_STRIPCC | UTF8PROC_IGNORE);
+
+  UniString r(32);
+  utf8proc_ssize_t sz = utf8proc_decompose_utf32(
+        reinterpret_cast<utf8proc_int32_t const *>(s.data()), s.size(),
+        reinterpret_cast<utf8proc_int32_t *>(r.data()), r.size(), opt);
+
+  if (sz < 0)
+  {
+    LOG(LERROR, ("Can't normilize string", s, "Reason", utf8proc_errmsg(sz)));
+    return UniString();
+  }
+
+  if (sz > r.size())
+  {
+    r.resize(sz);
+    sz = utf8proc_decompose_utf32(
+          reinterpret_cast<utf8proc_int32_t const *>(s.data()), s.size(),
+          reinterpret_cast<utf8proc_int32_t *>(r.data()), r.size(), opt);
+    ASSERT_EQUAL(sz, r.size(), ());
+  }
+  else
+    r.resize(sz);
+
   return r;
 }
 

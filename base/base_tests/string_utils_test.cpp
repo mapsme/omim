@@ -384,8 +384,8 @@ UNIT_TEST(Normalize)
 UNIT_TEST(Normalize_Special)
 {
   {
-    string const utf8 = "ąĄćłŁÓŻźŃĘęĆ";
-    TEST_EQUAL(strings::ToUtf8(strings::Normalize(strings::MakeUniString(utf8))), "aAclLOZzNEeC", ());
+    string const utf8 = "ąĄćłŁÓŻźŃĘęĆß";
+    TEST_EQUAL(strings::ToUtf8(strings::Normalize(strings::MakeUniString(utf8))), "aAclLOZzNEeCss", ());
   }
 
   {
