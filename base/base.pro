@@ -30,6 +30,8 @@ SOURCES += \
     thread_pool.cpp \
     threaded_container.cpp \
     timer.cpp \
+    utf8proc/utf8proc.c \
+    utf8proc/utf8proc_data.c \
 
 HEADERS += \
     SRC_FIRST.hpp \
@@ -81,3 +83,4 @@ HEADERS += \
     threaded_priority_queue.hpp \
     timer.hpp \
     worker_thread.hpp \
+    utf8proc/utf8proc.h \
