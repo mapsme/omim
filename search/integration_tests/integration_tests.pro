@@ -24,11 +24,13 @@ SOURCES += \
     ../../testing/testingmain.cpp \
     retrieval_test.cpp \
     smoke_test.cpp \
+    test_feature.cpp \
     test_mwm_builder.cpp \
     test_search_engine.cpp \
     test_search_request.cpp \
 
 HEADERS += \
+    test_feature.hpp \
     test_mwm_builder.hpp \
     test_search_engine.hpp \
     test_search_request.hpp \
