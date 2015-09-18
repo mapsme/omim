@@ -141,7 +141,7 @@ typedef enum {
   UTF8PROC_STABLE    = (1<<1),
   /** Compatibility decomposition (i.e. formatting information is lost). */
   UTF8PROC_COMPAT    = (1<<2),
-  /** Return a result with decomposed characters. */
+  /** Return a result with composed characters. */
   UTF8PROC_COMPOSE   = (1<<3),
   /** Return a result with decomposed characters. */
   UTF8PROC_DECOMPOSE = (1<<4),
@@ -475,6 +475,11 @@ UTF8PROC_DLLEXPORT utf8proc_ssize_t utf8proc_decompose_char(
  */
 UTF8PROC_DLLEXPORT utf8proc_ssize_t utf8proc_decompose(
   const utf8proc_uint8_t *str, utf8proc_ssize_t strlen,
+  utf8proc_int32_t *buffer, utf8proc_ssize_t bufsize, utf8proc_option_t options
+);
+
+UTF8PROC_DLLEXPORT utf8proc_ssize_t utf8proc_decompose_utf32(
+  const utf8proc_int32_t *str, utf8proc_ssize_t strlen,
   utf8proc_int32_t *buffer, utf8proc_ssize_t bufsize, utf8proc_option_t options
 );
 

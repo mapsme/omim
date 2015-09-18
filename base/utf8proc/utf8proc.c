@@ -399,17 +399,50 @@ UTF8PROC_DLLEXPORT utf8proc_ssize_t utf8proc_decompose_char(utf8proc_int32_t uc,
   return 1;
 }
 
-UTF8PROC_DLLEXPORT utf8proc_ssize_t utf8proc_decompose(
-  const utf8proc_uint8_t *str, utf8proc_ssize_t strlen,
-  utf8proc_int32_t *buffer, utf8proc_ssize_t bufsize, utf8proc_option_t options
-) {
-  /* strlen will be ignored, if UTF8PROC_NULLTERM is set in options */
-  utf8proc_ssize_t wpos = 0;
+bool check_decompose_options(utf8proc_option_t options)
+{
   if ((options & UTF8PROC_COMPOSE) && (options & UTF8PROC_DECOMPOSE))
-    return UTF8PROC_ERROR_INVALIDOPTS;
+    return false;
   if ((options & UTF8PROC_STRIPMARK) &&
       !(options & UTF8PROC_COMPOSE) && !(options & UTF8PROC_DECOMPOSE))
+    return false;
+  return true;
+}
+
+void reorder_decomposed(utf8proc_int32_t * buffer, utf8proc_ssize_t wpos, utf8proc_option_t options)
+{
+  if (options & (UTF8PROC_COMPOSE|UTF8PROC_DECOMPOSE)) {
+    utf8proc_ssize_t pos = 0;
+    while (pos < wpos-1) {
+      utf8proc_int32_t uc1, uc2;
+      const utf8proc_property_t *property1, *property2;
+      uc1 = buffer[pos];
+      uc2 = buffer[pos+1];
+      property1 = unsafe_get_property(uc1);
+      property2 = unsafe_get_property(uc2);
+      if (property1->combining_class > property2->combining_class &&
+          property2->combining_class > 0) {
+        buffer[pos] = uc2;
+        buffer[pos+1] = uc1;
+        if (pos > 0) pos--; else pos++;
+      } else {
+        pos++;
+      }
+    }
+  }
+}
+
+utf8proc_ssize_t kMaxPossibleLength = (utf8proc_ssize_t)SSIZE_MAX / sizeof(utf8proc_int32_t) / 2;
+
+UTF8PROC_DLLEXPORT utf8proc_ssize_t utf8proc_decompose(
+  const utf8proc_uint8_t *str, utf8proc_ssize_t strlen,
+  utf8proc_int32_t *buffer, utf8proc_ssize_t bufsize, utf8proc_option_t options)
+{
+  if (!check_decompose_options(options))
     return UTF8PROC_ERROR_INVALIDOPTS;
+
+  /* strlen will be ignored, if UTF8PROC_NULLTERM is set in options */
+  utf8proc_ssize_t wpos = 0;
   {
     utf8proc_int32_t uc;
     utf8proc_ssize_t rpos = 0;
@@ -435,29 +468,44 @@ UTF8PROC_DLLEXPORT utf8proc_ssize_t utf8proc_decompose(
       if (decomp_result < 0) return decomp_result;
       wpos += decomp_result;
       /* prohibiting integer overflows due to too long strings: */
-      if (wpos < 0 || wpos > SSIZE_MAX/sizeof(utf8proc_int32_t)/2)
+      if (wpos < 0 || wpos > kMaxPossibleLength)
         return UTF8PROC_ERROR_OVERFLOW;
     }
   }
-  if ((options & (UTF8PROC_COMPOSE|UTF8PROC_DECOMPOSE)) && bufsize >= wpos) {
-    utf8proc_ssize_t pos = 0;
-    while (pos < wpos-1) {
-      utf8proc_int32_t uc1, uc2;
-      const utf8proc_property_t *property1, *property2;
-      uc1 = buffer[pos];
-      uc2 = buffer[pos+1];
-      property1 = unsafe_get_property(uc1);
-      property2 = unsafe_get_property(uc2);
-      if (property1->combining_class > property2->combining_class &&
-          property2->combining_class > 0) {
-        buffer[pos] = uc2;
-        buffer[pos+1] = uc1;
-        if (pos > 0) pos--; else pos++;
-      } else {
-        pos++;
-      }
-    }
+
+  if (bufsize >= wpos)
+    reorder_decomposed(buffer, wpos, options);
+
+  return wpos;
+}
+
+UTF8PROC_DLLEXPORT utf8proc_ssize_t utf8proc_decompose_utf32(
+  const utf8proc_int32_t *str, utf8proc_ssize_t strlen,
+  utf8proc_int32_t *buffer, utf8proc_ssize_t bufsize, utf8proc_option_t options)
+{
+  if (!check_decompose_options(options))
+    return UTF8PROC_ERROR_INVALIDOPTS;
+
+  utf8proc_ssize_t wpos = 0;
+  int boundclass = UTF8PROC_BOUNDCLASS_START;
+  for (utf8proc_ssize_t i = 0; i < strlen; ++i)
+  {
+    utf8proc_ssize_t decomp_result = utf8proc_decompose_char(
+        str[i], buffer + wpos, (bufsize > wpos) ? (bufsize - wpos) : 0, options,
+        &boundclass);
+
+    if (decomp_result < 0)
+      return decomp_result;
+    wpos += decomp_result;
+
+    /* prohibiting integer overflows due to too long strings: */
+    if (wpos < 0 || wpos > kMaxPossibleLength)
+      return UTF8PROC_ERROR_OVERFLOW;
   }
+
+  if (bufsize >= wpos)
+    reorder_decomposed(buffer, wpos, options);
+
   return wpos;
 }
 
