@@ -130,15 +130,14 @@ void DumpRegionsIntoFile(string const &fileName, list<vector<m2::PointD>> const 
   dumpStream.close();
 }
 
-bool CoastlineFeaturesGenerator::Finish(bool needStopIfFail, string const & intermediateDir)
+bool CoastlineFeaturesGenerator::Finish(string const & intermediateDir)
 {
   MergedRegionSaver saver(*this);
   m_merger.DoMerge(saver);
 
   if (saver.HasNotMergedCoasts())
   {
-    LOG(LINFO, ("Total not merged coasts:", doAdd.GetNotMergedCoastsCount()));
-    LOG(LINFO, ("Total points in not merged coasts:", doAdd.GetNotMergedCoastsPoints()));
+    LOG(LINFO, ("Total not merged coasts:", saver.GetNotMergedCoastsCount()));
     return false;
   }
 

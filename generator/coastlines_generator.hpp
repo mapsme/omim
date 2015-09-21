@@ -19,8 +19,7 @@ public:
   void AddRegion(FeatureBuilder1 const & fb);
 
   void operator() (FeatureBuilder1 const & fb);
-  /// @return false if coasts are not merged and FLAG_fail_on_coasts is set
-  bool Finish(bool needStopIfFail, string const & intermediateDir);
+  bool Finish(string const & intermediateDir);
 
   bool MakePolygons(list<FeatureBuilder1> & vecFb);
 };

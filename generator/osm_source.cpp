@@ -186,7 +186,7 @@ class MainFeaturesEmitter
   unique_ptr<feature::FeaturesCollector> m_coastsHolder;
 
   string m_srcCoastsFile;
-  bool m_failOnCoasts;
+  feature::GenerateInfo const & m_info;
 
   enum TypeIndex
   {
@@ -202,8 +202,7 @@ class MainFeaturesEmitter
   inline uint32_t Type(TypeIndex i) const { return m_types[i]; }
 
 public:
-  MainFeaturesEmitter(feature::GenerateInfo const & info)
-  : m_failOnCoasts(info.m_failOnCoasts)
+  MainFeaturesEmitter(feature::GenerateInfo const & info) : m_info(info)
   {
     Classificator const & c = classif();
 
@@ -287,12 +286,12 @@ public:
     if (m_coasts)
     {
       // Check and stop if some coasts were not merged
-      if (!m_coasts->Finish() && m_failOnCoasts)
+      if (!m_coasts->Finish(m_info.m_intermediateDir) && m_info.m_failOnCoasts)
         return false;
 
         LOG(LINFO, ("Create world water polygons start"));
         list<FeatureBuilder1> vecFb;
-        if(needStopIfFail && !m_coasts->MakePolygons(vecFb))
+        if(m_info.m_failOnCoasts && !m_coasts->MakePolygons(vecFb))
           return false;
 
         LOG(LINFO, ("World water polygons ready to save"));
@@ -301,9 +300,13 @@ public:
       }
       else if (m_coastsHolder)
       {
-        CombinedEmitter<feature::FeaturesCollector, CountriesGenerator>
-        emitter(m_coastsHolder.get(), m_countries.get());
-        feature::ForEachFromDatRawFormat(m_srcCoastsFile, emitter);
+        feature::ForEachFromDatRawFormat(m_srcCoastsFile, [this](FeatureBuilder1 const & fb, uint64_t)
+        {
+          if (m_coastsHolder)
+           (*m_coastsHolder)(fb);
+          if (m_countries)
+           (*m_countries)(fb);
+        });
       }
       return true;
     }
@@ -490,7 +493,7 @@ bool GenerateFeaturesImpl(feature::GenerateInfo & info)
     parser.Finish();
 
     // Stop if coasts are not merged and FLAG_fail_on_coasts is set
-    if (!bucketer.Finish(info.m_needStopIfMergeCoastsFail))
+    if (!bucketer.Finish())
       return false;
 
     bucketer.GetNames(info.m_bucketNames);
