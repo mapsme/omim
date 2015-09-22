@@ -44,7 +44,9 @@ public class MwmApplication extends android.app.Application implements ActiveCou
   private final Gson mGson = new Gson();
   private static SharedPreferences mPrefs;
 
-  private boolean mAreStatsInitialised;
+  private boolean mAreCountersInitialised;
+  private boolean mIsFrameworkInitialized;
+
   private Handler mMainLoopHandler;
   private Object mMainQueueToken = new Object();
 
@@ -102,6 +104,28 @@ public class MwmApplication extends android.app.Application implements ActiveCou
 
     mMainLoopHandler = new Handler(getMainLooper());
 
+    initParse();
+    mPrefs = getSharedPreferences(getString(R.string.pref_file_name), MODE_PRIVATE);
+  }
+
+  public synchronized void initNativeCore()
+  {
+    if (mIsFrameworkInitialized)
+      return;
+
+    initPaths();
+    nativeInit(getApkPath(), getDataStoragePath(), getTempPath(), getObbGooglePath(),
+            BuildConfig.FLAVOR, BuildConfig.BUILD_TYPE,
+            Yota.isFirstYota(), UiUtils.isSmallTablet() || UiUtils.isBigTablet());
+    ActiveCountryTree.addListener(this);
+    initNativeStrings();
+    BookmarkManager.getIcons(); // init BookmarkManager (automatically loads bookmarks)
+    mIsFrameworkInitialized = true;
+  }
+
+  @SuppressWarnings("ResultOfMethodCallIgnored")
+  private void initPaths()
+  {
     final String extStoragePath = getDataStoragePath();
     final String extTmpPath = getTempPath();
 
@@ -156,7 +180,7 @@ public class MwmApplication extends android.app.Application implements ActiveCou
       return cacheDir.getAbsolutePath();
 
     return Environment.getExternalStorageDirectory().getAbsolutePath() +
-        String.format(Constants.STORAGE_PATH, BuildConfig.APPLICATION_ID, Constants.CACHE_DIR);
+            String.format(Constants.STORAGE_PATH, BuildConfig.APPLICATION_ID, Constants.CACHE_DIR);
   }
 
   private String getObbGooglePath()
@@ -170,32 +194,13 @@ public class MwmApplication extends android.app.Application implements ActiveCou
     System.loadLibrary("mapswithme");
   }
 
-  public void runNativeFunctorOnUiThread(final long functorPointer)
-  {
-    //TODO(android developer) implement categories of messages
-    Message m = Message.obtain(mMainLoopHandler, new Runnable()
-    {
-      @Override
-      public void run()
-      {
-        runNativeFunctor(functorPointer);
-      }
-    });
-    m.obj = mMainQueueToken;
-    mMainLoopHandler.sendMessage(m);
-  }
-
-  public void clearFunctorsOnUiThread()
-  {
-    mMainLoopHandler.removeCallbacksAndMessages(mMainQueueToken);
-  }
-
   private native void nativeInit(String apkPath, String storagePath,
                                  String tmpPath, String obbGooglePath,
                                  String flavorName, String buildType,
                                  boolean isYota, boolean isTablet);
 
-  private native void runNativeFunctor(final long functorPointer);
+  public native boolean nativeIsBenchmarking();
+
   private native void nativeAddLocalization(String name, String value);
 
   // Dealing with Settings
@@ -224,6 +229,8 @@ public class MwmApplication extends android.app.Application implements ActiveCou
    */
   public native boolean hasFreeSpace(long size);
 
+  private native void runNativeFunctor(final long functorPointer);
+
   /*
    * init Parse SDK
    */
@@ -246,8 +253,8 @@ public class MwmApplication extends android.app.Application implements ActiveCou
           org.alohalytics.Statistics.logEvent(AlohaHelper.PARSE_INSTALLATION_ID, newId);
           org.alohalytics.Statistics.logEvent(AlohaHelper.PARSE_DEVICE_TOKEN, newToken);
           prefs.edit()
-               .putString(PREF_PARSE_INSTALLATION_ID, newId)
-               .putString(PREF_PARSE_DEVICE_TOKEN, newToken).apply();
+                  .putString(PREF_PARSE_INSTALLATION_ID, newId)
+                  .putString(PREF_PARSE_DEVICE_TOKEN, newToken).apply();
         }
       }
     });
@@ -327,5 +334,25 @@ public class MwmApplication extends android.app.Application implements ActiveCou
   public String getFirstInstallFlavor()
   {
     return nativeGetString(FIRST_INSTALL_FLAVOR, "");
+  }
+
+  public void runNativeFunctorOnUiThread(final long functorPointer)
+  {
+    //TODO(android developer) implement categories of messages
+    Message m = Message.obtain(mMainLoopHandler, new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        runNativeFunctor(functorPointer);
+      }
+    });
+    m.obj = mMainQueueToken;
+    mMainLoopHandler.sendMessage(m);
+  }
+
+  public void clearFunctorsOnUiThread()
+  {
+    mMainLoopHandler.removeCallbacksAndMessages(mMainQueueToken);
   }
 }
