@@ -85,10 +85,6 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 @end
 
 @implementation MapViewController
-{
-  ActiveMapsObserver * m_mapsObserver;
-  int m_mapsObserverSlotId;
-}
 
 #pragma mark - LocationManager Callbacks
 
@@ -207,23 +203,18 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
     [self dismissPlacePage];
   else
     [self.controlsManager showPlacePageWithUserMark:move(mark)];
-}
 
-- (void)processMapClickAtPoint:(CGPoint)point longClick:(BOOL)isLongClick
-{
-  CGFloat const scaleFactor = self.view.contentScaleFactor;
-  m2::PointD const pxClicked(point.x * scaleFactor, point.y * scaleFactor);
-
-  Framework & f = GetFramework();
-  UserMark const * userMark = f.GetUserMark(pxClicked, isLongClick);
-  if (f.HasActiveUserMark() == false && self.controlsManager.searchHidden && !f.IsRouteNavigable())
-  {
-    if (userMark == nullptr)
-      self.controlsManager.hidden = !self.controlsManager.hidden;
-    else
-      self.controlsManager.hidden = NO;
-  }
-  f.GetBalloonManager().OnShowMark(userMark);
+  //TODO(@kuznetsov)
+  /*
+   UserMark const * userMark = f.GetUserMark(pxClicked, isLongClick);
+   if (f.HasActiveUserMark() == false && self.controlsManager.searchHidden && !f.IsRouteNavigable())
+   {
+   if (userMark == nullptr)
+   self.controlsManager.hidden = !self.controlsManager.hidden;
+   else
+   self.controlsManager.hidden = NO;
+   }
+   */
 }
 
 - (void)onMyPositionClicked:(id)sender
@@ -384,9 +375,6 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
   [super viewDidLoad];
   self.view.clipsToBounds = YES;
   self.controlsManager = [[MWMMapViewControlsManager alloc] initWithParentController:self];
-
-  __weak MapViewController * weakSelf = self;
-  m_mapsObserver = new ActiveMapsObserver(weakSelf);
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -399,8 +387,6 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 {
   [super viewWillDisappear:animated];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
-
-  GetFramework().GetActiveMaps()->RemoveListener(m_mapsObserverSlotId);
 }
 
 - (void)orientationChanged:(NSNotification *)notification
@@ -501,11 +487,9 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
       {
         case routing::IRouter::ResultCode::NoError:
         {
-          if (f.GetRouter() == routing::RouterType::Pedestrian)
-            [self countPedestrianRoute];
           self.controlsManager.routeBuildingProgress = 100.;
-          f.DiactivateUserMark();
-          [self.searchView setState:SearchViewStateHidden animated:YES];
+          f.DeactivateUserMark();
+          self.controlsManager.searchHidden = YES;
           if (self.forceRoutingStateChange == ForceRoutingStateChangeStartFollowing)
             [self.controlsManager routingNavigation];
           else
@@ -548,25 +532,6 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 
   NSLog(@"MapViewController initWithCoder Ended");
   return self;
-}
-
-- (void)countPedestrianRoute
-{
-  if ([NSUserDefaults.standardUserDefaults boolForKey:kShownPedestrianAchieveToastKey])
-    return;
-  NSInteger pedestrianRoutesCount = [NSUserDefaults.standardUserDefaults integerForKey:kPedestrianRouteCountKey];
-  [NSUserDefaults.standardUserDefaults setInteger:++pedestrianRoutesCount forKey:kPedestrianRouteCountKey];
-  // We show pedestrian promotion dialog if user has built at least 3 routes and more than 1 day has passed since
-  // the first pedestrian navigation promotion.
-  if (pedestrianRoutesCount < 3)
-    return;
-  NSDate * firstToastDate = [NSUserDefaults.standardUserDefaults valueForKey:kFirstPedestrianToastDateKey];
-  NSTimeInterval const day = 24 * 60 * 60;
-  NSTimeInterval const timePassed = [NSDate.date timeIntervalSinceDate:firstToastDate];
-  if (timePassed < day)
-    return;
-  [NSUserDefaults.standardUserDefaults setBool:YES forKey:kShownPedestrianAchieveToastKey];
-  [self.alertController presentPedestrianToastAlert:NO];
 }
 
 #pragma mark - API bar
@@ -619,102 +584,6 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
   return _alertController;
 }
 
-#pragma mark - Map state
-
-- (void)checkCurrentLocationMap
-{
-  Framework & f = GetFramework();
-  ActiveMapsLayout & activeMapLayout = f.GetCountryTree().GetActiveMapLayout();
-  int const mapsCount = activeMapLayout.GetCountInGroup(ActiveMapsLayout::TGroup::EOutOfDate) + activeMapLayout.GetCountInGroup(ActiveMapsLayout::TGroup::EUpToDate);
-  self.haveMap = mapsCount > 0;
-}
-
-#pragma mark - SearchViewDelegate
-
-- (void)searchViewWillEnterState:(SearchViewState)state
-{
-  [self checkCurrentLocationMap];
-  switch (state)
-  {
-    case SearchViewStateHidden:
-      self.controlsManager.hidden = NO;
-      break;
-    case SearchViewStateResults:
-      self.controlsManager.hidden = NO;
-      break;
-    case SearchViewStateAlpha:
-      self.controlsManager.hidden = NO;
-      break;
-    case SearchViewStateFullscreen:
-      self.controlsManager.hidden = YES;
-      GetFramework().DiactivateUserMark();
-      break;
-  }
-}
-
-- (void)searchViewDidEnterState:(SearchViewState)state
-{
-  switch (state)
-  {
-    case SearchViewStateResults:
-      [self setMapInfoViewFlag:MapInfoViewSearch];
-      break;
-    case SearchViewStateHidden:
-    case SearchViewStateAlpha:
-    case SearchViewStateFullscreen:
-      [self clearMapInfoViewFlag:MapInfoViewSearch];
-      break;
-  }
-  [self updateStatusBarStyle];
-}
-
-#pragma mark - MWMNavigationDelegate
-
-- (void)pushDownloadMaps
-{
-  [Alohalytics logEvent:kAlohalyticsTapEventKey withValue:@"downloader"];
-  CountryTreeVC * vc = [[CountryTreeVC alloc] initWithNodePosition:-1];
-  [self.navigationController pushViewController:vc animated:YES];
-}
-
-#pragma mark - MWMPlacePageViewManagerDelegate
-
-- (void)addPlacePageViews:(NSArray *)views
-{
-  [views enumerateObjectsUsingBlock:^(UIView * view, NSUInteger idx, BOOL *stop)
-  {
-    if ([self.view.subviews containsObject:view])
-      return;
-    [self.view insertSubview:view belowSubview:self.searchView];
-  }];
-}
-
-#pragma mark - ActiveMapsObserverProtocol
-
-- (void)countryStatusChangedAtPosition:(int)position inGroup:(ActiveMapsLayout::TGroup const &)group
-{
-  auto const status = GetFramework().GetCountryTree().GetActiveMapLayout().GetCountryStatus(group, position);
-  if (status == TStatus::EDownloadFailed)
-  {
-    [self.searchView downloadFailed];
-  }
-  else if (status == TStatus::EOnDisk)
-  {
-    [self checkCurrentLocationMap];
-    [self.searchView downloadComplete];
-  }
-}
-
-- (void)countryDownloadingProgressChanged:(LocalAndRemoteSizeT const &)progress atPosition:(int)position inGroup:(ActiveMapsLayout::TGroup const &)group
-{
-  if (self.searchView.state != SearchViewStateFullscreen)
-    return;
-  CGFloat const normProgress = (CGFloat)progress.first / (CGFloat)progress.second;
-  ActiveMapsLayout & activeMapLayout = GetFramework().GetCountryTree().GetActiveMapLayout();
-  NSString * countryName = [NSString stringWithUTF8String:activeMapLayout.GetFormatedCountryName(activeMapLayout.GetCoreIndex(group, position)).c_str()];
-  [self.searchView downloadProgress:normProgress countryName:countryName];
-}
-
 #pragma mark - Private methods
 
 - (void)destroyPopover
@@ -726,7 +595,7 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 {
   Framework & f = GetFramework();
   if (self.popoverVC)
-    f.DiactivateUserMark();
+    f.DeactivateUserMark();
 
   double const sf = self.view.contentScaleFactor;
 

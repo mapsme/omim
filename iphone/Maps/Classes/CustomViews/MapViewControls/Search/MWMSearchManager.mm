@@ -237,9 +237,7 @@ extern NSString * const kAlohalyticsTapEventKey;
 
 - (void)changeToMapSearchState
 {
-  PinClickManager & bm = GetFramework().GetBalloonManager();
-  bm.RemovePin();
-  bm.Dismiss();
+  GetFramework().DeactivateUserMark();
   [self.searchTextField resignFirstResponder];
   self.rootView.compact = YES;
   self.tableViewController.searchOnMap = YES;
