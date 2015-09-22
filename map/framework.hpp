@@ -240,7 +240,7 @@ public:
   BookmarkManager & GetBookmarkManager() { return m_bmManager; }
 
   void ActivateUserMark(UserMark const * mark, bool needAnim);
-  void DiactivateUserMark();
+  void DeactivateUserMark();
   PoiMarkPoint * GetAddressMark(m2::PointD const & globalPoint) const;
 
   using TActivateCallbackFn = function<void (unique_ptr<UserMarkCopy> mark)>;
@@ -468,6 +468,7 @@ public:
   bool IsRouteBuilding() const { return m_routingSession.IsBuilding(); }
   bool IsOnRoute() const { return m_routingSession.IsOnRoute(); }
   bool IsRouteNavigable() const { return m_routingSession.IsNavigable(); }
+  void BuildRoute(m2::PointD const & finish, uint32_t timeoutSec);
   void BuildRoute(m2::PointD const & start, m2::PointD const & finish, uint32_t timeoutSec);
   void SetRouteBuildingListener(TRouteBuildingCallback const & buildingCallback) { m_routingCallback = buildingCallback; }
   void SetRouteProgressListener(TRouteProgressCallback const & progressCallback) { m_progressCallback = progressCallback; }
