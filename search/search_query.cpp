@@ -1558,7 +1558,6 @@ public:
 
 void Query::SearchLocality(MwmValue const * pMwm, Locality & res1, Region & res2)
 {
-  LOG(LDEBUG, ("Query::SearchLocality"));
   SearchQueryParams params;
   InitParams(true /* localitySearch */, params);
 

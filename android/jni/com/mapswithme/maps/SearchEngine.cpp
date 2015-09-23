@@ -212,7 +212,7 @@ extern "C"
     lock_guard<mutex> guard(g_resultsMutex);
     g_framework->DontLoadState();
 
-    android::Platform::RunOnGuiThreadImpl([results=g_results]()
+    android::Platform::RunOnGuiThreadImpl([results = g_results]()
     {
       g_framework->NativeFramework()->ShowAllSearchResults(results);
     });
