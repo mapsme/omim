@@ -1,7 +1,8 @@
 #pragma once
-#include "intermediate_result.hpp"
-#include "keyword_lang_matcher.hpp"
-#include "retrieval.hpp"
+#include "search/intermediate_result.hpp"
+#include "search/keyword_lang_matcher.hpp"
+#include "search/retrieval.hpp"
+#include "search/suggest.hpp"
 
 #include "indexer/ftypes_matcher.hpp"
 #include "indexer/index.hpp"
@@ -56,28 +57,9 @@ namespace impl
 class Query : public my::Cancellable
 {
 public:
-  struct TSuggest
-  {
-    strings::UniString m_name;
-    uint8_t m_prefixLength;
-    int8_t m_locale;
-
-    TSuggest(strings::UniString const & name, uint8_t len, int8_t locale)
-      : m_name(name), m_prefixLength(len), m_locale(locale)
-    {
-    }
-  };
-
-  // Vector of suggests.
-  using TStringsToSuggestVector = vector<TSuggest>;
-
-  Query(Index & index, CategoriesHolder const * pCategories,
-        TStringsToSuggestVector const * pStringsToSuggest,
+  Query(Index & index, CategoriesHolder const & categories, vector<Suggest> const & suggests,
         storage::CountryInfoGetter const & infoGetter);
 
-  // TODO (@gorshenin): current cancellation logic is completely wrong
-  // and broken by design. Fix it ASAP.
-  //
   // my::Cancellable overrides:
   void Reset() override;
   void Cancel() override;
@@ -213,8 +195,8 @@ private:
   void MakeResultHighlight(Result & res) const;
 
   Index & m_index;
-  CategoriesHolder const * m_pCategories;
-  TStringsToSuggestVector const * m_pStringsToSuggest;
+  CategoriesHolder const & m_categories;
+  vector<Suggest> const & m_suggests;
   storage::CountryInfoGetter const & m_infoGetter;
 
   string m_region;

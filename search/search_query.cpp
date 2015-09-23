@@ -198,12 +198,12 @@ RankTable const * Query::RetrievalCallback::LoadTable(MwmSet::MwmId const & id)
 
 void Query::RetrievalCallback::UnloadTable(MwmSet::MwmId const & id) { m_rankTables.erase(id); }
 
-Query::Query(Index & index, CategoriesHolder const * pCategories,
-             TStringsToSuggestVector const * pStringsToSuggest,
+Query::Query(Index & index, CategoriesHolder & categories,
+             vector<Suggest> const & suggests,
              storage::CountryInfoGetter const & infoGetter)
   : m_index(index)
-  , m_pCategories(pCategories)
-  , m_pStringsToSuggest(pStringsToSuggest)
+  , m_categories(categories)
+  , m_suggests(suggests)
   , m_infoGetter(infoGetter)
 #ifdef HOUSE_SEARCH_TEST
   , m_houseDetector(&index)
@@ -1540,7 +1540,6 @@ public:
 
 void Query::SearchLocality(MwmValue const * pMwm, Locality & res1, Region & res2)
 {
-  LOG(LDEBUG, ("Query::SearchLocality"));
   SearchQueryParams params;
   InitParams(true /* localitySearch */, params);
 
@@ -1669,7 +1668,7 @@ void Query::SuggestStrings(Results & res)
 void Query::MatchForSuggestionsImpl(strings::UniString const & token, int8_t locale,
                                     string const & prolog, Results & res)
 {
-  for (TSuggest const & suggest : *m_pStringsToSuggest)
+  for (auto const & suggest : *m_pStringsToSuggest)
   {
     strings::UniString const & s = suggest.m_name;
     if ((suggest.m_prefixLength <= token.size()) &&

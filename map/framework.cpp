@@ -24,6 +24,7 @@
 #include "routing/route.hpp"
 #include "routing/routing_algorithm.hpp"
 
+#include "search/geometry_utils.hpp"
 #include "search/intermediate_result.hpp"
 #include "search/result.hpp"
 #include "search/search_engine.hpp"
@@ -99,10 +100,20 @@ Framework::FixedPosition::FixedPosition()
 
 namespace
 {
-  static const int BM_TOUCH_PIXEL_INCREASE = 20;
-  static const int kKeepPedestrianDistanceMeters = 10000;
-  char const kRouterTypeKey[] = "router";
+static const int BM_TOUCH_PIXEL_INCREASE = 20;
+static const int kKeepPedestrianDistanceMeters = 10000;
+char const kRouterTypeKey[] = "router";
+double const kDistEqualQuery = 100.0;
+
+// Cancels search query by |handle|.
+void CancelQuery(weak_ptr<search::QueryHandle> & handle)
+{
+  auto queryHandle = handle.lock();
+  if (queryHandle)
+    queryHandle->Cancel();
+  handle.reset();
 }
+}  // namespace
 
 pair<MwmSet::MwmId, MwmSet::RegResult> Framework::RegisterMap(
     LocalCountryFile const & localFile)
@@ -459,7 +470,7 @@ void Framework::UpdateLatestCountryFile(LocalCountryFile const & localFile)
   if (id.IsAlive())
     InvalidateRect(id.GetInfo()->m_limitRect, true /* doForceUpdate */);
 
-  m_searchEngine->ClearViewportsCache();
+  m_searchEngine->ClearCaches();
 }
 
 void Framework::OnMapDeregistered(platform::LocalCountryFile const & localFile)
@@ -493,7 +504,7 @@ void Framework::RegisterAllMaps()
 
   m_countryTree.Init(maps);
 
-  m_searchEngine->SupportOldFormat(minFormat < version::v3);
+  m_searchEngine->SetSupportOldFormat(minFormat < version::v3);
 }
 
 void Framework::DeregisterAllMaps()
@@ -995,12 +1006,39 @@ void Framework::UpdateUserViewportChanged()
 {
   if (IsISActive())
   {
-    (void)GetCurrentPosition(m_lastSearch.m_lat, m_lastSearch.m_lon);
-    m_lastSearch.SetSearchMode(search::SearchParams::IN_VIEWPORT_ONLY);
-    m_lastSearch.SetForceSearch(false);
+    (void)GetCurrentPosition(m_lastISParams.m_lat, m_lastISParams.m_lon);
+    m_lastISParams.SetSearchMode(search::SearchParams::IN_VIEWPORT_ONLY);
+    m_lastISParams.SetForceSearch(false);
 
-    m_searchEngine->Search(m_lastSearch, GetCurrentViewport());
+    Search(m_lastISParams);
   }
+}
+
+bool Framework::Search(search::SearchParams const & params)
+{
+#ifdef FIXED_LOCATION
+  search::SearchParams rParams(params);
+  if (params.IsValidPosition())
+  {
+    m_fixedPos.GetLat(rParams.m_lat);
+    m_fixedPos.GetLon(rParams.m_lon);
+  }
+#else
+  search::SearchParams const & rParams = params;
+#endif
+
+  m2::RectD const viewport = GetCurrentViewport();
+
+  if (QueryCouldBeSkipped(rParams, viewport))
+    return false;
+
+  m_lastQueryParams = rParams;
+  m_lastQueryViewport = viewport;
+
+  // Cancels previous search request (if any) and initiates new search request.
+  CancelQuery(m_lastQueryHandle);
+  m_lastQueryHandle = m_searchEngine->Search(m_lastQueryParams, m_lastQueryViewport);
+  return true;
 }
 
 void Framework::UpdateSearchResults(search::Results const & results)
@@ -1013,7 +1051,7 @@ void Framework::ClearAllCaches()
 {
   m_model.ClearCaches();
   m_infoGetter->ClearCaches();
-  m_searchEngine->ClearAllCaches();
+  m_searchEngine->ClearCaches();
 }
 
 void Framework::MemoryWarning()
@@ -1292,25 +1330,25 @@ string Framework::GetCountryName(string const & id) const
   return info.m_name;
 }
 
-void Framework::PrepareSearch()
+bool Framework::QueryCouldBeSkipped(search::SearchParams const & params,
+                                    m2::RectD const & viewport) const
 {
-  m_searchEngine->PrepareSearch(GetCurrentViewport());
-}
-
-bool Framework::Search(search::SearchParams const & params)
-{
-#ifdef FIXED_LOCATION
-  search::SearchParams rParams(params);
-  if (params.IsValidPosition())
+  if (params.IsForceSearch())
+    return false;
+  if (!m_lastQueryParams.IsEqualCommon(params))
+    return false;
+  if (!m_lastQueryViewport.IsValid() ||
+      !search::IsEqualMercator(m_lastQueryViewport, viewport, kDistEqualQuery))
   {
-    m_fixedPos.GetLat(rParams.m_lat);
-    m_fixedPos.GetLon(rParams.m_lon);
+    return false;
   }
-#else
-  search::SearchParams const & rParams = params;
-#endif
-
-  return m_searchEngine->Search(rParams, GetCurrentViewport());
+  if (!m_lastQueryParams.IsSearchAroundPosition() ||
+      ms::DistanceOnEarth(m_lastQueryParams.m_lat, m_lastQueryParams.m_lon, params.m_lat,
+                          params.m_lon) <= kDistEqualQuery)
+  {
+    return false;
+  }
+  return true;
 }
 
 bool Framework::GetCurrentPosition(double & lat, double & lon) const
@@ -1353,7 +1391,7 @@ void Framework::ShowSearchResult(search::Result const & res)
   m_bmManager.UserMarksClear(type);
   m_bmManager.UserMarksSetDrawable(type, false);
 
-  m_lastSearch.Clear();
+  m_lastISParams.Clear();
   m_fixedSearchResults = 0;
 
   int scale;
@@ -1492,7 +1530,12 @@ void Framework::FillSearchResultsMarks(search::Results const & results)
 
 void Framework::CancelInteractiveSearch()
 {
-  m_lastSearch.Clear();
+  if (IsISActive())
+  {
+    m_lastISParams.Clear();
+    CancelQuery(m_lastQueryHandle);
+  }
+
   m_bmManager.UserMarksClear(UserMarkContainer::SEARCH_MARK);
 
   m_fixedSearchResults = 0;
