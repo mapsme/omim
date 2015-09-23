@@ -18,10 +18,12 @@ Result::Result(FeatureID const & id, m2::PointD const & pt, string const & str,
   Init(true /* metadataInitialized */);
 }
 
-Result::Result(FeatureID const & id, m2::PointD const & pt, string const & str, string const & type)
+Result::Result(FeatureID const & id, m2::PointD const & pt, string const & str,
+               string const & region, string const & type)
   : m_id(id)
   , m_center(pt)
   , m_str(str)
+  , m_region(region)
   , m_type(type)
 {
   Init(false /* metadataInitialized */);

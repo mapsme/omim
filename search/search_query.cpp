@@ -929,17 +929,7 @@ void Query::ProcessSuggestions(vector<T> & vec, Results & res) const
 void Query::AddPreResult1(MwmSet::MwmId const & mwmId, uint32_t featureId, uint8_t rank,
                           double priority, ViewportID viewportId /*= DEFAULT_V*/)
 {
-<<<<<<< HEAD
-  /// If we are in viewport search mode, check actual "point-in-viewport" criteria.
-  /// @todo Actually, this checks are more-like hack, but not a suitable place to do ...
-  if (m_queuesCount == 1 && vID == CURRENT_V && !m_viewport[CURRENT_V].IsPointInside(val.m_pt))
-    return;
-
-  impl::PreResult1 res(FeatureID(mwmID, val.m_featureId), val.m_rank,
-                       val.m_pt, GetPosition(vID), vID);
-=======
   impl::PreResult1 res(FeatureID(mwmId, featureId), rank, priority, viewportId);
->>>>>>> 0d7490b... Integration of retrieval.
 
   for (size_t i = 0; i < m_queuesCount; ++i)
   {
@@ -1568,7 +1558,6 @@ public:
 
 void Query::SearchLocality(MwmValue const * pMwm, Locality & res1, Region & res2)
 {
-  LOG(LDEBUG, ("Query::SearchLocality"));
   SearchQueryParams params;
   InitParams(true /* localitySearch */, params);
 
@@ -1663,21 +1652,8 @@ void Query::SearchInMwms(TMWMVector const & mwmsInfo, SearchQueryParams const & 
   limits.SetMaxNumFeatures(kPreResultsCount);
   limits.SetSearchInWorld(m_worldSearch);
 
-<<<<<<< HEAD
-  serial::CodingParams cp(trie::GetCodingParams(header.GetDefCodingParams()));
-  ModelReaderPtr searchReader = value->m_cont.GetReader(SEARCH_INDEX_FILE_TAG);
-  unique_ptr<trie::DefaultIterator> const trieRoot(
-      trie::ReadTrie(SubReaderWrapper<Reader>(searchReader.GetPtr()), trie::ValueReader(cp),
-                     trie::TEdgeValueReader()));
-
-  MwmSet::MwmId const mwmId = mwmHandle.GetId();
-  FeaturesFilter filter(viewportId == DEFAULT_V || isWorld ?
-                          0 : &m_offsetsInViewport[viewportId][mwmId], *this);
-  MatchFeaturesInTrie(params, *trieRoot, filter, [&](TTrieValue const & value)
-=======
   m2::RectD const * viewport = nullptr;
   if (viewportId == LOCALITY_V)
->>>>>>> 0d7490b... Integration of retrieval.
   {
     limits.SetMaxViewportScale(1.0);
     viewport = &m_viewport[LOCALITY_V];
