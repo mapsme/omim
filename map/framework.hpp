@@ -56,6 +56,7 @@
 #include "std/target_os.hpp"
 #include "std/unique_ptr.hpp"
 #include "std/vector.hpp"
+#include "std/weak_ptr.hpp"
 
 namespace search
 {
@@ -331,10 +332,26 @@ private:
   void InitCountryInfoGetter();
   void InitSearchEngine();
 
-  search::SearchParams m_lastSearch;
+  // Last search query params for the interactive search.
+  search::SearchParams m_lastISParams;
   uint8_t m_fixedSearchResults;
 
+  // Search query params and viewport for the latest search
+  // query. These fields are used to check whether a new search query
+  // can be skipped. Note that these fields are not guarded by a mutex
+  // because we're assuming that they will be accessed only from the
+  // UI thread.
+  search::SearchParams m_lastQueryParams;
+  m2::RectD m_lastQueryViewport;
+
+  // A handle for the latest search query.
+  weak_ptr<search::QueryHandle> m_lastQueryHandle;
+
   void FillSearchResultsMarks(search::Results const & results);
+
+  // Returns true when |params| and |viewport| are almost the same as
+  // the latest search query's params and viewport.
+  bool QueryCouldBeSkipped(search::SearchParams const & params, m2::RectD const & viewport) const;
 
 public:
   using TSearchRequest = search::QuerySaver::TSearchRequest;
@@ -345,7 +362,6 @@ public:
 
   /// Call this function before entering search GUI.
   /// While it's loading, we can cache features in viewport.
-  void PrepareSearch();
   bool Search(search::SearchParams const & params);
   bool GetCurrentPosition(double & lat, double & lon) const;
 
@@ -355,8 +371,8 @@ public:
   size_t ShowAllSearchResults(search::Results const & results);
   void UpdateSearchResults(search::Results const & results);
 
-  void StartInteractiveSearch(search::SearchParams const & params) { m_lastSearch = params; }
-  bool IsISActive() const { return !m_lastSearch.m_query.empty(); }
+  void StartInteractiveSearch(search::SearchParams const & params) { m_lastISParams = params; }
+  bool IsISActive() const { return !m_lastISParams.m_query.empty(); }
   void CancelInteractiveSearch();
 
   list<TSearchRequest> const & GetLastSearchQueries() const { return m_searchQuerySaver.Get(); }
