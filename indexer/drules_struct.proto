@@ -69,6 +69,7 @@ message CaptionDefProto
   optional uint32 stroke_color = 3;
   optional int32 offset_x = 4;
   optional int32 offset_y = 5;
+  optional int32 text_type = 6;  // 0-name, 1-addr:housename, 2-addr:housenumber, default is 0
 }
 
 message CaptionRuleProto
