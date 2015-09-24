@@ -11,6 +11,9 @@ whatever_to_cairo = mapcss.webcolors.webcolors.whatever_to_cairo
 
 WIDTH_SCALE = 1.0
 
+TEXT_TYPE_ADDR_HOUSENAME = 1
+TEXT_TYPE_ADDR_HOUSENUMBER = 2
+
 
 def mwm_encode_color(st, prefix='', default='black'):
     if prefix:
@@ -110,6 +113,7 @@ def komap_mapswithme(options):
         cltags = classificator[cl]
         cltags["name"] = "name"
         cltags["addr:housenumber"] = "addr:housenumber"
+        cltags["addr:housename"] = "addr:housename"
         cltags["ref"] = "ref"
         cltags["int_name"] = "int_name"
         cltags["addr:flats"] = "addr:flats"
@@ -285,6 +289,11 @@ def komap_mapswithme(options):
                                 dr_cur_subtext.offset_y = int(sp.get('text-offset-y', sp.get('text-offset', 0)))
                             if 'text-offset-x' in sp:
                                 dr_cur_subtext.offset_x = int(sp.get('text-offset-x', 0))
+                            text_value = sp.get('text', 'name')
+                            if text_value == "addr:housename":
+                                dr_cur_subtext.text_type = TEXT_TYPE_ADDR_HOUSENAME
+                            elif text_value == "addr:housenumber":
+                                dr_cur_subtext.text_type = TEXT_TYPE_ADDR_HOUSENUMBER
                             has_text.pop()
                         dr_text.priority = min(19000, (base_z + int(st.get('z-index', 0))))
                         has_text = None
