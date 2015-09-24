@@ -125,12 +125,7 @@ void OnResults(Results const & results, long long timestamp, bool interactive, b
   }
 
   if (interactive)
-  {
-    android::Platform::RunOnGuiThreadImpl([results]()
-    {
-      g_framework->NativeFramework()->UpdateSearchResults(results);
-    });
-  }
+    g_framework->NativeFramework()->UpdateSearchResults(results);
 
   jobjectArray const & jResults = BuildJavaResults(results, hasPosition, lat, lon);
   env->CallVoidMethod(g_javaListener, g_updateResultsId, jResults, static_cast<jlong>(timestamp));
@@ -200,10 +195,7 @@ extern "C"
     g_framework->DontLoadState();
 
     Result const & result = g_results.GetResult(index);
-    android::Platform::RunOnGuiThreadImpl([result]()
-    {
-      g_framework->NativeFramework()->ShowSearchResult(result);
-    });
+    g_framework->NativeFramework()->ShowSearchResult(result);
   }
 
   JNIEXPORT void JNICALL
@@ -211,10 +203,6 @@ extern "C"
   {
     lock_guard<mutex> guard(g_resultsMutex);
     g_framework->DontLoadState();
-
-    android::Platform::RunOnGuiThreadImpl([results=g_results]()
-    {
-      g_framework->NativeFramework()->ShowAllSearchResults(results);
-    });
+    g_framework->NativeFramework()->ShowAllSearchResults(g_results);
   }
 } // extern "C"
