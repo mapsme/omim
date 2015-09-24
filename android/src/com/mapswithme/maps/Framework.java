@@ -103,8 +103,6 @@ public class Framework
 
   public native static void cleanSearchLayerOnMap();
 
-  public native static void invalidate();
-
   public native static void deactivatePopup();
 
   public native static String[] nativeGetMovableFilesExts();
@@ -177,8 +175,6 @@ public class Framework
    * @return {@link Framework#ROUTER_TYPE_VEHICLE} or {@link Framework#ROUTER_TYPE_PEDESTRIAN}
    */
   public native static int nativeGetBestRouter(double srcLat, double srcLon, double dstLat, double dstLon);
-
-  public native static void setWidgetPivot(int widget, int pivotX, int pivotY);
 
   /**
    * Registers all maps(.mwms). Adds them to the models, generates indexes and does all necessary stuff.

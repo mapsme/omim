@@ -244,6 +244,7 @@ public:
 
   void ActivateUserMark(UserMark const * mark, bool needAnim);
   void DeactivateUserMark();
+  bool HasActiveUserMark();
   PoiMarkPoint * GetAddressMark(m2::PointD const & globalPoint) const;
 
   using TActivateCallbackFn = function<void (unique_ptr<UserMarkCopy> mark)>;

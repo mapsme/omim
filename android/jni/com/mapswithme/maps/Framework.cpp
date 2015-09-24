@@ -478,6 +478,11 @@ location::EMyPositionMode Framework::GetMyPositionMode() const
   return m_currentMode;
 }
 
+void Framework::SetMyPositionMode(location::EMyPositionMode mode)
+{
+  m_currentMode = mode;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 void Framework::ItemStatusChanged(int childPosition)
 {
@@ -1300,16 +1305,6 @@ extern "C"
   Java_com_mapswithme_maps_Framework_nativeGetBestRouter(JNIEnv * env, jclass thiz, jdouble srcLat, jdouble srcLon, jdouble dstLat, jdouble dstLon)
   {
     return static_cast<jint>(frm()->GetBestRouter(MercatorBounds::FromLatLon(srcLat, srcLon), MercatorBounds::FromLatLon(dstLat, dstLon)));
-  }
-
-  JNIEXPORT void JNICALL
-  Java_com_mapswithme_maps_Framework_setWidgetPivot(JNIEnv * env, jclass thiz, jint widget, jint pivotX, jint pivotY)
-  {
-//TODO (UVR)
-//    using WidgetType = InformationDisplay::WidgetType;
-//    WidgetType const widgetType = static_cast<WidgetType>(widget);
-//    m2::PointD const pivot = m2::PointD(pivotX, pivotY);
-//    android::Platform::RunOnGuiThreadImpl(bind(&Framework::SetWidgetPivot, frm(), widgetType, pivot));
   }
 
   JNIEXPORT void JNICALL
