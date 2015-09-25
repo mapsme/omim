@@ -1001,13 +1001,14 @@ void Framework::ShowRectFixedAR(m2::AnyRectD const & rect)
 
 void Framework::UpdateUserViewportChanged()
 {
-  if (IsISActive())
+  if (IsInteractiveSearchActive())
   {
-    (void)GetCurrentPosition(m_lastISParams.m_lat, m_lastISParams.m_lon);
-    m_lastISParams.SetSearchMode(search::SearchParams::IN_VIEWPORT_ONLY);
-    m_lastISParams.SetForceSearch(false);
+    (void)GetCurrentPosition(m_lastInteractiveSearchParams.m_lat,
+                             m_lastInteractiveSearchParams.m_lon);
+    m_lastInteractiveSearchParams.SetSearchMode(search::SearchParams::IN_VIEWPORT_ONLY);
+    m_lastInteractiveSearchParams.SetForceSearch(false);
 
-    Search(m_lastISParams);
+    Search(m_lastInteractiveSearchParams);
   }
 }
 
@@ -1026,7 +1027,7 @@ bool Framework::Search(search::SearchParams const & params)
 
   m2::RectD const viewport = GetCurrentViewport();
 
-  if (QueryCouldBeSkipped(rParams, viewport))
+  if (QueryMayBeSkipped(rParams, viewport))
     return false;
 
   m_lastQueryParams = rParams;
@@ -1327,8 +1328,8 @@ string Framework::GetCountryName(string const & id) const
   return info.m_name;
 }
 
-bool Framework::QueryCouldBeSkipped(search::SearchParams const & params,
-                                    m2::RectD const & viewport) const
+bool Framework::QueryMayBeSkipped(search::SearchParams const & params,
+                                  m2::RectD const & viewport) const
 {
   if (params.IsForceSearch())
     return false;
@@ -1388,7 +1389,7 @@ void Framework::ShowSearchResult(search::Result const & res)
   m_bmManager.UserMarksClear(type);
   m_bmManager.UserMarksSetDrawable(type, false);
 
-  m_lastISParams.Clear();
+  m_lastInteractiveSearchParams.Clear();
   m_fixedSearchResults = 0;
 
   int scale;
@@ -1434,7 +1435,7 @@ void Framework::ShowSearchResult(search::Result const & res)
   m_balloonManager.OnShowMark(mark);
 }
 
-size_t Framework::ShowAllSearchResults(search::Results const & results)
+size_t Framework::ShowSearchResults(search::Results const & results)
 {
   using namespace search;
 
@@ -1527,9 +1528,9 @@ void Framework::FillSearchResultsMarks(search::Results const & results)
 
 void Framework::CancelInteractiveSearch()
 {
-  if (IsISActive())
+  if (IsInteractiveSearchActive())
   {
-    m_lastISParams.Clear();
+    m_lastInteractiveSearchParams.Clear();
     CancelQuery(m_lastQueryHandle);
   }
 

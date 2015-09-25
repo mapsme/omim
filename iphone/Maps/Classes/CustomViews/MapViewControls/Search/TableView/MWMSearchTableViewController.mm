@@ -314,7 +314,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     {
       f.StartInteractiveSearch(searchParams);
       if (searchResults.GetCount())
-        f.ShowAllSearchResults(searchResults);
+        f.ShowSearchResults(searchResults);
       f.UpdateUserViewportChanged();
     }
     else

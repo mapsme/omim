@@ -1,4 +1,4 @@
-#include "search/integration_tests/test_feature.hpp"
+#include "search/search_integration_tests/test_feature.hpp"
 
 #include "generator/feature_builder.hpp"
 
