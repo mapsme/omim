@@ -198,8 +198,7 @@ RankTable const * Query::RetrievalCallback::LoadTable(MwmSet::MwmId const & id)
 
 void Query::RetrievalCallback::UnloadTable(MwmSet::MwmId const & id) { m_rankTables.erase(id); }
 
-Query::Query(Index & index, CategoriesHolder & categories,
-             vector<Suggest> const & suggests,
+Query::Query(Index & index, CategoriesHolder const & categories, vector<Suggest> const & suggests,
              storage::CountryInfoGetter const & infoGetter)
   : m_index(index)
   , m_categories(categories)
@@ -432,23 +431,20 @@ int Query::GetCategoryLocales(int8_t (&arr) [3]) const
 template <class ToDo>
 void Query::ForEachCategoryTypes(ToDo toDo) const
 {
-  if (m_pCategories)
+  int8_t arrLocales[3];
+  int const localesCount = GetCategoryLocales(arrLocales);
+
+  size_t const tokensCount = m_tokens.size();
+  for (size_t i = 0; i < tokensCount; ++i)
   {
-    int8_t arrLocales[3];
-    int const localesCount = GetCategoryLocales(arrLocales);
+    for (int j = 0; j < localesCount; ++j)
+      m_categories.ForEachTypeByName(arrLocales[j], m_tokens[i], bind<void>(ref(toDo), i, _1));
+  }
 
-    size_t const tokensCount = m_tokens.size();
-    for (size_t i = 0; i < tokensCount; ++i)
-    {
-      for (int j = 0; j < localesCount; ++j)
-        m_pCategories->ForEachTypeByName(arrLocales[j], m_tokens[i], bind<void>(ref(toDo), i, _1));
-    }
-
-    if (!m_prefix.empty())
-    {
-      for (int j = 0; j < localesCount; ++j)
-        m_pCategories->ForEachTypeByName(arrLocales[j], m_prefix, bind<void>(ref(toDo), tokensCount, _1));
-    }
+  if (!m_prefix.empty())
+  {
+    for (int j = 0; j < localesCount; ++j)
+      m_categories.ForEachTypeByName(arrLocales[j], m_prefix, bind<void>(ref(toDo), tokensCount, _1));
   }
 }
 
@@ -546,7 +542,7 @@ void Query::SearchViewportPoints(Results & res)
   {
     if (IsCancelled())
       break;
-    res.AddResultNoChecks((*(indV[i])).GeneratePointResult(m_infoGetter, m_pCategories,
+    res.AddResultNoChecks((*(indV[i])).GeneratePointResult(m_infoGetter, &m_categories,
                                                            &m_prefferedTypes, m_currentLocaleCode));
   }
 }
@@ -1014,8 +1010,8 @@ public:
 
 Result Query::MakeResult(impl::PreResult2 const & r) const
 {
-  Result res = r.GenerateFinalResult(m_infoGetter, m_pCategories,
-                                     &m_prefferedTypes, m_currentLocaleCode);
+  Result res =
+      r.GenerateFinalResult(m_infoGetter, &m_categories, &m_prefferedTypes, m_currentLocaleCode);
   MakeResultHighlight(res);
 
 #ifdef FIND_LOCALITY_TEST
@@ -1651,23 +1647,22 @@ void Query::SearchInMwms(TMWMVector const & mwmsInfo, SearchQueryParams const & 
 
 void Query::SuggestStrings(Results & res)
 {
-  if (m_pStringsToSuggest && !m_prefix.empty())
-  {
-    int8_t arrLocales[3];
-    int const localesCount = GetCategoryLocales(arrLocales);
+  if (m_prefix.empty())
+    return;
+  int8_t arrLocales[3];
+  int const localesCount = GetCategoryLocales(arrLocales);
 
-    string prolog;
-    RemoveStringPrefix(*m_query, prolog);
+  string prolog;
+  RemoveStringPrefix(*m_query, prolog);
 
-    for (int i = 0; i < localesCount; ++i)
-      MatchForSuggestionsImpl(m_prefix, arrLocales[i], prolog, res);
-  }
+  for (int i = 0; i < localesCount; ++i)
+    MatchForSuggestionsImpl(m_prefix, arrLocales[i], prolog, res);
 }
 
 void Query::MatchForSuggestionsImpl(strings::UniString const & token, int8_t locale,
                                     string const & prolog, Results & res)
 {
-  for (auto const & suggest : *m_pStringsToSuggest)
+  for (auto const & suggest : m_suggests)
   {
     strings::UniString const & s = suggest.m_name;
     if ((suggest.m_prefixLength <= token.size()) &&

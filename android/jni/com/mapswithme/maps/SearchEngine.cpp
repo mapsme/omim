@@ -214,7 +214,7 @@ extern "C"
 
     android::Platform::RunOnGuiThreadImpl([results = g_results]()
     {
-      g_framework->NativeFramework()->ShowAllSearchResults(results);
+      g_framework->NativeFramework()->ShowSearchResults(results);
     });
   }
 } // extern "C"
