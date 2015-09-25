@@ -365,8 +365,7 @@ public class SearchFragment extends BaseMwmFragment
     SearchRecents.add(query);
     FloatingSearchToolbarController.cancelApiCall();
     FloatingSearchToolbarController.saveQuery("");
-    // TODO (android developers) nativeShowResult must be called after onRenderingInitialized
-    //SearchEngine.nativeShowResult(resultIndex);
+    SearchEngine.nativeShowResult(resultIndex);
     Utils.navigateToParent(getActivity());
 
     Statistics.INSTANCE.trackSimpleNamedEvent(Statistics.EventName.SEARCH_KEY_CLICKED);
@@ -377,8 +376,7 @@ public class SearchFragment extends BaseMwmFragment
     final String query = getQuery();
     mLastQueryTimestamp = System.nanoTime();
     SearchEngine.nativeRunInteractiveSearch(query, Language.getKeyboardLocale(), mLastQueryTimestamp);
-    // TODO (android developers) nativeShowResult must be called after onRenderingInitialized
-    //SearchEngine.nativeShowAllResults();
+    SearchEngine.nativeShowAllResults();
     FloatingSearchToolbarController.saveQuery(query);
     Utils.navigateToParent(getActivity());
 
