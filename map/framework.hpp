@@ -333,7 +333,7 @@ private:
   void InitSearchEngine();
 
   // Last search query params for the interactive search.
-  search::SearchParams m_lastISParams;
+  search::SearchParams m_lastInteractiveSearchParams;
   uint8_t m_fixedSearchResults;
 
   // Search query params and viewport for the latest search
@@ -351,7 +351,7 @@ private:
 
   // Returns true when |params| and |viewport| are almost the same as
   // the latest search query's params and viewport.
-  bool QueryCouldBeSkipped(search::SearchParams const & params, m2::RectD const & viewport) const;
+  bool QueryMayBeSkipped(search::SearchParams const & params, m2::RectD const & viewport) const;
 
 public:
   using TSearchRequest = search::QuerySaver::TSearchRequest;
@@ -368,11 +368,14 @@ public:
   void LoadSearchResultMetadata(search::Result & res) const;
   void ShowSearchResult(search::Result const & res);
 
-  size_t ShowAllSearchResults(search::Results const & results);
+  size_t ShowSearchResults(search::Results const & results);
   void UpdateSearchResults(search::Results const & results);
 
-  void StartInteractiveSearch(search::SearchParams const & params) { m_lastISParams = params; }
-  bool IsISActive() const { return !m_lastISParams.m_query.empty(); }
+  void StartInteractiveSearch(search::SearchParams const & params)
+  {
+    m_lastInteractiveSearchParams = params;
+  }
+  bool IsInteractiveSearchActive() const { return !m_lastInteractiveSearchParams.m_query.empty(); }
   void CancelInteractiveSearch();
 
   list<TSearchRequest> const & GetLastSearchQueries() const { return m_searchQuerySaver.Get(); }

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "search_query.hpp"
+#include "search/search_query.hpp"
+#include "search/suggest.hpp"
 
 #include "std/unique_ptr.hpp"
 
@@ -16,12 +17,11 @@ class SearchQueryFactory
 public:
   virtual ~SearchQueryFactory() = default;
 
-  virtual unique_ptr<Query> BuildSearchQuery(
-      Index & index, CategoriesHolder const * categories,
-      Query::TStringsToSuggestVector const * stringsToSuggest,
-      storage::CountryInfoGetter const & infoGetter)
+  virtual unique_ptr<Query> BuildSearchQuery(Index & index, CategoriesHolder const & categories,
+                                             vector<Suggest> const & suggests,
+                                             storage::CountryInfoGetter const & infoGetter)
   {
-    return make_unique<Query>(index, categories, stringsToSuggest, infoGetter);
+    return make_unique<Query>(index, categories, suggests, infoGetter);
   }
 };
 }  // namespace search

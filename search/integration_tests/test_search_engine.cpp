@@ -5,6 +5,7 @@
 
 #include "search/search_query.hpp"
 #include "search/search_query_factory.hpp"
+#include "search/suggest.hpp"
 
 #include "platform/platform.hpp"
 
@@ -15,10 +16,9 @@ namespace
 class TestQuery : public search::Query
 {
 public:
-  TestQuery(Index & index, CategoriesHolder const * categories,
-            search::Query::TStringsToSuggestVector const * stringsToSuggest,
-            storage::CountryInfoGetter const & infoGetter)
-    : search::Query(index, categories, stringsToSuggest, infoGetter)
+  TestQuery(Index & index, CategoriesHolder const & categories,
+            vector<search::Suggest> const & suggests, storage::CountryInfoGetter const & infoGetter)
+    : search::Query(index, categories, suggests, infoGetter)
   {
   }
 
@@ -32,12 +32,11 @@ public:
 class TestSearchQueryFactory : public search::SearchQueryFactory
 {
   // search::SearchQueryFactory overrides:
-  unique_ptr<search::Query> BuildSearchQuery(
-      Index & index, CategoriesHolder const * categories,
-      search::Query::TStringsToSuggestVector const * stringsToSuggest,
-      storage::CountryInfoGetter const & infoGetter) override
+  unique_ptr<search::Query> BuildSearchQuery(Index & index, CategoriesHolder const & categories,
+                                             vector<search::Suggest> const & suggests,
+                                             storage::CountryInfoGetter const & infoGetter) override
   {
-    return make_unique<TestQuery>(index, categories, stringsToSuggest, infoGetter);
+    return make_unique<TestQuery>(index, categories, suggests, infoGetter);
   }
 };
 }  // namespace
