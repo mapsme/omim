@@ -191,15 +191,19 @@ extern "C"
   Java_com_mapswithme_maps_search_SearchEngine_nativeShowResult(JNIEnv * env, jobject thiz, jint index)
   {
     lock_guard<mutex> guard(g_resultsMutex);
-    g_framework->DontLoadState();
     Result const & result = g_results.GetResult(index);
-    g_framework->NativeFramework()->ShowSearchResult(result);
+    g_framework->PostDrapeTask([result]()
+    {
+      g_framework->NativeFramework()->ShowSearchResult(result);
+    });
   }
 
   JNIEXPORT void JNICALL
   Java_com_mapswithme_maps_search_SearchEngine_nativeShowAllResults(JNIEnv * env, jclass clazz)
   {
-    g_framework->DontLoadState();
-    g_framework->NativeFramework()->ShowAllSearchResults();
+    g_framework->PostDrapeTask([]()
+    {
+      g_framework->NativeFramework()->ShowAllSearchResults();
+    });
   }
 } // extern "C"
