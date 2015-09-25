@@ -812,36 +812,21 @@ void Framework::StartInteractiveSearch(search::SearchParams const & params)
 {
   using namespace search;
 
-  m_lastISParams = params;
-  m_lastISParams.SetForceSearch(false);
-  m_lastISParams.SetSearchMode(SearchParams::IN_VIEWPORT_ONLY | SearchParams::SEARCH_WORLD);
-  m_lastISParams.m_callback = [this](Results const & results)
+  m_lastInteractiveSearchParams = params;
+  m_lastInteractiveSearchParams.SetForceSearch(false);
+  m_lastInteractiveSearchParams.SetSearchMode(SearchParams::IN_VIEWPORT_ONLY |
+                                              SearchParams::SEARCH_WORLD);
+  m_lastInteractiveSearchParams.m_callback = [this](Results const & results)
   {
     if (!results.IsEndMarker())
     {
       GetPlatform().RunOnGuiThread([this, results]()
       {
-        if (IsISActive())
+        if (IsInteractiveSearchActive())
           FillSearchResultsMarks(results);
       });
     }
   };
-}
-
-void Framework::UpdateUserViewportChanged()
-{
-  if (IsISActive())
-  {
-    (void)GetCurrentPosition(m_lastISParams.m_lat, m_lastISParams.m_lon);
-
-    m_searchEngine->Search(m_lastISParams, GetCurrentViewport());
-    
-    (void)GetCurrentPosition(m_lastISParams.m_lat, m_lastISParams.m_lon);
-    m_lastISParams.SetSearchMode(search::SearchParams::IN_VIEWPORT_ONLY);
-    m_lastISParams.SetForceSearch(false);
-
-    Search(m_lastISParams);
-  }
 }
 
 void Framework::ClearAllCaches()
@@ -923,6 +908,19 @@ void Framework::UpdateCountryInfo(storage::TIndex const & countryIndex, bool isC
   m_drapeEngine->SetCountryInfo(countryInfo, isCurrentCountry);
 }
 
+void Framework::UpdateUserViewportChanged()
+{
+  if (IsInteractiveSearchActive())
+  {
+    (void)GetCurrentPosition(m_lastInteractiveSearchParams.m_lat,
+                             m_lastInteractiveSearchParams.m_lon);
+    m_lastInteractiveSearchParams.SetSearchMode(search::SearchParams::IN_VIEWPORT_ONLY);
+    m_lastInteractiveSearchParams.SetForceSearch(false);
+
+    Search(m_lastInteractiveSearchParams);
+  }
+}
+
 bool Framework::Search(search::SearchParams const & params)
 {
 #ifdef FIXED_LOCATION
@@ -938,7 +936,7 @@ bool Framework::Search(search::SearchParams const & params)
 
   m2::RectD const viewport = GetCurrentViewport();
 
-  if (QueryCouldBeSkipped(rParams, viewport))
+  if (QueryMayBeSkipped(rParams, viewport))
     return false;
 
   m_lastQueryParams = rParams;
@@ -1050,8 +1048,8 @@ string Framework::GetCountryName(string const & id) const
   return info.m_name;
 }
 
-bool Framework::QueryCouldBeSkipped(search::SearchParams const & params,
-                                    m2::RectD const & viewport) const
+bool Framework::QueryMayBeSkipped(search::SearchParams const & params,
+                                  m2::RectD const & viewport) const
 {
   if (params.IsForceSearch())
     return false;
@@ -1144,7 +1142,7 @@ void Framework::ShowSearchResult(search::Result const & res)
   ActivateUserMark(mark, false);
 }
 
-size_t Framework::ShowAllSearchResults(search::Results const & results)
+size_t Framework::ShowSearchResults(search::Results const & results)
 {
   using namespace search;
 
@@ -1240,9 +1238,9 @@ void Framework::FillSearchResultsMarks(search::Results const & results)
 void Framework::CancelInteractiveSearch()
 {
   UserMarkControllerGuard(m_bmManager, UserMarkType::SEARCH_MARK).m_controller.Clear();
-  if (IsISActive())
+  if (IsInteractiveSearchActive())
   {
-    m_lastISParams.Clear();
+    m_lastInteractiveSearchParams.Clear();
     CancelQuery(m_lastQueryHandle);
   }
 
