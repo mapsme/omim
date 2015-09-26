@@ -47,7 +47,8 @@ RoutingSession::RoutingSession()
       m_route(string()),
       m_state(RoutingNotActive),
       m_endPoint(m2::PointD::Zero()),
-      m_speedMpS(0),
+      m_lastWarnedSpeedCamera(0),
+      m_speedWarningSignal(false),
       m_passedDistanceOnRouteMeters(0.0)
 {
 }
@@ -127,10 +128,12 @@ void RoutingSession::Reset()
 
   m_passedDistanceOnRouteMeters = 0.0;
   m_lastWarnedSpeedCamera = 0;
+  m_speedWarningSignal = false;
 }
 
 RoutingSession::State RoutingSession::OnLocationPositionChanged(m2::PointD const & position,
-                                                                GpsInfo const & info)
+                                                                GpsInfo const & info,
+                                                                Index const & index)
 {
   ASSERT(m_state != RoutingNotActive, ());
   ASSERT(m_router != nullptr, ());
@@ -151,7 +154,6 @@ RoutingSession::State RoutingSession::OnLocationPositionChanged(m2::PointD const
   ASSERT(m_route.IsValid(), ());
 
   m_turnsSound.SetSpeedMetersPerSecond(info.m_speed);
-  m_speedMpS = info.m_speed;
 
   if (m_route.MoveIterator(info))
   {
@@ -168,7 +170,26 @@ RoutingSession::State RoutingSession::OnLocationPositionChanged(m2::PointD const
       alohalytics::LogEvent("RouteTracking_ReachedDestination", params);
     }
     else
+    {
       m_state = OnRoute;
+
+      // Warning signals checks
+      if (m_routingSettings.m_speedCameraWarning && !m_speedWarningSignal)
+      {
+        double const warningDistanceM = max(kSpeedCameraMinimalWarningMeters,
+                                            info.m_speed * kSpeedCameraWarningSeconds);
+        SpeedCameraRestriction cam(0, 0);
+        double const camDistance = m_route.GetCurrentCam(cam, index);
+        if (Route::kInvalidSpeedCameraDistance != camDistance && camDistance < warningDistanceM)
+        {
+          if (cam.m_index > m_lastWarnedSpeedCamera && info.m_speed > cam.m_maxSpeed * kMpsToKmh)
+          {
+            m_speedWarningSignal = true;
+            m_lastWarnedSpeedCamera = cam.m_index;
+          }
+        }
+      }
+    }
     m_lastGoodPosition = position;
   }
   else
@@ -197,7 +218,7 @@ RoutingSession::State RoutingSession::OnLocationPositionChanged(m2::PointD const
   return m_state;
 }
 
-void RoutingSession::GetRouteFollowingInfo(FollowingInfo & info, Index const & index) const
+void RoutingSession::GetRouteFollowingInfo(FollowingInfo & info) const
 {
   auto formatDistFn = [](double dist, string & value, string & suffix)
   {
@@ -274,22 +295,9 @@ void RoutingSession::GetRouteFollowingInfo(FollowingInfo & info, Index const & i
     info.m_lanes.clear();
   }
 
-  // Warning signals checks
-  if (m_routingSettings.m_speedCameraWarning)
-  {
-    double const warningDistanceM = max(kSpeedCameraMinimalWarningMeters,
-                                        m_speedMpS * kSpeedCameraWarningSeconds);
-    SpeedCameraRestriction cam(0, 0);
-    double const camDistance = m_route.GetCurrentCam(cam, index);
-    if (Route::kInvalidSpeedCameraDistance != camDistance && camDistance < warningDistanceM)
-    {
-      if (cam.m_index > m_lastWarnedSpeedCamera && m_speedMpS > cam.m_maxSpeed * kMpsToKmh)
-      {
-        info.m_speedWarningSignal = true;
-        m_lastWarnedSpeedCamera = cam.m_index;
-      }
-    }
-  }
+  // Speedcam signal information.
+  info.m_speedWarningSignal = m_speedWarningSignal;
+  m_speedWarningSignal = false;
 
   // Pedestrian info
   m2::PointD pos;
