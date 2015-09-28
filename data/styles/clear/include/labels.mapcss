@@ -784,10 +784,8 @@ node|z8-9[place=region],
 
 area|z16[building],
 node|z16[building],
-area|z16[addr:housenumber][addr:street],
-node|z16[addr:housenumber][addr:street]
 {
-  text: "addr:housenumber";
+  text: "addr:housename";
   font-size: 8;
   text-color: @housename;
   text-position: center;
@@ -796,23 +794,18 @@ node|z16[addr:housenumber][addr:street]
 
 area|z17[building],
 node|z17[building],
-area|z17[addr:housenumber][addr:street],
-node|z17[addr:housenumber][addr:street]
 {
-  text: "addr:housenumber";
+  text: name;
   font-size: 9;
   text-color: @building_label;
   text-position: center;
   z-index: 300;
 }
 
-
 area|z18-[building],
 node|z18-[building],
-area|z18-[addr:housenumber][addr:street],
-node|z18-[addr:housenumber][addr:street]
 {
-  text: "addr:housenumber";
+  text: name;
   font-size: 10;
   text-color: @building_label;
   text-position: center;

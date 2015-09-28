@@ -912,6 +912,13 @@ class CaptionDefProto : public ::google::protobuf::MessageLite {
   inline ::google::protobuf::int32 offset_y() const;
   inline void set_offset_y(::google::protobuf::int32 value);
 
+  // optional int32 text_type = 6;
+  inline bool has_text_type() const;
+  inline void clear_text_type();
+  static const int kTextTypeFieldNumber = 6;
+  inline ::google::protobuf::int32 text_type() const;
+  inline void set_text_type(::google::protobuf::int32 value);
+
   // @@protoc_insertion_point(class_scope:CaptionDefProto)
  private:
   inline void set_has_height();
@@ -924,6 +931,8 @@ class CaptionDefProto : public ::google::protobuf::MessageLite {
   inline void clear_has_offset_x();
   inline void set_has_offset_y();
   inline void clear_has_offset_y();
+  inline void set_has_text_type();
+  inline void clear_has_text_type();
 
   ::std::string _unknown_fields_;
 
@@ -934,6 +943,7 @@ class CaptionDefProto : public ::google::protobuf::MessageLite {
   ::google::protobuf::uint32 stroke_color_;
   ::google::protobuf::int32 offset_x_;
   ::google::protobuf::int32 offset_y_;
+  ::google::protobuf::int32 text_type_;
   #ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
   friend void  protobuf_AddDesc_drules_5fstruct_2eproto_impl();
   #else
@@ -2759,6 +2769,30 @@ inline void CaptionDefProto::set_offset_y(::google::protobuf::int32 value) {
   set_has_offset_y();
   offset_y_ = value;
   // @@protoc_insertion_point(field_set:CaptionDefProto.offset_y)
+}
+
+// optional int32 text_type = 6;
+inline bool CaptionDefProto::has_text_type() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void CaptionDefProto::set_has_text_type() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void CaptionDefProto::clear_has_text_type() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void CaptionDefProto::clear_text_type() {
+  text_type_ = 0;
+  clear_has_text_type();
+}
+inline ::google::protobuf::int32 CaptionDefProto::text_type() const {
+  // @@protoc_insertion_point(field_get:CaptionDefProto.text_type)
+  return text_type_;
+}
+inline void CaptionDefProto::set_text_type(::google::protobuf::int32 value) {
+  set_has_text_type();
+  text_type_ = value;
+  // @@protoc_insertion_point(field_set:CaptionDefProto.text_type)
 }
 
 // -------------------------------------------------------------------

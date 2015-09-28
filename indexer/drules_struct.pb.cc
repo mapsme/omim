@@ -2035,6 +2035,7 @@ const int CaptionDefProto::kColorFieldNumber;
 const int CaptionDefProto::kStrokeColorFieldNumber;
 const int CaptionDefProto::kOffsetXFieldNumber;
 const int CaptionDefProto::kOffsetYFieldNumber;
+const int CaptionDefProto::kTextTypeFieldNumber;
 #endif  // !_MSC_VER
 
 CaptionDefProto::CaptionDefProto()
@@ -2060,6 +2061,7 @@ void CaptionDefProto::SharedCtor() {
   stroke_color_ = 0u;
   offset_x_ = 0;
   offset_y_ = 0;
+  text_type_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -2108,8 +2110,8 @@ void CaptionDefProto::Clear() {
     ::memset(&first, 0, n);                                \
   } while (0)
 
-  if (_has_bits_[0 / 32] & 31) {
-    ZR_(height_, offset_y_);
+  if (_has_bits_[0 / 32] & 63) {
+    ZR_(height_, text_type_);
   }
 
 #undef OFFSET_OF_FIELD_
@@ -2203,6 +2205,21 @@ bool CaptionDefProto::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(48)) goto parse_text_type;
+        break;
+      }
+
+      // optional int32 text_type = 6;
+      case 6: {
+        if (tag == 48) {
+         parse_text_type:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &text_type_)));
+          set_has_text_type();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -2257,6 +2274,11 @@ void CaptionDefProto::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(5, this->offset_y(), output);
   }
 
+  // optional int32 text_type = 6;
+  if (has_text_type()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(6, this->text_type(), output);
+  }
+
   output->WriteRaw(unknown_fields().data(),
                    unknown_fields().size());
   // @@protoc_insertion_point(serialize_end:CaptionDefProto)
@@ -2301,6 +2323,13 @@ int CaptionDefProto::ByteSize() const {
           this->offset_y());
     }
 
+    // optional int32 text_type = 6;
+    if (has_text_type()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->text_type());
+    }
+
   }
   total_size += unknown_fields().size();
 
@@ -2333,6 +2362,9 @@ void CaptionDefProto::MergeFrom(const CaptionDefProto& from) {
     if (from.has_offset_y()) {
       set_offset_y(from.offset_y());
     }
+    if (from.has_text_type()) {
+      set_text_type(from.text_type());
+    }
   }
   mutable_unknown_fields()->append(from.unknown_fields());
 }
@@ -2356,6 +2388,7 @@ void CaptionDefProto::Swap(CaptionDefProto* other) {
     std::swap(stroke_color_, other->stroke_color_);
     std::swap(offset_x_, other->offset_x_);
     std::swap(offset_y_, other->offset_y_);
+    std::swap(text_type_, other->text_type_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.swap(other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
