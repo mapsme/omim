@@ -21,7 +21,7 @@ namespace
 QString GetKothicScript()
 {
   QString const resourceDir = GetPlatform().ResourcesDir().c_str();
-  return resourceDir + "kothic/libkomwm.py";
+  return resourceDir + "kothic/src/libkomwm.py";
 }
 
 QString GetProtobufEgg()
