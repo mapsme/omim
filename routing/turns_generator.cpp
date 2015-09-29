@@ -774,10 +774,10 @@ void GetTurnDirection(Index const & index, TurnInfo & turnInfo, TurnItem & turn)
   GetPossibleTurns(index, turnInfo.m_ingoingNodeID, ingoingPointOneSegment, junctionPoint,
                    turnInfo.m_routeMapping, nodes);
 
-  size_t const nodesSize = nodes.size();
-  bool const hasMultiTurns = nodesSize > 1;
+  size_t const numNodes = nodes.size();
+  bool const hasMultiTurns = numNodes > 1;
 
-  if (nodesSize == 0)
+  if (numNodes == 0)
     return;
 
   if (!hasMultiTurns)

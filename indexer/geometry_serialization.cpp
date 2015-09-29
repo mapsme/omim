@@ -156,7 +156,7 @@ namespace serial
 
       // find next edges
       int const nextNode = curr.m_p[1];
-      vector<TEdge>::iterator i = lower_bound(edges.begin(), edges.end(), nextNode, edge_less_p0());
+      auto i = lower_bound(edges.begin(), edges.end(), nextNode, edge_less_p0());
       bool const found = (i != edges.end() && i->m_p[0] == nextNode);
       if (found)
       {

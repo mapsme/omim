@@ -161,9 +161,10 @@ namespace serial
   {
     using TPoint = m2::PointU;
     using TEdge = tesselator::Edge;
-    using TBuffer = vector<char> ;
+    using TBuffer = vector<char>;
 
-    TPoint m_base, m_max;
+    TPoint m_base;
+    TPoint m_max;
 
     list<TBuffer> m_buffers;
 
@@ -178,8 +179,8 @@ namespace serial
     size_t GetBufferSize() const
     {
       size_t sz = 0;
-      for (list<TBuffer>::const_iterator i = m_buffers.begin(); i != m_buffers.end(); ++i)
-        sz += i->size();
+      for (auto const & i : m_buffers)
+        sz += i.size();
       return sz;
     }
 

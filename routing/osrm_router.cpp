@@ -704,10 +704,10 @@ OsrmRouter::ResultCode OsrmRouter::MakeTurnAnnotation(
     INTERRUPT_WHEN_CANCELLED(delegate);
 
     // Get all computed route coordinates
-    size_t const segmentSize = segment.size();
-    for (size_t rawPathIndex = 0; rawPathIndex < segmentSize; ++rawPathIndex)
+    size_t const numSegments = segment.size();
+    for (size_t rawPathIndex = 0; rawPathIndex < numSegments; ++rawPathIndex)
     {
-      RawPathData const & path_data = segment[rawPathIndex];
+      RawPathData const & pathData = segment[rawPathIndex];
 
       if (rawPathIndex > 0 && !points.empty())
       {
@@ -719,7 +719,7 @@ OsrmRouter::ResultCode OsrmRouter::MakeTurnAnnotation(
 
         // ETA information.
         // Osrm multiples seconds to 10, so we need to divide it back.
-        double const nodeTimeSeconds = path_data.segmentWeight / 10.0;
+        double const nodeTimeSeconds = pathData.segmentWeight / 10.0;
 
 #ifdef DEBUG
         double distMeters = 0.0;
@@ -743,7 +743,7 @@ OsrmRouter::ResultCode OsrmRouter::MakeTurnAnnotation(
       }
 
       buffer_vector<TSeg, 8> buffer;
-      mapping->m_segMapping.ForEachFtSeg(path_data.node, MakeBackInsertFunctor(buffer));
+      mapping->m_segMapping.ForEachFtSeg(pathData.node, MakeBackInsertFunctor(buffer));
 
       auto FindIntersectingSeg = [&buffer] (TSeg const & seg) -> size_t
       {
@@ -767,7 +767,7 @@ OsrmRouter::ResultCode OsrmRouter::MakeTurnAnnotation(
           continue;
         startK = FindIntersectingSeg(segBegin);
       }
-      if (rawPathIndex == segmentSize - 1)
+      if (rawPathIndex + 1 == numSegments)
       {
         if (!segEnd.IsValid())
           continue;
@@ -785,11 +785,11 @@ OsrmRouter::ResultCode OsrmRouter::MakeTurnAnnotation(
 
         auto startIdx = seg.m_pointStart;
         auto endIdx = seg.m_pointEnd;
-        bool const needTime = (rawPathIndex == 0) || (rawPathIndex == segmentSize - 1);
+        bool const needTime = (rawPathIndex == 0) || (rawPathIndex == numSegments - 1);
 
         if (rawPathIndex == 0 && k == startK && segBegin.IsValid())
           startIdx = (seg.m_pointEnd > seg.m_pointStart) ? segBegin.m_pointStart : segBegin.m_pointEnd;
-        if (rawPathIndex == segmentSize - 1 && k == endK - 1 && segEnd.IsValid())
+        if (rawPathIndex == numSegments - 1 && k == endK - 1 && segEnd.IsValid())
           endIdx = (seg.m_pointEnd > seg.m_pointStart) ? segEnd.m_pointEnd : segEnd.m_pointStart;
 
         if (seg.m_pointEnd > seg.m_pointStart)
