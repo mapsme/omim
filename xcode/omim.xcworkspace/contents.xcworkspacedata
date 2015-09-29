@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:../iphone/Maps/Maps.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:defaults.xcconfig">
    </FileRef>
    <Group
