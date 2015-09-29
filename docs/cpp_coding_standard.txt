@@ -24,6 +24,33 @@ Naming and formatting
 - Space after the keyword in conditions and loops. Space after ';' in for loop
 - Space between binary operators, but can skip according to operators priority: x = y*y + z*z;
 - Space after double dash
+- Compile-time constants must be named in camelCase, starting with a lower-case 'k', i.e. kCompileTimeConstant.
+- Values of enum classes must be named in CamelCase, i.e:
+
+  enum class Color
+  {
+    Red,
+    Green,
+    Blue,
+    CoralPink
+  };
+
+- Macroses and C-style enums must be named in UPPER_CASE and enum
+  values must be prefixed with capitalized enum name:
+
+  #define BUF_SIZE 1024
+
+  enum Type
+  {
+    TYPE_INTEGER,
+    TYPE_FLOAT,
+    TYPE_STRING
+  };
+
+  Note that macroses make debugging hard and old-style enums have
+  dangerous implicit conversions to integers and tend to clutter
+  containing namespaces. Thus avoid them when possible - use const or
+  constexpr instead of macroses and enum classes instead of enums.
 
 // *********** Formatting Example/Guide/Reference ***********
 #include "../std/math.hpp"
