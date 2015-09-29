@@ -2,24 +2,24 @@
 #include "coding/trie.hpp"
 #include "coding/reader.hpp"
 #include "coding/varint.hpp"
+
 #include "base/assert.hpp"
 #include "base/bits.hpp"
 #include "base/macros.hpp"
 
 namespace trie
 {
-template <class ValueReaderT, typename EdgeValueT>
-class LeafIterator0 : public Iterator<typename ValueReaderT::ValueType, EdgeValueT>
+template <class TValueReader>
+class LeafIterator0 : public Iterator<typename TValueReader::ValueType>
 {
 public:
-  typedef typename ValueReaderT::ValueType ValueType;
-  typedef EdgeValueT EdgeValueType;
+  using ValueType = typename TValueReader::ValueType;
 
-  template <class ReaderT>
-  LeafIterator0(ReaderT const & reader, ValueReaderT const & valueReader)
+  template <class TReader>
+  LeafIterator0(TReader const & reader, TValueReader const & valueReader)
   {
     uint32_t const size = static_cast<uint32_t>(reader.Size());
-    ReaderSource<ReaderT> src(reader);
+    ReaderSource<TReader> src(reader);
     while (src.Pos() < size)
     {
       this->m_value.push_back(ValueType());
@@ -32,58 +32,54 @@ public:
     ASSERT_EQUAL(size, src.Pos(), ());
   }
 
-  Iterator<ValueType, EdgeValueType> * Clone() const
+  // trie::Iterator overrides:
+  unique_ptr<Iterator<ValueType>> Clone() const override
   {
-    return new LeafIterator0<ValueReaderT, EdgeValueT>(*this);
+    return make_unique<LeafIterator0<TValueReader>>(*this);
   }
 
-  Iterator<ValueType, EdgeValueType> * GoToEdge(size_t i) const
+  unique_ptr<Iterator<ValueType>> GoToEdge(size_t i) const override
   {
     ASSERT(false, (i));
     UNUSED_VALUE(i);
-    return NULL;
+    return nullptr;
   }
 };
 
-template <class ReaderT, class ValueReaderT, class EdgeValueReaderT>
-class IteratorImplBase :
-    public Iterator<typename ValueReaderT::ValueType, typename EdgeValueReaderT::ValueType>
+template <class TReader, class TValueReader>
+class IteratorImplBase : public Iterator<typename TValueReader::ValueType>
 {
 protected:
   enum { IS_READER_IN_MEMORY = 0 };
 };
 
-template <class ValueReaderT, class EdgeValueReaderT>
-class IteratorImplBase<SharedMemReader, ValueReaderT, EdgeValueReaderT> :
-    public Iterator<typename ValueReaderT::ValueType, typename EdgeValueReaderT::ValueType>
+template <class TValueReader>
+class IteratorImplBase<SharedMemReader, TValueReader>
+    : public Iterator<typename TValueReader::ValueType>
 {
 protected:
   enum { IS_READER_IN_MEMORY = 1 };
 };
 
-
-template <class ReaderT, class ValueReaderT, class EdgeValueReaderT>
-class Iterator0 : public IteratorImplBase<ReaderT, ValueReaderT, EdgeValueReaderT>
+template <class TReader, class TValueReader>
+class Iterator0 : public IteratorImplBase<TReader, TValueReader>
 {
 public:
-  typedef typename ValueReaderT::ValueType ValueType;
-  typedef typename EdgeValueReaderT::ValueType EdgeValueType;
+  typedef typename TValueReader::ValueType ValueType;
 
-  Iterator0(ReaderT const & reader,
-            ValueReaderT const & valueReader,
-            EdgeValueReaderT const &  edgeValueReader,
-            TrieChar baseChar)
-    : m_reader(reader), m_valueReader(valueReader), m_edgeValueReader(edgeValueReader)
+  Iterator0(TReader const & reader, TValueReader const & valueReader, TrieChar baseChar)
+    : m_reader(reader), m_valueReader(valueReader)
   {
     ParseNode(baseChar);
   }
 
-  Iterator<ValueType, EdgeValueType> * Clone() const
+  // trie::Iterator overrides:
+  unique_ptr<Iterator<ValueType>> Clone() const override
   {
-    return new Iterator0<ReaderT, ValueReaderT, EdgeValueReaderT>(*this);
+    return make_unique<Iterator0<TReader, TValueReader>>(*this);
   }
 
-  Iterator<ValueType, EdgeValueType> * GoToEdge(size_t i) const
+  unique_ptr<Iterator<ValueType>> GoToEdge(size_t i) const override
   {
     ASSERT_LESS(i, this->m_edge.size(), ());
     uint32_t const offset = m_edgeInfo[i].m_offset;
@@ -91,36 +87,35 @@ public:
 
     // TODO: Profile to check that MemReader optimization helps?
     /*
-    if (!IteratorImplBase<ReaderT, ValueReaderT, EdgeValueReaderT>::IS_READER_IN_MEMORY &&
+    if (!IteratorImplBase<TReader, TValueReader>::IS_READER_IN_MEMORY &&
         size < 1024)
     {
       SharedMemReader memReader(size);
       m_reader.Read(offset, memReader.Data(), size);
       if (m_edgeInfo[i].m_isLeaf)
-        return new LeafIterator0<SharedMemReader, ValueReaderT, EdgeValueType>(
+        return make_unique<LeafIterator0<SharedMemReader, TValueReader>>(
               memReader, m_valueReader);
       else
-        return new Iterator0<SharedMemReader, ValueReaderT, EdgeValueReaderT>(
-              memReader, m_valueReader, m_edgeValueReader,
+        return make_unique<Iterator0<SharedMemReader, TValueReader>>(
+              memReader, m_valueReader,
               this->m_edge[i].m_str.back());
     }
     else
     */
     {
       if (m_edgeInfo[i].m_isLeaf)
-        return new LeafIterator0<ValueReaderT, EdgeValueType>(
-              m_reader.SubReader(offset, size), m_valueReader);
+        return make_unique<LeafIterator0<TValueReader>>(m_reader.SubReader(offset, size),
+                                                        m_valueReader);
       else
-        return new Iterator0<ReaderT, ValueReaderT, EdgeValueReaderT>(
-              m_reader.SubReader(offset, size), m_valueReader, m_edgeValueReader,
-              this->m_edge[i].m_str.back());
+        return make_unique<Iterator0<TReader, TValueReader>>(
+            m_reader.SubReader(offset, size), m_valueReader, this->m_edge[i].m_str.back());
     }
   }
 
 private:
   void ParseNode(TrieChar baseChar)
   {
-    ReaderSource<ReaderT> src(m_reader);
+    ReaderSource<TReader> src(m_reader);
 
     // [1: header]: [2: min(valueCount, 3)] [6: min(childCount, 63)]
     uint8_t const header = ReadPrimitiveFromSource<uint8_t>(src);
@@ -146,7 +141,7 @@ private:
     m_edgeInfo[0].m_offset = 0;
     for (uint32_t i = 0; i < childCount; ++i)
     {
-      typename Iterator<ValueType, EdgeValueType>::Edge & e = this->m_edge[i];
+      typename Iterator<ValueType>::Edge & e = this->m_edge[i];
 
       // [1: header]: [1: isLeaf] [1: isShortEdge] [6: (edgeChar0 - baseChar) or min(edgeLen-1, 63)]
       uint8_t const header = ReadPrimitiveFromSource<uint8_t>(src);
@@ -166,9 +161,6 @@ private:
         for (uint32_t i = 0; i < edgeLen; ++i)
           e.m_str.push_back(baseChar += ReadVarInt<int32_t>(src));
       }
-
-      // [edge value]
-      m_edgeValueReader(src, e.m_value);
 
       // [child size]: if the child is not the last one
       m_edgeInfo[i + 1].m_offset = m_edgeInfo[i].m_offset;
@@ -192,20 +184,16 @@ private:
 
   buffer_vector<EdgeInfo, 9> m_edgeInfo;
 
-  ReaderT m_reader;
-  ValueReaderT m_valueReader;
-  EdgeValueReaderT m_edgeValueReader;
+  TReader m_reader;
+  TValueReader m_valueReader;
 };
 
 // Returns iterator to the root of the trie.
-template <class ReaderT, class ValueReaderT, class EdgeValueReaderT>
-Iterator<typename ValueReaderT::ValueType, typename EdgeValueReaderT::ValueType> *
-ReadTrie(ReaderT const & reader,
-         ValueReaderT valueReader = ValueReaderT(),
-         EdgeValueReaderT edgeValueReader = EdgeValueReaderT())
+template <class TReader, class TValueReader>
+unique_ptr<Iterator<typename TValueReader::ValueType>> ReadTrie(
+    TReader const & reader, TValueReader valueReader = TValueReader())
 {
-  return new Iterator0<ReaderT, ValueReaderT, EdgeValueReaderT>(
-        reader, valueReader, edgeValueReader, DEFAULT_CHAR);
+  return make_unique<Iterator0<TReader, TValueReader>>(reader, valueReader, DEFAULT_CHAR);
 }
 
 }  // namespace trie
