@@ -326,6 +326,8 @@ TurnDirection FindDirectionByAngle(vector<pair<double, TurnDirection>> const & l
  * \param segment is a ingoing or outgoing feature segment.
  * \param ft is a ingoing or outgoing feature.
  * \param junctionPoint is a junction point.
+ * \param maxPointsCount returned poit could't be more than maxPointsCount poins away from junctionPoint
+ * \param minDistMeters returned point should be minDistMeters away from junctionPoint if ft is long and consists of short segments
  * \param GetPointIndex is a function for getting points by index.
  * It defines a direction of following along a feature. So it differs for ingoing and outgoing cases.
  * It has following parameters:
@@ -339,13 +341,9 @@ TurnDirection FindDirectionByAngle(vector<pair<double, TurnDirection>> const & l
  */
 m2::PointD GetPointForTurn(OsrmMappingTypes::FtSeg const & segment, FeatureType const & ft,
                            m2::PointD const & junctionPoint,
-                           size_t (*GetPointIndex)(const size_t start, const size_t end, const size_t shift),
-                           size_t const maxPointsCount = 7, // An ingoing and outgoing point could be farther
-                                                             // then kMaxPointsCount points from the junctionPoint
-                           double const minDistMeters = 300. // If ft feature is long enough and consists of short segments
-                                                              // the point for turn generation is taken as the next point
-                                                              // along the route after kMinDistMeters.
-                           )
+                           size_t const maxPointsCount,
+                           double const minDistMeters,
+                           size_t (*GetPointIndex)(const size_t start, const size_t end, const size_t shift))
 {
   double curDistanceMeters = 0.;
   m2::PointD point = junctionPoint;
@@ -738,11 +736,14 @@ void GetTurnDirection(Index const & index, TurnInfo & turnInfo, TurnItem & turn)
     return end > start ? start + i : start - i;
   };
 
+  size_t constexpr kMaxPointsCount = 7;
+  double constexpr kMinDistMeters = 300.;
+
   m2::PointD const junctionPoint = ingoingFeature.GetPoint(turnInfo.m_ingoingSegment.m_pointEnd);
   m2::PointD const ingoingPoint = GetPointForTurn(turnInfo.m_ingoingSegment, ingoingFeature,
-                                                  junctionPoint, getIngoingPointIndex);
+                                                  junctionPoint, kMaxPointsCount, kMinDistMeters, getIngoingPointIndex);
   m2::PointD const outgoingPoint = GetPointForTurn(turnInfo.m_outgoingSegment, outgoingFeature,
-                                                   junctionPoint, getOutgoingPointIndex);
+                                                   junctionPoint, kMaxPointsCount, kMinDistMeters, getOutgoingPointIndex);
 
   double const turnAngle = my::RadToDeg(PiMinusTwoVectorsAngle(junctionPoint, ingoingPoint, outgoingPoint));
   TurnDirection const intermediateDirection = IntermediateDirection(turnAngle);
@@ -808,12 +809,11 @@ void GetTurnDirection(Index const & index, TurnInfo & turnInfo, TurnItem & turn)
     return;
   }
 
+  size_t constexpr kNotSoCloseMaxPointsCount = 3;
+  double constexpr kNotSoCloseMinDistMeters = 30.;
+  auto const notSoCloseToTheTurnPoint = GetPointForTurn(turnInfo.m_ingoingSegment, ingoingFeature, junctionPoint,
+                                                        kNotSoCloseMaxPointsCount, kNotSoCloseMinDistMeters, getIngoingPointIndex);
 
-  size_t constexpr kMaxPointsCount = 3;
-  double constexpr kMinDistMeters = 30.;
-  auto const notSoCloseToTheTurnPoint = GetPointForTurn(turnInfo.m_ingoingSegment, ingoingFeature,
-                                                        junctionPoint, getIngoingPointIndex,
-                                                        kMaxPointsCount, kMinDistMeters);
   if (!KeepTurnByIngoingEdges(junctionPoint, notSoCloseToTheTurnPoint, outgoingPoint, hasMultiTurns,
                               turnInfo.m_routeMapping, index))
   {
