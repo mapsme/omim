@@ -1,0 +1,3 @@
+[submodule "tools/kothic"]
+	path = tools/kothic
+	url = git://github.com/mapsme/kothic.git
