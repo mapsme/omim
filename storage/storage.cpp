@@ -597,8 +597,13 @@ string Storage::GetFileDownloadUrl(string const & baseUrl, TIndex const & index,
 
 string Storage::GetFileDownloadUrl(string const & baseUrl, string const & fName) const
 {
+#ifdef BUILD_DESIGNER
+  return "http://designer.mapswithme.com/mac/" + strings::to_string(GetCurrentDataVersion()) + "/" +
+         UrlEncode(fName);
+#else // BUILD_DESIGNER
   return baseUrl + OMIM_OS_NAME "/" + strings::to_string(GetCurrentDataVersion()) + "/" +
          UrlEncode(fName);
+#endif // BUILD_DESIGNER
 }
 
 TIndex Storage::FindIndexByFile(string const & name) const

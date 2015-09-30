@@ -2,6 +2,8 @@
 
 #include "qt/slider_ctrl.hpp"
 
+#include "indexer/classificator_loader.hpp"
+
 #include "map/country_status_display.hpp"
 
 #include "render/render_policy.hpp"
@@ -691,5 +693,20 @@ namespace qt
   void DrawWidget::SetRouter(routing::RouterType routerType)
   {
     m_framework->SetRouter(routerType);
+  }
+
+  void DrawWidget::RefreshDrawingRules()
+  {
+#ifndef USE_DRAPE
+    makeCurrent();
+
+    m_framework->SetRenderPolicy(nullptr);
+
+    classificator::Load();
+
+    InitRenderPolicy();
+
+    m_framework->SetUpdatesEnabled(true);
+#endif
   }
 }
