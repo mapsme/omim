@@ -362,18 +362,29 @@ void Query::ForEachCategoryTypes(ToDo toDo) const
   {
     int8_t arrLocales[3];
     int const localesCount = GetCategoryLocales(arrLocales);
+    static int8_t const enLocaleCode = CategoriesHolder::MapLocaleToInteger("en");
 
     size_t const tokensCount = m_tokens.size();
     for (size_t i = 0; i < tokensCount; ++i)
     {
       for (int j = 0; j < localesCount; ++j)
         m_pCategories->ForEachTypeByName(arrLocales[j], m_tokens[i], bind<void>(ref(toDo), i, _1));
+
+      // Special process of 2 codepoints emoji (e.g. black guy on a bike).
+      if (m_tokens[i].size() > 1)
+        m_pCategories->ForEachTypeByName(enLocaleCode, strings::UniString(1, m_tokens[i][0]),
+                                         bind<void>(ref(toDo), i, _1));
     }
 
     if (!m_prefix.empty())
     {
       for (int j = 0; j < localesCount; ++j)
         m_pCategories->ForEachTypeByName(arrLocales[j], m_prefix, bind<void>(ref(toDo), tokensCount, _1));
+
+      // Special process of 2 codepoints emoji (e.g. black guy on a bike).
+      if (m_prefix.size() > 1)
+        m_pCategories->ForEachTypeByName(enLocaleCode, strings::UniString(1, m_prefix[0]),
+                                         bind<void>(ref(toDo), tokensCount, _1));
     }
   }
 }
