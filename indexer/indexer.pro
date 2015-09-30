@@ -94,6 +94,7 @@ HEADERS += \
     scale_index.hpp \
     scale_index_builder.hpp \
     scales.hpp \
+    scales_patch.hpp \
     search_delimiters.hpp \
     search_index_builder.hpp \
     search_string_utils.hpp \

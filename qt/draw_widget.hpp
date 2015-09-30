@@ -104,6 +104,8 @@ namespace qt
 
     void PrepareShutdown();
 
+    void RefreshDrawingRules();
+
     Framework & GetFramework() { return *m_framework.get(); }
 
     void SetMapStyle(MapStyle mapStyle);
