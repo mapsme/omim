@@ -402,7 +402,7 @@ void Framework::UpdateLatestCountryFile(LocalCountryFile const & localFile)
   auto p = m_model.RegisterMap(localFile);
   MwmSet::MwmId const & id = p.first;
   if (id.IsAlive())
-	InvalidateRect(handle.GetInfo()->m_limitRect);
+    InvalidateRect(id.GetInfo()->m_limitRect);
 
   GetSearchEngine()->ClearViewportsCache();
 }
