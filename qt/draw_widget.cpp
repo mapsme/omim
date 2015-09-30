@@ -575,4 +575,9 @@ bool IsLocationEmulation(QMouseEvent * e)
   {
     m_framework->SetRouter(routerType);
   }
+
+  void DrawWidget::RefreshDrawingRules()
+  {
+    SetMapStyle(MapStyleLight);
+  }
 }

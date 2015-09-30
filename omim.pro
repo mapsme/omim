@@ -52,7 +52,7 @@ CONFIG(desktop) {
     SUBDIRS += drape_head
   }
 
-  CONFIG(map_designer) {
+  CONFIG(map_designer):CONFIG(desktop) {
     SUBDIRS += skin_generator
   }
 

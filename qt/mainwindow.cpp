@@ -13,6 +13,8 @@
 
 #include "std/bind.hpp"
 
+#include "build_style/build_style.h"
+
 #include <QtGui/QCloseEvent>
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
@@ -31,6 +33,7 @@
   #include <QtWidgets/QToolBar>
 #endif
 
+#include <QMessageBox>
 
 #define IDM_ABOUT_DIALOG        1001
 #define IDM_PREFERENCES_DIALOG  1002
@@ -49,7 +52,10 @@
 namespace qt
 {
 
-MainWindow::MainWindow() : m_locationService(CreateDesktopLocationService(*this))
+MainWindow::MainWindow(QString const & mapcssFilePath /*= QString()*/)
+  : m_pBuildStyleAction(nullptr)
+  , m_locationService(CreateDesktopLocationService(*this))
+  , m_mapcssFilePath(mapcssFilePath)
 {
   // Always runs on the first desktop
   QDesktopWidget const * desktop(QApplication::desktop());
@@ -83,7 +89,11 @@ MainWindow::MainWindow() : m_locationService(CreateDesktopLocationService(*this)
   CreateNavigationBar();
   CreateSearchBarAndPanel();
 
-  setWindowTitle(tr("MAPS.ME"));
+  QString caption = qAppName();
+  if (!m_mapcssFilePath.isEmpty())
+    caption += QString(" - ") + m_mapcssFilePath;
+
+  setWindowTitle(caption);
   setWindowIcon(QIcon(":/ui/logo.png"));
 
 #ifndef OMIM_OS_WINDOWS
@@ -105,7 +115,7 @@ MainWindow::MainWindow() : m_locationService(CreateDesktopLocationService(*this)
     item.cch = prefsStr.size();
     ::InsertMenuItemA(menu, ::GetMenuItemCount(menu) - 1, TRUE, &item);
     item.wID = IDM_ABOUT_DIALOG;
-    QByteArray const aboutStr = tr("About MAPS.ME...").toLocal8Bit();
+    QByteArray const aboutStr = tr("About...").toLocal8Bit();
     item.dwTypeData = const_cast<char *>(aboutStr.data());
     item.cch = aboutStr.size();
     ::InsertMenuItemA(menu, ::GetMenuItemCount(menu) - 1, TRUE, &item);
@@ -136,7 +146,7 @@ MainWindow::MainWindow() : m_locationService(CreateDesktopLocationService(*this)
 
     if (!text.empty())
     {
-      InfoDialog welcomeDlg(tr("Welcome to MAPS.ME!"), text.c_str(),
+      InfoDialog welcomeDlg(QString("Welcome to ") + qAppName(), text.c_str(),
                             this, QStringList(tr("Download Maps")));
       if (welcomeDlg.exec() == QDialog::Rejected)
         bShowUpdateDialog = false;
@@ -285,6 +295,18 @@ void MainWindow::CreateNavigationBar()
     m_pMyPositionAction->setToolTip(tr("My Position"));
 // #endif
 
+#ifdef BUILD_DESIGNER
+    if (!m_mapcssFilePath.isEmpty())
+    {
+      m_pBuildStyleAction = pToolBar->addAction(QIcon(":/navig64/run.png"),
+                                                tr("Build style"),
+                                                this,
+                                                SLOT(OnBuildStyle()));
+      m_pBuildStyleAction->setCheckable(false);
+      m_pBuildStyleAction->setToolTip(tr("Run script"));
+    }
+#endif // BUILD_DESIGNER
+
     // add view actions 1
     button_t arr[] = {
       { QString(), 0, 0 },
@@ -388,6 +410,26 @@ void MainWindow::OnPreferences()
 
   m_pDrawWidget->GetFramework().EnterForeground();
 }
+
+#ifdef BUILD_DESIGNER
+void MainWindow::OnBuildStyle()
+{
+  try
+  {
+    build_style::BuildAndApply(m_mapcssFilePath);
+    m_pDrawWidget->RefreshDrawingRules();
+  }
+  catch (exception & e)
+  {
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("Error");
+    msgBox.setText(e.what());
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    msgBox.exec();
+  }
+}
+#endif // BUILD_DESIGNER
 
 #ifndef NO_DOWNLOADER
 void MainWindow::ShowUpdateDialog()
