@@ -101,4 +101,11 @@
    <FileRef
       location = "container:MapsMe/MapsMe.xcodeproj">
    </FileRef>
+   <Group
+      location = "container:"
+      name = "iOS">
+      <FileRef
+         location = "group:../iphone/Maps/Maps.xcodeproj">
+      </FileRef>
+   </Group>
 </Workspace>
