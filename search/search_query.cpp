@@ -894,10 +894,11 @@ void Query::ProcessSuggestions(vector<T> & vec, Results & res) const
       if (!suggest.empty() && added < MAX_SUGGESTS_COUNT)
       {
         if (res.AddResult((Result(MakeResult(r), suggest))))
+        {
           ++added;
-
-        i = vec.erase(i);
-        continue;
+          i = vec.erase(i);
+          continue;
+        }
       }
     }
     ++i;
