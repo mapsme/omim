@@ -1,6 +1,6 @@
 #include "search/search_integration_tests/test_mwm_builder.hpp"
 
-#include "search/integration_tests/test_feature.hpp"
+#include "search/search_integration_tests/test_feature.hpp"
 
 #include "indexer/data_header.hpp"
 #include "indexer/index_builder.hpp"
