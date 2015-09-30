@@ -4804,6 +4804,7 @@ cont {
       primary {
         height: 8
         color: 5592405
+        text: "addr:housename"
       }
       priority: 15224
     }
@@ -4852,49 +4853,6 @@ cont {
   }
 }
 cont {
-  name: "building-address"
-  element {
-    scale: 16
-    caption {
-      primary {
-        height: 8
-        color: 5592405
-      }
-      priority: 15224
-    }
-  }
-  element {
-    scale: 17
-    caption {
-      primary {
-        height: 9
-        color: 5592405
-      }
-      priority: 15344
-    }
-  }
-  element {
-    scale: 18
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-      }
-      priority: 15620
-    }
-  }
-  element {
-    scale: 19
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-      }
-      priority: 15620
-    }
-  }
-}
-cont {
   name: "entrance"
   element {
     scale: 18
@@ -4908,6 +4866,7 @@ cont {
         height: 10
         color: 5592405
         offset_x: 6
+        text: "ref"
       }
       priority: 15068
     }
@@ -4924,11 +4883,13 @@ cont {
         height: 10
         color: 5592405
         offset_x: 6
+        text: "ref"
       }
       secondary {
         height: 9
         color: 5592405
         offset_y: 10
+        text: "addr:flats"
       }
       priority: 15068
     }
