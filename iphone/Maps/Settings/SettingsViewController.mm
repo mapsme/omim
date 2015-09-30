@@ -200,7 +200,7 @@ Settings::Units unitsForIndex(NSInteger index)
         }];
     Settings::Set("Units", units);
     [tableView reloadSections:[NSIndexSet indexSetWithIndex:SectionMetrics] withRowAnimation:UITableViewRowAnimationFade];
-    [[MapsAppDelegate theApp].mapViewController setupMeasurementSystem];
+    GetPlatform().SetupMeasurementSystem();
   }
 }
 
