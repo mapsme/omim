@@ -803,6 +803,12 @@ void Framework::OnDownloadRetryCallback(storage::TIndex const & countryIndex)
 void Framework::OnUpdateCountryIndex(storage::TIndex const & currentIndex, m2::PointF const & pt)
 {
   storage::TIndex newCountryIndex = GetCountryIndex(m2::PointD(pt));
+  if (!newCountryIndex.IsValid())
+  {
+    m_drapeEngine->SetInvalidCountryInfo();
+    return;
+  }
+
   if (currentIndex != newCountryIndex)
     UpdateCountryInfo(newCountryIndex, true /* isCurrentCountry */);
 }
@@ -813,6 +819,13 @@ void Framework::UpdateCountryInfo(storage::TIndex const & countryIndex, bool isC
 
   if (!m_drapeEngine)
     return;
+
+  string const & fileName = m_storage.CountryByIndex(countryIndex).GetFile().GetNameWithoutExt();
+  if (m_model.IsLoaded(fileName))
+  {
+    m_drapeEngine->SetInvalidCountryInfo();
+    return;
+  }
 
   gui::CountryInfo countryInfo;
 
@@ -827,9 +840,7 @@ void Framework::UpdateCountryInfo(storage::TIndex const & countryIndex, bool isC
     countryInfo.m_downloadProgress = progress.first * 100 / progress.second;
   }
 
-  string const & fileName = m_storage.CountryByIndex(countryIndex).GetFile().GetNameWithoutExt();
-  bool const isLoaded = m_model.IsLoaded(fileName);
-  m_drapeEngine->SetCountryInfo(countryInfo, isCurrentCountry, isLoaded);
+  m_drapeEngine->SetCountryInfo(countryInfo, isCurrentCountry);
 }
 
 void Framework::MemoryWarning()
