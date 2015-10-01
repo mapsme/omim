@@ -49,6 +49,7 @@ HEADERS += \
     exception.hpp \
     fence_manager.hpp \
     internal/message.hpp \
+    interval_set.hpp \
     limited_priority_queue.hpp \
     logging.hpp \
     macros.hpp \
