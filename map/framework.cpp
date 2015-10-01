@@ -389,9 +389,6 @@ void Framework::DeleteCountry(storage::TIndex const & index, MapOptions opt)
       {
         InvalidateRect(GetCountryBounds(countryFile.GetNameWithoutExt()), true /* doForceUpdate */);
       }
-      // TODO (@ldragunov, @gorshenin): rewrite routing session to use MwmHandles. Thus,
-      // it won' be needed to reset it after maps update.
-      m_routingSession.Reset();
       return;
     }
     case MapOptions::CarRouting:
@@ -2265,7 +2262,7 @@ void Framework::CheckLocationForRouting(GpsInfo const & info)
     return;
 
   m2::PointD const & position = GetLocationState()->Position();
-  if (m_routingSession.OnLocationPositionChanged(position, info) == RoutingSession::RouteNeedRebuild)
+  if (m_routingSession.OnLocationPositionChanged(position, info, m_model.GetIndex()) == RoutingSession::RouteNeedRebuild)
   {
     auto readyCallback = [this](Route const & route, IRouter::ResultCode code)
     {

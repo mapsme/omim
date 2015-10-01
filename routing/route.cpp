@@ -1,4 +1,5 @@
 #include "route.hpp"
+#include "speed_camera.hpp"
 #include "turns_generator.hpp"
 
 #include "indexer/mercator.hpp"
@@ -27,7 +28,7 @@ double constexpr kOnEndToleranceM = 10.0;
 
 Route::Route(string const & router, vector<m2::PointD> const & points, string const & name)
   : m_router(router), m_routingSettings(GetCarRoutingSettings()),
-    m_name(name), m_poly(points.begin(), points.end())
+    m_name(name), m_poly(points.begin(), points.end()), m_lastCheckedCamera(0)
 {
   Update();
 }
@@ -43,6 +44,7 @@ void Route::Swap(Route & rhs)
   swap(m_turns, rhs.m_turns);
   swap(m_times, rhs.m_times);
   m_absentCountries.swap(rhs.m_absentCountries);
+  swap(m_lastCheckedCamera, rhs.m_lastCheckedCamera);
 }
 
 double Route::GetTotalDistanceMeters() const
@@ -146,6 +148,23 @@ Route::TTurns::const_iterator Route::GetCurrentTurn() const
          {
            return lhs.m_index < rhs.m_index;
          });
+}
+
+double Route::GetCurrentCam(SpeedCameraRestriction & camera, Index const & index) const
+{
+  size_t const currentIndex = max(m_poly.GetCurrentIter().m_ind, m_lastCheckedCamera);
+  for (size_t i = currentIndex; i < m_poly.GetPolyline().GetSize(); ++i)
+  {
+    uint8_t speed = CheckCameraInPoint(m_poly.GetPolyline().GetPoint(i), index);
+    if (speed != kNoSpeedCamera)
+    {
+      camera = SpeedCameraRestriction(static_cast<uint32_t>(i), speed);
+      m_lastCheckedCamera = i;
+      return m_poly.GetDistanceM(m_poly.GetCurrentIter(), m_poly.GetIterToIndex(i));
+    }
+  }
+  m_lastCheckedCamera = m_poly.GetPolyline().GetSize();
+  return kInvalidSpeedCameraDistance;
 }
 
 void Route::GetCurrentTurn(double & distanceToTurnMeters, turns::TurnItem & turn) const

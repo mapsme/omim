@@ -77,7 +77,8 @@ public:
   bool IsOnRoute() const { return (m_state == OnRoute); }
   void Reset();
 
-  State OnLocationPositionChanged(m2::PointD const & position, location::GpsInfo const & info);
+  State OnLocationPositionChanged(m2::PointD const & position, location::GpsInfo const & info,
+                                  Index const & index);
   void GetRouteFollowingInfo(location::FollowingInfo & info) const;
 
   void MatchLocationToRoute(location::GpsInfo & location,
@@ -124,6 +125,11 @@ private:
   Route m_route;
   State m_state;
   m2::PointD m_endPoint;
+  size_t m_lastWarnedSpeedCamera;
+  // TODO (ldragunov) Rewrite UI interop to message queue and avoid mutable.
+  /// This field is mutable because it's modified in a constant getter. Note that the notification
+  /// about camera will be sent at most once.
+  mutable bool m_speedWarningSignal;
 
   mutable threads::Mutex m_routeSessionMutex;
 

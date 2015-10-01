@@ -31,6 +31,12 @@ double constexpr kMaxTurnDistM = 400.;
 // @todo(kshalnev) The distance may depend on the current speed.
 double constexpr kShowPedestrianTurnInMeters = 5.;
 
+// Minimal distance to speed camera to make sound bell on overspeed.
+double constexpr kSpeedCameraMinimalWarningMeters = 200.;
+// Seconds to warning user before speed camera for driving with current speed.
+double constexpr kSpeedCameraWarningSeconds = 30;
+
+double constexpr kKmhToMps = 1000. / 3600.;
 }  // namespace
 
 namespace routing
@@ -41,6 +47,8 @@ RoutingSession::RoutingSession()
       m_route(string()),
       m_state(RoutingNotActive),
       m_endPoint(m2::PointD::Zero()),
+      m_lastWarnedSpeedCamera(0),
+      m_speedWarningSignal(false),
       m_passedDistanceOnRouteMeters(0.0)
 {
 }
@@ -119,10 +127,13 @@ void RoutingSession::Reset()
   m_turnsSound.Reset();
 
   m_passedDistanceOnRouteMeters = 0.0;
+  m_lastWarnedSpeedCamera = 0;
+  m_speedWarningSignal = false;
 }
 
 RoutingSession::State RoutingSession::OnLocationPositionChanged(m2::PointD const & position,
-                                                                GpsInfo const & info)
+                                                                GpsInfo const & info,
+                                                                Index const & index)
 {
   ASSERT(m_state != RoutingNotActive, ());
   ASSERT(m_router != nullptr, ());
@@ -159,7 +170,26 @@ RoutingSession::State RoutingSession::OnLocationPositionChanged(m2::PointD const
       alohalytics::LogEvent("RouteTracking_ReachedDestination", params);
     }
     else
+    {
       m_state = OnRoute;
+
+      // Warning signals checks
+      if (m_routingSettings.m_speedCameraWarning && !m_speedWarningSignal)
+      {
+        double const warningDistanceM = max(kSpeedCameraMinimalWarningMeters,
+                                            info.m_speed * kSpeedCameraWarningSeconds);
+        SpeedCameraRestriction cam(0, 0);
+        double const camDistance = m_route.GetCurrentCam(cam, index);
+        if (Route::kInvalidSpeedCameraDistance != camDistance && camDistance < warningDistanceM)
+        {
+          if (cam.m_index > m_lastWarnedSpeedCamera && info.m_speed > cam.m_maxSpeed * kKmhToMps)
+          {
+            m_speedWarningSignal = true;
+            m_lastWarnedSpeedCamera = cam.m_index;
+          }
+        }
+      }
+    }
     m_lastGoodPosition = position;
   }
   else
@@ -204,73 +234,77 @@ void RoutingSession::GetRouteFollowingInfo(FollowingInfo & info) const
   threads::MutexGuard guard(m_routeSessionMutex);
   UNUSED_VALUE(guard);
 
-  if (m_route.IsValid() && IsNavigable())
+  if (!m_route.IsValid() || !IsNavigable())
   {
-    formatDistFn(m_route.GetCurrentDistanceToEndMeters(), info.m_distToTarget, info.m_targetUnitsSuffix);
+    // nothing should be displayed on the screen about turns if these lines are executed
+    info = FollowingInfo();
+    return;
+  }
 
-    double distanceToTurnMeters = 0., distanceToNextTurnMeters = 0.;
-    turns::TurnItem turn;
-    turns::TurnItem nextTurn;
-    m_route.GetCurrentTurn(distanceToTurnMeters, turn);
-    formatDistFn(distanceToTurnMeters, info.m_distToTurn, info.m_turnUnitsSuffix);
-    info.m_turn = turn.m_turn;
+  formatDistFn(m_route.GetCurrentDistanceToEndMeters(), info.m_distToTarget, info.m_targetUnitsSuffix);
 
-    // The turn after the next one.
-    if (m_route.GetNextTurn(distanceToNextTurnMeters, nextTurn))
+  double distanceToTurnMeters = 0.;
+  double distanceToNextTurnMeters = 0.;
+  turns::TurnItem turn;
+  turns::TurnItem nextTurn;
+  m_route.GetCurrentTurn(distanceToTurnMeters, turn);
+  formatDistFn(distanceToTurnMeters, info.m_distToTurn, info.m_turnUnitsSuffix);
+  info.m_turn = turn.m_turn;
+
+  // The turn after the next one.
+  if (m_route.GetNextTurn(distanceToNextTurnMeters, nextTurn))
+  {
+    double const distBetweenTurnsM = distanceToNextTurnMeters - distanceToTurnMeters;
+    ASSERT_LESS_OR_EQUAL(0, distBetweenTurnsM, ());
+
+    if (m_routingSettings.m_showTurnAfterNext &&
+        distanceToTurnMeters < kShowTheTurnAfterTheNextM && distBetweenTurnsM < kMaxTurnDistM)
     {
-      double const distBetweenTurnsM = distanceToNextTurnMeters - distanceToTurnMeters;
-      ASSERT_LESS_OR_EQUAL(0, distBetweenTurnsM, ());
-
-      if (m_routingSettings.m_showTurnAfterNext &&
-          distanceToTurnMeters < kShowTheTurnAfterTheNextM && distBetweenTurnsM < kMaxTurnDistM)
-      {
-        info.m_nextTurn = nextTurn.m_turn;
-      }
-      else
-      {
-        info.m_nextTurn = routing::turns::TurnDirection::NoTurn;
-      }
+      info.m_nextTurn = nextTurn.m_turn;
     }
     else
     {
       info.m_nextTurn = routing::turns::TurnDirection::NoTurn;
     }
-    info.m_exitNum = turn.m_exitNum;
-    info.m_time = m_route.GetCurrentTimeToEndSec();
-    info.m_sourceName = turn.m_sourceName;
-    info.m_targetName = turn.m_targetName;
-    info.m_completionPercent = 100.0 *
-      (m_passedDistanceOnRouteMeters + m_route.GetCurrentDistanceFromBeginMeters()) /
-      (m_passedDistanceOnRouteMeters + m_route.GetTotalDistanceMeters());
-
-    // Lane information.
-    if (distanceToTurnMeters < kShowLanesDistInMeters)
-    {
-      // There are two nested loops below. Outer one is for lanes and inner one (ctor of
-      // SingleLaneInfo) is
-      // for each lane's directions. The size of turn.m_lanes is relatively small. Less than 10 in
-      // most cases.
-      info.m_lanes.clear();
-      for (size_t j = 0; j < turn.m_lanes.size(); ++j)
-        info.m_lanes.emplace_back(turn.m_lanes[j]);
-    }
-    else
-    {
-      info.m_lanes.clear();
-    }
-
-    // Pedestrian info
-    m2::PointD pos;
-    m_route.GetCurrentDirectionPoint(pos);
-    info.m_pedestrianDirectionPos = MercatorBounds::ToLatLon(pos);
-    info.m_pedestrianTurn =
-        (distanceToTurnMeters < kShowPedestrianTurnInMeters) ? turn.m_pedestrianTurn : turns::PedestrianDirection::None;
   }
   else
   {
-    // nothing should be displayed on the screen about turns if these lines are executed
-    info = FollowingInfo();
+    info.m_nextTurn = routing::turns::TurnDirection::NoTurn;
   }
+  info.m_exitNum = turn.m_exitNum;
+  info.m_time = m_route.GetCurrentTimeToEndSec();
+  info.m_sourceName = turn.m_sourceName;
+  info.m_targetName = turn.m_targetName;
+  info.m_completionPercent = 100.0 *
+    (m_passedDistanceOnRouteMeters + m_route.GetCurrentDistanceFromBeginMeters()) /
+    (m_passedDistanceOnRouteMeters + m_route.GetTotalDistanceMeters());
+
+  // Lane information.
+  if (distanceToTurnMeters < kShowLanesDistInMeters)
+  {
+    // There are two nested loops below. Outer one is for lanes and inner one (ctor of
+    // SingleLaneInfo) is
+    // for each lane's directions. The size of turn.m_lanes is relatively small. Less than 10 in
+    // most cases.
+    info.m_lanes.clear();
+    for (size_t j = 0; j < turn.m_lanes.size(); ++j)
+      info.m_lanes.emplace_back(turn.m_lanes[j]);
+  }
+  else
+  {
+    info.m_lanes.clear();
+  }
+
+  // Speedcam signal information.
+  info.m_speedWarningSignal = m_speedWarningSignal;
+  m_speedWarningSignal = false;
+
+  // Pedestrian info
+  m2::PointD pos;
+  m_route.GetCurrentDirectionPoint(pos);
+  info.m_pedestrianDirectionPos = MercatorBounds::ToLatLon(pos);
+  info.m_pedestrianTurn =
+      (distanceToTurnMeters < kShowPedestrianTurnInMeters) ? turn.m_pedestrianTurn : turns::PedestrianDirection::None;
 }
 
 void RoutingSession::GenerateTurnSound(vector<string> & turnNotifications)
@@ -310,6 +344,7 @@ void RoutingSession::AssignRoute(Route & route, IRouter::ResultCode e)
 
   route.SetRoutingSettings(m_routingSettings);
   m_route.Swap(route);
+  m_lastWarnedSpeedCamera = 0;
 }
 
 void RoutingSession::SetRouter(unique_ptr<IRouter> && router,
