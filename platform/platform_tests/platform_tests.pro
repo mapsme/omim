@@ -18,7 +18,7 @@ macx-* {
   QT *= gui widgets # needed for QApplication with event loop, to test async events (downloader, etc.)
   LIBS *= "-framework IOKit" "-framework QuartzCore"
 }
-win32*|linux* {
+win32*|linux*|freebsd* {
   QT *= network
 }
 

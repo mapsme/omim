@@ -33,6 +33,8 @@ INCLUDEPATH += $$ROOT_DIR/3party/jansson/src
                          apple_location_service.mm
   } else:linux* {
     SOURCES += platform_linux.cpp
+  } else:freebsd* {
+    SOURCES += platform_freebsd.cpp
   }
 } else:iphone* {
   OBJECTIVE_SOURCES += ios_video_timer.mm \
