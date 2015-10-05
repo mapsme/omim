@@ -28,7 +28,7 @@ macx-*|iphone* {
   OBJECTIVE_SOURCES += $$ROOT_DIR/3party/Alohalytics/src/apple/http_client_apple.mm \
                        $$ROOT_DIR/3party/Alohalytics/src/apple/alohalytics_objc.mm
   QMAKE_OBJECTIVE_CFLAGS += -fobjc-arc
-} else:linux*|win* {
+} else:linux*|freebsd*|win* {
   SOURCES += $$ROOT_DIR/3party/Alohalytics/src/posix/http_client_curl.cc
 } else:android* {
   SOURCES += $$ROOT_DIR/3party/Alohalytics/src/android/jni/jni_alohalytics.cc

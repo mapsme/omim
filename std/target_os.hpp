@@ -39,6 +39,11 @@
     #define OMIM_OS_WINDOWS_NATIVE
   #endif
 
+#elif defined(__FreeBSD__)
+  #define OMIM_OS_FREEBSD
+  #define OMIM_OS_NAME "freebsd"
+  #define OMIM_OS_DESKTOP
+
 #else
   #define OMIM_OS_LINUX
   #define OMIM_OS_NAME "linux"

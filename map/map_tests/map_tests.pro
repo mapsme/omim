@@ -21,7 +21,7 @@ include($$ROOT_DIR/common.pri)
 
 QT *= core opengl
 
-linux*|win* {
+linux*|freebsd*|win* {
   QT *= network
 }
 

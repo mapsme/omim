@@ -12,7 +12,7 @@
 #elif defined(OMIM_OS_WINDOWS)
   #include "config_win32.h"
 
-#elif defined(OMIM_OS_LINUX)
+#elif defined(OMIM_OS_LINUX) || defined(OMIM_OS_FREEBSD)
   #include "config_linux.h"
 
 #elif defined(OMIM_OS_TIZEN)

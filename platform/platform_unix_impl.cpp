@@ -14,7 +14,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#if defined(OMIM_OS_MAC) || defined(OMIM_OS_IPHONE)
+#if defined(OMIM_OS_MAC) || defined(OMIM_OS_IPHONE) || defined(OMIM_OS_FREEBSD)
   #include <sys/mount.h>
 #else
   #include <sys/vfs.h>
