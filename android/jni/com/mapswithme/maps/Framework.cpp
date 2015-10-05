@@ -1201,12 +1201,6 @@ extern "C"
     return resultArray;
   }
 
-  JNIEXPORT jstring JNICALL
-  Java_com_mapswithme_maps_Framework_nativeGetBookmarksExt(JNIEnv * env, jclass thiz)
-  {
-    return jni::ToJavaString(env, BOOKMARKS_FILE_EXTENSION);
-  }
-
   JNIEXPORT void JNICALL
   Java_com_mapswithme_maps_Framework_nativeSetWritableDir(JNIEnv * env, jclass thiz, jstring jNewPath)
   {

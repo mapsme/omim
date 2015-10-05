@@ -13,18 +13,18 @@
 extern "C"
 {
   JNIEXPORT void JNICALL
-  Java_com_mapswithme_maps_MwmApplication_nativeInit(
-      JNIEnv * env, jobject thiz,
-      jstring apkPath, jstring storagePath, jstring tmpPath, jstring obbGooglePath,
-      jstring flavorName, jstring buildType, jboolean isYota, jboolean isTablet)
+  Java_com_mapswithme_maps_MwmApplication_nativeInit(JNIEnv * env, jobject thiz,
+                                                     jstring apkPath, jstring settingsPath, jstring tmpPath, jstring obbGooglePath,
+                                                     jstring flavorName, jstring buildType, jboolean isTablet)
   {
-    android::Platform::Instance().Initialize(
-        env, apkPath, storagePath, tmpPath, obbGooglePath, flavorName, buildType, isYota, isTablet);
+    android::Platform::Instance().Initialize(env, apkPath, settingsPath, tmpPath, obbGooglePath, flavorName, buildType, isTablet);
+  }
 
-    LOG(LDEBUG, ("Creating android::Framework instance ..."));
-
-    if (!g_framework)
-      g_framework = new android::Framework();
+  JNIEXPORT void JNICALL
+  Java_com_mapswithme_maps_MwmApplication_nativeStart(JNIEnv * env, jobject thiz, jstring mapsPath)
+  {
+    android::Platform::Instance().SetStoragePath(jni::ToNativeString(env, mapsPath));
+    g_framework = new android::Framework();
 
     LOG(LDEBUG, ("android::Framework created"));
   }

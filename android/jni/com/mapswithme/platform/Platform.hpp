@@ -11,10 +11,10 @@ namespace android
   {
   public:
     void Initialize(JNIEnv * env,
-                    jstring apkPath, jstring storagePath,
+                    jstring apkPath, jstring settingsPath,
                     jstring tmpPath, jstring obbGooglePath,
                     jstring flavorName, jstring buildType,
-                    bool isYota, bool isTablet);
+                    bool isTablet);
 
     /// get storage path without ending "/MapsWithMe/"
     string GetStoragePathPrefix() const;

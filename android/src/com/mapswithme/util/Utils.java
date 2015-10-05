@@ -178,7 +178,7 @@ public class Utils
    */
   public static String saveLogToFile()
   {
-    String fullName = MwmApplication.get().getDataStoragePath() + "log.txt";
+    String fullName = MwmApplication.getDataStoragePath() + "log.txt";
     File file = new File(fullName);
     InputStreamReader reader = null;
     FileWriter writer = null;
@@ -288,5 +288,11 @@ public class Utils
       ((CustomNavigateUpListener) activity).customOnNavigateUp();
     else
       NavUtils.navigateUpFromSameTask(activity);
+  }
+
+  public static boolean directoryExists(String path)
+  {
+    final File file = new File(path);
+    return (file.exists() && file.isDirectory() && file.canRead());
   }
 }

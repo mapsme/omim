@@ -93,10 +93,10 @@ Platform::EConnectionType Platform::ConnectionStatus()
 namespace android
 {
   void Platform::Initialize(JNIEnv * env,
-                            jstring apkPath, jstring storagePath,
+                            jstring apkPath, jstring settingsPath,
                             jstring tmpPath, jstring obbGooglePath,
                             jstring flavorName, jstring buildType,
-                            bool isYota, bool isTablet)
+                            bool isTablet)
   {
     string const flavor = jni::ToNativeString(env, flavorName);
     string const build = jni::ToNativeString(env, buildType);
@@ -112,25 +112,10 @@ namespace android
     else
       m_androidDefResScope = "fwr";
 
-    m_isTablet = isTablet;
-
     m_resourcesDir = jni::ToNativeString(env, apkPath);
-
-    // Settings file should be in a one place always (default external storage).
-    // It stores path to the current maps storage.
-    m_settingsDir = jni::ToNativeString(env, storagePath);
-
-    // @TODO it's a bug when user had all his maps on SD but when space is low,
-    // he loses access to all downloaded maps. We should display warnings in these cases in UI.
-    if (!Settings::Get("StoragePath", m_writableDir) || !HasAvailableSpaceForWriting(1024))
-    {
-      // If no saved storage path or the storage is unavailable
-      // (disconnected from the last session), assign writable
-      // path to the default external storage.
-      m_writableDir = m_settingsDir;
-    }
-
+    m_settingsDir = jni::ToNativeString(env, settingsPath);
     m_tmpDir = jni::ToNativeString(env, tmpPath);
+    m_isTablet = isTablet;
 
     string const obbPath = jni::ToNativeString(env, obbGooglePath);
     Platform::FilesList files;
@@ -164,6 +149,13 @@ namespace android
   void Platform::SetStoragePath(string const & path)
   {
     m_writableDir = path;
+
+    // @TODO it's a bug when user had all his maps on SD but when space is low,
+    // he loses access to all downloaded maps. We should display warnings in these cases in UI.
+    if (!HasAvailableSpaceForWriting(1024))
+      // If no saved storage path (disconnected from the last session), assign writable path to the default external storage.
+      m_writableDir = m_settingsDir;
+
     Settings::Set("StoragePath", m_writableDir);
   }
 

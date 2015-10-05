@@ -22,6 +22,7 @@ public enum MapStorage
   /**
    * Callbacks are called from native code.
    */
+  @SuppressWarnings("unused")
   public interface Listener
   {
     void onCountryStatusChanged(Index idx);
@@ -95,11 +96,7 @@ public enum MapStorage
 
   public native String countryName(Index idx);
 
-  public native Index findIndexByFile(String name);
-
   public native int subscribe(Listener l);
 
   public native void unsubscribe(int slotId);
-
-  public static native boolean nativeMoveFile(String oldFile, String newFile);
 }

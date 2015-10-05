@@ -111,8 +111,6 @@ public class Framework
 
   public native static String[] nativeGetMovableFilesExts();
 
-  public native static String nativeGetBookmarksExt();
-
   public native static String nativeGetBookmarkDir();
 
   public native static String nativeGetSettingsDir();

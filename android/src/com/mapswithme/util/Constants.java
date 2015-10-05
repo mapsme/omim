@@ -46,6 +46,7 @@ public final class Constants
   public static final String DEVICE_YOTAPHONE = "yotaphone";
   public static final String CACHE_DIR = "cache";
   public static final String FILES_DIR = "files";
+  public static final String PREF_STORAGE_PATH = "StoragePath";
 
   private Constants() {}
 }
