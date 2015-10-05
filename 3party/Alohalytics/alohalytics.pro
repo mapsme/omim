@@ -25,7 +25,7 @@ macx-* {
   QMAKE_LFLAGS *=  -framework Foundation
 }
 
-macx-*|linux-* {
+macx-*|linux-*|freebsd-* {
   SOURCES += src/posix/file_manager_posix_impl.cc
 }
 
