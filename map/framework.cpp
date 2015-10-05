@@ -1070,11 +1070,12 @@ size_t Framework::ShowAllSearchResults(search::Results const & results)
     if (!viewport.IsPointInside(pt))
     {
       viewport.SetSizesToIncludePoint(pt);
-
-      ShowRect(viewport);
       CallDrapeFunction(bind(&df::DrapeEngine::StopLocationFollow, _1));
     }
   }
+
+  // Graphics engine can be recreated (on Android), so we always set up viewport here.
+  ShowRect(viewport);
 
   return count;
 }
@@ -1207,6 +1208,13 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
   InvalidateMyPosition();
 
   m_bmManager.InitBookmarks();
+
+  vector<UserMarkType> types = { UserMarkType::SEARCH_MARK, UserMarkType::API_MARK, UserMarkType::DEBUG_MARK };
+  for (size_t typeIndex = 0; typeIndex < types.size(); typeIndex++)
+  {
+    UserMarkControllerGuard guard(m_bmManager, types[typeIndex]);
+    guard.m_controller.Update();
+  }
 
   // In case of the engine reinitialization simulate the last tap to show selection mark.
   if (m_lastTapEvent != nullptr)
@@ -1534,6 +1542,11 @@ void Framework::OnTapEvent(m2::PointD pxPoint, bool isLong, bool isMyPosition, F
   }
 
   ActivateUserMark(mark, true);
+}
+
+void Framework::ResetLastTapEvent()
+{
+  m_lastTapEvent.reset();
 }
 
 UserMark const * Framework::OnTapEventImpl(m2::PointD pxPoint, bool isLong, bool isMyPosition, FeatureID feature)
