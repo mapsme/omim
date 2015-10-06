@@ -22,7 +22,6 @@ SOURCES += \
   containers_test.cpp \
   deferred_task_test.cpp \
   fence_manager_test.cpp \
-  interval_set_test.cpp \
   logging_test.cpp \
   math_test.cpp \
   matrix_test.cpp \
