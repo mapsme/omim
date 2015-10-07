@@ -35,7 +35,7 @@
 	<string name="downloading">Stahování…</string>
 	<string name="get_it_now">Získat nyní</string>
 	<!-- Text to show occasionaly with a proposal to Like our program on Facebook -->
-	<string name="share_on_facebook_text">Děkujeme, že používáte MAPS.ME! Líbí se Vám tato aplikace? Řekněte o ní svým přátelům! To bude pro nás nejlepší vyjádření vděčnosti.</string>
+	<string name="share_on_facebook_text">Děkujeme, že používáš MAPS.ME! Líbí se ti tato aplikace? Řekni o ní svým přátelům! To bude pro nás nejlepší vyjádření vděčnosti.</string>
 	<!-- Choose measurement on first launch alert - choose metric system button -->
 	<string name="kilometres">Kilometry</string>
 	<!-- Leave Review dialog - Review button -->
@@ -452,7 +452,7 @@
 	<!-- Toolbar title -->
 	<string name="toolbar_application_menu">Nabídka aplikace</string>
 	<!-- Preference text -->
-	<string name="pref_use_google_play">Proužívat služby Google Play pro získání aktuální polohy</string>
+	<string name="pref_use_google_play">Používat služby Google Play pro získání aktuální polohy</string>
 	<!-- Text for rating dialog -->
 	<string name="rating_just_rated">Právě jsem ohodnotil(a) vaši aplikaci</string>
 	<!-- Text for rating dialog -->
