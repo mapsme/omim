@@ -35,7 +35,7 @@
 	<string name="downloading">Stahování…</string>
 	<string name="get_it_now">Získat nyní</string>
 	<!-- Text to show occasionaly with a proposal to Like our program on Facebook -->
-	<string name="share_on_facebook_text">Děkujeme, že používáte MAPS.ME! Líbí se Vám tato aplikace? Řekněte o ní svým přátelům! To bude pro nás nejlepší vyjádření vděčnosti.</string>
+	<string name="share_on_facebook_text">Děkujeme, že používáš MAPS.ME! Líbí se ti tato aplikace? Řekni o ní svým přátelům! To bude pro nás nejlepší vyjádření vděčnosti.</string>
 	<!-- Choose measurement on first launch alert - choose metric system button -->
 	<string name="kilometres">Kilometry</string>
 	<!-- Leave Review dialog - Review button -->
@@ -167,9 +167,9 @@
 	<!-- Add bookmark dialog - bookmark set, Bookmarks dialog - Bookmark set cell -->
 	<string name="set">Skupina</string>
 	<!-- Text hint in Bookmarks dialog when no any bookmarks are added -->
-	<string name="bookmarks_usage_hint">Zatím nemáš žádné záložky.\nZáložku můžeš přidat přidržením libovolného místa na mapě.\nV MAPS.ME mohou být také zobrazeny importované záložky z jiných zdrojů. Soubor ve formátu KML/KMZ s uloženými záložkami lze otevřít např. z emailu, Dropboxu nebo webového odkazu.</string>
+	<string name="bookmarks_usage_hint">Zatím nemáš žádné záložky.\nZáložku můžeš přidat přidržením libovolného místa na mapě.\nV MAPS.ME mohou být také zobrazeny importované záložky z jiných zdrojů. Soubor ve formátu KML/KMZ s uloženými záložkami lze otevřít např. z e-mailu, Dropboxu nebo webového odkazu.</string>
 	<!-- Text hint in Bookmarks dialog when at least one bookmark is added -->
-	<string name="bookmarks_usage_hint_import_only">V MAPS.ME mohou být zobrazeny importované záložky z jiných zdrojů. Soubor ve formátu KML/KMZ s uloženými záložkami lze otevřít např. z emailu, Dropboxu nebo webového odkazu.</string>
+	<string name="bookmarks_usage_hint_import_only">V MAPS.ME mohou být zobrazeny importované záložky z jiných zdrojů. Soubor ve formátu KML/KMZ s uloženými záložkami lze otevřít např. z e-mailu, Dropboxu nebo webového odkazu.</string>
 	<!-- Settings button in system menu -->
 	<string name="settings">Nastavení</string>
 	<!-- Header of settings activity where user defines storage path -->
@@ -228,11 +228,11 @@
 	<!-- Notes field in Bookmarks view -->
 	<string name="description">Poznámky</string>
 	<!-- Button text -->
-	<string name="share_by_email">Sdílet emailem</string>
+	<string name="share_by_email">Sdílet e-mailem</string>
 	<!-- Email Subject when sharing bookmarks category -->
 	<string name="share_bookmarks_email_subject">Sdílené záložky MAPS.ME</string>
 	<!-- Email text when sharing bookmarks category -->
-	<string name="share_bookmarks_email_body">Ahoj!\n\nZde jsou mé záložky z offline map aplikace MAPS.ME v přiloženém souboru \&quot;%s.kmz\&quot;. Pokud máš již aplikaci MAPS.ME nainstalovanou, otevři si, prosím, tento soubor. V opačném případě si nejprve nainstaluj aplikaci pro své iOS nebo Android zařízení z tohoto odkazu http://maps.me/get?kmz\n\nSkvěle se bav s MAPS.ME!</string>
+	<string name="share_bookmarks_email_body">Ahoj!\n\nZde jsou mé záložky z offline map aplikace MAPS.ME v přiloženém souboru „%s.kmz“. Pokud máš již aplikaci MAPS.ME nainstalovanou, otevři si, prosím, tento soubor. V opačném případě si nejprve nainstaluj aplikaci pro své iOS nebo Android zařízení z tohoto odkazu http://maps.me/get?kmz\n\nSkvěle se bav s MAPS.ME!</string>
 	<!-- message title of loading file -->
 	<string name="load_kmz_title">Nahrávání záložek</string>
 	<!-- Kmz file successful loading -->
@@ -266,7 +266,7 @@
 	<!-- Subject for emailed position -->
 	<string name="my_position_share_email_subject">Podívej se na mou aktuální polohu na mapě na MAPS.ME</string>
 	<!-- Share my position using EMail, %1$@ is ge0:// and %2$@ is http://ge0.me link WITHOUT NAME -->
-	<string name="my_position_share_email">Ahoj,\n\nPrávě jsem tady: %1$s. Klepni na jeden z těchto odkazů %2$s, %3$s a uvidíš toto místo na mapě.\n\nDíky.</string>
+	<string name="my_position_share_email">Ahoj,\n\nprávě jsem tady: %1$s. Klepni na jeden z těchto odkazů %2$s, %3$s a uvidíš toto místo na mapě.\n\nDíky.</string>
 	<!-- Android share by Message/SMS button text (including SMS) -->
 	<string name="share_by_message">Sdílet pomocí zprávy</string>
 	<!-- Share button text which opens menu with more buttons, like Message, EMail, Facebook etc. -->
@@ -313,13 +313,13 @@
 	<string name="placepage_unsorted">Nezařazené</string>
 	<string name="search_show_on_map">Zobrazit na mapě</string>
 	<!-- Used to warn user when fixing KitKat issue -->
-	<string name="kitkat_migrate_ok">Uložiště map bylo optimalizováno. Prosím, restartuj aplikaci.\n\nAdresář MapsWithMe v kořenové složce SD karty již není potřeba, můžeš ho smazat.</string>
+	<string name="kitkat_migrate_ok">Úložiště map bylo optimalizováno. Prosím, restartuj aplikaci.\n\nAdresář MapsWithMe v kořenové složce SD karty již není potřeba, můžeš ho smazat.</string>
 	<!-- Used to warn user when fixing KitKat issue -->
 	<string name="kitkat_migrate_failed">Kvůli změnám v Androidu 4.4 musíme optimalizovat uložiště map, ale není dostatek prostoru pro jejich zkopírování.\n\nProsím, uvolni paměť, jinak budou mapy dostupné pouze v režimu pro čtení.</string>
 	<!-- Used to warn user when fixing KitKat issue -->
 	<string name="bookmark_move_fail">Potřebujeme přesunout tvé záložky do vnitřní paměti zařízení, ale není pro ně volné místo. Prosím, uvolni paměť, jinak nebudou záložky dostupné.</string>
 	<!-- Used to warn user when fixing KitKat issue -->
-	<string name="kitkat_optimization_in_progress">Uložiště map se právě optimalizuje. Může to trvat i pár minut. Prosíme o chvilku strpení.</string>
+	<string name="kitkat_optimization_in_progress">Úložiště map se právě optimalizuje. Může to trvat i pár minut. Prosíme o chvilku strpení.</string>
 	<!-- Used in More Apps menu -->
 	<string name="free">Zdarma</string>
 	<!-- Used in More Apps menu -->
@@ -452,41 +452,41 @@
 	<!-- Toolbar title -->
 	<string name="toolbar_application_menu">Nabídka aplikace</string>
 	<!-- Preference text -->
-	<string name="pref_use_google_play">Použijte služby Google Play, abyste získali svou aktuální polohu</string>
+	<string name="pref_use_google_play">Používat služby Google Play pro získání aktuální polohy</string>
 	<!-- Text for rating dialog -->
 	<string name="rating_just_rated">Právě jsem ohodnotil(a) vaši aplikaci</string>
 	<!-- Text for rating dialog -->
 	<string name="rating_user_since">Uživatelem MAPS.ME jsem od roku %s</string>
 	<!-- Text for rating dialog -->
-	<string name="rating_do_like_maps">Líbí se vám aplikace MAPS.ME?</string>
+	<string name="rating_do_like_maps">Líbí se ti aplikace MAPS.ME?</string>
 	<!-- Text for rating dialog -->
-	<string name="rating_tap_star">Klepnutím na hvězdičku naši aplikaci ohodnotíte.</string>
+	<string name="rating_tap_star">Klepnutím na hvězdičku naši aplikaci ohodnotíš.</string>
 	<!-- Text for rating dialog -->
-	<string name="rating_thanks">Děkujeme vám!</string>
+	<string name="rating_thanks">Děkujeme!</string>
 	<!-- Text for rating dialog -->
-	<string name="rating_share_ideas">Podělte se o jakékoli nápady nebo problémy, abychom mohli naši aplikaci pro vás neustále zlepšovat.</string>
+	<string name="rating_share_ideas">Poděl se s námi o své nápady nebo problémy, abychom mohli aplikaci vylepšit.</string>
 	<!-- Text for rating dialog -->
 	<string name="rating_send_feedback">Odeslat názor</string>
 	<!-- Text for g+ dialog -->
-	<string name="rating_google_plus">Klikněte na g+ a povězte o aplikaci svým přátelům.</string>
+	<string name="rating_google_plus">Klepni na g+ a pověz o aplikaci svým přátelům.</string>
 	<!-- Text for routing error dialog -->
 	<string name="routing_download_maps_along">Stahovat mapy podél cesty</string>
 	<!-- Text for routing error dialog -->
-	<string name="routing_download_map">Získejte mapu</string>
+	<string name="routing_download_map">Získej mapu</string>
 	<!-- Text for routing error dialog -->
-	<string name="routing_download_map_and_routing">Stáhněte si aktualizovanou mapu a data tras, abyste získali všechny funkce MAPS.ME.</string>
+	<string name="routing_download_map_and_routing">Stáhni si aktualizovanou mapu a data tras, ať můžeš využít všechny funkce MAPS.ME.</string>
 	<!-- Text for routing error dialog -->
-	<string name="routing_get_routing_data">Získejte data tras</string>
+	<string name="routing_get_routing_data">Získej data tras</string>
 	<!-- Text for routing error dialog -->
-	<string name="routing_get_additional_data">další data potřebná k vytvoření tras z vašeho umístění.</string>
+	<string name="routing_get_additional_data">Další data potřebná k návrhu tras z tvého umístění.</string>
 	<!-- Text for routing error dialog -->
-	<string name="routing_requires_all_map">Vytvoření trasy vyžaduje stažení a aktualizaci všech map z vašeho umístění do cílového umístění.</string>
+	<string name="routing_requires_all_map">Vytvoření trasy vyžaduje stažení a aktualizaci všech map z tvého umístění až do cíle cesty.</string>
 	<!-- Text for routing error dialog -->
 	<string name="routing_not_enough_space">Nedostatek místa</string>
 	<!-- Text for routing error dialog -->
-	<string name="routing_download_more_than_avail">Potřebujete stáhnout %1$s MB, ale je dostupných pouhých %2$s MB.</string>
+	<string name="routing_download_more_than_avail">Je třeba stáhnout %1$s MB, ale je dostupných pouze %2$s MB.</string>
 	<!-- Text for routing error dialog -->
-	<string name="routing_download_roaming">Stáhnete přes mobilní data (v roamingu) %s MB. To může mít za následek další poplatky v závislosti na vašem mobilním datovém tarifu.</string>
+	<string name="routing_download_roaming">Chystáš se stáhnout %@ MB pomocí mobilních dat (v roamingu). To může mít za následek další poplatky v závislosti na tvém mobilním datovém tarifu.</string>
 	<!-- Cuisine -->
 	<string name="cuisine_regional">regionální kuchyně</string>
 	<!-- Cuisine -->
@@ -530,7 +530,7 @@
 	<!-- Cuisine -->
 	<string name="cuisine_sushi">suši</string>
 	<!-- Cuisine -->
-	<string name="cuisine_fish_and_chips">fish and chips</string>
+	<string name="cuisine_fish_and_chips">ryba a hranolky</string>
 	<!-- Cuisine -->
 	<string name="cuisine_turkish">turecká kuchyně</string>
 	<!-- Cuisine -->
@@ -670,17 +670,17 @@
 	<!-- bookmark button text -->
 	<string name="bookmark">záložka</string>
 	<!-- map is not downloaded -->
-	<string name="not_found_map">Mapa vaší polohy není stažena</string>
+	<string name="not_found_map">Mapa tvé polohy není stažena</string>
 	<!-- location service disabled -->
 	<string name="enable_location_service">Prosím, povol Služby určování polohy</string>
 	<!-- download map -->
-	<string name="download_map">Stáhněte si mapu své polohy</string>
+	<string name="download_map">Stáhni si mapu své polohy</string>
 	<!-- download map on iPhone -->
-	<string name="download_map_iphone">Stáhněte si do svého iPhonu mapu své současné polohy</string>
+	<string name="download_map_iphone">Stáhni si do svého iPhonu mapu své současné polohy</string>
 	<!-- clear pin -->
 	<string name="nearby">V okolí</string>
 	<!-- clear pin -->
-	<string name="clear_pin">Vyčistit připínáček</string>
+	<string name="clear_pin">Odebrat špendlík</string>
 	<!-- location is undefined -->
 	<string name="undefined_location">Aktuální poloha nebyla zatím zjištěna.</string>
 	<!-- download country of your location -->
@@ -688,9 +688,9 @@
 	<!-- download failed -->
 	<string name="download_failed">Stahování selhalo</string>
 	<!-- get the map -->
-	<string name="get_the_map">Získejte mapu</string>
+	<string name="get_the_map">Získej mapu</string>
 	<string name="save">Uložit</string>
-	<string name="edit_description_hint">Váš popis (HTML nebo text)</string>
+	<string name="edit_description_hint">Popis (HTML nebo text)</string>
 	<string name="new_group">Nová skupina</string>
 	<string name="create">vytvořit</string>
 	<!-- red color -->
@@ -713,44 +713,44 @@
 	<string name="WiFi_available">Ano</string>
 
 	<!-- SECTION: Routing dialogs strings -->
-	<string name="dialog_routing_disclaimer_title">Při navigaci podle trasy mějte na paměti následující:</string>
-	<string name="dialog_routing_disclaimer_priority">— Situace na silnici, dopravní předpisy a dopravní značení mají vždy prioritu před pokyny navigace;</string>
-	<string name="dialog_routing_disclaimer_precision">— Mapa může být nepřesná a navrhovaná trasa nemusí být vždy optimální cestou, jak dojet do cíle;</string>
-	<string name="dialog_routing_disclaimer_recommendations">— Navrhované trasy je třeba brát pouze jako doporučení;</string>
+	<string name="dialog_routing_disclaimer_title">Při navigaci podle trasy měj na paměti následující:</string>
+	<string name="dialog_routing_disclaimer_priority">• Situace na silnici, dopravní předpisy a dopravní značení mají vždy prioritu před pokyny navigace.</string>
+	<string name="dialog_routing_disclaimer_precision">• Mapa může být nepřesná a navrhovaná trasa nemusí být vždy optimální cestou, jak dojet do cíle.</string>
+	<string name="dialog_routing_disclaimer_recommendations">• Navrhované trasy je třeba brát pouze jako doporučení.</string>
 	<string name="dialog_routing_disclaimer_beware">Na silnici buďte pozorní a chovejte se bezpečně!</string>
 	<string name="dialog_routing_check_gps">Zkontrolovat signál GPS</string>
-	<string name="dialog_routing_error_location_not_found">Nepodařilo se vytvořit trasu. Nelze zjistit aktuální souřadnice GPS.</string>
-	<string name="dialog_routing_location_turn_wifi">Zkontrolujte signál GPS. Povolením připojení Wi-Fi zpřesníte určení vaší polohy.</string>
+	<string name="dialog_routing_error_location_not_found">Trasu se nepodařilo vytvořit. Nelze zjistit aktuální souřadnice GPS.</string>
+	<string name="dialog_routing_location_turn_wifi">Zkontroluj signál GPS. Povolením připojení Wi-Fi zpřesníš určení své polohy.</string>
 	<string name="dialog_routing_location_turn_on">Povolit služby určování polohy</string>
-	<string name="dialog_routing_location_unknown_turn_on">Nepodařilo se zjistit aktuální souřadnice GPS. Pro výpočet trasy povolte služby určování polohy.</string>
-	<string name="dialog_routing_location_unknown">Nepodařilo se zjistit aktuální souřadnice GPS.</string>
+	<string name="dialog_routing_location_unknown_turn_on">Aktuální souřadnice GPS se nepodařilo zjistit. Pro výpočet trasy povol služby určování polohy.</string>
+	<string name="dialog_routing_location_unknown">Aktuální souřadnice GPS se nepodařilo zjistit.</string>
 	<string name="dialog_routing_download_files">Stáhnout požadované soubory</string>
 	<string name="dialog_routing_download_and_update_all">Stáhnout a aktualizovat veškeré informace o mapách a trasách spolu s navrhovanou cestou pro výpočet trasy.</string>
 	<string name="dialog_routing_routes_size">Soubory s informacemi o trasách</string>
-	<string name="dialog_routing_unable_locate_route">Nepodařilo se zjistit trasu</string>
-	<string name="dialog_routing_cant_build_route">Nepodařilo se vytvořit trasu.</string>
-	<string name="dialog_routing_change_start_or_end">Upravte místo startu nebo cíle.</string>
+	<string name="dialog_routing_unable_locate_route">Trasu se nepodařilo zjistit.</string>
+	<string name="dialog_routing_cant_build_route">Trasu se nepodařilo vytvořit.</string>
+	<string name="dialog_routing_change_start_or_end">Uprav místo startu nebo cíle.</string>
 	<string name="dialog_routing_change_start">Upravit místo startu</string>
 	<string name="dialog_routing_start_not_determined">Trasa nebyla vytvořena. Nepodařilo se najít místo startu.</string>
-	<string name="dialog_routing_select_closer_start">Vyberte místo startu blíže k silnici.</string>
+	<string name="dialog_routing_select_closer_start">Vyber místo startu blíže k silnici.</string>
 	<string name="dialog_routing_change_end">Upravit cíl</string>
 	<string name="dialog_routing_end_not_determined">Trasa nebyla vytvořena. Nepodařilo se najít cíl.</string>
-	<string name="dialog_routing_select_closer_end">Vyberte místo cíle blíže k silnici.</string>
+	<string name="dialog_routing_select_closer_end">Vyber místo cíle blíže k silnici.</string>
 	<string name="dialog_routing_system_error">Systémová chyba</string>
-	<string name="dialog_routing_application_error">Nepodařilo se vytvořit trasu z důvodu chyby aplikace.</string>
+	<string name="dialog_routing_application_error">Trasu se nepodařilo vytvořit z důvodu chyby aplikace.</string>
 	<string name="dialog_routing_try_again">Zkuste to prosím znovu</string>
 	<string name="dialog_routing_send_error">Nahlásit problém</string>
-	<string name="dialog_routing_if_get_cross_route">Chcete vytvořit přímější trasu, která vede přes více než jednu mapu?</string>
+	<string name="dialog_routing_if_get_cross_route">Chceš vytvořit přímější trasu, která vede přes více než jednu mapu?</string>
 	<string name="dialog_routing_cross_route_is_optimal">K dispozici je optimálnější trasa, která překračuje hranice této mapy.</string>
 	<string name="dialog_routing_always_cross_that_border">Vždy překročit tuto hranici</string>
 	<string name="dialog_routing_not_now">Nyní ne</string>
 	<string name="dialog_routing_build_route">Vytvořit</string>
-	<string name="dialog_routing_download_and_build_cross_route">Chcete mapu stáhnout a vytvořit optimálnější trasu, která vede přes více než jednu mapu?</string>
+	<string name="dialog_routing_download_and_build_cross_route">Chceš mapu stáhnout a vytvořit optimálnější trasu, která vede přes více než jednu mapu?</string>
 	<string name="dialog_routing_download_cross_route">Stáhnout mapu a vytvořit optimálnější trasu, která překračuje hranice této mapy.</string>
 	<string name="dialog_routing_cross_route_always">Vždy překročit tuto hranici</string>
 
 	<!-- SECTION: Strings for downloading map from search -->
-	<string name="search_without_internet_advertisement">Chcete-li začít hledat a vytvářet trasy, pak si prosím stáhněte mapu a nebudete již potřebovat připojení.</string>
+	<string name="search_without_internet_advertisement">Chceš-li začít hledat a vytvářet trasy, pak si prosím stáhni mapu a nebudeš již potřebovat připojení.</string>
 	<string name="search_select_map">Vybrat mapu</string>
 	<string name="search_select_other_map">Vybrat jinou mapu</string>
 	<string name="search_vehicle_routes">Pokyny pro řízení</string>
@@ -763,7 +763,7 @@
 	<!-- Bottom sheet: expand button (should be short) -->
 	<string name="bottom_sheet_more">Více…</string>
 	<!-- Failed planning route message in navigation view -->
-	<string name="routing_planning_error">Selhalo plánování trasy</string>
+	<string name="routing_planning_error">Naplánování trasy se nezdařilo</string>
 	<!-- Arrive routing message in navigation view -->
 	<string name="routing_arrive">Příjezd</string>
 	<!-- Routing Start button title -->
@@ -771,32 +771,32 @@
 	<!-- Planning route message in navigation view -->
 	<string name="routing_planning">Probíhá plánování trasy</string>
 	<!-- Text for routing::IRouter::FileTooOld dialog. -->
-	<string name="dialog_routing_download_and_update_maps">Abyste vytvořili trasu stáhněte si prosím a aktualizuje všechny mapy na cestě.</string>
+	<string name="dialog_routing_download_and_update_maps">Pro vytvoření trasy si prosím stáhni a aktualizuj všechny mapy podél očekávané cesty.</string>
 	<!-- Text for facebook sharing news about walking routes -->
-	<string name="share_walking_routes_facebook">MAPS.ME vám ušetří čas chůze. Nyní jsou dostupné pokyny pro chodce pro více než 2 milióny km tratí pro chodce, stezek a pěšin.</string>
+	<string name="share_walking_routes_facebook">MAPS.ME ti ušetří čas chůze. Nyní jsou dostupné pokyny pro chodce pro více než 2 milióny km stezek, pěšin a tratí pro chodce.</string>
 	<!-- Text for messenger sharing news about walking routes -->
-	<string name="share_walking_routes_messenger">MAPS.ME vám po celém světě ukáže nejkratší trasy pro chodce! Vyzkoušejte to: http://maps.me/get?walk_im</string>
+	<string name="share_walking_routes_messenger">MAPS.ME ti po celém světě ukáže nejkratší trasy pro chodce! Vyzkoušej to: http://maps.me/get?walk_im</string>
 	<!-- Text for sms sharing news about walking routes -->
-	<string name="share_walking_routes_sms">MAPS.ME vám ukáže nejkratší trasy pro chodce: http://maps.me/get?walk</string>
+	<string name="share_walking_routes_sms">MAPS.ME ti ukáže nejkratší trasy pro chodce: http://maps.me/get?walk</string>
 	<!-- Subject for email sharing news about walking routes -->
 	<string name="share_walking_routes_email_subject">Jsou dostupné nejkratší trasy pro chodce</string>
 	<!-- Text for email sharing news about walking routes -->
-	<string name="share_walking_routes_email_body">MAPS.ME právě uvedlo pokyny pro chodce založené na nejpodrobnější mapě světa! Ukážou vám nejkratší trasu do jakékoliv destinace. Vyzkoušejte je: http://maps.me/get?walk_em</string>
+	<string name="share_walking_routes_email_body">MAPS.ME právě uvedlo pokyny pro chodce založené na nejpodrobnější mapě světa! Ukážou ti nejkratší trasu do jakékoliv destinace. Vyzkoušej je: http://maps.me/get?walk_em</string>
 	<!-- Title for walking routes dialog, notifications etc. -->
 	<string name="title_walking_available">V MAPS.ME jsou dostupné pokyny pro chodce!</string>
 	<!-- Text for walking routes dialog -->
-	<string name="share_walking_routes_first_launch">Ukážou vám nejkratší trasu do jakékoliv destinace. Pomozte svým kamarádům také ušetřit čas chůze!</string>
+	<string name="share_walking_routes_first_launch">Ukážou ti nejkratší trasu do jakékoliv destinace. Pomoz svým kamarádům také ušetřit čas chůze!</string>
 	<!-- Title for walking routes dialog after 3 built routes -->
 	<string name="share_walking_routes_congratulations">Blahopřejeme!</string>
 	<!-- Text for walking routes dialog after 3 built routes -->
-	<string name="share_walking_routes_mastering">Zvládli jste funkci Pokyny pro chodce. Pomozte svým kamarádům také ušetřit čas chůze. Řekněte jim o MAPS.ME.</string>
+	<string name="share_walking_routes_mastering">Již plně ovládáš funkci Pokyny pro chodce. Pomoz svým kamarádům také ušetřit čas chůze. Řekni jim o MAPS.ME.</string>
 	<!-- Android notification about walking directions for update users -->
-	<string name="walking_notification_text">Chcete je vyzkoušet?</string>
+	<string name="walking_notification_text">Chceš je vyzkoušet?</string>
 	<!-- Android notification with picture (rich) about walking directions for update users -->
-	<string name="walking_rich_notification_text">Ukážou vám nejkratší trasu do cílového bodu. Vyzkoušejte si to sami a pomozte svým kamarádům ušetřit čas cestování.</string>
-	<string name="rate_alert_title">Líbí se Vám aplikace?</string>
-	<string name="rate_alert_default_message">Děkujeme, že používáte MAPS.ME. Ohodnoťte, prosím, tuto aplikaci. Váš komentář nám pomůže zlepšovat se.</string>
-	<string name="rate_alert_five_star_message">Hurá! Také Vás zbožňujeme!</string>
+	<string name="walking_rich_notification_text">Ukážou ti nejkratší trasu do cílového bodu. Vyzkoušej si to a pomoz také svým kamarádům ušetřit čas strávený cestováním.</string>
+	<string name="rate_alert_title">Líbí se ti aplikace?</string>
+	<string name="rate_alert_default_message">Děkujeme, že používáš MAPS.ME. Ohodnoť, prosím, tuto aplikaci. Tvůj názor nám pomůže ji ještě zlepšit.</string>
+	<string name="rate_alert_five_star_message">Hurá! Také tě zbožňujeme!</string>
 	<string name="rate_alert_four_star_message">Děkujeme, budeme se snažit!</string>
 	<string name="rate_alert_less_than_four_star_message">Nějaké nápady, jak to můžeme dělat lépe?</string>
 	<string name="categories">Kategorie</string>
@@ -804,14 +804,14 @@
 	<string name="next_turn_then">Poté</string>
 	<string name="closed">Zavřeno</string>
 	<string name="back_to">Zpět na %s</string>
-	<string name="search_not_found">Omlouvám se, nic jsem nenalezl.</string>
-	<string name="search_not_found_query">Zkuste, prosím, jiný dotaz.</string>
-	<string name="search_not_found_map">Stáhněte si, prosím, mapu, ve které hledáte.</string>
-	<string name="search_not_found_location">Stáhněte si mapu své aktuální pozice.</string>
+	<string name="search_not_found">Omlouváme se, nic nenalezeno.</string>
+	<string name="search_not_found_query">Zkus, prosím, jiný dotaz.</string>
+	<string name="search_not_found_map">Stáhni si mapu, ve které hledáš.</string>
+	<string name="search_not_found_location">Stáhni si mapu své aktuální pozice.</string>
 	<string name="search_history_title">Prohledat historii</string>
-	<string name="search_history_text">Získejte přístup k hledanému dotazu rychle.</string>
+	<string name="search_history_text">Získej rychlý přístup k hledanému dotazu.</string>
 	<string name="update_maps_alert_title">Průzkum map je nyní snazší</string>
-	<string name="update_maps_alert_message">Vylepšili jsme styly map. Nyní vypadají všechny předměty více přátelsky a čistěji. Aktualizujte mapy a získejte z nového designu maximum.</string>
+	<string name="update_maps_alert_message">Vylepšili jsme styly map. Nyní vypadají všechny předměty více přátelsky a čistěji. Aktualizuj si své mapy a získej z nového designu maximum.</string>
 	<string name="update_maps_alert_button_title">Aktualizovat mapy</string>
 	<string name="clear_search">Vymazat historii vyhledávání</string>
 </resources>
