@@ -24,6 +24,7 @@ import com.parse.ParseInstallation;
 import com.parse.SaveCallback;
 
 import java.io.File;
+import java.io.FileFilter;
 
 public class MwmApplication extends android.app.Application implements ActiveCountryTree.ActiveCountryListener
 {
@@ -162,22 +163,35 @@ public class MwmApplication extends android.app.Application implements ActiveCou
 
   private static boolean isMapStorage(String path)
   {
-    return !TextUtils.isEmpty(path) && Utils.directoryExists(path) &&
-           new File(path, "World.mwm").exists();
+    final File dir = new File(path);
+    if (TextUtils.isEmpty(path) || !Utils.isDirectoryReadable(dir))
+      return false;
+
+    // Current map directory should contain folders with map indices at least, so use this fact as an indicator.
+    final File[] list = dir.listFiles(new FileFilter()
+    {
+      @Override
+      public boolean accept(File file)
+      {
+        return file.isDirectory();
+      }
+    });
+
+    return (list.length != 0);
   }
 
   private String findMapStoragePath()
   {
-    String res = mPrefs.getString(Constants.PREF_STORAGE_PATH, "");
+    String res = mPrefs.getString(Constants.STORAGE_PATH_PREF, "");
     if (isMapStorage(res))
       return res;
 
-    res = nativeGetString(Constants.PREF_STORAGE_PATH, "");
+    res = nativeGetString(Constants.STORAGE_PATH_PREF, "");
     if (!isMapStorage(res))
       res = getDataStoragePath();
 
     mPrefs.edit()
-          .putString(Constants.PREF_STORAGE_PATH, res)
+          .putString(Constants.STORAGE_PATH_PREF, res)
           .apply();
 
     return res;

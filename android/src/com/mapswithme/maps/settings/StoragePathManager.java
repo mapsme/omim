@@ -395,7 +395,7 @@ public class StoragePathManager
       {
         Framework.nativeSetWritableDir(fullNewPath);
         MwmApplication.prefs().edit()
-                      .putString(Constants.PREF_STORAGE_PATH, fullNewPath)
+                      .putString(Constants.STORAGE_PATH_PREF, fullNewPath)
                       .apply();
       }
     });

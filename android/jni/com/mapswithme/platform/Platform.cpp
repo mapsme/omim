@@ -149,13 +149,6 @@ namespace android
   void Platform::SetStoragePath(string const & path)
   {
     m_writableDir = path;
-
-    // @TODO it's a bug when user had all his maps on SD but when space is low,
-    // he loses access to all downloaded maps. We should display warnings in these cases in UI.
-    if (!HasAvailableSpaceForWriting(1024))
-      // If no saved storage path (disconnected from the last session), assign writable path to the default external storage.
-      m_writableDir = m_settingsDir;
-
     Settings::Set("StoragePath", m_writableDir);
   }
 

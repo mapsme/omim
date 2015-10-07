@@ -23,8 +23,10 @@ extern "C"
   JNIEXPORT void JNICALL
   Java_com_mapswithme_maps_MwmApplication_nativeStart(JNIEnv * env, jobject thiz, jstring mapsPath)
   {
+    ASSERT(!g_framework, ("nativeStart() must NOT be called twice!"));
+
     android::Platform::Instance().SetStoragePath(jni::ToNativeString(env, mapsPath));
-    g_framework = new android::Framework();
+    g_framework.reset(new android::Framework());
 
     LOG(LDEBUG, ("android::Framework created"));
   }

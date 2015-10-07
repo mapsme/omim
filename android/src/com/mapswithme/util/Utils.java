@@ -290,9 +290,8 @@ public class Utils
       NavUtils.navigateUpFromSameTask(activity);
   }
 
-  public static boolean directoryExists(String path)
+  public static boolean isDirectoryReadable(File dir)
   {
-    final File file = new File(path);
-    return (file.exists() && file.isDirectory() && file.canRead());
+    return (dir.exists() && dir.isDirectory() && dir.canRead());
   }
 }

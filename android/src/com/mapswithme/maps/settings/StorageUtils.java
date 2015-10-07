@@ -62,10 +62,10 @@ public final class StorageUtils
   {
     StatFs statFs = new StatFs(path);
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
-      return statFs.getFreeBlocksLong() * statFs.getBlockSizeLong();
+      return statFs.getAvailableBlocksLong() * statFs.getBlockSizeLong();
 
     //noinspection deprecation
-    return (long) statFs.getFreeBlocks() * statFs.getBlockSize();
+    return (long) statFs.getAvailableBlocks() * statFs.getBlockSize();
   }
 
   // http://stackoverflow.com/questions/8151779/find-sd-card-volume-label-on-android
