@@ -4,6 +4,8 @@
 #include "drape_frontend/message_subclasses.hpp"
 #include "drape_frontend/visual_params.hpp"
 #include "drape_frontend/user_mark_shapes.hpp"
+#include "drape_frontend/framebuffer.hpp"
+#include "drape_frontend/renderer3d.hpp"
 
 #include "drape/debug_rect_renderer.hpp"
 
@@ -41,6 +43,9 @@ FrontendRenderer::FrontendRenderer(Params const & params)
   , m_gpuProgramManager(new dp::GpuProgramManager())
   , m_routeRenderer(new RouteRenderer())
   , m_overlayTree(new dp::OverlayTree())
+  , m_useFramebuffer(true)
+  , m_framebuffer(new Framebuffer())
+  , m_renderer3d(new Renderer3d())
   , m_viewport(params.m_viewport)
   , m_userEventStream(params.m_isCountryLoadedFn)
   , m_modelViewChangedFn(params.m_modelViewChangedFn)
@@ -60,7 +65,6 @@ FrontendRenderer::FrontendRenderer(Params const & params)
 
   m_myPositionController.reset(new MyPositionController(params.m_initMyPositionMode));
   m_myPositionController->SetModeListener(params.m_myPositionModeCallback);
-
   StartThread();
 }
 
@@ -444,6 +448,21 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
 
       break;
     }
+  case Message::Enable3dMode:
+    {
+      ref_ptr<Enable3dModeMessage> msg = message;
+      m_renderer3d->SetVerticalFOV(msg->GetAngleFOV());
+      m_renderer3d->SetPlaneAngleX(msg->GetAngleX());
+      m_renderer3d->SetPlaneOffsetZ(msg->GetDeltaZ());
+      m_useFramebuffer = true;
+      break;
+    }
+
+  case Message::Disable3dMode:
+    {
+      m_useFramebuffer = false;
+      break;
+    }
 
   case Message::Invalidate:
     {
@@ -466,6 +485,8 @@ void FrontendRenderer::OnResize(ScreenBase const & screen)
   m_viewport.SetViewport(0, 0, screen.GetWidth(), screen.GetHeight());
   m_myPositionController->SetPixelRect(screen.PixelRect());
   m_contextFactory->getDrawContext()->resize(m_viewport.GetWidth(), m_viewport.GetHeight());
+  m_framebuffer->SetSize(m_viewport.GetWidth(), m_viewport.GetHeight());
+  m_renderer3d->SetSize(m_viewport.GetWidth(), m_viewport.GetHeight());
   RefreshProjection();
 }
 
@@ -619,6 +640,9 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
   BeforeDrawFrame();
 #endif
 
+  if (m_useFramebuffer)
+    m_framebuffer->Enable();
+
   RenderGroupComparator comparator;
   sort(m_renderGroups.begin(), m_renderGroups.end(), bind(&RenderGroupComparator::operator (), &comparator, _1, _2));
 
@@ -717,6 +741,12 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
 
   if (m_guiRenderer != nullptr)
     m_guiRenderer->Render(make_ref(m_gpuProgramManager), modelView);
+
+  if (m_useFramebuffer)
+  {
+    m_framebuffer->Disable();
+    m_renderer3d->Render(m_framebuffer->GetTextureId(), make_ref(m_gpuProgramManager));
+  }
 
   GLFunctions::glEnable(gl_const::GLDepthTest);
 
