@@ -67,16 +67,14 @@ bool IsMiddleTunnel(int const layer, double const depth)
   return layer != feature::LAYER_EMPTY && depth < 19000;
 }
 
-double CalcPopulationRank(FeatureType const & f)
+void FilterRulesByRuntimeSelector(FeatureType const & f, int zoomLevel, drule::KeysT & keys)
 {
-  uint32_t population = f.GetPopulation();
-  if (population != 1)
+  keys.erase_if([&f, zoomLevel](drule::Key const & key)->bool
   {
-    double const maxPopulation = 3.0E6;
-    return min(maxPopulation, (double)population) / (maxPopulation * 4);
-  }
-
-  return 0.0;
+    drule::BaseRule const * const rule = drule::rules().Find(key);
+    ASSERT(rule != nullptr, ());
+    return !rule->TestFeature(f, zoomLevel);
+  });
 }
 
 class KeyFunctor
@@ -170,9 +168,6 @@ const uint8_t PointStyleFlag = 1 << 3;
 
 // ==================================== //
 
-CaptionDescription::CaptionDescription()
-  : m_populationRank(0.0) {}
-
 void CaptionDescription::Init(FeatureType const & f,
                               int const zoomLevel)
 {
@@ -180,7 +175,6 @@ void CaptionDescription::Init(FeatureType const & f,
 
   m_roadNumber = f.GetRoadNumber();
   m_houseNumber = f.GetHouseNumber();
-  m_populationRank = CalcPopulationRank(f);
 
   if (ftypes::IsBuildingChecker::Instance()(f))
   {
@@ -235,11 +229,6 @@ string CaptionDescription::GetPathName() const
     return m_mainText;
   else
     return m_mainText + "   " + m_auxText;
-}
-
-double CaptionDescription::GetPopulationRank() const
-{
-  return m_populationRank;
 }
 
 bool CaptionDescription::IsNameExists() const
@@ -339,6 +328,8 @@ bool InitStylist(FeatureType const & f,
 {
   drule::KeysT keys;
   pair<int, bool> geomType = feature::GetDrawRule(f, zoomLevel, keys);
+
+  FilterRulesByRuntimeSelector(f, zoomLevel, keys);
 
   if (keys.empty())
     return false;
