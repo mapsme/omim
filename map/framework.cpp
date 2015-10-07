@@ -768,22 +768,6 @@ void Framework::InvalidateRect(m2::RectD const & rect)
   CallDrapeFunction(bind(&df::DrapeEngine::InvalidateRect, _1, rect));
 }
 
-void Framework::UpdateUserViewportChanged()
-{
-  if (IsISActive())
-  {
-    (void)GetCurrentPosition(m_lastISParams.m_lat, m_lastISParams.m_lon);
-
-    m_searchEngine->Search(m_lastISParams, GetCurrentViewport());
-    
-    (void)GetCurrentPosition(m_lastISParams.m_lat, m_lastISParams.m_lon);
-    m_lastISParams.SetSearchMode(search::SearchParams::IN_VIEWPORT_ONLY);
-    m_lastISParams.SetForceSearch(false);
-
-    Search(m_lastISParams);
-  }
-}
-
 void Framework::UpdateSearchResults(search::Results const & results)
 {
   if (!results.IsEndMarker() && results.GetCount() > 0)
@@ -796,7 +780,7 @@ void Framework::UpdateSearchResults(search::Results const & results)
 
 void Framework::OnSearchResultsCallbackUI(search::Results const & results)
 {
-  if (IsISActive())
+  if (IsInteractiveSearchActive())
     FillSearchResultsMarks(results);
 }
 
@@ -1019,7 +1003,7 @@ string Framework::GetCountryName(string const & id) const
   return info.m_name;
 }
 
-bool Framework::QueryCouldBeSkipped(search::SearchParams const & params,
+bool Framework::QueryMayBeSkipped(search::SearchParams const & params,
                                     m2::RectD const & viewport) const
 {
   if (params.IsForceSearch())
