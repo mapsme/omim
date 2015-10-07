@@ -40,7 +40,9 @@ public:
     DeactivateRouteFollowing,
     UpdateMapStyle,
     InvalidateTextures,
-    Invalidate
+    Invalidate,
+    Enable3dMode,
+    Disable3dMode
   };
 
   virtual ~Message() {}
