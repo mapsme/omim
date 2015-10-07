@@ -39,6 +39,7 @@ SOURCES += \
     circle_shape.cpp \
     drape_engine.cpp \
     engine_context.cpp \
+    framebuffer.cpp \
     frontend_renderer.cpp \
     line_shape.cpp \
     line_shape_helper.cpp \
@@ -56,6 +57,7 @@ SOURCES += \
     read_mwm_task.cpp \
     render_group.cpp \
     render_node.cpp \
+    renderer3d.cpp \
     route_builder.cpp \
     route_renderer.cpp \
     route_shape.cpp \
@@ -116,6 +118,7 @@ HEADERS += \
     circle_shape.hpp \
     drape_engine.hpp \
     engine_context.hpp \
+    framebuffer.hpp \
     frontend_renderer.hpp \
     intrusive_vector.hpp \
     line_shape.hpp \
@@ -137,6 +140,7 @@ HEADERS += \
     read_mwm_task.hpp \
     render_group.hpp \
     render_node.hpp \
+    renderer3d.hpp \
     route_builder.hpp \
     route_renderer.hpp \
     route_shape.hpp \

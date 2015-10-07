@@ -40,6 +40,7 @@ extern const glConst GLRGB;
 extern const glConst GLAlpha;
 extern const glConst GLLuminance;
 extern const glConst GLAlphaLuminance;
+extern const glConst GLDepthComponent;
 
 /// Texture layout size
 extern const glConst GLRGBA8;
@@ -124,6 +125,10 @@ extern const glConst GLFront;
 extern const glConst GLBack;
 extern const glConst GLFrontAndBack;
 
+/// OpenGL kinds of primitives
+extern const glConst GLTriangles;
+extern const glConst GLTriangleStrip;
+
 /// OpenGL depth functions
 extern const glConst GLNever;
 extern const glConst GLLess;
@@ -136,5 +141,13 @@ extern const glConst GLAlways;
 
 /// Program object parameter names
 extern const glConst GLActiveUniforms;
+
+/// Framebuffer attachment points
+extern const glConst GLColorAttachment;
+extern const glConst GLDepthAttachment;
+extern const glConst GlStencilAttachment;
+
+/// Framebuffer status
+extern const glConst GlFramebufferComplete;
 
 } // namespace GLConst

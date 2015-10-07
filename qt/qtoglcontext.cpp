@@ -46,7 +46,7 @@ void QtRenderOGLContext::doneCurrent()
 
 void QtRenderOGLContext::setDefaultFramebuffer()
 {
-  GLFunctions::glBindFramebuffer(GL_FRAMEBUFFER, m_ctx->defaultFramebufferObject());
+  GLFunctions::glBindFramebuffer(m_ctx->defaultFramebufferObject());
 }
 
 void QtRenderOGLContext::shutDown()
