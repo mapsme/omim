@@ -1286,7 +1286,7 @@ void Framework::InitCountryInfoGetter()
   try
   {
     m_infoGetter.reset(new storage::CountryInfoGetter(platform.GetReader(PACKED_POLYGONS_FILE),
-                                                       platform.GetReader(COUNTRIES_FILE)));
+                                                      platform.GetReader(COUNTRIES_FILE)));
   }
   catch (RootException const & e)
   {
