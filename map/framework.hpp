@@ -111,13 +111,18 @@ protected:
 
   StringsBundle m_stringsBundle;
 
-  // The order matters here: storage::CountryInfoGetter must be
-  // initialized before search::Engine.
-  unique_ptr<storage::CountryInfoGetter> m_infoGetter;
-  unique_ptr<search::Engine> m_searchEngine;
-  search::QuerySaver m_searchQuerySaver;
+  // The order matters here: storage::CountryInfoGetter and
+  // m_model::FeaturesFetcher must be initialized before
+  // search::Engine and, therefore, destroyed after search::Engine.
 
   model::FeaturesFetcher m_model;
+
+  unique_ptr<storage::CountryInfoGetter> m_infoGetter;
+
+  unique_ptr<search::Engine> m_searchEngine;
+
+  search::QuerySaver m_searchQuerySaver;
+
   ScalesProcessor m_scales;
   Navigator m_navigator;
   Animator m_animator;
