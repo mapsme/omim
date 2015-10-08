@@ -127,7 +127,7 @@ private:
   vector<shared_ptr<MatchingRule>> m_rules;
 };
 
-void MatchResults(Index const & index, vector<shared_ptr<MatchingRule>> rules,
+bool MatchResults(Index const & index, vector<shared_ptr<MatchingRule>> rules,
                   vector<search::Result> const & actual)
 {
   vector<FeatureID> resultIds;
@@ -151,7 +151,7 @@ void MatchResults(Index const & index, vector<shared_ptr<MatchingRule>> rules,
   index.ReadFeatures(removeMatched, resultIds);
 
   if (rules.empty() && unexpected.empty())
-    return;
+    return true;
 
   ostringstream os;
   os << "Unsatisfied rules:" << endl;
@@ -161,7 +161,7 @@ void MatchResults(Index const & index, vector<shared_ptr<MatchingRule>> rules,
   for (auto const & u : unexpected)
     os << "  " << u << endl;
 
-  TEST(false, (os.str()));
+  return false;
 }
 
 void Cleanup(platform::LocalCountryFile const & map)
@@ -483,7 +483,7 @@ UNIT_TEST(Retrieval_CafeMTV)
         make_shared<ExactMatch>(testWorldId, mskCity), make_shared<ExactMatch>(mskId, mskCity)};
     vector<shared_ptr<MatchingRule>> rules = {make_shared<AlternativesMatch>(mskCityAlts),
                                               make_shared<ExactMatch>(mtvId, mskCafe)};
-    MatchResults(engine, rules, request.Results());
+    TEST(MatchResults(engine, rules, request.Results()), ());
   }
 
   {
@@ -494,7 +494,7 @@ UNIT_TEST(Retrieval_CafeMTV)
         make_shared<ExactMatch>(testWorldId, mtvCity), make_shared<ExactMatch>(mtvId, mtvCity)};
     vector<shared_ptr<MatchingRule>> rules = {make_shared<AlternativesMatch>(mtvCityAlts),
                                               make_shared<ExactMatch>(mskId, mtvCafe)};
-    MatchResults(engine, rules, request.Results());
+    TEST(MatchResults(engine, rules, request.Results()), ());
   }
 
   {
@@ -508,6 +508,6 @@ UNIT_TEST(Retrieval_CafeMTV)
     // TODO (@gorshenin): current search algorithm can't retrieve both
     // Cafe Moscow @ MTV and Cafe MTV @ Moscow, it'll just return one
     // of them. Fix this test when locality search will be fixed.
-    MatchResults(engine, rules, request.Results());
+    TEST(MatchResults(engine, rules, request.Results()), ());
   }
 }
