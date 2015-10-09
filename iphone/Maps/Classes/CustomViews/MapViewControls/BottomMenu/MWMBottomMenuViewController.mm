@@ -51,8 +51,6 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell)
 
 @property(nonatomic) MWMBottomMenuState restoreState;
 
-@property(nonatomic) int locationListenerSlot;
-
 @end
 
 @implementation MWMBottomMenuViewController
@@ -91,14 +89,11 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell)
 - (void)viewWillAppear:(BOOL)animated
 {
   [super viewWillAppear:animated];
-  [self configLocationListener];
-  [self onLocationStateModeChanged:GetFramework().GetLocationState()->GetMode()];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
   [super viewWillDisappear:animated];
-  GetFramework().GetLocationState()->RemoveStateModeListener(self.locationListenerSlot);
 }
 
 #pragma mark - Layout
@@ -139,28 +134,17 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell)
 
 #pragma mark - Location button
 
-- (void)configLocationListener
-{
-  typedef void (*LocationStateModeFnT)(id, SEL, location::State::Mode);
-  SEL locationStateModeSelector = @selector(onLocationStateModeChanged:);
-  LocationStateModeFnT locationStateModeFn =
-      (LocationStateModeFnT)[self methodForSelector:locationStateModeSelector];
-
-  self.locationListenerSlot = GetFramework().GetLocationState()->AddStateModeListener(
-      bind(locationStateModeFn, self, locationStateModeSelector, _1));
-}
-
-- (void)onLocationStateModeChanged:(location::State::Mode)state
+- (void)onLocationStateModeChanged:(location::EMyPositionMode)state
 {
   UIButton * locBtn = self.locationButton;
   [locBtn.imageView.layer removeAllAnimations];
   switch (state)
   {
-  case location::State::Mode::UnknownPosition:
+  case location::MODE_UNKNOWN_POSITION:
     [locBtn setImage:[UIImage imageNamed:@"ic_menu_location_off_mode_light"]
             forState:UIControlStateNormal];
     break;
-  case location::State::Mode::PendingPosition:
+  case location::MODE_PENDING_POSITION:
   {
     [locBtn setImage:[UIImage imageNamed:@"ic_menu_location_pending"]
             forState:UIControlStateNormal];
@@ -173,14 +157,14 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell)
     [locBtn.imageView.layer addAnimation:rotation forKey:@"locationImage"];
     break;
   }
-  case location::State::Mode::NotFollow:
+  case location::MODE_NOT_FOLLOW:
     [locBtn setImage:[UIImage imageNamed:@"ic_menu_location_get_position"]
             forState:UIControlStateNormal];
     break;
-  case location::State::Mode::Follow:
+  case location::MODE_FOLLOW:
     [locBtn setImage:[UIImage imageNamed:@"ic_menu_location_follow"] forState:UIControlStateNormal];
     break;
-  case location::State::Mode::RotateAndFollow:
+  case location::MODE_ROTATE_AND_FOLLOW:
     UIButton * btn = self.locationButton;
     NSUInteger const morphImagesCount = 6;
     NSUInteger const startValue = 1;
@@ -336,7 +320,7 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell)
 
 - (IBAction)locationButtonTouchUpInside:(UIButton *)sender
 {
-  GetFramework().GetLocationState()->SwitchToNextMode();
+  GetFramework().SwitchMyPositionNextMode();
 }
 
 - (IBAction)point2PointButtonTouchUpInside:(UIButton *)sender
