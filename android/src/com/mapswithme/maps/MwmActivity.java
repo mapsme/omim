@@ -75,8 +75,10 @@ public class MwmActivity extends BaseMwmFragmentActivity
                                  ChooseBookmarkCategoryFragment.Listener
 {
   public static final String EXTRA_TASK = "map_task";
-  private final static String EXTRA_CONSUMED = "mwm.extra.intent.processed";
+  private static final String EXTRA_CONSUMED = "mwm.extra.intent.processed";
   private static final String EXTRA_UPDATE_COUNTRIES = ".extra.update.countries";
+
+  private static final String FRAGMENT_TAG = MapFragment.class.getSimpleName();
 
   private static final String[] DOCKED_FRAGMENTS = {SearchFragment.class.getName(), DownloadFragment.class.getName()};
 
@@ -338,13 +340,13 @@ public class MwmActivity extends BaseMwmFragmentActivity
         mMainMenu.close(true);
       }
     });
-    mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag(MapFragment.FRAGMENT_TAG);
+    mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
     if (mMapFragment == null)
     {
       mMapFragment = (MapFragment) MapFragment.instantiate(this, MapFragment.class.getName(), null);
       getSupportFragmentManager()
           .beginTransaction()
-          .replace(R.id.map_fragment_container, mMapFragment, MapFragment.FRAGMENT_TAG)
+          .replace(R.id.map_fragment_container, mMapFragment, FRAGMENT_TAG)
           .commit();
     }
     mFrame.setOnTouchListener(this);
@@ -601,7 +603,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
       mTasks.add(mapTask);
       intent.removeExtra(EXTRA_TASK);
 
-      if (mMapFragment.isRenderingInitialized())
+      if (MapFragment.nativeIsEngineCreated())
         runTasks();
 
       // mark intent as consumed
@@ -612,7 +614,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   @Override
   public void onLocationError(int errorCode)
   {
-    mMapFragment.nativeOnLocationError(errorCode);
+    MapFragment.nativeOnLocationError(errorCode);
 
     if (errorCode == LocationHelper.ERROR_DENIED)
     {
@@ -653,14 +655,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     if (!l.getProvider().equals(LocationHelper.LOCATION_PREDICTOR_PROVIDER))
       mLocationPredictor.reset(l);
 
-    mMapFragment.nativeLocationUpdated(
-        l.getTime(),
-        l.getLatitude(),
-        l.getLongitude(),
-        l.getAccuracy(),
-        l.getAltitude(),
-        l.getSpeed(),
-        l.getBearing());
+    MapFragment.nativeLocationUpdated(l.getTime(), l.getLatitude(), l.getLongitude(), l.getAccuracy(), l.getAltitude(), l.getSpeed(), l.getBearing());
 
     if (mPlacePage.getState() != State.HIDDEN)
       mPlacePage.refreshLocation(l);
@@ -684,7 +679,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
     mLastCompassData.update(getWindowManager().getDefaultDisplay().getRotation(), magneticNorth, trueNorth);
 
-    mMapFragment.nativeCompassUpdated(mLastCompassData.magneticNorth, mLastCompassData.trueNorth, false);
+    MapFragment.nativeCompassUpdated(mLastCompassData.magneticNorth, mLastCompassData.trueNorth, false);
     if (mPlacePage.getState() != State.HIDDEN)
       mPlacePage.refreshAzimuth(mLastCompassData.north);
 
@@ -716,7 +711,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     LocationState.INSTANCE.setMyPositionModeListener(this);
   }
 
-  private void stopLocationStateUpdates()
+  private static void stopLocationStateUpdates()
   {
     LocationState.INSTANCE.removeMyPositionModeListener();
   }
@@ -1031,11 +1026,11 @@ public class MwmActivity extends BaseMwmFragmentActivity
       break;
     case R.id.map_button_plus:
       AlohaHelper.logClick(AlohaHelper.ZOOM_IN);
-      mMapFragment.nativeScalePlus();
+      MapFragment.nativeScalePlus();
       break;
     case R.id.map_button_minus:
       AlohaHelper.logClick(AlohaHelper.ZOOM_OUT);
-      mMapFragment.nativeScaleMinus();
+      MapFragment.nativeScaleMinus();
       break;
     case R.id.yop_it:
       final double[] latLon = Framework.getScreenRectCenter();
@@ -1165,7 +1160,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     @Override
     public boolean run(MwmActivity target)
     {
-      return target.mMapFragment.showMapForUrl(mUrl);
+      return MapFragment.nativeShowMapForUrl(mUrl);
     }
   }
 
@@ -1199,13 +1194,13 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   public void adjustCompass(int offset)
   {
-    if (mMapFragment != null && mMapFragment.isAdded())
-    {
-      mMapFragment.adjustCompass(mPanelAnimator.isVisible() ? offset : 0);
+    if (mMapFragment == null || !mMapFragment.isAdded())
+      return;
 
-      if (mLastCompassData != null)
-        mMapFragment.nativeCompassUpdated(mLastCompassData.magneticNorth, mLastCompassData.trueNorth, true);
-    }
+    mMapFragment.adjustCompass(mPanelAnimator.isVisible() ? offset : 0, true);
+
+    if (mLastCompassData != null)
+      MapFragment.nativeCompassUpdated(mLastCompassData.magneticNorth, mLastCompassData.trueNorth, true);
   }
 
   @Override
