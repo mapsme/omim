@@ -264,7 +264,8 @@ typedef NS_ENUM(NSUInteger, MWMiPhonePortraitPlacePageState)
   _targetPoint = targetPoint;
   __weak MWMiPhonePortraitPlacePage * weakSelf = self;
   if (self.state == MWMiPhonePortraitPlacePageStateClosed)
-    GetFramework().GetBalloonManager().RemovePin();
+    GetFramework().DeactivateUserMark();
+  
   [self startAnimatingPlacePage:self initialVelocity:CGPointMake(0.0, self.panVelocity) completion:^
   {
     __strong MWMiPhonePortraitPlacePage * self = weakSelf;

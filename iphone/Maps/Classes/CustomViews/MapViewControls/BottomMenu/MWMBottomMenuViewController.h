@@ -1,6 +1,8 @@
 
 #import "MWMBottomMenuView.h"
 
+#include "platform/location.hpp"
+
 @class MapViewController;
 
 @protocol MWMBottomMenuControllerProtocol<NSObject>
@@ -24,5 +26,7 @@
 - (void)setStreetName:(NSString *)streetName;
 - (void)setPlanning;
 - (void)setGo;
+
+- (void)onLocationStateModeChanged:(location::EMyPositionMode)state;
 
 @end

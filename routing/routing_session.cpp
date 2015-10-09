@@ -139,9 +139,7 @@ void RoutingSession::Reset()
   m_speedWarningSignal = false;
 }
 
-RoutingSession::State RoutingSession::OnLocationPositionChanged(m2::PointD const & position,
-                                                                GpsInfo const & info,
-                                                                Index const & index)
+RoutingSession::State RoutingSession::OnLocationPositionChanged(GpsInfo const & info, Index const & index)
  {
   ASSERT(m_state != RoutingNotActive, ());
   ASSERT(m_router != nullptr, ());
@@ -191,13 +189,13 @@ RoutingSession::State RoutingSession::OnLocationPositionChanged(m2::PointD const
         }
       }
     }
-    m_lastGoodPosition = position;
+    m_lastGoodPosition = m_userCurrentPosition;
   }
   else
   {
     // Distance from the last known projection on route
     // (check if we are moving far from the last known projection).
-    double const dist = m_route.GetCurrentSqDistance(position);
+    double const dist = m_route.GetCurrentSqDistance(m_userCurrentPosition);
     if (dist > m_lastDistance || my::AlmostEqualULPs(dist, m_lastDistance, 1 << 16))
     {
       ++m_moveAwayCounter;
@@ -365,21 +363,6 @@ void RoutingSession::MatchLocationToRoute(location::GpsInfo & location,
   threads::MutexGuard guard(m_routeSessionMutex);
   UNUSED_VALUE(guard);
   m_route.MatchLocationToRoute(location, routeMatchingInfo);
-}
-
-bool RoutingSession::GetMercatorDistanceFromBegin(double & distance) const
-{
-  if (m_state != State::OnRoute)
-  {
-    distance = 0.0;
-    return false;
-  }
-
-  threads::MutexGuard guard(m_routeSessionMutex);
-  UNUSED_VALUE(guard);
-
-  distance = m_route.GetMercatorDistanceFromBegin();
-  return true;
 }
 
 void RoutingSession::SetRoutingSettings(RoutingSettings const & routingSettings)
