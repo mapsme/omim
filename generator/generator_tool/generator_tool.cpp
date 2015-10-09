@@ -11,12 +11,13 @@
 #include "generator/routing_generator.hpp"
 #include "generator/osm_source.hpp"
 
-#include "indexer/drawing_rules.hpp"
-#include "indexer/classificator_loader.hpp"
 #include "indexer/classificator.hpp"
+#include "indexer/classificator_loader.hpp"
 #include "indexer/data_header.hpp"
+#include "indexer/drawing_rules.hpp"
 #include "indexer/features_vector.hpp"
 #include "indexer/index_builder.hpp"
+#include "indexer/rank_table.hpp"
 #include "indexer/search_index_builder.hpp"
 
 #include "coding/file_name_utils.hpp"
@@ -199,6 +200,10 @@ int main(int argc, char ** argv)
 
       if (!indexer::BuildSearchIndexFromDatFile(datFile, true))
         LOG(LCRITICAL, ("Error generating search index."));
+
+      LOG(LINFO, ("Generating rank table for ", datFile));
+      if (!search::RankTableBuilder::CreateIfNotExists(datFile))
+        LOG(LCRITICAL, ("Error generating rank table."));
     }
   }
 
