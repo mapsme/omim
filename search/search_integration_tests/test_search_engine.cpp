@@ -7,6 +7,8 @@
 #include "search/search_query_factory.hpp"
 #include "search/suggest.hpp"
 
+#include "storage/country_info_getter.hpp"
+
 #include "platform/platform.hpp"
 
 #include "std/unique_ptr.hpp"
@@ -43,11 +45,23 @@ class TestSearchQueryFactory : public search::SearchQueryFactory
 
 TestSearchEngine::TestSearchEngine(string const & locale)
   : m_platform(GetPlatform())
-  , m_infoGetter(m_platform.GetReader(PACKED_POLYGONS_FILE), m_platform.GetReader(COUNTRIES_FILE))
-  , m_engine(*this, m_platform.GetReader(SEARCH_CATEGORIES_FILE_NAME), m_infoGetter, locale,
+  , m_infoGetter(new storage::CountryInfoReader(m_platform.GetReader(PACKED_POLYGONS_FILE),
+                                                m_platform.GetReader(COUNTRIES_FILE)))
+  , m_engine(*this, m_platform.GetReader(SEARCH_CATEGORIES_FILE_NAME), *m_infoGetter, locale,
              make_unique<TestSearchQueryFactory>())
 {
 }
+
+TestSearchEngine::TestSearchEngine(string const & locale,
+                                   unique_ptr<storage::CountryInfoGetter> && infoGetter)
+  : m_platform(GetPlatform())
+  , m_infoGetter(move(infoGetter))
+  , m_engine(*this, m_platform.GetReader(SEARCH_CATEGORIES_FILE_NAME), *m_infoGetter, locale,
+             make_unique<TestSearchQueryFactory>())
+{
+}
+
+TestSearchEngine::~TestSearchEngine() {}
 
 weak_ptr<search::QueryHandle> TestSearchEngine::Search(search::SearchParams const & params,
                                                        m2::RectD const & viewport)
