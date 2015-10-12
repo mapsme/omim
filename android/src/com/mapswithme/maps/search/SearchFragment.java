@@ -82,7 +82,7 @@ public class SearchFragment extends BaseMwmFragment
       }
 
       // TODO: This code only for demonstration purposes and will be removed soon
-      if (trySwitchOnTurnSound(query) || tryChangeMapStyle(query))
+      if (trySwitchOnTurnSound(query) || tryChangeMapStyle(query) || try3dMode(query))
         return;
 
       runSearch();
@@ -356,6 +356,20 @@ public class SearchFragment extends BaseMwmFragment
     TtsPlayer.INSTANCE.enable(sound);
 
     return sound;
+  }
+
+  private boolean try3dMode(String str)
+  {
+    final boolean is3d = str.equals("?3d");
+    final boolean is2d = str.equals("?2d");
+
+    if (!is3d && !is2d)
+      return false;
+
+    hideSearch();
+    Framework.nativeEnable3dMode(is3d);
+
+    return true;
   }
   // FIXME END
 
