@@ -9,11 +9,20 @@
 namespace df
 {
 
+enum class ModelViewAnimationType
+{
+  Default,
+  Scale,
+  FollowAndRotate,
+  KineticScroll
+};
+
 class BaseModelViewAnimation : public BaseInterpolator
 {
 public:
   BaseModelViewAnimation(double duration, double delay = 0) : BaseInterpolator(duration, delay) {}
 
+  virtual ModelViewAnimationType GetType() const = 0;
   virtual m2::AnyRectD GetCurrentRect(ScreenBase const & screen) const = 0;
   virtual m2::AnyRectD GetTargetRect(ScreenBase const & screen) const = 0;
 };
@@ -30,6 +39,8 @@ public:
   /// sDuration - scaleDuration
   ModelViewAnimation(m2::AnyRectD const & startRect, m2::AnyRectD const & endRect,
                      double aDuration, double mDuration, double sDuration);
+
+  ModelViewAnimationType GetType() const override { return ModelViewAnimationType::Default; }
   m2::AnyRectD GetCurrentRect(ScreenBase const & screen) const override;
   m2::AnyRectD GetTargetRect(ScreenBase const & screen) const override;
 
@@ -46,41 +57,51 @@ private:
   double m_scaleDuration;
 };
 
-class FixedPointAnimation : public ModelViewAnimation
+class ScaleAnimation : public ModelViewAnimation
 {
 public:
-  /// This animation extends ModelViewAnimation by adding point which must be in certain
-  /// pixel position on the screen.
-  FixedPointAnimation(m2::AnyRectD const & startRect, m2::AnyRectD const & endRect,
-                      double aDuration, double mDuration, double sDuration,
-                      m2::PointD const & pixelPoint, m2::PointD const & globalPoint);
+  ScaleAnimation(m2::AnyRectD const & startRect, m2::AnyRectD const & endRect,
+                 double aDuration, double mDuration, double sDuration,
+                 m2::PointD const & globalPoint, m2::PointD const & pixelOffset);
+
+  ModelViewAnimationType GetType() const override { return ModelViewAnimationType::Scale; }
   m2::AnyRectD GetCurrentRect(ScreenBase const & screen) const override;
   m2::AnyRectD GetTargetRect(ScreenBase const & screen) const override;
 
 private:
-  void ApplyFixedPoint(ScreenBase const & screen, m2::AnyRectD & rect) const;
-  m2::PointD m_pixelPoint;
+  void ApplyPixelOffset(ScreenBase const & screen, m2::AnyRectD & rect) const;
   m2::PointD m_globalPoint;
+  m2::PointD m_pixelOffset;
 };
 
 class FollowAndRotateAnimation : public BaseModelViewAnimation
 {
 public:
-  FollowAndRotateAnimation(m2::AnyRectD const & startRect, m2::PointD const & userPos,
-                           double newCenterOffset, double oldCenterOffset,
+  FollowAndRotateAnimation(m2::AnyRectD const & startRect,
+                           m2::RectD const & targetLocalRect,
+                           m2::PointD const & userPos,
+                           m2::PointD const & startPixelPos,
+                           m2::PointD const & endPixelPos,
                            double azimuth, double duration);
 
+  ModelViewAnimationType GetType() const override { return ModelViewAnimationType::FollowAndRotate; }
   m2::AnyRectD GetCurrentRect(ScreenBase const & screen) const override;
   m2::AnyRectD GetTargetRect(ScreenBase const & screen) const override;
 
+  static m2::PointD CalculateCenter(ScreenBase const & screen, m2::PointD const & userPos,
+                                    m2::PointD const & pixelPos, double azimuth);
+  static m2::PointD CalculateCenter(m2::RectD const & localRect, m2::RectD const & pixelRect,
+                                    m2::PointD const & userPos, m2::PointD const & pixelPos,
+                                    double azimuth);
 private:
-  m2::AnyRectD GetRect(double elapsedTime) const;
+  m2::AnyRectD GetRect(ScreenBase const & screen, double elapsedTime) const;
 
   InerpolateAngle m_angleInterpolator;
   m2::RectD m_rect;
+  m2::RectD m_target;
   m2::PointD m_userPos;
-  double m_newCenterOffset;
-  double m_oldCenterOffset;
+  m2::PointD m_startPixelPos;
+  m2::PointD m_endPixelPos;
 };
 
 } // namespace df
