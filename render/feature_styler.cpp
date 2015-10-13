@@ -140,7 +140,7 @@ namespace di
     drule::MakeUnique(keys);
 
     int layer = f.GetLayer();
-    if (layer == feature::LAYER_TRANSPARENT_TUNNEL)
+    if (layer < 0 || layer == feature::LAYER_TRANSPARENT_TUNNEL)
       layer = 0;
 
     bool hasIcon = false;
