@@ -33,6 +33,7 @@ SUBDIRS += stats
 SUBDIRS += indexer
 SUBDIRS += routing
 SUBDIRS += storage
+SUBDIRS += editor
 
 # Integration tests dependencies for gtool
 CONFIG(gtool):!CONFIG(no-tests) {
@@ -88,6 +89,7 @@ CONFIG(desktop) {
     SUBDIRS += gui/gui_tests
     SUBDIRS += pedestrian_routing_tests
     SUBDIRS += search/search_integration_tests
+    SUBDIRS += editor/editor_tests
 
     CONFIG(drape) {
       SUBDIRS += drape/drape_tests
