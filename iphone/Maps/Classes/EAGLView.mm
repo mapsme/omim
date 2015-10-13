@@ -1,25 +1,16 @@
-#import <QuartzCore/QuartzCore.h>
-#import <OpenGLES/EAGLDrawable.h>
 #import "Common.h"
 #import "EAGLView.h"
 
-#include "Framework.h"
-#include "../../indexer/classificator_loader.hpp"
 #import "../Platform/opengl/iosOGLContextFactory.h"
 
-#include "drape_frontend/gui/skin.hpp"
+#include "Framework.h"
+#include "../../indexer/classificator_loader.hpp"
 
 #include "platform/platform.hpp"
 
 #include "std/bind.hpp"
-#include "std/unique_ptr.hpp"
-
 
 @implementation EAGLView
-{
-  unique_ptr<gui::Skin> m_skin;
-}
-
 
 // You must implement this method
 + (Class)layerClass
@@ -35,6 +26,7 @@
   if ((self = [super initWithCoder:coder]))
   {
     lastViewSize = CGRectZero;
+    _widgetsManager = [[MWMMapWidgets alloc] init];
 
     // Setup Layer Properties
     CAEAGLLayer * eaglLayer = (CAEAGLLayer *)self.layer;
@@ -63,16 +55,7 @@
   p.m_surfaceHeight = height;
   p.m_visualScale = self.contentScaleFactor;
 
-  /// @TODO (iOS developers) remove this stuff and create real logic for init and layout core widgets
-  m_skin.reset(new gui::Skin(gui::ResolveGuiSkinFile("default"), p.m_visualScale));
-  m_skin->Resize(p.m_surfaceWidth, p.m_surfaceHeight);
-  m_skin->ForEach([&p](gui::EWidget widget, gui::Position const & pos)
-  {
-    p.m_widgetsInitInfo[widget] = pos;
-  });
-
-  p.m_widgetsInitInfo[gui::WIDGET_SCALE_LABEL] = gui::Position(dp::LeftBottom);
-
+  [self.widgetsManager setupWidgets:p];
   GetFramework().CreateDrapeEngine(make_ref<dp::OGLContextFactory>(m_factory), move(p));
 
   NSLog(@"EAGLView createDrapeEngine Ended");
@@ -92,19 +75,7 @@
 
   GetFramework().OnSize(w, h);
 
-  /// @TODO (iOS developers) remove this stuff and create real logic for layout core widgets
-  if (m_skin)
-  {
-    m_skin->Resize(w, h);
-
-    gui::TWidgetsLayoutInfo layout;
-    m_skin->ForEach([&layout](gui::EWidget w, gui::Position const & pos)
-    {
-      layout[w] = pos.m_pixelPivot;
-    });
-
-    GetFramework().SetWidgetLayout(move(layout));
-  }
+  [self.widgetsManager resize:CGSizeMake(w, h)];
 }
 
 - (double)correctContentScale
