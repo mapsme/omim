@@ -537,13 +537,5 @@ private:
   routing::RouterType m_currentRouterType;
   //@}
 
-public:
-  /// @name Full screen mode
-  //@{
-  void SetFullScreenMode(bool enable) { m_isFullScreenMode = enable; }
-private:
-  bool m_isFullScreenMode = false;
-  //@}
-
   DECLARE_THREAD_CHECKER(m_threadChecker);
 };
