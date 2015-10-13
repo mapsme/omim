@@ -1,4 +1,5 @@
 #import "Common.h"
+#import "EAGLView.h"
 #import "MapsAppDelegate.h"
 #import "MapViewController.h"
 #import "MWMActivityViewController.h"
@@ -500,6 +501,7 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell)
 - (void)setLeftBound:(CGFloat)leftBound
 {
   ((MWMBottomMenuView *)self.view).leftBound = leftBound;
+  ((EAGLView *)self.controller.view).widgetsManager.leftBound = leftBound;
 }
 
 - (CGFloat)leftBound
