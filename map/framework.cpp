@@ -1249,6 +1249,10 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
                                            m_lastTapEvent->m_isMyPosition, m_lastTapEvent->m_feature);
     ActivateUserMark(mark, true);
   }
+
+  // In case of the engine reinitialization recover route.
+  if (m_routingSession.IsActive())
+    InsertRoute(m_routingSession.GetRoute());
 }
 
 ref_ptr<df::DrapeEngine> Framework::GetDrapeEngine()
@@ -1742,11 +1746,11 @@ void Framework::BuildRoute(m2::PointD const & start, m2::PointD const & finish, 
     vector<storage::TIndex> absentRoutingIndexes;
     if (code == IRouter::NoError)
     {
-      double constexpr kRouteScaleMultiplierToShowWholeRoute = 1.5;
+      double const kRouteScaleMultiplier = 1.5;
 
       InsertRoute(route);
       m2::RectD routeRect = route.GetPoly().GetLimitRect();
-      routeRect.Scale(kRouteScaleMultiplierToShowWholeRoute);
+      routeRect.Scale(kRouteScaleMultiplier);
       m_drapeEngine->SetModelViewRect(routeRect, true, -1, true);
     }
     else
@@ -1868,6 +1872,7 @@ void Framework::InsertRoute(Route const & route)
     routeColor = dp::Color(5, 105, 175, 204);
   else
     routeColor = dp::Color(30, 150, 240, 204);
+
   m_drapeEngine->AddRoute(route.GetPoly(), turns, routeColor);
 }
 
