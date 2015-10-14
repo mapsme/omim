@@ -14,6 +14,9 @@
 #include "search/search_integration_tests/test_search_request.hpp"
 #include "search/search_query_params.hpp"
 
+#include "storage/country_decl.hpp"
+#include "storage/country_info_getter.hpp"
+
 #include "platform/local_country_file.hpp"
 #include "platform/local_country_file_utils.hpp"
 #include "platform/platform.hpp"
@@ -127,7 +130,7 @@ private:
   vector<shared_ptr<MatchingRule>> m_rules;
 };
 
-void MatchResults(Index const & index, vector<shared_ptr<MatchingRule>> rules,
+bool MatchResults(Index const & index, vector<shared_ptr<MatchingRule>> rules,
                   vector<search::Result> const & actual)
 {
   vector<FeatureID> resultIds;
@@ -151,7 +154,7 @@ void MatchResults(Index const & index, vector<shared_ptr<MatchingRule>> rules,
   index.ReadFeatures(removeMatched, resultIds);
 
   if (rules.empty() && unexpected.empty())
-    return;
+    return true;
 
   ostringstream os;
   os << "Unsatisfied rules:" << endl;
@@ -161,7 +164,8 @@ void MatchResults(Index const & index, vector<shared_ptr<MatchingRule>> rules,
   for (auto const & u : unexpected)
     os << "  " << u << endl;
 
-  TEST(false, (os.str()));
+  LOG(LWARNING, (os.str()));
+  return false;
 }
 
 void Cleanup(platform::LocalCountryFile const & map)
@@ -463,7 +467,16 @@ UNIT_TEST(Retrieval_CafeMTV)
     builder.Add(*mtvCity);
   }
 
-  TestSearchEngine engine("en");
+  m2::RectD const mskViewport(m2::PointD(0.99, -0.1), m2::PointD(1.01, 0.1));
+  m2::RectD const mtvViewport(m2::PointD(-1.1, -0.1), m2::PointD(-0.99, 0.1));
+
+  // There are test requests involving locality search, thus it's
+  // better to mock information about countries.
+  vector<storage::CountryDef> countries;
+  countries.emplace_back(msk.GetCountryName(), mskViewport);
+  countries.emplace_back(mtv.GetCountryName(), mtvViewport);
+
+  TestSearchEngine engine("en", make_unique<storage::CountryInfoGetterForTesting>(countries));
   TEST_EQUAL(MwmSet::RegResult::Success, engine.RegisterMap(msk).second, ());
   TEST_EQUAL(MwmSet::RegResult::Success, engine.RegisterMap(mtv).second, ());
   TEST_EQUAL(MwmSet::RegResult::Success, engine.RegisterMap(testWorld).second, ());
@@ -472,18 +485,15 @@ UNIT_TEST(Retrieval_CafeMTV)
   auto const mtvId = engine.GetMwmIdByCountryFile(mtv.GetCountryFile());
   auto const testWorldId = engine.GetMwmIdByCountryFile(testWorld.GetCountryFile());
 
-  m2::RectD const moscowViewport(m2::PointD(0.99, -0.1), m2::PointD(1.01, 0.1));
-  m2::RectD const mtvViewport(m2::PointD(-1.1, -0.1), m2::PointD(-0.99, 0.1));
-
   {
-    TestSearchRequest request(engine, "Moscow ", "en", search::SearchParams::ALL, moscowViewport);
+    TestSearchRequest request(engine, "Moscow ", "en", search::SearchParams::ALL, mskViewport);
     request.Wait();
 
     initializer_list<shared_ptr<MatchingRule>> mskCityAlts = {
         make_shared<ExactMatch>(testWorldId, mskCity), make_shared<ExactMatch>(mskId, mskCity)};
     vector<shared_ptr<MatchingRule>> rules = {make_shared<AlternativesMatch>(mskCityAlts),
                                               make_shared<ExactMatch>(mtvId, mskCafe)};
-    MatchResults(engine, rules, request.Results());
+    TEST(MatchResults(engine, rules, request.Results()), ());
   }
 
   {
@@ -494,7 +504,7 @@ UNIT_TEST(Retrieval_CafeMTV)
         make_shared<ExactMatch>(testWorldId, mtvCity), make_shared<ExactMatch>(mtvId, mtvCity)};
     vector<shared_ptr<MatchingRule>> rules = {make_shared<AlternativesMatch>(mtvCityAlts),
                                               make_shared<ExactMatch>(mskId, mtvCafe)};
-    MatchResults(engine, rules, request.Results());
+    TEST(MatchResults(engine, rules, request.Results()), ());
   }
 
   {
@@ -508,6 +518,6 @@ UNIT_TEST(Retrieval_CafeMTV)
     // TODO (@gorshenin): current search algorithm can't retrieve both
     // Cafe Moscow @ MTV and Cafe MTV @ Moscow, it'll just return one
     // of them. Fix this test when locality search will be fixed.
-    MatchResults(engine, rules, request.Results());
+    TEST(MatchResults(engine, rules, request.Results()), ());
   }
 }

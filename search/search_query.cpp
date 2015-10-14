@@ -31,6 +31,7 @@
 #include "coding/reader_wrapper.hpp"
 
 #include "base/logging.hpp"
+#include "base/scope_guard.hpp"
 #include "base/stl_add.hpp"
 #include "base/string_utils.hpp"
 
@@ -1274,8 +1275,19 @@ void Query::SearchAddress(Results & res)
           /// @todo Hack - do not search for address in World.mwm; Do it better in future.
           bool const b = m_worldSearch;
           m_worldSearch = false;
-          SearchFeaturesInViewport(params, mwmsInfo, LOCALITY_V);
-          m_worldSearch = b;
+          MY_SCOPE_GUARD(restoreWorldSearch, [&]() { m_worldSearch = b; });
+
+          // Candidates for search around locality. Initially filled
+          // with mwms containing city center.
+          TMWMVector localityMwms;
+          string const localityFile = m_infoGetter.GetRegionFile(cityCenter);
+          auto localityMismatch = [&localityFile](shared_ptr<MwmInfo> const & info)
+          {
+            return info->GetCountryName() != localityFile;
+          };
+          remove_copy_if(mwmsInfo.begin(), mwmsInfo.end(), back_inserter(localityMwms),
+                         localityMismatch);
+          SearchFeaturesInViewport(params, localityMwms, LOCALITY_V);
         }
         else
         {
