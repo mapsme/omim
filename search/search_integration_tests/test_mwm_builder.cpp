@@ -43,16 +43,18 @@ void TestMwmBuilder::Finish()
 {
   CHECK(m_collector, ("Finish() already was called."));
   m_collector.reset();
+
   feature::GenerateInfo info;
   info.m_targetDir = m_file.GetDirectory();
   info.m_tmpDir = m_file.GetDirectory();
   CHECK(GenerateFinalFeatures(info, m_file.GetCountryFile().GetNameWithoutExt(), m_type),
         ("Can't sort features."));
-  CHECK(indexer::BuildIndexFromDatFile(m_file.GetPath(MapOptions::Map),
-                                       m_file.GetPath(MapOptions::Map)),
+
+  string const path = m_file.GetPath(MapOptions::Map);
+  CHECK(indexer::BuildIndexFromDatFile(path, path),
         ("Can't build geometry index."));
-  CHECK(indexer::BuildSearchIndexFromDatFile(m_file.GetPath(MapOptions::Map),
-                                             true /* forceRebuild */),
+  CHECK(indexer::BuildSearchIndexFromDatFile(path, true /* forceRebuild */),
         ("Can't build search index."));
+
   m_file.SyncWithDisk();
 }
