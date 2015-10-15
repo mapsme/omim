@@ -52,7 +52,7 @@ static NSString * const kKeyPath = @"subviews";
 - (IBAction)back
 {
   Framework & f = GetFramework();
-  f.DeactivateUserMark();
+  f.ActivateUserMark(nullptr, true);
   UserMarkControllerGuard guard(f.GetBookmarkManager(), UserMarkType::API_MARK);
   guard.m_controller.Clear();
   self.isVisible = NO;
