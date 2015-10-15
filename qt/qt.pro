@@ -26,7 +26,7 @@ win32* {
   win32-msvc*: LIBS *= -lwlanapi
 }
 
-win32*|linux* {
+win32*|linux*|freebsd* {
   QT *= network
 }
 

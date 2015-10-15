@@ -16,7 +16,7 @@
   // for XP it's not defined
   #define MUI_LANGUAGE_NAME 0x8
 
-#elif defined(OMIM_OS_LINUX)
+#elif defined(OMIM_OS_LINUX) || defined(OMIM_OS_FREEBSD)
   #include "../std/cstdlib.hpp"
 
 #elif defined(OMIM_OS_ANDROID)
@@ -100,7 +100,7 @@ void GetSystemPreferred(vector<string> & languages)
       }
   }
 
-#elif defined(OMIM_OS_LINUX)
+#elif defined(OMIM_OS_LINUX) || defined(OMIM_OS_FREEBSD)
   // check environment variables
   char const * p = getenv("LANGUAGE");
   if (p) // LANGUAGE can contain several values divided by ':'
