@@ -512,7 +512,7 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
           if (f.GetRouter() == routing::RouterType::Pedestrian)
             [self countPedestrianRoute];
           self.controlsManager.routeBuildingProgress = 100.;
-          f.DiactivateUserMark();
+          f.ActivateUserMark(nullptr, true);
           [self.searchView setState:SearchViewStateHidden animated:YES];
           if (self.forceRoutingStateChange == ForceRoutingStateChangeStartFollowing)
             [self.controlsManager routingNavigation];
@@ -745,7 +745,7 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 {
   Framework & f = GetFramework();
   if (self.popoverVC)
-    f.DeactivateUserMark();
+    f.ActivateUserMark(nullptr, true);
 
   double const sf = self.view.contentScaleFactor;
 
