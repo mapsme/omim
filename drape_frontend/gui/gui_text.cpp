@@ -125,6 +125,9 @@ void StaticLabel::CacheStaticText(string const & text, char const * delim,
 
   ASSERT(!textParts.empty(), ());
 
+  for (auto const & str : textParts)
+    result.m_alphabet.insert(str.begin(), str.end());
+
   dp::TextureManager::TMultilineGlyphsBuffer buffers;
   mng->GetGlyphRegions(textParts, buffers);
 
@@ -437,10 +440,20 @@ m2::PointF MutableLabel::GetAvarageSize() const
 }
 
 MutableLabelHandle::MutableLabelHandle(dp::Anchor anchor, m2::PointF const & pivot)
-    : TBase(anchor, pivot, m2::PointF::Zero())
-    , m_textView(make_unique_dp<MutableLabel>(anchor))
-{
-}
+  : TBase(anchor, pivot, m2::PointF::Zero())
+  , m_textView(make_unique_dp<MutableLabel>(anchor))
+  , m_isContentDirty(true)
+  , m_glyphsReady(false)
+{}
+
+MutableLabelHandle::MutableLabelHandle(dp::Anchor anchor, m2::PointF const & pivot,
+                                       ref_ptr<dp::TextureManager> textures)
+  : TBase(anchor, pivot, m2::PointF::Zero())
+  , m_textView(make_unique_dp<MutableLabel>(anchor))
+  , m_isContentDirty(true)
+  , m_textureManager(textures)
+  , m_glyphsReady(false)
+{}
 
 void MutableLabelHandle::GetAttributeMutation(ref_ptr<dp::AttributeBufferMutator> mutator,
                                               ScreenBase const & screen) const
@@ -468,6 +481,28 @@ void MutableLabelHandle::GetAttributeMutation(ref_ptr<dp::AttributeBufferMutator
   mutateNode.m_data = make_ref(dataPointer);
   mutateNode.m_region = offsetNode.second;
   mutator->AddMutation(offsetNode.first, mutateNode);
+}
+
+bool MutableLabelHandle::Update(ScreenBase const & screen)
+{
+  if (!m_glyphsReady)
+  {
+    strings::UniString alphabetStr;
+    for (auto const & node : m_textView->GetAlphabet())
+      alphabetStr.push_back(node.first);
+
+    m_glyphsReady = m_textureManager->AreGlyphsReady(alphabetStr);
+  }
+
+  if (!m_glyphsReady)
+    return false;
+
+  return TBase::Update(screen);
+}
+
+void MutableLabelHandle::SetTextureManager(ref_ptr<dp::TextureManager> textures)
+{
+  m_textureManager = textures;
 }
 
 ref_ptr<MutableLabel> MutableLabelHandle::GetTextView()
@@ -533,6 +568,27 @@ m2::PointF MutableLabelDrawer::Draw(Params const & params, ref_ptr<dp::TextureMa
   }
 
   return staticData.m_maxPixelSize;
+}
+
+StaticLabelHandle::StaticLabelHandle(ref_ptr<dp::TextureManager> textureManager,
+                                     dp::Anchor anchor, m2::PointF const & pivot,
+                                     m2::PointF const & size,
+                                     TAlphabet const & alphabet)
+  : TBase(anchor, pivot, size)
+  , m_alphabet(alphabet.begin(), alphabet.end())
+  , m_textureManager(textureManager)
+  , m_glyphsReady(false)
+{}
+
+bool StaticLabelHandle::Update(ScreenBase const & screen)
+{
+  if (!m_glyphsReady)
+    m_glyphsReady = m_textureManager->AreGlyphsReady(m_alphabet);
+
+  if (!m_glyphsReady)
+    return false;
+
+  return TBase::Update(screen);
 }
 
 }

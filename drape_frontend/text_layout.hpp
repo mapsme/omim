@@ -38,6 +38,8 @@ public:
   float GetPixelLength() const;
   float GetPixelHeight() const;
 
+  strings::UniString const & GetText() const;
+
 protected:
   void Init(strings::UniString const & text,
             float fontSize,
@@ -47,7 +49,8 @@ protected:
   typedef dp::TextureManager::GlyphRegion GlyphRegion;
 
   dp::TextureManager::TGlyphsBuffer m_metrics;
-  float m_textSizeRatio = 0.0;
+  strings::UniString m_text;
+  float m_textSizeRatio = 0.0f;
 };
 
 class StraightTextLayout : public TextLayout
