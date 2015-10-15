@@ -485,7 +485,7 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
         case routing::IRouter::ResultCode::NoError:
         {
           self.controlsManager.routeBuildingProgress = 100.;
-          f.DeactivateUserMark();
+          f.ActivateUserMark(nullptr, true);
           self.controlsManager.searchHidden = YES;
           if (self.forceRoutingStateChange == ForceRoutingStateChangeStartFollowing)
             [self.controlsManager routingNavigation];
@@ -592,7 +592,7 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 {
   Framework & f = GetFramework();
   if (self.popoverVC)
-    f.DeactivateUserMark();
+    f.ActivateUserMark(nullptr, true);
 
   double const sf = self.view.contentScaleFactor;
 
