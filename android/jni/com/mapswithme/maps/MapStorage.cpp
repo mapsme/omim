@@ -96,20 +96,6 @@ extern "C"
     return static_cast<jint>(g_framework->GetCountryStatus(IndexBinding(idx).toNative()));
   }
 
-  JNIEXPORT jobject JNICALL
-  Java_com_mapswithme_maps_MapStorage_findIndexByFile(JNIEnv * env, jobject thiz, jstring name)
-  {
-    char const * s = env->GetStringUTFChars(name, 0);
-    if (s == 0)
-      return 0;
-
-    TIndex const idx = GetStorage().FindIndexByFile(s);
-    if (idx.IsValid())
-      return ToJava(idx);
-    else
-      return 0;
-  }
-
   void ReportChangeCountryStatus(shared_ptr<jobject> const & obj, TIndex const & idx)
   {
     JNIEnv * env = jni::GetEnv();
@@ -144,12 +130,6 @@ extern "C"
     LOG(LDEBUG, ("UnSubscribe from storage"));
 
     GetStorage().Unsubscribe(slotID);
-  }
-
-  JNIEXPORT jboolean JNICALL
-  Java_com_mapswithme_maps_MapStorage_nativeMoveFile(JNIEnv * env, jobject thiz, jstring oldFile, jstring newFile)
-  {
-    return my::RenameFileX(jni::ToNativeString(env, oldFile), jni::ToNativeString(env, newFile));
   }
 }
 

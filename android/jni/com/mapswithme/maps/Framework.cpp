@@ -43,7 +43,7 @@ const unsigned SHORT_TOUCH_MS = 250;
 const double DOUBLE_TOUCH_S = SHORT_TOUCH_MS / 1000.0;
 }
 
-android::Framework * g_framework = 0;
+unique_ptr<android::Framework> g_framework;
 
 using namespace storage;
 using platform::CountryFile;
@@ -74,9 +74,6 @@ namespace android
      m_screenHeight(0),
      m_currentSlotID(0)
   {
-    ASSERT_EQUAL ( g_framework, 0, () );
-    g_framework = this;
-
     m_videoTimer = new VideoTimer(bind(&Framework::CallRepaint, this));
     m_activeMapsConnectionID = m_work.GetCountryTree().GetActiveMapLayout().AddListener(this);
   }
@@ -1201,12 +1198,6 @@ extern "C"
     return resultArray;
   }
 
-  JNIEXPORT jstring JNICALL
-  Java_com_mapswithme_maps_Framework_nativeGetBookmarksExt(JNIEnv * env, jclass thiz)
-  {
-    return jni::ToJavaString(env, BOOKMARKS_FILE_EXTENSION);
-  }
-
   JNIEXPORT void JNICALL
   Java_com_mapswithme_maps_Framework_nativeSetWritableDir(JNIEnv * env, jclass thiz, jstring jNewPath)
   {
@@ -1456,14 +1447,14 @@ extern "C"
   Java_com_mapswithme_maps_Framework_setMapStyle(JNIEnv * env, jclass thiz, jint mapStyle)
   {
     MapStyle const val = static_cast<MapStyle>(mapStyle);
-    android::Platform::RunOnGuiThreadImpl(bind(&android::Framework::SetMapStyle, g_framework, val));
+    android::Platform::RunOnGuiThreadImpl(bind(&android::Framework::SetMapStyle, g_framework.get(), val));
   }
 
   JNIEXPORT void JNICALL
   Java_com_mapswithme_maps_Framework_setRouter(JNIEnv * env, jclass thiz, jint routerType)
   {
     routing::RouterType const val = static_cast<routing::RouterType>(routerType);
-    android::Platform::RunOnGuiThreadImpl(bind(&android::Framework::SetRouter, g_framework, val));
+    android::Platform::RunOnGuiThreadImpl(bind(&android::Framework::SetRouter, g_framework.get(), val));
   }
 
   JNIEXPORT jint JNICALL

@@ -7,7 +7,6 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
-
 import com.google.gsonaltered.Gson;
 import com.mapswithme.country.ActiveCountryTree;
 import com.mapswithme.country.CountryItem;
@@ -16,7 +15,7 @@ import com.mapswithme.maps.background.Notifier;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 import com.mapswithme.util.Constants;
 import com.mapswithme.util.UiUtils;
-import com.mapswithme.util.Yota;
+import com.mapswithme.util.Utils;
 import com.mapswithme.util.statistics.AlohaHelper;
 import com.mapswithme.util.statistics.Statistics;
 import com.parse.Parse;
@@ -25,6 +24,7 @@ import com.parse.ParseInstallation;
 import com.parse.SaveCallback;
 
 import java.io.File;
+import java.io.FileFilter;
 
 public class MwmApplication extends android.app.Application implements ActiveCountryTree.ActiveCountryListener
 {
@@ -101,7 +101,7 @@ public class MwmApplication extends android.app.Application implements ActiveCou
     mPrefs = getSharedPreferences(getString(R.string.pref_file_name), MODE_PRIVATE);
   }
 
-  public synchronized void initNativeCore()
+  public void initNativeCore()
   {
     if (mIsFrameworkInitialized)
       return;
@@ -109,7 +109,10 @@ public class MwmApplication extends android.app.Application implements ActiveCou
     initPaths();
     nativeInit(getApkPath(), getDataStoragePath(), getTempPath(), getObbGooglePath(),
                BuildConfig.FLAVOR, BuildConfig.BUILD_TYPE,
-               Yota.isFirstYota(), UiUtils.isSmallTablet() || UiUtils.isBigTablet());
+               UiUtils.isSmallTablet() || UiUtils.isBigTablet());
+
+    nativeStart(findMapStoragePath());
+
     ActiveCountryTree.addListener(this);
     initNativeStrings();
     BookmarkManager.getIcons(); // init BookmarkManager (automatically loads bookmarks)
@@ -119,11 +122,8 @@ public class MwmApplication extends android.app.Application implements ActiveCou
   @SuppressWarnings("ResultOfMethodCallIgnored")
   private void initPaths()
   {
-    final String extStoragePath = getDataStoragePath();
-    final String extTmpPath = getTempPath();
-
-    new File(extStoragePath).mkdirs();
-    new File(extTmpPath).mkdirs();
+    new File(getDataStoragePath()).mkdirs();
+    new File(getTempPath()).mkdirs();
   }
 
   private void initNativeStrings()
@@ -161,7 +161,43 @@ public class MwmApplication extends android.app.Application implements ActiveCou
     }
   }
 
-  public String getDataStoragePath()
+  private static boolean isMapStorage(String path)
+  {
+    final File dir = new File(path);
+    if (TextUtils.isEmpty(path) || !Utils.isDirectoryReadable(dir))
+      return false;
+
+    // Current map directory should contain folders with map indices at least, so use this fact as an indicator.
+    final File[] list = dir.listFiles(new FileFilter()
+    {
+      @Override
+      public boolean accept(File file)
+      {
+        return file.isDirectory();
+      }
+    });
+
+    return (list.length != 0);
+  }
+
+  private String findMapStoragePath()
+  {
+    String res = mPrefs.getString(Constants.STORAGE_PATH_PREF, "");
+    if (isMapStorage(res))
+      return res;
+
+    res = nativeGetString(Constants.STORAGE_PATH_PREF, "");
+    if (!isMapStorage(res))
+      res = getDataStoragePath();
+
+    mPrefs.edit()
+          .putString(Constants.STORAGE_PATH_PREF, res)
+          .apply();
+
+    return res;
+  }
+
+  public static String getDataStoragePath()
   {
     return Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.MWM_DIR_POSTFIX;
   }
@@ -176,7 +212,7 @@ public class MwmApplication extends android.app.Application implements ActiveCou
         String.format(Constants.STORAGE_PATH, BuildConfig.APPLICATION_ID, Constants.CACHE_DIR);
   }
 
-  private String getObbGooglePath()
+  private static String getObbGooglePath()
   {
     final String storagePath = Environment.getExternalStorageDirectory().getAbsolutePath();
     return storagePath.concat(String.format(Constants.OBB_PATH, BuildConfig.APPLICATION_ID));
@@ -187,10 +223,12 @@ public class MwmApplication extends android.app.Application implements ActiveCou
     System.loadLibrary("mapswithme");
   }
 
-  private native void nativeInit(String apkPath, String storagePath,
+  private native void nativeInit(String apkPath, String settingsPath,
                                  String tmpPath, String obbGooglePath,
                                  String flavorName, String buildType,
-                                 boolean isYota, boolean isTablet);
+                                 boolean isTablet);
+
+  private native void nativeStart(String mapsPath);
 
   public native boolean nativeIsBenchmarking();
 

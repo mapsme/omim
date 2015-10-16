@@ -2,21 +2,15 @@ package com.mapswithme.maps.settings;
 
 import android.annotation.TargetApi;
 import android.os.Build;
+import android.os.StatFs;
 import android.util.Log;
-
 import com.mapswithme.maps.BuildConfig;
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.util.Constants;
 import com.mapswithme.util.Utils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FilenameFilter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +27,7 @@ public final class StorageUtils
    * true for some actually read only directories on sdcard.
    * see https://code.google.com/p/android/issues/detail?id=66369 for details
    *
-   * @param path path to ckeck
+   * @param path path to check
    * @return result
    */
   @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -66,16 +60,12 @@ public final class StorageUtils
 
   static long getFreeBytesAtPath(String path)
   {
-    long size = 0;
-    try
-    {
-      size = new File(path).getFreeSpace();
-    } catch (RuntimeException e)
-    {
-      e.printStackTrace();
-    }
+    StatFs statFs = new StatFs(path);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+      return statFs.getAvailableBlocksLong() * statFs.getBlockSizeLong();
 
-    return size;
+    //noinspection deprecation
+    return (long) statFs.getAvailableBlocks() * statFs.getBlockSize();
   }
 
   // http://stackoverflow.com/questions/8151779/find-sd-card-volume-label-on-android
@@ -248,7 +238,7 @@ public final class StorageUtils
   /**
    * Recursively lists all movable files in the directory.
    */
-  static void listFilesRecursively(File dir, String prefix, FilenameFilter filter, ArrayList<String> relPaths)
+  static void listFilesRecursively(File dir, String prefix, FilenameFilter filter, List<String> relPaths)
   {
     for (File file : dir.listFiles())
     {
