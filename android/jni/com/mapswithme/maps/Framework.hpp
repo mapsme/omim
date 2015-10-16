@@ -82,6 +82,8 @@ namespace android
 
     void SetMapStyle(MapStyle mapStyle);
 
+    void SetupMeasurementSystem();
+
     void SetRouter(routing::RouterType type) { m_work.SetRouter(type); }
     routing::RouterType GetRouter() const { return m_work.GetRouter(); }
 
