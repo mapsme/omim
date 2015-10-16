@@ -1298,6 +1298,8 @@ MapStyle Framework::GetMapStyle() const
 
 void Framework::SetupMeasurementSystem()
 {
+  GetPlatform().SetupMeasurementSystem();
+
   Settings::Units units = Settings::Metric;
   Settings::Get("Units", units);
 
