@@ -7,6 +7,8 @@
 #include "render/render_policy.hpp"
 #include "render/frame_image.hpp"
 
+#include "editor/osm_editor.hpp"
+
 #include "search/result.hpp"
 
 #include "gui/controller.hpp"
@@ -22,6 +24,7 @@
 #include <QtCore/QDateTime>
 #include <QtCore/QLocale>
 #include <QtGui/QMouseEvent>
+#include <QtCore/QSignalMapper>
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
   #include <QtGui/QApplication>
@@ -30,7 +33,14 @@
 #else
   #include <QtWidgets/QApplication>
   #include <QtWidgets/QDesktopWidget>
+  #include <QtWidgets/QDialog>
+  #include <QtWidgets/QDialogButtonBox>
+  #include <QtWidgets/QHBoxLayout>
+  #include <QtWidgets/QLabel>
+  #include <QtWidgets/QLineEdit>
   #include <QtWidgets/QMenu>
+  #include <QtWidgets/QPushButton>
+  #include <QtWidgets/QVBoxLayout>
 #endif
 
 namespace qt
@@ -469,8 +479,13 @@ namespace qt
       m2::PointD dummy;
       search::AddressInfo info;
       feature::Metadata metadata;
-      if (m_framework->GetVisiblePOI(pt, dummy, info, metadata))
-        add_string(menu, "POI");
+      FeatureID featureId;
+      char const * kEditPoi = "Edit POI";
+      if (m_framework->GetVisiblePOI(pt, dummy, info, metadata, featureId))
+      {
+        add_string(menu, kEditPoi);
+        (void)menu.addSeparator();
+      }
       else
         m_framework->GetAddressInfoForPixelPoint(pt, info);
 
@@ -486,9 +501,64 @@ namespace qt
       if (!info.m_name.empty())
         add_string(menu, info.m_name);
       add_string(menu, info.FormatAddress());
-      add_string(menu, info.FormatTypes());
+      string const allTypes = info.FormatTypes();
+      if (!allTypes.empty())
+        add_string(menu, allTypes);
 
-      menu.exec(e->pos());
+      QAction * selected = menu.exec(e->pos());
+      // Display Edit POI dialog if user has selected Edit POI item.
+      if (selected && selected->text() == kEditPoi)
+      {
+        // Create Edit POI dialog.
+        QDialog dlg(this);
+        QVBoxLayout * vLayout = new QVBoxLayout();
+
+        // First uneditable row: feature types.
+        QHBoxLayout * typesRow = new QHBoxLayout();
+        typesRow->addWidget(new QLabel("Types:"));
+        typesRow->addWidget(new QLabel(QString::fromStdString(allTypes)));
+        vLayout->addLayout(typesRow);
+        // Second row: Name label and text input.
+        QHBoxLayout * nameRow = new QHBoxLayout();
+        nameRow->addWidget(new QLabel("Name:"));
+        QLineEdit * lineEditName = new QLineEdit(QString::fromStdString(info.m_name));
+        nameRow->addWidget(lineEditName);
+        vLayout->addLayout(nameRow);
+
+        // Dialog buttons.
+        QDialogButtonBox * buttonBox = new QDialogButtonBox(
+              QDialogButtonBox::Cancel | QDialogButtonBox::Save);
+        connect(buttonBox, SIGNAL(accepted()), &dlg, SLOT(accept()));
+        connect(buttonBox, SIGNAL(rejected()), &dlg, SLOT(reject()));
+        // Delete button should send custom int return value from dialog.
+        QPushButton * deletePOIButton = new QPushButton("Delete POI");
+        QSignalMapper signalMapper;
+        connect(deletePOIButton, SIGNAL(clicked()), &signalMapper, SLOT(map()));
+        signalMapper.setMapping(deletePOIButton, QDialogButtonBox::DestructiveRole);
+        connect(&signalMapper, SIGNAL(mapped(int)), &dlg, SLOT(done(int)));
+        buttonBox->addButton(deletePOIButton, QDialogButtonBox::DestructiveRole);
+        QHBoxLayout * buttonsRowLayout = new QHBoxLayout();
+        buttonsRowLayout->addWidget(buttonBox);
+        vLayout->addLayout(buttonsRowLayout);
+
+        dlg.setLayout(vLayout);
+        dlg.setWindowTitle(kEditPoi);
+        int result = dlg.exec();
+        if (result == QDialog::Accepted)
+        {
+          // Save edited data.
+          string const editedName = lineEditName->text().toStdString();
+          if (editedName != info.m_name)
+          {
+            // Name was edited.
+            OSMEditor::Instance().EditFeatureName(featureId, editedName);
+          }
+        }
+        else if (result == QDialogButtonBox::DestructiveRole)
+        {
+          OSMEditor::Instance().DeleteFeature(featureId);
+        }
+      }
     }
   }
 
