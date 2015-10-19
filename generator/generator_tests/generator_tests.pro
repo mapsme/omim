@@ -4,7 +4,7 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 ROOT_DIR = ../..
-DEPENDENCIES = generator map routing editor indexer platform geometry coding base \
+DEPENDENCIES = generator map graphics routing editor indexer platform geometry coding base \
                expat tess2 protobuf tomcrypt osrm succinct
 
 include($$ROOT_DIR/common.pri)
