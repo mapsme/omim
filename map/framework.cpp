@@ -5,6 +5,8 @@
 #include "navigator_utils.hpp"
 #include "ge0_parser.hpp"
 
+#include "editor/osm_editor.hpp"
+
 #include "render/cpu_drawer.hpp"
 #include "render/gpu_drawer.hpp"
 
@@ -204,6 +206,8 @@ Framework::Framework()
     m_fixedSearchResults(0),
     m_locationChangedSlotID(-1)
 {
+  // TODO(AlexZ): Is there a better way?
+  OSMEditor::Instance().SetFrameworkAndIndex(*this, m_model.GetIndex());
   // Checking whether we should enable benchmark.
   bool isBenchmarkingEnabled = false;
   (void)Settings::Get("IsBenchmarking", isBenchmarkingEnabled);
@@ -1810,7 +1814,8 @@ OEPointerT GetClosestToPivot(list<OEPointerT> const & l, m2::PointD const & pxPo
 #endif // USE_DRAPE
 
 bool Framework::GetVisiblePOI(m2::PointD const & pxPoint, m2::PointD & pxPivot,
-                              search::AddressInfo & info, feature::Metadata & metadata) const
+                              search::AddressInfo & info, feature::Metadata & metadata,
+                              FeatureID & outFeatureId) const
 {
 #ifndef USE_DRAPE
   ASSERT(m_renderPolicy, ());
@@ -1843,6 +1848,7 @@ bool Framework::GetVisiblePOI(m2::PointD const & pxPoint, m2::PointD & pxPivot,
 
   if (ui.IsValid())
   {
+    outFeatureId = ui.m_featureID;
     Index::FeaturesLoaderGuard guard(m_model.GetIndex(), ui.m_featureID.m_mwmId);
 
     FeatureType ft;
@@ -2002,7 +2008,8 @@ UserMark const * Framework::GetUserMarkWithoutLogging(m2::PointD const & pxPoint
     m2::PointD pxPivot;
     search::AddressInfo info;
     feature::Metadata metadata;
-    if (GetVisiblePOI(pxPoint, pxPivot, info, metadata))
+    FeatureID featureId;
+    if (GetVisiblePOI(pxPoint, pxPivot, info, metadata, featureId))
       needMark = true;
     else if (isLongPress)
     {

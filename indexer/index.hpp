@@ -1,4 +1,6 @@
 #pragma once
+#include "editor/osm_editor.hpp"
+
 #include "indexer/cell_id.hpp"
 #include "indexer/data_factory.hpp"
 #include "indexer/feature_covering.hpp"
@@ -88,10 +90,10 @@ public:
   bool RemoveObserver(Observer const & observer);
 
 private:
-
   template <typename F> class ReadMWMFunctor
   {
     F & m_f;
+    OSMEditor const & m_osmEditor = OSMEditor::Instance();
   public:
     ReadMWMFunctor(F & f) : m_f(f) {}
 
@@ -126,12 +128,21 @@ private:
           {
             if (checkUnique(index))
             {
+              FeatureID const featureId(mwmID, index);
               FeatureType feature;
-
-              fv.GetByIndex(index, feature);
-              feature.SetID(FeatureID(mwmID, index));
-
-              m_f(feature);
+              if (m_osmEditor.WasFeatureEdited(featureId))
+              {
+                // If feature was deleted, do not emit it.
+                // Otherwise, emit edited feature.
+                if (m_osmEditor.GetEditedFeature(featureId, feature))
+                  m_f(feature);
+              }
+              else
+              {
+                fv.GetByIndex(index, feature);
+                feature.SetID(featureId);
+                m_f(feature);
+              }
             }
           }, i.first, i.second, scale);
         }
@@ -142,6 +153,7 @@ private:
   template <typename F> class ReadFeatureIndexFunctor
   {
     F & m_f;
+//    OSMEditor const & m_osmEditor = OSMEditor::Instance();
   public:
     ReadFeatureIndexFunctor(F & f) : m_f(f) {}
 
@@ -172,7 +184,13 @@ private:
           index.ForEachInIntervalAndScale([&] (uint32_t index)
           {
             if (checkUnique(index))
-              m_f(FeatureID(mwmID, index));
+            {
+              FeatureID const featureId(mwmID, index);
+              // TODO(AlexZ): Do we realy need this check? Or it is not necessary?
+              // Do not process features which were deleted in the editor.
+//              if (!m_osmEditor.IsDeleted(featureId))
+              m_f(featureId);
+            }
           }, i.first, i.second, scale);
         }
       }
