@@ -4,7 +4,7 @@
 #include "storage/storage_defines.hpp"
 #include "storage/storage_tests/fake_map_files_downloader.hpp"
 #include "storage/storage_tests/task_runner.hpp"
-#include "storage/storage_tests/test_map_files_downloader.hpp"
+//#include "storage/storage_tests/test_map_files_downloader.hpp"
 
 #include "indexer/indexer_tests/test_mwm_set.hpp"
 
@@ -675,35 +675,35 @@ UNIT_TEST(StorageTest_DeleteCountry)
   routing.Reset();
 }
 
-UNIT_TEST(StorageTest_FailedDownloading)
-{
-  Storage storage;
-  storage.Init(&OnCountryDownloaded);
-  storage.SetDownloaderForTesting(make_unique<TestMapFilesDownloader>());
-  storage.SetCurrentDataVersionForTesting(1234);
+//UNIT_TEST(StorageTest_FailedDownloading)
+//{
+//  Storage storage;
+//  storage.Init(&OnCountryDownloaded);
+//  storage.SetDownloaderForTesting(make_unique<TestMapFilesDownloader>());
+//  storage.SetCurrentDataVersionForTesting(1234);
 
-  TIndex const index = storage.FindIndexByFile("Uruguay");
-  CountryFile const countryFile = storage.GetCountryFile(index);
+//  TIndex const index = storage.FindIndexByFile("Uruguay");
+//  CountryFile const countryFile = storage.GetCountryFile(index);
 
-  // To prevent interference from other tests and on other tests it's
-  // better to remove temprorary downloader files.
-  DeleteDownloaderFilesForCountry(countryFile, storage.GetCurrentDataVersion());
-  MY_SCOPE_GUARD(cleanup, [&]()
-  {
-    DeleteDownloaderFilesForCountry(countryFile, storage.GetCurrentDataVersion());
-  });
+//  // To prevent interference from other tests and on other tests it's
+//  // better to remove temprorary downloader files.
+//  DeleteDownloaderFilesForCountry(countryFile, storage.GetCurrentDataVersion());
+//  MY_SCOPE_GUARD(cleanup, [&]()
+//  {
+//    DeleteDownloaderFilesForCountry(countryFile, storage.GetCurrentDataVersion());
+//  });
 
-  {
-    FailedDownloadingWaiter waiter(storage, index);
-    storage.DownloadCountry(index, MapOptions::Map);
-    QCoreApplication::exec();
-  }
+//  {
+//    FailedDownloadingWaiter waiter(storage, index);
+//    storage.DownloadCountry(index, MapOptions::Map);
+//    QCoreApplication::exec();
+//  }
 
-  // File wasn't downloaded, but temprorary downloader files must exist.
-  string const downloadPath =
-      GetFileDownloadPath(countryFile, MapOptions::Map, storage.GetCurrentDataVersion());
-  TEST(!Platform::IsFileExistsByFullPath(downloadPath), ());
-  TEST(Platform::IsFileExistsByFullPath(downloadPath + DOWNLOADING_FILE_EXTENSION), ());
-  TEST(Platform::IsFileExistsByFullPath(downloadPath + RESUME_FILE_EXTENSION), ());
-}
+//  // File wasn't downloaded, but temprorary downloader files must exist.
+//  string const downloadPath =
+//      GetFileDownloadPath(countryFile, MapOptions::Map, storage.GetCurrentDataVersion());
+//  TEST(!Platform::IsFileExistsByFullPath(downloadPath), ());
+//  TEST(Platform::IsFileExistsByFullPath(downloadPath + DOWNLOADING_FILE_EXTENSION), ());
+//  TEST(Platform::IsFileExistsByFullPath(downloadPath + RESUME_FILE_EXTENSION), ());
+//}
 }  // namespace storage
