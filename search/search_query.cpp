@@ -956,8 +956,9 @@ void Query::ProcessSuggestions(vector<T> & vec, Results & res) const
 void Query::AddResultFromTrie(TTrieValue const & val, MwmSet::MwmId const & mwmID,
                               ViewportID vID /*= DEFAULT_V*/)
 {
-  // If we are in viewport search mode, check actual "point-in-viewport" criteria.
-  if (m_queuesCount == 1 && !m_viewport[CURRENT_V].IsPointInside(val.m_pt))
+  /// If we are in viewport search mode, check actual "point-in-viewport" criteria.
+  /// @todo Actually, this checks are more-like hack, but not a suitable place to do ...
+  if (m_queuesCount == 1 && vID == CURRENT_V && !m_viewport[CURRENT_V].IsPointInside(val.m_pt))
     return;
 
   impl::PreResult1 res(FeatureID(mwmID, val.m_featureId), val.m_rank,
