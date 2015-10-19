@@ -31,7 +31,7 @@ INCLUDEPATH *= $$ROOT_DIR/3party/glm
 # Hack for Qt5 qmake to make it much faster.
 # Turns off any external headers modification check (see DEPENDPATH).
 # Do not remove depend_includepath in CONFIG. Need to check modifications within ROOT_DIR.
-#CONFIG -= depend_includepath
+CONFIG -= depend_includepath
 
 CONFIG *= c++11
 
