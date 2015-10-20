@@ -142,7 +142,7 @@ void TextShape::DrawSubString(StraightTextLayout const & layout, dp::FontDecl co
                staticBuffer,
                dynamicBuffer);
 
-  dp::GLState state(gpu::TEXT_PROGRAM, dp::GLState::OverlayLayer);
+  dp::GLState state(gpu::TEXT_SPRITE_PROGRAM, dp::GLState::OverlayLayer);
   ASSERT(color.GetTexture() == outline.GetTexture(), ());
   state.SetColorTexture(color.GetTexture());
   state.SetMaskTexture(layout.GetMaskTexture());
