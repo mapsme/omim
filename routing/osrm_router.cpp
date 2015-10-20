@@ -257,13 +257,15 @@ public:
 
   void CalculateOffsets(FeatureGraphNode & node) const
   {
-    CalculateWeight(node.segment, node.segmentPoint, node.node.forward_node_id, node.node.forward_weight, true /* offsetToRight */);
-    CalculateWeight(node.segment, node.segmentPoint, node.node.reverse_node_id, node.node.reverse_weight, false /* offsetToRight */);
+    //CalculateWeight(node.segment, node.segmentPoint, node.node.forward_node_id, node.node.forward_weight, true /* offsetToRight */);
+    //CalculateWeight(node.segment, node.segmentPoint, node.node.reverse_node_id, node.node.reverse_weight, false /* offsetToRight */);
 
     // need to initialize weights for correct work of PhantomNode::GetForwardWeightPlusOffset
     // and PhantomNode::GetReverseWeightPlusOffset
     node.node.forward_offset = 0;
     node.node.reverse_offset = 0;
+    node.node.forward_weight = 0;
+    node.node.reverse_weight = 0;
   }
 
   void MakeResult(TFeatureGraphNodeVec & res, size_t maxCount, string const & mwmName)
