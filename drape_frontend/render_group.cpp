@@ -68,7 +68,8 @@ void RenderGroup::Render(ScreenBase const & screen)
 {
   BaseRenderGroup::Render(screen);
 
-  if (m_state.GetProgramIndex() == gpu::TEXT_PROGRAM)
+  if (m_state.GetProgramIndex() == gpu::TEXT_PROGRAM ||
+      m_state.GetProgramIndex() == gpu::TEXT_SPRITE_PROGRAM)
   {
     auto const & params = df::VisualParams::Instance().GetGlyphVisualParams();
 
