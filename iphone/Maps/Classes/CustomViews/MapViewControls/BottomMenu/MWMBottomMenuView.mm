@@ -154,11 +154,19 @@
 {
   UIView * superView = self.superview;
   CGFloat const contentScaleFactor = superView.contentScaleFactor;
-  m2::PointD const pivot(superView.width * contentScaleFactor - 36.0,
-                         (superView.height - self.mainButtons.height) * contentScaleFactor - 24.0);
+  m2::PointD const rulerPivot(
+      superView.width * contentScaleFactor - 20.0,
+      (superView.height - self.mainButtons.height) * contentScaleFactor - 24.0);
   auto & infoDisplay = GetFramework().GetInformationDisplay();
-  infoDisplay.SetWidgetPivot(InformationDisplay::WidgetType::Ruler, pivot);
-  infoDisplay.SetWidgetPivot(InformationDisplay::WidgetType::CopyrightLabel, pivot);
+  infoDisplay.SetWidgetPivot(InformationDisplay::WidgetType::Ruler, rulerPivot);
+  infoDisplay.SetWidgetPivot(InformationDisplay::WidgetType::CopyrightLabel, rulerPivot);
+
+  m2::PointD const halfCompassSize(
+      infoDisplay.GetWidgetSize(InformationDisplay::WidgetType::CompassArrow) * 0.5);
+  m2::PointD const compassPivot(
+      halfCompassSize.x + 12.0,
+      (superView.height - self.mainButtons.height) * contentScaleFactor - halfCompassSize.y - 12.0);
+  infoDisplay.SetWidgetPivot(InformationDisplay::WidgetType::CompassArrow, compassPivot);
 }
 
 - (void)layoutGeometry
