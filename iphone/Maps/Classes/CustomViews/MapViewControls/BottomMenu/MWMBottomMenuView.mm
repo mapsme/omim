@@ -26,6 +26,9 @@
 
 @property(nonatomic) CGFloat layoutDuration;
 
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * searchLeftOffset;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * bookmarksLeftOffset;
+
 @end
 
 @implementation MWMBottomMenuView
@@ -175,6 +178,57 @@
   CGFloat const width = self.superview.width - self.leftBound;
   CGFloat const height = self.mainButtons.height + self.separator.height + self.additionalButtons.height;
   self.frame = {{self.superview.width - width, self.superview.height - height}, {width, height}};
+  [self layoutSearchAndBookmarksButtons];
+}
+
+- (void)layoutSearchAndBookmarksButtons
+{
+  CGFloat const width = self.width;
+  if (width <= 320.0)
+  {
+    self.searchLeftOffset.constant = 84.0;
+    self.bookmarksLeftOffset.constant = 170.0;
+  }
+  else if (width <= 375.0)
+  {
+    self.searchLeftOffset.constant = 102.0;
+    self.bookmarksLeftOffset.constant = 206.0;
+  }
+  else if (width <= 414.0)
+  {
+    self.searchLeftOffset.constant = 115.0;
+    self.bookmarksLeftOffset.constant = 232.0;
+  }
+  else if (width <= 480.0)
+  {
+    self.searchLeftOffset.constant = 137.0;
+    self.bookmarksLeftOffset.constant = 276.0;
+  }
+  else if (width <= 568.0)
+  {
+    self.searchLeftOffset.constant = 166.0;
+    self.bookmarksLeftOffset.constant = 334.0;
+  }
+  else if (width <= 667.0)
+  {
+    self.searchLeftOffset.constant = 199.0;
+    self.bookmarksLeftOffset.constant = 400.0;
+  }
+  else if (width <= 736.0)
+  {
+    self.searchLeftOffset.constant = 222.0;
+    self.bookmarksLeftOffset.constant = 446.0;
+  }
+  else if (width <= 768.0)
+  {
+    self.searchLeftOffset.constant = 233.0;
+    self.bookmarksLeftOffset.constant = 468.0;
+  }
+  else
+  {
+    self.searchLeftOffset.constant = 318.0;
+    self.bookmarksLeftOffset.constant = 638.0;
+  }
 }
 
 - (void)updateMenuButtonFromState:(MWMBottomMenuState)fromState toState:(MWMBottomMenuState)toState

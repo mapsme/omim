@@ -3,7 +3,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
-        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MWMBottomMenuViewController">
@@ -37,7 +36,7 @@
                             </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IzQ-aQ-aPH" userLabel="Search">
-                            <rect key="frame" x="74" y="0.0" width="64" height="48"/>
+                            <rect key="frame" x="86" y="0.0" width="64" height="48"/>
                             <animations/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <accessibility key="accessibilityConfiguration" identifier="searchButton"/>
@@ -52,7 +51,7 @@
                             </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qVh-dm-DDH" userLabel="Bookmarks">
-                            <rect key="frame" x="181.5" y="0.0" width="64" height="48"/>
+                            <rect key="frame" x="172" y="0.0" width="64" height="48"/>
                             <animations/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <accessibility key="accessibilityConfiguration" identifier="bookmarksButton"/>
@@ -148,15 +147,15 @@
                         <constraint firstItem="IzQ-aQ-aPH" firstAttribute="height" secondItem="kbJ-If-gUR" secondAttribute="height" id="JFI-3b-72w"/>
                         <constraint firstItem="qVh-dm-DDH" firstAttribute="centerY" secondItem="kbJ-If-gUR" secondAttribute="centerY" id="Rgu-Ok-h30"/>
                         <constraint firstItem="s0b-7N-YrO" firstAttribute="leading" secondItem="kbJ-If-gUR" secondAttribute="leading" identifier="locationLeading" id="S6T-lV-BoU"/>
+                        <constraint firstItem="qVh-dm-DDH" firstAttribute="leading" secondItem="kbJ-If-gUR" secondAttribute="leading" constant="172" id="bTy-4O-iGt"/>
                         <constraint firstItem="qVh-dm-DDH" firstAttribute="height" secondItem="kbJ-If-gUR" secondAttribute="height" id="d2K-hv-PmH"/>
                         <constraint firstItem="YLY-C4-SBu" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="pLD-sZ-ejH" secondAttribute="trailing" id="eZr-YW-5Wq"/>
-                        <constraint firstItem="IzQ-aQ-aPH" firstAttribute="centerX" secondItem="kbJ-If-gUR" secondAttribute="centerX" multiplier="2:3" id="fE8-rK-uG9"/>
                         <constraint firstItem="WLn-2O-Ivv" firstAttribute="centerX" secondItem="YLY-C4-SBu" secondAttribute="centerX" constant="8" id="lUQ-gw-psA"/>
                         <constraint firstItem="s0b-7N-YrO" firstAttribute="height" secondItem="kbJ-If-gUR" secondAttribute="height" id="nMi-k1-EhE"/>
                         <constraint firstItem="pLD-sZ-ejH" firstAttribute="centerX" secondItem="kbJ-If-gUR" secondAttribute="centerX" id="nTI-os-Xq1"/>
                         <constraint firstItem="IzQ-aQ-aPH" firstAttribute="centerY" secondItem="kbJ-If-gUR" secondAttribute="centerY" id="nbW-x7-1M5"/>
                         <constraint firstItem="pLD-sZ-ejH" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="s0b-7N-YrO" secondAttribute="trailing" id="rSG-G7-knr"/>
-                        <constraint firstItem="qVh-dm-DDH" firstAttribute="centerX" secondItem="kbJ-If-gUR" secondAttribute="centerX" multiplier="4:3" id="sQB-uy-oHs"/>
+                        <constraint firstItem="IzQ-aQ-aPH" firstAttribute="leading" secondItem="kbJ-If-gUR" secondAttribute="leading" constant="86" id="tni-zE-Shr"/>
                         <constraint firstItem="YLY-C4-SBu" firstAttribute="height" secondItem="kbJ-If-gUR" secondAttribute="height" id="wGb-xV-jeL"/>
                     </constraints>
                 </view>
@@ -205,12 +204,14 @@
             <connections>
                 <outlet property="additionalButtons" destination="hSd-fM-qKd" id="Rgj-Fo-JK8"/>
                 <outlet property="bookmarksButton" destination="qVh-dm-DDH" id="ZaH-0y-b64"/>
+                <outlet property="bookmarksLeftOffset" destination="bTy-4O-iGt" id="3zv-pN-gCi"/>
                 <outlet property="downloadBadge" destination="WLn-2O-Ivv" id="f9u-k6-l9u"/>
                 <outlet property="goButton" destination="pLD-sZ-ejH" id="Txw-4S-mwR"/>
                 <outlet property="locationButton" destination="s0b-7N-YrO" id="Oc3-yY-DPM"/>
                 <outlet property="mainButtons" destination="kbJ-If-gUR" id="1sk-bi-6xl"/>
                 <outlet property="menuButton" destination="YLY-C4-SBu" id="A5G-Bc-IlQ"/>
                 <outlet property="searchButton" destination="IzQ-aQ-aPH" id="2dy-QI-T39"/>
+                <outlet property="searchLeftOffset" destination="tni-zE-Shr" id="Nwe-ST-FlB"/>
                 <outlet property="separator" destination="nYy-JN-hGA" id="z8u-tH-WGu"/>
                 <outlet property="streetLabel" destination="xr9-L5-hTa" id="xHt-2V-nZj"/>
             </connections>
