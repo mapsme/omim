@@ -21,7 +21,8 @@ RenderGroup::RenderGroup(dp::GLState const & state, df::TileKey const & tileKey)
   : TBase(state, tileKey)
   , m_pendingOnDelete(false)
 {
-  if (state.GetProgramIndex() == gpu::TEXT_PROGRAM)
+  if (state.GetProgramIndex() == gpu::TEXT_PROGRAM
+      || state.GetProgramIndex() == gpu::TEXT_SPRITE_PROGRAM)
   {
     auto const & params = VisualParams::Instance().GetGlyphVisualParams();
     m_uniforms.SetFloatValue("u_outlineGlyphParams",
