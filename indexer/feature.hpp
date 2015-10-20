@@ -25,6 +25,9 @@ namespace old_101 { namespace feature
 /// Base feature class for storing common data (without geometry).
 class FeatureBase
 {
+  // Editor needs full 'administrative rights' to edit features.
+  friend class OSMEditor;
+
   static const int m_maxTypesCount = feature::max_types_count;
 
 public:
@@ -151,6 +154,11 @@ class FeatureType : public FeatureBase
   FeatureID m_id;
 
 public:
+  // Need it to use feature's copy in the editor.
+  // TODO(AlexZ): Is there a better way?
+  FeatureType() = default;
+  FeatureType(FeatureType const &) = default;
+
   void Deserialize(feature::LoaderBase * pLoader, TBuffer buffer);
 
   inline void SetID(FeatureID const & id) { m_id = id; }

@@ -115,6 +115,15 @@ bool Index::FeaturesLoaderGuard::IsWorld() const
 
 void Index::FeaturesLoaderGuard::GetFeatureByIndex(uint32_t index, FeatureType & ft)
 {
-  m_vector.GetByIndex(index, ft);
-  ft.SetID(FeatureID(m_handle.GetId(), index));
+  FeatureID const featureId(m_handle.GetId(), index);
+  OSMEditor & editor = OSMEditor::Instance();
+  if (editor.WasFeatureEdited(featureId))
+  {
+    (void)editor.GetEditedFeature(featureId, ft);
+  }
+  else
+  {
+    m_vector.GetByIndex(index, ft);
+    ft.SetID(featureId);
+  }
 }
