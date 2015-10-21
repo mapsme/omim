@@ -86,6 +86,7 @@ public:
   bool IsBuilding() const { return (m_state == RouteBuilding); }
   bool IsOnRoute() const { return (m_state == OnRoute); }
   void Reset();
+  void StartRoute() {m_state = (m_state == RouteNotStarted) ? OnRoute : m_state;}
 
   State OnLocationPositionChanged(m2::PointD const & position, location::GpsInfo const & info,
                                   Index const & index);
