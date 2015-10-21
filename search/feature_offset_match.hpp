@@ -261,6 +261,7 @@ public:
   template <class ToDo>
   void ForEachValue(size_t index, ToDo && toDo) const
   {
+    ASSERT_LESS(index, m_holder.size(), ());
     for (auto const & value : m_holder[index])
       toDo(value);
   }
@@ -386,10 +387,7 @@ void MatchFeaturesInTrie(SearchQueryParams const & params, trie::DefaultIterator
                          TFilter const & filter, ToDo && toDo)
 {
   TrieValuesHolder<TFilter> categoriesHolder(filter);
-  if (!MatchCategoriesInTrie(params, trieRoot, categoriesHolder)) {
-    LOG(LERROR, ("Can't find categories."));
-    return;
-  }
+  bool const categoriesMatched = MatchCategoriesInTrie(params, trieRoot, categoriesHolder);
 
   impl::OffsetIntersecter<TFilter> intersecter(filter);
   for (size_t i = 0; i < params.m_tokens.size(); ++i)
@@ -398,7 +396,8 @@ void MatchFeaturesInTrie(SearchQueryParams const & params, trie::DefaultIterator
     {
       MatchTokenInTrie(params.m_tokens[i], langRoot, intersecter);
     });
-    categoriesHolder.ForEachValue(i, intersecter);
+    if (categoriesMatched)
+      categoriesHolder.ForEachValue(i, intersecter);
     intersecter.NextStep();
   }
 
@@ -408,7 +407,8 @@ void MatchFeaturesInTrie(SearchQueryParams const & params, trie::DefaultIterator
     {
       MatchTokenPrefixInTrie(params.m_prefixTokens, langRoot, intersecter);
     });
-    categoriesHolder.ForEachValue(params.m_tokens.size(), intersecter);
+    if (categoriesMatched)
+      categoriesHolder.ForEachValue(params.m_tokens.size(), intersecter);
     intersecter.NextStep();
   }
 
