@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
 import com.mapswithme.country.ActiveCountryTree;
 import com.mapswithme.country.DownloadActivity;
 import com.mapswithme.country.DownloadFragment;
@@ -40,10 +41,10 @@ import com.mapswithme.maps.dialog.RoutingErrorDialogFragment;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.location.LocationPredictor;
 import com.mapswithme.maps.routing.RoutingResultCodesProcessor;
+import com.mapswithme.maps.search.FloatingSearchToolbarController;
 import com.mapswithme.maps.search.SearchActivity;
 import com.mapswithme.maps.search.SearchEngine;
 import com.mapswithme.maps.search.SearchFragment;
-import com.mapswithme.maps.search.FloatingSearchToolbarController;
 import com.mapswithme.maps.settings.SettingsActivity;
 import com.mapswithme.maps.settings.StoragePathManager;
 import com.mapswithme.maps.settings.UnitLocale;
@@ -893,7 +894,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     return true;
   }
 
-  // Callbacks from native map objects touch event.
+  // Callbacks from native touch events on map objects.
   @Override
   public void onApiPointActivated(final double lat, final double lon, final String name, final String id)
   {
@@ -902,15 +903,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
       final ParsedMwmRequest request = ParsedMwmRequest.getCurrentRequest();
       request.setPointData(lat, lon, name, id);
 
-      runOnUiThread(new Runnable()
-      {
-        @Override
-        public void run()
-        {
-          final String poiType = ParsedMwmRequest.getCurrentRequest().getCallerName(MwmApplication.get()).toString();
-          activateMapObject(new ApiPoint(name, id, poiType, lat, lon));
-        }
-      });
+      final String poiType = ParsedMwmRequest.getCurrentRequest().getCallerName(MwmApplication.get()).toString();
+      activateMapObject(new ApiPoint(name, id, poiType, lat, lon));
     }
   }
 
@@ -920,61 +914,28 @@ public class MwmActivity extends BaseMwmFragmentActivity
   {
     final MapObject poi = new MapObject.Poi(name, lat, lon, type);
     poi.addMetadata(metaTypes, metaValues);
-
-    runOnUiThread(new Runnable()
-    {
-      @Override
-      public void run()
-      {
-        activateMapObject(poi);
-      }
-    });
+    activateMapObject(poi);
   }
 
   @Override
   public void onBookmarkActivated(final int category, final int bookmarkIndex)
   {
-    runOnUiThread(new Runnable()
-    {
-      @Override
-      public void run()
-      {
-        activateMapObject(BookmarkManager.INSTANCE.getBookmark(category, bookmarkIndex));
-      }
-    });
+    activateMapObject(BookmarkManager.INSTANCE.getBookmark(category, bookmarkIndex));
   }
 
   @Override
   public void onMyPositionActivated(final double lat, final double lon)
   {
-    final MapObject mypos = new MapObject.MyPosition(getString(R.string.my_position), lat, lon);
-
-    runOnUiThread(new Runnable()
-    {
-      @Override
-      public void run()
-      {
-        if (!Framework.nativeIsRoutingActive())
-        {
-          activateMapObject(mypos);
-        }
-      }
-    });
+    if (!Framework.nativeIsRoutingActive())
+      activateMapObject(new MapObject.MyPosition(getString(R.string.my_position), lat, lon));
   }
 
   @Override
   public void onAdditionalLayerActivated(final String name, final String type, final double lat, final double lon, final int[] metaTypes, final String[] metaValues)
   {
-    runOnUiThread(new Runnable()
-    {
-      @Override
-      public void run()
-      {
-        final MapObject sr = new MapObject.SearchResult(name, type, lat, lon);
-        sr.addMetadata(metaTypes, metaValues);
-        activateMapObject(sr);
-      }
-    });
+    final MapObject sr = new MapObject.SearchResult(name, type, lat, lon);
+    sr.addMetadata(metaTypes, metaValues);
+    activateMapObject(sr);
   }
 
   private void activateMapObject(MapObject object)
@@ -993,16 +954,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   public void onDismiss()
   {
     if (!mPlacePage.hasMapObject(null))
-    {
-      runOnUiThread(new Runnable()
-      {
-        @Override
-        public void run()
-        {
-          mPlacePage.hide();
-        }
-      });
-    }
+      mPlacePage.hide();
   }
 
   @Override
@@ -1070,7 +1022,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   public boolean onTouch(View view, MotionEvent event)
   {
     return mPlacePage.hideOnTouch() ||
-        mMapFragment.onTouch(view, event);
+           mMapFragment.onTouch(view, event);
   }
 
   @Override
