@@ -13,6 +13,8 @@
 
 #include "platform/local_country_file.hpp"
 
+#include "coding/file_writer.hpp"
+
 #include "base/logging.hpp"
 
 #include "defines.hpp"
@@ -21,7 +23,7 @@ TestMwmBuilder::TestMwmBuilder(platform::LocalCountryFile & file, feature::DataH
     : m_file(file),
       m_type(type),
       m_collector(
-          make_unique<feature::FeaturesCollector>(file.GetPath(MapOptions::Map) + EXTENSION_TMP))
+          make_unique<feature::FeaturesCollector>(m_file.GetPath(MapOptions::Map) + EXTENSION_TMP))
 {
 }
 
@@ -30,6 +32,7 @@ TestMwmBuilder::~TestMwmBuilder()
   if (m_collector)
     Finish();
   CHECK(!m_collector, ("Features weren't dumped on disk."));
+  FileWriter::DeleteFileX(m_file.GetPath(MapOptions::Map) + EXTENSION_TMP);
 }
 
 void TestMwmBuilder::Add(TestFeature const & feature)
