@@ -120,8 +120,6 @@ namespace android
     void AddLocalMaps();
     void RemoveLocalMaps();
 
-    void GetMapsWithoutSearch(vector<string> & out) const;
-
     storage::TIndex GetCountryIndex(double lat, double lon) const;
     string GetCountryCode(double lat, double lon) const;
 
