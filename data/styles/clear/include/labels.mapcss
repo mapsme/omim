@@ -104,7 +104,7 @@ node|z4[place=city][capital!=2][population>=1000000],
   text: name;
   text-color: @label_dark;
   text-halo-radius: 1;
-  text-halo-opacity: 0.5;
+  text-halo-opacity: 1;
   text-halo-color: @label_halo_medium;
   z-index: 1000;
 }
@@ -116,7 +116,7 @@ node|z4[place=city][capital=2],
   text: name;
   text-color: @label_dark;
   text-halo-radius: 1;
-  text-halo-opacity: 0.5;
+  text-halo-opacity: 1;
   text-halo-color: @label_halo_medium;
   z-index: 4000;
 }
@@ -129,7 +129,7 @@ node|z4[place=city][capital=2],
     text: name;
     text-color: @label_dark;
     text-halo-radius: 1;
-    text-halo-opacity: 0.5;
+    text-halo-opacity: 1;
     text-halo-color: @label_halo_medium;
     z-index: 1000;
   }
@@ -145,24 +145,9 @@ node|z5[place=city][capital=2]{
   text: name;
   text-color: @label_dark;
   text-halo-radius: 1;
-  text-halo-opacity: 0.5;
+  text-halo-opacity: 1;
   text-halo-color: @label_halo_medium;
 }
-
-/*
-node|z5[place=city][capital=3],
-node|z5[place=city][capital=4] {
-  icon-image: dot-s.svg;
-  text-offset: 3;
-  font-size: 10;
-  text: name;
-  text-color: @label_medium;
-  text-halo-radius: 1;
-  text-halo-opacity: 0.3;
-  text-halo-color: @label_halo_medium;
-}
-*/
-
 
 
 /* CITIES ZOOM 6*/
@@ -173,7 +158,7 @@ node|z6[place=city][capital!=2][population>=50000],
   text: name;
   text-color: @label_dark;
   text-halo-radius: 1;
-  text-halo-opacity: 0.5;
+  text-halo-opacity: 1;
   text-halo-color: @label_halo_medium;
   z-index: 1000;
 }
@@ -190,24 +175,11 @@ node|z6[place=city][capital=2] {
   text: name;
   text-color: @label_dark;
   text-halo-radius: 1;
-  text-halo-opacity: 0.5;
+  text-halo-opacity: 1;
   text-halo-color: @label_halo_medium;
   z-index: 9000;
 }
 
-/*
-node|z6[place=city][capital=3],
-node|z6[place=city][capital=4] {
-  icon-image: dot-s.svg;
-  text-offset: 3;
-  font-size: 10;
-  text: name;
-  text-color: @label_medium;
-  text-halo-radius: 1;
-  text-halo-opacity: 0.3;
-  text-halo-color: @label_halo_medium;
-}
-*/
 
 /* CITIES ZOOM 7*/
 
@@ -222,7 +194,7 @@ node|z7[place=city][capital!=2][population>=40000],
   text: name;
   text-color: @label_dark;
   text-halo-radius: 1;
-  text-halo-opacity: 0.6;
+  text-halo-opacity: 1;
   text-halo-color: @label_halo_medium;
   z-index: 5000;
 }
@@ -234,7 +206,7 @@ node|z7[place=city][capital=2]{
   text: name;
   text-color: @label_dark;
   text-halo-radius: 1;
-  text-halo-opacity: 0.6;
+  text-halo-opacity: 1;
   text-halo-color: @label_halo_medium;
   z-index: 9000;
 }
@@ -253,7 +225,7 @@ node|z8[place=city][capital!=2][population>=40000],
   text: name;
   text-color: @label_dark;
   text-halo-radius: 1;
-  text-halo-opacity: 0.6;
+  text-halo-opacity: 1;
   text-halo-color: @label_halo_medium;
   z-index: 3000;
 }
@@ -270,7 +242,7 @@ node|z8[place=city][capital=2] {
   text: name;
   text-color: @label_dark;
   text-halo-radius: 1;
-  text-halo-opacity: 0.6;
+  text-halo-opacity: 1;
   text-halo-color: @label_halo_medium;
   z-index: 9000;
 }
@@ -701,6 +673,16 @@ line|z16-17[highway=secondary] {
 }
 
 /* SECONDARY LABELS */
+line|z15-[highway=bridleway],
+line|z15-[highway=path] {
+  font-size: 9;
+  text: name;
+  text-color: @label_medium;
+  text-halo-opacity: 0.5;
+  text-halo-radius: 1;
+  text-halo-color: @label_halo_light;
+}
+
 line|z16-17[highway=primary_link],
 line|z16-17[highway=motorway_link],
 line|z16-17[highway=trunk_link],
@@ -709,6 +691,7 @@ line|z16-17[highway=tertiary],
 line|z16-17[highway=unclassified],
 line|z16-17[highway=living_street],
 line|z16-17[highway=pedestrian],
+line|z16-17[highway=bridleway],
 line|z16-17[highway=path] {
   font-size: 11;
   text: name;
@@ -752,7 +735,9 @@ line|z18-[highway=tertiary],
 line|z18-[highway=unclassified],
 line|z18-[highway=living_street],
 line|z18-[highway=pedestrian],
-line|z18-[highway=path] {
+line|z18-[highway=path],
+line|z18-[highway=bridleway],
+line|z18-[highway=service] {
   font-size: 12;
   text: name;
   text-color: @label_medium;
@@ -875,7 +860,9 @@ area|z15-[area:highway=footway],
 }
 /* INDUSTRIAL */
 
-area|z15-[landuse=industrial] {
+area|z15-[landuse=industrial],
+area|z15-[landuse=construction],
+node|z15-[landuse=industrial]{
   text: name;
   font-size: 10;
   text-color: @city_label;
@@ -999,6 +986,7 @@ area|z12-[natural=water][bbox_area<10000000]
 
 line[waterway] {
     text-position: line;
+    z-index:10000;
 }
 
 line|z11-[waterway=river] {
@@ -1019,13 +1007,15 @@ line|z11-[waterway=riverbank] {
   text-halo-radius: 0;
 }
 
-line|z13-[waterway=stream] {
+line|z13-[waterway=stream],
+line|z13-[waterway=canal] {
   text: name;
   font-size: 11;
   text-color: @water_label;
   text-halo-opacity: 0.1;
   text-halo-color: @halo_water_lable;
   text-halo-radius: 0;
+  z-index: 10000;
 }
 
 /*
@@ -1045,9 +1035,11 @@ area|z10-[landuse=reservoir][bbox_area<100000000000],
 area|z10-[natural=water][bbox_area<100000000000]
 {}
 */
+
 /* PARKS LABELS */
 
-area|z14[leisure=park][name] {
+area|z14[leisure=park][name],
+area|z14-[landuse=forest][name] {
   icon-image: park-s.svg;
   text-offset: 8;
   text: name;
@@ -1057,10 +1049,12 @@ area|z14[leisure=park][name] {
   text-halo-radius: 0.4;
   text-halo-opacity: 0.4;
 }
-area|z14[leisure=park][!name] {
+area|z14[leisure=park][!name],
+area|z14-[landuse=forest][!name] {
 }
 
-area|z15[leisure=park][name], {
+area|z15[leisure=park][name],
+area|z15-[landuse=forest][name] {
   icon-image: park-m.svg;
   text-offset: 8;
   text: name;
@@ -1083,11 +1077,13 @@ area|z15[leisure=garden][name] {
 }
 */
 area|z15[leisure=park][!name],
+area|z14-[landuse=forest][!name]
 /*area|z15[leisure=garden][!name]*/ {
 
 }
 
-area|z16[leisure=park][name]{
+area|z16[leisure=park][name],
+area|z16[landuse=forest][!name]{
   icon-image: park-m.svg;
   text-offset: 10;
   text: name;
@@ -1108,10 +1104,12 @@ area|z16[leisure=garden][name] {
   text-halo-radius: 0.5;
 }
 area|z16[leisure=park][!name],
-area|z16[leisure=garden][!name] {
+area|z16[leisure=garden][!name],
+area|z16[landuse=forest][!name] {
 }
 
-area|z17[leisure=park][name] {
+area|z17[leisure=park][name],
+area|z17[landuse=forest][name] {
   icon-image: park-l.svg;
   text-offset: 10;
   text: name;
@@ -1132,12 +1130,14 @@ area|z17[leisure=garden][name] {
   text-halo-color: @label_halo_light;
   text-halo-radius: 0.5;
 }
-area|z17[leisure=park][!name] {
+area|z17[leisure=park][!name],
+area|z17[landuse=forest][!name] {
 }
 
 area|z17[leisure=garden][!name] {
 }
-area|z18-[leisure=park][name] {
+area|z18-[leisure=park][name],
+area|z18-[landuse=forest][name] {
   icon-image: park-l.svg;
   text-offset: 10;
   text: name;
@@ -1157,12 +1157,17 @@ area|z18-[leisure=garden][name] {
   text-halo-color: @label_halo_light;
   text-halo-radius: 0.5;
 }
-area|z18-[leisure=park][!name] {
+area|z18-[leisure=park][!name],
+{
   icon-image: park-l.svg;
 }
+area|z18-[landuse=forest][!name] {
+}
+
 area|z18-[leisure=garden][!name] {
   icon-image: garden-l.svg;
 }
+
 /* BEACH LABELS */
 
 area|z15-[leisure=beach_resort],
@@ -1200,17 +1205,19 @@ node|z17-[landuse=cemetery] {
   text: name;
   font-size: 10;
   text-color: @poi_label;
-  z-index: 1000;
+  z-index: 800;
 }
+
 area|z17-[amenity=grave_yard]
 node|z17-[amenity=grave_yard]{
-  icon-image: cemetry-l.svg;
+  icon-image: cemetery-l.svg;
   text-offset: 10;
   text: name;
   font-size: 10;
   text-color: @poi_label;
-  z-index: 1000;
+  z-index: 800;
 }
+
 /* PIER */
 area|z17-[man_made=pier],
 area|z17-[man_made=breakwater],
