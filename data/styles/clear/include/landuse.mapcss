@@ -43,6 +43,7 @@ area|z14-[area:highway=footway],
 area|z14-[area:highway=living_street],
 {
   fill-color: @pedestrian_area;
+  fill-position: background;
   fill-opacity: 0.3;
   z-index: 550;
 }
@@ -54,14 +55,17 @@ area|z16-[area:highway=footway],
 area|z16-[area:highway=living_street],
 {
   fill-color: @pedestrian_area;
+  fill-position: background;
   fill-opacity: 0.3;
   z-index: 550;
 }
 
 /* INDUSTRIAL */
 
-area|z15-[landuse=industrial] {
+area|z15-[landuse=industrial]
+area|z15-[landuse=construction]{
   fill-color: @industrial;
+  fill-position: background;
   fill-opacity: 1;
   z-index: -10;
 }
@@ -72,18 +76,21 @@ area|z15-[landuse=industrial] {
 area|z14[landuse=cemetery] {
   fill-color: @park;
   fill-opacity: 0.85;
-  z-index: -10;
+  z-index: -5000;
+  fill-position: background;
 }
 area|z14[amenity=grave_yard] {
   fill-color: @park;
   fill-opacity: 0.85;
-  z-index: -10;
+  z-index: -5000;
+  fill-position: background;
 }
 area|z15-[amenity=grave_yard],
 area|z15-[landuse=cemetery] {
   fill-color: @park;
   fill-opacity: 1;
-  z-index: -1000;
+  z-index: -10000;
+  fill-position: background;
 }
 
 
@@ -91,19 +98,19 @@ area|z15-[landuse=cemetery] {
 area|z14-15[amenity=university] {
   fill-color: @unversity;
   fill-opacity: 0.8;
-  z-index: 10;
+  fill-position: background;
 }
 
 area|z16-17[amenity=university] {
   fill-color: @unversity;
   fill-opacity: 1;
-  z-index: 10;
+  fill-position: background;
 }
 
 area|z18-[amenity=university] {
   fill-color: @unversity;
+  fill-position: background;
   fill-opacity: 1;
-  z-index: 0;
 }
 
 area|z16-[leisure=pitch],
@@ -111,6 +118,7 @@ area|z16-[sport=soccer],
 area|z15-[leisure=stadium],
 area|z17-[leisure=playground]  {
   fill-color: @sport;
+  fill-position: background;
   fill-opacity: 1;
   z-index: 150;
 }
