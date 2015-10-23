@@ -10,7 +10,6 @@ import android.provider.Settings;
 import android.support.annotation.DimenRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -19,7 +18,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
-import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.mapswithme.maps.MwmApplication;
@@ -28,7 +26,6 @@ import com.mapswithme.maps.R;
 public final class UiUtils
 {
   private static float sScreenDensity;
-
 
   public static class SimpleAnimationListener implements AnimationListener
   {
@@ -60,7 +57,6 @@ public final class UiUtils
     public void onAnimationRepeat(Animator animation) {}
   }
 
-  
   public static void waitLayout(final View view, @NonNull final ViewTreeObserver.OnGlobalLayoutListener callback)
   {
     view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener()
@@ -144,6 +140,21 @@ public final class UiUtils
   {
     for (final int id : viewIds)
       invisible(frame, id);
+  }
+
+  public static boolean isHidden(View view)
+  {
+    return view.getVisibility() == View.GONE;
+  }
+
+  public static boolean isInvisible(View view)
+  {
+    return view.getVisibility() == View.INVISIBLE;
+  }
+
+  public static boolean isVisible(View view)
+  {
+    return view.getVisibility() == View.VISIBLE;
   }
 
   public static void showIf(boolean condition, View view)
@@ -274,80 +285,17 @@ public final class UiUtils
     return isSmallTablet() || isBigTablet();
   }
 
-  public static void appearSlidingDown(final View view, @Nullable final Runnable completionListener)
-  {
-    if (view.getVisibility() == View.VISIBLE)
-    {
-      if (completionListener != null)
-        completionListener.run();
-      return;
-    }
-
-    show(view);
-
-    Animation a = AnimationUtils.loadAnimation(view.getContext(), R.anim.slide_appear_down);
-    if (completionListener != null)
-      a.setAnimationListener(new UiUtils.SimpleAnimationListener()
-      {
-        @Override
-        public void onAnimationEnd(Animation animation)
-        {
-          completionListener.run();
-        }
-      });
-
-    view.startAnimation(a);
-  }
-
-  public static void disappearSlidingUp(final View view, @Nullable final Runnable completionListener)
-  {
-    if (view.getVisibility() != View.VISIBLE)
-    {
-      if (completionListener != null)
-        completionListener.run();
-      return;
-    }
-
-    Animation a = AnimationUtils.loadAnimation(view.getContext(), R.anim.slide_disappear_up);
-    a.setAnimationListener(new UiUtils.SimpleAnimationListener()
-    {
-      @Override
-      public void onAnimationEnd(Animation animation)
-      {
-        hide(view);
-        view.clearAnimation();
-
-        if (completionListener != null)
-          completionListener.run();
-      }
-    });
-
-    view.startAnimation(a);
-  }
-
-  public static void exchangeViewsAnimatedDown(final View toHide, final View toShow, @Nullable final Runnable completionListener)
-  {
-    disappearSlidingUp(toHide, new Runnable()
-    {
-      @Override
-      public void run()
-      {
-        appearSlidingDown(toShow, completionListener);
-      }
-    });
-  }
-
   public static int dimen(@DimenRes int id)
   {
     return MwmApplication.get().getResources().getDimensionPixelSize(id);
   }
 
-  public static int dp(int v)
+  public static int toPx(int dp)
   {
     if (sScreenDensity == 0)
       sScreenDensity = MwmApplication.get().getResources().getDisplayMetrics().density;
 
-    return (int) (v * sScreenDensity + 0.5);
+    return (int) (dp * sScreenDensity + 0.5);
   }
 
   // utility class
