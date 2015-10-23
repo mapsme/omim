@@ -26,8 +26,9 @@ public:
                      dp::Anchor anchor, glsl::vec2 const & pivot,
                      glsl::vec2 const & pxSize, glsl::vec2 const & offset,
                      double priority, ref_ptr<dp::TextureManager> textureManager,
-                     gpu::TTextDynamicVertexBuffer && normals)
-    : TextHandle(id, text, anchor, priority, textureManager, move(normals))
+                     gpu::TTextDynamicVertexBuffer && normals,
+                     bool isBillboard = false)
+    : TextHandle(id, text, anchor, priority, textureManager, move(normals), isBillboard)
     , m_pivot(glsl::ToPoint(pivot))
     , m_offset(glsl::ToPoint(offset))
     , m_size(glsl::ToPoint(pxSize))
@@ -67,6 +68,11 @@ public:
   void GetPixelShape(ScreenBase const & screen, Rects & rects) const override
   {
     rects.push_back(m2::RectF(GetPixelRect(screen)));
+  }
+
+  void GetPixelShapePerspective(const ScreenBase &screen, Rects &rects) const override
+  {
+    rects.push_back(m2::RectF(TextHandle::GetPixelRectPerspective(screen)));
   }
 
 private:
@@ -149,7 +155,8 @@ void TextShape::DrawSubString(StraightTextLayout const & layout,
                                                                            glsl::vec2(pixelSize.x, pixelSize.y),
                                                                            baseOffset, m_params.m_depth,
                                                                            textures,
-                                                                           move(dynamicBuffer));
+                                                                           move(dynamicBuffer),
+                                                                           true);
 
   dp::AttributeProvider provider(2, staticBuffer.size());
   provider.InitStream(0, gpu::TextStaticVertex::GetBindingInfo(), make_ref(staticBuffer.data()));

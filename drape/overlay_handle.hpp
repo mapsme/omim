@@ -24,21 +24,29 @@ public:
 
   OverlayHandle(FeatureID const & id,
                 dp::Anchor anchor,
-                double priority);
+                double priority,
+                bool isBillboard = false);
 
   virtual ~OverlayHandle() {}
 
   bool IsVisible() const;
   void SetIsVisible(bool isVisible);
 
+  bool IsBillboard() const;
+
   m2::PointD GetPivot(ScreenBase const & screen) const;
+  m2::PointD GetPivotPerspective(ScreenBase const & screen) const;
 
   virtual bool Update(ScreenBase const & /*screen*/) { return true; }
+
   virtual m2::RectD GetPixelRect(ScreenBase const & screen) const = 0;
+  virtual m2::RectD GetPixelRectPerspective(ScreenBase const & screen) const;
 
   virtual void GetPixelShape(ScreenBase const & screen, Rects & rects) const = 0;
+  virtual void GetPixelShapePerspective(ScreenBase const & screen, Rects & rects) const = 0;
 
   bool IsIntersect(ScreenBase const & screen, ref_ptr<OverlayHandle> const h) const;
+  bool IsIntersectPerspective(ScreenBase const & screen, ref_ptr<OverlayHandle> const h) const;
 
   virtual bool IndexesRequired() const { return true; }
   void * IndexStorage(uint32_t size);
@@ -56,9 +64,13 @@ protected:
   FeatureID const m_id;
   dp::Anchor const m_anchor;
   double const m_priority;
+  bool m_isBillboard;
 
   typedef pair<BindingInfo, MutateRegion> TOffsetNode;
   TOffsetNode const & GetOffsetNode(uint8_t bufferID) const;
+
+  m2::PointD GetPerspectivePoint(const m2::PointD & pixelPoint, ScreenBase const & screen) const;
+  m2::RectD GetPerspectiveRect(const m2::RectD & pixelRect, ScreenBase const & screen) const;
 
 private:
   bool m_isVisible;
@@ -85,11 +97,13 @@ public:
                dp::Anchor anchor,
                m2::PointD const & gbPivot,
                m2::PointD const & pxSize,
-               double priority);
+               double priority,
+               bool isBillboard = false);
 
-  virtual m2::RectD GetPixelRect(ScreenBase const & screen) const;
-  virtual void GetPixelShape(ScreenBase const & screen, Rects & rects) const;
+  virtual m2::RectD GetPixelRect(ScreenBase const & screen) const override;
 
+  virtual void GetPixelShape(ScreenBase const & screen, Rects & rects) const override;
+  virtual void GetPixelShapePerspective(ScreenBase const & screen, Rects & rects) const override;
 private:
   m2::PointD m_gbPivot;
   m2::PointD m_pxHalfSize;

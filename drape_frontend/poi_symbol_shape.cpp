@@ -54,7 +54,8 @@ void PoiSymbolShape::Draw(ref_ptr<dp::Batcher> batcher, ref_ptr<dp::TextureManag
                                                                          dp::Bottom,
                                                                          m_pt,
                                                                          pixelSize,
-                                                                         m_params.m_depth);
+                                                                         m_params.m_depth,
+                                                                         true);
 
   batcher->InsertTriangleStrip(state, make_ref(&provider), move(handle));
 }

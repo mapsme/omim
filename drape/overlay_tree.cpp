@@ -35,14 +35,18 @@ void OverlayTree::StartOverlayPlacing(ScreenBase const & screen)
 void OverlayTree::Add(ref_ptr<OverlayHandle> handle, bool isTransparent)
 {
   ScreenBase const & modelView = GetModelView();
+  bool is3dMode = modelView.isPerspective();
 
   handle->SetIsVisible(false);
 
   if (!handle->Update(modelView))
     return;
 
-  m2::RectD const pixelRect = handle->GetPixelRect(modelView);
-  if (!m_traits.m_modelView.PixelRect().IsIntersect(pixelRect))
+  m2::RectD const pixelRect = is3dMode ? handle->GetPixelRectPerspective(modelView)
+                                       : handle->GetPixelRect(modelView);
+  m2::RectD const screenRect = is3dMode ? modelView.PixelRect3d()
+                                        : modelView.PixelRect();
+  if (!screenRect.IsIntersect(pixelRect))
   {
     handle->SetIsVisible(false);
     return;
@@ -61,6 +65,7 @@ void OverlayTree::Add(ref_ptr<OverlayHandle> handle, bool isTransparent)
   });
 
   double const inputPriority = handle->GetPriority();
+  double const posY = is3dMode ? handle->GetPivotPerspective(modelView).y : 0.0;
   /*
    * In this loop we decide which element must be visible
    * If input element "handle" more priority than all "Intersected elements"
@@ -68,8 +73,11 @@ void OverlayTree::Add(ref_ptr<OverlayHandle> handle, bool isTransparent)
    * But if some of already inserted elements more priority than we don't insert "handle"
    */
   for (OverlayContainerT::const_iterator it = elements.begin(); it != elements.end(); ++it)
-    if (inputPriority < it->m_handle->GetPriority())
+  {
+    bool rejectByDepth = is3dMode ? posY > it->m_handle->GetPivotPerspective(modelView).y : false;
+    if (inputPriority < it->m_handle->GetPriority() || rejectByDepth)
       return;
+  }
 
   for (OverlayContainerT::const_iterator it = elements.begin(); it != elements.end(); ++it)
     Erase(*it);
