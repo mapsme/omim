@@ -109,8 +109,8 @@ public class MwmApplication extends android.app.Application implements ActiveCou
 
     initPaths();
     nativeInit(getApkPath(), getDataStoragePath(), getTempPath(), getObbGooglePath(),
-            BuildConfig.FLAVOR, BuildConfig.BUILD_TYPE,
-            Yota.isFirstYota(), UiUtils.isSmallTablet() || UiUtils.isBigTablet());
+               BuildConfig.FLAVOR, BuildConfig.BUILD_TYPE,
+               Yota.isFirstYota(), UiUtils.isTablet());
     ActiveCountryTree.addListener(this);
     initNativeStrings();
     BookmarkManager.getIcons(); // init BookmarkManager (automatically loads bookmarks)
