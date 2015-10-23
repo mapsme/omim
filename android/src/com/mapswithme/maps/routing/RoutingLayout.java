@@ -1,4 +1,4 @@
-package com.mapswithme.maps.widget;
+package com.mapswithme.maps.routing;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -25,8 +25,9 @@ import com.mapswithme.maps.R;
 import com.mapswithme.maps.bookmarks.data.DistanceAndAzimut;
 import com.mapswithme.maps.bookmarks.data.MapObject;
 import com.mapswithme.maps.location.LocationHelper;
-import com.mapswithme.maps.routing.RoutingInfo;
-import com.mapswithme.maps.routing.RoutingResultCodesProcessor;
+import com.mapswithme.maps.widget.FlatProgressView;
+import com.mapswithme.maps.widget.WheelProgressView;
+import com.mapswithme.util.Animations;
 import com.mapswithme.util.Config;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.statistics.AlohaHelper;
@@ -201,7 +202,7 @@ public class RoutingLayout extends RelativeLayout implements View.OnClickListene
     {
     case HIDDEN:
       if (animated)
-        UiUtils.disappearSlidingUp(this, null);
+        Animations.disappearSliding(this, Animations.TOP, null);
       else
         UiUtils.hide(this);
       UiUtils.hide(mBtnStart, mTvExitNum);
@@ -219,8 +220,8 @@ public class RoutingLayout extends RelativeLayout implements View.OnClickListene
       mWvProgress.setProgress(0);
       if (animated)
       {
-        UiUtils.appearSlidingDown(this, null);
-        UiUtils.disappearSlidingUp(mBtnStart, null);
+        Animations.appearSliding(this, Animations.TOP, null);
+        Animations.disappearSliding(mBtnStart, Animations.TOP, null);
       }
       else
       {
@@ -233,7 +234,7 @@ public class RoutingLayout extends RelativeLayout implements View.OnClickListene
       UiUtils.show(this, mLayoutSetupRouting, mTvPrepareDistance, mTvPrepareTime, mIvCancelRouteBuild);
       UiUtils.hide(mLayoutTurnInstructions, mWvProgress, mTvPlanning, mNextTurn);
       if (animated)
-        UiUtils.appearSlidingDown(mBtnStart, null);
+        Animations.appearSliding(mBtnStart, Animations.TOP, null);
       else
         UiUtils.show(mBtnStart);
       refreshRouteSetup();
@@ -245,7 +246,7 @@ public class RoutingLayout extends RelativeLayout implements View.OnClickListene
       break;
     case TURN_INSTRUCTIONS:
       UiUtils.show(this, mLayoutTurnInstructions);
-      UiUtils.disappearSlidingUp(mLayoutSetupRouting, null);
+      UiUtils.hide(mLayoutSetupRouting);
       refreshTurnInstructions();
       break;
     }
@@ -310,12 +311,12 @@ public class RoutingLayout extends RelativeLayout implements View.OnClickListene
     if (routingInfo.vehicleNextTurnDirection.containsNextTurn())
     {
       if (mNextTurn.getVisibility() != VISIBLE && mNextTurn.getAnimation() == null)
-        UiUtils.appearSlidingDown(mNextTurn, null);
+        Animations.appearSliding(mNextTurn, Animations.TOP, null);
 
       routingInfo.vehicleNextTurnDirection.setNextTurnDrawable(mIvNextTurn);
     }
     else if (mNextTurn.getVisibility() == VISIBLE && mNextTurn.getAnimation() == null)
-      UiUtils.disappearSlidingUp(mNextTurn, null);
+      Animations.disappearSliding(mNextTurn, Animations.BOTTOM, null);
   }
 
   private void refreshPedestrianAzimutAndDistance(RoutingInfo info)
