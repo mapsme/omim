@@ -17,7 +17,7 @@
       android:visibility="gone"
       tools:visibility="visible"/>
 
-  <com.mapswithme.maps.widget.RoutingLayout
+  <com.mapswithme.maps.routing.RoutingLayout
       android:id="@+id/layout__routing"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
