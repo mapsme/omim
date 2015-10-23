@@ -88,6 +88,7 @@ void OverlayTree::Add(ref_ptr<OverlayHandle> handle, bool isTransparent)
   ASSERT(IsNeedUpdate(), ());
 
   ScreenBase const & modelView = GetModelView();
+  bool is3dMode = modelView.isPerspective();
 
   handle->SetIsVisible(false);
 
@@ -95,7 +96,9 @@ void OverlayTree::Add(ref_ptr<OverlayHandle> handle, bool isTransparent)
     return;
 
   m2::RectD const pixelRect = handle->GetExtendedPixelRect(modelView);
-  if (!m_traits.m_modelView.PixelRect().IsIntersect(pixelRect))
+  m2::RectD const screenRect = is3dMode ? modelView.PixelRect3d()
+                                        : modelView.PixelRect();
+  if (!screenRect.IsIntersect(pixelRect))
   {
     handle->SetIsVisible(false);
     return;
@@ -112,6 +115,8 @@ void OverlayTree::InsertHandle(ref_ptr<OverlayHandle> handle, bool isTransparent
   ASSERT(IsNeedUpdate(), ());
 
   ScreenBase const & modelView = GetModelView();
+  bool is3dMode = modelView.isPerspective();
+
   m2::RectD const pixelRect = handle->GetExtendedPixelRect(modelView);
 
   TOverlayContainer elements;
@@ -135,6 +140,7 @@ void OverlayTree::InsertHandle(ref_ptr<OverlayHandle> handle, bool isTransparent
     if (boundToParent)
       handleToCompare = parentOverlay.m_handle;
 
+    double const posY = is3dMode ? handleToCompare->GetPivotPerspective(modelView).y : 0.0;
     // In this loop we decide which element must be visible.
     // If input element "handle" more priority than all "Intersected elements"
     // than we remove all "Intersected elements" and insert input element "handle".
@@ -142,8 +148,9 @@ void OverlayTree::InsertHandle(ref_ptr<OverlayHandle> handle, bool isTransparent
     HandleComparator comparator;
     for (auto const & info : elements)
     {
+      bool rejectByDepth = is3dMode ? posY > info.m_handle->GetPivotPerspective(modelView).y : false;
       bool const timeReject = !info.m_handle->IsMinVisibilityTimeUp();
-      if (timeReject || comparator.IsGreater(info.m_handle, handleToCompare))
+      if (timeReject || rejectByDepth || comparator.IsGreater(info.m_handle, handleToCompare))
       {
         // Handle is displaced and bound to its parent, parent will be displaced too.
         if (boundToParent)
