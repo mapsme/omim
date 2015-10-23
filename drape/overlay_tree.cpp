@@ -82,14 +82,18 @@ void OverlayTree::StartOverlayPlacing(ScreenBase const & screen)
 void OverlayTree::Add(ref_ptr<OverlayHandle> handle, bool isTransparent)
 {
   ScreenBase const & modelView = GetModelView();
+  bool is3dMode = modelView.isPerspective();
 
   handle->SetIsVisible(false);
 
   if (!handle->Update(modelView))
     return;
 
-  m2::RectD const pixelRect = handle->GetPixelRect(modelView);
-  if (!m_traits.m_modelView.PixelRect().IsIntersect(pixelRect))
+  m2::RectD const pixelRect = is3dMode ? handle->GetPixelRectPerspective(modelView)
+                                       : handle->GetPixelRect(modelView);
+  m2::RectD const screenRect = is3dMode ? modelView.PixelRect3d()
+                                        : modelView.PixelRect();
+  if (!screenRect.IsIntersect(pixelRect))
   {
     handle->SetIsVisible(false);
     return;
@@ -104,7 +108,10 @@ void OverlayTree::InsertHandle(ref_ptr<OverlayHandle> handle, bool isTransparent
                                detail::OverlayInfo const & parentOverlay)
 {
   ScreenBase const & modelView = GetModelView();
-  m2::RectD const pixelRect = handle->GetPixelRect(modelView);
+  bool is3dMode = modelView.isPerspective();
+
+  m2::RectD const pixelRect = is3dMode ? handle->GetPixelRectPerspective(modelView)
+                                       : handle->GetPixelRect(modelView);
 
   TOverlayContainer elements;
 
@@ -125,6 +132,7 @@ void OverlayTree::InsertHandle(ref_ptr<OverlayHandle> handle, bool isTransparent
   if (boundToParent)
     handleToCompare = parentOverlay.m_handle;
 
+  double const posY = is3dMode ? handleToCompare->GetPivotPerspective(modelView).y : 0.0;
   // In this loop we decide which element must be visible.
   // If input element "handle" more priority than all "Intersected elements"
   // than we remove all "Intersected elements" and insert input element "handle".
@@ -132,7 +140,8 @@ void OverlayTree::InsertHandle(ref_ptr<OverlayHandle> handle, bool isTransparent
   HandleComparator comparator;
   for (auto const & info : elements)
   {
-    if (comparator.IsGreater(info.m_handle, handleToCompare))
+    bool rejectByDepth = is3dMode ? posY > info.m_handle->GetPivotPerspective(modelView).y : false;
+    if (comparator.IsGreater(info.m_handle, handleToCompare) || rejectByDepth)
     {
       // Handle is displaced and bound to its parent, parent will be displaced too.
       if (boundToParent)
