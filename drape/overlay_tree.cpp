@@ -44,9 +44,9 @@ void OverlayTree::Add(ref_ptr<OverlayHandle> handle, bool isTransparent)
 
   m2::RectD const pixelRect = is3dMode ? handle->GetPixelRectPerspective(modelView)
                                        : handle->GetPixelRect(modelView);
-  m2::RectD const screenRect = is3dMode ? modelView.PixelRect3d()
-                                        : modelView.PixelRect();
-  if (!screenRect.IsIntersect(pixelRect))
+
+  if (!modelView.PixelRect().IsIntersect(handle->GetPixelRect(modelView))
+      || (is3dMode && !modelView.PixelRect3d().IsIntersect(pixelRect)))
   {
     handle->SetIsVisible(false);
     return;

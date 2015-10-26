@@ -46,7 +46,6 @@ public:
   virtual void GetPixelShapePerspective(ScreenBase const & screen, Rects & rects) const = 0;
 
   bool IsIntersect(ScreenBase const & screen, ref_ptr<OverlayHandle> const h) const;
-  bool IsIntersectPerspective(ScreenBase const & screen, ref_ptr<OverlayHandle> const h) const;
 
   virtual bool IndexesRequired() const { return true; }
   void * IndexStorage(uint32_t size);
