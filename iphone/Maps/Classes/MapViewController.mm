@@ -795,4 +795,9 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
   return haveAppWall && haveBanners;
 }
 
+- (BOOL)hasNavigationBar
+{
+  return NO;
+}
+
 @end
