@@ -984,4 +984,9 @@ NSInteger compareAddress(id l, id r, void * context)
   return haveAppWall && haveBanners;
 }
 
+- (BOOL)hasNavigationBar
+{
+  return NO;
+}
+
 @end
