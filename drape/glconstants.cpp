@@ -151,8 +151,8 @@ const glConst GLActiveUniforms      = GL_ACTIVE_UNIFORMS;
 
 const glConst GLColorAttachment     = GL_COLOR_ATTACHMENT0;
 const glConst GLDepthAttachment     = GL_DEPTH_ATTACHMENT;
-const glConst GlStencilAttachment   = GL_STENCIL_ATTACHMENT;
+const glConst GLStencilAttachment   = GL_STENCIL_ATTACHMENT;
 
-const glConst GlFramebufferComplete = GL_FRAMEBUFFER_COMPLETE;
+const glConst GLFramebufferComplete = GL_FRAMEBUFFER_COMPLETE;
 
 } // namespace GLConst

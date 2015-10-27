@@ -1335,7 +1335,7 @@ extern "C"
   JNIEXPORT void JNICALL
   Java_com_mapswithme_maps_Framework_nativeEnable3dMode(JNIEnv * env, jclass thiz, jboolean enable)
   {
-    bool enable3d = static_cast<bool>(enable);
+    bool const enable3d = static_cast<bool>(enable);
 
     g_framework->PostDrapeTask([enable3d]()
     {

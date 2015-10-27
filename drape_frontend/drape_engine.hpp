@@ -108,7 +108,7 @@ public:
   void SetWidgetLayout(gui::TWidgetsLayoutInfo && info);
   gui::TWidgetsSizeInfo const & GetWidgetSizes();
 
-  void Enable3dMode(float angleFOV, float angleX);
+  void Enable3dMode(float rotationAngle, float angleFOV);
   void Disable3dMode();
 
 private:
