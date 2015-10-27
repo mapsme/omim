@@ -1,8 +1,8 @@
-
-#import "NavigationController.h"
 #import "MapsAppDelegate.h"
+#import "NavigationController.h"
+#import "TableViewController.h"
 #import "UIViewController+Navigation.h"
-#import "MapViewController.h"
+#import "ViewController.h"
 
 @interface NavigationController () <UINavigationControllerDelegate>
 
@@ -20,12 +20,15 @@
   [super viewDidLoad];
 
   self.delegate = self;
-  self.autorotate = YES;
 }
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
-  [navigationController setNavigationBarHidden:[viewController isMemberOfClass:[MapViewController class]] animated:animated];
+  NSAssert([viewController isKindOfClass:[ViewController class]] ||
+               [viewController isKindOfClass:[TableViewController class]],
+           @"Controller must inherit ViewController or TableViewController class");
+  ViewController * vc = (ViewController *)viewController;
+  [navigationController setNavigationBarHidden:!vc.hasNavigationBar animated:animated];
 
   if ([navigationController.viewControllers count] > 1)
     [viewController showBackButton];
@@ -33,7 +36,7 @@
 
 - (BOOL)shouldAutorotate
 {
-  return self.autorotate;
+  return YES;
 }
 
 @end
