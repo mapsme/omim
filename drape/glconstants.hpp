@@ -146,9 +146,9 @@ extern const glConst GLTriangleStrip;
 /// Framebuffer attachment points
 extern const glConst GLColorAttachment;
 extern const glConst GLDepthAttachment;
-extern const glConst GlStencilAttachment;
+extern const glConst GLStencilAttachment;
 
 /// Framebuffer status
-extern const glConst GlFramebufferComplete;
+extern const glConst GLFramebufferComplete;
 
 } // namespace GLConst
