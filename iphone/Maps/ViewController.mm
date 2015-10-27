@@ -37,4 +37,11 @@
   [super viewWillDisappear:animated];
 }
 
+#pragma mark - Properties
+
+- (BOOL)hasNavigationBar
+{
+  return YES;
+}
+
 @end
