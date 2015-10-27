@@ -1,11 +1,11 @@
 #include "drape_frontend/animation/interpolation_holder.hpp"
 #include "drape_frontend/gui/drape_gui.hpp"
+#include "drape_frontend/framebuffer.hpp"
 #include "drape_frontend/frontend_renderer.hpp"
 #include "drape_frontend/message_subclasses.hpp"
+#include "drape_frontend/renderer3d.hpp"
 #include "drape_frontend/visual_params.hpp"
 #include "drape_frontend/user_mark_shapes.hpp"
-#include "drape_frontend/framebuffer.hpp"
-#include "drape_frontend/renderer3d.hpp"
 
 #include "drape/debug_rect_renderer.hpp"
 #include "drape/shader_def.hpp"
@@ -456,8 +456,8 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
     {
       if (!m_useFramebuffer)
       {
-        ref_ptr<Enable3dModeMessage> msg = message;
-        AddUserEvent(Enable3dModeEvent(msg->GetAngleX(), msg->GetAngleFOV()));
+        ref_ptr<Enable3dModeMessage> const msg = message;
+        AddUserEvent(Enable3dModeEvent(msg->GetRotationAngle(), msg->GetAngleFOV()));
         m_useFramebuffer = true;
         m_3dModeChanged = true;
       }
@@ -493,7 +493,7 @@ unique_ptr<threads::IRoutine> FrontendRenderer::CreateRoutine()
 
 void FrontendRenderer::OnResize(ScreenBase const & screen)
 {
-  m2::RectD viewportRect = screen.isPerspective() ? screen.PixelRect3d() : screen.PixelRect();
+  m2::RectD const viewportRect = screen.isPerspective() ? screen.PixelRectIn3d() : screen.PixelRect();
 
   m_myPositionController->SetPixelRect(screen.PixelRect());
   m_viewport.SetViewport(0, 0, screen.GetWidth(), screen.GetHeight());
@@ -504,12 +504,13 @@ void FrontendRenderer::OnResize(ScreenBase const & screen)
   {
     int width = screen.GetWidth();
     int height = screen.GetHeight();
-    int maxSide = max(width, height);
+    int const maxSide = max(width, height);
     if (maxSide > m_framebuffer->GetMaxSize())
     {
       width = width * m_framebuffer->GetMaxSize() / maxSide;
       height = height * m_framebuffer->GetMaxSize() / maxSide;
-      LOG(LINFO, ("Max texture size: ", m_framebuffer->GetMaxSize(), ", expanded screen size: ", maxSide, ", scale: ", m_framebuffer->GetMaxSize() / (double)maxSide));
+      LOG(LINFO, ("Max texture size:", m_framebuffer->GetMaxSize(), ", expanded screen size:", maxSide,
+                  ", scale:", m_framebuffer->GetMaxSize() / (double)maxSide));
     }
 
     m_viewport.SetViewport(0, 0, width, height);
@@ -635,7 +636,7 @@ FeatureID FrontendRenderer::GetVisiblePOI(m2::RectD const & pixelRect) const
   ScreenBase const & screen = m_userEventStream.GetCurrentScreen();
   for (ref_ptr<dp::OverlayHandle> handle : selectResult)
   {
-    double const curDist = pt.SquareLength(handle->GetPivot(screen));
+    double const curDist = pt.SquareLength(handle->GetPivot(screen, false));
     if (curDist < dist)
     {
       dist = curDist;
@@ -751,12 +752,11 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
   m_myPositionController->Render(MyPositionController::RenderAccuracy,
                                  modelView, make_ref(m_gpuProgramManager), m_generalUniforms);
 
-  if (!m_useFramebuffer)
-    for (size_t currentRenderGroup = overlayRenderGroup; currentRenderGroup < m_renderGroups.size(); ++currentRenderGroup)
-    {
-      drape_ptr<RenderGroup> const & group = m_renderGroups[currentRenderGroup];
-      RenderSingleGroup(modelView, make_ref(group));
-    }
+  for (size_t currentRenderGroup = overlayRenderGroup; currentRenderGroup < m_renderGroups.size(); ++currentRenderGroup)
+  {
+    drape_ptr<RenderGroup> const & group = m_renderGroups[currentRenderGroup];
+    RenderSingleGroup(modelView, make_ref(group));
+  }
 
   GLFunctions::glClearDepth();
   if (m_selectionShape != nullptr && m_selectionShape->GetSelectedObject() == SelectionShape::OBJECT_USER_MARK)
@@ -767,12 +767,14 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
   m_routeRenderer->RenderRoute(modelView, make_ref(m_gpuProgramManager), m_generalUniforms);
 
   if (!m_useFramebuffer)
+  {
     for (drape_ptr<UserMarkRenderGroup> const & group : m_userMarkRenderGroups)
     {
       ASSERT(group.get() != nullptr, ());
       if (m_userMarkVisibility.find(group->GetTileKey()) != m_userMarkVisibility.end())
         RenderSingleGroup(modelView, make_ref(group));
     }
+  }
 
   m_routeRenderer->RenderRouteSigns(modelView, make_ref(m_gpuProgramManager), m_generalUniforms);
 
@@ -789,7 +791,7 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
 
     m_isBillboardRenderPass = true;
 
-    // Test code to check ortho overlays in 3d mode
+    // TODO: Try to avoid code duplicate in billboard render pass.
     GLFunctions::glDisable(gl_const::GLDepthTest);
     for (size_t currentRenderGroup = overlayRenderGroup; currentRenderGroup < m_renderGroups.size(); ++currentRenderGroup)
     {
@@ -804,7 +806,6 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
       if (m_userMarkVisibility.find(group->GetTileKey()) != m_userMarkVisibility.end())
         RenderSingleGroup(modelView, make_ref(group));
     }
-    // End of test code
 
     m_isBillboardRenderPass = false;
   }
@@ -827,7 +828,7 @@ bool FrontendRenderer::IsBillboardProgram(int programIndex) const
 void FrontendRenderer::RenderSingleGroup(ScreenBase const & modelView, ref_ptr<BaseRenderGroup> group)
 {
   dp::GLState const & state = group->GetState();
-  bool isBillboardProgram = IsBillboardProgram(state.GetProgramIndex());
+  bool const isBillboardProgram = IsBillboardProgram(state.GetProgramIndex());
 
   if (m_useFramebuffer && (m_isBillboardRenderPass != isBillboardProgram))
     return;
@@ -863,9 +864,8 @@ void FrontendRenderer::RefreshPivotTransform(ScreenBase const & screen)
 {
   if (m_useFramebuffer)
   {
-    float transform[16];
-    copy(begin(screen.PTo3dMatrix().m_data), end(screen.PTo3dMatrix().m_data), transform);
-    m_generalUniforms.SetMatrix4x4Value("pivotTransform", transform);
+    math::Matrix<float, 4, 4> const transform(screen.PTo3dMatrix());
+    m_generalUniforms.SetMatrix4x4Value("pivotTransform", transform.m_data);
   }
   else
     m_generalUniforms.SetMatrix4x4Value("pivotTransform", math::Identity<float, 4>().m_data);
