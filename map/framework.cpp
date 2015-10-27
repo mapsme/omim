@@ -144,7 +144,7 @@ void Framework::OnLocationUpdate(GpsInfo const & info)
   MatchLocationToRoute(rInfo, routeMatchingInfo, hasDistanceFromBegin, distanceFromBegin);
 
   shared_ptr<State> const & state = GetLocationState();
-  state->OnLocationUpdate(rInfo, m_routingSession.IsNavigable(), routeMatchingInfo);
+  state->OnLocationUpdate(rInfo, routeMatchingInfo);
 
   if (state->IsModeChangeViewport())
     UpdateUserViewportChanged();
@@ -157,11 +157,7 @@ void Framework::OnCompassUpdate(CompassInfo const & info)
 #ifdef FIXED_LOCATION
   CompassInfo rInfo(info);
   m_fixedPos.GetNorth(rInfo.m_bearing);
-#else
-  CompassInfo const & rInfo = info;
 #endif
-
-  GetLocationState()->OnCompassUpdate(rInfo);
 }
 
 void Framework::StopLocationFollow()

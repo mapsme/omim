@@ -103,7 +103,7 @@ namespace location
 
     /// @name GPS location updates routine.
     //@{
-    void OnLocationUpdate(location::GpsInfo const & info, bool isNavigable, location::RouteMatchingInfo const & routeMatchingInfo);
+    void OnLocationUpdate(location::GpsInfo const & info, location::RouteMatchingInfo const & routeMatchingInfo);
     void OnCompassUpdate(location::CompassInfo const & info);
     //@}
 
@@ -152,7 +152,7 @@ namespace location
 
     ScreenBase const & GetModelView() const;
 
-    void Assign(location::GpsInfo const & info, bool isNavigable);
+    void Assign(location::GpsInfo const & info);
     bool Assign(location::CompassInfo const & info);
     void SetDirection(double bearing);
     const m2::PointD GetPositionForDraw() const;
