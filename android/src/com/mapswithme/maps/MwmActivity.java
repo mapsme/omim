@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
 import com.mapswithme.country.ActiveCountryTree;
 import com.mapswithme.country.DownloadActivity;
 import com.mapswithme.country.DownloadFragment;
@@ -40,16 +41,16 @@ import com.mapswithme.maps.dialog.RoutingErrorDialogFragment;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.location.LocationPredictor;
 import com.mapswithme.maps.routing.RoutingResultCodesProcessor;
+import com.mapswithme.maps.search.FloatingSearchToolbarController;
 import com.mapswithme.maps.search.SearchActivity;
 import com.mapswithme.maps.search.SearchEngine;
 import com.mapswithme.maps.search.SearchFragment;
-import com.mapswithme.maps.search.FloatingSearchToolbarController;
 import com.mapswithme.maps.settings.SettingsActivity;
 import com.mapswithme.maps.settings.StoragePathManager;
 import com.mapswithme.maps.settings.UnitLocale;
 import com.mapswithme.maps.sound.TtsPlayer;
 import com.mapswithme.maps.widget.FadeView;
-import com.mapswithme.maps.widget.RoutingLayout;
+import com.mapswithme.maps.routing.RoutingLayout;
 import com.mapswithme.maps.widget.menu.MainMenu;
 import com.mapswithme.maps.widget.placepage.BasePlacePageAnimationController;
 import com.mapswithme.maps.widget.placepage.PlacePageView;
@@ -110,6 +111,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   private ImageButton mBtnZoomOut;
 
   private boolean mIsFragmentContainer;
+  private boolean mIsFullscreen;
 
   private LocationPredictor mLocationPredictor;
   private FloatingSearchToolbarController mSearchController;
@@ -304,21 +306,25 @@ public class MwmActivity extends BaseMwmFragmentActivity
   private void initRoutingBox()
   {
     mLayoutRouting = (RoutingLayout) findViewById(R.id.layout__routing);
-    mLayoutRouting.setListener(new RoutingLayout.ActionListener() {
+    mLayoutRouting.setListener(new RoutingLayout.ActionListener()
+    {
       @Override
-      public void onCloseRouting() {
+      public void onCloseRouting()
+      {
         mMainMenu.setNavigationMode(false);
         adjustZoomButtons(false);
       }
 
       @Override
-      public void onStartRouteFollow() {
+      public void onStartRouteFollow()
+      {
         mMainMenu.setNavigationMode(true);
         adjustZoomButtons(true);
       }
 
       @Override
-      public void onRouteTypeChange(int type) {
+      public void onRouteTypeChange(int type)
+      {
       }
     });
   }
@@ -405,9 +411,11 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   private void buildRoute()
   {
-    closeMenuAndRun(AlohaHelper.PP_ROUTE, new Runnable() {
+    closeMenuAndRun(AlohaHelper.PP_ROUTE, new Runnable()
+    {
       @Override
-      public void run() {
+      public void run()
+      {
         mLayoutRouting.setEndPoint(mPlacePage.getMapObject());
         mLayoutRouting.setState(RoutingLayout.State.PREPARING, true);
 
@@ -795,14 +803,14 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
     switch (newMode)
     {
-      case LocationState.UNKNOWN_POSITION:
-        pauseLocation();
-        break;
-      case LocationState.PENDING_POSITION:
-        resumeLocation();
-        break;
-      default:
-        break;
+    case LocationState.UNKNOWN_POSITION:
+      pauseLocation();
+      break;
+    case LocationState.PENDING_POSITION:
+      resumeLocation();
+      break;
+    default:
+      break;
     }
   }
 
@@ -888,7 +896,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     return true;
   }
 
-  // Callbacks from native map objects touch event.
+  // Callbacks from native touch events on map objects.
   @Override
   public void onApiPointActivated(final double lat, final double lon, final String name, final String id)
   {
@@ -897,15 +905,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
       final ParsedMwmRequest request = ParsedMwmRequest.getCurrentRequest();
       request.setPointData(lat, lon, name, id);
 
-      runOnUiThread(new Runnable()
-      {
-        @Override
-        public void run()
-        {
-          final String poiType = ParsedMwmRequest.getCurrentRequest().getCallerName(MwmApplication.get()).toString();
-          activateMapObject(new ApiPoint(name, id, poiType, lat, lon));
-        }
-      });
+      final String poiType = ParsedMwmRequest.getCurrentRequest().getCallerName(MwmApplication.get()).toString();
+      activateMapObject(new ApiPoint(name, id, poiType, lat, lon));
     }
   }
 
@@ -915,65 +916,33 @@ public class MwmActivity extends BaseMwmFragmentActivity
   {
     final MapObject poi = new MapObject.Poi(name, lat, lon, type);
     poi.addMetadata(metaTypes, metaValues);
-
-    runOnUiThread(new Runnable()
-    {
-      @Override
-      public void run()
-      {
-        activateMapObject(poi);
-      }
-    });
+    activateMapObject(poi);
   }
 
   @Override
   public void onBookmarkActivated(final int category, final int bookmarkIndex)
   {
-    runOnUiThread(new Runnable()
-    {
-      @Override
-      public void run()
-      {
-        activateMapObject(BookmarkManager.INSTANCE.getBookmark(category, bookmarkIndex));
-      }
-    });
+    activateMapObject(BookmarkManager.INSTANCE.getBookmark(category, bookmarkIndex));
   }
 
   @Override
   public void onMyPositionActivated(final double lat, final double lon)
   {
-    final MapObject mypos = new MapObject.MyPosition(getString(R.string.my_position), lat, lon);
-
-    runOnUiThread(new Runnable()
-    {
-      @Override
-      public void run()
-      {
-        if (!Framework.nativeIsRoutingActive())
-        {
-          activateMapObject(mypos);
-        }
-      }
-    });
+    if (!Framework.nativeIsRoutingActive())
+      activateMapObject(new MapObject.MyPosition(getString(R.string.my_position), lat, lon));
   }
 
   @Override
   public void onAdditionalLayerActivated(final String name, final String type, final double lat, final double lon, final int[] metaTypes, final String[] metaValues)
   {
-    runOnUiThread(new Runnable()
-    {
-      @Override
-      public void run()
-      {
-        final MapObject sr = new MapObject.SearchResult(name, type, lat, lon);
-        sr.addMetadata(metaTypes, metaValues);
-        activateMapObject(sr);
-      }
-    });
+    final MapObject sr = new MapObject.SearchResult(name, type, lat, lon);
+    sr.addMetadata(metaTypes, metaValues);
+    activateMapObject(sr);
   }
 
   private void activateMapObject(MapObject object)
   {
+    setFullscreen(false);
     if (!mPlacePage.hasMapObject(object))
     {
       mPlacePage.setMapObject(object);
@@ -988,15 +957,48 @@ public class MwmActivity extends BaseMwmFragmentActivity
   public void onDismiss()
   {
     if (!mPlacePage.hasMapObject(null))
+      mPlacePage.hide();
+    else
     {
-      runOnUiThread(new Runnable()
+      if ((mPanelAnimator != null && mPanelAnimator.isVisible()) ||
+          UiUtils.isVisible(mSearchController.getToolbar()))
+        return;
+
+      setFullscreen(!mIsFullscreen);
+    }
+  }
+
+  private void setFullscreen(boolean isFullscreen)
+  {
+    mIsFullscreen = isFullscreen;
+    if (isFullscreen)
+    {
+      Animations.disappearSliding(mMainMenu.getFrame(), Animations.BOTTOM, new Runnable()
       {
         @Override
         public void run()
         {
-          mPlacePage.hide();
+          final int menuHeight = mMainMenu.getFrame().getHeight();
+          adjustCompass(0, menuHeight);
+          adjustRuler(0, menuHeight);
         }
       });
+      Animations.disappearSliding(mBtnZoomOut, Animations.RIGHT, null);
+      Animations.disappearSliding(mBtnZoomIn, Animations.RIGHT, null);
+    }
+    else
+    {
+      Animations.appearSliding(mMainMenu.getFrame(), Animations.BOTTOM, new Runnable()
+      {
+        @Override
+        public void run()
+        {
+          adjustCompass(0, 0);
+          adjustRuler(0, 0);
+        }
+      });
+      Animations.appearSliding(mBtnZoomOut, Animations.RIGHT, null);
+      Animations.appearSliding(mBtnZoomIn, Animations.RIGHT, null);
     }
   }
 
@@ -1065,7 +1067,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   public boolean onTouch(View view, MotionEvent event)
   {
     return mPlacePage.hideOnTouch() ||
-        mMapFragment.onTouch(view, event);
+           mMapFragment.onTouch(view, event);
   }
 
   @Override
@@ -1182,27 +1184,29 @@ public class MwmActivity extends BaseMwmFragmentActivity
     public boolean run(MwmActivity target)
     {
       if (mDoAutoDownload)
-      {
         Framework.downloadCountry(mIndex);
-        // set zoom level so that download process is visible
-        Framework.nativeShowCountry(mIndex, true);
-      }
-      else
-        Framework.nativeShowCountry(mIndex, false);
-
+      Framework.nativeShowCountry(mIndex, mDoAutoDownload);
       return true;
     }
   }
 
-  public void adjustCompass(int offset)
+  public void adjustCompass(int offsetX, int offsetY)
   {
     if (mMapFragment == null || !mMapFragment.isAdded())
       return;
 
-    mMapFragment.setupCompass(mPanelAnimator.isVisible() ? offset : 0, true /* forceRedraw */);
+    mMapFragment.setupCompass((mPanelAnimator != null && mPanelAnimator.isVisible()) ? offsetX : 0, offsetY, true);
 
     if (mLastCompassData != null)
       MapFragment.nativeCompassUpdated(mLastCompassData.magneticNorth, mLastCompassData.trueNorth, true);
+  }
+
+  public void adjustRuler(int offsetX, int offsetY)
+  {
+    if (mMapFragment == null || !mMapFragment.isAdded())
+      return;
+
+    mMapFragment.setupRuler(offsetX, offsetY, true);
   }
 
   @Override
