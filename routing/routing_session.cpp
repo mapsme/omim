@@ -142,8 +142,7 @@ RoutingSession::State RoutingSession::OnLocationPositionChanged(m2::PointD const
   ASSERT(m_state != RoutingNotActive, ());
   ASSERT(m_router != nullptr, ());
 
-  if (m_state == RouteNeedRebuild || m_state == RouteFinished || m_state == RouteBuilding ||
-      m_state == RouteNotReady)
+  if (m_state != OnRoute)
     return m_state;
 
   threads::MutexGuard guard(m_routeSessionMutex);
@@ -168,8 +167,6 @@ RoutingSession::State RoutingSession::OnLocationPositionChanged(m2::PointD const
     }
     else
     {
-      m_state = OnRoute;
-
       // Warning signals checks
       if (m_routingSettings.m_speedCameraWarning && !m_speedWarningSignal)
       {
