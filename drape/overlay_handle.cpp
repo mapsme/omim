@@ -26,8 +26,8 @@ OverlayHandle::OverlayHandle(FeatureID const & id,
   : m_id(id)
   , m_anchor(anchor)
   , m_priority(priority)
-  , m_isBillboard(isBillboard)
   , m_overlayRank(OverlayRank0)
+  , m_isBillboard(isBillboard)
   , m_isVisible(false)
 {
 }
@@ -47,9 +47,9 @@ bool OverlayHandle::IsBillboard() const
   return m_isBillboard;
 }
 
-m2::PointD OverlayHandle::GetPivot(ScreenBase const & screen) const
+m2::PointD OverlayHandle::GetPivot(ScreenBase const & screen, bool perspective) const
 {
-  m2::RectD r = GetPixelRect(screen);
+  m2::RectD r = GetPixelRect(screen, false);
   m2::PointD size(0.5 * r.SizeX(), 0.5 * r.SizeY());
   m2::PointD result = r.Center();
 
@@ -63,12 +63,10 @@ m2::PointD OverlayHandle::GetPivot(ScreenBase const & screen) const
   else if (m_anchor & dp::Bottom)
     result.y += size.y;
 
-  return result;
-}
+  if (perspective)
+    result = screen.PtoP3d(result);
 
-m2::PointD OverlayHandle::GetPivotPerspective(ScreenBase const & screen) const
-{
-  return GetPerspectivePoint(GetPivot(screen), screen);
+  return result;
 }
 
 bool OverlayHandle::IsIntersect(ScreenBase const & screen, ref_ptr<OverlayHandle> const h) const
@@ -76,16 +74,8 @@ bool OverlayHandle::IsIntersect(ScreenBase const & screen, ref_ptr<OverlayHandle
   Rects ar1;
   Rects ar2;
 
-  if (screen.isPerspective())
-  {
-    GetPixelShapePerspective(screen, ar1);
-    h->GetPixelShapePerspective(screen, ar2);
-  }
-  else
-  {
-    GetPixelShape(screen, ar1);
-    h->GetPixelShape(screen, ar2);
-  }
+  GetPixelShape(screen, ar1, screen.isPerspective());
+  h->GetPixelShape(screen, ar2, screen.isPerspective());
 
   for (size_t i = 0; i < ar1.size(); ++i)
     for (size_t j = 0; j < ar2.size(); ++j)
@@ -143,46 +133,13 @@ OverlayHandle::TOffsetNode const & OverlayHandle::GetOffsetNode(uint8_t bufferID
   return *it;
 }
 
-m2::PointD OverlayHandle::GetPerspectivePoint(m2::PointD const & pixelPoint, ScreenBase const & screen) const
+m2::RectD OverlayHandle::GetPerspectiveRect(m2::RectD const & pixelRect, ScreenBase const & screen) const
 {
-  m2::RectD screenPixelRect = screen.PixelRect();
-  ASSERT(screenPixelRect.SizeX() && screenPixelRect.SizeY(), ());
-
-  math::Matrix<double, 1, 4> normalizedPoint
-  {
-    float(2.0 * pixelPoint.x / screenPixelRect.SizeX() - 1.0),
-    -float(2.0 * pixelPoint.y / screenPixelRect.SizeY() - 1.0),
-    0.0,
-    1.0
-  };
-
-  math::Matrix<double, 1, 4> perspectivePoint = normalizedPoint * screen.PTo3dMatrix();
-  perspectivePoint(0, 0) /= perspectivePoint(0, 3);
-  perspectivePoint(0, 1) /= perspectivePoint(0, 3);
-  perspectivePoint(0, 2) /= perspectivePoint(0, 3);
-  perspectivePoint(0, 3) = 1.0;
-
-  m2::RectD viewport = screen.PixelRect3d();
-  m2::PointD pixelPointPerspective(
-        (perspectivePoint(0, 0) + 1.0) * viewport.SizeX() / 2.0,
-        (perspectivePoint(0, 1) + 1.0) * viewport.SizeY() / 2.0);
-
-  return pixelPointPerspective;
-}
-
-m2::RectD OverlayHandle::GetPerspectiveRect(const m2::RectD & pixelRect, ScreenBase const & screen) const
-{
-  m2::PointD tmpPoint = GetPerspectivePoint(pixelRect.LeftTop(), screen);
+  m2::PointD const tmpPoint = screen.PtoP3d(pixelRect.LeftTop());
   m2::RectD perspectiveRect(tmpPoint, tmpPoint);
-
-  tmpPoint = GetPerspectivePoint(pixelRect.RightBottom(), screen);
-  perspectiveRect.Add(tmpPoint);
-
-  tmpPoint = GetPerspectivePoint(m2::PointD(pixelRect.minX(), pixelRect.maxY()), screen);
-  perspectiveRect.Add(tmpPoint);
-
-  tmpPoint = GetPerspectivePoint(m2::PointD(pixelRect.maxX(), pixelRect.minY()), screen);
-  perspectiveRect.Add(tmpPoint);
+  perspectiveRect.Add(screen.PtoP3d(pixelRect.LeftBottom()));
+  perspectiveRect.Add(screen.PtoP3d(pixelRect.RightBottom()));
+  perspectiveRect.Add(screen.PtoP3d(pixelRect.RightTop()));
 
   return perspectiveRect;
 }
@@ -191,20 +148,21 @@ m2::RectD OverlayHandle::GetPixelRectPerspective(ScreenBase const & screen) cons
 {
   if (m_isBillboard)
   {
-    m2::PointD const pxPivot = GetPivot(screen);
-    m2::PointD pxPivotPerspective = GetPerspectivePoint(pxPivot, screen);
+    m2::PointD const pxPivot = GetPivot(screen, false);
+    m2::PointD const pxPivotPerspective = screen.PtoP3d(pxPivot);
 
-    m2::RectD pxRectPerspective = GetPixelRect(screen);
+    m2::RectD pxRectPerspective = GetPixelRect(screen, false);
     pxRectPerspective.Offset(-pxPivot);
-    double maxY = -pxRectPerspective.minY();
-    pxRectPerspective.setMinY(-pxRectPerspective.maxY());
+    double const maxY = -pxRectPerspective.minY();
+    double const minY = -pxRectPerspective.maxY();
+    pxRectPerspective.setMinY(minY);
     pxRectPerspective.setMaxY(maxY);
     pxRectPerspective.Offset(pxPivotPerspective);
 
     return pxRectPerspective;
   }
 
-  return GetPerspectiveRect(GetPixelRect(screen), screen);
+  return GetPerspectiveRect(GetPixelRect(screen, false), screen);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -218,8 +176,11 @@ SquareHandle::SquareHandle(FeatureID const & id, dp::Anchor anchor,
   , m_pxHalfSize(pxSize.x / 2.0, pxSize.y / 2.0)
 {}
 
-m2::RectD SquareHandle::GetPixelRect(ScreenBase const & screen) const
+m2::RectD SquareHandle::GetPixelRect(ScreenBase const & screen, bool perspective) const
 {
+  if (perspective)
+    return GetPixelRectPerspective(screen);
+
   m2::PointD const pxPivot = screen.GtoP(m_gbPivot);
   m2::RectD  result(pxPivot - m_pxHalfSize, pxPivot + m_pxHalfSize);
   m2::PointD offset(0.0, 0.0);
@@ -238,16 +199,9 @@ m2::RectD SquareHandle::GetPixelRect(ScreenBase const & screen) const
   return result;
 }
 
-void SquareHandle::GetPixelShape(ScreenBase const & screen, Rects & rects) const
+void SquareHandle::GetPixelShape(ScreenBase const & screen, Rects & rects, bool perspective) const
 {
-  m2::RectD rd = GetPixelRect(screen);
-  rects.push_back(m2::RectF(rd.minX(), rd.minY(), rd.maxX(), rd.maxY()));
-}
-
-void SquareHandle::GetPixelShapePerspective(ScreenBase const & screen, Rects & rects) const
-{
-  m2::RectD rd = TBase::GetPixelRectPerspective(screen);
-  rects.push_back(m2::RectF(rd.minX(), rd.minY(), rd.maxX(), rd.maxY()));
+  rects.emplace_back(GetPixelRect(screen, perspective));
 }
 
 uint64_t CalculateOverlayPriority(int minZoomLevel, uint8_t rank, float depth)

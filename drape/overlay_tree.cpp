@@ -82,18 +82,17 @@ void OverlayTree::StartOverlayPlacing(ScreenBase const & screen)
 void OverlayTree::Add(ref_ptr<OverlayHandle> handle, bool isTransparent)
 {
   ScreenBase const & modelView = GetModelView();
-  bool is3dMode = modelView.isPerspective();
+  bool const is3dMode = modelView.isPerspective();
 
   handle->SetIsVisible(false);
 
   if (!handle->Update(modelView))
     return;
 
-  m2::RectD const pixelRect = is3dMode ? handle->GetPixelRectPerspective(modelView)
-                                       : handle->GetPixelRect(modelView);
+  m2::RectD const pixelRect = handle->GetPixelRect(modelView, is3dMode);
 
-  if (!modelView.PixelRect().IsIntersect(handle->GetPixelRect(modelView))
-      || (is3dMode && !modelView.PixelRect3d().IsIntersect(pixelRect)))
+  if (!modelView.PixelRect().IsIntersect(handle->GetPixelRect(modelView, false)) ||
+      (is3dMode && !modelView.PixelRectIn3d().IsIntersect(pixelRect)))
   {
     handle->SetIsVisible(false);
     return;
@@ -108,10 +107,9 @@ void OverlayTree::InsertHandle(ref_ptr<OverlayHandle> handle, bool isTransparent
                                detail::OverlayInfo const & parentOverlay)
 {
   ScreenBase const & modelView = GetModelView();
-  bool is3dMode = modelView.isPerspective();
+  bool const is3dMode = modelView.isPerspective();
 
-  m2::RectD const pixelRect = is3dMode ? handle->GetPixelRectPerspective(modelView)
-                                       : handle->GetPixelRect(modelView);
+  m2::RectD const pixelRect = handle->GetPixelRect(modelView, is3dMode);
 
   TOverlayContainer elements;
 
@@ -132,7 +130,7 @@ void OverlayTree::InsertHandle(ref_ptr<OverlayHandle> handle, bool isTransparent
   if (boundToParent)
     handleToCompare = parentOverlay.m_handle;
 
-  double const posY = is3dMode ? handleToCompare->GetPivotPerspective(modelView).y : 0.0;
+  double const posY = handleToCompare->GetPivot(modelView, is3dMode).y;
   // In this loop we decide which element must be visible.
   // If input element "handle" more priority than all "Intersected elements"
   // than we remove all "Intersected elements" and insert input element "handle".
@@ -140,7 +138,7 @@ void OverlayTree::InsertHandle(ref_ptr<OverlayHandle> handle, bool isTransparent
   HandleComparator comparator;
   for (auto const & info : elements)
   {
-    bool rejectByDepth = is3dMode ? posY > info.m_handle->GetPivotPerspective(modelView).y : false;
+    bool const rejectByDepth = is3dMode ? posY > info.m_handle->GetPivot(modelView, is3dMode).y : false;
     if (comparator.IsGreater(info.m_handle, handleToCompare) || rejectByDepth)
     {
       // Handle is displaced and bound to its parent, parent will be displaced too.
@@ -236,7 +234,7 @@ void OverlayTree::Select(m2::RectD const & rect, TSelectResult & result) const
     if (info.m_handle->IsVisible() && info.m_handle->GetFeatureID().IsValid())
     {
       OverlayHandle::Rects shape;
-      info.m_handle->GetPixelShape(screen, shape);
+      info.m_handle->GetPixelShape(screen, shape, false);
       for (m2::RectF const & rShape : shape)
       {
         if (rShape.IsIntersect(m2::RectF(rect)))
