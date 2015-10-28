@@ -1643,6 +1643,8 @@ void Framework::InvalidateRendering()
 
 UserMark const * Framework::OnTapEventImpl(m2::PointD pxPoint, bool isLong, bool isMyPosition, FeatureID feature)
 {
+  pxPoint = m_currentMovelView.P3dToP(pxPoint);
+
   if (isMyPosition)
   {
     search::AddressInfo info;
