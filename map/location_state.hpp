@@ -6,8 +6,6 @@
 
 #include "base/timer.hpp"
 
-#include "routing/turns.hpp"
-
 #include "platform/location.hpp"
 
 #include "std/function.hpp"
