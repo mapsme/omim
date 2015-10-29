@@ -592,6 +592,9 @@ public:
   bool IsRouteBuilding() const { return m_routingSession.IsBuilding(); }
   bool IsOnRoute() const { return m_routingSession.IsOnRoute(); }
   bool IsRouteNavigable() const { return m_routingSession.IsNavigable(); }
+  /// @return true if compass heading shall be used for map orientation and
+  /// false if gps bearing shall be used for map orientation.
+  routing::CourseType GetCourseType() const { return m_routingSession.GetCourseType(); }
   void BuildRoute(m2::PointD const & start, m2::PointD const & finish, uint32_t timeoutSec);
   // FollowRoute has a bug where the router follows the route even if the method hads't been called.
   // This method was added because we do not want to break the behaviour that is familiar to our users.
