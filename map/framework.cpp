@@ -1459,7 +1459,7 @@ m2::PointD Framework::GetVisiblePOI(FeatureID id, search::AddressInfo & info, fe
 
   GetAddressInfo(ft, center, info);
 
-  return GtoP(center);
+  return m_currentMovelView.isPerspective() ? GtoP3d(center) : GtoP(center);
 }
 
 namespace
@@ -1643,7 +1643,7 @@ void Framework::InvalidateRendering()
 
 UserMark const * Framework::OnTapEventImpl(m2::PointD pxPoint, bool isLong, bool isMyPosition, FeatureID feature)
 {
-  pxPoint = m_currentMovelView.P3dToP(pxPoint);
+  m2::PointD const pxPoint2d = m_currentMovelView.P3dToP(pxPoint);
 
   if (isMyPosition)
   {
@@ -1659,13 +1659,13 @@ UserMark const * Framework::OnTapEventImpl(m2::PointD pxPoint, bool isLong, bool
 
   m2::AnyRectD rect;
   uint32_t const touchRadius = vp.GetTouchRectRadius();
-  m_currentMovelView.GetTouchRect(pxPoint, touchRadius, rect);
+  m_currentMovelView.GetTouchRect(pxPoint2d, touchRadius, rect);
 
   m2::AnyRectD bmSearchRect;
   double const bmAddition = BM_TOUCH_PIXEL_INCREASE * vp.GetVisualScale();
   double const pxWidth  =  touchRadius;
   double const pxHeight = touchRadius + bmAddition;
-  m_currentMovelView.GetTouchRect(pxPoint + m2::PointD(0, bmAddition),
+  m_currentMovelView.GetTouchRect(pxPoint2d + m2::PointD(0, bmAddition),
                                   pxWidth, pxHeight, bmSearchRect);
   UserMark const * mark = m_bmManager.FindNearestUserMark(
         [&rect, &bmSearchRect](UserMarkType type) -> m2::AnyRectD const &
@@ -1688,7 +1688,7 @@ UserMark const * Framework::OnTapEventImpl(m2::PointD pxPoint, bool isLong, bool
   }
   else if (isLong)
   {
-    GetAddressInfoForPixelPoint(pxPoint, info);
+    GetAddressInfoForPixelPoint(pxPoint2d, info);
     pxPivot = pxPoint;
     needMark = true;
   }
@@ -1696,7 +1696,7 @@ UserMark const * Framework::OnTapEventImpl(m2::PointD pxPoint, bool isLong, bool
   if (needMark)
   {
     PoiMarkPoint * poiMark = UserMarkContainer::UserMarkForPoi();
-    poiMark->SetPtOrg(m_currentMovelView.PtoG(pxPivot));
+    poiMark->SetPtOrg(m_currentMovelView.PtoG(m_currentMovelView.P3dToP(pxPivot)));
     poiMark->SetInfo(info);
     poiMark->SetMetadata(move(metadata));
     return poiMark;
