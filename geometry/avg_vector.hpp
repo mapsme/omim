@@ -80,7 +80,7 @@ namespace math
 
   // Compass smoothing parameters
   // We're using technique described in
-  // http://windowsteamblog.com/windows_phone/b/wpdev/archive/2010/09/08/using-the-accelerometer-on-windows-phone-7.aspx
+  // https://blogs.windows.com/buildingapps/2010/09/08/using-the-accelerometer-on-windows-phone-7/
   // In short it's a combination of low-pass filter to smooth the
   // small orientation changes and a threshold filter to get big changes fast.
   // k in the following formula: O(n) = O(n-1) + k * (I - O(n - 1));

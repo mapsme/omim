@@ -960,7 +960,7 @@ bool State::IsCompassHeadingUsed() const
 {
   // If the current speed according to GPS is more than
   // kUseOnlyGpsHeadingSpeedMPS meters per second only GPS bearing is used.
-  double const kUseOnlyGpsBearingSpeedMPS = 4;
+  double const kUseOnlyGpsBearingSpeedMPS = 2;
   if (m_currentSpeedMPS > kUseOnlyGpsBearingSpeedMPS)
     return false;
   return m_framework->GetCourseType() == routing::CourseType::CompassHeadingForSmallSpeed;
