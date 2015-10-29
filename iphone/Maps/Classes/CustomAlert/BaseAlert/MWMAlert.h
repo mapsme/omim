@@ -24,6 +24,7 @@ typedef void (^RightButtonAction)();
 + (MWMAlert *)locationServiceNotSupportedAlert;
 + (MWMAlert *)pedestrianToastShareAlert:(BOOL)isFirstLaunch;
 + (MWMAlert *)point2PointAlertWithOkBlock:(RightButtonAction)block needToRebuild:(BOOL)needToRebuild;
++ (MWMAlert *)updateMapsAlert;
 - (void)close;
 
 - (void)setNeedsCloseAlertAfterEnterBackground;
