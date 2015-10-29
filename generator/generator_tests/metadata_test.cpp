@@ -171,6 +171,46 @@ UNIT_TEST(Metadata_ValidateAndFormat_wikipedia)
   params.GetMetadata().Drop(feature::Metadata::FMD_WIKIPEDIA);
 }
 
+UNIT_TEST(Metadata_ValidateAndFormat_description)
+{
+  FeatureParams params;
+  MetadataTagProcessor p(params);
+
+  p("description", "");
+  TEST(params.GetMetadata().Empty(), ("Empty"));
+
+  string line25("1двадцатьдва23");
+  TEST_EQUAL(line25.length(), 25, ("str length"));
+  string line63 = line25 + " 12345678901 " + line25;
+  string line255 = line63 + " " + line63 + " " + line63 + " " + line63;
+
+  p("description", line255);
+  TEST_EQUAL(params.GetMetadata().GetDescription(), line255, ("255 chars"));
+  TEST_EQUAL(params.GetMetadata().Get(feature::Metadata::FMD_DESCRIPTION2), "", ("255 chars"));
+  // We don't need to clear metadata, since description is always overwritten.
+
+  p("description", line255 + "ABC");
+  TEST_EQUAL(params.GetMetadata().GetDescription(), line255 + "ABC", ("258 chars"));
+  TEST_EQUAL(params.GetMetadata().Get(feature::Metadata::FMD_DESCRIPTION2), "ABC", ("258 chars"));
+
+  p("description", line255 + line255 + line255 + line255 + "A");
+  TEST_EQUAL(params.GetMetadata().GetDescription(), line255 + line255 + line255 + line255, ("1021 chars"));
+  TEST_EQUAL(params.GetMetadata().Get(feature::Metadata::FMD_DESCRIPTION),  line255, ("1021 chars"));
+  TEST_EQUAL(params.GetMetadata().Get(feature::Metadata::FMD_DESCRIPTION2), line255, ("1021 chars"));
+  TEST_EQUAL(params.GetMetadata().Get(feature::Metadata::FMD_DESCRIPTION3), line255, ("1021 chars"));
+  TEST_EQUAL(params.GetMetadata().Get(feature::Metadata::FMD_DESCRIPTION4), line255, ("1021 chars"));
+
+  string line254 = line255.substr(0, 254);
+  p("description", line254 + "Ж");
+  TEST_EQUAL(params.GetMetadata().GetDescription(), line254 + "Ж", ("255 chars w/uni"));
+
+  p("description", line254 + "Ж" + line254 + line254 + line254 + "Й");
+  TEST_EQUAL(params.GetMetadata().GetDescription(), line254 + "Ж" + line254 + line254 + line254 + "Й", ("1020 chars w/uni"));
+
+  p("description", line254 + "Ж" + line254 + line254 + line254 + "QЙ");
+  TEST_EQUAL(params.GetMetadata().GetDescription(), line254 + "Ж" + line254 + line254 + line254 + "Q", ("1020 chars w/uni split"));
+}
+
 UNIT_TEST(Metadata_ReadWrite_Intermediate)
 {
   FeatureParams params;

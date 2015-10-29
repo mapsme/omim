@@ -92,6 +92,7 @@ namespace feature
     string GetWikiTitle() const;
     void SetDescription(string const & s);
     string GetDescription() const;
+    void DropDescription();
 
     template <class ArchiveT> void SerializeToMWM(ArchiveT & ar) const
     {
