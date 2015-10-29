@@ -69,4 +69,21 @@ string Metadata::GetWikiTitle() const
   string value = this->Get(FMD_WIKIPEDIA);
   return UriDecode(value);
 }
+
+void Metadata::SetDescription(string const & s)
+{
+  this->Set(FMD_DESCRIPTION, s.substr(0, kMaxStringLength));
+  if (s.length() > kMaxStringLength)
+    this->Set(FMD_DESCRIPTION2, s.substr(kMaxStringLength, kMaxStringLength));
+  if (s.length() > kMaxStringLength * 2)
+    this->Set(FMD_DESCRIPTION3, s.substr(kMaxStringLength * 2, kMaxStringLength));
+  if (s.length() > kMaxStringLength * 3)
+    this->Set(FMD_DESCRIPTION4, s.substr(kMaxStringLength * 3, kMaxStringLength));
+}
+
+string Metadata::GetDescription() const
+{
+  return this->Get(FMD_DESCRIPTION) + this->Get(FMD_DESCRIPTION2) +
+    this->Get(FMD_DESCRIPTION3) + this->Get(FMD_DESCRIPTION4);
+}
 }  // namespace feature

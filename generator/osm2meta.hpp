@@ -127,7 +127,7 @@ public:
     {
       string const & value = ValidateAndFormat_description(v);
       if (!value.empty())
-        md.Add(Metadata::FMD_DESCRIPTION, value);
+        md.SetDescription(value);
     }
     return false;
   }
