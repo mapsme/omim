@@ -42,6 +42,8 @@ namespace search { struct AddressInfo; }
 
 - (void)showAPIBar;
 
+- (void)presentUpdateMapsAlert;
+
 - (void)performAction:(NSString *)action;
 
 - (void)openBookmarks;

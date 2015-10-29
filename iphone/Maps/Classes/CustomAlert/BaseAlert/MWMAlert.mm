@@ -8,6 +8,7 @@
 #import "MWMPedestrianShareAlert.h"
 #import "MWMRateAlert.h"
 #import "MWMRoutingDisclaimerAlert.h"
+#import "MWMUpdateMapsAlert.h"
 
 @implementation MWMAlert
 
@@ -93,6 +94,11 @@
 + (MWMAlert *)pedestrianToastShareAlert:(BOOL)isFirstLaunch
 {
   return [MWMPedestrianShareAlert alert:isFirstLaunch];
+}
+
++ (MWMAlert *)updateMapsAlert
+{
+  return [MWMUpdateMapsAlert alert];
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)orientation
