@@ -721,6 +721,11 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
   [self.alertController presentRoutingDisclaimerAlert];
 }
 
+- (void)presentUpdateMapsAlert
+{
+  [self.alertController presentUpdateMapsAlert];
+}
+
 #pragma mark - Getters
 
 - (MWMAlertViewController *)alertController
