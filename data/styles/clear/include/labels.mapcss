@@ -1136,7 +1136,7 @@ area|z17[landuse=forest][!name] {
 
 area|z17[leisure=garden][!name] {
 }
-area|z18-[leisure=park][name],
+area|z18-[leisure=park],
 area|z18-[landuse=forest][name] {
   icon-image: park-l.svg;
   text-offset: 10;
@@ -1147,7 +1147,7 @@ area|z18-[landuse=forest][name] {
   text-halo-color: @label_halo_light;
   text-halo-radius: 0.5;
 }
-area|z18-[leisure=garden][name] {
+area|z18-[leisure=garden] {
   icon-image: garden-l.svg;
   text-offset: 10;
   text: name;
@@ -1157,15 +1157,7 @@ area|z18-[leisure=garden][name] {
   text-halo-color: @label_halo_light;
   text-halo-radius: 0.5;
 }
-area|z18-[leisure=park][!name],
-{
-  icon-image: park-l.svg;
-}
 area|z18-[landuse=forest][!name] {
-}
-
-area|z18-[leisure=garden][!name] {
-  icon-image: garden-l.svg;
 }
 
 /* BEACH LABELS */
