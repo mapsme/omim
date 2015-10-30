@@ -44,7 +44,7 @@ void PoiSymbolShape::Draw(ref_ptr<dp::Batcher> batcher, ref_ptr<dp::TextureManag
                                glsl::vec2(texRect.maxX(), texRect.minY())},
   };
 
-  dp::GLState state(gpu::TEXTURING_PROGRAM, dp::GLState::OverlayLayer);
+  dp::GLState state(gpu::TEXTURING_BILLBOARD_PROGRAM, dp::GLState::OverlayLayer);
   state.SetColorTexture(region.GetTexture());
 
   dp::AttributeProvider provider(1, 4);
@@ -54,7 +54,8 @@ void PoiSymbolShape::Draw(ref_ptr<dp::Batcher> batcher, ref_ptr<dp::TextureManag
                                                                          dp::Bottom,
                                                                          m_pt,
                                                                          pixelSize,
-                                                                         m_params.m_depth);
+                                                                         m_params.m_depth,
+                                                                         true);
 
   batcher->InsertTriangleStrip(state, make_ref(&provider), move(handle));
 }

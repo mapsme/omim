@@ -210,6 +210,11 @@ void Framework::SetMapStyle(MapStyle mapStyle)
   m_work.SetMapStyle(mapStyle);
 }
 
+void Framework::Enable3dMode(bool enable)
+{
+  m_work.Enable3dMode(enable);
+}
+
 Storage & Framework::Storage()
 {
   return m_work.Storage();
@@ -1325,5 +1330,16 @@ extern "C"
   Java_com_mapswithme_maps_Framework_nativeDeregisterMaps(JNIEnv * env, jclass thiz)
   {
     frm()->DeregisterAllMaps();
+  }
+
+  JNIEXPORT void JNICALL
+  Java_com_mapswithme_maps_Framework_nativeEnable3dMode(JNIEnv * env, jclass thiz, jboolean enable)
+  {
+    bool const enable3d = static_cast<bool>(enable);
+
+    g_framework->PostDrapeTask([enable3d]()
+    {
+      g_framework->Enable3dMode(enable3d);
+    });
   }
 } // extern "C"

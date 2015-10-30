@@ -8,7 +8,7 @@ namespace df
 TextHandle::TextHandle(FeatureID const & id, strings::UniString const & text,
                        dp::Anchor anchor, double priority,
                        ref_ptr<dp::TextureManager> textureManager)
-  : OverlayHandle(id, anchor, priority)
+  : OverlayHandle(id, anchor, priority, false)
   , m_forceUpdateNormals(false)
   , m_isLastVisible(false)
   , m_text(text)
@@ -19,8 +19,9 @@ TextHandle::TextHandle(FeatureID const & id, strings::UniString const & text,
 TextHandle::TextHandle(FeatureID const & id, strings::UniString const & text,
                        dp::Anchor anchor, double priority,
                        ref_ptr<dp::TextureManager> textureManager,
-                       gpu::TTextDynamicVertexBuffer && normals)
-  : OverlayHandle(id, anchor, priority)
+                       gpu::TTextDynamicVertexBuffer && normals,
+                       bool isBillboard)
+  : OverlayHandle(id, anchor, priority, isBillboard)
   , m_normals(move(normals))
   , m_forceUpdateNormals(false)
   , m_isLastVisible(false)

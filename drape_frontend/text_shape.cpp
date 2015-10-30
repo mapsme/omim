@@ -26,15 +26,19 @@ public:
                      dp::Anchor anchor, glsl::vec2 const & pivot,
                      glsl::vec2 const & pxSize, glsl::vec2 const & offset,
                      double priority, ref_ptr<dp::TextureManager> textureManager,
-                     gpu::TTextDynamicVertexBuffer && normals)
-    : TextHandle(id, text, anchor, priority, textureManager, move(normals))
+                     gpu::TTextDynamicVertexBuffer && normals,
+                     bool isBillboard = false)
+    : TextHandle(id, text, anchor, priority, textureManager, move(normals), isBillboard)
     , m_pivot(glsl::ToPoint(pivot))
     , m_offset(glsl::ToPoint(offset))
     , m_size(glsl::ToPoint(pxSize))
   {}
 
-  m2::RectD GetPixelRect(ScreenBase const & screen) const override
+  m2::RectD GetPixelRect(ScreenBase const & screen, bool perspective) const override
   {
+    if (perspective)
+      return GetPixelRectPerspective(screen);
+
     m2::PointD pivot = screen.GtoP(m_pivot) + m_offset;
     double x = pivot.x;
     double y = pivot.y;
@@ -64,9 +68,9 @@ public:
                      max(x, pivot.x), max(y, pivot.y));
   }
 
-  void GetPixelShape(ScreenBase const & screen, Rects & rects) const override
+  void GetPixelShape(ScreenBase const & screen, Rects & rects, bool perspective) const override
   {
-    rects.push_back(m2::RectF(GetPixelRect(screen)));
+    rects.emplace_back(GetPixelRect(screen, perspective));
   }
 
 private:
@@ -134,7 +138,7 @@ void TextShape::DrawSubString(StraightTextLayout const & layout,
                staticBuffer,
                dynamicBuffer);
 
-  dp::GLState state(gpu::TEXT_PROGRAM, dp::GLState::OverlayLayer);
+  dp::GLState state(gpu::TEXT_BILLBOARD_PROGRAM, dp::GLState::OverlayLayer);
   ASSERT(color.GetTexture() == outline.GetTexture(), ());
   state.SetColorTexture(color.GetTexture());
   state.SetMaskTexture(layout.GetMaskTexture());
@@ -149,7 +153,8 @@ void TextShape::DrawSubString(StraightTextLayout const & layout,
                                                                            glsl::vec2(pixelSize.x, pixelSize.y),
                                                                            baseOffset, m_params.m_depth,
                                                                            textures,
-                                                                           move(dynamicBuffer));
+                                                                           move(dynamicBuffer),
+                                                                           true);
 
   dp::AttributeProvider provider(2, staticBuffer.size());
   provider.InitStream(0, gpu::TextStaticVertex::GetBindingInfo(), make_ref(staticBuffer.data()));

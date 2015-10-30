@@ -15,6 +15,9 @@ extern NSString * const kMwmTextToSpeechDisable;
 
   if ([self performSound:cmd])
     return YES;
+  
+  if ([self perform3dMode:cmd])
+    return YES;
 
   return NO;
 }
@@ -49,6 +52,21 @@ extern NSString * const kMwmTextToSpeechDisable;
   if (nosound)
     [[NSNotificationCenter defaultCenter] postNotificationName:kMwmTextToSpeechDisable object:nil];
 
+  return YES;
+}
+
++ (BOOL)perform3dMode:(NSString *)cmd
+{
+  // Hook for shell command on change 3d mode
+  BOOL const enable = [cmd isEqualToString:@"?3d"];
+  BOOL const disable = [cmd isEqualToString:@"?2d"];
+  
+  if (!enable && !disable)
+    return NO;
+  
+  Framework & frm = GetFramework();
+  frm.Enable3dMode(enable);
+  
   return YES;
 }
 

@@ -36,7 +36,7 @@ struct OverlayTraits
 
   inline m2::RectD const LimitRect(OverlayInfo const & info)
   {
-    return info.m_handle->GetPixelRect(m_modelView);
+    return info.m_handle->GetPixelRect(m_modelView, m_modelView.isPerspective());
   }
 };
 

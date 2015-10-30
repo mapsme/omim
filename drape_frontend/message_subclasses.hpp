@@ -586,4 +586,31 @@ public:
   Type GetType() const override { return Message::InvalidateTextures; }
 };
 
+class Enable3dModeMessage : public Message
+{
+public:
+  Enable3dModeMessage(float rotationAngle, float angleFOV)
+    : m_angleFOV(angleFOV)
+    , m_rotationAngle(rotationAngle)
+  {}
+
+  Type GetType() const override { return Message::Enable3dMode; }
+
+  float GetAngleFOV() const { return m_angleFOV; }
+  float GetRotationAngle() const { return m_rotationAngle; }
+
+private:
+  float m_angleFOV;
+  float m_rotationAngle;
+};
+
+class Disable3dModeMessage : public Message
+{
+public:
+  Disable3dModeMessage()
+  {}
+
+  Type GetType() const override { return Message::Disable3dMode; }
+};
+
 } // namespace df

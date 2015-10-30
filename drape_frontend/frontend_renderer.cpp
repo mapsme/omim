@@ -1,9 +1,13 @@
 #include "drape_frontend/animation/interpolation_holder.hpp"
 #include "drape_frontend/gui/drape_gui.hpp"
+#include "drape_frontend/framebuffer.hpp"
 #include "drape_frontend/frontend_renderer.hpp"
 #include "drape_frontend/message_subclasses.hpp"
+#include "drape_frontend/renderer3d.hpp"
 #include "drape_frontend/visual_params.hpp"
 #include "drape_frontend/user_mark_shapes.hpp"
+
+#include "drape/shader_def.hpp"
 
 #include "drape/utils/glyph_usage_tracker.hpp"
 #include "drape/utils/gpu_mem_tracker.hpp"
@@ -39,6 +43,11 @@ FrontendRenderer::FrontendRenderer(Params const & params)
   , m_gpuProgramManager(new dp::GpuProgramManager())
   , m_routeRenderer(new RouteRenderer())
   , m_overlayTree(new dp::OverlayTree())
+  , m_useFramebuffer(false)
+  , m_isBillboardRenderPass(false)
+  , m_3dModeChanged(true)
+  , m_framebuffer(new Framebuffer())
+  , m_renderer3d(new Renderer3d())
   , m_viewport(params.m_viewport)
   , m_userEventStream(params.m_isCountryLoadedFn)
   , m_modelViewChangedFn(params.m_modelViewChangedFn)
@@ -360,6 +369,28 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
 
       break;
     }
+  case Message::Enable3dMode:
+    {
+      if (!m_useFramebuffer)
+      {
+        ref_ptr<Enable3dModeMessage> const msg = message;
+        AddUserEvent(Enable3dModeEvent(msg->GetRotationAngle(), msg->GetAngleFOV()));
+        m_useFramebuffer = true;
+        m_3dModeChanged = true;
+      }
+      break;
+    }
+
+  case Message::Disable3dMode:
+    {
+      if (m_useFramebuffer)
+      {
+        m_useFramebuffer = false;
+        m_3dModeChanged = true;
+        AddUserEvent(Disable3dMode());
+      }
+      break;
+    }
 
   default:
     ASSERT(false, ());
@@ -373,10 +404,34 @@ unique_ptr<threads::IRoutine> FrontendRenderer::CreateRoutine()
 
 void FrontendRenderer::OnResize(ScreenBase const & screen)
 {
-  m_viewport.SetViewport(0, 0, screen.GetWidth(), screen.GetHeight());
+  m2::RectD const viewportRect = screen.isPerspective() ? screen.PixelRectIn3d() : screen.PixelRect();
+
   m_myPositionController->SetPixelRect(screen.PixelRect());
-  m_contextFactory->getDrawContext()->resize(m_viewport.GetWidth(), m_viewport.GetHeight());
+  m_viewport.SetViewport(0, 0, screen.GetWidth(), screen.GetHeight());
+  m_contextFactory->getDrawContext()->resize(viewportRect.SizeX(), viewportRect.SizeY());
   RefreshProjection();
+
+  if (m_useFramebuffer)
+  {
+    int width = screen.GetWidth();
+    int height = screen.GetHeight();
+    int const maxSide = max(width, height);
+    if (maxSide > m_framebuffer->GetMaxSize())
+    {
+      width = width * m_framebuffer->GetMaxSize() / maxSide;
+      height = height * m_framebuffer->GetMaxSize() / maxSide;
+      LOG(LINFO, ("Max texture size:", m_framebuffer->GetMaxSize(), ", expanded screen size:", maxSide,
+                  ", scale:", m_framebuffer->GetMaxSize() / (double)maxSide));
+    }
+
+    m_viewport.SetViewport(0, 0, width, height);
+
+    m_renderer3d->SetSize(viewportRect.SizeX(), viewportRect.SizeY());
+    m_framebuffer->SetDefaultContext(m_contextFactory->getDrawContext());
+    m_framebuffer->SetSize(width, height);
+
+    RefreshPivotTransform(screen);
+  }
 }
 
 void FrontendRenderer::AddToRenderGroup(vector<drape_ptr<RenderGroup>> & groups,
@@ -467,7 +522,7 @@ FeatureID FrontendRenderer::GetVisiblePOI(m2::RectD const & pixelRect) const
   ScreenBase const & screen = m_userEventStream.GetCurrentScreen();
   for (ref_ptr<dp::OverlayHandle> handle : selectResult)
   {
-    double const curDist = pt.SquareLength(handle->GetPivot(screen));
+    double const curDist = pt.SquareLength(handle->GetPivot(screen, false));
     if (curDist < dist)
     {
       dist = curDist;
@@ -506,6 +561,12 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
   BeforeDrawFrame();
 #endif
 
+  if (m_useFramebuffer)
+  {
+    m_framebuffer->SetDefaultContext(m_contextFactory->getDrawContext());
+    m_framebuffer->Enable();
+  }
+
   RenderGroupComparator comparator;
   sort(m_renderGroups.begin(), m_renderGroups.end(), bind(&RenderGroupComparator::operator (), &comparator, _1, _2));
 
@@ -543,15 +604,18 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
   GLFunctions::glClear();
 
   dp::GLState::DepthLayer prevLayer = dp::GLState::GeometryLayer;
-  size_t currentRenderGroup = 0;
-  for (; currentRenderGroup < m_renderGroups.size(); ++currentRenderGroup)
+  size_t overlayRenderGroup = 0;
+  for (size_t currentRenderGroup = 0; currentRenderGroup < m_renderGroups.size(); ++currentRenderGroup)
   {
     drape_ptr<RenderGroup> const & group = m_renderGroups[currentRenderGroup];
 
     dp::GLState const & state = group->GetState();
     dp::GLState::DepthLayer layer = state.GetDepthLayer();
     if (prevLayer != layer && layer == dp::GLState::OverlayLayer)
+    {
+      overlayRenderGroup = currentRenderGroup;
       break;
+    }
 
     prevLayer = layer;
     RenderSingleGroup(modelView, make_ref(group));
@@ -574,7 +638,7 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
   m_myPositionController->Render(MyPositionController::RenderAccuracy,
                                  modelView, make_ref(m_gpuProgramManager), m_generalUniforms);
 
-  for (; currentRenderGroup < m_renderGroups.size(); ++currentRenderGroup)
+  for (size_t currentRenderGroup = overlayRenderGroup; currentRenderGroup < m_renderGroups.size(); ++currentRenderGroup)
   {
     drape_ptr<RenderGroup> const & group = m_renderGroups[currentRenderGroup];
     RenderSingleGroup(modelView, make_ref(group));
@@ -588,11 +652,14 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
 
   m_routeRenderer->RenderRoute(modelView, make_ref(m_gpuProgramManager), m_generalUniforms);
 
-  for (drape_ptr<UserMarkRenderGroup> const & group : m_userMarkRenderGroups)
+  if (!m_useFramebuffer)
   {
-    ASSERT(group.get() != nullptr, ());
-    if (m_userMarkVisibility.find(group->GetTileKey()) != m_userMarkVisibility.end())
-      RenderSingleGroup(modelView, make_ref(group));
+    for (drape_ptr<UserMarkRenderGroup> const & group : m_userMarkRenderGroups)
+    {
+      ASSERT(group.get() != nullptr, ());
+      if (m_userMarkVisibility.find(group->GetTileKey()) != m_userMarkVisibility.end())
+        RenderSingleGroup(modelView, make_ref(group));
+    }
   }
 
   m_routeRenderer->RenderRouteSigns(modelView, make_ref(m_gpuProgramManager), m_generalUniforms);
@@ -603,6 +670,32 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
   if (m_guiRenderer != nullptr)
     m_guiRenderer->Render(make_ref(m_gpuProgramManager), modelView);
 
+  if (m_useFramebuffer)
+  {
+    m_framebuffer->Disable();
+    m_renderer3d->Render(modelView, m_framebuffer->GetTextureId(), make_ref(m_gpuProgramManager));
+
+    m_isBillboardRenderPass = true;
+
+    // TODO: Try to avoid code duplicate in billboard render pass.
+    GLFunctions::glDisable(gl_const::GLDepthTest);
+    for (size_t currentRenderGroup = overlayRenderGroup; currentRenderGroup < m_renderGroups.size(); ++currentRenderGroup)
+    {
+      drape_ptr<RenderGroup> const & group = m_renderGroups[currentRenderGroup];
+      RenderSingleGroup(modelView, make_ref(group));
+    }
+
+    for (drape_ptr<UserMarkRenderGroup> const & group : m_userMarkRenderGroups)
+    {
+      ASSERT(group.get() != nullptr, ());
+      group->UpdateAnimation();
+      if (m_userMarkVisibility.find(group->GetTileKey()) != m_userMarkVisibility.end())
+        RenderSingleGroup(modelView, make_ref(group));
+    }
+
+    m_isBillboardRenderPass = false;
+  }
+
   GLFunctions::glEnable(gl_const::GLDepthTest);
 
 #ifdef DRAW_INFO
@@ -610,11 +703,23 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
 #endif
 }
 
+bool FrontendRenderer::IsBillboardProgram(int programIndex) const
+{
+  return programIndex == gpu::TEXTURING_BILLBOARD_PROGRAM
+      || programIndex == gpu::TEXT_BILLBOARD_PROGRAM
+      || programIndex == gpu::BOOKMARK_BILLBOARD_PROGRAM;
+}
+
 void FrontendRenderer::RenderSingleGroup(ScreenBase const & modelView, ref_ptr<BaseRenderGroup> group)
 {
+  dp::GLState const & state = group->GetState();
+  bool const isBillboardProgram = IsBillboardProgram(state.GetProgramIndex());
+
+  if (m_useFramebuffer && (m_isBillboardRenderPass != isBillboardProgram))
+    return;
+
   group->UpdateAnimation();
 
-  dp::GLState const & state = group->GetState();
   ref_ptr<dp::GpuProgram> program = m_gpuProgramManager->GetProgram(state.GetProgramIndex());
   program->Bind();
 
@@ -646,6 +751,17 @@ void FrontendRenderer::RefreshModelView(ScreenBase const & screen)
   mv(3, 0) = m(0, 2); mv(3, 1) = m(1, 2); mv(3, 2) = 0; mv(3, 3) = m(2, 2);
 
   m_generalUniforms.SetMatrix4x4Value("modelView", mv.m_data);
+}
+
+void FrontendRenderer::RefreshPivotTransform(ScreenBase const & screen)
+{
+  if (m_useFramebuffer)
+  {
+    math::Matrix<float, 4, 4> const transform(screen.PTo3dMatrix());
+    m_generalUniforms.SetMatrix4x4Value("pivotTransform", transform.m_data);
+  }
+  else
+    m_generalUniforms.SetMatrix4x4Value("pivotTransform", math::Identity<float, 4>().m_data);
 }
 
 void FrontendRenderer::RefreshBgColor()
@@ -940,6 +1056,10 @@ ScreenBase const & FrontendRenderer::ProcessEvents(bool & modelViewChanged, bool
 {
   ScreenBase const & modelView = m_userEventStream.ProcessEvents(modelViewChanged, viewportChanged);
   gui::DrapeGui::Instance().SetInUserAction(m_userEventStream.IsInUserAction());
+
+  viewportChanged = viewportChanged || m_3dModeChanged;
+  m_3dModeChanged = false;
+
   return modelView;
 }
 
@@ -947,6 +1067,7 @@ void FrontendRenderer::PrepareScene(ScreenBase const & modelView)
 {
   RefreshModelView(modelView);
   RefreshBgColor();
+  RefreshPivotTransform(modelView);
 }
 
 void FrontendRenderer::UpdateScene(ScreenBase const & modelView)

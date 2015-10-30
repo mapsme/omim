@@ -35,14 +35,17 @@ void OverlayTree::StartOverlayPlacing(ScreenBase const & screen)
 void OverlayTree::Add(ref_ptr<OverlayHandle> handle, bool isTransparent)
 {
   ScreenBase const & modelView = GetModelView();
+  bool const is3dMode = modelView.isPerspective();
 
   handle->SetIsVisible(false);
 
   if (!handle->Update(modelView))
     return;
 
-  m2::RectD const pixelRect = handle->GetPixelRect(modelView);
-  if (!m_traits.m_modelView.PixelRect().IsIntersect(pixelRect))
+  m2::RectD const pixelRect = handle->GetPixelRect(modelView, is3dMode);
+
+  if (!modelView.PixelRect().IsIntersect(handle->GetPixelRect(modelView, false)) ||
+      (is3dMode && !modelView.PixelRectIn3d().IsIntersect(pixelRect)))
   {
     handle->SetIsVisible(false);
     return;
@@ -61,6 +64,7 @@ void OverlayTree::Add(ref_ptr<OverlayHandle> handle, bool isTransparent)
   });
 
   double const inputPriority = handle->GetPriority();
+  double const posY = is3dMode ? handle->GetPivot(modelView, true).y : 0.0;
   /*
    * In this loop we decide which element must be visible
    * If input element "handle" more priority than all "Intersected elements"
@@ -68,8 +72,11 @@ void OverlayTree::Add(ref_ptr<OverlayHandle> handle, bool isTransparent)
    * But if some of already inserted elements more priority than we don't insert "handle"
    */
   for (OverlayContainerT::const_iterator it = elements.begin(); it != elements.end(); ++it)
-    if (inputPriority < it->m_handle->GetPriority())
+  {
+    bool const rejectByDepth = is3dMode ? posY > it->m_handle->GetPivot(modelView, true).y : false;
+    if (inputPriority < it->m_handle->GetPriority() || rejectByDepth)
       return;
+  }
 
   for (OverlayContainerT::const_iterator it = elements.begin(); it != elements.end(); ++it)
     Erase(*it);
@@ -93,7 +100,7 @@ void OverlayTree::Select(m2::RectD const & rect, TSelectResult & result) const
     if (info.m_handle->IsVisible() && info.m_handle->GetFeatureID().IsValid())
     {
       OverlayHandle::Rects shape;
-      info.m_handle->GetPixelShape(screen, shape);
+      info.m_handle->GetPixelShape(screen, shape, false);
       for (m2::RectF const & rShape : shape)
       {
         if (rShape.IsIntersect(m2::RectF(rect)))

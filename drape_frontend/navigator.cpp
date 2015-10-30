@@ -31,7 +31,8 @@ namespace df
 {
 
 Navigator::Navigator()
-  : m_InAction(false)
+  : m_is3dMode(false)
+  , m_InAction(false)
 {
 }
 
@@ -510,6 +511,20 @@ void Navigator::StopScale(m2::PointD const & pt1, m2::PointD const & pt2)
 bool Navigator::IsRotatingDuringScale() const
 {
   return m_IsRotatingDuringScale;
+}
+
+void Navigator::Enable3dMode(double rotationAngle, double angleFOV)
+{
+  ASSERT(!m_is3dMode, ());
+  m_Screen.ApplyPerspective(rotationAngle, angleFOV);
+  m_is3dMode = true;
+}
+
+void Navigator::Disable3dMode()
+{
+  ASSERT(m_is3dMode, ());
+  m_Screen.ResetPerspective();
+  m_is3dMode = false;
 }
 
 m2::AnyRectD ToRotated(Navigator const & navigator, m2::RectD const & rect)

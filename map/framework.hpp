@@ -529,6 +529,8 @@ public:
   inline void GenerateTurnSound(vector<string> & turnNotifications)
       { return m_routingSession.GenerateTurnSound(turnNotifications); }
 
+  void Enable3dMode(bool enable);
+
 private:
   void SetRouterImpl(routing::RouterType type);
   void RemoveRoute(bool deactivateFollowing);

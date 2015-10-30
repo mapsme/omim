@@ -45,6 +45,8 @@ namespace df
 {
 
 class SelectionShape;
+class Framebuffer;
+class Renderer3d;
 
 struct TapInfo
 {
@@ -132,6 +134,7 @@ private:
   void RenderSingleGroup(ScreenBase const & modelView, ref_ptr<BaseRenderGroup> group);
   void RefreshProjection();
   void RefreshModelView(ScreenBase const & screen);
+  void RefreshPivotTransform(ScreenBase const & screen);
   void RefreshBgColor();
 
   ScreenBase const & ProcessEvents(bool & modelViewChanged, bool & viewportChanged);
@@ -193,6 +196,8 @@ private:
   FeatureID GetVisiblePOI(m2::PointD const & pixelPoint) const;
   FeatureID GetVisiblePOI(m2::RectD const & pixelRect) const;
 
+  bool IsBillboardProgram(int programIndex) const;
+
 private:
   drape_ptr<dp::GpuProgramManager> m_gpuProgramManager;
 
@@ -209,6 +214,12 @@ private:
   drape_ptr<dp::OverlayTree> m_overlayTree;
 
   dp::UniformValuesStorage m_generalUniforms;
+
+  bool m_useFramebuffer;
+  bool m_isBillboardRenderPass;
+  bool m_3dModeChanged;
+  drape_ptr<Framebuffer> m_framebuffer;
+  drape_ptr<Renderer3d> m_renderer3d;
 
   Viewport m_viewport;
   UserEventStream m_userEventStream;

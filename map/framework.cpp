@@ -1992,3 +1992,12 @@ void Framework::SetLastUsedRouter(RouterType type)
 {
   Settings::Set(kRouterTypeKey, routing::ToString(type));
 }
+
+void Framework::Enable3dMode(bool enable)
+{
+  ASSERT(m_drapeEngine != nullptr, ());
+  if (enable)
+    m_drapeEngine->Enable3dMode(M_PI_4, M_PI / 3.0f);
+  else
+    m_drapeEngine->Disable3dMode();
+}

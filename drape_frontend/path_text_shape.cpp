@@ -50,8 +50,11 @@ public:
     return m_layout->CacheDynamicGeometry(m_centerPointIter, screen, m_normals);
   }
 
-  m2::RectD GetPixelRect(ScreenBase const & screen) const override
+  m2::RectD GetPixelRect(ScreenBase const & screen, bool perspective) const override
   {
+    if (perspective)
+      return GetPixelRectPerspective(screen);
+
     m2::PointD const pixelPivot(screen.GtoP(m_centerPointIter.m_pos));
     m2::RectD result;
     for (gpu::TextDynamicVertex const & v : m_normals)
@@ -60,7 +63,7 @@ public:
     return result;
   }
 
-  void GetPixelShape(ScreenBase const & screen, Rects & rects) const override
+  void GetPixelShape(ScreenBase const & screen, Rects & rects, bool perspective) const override
   {
     m2::PointD const pixelPivot(screen.GtoP(m_centerPointIter.m_pos));
     for (size_t quadIndex = 0; quadIndex < m_normals.size(); quadIndex += 4)
@@ -70,7 +73,8 @@ public:
       r.Add(pixelPivot + glsl::ToPoint(m_normals[quadIndex + 1].m_normal));
       r.Add(pixelPivot + glsl::ToPoint(m_normals[quadIndex + 2].m_normal));
       r.Add(pixelPivot + glsl::ToPoint(m_normals[quadIndex + 3].m_normal));
-      rects.push_back(r);
+
+      rects.emplace_back(perspective ? m2::RectF(GetPerspectiveRect(m2::RectD(r), screen)) : move(r));
     }
   }
 
