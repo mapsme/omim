@@ -35,11 +35,25 @@ node|z3[place=country]
   text-color: @country_label;
   z-index: 1000;
 }
+node|z3[place=country]::int_name
+{
+  text: int_name;
+  font-size: 8.5;
+  text-color: @country_label;
+  z-index: 1000;
+}
 
 node|z4[place=country]
 {
   text: name;
   font-size: 14;
+  text-color: @country_label;
+  z-index: 1000;
+}
+node|z4[place=country]::int_name
+{
+  text: name;
+  font-size: 12;
   text-color: @country_label;
   z-index: 1000;
 }
@@ -51,11 +65,25 @@ node|z5[place=country]
   text-color: @country_label;
   z-index: 1000;
 }
+node|z5[place=country]::int_name
+{
+  text: int_name;
+  font-size: 14;
+  text-color: @country_label;
+  z-index: 1000;
+}
 
 node|z6-[place=country]
 {
   text: name;
   font-size: 18;
+  text-color: @country_label;
+  z-index: 1000;
+}
+node|z6-[place=country]::int_name
+{
+  text: name;
+  font-size: 16;
   text-color: @country_label;
   z-index: 1000;
 }
