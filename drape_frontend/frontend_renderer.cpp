@@ -681,7 +681,13 @@ void FrontendRenderer::OnTap(m2::PointD const & pt, bool isLongTap)
 
 void FrontendRenderer::OnDoubleTap(m2::PointD const & pt)
 {
-  m_userEventStream.AddEvent(ScaleEvent(2.0 /*scale factor*/, pt, true /*animated*/));
+  m_userEventStream.AddEvent(ScaleEvent(2.0 /* scale factor */, pt, true /* animated */));
+}
+
+void FrontendRenderer::OnTwoFingersTap()
+{
+  ScreenBase const & screen = m_userEventStream.GetCurrentScreen();
+  m_userEventStream.AddEvent(ScaleEvent(0.5 /* scale factor */, screen.PixelRect().Center(), true /* animated */));
 }
 
 bool FrontendRenderer::OnSingleTouchFiltrate(m2::PointD const & pt, TouchEvent::ETouchType type)
@@ -818,7 +824,7 @@ void FrontendRenderer::Routine::Do()
 
   int const kMaxInactiveFrames = 60;
 
-  my::HighResTimer timer;
+  my::Timer timer;
   timer.Reset();
 
   double frameTime = 0.0;
@@ -873,7 +879,8 @@ void FrontendRenderer::Routine::Do()
 
       while (availableTime > 0)
       {
-        m_renderer.ProcessSingleMessage(availableTime * 1000.0);
+        if (m_renderer.ProcessSingleMessage(availableTime * 1000.0))
+          inactiveFrameCount = 0;
         availableTime = VSyncInterval - timer.ElapsedSeconds();
       }
     }
