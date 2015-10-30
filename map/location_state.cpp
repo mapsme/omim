@@ -29,15 +29,11 @@
 
 namespace location
 {
-
 namespace
 {
-
 static const int POSITION_Y_OFFSET = 75;
 static const double POSITION_TOLERANCE = 1.0E-6;  // much less than coordinates coding error
 static const double ANGLE_TOLERANCE = my::DegToRad(3.0);
-static const double GPS_BEARING_LIFETIME_S = 5.0;
-
 
 uint16_t IncludeModeBit(uint16_t mode, uint16_t bit)
 {
@@ -248,7 +244,7 @@ private:
 
 string const LocationStateMode = "LastLocationStateMode";
 
-}
+}  // namespace
 
 State::Params::Params()
   : m_locationAreaColor(0, 0, 0, 0),
@@ -396,9 +392,9 @@ void State::TurnOff()
   invalidate();
 }
 
-void State::OnLocationUpdate(location::GpsInfo const & info, bool isNavigable, location::RouteMatchingInfo const & routeMatchingInfo)
+void State::OnLocationUpdate(location::GpsInfo const & info, location::RouteMatchingInfo const & routeMatchingInfo)
 {
-  Assign(info, isNavigable);
+  Assign(info);
   m_routeMatchingInfo = routeMatchingInfo;
 
   setIsVisible(true);
@@ -413,15 +409,6 @@ void State::OnLocationUpdate(location::GpsInfo const & info, bool isNavigable, l
 
   CallPositionChangedListeners(m_position);
   invalidate();
-}
-
-void State::OnCompassUpdate(location::CompassInfo const & info)
-{
-  if (Assign(info))
-  {
-    AnimateFollow();
-    invalidate();
-  }
 }
 
 void State::CallStateModeListeners()
@@ -901,7 +888,7 @@ void State::RotateOnNorth()
   m_framework->GetAnimator().RotateScreen(GetModelView().GetAngle(), 0.0);
 }
 
-void State::Assign(location::GpsInfo const & info, bool isNavigable)
+void State::Assign(location::GpsInfo const & info)
 {
   m2::RectD rect = MercatorBounds::MetresToXY(info.m_longitude,
                                               info.m_latitude,
@@ -909,23 +896,12 @@ void State::Assign(location::GpsInfo const & info, bool isNavigable)
   m_position = rect.Center();
   m_errorRadius = rect.SizeX() / 2;
 
-  bool const hasBearing = info.HasBearing();
-  if ((isNavigable && hasBearing)
-      || (!isNavigable && hasBearing && info.HasSpeed() && info.m_speed > 1.0))
+  double const kMaxKeepBearingSpeedMPS = 0.3;
+  if (info.HasBearing() && info.m_speed > kMaxKeepBearingSpeedMPS)
   {
     SetDirection(my::DegToRad(info.m_bearing));
     m_lastGPSBearing.Reset();
   }
-}
-
-bool State::Assign(location::CompassInfo const & info)
-{
-  if ((IsInRouting() && GetMode() >= Follow) ||
-      (m_lastGPSBearing.ElapsedSeconds() < GPS_BEARING_LIFETIME_S))
-    return false;
-
-  SetDirection(info.m_bearing);
-  return true;
 }
 
 void State::SetDirection(double bearing)
@@ -946,5 +922,4 @@ m2::PointD const State::GetPositionForDraw() const
 
   return pivot();
 }
-
-}
+} //  namespace location
