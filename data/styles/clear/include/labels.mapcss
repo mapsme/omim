@@ -281,6 +281,12 @@ node|z8[place=town][population>=40000] {
   text-color: @city_label;
   z-index: 2000;
 }
+node|z8[place=town][population>=40000]::int_name {
+  font-size: 8;
+  text: int_name;
+  text-color: @city_label;
+  z-index: 2000;
+}
 node|z8[place=state]
 {
   text: name;
@@ -318,6 +324,14 @@ node|z9[place=city][capital=2] {
 node|z9[place=town][population>=20000]  {
   font-size: 10;
   text: name;
+  text-color: @city_label;
+  text-halo-radius: 1;
+  text-halo-opacity: 0.5;
+  text-halo-color: @label_halo_bg;
+}
+node|z9[place=town][population>=20000]::int_name  {
+  font-size: 8;
+  text: int_name;
   text-color: @city_label;
   text-halo-radius: 1;
   text-halo-opacity: 0.5;
@@ -366,6 +380,15 @@ node|z10[place=town] {
   text-halo-color: @label_halo_bg;
   z-index: 2000;
 }
+node|z10[place=town]::int_name {
+  font-size: 8;
+  text: int_name;
+  text-color: @city_label;
+  text-halo-radius: 1;
+  text-halo-opacity: 1;
+  text-halo-color: @label_halo_bg;
+  z-index: 2000;
+}
 node|z9[place=state]
 {
   text: name;
@@ -401,6 +424,14 @@ node|z11[place=city][capital=2]{
 node|z11[place=town] {
   font-size: 12;
   text: name;
+  text-color: @label_medium;
+  text-halo-radius: 1;
+  text-halo-opacity: 0.5;
+  text-halo-color: @label_halo_medium;
+}
+node|z11[place=town]::int_name {
+  font-size: 10;
+  text: int_name;
   text-color: @label_medium;
   text-halo-radius: 1;
   text-halo-opacity: 0.5;
@@ -448,6 +479,14 @@ node|z12[place=town] {
   text-halo-opacity: 0.5;
   text-halo-color: @label_halo_medium;
 }
+node|z12[place=town]::int_name {
+  font-size: 12;
+  text: int_name;
+  text-color: @label_medium;
+  text-halo-radius: 1;
+  text-halo-opacity: 0.5;
+  text-halo-color: @label_halo_medium;
+}
 
 node|z12[place=village] {
   font-size: 12;
@@ -462,6 +501,14 @@ node|z12[place=village] {
 node|z13-17[place=town] {
   font-size: 14;
   text: name;
+  text-color: @label_medium;
+  text-halo-radius: 1;
+  text-halo-opacity: 0.5;
+  text-halo-color: @label_halo_light;
+}
+node|z13-17[place=town]::int_name {
+  font-size: 12;
+  text: int_name;
   text-color: @label_medium;
   text-halo-radius: 1;
   text-halo-opacity: 0.5;
