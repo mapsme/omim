@@ -374,7 +374,7 @@ namespace
 
 void Navigator::Scale(m2::PointD const & pt, double factor)
 {
-  CalculateScale(pt, factor, m_Screen);
+  CalculateScale(m_Screen.P3dToP(pt), factor, m_Screen);
 }
 
 void Navigator::CalculateScale(m2::PointD const & pt, double factor, ScreenBase & screen)
@@ -416,10 +416,8 @@ bool Navigator::ScaleImpl(m2::PointD const & newPt1, m2::PointD const & newPt2,
                           bool skipMinScaleAndBordersCheck, bool doRotateScreen,
                           ScreenBase & screen)
 {
-  math::Matrix<double, 3, 3> const newM = screen.GtoPMatrix() * ScreenBase::CalcTransform(screen.P3dToP(oldPt1),
-                                                                                          screen.P3dToP(oldPt2),
-                                                                                          screen.P3dToP(newPt1),
-                                                                                          screen.P3dToP(newPt2));
+  math::Matrix<double, 3, 3> const newM =
+      screen.GtoPMatrix() * ScreenBase::CalcTransform(oldPt1, oldPt2, newPt1, newPt2);
 
   double oldAngle = screen.GetAngle();
   ScreenBase tmp = screen;
