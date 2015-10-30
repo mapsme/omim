@@ -23,6 +23,7 @@ SOURCES += \
     feature_generator.cpp \
     feature_merger.cpp \
     feature_sorter.cpp \
+    osm2meta.cpp \
     osm2type.cpp \
     osm_id.cpp \
     osm_source.cpp \
