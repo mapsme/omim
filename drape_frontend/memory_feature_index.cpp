@@ -5,7 +5,7 @@ namespace df
 
 void MemoryFeatureIndex::ReadFeaturesRequest(TFeaturesInfo & features, vector<FeatureID> & featuresToRead)
 {
-  threads::MutexGuard lock(m_mutex);
+  ASSERT(m_isLocked, ());
 
   for (size_t i = 0; i < features.size(); ++i)
   {
@@ -21,7 +21,7 @@ void MemoryFeatureIndex::ReadFeaturesRequest(TFeaturesInfo & features, vector<Fe
 
 void MemoryFeatureIndex::RemoveFeatures(TFeaturesInfo & features)
 {
-  threads::MutexGuard lock(m_mutex);
+  ASSERT(m_isLocked, ());
 
   for (size_t i = 0; i < features.size(); ++i)
   {
