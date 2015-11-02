@@ -161,7 +161,6 @@ node|z4[place=city][capital=2],
 node|z4[place=city][capital=2]::int_name
  {
   icon-image: star-s.svg;
-  text-offset: 2.8;
   font-size: 9;
   text: int_name;
   text-color: @label_dark;
@@ -210,7 +209,6 @@ node|z5[place=city][capital=2]{
 }
 node|z5[place=city][capital=2]::int_name {
   icon-image: star-m.svg;
-  text-offset: 3;
   font-size: 9;
   text: int_name;
   text-color: @label_dark;
@@ -276,7 +274,6 @@ node|z6[place=city][capital=2] {
 }
 node|z6[place=city][capital=2]::int_name {
   icon-image: star-l.svg;
-  text-offset: 4;
   font-size: 9;
   text: int_name;
   text-color: @label_dark;
@@ -341,7 +338,6 @@ node|z7[place=city][capital=2]{
 }
 node|z7[place=city][capital=2]::int_name {
   icon-image: star-l.svg;
-  text-offset: 5;
   font-size: 10;
   text: int_name;
   text-color: @label_dark;
@@ -399,7 +395,6 @@ node|z8[place=city][capital=2] {
 }
 node|z8[place=city][capital=2]::int_name {
   icon-image: star-l.svg;
-  text-offset: 5;
   font-size: 11;
   text: int_name;
   text-color: @label_dark;
@@ -449,10 +444,6 @@ node|z9[place=city]::int_name {
   text-halo-radius: 0.5;
   text-halo-opacity: 0.5;
   text-halo-color: @label_halo_medium;
-  /*
-  icon-image: dot-s.svg;
-  text-offset: 4;
-  */
 }
 
 node|z9[place=city][capital=2] {
@@ -468,7 +459,6 @@ node|z9[place=city][capital=2] {
 }
 node|z9[place=city][capital=2]::int_name {
   icon-image: star-l.svg;
-  text-offset: 3;
   font-size: 11;
   text: int_name;
   text-color: @label_dark;
@@ -538,7 +528,6 @@ node|z10[place=city][capital=2]{
 }
 node|z10[place=city][capital=2]::int_name {
   icon-image: star-l.svg;
-  text-offset: 3;
   font-size: 11;
   text: int_name;
   text-color: @label_dark;
@@ -609,7 +598,6 @@ node|z11[place=city][capital=2]{
 }
 node|z11[place=city][capital=2]::int_name {
   icon-image: star-l.svg;
-  text-offset: 4;
   font-size: 13;
   text: int_name;
   text-color: @label_dark;
@@ -677,7 +665,6 @@ node|z12[place=city][capital=2]{
 }
 node|z12[place=city][capital=2]::int_name {
   icon-image: star-l.svg;
-  text-offset: 4;
   font-size: 15;
   text: int_name;
   text-color: @label_dark;
@@ -774,7 +761,6 @@ node|z13-14[place=city][capital=2] {
 }
 node|z13-14[place=city][capital=2]::int_name {
   icon-image: star-l.svg;
-  text-offset: 4;
   font-size: 15;
   text: int_name;
   text-color: @label_medium;
