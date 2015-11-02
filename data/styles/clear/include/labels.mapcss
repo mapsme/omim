@@ -35,11 +35,25 @@ node|z3[place=country]
   text-color: @country_label;
   z-index: 1000;
 }
+node|z3[place=country]::int_name
+{
+  text: int_name;
+  font-size: 8.5;
+  text-color: @country_label;
+  z-index: 1000;
+}
 
 node|z4[place=country]
 {
   text: name;
   font-size: 14;
+  text-color: @country_label;
+  z-index: 1000;
+}
+node|z4[place=country]::int_name
+{
+  text: name;
+  font-size: 12;
   text-color: @country_label;
   z-index: 1000;
 }
@@ -51,11 +65,25 @@ node|z5[place=country]
   text-color: @country_label;
   z-index: 1000;
 }
+node|z5[place=country]::int_name
+{
+  text: int_name;
+  font-size: 14;
+  text-color: @country_label;
+  z-index: 1000;
+}
 
 node|z6-[place=country]
 {
   text: name;
   font-size: 18;
+  text-color: @country_label;
+  z-index: 1000;
+}
+node|z6-[place=country]::int_name
+{
+  text: name;
+  font-size: 16;
   text-color: @country_label;
   z-index: 1000;
 }
@@ -108,12 +136,33 @@ node|z4[place=city][capital!=2][population>=1000000],
   text-halo-color: @label_halo_medium;
   z-index: 1000;
 }
+node|z4[place=city][capital!=2][population>=1000000]::int_name
+{
+  font-size: 8;
+  text: int_name;
+  text-color: @label_dark;
+  text-halo-radius: 1;
+  text-halo-opacity: 0.5;
+  text-halo-color: @label_halo_medium;
+  z-index: 1000;
+}
 node|z4[place=city][capital=2],
  {
   icon-image: star-s.svg;
   text-offset: 2.8;
   font-size: 10;
   text: name;
+  text-color: @label_dark;
+  text-halo-radius: 1;
+  text-halo-opacity: 0.5;
+  text-halo-color: @label_halo_medium;
+  z-index: 4000;
+}
+node|z4[place=city][capital=2]::int_name
+ {
+  icon-image: star-s.svg;
+  font-size: 9;
+  text: int_name;
   text-color: @label_dark;
   text-halo-radius: 1;
   text-halo-opacity: 0.5;
@@ -137,12 +186,31 @@ node|z4[place=city][capital=2],
   icon-image: dot-s.svg;
   text-offset: 3;
   */
+node|z5[place=city][capital!=2][population>=150000]::int_name
+{
+  font-size: 9;
+  text: int_name;
+  text-color: @label_dark;
+  text-halo-radius: 1;
+  text-halo-opacity: 0.5;
+  text-halo-color: @label_halo_medium;
+  z-index: 1000;
+}
 
 node|z5[place=city][capital=2]{
   icon-image: star-m.svg;
   text-offset: 3;
   font-size: 10;
   text: name;
+  text-color: @label_dark;
+  text-halo-radius: 1;
+  text-halo-opacity: 0.5;
+  text-halo-color: @label_halo_medium;
+}
+node|z5[place=city][capital=2]::int_name {
+  icon-image: star-m.svg;
+  font-size: 9;
+  text: int_name;
   text-color: @label_dark;
   text-halo-radius: 1;
   text-halo-opacity: 0.5;
@@ -177,6 +245,16 @@ node|z6[place=city][capital!=2][population>=50000],
   text-halo-color: @label_halo_medium;
   z-index: 1000;
 }
+node|z6[place=city][capital!=2][population>=50000]::int_name
+{
+  font-size: 9;
+  text: int_name;
+  text-color: @label_dark;
+  text-halo-radius: 1;
+  text-halo-opacity: 0.5;
+  text-halo-color: @label_halo_medium;
+  z-index: 1000;
+}
 
   /*
   icon-image: dot-s.svg;
@@ -188,6 +266,16 @@ node|z6[place=city][capital=2] {
   text-offset: 4;
   font-size: 10;
   text: name;
+  text-color: @label_dark;
+  text-halo-radius: 1;
+  text-halo-opacity: 0.5;
+  text-halo-color: @label_halo_medium;
+  z-index: 9000;
+}
+node|z6[place=city][capital=2]::int_name {
+  icon-image: star-l.svg;
+  font-size: 9;
+  text: int_name;
   text-color: @label_dark;
   text-halo-radius: 1;
   text-halo-opacity: 0.5;
@@ -226,6 +314,16 @@ node|z7[place=city][capital!=2][population>=40000],
   text-halo-color: @label_halo_medium;
   z-index: 5000;
 }
+node|z7[place=city][capital!=2][population>=40000]::int_name
+{
+  font-size: 9;
+  text: int_name;
+  text-color: @label_dark;
+  text-halo-radius: 1;
+  text-halo-opacity: 0.6;
+  text-halo-color: @label_halo_medium;
+  z-index: 5000;
+}
 
 node|z7[place=city][capital=2]{
   icon-image: star-l.svg;
@@ -238,6 +336,17 @@ node|z7[place=city][capital=2]{
   text-halo-color: @label_halo_medium;
   z-index: 9000;
 }
+node|z7[place=city][capital=2]::int_name {
+  icon-image: star-l.svg;
+  font-size: 10;
+  text: int_name;
+  text-color: @label_dark;
+  text-halo-radius: 1;
+  text-halo-opacity: 0.6;
+  text-halo-color: @label_halo_medium;
+  z-index: 9000;
+}
+
 node|z7[place=state]
 {
   text: name;
@@ -251,6 +360,16 @@ node|z8[place=city][capital!=2][population>=40000],
 {
   font-size: 11;
   text: name;
+  text-color: @label_dark;
+  text-halo-radius: 1;
+  text-halo-opacity: 0.6;
+  text-halo-color: @label_halo_medium;
+  z-index: 3000;
+}
+node|z8[place=city][capital!=2][population>=40000]::int_name
+{
+  font-size: 10;
+  text: int_name;
   text-color: @label_dark;
   text-halo-radius: 1;
   text-halo-opacity: 0.6;
@@ -274,10 +393,26 @@ node|z8[place=city][capital=2] {
   text-halo-color: @label_halo_medium;
   z-index: 9000;
 }
+node|z8[place=city][capital=2]::int_name {
+  icon-image: star-l.svg;
+  font-size: 11;
+  text: int_name;
+  text-color: @label_dark;
+  text-halo-radius: 1;
+  text-halo-opacity: 0.6;
+  text-halo-color: @label_halo_medium;
+  z-index: 9000;
+}
 
 node|z8[place=town][population>=40000] {
   font-size: 10;
   text: name;
+  text-color: @city_label;
+  z-index: 2000;
+}
+node|z8[place=town][population>=40000]::int_name {
+  font-size: 8;
+  text: int_name;
   text-color: @city_label;
   z-index: 2000;
 }
@@ -302,6 +437,14 @@ node|z9[place=city] {
   text-offset: 4;
   */
 }
+node|z9[place=city]::int_name {
+  font-size: 10;
+  text: int_name;
+  text-color: @label_dark;
+  text-halo-radius: 0.5;
+  text-halo-opacity: 0.5;
+  text-halo-color: @label_halo_medium;
+}
 
 node|z9[place=city][capital=2] {
   icon-image: star-l.svg;
@@ -314,10 +457,28 @@ node|z9[place=city][capital=2] {
   text-halo-color: @label_halo_medium;
   z-index: 3900;
 }
+node|z9[place=city][capital=2]::int_name {
+  icon-image: star-l.svg;
+  font-size: 11;
+  text: int_name;
+  text-color: @label_dark;
+  text-halo-radius: 0.5;
+  text-halo-opacity: 0.5;
+  text-halo-color: @label_halo_medium;
+  z-index: 3900;
+}
 
 node|z9[place=town][population>=20000]  {
   font-size: 10;
   text: name;
+  text-color: @city_label;
+  text-halo-radius: 1;
+  text-halo-opacity: 0.5;
+  text-halo-color: @label_halo_bg;
+}
+node|z9[place=town][population>=20000]::int_name  {
+  font-size: 8;
+  text: int_name;
   text-color: @city_label;
   text-halo-radius: 1;
   text-halo-opacity: 0.5;
@@ -344,6 +505,15 @@ node|z10[place=city] {
   text-halo-color: @label_halo_light;
   z-index: 2000;
 }
+node|z10[place=city]::int_name {
+  font-size: 11;
+  text: int_name;
+  text-color: @label_medium;
+  text-halo-radius:1;
+  text-halo-opacity: 0.5;
+  text-halo-color: @label_halo_light;
+  z-index: 2000;
+}
 
 node|z10[place=city][capital=2]{
   icon-image: star-l.svg;
@@ -356,10 +526,29 @@ node|z10[place=city][capital=2]{
   text-halo-color: @label_halo_light;
   z-index: 9000;
 }
+node|z10[place=city][capital=2]::int_name {
+  icon-image: star-l.svg;
+  font-size: 11;
+  text: int_name;
+  text-color: @label_dark;
+  text-halo-radius:1;
+  text-halo-opacity: 0.5;
+  text-halo-color: @label_halo_light;
+  z-index: 9000;
+}
 
 node|z10[place=town] {
   font-size: 10;
   text: name;
+  text-color: @city_label;
+  text-halo-radius: 1;
+  text-halo-opacity: 1;
+  text-halo-color: @label_halo_bg;
+  z-index: 2000;
+}
+node|z10[place=town]::int_name {
+  font-size: 8;
+  text: int_name;
   text-color: @city_label;
   text-halo-radius: 1;
   text-halo-opacity: 1;
@@ -386,6 +575,15 @@ node|z11[place=city] {
   text-halo-color: @label_halo_light;
   z-index: 4000;
 }
+node|z11[place=city]::int_name {
+  font-size: 13;
+  text: int_name;
+  text-color: @label_dark;
+  text-halo-radius:1;
+  text-halo-opacity: 0.5;
+  text-halo-color: @label_halo_light;
+  z-index: 4000;
+}
 
 node|z11[place=city][capital=2]{
   icon-image: star-l.svg;
@@ -398,9 +596,27 @@ node|z11[place=city][capital=2]{
   text-halo-color: @label_halo_light;
   z-index: 3900;
 }
+node|z11[place=city][capital=2]::int_name {
+  icon-image: star-l.svg;
+  font-size: 13;
+  text: int_name;
+  text-color: @label_dark;
+  text-halo-radius:1;
+  text-halo-opacity: 0.5;
+  text-halo-color: @label_halo_light;
+  z-index: 3900;
+}
 node|z11[place=town] {
   font-size: 12;
   text: name;
+  text-color: @label_medium;
+  text-halo-radius: 1;
+  text-halo-opacity: 0.5;
+  text-halo-color: @label_halo_medium;
+}
+node|z11[place=town]::int_name {
+  font-size: 10;
+  text: int_name;
   text-color: @label_medium;
   text-halo-radius: 1;
   text-halo-opacity: 0.5;
@@ -427,6 +643,14 @@ node|z12[place=city] {
   text-halo-opacity: 0.5;
   text-halo-color: @label_halo_light;
 }
+node|z12[place=city]::int_name {
+  font-size: 13;
+  text: int_name;
+  text-color: @label_medium;
+  text-halo-radius: 1;
+  text-halo-opacity: 0.5;
+  text-halo-color: @label_halo_light;
+}
 
 node|z12[place=city][capital=2]{
   icon-image: star-l.svg;
@@ -439,10 +663,28 @@ node|z12[place=city][capital=2]{
   text-halo-color: @label_halo_light;
   z-index: 3900;
 }
+node|z12[place=city][capital=2]::int_name {
+  icon-image: star-l.svg;
+  font-size: 15;
+  text: int_name;
+  text-color: @label_dark;
+  text-halo-radius: 1;
+  text-halo-opacity: 0.5;
+  text-halo-color: @label_halo_light;
+  z-index: 3900;
+}
 
 node|z12[place=town] {
   font-size: 14;
   text: name;
+  text-color: @label_medium;
+  text-halo-radius: 1;
+  text-halo-opacity: 0.5;
+  text-halo-color: @label_halo_medium;
+}
+node|z12[place=town]::int_name {
+  font-size: 12;
+  text: int_name;
   text-color: @label_medium;
   text-halo-radius: 1;
   text-halo-opacity: 0.5;
@@ -462,6 +704,14 @@ node|z12[place=village] {
 node|z13-17[place=town] {
   font-size: 14;
   text: name;
+  text-color: @label_medium;
+  text-halo-radius: 1;
+  text-halo-opacity: 0.5;
+  text-halo-color: @label_halo_light;
+}
+node|z13-17[place=town]::int_name {
+  font-size: 12;
+  text: int_name;
   text-color: @label_medium;
   text-halo-radius: 1;
   text-halo-opacity: 0.5;
@@ -488,12 +738,31 @@ node|z13-14[place=city] {
   text-halo-color: @label_halo_light;
   z-index: 1;
 }
+node|z13-14[place=city]::int_name {
+  font-size: 13;
+  text: int_name;
+  text-color: @label_medium;
+  text-halo-radius: 1;
+  text-halo-opacity: 0.5;
+  text-halo-color: @label_halo_light;
+  z-index: 1;
+}
 
 node|z13-14[place=city][capital=2] {
   icon-image: star-l.svg;
   text-offset: 4;
   font-size: 16;
   text: name;
+  text-color: @label_medium;
+  text-halo-radius: 1;
+  text-halo-opacity: 0.5;
+  text-halo-color: @label_halo_light;
+  z-index: 1;
+}
+node|z13-14[place=city][capital=2]::int_name {
+  icon-image: star-l.svg;
+  font-size: 15;
+  text: int_name;
   text-color: @label_medium;
   text-halo-radius: 1;
   text-halo-opacity: 0.5;
@@ -798,6 +1067,14 @@ node|z8-9[place=region],
 {
   text: name;
   font-size: 12;
+  text-color: @district_label;
+}
+
+node|z14-[place=locality]::int_name,
+node|z14-[place=neighbourhood]::int_name,
+{
+  text: int_name;
+  font-size: 10;
   text-color: @district_label;
 }
 
