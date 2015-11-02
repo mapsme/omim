@@ -7,8 +7,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.R;
+import com.mapswithme.maps.widget.SdcardUnavailableDialogFragment;
 import com.mapswithme.util.Utils;
 import com.mapswithme.util.ViewServer;
 import com.mapswithme.util.statistics.Statistics;
@@ -33,6 +35,7 @@ public class BaseMwmFragmentActivity extends AppCompatActivity
 
     MwmApplication.get().initNativeCore();
     MwmApplication.get().initCounters();
+    SdcardUnavailableDialogFragment.checkSdcard(this);
     ViewServer.get(this).addWindow(this);
 
     attachDefaultFragment();

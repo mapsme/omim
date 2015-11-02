@@ -2,7 +2,12 @@ package com.mapswithme.maps.settings;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Environment;
 import android.support.annotation.Nullable;
@@ -21,7 +26,8 @@ import com.mapswithme.util.concurrency.UiThread;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StoragePathManager
 {

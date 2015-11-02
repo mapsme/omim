@@ -37,7 +37,7 @@ public final class StorageUtils
    * @return result
    */
   @SuppressWarnings("ResultOfMethodCallIgnored")
-  static boolean isDirWritable(String path)
+  public static boolean isDirWritable(String path)
   {
     final File f = new File(path, "testDir");
     f.mkdir();
@@ -52,9 +52,9 @@ public final class StorageUtils
 
   /**
    * Returns path, where maps and other files are stored.
-   * @return pat (or empty string, if framework wasn't created yet)
+   * @return path (or empty string, if framework wasn't created yet)
    */
-  static String getWritableDirRoot()
+  public static String getWritableDirRoot()
   {
     String writableDir = Framework.nativeGetWritableDir();
     int index = writableDir.lastIndexOf(Constants.MWM_DIR_POSTFIX);
@@ -64,7 +64,7 @@ public final class StorageUtils
     return writableDir;
   }
 
-  static long getFreeBytesAtPath(String path)
+  public static long getFreeBytesAtPath(String path)
   {
     long size = 0;
     try
@@ -190,7 +190,7 @@ public final class StorageUtils
     }
   }
 
-  static void copyFile(File source, File dest) throws IOException
+  public static void copyFile(File source, File dest) throws IOException
   {
     int maxChunkSize = 10 * Constants.MB; // move file by smaller chunks to avoid OOM.
     FileChannel inputChannel = null, outputChannel = null;
@@ -214,7 +214,7 @@ public final class StorageUtils
     }
   }
 
-  static long getDirSizeRecursively(File file, FilenameFilter fileFilter)
+  public static long getDirSizeRecursively(File file, FilenameFilter fileFilter)
   {
     if (file.isDirectory())
     {
@@ -231,7 +231,7 @@ public final class StorageUtils
     return 0;
   }
 
-  static long getWritableDirSize()
+  public static long getWritableDirSize()
   {
     final File writableDir = new File(Framework.nativeGetWritableDir());
     if (BuildConfig.DEBUG)
@@ -248,7 +248,7 @@ public final class StorageUtils
   /**
    * Recursively lists all movable files in the directory.
    */
-  static void listFilesRecursively(File dir, String prefix, FilenameFilter filter, ArrayList<String> relPaths)
+  public static void listFilesRecursively(File dir, String prefix, FilenameFilter filter, ArrayList<String> relPaths)
   {
     for (File file : dir.listFiles())
     {
@@ -264,7 +264,7 @@ public final class StorageUtils
   }
 
   @SuppressWarnings("ResultOfMethodCallIgnored")
-  static void removeEmptyDirectories(File dir)
+  public static void removeEmptyDirectories(File dir)
   {
     for (File file : dir.listFiles())
     {
@@ -276,7 +276,7 @@ public final class StorageUtils
   }
 
   @SuppressWarnings("ResultOfMethodCallIgnored")
-  static boolean removeFilesInDirectory(File dir, File[] files)
+  public static boolean removeFilesInDirectory(File dir, File[] files)
   {
     try
     {
@@ -293,5 +293,4 @@ public final class StorageUtils
       return false;
     }
   }
-
 }
