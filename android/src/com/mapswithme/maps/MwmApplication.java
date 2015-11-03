@@ -2,18 +2,16 @@ package com.mapswithme.maps;
 
 import android.app.Application;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.util.Log;
+
 import com.google.gson.Gson;
 import com.mapswithme.country.ActiveCountryTree;
 import com.mapswithme.country.CountryItem;
 import com.mapswithme.maps.background.Notifier;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 import com.mapswithme.maps.sound.TtsPlayer;
+import com.mapswithme.maps.settings.StoragePathManager;
 import com.mapswithme.util.Config;
-import com.mapswithme.util.Constants;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.Yota;
 import com.mapswithme.util.statistics.AlohaHelper;
@@ -93,8 +91,9 @@ public class MwmApplication extends Application
   {
     super.onCreate();
 
-    initPaths();
-    nativeInitPlatform(getApkPath(), getDataStoragePath(), getTempPath(), getObbGooglePath(),
+    StoragePathManager.initPaths();
+    nativeInitPlatform(StoragePathManager.getApkPath(), StoragePathManager.getSettingsPath(),
+                       StoragePathManager.getTempPath(), StoragePathManager.getObbGooglePath(),
                        BuildConfig.FLAVOR, BuildConfig.BUILD_TYPE,
                        Yota.isFirstYota(), UiUtils.isSmallTablet() || UiUtils.isBigTablet());
     initParse();
@@ -112,13 +111,6 @@ public class MwmApplication extends Application
     BookmarkManager.getIcons(); // init BookmarkManager (automatically loads bookmarks)
     TtsPlayer.INSTANCE.init(this);
     mIsFrameworkInitialized = true;
-  }
-
-  @SuppressWarnings("ResultOfMethodCallIgnored")
-  private void initPaths()
-  {
-    new File(getDataStoragePath()).mkdirs();
-    new File(getTempPath()).mkdirs();
   }
 
   private void initNativeStrings()
@@ -144,39 +136,6 @@ public class MwmApplication extends Application
     nativeAddLocalization("routing_failed_internal_error", getString(R.string.routing_failed_internal_error));
   }
 
-  public String getApkPath()
-  {
-    try
-    {
-      return getPackageManager().getApplicationInfo(BuildConfig.APPLICATION_ID, 0).sourceDir;
-    } catch (final NameNotFoundException e)
-    {
-      Log.e(TAG, "Can't get apk path from PackageManager");
-      return "";
-    }
-  }
-
-  public String getDataStoragePath()
-  {
-    return Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.MWM_DIR_POSTFIX;
-  }
-
-  public String getTempPath()
-  {
-    final File cacheDir = getExternalCacheDir();
-    if (cacheDir != null)
-      return cacheDir.getAbsolutePath();
-
-    return Environment.getExternalStorageDirectory().getAbsolutePath() +
-        String.format(Constants.STORAGE_PATH, BuildConfig.APPLICATION_ID, Constants.CACHE_DIR);
-  }
-
-  private String getObbGooglePath()
-  {
-    final String storagePath = Environment.getExternalStorageDirectory().getAbsolutePath();
-    return storagePath.concat(String.format(Constants.OBB_PATH, BuildConfig.APPLICATION_ID));
-  }
-
   static
   {
     System.loadLibrary("mapswithme");
@@ -193,11 +152,6 @@ public class MwmApplication extends Application
   public native boolean nativeIsBenchmarking();
 
   private native void nativeAddLocalization(String name, String value);
-
-  /**
-   * Check if current storage have at least {@code size} bytes free.
-   */
-  public native boolean nativeHasFreeSpace(long size);
 
   /*
    * init Parse SDK

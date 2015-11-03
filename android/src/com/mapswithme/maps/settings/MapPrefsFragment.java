@@ -22,7 +22,7 @@ public class MapPrefsFragment extends BaseXmlSettingsFragment
 
   private boolean singleStorageOnly()
   {
-    return Yota.isFirstYota() || !mPathManager.hasMoreThanOneStorage();
+    return Yota.isFirstYota() || !(mPathManager.getStorages().size() > 1);
   }
 
   private void updateStoragePrefs()
@@ -140,7 +140,7 @@ public class MapPrefsFragment extends BaseXmlSettingsFragment
     mPathManager.startExternalStorageWatching(activity, new StoragePathManager.OnStorageListChangedListener()
     {
       @Override
-      public void onStorageListChanged(List<StorageItem> storageItems, int currentStorageIndex)
+      public void onStorageListChanged(List<String> storages)
       {
         updateStoragePrefs();
       }

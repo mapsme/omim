@@ -2,10 +2,10 @@ package com.mapswithme.maps.settings;
 
 import android.annotation.TargetApi;
 import android.os.Build;
+import android.support.annotation.WorkerThread;
 import android.util.Log;
 
 import com.mapswithme.maps.BuildConfig;
-import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.util.Constants;
 import com.mapswithme.util.Utils;
@@ -37,7 +37,7 @@ public final class StorageUtils
    * @return result
    */
   @SuppressWarnings("ResultOfMethodCallIgnored")
-  public static boolean isDirWritable(String path)
+  public static boolean isPathWritable(String path)
   {
     final File f = new File(path, "testDir");
     f.mkdir();
@@ -48,20 +48,6 @@ public final class StorageUtils
     }
 
     return false;
-  }
-
-  /**
-   * Returns path, where maps and other files are stored.
-   * @return path (or empty string, if framework wasn't created yet)
-   */
-  public static String getWritableDirRoot()
-  {
-    String writableDir = Framework.nativeGetWritableDir();
-    int index = writableDir.lastIndexOf(Constants.MWM_DIR_POSTFIX);
-    if (index != -1)
-      writableDir = writableDir.substring(0, index);
-
-    return writableDir;
   }
 
   public static long getFreeBytesAtPath(String path)
@@ -78,11 +64,84 @@ public final class StorageUtils
     return size;
   }
 
+  static List<String> parseStorages()
+  {
+    final List<String> results = new ArrayList<>();
+    if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT)
+      results.addAll(parseKitkatStorages());
+
+    results.addAll(parseConfigStorages());
+    return results;
+  }
+
+  static List<String> parseConfigStorages()
+  {
+    final List<String> storages = new ArrayList<>();
+    storages.addAll(parseMountFile("/etc/vold.conf", VOLD_MODE));
+    storages.addAll(parseMountFile("/etc/vold.fstab", VOLD_MODE));
+    storages.addAll(parseMountFile("/system/etc/vold.fstab", VOLD_MODE));
+    storages.addAll(parseMountFile("/proc/mounts", MOUNTS_MODE));
+
+    final List<String> results = new ArrayList<>();
+    final String suffix = String.format(Constants.STORAGE_PATH, BuildConfig.APPLICATION_ID, Constants.FILES_DIR);
+    for (String storage : storages)
+    {
+      Log.i(StoragePathManager.TAG, "Test storage from config files : " + storage);
+      if (isPathWritable(storage))
+      {
+        Log.i(StoragePathManager.TAG, "Found writable storage : " + storage);
+        results.add(storage);
+      }
+      else
+      {
+        storage += suffix;
+        File file = new File(storage);
+        if (!file.exists()) // create directory for our package if it isn't created by any reason
+        {
+          Log.i(StoragePathManager.TAG, "Try to create MWM path");
+          file.mkdirs();
+          file = new File(storage);
+          if (file.exists())
+            Log.i(StoragePathManager.TAG, "Created!");
+        }
+        if (isPathWritable(storage))
+        {
+          Log.i(StoragePathManager.TAG, "Found writable storage : " + storage);
+          results.add(storage);
+        }
+      }
+    }
+    return results;
+  }
+
+  @TargetApi(Build.VERSION_CODES.KITKAT)
+  @SuppressWarnings("ResultOfMethodCallIgnored")
+  static List<String> parseKitkatStorages()
+  {
+    final List<String> results = new ArrayList<>();
+    final File primaryStorage = MwmApplication.get().getExternalFilesDir(null);
+    final File[] storages = MwmApplication.get().getExternalFilesDirs(null);
+    if (storages != null)
+    {
+      for (File storage : storages)
+      {
+        if (storage != null && !storage.equals(primaryStorage))
+        {
+          Log.i(StoragePathManager.TAG, "Additional storage path: " + storage.getPath());
+          results.add(storage.getPath());
+        }
+      }
+    }
+
+    return results;
+  }
+
   // http://stackoverflow.com/questions/8151779/find-sd-card-volume-label-on-android
   // http://stackoverflow.com/questions/5694933/find-an-external-sd-card-location
   // http://stackoverflow.com/questions/14212969/file-canwrite-returns-false-on-some-devices-although-write-external-storage-pe
-  static void parseMountFile(String file, int mode, List<String> paths)
+  static List<String> parseMountFile(String file, int mode)
   {
+    final List<String> results = new ArrayList<>();
     Log.i(StoragePathManager.TAG, "Parsing " + file);
 
     BufferedReader reader = null;
@@ -113,13 +172,13 @@ public final class StorageUtils
         if (mode == VOLD_MODE)
         {
           if (arr[start].startsWith("dev_mount"))
-            paths.add(arr[start + 2]);
+            results.add(arr[start + 2]);
         }
         else
         {
           for (final String s : new String[]{"tmpfs", "/dev/block/vold", "/dev/fuse", "/mnt/media_rw"})
             if (arr[start].startsWith(s))
-              paths.add(arr[start + 1]);
+              results.add(arr[start + 1]);
         }
       }
     } catch (final IOException e)
@@ -129,65 +188,8 @@ public final class StorageUtils
     {
       Utils.closeStream(reader);
     }
-  }
 
-  static void parseStorages(List<String> paths)
-  {
-    parseMountFile("/etc/vold.conf", VOLD_MODE, paths);
-    parseMountFile("/etc/vold.fstab", VOLD_MODE, paths);
-    parseMountFile("/system/etc/vold.fstab", VOLD_MODE, paths);
-    parseMountFile("/proc/mounts", MOUNTS_MODE, paths);
-  }
-
-  @TargetApi(Build.VERSION_CODES.KITKAT)
-  @SuppressWarnings("ResultOfMethodCallIgnored")
-  static void parseKitkatStorages(List<String> paths)
-  {
-    final File primaryStorage = MwmApplication.get().getExternalFilesDir(null);
-    final File[] storages = MwmApplication.get().getExternalFilesDirs(null);
-    if (storages != null)
-    {
-      for (File f : storages)
-      {
-        // add only secondary dirs
-        if (f != null && !f.equals(primaryStorage))
-        {
-          Log.i(StoragePathManager.TAG, "Additional storage path: " + f.getPath());
-          paths.add(f.getPath());
-        }
-      }
-    }
-
-    final ArrayList<String> testStorages = new ArrayList<>();
-    parseStorages(testStorages);
-    final String suffix = String.format(Constants.STORAGE_PATH, BuildConfig.APPLICATION_ID, Constants.FILES_DIR);
-    for (String testStorage : testStorages)
-    {
-      Log.i(StoragePathManager.TAG, "Test storage from config files : " + testStorage);
-      if (isDirWritable(testStorage))
-      {
-        Log.i(StoragePathManager.TAG, "Found writable storage : " + testStorage);
-        paths.add(testStorage);
-      }
-      else
-      {
-        testStorage += suffix;
-        File file = new File(testStorage);
-        if (!file.exists()) // create directory for our package if it isn't created by any reason
-        {
-          Log.i(StoragePathManager.TAG, "Try to create MWM path");
-          file.mkdirs();
-          file = new File(testStorage);
-          if (file.exists())
-            Log.i(StoragePathManager.TAG, "Created!");
-        }
-        if (isDirWritable(testStorage))
-        {
-          Log.i(StoragePathManager.TAG, "Found writable storage : " + testStorage);
-          paths.add(testStorage);
-        }
-      }
-    }
+    return results;
   }
 
   public static void copyFile(File source, File dest) throws IOException
@@ -231,24 +233,10 @@ public final class StorageUtils
     return 0;
   }
 
-  public static long getWritableDirSize()
-  {
-    final File writableDir = new File(Framework.nativeGetWritableDir());
-    if (BuildConfig.DEBUG)
-    {
-      if (!writableDir.exists())
-        throw new IllegalStateException("Writable directory doesn't exits, can't get size.");
-      if (!writableDir.isDirectory())
-        throw new IllegalStateException("Writable directory isn't a directory, can't get size.");
-    }
-
-    return getDirSizeRecursively(writableDir, StoragePathManager.MOVABLE_FILES_FILTER);
-  }
-
   /**
-   * Recursively lists all movable files in the directory.
+   * Recursively filters and lists all files in the directory.
    */
-  public static void listFilesRecursively(File dir, String prefix, FilenameFilter filter, ArrayList<String> relPaths)
+  public static void listFilesRecursively(File dir, String prefix, FilenameFilter filter, List<String> relPaths)
   {
     for (File file : dir.listFiles())
     {
@@ -264,6 +252,7 @@ public final class StorageUtils
   }
 
   @SuppressWarnings("ResultOfMethodCallIgnored")
+  @WorkerThread
   public static void removeEmptyDirectories(File dir)
   {
     for (File file : dir.listFiles())
@@ -276,6 +265,7 @@ public final class StorageUtils
   }
 
   @SuppressWarnings("ResultOfMethodCallIgnored")
+  @WorkerThread
   public static boolean removeFilesInDirectory(File dir, File[] files)
   {
     try
@@ -292,5 +282,45 @@ public final class StorageUtils
       e.printStackTrace();
       return false;
     }
+  }
+
+  @SuppressWarnings("ResultOfMethodCallIgnored")
+  @WorkerThread
+  public static String moveFiles(final File dstFile, final File srcFile, final FilenameFilter filter)
+  {
+    if (!dstFile.exists())
+      dstFile.mkdir();
+
+    final List<String> movablePaths = new ArrayList<>();
+    StorageUtils.listFilesRecursively(srcFile, "", filter, movablePaths);
+
+    final File[] oldFiles = new File[movablePaths.size()];
+    final File[] newFiles = new File[movablePaths.size()];
+    for (int i = 0; i < movablePaths.size(); ++i)
+    {
+      oldFiles[i] = new File(srcFile.getAbsolutePath(), movablePaths.get(i));
+      newFiles[i] = new File(dstFile.getAbsolutePath(), movablePaths.get(i));
+    }
+
+    try
+    {
+      for (int i = 0; i < oldFiles.length; ++i)
+      {
+        final File parent = newFiles[i].getParentFile();
+        if (parent != null)
+          parent.mkdirs();
+        StorageUtils.copyFile(oldFiles[i], newFiles[i]);
+      }
+    } catch (IOException e)
+    {
+      e.printStackTrace();
+      // Error, remove partly copied files.
+      StorageUtils.removeFilesInDirectory(dstFile, newFiles);
+      return "IOException";
+    }
+
+    // Old files were copied, delete them.
+    StorageUtils.removeFilesInDirectory(srcFile, oldFiles);
+    return null;
   }
 }

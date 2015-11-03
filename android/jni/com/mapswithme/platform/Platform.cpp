@@ -93,7 +93,7 @@ Platform::EConnectionType Platform::ConnectionStatus()
 namespace android
 {
   void Platform::Initialize(JNIEnv * env,
-                            jstring apkPath, jstring storagePath,
+                            jstring apkPath, jstring settingsPath,
                             jstring tmpPath, jstring obbGooglePath,
                             jstring flavorName, jstring buildType,
                             bool isYota, bool isTablet)
@@ -115,7 +115,7 @@ namespace android
     m_isTablet = isTablet;
     m_resourcesDir = jni::ToNativeString(env, apkPath);
     // Settings file should be in a one place always (default external storage).
-    m_settingsDir = jni::ToNativeString(env, storagePath);
+    m_settingsDir = jni::ToNativeString(env, settingsPath);
     m_tmpDir = jni::ToNativeString(env, tmpPath);
 
     if (!Settings::Get("StoragePath", m_writableDir))
