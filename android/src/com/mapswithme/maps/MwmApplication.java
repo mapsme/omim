@@ -91,19 +91,20 @@ public class MwmApplication extends android.app.Application implements ActiveCou
   {
     super.onCreate();
 
+    initPaths();
+    nativeInitPlatform(getApkPath(), getDataStoragePath(), getTempPath(), getObbGooglePath(),
+                       BuildConfig.FLAVOR, BuildConfig.BUILD_TYPE,
+                       Yota.isFirstYota(), UiUtils.isSmallTablet() || UiUtils.isBigTablet());
     initParse();
     mPrefs = getSharedPreferences(getString(R.string.pref_file_name), MODE_PRIVATE);
   }
 
-  public synchronized void initNativeCore()
+  public void initNativeCore()
   {
     if (mIsFrameworkInitialized)
       return;
 
-    initPaths();
-    nativeInit(getApkPath(), getDataStoragePath(), getTempPath(), getObbGooglePath(),
-               BuildConfig.FLAVOR, BuildConfig.BUILD_TYPE,
-               Yota.isFirstYota(), UiUtils.isSmallTablet() || UiUtils.isBigTablet());
+    nativeInitFramework();
     ActiveCountryTree.addListener(this);
     initNativeStrings();
     BookmarkManager.getIcons(); // init BookmarkManager (automatically loads bookmarks)
@@ -113,11 +114,8 @@ public class MwmApplication extends android.app.Application implements ActiveCou
   @SuppressWarnings("ResultOfMethodCallIgnored")
   private void initPaths()
   {
-    final String extStoragePath = getDataStoragePath();
-    final String extTmpPath = getTempPath();
-
-    new File(extStoragePath).mkdirs();
-    new File(extTmpPath).mkdirs();
+    new File(getDataStoragePath()).mkdirs();
+    new File(getTempPath()).mkdirs();
   }
 
   private void initNativeStrings()
@@ -181,19 +179,17 @@ public class MwmApplication extends android.app.Application implements ActiveCou
     System.loadLibrary("mapswithme");
   }
 
-  private native void nativeInit(String apkPath, String storagePath,
-                                 String tmpPath, String obbGooglePath,
-                                 String flavorName, String buildType,
-                                 boolean isYota, boolean isTablet);
+  /**
+   * Initializes native Platform with paths. Should be called before usage of any other native components.
+   */
+  private native void nativeInitPlatform(String apkPath, String storagePath, String tmpPath, String obbGooglePath,
+                                         String flavorName, String buildType, boolean isYota, boolean isTablet);
+
+  private native void nativeInitFramework();
 
   public native boolean nativeIsBenchmarking();
 
   private native void nativeAddLocalization(String name, String value);
-
-  /**
-   * Check if device have at least {@code size} bytes free.
-   */
-  public native boolean hasFreeSpace(long size);
 
   /*
    * init Parse SDK
