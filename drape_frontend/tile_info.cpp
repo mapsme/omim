@@ -27,8 +27,6 @@ m2::RectD TileInfo::GetGlobalRect() const
 
 void TileInfo::ReadFeatureIndex(MapDataProvider const & model)
 {
-  lock_guard<mutex> lock(m_mutex);
-
   if (DoNeedReadIndex())
   {
     CheckCanceled();
@@ -59,11 +57,12 @@ void TileInfo::ReadFeatures(MapDataProvider const & model, MemoryFeatureIndex & 
   // Reading can be interrupted by exception throwing
   MY_SCOPE_GUARD(ReleaseReadTile, bind(&EngineContext::EndReadTile, m_context.get()));
 
-  ReadFeatureIndex(model);
-
   vector<FeatureID> featuresToRead;
   {
-    lock_guard<mutex> g(m_mutex);
+    MemoryFeatureIndex::Lock lock(memIndex);
+    UNUSED_VALUE(lock);
+
+    ReadFeatureIndex(model);
     CheckCanceled();
     featuresToRead.reserve(AverageFeaturesCount);
     memIndex.ReadFeaturesRequest(m_featureInfo, featuresToRead);
@@ -79,14 +78,19 @@ void TileInfo::ReadFeatures(MapDataProvider const & model, MemoryFeatureIndex & 
 void TileInfo::Cancel(MemoryFeatureIndex & memIndex)
 {
   m_isCanceled = true;
-  lock_guard<mutex> lock(m_mutex);
+  MemoryFeatureIndex::Lock lock(memIndex);
+  UNUSED_VALUE(lock);
   memIndex.RemoveFeatures(m_featureInfo);
+}
+
+bool TileInfo::IsCancelled() const
+{
+  return m_isCanceled;
 }
 
 void TileInfo::ProcessID(FeatureID const & id)
 {
   m_featureInfo.push_back(id);
-  CheckCanceled();
 }
 
 void TileInfo::InitStylist(FeatureType const & f, Stylist & s)
