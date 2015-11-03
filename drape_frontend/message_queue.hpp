@@ -20,13 +20,15 @@ public:
   ~MessageQueue();
 
   /// if queue is empty then return NULL
-  drape_ptr<Message> PopMessage(unsigned maxTimeWait);
+  drape_ptr<Message> PopMessage(bool waitForMessage);
   void PushMessage(drape_ptr<Message> && message, MessagePriority priority);
   void CancelWait();
   void ClearQuery();
   bool IsEmpty();
 
 private:
+  void CancelWaitImpl();
+
   mutex m_mutex;
   condition_variable m_condition;
   bool m_isWaiting;

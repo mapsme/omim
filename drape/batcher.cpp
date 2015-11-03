@@ -215,8 +215,7 @@ template <typename TBatcher>
 IndicesRange Batcher::InsertTriangles(GLState const & state, ref_ptr<AttributeProvider> params,
                                       drape_ptr<OverlayHandle> && transferHandle, uint8_t vertexStride)
 {
-  ref_ptr<RenderBucket> bucket = GetBucket(state);
-  ref_ptr<VertexArrayBuffer> vao = bucket->GetBuffer();
+  ref_ptr<VertexArrayBuffer> vao = GetBucket(state)->GetBuffer();
   IndicesRange range;
 
   drape_ptr<OverlayHandle> handle = move(transferHandle);
@@ -242,22 +241,16 @@ IndicesRange Batcher::InsertTriangles(GLState const & state, ref_ptr<AttributePr
   }
 
   if (handle != nullptr)
-    bucket->AddOverlayHandle(move(handle));
+    GetBucket(state)->AddOverlayHandle(move(handle));
 
   return range;
 }
 
 Batcher * BatcherFactory::GetNew() const
 {
-  uint32_t indexBufferSize = 65000;
-  uint32_t vertexBufferSize = 65000;
-  if (dp::IndexStorage::IsSupported32bit())
-  {
-    indexBufferSize = 65000 * 2;
-    vertexBufferSize = 65000 * 2;
-  }
-
-  return new Batcher(indexBufferSize, vertexBufferSize);
+  uint32_t const kIndexBufferSize = 5000;
+  uint32_t const kVertexBufferSize = 5000;
+  return new Batcher(kIndexBufferSize, kVertexBufferSize);
 }
 
 SessionGuard::SessionGuard(Batcher & batcher, const Batcher::TFlushFn & flusher)

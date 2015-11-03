@@ -22,8 +22,15 @@
 namespace df
 {
 
-int const SIMPLIFY_BOTTOM = 10;
-int const SIMPLIFY_TOP = 12;
+int const kLineSimplifyLevelStart = 10;
+int const kLineSimplifyLevelEnd = 12;
+
+size_t kMinFlushSizes[df::PrioritiesCount] =
+{
+  1, // AreaPriority
+  5, // TextAndPoiPriority
+  10, // LinePriority
+};
 
 RuleDrawer::RuleDrawer(TDrawerCallback const & fn, ref_ptr<EngineContext> context)
   : m_callback(fn)
@@ -35,6 +42,23 @@ RuleDrawer::RuleDrawer(TDrawerCallback const & fn, ref_ptr<EngineContext> contex
   m_geometryConvertor.OnSize(0, 0, tileSize, tileSize);
   m_geometryConvertor.SetFromRect(m2::AnyRectD(m_globalRect));
   m_currentScaleGtoP = 1.0f / m_geometryConvertor.GetScale();
+
+  for (size_t i = 0; i < m_mapShapes.size(); i++)
+    m_mapShapes[i].reserve(kMinFlushSizes[i] + 1);
+}
+
+RuleDrawer::~RuleDrawer()
+{
+  for (auto & shapes : m_mapShapes)
+  {
+    if (shapes.empty())
+      continue;
+
+    for (auto const & shape : shapes)
+      shape->Prepare(m_context->GetTextureManager());
+
+    m_context->Flush(move(shapes));
+  }
 }
 
 void RuleDrawer::operator()(FeatureType const & f)
@@ -62,7 +86,9 @@ void RuleDrawer::operator()(FeatureType const & f)
 
   auto insertShape = [this](drape_ptr<MapShape> && shape)
   {
-    m_mapShapes.push_back(move(shape));
+    int const index = static_cast<int>(shape->GetPriority());
+    ASSERT_LESS(index, m_mapShapes.size(), ());
+    m_mapShapes[index].push_back(move(shape));
   };
 
   if (s.AreaStyleExists())
@@ -79,7 +105,8 @@ void RuleDrawer::operator()(FeatureType const & f)
   else if (s.LineStyleExists())
   {
     ApplyLineFeature apply(insertShape, f.GetID(), s.GetCaptionDescription(), m_currentScaleGtoP,
-                           zoomLevel >= SIMPLIFY_BOTTOM && zoomLevel <= SIMPLIFY_TOP, f.GetPointsCount());
+                           zoomLevel >= kLineSimplifyLevelStart && zoomLevel <= kLineSimplifyLevelEnd,
+                           f.GetPointsCount());
     f.ForEachPointRef(apply, zoomLevel);
 
     if (apply.HasGeometry())
@@ -129,10 +156,18 @@ void RuleDrawer::operator()(FeatureType const & f)
   insertShape(make_unique_dp<TextShape>(r.Center(), tp));
 #endif
 
-  for (auto & shape : m_mapShapes)
-    shape->Prepare(m_context->GetTextureManager());
+  for (size_t i = 0; i < m_mapShapes.size(); i++)
+  {
+    if (m_mapShapes[i].size() < kMinFlushSizes[i])
+      continue;
 
-  m_context->Flush(move(m_mapShapes));
+    for (auto const & shape : m_mapShapes[i])
+      shape->Prepare(m_context->GetTextureManager());
+
+    TMapShapes mapShapes;
+    mapShapes.swap(m_mapShapes[i]);
+    m_context->Flush(move(mapShapes));
+  }
 }
 
 } // namespace df
