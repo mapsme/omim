@@ -280,9 +280,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
     Statistics.INSTANCE.trackConnectionState();
 
-    if (MwmApplication.get().nativeIsBenchmarking())
-      Utils.keepScreenOn(true, getWindow());
-
     // TODO consider implementing other model of listeners connection, without activities being bound
     Framework.nativeSetRoutingListener(this);
     Framework.nativeSetRouteProgressListener(this);

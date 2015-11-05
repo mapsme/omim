@@ -193,8 +193,6 @@ public class MwmApplication extends android.app.Application implements ActiveCou
                                  String flavorName, String buildType,
                                  boolean isYota, boolean isTablet);
 
-  public native boolean nativeIsBenchmarking();
-
   private native void nativeAddLocalization(String name, String value);
 
   /**
