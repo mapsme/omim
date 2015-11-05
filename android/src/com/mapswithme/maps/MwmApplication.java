@@ -196,8 +196,6 @@ public class MwmApplication extends Application
                                  String flavorName, String buildType,
                                  boolean isYota, boolean isTablet);
 
-  public native boolean nativeIsBenchmarking();
-
   private native void nativeAddLocalization(String name, String value);
 
   /**
