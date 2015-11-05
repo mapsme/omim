@@ -201,7 +201,8 @@ extern NSString * const kAlohalyticsTapEventKey;
   [Alohalytics logEvent:kAlohalyticsTapEventKey withValue:@"downloader"];
 //  CountryTreeVC * vc = [[CountryTreeVC alloc] initWithNodePosition:-1];
 //  [self.ownerController.navigationController pushViewController:vc animated:YES];
-  [self.ownerController presentUpdateMapsAlert];
+//  [self.ownerController presentUpdateMapsAlert];
+  [self.ownerController performSegueWithIdentifier:@"Map2MapDownloaderSegue" sender:self];
 }
 
 #pragma mark - MWMBottomMenuControllerProtocol
