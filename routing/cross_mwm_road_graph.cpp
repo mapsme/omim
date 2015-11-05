@@ -117,7 +117,8 @@ BorderCross CrossMwmGraph::FindNextMwmNode(OutgoingCrossNode const & startNode,
   m2::PointD const & startPoint = startNode.m_point;
 
   // Check cached crosses.
-  auto const it = m_cachedNextNodes.find(startPoint);
+  auto const key = make_pair(startNode.m_nodeId, currentMapping->GetMwmId());
+  auto const it = m_cachedNextNodes.find(key);
   if (it != m_cachedNextNodes.end())
   {
     return it->second;
@@ -143,7 +144,7 @@ BorderCross CrossMwmGraph::FindNextMwmNode(OutgoingCrossNode const & startNode,
                     MercatorBounds::FromLatLon(targetPoint.y, targetPoint.x)),
           CrossNode(i->m_nodeId, nextMwm,
                     MercatorBounds::FromLatLon(targetPoint.y, targetPoint.x)));
-      m_cachedNextNodes.insert(make_pair(startPoint, cross));
+      m_cachedNextNodes.insert(make_pair(key, cross));
       return cross;
     }
   }

@@ -10,6 +10,7 @@
 
 #include "base/macros.hpp"
 
+#include "std/functional.hpp"
 #include "std/unordered_map.hpp"
 
 namespace routing
@@ -130,7 +131,19 @@ private:
 
   map<CrossNode, vector<CrossWeightedEdge> > m_virtualEdges;
   mutable RoutingIndexManager m_indexManager;
-  mutable unordered_map<m2::PointD, BorderCross, m2::PointD::Hash> m_cachedNextNodes;
+
+  // Caching stuff.
+  using TCachingKey = pair<WritedNodeID, Index::MwmId>;
+
+  struct Hash
+  {
+    size_t operator()(TCachingKey const & p) const
+    {
+      return hash<WritedNodeID>()(p.first) ^ hash<string>()(p.second.GetInfo()->GetCountryName());
+    }
+  };
+
+  mutable unordered_map<TCachingKey, BorderCross, Hash> m_cachedNextNodes;
 };
 
 //--------------------------------------------------------------------------------------------------
