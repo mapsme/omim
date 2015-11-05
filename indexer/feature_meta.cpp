@@ -1,55 +1,30 @@
 #include "indexer/feature_meta.hpp"
 
+#include "std/iomanip.hpp"
+
 namespace
 {
-char HexToDec(char ch)
+// Special URL encoding for wikipedia:
+// Replaces special characters with %HH codes
+// And spaces with underscores.
+string WikiUrlEncode(string const & value)
 {
-  if (ch >= '0' && ch <= '9')
-    return ch - '0';
-  if (ch >= 'a')
-    ch -= 'a' - 'A';
-  if (ch >= 'A' && ch <= 'F')
-    return ch - 'A' + 10;
-  return -1;
-}
+  ostringstream escaped;
+  escaped.fill('0');
+  escaped << hex;
 
-string UriDecode(string const & sSrc)
-{
-  // This code is based on
-  // http://www.codeguru.com/cpp/cpp/string/conversions/article.php/c12759
-  //
-  // Note from RFC1630: "Sequences which start with a percent
-  // sign but are not followed by two hexadecimal characters
-  // (0-9, A-F) are reserved for future extension"
-
-  string result(sSrc.length(), 0);
-  auto itResult = result.begin();
-
-  for (auto it = sSrc.begin(); it != sSrc.end(); ++it)
+  for (auto const & c : value)
   {
-    if (*it == '%')
-    {
-      if (distance(it, sSrc.end()) > 2)
-      {
-        char dec1 = HexToDec(*(it + 1));
-        char dec2 = HexToDec(*(it + 2));
-        if (-1 != dec1 && -1 != dec2)
-        {
-          *itResult++ = (dec1 << 4) + dec2;
-          it += 2;
-          continue;
-        }
-      }
-    }
-
-    if (*it == '_')
-      *itResult++ = ' ';
+    if (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~')
+      escaped << c;
+    else if (c == ' ')
+      escaped << '_';
     else
-      *itResult++ = *it;
+      escaped << '%' << std::uppercase << setw(2)
+              << static_cast<int>(static_cast<unsigned char>(c));
   }
 
-  result.resize(distance(result.begin(), itResult));
-  return result;
+  return escaped.str();
 }
 }  // namespace
 
@@ -61,12 +36,7 @@ string Metadata::GetWikiURL() const
   string::size_type i = value.find(':');
   if (i == string::npos)
     return string();
-  return "https://" + value.substr(0, i) + ".wikipedia.org/wiki/" + value.substr(i + 1);
-}
-
-string Metadata::GetWikiTitle() const
-{
-  string value = this->Get(FMD_WIKIPEDIA);
-  return UriDecode(value);
+  return "https://" + value.substr(0, i) + ".wikipedia.org/wiki/" +
+         WikiUrlEncode(value.substr(i + 1));
 }
 }  // namespace feature
