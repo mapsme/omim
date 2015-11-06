@@ -123,6 +123,12 @@ public:
       if (!value.empty())
         md.Add(Metadata::FMD_FLATS, value);
     }
+    else if (k == "description")
+    {
+      string const & value = ValidateAndFormat_description(v);
+      if (!value.empty())
+        md.SetDescription(value);
+    }
     return false;
   }
 
@@ -210,6 +216,10 @@ protected:
     return v;
   }
   string ValidateAndFormat_flats(string const & v) const
+  {
+    return v;
+  }
+  string ValidateAndFormat_description(string const & v) const
   {
     return v;
   }

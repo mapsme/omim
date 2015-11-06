@@ -51,6 +51,30 @@ string UriDecode(string const & sSrc)
   result.resize(distance(result.begin(), itResult));
   return result;
 }
+
+// Strip broken multibyte character from the tail.
+string StripMultiByte(string const & s)
+{
+  if (s.length() < 5)
+    return s;
+  string::size_type pos = s.length() - 5;
+  string::size_type next = pos;
+  while (next < s.length())
+  {
+    if ((s[next] & 0xE0) == 0xC0)
+      next += 2;
+    else if ((s[next] & 0xF0) == 0xE0)
+      next += 3;
+    else if ((s[next] & 0xF8) == 0xF0)
+      next += 4;
+    else
+      next++;
+    if (next <= s.length())
+      pos = next;
+  }
+
+  return s.substr(0, pos);
+}
 }  // namespace
 
 namespace feature
@@ -68,5 +92,27 @@ string Metadata::GetWikiTitle() const
 {
   string value = this->Get(FMD_WIKIPEDIA);
   return UriDecode(value);
+}
+
+void Metadata::SetDescription(string const & s)
+{
+  this->Set(FMD_DESCRIPTION, s.substr(0, kMaxStringLength));
+  this->Set(FMD_DESCRIPTION2, s.length() <= kMaxStringLength ? string() : s.substr(kMaxStringLength, kMaxStringLength));
+  this->Set(FMD_DESCRIPTION3, s.length() <= kMaxStringLength * 2 ? string() : s.substr(kMaxStringLength * 2, kMaxStringLength));
+  this->Set(FMD_DESCRIPTION4, s.length() <= kMaxStringLength * 3 ? string() : StripMultiByte(s.substr(kMaxStringLength * 3, kMaxStringLength)));
+}
+
+string Metadata::GetDescription() const
+{
+  return this->Get(FMD_DESCRIPTION) + this->Get(FMD_DESCRIPTION2) +
+    this->Get(FMD_DESCRIPTION3) + this->Get(FMD_DESCRIPTION4);
+}
+
+void Metadata::DropDescription()
+{
+  this->Drop(FMD_DESCRIPTION);
+  this->Drop(FMD_DESCRIPTION2);
+  this->Drop(FMD_DESCRIPTION3);
+  this->Drop(FMD_DESCRIPTION4);
 }
 }  // namespace feature

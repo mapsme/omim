@@ -37,6 +37,10 @@ namespace feature
       FMD_WIKIPEDIA = 16,
       FMD_MAXSPEED = 17,
       FMD_FLATS = 18,
+      FMD_DESCRIPTION = 19,
+      FMD_DESCRIPTION2 = 20,
+      FMD_DESCRIPTION3 = 21,
+      FMD_DESCRIPTION4 = 22,
       FMD_COUNT
     };
 
@@ -49,6 +53,13 @@ namespace feature
         val = s;
       else
         val = val + ", " + s;
+      return true;
+    }
+
+    bool Set(EType type, string const & s)
+    {
+      string & val = m_metadata[type];
+      val = s;
       return true;
     }
 
@@ -79,6 +90,9 @@ namespace feature
 
     string GetWikiURL() const;
     string GetWikiTitle() const;
+    void SetDescription(string const & s);
+    string GetDescription() const;
+    void DropDescription();
 
     template <class ArchiveT> void SerializeToMWM(ArchiveT & ar) const
     {
