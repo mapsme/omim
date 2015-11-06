@@ -172,7 +172,8 @@ void TextShape::DrawSubString(StraightTextLayout const & layout, dp::FontDecl co
                staticBuffer,
                dynamicBuffer);
 
-  dp::GLState state(gpu::TEXT_BILLBOARD_PROGRAM, dp::GLState::OverlayLayer);
+  dp::GLState state(gpu::TEXT_PROGRAM, dp::GLState::OverlayLayer);
+  state.SetProgram3dIndex(gpu::TEXT_BILLBOARD_PROGRAM);
   ASSERT(color.GetTexture() == outline.GetTexture(), ());
   state.SetColorTexture(color.GetTexture());
   state.SetMaskTexture(layout.GetMaskTexture());
