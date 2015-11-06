@@ -22,7 +22,7 @@ RenderGroup::RenderGroup(dp::GLState const & state, df::TileKey const & tileKey)
   , m_pendingOnDelete(false)
 {
   if (state.GetProgramIndex() == gpu::TEXT_PROGRAM
-      || state.GetProgramIndex() == gpu::TEXT_BILLBOARD_PROGRAM)
+      || state.GetProgram3dIndex() == gpu::TEXT_BILLBOARD_PROGRAM)
   {
     auto const & params = VisualParams::Instance().GetGlyphVisualParams();
     m_uniforms.SetFloatValue("u_outlineGlyphParams",
