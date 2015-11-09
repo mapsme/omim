@@ -374,6 +374,7 @@ public:
   //@{
   inline m2::PointD PtoG(m2::PointD const & p) const { return m_currentMovelView.PtoG(p); }
   inline m2::PointD GtoP(m2::PointD const & p) const { return m_currentMovelView.GtoP(p); }
+  inline m2::PointD GtoP3d(m2::PointD const & p) const { return m_currentMovelView.PtoP3d(m_currentMovelView.GtoP(p)); }
 
   void SaveState();
   void LoadState();

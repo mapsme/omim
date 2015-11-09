@@ -21,6 +21,8 @@ namespace
 
 class StraightTextHandle : public TextHandle
 {
+  using TBase = TextHandle;
+
 public:
   StraightTextHandle(FeatureID const & id, strings::UniString const & text,
                      dp::Anchor anchor, glsl::vec2 const & pivot,
@@ -34,10 +36,34 @@ public:
     , m_size(glsl::ToPoint(pxSize))
   {}
 
+  m2::PointD GetPivot(ScreenBase const & screen, bool perspective) const override
+  {
+    m2::PointD pivot = TBase::GetPivot(screen, false);
+    if (perspective)
+      pivot = screen.PtoP3d(pivot - m_offset) + m_offset;
+    return pivot;
+  }
+
   m2::RectD GetPixelRect(ScreenBase const & screen, bool perspective) const override
   {
     if (perspective)
-      return GetPixelRectPerspective(screen);
+    {
+      if (IsBillboard())
+      {
+        m2::PointD const pxPivot = screen.GtoP(m_pivot);
+        m2::PointD const pxPivotPerspective = screen.PtoP3d(pxPivot);
+
+        m2::RectD pxRectPerspective = GetPixelRect(screen, false);
+        pxRectPerspective.Offset(-pxPivot);
+        pxRectPerspective.Offset(pxPivotPerspective);
+
+        return pxRectPerspective;
+      }
+      else
+      {
+        return GetPixelRectPerspective(screen);
+      }
+    }
 
     m2::PointD pivot = screen.GtoP(m_pivot) + m_offset;
     double x = pivot.x;
@@ -138,7 +164,8 @@ void TextShape::DrawSubString(StraightTextLayout const & layout,
                staticBuffer,
                dynamicBuffer);
 
-  dp::GLState state(gpu::TEXT_BILLBOARD_PROGRAM, dp::GLState::OverlayLayer);
+  dp::GLState state(gpu::TEXT_PROGRAM, dp::GLState::OverlayLayer);
+  state.SetProgram3dIndex(gpu::TEXT_BILLBOARD_PROGRAM);
   ASSERT(color.GetTexture() == outline.GetTexture(), ());
   state.SetColorTexture(color.GetTexture());
   state.SetMaskTexture(layout.GetMaskTexture());

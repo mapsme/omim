@@ -2,6 +2,7 @@
 #include "geometry/transformations.hpp"
 #include "geometry/angles.hpp"
 
+#include "base/assert.hpp"
 #include "base/logging.hpp"
 
 #include "std/cmath.hpp"
@@ -12,8 +13,10 @@ ScreenBase::ScreenBase() :
     m_Scale(0.1),
     m_Angle(0.0),
     m_Org(320, 240),
-    m_3dFOV(M_PI / 3.0),
-    m_3dAngleX(M_PI_4),
+    m_3dFOV(0.0),
+    m_3dNearZ(0.0),
+    m_3dFarZ(0.0),
+    m_3dAngleX(0.0),
     m_3dScaleX(1.0),
     m_3dScaleY(1.0),
     m_isPerspective(false),
@@ -254,6 +257,9 @@ void ScreenBase::ExtractGtoPParams(MatrixT const & m,
 // Calculate expanded area of visible map plane.
 void ScreenBase::ApplyPerspective(double rotationAngle, double angleFOV)
 {
+  // TODO: Handle the case when rotationAngle == 0.0.
+  ASSERT_NOT_EQUAL(rotationAngle, 0.0, ());
+  ASSERT_NOT_EQUAL(angleFOV, 0.0, ());
   m_isPerspective = true;
 
   m_3dAngleX = rotationAngle;
@@ -286,15 +292,15 @@ void ScreenBase::ApplyPerspective(double rotationAngle, double angleFOV)
   translateM(3, 2) = offsetZ;
 
   Matrix3dT projectionM = math::Zero<double, 4>();
-  // TODO: Calculate near and far values.
-  double const near = 0.1;
-  double const far = 100.0;
-  projectionM(0, 0) = projectionM(1, 1) = cameraZ;
-  projectionM(2, 2) = (far + near) / (far - near);
+  m_3dNearZ = cameraZ;
+  m_3dFarZ = cameraZ + 2.0 * sin(m_3dAngleX) * m_3dScaleY;
+  projectionM(0, 0) = projectionM(1, 1) = m_3dNearZ;
+  projectionM(2, 2) = (m_3dFarZ + m_3dNearZ) / (m_3dFarZ - m_3dNearZ);
   projectionM(2, 3) = 1.0;
-  projectionM(3, 2) = -2.0 * far * near / (far - near);
+  projectionM(3, 2) = -2.0 * m_3dFarZ * m_3dNearZ / (m_3dFarZ - m_3dNearZ);
 
   m_Pto3d = scaleM * rotateM * translateM * projectionM;
+  m_3dtoP = math::Inverse(m_Pto3d);
 
   double const dyG = m_GlobalRect.GetLocalRect().SizeY() * (m_3dScaleX - 1.0);
   Scale(1.0 / m_3dScaleX);
@@ -318,18 +324,53 @@ void ScreenBase::ResetPerspective()
   m_PixelRect.setMaxY(m_PixelRect.maxY() / m_3dScaleY);
 
   Scale(1.0 / m_3dScaleX);
+
+  m_3dScaleX = m_3dScaleY = 1.0;
+  m_3dAngleX = 0.0;
+  m_3dFOV = 0.0;
 }
 
 m2::PointD ScreenBase::PtoP3d(m2::PointD const & pt) const
 {
+  if (!m_isPerspective)
+    return pt;
+
   Vector3dT const normalizedPoint{float(2.0 * pt.x / m_PixelRect.SizeX() - 1.0),
                                   -float(2.0 * pt.y / m_PixelRect.SizeY() - 1.0), 0.0, 1.0};
+
   Vector3dT const perspectivePoint = normalizedPoint * m_Pto3d;
 
   m2::RectD const viewport = PixelRectIn3d();
   m2::PointD const pixelPointPerspective(
       (perspectivePoint(0, 0) / perspectivePoint(0, 3) + 1.0) * viewport.SizeX() / 2.0,
-      (perspectivePoint(0, 1) / perspectivePoint(0, 3) + 1.0) * viewport.SizeY() / 2.0);
+      (-perspectivePoint(0, 1) / perspectivePoint(0, 3) + 1.0) * viewport.SizeY() / 2.0);
 
   return pixelPointPerspective;
+}
+
+m2::PointD ScreenBase::P3dToP(m2::PointD const & pt) const
+{
+  if (!m_isPerspective)
+    return pt;
+
+  double const normalizedX = 2.0 * pt.x / PixelRectIn3d().SizeX() - 1.0;
+  double const normalizedY = -2.0 * pt.y / PixelRectIn3d().SizeY() + 1.0;
+
+  double const tanX = tan(m_3dAngleX);
+  double const cameraDistanceZ =
+      m_3dNearZ * (1.0 + (normalizedY + 1.0) * tanX / (m_3dNearZ - normalizedY * tanX));
+
+  double const a = (m_3dFarZ + m_3dNearZ) / (m_3dFarZ - m_3dNearZ);
+  double const b = -2.0 * m_3dFarZ * m_3dNearZ / (m_3dFarZ - m_3dNearZ);
+  double const normalizedZ = (a * cameraDistanceZ + b) / cameraDistanceZ;
+
+  Vector3dT const normalizedPoint{normalizedX, normalizedY, normalizedZ, 1.0};
+
+  Vector3dT const originalPoint = normalizedPoint * m_3dtoP;
+
+  m2::PointD const pixelPointOriginal =
+      m2::PointD((originalPoint(0, 0) / originalPoint(0, 3) + 1.0) * PixelRect().SizeX() / 2.0,
+                 (-originalPoint(0, 1) / originalPoint(0, 3) + 1.0) * PixelRect().SizeY() / 2.0);
+
+  return pixelPointOriginal;
 }

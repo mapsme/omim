@@ -53,14 +53,14 @@ m2::PointD OverlayHandle::GetPivot(ScreenBase const & screen, bool perspective) 
   m2::PointD result = r.Center();
 
   if (m_anchor & dp::Left)
-    result.x += size.x;
-  else if (m_anchor & dp::Right)
     result.x -= size.x;
+  else if (m_anchor & dp::Right)
+    result.x += size.x;
 
   if (m_anchor & dp::Top)
-    result.y += size.y;
-  else if (m_anchor & dp::Bottom)
     result.y -= size.y;
+  else if (m_anchor & dp::Bottom)
+    result.y += size.y;
 
   if (perspective)
     result = screen.PtoP3d(result);
@@ -152,10 +152,6 @@ m2::RectD OverlayHandle::GetPixelRectPerspective(ScreenBase const & screen) cons
 
     m2::RectD pxRectPerspective = GetPixelRect(screen, false);
     pxRectPerspective.Offset(-pxPivot);
-    double const maxY = -pxRectPerspective.minY();
-    double const minY = -pxRectPerspective.maxY();
-    pxRectPerspective.setMinY(minY);
-    pxRectPerspective.setMaxY(maxY);
     pxRectPerspective.Offset(pxPivotPerspective);
 
     return pxRectPerspective;

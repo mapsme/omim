@@ -121,7 +121,8 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
       dp::GLState const & state = msg->GetState();
       TileKey const & key = msg->GetKey();
       drape_ptr<dp::RenderBucket> bucket = msg->AcceptBuffer();
-      ref_ptr<dp::GpuProgram> program = m_gpuProgramManager->GetProgram(state.GetProgramIndex());
+      ref_ptr<dp::GpuProgram> program = m_gpuProgramManager->GetProgram(m_useFramebuffer ? state.GetProgram3dIndex()
+                                                                                         : state.GetProgramIndex());
       program->Bind();
       bucket->GetBuffer()->Build(program);
       if (!IsUserMarkLayer(key))
@@ -282,7 +283,9 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
   case Message::FindVisiblePOI:
     {
       ref_ptr<FindVisiblePOIMessage> msg = message;
-      msg->SetFeatureID(GetVisiblePOI(m_userEventStream.GetCurrentScreen().GtoP(msg->GetPoint())));
+      ScreenBase const & screen = m_userEventStream.GetCurrentScreen();
+      msg->SetFeatureID(GetVisiblePOI(screen.isPerspective() ? screen.PtoP3d(screen.GtoP(msg->GetPoint()))
+                                                             : screen.GtoP(msg->GetPoint())));
       break;
     }
 
@@ -522,7 +525,7 @@ FeatureID FrontendRenderer::GetVisiblePOI(m2::RectD const & pixelRect) const
   ScreenBase const & screen = m_userEventStream.GetCurrentScreen();
   for (ref_ptr<dp::OverlayHandle> handle : selectResult)
   {
-    double const curDist = pt.SquareLength(handle->GetPivot(screen, false));
+    double const curDist = pt.SquareLength(handle->GetPivot(screen, screen.isPerspective()));
     if (curDist < dist)
     {
       dist = curDist;
@@ -667,7 +670,7 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
   m_myPositionController->Render(MyPositionController::RenderMyPosition,
                                  modelView, make_ref(m_gpuProgramManager), m_generalUniforms);
 
-  if (m_guiRenderer != nullptr)
+  if (!m_useFramebuffer && m_guiRenderer != nullptr)
     m_guiRenderer->Render(make_ref(m_gpuProgramManager), modelView);
 
   if (m_useFramebuffer)
@@ -693,6 +696,13 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
         RenderSingleGroup(modelView, make_ref(group));
     }
 
+    if (m_guiRenderer != nullptr)
+    {
+      ScreenBase modelView2d = modelView;
+      modelView2d.ResetPerspective();
+      m_guiRenderer->Render(make_ref(m_gpuProgramManager), modelView2d);
+    }
+
     m_isBillboardRenderPass = false;
   }
 
@@ -713,14 +723,16 @@ bool FrontendRenderer::IsBillboardProgram(int programIndex) const
 void FrontendRenderer::RenderSingleGroup(ScreenBase const & modelView, ref_ptr<BaseRenderGroup> group)
 {
   dp::GLState const & state = group->GetState();
-  bool const isBillboardProgram = IsBillboardProgram(state.GetProgramIndex());
+  uint32_t const gpuProgramIndex = m_useFramebuffer ? state.GetProgram3dIndex()
+                                                    : state.GetProgramIndex();
+  bool const isBillboardProgram = IsBillboardProgram(gpuProgramIndex);
 
   if (m_useFramebuffer && (m_isBillboardRenderPass != isBillboardProgram))
     return;
 
   group->UpdateAnimation();
 
-  ref_ptr<dp::GpuProgram> program = m_gpuProgramManager->GetProgram(state.GetProgramIndex());
+  ref_ptr<dp::GpuProgram> program = m_gpuProgramManager->GetProgram(gpuProgramIndex);
   program->Bind();
 
   ApplyState(state, program);
