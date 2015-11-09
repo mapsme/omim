@@ -1,16 +1,46 @@
 #include "drape/overlay_tree.hpp"
 
+#include "std/algorithm.hpp"
 #include "std/bind.hpp"
 
 namespace dp
 {
 
-int const FRAME_UPDATE_PERIOD = 10;
+int const kFrameUpdarePeriod = 10;
+int const kAverageHandlesCount = 500;
+
+namespace
+{
+
+class HandleComparator
+{
+public:
+  bool operator()(OverlayTree::THandle const & l, OverlayTree::THandle const & r) const
+  {
+    int const priorityLeft = l.first->GetPriority();
+    int const priorityRight = r.first->GetPriority();
+    if (priorityLeft > priorityRight)
+      return true;
+
+    if (priorityLeft == priorityRight)
+      return l.first.get() > r.first.get();
+
+    return false;
+  }
+};
+
+} // namespace
+
+OverlayTree::OverlayTree()
+  : m_frameCounter(-1)
+{
+  m_handles.reserve(kAverageHandlesCount);
+}
 
 void OverlayTree::Frame()
 {
   m_frameCounter++;
-  if (m_frameCounter >= FRAME_UPDATE_PERIOD)
+  if (m_frameCounter >= kFrameUpdarePeriod)
     m_frameCounter = -1;
 }
 
@@ -48,6 +78,14 @@ void OverlayTree::Add(ref_ptr<OverlayHandle> handle, bool isTransparent)
     return;
   }
 
+  m_handles.emplace_back(make_pair(handle, isTransparent));
+}
+
+void OverlayTree::InsertHandle(ref_ptr<OverlayHandle> handle, bool isTransparent)
+{
+  ScreenBase const & modelView = GetModelView();
+  m2::RectD const pixelRect = handle->GetPixelRect(modelView);
+
   typedef buffer_vector<detail::OverlayInfo, 8> OverlayContainerT;
   OverlayContainerT elements;
   /*
@@ -74,11 +112,17 @@ void OverlayTree::Add(ref_ptr<OverlayHandle> handle, bool isTransparent)
   for (OverlayContainerT::const_iterator it = elements.begin(); it != elements.end(); ++it)
     Erase(*it);
 
-  BaseT::Add(detail::OverlayInfo(handle, isTransparent), pixelRect);
+  TBase::Add(detail::OverlayInfo(handle, isTransparent), pixelRect);
 }
 
 void OverlayTree::EndOverlayPlacing()
 {
+  HandleComparator comparator;
+  sort(m_handles.begin(), m_handles.end(), comparator);
+  for (auto const & handle : m_handles)
+    InsertHandle(handle.first, handle.second);
+  m_handles.clear();
+
   ForEach([] (detail::OverlayInfo const & info)
   {
     info.m_handle->SetIsVisible(true);
