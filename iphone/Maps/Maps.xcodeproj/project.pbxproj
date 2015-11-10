@@ -134,6 +134,21 @@
 		34D15BA81BD8F93C00C8BCBE /* AddSetTableViewCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 34D15BA61BD8F93C00C8BCBE /* AddSetTableViewCell.mm */; };
 		34D15BA91BD8F93C00C8BCBE /* AddSetTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 34D15BA71BD8F93C00C8BCBE /* AddSetTableViewCell.xib */; };
 		34D7B0531BE8E947003C2A60 /* MWMMapDownloaderTableViewCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 34D7B0521BE8E947003C2A60 /* MWMMapDownloaderTableViewCell.mm */; };
+		34DDD5321BFDAFFE00407F2F /* MWMUpdateMapsAlert.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3419AAA61BDFD047003DC110 /* MWMUpdateMapsAlert.mm */; };
+		34DDD5331BFDB00D00407F2F /* MWMUpdateMapsAlert.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3419AAA81BDFD0B0003DC110 /* MWMUpdateMapsAlert.xib */; };
+		34DDD5341BFDB0B600407F2F /* MWMMapDownloaderViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 342AF0DF1BE24E9A0016F3AE /* MWMMapDownloaderViewController.mm */; };
+		34DDD5351BFDB0C600407F2F /* MWMMapCountryDownloaderViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 341223BA1BEB58FA007227E9 /* MWMMapCountryDownloaderViewController.mm */; };
+		34DDD5361BFDB0CF00407F2F /* MWMMapDownloaderTableViewCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 34D7B0521BE8E947003C2A60 /* MWMMapDownloaderTableViewCell.mm */; };
+		34DDD5371BFDB0D300407F2F /* MWMMapDownloaderCountryTableViewCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 34AF5FB31BE38863002AEAEE /* MWMMapDownloaderCountryTableViewCell.mm */; };
+		34DDD5381BFDB0DA00407F2F /* MWMMapDownloaderCountryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 34212C021BE8972E00DB4B18 /* MWMMapDownloaderCountryTableViewCell.xib */; };
+		34DDD5391BFDB0E100407F2F /* MWMMapDownloaderLargeCountryTableViewCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 34AF5FB91BE39473002AEAEE /* MWMMapDownloaderLargeCountryTableViewCell.mm */; };
+		34DDD53A1BFDB0E500407F2F /* MWMMapDownloaderLargeCountryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 34212C061BE897C200DB4B18 /* MWMMapDownloaderLargeCountryTableViewCell.xib */; };
+		34DDD53B1BFDB0EC00407F2F /* MWMMapDownloaderPlaceTableViewCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 34AF5FB61BE38F51002AEAEE /* MWMMapDownloaderPlaceTableViewCell.mm */; };
+		34DDD53C1BFDB0EF00407F2F /* MWMMapDownloaderPlaceTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 34212C041BE897A100DB4B18 /* MWMMapDownloaderPlaceTableViewCell.xib */; };
+		34DDD53D1BFDB0F500407F2F /* MWMMapDownloaderSubplaceTableViewCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 34AF5FBC1BE398E6002AEAEE /* MWMMapDownloaderSubplaceTableViewCell.mm */; };
+		34DDD53E1BFDB0F900407F2F /* MWMMapDownloaderSubplaceTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 343D18781BE8CE7200FCAFAC /* MWMMapDownloaderSubplaceTableViewCell.xib */; };
+		34DDD53F1BFDB0FD00407F2F /* MWMMapDownloaderTableViewHeader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 34AF5FC21BE3B656002AEAEE /* MWMMapDownloaderTableViewHeader.mm */; };
+		34DDD5401BFDB10100407F2F /* MWMMapDownloaderTableViewHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 34AF5FC41BE3B66C002AEAEE /* MWMMapDownloaderTableViewHeader.xib */; };
 		34DF4D111AE77B9F0012702D /* MWMWKInterfaceController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 34DF4D101AE77B9F0012702D /* MWMWKInterfaceController.mm */; };
 		34F45E8E1B96E88100AC93F8 /* MWMSearchTabButtonsView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 34F45E8D1B96E88100AC93F8 /* MWMSearchTabButtonsView.mm */; };
 		34F45E901B96E8B100AC93F8 /* MWMSearchTabButtonsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 34F45E8F1B96E8B100AC93F8 /* MWMSearchTabButtonsView.xib */; };
@@ -3307,10 +3322,12 @@
 				6741A94D1BF340DE002C974C /* resources-xxhdpi_clear in Resources */,
 				6741A94E1BF340DE002C974C /* MWMLandscapeNavigationDashboard.xib in Resources */,
 				6741A94F1BF340DE002C974C /* MWMDefaultAlert.xib in Resources */,
+				34DDD5381BFDB0DA00407F2F /* MWMMapDownloaderCountryTableViewCell.xib in Resources */,
 				6741A9501BF340DE002C974C /* fonts_whitelist.txt in Resources */,
 				6741A9511BF340DE002C974C /* MWMDownloaderDialogHeader.xib in Resources */,
 				6741A9521BF340DE002C974C /* World.mwm in Resources */,
 				F607C18A1C032A8800B53A87 /* resources-hdpi_dark in Resources */,
+				34DDD5401BFDB10100407F2F /* MWMMapDownloaderTableViewHeader.xib in Resources */,
 				6741A9531BF340DE002C974C /* 01_dejavusans.ttf in Resources */,
 				6741A9541BF340DE002C974C /* 02_droidsans-fallback.ttf in Resources */,
 				6741A9551BF340DE002C974C /* resources-xxhdpi_dark in Resources */,
@@ -3319,6 +3336,7 @@
 				6741A9581BF340DE002C974C /* 04_padauk.ttf in Resources */,
 				6741A9591BF340DE002C974C /* 05_khmeros.ttf in Resources */,
 				677A2DE21C0DD50900635A00 /* resources-default in Resources */,
+				34DDD53C1BFDB0EF00407F2F /* MWMMapDownloaderPlaceTableViewCell.xib in Resources */,
 				6741A95A1BF340DE002C974C /* me.maps.entitlements in Resources */,
 				3476B8E11BFDD33A00874594 /* tts-how-to-set-up-voice-img in Resources */,
 				6741A95B1BF340DE002C974C /* 06_code2000.ttf in Resources */,
@@ -3366,15 +3384,18 @@
 				6741A9831BF340DE002C974C /* Mapsme.storyboard in Resources */,
 				6741A9841BF340DE002C974C /* MWMSearchShowOnMapCell.xib in Resources */,
 				6741A9851BF340DE002C974C /* MWMBottomMenuCollectionViewPortraitCell.xib in Resources */,
+				34DDD5331BFDB00D00407F2F /* MWMUpdateMapsAlert.xib in Resources */,
 				6741A9861BF340DE002C974C /* MWMSearchDownloadMapRequest.xib in Resources */,
 				6741A9871BF340DE002C974C /* drules_proto_clear.bin in Resources */,
 				6741A9881BF340DE002C974C /* MWMAPIBarView.xib in Resources */,
 				6741A9891BF340DE002C974C /* MWMSearchHistoryClearCell.xib in Resources */,
 				6741A98A1BF340DE002C974C /* MWMRoutePointCell.xib in Resources */,
+				34DDD53A1BFDB0E500407F2F /* MWMMapDownloaderLargeCountryTableViewCell.xib in Resources */,
 				6741A98B1BF340DE002C974C /* MWMCircularProgress.xib in Resources */,
 				6741A98C1BF340DE002C974C /* PlacePageLinkCell.xib in Resources */,
 				6741A98D1BF340DE002C974C /* MWMDownloadMapRequest.xib in Resources */,
 				6741A98E1BF340DE002C974C /* MWMNiPadNavigationDashboard.xib in Resources */,
+				34DDD53E1BFDB0F900407F2F /* MWMMapDownloaderSubplaceTableViewCell.xib in Resources */,
 				6741A98F1BF340DE002C974C /* MWMSearchBookmarksCell.xib in Resources */,
 				6741A9901BF340DE002C974C /* resources-mdpi_dark in Resources */,
 				6741A9911BF340DE002C974C /* MWMFacebookAlert.xib in Resources */,
@@ -3674,6 +3695,7 @@
 				6741A9A41BF340DE002C974C /* MWMSearchTabbedViewController.mm in Sources */,
 				6741A9A51BF340DE002C974C /* MWMShareLocationActivityItem.mm in Sources */,
 				6741A9A61BF340DE002C974C /* RichTextVC.mm in Sources */,
+				34DDD5361BFDB0CF00407F2F /* MWMMapDownloaderTableViewCell.mm in Sources */,
 				6741A9A71BF340DE002C974C /* UIViewController+Navigation.mm in Sources */,
 				6741A9A81BF340DE002C974C /* MWMFacebookAlert.mm in Sources */,
 				6741A9A91BF340DE002C974C /* MWMDefaultAlert.mm in Sources */,
@@ -3683,6 +3705,7 @@
 				6741A9AD1BF340DE002C974C /* MWMSpringAnimation.mm in Sources */,
 				6741A9AE1BF340DE002C974C /* MWMSearchCategoryCell.mm in Sources */,
 				6741A9AF1BF340DE002C974C /* ActiveMapsVC.mm in Sources */,
+				34DDD53D1BFDB0F500407F2F /* MWMMapDownloaderSubplaceTableViewCell.mm in Sources */,
 				6741A9B01BF340DE002C974C /* MapsAppDelegate.mm in Sources */,
 				6741A9B11BF340DE002C974C /* MWMAPIBarView.mm in Sources */,
 				6741A9B21BF340DE002C974C /* MWMDownloadMapRequest.mm in Sources */,
@@ -3698,6 +3721,7 @@
 				6741A9BD1BF340DE002C974C /* MWMWatchNotification.mm in Sources */,
 				6741A9BE1BF340DE002C974C /* UILabel+RuntimeAttributes.mm in Sources */,
 				6741A9BF1BF340DE002C974C /* MWMSearchTabbedCollectionViewCell.mm in Sources */,
+				34DDD5321BFDAFFE00407F2F /* MWMUpdateMapsAlert.mm in Sources */,
 				6741A9C01BF340DE002C974C /* MWMTextView.mm in Sources */,
 				6741A9C11BF340DE002C974C /* MWMNextTurnPanel.mm in Sources */,
 				6741A9C21BF340DE002C974C /* MWMiPhonePortraitPlacePage.mm in Sources */,
@@ -3712,6 +3736,7 @@
 				6741A9CA1BF340DE002C974C /* MWMAnimator.mm in Sources */,
 				6741A9CB1BF340DE002C974C /* MWMSearchContentView.mm in Sources */,
 				6741A9CC1BF340DE002C974C /* MWMSearchTableViewController.mm in Sources */,
+				34DDD5351BFDB0C600407F2F /* MWMMapCountryDownloaderViewController.mm in Sources */,
 				6741A9CD1BF340DE002C974C /* MapsObservers.mm in Sources */,
 				6741A9CE1BF340DE002C974C /* MWMSearchManager.mm in Sources */,
 				6741A9CF1BF340DE002C974C /* MWMLocationAlert.mm in Sources */,
@@ -3727,7 +3752,9 @@
 				6741A9D81BF340DE002C974C /* RouteState.mm in Sources */,
 				6741A9D91BF340DE002C974C /* MWMLanesPanel.mm in Sources */,
 				676507631C1055BB00830BB3 /* MWMTTSLanguageViewController.mm in Sources */,
+				34DDD5391BFDB0E100407F2F /* MWMMapDownloaderLargeCountryTableViewCell.mm in Sources */,
 				6741A9DA1BF340DE002C974C /* UIKitCategories.mm in Sources */,
+				34DDD53B1BFDB0EC00407F2F /* MWMMapDownloaderPlaceTableViewCell.mm in Sources */,
 				6741A9DB1BF340DE002C974C /* MWMRoutePreview.mm in Sources */,
 				6741A9DC1BF340DE002C974C /* MWMRoutePointLayout.mm in Sources */,
 				6741A9DD1BF340DE002C974C /* CountryTreeVC.mm in Sources */,
@@ -3762,13 +3789,16 @@
 				6741A9FA1BF340DE002C974C /* MWMBookmarkColorViewController.mm in Sources */,
 				6741A9FB1BF340DE002C974C /* MWMSearchDownloadMapRequestView.mm in Sources */,
 				6741A9FC1BF340DE002C974C /* iosOGLContextFactory.mm in Sources */,
+				34DDD5371BFDB0D300407F2F /* MWMMapDownloaderCountryTableViewCell.mm in Sources */,
 				6741A9FD1BF340DE002C974C /* Framework.cpp in Sources */,
 				6741A9FE1BF340DE002C974C /* SelectSetVC.mm in Sources */,
 				6741A9FF1BF340DE002C974C /* AddSetVC.mm in Sources */,
 				6741AA001BF340DE002C974C /* DownloaderParentVC.mm in Sources */,
 				6741AA011BF340DE002C974C /* MWMSearchTabbedViewLayout.mm in Sources */,
+				34DDD53F1BFDB0FD00407F2F /* MWMMapDownloaderTableViewHeader.mm in Sources */,
 				6741AA021BF340DE002C974C /* BookmarksRootVC.mm in Sources */,
 				6741AA031BF340DE002C974C /* MWMActivityViewController.mm in Sources */,
+				34DDD5341BFDB0B600407F2F /* MWMMapDownloaderViewController.mm in Sources */,
 				6741AA041BF340DE002C974C /* MWMNavigationDashboardManager.mm in Sources */,
 				6741AA051BF340DE002C974C /* MWMSearchDownloadViewController.mm in Sources */,
 				6741AA061BF340DE002C974C /* MWMSearchHistoryRequestCell.mm in Sources */,
