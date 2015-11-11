@@ -23,19 +23,43 @@ dependencies {
     compile 'org.json:json:20150729'
 
     testCompile 'junit:junit:4.12'
-    testCompile 'com.jayway.restassured:rest-assured:2.7.0'
+    testCompile 'org.hamcrest:hamcrest-all:1.3'
+    testCompile 'org.slf4j:slf4j-log4j12:1.7.12'
+}
+
+
+task obbGenerate(type: GradleBuild) {
+    buildFile = '../../android/build.gradle'
+    dir = "../../android"
+    tasks = ['obbGenerate']
 }
 
 
 
- task deviceTests (type: Test, dependsOn: testClasses) {
-     filter {
-      	//specific test method
-      	//all classes in package, recursively
-      	includeTestsMatching "me.maps.integTest.*"
-     }
+task appClean(type: GradleBuild) {
+    buildFile = '../../android/build.gradle'
+    dir = "../../android"
+    tasks = ['clean']
+}
+
+
+task buildApplication(type: GradleBuild) {
+    buildFile = '../../android/build.gradle'
+    dir = "../../android"
+    tasks = ['assembleGoogleRelease']
+}
+
+
+
+ task deviceTests (type: Test, dependsOn: [testClasses]) {//, obbGenerate, appClean, buildApplication]) {
+// task deviceTests (type: Test, dependsOn: [testClasses, obbGenerate, appClean, buildApplication]) {
+    filter {
+      	includeTestsMatching "me.maps.deviceTests.*"
+    }
 }
 
 task showMeCache << {
   configurations.compile.each { println it }
 }
+
+

@@ -16,11 +16,11 @@ public class Utils {
 	public static final String VERSION = "__version__";
 
 
-	public static Map<String, Long> readFilesizesFromCoutriesTxt(String path) {
+	public static Map<String, Long> readFilesizesFromCoutriesFile(String path) {
 		try {
-			List<String> newCountries = Files.readAllLines(Paths.get(path));
-			String s = newCountries.stream().collect(Collectors.joining());
-			JSONObject json = new JSONObject(s);
+			List<String> lines = Files.readAllLines(Paths.get(path));
+			String contents = lines.stream().collect(Collectors.joining());
+			JSONObject json = new JSONObject(contents);
 			return parseCountriesTxt(json);
 		} catch (Exception e) {
 			e.printStackTrace();
