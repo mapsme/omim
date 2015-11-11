@@ -758,7 +758,7 @@
 	<!-- Routing Start button title -->
 	<string name="routing_start">Incepeți</string>
 	<!-- Planning route message in navigation view -->
-	<string name="routing_planning">Se determină ruta</string>
+	<string name="routing_planning">Se planifică...</string>
 	<!-- Text for routing::IRouter::FileTooOld dialog. -->
 	<string name="dialog_routing_download_and_update_maps">Pentru a crea o rută, vă rugăm să descărcați și să actualizați toate hărțile de pe parcursul rutei.</string>
 	<!-- Text for facebook sharing news about walking routes -->
@@ -800,4 +800,9 @@
 	<string name="search_history_title">Istoricul căutărilor</string>
 	<string name="search_history_text">Accesare rapidă a căutărilor recente.</string>
 	<string name="clear_search">Ștergere istoric de căutare</string>
+	<string name="p2p_planning_route_title">Planificare rută</string>
+	<string name="p2p_your_location">Locația dvs.</string>
+	<string name="p2p_start_routing">Start</string>
+	<string name="p2p_place_page_from">Din</string>
+	<string name="p2p_place_page_to">În</string>
 </resources>

@@ -747,7 +747,7 @@
 	<!-- Routing Start button title -->
 	<string name="routing_start">開始</string>
 	<!-- Planning route message in navigation view -->
-	<string name="routing_planning">計劃路線</string>
+	<string name="routing_planning">計劃中…</string>
 	<!-- Text for routing::IRouter::FileTooOld dialog. -->
 	<string name="dialog_routing_download_and_update_maps">要創建路線，請下載並更新所有沿路線的地圖。</string>
 	<!-- Text for facebook sharing news about walking routes -->
@@ -789,4 +789,9 @@
 	<string name="search_history_title">搜尋歷史紀錄</string>
 	<string name="search_history_text">快速存取最近搜尋的問題。</string>
 	<string name="clear_search">清除搜尋記錄</string>
+	<string name="p2p_planning_route_title">路線計劃</string>
+	<string name="p2p_your_location">您的位置</string>
+	<string name="p2p_start_routing">開始</string>
+	<string name="p2p_place_page_from">從</string>
+	<string name="p2p_place_page_to">到</string>
 </resources>

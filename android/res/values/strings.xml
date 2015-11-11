@@ -814,7 +814,7 @@
 	<!-- Routing Start button title -->
 	<string name="routing_start">Start</string>
 	<!-- Planning route message in navigation view -->
-	<string name="routing_planning">Planning Route</string>
+	<string name="routing_planning">Planning...</string>
 	<!-- Text for routing::IRouter::FileTooOld dialog. -->
 	<string name="dialog_routing_download_and_update_maps">Download and update all map along the projected path to calculate route.</string>
 	<!-- Text for facebook sharing news about walking routes -->
@@ -858,4 +858,9 @@
 	<string name="clear_search">Clear Search History</string>
 	<!-- Place Page link to Wikipedia article (if map object has it). -->
 	<string name="read_in_wikipedia">Wikipedia</string>
+	<string name="p2p_planning_route_title">Route Planning</string>
+	<string name="p2p_your_location">Your Location</string>
+	<string name="p2p_start_routing">Start</string>
+	<string name="p2p_place_page_from">From</string>
+	<string name="p2p_place_page_to">To</string>
 </resources>

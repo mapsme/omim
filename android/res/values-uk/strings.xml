@@ -764,7 +764,7 @@
 	<!-- Routing Start button title -->
 	<string name="routing_start">Почати</string>
 	<!-- Planning route message in navigation view -->
-	<string name="routing_planning">Планування маршруту</string>
+	<string name="routing_planning">Планування ...</string>
 	<!-- Text for routing::IRouter::FileTooOld dialog. -->
 	<string name="dialog_routing_download_and_update_maps">Для створення маршруту, будь ласка, скачайте та обновіть всі карти за ним.</string>
 	<!-- Text for facebook sharing news about walking routes -->
@@ -806,4 +806,9 @@
 	<string name="search_history_title">Історія пошуку</string>
 	<string name="search_history_text">Швидкий доступ до недавніх результатів пошуку.</string>
 	<string name="clear_search">Очистити історію пошуку</string>
+	<string name="p2p_planning_route_title">Планування маршруту</string>
+	<string name="p2p_your_location">Ваше місцезнаходження</string>
+	<string name="p2p_start_routing">Початок</string>
+	<string name="p2p_place_page_from">Від</string>
+	<string name="p2p_place_page_to">До</string>
 </resources>

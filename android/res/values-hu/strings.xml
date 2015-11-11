@@ -762,7 +762,7 @@
 	<!-- Routing Start button title -->
 	<string name="routing_start">Indítás</string>
 	<!-- Planning route message in navigation view -->
-	<string name="routing_planning">Útvonal tervezése</string>
+	<string name="routing_planning">Tervezés...</string>
 	<!-- Text for routing::IRouter::FileTooOld dialog. -->
 	<string name="dialog_routing_download_and_update_maps">Útvonal létrehozásához kérjük, töltse le és frissítse az összes térképet az útvonal mentén.</string>
 	<!-- Text for facebook sharing news about walking routes -->
@@ -804,4 +804,9 @@
 	<string name="search_history_title">Előző keresések</string>
 	<string name="search_history_text">Aktuális keresés gyors elérése.</string>
 	<string name="clear_search">A keresési előzmények törlése</string>
+	<string name="p2p_planning_route_title">Útvonaltervezés</string>
+	<string name="p2p_your_location">Az Ön helyzete</string>
+	<string name="p2p_start_routing">Indítás</string>
+	<string name="p2p_place_page_from">Innen</string>
+	<string name="p2p_place_page_to">Ide</string>
 </resources>

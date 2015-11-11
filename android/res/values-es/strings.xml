@@ -754,7 +754,7 @@
 	<!-- Routing Start button title -->
 	<string name="routing_start">Empezar</string>
 	<!-- Planning route message in navigation view -->
-	<string name="routing_planning">Planificando ruta</string>
+	<string name="routing_planning">Planeando...</string>
 	<!-- Text for routing::IRouter::FileTooOld dialog. -->
 	<string name="dialog_routing_download_and_update_maps">Para crear una ruta, por favor, descarga y actualiza todos los mapas a lo largo de la ruta.</string>
 	<!-- Text for facebook sharing news about walking routes -->
@@ -796,4 +796,9 @@
 	<string name="search_history_title">Historial de búsquedas</string>
 	<string name="search_history_text">Acceder rápidamente a las consultas de búsquedas recientes.</string>
 	<string name="clear_search">Eliminar el historial de búsqueda</string>
+	<string name="p2p_planning_route_title">Planificación de ruta</string>
+	<string name="p2p_your_location">Tu ubicación</string>
+	<string name="p2p_start_routing">Empezar</string>
+	<string name="p2p_place_page_from">Desde</string>
+	<string name="p2p_place_page_to">A</string>
 </resources>

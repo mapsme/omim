@@ -812,7 +812,7 @@
 	<!-- Routing Start button title -->
 	<string name="routing_start">Начать</string>
 	<!-- Planning route message in navigation view -->
-	<string name="routing_planning">Поиск маршрута</string>
+	<string name="routing_planning">Планируем...</string>
 	<!-- Text for routing::IRouter::FileTooOld dialog. -->
 	<string name="dialog_routing_download_and_update_maps">Для построения маршрута загрузите и обновите все карты по пути следования.</string>
 	<!-- Text for facebook sharing news about walking routes -->
@@ -854,4 +854,9 @@
 	<string name="search_history_title">История поиска</string>
 	<string name="search_history_text">Быстрый доступ к последним поисковым запросам.</string>
 	<string name="clear_search">Очистить историю поиска</string>
+	<string name="p2p_planning_route_title">Планирование маршрута</string>
+	<string name="p2p_your_location">Ваше местоположение</string>
+	<string name="p2p_start_routing">Начать движение</string>
+	<string name="p2p_place_page_from">Отсюда</string>
+	<string name="p2p_place_page_to">Сюда</string>
 </resources>

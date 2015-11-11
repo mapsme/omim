@@ -764,7 +764,7 @@
 	<!-- Routing Start button title -->
 	<string name="routing_start">Spustiť</string>
 	<!-- Planning route message in navigation view -->
-	<string name="routing_planning">Plánovanie trasy</string>
+	<string name="routing_planning">Plánovanie ...</string>
 	<!-- Text for routing::IRouter::FileTooOld dialog. -->
 	<string name="dialog_routing_download_and_update_maps">Prosím, pre vytvorenie trasy si stiahnite a aktualizujte všetky mapy pozdĺž trasy.</string>
 	<!-- Text for facebook sharing news about walking routes -->
@@ -806,4 +806,9 @@
 	<string name="search_history_title">História vyhľadávania</string>
 	<string name="search_history_text">Rýchlo pristupujte k nedávnym hľadaným výrazom.</string>
 	<string name="clear_search">Vymazať históriu vyhľadávania</string>
+	<string name="p2p_planning_route_title">Plánovanie trasy</string>
+	<string name="p2p_your_location">Vaša poloha</string>
+	<string name="p2p_start_routing">Štart</string>
+	<string name="p2p_place_page_from">Z</string>
+	<string name="p2p_place_page_to">Do</string>
 </resources>

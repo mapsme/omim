@@ -761,7 +761,7 @@
 	<!-- Routing Start button title -->
 	<string name="routing_start">Xuất phát</string>
 	<!-- Planning route message in navigation view -->
-	<string name="routing_planning">Đang tìm đường</string>
+	<string name="routing_planning">Đang hoạch định...</string>
 	<!-- Text for routing::IRouter::FileTooOld dialog. -->
 	<string name="dialog_routing_download_and_update_maps">Để tạo đường đi, vui lòng tải về và cập nhật tất cả bản đồ dọc theo tuyến đường.</string>
 	<!-- Text for facebook sharing news about walking routes -->
@@ -803,4 +803,9 @@
 	<string name="search_history_title">Lịch sử tìm kiếm</string>
 	<string name="search_history_text">Truy cập nhanh chóng đến câu hỏi tìm kiếm gần đây.</string>
 	<string name="clear_search">Xóa Lịch sử Tìm kiếm</string>
+	<string name="p2p_planning_route_title">Hoạch định đường đi</string>
+	<string name="p2p_your_location">Vị trí của bạn</string>
+	<string name="p2p_start_routing">Bắt đầu</string>
+	<string name="p2p_place_page_from">Từ</string>
+	<string name="p2p_place_page_to">Đến</string>
 </resources>

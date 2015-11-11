@@ -508,6 +508,18 @@
 /* «Map style» entry value */
 "pref_map_style_modern_light" = "Modern light";
 
+/* Settings «Route» category: «Tts enabled» title */
+"pref_tts_enable_title" = "Voice instructions";
+
+/* Settings «Route» category: «Tts enabled» summary */
+"pref_tts_enable_summary" = "Turn instructions";
+
+/* Settings «Route» category: «Tts language» title */
+"pref_tts_language_title" = "Voice language";
+
+/* Settings «Route» category: «Tts unavailable» subtitle */
+"pref_tts_unavailable" = "TTS unavailable";
+
 "placepage_distance" = "Distância";
 
 "placepage_coordinates" = "Coordenadas";
@@ -1245,7 +1257,7 @@
 "routing_start" = "Começar";
 
 /* Planning route message in navigation view */
-"routing_planning" = "A planear a viagem";
+"routing_planning" = "Planejando...";
 
 /* Text for routing::IRouter::FileTooOld dialog. */
 "dialog_routing_download_and_update_maps" = "Para criar uma rota, por favor, baixe e atualize todos os mapas ao longo da rota.";
@@ -1319,3 +1331,13 @@
 
 /* Place Page link to Wikipedia article (if map object has it). */
 "read_in_wikipedia" = "Wikipedia";
+
+"p2p_planning_route_title" = "Planejar rota";
+
+"p2p_your_location" = "Localização atual";
+
+"p2p_start_routing" = "Iniciar";
+
+"p2p_place_page_from" = "De";
+
+"p2p_place_page_to" = "Para";
