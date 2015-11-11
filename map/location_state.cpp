@@ -913,6 +913,9 @@ void State::RotateOnNorth()
 
 void State::Assign(location::GpsInfo const & info)
 {
+  // The minimal speed when GpsInfo::m_speed is valid for most gps chipsets.
+  // If GpsInfo::m_speed less than kMaxKeepBearingSpeedMPS the former m_drawDirection is used.
+  double const kMaxKeepBearingSpeedMPS = 0.3;
   m2::RectD rect = MercatorBounds::MetresToXY(info.m_longitude,
                                               info.m_latitude,
                                               info.m_horizontalAccuracy);
@@ -921,9 +924,6 @@ void State::Assign(location::GpsInfo const & info)
   if (info.HasSpeed())
     m_currentSpeedMPS = info.m_speed;
 
-  // The minimal speed when GpsInfo::m_speed is valid for most gps chipsets.
-  // If GpsInfo::m_speed less than kMaxKeepBearingSpeedMPS the former m_drawDirection is used.
-  double const kMaxKeepBearingSpeedMPS = 0.3;
   if (!IsCompassHeadingUsed() && info.m_speed >= kMaxKeepBearingSpeedMPS)
     SetDirection(my::DegToRad(info.m_bearing));
 }
