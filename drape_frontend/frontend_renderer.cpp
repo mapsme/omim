@@ -43,9 +43,8 @@ FrontendRenderer::FrontendRenderer(Params const & params)
   , m_gpuProgramManager(new dp::GpuProgramManager())
   , m_routeRenderer(new RouteRenderer())
   , m_overlayTree(new dp::OverlayTree())
-  , m_useFramebuffer(false)
+  , m_enable3dInNavigation(false)
   , m_isBillboardRenderPass(false)
-  , m_3dModeChanged(true)
   , m_framebuffer(new Framebuffer())
   , m_renderer3d(new Renderer3d())
   , m_viewport(params.m_viewport)
@@ -121,8 +120,8 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
       dp::GLState const & state = msg->GetState();
       TileKey const & key = msg->GetKey();
       drape_ptr<dp::RenderBucket> bucket = msg->AcceptBuffer();
-      ref_ptr<dp::GpuProgram> program = m_gpuProgramManager->GetProgram(m_useFramebuffer ? state.GetProgram3dIndex()
-                                                                                         : state.GetProgramIndex());
+      ref_ptr<dp::GpuProgram> program = m_gpuProgramManager->GetProgram(
+            IsPerspective() ? state.GetProgram3dIndex() : state.GetProgramIndex());
       program->Bind();
       bucket->GetBuffer()->Build(program);
       if (!IsUserMarkLayer(key))
@@ -339,7 +338,20 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
       ref_ptr<RemoveRouteMessage> msg = message;
       m_routeRenderer->Clear();
       if (msg->NeedDeactivateFollowing())
+      {
         m_myPositionController->DeactivateRouting();
+        if (m_enable3dInNavigation)
+          AddUserEvent(Disable3dModeEvent());
+      }
+      break;
+    }
+
+  case Message::FollowRoute:
+    {
+      ref_ptr<FollowRouteMessage> msg = message;
+      m_myPositionController->NextMode(msg->GetPreferredZoomLevel());
+      if (m_enable3dInNavigation)
+        AddUserEvent(Enable3dModeEvent(msg->GetRotationAngle(), msg->GetAngleFOV()));
       break;
     }
 
@@ -372,26 +384,11 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
 
       break;
     }
+
   case Message::Enable3dMode:
     {
-      if (!m_useFramebuffer)
-      {
-        ref_ptr<Enable3dModeMessage> const msg = message;
-        AddUserEvent(Enable3dModeEvent(msg->GetRotationAngle(), msg->GetAngleFOV()));
-        m_useFramebuffer = true;
-        m_3dModeChanged = true;
-      }
-      break;
-    }
-
-  case Message::Disable3dMode:
-    {
-      if (m_useFramebuffer)
-      {
-        m_useFramebuffer = false;
-        m_3dModeChanged = true;
-        AddUserEvent(Disable3dMode());
-      }
+      ref_ptr<Enable3dModeMessage> const msg = message;
+      m_enable3dInNavigation = msg->Enable();
       break;
     }
 
@@ -414,17 +411,18 @@ void FrontendRenderer::OnResize(ScreenBase const & screen)
   m_contextFactory->getDrawContext()->resize(viewportRect.SizeX(), viewportRect.SizeY());
   RefreshProjection();
 
-  if (m_useFramebuffer)
+  if (screen.isPerspective())
   {
     int width = screen.GetWidth();
     int height = screen.GetHeight();
     int const maxSide = max(width, height);
-    if (maxSide > m_framebuffer->GetMaxSize())
+    int const maxTextureSize = m_framebuffer->GetMaxSize();
+    if (maxSide > maxTextureSize)
     {
-      width = width * m_framebuffer->GetMaxSize() / maxSide;
-      height = height * m_framebuffer->GetMaxSize() / maxSide;
-      LOG(LINFO, ("Max texture size:", m_framebuffer->GetMaxSize(), ", expanded screen size:", maxSide,
-                  ", scale:", m_framebuffer->GetMaxSize() / (double)maxSide));
+      width = width * maxTextureSize / maxSide;
+      height = height * maxTextureSize / maxSide;
+      LOG(LINFO, ("Max texture size:", maxTextureSize, ", expanded screen size:", maxSide,
+                  ", scale:", maxTextureSize / (double)maxSide));
     }
 
     m_viewport.SetViewport(0, 0, width, height);
@@ -564,7 +562,8 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
   BeforeDrawFrame();
 #endif
 
-  if (m_useFramebuffer)
+  bool const isPerspective = modelView.isPerspective();
+  if (isPerspective)
   {
     m_framebuffer->SetDefaultContext(m_contextFactory->getDrawContext());
     m_framebuffer->Enable();
@@ -655,7 +654,7 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
 
   m_routeRenderer->RenderRoute(modelView, make_ref(m_gpuProgramManager), m_generalUniforms);
 
-  if (!m_useFramebuffer)
+  if (!isPerspective)
   {
     for (drape_ptr<UserMarkRenderGroup> const & group : m_userMarkRenderGroups)
     {
@@ -670,10 +669,10 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
   m_myPositionController->Render(MyPositionController::RenderMyPosition,
                                  modelView, make_ref(m_gpuProgramManager), m_generalUniforms);
 
-  if (!m_useFramebuffer && m_guiRenderer != nullptr)
+  if (!isPerspective && m_guiRenderer != nullptr)
     m_guiRenderer->Render(make_ref(m_gpuProgramManager), modelView);
 
-  if (m_useFramebuffer)
+  if (isPerspective)
   {
     m_framebuffer->Disable();
     m_renderer3d->Render(modelView, m_framebuffer->GetTextureId(), make_ref(m_gpuProgramManager));
@@ -713,6 +712,11 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
 #endif
 }
 
+bool FrontendRenderer::IsPerspective() const
+{
+  return m_userEventStream.GetCurrentScreen().isPerspective();
+}
+
 bool FrontendRenderer::IsBillboardProgram(int programIndex) const
 {
   return programIndex == gpu::TEXTURING_BILLBOARD_PROGRAM
@@ -723,11 +727,13 @@ bool FrontendRenderer::IsBillboardProgram(int programIndex) const
 void FrontendRenderer::RenderSingleGroup(ScreenBase const & modelView, ref_ptr<BaseRenderGroup> group)
 {
   dp::GLState const & state = group->GetState();
-  uint32_t const gpuProgramIndex = m_useFramebuffer ? state.GetProgram3dIndex()
+  bool const isPerspective = modelView.isPerspective();
+
+  uint32_t const gpuProgramIndex = isPerspective ? state.GetProgram3dIndex()
                                                     : state.GetProgramIndex();
   bool const isBillboardProgram = IsBillboardProgram(gpuProgramIndex);
 
-  if (m_useFramebuffer && (m_isBillboardRenderPass != isBillboardProgram))
+  if (isPerspective && (m_isBillboardRenderPass != isBillboardProgram))
     return;
 
   group->UpdateAnimation();
@@ -767,7 +773,7 @@ void FrontendRenderer::RefreshModelView(ScreenBase const & screen)
 
 void FrontendRenderer::RefreshPivotTransform(ScreenBase const & screen)
 {
-  if (m_useFramebuffer)
+  if (screen.isPerspective())
   {
     math::Matrix<float, 4, 4> const transform(screen.PTo3dMatrix());
     m_generalUniforms.SetMatrix4x4Value("pivotTransform", transform.m_data);
@@ -1068,9 +1074,6 @@ ScreenBase const & FrontendRenderer::ProcessEvents(bool & modelViewChanged, bool
 {
   ScreenBase const & modelView = m_userEventStream.ProcessEvents(modelViewChanged, viewportChanged);
   gui::DrapeGui::Instance().SetInUserAction(m_userEventStream.IsInUserAction());
-
-  viewportChanged = viewportChanged || m_3dModeChanged;
-  m_3dModeChanged = false;
 
   return modelView;
 }

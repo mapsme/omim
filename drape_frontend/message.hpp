@@ -37,10 +37,10 @@ public:
     AddRoute,
     RemoveRoute,
     FlushRoute,
+    FollowRoute,
     UpdateMapStyle,
     InvalidateTextures,
-    Enable3dMode,
-    Disable3dMode
+    Enable3dMode
   };
 
   virtual ~Message() {}
