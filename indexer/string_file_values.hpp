@@ -1,12 +1,17 @@
 #pragma once
 
-#include "coding/old_compressed_bit_vector.hpp"
+#include "coding/compressed_bit_vector.hpp"
 #include "coding/read_write_utils.hpp"
 #include "coding/write_to_sink.hpp"
+
+#include "indexer/coding_params.hpp"
+#include "indexer/geometry_serialization.hpp"
 
 #include "base/assert.hpp"
 
 #include "std/algorithm.hpp"
+#include "std/unique_ptr.hpp"
+#include "std/utility.hpp"
 
 /// Following classes are supposed to be used with StringsFile. They
 /// allow to write/read them, compare or serialize to an in-memory
@@ -15,141 +20,265 @@
 /// compressed search index construction, they allow to avoid
 /// redundant serialization-deserialization or sorting.
 
-/// A wrapper around feature index.
+// A wrapper around feature index.
 struct FeatureIndexValue
 {
-  FeatureIndexValue() : m_value(0) {}
+  FeatureIndexValue() : m_featureId(0) {}
 
-  template <typename TWriter>
-  void Write(TWriter & writer) const
-  {
-    WriteToSink(writer, m_value);
-  }
+  FeatureIndexValue(uint64_t featureId) : m_featureId(featureId) {}
 
-  template <typename TReader>
-  void Read(TReader & reader)
-  {
-    m_value = ReadPrimitiveFromSource<uint32_t>(reader);
-  }
+  bool operator<(FeatureIndexValue const & o) const { return m_featureId < o.m_featureId; }
 
-  inline void const * data() const { return &m_value; }
+  bool operator==(FeatureIndexValue const & o) const { return m_featureId == o.m_featureId; }
 
-  inline size_t size() const { return sizeof(m_value); }
+  void Swap(FeatureIndexValue & o) { swap(m_featureId, o.m_featureId); }
 
-  bool operator<(FeatureIndexValue const & value) const { return m_value < value.m_value; }
-
-  bool operator==(FeatureIndexValue const & value) const { return m_value == value.m_value; }
-
-  void swap(FeatureIndexValue & value) { ::swap(m_value, value.m_value); }
-
-  uint32_t m_value;
+  uint64_t m_featureId;
 };
 
-/// A wrapper around serialized SaverT::ValueType.
-struct SerializedFeatureInfoValue
+struct FeatureWithRankAndCenter
 {
-  using ValueT = buffer_vector<uint8_t, 32>;
+  FeatureWithRankAndCenter() : m_pt(m2::PointD()), m_featureId(0), m_rank(0) {}
+
+  FeatureWithRankAndCenter(m2::PointD pt, uint32_t featureId, uint8_t rank)
+    : m_pt(pt), m_featureId(featureId), m_rank(rank)
+  {
+  }
+
+  bool operator<(FeatureWithRankAndCenter const & o) const { return m_featureId < o.m_featureId; }
+
+  bool operator==(FeatureWithRankAndCenter const & o) const { return m_featureId == o.m_featureId; }
+
+  void Swap(FeatureWithRankAndCenter & o)
+  {
+    swap(m_pt, o.m_pt);
+    swap(m_featureId, o.m_featureId);
+    swap(m_rank, o.m_rank);
+  }
+
+  m2::PointD m_pt;       // Center point of the feature.
+  uint32_t m_featureId;  // Feature identifier.
+  uint8_t m_rank;        // Rank of the feature.
+};
+
+template <typename TValue>
+class SingleValueSerializer;
+
+template <>
+class SingleValueSerializer<FeatureWithRankAndCenter>
+{
+public:
+  using TValue = FeatureWithRankAndCenter;
+
+  SingleValueSerializer(serial::CodingParams const & codingParams) : m_codingParams(codingParams) {}
 
   template <typename TWriter>
-  void Write(TWriter & writer) const
+  void Serialize(TWriter & writer, TValue const & v) const
   {
-    rw::WriteVectorOfPOD(writer, m_value);
+    serial::SavePoint(writer, v.m_pt, m_codingParams);
+    WriteToSink(writer, v.m_featureId);
+    WriteToSink(writer, v.m_rank);
   }
 
   template <typename TReader>
-  void Read(TReader & reader)
+  void Deserialize(TReader & reader, TValue & v) const
   {
-    rw::ReadVectorOfPOD(reader, m_value);
+    ReaderSource<TReader> src(reader);
+    DeserializeFromSource(src, v);
   }
 
-  inline void const * data() const { return m_value.data(); }
-
-  inline size_t size() const { return m_value.size() * sizeof(ValueT::value_type); }
-
-  bool operator<(SerializedFeatureInfoValue const & value) const { return m_value < value.m_value; }
-
-  bool operator==(SerializedFeatureInfoValue const & value) const
+  template <typename TSource>
+  void DeserializeFromSource(TSource & src, TValue & v) const
   {
-    return m_value == value.m_value;
+    v.m_pt = serial::LoadPoint(src, m_codingParams);
+    v.m_featureId = ReadPrimitiveFromSource<uint32_t>(src);
+    v.m_rank = ReadPrimitiveFromSource<uint8_t>(src);
   }
 
-  void swap(SerializedFeatureInfoValue & value) { m_value.swap(value.m_value); }
-
-  ValueT m_value;
+private:
+  serial::CodingParams m_codingParams;
 };
 
-/// This template is used to accumulate and serialize a group of
-/// values of the same type.
-template <typename Value>
+template <>
+class SingleValueSerializer<FeatureIndexValue>
+{
+public:
+  using TValue = FeatureIndexValue;
+
+  SingleValueSerializer() = default;
+
+  // todo(@mpimenov). Remove.
+  SingleValueSerializer(serial::CodingParams const & /* codingParams */) {}
+
+  // The serialization and deserialization is needed for StringsFile.
+  // Use ValueList for group serialization in CBVs.
+  template <typename TWriter>
+  void Serialize(TWriter & writer, TValue const & v) const
+  {
+    WriteToSink(writer, v.m_featureId);
+  }
+
+  template <typename TReader>
+  void Deserialize(TReader & reader, TValue & v) const
+  {
+    ReaderSource<TReader> src(reader);
+    DeserializeFromSource(src, v);
+  }
+
+  template <typename TSource>
+  void DeserializeFromSource(TSource & src, TValue & v) const
+  {
+    v.m_featureId = ReadPrimitiveFromSource<uint64_t>(src);
+  }
+};
+
+// This template is used to accumulate, serialize and deserialize
+// a group of values of the same type.
+template <typename TValue>
 class ValueList;
 
-/// ValueList<FeatureIndexValue> serializes a group of features
-/// indices as a compressed bit vector, thus, allowing us to save a
-/// disk space.
+// ValueList<FeatureIndexValue> serializes a group of feature
+// indices as a compressed bit vector.
 template <>
 class ValueList<FeatureIndexValue>
 {
 public:
-  void Append(FeatureIndexValue const & value)
+  using TValue = FeatureIndexValue;
+
+  ValueList() = default;
+
+  ValueList(ValueList<FeatureIndexValue> const & o)
   {
-    // External-memory trie adds <string, value> pairs in a sorted
-    // order, thus, values are supposed to be accumulated in a
-    // sorted order, and we can avoid sorting them before construction
-    // of a CompressedBitVector.
-    ASSERT(m_offsets.empty() || m_offsets.back() <= value.m_value, ());
-    if (!m_offsets.empty() && m_offsets.back() == value.m_value)
-      return;
-    m_offsets.push_back(value.m_value);
+    if (o.m_cbv)
+      m_cbv = o.m_cbv->Clone();
   }
 
-  /// This method returns number of values in the current instance of
-  /// ValueList<FeatureIndexValue>, but as these values are actually
-  /// features indices and can be dumped as a single serialized
-  /// compressed bit vector, this method returns 1 when there're at
-  /// least one feature's index in the list - so, compressed bit
-  /// vector will be built and serialized - and 0 otherwise.
-  size_t size() const { return m_offsets.empty() ? 0 : 1; }
-
-  bool empty() const { return m_offsets.empty(); }
-
-  template <typename SinkT>
-  void Dump(SinkT & sink) const
+  void Init(vector<FeatureIndexValue> const & values)
   {
-    vector<uint8_t> buffer;
-    MemWriter<vector<uint8_t>> writer(buffer);
-    BuildCompressedBitVector(writer, m_offsets);
-    sink.Write(buffer.data(), buffer.size());
+    vector<uint64_t> ids(values.size());
+    for (size_t i = 0; i < ids.size(); ++i)
+      ids[i] = values[i].m_featureId;
+    m_cbv = coding::CompressedBitVectorBuilder::FromBitPositions(move(ids));
+  }
+
+  // This method returns number of values in the current instance of
+  // ValueList<FeatureIndexValue>, but as these values are actually
+  // features indices and can be dumped as a single serialized
+  // compressed bit vector, this method returns 1 when there're at
+  // least one feature's index in the list - so, compressed bit
+  // vector will be built and serialized - and 0 otherwise.
+  size_t Size() const
+  {
+    return (m_cbv && m_cbv->PopCount() != 0) ? 1 : 0;
+  }
+
+  bool IsEmpty() const { return Size() == 0; }
+
+  template <typename TSink>
+  void Serialize(TSink & sink, SingleValueSerializer<TValue> const & /* serializer */) const
+  {
+    if (IsEmpty())
+      return;
+    vector<uint8_t> buf;
+    MemWriter<decltype(buf)> writer(buf);
+    m_cbv->Serialize(writer);
+    sink.Write(buf.data(), buf.size());
+  }
+
+  // Note the valueCount parameter. It is here for compatibility with
+  // an old data format that was serializing FeatureWithRankAndCenter`s.
+  // They were put in a vector, this vector's size was encoded somehow
+  // and then the vector was written with a method similar to Serialize above.
+  // The deserialization code read the valueCount separately and then
+  // read each FeatureWithRankAndCenter one by one.
+  // A better approach is to make Serialize/Deserialize responsible for
+  // every part of serialization and as such it should not need valueCount.
+  template <typename TSource>
+  void Deserialize(TSource & src, uint32_t valueCount,
+                   SingleValueSerializer<TValue> const & /* serializer */)
+  {
+    if (valueCount > 0)
+      m_cbv = coding::CompressedBitVectorBuilder::DeserializeFromSource(src);
+    else
+      m_cbv.reset();
+  }
+
+  template <typename TSource>
+  void Deserialize(TSource & src, SingleValueSerializer<TValue> const & /* serializer */)
+  {
+    if (src.Size() > 0)
+      m_cbv = coding::CompressedBitVectorBuilder::DeserializeFromSource(src);
+    else
+      m_cbv.reset();
+  }
+
+  template <typename TF>
+  void ForEach(TF && f) const
+  {
+    if (IsEmpty())
+      return;
+    coding::CompressedBitVectorEnumerator::ForEach(*m_cbv, [&f](uint64_t const bitPosition)
+                                                   {
+                                                     f(TValue(bitPosition));
+                                                   });
   }
 
 private:
-  vector<uint32_t> m_offsets;
+  unique_ptr<coding::CompressedBitVector> m_cbv;
 };
 
-/// ValueList<SerializedFeatureInfoValue> sequentially serializes
+/// ValueList<FeatureWithRankAndCenter> sequentially serializes
 /// encoded features infos.
 template <>
-class ValueList<SerializedFeatureInfoValue>
+class ValueList<FeatureWithRankAndCenter>
 {
 public:
-  ValueList() : m_size(0) {}
+  using TValue = FeatureWithRankAndCenter;
+  using TSerializer = SingleValueSerializer<TValue>;
 
-  void Append(SerializedFeatureInfoValue const & value)
+  void Init(vector<TValue> const & values) { m_values = values; }
+
+  size_t Size() const { return m_values.size(); }
+
+  bool IsEmpty() const { return m_values.empty(); }
+
+  template <typename TSink>
+  void Serialize(TSink & sink, SingleValueSerializer<TValue> const & serializer) const
   {
-    m_value.insert(m_value.end(), value.m_value.begin(), value.m_value.end());
-    ++m_size;
+    for (auto const & value : m_values)
+      serializer.Serialize(sink, value);
   }
 
-  size_t size() const { return m_size; }
-
-  bool empty() const { return !m_size; }
-
-  template <typename SinkT>
-  void Dump(SinkT & sink) const
+  template <typename TSource>
+  void Deserialize(TSource & src, uint32_t valueCount,
+                   SingleValueSerializer<TValue> const & serializer)
   {
-    sink.Write(m_value.data(), m_value.size());
+    m_values.resize(valueCount);
+    for (size_t i = 0; i < valueCount; ++i)
+      serializer.DeserializeFromSource(src, m_values[i]);
+  }
+
+  // When valueCount is not known, Deserialize reads
+  // until the source is exhausted.
+  template <typename TSource>
+  void Deserialize(TSource & src, SingleValueSerializer<TValue> const & serializer)
+  {
+    m_values.clear();
+    while (src.Size() > 0)
+    {
+      m_values.push_back(TValue());
+      serializer.DeserializeFromSource(src, m_values.back());
+    }
+  }
+
+  template <typename TF>
+  void ForEach(TF && f) const
+  {
+    for (auto const & value : m_values)
+      f(value);
   }
 
 private:
-  buffer_vector<uint8_t, 32> m_value;
-  uint32_t m_size;
+  vector<TValue> m_values;
 };
+

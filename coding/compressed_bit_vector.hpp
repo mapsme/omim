@@ -1,9 +1,14 @@
+#pragma once
+
 #include "coding/read_write_utils.hpp"
 #include "coding/reader.hpp"
 #include "coding/writer.hpp"
 
+#include "base/assert.hpp"
+
 #include "std/algorithm.hpp"
 #include "std/unique_ptr.hpp"
+#include "std/utility.hpp"
 #include "std/vector.hpp"
 
 namespace coding
@@ -58,6 +63,9 @@ public:
   // todo(@pimenov). Think about rewriting Serialize and Deserialize to use the
   // code in old_compressed_bit_vector.{c,h}pp.
   virtual void Serialize(Writer & writer) const = 0;
+
+  // Copies a bit vector and returns a pointer to the copy.
+  virtual unique_ptr<CompressedBitVector> Clone() const = 0;
 };
 
 string DebugPrint(CompressedBitVector::StorageStrategy strat);
@@ -65,12 +73,13 @@ string DebugPrint(CompressedBitVector::StorageStrategy strat);
 class DenseCBV : public CompressedBitVector
 {
 public:
+  friend class CompressedBitVectorBuilder;
   static uint64_t const kBlockSize = 64;
 
   DenseCBV() = default;
 
   // Builds a dense CBV from a list of positions of set bits.
-  DenseCBV(vector<uint64_t> const & setBits);
+  explicit DenseCBV(vector<uint64_t> const & setBits);
 
   // Not to be confused with the constructor: the semantics
   // of the array of integers is completely different.
@@ -99,6 +108,7 @@ public:
   bool GetBit(uint64_t pos) const override;
   StorageStrategy GetStorageStrategy() const override;
   void Serialize(Writer & writer) const override;
+  unique_ptr<CompressedBitVector> Clone() const override;
 
 private:
   vector<uint64_t> m_bitGroups;
@@ -108,11 +118,14 @@ private:
 class SparseCBV : public CompressedBitVector
 {
 public:
+  friend class CompressedBitVectorBuilder;
   using TIterator = vector<uint64_t>::const_iterator;
 
-  SparseCBV(vector<uint64_t> const & setBits);
+  SparseCBV() = default;
 
-  SparseCBV(vector<uint64_t> && setBits);
+  explicit SparseCBV(vector<uint64_t> const & setBits);
+
+  explicit SparseCBV(vector<uint64_t> && setBits);
 
   // Returns the position of the i'th set bit.
   uint64_t Select(size_t i) const;
@@ -129,6 +142,7 @@ public:
   bool GetBit(uint64_t pos) const override;
   StorageStrategy GetStorageStrategy() const override;
   void Serialize(Writer & writer) const override;
+  unique_ptr<CompressedBitVector> Clone() const override;
 
   inline TIterator Begin() const { return m_positions.cbegin(); }
   inline TIterator End() const { return m_positions.cend(); }
@@ -148,14 +162,23 @@ public:
 
   // Chooses a strategy to store the bit vector with bits from a bitmap obtained
   // by concatenating the elements of bitGroups.
+  static unique_ptr<CompressedBitVector> FromBitGroups(vector<uint64_t> & bitGroups);
   static unique_ptr<CompressedBitVector> FromBitGroups(vector<uint64_t> && bitGroups);
 
   // Reads a bit vector from reader which must contain a valid
   // bit vector representation (see CompressedBitVector::Serialize for the format).
   template <typename TReader>
-  static unique_ptr<CompressedBitVector> Deserialize(TReader & reader)
+  static unique_ptr<CompressedBitVector> DeserializeFromReader(TReader & reader)
   {
     ReaderSource<TReader> src(reader);
+    return DeserializeFromSource(src);
+  }
+
+  // Reads a bit vector from source which must contain a valid
+  // bit vector representation (see CompressedBitVector::Serialize for the format).
+  template <typename TSource>
+  static unique_ptr<CompressedBitVector> DeserializeFromSource(TSource & src)
+  {
     uint8_t header = ReadPrimitiveFromSource<uint8_t>(src);
     CompressedBitVector::StorageStrategy strat =
         static_cast<CompressedBitVector::StorageStrategy>(header);
@@ -174,7 +197,7 @@ public:
         return make_unique<SparseCBV>(move(setBits));
       }
     }
-    return nullptr;
+    return unique_ptr<CompressedBitVector>();
   }
 };
 

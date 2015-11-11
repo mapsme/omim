@@ -51,10 +51,11 @@ inline shared_ptr<trie::DefaultIterator> MoveTrieIteratorToString(
 
     for (uint32_t i = 0; i < edgeCount; ++i)
     {
-      size_t const szEdge = it->m_edge[i].m_str.size();
+      size_t const szEdge = it->m_edge[i].m_label.size();
 
-      size_t const count = CalcEqualLength(it->m_edge[i].m_str.begin(), it->m_edge[i].m_str.end(),
-                                           queryS.begin() + symbolsMatched, queryS.end());
+      size_t const count =
+          CalcEqualLength(it->m_edge[i].m_label.begin(), it->m_edge[i].m_label.end(),
+                          queryS.begin() + symbolsMatched, queryS.end());
 
       if ((count > 0) && (count == szEdge || szQuery == count + symbolsMatched))
       {
@@ -113,8 +114,8 @@ void FullMatchInTrie(trie::DefaultIterator const & trieRoot, strings::UniChar co
 #endif
 
   ASSERT_EQUAL ( symbolsMatched, s.size(), () );
-  for (size_t i = 0; i < it->m_value.size(); ++i)
-    f(it->m_value[i]);
+
+  it->m_valueList.ForEach(f);
 }
 
 template <typename F>
@@ -142,40 +143,32 @@ void PrefixMatchInTrie(trie::DefaultIterator const & trieRoot, strings::UniChar 
 
   while (!trieQueue.empty())
   {
-    // Next 2 lines don't throw any exceptions while moving
-    // ownership from container to smart pointer.
     auto const it = trieQueue.back();
     trieQueue.pop_back();
 
-    for (size_t i = 0; i < it->m_value.size(); ++i)
-      f(it->m_value[i]);
+    it->m_valueList.ForEach(f);
 
     for (size_t i = 0; i < it->m_edge.size(); ++i)
       trieQueue.push_back(it->GoToEdge(i));
   }
 }
 
-template <class TFilter>
+template <typename TFilter, typename TValue>
 class OffsetIntersecter
 {
-  using ValueT = trie::ValueReader::ValueType;
-
   struct HashFn
   {
-    size_t operator() (ValueT const & v) const
-    {
-      return v.m_featureId;
-    }
+    size_t operator()(TValue const & v) const { return v.m_featureId; }
   };
   struct EqualFn
   {
-    bool operator() (ValueT const & v1, ValueT const & v2) const
+    bool operator()(TValue const & v1, TValue const & v2) const
     {
       return (v1.m_featureId == v2.m_featureId);
     }
   };
 
-  using TSet = unordered_set<ValueT, HashFn, EqualFn>;
+  using TSet = unordered_set<TValue, HashFn, EqualFn>;
 
   TFilter const & m_filter;
   unique_ptr<TSet> m_prevSet;
@@ -184,7 +177,7 @@ class OffsetIntersecter
 public:
   explicit OffsetIntersecter(TFilter const & filter) : m_filter(filter), m_set(new TSet) {}
 
-  void operator() (ValueT const & v)
+  void operator()(TValue const & v)
   {
     if (m_prevSet && !m_prevSet->count(v))
       return;
@@ -222,7 +215,7 @@ struct TrieRootPrefix
   size_t m_prefixSize;
 
   TrieRootPrefix(trie::DefaultIterator const & root,
-                 trie::DefaultIterator::Edge::EdgeStrT const & edge)
+                 trie::DefaultIterator::Edge::TEdgeLabel const & edge)
     : m_root(root)
   {
     if (edge.size() == 1)
@@ -238,7 +231,7 @@ struct TrieRootPrefix
   }
 };
 
-template <class TFilter>
+template <typename TFilter, typename TValue>
 class TrieValuesHolder
 {
 public:
@@ -252,7 +245,7 @@ public:
     m_index = index;
   }
 
-  void operator()(Query::TTrieValue const & v)
+  void operator()(TValue const & v)
   {
     if (m_filter(v.m_featureId))
       m_holder[m_index].push_back(v);
@@ -267,7 +260,7 @@ public:
   }
 
 private:
-  vector<vector<Query::TTrieValue>> m_holder;
+  vector<vector<TValue>> m_holder;
   size_t m_index;
   TFilter const & m_filter;
 };
@@ -339,7 +332,7 @@ bool MatchCategoriesInTrie(SearchQueryParams const & params, trie::DefaultIterat
   uint32_t const numLangs = static_cast<uint32_t>(trieRoot.m_edge.size());
   for (uint32_t langIx = 0; langIx < numLangs; ++langIx)
   {
-    auto const & edge = trieRoot.m_edge[langIx].m_str;
+    auto const & edge = trieRoot.m_edge[langIx].m_label;
     ASSERT_GREATER_OR_EQUAL(edge.size(), 1, ());
     if (edge[0] == search::kCategoriesLang)
     {
@@ -368,7 +361,7 @@ void ForEachLangPrefix(SearchQueryParams const & params, trie::DefaultIterator c
   uint32_t const numLangs = static_cast<uint32_t>(trieRoot.m_edge.size());
   for (uint32_t langIx = 0; langIx < numLangs; ++langIx)
   {
-    auto const & edge = trieRoot.m_edge[langIx].m_str;
+    auto const & edge = trieRoot.m_edge[langIx].m_label;
     ASSERT_GREATER_OR_EQUAL(edge.size(), 1, ());
     int8_t const lang = static_cast<int8_t>(edge[0]);
     if (edge[0] < search::kCategoriesLang && params.IsLangExist(lang))
@@ -386,10 +379,11 @@ template <typename TFilter, typename ToDo>
 void MatchFeaturesInTrie(SearchQueryParams const & params, trie::DefaultIterator const & trieRoot,
                          TFilter const & filter, ToDo && toDo)
 {
-  TrieValuesHolder<TFilter> categoriesHolder(filter);
+  using TValue = trie::DefaultIterator::TValue;
+  TrieValuesHolder<TFilter, TValue> categoriesHolder(filter);
   bool const categoriesMatched = MatchCategoriesInTrie(params, trieRoot, categoriesHolder);
 
-  impl::OffsetIntersecter<TFilter> intersecter(filter);
+  impl::OffsetIntersecter<TFilter, TValue> intersecter(filter);
   for (size_t i = 0; i < params.m_tokens.size(); ++i)
   {
     ForEachLangPrefix(params, trieRoot, [&](TrieRootPrefix & langRoot, int8_t lang)
