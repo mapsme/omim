@@ -197,18 +197,19 @@ m2::PointF GetOffset(CaptionDefProto const * capRule)
 } // namespace
 
 BaseApplyFeature::BaseApplyFeature(TInsertShapeFn const & insertShape, FeatureID const & id,
-                                   CaptionDescription const & caption)
+                                   int minVisibleScale, uint8_t rank, CaptionDescription const & caption)
   : m_insertShape(insertShape)
   , m_id(id)
   , m_captions(caption)
+  , m_minVisibleScale(minVisibleScale)
+  , m_rank(rank)
 {
   ASSERT(m_insertShape != nullptr, ());
 }
 
 void BaseApplyFeature::ExtractCaptionParams(CaptionDefProto const * primaryProto,
                                             CaptionDefProto const * secondaryProto,
-                                            double depth,
-                                            TextViewParams & params) const
+                                            double depth, TextViewParams & params) const
 {
   dp::FontDecl decl;
   CaptionDefProtoToFontDecl(primaryProto, decl);
@@ -219,6 +220,8 @@ void BaseApplyFeature::ExtractCaptionParams(CaptionDefProto const * primaryProto
   params.m_primaryText = m_captions.GetMainText();
   params.m_primaryTextFont = decl;
   params.m_primaryOffset = GetOffset(primaryProto);
+  params.m_primaryOptional = primaryProto->has_is_optional() ? primaryProto->is_optional() : true;
+  params.m_secondaryOptional = true;
 
   if (secondaryProto)
   {
@@ -227,14 +230,13 @@ void BaseApplyFeature::ExtractCaptionParams(CaptionDefProto const * primaryProto
 
     params.m_secondaryText = m_captions.GetAuxText();
     params.m_secondaryTextFont = auxDecl;
+    params.m_secondaryOptional = secondaryProto->has_is_optional() ? secondaryProto->is_optional() : true;
   }
 }
 
-// ============================================= //
-
 ApplyPointFeature::ApplyPointFeature(TInsertShapeFn const & insertShape, FeatureID const & id,
-                                     CaptionDescription const & captions)
-  : TBase(insertShape, id, captions)
+                                     int minVisibleScale, uint8_t rank, CaptionDescription const & captions)
+  : TBase(insertShape, id, minVisibleScale, rank, captions)
   , m_hasPoint(false)
   , m_symbolDepth(dp::minDepth)
   , m_circleDepth(dp::minDepth)
@@ -253,31 +255,35 @@ void ApplyPointFeature::ProcessRule(Stylist::TRuleWrapper const & rule)
 {
   if (m_hasPoint == false)
     return;
-  drule::BaseRule const * pRule = rule.first;
-  float depth = rule.second;
 
-  bool isNode = (pRule->GetType() & drule::node) != 0;
+  drule::BaseRule const * pRule = rule.first;
+  float const depth = rule.second;
+
+  SymbolRuleProto const * symRule = pRule->GetSymbol();
+  if (symRule != nullptr)
+  {
+    m_symbolDepth = depth;
+    m_symbolRule = symRule;
+  }
+
+  CircleRuleProto const * circleRule = pRule->GetCircle();
+  if (circleRule != nullptr)
+  {
+    m_circleDepth = depth;
+    m_circleRule = circleRule;
+  }
+
+  bool const hasPOI = (m_symbolRule != nullptr || m_circleRule != nullptr);
+  bool const isNode = (pRule->GetType() & drule::node) != 0;
   CaptionDefProto const * capRule = pRule->GetCaption(0);
   if (capRule && isNode)
   {
     TextViewParams params;
     ExtractCaptionParams(capRule, pRule->GetCaption(1), depth, params);
+    params.m_minVisibleScale = m_minVisibleScale;
+    params.m_rank = m_rank;
     if(!params.m_primaryText.empty() || !params.m_secondaryText.empty())
-      m_insertShape(make_unique_dp<TextShape>(m_centerPoint, params));
-  }
-
-  SymbolRuleProto const * symRule = pRule->GetSymbol();
-  if (symRule)
-  {
-    m_symbolDepth = depth;
-    m_symbolRule  = symRule;
-  }
-
-  CircleRuleProto const * circleRule = pRule->GetCircle();
-  if (circleRule)
-  {
-    m_circleDepth = depth;
-    m_circleRule  = circleRule;
+      m_insertShape(make_unique_dp<TextShape>(m_centerPoint, params, hasPOI));
   }
 }
 
@@ -291,6 +297,8 @@ void ApplyPointFeature::Finish()
   {
     CircleViewParams params(m_id);
     params.m_depth = m_circleDepth;
+    params.m_minVisibleScale = m_minVisibleScale;
+    params.m_rank = m_rank;
     params.m_color = ToDrapeColor(m_circleRule->color());
     params.m_radius = m_circleRule->radius();
     m_insertShape(make_unique_dp<CircleShape>(m_centerPoint, params));
@@ -299,18 +307,17 @@ void ApplyPointFeature::Finish()
   {
     PoiSymbolViewParams params(m_id);
     params.m_depth = m_symbolDepth;
+    params.m_minVisibleScale = m_minVisibleScale;
+    params.m_rank = m_rank;
     params.m_symbolName = m_symbolRule->name();
     m_insertShape(make_unique_dp<PoiSymbolShape>(m_centerPoint, params));
   }
 }
 
-// ============================================= //
-
 ApplyAreaFeature::ApplyAreaFeature(TInsertShapeFn const & insertShape, FeatureID const & id,
-                                   CaptionDescription const & captions)
-  : TBase(insertShape, id, captions)
-{
-}
+                                   int minVisibleScale, uint8_t rank, CaptionDescription const & captions)
+  : TBase(insertShape, id, minVisibleScale, rank, captions)
+{}
 
 void ApplyAreaFeature::operator()(m2::PointD const & p1, m2::PointD const & p2, m2::PointD const & p3)
 {
@@ -338,18 +345,18 @@ void ApplyAreaFeature::ProcessRule(Stylist::TRuleWrapper const & rule)
     AreaViewParams params;
     params.m_depth = depth;
     params.m_color = ToDrapeColor(areaRule->color());
+    params.m_minVisibleScale = m_minVisibleScale;
+    params.m_rank = m_rank;
     m_insertShape(make_unique_dp<AreaShape>(move(m_triangles), params));
   }
   else
     TBase::ProcessRule(rule);
 }
 
-// ============================================= //
-
 ApplyLineFeature::ApplyLineFeature(TInsertShapeFn const & insertShape, FeatureID const & id,
-                                   CaptionDescription const & captions, double currentScaleGtoP,
-                                   bool simplify, size_t pointsCount)
-  : TBase(insertShape, id, captions)
+                                   int minVisibleScale, uint8_t rank, CaptionDescription const & captions,
+                                   double currentScaleGtoP, bool simplify, size_t pointsCount)
+  : TBase(insertShape, id, minVisibleScale, rank, captions)
   , m_currentScaleGtoP(currentScaleGtoP)
   , m_sqrScale(math::sqr(m_currentScaleGtoP))
   , m_simplify(simplify)
@@ -417,6 +424,8 @@ void ApplyLineFeature::ProcessRule(Stylist::TRuleWrapper const & rule)
 
     PathTextViewParams params;
     params.m_depth = depth;
+    params.m_minVisibleScale = m_minVisibleScale;
+    params.m_rank = m_rank;
     params.m_text = m_captions.GetPathName();
     params.m_textFont = fontDecl;
     params.m_baseGtoPScale = m_currentScaleGtoP;
@@ -431,6 +440,8 @@ void ApplyLineFeature::ProcessRule(Stylist::TRuleWrapper const & rule)
       PathSymProto const & symRule = pLineRule->pathsym();
       PathSymbolViewParams params;
       params.m_depth = depth;
+      params.m_minVisibleScale = m_minVisibleScale;
+      params.m_rank = m_rank;
       params.m_symbolName = symRule.name();
       float const mainScale = df::VisualParams::Instance().GetVisualScale();
       params.m_offset = symRule.offset() * mainScale;
@@ -444,6 +455,8 @@ void ApplyLineFeature::ProcessRule(Stylist::TRuleWrapper const & rule)
       LineViewParams params;
       Extract(pLineRule, params);
       params.m_depth = depth;
+      params.m_minVisibleScale = m_minVisibleScale;
+      params.m_rank = m_rank;
       params.m_baseGtoPScale = m_currentScaleGtoP;
 
       m_insertShape(make_unique_dp<LineShape>(m_spline, params));
@@ -486,16 +499,20 @@ void ApplyLineFeature::Finish()
 
     TextViewParams viewParams;
     viewParams.m_depth = m_shieldDepth;
+    viewParams.m_minVisibleScale = m_minVisibleScale;
+    viewParams.m_rank = m_rank;
     viewParams.m_anchor = dp::Center;
     viewParams.m_featureID = FeatureID();
     viewParams.m_primaryText = roadNumber;
     viewParams.m_primaryTextFont = font;
     viewParams.m_primaryOffset = m2::PointF(0, 0);
+    viewParams.m_primaryOptional = true;
+    viewParams.m_secondaryOptional = true;
 
     m2::Spline::iterator it = m_spline.CreateIterator();
     while (!it.BeginAgain())
     {
-      m_insertShape(make_unique_dp<TextShape>(it.m_pos, viewParams));
+      m_insertShape(make_unique_dp<TextShape>(it.m_pos, viewParams, false /* hasPOI */));
       it.Advance(splineStep);
     }
   }

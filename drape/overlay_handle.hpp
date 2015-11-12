@@ -17,14 +17,21 @@
 namespace dp
 {
 
+enum OverlayRank
+{
+  OverlayRank0 = 0,
+  OverlayRank1,
+  OverlayRank2,
+
+  OverlayRanksCount
+};
+
 class OverlayHandle
 {
 public:
   typedef vector<m2::RectF> Rects;
 
-  OverlayHandle(FeatureID const & id,
-                dp::Anchor anchor,
-                double priority);
+  OverlayHandle(FeatureID const & id, dp::Anchor anchor, uint64_t priority);
 
   virtual ~OverlayHandle() {}
 
@@ -50,12 +57,19 @@ public:
   void AddDynamicAttribute(BindingInfo const & binding, uint32_t offset, uint32_t count);
 
   FeatureID const & GetFeatureID() const;
-  double const & GetPriority() const;
+  uint64_t const & GetPriority() const;
+
+  virtual bool IsBound() const { return false; }
+
+  int GetOverlayRank() const { return m_overlayRank; }
+  void SetOverlayRank(int overlayRank) { m_overlayRank = overlayRank; }
 
 protected:
   FeatureID const m_id;
   dp::Anchor const m_anchor;
-  double const m_priority;
+  uint64_t const m_priority;
+
+  int m_overlayRank;
 
   typedef pair<BindingInfo, MutateRegion> TOffsetNode;
   TOffsetNode const & GetOffsetNode(uint8_t bufferID) const;
@@ -79,13 +93,14 @@ private:
 
 class SquareHandle : public OverlayHandle
 {
-  typedef OverlayHandle base_t;
+  using TBase = OverlayHandle;
+
 public:
   SquareHandle(FeatureID const & id,
                dp::Anchor anchor,
                m2::PointD const & gbPivot,
                m2::PointD const & pxSize,
-               double priority);
+               uint64_t priority);
 
   virtual m2::RectD GetPixelRect(ScreenBase const & screen) const;
   virtual void GetPixelShape(ScreenBase const & screen, Rects & rects) const;
@@ -94,5 +109,7 @@ private:
   m2::PointD m_gbPivot;
   m2::PointD m_pxHalfSize;
 };
+
+uint64_t CalculateOverlayPriority(int minZoomLevel, uint8_t rank, float depth);
 
 } // namespace dp
