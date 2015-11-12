@@ -13,6 +13,8 @@
 #include "std/algorithm.hpp"
 #include "std/cstring.hpp"
 #include "std/string.hpp"
+#include "std/target_os.hpp"
+#include "std/type_traits.hpp"
 #include "std/utility.hpp"
 #include "std/vector.hpp"
 
@@ -20,6 +22,16 @@
 
 namespace
 {
+template <typename T>
+constexpr bool IsTriviallyCopyable() noexcept
+{
+#if defined(OMIM_OS_LINUX)
+  return true;
+#else
+  return is_trivially_copyable<T>::value;
+#endif
+}
+
 struct ChildNodeInfo
 {
   bool m_isLeaf;
@@ -44,7 +56,7 @@ template <typename TPrimitive>
 class SingleValueSerializer
 {
 public:
-  static_assert(is_trivially_copyable<TPrimitive>::value, "");
+  static_assert(IsTriviallyCopyable<TPrimitive>(), "");
 
   template <typename TWriter>
   void Serialize(TWriter & writer, TPrimitive const & v) const
@@ -60,7 +72,7 @@ public:
   using TValue = TPrimitive;
   using TSerializer = SingleValueSerializer<TValue>;
 
-  static_assert(is_trivially_copyable<TPrimitive>::value, "");
+  static_assert(IsTriviallyCopyable<TPrimitive>(), "");
 
   ValueList() = default;
 
