@@ -160,8 +160,6 @@ UNIT_TEST(SuccinctTrie_Serialization_Smoke1)
 
   MemReader memReader(buf.data(), buf.size());
 
-  using TEmptyValue = EmptyValueReader::ValueType;
-
   auto trieRoot = trie::ReadSuccinctTrie(memReader, EmptyValueReader());
   TEST(trieRoot, ());
 }
@@ -178,8 +176,6 @@ UNIT_TEST(SuccinctTrie_Serialization_Smoke2)
   BuildFromSimpleValueList(memWriter, data);
 
   MemReader memReader(buf.data(), buf.size());
-
-  using TEmptyValue = EmptyValueReader::ValueType;
 
   auto trieRoot = trie::ReadSuccinctTrie(memReader, SimpleValueReader());
   TEST(trieRoot, ());
@@ -200,8 +196,6 @@ UNIT_TEST(SuccinctTrie_Iterator)
   BuildFromSimpleValueList(memWriter, data);
 
   MemReader memReader(buf.data(), buf.size());
-
-  using TEmptyValue = EmptyValueReader::ValueType;
 
   auto trieRoot = trie::ReadSuccinctTrie(memReader, SimpleValueReader());
   TEST(trieRoot, ());
@@ -228,8 +222,6 @@ UNIT_TEST(SuccinctTrie_MoveToString)
 
   BuildFromSimpleValueList(memWriter, data);
   MemReader memReader(buf.data(), buf.size());
-
-  using TEmptyValue = EmptyValueReader::ValueType;
 
   auto trieRoot = trie::ReadSuccinctTrie(memReader, SimpleValueReader());
 
