@@ -23,7 +23,9 @@ SOURCES += \
     feature_generator.cpp \
     feature_merger.cpp \
     feature_sorter.cpp \
+    osm2meta.cpp \
     osm2type.cpp \
+    osm_element.cpp \
     osm_id.cpp \
     osm_source.cpp \
     routing_generator.cpp \
@@ -31,7 +33,6 @@ SOURCES += \
     tesselator.cpp \
     unpack_mwm.cpp \
     update_generator.cpp \
-    osm_element.cpp \
 
 HEADERS += \
     borders_generator.hpp \
@@ -50,7 +51,6 @@ HEADERS += \
     generate_info.hpp \
     osm2meta.hpp \
     osm2type.hpp \
-    osm2meta.hpp \
     osm_element.hpp \
     osm_id.hpp \
     osm_o5m_source.hpp \

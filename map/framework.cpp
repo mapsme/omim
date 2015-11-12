@@ -477,7 +477,6 @@ void Framework::RegisterAllMaps()
          ("Registering maps while map downloading leads to removing downloading maps from "
           "ActiveMapsListener::m_items."));
 
-  platform::CleanupMapsDirectory(m_storage.GetCurrentDataVersion());
   m_storage.RegisterAllLocalMaps();
 
   int minFormat = numeric_limits<int>::max();
@@ -995,12 +994,29 @@ void Framework::ShowRectFixedAR(m2::AnyRectD const & rect)
   Invalidate();
 }
 
+void Framework::StartInteractiveSearch(search::SearchParams const & params)
+{
+  using namespace search;
+
+  m_lastSearch = params;
+  m_lastSearch.SetForceSearch(false);
+  m_lastSearch.SetSearchMode(SearchParams::IN_VIEWPORT_ONLY | SearchParams::SEARCH_WORLD);
+  m_lastSearch.m_callback = [this](Results const & results)
+  {
+    if (!results.IsEndMarker())
+      GetPlatform().RunOnGuiThread([this, results]()
+      {
+        UpdateSearchResults(results);
+      });
+  };
+}
+
 void Framework::UpdateUserViewportChanged()
 {
   if (IsISActive())
   {
     (void)GetCurrentPosition(m_lastSearch.m_lat, m_lastSearch.m_lon);
-    m_lastSearch.SetForceSearch(false);
+
     m_searchEngine->Search(m_lastSearch, GetCurrentViewport());
   }
 }
@@ -2241,6 +2257,12 @@ void Framework::RemoveRoute()
   m_bmManager.ResetRouteTrack();
 }
 
+bool Framework::DisableFollowMode()
+{
+  GetLocationState()->SetRoutingNotFollow();
+  return m_routingSession.DisableFollowMode();
+}
+
 void Framework::FollowRoute()
 {
   int const scale = (m_currentRouterType == RouterType::Pedestrian) ?
@@ -2303,7 +2325,8 @@ void Framework::CheckLocationForRouting(GpsInfo const & info)
         GetPlatform().RunOnGuiThread(bind(&Framework::InsertRoute, this, route));
     };
 
-    m_routingSession.RebuildRoute(position, readyCallback, m_progressCallback, 0 /* timeoutSec */);
+    m_routingSession.RebuildRoute(MercatorBounds::FromLatLon(info.m_latitude, info.m_longitude),
+                                  readyCallback, m_progressCallback, 0 /* timeoutSec */);
   }
 }
 

@@ -13,21 +13,19 @@
 #include "platform/platform.hpp"
 #include "storage/storage_defines.hpp"
 
-static NSString * kDownloadMapActionName = @"DownloadMapAction";
+static NSString * const kDownloadMapActionName = @"DownloadMapAction";
 
-static NSString * kFlagsKey = @"DownloadMapNotificationFlags";
-static constexpr const double kRepeatedNotificationIntervalInSeconds = 3 * 30 * 24 * 60 * 60; // three months
+static NSString * const kFlagsKey = @"DownloadMapNotificationFlags";
+static double constexpr kRepeatedNotificationIntervalInSeconds = 3 * 30 * 24 * 60 * 60; // three months
 
 using namespace storage;
-
-typedef void (^CompletionHandler)(UIBackgroundFetchResult);
 
 @interface LocalNotificationManager () <CLLocationManagerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic) CLLocationManager * locationManager;
 @property (nonatomic) TIndex countryIndex;
-@property (nonatomic, copy) CompletionHandler downloadMapCompletionHandler;
-@property (nonatomic, weak) NSTimer * timer;
+@property (copy, nonatomic) CompletionHandler downloadMapCompletionHandler;
+@property (weak, nonatomic) NSTimer * timer;
 
 @end
 
@@ -35,9 +33,10 @@ typedef void (^CompletionHandler)(UIBackgroundFetchResult);
 
 + (instancetype)sharedManager
 {
-  static LocalNotificationManager * manager;
+  static LocalNotificationManager * manager = nil;
   static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
+  dispatch_once(&onceToken, ^
+  {
     manager = [[self alloc] init];
   });
   return manager;
@@ -63,7 +62,7 @@ typedef void (^CompletionHandler)(UIBackgroundFetchResult);
 
 #pragma mark - Location Notifications
 
-- (void)showDownloadMapNotificationIfNeeded:(void (^)(UIBackgroundFetchResult))completionHandler
+- (void)showDownloadMapNotificationIfNeeded:(CompletionHandler)completionHandler
 {
   NSTimeInterval const completionTimeIndent = 2.0;
   NSTimeInterval const backgroundTimeRemaining = UIApplication.sharedApplication.backgroundTimeRemaining - completionTimeIndent;
@@ -151,7 +150,7 @@ typedef void (^CompletionHandler)(UIBackgroundFetchResult);
   return _locationManager;
 }
 
-- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations
 {
   [self.timer invalidate];
   [self.locationManager stopUpdatingLocation];
@@ -164,7 +163,7 @@ typedef void (^CompletionHandler)(UIBackgroundFetchResult);
   {
     Framework & f = GetFramework();
     CLLocation * lastLocation = [locations lastObject];
-    TIndex const index = f.GetCountryIndex(ToMercator(lastLocation.coordinate));
+    TIndex const index = f.GetCountryIndex(lastLocation.mercator);
     
     if (index.IsValid() && [self shouldShowNotificationForIndex:index])
     {

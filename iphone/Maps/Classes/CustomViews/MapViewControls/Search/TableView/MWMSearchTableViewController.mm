@@ -91,10 +91,16 @@ LocationObserver>
     dispatch_async(dispatch_get_main_queue(), [=]()
     {
       if (!results.IsEndMarker())
+      {
         searchResults = results;
+        [self updateSearchResultsInTable];
+      }
       else if (results.IsEndedNormal())
+      {
         [self completeSearch];
-      [self updateSearchResults];
+        if (IPAD)
+          GetFramework().UpdateUserViewportChanged();
+      }
     });
   };
 }
@@ -108,7 +114,8 @@ LocationObserver>
   }
   else
   {
-    if (IPAD)
+    MWMRoutingPlaneMode const m = MapsAppDelegate.theApp.routingPlaneMode;
+    if (IPAD || m == MWMRoutingPlaneModeSearchSource || m == MWMRoutingPlaneModeSearchDestination)
       return MWMSearchTableCellTypeCommon;
     else
       return indexPath.row == 0 ? MWMSearchTableCellTypeOnMap : MWMSearchTableCellTypeCommon;
@@ -229,16 +236,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
   {
     search::Result const & result = [self searchResultForIndexPath:indexPath];
     if (cellType == MWMSearchTableCellTypeSuggestion)
-    {
       [self.delegate searchText:@(result.GetSuggestionString()) forInputLocale:nil];
-    }
     else
-    {
-      Framework & f = GetFramework();
-      f.ShowSearchResult(result);
-      f.SaveSearchQuery(make_pair(searchParams.m_inputLocale, searchParams.m_query));
-      self.delegate.state = MWMSearchManagerStateHidden;
-    }
+      [self.delegate processSearchWithResult:result query:make_pair(searchParams.m_inputLocale, searchParams.m_query)];
   }
 }
 
@@ -261,12 +261,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
   }
 }
 
-- (void)updateSearchResultsOnMap
-{
-  if (self.searchOnMap)
-    GetFramework().UpdateSearchResults(searchResults);
-}
-
 - (void)updateSearchResultsInTable
 {
   if (!IPAD && _searchOnMap)
@@ -274,12 +268,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
   self.commonSizingCell = nil;
   [self.tableView reloadData];
-}
-
-- (void)updateSearchResults
-{
-  [self updateSearchResultsOnMap];
-  [self updateSearchResultsInTable];
 }
 
 #pragma mark - LocationObserver
@@ -301,7 +289,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     searchParams.SetInputLocale(locale.UTF8String);
   searchParams.m_query = text.precomposedStringWithCompatibilityMapping.UTF8String;
   searchParams.SetForceSearch(true);
-  searchResults.Clear();
 
   [self updateSearch];
 }
@@ -312,26 +299,14 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
   if (!searchParams.m_query.empty())
   {
     self.watchLocationUpdates = YES;
-    if (IPAD)
-    {
-      f.StartInteractiveSearch(searchParams);
-      f.UpdateUserViewportChanged();
-    }
-    else if (_searchOnMap)
-    {
-      search::SearchParams local(searchParams);
-      local.SetSearchMode(search::SearchParams::IN_VIEWPORT_ONLY |
-                          search::SearchParams::SEARCH_WORLD);
-      f.StartInteractiveSearch(local);
 
-      if (searchResults.GetCount() > 0)
-        f.ShowAllSearchResults(searchResults);
-      f.UpdateUserViewportChanged();
-    }
-    else
-    {
+    if (self.searchOnMap)
+      f.StartInteractiveSearch(searchParams);
+
+    if (!_searchOnMap)
       f.Search(searchParams);
-    }
+    else
+      f.ShowAllSearchResults(searchResults);
   }
   else
   {
