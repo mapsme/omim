@@ -1609,6 +1609,12 @@ void Framework::ResetLastTapEvent()
   m_lastTapEvent.reset();
 }
 
+void Framework::InvalidateRendering()
+{
+  if (m_drapeEngine != nullptr)
+    m_drapeEngine->Invalidate();
+}
+
 UserMark const * Framework::OnTapEventImpl(m2::PointD pxPoint, bool isLong, bool isMyPosition, FeatureID feature)
 {
   if (isMyPosition)

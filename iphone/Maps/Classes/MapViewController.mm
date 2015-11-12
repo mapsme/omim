@@ -370,6 +370,8 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
   [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
 
   self.controlsManager.menuState = self.menuRestoreState;
+  
+  GetFramework().InvalidateRendering();
 }
 
 - (void)viewDidLoad
