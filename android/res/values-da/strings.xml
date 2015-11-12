@@ -761,7 +761,7 @@
 	<!-- Routing Start button title -->
 	<string name="routing_start">Start</string>
 	<!-- Planning route message in navigation view -->
-	<string name="routing_planning">Planlægger rute</string>
+	<string name="routing_planning">Planlægger...</string>
 	<!-- Text for routing::IRouter::FileTooOld dialog. -->
 	<string name="dialog_routing_download_and_update_maps">For at oprette en rute skal du hente og opdatere alle kort langs ruten.</string>
 	<!-- Text for facebook sharing news about walking routes -->
@@ -803,4 +803,9 @@
 	<string name="search_history_title">Søgehistorik</string>
 	<string name="search_history_text">Gå hurtigt ind på seneste forespørgsel.</string>
 	<string name="clear_search">Ryd historiksøgning</string>
+	<string name="p2p_planning_route_title">Ruteplanlægning</string>
+	<string name="p2p_your_location">Din lokalitet</string>
+	<string name="p2p_start_routing">Start</string>
+	<string name="p2p_place_page_from">Fra</string>
+	<string name="p2p_place_page_to">Til</string>
 </resources>

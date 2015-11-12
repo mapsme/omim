@@ -751,7 +751,7 @@
 	<!-- Routing Start button title -->
 	<string name="routing_start">Starten</string>
 	<!-- Planning route message in navigation view -->
-	<string name="routing_planning">Route wordt berekend</string>
+	<string name="routing_planning">Aan het plannen.....</string>
 	<!-- Text for routing::IRouter::FileTooOld dialog. -->
 	<string name="dialog_routing_download_and_update_maps">Om een route te maken, download en update alle kaarten rondom de route.</string>
 	<!-- Text for facebook sharing news about walking routes -->
@@ -793,4 +793,9 @@
 	<string name="search_history_title">Zoekgeschiedenis</string>
 	<string name="search_history_text">Snel toegang tot recente zoekopdrachten.</string>
 	<string name="clear_search">Zoekgeschiedenis wissen</string>
+	<string name="p2p_planning_route_title">Routeberekening</string>
+	<string name="p2p_your_location">Uw locatie</string>
+	<string name="p2p_start_routing">Beginnen</string>
+	<string name="p2p_place_page_from">Van</string>
+	<string name="p2p_place_page_to">Naar</string>
 </resources>

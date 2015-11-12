@@ -763,7 +763,7 @@
 	<!-- Routing Start button title -->
 	<string name="routing_start">เริ่มต้น</string>
 	<!-- Planning route message in navigation view -->
-	<string name="routing_planning">กำลังวางแผนเส้นทาง</string>
+	<string name="routing_planning">กำลังวางแผน...</string>
 	<!-- Text for routing::IRouter::FileTooOld dialog. -->
 	<string name="dialog_routing_download_and_update_maps">เพื่อสร้างเส้นทาง โปรดดาวน์โหลดและอัปเดตแผนที่ทั้งหมดตลอดเส้นทาง</string>
 	<!-- Text for facebook sharing news about walking routes -->
@@ -805,4 +805,9 @@
 	<string name="search_history_title">ประวัติการค้นหา</string>
 	<string name="search_history_text">เข้าถึงคำถามที่ใช้ในการค้นหาเมื่อเร็ว ๆ นี้ได้อย่างรวดเร็ว</string>
 	<string name="clear_search">ล้างการค้นหาประวัติ</string>
+	<string name="p2p_planning_route_title">การวางแผนเส้นทาง</string>
+	<string name="p2p_your_location">ตำแหน่งที่ตั้งของคุณ</string>
+	<string name="p2p_start_routing">เริ่มต้น</string>
+	<string name="p2p_place_page_from">จาก</string>
+	<string name="p2p_place_page_to">ถึง</string>
 </resources>

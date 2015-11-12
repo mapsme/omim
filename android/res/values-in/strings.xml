@@ -760,7 +760,7 @@
 	<!-- Routing Start button title -->
 	<string name="routing_start">Mulai</string>
 	<!-- Planning route message in navigation view -->
-	<string name="routing_planning">Merencanakan Rute</string>
+	<string name="routing_planning">Merencanakan...</string>
 	<!-- Text for routing::IRouter::FileTooOld dialog. -->
 	<string name="dialog_routing_download_and_update_maps">Untuk membuat rute, silakan unduh dan perbarui semua peta sepanjang rute.</string>
 	<!-- Text for facebook sharing news about walking routes -->
@@ -802,4 +802,9 @@
 	<string name="search_history_title">Riwayat Pencarian</string>
 	<string name="search_history_text">Akses kueri pencarian terbaru dengan cepat.</string>
 	<string name="clear_search">Bersihkan riwayat pencarian</string>
+	<string name="p2p_planning_route_title">Perencana Rute</string>
+	<string name="p2p_your_location">Lokasi Anda</string>
+	<string name="p2p_start_routing">Mulai</string>
+	<string name="p2p_place_page_from">Dari</string>
+	<string name="p2p_place_page_to">Ke</string>
 </resources>

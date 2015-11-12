@@ -765,7 +765,7 @@
 	<!-- Routing Start button title -->
 	<string name="routing_start">ابدأ</string>
 	<!-- Planning route message in navigation view -->
-	<string name="routing_planning">يتم تخطيط المسار</string>
+	<string name="routing_planning">جار التخطيط ...</string>
 	<!-- Text for routing::IRouter::FileTooOld dialog. -->
 	<string name="dialog_routing_download_and_update_maps">لإنشاء مسار، يرجى تنزيل وتحديث جميع الخرائط على امتداد الطريق.</string>
 	<!-- Text for facebook sharing news about walking routes -->
@@ -807,4 +807,9 @@
 	<string name="search_history_title">سجل البحث</string>
 	<string name="search_history_text">الوصول إلى استعلامات البحث الحديثة بسرعة.</string>
 	<string name="clear_search">مسح تاريخ البحث</string>
+	<string name="p2p_planning_route_title">تخطيط الطريق</string>
+	<string name="p2p_your_location">موقعك</string>
+	<string name="p2p_start_routing">البداية</string>
+	<string name="p2p_place_page_from">من</string>
+	<string name="p2p_place_page_to">إلى</string>
 </resources>

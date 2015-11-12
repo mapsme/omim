@@ -765,7 +765,7 @@
 	<!-- Routing Start button title -->
 	<string name="routing_start">Başlat</string>
 	<!-- Planning route message in navigation view -->
-	<string name="routing_planning">Rota Planlanıyor</string>
+	<string name="routing_planning">Planlanıyor.....</string>
 	<!-- Text for routing::IRouter::FileTooOld dialog. -->
 	<string name="dialog_routing_download_and_update_maps">Bir rota oluşturmak için lütfen rota üzerindeki tüm haritaları indirin ve güncelleyin.</string>
 	<!-- Text for facebook sharing news about walking routes -->
@@ -807,4 +807,9 @@
 	<string name="search_history_title">Arama Geçmişi</string>
 	<string name="search_history_text">En son yapılan arama sorgularına hızlı erişim.</string>
 	<string name="clear_search">Arama geçmişini temizle</string>
+	<string name="p2p_planning_route_title">Rota planlama</string>
+	<string name="p2p_your_location">Konumunuz</string>
+	<string name="p2p_start_routing">Başla</string>
+	<string name="p2p_place_page_from">Başlangıç</string>
+	<string name="p2p_place_page_to">Hedef</string>
 </resources>

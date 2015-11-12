@@ -508,6 +508,18 @@
 /* «Map style» entry value */
 "pref_map_style_modern_light" = "Modern light";
 
+/* Settings «Route» category: «Tts enabled» title */
+"pref_tts_enable_title" = "Voice instructions";
+
+/* Settings «Route» category: «Tts enabled» summary */
+"pref_tts_enable_summary" = "Turn instructions";
+
+/* Settings «Route» category: «Tts language» title */
+"pref_tts_language_title" = "Voice language";
+
+/* Settings «Route» category: «Tts unavailable» subtitle */
+"pref_tts_unavailable" = "TTS unavailable";
+
 "placepage_distance" = "距离";
 
 "placepage_coordinates" = "坐标";
@@ -1245,7 +1257,7 @@
 "routing_start" = "开始";
 
 /* Planning route message in navigation view */
-"routing_planning" = "规划路线";
+"routing_planning" = "计划中…";
 
 /* Text for routing::IRouter::FileTooOld dialog. */
 "dialog_routing_download_and_update_maps" = "要创建路线，请下载并更新所有沿路线的地图。";
@@ -1319,3 +1331,13 @@
 
 /* Place Page link to Wikipedia article (if map object has it). */
 "read_in_wikipedia" = "Wikipedia";
+
+"p2p_planning_route_title" = "路线计划";
+
+"p2p_your_location" = "您的位置";
+
+"p2p_start_routing" = "开始";
+
+"p2p_place_page_from" = "从";
+
+"p2p_place_page_to" = "到";

@@ -1433,7 +1433,7 @@
     vi = Tải xuống Bản đồ\n(^ ^)
     ro = Descărcare hartă\n(^ ^)
     nb = Last ned kart\n(^ ^)
-    fi = Lataa kartta\n(^ ^)    
+    fi = Lataa kartta\n(^ ^)
 
   [country_status_download_without_routing]
     comment = Button text for the button at the center of the screen when the country is not downloaded
@@ -9166,7 +9166,7 @@
     el = βιετναμέζικη κουζίνα
     ar = مطبخ فيتنامي
     he = מטבח וייטנאמי
-    
+
   [cuisine_noodles]
     tags = android, ios
     comment = Cuisine
@@ -9567,7 +9567,7 @@
     tags = android, ios
     comment = Cuisine
     en = crepe
-    ru = тонкие блинчики 
+    ru = тонкие блинчики
     uk = креп
     tr = krep
     es = crepes
@@ -10006,7 +10006,7 @@
     ro = tavernă
     pl = winiarnia
     ko = 와인 레스토랑
-    id = taverna anggur 
+    id = taverna anggur
     hu = borozó
     de = Buschenschank
     fr = buschenschank
@@ -10816,7 +10816,7 @@
     el = εκλεκτά τρόφιμα
     ar = أطعمة مبردة
     he = מעדנייה
-    
+
   [cuisine_irish]
     tags = android, ios
     comment = Cuisine
@@ -11064,7 +11064,7 @@
     ko = 모로코식 음식
     id = masakan maroko
     hu = marokkói konyha
-    de = marokkanische Küche 
+    de = marokkanische Küche
     fr = cuisine marocaine
     nl = marokkaans
     fi = marokkolainen keittiö
@@ -11173,7 +11173,7 @@
     nb = gourmet
     zh-Hant = 高級 餐飲
     zh-Hans = 高级 餐饮
-    vi = chuỗi nhà hàng 
+    vi = chuỗi nhà hàng
     th = อาหารหรูหรา
     ja = 高級料理
     el = εκλεκτό φαγητό
@@ -13405,33 +13405,33 @@
   [routing_planning]
     tags = ios,android
     comment = Planning route message in navigation view
-    en = Planning Route
-    ru = Поиск маршрута
-    fr = Calcul de l'itinéraire
-    da = Planlægger rute
-    id = Merencanakan Rute
-    ko = 경로 계획 중
-    sv = Planerar rutt
-    tr = Rota Planlanıyor
-    uk = Планування маршруту
-    vi = Đang tìm đường
-    hu = Útvonal tervezése
-    de = Routenplanung
-    fi = Reittiä suunnitellaan
-    cs = Probíhá plánování trasy
-    it = Calcolo del percorso
-    nb = Planlegg en rute
-    zh-Hant = 計劃路線
-    zh-Hans = 规划路线
-    th = กำลังวางแผนเส้นทาง
-    ja = ルートを計画中
-    ro = Se determină ruta
-    ar = يتم تخطيط المسار
-    sk = Plánovanie trasy
-    es = Planificando ruta
-    pl = Planowanie trasy
-    nl = Route wordt berekend
-    pt = A planear a viagem
+    en = Planning...
+    ru = Планируем...
+    fr = En cours de planification...
+    da = Planlægger...
+    id = Merencanakan...
+    ko = 계획 중...
+    sv = Planerar...
+    tr = Planlanıyor.....
+    uk = Планування ...
+    vi = Đang hoạch định...
+    hu = Tervezés...
+    de = Route wird geplant ...
+    fi = Lasketaan...
+    cs = Plánování...
+    it = Pianificazione...
+    nb = Planlegger...
+    zh-Hant = 計劃中…
+    zh-Hans = 计划中…
+    th = กำลังวางแผน...
+    ja = 作成中…
+    ro = Se planifică...
+    ar = جار التخطيط ...
+    sk = Plánovanie ...
+    es = Planeando...
+    pl = Planowanie...
+    nl = Aan het plannen.....
+    pt = Planejando...
 
   [dialog_routing_download_and_update_maps]
     tags = ios, android
@@ -13807,32 +13807,32 @@
 
   [rate_alert_title]
     tags = ios, android
-    en = Like the app? 
+    en = Like the app?
     ru = Нравится приложение?
-    fr = Vous aimez l’application ? 
-    da = Kan du lide appen? 
-    id = Suka aplikasi ini? 
-    ko = 앱을 좋아하나요? 
-    sv = Gillar du appen? 
-    tr = Uygulamayı beğendiniz mi? 
+    fr = Vous aimez l’application ?
+    da = Kan du lide appen?
+    id = Suka aplikasi ini?
+    ko = 앱을 좋아하나요?
+    sv = Gillar du appen?
+    tr = Uygulamayı beğendiniz mi?
     uk = Подобається програма?
-    vi = Bạn thích ứng dụng chứ? 
+    vi = Bạn thích ứng dụng chứ?
     hu = Tetszik az app?
-    de = Gefällt Ihnen die App? 
+    de = Gefällt Ihnen die App?
     fi = Pidätkö sovelluksesta?
-    cs = Líbí se vám aplikace? 
-    it = Ti piace l’app? 
-    nb = Liker du appen? 
+    cs = Líbí se vám aplikace?
+    it = Ti piace l’app?
+    nb = Liker du appen?
     zh-Hant = 喜歡這個應用嗎？
     zh-Hans = 喜欢这个应用吗？
-    th = ชอบแอปหรือไม่? 
-    ja = このアプリが好きですか? 
+    th = ชอบแอปหรือไม่?
+    ja = このアプリが好きですか?
     ro = Vă place aplicația?
     ar = يعجبك التطبيق؟
     sk = Páči sa vám aplikácia?
-    es = ¿Te gusta la aplicación? 
-    pl = Lubisz tę aplikację? 
-    nl = Vindt u de app leuk? 
+    es = ¿Te gusta la aplicación?
+    pl = Lubisz tę aplikację?
+    nl = Vindt u de app leuk?
     pt = Gosta do aplicativo?
 
   [rate_alert_default_message]
@@ -13847,7 +13847,7 @@
     tr = MAPS.ME’yi kullandığınız için teşekkür ederiz. Lütfen uygulamaya puan verin. Geri bildiriminiz daha iyi hale gelebilmemize yardımcı olur.
     uk = Дякуємо за використання MAPS.ME. Будь ласка, дайте їй оцінку. Ваш відгук допоможе нам стати краще.
     vi = Cám ơn bạn đã sử dụng MAPS.ME. Vui lòng đánh giá ứng dụng. Phản hồi của bạn giúp chúng tôi trở nên tốt hơn.
-    hu = Köszönjük, hogy a MAPS.ME-t használta. Kérjük, értékelje az appot. A visszajelzéseik segítenek bennünket abban, hogy jobbá váljunk. 
+    hu = Köszönjük, hogy a MAPS.ME-t használta. Kérjük, értékelje az appot. A visszajelzéseik segítenek bennünket abban, hogy jobbá váljunk.
     de = Danke, dass Sie MAPS.ME nutzen. Bitte bewerten Sie die App. Ihr Feedback hilft uns besser zu werden.
     fi = Kiitos kun käytät MAPS.ME:tä. Voisitko myös arvostella sovelluksen? Palautteesi avulla tulemme vielä paremmiksi.
     cs = Děkujeme, že používáte MAPS.ME. Ohodnoťte, prosím, tuto aplikaci. Váš komentář nám pomůže ji ještě zlepšit.
@@ -13889,7 +13889,7 @@
     ja = やったー! 相思相愛!
     ro = Ura! Și noi vă iubim!
     ar = مرحا! نحن أيضا نحبك!
-    sk = Hurá! Aj my vás taky páči! 
+    sk = Hurá! Aj my vás taky páči!
     es = ¡Genial! ¡Nosotros también te queremos!
     pl = Hurra! My też Cię uwielbiamy!
     nl = Hoera! Wij houden ook van u!
@@ -13919,7 +13919,7 @@
     ja = ありがとうございます。頑張ります!
     ro = Vă mulțumim, vom face tot ce ne stă în putință!
     ar = شكرا لك، سوف نبذل قصارى جهدنا!
-    sk = Ďakujeme vám, urobíme, čo bude v našich silách! 
+    sk = Ďakujeme vám, urobíme, čo bude v našich silách!
     es = ¡Gracias, haremos todo lo posible!
     pl = Dziękujemy, zrobimy co w naszej mocy!
     nl = Bedankt, we zullen ons best doen!
@@ -13949,7 +13949,7 @@
     ja = 改善のためのアイデアはございますか?
     ro = Aveți vreo idee prin care putem să îmbunătățim aplicația?
     ar = لديك أي فكرة حول كيف يمكننا أن نجعله أفضل؟
-    sk = Nejaký nápad, ako ju môžeme vylepšiť? 
+    sk = Nejaký nápad, ako ju môžeme vylepšiť?
     es = ¿Alguna idea de cómo podemos mejorarla?
     pl = Czy masz pomysł, w jaki sposób możemy dokonać ulepszeń?
     nl = Heeft u suggesties voor verbeteringen?
@@ -14320,3 +14320,153 @@
     tags = ios, android
     comment = Place Page link to Wikipedia article (if map object has it).
     en = Wikipedia
+
+  [p2p_planning_route_title]
+    tags = ios, android
+    en = Route Planning
+    ru = Планирование маршрута
+    fr = Planification d’itinéraire
+    da = Ruteplanlægning
+    id = Perencana Rute
+    ko = 경로 계획 중
+    sv = Ruttplanering
+    tr = Rota planlama
+    uk = Планування маршруту
+    vi = Hoạch định đường đi
+    hu = Útvonaltervezés
+    de = Routenplanung
+    fi = Reittisuunnittelu
+    cs = Plánování trasy
+    it = Pianificazione percorso
+    nb = Ruteplanlegging
+    zh-Hant = 路線計劃
+    zh-Hans = 路线计划
+    th = การวางแผนเส้นทาง
+    ja = ルート作成
+    ro = Planificare rută
+    ar = تخطيط الطريق
+    sk = Plánovanie trasy
+    es = Planificación de ruta
+    pl = Planowanie trasy
+    nl = Routeberekening
+    pt = Planejar rota
+
+  [p2p_your_location]
+    tags = ios, android
+    en = Your Location
+    ru = Ваше местоположение
+    fr = Votre emplacement
+    da = Din lokalitet
+    id = Lokasi Anda
+    ko = 위치
+    sv = Din plats
+    tr = Konumunuz
+    uk = Ваше місцезнаходження
+    vi = Vị trí của bạn
+    hu = Az Ön helyzete
+    de = Ihr Standort
+    fi = Sijaintisi
+    cs = Vaše umístění
+    it = La tua posizione
+    nb = Din beliggenhet
+    zh-Hant = 您的位置
+    zh-Hans = 您的位置
+    th = ตำแหน่งที่ตั้งของคุณ
+    ja = 現在位置
+    ro = Locația dvs.
+    ar = موقعك
+    sk = Vaša poloha
+    es = Tu ubicación
+    pl = Twoja lokalizacja
+    nl = Uw locatie
+    pt = Localização atual
+
+  [p2p_start_routing]
+    tags = ios, android
+    en = Start
+    ru = Начать движение
+    fr = Démarrer
+    da = Start
+    id = Mulai
+    ko = 시작
+    sv = Start
+    tr = Başla
+    uk = Початок
+    vi = Bắt đầu
+    hu = Indítás
+    de = Start
+    fi = Aloita
+    cs = Start
+    it = Inizia
+    nb = Start
+    zh-Hant = 開始
+    zh-Hans = 开始
+    th = เริ่มต้น
+    ja = 開始
+    ro = Start
+    ar = البداية
+    sk = Štart
+    es = Empezar
+    pl = Start
+    nl = Beginnen
+    pt = Iniciar
+
+  [p2p_place_page_from]
+    tags = ios, android
+    en = From
+    ru = Отсюда
+    fr = Depuis
+    da = Fra
+    id = Dari
+    ko = 출발지
+    sv = Från
+    tr = Başlangıç
+    uk = Від
+    vi = Từ
+    hu = Innen
+    de = Von
+    fi = Lähtöpaikka
+    cs = Z
+    it = Da
+    nb = Fra
+    zh-Hant = 從
+    zh-Hans = 从
+    th = จาก
+    ja = 出発地
+    ro = Din
+    ar = من
+    sk = Z
+    es = Desde
+    pl = Z
+    nl = Van
+    pt = De
+
+  [p2p_place_page_to]
+    tags = ios, android
+    en = To
+    ru = Сюда
+    fr = Jusqu'à
+    da = Til
+    id = Ke
+    ko = 도착지
+    sv = Till
+    tr = Hedef
+    uk = До
+    vi = Đến
+    hu = Ide
+    de = Nach
+    fi = Määränpää
+    cs = Do
+    it = A
+    nb = Til
+    zh-Hant = 到
+    zh-Hans = 到
+    th = ถึง
+    ja = 目的地
+    ro = În
+    ar = إلى
+    sk = Do
+    es = A
+    pl = Do
+    nl = Naar
+    pt = Para
