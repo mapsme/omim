@@ -587,10 +587,10 @@ public:
   double GetAngleFOV() const { return m_angleFOV; }
 
 private:
-  int m_preferredZoomLevel;
-  int m_preferredZoomLevelIn3d;
-  double m_rotationAngle;
-  double m_angleFOV;
+  int const m_preferredZoomLevel;
+  int const m_preferredZoomLevelIn3d;
+  double const m_rotationAngle;
+  double const m_angleFOV;
 };
 
 class UpdateMapStyleMessage : public Message
