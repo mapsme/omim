@@ -145,3 +145,20 @@ UNIT_TEST(FBuilder_RemoveUselessNames)
 
   TEST(fb1.CheckValid(), ());
 }
+
+UNIT_TEST(FeatureParams_Parsing)
+{
+  classificator::Load();
+
+  {
+    FeatureParams params;
+    params.AddStreet("Embarcadero street \t\t 85");
+    TEST_EQUAL(params.GetStreet(), "Embarcadero street", ());
+  }
+
+  {
+    FeatureParams params;
+    params.AddAddress("165 \t\t Dolliver Street");
+    TEST_EQUAL(params.GetStreet(), "Dolliver Street", ());
+  }
+}
