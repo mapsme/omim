@@ -641,7 +641,8 @@ void Framework::ShowAll()
 
 m2::PointD Framework::GetPixelCenter() const
 {
-  return m_currentMovelView.PixelRect().Center();
+  return m_currentMovelView.isPerspective() ? m_currentMovelView.PixelRectIn3d().Center()
+                                            : m_currentMovelView.PixelRect().Center();
 }
 
 m2::PointD const & Framework::GetViewportCenter() const
@@ -720,7 +721,7 @@ void Framework::Scale(Framework::EScaleMode mode, m2::PointD const & pxPoint, bo
 
 void Framework::Scale(double factor, bool isAnim)
 {
-  Scale(factor, m_currentMovelView.PixelRect().Center(), isAnim);
+  Scale(factor, GetPixelCenter(), isAnim);
 }
 
 void Framework::Scale(double factor, m2::PointD const & pxPoint, bool isAnim)
