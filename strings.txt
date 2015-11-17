@@ -30,6 +30,8 @@
     ro = Despre
     nb = Om
     fi = Tietoja
+    fr=درباره
+    
 
   [back]
     en = Back
@@ -61,6 +63,7 @@
     ro = Înapoi
     nb = Tilbake
     fi = Takaisin
+    fr = عقب
 
   [cancel]
     tags = tizen
@@ -93,6 +96,7 @@
     ro = Anulare
     nb = Avbryt
     fi = Peruuta
+    fr  بازگشت
 
   [cancel_download]
     tags = tizen
@@ -125,6 +129,7 @@
     ro = Anulare descărcare
     nb = Avbryt nedlasting
     fi = Peruuta lataus
+    fr = 
 
   [delete]
     tags = tizen
