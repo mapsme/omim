@@ -4,11 +4,11 @@
 #include "coding/file_name_utils.hpp"
 
 #include "base/logging.hpp"
+#include "base/regexp.hpp"
 #include "base/scope_guard.hpp"
 
 #include "std/algorithm.hpp"
 #include "std/cstring.hpp"
-#include "std/regex.hpp"
 #include "std/unique_ptr.hpp"
 
 #include <dirent.h>
@@ -207,13 +207,14 @@ void EnumerateFilesByRegExp(string const & directory, string const & regexp,
   if (!dir)
     return;
 
-  regex exp(regexp);
+  regexp::RegExpT exp;
+  regexp::Create(regexp, exp);
 
   struct dirent * entry;
   while ((entry = readdir(dir.get())) != 0)
   {
     string const name(entry->d_name);
-    if (regex_search(name.begin(), name.end(), exp))
+    if (regexp::IsExist(name, exp))
       res.push_back(name);
   }
 }

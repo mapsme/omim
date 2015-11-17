@@ -1,15 +1,16 @@
 #include "map/geourl_process.hpp"
 
-#include "indexer/mercator.hpp"
 #include "indexer/scales.hpp"
+#include "indexer/mercator.hpp"
 
 #include "coding/uri.hpp"
 
-#include "base/logging.hpp"
 #include "base/string_utils.hpp"
+#include "base/regexp.hpp"
+#include "base/logging.hpp"
 
 #include "std/bind.hpp"
-#include "std/regex.hpp"
+
 
 namespace url_scheme
 {
@@ -78,7 +79,7 @@ namespace url_scheme
 
   class LatLonParser
   {
-    regex m_regexp;
+    regexp::RegExpT m_regexp;
     Info & m_info;
     int m_latPriority, m_lonPriority;
 
@@ -112,11 +113,9 @@ namespace url_scheme
 
   public:
     LatLonParser(Info & info)
-      : m_regexp("-?\\d+\\.?\\d*, *-?\\d+\\.?\\d*")
-      , m_info(info)
-      , m_latPriority(-1)
-      , m_lonPriority(-1)
+      : m_info(info), m_latPriority(-1), m_lonPriority(-1)
     {
+      regexp::Create("-?\\d+\\.?\\d*, *-?\\d+\\.?\\d*", m_regexp);
     }
 
     bool IsValid() const
@@ -140,7 +139,7 @@ namespace url_scheme
 
       if (priority != LL_PRIORITY)
       {
-        strings::ForEachMatched(value, m_regexp, AssignCoordinates(*this, priority));
+        regexp::ForEachMatched(value, m_regexp, AssignCoordinates(*this, priority));
       }
       else
       {
