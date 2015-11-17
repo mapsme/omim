@@ -497,7 +497,7 @@ void FrontendRenderer::OnResize(ScreenBase const & screen)
 {
   m2::RectD const viewportRect = screen.isPerspective() ? screen.PixelRectIn3d() : screen.PixelRect();
 
-  m_myPositionController->SetPixelRect(screen.PixelRect());
+  m_myPositionController->SetPixelRect(viewportRect);
   m_viewport.SetViewport(0, 0, screen.GetWidth(), screen.GetHeight());
   m_contextFactory->getDrawContext()->resize(viewportRect.SizeX(), viewportRect.SizeY());
   RefreshProjection();
@@ -1232,6 +1232,9 @@ void FrontendRenderer::UpdateScene(ScreenBase const & modelView)
   TTilesCollection tiles;
   ResolveTileKeys(modelView, tiles);
 
+  m_myPositionController->UpdatePixelPosition(modelView);
+
+  m_overlayTree->ForceUpdate();
   auto removePredicate = [this](drape_ptr<RenderGroup> const & group)
   {
     return group->IsOverlay() && group->GetTileKey().m_styleZoomLevel > GetCurrentZoomLevel();
