@@ -8,9 +8,8 @@
 
 #include "base/logging.hpp"
 #include "base/thread.hpp"
+#include "base/regexp.hpp"
 #include "base/string_utils.hpp"
-
-#include "std/regex.hpp"
 
 #include <unistd.h>     // for sysconf
 #include <sys/stat.h>
@@ -197,12 +196,13 @@ void Platform::GetFilesByRegExp(string const & directory, string const & regexp,
     FilesT fList;
     ZipFileReader::FilesList(directory, fList);
 
-    regex exp(regexp);
+    regexp::RegExpT exp;
+    regexp::Create(regexp, exp);
 
     for (FilesT::iterator it = fList.begin(); it != fList.end(); ++it)
     {
       string & name = it->first;
-      if (regex_search(name.begin(), name.end(), exp))
+      if (regexp::IsExist(name, exp))
       {
         // Remove assets/ prefix - clean files are needed for fonts white/blacklisting logic
         size_t const ASSETS_LENGTH = 7;
