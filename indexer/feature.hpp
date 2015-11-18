@@ -21,7 +21,6 @@ namespace old_101 { namespace feature
   class LoaderImpl;
 }}
 
-
 /// Base feature class for storing common data (without geometry).
 class FeatureBase
 {
@@ -143,9 +142,17 @@ protected:
   friend class old_101::feature::LoaderImpl;
 };
 
+namespace osm
+{
+class Editor;
+}
+
 /// Working feature class with geometry.
 class FeatureType : public FeatureBase
 {
+  // TODO(AlexZ): Use special constructor/convertor for Editor structures.
+  friend class osm::Editor;
+
   typedef FeatureBase base_type;
 
   FeatureID m_id;
