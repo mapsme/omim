@@ -440,7 +440,9 @@ private:
   void GetLocality(m2::PointD const & pt, search::AddressInfo & info) const;
 
 public:
-  bool GetVisiblePOI(m2::PointD const & pxPoint, m2::PointD & pxPivot, search::AddressInfo & info, feature::Metadata & metadata) const;
+  /// outFeatureId contains FeatureID if non-null and returns true.
+  bool GetVisiblePOI(m2::PointD const & pxPoint, m2::PointD & pxPivot, search::AddressInfo & info,
+                     feature::Metadata & metadata, FeatureID * outFeatureId = nullptr) const;
   void FindClosestPOIMetadata(m2::PointD const & pt, feature::Metadata & metadata) const;
 
 #ifndef USE_DRAPE
