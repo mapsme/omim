@@ -16,6 +16,7 @@
 #include "indexer/feature_impl.hpp"
 #include "indexer/features_vector.hpp"
 #include "indexer/index.hpp"
+#include "indexer/osm_editor.hpp"
 #include "indexer/scales.hpp"
 #include "indexer/search_delimiters.hpp"
 #include "indexer/search_string_utils.hpp"
@@ -729,6 +730,11 @@ void Query::MakePreResult2(vector<T> & cont, vector<FeatureID> & streets)
   impl::PreResult2Maker maker(*this);
   for (auto const & r : theSet)
   {
+    // Filter out results deleted in the editor.
+    // TODO(vng, ygorshenin): What is the best place to inject new features for search engine?
+    if (osm::Editor::IsFeatureDeleted(r.GetID()))
+      continue;
+
     impl::PreResult2 * p = maker(r);
     if (p == 0)
       continue;
