@@ -552,6 +552,13 @@ public:
                               double bearing, double speed, double elapsedSeconds);
 
 public:
+  /// @name Editor Interface.
+  //@{
+  void DeleteFeature(FeatureID const & fid);
+  void EditFeatureName(FeatureID const & fid, string const & newName);
+  //@}
+
+public:
   string CodeGe0url(Bookmark const * bmk, bool addName);
   string CodeGe0url(double lat, double lon, double zoomLevel, string const & name);
 

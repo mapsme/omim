@@ -62,6 +62,7 @@ SOURCES += \
     country_tree.cpp \
     feature_vec_model.cpp \
     framework.cpp \
+    framework_editor.cpp \
     ge0_parser.cpp \
     geourl_process.cpp \
     information_display.cpp \
