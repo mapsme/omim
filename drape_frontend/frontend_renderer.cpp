@@ -407,7 +407,7 @@ void FrontendRenderer::OnResize(ScreenBase const & screen)
 {
   m2::RectD const viewportRect = screen.isPerspective() ? screen.PixelRectIn3d() : screen.PixelRect();
 
-  m_myPositionController->SetPixelRect(screen.PixelRect());
+  m_myPositionController->SetPixelRect(viewportRect);
   m_viewport.SetViewport(0, 0, screen.GetWidth(), screen.GetHeight());
   m_contextFactory->getDrawContext()->resize(viewportRect.SizeX(), viewportRect.SizeY());
   RefreshProjection();
@@ -777,7 +777,7 @@ void FrontendRenderer::RefreshPivotTransform(ScreenBase const & screen)
 {
   if (screen.isPerspective())
   {
-    math::Matrix<float, 4, 4> const transform(screen.PTo3dMatrix());
+    math::Matrix<float, 4, 4> const transform(screen.Pto3dMatrix());
     m_generalUniforms.SetMatrix4x4Value("pivotTransform", transform.m_data);
   }
   else
@@ -1092,6 +1092,8 @@ void FrontendRenderer::UpdateScene(ScreenBase const & modelView)
   ResolveZoomLevel(modelView);
   TTilesCollection tiles;
   ResolveTileKeys(modelView, tiles);
+
+  m_myPositionController->UpdatePixelPosition(modelView);
 
   m_commutator->PostMessage(ThreadsCommutator::ResourceUploadThread,
                             make_unique_dp<UpdateReadManagerMessage>(modelView, move(tiles)),

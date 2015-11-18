@@ -134,9 +134,9 @@ public:
 
   double GetAngleFOV() const { return m_3dFOV; }
 
-  m2::PointD P3dToP(m2::PointD const & pt) const;
+  m2::PointD P3dtoP(m2::PointD const & pt) const;
 
-  Matrix3dT const & PTo3dMatrix() const { return m_Pto3d; }
+  Matrix3dT const & Pto3dMatrix() const { return m_Pto3d; }
   bool isPerspective() const { return m_isPerspective; }
 
   m2::PointD PtoP3d(m2::PointD const & pt) const;
@@ -150,7 +150,8 @@ public:
 
   /// Compute arbitrary pixel transformation, that translates the (oldPt1, oldPt2) -> (newPt1, newPt2)
   static MatrixT const CalcTransform(m2::PointD const & oldPt1, m2::PointD const & oldPt2,
-                                     m2::PointD const & newPt1, m2::PointD const & newPt2);
+                                     m2::PointD const & newPt1, m2::PointD const & newPt2,
+                                     bool allowRotate);
 
   /// Setting GtoP matrix extracts the Angle and m_Org parameters, leaving PixelRect intact
   void SetGtoPMatrix(MatrixT const & m);
