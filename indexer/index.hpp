@@ -5,6 +5,7 @@
 #include "indexer/features_offsets_table.hpp"
 #include "indexer/features_vector.hpp"
 #include "indexer/mwm_set.hpp"
+#include "indexer/osm_editor.hpp"
 #include "indexer/scale_index.hpp"
 #include "indexer/unique_index.hpp"
 
@@ -122,18 +123,23 @@ private:
 
         for (auto const & i : interval)
         {
-          index.ForEachInIntervalAndScale([&] (uint32_t index)
-          {
-            if (checkUnique(index))
-            {
-              FeatureType feature;
+          index.ForEachInIntervalAndScale(
+              [&](uint32_t index)
+              {
+                // Can we avoid this check if feature was deleted?
+                if (checkUnique(index))
+                {
+                  FeatureID const featureId(mwmID, index);
+                  if (osm::Editor::IsFeatureDeleted(featureId))
+                    return;
 
-              fv.GetByIndex(index, feature);
-              feature.SetID(FeatureID(mwmID, index));
-
-              m_f(feature);
-            }
-          }, i.first, i.second, scale);
+                  FeatureType feature;
+                  fv.GetByIndex(index, feature);
+                  feature.SetID(featureId);
+                  m_f(feature);
+                }
+              },
+              i.first, i.second, scale);
         }
       }
     }
