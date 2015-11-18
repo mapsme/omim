@@ -89,11 +89,11 @@ public:
   bool RemoveObserver(Observer const & observer);
 
 private:
-
-  template <typename F> class ReadMWMFunctor
+  template <typename F>
+  struct ReadMWMFunctor
   {
     F & m_f;
-  public:
+
     ReadMWMFunctor(F & f) : m_f(f) {}
 
     void operator()(MwmHandle const & handle, covering::CoveringGetter & cov, uint32_t scale) const
@@ -145,10 +145,11 @@ private:
     }
   };
 
-  template <typename F> class ReadFeatureIndexFunctor
+  template <typename F>
+  struct ReadFeatureIndexFunctor
   {
     F & m_f;
-  public:
+
     ReadFeatureIndexFunctor(F & f) : m_f(f) {}
 
     void operator()(MwmHandle const & handle, covering::CoveringGetter & cov, uint32_t scale) const
@@ -339,6 +340,9 @@ private:
       MwmHandle const handle = GetMwmHandleById(worldID[1]);
       f(handle, cov, scale);
     }
+
+    // Separate pass for edited/created features container.
+    osm::Editor::Emitter<decltype(f.m_f)>(f.m_f, rect, scale);
   }
 
   my::ObserverList<Observer> m_observers;
