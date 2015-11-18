@@ -11,9 +11,6 @@
 
 namespace df
 {
-Framebuffer::Framebuffer() : m_maxTextureSize(GLFunctions::glGetInteger(gl_const::GLMaxTextureSize))
-{
-}
 
 Framebuffer::~Framebuffer()
 {
@@ -44,8 +41,10 @@ void Framebuffer::SetDefaultContext(dp::OGLContext * context)
   m_defaultContext = context;
 }
 
-int32_t Framebuffer::GetMaxSize() const
+int32_t Framebuffer::GetMaxSize()
 {
+  if (m_maxTextureSize == 0)
+    m_maxTextureSize = GLFunctions::glGetInteger(gl_const::GLMaxTextureSize);
   return m_maxTextureSize;
 }
 
