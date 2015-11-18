@@ -881,7 +881,7 @@ void FrontendRenderer::RefreshPivotTransform(ScreenBase const & screen)
 {
   if (screen.isPerspective())
   {
-    math::Matrix<float, 4, 4> const transform(screen.PTo3dMatrix());
+    math::Matrix<float, 4, 4> const transform(screen.Pto3dMatrix());
     m_generalUniforms.SetMatrix4x4Value("pivotTransform", transform.m_data);
   }
   else
