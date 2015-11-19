@@ -531,6 +531,8 @@ public:
       { return m_routingSession.GenerateTurnSound(turnNotifications); }
 
   void Enable3dMode(bool enable);
+  void Save3dMode(bool enable);
+  void Load3dMode();
 
 private:
   void SetRouterImpl(routing::RouterType type);
