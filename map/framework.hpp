@@ -530,9 +530,9 @@ public:
   inline void GenerateTurnSound(vector<string> & turnNotifications)
       { return m_routingSession.GenerateTurnSound(turnNotifications); }
 
-  void Enable3dMode(bool enable);
-  void Save3dMode(bool enable);
-  void Load3dMode();
+  void Allow3dMode(bool allow);
+  void Save3dMode(bool allow);
+  bool Load3dMode();
 
 private:
   void SetRouterImpl(routing::RouterType type);

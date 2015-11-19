@@ -40,7 +40,7 @@ public:
     FollowRoute,
     UpdateMapStyle,
     InvalidateTextures,
-    Enable3dMode,
+    Allow3dMode,
     EnablePerspective
   };
 
