@@ -341,7 +341,7 @@ public class SearchFragment extends BaseMwmFragment
       return false;
 
     hideSearch();
-    Framework.nativeEnable3dMode(is3d);
+    Framework.nativeAllow3dMode(is3d);
 
     return true;
   }
