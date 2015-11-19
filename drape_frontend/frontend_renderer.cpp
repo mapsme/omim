@@ -341,7 +341,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
       {
         m_myPositionController->DeactivateRouting();
         if (m_enable3dInNavigation)
-          AddUserEvent(Disable3dModeEvent());
+          AddUserEvent(DisablePerspectiveEvent());
       }
       break;
     }
@@ -352,7 +352,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
       m_myPositionController->NextMode(!m_enable3dInNavigation ? msg->GetPreferredZoomLevel()
                                                                : msg->GetPreferredZoomLevelIn3d());
       if (m_enable3dInNavigation)
-        AddUserEvent(Enable3dModeEvent(msg->GetRotationAngle(), msg->GetAngleFOV()));
+        AddUserEvent(EnablePerspectiveEvent(msg->GetRotationAngle(), msg->GetAngleFOV(), true));
       break;
     }
 
@@ -386,9 +386,16 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
       break;
     }
 
-  case Message::Enable3dMode:
+  case Message::EnablePerspective:
     {
-      ref_ptr<Enable3dModeMessage> const msg = message;
+      ref_ptr<EnablePerspectiveMessage> const msg = message;
+      AddUserEvent(EnablePerspectiveEvent(msg->GetRotationAngle(), msg->GetAngleFOV(), false));
+      break;
+    }
+
+  case Message::Allow3dMode:
+    {
+      ref_ptr<Allow3dModeMessage> const msg = message;
       m_enable3dInNavigation = msg->Enable();
       break;
     }

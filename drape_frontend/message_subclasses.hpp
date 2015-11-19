@@ -609,18 +609,36 @@ public:
   Type GetType() const override { return Message::InvalidateTextures; }
 };
 
-class Enable3dModeMessage : public Message
+class Allow3dModeMessage : public Message
 {
 public:
-  Enable3dModeMessage(bool enable)
+  Allow3dModeMessage(bool enable)
     : m_enable(enable)
   {}
 
-  Type GetType() const override { return Message::Enable3dMode; }
+  Type GetType() const override { return Message::Allow3dMode; }
   bool Enable() const { return m_enable; }
 
 private:
   bool const m_enable;
+};
+
+class EnablePerspectiveMessage : public Message
+{
+public:
+  EnablePerspectiveMessage(double rotationAngle, double angleFOV)
+    : m_rotationAngle(rotationAngle)
+    , m_angleFOV(angleFOV)
+  {}
+
+  Type GetType() const override { return Message::EnablePerspective; }
+
+  double GetRotationAngle() const { return m_rotationAngle; }
+  double GetAngleFOV() const { return m_angleFOV; }
+
+private:
+  double const m_rotationAngle;
+  double const m_angleFOV;
 };
 
 } // namespace df
