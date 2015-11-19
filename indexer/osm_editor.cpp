@@ -20,6 +20,7 @@ struct Editor::Impl
   {
     // TODO(AlexZ): Initialize from xml file.
   }
+
   void Save()
   {
     // TODO(AlexZ): Save to xml file.
@@ -41,18 +42,21 @@ bool Editor::IsFeatureDeleted(FeatureID const & fid)
 }
 
 void Editor::DeleteFeature(FeatureID const & fid) { GetImpl().m_deletedFeatures.insert(fid); }
-static void ChangeName(StringUtf8Multilang & featureName, string const & newName)
+namespace
+{
+void ChangeName(StringUtf8Multilang & featureName, string const & newName)
 {
   // TODO(AlexZ): Take all lanugages into an account.
   featureName.AddString(StringUtf8Multilang::DEFAULT_CODE, newName);
 }
 
-static FeatureID GenerateNewFeatureId(FeatureID const & oldFeatureId)
+FeatureID GenerateNewFeatureId(FeatureID const & oldFeatureId)
 {
   // TODO(AlexZ): Stable & unique features ID generation.
   static uint32_t newOffset = 0x0effffff;
   return FeatureID(oldFeatureId.m_mwmId, newOffset++);
 }
+}  // namespace
 
 void Editor::EditFeatureName(FeatureID const & fid, string const & newName, Index const & index)
 {
@@ -86,7 +90,7 @@ void Editor::EditFeatureName(FeatureID const & fid, string const & newName, Inde
   DeleteFeature(fid);
 }
 
-void Editor::ForEachFeatureInRectAndScale(TEmitterLambda f, m2::RectD const & /*rect*/,
+void Editor::ForEachFeatureInRectAndScale(TEmitter f, m2::RectD const & /*rect*/,
                                           uint32_t /*scale*/)
 {
   // TODO(AlexZ): Check rect and scale.

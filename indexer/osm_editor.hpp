@@ -17,6 +17,7 @@ namespace osm
 class Editor final
 {
   struct Impl;
+  // TODO(AlexZ): Check final implementation for thread-safety.
   Impl * m_impl;
 
   Editor();
@@ -24,23 +25,20 @@ class Editor final
   static Impl & GetImpl();
 
 public:
-  using TEmitterLambda = function<void(FeatureType &)>;
-  static void ForEachFeatureInRectAndScale(TEmitterLambda f, m2::RectD const & rect,
-                                           uint32_t scale);
+  using TEmitter = function<void(FeatureType &)>;
+  static void ForEachFeatureInRectAndScale(TEmitter f, m2::RectD const & rect, uint32_t scale);
 
   template <class TFeaturesEmitter>
-  struct Emitter
+  static void ForEachFeatureInRectAndScaleWrapper(TFeaturesEmitter & emitter,
+                                                  m2::RectD const & rect, uint32_t scale)
   {
-    Emitter(TFeaturesEmitter & emitter, m2::RectD const & rect, uint32_t scale)
-    {
-      Editor::ForEachFeatureInRectAndScale(
-          [&emitter](FeatureType & ft)
-          {
-            emitter(ft);
-          },
-          rect, scale);
-    }
-  };
+    Editor::ForEachFeatureInRectAndScale(
+        [&emitter](FeatureType & ft)
+        {
+          emitter(ft);
+        },
+        rect, scale);
+  }
 
   /// True if feature was deleted or edited by user.
   static bool IsFeatureDeleted(FeatureID const & fid);

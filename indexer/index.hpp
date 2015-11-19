@@ -342,7 +342,7 @@ private:
     }
 
     // Separate pass for edited/created features container.
-    osm::Editor::Emitter<decltype(f.m_f)>(f.m_f, rect, scale);
+    osm::Editor::ForEachFeatureInRectAndScaleWrapper(f.m_f, rect, scale);
   }
 
   my::ObserverList<Observer> m_observers;
