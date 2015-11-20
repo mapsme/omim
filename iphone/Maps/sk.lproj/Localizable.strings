@@ -1369,3 +1369,15 @@
 "whats_new_happy_day" = "Naozaj šťastný deň! Plánujte si výlety napred s MAPS.ME.";
 
 "whats_new_next" = "Nasledujúca";
+
+"sd_unavailable_title" = "Nemožno uložiť na SD kartu";
+
+"sd_unavailable_message_first" = "Použitie SD karty zlyhalo.";
+
+"sd_unavailable_message_second" = "Uistite sa, že je dostatok pamäte a nie je poškodená.";
+
+"sd_unavailable_use_internal" = "použite internú pamäť";
+
+"sd_unavailable_try_again" = "skúste to znova";
+
+"sd_unavailable_cancel" = "zrušiť";

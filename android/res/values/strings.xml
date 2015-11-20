@@ -878,4 +878,10 @@
 	<string name="whats_new_between_any_points">Build routes between any points</string>
 	<string name="whats_new_happy_day">A happy day indeed! Plan your trips ahead with MAPS.ME.</string>
 	<string name="whats_new_next">Next</string>
+	<string name="sd_unavailable_title">Saving to SD Сard Failed</string>
+	<string name="sd_unavailable_message_first">Accessing SD card failed.</string>
+	<string name="sd_unavailable_message_second">Make sure there is enough memory and it is not damaged.</string>
+	<string name="sd_unavailable_use_internal">use internal memory</string>
+	<string name="sd_unavailable_try_again">try again</string>
+	<string name="sd_unavailable_cancel">cancel</string>
 </resources>

@@ -809,4 +809,7 @@
 	<string name="whats_new_between_any_points">創建任何點之間的路線</string>
 	<string name="whats_new_happy_day">真是愉快的一天！使用MAPS.ME提前計劃您的旅行。</string>
 	<string name="whats_new_next">下一頁</string>
+	<string name="sd_unavailable_title">無法保存至SD卡</string>
+	<string name="sd_unavailable_message_first">使用SD卡失敗.</string>
+	<string name="sd_unavailable_message_second">確保內存充足且未被損壞。</string>
 </resources>

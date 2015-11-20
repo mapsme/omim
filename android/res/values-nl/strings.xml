@@ -813,4 +813,10 @@
 	<string name="whats_new_between_any_points">Maak routes tussen alle punten</string>
 	<string name="whats_new_happy_day">Inderdaad een prettige dag! Plan uw reizen vooruit met MAPS.ME.</string>
 	<string name="whats_new_next">Volgende</string>
+	<string name="sd_unavailable_title">Kan niet op sd-kaart opslaan</string>
+	<string name="sd_unavailable_message_first">Gebruik van SD-kaart mislukt.</string>
+	<string name="sd_unavailable_message_second">Zorg ervoor dat er voldoende ruimte is en dat het niet beschadigd is.</string>
+	<string name="sd_unavailable_use_internal">interne geheugen gebruiken</string>
+	<string name="sd_unavailable_try_again">opnieuw proberen</string>
+	<string name="sd_unavailable_cancel">annuleren</string>
 </resources>

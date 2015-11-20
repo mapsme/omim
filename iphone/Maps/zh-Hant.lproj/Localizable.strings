@@ -1369,3 +1369,15 @@
 "whats_new_happy_day" = "真是愉快的一天！使用MAPS.ME提前計劃您的旅行。";
 
 "whats_new_next" = "下一頁";
+
+"sd_unavailable_title" = "無法保存至SD卡";
+
+"sd_unavailable_message_first" = "使用SD卡失敗.";
+
+"sd_unavailable_message_second" = "確保內存充足且未被損壞。";
+
+"sd_unavailable_use_internal" = "use internal memory";
+
+"sd_unavailable_try_again" = "try again";
+
+"sd_unavailable_cancel" = "cancel";

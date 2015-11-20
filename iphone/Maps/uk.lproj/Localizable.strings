@@ -1369,3 +1369,15 @@
 "whats_new_happy_day" = "Так, це насправді! Сьогодні щасливий день і ще одне покращення. Заздалегідь заплануйте свої подорожі разом з MAPS.ME.";
 
 "whats_new_next" = "Далі";
+
+"sd_unavailable_title" = "Неможливо зберегти на SD-картку";
+
+"sd_unavailable_message_first" = "Не вдається використати SD-картку.";
+
+"sd_unavailable_message_second" = "Перевірте чи достатньо пам'яті і чи нема пошкоджень.";
+
+"sd_unavailable_use_internal" = "використати внутрішню пам'ять";
+
+"sd_unavailable_try_again" = "спробувати ще раз";
+
+"sd_unavailable_cancel" = "скасувати";

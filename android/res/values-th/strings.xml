@@ -825,4 +825,10 @@
 	<string name="whats_new_between_any_points">สร้างเส้นทางระหว่างทุกจุด</string>
 	<string name="whats_new_happy_day">เป็นวันที่แสนสุขจริง ๆ! วางแผนทริปของคุณล่วงหน้าด้วย MAPS.ME</string>
 	<string name="whats_new_next">ถัดไป</string>
+	<string name="sd_unavailable_title">ไม่สามารถบันทึกไปยัง SD การ์ดได้</string>
+	<string name="sd_unavailable_message_first">ความผิดพลาดในการใช้ SD การ์ด</string>
+	<string name="sd_unavailable_message_second">ตรวจสอบให้แน่ใจว่ามีหน่วยความจำเพียงพอและมันไม่ได้รับความเสียหาย</string>
+	<string name="sd_unavailable_use_internal">ใช้หน่วยความจำภายใน</string>
+	<string name="sd_unavailable_try_again">ลองอีกครั้ง</string>
+	<string name="sd_unavailable_cancel">ยกเลิก</string>
 </resources>

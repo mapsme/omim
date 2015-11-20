@@ -1369,3 +1369,15 @@
 "whats_new_happy_day" = "I dag er en god dag! Planlegg reisene dine i forveien med MAPS.ME.";
 
 "whats_new_next" = "Neste";
+
+"sd_unavailable_title" = "Kunne ikke lagre på SD-kort";
+
+"sd_unavailable_message_first" = "Feil ved bruk av SD-kort.";
+
+"sd_unavailable_message_second" = "Sørg for at det er nok minne og at kortet ikke er skadet.";
+
+"sd_unavailable_use_internal" = "bruk internminne";
+
+"sd_unavailable_try_again" = "prøv igjen";
+
+"sd_unavailable_cancel" = "avbryt";

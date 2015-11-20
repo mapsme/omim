@@ -818,4 +818,10 @@
 	<string name="whats_new_between_any_points">Routenberechnung zwischen zwei frei wählbaren Zielen</string>
 	<string name="whats_new_happy_day">Welch ein schöner Tag! Reiseplanung im Voraus mit MAPS.ME.</string>
 	<string name="whats_new_next">Weiter</string>
+	<string name="sd_unavailable_title">Speichern auf der SD-Karte nicht möglich</string>
+	<string name="sd_unavailable_message_first">Verwenden der SD-Karte fehlgeschlagen.</string>
+	<string name="sd_unavailable_message_second">Stellen Sie sicher, dass es genug Speicher gibt und sie nicht beschädigt ist.</string>
+	<string name="sd_unavailable_use_internal">internen speicher verwenden</string>
+	<string name="sd_unavailable_try_again">erneut versuchen</string>
+	<string name="sd_unavailable_cancel">abbrechen</string>
 </resources>

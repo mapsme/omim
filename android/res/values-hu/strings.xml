@@ -824,4 +824,10 @@
 	<string name="whats_new_between_any_points">Alakíts ki egy útvonalat két tetszőleges pont között</string>
 	<string name="whats_new_happy_day">Micsoda boldog nap ez! Tervezd meg az utaidat előre a MAPS.ME-vel!</string>
 	<string name="whats_new_next">Következő</string>
+	<string name="sd_unavailable_title">SD kártyára mentés nem lehetséges</string>
+	<string name="sd_unavailable_message_first">Hiba történt az SD kártya használata során.</string>
+	<string name="sd_unavailable_message_second">Bizonyosodj meg arról, hogy kártyádon elég hely van és hogy nem sérült</string>
+	<string name="sd_unavailable_use_internal">belső memória használata</string>
+	<string name="sd_unavailable_try_again">újrapróbálkozás</string>
+	<string name="sd_unavailable_cancel">mégse</string>
 </resources>

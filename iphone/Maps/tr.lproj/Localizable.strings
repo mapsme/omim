@@ -1369,3 +1369,15 @@
 "whats_new_happy_day" = "Çok mutlu bir gün öyle değil mi! Yolculuğunuzu önceden MAPS.ME ile planlayın.";
 
 "whats_new_next" = "Sonraki";
+
+"sd_unavailable_title" = "SD karta kaydedilemiyor";
+
+"sd_unavailable_message_first" = "SD kart kullanımı başarısız.";
+
+"sd_unavailable_message_second" = "Yeterli hafıza olduğundan ve hasar görmediğinden emin ol.";
+
+"sd_unavailable_use_internal" = "dahili hafizayi kullan";
+
+"sd_unavailable_try_again" = "tekrar dene";
+
+"sd_unavailable_cancel" = "iptal";

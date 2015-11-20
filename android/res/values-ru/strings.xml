@@ -874,4 +874,10 @@
 	<string name="whats_new_between_any_points">Стройте маршрут между любыми объектами</string>
 	<string name="whats_new_happy_day">Да, да, это правда! Сегодня счастливый день и еще одно улучшение. Планируйте свои путешествия заранее с MAPS.ME.</string>
 	<string name="whats_new_next">Далее</string>
+	<string name="sd_unavailable_title">Запись на SD карту недоступна</string>
+	<string name="sd_unavailable_message_first">Не удалось использовать SD-карту.</string>
+	<string name="sd_unavailable_message_second">Убедитесь, что на ней есть свободное место и она исправна.</string>
+	<string name="sd_unavailable_use_internal">использовать внутреннюю память</string>
+	<string name="sd_unavailable_try_again">повторить</string>
+	<string name="sd_unavailable_cancel">отмена</string>
 </resources>

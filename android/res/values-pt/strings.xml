@@ -820,4 +820,10 @@
 	<string name="whats_new_between_any_points">Crea rutas entre los puntos que quieras</string>
 	<string name="whats_new_happy_day">¡Que tengas un buen día! Planifica tus viajes por adelantado con MAPS.ME.</string>
 	<string name="whats_new_next">Próxima</string>
+	<string name="sd_unavailable_title">Não foi possível salvar no cartão SD</string>
+	<string name="sd_unavailable_message_first">Falha ao usar o cartão SD.</string>
+	<string name="sd_unavailable_message_second">Verifique se há memória suficiente no cartão e se ele não está danificado.</string>
+	<string name="sd_unavailable_use_internal">usar memória interna</string>
+	<string name="sd_unavailable_try_again">tentar outra vez</string>
+	<string name="sd_unavailable_cancel">cancelar</string>
 </resources>
