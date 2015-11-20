@@ -23,9 +23,9 @@
   {
     p.m_widgetsInitInfo[widget] = pos;
   });
-#ifdef DEBUG
+// #ifdef DEBUG
   p.m_widgetsInitInfo[gui::WIDGET_SCALE_LABEL] = gui::Position(dp::LeftBottom);
-#endif
+// #endif
 }
 
 - (void)resize:(CGSize)size

@@ -9,6 +9,8 @@
 {
   if ([self performMapStyle:cmd])
     return YES;
+  if ([self performRenderDebug:cmd])
+    return YES;
 
   return NO;
 }
@@ -28,5 +30,20 @@
 
   return YES;
 }
+
+// <MAPS.ME.Designer>
+// Hook for shell command to turn on/off renderer debug mode
+#import "drape/debug_rect_renderer.hpp"
++ (BOOL)performRenderDebug:(NSString *)cmd
+{
+  BOOL const isDebug = [cmd isEqualToString:@"?debug"];
+  
+  if (!isDebug)
+    return NO;
+  
+  dp::DebugRectRenderer::Instance().SetEnabled(!dp::DebugRectRenderer::Instance().IsEnabled());
+  return YES;
+}
+// </MAPS.ME.Designer>
 
 @end
