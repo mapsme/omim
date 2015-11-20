@@ -6,7 +6,9 @@
 #include "geometry/rect2d.hpp"
 #include "geometry/screenbase.hpp"
 
-//#define RENDER_DEBUG_RECTS
+#ifdef BUILD_DESIGNER
+#define RENDER_DEBUG_RECTS
+#endif // BUILD_DESIGNER
 
 namespace dp
 {

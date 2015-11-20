@@ -54,6 +54,21 @@ enum
 #define COLOR_INQUEUE         Qt::gray
 #define COLOR_OUTOFDATE       Qt::magenta
 
+namespace
+{
+MapOptions GetMapOptionsAvailableForDownload(Storage & st, TIndex const & countryIndex)
+{
+  platform::CountryFile const & countryFile = st.GetCountryFile(countryIndex);
+  bool const hasCarRouting = (0 != countryFile.GetRemoteSize(MapOptions::CarRouting));
+
+  MapOptions options = MapOptions::Map;
+  if (hasCarRouting)
+    options = SetOptions(options, MapOptions::CarRouting);
+
+  return options;
+}
+}  // namespace
+
 namespace qt
 {
   /// adds custom sorting for "Size" column
@@ -150,7 +165,7 @@ namespace qt
         QAbstractButton * res = ask.clickedButton();
 
         if (res == btns[0])
-          m_framework.DownloadCountry(countryIndex, MapOptions::MapWithCarRouting);
+          m_framework.DownloadCountry(countryIndex, GetMapOptionsAvailableForDownload(st, countryIndex));
 
         if (res == btns[1])
           m_framework.DeleteCountry(countryIndex, MapOptions::MapWithCarRouting);
@@ -173,7 +188,7 @@ namespace qt
 
     case TStatus::ENotDownloaded:
     case TStatus::EDownloadFailed:
-      m_framework.DownloadCountry(countryIndex, MapOptions::MapWithCarRouting);
+      m_framework.DownloadCountry(countryIndex, GetMapOptionsAvailableForDownload(st, countryIndex));
       break;
 
     case TStatus::EInQueue:

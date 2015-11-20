@@ -1,5 +1,7 @@
 #include "skin_generator.hpp"
 
+#include <iostream>
+
 #include <QtCore/QFile>
 #include <QtCore/QString>
 #include <QApplication>
@@ -25,25 +27,34 @@ DEFINE_bool(colorCorrection, false, "apply color correction for yota");
 
 int main(int argc, char *argv[])
 {
-  google::ParseCommandLineFlags(&argc, &argv, true);
-  QApplication app(argc, argv);
+  try
+  {
+    google::ParseCommandLineFlags(&argc, &argv, true);
+    QApplication app(argc, argv);
 
-  tools::SkinGenerator gen(FLAGS_colorCorrection);
+    tools::SkinGenerator gen(FLAGS_colorCorrection);
 
-  std::vector<QSize> symbolSizes;
-  symbolSizes.push_back(QSize(FLAGS_symbolWidth, FLAGS_symbolHeight));
+    std::vector<QSize> symbolSizes;
+    symbolSizes.push_back(QSize(FLAGS_symbolWidth, FLAGS_symbolHeight));
 
-  std::vector<std::string> suffixes;
-  suffixes.push_back(FLAGS_skinSuffix);
+    std::vector<std::string> suffixes;
+    suffixes.push_back(FLAGS_skinSuffix);
 
-  gen.processSymbols(FLAGS_symbolsDir, FLAGS_skinName, symbolSizes, suffixes);
+    gen.processSymbols(FLAGS_symbolsDir, FLAGS_skinName, symbolSizes, suffixes);
 
-  gen.renderPages();
+    gen.renderPages();
 
-  gen.writeToFile(FLAGS_skinName + FLAGS_skinSuffix);
-  QString newSkin(FLAGS_skinName.c_str());
-  newSkin.replace("basic", "symbols");
-  gen.writeToFileNewStyle(newSkin.toStdString() + FLAGS_skinSuffix);
+    gen.writeToFile(FLAGS_skinName + FLAGS_skinSuffix);
+    QString newSkin(FLAGS_skinName.c_str());
+    newSkin.replace("basic", "symbols");
+    gen.writeToFileNewStyle(newSkin.toStdString() + FLAGS_skinSuffix);
 
-  return 0;
+    std::cout << "Done" << std::endl;
+    return 0;
+  }
+  catch (std::exception& e)
+  {
+    std::cerr << "Exception " << e.what() << std::endl;
+    return -1;
+  }
 }

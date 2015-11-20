@@ -195,8 +195,10 @@ Framework::Framework()
 
   // Restore map style before classificator loading
   int mapStyle = MapStyleLight;
+#ifndef BUILD_DESIGNER
   if (!Settings::Get(kMapStyleKey, mapStyle))
     mapStyle = MapStyleClear;
+#endif //  BUILD_DESIGNER
   GetStyleReader().SetCurrentStyle(static_cast<MapStyle>(mapStyle));
 
   m_ParsedMapApi.SetBookmarkManager(&m_bmManager);

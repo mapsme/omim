@@ -5,6 +5,7 @@
 #include "indexer/feature_covering.hpp"
 #include "indexer/feature_visibility.hpp"
 #include "indexer/interval_index_builder.hpp"
+#include "indexer/scales_patch.hpp"
 
 #include "defines.hpp"
 
@@ -104,7 +105,7 @@ public:
   void operator() (TFeature const & ft, uint32_t index) const
   {
     m_scalesIdx = 0;
-    uint32_t minScaleClassif = feature::GetMinDrawableScaleClassifOnly(ft);
+    uint32_t minScaleClassif = PatchMinDrawableScale(feature::GetMinDrawableScaleClassifOnly(ft));
     // The classificator won't allow this feature to be drawable for smaller
     // scales so the first buckets can be safely skipped.
     // todo(@pimenov) Parallelizing this loop may be helpful.
