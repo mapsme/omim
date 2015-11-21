@@ -29,3 +29,4 @@ OTHER_FILES += \
     shaders/circle_shader.fsh \
     shaders/circle_shader.vsh \
     shaders/area_vertex_shader.vsh \
+    shaders/area_noise.fsh \

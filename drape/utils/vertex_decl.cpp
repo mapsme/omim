@@ -29,11 +29,13 @@ typedef dp::BindingInfo (*TInitFunction)();
 dp::BindingInfo AreaBindingInit()
 {
   static_assert(sizeof(AreaVertex) == (sizeof(AreaVertex::TPosition) +
-                                       sizeof(AreaVertex::TTexCoord)), "");
+                                       sizeof(AreaVertex::TTexCoord) +
+                                       sizeof(AreaVertex::TNormal)), "");
 
-  dp::BindingFiller<AreaVertex> filler(2);
+  dp::BindingFiller<AreaVertex> filler(3);
   filler.FillDecl<SolidTexturingVertex::TPosition>("a_position");
   filler.FillDecl<SolidTexturingVertex::TTexCoord>("a_colorTexCoords");
+  filler.FillDecl<SolidTexturingVertex::TNormal>("a_noisePosition");
 
   return filler.m_info;
 }
@@ -148,12 +150,14 @@ dp::BindingInfo const & GetBinding(VertexType type)
 AreaVertex::AreaVertex()
   : m_position(0.0, 0.0, 0.0)
   , m_colorTexCoord(0.0, 0.0)
+  , m_noise(0.0, 0.0)
 {
 }
 
-AreaVertex::AreaVertex(TPosition const & position, TTexCoord const & colorTexCoord)
+AreaVertex::AreaVertex(TPosition const & position, TTexCoord const & colorTexCoord, TNormal const & noise)
   : m_position(position)
   , m_colorTexCoord(colorTexCoord)
+  , m_noise(noise)
 {
 }
 

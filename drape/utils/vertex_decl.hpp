@@ -18,10 +18,11 @@ struct BaseVertex
 struct AreaVertex : BaseVertex
 {
   AreaVertex();
-  AreaVertex(TPosition const & position, TTexCoord const & colorTexCoord);
+  AreaVertex(TPosition const & position, TTexCoord const & colorTexCoord, TNormal const & noise);
 
   TPosition m_position;
   TTexCoord m_colorTexCoord;
+  TNormal m_noise;
 
   static dp::BindingInfo const & GetBindingInfo();
 };
