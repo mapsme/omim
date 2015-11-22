@@ -6,7 +6,7 @@ DST=$2
 
 # Remove old links
 rm -rf $DST || true
-mkdir $DST || true
+mkdir -p $DST || true
 
 files=(copyright.html faq.html resources-default resources-ldpi resources-mdpi resources-hdpi resources-xhdpi resources-xxhdpi categories.txt classificator.txt
        resources-ldpi_dark resources-mdpi_dark resources-hdpi_dark resources-xhdpi_dark resources-xxhdpi_dark
