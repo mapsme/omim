@@ -4,10 +4,13 @@ set -e -u -x
 MY_PATH=`pwd`
 BINARY_PATH="$MY_PATH/../../out/release/skin_generator"
 DATA_PATH="$MY_PATH/../../data"
-DETECT_QMAKE="$MY_PATH/../autobuild/detect_qmake.sh"
 
-source "$DETECT_QMAKE"
-QMAKE="$(PrintQmakePath)" || ( echo "ERROR: qmake was not found, please add it to your PATH or into the tools/autobuild/detect_qmake.sh"; exit 1 )
+if [ ! -x "${QMAKE-}" ]; then
+  DETECT_QMAKE="$MY_PATH/../autobuild/detect_qmake.sh"
+
+  source "$DETECT_QMAKE"
+  QMAKE="$(PrintQmakePath)" || ( echo "ERROR: qmake was not found, please add it to your PATH or into the tools/autobuild/detect_qmake.sh"; exit 1 )
+fi
 
 # If skin_generator does not exist then build it
 if [ ! -f $BINARY_PATH ];
