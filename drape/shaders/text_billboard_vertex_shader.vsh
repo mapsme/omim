@@ -14,13 +14,13 @@ varying vec2 v_maskTexCoord;
 
 const float Zero = 0.0;
 const float One = 1.0;
-const float BaseDepthShoft = -10.0;
+const float BaseDepthShift = -10.0;
 
 void main()
 {
   float isOutline = step(0.5, u_isOutlinePass);
   float notOutline = One - isOutline;
-  float depthShift = BaseDepthShoft * isOutline;
+  float depthShift = BaseDepthShift * isOutline;
 
   // Here we intentionally decrease precision of 'pivot' calculation
   // to eliminate jittering effect in process of billboard reconstruction.
@@ -28,7 +28,7 @@ void main()
   vec4 offset = vec4(a_normal, Zero, Zero) * projection;
     
   vec4 projectedPivot = pivot * projection;
-  vec4 transformedPivot = pivotTransform * vec4(projectedPivot.xy, Zero, One);
+  vec4 transformedPivot = pivotTransform * projectedPivot;
     
   vec4 scale = pivotTransform * vec4(One, -One, Zero, One);
   gl_Position = transformedPivot + vec4(offset.xy * transformedPivot.w / scale.w * scale.x, Zero, Zero);
