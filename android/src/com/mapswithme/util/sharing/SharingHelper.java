@@ -15,7 +15,6 @@ import com.cocosw.bottomsheet.BottomSheet;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
-import com.mapswithme.maps.settings.StoragePathFragment;
 import com.mapswithme.maps.settings.StoragePathManager;
 import com.mapswithme.util.BottomSheetHelper;
 import com.mapswithme.util.concurrency.ThreadPool;

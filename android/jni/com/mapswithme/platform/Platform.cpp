@@ -107,7 +107,9 @@ namespace android
       m_androidDefResScope = "fwr";
     else if (flavor.find("google") == 0)
       m_androidDefResScope = "ferw";
-    else if (flavor.find("amazon") == 0 || flavor.find("samsung") == 0) // optimization to read World mwm-s faster
+    else if (flavor.find("amazon") == 0 || flavor.find("samsung") == 0)
+      // optimization to read World mwm-s faster
+      // TODO @vng @yunikkk remove or implement comprehensive solution for all flavors
       m_androidDefResScope = "frw";
     else
       m_androidDefResScope = "fwr";
