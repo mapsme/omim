@@ -2035,12 +2035,14 @@ void Framework::SetLastUsedRouter(RouterType type)
   Settings::Set(kRouterTypeKey, routing::ToString(type));
 }
 
-void Framework::SetRouteStartPoint(m2::PointD const & pt)
+void Framework::SetRouteStartPoint(m2::PointD const & pt, bool isValid)
 {
-  //m_bmManager.SetRouteStartPoint(pt);
+  if (m_drapeEngine != nullptr)
+    m_drapeEngine->SetRoutePoint(pt, true /* isStart */, isValid);
 }
 
-void Framework::SetRouteFinishPoint(m2::PointD const & pt)
+void Framework::SetRouteFinishPoint(m2::PointD const & pt, bool isValid)
 {
-  //m_bmManager.SetRouteFinishPoint(pt);
+  if (m_drapeEngine != nullptr)
+    m_drapeEngine->SetRoutePoint(pt, false /* isStart */, isValid);
 }
