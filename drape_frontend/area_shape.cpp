@@ -29,10 +29,14 @@ void AreaShape::Draw(ref_ptr<dp::Batcher> batcher, ref_ptr<dp::TextureManager> t
 
   buffer_vector<gpu::AreaVertex, 128> vertexes;
   vertexes.resize(m_vertexes.size());
-  transform(m_vertexes.begin(), m_vertexes.end(), vertexes.begin(), [&colorPoint, this](m2::PointF const & vertex)
+  int counter = 0;
+  transform(m_vertexes.begin(), m_vertexes.end(), vertexes.begin(), [&](m2::PointF const & vertex)
   {
+    glsl::vec2 noise(float(counter & 1), float((counter & 2) >> 1));
+    counter = my::cyclicClamp(++counter, 0, 2);
+
     return gpu::AreaVertex(glsl::vec3(glsl::ToVec2(vertex), m_params.m_depth),
-                                     colorPoint);
+                                     colorPoint, noise);
   });
 
   dp::GLState state(gpu::AREA_PROGRAM, dp::GLState::GeometryLayer);
