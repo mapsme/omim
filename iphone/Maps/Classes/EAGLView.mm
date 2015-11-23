@@ -51,6 +51,14 @@ double getExactDPI()
   }
 }
   
+double FixDPI(double exactDPI)
+{
+  float const iPadIncreaseDPIFactor = 1.28f;
+  if (IPAD)
+    return iPadIncreaseDPIFactor * exactDPI;
+  return exactDPI;
+}
+  
 graphics::EDensity getDensityType(int exactDensityDPI, double scale)
 {
   if (scale > 2)
@@ -137,7 +145,7 @@ graphics::EDensity getDensityType(int exactDensityDPI, double scale)
   NSLog(@"EAGLView initRenderPolicy Started");
   
 #ifndef USE_DRAPE
-  int const dpi = static_cast<int>(getExactDPI());
+  int const dpi = static_cast<int>(FixDPI(getExactDPI()));
   
   graphics::ResourceManager::Params rmParams;
   rmParams.m_videoMemoryLimit = GetPlatform().VideoMemoryLimit();

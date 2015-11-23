@@ -73,7 +73,7 @@ protected:
   bool m_doForceUpdate;
   m2::AnyRectD m_invalidRect;
   graphics::EDensity m_density;
-  int m_exactDensityDPI;
+  int m_exactDensityDPI; // It could be bigger than exact screen DPI in case of iPads and tablets.
   double m_visualScale;
   string m_skinName;
   anim::Controller * m_controller;
@@ -92,7 +92,7 @@ public:
     string m_skinName;
     size_t m_screenWidth;
     size_t m_screenHeight;
-    int m_exactDensityDPI;
+    int m_exactDensityDPI; // It could be bigger than exact screen DPI in case of iPads and tablets.
   };
 
   /// constructor
