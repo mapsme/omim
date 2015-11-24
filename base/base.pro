@@ -81,5 +81,4 @@ HEADERS += \
     threaded_list.hpp \
     threaded_priority_queue.hpp \
     timer.hpp \
-    visual_scale.hpp \
     worker_thread.hpp \
