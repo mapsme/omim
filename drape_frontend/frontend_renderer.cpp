@@ -346,7 +346,11 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
       {
         m_myPositionController->DeactivateRouting();
         if (m_enable3dInNavigation)
+        {
+          m_discardedFOV = -1.0;
+          m_discardedAngle = -1.0;
           AddUserEvent(DisablePerspectiveEvent());
+        }
       }
       break;
     }
@@ -357,13 +361,20 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
       m_myPositionController->NextMode(!m_enable3dInNavigation ? msg->GetPreferredZoomLevel()
                                                                : msg->GetPreferredZoomLevelIn3d());
       if (m_enable3dInNavigation)
-        AddUserEvent(EnablePerspectiveEvent(msg->GetRotationAngle(), msg->GetAngleFOV(), true));
+        AddUserEvent(EnablePerspectiveEvent(msg->GetRotationAngle(), msg->GetAngleFOV(),
+                                            true /* animated */, false /* immediately start*/));
       break;
     }
 
   case Message::DeactivateRouteFollowing:
     {
       m_myPositionController->DeactivateRouting();
+      if (m_enable3dInNavigation)
+      {
+        m_discardedFOV = -1.0;
+        m_discardedAngle = -1.0;
+        AddUserEvent(DisablePerspectiveEvent());
+      }
       break;
     }
 
@@ -418,7 +429,8 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
   case Message::EnablePerspective:
     {
       ref_ptr<EnablePerspectiveMessage> const msg = message;
-      AddUserEvent(EnablePerspectiveEvent(msg->GetRotationAngle(), msg->GetAngleFOV(), false));
+      AddUserEvent(EnablePerspectiveEvent(msg->GetRotationAngle(), msg->GetAngleFOV(),
+                                          false /* animated */, true /* immediately start */));
       break;
     }
 
@@ -449,7 +461,9 @@ void FrontendRenderer::OnResize(ScreenBase const & screen)
 {
   m2::RectD const viewportRect = screen.isPerspective() ? screen.PixelRectIn3d() : screen.PixelRect();
 
+  m_myPositionController->UpdatePixelPosition(screen);
   m_myPositionController->SetPixelRect(viewportRect);
+
   m_viewport.SetViewport(0, 0, screen.GetWidth(), screen.GetHeight());
   m_contextFactory->getDrawContext()->resize(viewportRect.SizeX(), viewportRect.SizeY());
   RefreshProjection();
@@ -831,6 +845,24 @@ int FrontendRenderer::GetCurrentZoomLevel() const
 void FrontendRenderer::ResolveZoomLevel(ScreenBase const & screen)
 {
   m_currentZoomLevel = GetDrawTileScale(screen);
+
+  if (m_userEventStream.IsInPerspectiveAnimation())
+    return;
+  LOG(LWARNING, ("m_currentZoomLevel =", m_currentZoomLevel));
+  if (screen.isPerspective() && m_currentZoomLevel < m_min3dZoomLevel)
+  {
+    m_discardedFOV = screen.GetAngleFOV();
+    m_discardedAngle = screen.GetRotationAngle();
+    AddUserEvent(DisablePerspectiveEvent());
+  }
+  else if (m_discardedFOV > 0.0 &&
+           m_currentZoomLevel >= m_min3dZoomLevel)
+  {
+    AddUserEvent(EnablePerspectiveEvent(m_discardedAngle, m_discardedFOV,
+                                        true /* animated */, true /* immediately start */));
+    m_discardedFOV = -1.0;
+    m_discardedAngle = -1.0;
+  }
 }
 
 void FrontendRenderer::OnTap(m2::PointD const & pt, bool isLongTap)
@@ -1128,6 +1160,8 @@ void FrontendRenderer::PrepareScene(ScreenBase const & modelView)
   RefreshModelView(modelView);
   RefreshBgColor();
   RefreshPivotTransform(modelView);
+
+  m_myPositionController->UpdatePixelPosition(modelView);
 }
 
 void FrontendRenderer::UpdateScene(ScreenBase const & modelView)
@@ -1135,8 +1169,6 @@ void FrontendRenderer::UpdateScene(ScreenBase const & modelView)
   ResolveZoomLevel(modelView);
   TTilesCollection tiles;
   ResolveTileKeys(modelView, tiles);
-
-  m_myPositionController->UpdatePixelPosition(modelView);
 
   m_commutator->PostMessage(ThreadsCommutator::ResourceUploadThread,
                             make_unique_dp<UpdateReadManagerMessage>(modelView, move(tiles)),
