@@ -14,6 +14,7 @@ typedef void (^AlertActionType)(UIAlertAction *);
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint * allMapsViewBottomOffset;
 
 @property (nonatomic) UIImage * navBarBackground;
+@property (nonatomic) UIImage * navBarShadow;
 
 @property (nonatomic) CGFloat lastScrollOffset;
 
@@ -39,16 +40,21 @@ typedef void (^AlertActionType)(UIAlertAction *);
 - (void)viewWillAppear:(BOOL)animated
 {
   [super viewWillAppear:animated];
+  UINavigationBar * navBar = [UINavigationBar appearance];
+  self.navBarBackground = [navBar backgroundImageForBarMetrics:UIBarMetricsDefault];
+  self.navBarShadow = navBar.shadowImage;
   UIColor * searchBarColor = [UIColor primary];
-  self.navBarBackground = [self.navigationController.navigationBar backgroundImageForBarMetrics:UIBarMetricsDefault];
-  [self.navigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:searchBarColor]
-                                                forBarMetrics:UIBarMetricsDefault];
+  [navBar setBackgroundImage:[UIImage imageWithColor:searchBarColor]
+               forBarMetrics:UIBarMetricsDefault];
+  navBar.shadowImage = [UIImage imageWithColor:[UIColor clearColor]];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
   [super viewWillDisappear:animated];
-  [self.navigationController.navigationBar setBackgroundImage:self.navBarBackground forBarMetrics:UIBarMetricsDefault];
+  UINavigationBar * navBar = [UINavigationBar appearance];
+  [navBar setBackgroundImage:self.navBarBackground forBarMetrics:UIBarMetricsDefault];
+  navBar.shadowImage = self.navBarShadow;
 }
 
 #pragma mark - Table
