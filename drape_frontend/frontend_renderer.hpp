@@ -35,8 +35,6 @@
 #include "std/function.hpp"
 #include "std/map.hpp"
 
-//#define USE_TEXTURE_IN_3D
-
 namespace dp
 {
   class RenderBucket;
@@ -47,11 +45,6 @@ namespace df
 {
 
 class SelectionShape;
-
-#ifdef USE_TEXTURE_IN_3D
-class Framebuffer;
-class Renderer3d;
-#endif
 
 struct TapInfo
 {
@@ -224,10 +217,6 @@ private:
 
   bool m_enable3dInNavigation;
   bool m_isBillboardRenderPass;
-#ifdef USE_TEXTURE_IN_3D
-  drape_ptr<Framebuffer> m_framebuffer;
-  drape_ptr<Renderer3d> m_renderer3d;
-#endif
 
   Viewport m_viewport;
   UserEventStream m_userEventStream;
