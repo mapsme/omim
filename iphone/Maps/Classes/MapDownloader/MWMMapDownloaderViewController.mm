@@ -16,6 +16,7 @@ static NSString * const kSubplaceCellIdentifier = @"MWMMapDownloaderSubplaceTabl
 extern NSString * const kPlaceCellIdentifier;
 
 static NSUInteger const sectionsCount = 2;
+static NSUInteger const cellsCount = 4;
 static NSString * const kCellType = @"kCellType";
 static NSString * const kCellTitle = @"kCellTitle";
 static NSString * const kCellDownloadSize = @"kCellDownloadSize";
@@ -23,11 +24,7 @@ static NSString * const kCellMapsCount = @"kCellMapsCount";
 static NSString * const kCellArea = @"kCellArea";
 static NSString * const kCellSubplace = @"kCellSubplace";
 
-@interface MWMMapDownloaderViewController ()<UISearchBarDelegate, UIScrollViewDelegate,
-                                             MWMMapDownloaderTableViewHeaderProtocol>
-{
-  vector<BOOL> sectionsExpanded;
-}
+@interface MWMMapDownloaderViewController ()<UISearchBarDelegate, UIScrollViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView * statusBarBackground;
 @property (weak, nonatomic) IBOutlet UISearchBar * searchBar;
@@ -70,7 +67,6 @@ static NSString * const kCellSubplace = @"kCellSubplace";
 - (void)configTable
 {
   [super configTable];
-  sectionsExpanded = vector<BOOL>(sectionsCount, NO);
   [self.tableView registerNib:[UINib nibWithNibName:kCountryCellIdentifier bundle:nil] forCellReuseIdentifier:kCountryCellIdentifier];
   [self.tableView registerNib:[UINib nibWithNibName:kLargeCountryCellIdentifier bundle:nil] forCellReuseIdentifier:kLargeCountryCellIdentifier];
   [self.tableView registerNib:[UINib nibWithNibName:kSubplaceCellIdentifier bundle:nil] forCellReuseIdentifier:kSubplaceCellIdentifier];
@@ -135,16 +131,6 @@ static NSString * const kCellSubplace = @"kCellSubplace";
   }
 }
 
-#pragma mark - MWMMapDownloaderTableViewHeaderProtocol
-
-- (void)expandButtonPressed:(MWMMapDownloaderTableViewHeader *)sender
-{
-  sectionsExpanded[sender.section] = sender.expanded;
-  [self.tableView beginUpdates];
-  [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:sender.section] withRowAnimation:UITableViewRowAnimationAutomatic];
-  [self.tableView endUpdates];
-}
-
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView * _Nonnull)tableView
@@ -154,7 +140,7 @@ static NSString * const kCellSubplace = @"kCellSubplace";
 
 - (NSInteger)tableView:(UITableView * _Nonnull)tableView numberOfRowsInSection:(NSInteger)section
 {
-  return sectionsExpanded[section] ? 4 : 0;
+  return cellsCount;
 }
 
 #pragma mark - UITableViewDelegate
@@ -165,11 +151,8 @@ static NSString * const kCellSubplace = @"kCellSubplace";
       [[[NSBundle mainBundle] loadNibNamed:@"MWMMapDownloaderTableViewHeader"
                                      owner:nil
                                    options:nil] firstObject];
-  headerView.delegate = self;
-  headerView.section = section;
   headerView.lastSection = (section == sectionsCount - 1);
   headerView.title.text = [NSString stringWithFormat:@"Header: %@", @(section)];
-  headerView.expanded = sectionsExpanded[section];
   return headerView;
 }
 
