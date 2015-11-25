@@ -17,3 +17,4 @@ SOURCES += \
     ../../testing/testingmain.cpp \
     screenglglobal_test.cpp \
     shape_renderer_test.cpp \
+    visual_scale_test.cpp \
