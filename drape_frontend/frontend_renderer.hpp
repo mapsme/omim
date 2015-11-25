@@ -146,6 +146,10 @@ private:
   int GetCurrentZoomLevel() const;
   void ResolveZoomLevel(ScreenBase const & screen);
 
+  void DiscardPerspective(ScreenBase const & screen);
+  void DiscardPerspective();
+  void RecoverPerspective();
+
   void OnTap(m2::PointD const & pt, bool isLong) override;
   void OnDoubleTap(m2::PointD const & pt) override;
   void OnTwoFingersTap() override;
@@ -227,8 +231,9 @@ private:
   unique_ptr<TileTree> m_tileTree;
   int m_currentZoomLevel = -1;
   int m_min3dZoomLevel = 17;
-  double m_discardedFOV = -1.0;
-  double m_discardedAngle = -1.0;
+
+  double m_discardedFOV = 0.0;
+  double m_discardedAngle = 0.0;
 };
 
 } // namespace df
