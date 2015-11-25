@@ -11,14 +11,6 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="28"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fg0-cG-hqz">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="28"/>
-                    <animations/>
-                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                    <connections>
-                        <action selector="buttonPressed" destination="b49-gZ-yx0" eventType="touchUpInside" id="YYq-i8-IbS"/>
-                    </connections>
-                </button>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PMw-UJ-6y5" userLabel="SeparatorUp">
                     <rect key="frame" x="0.0" y="0.0" width="375" height="1"/>
                     <animations/>
@@ -48,10 +40,6 @@
                         <userDefinedRuntimeAttribute type="string" keyPath="backgroundColorName" value="blackDividers"/>
                     </userDefinedRuntimeAttributes>
                 </view>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_arrow_gray_up" translatesAutoresizingMaskIntoConstraints="NO" id="Vx0-0a-NHs" userLabel="arrow">
-                    <rect key="frame" x="345" y="10" width="14" height="8"/>
-                    <animations/>
-                </imageView>
             </subviews>
             <animations/>
             <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="calibratedRGB"/>
@@ -60,13 +48,7 @@
                 <constraint firstItem="3BJ-0r-JzZ" firstAttribute="leading" secondItem="b49-gZ-yx0" secondAttribute="leading" id="9ho-C1-Gtc"/>
                 <constraint firstItem="PMw-UJ-6y5" firstAttribute="leading" secondItem="b49-gZ-yx0" secondAttribute="leading" id="E6R-dv-UcP"/>
                 <constraint firstAttribute="trailing" secondItem="PMw-UJ-6y5" secondAttribute="trailing" id="LbV-hu-3hY"/>
-                <constraint firstItem="Vx0-0a-NHs" firstAttribute="centerY" secondItem="b49-gZ-yx0" secondAttribute="centerY" id="NRF-ad-fq9"/>
-                <constraint firstItem="fg0-cG-hqz" firstAttribute="top" secondItem="b49-gZ-yx0" secondAttribute="top" id="WYV-1f-YW8"/>
-                <constraint firstItem="fg0-cG-hqz" firstAttribute="leading" secondItem="b49-gZ-yx0" secondAttribute="leading" id="YYg-6k-g6Y"/>
                 <constraint firstItem="1oa-vX-tyu" firstAttribute="leading" secondItem="b49-gZ-yx0" secondAttribute="leading" priority="750" constant="16" id="e0S-e8-4Db"/>
-                <constraint firstAttribute="trailing" secondItem="fg0-cG-hqz" secondAttribute="trailing" id="f3O-NQ-Qq0"/>
-                <constraint firstAttribute="trailing" secondItem="Vx0-0a-NHs" secondAttribute="trailing" priority="750" constant="16" id="fp5-Ea-Ofq"/>
-                <constraint firstAttribute="bottom" secondItem="fg0-cG-hqz" secondAttribute="bottom" id="iCc-il-er6"/>
                 <constraint firstItem="1oa-vX-tyu" firstAttribute="centerY" secondItem="b49-gZ-yx0" secondAttribute="centerY" id="o6C-03-A3I"/>
                 <constraint firstAttribute="bottom" secondItem="3BJ-0r-JzZ" secondAttribute="bottom" id="uii-fZ-QtZ"/>
                 <constraint firstItem="PMw-UJ-6y5" firstAttribute="top" secondItem="b49-gZ-yx0" secondAttribute="top" id="x6d-eE-mk8"/>
@@ -74,15 +56,10 @@
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
-                <outlet property="arrow" destination="Vx0-0a-NHs" id="7Qh-gC-NYl"/>
-                <outlet property="button" destination="fg0-cG-hqz" id="AxD-9o-SXg"/>
                 <outlet property="separatorDown" destination="3BJ-0r-JzZ" id="gIO-RV-OmV"/>
                 <outlet property="title" destination="1oa-vX-tyu" id="aPF-QZ-120"/>
             </connections>
             <point key="canvasLocation" x="179" y="357"/>
         </view>
     </objects>
-    <resources>
-        <image name="ic_arrow_gray_up" width="14" height="8"/>
-    </resources>
 </document>
