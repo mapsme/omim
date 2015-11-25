@@ -143,6 +143,17 @@ static NSString * const kCellSubplace = @"kCellSubplace";
   return cellsCount;
 }
 
+- (NSArray<NSString *> * _Nullable)sectionIndexTitlesForTableView:(UITableView * _Nonnull)tableView
+{
+//  return nil;
+  return @[@"A", @"Z"];
+}
+
+- (NSInteger)tableView:(UITableView * _Nonnull)tableView sectionForSectionIndexTitle:(NSString * _Nonnull)title atIndex:(NSInteger)index
+{
+  return index;
+}
+
 #pragma mark - UITableViewDelegate
 
 - (UIView * _Nullable)tableView:(UITableView * _Nonnull)tableView viewForHeaderInSection:(NSInteger)section
