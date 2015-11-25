@@ -150,6 +150,7 @@
 		34DDD53F1BFDB0FD00407F2F /* MWMMapDownloaderTableViewHeader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 34AF5FC21BE3B656002AEAEE /* MWMMapDownloaderTableViewHeader.mm */; };
 		34DDD5401BFDB10100407F2F /* MWMMapDownloaderTableViewHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 34AF5FC41BE3B66C002AEAEE /* MWMMapDownloaderTableViewHeader.xib */; };
 		34DF4D111AE77B9F0012702D /* MWMWKInterfaceController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 34DF4D101AE77B9F0012702D /* MWMWKInterfaceController.mm */; };
+		34EF94291C05A6F30050B714 /* MWMSegue.mm in Sources */ = {isa = PBXBuildFile; fileRef = F607C18D1C047FDC00B53A87 /* MWMSegue.mm */; };
 		34F45E8E1B96E88100AC93F8 /* MWMSearchTabButtonsView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 34F45E8D1B96E88100AC93F8 /* MWMSearchTabButtonsView.mm */; };
 		34F45E901B96E8B100AC93F8 /* MWMSearchTabButtonsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 34F45E8F1B96E8B100AC93F8 /* MWMSearchTabButtonsView.xib */; };
 		34F8ADD91B97229A004184CC /* MWMSearchTableView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 34F8ADD81B97229A004184CC /* MWMSearchTableView.mm */; };
@@ -3833,6 +3834,7 @@
 				6741AA221BF340DE002C974C /* MWMNavigationView.mm in Sources */,
 				6741AA231BF340DE002C974C /* UIFont+MapsMeFonts.mm in Sources */,
 				674A7E301C0DB10B003D48E1 /* MWMMapWidgets.mm in Sources */,
+				34EF94291C05A6F30050B714 /* MWMSegue.mm in Sources */,
 				6741AA241BF340DE002C974C /* UIButton+RuntimeAttributes.mm in Sources */,
 				6741AA251BF340DE002C974C /* MWMBottomMenuView.mm in Sources */,
 				6741AA261BF340DE002C974C /* MWMSearchDownloadMapRequest.mm in Sources */,
