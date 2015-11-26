@@ -7,8 +7,12 @@
 #include "base/macros.hpp"
 #include "base/logging.hpp"
 
-#include "std/string.hpp"
+#include "std/algorithm.hpp"
+#include "std/cmath.hpp"
 #include "std/cstring.hpp"
+#include "std/limits.hpp"
+#include "std/string.hpp"
+
 
 
 namespace graphics
@@ -79,6 +83,28 @@ namespace graphics
     density = static_cast<EDensity>(FindFirstBySecond(s_density, name, EqualStrings()));
   }
 
+  double supportedVisualScale(double exactVisualScale) noexcept
+  {
+    array<double, 5> const kSupportedVisualScale = {{1., 1.5, 2., 3., 4.}};
+    if (exactVisualScale <= kSupportedVisualScale.front())
+      return kSupportedVisualScale.front();
+    if (exactVisualScale >= kSupportedVisualScale.back())
+      return kSupportedVisualScale.back();
+
+    double minDist = numeric_limits<double>::max();
+    for (int i = 0; i < kSupportedVisualScale.size(); ++i)
+    {
+      double const dist = abs(kSupportedVisualScale[i] - exactVisualScale);
+      if (dist >= minDist)
+      {
+        ASSERT_LESS(0, i, ());
+        return kSupportedVisualScale[i - 1];
+      }
+      minDist = dist;
+    }
+    return kSupportedVisualScale.back();
+  }
+
   double visualScaleExact(int exactDensityDPI)
   {
     double const mdpiDensityDPI = 160.;
@@ -89,9 +115,7 @@ namespace graphics
 
     // For some old devices (for example iPad 2) the density could be less than 160 DPI.
     // Returns one in that case to keep readable text on the map.
-    if (exactDensityDPI <= mdpiDensityDPI)
-      return 1.;
-    return exactDensityDPI / mdpiDensityDPI;
+    return supportedVisualScale(max(1., exactDensityDPI / mdpiDensityDPI));
   }
 
   DataIS s_semantics[] = {
