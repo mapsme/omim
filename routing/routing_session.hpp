@@ -88,6 +88,10 @@ public:
   bool IsBuilt() const { return (IsNavigable() || m_state == RouteNeedRebuild || m_state == RouteFinished); }
   bool IsBuilding() const { return (m_state == RouteBuilding); }
   bool IsOnRoute() const { return (m_state == OnRoute); }
+  CourseType GetCourseType() const
+  {
+    return !IsBuilt() ? CourseType::CompassHeadingForSmallSpeed : m_routingSettings.m_curPosCourseType;
+  }
   void Reset();
 
   State OnLocationPositionChanged(m2::PointD const & position, location::GpsInfo const & info,

@@ -4,6 +4,13 @@
 
 namespace routing
 {
+/// \brief It's a list of ways to orient the current position coursor.
+enum class CourseType
+{
+  GPSBearingAlways,                /*!< Use GPS bearing for orientation current position always. */
+  CompassHeadingForSmallSpeed      /*!< Use compass heading if the current speed is small and
+                                        GPS bearing if current speed is bigger. */
+};
 
 /// \brief The RoutingSettings struct is intended to collect all the settings of
 /// following along the route.
@@ -35,19 +42,27 @@ struct RoutingSettings
 
   /// \brief m_speedCameraWarning is a flag for enabling user notifications about speed cameras.
   bool m_speedCameraWarning;
+
+  /// \brief if m_useCompassHeading == true compass heading is used to orient the map and
+  /// the current position while navigation.
+  /// Otherwise (m_useCompassHeading == false) gps bearing is used.
+  /// \brief m_curPosCourseType defines the source of the angle (course) for current position.
+  CourseType m_curPosCourseType;
 };
 
 inline RoutingSettings GetPedestrianRoutingSettings()
 {
   return RoutingSettings({ false /* m_matchRoute */, false /* m_soundDirection */,
                            20. /* m_matchingThresholdM */, true /* m_keepPedestrianInfo */,
-                           false /* m_showTurnAfterNext */, false /* m_speedCameraWarning*/});
+                           false /* m_showTurnAfterNext */, false /* m_speedCameraWarning*/,
+                           CourseType::CompassHeadingForSmallSpeed /* m_curPosCourseType */});
 }
 
 inline RoutingSettings GetCarRoutingSettings()
 {
   return RoutingSettings({ true /* m_matchRoute */, true /* m_soundDirection */,
                            50. /* m_matchingThresholdM */, false /* m_keepPedestrianInfo */,
-                           true /* m_showTurnAfterNext */, true /* m_speedCameraWarning*/});
+                           true /* m_showTurnAfterNext */, true /* m_speedCameraWarning*/,
+                           CourseType::GPSBearingAlways /* m_curPosCourseType */});
 }
 }  // namespace routing

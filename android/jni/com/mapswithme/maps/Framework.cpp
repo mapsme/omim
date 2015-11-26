@@ -97,14 +97,25 @@ namespace android
     Platform::RunOnGuiThreadImpl(bind(&::Framework::OnLocationUpdate, ref(m_work), info));
   }
 
-  void Framework::OnCompassUpdated(location::CompassInfo const & info, bool force)
+  void Framework::OnCompassUpdated(location::CompassInfo & info, bool force)
   {
-    static double const COMPASS_THRESHOLD = my::DegToRad(1.0);
+    if (force)
+    {
+      m_lastCompass = info.m_bearing;
+      Platform::RunOnGuiThreadImpl(bind(&::Framework::OnCompassUpdate, ref(m_work), info));
+      return;
+    }
 
+    static double const kCompassThreshold = my::DegToRad(1.);
     /// @todo Do not emit compass bearing too often while we are passing it through nv-queue.
     /// Need to make more experiments in future.
-    if (force || fabs(ang::GetShortestDistance(m_lastCompass, info.m_bearing)) >= COMPASS_THRESHOLD)
+    double const shortestDistDeg = ang::GetShortestDistance(m_lastCompass, info.m_bearing);
+    if (fabs(shortestDistDeg) >= kCompassThreshold)
     {
+      if (shortestDistDeg > 0)
+        info.m_bearing = m_lastCompass + kCompassThreshold;
+      else
+        info.m_bearing = m_lastCompass - kCompassThreshold;
       m_lastCompass = info.m_bearing;
       Platform::RunOnGuiThreadImpl(bind(&::Framework::OnCompassUpdate, ref(m_work), info));
     }

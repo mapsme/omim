@@ -210,7 +210,7 @@ public enum LocationHelper implements SensorEventListener
   {
     if (mSensorManager != null)
     {
-      final int COMPASS_REFRESH_MKS = SensorManager.SENSOR_DELAY_UI;
+      final int COMPASS_REFRESH_MKS = SensorManager.SENSOR_DELAY_NORMAL;
 
       if (mAccelerometer != null)
         mSensorManager.registerListener(this, mAccelerometer, COMPASS_REFRESH_MKS);

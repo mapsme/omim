@@ -36,7 +36,6 @@ namespace
 static const int POSITION_Y_OFFSET = 75;
 static const double POSITION_TOLERANCE = 1.0E-6;  // much less than coordinates coding error
 static const double ANGLE_TOLERANCE = my::DegToRad(3.0);
-static const double GPS_BEARING_LIFETIME_S = 5.0;
 
 
 uint16_t IncludeModeBit(uint16_t mode, uint16_t bit)
@@ -261,7 +260,7 @@ State::State(Params const & p)
     m_errorRadius(0),
     m_position(0, 0),
     m_drawDirection(0.0),
-    m_lastGPSBearing(false),
+    m_currentSpeedMPS(0.0),
     m_afterPendingMode(Follow),
     m_routeMatchingInfo(),
     m_currentSlotID(0)
@@ -397,9 +396,9 @@ void State::TurnOff()
   invalidate();
 }
 
-void State::OnLocationUpdate(location::GpsInfo const & info, bool isNavigable, location::RouteMatchingInfo const & routeMatchingInfo)
+void State::OnLocationUpdate(location::GpsInfo const & info, location::RouteMatchingInfo const & routeMatchingInfo)
 {
-  Assign(info, isNavigable);
+  Assign(info);
   m_routeMatchingInfo = routeMatchingInfo;
 
   setIsVisible(true);
@@ -912,27 +911,26 @@ void State::RotateOnNorth()
   m_framework->GetAnimator().RotateScreen(GetModelView().GetAngle(), 0.0);
 }
 
-void State::Assign(location::GpsInfo const & info, bool isNavigable)
+void State::Assign(location::GpsInfo const & info)
 {
+  // The minimal speed when GpsInfo::m_speed is valid for most gps chipsets.
+  // If GpsInfo::m_speed less than kMaxKeepBearingSpeedMPS the former m_drawDirection is used.
+  double const kMaxKeepBearingSpeedMPS = 0.3;
   m2::RectD rect = MercatorBounds::MetresToXY(info.m_longitude,
                                               info.m_latitude,
                                               info.m_horizontalAccuracy);
   m_position = rect.Center();
   m_errorRadius = rect.SizeX() / 2;
+  if (info.HasSpeed())
+    m_currentSpeedMPS = info.m_speed;
 
-  bool const hasBearing = info.HasBearing();
-  if ((isNavigable && hasBearing)
-      || (!isNavigable && hasBearing && info.HasSpeed() && info.m_speed > 1.0))
-  {
+  if (!IsCompassHeadingUsed() && info.m_speed >= kMaxKeepBearingSpeedMPS)
     SetDirection(my::DegToRad(info.m_bearing));
-    m_lastGPSBearing.Reset();
-  }
 }
 
 bool State::Assign(location::CompassInfo const & info)
 {
-  if ((IsInRouting() && GetMode() >= Follow) ||
-      (m_lastGPSBearing.ElapsedSeconds() < GPS_BEARING_LIFETIME_S))
+  if (!IsCompassHeadingUsed())
     return false;
 
   SetDirection(info.m_bearing);
@@ -958,4 +956,13 @@ m2::PointD const State::GetPositionForDraw() const
   return pivot();
 }
 
+bool State::IsCompassHeadingUsed() const
+{
+  // If the current speed according to GPS is more than
+  // kUseOnlyGpsHeadingSpeedMPS meters per second only GPS bearing is used.
+  double const kUseOnlyGpsBearingSpeedMPS = 2;
+  if (m_currentSpeedMPS > kUseOnlyGpsBearingSpeedMPS)
+    return false;
+  return m_framework->GetCourseType() == routing::CourseType::CompassHeadingForSmallSpeed;
+}
 }

@@ -4,10 +4,6 @@
 
 #include "geometry/point2d.hpp"
 
-#include "base/timer.hpp"
-
-#include "routing/turns.hpp"
-
 #include "platform/location.hpp"
 
 #include "std/function.hpp"
@@ -104,7 +100,7 @@ namespace location
 
     /// @name GPS location updates routine.
     //@{
-    void OnLocationUpdate(location::GpsInfo const & info, bool isNavigable, location::RouteMatchingInfo const & routeMatchingInfo);
+    void OnLocationUpdate(location::GpsInfo const & info, location::RouteMatchingInfo const & routeMatchingInfo);
     void OnCompassUpdate(location::CompassInfo const & info);
     //@}
 
@@ -144,6 +140,7 @@ namespace location
     bool IsRotationActive() const;
     bool IsInRouting() const;
     bool IsRoutingFollowingDisabled() const;
+    bool IsCompassHeadingUsed() const;
 
     m2::PointD const GetModeDefaultPixelBinding(Mode mode) const;
     m2::PointD const GetRaFModeDefaultPxBind() const;
@@ -154,7 +151,7 @@ namespace location
 
     ScreenBase const & GetModelView() const;
 
-    void Assign(location::GpsInfo const & info, bool isNavigable);
+    void Assign(location::GpsInfo const & info);
     bool Assign(location::CompassInfo const & info);
     void SetDirection(double bearing);
     const m2::PointD GetPositionForDraw() const;
@@ -178,7 +175,7 @@ namespace location
     double m_errorRadius;   //< error radius in mercator
     m2::PointD m_position;  //< position in mercator
     double m_drawDirection;
-    my::Timer m_lastGPSBearing;
+    double m_currentSpeedMPS; // Current speed according to GPS in meters per second.
     Mode m_afterPendingMode;
 
     RouteMatchingInfo m_routeMatchingInfo;
