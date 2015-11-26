@@ -43,6 +43,8 @@ public:
     m_normals.resize(4 * m_layout->GetGlyphCount());
   }
 
+  double GetMinScaleInPerspective() const override { return 0.5; }
+
   bool Update(ScreenBase const & screen) override
   {
     if (!df::TextHandle::Update(screen))
