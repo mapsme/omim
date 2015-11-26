@@ -29,7 +29,7 @@ namespace graphics
 
   /// Returns closest value to a grid set in the method.
   /// For the time being the grid is { 1., 1.5, 2., 3., 4. }.
-  double supportedVisualScale(double exactVisualScale);
+  double supportedVisualScale(double exactVisualScale) noexcept;
   /// Gets visual scale by exact density in dpi.
   double visualScaleExact(int exactDensityDPI);
 

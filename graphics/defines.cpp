@@ -83,9 +83,9 @@ namespace graphics
     density = static_cast<EDensity>(FindFirstBySecond(s_density, name, EqualStrings()));
   }
 
-  double supportedVisualScale(double exactVisualScale)
+  double supportedVisualScale(double exactVisualScale) noexcept
   {
-    vector<double> const kSupportedVisualScale = { 1., 1.5, 2., 3., 4. };
+    array<double, 5> const kSupportedVisualScale = {{1., 1.5, 2., 3., 4.}};
     if (exactVisualScale <= kSupportedVisualScale.front())
       return kSupportedVisualScale.front();
     if (exactVisualScale >= kSupportedVisualScale.back())
