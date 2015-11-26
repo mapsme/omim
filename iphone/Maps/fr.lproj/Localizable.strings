@@ -1324,3 +1324,15 @@
 "whats_new_happy_day" = "Nous vous souhaitons une bonne journée ! Préparez vos trajet en avance avec MAPS.ME";
 
 "whats_new_next" = "Neste";
+
+"sd_unavailable_title" = "Enregistrement sur la carte SD impossible";
+
+"sd_unavailable_message_first" = "L'utilisation de la carte SD a échoué.";
+
+"sd_unavailable_message_second" = "Vérifiez que la carte contient assez de mémoire et qu'elle n'est pas endommagée.";
+
+"sd_unavailable_use_internal" = "utiliser la mémoire interne";
+
+"sd_unavailable_try_again" = "réessayer";
+
+"sd_unavailable_cancel" = "annuler";

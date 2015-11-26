@@ -1324,3 +1324,15 @@
 "whats_new_happy_day" = "¡Que tengas un buen día! Planifica tus viajes por adelantado con MAPS.ME.";
 
 "whats_new_next" = "Próxima";
+
+"sd_unavailable_title" = "Não foi possível salvar no cartão SD";
+
+"sd_unavailable_message_first" = "Falha ao usar o cartão SD.";
+
+"sd_unavailable_message_second" = "Verifique se há memória suficiente no cartão e se ele não está danificado.";
+
+"sd_unavailable_use_internal" = "usar memória interna";
+
+"sd_unavailable_try_again" = "tentar outra vez";
+
+"sd_unavailable_cancel" = "cancelar";

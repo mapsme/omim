@@ -793,4 +793,10 @@
 	<string name="whats_new_between_any_points">Luo reittejä minkä tahansa kohteiden välille</string>
 	<string name="whats_new_happy_day">Elämä hymyilee! Suunnittele matkasi etukäteen MAPS.ME -sovelluksen avulla.</string>
 	<string name="whats_new_next">Seuraava</string>
+	<string name="sd_unavailable_title">SD-kortille tallentaminen ei onnistu</string>
+	<string name="sd_unavailable_message_first">Virhe käytettäessä SD-korttia.</string>
+	<string name="sd_unavailable_message_second">Varmista, että kortilla on tarpeeksi tilaa ja ettei se ole vahingoittunut.</string>
+	<string name="sd_unavailable_use_internal">käytä sisäistä muistia</string>
+	<string name="sd_unavailable_try_again">yritä uudelleen</string>
+	<string name="sd_unavailable_cancel">peru</string>
 </resources>

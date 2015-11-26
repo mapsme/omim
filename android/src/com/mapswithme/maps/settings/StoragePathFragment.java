@@ -1,6 +1,7 @@
 package com.mapswithme.maps.settings;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.base.OnBackPressListener;
 import com.mapswithme.maps.widget.BaseShadowController;
@@ -20,10 +22,12 @@ import java.util.List;
 
 public class StoragePathFragment extends BaseSettingsFragment
                               implements StoragePathManager.MoveFilesListener,
-                                         OnBackPressListener
+                                         OnBackPressListener,
+                                         AdapterView.OnItemClickListener
 {
   private TextView mHeader;
   private ListView mList;
+  private ProgressDialog mProgress;
 
   private StoragePathAdapter mAdapter;
   private StoragePathManager mPathManager = new StoragePathManager();
@@ -47,14 +51,7 @@ public class StoragePathFragment extends BaseSettingsFragment
 
     mHeader = (TextView) mFrame.findViewById(R.id.header);
     mList = (ListView) mFrame.findViewById(R.id.list);
-    mList.setOnItemClickListener(new AdapterView.OnItemClickListener()
-    {
-      @Override
-      public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-      {
-        mAdapter.onItemClick(position);
-      }
-    });
+    mList.setOnItemClickListener(this);
 
     return mFrame;
   }
@@ -66,14 +63,14 @@ public class StoragePathFragment extends BaseSettingsFragment
     mPathManager.startExternalStorageWatching(getActivity(), new StoragePathManager.OnStorageListChangedListener()
     {
       @Override
-      public void onStorageListChanged(List<StorageItem> storageItems, int currentStorageIndex)
+      public void onStorageListChanged(List<String> storageItems)
       {
         updateList();
       }
     }, this);
 
     if (mAdapter == null)
-      mAdapter = new StoragePathAdapter(mPathManager, getActivity());
+      mAdapter = new StoragePathAdapter(getActivity());
 
     updateList();
     mList.setAdapter(mAdapter);
@@ -88,30 +85,35 @@ public class StoragePathFragment extends BaseSettingsFragment
 
   private void updateList()
   {
-    long dirSize = StorageUtils.getWritableDirSize();
+    long dirSize = StoragePathManager.getMwmDirSize();
     mHeader.setText(getString(R.string.maps) + ": " + getSizeString(dirSize));
 
     if (mAdapter != null)
-      mAdapter.update(mPathManager.getStorageItems(), mPathManager.getCurrentStorageIndex(), dirSize);
+      mAdapter.update(mPathManager.getStorages());
   }
 
   @Override
   public void moveFilesFinished(String newPath)
   {
+    if (!isAdded())
+      return;
+
+    showProgress(false);
     updateList();
   }
 
   @Override
-  public void moveFilesFailed(int errorCode)
+  public void moveFilesFailed(String errorCode)
   {
     if (!isAdded())
       return;
 
-    final String message = "Failed to move maps with internal error: " + errorCode;
     final Activity activity = getActivity();
     if (activity.isFinishing())
       return;
 
+    showProgress(false);
+    final String message = "Failed to move maps with internal error: " + errorCode;
     new AlertDialog.Builder(activity)
         .setTitle(message)
         .setPositiveButton(R.string.report_a_bug, new DialogInterface.OnClickListener()
@@ -126,7 +128,7 @@ public class StoragePathFragment extends BaseSettingsFragment
 
   static String getSizeString(long size)
   {
-    final String units[] = { "Kb", "Mb", "Gb" };
+    final String units[] = {"Kb", "Mb", "Gb"};
 
     long current = Constants.KB;
     int i = 0;
@@ -146,7 +148,7 @@ public class StoragePathFragment extends BaseSettingsFragment
   @Override
   public boolean onBackPressed()
   {
-    SettingsActivity activity = (SettingsActivity)getActivity();
+    SettingsActivity activity = (SettingsActivity) getActivity();
     if (activity.onIsMultiPane())
     {
       activity.switchToHeader(R.id.group_map);
@@ -154,5 +156,42 @@ public class StoragePathFragment extends BaseSettingsFragment
     }
 
     return false;
+  }
+
+  @Override
+  public void onItemClick(AdapterView<?> parent, View view, final int position, long id)
+  {
+    if (!mAdapter.isStorageBigEnough(position) || position == mAdapter.getStorageIndex())
+      return;
+
+    new AlertDialog.Builder(getActivity())
+        .setCancelable(false)
+        .setTitle(R.string.move_maps)
+        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
+        {
+          @Override
+          public void onClick(DialogInterface dlg, int which)
+          {
+            mPathManager.changeStorage(mAdapter.getItem(position).getMwmRootPath());
+            showProgress(true);
+          }
+        })
+        .setNegativeButton(R.string.cancel, null)
+        .show();
+  }
+
+  private void showProgress(boolean show)
+  {
+    if (show)
+    {
+      mProgress = new ProgressDialog(getActivity());
+      mProgress.setMessage(getString(R.string.wait_several_minutes));
+      mProgress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+      mProgress.setIndeterminate(true);
+      mProgress.setCancelable(false);
+      mProgress.show();
+    }
+    else
+      mProgress.dismiss();
   }
 }

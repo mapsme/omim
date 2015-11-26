@@ -1324,3 +1324,15 @@
 "whats_new_happy_day" = "Da, da, e adevărat! Astăzi este o zi fericită cu încă o îmbunătățire! Planificați-vă călătoria din timp cu MAPS.ME.";
 
 "whats_new_next" = "Următoarea";
+
+"sd_unavailable_title" = "Nu s-a reușit salvarea pe cardul SD";
+
+"sd_unavailable_message_first" = "Utilizarea cardului SD a eșuat.";
+
+"sd_unavailable_message_second" = "Asigurați-vă că există suficientă memorie disponibilă și că nu este deteriorată.";
+
+"sd_unavailable_use_internal" = "folosiți memoria internă";
+
+"sd_unavailable_try_again" = "încercați din nou";
+
+"sd_unavailable_cancel" = "anulare";

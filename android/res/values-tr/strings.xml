@@ -797,4 +797,10 @@
 	<string name="whats_new_between_any_points">Herhangi noktalar arasında rotalar oluşturun</string>
 	<string name="whats_new_happy_day">Çok mutlu bir gün öyle değil mi! Yolculuğunuzu önceden MAPS.ME ile planlayın.</string>
 	<string name="whats_new_next">Sonraki</string>
+	<string name="sd_unavailable_title">SD karta kaydedilemiyor</string>
+	<string name="sd_unavailable_message_first">SD kart kullanımı başarısız.</string>
+	<string name="sd_unavailable_message_second">Yeterli hafıza olduğundan ve hasar görmediğinden emin ol.</string>
+	<string name="sd_unavailable_use_internal">dahili hafizayi kullan</string>
+	<string name="sd_unavailable_try_again">tekrar dene</string>
+	<string name="sd_unavailable_cancel">iptal</string>
 </resources>

@@ -793,4 +793,10 @@
 	<string name="whats_new_between_any_points">Lập đường đi giữa bất kỳ các điểm nào</string>
 	<string name="whats_new_happy_day">Một ngày thực sự hạnh phúc! Hãy lên kế hoạch trước chuyến đi của bạn với MAPS.ME.</string>
 	<string name="whats_new_next">Tiếp theo</string>
+	<string name="sd_unavailable_title">Không thể lưu vào thẻ nhớ SD</string>
+	<string name="sd_unavailable_message_first">Lỗi khi sử dụng thẻ nhớ SD.</string>
+	<string name="sd_unavailable_message_second">Hãy đảm bảo rằng có đủ bộ nhớ và nó không bị hư hỏng.</string>
+	<string name="sd_unavailable_use_internal">sử dụng bộ nhớ trong</string>
+	<string name="sd_unavailable_try_again">thử lại</string>
+	<string name="sd_unavailable_cancel">hủy</string>
 </resources>

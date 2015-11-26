@@ -1324,3 +1324,15 @@
 "whats_new_happy_day" = "実にすがすがしい日ですね！MAPS.MEで旅程を立てましょう。";
 
 "whats_new_next" = "次へ";
+
+"sd_unavailable_title" = "SDカードに保存できません";
+
+"sd_unavailable_message_first" = "SDカードを使用できません.";
+
+"sd_unavailable_message_second" = "メモリー容量が十分で破損していないことを確認してください。";
+
+"sd_unavailable_use_internal" = "内部メモリいーを使用";
+
+"sd_unavailable_try_again" = "再試行";
+
+"sd_unavailable_cancel" = "キャンセル";

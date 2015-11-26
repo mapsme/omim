@@ -1324,3 +1324,15 @@
 "whats_new_happy_day" = "เป็นวันที่แสนสุขจริง ๆ! วางแผนทริปของคุณล่วงหน้าด้วย MAPS.ME";
 
 "whats_new_next" = "ถัดไป";
+
+"sd_unavailable_title" = "ไม่สามารถบันทึกไปยัง SD การ์ดได้";
+
+"sd_unavailable_message_first" = "ความผิดพลาดในการใช้ SD การ์ด";
+
+"sd_unavailable_message_second" = "ตรวจสอบให้แน่ใจว่ามีหน่วยความจำเพียงพอและมันไม่ได้รับความเสียหาย";
+
+"sd_unavailable_use_internal" = "ใช้หน่วยความจำภายใน";
+
+"sd_unavailable_try_again" = "ลองอีกครั้ง";
+
+"sd_unavailable_cancel" = "ยกเลิก";

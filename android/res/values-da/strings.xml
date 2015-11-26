@@ -793,4 +793,10 @@
 	<string name="whats_new_between_any_points">Byg ruter mellem alle punkter</string>
 	<string name="whats_new_happy_day">En god dag ganske vidst! Planlæg dine rejser på forhånd med MAPS.ME.</string>
 	<string name="whats_new_next">Næste</string>
+	<string name="sd_unavailable_title">Kan ikke gemme på SD-kort</string>
+	<string name="sd_unavailable_message_first">Fejl under brug af SD-kort.</string>
+	<string name="sd_unavailable_message_second">Kontroller, at der er nok hukommelse, og at kortet ikke er beskadiget.</string>
+	<string name="sd_unavailable_use_internal">brug intern hukommelse</string>
+	<string name="sd_unavailable_try_again">prøv igen</string>
+	<string name="sd_unavailable_cancel">annuller</string>
 </resources>

@@ -797,4 +797,10 @@
 	<string name="whats_new_between_any_points">إنشاء الطرق بين أي نقاط</string>
 	<string name="whats_new_happy_day">يوم سعيد حقا! قم بتخطيط رحلاتك مقدماً مع MAPS.ME.</string>
 	<string name="whats_new_next">التالي</string>
+	<string name="sd_unavailable_title">تعذر الحفظ على بطاقة الذاكرة</string>
+	<string name="sd_unavailable_message_first">تعذر استخدام بطاقة الذاكرة.</string>
+	<string name="sd_unavailable_message_second">تأكد من وجود مساحة كافية في بطاقة الذاكرة وأن البطاقة غير تالفة.</string>
+	<string name="sd_unavailable_use_internal">استخدم الذاكرة الداخلية</string>
+	<string name="sd_unavailable_try_again">حاول مرة أخرى</string>
+	<string name="sd_unavailable_cancel">قم بالإلغاء.</string>
 </resources>

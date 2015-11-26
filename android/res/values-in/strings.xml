@@ -792,4 +792,10 @@
 	<string name="whats_new_between_any_points">Buat rute antar titik mana saja</string>
 	<string name="whats_new_happy_day">Memang hari yang membahagiakan! Rencanakan perjalanan Anda ke depan bersama MAPS.ME.</string>
 	<string name="whats_new_next">Berikut</string>
+	<string name="sd_unavailable_title">Tidak bisa menyimpan ke kartu SD</string>
+	<string name="sd_unavailable_message_first">Gagal menggunakan kartu SD.</string>
+	<string name="sd_unavailable_message_second">Pastikan memori mencukupi dan kartu tidak rusak.</string>
+	<string name="sd_unavailable_use_internal">gunakan memori internal</string>
+	<string name="sd_unavailable_try_again">coba lagi</string>
+	<string name="sd_unavailable_cancel">batalkan</string>
 </resources>

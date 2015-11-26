@@ -241,16 +241,6 @@ public final class Config
     setBool(KEY_MISC_DISCLAIMER_ACCEPTED, true);
   }
 
-  public static boolean isKmlMoved()
-  {
-    return getBool(KEY_MISC_KML_MOVED);
-  }
-
-  public static void setKmlMoved()
-  {
-    setBool(KEY_MISC_KML_MOVED);
-  }
-
   public static boolean isKitKatMigrationComplete()
   {
     return getBool(KEY_MISC_KITKAT_MIGRATED);

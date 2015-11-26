@@ -1324,3 +1324,15 @@
 "whats_new_happy_day" = "¡Que tengas un buen día! Planifica tus viajes por adelantado con MAPS.ME.";
 
 "whats_new_next" = "Siguiente";
+
+"sd_unavailable_title" = "Det går inte att spara till SD-kort";
+
+"sd_unavailable_message_first" = "Misslyckat försök att använda SD-kortet.";
+
+"sd_unavailable_message_second" = "Se till att det finns tillräckligt med minne, och att det inte är skadat.";
+
+"sd_unavailable_use_internal" = "använd interna minnet";
+
+"sd_unavailable_try_again" = "försök igen";
+
+"sd_unavailable_cancel" = "avsluta";

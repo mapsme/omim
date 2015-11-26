@@ -793,4 +793,10 @@
 	<string name="whats_new_between_any_points">Sett sammen en reiserute mellom to steder</string>
 	<string name="whats_new_happy_day">I dag er en god dag! Planlegg reisene dine i forveien med MAPS.ME.</string>
 	<string name="whats_new_next">Neste</string>
+	<string name="sd_unavailable_title">Kunne ikke lagre på SD-kort</string>
+	<string name="sd_unavailable_message_first">Feil ved bruk av SD-kort.</string>
+	<string name="sd_unavailable_message_second">Sørg for at det er nok minne og at kortet ikke er skadet.</string>
+	<string name="sd_unavailable_use_internal">bruk internminne</string>
+	<string name="sd_unavailable_try_again">prøv igjen</string>
+	<string name="sd_unavailable_cancel">avbryt</string>
 </resources>

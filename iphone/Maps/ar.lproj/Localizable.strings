@@ -1324,3 +1324,15 @@
 "whats_new_happy_day" = "يوم سعيد حقا! قم بتخطيط رحلاتك مقدماً مع MAPS.ME.";
 
 "whats_new_next" = "التالي";
+
+"sd_unavailable_title" = "تعذر الحفظ على بطاقة الذاكرة";
+
+"sd_unavailable_message_first" = "تعذر استخدام بطاقة الذاكرة.";
+
+"sd_unavailable_message_second" = "تأكد من وجود مساحة كافية في بطاقة الذاكرة وأن البطاقة غير تالفة.";
+
+"sd_unavailable_use_internal" = "استخدم الذاكرة الداخلية";
+
+"sd_unavailable_try_again" = "حاول مرة أخرى";
+
+"sd_unavailable_cancel" = "قم بالإلغاء.";

@@ -796,4 +796,10 @@
 	<string name="whats_new_between_any_points">Vytvorte si trasy medzi ľubovoľnými bodmi</string>
 	<string name="whats_new_happy_day">Naozaj šťastný deň! Plánujte si výlety napred s MAPS.ME.</string>
 	<string name="whats_new_next">Nasledujúca</string>
+	<string name="sd_unavailable_title">Nemožno uložiť na SD kartu</string>
+	<string name="sd_unavailable_message_first">Použitie SD karty zlyhalo.</string>
+	<string name="sd_unavailable_message_second">Uistite sa, že je dostatok pamäte a nie je poškodená.</string>
+	<string name="sd_unavailable_use_internal">použite internú pamäť</string>
+	<string name="sd_unavailable_try_again">skúste to znova</string>
+	<string name="sd_unavailable_cancel">zrušiť</string>
 </resources>

@@ -783,4 +783,10 @@
 	<string name="whats_new_between_any_points">모든 지점 사이로 경로 구축</string>
 	<string name="whats_new_happy_day">정말로 행복한 하루되세요! MAPS.ME로 향후 여행을 계획하세요.</string>
 	<string name="whats_new_next">다음</string>
+	<string name="sd_unavailable_title">SD 카드를 저장할 수 없음</string>
+	<string name="sd_unavailable_message_first">SD 카드 사용에 실패.</string>
+	<string name="sd_unavailable_message_second">충분한 메모리가 있으며 손상되어 있지 않은지 확인합니다.</string>
+	<string name="sd_unavailable_use_internal">내부 메모리 사용</string>
+	<string name="sd_unavailable_try_again">다시 시도</string>
+	<string name="sd_unavailable_cancel">취소</string>
 </resources>

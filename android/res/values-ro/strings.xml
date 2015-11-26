@@ -790,4 +790,10 @@
 	<string name="whats_new_between_any_points">Elaborați un traseu între orice obiecte</string>
 	<string name="whats_new_happy_day">Da, da, e adevărat! Astăzi este o zi fericită cu încă o îmbunătățire! Planificați-vă călătoria din timp cu MAPS.ME.</string>
 	<string name="whats_new_next">Următoarea</string>
+	<string name="sd_unavailable_title">Nu s-a reușit salvarea pe cardul SD</string>
+	<string name="sd_unavailable_message_first">Utilizarea cardului SD a eșuat.</string>
+	<string name="sd_unavailable_message_second">Asigurați-vă că există suficientă memorie disponibilă și că nu este deteriorată.</string>
+	<string name="sd_unavailable_use_internal">folosiți memoria internă</string>
+	<string name="sd_unavailable_try_again">încercați din nou</string>
+	<string name="sd_unavailable_cancel">anulare</string>
 </resources>

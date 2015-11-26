@@ -1324,3 +1324,15 @@
 "whats_new_happy_day" = "Memang hari yang membahagiakan! Rencanakan perjalanan Anda ke depan bersama MAPS.ME.";
 
 "whats_new_next" = "Berikut";
+
+"sd_unavailable_title" = "Tidak bisa menyimpan ke kartu SD";
+
+"sd_unavailable_message_first" = "Gagal menggunakan kartu SD.";
+
+"sd_unavailable_message_second" = "Pastikan memori mencukupi dan kartu tidak rusak.";
+
+"sd_unavailable_use_internal" = "gunakan memori internal";
+
+"sd_unavailable_try_again" = "coba lagi";
+
+"sd_unavailable_cancel" = "batalkan";

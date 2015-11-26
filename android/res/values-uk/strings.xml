@@ -796,4 +796,10 @@
 	<string name="whats_new_between_any_points">Прокладіть маршрут між будь-якими об\&#39;єктами</string>
 	<string name="whats_new_happy_day">Так, це насправді! Сьогодні щасливий день і ще одне покращення. Заздалегідь заплануйте свої подорожі разом з MAPS.ME.</string>
 	<string name="whats_new_next">Далі</string>
+	<string name="sd_unavailable_title">Неможливо зберегти на SD-картку</string>
+	<string name="sd_unavailable_message_first">Не вдається використати SD-картку.</string>
+	<string name="sd_unavailable_message_second">Перевірте чи достатньо пам\&#39;яті і чи нема пошкоджень.</string>
+	<string name="sd_unavailable_use_internal">використати внутрішню пам\&#39;ять</string>
+	<string name="sd_unavailable_try_again">спробувати ще раз</string>
+	<string name="sd_unavailable_cancel">скасувати</string>
 </resources>

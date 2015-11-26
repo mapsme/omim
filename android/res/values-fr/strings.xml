@@ -804,4 +804,10 @@
 	<string name="whats_new_between_any_points">Obtenez des itinéraires entre n\&#39;importe quels points</string>
 	<string name="whats_new_happy_day">Nous vous souhaitons une bonne journée ! Préparez vos trajet en avance avec MAPS.ME</string>
 	<string name="whats_new_next">Neste</string>
+	<string name="sd_unavailable_title">Enregistrement sur la carte SD impossible</string>
+	<string name="sd_unavailable_message_first">L\&#39;utilisation de la carte SD a échoué.</string>
+	<string name="sd_unavailable_message_second">Vérifiez que la carte contient assez de mémoire et qu\&#39;elle n\&#39;est pas endommagée.</string>
+	<string name="sd_unavailable_use_internal">utiliser la mémoire interne</string>
+	<string name="sd_unavailable_try_again">réessayer</string>
+	<string name="sd_unavailable_cancel">annuler</string>
 </resources>

@@ -1324,3 +1324,15 @@
 "whats_new_happy_day" = "To będzie dobry dzień! Planuj swoje podróże z MAPS.ME.";
 
 "whats_new_next" = "Dalej";
+
+"sd_unavailable_title" = "Nie udało się zapisać na karcie SD";
+
+"sd_unavailable_message_first" = "Błąd karty SD.";
+
+"sd_unavailable_message_second" = "Upewnij się, że na karcie jest wystarczająco wolnego miejsca i czy nie jest ona uszkodzona.";
+
+"sd_unavailable_use_internal" = "użyj pamięci wewnętrznej";
+
+"sd_unavailable_try_again" = "spróbuj ponownie";
+
+"sd_unavailable_cancel" = "anuluj";

@@ -794,4 +794,10 @@
 	<string name="whats_new_between_any_points">Twórz trasy pomiędzy dowolnymi punktami</string>
 	<string name="whats_new_happy_day">To będzie dobry dzień! Planuj swoje podróże z MAPS.ME.</string>
 	<string name="whats_new_next">Dalej</string>
+	<string name="sd_unavailable_title">Nie udało się zapisać na karcie SD</string>
+	<string name="sd_unavailable_message_first">Błąd karty SD.</string>
+	<string name="sd_unavailable_message_second">Upewnij się, że na karcie jest wystarczająco wolnego miejsca i czy nie jest ona uszkodzona.</string>
+	<string name="sd_unavailable_use_internal">użyj pamięci wewnętrznej</string>
+	<string name="sd_unavailable_try_again">spróbuj ponownie</string>
+	<string name="sd_unavailable_cancel">anuluj</string>
 </resources>

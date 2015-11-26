@@ -1324,3 +1324,15 @@
 "whats_new_happy_day" = "En god dag ganske vidst! Planlæg dine rejser på forhånd med MAPS.ME.";
 
 "whats_new_next" = "Næste";
+
+"sd_unavailable_title" = "Kan ikke gemme på SD-kort";
+
+"sd_unavailable_message_first" = "Fejl under brug af SD-kort.";
+
+"sd_unavailable_message_second" = "Kontroller, at der er nok hukommelse, og at kortet ikke er beskadiget.";
+
+"sd_unavailable_use_internal" = "brug intern hukommelse";
+
+"sd_unavailable_try_again" = "prøv igen";
+
+"sd_unavailable_cancel" = "annuller";

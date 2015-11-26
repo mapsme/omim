@@ -793,4 +793,10 @@
 	<string name="whats_new_between_any_points">Skapa rutter mellan valfria punkter</string>
 	<string name="whats_new_happy_day">Definitivt en dag att fira! Planera dina resor i förväg med MAPS.ME.</string>
 	<string name="whats_new_next">Nästa</string>
+	<string name="sd_unavailable_title">Det går inte att spara till SD-kort</string>
+	<string name="sd_unavailable_message_first">Misslyckat försök att använda SD-kortet.</string>
+	<string name="sd_unavailable_message_second">Se till att det finns tillräckligt med minne, och att det inte är skadat.</string>
+	<string name="sd_unavailable_use_internal">använd interna minnet</string>
+	<string name="sd_unavailable_try_again">försök igen</string>
+	<string name="sd_unavailable_cancel">avsluta</string>
 </resources>

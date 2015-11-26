@@ -1324,3 +1324,15 @@
 "whats_new_happy_day" = "Да, да, это правда! Сегодня счастливый день и еще одно улучшение. Планируйте свои путешествия заранее с MAPS.ME.";
 
 "whats_new_next" = "Далее";
+
+"sd_unavailable_title" = "Запись на SD карту недоступна";
+
+"sd_unavailable_message_first" = "Не удалось использовать SD-карту.";
+
+"sd_unavailable_message_second" = "Убедитесь, что на ней есть свободное место и она исправна.";
+
+"sd_unavailable_use_internal" = "использовать внутреннюю память";
+
+"sd_unavailable_try_again" = "повторить";
+
+"sd_unavailable_cancel" = "отмена";

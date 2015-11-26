@@ -800,4 +800,10 @@
 	<string name="whats_new_between_any_points">Vytvořte cesty mezi dvěma body</string>
 	<string name="whats_new_happy_day">Přejeme vám opravdu hezký den! Naplánujte svůj výlet předem s aplikací MAPS.ME.</string>
 	<string name="whats_new_next">Další</string>
+	<string name="sd_unavailable_title">Není možné uložit na SD kartu</string>
+	<string name="sd_unavailable_message_first">Chyba při používání SD karty.</string>
+	<string name="sd_unavailable_message_second">Ujistěte se, že má dostatek paměti a není poškozená.</string>
+	<string name="sd_unavailable_use_internal">použít interní paměť</string>
+	<string name="sd_unavailable_try_again">zkusit znovu</string>
+	<string name="sd_unavailable_cancel">zrušit</string>
 </resources>

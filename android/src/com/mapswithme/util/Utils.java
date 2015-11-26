@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.mapswithme.maps.BuildConfig;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.activity.CustomNavigateUpListener;
+import com.mapswithme.maps.settings.StoragePathManager;
 import com.mapswithme.util.statistics.AlohaHelper;
 
 import java.io.*;
@@ -182,7 +183,7 @@ public class Utils
    */
   public static String saveLogToFile()
   {
-    String fullName = MwmApplication.get().getDataStoragePath() + "log.txt";
+    String fullName = StoragePathManager.getTempPath() + "log.txt";
     File file = new File(fullName);
     InputStreamReader reader = null;
     FileWriter writer = null;

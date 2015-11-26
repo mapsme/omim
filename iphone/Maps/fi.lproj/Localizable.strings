@@ -1324,3 +1324,15 @@
 "whats_new_happy_day" = "Elämä hymyilee! Suunnittele matkasi etukäteen MAPS.ME -sovelluksen avulla.";
 
 "whats_new_next" = "Seuraava";
+
+"sd_unavailable_title" = "SD-kortille tallentaminen ei onnistu";
+
+"sd_unavailable_message_first" = "Virhe käytettäessä SD-korttia.";
+
+"sd_unavailable_message_second" = "Varmista, että kortilla on tarpeeksi tilaa ja ettei se ole vahingoittunut.";
+
+"sd_unavailable_use_internal" = "käytä sisäistä muistia";
+
+"sd_unavailable_try_again" = "yritä uudelleen";
+
+"sd_unavailable_cancel" = "peru";
