@@ -33,10 +33,10 @@ SUBDIRS += stats
 SUBDIRS += indexer
 SUBDIRS += routing
 SUBDIRS += storage
+SUBDIRS += search
 
 # Integration tests dependencies for gtool
 CONFIG(gtool):!CONFIG(no-tests) {
-  SUBDIRS += search
   SUBDIRS += map
   SUBDIRS += routing/routing_integration_tests
 }
@@ -50,7 +50,6 @@ CONFIG(desktop) {
   SUBDIRS *= graphics
   SUBDIRS *= gui
   SUBDIRS *= render
-  SUBDIRS *= search
   SUBDIRS *= map
 
   CONFIG(desktop) {
