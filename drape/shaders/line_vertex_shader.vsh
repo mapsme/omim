@@ -4,6 +4,7 @@ attribute vec2 a_colorTexCoord;
 
 uniform mat4 modelView;
 uniform mat4 projection;
+uniform mat4 pivotTransform;
 
 varying vec2 v_colorTexCoord;
 varying vec2 v_maskTexCoord;
@@ -23,5 +24,9 @@ void main(void)
 
   v_colorTexCoord = a_colorTexCoord;
   v_halfLength = vec2(sign(a_normal.z) * halfWidth, abs(a_normal.z));
-  gl_Position = vec4(transformedAxisPos, a_position.z, 1.0) * projection;
+  vec4 pos = vec4(transformedAxisPos, a_position.z, 1.0) * projection;
+  float w = pos.w;
+  pos.xyw = (pivotTransform * pos).xyw;
+  pos.z *= pos.w / w;
+  gl_Position = pos;
 }

@@ -45,8 +45,6 @@ namespace df
 {
 
 class SelectionShape;
-class Framebuffer;
-class Renderer3d;
 
 struct TapInfo
 {
@@ -132,7 +130,7 @@ private:
   void OnResize(ScreenBase const & screen);
   void RenderScene(ScreenBase const & modelView);
   void RenderSingleGroup(ScreenBase const & modelView, ref_ptr<BaseRenderGroup> group);
-  void RefreshProjection();
+  void RefreshProjection(ScreenBase const & screen);
   void RefreshModelView(ScreenBase const & screen);
   void RefreshPivotTransform(ScreenBase const & screen);
   void RefreshBgColor();
@@ -147,6 +145,10 @@ private:
   void ResolveTileKeys(m2::RectD const & rect, TTilesCollection & tiles);
   int GetCurrentZoomLevel() const;
   void ResolveZoomLevel(ScreenBase const & screen);
+
+  void DiscardPerspective(ScreenBase const & screen);
+  void DiscardPerspective();
+  void RecoverPerspective();
 
   void OnTap(m2::PointD const & pt, bool isLong) override;
   void OnDoubleTap(m2::PointD const & pt) override;
@@ -219,8 +221,6 @@ private:
 
   bool m_enable3dInNavigation;
   bool m_isBillboardRenderPass;
-  drape_ptr<Framebuffer> m_framebuffer;
-  drape_ptr<Renderer3d> m_renderer3d;
 
   Viewport m_viewport;
   UserEventStream m_userEventStream;
@@ -230,6 +230,11 @@ private:
 
   unique_ptr<TileTree> m_tileTree;
   int m_currentZoomLevel = -1;
+  // TODO: Calculate min zoom level based on the device capabilities.
+  int const m_min3dZoomLevel = 17;
+
+  double m_discardedFOV = 0.0;
+  double m_discardedAngle = 0.0;
 };
 
 } // namespace df
