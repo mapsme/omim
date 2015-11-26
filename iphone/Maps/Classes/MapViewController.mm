@@ -867,6 +867,11 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
   [self.alertController presentRoutingDisclaimerAlert];
 }
 
+- (void)presentUpdateMapsAlert
+{
+  [self.alertController presentUpdateMapsAlert];
+}
+
 #pragma mark - Getters
 
 - (MWMAlertViewController *)alertController
@@ -982,6 +987,11 @@ NSInteger compareAddress(id l, id r, void * context)
   BOOL const haveAppWall = (self.appWallAd != nil);
   BOOL const haveBanners = (self.appWallAd.banners && self.appWallAd.banners != 0);
   return haveAppWall && haveBanners;
+}
+
+- (BOOL)hasNavigationBar
+{
+  return NO;
 }
 
 @end

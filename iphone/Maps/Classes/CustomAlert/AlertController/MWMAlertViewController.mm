@@ -91,6 +91,11 @@ static NSString * const kAlertControllerNibIdentifier = @"MWMAlertViewController
   [self displayAlert:[MWMAlert pedestrianToastShareAlert:isFirstLaunch]];
 }
 
+- (void)presentUpdateMapsAlert
+{
+  [self displayAlert:[MWMAlert updateMapsAlert]];
+}
+
 - (void)presentDownloaderAlertWithCountries:(vector<storage::TIndex> const &)countries
                                      routes:(vector<storage::TIndex> const &)routes
                                        code:(routing::IRouter::ResultCode)code
