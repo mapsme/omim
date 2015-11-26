@@ -2417,9 +2417,11 @@ void Framework::SetLastUsedRouter(RouterType type)
 void Framework::SetRouteStartPoint(m2::PointD const & pt, bool isValid)
 {
   m_bmManager.SetRouteStartPoint(pt, isValid);
+  Invalidate();
 }
 
 void Framework::SetRouteFinishPoint(m2::PointD const & pt, bool isValid)
 {
   m_bmManager.SetRouteFinishPoint(pt, isValid);
+  Invalidate();
 }

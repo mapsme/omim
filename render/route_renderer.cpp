@@ -361,6 +361,9 @@ void RouteRenderer::PrepareToShutdown()
 {
   DestroyDisplayLists();
 
+  m_startRoutePoint.m_needUpdate = m_startRoutePoint.m_isValid;
+  m_finishRoutePoint.m_needUpdate = m_finishRoutePoint.m_isValid;
+
   m_arrowBorders.clear();
   m_routeSegments.clear();
 
