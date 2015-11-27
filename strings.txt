@@ -14444,32 +14444,3 @@
     pl = Dalej
     nl = Volgende
     pt = Próxima
-
-  [prefs_group_route]
-    ru = Навигация
-    en = Navigation
-    fr = Navigation
-    da = Navigation
-    id = Navigasi
-    ko = 네비게이션
-    sv = Navigering
-    tr = Navigasyon
-    uk = Навігація
-    vi = Điều hướng
-    hu = Navigáció
-    de = Navigation
-    fi = Navigaatio
-    cs = Navigace
-    it = Navigazione
-    nb = Navigasjon
-    zh-Hant = 導航
-    zh-Hans = 导航
-    th = การนำทาง
-    ja = ナビゲーション
-    ro = Navigație
-    ar = الملاحة
-    sk = Navigácia
-    es = Navegación
-    pl = Nawigacja
-    nl = Navigatie
-    pt = Navegação
