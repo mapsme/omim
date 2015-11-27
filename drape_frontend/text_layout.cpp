@@ -20,12 +20,10 @@ float const VALID_SPLINE_TURN = 0.96f;
 class TextGeometryGenerator
 {
 public:
-  TextGeometryGenerator(glsl::vec3 const & pivot,
-                        dp::TextureManager::ColorRegion const & color,
+  TextGeometryGenerator(dp::TextureManager::ColorRegion const & color,
                         dp::TextureManager::ColorRegion const & outline,
                         gpu::TTextStaticVertexBuffer & buffer)
-    : m_pivot(pivot)
-    , m_colorCoord(glsl::ToVec2(color.GetTexRect().Center()))
+    : m_colorCoord(glsl::ToVec2(color.GetTexRect().Center()))
     , m_outlineCoord(glsl::ToVec2(outline.GetTexRect().Center()))
     , m_buffer(buffer)
   {
@@ -34,14 +32,13 @@ public:
   void operator() (dp::TextureManager::GlyphRegion const & glyph)
   {
     m2::RectF const & mask = glyph.GetTexRect();
-    m_buffer.push_back(gpu::TextStaticVertex(m_pivot, m_colorCoord, m_outlineCoord, glsl::ToVec2(mask.LeftTop())));
-    m_buffer.push_back(gpu::TextStaticVertex(m_pivot, m_colorCoord, m_outlineCoord, glsl::ToVec2(mask.LeftBottom())));
-    m_buffer.push_back(gpu::TextStaticVertex(m_pivot, m_colorCoord, m_outlineCoord, glsl::ToVec2(mask.RightTop())));
-    m_buffer.push_back(gpu::TextStaticVertex(m_pivot, m_colorCoord, m_outlineCoord, glsl::ToVec2(mask.RightBottom())));
+    m_buffer.push_back(gpu::TextStaticVertex(m_colorCoord, m_outlineCoord, glsl::ToVec2(mask.LeftTop())));
+    m_buffer.push_back(gpu::TextStaticVertex(m_colorCoord, m_outlineCoord, glsl::ToVec2(mask.LeftBottom())));
+    m_buffer.push_back(gpu::TextStaticVertex(m_colorCoord, m_outlineCoord, glsl::ToVec2(mask.RightTop())));
+    m_buffer.push_back(gpu::TextStaticVertex(m_colorCoord, m_outlineCoord, glsl::ToVec2(mask.RightBottom())));
   }
 
 protected:
-  glsl::vec3 const & m_pivot;
   glsl::vec2 m_colorCoord;
   glsl::vec2 m_outlineCoord;
   gpu::TTextStaticVertexBuffer & m_buffer;
@@ -57,7 +54,8 @@ public:
                                 dp::TextureManager::ColorRegion const & outline,
                                 gpu::TTextStaticVertexBuffer & staticBuffer,
                                 gpu::TTextDynamicVertexBuffer & dynBuffer)
-    : TBase(pivot, color, outline, staticBuffer)
+    : TBase(color, outline, staticBuffer)
+    , m_pivot(pivot)
     , m_penPosition(pixelOffset)
     , m_buffer(dynBuffer)
     , m_textRatio(textRatio)
@@ -82,16 +80,17 @@ public:
       m_penPosition += glsl::vec2(-xOffset, 0.0f);
     }
 
-    m_buffer.push_back(gpu::TextDynamicVertex(m_penPosition + glsl::vec2(xOffset, bottomVector)));
-    m_buffer.push_back(gpu::TextDynamicVertex(m_penPosition + glsl::vec2(xOffset, upVector)));
-    m_buffer.push_back(gpu::TextDynamicVertex(m_penPosition + glsl::vec2(pixelSize.x + xOffset, bottomVector)));
-    m_buffer.push_back(gpu::TextDynamicVertex(m_penPosition + glsl::vec2(pixelSize.x + xOffset, upVector)));
+    m_buffer.push_back(gpu::TextDynamicVertex(m_pivot, m_penPosition + glsl::vec2(xOffset, bottomVector)));
+    m_buffer.push_back(gpu::TextDynamicVertex(m_pivot, m_penPosition + glsl::vec2(xOffset, upVector)));
+    m_buffer.push_back(gpu::TextDynamicVertex(m_pivot, m_penPosition + glsl::vec2(pixelSize.x + xOffset, bottomVector)));
+    m_buffer.push_back(gpu::TextDynamicVertex(m_pivot, m_penPosition + glsl::vec2(pixelSize.x + xOffset, upVector)));
     m_penPosition += glsl::vec2(glyph.GetAdvanceX() * m_textRatio, glyph.GetAdvanceY() * m_textRatio);
 
     TBase::operator()(glyph);
   }
 
 private:
+  glsl::vec3 const & m_pivot;
   glsl::vec2 m_penPosition;
   gpu::TTextDynamicVertexBuffer & m_buffer;
   float m_textRatio = 0.0f;
@@ -346,16 +345,16 @@ PathTextLayout::PathTextLayout(strings::UniString const & text, float fontSize,
   Init(fribidi::log2vis(text), fontSize, textures);
 }
 
-void PathTextLayout::CacheStaticGeometry(glm::vec3 const & pivot,
-                                         dp::TextureManager::ColorRegion const & colorRegion,
+void PathTextLayout::CacheStaticGeometry(dp::TextureManager::ColorRegion const & colorRegion,
                                          dp::TextureManager::ColorRegion const & outlineRegion,
                                          gpu::TTextStaticVertexBuffer & staticBuffer) const
 {
-  TextGeometryGenerator gen(pivot, colorRegion, outlineRegion, staticBuffer);
+  TextGeometryGenerator gen(colorRegion, outlineRegion, staticBuffer);
   for_each(m_metrics.begin(), m_metrics.end(), gen);
 }
 
-bool PathTextLayout::CacheDynamicGeometry(m2::Spline::iterator const & iter, ScreenBase const & screen,
+bool PathTextLayout::CacheDynamicGeometry(m2::Spline::iterator const & iter, const float depth,
+                                          ScreenBase const & screen,
                                           gpu::TTextDynamicVertexBuffer & buffer) const
 {
   float const scalePtoG = screen.GetScale();
@@ -399,11 +398,11 @@ bool PathTextLayout::CacheDynamicGeometry(m2::Spline::iterator const & iter, Scr
 
     size_t baseIndex = 4 * i;
 
-    buffer[baseIndex + 0] = gpu::TextDynamicVertex(formingVector + normal * bottomVector + tangent * xOffset);
-    buffer[baseIndex + 1] = gpu::TextDynamicVertex(formingVector + normal * upVector + tangent * xOffset);
-    buffer[baseIndex + 2] = gpu::TextDynamicVertex(formingVector + normal * bottomVector + tangent * (pxSize.x + xOffset));
-    buffer[baseIndex + 3] = gpu::TextDynamicVertex(formingVector + normal * upVector + tangent * (pxSize.x + xOffset));
-
+    glsl::vec3 pivot(glsl::ToVec2(iter.m_pos), depth);
+    buffer[baseIndex + 0] = gpu::TextDynamicVertex(pivot, formingVector + normal * bottomVector + tangent * xOffset);
+    buffer[baseIndex + 1] = gpu::TextDynamicVertex(pivot, formingVector + normal * upVector + tangent * xOffset);
+    buffer[baseIndex + 2] = gpu::TextDynamicVertex(pivot, formingVector + normal * bottomVector + tangent * (pxSize.x + xOffset));
+    buffer[baseIndex + 3] = gpu::TextDynamicVertex(pivot, formingVector + normal * upVector + tangent * (pxSize.x + xOffset));
 
     float const xAdvance = g.GetAdvanceX() * m_textSizeRatio;
     glsl::vec2 currentTangent = glsl::ToVec2(penIter.m_dir);
