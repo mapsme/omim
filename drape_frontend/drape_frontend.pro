@@ -39,6 +39,8 @@ SOURCES += \
     drape_engine.cpp \
     engine_context.cpp \
     frontend_renderer.cpp \
+    gps_track_renderer.cpp \
+    gps_track_shape.cpp \
     line_shape.cpp \
     line_shape_helper.cpp \
     map_data_provider.cpp \
@@ -117,6 +119,9 @@ HEADERS += \
     drape_engine.hpp \
     engine_context.hpp \
     frontend_renderer.hpp \
+    gps_track_point.hpp \
+    gps_track_renderer.hpp \
+    gps_track_shape.hpp \
     intrusive_vector.hpp \
     line_shape.hpp \
     line_shape_helper.hpp \
