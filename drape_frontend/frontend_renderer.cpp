@@ -40,6 +40,7 @@ FrontendRenderer::FrontendRenderer(Params const & params)
   : BaseRenderer(ThreadsCommutator::RenderThread, params)
   , m_gpuProgramManager(new dp::GpuProgramManager())
   , m_routeRenderer(new RouteRenderer())
+  , m_gpsTrackRenderer(new GpsTrackRenderer(bind(&FrontendRenderer::PrepareGpsTrackPoints, this, _1)))
   , m_overlayTree(new dp::OverlayTree())
   , m_viewport(params.m_viewport)
   , m_userEventStream(params.m_isCountryLoadedFn)
@@ -457,6 +458,26 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
       break;
     }
 
+  case Message::FlushGpsTrackPoints:
+    {
+      ref_ptr<FlushGpsTrackPointsMessage> msg = message;
+      m_gpsTrackRenderer->AddRenderData(make_ref(m_gpuProgramManager), msg->AcceptRenderData());
+      break;
+    }
+
+  case Message::UpdateGpsTrackPoints:
+    {
+      ref_ptr<UpdateGpsTrackPointsMessage> msg = message;
+      m_gpsTrackRenderer->UpdatePoints(msg->GetPointsToAdd(), msg->GetPointsToRemove());
+      break;
+    }
+
+  case Message::ClearGpsTrackPoints:
+    {
+      m_gpsTrackRenderer->Clear();
+      break;
+    }
+
   case Message::Invalidate:
     {
       // Do nothing here, new frame will be rendered because of this message processing.
@@ -605,6 +626,13 @@ FeatureID FrontendRenderer::GetVisiblePOI(m2::RectD const & pixelRect) const
   return featureID;
 }
 
+void FrontendRenderer::PrepareGpsTrackPoints(size_t pointsCount)
+{
+  m_commutator->PostMessage(ThreadsCommutator::ResourceUploadThread,
+                            make_unique_dp<CacheGpsTrackPointsMessage>(pointsCount),
+                            MessagePriority::Normal);
+}
+
 void FrontendRenderer::BeginUpdateOverlayTree(ScreenBase const & modelView)
 {
   if (m_overlayTree->Frame())
@@ -706,6 +734,9 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
     drape_ptr<RenderGroup> const & group = m_renderGroups[currentRenderGroup];
     RenderSingleGroup(modelView, make_ref(group));
   }
+
+  m_gpsTrackRenderer->RenderTrack(modelView, GetCurrentZoomLevel(),
+                                  make_ref(m_gpuProgramManager), m_generalUniforms);
 
   GLFunctions::glClearDepth();
   if (m_selectionShape != nullptr && m_selectionShape->GetSelectedObject() == SelectionShape::OBJECT_USER_MARK)
@@ -1111,6 +1142,8 @@ void FrontendRenderer::UpdateScene(ScreenBase const & modelView)
   ResolveZoomLevel(modelView);
   TTilesCollection tiles;
   ResolveTileKeys(modelView, tiles);
+
+  m_gpsTrackRenderer->Update();
 
   auto removePredicate = [this](drape_ptr<RenderGroup> const & group)
   {
