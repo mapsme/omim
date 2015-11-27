@@ -306,6 +306,11 @@
 	<string name="length">ระยะเวลา</string>
 	<string name="share_my_location">แชร์ตำแหน่งที่ตั้งของฉัน</string>
 	<string name="menu_search">ค้นหา</string>
+	<!-- Settings screen: "Map" category title -->
+	<string name="prefs_group_map">แผนที่</string>
+	<!-- Settings screen: "Miscellaneous" category title -->
+	<string name="prefs_group_misc">เบ็ดเตล็ด</string>
+	<string name="prefs_group_route">การนำทาง</string>
 	<string name="pref_zoom_title">ปุ่มซูม</string>
 	<string name="pref_zoom_summary">แสดงบนหน้าจอ</string>
 	<!-- Title for "Other" section in TTS settings. -->
@@ -795,4 +800,5 @@
 	<string name="whats_new_between_any_points">สร้างเส้นทางระหว่างทุกจุด</string>
 	<string name="whats_new_happy_day">เป็นวันที่แสนสุขจริง ๆ! วางแผนทริปของคุณล่วงหน้าด้วย MAPS.ME</string>
 	<string name="whats_new_next">ถัดไป</string>
+	<string name="prefs_group_route">การนำทาง</string>
 </resources>

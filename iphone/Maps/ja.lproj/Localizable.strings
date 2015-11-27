@@ -481,13 +481,12 @@
 "menu_search" = "検索";
 
 /* Settings screen: "Map" category title */
-"prefs_group_map" = "Map";
-
-/* Settings screen: "Route" category title */
-"prefs_group_route" = "Route";
+"prefs_group_map" = "地図";
 
 /* Settings screen: "Miscellaneous" category title */
-"prefs_group_misc" = "Miscellaneous";
+"prefs_group_misc" = "その他";
+
+"prefs_group_route" = "ナビゲーション";
 
 "pref_zoom_title" = "ズームボタン";
 
@@ -1324,3 +1323,5 @@
 "whats_new_happy_day" = "実にすがすがしい日ですね！MAPS.MEで旅程を立てましょう。";
 
 "whats_new_next" = "次へ";
+
+"prefs_group_route" = "ナビゲーション";
