@@ -54,11 +54,9 @@ dp::BindingInfo SolidTexturingBindingInit()
 
 dp::BindingInfo TextStaticBindingInit()
 {
-  static_assert(sizeof(TextStaticVertex) == (sizeof(TextStaticVertex::TPosition) +
-                                             3 * sizeof(TextStaticVertex::TTexCoord)), "");
+  static_assert(sizeof(TextStaticVertex) == (3 * sizeof(TextStaticVertex::TTexCoord)), "");
 
-  dp::BindingFiller<TextStaticVertex> filler(4);
-  filler.FillDecl<TextStaticVertex::TPosition>("a_position");
+  dp::BindingFiller<TextStaticVertex> filler(3);
   filler.FillDecl<TextStaticVertex::TTexCoord>("a_colorTexCoord");
   filler.FillDecl<TextStaticVertex::TTexCoord>("a_outlineColorTexCoord");
   filler.FillDecl<TextStaticVertex::TTexCoord>("a_maskTexCoord");
@@ -68,9 +66,11 @@ dp::BindingInfo TextStaticBindingInit()
 
 dp::BindingInfo TextDynamicBindingInit()
 {
-  static_assert(sizeof(TextDynamicVertex) == sizeof(TextDynamicVertex::TNormal), "");
+  static_assert(sizeof(TextDynamicVertex) == (sizeof(TextStaticVertex::TPosition) +
+                                              sizeof(TextDynamicVertex::TNormal)), "");
 
-  dp::BindingFiller<TextDynamicVertex> filler(1, TextDynamicVertex::GetDynamicStreamID());
+  dp::BindingFiller<TextDynamicVertex> filler(2, TextDynamicVertex::GetDynamicStreamID());
+  filler.FillDecl<TextStaticVertex::TPosition>("a_position");
   filler.FillDecl<TextDynamicVertex::TNormal>("a_normal");
 
   return filler.m_info;
@@ -183,17 +183,15 @@ dp::BindingInfo const & SolidTexturingVertex::GetBindingInfo()
 }
 
 TextStaticVertex::TextStaticVertex()
-  : m_position(0.0, 0.0, 0.0)
-  , m_colorTexCoord(0.0, 0.0)
+  : m_colorTexCoord(0.0, 0.0)
   , m_outlineTexCoord(0.0, 0.0)
   , m_maskTexCoord(0.0, 0.0)
 {
 }
 
-TextStaticVertex::TextStaticVertex(TPosition const & position, TTexCoord const & colorTexCoord,
+TextStaticVertex::TextStaticVertex(TTexCoord const & colorTexCoord,
                                    TTexCoord const & outlineTexCoord, TTexCoord const & maskTexCoord)
-  : m_position(position)
-  , m_colorTexCoord(colorTexCoord)
+  : m_colorTexCoord(colorTexCoord)
   , m_outlineTexCoord(outlineTexCoord)
   , m_maskTexCoord(maskTexCoord)
 {
@@ -205,12 +203,14 @@ dp::BindingInfo const & TextStaticVertex::GetBindingInfo()
 }
 
 TextDynamicVertex::TextDynamicVertex()
-  : m_normal(0.0, 0.0)
+  : m_position(0.0, 0.0, 0.0)
+  , m_normal(0.0, 0.0)
 {
 }
 
-TextDynamicVertex::TextDynamicVertex(TNormal const & normal)
-  : m_normal(normal)
+TextDynamicVertex::TextDynamicVertex(TPosition const & position, TNormal const & normal)
+  : m_position(position),
+    m_normal(normal)
 {
 }
 
