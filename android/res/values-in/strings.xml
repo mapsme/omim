@@ -304,6 +304,11 @@
 	<string name="length">Panjang</string>
 	<string name="share_my_location">Bagikan Lokasi Saya</string>
 	<string name="menu_search">Cari</string>
+	<!-- Settings screen: "Map" category title -->
+	<string name="prefs_group_map">Peta</string>
+	<!-- Settings screen: "Miscellaneous" category title -->
+	<string name="prefs_group_misc">Lain-Lain</string>
+	<string name="prefs_group_route">Navigasi</string>
 	<string name="pref_zoom_title">Tombol perbesaran</string>
 	<string name="pref_zoom_summary">Tampilkan pada layar</string>
 	<!-- Title for "Other" section in TTS settings. -->
@@ -792,4 +797,5 @@
 	<string name="whats_new_between_any_points">Buat rute antar titik mana saja</string>
 	<string name="whats_new_happy_day">Memang hari yang membahagiakan! Rencanakan perjalanan Anda ke depan bersama MAPS.ME.</string>
 	<string name="whats_new_next">Berikut</string>
+	<string name="prefs_group_route">Navigasi</string>
 </resources>

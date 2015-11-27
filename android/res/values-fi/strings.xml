@@ -304,6 +304,11 @@
 	<string name="length">Pituus</string>
 	<string name="share_my_location">Jaa sijaintini</string>
 	<string name="menu_search">Haku</string>
+	<!-- Settings screen: "Map" category title -->
+	<string name="prefs_group_map">Kartta</string>
+	<!-- Settings screen: "Miscellaneous" category title -->
+	<string name="prefs_group_misc">Muut</string>
+	<string name="prefs_group_route">Navigaatio</string>
 	<string name="pref_zoom_title">Zoomauspainikkeet</string>
 	<string name="pref_zoom_summary">Näytä ruudulla</string>
 	<!-- Title for "Other" section in TTS settings. -->
@@ -793,4 +798,5 @@
 	<string name="whats_new_between_any_points">Luo reittejä minkä tahansa kohteiden välille</string>
 	<string name="whats_new_happy_day">Elämä hymyilee! Suunnittele matkasi etukäteen MAPS.ME -sovelluksen avulla.</string>
 	<string name="whats_new_next">Seuraava</string>
+	<string name="prefs_group_route">Navigaatio</string>
 </resources>

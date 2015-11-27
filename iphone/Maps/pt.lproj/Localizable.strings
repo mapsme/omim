@@ -481,13 +481,12 @@
 "menu_search" = "Pesquisar";
 
 /* Settings screen: "Map" category title */
-"prefs_group_map" = "Map";
-
-/* Settings screen: "Route" category title */
-"prefs_group_route" = "Route";
+"prefs_group_map" = "Mapa";
 
 /* Settings screen: "Miscellaneous" category title */
-"prefs_group_misc" = "Miscellaneous";
+"prefs_group_misc" = "Diversos";
+
+"prefs_group_route" = "Navegação";
 
 "pref_zoom_title" = "Botões de zoom";
 
@@ -1324,3 +1323,5 @@
 "whats_new_happy_day" = "¡Que tengas un buen día! Planifica tus viajes por adelantado con MAPS.ME.";
 
 "whats_new_next" = "Próxima";
+
+"prefs_group_route" = "Navegação";
