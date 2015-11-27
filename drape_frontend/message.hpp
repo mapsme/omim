@@ -42,7 +42,11 @@ public:
     DeactivateRouteFollowing,
     UpdateMapStyle,
     InvalidateTextures,
-    Invalidate
+    Invalidate,
+    CacheGpsTrackPoints,
+    FlushGpsTrackPoints,
+    UpdateGpsTrackPoints,
+    ClearGpsTrackPoints
   };
 
   virtual ~Message() {}
