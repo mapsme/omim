@@ -43,6 +43,7 @@ SOURCES += \
     mercator.cpp \
     mwm_set.cpp \
     old/feature_loader_101.cpp \
+    osm_editor.cpp \
     point_to_int64.cpp \
     scales.cpp \
     search_delimiters.cpp \
@@ -92,6 +93,7 @@ HEADERS += \
     mwm_set.hpp \
     old/feature_loader_101.hpp \
     old/interval_index_101.hpp \
+    osm_editor.hpp \
     point_to_int64.hpp \
     scale_index.hpp \
     scale_index_builder.hpp \

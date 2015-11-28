@@ -1835,7 +1835,8 @@ OEPointerT GetClosestToPivot(list<OEPointerT> const & l, m2::PointD const & pxPo
 #endif // USE_DRAPE
 
 bool Framework::GetVisiblePOI(m2::PointD const & pxPoint, m2::PointD & pxPivot,
-                              search::AddressInfo & info, feature::Metadata & metadata) const
+                              search::AddressInfo & info, feature::Metadata & metadata,
+                              FeatureID * outFeatureId) const
 {
 #ifndef USE_DRAPE
   ASSERT(m_renderPolicy, ());
@@ -1868,11 +1869,13 @@ bool Framework::GetVisiblePOI(m2::PointD const & pxPoint, m2::PointD & pxPivot,
 
   if (ui.IsValid())
   {
-    Index::FeaturesLoaderGuard guard(m_model.GetIndex(), ui.m_featureID.m_mwmId);
+    auto const fid = ui.m_featureID;
+    if (outFeatureId)
+      *outFeatureId = fid;
 
     FeatureType ft;
-    guard.GetFeatureByIndex(ui.m_featureID.m_index, ft);
-
+    Index::FeaturesLoaderGuard guard(m_model.GetIndex(), fid.m_mwmId);
+    guard.GetFeatureByIndex(fid.m_index, ft);
     ft.ParseMetadata();
     metadata = ft.GetMetadata();
 

@@ -5,6 +5,7 @@
 #include "indexer/features_offsets_table.hpp"
 #include "indexer/features_vector.hpp"
 #include "indexer/mwm_set.hpp"
+#include "indexer/osm_editor.hpp"
 #include "indexer/scale_index.hpp"
 #include "indexer/unique_index.hpp"
 
@@ -88,11 +89,11 @@ public:
   bool RemoveObserver(Observer const & observer);
 
 private:
-
-  template <typename F> class ReadMWMFunctor
+  template <typename F>
+  struct ReadMWMFunctor
   {
     F & m_f;
-  public:
+
     ReadMWMFunctor(F & f) : m_f(f) {}
 
     void operator()(MwmHandle const & handle, covering::CoveringGetter & cov, uint32_t scale) const
@@ -122,27 +123,33 @@ private:
 
         for (auto const & i : interval)
         {
-          index.ForEachInIntervalAndScale([&] (uint32_t index)
-          {
-            if (checkUnique(index))
-            {
-              FeatureType feature;
+          index.ForEachInIntervalAndScale(
+              [&](uint32_t index)
+              {
+                // Can we avoid this check if feature was deleted?
+                if (checkUnique(index))
+                {
+                  FeatureID const featureId(mwmID, index);
+                  if (osm::Editor::IsFeatureDeleted(featureId))
+                    return;
 
-              fv.GetByIndex(index, feature);
-              feature.SetID(FeatureID(mwmID, index));
-
-              m_f(feature);
-            }
-          }, i.first, i.second, scale);
+                  FeatureType feature;
+                  fv.GetByIndex(index, feature);
+                  feature.SetID(featureId);
+                  m_f(feature);
+                }
+              },
+              i.first, i.second, scale);
         }
       }
     }
   };
 
-  template <typename F> class ReadFeatureIndexFunctor
+  template <typename F>
+  struct ReadFeatureIndexFunctor
   {
     F & m_f;
-  public:
+
     ReadFeatureIndexFunctor(F & f) : m_f(f) {}
 
     void operator()(MwmHandle const & handle, covering::CoveringGetter & cov, uint32_t scale) const
@@ -333,6 +340,9 @@ private:
       MwmHandle const handle = GetMwmHandleById(worldID[1]);
       f(handle, cov, scale);
     }
+
+    // Separate pass for edited/created features container.
+    osm::Editor::ForEachFeatureInRectAndScaleWrapper(f.m_f, rect, scale);
   }
 
   my::ObserverList<Observer> m_observers;
