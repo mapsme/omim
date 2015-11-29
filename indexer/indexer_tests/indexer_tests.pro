@@ -5,7 +5,7 @@ TEMPLATE = app
 
 ROOT_DIR = ../..
 DEPENDENCIES = indexer platform geometry coding base protobuf tomcrypt
-DEPENDENCIES += opening_hours
+DEPENDENCIES += opening_hours pugixml
 
 include($$ROOT_DIR/common.pri)
 
@@ -37,3 +37,4 @@ SOURCES += \
     test_polylines.cpp \
     test_type.cpp \
     visibility_test.cpp \
+    xml_feature_test.cpp \
