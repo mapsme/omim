@@ -21,7 +21,6 @@ namespace old_101 { namespace feature
   class LoaderImpl;
 }}
 
-
 /// Base feature class for storing common data (without geometry).
 class FeatureBase
 {
@@ -41,12 +40,12 @@ public:
 
   feature::EGeomType GetFeatureType() const;
 
-  inline uint8_t GetTypesCount() const
+  uint8_t GetTypesCount() const
   {
     return ((Header() & feature::HEADER_TYPE_MASK) + 1);
   }
 
-  inline int8_t GetLayer() const
+  int8_t GetLayer() const
   {
     if (!(Header() & feature::HEADER_HAS_LAYER))
       return 0;
@@ -55,7 +54,7 @@ public:
     return m_params.layer;
   }
 
-  inline bool HasName() const
+  bool HasName() const
   {
     return (Header() & feature::HEADER_HAS_NAME) != 0;
   }
@@ -80,7 +79,7 @@ public:
   */
 
   template <class T>
-  inline bool ForEachNameRef(T & functor) const
+  bool ForEachNameRef(T & functor) const
   {
     if (!HasName())
       return false;
@@ -90,13 +89,13 @@ public:
     return true;
   }
 
-  inline m2::RectD GetLimitRect() const
+  m2::RectD GetLimitRect() const
   {
     ASSERT ( m_limitRect.IsValid(), () );
     return m_limitRect;
   }
 
-  inline m2::PointD GetCenter() const
+  m2::PointD GetCenter() const
   {
     ASSERT_EQUAL ( GetFeatureType(), feature::GEOM_POINT, () );
     ParseCommon();
@@ -117,12 +116,12 @@ protected:
   /// @name Need for FeatureBuilder.
   //@{
   friend class FeatureBuilder1;
-  inline void SetHeader(uint8_t h) { m_header = h; }
+  void SetHeader(uint8_t h) { m_header = h; }
   //@}
 
   string DebugString() const;
 
-  inline uint8_t Header() const { return m_header; }
+  uint8_t Header() const { return m_header; }
 
 protected:
   feature::LoaderBase * m_pLoader;
@@ -153,10 +152,10 @@ class FeatureType : public FeatureBase
 public:
   void Deserialize(feature::LoaderBase * pLoader, TBuffer buffer);
 
-  inline void SetID(FeatureID const & id) { m_id = id; }
-  inline FeatureID GetID() const { return m_id; }
+  void SetID(FeatureID const & id) { m_id = id; }
+  FeatureID GetID() const { return m_id; }
 
-  /// @name Parse functions. Do simple dispatching to m_pLoader.
+ /// @name Parse functions. Do simple dispatching to m_pLoader.
   //@{
   void ParseHeader2() const;
 
@@ -194,12 +193,13 @@ public:
     }
   }
 
-  inline size_t GetPointsCount() const
+  size_t GetPointsCount() const
   {
     ASSERT(m_bPointsParsed, ());
     return m_points.size();
   }
-  inline m2::PointD const & GetPoint(size_t i) const
+
+  m2::PointD const & GetPoint(size_t i) const
   {
     ASSERT_LESS(i, m_points.size(), ());
     ASSERT(m_bPointsParsed, ());
@@ -263,14 +263,14 @@ public:
   string GetRoadNumber() const;
   bool HasInternet() const;
 
-  inline feature::Metadata const & GetMetadata() const { return m_metadata; }
-  inline feature::Metadata & GetMetadata() { return m_metadata; }
+  feature::Metadata const & GetMetadata() const { return m_metadata; }
+  feature::Metadata & GetMetadata() { return m_metadata; }
 
   double GetDistance(m2::PointD const & pt, int scale) const;
 
   /// @name Statistic functions.
   //@{
-  inline void ParseBeforeStatistic() const
+  void ParseBeforeStatistic() const
   {
     ParseHeader2();
   }
@@ -305,7 +305,7 @@ public:
 
   void SwapGeometry(FeatureType & r);
 
-  inline void SwapPoints(buffer_vector<m2::PointD, 32> & points) const
+  void SwapPoints(buffer_vector<m2::PointD, 32> & points) const
   {
     ASSERT(m_bPointsParsed, ());
     return m_points.swap(points);
