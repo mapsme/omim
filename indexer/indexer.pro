@@ -48,6 +48,7 @@ SOURCES += \
     search_index_builder.cpp \
     search_string_utils.cpp \
     types_mapping.cpp \
+    xml_feature.cpp \
 
 HEADERS += \
     categories_holder.hpp \
@@ -104,6 +105,7 @@ HEADERS += \
     tree_structure.hpp \
     types_mapping.hpp \
     unique_index.hpp \
+    xml_feature.hpp \
 
 OTHER_FILES += drules_struct.proto
 
