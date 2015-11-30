@@ -419,6 +419,9 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   private void startLocationToPoint(String statisticsEvent, String alohaEvent, final @Nullable MapObject endPoint)
   {
+    // TODO @yunikkk or @trashkalmar we shouldn't close search here.
+    // Search toolbar should reside above of routing layout.
+    SearchEngine.cancelSearch();
     closeMenu(statisticsEvent, alohaEvent, new Runnable()
     {
       @Override
