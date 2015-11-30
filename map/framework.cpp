@@ -136,6 +136,12 @@ void Framework::OnLocationUpdate(GpsInfo const & info)
 
   CallDrapeFunction(bind(&df::DrapeEngine::SetGpsInfo, _1, rInfo,
                          m_routingSession.IsNavigable(), routeMatchingInfo));
+
+  if (m_gpsTrackingEnabled)
+  {
+    m2::PointD const point = MercatorBounds::FromLatLon(ms::LatLon(info.m_latitude, info.m_latitude));
+    m_gpsTrack.AddPoint(point, info.m_speed, info.m_timestamp);
+  }
 }
 
 void Framework::OnCompassUpdate(CompassInfo const & info)
@@ -187,6 +193,7 @@ void Framework::StopLocationFollow()
 
 Framework::Framework()
   : m_bmManager(*this)
+  , m_gpsTrackingEnabled(false)
   , m_fixedSearchResults(0)
 {
   m_activeMaps.reset(new ActiveMapsLayout(*this));
@@ -1274,6 +1281,9 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
   // In case of the engine reinitialization recover route.
   if (m_routingSession.IsActive())
     InsertRoute(m_routingSession.GetRoute());
+
+  if (m_gpsTrackingEnabled)
+    m_gpsTrack.SetCallback(bind(&Framework::OnUpdateGpsTrackPoints, this, _1, _2), true /* sendAll */);
 }
 
 ref_ptr<df::DrapeEngine> Framework::GetDrapeEngine()
@@ -1283,7 +1293,36 @@ ref_ptr<df::DrapeEngine> Framework::GetDrapeEngine()
 
 void Framework::DestroyDrapeEngine()
 {
+  m_gpsTrack.SetCallback(nullptr, false /* sendAll */);
+
   m_drapeEngine.reset();
+}
+
+void Framework::EnableGpsTracking(bool enabled)
+{
+  // NOTE!
+  // In future we will distinguish GPS tracking and visualization of GPS tracking (for example, we could
+  // track a position, but render it only if user asks to render track).
+  // For now, GPS tracking and visualization of GPS tracking are treated as the same.
+
+  if (enabled == m_gpsTrackingEnabled)
+    return;
+
+  m_gpsTrackingEnabled = enabled;
+
+  if (m_drapeEngine)
+    m_drapeEngine->ClearGpsTrackPoints();
+
+  if (enabled)
+  {
+    m_gpsTrack.SetCallback(bind(&Framework::OnUpdateGpsTrackPoints, this, _1, _2), true /* sendAll */);
+  }
+  else
+  {
+    // Reset callback first to prevent notification about removed points on Clear
+    m_gpsTrack.SetCallback(nullptr, false /* sendAll */);
+    m_gpsTrack.Clear();
+  }
 }
 
 void Framework::SetMapStyle(MapStyle mapStyle)
