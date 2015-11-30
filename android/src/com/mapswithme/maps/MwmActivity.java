@@ -579,6 +579,9 @@ public class MwmActivity extends BaseMwmFragmentActivity
       outState.putParcelable(STATE_MAP_OBJECT, mPlacePage.getMapObject());
     }
 
+    if (!mIsFragmentContainer && RoutingController.get().isPlanning())
+      mRoutingPlanInplaceController.onSaveState(outState);
+
     super.onSaveInstanceState(outState);
   }
 
@@ -592,6 +595,9 @@ public class MwmActivity extends BaseMwmFragmentActivity
       mPlacePage.setMapObject((MapObject) savedInstanceState.getParcelable(STATE_MAP_OBJECT));
       mPlacePage.setState(State.PREVIEW);
     }
+
+    if (!mIsFragmentContainer && RoutingController.get().isPlanning())
+      mRoutingPlanInplaceController.restoreState(savedInstanceState);
   }
 
   @Override
