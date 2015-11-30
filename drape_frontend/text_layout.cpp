@@ -354,7 +354,7 @@ void PathTextLayout::CacheStaticGeometry(dp::TextureManager::ColorRegion const &
   for_each(m_metrics.begin(), m_metrics.end(), gen);
 }
 
-bool PathTextLayout::CacheDynamicGeometry(m2::Spline::iterator const & iter, const float depth,
+bool PathTextLayout::CacheDynamicGeometry(m2::Spline::iterator const & iter, float depth,
                                           m2::PointD const & globalPivot,
                                           gpu::TTextDynamicVertexBuffer & buffer) const
 {
@@ -462,7 +462,7 @@ void PathTextLayout::CalculatePositions(vector<float> & offsets, float splineLen
     // here we place 2 text on the ends of path
     // then we place as much as possible text on center path uniformly
     float const emptySpace = pathLength - 2 * textLength;
-    uint32_t textCount = static_cast<uint32_t>(ceil(emptySpace / minPeriodSize));
+    uint32_t const textCount = static_cast<uint32_t>(ceil(emptySpace / minPeriodSize));
     float const offset = (emptySpace - textCount * textLength) / (textCount + 1);
     offsets.reserve(textCount + 2);
     offsets.push_back(textHalfLength * splineScaleFromPixel);

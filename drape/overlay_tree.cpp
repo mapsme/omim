@@ -109,22 +109,7 @@ void OverlayTree::InsertHandle(ref_ptr<OverlayHandle> handle, bool isTransparent
   ScreenBase const & modelView = GetModelView();
   bool const is3dMode = modelView.isPerspective();
 
-  bool const boundToParent = (parentOverlay.m_handle != nullptr && handle->IsBound());
-
   m2::RectD const pixelRect = handle->GetPixelRect(modelView, is3dMode);
-  if (is3dMode && handle->GetMinScaleInPerspective() > 0.0)
-  {
-    m2::RectD const pixelRect2d = handle->GetPixelRect(modelView, false);
-    double const scale = min(pixelRect.SizeX() / pixelRect2d.SizeX(),
-                             pixelRect.SizeY() / pixelRect2d.SizeY());
-    if (scale < handle->GetMinScaleInPerspective())
-    {
-      // Handle is displaced and bound to its parent, parent will be displaced too.
-      if (boundToParent)
-        Erase(parentOverlay);
-      return;
-    }
-  }
 
   TOverlayContainer elements;
 
@@ -138,6 +123,7 @@ void OverlayTree::InsertHandle(ref_ptr<OverlayHandle> handle, bool isTransparent
       elements.push_back(info);
   });
 
+  bool const boundToParent = (parentOverlay.m_handle != nullptr && handle->IsBound());
 
   // If handle is bound to its parent, parent's handle will be used.
   ref_ptr<OverlayHandle> handleToCompare = handle;
