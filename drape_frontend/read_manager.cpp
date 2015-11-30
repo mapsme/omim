@@ -106,7 +106,17 @@ void ReadManager::UpdateCoverage(ScreenBase const & screen, TTilesCollection con
     IncreaseCounter(static_cast<int>(inputRects.size() + (m_tileInfos.size() - outdatedTiles.size())));
 
     for_each(outdatedTiles.begin(), outdatedTiles.end(), bind(&ReadManager::ClearTileInfo, this, _1));
-    for_each(m_tileInfos.begin(), m_tileInfos.end(), bind(&ReadManager::PushTaskFront, this, _1));
+    for (shared_ptr<TileInfo> const & tile : m_tileInfos)
+    {
+      for (shared_ptr<TileInfo> & outTile : outdatedTiles)
+      {
+        if (IsNeighbours(tile->GetTileKey(), outTile->GetTileKey()))
+        {
+            PushTaskFront(tile);
+            break;
+        }
+      }
+    }
     for_each(inputRects.begin(), inputRects.end(), bind(&ReadManager::PushTaskBackForTileKey, this, _1, texMng));
   }
   m_currentViewport = screen;
@@ -137,6 +147,15 @@ void ReadManager::Stop()
 
   m_pool->Stop();
   m_pool.reset();
+}
+
+bool ReadManager::CheckTileKey(TileKey const & tileKey) const
+{
+  for (auto const & tileInfo : m_tileInfos)
+    if (tileInfo->GetTileKey() == tileKey)
+      return !tileInfo->IsCancelled();
+
+  return false;
 }
 
 size_t ReadManager::ReadCount()
