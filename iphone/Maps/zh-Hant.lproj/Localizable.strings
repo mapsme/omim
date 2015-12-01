@@ -1369,3 +1369,6 @@
 "whats_new_happy_day" = "真是愉快的一天！使用MAPS.ME提前計劃您的旅行。";
 
 "whats_new_next" = "下一頁";
+
+/* "Recording GPS track" notification text */
+"track_notification_text" = "Recording GPS track";

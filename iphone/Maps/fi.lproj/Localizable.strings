@@ -1369,3 +1369,6 @@
 "whats_new_happy_day" = "Elämä hymyilee! Suunnittele matkasi etukäteen MAPS.ME -sovelluksen avulla.";
 
 "whats_new_next" = "Seuraava";
+
+/* "Recording GPS track" notification text */
+"track_notification_text" = "Recording GPS track";
