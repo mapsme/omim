@@ -308,7 +308,7 @@
       </intent-filter>
     </receiver>
 
-    <service android:name=".background.TrackRecordService"
+    <service android:name="com.mapswithme.maps.background.TrackRecordService"
              android:exported="false"/>
   </application>
 </manifest>

@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
@@ -21,7 +22,7 @@ public abstract class BaseKeepAliveService extends IntentService
 
   private final CountDownLatch mWaitMonitor = new CountDownLatch(1);
 
-  private static BaseKeepAliveService getAliveService(Class<? extends BaseKeepAliveService> serviceClass)
+  private static @Nullable BaseKeepAliveService getAliveService(Class<? extends BaseKeepAliveService> serviceClass)
   {
     WeakReference<BaseKeepAliveService> svc = sAliveServices.get(serviceClass);
     if (svc == null)
