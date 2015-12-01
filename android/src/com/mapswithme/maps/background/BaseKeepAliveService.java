@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.WakefulBroadcastReceiver;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -61,6 +62,7 @@ public abstract class BaseKeepAliveService extends IntentService
       sAliveServices.remove(getClass());
     }
     stopForeground(true);
+    WakefulBroadcastReceiver.completeWakefulIntent(intent);
   }
 
   public static void start(Class<? extends BaseKeepAliveService> serviceClass)
@@ -68,7 +70,7 @@ public abstract class BaseKeepAliveService extends IntentService
     synchronized (sAliveServices)
     {
       if (getAliveService(serviceClass) == null)
-        MwmApplication.get().startService(new Intent(MwmApplication.get(), serviceClass));
+        WakefulBroadcastReceiver.startWakefulService(MwmApplication.get(), new Intent(MwmApplication.get(), serviceClass));
     }
   }
 
