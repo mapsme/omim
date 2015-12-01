@@ -23,8 +23,10 @@
 #include "indexer/index.hpp"
 #include "indexer/scales.hpp"
 #include "indexer/search_delimiters.hpp"
+#include "indexer/search_index_values.hpp"
 #include "indexer/search_string_utils.hpp"
 
+#include "platform/mwm_version.hpp"
 #include "platform/preferred_languages.hpp"
 
 #include "coding/compressed_bit_vector.hpp"
@@ -1495,7 +1497,11 @@ public:
 
   void SwitchTo(size_t ind) { m_index = ind; }
 
-  void operator()(Query::TTrieValue const & v)
+  void operator()(FeatureWithRankAndCenter const & value) { operator()(value.m_featureId); }
+
+  void operator()(FeatureIndexValue const & value) { operator()(value.m_featureId); }
+
+  void operator()(uint32_t const featureId)
   {
     if (m_query.IsCancelled())
       throw Query::CancelException();
@@ -1503,7 +1509,7 @@ public:
     // find locality in current results
     for (size_t i = 0; i < 3; ++i)
     {
-      auto it = find_if(m_localities[i].begin(), m_localities[i].end(), EqualID(v.m_featureId));
+      auto it = find_if(m_localities[i].begin(), m_localities[i].end(), EqualID(featureId));
       if (it != m_localities[i].end())
       {
         it->m_matchedTokens.push_back(m_index);
@@ -1513,7 +1519,7 @@ public:
 
     // Load feature.
     FeatureType f;
-    m_vector.GetByIndex(v.m_featureId, f);
+    m_vector.GetByIndex(featureId, f);
 
     using namespace ftypes;
 
@@ -1528,14 +1534,14 @@ public:
     uint8_t rank = 0;
     if (m_table.get())
     {
-      ASSERT_LESS(v.m_featureId, m_table->Size(), ());
-      rank = m_table->Get(v.m_featureId);
+      ASSERT_LESS(featureId, m_table->Size(), ());
+      rank = m_table->Get(featureId);
     }
     else
     {
       LOG(LWARNING, ("Can't get ranks table for locality search."));
     }
-    m_localities[type].emplace_back(type, v.m_featureId, center, rank);
+    m_localities[type].emplace_back(type, featureId, center, rank);
     Locality & loc = m_localities[type].back();
 
     loc.m_radius = GetRadiusByPopulation(GetPopulation(f));
@@ -1600,7 +1606,58 @@ public:
     }
   }
 };
+
 }  // namespace impl
+
+namespace
+{
+template <typename TValue>
+void SearchLocalityImpl(Query * query, MwmValue const * pMwm, Locality & res1, Region & res2,
+                        SearchQueryParams & params, serial::CodingParams & codingParams)
+{
+    ModelReaderPtr searchReader = pMwm->m_cont.GetReader(SEARCH_INDEX_FILE_TAG);
+
+    auto const trieRoot = trie::ReadTrie<SubReaderWrapper<Reader>, ValueList<TValue>>(
+        SubReaderWrapper<Reader>(searchReader.GetPtr()),
+        SingleValueSerializer<TValue>(codingParams));
+
+    auto finder = [&](TrieRootPrefix<TValue> & langRoot, int8_t lang)
+    {
+      impl::DoFindLocality doFind(*query, pMwm, lang);
+      MatchTokensInTrie(params.m_tokens, langRoot, doFind);
+
+      // Last token's prefix is used as a complete token here, to limit number of
+      // results.
+      doFind.Resize(params.m_tokens.size() + 1);
+      doFind.SwitchTo(params.m_tokens.size());
+      MatchTokenInTrie(params.m_prefixTokens, langRoot, doFind);
+      doFind.SortLocalities();
+
+      // Get regions from STATE and COUNTRY localities
+      vector<Region> regions;
+      doFind.GetRegions(regions);
+
+      // Get best CITY locality.
+      Locality loc;
+      doFind.GetBestCity(loc, regions);
+      if (res1 < loc)
+      {
+        LOG(LDEBUG, ("Better location ", loc, " for language ", lang));
+        res1.Swap(loc);
+      }
+
+      // Get best region.
+      if (!regions.empty())
+      {
+        sort(regions.begin(), regions.end());
+        if (res2 < regions.back())
+          res2.Swap(regions.back());
+      }
+    };
+
+    ForEachLangPrefix(params, *trieRoot, finder);
+}
+}  // namespace
 
 void Query::SearchLocality(MwmValue const * pMwm, Locality & res1, Region & res2)
 {
@@ -1609,44 +1666,20 @@ void Query::SearchLocality(MwmValue const * pMwm, Locality & res1, Region & res2
 
   auto codingParams = trie::GetCodingParams(pMwm->GetHeader().GetDefCodingParams());
 
-  ModelReaderPtr searchReader = pMwm->m_cont.GetReader(SEARCH_INDEX_FILE_TAG);
+  MwmTraits mwmTraits(pMwm->GetHeader().GetFormat());
 
-  using TValue = FeatureIndexValue;
-  auto const trieRoot = trie::ReadTrie<SubReaderWrapper<Reader>, ValueList<TValue>>(
-      SubReaderWrapper<Reader>(searchReader.GetPtr()), SingleValueSerializer<TValue>(codingParams));
-
-  ForEachLangPrefix(params, *trieRoot, [&](TrieRootPrefix & langRoot, int8_t lang)
+  if (mwmTraits.GetSearchIndexFormat() ==
+      MwmTraits::SearchIndexFormat::FeaturesWithRankAndCenter)
   {
-    impl::DoFindLocality doFind(*this, pMwm, lang);
-    MatchTokensInTrie(params.m_tokens, langRoot, doFind);
-
-    // Last token's prefix is used as a complete token here, to limit number of results.
-    doFind.Resize(params.m_tokens.size() + 1);
-    doFind.SwitchTo(params.m_tokens.size());
-    MatchTokenInTrie(params.m_prefixTokens, langRoot, doFind);
-    doFind.SortLocalities();
-
-    // Get regions from STATE and COUNTRY localities
-    vector<Region> regions;
-    doFind.GetRegions(regions);
-
-    // Get best CITY locality.
-    Locality loc;
-    doFind.GetBestCity(loc, regions);
-    if (res1 < loc)
-    {
-      LOG(LDEBUG, ("Better location ", loc, " for language ", lang));
-      res1.Swap(loc);
-    }
-
-    // Get best region.
-    if (!regions.empty())
-    {
-      sort(regions.begin(), regions.end());
-      if (res2 < regions.back())
-        res2.Swap(regions.back());
-    }
-  });
+    using TValue = FeatureWithRankAndCenter;
+    SearchLocalityImpl<TValue>(this, pMwm, res1, res2, params, codingParams);
+  }
+  else if (mwmTraits.GetSearchIndexFormat() ==
+           MwmTraits::SearchIndexFormat::CompressedBitVector)
+  {
+    using TValue = FeatureIndexValue;
+    SearchLocalityImpl<TValue>(this, pMwm, res1, res2, params, codingParams);
+  }
 }
 
 void Query::SearchFeatures()

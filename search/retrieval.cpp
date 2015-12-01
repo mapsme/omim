@@ -7,7 +7,10 @@
 #include "indexer/feature_algo.hpp"
 #include "indexer/index.hpp"
 #include "indexer/scales.hpp"
+#include "indexer/search_index_values.hpp"
 #include "indexer/search_trie.hpp"
+
+#include "platform/mwm_version.hpp"
 
 #include "coding/compressed_bit_vector.hpp"
 #include "coding/reader_wrapper.hpp"
@@ -57,28 +60,27 @@ void CoverRect(m2::RectD const & rect, int scale, covering::IntervalsT & result)
   result.insert(result.end(), intervals.begin(), intervals.end());
 }
 
-// Retrieves from the search index corresponding to |handle| all
-// features matching to |params|.
-unique_ptr<coding::CompressedBitVector> RetrieveAddressFeatures(MwmSet::MwmHandle const & handle,
-                                                                my::Cancellable const & cancellable,
-                                                                SearchQueryParams const & params)
+namespace
 {
-  using TValue = FeatureIndexValue;
-
+template <typename TValue>
+unique_ptr<coding::CompressedBitVector> RetrieveAddressFeaturesImpl(
+    MwmSet::MwmHandle const & handle, my::Cancellable const & cancellable,
+    SearchQueryParams const & params)
+{
   auto * value = handle.GetValue<MwmValue>();
-  ASSERT(value, ());
   serial::CodingParams codingParams(trie::GetCodingParams(value->GetHeader().GetDefCodingParams()));
   ModelReaderPtr searchReader = value->m_cont.GetReader(SEARCH_INDEX_FILE_TAG);
-  auto const trieRoot = trie::ReadTrie<SubReaderWrapper<Reader>, ValueList<TValue>>(
-      SubReaderWrapper<Reader>(searchReader.GetPtr()), SingleValueSerializer<TValue>(codingParams));
 
   auto emptyFilter = [](uint32_t /* featureId */)
   {
     return true;
   };
 
-  // TODO (@y, @m): remove this code as soon as search index will have
-  // native support for bit vectors.
+  auto const trieRoot = trie::ReadTrie<SubReaderWrapper<Reader>, ValueList<TValue>>(
+      SubReaderWrapper<Reader>(searchReader.GetPtr()), SingleValueSerializer<TValue>(codingParams));
+
+  // TODO (@y, @m): This code may be optimized in the case where
+  // bit vectors are sorted in the search index.
   vector<uint64_t> features;
   auto collector = [&](TValue const & value)
   {
@@ -89,6 +91,33 @@ unique_ptr<coding::CompressedBitVector> RetrieveAddressFeatures(MwmSet::MwmHandl
 
   MatchFeaturesInTrie(params, *trieRoot, emptyFilter, collector);
   return SortFeaturesAndBuildCBV(move(features));
+}
+}  // namespace
+
+// Retrieves from the search index corresponding to |handle| all
+// features matching to |params|.
+unique_ptr<coding::CompressedBitVector> RetrieveAddressFeatures(MwmSet::MwmHandle const & handle,
+                                                                my::Cancellable const & cancellable,
+                                                                SearchQueryParams const & params)
+{
+  auto * value = handle.GetValue<MwmValue>();
+  ASSERT(value, ());
+
+  MwmTraits mwmTraits(value->GetMwmVersion().format);
+
+  if (mwmTraits.GetSearchIndexFormat() ==
+      MwmTraits::SearchIndexFormat::FeaturesWithRankAndCenter)
+  {
+    using TValue = FeatureWithRankAndCenter;
+    return RetrieveAddressFeaturesImpl<TValue>(handle, cancellable, params);
+  }
+  else if (mwmTraits.GetSearchIndexFormat() ==
+           MwmTraits::SearchIndexFormat::CompressedBitVector)
+  {
+    using TValue = FeatureIndexValue;
+    return RetrieveAddressFeaturesImpl<TValue>(handle, cancellable, params);
+  }
+  return unique_ptr<coding::CompressedBitVector>();
 }
 
 // Retrieves from the geometry index corresponding to handle all
