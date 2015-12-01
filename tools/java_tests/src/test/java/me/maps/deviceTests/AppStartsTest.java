@@ -90,7 +90,7 @@ public class AppStartsTest {
 	private static void uninstallAllSiblings() throws Exception {
 		List<String> siblings = Adb.packagesGrep(APPNAME);
 		for (String app : siblings) {
-			Adb.adbUninstall(app);
+			Adb.uninstall(app);
 		}
 	}
 
