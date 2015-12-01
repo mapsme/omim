@@ -44,10 +44,9 @@ struct TextStaticVertex : BaseVertex
 {
 public:
   TextStaticVertex();
-  TextStaticVertex(TPosition const & position, TTexCoord const & colorTexCoord,
+  TextStaticVertex(TTexCoord const & colorTexCoord,
                    TTexCoord const & outlineTexCoord, TTexCoord const & maskTexCoord);
 
-  TPosition m_position;
   TTexCoord m_colorTexCoord;
   TTexCoord m_outlineTexCoord;
   TTexCoord m_maskTexCoord;
@@ -60,8 +59,9 @@ typedef buffer_vector<TextStaticVertex, 128> TTextStaticVertexBuffer;
 struct TextDynamicVertex : BaseVertex
 {
   TextDynamicVertex();
-  TextDynamicVertex(TNormal const & normal);
+  TextDynamicVertex(TPosition const & position, TNormal const & normal);
 
+  TPosition m_position;
   TNormal m_normal;
 
   static dp::BindingInfo const & GetBindingInfo();

@@ -1,4 +1,5 @@
 #include "drape_frontend/text_layout.hpp"
+#include "drape_frontend/visual_params.hpp"
 
 #include "drape/fribidi.hpp"
 #include "drape/glsl_func.hpp"
@@ -20,12 +21,10 @@ float const VALID_SPLINE_TURN = 0.96f;
 class TextGeometryGenerator
 {
 public:
-  TextGeometryGenerator(glsl::vec3 const & pivot,
-                        dp::TextureManager::ColorRegion const & color,
+  TextGeometryGenerator(dp::TextureManager::ColorRegion const & color,
                         dp::TextureManager::ColorRegion const & outline,
                         gpu::TTextStaticVertexBuffer & buffer)
-    : m_pivot(pivot)
-    , m_colorCoord(glsl::ToVec2(color.GetTexRect().Center()))
+    : m_colorCoord(glsl::ToVec2(color.GetTexRect().Center()))
     , m_outlineCoord(glsl::ToVec2(outline.GetTexRect().Center()))
     , m_buffer(buffer)
   {
@@ -34,14 +33,13 @@ public:
   void operator() (dp::TextureManager::GlyphRegion const & glyph)
   {
     m2::RectF const & mask = glyph.GetTexRect();
-    m_buffer.push_back(gpu::TextStaticVertex(m_pivot, m_colorCoord, m_outlineCoord, glsl::ToVec2(mask.LeftTop())));
-    m_buffer.push_back(gpu::TextStaticVertex(m_pivot, m_colorCoord, m_outlineCoord, glsl::ToVec2(mask.LeftBottom())));
-    m_buffer.push_back(gpu::TextStaticVertex(m_pivot, m_colorCoord, m_outlineCoord, glsl::ToVec2(mask.RightTop())));
-    m_buffer.push_back(gpu::TextStaticVertex(m_pivot, m_colorCoord, m_outlineCoord, glsl::ToVec2(mask.RightBottom())));
+    m_buffer.push_back(gpu::TextStaticVertex(m_colorCoord, m_outlineCoord, glsl::ToVec2(mask.LeftTop())));
+    m_buffer.push_back(gpu::TextStaticVertex(m_colorCoord, m_outlineCoord, glsl::ToVec2(mask.LeftBottom())));
+    m_buffer.push_back(gpu::TextStaticVertex(m_colorCoord, m_outlineCoord, glsl::ToVec2(mask.RightTop())));
+    m_buffer.push_back(gpu::TextStaticVertex(m_colorCoord, m_outlineCoord, glsl::ToVec2(mask.RightBottom())));
   }
 
 protected:
-  glsl::vec3 const & m_pivot;
   glsl::vec2 m_colorCoord;
   glsl::vec2 m_outlineCoord;
   gpu::TTextStaticVertexBuffer & m_buffer;
@@ -57,7 +55,8 @@ public:
                                 dp::TextureManager::ColorRegion const & outline,
                                 gpu::TTextStaticVertexBuffer & staticBuffer,
                                 gpu::TTextDynamicVertexBuffer & dynBuffer)
-    : TBase(pivot, color, outline, staticBuffer)
+    : TBase(color, outline, staticBuffer)
+    , m_pivot(pivot)
     , m_penPosition(pixelOffset)
     , m_buffer(dynBuffer)
     , m_textRatio(textRatio)
@@ -82,16 +81,17 @@ public:
       m_penPosition += glsl::vec2(-xOffset, 0.0f);
     }
 
-    m_buffer.push_back(gpu::TextDynamicVertex(m_penPosition + glsl::vec2(xOffset, bottomVector)));
-    m_buffer.push_back(gpu::TextDynamicVertex(m_penPosition + glsl::vec2(xOffset, upVector)));
-    m_buffer.push_back(gpu::TextDynamicVertex(m_penPosition + glsl::vec2(pixelSize.x + xOffset, bottomVector)));
-    m_buffer.push_back(gpu::TextDynamicVertex(m_penPosition + glsl::vec2(pixelSize.x + xOffset, upVector)));
+    m_buffer.push_back(gpu::TextDynamicVertex(m_pivot, m_penPosition + glsl::vec2(xOffset, bottomVector)));
+    m_buffer.push_back(gpu::TextDynamicVertex(m_pivot, m_penPosition + glsl::vec2(xOffset, upVector)));
+    m_buffer.push_back(gpu::TextDynamicVertex(m_pivot, m_penPosition + glsl::vec2(pixelSize.x + xOffset, bottomVector)));
+    m_buffer.push_back(gpu::TextDynamicVertex(m_pivot, m_penPosition + glsl::vec2(pixelSize.x + xOffset, upVector)));
     m_penPosition += glsl::vec2(glyph.GetAdvanceX() * m_textRatio, glyph.GetAdvanceY() * m_textRatio);
 
     TBase::operator()(glyph);
   }
 
 private:
+  glsl::vec3 const & m_pivot;
   glsl::vec2 m_penPosition;
   gpu::TTextDynamicVertexBuffer & m_buffer;
   float m_textRatio = 0.0f;
@@ -346,46 +346,45 @@ PathTextLayout::PathTextLayout(strings::UniString const & text, float fontSize,
   Init(fribidi::log2vis(text), fontSize, textures);
 }
 
-void PathTextLayout::CacheStaticGeometry(glm::vec3 const & pivot,
-                                         dp::TextureManager::ColorRegion const & colorRegion,
+void PathTextLayout::CacheStaticGeometry(dp::TextureManager::ColorRegion const & colorRegion,
                                          dp::TextureManager::ColorRegion const & outlineRegion,
                                          gpu::TTextStaticVertexBuffer & staticBuffer) const
 {
-  TextGeometryGenerator gen(pivot, colorRegion, outlineRegion, staticBuffer);
+  TextGeometryGenerator gen(colorRegion, outlineRegion, staticBuffer);
   for_each(m_metrics.begin(), m_metrics.end(), gen);
 }
 
-bool PathTextLayout::CacheDynamicGeometry(m2::Spline::iterator const & iter, ScreenBase const & screen,
+bool PathTextLayout::CacheDynamicGeometry(m2::Spline::iterator const & iter, float depth,
+                                          m2::PointD const & globalPivot,
                                           gpu::TTextDynamicVertexBuffer & buffer) const
 {
-  float const scalePtoG = screen.GetScale();
-  float const glbHalfLength = 0.5 * GetPixelLength() * scalePtoG;
+  float const halfLength = 0.5 * GetPixelLength();
 
   m2::Spline::iterator beginIter = iter;
-  beginIter.Advance(-glbHalfLength);
+  beginIter.Advance(-halfLength);
   m2::Spline::iterator endIter = iter;
-  endIter.Advance(glbHalfLength);
+  endIter.Advance(halfLength);
   if (beginIter.BeginAgain() || endIter.BeginAgain())
     return false;
 
   float const halfFontSize = 0.5 * GetPixelHeight();
   float advanceSign = 1.0f;
   m2::Spline::iterator penIter = beginIter;
-  if (screen.GtoP(beginIter.m_pos).x > screen.GtoP(endIter.m_pos).x)
+  if (beginIter.m_pos.x > endIter.m_pos.x)
   {
     advanceSign = -advanceSign;
     penIter = endIter;
   }
 
-  glsl::vec2 pxPivot = glsl::ToVec2(screen.GtoP(iter.m_pos));
+  glsl::vec2 pxPivot = glsl::ToVec2(iter.m_pos);
   buffer.resize(4 * m_metrics.size());
   for (size_t i = 0; i < m_metrics.size(); ++i)
   {
     GlyphRegion const & g = m_metrics[i];
     m2::PointF pxSize = m2::PointF(g.GetPixelSize()) * m_textSizeRatio;
 
-    m2::PointD const pxBase = screen.GtoP(penIter.m_pos);
-    m2::PointD const pxShiftBase = screen.GtoP(penIter.m_pos + penIter.m_dir);
+    m2::PointD const pxBase = penIter.m_pos;
+    m2::PointD const pxShiftBase = penIter.m_pos + penIter.m_dir;
 
     glsl::vec2 tangent = advanceSign * glsl::normalize(glsl::ToVec2(pxShiftBase - pxBase));
     glsl::vec2 normal = glsl::normalize(glsl::vec2(-tangent.y, tangent.x));
@@ -399,21 +398,78 @@ bool PathTextLayout::CacheDynamicGeometry(m2::Spline::iterator const & iter, Scr
 
     size_t baseIndex = 4 * i;
 
-    buffer[baseIndex + 0] = gpu::TextDynamicVertex(formingVector + normal * bottomVector + tangent * xOffset);
-    buffer[baseIndex + 1] = gpu::TextDynamicVertex(formingVector + normal * upVector + tangent * xOffset);
-    buffer[baseIndex + 2] = gpu::TextDynamicVertex(formingVector + normal * bottomVector + tangent * (pxSize.x + xOffset));
-    buffer[baseIndex + 3] = gpu::TextDynamicVertex(formingVector + normal * upVector + tangent * (pxSize.x + xOffset));
-
+    glsl::vec3 pivot(glsl::ToVec2(globalPivot), depth);
+    buffer[baseIndex + 0] = gpu::TextDynamicVertex(pivot, formingVector + normal * bottomVector + tangent * xOffset);
+    buffer[baseIndex + 1] = gpu::TextDynamicVertex(pivot, formingVector + normal * upVector + tangent * xOffset);
+    buffer[baseIndex + 2] = gpu::TextDynamicVertex(pivot, formingVector + normal * bottomVector + tangent * (pxSize.x + xOffset));
+    buffer[baseIndex + 3] = gpu::TextDynamicVertex(pivot, formingVector + normal * upVector + tangent * (pxSize.x + xOffset));
 
     float const xAdvance = g.GetAdvanceX() * m_textSizeRatio;
     glsl::vec2 currentTangent = glsl::ToVec2(penIter.m_dir);
-    penIter.Advance(advanceSign * xAdvance * scalePtoG);
+    penIter.Advance(advanceSign * xAdvance);
     float const dotProduct = glsl::dot(currentTangent, glsl::ToVec2(penIter.m_dir));
     if (dotProduct < VALID_SPLINE_TURN)
       return false;
   }
 
   return true;
+}
+
+// static
+void PathTextLayout::CalculatePositions(vector<float> & offsets, float splineLength,
+                                       float splineScaleToPixel, float textPixelLength)
+{
+  //we leave a little space on either side of the text that would
+  //remove the comparison for equality of spline portions
+  float const TextBorder = 4.0f;
+  float const textLength = TextBorder + textPixelLength;
+  float const textHalfLength = textLength / 2.0f;
+
+  // on next readable scale m_scaleGtoP will be twice
+  if (textLength > splineLength * 2 * splineScaleToPixel)
+    return;
+
+  float const pathLength = splineScaleToPixel * splineLength;
+
+  /// copied from old code
+  /// @todo Choose best constant for minimal space.
+  float const etalonEmpty = max(200 * df::VisualParams::Instance().GetVisualScale(), (double)textLength);
+  float const minPeriodSize = etalonEmpty + textLength;
+  float const twoTextAndEmpty = minPeriodSize + textLength;
+
+  float const splineScaleFromPixel = 1.0f / splineScaleToPixel;
+
+  if (pathLength < twoTextAndEmpty)
+  {
+    // if we can't place 2 text and empty part on path
+    // we place only one text on center of path
+    offsets.push_back(splineLength / 2.0f);
+
+  }
+  else if (pathLength < twoTextAndEmpty + minPeriodSize)
+  {
+    // if we can't place 3 text and 2 empty path
+    // we place 2 text with empty space beetwen
+    // and some offset from path end
+    float const endOffset = (pathLength - (2 * textLength + etalonEmpty)) / 2;
+
+    // division on m_scaleGtoP give as global coord frame (Mercator)
+    offsets.push_back((endOffset + textHalfLength) * splineScaleFromPixel);
+    offsets.push_back((pathLength - (textHalfLength + endOffset)) * splineScaleFromPixel);
+  }
+  else
+  {
+    // here we place 2 text on the ends of path
+    // then we place as much as possible text on center path uniformly
+    float const emptySpace = pathLength - 2 * textLength;
+    uint32_t const textCount = static_cast<uint32_t>(ceil(emptySpace / minPeriodSize));
+    float const offset = (emptySpace - textCount * textLength) / (textCount + 1);
+    offsets.reserve(textCount + 2);
+    offsets.push_back(textHalfLength * splineScaleFromPixel);
+    offsets.push_back((pathLength - textHalfLength) * splineScaleFromPixel);
+    for (size_t i = 0; i < textCount; ++i)
+      offsets.push_back((textHalfLength + (textLength + offset) * (i + 1)) * splineScaleFromPixel);
+  }
 }
 
 ///////////////////////////////////////////////////////////////

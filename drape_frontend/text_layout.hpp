@@ -82,13 +82,16 @@ public:
   PathTextLayout(strings::UniString const & text,
                  float fontSize, ref_ptr<dp::TextureManager> textures);
 
-  void CacheStaticGeometry(glsl::vec3 const & pivot,
-                           dp::TextureManager::ColorRegion const & colorRegion,
+  static void CalculatePositions(vector<float> & offsets, float splineLength,
+                                 float splineScaleToPixel, float textPixelLength);
+
+  void CacheStaticGeometry(dp::TextureManager::ColorRegion const & colorRegion,
                            dp::TextureManager::ColorRegion const & outlineRegion,
                            gpu::TTextStaticVertexBuffer & staticBuffer) const;
 
   bool CacheDynamicGeometry(m2::Spline::iterator const & iter,
-                            ScreenBase const & screen,
+                            float depth,
+                            m2::PointD const & globalPivot,
                             gpu::TTextDynamicVertexBuffer & buffer) const;
 };
 
