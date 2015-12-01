@@ -14862,3 +14862,10 @@
     pl = Dalej
     nl = Volgende
     pt = Próxima
+
+  [track_notification_text]
+    tags = android
+    comment = "Recording GPS track" notification text
+    en = Recording GPS track
+    ru = Запись GPS маршрута
+

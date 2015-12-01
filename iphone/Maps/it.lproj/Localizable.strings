@@ -1369,3 +1369,6 @@
 "whats_new_happy_day" = "Un giorno davvero felice! Pianifica in anticipo i tuoi viaggi con MAPS.ME.";
 
 "whats_new_next" = "Avanti";
+
+/* "Recording GPS track" notification text */
+"track_notification_text" = "Recording GPS track";

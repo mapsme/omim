@@ -1369,3 +1369,6 @@
 "whats_new_happy_day" = "Micsoda boldog nap ez! Tervezd meg az utaidat előre a MAPS.ME-vel!";
 
 "whats_new_next" = "Következő";
+
+/* "Recording GPS track" notification text */
+"track_notification_text" = "Recording GPS track";

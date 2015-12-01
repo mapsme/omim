@@ -1369,3 +1369,6 @@
 "whats_new_happy_day" = "実にすがすがしい日ですね！MAPS.MEで旅程を立てましょう。";
 
 "whats_new_next" = "次へ";
+
+/* "Recording GPS track" notification text */
+"track_notification_text" = "Recording GPS track";
