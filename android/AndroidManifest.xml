@@ -308,6 +308,7 @@
       </intent-filter>
     </receiver>
 
+    <service android:name=".background.TrackRecordService"
+             android:exported="false"/>
   </application>
-
 </manifest>
