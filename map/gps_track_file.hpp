@@ -51,6 +51,9 @@ public:
   /// If fn returns false then enumeration is stopped.
   void ForEach(function<bool(double timestamp, m2::PointD const & pt, double speed)> const & fn);
 
+  /// Drops points earlier than specified date
+  void DropEarlierThan(double timestamp);
+
 private:
   struct Item
   {

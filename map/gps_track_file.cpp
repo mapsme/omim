@@ -6,6 +6,9 @@
 namespace
 {
 
+size_t constexpr kLinearSearchMinDistance = 10;
+size_t constexpr kMinItemCount = 2;
+
 inline fstream CreateBinaryFile(string const & filePath)
 {
   return fstream(filePath, ios::in|ios::out|ios::binary|ios::trunc);
@@ -20,7 +23,7 @@ inline fstream OpenBinaryFile(string const & filePath)
 
 GpsTrackFile::GpsTrackFile(string const & filePath, size_t maxItemCount)
   : m_filePath(filePath)
-  , m_maxItemCount(max(maxItemCount + 1, size_t(2)))
+  , m_maxItemCount(max(maxItemCount, kMinItemCount) + 1)
 {
   m_header.m_maxItemCount = m_maxItemCount;
 
@@ -92,6 +95,7 @@ bool GpsTrackFile::Append(Item const & item)
   size_t const newLast = (m_header.m_last + 1) % m_maxItemCount;
   size_t const newFirst = (newLast == m_header.m_first) ? ((m_header.m_first + 1) % m_maxItemCount) : m_header.m_first;
 
+  // TODO: notify about added and removed elements
   // if newFirst != m_header.m_first then element with index m_header.m_first is popped
   // element with index m_header.m_last is added
 
@@ -115,11 +119,7 @@ void GpsTrackFile::ForEach(function<bool(double timestamp, m2::PointD const & pt
   for (size_t i = m_header.m_first; i != m_header.m_last; i = (i + 1) % m_maxItemCount)
   {
     Item item;
-    if (!ReadItem(i, item))
-    {
-      CHECK(false, ("Inconsistent file"));
-      return;
-    }
+    CHECK(ReadItem(i, item), ("Inconsistent file"));
 
     CHECK(prevTimestamp < item.m_timestamp, ("Inconsistent file"));
 
@@ -131,9 +131,79 @@ void GpsTrackFile::ForEach(function<bool(double timestamp, m2::PointD const & pt
   }
 }
 
+void GpsTrackFile::DropEarlierThan(double timestamp)
+{
+  ASSERT(m_stream.is_open(), ("File is not open"));
+
+  if (IsEmpty())
+    return;
+
+  if (m_header.m_timestamp <= timestamp)
+  {
+    // TODO: notify about all elements were removed
+
+    Clear();
+    return;
+  }
+
+  size_t const n = GetCount();
+
+  // Try linear search for short distance
+  // In common case elements will be removed from the tail by small pieces
+  size_t const linearSearchCount = min(kLinearSearchMinDistance, n);
+  for (size_t i = m_header.m_first, j = 0; i != m_header.m_last; i = (i + 1) % m_maxItemCount, ++j)
+  {
+    if (j >= linearSearchCount)
+      break;
+
+    Item item;
+    CHECK(ReadItem(i, item), ("Inconsistent file"));
+
+    if (item.m_timestamp >= timestamp)
+    {
+      if (i != m_header.m_first)
+      {
+        // TODO: Items from range [m_header.m_first to i) are removed, notify about this
+
+        m_header.m_first = i;
+        WriteHeader(m_header);
+      }
+
+      return;
+    }
+  }
+
+  // By nature items are sorted by timestamp.
+  // Use lower_bound algorithm to find first element later than timestamp.
+  size_t len = n, first = m_header.m_first;
+  while (len > 0)
+  {
+    size_t const step = len / 2;
+    size_t const index = (first + step) % m_maxItemCount;
+    Item item;
+    CHECK(ReadItem(index, item), ("Inconsistent file"));
+    if (item.m_timestamp < timestamp)
+    {
+      first = (index + 1) % m_maxItemCount;
+      len -= step + 1;
+    }
+    else
+      len = step;
+  }
+  if (first != m_header.m_first)
+  {
+    // TODO: Items in range [m_header.m_first ... first) are removed, notify about this
+
+    m_header.m_first = first;
+    WriteHeader(m_header);
+  }
+}
+
 void GpsTrackFile::Clear()
 {
   ASSERT(m_stream.is_open(), ("File is not open"));
+
+  // TODO: notify about all elements were removed
 
   Header emptyHeader;
   emptyHeader.m_maxItemCount = m_maxItemCount;

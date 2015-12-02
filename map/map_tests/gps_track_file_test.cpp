@@ -27,7 +27,7 @@ UNIT_TEST(GpsTrackFile_SimpleWriteRead)
       file.Append(timestamp + i, m2::PointD(i+1000,i+2000), i+3000);
     }
 
-    TEST_EQUAL(fileMaxItemCount, file.GetCount(), ());
+    TEST_EQUAL(fileMaxItemCount/2, file.GetCount(), ());
 
     file.Close();
   }
@@ -36,7 +36,7 @@ UNIT_TEST(GpsTrackFile_SimpleWriteRead)
   {
     GpsTrackFile file(filePath, fileMaxItemCount);
 
-    TEST_EQUAL(fileMaxItemCount, file.GetCount(), ());
+    TEST_EQUAL(fileMaxItemCount/2, file.GetCount(), ());
 
     size_t i = 0;
     file.ForEach([&i,timestamp](double t, m2::PointD const & pt, double speed)->bool
@@ -102,4 +102,36 @@ UNIT_TEST(GpsTrackFile_WriteReadWithPopping)
 
     TEST_EQUAL(i, fileMaxItemCount, ());
   }
+}
+
+UNIT_TEST(GpsTrackFile_DropInTail)
+{
+  time_t const timestamp = system_clock::to_time_t(system_clock::now());
+  string const filePath = my::JoinFoldersToPath(GetPlatform().WritableDir(), "gpstrack.bin");
+
+  GpsTrackFile file(filePath, 100);
+
+  file.Clear();
+
+  for (size_t i = 0; i < 50; ++i)
+    file.Append(timestamp + i, m2::PointD(i+1000,i+2000), i+3000);
+
+  TEST_EQUAL(50, file.GetCount(), ());
+
+  file.DropEarlierThan(timestamp + 4.5); // drop points 0,1,2,3,4
+
+  TEST_EQUAL(45, file.GetCount(), ());
+
+  size_t i = 5; // new first
+  file.ForEach([&i,timestamp](double t, m2::PointD const & pt, double speed)->bool
+  {
+    TEST_EQUAL(timestamp + i, t, ());
+    TEST_EQUAL(pt.x, i + 1000, ());
+    TEST_EQUAL(pt.y, i + 2000, ());
+    TEST_EQUAL(speed, i + 3000, ());
+    ++i;
+    return true;
+  });
+
+  file.Close();
 }
