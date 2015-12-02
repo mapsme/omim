@@ -6,7 +6,6 @@
 #include "drape_frontend/user_mark_shapes.hpp"
 
 #include "drape/debug_rect_renderer.hpp"
-#include "drape/shader_def.hpp"
 
 #include "drape/utils/glyph_usage_tracker.hpp"
 #include "drape/utils/gpu_mem_tracker.hpp"
@@ -43,7 +42,6 @@ FrontendRenderer::FrontendRenderer(Params const & params)
   , m_routeRenderer(new RouteRenderer())
   , m_overlayTree(new dp::OverlayTree())
   , m_enable3dInNavigation(false)
-  , m_isBillboardRenderPass(false)
   , m_viewport(params.m_viewport)
   , m_userEventStream(params.m_isCountryLoadedFn)
   , m_modelViewChangedFn(params.m_modelViewChangedFn)
@@ -670,24 +668,21 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
   GLFunctions::glClear();
 
   dp::GLState::DepthLayer prevLayer = dp::GLState::GeometryLayer;
-  size_t overlayRenderGroup = 0;
-  for (size_t currentRenderGroup = 0; currentRenderGroup < m_renderGroups.size(); ++currentRenderGroup)
+  size_t currentRenderGroup = 0;
+  for (; currentRenderGroup < m_renderGroups.size(); ++currentRenderGroup)
   {
     drape_ptr<RenderGroup> const & group = m_renderGroups[currentRenderGroup];
 
     dp::GLState const & state = group->GetState();
     dp::GLState::DepthLayer layer = state.GetDepthLayer();
     if (prevLayer != layer && layer == dp::GLState::OverlayLayer)
-    {
-      overlayRenderGroup = currentRenderGroup;
       break;
-    }
 
     prevLayer = layer;
     RenderSingleGroup(modelView, make_ref(group));
   }
 
-  GLFunctions::glClearDepth();
+  GLFunctions::glDisable(gl_const::GLDepthTest);
   if (m_selectionShape != nullptr)
   {
     SelectionShape::ESelectedObject selectedObject = m_selectionShape->GetSelectedObject();
@@ -704,28 +699,26 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
   m_myPositionController->Render(MyPositionController::RenderAccuracy,
                                  modelView, make_ref(m_gpuProgramManager), m_generalUniforms);
 
-  for (size_t currentRenderGroup = overlayRenderGroup; currentRenderGroup < m_renderGroups.size(); ++currentRenderGroup)
+  GLFunctions::glEnable(gl_const::GLDepthTest);
+  if (isPerspective)
+    GLFunctions::glClearDepth();
+  for (; currentRenderGroup < m_renderGroups.size(); ++currentRenderGroup)
   {
     drape_ptr<RenderGroup> const & group = m_renderGroups[currentRenderGroup];
     RenderSingleGroup(modelView, make_ref(group));
   }
 
-  GLFunctions::glClearDepth();
+  GLFunctions::glDisable(gl_const::GLDepthTest);
   if (m_selectionShape != nullptr && m_selectionShape->GetSelectedObject() == SelectionShape::OBJECT_USER_MARK)
     m_selectionShape->Render(modelView, make_ref(m_gpuProgramManager), m_generalUniforms);
 
-  GLFunctions::glDisable(gl_const::GLDepthTest);
-
   m_routeRenderer->RenderRoute(modelView, make_ref(m_gpuProgramManager), m_generalUniforms);
 
-  if (!isPerspective)
+  for (drape_ptr<UserMarkRenderGroup> const & group : m_userMarkRenderGroups)
   {
-    for (drape_ptr<UserMarkRenderGroup> const & group : m_userMarkRenderGroups)
-    {
-      ASSERT(group.get() != nullptr, ());
-      if (m_userMarkVisibility.find(group->GetTileKey()) != m_userMarkVisibility.end())
-        RenderSingleGroup(modelView, make_ref(group));
-    }
+    ASSERT(group.get() != nullptr, ());
+    if (m_userMarkVisibility.find(group->GetTileKey()) != m_userMarkVisibility.end())
+      RenderSingleGroup(modelView, make_ref(group));
   }
 
   m_routeRenderer->RenderRouteSigns(modelView, make_ref(m_gpuProgramManager), m_generalUniforms);
@@ -733,37 +726,16 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
   m_myPositionController->Render(MyPositionController::RenderMyPosition,
                                  modelView, make_ref(m_gpuProgramManager), m_generalUniforms);
 
-  if (!isPerspective && m_guiRenderer != nullptr)
-    m_guiRenderer->Render(make_ref(m_gpuProgramManager), modelView);
-
-  if (isPerspective)
+  if (m_guiRenderer != nullptr)
   {
-    m_isBillboardRenderPass = true;
-
-    // TODO: Try to avoid code duplicate in billboard render pass.
-    GLFunctions::glDisable(gl_const::GLDepthTest);
-    for (size_t currentRenderGroup = overlayRenderGroup; currentRenderGroup < m_renderGroups.size(); ++currentRenderGroup)
-    {
-      drape_ptr<RenderGroup> const & group = m_renderGroups[currentRenderGroup];
-      RenderSingleGroup(modelView, make_ref(group));
-    }
-
-    for (drape_ptr<UserMarkRenderGroup> const & group : m_userMarkRenderGroups)
-    {
-      ASSERT(group.get() != nullptr, ());
-      group->UpdateAnimation();
-      if (m_userMarkVisibility.find(group->GetTileKey()) != m_userMarkVisibility.end())
-        RenderSingleGroup(modelView, make_ref(group));
-    }
-
-    if (m_guiRenderer != nullptr)
+    if (isPerspective)
     {
       ScreenBase modelView2d = modelView;
       modelView2d.ResetPerspective();
       m_guiRenderer->Render(make_ref(m_gpuProgramManager), modelView2d);
     }
-
-    m_isBillboardRenderPass = false;
+    else
+      m_guiRenderer->Render(make_ref(m_gpuProgramManager), modelView);
   }
 
   GLFunctions::glEnable(gl_const::GLDepthTest);
@@ -778,19 +750,8 @@ bool FrontendRenderer::IsPerspective() const
   return m_userEventStream.GetCurrentScreen().isPerspective();
 }
 
-bool FrontendRenderer::IsBillboardProgram(int programIndex) const
-{
-  return programIndex == gpu::TEXTURING_BILLBOARD_PROGRAM
-      || programIndex == gpu::TEXT_BILLBOARD_PROGRAM
-      || programIndex == gpu::BOOKMARK_BILLBOARD_PROGRAM;
-}
-
 void FrontendRenderer::RenderSingleGroup(ScreenBase const & modelView, ref_ptr<BaseRenderGroup> group)
 {
-  if (modelView.isPerspective() &&
-      (m_isBillboardRenderPass != IsBillboardProgram(group->GetState().GetProgram3dIndex())))
-    return;
-
   group->UpdateAnimation();
   group->Render(modelView);
 }
