@@ -1,12 +1,54 @@
 #pragma once
 
-#include "std/string.hpp"
+#include "geometry/point2d.hpp"
 
-#include "base/assert.hpp"
+#include "std/algorithm.hpp"
+#include "std/fstream.hpp"
+#include "std/function.hpp"
+#include "std/string.hpp"
 
 class GpsTrackFile
 {
 public:
+  /// @note Opens or constructs file with track data
+  GpsTrackFile(string const & filePath, size_t maxItemCount);
+
+  /// Delete move ctor and operator (will be implemented later)
+  GpsTrackFile(GpsTrackFile &&) = delete;
+  GpsTrackFile & operator=(GpsTrackFile &&) = delete;
+
+  /// Delete copy ctor and operator (unsupported)
+  GpsTrackFile(GpsTrackFile const &) = delete;
+  GpsTrackFile & operator=(GpsTrackFile const &) = delete;
+
+  /// Returns true if file is open, otherwise returns false
+  bool IsOpen() const;
+
+  /// Flushes all changes and closes file
+  void Close();
+
+  /// Appends new point in the file
+  /// @note Timestamp must be not less than for the last added point, otherwise function returns false.
+  /// @note File is circular, when maxItemCount limit is reached, old points are popped from file.
+  bool Append(double timestamp, m2::PointD const & pt, double speed);
+
+  /// Remove all points from the file
+  void Clear();
+
+  /// Flushes all changes in file
+  void Flush();
+
+  /// Returns true if file does not contain points
+  bool IsEmpty() const;
+
+  /// Returns last known timestamp, or zero if there is no points
+  double GetTimestamp() const;
+
+  /// Enums all points in the file
+  /// If fn returns false then enumeration is stopped.
+  void ForEach(function<bool(double timestamp, m2::PointD const & pt, double speed)> const & fn);
+
+private:
   struct Item
   {
     double m_timestamp;
@@ -15,238 +57,32 @@ public:
     double m_speed;
   };
 
-  GpsTrackFile(string const & filePath, uint32_t maxPageCount)
-    : m_filePath(filePath)
-    , m_maxPageCount(max(2, maxPageCount))
+  struct Header
   {
-  }
-
-  void Flush()
-  {
-    FlushPage(m_lastPage);
-    FlushPage(m_firstPage);
-    FlushHeader();
-  }
-
-  void Append(Item const & item)
-  {
-    if (m_lastPage->CanPushBack())
-    {
-      m_lastPage->PushBack(item);
-      return;
-    }
-
-    FlushPage(m_lastPage);
-    FlushHeader();
-
-    uint32_t const nextLastIndex = (m_lastPage->GetIndex() + 1) % m_maxPageCount;
-
-    if (nextLastIndex == m_firstPage->GetIndex())
-    {
-      // Last has reached First, new Last will be old First and new First will be shifted for one
-      // FxxxL
-      // LFxxx
-
-      uint32_t const nextFirstIndex = (nextLastIndex + 1) % m_maxPageCount;
-
-      // load next first page
-      m_firstPage->SetIndex(nextFirstIndex);
-      m_firstPage->Clear();
-      m_firstPage->SetDirty(false);
-      LoadPage(m_firstPage);
-    }
-
-    // alloc new page
-    if (m_lastPage != m_firstPage)
-      m_lastPage->Clear(); // Reuse page
-    else
-      m_lastPage = new Page(); // New page
-    m_lastPage->SetIndex(newLastIndex);
-    m_lastPage->SetDirty(false);
-
-    m_lastPage->PushBack(item);
-  }
-
-  bool PopFront(Item & item)
-  {
-    if (m_firstPage->CanPopFront())
-    {
-      item = m_firstPage->PopFront();
-      return true;
-    }
-    else
-    {
-      if (m_firstPage == m_lastPage)
-      {
-        // no more data
-        return false;
-      }
-    }
-
-    size_t const nextFirstIndex = (1 + m_firstPage->GetIndex()) % m_maxPageCount;
-
-    if (nextFirstIndex == m_lastPage->GetIndex())
-    {
-      // next first page is the last page
-
-      m_firstPage = m_lastPage;
-
-      if (m_firstPage->CanPopFront())
-      {
-        item = m_firstPage->PopFront();
-        return true;
-      }
-
-      // no more data
-      return false;
-    }
-
-    // load next first page
-    m_firstPage->Clear();
-    m_firstPage->SetIndex(nextFirstIndex);
-    m_firstPage->SetDirty(false);
-    LoadPage(m_firstPage);
-
-    if (!m_firstPage->CanPopFront())
-    {
-      // Error in file because next first page shoule be non-empty
-      return false;
-    }
-
-    item = m_firstPage->PopFront();
-    return true;
-  }
-
-private:
-  void LoadPage(Page * page)
-  {
-    uint32_t const index = page->GetIndex();
-    uint32_t const offset = index * kPageSizeBytes + sizeof(Head);
-    // read page->m_first in position 'offset'
-    // read page->m_last in position 'offset + sizeof(uint32_t)'
-    // read page->m_items in position 'offset + 2 * sizeof(uint32_t)'
-    page->SetDirty(false);
-  }
-
-  void FlushPage(Page * page)
-  {
-    if (!page->IsDirty())
-      return;
-    uint32_t const index = page->GetIndex();
-    uint32_t const offset = index * kPageSizeBytes + sizeof(Head);
-    // write page->m_first in position 'offset'
-    // write page->m_last in position 'offset + sizeof(uint32_t)'
-    // write page->m_items in position 'offset + 2 * sizeof(uint32_t)'
-    page->SetDirty(false);
-  }
-
-  void FlushHeader()
-  {
-    uint32_t const newFirstIndex = m_firstPage->GetIndex();
-    uint32_t const newLastIndex = m_lastPage->GetIndex();
-
-    if (m_header.m_firstIndex == newFirstIndex && m_header.m_lastIndex == newLastIndex)
-      return;
-
-    m_header.m_firstIndex = newFirstIndex;
-    m_header.m_lastIndex = newLastIndex;
-
-    // write m_header in position '0'
-  }
-
-  void ReadHeader()
-  {
-    // read m_header in position '0'
-  }
-
-private:
-  static size_t constexpr kPageSizeBytes = 1024;
-  static size_t constexpr kItemsPerPage = kPageSizeBytes / sizeof(Item);
-
-  class Page
-  {
-  public:
-    Page()
-      : m_first(0)
-      , m_last(0)
-      , m_dirty(false)
-      , m_index(0)
-    {}
-    uint32_t GetIndex() const
-    {
-      return m_index;
-    }
-    void SetIndex(uint32_t index)
-    {
-      m_index = index;
-    }
-    bool IsDirty() const
-    {
-      return m_dirty;
-    }
-    void SetDirty(bool dirty)
-    {
-      m_dirty = dirty;
-    }
-    bool CanPushBack() const
-    {
-      return m_last < kItemsPerPage;
-    }
-    bool CanPopFront() const
-    {
-      return m_first < m_last;
-    }
-    bool IsDead() const
-    {
-      return m_first == m_last && m_last == kItemsPerPage;
-    }
-    bool IsEmpty() const
-    {
-      return m_first == m_last;
-    }
-    void PushBack(Item const & item) noexcept
-    {
-      ASSERT(m_last < kItemsPerPage, ());
-      m_items[m_last] = item;
-      ++m_last;
-      m_dirty = true;
-    }
-    Item PopFront() noexcept
-    {
-      ASSERT(m_first < m_last, ());
-      ++m_first;
-      m_dirty = true;
-      return m_items[m_first - 1];
-    }
-    size_t Size() const noexcept
-    {
-      return m_last - m_first;
-    }
-    void Clear()
-    {
-      m_first = 0;
-      m_last = 0;
-      m_dirty = true;
-    }
-
-  private:
-    Item m_items[kItemsPerPage];
+    size_t m_maxItemCount;
+    double m_timestamp;
     size_t m_first;
     size_t m_last;
-    bool m_dirty;
-    uint32_t m_index;
+
+    Header()
+      : m_maxItemCount(0), m_timestamp(0), m_first(0), m_last(0)
+    {}
   };
 
-  struct Head
-  {
-    uint32_t m_firstIndex;
-    uint32_t m_lastIndex;
-  };
+  bool Append(Item const & item);
 
-  Page * m_firstPage;
-  Page * m_lastPage;
-  Head m_header;
+  bool ReadHeader(Header & header);
+  void WriteHeader(Header const & header);
+
+  bool ReadItem(size_t index, Item & item);
+  void WriteItem(size_t index, Item const & item);
+
+  static size_t ItemOffset(size_t index);
 
   string const m_filePath;
-  uint32_t const m_maxPageCount;
+  size_t const m_maxItemCount;
+
+  fstream m_stream;
+
+  Header m_header;
 };
