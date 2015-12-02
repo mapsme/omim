@@ -204,7 +204,6 @@ private:
   FeatureID GetVisiblePOI(m2::PointD const & pixelPoint) const;
   FeatureID GetVisiblePOI(m2::RectD const & pixelRect) const;
 
-  bool IsBillboardProgram(int programIndex) const;
   bool IsPerspective() const;
 
 private:
@@ -225,7 +224,6 @@ private:
   dp::UniformValuesStorage m_generalUniforms;
 
   bool m_enable3dInNavigation;
-  bool m_isBillboardRenderPass;
 
   Viewport m_viewport;
   UserEventStream m_userEventStream;
