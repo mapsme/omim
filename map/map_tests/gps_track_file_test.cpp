@@ -20,10 +20,14 @@ UNIT_TEST(GpsTrackFile_SimpleWriteRead)
 
     file.Clear();
 
+    TEST_EQUAL(0, file.GetCount(), ());
+
     for (size_t i = 0; i < fileMaxItemCount/2; ++i)
     {
       file.Append(timestamp + i, m2::PointD(i+1000,i+2000), i+3000);
     }
+
+    TEST_EQUAL(fileMaxItemCount, file.GetCount(), ());
 
     file.Close();
   }
@@ -31,6 +35,8 @@ UNIT_TEST(GpsTrackFile_SimpleWriteRead)
   // Read GPS tracks.
   {
     GpsTrackFile file(filePath, fileMaxItemCount);
+
+    TEST_EQUAL(fileMaxItemCount, file.GetCount(), ());
 
     size_t i = 0;
     file.ForEach([&i,timestamp](double t, m2::PointD const & pt, double speed)->bool
@@ -62,10 +68,14 @@ UNIT_TEST(GpsTrackFile_WriteReadWithPopping)
 
     file.Clear();
 
+    TEST_EQUAL(0, file.GetCount(), ());
+
     for (size_t i = 0; i < 2 * fileMaxItemCount; ++i)
     {
       file.Append(timestamp + i, m2::PointD(i+1000,i+2000), i+3000);
     }
+
+    TEST_EQUAL(fileMaxItemCount, file.GetCount(), ());
 
     file.Close();
   }
@@ -74,6 +84,8 @@ UNIT_TEST(GpsTrackFile_WriteReadWithPopping)
   // Only last fileMaxItemCount must be in cyclic buffer
   {
     GpsTrackFile file(filePath, fileMaxItemCount);
+
+    TEST_EQUAL(fileMaxItemCount, file.GetCount(), ());
 
     size_t i = 0;
     file.ForEach([&i,timestamp](double t, m2::PointD const & pt, double speed)->bool

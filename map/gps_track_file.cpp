@@ -92,6 +92,9 @@ bool GpsTrackFile::Append(Item const & item)
   size_t const newLast = (m_header.m_last + 1) % m_maxItemCount;
   size_t const newFirst = (newLast == m_header.m_first) ? ((m_header.m_first + 1) % m_maxItemCount) : m_header.m_first;
 
+  // if newFirst != m_header.m_first then element with index m_header.m_first is popped
+  // element with index m_header.m_last is added
+
   WriteItem(m_header.m_last, item);
 
   m_header.m_first = newFirst;
@@ -148,6 +151,12 @@ bool GpsTrackFile::IsEmpty() const
 double GpsTrackFile::GetTimestamp() const
 {
   return m_header.m_timestamp;
+}
+
+size_t GpsTrackFile::GetCount() const
+{
+  return (m_header.m_first <= m_header.m_last) ? (m_header.m_last - m_header.m_first) :
+                                                 (m_header.m_last + m_maxItemCount - m_header.m_first);
 }
 
 bool GpsTrackFile::ReadHeader(Header & header)

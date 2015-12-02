@@ -44,6 +44,9 @@ public:
   /// Returns last known timestamp, or zero if there is no points
   double GetTimestamp() const;
 
+  /// Returns number of elements in the file
+  size_t GetCount() const;
+
   /// Enums all points in the file
   /// If fn returns false then enumeration is stopped.
   void ForEach(function<bool(double timestamp, m2::PointD const & pt, double speed)> const & fn);
