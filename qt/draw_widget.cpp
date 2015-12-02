@@ -18,12 +18,20 @@
 #include <QtGui/QOpenGLFunctions>
 #include <QtGui/QVector2D>
 
-#include <QtWidgets/QMenu>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDesktopWidget>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QVBoxLayout>
 
 #include <QtCore/QLocale>
 #include <QtCore/QDateTime>
+#include <QtCore/QSignalMapper>
 #include <QtCore/QThread>
 #include <QtCore/QTimer>
 
@@ -79,8 +87,11 @@ DrawWidget::DrawWidget(QWidget * parent)
     m_enableScaleUpdate(true),
     m_emulatingLocation(false)
 {
-  m_framework->SetUserMarkActivationListener([](unique_ptr<UserMarkCopy> mark)
+  m_framework->SetUserMarkActivationListener([this](unique_ptr<UserMarkCopy> mark)
   {
+    auto const * m = mark->GetUserMark();
+    if (m->GetMarkType() == UserMark::Type::POI)
+      TryToShowEditor(m->GetPivot());
   });
 
   m_framework->SetRouteBuildingListener([](routing::IRouter::ResultCode,
@@ -323,10 +334,7 @@ void DrawWidget::mousePressEvent(QMouseEvent * e)
     else if (IsLocationEmulation(e))
       SubmitFakeLocationPoint(pt);
     else
-    {
       m_framework->TouchEvent(GetTouchEvent(e, df::TouchEvent::TOUCH_DOWN));
-      setCursor(Qt::CrossCursor);
-    }
   }
   else if (IsRightButton(e))
     ShowInfoPopup(e, pt);
@@ -459,6 +467,108 @@ void DrawWidget::SubmitRoutingPoint(m2::PointD const & pt)
     m_framework->CloseRouting();
   else
     m_framework->BuildRoute(m_framework->PtoG(pt), 0 /* timeoutSec */);
+}
+
+void DrawWidget::TryToShowEditor(m2::PointD const & pt)
+{
+  using feature::Metadata;
+
+  search::AddressInfo info;
+  Metadata metadata;
+//  FeatureType feature;
+  if (!m_framework->GetVisiblePOI(pt, info, metadata/*, &feature*/))
+    return;
+
+  // Create Edit POI dialog.
+  QDialog dlg(this);
+  QVBoxLayout * vLayout = new QVBoxLayout();
+
+  // First uneditable row: feature types.
+  QHBoxLayout * typesRow = new QHBoxLayout();
+  typesRow->addWidget(new QLabel("Types:"));
+  typesRow->addWidget(new QLabel(QString::fromStdString(info.FormatTypes())));
+  vLayout->addLayout(typesRow);
+  // Second row: Name label and text input.
+  QHBoxLayout * nameRow = new QHBoxLayout();
+  nameRow->addWidget(new QLabel("Name:"));
+  QLineEdit * lineEditName = new QLineEdit(QString::fromStdString(info.m_name));
+  nameRow->addWidget(lineEditName);
+  vLayout->addLayout(nameRow);
+
+  // More rows: All  metadata rows.
+  QVBoxLayout * metaRows = new QVBoxLayout();
+  // TODO(mgsergio): Load editable fields from metadata.
+  set<Metadata::EType> editableMetadataFields;
+  // TODO(AlexZ): Temporarily allow all fields.
+  // This code will be removed very soon and is used as a temporary stub.
+  for (int i = Metadata::EType::FMD_CUISINE; i < Metadata::EType::FMD_COUNT; ++i)
+    editableMetadataFields.insert(static_cast<Metadata::EType>(i));
+/*
+  // Merge editable fields for all feature's types.
+  feature.ForEachType([&editableMetadataFields](uint32_t type)
+  {
+    auto const editableFields = osm::Editor::EditableMetadataForType(type);
+    editableMetadataFields.insert(editableFields.begin(), editableFields.end());
+  });
+*/
+  // Equals to editableMetadataFields, used to retrieve text entered by user.
+  vector<QLineEdit *> metaFieldEditors;
+  for (auto const field : editableMetadataFields)
+  {
+    QHBoxLayout * fieldRow = new QHBoxLayout();
+    fieldRow->addWidget(new QLabel(QString::fromStdString(DebugPrint(field) + ":")));
+    QLineEdit * lineEdit = new QLineEdit(QString::fromStdString(metadata.Get(field)));
+    fieldRow->addWidget(lineEdit);
+    metaFieldEditors.push_back(lineEdit);
+    metaRows->addLayout(fieldRow);
+  }
+  ASSERT_EQUAL(editableMetadataFields.size(), metaFieldEditors.size(), ());
+  vLayout->addLayout(metaRows);
+
+  // Dialog buttons.
+  QDialogButtonBox * buttonBox = new QDialogButtonBox(
+        QDialogButtonBox::Cancel | QDialogButtonBox::Save);
+  connect(buttonBox, SIGNAL(accepted()), &dlg, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), &dlg, SLOT(reject()));
+  // Delete button should send custom int return value from dialog.
+  QPushButton * deletePOIButton = new QPushButton("Delete POI");
+  QSignalMapper signalMapper;
+  connect(deletePOIButton, SIGNAL(clicked()), &signalMapper, SLOT(map()));
+  signalMapper.setMapping(deletePOIButton, QDialogButtonBox::DestructiveRole);
+  connect(&signalMapper, SIGNAL(mapped(int)), &dlg, SLOT(done(int)));
+  buttonBox->addButton(deletePOIButton, QDialogButtonBox::DestructiveRole);
+  QHBoxLayout * buttonsRowLayout = new QHBoxLayout();
+  buttonsRowLayout->addWidget(buttonBox);
+  vLayout->addLayout(buttonsRowLayout);
+
+  dlg.setLayout(vLayout);
+  dlg.setWindowTitle("POI Editor");
+  int result = dlg.exec();
+  if (result == QDialog::Accepted)
+  {
+    // TODO(AlexZ): Uncomment and finish the code below.
+/*
+    // Save edited data.
+    string const editedName = lineEditName->text().toStdString();
+    if (editedName != info.m_name)
+      m_framework->EditFeatureName(feature.GetID(), editedName);
+    // TODO: Compare with
+    // 1) osm::EditFeatureName(feature, editedName);
+    // 2) feature.EditName(editedName);
+    // 3) m_framework->EditFeature(feature.EditName(editedName));
+
+    // Save edited metadata (if any).
+    size_t index = 0;
+    for (auto const field : editableMetadataFields)
+      metadata.Set(field, metaFieldEditors[index]->text().toStdString());
+*/
+  }
+  else if (result == QDialogButtonBox::DestructiveRole)
+  {
+/*
+    m_framework->DeleteFeature(feature.GetID());
+*/
+  }
 }
 
 void DrawWidget::ShowInfoPopup(QMouseEvent * e, m2::PointD const & pt)
