@@ -131,7 +131,7 @@ void GpsTrack::InitContainer()
       return true;
     });
   }
-  catch (RootException &)
+  catch (GpsTrackFile::CorruptedFileException &)
   {
     // File has been corrupted, therefore drop any data
     m_container->Clear();

@@ -131,9 +131,11 @@ void GpsTrackFile::ForEach(function<bool(double timestamp, m2::PointD const & pt
   for (size_t i = m_header.m_first; i != m_header.m_last; i = (i + 1) % m_maxItemCount)
   {
     Item item;
-    CHECK(ReadItem(i, item), ("Inconsistent file"));
+    if (!ReadItem(i, item))
+      MYTHROW(CorruptedFileException, ("Inconsistent file"));
 
-    CHECK(prevTimestamp <= item.m_timestamp, ("Inconsistent file"));
+    if (prevTimestamp > item.m_timestamp)
+      MYTHROW(CorruptedFileException, ("Inconsistent file"));
 
     m2::PointD pt(item.m_x, item.m_y);
     if (!fn(item.m_timestamp, pt, item.m_speed, id))
@@ -165,7 +167,8 @@ pair<size_t, size_t> GpsTrackFile::DropEarlierThan(double timestamp)
       break;
 
     Item item;
-    CHECK(ReadItem(i, item), ("Inconsistent file"));
+    if (!ReadItem(i, item))
+      MYTHROW(CorruptedFileException, ("Inconsistent file"));
 
     if (item.m_timestamp >= timestamp)
     {
@@ -193,7 +196,8 @@ pair<size_t, size_t> GpsTrackFile::DropEarlierThan(double timestamp)
     size_t const index = (first + step) % m_maxItemCount;
 
     Item item;
-    CHECK(ReadItem(index, item), ("Inconsistent file"));
+    if (!ReadItem(index, item))
+      MYTHROW(CorruptedFileException, ("Inconsistent file"));
 
     if (item.m_timestamp < timestamp)
     {

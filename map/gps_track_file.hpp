@@ -2,6 +2,8 @@
 
 #include "geometry/point2d.hpp"
 
+#include "base/exception.hpp"
+
 #include "std/fstream.hpp"
 #include "std/function.hpp"
 #include "std/limits.hpp"
@@ -10,6 +12,8 @@
 class GpsTrackFile final
 {
 public:
+  DECLARE_EXCEPTION(CorruptedFileException, RootException);
+
   /// Invalid identifier for point
   static size_t const kInvalidId; // = numeric_limits<size_t>::max();
 
