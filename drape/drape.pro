@@ -39,3 +39,5 @@ OTHER_FILES += \
     shaders/user_mark.vsh \
     shaders/text_outlined_vertex_shader.vsh \
     shaders/text_vertex_shader.vsh \
+    shaders/trackpoint_vertex_shader.vsh \
+    shaders/trackpoint_fragment_shader.fsh \
