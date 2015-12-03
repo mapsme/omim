@@ -35,7 +35,8 @@ GpsTrackFile::GpsTrackFile(string const & filePath, size_t maxItemCount)
   if (!m_stream)
   {
     m_stream = CreateBinaryFile(filePath);
-    CHECK((bool)m_stream, ());
+    if (!m_stream)
+      MYTHROW(CreateFileException, ("File:", filePath));
 
     WriteHeader(m_header);
   }
@@ -44,7 +45,8 @@ GpsTrackFile::GpsTrackFile(string const & filePath, size_t maxItemCount)
     // Corrupted file, rewrite it
 
     m_stream = CreateBinaryFile(filePath);
-    CHECK((bool)m_stream, ());
+    if (!m_stream)
+      MYTHROW(CreateFileException, ("File:", filePath));
 
     m_header = Header();
     m_header.m_maxItemCount = m_maxItemCount;
@@ -132,10 +134,10 @@ void GpsTrackFile::ForEach(function<bool(double timestamp, m2::PointD const & pt
   {
     Item item;
     if (!ReadItem(i, item))
-      MYTHROW(CorruptedFileException, ("Inconsistent file"));
+      MYTHROW(CorruptedFileException, ("File:", m_filePath));
 
     if (prevTimestamp > item.m_timestamp)
-      MYTHROW(CorruptedFileException, ("Inconsistent file"));
+      MYTHROW(CorruptedFileException, ("File:", m_filePath));
 
     m2::PointD pt(item.m_x, item.m_y);
     if (!fn(item.m_timestamp, pt, item.m_speed, id))
@@ -168,7 +170,7 @@ pair<size_t, size_t> GpsTrackFile::DropEarlierThan(double timestamp)
 
     Item item;
     if (!ReadItem(i, item))
-      MYTHROW(CorruptedFileException, ("Inconsistent file"));
+      MYTHROW(CorruptedFileException, ("File:", m_filePath));
 
     if (item.m_timestamp >= timestamp)
     {
@@ -197,7 +199,7 @@ pair<size_t, size_t> GpsTrackFile::DropEarlierThan(double timestamp)
 
     Item item;
     if (!ReadItem(index, item))
-      MYTHROW(CorruptedFileException, ("Inconsistent file"));
+      MYTHROW(CorruptedFileException, ("File:", m_filePath));
 
     if (item.m_timestamp < timestamp)
     {
@@ -265,6 +267,8 @@ bool GpsTrackFile::ReadHeader(Header & header)
 {
   m_stream.seekg(0, ios::beg);
   m_stream.read(reinterpret_cast<char *>(&header), sizeof(header));
+  if (0 != (m_stream.rdstate() & (ios::failbit | ios::badbit)))
+    MYTHROW(ReadFileException, ("File:", m_filePath));
   return ((m_stream.rdstate() & ios::eofbit) == 0);
 }
 
@@ -272,6 +276,8 @@ void GpsTrackFile::WriteHeader(Header const & header)
 {
   m_stream.seekp(0, ios::beg);
   m_stream.write(reinterpret_cast<char const *>(&header), sizeof(header));
+  if (0 != (m_stream.rdstate() & (ios::failbit | ios::badbit)))
+    MYTHROW(WriteFileException, ("File:", m_filePath));
 }
 
 bool GpsTrackFile::ReadItem(size_t index, Item & item)
@@ -279,6 +285,8 @@ bool GpsTrackFile::ReadItem(size_t index, Item & item)
   size_t const offset = ItemOffset(index);
   m_stream.seekg(offset, ios::beg);
   m_stream.read(reinterpret_cast<char *>(&item), sizeof(item));
+  if (0 != (m_stream.rdstate() & (ios::failbit | ios::badbit)))
+    MYTHROW(ReadFileException, ("File:", m_filePath));
   return ((m_stream.rdstate() & ios::eofbit) == 0);
 }
 
@@ -287,6 +295,8 @@ void GpsTrackFile::WriteItem(size_t index, Item const & item)
   size_t const offset = ItemOffset(index);
   m_stream.seekp(offset, ios::beg);
   m_stream.write(reinterpret_cast<char const *>(&item), sizeof(item));
+  if (0 != (m_stream.rdstate() & (ios::failbit | ios::badbit)))
+    MYTHROW(WriteFileException, ("File:", m_filePath));
 }
 
 size_t GpsTrackFile::ItemOffset(size_t index)

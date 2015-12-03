@@ -12,6 +12,9 @@
 class GpsTrackFile final
 {
 public:
+  DECLARE_EXCEPTION(CreateFileException, RootException);
+  DECLARE_EXCEPTION(WriteFileException, RootException);
+  DECLARE_EXCEPTION(ReadFileException, RootException);
   DECLARE_EXCEPTION(CorruptedFileException, RootException);
 
   /// Invalid identifier for point
@@ -115,7 +118,7 @@ private:
   string const m_filePath;
   size_t const m_maxItemCount;
 
-  fstream m_stream;
+  fstream m_stream; // buffered file stream
 
   Header m_header;
 };
