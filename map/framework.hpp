@@ -6,7 +6,6 @@
 #include "map/bookmark_manager.hpp"
 #include "map/country_tree.hpp"
 #include "map/feature_vec_model.hpp"
-#include "map/gps_track_container.hpp"
 #include "map/mwm_url.hpp"
 #include "map/track.hpp"
 
@@ -130,7 +129,6 @@ protected:
 
   BookmarkManager m_bmManager;
 
-  GpsTrackContainer m_gpsTrack;
   atomic<bool> m_gpsTrackingEnabled;
 
   /// This function is called by m_storage when latest local files

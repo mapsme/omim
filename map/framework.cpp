@@ -2,6 +2,7 @@
 
 #include "map/ge0_parser.hpp"
 #include "map/geourl_process.hpp"
+#include "map/gps_track.hpp"
 #include "map/storage_bridge.hpp"
 
 #include "defines.hpp"
@@ -138,10 +139,7 @@ void Framework::OnLocationUpdate(GpsInfo const & info)
                          m_routingSession.IsNavigable(), routeMatchingInfo));
 
   if (m_gpsTrackingEnabled)
-  {
-    m2::PointD const point = MercatorBounds::FromLatLon(ms::LatLon(info.m_latitude, info.m_longitude));
-    m_gpsTrack.AddPoint(point, info.m_speed, info.m_timestamp);
-  }
+    GetDefaultGpsTrack().AddPoint(info);
 }
 
 void Framework::OnCompassUpdate(CompassInfo const & info)
@@ -1282,7 +1280,7 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
     InsertRoute(m_routingSession.GetRoute());
 
   if (m_gpsTrackingEnabled)
-    m_gpsTrack.SetCallback(bind(&df::DrapeEngine::UpdateGpsTrackPoints, m_drapeEngine.get(), _1, _2), true /* sendAll */);
+    GetDefaultGpsTrack().SetCallback(bind(&df::DrapeEngine::UpdateGpsTrackPoints, m_drapeEngine.get(), _1, _2));
 }
 
 ref_ptr<df::DrapeEngine> Framework::GetDrapeEngine()
@@ -1292,7 +1290,7 @@ ref_ptr<df::DrapeEngine> Framework::GetDrapeEngine()
 
 void Framework::DestroyDrapeEngine()
 {
-  m_gpsTrack.SetCallback(nullptr, false /* sendAll */);
+  GetDefaultGpsTrack().SetCallback(nullptr);
 
   m_drapeEngine.reset();
 }
@@ -1311,16 +1309,16 @@ void Framework::EnableGpsTracking(bool enabled)
 
   if (enabled)
   {
-    m_gpsTrack.Clear();
+    GetDefaultGpsTrack().Clear();
 
     if (m_drapeEngine)
-      m_gpsTrack.SetCallback(bind(&df::DrapeEngine::UpdateGpsTrackPoints, m_drapeEngine.get(), _1, _2), true /* sendAll */);
+      GetDefaultGpsTrack().SetCallback(bind(&df::DrapeEngine::UpdateGpsTrackPoints, m_drapeEngine.get(), _1, _2));
   }
   else
   {
     // Reset callback first to prevent notification about removed points on Clear
-    m_gpsTrack.SetCallback(nullptr, false /* sendAll */);
-    m_gpsTrack.Clear();
+    GetDefaultGpsTrack().SetCallback(nullptr);
+    GetDefaultGpsTrack().Clear();
 
     if (m_drapeEngine)
       m_drapeEngine->ClearGpsTrackPoints();
@@ -1334,12 +1332,12 @@ bool Framework::IsGpsTrackingEnabled() const
 
 void Framework::SetGpsTrackingDuration(hours duration)
 {
-  m_gpsTrack.SetDuration(duration);
+  GetDefaultGpsTrack().SetDuration(duration);
 }
 
 hours Framework::GetGpsTrackingDuration() const
 {
-  return m_gpsTrack.GetDuration();
+  return GetDefaultGpsTrack().GetDuration();
 }
 
 void Framework::SetMapStyle(MapStyle mapStyle)
