@@ -235,6 +235,16 @@ pair<size_t, size_t> GpsTrackFile::Clear()
   return res;
 }
 
+size_t GpsTrackFile::GetMaxItemCount() const
+{
+  return m_maxItemCount;
+}
+
+size_t GpsTrackFile::GetCount() const
+{
+  return Distance(m_header.m_first, m_header.m_last);
+}
+
 bool GpsTrackFile::IsEmpty() const
 {
   return m_header.m_first == m_header.m_last;
@@ -243,11 +253,6 @@ bool GpsTrackFile::IsEmpty() const
 double GpsTrackFile::GetTimestamp() const
 {
   return m_header.m_timestamp;
-}
-
-size_t GpsTrackFile::GetCount() const
-{
-  return Distance(m_header.m_first, m_header.m_last);
 }
 
 bool GpsTrackFile::ReadHeader(Header & header)

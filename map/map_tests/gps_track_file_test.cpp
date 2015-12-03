@@ -15,6 +15,7 @@ UNIT_TEST(GpsTrackFile_SimpleWriteRead)
   size_t const fileMaxItemCount = 100000;
 
   // Write GPS tracks.
+  // (write only half of max items to do not do recycling)
   {
     GpsTrackFile file(filePath, fileMaxItemCount);
 
@@ -53,9 +54,13 @@ UNIT_TEST(GpsTrackFile_SimpleWriteRead)
       return true;
     });
 
-    file.Close();
-
     TEST_EQUAL(i, fileMaxItemCount/2, ());
+
+    auto res = file.Clear();
+    TEST_EQUAL(res.first, 0, ());
+    TEST_EQUAL(res.second, fileMaxItemCount/2 - 1, ());
+
+    file.Close();
   }
 }
 
@@ -113,9 +118,9 @@ UNIT_TEST(GpsTrackFile_WriteReadWithPopping)
       return true;
     });
 
-    file.Close();
-
     TEST_EQUAL(i, fileMaxItemCount, ());
+
+    file.Close();
   }
 }
 
@@ -138,7 +143,9 @@ UNIT_TEST(GpsTrackFile_DropInTail)
 
   TEST_EQUAL(50, file.GetCount(), ());
 
-  file.DropEarlierThan(timestamp + 4.5); // drop points 0,1,2,3,4
+  auto res = file.DropEarlierThan(timestamp + 4.5); // drop points 0,1,2,3,4
+  TEST_EQUAL(res.first, 0, ());
+  TEST_EQUAL(res.second, 4, ());
 
   TEST_EQUAL(45, file.GetCount(), ());
 
@@ -152,6 +159,10 @@ UNIT_TEST(GpsTrackFile_DropInTail)
     ++i;
     return true;
   });
+
+  res = file.Clear();
+  TEST_EQUAL(res.first, 5, ());
+  TEST_EQUAL(res.second, 49, ());
 
   file.Close();
 }
@@ -175,7 +186,9 @@ UNIT_TEST(GpsTrackFile_DropInMiddle)
 
   TEST_EQUAL(50, file.GetCount(), ());
 
-  file.DropEarlierThan(timestamp + 48.5); // drop all except last
+  auto res = file.DropEarlierThan(timestamp + 48.5); // drop all except last
+  TEST_EQUAL(res.first, 0, ());
+  TEST_EQUAL(res.second, 48, ());
 
   TEST_EQUAL(1, file.GetCount(), ());
 
@@ -212,7 +225,9 @@ UNIT_TEST(GpsTrackFile_DropAll)
 
   TEST_EQUAL(50, file.GetCount(), ());
 
-  file.DropEarlierThan(timestamp + 51); // drop all
+  auto res = file.DropEarlierThan(timestamp + 51); // drop all
+  TEST_EQUAL(res.first, 0, ());
+  TEST_EQUAL(res.second, 49, ());
 
   TEST_EQUAL(0, file.GetCount(), ());
 
@@ -238,7 +253,9 @@ UNIT_TEST(GpsTrackFile_Clear)
 
   TEST_EQUAL(50, file.GetCount(), ());
 
-  file.Clear();
+  auto res = file.Clear();
+  TEST_EQUAL(res.first, 0, ());
+  TEST_EQUAL(res.second, 49, ());
 
   TEST_EQUAL(0, file.GetCount(), ());
 

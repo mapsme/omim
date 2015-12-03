@@ -7,7 +7,7 @@
 #include "std/limits.hpp"
 #include "std/string.hpp"
 
-class GpsTrackFile
+class GpsTrackFile final
 {
 public:
   /// Invalid identifier for point
@@ -15,14 +15,14 @@ public:
 
   /// @note Opens file with track data or constructs new
   /// @param filePath - path to the file on disk
-  /// @param maxItemCount - max number of items in recycling queue
+  /// @param maxItemCount - max number of items in recycling file
   GpsTrackFile(string const & filePath, size_t maxItemCount);
 
   /// Delete move ctor and operator (will be implemented later)
   GpsTrackFile(GpsTrackFile &&) = delete;
   GpsTrackFile & operator=(GpsTrackFile &&) = delete;
 
-  /// Delete copy ctor and operator (unsupported)
+  /// Delete copy ctor and operator (unsupported by nature)
   GpsTrackFile(GpsTrackFile const &) = delete;
   GpsTrackFile & operator=(GpsTrackFile const &) = delete;
 
@@ -41,13 +41,19 @@ public:
   /// @param timestamp - timestamp of the point, number of seconds since 1.1.1970.
   /// @param poppedId - identifier of popped point due to recycling, kInvalidId if there is no popped point.
   /// @returns identifier of point, kInvalidId if point was not added.
-  /// @note Timestamp must be not less than for the last added point, otherwise function returns false.
-  /// @note File is circular, when maxItemCount limit is reached, old point is popped out from file.
-  size_t Append(double timestamp, m2::PointD const & pt, double speed, size_t & poppedId);
+  /// @note Timestamp must be not less than GetTimestamp(), otherwise function returns false.
+  /// @note File is circular, when GetMaxItemCount() limit is reached, old point is popped out from file.
+  size_t Append(double timestamp, m2::PointD const & pt, double speedMPS, size_t & poppedId);
 
   /// Remove all points from the file
   /// @returns range of identifiers of removed points, or pair(kInvalidId,kInvalidId) if nothing was removed.
   pair<size_t, size_t> Clear();
+
+  /// Returns max number of points in recycling file
+  size_t GetMaxItemCount() const;
+
+  /// Returns number of items in the file, this values is <= GetMaxItemCount()
+  size_t GetCount() const;
 
   /// Returns true if file does not contain points
   bool IsEmpty() const;
@@ -55,10 +61,7 @@ public:
   /// Returns upper bound timestamp, or zero if there is no points
   double GetTimestamp() const;
 
-  /// Returns number of elements in the file
-  size_t GetCount() const;
-
-  /// Enums all points in the file
+  /// Enumerates all points from the file in timestamp ascending order
   /// If fn returns false then enumeration is stopped.
   void ForEach(function<bool(double timestamp, m2::PointD const & pt, double speedMPS, size_t id)> const & fn);
 
