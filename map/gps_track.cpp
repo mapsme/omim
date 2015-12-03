@@ -123,11 +123,20 @@ void GpsTrack::InitContainer()
   m_container = make_unique<GpsTrackContainer>();
   m_container->SetDuration(m_duration);
 
-  m_file->ForEach([this](double timestamp, m2::PointD const & pt, double speedMPS, size_t)->bool
+  try
   {
-    m_container->AddPoint(pt, speedMPS, timestamp);
-    return true;
-  });
+    m_file->ForEach([this](double timestamp, m2::PointD const & pt, double speedMPS, size_t)->bool
+    {
+      m_container->AddPoint(pt, speedMPS, timestamp);
+      return true;
+    });
+  }
+  catch (RootException &)
+  {
+    // File has been corrupted, therefore drop any data
+    m_container->Clear();
+    m_file->Clear();
+  }
 }
 
 GpsTrack & GetDefaultGpsTrack()

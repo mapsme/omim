@@ -1,9 +1,9 @@
 #include "map/gps_track_file.hpp"
 
-#include "std/algorithm.hpp"
-
 #include "base/assert.hpp"
 #include "base/logging.hpp"
+
+#include "std/algorithm.hpp"
 
 namespace
 {
