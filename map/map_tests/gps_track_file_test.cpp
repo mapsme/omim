@@ -24,7 +24,10 @@ UNIT_TEST(GpsTrackFile_SimpleWriteRead)
 
     for (size_t i = 0; i < fileMaxItemCount/2; ++i)
     {
-      file.Append(timestamp + i, m2::PointD(i+1000,i+2000), i+3000);
+      size_t poppedId;
+      size_t addedId = file.Append(timestamp + i, m2::PointD(i+1000,i+2000), i+3000, poppedId);
+      TEST_EQUAL(i, addedId, ());
+      TEST_EQUAL(GpsTrackFile::kInvalidId, poppedId, ());
     }
 
     TEST_EQUAL(fileMaxItemCount/2, file.GetCount(), ());
@@ -39,8 +42,9 @@ UNIT_TEST(GpsTrackFile_SimpleWriteRead)
     TEST_EQUAL(fileMaxItemCount/2, file.GetCount(), ());
 
     size_t i = 0;
-    file.ForEach([&i,timestamp](double t, m2::PointD const & pt, double speed)->bool
+    file.ForEach([&i,timestamp](double t, m2::PointD const & pt, double speed, size_t id)->bool
     {
+      TEST_EQUAL(id, i, ());
       TEST_EQUAL(timestamp + i, t, ());
       TEST_EQUAL(pt.x, i + 1000, ());
       TEST_EQUAL(pt.y, i + 2000, ());
@@ -72,7 +76,17 @@ UNIT_TEST(GpsTrackFile_WriteReadWithPopping)
 
     for (size_t i = 0; i < 2 * fileMaxItemCount; ++i)
     {
-      file.Append(timestamp + i, m2::PointD(i+1000,i+2000), i+3000);
+      size_t poppedId;
+      size_t addedId = file.Append(timestamp + i, m2::PointD(i+1000,i+2000), i+3000, poppedId);
+      TEST_EQUAL(i, addedId, ());
+      if (i >= fileMaxItemCount)
+      {
+        TEST_EQUAL(i - fileMaxItemCount, poppedId, ());
+      }
+      else
+      {
+        TEST_EQUAL(GpsTrackFile::kInvalidId, poppedId, ());
+      }
     }
 
     TEST_EQUAL(fileMaxItemCount, file.GetCount(), ());
@@ -88,8 +102,9 @@ UNIT_TEST(GpsTrackFile_WriteReadWithPopping)
     TEST_EQUAL(fileMaxItemCount, file.GetCount(), ());
 
     size_t i = 0;
-    file.ForEach([&i,timestamp](double t, m2::PointD const & pt, double speed)->bool
+    file.ForEach([&i,timestamp](double t, m2::PointD const & pt, double speed, size_t id)->bool
     {
+      TEST_EQUAL(id, i + fileMaxItemCount, ());
       TEST_EQUAL(timestamp + i + fileMaxItemCount, t, ());
       TEST_EQUAL(pt.x, i + 1000 + fileMaxItemCount, ());
       TEST_EQUAL(pt.y, i + 2000 + fileMaxItemCount, ());
@@ -114,7 +129,12 @@ UNIT_TEST(GpsTrackFile_DropInTail)
   file.Clear();
 
   for (size_t i = 0; i < 50; ++i)
-    file.Append(timestamp + i, m2::PointD(i+1000,i+2000), i+3000);
+  {
+    size_t poppedId;
+    size_t addedId = file.Append(timestamp + i, m2::PointD(i+1000,i+2000), i+3000, poppedId);
+    TEST_EQUAL(i, addedId, ());
+    TEST_EQUAL(GpsTrackFile::kInvalidId, poppedId, ());
+  }
 
   TEST_EQUAL(50, file.GetCount(), ());
 
@@ -123,7 +143,7 @@ UNIT_TEST(GpsTrackFile_DropInTail)
   TEST_EQUAL(45, file.GetCount(), ());
 
   size_t i = 5; // new first
-  file.ForEach([&i,timestamp](double t, m2::PointD const & pt, double speed)->bool
+  file.ForEach([&i,timestamp](double t, m2::PointD const & pt, double speed, size_t id)->bool
   {
     TEST_EQUAL(timestamp + i, t, ());
     TEST_EQUAL(pt.x, i + 1000, ());
@@ -146,7 +166,12 @@ UNIT_TEST(GpsTrackFile_DropInMiddle)
   file.Clear();
 
   for (size_t i = 0; i < 50; ++i)
-    file.Append(timestamp + i, m2::PointD(i+1000,i+2000), i+3000);
+  {
+    size_t poppedId;
+    size_t addedId = file.Append(timestamp + i, m2::PointD(i+1000,i+2000), i+3000, poppedId);
+    TEST_EQUAL(i, addedId, ());
+    TEST_EQUAL(GpsTrackFile::kInvalidId, poppedId, ());
+  }
 
   TEST_EQUAL(50, file.GetCount(), ());
 
@@ -155,7 +180,7 @@ UNIT_TEST(GpsTrackFile_DropInMiddle)
   TEST_EQUAL(1, file.GetCount(), ());
 
   size_t i = 49; // new first
-  file.ForEach([&i,timestamp](double t, m2::PointD const & pt, double speed)->bool
+  file.ForEach([&i,timestamp](double t, m2::PointD const & pt, double speed, size_t id)->bool
   {
     TEST_EQUAL(timestamp + i, t, ());
     TEST_EQUAL(pt.x, i + 1000, ());
@@ -178,7 +203,12 @@ UNIT_TEST(GpsTrackFile_DropAll)
   file.Clear();
 
   for (size_t i = 0; i < 50; ++i)
-    file.Append(timestamp + i, m2::PointD(i+1000,i+2000), i+3000);
+  {
+    size_t poppedId;
+    size_t addedId = file.Append(timestamp + i, m2::PointD(i+1000,i+2000), i+3000, poppedId);
+    TEST_EQUAL(i, addedId, ());
+    TEST_EQUAL(GpsTrackFile::kInvalidId, poppedId, ());
+  }
 
   TEST_EQUAL(50, file.GetCount(), ());
 
@@ -199,7 +229,12 @@ UNIT_TEST(GpsTrackFile_Clear)
   file.Clear();
 
   for (size_t i = 0; i < 50; ++i)
-    file.Append(timestamp + i, m2::PointD(i+1000,i+2000), i+3000);
+  {
+    size_t poppedId;
+    size_t addedId = file.Append(timestamp + i, m2::PointD(i+1000,i+2000), i+3000, poppedId);
+    TEST_EQUAL(i, addedId, ());
+    TEST_EQUAL(GpsTrackFile::kInvalidId, poppedId, ());
+  }
 
   TEST_EQUAL(50, file.GetCount(), ());
 

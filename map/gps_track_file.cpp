@@ -1,5 +1,7 @@
 #include "map/gps_track_file.hpp"
 
+#include "std/algorithm.hpp"
+
 #include "base/assert.hpp"
 #include "base/logging.hpp"
 
@@ -20,6 +22,8 @@ inline fstream OpenBinaryFile(string const & filePath)
 }
 
 } // namespace
+
+size_t const GpsTrackFile::kInvalidId = numeric_limits<size_t>::max();
 
 GpsTrackFile::GpsTrackFile(string const & filePath, size_t maxItemCount)
   : m_filePath(filePath)
@@ -49,13 +53,6 @@ GpsTrackFile::GpsTrackFile(string const & filePath, size_t maxItemCount)
   }
 }
 
-void GpsTrackFile::Flush()
-{
-  ASSERT(m_stream.is_open(), ("File is not open"));
-
-  m_stream.flush();
-}
-
 bool GpsTrackFile::IsOpen() const
 {
   return m_stream.is_open();
@@ -71,7 +68,14 @@ void GpsTrackFile::Close()
   m_header.m_maxItemCount = m_maxItemCount;
 }
 
-bool GpsTrackFile::Append(double timestamp, m2::PointD const & pt, double speed)
+void GpsTrackFile::Flush()
+{
+  ASSERT(m_stream.is_open(), ("File is not open"));
+
+  m_stream.flush();
+}
+
+size_t GpsTrackFile::Append(double timestamp, m2::PointD const & pt, double speed, size_t & poppedId)
 {
   Item item;
   item.m_timestamp = timestamp;
@@ -79,42 +83,50 @@ bool GpsTrackFile::Append(double timestamp, m2::PointD const & pt, double speed)
   item.m_y = pt.y;
   item.m_speed = speed;
 
-  return Append(item);
+  return Append(item, poppedId);
 }
 
-bool GpsTrackFile::Append(Item const & item)
+size_t GpsTrackFile::Append(Item const & item, size_t & poppedId)
 {
   ASSERT(m_stream.is_open(), ("File is not open"));
 
   if (item.m_timestamp < m_header.m_timestamp)
   {
     ASSERT(item.m_timestamp >= m_header.m_timestamp, ("Timestamp sequence is broken"));
-    return false;
+
+    poppedId = kInvalidId; // nothing was popped
+    return kInvalidId; // nothing was added
   }
 
   size_t const newLast = (m_header.m_last + 1) % m_maxItemCount;
   size_t const newFirst = (newLast == m_header.m_first) ? ((m_header.m_first + 1) % m_maxItemCount) : m_header.m_first;
 
-  // TODO: notify about added and removed elements
-  // if newFirst != m_header.m_first then element with index m_header.m_first is popped
-  // element with index m_header.m_last is added
-
   WriteItem(m_header.m_last, item);
+
+  size_t const addedId = m_header.m_lastId;
+
+  if (m_header.m_first == newFirst)
+    poppedId = kInvalidId; // nothing was popped
+  else
+    poppedId = m_header.m_lastId - GetCount(); // the id of the first item
 
   m_header.m_first = newFirst;
   m_header.m_last = newLast;
   m_header.m_timestamp = item.m_timestamp;
+  m_header.m_lastId += 1;
 
   WriteHeader(m_header);
 
-  return true;
+  return addedId;
 }
 
-void GpsTrackFile::ForEach(function<bool(double timestamp, m2::PointD const & pt, double speed)> const & fn)
+void GpsTrackFile::ForEach(function<bool(double timestamp, m2::PointD const & pt, double speed, size_t id)> const & fn)
 {
   ASSERT(m_stream.is_open(), ("File is not open"));
 
   double prevTimestamp = 0;
+
+  size_t id = m_header.m_lastId - GetCount(); // the id of the first item
 
   for (size_t i = m_header.m_first; i != m_header.m_last; i = (i + 1) % m_maxItemCount)
   {
@@ -124,27 +136,23 @@ void GpsTrackFile::ForEach(function<bool(double timestamp, m2::PointD const & pt
     CHECK(prevTimestamp < item.m_timestamp, ("Inconsistent file"));
 
     m2::PointD pt(item.m_x, item.m_y);
-    if (!fn(item.m_timestamp, pt, item.m_speed))
+    if (!fn(item.m_timestamp, pt, item.m_speed, id))
       break;
 
     prevTimestamp = item.m_timestamp;
+    ++id;
   }
 }
 
-void GpsTrackFile::DropEarlierThan(double timestamp)
+pair<size_t, size_t> GpsTrackFile::DropEarlierThan(double timestamp)
 {
   ASSERT(m_stream.is_open(), ("File is not open"));
 
   if (IsEmpty())
-    return;
+    return make_pair(kInvalidId, kInvalidId); // nothing was dropped
 
   if (m_header.m_timestamp <= timestamp)
-  {
-    // TODO: notify about all elements were removed
-
-    Clear();
-    return;
-  }
+    return Clear();
 
   size_t const n = GetCount();
 
@@ -161,15 +169,18 @@ void GpsTrackFile::DropEarlierThan(double timestamp)
 
     if (item.m_timestamp >= timestamp)
     {
-      if (i != m_header.m_first)
-      {
-        // TODO: Items from range [m_header.m_first to i) are removed, notify about this
+      // Dropped range is
+      pair<size_t, size_t> const res = make_pair(m_header.m_lastId - n,
+                                                 m_header.m_lastId - n + j - 1);
 
+      // Update header.first, if need
+      if (i != m_header.m_first)
+      {        
         m_header.m_first = i;
         WriteHeader(m_header);
       }
 
-      return;
+      return res;
     }
   }
 
@@ -190,27 +201,38 @@ void GpsTrackFile::DropEarlierThan(double timestamp)
     else
       len = step;
   }
+
+  // Dropped range is
+  pair<size_t, size_t> const res = make_pair(m_header.m_lastId - n,
+                                             m_header.m_lastId - n + Distance(m_header.m_first, first) - 1);
+
+  // Update header.first, if need
   if (first != m_header.m_first)
   {
-    // TODO: Items in range [m_header.m_first ... first) are removed, notify about this
-
     m_header.m_first = first;
     WriteHeader(m_header);
   }
+
+  return res;
 }
 
-void GpsTrackFile::Clear()
+pair<size_t, size_t> GpsTrackFile::Clear()
 {
   ASSERT(m_stream.is_open(), ("File is not open"));
 
-  // TODO: notify about all elements were removed
+  if (IsEmpty())
+     return make_pair(kInvalidId, kInvalidId); // nothing was dropped
 
-  Header emptyHeader;
-  emptyHeader.m_maxItemCount = m_maxItemCount;
+  // Dropped range is
+  pair<size_t, size_t> const res = make_pair(m_header.m_lastId - GetCount(),
+                                             m_header.m_lastId - 1);
 
-  WriteHeader(emptyHeader);
+  m_header = Header();
+  m_header.m_maxItemCount = m_maxItemCount;
 
-  m_header = emptyHeader;
+  WriteHeader(m_header);
+
+  return res;
 }
 
 bool GpsTrackFile::IsEmpty() const
@@ -225,8 +247,7 @@ double GpsTrackFile::GetTimestamp() const
 
 size_t GpsTrackFile::GetCount() const
 {
-  return (m_header.m_first <= m_header.m_last) ? (m_header.m_last - m_header.m_first) :
-                                                 (m_header.m_last + m_maxItemCount - m_header.m_first);
+  return Distance(m_header.m_first, m_header.m_last);
 }
 
 bool GpsTrackFile::ReadHeader(Header & header)
@@ -260,4 +281,9 @@ void GpsTrackFile::WriteItem(size_t index, Item const & item)
 size_t GpsTrackFile::ItemOffset(size_t index)
 {
   return sizeof(Header) + index * sizeof(Item);
+}
+
+size_t GpsTrackFile::Distance(size_t first, size_t last) const
+{
+  return (first <= last) ? (last - first) : (last + m_maxItemCount - first);
 }
