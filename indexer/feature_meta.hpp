@@ -162,4 +162,6 @@ namespace feature
       MetadataBase::Set(type, s);
     }
   };
-}
+} // namespace feature
+
+string DebugPrint(feature::Metadata::EType type);
