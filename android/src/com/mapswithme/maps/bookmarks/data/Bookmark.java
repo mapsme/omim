@@ -40,6 +40,20 @@ public class Bookmark extends MapObject
     this(source.readInt(), source.readInt(), source.readString());
   }
 
+  public static final Creator<Bookmark> CREATOR = new Creator<Bookmark>() {
+    @Override
+    public Bookmark createFromParcel(Parcel source)
+    {
+      return (Bookmark) MapObject.readFromParcel(source);
+    }
+
+    @Override
+    public Bookmark[] newArray(int size)
+    {
+      return new Bookmark[size];
+    }
+  };
+
   private native ParcelablePointD getXY(int catId, long bookmarkId);
 
   private native String getIcon(int catId, long bookmarkId);

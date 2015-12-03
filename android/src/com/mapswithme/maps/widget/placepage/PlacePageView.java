@@ -728,7 +728,6 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
     case R.id.ll__place_editor:
       showEditor();
       break;
-
     case R.id.iv__bookmark_color:
       saveBookmarkNameIfUpdated();
       selectBookmarkColor();

@@ -8,6 +8,7 @@
   android:padding="@dimen/margin_half_plus"
   android:singleLine="true"
   android:textAllCaps="true"
-  android:textAppearance="@style/MwmTextAppearance.Body4"
+  android:textAppearance="@style/MwmTextAppearance.Body3"
+  android:textColor="@color/color_timepicker_tab"
   tools:drawableLeft="@drawable/ic_menu_open"
   tools:text="Some tab"/>

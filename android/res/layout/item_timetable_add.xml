@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <Button
+    android:id="@+id/btn__add_time"
+    android:layout_width="124dp"
+    android:layout_height="36dp"
+    android:layout_gravity="center"
+    android:layout_marginBottom="@dimen/margin_base_plus"
+    android:layout_marginTop="@dimen/margin_base_plus"
+    android:background="@color/base_blue_light"
+    android:text="@string/editor_time_add"
+    android:textAllCaps="true"
+    android:textAppearance="@style/MwmTextAppearance.Body3.Light"/>
+
+</FrameLayout>

@@ -28,7 +28,6 @@ public class ChooseBookmarkCategoryFragment extends BaseMwmDialogFragment implem
   private ChooseBookmarkCategoryAdapter mAdapter;
   private RecyclerView mRecycler;
 
-
   public interface Listener
   {
     void onCategoryChanged(int bookmarkId, int newCategoryId);

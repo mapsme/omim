@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:card_view="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/margin_half">
+
+    <android.support.v7.widget.CardView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@android:color/white"
+      card_view:cardBackgroundColor="@android:color/white"
+      card_view:cardCornerRadius="2dp"
+      card_view:cardElevation="4dp">
+
+      <EditText
+        android:id="@+id/et__timetable"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/base_block_size"
+        android:layout_alignParentBottom="true"
+        android:background="@null"
+        android:hint="hint"
+        android:padding="@dimen/margin_base"
+        android:textAppearance="@style/MwmTextAppearance.Body3"/>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/margin_half"
+      android:background="@android:color/white"
+      card_view:cardBackgroundColor="@android:color/white"
+      card_view:cardCornerRadius="2dp"
+      card_view:cardElevation="4dp">
+
+      <RelativeLayout
+        android:id="@+id/examples"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true">
+
+        <TextView
+          android:id="@+id/tv__examples_title"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/base_block_size"
+          android:background="@null"
+          android:drawableLeft="@drawable/ic_type_text"
+          android:drawablePadding="@dimen/margin_base"
+          android:drawableStart="@drawable/ic_type_text"
+          android:gravity="center_vertical"
+          android:text="Example values"
+          android:padding="@dimen/margin_base"
+          android:textAppearance="@style/MwmTextAppearance.Body3"
+          android:textColor="@color/base_blue_light"/>
+
+        <ImageView
+          android:id="@+id/iv__indicator"
+          android:layout_width="wrap_content"
+          android:layout_height="@dimen/base_block_size"
+          android:layout_alignParentEnd="true"
+          android:layout_alignParentRight="true"
+          android:gravity="center_vertical"
+          android:scaleType="center"/>
+
+        <View
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:layout_below="@id/tv__examples_title"
+          android:background="@color/divider_standard"/>
+
+        <TextView
+          android:id="@+id/tv__examples"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_below="@id/tv__examples_title"
+          android:padding="@dimen/margin_base"
+          android:text="trololo \ntrololo \ntrololo"/>
+
+      </RelativeLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+  </LinearLayout>
+
+</ScrollView>

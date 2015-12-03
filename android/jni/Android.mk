@@ -25,8 +25,8 @@ define add_prebuild_static_lib
   include $(PREBUILT_STATIC_LIBRARY)
 endef
 
-prebuild_static_libs := osrm protobuf tomcrypt jansson minizip fribidi freetype expat succinct opening_hours pugixml \
-    base coding geometry editor platform indexer storage search routing drape drape_frontend map stats_client
+prebuild_static_libs := osrm protobuf tomcrypt jansson minizip fribidi freetype expat base coding geometry \
+    editor platform indexer storage search routing drape drape_frontend map stats_client succinct opening_hours pugixml
 
 $(foreach item,$(prebuild_static_libs),$(eval $(call add_prebuild_static_lib,$(item))))
 
@@ -98,10 +98,11 @@ LOCAL_SRC_FILES := \
 	com/mapswithme/platform/MethodRef.cpp \
 	com/mapswithme/platform/PThreadImpl.cpp \
 	com/mapswithme/util/StringUtils.cpp \
-    com/mapswithme/util/Config.cpp \
+	com/mapswithme/util/Config.cpp \
 	com/mapswithme/opengl/android_gl_utils.cpp \
 	com/mapswithme/opengl/androidoglcontext.cpp \
 	com/mapswithme/opengl/androidoglcontextfactory.cpp \
+	com/mapswithme/maps/editor/OpeningHours.cpp \
 
 LOCAL_LDLIBS := -llog -landroid -lEGL -lGLESv2 -latomic -lz
 
