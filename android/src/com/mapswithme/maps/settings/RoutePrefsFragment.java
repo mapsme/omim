@@ -150,6 +150,7 @@ public class RoutePrefsFragment extends PreferenceFragment
 
     mPrefEnabled = (TwoStatePreference) findPreference(getString(R.string.pref_tts_enabled));
     mPrefLanguages = (ListPreference) findPreference(getString(R.string.pref_tts_language));
+
     update();
   }
 
