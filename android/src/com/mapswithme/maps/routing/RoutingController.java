@@ -92,6 +92,10 @@ public class RoutingController
   private MapStorage.Index[] mLastMissingCountries;
   private MapStorage.Index[] mLastMissingRoutes;
   private RoutingInfo mCachedRoutingInfo;
+  // This flag indicates if route wasn't built yet and should be after rendering fragment is created.
+  // Route can be build only if NVThread is running and listening for routing events.
+  // Fix is unnecessary in version with Drape inside.
+  private boolean mHasBuildRequest;
 
   @SuppressWarnings("FieldCanBeLocal")
   private final Framework.RoutingListener mRoutingListener = new Framework.RoutingListener()
@@ -268,6 +272,10 @@ public class RoutingController
     mContainer.showNavigation(isNavigating());
     mContainer.updateMenu();
     processRoutingEvent();
+
+    if (mHasBuildRequest)
+      build();
+    mHasBuildRequest = false;
   }
 
   public void onSaveState()
@@ -287,7 +295,10 @@ public class RoutingController
     org.alohalytics.Statistics.logEvent(AlohaHelper.ROUTING_BUILD, new String[] {Statistics.EventParam.FROM, Statistics.getPointType(mStartPoint),
                                                                                  Statistics.EventParam.TO, Statistics.getPointType(mEndPoint)});
 
-    Framework.nativeBuildRoute(mStartPoint.getLat(), mStartPoint.getLon(), mEndPoint.getLat(), mEndPoint.getLon());
+    if (mContainer == null)
+      mHasBuildRequest = true;
+    else
+      Framework.nativeBuildRoute(mStartPoint.getLat(), mStartPoint.getLon(), mEndPoint.getLat(), mEndPoint.getLon());
   }
 
   private void showDisclaimer(final MapObject endPoint)

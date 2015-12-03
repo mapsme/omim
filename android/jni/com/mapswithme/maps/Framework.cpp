@@ -1265,8 +1265,8 @@ extern "C"
                                                       jdouble finishLon)
   {
     android::Platform::RunOnGuiThreadImpl(bind(&::Framework::BuildRoute, frm(),
-          MercatorBounds::FromLatLon(startLat, startLon),
-          MercatorBounds::FromLatLon(finishLat, finishLon), 0 /* timeoutSec */ ));
+                                               MercatorBounds::FromLatLon(startLat, startLon),
+                                               MercatorBounds::FromLatLon(finishLat, finishLon), 0 /* timeoutSec */ ));
   }
 
   JNIEXPORT void JNICALL
