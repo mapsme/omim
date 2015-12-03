@@ -167,3 +167,45 @@ UNIT_TEST(GpsTrackFile_DropInMiddle)
 
   file.Close();
 }
+
+UNIT_TEST(GpsTrackFile_DropAll)
+{
+  time_t const timestamp = system_clock::to_time_t(system_clock::now());
+  string const filePath = my::JoinFoldersToPath(GetPlatform().WritableDir(), "gpstrack.bin");
+
+  GpsTrackFile file(filePath, 100);
+
+  file.Clear();
+
+  for (size_t i = 0; i < 50; ++i)
+    file.Append(timestamp + i, m2::PointD(i+1000,i+2000), i+3000);
+
+  TEST_EQUAL(50, file.GetCount(), ());
+
+  file.DropEarlierThan(timestamp + 51); // drop all
+
+  TEST_EQUAL(0, file.GetCount(), ());
+
+  file.Close();
+}
+
+UNIT_TEST(GpsTrackFile_Clear)
+{
+  time_t const timestamp = system_clock::to_time_t(system_clock::now());
+  string const filePath = my::JoinFoldersToPath(GetPlatform().WritableDir(), "gpstrack.bin");
+
+  GpsTrackFile file(filePath, 100);
+
+  file.Clear();
+
+  for (size_t i = 0; i < 50; ++i)
+    file.Append(timestamp + i, m2::PointD(i+1000,i+2000), i+3000);
+
+  TEST_EQUAL(50, file.GetCount(), ());
+
+  file.Clear();
+
+  TEST_EQUAL(0, file.GetCount(), ());
+
+  file.Close();
+}
