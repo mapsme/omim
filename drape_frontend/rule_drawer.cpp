@@ -7,6 +7,7 @@
 #include "indexer/feature.hpp"
 #include "indexer/feature_algo.hpp"
 #include "indexer/feature_visibility.hpp"
+#include "indexer/ftypes_matcher.hpp"
 
 #include "base/assert.hpp"
 #include "std/bind.hpp"
@@ -111,7 +112,10 @@ void RuleDrawer::operator()(FeatureType const & f)
 
   if (s.AreaStyleExists())
   {
-    ApplyAreaFeature apply(insertShape, f.GetID(), minVisibleScale, f.GetRank(), s.GetCaptionDescription());
+    // TODO: isBuilding can be true ONLY if 3D houses mode is on
+    bool const isBuilding = ftypes::IsBuildingChecker::Instance()(f);
+    ApplyAreaFeature apply(insertShape, f.GetID(), isBuilding,
+                           minVisibleScale, f.GetRank(), s.GetCaptionDescription());
     f.ForEachTriangleRef(apply, zoomLevel);
 
     if (s.PointStyleExists())
