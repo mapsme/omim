@@ -151,4 +151,6 @@ namespace feature
     enum { kMaxStringLength = 255 };
     map<EType, string> m_metadata;
   };
-}
+} // namespace feature
+
+string DebugPrint(feature::Metadata::EType type);
