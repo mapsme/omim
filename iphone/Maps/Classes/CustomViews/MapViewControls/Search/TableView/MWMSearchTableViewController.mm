@@ -326,7 +326,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         f.UpdateUserViewportChanged();
       }
       else
-        f.ShowAllSearchResults(searchResults);
+        f.ShowSearchResults(searchResults);
     }
   }
   else
