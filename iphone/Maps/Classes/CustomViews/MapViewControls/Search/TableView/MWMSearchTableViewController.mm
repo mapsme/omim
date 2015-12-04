@@ -312,7 +312,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     if (!_searchOnMap)
       f.Search(searchParams);
     else
-      f.ShowAllSearchResults(searchResults);
+      f.ShowSearchResults(searchResults);
   }
   else
   {
