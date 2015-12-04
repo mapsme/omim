@@ -396,7 +396,7 @@ FileWriter FilesContainerW::GetWriter(Tag const & tag)
     writer.WritePaddingByPos(kSectionAlignment);
     m_info.push_back(Info(tag, writer.Pos()));
     ASSERT(m_info.back().m_offset % kSectionAlignment == 0, ());
-    return writer;
+    return move(writer);
   }
   else
   {
@@ -405,7 +405,7 @@ FileWriter FilesContainerW::GetWriter(Tag const & tag)
     writer.WritePaddingByPos(kSectionAlignment);
     m_info.push_back(Info(tag, writer.Pos()));
     ASSERT(m_info.back().m_offset % kSectionAlignment == 0, ());
-    return writer;
+    return move(writer);
   }
 }
 
