@@ -18,6 +18,7 @@ SOURCES += \
     ../../testing/testingmain.cpp \
     algos_tests.cpp \
     house_detector_tests.cpp \
+    house_numbers_matcher_test.cpp \
     interval_set_test.cpp \
     keyword_lang_matcher_test.cpp \
     keyword_matcher_test.cpp \

@@ -40,6 +40,7 @@ HEADERS += \
     v2/features_layer_matcher.hpp \
     v2/features_layer_path_finder.hpp \
     v2/geocoder.hpp \
+    v2/house_numbers_matcher.hpp \
     v2/search_model.hpp \
     v2/search_query_v2.hpp \
     v2/street_vicinity_loader.hpp \
@@ -68,6 +69,7 @@ SOURCES += \
     v2/features_layer_matcher.cpp \
     v2/features_layer_path_finder.cpp \
     v2/geocoder.cpp \
+    v2/house_numbers_matcher.cpp \
     v2/search_model.cpp \
     v2/search_query_v2.cpp \
     v2/street_vicinity_loader.cpp \
