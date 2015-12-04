@@ -356,7 +356,7 @@ private:
 
   void OnUpdateCountryIndex(storage::TIndex const & currentIndex, m2::PointF const & pt);
   void UpdateCountryInfo(storage::TIndex const & countryIndex, bool isCurrentCountry);
-  
+
   // Search query params and viewport for the latest search
   // query. These fields are used to check whether a new search query
   // can be skipped. Note that these fields are not guarded by a mutex
