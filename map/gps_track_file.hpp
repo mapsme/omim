@@ -92,8 +92,11 @@ private:
     size_t m_last; // index of last item, items are in range [first,last)
     size_t m_lastId; // identifier of the last item
 
-    Header()
-      : m_maxItemCount(0), m_timestamp(0), m_first(0), m_last(0), m_lastId(0)
+    explicit Header(size_t maxItemCount = 0)
+      : m_maxItemCount(maxItemCount)
+      , m_timestamp(0)
+      , m_first(0), m_last(0)
+      , m_lastId(0)
     {}
   };
 

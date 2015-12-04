@@ -31,7 +31,7 @@ GpsTrackFile::GpsTrackFile(string const & filePath, size_t maxItemCount)
   , m_maxItemCount(max(maxItemCount, kMinItemCount) + 1)
   , m_lazyWriteHeaderCount(0)
 {
-  m_header.m_maxItemCount = m_maxItemCount;
+  m_header = Header(m_maxItemCount);
 
   m_stream = OpenBinaryFile(filePath);
   if (!m_stream)
@@ -50,8 +50,7 @@ GpsTrackFile::GpsTrackFile(string const & filePath, size_t maxItemCount)
     if (!m_stream)
       MYTHROW(CreateFileException, ("File:", filePath));
 
-    m_header = Header();
-    m_header.m_maxItemCount = m_maxItemCount;
+    m_header = Header(m_maxItemCount);
 
     WriteHeader(m_header);
   }
@@ -93,8 +92,7 @@ void GpsTrackFile::Close()
   if (0 != (m_stream.rdstate() & (ios::failbit | ios::badbit)))
     MYTHROW(WriteFileException, ("File:", m_filePath));
 
-  m_header = Header();
-  m_header.m_maxItemCount = m_maxItemCount;
+  m_header = Header(m_maxItemCount);
 }
 
 void GpsTrackFile::Flush()
@@ -259,8 +257,7 @@ pair<size_t, size_t> GpsTrackFile::Clear()
   pair<size_t, size_t> const res = make_pair(m_header.m_lastId - GetCount(),
                                              m_header.m_lastId - 1);
 
-  m_header = Header();
-  m_header.m_maxItemCount = m_maxItemCount;
+  m_header = Header(m_maxItemCount);
 
   LazyWriteHeader();
 
