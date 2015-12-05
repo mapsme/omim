@@ -189,7 +189,15 @@ PathTextShape::PathTextShape(m2::SharedSpline const & spline,
 
 uint64_t PathTextShape::GetOverlayPriority() const
 {
-  return dp::CalculateOverlayPriority(m_params.m_minVisibleScale, m_params.m_rank, m_params.m_depth);
+  // Overlay priority for path text shapes considers length of the text.
+  // Greater test length has more priority, because smaller texts have more chances to be shown along the road.
+  // [6 bytes - standard overlay priority][1 byte - reserved][1 byte - length].
+  static uint64_t constexpr kMask = ~static_cast<uint64_t>(0xFF);
+  uint64_t priority = dp::CalculateOverlayPriority(m_params.m_minVisibleScale, m_params.m_rank, m_params.m_depth);
+  priority &= kMask;
+  priority |= (static_cast<uint8_t>(m_params.m_text.size()));
+
+  return priority;
 }
 
 void PathTextShape::Draw(ref_ptr<dp::Batcher> batcher, ref_ptr<dp::TextureManager> textures) const

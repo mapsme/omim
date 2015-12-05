@@ -421,54 +421,32 @@ void PathTextLayout::CalculatePositions(vector<float> & offsets, float splineLen
 {
   //we leave a little space on either side of the text that would
   //remove the comparison for equality of spline portions
-  float const TextBorder = 4.0f;
-  float const textLength = TextBorder + textPixelLength;
-  float const textHalfLength = textLength / 2.0f;
+  float const kTextBorder = 4.0f;
+  float const textLength = kTextBorder + textPixelLength;
 
   // on next readable scale m_scaleGtoP will be twice
-  if (textLength > splineLength * 2 * splineScaleToPixel)
+  if (textLength > splineLength * 2.0 * splineScaleToPixel)
     return;
 
-  float const pathLength = splineScaleToPixel * splineLength;
+  float const kPathLengthScalar = 0.75;
+  float const pathLength = kPathLengthScalar * splineScaleToPixel * splineLength;
 
-  /// copied from old code
-  /// @todo Choose best constant for minimal space.
-  float const etalonEmpty = max(200 * df::VisualParams::Instance().GetVisualScale(), (double)textLength);
+  float const etalonEmpty = max(300 * df::VisualParams::Instance().GetVisualScale(), (double)textLength);
   float const minPeriodSize = etalonEmpty + textLength;
   float const twoTextAndEmpty = minPeriodSize + textLength;
-
-  float const splineScaleFromPixel = 1.0f / splineScaleToPixel;
 
   if (pathLength < twoTextAndEmpty)
   {
     // if we can't place 2 text and empty part on path
     // we place only one text on center of path
     offsets.push_back(splineLength / 2.0f);
-
-  }
-  else if (pathLength < twoTextAndEmpty + minPeriodSize)
-  {
-    // if we can't place 3 text and 2 empty path
-    // we place 2 text with empty space beetwen
-    // and some offset from path end
-    float const endOffset = (pathLength - (2 * textLength + etalonEmpty)) / 2;
-
-    // division on m_scaleGtoP give as global coord frame (Mercator)
-    offsets.push_back((endOffset + textHalfLength) * splineScaleFromPixel);
-    offsets.push_back((pathLength - (textHalfLength + endOffset)) * splineScaleFromPixel);
   }
   else
   {
-    // here we place 2 text on the ends of path
-    // then we place as much as possible text on center path uniformly
-    float const emptySpace = pathLength - 2 * textLength;
-    uint32_t const textCount = static_cast<uint32_t>(ceil(emptySpace / minPeriodSize));
-    float const offset = (emptySpace - textCount * textLength) / (textCount + 1);
-    offsets.reserve(textCount + 2);
-    offsets.push_back(textHalfLength * splineScaleFromPixel);
-    offsets.push_back((pathLength - textHalfLength) * splineScaleFromPixel);
-    for (size_t i = 0; i < textCount; ++i)
-      offsets.push_back((textHalfLength + (textLength + offset) * (i + 1)) * splineScaleFromPixel);
+    double const textCount = max(floor(pathLength / minPeriodSize), 1.0);
+    double const glbTextLen = splineLength / textCount;
+    for (double offset = 0.5 * glbTextLen; offset < splineLength; offset += glbTextLen)
+      offsets.push_back(offset);
   }
 }
 
