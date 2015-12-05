@@ -5,6 +5,8 @@
 namespace dp
 {
 
+double const k3dAdditionalExtention = 3.0;
+
 struct OverlayHandle::OffsetNodeFinder
 {
 public:
@@ -41,6 +43,8 @@ bool OverlayHandle::IsVisible() const
 void OverlayHandle::SetIsVisible(bool isVisible)
 {
   m_isVisible = isVisible;
+  if (m_isVisible && IsMinVisibilityTimeUp())
+    m_visibilityTimestamp = steady_clock::now();
 }
 
 bool OverlayHandle::IsBillboard() const
@@ -138,15 +142,20 @@ m2::RectD OverlayHandle::GetExtendedPixelRect(ScreenBase const & screen) const
 {
   m2::RectD rect = GetPixelRect(screen, screen.isPerspective());
   rect.Inflate(m_extendingSize, m_extendingSize);
+  if (screen.isPerspective())
+    rect.Scale(k3dAdditionalExtention);
   return rect;
 }
 
 void OverlayHandle::GetExtendedPixelShape(ScreenBase const & screen, Rects & rects) const
 {
   GetPixelShape(screen, rects, screen.isPerspective());
-
   for (auto & rect : rects)
+  {
     rect.Inflate(m_extendingSize, m_extendingSize);
+    if (screen.isPerspective())
+      rect.Scale(k3dAdditionalExtention);
+  }
 }
 
 m2::RectD OverlayHandle::GetPerspectiveRect(m2::RectD const & pixelRect, ScreenBase const & screen) const
@@ -177,7 +186,12 @@ m2::RectD OverlayHandle::GetPixelRectPerspective(ScreenBase const & screen) cons
   return GetPerspectiveRect(GetPixelRect(screen, false), screen);
 }
 
-////////////////////////////////////////////////////////////////////////////////
+bool OverlayHandle::IsMinVisibilityTimeUp() const
+{
+  uint32_t const kMinVisibilityTimeMs = 500;
+  uint32_t const t = duration_cast<milliseconds>(steady_clock::now() - m_visibilityTimestamp).count();
+  return t > kMinVisibilityTimeMs;
+}
 
 SquareHandle::SquareHandle(FeatureID const & id, dp::Anchor anchor,
                            m2::PointD const & gbPivot, m2::PointD const & pxSize,

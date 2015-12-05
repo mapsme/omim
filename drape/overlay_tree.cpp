@@ -132,28 +132,32 @@ void OverlayTree::InsertHandle(ref_ptr<OverlayHandle> handle, bool isTransparent
       elements.push_back(info);
   });
 
-  bool const boundToParent = (parentOverlay.m_handle != nullptr && handle->IsBound());
-
-  // If handle is bound to its parent, parent's handle will be used.
-  ref_ptr<OverlayHandle> handleToCompare = handle;
-  if (boundToParent)
-    handleToCompare = parentOverlay.m_handle;
-
-  double const posY = handleToCompare->GetPivot(modelView, is3dMode).y;
-  // In this loop we decide which element must be visible.
-  // If input element "handle" more priority than all "Intersected elements"
-  // than we remove all "Intersected elements" and insert input element "handle".
-  // But if some of already inserted elements more priority than we don't insert "handle".
-  HandleComparator comparator;
-  for (auto const & info : elements)
+  if (handle->IsMinVisibilityTimeUp())
   {
-    bool const rejectByDepth = is3dMode ? posY > info.m_handle->GetPivot(modelView, is3dMode).y : false;
-    if (comparator.IsGreater(info.m_handle, handleToCompare) || rejectByDepth)
+    bool const boundToParent = (parentOverlay.m_handle != nullptr && handle->IsBound());
+
+    // If handle is bound to its parent, parent's handle will be used.
+    ref_ptr<OverlayHandle> handleToCompare = handle;
+    if (boundToParent)
+      handleToCompare = parentOverlay.m_handle;
+
+    double const posY = handleToCompare->GetPivot(modelView, is3dMode).y;
+    // In this loop we decide which element must be visible.
+    // If input element "handle" more priority than all "Intersected elements"
+    // than we remove all "Intersected elements" and insert input element "handle".
+    // But if some of already inserted elements more priority than we don't insert "handle".
+    HandleComparator comparator;
+    for (auto const & info : elements)
     {
-      // Handle is displaced and bound to its parent, parent will be displaced too.
-      if (boundToParent)
-        Erase(parentOverlay);
-      return;
+      bool const rejectByDepth = is3dMode ? posY > info.m_handle->GetPivot(modelView, is3dMode).y : false;
+      bool const rejectByTime = !info.m_handle->IsMinVisibilityTimeUp();
+      if (rejectByDepth || rejectByTime || comparator.IsGreater(info.m_handle, handleToCompare))
+      {
+        // Handle is displaced and bound to its parent, parent will be displaced too.
+        if (boundToParent)
+          Erase(parentOverlay);
+        return;
+      }
     }
   }
 
