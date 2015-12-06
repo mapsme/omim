@@ -153,7 +153,7 @@ SUBDIRS = 3party base editor coding geometry indexer routing
     SUBDIRS *= generator_tests
 
     editor_tests.subdir = editor/editor_tests
-    editor_tests.depends = 3party base editor geometry
+    editor_tests.depends = 3party base coding editor geometry
     SUBDIRS *= editor_tests
 
     SUBDIRS *= qt_tstfrm
