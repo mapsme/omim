@@ -1322,3 +1322,9 @@
 "whats_new_happy_day" = "정말로 행복한 하루되세요! MAPS.ME로 향후 여행을 계획하세요.";
 
 "whats_new_next" = "다음";
+
+/* «Add place» button in place page. */
+"pp_place_add" = "Add place";
+
+/* «Edit place» button in place page. */
+"pp_place_edit" = "Edit place";
