@@ -36,6 +36,7 @@ ReadManager::ReadManager(ref_ptr<ThreadsCommutator> commutator, MapDataProvider 
   , m_model(model)
   , m_pool(make_unique_dp<threads::ThreadPool>(ReadCount(), bind(&ReadManager::OnTaskFinished, this, _1)))
   , m_forceUpdate(true)
+  , m_is3d(false)
   , myPool(64, ReadMWMTaskFactory(m_memIndex, m_model))
   , m_counter(0)
 {
@@ -75,7 +76,9 @@ void ReadManager::UpdateCoverage(ScreenBase const & screen, TTilesCollection con
     return;
 
   m_forceUpdate = false;
-  if (MustDropAllTiles(screen))
+  m_is3d = screen.isPerspective();
+  bool const changeMode = (m_is3d != m_currentViewport.isPerspective());
+  if (changeMode || MustDropAllTiles(screen))
   {
     IncreaseCounter(static_cast<int>(tiles.size()));
 
@@ -111,8 +114,8 @@ void ReadManager::UpdateCoverage(ScreenBase const & screen, TTilesCollection con
       {
         if (IsNeighbours(tile->GetTileKey(), outTile->GetTileKey()))
         {
-            rereadTiles.push_back(tile);
-            break;
+          rereadTiles.push_back(tile);
+          break;
         }
       }
     }
@@ -177,6 +180,7 @@ bool ReadManager::MustDropAllTiles(ScreenBase const & screen) const
 void ReadManager::PushTaskBackForTileKey(TileKey const & tileKey, ref_ptr<dp::TextureManager> texMng)
 {
   shared_ptr<TileInfo> tileInfo(new TileInfo(make_unique_dp<EngineContext>(tileKey, m_commutator, texMng)));
+  tileInfo->Set3dMode(m_is3d);
   m_tileInfos.insert(tileInfo);
   ReadMWMTask * task = myPool.Get();
   task->Init(tileInfo);
@@ -185,6 +189,7 @@ void ReadManager::PushTaskBackForTileKey(TileKey const & tileKey, ref_ptr<dp::Te
 
 void ReadManager::PushTaskFront(shared_ptr<TileInfo> const & tileToReread)
 {
+  tileToReread->Set3dMode(m_is3d);
   ReadMWMTask * task = myPool.Get();
   task->Init(tileToReread);
   m_pool->PushFront(task);

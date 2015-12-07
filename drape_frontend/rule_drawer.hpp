@@ -27,7 +27,7 @@ public:
   using TDrawerCallback = function<void (FeatureType const &, Stylist &)>;
   using TCheckCancelledCallback = function<bool ()>;
   RuleDrawer(TDrawerCallback const & fn, TCheckCancelledCallback const & checkCancelled,
-             ref_ptr<EngineContext> context);
+             ref_ptr<EngineContext> context, bool is3d);
   ~RuleDrawer();
 
   void operator() (FeatureType const & f);
@@ -42,6 +42,8 @@ private:
   ScreenBase m_geometryConvertor;
   double m_currentScaleGtoP;
   set<string> m_coastlines;
+
+  bool const m_is3d;
 
   array<TMapShapes, df::PrioritiesCount> m_mapShapes;
   bool m_wasCancelled;

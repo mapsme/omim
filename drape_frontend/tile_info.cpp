@@ -17,6 +17,7 @@ namespace df
 TileInfo::TileInfo(drape_ptr<EngineContext> && context)
   : m_context(move(context))
   , m_isCanceled(false)
+  , m_is3d(false)
 {
 }
 
@@ -72,7 +73,7 @@ void TileInfo::ReadFeatures(MapDataProvider const & model, MemoryFeatureIndex & 
   {
     RuleDrawer drawer(bind(&TileInfo::InitStylist, this, _1 ,_2),
                       bind(&TileInfo::IsCancelled, this),
-                      make_ref(m_context));
+                      make_ref(m_context), m_is3d);
     model.ReadFeatures(bind<void>(ref(drawer), _1), featuresToRead);
   }
 }
@@ -100,8 +101,6 @@ void TileInfo::InitStylist(FeatureType const & f, Stylist & s)
   CheckCanceled();
   df::InitStylist(f, m_context->GetTileKey().m_zoomLevel, s);
 }
-
-//====================================================//
 
 bool TileInfo::DoNeedReadIndex() const
 {
