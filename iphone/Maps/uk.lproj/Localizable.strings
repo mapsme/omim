@@ -1322,3 +1322,9 @@
 "whats_new_happy_day" = "Так, це насправді! Сьогодні щасливий день і ще одне покращення. Заздалегідь заплануйте свої подорожі разом з MAPS.ME.";
 
 "whats_new_next" = "Далі";
+
+/* «Add place» button in place page. */
+"pp_place_add" = "Add place";
+
+/* «Edit place» button in place page. */
+"pp_place_edit" = "Edit place";

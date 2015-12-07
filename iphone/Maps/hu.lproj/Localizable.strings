@@ -1322,3 +1322,9 @@
 "whats_new_happy_day" = "Micsoda boldog nap ez! Tervezd meg az utaidat előre a MAPS.ME-vel!";
 
 "whats_new_next" = "Következő";
+
+/* «Add place» button in place page. */
+"pp_place_add" = "Add place";
+
+/* «Edit place» button in place page. */
+"pp_place_edit" = "Edit place";

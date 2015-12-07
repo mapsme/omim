@@ -1322,3 +1322,9 @@
 "whats_new_happy_day" = "I dag er en god dag! Planlegg reisene dine i forveien med MAPS.ME.";
 
 "whats_new_next" = "Neste";
+
+/* «Add place» button in place page. */
+"pp_place_add" = "Add place";
+
+/* «Edit place» button in place page. */
+"pp_place_edit" = "Edit place";

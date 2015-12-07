@@ -846,4 +846,8 @@
 	<string name="whats_new_between_any_points">Build routes between any points</string>
 	<string name="whats_new_happy_day">A happy day indeed! Plan your trips ahead with MAPS.ME.</string>
 	<string name="whats_new_next">Next</string>
+	<!-- «Add place» button in place page. -->
+	<string name="pp_place_add">Add place</string>
+	<!-- «Edit place» button in place page. -->
+	<string name="pp_place_edit">Edit place</string>
 </resources>
