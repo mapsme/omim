@@ -1322,3 +1322,9 @@
 "whats_new_happy_day" = "真是快乐的一天！用MAPS.ME事先计划路程吧。";
 
 "whats_new_next" = "下一页";
+
+/* «Add place» button in place page. */
+"pp_place_add" = "Add place";
+
+/* «Edit place» button in place page. */
+"pp_place_edit" = "Edit place";

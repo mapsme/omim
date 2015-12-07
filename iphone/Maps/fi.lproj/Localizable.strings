@@ -1322,3 +1322,9 @@
 "whats_new_happy_day" = "Elämä hymyilee! Suunnittele matkasi etukäteen MAPS.ME -sovelluksen avulla.";
 
 "whats_new_next" = "Seuraava";
+
+/* «Add place» button in place page. */
+"pp_place_add" = "Add place";
+
+/* «Edit place» button in place page. */
+"pp_place_edit" = "Edit place";

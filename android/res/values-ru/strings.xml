@@ -842,4 +842,8 @@
 	<string name="whats_new_between_any_points">Стройте маршрут между любыми объектами</string>
 	<string name="whats_new_happy_day">Да, да, это правда! Сегодня счастливый день и еще одно улучшение. Планируйте свои путешествия заранее с MAPS.ME.</string>
 	<string name="whats_new_next">Далее</string>
+	<!-- «Add place» button in place page. -->
+	<string name="pp_place_add">Добавить место</string>
+	<!-- «Edit place» button in place page. -->
+	<string name="pp_place_edit">Редактировать место</string>
 </resources>
