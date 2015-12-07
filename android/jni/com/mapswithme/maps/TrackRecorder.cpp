@@ -1,5 +1,17 @@
 #include "Framework.hpp"
 
+#include "std/chrono.hpp"
+
+namespace
+{
+
+::Framework * frm()
+{
+  return g_framework->NativeFramework();
+}
+
+} // namespace
+
 extern "C"
 {
   JNIEXPORT void JNICALL
@@ -15,14 +27,14 @@ extern "C"
   }
 
   JNIEXPORT void JNICALL
-  Java_com_mapswithme_maps_location_TrackRecorder_nativeSetDuration(JNIEnv * env, jclass clazz, jint hours)
+  Java_com_mapswithme_maps_location_TrackRecorder_nativeSetDuration(JNIEnv * env, jclass clazz, jint durationHours)
   {
-    frm()->SetGpsTrackingDuration(hours(hours));
+    frm()->SetGpsTrackingDuration(hours(durationHours));
   }
 
   JNIEXPORT jint JNICALL
   Java_com_mapswithme_maps_location_TrackRecorder_nativeGetDuration(JNIEnv * env, jclass clazz)
   {
-    return frm()->GetGpsTrackingDuration();
+    return frm()->GetGpsTrackingDuration().count();
   }
 }
