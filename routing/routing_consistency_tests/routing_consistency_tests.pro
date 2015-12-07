@@ -15,6 +15,10 @@ QT *= core
 
 INCLUDEPATH *= $$ROOT_DIR/3party/gflags/src
 
+macx-* {
+  LIBS *= "-framework SystemConfiguration"
+}
+
 SOURCES += \
   ../routing_integration_tests/routing_test_tools.cpp \
   routing_consistency_tests.cpp \

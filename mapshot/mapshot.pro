@@ -16,7 +16,7 @@ TEMPLATE = app
 QT *= core network
 
 macx-* {
-  LIBS *= "-framework IOKit" "-framework SystemConfiguration"
+  LIBS *= "-framework IOKit" "-framework SystemConfiguration" "-framework OpenGL"
 }
 
 SOURCES += \
