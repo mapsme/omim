@@ -93,6 +93,8 @@ namespace
   char const kRouterTypeKey[] = "router";
   char const kMapStyleKey[] = "MapStyleKeyV1";
   char const kGpsTrackingEnabledKey[] = "GpsTrackingEnabled";
+  char const kGpsTrackingDurationHours[] = "GpsTrackingDurationH";
+  uint32_t const kDefaultGpsTrackingMaxRurationHours = 24;
 }
 
 pair<MwmSet::MwmId, MwmSet::RegResult> Framework::RegisterMap(
@@ -212,6 +214,12 @@ Framework::Framework()
   if (!Settings::Get(kGpsTrackingEnabledKey, gpsTrackingEnabled))
     gpsTrackingEnabled = false;
   m_gpsTrackingEnabled = gpsTrackingEnabled;
+
+  // Restore gps tracking duration, hours
+  uint32_t duration = kDefaultGpsTrackingMaxRurationHours;
+  if (!Settings::Get(kGpsTrackingDurationHours, duration))
+    duration = kDefaultGpsTrackingMaxRurationHours;
+  m_gpsTrack.SetDuration(hours(duration));
 
   m_ParsedMapApi.SetBookmarkManager(&m_bmManager);
 
@@ -1338,6 +1346,8 @@ bool Framework::IsGpsTrackingEnabled() const
 
 void Framework::SetGpsTrackingDuration(hours duration)
 {
+  Settings::Set(kGpsTrackingDurationHours, duration.count());
+
   m_gpsTrack.SetDuration(duration);
 }
 
