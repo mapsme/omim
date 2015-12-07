@@ -14543,3 +14543,15 @@
     pl = Dalej
     nl = Volgende
     pt = Próxima
+
+  [pp_place_add]
+    tags = ios, android
+    comment = «Add place» button in place page.
+    en = Add place
+    ru = Добавить место
+
+  [pp_place_edit]
+    tags = ios, android
+    comment = «Edit place» button in place page.
+    en = Edit place
+    ru = Редактировать место
