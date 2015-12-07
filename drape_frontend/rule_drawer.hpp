@@ -29,7 +29,7 @@ public:
   using TIsCountryLoadedByNameFn = function<bool (string const &)>;
 
   RuleDrawer(TDrawerCallback const & drawerFn, TCheckCancelledCallback const & checkCancelled,
-             TIsCountryLoadedByNameFn const & isLoadedFn, ref_ptr<EngineContext> context);
+             TIsCountryLoadedByNameFn const & isLoadedFn, ref_ptr<EngineContext> context, bool is3d);
   ~RuleDrawer();
 
   void operator() (FeatureType const & f);
@@ -45,6 +45,8 @@ private:
   m2::RectD m_globalRect;
   ScreenBase m_geometryConvertor;
   double m_currentScaleGtoP;
+
+  bool const m_is3d;
 
   array<TMapShapes, df::PrioritiesCount> m_mapShapes;
   bool m_wasCancelled;
