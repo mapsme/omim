@@ -18,5 +18,5 @@
 
   <item android:id="@+id/delete"
         android:title="@string/delete"
-        android:icon="@drawable/ic_delete"/>
+        android:icon="@drawable/ic_trashcan"/>
 </menu>

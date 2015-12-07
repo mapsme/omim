@@ -819,7 +819,7 @@ public abstract class BaseDownloadAdapter extends BaseAdapter
       if (options != StorageOptions.MAP_OPTION_MAP_ONLY)
         bs.sheet(MENU_DELETE_ROUTING, R.drawable.ic_no_routing, R.string.downloader_delete_routing);
 
-      bs.sheet(MENU_DELETE, R.drawable.ic_delete, R.string.downloader_delete_map);
+      bs.sheet(MENU_DELETE, R.drawable.ic_trashcan, R.string.downloader_delete_map);
     }
 
     switch (status)

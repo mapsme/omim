@@ -143,7 +143,7 @@ public class BookmarksListFragment extends BaseMwmListFragment
     case BookmarkListAdapter.TYPE_TRACK:
       BottomSheetHelper.create(getActivity())
                        .title(((Track) item).getName())
-                       .sheet(Menu.NONE, R.drawable.ic_delete, R.string.delete)
+                       .sheet(Menu.NONE, R.drawable.ic_trashcan, R.string.delete)
                        .listener(new DialogInterface.OnClickListener()
                        {
                          @Override
