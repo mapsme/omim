@@ -1,5 +1,6 @@
-#include "geometry_utils.hpp"
 #include "search_engine.hpp"
+
+#include "geometry_utils.hpp"
 #include "search_query.hpp"
 #include "search_string_utils.hpp"
 
