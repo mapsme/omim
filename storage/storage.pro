@@ -17,6 +17,7 @@ HEADERS += \
   country_polygon.hpp \
   http_map_files_downloader.hpp \
   index.hpp \
+  map_repository.hpp \
   map_files_downloader.hpp \
   queued_country.hpp \
   simple_tree.hpp \
@@ -29,6 +30,7 @@ SOURCES += \
   country_info_getter.cpp \
   http_map_files_downloader.cpp \
   index.cpp \
+  map_repository.cpp \
   queued_country.cpp \
   storage.cpp \
   storage_defines.cpp \
