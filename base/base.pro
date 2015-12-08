@@ -70,6 +70,7 @@ HEADERS += \
     stats.hpp \
     std_serialization.hpp \
     stl_add.hpp \
+    stl_helpers.hpp \
     stl_iterator.hpp \
     string_format.hpp \
     string_utils.hpp \
@@ -83,5 +84,4 @@ HEADERS += \
     threaded_priority_queue.hpp \
     timegm.hpp \
     timer.hpp \
-    vector_operations.hpp \
     worker_thread.hpp \
