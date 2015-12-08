@@ -17,6 +17,9 @@ const char * const kSuffixModernClear = "_clear";
 
 string GetStyleSuffix(MapStyle mapStyle)
 {
+#ifdef BUILD_DESIGNER
+  return string();
+#else
   switch (mapStyle)
   {
   case MapStyleLight:
@@ -33,6 +36,7 @@ string GetStyleSuffix(MapStyle mapStyle)
   }
   LOG(LWARNING, ("Unknown map style", mapStyle));
   return kSuffixModernClear;
+#endif // BUILD_DESIGNER
 }
 
 }  // namespace

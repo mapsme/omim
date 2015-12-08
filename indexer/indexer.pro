@@ -112,6 +112,7 @@ HEADERS += \
     search_string_utils.hpp \    # it's in indexer because of CategoriesHolder dependency.
     succinct_trie_builder.hpp \
     succinct_trie_reader.hpp \
+    scales_patch.hpp \
     tesselator_decl.hpp \
     tree_structure.hpp \
     trie.hpp \
