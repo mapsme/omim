@@ -1,12 +1,13 @@
-#include "search/locality.hpp"
+#include "locality.hpp"
 
-#include "indexer/search_delimiters.hpp"
-#include "indexer/search_string_utils.hpp"
+#include "search_delimiters.hpp"
+#include "search_string_utils.hpp"
 
 #include "base/assert.hpp"
 
 #include "std/algorithm.hpp"
 #include "std/limits.hpp"
+
 
 namespace search
 {

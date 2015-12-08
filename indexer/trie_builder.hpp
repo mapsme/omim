@@ -1,4 +1,5 @@
 #pragma once
+#include "trie.hpp"
 
 #include "coding/byte_stream.hpp"
 #include "coding/varint.hpp"
