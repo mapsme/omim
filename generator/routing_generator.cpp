@@ -179,7 +179,7 @@ void FindCrossNodes(osrm::NodeDataVectorT const & nodeData, gen::OsmID2FeatureID
             FeatureType ft;
             Index::FeaturesLoaderGuard loader(index, mwmId);
             loader.GetFeatureByIndex(osm2ft.GetFeatureID(startSeg.wayId), ft);
-            LOG(LINFO, ("Double border intersection", wgsIntersection, "rank:", GetWarningRank(ft)));
+            LOG(LINFO, ("Double border intersection", wgsIntersection, "rank:", GetWarningRank(ft), "feature point", ms::LatLon(data.m_segments.front().lat1, data.m_segments.front().lon1), " wayIds", startSeg.wayId, endSeg.wayId));
           }
         }
       }
