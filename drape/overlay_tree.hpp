@@ -13,7 +13,9 @@
 namespace dp
 {
 
-//#define COLLECT_DISPLACEMENT_INFO
+#ifdef BUILD_DESIGNER
+#define COLLECT_DISPLACEMENT_INFO
+#endif // BUILD_DESIGNER
 
 namespace detail
 {

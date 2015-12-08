@@ -8,7 +8,12 @@ DEPENDENCIES += opening_hours \
 
 include($$ROOT_DIR/common.pri)
 
-TARGET = MAPS.ME
+map_designer {
+  TARGET = MAPS.ME.Designer
+} else {
+  TARGET = MAPS.ME
+}
+
 TEMPLATE = app
 CONFIG += warn_on
 QT *= core widgets gui opengl
@@ -42,7 +47,12 @@ macx-* {
   LIBS *= "-framework CoreLocation" "-framework CoreWLAN" \
           "-framework QuartzCore" "-framework IOKit" "-framework SystemConfiguration"
 
-  ICON = res/mac.icns
+  map_designer {
+    ICON = res/designer.icns
+  } else {
+    ICON = res/mac.icns
+  }
+
   PLIST_FILE = Info.plist
   # path to original plist, which will be processed by qmake and later by us
   QMAKE_INFO_PLIST = res/$${PLIST_FILE}
@@ -57,13 +67,15 @@ macx-* {
 
 OTHER_RES.path = $$DATADIR
 OTHER_RES.files = ../data/copyright.html ../data/eula.html ../data/welcome.html \
-                  ../data/countries.txt \
+                  ../data/countries.txt ../data/colors.txt ../data/patterns.txt \
                   ../data/languages.txt ../data/categories.txt \
                   ../data/packed_polygons.bin res/logo.png
 CLASSIFICATOR_RES.path = $$DATADIR
 CLASSIFICATOR_RES.files = ../data/classificator.txt \
                           ../data/types.txt \
-                          ../data/drules_proto_legacy.bin
+                          ../data/mapcss-dynamic.txt \
+                          ../data/mapcss-mapping.csv \
+                          ../data/drules_proto_legacy.bin                          
 DEFAULT_SKIN_RES.path = $$DATADIR/resources-default
 DEFAULT_SKIN_RES.files = ../resources-default/default.ui
 MDPI_SKIN_RES.path = $$DATADIR/resources-mdpi_legacy
@@ -96,6 +108,25 @@ linux* {
 
 macx-* {
   QMAKE_BUNDLE_DATA += $$ALL_RESOURCES
+}
+
+map_designer {
+SOURCES += \
+    build_style/build_common.cpp \
+    build_style/build_drules.cpp \
+    build_style/build_skins.cpp \
+    build_style/build_style.cpp \
+    build_style/build_statistics.cpp \
+    build_style/run_tests.cpp \
+
+HEADERS += \
+    build_style/build_common.h \
+    build_style/build_drules.h \
+    build_style/build_skins.h \
+    build_style/build_style.h \
+    build_style/build_statistics.h \
+    build_style/run_tests.h \
+
 }
 
 SOURCES += \

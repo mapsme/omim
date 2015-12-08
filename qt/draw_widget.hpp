@@ -61,6 +61,8 @@ namespace qt
 
     void PrepareShutdown();
 
+    void RefreshDrawingRules();
+
     Framework & GetFramework() { return *m_framework.get(); }
 
     void SetMapStyle(MapStyle mapStyle);
@@ -103,8 +105,6 @@ namespace qt
     bool m_enableScaleUpdate;
 
     bool m_emulatingLocation;
-
-    void InitRenderPolicy();
 
     unique_ptr<gui::Skin> m_skin;
   };

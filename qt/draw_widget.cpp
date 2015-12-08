@@ -545,4 +545,9 @@ void DrawWidget::SetRouter(routing::RouterType routerType)
   m_framework->SetRouter(routerType);
 }
 
+void DrawWidget::RefreshDrawingRules()
+{
+  SetMapStyle(MapStyleLight);
+}
+
 }
