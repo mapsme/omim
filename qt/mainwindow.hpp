@@ -31,6 +31,10 @@ namespace qt
     QAction * m_selectionMode;
     QAction * m_clearSelection;
     QAction * m_pSearchAction;
+    QAction * m_pBuildStyleAction;
+    QAction * m_pDrawDebugRectAction;
+    QAction * m_pGetStatisticsAction;
+    QAction * m_pRunTestsAction;
     DrawWidget * m_pDrawWidget;
 
     QDockWidget * m_Docks[1];
@@ -42,10 +46,13 @@ namespace qt
 
     unique_ptr<location::LocationService> const m_locationService;
 
+    QString const m_mapcssFilePath;
+
     Q_OBJECT
 
   public:
-    MainWindow();
+    MainWindow(QString const & mapcssFilePath = QString());
+    virtual ~MainWindow() {};
 
     virtual void OnLocationError(location::TLocationError errorCode);
     virtual void OnLocationUpdated(location::GpsInfo const & info);
@@ -89,5 +96,13 @@ namespace qt
 
     void OnSwitchSelectionMode();
     void OnClearSelection();
+
+#ifdef BUILD_DESIGNER
+    void OnBuildStyle();
+    void OnDebugStyle();
+    void OnGetStatistics();
+    void OnRunTests();
+#endif // BUILD_DESIGNER
+
   };
 }

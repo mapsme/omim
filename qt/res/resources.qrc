@@ -14,6 +14,10 @@
         <file>select.png</file>
         <file>selectmode.png</file>
         <file>clear.png</file>
+        <file>run.png</file>
+        <file>bug.png</file>
+        <file>chart.png</file>
+        <file>test.png</file>
     </qresource>
     <qresource prefix="/ui">
         <file>logo.png</file>
