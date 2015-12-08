@@ -850,4 +850,14 @@
 	<string name="pp_place_add">Add place</string>
 	<!-- «Edit place» button in place page. -->
 	<string name="pp_place_edit">Edit place</string>
+	<string name="editor_time_add">Add schedule</string>
+	<string name="editor_time_delete">Delete schedule</string>
+	<!-- Text for allday switch. -->
+	<string name="editor_time_allday">All day(24 hours)</string>
+	<string name="editor_time_open">Open time</string>
+	<string name="editor_time_close">Close time</string>
+	<string name="editor_time_add_closed">Add hours closed</string>
+	<string name="editor_time_title">Opening hours</string>
+	<string name="editor_time_advanced">Advanced mode</string>
+	<string name="editor_time_simple">Simple mode</string>
 </resources>
