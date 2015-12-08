@@ -24,6 +24,7 @@ HEADERS += \
     locality.hpp \
     locality_finder.hpp \
     params.hpp \
+    projection_on_street.hpp \
     query_saver.hpp \
     region.hpp \
     result.hpp \
@@ -41,6 +42,7 @@ HEADERS += \
     v2/geocoder.hpp \
     v2/search_model.hpp \
     v2/search_query_v2.hpp \
+    v2/street_vicinity_loader.hpp \
 
 SOURCES += \
     approximate_string_match.cpp \
@@ -54,6 +56,7 @@ SOURCES += \
     locality.cpp \
     locality_finder.cpp \
     params.cpp \
+    projection_on_street.cpp \
     query_saver.cpp \
     region.cpp \
     result.cpp \
@@ -67,3 +70,4 @@ SOURCES += \
     v2/geocoder.cpp \
     v2/search_model.cpp \
     v2/search_query_v2.cpp \
+    v2/street_vicinity_loader.cpp \
