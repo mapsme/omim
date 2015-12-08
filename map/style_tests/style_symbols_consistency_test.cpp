@@ -5,6 +5,8 @@
 #include "indexer/drules_include.hpp"
 #include "indexer/map_style_reader.hpp"
 
+#include "platform/platform.hpp"
+
 #include "base/logging.hpp"
 
 #include "coding/parse_xml.hpp"
@@ -14,6 +16,19 @@
 #include "std/set.hpp"
 #include "std/string.hpp"
 #include "std/vector.hpp"
+
+namespace
+{
+void UnitTestInitPlatform()
+{
+  Platform & pl = GetPlatform();
+  CommandLineOptions const & options = GetTestingOptions();
+  if (options.m_dataPath)
+    pl.SetWritableDirForTests(options.m_dataPath);
+  if (options.m_resourcePath)
+    pl.SetResourceDir(options.m_resourcePath);
+}
+}
 
 namespace
 {
@@ -64,6 +79,8 @@ set<string> GetSymbolsSetFromResourcesFile(string const & density)
 
 UNIT_TEST(Test_SymbolsConsistency)
 {
+  UnitTestInitPlatform();
+
   // Tests that all symbols specified in drawing rules have corresponding symbols in resources
 
   bool res = true;

@@ -96,11 +96,12 @@ HEADERS += \
     scales.hpp \
     succinct_trie_builder.hpp \
     succinct_trie_reader.hpp \
+    scales_patch.hpp \
     tesselator_decl.hpp \
     tree_structure.hpp \
     trie.hpp \
     trie_builder.hpp \
-    trie_reader.hpp \     
+    trie_reader.hpp \
     types_mapping.hpp \
     types_skipper.hpp \
     unique_index.hpp \

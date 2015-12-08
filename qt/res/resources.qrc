@@ -11,6 +11,10 @@
         <file>minus.png</file>
         <file>location-search.png</file>
         <file>location.png</file>
+        <file>run.png</file>
+        <file>bug.png</file>
+        <file>chart.png</file>
+        <file>test.png</file>
     </qresource>
     <qresource prefix="/ui">
         <file>logo.png</file>
