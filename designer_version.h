@@ -1,0 +1,4 @@
+#pragma once
+#define DESIGNER_APP_VERSION ""
+#define DESIGNER_CODEBASE_SHA ""
+#define DESIGNER_DATA_VERSION ""
