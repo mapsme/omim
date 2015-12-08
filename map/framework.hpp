@@ -22,6 +22,7 @@
 #include "search/query_saver.hpp"
 #include "search/search_engine.hpp"
 
+#include "storage/map_repository.hpp"
 #include "storage/storage.hpp"
 
 #include "platform/country_defines.hpp"
@@ -122,6 +123,7 @@ protected:
   storage::Storage m_storage;
   shared_ptr<storage::ActiveMapsLayout> m_activeMaps;
   storage::CountryTree m_globalCntTree;
+  storage::MapRepository m_mapRepository;
 
   location::TMyPositionModeChanged m_myPositionListener;
 
@@ -219,6 +221,7 @@ public:
   storage::Storage & Storage() { return m_storage; }
   shared_ptr<storage::ActiveMapsLayout> & GetActiveMaps() { return m_activeMaps; }
   storage::CountryTree & GetCountryTree() { return m_globalCntTree; }
+  storage::MapRepository & GetMapRepository() { return m_mapRepository; }
 
   /// @name Bookmarks, Tracks and other UserMarks
   //@{
