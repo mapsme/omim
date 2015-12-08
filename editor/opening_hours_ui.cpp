@@ -115,7 +115,7 @@ TimeTable TimeTable::GetPredefinedTimeTable()
     osmoh::Weekday::Saturday
   };
 
-  tt.m_openingTime = tt.GetPredifinedOpeningTime();
+  tt.m_openingTime = tt.GetPredefinedOpeningTime();
 
   return tt;
 }
@@ -152,11 +152,19 @@ bool TimeTable::SetOpeningTime(osmoh::Timespan const & span)
 
 bool TimeTable::AddExcludeTime(osmoh::Timespan const & span)
 {
-  if (IsTwentyFourHours())
+  return ReplaceExcludeTime(span, GetExcludeTime().size());
+}
+
+bool TimeTable::ReplaceExcludeTime(osmoh::Timespan const & span, size_t const index)
+{
+  if (IsTwentyFourHours() || index > m_excludeTime.size())
     return false;
 
   auto copy = m_excludeTime;
-  copy.push_back(span);
+  if (index == m_excludeTime.size())
+    copy.push_back(span);
+  else
+    copy[index] = span;
 
   if (!FixTimeSpans(copy, m_openingTime))
     return false;
@@ -191,7 +199,7 @@ bool TimeTable::IsValid() const
   return true;
 }
 
-osmoh::Timespan TimeTable::GetPredifinedOpeningTime() const
+osmoh::Timespan TimeTable::GetPredefinedOpeningTime() const
 {
   using osmoh::operator""_h;
   return {10_h, 22_h};
@@ -200,8 +208,18 @@ osmoh::Timespan TimeTable::GetPredifinedOpeningTime() const
 osmoh::Timespan TimeTable::GetPredefinedExcludeTime() const
 {
   using osmoh::operator""_h;
-  // TODO(mgsergio): Genarate next span with start = end of the last once + 1_h
-  return {12_h, 13_h};
+  if (GetExcludeTime().empty())
+    return {12_h, 13_h};
+
+  auto nextExcludeTimeStart = GetExcludeTime().back().GetEnd().GetHourMinutes();
+  nextExcludeTimeStart.AddDuration(2_h);
+  if (nextExcludeTimeStart.GetDuration() >= 24_h - 1_h)
+    nextExcludeTimeStart.AddDuration(-24_h);
+
+  auto nextExcludeTimeEnd = nextExcludeTimeStart;
+  nextExcludeTimeEnd.AddDuration(1_h);
+
+  return {nextExcludeTimeStart, nextExcludeTimeEnd};
 }
 
 // TimeTableSet ------------------------------------------------------------------------------------
