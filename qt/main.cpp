@@ -24,6 +24,8 @@
   #include <QtWidgets/QApplication>
 #endif
 
+#include <QFileDialog>
+
 namespace
 {
   class FinalizeBase
@@ -95,7 +97,7 @@ int main(int argc, char * argv[])
       ReaderPtr<Reader> reader = GetPlatform().GetReader("eula.html");
       reader.ReadAsString(buffer);
     }
-    qt::InfoDialog eulaDialog("MAPS.ME End User Licensing Agreement", buffer.c_str(), NULL, buttons);
+    qt::InfoDialog eulaDialog(qAppName() + QString(" End User Licensing Agreement"), buffer.c_str(), NULL, buttons);
     eulaAccepted = (eulaDialog.exec() == 1);
     settings::Set(settingsEULA, eulaAccepted);
   }
@@ -103,8 +105,14 @@ int main(int argc, char * argv[])
   int returnCode = -1;
   if (eulaAccepted)   // User has accepted EULA
   {
+    QString mapcssFilePath;
+#ifdef BUILD_DESIGNER
+    mapcssFilePath = QFileDialog::getOpenFileName(nullptr,
+      "Open MapCSS file", "~/", "MapCSS Files (*.mapcss)");
+#endif // BUILD_DESIGNER
+
     Framework framework;
-    qt::MainWindow w(framework);
+    qt::MainWindow w(framework, mapcssFilePath);
     w.show();
     returnCode = a.exec();
   }

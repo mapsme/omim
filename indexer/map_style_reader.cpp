@@ -20,6 +20,9 @@ std::string const kStylesOverrideDir = "styles";
 
 string GetStyleRulesSuffix(MapStyle mapStyle)
 {
+#ifdef BUILD_DESIGNER
+  return string();
+#else
   switch (mapStyle)
   {
   case MapStyleDark:
@@ -60,6 +63,7 @@ string GetStyleResourcesSuffix(MapStyle mapStyle)
   }
   LOG(LWARNING, ("Unknown map style", mapStyle));
   return kSuffixClear;
+#endif // BUILD_DESIGNER
 }
 
 }  // namespace

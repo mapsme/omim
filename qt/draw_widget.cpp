@@ -401,5 +401,13 @@ void DrawWidget::SetRouter(routing::RouterType routerType)
 {
   m_framework.SetRouter(routerType);
 }
+
 void DrawWidget::SetSelectionMode(bool mode) { m_selectionMode = mode; }
+
+
+void DrawWidget::RefreshDrawingRules()
+{
+  SetMapStyle(MapStyleLight);
+}
+
 }

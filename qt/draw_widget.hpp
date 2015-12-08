@@ -72,6 +72,10 @@ public:
 
   void SetSelectionMode(bool mode);
 
+  void RefreshDrawingRules();
+
+  Framework & GetFramework() { return *m_framework.get(); }
+
 protected:
   /// @name Overriden from MapWidget.
   //@{

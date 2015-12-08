@@ -37,6 +37,10 @@ namespace qt
     QAction * m_trafficEnableAction;
     QAction * m_saveTrafficSampleAction;
     QAction * m_quitTrafficModeAction;
+    QAction * m_pBuildStyleAction;
+    QAction * m_pDrawDebugRectAction;
+    QAction * m_pGetStatisticsAction;
+    QAction * m_pRunTestsAction;
     DrawWidget * m_pDrawWidget;
 
     // TODO(mgsergio): Make indexing more informative.
@@ -51,11 +55,13 @@ namespace qt
 
     // This object is managed by Qt memory system.
     TrafficMode * m_trafficMode = nullptr;
+    QString const m_mapcssFilePath;
 
     Q_OBJECT
 
   public:
-    MainWindow(Framework & framework);
+    MainWindow(Framework & framework, QString const & mapcssFilePath = QString());
+    virtual ~MainWindow() {};
 
     virtual void OnLocationError(location::TLocationError errorCode);
     virtual void OnLocationUpdated(location::GpsInfo const & info);
@@ -107,5 +113,12 @@ namespace qt
     void OnOpenTrafficSample();
     void OnSaveTrafficSample();
     void OnQuitTrafficMode();
+
+#ifdef BUILD_DESIGNER
+    void OnBuildStyle();
+    void OnDebugStyle();
+    void OnGetStatistics();
+    void OnRunTests();
+#endif // BUILD_DESIGNER
   };
 }
