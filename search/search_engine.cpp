@@ -1,13 +1,13 @@
 #include "geometry_utils.hpp"
 #include "search_engine.hpp"
 #include "search_query.hpp"
+#include "search_string_utils.hpp"
 
 #include "storage/country_info_getter.hpp"
 
 #include "indexer/classificator.hpp"
 #include "indexer/mercator.hpp"
 #include "indexer/scales.hpp"
-#include "indexer/search_string_utils.hpp"
 
 #include "platform/platform.hpp"
 
