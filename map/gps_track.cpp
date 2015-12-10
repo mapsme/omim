@@ -139,7 +139,7 @@ void GpsTrack::ScheduleTask()
         ProcessPoints();
       }
 
-      CloseFile();
+      m_storage.reset();
     });
   }
 
@@ -147,74 +147,18 @@ void GpsTrack::ScheduleTask()
   m_cv.notify_one();
 }
 
-void GpsTrack::LazyInitFile()
+void GpsTrack::InitStorageIfNeed()
 {
-  if (m_file)
-    return;
-
-  m_file = make_unique<GpsTrackFile>();
-
-  // Open or create gps track file
-  try
-  {
-    if (!m_file->Open(m_filePath, m_maxItemCount))
-    {
-      if (!m_file->Create(m_filePath, m_maxItemCount))
-      {
-        LOG(LINFO, ("Cannot open or create GpsTrackFile:", m_filePath));
-        m_file.reset();
-      }
-      else
-      {
-        LOG(LINFO, ("GpsTrackFile has been created:", m_filePath));
-      }
-    }
-  }
-  catch (GpsTrackFile::CorruptedFileException &)
-  {
-    // File has been corrupted.
-    // Drop any data from the file.
-    // If file exception happens, then drop file.
-    try
-    {
-      LOG(LINFO, ("File is corrupted, create new:", m_filePath));
-      if (!m_file->Create(m_filePath, m_maxItemCount))
-      {
-        LOG(LINFO, ("Cannot create GpsTrackFile:", m_filePath));
-        m_file.reset();
-      }
-      else
-      {
-        LOG(LINFO, ("GpsTrackFile has been created:", m_filePath));
-      }
-    }
-    catch (RootException & e)
-    {
-      LOG(LINFO, ("GpsTrackFile.Create has caused exception:", e.Msg()));
-      m_file.reset();
-    }
-  }
-  catch (RootException & e)
-  {
-    LOG(LINFO, ("GpsTrackFile has caused exception:", e.Msg()));
-    m_file.reset();
-  }
-}
-
-void GpsTrack::CloseFile()
-{
-  if (!m_file)
+  if (m_storage)
     return;
 
   try
   {
-    m_file->Close();
-    m_file.reset();
+    m_storage = make_unique<GpsTrackStorage>(m_filePath, m_maxItemCount);
   }
   catch (RootException & e)
   {
-    LOG(LINFO, ("GpsTrackFile.Close has caused exception:", e.Msg()));
-    m_file.reset();
+    LOG(LINFO, ("Storage has not been created:", e.Msg()));
   }
 }
 
@@ -224,37 +168,24 @@ void GpsTrack::InitCollection(hours duration)
 
   m_collection = make_unique<GpsTrackCollection>(m_maxItemCount, duration);
 
-  LazyInitFile();
-
-  if (!m_file)
+  InitStorageIfNeed();
+  if (!m_storage)
     return;
 
-  // Read points from the file
-  // If CorruptedFileException happens, the clear the file
-  // If file exception happens, then drop file.
   try
   {
-    // Read points from file to the collection
-    m_file->ForEach([this](TItem const & info, size_t /* id */)->bool
+    m_storage->ForEach([this](TItem const & info)->bool
     {
       pair<size_t, size_t> evictedIds;
       m_collection->Add(info, evictedIds);
       return true;
     });
   }
-  catch (GpsTrackFile::CorruptedFileException &)
+  catch (RootException & e)
   {
-    LOG(LINFO, ("GpsTrackFile is corrupted, clear it:", m_filePath));
+    LOG(LINFO, ("Storage has caused exception:", e.Msg()));
     m_collection->Clear();
-    try
-    {
-      m_file->Clear();
-    }
-    catch (RootException & e)
-    {
-      LOG(LINFO, ("GpsTrackFile.Clear caused exception:", e.Msg()));
-      m_file.reset();
-    }
+    m_storage.reset();
   }
 }
 
@@ -276,12 +207,16 @@ void GpsTrack::ProcessPoints()
   if (!m_collection && HasCallback())
     InitCollection(duration);
 
-  UpdateFile(needClear, points);
+  UpdateStorage(needClear, points);
 
   if (!m_collection)
     return;
 
-  UpdateCollection(duration, needClear, points);
+  pair<size_t, size_t> addedIds;
+  pair<size_t, size_t> evictedIds;
+  UpdateCollection(duration, needClear, points, addedIds, evictedIds);
+
+  NotifyCallback(addedIds, evictedIds);
 }
 
 bool GpsTrack::HasCallback()
@@ -290,37 +225,28 @@ bool GpsTrack::HasCallback()
   return m_callback != nullptr;
 }
 
-void GpsTrack::UpdateFile(bool needClear, vector<TItem> const & points)
+void GpsTrack::UpdateStorage(bool needClear, vector<TItem> const & points)
 {
-  // Update file, if need
-  // If file exception happens, then drop the file.
-
-  LazyInitFile();
-
-  if (!m_file)
+  InitStorageIfNeed();
+  if (!m_storage)
     return;
 
   try
   {
-    // clear points from file, if need
     if (needClear)
-      m_file->Clear();
+      m_storage->Clear();
 
-    // add points to file if need
-    for (auto const & point : points)
-    {
-      size_t evictedId;
-      m_file->Append(point, evictedId);
-    }
+    m_storage->Append(points);
   }
   catch (RootException & e)
   {
-    LOG(LINFO, ("GpsTrackFile.Append has caused exception:", e.Msg()));
-    m_file.reset();
+    LOG(LINFO, ("Storage has caused exception:", e.Msg()));
+    m_storage.reset();
   }
 }
 
-void GpsTrack::UpdateCollection(hours duration, bool needClear, vector<TItem> const & points)
+void GpsTrack::UpdateCollection(hours duration, bool needClear, vector<TItem> const & points,
+                                pair<size_t, size_t> & addedIds, pair<size_t, size_t> & evictedIds)
 {
   // Apply Clear, SetDuration and Add points
 
@@ -336,17 +262,17 @@ void GpsTrack::UpdateCollection(hours duration, bool needClear, vector<TItem> co
     evictedIdsByDuration = m_collection->SetDuration(duration);
 
   // Add points to the collection, if need
-  pair<size_t, size_t> evictedIds = make_pair(kInvalidId, kInvalidId);
-  pair<size_t, size_t> addedIds = make_pair(kInvalidId, kInvalidId);
+  pair<size_t, size_t> evictedIdsByAdd = make_pair(kInvalidId, kInvalidId);
   if (!points.empty())
     addedIds = m_collection->Add(points, evictedIds);
+  else
+    addedIds = make_pair(kInvalidId, kInvalidId);
 
-  // Result evicted is
-  evictedIds = UnionRanges(evictedIds, UnionRanges(evictedIdsByClear, evictedIdsByDuration));
+  evictedIds = UnionRanges(evictedIdsByAdd, UnionRanges(evictedIdsByClear, evictedIdsByDuration));
+}
 
-  // Send callback notification.
-  // Callback must be protected by m_callbackGuard
-
+void GpsTrack::NotifyCallback(pair<size_t, size_t> const & addedIds, pair<size_t, size_t> const & evictedIds)
+{
   lock_guard<mutex> lg(m_callbackGuard);
 
   if (!m_callback)
@@ -356,7 +282,6 @@ void GpsTrack::UpdateCollection(hours duration, bool needClear, vector<TItem> co
   {
     m_needSendSnapshop = false;
 
-    // Get all points from collection to send them to the callback
     vector<pair<size_t, TItem>> toAdd;
     toAdd.reserve(m_collection->GetSize());
     m_collection->ForEach([&toAdd](TItem const & point, size_t id)->bool
@@ -377,10 +302,6 @@ void GpsTrack::UpdateCollection(hours duration, bool needClear, vector<TItem> co
     {
       size_t const addedCount = addedIds.second - addedIds.first + 1;
       ASSERT_GREATER_OR_EQUAL(m_collection->GetSize(), addedCount, ());
-
-      // Not all points from infos could be added to collection due to timestamp consequence restriction.
-      // Get added points from collection - take last <addedCount> points from collection, these points
-      // were added this time.
       toAdd.reserve(addedCount);
       m_collection->ForEach([&toAdd](TItem const & point, size_t id)->bool
       {
