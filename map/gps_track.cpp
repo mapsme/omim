@@ -157,47 +157,20 @@ void GpsTrack::LazyInitFile()
   // Open or create gps track file
   try
   {
-    if (!m_file->Open(m_filePath, m_maxItemCount))
-    {
-      if (!m_file->Create(m_filePath, m_maxItemCount))
-      {
-        LOG(LINFO, ("Cannot open or create GpsTrackFile:", m_filePath));
-        m_file.reset();
-      }
-      else
-      {
-        LOG(LINFO, ("GpsTrackFile has been created:", m_filePath));
-      }
-    }
+    m_file->Open(m_filePath, m_maxItemCount);
   }
-  catch (GpsTrackFile::CorruptedFileException &)
+  catch (RootException & e)
   {
-    // File has been corrupted.
-    // Drop any data from the file.
-    // If file exception happens, then drop file.
+    LOG(LINFO, ("GpsTrackFile.Open has caused exception:", e.Msg()));
     try
     {
-      LOG(LINFO, ("File is corrupted, create new:", m_filePath));
-      if (!m_file->Create(m_filePath, m_maxItemCount))
-      {
-        LOG(LINFO, ("Cannot create GpsTrackFile:", m_filePath));
-        m_file.reset();
-      }
-      else
-      {
-        LOG(LINFO, ("GpsTrackFile has been created:", m_filePath));
-      }
+      m_file->Create(m_filePath, m_maxItemCount);
     }
     catch (RootException & e)
     {
       LOG(LINFO, ("GpsTrackFile.Create has caused exception:", e.Msg()));
       m_file.reset();
     }
-  }
-  catch (RootException & e)
-  {
-    LOG(LINFO, ("GpsTrackFile has caused exception:", e.Msg()));
-    m_file.reset();
   }
 }
 
@@ -229,32 +202,20 @@ void GpsTrack::InitCollection(hours duration)
   if (!m_file)
     return;
 
-  // Read points from the file
-  // If CorruptedFileException happens, the clear the file
-  // If file exception happens, then drop file.
   try
   {
-    // Read points from file to the collection
-    m_file->ForEach([this](TItem const & info, size_t /* id */)->bool
+    m_file->ForEach([this](TItem const & info)->bool
     {
       pair<size_t, size_t> evictedIds;
       m_collection->Add(info, evictedIds);
       return true;
     });
   }
-  catch (GpsTrackFile::CorruptedFileException &)
+  catch (RootException & e)
   {
-    LOG(LINFO, ("GpsTrackFile is corrupted, clear it:", m_filePath));
+    LOG(LINFO, ("GpsTrackFile.ForEach has caused exception:", e.Msg()));
     m_collection->Clear();
-    try
-    {
-      m_file->Clear();
-    }
-    catch (RootException & e)
-    {
-      LOG(LINFO, ("GpsTrackFile.Clear caused exception:", e.Msg()));
-      m_file.reset();
-    }
+    m_file.reset();
   }
 }
 
@@ -302,16 +263,10 @@ void GpsTrack::UpdateFile(bool needClear, vector<TItem> const & points)
 
   try
   {
-    // clear points from file, if need
     if (needClear)
       m_file->Clear();
 
-    // add points to file if need
-    for (auto const & point : points)
-    {
-      size_t evictedId;
-      m_file->Append(point, evictedId);
-    }
+    m_file->Append(points);
   }
   catch (RootException & e)
   {
