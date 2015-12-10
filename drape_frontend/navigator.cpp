@@ -12,6 +12,7 @@
 
 #include "base/logging.hpp"
 
+#include "std/algorithm.hpp"
 #include "std/function.hpp"
 #include "std/bind.hpp"
 
@@ -25,6 +26,15 @@ void ReduceRectHack(m2::RectD & r)
   r.Inflate(-1.0E-9, -1.0E-9);
 }
 
+/// \returns The factor should be used to zoomin from the scale of screen to the most
+/// detailed scale according to scales::GetUpperStyleScale().
+double GetUpperScaleFactor(ScreenBase const & screen)
+{
+  m2::RectD const screenScreenRect = screen.ClipRect();
+  m2::RectD const upperScaleRect = df::GetRectForDrawScale(scales::GetUpperStyleScale(), screenScreenRect.Center());
+  return min(screenScreenRect.SizeX() / upperScaleRect.SizeX(),
+             screenScreenRect.SizeY() / upperScaleRect.SizeY());
+}
 } // namespace
 
 namespace df
@@ -379,6 +389,7 @@ void Navigator::Scale(m2::PointD const & pt, double factor)
 void Navigator::CalculateScale(m2::PointD const & pt, double factor, ScreenBase & screen)
 {
   m2::PointD startPt, endPt;
+  factor = min(factor, GetUpperScaleFactor(screen));
   CalcScalePoints(pt, factor, screen.PixelRect(), startPt, endPt);
   ScaleImpl(pt, endPt, pt, startPt, factor > 1, false, screen);
 }
@@ -434,7 +445,8 @@ bool Navigator::ScaleImpl(m2::PointD const & newPt1, m2::PointD const & newPt2,
       return false;
   }
 
-  if (!CheckMaxScale(tmp))
+  double const kMostDetailedZoomFactor = 1.;
+  if (!CheckMaxScale(tmp) || GetUpperScaleFactor(tmp) < kMostDetailedZoomFactor)
     return false;
 
   // re-checking the borders, as we might violate them a bit (don't know why).
