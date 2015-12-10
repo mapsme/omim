@@ -40,6 +40,8 @@ import com.mapswithme.maps.bookmarks.ChooseBookmarkCategoryFragment;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 import com.mapswithme.maps.bookmarks.data.MapObject;
 import com.mapswithme.maps.bookmarks.data.MapObject.ApiPoint;
+import com.mapswithme.maps.editor.EditorActivity;
+import com.mapswithme.maps.editor.EditorFragment;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.location.LocationPredictor;
 import com.mapswithme.maps.routing.NavigationController;
@@ -93,7 +95,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   private static final String[] DOCKED_FRAGMENTS = { SearchFragment.class.getName(),
                                                      DownloadFragment.class.getName(),
-                                                     RoutingPlanFragment.class.getName() };
+                                                     RoutingPlanFragment.class.getName(),
+                                                     EditorFragment.class.getName() };
   // Instance state
   private static final String STATE_PP_OPENED = "PpOpened";
   private static final String STATE_MAP_OBJECT = "MapObject";
@@ -242,6 +245,18 @@ public class MwmActivity extends BaseMwmFragmentActivity
     }
     else
       SearchActivity.start(this, query);
+  }
+
+  public void showEditor(MapObject point)
+  {
+    if (mIsFragmentContainer)
+    {
+      final Bundle args = new Bundle();
+      args.putParcelable(EditorFragment.EXTRA_POINT, point);
+      replaceFragment(EditorFragment.class, args, null);
+    }
+    else
+      EditorActivity.start(this, point);
   }
 
   private void shareMyLocation()

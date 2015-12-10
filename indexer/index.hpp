@@ -249,7 +249,7 @@ public:
     inline MwmSet::MwmId GetId() const { return m_handle.GetId(); }
     string GetCountryFileName() const;
     bool IsWorld() const;
-    void GetFeatureByIndex(uint32_t index, FeatureType & ft);
+    void GetFeatureByIndex(uint32_t index, FeatureType & ft) const;
 
   private:
     MwmHandle m_handle;
