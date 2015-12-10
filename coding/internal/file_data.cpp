@@ -44,7 +44,7 @@ FileData::FileData(string const & fileName, Op op)
   if (op == OP_WRITE_EXISTING)
   {
     // Special case, since "r+b" fails if file doesn't exist.
-    m_File = fopen(fileName.c_str(), "wb");
+    m_File = fopen(fileName.c_str(), "w+b");
     if (m_File)
       return;
   }
