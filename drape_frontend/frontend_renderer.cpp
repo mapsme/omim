@@ -371,6 +371,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
       if (msg->NeedDeactivateFollowing())
       {
         m_myPositionController->DeactivateRouting();
+        m_overlayTree->SetFollowingMode(false);
         if (m_enable3dInNavigation)
           DisablePerspective();
       }
@@ -382,6 +383,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
       ref_ptr<FollowRouteMessage> const msg = message;
       m_myPositionController->NextMode(!m_enable3dInNavigation ? msg->GetPreferredZoomLevel()
                                                                : msg->GetPreferredZoomLevelIn3d());
+      m_overlayTree->SetFollowingMode(true);
       if (m_enable3dInNavigation)
         AddUserEvent(EnablePerspectiveEvent(msg->GetRotationAngle(), msg->GetAngleFOV(),
                                             true /* animated */, false /* immediately start*/));
@@ -391,6 +393,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
   case Message::DeactivateRouteFollowing:
     {
       m_myPositionController->DeactivateRouting();
+      m_overlayTree->SetFollowingMode(false);
       if (m_enable3dInNavigation)
         DisablePerspective();
       break;

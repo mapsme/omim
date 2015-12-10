@@ -63,6 +63,8 @@ public:
   using TSelectResult = buffer_vector<ref_ptr<OverlayHandle>, 8>;
   void Select(m2::RectD const & rect, TSelectResult & result) const;
 
+  void SetFollowingMode(bool mode);
+
   using THandle = pair<ref_ptr<OverlayHandle>, bool>;
 
 private:
@@ -76,6 +78,7 @@ private:
   int m_frameCounter;
   array<vector<THandle>, dp::OverlayRanksCount> m_handles;
   vector<detail::OverlayInfo> m_handlesToDelete;
+  bool m_followingMode;
 };
 
 } // namespace dp
