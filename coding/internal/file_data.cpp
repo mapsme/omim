@@ -28,7 +28,7 @@ namespace my
 FileData::FileData(string const & fileName, Op op)
     : m_FileName(fileName), m_Op(op)
 {
-  char const * const modes [] = {"rb", "wb", "r+b", "ab"};
+  char const * const modes [] = {"rb", "wb", "r+b", "ab", "r+b"};
 #ifdef OMIM_OS_TIZEN
   m_File = new Tizen::Io::File();
   result const error = m_File->Construct(fileName.c_str(), modes[op]);
@@ -45,6 +45,13 @@ FileData::FileData(string const & fileName, Op op)
   {
     // Special case, since "r+b" fails if file doesn't exist.
     m_File = fopen(fileName.c_str(), "wb");
+    if (m_File)
+      return;
+  }
+  else if (op == OP_WRITE_READ_OPEN_ALWAYS)
+  {
+    // Special case, since "r+b" fails if file doesn't exist.
+    m_File = fopen(fileName.c_str(), "w+b");
     if (m_File)
       return;
   }
@@ -79,6 +86,7 @@ string FileData::GetErrorProlog() const
   case OP_WRITE_TRUNCATE: s = "Write truncate"; break;
   case OP_WRITE_EXISTING: s = "Write existing"; break;
   case OP_APPEND: s = "Append"; break;
+  case OP_WRITE_READ_OPEN_ALWAYS: s = "ReadWrite always"; break;
   }
 
   return m_FileName + "; " + s + "; " + strerror(errno);

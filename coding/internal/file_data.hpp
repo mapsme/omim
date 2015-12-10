@@ -24,7 +24,7 @@ class FileData: private noncopyable
 {
 public:
   /// @note Do not change order (@see FileData::FileData).
-  enum Op { OP_READ = 0, OP_WRITE_TRUNCATE, OP_WRITE_EXISTING, OP_APPEND };
+  enum Op { OP_READ = 0, OP_WRITE_TRUNCATE, OP_WRITE_EXISTING, OP_APPEND, OP_WRITE_READ_OPEN_ALWAYS };
 
   FileData(string const & fileName, Op op);
   ~FileData();
