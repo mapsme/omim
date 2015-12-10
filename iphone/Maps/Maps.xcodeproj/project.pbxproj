@@ -4803,6 +4803,7 @@
 					"-lsuccinct",
 					"-ObjC",
 					"-lopening_hours",
+					"-lpugixml",
 				);
 				PRODUCT_NAME = "maps.me dbg";
 				SDKROOT = iphoneos;
@@ -4923,6 +4924,7 @@
 					"-lsuccinct",
 					"-ObjC",
 					"-lopening_hours",
+					"-lpugixml",
 				);
 				PRODUCT_NAME = "maps.me dbg";
 				SDKROOT = iphoneos;
@@ -5045,6 +5047,7 @@
 					"-lsuccinct",
 					"-ObjC",
 					"-lopening_hours",
+					"-lpugixml",
 				);
 				PRODUCT_NAME = "maps.me beta";
 				SDKROOT = iphoneos;
@@ -5168,6 +5171,7 @@
 					"-lsuccinct",
 					"-ObjC",
 					"-lopening_hours",
+					"-lpugixml",
 				);
 				PRODUCT_NAME = maps.me;
 				SDKROOT = iphoneos;
@@ -5290,6 +5294,7 @@
 					"-lsuccinct",
 					"-ObjC",
 					"-lopening_hours",
+					"-lpugixml",
 				);
 				PRODUCT_NAME = "maps.me rel";
 				SDKROOT = iphoneos;
@@ -5410,6 +5415,7 @@
 					"-lsuccinct",
 					"-ObjC",
 					"-lopening_hours",
+					"-lpugixml",
 				);
 				PRODUCT_NAME = "maps.me rel";
 				SDKROOT = iphoneos;
