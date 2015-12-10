@@ -1,5 +1,7 @@
 #include "Framework.hpp"
 
+#include "map/gps_tracking.hpp"
+
 #include "std/chrono.hpp"
 
 namespace
@@ -27,7 +29,7 @@ extern "C"
       return;
     }
 
-    Settings::Set("GpsTrackingEnabled", static_cast<bool>(enable));
+    GpsTracking::Instance().SetEnabled(enable);
   }
 
   JNIEXPORT jboolean JNICALL
@@ -39,9 +41,7 @@ extern "C"
     if (framework)
       return framework->IsGpsTrackingEnabled();
 
-    bool res = false;
-    Settings::Get("GpsTrackingEnabled", res);
-    return res;
+    return GpsTracking::Instance().IsEnabled();
   }
 
   JNIEXPORT void JNICALL
@@ -59,8 +59,6 @@ extern "C"
     if (framework)
       return framework->GetGpsTrackingDuration().count();
 
-    uint32_t res = 24;
-    Settings::Get("GpsTrackingDuration", res);
-    return res;
+    return GpsTracking::Instance()::GetDuration().count();
   }
 }

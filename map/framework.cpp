@@ -2,6 +2,7 @@
 
 #include "map/ge0_parser.hpp"
 #include "map/geourl_process.hpp"
+#include "map/gps_tracking.hpp"
 #include "map/storage_bridge.hpp"
 
 #include "defines.hpp"
@@ -93,9 +94,6 @@ namespace
   static const int kKeepPedestrianDistanceMeters = 10000;
   char const kRouterTypeKey[] = "router";
   char const kMapStyleKey[] = "MapStyleKeyV1";
-  char const kGpsTrackingEnabledKey[] = "GpsTrackingEnabled";
-  char const kGpsTrackingDurationHours[] = "GpsTrackingDuration";
-  uint32_t const kDefaultGpsTrackingMaxDurationHours = 24;
 }
 
 pair<MwmSet::MwmId, MwmSet::RegResult> Framework::RegisterMap(
@@ -141,8 +139,11 @@ void Framework::OnLocationUpdate(GpsInfo const & info)
   CallDrapeFunction(bind(&df::DrapeEngine::SetGpsInfo, _1, rInfo,
                          m_routingSession.IsNavigable(), routeMatchingInfo));
 
-  if (m_gpsTrackingEnabled)
-    m_gpsTrack.AddPoint(info);
+  if (GpsTracking::Instance().IsEnabled())
+  {
+    auto & gpsTrack = GpsTracking::Instance().GetTrack();
+    gpsTrack.AddPoint(info);
+  }
 }
 
 void Framework::OnCompassUpdate(CompassInfo const & info)
@@ -194,8 +195,6 @@ void Framework::StopLocationFollow()
 
 Framework::Framework()
   : m_bmManager(*this)
-  , m_gpsTrackingEnabled(false)
-  , m_gpsTrack(GetDefaultGpsTrack())
   , m_fixedSearchResults(0)
 {
   m_activeMaps.reset(new ActiveMapsLayout(*this));
@@ -207,16 +206,6 @@ Framework::Framework()
   if (!Settings::Get(kMapStyleKey, mapStyle))
     mapStyle = MapStyleClear;
   GetStyleReader().SetCurrentStyle(static_cast<MapStyle>(mapStyle));
-
-  // Restore gps tracking enabled
-  bool gpsTrackingEnabled = false;
-  Settings::Get(kGpsTrackingEnabledKey, gpsTrackingEnabled);
-  m_gpsTrackingEnabled = gpsTrackingEnabled;
-
-  // Restore gps tracking duration, hours
-  uint32_t duration = kDefaultGpsTrackingMaxDurationHours;
-  Settings::Get(kGpsTrackingDurationHours, duration);
-  m_gpsTrack.SetDuration(hours(duration));
 
   m_ParsedMapApi.SetBookmarkManager(&m_bmManager);
 
@@ -1293,8 +1282,11 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
   if (m_routingSession.IsActive())
     InsertRoute(m_routingSession.GetRoute());
 
-  if (m_gpsTrackingEnabled)
-    m_gpsTrack.SetCallback(bind(&Framework::OnUpdateGpsTrackPointsCallback, this, _1, _2));
+  if (GpsTracking::Instance().IsEnabled())
+  {
+    auto & gpsTrack = GpsTracking::Instance().GetTrack();
+    gpsTrack.SetCallback(bind(&Framework::OnUpdateGpsTrackPointsCallback, this, _1, _2));
+  }
 }
 
 ref_ptr<df::DrapeEngine> Framework::GetDrapeEngine()
@@ -1304,7 +1296,8 @@ ref_ptr<df::DrapeEngine> Framework::GetDrapeEngine()
 
 void Framework::DestroyDrapeEngine()
 {
-  m_gpsTrack.SetCallback(nullptr);
+  auto & gpsTrack = GpsTracking::Instance().GetTrack();
+  gpsTrack.SetCallback(nullptr);
 
   m_drapeEngine.reset();
 }
@@ -1316,25 +1309,25 @@ void Framework::EnableGpsTracking(bool enabled)
   // track a position, but render it only if user asks to render track).
   // For now, GPS tracking and visualization of GPS tracking are treated as the same.
 
-  if (enabled == m_gpsTrackingEnabled)
+  if (enabled == GpsTracking::Instance().IsEnabled())
     return;
 
-  m_gpsTrackingEnabled = enabled;
+  GpsTracking::Instance().SetEnabled(enabled);
 
-  Settings::Set(kGpsTrackingEnabledKey, enabled);
+  auto & gpsTrack = GpsTracking::Instance().GetTrack();
 
   if (enabled)
   {
-    m_gpsTrack.Clear();
+    gpsTrack.Clear();
 
     if (m_drapeEngine)
-      m_gpsTrack.SetCallback(bind(&Framework::OnUpdateGpsTrackPointsCallback, this, _1, _2));
+      gpsTrack.SetCallback(bind(&Framework::OnUpdateGpsTrackPointsCallback, this, _1, _2));
   }
   else
   {
     // Reset callback first to prevent notification about removed points on Clear
-    m_gpsTrack.SetCallback(nullptr);
-    m_gpsTrack.Clear();
+    gpsTrack.SetCallback(nullptr);
+    gpsTrack.Clear();
 
     if (m_drapeEngine)
       m_drapeEngine->ClearGpsTrackPoints();
@@ -1343,20 +1336,20 @@ void Framework::EnableGpsTracking(bool enabled)
 
 bool Framework::IsGpsTrackingEnabled() const
 {
-  return m_gpsTrackingEnabled;
+  return GpsTracking::Instance().IsEnabled();
 }
 
 void Framework::SetGpsTrackingDuration(hours duration)
 {
-  uint32_t const hours = duration.count();
-  Settings::Set(kGpsTrackingDurationHours, hours);
+  GpsTracking::Instance().SetDuration(duration);
 
-  m_gpsTrack.SetDuration(duration);
+  auto & gpsTrack = GpsTracking::Instance().GetTrack();
+  gpsTrack.SetDuration(duration);
 }
 
 hours Framework::GetGpsTrackingDuration() const
 {
-  return m_gpsTrack.GetDuration();
+  return GpsTracking::Instance().GetDuration();
 }
 
 void Framework::OnUpdateGpsTrackPointsCallback(vector<pair<size_t, location::GpsTrackInfo>> && toAdd,
