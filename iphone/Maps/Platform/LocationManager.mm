@@ -14,6 +14,8 @@
 #include "platform/settings.hpp"
 #include "base/math.hpp"
 
+#include "platform/file_logging.hpp"
+
 static CLAuthorizationStatus const kRequestAuthStatus = kCLAuthorizationStatusAuthorizedAlways;
 static NSString * const kAlohalyticsLocationRequestAlwaysFailed = @"$locationAlwaysRequestErrorDenied";
 
@@ -67,23 +69,38 @@ static NSString * const kAlohalyticsLocationRequestAlwaysFailed = @"$locationAlw
 - (void)onDaemonMode
 {
   self.isDaemonMode = YES;
+  [m_locationManager stopMonitoringSignificantLocationChanges];
+//  [m_locationManager disallowDeferredLocationUpdates];
+  m_locationManager.activityType = CLActivityTypeOther;
+
+//  if (m_locationManager)
+//    [m_locationManager stopMonitoringSignificantLocationChanges];
+//
+//  m_locationManager = [[CLLocationManager alloc]init];
+//  m_locationManager.delegate = self;
+//  m_locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
+//  m_locationManager.allowsBackgroundLocationUpdates = YES;
+
   [m_locationManager startMonitoringSignificantLocationChanges];
-  m_locationManager.activityType = CLActivityTypeFitness;
   [m_locationManager startUpdatingLocation];
+//  [m_locationManager stopMonitoringSignificantLocationChanges];
+//  [m_locationManager startMonitoringSignificantLocationChanges];
+////  m_locationManager.activityType = CLActivityTypeFitness;
+//  [m_locationManager startUpdatingLocation];
 }
 
 - (void)beforeTerminate
 {
-  if (GetFramework().IsGpsTrackingEnabled())
-    [m_locationManager startMonitoringSignificantLocationChanges];
+  if (!GetFramework().IsGpsTrackingEnabled())
+    return;
+  [m_locationManager stopMonitoringSignificantLocationChanges];
+  [m_locationManager startMonitoringSignificantLocationChanges];
 }
 
 - (void)onForeground
 {
   self.isDaemonMode = NO;
   [m_locationManager stopMonitoringSignificantLocationChanges];
-  [m_locationManager disallowDeferredLocationUpdates];
-  m_locationManager.activityType = CLActivityTypeOther;
   [self orientationChanged];
 }
 
@@ -169,8 +186,8 @@ static NSString * const kAlohalyticsLocationRequestAlwaysFailed = @"$locationAlw
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations
 {
   [self processLocation:locations.lastObject];
-  if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground)
-    [m_locationManager allowDeferredLocationUpdatesUntilTraveled:300 timeout:15];
+//  if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground)
+//    [m_locationManager allowDeferredLocationUpdatesUntilTraveled:300 timeout:15];
 }
 
 - (void)processLocation:(CLLocation *)location
@@ -180,12 +197,21 @@ static NSString * const kAlohalyticsLocationRequestAlwaysFailed = @"$locationAlw
   if (location.horizontalAccuracy < 0.)
     return;
 
+
   // Save current device time for location.
   m_lastLocationTime = [NSDate date];
   [[Statistics instance] logLocation:location];
   auto const newInfo = gpsInfoFromLocation(location);
   if (self.isDaemonMode)
   {
+//    auto ud = [NSUserDefaults standardUserDefaults];
+//    NSMutableDictionary<NSString *, NSString *> * d = [[ud objectForKey:@"locations"] mutableCopy];
+//    if (!d)
+//      d = [NSMutableDictionary dictionary];
+//    CLLocationCoordinate2D c = location.coordinate;
+//    [d setObject:@(c.latitude).stringValue forKey:@(c.longitude).stringValue];
+//    [ud setObject:d forKey:@"locations"];
+//    [ud synchronize];
     GetDefaultGpsTrack().AddPoint(newInfo);
   }
   else

@@ -28,6 +28,8 @@
 #include "platform/platform_ios.hpp"
 #include "platform/preferred_languages.hpp"
 
+#include "platform/file_logging.hpp"
+
 // If you have a "missing header error" here, then please run configure.sh script in the root repo folder.
 #import "../../../private.h"
 
@@ -167,14 +169,16 @@ void InitLocalizedStrings()
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  // Initialize all 3party engines.
+  BOOL returnValue = [self initStatistics:application didFinishLaunchingWithOptions:launchOptions];
   if (launchOptions[UIApplicationLaunchOptionsLocationKey])
   {
     _m_locationManager = [[LocationManager alloc] init];
     [self.m_locationManager onDaemonMode];
-    return YES;
+    return returnValue;
   }
-  // Initialize all 3party engines.
-  BOOL returnValue = [self initStatistics:application didFinishLaunchingWithOptions:launchOptions];
+  if (application.applicationState == UIApplicationStateBackground)
+    return returnValue;
 
   NSURL * urlUsedToLaunchMaps = launchOptions[UIApplicationLaunchOptionsURLKey];
   if (urlUsedToLaunchMaps != nil)
@@ -249,12 +253,13 @@ void InitLocalizedStrings()
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
-  [self.m_locationManager beforeTerminate];
+//  [self.m_locationManager beforeTerminate];
   [self.mapViewController onTerminate];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
+  [self.m_locationManager beforeTerminate];
   [self.mapViewController onEnterBackground];
   if (m_activeDownloadsCounter)
   {
@@ -280,6 +285,8 @@ void InitLocalizedStrings()
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
+  if (application.applicationState == UIApplicationStateBackground)
+    return;
   Framework & f = GetFramework();
   if (m_geoURL)
   {
@@ -326,7 +333,6 @@ void InitLocalizedStrings()
   m_fileURL = nil;
 
   [self restoreRouteState];
-
   [[Statistics instance] applicationDidBecomeActive];
 }
 

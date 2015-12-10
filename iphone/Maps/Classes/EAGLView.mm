@@ -58,9 +58,10 @@ double getExactDPI(double contentScaleFactor)
 // The GL view is stored in the nib file. When it's unarchived it's sent -initWithCoder:
 - (id)initWithCoder:(NSCoder *)coder
 {
+  BOOL const isBackground = [UIApplication sharedApplication].applicationState == UIApplicationStateBackground;
   NSLog(@"EAGLView initWithCoder Started");
-
-  if ((self = [super initWithCoder:coder]))
+  self = [super initWithCoder:coder];
+  if (self && !isBackground)
   {
     lastViewSize = CGRectZero;
     _widgetsManager = [[MWMMapWidgets alloc] init];

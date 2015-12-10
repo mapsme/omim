@@ -74,7 +74,7 @@ using namespace storage;
   }
   else
   {
-    [self.locationManager stopUpdatingLocation];
+//    [self.locationManager stopUpdatingLocation];
     completionHandler(UIBackgroundFetchResultFailed);
   }
 }

@@ -377,6 +377,8 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 
 - (void)onEnterForeground
 {
+  if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground)
+    return;
   // Notify about entering foreground (should be called on the first launch too).
   GetFramework().EnterForeground();
 
