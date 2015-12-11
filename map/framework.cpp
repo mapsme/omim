@@ -1303,7 +1303,6 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
 
   if (m_connectToGpsTrack)
   {
-    m_connectToGpsTrack = false;
     GpsTracker::Instance().Connect(bind(&Framework::OnUpdateGpsTrackPointsCallback, this, _1, _2));
   }
 }
@@ -1316,21 +1315,17 @@ ref_ptr<df::DrapeEngine> Framework::GetDrapeEngine()
 void Framework::DestroyDrapeEngine()
 {
   GpsTracker::Instance().Disconnect();
+
   m_drapeEngine.reset();
 }
 
 void Framework::ConnectToGpsTracker()
 {
+  m_connectToGpsTrack = true;
   if (m_drapeEngine)
   {
-    m_connectToGpsTrack = false;
     m_drapeEngine->ClearGpsTrackPoints();
     GpsTracker::Instance().Connect(bind(&Framework::OnUpdateGpsTrackPointsCallback, this, _1, _2));
-  }
-  else
-  {
-    // Postspone connect to tracker until is being constructed
-    m_connectToGpsTrack = true;
   }
 }
 
