@@ -1287,9 +1287,7 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
     InsertRoute(m_routingSession.GetRoute());
 
   if (m_connectToGpsTrack)
-  {
     GpsTracker::Instance().Connect(bind(&Framework::OnUpdateGpsTrackPointsCallback, this, _1, _2));
-  }
 }
 
 ref_ptr<df::DrapeEngine> Framework::GetDrapeEngine()
@@ -1300,7 +1298,6 @@ ref_ptr<df::DrapeEngine> Framework::GetDrapeEngine()
 void Framework::DestroyDrapeEngine()
 {
   GpsTracker::Instance().Disconnect();
-
   m_drapeEngine.reset();
 }
 
@@ -1317,8 +1314,9 @@ void Framework::ConnectToGpsTracker()
 void Framework::DisconnectFromGpsTracker()
 {
   m_connectToGpsTrack = false;
-  m_drapeEngine->ClearGpsTrackPoints();
   GpsTracker::Instance().Disconnect();
+  if (m_drapeEngine)
+    m_drapeEngine->ClearGpsTrackPoints();
 }
 
 void Framework::OnUpdateGpsTrackPointsCallback(vector<pair<size_t, location::GpsTrackInfo>> && toAdd,
