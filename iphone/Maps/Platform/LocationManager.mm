@@ -9,7 +9,7 @@
 
 #include "Framework.h"
 
-#include "map/gps_track.hpp"
+#include "map/gps_tracking.hpp"
 #include "platform/measurement_utils.hpp"
 #include "platform/settings.hpp"
 #include "base/math.hpp"
@@ -186,7 +186,8 @@ static NSString * const kAlohalyticsLocationRequestAlwaysFailed = @"$locationAlw
   auto const newInfo = gpsInfoFromLocation(location);
   if (self.isDaemonMode)
   {
-    GetDefaultGpsTrack().AddPoint(newInfo);
+    if (GpsTracking::Instance().IsEnabled())
+      GpsTracking::Instance().GetTrack().AddPoint(newInfo);
   }
   else
   {
