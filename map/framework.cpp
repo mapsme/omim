@@ -1362,7 +1362,7 @@ hours Framework::GetGpsTrackingDuration() const
 void Framework::OnUpdateGpsTrackPointsCallback(vector<pair<size_t, location::GpsTrackInfo>> && toAdd,
                                                pair<size_t, size_t> const & toRemove)
 {
-  ASSERT(m_drapeEngine.get() != nullptr, ());
+//  ASSERT(m_drapeEngine.get() != nullptr, ());
 
   vector<df::GpsTrackPoint> pointsAdd;
   pointsAdd.reserve(toAdd.size());
@@ -1385,7 +1385,8 @@ void Framework::OnUpdateGpsTrackPointsCallback(vector<pair<size_t, location::Gps
       indicesRemove.emplace_back(i);
   }
 
-  m_drapeEngine->UpdateGpsTrackPoints(move(pointsAdd), move(indicesRemove));
+  if (m_drapeEngine != nullptr)
+    m_drapeEngine->UpdateGpsTrackPoints(move(pointsAdd), move(indicesRemove));
 }
 
 void Framework::SetMapStyle(MapStyle mapStyle)
