@@ -2,6 +2,7 @@
 
 #include "search/search_query_params.hpp"
 #include "search/v2/features_layer.hpp"
+#include "search/v2/features_layer_path_finder.hpp"
 #include "search/v2/search_model.hpp"
 
 #include "indexer/mwm_set.hpp"
@@ -34,7 +35,7 @@ class RankTable;
 
 namespace v2
 {
-class FeaturesLayerPathFinder;
+class FeaturesLayerMatcher;
 class SearchModel;
 
 // This class is used to retrieve all features corresponding to a
@@ -86,9 +87,6 @@ private:
   // pre-check to cut off unnecessary work.
   bool IsLayerSequenceSane() const;
 
-  // Returns true if [curToken, endToken) subsequence looks like a house number.
-  bool LooksLikeHouseNumber(size_t curToken, size_t endToken) const;
-
   // Finds all paths through layers and emits reachable features from
   // the lowest layer.
   void FindPaths();
@@ -120,8 +118,11 @@ private:
   // Features loader.
   unique_ptr<Index::FeaturesLoaderGuard> m_loader;
 
+  // Features matcher for layers intersection.
+  unique_ptr<FeaturesLayerMatcher> m_matcher;
+
   // Path finder for interpretations.
-  unique_ptr<FeaturesLayerPathFinder> m_finder;
+  FeaturesLayerPathFinder m_finder;
 
   // Search query params prepared for retrieval.
   SearchQueryParams m_retrievalParams;

@@ -3,6 +3,7 @@
 #include "search/projection_on_street.hpp"
 
 #include "indexer/feature.hpp"
+#include "indexer/feature_algo.hpp"
 #include "indexer/features_vector.hpp"
 #include "indexer/scale_index.hpp"
 
@@ -26,11 +27,11 @@ public:
     Street() = default;
     Street(Street && street) = default;
 
-    inline bool IsEmpty() const { return m_points.empty() || m_rect.IsEmptyInterior(); }
+    inline bool IsEmpty() const { return !m_calculator || m_rect.IsEmptyInterior(); }
 
-    vector<m2::PointD> m_points;
     vector<uint32_t> m_features;
     m2::RectD m_rect;
+    unique_ptr<ProjectionOnStreetCalculator> m_calculator;
 
     DISALLOW_COPY(Street);
   };
@@ -47,14 +48,12 @@ public:
     if (street.IsEmpty())
       return;
 
-    ProjectionOnStreetCalculator calculator(street.m_points, m_offsetMeters);
+    ProjectionOnStreetCalculator const & calculator = *street.m_calculator;
     ProjectionOnStreet proj;
-
     for (uint32_t id : street.m_features)
     {
       // Load center and check projection only when |id| is in |sortedIds|.
-      auto it = lower_bound(sortedIds.begin(), sortedIds.end(), id);
-      if (it == sortedIds.end() || *it != id)
+      if (!binary_search(sortedIds.begin(), sortedIds.end(), id))
         continue;
 
       FeatureType ft;
@@ -62,7 +61,30 @@ public:
       if (!calculator.GetProjection(ft.GetCenter(), proj))
         continue;
 
-      fn(distance(sortedIds.begin(), it));
+      fn(id);
+    }
+  }
+
+  template <typename TFilter, typename TFn>
+  void FilterFeaturesInVicinity(uint32_t streetId, TFilter && filter, TFn && fn)
+  {
+    Street const & street = GetStreet(streetId);
+    if (street.IsEmpty())
+      return;
+
+    ProjectionOnStreetCalculator const & calculator = *street.m_calculator;
+    ProjectionOnStreet proj;
+    for (uint32_t id : street.m_features)
+    {
+      FeatureType ft;
+      m_featuresVector.GetByIndex(id, ft);
+      if (!filter(id, ft))
+        continue;
+
+      if (!calculator.GetProjection(feature::GetCenter(ft, FeatureType::WORST_GEOMETRY), proj))
+        continue;
+
+      fn(id, ft);
     }
   }
 
