@@ -24,6 +24,7 @@
 - (void)routeFrom;
 - (void)routeTo;
 - (void)share;
+- (void)editPlace;
 - (void)addBookmark;
 - (void)removeBookmark;
 - (void)apiBack;
