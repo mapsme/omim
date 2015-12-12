@@ -13,6 +13,7 @@
 + (UIColor *)orange;
 + (UIColor *)linkBlue;
 + (UIColor *)linkBlueDark;
++ (UIColor *)linkBlueDisabled;
 + (UIColor *)blackPrimaryText;
 + (UIColor *)blackSecondaryText;
 + (UIColor *)blackStatusBarBackground;
