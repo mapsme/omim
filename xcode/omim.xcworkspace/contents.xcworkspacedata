@@ -114,4 +114,7 @@
    <FileRef
       location = "group:mapshot/mapshot.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:editor/editor.xcodeproj">
+   </FileRef>
 </Workspace>
