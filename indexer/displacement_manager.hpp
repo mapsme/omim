@@ -6,8 +6,8 @@
 #include "indexer/feature_visibility.hpp"
 #include "indexer/scales.hpp"
 
-#include "geometry/any_rect2d.hpp"
 #include "geometry/point2d.hpp"
+#include "geometry/rect2d.hpp"
 #include "geometry/screenbase.hpp"
 #include "geometry/tree4d.hpp"
 
@@ -126,7 +126,7 @@ public:
         acceptedNodes.ForEachInRect( m2::Inflate(displacementRect, {delta, delta}),
             [&isDisplaced, &maxNode, &delta, &scale](DisplaceableNode const & node)
             {
-              if ((maxNode.center - node.center).Length() < delta && node.maxScale > scale)
+              if (maxNode.center.SquareLength(node.center) < delta * delta && node.maxScale > scale)
                 isDisplaced = true;
             });
         if (isDisplaced)
