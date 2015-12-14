@@ -16,6 +16,7 @@
 #include "indexer/feature_impl.hpp"
 #include "indexer/features_vector.hpp"
 #include "indexer/index.hpp"
+#include "indexer/osm_editor.hpp"
 #include "indexer/scales.hpp"
 #include "indexer/search_delimiters.hpp"
 #include "indexer/search_string_utils.hpp"
@@ -1857,6 +1858,15 @@ void Query::SearchFeatures(SearchQueryParams const & params, TMWMVector const & 
   }
 }
 
+namespace
+{
+bool MatchRawFeature(SearchQueryParams const & /*params*/, FeatureType const & /*feature*/)
+{
+  // TODO(vng, ygorshenin): Need the same matching implementation as used in the search trie.
+  return false;
+}
+} // namespace
+
 void Query::SearchInMWM(Index::MwmHandle const & mwmHandle, SearchQueryParams const & params,
                         ViewportID viewportId /*= DEFAULT_V*/)
 {
@@ -1870,19 +1880,38 @@ void Query::SearchInMWM(Index::MwmHandle const & mwmHandle, SearchQueryParams co
   if (isWorld && !m_worldSearch)
     return;
 
-  serial::CodingParams cp(trie::GetCodingParams(header.GetDefCodingParams()));
-  ModelReaderPtr searchReader = value->m_cont.GetReader(SEARCH_INDEX_FILE_TAG);
+  serial::CodingParams const cp(trie::GetCodingParams(header.GetDefCodingParams()));
+  ModelReaderPtr const searchReader = value->m_cont.GetReader(SEARCH_INDEX_FILE_TAG);
   unique_ptr<trie::DefaultIterator> const trieRoot(
       trie::ReadTrie(SubReaderWrapper<Reader>(searchReader.GetPtr()), trie::ValueReader(cp),
                      trie::TEdgeValueReader()));
 
-  MwmSet::MwmId const mwmId = mwmHandle.GetId();
-  FeaturesFilter filter(viewportId == DEFAULT_V || isWorld ?
-                          0 : &m_offsetsInViewport[viewportId][mwmId], *this);
+  MwmSet::MwmId const & mwmId = mwmHandle.GetId();
+  FeaturesFilter const filter(viewportId == DEFAULT_V || isWorld ?
+                              0 : &m_offsetsInViewport[viewportId][mwmId], *this);
+  auto & editor = osm::Editor::Instance();
+  vector<TTrieValue> editedFeaturesToMatchSeparately;
   MatchFeaturesInTrie(params, *trieRoot, filter, [&](TTrieValue const & value)
   {
-    AddResultFromTrie(value, mwmId, viewportId);
+    // Filter out features deleted by user and edited features (they should be matched separately).
+    FeatureID const fid(mwmId, value.m_featureId);
+    if (!editor.IsFeatureDeleted(fid))
+    {
+      if (editor.IsFeatureEdited(fid))
+        editedFeaturesToMatchSeparately.push_back(value);
+      else
+        AddResultFromTrie(value, mwmId, viewportId);
+    }
   });
+
+  // Separate matching for edited features.
+  for (auto const & trieValue : editedFeaturesToMatchSeparately)
+  {
+    FeatureType feature;
+    VERIFY(editor.GetEditedFeature(FeatureID(mwmId, trieValue.m_featureId), feature), ());
+    if (MatchRawFeature(params, feature))
+      AddResultFromTrie(trieValue, mwmId, viewportId);
+  }
 }
 
 void Query::SuggestStrings(Results & res)

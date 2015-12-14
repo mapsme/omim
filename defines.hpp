@@ -58,8 +58,3 @@
 #define PACKED_POLYGONS_INFO_TAG "info"
 
 #define EXTERNAL_RESOURCES_FILE "external_resources.txt"
-
-/// How many langs we're supporting on indexing stage
-#define MAX_SUPPORTED_LANGUAGES 64
-
-

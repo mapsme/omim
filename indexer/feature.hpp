@@ -21,7 +21,6 @@ namespace old_101 { namespace feature
   class LoaderImpl;
 }}
 
-
 /// Base feature class for storing common data (without geometry).
 class FeatureBase
 {
@@ -80,7 +79,7 @@ public:
   */
 
   template <class T>
-  inline bool ForEachNameRef(T & functor) const
+  inline bool ForEachNameRef(T && functor) const
   {
     if (!HasName())
       return false;
@@ -155,6 +154,12 @@ public:
 
   inline void SetID(FeatureID const & id) { m_id = id; }
   inline FeatureID GetID() const { return m_id; }
+
+  /// @name Editor functions.
+  //@{
+  void SetNames(StringUtf8Multilang const & newNames);
+  void SetMetadata(feature::Metadata const & newMetadata);
+  //@}
 
   /// @name Parse functions. Do simple dispatching to m_pLoader.
   //@{
