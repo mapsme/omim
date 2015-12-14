@@ -96,12 +96,12 @@ namespace
   char const kMapStyleKey[] = "MapStyleKeyV1";
 
   // TODO!
-  // To adjust GpsTrackFilter was added secret command "?gpsaccuracy:xxx;"
+  // To adjust GpsTrackFilter was added secret command "?gpstrackaccuracy:xxx;"
   // where xxx is a new value for horizontal accuracy.
   // This is temporary solution while we don't have a good filter.
-  void ParseSetMinGpsAccuracyCommand(string const & query)
+  void ParseSetGpsTrackMinAccuracyCommand(string const & query)
   {
-    const char  kGpsAccuracy[] = "?gpsaccuracy:";
+    const char  kGpsAccuracy[] = "?gpstrackaccuracy:";
     if (strings::StartsWith(query, kGpsAccuracy))
     {
       size_t const end = query.find(';', sizeof(kGpsAccuracy) - 1);
@@ -1002,7 +1002,7 @@ bool Framework::Search(search::SearchParams const & params)
   search::SearchParams const & rParams = params;
 #endif
 
-  ParseSetMinGpsAccuracyCommand(params.m_query);
+  ParseSetGpsTrackMinAccuracyCommand(params.m_query);
 
   return m_searchEngine->Search(rParams, GetCurrentViewport());
 }
