@@ -46,7 +46,7 @@ static CGFloat const alpha100 = 1.;
 // Background color && press color
 + (UIColor *)pressBackground
 {
-  return [UIColor colorWithRed:scaled(245.) green:scaled(245.) blue:scaled(245.) alpha:alpha100];
+  return [UIColor colorWithRed:scaled(248.) green:scaled(248.) blue:scaled(248.) alpha:alpha100];
 }
 // Red color (use for status closed in place page)
 + (UIColor *)red
@@ -68,6 +68,11 @@ static CGFloat const alpha100 = 1.;
 + (UIColor *)linkBlueDark
 {
   return [UIColor colorWithRed:scaled(25.) green:scaled(135.) blue:scaled(215.) alpha:alpha100];
+}
+
++ (UIColor *)linkBlueDisabled
+{
+  return [self.linkBlue colorWithAlphaComponent:alpha26];
 }
 
 + (UIColor *)blackPrimaryText
