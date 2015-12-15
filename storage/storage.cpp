@@ -71,22 +71,6 @@ void DeleteFromDiskWithIndexes(LocalCountryFile const & localFile, MapOptions op
   DeleteCountryIndexes(localFile);
   localFile.DeleteFromDisk(options);
 }
-
-class EqualFileName
-{
-  string const & m_name;
-
-public:
-  explicit EqualFileName(string const & name) : m_name(name) {}
-  bool operator()(SimpleTree<Country> const & node) const
-  {
-    Country const & c = node.Value();
-    if (c.GetFilesCount() > 0)
-      return (c.GetFile().GetNameWithoutExt() == m_name);
-    else
-      return false;
-  }
-};
 }  // namespace
 
 Storage::Storage() : m_downloader(new HttpMapFilesDownloader()), m_currentSlotId(0)
@@ -143,7 +127,7 @@ void Storage::RegisterAllLocalMaps()
     LocalCountryFile const & localFile = *i;
     string const & name = localFile.GetCountryName();
     TIndex index = FindIndexByFile(name);
-    if (index.IsValid())
+    if (index.IsValid() && IsIndexInCountryTree(index))
       RegisterCountryFiles(index, localFile.GetDirectory(), localFile.GetVersion());
     else
       RegisterFakeCountryFiles(localFile);
@@ -172,20 +156,9 @@ size_t Storage::GetDownloadedFilesCount() const
 
 CountriesContainerT const & NodeFromIndex(CountriesContainerT const & root, TIndex const & index)
 {
-  // complex logic to avoid [] out_of_bounds exceptions
-  if (index.m_group == TIndex::INVALID || index.m_group >= static_cast<int>(root.SiblingsCount()))
-    return root;
-  if (index.m_country == TIndex::INVALID ||
-      index.m_country >= static_cast<int>(root[index.m_group].SiblingsCount()))
-  {
-    return root[index.m_group];
-  }
-  if (index.m_region == TIndex::INVALID ||
-      index.m_region >= static_cast<int>(root[index.m_group][index.m_country].SiblingsCount()))
-  {
-    return root[index.m_group][index.m_country];
-  }
-  return root[index.m_group][index.m_country][index.m_region];
+  SimpleTree<Country> const * node = root.FindLeaf(Country(index.m_idx));
+  CHECK(node, ("Node with id =", index.m_idx, "not found in country tree."));
+  return *node;
 }
 
 Country const & Storage::CountryByIndex(TIndex const & index) const
@@ -208,6 +181,11 @@ size_t Storage::CountriesCount(TIndex const & index) const
 string const & Storage::CountryName(TIndex const & index) const
 {
   return NodeFromIndex(m_countries, index).Value().Name();
+}
+
+bool Storage::IsIndexInCountryTree(TIndex const & index) const
+{
+  return m_countries.Find(Country(index.m_idx)) != nullptr;
 }
 
 string const & Storage::CountryFlag(TIndex const & index) const
@@ -242,7 +220,7 @@ CountryFile const & Storage::GetCountryFile(TIndex const & index) const
 Storage::TLocalFilePtr Storage::GetLatestLocalFile(CountryFile const & countryFile) const
 {
   TIndex const index = FindIndexByFile(countryFile.GetNameWithoutExt());
-  if (index.IsValid())
+  if (index.IsValid() && IsIndexInCountryTree(index))
   {
     TLocalFilePtr localFile = GetLatestLocalFile(index);
     if (localFile)
@@ -358,7 +336,7 @@ void Storage::DeleteCustomCountryVersion(LocalCountryFile const & localFile)
   }
 
   TIndex const index = FindIndexByFile(countryFile.GetNameWithoutExt());
-  if (!index.IsValid())
+  if (!(index.IsValid() && IsIndexInCountryTree(index)))
   {
     LOG(LERROR, ("Removed files for an unknown country:", localFile));
     return;
@@ -634,52 +612,18 @@ string Storage::GetFileDownloadUrl(string const & baseUrl, string const & fName)
 
 TIndex Storage::FindIndexByFile(string const & name) const
 {
-  EqualFileName fn(name);
-
-  for (size_t i = 0; i < m_countries.SiblingsCount(); ++i)
-  {
-    if (fn(m_countries[i]))
-      return TIndex(static_cast<int>(i));
-
-    for (size_t j = 0; j < m_countries[i].SiblingsCount(); ++j)
-    {
-      if (fn(m_countries[i][j]))
-        return TIndex(static_cast<int>(i), static_cast<int>(j));
-
-      for (size_t k = 0; k < m_countries[i][j].SiblingsCount(); ++k)
-      {
-        if (fn(m_countries[i][j][k]))
-          return TIndex(static_cast<int>(i), static_cast<int>(j), static_cast<int>(k));
-      }
-    }
-  }
-
-  return TIndex();
+  // @TODO(bykoianko) Probably it's worth to check here if name represent a node in the tree.
+  return TIndex(name);
 }
 
 vector<TIndex> Storage::FindAllIndexesByFile(string const & name) const
 {
-  EqualFileName fn(name);
+//  EqualFileName fn(name);
   vector<TIndex> res;
+  if (!m_countries.Find(name))
+    return res; // File id name not found.
 
-  for (size_t i = 0; i < m_countries.SiblingsCount(); ++i)
-  {
-    if (fn(m_countries[i]))
-      res.emplace_back(static_cast<int>(i));
-
-    for (size_t j = 0; j < m_countries[i].SiblingsCount(); ++j)
-    {
-      if (fn(m_countries[i][j]))
-        res.emplace_back(static_cast<int>(i), static_cast<int>(j));
-
-      for (size_t k = 0; k < m_countries[i][j].SiblingsCount(); ++k)
-      {
-        if (fn(m_countries[i][j][k]))
-          res.emplace_back(static_cast<int>(i), static_cast<int>(j), static_cast<int>(k));
-      }
-    }
-  }
-
+  res.push_back(TIndex(name));
   return res;
 }
 
