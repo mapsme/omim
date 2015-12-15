@@ -11,7 +11,7 @@ area|z0-[natural=glacier]
 {z-index: 1;}
 area|z10-[leisure=beach_resort],
 area|z10-[natural=beach],
-{z-index: 46;}
+{z-index: 1;}
 
 /*LANDUSE 1- */
 

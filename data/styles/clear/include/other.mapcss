@@ -8,7 +8,7 @@ line|z16[barrier=hedge],
 line|z16[historic=citywalls],
 {
   color: @fence;
-  width: 0.7;
+  width: 0.5;
   opacity: 1;
   z-index: 950;
   dashes: 0.09,0.09;
@@ -22,7 +22,7 @@ line|z17-[barrier=hedge],
 line|z17-[historic=citywalls],
 {
   color: @fence;
-  width: 1.2;
+  width: 1;
   opacity: 1;
   z-index: 950;
   dashes: 0.18,0.18;
@@ -35,13 +35,10 @@ line|z18-[barrier=hedge],
 line|z18-[historic=citywalls],
 {
   color: @fence;
-  width: 1.4;
+  width: 1;
   z-index: 950;
   dashes: 0.18,0.18;
 }
-
-
-
 
 /* PISTE */
 /* node|z13[aerialway=station] { symbol-shape: circle; symbol-fill-color: grey; symbol-size: 2; } */
@@ -69,25 +66,13 @@ line|z15-[piste:lift=t-bar] {
   z-index: 6888;
 }
 
-line|z19-[power=line] {
-  color: @aerialway;
-  width: 1;
-  opacity: 1;
-  z-index: 2000;
-}
-
-
-line|z14[piste:type=downhill],
-line|z14[piste:type=nordic],
-line|z14[piste:type=sled],
-{
+line|z14[piste:type=downhill], line|z14[piste:type=nordic], line|z14[piste:type=sled] {
   color: @piste;
   width: 0.8;
   opacity: 1;
   z-index: 10;
 }
-line|z14[route=ski],
-line|z14[leisure=skiing]  {
+line|z14[route=ski] {
   color: @piste;
   width: 0.8;
   opacity: 1;
@@ -106,8 +91,7 @@ line|z15-[piste:type=nordic]{
   z-index: 199;
 }
 
-line|z15-[route=ski],
-line|z15-[leisure=skiing]  {
+line|z15-[route=ski] {
   color: @piste;
   width: 1.1;
   opacity: 1;
@@ -123,8 +107,7 @@ line|z17-[piste:type=sled] {
   opacity: 1;
   z-index: 199;
 }
-line|z17-[route=ski],
-line|z17-[leisure=skiing]  {
+line|z17-[route=ski] {
   color: @piste;
   width: 1.5;
   opacity: 1;
