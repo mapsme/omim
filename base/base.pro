@@ -59,6 +59,7 @@ HEADERS += \
     mutex.hpp \
     object_tracker.hpp \
     observer_list.hpp \
+    range_iterator.hpp \
     regexp.hpp \
     resource_pool.hpp \
     rolling_hash.hpp \
