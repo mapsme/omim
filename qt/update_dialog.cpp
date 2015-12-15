@@ -111,80 +111,80 @@ namespace qt
   /// when user clicks on any map row in the table
   void UpdateDialog::OnItemClick(QTreeWidgetItem * item, int /*column*/)
   {
-    // calculate index of clicked item
-    QList<int> treeIndex;
-    {
-      QTreeWidgetItem * parent = item;
-      while (parent)
-      {
-        treeIndex.insert(0, parent->data(KColumnIndexCountry, Qt::UserRole).toInt());
-        parent = parent->parent();
-      }
-      while (treeIndex.size() < 3)
-        treeIndex.append(TIndex::INVALID);
-    }
+//    // calculate index of clicked item
+//    QList<int> treeIndex;
+//    {
+//      QTreeWidgetItem * parent = item;
+//      while (parent)
+//      {
+//        treeIndex.insert(0, parent->data(KColumnIndexCountry, Qt::UserRole).toInt());
+//        parent = parent->parent();
+//      }
+//      while (treeIndex.size() < 3)
+//        treeIndex.append(TIndex::INVALID);
+//    }
 
-    TIndex const countryIndex(treeIndex[0], treeIndex[1], treeIndex[2]);
-    Storage & st = GetStorage();
+//    TIndex const countryIndex(treeIndex[0], treeIndex[1], treeIndex[2]);
+//    Storage & st = GetStorage();
 
-    // skip group items
-    if (st.CountriesCount(countryIndex) > 0)
-      return;
+//    // skip group items
+//    if (st.CountriesCount(countryIndex) > 0)
+//      return;
 
-    switch (m_framework.GetActiveMaps()->GetCountryStatus(countryIndex))
-    {
-    case TStatus::EOnDiskOutOfDate:
-      {
-        // map is already downloaded, so ask user about deleting!
-        QMessageBox ask(this);
-        ask.setIcon(QMessageBox::Question);
-        ask.setText(tr("Do you want to update or delete %1?").arg(item->text(KColumnIndexCountry)));
+//    switch (m_framework.GetActiveMaps()->GetCountryStatus(countryIndex))
+//    {
+//    case TStatus::EOnDiskOutOfDate:
+//      {
+//        // map is already downloaded, so ask user about deleting!
+//        QMessageBox ask(this);
+//        ask.setIcon(QMessageBox::Question);
+//        ask.setText(tr("Do you want to update or delete %1?").arg(item->text(KColumnIndexCountry)));
 
-        QPushButton * btns[3];
-        btns[0] = ask.addButton(tr("Update"), QMessageBox::ActionRole);
-        btns[1] = ask.addButton(tr("Delete"), QMessageBox::ActionRole);
-        btns[2] = ask.addButton(tr("Cancel"), QMessageBox::NoRole);
+//        QPushButton * btns[3];
+//        btns[0] = ask.addButton(tr("Update"), QMessageBox::ActionRole);
+//        btns[1] = ask.addButton(tr("Delete"), QMessageBox::ActionRole);
+//        btns[2] = ask.addButton(tr("Cancel"), QMessageBox::NoRole);
 
-        (void)ask.exec();
+//        (void)ask.exec();
 
-        QAbstractButton * res = ask.clickedButton();
+//        QAbstractButton * res = ask.clickedButton();
 
-        if (res == btns[0])
-          m_framework.GetActiveMaps()->DownloadMap(countryIndex, MapOptions::MapWithCarRouting);
+//        if (res == btns[0])
+//          m_framework.GetActiveMaps()->DownloadMap(countryIndex, MapOptions::MapWithCarRouting);
 
-        if (res == btns[1])
-          m_framework.GetActiveMaps()->DeleteMap(countryIndex, MapOptions::MapWithCarRouting);
-      }
-      break;
+//        if (res == btns[1])
+//          m_framework.GetActiveMaps()->DeleteMap(countryIndex, MapOptions::MapWithCarRouting);
+//      }
+//      break;
 
-    case TStatus::EOnDisk:
-      {
-        // map is already downloaded, so ask user about deleting!
-        QMessageBox ask(this);
-        ask.setIcon(QMessageBox::Question);
-        ask.setText(tr("Do you want to delete %1?").arg(item->text(KColumnIndexCountry)));
-        ask.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        ask.setDefaultButton(QMessageBox::No);
+//    case TStatus::EOnDisk:
+//      {
+//        // map is already downloaded, so ask user about deleting!
+//        QMessageBox ask(this);
+//        ask.setIcon(QMessageBox::Question);
+//        ask.setText(tr("Do you want to delete %1?").arg(item->text(KColumnIndexCountry)));
+//        ask.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+//        ask.setDefaultButton(QMessageBox::No);
 
-        if (ask.exec() == QMessageBox::Yes)
-          m_framework.GetActiveMaps()->DeleteMap(countryIndex, MapOptions::MapWithCarRouting);
-      }
-      break;
+//        if (ask.exec() == QMessageBox::Yes)
+//          m_framework.GetActiveMaps()->DeleteMap(countryIndex, MapOptions::MapWithCarRouting);
+//      }
+//      break;
 
-    case TStatus::ENotDownloaded:
-    case TStatus::EDownloadFailed:
-      m_framework.GetActiveMaps()->DownloadMap(countryIndex, MapOptions::MapWithCarRouting);
-      break;
+//    case TStatus::ENotDownloaded:
+//    case TStatus::EDownloadFailed:
+//      m_framework.GetActiveMaps()->DownloadMap(countryIndex, MapOptions::MapWithCarRouting);
+//      break;
 
-    case TStatus::EInQueue:
-    case TStatus::EDownloading:
-      m_framework.GetActiveMaps()->DeleteMap(countryIndex, MapOptions::MapWithCarRouting);
-      break;
+//    case TStatus::EInQueue:
+//    case TStatus::EDownloading:
+//      m_framework.GetActiveMaps()->DeleteMap(countryIndex, MapOptions::MapWithCarRouting);
+//      break;
 
-    default:
-      ASSERT(false, ("We shouldn't be here"));
-      break;
-    }
+//    default:
+//      ASSERT(false, ("We shouldn't be here"));
+//      break;
+//    }
   }
 
   QTreeWidgetItem * MatchedItem(QTreeWidgetItem & parent, int index)
@@ -205,24 +205,24 @@ namespace qt
   QTreeWidgetItem * GetTreeItemByIndex(QTreeWidget & tree, TIndex const & index)
   {
     QTreeWidgetItem * item = 0;
-    if (index.m_group >= 0)
-    {
-      for (int i = 0; i < tree.topLevelItemCount(); ++i)
-      {
-        QTreeWidgetItem * grItem = tree.topLevelItem(i);
-        if (index.m_group == grItem->data(KColumnIndexCountry, Qt::UserRole).toInt())
-        {
-          item = grItem;
-          break;
-        }
-      }
-    }
-    if (item && index.m_country >= 0)
-    {
-      item = MatchedItem(*item, index.m_country);
-      if (item && index.m_region >= 0)
-        item = MatchedItem(*item, index.m_region);
-    }
+//    if (index.m_group >= 0)
+//    {
+//      for (int i = 0; i < tree.topLevelItemCount(); ++i)
+//      {
+//        QTreeWidgetItem * grItem = tree.topLevelItem(i);
+//        if (index.m_group == grItem->data(KColumnIndexCountry, Qt::UserRole).toInt())
+//        {
+//          item = grItem;
+//          break;
+//        }
+//      }
+//    }
+//    if (item && index.m_country >= 0)
+//    {
+//      item = MatchedItem(*item, index.m_country);
+//      if (item && index.m_region >= 0)
+//        item = MatchedItem(*item, index.m_region);
+//    }
     return item;
   }
 
@@ -346,29 +346,29 @@ namespace qt
     m_tree->setSortingEnabled(false);
     m_tree->clear();
 
-    int const gCount = GetChildsCount(TIndex());
-    for (int group = 0; group < gCount; ++group)
-    {
-      TIndex const grIndex(group);
-      QTreeWidgetItem * groupItem = CreateTreeItem(grIndex, group, 0);
-      UpdateRowWithCountryInfo(grIndex);
+//    int const gCount = GetChildsCount(TIndex());
+//    for (int group = 0; group < gCount; ++group)
+//    {
+//      TIndex const grIndex(group);
+//      QTreeWidgetItem * groupItem = CreateTreeItem(grIndex, group, 0);
+//      UpdateRowWithCountryInfo(grIndex);
 
-      int const cCount = GetChildsCount(grIndex);
-      for (int country = 0; country < cCount; ++country)
-      {
-        TIndex const cIndex(group, country);
-        QTreeWidgetItem * countryItem = CreateTreeItem(cIndex, country, groupItem);
-        UpdateRowWithCountryInfo(cIndex);
+//      int const cCount = GetChildsCount(grIndex);
+//      for (int country = 0; country < cCount; ++country)
+//      {
+//        TIndex const cIndex(group, country);
+//        QTreeWidgetItem * countryItem = CreateTreeItem(cIndex, country, groupItem);
+//        UpdateRowWithCountryInfo(cIndex);
 
-        int const rCount = GetChildsCount(cIndex);
-        for (int region = 0; region < rCount; ++region)
-        {
-          TIndex const rIndex(group, country, region);
-          (void)CreateTreeItem(rIndex, region, countryItem);
-          UpdateRowWithCountryInfo(rIndex);
-        }
-      }
-    }
+//        int const rCount = GetChildsCount(cIndex);
+//        for (int region = 0; region < rCount; ++region)
+//        {
+//          TIndex const rIndex(group, country, region);
+//          (void)CreateTreeItem(rIndex, region, countryItem);
+//          UpdateRowWithCountryInfo(rIndex);
+//        }
+//      }
+//    }
 
     m_tree->sortByColumn(KColumnIndexCountry, Qt::AscendingOrder);
     m_tree->setSortingEnabled(true);
