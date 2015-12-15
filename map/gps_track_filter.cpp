@@ -1,13 +1,19 @@
 #include "map/gps_track_filter.hpp"
 
+#include "geometry/distance_on_sphere.hpp"
+
 #include "platform/settings.hpp"
 
 namespace
 {
 
+char const kMinHorizontalAccuracyKey[] = "GpsTrackingMinAccuracy";
+
+// Minimal horizontal accuracy is required to skip 'bad' points.
 double constexpr kMinHorizontalAccuracyMeters = 50;
 
-char const kMinHorizontalAccuracyKey[] = "GpsTrackingMinAccuracy";
+// Required for points decimation to reduce number of close points.
+double constexpr kClosePointDistanceMeters = 15;
 
 } // namespace
 
@@ -18,6 +24,8 @@ void GpsTrackFilter::StoreMinHorizontalAccuracy(double value)
 
 GpsTrackFilter::GpsTrackFilter()
   : m_minAccuracy(kMinHorizontalAccuracyMeters)
+  , m_lastLl(0, 0)
+  , m_hasLastLl(false)
 {
   Settings::Get(kMinHorizontalAccuracyKey, m_minAccuracy);
 }
@@ -30,11 +38,20 @@ void GpsTrackFilter::Process(vector<location::GpsInfo> const & inPoints,
 
   outPoints.reserve(inPoints.size());
 
-  for (auto const & inPt : inPoints)
+  for (auto const & originPt : inPoints)
   {
-    if (m_minAccuracy > 0 && inPt.m_horizontalAccuracy > m_minAccuracy)
+    // Filter point by accuracy
+    if (m_minAccuracy > 0 && originPt.m_horizontalAccuracy > m_minAccuracy)
       continue;
 
-    outPoints.emplace_back(inPt);
+    // Filter point by close distance
+    ms::LatLon const ll(originPt.m_latitude, originPt.m_longitude);
+    if (m_hasLastLl && ms::DistanceOnEarth(m_lastLl, ll) < kClosePointDistanceMeters)
+      continue;
+
+    m_lastLl = ll;
+    m_hasLastLl = true;
+
+    outPoints.emplace_back(originPt);
   }
 }
