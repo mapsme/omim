@@ -1,10 +1,8 @@
 #pragma once
 
-#include "map/active_maps_layout.hpp"
 #include "map/api_mark_point.hpp"
 #include "map/bookmark.hpp"
 #include "map/bookmark_manager.hpp"
-#include "map/country_tree.hpp"
 #include "map/feature_vec_model.hpp"
 #include "map/mwm_url.hpp"
 #include "map/track.hpp"
@@ -58,7 +56,7 @@ class CountryInfoGetter;
 
 namespace routing { namespace turns{ class Settings; } }
 
-class StorageBridge;
+//class StorageBridge;
 
 namespace df
 {
@@ -112,7 +110,7 @@ protected:
 
   routing::RoutingSession m_routingSession;
 
-  drape_ptr<StorageBridge> m_storageBridge;
+//  drape_ptr<StorageBridge> m_storageBridge;
   drape_ptr<df::DrapeEngine> m_drapeEngine;
   drape_ptr<df::watch::CPUDrawer> m_cpuDrawer;
 
@@ -121,8 +119,8 @@ protected:
   TDownloadCountryListener m_downloadCountryListener;
 
   storage::Storage m_storage;
-  shared_ptr<storage::ActiveMapsLayout> m_activeMaps;
-  storage::CountryTree m_globalCntTree;
+//  shared_ptr<storage::ActiveMapsLayout> m_activeMaps;
+//  storage::CountryTree m_globalCntTree;
   storage::MapRepository m_mapRepository;
 
   location::TMyPositionModeChanged m_myPositionListener;
@@ -219,8 +217,6 @@ public:
   //@}
 
   storage::Storage & Storage() { return m_storage; }
-  shared_ptr<storage::ActiveMapsLayout> & GetActiveMaps() { return m_activeMaps; }
-  storage::CountryTree & GetCountryTree() { return m_globalCntTree; }
   storage::MapRepository & GetMapRepository() { return m_mapRepository; }
 
   /// @name Bookmarks, Tracks and other UserMarks
