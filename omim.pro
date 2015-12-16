@@ -73,6 +73,9 @@ SUBDIRS = 3party base coding geometry indexer search routing
     # Additional desktop-only, tests-only libraries.
     platform_tests_support.subdir = platform/platform_tests_support
     SUBDIRS *= platform_tests_support
+    
+    search_tests_support.subdir = search/search_tests_support
+    SUBDIRS *= search_tests_support
 
     # Tests binaries.
     base_tests.subdir = base/base_tests
@@ -139,7 +142,7 @@ SUBDIRS = 3party base coding geometry indexer search routing
     SUBDIRS *= pedestrian_routing_tests
 
     search_integration_tests.subdir = search/search_integration_tests
-    search_integration_tests.depends = $$MapDepLibs generator
+    search_integration_tests.depends = $$MapDepLibs generator search_tests_support
     SUBDIRS *= search_integration_tests
 
     generator_tests.subdir = generator/generator_tests

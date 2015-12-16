@@ -1,6 +1,6 @@
-#include "search/search_integration_tests/test_search_request.hpp"
+#include "search/search_tests_support/test_search_request.hpp"
 
-#include "search/search_integration_tests/test_search_engine.hpp"
+#include "search/search_tests_support/test_search_engine.hpp"
 
 #include "base/logging.hpp"
 

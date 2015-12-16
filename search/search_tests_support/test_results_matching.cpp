@@ -1,4 +1,4 @@
-#include "search/search_integration_tests/test_results_matching.hpp"
+#include "search/search_tests_support/test_results_matching.hpp"
 
 #include "indexer/feature_decl.hpp"
 #include "indexer/index.hpp"

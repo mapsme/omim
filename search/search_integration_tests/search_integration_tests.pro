@@ -6,7 +6,7 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 ROOT_DIR = ../..
-DEPENDENCIES = generator routing search storage stats_client jansson indexer platform geometry coding base \
+DEPENDENCIES = generator routing search search_tests_support storage stats_client jansson indexer platform geometry coding base \
                tess2 protobuf tomcrypt succinct
 
 DEPENDENCIES += opening_hours \
@@ -23,15 +23,5 @@ SOURCES += \
     retrieval_test.cpp \
     search_query_v2_test.cpp \
     smoke_test.cpp \
-    test_feature.cpp \
-    test_mwm_builder.cpp \
-    test_results_matching.cpp \
-    test_search_engine.cpp \
-    test_search_request.cpp \
 
 HEADERS += \
-    test_feature.hpp \
-    test_mwm_builder.hpp \
-    test_results_matching.hpp \
-    test_search_engine.hpp \
-    test_search_request.hpp \

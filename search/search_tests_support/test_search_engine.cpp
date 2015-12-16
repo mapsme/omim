@@ -1,4 +1,4 @@
-#include "search/search_integration_tests/test_search_engine.hpp"
+#include "search/search_tests_support/test_search_engine.hpp"
 
 #include "search/categories_holder.hpp"
 #include "search/search_query.hpp"
