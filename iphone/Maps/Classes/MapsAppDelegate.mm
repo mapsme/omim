@@ -217,18 +217,41 @@ void InitLocalizedStrings()
   m_geoURL = nil;
   m_mwmURL = nil;
   m_fileURL = nil;
+
+- (void)incrementSessionsCountAndCheckForAlert
+{
+  [self incrementSessionCount];
+  [self showAlertIfRequired];
+}
+
+- (void)commonInit
+{
+  [HttpThread setDownloadIndicatorProtocol:self];
+  [self trackWatchUser];
+  InitLocalizedStrings();
+  [Preferences setup];
+  [self subscribeToStorage];
+  [self customizeAppearance];
+
+  self.standbyCounter = 0;
+  NSTimeInterval const minimumBackgroundFetchIntervalInSeconds = 6 * 60 * 60;
+  [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:minimumBackgroundFetchIntervalInSeconds];
+  [self startAdServerForbiddenCheckTimer];
+  Framework & f = GetFramework();
+  [UIApplication sharedApplication].applicationIconBadgeNumber = f.GetCountryTree().GetActiveMapLayout().GetOutOfDateCount();
+  f.InvalidateMyPosition();
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  // Initialize all 3party engines.
+  BOOL returnValue = [self initStatistics:application didFinishLaunchingWithOptions:launchOptions];
   if (launchOptions[UIApplicationLaunchOptionsLocationKey])
   {
     _m_locationManager = [[LocationManager alloc] init];
     [self.m_locationManager onDaemonMode];
-    return YES;
+    return returnValue;
   }
-  // Initialize all 3party engines.
-  BOOL returnValue = [self initStatistics:application didFinishLaunchingWithOptions:launchOptions];
 
   NSURL * urlUsedToLaunchMaps = launchOptions[UIApplicationLaunchOptionsURLKey];
   if (urlUsedToLaunchMaps != nil)
@@ -236,47 +259,20 @@ void InitLocalizedStrings()
   else
     returnValue = YES;
 
-  [HttpThread setDownloadIndicatorProtocol:self];
-
-  [self trackWatchUser];
-
-  InitLocalizedStrings();
-  
   [self.mapViewController onEnterForeground];
-
-  [Preferences setup];
   _m_locationManager = [[LocationManager alloc] init];
   [self.m_locationManager onForeground];
-  [self subscribeToStorage];
-
-  [self customizeAppearance];
-  
-  self.standbyCounter = 0;
-
-  NSTimeInterval const minimumBackgroundFetchIntervalInSeconds = 6 * 60 * 60;
-  [application setMinimumBackgroundFetchInterval:minimumBackgroundFetchIntervalInSeconds];
-
   [self registerNotifications:application launchOptions:launchOptions];
+  [self commonInit];
 
   LocalNotificationManager * notificationManager = [LocalNotificationManager sharedManager];
   if (launchOptions[UIApplicationLaunchOptionsLocalNotificationKey])
     [notificationManager processNotification:launchOptions[UIApplicationLaunchOptionsLocalNotificationKey] onLaunch:YES];
-  
+
   if ([Alohalytics isFirstSession])
-  {
     [self firstLaunchSetup];
-  }
   else
-  {
-    [self incrementSessionCount];
-    [self showAlertIfRequired];
-  }
-
-  [self startAdServerForbiddenCheckTimer];
-
-  Framework & f = GetFramework();
-  application.applicationIconBadgeNumber = f.GetCountryTree().GetActiveMapLayout().GetOutOfDateCount();
-  f.InvalidateMyPosition();
+    [self incrementSessionsCountAndCheckForAlert];
 
   [self enableTTSForTheFirstTime];
   [MWMTextToSpeech activateAudioSession];
@@ -303,12 +299,13 @@ void InitLocalizedStrings()
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
-  [self.m_locationManager beforeTerminate];
+//  [self.m_locationManager beforeTerminate];
   [self.mapViewController onTerminate];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
+  [self.m_locationManager beforeTerminate];
   [self.mapViewController onEnterBackground];
   if (m_activeDownloadsCounter)
   {
@@ -327,7 +324,16 @@ void InitLocalizedStrings()
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
-  [self.m_locationManager onForeground];
+  if (self.m_locationManager.isDaemonMode)
+  {
+    [self.m_locationManager onForeground];
+    [self.mapViewController initialize];
+    [(EAGLView *)self.mapViewController.view initialize];
+    [self.mapViewController.view setNeedsLayout];
+    [self.mapViewController.view layoutIfNeeded];
+    [self commonInit];
+    [self incrementSessionsCountAndCheckForAlert];
+  }
   [self.mapViewController onEnterForeground];
   [MWMTextToSpeech activateAudioSession];
 }
@@ -336,8 +342,54 @@ void InitLocalizedStrings()
 {
   [self handleURLs];
 
-  [self restoreRouteState];
+  if (application.applicationState == UIApplicationStateBackground)
+    return;
+  Framework & f = GetFramework();
+  if (m_geoURL)
+  {
+    if (f.ShowMapForURL([m_geoURL UTF8String]))
+    {
+      [[Statistics instance] logEvent:kStatEventName(kStatApplication, kStatImport)
+                       withParameters:@{kStatValue : m_scheme}];
+      [self showMap];
+    }
+  }
+  else if (m_mwmURL)
+  {
+    if (f.ShowMapForURL([m_mwmURL UTF8String]))
+    {
+      [[Statistics instance] logApiUsage:m_sourceApplication];
+      [self showMap];
+      [self.mapViewController showAPIBar];
+    }
+  }
+  else if (m_fileURL)
+  {
+    if (!f.AddBookmarksFile([m_fileURL UTF8String]))
+      [self showLoadFileAlertIsSuccessful:NO];
 
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"KML file added" object:nil];
+    [self showLoadFileAlertIsSuccessful:YES];
+    [[Statistics instance] logEvent:kStatEventName(kStatApplication, kStatImport)
+                     withParameters:@{kStatValue : kStatKML}];
+  }
+  else
+  {
+    UIPasteboard * pasteboard = [UIPasteboard generalPasteboard];
+    if ([pasteboard.string length])
+    {
+      if (f.ShowMapForURL([pasteboard.string UTF8String]))
+      {
+        [self showMap];
+        pasteboard.string = @"";
+      }
+    }
+  }
+  m_geoURL = nil;
+  m_mwmURL = nil;
+  m_fileURL = nil;
+
+  [self restoreRouteState];
   [[Statistics instance] applicationDidBecomeActive];
 }
 
@@ -625,7 +677,7 @@ void InitLocalizedStrings()
   NSUInteger const kMaximumSessionCountForShowingShareAlert = 50;
   if (sessionCount > kMaximumSessionCountForShowingShareAlert)
     return;
-  
+
   NSDate *lastLaunchDate = [standartDefaults objectForKey:kUDLastLaunchDateKey];
   NSUInteger daysFromLastLaunch = [self.class daysBetweenNowAndDate:lastLaunchDate];
   if (daysFromLastLaunch > 0)
@@ -649,7 +701,7 @@ void InitLocalizedStrings()
 {
   if (!Platform::IsConnected())
     return;
-  
+
   UIViewController * topViewController = [(UINavigationController*)self.window.rootViewController visibleViewController];
   MWMAlertViewController * alert = [[MWMAlertViewController alloc] initWithViewController:topViewController];
   if (isRate)
@@ -672,19 +724,19 @@ void InitLocalizedStrings()
   NSUserDefaults const * const standartDefaults = [NSUserDefaults standardUserDefaults];
   if ([standartDefaults boolForKey:kUDAlreadySharedKey])
     return NO;
-  
+
   NSUInteger const sessionCount = [standartDefaults integerForKey:kUDSessionsCountKey];
   if (sessionCount > kMaximumSessionCountForShowingShareAlert)
     return NO;
-  
+
   NSDate * const lastShareRequestDate = [standartDefaults objectForKey:kUDLastShareRequstDate];
   NSUInteger const daysFromLastShareRequest = [MapsAppDelegate daysBetweenNowAndDate:lastShareRequestDate];
   if (lastShareRequestDate != nil && daysFromLastShareRequest == 0)
     return NO;
-  
+
   if (sessionCount == 30 || sessionCount == kMaximumSessionCountForShowingShareAlert)
     return YES;
-  
+
   if (self.userIsNew)
   {
     if (sessionCount == 12)
@@ -711,17 +763,17 @@ void InitLocalizedStrings()
   NSUserDefaults const * const standartDefaults = [NSUserDefaults standardUserDefaults];
   if ([standartDefaults boolForKey:kUDAlreadyRatedKey])
     return NO;
-  
+
   NSUInteger const sessionCount = [standartDefaults integerForKey:kUDSessionsCountKey];
   if (sessionCount > kMaximumSessionCountForShowingAlert)
     return NO;
-  
+
   NSDate * const lastRateRequestDate = [standartDefaults objectForKey:kUDLastRateRequestDate];
   NSUInteger const daysFromLastRateRequest = [MapsAppDelegate daysBetweenNowAndDate:lastRateRequestDate];
   // Do not show more than one alert per day.
   if (lastRateRequestDate != nil && daysFromLastRateRequest == 0)
     return NO;
-  
+
   if (self.userIsNew)
   {
     // It's new user.
@@ -743,7 +795,7 @@ void InitLocalizedStrings()
   NSString *firstVersion = [[NSUserDefaults standardUserDefaults] stringForKey:kUDFirstVersionKey];
   if (!firstVersion.length || firstVersionIsLessThanSecond(firstVersion, currentVersion))
     return NO;
-  
+
   return YES;
 }
 
@@ -751,7 +803,7 @@ void InitLocalizedStrings()
 {
   if (!fromDate)
     return 0;
-  
+
   NSDate *now = NSDate.date;
   NSCalendar *calendar = [NSCalendar currentCalendar];
   [calendar rangeOfUnit:NSCalendarUnitDay startDate:&fromDate interval:NULL forDate:fromDate];
