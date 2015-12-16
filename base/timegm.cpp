@@ -10,16 +10,12 @@
 
 namespace
 {
+
 // Number of days elapsed since Jan 01 up to each month
 // (except for February in leap years).
 int const g_monoff[] = {
   0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334
 };
-
-bool IsLeapYear(int year)
-{
-  return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
-}
 
 int LeapDaysCount(int y1, int y2)
 {
@@ -31,6 +27,12 @@ int LeapDaysCount(int y1, int y2)
 
 namespace base
 {
+
+bool IsLeapYear(int year)
+{
+  return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
+}
+
 // Inspired by python's calendar.py
 time_t TimeGM(std::tm const & tm)
 {
@@ -54,4 +56,17 @@ time_t TimeGM(std::tm const & tm)
 
   return seconds;
 }
+
+time_t TimeGM(int year, int month, int day, int hour, int min, int sec)
+{
+  tm t = {};
+  t.tm_year = year - 1900;
+  t.tm_mon = month - 1;
+  t.tm_mday = day;
+  t.tm_hour = hour;
+  t.tm_min = min;
+  t.tm_sec = sec;
+  return TimeGM(t);
+}
+
 } // namespace base
