@@ -52,60 +52,64 @@ GpsTrackFilter::GpsTrackFilter()
 void GpsTrackFilter::Process(vector<location::GpsInfo> const & inPoints,
                              vector<location::GpsTrackInfo> & outPoints)
 {
-  steady_clock::time_point const timeNow = steady_clock::now();
-
   outPoints.reserve(inPoints.size());
 
   for (location::GpsInfo const & currInfo : inPoints)
   {
-    if (!m_hasLastInfo)
+    if (!m_hasLastInfo || IsGoodPoint(currInfo))
     {
-      // Accept first point
       m_hasLastInfo = true;
       m_lastInfo = currInfo;
-      m_lastGoodGpsTime = timeNow;
       outPoints.emplace_back(currInfo);
-      continue;
     }
-
-    // Distance in meters between last and current point is, meters:
-    double const distance = ms::DistanceOnEarth(m_lastInfo.m_latitude, m_lastInfo.m_longitude,
-                                                currInfo.m_latitude, currInfo.m_longitude);
-
-    // Filter point by close distance
-    if (distance < kClosePointDistanceMeters)
-      continue;
-
-    // Filter point if accuracy areas are intersected
-    if (distance < m_lastInfo.m_horizontalAccuracy && distance < currInfo.m_horizontalAccuracy)
-      continue;
-
-    // Filter by point accuracy
-    if (currInfo.m_horizontalAccuracy > m_minAccuracy)
-      continue;
-
-    bool const lastRealGps = IsRealGpsPoint(m_lastInfo);
-    bool const currRealGps = IsRealGpsPoint(currInfo);
-
-    bool const gpsToWifi = lastRealGps && !currRealGps;
-    bool const wifiToWifi = !lastRealGps && !currRealGps;
-
-    if (gpsToWifi || wifiToWifi)
-    {
-      auto const elapsedTimeSinceGoodGps = duration_cast<seconds>(timeNow - m_lastGoodGpsTime);
-
-      // Wait before switch gps to wifi or switch between wifi points
-      if (elapsedTimeSinceGoodGps.count() < kWifiAreaGpsPeriodicyCheckSec)
-        continue;
-
-      // Skip point if moving to it was too fast, we guess it was a jump from wifi to another wifi
-      double const speed = distance / elapsedTimeSinceGoodGps.count();
-      if (speed > kWifiAreaAcceptableMovingSpeedMps)
-        continue;
-    }
-
-    m_lastGoodGpsTime = timeNow;
-    m_lastInfo = currInfo;
-    outPoints.emplace_back(currInfo);
   }
+}
+
+bool GpsTrackFilter::IsGoodPoint(location::GpsInfo const & currInfo) const
+{
+  // Distance in meters between last and current point is, meters:
+  double const distance = ms::DistanceOnEarth(m_lastInfo.m_latitude, m_lastInfo.m_longitude,
+                                              currInfo.m_latitude, currInfo.m_longitude);
+
+  // Filter point by close distance
+  if (distance < kClosePointDistanceMeters)
+    return false;
+
+  // Filter point if accuracy areas are intersected
+  if (distance < m_lastInfo.m_horizontalAccuracy && distance < currInfo.m_horizontalAccuracy)
+    return false;
+
+  // Filter by point accuracy
+  if (currInfo.m_horizontalAccuracy > m_minAccuracy)
+    return false;
+
+  bool const lastRealGps = IsRealGpsPoint(m_lastInfo);
+  bool const currRealGps = IsRealGpsPoint(currInfo);
+
+  bool const gpsToWifi = lastRealGps && !currRealGps;
+  bool const wifiToWifi = !lastRealGps && !currRealGps;
+
+  if (gpsToWifi || wifiToWifi)
+  {
+    if (currInfo.m_timestamp < m_lastInfo.m_timestamp)
+    {
+      // Switched to wifi without time, phone time is used,
+      // phone time may be less than last known gps time. in this case
+      // accept point.
+      return true;
+    }
+
+    double const elapsedTime = currInfo.m_timestamp - m_lastInfo.m_timestamp;
+
+    // Wait before switch gps to wifi or switch between wifi points
+    if (elapsedTime < kWifiAreaGpsPeriodicyCheckSec)
+      return false;
+
+    // Skip point if moving to it was too fast, we guess it was a jump from wifi to another wifi
+    double const speed = distance / elapsedTime;
+    if (speed > kWifiAreaAcceptableMovingSpeedMps)
+      return false;
+  }
+
+  return true;
 }
