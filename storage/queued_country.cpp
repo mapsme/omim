@@ -7,6 +7,7 @@ namespace storage
 QueuedCountry::QueuedCountry(TIndex const & index, MapOptions opt)
     : m_index(index), m_init(opt), m_left(opt), m_current(MapOptions::Nothing)
 {
+  // @TODO(bykoianko) Probably it's nessecary to check if InIndexInCountryTree here.
   ASSERT(GetIndex().IsValid(), ("Only valid countries may be downloaded."));
   ASSERT(m_left != MapOptions::Nothing, ("Empty file set was requested for downloading."));
   SwitchToNextFile();
