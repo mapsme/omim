@@ -25,7 +25,8 @@ SOURCES += \
     osm_id_test.cpp \
     osm_o5m_source_test.cpp \
     osm_type_test.cpp \
+    source_data.cpp \
+    source_to_element_test.cpp \
+    tag_admixer_test.cpp \
     tesselator_test.cpp \
     triangles_tree_coding_test.cpp \
-    source_to_element_test.cpp \
-    source_data.cpp \
