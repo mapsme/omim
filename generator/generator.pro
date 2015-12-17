@@ -64,4 +64,5 @@ HEADERS += \
     update_generator.hpp \
     ways_merger.hpp \
     world_map_generator.hpp \
+    tag_admixer.hpp
 
