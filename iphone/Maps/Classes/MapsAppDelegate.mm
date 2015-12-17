@@ -1,5 +1,6 @@
 #import "AppInfo.h"
 #import "Common.h"
+#import "EAGLView.h"
 #import "LocalNotificationManager.h"
 #import "LocationManager.h"
 #import "MapsAppDelegate.h"
@@ -165,16 +166,40 @@ void InitLocalizedStrings()
   return YES;
 }
 
+- (void)incrementSessionsCountAndCheckForAlert
+{
+  [self incrementSessionCount];
+  [self showAlertIfRequired];
+}
+
+- (void)commonInit
+{
+  [HttpThread setDownloadIndicatorProtocol:self];
+  [self trackWatchUser];
+  InitLocalizedStrings();
+  [Preferences setup];
+  [self subscribeToStorage];
+  [self customizeAppearance];
+
+  self.standbyCounter = 0;
+  NSTimeInterval const minimumBackgroundFetchIntervalInSeconds = 6 * 60 * 60;
+  [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:minimumBackgroundFetchIntervalInSeconds];
+  [self startAdServerForbiddenCheckTimer];
+  Framework & f = GetFramework();
+  [UIApplication sharedApplication].applicationIconBadgeNumber = f.GetCountryTree().GetActiveMapLayout().GetOutOfDateCount();
+  f.InvalidateMyPosition();
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  // Initialize all 3party engines.
+  BOOL returnValue = [self initStatistics:application didFinishLaunchingWithOptions:launchOptions];
   if (launchOptions[UIApplicationLaunchOptionsLocationKey])
   {
     _m_locationManager = [[LocationManager alloc] init];
     [self.m_locationManager onDaemonMode];
-    return YES;
+    return returnValue;
   }
-  // Initialize all 3party engines.
-  BOOL returnValue = [self initStatistics:application didFinishLaunchingWithOptions:launchOptions];
 
   NSURL * urlUsedToLaunchMaps = launchOptions[UIApplicationLaunchOptionsURLKey];
   if (urlUsedToLaunchMaps != nil)
@@ -182,47 +207,20 @@ void InitLocalizedStrings()
   else
     returnValue = YES;
 
-  [HttpThread setDownloadIndicatorProtocol:self];
-
-  [self trackWatchUser];
-
-  InitLocalizedStrings();
-  
   [self.mapViewController onEnterForeground];
-
-  [Preferences setup];
   _m_locationManager = [[LocationManager alloc] init];
   [self.m_locationManager onForeground];
-  [self subscribeToStorage];
-
-  [self customizeAppearance];
-  
-  self.standbyCounter = 0;
-
-  NSTimeInterval const minimumBackgroundFetchIntervalInSeconds = 6 * 60 * 60;
-  [application setMinimumBackgroundFetchInterval:minimumBackgroundFetchIntervalInSeconds];
-
   [self registerNotifications:application launchOptions:launchOptions];
+  [self commonInit];
 
   LocalNotificationManager * notificationManager = [LocalNotificationManager sharedManager];
   if (launchOptions[UIApplicationLaunchOptionsLocalNotificationKey])
     [notificationManager processNotification:launchOptions[UIApplicationLaunchOptionsLocalNotificationKey] onLaunch:YES];
   
   if ([Alohalytics isFirstSession])
-  {
     [self firstLaunchSetup];
-  }
   else
-  {
-    [self incrementSessionCount];
-    [self showAlertIfRequired];
-  }
-
-  [self startAdServerForbiddenCheckTimer];
-
-  Framework & f = GetFramework();
-  application.applicationIconBadgeNumber = f.GetCountryTree().GetActiveMapLayout().GetOutOfDateCount();
-  f.InvalidateMyPosition();
+    [self incrementSessionsCountAndCheckForAlert];
 
   [self enableTTSForTheFirstTime];
   [MWMTextToSpeech activateAudioSession];
@@ -273,13 +271,24 @@ void InitLocalizedStrings()
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
-  [self.m_locationManager onForeground];
+  if (self.m_locationManager.isDaemonMode)
+  {
+    [self.m_locationManager onForeground];
+    [self.mapViewController initialize];
+    [(EAGLView *)self.mapViewController.view initialize];
+    [self.mapViewController.view setNeedsLayout];
+    [self.mapViewController.view layoutIfNeeded];
+    [self commonInit];
+    [self incrementSessionsCountAndCheckForAlert];
+  }
   [self.mapViewController onEnterForeground];
   [MWMTextToSpeech activateAudioSession];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
+  if (application.applicationState == UIApplicationStateBackground)
+    return;
   Framework & f = GetFramework();
   if (m_geoURL)
   {
@@ -326,7 +335,6 @@ void InitLocalizedStrings()
   m_fileURL = nil;
 
   [self restoreRouteState];
-
   [[Statistics instance] applicationDidBecomeActive];
 }
 
