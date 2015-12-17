@@ -24,6 +24,7 @@ protected:
   TestFeature(m2::PointD const & center, string const & name, string const & lang);
 
   m2::PointD const m_center;
+  bool const m_hasCenter;
   string const m_name;
   string const m_lang;
 };
@@ -71,6 +72,8 @@ public:
                string const & lang);
   TestBuilding(m2::PointD const & center, string const & name, string const & houseNumber,
                TestStreet const & street, string const & lang);
+  TestBuilding(vector<m2::PointD> const & boundary, string const & name, string const & houseNumber,
+               TestStreet const & street, string const & lang);
 
   // TestFeature overrides:
   void Serialize(FeatureBuilder1 & fb) const override;
@@ -78,6 +81,7 @@ public:
   string ToString() const override;
 
 protected:
+  vector<m2::PointD> const m_boundary;
   string const m_houseNumber;
   string const m_streetName;
 };
