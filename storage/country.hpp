@@ -33,6 +33,8 @@ class Country
   /// Flag to display
   string m_flag;
   /// stores squares with world pieces which are part of the country
+  /// @TODO(bykoianko) Remove this field. Name will tranform to id (file name without extension for leaves.)
+  /// and unique id for other cases.
   buffer_vector<platform::CountryFile, 1> m_files;
 
 public:
