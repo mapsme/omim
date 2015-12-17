@@ -1,7 +1,10 @@
 #pragma once
 
+#include "base/assert.hpp"
+
 #include "std/vector.hpp"
 #include "std/algorithm.hpp"
+#include "std/utility.hpp"
 
 template <class T>
 class SimpleTree
@@ -9,6 +12,7 @@ class SimpleTree
   typedef std::vector<SimpleTree<T> > internal_container_type;
 
   T m_value;
+  // @TODO According to the logic the member and methods should be called m_children. Rename it.
   internal_container_type m_siblings;
 
 public:
@@ -62,6 +66,44 @@ public:
     if (!onlySiblings)
       for (typename internal_container_type::iterator it = m_siblings.begin(); it != m_siblings.end(); ++it)
         it->Sort(false);
+  }
+
+  /// \brief Checks all nodes in tree to find an equal one. If there're several equal nodes
+  /// returns the first found.
+  /// \returns a poiter item in the tree if found and nullptr otherwise.
+  /// @TODO The complexity of the method is O(n). But the structure (tree) is built on the start of the program
+  /// and then activly on run time. This method should work at constant time.
+  SimpleTree<T> const * const Find(T const & value) const
+  {
+    if (!(m_value < value) && !(value < m_value))
+      return this;
+
+    for (auto const & child : m_siblings)
+    {
+      SimpleTree<T> const * const found = child.Find(value);
+      if (found != nullptr)
+        return found;
+    }
+    return nullptr;
+  }
+
+  /// \brief Find only leaves.
+  /// \note It's a termprary fucntion for compatablity with old countries.txt.
+  /// When new countries.txt with unique ids will be added FindLeaf will be removed
+  /// and Find will be used intead.
+  /// @TODO Remove this method on countries.txt update.
+  SimpleTree<T> const * const FindLeaf(T const & value) const
+  {
+    if (!(m_value < value) && !(value < m_value) && m_siblings.empty())
+      return this; // It's a leaf.
+
+    for (auto const & child : m_siblings)
+    {
+      SimpleTree<T> const * const found = child.FindLeaf(value);
+      if (found != nullptr)
+        return found;
+    }
+    return nullptr;
   }
 
   SimpleTree<T> const & operator[](size_t index) const
