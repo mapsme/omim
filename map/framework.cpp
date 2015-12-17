@@ -843,6 +843,7 @@ void Framework::OnDownloadRetryCallback(storage::TIndex const & countryIndex)
 void Framework::OnUpdateCountryIndex(storage::TIndex const & currentIndex, m2::PointF const & pt)
 {
   storage::TIndex newCountryIndex = GetCountryIndex(m2::PointD(pt));
+  // @TODO(bykoianko) Probably it's nessecary to check if InIndexInCountryTree here.
   if (!newCountryIndex.IsValid())
   {
     m_drapeEngine->SetInvalidCountryInfo();
