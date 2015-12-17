@@ -21,6 +21,12 @@ line[highway=secondary]
 {
   casing-color: @highway_minor_casing;
 }
+line|z1-[highway=world_level]
+{
+  color: @highway_trunk_z7;
+  width: 1;
+  casing-width: 0;
+}
 line|z7[highway=trunk]
 {
   color: @highway_trunk_z7;
