@@ -17,6 +17,12 @@ double constexpr kClosePointDistanceMeters = 15;
 
 } // namespace
 
+void GpsTrackNullFilter::Process(vector<location::GpsInfo> const & inPoints,
+                                 vector<location::GpsTrackInfo> & outPoints)
+{
+  outPoints.insert(outPoints.end(), inPoints.begin(), inPoints.end());
+}
+
 void GpsTrackFilter::StoreMinHorizontalAccuracy(double value)
 {
   Settings::Set(kMinHorizontalAccuracyKey, value);
