@@ -30,6 +30,9 @@ void LoadGroupImpl(int depth, json_t * group, ToDo & toDo)
     json_t * j = json_array_get(group, i);
 
     // name is mandatory
+    // @TODO(bykoianko) Fields n, f and c should be removed. Instead of them the field id should be used.
+    // It'll happend when countries.txt is updated.
+    // Till that the field n is used as id. So n is always equel file name without extension in case leaves.
     char const * name = json_string_value(json_object_get(j, "n"));
     if (!name)
       MYTHROW(my::Json::Exception, ("Country name is missing"));
@@ -38,6 +41,7 @@ void LoadGroupImpl(int depth, json_t * group, ToDo & toDo)
     // if file is empty, it's the same as the name
     if (!file)
       file = name;
+    name = file; // A temperary line. It'll be removed when id field is used.
 
     char const * flag = json_string_value(json_object_get(j, "c"));
     toDo(name, file, flag ? flag : "",
