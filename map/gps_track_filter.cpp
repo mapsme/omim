@@ -67,6 +67,10 @@ void GpsTrackFilter::Process(vector<location::GpsInfo> const & inPoints,
 
 bool GpsTrackFilter::IsGoodPoint(location::GpsInfo const & currInfo) const
 {
+  // Do not accept points from the predictor
+  if (currInfo.m_source == location::EPredictor)
+    return false;
+
   // Distance in meters between last and current point is, meters:
   double const distance = ms::DistanceOnEarth(m_lastInfo.m_latitude, m_lastInfo.m_longitude,
                                               currInfo.m_latitude, currInfo.m_longitude);
