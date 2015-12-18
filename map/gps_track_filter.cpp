@@ -20,7 +20,7 @@ double constexpr kClosePointDistanceMeters = 15;
 size_t const kWifiAreaGpsPeriodicyCheckSec = 30;
 
 // Max acceptable moving speed in wifi area, required to prevent jumping between wifi, m/s
-double const kWifiAreaAcceptableMovingSpeedMps = 3;
+double const kWifiAreaAcceptableMovingSpeedMps = 15; // pedestrian, bicycle
 
 bool IsRealGpsPoint(location::GpsInfo const & info)
 {
