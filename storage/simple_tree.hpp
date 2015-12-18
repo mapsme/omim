@@ -2,9 +2,9 @@
 
 #include "base/assert.hpp"
 
-#include "std/vector.hpp"
 #include "std/algorithm.hpp"
 #include "std/utility.hpp"
+#include "std/vector.hpp"
 
 template <class T>
 class SimpleTree
@@ -71,8 +71,9 @@ public:
   /// \brief Checks all nodes in tree to find an equal one. If there're several equal nodes
   /// returns the first found.
   /// \returns a poiter item in the tree if found and nullptr otherwise.
-  /// @TODO The complexity of the method is O(n). But the structure (tree) is built on the start of the program
-  /// and then activly on run time. This method should work at constant time.
+  /// @TODO(bykoianko) The complexity of the method is O(n). But the structure (tree) is built on the start of the program
+  /// and then actively used on run time. This method (and class) should be redesigned to make the function work faster.
+  /// A hash table is being planned to use.
   SimpleTree<T> const * const Find(T const & value) const
   {
     if (!(m_value < value) && !(value < m_value))
@@ -91,7 +92,7 @@ public:
   /// \note It's a termprary fucntion for compatablity with old countries.txt.
   /// When new countries.txt with unique ids will be added FindLeaf will be removed
   /// and Find will be used intead.
-  /// @TODO Remove this method on countries.txt update.
+  /// @TODO(bykoianko) Remove this method on countries.txt update.
   SimpleTree<T> const * const FindLeaf(T const & value) const
   {
     if (!(m_value < value) && !(value < m_value) && m_siblings.empty())
