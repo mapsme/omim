@@ -5,6 +5,7 @@ namespace storage
 {
 using TIndex = string;
 
-static const TIndex kInvalidIndex = string("");
+extern const storage::TIndex kInvalidIndex;
+
 bool IsIndexValid(TIndex const & index);
 } //  namespace storage
