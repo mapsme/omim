@@ -387,13 +387,6 @@ string Framework::GetCountryName(TIndex const & index) const
   return (!group.empty() ? group + ", " + name : name);
 }
 
-m2::RectD Framework::GetCountryBounds(string const & file) const
-{
-  m2::RectD const bounds = m_infoGetter->CalcLimitRect(file);
-  ASSERT(bounds.IsValid(), ());
-  return bounds;
-}
-
 m2::RectD Framework::GetCountryBounds(TIndex const & index) const
 {
   CountryFile const & file = m_storage.GetCountryFile(index);
@@ -824,7 +817,7 @@ void Framework::OnUpdateCountryIndex(storage::TIndex const & currentIndex, m2::P
   // @TODO(bykoianko) This method should be redesigned.
   storage::TIndex newCountryIndex = GetCountryIndex(m2::PointD(pt));
   // @TODO(bykoianko) Probably it's nessecary to check if InIndexInCountryTree here.
-  if (!newCountryIndex.IsValid())
+  if (!IsIndexValid(newCountryIndex))
   {
     m_drapeEngine->SetInvalidCountryInfo();
     return;
@@ -837,7 +830,6 @@ void Framework::OnUpdateCountryIndex(storage::TIndex const & currentIndex, m2::P
 void Framework::UpdateCountryInfo(storage::TIndex const & countryIndex, bool isCurrentCountry)
 {
   // @TODO(bykoianko) This method should be redesigned.
-
   if (!m_drapeEngine)
     return;
 
@@ -932,13 +924,6 @@ string Framework::GetCountryName(m2::PointD const & pt) const
 {
   storage::CountryInfo info;
   m_infoGetter->GetRegionInfo(pt, info);
-  return info.m_name;
-}
-
-string Framework::GetCountryName(string const & id) const
-{
-  storage::CountryInfo info;
-  m_infoGetter->GetRegionInfo(id, info);
   return info.m_name;
 }
 
