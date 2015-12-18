@@ -10,7 +10,7 @@ namespace osm
 
 /// All methods here are synchronous and need wrappers for async usage.
 /// TODO(AlexZ): Rewrite ServerAPI interface to accept XMLFeature.
-class ServerAPI
+class ServerApi06
 {
   string m_user;
   string m_password;
@@ -28,7 +28,7 @@ public:
     ECanNotBeDeleted
   };
 
-  ServerAPI(string const & user, string const & password, string const & baseUrl = "http://api.openstreetmap.org/api/0.6");
+  ServerApi06(string const & user, string const & password, string const & baseUrl = "http://api.openstreetmap.org/api/0.6");
   /// @returns true if connection with OSM server was established, and user+password are valid.
   bool CheckUserAndPassword() const;
   /// @returns http server code for given url or negative value in case of error.

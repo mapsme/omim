@@ -6,27 +6,27 @@
 
 #include "3party/pugixml/src/pugixml.hpp"
 
-using osm::ServerAPI;
+using osm::ServerApi06;
 using namespace pugi;
 
 constexpr char const * kOsmDevApiServer = "http://master.apis.dev.openstreetmap.org/api/0.6";
 constexpr char const * kOsmDevServer = "http://master.apis.dev.openstreetmap.org";
 constexpr char const * kValidOsmUser = "MapsMeTestUser";
 constexpr char const * kInvalidOsmUser = "qwesdxzcgretwr";
-ServerAPI const kApi(kValidOsmUser, "12345678", kOsmDevApiServer);
+ServerApi06 const kApi(kValidOsmUser, "12345678", kOsmDevApiServer);
 
 UNIT_TEST(OSM_ServerAPI_CheckUserAndPassword)
 {
   TEST(kApi.CheckUserAndPassword(), ());
 
   my::LogLevelSuppressor s;
-  TEST(!ServerAPI(kInvalidOsmUser, "3345dfce2", kOsmDevServer).CheckUserAndPassword(), ());
+  TEST(!ServerApi06(kInvalidOsmUser, "3345dfce2", kOsmDevServer).CheckUserAndPassword(), ());
 }
 
 UNIT_TEST(OSM_ServerAPI_HttpCodeForUrl)
 {
-  TEST_EQUAL(200, ServerAPI::HttpCodeForUrl(string(kOsmDevServer) + "/user/" + kValidOsmUser), ());
-  TEST_EQUAL(404, ServerAPI::HttpCodeForUrl(string(kOsmDevServer) + "/user/" + kInvalidOsmUser), ());
+  TEST_EQUAL(200, ServerApi06::HttpCodeForUrl(string(kOsmDevServer) + "/user/" + kValidOsmUser), ());
+  TEST_EQUAL(404, ServerApi06::HttpCodeForUrl(string(kOsmDevServer) + "/user/" + kInvalidOsmUser), ());
 }
 
 
@@ -34,7 +34,7 @@ namespace
 {
 // id attribute is set to -1.
 // version attribute is set to 1.
-void GenerateNodeXml(double lat, double lon, ServerAPI::TKeyValueTags const & tags, xml_document & outNode)
+void GenerateNodeXml(double lat, double lon, ServerApi06::TKeyValueTags const & tags, xml_document & outNode)
 {
   outNode.reset();
   xml_node node = outNode.append_child("osm").append_child("node");
@@ -119,7 +119,7 @@ UNIT_TEST(OSM_ServerAPI_ChangesetActions)
   reply.load_string(serverReply.c_str());
   TEST_EQUAL(nodeId, reply.child("osm").child("node").attribute("id").as_ullong(), ());
 
-  TEST(ServerAPI::DeleteResult::ESuccessfullyDeleted == kApi.DeleteNode(XmlToString(node), nodeId), ());
+  TEST(ServerApi06::DeleteResult::ESuccessfullyDeleted == kApi.DeleteNode(XmlToString(node), nodeId), ());
 
   TEST(kApi.CloseChangeSet(changeSetId), ());
 }

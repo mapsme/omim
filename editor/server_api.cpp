@@ -24,12 +24,12 @@ void PrintRequest(HTTPClientPlatformWrapper const & r)
 }
 } // namespace
 
-ServerAPI::ServerAPI(string const & user, string const & password, string const & baseUrl)
+ServerApi06::ServerApi06(string const & user, string const & password, string const & baseUrl)
   : m_user(user), m_password(password), m_baseOsmServerUrl(baseUrl)
 {
 }
 
-bool ServerAPI::CreateChangeSet(TKeyValueTags && kvTags, uint64_t & outChangeSetId) const
+bool ServerApi06::CreateChangeSet(TKeyValueTags && kvTags, uint64_t & outChangeSetId) const
 {
   ostringstream stream;
   stream << "<osm>\n"
@@ -56,7 +56,7 @@ bool ServerAPI::CreateChangeSet(TKeyValueTags && kvTags, uint64_t & outChangeSet
   return false;
 }
 
-bool ServerAPI::CreateNode(string const & nodeXml, uint64_t & outCreatedNodeId) const
+bool ServerApi06::CreateNode(string const & nodeXml, uint64_t & outCreatedNodeId) const
 {
   HTTPClientPlatformWrapper request(m_baseOsmServerUrl + "/node/create");
   bool const success = request.set_user_and_password(m_user, m_password)
@@ -75,7 +75,7 @@ bool ServerAPI::CreateNode(string const & nodeXml, uint64_t & outCreatedNodeId) 
   return false;
 }
 
-bool ServerAPI::ModifyNode(string const & nodeXml, uint64_t nodeId) const
+bool ServerApi06::ModifyNode(string const & nodeXml, uint64_t nodeId) const
 {
   HTTPClientPlatformWrapper request(m_baseOsmServerUrl + "/node/" + strings::to_string(nodeId));
   bool const success = request.set_user_and_password(m_user, m_password)
@@ -89,7 +89,7 @@ bool ServerAPI::ModifyNode(string const & nodeXml, uint64_t nodeId) const
   return false;
 }
 
-ServerAPI::DeleteResult ServerAPI::DeleteNode(string const & nodeXml, uint64_t nodeId) const
+ServerApi06::DeleteResult ServerApi06::DeleteNode(string const & nodeXml, uint64_t nodeId) const
 {
   HTTPClientPlatformWrapper request(m_baseOsmServerUrl + "/node/" + strings::to_string(nodeId));
   bool const success = request.set_user_and_password(m_user, m_password)
@@ -109,7 +109,7 @@ ServerAPI::DeleteResult ServerAPI::DeleteNode(string const & nodeXml, uint64_t n
   return DeleteResult::EFailed;
 }
 
-bool ServerAPI::CloseChangeSet(uint64_t changesetId) const
+bool ServerApi06::CloseChangeSet(uint64_t changesetId) const
 {
   HTTPClientPlatformWrapper request(m_baseOsmServerUrl + "/changeset/" +
                                     strings::to_string(changesetId) + "/close");
@@ -124,7 +124,7 @@ bool ServerAPI::CloseChangeSet(uint64_t changesetId) const
   return false;
 }
 
-bool ServerAPI::CheckUserAndPassword() const
+bool ServerApi06::CheckUserAndPassword() const
 {
   static constexpr char const * kAPIWritePermission = "allow_write_api";
   HTTPClientPlatformWrapper request(m_baseOsmServerUrl + "/permissions");
@@ -138,7 +138,7 @@ bool ServerAPI::CheckUserAndPassword() const
   return false;
 }
 
-int ServerAPI::HttpCodeForUrl(string const & url)
+int ServerApi06::HttpCodeForUrl(string const & url)
 {
   HTTPClientPlatformWrapper request(url);
   bool const success = request.RunHTTPRequest();
@@ -149,7 +149,7 @@ int ServerAPI::HttpCodeForUrl(string const & url)
   return -1;
 }
 
-string ServerAPI::GetXmlFeaturesInRect(m2::RectD const & latLonRect) const
+string ServerApi06::GetXmlFeaturesInRect(m2::RectD const & latLonRect) const
 {
   using strings::to_string_dac;
 
@@ -169,7 +169,7 @@ string ServerAPI::GetXmlFeaturesInRect(m2::RectD const & latLonRect) const
   return string();
 }
 
-string ServerAPI::GetXmlNodeByLatLon(double lat, double lon) const
+string ServerApi06::GetXmlNodeByLatLon(double lat, double lon) const
 {
   constexpr double const kInflateRadiusDegrees = 1.0e-6; //!< ~1 meter.
   m2::RectD rect(lon, lat, lon, lat);
