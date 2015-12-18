@@ -618,13 +618,10 @@ TIndex Storage::FindIndexByFile(string const & name) const
 
 vector<TIndex> Storage::FindAllIndexesByFile(string const & name) const
 {
-//  EqualFileName fn(name);
-  vector<TIndex> res;
   if (!m_countries.Find(name))
-    return res; // File id name not found.
+    return vector<TIndex>();
 
-  res.push_back(TIndex(name));
-  return res;
+  return { TIndex(name) };
 }
 
 void Storage::GetOutdatedCountries(vector<Country const *> & countries) const
