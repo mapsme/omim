@@ -188,10 +188,6 @@ Framework::Framework()
   : m_bmManager(*this)
   , m_fixedSearchResults(0)
 {
-//  m_activeMaps.reset(new ActiveMapsLayout(*this));
-//  m_globalCntTree = storage::CountryTree(m_activeMaps);
-//  m_storageBridge = make_unique_dp<StorageBridge>(m_activeMaps, bind(&Framework::UpdateCountryInfo, this, _1, false));
-
   // Restore map style before classificator loading
   int mapStyle = MapStyleLight;
   if (!Settings::Get(kMapStyleKey, mapStyle))
@@ -273,8 +269,6 @@ Framework::~Framework()
 {
   m_drapeEngine.reset();
 
-//  m_storageBridge.reset();
-//  m_activeMaps.reset();
   m_model.SetOnMapDeregisteredCallback(nullptr);
 }
 
@@ -452,14 +446,11 @@ void Framework::RegisterAllMaps()
     minFormat = min(minFormat, static_cast<int>(id.GetInfo()->m_version.format));
   }
 
-//  m_activeMaps->Init(maps);
-
   m_searchEngine->SupportOldFormat(minFormat < version::v3);
 }
 
 void Framework::DeregisterAllMaps()
 {
-//  m_activeMaps->Clear();
   m_model.Clear();
   m_storage.Clear();
 }
@@ -818,30 +809,25 @@ void Framework::SetDownloadCountryListener(TDownloadCountryListener const & list
 
 void Framework::OnDownloadMapCallback(storage::TIndex const & countryIndex)
 {
-  if (m_downloadCountryListener != nullptr)
-    m_downloadCountryListener(countryIndex, static_cast<int>(MapOptions::Map));
-//  else
-//    m_activeMaps->DownloadMap(countryIndex, MapOptions::Map);
+  // @TODO(bykoianko) This method should be removed when map downloader is finished.
+  ASSERT(false, ());
 }
 
 void Framework::OnDownloadMapRoutingCallback(storage::TIndex const & countryIndex)
 {
-  if (m_downloadCountryListener != nullptr)
-    m_downloadCountryListener(countryIndex, static_cast<int>(MapOptions::MapWithCarRouting));
-//  else
-//    m_activeMaps->DownloadMap(countryIndex, MapOptions::MapWithCarRouting);
+  // @TODO(bykoianko) This method should be removed when map downloader is finished.
+  ASSERT(false, ());
 }
 
 void Framework::OnDownloadRetryCallback(storage::TIndex const & countryIndex)
 {
-  if (m_downloadCountryListener != nullptr)
-    m_downloadCountryListener(countryIndex, -1);
-//  else
-//    m_activeMaps->RetryDownloading(countryIndex);
+  // @TODO(bykoianko) This method should be removed when map downloader is finished.
+  ASSERT(false, ());
 }
 
 void Framework::OnUpdateCountryIndex(storage::TIndex const & currentIndex, m2::PointF const & pt)
 {
+  // @TODO(bykoianko) This method should be redesigned.
   storage::TIndex newCountryIndex = GetCountryIndex(m2::PointD(pt));
   // @TODO(bykoianko) Probably it's nessecary to check if InIndexInCountryTree here.
   if (!newCountryIndex.IsValid())
@@ -856,7 +842,7 @@ void Framework::OnUpdateCountryIndex(storage::TIndex const & currentIndex, m2::P
 
 void Framework::UpdateCountryInfo(storage::TIndex const & countryIndex, bool isCurrentCountry)
 {
-//  ASSERT(m_activeMaps != nullptr, ());
+  // @TODO(bykoianko) This method should be redesigned.
 
   if (!m_drapeEngine)
     return;
@@ -871,15 +857,7 @@ void Framework::UpdateCountryInfo(storage::TIndex const & countryIndex, bool isC
   gui::CountryInfo countryInfo;
 
   countryInfo.m_countryIndex = countryIndex;
-//  countryInfo.m_currentCountryName = m_activeMaps->GetFormatedCountryName(countryIndex);
-//  countryInfo.m_mapSize = m_activeMaps->GetRemoteCountrySizes(countryIndex).first;
-//  countryInfo.m_routingSize = m_activeMaps->GetRemoteCountrySizes(countryIndex).second;
-//  countryInfo.m_countryStatus = m_activeMaps->GetCountryStatus(countryIndex);
-  if (countryInfo.m_countryStatus == storage::TStatus::EDownloading)
-  {
-//    storage::LocalAndRemoteSizeT progress = m_activeMaps->GetDownloadableCountrySize(countryIndex);
-//    countryInfo.m_downloadProgress = progress.first * 100 / progress.second;
-  }
+  // @TODO(bykoianko) The other fields of countryInfo should be filled.
 
   m_drapeEngine->SetCountryInfo(countryInfo, isCurrentCountry);
 }
@@ -1223,25 +1201,29 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
 
   TUpdateCountryIndexFn updateCountryIndex = [this](storage::TIndex const & currentIndex, m2::PointF const & pt)
   {
+    // @TODO(bykoianko) This method should be redesigned.
     GetPlatform().RunOnGuiThread(bind(&Framework::OnUpdateCountryIndex, this, currentIndex, pt));
   };
 
   TIsCountryLoadedFn isCountryLoadedFn = bind(&Framework::IsCountryLoaded, this, _1);
   auto isCountryLoadedByNameFn = bind(&Framework::IsCountryLoadedByName, this, _1);
 
-  TDownloadFn downloadMapFn = [this](storage::TIndex const & countryIndex)
+  TDownloadFn downloadMapFn = [this](storage::TIndex const &)
   {
-    GetPlatform().RunOnGuiThread(bind(&Framework::OnDownloadMapCallback, this, countryIndex));
+    // @TODO(bykoianko) This method should be removed when map downloader is finished.
+    ASSERT(false, ());
   };
 
-  TDownloadFn downloadMapWithoutRoutingFn = [this](storage::TIndex const & countryIndex)
+  TDownloadFn downloadMapWithoutRoutingFn = [this](storage::TIndex const &)
   {
-    GetPlatform().RunOnGuiThread(bind(&Framework::OnDownloadMapRoutingCallback, this, countryIndex));
+    // @TODO(bykoianko) This method should be removed when map downloader is finished.
+    ASSERT(false, ());
   };
 
-  TDownloadFn downloadRetryFn = [this](storage::TIndex const & countryIndex)
+  TDownloadFn downloadRetryFn = [this](storage::TIndex const &)
   {
-    GetPlatform().RunOnGuiThread(bind(&Framework::OnDownloadRetryCallback, this, countryIndex));
+    // @TODO(bykoianko) This method should be removed when map downloader is finished.
+    ASSERT(false, ());
   };
 
   df::DrapeEngine::Params p(contextFactory,
