@@ -127,7 +127,7 @@ void Storage::RegisterAllLocalMaps()
     LocalCountryFile const & localFile = *i;
     string const & name = localFile.GetCountryName();
     TIndex index = FindIndexByFile(name);
-    if (index.IsValid() && IsIndexInCountryTree(index))
+    if (IsIndexValid(index) && IsIndexInCountryTree(index))
       RegisterCountryFiles(index, localFile.GetDirectory(), localFile.GetVersion());
     else
       RegisterFakeCountryFiles(localFile);
@@ -156,8 +156,8 @@ size_t Storage::GetDownloadedFilesCount() const
 
 CountriesContainerT const & NodeFromIndex(CountriesContainerT const & root, TIndex const & index)
 {
-  SimpleTree<Country> const * node = root.FindLeaf(Country(index.m_idx));
-  CHECK(node, ("Node with id =", index.m_idx, "not found in country tree."));
+  SimpleTree<Country> const * node = root.FindLeaf(Country(index));
+  CHECK(node, ("Node with id =", index, "not found in country tree."));
   return *node;
 }
 
@@ -185,7 +185,7 @@ string const & Storage::CountryName(TIndex const & index) const
 
 bool Storage::IsIndexInCountryTree(TIndex const & index) const
 {
-  return m_countries.Find(Country(index.m_idx)) != nullptr;
+  return m_countries.Find(Country(index)) != nullptr;
 }
 
 string const & Storage::CountryFlag(TIndex const & index) const
@@ -220,7 +220,7 @@ CountryFile const & Storage::GetCountryFile(TIndex const & index) const
 Storage::TLocalFilePtr Storage::GetLatestLocalFile(CountryFile const & countryFile) const
 {
   TIndex const index = FindIndexByFile(countryFile.GetNameWithoutExt());
-  if (index.IsValid() && IsIndexInCountryTree(index))
+  if (IsIndexValid(index) && IsIndexInCountryTree(index))
   {
     TLocalFilePtr localFile = GetLatestLocalFile(index);
     if (localFile)
@@ -336,7 +336,7 @@ void Storage::DeleteCustomCountryVersion(LocalCountryFile const & localFile)
   }
 
   TIndex const index = FindIndexByFile(countryFile.GetNameWithoutExt());
-  if (!(index.IsValid() && IsIndexInCountryTree(index)))
+  if (!(IsIndexValid(index) && IsIndexInCountryTree(index)))
   {
     LOG(LERROR, ("Removed files for an unknown country:", localFile));
     return;
