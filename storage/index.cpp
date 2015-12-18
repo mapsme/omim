@@ -5,9 +5,8 @@
 
 namespace storage
 {
-  const string TIndex::INVALID = string("");
-  string DebugPrint(TIndex const & r)
-  {
-    return r.m_idx;
-  }
+bool IsIndexValid(TIndex const & index)
+{
+  return index != kInvalidIndex;
 }
+} //  namespace storage
