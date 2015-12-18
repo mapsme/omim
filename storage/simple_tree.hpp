@@ -12,7 +12,8 @@ class SimpleTree
   typedef std::vector<SimpleTree<T> > internal_container_type;
 
   T m_value;
-  // @TODO According to the logic the member and methods should be called m_children. Rename it.
+  // @TODO(bykoianko) According to the logic the member and methods should be called m_children. Rename it.
+  // @TODO(bykoianko) Remove on unnecessary methods of SimpleTree if any.
   internal_container_type m_siblings;
 
 public:
