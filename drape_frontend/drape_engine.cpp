@@ -24,7 +24,7 @@ void ConnectDownloadFn(gui::CountryStatusHelper::EButtonType buttonType, MapData
   guiSubsystem.ConnectOnButtonPressedHandler(buttonType, [downloadFn, &guiSubsystem]()
   {
     storage::TIndex countryIndex = guiSubsystem.GetCountryStatusHelper().GetCountryIndex();
-    ASSERT(countryIndex != storage::kInvalidIndex, ());
+    ASSERT(storage::IsIndexValid(countryIndex), (countryIndex));
     if (downloadFn != nullptr)
       downloadFn(countryIndex);
   });

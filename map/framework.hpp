@@ -113,8 +113,6 @@ protected:
 
   double m_startForegroundTime;
 
-  TDownloadCountryListener m_downloadCountryListener;
-
   storage::Storage m_storage;
   storage::MapRepository m_mapRepository;
 
@@ -200,8 +198,6 @@ public:
 
   /// @name Get any country info by point.
   //@{
-  storage::TIndex GetCountryIndex(m2::PointD const & pt) const;
-
   string GetCountryName(m2::PointD const & pt) const;
   /// @param[in] id Country file name without an extension.
 

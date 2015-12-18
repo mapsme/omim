@@ -819,65 +819,6 @@ void Framework::ClearAllCaches()
   m_searchEngine->ClearAllCaches();
 }
 
-void Framework::SetDownloadCountryListener(TDownloadCountryListener const & listener)
-{
-  m_downloadCountryListener = listener;
-}
-
-void Framework::OnDownloadMapCallback(storage::TIndex const & countryIndex)
-{
-  // @TODO(bykoianko) This method should be removed when map downloader is finished.
-  ASSERT(false, ());
-}
-
-void Framework::OnDownloadMapRoutingCallback(storage::TIndex const & countryIndex)
-{
-  // @TODO(bykoianko) This method should be removed when map downloader is finished.
-  ASSERT(false, ());
-}
-
-void Framework::OnDownloadRetryCallback(storage::TIndex const & countryIndex)
-{
-  // @TODO(bykoianko) This method should be removed when map downloader is finished.
-  ASSERT(false, ());
-}
-
-void Framework::OnUpdateCountryIndex(storage::TIndex const & currentIndex, m2::PointF const & pt)
-{
-  // @TODO(bykoianko) This method should be redesigned.
-  storage::TIndex newCountryIndex = GetCountryIndex(m2::PointD(pt));
-  // @TODO(bykoianko) Probably it's nessecary to check if InIndexInCountryTree here.
-  if (!IsIndexValid(newCountryIndex))
-  {
-    m_drapeEngine->SetInvalidCountryInfo();
-    return;
-  }
-
-  if (currentIndex != newCountryIndex)
-    UpdateCountryInfo(newCountryIndex, true /* isCurrentCountry */);
-}
-
-void Framework::UpdateCountryInfo(storage::TIndex const & countryIndex, bool isCurrentCountry)
-{
-  // @TODO(bykoianko) This method should be redesigned.
-  if (!m_drapeEngine)
-    return;
-
-  string const & fileName = m_storage.CountryByIndex(countryIndex).GetFile().GetNameWithoutExt();
-  if (m_model.IsLoaded(fileName))
-  {
-    m_drapeEngine->SetInvalidCountryInfo();
-    return;
-  }
-
-  gui::CountryInfo countryInfo;
-
-  countryInfo.m_countryIndex = countryIndex;
-  // @TODO(bykoianko) The other fields of countryInfo should be filled.
-
-  m_drapeEngine->SetCountryInfo(countryInfo, isCurrentCountry);
-}
-
 void Framework::MemoryWarning()
 {
   LOG(LINFO, ("MemoryWarning"));
@@ -943,11 +884,6 @@ void Framework::InitSearchEngine()
   {
     LOG(LCRITICAL, ("Can't load needed resources for search::Engine:", e.Msg()));
   }
-}
-
-TIndex Framework::GetCountryIndex(m2::PointD const & pt) const
-{
-  return m_storage.FindIndexByFile(m_infoGetter->GetRegionFile(pt));
 }
 
 string Framework::GetCountryName(m2::PointD const & pt) const
@@ -1220,10 +1156,9 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
     m_model.ReadFeatures(fn, ids);
   };
 
-  TUpdateCountryIndexFn updateCountryIndex = [this](storage::TIndex const & currentIndex, m2::PointF const & pt)
+  TUpdateCountryIndexFn updateCountryIndex = [this](storage::TIndex const &, m2::PointF const &)
   {
     // @TODO(bykoianko) This method should be redesigned.
-    GetPlatform().RunOnGuiThread(bind(&Framework::OnUpdateCountryIndex, this, currentIndex, pt));
   };
 
   TIsCountryLoadedFn isCountryLoadedFn = bind(&Framework::IsCountryLoaded, this, _1);
