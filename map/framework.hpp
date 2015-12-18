@@ -56,8 +56,6 @@ class CountryInfoGetter;
 
 namespace routing { namespace turns{ class Settings; } }
 
-//class StorageBridge;
-
 namespace df
 {
   namespace watch
@@ -110,7 +108,6 @@ protected:
 
   routing::RoutingSession m_routingSession;
 
-//  drape_ptr<StorageBridge> m_storageBridge;
   drape_ptr<df::DrapeEngine> m_drapeEngine;
   drape_ptr<df::watch::CPUDrawer> m_cpuDrawer;
 
@@ -119,8 +116,6 @@ protected:
   TDownloadCountryListener m_downloadCountryListener;
 
   storage::Storage m_storage;
-//  shared_ptr<storage::ActiveMapsLayout> m_activeMaps;
-//  storage::CountryTree m_globalCntTree;
   storage::MapRepository m_mapRepository;
 
   location::TMyPositionModeChanged m_myPositionListener;
