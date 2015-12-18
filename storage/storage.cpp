@@ -618,10 +618,12 @@ TIndex Storage::FindIndexByFile(string const & name) const
 
 vector<TIndex> Storage::FindAllIndexesByFile(string const & name) const
 {
-  if (!m_countries.Find(name))
-    return vector<TIndex>();
-
-  return { TIndex(name) };
+  // @TODO(bykoianko) This method should be rewritten. At list now name and the param of Find
+  // have different types: string and TIndex.
+  vector<TIndex> result;
+  if (m_countries.Find(name))
+    result.push_back(name);
+  return result;
 }
 
 void Storage::GetOutdatedCountries(vector<Country const *> & countries) const
