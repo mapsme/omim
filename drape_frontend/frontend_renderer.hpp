@@ -12,6 +12,7 @@
 
 #include "drape_frontend/backend_renderer.hpp"
 #include "drape_frontend/base_renderer.hpp"
+#include "drape_frontend/gps_track_renderer.hpp"
 #include "drape_frontend/my_position_controller.hpp"
 #include "drape_frontend/navigator.hpp"
 #include "drape_frontend/render_group.hpp"
@@ -205,6 +206,8 @@ private:
   FeatureID GetVisiblePOI(m2::PointD const & pixelPoint) const;
   FeatureID GetVisiblePOI(m2::RectD const & pixelRect) const;
 
+  void PrepareGpsTrackPoints(size_t pointsCount);
+
 private:
   drape_ptr<dp::GpuProgramManager> m_gpuProgramManager;
 
@@ -217,6 +220,7 @@ private:
   drape_ptr<MyPositionController> m_myPositionController;
   drape_ptr<SelectionShape> m_selectionShape;
   drape_ptr<RouteRenderer> m_routeRenderer;
+  drape_ptr<GpsTrackRenderer> m_gpsTrackRenderer;
 
   drape_ptr<dp::OverlayTree> m_overlayTree;
 
