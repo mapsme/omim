@@ -113,8 +113,6 @@ protected:
 
   double m_startForegroundTime;
 
-  TDownloadCountryListener m_downloadCountryListener;
-
   storage::Storage m_storage;
   storage::MapRepository m_mapRepository;
 
@@ -200,8 +198,6 @@ public:
 
   /// @name Get any country info by point.
   //@{
-  storage::TIndex GetCountryIndex(m2::PointD const & pt) const;
-
   string GetCountryName(m2::PointD const & pt) const;
   /// @param[in] id Country file name without an extension.
 
@@ -324,13 +320,6 @@ private:
   uint8_t m_fixedSearchResults;
 
   void FillSearchResultsMarks(search::Results const & results);
-
-  void OnDownloadMapCallback(storage::TIndex const & countryIndex);
-  void OnDownloadMapRoutingCallback(storage::TIndex const & countryIndex);
-  void OnDownloadRetryCallback(storage::TIndex const & countryIndex);
-
-  void OnUpdateCountryIndex(storage::TIndex const & currentIndex, m2::PointF const & pt);
-  void UpdateCountryInfo(storage::TIndex const & countryIndex, bool isCurrentCountry);
 
 public:
   using TSearchRequest = search::QuerySaver::TSearchRequest;
