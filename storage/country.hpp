@@ -1,6 +1,7 @@
 #pragma once
 
 #include "storage/country_decl.hpp"
+#include "storage/index.hpp"
 #include "storage/simple_tree.hpp"
 #include "storage/storage_defines.hpp"
 
@@ -29,7 +30,7 @@ class Country
 {
   friend class update::SizeUpdater;
   /// Name in the country node tree
-  string m_name;
+  TIndex m_name;
   /// Flag to display
   string m_flag;
   /// stores squares with world pieces which are part of the country
@@ -39,7 +40,7 @@ class Country
 
 public:
   Country() {}
-  Country(string const & name, string const & flag = "") : m_name(name), m_flag(flag) {}
+  Country(TIndex const & name, string const & flag = "") : m_name(name), m_flag(flag) {}
 
   bool operator<(Country const & other) const { return Name() < other.Name(); }
 
@@ -55,7 +56,7 @@ public:
     return m_files.front();
   }
 
-  string const & Name() const { return m_name; }
+  TIndex const & Name() const { return m_name; }
   string const & Flag() const { return m_flag; }
 
   uint64_t Size(MapOptions opt) const;

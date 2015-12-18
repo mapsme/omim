@@ -186,7 +186,6 @@ public:
 
   /// Get country rect from borders (not from mwm file).
   /// @param[in] file Pass country file name without extension as an id.
-  m2::RectD GetCountryBounds(string const & file) const;
   m2::RectD GetCountryBounds(storage::TIndex const & index) const;
 
   void ShowCountry(storage::TIndex const & index);
@@ -205,7 +204,6 @@ public:
 
   string GetCountryName(m2::PointD const & pt) const;
   /// @param[in] id Country file name without an extension.
-  string GetCountryName(string const & id) const;
 
   /// @return country code in ISO 3166-1 alpha-2 format (two small letters) or empty string
   string GetCountryCode(m2::PointD const & pt) const;
