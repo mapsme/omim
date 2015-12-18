@@ -15,7 +15,7 @@ namespace gui
 
 struct CountryInfo
 {
-  storage::TIndex m_countryIndex = storage::TIndex::INVALID;
+  storage::TIndex m_countryIndex = storage::kInvalidIndex;
   storage::TStatus m_countryStatus = storage::TStatus::EUnknown;
   string m_currentCountryName;
   size_t m_mapSize = 0;
