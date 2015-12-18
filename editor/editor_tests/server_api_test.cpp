@@ -9,11 +9,10 @@
 using osm::ServerApi06;
 using namespace pugi;
 
-constexpr char const * kOsmDevApiServer = "http://master.apis.dev.openstreetmap.org/api/0.6";
 constexpr char const * kOsmDevServer = "http://master.apis.dev.openstreetmap.org";
 constexpr char const * kValidOsmUser = "MapsMeTestUser";
 constexpr char const * kInvalidOsmUser = "qwesdxzcgretwr";
-ServerApi06 const kApi(kValidOsmUser, "12345678", kOsmDevApiServer);
+ServerApi06 const kApi(kValidOsmUser, "12345678", kOsmDevServer);
 
 UNIT_TEST(OSM_ServerAPI_CheckUserAndPassword)
 {
@@ -28,7 +27,6 @@ UNIT_TEST(OSM_ServerAPI_HttpCodeForUrl)
   TEST_EQUAL(200, ServerApi06::HttpCodeForUrl(string(kOsmDevServer) + "/user/" + kValidOsmUser), ());
   TEST_EQUAL(404, ServerApi06::HttpCodeForUrl(string(kOsmDevServer) + "/user/" + kInvalidOsmUser), ());
 }
-
 
 namespace
 {

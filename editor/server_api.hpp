@@ -28,7 +28,7 @@ public:
     ECanNotBeDeleted
   };
 
-  ServerApi06(string const & user, string const & password, string const & baseUrl = "http://api.openstreetmap.org/api/0.6");
+  ServerApi06(string const & user, string const & password, string const & baseUrl = "http://api.openstreetmap.org");
   /// @returns true if connection with OSM server was established, and user+password are valid.
   bool CheckUserAndPassword() const;
   /// @returns http server code for given url or negative value in case of error.

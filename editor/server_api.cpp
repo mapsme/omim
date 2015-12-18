@@ -39,7 +39,7 @@ bool ServerApi06::CreateChangeSet(TKeyValueTags && kvTags, uint64_t & outChangeS
   stream << "</changeset>\n"
   "</osm>\n";
 
-  HTTPClientPlatformWrapper request(m_baseOsmServerUrl + "/changeset/create");
+  HTTPClientPlatformWrapper request(m_baseOsmServerUrl + "/api/0.6/changeset/create");
   bool const success = request.set_user_and_password(m_user, m_password)
       .set_body_data(move(stream.str()), "", "PUT")
       .RunHTTPRequest();
@@ -58,7 +58,7 @@ bool ServerApi06::CreateChangeSet(TKeyValueTags && kvTags, uint64_t & outChangeS
 
 bool ServerApi06::CreateNode(string const & nodeXml, uint64_t & outCreatedNodeId) const
 {
-  HTTPClientPlatformWrapper request(m_baseOsmServerUrl + "/node/create");
+  HTTPClientPlatformWrapper request(m_baseOsmServerUrl + "/api/0.6/node/create");
   bool const success = request.set_user_and_password(m_user, m_password)
       .set_body_data(move(nodeXml), "", "PUT")
       .RunHTTPRequest();
@@ -77,7 +77,7 @@ bool ServerApi06::CreateNode(string const & nodeXml, uint64_t & outCreatedNodeId
 
 bool ServerApi06::ModifyNode(string const & nodeXml, uint64_t nodeId) const
 {
-  HTTPClientPlatformWrapper request(m_baseOsmServerUrl + "/node/" + strings::to_string(nodeId));
+  HTTPClientPlatformWrapper request(m_baseOsmServerUrl + "/api/0.6/node/" + strings::to_string(nodeId));
   bool const success = request.set_user_and_password(m_user, m_password)
       .set_body_data(move(nodeXml), "", "PUT")
       .RunHTTPRequest();
@@ -91,7 +91,7 @@ bool ServerApi06::ModifyNode(string const & nodeXml, uint64_t nodeId) const
 
 ServerApi06::DeleteResult ServerApi06::DeleteNode(string const & nodeXml, uint64_t nodeId) const
 {
-  HTTPClientPlatformWrapper request(m_baseOsmServerUrl + "/node/" + strings::to_string(nodeId));
+  HTTPClientPlatformWrapper request(m_baseOsmServerUrl + "/api/0.6/node/" + strings::to_string(nodeId));
   bool const success = request.set_user_and_password(m_user, m_password)
       .set_body_data(move(nodeXml), "", "DELETE")
       .RunHTTPRequest();
@@ -111,7 +111,7 @@ ServerApi06::DeleteResult ServerApi06::DeleteNode(string const & nodeXml, uint64
 
 bool ServerApi06::CloseChangeSet(uint64_t changesetId) const
 {
-  HTTPClientPlatformWrapper request(m_baseOsmServerUrl + "/changeset/" +
+  HTTPClientPlatformWrapper request(m_baseOsmServerUrl + "/api/0.6/changeset/" +
                                     strings::to_string(changesetId) + "/close");
   bool const success = request.set_user_and_password(m_user, m_password)
       .set_http_method("PUT")
@@ -127,7 +127,7 @@ bool ServerApi06::CloseChangeSet(uint64_t changesetId) const
 bool ServerApi06::CheckUserAndPassword() const
 {
   static constexpr char const * kAPIWritePermission = "allow_write_api";
-  HTTPClientPlatformWrapper request(m_baseOsmServerUrl + "/permissions");
+  HTTPClientPlatformWrapper request(m_baseOsmServerUrl + "/api/0.6/permissions");
   bool const success = request.set_user_and_password(m_user, m_password).RunHTTPRequest();
   if (success && request.error_code() == 200 &&
       request.server_response().find(kAPIWritePermission) != string::npos)
@@ -157,7 +157,7 @@ string ServerApi06::GetXmlFeaturesInRect(m2::RectD const & latLonRect) const
   static constexpr double const kDAC = 7;
   m2::PointD const lb = latLonRect.LeftBottom();
   m2::PointD const rt = latLonRect.RightTop();
-  string const url = m_baseOsmServerUrl + "/map?bbox=" + to_string_dac(lb.x, kDAC) + ',' + to_string_dac(lb.y, kDAC) + ',' +
+  string const url = m_baseOsmServerUrl + "/api/0.6/map?bbox=" + to_string_dac(lb.x, kDAC) + ',' + to_string_dac(lb.y, kDAC) + ',' +
       to_string_dac(rt.x, kDAC) + ',' + to_string_dac(rt.y, kDAC);
   HTTPClientPlatformWrapper request(url);
   bool const success = request.set_user_and_password(m_user, m_password).RunHTTPRequest();
