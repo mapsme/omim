@@ -336,8 +336,6 @@ private:
 
   bool m_connectToGpsTrack; // need to connect to tracker when Drape is being constructed
 
-  void OnSearchResultsCallback(search::Results const & results);
-  void OnSearchResultsCallbackUI(search::Results const & results);
   void FillSearchResultsMarks(search::Results const & results);
 
   void OnDownloadMapCallback(storage::TIndex const & countryIndex);
@@ -496,7 +494,7 @@ public:
   //@}
 
 public:
-  using TRouteBuildingCallback = function<void(routing::IRouter::ResultCode,
+  using TRouteBuildingCallback = function<void(routing::IRouter::ResultCode, 
                                                vector<storage::TIndex> const &,
                                                vector<storage::TIndex> const &)>;
   using TRouteProgressCallback = function<void(float)>;
