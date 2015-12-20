@@ -133,6 +133,7 @@ protected:
 private:
   void OnResize(ScreenBase const & screen);
   void RenderScene(ScreenBase const & modelView);
+  void MergeBuckets();
   void RenderSingleGroup(ScreenBase const & modelView, ref_ptr<BaseRenderGroup> group);
   void RefreshProjection();
   void RefreshModelView(ScreenBase const & screen);
@@ -232,6 +233,7 @@ private:
   int m_currentZoomLevel = -1;
   ref_ptr<RequestedTiles> m_requestedTiles;
   uint64_t m_maxGeneration;
+  int m_mergeBucketsCounter = 0;
 };
 
 } // namespace df
