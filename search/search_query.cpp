@@ -1894,13 +1894,12 @@ void Query::SearchInMWM(Index::MwmHandle const & mwmHandle, SearchQueryParams co
   MatchFeaturesInTrie(params, *trieRoot, filter, [&](TTrieValue const & value)
   {
     // Filter out features deleted by user and edited features (they should be matched separately).
-    FeatureID const fid(mwmId, value.m_featureId);
-    if (!editor.IsFeatureDeleted(fid))
+    switch (editor.GetFeatureStatus(mwmId, value.m_featureId))
     {
-      if (editor.IsFeatureEdited(fid))
-        editedFeaturesToMatchSeparately.push_back(value);
-      else
-        AddResultFromTrie(value, mwmId, viewportId);
+    case osm::Editor::EDeleted: return;
+    case osm::Editor::EModified: editedFeaturesToMatchSeparately.push_back(value); return;
+    case osm::Editor::ECreated: CHECK(false, ("Created features should have different offsets."));
+    case osm::Editor::EUntouched: AddResultFromTrie(value, mwmId, viewportId); break;
     }
   });
 
@@ -1908,7 +1907,7 @@ void Query::SearchInMWM(Index::MwmHandle const & mwmHandle, SearchQueryParams co
   for (auto const & trieValue : editedFeaturesToMatchSeparately)
   {
     FeatureType feature;
-    VERIFY(editor.GetEditedFeature(FeatureID(mwmId, trieValue.m_featureId), feature), ());
+    VERIFY(editor.GetEditedFeature(mwmId, trieValue.m_featureId, feature), ());
     if (MatchRawFeature(params, feature))
       AddResultFromTrie(trieValue, mwmId, viewportId);
   }
