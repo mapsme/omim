@@ -68,7 +68,7 @@ bool SetAttributeForOsmNode(xml_document & doc, char const * attribute, TNewValu
   if (node.attribute(attribute).empty())
     node.append_attribute(attribute) = v;
   else
-    node.attribute(attribute).set_value(v);
+    node.attribute(attribute) = v;
   return true;
 }
 

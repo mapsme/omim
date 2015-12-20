@@ -29,7 +29,7 @@ ServerApi06::ServerApi06(string const & user, string const & password, string co
 {
 }
 
-bool ServerApi06::CreateChangeSet(TKeyValueTags && kvTags, uint64_t & outChangeSetId) const
+bool ServerApi06::CreateChangeSet(TKeyValueTags const & kvTags, uint64_t & outChangeSetId) const
 {
   ostringstream stream;
   stream << "<osm>\n"
@@ -142,9 +142,9 @@ int ServerApi06::HttpCodeForUrl(string const & url)
 {
   HTTPClientPlatformWrapper request(url);
   bool const success = request.RunHTTPRequest();
-  int const httpError = request.error_code();
+  int const httpCode = request.error_code();
   if (success)
-    return httpError;
+    return httpCode;
 
   return -1;
 }

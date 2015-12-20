@@ -12,10 +12,6 @@ namespace osm
 /// TODO(AlexZ): Rewrite ServerAPI interface to accept XMLFeature.
 class ServerApi06
 {
-  string m_user;
-  string m_password;
-  string m_baseOsmServerUrl;
-
 public:
   // k= and v= tags used in OSM.
   using TKeyValueTags = map<string, string>;
@@ -37,7 +33,7 @@ public:
   static int HttpCodeForUrl(string const & url);
 
   /// Please use at least created_by=* and comment=* tags.
-  bool CreateChangeSet(TKeyValueTags && kvTags, uint64_t & outChangeSetId) const;
+  bool CreateChangeSet(TKeyValueTags const & kvTags, uint64_t & outChangeSetId) const;
   /// nodeXml should be wrapped into <osm> ... </osm> tags.
   bool CreateNode(string const & nodeXml, uint64_t & outCreatedNodeId) const;
   /// nodeXml should be wrapped into <osm> ... </osm> tags.
@@ -49,6 +45,11 @@ public:
   /// @returns OSM xml string with features in the bounding box or empty string on error.
   string GetXmlFeaturesInRect(m2::RectD const & latLonRect) const;
   string GetXmlNodeByLatLon(double lat, double lon) const;
+
+private:
+  string m_user;
+  string m_password;
+  string m_baseOsmServerUrl;
 };
 
 } // namespace osm
