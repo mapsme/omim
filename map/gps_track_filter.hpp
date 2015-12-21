@@ -4,7 +4,6 @@
 
 #include "geometry/latlon.hpp"
 
-#include "std/chrono.hpp"
 #include "std/vector.hpp"
 
 class IGpsTrackFilter
@@ -41,6 +40,6 @@ private:
 
   bool m_hasLastInfo;
   location::GpsInfo m_lastInfo;
-  steady_clock::time_point m_lastGoodGpsTime;
+  location::GpsInfo m_lastAcceptedInfo;
+  double m_lastSpeed;
 };
-
