@@ -40,6 +40,8 @@
   <string name="pref_map_style" translatable="false">MapStyle</string>
   <string name="pref_tts_enabled" translatable="false">TtsEnabled</string>
   <string name="pref_tts_language" translatable="false">TtsLanguage</string>
+  <string name="pref_track_record_enabled" translatable="false">TrackRecordEnabled</string>
+  <string name="pref_track_record_length" translatable="false">TrackRecordLength</string>
   <string name="pref_showcase_switched_on" translatable="false">DisplayShowcase</string>
 
   <string name="notification_ticker_ltr" translatable="false">%1$s: %2$s</string>
