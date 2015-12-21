@@ -9,6 +9,8 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import java.io.File;
+
 import com.google.gson.Gson;
 import com.mapswithme.country.ActiveCountryTree;
 import com.mapswithme.country.CountryItem;
@@ -25,8 +27,6 @@ import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.SaveCallback;
-
-import java.io.File;
 
 public class MwmApplication extends Application
                          implements ActiveCountryTree.ActiveCountryListener
@@ -103,7 +103,7 @@ public class MwmApplication extends Application
     initPaths();
     nativeInitPlatform(getApkPath(), getDataStoragePath(), getTempPath(), getObbGooglePath(),
                        BuildConfig.FLAVOR, BuildConfig.BUILD_TYPE,
-                       Yota.isFirstYota(), UiUtils.isSmallTablet() || UiUtils.isBigTablet());
+                       Yota.isFirstYota(), UiUtils.isTablet());
     initParse();
     sPrefs = getSharedPreferences(getString(R.string.pref_file_name), MODE_PRIVATE);
   }
