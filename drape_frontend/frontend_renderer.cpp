@@ -796,7 +796,6 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
   if (isPerspective && has3dAreas)
   {
     m_framebuffer->Enable();
-    GLFunctions::glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     GLFunctions::glClear();
     GLFunctions::glClearDepth();
 
@@ -807,7 +806,6 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
       if (group->GetState().GetProgram3dIndex() == gpu::AREA_3D_PROGRAM)
         RenderSingleGroup(modelView, make_ref(group));
     }
-    RefreshBgColor();
     m_framebuffer->Disable();
 
     GLFunctions::glDisable(gl_const::GLDepthTest);
@@ -919,7 +917,7 @@ void FrontendRenderer::RefreshBgColor()
 {
   uint32_t color = drule::rules().GetBgColor(df::GetDrawTileScale(m_userEventStream.GetCurrentScreen()));
   dp::Color c = dp::Extract(color, 255 - (color >> 24));
-  GLFunctions::glClearColor(c.GetRedF(), c.GetGreenF(), c.GetBlueF(), 1.0f);
+  GLFunctions::glClearColor(c.GetRedF(), c.GetGreenF(), c.GetBlueF(), 0.0f);
 }
 
 int FrontendRenderer::GetCurrentZoomLevel() const
