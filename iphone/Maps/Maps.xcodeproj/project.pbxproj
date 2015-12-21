@@ -18,6 +18,8 @@
 		340E10631B949D1900D975D5 /* MWMSearchBookmarksManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 340E10621B949D1900D975D5 /* MWMSearchBookmarksManager.mm */; };
 		340F24631B14910500F874CD /* RouteState.mm in Sources */ = {isa = PBXBuildFile; fileRef = 340F24621B14910500F874CD /* RouteState.mm */; };
 		341522BF1B666A550077AA8F /* MWMAPIBarView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 341522BE1B666A550077AA8F /* MWMAPIBarView.mm */; };
+		341876B41C28026D005A0C9A /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 454040681AD2D8D2007A9B12 /* CoreVideo.framework */; };
+		341876B51C280272005A0C9A /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 454040681AD2D8D2007A9B12 /* CoreVideo.framework */; };
 		341C2A571B72092A00AD41A1 /* 02_droidsans-fallback.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9DF04B231B71010E00DACAF1 /* 02_droidsans-fallback.ttf */; };
 		341C2A5B1B720B8A00AD41A1 /* MWMAPIBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 341C2A5A1B720B8A00AD41A1 /* MWMAPIBarView.xib */; };
 		342AD76F1B53D30C00E0B997 /* UIButton+RuntimeAttributes.mm in Sources */ = {isa = PBXBuildFile; fileRef = 342AD76E1B53D30C00E0B997 /* UIButton+RuntimeAttributes.mm */; };
@@ -151,7 +153,7 @@
 		4579C89D1AD2F9E6001D6B90 /* drules_proto_dark.bin in Resources */ = {isa = PBXBuildFile; fileRef = 4A00DBDE1AB704C400113624 /* drules_proto_dark.bin */; };
 		4579C89E1AD2F9E6001D6B90 /* drules_proto.bin in Resources */ = {isa = PBXBuildFile; fileRef = F7FDD822147F30CC005900FA /* drules_proto.bin */; };
 		4579C89F1AD2FA36001D6B90 /* packed_polygons.bin in Resources */ = {isa = PBXBuildFile; fileRef = FA85F632145DDDC20090E1A0 /* packed_polygons.bin */; };
-		4579C8A01AD2FAB1001D6B90 /* 00_roboto_medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FAF30A94173AB23900818BF6 /* 00_roboto_medium.ttf */; };
+		4579C8A01AD2FAB1001D6B90 /* 07_roboto_medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FAF30A94173AB23900818BF6 /* 07_roboto_medium.ttf */; };
 		4579C8A11AD2FAB1001D6B90 /* 01_dejavusans.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EEA615E5134C4968003A9827 /* 01_dejavusans.ttf */; };
 		4579C8A31AD2FAB1001D6B90 /* 03_jomolhari-id-a3d.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EEA615E7134C4968003A9827 /* 03_jomolhari-id-a3d.ttf */; };
 		4579C8A41AD2FAB1001D6B90 /* 04_padauk.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EEA615E8134C4968003A9827 /* 04_padauk.ttf */; };
@@ -209,7 +211,7 @@
 		6741A9161BF340D1002C974C /* resources-xhdpi_dark in Resources */ = {isa = PBXBuildFile; fileRef = 4A7D89C31B2EBF3B00AC843E /* resources-xhdpi_dark */; };
 		6741A9171BF340D1002C974C /* resources-xhdpi in Resources */ = {isa = PBXBuildFile; fileRef = 97FC99DA19C1A2CD00C1CF98 /* resources-xhdpi */; };
 		6741A9181BF340D1002C974C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = FA99CB71147089B100689A9A /* Localizable.strings */; };
-		6741A9191BF340D1002C974C /* 00_roboto_medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FAF30A94173AB23900818BF6 /* 00_roboto_medium.ttf */; };
+		6741A9191BF340D1002C974C /* 07_roboto_medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FAF30A94173AB23900818BF6 /* 07_roboto_medium.ttf */; };
 		6741A91A1BF340D1002C974C /* 01_dejavusans.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EEA615E5134C4968003A9827 /* 01_dejavusans.ttf */; };
 		6741A91B1BF340D1002C974C /* 02_droidsans-fallback.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9DF04B231B71010E00DACAF1 /* 02_droidsans-fallback.ttf */; };
 		6741A91C1BF340D1002C974C /* 03_jomolhari-id-a3d.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EEA615E7134C4968003A9827 /* 03_jomolhari-id-a3d.ttf */; };
@@ -326,7 +328,7 @@
 		6741A99C1BF340DE002C974C /* resources-6plus in Resources */ = {isa = PBXBuildFile; fileRef = 45159BF81B0CA2D5009BFA85 /* resources-6plus */; };
 		6741A99D1BF340DE002C974C /* MWMPedestrianShareAlert.xib in Resources */ = {isa = PBXBuildFile; fileRef = 347BAC681B733D540010FF78 /* MWMPedestrianShareAlert.xib */; };
 		6741A99E1BF340DE002C974C /* MWMNextTurnPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = F6FF2E2A1B8C5C020063FD1F /* MWMNextTurnPanel.xib */; };
-		6741A99F1BF340DE002C974C /* 00_roboto_medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FAF30A94173AB23900818BF6 /* 00_roboto_medium.ttf */; };
+		6741A99F1BF340DE002C974C /* 07_roboto_medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FAF30A94173AB23900818BF6 /* 07_roboto_medium.ttf */; };
 		6741A9A11BF340DE002C974C /* MWMSearchDownloadView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 344825961B8DCEC400757B1B /* MWMSearchDownloadView.mm */; };
 		6741A9A21BF340DE002C974C /* CommunityVC.mm in Sources */ = {isa = PBXBuildFile; fileRef = 978D4A241996B0EC00D72CA7 /* CommunityVC.mm */; };
 		6741A9A31BF340DE002C974C /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.mm */; };
@@ -478,7 +480,6 @@
 		6741AA381BF340DE002C974C /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34570A331B13217C00E6D4FD /* Bolts.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		6741AA391BF340DE002C974C /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34570A341B13217C00E6D4FD /* Parse.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		6741AA3A1BF340DE002C974C /* ParseFacebookUtilsV4.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34570A351B13217C00E6D4FD /* ParseFacebookUtilsV4.framework */; settings = {ATTRIBUTES = (Required, ); }; };
-		6741AA3B1BF340DE002C974C /* libMyTracker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F69A16A21AF24A3300EF43F0 /* libMyTracker.a */; };
 		6741AA3C1BF340DE002C974C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		6741AA3D1BF340DE002C974C /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6BC1E4B1ACBE96100EF0360 /* FBSDKCoreKit.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		6741AA3E1BF340DE002C974C /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6BC1E4C1ACBE96100EF0360 /* FBSDKShareKit.framework */; settings = {ATTRIBUTES = (Required, ); }; };
@@ -684,7 +685,7 @@
 		F6830F111B85F6B900C42AAE /* MWMLanesPanel.mm in Sources */ = {isa = PBXBuildFile; fileRef = F6830F101B85F6B900C42AAE /* MWMLanesPanel.mm */; };
 		F68CEF741AD8852A00563FBA /* MWMMapController.mm in Sources */ = {isa = PBXBuildFile; fileRef = F68CEF731AD8852A00563FBA /* MWMMapController.mm */; };
 		F68E6BD21B8DB7AE0040566D /* MWMRouteHelperPanel.mm in Sources */ = {isa = PBXBuildFile; fileRef = F68E6BD11B8DB7AE0040566D /* MWMRouteHelperPanel.mm */; };
-		F69A16A31AF24A3300EF43F0 /* libMyTracker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F69A16A21AF24A3300EF43F0 /* libMyTracker.a */; };
+		F696CCBB1C2816FB00150DFD /* MyTrackerSDKCorp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F696CCBA1C2816FB00150DFD /* MyTrackerSDKCorp.framework */; };
 		F6A750B91BE8C74400981B41 /* MWMSearchHistoryMyPositionCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = F6A750B81BE8C74400981B41 /* MWMSearchHistoryMyPositionCell.mm */; };
 		F6A750BB1BE8C7BA00981B41 /* MWMSearchHistoryMyPositionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F6A750BA1BE8C7BA00981B41 /* MWMSearchHistoryMyPositionCell.xib */; };
 		F6BB6CBE1BB15A5E00DF1DF2 /* MWMRoutePreview.xib in Resources */ = {isa = PBXBuildFile; fileRef = F6BB6CBD1BB15A5E00DF1DF2 /* MWMRoutePreview.xib */; };
@@ -752,7 +753,7 @@
 		FAAEA7D1161BD26600CCD661 /* synonyms.txt in Resources */ = {isa = PBXBuildFile; fileRef = FAAEA7D0161BD26600CCD661 /* synonyms.txt */; };
 		FAAEA7D5161D8D3100CCD661 /* BookmarksRootVC.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAAEA7D3161D8D3100CCD661 /* BookmarksRootVC.mm */; };
 		FAAFD697139D9BE2000AE70C /* categories.txt in Resources */ = {isa = PBXBuildFile; fileRef = FAAFD696139D9BE2000AE70C /* categories.txt */; };
-		FAF30A95173AB23900818BF6 /* 00_roboto_medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FAF30A94173AB23900818BF6 /* 00_roboto_medium.ttf */; };
+		FAF30A95173AB23900818BF6 /* 07_roboto_medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FAF30A94173AB23900818BF6 /* 07_roboto_medium.ttf */; };
 		FAF457E715597D4600DCCC49 /* Framework.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAF457E615597D4600DCCC49 /* Framework.cpp */; };
 		FAFCB63613366E78001A5C59 /* WebViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAFCB63513366E78001A5C59 /* WebViewController.mm */; };
 		FAFF422A1347F101009BBB14 /* World.mwm in Resources */ = {isa = PBXBuildFile; fileRef = FAFF42291347F101009BBB14 /* World.mwm */; };
@@ -1267,13 +1268,7 @@
 		F68CEF731AD8852A00563FBA /* MWMMapController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MWMMapController.mm; sourceTree = "<group>"; };
 		F68E6BD01B8DB7AE0040566D /* MWMRouteHelperPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWMRouteHelperPanel.h; sourceTree = "<group>"; };
 		F68E6BD11B8DB7AE0040566D /* MWMRouteHelperPanel.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MWMRouteHelperPanel.mm; sourceTree = "<group>"; };
-		F69A16A21AF24A3300EF43F0 /* libMyTracker.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMyTracker.a; path = MyTracker/libMyTracker.a; sourceTree = "<group>"; };
-		F69A16A51AF24A9000EF43F0 /* MRAbstractDataProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MRAbstractDataProvider.h; path = MyTracker/MRAbstractDataProvider.h; sourceTree = "<group>"; };
-		F69A16A61AF24A9000EF43F0 /* MRCustomParamsProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MRCustomParamsProvider.h; path = MyTracker/MRCustomParamsProvider.h; sourceTree = "<group>"; };
-		F69A16A71AF24A9000EF43F0 /* MRMyTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MRMyTracker.h; path = MyTracker/MRMyTracker.h; sourceTree = "<group>"; };
-		F69A16A81AF24A9000EF43F0 /* MRTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MRTracker.h; path = MyTracker/MRTracker.h; sourceTree = "<group>"; };
-		F69A16A91AF24A9000EF43F0 /* MRTrackerParams.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MRTrackerParams.h; path = MyTracker/MRTrackerParams.h; sourceTree = "<group>"; };
-		F69A16AA1AF24A9000EF43F0 /* MRTrackerParams+Corp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "MRTrackerParams+Corp.h"; path = "MyTracker/MRTrackerParams+Corp.h"; sourceTree = "<group>"; };
+		F696CCBA1C2816FB00150DFD /* MyTrackerSDKCorp.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MyTrackerSDKCorp.framework; path = MyTracker/MyTrackerSDKCorp.framework; sourceTree = "<group>"; };
 		F6A750B71BE8C74400981B41 /* MWMSearchHistoryMyPositionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWMSearchHistoryMyPositionCell.h; sourceTree = "<group>"; };
 		F6A750B81BE8C74400981B41 /* MWMSearchHistoryMyPositionCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MWMSearchHistoryMyPositionCell.mm; sourceTree = "<group>"; };
 		F6A750BA1BE8C7BA00981B41 /* MWMSearchHistoryMyPositionCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MWMSearchHistoryMyPositionCell.xib; sourceTree = "<group>"; };
@@ -1386,7 +1381,7 @@
 		FAB09895148E2F1500892860 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FAB0FC6019251E85003B396F /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FAB9D5D91992B981003F6A52 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/Localizable.strings; sourceTree = "<group>"; };
-		FAF30A94173AB23900818BF6 /* 00_roboto_medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = 00_roboto_medium.ttf; path = ../../data/00_roboto_medium.ttf; sourceTree = "<group>"; };
+		FAF30A94173AB23900818BF6 /* 07_roboto_medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = 07_roboto_medium.ttf; path = ../../data/07_roboto_medium.ttf; sourceTree = "<group>"; };
 		FAF457E415597BC100DCCC49 /* Framework.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Framework.h; sourceTree = "<group>"; };
 		FAF457E615597D4600DCCC49 /* Framework.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Framework.cpp; sourceTree = "<group>"; };
 		FAF8E2EC1752E0F100D41090 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -1400,6 +1395,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F696CCBB1C2816FB00150DFD /* MyTrackerSDKCorp.framework in Frameworks */,
+				341876B41C28026D005A0C9A /* CoreVideo.framework in Frameworks */,
 				34751E9E1BFB8E73005299B7 /* MediaPlayer.framework in Frameworks */,
 				34570A411B13229300E6D4FD /* FBSDKLoginKit.framework in Frameworks */,
 				B08AA8D61A25E58C00810B1C /* Social.framework in Frameworks */,
@@ -1410,7 +1407,6 @@
 				34570A361B13217C00E6D4FD /* Bolts.framework in Frameworks */,
 				34570A371B13217C00E6D4FD /* Parse.framework in Frameworks */,
 				34570A381B13217C00E6D4FD /* ParseFacebookUtilsV4.framework in Frameworks */,
-				F69A16A31AF24A3300EF43F0 /* libMyTracker.a in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				F6BC1E4D1ACBE96100EF0360 /* FBSDKCoreKit.framework in Frameworks */,
 				F6BC1E4E1ACBE96100EF0360 /* FBSDKShareKit.framework in Frameworks */,
@@ -1501,6 +1497,7 @@
 				6741AAC61BF356BA002C974C /* libgeometry.a in Frameworks */,
 				674A7E291C0DA576003D48E1 /* libsdf_image.a in Frameworks */,
 				6741AAC91BF356BA002C974C /* libindexer.a in Frameworks */,
+				341876B51C280272005A0C9A /* CoreVideo.framework in Frameworks */,
 				6741AACA1BF356BA002C974C /* libjansson.a in Frameworks */,
 				6741AACB1BF356BA002C974C /* liblodepng.a in Frameworks */,
 				6741AACC1BF356BA002C974C /* libmap.a in Frameworks */,
@@ -1525,7 +1522,6 @@
 				6741AA381BF340DE002C974C /* Bolts.framework in Frameworks */,
 				6741AA391BF340DE002C974C /* Parse.framework in Frameworks */,
 				6741AA3A1BF340DE002C974C /* ParseFacebookUtilsV4.framework in Frameworks */,
-				6741AA3B1BF340DE002C974C /* libMyTracker.a in Frameworks */,
 				6741AA3C1BF340DE002C974C /* Foundation.framework in Frameworks */,
 				6741AA3D1BF340DE002C974C /* FBSDKCoreKit.framework in Frameworks */,
 				6741AA3E1BF340DE002C974C /* FBSDKShareKit.framework in Frameworks */,
@@ -1655,7 +1651,6 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				F69A16AB1AF24A9400EF43F0 /* MyTracker */,
 				28A0AB4B0D9B1048005BE974 /* Maps_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.mm */,
 			);
@@ -1679,6 +1674,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F696CCBA1C2816FB00150DFD /* MyTrackerSDKCorp.framework */,
 				674A7E201C0DA55E003D48E1 /* libdrape_frontend.a */,
 				674A7E211C0DA55E003D48E1 /* libdrape.a */,
 				674A7E221C0DA55E003D48E1 /* libsdf_image.a */,
@@ -1715,7 +1711,6 @@
 				34570A331B13217C00E6D4FD /* Bolts.framework */,
 				34570A341B13217C00E6D4FD /* Parse.framework */,
 				34570A351B13217C00E6D4FD /* ParseFacebookUtilsV4.framework */,
-				F69A16A21AF24A3300EF43F0 /* libMyTracker.a */,
 				4540406E1AD2D9C5007A9B12 /* WatchKit.framework */,
 				454040681AD2D8D2007A9B12 /* CoreVideo.framework */,
 				F673E9151AD2B65B0064EB7F /* GLKit.framework */,
@@ -2550,19 +2545,6 @@
 			name = Panels;
 			sourceTree = "<group>";
 		};
-		F69A16AB1AF24A9400EF43F0 /* MyTracker */ = {
-			isa = PBXGroup;
-			children = (
-				F69A16A51AF24A9000EF43F0 /* MRAbstractDataProvider.h */,
-				F69A16A61AF24A9000EF43F0 /* MRCustomParamsProvider.h */,
-				F69A16A71AF24A9000EF43F0 /* MRMyTracker.h */,
-				F69A16A81AF24A9000EF43F0 /* MRTracker.h */,
-				F69A16A91AF24A9000EF43F0 /* MRTrackerParams.h */,
-				F69A16AA1AF24A9000EF43F0 /* MRTrackerParams+Corp.h */,
-			);
-			name = MyTracker;
-			sourceTree = "<group>";
-		};
 		F6BBF2C31B4FFB56000CF8E2 /* LocationAlert */ = {
 			isa = PBXGroup;
 			children = (
@@ -2753,13 +2735,13 @@
 				FA64D9A813F975AD00350ECF /* types.txt */,
 				452FCA3A1B6A3DF7007019AB /* colors.txt */,
 				451950391B7A3E070085DA05 /* patterns.txt */,
-				FAF30A94173AB23900818BF6 /* 00_roboto_medium.ttf */,
 				EEA615E5134C4968003A9827 /* 01_dejavusans.ttf */,
 				9DF04B231B71010E00DACAF1 /* 02_droidsans-fallback.ttf */,
 				EEA615E7134C4968003A9827 /* 03_jomolhari-id-a3d.ttf */,
 				EEA615E8134C4968003A9827 /* 04_padauk.ttf */,
 				EEA615E9134C4968003A9827 /* 05_khmeros.ttf */,
 				EE164810135CEE49003B8A3E /* 06_code2000.ttf */,
+				FAF30A94173AB23900818BF6 /* 07_roboto_medium.ttf */,
 				FAFF42291347F101009BBB14 /* World.mwm */,
 				FA459EB314327AF700B5BB3C /* WorldCoasts.mwm */,
 				EEFE7C1212F8C9E1006AF8C3 /* fonts_blacklist.txt */,
@@ -3152,7 +3134,7 @@
 				45159BF91B0CA2D5009BFA85 /* resources-6plus in Resources */,
 				347BAC691B733D540010FF78 /* MWMPedestrianShareAlert.xib in Resources */,
 				F6FF2E2B1B8C5C020063FD1F /* MWMNextTurnPanel.xib in Resources */,
-				FAF30A95173AB23900818BF6 /* 00_roboto_medium.ttf in Resources */,
+				FAF30A95173AB23900818BF6 /* 07_roboto_medium.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3175,7 +3157,7 @@
 				6741A9161BF340D1002C974C /* resources-xhdpi_dark in Resources */,
 				6741A9171BF340D1002C974C /* resources-xhdpi in Resources */,
 				6741A9181BF340D1002C974C /* Localizable.strings in Resources */,
-				6741A9191BF340D1002C974C /* 00_roboto_medium.ttf in Resources */,
+				6741A9191BF340D1002C974C /* 07_roboto_medium.ttf in Resources */,
 				6741A91A1BF340D1002C974C /* 01_dejavusans.ttf in Resources */,
 				6741A91B1BF340D1002C974C /* 02_droidsans-fallback.ttf in Resources */,
 				6741A91C1BF340D1002C974C /* 03_jomolhari-id-a3d.ttf in Resources */,
@@ -3307,7 +3289,7 @@
 				6741A99C1BF340DE002C974C /* resources-6plus in Resources */,
 				6741A99D1BF340DE002C974C /* MWMPedestrianShareAlert.xib in Resources */,
 				6741A99E1BF340DE002C974C /* MWMNextTurnPanel.xib in Resources */,
-				6741A99F1BF340DE002C974C /* 00_roboto_medium.ttf in Resources */,
+				6741A99F1BF340DE002C974C /* 07_roboto_medium.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3322,13 +3304,13 @@
 				F6C7B7131BA840A4004233F4 /* resources-xhdpi_dark in Resources */,
 				343F26311AEFDF3E00388A6D /* resources-xhdpi in Resources */,
 				6C47C8BF1AD6C47E000C52C1 /* Localizable.strings in Resources */,
-				4579C8A01AD2FAB1001D6B90 /* 00_roboto_medium.ttf in Resources */,
 				4579C8A11AD2FAB1001D6B90 /* 01_dejavusans.ttf in Resources */,
 				9DF04B241B71010E00DACAF1 /* 02_droidsans-fallback.ttf in Resources */,
 				4579C8A31AD2FAB1001D6B90 /* 03_jomolhari-id-a3d.ttf in Resources */,
 				4579C8A41AD2FAB1001D6B90 /* 04_padauk.ttf in Resources */,
 				4579C8A51AD2FAB1001D6B90 /* 05_khmeros.ttf in Resources */,
 				4579C8A61AD2FAB1001D6B90 /* 06_code2000.ttf in Resources */,
+				4579C8A01AD2FAB1001D6B90 /* 07_roboto_medium.ttf in Resources */,
 				347274791B0F4FD900756B37 /* me.maps.watchkitextension.production.entitlements in Resources */,
 				34C659481BD12A77009DC20A /* InfoPlist.strings in Resources */,
 				4579C89F1AD2FA36001D6B90 /* packed_polygons.bin in Resources */,
@@ -4778,7 +4760,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SRCROOT)/../../../omim-iphone-debug-i386/out/debug\"",
-					"$(PROJECT_DIR)/MyTracker",
 					"$(PROJECT_DIR)/Statistics",
 				);
 				OTHER_CFLAGS = (
@@ -4833,6 +4814,7 @@
 					"$(PROJECT_DIR)/PushNotifications",
 					"$(PROJECT_DIR)/Statistics",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/MyTracker",
 				);
 				INFOPLIST_FILE = MAPSME.plist;
 				OTHER_CFLAGS = (
@@ -4897,7 +4879,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SRCROOT)/../../../omim-iphone-debug-$(CURRENT_ARCH)/out/debug\"",
-					"$(PROJECT_DIR)/MyTracker",
 					"$(PROJECT_DIR)/Statistics",
 				);
 				ONLY_ACTIVE_ARCH = YES;
@@ -4952,6 +4933,7 @@
 					"$(PROJECT_DIR)/PushNotifications",
 					"$(PROJECT_DIR)/Statistics",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/MyTracker",
 				);
 				INFOPLIST_FILE = MAPSME.plist;
 				OTHER_CFLAGS = (
@@ -5020,7 +5002,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SRCROOT)/../../../omim-iphone-production-$(CURRENT_ARCH)/out/production\"",
-					"$(PROJECT_DIR)/MyTracker",
 					"$(PROJECT_DIR)/Statistics",
 				);
 				OTHER_CFLAGS = (
@@ -5075,6 +5056,7 @@
 					"$(PROJECT_DIR)/PushNotifications",
 					"$(PROJECT_DIR)/Statistics",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/MyTracker",
 				);
 				INFOPLIST_FILE = MAPSME.plist;
 				OTHER_CFLAGS = (
@@ -5143,7 +5125,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SRCROOT)/../../../omim-iphone-production-$(CURRENT_ARCH)/out/production\"",
-					"$(PROJECT_DIR)/MyTracker",
 					"$(PROJECT_DIR)/Statistics",
 				);
 				OTHER_CFLAGS = (
@@ -5198,6 +5179,7 @@
 					"$(PROJECT_DIR)/PushNotifications",
 					"$(PROJECT_DIR)/Statistics",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/MyTracker",
 				);
 				INFOPLIST_FILE = MAPSME.plist;
 				OTHER_CFLAGS = (
@@ -5264,7 +5246,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SRCROOT)/../../../omim-iphone-release-$(CURRENT_ARCH)/out/release\"",
-					"$(PROJECT_DIR)/MyTracker",
 					"$(PROJECT_DIR)/Statistics",
 				);
 				ONLY_ACTIVE_ARCH = YES;
@@ -5319,6 +5300,7 @@
 					"$(PROJECT_DIR)/PushNotifications",
 					"$(PROJECT_DIR)/Statistics",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/MyTracker",
 				);
 				INFOPLIST_FILE = MAPSME.plist;
 				OTHER_CFLAGS = (
@@ -5385,7 +5367,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SRCROOT)/../../../omim-iphone-release-i386/out/release\"",
-					"$(PROJECT_DIR)/MyTracker",
 					"$(PROJECT_DIR)/Statistics",
 				);
 				OTHER_CFLAGS = (
@@ -5440,6 +5421,7 @@
 					"$(PROJECT_DIR)/PushNotifications",
 					"$(PROJECT_DIR)/Statistics",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/MyTracker",
 				);
 				INFOPLIST_FILE = MAPSME.plist;
 				OTHER_CFLAGS = (
