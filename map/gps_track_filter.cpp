@@ -55,6 +55,10 @@ void GpsTrackFilter::Process(vector<location::GpsInfo> const & inPoints,
     if (currInfo.m_horizontalAccuracy > m_minAccuracy)
       continue;
 
+    // Skip any function without speed
+    if (!currInfo.HasSpeed())
+      continue;
+
     if (!m_hasLastInfo || currInfo.m_timestamp < m_lastAcceptedInfo.m_timestamp)
     {
       m_hasLastInfo = true;
