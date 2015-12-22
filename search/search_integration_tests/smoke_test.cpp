@@ -17,6 +17,8 @@
 #include "platform/local_country_file_utils.hpp"
 #include "platform/platform.hpp"
 
+using namespace search::tests_support;
+
 namespace
 {
 class ScopedMapFile

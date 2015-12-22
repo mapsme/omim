@@ -4,6 +4,10 @@
 
 #include "base/logging.hpp"
 
+namespace search
+{
+namespace tests_support
+{
 TestSearchRequest::TestSearchRequest(TestSearchEngine & engine, string const & query,
                                      string const & locale, search::SearchParams::SearchModeT mode,
                                      m2::RectD const & viewport)
@@ -49,3 +53,5 @@ void TestSearchRequest::Done(search::Results const & results)
     m_results.assign(results.Begin(), results.End());
   }
 }
+}  // namespace tests_support
+}  // namespace search

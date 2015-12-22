@@ -8,6 +8,10 @@
 class FeatureBuilder1;
 class FeatureType;
 
+namespace search
+{
+namespace tests_support
+{
 class TestFeature
 {
 public:
@@ -87,3 +91,5 @@ protected:
 };
 
 string DebugPrint(TestFeature const & feature);
+}  // namespace tests_support
+}  // namespace search

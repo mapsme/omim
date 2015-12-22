@@ -5,6 +5,10 @@
 
 #include "std/sstream.hpp"
 
+namespace search
+{
+namespace tests_support
+{
 ExactMatch::ExactMatch(MwmSet::MwmId const & mwmId, shared_ptr<TestFeature> feature)
   : m_mwmId(mwmId), m_feature(feature)
 {
@@ -92,3 +96,5 @@ bool MatchResults(Index const & index, vector<shared_ptr<MatchingRule>> rules,
 }
 
 string DebugPrint(MatchingRule const & rule) { return rule.ToString(); }
+}  // namespace tests_support
+}  // namespace search

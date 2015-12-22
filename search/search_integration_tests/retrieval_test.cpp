@@ -33,6 +33,8 @@
 #include "std/limits.hpp"
 #include "std/shared_ptr.hpp"
 
+using namespace search::tests_support;
+
 namespace
 {
 void InitParams(string const & query, search::SearchQueryParams & params)

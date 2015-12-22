@@ -12,6 +12,10 @@
 
 #include "std/sstream.hpp"
 
+namespace search
+{
+namespace tests_support
+{
 // TestFeature -------------------------------------------------------------------------------------
 TestFeature::TestFeature(string const & name, string const & lang)
   : m_center(0, 0), m_hasCenter(false), m_name(name), m_lang(lang)
@@ -102,7 +106,7 @@ void TestStreet::Serialize(FeatureBuilder1 & fb) const
 string TestStreet::ToString() const
 {
   ostringstream os;
-  os << "TestStreet [" << m_name << ", " << m_lang << ", " << DebugPrint(m_points) << "]";
+  os << "TestStreet [" << m_name << ", " << m_lang << ", " << ::DebugPrint(m_points) << "]";
   return os.str();
 }
 
@@ -168,3 +172,5 @@ string TestBuilding::ToString() const
 }
 
 string DebugPrint(TestFeature const & feature) { return feature.ToString(); }
+}  // namespace tests_support
+}  // namespace search

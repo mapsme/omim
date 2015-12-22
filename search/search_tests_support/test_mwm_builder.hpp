@@ -13,6 +13,10 @@ namespace platform
 class LocalCountryFile;
 }
 
+namespace search
+{
+namespace tests_support
+{
 class TestFeature;
 
 class TestMwmBuilder
@@ -30,3 +34,5 @@ private:
   feature::DataHeader::MapType m_type;
   unique_ptr<feature::FeaturesCollector> m_collector;
 };
+}  // namespace tests_support
+}  // namespace search

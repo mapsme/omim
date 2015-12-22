@@ -24,6 +24,8 @@
 
 #include "base/scope_guard.hpp"
 
+using namespace search::tests_support;
+
 namespace
 {
 void Cleanup(platform::LocalCountryFile const & map)

@@ -13,6 +13,10 @@
 class FeatureType;
 class Index;
 
+namespace search
+{
+namespace tests_support
+{
 class MatchingRule
 {
 public:
@@ -53,3 +57,5 @@ bool MatchResults(Index const & index, vector<shared_ptr<MatchingRule>> rules,
                   vector<search::Result> const & actual);
 
 string DebugPrint(MatchingRule const & rule);
+}  // namespace tests_support
+}  // namespace search

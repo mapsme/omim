@@ -18,6 +18,10 @@
 
 #include "defines.hpp"
 
+namespace search
+{
+namespace tests_support
+{
 TestMwmBuilder::TestMwmBuilder(platform::LocalCountryFile & file, feature::DataHeader::MapType type)
     : m_file(file),
       m_type(type),
@@ -61,3 +65,5 @@ void TestMwmBuilder::Finish()
 
   m_file.SyncWithDisk();
 }
+}  // namespace tests_support
+}  // namespace search
