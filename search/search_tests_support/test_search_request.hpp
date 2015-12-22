@@ -10,6 +10,10 @@
 #include "std/string.hpp"
 #include "std/vector.hpp"
 
+namespace search
+{
+namespace tests_support
+{
 class TestSearchEngine;
 
 // This class wraps a search query to a search engine. Note that the
@@ -34,3 +38,5 @@ private:
   vector<search::Result> m_results;
   bool m_done;
 };
+}  // namespace tests_support
+}  // namespace search

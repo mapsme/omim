@@ -1,5 +1,5 @@
-#include "search/search_integration_tests/test_mwm_builder.hpp"
-#include "search/search_integration_tests/test_feature.hpp"
+#include "search/search_tests_support/test_mwm_builder.hpp"
+#include "search/search_tests_support/test_feature.hpp"
 
 #include "generator/feature_builder.hpp"
 #include "generator/feature_generator.hpp"
@@ -18,6 +18,10 @@
 
 #include "defines.hpp"
 
+namespace search
+{
+namespace tests_support
+{
 TestMwmBuilder::TestMwmBuilder(platform::LocalCountryFile & file, feature::DataHeader::MapType type)
     : m_file(file),
       m_type(type),
@@ -61,3 +65,5 @@ void TestMwmBuilder::Finish()
 
   m_file.SyncWithDisk();
 }
+}  // namespace tests_support
+}  // namespace search

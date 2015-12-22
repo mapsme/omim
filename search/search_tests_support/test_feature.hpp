@@ -8,6 +8,10 @@
 class FeatureBuilder1;
 class FeatureType;
 
+namespace search
+{
+namespace tests_support
+{
 class TestFeature
 {
 public:
@@ -77,7 +81,7 @@ public:
 
   // TestFeature overrides:
   void Serialize(FeatureBuilder1 & fb) const override;
-  bool Matches(FeatureType const & feature) const;
+  bool Matches(FeatureType const & feature) const override;
   string ToString() const override;
 
 protected:
@@ -87,3 +91,5 @@ protected:
 };
 
 string DebugPrint(TestFeature const & feature);
+}  // namespace tests_support
+}  // namespace search
