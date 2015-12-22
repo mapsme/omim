@@ -168,6 +168,9 @@ Country const & Storage::CountryByIndex(TIndex const & index) const
 
 void Storage::GetGroupAndCountry(TIndex const & index, string & group, string & country) const
 {
+  // @TODO(bykoianko) This method can work faster and more correctly.
+  // 1. You need parrents (group) - use m_countries "tree".
+  // 2. You need country - it's TIndex now.
   string fName = CountryByIndex(index).GetFile().GetNameWithoutExt();
   CountryInfo::FileName2FullName(fName);
   CountryInfo::FullName2GroupAndMap(fName, group, country);
