@@ -293,6 +293,7 @@ Framework::Framework()
     return m_model.GetIndex().GetMwmIdByCountryFile(platform::CountryFile(name));
   });
   editor.SetInvalidateFn([this](){ InvalidateRect(GetCurrentViewport()); });
+  editor.LoadMapEdits();
 }
 
 Framework::~Framework()
