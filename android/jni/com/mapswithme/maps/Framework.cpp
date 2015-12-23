@@ -721,9 +721,8 @@ extern "C"
     {
     case UserMark::Type::API:
       {
-        double lat, lon;
-        mark->GetLatLon(lat, lon);
-        CallOnApiPointActivatedListener(obj, CastMark<ApiMarkPoint>(mark), lat, lon);
+        ms::LatLon const ll = mark->GetLatLon();
+        CallOnApiPointActivatedListener(obj, CastMark<ApiMarkPoint>(mark), ll.lat, ll.lon);
         break;
       }
 
@@ -753,9 +752,8 @@ extern "C"
 
     case UserMark::Type::MY_POSITION:
       {
-        double lat, lon;
-        mark->GetLatLon(lat, lon);
-        CallOnMyPositionActivatedListener(obj, lat, lon);
+        ms::LatLon const ll = mark->GetLatLon();
+        CallOnMyPositionActivatedListener(obj, ll.lat, ll.lon);
         break;
       }
     case UserMark::Type::DEBUG_MARK:
