@@ -85,7 +85,8 @@ public:
   template <typename TFunc>
   void ForEachTag(TFunc && func) const
   {
-    // TODO(mgsergio): implement me.
+    for (auto const & tag : GetRootNode().select_nodes("tag"))
+      func(tag.node().attribute("k").value(), tag.node().attribute("v").value());
   }
 
   string GetTagValue(string const & key) const;
