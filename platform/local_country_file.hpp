@@ -69,6 +69,7 @@ public:
   bool operator<(LocalCountryFile const & rhs) const;
   bool operator==(LocalCountryFile const & rhs) const;
 
+  void SetVersionForTesting(int64_t version) { m_version = version; }
   // Creates LocalCountryFile for test purposes, for a country region
   // with countryFileName (without any extensions). Automatically
   // performs sync with disk.
