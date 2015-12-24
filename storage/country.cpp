@@ -36,9 +36,8 @@ void LoadGroupImpl(int depth, json_t * group, ToDo & toDo, int64_t version)
       if (!id)
         MYTHROW(my::Json::Exception, ("Id is missing"));
 
-
       char const * flag = json_string_value(json_object_get(j, "c"));
-      size_t const mwmSize = static_cast<uint32_t>(json_integer_value(json_object_get(j, "s")));
+      size_t const mwmSize = static_cast<size_t>(json_integer_value(json_object_get(j, "s")));
       // @TODO(bykoianko) After we stop supporting two component mwms (wiht routing files)
       // rewrite toDo function to use id and mwmSize only once.
       toDo(id, id, flag ? flag : "",
