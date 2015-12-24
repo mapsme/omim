@@ -1,5 +1,6 @@
 #include "storage/country.hpp"
 
+#include "platform/mwm_version.hpp"
 #include "platform/platform.hpp"
 
 #include "base/logging.hpp"
@@ -23,16 +24,41 @@ void Country::AddFile(CountryFile const & file) { m_files.push_back(file); }
 ////////////////////////////////////////////////////////////////////////
 
 template <class ToDo>
-void LoadGroupImpl(int depth, json_t * group, ToDo & toDo)
+void LoadGroupImpl(int depth, json_t * group, ToDo & toDo, int64_t version)
 {
+  if (version::IsSingleMwm(version))
+  {
+    for (size_t i = 0; i < json_array_size(group); ++i)
+    {
+      json_t * j = json_array_get(group, i);
+
+      char const * id = json_string_value(json_object_get(j, "id"));
+      if (!id)
+        MYTHROW(my::Json::Exception, ("Id is missing"));
+
+
+      char const * flag = json_string_value(json_object_get(j, "c"));
+      size_t const mwmSize = static_cast<uint32_t>(json_integer_value(json_object_get(j, "s")));
+      // @TODO(bykoianko) After we stop supporting two component mwms (wiht routing files)
+      // rewrite toDo function to use id and mwmSize only once.
+      toDo(id, id, flag ? flag : "",
+           // We expect what mwm and routing files should be less 2Gb
+           mwmSize, mwmSize, depth);
+
+      json_t * children = json_object_get(j, "g");
+      if (children)
+        LoadGroupImpl(depth + 1, children, toDo, version);
+    }
+    return;
+  }
+
+  // @TODO(bykoianko) After we stop supporting two component mwms (wiht routing files)
+  // remove code below.
   for (size_t i = 0; i < json_array_size(group); ++i)
   {
     json_t * j = json_array_get(group, i);
 
     // name is mandatory
-    // @TODO(bykoianko) Fields n, f and c should be removed. Instead of them the field id should be used.
-    // It'll happend when countries.txt is updated.
-    // Till that the field n is used as id. So n is always equel file name without extension in case leaves.
     char const * name = json_string_value(json_object_get(j, "n"));
     if (!name)
       MYTHROW(my::Json::Exception, ("Country name is missing"));
@@ -41,7 +67,6 @@ void LoadGroupImpl(int depth, json_t * group, ToDo & toDo)
     // if file is empty, it's the same as the name
     if (!file)
       file = name;
-    name = file; // A temperary line. It'll be removed when id field is used.
 
     char const * flag = json_string_value(json_object_get(j, "c"));
     toDo(name, file, flag ? flag : "",
@@ -51,12 +76,12 @@ void LoadGroupImpl(int depth, json_t * group, ToDo & toDo)
 
     json_t * children = json_object_get(j, "g");
     if (children)
-      LoadGroupImpl(depth + 1, children, toDo);
+      LoadGroupImpl(depth + 1, children, toDo, version);
   }
 }
 
 template <class ToDo>
-bool LoadCountriesImpl(string const & jsonBuffer, ToDo & toDo)
+bool LoadCountriesImpl(string const & jsonBuffer, ToDo & toDo, int64_t version)
 {
   try
   {
@@ -64,7 +89,7 @@ bool LoadCountriesImpl(string const & jsonBuffer, ToDo & toDo)
     json_t * children = json_object_get(root.get(), "g");
     if (!children)
       MYTHROW(my::Json::Exception, ("Root country doesn't have any groups"));
-    LoadGroupImpl(0, children, toDo);
+    LoadGroupImpl(0, children, toDo, version);
     return true;
   }
   catch (my::Json::Exception const & e)
@@ -101,12 +126,22 @@ class DoStoreFile2Info
 {
   map<string, CountryInfo> & m_file2info;
   string m_lastFlag;
+  int64_t const m_version;
 
 public:
-  DoStoreFile2Info(map<string, CountryInfo> & file2info) : m_file2info(file2info) {}
+  DoStoreFile2Info(map<string, CountryInfo> & file2info, int64_t version)
+    : m_file2info(file2info), m_version(version) {}
 
   void operator()(string name, string file, string const & flag, uint32_t mapSize, uint32_t, int)
   {
+    if (version::IsSingleMwm(m_version))
+    {
+      ASSERT_EQUAL(name, file, ());
+      CountryInfo info(name, flag);
+      m_file2info[name] = move(info);
+      return;
+    }
+
     if (!flag.empty())
       m_lastFlag = flag;
 
@@ -163,7 +198,7 @@ int64_t LoadCountries(string const & jsonBuffer, CountriesContainerT & countries
     my::Json root(jsonBuffer.c_str());
     version = json_integer_value(json_object_get(root.get(), "v"));
     DoStoreCountries doStore(countries);
-    if (!LoadCountriesImpl(jsonBuffer, doStore))
+    if (!LoadCountriesImpl(jsonBuffer, doStore, version))
       return -1;
   }
   catch (my::Json::Exception const & e)
@@ -176,15 +211,36 @@ int64_t LoadCountries(string const & jsonBuffer, CountriesContainerT & countries
 void LoadCountryFile2CountryInfo(string const & jsonBuffer, map<string, CountryInfo> & id2info)
 {
   ASSERT(id2info.empty(), ());
-  DoStoreFile2Info doStore(id2info);
-  LoadCountriesImpl(jsonBuffer, doStore);
+
+  int64_t version = -1;
+  try
+  {
+    my::Json root(jsonBuffer.c_str());
+    version = json_integer_value(json_object_get(root.get(), "v"));
+    DoStoreFile2Info doStore(id2info, version);
+    LoadCountriesImpl(jsonBuffer, doStore, version);
+  }
+  catch (my::Json::Exception const & e)
+  {
+    LOG(LERROR, (e.Msg()));
+  }
 }
 
 void LoadCountryCode2File(string const & jsonBuffer, multimap<string, string> & code2file)
 {
   ASSERT(code2file.empty(), ());
-  DoStoreCode2File doStore(code2file);
-  LoadCountriesImpl(jsonBuffer, doStore);
+  int64_t version = -1;
+  try
+  {
+    my::Json root(jsonBuffer.c_str());
+    version = json_integer_value(json_object_get(root.get(), "v"));
+    DoStoreCode2File doStore(code2file);
+    LoadCountriesImpl(jsonBuffer, doStore, version);
+  }
+  catch (my::Json::Exception const & e)
+  {
+    LOG(LERROR, (e.Msg()));
+  }
 }
 
 template <class T>

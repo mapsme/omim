@@ -78,8 +78,6 @@ void CountryInfoGetter::GetRegionInfo(string const & id, CountryInfo & info) con
   info = it->second;
   if (info.m_name.empty())
     info.m_name = id;
-
-  CountryInfo::FileName2FullName(info.m_name);
 }
 
 void CountryInfoGetter::CalcUSALimitRect(m2::RectD rects[3]) const
