@@ -101,7 +101,7 @@ UNIT_TEST(LocalCountryFile_DiskFiles)
   CountryFile countryFile("TestCountry");
   countryFile.SetRemoteSizes(1 /* mapSize */, 2 /* routingSize */);
 
-  LocalCountryFile localFile(platform.WritableDir(), countryFile, 0 /* version */);
+  LocalCountryFile localFile(platform.WritableDir(), countryFile, 150312 /* version */);
   TEST(!localFile.OnDisk(MapOptions::Map), ());
   TEST(!localFile.OnDisk(MapOptions::CarRouting), ());
   TEST(!localFile.OnDisk(MapOptions::MapWithCarRouting), ());
