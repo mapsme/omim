@@ -22,6 +22,9 @@ namespace storage
 
   struct CountryInfo
   {
+    CountryInfo() {}
+    CountryInfo(string const & id, string const & flag) : m_name(id), m_flag(flag) {}
+
     /// Name (in native language) of country or region.
     /// (if empty - equals to file name of country - no additional memory)
     string m_name;
@@ -29,8 +32,10 @@ namespace storage
     /// Flag of country or region.
     string m_flag;
 
-    bool IsNotEmpty() const { return !m_flag.empty(); }
+    bool IsNotEmpty() const { return !m_name.empty(); }
 
+    // @TODO(bykoianko) Twine will be used intead of this function.
+    // So id (fName) will be converted to a local name.
     static void FileName2FullName(string & fName);
     static void FullName2GroupAndMap(string const & fName, string & group, string & map);
   };

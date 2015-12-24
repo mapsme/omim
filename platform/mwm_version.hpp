@@ -42,4 +42,8 @@ bool ReadVersion(FilesContainerR const & container, MwmVersion & version);
 
 /// Helper function that is used in FindAllLocalMaps.
 uint32_t ReadVersionTimestamp(ModelReaderPtr const & reader);
+
+/// \returns true if the mwm was generated after small mwm update.
+/// This means it contains routing file as well.
+bool IsSingleMwm(int64_t version);
 }  // namespace version
