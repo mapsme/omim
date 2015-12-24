@@ -1,4 +1,5 @@
 #include "platform/local_country_file.hpp"
+#include "platform/mwm_version.hpp"
 #include "platform/platform.hpp"
 
 #include "coding/internal/file_data.hpp"
@@ -31,16 +32,18 @@ void LocalCountryFile::SyncWithDisk()
 {
   m_files = MapOptions::Nothing;
   m_mapSize = 0;
-  m_routingSize = 0;
-
   Platform & platform = GetPlatform();
 
   if (platform.GetFileSizeByFullPath(GetPath(MapOptions::Map), m_mapSize))
     m_files = SetOptions(m_files, MapOptions::Map);
 
-  string const routingPath = GetPath(MapOptions::CarRouting);
-  if (platform.GetFileSizeByFullPath(routingPath, m_routingSize))
-    m_files = SetOptions(m_files, MapOptions::CarRouting);
+  if (!version::IsSingleMwm(GetVersion()))
+  {
+    m_routingSize = 0;
+    string const routingPath = GetPath(MapOptions::CarRouting);
+    if (platform.GetFileSizeByFullPath(routingPath, m_routingSize))
+      m_files = SetOptions(m_files, MapOptions::CarRouting);
+  }
 }
 
 void LocalCountryFile::DeleteFromDisk(MapOptions files) const
@@ -57,10 +60,9 @@ void LocalCountryFile::DeleteFromDisk(MapOptions files) const
 
 string LocalCountryFile::GetPath(MapOptions file) const
 {
-  // TODO (mpimenov): Refactor with MwmTraits after merge new-search branch.
-  bool singleFile = GetVersion() > 151126;
-  string const & countryFilePath = singleFile ? m_countryFile.GetNameWithExt(MapOptions::Map)
-                                              : m_countryFile.GetNameWithExt(file);
+  string const & countryFilePath =
+      version::IsSingleMwm(GetVersion()) ? m_countryFile.GetNameWithExt(MapOptions::Map)
+                                        : m_countryFile.GetNameWithExt(file);
   return my::JoinFoldersToPath(m_directory, countryFilePath);
 }
 
@@ -69,8 +71,11 @@ uint32_t LocalCountryFile::GetSize(MapOptions filesMask) const
   uint64_t size64 = 0;
   if (HasOptions(filesMask, MapOptions::Map))
     size64 += m_mapSize;
-  if (HasOptions(filesMask, MapOptions::CarRouting))
-    size64 += m_routingSize;
+  if (!version::IsSingleMwm(GetVersion()))
+  {
+    if (HasOptions(filesMask, MapOptions::CarRouting))
+      size64 += m_routingSize;
+  }
   uint32_t const size32 = static_cast<uint32_t>(size64);
   ASSERT_EQUAL(size32, size64, ());
   return size32;
