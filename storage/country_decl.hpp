@@ -23,14 +23,11 @@ namespace storage
   struct CountryInfo
   {
     CountryInfo() = default;
-    CountryInfo(string const & id, string const & flag) : m_name(id), m_flag(flag) {}
+    CountryInfo(string const & id) : m_name(id) {}
 
     /// Name (in native language) of country or region.
     /// (if empty - equals to file name of country - no additional memory)
     string m_name;
-
-    /// Flag of country or region.
-    string m_flag;
 
     bool IsNotEmpty() const { return !m_name.empty(); }
 
