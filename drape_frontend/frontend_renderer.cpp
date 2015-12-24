@@ -403,8 +403,11 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
                                                                : msg->GetPreferredZoomLevelIn3d());
       m_overlayTree->SetFollowingMode(true);
       if (m_enable3dInNavigation)
+      {
+        bool immediatelyStart = !m_myPositionController->IsRotationActive();
         AddUserEvent(EnablePerspectiveEvent(msg->GetRotationAngle(), msg->GetAngleFOV(),
-                                            true /* animated */, false /* immediately start*/));
+                                            true /* animated */, immediatelyStart));
+      }
       break;
     }
 
@@ -500,20 +503,33 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
   case Message::Allow3dMode:
     {
       ref_ptr<Allow3dModeMessage> const msg = message;
-#ifdef OMIM_OS_DESKTOP
       bool const isPerspective = m_userEventStream.GetCurrentScreen().isPerspective();
+#ifdef OMIM_OS_DESKTOP
       if (m_enable3dInNavigation == msg->Allow() &&
           m_enable3dInNavigation != isPerspective)
       {
 
         if (m_enable3dInNavigation)
-          AddUserEvent(EnablePerspectiveEvent(M_PI / 4.0, M_PI / 3.0,
+          AddUserEvent(EnablePerspectiveEvent(msg->GetRotationAngle(), msg->GetAngleFOV(),
                                               false /* animated */, true /* immediately start */));
         else
           AddUserEvent(DisablePerspectiveEvent());
       }
 #endif
       m_enable3dInNavigation = msg->Allow();
+
+      if (m_myPositionController->IsInRouting())
+      {
+        if (m_enable3dInNavigation && !isPerspective && !m_perspectiveDiscarded)
+        {
+          AddUserEvent(EnablePerspectiveEvent(msg->GetRotationAngle(), msg->GetAngleFOV(),
+                                              true /* animated */, true /* immediately start */));
+        }
+        else if (!m_enable3dInNavigation && (isPerspective || m_perspectiveDiscarded))
+        {
+          DisablePerspective();
+        }
+      }
       break;
     }
 
