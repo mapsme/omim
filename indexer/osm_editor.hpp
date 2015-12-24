@@ -20,9 +20,10 @@ namespace osm
 
 class Editor final
 {
-  Editor();
+  Editor() = default;
 
 public:
+  using TMwmIdByMapNameFn = function<MwmSet::MwmId(string const & /*map*/)>;
   using TInvalidateFn = function<void()>;
 
   enum FeatureStatus
@@ -35,11 +36,10 @@ public:
 
   static Editor & Instance();
 
-  void SetInvalidateFn(TInvalidateFn && fn) { m_invalidateFn = move(fn); }
+  void SetMwmIdByNameAndVersionFn(TMwmIdByMapNameFn const & fn) { m_mwmIdByMapNameFn = fn; }
+  void SetInvalidateFn(TInvalidateFn const & fn) { m_invalidateFn = fn; }
 
-  void Load(string const & fullFilePath);
-  // TODO(AlexZ): Synchronize Save call/make it on a separate thread.
-  void Save(string const & fullFilePath) const;
+  void LoadMapEdits();
 
   using TFeatureIDFunctor = function<void(FeatureID const &)>;
   using TFeatureTypeFunctor = function<void(FeatureType &)>;
@@ -68,6 +68,9 @@ public:
   vector<feature::Metadata::EType> EditableMetadataForType(uint32_t type) const;
 
 private:
+  // TODO(AlexZ): Synchronize Save call/make it on a separate thread.
+  void Save(string const & fullFilePath) const;
+
   struct FeatureTypeInfo
   {
     FeatureStatus m_status;
@@ -83,6 +86,8 @@ private:
   /// Deleted, edited and created features.
   map<MwmSet::MwmId, map<uint32_t, FeatureTypeInfo>> m_features;
 
+  /// Get MwmId for each map, used in FeatureIDs and to check if edits are up-to-date.
+  TMwmIdByMapNameFn m_mwmIdByMapNameFn;
   /// Invalidate map viewport after edits.
   TInvalidateFn m_invalidateFn;
 };  // class Editor

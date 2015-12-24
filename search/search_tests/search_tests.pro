@@ -6,7 +6,7 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 ROOT_DIR = ../..
-DEPENDENCIES = search indexer platform geometry coding base protobuf tomcrypt pugixml
+DEPENDENCIES = search indexer platform editor geometry coding base protobuf tomcrypt pugixml
 
 include($$ROOT_DIR/common.pri)
 
