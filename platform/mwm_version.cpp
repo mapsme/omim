@@ -74,4 +74,13 @@ uint32_t ReadVersionTimestamp(ModelReaderPtr const & reader)
   return version.timestamp;
 }
 
+bool IsSingleMwm(int64_t version)
+{
+  // TODO (mpimenov): Refactor with MwmTraits after merge new-search branch.
+  int64_t const kMinSingleMwmVersion = 151218;
+  // version <= kMaxTestPurposesVersion is reserved for test purposes and is considered as single mwm case.
+  int64_t const kMaxTestPurposesVersion = 5;
+
+  return version >= kMinSingleMwmVersion || version < kMaxTestPurposesVersion;
+}
 }  // namespace version
