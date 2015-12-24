@@ -1225,13 +1225,6 @@ gui::TWidgetsSizeInfo const & Framework::GetWidgetSizes()
   return m_drapeEngine->GetWidgetSizes();
 }
 
-string Framework::GetCountryCode(m2::PointD const & pt) const
-{
-  storage::CountryInfo info;
-  m_infoGetter->GetRegionInfo(pt, info);
-  return info.m_flag;
-}
-
 bool Framework::ShowMapForURL(string const & url)
 {
   m2::PointD point;

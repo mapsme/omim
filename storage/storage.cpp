@@ -193,11 +193,6 @@ bool Storage::IsIndexInCountryTree(TIndex const & index) const
   return m_countries.Find(Country(index)) != nullptr;
 }
 
-string const & Storage::CountryFlag(TIndex const & index) const
-{
-  return NodeFromIndex(m_countries, index).Value().Flag();
-}
-
 LocalAndRemoteSizeT Storage::CountrySizeInBytes(TIndex const & index, MapOptions opt) const
 {
   QueuedCountry const * queuedCountry = FindCountryInQueue(index);
