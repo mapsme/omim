@@ -36,11 +36,10 @@ void LoadGroupImpl(int depth, json_t * group, ToDo & toDo, int64_t version)
       if (!id)
         MYTHROW(my::Json::Exception, ("Id is missing"));
 
-      char const * flag = json_string_value(json_object_get(j, "c"));
       size_t const mwmSize = static_cast<size_t>(json_integer_value(json_object_get(j, "s")));
       // @TODO(bykoianko) After we stop supporting two component mwms (wiht routing files)
       // rewrite toDo function to use id and mwmSize only once.
-      toDo(id, id, flag ? flag : "",
+      toDo(id, id,
            // We expect what mwm and routing files should be less 2Gb
            mwmSize, mwmSize, depth);
 
@@ -67,8 +66,7 @@ void LoadGroupImpl(int depth, json_t * group, ToDo & toDo, int64_t version)
     if (!file)
       file = name;
 
-    char const * flag = json_string_value(json_object_get(j, "c"));
-    toDo(name, file, flag ? flag : "",
+    toDo(name, file,
          // We expect what mwm and routing files should be less 2Gb
          static_cast<uint32_t>(json_integer_value(json_object_get(j, "s"))),
          static_cast<uint32_t>(json_integer_value(json_object_get(j, "rs"))), depth);
@@ -107,10 +105,10 @@ class DoStoreCountries
 public:
   DoStoreCountries(CountriesContainerT & cont) : m_cont(cont) {}
 
-  void operator()(string const & name, string const & file, string const & flag, uint32_t mapSize,
+  void operator()(string const & name, string const & file/*, string const & flag*/, uint32_t mapSize,
                   uint32_t routingSize, int depth)
   {
-    Country country(name, flag);
+    Country country(name);
     if (mapSize)
     {
       CountryFile countryFile(file);
@@ -124,25 +122,21 @@ public:
 class DoStoreFile2Info
 {
   map<string, CountryInfo> & m_file2info;
-  string m_lastFlag;
   int64_t const m_version;
 
 public:
   DoStoreFile2Info(map<string, CountryInfo> & file2info, int64_t version)
     : m_file2info(file2info), m_version(version) {}
 
-  void operator()(string name, string file, string const & flag, uint32_t mapSize, uint32_t, int)
+  void operator()(string name, string file, uint32_t mapSize, uint32_t, int)
   {
     if (version::IsSingleMwm(m_version))
     {
       ASSERT_EQUAL(name, file, ());
-      CountryInfo info(name, flag);
+      CountryInfo info(name);
       m_file2info[name] = move(info);
       return;
     }
-
-    if (!flag.empty())
-      m_lastFlag = flag;
 
     if (mapSize)
     {
@@ -163,29 +157,11 @@ public:
       else
         file.swap(name);
 
-      // Do not use 'name' here! It was swapped!
-
-      ASSERT(!m_lastFlag.empty(), ());
-      info.m_flag = m_lastFlag;
-
       m_file2info[file] = info;
     }
   }
 };
-
-class DoStoreCode2File
-{
-  multimap<string, string> & m_code2file;
-
-public:
-  DoStoreCode2File(multimap<string, string> & code2file) : m_code2file(code2file) {}
-
-  void operator()(string const &, string const & file, string const & flag, uint32_t, uint32_t, int)
-  {
-    m_code2file.insert(make_pair(flag, file));
-  }
-};
-}
+} //  namespace
 
 int64_t LoadCountries(string const & jsonBuffer, CountriesContainerT & countries)
 {
@@ -225,23 +201,6 @@ void LoadCountryFile2CountryInfo(string const & jsonBuffer, map<string, CountryI
   }
 }
 
-void LoadCountryCode2File(string const & jsonBuffer, multimap<string, string> & code2file)
-{
-  ASSERT(code2file.empty(), ());
-  int64_t version = -1;
-  try
-  {
-    my::Json root(jsonBuffer.c_str());
-    version = json_integer_value(json_object_get(root.get(), "v"));
-    DoStoreCode2File doStore(code2file);
-    LoadCountriesImpl(jsonBuffer, doStore, version);
-  }
-  catch (my::Json::Exception const & e)
-  {
-    LOG(LERROR, (e.Msg()));
-  }
-}
-
 template <class T>
 void SaveImpl(T const & v, json_t * jParent)
 {
@@ -258,9 +217,6 @@ void SaveImpl(T const & v, json_t * jParent)
     string const strName = v[i].Value().Name();
     CHECK(!strName.empty(), ("Empty country name?"));
     json_object_set_new(jCountry.get(), "n", json_string(strName.c_str()));
-    string const strFlag = v[i].Value().Flag();
-    if (!strFlag.empty())
-      json_object_set_new(jCountry.get(), "c", json_string(strFlag.c_str()));
 
     size_t countriesCount = v[i].Value().GetFilesCount();
     ASSERT_LESS_OR_EQUAL(countriesCount, 1, ());
@@ -298,5 +254,4 @@ bool SaveCountries(int64_t version, CountriesContainerT const & countries, strin
   free(res);
   return true;
 }
-
 }  // namespace storage
