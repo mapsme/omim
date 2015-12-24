@@ -15,8 +15,6 @@
 
 #include "indexer/index.hpp"
 
-//#include "storage/storage.hpp"
-
 #include "platform/local_country_file.hpp"
 #include "platform/local_country_file_utils.hpp"
 #include "platform/platform.hpp"
@@ -140,23 +138,9 @@ namespace integration
     platform::FindAllLocalMapsAndCleanup(numeric_limits<int64_t>::max() /* latestVersion */,
                                          localFiles);
 
-//    storage::Storage storage;
-//    int64_t const countriesTxtVersion = storage.GetCurrentDataVersion();
     for (auto & file : localFiles)
-    {
       file.SyncWithDisk();
-      // FindAllLocalMapsAndCleanup writes a correct mwm version
-      // to localFiles field except for the case when mwms are localed directly in data directory.
-      // If mwms are located in data directory the version is set to zero.
-      // General using of routing integration test is to put all actual mwm to data directory
-      // and run the test.
-      // Taking into account it and now our application (including test) has to be ready
-      // for big and small mwms let's assume for this test that if mwm version is not defined
-      // version written in countries.txt will be used. This information will be used
-      // in TRouterComponents constructor.
-      //if (file.GetVersion() == 0)
-      //  file.SetVersionForTesting(countriesTxtVersion);
-    }
+
     ASSERT(!localFiles.empty(), ());
     return shared_ptr<TRouterComponents>(new TRouterComponents(localFiles));
   }

@@ -328,16 +328,15 @@ UNIT_TEST(StorageTest_Smoke)
 {
   Storage storage;
 
-  TIndex const usaGeorgiaIndex = storage.FindIndexByFile("Georgia");
-  TEST(IsIndexValid(usaGeorgiaIndex), ());
-  CountryFile usaGeorgiaFile = storage.GetCountryFile(usaGeorgiaIndex);
+  TIndex const georgiaIndex = storage.FindIndexByFile("Georgia");
+  TEST(IsIndexValid(georgiaIndex), ());
+  CountryFile usaGeorgiaFile = storage.GetCountryFile(georgiaIndex);
   TEST_EQUAL(usaGeorgiaFile.GetNameWithExt(MapOptions::Map),
              "Georgia" DATA_FILE_EXTENSION, ());
 
   if (version::IsSingleMwm(storage.GetCurrentDataVersion()))
     return; // Test below is on routing mwm. It is not relevant for single mwm data.
 
-  TIndex const georgiaIndex = storage.FindIndexByFile("Georgia");
   TEST(IsIndexValid(georgiaIndex), ());
   CountryFile georgiaFile = storage.GetCountryFile(georgiaIndex);
   TEST_EQUAL(georgiaFile.GetNameWithExt(MapOptions::CarRouting),

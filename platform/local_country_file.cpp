@@ -61,8 +61,7 @@ void LocalCountryFile::DeleteFromDisk(MapOptions files) const
 string LocalCountryFile::GetPath(MapOptions file) const
 {
   string const & countryFilePath =
-      version::IsSingleMwm(GetVersion()) ? m_countryFile.GetNameWithExt(MapOptions::Map)
-                                        : m_countryFile.GetNameWithExt(file);
+      m_countryFile.GetNameWithExt(version::IsSingleMwm(GetVersion()) ? MapOptions::Map : file);
   return my::JoinFoldersToPath(m_directory, countryFilePath);
 }
 
@@ -71,11 +70,9 @@ uint32_t LocalCountryFile::GetSize(MapOptions filesMask) const
   uint64_t size64 = 0;
   if (HasOptions(filesMask, MapOptions::Map))
     size64 += m_mapSize;
-  if (!version::IsSingleMwm(GetVersion()))
-  {
-    if (HasOptions(filesMask, MapOptions::CarRouting))
-      size64 += m_routingSize;
-  }
+  if (!version::IsSingleMwm(GetVersion()) && HasOptions(filesMask, MapOptions::CarRouting))
+    size64 += m_routingSize;
+
   uint32_t const size32 = static_cast<uint32_t>(size64);
   ASSERT_EQUAL(size32, size64, ());
   return size32;
