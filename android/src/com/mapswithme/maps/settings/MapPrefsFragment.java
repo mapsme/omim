@@ -8,16 +8,16 @@ import android.preference.Preference;
 import android.preference.TwoStatePreference;
 import android.support.v7.app.AlertDialog;
 
+import java.util.List;
+
 import com.mapswithme.country.ActiveCountryTree;
-import com.mapswithme.maps.BuildConfig;
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.R;
 import com.mapswithme.util.Config;
+import com.mapswithme.util.ThemeUtils;
 import com.mapswithme.util.Yota;
 import com.mapswithme.util.statistics.AlohaHelper;
 import com.mapswithme.util.statistics.Statistics;
-
-import java.util.List;
 
 public class MapPrefsFragment extends BaseXmlSettingsFragment
 {
@@ -104,23 +104,27 @@ public class MapPrefsFragment extends BaseXmlSettingsFragment
       }
     });
 
+    int style = Framework.getMapStyle();
+    if (style == Framework.MAP_STYLE_LIGHT)
+      style = Framework.MAP_STYLE_CLEAR;
+
     pref = findPreference(getString(R.string.pref_map_style));
-    if (BuildConfig.ALLOW_PREF_MAP_STYLE)
+    ((ListPreference) pref).setValue(String.valueOf(style));
+    pref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
     {
-      ((ListPreference) pref).setValue(String.valueOf(Framework.getMapStyle()));
-      pref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+      @Override
+      public boolean onPreferenceChange(Preference preference, Object newValue)
       {
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object newValue)
-        {
-          Statistics.INSTANCE.trackEvent(Statistics.EventName.Settings.MAP_STYLE);
-          Framework.setMapStyle(Integer.parseInt((String) newValue));
-          return true;
-        }
-      });
-    }
-    else
-      getPreferenceScreen().removePreference(pref);
+        Framework.setMapStyle(Integer.parseInt((String) newValue));
+
+        String themeName = (String.valueOf(Framework.MAP_STYLE_DARK).equals(newValue) ? ThemeUtils.THEME_NIGHT : ThemeUtils.THEME_DEFAULT);
+        Config.setUiTheme(themeName);
+        Statistics.INSTANCE.trackEvent(Statistics.EventName.Settings.MAP_STYLE,
+                                       new Statistics.ParameterBuilder().add(Statistics.EventParam.NAME, themeName));
+        getActivity().recreate();
+        return true;
+      }
+    });
 
     pref = findPreference(getString(R.string.pref_yota));
     if (Yota.isFirstYota())

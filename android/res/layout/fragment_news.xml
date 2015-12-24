@@ -38,7 +38,7 @@
       android:layout_height="wrap_content"
       android:layout_gravity="right"
       android:textAppearance="@style/MwmTextAppearance.Body3"
-      android:textColor="@color/base_blue_light"
+      android:textColor="?colorAccent"
       android:textAllCaps="true"
       android:padding="@dimen/margin_base"
       android:background="?clickableBackground"
