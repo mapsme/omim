@@ -2,9 +2,11 @@
 
 #include "storage/country_info_getter.hpp"
 #include "storage/country.hpp"
+#include "storage/storage.hpp"
 
 #include "geometry/mercator.hpp"
 
+#include "platform/mwm_version.hpp"
 #include "platform/platform.hpp"
 
 #include "base/logging.hpp"
@@ -37,19 +39,45 @@ UNIT_TEST(CountryInfoGetter_GetByPoint_Smoke)
   auto const getter = CreateCountryInfoGetter();
 
   CountryInfo info;
+  Storage storage;
+  bool const isSingleMwm = version::IsSingleMwm(storage.GetCurrentDataVersion());
 
   // Minsk
   getter->GetRegionInfo(MercatorBounds::FromLatLon(53.9022651, 27.5618818), info);
-  TEST_EQUAL(info.m_name, "Belarus", ());
-  TEST_EQUAL(info.m_flag, "by", ());
+  if (isSingleMwm)
+  {
+    TEST_EQUAL(info.m_name, "Belarus_Minsk Region", ());
+    TEST_EQUAL(info.m_flag, "", ());
+  }
+  else
+  {
+    TEST_EQUAL(info.m_name, "Belarus", ());
+    TEST_EQUAL(info.m_flag, "by", ());
+  }
 
   getter->GetRegionInfo(MercatorBounds::FromLatLon(-6.4146288, -38.0098101), info);
-  TEST_EQUAL(info.m_name, "Brazil, Brazil_Northeast", ());
-  TEST_EQUAL(info.m_flag, "br", ());
+  if (isSingleMwm)
+  {
+    TEST_EQUAL(info.m_name, "Brazil_Rio Grande do Norte", ());
+    TEST_EQUAL(info.m_flag, "", ());
+  }
+  else
+  {
+    TEST_EQUAL(info.m_name, "Brazil_Northeast", ());
+    TEST_EQUAL(info.m_flag, "br", ());
+  }
 
   getter->GetRegionInfo(MercatorBounds::FromLatLon(34.6509, 135.5018), info);
-  TEST_EQUAL(info.m_name, "Japan, Japan_Kinki", ());
-  TEST_EQUAL(info.m_flag, "jp", ());
+  if (isSingleMwm)
+  {
+    TEST_EQUAL(info.m_name, "Japan_Kinki Region_Osaka", ());
+    TEST_EQUAL(info.m_flag, "", ());
+  }
+  else
+  {
+    TEST_EQUAL(info.m_name, "Japan_Kinki", ());
+    TEST_EQUAL(info.m_flag, "jp", ());
+  }
 }
 
 UNIT_TEST(CountryInfoGetter_ValidName_Smoke)
@@ -60,8 +88,18 @@ UNIT_TEST(CountryInfoGetter_ValidName_Smoke)
   map<string, CountryInfo> id2info;
   storage::LoadCountryFile2CountryInfo(buffer, id2info);
 
-  TEST(!IsEmptyName(id2info, "Germany_Baden-Wurttemberg"), ());
-  TEST(!IsEmptyName(id2info, "France_Paris & Ile-de-France"), ());
+  Storage storage;
+
+  if (version::IsSingleMwm(storage.GetCurrentDataVersion()))
+  {
+    TEST(!IsEmptyName(id2info, "Belgium_West Flanders"), ());
+    TEST(!IsEmptyName(id2info, "France_Ile-de-France_Paris"), ());
+  }
+  else
+  {
+    TEST(!IsEmptyName(id2info, "Germany_Baden-Wurttemberg"), ());
+    TEST(!IsEmptyName(id2info, "France_Paris & Ile-de-France"), ());
+  }
 }
 
 UNIT_TEST(CountryInfoGetter_SomeRects)
