@@ -22,7 +22,7 @@ namespace storage
 
   struct CountryInfo
   {
-    CountryInfo() {}
+    CountryInfo() = default;
     CountryInfo(string const & id, string const & flag) : m_name(id), m_flag(flag) {}
 
     /// Name (in native language) of country or region.
