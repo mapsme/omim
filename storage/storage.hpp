@@ -136,7 +136,6 @@ public:
 
   size_t CountriesCount(TIndex const & index) const;
   string const & CountryName(TIndex const & index) const;
-  string const & CountryFlag(TIndex const & index) const;
   bool IsIndexInCountryTree(TIndex const & index) const;
 
   LocalAndRemoteSizeT CountrySizeInBytes(TIndex const & index, MapOptions opt) const;

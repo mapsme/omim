@@ -200,9 +200,6 @@ public:
   //@{
   string GetCountryName(m2::PointD const & pt) const;
   /// @param[in] id Country file name without an extension.
-
-  /// @return country code in ISO 3166-1 alpha-2 format (two small letters) or empty string
-  string GetCountryCode(m2::PointD const & pt) const;
   //@}
 
   storage::Storage & Storage() { return m_storage; }

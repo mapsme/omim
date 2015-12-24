@@ -31,8 +31,6 @@ class Country
   friend class update::SizeUpdater;
   /// Name in the country node tree
   TIndex m_name;
-  /// Flag to display
-  string m_flag;
   /// stores squares with world pieces which are part of the country
   /// @TODO(bykoianko) Remove this field. Name will tranform to id (file name without extension for leaves.)
   /// and unique id for other cases.
@@ -40,7 +38,7 @@ class Country
 
 public:
   Country() {}
-  Country(TIndex const & name, string const & flag = "") : m_name(name), m_flag(flag) {}
+  Country(TIndex const & name) : m_name(name) {}
 
   bool operator<(Country const & other) const { return Name() < other.Name(); }
 
@@ -57,7 +55,6 @@ public:
   }
 
   TIndex const & Name() const { return m_name; }
-  string const & Flag() const { return m_flag; }
 
   uint64_t Size(MapOptions opt) const;
 };
@@ -68,8 +65,6 @@ typedef SimpleTree<Country> CountriesContainerT;
 int64_t LoadCountries(string const & jsonBuffer, CountriesContainerT & countries);
 
 void LoadCountryFile2CountryInfo(string const & jsonBuffer, map<string, CountryInfo> & id2info);
-
-void LoadCountryCode2File(string const & jsonBuffer, multimap<string, string> & code2file);
 
 bool SaveCountries(int64_t version, CountriesContainerT const & countries, string & jsonBuffer);
 }  // namespace storage
