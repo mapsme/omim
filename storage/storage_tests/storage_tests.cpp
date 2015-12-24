@@ -619,7 +619,7 @@ UNIT_TEST(StorageTest_DownloadTwoCountriesAndDelete)
     // It could happend after moving to string TIndex. You should thing more about it and fix probably fix it.
     unique_ptr<CountryDownloaderChecker> uruguayChecker = make_unique<CountryDownloaderChecker>(
         storage, uruguayIndex, MapOptions::MapWithCarRouting,
-        vector<TStatus>{TStatus::ENotDownloaded, TStatus::EDownloading, TStatus::EDownloading, TStatus::EDownloading, TStatus::ENotDownloaded});
+        vector<TStatus>{TStatus::ENotDownloaded, TStatus::EDownloading, TStatus::ENotDownloaded});
     // Only routing file will be deleted for Venezuela, thus, Venezuela should pass through
     // following
     // states:
@@ -627,7 +627,7 @@ UNIT_TEST(StorageTest_DownloadTwoCountriesAndDelete)
     // (second notification will be sent after deletion of a routing file) -> OnDisk.
     unique_ptr<CountryDownloaderChecker> venezuelaChecker = make_unique<CountryDownloaderChecker>(
         storage, venezuelaIndex, MapOptions::MapWithCarRouting,
-        vector<TStatus>{TStatus::ENotDownloaded, TStatus::EInQueue, TStatus::EInQueue, TStatus::EDownloading,
+        vector<TStatus>{TStatus::ENotDownloaded, TStatus::EInQueue, TStatus::EDownloading, TStatus::EDownloading,
                         TStatus::EOnDisk});
     uruguayChecker->StartDownload();
     venezuelaChecker->StartDownload();
