@@ -120,7 +120,7 @@ void Storage::RegisterAllLocalMaps()
       LocalCountryFile & localFile = *j;
       LOG(LINFO, ("Removing obsolete", localFile));
       localFile.SyncWithDisk();
-      DeleteFromDiskWithIndexes(localFile, MapOptions::Map);
+      DeleteFromDiskWithIndexes(localFile, MapOptions::MapWithCarRouting);
       ++j;
     }
 
