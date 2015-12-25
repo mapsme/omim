@@ -37,11 +37,10 @@ void LoadGroupImpl(int depth, json_t * group, ToDo & toDo, int64_t version)
         MYTHROW(my::Json::Exception, ("Id is missing"));
 
       size_t const mwmSize = static_cast<size_t>(json_integer_value(json_object_get(j, "s")));
-      // @TODO(bykoianko) After we stop supporting two component mwms (wiht routing files)
+      // @TODO(bykoianko) After we stop supporting two component mwms (with routing files)
       // rewrite toDo function to use id and mwmSize only once.
-      toDo(id, id,
-           // We expect what mwm and routing files should be less 2Gb
-           mwmSize, mwmSize, depth);
+      // We expect that mwm and routing files should be less than 2GB.
+      toDo(id, id,  mwmSize, mwmSize, depth);
 
       json_t * children = json_object_get(j, "g");
       if (children)
@@ -50,7 +49,7 @@ void LoadGroupImpl(int depth, json_t * group, ToDo & toDo, int64_t version)
     return;
   }
 
-  // @TODO(bykoianko) After we stop supporting two component mwms (wiht routing files)
+  // @TODO(bykoianko) After we stop supporting two component mwms (with routing files)
   // remove code below.
   for (size_t i = 0; i < json_array_size(group); ++i)
   {
@@ -66,8 +65,8 @@ void LoadGroupImpl(int depth, json_t * group, ToDo & toDo, int64_t version)
     if (!file)
       file = name;
 
+    // We expect that mwm and routing files should be less than 2GB.
     toDo(name, file,
-         // We expect what mwm and routing files should be less 2Gb
          static_cast<uint32_t>(json_integer_value(json_object_get(j, "s"))),
          static_cast<uint32_t>(json_integer_value(json_object_get(j, "rs"))), depth);
 
@@ -105,7 +104,7 @@ class DoStoreCountries
 public:
   DoStoreCountries(CountriesContainerT & cont) : m_cont(cont) {}
 
-  void operator()(string const & name, string const & file/*, string const & flag*/, uint32_t mapSize,
+  void operator()(string const & name, string const & file, uint32_t mapSize,
                   uint32_t routingSize, int depth)
   {
     Country country(name);

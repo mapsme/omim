@@ -5,6 +5,7 @@
 #include "indexer/feature_visibility.hpp"
 #include "indexer/scales.hpp"
 
+#include "platform/mwm_version.hpp"
 #include "platform/platform.hpp"
 
 #include "coding/file_name_utils.hpp"
@@ -103,7 +104,7 @@ void RunFeaturesLoadingBenchmark(string const & file, pair<int, int> scaleRange,
   my::GetNameWithoutExt(fileName);
 
   platform::LocalCountryFile localFile =
-      platform::LocalCountryFile::MakeForTesting(fileName);
+      platform::LocalCountryFile::MakeForTesting(fileName, version::kASingleMwmVersionForTesting1);
 
   model::FeaturesFetcher src;
   auto const r = src.RegisterMap(localFile);
