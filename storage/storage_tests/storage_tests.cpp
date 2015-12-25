@@ -11,6 +11,7 @@
 #include "platform/country_file.hpp"
 #include "platform/local_country_file.hpp"
 #include "platform/local_country_file_utils.hpp"
+#include "platform/mwm_version.hpp"
 #include "platform/platform.hpp"
 #include "platform/platform_tests_support/scoped_dir.hpp"
 #include "platform/platform_tests_support/scoped_file.hpp"
@@ -89,7 +90,7 @@ protected:
     TStatus const nextStatus = m_storage.CountryStatusEx(m_index);
     LOG(LINFO, (m_countryFile, "status transition: from", m_transitionList[m_currStatus], "to",
                 nextStatus));
-    TEST_LESS(m_currStatus + 1, m_transitionList.size(), (m_countryFile));
+   TEST_LESS(m_currStatus + 1, m_transitionList.size(), (m_countryFile));
     TEST_EQUAL(nextStatus, m_transitionList[m_currStatus + 1], (m_countryFile));
     ++m_currStatus;
     if (m_transitionList[m_currStatus] == TStatus::EDownloading)
@@ -335,7 +336,7 @@ UNIT_TEST(StorageTest_Smoke)
              "Georgia" DATA_FILE_EXTENSION, ());
 
   if (version::IsSingleMwm(storage.GetCurrentDataVersion()))
-    return; // Test below is on routing mwm. It is not relevant for single mwm data.
+    return; // Following code tests car routing files, and is not relevant for a single mwm case.
 
   TEST(IsIndexValid(georgiaIndex), ());
   CountryFile georgiaFile = storage.GetCountryFile(georgiaIndex);
@@ -406,11 +407,18 @@ UNIT_TEST(StorageTest_TwoCountriesDownloading)
 UNIT_TEST(StorageTest_DeleteTwoVersionsOfTheSameCountry)
 {
   Storage storage;
+  bool const isSingleMwm = version::IsSingleMwm(storage.GetCurrentDataVersion());
+  if (isSingleMwm)
+    storage.SetCurrentDataVersionForTesting(version::kASingleMwmVersionForTestingLatest);
+  string const mwmName = isSingleMwm ? "Azerbaijan Region" : "Azerbaijan";
+  int64_t const v1 = isSingleMwm ? version::kASingleMwmVersionForTesting1 :
+                                   version::kATwoComponentMwmVersionForTesting1;
+  int64_t const v2 = isSingleMwm ? version::kASingleMwmVersionForTesting2 :
+                                   version::kATwoComponentMwmVersionForTesting2;
+
   storage.Init(&OnCountryDownloaded);
   storage.RegisterAllLocalMaps();
 
-  string const mwmName = version::IsSingleMwm(storage.GetCurrentDataVersion()) ?
-      "Azerbaijan Region" : "Azerbaijan";
   TIndex const index = storage.FindIndexByFile(mwmName);
   TEST(IsIndexValid(index), ());
   CountryFile const countryFile = storage.GetCountryFile(index);
@@ -420,14 +428,14 @@ UNIT_TEST(StorageTest_DeleteTwoVersionsOfTheSameCountry)
   TEST(!latestLocalFile.get(), ("Country wasn't deleted from disk."));
   TEST_EQUAL(TStatus::ENotDownloaded, storage.CountryStatusEx(index), ());
 
-  TLocalFilePtr localFileV1 = CreateDummyMapFile(countryFile, 1 /* version */, 1024 /* size */);
+  TLocalFilePtr localFileV1 = CreateDummyMapFile(countryFile, v1, 1024 /* size */);
   storage.RegisterAllLocalMaps();
   latestLocalFile = storage.GetLatestLocalFile(index);
   TEST(latestLocalFile.get(), ("Created map file wasn't found by storage."));
   TEST_EQUAL(latestLocalFile->GetVersion(), localFileV1->GetVersion(), ());
   TEST_EQUAL(TStatus::EOnDiskOutOfDate, storage.CountryStatusEx(index), ());
 
-  TLocalFilePtr localFileV2 = CreateDummyMapFile(countryFile, 2 /* version */, 2048 /* size */);
+  TLocalFilePtr localFileV2 = CreateDummyMapFile(countryFile, v2, 2048 /* size */);
   storage.RegisterAllLocalMaps();
   latestLocalFile = storage.GetLatestLocalFile(index);
   TEST(latestLocalFile.get(), ("Created map file wasn't found by storage."));
@@ -485,6 +493,10 @@ UNIT_TEST(StorageTest_DownloadCountryAndDeleteRoutingOnly)
 UNIT_TEST(StorageTest_DownloadMapAndRoutingSeparately)
 {
   Storage storage;
+  bool const isSingleMwm = version::IsSingleMwm(storage.GetCurrentDataVersion());
+  if (isSingleMwm)
+    return;
+
   TaskRunner runner;
   tests::TestMwmSet mwmSet;
   InitStorage(storage, runner, [&mwmSet](LocalCountryFile const & localFile)
@@ -500,7 +512,6 @@ UNIT_TEST(StorageTest_DownloadMapAndRoutingSeparately)
     }
   });
 
-  bool const isSingleMwm = version::IsSingleMwm(storage.GetCurrentDataVersion());
   string const mwmName = isSingleMwm ? "Azerbaijan Region" : "Azerbaijan";
   TIndex const index = storage.FindIndexByFile(mwmName);
   TEST(IsIndexValid(index), ());
@@ -524,34 +535,31 @@ UNIT_TEST(StorageTest_DownloadMapAndRoutingSeparately)
   TEST(id.IsAlive(), ());
   TEST_EQUAL(MapOptions::Map, id.GetInfo()->GetLocalFile().GetFiles(), ());
 
-  if (!isSingleMwm)
+  // Download routing file in addition to exising map file.
   {
-    // Download routing file in addition to exising map file.
-    {
-      unique_ptr<CountryDownloaderChecker> checker =
-          PresentCountryDownloaderChecker(storage, index, MapOptions::CarRouting);
-      checker->StartDownload();
-      runner.Run();
-    }
-
-    TLocalFilePtr localFileB = storage.GetLatestLocalFile(index);
-    TEST(localFileB.get(), ());
-    TEST_EQUAL(localFileA.get(), localFileB.get(), (*localFileA, *localFileB));
-    TEST_EQUAL(MapOptions::MapWithCarRouting, localFileB->GetFiles(), ());
-
-    TEST(id.IsAlive(), ());
-    TEST_EQUAL(MapOptions::MapWithCarRouting, id.GetInfo()->GetLocalFile().GetFiles(), ());
-
-    // Delete routing file and check status update.
-    {
-      CountryStatusChecker checker(storage, index, TStatus::EOnDisk);
-      storage.DeleteCountry(index, MapOptions::CarRouting);
-    }
-    TLocalFilePtr localFileC = storage.GetLatestLocalFile(index);
-    TEST(localFileC.get(), ());
-    TEST_EQUAL(localFileB.get(), localFileC.get(), (*localFileB, *localFileC));
-    TEST_EQUAL(MapOptions::Map, localFileC->GetFiles(), ());
+    unique_ptr<CountryDownloaderChecker> checker =
+        PresentCountryDownloaderChecker(storage, index, MapOptions::CarRouting);
+    checker->StartDownload();
+    runner.Run();
   }
+
+  TLocalFilePtr localFileB = storage.GetLatestLocalFile(index);
+  TEST(localFileB.get(), ());
+  TEST_EQUAL(localFileA.get(), localFileB.get(), (*localFileA, *localFileB));
+  TEST_EQUAL(MapOptions::MapWithCarRouting, localFileB->GetFiles(), ());
+
+  TEST(id.IsAlive(), ());
+  TEST_EQUAL(MapOptions::MapWithCarRouting, id.GetInfo()->GetLocalFile().GetFiles(), ());
+
+  // Delete routing file and check status update.
+  {
+    CountryStatusChecker checker(storage, index, TStatus::EOnDisk);
+    storage.DeleteCountry(index, MapOptions::CarRouting);
+  }
+  TLocalFilePtr localFileC = storage.GetLatestLocalFile(index);
+  TEST(localFileC.get(), ());
+  TEST_EQUAL(localFileB.get(), localFileC.get(), (*localFileB, *localFileC));
+  TEST_EQUAL(MapOptions::Map, localFileC->GetFiles(), ());
 
   TEST(id.IsAlive(), ());
   TEST_EQUAL(MapOptions::Map, id.GetInfo()->GetLocalFile().GetFiles(), ());
@@ -589,12 +597,68 @@ UNIT_TEST(StorageTest_DeletePendingCountry)
   }
 }
 
-UNIT_TEST(StorageTest_DownloadTwoCountriesAndDelete)
+UNIT_TEST(StorageTest_DownloadTwoCountriesAndDeleteSingleMwm)
+{
+  Storage storage;
+  if (!version::IsSingleMwm(storage.GetCurrentDataVersion()))
+    return;
+
+  TaskRunner runner;
+  InitStorage(storage, runner);
+
+  TIndex const uruguayIndex = storage.FindIndexByFile("Uruguay");
+  TEST(IsIndexValid(uruguayIndex), ());
+  storage.DeleteCountry(uruguayIndex, MapOptions::Map);
+  MY_SCOPE_GUARD(cleanupUruguayFiles, bind(&Storage::DeleteCountry, &storage, uruguayIndex,
+                                           MapOptions::Map));
+
+  TIndex const venezuelaIndex = storage.FindIndexByFile("Venezuela");
+  TEST(IsIndexValid(venezuelaIndex), ());
+  storage.DeleteCountry(venezuelaIndex, MapOptions::Map);
+  MY_SCOPE_GUARD(cleanupVenezuelaFiles, bind(&Storage::DeleteCountry, &storage, venezuelaIndex,
+                                             MapOptions::Map));
+
+  {
+    unique_ptr<CountryDownloaderChecker> uruguayChecker = make_unique<CountryDownloaderChecker>(
+        storage, uruguayIndex, MapOptions::Map,
+        vector<TStatus>{TStatus::ENotDownloaded, TStatus::EDownloading, TStatus::EOnDisk});
+
+    unique_ptr<CountryDownloaderChecker> venezuelaChecker = make_unique<CountryDownloaderChecker>(
+        storage, venezuelaIndex, MapOptions::Map,
+        vector<TStatus>{TStatus::ENotDownloaded, TStatus::EInQueue,
+                        TStatus::EDownloading, TStatus::EOnDisk});
+
+    uruguayChecker->StartDownload();
+    venezuelaChecker->StartDownload();
+    runner.Run();
+  }
+
+  {
+    unique_ptr<CountryDownloaderChecker> uruguayChecker = make_unique<CountryDownloaderChecker>(
+        storage, uruguayIndex, MapOptions::Map,
+        vector<TStatus>{TStatus::EOnDisk, TStatus::ENotDownloaded});
+
+    unique_ptr<CountryDownloaderChecker> venezuelaChecker = make_unique<CountryDownloaderChecker>(
+        storage, venezuelaIndex, MapOptions::Map,
+        vector<TStatus>{TStatus::EOnDisk, TStatus::ENotDownloaded});
+
+    storage.DeleteCountry(uruguayIndex, MapOptions::Map);
+    storage.DeleteCountry(venezuelaIndex, MapOptions::Map);
+    runner.Run();
+  }
+
+  TLocalFilePtr uruguayFile = storage.GetLatestLocalFile(uruguayIndex);
+  TEST(!uruguayFile.get(), (*uruguayFile));
+
+  TLocalFilePtr venezuelaFile = storage.GetLatestLocalFile(venezuelaIndex);
+  TEST(!venezuelaFile.get(), ());
+}
+
+UNIT_TEST(StorageTest_DownloadTwoCountriesAndDeleteTwoComponentMwm)
 {
   Storage storage;
   if (version::IsSingleMwm(storage.GetCurrentDataVersion()))
     return;
-  // @TODO(bykoianko) Implement the same test for single mwm case.
 
   TaskRunner runner;
   InitStorage(storage, runner);
@@ -614,9 +678,6 @@ UNIT_TEST(StorageTest_DownloadTwoCountriesAndDelete)
   {
     // Map file will be deleted for Uruguay, thus, routing file should also be deleted. Therefore,
     // Uruguay should pass through following states: NotDownloaded -> Downloading -> NotDownloaded.
-    // @TODO(bykoianko) The list of states are changed (here and below) are changed.
-    // The reason is an extra (and probably unnessesary) call of OnCountryStatusChanged without changing conditions.
-    // It could happend after moving to string TIndex. You should thing more about it and fix probably fix it.
     unique_ptr<CountryDownloaderChecker> uruguayChecker = make_unique<CountryDownloaderChecker>(
         storage, uruguayIndex, MapOptions::MapWithCarRouting,
         vector<TStatus>{TStatus::ENotDownloaded, TStatus::EDownloading, TStatus::ENotDownloaded});
@@ -627,8 +688,8 @@ UNIT_TEST(StorageTest_DownloadTwoCountriesAndDelete)
     // (second notification will be sent after deletion of a routing file) -> OnDisk.
     unique_ptr<CountryDownloaderChecker> venezuelaChecker = make_unique<CountryDownloaderChecker>(
         storage, venezuelaIndex, MapOptions::MapWithCarRouting,
-        vector<TStatus>{TStatus::ENotDownloaded, TStatus::EInQueue, TStatus::EDownloading, TStatus::EDownloading,
-                        TStatus::EOnDisk});
+        vector<TStatus>{TStatus::ENotDownloaded, TStatus::EInQueue, TStatus::EDownloading,
+                        TStatus::EDownloading, TStatus::EOnDisk});
     uruguayChecker->StartDownload();
     venezuelaChecker->StartDownload();
     storage.DeleteCountry(uruguayIndex, MapOptions::Map);
@@ -637,8 +698,8 @@ UNIT_TEST(StorageTest_DownloadTwoCountriesAndDelete)
   }
   // @TODO(bykoianko) This test changed its behaivier. This commented lines are left specially
   // to fixed later.
-  //  TLocalFilePtr uruguayFile = storage.GetLatestLocalFile(uruguayIndex);
-  //  TEST(!uruguayFile.get(), (*uruguayFile));
+  TLocalFilePtr uruguayFile = storage.GetLatestLocalFile(uruguayIndex);
+  TEST(!uruguayFile.get(), (*uruguayFile));
 
   TLocalFilePtr venezuelaFile = storage.GetLatestLocalFile(venezuelaIndex);
   TEST(venezuelaFile.get(), ());
@@ -673,7 +734,7 @@ UNIT_TEST(StorageTest_DeleteCountry)
   InitStorage(storage, runner);
 
   tests_support::ScopedFile map("Wonderland.mwm", "map");
-  LocalCountryFile file = LocalCountryFile::MakeForTesting("Wonderland");
+  LocalCountryFile file = LocalCountryFile::MakeForTesting("Wonderland", version::kASingleMwmVersionForTesting1);
   TEST_EQUAL(MapOptions::Map, file.GetFiles(), ());
 
   CountryIndexes::PreparePlaceOnDisk(file);
@@ -733,7 +794,7 @@ UNIT_TEST(StorageTest_EmptyRoutingFile)
 {
   Storage storage;
   if (version::IsSingleMwm(storage.GetCurrentDataVersion()))
-    return; // Test below is on routing mwm. It is not relevant for single mwm data.
+    return; // Following code tests car routing files, and is not relevant for a single mwm case.
 
   TaskRunner runner;
   InitStorage(storage, runner, [](LocalCountryFile const & localFile)

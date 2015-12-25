@@ -69,11 +69,10 @@ public:
   bool operator<(LocalCountryFile const & rhs) const;
   bool operator==(LocalCountryFile const & rhs) const;
 
-  void SetVersionForTesting(int64_t version) { m_version = version; }
   // Creates LocalCountryFile for test purposes, for a country region
   // with countryFileName (without any extensions). Automatically
   // performs sync with disk.
-  static LocalCountryFile MakeForTesting(string const & countryFileName);
+  static LocalCountryFile MakeForTesting(string const & countryFileName, int64_t version = 0);
 
   /// @todo The easiest solution for now. Need to be removed in future.
   /// @param fullPath Full path to the mwm file.

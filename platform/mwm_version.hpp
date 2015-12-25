@@ -46,4 +46,12 @@ uint32_t ReadVersionTimestamp(ModelReaderPtr const & reader);
 /// \returns true if version is version of a mwm which was generated after small mwm update.
 /// This means it contains routing file as well.
 bool IsSingleMwm(int64_t version);
+
+/// \brief This constant below is used for writing test to set a version of mwm
+/// which should be processed as either single or two components (mwm and routing) mwms.
+extern int64_t const kASingleMwmVersionForTesting1;
+extern int64_t const kASingleMwmVersionForTesting2;
+extern int64_t const kASingleMwmVersionForTestingLatest;
+extern int64_t const kATwoComponentMwmVersionForTesting1;
+extern int64_t const kATwoComponentMwmVersionForTesting2;
 }  // namespace version
