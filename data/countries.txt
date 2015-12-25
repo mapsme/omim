@@ -1834,7 +1834,7 @@
     }, 
     {
      "s": 26315337, 
-     "id": "Israel"
+     "id": "Israel Region"
     }
    ]
   }, 
@@ -3517,7 +3517,7 @@
     }, 
     {
      "s": 17592174, 
-     "id": "Palestine"
+     "id": "Palestine Region"
     }
    ]
   }, 
