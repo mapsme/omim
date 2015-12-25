@@ -5,6 +5,7 @@
 #include "indexer/scales.hpp"
 #include "indexer/classificator_loader.hpp"
 
+#include "platform/mwm_version.hpp"
 
 namespace
 {
@@ -39,7 +40,8 @@ public:
 bool RunTest(string const & countryFileName, int lowS, int highS)
 {
   model::FeaturesFetcher src;
-  auto p = src.RegisterMap(platform::LocalCountryFile::MakeForTesting(countryFileName));
+  auto p = src.RegisterMap(platform::LocalCountryFile::MakeForTesting(countryFileName,
+                                                                      version::kASingleMwmVersionForTesting1));
   if (p.second != MwmSet::RegResult::Success)
     return false;
 

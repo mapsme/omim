@@ -169,10 +169,13 @@ Country const & Storage::CountryByIndex(TIndex const & index) const
 void Storage::GetGroupAndCountry(TIndex const & index, string & group, string & country) const
 {
   // @TODO(bykoianko) This method can work faster and more correctly.
-  // 1. You need parrents (group) - use m_countries "tree".
-  // 2. You need country - it's TIndex now.
-  // 3. You need to use twine instead of FileName2FullName and FullName2GroupAndMap
-  //    to get readable names from id.
+  // 1. To get id for filling group parameter it's better to use take the parent
+  //    of index parameter in m_countries tree. Just fill group
+  //    with its parent name if valid.
+  // 2. Use index as id for filling country parameter.
+  // 3. To translate the ids got in (1) and (2) into strings for filling group and country
+  //    use platform/get_text_by_id subsystem based on twine.
+
   string fName = CountryByIndex(index).GetFile().GetNameWithoutExt();
   CountryInfo::FileName2FullName(fName);
   CountryInfo::FullName2GroupAndMap(fName, group, country);
@@ -771,11 +774,6 @@ void Storage::RegisterCountryFiles(TIndex const & index, string const & director
   TLocalFilePtr localFile = GetLocalFile(index, version);
   if (localFile)
     return;
-  // @TODO(bykoianko) This place should be implemented faster.
-  // You use Find twice. Here and in GetCountryFile.
-  SimpleTree<Country> const * node = m_countries.Find(Country(index));
-  if (node && node->SiblingsCount() != 0)
-    return; // It's index of group of mwms.
 
   CountryFile const & countryFile = GetCountryFile(index);
   localFile = make_shared<LocalCountryFile>(directory, countryFile, version);

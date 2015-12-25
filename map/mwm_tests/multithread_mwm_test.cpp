@@ -4,6 +4,8 @@
 
 #include "indexer/scales.hpp"
 
+#include "platform/mwm_version.hpp"
+
 #include "base/macros.hpp"
 #include "base/thread.hpp"
 
@@ -63,7 +65,7 @@ namespace
     SourceT src;
     src.InitClassificator();
 
-    UNUSED_VALUE(src.RegisterMap(platform::LocalCountryFile::MakeForTesting(file)));
+    UNUSED_VALUE(src.RegisterMap(platform::LocalCountryFile::MakeForTesting(file, version::kASingleMwmVersionForTesting1)));
 
     // Check that country rect is valid and not infinity.
     m2::RectD const r = src.GetWorldRect();

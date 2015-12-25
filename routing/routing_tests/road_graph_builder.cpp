@@ -2,6 +2,8 @@
 
 #include "indexer/mwm_set.hpp"
 
+#include "platform/mwm_version.hpp"
+
 #include "base/macros.hpp"
 #include "base/logging.hpp"
 
@@ -22,7 +24,7 @@ class TestValidFeatureIDProvider : private MwmSet
 public:
   TestValidFeatureIDProvider()
   {
-    UNUSED_VALUE(Register(platform::LocalCountryFile::MakeForTesting("0")));
+    UNUSED_VALUE(Register(platform::LocalCountryFile::MakeForTesting("0", version::kASingleMwmVersionForTesting1)));
 
     vector<shared_ptr<MwmInfo>> mwmsInfoList;
     GetMwmsInfo(mwmsInfoList);

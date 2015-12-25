@@ -44,34 +44,16 @@ UNIT_TEST(CountryInfoGetter_GetByPoint_Smoke)
 
   // Minsk
   getter->GetRegionInfo(MercatorBounds::FromLatLon(53.9022651, 27.5618818), info);
-  if (isSingleMwm)
-  {
-    TEST_EQUAL(info.m_name, "Belarus_Minsk Region", ());
-  }
-  else
-  {
-    TEST_EQUAL(info.m_name, "Belarus", ());
-  }
+  string const belarusName = isSingleMwm ? "Belarus_Minsk Region" : "Belarus";
+  TEST_EQUAL(info.m_name, belarusName, ());
 
   getter->GetRegionInfo(MercatorBounds::FromLatLon(-6.4146288, -38.0098101), info);
-  if (isSingleMwm)
-  {
-    TEST_EQUAL(info.m_name, "Brazil_Rio Grande do Norte", ());
-  }
-  else
-  {
-    TEST_EQUAL(info.m_name, "Brazil_Northeast", ());
-  }
+  string const brazilName = isSingleMwm ? "Brazil_Rio Grande do Norte" : "Brazil_Northeast";
+  TEST_EQUAL(info.m_name, brazilName, ());
 
   getter->GetRegionInfo(MercatorBounds::FromLatLon(34.6509, 135.5018), info);
-  if (isSingleMwm)
-  {
-    TEST_EQUAL(info.m_name, "Japan_Kinki Region_Osaka", ());
-  }
-  else
-  {
-    TEST_EQUAL(info.m_name, "Japan_Kinki", ());
-  }
+  string const japanName = isSingleMwm ? "Japan_Kinki Region_Osaka" : "Japan_Kinki";
+  TEST_EQUAL(info.m_name, japanName, ());
 }
 
 UNIT_TEST(CountryInfoGetter_ValidName_Smoke)
