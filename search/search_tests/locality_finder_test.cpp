@@ -9,6 +9,7 @@
 #include "platform/country_file.hpp"
 #include "platform/local_country_file.hpp"
 #include "platform/local_country_file_utils.hpp"
+#include "platform/mwm_version.hpp"
 #include "platform/platform.hpp"
 
 #include "base/scope_guard.hpp"
@@ -46,7 +47,7 @@ UNIT_TEST(LocalityFinder)
   Index index;
   m2::RectD rect;
 
-  auto world = platform::LocalCountryFile::MakeForTesting("World");
+  auto world = platform::LocalCountryFile::MakeForTesting("World", version::kASingleMwmVersionForTesting1);
   auto cleanup = [&world]()
   {
     platform::CountryIndexes::DeleteFromDisk(world);

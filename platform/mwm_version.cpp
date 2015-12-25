@@ -13,6 +13,13 @@
 
 namespace version
 {
+int64_t constexpr kASingleMwmVersionForTesting1 = 991215;
+int64_t constexpr kASingleMwmVersionForTesting2 = kASingleMwmVersionForTesting1 + 1;
+int64_t constexpr kASingleMwmVersionForTestingLatest = kASingleMwmVersionForTesting1 + 10;
+
+int64_t constexpr kATwoComponentMwmVersionForTesting1 = 10;
+int64_t constexpr kATwoComponentMwmVersionForTesting2 = kATwoComponentMwmVersionForTesting1 + 1;
+
 namespace
 {
 
@@ -76,11 +83,11 @@ uint32_t ReadVersionTimestamp(ModelReaderPtr const & reader)
 
 bool IsSingleMwm(int64_t version)
 {
-  // TODO (mpimenov): Refactor with MwmTraits after merge new-search branch.
-  int64_t const kMinSingleMwmVersion = 151218;
-  // version <= kMaxTestPurposesVersion is reserved for test purposes and is considered as single mwm case.
-  int64_t const kMaxTestPurposesVersion = 5;
-
-  return version >= kMinSingleMwmVersion || version < kMaxTestPurposesVersion;
+  // kMinSingleMwmVersion is a barrier mwm version.
+  // All a mwm version less then kMinSingleMwmVersion the mwm is considered as:
+  // * a mwm of small mwm coverage
+  // * a single mwm which contains mwm and routing information
+  int64_t constexpr kMinSingleMwmVersion = 151218;
+  return version >= kMinSingleMwmVersion;
 }
 }  // namespace version

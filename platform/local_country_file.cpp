@@ -32,6 +32,7 @@ void LocalCountryFile::SyncWithDisk()
 {
   m_files = MapOptions::Nothing;
   m_mapSize = 0;
+  m_routingSize = 0;
   Platform & platform = GetPlatform();
 
   if (platform.GetFileSizeByFullPath(GetPath(MapOptions::Map), m_mapSize))
@@ -39,7 +40,6 @@ void LocalCountryFile::SyncWithDisk()
 
   if (!version::IsSingleMwm(GetVersion()))
   {
-    m_routingSize = 0;
     string const routingPath = GetPath(MapOptions::CarRouting);
     if (platform.GetFileSizeByFullPath(routingPath, m_routingSize))
       m_files = SetOptions(m_files, MapOptions::CarRouting);
@@ -98,10 +98,10 @@ bool LocalCountryFile::operator==(LocalCountryFile const & rhs) const
 }
 
 // static
-LocalCountryFile LocalCountryFile::MakeForTesting(string const & countryFileName)
+LocalCountryFile LocalCountryFile::MakeForTesting(string const & countryFileName, int64_t version)
 {
   CountryFile const countryFile(countryFileName);
-  LocalCountryFile localFile(GetPlatform().WritableDir(), countryFile, 0 /* version */);
+  LocalCountryFile localFile(GetPlatform().WritableDir(), countryFile, version);
   localFile.SyncWithDisk();
   return localFile;
 }
