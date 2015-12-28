@@ -5,7 +5,7 @@
 /// \brief MapOptions reflects type of map data.
 /// \note After mwm update (to small mwms) mwm files contain map and routing sections.
 /// They contain information previously contained in map(mwm) and car routing(mwm.routing) files.
-/// @TODO When we start using small(single) mwm the enum should be kept.
+/// @TODO When we start using small(single) mwm the enum should be kept as is.
 /// It's necessary for correct working with old big mwm which were downloaded previously.
 /// After we stop supporting big mwms at all the enum should be deleted.
 enum class MapOptions : uint8_t

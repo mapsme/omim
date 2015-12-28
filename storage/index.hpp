@@ -7,6 +7,6 @@ using TIndex = string;
 
 extern const storage::TIndex kInvalidIndex;
 
-// @TODO(bykoianko) Check in courtry tree if the index valid.
+// @TODO(bykoianko) Check in counrtry tree if the index valid.
 bool IsIndexValid(TIndex const & index);
 } //  namespace storage

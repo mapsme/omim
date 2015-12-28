@@ -13,7 +13,7 @@ namespace storage
 {
 /// This class is responsible for downloading, updating and deleting maps.
 /// It represents the interface which can be used by clients (Android/iOS).
-/// The term node means a mwm or a group of mwm like a big country.
+/// The term node means an mwm or a group of mwm like a big country.
 /// The term node id means a string id of mwm or a group of mwm. The sting contains
 /// a name of file with mwm of a name country(territory).
 class MapRepository
@@ -60,7 +60,7 @@ public:
     /// If the node is expandable (a big country) m_mapsDownloaded is number of maps has been downloaded.
     /// If the node isn't expandable m_mapsDownloaded == -1.
     int m_mapsDownloaded;
-    /// \brief It's a mwm version which was taken for mwm header.
+    /// \brief It's an mwm version which was taken for mwm header.
     /// @TODO Discuss a version format. It should represent date and time (one second precision).
     /// It should be converted easily to unix time.
     /// \note It's set to zero in it's attributes of expandable node.
@@ -89,9 +89,9 @@ public:
   struct StatusCallback
   {
     /// \brief m_onStatusChanged is called by MapRepository when status of
-    /// a node is changed. If this method is called for a mwm it'll be called for
+    /// a node is changed. If this method is called for an mwm it'll be called for
     /// every its parent and grandparents.
-    /// \param nodeId is id of mwm or a mwm group which status has been changed.
+    /// \param nodeId is id of mwm or an mwm group which status has been changed.
     TOnStatusChangedCallback m_onStatusChanged;
     /// \brief m_onError is called when an error happend while async operation.
     /// \note A client should be ready for any value of error.
