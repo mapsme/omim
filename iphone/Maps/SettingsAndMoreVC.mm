@@ -75,7 +75,8 @@ extern NSDictionary * const deviceNames = @{@"x86_64" : @"Simulator",
                                 @{@"Id" : @"Help", @"Title" : L(@"help"), @"Icon" : @"IconHelp"},
                                 @{@"Id" : @"ReportBug", @"Title" : L(@"report_a_bug"), @"Icon" : @"IconReportABug"}]},
                  @{@"Title" : @"",
-                   @"Items" : @[@{@"Id" : @"Community", @"Title" : L(@"maps_me_community"), @"Icon" : @"IconSocial"},
+                   @"Items" : @[@{@"Id" : @"Authorization", @"Title" : L(@"authorization"), @"Icon" : @"ic_settings_login"},
+                                @{@"Id" : @"Community", @"Title" : L(@"maps_me_community"), @"Icon" : @"IconSocial"},
                                 @{@"Id" : @"RateApp", @"Title" : L(@"rate_the_app"), @"Icon" : @"IconRate"}]},
                  @{@"Title" : @"",
                    @"Items" : @[@{@"Id" : @"About", @"Title" : L(@"about_menu_title"), @"Icon" : @"IconAbout"},
@@ -129,6 +130,8 @@ extern NSDictionary * const deviceNames = @{@"x86_64" : @"Simulator",
   NSString * itemId = self.items[indexPath.section][@"Items"][indexPath.row][@"Id"];
   if ([itemId isEqualToString:@"About"])
     [self about];
+  else if ([itemId isEqualToString:@"Authorization"])
+    [self authorization];
   else if ([itemId isEqualToString:@"Community"])
     [self community];
   else if ([itemId isEqualToString:@"RateApp"])
@@ -149,6 +152,15 @@ extern NSDictionary * const deviceNames = @{@"x86_64" : @"Simulator",
   [Alohalytics logEvent:kAlohalyticsTapEventKey withValue:@"settingsMiles"];
   SettingsViewController * vc = [self.mainStoryboard instantiateViewControllerWithIdentifier:[SettingsViewController className]];
   [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (void)authorization
+{
+  [[Statistics instance] logEvent:kStatSettingsOpenSection withParameters:@{kStatName : kStatAuthorization}];
+  UINavigationController * vc = [self.mainStoryboard instantiateViewControllerWithIdentifier:@"LoginNavigationController"];
+  vc.modalPresentationStyle = UIModalPresentationFormSheet;
+  vc.preferredContentSize = {520, 600};
+  [self.navigationController presentViewController:vc animated:YES completion:nil];
 }
 
 - (void)community
