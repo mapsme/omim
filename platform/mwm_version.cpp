@@ -13,13 +13,6 @@
 
 namespace version
 {
-int64_t constexpr kASingleMwmVersionForTesting1 = 991215;
-int64_t constexpr kASingleMwmVersionForTesting2 = kASingleMwmVersionForTesting1 + 1;
-int64_t constexpr kASingleMwmVersionForTestingLatest = kASingleMwmVersionForTesting1 + 10;
-
-int64_t constexpr kATwoComponentMwmVersionForTesting1 = 10;
-int64_t constexpr kATwoComponentMwmVersionForTesting2 = kATwoComponentMwmVersionForTesting1 + 1;
-
 namespace
 {
 
@@ -84,8 +77,8 @@ uint32_t ReadVersionTimestamp(ModelReaderPtr const & reader)
 bool IsSingleMwm(int64_t version)
 {
   // kMinSingleMwmVersion is a barrier mwm version.
-  // All a mwm version less then kMinSingleMwmVersion the mwm is considered as:
-  // * a mwm of small mwm coverage
+  // All an mwm version less then kMinSingleMwmVersion the mwm is considered as:
+  // * an mwm of small mwm coverage
   // * a single mwm which contains mwm and routing information
   int64_t constexpr kMinSingleMwmVersion = 151218;
   return version >= kMinSingleMwmVersion;

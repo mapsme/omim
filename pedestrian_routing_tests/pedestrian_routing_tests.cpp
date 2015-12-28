@@ -9,8 +9,6 @@
 #include "routing/pedestrian_model.hpp"
 #include "routing/router_delegate.hpp"
 
-#include "platform/mwm_version.hpp"
-
 #include "base/logging.hpp"
 #include "base/macros.hpp"
 #include "base/timer.hpp"
@@ -135,7 +133,7 @@ void TestTwoPointsOnFeature(m2::PointD const & startPos, m2::PointD const & fina
   classificator::Load();
 
   CountryFile countryFile(MAP_NAME);
-  LocalCountryFile localFile = LocalCountryFile::MakeForTesting(MAP_NAME, version::kASingleMwmVersionForTesting1);
+  LocalCountryFile localFile = LocalCountryFile::MakeForTesting(MAP_NAME);
 
   Index index;
   UNUSED_VALUE(index.RegisterMap(localFile));
@@ -164,7 +162,7 @@ void TestTwoPoints(m2::PointD const & startPos, m2::PointD const & finalPos)
   classificator::Load();
 
   CountryFile countryFile(MAP_NAME);
-  LocalCountryFile localFile = LocalCountryFile::MakeForTesting(MAP_NAME, version::kASingleMwmVersionForTesting1);
+  LocalCountryFile localFile = LocalCountryFile::MakeForTesting(MAP_NAME);
 
   Index index;
   UNUSED_VALUE(index.RegisterMap(localFile));
