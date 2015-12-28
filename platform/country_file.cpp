@@ -1,7 +1,9 @@
 #include "platform/country_file.hpp"
 
 #include "defines.hpp"
+
 #include "base/assert.hpp"
+
 #include "std/sstream.hpp"
 
 namespace platform
@@ -12,7 +14,9 @@ CountryFile::CountryFile(string const & name) : m_name(name), m_mapSize(0), m_ro
 
 string const & CountryFile::GetNameWithoutExt() const { return m_name; }
 
-string CountryFile::GetNameWithExt(MapOptions file) const
+string CountryFile::GetNameWitOneComponentExt() const { return m_name + DATA_FILE_EXTENSION; }
+
+string CountryFile::GetNameWithTwoComponentsExt(MapOptions file) const
 {
   switch (file)
   {
@@ -34,6 +38,10 @@ void CountryFile::SetRemoteSizes(uint32_t mapSize, uint32_t routingSize)
 
 uint32_t CountryFile::GetRemoteSize(MapOptions filesMask) const
 {
+//  return m_mapSize;
+//  if (version::IsSingleMwm(version))
+//    return m_mapSize;
+
   uint32_t size = 0;
   if (HasOptions(filesMask, MapOptions::Map))
     size += m_mapSize;
