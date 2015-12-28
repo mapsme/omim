@@ -65,7 +65,7 @@ namespace
     SourceT src;
     src.InitClassificator();
 
-    UNUSED_VALUE(src.RegisterMap(platform::LocalCountryFile::MakeForTesting(file, version::kASingleMwmVersionForTesting1)));
+    UNUSED_VALUE(src.RegisterMap(platform::LocalCountryFile::MakeForTesting(file)));
 
     // Check that country rect is valid and not infinity.
     m2::RectD const r = src.GetWorldRect();

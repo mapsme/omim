@@ -5,7 +5,6 @@
 #include "indexer/features_vector.hpp"
 
 #include "platform/local_country_file_utils.hpp"
-#include "platform/mwm_version.hpp"
 #include "platform/platform.hpp"
 
 #include "coding/file_container.hpp"
@@ -69,8 +68,7 @@ namespace feature
   {
     string const testFileName = "minsk-pass";
 
-    LocalCountryFile localFile =
-        LocalCountryFile::MakeForTesting(testFileName, version::kASingleMwmVersionForTesting1);
+    LocalCountryFile localFile = LocalCountryFile::MakeForTesting(testFileName);
     string const indexFile = CountryIndexes::GetPath(localFile, CountryIndexes::Index::Offsets);
     FileWriter::DeleteFileX(indexFile);
 
@@ -98,8 +96,7 @@ namespace feature
 
     FilesContainerR baseContainer(pl.GetReader("minsk-pass" DATA_FILE_EXTENSION));
 
-    LocalCountryFile localFile =
-        LocalCountryFile::MakeForTesting(testFileName, version::kASingleMwmVersionForTesting1);
+    LocalCountryFile localFile = LocalCountryFile::MakeForTesting(testFileName);
     CountryIndexes::PreparePlaceOnDisk(localFile);
 
     string const indexFile = CountryIndexes::GetPath(localFile, CountryIndexes::Index::Offsets);
