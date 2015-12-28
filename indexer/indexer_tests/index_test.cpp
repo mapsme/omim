@@ -8,7 +8,6 @@
 
 #include "platform/country_file.hpp"
 #include "platform/local_country_file.hpp"
-#include "platform/mwm_version.hpp"
 #include "platform/platform.hpp"
 
 #include "base/logging.hpp"
@@ -80,8 +79,7 @@ private:
 UNIT_TEST(Index_Parse)
 {
   Index index;
-  UNUSED_VALUE(index.RegisterMap(platform::LocalCountryFile::
-                                 MakeForTesting("minsk-pass", version::kASingleMwmVersionForTesting1)));
+  UNUSED_VALUE(index.RegisterMap(platform::LocalCountryFile::MakeForTesting("minsk-pass")));
 
   // Make sure that index is actually parsed.
   NoopFunctor fn;

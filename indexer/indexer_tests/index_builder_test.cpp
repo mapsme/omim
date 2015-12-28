@@ -8,7 +8,6 @@
 
 #include "defines.hpp"
 
-#include "platform/mwm_version.hpp"
 #include "platform/platform.hpp"
 
 #include "coding/file_container.hpp"
@@ -54,8 +53,7 @@ UNIT_TEST(BuildIndexTest)
   {
     // Check that index actually works.
     Index index;
-    UNUSED_VALUE(index.Register(platform::LocalCountryFile::
-                                MakeForTesting("build_index_test", version::kASingleMwmVersionForTesting1)));
+    UNUSED_VALUE(index.Register(platform::LocalCountryFile::MakeForTesting("build_index_test")));
 
     // Make sure that index is actually parsed.
     NoopFunctor fn;

@@ -141,7 +141,9 @@ UNIT_TEST(LocalCountryFile_DiskFilesSingleMwm)
   Platform & platform = GetPlatform();
 
   CountryFile countryFile("TestSingleMwmCountry");
-  countryFile.SetRemoteSizes(15 /* mapSize */, 1234 /* routingSize. It could have any value. */);
+  // For version 160707 we're assuming that routing sections are included into an mwm file,
+  // so there is no separate routing file at all.
+  countryFile.SetRemoteSizes(15 /* mapSize */, 0 /* routingSize. */);
 
   size_t const singleMwmVersion = 160707;
   LocalCountryFile localFile(platform.WritableDir(), countryFile, singleMwmVersion);
