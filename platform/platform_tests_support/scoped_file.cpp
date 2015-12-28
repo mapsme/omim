@@ -29,7 +29,7 @@ ScopedFile::ScopedFile(string const & relativePath, string const & contents)
 
 ScopedFile::ScopedFile(ScopedDir const & dir, CountryFile const & countryFile, MapOptions file,
                        string const & contents)
-    : ScopedFile(my::JoinFoldersToPath(dir.GetRelativePath(), countryFile.GetNameWithExt(file)),
+    : ScopedFile(my::JoinFoldersToPath(dir.GetRelativePath(), countryFile.GetNameWithTwoComponentsExt(file)),
                  contents)
 {
 }

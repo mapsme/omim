@@ -60,7 +60,7 @@ void TestMapping(InputDataT const & data,
   platform::LocalCountryFile localFile(GetPlatform().WritableDir(), country, 0 /* version */);
   localFile.SyncWithDisk();
   platform::tests_support::ScopedMwm mapMwm(
-      localFile.GetCountryFile().GetNameWithExt(MapOptions::Map));
+      localFile.GetCountryFile().GetNameWithTwoComponentsExt(MapOptions::Map));
   static char const ftSegsPath[] = "test1.tmp";
 
   platform::CountryIndexes::PreparePlaceOnDisk(localFile);

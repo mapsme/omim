@@ -92,7 +92,11 @@ private:
 
   MapOptions m_files;
 
+  /// Size of file which contains map section in bytes. It's mwm file in any case.
   uint64_t m_mapSize;
+  /// Size of file which contains routing section in bytes.
+  /// It's .mwm.routing file in case of big (two component) mwms.
+  /// And m_routingSize == m_mapSize for small (one compontent) mwms.
   uint64_t m_routingSize;
 };
 

@@ -11,14 +11,6 @@ using platform::CountryFile;
 
 namespace storage
 {
-uint64_t Country::Size(MapOptions opt) const
-{
-  uint64_t size = 0;
-  for (CountryFile const & file : m_files)
-    size += file.GetRemoteSize(opt);
-  return size;
-}
-
 void Country::AddFile(CountryFile const & file) { m_files.push_back(file); }
 
 ////////////////////////////////////////////////////////////////////////
@@ -200,6 +192,7 @@ void LoadCountryFile2CountryInfo(string const & jsonBuffer, map<string, CountryI
   }
 }
 
+// @TODO(@syershov) This method should be removed while removing all countries.txt generation funtionality.
 template <class T>
 void SaveImpl(T const & v, json_t * jParent)
 {
@@ -239,6 +232,7 @@ void SaveImpl(T const & v, json_t * jParent)
   json_object_set(jParent, "g", jArray.get());
 }
 
+// @TODO(@syershov) This method should be removed while removing all countries.txt generation funtionality.
 bool SaveCountries(int64_t version, CountriesContainerT const & countries, string & jsonBuffer)
 {
   my::JsonHandle root;

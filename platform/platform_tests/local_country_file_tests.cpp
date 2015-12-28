@@ -108,7 +108,7 @@ UNIT_TEST(LocalCountryFile_DiskFiles)
     TEST(!localFile.OnDisk(MapOptions::CarRouting), ());
     TEST(!localFile.OnDisk(MapOptions::MapWithCarRouting), ());
 
-    ScopedFile testMapFile(countryFile.GetNameWithExt(MapOptions::Map), "map");
+    ScopedFile testMapFile(countryFile.GetNameWithTwoComponentsExt(MapOptions::Map), "map");
 
     localFile.SyncWithDisk();
     TEST(localFile.OnDisk(MapOptions::Map), ());
@@ -116,7 +116,8 @@ UNIT_TEST(LocalCountryFile_DiskFiles)
     TEST(!localFile.OnDisk(MapOptions::MapWithCarRouting), ());
     TEST_EQUAL(3, localFile.GetSize(MapOptions::Map), ());
 
-    ScopedFile testRoutingFile(countryFile.GetNameWithExt(MapOptions::CarRouting), "routing");
+    ScopedFile testRoutingFile(countryFile.GetNameWithTwoComponentsExt(MapOptions::CarRouting),
+                               "routing");
 
     localFile.SyncWithDisk();
     TEST(localFile.OnDisk(MapOptions::Map), ());
@@ -149,7 +150,8 @@ UNIT_TEST(LocalCountryFile_DiskFilesSingleMwm)
   TEST(!localFile.OnDisk(MapOptions::MapWithCarRouting), ());
 
   // Size of file with word map is 3 bytes.
-  ScopedFile testMapFile(countryFile.GetNameWithExt(MapOptions::Map), "Signle mwm map");
+  ScopedFile testMapFile(countryFile.GetNameWithTwoComponentsExt(MapOptions::Map),
+                         "Signle mwm map");
 
   localFile.SyncWithDisk();
   TEST(localFile.OnDisk(MapOptions::Map), ());
