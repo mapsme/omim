@@ -37,7 +37,7 @@ class Country
   buffer_vector<platform::CountryFile, 1> m_files;
 
 public:
-  Country() {}
+  Country() = default;
   Country(TIndex const & name) : m_name(name) {}
 
   bool operator<(Country const & other) const { return Name() < other.Name(); }

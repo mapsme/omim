@@ -409,12 +409,12 @@ UNIT_TEST(StorageTest_DeleteTwoVersionsOfTheSameCountry)
   Storage storage;
   bool const isSingleMwm = version::IsSingleMwm(storage.GetCurrentDataVersion());
   if (isSingleMwm)
-    storage.SetCurrentDataVersionForTesting(version::kASingleMwmVersionForTestingLatest);
+    storage.SetCurrentDataVersionForTesting(version::ForTesting::SingleMwmLatest);
   string const mwmName = isSingleMwm ? "Azerbaijan Region" : "Azerbaijan";
-  int64_t const v1 = isSingleMwm ? version::kASingleMwmVersionForTesting1 :
-                                   version::kATwoComponentMwmVersionForTesting1;
-  int64_t const v2 = isSingleMwm ? version::kASingleMwmVersionForTesting2 :
-                                   version::kATwoComponentMwmVersionForTesting2;
+  int64_t const v1 = isSingleMwm ? version::ForTesting::SingleMwm1
+                                 : version::ForTesting::TwoComponentMwm1;
+  int64_t const v2 = isSingleMwm ? version::ForTesting::SingleMwm2
+                                 : version::ForTesting::TwoComponentMwm2;
 
   storage.Init(&OnCountryDownloaded);
   storage.RegisterAllLocalMaps();
@@ -734,7 +734,7 @@ UNIT_TEST(StorageTest_DeleteCountry)
   InitStorage(storage, runner);
 
   tests_support::ScopedFile map("Wonderland.mwm", "map");
-  LocalCountryFile file = LocalCountryFile::MakeForTesting("Wonderland", version::kASingleMwmVersionForTesting1);
+  LocalCountryFile file = LocalCountryFile::MakeForTesting("Wonderland");
   TEST_EQUAL(MapOptions::Map, file.GetFiles(), ());
 
   CountryIndexes::PreparePlaceOnDisk(file);

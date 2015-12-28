@@ -9,7 +9,6 @@
 #include "indexer/classificator.hpp"
 
 #include "platform/local_country_file_utils.hpp"
-#include "platform/mwm_version.hpp"
 
 #include "geometry/rect_intersect.hpp"
 #include "geometry/robust_orientation.hpp"
@@ -253,8 +252,7 @@ void RunTest(string const & countryFileName)
   model::FeaturesFetcher src1;
   src1.InitClassificator();
 
-  platform::LocalCountryFile localFile(platform::LocalCountryFile::
-                                       MakeForTesting(countryFileName, version::kASingleMwmVersionForTesting1));
+  platform::LocalCountryFile localFile(platform::LocalCountryFile::MakeForTesting(countryFileName));
   // Clean indexes to prevent mwm and indexes versions mismatch error.
   platform::CountryIndexes::DeleteFromDisk(localFile);
   UNUSED_VALUE(src1.RegisterMap(localFile));
