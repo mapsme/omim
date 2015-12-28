@@ -27,9 +27,6 @@ namespace
  */
 bool CheckMwmConsistency(LocalCountryFile const & localFile)
 {
-  if (version::IsSingleMwm(localFile.GetVersion()))
-    return true;
-
   ModelReaderPtr r1 = FilesContainerR(localFile.GetPath(MapOptions::CarRouting))
       .GetReader(VERSION_FILE_TAG);
   ReaderSrc src1(r1.GetPtr());
