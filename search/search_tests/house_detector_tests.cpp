@@ -8,7 +8,6 @@
 #include "indexer/index.hpp"
 #include "indexer/scales.hpp"
 
-#include "platform/mwm_version.hpp"
 #include "platform/platform.hpp"
 
 #include "platform/local_country_file.hpp"
@@ -189,7 +188,7 @@ UNIT_TEST(HS_StreetsMerge)
   classificator::Load();
 
   Index index;
-  LocalCountryFile localFile(LocalCountryFile::MakeForTesting("minsk-pass", version::kASingleMwmVersionForTesting1));
+  LocalCountryFile localFile(LocalCountryFile::MakeForTesting("minsk-pass"));
   // Clean indexes to avoid jenkins errors.
   platform::CountryIndexes::DeleteFromDisk(localFile);
 
@@ -282,7 +281,7 @@ UNIT_TEST(HS_FindHouseSmoke)
   classificator::Load();
 
   Index index;
-  auto const p = index.Register(LocalCountryFile::MakeForTesting("minsk-pass", version::kASingleMwmVersionForTesting1));
+  auto const p = index.Register(LocalCountryFile::MakeForTesting("minsk-pass"));
   TEST(p.first.IsAlive(), ());
   TEST_EQUAL(MwmSet::RegResult::Success, p.second, ());
 
@@ -387,7 +386,7 @@ UNIT_TEST(HS_MWMSearch)
   }
 
   Index index;
-  auto p = index.Register(LocalCountryFile::MakeForTesting(country, version::kASingleMwmVersionForTesting1));
+  auto p = index.Register(LocalCountryFile::MakeForTesting(country));
   if (p.second != MwmSet::RegResult::Success)
   {
     LOG(LWARNING, ("MWM file not found"));

@@ -4,8 +4,6 @@
 
 #include "indexer/mwm_set.hpp"
 
-#include "platform/mwm_version.hpp"
-
 #include "base/macros.hpp"
 
 #include "std/initializer_list.hpp"
@@ -42,9 +40,9 @@ UNIT_TEST(MwmSetSmokeTest)
   TestMwmSet mwmSet;
   TMwmsInfo mwmsInfo;
 
-  UNUSED_VALUE(mwmSet.Register(LocalCountryFile::MakeForTesting("0", version::kASingleMwmVersionForTesting1)));
-  UNUSED_VALUE(mwmSet.Register(LocalCountryFile::MakeForTesting("1", version::kASingleMwmVersionForTesting1)));
-  UNUSED_VALUE(mwmSet.Register(LocalCountryFile::MakeForTesting("2", version::kASingleMwmVersionForTesting1)));
+  UNUSED_VALUE(mwmSet.Register(LocalCountryFile::MakeForTesting("0")));
+  UNUSED_VALUE(mwmSet.Register(LocalCountryFile::MakeForTesting("1")));
+  UNUSED_VALUE(mwmSet.Register(LocalCountryFile::MakeForTesting("2")));
   mwmSet.Deregister(CountryFile("1"));
 
   GetMwmsInfo(mwmSet, mwmsInfo);
@@ -60,7 +58,7 @@ UNIT_TEST(MwmSetSmokeTest)
     TEST(!handle1.IsAlive(), ());
   }
 
-  UNUSED_VALUE(mwmSet.Register(LocalCountryFile::MakeForTesting("3", version::kASingleMwmVersionForTesting1)));
+  UNUSED_VALUE(mwmSet.Register(LocalCountryFile::MakeForTesting("3")));
 
   GetMwmsInfo(mwmSet, mwmsInfo);
   TestFilesPresence(mwmsInfo, {"0", "2", "3"});
@@ -76,7 +74,7 @@ UNIT_TEST(MwmSetSmokeTest)
     MwmSet::MwmHandle const handle1 = mwmSet.GetMwmHandleByCountryFile(CountryFile("1"));
     TEST(!handle1.IsAlive(), ());
     mwmSet.Deregister(CountryFile("3"));
-    UNUSED_VALUE(mwmSet.Register(LocalCountryFile::MakeForTesting("4", version::kASingleMwmVersionForTesting1)));
+    UNUSED_VALUE(mwmSet.Register(LocalCountryFile::MakeForTesting("4")));
   }
 
   GetMwmsInfo(mwmSet, mwmsInfo);
@@ -89,7 +87,7 @@ UNIT_TEST(MwmSetSmokeTest)
   TEST(mwmsInfo["4"]->IsUpToDate(), ());
   TEST_EQUAL(mwmsInfo["4"]->m_maxScale, 4, ());
 
-  UNUSED_VALUE(mwmSet.Register(LocalCountryFile::MakeForTesting("5", version::kASingleMwmVersionForTesting1)));
+  UNUSED_VALUE(mwmSet.Register(LocalCountryFile::MakeForTesting("5")));
 
   GetMwmsInfo(mwmSet, mwmsInfo);
   TestFilesPresence(mwmsInfo, {"0", "2", "4", "5"});
@@ -109,7 +107,7 @@ UNIT_TEST(MwmSetIdTest)
 {
   TestMwmSet mwmSet;
   TEST_EQUAL(MwmSet::RegResult::Success,
-             mwmSet.Register(LocalCountryFile::MakeForTesting("3")).second, ());
+             mwmSet.Register(LocalCountryFile::MakeForTesting("3", 0 /* version */)).second, ());
 
   MwmSet::MwmId const id0 = mwmSet.GetMwmHandleByCountryFile(CountryFile("3")).GetId();
   MwmSet::MwmId const id1 = mwmSet.GetMwmHandleByCountryFile(CountryFile("3")).GetId();
@@ -134,7 +132,7 @@ UNIT_TEST(MwmSetLockAndIdTest)
   MwmSet::MwmId id;
 
   {
-    auto p = mwmSet.Register(LocalCountryFile::MakeForTesting("4", version::kASingleMwmVersionForTesting1));
+    auto p = mwmSet.Register(LocalCountryFile::MakeForTesting("4"));
     MwmSet::MwmHandle handle = mwmSet.GetMwmHandleById(p.first);
     TEST(handle.IsAlive(), ());
     TEST_EQUAL(MwmSet::RegResult::Success, p.second, ("Can't register test mwm 4"));

@@ -2,6 +2,7 @@
 
 #include "platform/country_file.hpp"
 #include "platform/country_defines.hpp"
+#include "platform/mwm_version.hpp"
 
 #include "std/string.hpp"
 #include "std/vector.hpp"
@@ -72,7 +73,8 @@ public:
   // Creates LocalCountryFile for test purposes, for a country region
   // with countryFileName (without any extensions). Automatically
   // performs sync with disk.
-  static LocalCountryFile MakeForTesting(string const & countryFileName, int64_t version = 0);
+  static LocalCountryFile MakeForTesting(string const & countryFileName,
+                                         int64_t version = version::SingleMwm1);
 
   /// @todo The easiest solution for now. Need to be removed in future.
   /// @param fullPath Full path to the mwm file.
