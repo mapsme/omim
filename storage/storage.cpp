@@ -4,6 +4,7 @@
 #include "defines.hpp"
 
 #include "platform/local_country_file_utils.hpp"
+#include "platform/mwm_version.hpp"
 #include "platform/platform.hpp"
 #include "platform/servers_list.hpp"
 
@@ -50,8 +51,11 @@ uint64_t GetLocalSize(shared_ptr<LocalCountryFile> file, MapOptions opt)
   return size;
 }
 
-uint64_t GetRemoteSize(CountryFile const & file, MapOptions opt)
+uint64_t GetRemoteSize(CountryFile const & file, MapOptions opt, int64_t version)
 {
+  if (version::IsSingleMwm(version))
+    return opt == MapOptions::Nothing ? 0 : file.GetRemoteSize(MapOptions::Map);
+
   uint64_t size = 0;
   for (MapOptions bit : {MapOptions::Map, MapOptions::CarRouting})
   {
@@ -203,14 +207,16 @@ LocalAndRemoteSizeT Storage::CountrySizeInBytes(TIndex const & index, MapOptions
   CountryFile const & countryFile = GetCountryFile(index);
   if (queuedCountry == nullptr)
   {
-    return LocalAndRemoteSizeT(GetLocalSize(localFile, opt), GetRemoteSize(countryFile, opt));
+    return LocalAndRemoteSizeT(GetLocalSize(localFile, opt),
+                               GetRemoteSize(countryFile, opt, GetCurrentDataVersion()));
   }
 
-  LocalAndRemoteSizeT sizes(0, GetRemoteSize(countryFile, opt));
+  LocalAndRemoteSizeT sizes(0, GetRemoteSize(countryFile, opt, GetCurrentDataVersion()));
   if (!m_downloader->IsIdle() && IsCountryFirstInQueue(index))
   {
     sizes.first = m_downloader->GetDownloadingProgress().first +
-                  GetRemoteSize(countryFile, queuedCountry->GetDownloadedFiles());
+                  GetRemoteSize(countryFile, queuedCountry->GetDownloadedFiles(),
+                                GetCurrentDataVersion());
   }
   return sizes;
 }
@@ -532,8 +538,8 @@ void Storage::OnMapFileDownloadProgress(MapFilesDownloader::TProgress const & pr
     QueuedCountry & queuedCountry = m_queue.front();
     CountryFile const & countryFile = GetCountryFile(queuedCountry.GetIndex());
     MapFilesDownloader::TProgress p = progress;
-    p.first += GetRemoteSize(countryFile, queuedCountry.GetDownloadedFiles());
-    p.second = GetRemoteSize(countryFile, queuedCountry.GetInitOptions());
+    p.first += GetRemoteSize(countryFile, queuedCountry.GetDownloadedFiles(), GetCurrentDataVersion());
+    p.second = GetRemoteSize(countryFile, queuedCountry.GetInitOptions(), GetCurrentDataVersion());
 
     ReportProgress(m_queue.front().GetIndex(), p);
   }
@@ -604,7 +610,11 @@ string Storage::GetFileDownloadUrl(string const & baseUrl, TIndex const & index,
                                    MapOptions file) const
 {
   CountryFile const & countryFile = GetCountryFile(index);
-  return GetFileDownloadUrl(baseUrl, countryFile.GetNameWithExt(file));
+
+  if (version::IsSingleMwm(GetCurrentDataVersion()))
+    return GetFileDownloadUrl(baseUrl, countryFile.GetNameWitOneComponentExt());
+  else
+    return GetFileDownloadUrl(baseUrl, countryFile.GetNameWithTwoComponentsExt(file));
 }
 
 string Storage::GetFileDownloadUrl(string const & baseUrl, string const & fName) const
@@ -662,7 +672,7 @@ TStatus Storage::CountryStatusFull(TIndex const & index, TStatus const status) c
     return TStatus::ENotDownloaded;
 
   CountryFile const & countryFile = GetCountryFile(index);
-  if (GetRemoteSize(countryFile, MapOptions::Map) == 0)
+  if (GetRemoteSize(countryFile, MapOptions::Map, GetCurrentDataVersion()) == 0)
     return TStatus::EUnknown;
 
   if (localFile->GetVersion() != GetCurrentDataVersion())
@@ -689,7 +699,7 @@ MapOptions Storage::NormalizeDownloadFileSet(TIndex const & index, MapOptions op
     }
 
     // Check whether requested file is not empty.
-    if (GetRemoteSize(country, option) == 0)
+    if (GetRemoteSize(country, option, GetCurrentDataVersion()) == 0)
     {
       ASSERT_NOT_EQUAL(MapOptions::Map, option, ("Map can't be empty."));
       options = UnsetOptions(options, option);
@@ -848,7 +858,7 @@ bool Storage::DeleteCountryFilesFromDownloader(TIndex const & index, MapOptions 
 uint64_t Storage::GetDownloadSize(QueuedCountry const & queuedCountry) const
 {
   CountryFile const & file = GetCountryFile(queuedCountry.GetIndex());
-  return GetRemoteSize(file, queuedCountry.GetCurrentFile());
+  return GetRemoteSize(file, queuedCountry.GetCurrentFile(), GetCurrentDataVersion());
 }
 
 string Storage::GetFileDownloadPath(TIndex const & index, MapOptions file) const

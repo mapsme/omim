@@ -55,8 +55,6 @@ public:
   }
 
   TIndex const & Name() const { return m_name; }
-
-  uint64_t Size(MapOptions opt) const;
 };
 
 typedef SimpleTree<Country> CountriesContainerT;
