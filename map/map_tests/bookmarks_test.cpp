@@ -8,7 +8,6 @@
 
 #include "search/result.hpp"
 
-#include "platform/mwm_version.hpp"
 #include "platform/platform.hpp"
 #include "platform/preferred_languages.hpp"
 
@@ -411,7 +410,7 @@ UNIT_TEST(Bookmarks_AddressInfo)
   // Maps added in constructor (we need minsk-pass.mwm only)
   Framework fm;
   fm.DeregisterAllMaps();
-  fm.RegisterMap(platform::LocalCountryFile::MakeForTesting("minsk-pass", version::kASingleMwmVersionForTesting1));
+  fm.RegisterMap(platform::LocalCountryFile::MakeForTesting("minsk-pass"));
   fm.OnSize(800, 600);
 
   // assume that developers have English or Russian system language :)

@@ -137,10 +137,8 @@ namespace integration
     vector<LocalCountryFile> localFiles;
     platform::FindAllLocalMapsAndCleanup(numeric_limits<int64_t>::max() /* latestVersion */,
                                          localFiles);
-
     for (auto & file : localFiles)
       file.SyncWithDisk();
-
     ASSERT(!localFiles.empty(), ());
     return shared_ptr<TRouterComponents>(new TRouterComponents(localFiles));
   }
