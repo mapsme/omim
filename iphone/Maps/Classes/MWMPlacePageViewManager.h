@@ -16,6 +16,7 @@
 - (instancetype)initWithViewController:(UIViewController *)viewController
                               delegate:(id<MWMPlacePageViewManagerProtocol>)delegate;
 - (void)showPlacePageWithUserMark:(unique_ptr<UserMarkCopy>)userMark;
+- (void)reloadPlacePage;
 - (void)refreshPlacePage;
 - (void)dismissPlacePage;
 - (void)hidePlacePage;
@@ -23,7 +24,7 @@
 - (void)routeFrom;
 - (void)routeTo;
 - (void)share;
-- (void)editPlace;
+- (void)editPlaceTime;
 - (void)addBookmark;
 - (void)removeBookmark;
 - (void)apiBack;

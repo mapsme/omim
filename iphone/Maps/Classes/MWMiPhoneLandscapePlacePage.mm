@@ -32,7 +32,7 @@ typedef NS_ENUM(NSUInteger, MWMiPhoneLandscapePlacePageState)
   [super configure];
   self.anchorImageView.backgroundColor = [UIColor whiteColor];
   self.anchorImageView.image = nil;
-  [self configureContentInset];
+  [self refresh];
   [self addPlacePageShadowToView:self.extendedPlacePageView offset:CGSizeMake(2.0, 4.0)];
   [self.extendedPlacePageView addSubview:self.actionBar];
   [self.manager addSubviews:@[self.extendedPlacePageView] withNavigationController:nil];
@@ -83,18 +83,23 @@ typedef NS_ENUM(NSUInteger, MWMiPhoneLandscapePlacePageState)
 - (void)addBookmark
 {
   [super addBookmark];
-  [self configureContentInset];
+  [self refresh];
 }
 
 - (void)removeBookmark
 {
   [super removeBookmark];
-  [self configureContentInset];
+  [self refresh];
 }
 
 - (void)reloadBookmark
 {
   [super reloadBookmark];
+  [self refresh];
+}
+
+- (void)refresh
+{
   [self configureContentInset];
 }
 
@@ -135,9 +140,9 @@ typedef NS_ENUM(NSUInteger, MWMiPhoneLandscapePlacePageState)
 {
   [super willStartEditingBookmarkTitle];
   CGFloat const statusBarHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
-  MWMBasePlacePageView const * basePlacePageView = self.basePlacePageView;
-  UITableView const * tableView = basePlacePageView.featureTable;
-  CGFloat const baseViewHeight = basePlacePageView.height;
+  MWMBasePlacePageView * basePPV = self.basePlacePageView;
+  UITableView const * tableView = basePPV.featureTable;
+  CGFloat const baseViewHeight = basePPV.height;
   CGFloat const tableHeight = tableView.contentSize.height;
   CGFloat const headerViewHeight = baseViewHeight - tableHeight;
   CGFloat const titleOriginY = tableHeight - kBookmarkCellHeight - tableView.contentOffset.y;
@@ -179,7 +184,7 @@ typedef NS_ENUM(NSUInteger, MWMiPhoneLandscapePlacePageState)
   self.actionBar.frame = {{0, height - actionBarHeight}, {width, actionBarHeight}};
   if (self.state == MWMiPhoneLandscapePlacePageStateOpen)
     [self updateTargetPoint];
-  [self configureContentInset];
+  [self refresh];
 }
 
 - (void)setTargetPoint:(CGPoint)targetPoint
