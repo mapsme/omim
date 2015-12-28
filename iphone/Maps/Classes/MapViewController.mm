@@ -99,6 +99,8 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 
 @property (nonatomic) BOOL skipForceTouch;
 
+@property (nonatomic) BOOL skipDismissOnViewDisappear;
+
 @end
 
 @implementation MapViewController
@@ -394,6 +396,8 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
   [super viewWillAppear:animated];
   [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
 
+  self.skipDismissOnViewDisappear = NO;
+  [self.controlsManager reloadPlacePage];
   self.controlsManager.menuState = self.menuRestoreState;
 
   [self refreshAd];
@@ -433,7 +437,8 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 {
   [super viewWillDisappear:animated];
   self.menuRestoreState = self.controlsManager.menuState;
-  [self dismissPlacePage];
+  if (!self.skipDismissOnViewDisappear)
+    [self dismissPlacePage];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
 }
 
@@ -771,8 +776,9 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-  if ([segue.identifier isEqualToString:@"Map2PlacePageEditor"])
+  if ([segue.identifier isEqualToString:@"Map2OpeningHoursEditor"])
   {
+    self.skipDismissOnViewDisappear = YES;
     MWMPlacePageEntity * entity = sender;
     NSUInteger const timeIndex = [entity.metadataTypes indexOfObject:@(MWMPlacePageMetadataTypeOpenHours)];
     BOOL const haveTime = (timeIndex != NSNotFound);
