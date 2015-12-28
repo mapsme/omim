@@ -172,8 +172,6 @@ public:
   ///
   /// @name This functions is used by Downloader UI.
   //@{
-  /// options - flags that signal about parts of map that must be deleted
-  void DeleteCountry(storage::TIndex const & index, MapOptions opt);
   /// options - flags that signal about parts of map that must be downloaded
   void DownloadCountry(storage::TIndex const & index, MapOptions opt);
 
