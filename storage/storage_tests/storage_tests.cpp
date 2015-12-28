@@ -90,7 +90,7 @@ protected:
     TStatus const nextStatus = m_storage.CountryStatusEx(m_index);
     LOG(LINFO, (m_countryFile, "status transition: from", m_transitionList[m_currStatus], "to",
                 nextStatus));
-   TEST_LESS(m_currStatus + 1, m_transitionList.size(), (m_countryFile));
+    TEST_LESS(m_currStatus + 1, m_transitionList.size(), (m_countryFile));
     TEST_EQUAL(nextStatus, m_transitionList[m_currStatus + 1], (m_countryFile));
     ++m_currStatus;
     if (m_transitionList[m_currStatus] == TStatus::EDownloading)
@@ -332,7 +332,7 @@ UNIT_TEST(StorageTest_Smoke)
   TIndex const georgiaIndex = storage.FindIndexByFile("Georgia");
   TEST(IsIndexValid(georgiaIndex), ());
   CountryFile usaGeorgiaFile = storage.GetCountryFile(georgiaIndex);
-  TEST_EQUAL(usaGeorgiaFile.GetNameWithExt(MapOptions::Map),
+  TEST_EQUAL(usaGeorgiaFile.GetNameWithTwoComponentsExt(MapOptions::Map),
              "Georgia" DATA_FILE_EXTENSION, ());
 
   if (version::IsSingleMwm(storage.GetCurrentDataVersion()))
@@ -340,7 +340,7 @@ UNIT_TEST(StorageTest_Smoke)
 
   TEST(IsIndexValid(georgiaIndex), ());
   CountryFile georgiaFile = storage.GetCountryFile(georgiaIndex);
-  TEST_EQUAL(georgiaFile.GetNameWithExt(MapOptions::CarRouting),
+  TEST_EQUAL(georgiaFile.GetNameWithTwoComponentsExt(MapOptions::CarRouting),
              "Georgia" DATA_FILE_EXTENSION ROUTING_FILE_EXTENSION, ());
 }
 
