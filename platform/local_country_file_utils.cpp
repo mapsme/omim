@@ -285,7 +285,9 @@ shared_ptr<LocalCountryFile> PreparePlaceForCountryFiles(CountryFile const & cou
 string GetFileDownloadPath(CountryFile const & countryFile, MapOptions file, int64_t version)
 {
   Platform & platform = GetPlatform();
-  string const readyFile = countryFile.GetNameWithExt(file) + READY_FILE_EXTENSION;
+  string const mapFilePath = version::IsSingleMwm(version) ? countryFile.GetNameWitOneComponentExt()
+                                                           : countryFile.GetNameWithTwoComponentsExt(file);
+  string const readyFile = mapFilePath + READY_FILE_EXTENSION;
   if (version == 0)
     return my::JoinFoldersToPath(platform.WritableDir(), readyFile);
   return my::JoinFoldersToPath({platform.WritableDir(), strings::to_string(version)}, readyFile);
