@@ -41,4 +41,6 @@ typedef NS_ENUM(NSUInteger, MWMRoutingPlaneMode)
 
 - (void)setMapStyle:(MapStyle)mapStyle;
 
+- (void)customizeAppearanceForNavigationBar:(UINavigationBar *)navigationBar;
+
 @end
