@@ -6,6 +6,7 @@
 #include "drape_frontend/user_mark_shapes.hpp"
 
 #include "drape/debug_rect_renderer.hpp"
+#include "drape/support_manager.hpp"
 
 #include "drape/utils/glyph_usage_tracker.hpp"
 #include "drape/utils/gpu_mem_tracker.hpp"
@@ -55,6 +56,10 @@ FrontendRenderer::FrontendRenderer(Params const & params)
   m_fps = 0.0;
 #endif
 
+#ifdef DEBUG
+  m_isTeardowned = false;
+#endif
+
   ASSERT(m_tapEventInfoFn, ());
   ASSERT(m_userPositionChangedFn, ());
 
@@ -66,7 +71,15 @@ FrontendRenderer::FrontendRenderer(Params const & params)
 
 FrontendRenderer::~FrontendRenderer()
 {
+  ASSERT(m_isTeardowned, ());
+}
+
+void FrontendRenderer::Teardown()
+{
   StopThread();
+#ifdef DEBUG
+  m_isTeardowned = true;
+#endif
 }
 
 #ifdef DRAW_INFO
@@ -810,6 +823,10 @@ void FrontendRenderer::OnTwoFingersTap()
 
 bool FrontendRenderer::OnSingleTouchFiltrate(m2::PointD const & pt, TouchEvent::ETouchType type)
 {
+  // This method can be called before gui rendererer initialization.
+  if (m_guiRenderer == nullptr)
+    return false;
+
   float const rectHalfSize = df::VisualParams::Instance().GetTouchRectRadius();
   m2::RectD r(-rectHalfSize, -rectHalfSize, rectHalfSize, rectHalfSize);
   r.SetCenter(pt);
@@ -925,6 +942,8 @@ void FrontendRenderer::Routine::Do()
   context->makeCurrent();
   GLFunctions::Init();
   GLFunctions::AttachCache(this_thread::get_id());
+
+  dp::SupportManager::Instance().Init();
 
   GLFunctions::glPixelStore(gl_const::GLUnpackAlignment, 1);
   GLFunctions::glEnable(gl_const::GLDepthTest);

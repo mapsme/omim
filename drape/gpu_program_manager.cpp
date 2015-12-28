@@ -1,5 +1,6 @@
 #include "drape/gpu_program_manager.hpp"
 #include "drape/shader_def.hpp"
+#include "drape/support_manager.hpp"
 
 #include "base/stl_add.hpp"
 #include "base/assert.hpp"
@@ -42,11 +43,18 @@ GpuProgramManager::~GpuProgramManager()
 
 void GpuProgramManager::Init()
 {
+  // This feature is not supported on some Android devices (especially on Android 4.x version).
+  // Since we can't predict on which devices it'll work fine, we have to turn off for all devices.
+#if !defined(OMIM_OS_ANDROID)
   if (GLFunctions::glGetInteger(gl_const::GLMaxVertexTextures) > 0)
   {
     LOG(LINFO, ("VTF enabled"));
-    globalDefines = "#define ENABLE_VTF\n"; // VTF == Vetrex Texture Fetch
+    m_globalDefines.append("#define ENABLE_VTF\n"); // VTF == Vetrex Texture Fetch
   }
+#endif
+
+  if (SupportManager::Instance().IsSamsungGoogleNexus())
+    m_globalDefines.append("#define SAMSUNG_GOOGLE_NEXUS\n");
 }
 
 ref_ptr<GpuProgram> GpuProgramManager::GetProgram(int index)
@@ -75,7 +83,7 @@ ref_ptr<Shader> GpuProgramManager::GetShader(int index, string const & source, S
   shader_map_t::iterator it = m_shaders.find(index);
   if (it == m_shaders.end())
   {
-    drape_ptr<Shader> shader = make_unique_dp<Shader>(source, globalDefines, t);
+    drape_ptr<Shader> shader = make_unique_dp<Shader>(source, m_globalDefines, t);
     ref_ptr<Shader> result = make_ref(shader);
     m_shaders.emplace(index, move(shader));
     return result;
