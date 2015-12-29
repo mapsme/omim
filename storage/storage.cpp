@@ -180,7 +180,7 @@ void Storage::GetGroupAndCountry(TIndex const & index, string & group, string & 
   // 3. To translate the ids got in (1) and (2) into strings for filling group and country
   //    use platform/get_text_by_id subsystem based on twine.
 
-  string fName = CountryByIndex(index).GetFile().GetNameWithoutExt();
+  string fName = CountryByIndex(index).GetFile().GetName();
   CountryInfo::FileName2FullName(fName);
   CountryInfo::FullName2GroupAndMap(fName, group, country);
 }
@@ -228,7 +228,7 @@ CountryFile const & Storage::GetCountryFile(TIndex const & index) const
 
 Storage::TLocalFilePtr Storage::GetLatestLocalFile(CountryFile const & countryFile) const
 {
-  TIndex const index = FindIndexByFile(countryFile.GetNameWithoutExt());
+  TIndex const index = FindIndexByFile(countryFile.GetName());
   if (IsIndexValid(index) && IsIndexInCountryTree(index))
   {
     TLocalFilePtr localFile = GetLatestLocalFile(index);
@@ -344,7 +344,7 @@ void Storage::DeleteCustomCountryVersion(LocalCountryFile const & localFile)
     }
   }
 
-  TIndex const index = FindIndexByFile(countryFile.GetNameWithoutExt());
+  TIndex const index = FindIndexByFile(countryFile.GetName());
   if (!(IsIndexValid(index) && IsIndexInCountryTree(index)))
   {
     LOG(LERROR, ("Removed files for an unknown country:", localFile));
@@ -421,7 +421,7 @@ void Storage::DownloadNextFile(QueuedCountry const & country)
   }
 
   // send Country name for statistics
-  m_downloader->GetServersList(GetCurrentDataVersion(), countryFile.GetNameWithoutExt(),
+  m_downloader->GetServersList(GetCurrentDataVersion(), countryFile.GetName(),
                                bind(&Storage::OnServerListDownloaded, this, _1));
 }
 
@@ -586,7 +586,7 @@ void Storage::OnMapDownloadFinished(TIndex const & index, bool success, MapOptio
                    ("This method should not be called for empty files set."));
   {
     alohalytics::LogEvent("$OnMapDownloadFinished",
-        alohalytics::TStringMap({{"name", GetCountryFile(index).GetNameWithoutExt()},
+        alohalytics::TStringMap({{"name", GetCountryFile(index).GetName()},
                                  {"status", success ? "ok" : "failed"},
                                  {"version", strings::to_string(GetCurrentDataVersion())},
                                  {"option", DebugPrint(files)}}));
@@ -612,9 +612,9 @@ string Storage::GetFileDownloadUrl(string const & baseUrl, TIndex const & index,
   CountryFile const & countryFile = GetCountryFile(index);
 
   if (version::IsSingleMwm(GetCurrentDataVersion()))
-    return GetFileDownloadUrl(baseUrl, countryFile.GetNameWitOneComponentExt());
+    return GetFileDownloadUrl(baseUrl, platform::GetNameWithOneComponentExt(countryFile.GetName()));
   else
-    return GetFileDownloadUrl(baseUrl, countryFile.GetNameWithTwoComponentsExt(file));
+    return GetFileDownloadUrl(baseUrl, platform::GetNameWithTwoComponentsExt(countryFile.GetName(), file));
 }
 
 string Storage::GetFileDownloadUrl(string const & baseUrl, string const & fName) const
@@ -644,7 +644,7 @@ void Storage::GetOutdatedCountries(vector<Country const *> & countries) const
   for (auto const & p : m_localFiles)
   {
     TIndex const & index = p.first;
-    string const name = GetCountryFile(index).GetNameWithoutExt();
+    string const name = GetCountryFile(index).GetName();
     TLocalFilePtr file = GetLatestLocalFile(index);
     if (file && file->GetVersion() != GetCurrentDataVersion() &&
         name != WORLD_COASTS_FILE_NAME && name != WORLD_FILE_NAME)

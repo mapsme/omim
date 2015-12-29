@@ -215,7 +215,7 @@ void FindAllLocalMapsAndCleanup(int64_t latestVersion, vector<LocalCountryFile> 
     auto i = localFiles.begin();
     for (; i != localFiles.end(); ++i)
     {
-      if (i->GetCountryFile().GetNameWithoutExt() == file)
+      if (i->GetCountryFile().GetName() == file)
         break;
     }
 
@@ -285,8 +285,8 @@ shared_ptr<LocalCountryFile> PreparePlaceForCountryFiles(CountryFile const & cou
 string GetFileDownloadPath(CountryFile const & countryFile, MapOptions file, int64_t version)
 {
   Platform & platform = GetPlatform();
-  string const mapFilePath = version::IsSingleMwm(version) ? countryFile.GetNameWitOneComponentExt()
-                                                           : countryFile.GetNameWithTwoComponentsExt(file);
+  string const mapFilePath = version::IsSingleMwm(version) ? GetNameWithOneComponentExt(countryFile.GetName())
+                                                           : GetNameWithTwoComponentsExt(countryFile.GetName(), file);
   string const readyFile = mapFilePath + READY_FILE_EXTENSION;
   if (version == 0)
     return my::JoinFoldersToPath(platform.WritableDir(), readyFile);
@@ -391,7 +391,7 @@ string CountryIndexes::IndexesDir(LocalCountryFile const & localFile)
       MYTHROW(FileSystemException, ("Can't create directory", dir));
   }
 
-  return my::JoinFoldersToPath(dir, file.GetNameWithoutExt());
+  return my::JoinFoldersToPath(dir, file.GetName());
 }
 
 string DebugPrint(CountryIndexes::Index index)

@@ -357,7 +357,7 @@ string Framework::GetCountryName(TIndex const & index) const
 m2::RectD Framework::GetCountryBounds(TIndex const & index) const
 {
   CountryFile const & file = m_storage.GetCountryFile(index);
-  return GetCountryBounds(file.GetNameWithoutExt());
+  return GetCountryBounds(file.GetName());
 }
 
 void Framework::ShowCountry(TIndex const & index)
