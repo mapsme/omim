@@ -332,7 +332,8 @@ UNIT_TEST(StorageTest_Smoke)
   TIndex const georgiaIndex = storage.FindIndexByFile("Georgia");
   TEST(IsIndexValid(georgiaIndex), ());
   CountryFile usaGeorgiaFile = storage.GetCountryFile(georgiaIndex);
-  TEST_EQUAL(platform::GetNameWithTwoComponentsExt(usaGeorgiaFile.GetName(), MapOptions::Map),
+  TEST_EQUAL(platform::GetFileName(usaGeorgiaFile.GetName(), MapOptions::Map,
+                                   version::FOR_TESTING_TWO_COMPONENT_MWM1),
              "Georgia" DATA_FILE_EXTENSION, ());
 
   if (version::IsSingleMwm(storage.GetCurrentDataVersion()))
@@ -340,7 +341,8 @@ UNIT_TEST(StorageTest_Smoke)
 
   TEST(IsIndexValid(georgiaIndex), ());
   CountryFile georgiaFile = storage.GetCountryFile(georgiaIndex);
-  TEST_EQUAL(platform::GetNameWithTwoComponentsExt(georgiaFile.GetName(), MapOptions::CarRouting),
+  TEST_EQUAL(platform::GetFileName(georgiaFile.GetName(), MapOptions::CarRouting,
+                                   version::FOR_TESTING_TWO_COMPONENT_MWM1),
              "Georgia" DATA_FILE_EXTENSION ROUTING_FILE_EXTENSION, ());
 }
 
@@ -409,12 +411,12 @@ UNIT_TEST(StorageTest_DeleteTwoVersionsOfTheSameCountry)
   Storage storage;
   bool const isSingleMwm = version::IsSingleMwm(storage.GetCurrentDataVersion());
   if (isSingleMwm)
-    storage.SetCurrentDataVersionForTesting(version::ForTesting::SingleMwmLatest);
+    storage.SetCurrentDataVersionForTesting(version::FOR_TESTING_SINGLE_MWM_LATEST);
   string const mwmName = isSingleMwm ? "Azerbaijan Region" : "Azerbaijan";
-  int64_t const v1 = isSingleMwm ? version::ForTesting::SingleMwm1
-                                 : version::ForTesting::TwoComponentMwm1;
-  int64_t const v2 = isSingleMwm ? version::ForTesting::SingleMwm2
-                                 : version::ForTesting::TwoComponentMwm2;
+  int64_t const v1 = isSingleMwm ? version::FOR_TESTING_SINGLE_MWM1
+                                 : version::FOR_TESTING_TWO_COMPONENT_MWM1;
+  int64_t const v2 = isSingleMwm ? version::FOR_TESTING_SINGLE_MWM2
+                                 : version::FOR_TESTING_TWO_COMPONENT_MWM2;
 
   storage.Init(&OnCountryDownloaded);
   storage.RegisterAllLocalMaps();

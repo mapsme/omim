@@ -2,6 +2,7 @@
 
 #include "defines.hpp"
 
+#include "platform/mwm_version.hpp"
 #include "platform/platform.hpp"
 
 #include "storage/country.hpp"
@@ -46,7 +47,9 @@ namespace update
     uint64_t GetFileSize(platform::CountryFile const & cnt, MapOptions opt) const
     {
       uint64_t sz = 0;
-      string const fName = platform::GetNameWithTwoComponentsExt(cnt.GetName(), opt);
+      // @TODO(yershov) Please delete this line below
+      // while deleting supporting of generation old (two compontnents) countries.txt
+      string const fName = platform::GetFileName(cnt.GetName(), opt, version::FOR_TESTING_TWO_COMPONENT_MWM1);
       if (!GetPlatform().GetFileSizeByFullPath(m_dataDir + fName, sz))
       {
         LOG(opt == MapOptions::Map ? LCRITICAL : LWARNING, ("File was not found:", fName));
@@ -87,7 +90,10 @@ namespace update
         cnt.SetRemoteSizes(static_cast<uint32_t>(szMap),
                            static_cast<uint32_t>(szRouting));
 
-        string const fName = platform::GetNameWithTwoComponentsExt(cnt.GetName(), MapOptions::Map);
+        // @TODO(yershov) Please delete this line below
+        // while deleting supporting of generation old (two compontnents) countries.txt
+        string const fName = platform::GetFileName(cnt.GetName(), MapOptions::Map,
+                                                   version::FOR_TESTING_TWO_COMPONENT_MWM1);
         auto found = find(m_files.begin(), m_files.end(), fName);
         if (found != m_files.end())
           m_files.erase(found);

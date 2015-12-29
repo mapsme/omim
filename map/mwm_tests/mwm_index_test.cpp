@@ -5,6 +5,7 @@
 #include "indexer/scales.hpp"
 #include "indexer/classificator_loader.hpp"
 
+
 namespace
 {
 

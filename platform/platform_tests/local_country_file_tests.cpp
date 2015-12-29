@@ -3,6 +3,7 @@
 #include "platform/country_file.hpp"
 #include "platform/local_country_file.hpp"
 #include "platform/local_country_file_utils.hpp"
+#include "platform/mwm_version.hpp"
 #include "platform/platform.hpp"
 #include "platform/platform_tests_support/scoped_dir.hpp"
 #include "platform/platform_tests_support/scoped_file.hpp"
@@ -108,7 +109,9 @@ UNIT_TEST(LocalCountryFile_DiskFiles)
     TEST(!localFile.OnDisk(MapOptions::CarRouting), ());
     TEST(!localFile.OnDisk(MapOptions::MapWithCarRouting), ());
 
-    ScopedFile testMapFile(GetNameWithTwoComponentsExt(countryFile.GetName(), MapOptions::Map), "map");
+    string const mapFileName = GetFileName(countryFile.GetName(), MapOptions::Map,
+                                           version::FOR_TESTING_TWO_COMPONENT_MWM1);
+    ScopedFile testMapFile(mapFileName, "map");
 
     localFile.SyncWithDisk();
     TEST(localFile.OnDisk(MapOptions::Map), ());
@@ -116,8 +119,9 @@ UNIT_TEST(LocalCountryFile_DiskFiles)
     TEST(!localFile.OnDisk(MapOptions::MapWithCarRouting), ());
     TEST_EQUAL(3, localFile.GetSize(MapOptions::Map), ());
 
-    ScopedFile testRoutingFile(GetNameWithTwoComponentsExt(countryFile.GetName(), MapOptions::CarRouting),
-                               "routing");
+    string const routingFileName = GetFileName(countryFile.GetName(), MapOptions::CarRouting,
+                                               version::FOR_TESTING_TWO_COMPONENT_MWM1);
+    ScopedFile testRoutingFile(routingFileName, "routing");
 
     localFile.SyncWithDisk();
     TEST(localFile.OnDisk(MapOptions::Map), ());
@@ -145,15 +149,16 @@ UNIT_TEST(LocalCountryFile_DiskFilesSingleMwm)
   // so there is no separate routing file at all.
   countryFile.SetRemoteSizes(15 /* mapSize */, 0 /* routingSize. */);
 
-  size_t const singleMwmVersion = 160707;
+  size_t const singleMwmVersion = version::FOR_TESTING_SINGLE_MWM1;
   LocalCountryFile localFile(platform.WritableDir(), countryFile, singleMwmVersion);
   TEST(!localFile.OnDisk(MapOptions::Map), ());
   TEST(!localFile.OnDisk(MapOptions::CarRouting), ());
   TEST(!localFile.OnDisk(MapOptions::MapWithCarRouting), ());
 
   // Size of file with word map is 3 bytes.
-  ScopedFile testMapFile(GetNameWithTwoComponentsExt(countryFile.GetName(), MapOptions::Map),
-                         "Signle mwm map");
+  string const mapFileName = GetFileName(countryFile.GetName(), MapOptions::Map,
+                                         version::FOR_TESTING_TWO_COMPONENT_MWM1);
+  ScopedFile testMapFile(mapFileName, "Single mwm map");
 
   localFile.SyncWithDisk();
   TEST(localFile.OnDisk(MapOptions::Map), ());
