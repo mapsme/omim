@@ -16,13 +16,8 @@ public:
   CountryFile();
   explicit CountryFile(string const & name);
 
-  string const & GetNameWithoutExt() const;
-  /// \returns file name (m_name) with .mwm extension.
-  string GetNameWitOneComponentExt() const;
-  /// \returns file name (m_name) with extension dependent on the file param.
-  /// The extension could be .mwm.routing or just .mwm.
-  /// The method is used for old (two components) mwm support.
-  string GetNameWithTwoComponentsExt(MapOptions file) const;
+  /// \returns file name without extensions.
+  string const & GetName() const;
 
   /// \note Remote size is size of mwm in bytes. This mwm contains routing and map sections.
   void SetRemoteSizes(uint32_t mapSize, uint32_t routingSize);
@@ -40,6 +35,13 @@ private:
   uint32_t m_mapSize;
   uint32_t m_routingSize;
 };
+
+/// \returns file name (m_name) with .mwm extension.
+string GetNameWithOneComponentExt(string const & nameWithoutExt);
+/// \returns file name (m_name) with extension dependent on the file param.
+/// The extension could be .mwm.routing or just .mwm.
+/// The method is used for old (two components) mwm support.
+string GetNameWithTwoComponentsExt(string const & nameWithoutExt, MapOptions file);
 
 string DebugPrint(CountryFile const & file);
 }  // namespace platform
