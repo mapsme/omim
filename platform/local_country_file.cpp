@@ -64,8 +64,8 @@ void LocalCountryFile::DeleteFromDisk(MapOptions files) const
 string LocalCountryFile::GetPath(MapOptions file) const
 {
   string const countryFilePath =
-      version::IsSingleMwm(GetVersion()) ? m_countryFile.GetNameWitOneComponentExt()
-                                         : m_countryFile.GetNameWithTwoComponentsExt(file);
+      version::IsSingleMwm(GetVersion()) ? GetNameWithOneComponentExt(m_countryFile.GetName())
+                                         : GetNameWithTwoComponentsExt(m_countryFile.GetName(), file);
   return my::JoinFoldersToPath(m_directory, countryFilePath);
 }
 
