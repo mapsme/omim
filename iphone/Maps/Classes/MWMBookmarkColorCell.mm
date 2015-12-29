@@ -1,7 +1,5 @@
 #import "MWMBookmarkColorCell.h"
 
-extern NSArray * const kBookmarkColorsVariant;
-
 @interface MWMBookmarkColorCell ()
 
 @property (copy, nonatomic) NSString * currentImageName;
