@@ -14,11 +14,13 @@ import java.io.File;
 import com.google.gson.Gson;
 import com.mapswithme.country.ActiveCountryTree;
 import com.mapswithme.country.CountryItem;
+import com.mapswithme.maps.background.AppBackgroundTracker;
 import com.mapswithme.maps.background.Notifier;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 import com.mapswithme.maps.sound.TtsPlayer;
 import com.mapswithme.util.Config;
 import com.mapswithme.util.Constants;
+import com.mapswithme.util.ThemeSwitcher;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.Yota;
 import com.mapswithme.util.statistics.AlohaHelper;
@@ -39,13 +41,14 @@ public class MwmApplication extends Application
 
   private static MwmApplication sSelf;
   private static SharedPreferences sPrefs;
+  private AppBackgroundTracker mBackgroundTracker;
   private final Gson mGson = new Gson();
 
   private boolean mAreCountersInitialized;
   private boolean mIsFrameworkInitialized;
 
   private Handler mMainLoopHandler;
-  private Object mMainQueueToken = new Object();
+  private final Object mMainQueueToken = new Object();
 
   public MwmApplication()
   {
@@ -61,6 +64,11 @@ public class MwmApplication extends Application
   public static Gson gson()
   {
     return sSelf.mGson;
+  }
+
+  public static AppBackgroundTracker backgroundTracker()
+  {
+    return sSelf.mBackgroundTracker;
   }
 
   public static SharedPreferences prefs()
@@ -106,6 +114,7 @@ public class MwmApplication extends Application
                        Yota.isFirstYota(), UiUtils.isTablet());
     initParse();
     sPrefs = getSharedPreferences(getString(R.string.pref_file_name), MODE_PRIVATE);
+    mBackgroundTracker = new AppBackgroundTracker();
   }
 
   public void initNativeCore()
@@ -118,6 +127,7 @@ public class MwmApplication extends Application
     initNativeStrings();
     BookmarkManager.getIcons(); // init BookmarkManager (automatically loads bookmarks)
     TtsPlayer.INSTANCE.init(this);
+    ThemeSwitcher.restart();
     mIsFrameworkInitialized = true;
   }
 
