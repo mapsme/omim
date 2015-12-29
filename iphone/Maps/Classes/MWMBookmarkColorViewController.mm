@@ -5,7 +5,16 @@
 #import "Statistics.h"
 #import "UIViewController+navigation.h"
 
-extern NSArray * const kBookmarkColorsVariant;
+static NSArray * const kBookmarkColorsVariant = @[
+  @"placemark-red",
+  @"placemark-yellow",
+  @"placemark-blue",
+  @"placemark-green",
+  @"placemark-purple",
+  @"placemark-orange",
+  @"placemark-brown",
+  @"placemark-pink"
+];
 
 static NSString * const kBookmarkColorCellIdentifier = @"MWMBookmarkColorCell";
 
