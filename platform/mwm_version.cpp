@@ -76,10 +76,7 @@ uint32_t ReadVersionTimestamp(ModelReaderPtr const & reader)
 
 bool IsSingleMwm(int64_t version)
 {
-  // kMinSingleMwmVersion is a barrier mwm version.
-  // All an mwm version less then kMinSingleMwmVersion the mwm is considered as:
-  // * an mwm of small mwm coverage
-  // * a single mwm which contains mwm and routing information
+  // @TODO(bykoianko) Check this version and move if necessary before small mwm release.
   int64_t constexpr kMinSingleMwmVersion = 151218;
   return version >= kMinSingleMwmVersion;
 }
