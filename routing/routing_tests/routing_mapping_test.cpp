@@ -26,8 +26,9 @@ class LocalFileGenerator
 public:
   LocalFileGenerator(string const & fileName)
       : m_countryFile(fileName),
-        m_testMapFile(m_countryFile.GetNameWithTwoComponentsExt(MapOptions::Map), "map"),
-        m_testRoutingFile(m_countryFile.GetNameWithTwoComponentsExt(MapOptions::CarRouting), "routing"),
+        m_testMapFile(platform::GetNameWithTwoComponentsExt(m_countryFile.GetName(), MapOptions::Map), "map"),
+        m_testRoutingFile(platform::GetNameWithTwoComponentsExt(m_countryFile.GetName(), MapOptions::CarRouting),
+                          "routing"),
         m_localFile(GetPlatform().WritableDir(), m_countryFile, 0 /* version */)
   {
     m_localFile.SyncWithDisk();
@@ -41,7 +42,7 @@ public:
 
   TestMwmSet & GetMwmSet() { return m_testSet; }
 
-  string const & GetCountryName() { return m_countryFile.GetNameWithoutExt(); }
+  string const & GetCountryName() { return m_countryFile.GetName(); }
 
   size_t GetNumRefs() { return m_result.first.GetInfo()->GetNumRefs(); }
 

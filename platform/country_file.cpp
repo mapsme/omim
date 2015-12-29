@@ -12,23 +12,7 @@ CountryFile::CountryFile() : m_mapSize(0), m_routingSize(0) {}
 
 CountryFile::CountryFile(string const & name) : m_name(name), m_mapSize(0), m_routingSize(0) {}
 
-string const & CountryFile::GetNameWithoutExt() const { return m_name; }
-
-string CountryFile::GetNameWitOneComponentExt() const { return m_name + DATA_FILE_EXTENSION; }
-
-string CountryFile::GetNameWithTwoComponentsExt(MapOptions file) const
-{
-  switch (file)
-  {
-    case MapOptions::Map:
-      return m_name + DATA_FILE_EXTENSION;
-    case MapOptions::CarRouting:
-      return m_name + DATA_FILE_EXTENSION + ROUTING_FILE_EXTENSION;
-    default:
-      ASSERT(false, ("Can't get name for:", file));
-      return string();
-  }
-}
+string const & CountryFile::GetName() const { return m_name; }
 
 void CountryFile::SetRemoteSizes(uint32_t mapSize, uint32_t routingSize)
 {
@@ -38,16 +22,31 @@ void CountryFile::SetRemoteSizes(uint32_t mapSize, uint32_t routingSize)
 
 uint32_t CountryFile::GetRemoteSize(MapOptions filesMask) const
 {
-//  return m_mapSize;
-//  if (version::IsSingleMwm(version))
-//    return m_mapSize;
-
   uint32_t size = 0;
   if (HasOptions(filesMask, MapOptions::Map))
     size += m_mapSize;
   if (HasOptions(filesMask, MapOptions::CarRouting))
     size += m_routingSize;
   return size;
+}
+
+string GetNameWithOneComponentExt(string const & nameWithoutExt)
+{
+  return nameWithoutExt + DATA_FILE_EXTENSION;
+}
+
+string GetNameWithTwoComponentsExt(string const & nameWithoutExt, MapOptions file)
+{
+  switch (file)
+  {
+    case MapOptions::Map:
+      return nameWithoutExt + DATA_FILE_EXTENSION;
+    case MapOptions::CarRouting:
+      return nameWithoutExt + DATA_FILE_EXTENSION + ROUTING_FILE_EXTENSION;
+    default:
+      ASSERT(false, ("Can't get name for:", file));
+      return string();
+  }
 }
 
 string DebugPrint(CountryFile const & file)
