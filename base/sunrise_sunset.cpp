@@ -1,6 +1,7 @@
 #include "base/sunrise_sunset.hpp"
 
 #include "base/assert.hpp"
+#include "base/exception.hpp"
 #include "base/math.hpp"
 #include "base/timer.hpp"
 #include "base/timegm.hpp"
@@ -26,18 +27,11 @@ inline double NormalizeAngle(double a)
   return res;
 }
 
-inline double NormalizeHour(double h)
-{
-  double res = fmod(h, 24.);
-  if (res < 0)
-    res += 24.;
-  return res;
-}
-
 inline int DaysOfMonth(int year, int month)
 {
   ASSERT_GREATER_OR_EQUAL(month, 1, ());
   ASSERT_LESS_OR_EQUAL(month, 12, ());
+
   int const february = base::IsLeapYear(year) ? 29 : 28;
   int const daysPerMonth[12] = { 31, february, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
   return daysPerMonth[month - 1];
@@ -54,10 +48,10 @@ enum class DayEventType
 // Main work-horse function which calculates sunrise/sunset in a specified date in a specified location.
 // This function was taken from source http://williams.best.vwh.net/sunrise_sunset_algorithm.htm.
 // Notation is kept to have source close to source.
-DayEventType CalculateDayEventTime(int year, int month, int day,
-                                   double latitude, double longitude,
-                                   bool sunrise,
-                                   int & hour, int & minute, int & second)
+// Original article is // http://babel.hathitrust.org/cgi/pt?id=uiug.30112059294311;view=1up;seq=25
+pair<DayEventType, time_t> CalculateDayEventTime(int year, int month, int day,
+                                                 double latitude, double longitude,
+                                                 bool sunrise)
 {
   // 1. first calculate the day of the year
 
@@ -115,10 +109,12 @@ DayEventType CalculateDayEventTime(int year, int month, int day,
   // if cosH < -1 then sun is never sets on this location on specified date (polar day)
   if (cosH < -1 || cosH > 1)
   {
-    hour = sunrise ? 0 : 23;
-    minute = sunrise ? 0 : 59;
-    second = sunrise ? 0 : 59;
-    return (cosH < -1) ? DayEventType::PolarDay : DayEventType::PolarNight;
+    int const h = sunrise ? 0 : 23;
+    int const m = sunrise ? 0 : 59;
+    int const s = sunrise ? 0 : 59;
+
+    return make_pair((cosH < -1) ? DayEventType::PolarDay : DayEventType::PolarNight,
+                     base::TimeGM(year, month, day, h, m, s));
   }
 
   // 7b. finish calculating H and convert into hours
@@ -135,30 +131,34 @@ DayEventType CalculateDayEventTime(int year, int month, int day,
 
   double T = H + RA - (0.06571 * t) - 6.622;
 
+  if (T > 24.)
+    T = fmod(T, 24.);
+  else if (T < 0)
+    T += 24.;
+
   // 9. adjust back to UTC
 
   double UT = T - lngHour;
-  // NOTE: UT potentially needs to be adjusted into the range [0,24) by adding/subtracting 24
-  UT = NormalizeHour(UT);
+
+  if (UT > 24.)
+  {
+    NextDay(year, month, day);
+    UT = fmod(UT, 24.0);
+  }
+  else if (UT < 0)
+  {
+    PrevDay(year, month, day);
+    UT += 24.;
+  }
 
   // UT - is a hour with fractional part of date year/month/day, in range of [0;24)
 
-  hour = floor(UT); // [0;24)
-  minute = floor((UT - hour) * 60); // [0;60)
-  second = fmod(floor(UT * 60 * 60) /* number of seconds from 0:0 to UT */, 60); // [0;60)
+  int const h = floor(UT); // [0;24)
+  int const m = floor((UT - h) * 60); // [0;60)
+  int const s = fmod(floor(UT * 60 * 60) /* number of seconds from 0:0 to UT */, 60); // [0;60)
 
-  return sunrise ? DayEventType::Sunrise : DayEventType::Sunset;
-}
-
-DayEventType CalculateDayEventTime(int year, int month, int day,
-                                   double latitude, double longitude,
-                                   bool sunrise,
-                                   time_t & timestampUtc)
-{
-  int h, m, s;
-  DayEventType const res = CalculateDayEventTime(year, month, day, latitude, longitude, sunrise, h, m, s);
-  timestampUtc = base::TimeGM(year, month, day, h, m, s);
-  return res;
+  return make_pair(sunrise ? DayEventType::Sunrise : DayEventType::Sunset,
+                   base::TimeGM(year, month, day, h, m, s));
 }
 
 } // namespace
@@ -217,124 +217,77 @@ pair<time_t, time_t> CalculateSunriseSunsetTime(int year, int month, int day,
   ASSERT_GREATER_OR_EQUAL(day, 1, ());
   ASSERT_LESS_OR_EQUAL(day, DaysOfMonth(year, month), ());
 
-  time_t sunriseUtc, sunsetUtc;
-  DayEventType const sunriseRes = CalculateDayEventTime(year, month, day, latitude, longitude, true /* sunrise */, sunriseUtc);
-  DayEventType const sunsetRes = CalculateDayEventTime(year, month, day, latitude, longitude, false /* sunrise */, sunsetUtc);
+  auto sunrise = CalculateDayEventTime(year, month, day, latitude, longitude, true /* sunrise */);
+  auto sunset = CalculateDayEventTime(year, month, day, latitude, longitude, false /* sunrise */);
 
   // Edge cases: polar day and polar night
-  if (sunriseRes == DayEventType::PolarDay || sunsetRes == DayEventType::PolarDay)
+  if (sunrise.first == DayEventType::PolarDay || sunset.first == DayEventType::PolarDay)
   {
     // Polar day: 24 hours of sun
-    sunriseUtc = base::TimeGM(year, month, day, 0, 0, 0);
-    sunsetUtc = sunriseUtc + kOneDaySeconds;
+    time_t sunriseUtc = base::TimeGM(year, month, day, 0, 0, 0);
+    time_t sunsetUtc = sunriseUtc + kOneDaySeconds;
     return make_pair(sunriseUtc, sunsetUtc);
   }
-  else if (sunriseRes == DayEventType::PolarNight || sunsetRes == DayEventType::PolarNight)
+  else if (sunrise.first == DayEventType::PolarNight || sunset.first == DayEventType::PolarNight)
   {
     // Polar night: 0 seconds of sun
-    sunriseUtc = sunsetUtc = base::TimeGM(year, month, day, 0, 0, 0);
+    time_t sunriseUtc = base::TimeGM(year, month, day, 0, 0, 0);
+    time_t sunsetUtc = base::TimeGM(year, month, day, 0, 0, 0);
     return make_pair(sunriseUtc, sunsetUtc);
   }
 
-  if (sunsetUtc < sunriseUtc)
-  {
-    // Process line of date changing.
-    // Local date fits to two utc dates (current utc date and previous utc date).
-
-    if (longitude > 0)
-    {
-      PrevDay(year, month, day);
-      CalculateDayEventTime(year, month, day, latitude, longitude, true /* sunrise */, sunriseUtc);
-    }
-    else if (longitude < 0)
-    {
-      NextDay(year, month, day);
-      CalculateDayEventTime(year, month, day, latitude, longitude, false /* sunrise */, sunsetUtc);
-    }
-  }
-
-  ASSERT_LESS(sunriseUtc, sunsetUtc, ());
-  return make_pair(sunriseUtc, sunsetUtc);
+  ASSERT_LESS(sunrise.second, sunset.second, ());
+  return make_pair(sunrise.second, sunset.second);
 }
 
-pair<time_t, time_t> CalculateSunriseSunsetTime(time_t timeUtc, double latitude, double longitude)
+DayTimeType GetDayTime(time_t timeUtc, double latitude, double longitude)
 {
   tm const * const t = gmtime(&timeUtc);
   if (nullptr == t)
   {
     LOG(LDEBUG, ("gmtime failed for time", timeUtc));
-    return make_pair(my::INVALID_TIME_STAMP, my::INVALID_TIME_STAMP);
+    MYTHROW(RootException, ("gmtime failed for time", timeUtc));
   }
 
   int year = t->tm_year + 1900;
-  int mon = t->tm_mon + 1;
+  int month = t->tm_mon + 1;
   int day = t->tm_mday;
 
-  auto sunriseSunsetUtc = CalculateSunriseSunsetTime(year, mon, day, latitude, longitude);
-
-  if (sunriseSunsetUtc.second < timeUtc)
-  {
-    // (sunrise) (sunset) <time> [sunrise] [sunset] ---> time axis
-    // result here is [sunrise][sunset]
-    NextDay(year, mon, day);
-    sunriseSunsetUtc = CalculateSunriseSunsetTime(year, mon, day, latitude, longitude);
-  }
-  else if (timeUtc < sunriseSunsetUtc.first)
-  {
-    // <time> (sunrise) (sunset) ---> time axis
-    // but on the change date line it can be:
-    //  [sunrise] <time> [sunset] (sunrise) (sunset) ---> time axis
-    // then result is [sunrise][sunset]
-    // or in regular case:
-    //  [sunrise] [sunset] <time> (sunrise) (sunset) ---> time axis
-    // then result is (sunrise)(sunset)
-    PrevDay(year, mon, day);
-    auto prevSunriseSunsetUtc = CalculateSunriseSunsetTime(year, mon, day, latitude, longitude);
-    if (timeUtc < prevSunriseSunsetUtc.second)
-      sunriseSunsetUtc = prevSunriseSunsetUtc;
-  }
-
-  return sunriseSunsetUtc;
-}
-
-pair<DayTimeType, time_t>  GetDayTime(time_t timeUtc, double latitude, double longitude)
-{
-  auto const sunriseSunsetUtc = CalculateSunriseSunsetTime(timeUtc, latitude, longitude);
-
-  if (sunriseSunsetUtc.first == my::INVALID_TIME_STAMP ||
-      sunriseSunsetUtc.second == my::INVALID_TIME_STAMP)
-  {
-    return make_pair(DayTimeType::DayTime, my::INVALID_TIME_STAMP);
-  }
-
-  // CalculateSunriseSunsetTime returns only 2 possible cases:
-  // <time> (sunrise) (sunset) ---> time axis
-  // (sunrise) <time> (sunset) ---> time axis
-  // it never returns sunrise and sunset before time
+  auto sunrise = CalculateDayEventTime(year, month, day, latitude, longitude, true /* sunrise */);
+  auto sunset = CalculateDayEventTime(year, month, day, latitude, longitude, false /* sunrise */);
 
   // Edge cases: polar day and polar night
-  if (sunriseSunsetUtc.first == sunriseSunsetUtc.second)
+  if (sunrise.first == DayEventType::PolarDay || sunset.first == DayEventType::PolarDay)
+    return DayTimeType::PolarDayTime;
+  else if (sunrise.first == DayEventType::PolarNight || sunset.first == DayEventType::PolarNight)
+    return DayTimeType::PolarNightTime;
+
+  if (timeUtc < sunrise.second)
   {
-    // Polar night: 0 seconds of sun
-    return make_pair(DayTimeType::PolarNight, timeUtc + kOneDaySeconds);
+    PrevDay(year, month, day);
+    auto prevSunrise = CalculateDayEventTime(year, month, day, latitude, longitude, true /* sunrise */);
+    auto prevSunset = CalculateDayEventTime(year, month, day, latitude, longitude, false /* sunrise */);
+
+    if (timeUtc >= prevSunset.second)
+      return DayTimeType::NightTime;
+    if (timeUtc < prevSunrise.second)
+      return DayTimeType::NightTime;
+    return DayTimeType::DayTime;
   }
-  else if (sunriseSunsetUtc.second == (sunriseSunsetUtc.first + kOneDaySeconds))
+  else if (timeUtc > sunset.second)
   {
-    // Polar day: 24 hours of sun
-    return make_pair(DayTimeType::PolarDay, timeUtc + kOneDaySeconds);
+    NextDay(year, month, day);
+    auto nextSunrise = CalculateDayEventTime(year, month, day, latitude, longitude, true /* sunrise */);
+    auto nextSunset = CalculateDayEventTime(year, month, day, latitude, longitude, false /* sunrise */);
+
+    if (timeUtc < nextSunrise.second)
+      return DayTimeType::NightTime;
+    if (timeUtc > nextSunset.second)
+      return DayTimeType::NightTime;
+    return DayTimeType::DayTime;
   }
 
-  if (timeUtc < sunriseSunsetUtc.first)
-  {
-    // (time) (sunrise) (sunset) ---> time axis
-    return make_pair(DayTimeType::NightTime, sunriseSunsetUtc.first);
-  }
-  else
-  {
-    // (sunrise) (time) (sunset) ---> time axis
-    ASSERT(timeUtc <= sunriseSunsetUtc.second, ());
-    return make_pair(DayTimeType::DayTime, sunriseSunsetUtc.second);
-  }
+  return DayTimeType::DayTime;
 }
 
 string DebugPrint(DayTimeType type)
@@ -343,8 +296,8 @@ string DebugPrint(DayTimeType type)
   {
   case DayTimeType::DayTime: return "DayTime";
   case DayTimeType::NightTime: return "NightTime";
-  case DayTimeType::PolarDay: return "PolarDay";
-  case DayTimeType::PolarNight: return "PolarNight";
+  case DayTimeType::PolarDayTime: return "PolarDayTime";
+  case DayTimeType::PolarNightTime: return "PolarNightTime";
   }
   return string();
 }

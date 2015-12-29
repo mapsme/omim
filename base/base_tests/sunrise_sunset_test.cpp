@@ -83,7 +83,7 @@ UNIT_TEST(SunriseSunsetAlgorithm_Moscow_December)
   TEST(TimesEqual(sunriseSunset.second, base::TimeGM(2015, 12, 25, 13, 1, 0)), ());
 }
 
-UNIT_TEST(SunriseSunsetAlgorithm_Moscow_NewYear_1)
+UNIT_TEST(SunriseSunsetAlgorithm_Moscow_NewYear)
 {
   // Moscow (utc +3), date 2016/1/1:
   // Sunrise utc time: 2016/1/1,6:1
@@ -92,19 +92,6 @@ UNIT_TEST(SunriseSunsetAlgorithm_Moscow_NewYear_1)
   double const lon = 37.6155556;
 
   pair<time_t, time_t> sunriseSunset = CalculateSunriseSunsetTime(2016, 1, 1, lat, lon);
-  TEST(TimesEqual(sunriseSunset.first, base::TimeGM(2016, 1, 1, 6, 1, 0)), ());
-  TEST(TimesEqual(sunriseSunset.second, base::TimeGM(2016, 1, 1, 13, 7, 0)), ());
-}
-
-UNIT_TEST(SunriseSunsetAlgorithm_Moscow_NewYear_2)
-{
-  // Moscow (utc +3), local time 2016/1/1,2:0, utc time 2015/12/31,23:0
-  // Sunrise utc time: 2016/1/1,6:1
-  // Sunset utc time: 2016/1/1,13:7
-  double const lat = 55.7522222;
-  double const lon = 37.6155556;
-
-  pair<time_t, time_t> sunriseSunset = CalculateSunriseSunsetTime(base::TimeGM(2015, 12, 31, 23, 0, 0), lat, lon);
   TEST(TimesEqual(sunriseSunset.first, base::TimeGM(2016, 1, 1, 6, 1, 0)), ());
   TEST(TimesEqual(sunriseSunset.second, base::TimeGM(2016, 1, 1, 13, 7, 0)), ());
 }
@@ -120,19 +107,16 @@ UNIT_TEST(SunriseSunsetAlgorithm_GetDayTime_Moscow_December)
   double const lon = 37.6155556;
 
   // before sunrise but after prev sunset
-  pair<DayTimeType, time_t> dayTime = GetDayTime(base::TimeGM(2015, 12, 23, 17, 0, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::NightTime, ());
-  TEST(TimesEqual(dayTime.second, base::TimeGM(2015, 12, 24, 6, 0, 0)), ());
+  DayTimeType dayTime = GetDayTime(base::TimeGM(2015, 12, 23, 17, 0, 0), lat, lon);
+  TEST_EQUAL(dayTime, DayTimeType::NightTime, ());
 
   // between sunrise and sunset
   dayTime = GetDayTime(base::TimeGM(2015, 12, 24, 10, 53, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::DayTime, ());
-  TEST(TimesEqual(dayTime.second, base::TimeGM(2015, 12, 24, 13, 0, 0)), ());
+  TEST_EQUAL(dayTime, DayTimeType::DayTime, ());
 
   // after sunset and before next sunrise
   dayTime = GetDayTime(base::TimeGM(2015, 12, 24, 16, 30, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::NightTime, ());
-  TEST(TimesEqual(dayTime.second, base::TimeGM(2015, 12, 25, 6, 0, 0)), ());
+  TEST_EQUAL(dayTime, DayTimeType::NightTime, ());
 }
 
 UNIT_TEST(SunriseSunsetAlgorithm_Paris_NewYear)
@@ -143,7 +127,7 @@ UNIT_TEST(SunriseSunsetAlgorithm_Paris_NewYear)
   double const lat = 48.875649;
   double const lon = 2.344428;
 
-  pair<time_t, time_t> sunriseSunset = CalculateSunriseSunsetTime(base::TimeGM(2015, 12, 31, 23, 30, 0), lat, lon);
+  pair<time_t, time_t> sunriseSunset = CalculateSunriseSunsetTime(2016, 1, 1, lat, lon);
   TEST(TimesEqual(sunriseSunset.first, base::TimeGM(2016, 1, 1, 7, 45, 0)), ());
   TEST(TimesEqual(sunriseSunset.second, base::TimeGM(2016, 1, 1, 16, 4, 0)), ());
 }
@@ -160,20 +144,17 @@ UNIT_TEST(SunriseSunsetAlgorithm_Honolulu_February)
   TEST(TimesEqual(sunriseSunset.first, base::TimeGM(2015, 2, 12, 17, 5, 0)), ());
   TEST(TimesEqual(sunriseSunset.second, base::TimeGM(2015, 2, 13, 4, 29, 0)), ());
 
-  auto dayTime = GetDayTime(base::TimeGM(2015, 2, 12, 15, 15, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::NightTime, ());
-  TEST_EQUAL(dayTime.second, sunriseSunset.first, ());
+  DayTimeType dayTime = GetDayTime(base::TimeGM(2015, 2, 12, 15, 15, 0), lat, lon);
+  TEST_EQUAL(dayTime, DayTimeType::NightTime, ());
 
   dayTime = GetDayTime(base::TimeGM(2015, 2, 12, 17, 10, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::DayTime, ());
-  TEST_EQUAL(dayTime.second, sunriseSunset.second, ());
+  TEST_EQUAL(dayTime, DayTimeType::DayTime, ());
 
   dayTime = GetDayTime(base::TimeGM(2015, 2, 13, 2, 30, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::DayTime, ());
-  TEST_EQUAL(dayTime.second, sunriseSunset.second, ());
+  TEST_EQUAL(dayTime, DayTimeType::DayTime, ());
 
   dayTime = GetDayTime(base::TimeGM(2015, 2, 13, 5, 0, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::NightTime, ());
+  TEST_EQUAL(dayTime, DayTimeType::NightTime, ());
 }
 
 UNIT_TEST(SunriseSunsetAlgorithm_Honolulu_July)
@@ -198,22 +179,6 @@ UNIT_TEST(SunriseSunsetAlgorithm_Honolulu_June)
   double const lon = -157.848568;
 
   pair<time_t, time_t> sunriseSunset = CalculateSunriseSunsetTime(2015, 6, 22, lat, lon);
-  TEST(TimesEqual(sunriseSunset.first, base::TimeGM(2015, 6, 22, 15, 51, 0)), ());
-  TEST(TimesEqual(sunriseSunset.second, base::TimeGM(2015, 6, 23, 5, 17, 0)), ());
-
-  sunriseSunset = CalculateSunriseSunsetTime(base::TimeGM(2015, 6, 22, 15, 0, 0), lat, lon);
-  TEST(TimesEqual(sunriseSunset.first, base::TimeGM(2015, 6, 22, 15, 51, 0)), ());
-  TEST(TimesEqual(sunriseSunset.second, base::TimeGM(2015, 6, 23, 5, 17, 0)), ());
-
-  sunriseSunset = CalculateSunriseSunsetTime(base::TimeGM(2015, 6, 22, 19, 0, 0), lat, lon);
-  TEST(TimesEqual(sunriseSunset.first, base::TimeGM(2015, 6, 22, 15, 51, 0)), ());
-  TEST(TimesEqual(sunriseSunset.second, base::TimeGM(2015, 6, 23, 5, 17, 0)), ());
-
-  sunriseSunset = CalculateSunriseSunsetTime(base::TimeGM(2015, 6, 23, 1, 0, 0), lat, lon);
-  TEST(TimesEqual(sunriseSunset.first, base::TimeGM(2015, 6, 22, 15, 51, 0)), ());
-  TEST(TimesEqual(sunriseSunset.second, base::TimeGM(2015, 6, 23, 5, 17, 0)), ());
-
-  sunriseSunset = CalculateSunriseSunsetTime(base::TimeGM(2015, 6, 23, 5, 10, 0), lat, lon);
   TEST(TimesEqual(sunriseSunset.first, base::TimeGM(2015, 6, 22, 15, 51, 0)), ());
   TEST(TimesEqual(sunriseSunset.second, base::TimeGM(2015, 6, 23, 5, 17, 0)), ());
 }
@@ -268,19 +233,16 @@ UNIT_TEST(SunriseSunsetAlgorithm_GetDayTime_Melbourne_August)
   double const lon = 144.957976;
 
   // before sunrise but after prev sunset
-  pair<DayTimeType, time_t> dayTime = GetDayTime(base::TimeGM(2015, 8, 11, 15, 0, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::NightTime, ());
-  TEST(TimesEqual(dayTime.second, base::TimeGM(2015, 8, 11, 21, 10, 0)), ());
+  DayTimeType dayTime = GetDayTime(base::TimeGM(2015, 8, 11, 15, 0, 0), lat, lon);
+  TEST_EQUAL(dayTime, DayTimeType::NightTime, ());
 
   // between sunrise and sunset
   dayTime = GetDayTime(base::TimeGM(2015, 8, 11, 21, 20, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::DayTime, ());
-  TEST(TimesEqual(dayTime.second, base::TimeGM(2015, 8, 12, 7, 42, 0)), ());
+  TEST_EQUAL(dayTime, DayTimeType::DayTime, ());
 
   // after sunset but before next sunrise
   dayTime = GetDayTime(base::TimeGM(2015, 8, 12, 10, 0, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::NightTime, ());
-  TEST(TimesEqual(dayTime.second, base::TimeGM(2015, 8, 12, 21, 9, 0)), ());
+  TEST_EQUAL(dayTime, DayTimeType::NightTime, ());
 }
 
 UNIT_TEST(SunriseSunsetAlgorithm_Wellington_October)
@@ -308,16 +270,14 @@ UNIT_TEST(SunriseSunsetAlgorithm_BuenosAires_March)
   TEST(TimesEqual(sunriseSunset.first, base::TimeGM(2015, 3, 8, 9, 48, 0)), ());
   TEST(TimesEqual(sunriseSunset.second, base::TimeGM(2015, 3, 8, 22, 23, 0)), ());
 
-  auto dayTime = GetDayTime(base::TimeGM(2015, 3, 8, 9, 0, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::NightTime, ());
-  TEST_EQUAL(dayTime.second, sunriseSunset.first, ());
+  DayTimeType dayTime = GetDayTime(base::TimeGM(2015, 3, 8, 9, 0, 0), lat, lon);
+  TEST_EQUAL(dayTime, DayTimeType::NightTime, ());
 
   dayTime = GetDayTime(base::TimeGM(2015, 3, 8, 21, 0, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::DayTime, ());
-  TEST_EQUAL(dayTime.second, sunriseSunset.second, ());
+  TEST_EQUAL(dayTime, DayTimeType::DayTime, ());
 
   dayTime = GetDayTime(base::TimeGM(2015, 3, 8, 22, 55, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::NightTime, ());
+  TEST_EQUAL(dayTime, DayTimeType::NightTime, ());
 }
 
 UNIT_TEST(SunriseSunsetAlgorithm_Seattle_May)
@@ -409,8 +369,8 @@ UNIT_TEST(SunriseSunsetAlgorithm_Tiksi_July)
   TEST(TimesEqual(sunriseSunset.first, base::TimeGM(2015, 7, 1, 0, 0, 0)), ());
   TEST_EQUAL(sunriseSunset.second, (sunriseSunset.first + kOneDaySeconds), ());
 
-  auto dayTime = GetDayTime(base::TimeGM(2015, 7, 1, 0, 0, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::PolarDay, ());
+  DayTimeType dayTime = GetDayTime(base::TimeGM(2015, 7, 1, 0, 0, 0), lat, lon);
+  TEST_EQUAL(dayTime, DayTimeType::PolarDayTime, ());
 }
 
 UNIT_TEST(SunriseSunsetAlgorithm_Tiksi_December)
@@ -425,8 +385,8 @@ UNIT_TEST(SunriseSunsetAlgorithm_Tiksi_December)
   TEST(TimesEqual(sunriseSunset.second, base::TimeGM(2015, 12, 1, 0, 0, 0)), ());
   TEST_EQUAL(sunriseSunset.first, sunriseSunset.second, ());
 
-  pair<DayTimeType, time_t> dayTime = GetDayTime(base::TimeGM(2015, 12, 1, 0, 0, 0), lat, lon);
-  TEST_EQUAL(DayTimeType::PolarNight, dayTime.first, ());
+  DayTimeType dayTime = GetDayTime(base::TimeGM(2015, 12, 1, 0, 0, 0), lat, lon);
+  TEST_EQUAL(DayTimeType::PolarNightTime, dayTime, ());
 }
 
 UNIT_TEST(SunriseSunsetAlgorithm_Norilsk_NewYear)
@@ -440,8 +400,8 @@ UNIT_TEST(SunriseSunsetAlgorithm_Norilsk_NewYear)
   TEST(TimesEqual(sunriseSunset.first, base::TimeGM(2016, 1, 1, 0, 0, 0)), ());
   TEST_EQUAL(sunriseSunset.first, sunriseSunset.second, ());
 
-  auto dayTime = GetDayTime(base::TimeGM(2016, 1, 1, 0, 0, 0), lat, lon);
-  TEST_EQUAL(DayTimeType::PolarNight, dayTime.first, ());
+  DayTimeType dayTime = GetDayTime(base::TimeGM(2016, 1, 1, 0, 0, 0), lat, lon);
+  TEST_EQUAL(DayTimeType::PolarNightTime, dayTime, ());
 }
 
 UNIT_TEST(SunriseSunsetAlgorithm_Norilsk_August)
@@ -455,8 +415,8 @@ UNIT_TEST(SunriseSunsetAlgorithm_Norilsk_August)
   TEST(TimesEqual(sunriseSunset.first, base::TimeGM(2015, 6, 22, 0, 0, 0)), ());
   TEST_EQUAL(sunriseSunset.second, (sunriseSunset.first + kOneDaySeconds), ());
 
-  pair<DayTimeType, time_t> dayTime = GetDayTime(base::TimeGM(2015, 6, 22, 0, 0, 0), lat, lon);
-  TEST_EQUAL(DayTimeType::PolarDay, dayTime.first, ());
+  DayTimeType dayTime = GetDayTime(base::TimeGM(2015, 6, 22, 0, 0, 0), lat, lon);
+  TEST_EQUAL(DayTimeType::PolarDayTime, dayTime, ());
 }
 
 UNIT_TEST(SunriseSunsetAlgorithm_Tokio_September)
@@ -484,17 +444,17 @@ UNIT_TEST(SunriseSunsetAlgorithm_Kabul_March)
   TEST(TimesEqual(sunriseSunset.first, base::TimeGM(2015, 3, 20, 1, 29, 0)), ());
   TEST(TimesEqual(sunriseSunset.second, base::TimeGM(2015, 3, 20, 13, 35, 0)), ());
 
-  auto dayTime = GetDayTime(base::TimeGM(2015, 3, 20, 1, 15, 0), lat, lon);
-  TEST_EQUAL(DayTimeType::NightTime, dayTime.first, ());
+  DayTimeType dayTime = GetDayTime(base::TimeGM(2015, 3, 20, 1, 15, 0), lat, lon);
+  TEST_EQUAL(DayTimeType::NightTime, dayTime, ());
 
   dayTime = GetDayTime(base::TimeGM(2015, 3, 20, 1, 45, 0), lat, lon);
-  TEST_EQUAL(DayTimeType::DayTime, dayTime.first, ());
+  TEST_EQUAL(DayTimeType::DayTime, dayTime, ());
 
   dayTime = GetDayTime(base::TimeGM(2015, 3, 20, 13, 15, 0), lat, lon);
-  TEST_EQUAL(DayTimeType::DayTime, dayTime.first, ());
+  TEST_EQUAL(DayTimeType::DayTime, dayTime, ());
 
   dayTime = GetDayTime(base::TimeGM(2015, 3, 20, 13, 45, 0), lat, lon);
-  TEST_EQUAL(DayTimeType::NightTime, dayTime.first, ());
+  TEST_EQUAL(DayTimeType::NightTime, dayTime, ());
 }
 
 UNIT_TEST(SunriseSunsetAlgorithm_Areora_January)
@@ -509,27 +469,25 @@ UNIT_TEST(SunriseSunsetAlgorithm_Areora_January)
   TEST(TimesEqual(sunriseSunset.first, base::TimeGM(2016, 1, 1, 15, 57, 0)), ());
   TEST(TimesEqual(sunriseSunset.second, base::TimeGM(2016, 1, 2, 5, 16, 0)), ());
 
-  auto dayTime = GetDayTime(base::TimeGM(2016, 1, 1, 15, 15, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::NightTime, ());
-  TEST_EQUAL(dayTime.second, sunriseSunset.first, ());
+  DayTimeType dayTime = GetDayTime(base::TimeGM(2016, 1, 1, 15, 15, 0), lat, lon);
+  TEST_EQUAL(dayTime, DayTimeType::NightTime, ());
 
   dayTime = GetDayTime(base::TimeGM(2016, 1, 1, 16, 10, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::DayTime, ());
-  TEST_EQUAL(dayTime.second, sunriseSunset.second, ());
+  TEST_EQUAL(dayTime, DayTimeType::DayTime, ());
 
   dayTime = GetDayTime(base::TimeGM(2016, 1, 2, 3, 15, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::DayTime, ());
-  TEST_EQUAL(dayTime.second, sunriseSunset.second, ());
+  TEST_EQUAL(dayTime, DayTimeType::DayTime, ());
 
   dayTime = GetDayTime(base::TimeGM(2016, 1, 2, 5, 35, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::NightTime, ());
+  TEST_EQUAL(dayTime, DayTimeType::NightTime, ());
 }
 
 UNIT_TEST(SunriseSunsetAlgorithm_Lorino_February)
 {
-  // Lorino. For date 2016/2/2:
-  // Sunrise utc time: 2016/2/2,20:17
-  // Sunset utc time: 2016/2/3,03:10
+  // Lorino (utc +12). For date 2016/2/2:
+  // Sunrise utc time: 2016/2/2,20:17 <- google returns incorrect value, it must be 2016/2/1,20:17
+  // Sunset utc time: 2016/2/3,3:10 <- google returns incorrect value, it must be 2016/2/2,3:10
+  // We, probably use the same algorithm as the Google and we have got the same result.
   double const lat = 65.499550;
   double const lon = -171.715726;
 
@@ -537,20 +495,20 @@ UNIT_TEST(SunriseSunsetAlgorithm_Lorino_February)
   TEST(TimesEqual(sunriseSunset.first, base::TimeGM(2016, 2, 2, 20, 17, 0)), ());
   TEST(TimesEqual(sunriseSunset.second, base::TimeGM(2016, 2, 3, 3, 10, 0)), ());
 
-  auto dayTime = GetDayTime(base::TimeGM(2016, 2, 2, 19, 30, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::NightTime, ());
-  TEST_EQUAL(dayTime.second, sunriseSunset.first, ());
+  DayTimeType dayTime = GetDayTime(base::TimeGM(2016, 2, 2, 19, 30, 0), lat, lon);
+  TEST_EQUAL(dayTime, DayTimeType::NightTime, ());
 
   dayTime = GetDayTime(base::TimeGM(2016, 2, 2, 20, 30, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::DayTime, ());
-  TEST_EQUAL(dayTime.second, sunriseSunset.second, ());
+  TEST_EQUAL(dayTime, DayTimeType::DayTime, ());
 
   dayTime = GetDayTime(base::TimeGM(2016, 2, 3, 3, 0, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::DayTime, ());
-  TEST_EQUAL(dayTime.second, sunriseSunset.second, ());
+  TEST_EQUAL(dayTime, DayTimeType::DayTime, ());
 
   dayTime = GetDayTime(base::TimeGM(2016, 2, 3, 10, 0, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::NightTime, ());
+  TEST_EQUAL(dayTime, DayTimeType::NightTime, ());
+
+  dayTime = GetDayTime(base::TimeGM(2016, 2, 1, 19, 0, 0), lat, lon);
+  TEST_EQUAL(dayTime, DayTimeType::NightTime, ());
 }
 
 UNIT_TEST(SunriseSunsetAlgorithm_Anadyr_December)
@@ -565,20 +523,17 @@ UNIT_TEST(SunriseSunsetAlgorithm_Anadyr_December)
   TEST(TimesEqual(sunriseSunset.first, base::TimeGM(2015, 12, 24, 22, 17, 0)), ());
   TEST(TimesEqual(sunriseSunset.second, base::TimeGM(2015, 12, 25, 2, 3, 0)), ());
 
-  auto dayTime = GetDayTime(base::TimeGM(2015, 12, 24, 19, 0, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::NightTime, ());
-  TEST_EQUAL(dayTime.second, sunriseSunset.first, ());
+  DayTimeType dayTime = GetDayTime(base::TimeGM(2015, 12, 24, 19, 0, 0), lat, lon);
+  TEST_EQUAL(dayTime, DayTimeType::NightTime, ());
 
   dayTime = GetDayTime(base::TimeGM(2015, 12, 24, 22, 30, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::DayTime, ());
-  TEST_EQUAL(dayTime.second, sunriseSunset.second, ());
+  TEST_EQUAL(dayTime, DayTimeType::DayTime, ());
 
   dayTime = GetDayTime(base::TimeGM(2015, 12, 25, 1, 55, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::DayTime, ());
-  TEST_EQUAL(dayTime.second, sunriseSunset.second, ());
+  TEST_EQUAL(dayTime, DayTimeType::DayTime, ());
 
   dayTime = GetDayTime(base::TimeGM(2015, 12, 25, 2, 30, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::NightTime, ());
+  TEST_EQUAL(dayTime, DayTimeType::NightTime, ());
 }
 
 UNIT_TEST(SunriseSunsetAlgorithm_Nikolski_December)
@@ -593,20 +548,17 @@ UNIT_TEST(SunriseSunsetAlgorithm_Nikolski_December)
   TEST(TimesEqual(sunriseSunset.first, base::TimeGM(2015, 12, 25, 19, 29, 0)), ());
   TEST(TimesEqual(sunriseSunset.second, base::TimeGM(2015, 12, 26, 3, 4, 0)), ());
 
-  auto dayTime = GetDayTime(base::TimeGM(2015, 12, 25, 19, 0, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::NightTime, ());
-  TEST_EQUAL(dayTime.second, sunriseSunset.first, ());
+  DayTimeType dayTime = GetDayTime(base::TimeGM(2015, 12, 25, 19, 0, 0), lat, lon);
+  TEST_EQUAL(dayTime, DayTimeType::NightTime, ());
 
   dayTime = GetDayTime(base::TimeGM(2015, 12, 25, 19, 35, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::DayTime, ());
-  TEST_EQUAL(dayTime.second, sunriseSunset.second, ());
+  TEST_EQUAL(dayTime, DayTimeType::DayTime, ());
 
   dayTime = GetDayTime(base::TimeGM(2015, 12, 26, 3, 0, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::DayTime, ());
-  TEST_EQUAL(dayTime.second, sunriseSunset.second, ());
+  TEST_EQUAL(dayTime, DayTimeType::DayTime, ());
 
   dayTime = GetDayTime(base::TimeGM(2015, 12, 26, 3, 10, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::NightTime, ());
+  TEST_EQUAL(dayTime, DayTimeType::NightTime, ());
 }
 
 UNIT_TEST(SunriseSunsetAlgorithm_Kiribati_July)
@@ -621,20 +573,17 @@ UNIT_TEST(SunriseSunsetAlgorithm_Kiribati_July)
   TEST(TimesEqual(sunriseSunset.first, base::TimeGM(2015, 7, 1, 16, 28, 0)), ());
   TEST(TimesEqual(sunriseSunset.second, base::TimeGM(2015, 7, 2, 4, 41, 0)), ());
 
-  auto dayTime = GetDayTime(base::TimeGM(2015, 7, 1, 16, 10, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::NightTime, ());
-  TEST_EQUAL(dayTime.second, sunriseSunset.first, ());
+  DayTimeType dayTime = GetDayTime(base::TimeGM(2015, 7, 1, 16, 10, 0), lat, lon);
+  TEST_EQUAL(dayTime, DayTimeType::NightTime, ());
 
   dayTime = GetDayTime(base::TimeGM(2015, 7, 1, 16, 35, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::DayTime, ());
-  TEST_EQUAL(dayTime.second, sunriseSunset.second, ());
+  TEST_EQUAL(dayTime, DayTimeType::DayTime, ());
 
   dayTime = GetDayTime(base::TimeGM(2015, 7, 2, 4, 0, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::DayTime, ());
-  TEST_EQUAL(dayTime.second, sunriseSunset.second, ());
+  TEST_EQUAL(dayTime, DayTimeType::DayTime, ());
 
   dayTime = GetDayTime(base::TimeGM(2015, 7, 2, 4, 50, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::NightTime, ());
+  TEST_EQUAL(dayTime, DayTimeType::NightTime, ());
 }
 
 UNIT_TEST(SunriseSunsetAlgorithm_Kiribati_July_2)
@@ -647,23 +596,11 @@ UNIT_TEST(SunriseSunsetAlgorithm_Kiribati_July_2)
   double const lat = 1.928797;
   double const lon = -157.494678;
 
-  // before sunrise
-  pair<time_t, time_t> sunriseSunset = CalculateSunriseSunsetTime(base::TimeGM(2015, 7, 1, 16, 10, 0), lat, lon);
+  pair<time_t, time_t> sunriseSunset = CalculateSunriseSunsetTime(2015, 7, 1, lat, lon);
   TEST(TimesEqual(sunriseSunset.first, base::TimeGM(2015, 7, 1, 16, 28, 0)), ());
   TEST(TimesEqual(sunriseSunset.second, base::TimeGM(2015, 7, 2, 4, 41, 0)), ());
 
-  // between sunrise sunset
-  sunriseSunset = CalculateSunriseSunsetTime(base::TimeGM(2015, 7, 2, 3, 30, 0), lat, lon);
-  TEST(TimesEqual(sunriseSunset.first, base::TimeGM(2015, 7, 1, 16, 28, 0)), ());
-  TEST(TimesEqual(sunriseSunset.second, base::TimeGM(2015, 7, 2, 4, 41, 0)), ());
-
-  // afer sunset but before next sunrise
-  sunriseSunset = CalculateSunriseSunsetTime(base::TimeGM(2015, 7, 2, 7, 0, 0), lat, lon);
-  TEST(TimesEqual(sunriseSunset.first, base::TimeGM(2015, 7, 2, 16, 28, 0)), ());
-  TEST(TimesEqual(sunriseSunset.second, base::TimeGM(2015, 7, 3, 4, 42, 0)), ());
-
-  // afer sunset but before next sunrise
-  sunriseSunset = CalculateSunriseSunsetTime(base::TimeGM(2015, 7, 2, 16, 10, 0), lat, lon);
+  sunriseSunset = CalculateSunriseSunsetTime(2015, 7, 2, lat, lon);
   TEST(TimesEqual(sunriseSunset.first, base::TimeGM(2015, 7, 2, 16, 28, 0)), ());
   TEST(TimesEqual(sunriseSunset.second, base::TimeGM(2015, 7, 3, 4, 42, 0)), ());
 }
@@ -680,20 +617,17 @@ UNIT_TEST(SunriseSunsetAlgorithm_London_July)
   TEST(TimesEqual(sunriseSunset.first, base::TimeGM(2015, 7, 1, 3, 47, 0)), ());
   TEST(TimesEqual(sunriseSunset.second, base::TimeGM(2015, 7, 1, 20, 21, 0)), ());
 
-  auto dayTime = GetDayTime(base::TimeGM(2015, 7, 1, 2, 50, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::NightTime, ());
-  TEST_EQUAL(dayTime.second, sunriseSunset.first, ());
+  DayTimeType dayTime = GetDayTime(base::TimeGM(2015, 7, 1, 2, 50, 0), lat, lon);
+  TEST_EQUAL(dayTime, DayTimeType::NightTime, ());
 
   dayTime = GetDayTime(base::TimeGM(2015, 7, 1, 16, 20, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::DayTime, ());
-  TEST_EQUAL(dayTime.second, sunriseSunset.second, ());
+  TEST_EQUAL(dayTime, DayTimeType::DayTime, ());
 
   dayTime = GetDayTime(base::TimeGM(2015, 7, 1, 20, 10, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::DayTime, ());
-  TEST_EQUAL(dayTime.second, sunriseSunset.second, ());
+  TEST_EQUAL(dayTime, DayTimeType::DayTime, ());
 
   dayTime = GetDayTime(base::TimeGM(2015, 7, 1, 21, 15, 0), lat, lon);
-  TEST_EQUAL(dayTime.first, DayTimeType::NightTime, ());
+  TEST_EQUAL(dayTime, DayTimeType::NightTime, ());
 }
 
 UNIT_TEST(NextDay_Test)
