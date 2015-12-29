@@ -611,10 +611,8 @@ string Storage::GetFileDownloadUrl(string const & baseUrl, TIndex const & index,
 {
   CountryFile const & countryFile = GetCountryFile(index);
 
-  if (version::IsSingleMwm(GetCurrentDataVersion()))
-    return GetFileDownloadUrl(baseUrl, platform::GetNameWithOneComponentExt(countryFile.GetName()));
-  else
-    return GetFileDownloadUrl(baseUrl, platform::GetNameWithTwoComponentsExt(countryFile.GetName(), file));
+  string const fileName = GetFileName(countryFile.GetName(), file, GetCurrentDataVersion());
+  return GetFileDownloadUrl(baseUrl, fileName);
 }
 
 string Storage::GetFileDownloadUrl(string const & baseUrl, string const & fName) const

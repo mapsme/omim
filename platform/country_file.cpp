@@ -1,10 +1,31 @@
 #include "platform/country_file.hpp"
+#include "platform/mwm_version.hpp"
 
 #include "defines.hpp"
 
 #include "base/assert.hpp"
 
 #include "std/sstream.hpp"
+
+namespace
+{
+/// \returns file name (m_name) with extension dependent on the file param.
+/// The extension could be .mwm.routing or just .mwm.
+/// The method is used for old (two components) mwm support.
+string GetNameWithExt(string const & countryFile, MapOptions file)
+{
+  switch (file)
+  {
+    case MapOptions::Map:
+      return countryFile + DATA_FILE_EXTENSION;
+    case MapOptions::CarRouting:
+      return countryFile + DATA_FILE_EXTENSION + ROUTING_FILE_EXTENSION;
+    default:
+      ASSERT(false, ("Can't get name for:", file));
+      return string();
+  }
+}
+} //  namespace
 
 namespace platform
 {
@@ -30,23 +51,11 @@ uint32_t CountryFile::GetRemoteSize(MapOptions filesMask) const
   return size;
 }
 
-string GetNameWithOneComponentExt(string const & nameWithoutExt)
-{
-  return nameWithoutExt + DATA_FILE_EXTENSION;
-}
 
-string GetNameWithTwoComponentsExt(string const & nameWithoutExt, MapOptions file)
+string GetFileName(string const & countryFile, MapOptions opt, int64_t version)
 {
-  switch (file)
-  {
-    case MapOptions::Map:
-      return nameWithoutExt + DATA_FILE_EXTENSION;
-    case MapOptions::CarRouting:
-      return nameWithoutExt + DATA_FILE_EXTENSION + ROUTING_FILE_EXTENSION;
-    default:
-      ASSERT(false, ("Can't get name for:", file));
-      return string();
-  }
+  return version::IsSingleMwm(version) ? GetNameWithExt(countryFile, MapOptions::Map)
+                                       : GetNameWithExt(countryFile, opt);
 }
 
 string DebugPrint(CountryFile const & file)
