@@ -32,7 +32,7 @@ void LoadGroupImpl(int depth, json_t * group, ToDo & toDo, int64_t version)
       // @TODO(bykoianko) After we stop supporting two component mwms (with routing files)
       // rewrite toDo function to use id and mwmSize only once.
       // We expect that mwm and routing files should be less than 2GB.
-      toDo(id, id,  mwmSize, mwmSize, depth);
+      toDo(id, id,  mwmSize, 0 /* routingSize */, depth);
 
       json_t * children = json_object_get(j, "g");
       if (children)
@@ -152,7 +152,7 @@ public:
     }
   }
 };
-} //  namespace
+}  // namespace
 
 int64_t LoadCountries(string const & jsonBuffer, CountriesContainerT & countries)
 {

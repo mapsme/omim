@@ -26,9 +26,10 @@ class LocalFileGenerator
 public:
   LocalFileGenerator(string const & fileName)
       : m_countryFile(fileName),
-        m_testMapFile(platform::GetNameWithTwoComponentsExt(m_countryFile.GetName(), MapOptions::Map), "map"),
-        m_testRoutingFile(platform::GetNameWithTwoComponentsExt(m_countryFile.GetName(), MapOptions::CarRouting),
-                          "routing"),
+        m_testMapFile(platform::GetFileName(m_countryFile.GetName(), MapOptions::Map,
+                                            version::FOR_TESTING_TWO_COMPONENT_MWM1), "map"),
+        m_testRoutingFile(platform::GetFileName(m_countryFile.GetName(), MapOptions::CarRouting,
+                                                version::FOR_TESTING_TWO_COMPONENT_MWM1), "map"),
         m_localFile(GetPlatform().WritableDir(), m_countryFile, 0 /* version */)
   {
     m_localFile.SyncWithDisk();
