@@ -65,7 +65,7 @@ void TestMwmBuilder::Finish()
   feature::GenerateInfo info;
   info.m_targetDir = m_file.GetDirectory();
   info.m_tmpDir = m_file.GetDirectory();
-  CHECK(GenerateFinalFeatures(info, m_file.GetCountryFile().GetNameWithoutExt(),
+  CHECK(GenerateFinalFeatures(info, m_file.GetCountryFile().GetName(),
                               feature::DataHeader::country),
         ("Can't sort features."));
 

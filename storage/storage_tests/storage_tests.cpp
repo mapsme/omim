@@ -332,7 +332,7 @@ UNIT_TEST(StorageTest_Smoke)
   TIndex const georgiaIndex = storage.FindIndexByFile("Georgia");
   TEST(IsIndexValid(georgiaIndex), ());
   CountryFile usaGeorgiaFile = storage.GetCountryFile(georgiaIndex);
-  TEST_EQUAL(usaGeorgiaFile.GetNameWithTwoComponentsExt(MapOptions::Map),
+  TEST_EQUAL(platform::GetNameWithTwoComponentsExt(usaGeorgiaFile.GetName(), MapOptions::Map),
              "Georgia" DATA_FILE_EXTENSION, ());
 
   if (version::IsSingleMwm(storage.GetCurrentDataVersion()))
@@ -340,7 +340,7 @@ UNIT_TEST(StorageTest_Smoke)
 
   TEST(IsIndexValid(georgiaIndex), ());
   CountryFile georgiaFile = storage.GetCountryFile(georgiaIndex);
-  TEST_EQUAL(georgiaFile.GetNameWithTwoComponentsExt(MapOptions::CarRouting),
+  TEST_EQUAL(platform::GetNameWithTwoComponentsExt(georgiaFile.GetName(), MapOptions::CarRouting),
              "Georgia" DATA_FILE_EXTENSION ROUTING_FILE_EXTENSION, ());
 }
 
@@ -820,10 +820,7 @@ UNIT_TEST(StorageTest_EmptyRoutingFile)
 UNIT_TEST(StorageTest_ObsoleteMapsRemoval)
 {
   Storage storage;
-
-  string const mwmName = version::IsSingleMwm(storage.GetCurrentDataVersion()) ?
-      "Azerbaijan Region" : "Azerbaijan";
-  CountryFile country(mwmName);
+  CountryFile country("Azerbaijan Region");
 
   tests_support::ScopedDir dir1("1");
   tests_support::ScopedFile map1(dir1, country, MapOptions::Map, "map1");
