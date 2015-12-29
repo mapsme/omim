@@ -74,7 +74,7 @@ public:
   // with countryFileName (without any extensions). Automatically
   // performs sync with disk.
   static LocalCountryFile MakeForTesting(string const & countryFileName,
-                                         int64_t version = version::SingleMwm1);
+                                         int64_t version = version::FOR_TESTING_SINGLE_MWM1);
 
   /// @todo The easiest solution for now. Need to be removed in future.
   /// @param fullPath Full path to the mwm file.
@@ -98,7 +98,7 @@ private:
   uint64_t m_mapSize;
   /// Size of file which contains routing section in bytes.
   /// It's .mwm.routing file in case of big (two component) mwms.
-  /// And m_routingSize == m_mapSize for small (one compontent) mwms.
+  /// And m_routingSize == 0 for small (one compontent) mwms.
   uint64_t m_routingSize;
 };
 

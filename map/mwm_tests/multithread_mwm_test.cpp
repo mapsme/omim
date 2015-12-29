@@ -4,8 +4,6 @@
 
 #include "indexer/scales.hpp"
 
-#include "platform/mwm_version.hpp"
-
 #include "base/macros.hpp"
 #include "base/thread.hpp"
 

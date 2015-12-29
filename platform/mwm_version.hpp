@@ -51,10 +51,10 @@ bool IsSingleMwm(int64_t version);
 /// which should be processed as either single or two components (mwm and routing) mwms.
 enum ForTesting
 {
-  TwoComponentMwm1 = 10,
-  TwoComponentMwm2,
-  SingleMwm1 = 991215,
-  SingleMwm2,
-  SingleMwmLatest,
+  FOR_TESTING_TWO_COMPONENT_MWM1 = 10,
+  FOR_TESTING_TWO_COMPONENT_MWM2,
+  FOR_TESTING_SINGLE_MWM1 = 991215,
+  FOR_TESTING_SINGLE_MWM2,
+  FOR_TESTING_SINGLE_MWM_LATEST,
 };
 }  // namespace version
