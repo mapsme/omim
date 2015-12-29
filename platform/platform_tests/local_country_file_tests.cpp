@@ -108,7 +108,7 @@ UNIT_TEST(LocalCountryFile_DiskFiles)
     TEST(!localFile.OnDisk(MapOptions::CarRouting), ());
     TEST(!localFile.OnDisk(MapOptions::MapWithCarRouting), ());
 
-    ScopedFile testMapFile(countryFile.GetNameWithTwoComponentsExt(MapOptions::Map), "map");
+    ScopedFile testMapFile(GetNameWithTwoComponentsExt(countryFile.GetName(), MapOptions::Map), "map");
 
     localFile.SyncWithDisk();
     TEST(localFile.OnDisk(MapOptions::Map), ());
@@ -116,7 +116,7 @@ UNIT_TEST(LocalCountryFile_DiskFiles)
     TEST(!localFile.OnDisk(MapOptions::MapWithCarRouting), ());
     TEST_EQUAL(3, localFile.GetSize(MapOptions::Map), ());
 
-    ScopedFile testRoutingFile(countryFile.GetNameWithTwoComponentsExt(MapOptions::CarRouting),
+    ScopedFile testRoutingFile(GetNameWithTwoComponentsExt(countryFile.GetName(), MapOptions::CarRouting),
                                "routing");
 
     localFile.SyncWithDisk();
@@ -152,7 +152,7 @@ UNIT_TEST(LocalCountryFile_DiskFilesSingleMwm)
   TEST(!localFile.OnDisk(MapOptions::MapWithCarRouting), ());
 
   // Size of file with word map is 3 bytes.
-  ScopedFile testMapFile(countryFile.GetNameWithTwoComponentsExt(MapOptions::Map),
+  ScopedFile testMapFile(GetNameWithTwoComponentsExt(countryFile.GetName(), MapOptions::Map),
                          "Signle mwm map");
 
   localFile.SyncWithDisk();
@@ -365,7 +365,7 @@ UNIT_TEST(LocalCountryFile_CountryIndexes)
   CountryFile germanyFile("Germany");
   LocalCountryFile germanyLocalFile(testDir.GetFullPath(), germanyFile, 101010 /* version */);
   TEST_EQUAL(
-      my::JoinFoldersToPath(germanyLocalFile.GetDirectory(), germanyFile.GetNameWithoutExt()),
+      my::JoinFoldersToPath(germanyLocalFile.GetDirectory(), germanyFile.GetName()),
       CountryIndexes::IndexesDir(germanyLocalFile), ());
   CountryIndexes::PreparePlaceOnDisk(germanyLocalFile);
 
