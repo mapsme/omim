@@ -36,12 +36,11 @@ private:
   uint32_t m_routingSize;
 };
 
-/// \returns file name (m_name) with .mwm extension.
-string GetNameWithOneComponentExt(string const & nameWithoutExt);
-/// \returns file name (m_name) with extension dependent on the file param.
-/// The extension could be .mwm.routing or just .mwm.
-/// The method is used for old (two components) mwm support.
-string GetNameWithTwoComponentsExt(string const & nameWithoutExt, MapOptions file);
-
+/// \returns This method returns file name with extension. For example Abkhazia.mwm or
+/// Abkhazia.mwm.routing.
+/// \param countryFile is a file name without extension. For example Abkhazia.
+/// \param file is type of map data.
+/// \param version is version of mwm. For example 160731.
+string GetFileName(string const & countryFile, MapOptions file, int64_t version);
 string DebugPrint(CountryFile const & file);
 }  // namespace platform

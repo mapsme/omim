@@ -39,10 +39,7 @@ void LocalCountryFile::SyncWithDisk()
     m_files = SetOptions(m_files, MapOptions::Map);
 
   if (version::IsSingleMwm(GetVersion()))
-  {
-    m_routingSize = m_mapSize;
     return;
-  }
 
   string const routingPath = GetPath(MapOptions::CarRouting);
   if (platform.GetFileSizeByFullPath(routingPath, m_routingSize))
@@ -63,10 +60,7 @@ void LocalCountryFile::DeleteFromDisk(MapOptions files) const
 
 string LocalCountryFile::GetPath(MapOptions file) const
 {
-  string const countryFilePath =
-      version::IsSingleMwm(GetVersion()) ? GetNameWithOneComponentExt(m_countryFile.GetName())
-                                         : GetNameWithTwoComponentsExt(m_countryFile.GetName(), file);
-  return my::JoinFoldersToPath(m_directory, countryFilePath);
+  return my::JoinFoldersToPath(m_directory, GetFileName(m_countryFile.GetName(), file, GetVersion()));
 }
 
 uint32_t LocalCountryFile::GetSize(MapOptions filesMask) const
