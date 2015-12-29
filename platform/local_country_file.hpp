@@ -63,7 +63,7 @@ public:
   }
 
   inline string const & GetDirectory() const { return m_directory; }
-  inline string const & GetCountryName() const { return m_countryFile.GetNameWithoutExt(); }
+  inline string const & GetCountryName() const { return m_countryFile.GetName(); }
   inline int64_t GetVersion() const { return m_version; }
   inline CountryFile const & GetCountryFile() const { return m_countryFile; }
 

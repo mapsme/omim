@@ -46,7 +46,7 @@ namespace update
     uint64_t GetFileSize(platform::CountryFile const & cnt, MapOptions opt) const
     {
       uint64_t sz = 0;
-      string const fName = cnt.GetNameWithTwoComponentsExt(opt);
+      string const fName = platform::GetNameWithTwoComponentsExt(cnt.GetName(), opt);
       if (!GetPlatform().GetFileSizeByFullPath(m_dataDir + fName, sz))
       {
         LOG(opt == MapOptions::Map ? LCRITICAL : LWARNING, ("File was not found:", fName));
@@ -87,7 +87,7 @@ namespace update
         cnt.SetRemoteSizes(static_cast<uint32_t>(szMap),
                            static_cast<uint32_t>(szRouting));
 
-        string const fName = cnt.GetNameWithTwoComponentsExt(MapOptions::Map);
+        string const fName = platform::GetNameWithTwoComponentsExt(cnt.GetName(), MapOptions::Map);
         auto found = find(m_files.begin(), m_files.end(), fName);
         if (found != m_files.end())
           m_files.erase(found);

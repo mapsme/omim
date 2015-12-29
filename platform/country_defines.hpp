@@ -10,10 +10,10 @@
 /// After we stop supporting big mwms at all the enum should be deleted.
 enum class MapOptions : uint8_t
 {
-  Nothing = 0x0,             /*!< No map information is contained. */
-  Map = 0x1,                 /*!< Map file contains map (mwm) information. */
-  CarRouting = 0x2,          /*!< Map file contains routing information. */
-  MapWithCarRouting = 0x3    /*!< Map file contains map (mwm) and routing information. */
+  Nothing = 0x0,             //!< No map information is contained.
+  Map = 0x1,                 //!< Map file contains map (mwm) information.
+  CarRouting = 0x2,          //!< Map file contains routing information.
+  MapWithCarRouting = 0x3    //!< Map file contains map (mwm) and routing information.
 };
 
 bool HasOptions(MapOptions mask, MapOptions options);
