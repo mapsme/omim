@@ -6,7 +6,8 @@
 
 @implementation UILabel (RuntimeAttributes)
 
-- (void)setLocalizedText:(NSString *)localizedText {
+- (void)setLocalizedText:(NSString *)localizedText
+{
   self.text = L(localizedText);
 }
 
@@ -22,44 +23,6 @@
 - (void)setColorName:(NSString *)colorName
 {
   self.textColor = [UIColor colorWithName:colorName];
-}
-
-@end
-
-@implementation UITextField (RuntimeAttributes)
-
-- (void)setLocalizedPlaceholder:(NSString *)placeholder
-{
-  self.placeholder = L(placeholder);
-}
-
-- (NSString *)localizedPlaceholder
-{
-  return L(self.placeholder);
-}
-
-- (void)setFontName:(NSString *)fontName
-{
-  self.font = [UIFont fontWithName:fontName];
-}
-
-@end
-
-@implementation MWMTextView (RuntimeAttributes)
-
-- (void)setLocalizedPlaceholder:(NSString *)localizedPlaceholder
-{
-  self.placeholder = L(localizedPlaceholder);
-}
-
-- (NSString *)localizedPlaceholder
-{
-  return L(self.placeholder);
-}
-
-- (void)setFontName:(NSString *)fontName
-{
-  self.font = [UIFont fontWithName:fontName];
 }
 
 @end

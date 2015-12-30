@@ -2,6 +2,7 @@
 #import "MWMOpeningHoursEditorViewController.h"
 #import "MWMOpeningHoursModel.h"
 #import "MWMOpeningHoursSection.h"
+#import "MWMTextView.h"
 
 extern NSDictionary * const kMWMOpeningHoursEditorTableCells = @{
   @(MWMOpeningHoursEditorDaysSelectorCell) : @"MWMOpeningHoursDaysSelectorTableViewCell",
@@ -16,9 +17,21 @@ extern NSDictionary * const kMWMOpeningHoursEditorTableCells = @{
 };
 
 @interface MWMOpeningHoursEditorViewController ()<UITableViewDelegate, UITableViewDataSource,
-                                                  MWMOpeningHoursModelProtocol>
+                                                  UITextViewDelegate, MWMOpeningHoursModelProtocol>
 
 @property (weak, nonatomic, readwrite) IBOutlet UITableView * tableView;
+@property (weak, nonatomic, readwrite) IBOutlet UIView * advancedEditor;
+@property (weak, nonatomic, readwrite) IBOutlet MWMTextView * editorView;
+@property (weak, nonatomic) IBOutlet UIView * helpView;
+@property (weak, nonatomic) IBOutlet UITextView * help;
+@property (weak, nonatomic, readwrite) IBOutlet NSLayoutConstraint * ohTextViewHeight;
+@property (weak, nonatomic) IBOutlet UIView * exampleValuesSeparator;
+@property (weak, nonatomic) IBOutlet UIImageView * exampleValuesExpandView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * exampesButtonBottomOffset;
+@property (weak, nonatomic, readwrite) IBOutlet UIButton * toggleModeButton;
+
+@property (nonatomic) BOOL exampleExpanded;
+@property (nonatomic) BOOL isSimpleMode;
 
 @property (nonatomic) MWMOpeningHoursModel * model;
 
@@ -31,6 +44,7 @@ extern NSDictionary * const kMWMOpeningHoursEditorTableCells = @{
   [super viewDidLoad];
   [self configNavBar];
   [self configTable];
+  [self configAdvancedEditor];
   [self configData];
 }
 
@@ -56,15 +70,24 @@ extern NSDictionary * const kMWMOpeningHoursEditorTableCells = @{
   }];
 }
 
+- (void)configAdvancedEditor
+{
+  [self.editorView setTextContainerInset:{.top = 12, .left = 10, .bottom = 12, .right = 10}];
+}
+
 - (void)configData
 {
   self.model = [[MWMOpeningHoursModel alloc] initWithDelegate:self];
+  self.isSimpleMode = self.model.isSimpleModeCapable;
 }
 
 #pragma mark - Actions
 
 - (void)onDone
 {
+  [self.model updateOpeningHours];
+  std::string str = self.openingHours.UTF8String;
+  // TODO (AlexZ): Store edited opening time
 }
 
 #pragma mark - Table
@@ -112,6 +135,8 @@ extern NSDictionary * const kMWMOpeningHoursEditorTableCells = @{
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView * _Nonnull)tableView
 {
+  if (!self.model.isSimpleMode)
+    return 0;
   return self.model.count + (self.model.canAddSection ? 1 : 0);
 }
 
@@ -135,6 +160,54 @@ extern NSDictionary * const kMWMOpeningHoursEditorTableCells = @{
 - (void)tableView:(UITableView * _Nonnull)tableView willDisplayCell:(MWMOpeningHoursTableViewCell * _Nonnull)cell forRowAtIndexPath:(NSIndexPath * _Nonnull)indexPath
 {
   [self fillCell:cell atIndexPath:indexPath];
+}
+
+#pragma mark - Advanced mode
+
+- (void)setExampleExpanded:(BOOL)exampleExpanded
+{
+  _exampleExpanded = exampleExpanded;
+  self.help.hidden = !exampleExpanded;
+  self.exampesButtonBottomOffset.priority = exampleExpanded ? UILayoutPriorityDefaultLow : UILayoutPriorityDefaultHigh;
+  self.exampleValuesSeparator.hidden = !exampleExpanded;
+  self.exampleValuesExpandView.image = [UIImage imageNamed:exampleExpanded ? @"ic_arrow_gray_up" : @"ic_arrow_gray_down"];
+  if (exampleExpanded)
+    [self.editorView resignFirstResponder];
+  else
+    [self.editorView becomeFirstResponder];
+}
+
+- (IBAction)toggleExample
+{
+  self.exampleExpanded = !self.exampleExpanded;
+}
+
+- (IBAction)toggleMode
+{
+  self.isSimpleMode = !self.isSimpleMode;
+}
+
+#pragma mark - UITextViewDelegate
+
+- (void)textViewDidChange:(UITextView *)textView
+{
+  self.openingHours = textView.text;
+  self.navigationItem.rightBarButtonItem.enabled = self.model.isValid;
+  self.toggleModeButton.enabled = self.model.isSimpleModeCapable;
+}
+
+#pragma mark - Properties
+
+- (void)setIsSimpleMode:(BOOL)isSimpleMode
+{
+  self.model.isSimpleMode = isSimpleMode;
+  if (!isSimpleMode)
+    self.exampleExpanded = NO;
+}
+
+- (BOOL)isSimpleMode
+{
+  return self.model.isSimpleMode;
 }
 
 @end
