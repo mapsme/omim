@@ -120,14 +120,12 @@ namespace
         {-5.4799407508360218, 58.242809563579847}, 455902.);
   }
 
-// @TODO This test fails with assert (Can't find section Italy_Tuscany_Grosseto.mwm node2ftseg)
-// on small mwm. The reason is a wrong small mwm. It should be fixed.
-//  UNIT_TEST(RussiaMoscowLenigradskiy39ItalySienaCenterRouteTest)
-//  {
-//    integration::CalculateRouteAndTestRouteLength(
-//        integration::GetOsrmComponents(), {37.537596024929826, 67.536160359657288}, {0., 0.},
-//        {11.327927635052676, 48.166256203616726}, 2870710.);
-//  }
+  UNIT_TEST(RussiaMoscowLenigradskiy39ItalySienaCenterRouteTest)
+  {
+    integration::CalculateRouteAndTestRouteLength(
+        integration::GetOsrmComponents(), {37.537596024929826, 67.536160359657288}, {0., 0.},
+        {11.327927635052676, 48.166256203616726}, 2870710.);
+  }
 
   UNIT_TEST(PeruSingleRoadTest)
   {
