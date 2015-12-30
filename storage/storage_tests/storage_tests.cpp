@@ -352,9 +352,7 @@ UNIT_TEST(StorageTest_SingleCountryDownloading)
   TaskRunner runner;
   InitStorage(storage, runner);
 
-  string const mwmName = version::IsSingleMwm(storage.GetCurrentDataVersion()) ?
-      "Azerbaijan Region" : "Azerbaijan";
-  TIndex const azerbaijanIndex = storage.FindIndexByFile(mwmName);
+  TIndex const azerbaijanIndex = storage.FindIndexByFile("Azerbaijan");
   TEST(IsIndexValid(azerbaijanIndex), ());
 
   CountryFile azerbaijanFile = storage.GetCountryFile(azerbaijanIndex);
@@ -412,7 +410,6 @@ UNIT_TEST(StorageTest_DeleteTwoVersionsOfTheSameCountry)
   bool const isSingleMwm = version::IsSingleMwm(storage.GetCurrentDataVersion());
   if (isSingleMwm)
     storage.SetCurrentDataVersionForTesting(version::FOR_TESTING_SINGLE_MWM_LATEST);
-  string const mwmName = isSingleMwm ? "Azerbaijan Region" : "Azerbaijan";
   int64_t const v1 = isSingleMwm ? version::FOR_TESTING_SINGLE_MWM1
                                  : version::FOR_TESTING_TWO_COMPONENT_MWM1;
   int64_t const v2 = isSingleMwm ? version::FOR_TESTING_SINGLE_MWM2
@@ -421,7 +418,7 @@ UNIT_TEST(StorageTest_DeleteTwoVersionsOfTheSameCountry)
   storage.Init(&OnCountryDownloaded);
   storage.RegisterAllLocalMaps();
 
-  TIndex const index = storage.FindIndexByFile(mwmName);
+  TIndex const index = storage.FindIndexByFile("Azerbaijan");
   TEST(IsIndexValid(index), ());
   CountryFile const countryFile = storage.GetCountryFile(index);
 
@@ -514,8 +511,7 @@ UNIT_TEST(StorageTest_DownloadMapAndRoutingSeparately)
     }
   });
 
-  string const mwmName = isSingleMwm ? "Azerbaijan Region" : "Azerbaijan";
-  TIndex const index = storage.FindIndexByFile(mwmName);
+  TIndex const index = storage.FindIndexByFile("Azerbaijan");
   TEST(IsIndexValid(index), ());
   CountryFile const countryFile = storage.GetCountryFile(index);
 
@@ -584,9 +580,7 @@ UNIT_TEST(StorageTest_DeletePendingCountry)
   TaskRunner runner;
   InitStorage(storage, runner);
 
-  string const mwmName = version::IsSingleMwm(storage.GetCurrentDataVersion()) ?
-      "Azerbaijan Region" : "Azerbaijan";
-  TIndex const index = storage.FindIndexByFile(mwmName);
+  TIndex const index = storage.FindIndexByFile("Azerbaijan");
   TEST(IsIndexValid(index), ());
   storage.DeleteCountry(index, MapOptions::Map);
 
@@ -822,7 +816,7 @@ UNIT_TEST(StorageTest_EmptyRoutingFile)
 UNIT_TEST(StorageTest_ObsoleteMapsRemoval)
 {
   Storage storage;
-  CountryFile country("Azerbaijan Region");
+  CountryFile country("Azerbaijan");
 
   tests_support::ScopedDir dir1("1");
   tests_support::ScopedFile map1(dir1, country, MapOptions::Map, "map1");
