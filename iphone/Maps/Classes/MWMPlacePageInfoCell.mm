@@ -73,7 +73,7 @@
     [self.textContainer
         setAttributedText:[[NSAttributedString alloc]
                               initWithString:info
-                                  attributes:@{NSFontAttributeName : [UIFont regular17]}]];
+                                  attributes:@{NSFontAttributeName : [UIFont regular16]}]];
   else
     [self.textContainer setText:info];
 
@@ -105,7 +105,7 @@
     case MWMPlacePageMetadataTypeCoordinate:
       [[Statistics instance] logEvent:kStatEventName(kStatPlacePage, kStatToggleCoordinates)];
       [self.currentEntity toggleCoordinateSystem];
-      [self.textContainer setText:[self.currentEntity getValue:MWMPlacePageMetadataTypeCoordinate]];
+      [self.textContainer setText:[self.currentEntity getFeatureValue:MWMPlacePageMetadataTypeCoordinate]];
       break;
     default:
       break;
