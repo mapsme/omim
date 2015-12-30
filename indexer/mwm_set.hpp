@@ -86,7 +86,6 @@ public:
 
     MwmId() = default;
     MwmId(shared_ptr<MwmInfo> const & info) : m_info(info) {}
-    MwmId(MwmId const & mwmId): m_info(mwmId.m_info) {}
 
     void Reset() { m_info.reset(); }
     bool IsAlive() const
@@ -98,11 +97,6 @@ public:
     inline bool operator==(MwmId const & rhs) const { return GetInfo() == rhs.GetInfo(); }
     inline bool operator!=(MwmId const & rhs) const { return !(*this == rhs); }
     inline bool operator<(MwmId const & rhs) const { return GetInfo() < rhs.GetInfo(); }
-    inline MwmId & operator=(MwmId const & rhs)
-    {
-      m_info = rhs.m_info;
-      return *this;
-    }
 
     friend string DebugPrint(MwmId const & id);
 
@@ -125,7 +119,7 @@ public:
 
   // Mwm handle, which is used to refer to mwm and prevent it from
   // deletion when its FileContainer is used.
-  class MwmHandle final
+  class MwmHandle
   {
   public:
     MwmHandle();
@@ -145,13 +139,15 @@ public:
 
     MwmHandle & operator=(MwmHandle && handle);
 
+  protected:
+    MwmId m_mwmId;
+
   private:
     friend class MwmSet;
 
     MwmHandle(MwmSet & mwmSet, MwmId const & mwmId, unique_ptr<MwmValueBase> && value);
 
     MwmSet * m_mwmSet;
-    MwmId m_mwmId;
     unique_ptr<MwmValueBase> m_value;
 
     DISALLOW_COPY(MwmHandle);
