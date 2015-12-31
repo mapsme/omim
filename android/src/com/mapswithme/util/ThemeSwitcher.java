@@ -41,7 +41,7 @@ public final class ThemeSwitcher
       Location last = LocationHelper.INSTANCE.getLastLocation();
       if (last == null)
       {
-        LocationHelper.INSTANCE.addLocationListener(mLocationListener);
+        LocationHelper.INSTANCE.addLocationListener(mLocationListener, true);
         theme = Config.getCurrentUiTheme();
       }
       else
