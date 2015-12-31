@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.mapswithme.maps.widget.BaseShadowController;
 import com.mapswithme.maps.widget.ObservableScrollView;
 import com.mapswithme.maps.widget.ScrollViewShadowController;
 import com.mapswithme.util.Constants;
+import com.mapswithme.util.Graphics;
 import com.mapswithme.util.Utils;
 import com.mapswithme.util.sharing.ShareOption;
 import com.mapswithme.util.statistics.AlohaHelper;
@@ -25,6 +27,14 @@ import com.mapswithme.util.statistics.Statistics;
 public class AboutFragment extends BaseSettingsFragment
                         implements View.OnClickListener
 {
+  private void setupItem(@IdRes int id, boolean tint)
+  {
+    TextView view = (TextView)mFrame.findViewById(id);
+    view.setOnClickListener(this);
+    if (tint)
+      Graphics.tint(view);
+  }
+
   @Override
   protected int getLayoutRes()
   {
@@ -46,14 +56,14 @@ public class AboutFragment extends BaseSettingsFragment
     ((TextView) mFrame.findViewById(R.id.version))
         .setText(getString(R.string.version, BuildConfig.VERSION_NAME));
 
-    mFrame.findViewById(R.id.web).setOnClickListener(this);
-    mFrame.findViewById(R.id.blog).setOnClickListener(this);
-    mFrame.findViewById(R.id.facebook).setOnClickListener(this);
-    mFrame.findViewById(R.id.twitter).setOnClickListener(this);
-    mFrame.findViewById(R.id.subscribe).setOnClickListener(this);
-    mFrame.findViewById(R.id.rate).setOnClickListener(this);
-    mFrame.findViewById(R.id.share).setOnClickListener(this);
-    mFrame.findViewById(R.id.copyright).setOnClickListener(this);
+    setupItem(R.id.web, true);
+    setupItem(R.id.blog, true);
+    setupItem(R.id.facebook, false);
+    setupItem(R.id.twitter, false);
+    setupItem(R.id.subscribe, true);
+    setupItem(R.id.rate, true);
+    setupItem(R.id.share, true);
+    setupItem(R.id.copyright, false);
 
     return mFrame;
   }

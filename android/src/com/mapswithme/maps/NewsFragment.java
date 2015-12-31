@@ -4,14 +4,18 @@ import android.app.Dialog;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.mapswithme.maps.base.BaseMwmDialogFragment;
 import com.mapswithme.util.Config;
 import com.mapswithme.util.UiUtils;
@@ -111,15 +115,15 @@ public class NewsFragment extends BaseMwmDialogFragment
   }
 
   @Override
-  public void onCreate(@Nullable Bundle savedInstanceState)
+  protected int getCustomTheme()
   {
-    super.onCreate(savedInstanceState);
-    setStyle(STYLE_NORMAL, UiUtils.isTablet() ? R.style.MwmMain_DialogFragment
-                                              : R.style.MwmMain_DialogFragment_Fullscreen);
+    return (UiUtils.isTablet() ? super.getCustomTheme()
+                               : getFullscreenTheme());
   }
 
   @Override
-  public @NonNull Dialog onCreateDialog(Bundle savedInstanceState)
+  public @NonNull
+  Dialog onCreateDialog(Bundle savedInstanceState)
   {
     Dialog res = super.onCreateDialog(savedInstanceState);
     res.requestWindowFeature(Window.FEATURE_NO_TITLE);
