@@ -10,6 +10,8 @@
 
 #include "base/string_utils.hpp"
 
+#include "3party/Alohalytics/src/alohalytics.h"
+
 #include "std/bind.hpp"
 #include "std/function.hpp"
 #include "std/limits.hpp"
@@ -168,12 +170,18 @@ bool CountryInfoGetter::IsBelongToRegion(size_t id, m2::PointD const & pt) const
 
 CountryInfoGetter::IdType CountryInfoGetter::FindFirstCountry(m2::PointD const & pt) const
 {
+  CountryInfoGetter::IdType result = kInvalidId;
   for (size_t id = 0; id < m_countries.size(); ++id)
   {
     if (m_countries[id].m_rect.IsPointInside(pt) && IsBelongToRegion(id, pt))
-      return id;
+    {
+      result = id;
+      break;
+    }
   }
-  return kInvalidId;
+  alohalytics::LogEvent("Find an mwm by PointD with CountryInfoGetter",
+                        result == kInvalidId ? "@ReturnsInvalidId" : "@ReturnsValidId");
+  return result;
 }
 
 template <typename ToDo>
