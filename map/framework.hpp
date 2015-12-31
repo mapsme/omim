@@ -20,7 +20,6 @@
 #include "search/query_saver.hpp"
 #include "search/search_engine.hpp"
 
-#include "storage/map_repository.hpp"
 #include "storage/storage.hpp"
 
 #include "platform/country_defines.hpp"
@@ -114,7 +113,6 @@ protected:
   double m_startForegroundTime;
 
   storage::Storage m_storage;
-  storage::MapRepository m_mapRepository;
 
   location::TMyPositionModeChanged m_myPositionListener;
 
@@ -201,7 +199,6 @@ public:
   //@}
 
   storage::Storage & Storage() { return m_storage; }
-  storage::MapRepository & GetMapRepository() { return m_mapRepository; }
 
   /// @name Bookmarks, Tracks and other UserMarks
   //@{
