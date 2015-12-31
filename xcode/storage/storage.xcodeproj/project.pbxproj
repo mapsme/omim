@@ -13,6 +13,8 @@
 		674125211B4C05FA00A3E828 /* queued_country.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6741251B1B4C05FA00A3E828 /* queued_country.cpp */; };
 		674125221B4C05FA00A3E828 /* queued_country.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 6741251C1B4C05FA00A3E828 /* queued_country.hpp */; };
 		674125231B4C05FA00A3E828 /* storage_defines.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6741251D1B4C05FA00A3E828 /* storage_defines.cpp */; };
+		6743D3401C35329A0095054B /* map_repository.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6743D33E1C35329A0095054B /* map_repository.cpp */; };
+		6743D3411C35329A0095054B /* map_repository.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 6743D33F1C35329A0095054B /* map_repository.hpp */; };
 		675343091A3F5A2600A0A8C3 /* country_decl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 675342F21A3F5A2600A0A8C3 /* country_decl.cpp */; };
 		6753430A1A3F5A2600A0A8C3 /* country_decl.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 675342F31A3F5A2600A0A8C3 /* country_decl.hpp */; };
 		6753430D1A3F5A2600A0A8C3 /* country_polygon.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 675342F61A3F5A2600A0A8C3 /* country_polygon.hpp */; };
@@ -36,6 +38,8 @@
 		6741251B1B4C05FA00A3E828 /* queued_country.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = queued_country.cpp; sourceTree = "<group>"; };
 		6741251C1B4C05FA00A3E828 /* queued_country.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = queued_country.hpp; sourceTree = "<group>"; };
 		6741251D1B4C05FA00A3E828 /* storage_defines.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = storage_defines.cpp; sourceTree = "<group>"; };
+		6743D33E1C35329A0095054B /* map_repository.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = map_repository.cpp; sourceTree = "<group>"; };
+		6743D33F1C35329A0095054B /* map_repository.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = map_repository.hpp; sourceTree = "<group>"; };
 		675342E01A3F59EF00A0A8C3 /* libstorage.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libstorage.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		675342F21A3F5A2600A0A8C3 /* country_decl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = country_decl.cpp; sourceTree = "<group>"; };
 		675342F31A3F5A2600A0A8C3 /* country_decl.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = country_decl.hpp; sourceTree = "<group>"; };
@@ -83,6 +87,8 @@
 		675342E21A3F59EF00A0A8C3 /* storage */ = {
 			isa = PBXGroup;
 			children = (
+				6743D33E1C35329A0095054B /* map_repository.cpp */,
+				6743D33F1C35329A0095054B /* map_repository.hpp */,
 				67AF49FE1BC579DD0048B1ED /* country_info_getter.cpp */,
 				67AF49FF1BC579DD0048B1ED /* country_info_getter.hpp */,
 				674125181B4C05FA00A3E828 /* http_map_files_downloader.cpp */,
@@ -123,6 +129,7 @@
 				6753430A1A3F5A2600A0A8C3 /* country_decl.hpp in Headers */,
 				67AF4A011BC579DD0048B1ED /* country_info_getter.hpp in Headers */,
 				674125221B4C05FA00A3E828 /* queued_country.hpp in Headers */,
+				6743D3411C35329A0095054B /* map_repository.hpp in Headers */,
 				6753431B1A3F5A2600A0A8C3 /* storage.hpp in Headers */,
 				675343171A3F5A2600A0A8C3 /* index.hpp in Headers */,
 			);
@@ -192,6 +199,7 @@
 				675343161A3F5A2600A0A8C3 /* index.cpp in Sources */,
 				674125231B4C05FA00A3E828 /* storage_defines.cpp in Sources */,
 				6741251E1B4C05FA00A3E828 /* http_map_files_downloader.cpp in Sources */,
+				6743D3401C35329A0095054B /* map_repository.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
