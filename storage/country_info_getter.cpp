@@ -4,6 +4,8 @@
 
 #include "indexer/geometry_serialization.hpp"
 
+#include "geometry/latlon.hpp"
+#include "geometry/mercator.hpp"
 #include "geometry/region2d.hpp"
 
 #include "coding/read_write_utils.hpp"
@@ -48,14 +50,14 @@ private:
 }  // namespace
 
 CountryInfoGetter::CountryInfoGetter(ModelReaderPtr polyR, ModelReaderPtr countryR)
-  : m_reader(polyR), m_cache(3)
+  : m_reader(polyR), m_cache(3), m_isSingleMwm(true)
 {
   ReaderSource<ModelReaderPtr> src(m_reader.GetReader(PACKED_POLYGONS_INFO_TAG));
   rw::Read(src, m_countries);
 
   string buffer;
   countryR.ReadAsString(buffer);
-  LoadCountryFile2CountryInfo(buffer, m_id2info);
+  LoadCountryFile2CountryInfo(buffer, m_id2info, m_isSingleMwm);
 }
 
 string CountryInfoGetter::GetRegionFile(m2::PointD const & pt) const
@@ -170,18 +172,17 @@ bool CountryInfoGetter::IsBelongToRegion(size_t id, m2::PointD const & pt) const
 
 CountryInfoGetter::IdType CountryInfoGetter::FindFirstCountry(m2::PointD const & pt) const
 {
-  CountryInfoGetter::IdType result = kInvalidId;
   for (size_t id = 0; id < m_countries.size(); ++id)
   {
     if (m_countries[id].m_rect.IsPointInside(pt) && IsBelongToRegion(id, pt))
-    {
-      result = id;
-      break;
-    }
+      return id;
   }
-  alohalytics::LogEvent("Find an mwm by PointD with CountryInfoGetter",
-                        result == kInvalidId ? "@ReturnsInvalidId" : "@ReturnsValidId");
-  return result;
+
+  ms::LatLon const latLon = MercatorBounds::ToLatLon(pt);
+  alohalytics::LogEvent(m_isSingleMwm ? "CountryInfoGetter cannot find any small mwm by a point»"
+                                      : "CountryInfoGetter cannot find any big mwm by a point»",
+                        alohalytics::Location::FromLatLon(latLon.lat, latLon.lon));
+  return kInvalidId;
 }
 
 template <typename ToDo>

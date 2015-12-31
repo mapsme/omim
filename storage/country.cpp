@@ -174,7 +174,8 @@ int64_t LoadCountries(string const & jsonBuffer, CountriesContainerT & countries
   return version;
 }
 
-void LoadCountryFile2CountryInfo(string const & jsonBuffer, map<string, CountryInfo> & id2info)
+void LoadCountryFile2CountryInfo(string const & jsonBuffer, map<string, CountryInfo> & id2info,
+                                 bool & isSingleMwm)
 {
   ASSERT(id2info.empty(), ());
 
@@ -183,6 +184,7 @@ void LoadCountryFile2CountryInfo(string const & jsonBuffer, map<string, CountryI
   {
     my::Json root(jsonBuffer.c_str());
     version = json_integer_value(json_object_get(root.get(), "v"));
+    isSingleMwm = version::IsSingleMwm(version);
     DoStoreFile2Info doStore(id2info, version);
     LoadCountriesImpl(jsonBuffer, doStore, version);
   }
