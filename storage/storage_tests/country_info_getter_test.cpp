@@ -62,7 +62,8 @@ UNIT_TEST(CountryInfoGetter_ValidName_Smoke)
   ReaderPtr<Reader>(GetPlatform().GetReader(COUNTRIES_FILE)).ReadAsString(buffer);
 
   map<string, CountryInfo> id2info;
-  storage::LoadCountryFile2CountryInfo(buffer, id2info);
+  bool isSingleMwm;
+  storage::LoadCountryFile2CountryInfo(buffer, id2info, isSingleMwm);
 
   Storage storage;
 
