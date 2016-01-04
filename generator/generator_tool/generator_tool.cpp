@@ -1,6 +1,5 @@
 #include "generator/feature_generator.hpp"
 #include "generator/feature_sorter.hpp"
-#include "generator/update_generator.hpp"
 #include "generator/borders_generator.hpp"
 #include "generator/borders_loader.hpp"
 #include "generator/dumper.hpp"
@@ -35,9 +34,6 @@
 #include "std/iomanip.hpp"
 #include "std/numeric.hpp"
 
-
-DEFINE_bool(generate_update, false,
-              "If specified, update.maps file will be generated from cells in the data path");
 
 DEFINE_bool(generate_classif, false, "Generate classificator.");
 
@@ -202,13 +198,6 @@ int main(int argc, char ** argv)
       if (!indexer::BuildSearchIndexFromDatFile(datFile, true))
         LOG(LCRITICAL, ("Error generating search index."));
     }
-  }
-
-  // Create http update list for countries and corresponding files
-  if (FLAGS_generate_update)
-  {
-    LOG(LINFO, ("Updating countries file..."));
-    update::UpdateCountries(path);
   }
 
   string const datFile = path + FLAGS_output + DATA_FILE_EXTENSION;
