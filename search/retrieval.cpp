@@ -77,7 +77,7 @@ unique_ptr<coding::CompressedBitVector> RetrieveAddressFeaturesImpl(
   auto collector = [&](TValue const & value)
   {
     ++counter;
-    if ((counter & 0xFF) && cancellable.IsCancelled())
+    if (!(counter & 0xFF) && cancellable.IsCancelled())
       MYTHROW(CancelException, ("Search cancelled"));
     features.push_back(value.m_featureId);
   };
@@ -99,7 +99,7 @@ unique_ptr<coding::CompressedBitVector> RetrieveGeometryFeaturesImpl(
   auto collector = [&](uint64_t featureId)
   {
     ++counter;
-    if ((counter & 0xFF) && cancellable.IsCancelled())
+    if (!(counter & 0xFF) && cancellable.IsCancelled())
       MYTHROW(CancelException, ("Search cancelled"));
     features.push_back(featureId);
   };
