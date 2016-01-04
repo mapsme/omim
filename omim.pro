@@ -150,6 +150,10 @@ SUBDIRS = 3party base coding geometry indexer search routing
     search_integration_tests.subdir = search/search_integration_tests
     search_integration_tests.depends = $$MapDepLibs search_tests_support generator
     SUBDIRS *= search_integration_tests
+    
+    search_quality_tests.subdir = search/search_quality_tests
+    search_quality_tests.depends = $$MapDepLibs generator search_tests_support
+    SUBDIRS *= search_quality_tests
 
     generator_tests.subdir = generator/generator_tests
     generator_tests.depends = $$MapDepLibs routing generator
