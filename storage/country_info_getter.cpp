@@ -179,8 +179,8 @@ CountryInfoGetter::IdType CountryInfoGetter::FindFirstCountry(m2::PointD const &
   }
 
   ms::LatLon const latLon = MercatorBounds::ToLatLon(pt);
-  alohalytics::LogEvent(m_isSingleMwm ? "CountryInfoGetter cannot find any small mwm by a point»"
-                                      : "CountryInfoGetter cannot find any big mwm by a point»",
+  alohalytics::LogEvent(m_isSingleMwm ? "Small mwm case. CountryInfoGetter could not find any mwm by point."
+                                      : "Big mwm case. CountryInfoGetter could not find any mwm by point.",
                         alohalytics::Location::FromLatLon(latLon.lat, latLon.lon));
   return kInvalidId;
 }
