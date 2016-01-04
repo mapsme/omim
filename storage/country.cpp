@@ -162,7 +162,18 @@ int64_t LoadCountries(string const & jsonBuffer, CountriesContainerT & countries
   try
   {
     my::Json root(jsonBuffer.c_str());
-    version = json_integer_value(json_object_get(root.get(), "v"));
+    json_t * const rootPtr = root.get();
+    version = json_integer_value(json_object_get(rootPtr, "v"));
+
+    // Extracting root id.
+    char const * const idKey = version::IsSingleMwm(version) ? "id" : "n";
+    char const * id = json_string_value(json_object_get(rootPtr, idKey));
+    if (!id)
+      MYTHROW(my::Json::Exception, ("Id is missing"));
+    Country rootCountry(id);
+    // @TODO(bykoianko) Add CourtyFile to rootCountry with correct size.
+    countries.Value() = rootCountry;
+
     DoStoreCountries doStore(countries);
     if (!LoadCountriesImpl(jsonBuffer, doStore, version))
       return -1;
