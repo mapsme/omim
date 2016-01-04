@@ -3,9 +3,10 @@
 #include "search/result.hpp"
 #include "drape_frontend/visual_params.hpp"
 
-#include "indexer/classificator.hpp"
-#include "indexer/feature_visibility.hpp"
 #include "indexer/categories_holder.hpp"
+#include "indexer/classificator.hpp"
+#include "indexer/feature_algo.hpp"
+#include "indexer/feature_visibility.hpp"
 
 #include "platform/preferred_languages.hpp"
 
@@ -492,27 +493,32 @@ void Framework::GetAddressInfoForGlobalPoint(m2::PointD const & pt, search::Addr
   //GetLocality(pt, info);
 }
 
-void Framework::GetAddressInfo(FeatureType const & ft, m2::PointD const & pt, search::AddressInfo & info) const
+search::AddressInfo Framework::GetPOIAddressInfo(FeatureType const & ft) const
 {
-  info.Clear();
+  search::AddressInfo info;
 
-  info.m_country = GetCountryName(pt);
+  ASSERT_NOT_EQUAL(ft.GetFeatureType(), feature::GEOM_LINE, ());
+  m2::PointD const center = feature::GetCenter(ft);
+
+  info.m_country = GetCountryName(center);
   if (info.m_country.empty())
   {
-    LOG(LINFO, ("Can't find region for point ", pt));
-    return;
+    LOG(LINFO, ("Can't find region for point ", center));
+    return info;
   }
 
   double const inf = numeric_limits<double>::max();
   double addressR[] = { inf, inf, inf };
 
   // FeatureType::WORST_GEOMETRY - no need to check on visibility
-  DoGetAddressInfo getAddress(pt, FeatureType::WORST_GEOMETRY, GetChecker(), addressR);
+  DoGetAddressInfo getAddress(center, FeatureType::WORST_GEOMETRY, GetChecker(), addressR);
   getAddress(ft);
   getAddress.FillAddress(m_searchEngine.get(), info);
 
   /// @todo Temporarily commented - it's slow and not used in UI
   //GetLocality(pt, info);
+
+  return info;
 }
 
 void Framework::GetLocality(m2::PointD const & pt, search::AddressInfo & info) const
