@@ -863,4 +863,32 @@ string Storage::GetFileDownloadPath(TIndex const & index, MapOptions file) const
 {
   return platform::GetFileDownloadPath(GetCountryFile(index), file, GetCurrentDataVersion());
 }
+
+TIndex const Storage::GetRootId() const
+{
+  return m_countries.Value().Name();
+}
+
+vector<TIndex> const Storage::GetChildren(TIndex const & parent) const
+{
+  CountriesContainerT const * parentNode = m_countries.Find(parent);
+  if (parentNode == nullptr)
+  {
+    ASSERT(false, ("TIndex =", parent, "not found in m_countries."));
+    return vector<TIndex>();
+  }
+  size_t const childernCount = parentNode->SiblingsCount();
+  if (childernCount == 0)
+  {
+    // parent is a leaf. It does not contain any child.
+    return vector<TIndex>();
+  }
+  vector<TIndex> childernVector;
+  childernVector.reserve(childernCount);
+  for (size_t i = 0; i < childernCount; ++i)
+  {
+    childernVector.emplace_back(m_countries[i].Value().Name());
+  }
+  return childernVector;
+}
 }  // namespace storage
