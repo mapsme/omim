@@ -159,19 +159,19 @@ void Geocoder::Go(vector<FeatureID> & results)
                      {
                        m_matcher.reset();
                        m_context.reset();
-                       m_features.clear();
+                       m_addressFeatures.clear();
                      });
 
       m_matcher.reset(new FeaturesLayerMatcher(m_index, *m_context, *this /* cancellable */));
 
       // Creates a cache of posting lists for each token.
-      m_features.resize(m_numTokens);
+      m_addressFeatures.resize(m_numTokens);
       for (size_t i = 0; i < m_numTokens; ++i)
       {
         PrepareRetrievalParams(i, i + 1);
-        m_features[i] = Retrieval::RetrieveAddressFeatures(
+        m_addressFeatures[i] = Retrieval::RetrieveAddressFeatures(
             m_context->m_value, *this /* cancellable */, m_retrievalParams);
-        ASSERT(m_features[i], ());
+        ASSERT(m_addressFeatures[i], ());
       }
 
       DoGeocodingWithLocalities();
@@ -188,7 +188,8 @@ void Geocoder::Go(vector<FeatureID> & results)
 
 void Geocoder::ClearCaches()
 {
-  m_features.clear();
+  m_geometryFeatures.clear();
+  m_addressFeatures.clear();
   m_matcher.reset();
 }
 
@@ -292,24 +293,22 @@ void Geocoder::DoGeocodingWithLocalities()
     unique_ptr<coding::CompressedBitVector> allFeatures;
     for (auto const & locality : p.second)
     {
-      m2::RectD rect = countryBounds;
-      if (!rect.Intersect(locality.m_rect))
-        continue;
-      auto features = Retrieval::RetrieveGeometryFeatures(
-          m_context->m_value, static_cast<my::Cancellable const &>(*this), rect, m_params.m_scale);
-      if (!features)
+      m2::RectD rect = locality.m_rect;
+      if (!rect.Intersect(countryBounds))
         continue;
 
+      auto const & features = RetrieveGeometryFeatures(*m_context, rect);
       if (!allFeatures)
-        allFeatures = move(features);
+        allFeatures = features.Clone();
       else
-        allFeatures = coding::CompressedBitVector::Union(*allFeatures, *features);
+        allFeatures = coding::CompressedBitVector::Union(*allFeatures, features);
     }
 
     if (coding::CompressedBitVector::IsEmpty(allFeatures))
       continue;
 
-    m_filter.SetFilter(move(allFeatures));
+    m_filter.SetFilter(allFeatures.get());
+    MY_SCOPE_GUARD(resetFilter, [&]() { m_filter.SetFilter(nullptr); });
 
     // Filter will be applied for all non-empty bit vectors.
     m_filter.SetThreshold(0);
@@ -335,7 +334,7 @@ void Geocoder::DoGeocodingWithoutLocalities()
   m2::PointD const & position = m_params.m_position;
 
   // Extracts features in viewport.
-  unique_ptr<coding::CompressedBitVector> viewportFeatures;
+  coding::CompressedBitVector const * viewportFeatures = nullptr;
   {
     // Limits viewport by kMaxViewportRadiusM.
     m2::RectD const viewportLimit =
@@ -343,20 +342,16 @@ void Geocoder::DoGeocodingWithoutLocalities()
     m2::RectD rect = viewport;
     rect.Intersect(viewportLimit);
     if (!rect.IsEmptyInterior())
-    {
-      viewportFeatures = Retrieval::RetrieveGeometryFeatures(
-          m_context->m_value, static_cast<my::Cancellable const &>(*this), rect, m_params.m_scale);
-    }
+      viewportFeatures = &RetrieveGeometryFeatures(*m_context, rect);
   }
 
   // Extracts features around user position.
-  unique_ptr<coding::CompressedBitVector> positionFeatures;
+  coding::CompressedBitVector const * positionFeatures = nullptr;
   if (!position.EqualDxDy(viewport.Center(), kEps))
   {
     m2::RectD const rect =
         MercatorBounds::RectByCenterXYAndSizeInMeters(position, kMaxPositionRadiusM);
-    positionFeatures = Retrieval::RetrieveGeometryFeatures(
-        m_context->m_value, static_cast<my::Cancellable const &>(*this), rect, m_params.m_scale);
+    positionFeatures = &RetrieveGeometryFeatures(*m_context, rect);
   }
 
   if (coding::CompressedBitVector::IsEmpty(viewportFeatures) &&
@@ -366,11 +361,20 @@ void Geocoder::DoGeocodingWithoutLocalities()
   }
 
   if (coding::CompressedBitVector::IsEmpty(viewportFeatures))
-    m_filter.SetFilter(move(positionFeatures));
+  {
+    m_filter.SetFilter(positionFeatures);
+  }
   else if (coding::CompressedBitVector::IsEmpty(positionFeatures))
-    m_filter.SetFilter(move(viewportFeatures));
+  {
+    m_filter.SetFilter(viewportFeatures);
+  }
   else
-    m_filter.SetFilter(coding::CompressedBitVector::Union(*viewportFeatures, *positionFeatures));
+  {
+    auto const allFeatures =
+        coding::CompressedBitVector::Union(*viewportFeatures, *positionFeatures);
+    m_filter.SetFilter(allFeatures.get());
+  }
+  MY_SCOPE_GUARD(resetFilter, [&]() { m_filter.SetFilter(nullptr); });
 
   // Filter will be applied only for large bit vectors.
   m_filter.SetThreshold(m_params.m_maxNumResults);
@@ -419,8 +423,8 @@ void Geocoder::DoGeocoding(size_t curToken)
   for (size_t n = 1; curToken + n <= m_numTokens && !m_usedTokens[curToken + n - 1]; ++n)
   {
     // At this point |intersection| is the intersection of
-    // m_features[curToken], m_features[curToken + 1], ...,
-    // m_features[curToken + n - 2], iff n > 2.
+    // m_addressFeatures[curToken], m_addressFeatures[curToken + 1], ...,
+    // m_addressFeatures[curToken + n - 2], iff n > 2.
 
     BailIfCancelled(static_cast<my::Cancellable const &>(*this));
 
@@ -437,18 +441,18 @@ void Geocoder::DoGeocoding(size_t curToken)
     coding::CompressedBitVector * features = nullptr;
     if (n == 1)
     {
-      features = m_features[curToken + n - 1].get();
+      features = m_addressFeatures[curToken + n - 1].get();
     }
     else if (n == 2)
     {
-      intersection = coding::CompressedBitVector::Intersect(*m_features[curToken + n - 2],
-                                                            *m_features[curToken + n - 1]);
+      intersection = coding::CompressedBitVector::Intersect(*m_addressFeatures[curToken + n - 2],
+                                                            *m_addressFeatures[curToken + n - 1]);
       features = intersection.get();
     }
     else
     {
-      intersection =
-          coding::CompressedBitVector::Intersect(*intersection, *m_features[curToken + n - 1]);
+      intersection = coding::CompressedBitVector::Intersect(*intersection,
+                                                            *m_addressFeatures[curToken + n - 1]);
       features = intersection.get();
     }
     ASSERT(features, ());
@@ -557,6 +561,24 @@ void Geocoder::FindPaths()
                                   {
                                     m_results->emplace_back(m_context->m_id, featureId);
                                   });
+}
+
+coding::CompressedBitVector const & Geocoder::RetrieveGeometryFeatures(MwmContext const & context,
+                                                                       m2::RectD const & rect)
+{
+  auto localityKey = make_tuple(context.m_handle.GetId(), rect, m_params.m_scale);
+  auto const it = m_geometryFeatures.find(localityKey);
+  if (it != m_geometryFeatures.cend())
+    return *it->second;
+
+  auto features = Retrieval::RetrieveGeometryFeatures(
+      context.m_value, static_cast<my::Cancellable const &>(*this), rect, m_params.m_scale);
+
+  if (!features)
+    features = make_unique<coding::DenseCBV>();
+  auto const * result = features.get();
+  m_geometryFeatures[localityKey] = move(features);
+  return *result;
 }
 }  // namespace v2
 }  // namespace search
