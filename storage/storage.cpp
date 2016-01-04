@@ -456,10 +456,11 @@ void Storage::LoadCountriesFile(bool forceReload)
   if (m_countries.ChildrenCount() == 0)
   {
     string json;
-    ReaderPtr<Reader>(GetPlatform().GetReader(COUNTRIES_FILE)).ReadAsString(json);
+    string name = migrate::NeedMigrate() ? COUNTRIES_FILE : COUNTRIES_MIGRATE_FILE;
+    ReaderPtr<Reader>(GetPlatform().GetReader(name)).ReadAsString(json);
     m_currentVersion = LoadCountries(json, m_countries);
     if (m_currentVersion < 0)
-      LOG(LERROR, ("Can't load countries file", COUNTRIES_FILE));
+      LOG(LERROR, ("Can't load countries file", name));
   }
 }
 
@@ -656,7 +657,7 @@ void Storage::GetOutdatedCountries(vector<Country const *> & countries) const
     string const name = GetCountryFile(countryId).GetName();
     TLocalFilePtr file = GetLatestLocalFile(countryId);
     if (file && file->GetVersion() != GetCurrentDataVersion() &&
-        name != WORLD_COASTS_FILE_NAME && name != WORLD_FILE_NAME)
+        name != WORLD_COASTS_FILE_NAME && name != WORLD_COASTS_MIGRATE_FILE_NAME && name != WORLD_FILE_NAME)
     {
       countries.push_back(&CountryByCountryId(countryId));
     }

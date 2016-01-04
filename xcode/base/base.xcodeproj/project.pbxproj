@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6743D3781C3AA5FD0095054B /* defines.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 6743D3771C3AA5FD0095054B /* defines.hpp */; };
 		674A7E2E1C0DB03D003D48E1 /* timegm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 674A7E2C1C0DB03D003D48E1 /* timegm.cpp */; };
 		674A7E2F1C0DB03D003D48E1 /* timegm.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 674A7E2D1C0DB03D003D48E1 /* timegm.hpp */; };
 		675341CB1A3F57E400A0A8C3 /* array_adapters.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 675341851A3F57E400A0A8C3 /* array_adapters.hpp */; };
@@ -71,6 +72,7 @@
 
 /* Begin PBXFileReference section */
 		670D05AA1B0E057B0013A7AC /* defaults.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = defaults.xcconfig; path = ../defaults.xcconfig; sourceTree = "<group>"; };
+		6743D3771C3AA5FD0095054B /* defines.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = defines.hpp; path = ../defines.hpp; sourceTree = "<group>"; };
 		674A7E2C1C0DB03D003D48E1 /* timegm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timegm.cpp; sourceTree = "<group>"; };
 		674A7E2D1C0DB03D003D48E1 /* timegm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = timegm.hpp; sourceTree = "<group>"; };
 		675341771A3F57BF00A0A8C3 /* libbase.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libbase.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -165,6 +167,7 @@
 		675341791A3F57BF00A0A8C3 /* base */ = {
 			isa = PBXGroup;
 			children = (
+				6743D3771C3AA5FD0095054B /* defines.hpp */,
 				674A7E2C1C0DB03D003D48E1 /* timegm.cpp */,
 				674A7E2D1C0DB03D003D48E1 /* timegm.hpp */,
 				675345381A3F6F5E00A0A8C3 /* internal */,
@@ -260,6 +263,7 @@
 				675342041A3F57E400A0A8C3 /* strings_bundle.hpp in Headers */,
 				675341CE1A3F57E400A0A8C3 /* base.hpp in Headers */,
 				675342001A3F57E400A0A8C3 /* string_format.hpp in Headers */,
+				6743D3781C3AA5FD0095054B /* defines.hpp in Headers */,
 				675341F41A3F57E400A0A8C3 /* scope_guard.hpp in Headers */,
 				675342071A3F57E400A0A8C3 /* thread_pool.hpp in Headers */,
 				6753420C1A3F57E400A0A8C3 /* threaded_list.hpp in Headers */,
