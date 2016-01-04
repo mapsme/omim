@@ -1113,6 +1113,7 @@ void Framework::ShowSearchResult(search::Result const & res)
 
   int scale;
   m2::PointD center;
+  unique_ptr<FeatureType> ft;
 
   using namespace search;
   using namespace feature;
@@ -1124,11 +1125,11 @@ void Framework::ShowSearchResult(search::Result const & res)
       FeatureID const id = res.GetFeatureID();
       Index::FeaturesLoaderGuard guard(m_model.GetIndex(), id.m_mwmId);
 
-      FeatureType ft;
-      guard.GetFeatureByIndex(id.m_index, ft);
+      ft.reset(new FeatureType);
+      guard.GetFeatureByIndex(id.m_index, *ft);
 
-      scale = GetFeatureViewportScale(TypesHolder(ft));
-      center = GetCenter(ft, scale);
+      scale = GetFeatureViewportScale(TypesHolder(*ft));
+      center = GetCenter(*ft, scale);
       break;
     }
 
@@ -1153,6 +1154,10 @@ void Framework::ShowSearchResult(search::Result const & res)
 
   SearchMarkPoint * mark = static_cast<SearchMarkPoint *>(guard.m_controller.CreateUserMark(center));
   mark->SetInfo(info);
+  if (ft)
+    mark->SetFeature(move(ft));
+  else
+    mark->SetFeature(GetFeatureAtMercatorPoint(center));
 
   ActivateUserMark(mark, false);
 }
@@ -1782,7 +1787,6 @@ void Framework::ActivateUserMark(UserMark const * mark, bool needAnim)
   if (mark)
   {
     m_activateUserMarkFn(mark->Copy());
-    m2::PointD pt = mark->GetPivot();
     df::SelectionShape::ESelectedObject object = df::SelectionShape::OBJECT_USER_MARK;
     UserMark::Type type = mark->GetMarkType();
     if (type == UserMark::Type::MY_POSITION)
@@ -1790,7 +1794,7 @@ void Framework::ActivateUserMark(UserMark const * mark, bool needAnim)
     else if (type == UserMark::Type::POI)
       object = df::SelectionShape::OBJECT_POI;
 
-    CallDrapeFunction(bind(&df::DrapeEngine::SelectObject, _1, object, pt, needAnim));
+    CallDrapeFunction(bind(&df::DrapeEngine::SelectObject, _1, object, mark->GetPivot(), needAnim));
   }
   else
   {
@@ -1896,13 +1900,15 @@ UserMark const * Framework::OnTapEventImpl(m2::PointD pxPoint, bool isLong, bool
   m2::PointD mercatorPivot;
   search::AddressInfo info;
   feature::Metadata metadata;
+  unique_ptr<FeatureType> feature;
 
   if (fid.IsValid())
   {
-    FeatureType const feature = GetPOIByID(fid);
-    mercatorPivot = feature::GetCenter(feature);
-    info = GetPOIAddressInfo(feature);
-    metadata = feature.GetMetadata();
+    feature.reset(new FeatureType);
+    *feature = GetPOIByID(fid);
+    mercatorPivot = feature::GetCenter(*feature);
+    info = GetPOIAddressInfo(*feature);
+    metadata = feature->GetMetadata();
     needMark = true;
   }
   else if (isLong)
@@ -1918,6 +1924,8 @@ UserMark const * Framework::OnTapEventImpl(m2::PointD pxPoint, bool isLong, bool
     poiMark->SetPtOrg(mercatorPivot);
     poiMark->SetInfo(info);
     poiMark->SetMetadata(move(metadata));
+    // Set or reset feature.
+    poiMark->SetFeature(move(feature));
     return poiMark;
   }
 
