@@ -119,10 +119,9 @@ public:
   /// a name of file with mwm of a name country(territory).
   //@{
   enum class ErrorCode;
-  using TNodeId = string;
-  using TOnSearchResultCallback = function<void (TNodeId const &)>;
-  using TOnStatusChangedCallback = function<void (TNodeId const &)>;
-  using TOnErrorCallback = function<void (TNodeId const &, ErrorCode)>;
+  using TOnSearchResultCallback = function<void (TIndex const &)>;
+  using TOnStatusChangedCallback = function<void (TIndex const &)>;
+  using TOnErrorCallback = function<void (TIndex const &, ErrorCode)>;
 
   /// \brief This enum describes status of a downloaded mwm or a group of downloaded mwm.
   enum class ClientNodeStatus
@@ -145,7 +144,7 @@ public:
     int m_childrenCounter;
     /// parentId is a node id of parent of the node.
     /// If the node is "world" (that means the root) parentId == "".
-    TNodeId parentId;
+    TIndex parentId;
   };
 
   /// \brief Contains all properties for a downloaded mwm.
@@ -198,16 +197,16 @@ public:
   };
 
   /// \brief Returns root node id of the county tree.
-  TNodeId const GetRootId() const;
+  TIndex const GetRootId() const;
   /// \brief Returns children node ids by a parent. For example GetChildren(GetRootId())
   /// returns all counties ids. It's content of map downloader list by default.
-  vector<TNodeId> const GetChildren(TNodeId const & parent) const;
+  vector<TIndex> const GetChildren(TIndex const & parent) const;
   /// \brief Returns children node ids by a parent for downloaded mwms.
   /// The result of the method is composed in a special way because of design requirements.
   /// If a direct child (of parent) contains two or more downloaded mwms the direct child id will be added to result.
   /// If a direct child (of parent) contains one downloaded mwm the mwm id will be added to result.
   /// If there's no downloaded mwms contained by a direct child the direct child id will not be added to result.
-  vector<TNodeId> const GetDownloadedChildren(TNodeId const & parent) const;
+  vector<TIndex> const GetDownloadedChildren(TIndex const & parent) const;
 
   /// \brief Search for node ids (mwms not groups of mwms) by position in mercator.
   /// Find all mwms which are close to position.
@@ -231,7 +230,7 @@ public:
   /// \brief Returns true if the node with nodeId has been downloaded and false othewise.
   /// If nodeId is a expandable returns true if all mwms which belongs to it have downloaded.
   /// Returns false if nodeId is an unknown string.
-  bool IsNodeDownloaded(TNodeId const & nodeId) const;
+  bool IsNodeDownloaded(TIndex const & nodeId) const;
   /// \brief Returns true if position is covered by a downloaded mwms.
   /// \note position is coordinates in mercator.
   bool IsPointCovered(m2::PointD const & position) const;
@@ -241,37 +240,37 @@ public:
   /// \param ServerNodeAttrs is filled with attibutes of node which is available for downloading.
   /// I.e. is written in county_attributes.txt.
   /// \return false in case of error and true otherwise.
-  bool GetServerNodeAttrs(TNodeId const & nodeId, ClientNodeAttrs & serverNodeAttrs) const;
+  bool GetServerNodeAttrs(TIndex const & nodeId, ClientNodeAttrs & serverNodeAttrs) const;
   /// \brief Gets attributes for downloaded a node by nodeId.
   /// \param ClientNodeAttrs is filled with attibutes in this method.
   /// \return false in case of error and true otherwise.
-  bool GetClientNodeAttrs(TNodeId const & nodeId, ClientNodeAttrs & clientNodeAttrs) const;
+  bool GetClientNodeAttrs(TIndex const & nodeId, ClientNodeAttrs & clientNodeAttrs) const;
 
   /// \brief Downloads one node (expandable or not) by nodeId.
   /// If node is expandable downloads all children (grandchildren) by the node
   /// until they havn't been downloaded before. Update all downloaded mwm if it's necessary.
   /// \return false in case of error and true otherwise.
-  bool DownloadNode(TNodeId const & nodeId);
+  bool DownloadNode(TIndex const & nodeId);
   /// \brief Delete one node (expandable or not).
   /// \return false in case of error and true otherwise.
-  bool DeleteNode(TNodeId const & nodeId);
+  bool DeleteNode(TIndex const & nodeId);
   /// \brief Updates one node (expandable or not).
   /// \note If you want to update all the maps and this update is without changing
   /// borders or hierarchy just call UpdateNode(GetRootId()).
   /// \return false in case of error and true otherwise.
-  bool UpdateNode(TNodeId const & nodeId);
+  bool UpdateNode(TIndex const & nodeId);
   /// \brief Cancels downloading a node if the downloading is in process.
   /// \return false in case of error and true otherwise.
-  bool CancelNodeDownloading(TNodeId const & nodeId);
+  bool CancelNodeDownloading(TIndex const & nodeId);
   /// \brief Downloading process could be interupted because of bad internet connection.
   /// In that case user could want to recover it. This method is done for it.
   /// This method works with expandable and not expandable nodeId.
   /// \return false in case of error and true otherwise.
-  bool RestoreNodeDownloading(TNodeId const & nodeId);
+  bool RestoreNodeDownloading(TIndex const & nodeId);
 
   /// \brief Shows a node (expandable or not) on the map.
   /// \return false in case of error and true otherwise.
-  bool ShowNode(TNodeId const & nodeId);
+  bool ShowNode(TIndex const & nodeId);
 
   /// \brief Get information for mwm update button.
   /// \return true if updateInfo is filled correctly and false otherwise.
