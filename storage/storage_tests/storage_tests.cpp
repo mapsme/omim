@@ -838,4 +838,30 @@ UNIT_TEST(StorageTest_ObsoleteMapsRemoval)
 
   TEST(map2.Exists(), ());
 }
+
+UNIT_TEST(StorageTest_GetRootId)
+{
+  Storage storage;
+  // The name of the root is the same for courntries.txt version 1 and version 2.
+  TEST_EQUAL(storage.GetRootId(), "Countries", ());
+}
+
+UNIT_TEST(StorageTest_GetChildren)
+{
+  Storage storage;
+  if (!version::IsSingleMwm(storage.GetCurrentDataVersion()))
+  {
+    // Storage::GetChildren is used only with single (new) mwms.
+    return;
+  }
+
+  TIndex const world = storage.GetRootId();
+  TEST_EQUAL(world, "Countries", ());
+
+  vector<TIndex> const countriesList = storage.GetChildren(world);
+  TEST_EQUAL(countriesList.size(), 206, ());
+  TEST_EQUAL(countriesList.front(), "Abkhazia", ());
+  TEST_EQUAL(countriesList.back(), "South Korea", ());
+}
+
 }  // namespace storage
