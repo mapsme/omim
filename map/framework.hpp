@@ -313,6 +313,9 @@ private:
 
   void FillSearchResultsMarks(search::Results const & results);
 
+  void OnUpdateCountryIndex(storage::TIndex const & currentIndex, m2::PointF const & pt);
+  void UpdateCountryInfo(storage::TIndex const & countryIndex, bool isCurrentCountry);
+
 public:
   using TSearchRequest = search::QuerySaver::TSearchRequest;
 

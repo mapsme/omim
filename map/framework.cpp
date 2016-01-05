@@ -762,6 +762,58 @@ void Framework::ClearAllCaches()
   m_searchEngine->ClearAllCaches();
 }
 
+void Framework::OnUpdateCountryIndex(storage::TIndex const & currentIndex, m2::PointF const & pt)
+{
+  storage::TIndex const newCountryIndex =
+      m_storage.FindIndexByFile(m_infoGetter->GetRegionFile(m2::PointD(pt)));
+  if (newCountryIndex.empty())
+  {
+    m_drapeEngine->SetInvalidCountryInfo();
+    return;
+  }
+
+  if (currentIndex != newCountryIndex)
+    UpdateCountryInfo(newCountryIndex, true /* isCurrentCountry */);
+}
+
+void Framework::UpdateCountryInfo(storage::TIndex const & countryIndex, bool isCurrentCountry)
+{
+  if (!m_drapeEngine)
+    return;
+
+  int64_t const currentVersion = m_storage.GetCurrentDataVersion();
+
+  string const countryFile = m_storage.CountryByIndex(countryIndex).GetFile().GetName();
+  CHECK(!countryFile.empty(), ());
+
+  // Note. MapOptions::Map is used below to be sure fileName has mwm extension
+  // in case of single mwms and two components mwms.
+  string const fileName = platform::GetFileName(countryFile,
+                                                MapOptions::Map, currentVersion);
+  if (m_model.IsLoaded(fileName))
+  {
+    m_drapeEngine->SetInvalidCountryInfo();
+    return;
+  }
+
+  gui::CountryInfo countryInfo;
+
+  countryInfo.m_countryIndex = countryIndex;
+  // @TODO(bykoianko) Locolize country name should be used here.
+  countryInfo.m_currentCountryName = countryIndex;
+  // @TODO(bykoianko) Valid values for countryInfo fields should be got with new Storage
+  // interface when it's ready. Now temporary values are used.
+  countryInfo.m_mapSize = 0;
+  countryInfo.m_routingSize = 0;
+  countryInfo.m_countryStatus = m_storage.CountryStatusEx(countryIndex);
+  if (countryInfo.m_countryStatus == storage::TStatus::EDownloading)
+  {
+    countryInfo.m_downloadProgress = 50 /* Just to show that downloading is in progress */;
+  }
+
+  m_drapeEngine->SetCountryInfo(countryInfo, isCurrentCountry);
+}
+
 void Framework::MemoryWarning()
 {
   LOG(LINFO, ("MemoryWarning"));
@@ -1097,9 +1149,9 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
     m_model.ReadFeatures(fn, ids);
   };
 
-  TUpdateCountryIndexFn updateCountryIndex = [this](storage::TIndex const &, m2::PointF const &)
+  TUpdateCountryIndexFn updateCountryIndex = [this](storage::TIndex const & currentIndex, m2::PointF const & pt)
   {
-    // @TODO(bykoianko) This method should be redesigned.
+    GetPlatform().RunOnGuiThread(bind(&Framework::OnUpdateCountryIndex, this, currentIndex, pt));
   };
 
   TIsCountryLoadedFn isCountryLoadedFn = bind(&Framework::IsCountryLoaded, this, _1);
