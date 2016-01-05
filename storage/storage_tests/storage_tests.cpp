@@ -851,7 +851,7 @@ UNIT_TEST(StorageTest_GetChildren)
   Storage storage;
   if (!version::IsSingleMwm(storage.GetCurrentDataVersion()))
   {
-    // Storage::GetChildren is used only with single (new) mwms.
+    // Storage::GetChildren is used only with single (small) mwms.
     return;
   }
 
@@ -862,6 +862,13 @@ UNIT_TEST(StorageTest_GetChildren)
   TEST_EQUAL(countriesList.size(), 206, ());
   TEST_EQUAL(countriesList.front(), "Abkhazia", ());
   TEST_EQUAL(countriesList.back(), "South Korea", ());
+
+  vector<TIndex> const abkhaziaList = storage.GetChildren("Abkhazia");
+  TEST(abkhaziaList.empty(), ());
+
+  vector<TIndex> const belarusList = storage.GetChildren("Belarus");
+  TEST_EQUAL(belarusList.size(), 6, ());
+  TEST_EQUAL(belarusList.front(), "Belarus_Vitebsk Region", ());
 }
 
 }  // namespace storage
