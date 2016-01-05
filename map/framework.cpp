@@ -1437,7 +1437,7 @@ bool Framework::ShowMapForURL(string const & url)
 
     return true;
   }
-  
+
   return false;
 }
 
