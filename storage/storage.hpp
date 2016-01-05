@@ -111,6 +111,8 @@ private:
 
 public:
   Storage();
+  /// \brief This constructor should be used for testing only.
+  explicit Storage(string const & referenceCountriesTxtJsonForTesting);
 
   /// @name Interface with clients (Android/iOS).
   /// \brief It represents the interface which can be used by clients (Android/iOS).
