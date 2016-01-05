@@ -99,7 +99,7 @@ public:
   void operator()(string const & name, string const & file, uint32_t mapSize,
                   uint32_t routingSize, int depth)
   {
-    Country country(name);
+    Country country(file);
     if (mapSize)
     {
       CountryFile countryFile(file);
@@ -131,23 +131,7 @@ public:
 
     if (mapSize)
     {
-      CountryInfo info;
-
-      // if 'file' is empty - it's equal to 'name'
-      if (!file.empty())
-      {
-        // make compound name: country_region
-        size_t const i = file.find_first_of('_');
-        if (i != string::npos)
-          name = file.substr(0, i) + '_' + name;
-
-        // fill 'name' only when it differs with 'file'
-        if (name != file)
-          info.m_name.swap(name);
-      }
-      else
-        file.swap(name);
-
+      CountryInfo info(file);
       m_file2info[file] = info;
     }
   }
