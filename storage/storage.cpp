@@ -1,5 +1,6 @@
-#include "storage/storage.hpp"
 #include "storage/http_map_files_downloader.hpp"
+#include "storage/storage.hpp"
+#include "storage_tests/test_map_files_downloader.hpp"
 
 #include "defines.hpp"
 
@@ -80,6 +81,15 @@ void DeleteFromDiskWithIndexes(LocalCountryFile const & localFile, MapOptions op
 Storage::Storage() : m_downloader(new HttpMapFilesDownloader()), m_currentSlotId(0)
 {
   LoadCountriesFile(false /* forceReload */);
+}
+
+Storage::Storage(string const & referenceCountriesTxtJsonForTesting)
+  : m_downloader(new TestMapFilesDownloader()), m_currentSlotId(0)
+{
+  m_countries.Clear();
+  m_currentVersion = LoadCountries(referenceCountriesTxtJsonForTesting, m_countries);
+  if (m_currentVersion < 0)
+    LOG(LERROR, ("Can't load countries file", COUNTRIES_FILE));
 }
 
 void Storage::Init(TUpdate const & update) { m_update = update; }
@@ -862,5 +872,28 @@ uint64_t Storage::GetDownloadSize(QueuedCountry const & queuedCountry) const
 string Storage::GetFileDownloadPath(TIndex const & index, MapOptions file) const
 {
   return platform::GetFileDownloadPath(GetCountryFile(index), file, GetCurrentDataVersion());
+}
+
+TIndex const Storage::GetRootId() const
+{
+  return m_countries.Value().Name();
+}
+
+vector<TIndex> const Storage::GetChildren(TIndex const & parent) const
+{
+  CountriesContainerT const * parentNode = m_countries.Find(parent);
+  if (parentNode == nullptr)
+  {
+    ASSERT(false, ("TIndex =", parent, "not found in m_countries."));
+    return vector<TIndex>();
+  }
+
+  size_t const childrenCount = parentNode->SiblingsCount();
+  vector<TIndex> childrenVector;
+  childrenVector.reserve(childrenCount);
+  for (size_t i = 0; i < childrenCount; ++i)
+    childrenVector.emplace_back((*parentNode)[i].Value().Name());
+
+  return childrenVector;
 }
 }  // namespace storage
