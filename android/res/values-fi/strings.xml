@@ -805,4 +805,13 @@
 	<string name="whats_new_between_any_points">Luo reittejä minkä tahansa kohteiden välille</string>
 	<string name="whats_new_happy_day">Elämä hymyilee! Suunnittele matkasi etukäteen MAPS.ME -sovelluksen avulla.</string>
 	<string name="whats_new_next">Seuraava</string>
+	<string name="3d_new_dimension">Uusi ulottuvuus MAPS.ME-sovellukseen</string>
+	<string name="3d_new_buildings">Kartta näyttää rakennukset nyt 3D:nä.</string>
+	<string name="3d_new_buildings_2">Karttamme ovat entistä informatiivisempia ja kauniimpia 3D-rakennusten avulla.</string>
+	<string name="3d_new_perspective">Suosikkikarttasi uudella perspektiivillä</string>
+	<string name="3d_new_angle">Suosikkikarttasi uudella ulottuvuudella</string>
+	<string name="3d_new_added_perspective">Olemme lisänneet perspektiivinäkymän navigointitilaan.</string>
+	<string name="3d_2d">2D</string>
+	<string name="3d_3d">3D</string>
+	<string name="3d_buildings">3D-rakennukset</string>
 </resources>

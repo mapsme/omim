@@ -808,4 +808,13 @@
 	<string name="whats_new_between_any_points">Прокладіть маршрут між будь-якими об\&#39;єктами</string>
 	<string name="whats_new_happy_day">Так, це насправді! Сьогодні щасливий день і ще одне покращення. Заздалегідь заплануйте свої подорожі разом з MAPS.ME.</string>
 	<string name="whats_new_next">Далі</string>
+	<string name="3d_new_dimension">Новий вимір в MAPS.ME</string>
+	<string name="3d_new_buildings">На карті з\&#39;явилися 3D будівлі.</string>
+	<string name="3d_new_buildings_2">З 3D будівлями наші карти стали більш інформативними і гарними.</string>
+	<string name="3d_new_perspective">Улюблені карти під новим кутом</string>
+	<string name="3d_new_angle">Улюблені карти в новому ракурсі</string>
+	<string name="3d_new_added_perspective">Ми додали переспективний огляд у режим навігації.</string>
+	<string name="3d_2d">2D</string>
+	<string name="3d_3d">3D</string>
+	<string name="3d_buildings">Будівлі у 3D</string>
 </resources>

@@ -846,4 +846,13 @@
 	<string name="whats_new_between_any_points">Build routes between any points</string>
 	<string name="whats_new_happy_day">A happy day indeed! Plan your trips ahead with MAPS.ME.</string>
 	<string name="whats_new_next">Next</string>
+	<string name="3d_new_dimension">A new dimension in MAPS.ME</string>
+	<string name="3d_new_buildings">The map now shows the buildings in 3D.</string>
+	<string name="3d_new_buildings_2">With 3D buildings, our maps have become more informative and more beautiful.</string>
+	<string name="3d_new_perspective">Your favorite maps from a new perspective</string>
+	<string name="3d_new_angle">Your favorite maps in a new dimension</string>
+	<string name="3d_new_added_perspective">We have added perspective view to the navigation mode.</string>
+	<string name="3d_2d">2D</string>
+	<string name="3d_3d">3D</string>
+	<string name="3d_buildings">3D Buildings</string>
 </resources>
