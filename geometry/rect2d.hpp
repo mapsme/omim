@@ -246,7 +246,6 @@ namespace m2
       return true;
     }
 
-    /*
     bool operator < (m2::Rect<T> const & r) const
     {
       if (m_minX != r.m_minX)
@@ -260,7 +259,6 @@ namespace m2
 
       return false;
     }
-    */
 
     bool operator == (m2::Rect<T> const & r) const
     {

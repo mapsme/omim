@@ -21,6 +21,7 @@
 
 #include "std/set.hpp"
 #include "std/string.hpp"
+#include "std/tuple.hpp"
 #include "std/unique_ptr.hpp"
 #include "std/unordered_map.hpp"
 #include "std/vector.hpp"
@@ -80,6 +81,9 @@ public:
   void ClearCaches();
 
 private:
+  using TGeometryFeaturesKey = tuple<MwmSet::MwmId, m2::RectD, int /* scale */>;
+  using TGeometryFeaturesValue = unique_ptr<coding::CompressedBitVector>;
+
   struct Locality
   {
     Locality() : m_featureId(0), m_startToken(0), m_endToken(0) {}
@@ -126,6 +130,10 @@ private:
   // the lowest layer.
   void FindPaths();
 
+  // A caching wrapper around Retrieval::RetrieveGeometryFeatures.
+  coding::CompressedBitVector const & RetrieveGeometryFeatures(MwmContext const & context,
+                                                               m2::RectD const & rect);
+
   Index & m_index;
 
   // Geocoder params.
@@ -149,10 +157,13 @@ private:
   // Map from [curToken, endToken) to matching localities list.
   map<pair<size_t, size_t>, vector<Locality>> m_localities;
 
+  // Cache of geometry features.
+  map<TGeometryFeaturesKey, TGeometryFeaturesValue> m_geometryFeatures;
+
   // Cache of posting lists for each token in the query.  TODO (@y,
   // @m, @vng): consider to update this cache lazily, as user inputs
   // tokens one-by-one.
-  vector<unique_ptr<coding::CompressedBitVector>> m_features;
+  vector<unique_ptr<coding::CompressedBitVector>> m_addressFeatures;
 
   // This vector is used to indicate what tokens were matched by
   // locality and can't be re-used during the geocoding process.

@@ -1,8 +1,11 @@
 #pragma once
 
-#include "coding/compressed_bit_vector.hpp"
-
 #include "std/unique_ptr.hpp"
+
+namespace coding
+{
+class CompressedBitVector;
+}
 
 namespace search
 {
@@ -16,16 +19,17 @@ class FeaturesFilter
 public:
   FeaturesFilter();
 
-  FeaturesFilter(unique_ptr<coding::CompressedBitVector> filter, uint32_t threshold);
+  FeaturesFilter(coding::CompressedBitVector const & filter, uint32_t threshold);
 
-  inline void SetFilter(unique_ptr<coding::CompressedBitVector> filter) { m_filter = move(filter); }
+  inline void SetFilter(coding::CompressedBitVector const * filter) { m_filter = filter; }
   inline void SetThreshold(uint32_t threshold) { m_threshold = threshold; }
 
   bool NeedToFilter(coding::CompressedBitVector const & features) const;
   unique_ptr<coding::CompressedBitVector> Filter(coding::CompressedBitVector const & cbv) const;
 
 private:
-  unique_ptr<coding::CompressedBitVector> m_filter;
+  // Non-owning ptr.
+  coding::CompressedBitVector const * m_filter;
   uint32_t m_threshold;
 };
 }  // namespace v2

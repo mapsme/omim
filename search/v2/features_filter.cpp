@@ -1,13 +1,15 @@
 #include "search/v2/features_filter.hpp"
 
+#include "coding/compressed_bit_vector.hpp"
+
 namespace search
 {
 namespace v2
 {
-FeaturesFilter::FeaturesFilter() : m_threshold(0) {}
+FeaturesFilter::FeaturesFilter() : m_filter(nullptr), m_threshold(0) {}
 
-FeaturesFilter::FeaturesFilter(unique_ptr<coding::CompressedBitVector> filter, uint32_t threshold)
-  : m_filter(move(filter)), m_threshold(threshold)
+FeaturesFilter::FeaturesFilter(coding::CompressedBitVector const & filter, uint32_t threshold)
+  : m_filter(&filter), m_threshold(threshold)
 {
 }
 
