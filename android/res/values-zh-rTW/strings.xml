@@ -791,4 +791,13 @@
 	<string name="whats_new_between_any_points">創建任何點之間的路線</string>
 	<string name="whats_new_happy_day">真是愉快的一天！使用MAPS.ME提前計劃您的旅行。</string>
 	<string name="whats_new_next">下一頁</string>
+	<string name="3d_new_dimension">MAPS.ME中的全新維度</string>
+	<string name="3d_new_buildings">地圖現在以3D顯示大樓。</string>
+	<string name="3d_new_buildings_2">有了3D大樓，我們的地圖信息量更豐富也更美了。</string>
+	<string name="3d_new_perspective">從全新的角度看您最愛的地圖</string>
+	<string name="3d_new_angle">您最愛的地圖有了新維度</string>
+	<string name="3d_new_added_perspective">我們添加了視角視圖到導航模式。</string>
+	<string name="3d_2d">2D</string>
+	<string name="3d_3d">3D</string>
+	<string name="3d_buildings">3D建築</string>
 </resources>
