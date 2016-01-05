@@ -841,14 +841,55 @@ UNIT_TEST(StorageTest_ObsoleteMapsRemoval)
 
 UNIT_TEST(StorageTest_GetRootId)
 {
-  Storage storage;
+  Storage storage(string("{ \
+                         \"id\": \"Countries\", \
+                         \"v\": 151227, \
+                         \"g\": [] \
+                         }"));
   // The name of the root is the same for courntries.txt version 1 and version 2.
   TEST_EQUAL(storage.GetRootId(), "Countries", ());
 }
 
 UNIT_TEST(StorageTest_GetChildren)
 {
-  Storage storage;
+  Storage storage(string("{ \
+                        \"id\": \"Countries\", \
+                        \"v\": 151227, \
+                        \"g\": [ \
+                            { \
+                             \"id\": \"Abkhazia\", \
+                             \"s\": 4689718, \
+                             \"old\": [ \
+                              \"Georgia\" \
+                             ] \
+                            }, \
+                            { \
+                             \"id\": \"Algeria\", \
+                             \"g\": [ \
+                              { \
+                               \"id\": \"Algeria_Central\", \
+                               \"s\": 24177144, \
+                               \"old\": [ \
+                                \"Algeria\" \
+                               ] \
+                              }, \
+                              { \
+                               \"id\": \"Algeria_Coast\", \
+                               \"s\": 66701534, \
+                               \"old\": [ \
+                                \"Algeria\" \
+                               ] \
+                              } \
+                             ] \
+                            }, \
+                            { \
+                             \"id\": \"South Korea_South\", \
+                             \"s\": 48394664, \
+                             \"old\": [ \
+                              \"South Korea\" \
+                             ] \
+                            } \
+                         ]}"));
   if (!version::IsSingleMwm(storage.GetCurrentDataVersion()))
   {
     // Storage::GetChildren is used only with single (small) mwms.
@@ -859,16 +900,16 @@ UNIT_TEST(StorageTest_GetChildren)
   TEST_EQUAL(world, "Countries", ());
 
   vector<TIndex> const countriesList = storage.GetChildren(world);
-  TEST_EQUAL(countriesList.size(), 206, ());
+  TEST_EQUAL(countriesList.size(), 3, ());
   TEST_EQUAL(countriesList.front(), "Abkhazia", ());
-  TEST_EQUAL(countriesList.back(), "South Korea", ());
+  TEST_EQUAL(countriesList.back(), "South Korea_South", ());
 
   vector<TIndex> const abkhaziaList = storage.GetChildren("Abkhazia");
   TEST(abkhaziaList.empty(), ());
 
-  vector<TIndex> const belarusList = storage.GetChildren("Belarus");
-  TEST_EQUAL(belarusList.size(), 6, ());
-  TEST_EQUAL(belarusList.front(), "Belarus_Vitebsk Region", ());
+  vector<TIndex> const belarusList = storage.GetChildren("Algeria");
+  TEST_EQUAL(belarusList.size(), 2, ());
+  TEST_EQUAL(belarusList.front(), "Algeria_Central", ());
 }
 
 }  // namespace storage
