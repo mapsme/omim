@@ -1,6 +1,5 @@
 #include "storage/http_map_files_downloader.hpp"
 #include "storage/storage.hpp"
-#include "storage_tests/test_map_files_downloader.hpp"
 
 #include "defines.hpp"
 
@@ -83,13 +82,12 @@ Storage::Storage() : m_downloader(new HttpMapFilesDownloader()), m_currentSlotId
   LoadCountriesFile(false /* forceReload */);
 }
 
-Storage::Storage(string const & referenceCountriesTxtJsonForTesting)
-  : m_downloader(new TestMapFilesDownloader()), m_currentSlotId(0)
+Storage::Storage(string const & referenceCountriesTxtJsonForTesting,
+                 MapFilesDownloader * mapDownloaderForTesting)
+  : m_downloader(mapDownloaderForTesting), m_currentSlotId(0)
 {
-  m_countries.Clear();
   m_currentVersion = LoadCountries(referenceCountriesTxtJsonForTesting, m_countries);
-  if (m_currentVersion < 0)
-    LOG(LERROR, ("Can't load countries file", COUNTRIES_FILE));
+  CHECK_LESS_OR_EQUAL(0, m_currentVersion, ("Can't load test countries file"));
 }
 
 void Storage::Init(TUpdate const & update) { m_update = update; }
