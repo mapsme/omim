@@ -877,18 +877,13 @@ vector<TIndex> const Storage::GetChildren(TIndex const & parent) const
     ASSERT(false, ("TIndex =", parent, "not found in m_countries."));
     return vector<TIndex>();
   }
-  size_t const childernCount = parentNode->SiblingsCount();
-  if (childernCount == 0)
-  {
-    // parent is a leaf. It does not contain any child.
-    return vector<TIndex>();
-  }
-  vector<TIndex> childernVector;
-  childernVector.reserve(childernCount);
-  for (size_t i = 0; i < childernCount; ++i)
-  {
-    childernVector.emplace_back(m_countries[i].Value().Name());
-  }
-  return childernVector;
+
+  size_t const childrenCount = parentNode->SiblingsCount();
+  vector<TIndex> childrenVector;
+  childrenVector.reserve(childrenCount);
+  for (size_t i = 0; i < childrenCount; ++i)
+    childrenVector.emplace_back((*parentNode)[i].Value().Name());
+
+  return childrenVector;
 }
 }  // namespace storage
