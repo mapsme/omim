@@ -5291,6 +5291,13 @@
      en = Night
      ru = Ночная
 
+  [pref_map_style_auto]
+     tags = android
+     comment = «Map style» entry value
+     en = Auto
+     ru = Автоматическое переключение
+
+
   [pref_tts_enable_title]
      tags = android,ios
      comment = Settings «Route» category: «Tts enabled» title
