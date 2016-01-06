@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.R;
+import com.mapswithme.maps.base.BaseMwmDialogFragment;
 import com.mapswithme.maps.bookmarks.data.DistanceAndAzimut;
 import com.mapswithme.maps.bookmarks.data.MapObject;
 import com.mapswithme.maps.location.LocationHelper;
@@ -20,7 +21,7 @@ import com.mapswithme.util.LocationUtils;
 import com.mapswithme.util.statistics.AlohaHelper;
 import com.mapswithme.util.statistics.Statistics;
 
-public class DirectionFragment extends DialogFragment implements LocationHelper.LocationListener
+public class DirectionFragment extends BaseMwmDialogFragment implements LocationHelper.LocationListener
 {
   private static final String EXTRA_MAP_OBJECT = "MapObject";
 

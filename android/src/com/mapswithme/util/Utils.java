@@ -12,6 +12,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.DimenRes;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -21,15 +22,19 @@ import android.util.Log;
 import android.view.Window;
 import android.widget.Toast;
 
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import com.mapswithme.maps.BuildConfig;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.activity.CustomNavigateUpListener;
 import com.mapswithme.util.statistics.AlohaHelper;
-
-import java.io.*;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 public class Utils
 {
@@ -304,7 +309,7 @@ public class Utils
     }
   }
 
-  public static void navigateToParent(Activity activity)
+  public static void navigateToParent(@NonNull Activity activity)
   {
     if (activity instanceof CustomNavigateUpListener)
       ((CustomNavigateUpListener) activity).customOnNavigateUp();
