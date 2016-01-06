@@ -16,6 +16,10 @@
 		670D05991B0CBD5A0013A7AC /* draw_widget.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 675345711A404CB200A0A8C3 /* draw_widget.hpp */; };
 		670D059A1B0CBD5B0013A7AC /* mainwindow.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 675345761A404CB200A0A8C3 /* mainwindow.hpp */; };
 		670D059B1B0CBD5B0013A7AC /* proxystyle.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 6753457A1A404CB200A0A8C3 /* proxystyle.hpp */; };
+		670E38BB1C3C1D0700E9C0A6 /* countries_mig.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 670E38B91C3C1D0700E9C0A6 /* countries_mig.txt */; };
+		670E38BC1C3C1D0700E9C0A6 /* packed_polygons_mig.bin in CopyFiles */ = {isa = PBXBuildFile; fileRef = 670E38BA1C3C1D0700E9C0A6 /* packed_polygons_mig.bin */; };
+		670E38BF1C3D32F700E9C0A6 /* colors.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 670E38BD1C3D32F700E9C0A6 /* colors.txt */; };
+		670E38C01C3D32F700E9C0A6 /* patterns.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 670E38BE1C3D32F700E9C0A6 /* patterns.txt */; };
 		6714E5E41BD13F67008AB603 /* drules_proto_clear.bin in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6714E5DE1BD13F67008AB603 /* drules_proto_clear.bin */; };
 		6714E5E51BD13F67008AB603 /* drules_proto_clear.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6714E5DF1BD13F67008AB603 /* drules_proto_clear.txt */; };
 		6714E5E61BD13F67008AB603 /* drules_proto_dark.bin in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6714E5E01BD13F67008AB603 /* drules_proto_dark.bin */; };
@@ -135,6 +139,10 @@
 			dstPath = "";
 			dstSubfolderSpec = 7;
 			files = (
+				670E38BF1C3D32F700E9C0A6 /* colors.txt in CopyFiles */,
+				670E38C01C3D32F700E9C0A6 /* patterns.txt in CopyFiles */,
+				670E38BB1C3C1D0700E9C0A6 /* countries_mig.txt in CopyFiles */,
+				670E38BC1C3C1D0700E9C0A6 /* packed_polygons_mig.bin in CopyFiles */,
 				67A461A71C2172C400B18739 /* 07_roboto_medium.ttf in CopyFiles */,
 				6714E5E41BD13F67008AB603 /* drules_proto_clear.bin in CopyFiles */,
 				6714E5E51BD13F67008AB603 /* drules_proto_clear.txt in CopyFiles */,
@@ -175,6 +183,10 @@
 
 /* Begin PBXFileReference section */
 		670D05BC1B0E10640013A7AC /* defaults.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = defaults.xcconfig; path = ../defaults.xcconfig; sourceTree = "<group>"; };
+		670E38B91C3C1D0700E9C0A6 /* countries_mig.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = countries_mig.txt; path = ../../data/countries_mig.txt; sourceTree = "<group>"; };
+		670E38BA1C3C1D0700E9C0A6 /* packed_polygons_mig.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; name = packed_polygons_mig.bin; path = ../../data/packed_polygons_mig.bin; sourceTree = "<group>"; };
+		670E38BD1C3D32F700E9C0A6 /* colors.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = colors.txt; path = ../../data/colors.txt; sourceTree = "<group>"; };
+		670E38BE1C3D32F700E9C0A6 /* patterns.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = patterns.txt; path = ../../data/patterns.txt; sourceTree = "<group>"; };
 		6714E5DE1BD13F67008AB603 /* drules_proto_clear.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = drules_proto_clear.bin; sourceTree = "<group>"; };
 		6714E5DF1BD13F67008AB603 /* drules_proto_clear.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = drules_proto_clear.txt; sourceTree = "<group>"; };
 		6714E5E01BD13F67008AB603 /* drules_proto_dark.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = drules_proto_dark.bin; sourceTree = "<group>"; };
@@ -419,6 +431,10 @@
 		675345401A404C6100A0A8C3 = {
 			isa = PBXGroup;
 			children = (
+				670E38BD1C3D32F700E9C0A6 /* colors.txt */,
+				670E38BE1C3D32F700E9C0A6 /* patterns.txt */,
+				670E38B91C3C1D0700E9C0A6 /* countries_mig.txt */,
+				670E38BA1C3C1D0700E9C0A6 /* packed_polygons_mig.bin */,
 				670D05BC1B0E10640013A7AC /* defaults.xcconfig */,
 				6729A5C91A693045007D5872 /* Resources */,
 				6729A4591A684401007D5872 /* Libs */,

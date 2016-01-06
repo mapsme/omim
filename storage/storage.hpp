@@ -296,6 +296,11 @@ public:
 
   void Init(TUpdate const & update);
 
+
+  // Switch on new storage version, remove old mwm
+  // and add required mwm's into download queue.
+  void Migrate();
+
   // Clears local files registry and downloader's queue.
   void Clear();
 

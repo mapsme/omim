@@ -207,6 +207,17 @@ bool SearchPanel::Try3dModeCmd(QString const & str)
   return true;
 }
 
+bool SearchPanel::TryMigrate(QString const & str)
+{
+  bool const isMigrate = (str == "?migrate");
+
+  if (!isMigrate)
+    return false;
+
+  m_pDrawWidget->GetFramework().Storage().Migrate();
+  return true;
+}
+
 void SearchPanel::OnSearchTextChanged(QString const & str)
 {
   QString const normalized = str.normalized(QString::NormalizationForm_KC);
@@ -217,6 +228,8 @@ void SearchPanel::OnSearchTextChanged(QString const & str)
   if (TryChangeRouterCmd(normalized))
     return;
   if (Try3dModeCmd(normalized))
+    return;
+  if (TryMigrate(normalized))
     return;
 
   // search even with empty query
