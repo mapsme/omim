@@ -193,12 +193,12 @@ void LoadCountryFile2CountryInfo(string const & jsonBuffer, map<string, CountryI
 template <class T>
 void SaveImpl(T const & v, json_t * jParent)
 {
-  size_t const siblingsCount = v.SiblingsCount();
-  CHECK_GREATER(siblingsCount, 0, ());
+  size_t const childrenCount = v.ChildrenCount();
+  CHECK_GREATER(childrenCount, 0, ());
 
   my::JsonHandle jArray;
   jArray.AttachNew(json_array());
-  for (size_t i = 0; i < siblingsCount; ++i)
+  for (size_t i = 0; i < childrenCount; ++i)
   {
     my::JsonHandle jCountry;
     jCountry.AttachNew(json_object());
@@ -220,7 +220,7 @@ void SaveImpl(T const & v, json_t * jParent)
                           json_integer(file.GetRemoteSize(MapOptions::CarRouting)));
     }
 
-    if (v.At(i).SiblingsCount())
+    if (v.At(i).ChildrenCount())
       SaveImpl(v.At(i), jCountry.get());
 
     json_array_append(jArray.get(), jCountry.get());
