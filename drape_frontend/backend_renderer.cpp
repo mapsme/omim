@@ -102,7 +102,7 @@ void BackendRenderer::AcceptMessage(ref_ptr<Message> message)
 
         gui::CountryStatusHelper & helper = gui::DrapeGui::Instance().GetCountryStatusHelper();
         if ((*tiles.begin()).m_zoomLevel > scales::GetUpperWorldScale())
-          m_model.UpdateCountryIndex(helper.GetCountryIndex(), screen.ClipRect().Center());
+          m_model.UpdateCountryId(helper.GetCountryId(), screen.ClipRect().Center());
         else
           helper.Clear();
       }
@@ -197,7 +197,7 @@ void BackendRenderer::AcceptMessage(ref_ptr<Message> message)
       else
       {
         gui::CountryInfo const & info = msg->GetCountryInfo();
-        if (msg->IsCurrentCountry() || helper.GetCountryIndex() == info.m_countryIndex)
+        if (msg->IsCurrentCountry() || helper.GetCountryId() == info.m_countryId)
         {
           helper.SetCountryInfo(info);
         }
