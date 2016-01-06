@@ -92,7 +92,7 @@ void Index::OnMwmDeregistered(LocalCountryFile const & localFile)
 // Index::FeaturesLoaderGuard implementation
 //////////////////////////////////////////////////////////////////////////////////
 
-Index::FeaturesLoaderGuard::FeaturesLoaderGuard(Index const & parent, MwmId id)
+Index::FeaturesLoaderGuard::FeaturesLoaderGuard(Index const & parent, MwmId const & id)
     : m_handle(parent.GetMwmHandleById(id)),
       /// @note This guard is suitable when mwm is loaded
       m_vector(m_handle.GetValue<MwmValue>()->m_cont,
@@ -116,7 +116,7 @@ bool Index::FeaturesLoaderGuard::IsWorld() const
 void Index::FeaturesLoaderGuard::GetFeatureByIndex(uint32_t index, FeatureType & ft) const
 {
   MwmId const & id = m_handle.GetId();
-  ASSERT_NOT_EQUAL(osm::Editor::EDeleted, m_editor.GetFeatureStatus(id, index),
+  ASSERT_NOT_EQUAL(osm::Editor::FeatureStatus::Deleted, m_editor.GetFeatureStatus(id, index),
                    ("Deleted feature was cached. Please review your code."));
   if (!m_editor.Instance().GetEditedFeature(id, index, ft))
   {

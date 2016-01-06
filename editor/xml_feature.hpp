@@ -26,18 +26,23 @@ class XMLFeature
   static char const * const kDefaultLang;
 
 public:
-  XMLFeature();
+  enum class Type
+  {
+    Node,
+    Way
+  };
+
+  XMLFeature(Type const type);
   XMLFeature(string const & xml);
   XMLFeature(pugi::xml_document const & xml);
   XMLFeature(pugi::xml_node const & xml);
   XMLFeature(XMLFeature const & feature) : XMLFeature(feature.m_document) {}
   void Save(ostream & ost) const;
 
+  Type GetType() const;
+
   m2::PointD GetCenter() const;
   void SetCenter(m2::PointD const & mercatorCenter);
-
-  string GetType() const;
-  void SetType(string const & type);
 
   string GetName(string const & lang) const;
   string GetName(uint8_t const langCode = StringUtf8Multilang::DEFAULT_CODE) const;

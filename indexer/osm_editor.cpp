@@ -38,149 +38,148 @@ namespace osm
 
 namespace
 {
-// TODO(mgsergio): Replace hard-coded value with reading from file.
 string GetEditorFilePath() { return GetPlatform().WritablePathForFile(kEditorXMLFileName); }
-static unordered_set<TStringPair, boost::hash<TStringPair>> const gConvertibleTypepairs = {
-    {"aeroway", "aerodrome"},
-    {"aeroway", "airport"},
-    {"amenity", "atm"},
-    {"amenity", "bank"},
-    {"amenity", "bar"},
-    {"amenity", "bbq"},
-    {"amenity", "bench"},
-    {"amenity", "bicycle_rental"},
-    {"amenity", "bureau_de_change"},
-    {"amenity", "bus_station"},
-    {"amenity", "cafe"},
-    {"amenity", "car_rental"},
-    {"amenity", "car_sharing"},
-    {"amenity", "casino"},
-    {"amenity", "cinema"},
-    {"amenity", "college"},
-    {"amenity", "doctors"},
-    {"amenity", "drinking_water"},
-    {"amenity", "embassy"},
-    {"amenity", "fast_food"},
-    {"amenity", "ferry_terminal"},
-    {"amenity", "fire_station"},
-    {"amenity", "fountain"},
-    {"amenity", "fuel"},
-    {"amenity", "grave_yard"},
-    {"amenity", "hospital"},
-    {"amenity", "hunting_stand"},
-    {"amenity", "kindergarten"},
-    {"amenity", "library"},
-    {"amenity", "marketplace"},
-    {"amenity", "nightclub"},
-    {"amenity", "parking"},
-    {"amenity", "pharmacy"},
-    {"amenity", "place_of_worship"},
-    {"amenity", "police"},
-    {"amenity", "post_box"},
-    {"amenity", "post_office"},
-    {"amenity", "pub"},
-    {"amenity", "recycling"},
-    {"amenity", "restaurant"},
-    {"amenity", "school"},
-    {"amenity", "shelter"},
-    {"amenity", "taxi"},
-    {"amenity", "telephone"},
-    {"amenity", "theatre"},
-    {"amenity", "toilets"},
-    {"amenity", "townhall"},
-    {"amenity", "university"},
-    {"amenity", "waste_disposal"},
-    {"highway", "bus_stop"},
-    {"highway", "speed_camera"},
-    {"historic", "archaeological_site"},
-    {"historic", "castle"},
-    {"historic", "memorial"},
-    {"historic", "monument"},
-    {"historic", "ruins"},
-    {"internet", "access"},
-    {"internet", "access|wlan"},
-    {"landuse", "cemetery"},
-    {"leisure", "garden"},
-    {"leisure", "pitch"},
-    {"leisure", "playground"},
-    {"leisure", "sports_centre"},
-    {"leisure", "stadium"},
-    {"leisure", "swimming_pool"},
-    {"natural", "peak"},
-    {"natural", "spring"},
-    {"natural", "waterfall"},
-    {"office", "company"},
-    {"office", "estate_agent"},
-    {"office", "government"},
-    {"office", "lawyer"},
-    {"office", "telecommunication"},
-    {"place", "farm"},
-    {"place", "hamlet"},
-    {"place", "village"},
-    {"railway", "halt"},
-    {"railway", "station"},
-    {"railway", "subway_entrance"},
-    {"railway", "tram_stop"},
-    {"shop", "alcohol"},
-    {"shop", "bakery"},
-    {"shop", "beauty"},
-    {"shop", "beverages"},
-    {"shop", "bicycle"},
-    {"shop", "books"},
-    {"shop", "butcher"},
-    {"shop", "car"},
-    {"shop", "car_repair"},
-    {"shop", "chemist"},
-    {"shop", "clothes"},
-    {"shop", "computer"},
-    {"shop", "confectionery"},
-    {"shop", "convenience"},
-    {"shop", "department_store"},
-    {"shop", "doityourself"},
-    {"shop", "electronics"},
-    {"shop", "florist"},
-    {"shop", "furniture"},
-    {"shop", "garden_centre"},
-    {"shop", "gift"},
-    {"shop", "greengrocer"},
-    {"shop", "hairdresser"},
-    {"shop", "hardware"},
-    {"shop", "jewelry"},
-    {"shop", "kiosk"},
-    {"shop", "laundry"},
-    {"shop", "mall"},
-    {"shop", "mobile_phone"},
-    {"shop", "optician"},
-    {"shop", "shoes"},
-    {"shop", "sports"},
-    {"shop", "supermarket"},
-    {"shop", "toys"},
-    {"tourism", "alpine_hut"},
-    {"tourism", "artwork"},
-    {"tourism", "attraction"},
-    {"tourism", "camp_site"},
-    {"tourism", "caravan_site"},
-    {"tourism", "guest_house"},
-    {"tourism", "hostel"},
-    {"tourism", "hotel"},
-    {"tourism", "information"},
-    {"tourism", "motel"},
-    {"tourism", "museum"},
-    {"tourism", "picnic_site"},
-    {"tourism", "viewpoint"},
-    {"waterway", "waterfall"}};
+// TODO(mgsergio): Replace hard-coded value with reading from file.
+static unordered_set<string> const gEditableTypes = {
+  {"aeroway-aerodrome"},
+  {"aeroway-airport"},
+  {"amenity-atm"},
+  {"amenity-bank"},
+  {"amenity-bar"},
+  {"amenity-bbq"},
+  {"amenity-bench"},
+  {"amenity-bicycle_rental"},
+  {"amenity-bureau_de_change"},
+  {"amenity-bus_station"},
+  {"amenity-cafe"},
+  {"amenity-car_rental"},
+  {"amenity-car_sharing"},
+  {"amenity-casino"},
+  {"amenity-cinema"},
+  {"amenity-college"},
+  {"amenity-doctors"},
+  {"amenity-drinking_water"},
+  {"amenity-embassy"},
+  {"amenity-fast_food"},
+  {"amenity-ferry_terminal"},
+  {"amenity-fire_station"},
+  {"amenity-fountain"},
+  {"amenity-fuel"},
+  {"amenity-grave_yard"},
+  {"amenity-hospital"},
+  {"amenity-hunting_stand"},
+  {"amenity-kindergarten"},
+  {"amenity-library"},
+  {"amenity-marketplace"},
+  {"amenity-nightclub"},
+  {"amenity-parking"},
+  {"amenity-pharmacy"},
+  {"amenity-place_of_worship"},
+  {"amenity-police"},
+  {"amenity-post_box"},
+  {"amenity-post_office"},
+  {"amenity-pub"},
+  {"amenity-recycling"},
+  {"amenity-restaurant"},
+  {"amenity-school"},
+  {"amenity-shelter"},
+  {"amenity-taxi"},
+  {"amenity-telephone"},
+  {"amenity-theatre"},
+  {"amenity-toilets"},
+  {"amenity-townhall"},
+  {"amenity-university"},
+  {"amenity-waste_disposal"},
+  {"highway-bus_stop"},
+  {"highway-speed_camera"},
+  {"historic-archaeological_site"},
+  {"historic-castle"},
+  {"historic-memorial"},
+  {"historic-monument"},
+  {"historic-ruins"},
+  {"internet-access"},
+  {"internet-access|wlan"},
+  {"landuse-cemetery"},
+  {"leisure-garden"},
+  {"leisure-pitch"},
+  {"leisure-playground"},
+  {"leisure-sports_centre"},
+  {"leisure-stadium"},
+  {"leisure-swimming_pool"},
+  {"natural-peak"},
+  {"natural-spring"},
+  {"natural-waterfall"},
+  {"office-company"},
+  {"office-estate_agent"},
+  {"office-government"},
+  {"office-lawyer"},
+  {"office-telecommunication"},
+  {"place-farm"},
+  {"place-hamlet"},
+  {"place-village"},
+  {"railway-halt"},
+  {"railway-station"},
+  {"railway-subway_entrance"},
+  {"railway-tram_stop"},
+  {"shop-alcohol"},
+  {"shop-bakery"},
+  {"shop-beauty"},
+  {"shop-beverages"},
+  {"shop-bicycle"},
+  {"shop-books"},
+  {"shop-butcher"},
+  {"shop-car"},
+  {"shop-car_repair"},
+  {"shop-chemist"},
+  {"shop-clothes"},
+  {"shop-computer"},
+  {"shop-confectionery"},
+  {"shop-convenience"},
+  {"shop-department_store"},
+  {"shop-doityourself"},
+  {"shop-electronics"},
+  {"shop-florist"},
+  {"shop-furniture"},
+  {"shop-garden_centre"},
+  {"shop-gift"},
+  {"shop-greengrocer"},
+  {"shop-hairdresser"},
+  {"shop-hardware"},
+  {"shop-jewelry"},
+  {"shop-kiosk"},
+  {"shop-laundry"},
+  {"shop-mall"},
+  {"shop-mobile_phone"},
+  {"shop-optician"},
+  {"shop-shoes"},
+  {"shop-sports"},
+  {"shop-supermarket"},
+  {"shop-toys"},
+  {"tourism-alpine_hut"},
+  {"tourism-artwork"},
+  {"tourism-attraction"},
+  {"tourism-camp_site"},
+  {"tourism-caravan_site"},
+  {"tourism-guest_house"},
+  {"tourism-hostel"},
+  {"tourism-hotel"},
+  {"tourism-information"},
+  {"tourism-motel"},
+  {"tourism-museum"},
+  {"tourism-picnic_site"},
+  {"tourism-viewpoint"},
+  {"waterway-waterfall"}};
 
-TStringPair MapsmeTypeToPair(string const & mapseType)
+template <typename TIterator>
+bool HasAtLeastOneEditableType(TIterator from, TIterator const to)
 {
-  vector<string> result(strings::SimpleTokenizer(mapseType, "|"), strings::SimpleTokenizer());
-  // TODO(mgsergio): Support only one type in the first version.
-  ASSERT_EQUAL(result.size(), 2, ("Too many parts in type string."));
-  return {result[0], result[1]};
-}
-
-bool IsTypeTag(TStringPair const & tag)
-{
-  return gConvertibleTypepairs.find(tag) != end(gConvertibleTypepairs);
+  while (from != to)
+  {
+    auto const & type = classif().GetReadableObjectName(*from++);
+    if (gEditableTypes.find(type) != end(gEditableTypes))
+      return true;
+  }
+  return false;
 }
 } // namespace
 
@@ -212,9 +211,12 @@ void Editor::LoadMapEdits()
 
   array<pair<FeatureStatus, char const *>, 3> const sections =
   {{
-    {EDeleted, kDeleteSection}, {EModified, kModifySection}, {ECreated, kCreateSection}
+      {FeatureStatus::Deleted, kDeleteSection},
+      {FeatureStatus::Modified, kModifySection},
+      {FeatureStatus::Created, kCreateSection}
   }};
   int deleted = 0, modified = 0, created = 0;
+
   for (xml_node mwm : doc.child(kXmlRootNode).children(kXmlMwmNode))
   {
     string const mapName = mwm.attribute("name").as_string("");
@@ -227,29 +229,48 @@ void Editor::LoadMapEdits()
       continue;
     }
 
-    for (size_t i = 0; i < sections.size(); ++i)
+    for (auto const & section : sections)
     {
-      for (xml_node node : mwm.child(sections[i].second).children("node"))
+      for (auto const nodeOrWay : mwm.child(section.second).select_nodes("node|way"))
       {
         try
         {
-          XMLFeature const xml(node);
+          XMLFeature const xml(nodeOrWay.node());
           FeatureID const fid(id, xml.GetOffset());
-          auto & fti = m_features[id][fid.m_index];
-          fti.m_feature = FeatureType::FromXML(xml);
+          FeatureTypeInfo fti;
+
+          /// TODO(mgsergio): uncomment when feature creating will
+          /// be required
+          // if (xml.GetType() != XMLFeature::Type::Way)
+          // {
+          // TODO(mgsergio): Check if feature can be read.
+          fti.m_feature = m_featureLoaderFn(fid);
+          fti.m_feature.ApplyPatch(xml);
+          // }
+          // else
+          // {
+          //   fti.m_feature = FeatureType::FromXML(xml);
+          // }
+
           fti.m_feature.SetID(fid);
+
           fti.m_modificationTimestamp = xml.GetModificationTime();
           ASSERT_NOT_EQUAL(my::INVALID_TIME_STAMP, fti.m_modificationTimestamp, ());
           fti.m_uploadAttemptTimestamp = xml.GetUploadTime();
           fti.m_uploadStatus = xml.GetUploadStatus();
           fti.m_uploadError = xml.GetUploadError();
-          fti.m_status = sections[i].first;
+          fti.m_status = section.first;
+
+          /// Call to m_featureLoaderFn indirectly tries to load feature by
+          /// it's ID from the editor's m_features.
+          /// That's why insertion into m_features should go AFTER call to m_featureLoaderFn.
+          m_features[id][fid.m_index] = fti;
         }
         catch (editor::XMLFeatureError const & ex)
         {
           ostringstream s;
-          node.print(s, "  ");
-          LOG(LERROR, (ex.what(), "Can't create XMLFeature in section", sections[i].second, s.str()));
+          nodeOrWay.node().print(s, "  ");
+          LOG(LERROR, (ex.what(), "Can't create XMLFeature in section", section.second, s.str()));
         }
       } // for nodes
     } // for sections
@@ -293,10 +314,10 @@ void Editor::Save(string const & fullFilePath) const
       }
       switch (fti.m_status)
       {
-      case EDeleted: VERIFY(xf.AttachToParentNode(deleted), ()); break;
-      case EModified: VERIFY(xf.AttachToParentNode(modified), ()); break;
-      case ECreated: VERIFY(xf.AttachToParentNode(created), ()); break;
-      case EUntouched: CHECK(false, ("Not edited features shouldn't be here."));
+      case FeatureStatus::Deleted: VERIFY(xf.AttachToParentNode(deleted), ()); break;
+      case FeatureStatus::Modified: VERIFY(xf.AttachToParentNode(modified), ()); break;
+      case FeatureStatus::Created: VERIFY(xf.AttachToParentNode(created), ()); break;
+      case FeatureStatus::Untouched: CHECK(false, ("Not edited features shouldn't be here."));
       }
     }
   }
@@ -309,15 +330,15 @@ Editor::FeatureStatus Editor::GetFeatureStatus(MwmSet::MwmId const & mwmId, uint
 {
   // Most popular case optimization.
   if (m_features.empty())
-    return EUntouched;
+    return FeatureStatus::Untouched;
 
   auto const mwmMatched = m_features.find(mwmId);
   if (mwmMatched == m_features.end())
-    return EUntouched;
+    return FeatureStatus::Untouched;
 
   auto const offsetMatched = mwmMatched->second.find(offset);
   if (offsetMatched == mwmMatched->second.end())
-    return EUntouched;
+    return FeatureStatus::Untouched;
 
   return offsetMatched->second.m_status;
 }
@@ -326,7 +347,7 @@ void Editor::DeleteFeature(FeatureType const & feature)
 {
   FeatureID const fid = feature.GetID();
   FeatureTypeInfo & ftInfo = m_features[fid.m_mwmId][fid.m_index];
-  ftInfo.m_status = EDeleted;
+  ftInfo.m_status = FeatureStatus::Deleted;
   ftInfo.m_feature = feature;
   // TODO: What if local client time is absolutely wrong?
   ftInfo.m_modificationTimestamp = time(nullptr);
@@ -353,7 +374,7 @@ void Editor::EditFeature(FeatureType & editedFeature)
   // TODO(AlexZ): Check if feature has not changed and reset status.
   FeatureID const fid = editedFeature.GetID();
   FeatureTypeInfo & ftInfo = m_features[fid.m_mwmId][fid.m_index];
-  ftInfo.m_status = EModified;
+  ftInfo.m_status = FeatureStatus::Modified;
   ftInfo.m_feature = editedFeature;
   // TODO: What if local client time is absolutely wrong?
   ftInfo.m_modificationTimestamp = time(nullptr);
@@ -379,7 +400,8 @@ void Editor::ForEachFeatureInMwmRectAndScale(MwmSet::MwmId const & id,
   for (auto const & offset : mwmFound->second)
   {
     FeatureTypeInfo const & ftInfo = offset.second;
-    if (ftInfo.m_status == ECreated && rect.IsPointInside(ftInfo.m_feature.GetCenter()))
+    if (ftInfo.m_status == FeatureStatus::Created &&
+        rect.IsPointInside(ftInfo.m_feature.GetCenter()))
       f(FeatureID(id, offset.first));
   }
 }
@@ -398,7 +420,8 @@ void Editor::ForEachFeatureInMwmRectAndScale(MwmSet::MwmId const & id,
   for (auto & offset : mwmFound->second)
   {
     FeatureTypeInfo & ftInfo = offset.second;
-    if (ftInfo.m_status == ECreated && rect.IsPointInside(ftInfo.m_feature.GetCenter()))
+    if (ftInfo.m_status == FeatureStatus::Created &&
+        rect.IsPointInside(ftInfo.m_feature.GetCenter()))
       f(ftInfo.m_feature);
   }
 }
@@ -421,37 +444,12 @@ bool Editor::GetEditedFeature(MwmSet::MwmId const & mwmId, uint32_t offset, Feat
 vector<Metadata::EType> Editor::EditableMetadataForType(FeatureType const & feature) const
 {
   // TODO(mgsergio): Load editable fields into memory from XML and query them here.
-
   TTypes types;
   feature.ForEachType([&types](uint32_t type) { types.push_back(type); });
-  // TODO(mgsergio): Only one-typed features are now supported.
-  if (types.size() != 1 || feature.GetFeatureType() != feature::GEOM_POINT)
-    return {};
 
   // Enable opening hours for the first release.
-  auto const & tags = GetTagsForType(types[0]);
-  if (tags.size() == 1 && IsTypeTag(tags[0]))
+  if (HasAtLeastOneEditableType(begin(types), end(types)))
     return {Metadata::FMD_OPEN_HOURS};
   return {};
-}
-
-Editor::TTypes Editor::GetTypesOfFeature(editor::XMLFeature const & xmlFeature) const
-{
-  TTags typeTags;
-  xmlFeature.ForEachTag([&typeTags](string const & key, string const & value)
-                        {
-                          if (IsTypeTag({key, value}))
-                            typeTags.emplace_back(key, value);
-                        });
-  ASSERT_GREATER(typeTags.size(), 0, ("Cannot determine type. Please review your code."));
-  // TODO(mgsergio): Only one-typed features are supported in the first version.
-  ASSERT_EQUAL(typeTags.size(), 1, ("Too many types for a feature."));
-  return {classif().GetTypeByPathSafe({typeTags[0].first, typeTags[0].second})};
-}
-
-Editor::TTags Editor::GetTagsForType(uint32_t type) const
-{
-  // TODO(mgsergio): Only one-typed features are supported in the first version.
-  return {MapsmeTypeToPair(classif().GetFullObjectName(type))};
 }
 }  // namespace osm

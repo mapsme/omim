@@ -137,13 +137,14 @@ private:
                 FeatureType feature;
                 switch (m_editor.GetFeatureStatus(mwmID, index))
                 {
-                case osm::Editor::EDeleted: return;
-                case osm::Editor::EModified:
+                case osm::Editor::FeatureStatus::Deleted: return;
+                case osm::Editor::FeatureStatus::Modified:
                   VERIFY(m_editor.GetEditedFeature(mwmID, index, feature), ());
                   m_f(feature);
                   return;
-                case osm::Editor::ECreated: CHECK(false, ("Created features index should be generated."));
-                case osm::Editor::EUntouched: break;
+                case osm::Editor::FeatureStatus::Created:
+                  CHECK(false, ("Created features index should be generated."));
+                case osm::Editor::FeatureStatus::Untouched: break;
                 }
                 if (checkUnique(index))
                 {
@@ -195,11 +196,15 @@ private:
 
         for (auto const & i : interval)
         {
-          index.ForEachInIntervalAndScale([&] (uint32_t index)
-          {
-            if (osm::Editor::EDeleted != m_editor.GetFeatureStatus(mwmID, index) && checkUnique(index))
-              m_f(FeatureID(mwmID, index));
-          }, i.first, i.second, scale);
+          index.ForEachInIntervalAndScale(
+              [&](uint32_t index)
+              {
+                if (osm::Editor::FeatureStatus::Deleted !=
+                        m_editor.GetFeatureStatus(mwmID, index) &&
+                    checkUnique(index))
+                  m_f(FeatureID(mwmID, index));
+              },
+              i.first, i.second, scale);
         }
       }
     }
@@ -246,9 +251,10 @@ public:
         do
         {
           osm::Editor::FeatureStatus const fts = editor.GetFeatureStatus(id, fidIter->m_index);
-          ASSERT_NOT_EQUAL(osm::Editor::EDeleted, fts, ("Deleted feature was cached. Please review your code."));
+          ASSERT_NOT_EQUAL(osm::Editor::FeatureStatus::Deleted, fts,
+                           ("Deleted feature was cached. Please review your code."));
           FeatureType featureType;
-          if (fts == osm::Editor::EModified)
+          if (fts == osm::Editor::FeatureStatus::Modified)
           {
             VERIFY(editor.GetEditedFeature(id, fidIter->m_index, featureType), ());
           }
@@ -273,7 +279,7 @@ public:
   class FeaturesLoaderGuard
   {
   public:
-    FeaturesLoaderGuard(Index const & parent, MwmId id);
+    FeaturesLoaderGuard(Index const & parent, MwmId const & id);
 
     inline MwmSet::MwmId const & GetId() const { return m_handle.GetId(); }
     string GetCountryFileName() const;

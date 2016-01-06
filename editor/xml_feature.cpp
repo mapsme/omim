@@ -24,6 +24,9 @@ constexpr char const * kUploadStatus = "upload_status";
 constexpr char const * kUploadError = "upload_error";
 constexpr char const * kHouseNumber = "addr:housenumber";
 
+constexpr char const * kNodeType = "node";
+constexpr char const * kWayType = "way";
+
 pugi::xml_node FindTag(pugi::xml_document const & document, string const & key)
 {
   return document.select_node(("//tag[@k='" + key + "']").data()).node();
@@ -64,9 +67,9 @@ namespace editor
 char const * const XMLFeature::kDefaultLang =
     StringUtf8Multilang::GetLangByCode(StringUtf8Multilang::DEFAULT_CODE);
 
-XMLFeature::XMLFeature()
+XMLFeature::XMLFeature(Type const type)
 {
-  m_document.append_child("node");
+  m_document.append_child(type == Type::Node ? kNodeType : kWayType);
 }
 
 XMLFeature::XMLFeature(string const & xml)
@@ -86,6 +89,11 @@ XMLFeature::XMLFeature(pugi::xml_node const & xml)
   m_document.reset();
   m_document.append_copy(xml);
   ValidateNode(GetRootNode());
+}
+
+XMLFeature::Type XMLFeature::GetType() const
+{
+  return strcmp(GetRootNode().name(), "node") == 0 ? Type::Node : Type::Way;
 }
 
 void XMLFeature::Save(ostream & ost) const
@@ -246,12 +254,12 @@ void XMLFeature::SetAttribute(string const & key, string const & value)
 
 pugi::xml_node const XMLFeature::GetRootNode() const
 {
-  return m_document.child("node");
+  return m_document.first_child();
 }
 
 pugi::xml_node XMLFeature::GetRootNode()
 {
-  return m_document.child("node");
+  return m_document.first_child();
 }
 
 bool XMLFeature::AttachToParentNode(pugi::xml_node parent) const
