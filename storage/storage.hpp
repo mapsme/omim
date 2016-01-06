@@ -113,7 +113,7 @@ public:
   Storage();
   /// \brief This constructor should be used for testing only.
   Storage(string const & referenceCountriesTxtJsonForTesting,
-          MapFilesDownloader * mapDownloaderForTesting);
+          unique_ptr<MapFilesDownloader> mapDownloaderForTesting);
 
   /// @name Interface with clients (Android/iOS).
   /// \brief It represents the interface which can be used by clients (Android/iOS).

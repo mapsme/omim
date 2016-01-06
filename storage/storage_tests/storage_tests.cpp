@@ -845,7 +845,7 @@ UNIT_TEST(StorageTest_GetRootId)
                            "id": "Countries",
                            "v": 151227,
                            "g": []
-                         })"), new TestMapFilesDownloader());
+                         })"), make_unique<TestMapFilesDownloader>());
 
   // The name of the root is the same for courntries.txt version 1 and version 2.
   TEST_EQUAL(storage.GetRootId(), "Countries", ());
@@ -890,7 +890,7 @@ UNIT_TEST(StorageTest_GetChildren)
                               "South Korea"
                              ]
                             }
-                         ]})"), new TestMapFilesDownloader());
+                         ]})"), make_unique<TestMapFilesDownloader>());
   if (!version::IsSingleMwm(storage.GetCurrentDataVersion()))
   {
     // Storage::GetChildren is used only with single (small) mwms.
