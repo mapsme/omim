@@ -439,10 +439,10 @@ public:
   void GetAddressInfoForGlobalPoint(m2::PointD const & pt, search::AddressInfo & info) const;
 
 private:
-  search::AddressInfo GetPOIAddressInfo(FeatureType const & ft) const;
   void GetLocality(m2::PointD const & pt, search::AddressInfo & info) const;
 
 public:
+  search::AddressInfo GetPOIAddressInfo(FeatureType const & ft) const;
   /// Get feature at given point even if it's invisible on the screen.
   /// TODO(AlexZ): Refactor out other similar methods.
   /// @returns nullptr if no feature was found at the given mercator point.
