@@ -92,6 +92,19 @@ Storage::Storage(string const & referenceCountriesTxtJsonForTesting,
 
 void Storage::Init(TUpdate const & update) { m_update = update; }
 
+void Storage::Migrate()
+{
+  for (auto const & localFiles : m_localFiles)
+  {
+    for (auto const & localFile : localFiles.second)
+    {
+      LOG_SHORT(LINFO, (localFiles.first, DebugPrint(*localFile)));
+//      localFile->SyncWithDisk();
+//      DeleteFromDiskWithIndexes(*localFile, MapOptions::MapWithCarRouting);
+    }
+  }
+}
+
 void Storage::Clear()
 {
   m_downloader->Reset();
