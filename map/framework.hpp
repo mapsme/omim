@@ -443,11 +443,15 @@ private:
   void GetLocality(m2::PointD const & pt, search::AddressInfo & info) const;
 
 public:
+  /// Get feature at given point even if it's invisible on the screen.
+  /// TODO(AlexZ): Refactor out other similar methods.
+  /// @returns nullptr if no feature was found at the given mercator point.
+  unique_ptr<FeatureType> GetFeatureAtMercatorPoint(m2::PointD const & mercator) const;
   bool GetVisiblePOI(m2::PointD const & glbPoint, search::AddressInfo & info, feature::Metadata & metadata) const;
   // TODO(AlexZ): Refactor similar getters to share common interface.
-  bool GetVisiblePOI(m2::PointD const & ptMercator, FeatureType & outPOI) const;
+  unique_ptr<FeatureType> GetVisiblePOI(m2::PointD const & ptMercator) const;
   // TODO(AlexZ): Do we really need to avoid linear features?
-  FeatureType GetPOIByID(FeatureID const & fid) const;
+  unique_ptr<FeatureType> GetPOIByID(FeatureID const & fid) const;
   void FindClosestPOIMetadata(m2::PointD const & pt, feature::Metadata & metadata) const;
 
   void MemoryWarning();

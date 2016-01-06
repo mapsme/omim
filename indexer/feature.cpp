@@ -178,6 +178,15 @@ void FeatureType::Deserialize(feature::LoaderBase * pLoader, TBuffer buffer)
   m_innerStats.MakeZero();
 }
 
+void FeatureType::ParseEverything() const
+{
+  // Also calls ParseCommon() and ParseTypes().
+  ParseHeader2();
+  ParseGeometry(FeatureType::BEST_GEOMETRY);
+  ParseTriangles(FeatureType::BEST_GEOMETRY);
+  ParseMetadata();
+}
+
 void FeatureType::ParseHeader2() const
 {
   if (!m_bHeader2Parsed)
@@ -275,7 +284,7 @@ namespace
 
 string FeatureType::DebugString(int scale) const
 {
-  ParseAll(scale);
+  ParseGeometryAndTriangles(scale);
 
   string s = base_type::DebugString();
 
@@ -310,7 +319,7 @@ string DebugPrint(FeatureType const & ft)
 
 bool FeatureType::IsEmptyGeometry(int scale) const
 {
-  ParseAll(scale);
+  ParseGeometryAndTriangles(scale);
 
   switch (GetFeatureType())
   {
@@ -322,7 +331,7 @@ bool FeatureType::IsEmptyGeometry(int scale) const
 
 m2::RectD FeatureType::GetLimitRect(int scale) const
 {
-  ParseAll(scale);
+  ParseGeometryAndTriangles(scale);
 
   if (m_triangles.empty() && m_points.empty() && (GetFeatureType() != GEOM_POINT))
   {
@@ -335,7 +344,7 @@ m2::RectD FeatureType::GetLimitRect(int scale) const
   return m_limitRect;
 }
 
-void FeatureType::ParseAll(int scale) const
+void FeatureType::ParseGeometryAndTriangles(int scale) const
 {
   ParseGeometry(scale);
   ParseTriangles(scale);

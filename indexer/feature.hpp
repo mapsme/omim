@@ -170,6 +170,8 @@ public:
 
   /// @name Parse functions. Do simple dispatching to m_pLoader.
   //@{
+  /// Super-method to call all possible Parse* methods.
+  void ParseEverything() const;
   void ParseHeader2() const;
 
   void ResetGeometry() const;
@@ -324,7 +326,7 @@ public:
   }
 
 private:
-  void ParseAll(int scale) const;
+  void ParseGeometryAndTriangles(int scale) const;
 
   // For better result this value should be greater than 17
   // (number of points in inner triangle-strips).
