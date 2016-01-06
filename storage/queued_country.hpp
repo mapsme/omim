@@ -9,21 +9,21 @@ namespace storage
 class QueuedCountry
 {
 public:
-  QueuedCountry(TIndex const & index, MapOptions opt);
+  QueuedCountry(TCountryId const & m_countryId, MapOptions opt);
 
   void AddOptions(MapOptions opt);
   void RemoveOptions(MapOptions opt);
   bool SwitchToNextFile();
 
-  inline TIndex const & GetIndex() const { return m_index; }
+  inline TCountryId const & GetCountryId() const { return m_countryId; }
   inline MapOptions GetInitOptions() const { return m_init; }
   inline MapOptions GetCurrentFile() const { return m_current; }
   inline MapOptions GetDownloadedFiles() const { return UnsetOptions(m_init, m_left); }
 
-  inline bool operator==(TIndex const & index) const { return m_index == index; }
+  inline bool operator==(TCountryId const & countryId) const { return m_countryId == countryId; }
 
 private:
-  TIndex m_index;
+  TCountryId m_countryId;
   MapOptions m_init;
   MapOptions m_left;
   MapOptions m_current;
