@@ -6,8 +6,6 @@
 #include "storage/queued_country.hpp"
 #include "storage/storage_defines.hpp"
 
-#include "search/params.hpp"
-
 #include "platform/local_country_file.hpp"
 
 #include "std/function.hpp"
@@ -211,25 +209,8 @@ public:
   /// If there's no downloaded mwms contained by a direct child the direct child id will not be added to result.
   vector<TCountryId> const GetDownloadedChildren(TCountryId const & parent) const;
 
-  /// \brief Search for node ids (mwms not groups of mwms) by position in mercator.
-  /// Find all mwms which are close to position.
-  /// For getting result callback SearchResultCallback should be implemented.
-  /// \note For the time being it returns node id of single mwms (not groups).
-  /// \return false in case of error and true otherwise.
-  bool SearchNodesByPosition(m2::PointD const & position,
-                             TOnSearchResultCallback const & result) const;
-  /// \brief Returns node ids (mwms not groups of mwms) by a region name in a locale language.
-  /// Finds in world mwm with name.
-  /// For getting result callback SearchResultCallback should be implemented.
-  /// \param name string to search in world.mwm.
-  /// \param locale wich is used for searching. E.g. "ru" or "zh-Hant".
-  /// \return false in case of error and true otherwise.
-  bool SearchNodesByName(search::SearchParams const & searchParams,
-                         TOnSearchResultCallback const & result) const;
-
   /// \brief Returns current version for mwms which are available on the server.
-  /// That means the version is written in county_attributes.txt
-  size_t GetNodeServerVersion() const;
+  inline int64_t GetCurrentDataVersion() const { return m_currentVersion; }
   /// \brief Returns true if the node with countryId has been downloaded and false othewise.
   /// If countryId is a expandable returns true if all mwms which belongs to it have downloaded.
   /// Returns false if countryId is an unknown string.
@@ -365,8 +346,6 @@ public:
 
   /// @param[out] res Populated with oudated countries.
   void GetOutdatedCountries(vector<Country const *> & countries) const;
-
-  inline int64_t GetCurrentDataVersion() const { return m_currentVersion; }
 
   void SetDownloaderForTesting(unique_ptr<MapFilesDownloader> && downloader);
   void SetCurrentDataVersionForTesting(int64_t currentVersion);
