@@ -65,12 +65,12 @@ UNIT_TEST(SimpleTree_Smoke)
   TEST_EQUAL(c1.count, 5, ());
 
   Calculator<TreeT> c2;
-  tree.ForEachChildren(c2);
+  tree.ForEachDescendants(c2);
   TEST_EQUAL(c2.count, 8, ());
 
   tree.Clear();
   Calculator<TreeT> c3;
-  tree.ForEachChildren(c3);
+  tree.ForEachDescendants(c3);
   TEST_EQUAL(c3.count, 0, ("Tree should be empty"));
 }
 

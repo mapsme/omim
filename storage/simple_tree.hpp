@@ -133,22 +133,22 @@ public:
   }
 
   template <class TFunctor>
-  void ForEachChildren(TFunctor & f)
+  void ForEachDescendants(TFunctor & f)
   {
     for (typename internal_container_type::iterator it = m_siblings.begin(); it != m_siblings.end(); ++it)
     {
       f(*it);
-      it->ForEachChildren(f);
+      it->ForEachDescendants(f);
     }
   }
 
   template <class TFunctor>
-  void ForEachChildren(TFunctor & f) const
+  void ForEachDescendants(TFunctor & f) const
   {
     for (typename internal_container_type::const_iterator it = m_siblings.begin(); it != m_siblings.end(); ++it)
     {
       f(*it);
-      it->ForEachChildren(f);
+      it->ForEachDescendants(f);
     }
   }
 };
