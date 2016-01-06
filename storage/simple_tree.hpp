@@ -108,7 +108,7 @@ public:
     return nullptr;
   }
 
-  SimpleTree<T> const & operator[](size_t index) const
+  SimpleTree<T> const & At(size_t index) const
   {
     return m_siblings.at(index);
   }
