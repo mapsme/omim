@@ -195,7 +195,7 @@ void Storage::GetGroupAndCountry(TCountryId const & countryId, string & group, s
 
 size_t Storage::CountriesCount(TCountryId const & countryId) const
 {
-  return NodeFromIndex(m_countries, countryId).SiblingsCount();
+  return NodeFromIndex(m_countries, countryId).ChildrenCount();
 }
 
 string const & Storage::CountryName(TCountryId const & countryId) const
@@ -453,7 +453,7 @@ void Storage::LoadCountriesFile(bool forceReload)
   if (forceReload)
     m_countries.Clear();
 
-  if (m_countries.SiblingsCount() == 0)
+  if (m_countries.ChildrenCount() == 0)
   {
     string json;
     ReaderPtr<Reader>(GetPlatform().GetReader(COUNTRIES_FILE)).ReadAsString(json);
@@ -889,11 +889,11 @@ vector<TCountryId> const Storage::GetChildren(TCountryId const & parent) const
     return vector<TCountryId>();
   }
 
-  size_t const childrenCount = parentNode->SiblingsCount();
+  size_t const childrenCount = parentNode->ChildrenCount();
   vector<TCountryId> childrenVector;
   childrenVector.reserve(childrenCount);
   for (size_t i = 0; i < childrenCount; ++i)
-    childrenVector.emplace_back((*parentNode)[i].Value().Name());
+    childrenVector.emplace_back(parentNode->Child(i).Value().Name());
 
   return childrenVector;
 }
