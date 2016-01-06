@@ -43,7 +43,7 @@ UNIT_TEST(SimpleTree_Smoke)
   TEST(node, ());
   TEST_EQUAL(node->Value(), 1, ());
   TEST(node->Find(10), ());
-  TEST_EQUAL(node->At(0).Value(), 20, ());
+  TEST_EQUAL(node->Child(0).Value(), 20, ());
 
   node = tree.Find(10);
   TEST(node, ());
@@ -51,26 +51,26 @@ UNIT_TEST(SimpleTree_Smoke)
 
   tree.Sort();
   // test sorting
-  TEST_EQUAL(tree.At(0).Value(), 1, ());
-  TEST_EQUAL(tree.At(1).Value(), 2, ());
-  TEST_EQUAL(tree.At(2).Value(), 3, ());
-  TEST_EQUAL(tree.At(3).Value(), 4, ());
-  TEST_EQUAL(tree.At(4).Value(), 5, ());
-  TEST_EQUAL(tree.At(0).At(0).Value(), 10, ());
-  TEST_EQUAL(tree.At(0).At(1).Value(), 20, ());
-  TEST_EQUAL(tree.At(0).At(2).Value(), 30, ());
+  TEST_EQUAL(tree.Child(0).Value(), 1, ());
+  TEST_EQUAL(tree.Child(1).Value(), 2, ());
+  TEST_EQUAL(tree.Child(2).Value(), 3, ());
+  TEST_EQUAL(tree.Child(3).Value(), 4, ());
+  TEST_EQUAL(tree.Child(4).Value(), 5, ());
+  TEST_EQUAL(tree.Child(0).Child(0).Value(), 10, ());
+  TEST_EQUAL(tree.Child(0).Child(1).Value(), 20, ());
+  TEST_EQUAL(tree.Child(0).Child(2).Value(), 30, ());
 
   Calculator<TreeT> c1;
   tree.ForEachChild(c1);
   TEST_EQUAL(c1.count, 5, ());
 
   Calculator<TreeT> c2;
-  tree.ForEachDescendants(c2);
+  tree.ForEachDescendant(c2);
   TEST_EQUAL(c2.count, 8, ());
 
   tree.Clear();
   Calculator<TreeT> c3;
-  tree.ForEachDescendants(c3);
+  tree.ForEachDescendant(c3);
   TEST_EQUAL(c3.count, 0, ("Tree should be empty"));
 }
 

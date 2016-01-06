@@ -9,13 +9,16 @@
 template <class T>
 class SimpleTree
 {
-  typedef std::vector<SimpleTree<T> > internal_container_type;
-
   T m_value;
   // @TODO(bykoianko) Remove on unnecessary methods of SimpleTree if any.
 
   /// \brief m_children contains all first generation descendants of the node.
-  internal_container_type m_children;
+  vector<SimpleTree<T>> m_children;
+
+  static bool IsEqual(T const & v1, T const & v2)
+  {
+    return !(v1 < v2) && !(v2 < v1);
+  }
 
 public:
   SimpleTree(T const & value = T()) : m_value(value)
@@ -46,7 +49,7 @@ public:
   /// @return reference is valid only up to the next tree structure modification
   T & Add(T const & value)
   {
-    m_children.push_back(SimpleTree(value));
+    m_children.emplace_back(SimpleTree(value));
     return m_children.back().Value();
   }
 
@@ -62,12 +65,11 @@ public:
   }
 
   /// sorts children independently on each level by default
-  void Sort(bool onlyChildren = false)
+  void Sort()
   {
-    std::sort(m_children.begin(), m_children.end());
-    if (!onlyChildren)
-      for (typename internal_container_type::iterator it = m_children.begin(); it != m_children.end(); ++it)
-        it->Sort(false);
+    sort(m_children.begin(), m_children.end());
+    for (auto & child : m_children)
+      child.Sort();
   }
 
   /// \brief Checks all nodes in tree to find an equal one. If there're several equal nodes
@@ -78,7 +80,7 @@ public:
   /// A hash table is being planned to use.
   SimpleTree<T> const * const Find(T const & value) const
   {
-    if (!(m_value < value) && !(value < m_value))
+    if (IsEqual(m_value, value))
       return this;
 
     for (auto const & child : m_children)
@@ -97,7 +99,7 @@ public:
   /// @TODO(bykoianko) Remove this method on countries.txt update.
   SimpleTree<T> const * const FindLeaf(T const & value) const
   {
-    if (!(m_value < value) && !(value < m_value) && m_children.empty())
+    if (IsEqual(m_value, value) && m_children.empty())
       return this; // It's a leaf.
 
     for (auto const & child : m_children)
@@ -109,7 +111,7 @@ public:
     return nullptr;
   }
 
-  SimpleTree<T> const & At(size_t index) const
+  SimpleTree<T> const & Child(size_t index) const
   {
     return m_children.at(index);
   }
@@ -121,37 +123,37 @@ public:
 
   /// \brief Calls functor f for each first generation descendant of the node.
   template <class TFunctor>
-  void ForEachChild(TFunctor & f)
+  void ForEachChild(TFunctor && f)
   {
-    for (typename internal_container_type::iterator it = m_children.begin(); it != m_children.end(); ++it)
-      f(*it);
+    for (auto const & child : m_children)
+      f(child);
   }
 
   template <class TFunctor>
-  void ForEachChild(TFunctor & f) const
+  void ForEachChild(TFunctor && f) const
   {
-    for (typename internal_container_type::const_iterator it = m_children.begin(); it != m_children.end(); ++it)
-      f(*it);
+    for (auto const & child : m_children)
+      f(child);
   }
 
   /// \brief Calls functor f for all nodes (add descendant) in the tree.
   template <class TFunctor>
-  void ForEachDescendants(TFunctor & f)
+  void ForEachDescendant(TFunctor && f)
   {
-    for (typename internal_container_type::iterator it = m_children.begin(); it != m_children.end(); ++it)
+    for (auto & child : m_children)
     {
-      f(*it);
-      it->ForEachDescendants(f);
+      f(child);
+      child.ForEachDescendant(f);
     }
   }
 
   template <class TFunctor>
-  void ForEachDescendants(TFunctor & f) const
+  void ForEachDescendant(TFunctor && f) const
   {
-    for (typename internal_container_type::const_iterator it = m_children.begin(); it != m_children.end(); ++it)
+    for (auto const & child: m_children)
     {
-      f(*it);
-      it->ForEachDescendants(f);
+      f(child);
+      child.ForEachDescendant(f);
     }
   }
 };
