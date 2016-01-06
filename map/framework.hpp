@@ -92,7 +92,7 @@ class Framework
 
 protected:
   using TDrapeFunction = function<void (df::DrapeEngine *)>;
-  using TDownloadCountryListener = function<void(storage::TIndex const &, int)>;
+  using TDownloadCountryListener = function<void(storage::TCountryId const &, int)>;
 
   StringsBundle m_stringsBundle;
 
@@ -171,18 +171,18 @@ public:
   /// @name This functions is used by Downloader UI.
   //@{
   /// options - flags that signal about parts of map that must be downloaded
-  void DownloadCountry(storage::TIndex const & index, MapOptions opt);
+  void DownloadCountry(storage::TCountryId const & countryId, MapOptions opt);
 
   void SetDownloadCountryListener(TDownloadCountryListener const & listener);
 
-  storage::TStatus GetCountryStatus(storage::TIndex const & index) const;
-  string GetCountryName(storage::TIndex const & index) const;
+  storage::TStatus GetCountryStatus(storage::TCountryId const & countryId) const;
+  string GetCountryName(storage::TCountryId const & countryId) const;
 
   /// Get country rect from borders (not from mwm file).
   /// @param[in] file Pass country file name without extension as an id.
-  m2::RectD GetCountryBounds(storage::TIndex const & index) const;
+  m2::RectD GetCountryBounds(storage::TCountryId const & countryId) const;
 
-  void ShowCountry(storage::TIndex const & index);
+  void ShowCountry(storage::TCountryId const & countryId);
 
   /// Checks, whether the country which contains the specified point is loaded.
   bool IsCountryLoaded(m2::PointD const & pt) const;
@@ -318,12 +318,8 @@ private:
 
   void FillSearchResultsMarks(search::Results const & results);
 
-  void OnDownloadMapCallback(storage::TIndex const & countryIndex);
-  void OnDownloadMapRoutingCallback(storage::TIndex const & countryIndex);
-  void OnDownloadRetryCallback(storage::TIndex const & countryIndex);
-
-  void OnUpdateCountryIndex(storage::TIndex const & currentIndex, m2::PointF const & pt);
-  void UpdateCountryInfo(storage::TIndex const & countryIndex, bool isCurrentCountry);
+  void OnUpdateCountryId(storage::TCountryId const & currentCountryId, m2::PointF const & pt);
+  void UpdateCountryInfo(storage::TCountryId const & countryCountryId, bool isCurrentCountry);
 
   void OnUpdateGpsTrackPointsCallback(vector<pair<size_t, location::GpsTrackInfo>> && toAdd,
                                       pair<size_t, size_t> const & toRemove);
@@ -476,9 +472,9 @@ public:
   //@}
 
 public:
-  using TRouteBuildingCallback = function<void(routing::IRouter::ResultCode,
-                                               vector<storage::TIndex> const &,
-                                               vector<storage::TIndex> const &)>;
+  using TRouteBuildingCallback = function<void(routing::IRouter::ResultCode, 
+                                               vector<storage::TCountryId> const &,
+                                               vector<storage::TCountryId> const &)>;
   using TRouteProgressCallback = function<void(float)>;
 
   /// @name Routing mode
@@ -544,8 +540,8 @@ private:
   void InsertRoute(routing::Route const & route);
   void CheckLocationForRouting(location::GpsInfo const & info);
   void CallRouteBuilded(routing::IRouter::ResultCode code,
-                        vector<storage::TIndex> const & absentCountries,
-                        vector<storage::TIndex> const & absentRoutingFiles);
+                        vector<storage::TCountryId> const & absentCountries,
+                        vector<storage::TCountryId> const & absentRoutingFiles);
   void MatchLocationToRoute(location::GpsInfo & info, location::RouteMatchingInfo & routeMatchingInfo) const;
   string GetRoutingErrorMessage(routing::IRouter::ResultCode code);
 

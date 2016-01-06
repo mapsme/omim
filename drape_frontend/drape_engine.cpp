@@ -23,10 +23,10 @@ void ConnectDownloadFn(gui::CountryStatusHelper::EButtonType buttonType, MapData
   gui::DrapeGui & guiSubsystem = gui::DrapeGui::Instance();
   guiSubsystem.ConnectOnButtonPressedHandler(buttonType, [downloadFn, &guiSubsystem]()
   {
-    storage::TIndex countryIndex = guiSubsystem.GetCountryStatusHelper().GetCountryIndex();
-    ASSERT(storage::IsIndexValid(countryIndex), (countryIndex));
+    storage::TCountryId countryId = guiSubsystem.GetCountryStatusHelper().GetCountryId();
+    ASSERT(storage::IsCountryIdValid(countryId), (countryId));
     if (downloadFn != nullptr)
-      downloadFn(countryIndex);
+      downloadFn(countryId);
   });
 }
 

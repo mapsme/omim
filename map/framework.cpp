@@ -373,34 +373,34 @@ bool Framework::IsWatchFrameRendererInited() const
   return m_cpuDrawer != nullptr;
 }
 
-void Framework::DownloadCountry(TIndex const & index, MapOptions opt)
+void Framework::DownloadCountry(TCountryId const & countryId, MapOptions opt)
 {
-  m_storage.DownloadCountry(index, opt);
+  m_storage.DownloadCountry(countryId, opt);
 }
 
-TStatus Framework::GetCountryStatus(TIndex const & index) const
+TStatus Framework::GetCountryStatus(TCountryId const & countryId) const
 {
-  return m_storage.CountryStatusEx(index);
+  return m_storage.CountryStatusEx(countryId);
 }
 
-string Framework::GetCountryName(TIndex const & index) const
+string Framework::GetCountryName(TCountryId const & countryId) const
 {
   string group, name;
-  m_storage.GetGroupAndCountry(index, group, name);
+  m_storage.GetGroupAndCountry(countryId, group, name);
   return (!group.empty() ? group + ", " + name : name);
 }
 
-m2::RectD Framework::GetCountryBounds(TIndex const & index) const
+m2::RectD Framework::GetCountryBounds(TCountryId const & countryId) const
 {
-  CountryFile const & file = m_storage.GetCountryFile(index);
+  CountryFile const & file = m_storage.GetCountryFile(countryId);
   return GetCountryBounds(file.GetName());
 }
 
-void Framework::ShowCountry(TIndex const & index)
+void Framework::ShowCountry(TCountryId const & countryId)
 {
   StopLocationFollow();
 
-  ShowRect(GetCountryBounds(index));
+  ShowRect(GetCountryBounds(countryId));
 }
 
 void Framework::UpdateLatestCountryFile(LocalCountryFile const & localFile)
@@ -792,28 +792,28 @@ void Framework::ClearAllCaches()
   m_searchEngine->ClearAllCaches();
 }
 
-void Framework::OnUpdateCountryIndex(storage::TIndex const & currentIndex, m2::PointF const & pt)
+void Framework::OnUpdateCountryId(storage::TCountryId const & currentCountryId, m2::PointF const & pt)
 {
-  storage::TIndex const newCountryIndex =
-      m_storage.FindIndexByFile(m_infoGetter->GetRegionFile(m2::PointD(pt)));
-  if (newCountryIndex.empty())
+  storage::TCountryId const newCountryId =
+      m_storage.FindCountryIdByFile(m_infoGetter->GetRegionFile(m2::PointD(pt)));
+  if (newCountryId.empty())
   {
     m_drapeEngine->SetInvalidCountryInfo();
     return;
   }
 
-  if (currentIndex != newCountryIndex)
-    UpdateCountryInfo(newCountryIndex, true /* isCurrentCountry */);
+  if (currentCountryId != newCountryId)
+    UpdateCountryInfo(newCountryId, true /* isCurrentCountry */);
 }
 
-void Framework::UpdateCountryInfo(storage::TIndex const & countryIndex, bool isCurrentCountry)
+void Framework::UpdateCountryInfo(storage::TCountryId const & countryId, bool isCurrentCountry)
 {
   if (!m_drapeEngine)
     return;
 
   int64_t const currentVersion = m_storage.GetCurrentDataVersion();
 
-  string const countryFile = m_storage.CountryByIndex(countryIndex).GetFile().GetName();
+  string const countryFile = m_storage.CountryByCountryId(countryId).GetFile().GetName();
   CHECK(!countryFile.empty(), ());
 
   // Note. MapOptions::Map is used below to be sure fileName has mwm extension
@@ -828,14 +828,14 @@ void Framework::UpdateCountryInfo(storage::TIndex const & countryIndex, bool isC
 
   gui::CountryInfo countryInfo;
 
-  countryInfo.m_countryIndex = countryIndex;
+  countryInfo.m_countryId = countryId;
   // @TODO(bykoianko) Locolize country name should be used here.
-  countryInfo.m_currentCountryName = countryIndex;
+  countryInfo.m_currentCountryName = countryId;
   // @TODO(bykoianko) Valid values for countryInfo fields should be got with new Storage
   // interface when it's ready. Now temporary values are used.
   countryInfo.m_mapSize = 0;
   countryInfo.m_routingSize = 0;
-  countryInfo.m_countryStatus = m_storage.CountryStatusEx(countryIndex);
+  countryInfo.m_countryStatus = m_storage.CountryStatusEx(countryId);
   if (countryInfo.m_countryStatus == storage::TStatus::EDownloading)
   {
     countryInfo.m_downloadProgress = 50 /* Just to show that downloading is in progress */;
@@ -1167,7 +1167,7 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
 {
   using TReadIDsFn = df::MapDataProvider::TReadIDsFn;
   using TReadFeaturesFn = df::MapDataProvider::TReadFeaturesFn;
-  using TUpdateCountryIndexFn = df::MapDataProvider::TUpdateCountryIndexFn;
+  using TUpdateCountryIndexFn = df::MapDataProvider::TUpdateCountryIdFn;
   using TIsCountryLoadedFn = df::MapDataProvider::TIsCountryLoadedFn;
   using TDownloadFn = df::MapDataProvider::TDownloadFn;
 
@@ -1181,27 +1181,27 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
     m_model.ReadFeatures(fn, ids);
   };
 
-  TUpdateCountryIndexFn updateCountryIndex = [this](storage::TIndex const & currentIndex, m2::PointF const & pt)
+  TUpdateCountryIndexFn updateCountryIndex = [this](storage::TCountryId const & currentCountryId, m2::PointF const & pt)
   {
-    GetPlatform().RunOnGuiThread(bind(&Framework::OnUpdateCountryIndex, this, currentIndex, pt));
+    GetPlatform().RunOnGuiThread(bind(&Framework::OnUpdateCountryId, this, currentCountryId, pt));
   };
 
   TIsCountryLoadedFn isCountryLoadedFn = bind(&Framework::IsCountryLoaded, this, _1);
   auto isCountryLoadedByNameFn = bind(&Framework::IsCountryLoadedByName, this, _1);
 
-  TDownloadFn downloadMapFn = [this](storage::TIndex const &)
+  TDownloadFn downloadMapFn = [this](storage::TCountryId const &)
   {
     // @TODO(bykoianko) This method should be removed when map downloader is finished.
     ASSERT(false, ());
   };
 
-  TDownloadFn downloadMapWithoutRoutingFn = [this](storage::TIndex const &)
+  TDownloadFn downloadMapWithoutRoutingFn = [this](storage::TCountryId const &)
   {
     // @TODO(bykoianko) This method should be removed when map downloader is finished.
     ASSERT(false, ());
   };
 
-  TDownloadFn downloadRetryFn = [this](storage::TIndex const &)
+  TDownloadFn downloadRetryFn = [this](storage::TCountryId const &)
   {
     // @TODO(bykoianko) This method should be removed when map downloader is finished.
     ASSERT(false, ());
@@ -1812,7 +1812,7 @@ void Framework::BuildRoute(m2::PointD const & finish, uint32_t timeoutSec)
   m2::PointD start;
   if (!m_drapeEngine->GetMyPosition(start))
   {
-    CallRouteBuilded(IRouter::NoCurrentPosition, vector<storage::TIndex>(), vector<storage::TIndex>());
+    CallRouteBuilded(IRouter::NoCurrentPosition, vector<storage::TCountryId>(), vector<storage::TCountryId>());
     return;
   }
 
@@ -1832,8 +1832,8 @@ void Framework::BuildRoute(m2::PointD const & start, m2::PointD const & finish, 
 
   auto readyCallback = [this] (Route const & route, IRouter::ResultCode code)
   {
-    vector<storage::TIndex> absentCountries;
-    vector<storage::TIndex> absentRoutingIndexes;
+    vector<storage::TCountryId> absentCountries;
+    vector<storage::TCountryId> absentRoutingIndexes;
     if (code == IRouter::NoError)
     {
       double const kRouteScaleMultiplier = 1.5;
@@ -1847,11 +1847,11 @@ void Framework::BuildRoute(m2::PointD const & start, m2::PointD const & finish, 
     {
       for (string const & name : route.GetAbsentCountries())
       {
-        storage::TIndex fileIndex = m_storage.FindIndexByFile(name);
-        if (m_storage.GetLatestLocalFile(fileIndex))
-          absentRoutingIndexes.push_back(fileIndex);
+        storage::TCountryId fileCountryId = m_storage.FindCountryIdByFile(name);
+        if (m_storage.GetLatestLocalFile(fileCountryId))
+          absentRoutingIndexes.push_back(fileCountryId);
         else
-          absentCountries.push_back(fileIndex);
+          absentCountries.push_back(fileCountryId);
       }
 
       if (code != IRouter::NeedMoreMaps)
@@ -1996,7 +1996,8 @@ void Framework::MatchLocationToRoute(location::GpsInfo & location, location::Rou
   m_routingSession.MatchLocationToRoute(location, routeMatchingInfo);
 }
 
-void Framework::CallRouteBuilded(IRouter::ResultCode code, vector<storage::TIndex> const & absentCountries, vector<storage::TIndex> const & absentRoutingFiles)
+void Framework::CallRouteBuilded(IRouter::ResultCode code, vector<storage::TCountryId> const & absentCountries,
+                                 vector<storage::TCountryId> const & absentRoutingFiles)
 {
   if (code == IRouter::Cancelled)
     return;
