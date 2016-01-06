@@ -1896,14 +1896,13 @@ void Query::SearchInMWM(Index::MwmHandle const & mwmHandle, SearchQueryParams co
     // Filter out features deleted by user and edited features (they should be matched separately).
     switch (editor.GetFeatureStatus(mwmId, value.m_featureId))
     {
-      case osm::Editor::FeatureStatus::Deleted:
-        return;
-      case osm::Editor::FeatureStatus::Modified:
-        editedFeaturesToMatchSeparately.push_back(value); return;
-      case osm::Editor::FeatureStatus::Created:
-        CHECK(false, ("Created features should have different offsets."));
-      case osm::Editor::FeatureStatus::Untouched:
-        AddResultFromTrie(value, mwmId, viewportId); break;
+    case osm::Editor::FeatureStatus::Deleted: return;
+    case osm::Editor::FeatureStatus::Modified:
+      editedFeaturesToMatchSeparately.push_back(value);
+      return;
+    case osm::Editor::FeatureStatus::Created:
+      CHECK(false, ("Created features should have different offsets."));
+    case osm::Editor::FeatureStatus::Untouched: AddResultFromTrie(value, mwmId, viewportId); break;
     }
   });
 
