@@ -92,8 +92,6 @@ public class Framework
 
   public native static void nativeClearApiPoints();
 
-  public native static void injectData(SearchResult searchResult, long index);
-
   public native static void deactivatePopup();
 
   public native static String[] nativeGetMovableFilesExts();
