@@ -61,7 +61,7 @@ UNIT_TEST(SimpleTree_Smoke)
   TEST_EQUAL(tree.At(0).At(2).Value(), 30, ());
 
   Calculator<TreeT> c1;
-  tree.ForEachSibling(c1);
+  tree.ForEachChild(c1);
   TEST_EQUAL(c1.count, 5, ());
 
   Calculator<TreeT> c2;
@@ -88,26 +88,26 @@ UNIT_TEST(SimpleTree_Country)
   TSimpleTreeCountry const * node = tree.Find(Country("moscow"));
   TEST(node, ());
   TEST_EQUAL(node->Value().Name(), "moscow", ());
-  TEST_EQUAL(node->SiblingsCount(), 0, ());
+  TEST_EQUAL(node->ChildrenCount(), 0, ());
 
   node = tree.Find(Country("belarus"));
   TEST(node, ());
   TEST_EQUAL(node->Value().Name(), "belarus", ());
-  TEST_EQUAL(node->SiblingsCount(), 0, ());
+  TEST_EQUAL(node->ChildrenCount(), 0, ());
 
   node = tree.Find(Country("russia"));
   TEST(node, ());
   TEST_EQUAL(node->Value().Name(), "russia", ());
-  TEST_EQUAL(node->SiblingsCount(), 3, ());
+  TEST_EQUAL(node->ChildrenCount(), 3, ());
   TEST(node->Find(Country("yekaterinburg")), ());
 
   node = tree.Find(Country("saint_petersburg"));
   TEST(node, ());
   TEST_EQUAL(node->Value().Name(), "saint_petersburg", ());
-  TEST_EQUAL(node->SiblingsCount(), 0, ());
+  TEST_EQUAL(node->ChildrenCount(), 0, ());
 
   node = tree.FindLeaf(Country("saint_petersburg"));
   TEST(node, ());
   TEST_EQUAL(node->Value().Name(), "saint_petersburg", ());
-  TEST_EQUAL(node->SiblingsCount(), 0, ());
+  TEST_EQUAL(node->ChildrenCount(), 0, ());
 }
