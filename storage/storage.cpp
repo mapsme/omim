@@ -83,8 +83,8 @@ Storage::Storage() : m_downloader(new HttpMapFilesDownloader()), m_currentSlotId
 }
 
 Storage::Storage(string const & referenceCountriesTxtJsonForTesting,
-                 MapFilesDownloader * mapDownloaderForTesting)
-  : m_downloader(mapDownloaderForTesting), m_currentSlotId(0)
+                 unique_ptr<MapFilesDownloader> mapDownloaderForTesting)
+  : m_downloader(move(mapDownloaderForTesting)), m_currentSlotId(0)
 {
   m_currentVersion = LoadCountries(referenceCountriesTxtJsonForTesting, m_countries);
   CHECK_LESS_OR_EQUAL(0, m_currentVersion, ("Can't load test countries file"));
