@@ -3,10 +3,10 @@
 
 namespace storage
 {
-using TIndex = string;
+using TCountryId = string;
 
-extern const storage::TIndex kInvalidIndex;
+extern const storage::TCountryId kInvalidCountryId;
 
-// @TODO(bykoianko) Check in counrtry tree if the index valid.
-bool IsIndexValid(TIndex const & index);
+// @TODO(bykoianko) Check in counrtry tree if the countryId valid.
+bool IsCountryIdValid(TCountryId const & countryId);
 } //  namespace storage

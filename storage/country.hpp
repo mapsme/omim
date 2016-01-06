@@ -30,13 +30,13 @@ class Country
 {
   friend class update::SizeUpdater;
   /// Name in the country node tree
-  TIndex m_name;
+  TCountryId m_name;
   /// stores squares with world pieces which are part of the country
   buffer_vector<platform::CountryFile, 1> m_files;
 
 public:
   Country() = default;
-  Country(TIndex const & name) : m_name(name) {}
+  Country(TCountryId const & name) : m_name(name) {}
 
   bool operator<(Country const & other) const { return Name() < other.Name(); }
 
@@ -52,7 +52,7 @@ public:
     return m_files.front();
   }
 
-  TIndex const & Name() const { return m_name; }
+  TCountryId const & Name() const { return m_name; }
 };
 
 typedef SimpleTree<Country> CountriesContainerT;

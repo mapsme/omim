@@ -4,10 +4,10 @@
 
 namespace storage
 {
-storage::TIndex const kInvalidIndex;
+storage::TCountryId const kInvalidCountryId;
 
-bool IsIndexValid(TIndex const & index)
+bool IsCountryIdValid(TCountryId const & countryId)
 {
-  return index != kInvalidIndex;
+  return countryId != kInvalidCountryId;
 }
 } //  namespace storage
