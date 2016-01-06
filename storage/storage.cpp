@@ -893,7 +893,7 @@ vector<TCountryId> const Storage::GetChildren(TCountryId const & parent) const
   vector<TCountryId> childrenVector;
   childrenVector.reserve(childrenCount);
   for (size_t i = 0; i < childrenCount; ++i)
-    childrenVector.emplace_back((*parentNode)[i].Value().Name());
+    childrenVector.emplace_back(parentNode->At(i).Value().Name());
 
   return childrenVector;
 }

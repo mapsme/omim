@@ -43,7 +43,7 @@ UNIT_TEST(SimpleTree_Smoke)
   TEST(node, ());
   TEST_EQUAL(node->Value(), 1, ());
   TEST(node->Find(10), ());
-  TEST_EQUAL((*node)[0].Value(), 20, ());
+  TEST_EQUAL(node->At(0).Value(), 20, ());
 
   node = tree.Find(10);
   TEST(node, ());
@@ -51,14 +51,14 @@ UNIT_TEST(SimpleTree_Smoke)
 
   tree.Sort();
   // test sorting
-  TEST_EQUAL(tree[0].Value(), 1, ());
-  TEST_EQUAL(tree[1].Value(), 2, ());
-  TEST_EQUAL(tree[2].Value(), 3, ());
-  TEST_EQUAL(tree[3].Value(), 4, ());
-  TEST_EQUAL(tree[4].Value(), 5, ());
-  TEST_EQUAL(tree[0][0].Value(), 10, ());
-  TEST_EQUAL(tree[0][1].Value(), 20, ());
-  TEST_EQUAL(tree[0][2].Value(), 30, ());
+  TEST_EQUAL(tree.At(0).Value(), 1, ());
+  TEST_EQUAL(tree.At(1).Value(), 2, ());
+  TEST_EQUAL(tree.At(2).Value(), 3, ());
+  TEST_EQUAL(tree.At(3).Value(), 4, ());
+  TEST_EQUAL(tree.At(4).Value(), 5, ());
+  TEST_EQUAL(tree.At(0).At(0).Value(), 10, ());
+  TEST_EQUAL(tree.At(0).At(1).Value(), 20, ());
+  TEST_EQUAL(tree.At(0).At(2).Value(), 30, ());
 
   Calculator<TreeT> c1;
   tree.ForEachSibling(c1);
