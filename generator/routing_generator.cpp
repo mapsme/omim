@@ -97,7 +97,7 @@ bool CheckBBoxCrossingBorder(m2::RegionD const & border, osrm::NodeData const & 
 }
 
 void FindCrossNodes(osrm::NodeDataVectorT const & nodeData, gen::OsmID2FeatureID const & osm2ft,
-                    borders::CountriesContainerT const & countries, string const & countryName,
+                    borders::TCountriesContainer const & countries, string const & countryName,
                     Index const & index, MwmSet::MwmId mwmId,
                     routing::CrossRoutingContextWriter & crossContext)
 {
@@ -257,7 +257,7 @@ void BuildCrossRoutingIndex(string const & baseDir, string const & countryName,
     return;
 
   LOG(LINFO, ("Loading countries borders..."));
-  borders::CountriesContainerT countries;
+  borders::TCountriesContainer countries;
   CHECK(borders::LoadCountriesList(baseDir, countries),
         ("Error loading country polygons files"));
 
