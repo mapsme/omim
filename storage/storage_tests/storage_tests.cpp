@@ -913,4 +913,102 @@ UNIT_TEST(StorageTest_GetChildren)
   TEST_EQUAL(algeriaList.front(), "Algeria_Central", ());
 }
 
+UNIT_TEST(StorageTest_IsCountryIdContained)
+{
+  vector<TCountryId> middleEarthCountryIdVec =
+      {"Arnor", "Mordor", "Rhovanion", "Rhun", "Gondor", "Eriador", "Rohan"};
+  sort(middleEarthCountryIdVec.begin(), middleEarthCountryIdVec.end());
+
+  TEST(IsCountryIdContained(middleEarthCountryIdVec, "Gondor"), ());
+  TEST(IsCountryIdContained(middleEarthCountryIdVec, "Arnor"), ());
+  TEST(!IsCountryIdContained(middleEarthCountryIdVec, "Azerbaijan"), ());
+  TEST(!IsCountryIdContained(middleEarthCountryIdVec, "Alban"), ());
+}
+
+UNIT_TEST(StorageTest_GetDownloadedChildren)
+{
+  Storage storage;
+  if (!version::IsSingleMwm(storage.GetCurrentDataVersion()))
+    return; // storage::GetDownloadedChildren is not used in case of two components mwm.
+
+  TaskRunner runner;
+  InitStorage(storage, runner);
+
+  TCountryId const algeriaCentralCountryId = storage.FindCountryIdByFile("Algeria_Central");
+  TCountryId const algeriaCoastCountryId = storage.FindCountryIdByFile("Algeria_Coast");
+  TEST(IsCountryIdValid(algeriaCentralCountryId), ());
+  TEST(IsCountryIdValid(algeriaCoastCountryId), ());
+
+  storage.DeleteCountry(algeriaCentralCountryId, MapOptions::Map);
+  storage.DeleteCountry(algeriaCoastCountryId, MapOptions::Map);
+
+  MY_SCOPE_GUARD(cleanupAlgeriaCentral,
+                 bind(&Storage::DeleteCountry, &storage, algeriaCentralCountryId, MapOptions::Map));
+  MY_SCOPE_GUARD(cleanupAlgeriaCoast,
+                 bind(&Storage::DeleteCountry, &storage, algeriaCoastCountryId, MapOptions::Map));
+
+  {
+    unique_ptr<CountryDownloaderChecker> algeriaCentralChecker = make_unique<CountryDownloaderChecker>(
+        storage, algeriaCentralCountryId, MapOptions::Map,
+        vector<TStatus>{TStatus::ENotDownloaded, TStatus::EDownloading, TStatus::EOnDisk});
+
+    unique_ptr<CountryDownloaderChecker> algeriaCoastChecker = make_unique<CountryDownloaderChecker>(
+        storage, algeriaCoastCountryId, MapOptions::Map,
+        vector<TStatus>{TStatus::ENotDownloaded, TStatus::EInQueue,
+                        TStatus::EDownloading, TStatus::EOnDisk});
+
+    algeriaCentralChecker->StartDownload();
+    algeriaCoastChecker->StartDownload();
+    runner.Run();
+  }
+
+  // Storage::GetLocalRealMaps() test.
+  vector<TCountryId> localRealMaps = storage.GetLocalRealMaps();
+  sort(localRealMaps.begin(), localRealMaps.end());
+  TEST(IsCountryIdContained(localRealMaps, "Algeria_Central"), ());
+  TEST(IsCountryIdContained(localRealMaps, "Algeria_Coast"), ());
+  TEST(!IsCountryIdContained(localRealMaps, "Algeria_Coast.mwm"), ());
+  TEST(!IsCountryIdContained(localRealMaps, "World"), ());
+  TEST(!IsCountryIdContained(localRealMaps, "WorldCoasts"), ());
+
+  // Storage::GetDownloadedChildren test when at least Algeria_Central and Algeria_Coast have been downloaded.
+  TCountryId const rootCountryId = storage.GetRootId();
+  TEST_EQUAL(rootCountryId, "Countries", ());
+  vector<TCountryId> rootChildrenCountriesId = storage.GetDownloadedChildren(rootCountryId);
+  sort(rootChildrenCountriesId.begin(), rootChildrenCountriesId.end());
+  TEST(IsCountryIdContained(rootChildrenCountriesId, "Algeria"), ());
+  TEST(!IsCountryIdContained(rootChildrenCountriesId, "Algeria_Central"), ());
+  TEST(!IsCountryIdContained(rootChildrenCountriesId, "Algeria_Coast"), ());
+
+  vector<TCountryId> algeriaChildrenCountriesId = storage.GetDownloadedChildren("Algeria");
+  sort(algeriaChildrenCountriesId.begin(), algeriaChildrenCountriesId.end());
+  TEST(IsCountryIdContained(algeriaChildrenCountriesId, "Algeria_Central"), ());
+  TEST(IsCountryIdContained(algeriaChildrenCountriesId, "Algeria_Coast"), ());
+
+  vector<TCountryId> const algeriaCentralChildrenCountriesId = storage.GetDownloadedChildren("Algeria_Central");
+  TEST(algeriaCentralChildrenCountriesId.empty(), ());
+
+  storage.DeleteCountry(algeriaCentralCountryId, MapOptions::Map);
+  // Storage::GetDownloadedChildren test when Algeria_Coast has been downloaded and
+  // Algeria_Central has been deleted.
+  vector<TCountryId> rootChildrenCountriesId2 = storage.GetDownloadedChildren(rootCountryId);
+  sort(rootChildrenCountriesId2.begin(), rootChildrenCountriesId2.end());
+  TEST(!IsCountryIdContained(rootChildrenCountriesId2, "Algeria"), ());
+  TEST(!IsCountryIdContained(rootChildrenCountriesId2, "Algeria_Central"), ());
+  TEST(IsCountryIdContained(rootChildrenCountriesId2, "Algeria_Coast"), ());
+
+  vector<TCountryId> childrenOfAbsentCountry = storage.GetDownloadedChildren("Algeria_Central");
+  TEST(childrenOfAbsentCountry.empty(), ());
+
+  vector<TCountryId> const algeriaCoastChildrenCountriesId = storage.GetDownloadedChildren("Algeria_Coast");
+  TEST(algeriaCoastChildrenCountriesId.empty(), ());
+
+  storage.DeleteCountry(algeriaCoastCountryId, MapOptions::Map);
+  // Storage::GetDownloadedChildren test when Algeria_Coast and Algeria_Central have been deleted.
+  vector<TCountryId> rootChildrenCountriesId3 = storage.GetDownloadedChildren(rootCountryId);
+  sort(rootChildrenCountriesId3.begin(), rootChildrenCountriesId3.end());
+  TEST(!IsCountryIdContained(rootChildrenCountriesId3, "Algeria"), ());
+  TEST(!IsCountryIdContained(rootChildrenCountriesId3, "Algeria_Central"), ());
+  TEST(!IsCountryIdContained(rootChildrenCountriesId3, "Algeria_Coast"), ());
+}
 }  // namespace storage
