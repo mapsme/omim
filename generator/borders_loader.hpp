@@ -30,9 +30,9 @@ namespace borders
     mutable int m_index;
   };
 
-  typedef m4::Tree<CountryPolygons> CountriesContainerT;
+  typedef m4::Tree<CountryPolygons> TCountriesContainer;
 
-  bool LoadCountriesList(string const & baseDir, CountriesContainerT & countries);
+  bool LoadCountriesList(string const & baseDir, TCountriesContainer & countries);
 
   void GeneratePackedBorders(string const & baseDir);
 }

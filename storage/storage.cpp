@@ -185,7 +185,7 @@ size_t Storage::GetDownloadedFilesCount() const
   return m_localFiles.size();
 }
 
-CountriesContainerT const & NodeFromIndex(CountriesContainerT const & root, TCountryId const & countryId)
+TCountriesContainer const & NodeFromIndex(TCountriesContainer const & root, TCountryId const & countryId)
 {
   SimpleTree<Country> const * node = root.FindLeaf(Country(countryId));
   CHECK(node, ("Node with id =", countryId, "not found in country tree."));
@@ -902,7 +902,7 @@ TCountryId const Storage::GetRootId() const
 
 vector<TCountryId> Storage::GetChildren(TCountryId const & parent) const
 {
-  CountriesContainerT const * parentNode = m_countries.Find(parent);
+  TCountriesContainer const * parentNode = m_countries.Find(parent);
   if (parentNode == nullptr)
   {
     ASSERT(false, ("TCountryId =", parent, "not found in m_countries."));
@@ -929,7 +929,7 @@ void Storage::GetLocalRealMaps(vector<TCountryId> & localMaps) const
 
 void Storage::GetDownloadedChildren(TCountryId const & parent, vector<TCountryId> & localChildren) const
 {
-  CountriesContainerT const * parentNode = m_countries.Find(parent);
+  TCountriesContainer const * parentNode = m_countries.Find(parent);
   if (parentNode == nullptr)
   {
     ASSERT(false, ("TCountryId =", parent, "not found in m_countries."));
@@ -947,7 +947,7 @@ void Storage::GetDownloadedChildren(TCountryId const & parent, vector<TCountryId
 
   for (size_t i = 0; i < childrenCount; ++i)
   {
-    CountriesContainerT const & child = parentNode->Child(i);
+    TCountriesContainer const & child = parentNode->Child(i);
     TCountryId const & childCountryId = child.Value().Name();
     if (HasCountryId(localMaps, childCountryId))
     { // CountryId of child is a name of an mwm.
@@ -958,7 +958,7 @@ void Storage::GetDownloadedChildren(TCountryId const & parent, vector<TCountryId
     // Child is a group of mwms.
     size_t localMapsInChild = 0;
     TCountryId lastCountryIdInLocalMaps;
-    child.ForEachDescendant([&](CountriesContainerT const & descendant)
+    child.ForEachDescendant([&](TCountriesContainer const & descendant)
                             {
                               TCountryId const & countryId = descendant.Value().Name();
                               if (HasCountryId(localMaps, countryId))

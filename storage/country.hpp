@@ -55,13 +55,13 @@ public:
   TCountryId const & Name() const { return m_name; }
 };
 
-typedef SimpleTree<Country> CountriesContainerT;
+typedef SimpleTree<Country> TCountriesContainer;
 
 /// @return version of country file or -1 if error was encountered
-int64_t LoadCountries(string const & jsonBuffer, CountriesContainerT & countries);
+int64_t LoadCountries(string const & jsonBuffer, TCountriesContainer & countries);
 
 void LoadCountryFile2CountryInfo(string const & jsonBuffer, map<string, CountryInfo> & id2info,
                                  bool & isSingleMwm);
 
-bool SaveCountries(int64_t version, CountriesContainerT const & countries, string & jsonBuffer);
+bool SaveCountries(int64_t version, TCountriesContainer const & countries, string & jsonBuffer);
 }  // namespace storage

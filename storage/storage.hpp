@@ -32,7 +32,7 @@ private:
   /// stores timestamp for update checks
   int64_t m_currentVersion;
 
-  CountriesContainerT m_countries;
+  TCountriesContainer m_countries;
 
   typedef list<QueuedCountry> TQueue;
 
