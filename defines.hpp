@@ -45,8 +45,8 @@
 #define CELL2FEATURE_SORTED_EXT ".c2f.sorted"
 #define CELL2FEATURE_TMP_EXT ".c2f.tmp"
 
-#define COUNTRIES_FILE  "countries.txt"
-#define COUNTRIES_MIGRATE_FILE  "countries_mig.txt"
+#define COUNTRIES_FILE "countries.txt"
+#define COUNTRIES_MIGRATE_FILE "countries_mig.txt"
 
 #define WORLD_FILE_NAME "World"
 #define WORLD_COASTS_FILE_NAME "WorldCoasts"
