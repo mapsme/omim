@@ -3,7 +3,7 @@
 
 import json
 import os
-import sys 
+import sys
 import urllib2
 
 from Queue import Queue
