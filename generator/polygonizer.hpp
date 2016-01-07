@@ -40,7 +40,7 @@ namespace feature
 
     vector<FeatureOutT*> m_Buckets;
     vector<string> m_Names;
-    borders::CountriesContainerT m_countries;
+    borders::TCountriesContainer m_countries;
 
 #if PARALLEL_POLYGONIZER
     QThreadPool m_ThreadPool;

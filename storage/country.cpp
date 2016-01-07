@@ -91,10 +91,10 @@ namespace
 {
 class DoStoreCountries
 {
-  CountriesContainerT & m_cont;
+  TCountriesContainer & m_cont;
 
 public:
-  DoStoreCountries(CountriesContainerT & cont) : m_cont(cont) {}
+  DoStoreCountries(TCountriesContainer & cont) : m_cont(cont) {}
 
   void operator()(string const & name, string const & file, uint32_t mapSize,
                   uint32_t routingSize, int depth)
@@ -138,7 +138,7 @@ public:
 };
 }  // namespace
 
-int64_t LoadCountries(string const & jsonBuffer, CountriesContainerT & countries)
+int64_t LoadCountries(string const & jsonBuffer, TCountriesContainer & countries)
 {
   countries.Clear();
 
@@ -230,7 +230,7 @@ void SaveImpl(T const & v, json_t * jParent)
 }
 
 // @TODO(@syershov) This method should be removed while removing all countries.txt generation funtionality.
-bool SaveCountries(int64_t version, CountriesContainerT const & countries, string & jsonBuffer)
+bool SaveCountries(int64_t version, TCountriesContainer const & countries, string & jsonBuffer)
 {
   my::JsonHandle root;
   root.AttachNew(json_object());
