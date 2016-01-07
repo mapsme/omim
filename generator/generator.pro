@@ -32,7 +32,6 @@ SOURCES += \
     statistics.cpp \
     tesselator.cpp \
     unpack_mwm.cpp \
-    update_generator.cpp \
 
 HEADERS += \
     borders_generator.hpp \
@@ -61,7 +60,6 @@ HEADERS += \
     statistics.hpp \
     tesselator.hpp \
     unpack_mwm.hpp \
-    update_generator.hpp \
     ways_merger.hpp \
     world_map_generator.hpp \
 
