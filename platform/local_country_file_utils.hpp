@@ -54,7 +54,7 @@ void CleanupMapsDirectory(int64_t latestVersion);
 
 // Tries to parse a version from a string of size not longer than 18
 // symbols and representing an unsigned decimal number. Leading zeroes
-// are allowed.
+// are allowed. This function doesn't modify |version| if |s| can't be parsed.
 bool ParseVersion(string const & s, int64_t & version);
 
 // When version is zero, uses writable directory, otherwise, creates
