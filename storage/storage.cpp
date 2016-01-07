@@ -975,4 +975,14 @@ void Storage::GetDownloadedChildren(TCountryId const & parent, vector<TCountryId
       localChildren.push_back(childCountryId); // Two or more descendants of the child is in localMaps.
   }
 }
+
+bool Storage::IsNodeDownloaded(TCountryId const & countryId) const
+{
+  for(auto const & localeMap : m_localFiles)
+  {
+    if (countryId == localeMap.first)
+      return true;
+  }
+  return false;
+}
 }  // namespace storage
