@@ -925,7 +925,7 @@ UNIT_TEST(StorageTest_HasCountryId)
   TEST(!HasCountryId(middleEarthCountryIdVec, "Alban"), ());
 }
 
-UNIT_TEST(StorageTest_GetDownloadedChildren)
+UNIT_TEST(StorageTest_DownloadedMapTests)
 {
   Storage storage;
   if (!version::IsSingleMwm(storage.GetCurrentDataVersion()))
@@ -972,6 +972,12 @@ UNIT_TEST(StorageTest_GetDownloadedChildren)
   TEST(!HasCountryId(localRealMaps, "World"), ());
   TEST(!HasCountryId(localRealMaps, "WorldCoasts"), ());
 
+  TEST(storage.IsNodeDownloaded("Algeria_Central"), ());
+  TEST(storage.IsNodeDownloaded("Algeria_Coast"), ());
+  TEST(!storage.IsNodeDownloaded("Algeria_Coast.mwm"), ());
+  TEST(!storage.IsNodeDownloaded("World"), ());
+  TEST(!storage.IsNodeDownloaded("World"), ());
+
   // Storage::GetDownloadedChildren test when at least Algeria_Central and Algeria_Coast have been downloaded.
   TCountryId const rootCountryId = storage.GetRootId();
   TEST_EQUAL(rootCountryId, "Countries", ());
@@ -1010,6 +1016,9 @@ UNIT_TEST(StorageTest_GetDownloadedChildren)
   storage.GetDownloadedChildren("Algeria_Coast", algeriaCoastChildrenCountriesId);
   TEST(algeriaCoastChildrenCountriesId.empty(), ());
 
+  TEST(!storage.IsNodeDownloaded("Algeria_Central"), ());
+  TEST(storage.IsNodeDownloaded("Algeria_Coast"), ());
+
   storage.DeleteCountry(algeriaCoastCountryId, MapOptions::Map);
   // Storage::GetDownloadedChildren test when Algeria_Coast and Algeria_Central have been deleted.
   vector<TCountryId> rootChildrenCountriesId3;
@@ -1018,5 +1027,8 @@ UNIT_TEST(StorageTest_GetDownloadedChildren)
   TEST(!HasCountryId(rootChildrenCountriesId3, "Algeria"), ());
   TEST(!HasCountryId(rootChildrenCountriesId3, "Algeria_Central"), ());
   TEST(!HasCountryId(rootChildrenCountriesId3, "Algeria_Coast"), ());
+
+  TEST(!storage.IsNodeDownloaded("Algeria_Central"), ());
+  TEST(!storage.IsNodeDownloaded("Algeria_Coast"), ());
 }
 }  // namespace storage
