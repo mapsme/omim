@@ -894,7 +894,7 @@ TCountryId const Storage::GetRootId() const
   return m_countries.Value().Name();
 }
 
-vector<TCountryId> const Storage::GetChildren(TCountryId const & parent) const
+vector<TCountryId> Storage::GetChildren(TCountryId const & parent) const
 {
   CountriesContainerT const * parentNode = m_countries.Find(parent);
   if (parentNode == nullptr)
@@ -910,5 +910,71 @@ vector<TCountryId> const Storage::GetChildren(TCountryId const & parent) const
     childrenVector.emplace_back(parentNode->Child(i).Value().Name());
 
   return childrenVector;
+}
+
+bool IsCountryIdContained(vector<TCountryId> const & sorted, TCountryId const & countyId)
+{
+  ASSERT(is_sorted(sorted.begin(), sorted.end()), ());
+  auto equalRange = equal_range(sorted.begin(), sorted.end(), countyId);
+  return (equalRange.second - equalRange.first) != 0;
+}
+
+vector<TCountryId> Storage::GetLocalRealMaps() const
+{
+  std::vector<TCountryId> keys;
+  keys.reserve(m_localFiles.size());
+
+  for(auto const & keyValue : m_localFiles)
+    keys.push_back(keyValue.first);
+  return keys;
+}
+
+vector<TCountryId> Storage::GetDownloadedChildren(TCountryId const & parent) const
+{
+  CountriesContainerT const * parentNode = m_countries.Find(parent);
+  if (parentNode == nullptr)
+  {
+    ASSERT(false, ("TCountryId =", parent, "not found in m_countries."));
+    return vector<TCountryId>();
+  }
+
+  vector<TCountryId> localMaps = GetLocalRealMaps();
+  if (localMaps.empty())
+    return vector<TCountryId>();
+
+  size_t const childrenCount = parentNode->ChildrenCount();
+  sort(localMaps.begin(), localMaps.end());
+
+  vector<TCountryId> localChildren;
+  for (size_t i = 0; i < childrenCount; ++i)
+  {
+    CountriesContainerT const & child = parentNode->Child(i);
+    TCountryId const & childCountryId = child.Value().Name();
+    if (IsCountryIdContained(localMaps, childCountryId))
+    { // CountryId of child is a name of an mwm.
+      localChildren.push_back(childCountryId);
+      continue;
+    }
+
+    // Child is a group of mwms.
+    size_t localMapsInChild = 0;
+    TCountryId lastCountryIdInLocalMaps;
+    child.ForEachDescendant([&](CountriesContainerT const & descendant)
+                            {
+                              TCountryId const & countryId = descendant.Value().Name();
+                              if (IsCountryIdContained(localMaps, countryId))
+                              {
+                                ++localMapsInChild;
+                                lastCountryIdInLocalMaps = countryId;
+                              }
+                            });
+    if (localMapsInChild == 0)
+      continue; // No descendant of the child is in localMaps.
+    else if (localMapsInChild == 1)
+      localChildren.push_back(lastCountryIdInLocalMaps); // One descendant of the child is in localMaps.
+    else
+      localChildren.push_back(childCountryId); // Two or more descendants of the child is in localMaps.
+  }
+  return localChildren;
 }
 }  // namespace storage
