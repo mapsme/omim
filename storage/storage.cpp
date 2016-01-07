@@ -77,6 +77,12 @@ void DeleteFromDiskWithIndexes(LocalCountryFile const & localFile, MapOptions op
 }
 }  // namespace
 
+bool HasCountryId(vector<TCountryId> const & sortedCountryIds, TCountryId const & countryId)
+{
+  ASSERT(is_sorted(sortedCountryIds.begin(), sortedCountryIds.end()), ());
+  return binary_search(sortedCountryIds.begin(), sortedCountryIds.end(), countryId);
+}
+
 Storage::Storage() : m_downloader(new HttpMapFilesDownloader()), m_currentSlotId(0)
 {
   LoadCountriesFile(false /* forceReload */);
@@ -894,7 +900,7 @@ TCountryId const Storage::GetRootId() const
   return m_countries.Value().Name();
 }
 
-vector<TCountryId> const Storage::GetChildren(TCountryId const & parent) const
+vector<TCountryId> Storage::GetChildren(TCountryId const & parent) const
 {
   CountriesContainerT const * parentNode = m_countries.Find(parent);
   if (parentNode == nullptr)
@@ -910,5 +916,63 @@ vector<TCountryId> const Storage::GetChildren(TCountryId const & parent) const
     childrenVector.emplace_back(parentNode->Child(i).Value().Name());
 
   return childrenVector;
+}
+
+void Storage::GetLocalRealMaps(vector<TCountryId> & localMaps) const
+{
+  localMaps.clear();
+  localMaps.reserve(m_localFiles.size());
+
+  for(auto const & keyValue : m_localFiles)
+    localMaps.push_back(keyValue.first);
+}
+
+void Storage::GetDownloadedChildren(TCountryId const & parent, vector<TCountryId> & localChildren) const
+{
+  CountriesContainerT const * parentNode = m_countries.Find(parent);
+  if (parentNode == nullptr)
+  {
+    ASSERT(false, ("TCountryId =", parent, "not found in m_countries."));
+    return;
+  }
+
+  localChildren.clear();
+  vector<TCountryId> localMaps;
+  GetLocalRealMaps(localMaps);
+  if (localMaps.empty())
+    return;
+
+  size_t const childrenCount = parentNode->ChildrenCount();
+  sort(localMaps.begin(), localMaps.end());
+
+  for (size_t i = 0; i < childrenCount; ++i)
+  {
+    CountriesContainerT const & child = parentNode->Child(i);
+    TCountryId const & childCountryId = child.Value().Name();
+    if (HasCountryId(localMaps, childCountryId))
+    { // CountryId of child is a name of an mwm.
+      localChildren.push_back(childCountryId);
+      continue;
+    }
+
+    // Child is a group of mwms.
+    size_t localMapsInChild = 0;
+    TCountryId lastCountryIdInLocalMaps;
+    child.ForEachDescendant([&](CountriesContainerT const & descendant)
+                            {
+                              TCountryId const & countryId = descendant.Value().Name();
+                              if (HasCountryId(localMaps, countryId))
+                              {
+                                ++localMapsInChild;
+                                lastCountryIdInLocalMaps = countryId;
+                              }
+                            });
+    if (localMapsInChild == 0)
+      continue; // No descendant of the child is in localMaps.
+    if (localMapsInChild == 1)
+      localChildren.push_back(lastCountryIdInLocalMaps); // One descendant of the child is in localMaps.
+    else
+      localChildren.push_back(childCountryId); // Two or more descendants of the child is in localMaps.
+  }
 }
 }  // namespace storage
