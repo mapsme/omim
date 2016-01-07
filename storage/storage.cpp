@@ -77,6 +77,13 @@ void DeleteFromDiskWithIndexes(LocalCountryFile const & localFile, MapOptions op
 }
 }  // namespace
 
+bool IsCountryIdContained(vector<TCountryId> const & sorted, TCountryId const & countyId)
+{
+  ASSERT(is_sorted(sorted.begin(), sorted.end()), ());
+  auto equalRange = equal_range(sorted.begin(), sorted.end(), countyId);
+  return (equalRange.second - equalRange.first) != 0;
+}
+
 Storage::Storage() : m_downloader(new HttpMapFilesDownloader()), m_currentSlotId(0)
 {
   LoadCountriesFile(false /* forceReload */);
@@ -910,13 +917,6 @@ vector<TCountryId> Storage::GetChildren(TCountryId const & parent) const
     childrenVector.emplace_back(parentNode->Child(i).Value().Name());
 
   return childrenVector;
-}
-
-bool IsCountryIdContained(vector<TCountryId> const & sorted, TCountryId const & countyId)
-{
-  ASSERT(is_sorted(sorted.begin(), sorted.end()), ());
-  auto equalRange = equal_range(sorted.begin(), sorted.end(), countyId);
-  return (equalRange.second - equalRange.first) != 0;
 }
 
 vector<TCountryId> Storage::GetLocalRealMaps() const

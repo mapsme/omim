@@ -278,6 +278,7 @@ public:
   //@}
 
   /// \returns real (not fake) local maps contained in countries.txt.
+  /// So this method does not return custom user local maps and World and WorldCoosts country id.
   vector<TCountryId> GetLocalRealMaps() const;
 
   void Init(TUpdate const & update);
