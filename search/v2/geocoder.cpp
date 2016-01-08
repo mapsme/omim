@@ -1,11 +1,11 @@
 #include "search/v2/geocoder.hpp"
 
-#include "search/cancel_exception.hpp"
 #include "search/retrieval.hpp"
 #include "search/search_delimiters.hpp"
 #include "search/search_string_utils.hpp"
 #include "search/v2/features_layer_matcher.hpp"
 
+#include "indexer/classificator.hpp"
 #include "indexer/feature_decl.hpp"
 #include "indexer/feature_impl.hpp"
 #include "indexer/index.hpp"
@@ -65,6 +65,28 @@ void JoinQueryTokens(SearchQueryParams const & params, size_t curToken, size_t e
   }
 }
 
+vector<strings::UniString> GetStreetCategories()
+{
+  vector<strings::UniString> categories;
+
+  auto const & classificator = classif();
+  auto addCategory = [&](uint32_t type)
+  {
+    uint32_t const index = classificator.GetIndexForType(type);
+    categories.push_back(FeatureTypeToString(index));
+  };
+  ftypes::IsStreetChecker::Instance().ForEachType(addCategory);
+
+  return categories;
+}
+
+template <typename TFn>
+void ForEachStreetCategory(TFn && fn)
+{
+  static auto const kCategories = GetStreetCategories();
+  for_each(kCategories.begin(), kCategories.end(), forward<TFn>(fn));
+}
+
 bool HasSearchIndex(MwmValue const & value) { return value.m_cont.IsExist(SEARCH_INDEX_FILE_TAG); }
 
 bool HasGeometryIndex(MwmValue & value) { return value.m_cont.IsExist(INDEX_FILE_TAG); }
@@ -92,6 +114,7 @@ Geocoder::Geocoder(Index & index)
   : m_index(index)
   , m_numTokens(0)
   , m_model(SearchModel::Instance())
+  , m_streets(nullptr)
   , m_finder(static_cast<my::Cancellable const &>(*this))
   , m_results(nullptr)
 {
@@ -159,6 +182,7 @@ void Geocoder::Go(vector<FeatureID> & results)
                        m_matcher.reset();
                        m_context.reset();
                        m_features.clear();
+                       m_streets = nullptr;
                      });
 
       m_matcher.reset(new FeaturesLayerMatcher(m_index, *m_context, *this /* cancellable */));
@@ -172,6 +196,8 @@ void Geocoder::Go(vector<FeatureID> & results)
             m_context->m_value, *this /* cancellable */, m_retrievalParams);
         ASSERT(m_features[i], ());
       }
+
+      m_streets = LoadStreets(*m_context);
 
       DoGeocodingWithLocalities();
       DoGeocodingWithoutLocalities();
@@ -189,6 +215,7 @@ void Geocoder::ClearCaches()
 {
   m_features.clear();
   m_matcher.reset();
+  m_streetsCache.clear();
 }
 
 void Geocoder::PrepareRetrievalParams(size_t curToken, size_t endToken)
@@ -276,6 +303,8 @@ void Geocoder::DoGeocodingWithLocalities()
   // Localities are ordered my (m_startToken, m_endToken) pairs.
   for (auto const & p : m_localities)
   {
+    BailIfCancelled();
+
     size_t const startToken = p.first.first;
     size_t const endToken = p.first.second;
     if (startToken == 0 && endToken == m_numTokens)
@@ -315,7 +344,7 @@ void Geocoder::DoGeocodingWithLocalities()
 
     // Marks all tokens matched to localities as used and performs geocoding.
     fill(m_usedTokens.begin() + startToken, m_usedTokens.begin() + endToken, true);
-    DoGeocoding(0 /* curToken */);
+    GreedilyMatchStreets();
     fill(m_usedTokens.begin() + startToken, m_usedTokens.begin() + endToken, false);
   }
 }
@@ -378,16 +407,74 @@ void Geocoder::DoGeocodingWithoutLocalities()
 
   // Filter will be applied only for large bit vectors.
   m_filter.SetThreshold(m_params.m_maxNumResults);
-  DoGeocoding(0 /* curToken */);
+  GreedilyMatchStreets();
 }
 
-void Geocoder::DoGeocoding(size_t curToken)
+void Geocoder::GreedilyMatchStreets()
+{
+  MatchPOIsAndBuildings(0 /* curToken */);
+
+  ASSERT(m_layers.empty(), ());
+
+  m_layers.emplace_back();
+
+  MY_SCOPE_GUARD(cleanupGuard, bind(&vector<FeaturesLayer>::pop_back, &m_layers));
+  for (size_t startToken = 0; startToken < m_numTokens; ++startToken)
+  {
+    if (m_usedTokens[startToken])
+      continue;
+
+    unique_ptr<coding::CompressedBitVector> buffer;
+    unique_ptr<coding::CompressedBitVector> allFeatures;
+
+    size_t curToken = startToken;
+    for (; curToken < m_numTokens && !m_usedTokens[curToken]; ++curToken)
+    {
+      if (IsStreetSynonym(strings::ToUtf8(m_params.GetTokens(curToken).front())))
+        continue;
+      if (startToken == curToken || coding::CompressedBitVector::IsEmpty(allFeatures))
+      {
+        buffer = coding::CompressedBitVector::Intersect(*m_streets, *m_features[curToken]);
+        if (m_filter.NeedToFilter(*buffer))
+          buffer = m_filter.Filter(*buffer);
+      }
+      else
+      {
+        buffer = coding::CompressedBitVector::Intersect(*allFeatures, *m_features[curToken]);
+      }
+      if (coding::CompressedBitVector::IsEmpty(buffer))
+          break;
+      allFeatures.swap(buffer);
+    }
+
+    if (coding::CompressedBitVector::IsEmpty(allFeatures))
+      continue;
+
+    auto & layer = m_layers.back();
+    layer.Clear();
+    layer.m_type = SearchModel::SEARCH_TYPE_STREET;
+    layer.m_startToken = startToken;
+    layer.m_endToken = curToken;
+    JoinQueryTokens(m_params, layer.m_startToken, layer.m_endToken, " " /* sep */,
+                    layer.m_subQuery);
+    vector<uint32_t> sortedFeatures;
+    coding::CompressedBitVectorEnumerator::ForEach(*allFeatures,
+                                                   MakeBackInsertFunctor(sortedFeatures));
+    layer.m_sortedFeatures = &sortedFeatures;
+
+    fill(m_usedTokens.begin() + startToken, m_usedTokens.begin() + curToken, true);
+    MatchPOIsAndBuildings(0 /* curToken */);
+    fill(m_usedTokens.begin() + startToken, m_usedTokens.begin() + curToken, false);
+  }
+}
+
+void Geocoder::MatchPOIsAndBuildings(size_t curToken)
 {
   // Skip used tokens.
   while (curToken != m_numTokens && m_usedTokens[curToken])
     ++curToken;
 
-  BailIfCancelled(static_cast<my::Cancellable const &>(*this));
+  BailIfCancelled();
 
   if (curToken == m_numTokens)
   {
@@ -402,22 +489,26 @@ void Geocoder::DoGeocoding(size_t curToken)
 
   // Clusters of features by search type. Each cluster is a sorted
   // list of ids.
-  vector<uint32_t> clusters[SearchModel::SEARCH_TYPE_CITY];
+  vector<uint32_t> clusters[SearchModel::SEARCH_TYPE_STREET];
 
   auto clusterize = [&](uint32_t featureId)
   {
+    if (m_streets->GetBit(featureId))
+      return;
+
     FeatureType feature;
     m_context->m_vector.GetByIndex(featureId, feature);
     feature.ParseTypes();
     SearchModel::SearchType const searchType = m_model.GetSearchType(feature);
 
     // All SEARCH_TYPE_CITY features were filtered in DoGeocodingWithLocalities().
-    if (searchType < SearchModel::SEARCH_TYPE_CITY)
+    // All SEARCH_TYPE_STREET features were filtered in GreedyMatchStreets().
+    if (searchType < SearchModel::SEARCH_TYPE_STREET)
       clusters[searchType].push_back(featureId);
   };
 
   unique_ptr<coding::CompressedBitVector> intersection;
-  unique_ptr<coding::CompressedBitVector> filteredIntersection;
+  coding::CompressedBitVector * features = nullptr;
 
   // Try to consume first n tokens starting at |curToken|.
   for (size_t n = 1; curToken + n <= m_numTokens && !m_usedTokens[curToken + n - 1]; ++n)
@@ -426,7 +517,7 @@ void Geocoder::DoGeocoding(size_t curToken)
     // m_features[curToken], m_features[curToken + 1], ...,
     // m_features[curToken + n - 2], iff n > 2.
 
-    BailIfCancelled(static_cast<my::Cancellable const &>(*this));
+    BailIfCancelled();
 
     {
       auto & layer = m_layers.back();
@@ -437,22 +528,19 @@ void Geocoder::DoGeocoding(size_t curToken)
                       layer.m_subQuery);
     }
 
-    // Non-owning ptr.
-    coding::CompressedBitVector * features = nullptr;
     if (n == 1)
     {
-      features = m_features[curToken + n - 1].get();
-    }
-    else if (n == 2)
-    {
-      intersection = coding::CompressedBitVector::Intersect(*m_features[curToken + n - 2],
-                                                            *m_features[curToken + n - 1]);
-      features = intersection.get();
+      features = m_features[curToken].get();
+      if (m_filter.NeedToFilter(*features))
+      {
+        intersection = m_filter.Filter(*features);
+        features = intersection.get();
+      }
     }
     else
     {
       intersection =
-          coding::CompressedBitVector::Intersect(*intersection, *m_features[curToken + n - 1]);
+          coding::CompressedBitVector::Intersect(*features, *m_features[curToken + n - 1]);
       features = intersection.get();
     }
     ASSERT(features, ());
@@ -462,20 +550,11 @@ void Geocoder::DoGeocoding(size_t curToken)
     if (coding::CompressedBitVector::IsEmpty(features) && !looksLikeHouseNumber)
       break;
 
-    // Non-owning ptr.
-    coding::CompressedBitVector * filtered = features;
-    if (features && m_filter.NeedToFilter(*features))
-    {
-      filteredIntersection = m_filter.Filter(*features);
-      filtered = filteredIntersection.get();
-    }
-    ASSERT(filtered, ());
-
     for (auto & cluster : clusters)
       cluster.clear();
-    coding::CompressedBitVectorEnumerator::ForEach(*filtered, clusterize);
+    coding::CompressedBitVectorEnumerator::ForEach(*features, clusterize);
 
-    for (size_t i = 0; i != SearchModel::SEARCH_TYPE_CITY; ++i)
+    for (size_t i = 0; i < ARRAY_SIZE(clusters); ++i)
     {
       // ATTENTION: DO NOT USE layer after recursive calls to
       // DoGeocoding().  This may lead to use-after-free.
@@ -492,17 +571,9 @@ void Geocoder::DoGeocoding(size_t curToken)
         continue;
       }
 
-      if (i == SearchModel::SEARCH_TYPE_STREET)
-      {
-        string key;
-        GetStreetNameAsKey(layer.m_subQuery, key);
-        if (key.empty())
-          continue;
-      }
-
       layer.m_type = static_cast<SearchModel::SearchType>(i);
       if (IsLayerSequenceSane())
-        DoGeocoding(curToken + n);
+        MatchPOIsAndBuildings(curToken + n);
     }
   }
 }
@@ -535,10 +606,15 @@ bool Geocoder::IsLayerSequenceSane() const
       streetIndex = i;
 
     // Checks that building and street layers are neighbours.
-    if (buildingIndex != m_layers.size() && streetIndex != m_layers.size() &&
-        buildingIndex != streetIndex + 1 && streetIndex != buildingIndex + 1)
+    if (buildingIndex != m_layers.size() && streetIndex != m_layers.size())
     {
-      return false;
+      auto & buildings = m_layers[buildingIndex];
+      auto & streets = m_layers[streetIndex];
+      if (buildings.m_startToken != streets.m_endToken &&
+          buildings.m_endToken != streets.m_startToken)
+      {
+        return false;
+      }
     }
   }
 
@@ -561,6 +637,52 @@ void Geocoder::FindPaths()
                                   {
                                     m_results->emplace_back(m_context->m_id, featureId);
                                   });
+}
+
+coding::CompressedBitVector const * Geocoder::LoadStreets(MwmContext & context)
+{
+  if (!context.m_handle.IsAlive() || !HasSearchIndex(context.m_value))
+    return nullptr;
+
+  auto mwmId = context.m_handle.GetId();
+  auto const it = m_streetsCache.find(mwmId);
+  if (it != m_streetsCache.cend())
+    return it->second.get();
+
+  unique_ptr<coding::CompressedBitVector> allStreets;
+
+  m_retrievalParams.m_tokens.resize(1);
+  m_retrievalParams.m_tokens[0].resize(1);
+  m_retrievalParams.m_prefixTokens.clear();
+
+  vector<unique_ptr<coding::CompressedBitVector>> streetsList;
+  ForEachStreetCategory([&](strings::UniString const & category)
+                        {
+                          m_retrievalParams.m_tokens[0][0] = category;
+                          auto streets = Retrieval::RetrieveAddressFeatures(
+                              context.m_value, *this /* cancellable */, m_retrievalParams);
+                          if (!coding::CompressedBitVector::IsEmpty(streets))
+                            streetsList.push_back(move(streets));
+                        });
+
+  // Following code performs pairwise union of adjacent bit vectors
+  // until at most one bit vector is left.
+  while (streetsList.size() > 1)
+  {
+    size_t i = 0;
+    size_t j = 0;
+    for (; j + 1 < streetsList.size(); j += 2)
+      streetsList[i++] = coding::CompressedBitVector::Union(*streetsList[j], *streetsList[j + 1]);
+    for (; j < streetsList.size(); ++j)
+      streetsList[i++] = move(streetsList[j]);
+    streetsList.resize(i);
+  }
+
+  if (streetsList.empty())
+    streetsList.push_back(make_unique<coding::DenseCBV>());
+  auto const * result = streetsList[0].get();
+  m_streetsCache[mwmId] = move(streetsList[0]);
+  return result;
 }
 }  // namespace v2
 }  // namespace search
