@@ -28,8 +28,8 @@ namespace migrate
 {
   // Set of functions to support migration between different versions of MWM
   // with totaly incompatible formats.
-  // 151218(TODO: don't forget set correct version number) - Migrate to small single file MWM
-  uint64_t constexpr kRequiredVersion = 151218;
+  // 160107(TODO: don't forget set correct version number) - Migrate to small single file MWM
+  uint64_t constexpr kRequiredVersion = 160107;
   bool NeedMigrate()
   {
     uint32_t version;
