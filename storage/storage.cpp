@@ -7,6 +7,7 @@
 #include "platform/mwm_version.hpp"
 #include "platform/platform.hpp"
 #include "platform/servers_list.hpp"
+#include "platform/settings.hpp"
 
 #include "coding/file_name_utils.hpp"
 #include "coding/internal/file_data.hpp"
@@ -89,6 +90,7 @@ Storage::Storage(string const & pathToCountriesFile /* = COUNTRIES_FILE */, stri
 
 
   LoadCountriesFile(false /* forceReload */, pathToCountriesFile, m_dataDir);
+  RestoreDownloadQueue();
 }
 
 Storage::Storage(string const & referenceCountriesTxtJsonForTesting,
@@ -103,13 +105,29 @@ void Storage::Init(TUpdate const & update) { m_update = update; }
 
 void Storage::Migrate()
 {
+  vector<TCountryId> existingCountries;
   for (auto const & localFiles : m_localFiles)
   {
     for (auto const & localFile : localFiles.second)
     {
       LOG_SHORT(LINFO, (localFiles.first, DebugPrint(*localFile)));
-//      localFile->SyncWithDisk();
-//      DeleteFromDiskWithIndexes(*localFile, MapOptions::MapWithCarRouting);
+      existingCountries.push_back(localFiles.first);
+      localFile->SyncWithDisk();
+      DeleteFromDiskWithIndexes(*localFile, MapOptions::MapWithCarRouting);
+    }
+  }
+
+  platform::migrate::SetMigrationFlag();
+
+  Clear();
+  TMapping mapping;
+  LoadCountriesFile(true /* forceReload */, &mapping);
+
+  for (auto const & country : existingCountries)
+  {
+    for (auto const & smallCountry : mapping[country])
+    {
+      DownloadCountry(smallCountry, MapOptions::MapWithCarRouting);
     }
   }
 }
@@ -327,6 +345,29 @@ void Storage::CountryStatusEx(TCountryId const & countryId, TStatus & status, Ma
   }
 }
 
+void Storage::SaveDownloadQueue()
+{
+  stringstream ss;
+  for (auto const & item : m_queue)
+    ss << (ss.str().empty() ? "" : ";") << item.GetCountryId();
+  Settings::Set("DownloadQueue", ss.str());
+}
+
+void Storage::RestoreDownloadQueue()
+{
+  string queue;
+  if (!Settings::Get("DownloadQueue", queue))
+    return;
+
+  strings::SimpleTokenizer iter(queue, ";");
+  while (iter)
+  {
+    DownloadCountry(*iter, MapOptions::MapWithCarRouting);
+    ++iter;
+  }
+}
+
+
 void Storage::DownloadCountry(TCountryId const & countryId, MapOptions opt)
 {
   opt = NormalizeDownloadFileSet(countryId, opt);
@@ -345,6 +386,7 @@ void Storage::DownloadCountry(TCountryId const & countryId, MapOptions opt)
     DownloadNextCountryFromQueue();
   else
     NotifyStatusChanged(countryId);
+  SaveDownloadQueue();
 }
 
 void Storage::DeleteCountry(TCountryId const & countryId, MapOptions opt)
@@ -471,7 +513,7 @@ TCountryId Storage::GetCurrentDownloadingCountryIndex() const
 }
 
 void Storage::LoadCountriesFile(bool forceReload, string const & pathToCountriesFile,
-                                string const & dataDir)
+                                string const & dataDir, TMapping * mapping)
 {
   m_dataDir = dataDir;
 
@@ -488,7 +530,8 @@ void Storage::LoadCountriesFile(bool forceReload, string const & pathToCountries
   {
     string json;
     ReaderPtr<Reader>(GetPlatform().GetReader(pathToCountriesFile)).ReadAsString(json);
-    m_currentVersion = LoadCountries(json, m_countries);
+    m_currentVersion = LoadCountries(json, m_countries, mapping);
+    LOG_SHORT(LINFO, ("Loaded countries list for version:", m_currentVersion));
     if (m_currentVersion < 0)
       LOG(LERROR, ("Can't load countries file", pathToCountriesFile));
   }
@@ -646,6 +689,7 @@ void Storage::OnMapDownloadFinished(TCountryId const & countryId, bool success, 
   ASSERT(localFile, ());
   DeleteCountryIndexes(*localFile);
   m_update(*localFile);
+  SaveDownloadQueue();
 }
 
 string Storage::GetFileDownloadUrl(string const & baseUrl, TCountryId const & countryId,

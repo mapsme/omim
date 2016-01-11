@@ -155,6 +155,9 @@ public:
   void ReleaseWatchFrameRenderer();
   bool IsWatchFrameRendererInited() const;
 
+  /// Migrate to new version of very different data.
+  void Migrate();
+
   /// Registers all local map files in internal indexes.
   void RegisterAllMaps();
 
