@@ -1,5 +1,6 @@
 #include "indexer/classificator.hpp"
 #include "indexer/feature_decl.hpp"
+#include "indexer/feature_meta.hpp"
 #include "indexer/index.hpp"
 #include "indexer/osm_editor.hpp"
 
@@ -10,11 +11,9 @@
 #include "base/logging.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/map.hpp"
-#include "std/set.hpp"
+#include "std/tuple.hpp"
+#include "std/unordered_map.hpp"
 #include "std/unordered_set.hpp"
-
-#include <boost/functional/hash.hpp>
 
 #include "3party/pugixml/src/pugixml.hpp"
 
@@ -32,7 +31,6 @@ constexpr char const * kCreateSection = "create";
 
 namespace osm
 {
-
 // TODO(AlexZ): Normalize osm multivalue strings for correct merging
 // (e.g. insert/remove spaces after ';' delimeter);
 
@@ -40,146 +38,177 @@ namespace
 {
 string GetEditorFilePath() { return GetPlatform().WritablePathForFile(kEditorXMLFileName); }
 // TODO(mgsergio): Replace hard-coded value with reading from file.
-static unordered_set<string> const gEditableTypes = {
-  {"aeroway-aerodrome"},
-  {"aeroway-airport"},
-  {"amenity-atm"},
-  {"amenity-bank"},
-  {"amenity-bar"},
-  {"amenity-bbq"},
-  {"amenity-bench"},
-  {"amenity-bicycle_rental"},
-  {"amenity-bureau_de_change"},
-  {"amenity-bus_station"},
-  {"amenity-cafe"},
-  {"amenity-car_rental"},
-  {"amenity-car_sharing"},
-  {"amenity-casino"},
-  {"amenity-cinema"},
-  {"amenity-college"},
-  {"amenity-doctors"},
-  {"amenity-drinking_water"},
-  {"amenity-embassy"},
-  {"amenity-fast_food"},
-  {"amenity-ferry_terminal"},
-  {"amenity-fire_station"},
-  {"amenity-fountain"},
-  {"amenity-fuel"},
-  {"amenity-grave_yard"},
-  {"amenity-hospital"},
-  {"amenity-hunting_stand"},
-  {"amenity-kindergarten"},
-  {"amenity-library"},
-  {"amenity-marketplace"},
-  {"amenity-nightclub"},
-  {"amenity-parking"},
-  {"amenity-pharmacy"},
-  {"amenity-place_of_worship"},
-  {"amenity-police"},
-  {"amenity-post_box"},
-  {"amenity-post_office"},
-  {"amenity-pub"},
-  {"amenity-recycling"},
-  {"amenity-restaurant"},
-  {"amenity-school"},
-  {"amenity-shelter"},
-  {"amenity-taxi"},
-  {"amenity-telephone"},
-  {"amenity-theatre"},
-  {"amenity-toilets"},
-  {"amenity-townhall"},
-  {"amenity-university"},
-  {"amenity-waste_disposal"},
-  {"highway-bus_stop"},
-  {"highway-speed_camera"},
-  {"historic-archaeological_site"},
-  {"historic-castle"},
-  {"historic-memorial"},
-  {"historic-monument"},
-  {"historic-ruins"},
-  {"internet-access"},
-  {"internet-access|wlan"},
-  {"landuse-cemetery"},
-  {"leisure-garden"},
-  {"leisure-pitch"},
-  {"leisure-playground"},
-  {"leisure-sports_centre"},
-  {"leisure-stadium"},
-  {"leisure-swimming_pool"},
-  {"natural-peak"},
-  {"natural-spring"},
-  {"natural-waterfall"},
-  {"office-company"},
-  {"office-estate_agent"},
-  {"office-government"},
-  {"office-lawyer"},
-  {"office-telecommunication"},
-  {"place-farm"},
-  {"place-hamlet"},
-  {"place-village"},
-  {"railway-halt"},
-  {"railway-station"},
-  {"railway-subway_entrance"},
-  {"railway-tram_stop"},
-  {"shop-alcohol"},
-  {"shop-bakery"},
-  {"shop-beauty"},
-  {"shop-beverages"},
-  {"shop-bicycle"},
-  {"shop-books"},
-  {"shop-butcher"},
-  {"shop-car"},
-  {"shop-car_repair"},
-  {"shop-chemist"},
-  {"shop-clothes"},
-  {"shop-computer"},
-  {"shop-confectionery"},
-  {"shop-convenience"},
-  {"shop-department_store"},
-  {"shop-doityourself"},
-  {"shop-electronics"},
-  {"shop-florist"},
-  {"shop-furniture"},
-  {"shop-garden_centre"},
-  {"shop-gift"},
-  {"shop-greengrocer"},
-  {"shop-hairdresser"},
-  {"shop-hardware"},
-  {"shop-jewelry"},
-  {"shop-kiosk"},
-  {"shop-laundry"},
-  {"shop-mall"},
-  {"shop-mobile_phone"},
-  {"shop-optician"},
-  {"shop-shoes"},
-  {"shop-sports"},
-  {"shop-supermarket"},
-  {"shop-toys"},
-  {"tourism-alpine_hut"},
-  {"tourism-artwork"},
-  {"tourism-attraction"},
-  {"tourism-camp_site"},
-  {"tourism-caravan_site"},
-  {"tourism-guest_house"},
-  {"tourism-hostel"},
-  {"tourism-hotel"},
-  {"tourism-information"},
-  {"tourism-motel"},
-  {"tourism-museum"},
-  {"tourism-picnic_site"},
-  {"tourism-viewpoint"},
-  {"waterway-waterfall"}};
+/// type:string -> description:pair<fields:vector<???>, editName:bool, editAddr:bool>
+
+using EType = feature::Metadata::EType;
+using TEditableFields = set<EType>;
+
+struct TypeDescription
+{
+  TypeDescription(TEditableFields const & fields, bool const name, bool const address) :
+      fields(fields),
+      name(name),
+      address(address)
+  {
+  }
+
+  TEditableFields const fields;
+  bool const name;
+  bool const address;
+};
+
+static unordered_map<string, TypeDescription> const gEditableTypes = {
+  {"aeroway-aerodrome", {{EType::FMD_ELE, EType::FMD_PHONE_NUMBER, EType::FMD_OPERATOR}, false, true}},
+  {"aeroway-airport", {{EType::FMD_ELE, EType::FMD_PHONE_NUMBER, EType::FMD_OPERATOR}, false, true}},
+  {"amenity-atm", {{}, true, false}},
+  {"amenity-bank", {{EType::FMD_OPERATOR, EType::FMD_OPEN_HOURS, EType::FMD_WEBSITE, EType::FMD_OPERATOR}, true, true}},
+  {"amenity-bar", {{EType::FMD_OPEN_HOURS}, true, true}},
+  {"amenity-bicycle_rental", {{EType::FMD_OPERATOR}, false, true}},
+  {"amenity-bureau_de_change", {{EType::FMD_OPEN_HOURS}, true, true}},
+  {"amenity-bus_station", {{EType::FMD_OPERATOR}, true, false}},
+  {"amenity-cafe", {{EType::FMD_OPEN_HOURS, EType::FMD_PHONE_NUMBER, EType::FMD_WEBSITE, EType::FMD_OPERATOR, EType::FMD_INTERNET}, true, true}},
+  {"amenity-car_rental", {{EType::FMD_OPERATOR}, true, false}},
+  {"amenity-car_sharing", {{EType::FMD_OPERATOR, EType::FMD_WEBSITE}, true, false}},
+  {"amenity-casino", {{EType::FMD_OPERATOR, EType::FMD_WEBSITE, EType::FMD_OPEN_HOURS}, true, false}},
+  {"amenity-cinema", {{EType::FMD_OPERATOR, EType::FMD_PHONE_NUMBER, EType::FMD_WEBSITE}, true, true}},
+  {"amenity-college", {{EType::FMD_OPERATOR, EType::FMD_WEBSITE, EType::FMD_WEBSITE}, true, true}},
+  {"amenity-doctors", {{}, true, true}},
+  {"amenity-drinking_water", {{EType::FMD_OPERATOR}, true, false}},
+  {"amenity-embassy", {{EType::FMD_PHONE_NUMBER, EType::FMD_WEBSITE}, true, false}},
+  {"amenity-fast_food", {{EType::FMD_OPERATOR, EType::FMD_CUISINE}, true, false}},
+  {"amenity-ferry_terminal", {{EType::FMD_OPERATOR}, true, false}},
+  {"amenity-fire_station", {{}, true, false}},
+  {"amenity-fountain", {{}, true, false}},
+  {"amenity-fuel", {{EType::FMD_OPERATOR, EType::FMD_OPEN_HOURS, EType::FMD_PHONE_NUMBER, EType::FMD_HEIGHT /*maxheight?*/, EType::FMD_WEBSITE}, true, true }},
+  {"amenity-grave_yard", {{}, true, false}},
+  {"amenity-hospital", {{EType::FMD_WEBSITE, EType::FMD_PHONE_NUMBER}, true, true}},
+  {"amenity-hunting_stand", {{EType::FMD_HEIGHT}, false, false}},
+  {"amenity-kindergarten", {{EType::FMD_WEBSITE, EType::FMD_PHONE_NUMBER, EType::FMD_OPERATOR,  EType::FMD_WEBSITE}, true, true}},
+  {"amenity-library", {{EType::FMD_PHONE_NUMBER, EType::FMD_WEBSITE,  EType::FMD_FAX_NUMBER, EType::FMD_FAX_NUMBER, EType::FMD_EMAIL}, true, true}},
+  {"amenity-marketplace", {{EType::FMD_OPERATOR, EType::FMD_OPEN_HOURS}, true, false}},
+  {"amenity-nightclub", {{EType::FMD_WEBSITE, EType::FMD_PHONE_NUMBER, EType::FMD_OPEN_HOURS, EType::FMD_OPERATOR, EType::FMD_POSTCODE}, true, true}},
+  {"amenity-parking", {{EType::FMD_OPERATOR}, true, false}},
+  {"amenity-pharmacy", {{EType::FMD_OPERATOR, EType::FMD_WEBSITE}, true, true}},
+  {"amenity-place_of_worship", {{EType::FMD_OPEN_HOURS, EType::FMD_WEBSITE}, true, false}},
+  {"amenity-police", {{EType::FMD_OPERATOR, EType::FMD_PHONE_NUMBER, EType::FMD_WEBSITE, EType::FMD_OPEN_HOURS, EType::FMD_POSTCODE}, true, true}},
+  {"amenity-post_box", {{EType::FMD_OPERATOR}, true, false}},
+  {"amenity-post_office", {{EType::FMD_OPERATOR, EType::FMD_WEBSITE,  EType::FMD_PHONE_NUMBER}, true, true}},
+  {"amenity-pub", {{EType::FMD_OPERATOR, EType::FMD_OPEN_HOURS, EType::FMD_CUISINE,  EType::FMD_PHONE_NUMBER, EType::FMD_EMAIL, EType::FMD_WEBSITE, EType::FMD_FAX_NUMBER}, true, true}},
+  {"amenity-recycling", {{EType::FMD_OPERATOR, EType::FMD_WEBSITE}, true, false}},
+  {"amenity-restaurant", {{EType::FMD_OPERATOR, EType::FMD_CUISINE, EType::FMD_OPEN_HOURS, EType::FMD_PHONE_NUMBER, EType::FMD_WEBSITE}, true, true}},
+  {"amenity-school", {{EType::FMD_OPERATOR,  EType::FMD_WIKIPEDIA}, true, true}},
+  {"amenity-taxi", {{EType::FMD_OPERATOR, EType::FMD_PHONE_NUMBER}, true, false}},
+  {"amenity-telephone", {{EType::FMD_OPERATOR, EType::FMD_PHONE_NUMBER}, false, false}},
+  {"amenity-theatre", {{EType::FMD_OPERATOR,  EType::FMD_WEBSITE, EType::FMD_PHONE_NUMBER, EType::FMD_POSTCODE}, true, true}},
+  {"amenity-toilets", {{EType::FMD_OPEN_HOURS, EType::FMD_OPERATOR}, true, false}},
+  {"amenity-townhall", {{EType::FMD_OPERATOR}, true, true}},
+  {"amenity-university", {{EType::FMD_OPERATOR,  EType::FMD_PHONE_NUMBER, EType::FMD_WEBSITE, EType::FMD_FAX_NUMBER, EType::FMD_EMAIL, }, true, true}},
+  {"amenity-waste_disposal", {{EType::FMD_OPERATOR, EType::FMD_WEBSITE}, false, false}},
+  {"highway-bus_stop", {{EType::FMD_OPERATOR}, true, false}},
+  {"historic-archaeological_site", {{}, true, false}},
+  {"historic-castle", {{EType::FMD_WIKIPEDIA}, true, false}},
+  {"historic-memorial", {{}, true, false}},
+  {"historic-monument", {{}, true, false}},
+  {"historic-ruins", {{}, true, false}},
+  {"internet-access", {{EType::FMD_INTERNET /*??*/}, false, false}},
+  {"internet-access|wlan", {{EType::FMD_INTERNET /*??*/}, false, false}},
+  {"landuse-cemetery", {{}, true, false}},
+  {"leisure-garden", {{}, true, false}},
+  {"leisure-sports_centre", {{}, true, true}},
+  {"leisure-stadium", {{EType::FMD_WIKIPEDIA, EType::FMD_WEBSITE, EType::FMD_OPERATOR}, true, true}},
+  {"leisure-swimming_pool", {{EType::FMD_OPEN_HOURS, EType::FMD_OPERATOR}, true, false}},
+  {"natural-peak", {{EType::FMD_WIKIPEDIA, EType::FMD_ELE}, true, false}},
+  {"natural-spring", {{}, true, false}},
+  {"natural-waterfall", {{}, true, false}},
+  {"office-company", {{}, true, false}},
+  {"office-government", {{}, true, false}},
+  {"office-lawyer", {{EType::FMD_OPEN_HOURS, EType::FMD_PHONE_NUMBER, EType::FMD_FAX_NUMBER, EType::FMD_WEBSITE, EType::FMD_EMAIL}, true, false}},
+  {"office-telecommunication", {{EType::FMD_OPEN_HOURS, EType::FMD_OPERATOR}, true, false}},
+  {"place-farm", {{EType::FMD_WIKIPEDIA}, true, false}},
+  {"place-hamlet", {{EType::FMD_WIKIPEDIA}, true, false}},
+  {"place-village", {{EType::FMD_WIKIPEDIA}, true, false}},
+  {"railway-halt", {{}, true, false}},
+  {"railway-station", {{EType::FMD_OPERATOR}, true, false}},
+  {"railway-subway_entrance", {{}, true, false}},
+  {"railway-tram_stop", {{EType::FMD_OPERATOR}, true, false}},
+  {"shop-alcohol", {{EType::FMD_OPEN_HOURS}, true, false}},
+  {"shop-bakery", {{EType::FMD_OPEN_HOURS}, true, false}},
+  {"shop-beauty", {{EType::FMD_OPEN_HOURS}, true, false}},
+  {"shop-beverages", {{EType::FMD_OPEN_HOURS}, true, false}},
+  {"shop-bicycle", {{EType::FMD_OPERATOR, EType::FMD_WEBSITE, EType::FMD_OPEN_HOURS, EType::FMD_POSTCODE}, true, true}},
+  {"shop-books", {{EType::FMD_OPEN_HOURS, EType::FMD_OPERATOR}, true, false}},
+  {"shop-butcher", {{EType::FMD_OPEN_HOURS}, true, false}},
+  {"shop-car", {{EType::FMD_OPERATOR, EType::FMD_OPEN_HOURS}, true, false}},
+  {"shop-car_repair", {{EType::FMD_OPERATOR, EType::FMD_WEBSITE, EType::FMD_PHONE_NUMBER, EType::FMD_POSTCODE}, true, true}},
+  {"shop-chemist", {{EType::FMD_OPEN_HOURS}, true, false}},
+  {"shop-clothes", {{EType::FMD_OPERATOR, EType::FMD_OPEN_HOURS}, true, false}},
+  {"shop-computer", {{EType::FMD_OPEN_HOURS}, true, false}},
+  {"shop-confectionery", {{EType::FMD_OPEN_HOURS}, true, false }},
+  {"shop-convenience", {{EType::FMD_OPERATOR, EType::FMD_OPEN_HOURS}, true, false}},
+  {"shop-department_store", {{EType::FMD_OPERATOR, EType::FMD_OPEN_HOURS}, false, false}},
+  {"shop-doityourself", {{EType::FMD_OPERATOR, EType::FMD_OPEN_HOURS}, true, false}},
+  {"shop-electronics", {{EType::FMD_OPEN_HOURS, EType::FMD_OPERATOR}, true, false}},
+  {"shop-florist", {{EType::FMD_OPEN_HOURS}, true, false}},
+  {"shop-furniture", {{EType::FMD_OPEN_HOURS}, false, false}},
+  {"shop-garden_centre", {{EType::FMD_OPEN_HOURS}, true, false}},
+  {"shop-gift", {{EType::FMD_OPEN_HOURS}, true, false}},
+  {"shop-greengrocer", {{EType::FMD_OPEN_HOURS}, true, false}},
+  {"shop-hairdresser", {{EType::FMD_OPEN_HOURS}, true, false}},
+  {"shop-hardware", {{EType::FMD_OPEN_HOURS}, true, false}},
+  {"shop-jewelry", {{EType::FMD_OPEN_HOURS}, true, false}},
+  {"shop-kiosk", {{EType::FMD_OPERATOR, EType::FMD_OPEN_HOURS}, true, false}},
+  {"shop-laundry", {{EType::FMD_OPEN_HOURS}, true, false}},
+  {"shop-mall", {{EType::FMD_OPERATOR, EType::FMD_OPEN_HOURS}, true, true}},
+  {"shop-mobile_phone", {{EType::FMD_OPERATOR, EType::FMD_OPEN_HOURS}, true, false}},
+  {"shop-optician", {{EType::FMD_OPEN_HOURS}, true, false}},
+  {"shop-shoes", {{EType::FMD_OPEN_HOURS}, true, false}},
+  {"shop-sports", {{EType::FMD_OPEN_HOURS}, true, false}},
+  {"shop-supermarket", {{EType::FMD_OPEN_HOURS, EType::FMD_OPERATOR}, true, false}},
+  {"shop-toys", {{EType::FMD_OPEN_HOURS}, true, false}},
+  {"tourism-alpine_hut", {{EType::FMD_ELE, EType::FMD_OPEN_HOURS, EType::FMD_OPERATOR}, true, false}},
+  {"tourism-artwork", {{EType::FMD_WEBSITE, EType::FMD_WIKIPEDIA}, true, false}},
+  {"tourism-camp_site", {{EType::FMD_OPERATOR, EType::FMD_WEBSITE, EType::FMD_OPEN_HOURS}, true, false}},
+  {"tourism-caravan_site", {{EType::FMD_WEBSITE, EType::FMD_OPERATOR}, true, false}},
+  {"tourism-guest_house", {{EType::FMD_OPERATOR, EType::FMD_WEBSITE}, true, false}},
+  {"tourism-hostel", {{EType::FMD_OPERATOR, EType::FMD_WEBSITE}, true, true}},
+  {"tourism-hotel", {{EType::FMD_OPERATOR, EType::FMD_WEBSITE, EType::FMD_PHONE_NUMBER}, true, true}},
+  {"tourism-information", {{}, true, false}},
+  {"tourism-motel", {{EType::FMD_OPERATOR}, true, true}},
+  {"tourism-museum", {{EType::FMD_OPERATOR, EType::FMD_OPEN_HOURS}, true, false}},
+  {"tourism-viewpoint", {{}, true, false}},
+  {"waterway-waterfall", {{EType::FMD_HEIGHT}, true, false}}};
+
+TypeDescription const * GetTypeDescription(uint32_t const type)
+{
+  auto const readableType = classif().GetReadableObjectName(type);
+  auto const it = gEditableTypes.find(readableType);
+  if (it != end(gEditableTypes))
+    return &it->second;
+  return nullptr;
+}
 
 template <typename TIterator>
-bool HasAtLeastOneEditableType(TIterator from, TIterator const to)
+TEditableFields GetEditableFields(TIterator from, TIterator const to)
 {
+  TEditableFields fields;
   while (from != to)
   {
-    auto const & type = classif().GetReadableObjectName(*from++);
-    if (gEditableTypes.find(type) != end(gEditableTypes))
-      return true;
+    auto const * desc = GetTypeDescription(*from++);
+    if (desc)
+    {
+      for (auto field : desc->fields)
+        fields.insert(field);
+    }
   }
-  return false;
+
+  return fields;
+}
+
+Editor::TTypes GetAllTypes(FeatureType const & feature)
+{
+  Editor::TTypes types;
+  feature.ForEachType([&types](uint32_t type) { types.push_back(type); });
+  return types;
 }
 } // namespace
 
@@ -444,12 +473,33 @@ bool Editor::GetEditedFeature(MwmSet::MwmId const & mwmId, uint32_t offset, Feat
 vector<Metadata::EType> Editor::EditableMetadataForType(FeatureType const & feature) const
 {
   // TODO(mgsergio): Load editable fields into memory from XML and query them here.
-  TTypes types;
-  feature.ForEachType([&types](uint32_t type) { types.push_back(type); });
+  auto const types = GetAllTypes(feature);
 
-  // Enable opening hours for the first release.
-  if (HasAtLeastOneEditableType(begin(types), end(types)))
-    return {Metadata::FMD_OPEN_HOURS};
-  return {};
+  auto const fields = GetEditableFields(begin(types), end(types));
+  return {begin(fields), end(fields)};
+}
+
+bool Editor::IsNameEditable(FeatureType const & feature) const
+{
+  for (auto type : GetAllTypes(feature))
+  {
+    auto const * typeDesc = GetTypeDescription(type);
+    if (typeDesc && typeDesc->name)
+      return true;
+  }
+
+  return false;
+}
+
+bool Editor::IsAddressEditable(FeatureType const & feature) const
+{
+  for (auto type : GetAllTypes(feature))
+  {
+    auto const * typeDesc = GetTypeDescription(type);
+    if (typeDesc && typeDesc->address)
+      return true;
+  }
+
+  return false;
 }
 }  // namespace osm
