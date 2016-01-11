@@ -799,7 +799,7 @@
 
 	<!-- SECTION: Strings for downloading map from search -->
 	<string name="search_without_internet_advertisement">Для поиска мест и построения маршрутов скачайте карту, и интернет вам больше не понадобится.</string>
-	<string name="search_select_map">Выбрать карту </string>
+	<string name="search_select_map">Выбрать карту</string>
 	<string name="search_select_other_map">Выбрать другую карту</string>
 	<string name="search_vehicle_routes">Автомобильные маршруты</string>
 	<!-- «Show» context menu -->
@@ -853,4 +853,8 @@
 	<string name="whats_new_3d_update_maps">Для полноценной работы функции, пожалуйста, обновите карты.</string>
 	<string name="whats_new_3d_on">Включить перспективный вид</string>
 	<string name="whats_new_3d_buildings_on">Включить 3D здания</string>
+	<!-- «Add place» button in place page. -->
+	<string name="pp_place_add">Добавить место</string>
+	<!-- «Edit place» button in place page. -->
+	<string name="pp_place_edit">Редактировать место</string>
 </resources>
