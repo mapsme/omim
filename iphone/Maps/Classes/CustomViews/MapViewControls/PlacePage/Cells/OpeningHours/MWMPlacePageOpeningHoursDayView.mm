@@ -13,12 +13,13 @@
 
 @property (weak, nonatomic) IBOutlet UILabel * closedLabel;
 
-@property (weak, nonatomic) IBOutlet UIImageView * expandImage;
-
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint * height;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * labelTopSpacing;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint * labelWidth;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint * breakLabelWidth;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint * breaksHolderHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * openTimeLabelLeadingOffset;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * labelOpenTimeLabelSpacing;
 
 @end
 
@@ -26,13 +27,14 @@
 
 - (void)setLabelText:(NSString *)text isRed:(BOOL)isRed
 {
-  self.label.text = text;
+  UILabel * label = self.label;
+  label.text = text;
   if (isRed)
-    self.label.textColor = [UIColor red];
+    label.textColor = [UIColor red];
   else if (self.currentDay)
-    self.label.textColor = [UIColor blackPrimaryText];
+    label.textColor = [UIColor blackPrimaryText];
   else
-    self.label.textColor = [UIColor blackSecondaryText];
+    label.textColor = [UIColor blackSecondaryText];
 }
 
 - (void)setOpenTimeText:(NSString *)text
@@ -77,41 +79,43 @@
   self.closedLabel.hidden = !closed;
 }
 
-- (void)setCanExpand:(BOOL)canExpand
-{
-  self.expandImage.hidden = !canExpand;
-}
-
-- (void)setCompatibilityText:(NSString *)text
+- (void)setCompatibilityText:(NSString *)text isPlaceholder:(BOOL)isPlaceholder
 {
   self.compatibilityLabel.text = text;
+  self.compatibilityLabel.textColor = isPlaceholder ? [UIColor blackSecondaryText] : [UIColor blackPrimaryText];
 }
 
 - (void)invalidate
 {
   CGFloat viewHeight;
-  BOOL const isRegular = (self.mode == MWMPlacePageOpeningHoursDayViewModeRegular);
-  if (isRegular)
-  {
-    [self.label sizeToIntegralFit];
-    self.labelWidth.constant = self.label.width;
-    [self.breakLabel sizeToIntegralFit];
-    self.breakLabelWidth.constant = self.breakLabel.width;
-
-    CGFloat const minHeight = self.currentDay ? 44.0 : 8.0;
-    CGFloat const breaksHolderHeight = self.breaksHolderHeight.constant;
-    CGFloat const additionalHeight = (breaksHolderHeight > 0 ? 4.0 : 0.0);
-    viewHeight = minHeight + breaksHolderHeight + additionalHeight;
-
-    CGFloat const heightForClosedLabel = 20.0;
-    if (!self.closedLabel.hidden)
-      viewHeight += heightForClosedLabel;
-  }
-  else
+  if (self.isCompatibility)
   {
     [self.compatibilityLabel sizeToIntegralFit];
     CGFloat const compatibilityLabelVerticalOffsets = 24.0;
     viewHeight = self.compatibilityLabel.height + compatibilityLabelVerticalOffsets;
+  }
+  else
+  {
+    UILabel * label = self.label;
+    UILabel * openTime = self.openTime;
+    CGFloat const labelOpenTimeLabelSpacing = self.labelOpenTimeLabelSpacing.constant;
+    [label sizeToIntegralFit];
+    self.labelWidth.constant = MIN(label.width, openTime.minX - label.minX - labelOpenTimeLabelSpacing);
+
+    [self.breakLabel sizeToIntegralFit];
+    self.breakLabelWidth.constant = self.breakLabel.width;
+
+    CGFloat const verticalSuperviewSpacing = self.labelTopSpacing.constant;
+    CGFloat const minHeight = label.height + 2 * verticalSuperviewSpacing;
+    CGFloat const breaksHolderHeight = self.breaksHolderHeight.constant;
+    CGFloat const additionalHeight = (breaksHolderHeight > 0 ? 4.0 : 0.0);
+    viewHeight = minHeight + breaksHolderHeight + additionalHeight;
+
+    if (self.closedLabel && !self.closedLabel.hidden)
+    {
+      CGFloat const heightForClosedLabel = 20.0;
+      viewHeight += heightForClosedLabel;
+    }
   }
 
   self.viewHeight = ceil(viewHeight);
@@ -137,20 +141,25 @@
   }
 }
 
-- (void)setMode:(MWMPlacePageOpeningHoursDayViewMode)mode
+- (void)setIsCompatibility:(BOOL)isCompatibility
 {
-  _mode = mode;
-  BOOL const isRegular = (mode == MWMPlacePageOpeningHoursDayViewModeRegular);
-  BOOL const isEmpty = (mode == MWMPlacePageOpeningHoursDayViewModeEmpty);
-  self.compatibilityLabel.hidden = isRegular;
-  self.label.hidden = !isRegular;
-  self.openTime.hidden = !isRegular;
-  self.breakLabel.hidden = !isRegular;
-  self.breaksHolder.hidden = !isRegular;
-  self.closedLabel.hidden = !isRegular;
+  _isCompatibility = isCompatibility;
+  self.compatibilityLabel.hidden = !isCompatibility;
+  self.label.hidden = isCompatibility;
+  self.openTime.hidden = isCompatibility;
+  self.breakLabel.hidden = isCompatibility;
+  self.breaksHolder.hidden = isCompatibility;
+  self.closedLabel.hidden = isCompatibility;
+}
 
-  if (isEmpty)
-    self.compatibilityLabel.text = L(@"add_opening_hours");
+- (CGFloat)openTimeLeadingOffset
+{
+  return self.openTime.minX;
+}
+
+- (void)setOpenTimeLeadingOffset:(CGFloat)openTimeLeadingOffset
+{
+  self.openTimeLabelLeadingOffset.constant = openTimeLeadingOffset;
 }
 
 @end

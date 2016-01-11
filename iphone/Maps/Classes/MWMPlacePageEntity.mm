@@ -9,39 +9,76 @@ using feature::Metadata;
 
 extern NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 
-static array<MWMPlacePageMetadataField, 8> const kPatternFieldsArray{
-    {MWMPlacePageMetadataFieldPostcode, MWMPlacePageMetadataFieldPhoneNumber,
-     MWMPlacePageMetadataFieldWebsite, MWMPlacePageMetadataFieldURL, MWMPlacePageMetadataFieldEmail,
-     MWMPlacePageMetadataFieldOpenHours, MWMPlacePageMetadataFieldWiFi,
-     MWMPlacePageMetadataFieldCoordinate}};
+namespace
+{
 
-static map<Metadata::EType, MWMPlacePageMetadataField> const kMetaFieldsMap{
-    {Metadata::FMD_URL, MWMPlacePageMetadataFieldURL},
-    {Metadata::FMD_WEBSITE, MWMPlacePageMetadataFieldWebsite},
-    {Metadata::FMD_PHONE_NUMBER, MWMPlacePageMetadataFieldPhoneNumber},
-    {Metadata::FMD_OPEN_HOURS, MWMPlacePageMetadataFieldOpenHours},
-    {Metadata::FMD_EMAIL, MWMPlacePageMetadataFieldEmail},
-    {Metadata::FMD_POSTCODE, MWMPlacePageMetadataFieldPostcode},
-    {Metadata::FMD_INTERNET, MWMPlacePageMetadataFieldWiFi}};
+NSString * const kOSMCuisineSeparator = @";";
+
+array<MWMPlacePageCellType, 10> const gMetaFieldsMap{
+    {MWMPlacePageCellTypePostcode, MWMPlacePageCellTypePhoneNumber, MWMPlacePageCellTypeWebsite,
+     MWMPlacePageCellTypeURL, MWMPlacePageCellTypeEmail, MWMPlacePageCellTypeOpenHours,
+     MWMPlacePageCellTypeWiFi, MWMPlacePageCellTypeCoordinate, MWMPlacePageCellTypeBookmark,
+     MWMPlacePageCellTypeEditButton}};
+
+NSUInteger kMetaFieldsMap[MWMPlacePageCellTypeCount] = {};
+
+void putFields(NSUInteger eTypeValue, NSUInteger ppValue)
+{
+  kMetaFieldsMap[eTypeValue] = ppValue;
+  kMetaFieldsMap[ppValue] = eTypeValue;
+}
+
+void initFieldsMap()
+{
+  putFields(Metadata::FMD_URL, MWMPlacePageCellTypeURL);
+  putFields(Metadata::FMD_WEBSITE, MWMPlacePageCellTypeWebsite);
+  putFields(Metadata::FMD_PHONE_NUMBER, MWMPlacePageCellTypePhoneNumber);
+  putFields(Metadata::FMD_OPEN_HOURS, MWMPlacePageCellTypeOpenHours);
+  putFields(Metadata::FMD_EMAIL, MWMPlacePageCellTypeEmail);
+  putFields(Metadata::FMD_POSTCODE, MWMPlacePageCellTypePostcode);
+  putFields(Metadata::FMD_INTERNET, MWMPlacePageCellTypeWiFi);
+  putFields(Metadata::FMD_CUISINE, MWMPlacePageCellTypeCuisine);
+
+  ASSERT_EQUAL(kMetaFieldsMap[Metadata::FMD_URL], MWMPlacePageCellTypeURL, ());
+  ASSERT_EQUAL(kMetaFieldsMap[MWMPlacePageCellTypeURL], Metadata::FMD_URL, ());
+  ASSERT_EQUAL(kMetaFieldsMap[Metadata::FMD_WEBSITE], MWMPlacePageCellTypeWebsite, ());
+  ASSERT_EQUAL(kMetaFieldsMap[MWMPlacePageCellTypeWebsite], Metadata::FMD_WEBSITE, ());
+  ASSERT_EQUAL(kMetaFieldsMap[Metadata::FMD_POSTCODE], MWMPlacePageCellTypePostcode, ());
+  ASSERT_EQUAL(kMetaFieldsMap[MWMPlacePageCellTypePostcode], Metadata::FMD_POSTCODE, ());
+  ASSERT_EQUAL(kMetaFieldsMap[MWMPlacePageCellTypeSpacer], 0, ());
+  ASSERT_EQUAL(kMetaFieldsMap[Metadata::FMD_MAXSPEED], 0, ());
+}
+} // namespace
+
+@interface MWMPlacePageEntity ()
+
+@property (weak, nonatomic) id<MWMPlacePageEntityProtocol> delegate;
+
+@end
 
 @implementation MWMPlacePageEntity
 {
-  vector<MWMPlacePageMetadataField> m_fields;
-  set<MWMPlacePageMetadataField> m_editableFields;
-  map<MWMPlacePageMetadataField, string> m_values;
+  vector<MWMPlacePageCellType> m_fields;
+  set<MWMPlacePageCellType> m_editableFields;
+  MWMPlacePageCellTypeValueMap m_values;
 }
 
-- (instancetype)initWithUserMark:(UserMark const *)userMark
+- (instancetype)initWithDelegate:(id<MWMPlacePageEntityProtocol>)delegate
 {
-  NSAssert(userMark, @"userMark can not be nil.");
+  NSAssert(delegate, @"delegate can not be nil.");
   self = [super init];
   if (self)
-    [self configureWithUserMark:userMark];
+  {
+    _delegate = delegate;
+    initFieldsMap();
+    [self config];
+  }
   return self;
 }
 
-- (void)configureWithUserMark:(UserMark const *)mark
+- (void)config
 {
+  UserMark const * mark = self.delegate.userMark;
   _latlon = mark->GetLatLon();
   using Type = UserMark::Type;
   switch (mark->GetMarkType())
@@ -56,43 +93,51 @@ static map<Metadata::EType, MWMPlacePageMetadataField> const kMetaFieldsMap{
       break;
     case Type::SEARCH:
     case Type::POI:
-      [self configureEntityWithFeature:mark->GetFeature()];
+      [self configureWithFeature:mark->GetFeature()];
       break;
     case Type::BOOKMARK:
       [self configureForBookmark:mark];
       break;
   }
-  [self setEditableFields];
+  [self setEditableTypes];
   [self sortMetaFields];
 }
 
 - (void)sortMetaFields
 {
-  auto begin = kPatternFieldsArray.begin();
-  auto end = kPatternFieldsArray.end();
-  sort(m_fields.begin(), m_fields.end(), [&](MWMPlacePageMetadataField a, MWMPlacePageMetadataField b)
+  auto const begin = gMetaFieldsMap.begin();
+  auto const end = gMetaFieldsMap.end();
+  sort(m_fields.begin(), m_fields.end(), [&](MWMPlacePageCellType a, MWMPlacePageCellType b)
   {
     return find(begin, end, a) < find(begin, end, b);
   });
 }
 
-- (void)addMetaField:(MWMPlacePageMetadataField)field
+- (void)addMetaField:(NSUInteger)value
 {
+  NSAssert(value >= Metadata::FMD_COUNT, @"Incorrect enum value");
+  MWMPlacePageCellType const field = static_cast<MWMPlacePageCellType>(value);
+  if (find(gMetaFieldsMap.begin(), gMetaFieldsMap.end(), field) == gMetaFieldsMap.end())
+    return;
   if (find(m_fields.begin(), m_fields.end(), field) == m_fields.end())
     m_fields.emplace_back(field);
 }
 
-- (void)removeMetaField:(MWMPlacePageMetadataField)field
+- (void)removeMetaField:(MWMPlacePageCellType)field
 {
-  auto it = find(m_fields.begin(), m_fields.end(), field);
+  auto const it = find(m_fields.begin(), m_fields.end(), field);
   if (it != m_fields.end())
     m_fields.erase(it);
 }
 
-- (void)addMetaField:(MWMPlacePageMetadataField)field value:(string const &)value
+- (void)addMetaField:(NSUInteger)key value:(string const &)value
 {
-  [self addMetaField:field];
-  m_values.emplace(field, value);
+  if (value.empty())
+    return;
+  [self addMetaField:key];
+  NSAssert(key >= Metadata::FMD_COUNT, @"Incorrect enum value");
+  MWMPlacePageCellType const cellType = static_cast<MWMPlacePageCellType>(key);
+  m_values[cellType] = value;
 }
 
 - (void)configureForBookmark:(UserMark const *)bookmark
@@ -110,15 +155,15 @@ static map<Metadata::EType, MWMPlacePageMetadataField> const kMetaFieldsMap{
   _isHTMLDescription = strings::IsHTML(description);
   self.bookmarkColor = @(data.GetType().c_str());
 
-  [self configureEntityWithFeature:bookmark->GetFeature()];
-  [self insertBookmarkInTypes];
+  [self configureWithFeature:bookmark->GetFeature()];
+  [self addBookmarkField];
 }
 
 - (void)configureForMyPosition:(MyPositionMarkPoint const *)myPositionMark
 {
   self.title = L(@"my_position");
   self.type = MWMPlacePageEntityTypeMyPosition;
-  [self addMetaField:MWMPlacePageMetadataFieldCoordinate];
+  [self addMetaField:MWMPlacePageCellTypeCoordinate];
 }
 
 - (void)configureForApi:(ApiMarkPoint const *)apiMark
@@ -126,11 +171,11 @@ static map<Metadata::EType, MWMPlacePageMetadataField> const kMetaFieldsMap{
   self.type = MWMPlacePageEntityTypeAPI;
   self.title = @(apiMark->GetName().c_str());
   self.category = @(GetFramework().GetApiDataHolder().GetAppTitle().c_str());
-  [self addMetaField:MWMPlacePageMetadataFieldCoordinate];
+  [self addMetaField:MWMPlacePageCellTypeCoordinate];
 }
 
 // feature can be nullptr if user selected any empty area.
-- (void)configureEntityWithFeature:(FeatureType const *)feature
+- (void)configureWithFeature:(FeatureType const *)feature
 {
   if (feature)
   {
@@ -148,22 +193,10 @@ static map<Metadata::EType, MWMPlacePageMetadataField> const kMetaFieldsMap{
       {
         case Metadata::FMD_CUISINE:
         {
-          NSString * result = @(metadata.Get(type).c_str());
-          NSString * cuisine = [NSString stringWithFormat:@"cuisine_%@", result];
-          NSString * localizedResult = L(cuisine);
-          NSString * currentCategory = self.category;
-          if (![localizedResult isEqualToString:currentCategory])
-          {
-            if ([localizedResult isEqualToString:cuisine])
-            {
-              if (![result isEqualToString:currentCategory])
-                self.category = [NSString stringWithFormat:@"%@, %@", self.category, result];
-            }
-            else
-            {
-              self.category = [NSString stringWithFormat:@"%@, %@", self.category, localizedResult];
-            }
-          }
+        [self deserializeCuisine:@(metadata.Get(type).c_str())];
+        NSString * cuisine = [self getCellValue:MWMPlacePageCellTypeCuisine];
+        if (![self.category isEqualToString:cuisine])
+          self.category = [NSString stringWithFormat:@"%@, %@", self.category, cuisine];
           break;
         }
         case Metadata::FMD_ELE:
@@ -195,32 +228,34 @@ static map<Metadata::EType, MWMPlacePageMetadataField> const kMetaFieldsMap{
         case Metadata::FMD_OPEN_HOURS:
         case Metadata::FMD_EMAIL:
         case Metadata::FMD_POSTCODE:
-          [self addMetaField:kMetaFieldsMap.at(type) value:metadata.Get(type)];
+          [self addMetaField:kMetaFieldsMap[type] value:metadata.Get(type)];
           break;
         case Metadata::FMD_INTERNET:
-          [self addMetaField:kMetaFieldsMap.at(type) value:L(@"WiFi_available").UTF8String];
+          [self addMetaField:kMetaFieldsMap[type] value:L(@"WiFi_available").UTF8String];
           break;
         default:
           break;
       }
     }
   }
-  [self addMetaField:MWMPlacePageMetadataFieldCoordinate];
+
+  [self addMetaField:MWMPlacePageCellTypeCoordinate];
 }
 
-- (void)enableEditing
+- (void)addEditField
 {
-  [self addMetaField:MWMPlacePageMetadataFieldEditButton];
+  [self addMetaField:MWMPlacePageCellTypeEditButton];
 }
 
-- (void)insertBookmarkInTypes
+- (void)addBookmarkField
 {
-  [self addMetaField:MWMPlacePageMetadataFieldBookmark];
+  [self addMetaField:MWMPlacePageCellTypeBookmark];
+  [self sortMetaFields];
 }
 
-- (void)removeBookmarkFromTypes
+- (void)removeBookmarkField
 {
-  [self removeMetaField:MWMPlacePageMetadataFieldBookmark];
+  [self removeMetaField:MWMPlacePageCellTypeBookmark];
 }
 
 - (void)toggleCoordinateSystem
@@ -230,45 +265,121 @@ static map<Metadata::EType, MWMPlacePageMetadataField> const kMetaFieldsMap{
   [ud synchronize];
 }
 
+- (void)deserializeCuisine:(NSString *)cuisine
+{
+  self.cuisines = [NSSet setWithArray:[cuisine componentsSeparatedByString:kOSMCuisineSeparator]];
+}
+
+- (NSString *)serializeCuisine
+{
+  return [self.cuisines.allObjects componentsJoinedByString:kOSMCuisineSeparator];
+}
+
 #pragma mark - Editing
 
-- (void)setEditableFields
+- (void)setEditableTypes
 {
-  // TODO: Replace with real array
-  vector<Metadata::EType> const editableTypes {Metadata::FMD_OPEN_HOURS};
-  //osm::Editor::Instance().EditableMetadataForType(<#const FeatureType &feature#>);
+  FeatureType * feature = self.delegate.userMark->GetFeature();
+  if (!feature)
+    return;
+  vector<Metadata::EType> const editableTypes = osm::Editor::Instance().EditableMetadataForType(*feature);
+  if (!editableTypes.empty())
+    [self addEditField];
   for (auto const & type : editableTypes)
   {
-    MWMPlacePageMetadataField uiType = kMetaFieldsMap.at(type);
-    [self addMetaField:uiType];
-    m_editableFields.insert(uiType);
+    NSAssert(kMetaFieldsMap[type] >= Metadata::FMD_COUNT, @"Incorrect enum value");
+    MWMPlacePageCellType const field = static_cast<MWMPlacePageCellType>(kMetaFieldsMap[type]);
+    m_editableFields.insert(field);
   }
 }
 
-- (BOOL)isFieldEditable:(MWMPlacePageMetadataField)field
+- (BOOL)isCellEditable:(MWMPlacePageCellType)cellType
 {
-  return m_editableFields.count(field) == 1;
+  return m_editableFields.count(cellType) == 1;
+}
+
+- (void)saveEditedCells:(MWMPlacePageCellTypeValueMap const &)cells
+{
+  FeatureType * feature = self.delegate.userMark->GetFeature();
+  NSAssert(feature != nullptr, @"Feature is null");
+  if (!feature)
+    return;
+  auto & metadata = feature->GetMetadata();
+  for (auto const & cell : cells)
+  {
+    switch (cell.first)
+    {
+      case MWMPlacePageCellTypePhoneNumber:
+      case MWMPlacePageCellTypeWebsite:
+      case MWMPlacePageCellTypeOpenHours:
+      case MWMPlacePageCellTypeEmail:
+      case MWMPlacePageCellTypeWiFi:
+      {
+        Metadata::EType const fmdType = static_cast<Metadata::EType>(kMetaFieldsMap[cell.first]);
+        NSAssert(fmdType > 0 && fmdType < Metadata::FMD_COUNT, @"Incorrect enum value");
+        metadata.Set(fmdType, cell.second);
+        break;
+      }
+      case MWMPlacePageCellTypeCuisine:
+      {
+        Metadata::EType const fmdType = static_cast<Metadata::EType>(kMetaFieldsMap[cell.first]);
+        NSAssert(fmdType > 0 && fmdType < Metadata::FMD_COUNT, @"Incorrect enum value");
+        NSString * cuisineStr = [self serializeCuisine];
+        metadata.Set(fmdType, cuisineStr.UTF8String);
+        break;
+      }
+      case MWMPlacePageCellTypeName:
+      {
+        // TODO Add implementation
+        break;
+      }
+      case MWMPlacePageCellTypeStreet:
+      {
+        // TODO Add implementation
+        break;
+      }
+      case MWMPlacePageCellTypeBuilding:
+      {
+        // TODO Add implementation
+        break;
+      }
+      default:
+        NSAssert(false, @"Invalid field for editor");
+        break;
+    }
+  }
+  feature->SetMetadata(metadata);
+  osm::Editor::Instance().EditFeature(*feature);
 }
 
 #pragma mark - Getters
 
-- (NSUInteger)getFieldsCount
+- (NSUInteger)getCellsCount
 {
   return m_fields.size();
 }
 
-- (MWMPlacePageMetadataField)getFieldType:(NSUInteger)index
+- (MWMPlacePageCellType)getCellType:(NSUInteger)index
 {
-  NSAssert(index < [self getFieldsCount], @"Invalid meta index");
+  NSAssert(index < [self getCellsCount], @"Invalid meta index");
   return m_fields[index];
 }
 
-- (NSString *)getFieldValue:(MWMPlacePageMetadataField)field
+- (NSString *)getCellValue:(MWMPlacePageCellType)cellType
 {
-  if (field == MWMPlacePageMetadataFieldCoordinate)
-    return [self coordinate];
-  auto it = m_values.find(field);
-  return it != m_values.end() ? @(it->second.c_str()) : nil;
+  switch (cellType)
+  {
+    case MWMPlacePageCellTypeName:
+      return self.title;
+    case MWMPlacePageCellTypeCoordinate:
+      return [self coordinate];
+    default:
+    {
+      auto const it = m_values.find(cellType);
+      BOOL const haveField = (it != m_values.end());
+      return haveField ? @(it->second.c_str()) : nil;
+    }
+  }
 }
 
 - (NSString *)coordinate
@@ -279,6 +390,33 @@ static map<Metadata::EType, MWMPlacePageMetadataField> const kMetaFieldsMap{
   return @((useDMSFormat ? MeasurementUtils::FormatLatLon(latlon.lat, latlon.lon)
                          : MeasurementUtils::FormatLatLonAsDMS(latlon.lat, latlon.lon, 2))
                .c_str());
+}
+
+#pragma mark - Properties
+
+@synthesize cuisines = _cuisines;
+- (NSSet<NSString *> *)cuisines
+{
+  if (!_cuisines)
+    _cuisines = [NSSet set];
+  return _cuisines;
+}
+
+- (void)setCuisines:(NSSet<NSString *> *)cuisines
+{
+  if ([_cuisines isEqualToSet:cuisines])
+    return;
+  _cuisines = cuisines;
+  NSMutableArray<NSString *> * localizedCuisines = [NSMutableArray arrayWithCapacity:self.cuisines.count];
+  for (NSString * cus in self.cuisines)
+  {
+    NSString * cuisine = [NSString stringWithFormat:@"cuisine_%@", cus];
+    NSString * localizedCuisine = L(cuisine);
+    BOOL const noLocalization = [localizedCuisine isEqualToString:cuisine];
+    [localizedCuisines addObject:noLocalization ? cus : localizedCuisine];
+  }
+  [self addMetaField:MWMPlacePageCellTypeCuisine
+               value:[localizedCuisines componentsJoinedByString:@", "].UTF8String];
 }
 
 #pragma mark - Bookmark editing
