@@ -10,26 +10,22 @@ using osm::ServerApi06;
 using osm::OsmOAuth;
 using namespace pugi;
 
-constexpr char const * kOsmDevServer = "http://master.apis.dev.openstreetmap.org";
-constexpr char const * kOsmConsumerKey = "eRtN6yKZZf34oVyBnyaVbsWtHIIeptLArQKdTwN3";
-constexpr char const * kOsmConsumerSecret = "lC124mtm2VqvKJjSh35qBpKfrkeIjpKuGe38Hd1H";
 constexpr char const * kValidOsmUser = "MapsMeTestUser";
 constexpr char const * kInvalidOsmUser = "qwesdxzcgretwr";
 constexpr char const * kValidOsmPassword = "12345678";
 
 UNIT_TEST(OSM_ServerAPI_TestUserExists)
 {
-  OsmOAuth auth(kOsmConsumerKey, kOsmConsumerSecret, kOsmDevServer);
-  ServerApi06 api(auth);
-  TEST(api.TestUserExists(kValidOsmUser), ());
-  TEST(!api.TestUserExists(kInvalidOsmUser), ());
+  ServerApi06 api(OsmOAuth::DevServerAuth());
+  TEST_EQUAL(OsmOAuth::ResponseCode::OK, api.TestUserExists(kValidOsmUser), ());
+  TEST_EQUAL(OsmOAuth::ResponseCode::NotFound, api.TestUserExists(kInvalidOsmUser), ());
 }
 
 namespace
 {
 ServerApi06 CreateAPI()
 {
-  OsmOAuth auth(kOsmConsumerKey, kOsmConsumerSecret, kOsmDevServer);
+  OsmOAuth auth = OsmOAuth::DevServerAuth();
   OsmOAuth::AuthResult result = auth.AuthorizePassword(kValidOsmUser, kValidOsmPassword);
   TEST_EQUAL(result, OsmOAuth::AuthResult::OK, ());
   TEST(auth.IsAuthorized(), ("OSM authorization"));
@@ -120,10 +116,11 @@ UNIT_TEST(OSM_ServerAPI_ChangesetActions)
   // New changeset has new id.
   TEST(SetAttributeForOsmNode(node, "changeset", changeSetId), ());
 
-  string const serverReply = api.GetXmlNodeByLatLon(node.child("osm").child("node").attribute("lat").as_double(),
-                                                     node.child("osm").child("node").attribute("lon").as_double());
+  auto const response = api.GetXmlNodeByLatLon(node.child("osm").child("node").attribute("lat").as_double(),
+                                               node.child("osm").child("node").attribute("lon").as_double());
+  TEST_EQUAL(response.first, OsmOAuth::ResponseCode::OK, ());
   xml_document reply;
-  reply.load_string(serverReply.c_str());
+  reply.load_string(response.second.c_str());
   TEST_EQUAL(nodeId, reply.child("osm").child("node").attribute("id").as_ullong(), ());
 
   TEST(ServerApi06::DeleteResult::ESuccessfullyDeleted == api.DeleteNode(XmlToString(node), nodeId), ());

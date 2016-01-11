@@ -26,9 +26,10 @@ public:
     ECanNotBeDeleted
   };
 
-  ServerApi06(OsmOAuth & auth);
+  ServerApi06(OsmOAuth const & auth);
   /// This function can be used to check if user did not confirm email validation link after registration.
-  bool TestUserExists(string const & userName);
+  /// @returns OK if user exists, NotFound if it is not, and ServerError if there is no connection.
+  OsmOAuth::ResponseCode TestUserExists(string const & userName);
   /// Please use at least created_by=* and comment=* tags.
   bool CreateChangeSet(TKeyValueTags const & kvTags, uint64_t & outChangeSetId) const;
   /// nodeXml should be wrapped into <osm> ... </osm> tags.
@@ -40,8 +41,8 @@ public:
   bool CloseChangeSet(uint64_t changesetId) const;
 
   /// @returns OSM xml string with features in the bounding box or empty string on error.
-  string GetXmlFeaturesInRect(m2::RectD const & latLonRect) const;
-  string GetXmlNodeByLatLon(double lat, double lon) const;
+  OsmOAuth::Response GetXmlFeaturesInRect(m2::RectD const & latLonRect) const;
+  OsmOAuth::Response GetXmlNodeByLatLon(double lat, double lon) const;
 
 private:
   OsmOAuth m_auth;

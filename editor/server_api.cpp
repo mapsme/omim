@@ -12,7 +12,7 @@
 namespace osm
 {
 
-ServerApi06::ServerApi06(OsmOAuth & auth)
+ServerApi06::ServerApi06(OsmOAuth const & auth)
   : m_auth(auth)
 {
 }
@@ -67,7 +67,7 @@ bool ServerApi06::ModifyNode(string const & nodeXml, uint64_t nodeId) const
   if (response.first == OsmOAuth::ResponseCode::OK)
     return true;
 
-  LOG(LWARNING, ("ModifyNode request has failed:", response.first));
+  LOG(LWARNING, ("ModifyNode request has failed:", response.first, response.second));
   return false;
 }
 
@@ -94,14 +94,13 @@ bool ServerApi06::CloseChangeSet(uint64_t changesetId) const
   return false;
 }
 
-bool ServerApi06::TestUserExists(string const & userName)
+OsmOAuth::ResponseCode ServerApi06::TestUserExists(string const & userName)
 {
   string const method = "/user/" + UrlEncode(userName);
-  OsmOAuth::Response const response = m_auth.DirectRequest(method, false);
-  return response.first == OsmOAuth::ResponseCode::OK;
+  return m_auth.DirectRequest(method, false).first;
 }
 
-string ServerApi06::GetXmlFeaturesInRect(m2::RectD const & latLonRect) const
+OsmOAuth::Response ServerApi06::GetXmlFeaturesInRect(m2::RectD const & latLonRect) const
 {
   using strings::to_string_dac;
 
@@ -112,19 +111,14 @@ string ServerApi06::GetXmlFeaturesInRect(m2::RectD const & latLonRect) const
   string const url = "/map?bbox=" + to_string_dac(lb.x, kDAC) + ',' + to_string_dac(lb.y, kDAC) + ',' +
       to_string_dac(rt.x, kDAC) + ',' + to_string_dac(rt.y, kDAC);
 
-  OsmOAuth::Response const response = m_auth.DirectRequest(url);
-  if (response.first == OsmOAuth::ResponseCode::OK)
-    return response.second;
-
-  LOG(LWARNING, ("GetXmlFeaturesInRect request has failed:", response.first));
-  return string();
+  return m_auth.DirectRequest(url);
 }
 
-string ServerApi06::GetXmlNodeByLatLon(double lat, double lon) const
+OsmOAuth::Response ServerApi06::GetXmlNodeByLatLon(double lat, double lon) const
 {
-  constexpr double const kInflateRadiusDegrees = 1.0e-6; //!< ~1 meter.
+  double const kInflateEpsilon = MercatorBounds::GetCellID2PointAbsEpsilon();
   m2::RectD rect(lon, lat, lon, lat);
-  rect.Inflate(kInflateRadiusDegrees, kInflateRadiusDegrees);
+  rect.Inflate(kInflateEpsilon, kInflateEpsilon);
   return GetXmlFeaturesInRect(rect);
 }
 

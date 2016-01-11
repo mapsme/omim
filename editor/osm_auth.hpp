@@ -1,20 +1,12 @@
 #pragma once
 
 #include "std/string.hpp"
+#include "std/utility.hpp"
 
 namespace osm
 {
 
-/// A structure that holds request token pair.
-struct ClientToken
-{
-  string m_key;
-  string m_secret;
-  inline bool IsValid() const { return !m_key.empty() && !m_secret.empty(); }
-};
-
-constexpr char const * kDefaultBaseURL = "https://www.openstreetmap.org";
-constexpr char const * kDefaultApiURL = "https://api.openstreetmap.org";
+using TKeySecret = pair<string /*key*/, string /*secret*/>;
 
 class OsmOAuth
 {
@@ -35,9 +27,10 @@ public:
   /// A result of a request. Has readable values for all OSM API return codes.
   enum class ResponseCode
   {
-    ServerError = -1,
+    NetworkError = -1,
     OK = 200,
     BadXML = 400,
+    BadAuth = 401,
     Redacted = 403,
     NotFound = 404,
     WrongMethod = 405,
@@ -53,23 +46,28 @@ public:
 
   /// The constructor. Simply stores a lot of strings in fields.
   /// @param[apiUrl] The OSM API URL defaults to baseUrl, or kDefaultApiURL if not specified.
-  OsmOAuth(string const & consumerKey, string const & consumerSecret,
-           string const & baseUrl = kDefaultBaseURL,
-           string const & apiUrl = kDefaultApiURL);
+  OsmOAuth(string const & consumerKey, string const & consumerSecret, string const & baseUrl, string const & apiUrl);
+
+  /// Ilya Zverev's test server.
+  static OsmOAuth IZServerAuth();
+  /// master.apis.dev.openstreetmap.org
+  static OsmOAuth DevServerAuth();
+  /// api.openstreetmap.org
+  static OsmOAuth ProductionServerAuth();
 
   /// @name Stateless methods.
   //@{
-  AuthResult AuthorizePassword(string const & login, string const & password, ClientToken & token) const;
-  AuthResult AuthorizeFacebook(string const & facebookToken, ClientToken & token) const;
+  AuthResult AuthorizePassword(string const & login, string const & password, TKeySecret & outKeySecret) const;
+  AuthResult AuthorizeFacebook(string const & facebookToken, TKeySecret & outKeySecret) const;
   /// @param[method] The API method, must start with a forward slash.
-  Response Request(ClientToken const & token, string const & method, string const & httpMethod = "GET", string const & body = "") const;
+  Response Request(TKeySecret const & keySecret, string const & method, string const & httpMethod = "GET", string const & body = "") const;
   //@}
 
   /// @name Methods for using a token stored in this class. Obviously not thread-safe.
   //@{
-  void SetToken(ClientToken const & token);
-  ClientToken const & GetToken() const { return m_token; }
-  bool IsAuthorized() const { return m_token.IsValid(); }
+  OsmOAuth & SetToken(TKeySecret const & keySecret);
+  TKeySecret const & GetToken() const;
+  bool IsAuthorized() const;
   AuthResult AuthorizePassword(string const & login, string const & password);
   AuthResult AuthorizeFacebook(string const & facebookToken);
   /// @param[method] The API method, must start with a forward slash.
@@ -87,18 +85,19 @@ private:
     string m_token;
   };
 
-  string m_consumerKey;
-  string m_consumerSecret;
+  /// Key and secret for application.
+  TKeySecret m_consumerKeySecret;
   string m_baseUrl;
   string m_apiUrl;
-  ClientToken m_token;
+  /// Key and secret to sign every OAuth request.
+  TKeySecret m_tokenKeySecret;
 
   AuthResult FetchSessionId(SessionID & sid) const;
   AuthResult LogoutUser(SessionID const & sid) const;
   AuthResult LoginUserPassword(string const & login, string const & password, SessionID const & sid) const;
   AuthResult LoginFacebook(string const & facebookToken, SessionID const & sid) const;
   string SendAuthRequest(string const & requestTokenKey, SessionID const & sid) const;
-  AuthResult FetchAccessToken(SessionID const & sid, ClientToken & token) const;
+  AuthResult FetchAccessToken(SessionID const & sid, TKeySecret & outKeySecret) const;
   AuthResult FetchAccessToken(SessionID const & sid);
 };
 

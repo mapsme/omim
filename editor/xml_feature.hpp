@@ -1,5 +1,6 @@
 #pragma once
 
+#include "geometry/mercator.hpp"
 #include "geometry/point2d.hpp"
 
 #include "coding/multilang_utf8_string.hpp"
@@ -32,16 +33,23 @@ public:
     Way
   };
 
+  /// Creates empty node or way.
   XMLFeature(Type const type);
   XMLFeature(string const & xml);
   XMLFeature(pugi::xml_document const & xml);
   XMLFeature(pugi::xml_node const & xml);
   XMLFeature(XMLFeature const & feature) : XMLFeature(feature.m_document) {}
+  bool operator==(XMLFeature const & other) const;
+
   void Save(ostream & ost) const;
+  string ToOSMString() const;
+
+  /// Tags from featureWithChanges are applied to this(osm) feature.
+  void ApplyPatch(XMLFeature const & featureWithChanges);
 
   Type GetType() const;
 
-  m2::PointD GetCenter() const;
+  ms::LatLon GetCenter() const;
   void SetCenter(m2::PointD const & mercatorCenter);
 
   string GetName(string const & lang) const;
@@ -115,4 +123,7 @@ private:
 
   pugi::xml_document m_document;
 };
+
+string DebugPrint(XMLFeature const & feature);
+
 } // namespace editor

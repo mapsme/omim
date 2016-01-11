@@ -1,10 +1,15 @@
 #include "editor/osm_auth.hpp"
 
+#include "coding/url_encode.hpp"
+
 #include "base/assert.hpp"
 #include "base/logging.hpp"
-#include "coding/url_encode.hpp"
+
 #include "std/iostream.hpp"
 #include "std/map.hpp"
+
+#include "private.h"
+
 #include "3party/liboauthcpp/include/liboauthcpp/liboauthcpp.h"
 #include "3party/Alohalytics/src/http_client.h"
 
@@ -16,6 +21,11 @@ constexpr char const * kApiVersion = "/api/0.6";
 
 namespace
 {
+inline bool IsKeySecretValid(TKeySecret const & t)
+{
+  return !(t.first.empty() || t.second.empty());
+}
+
 string findAuthenticityToken(string const & body)
 {
   auto pos = body.find("name=\"authenticity_token\"");
@@ -49,15 +59,32 @@ bool isLoggedIn(string const & contents)
 }
 }  // namespace
 
-OsmOAuth::OsmOAuth(string const & consumerKey, string const & consumerSecret,
-         string const & baseUrl, string const & apiUrl):
-    m_consumerKey(consumerKey), m_consumerSecret(consumerSecret), m_baseUrl(baseUrl)
+OsmOAuth::OsmOAuth(string const & consumerKey, string const & consumerSecret, string const & baseUrl, string const & apiUrl)
+  : m_consumerKeySecret(consumerKey, consumerSecret), m_baseUrl(baseUrl), m_apiUrl(apiUrl)
 {
-  // If base URL has been changed, but api URL is omitted, we use the same base URL for api calls.
-  if (apiUrl.empty() || (apiUrl == kDefaultApiURL && baseUrl != kDefaultBaseURL))
-    m_apiUrl = baseUrl;
-  else
-    m_apiUrl = apiUrl;
+}
+
+OsmOAuth OsmOAuth::IZServerAuth()
+{
+  constexpr char const * kIZTestServer = "http://188.166.112.124:3000";
+  constexpr char const * kIZConsumerKey = "QqwiALkYZ4Jd19lo1dtoPhcwGQUqMCMeVGIQ8Ahb";
+  constexpr char const * kIZConsumerSecret = "wi9HZKFoNYS06Yad5s4J0bfFo2hClMlH7pXaXWS3";
+  return OsmOAuth(kIZConsumerKey, kIZConsumerSecret, kIZTestServer, kIZTestServer);
+}
+
+OsmOAuth OsmOAuth::DevServerAuth()
+{
+  constexpr char const * kOsmDevServer = "http://master.apis.dev.openstreetmap.org";
+  constexpr char const * kOsmDevConsumerKey = "eRtN6yKZZf34oVyBnyaVbsWtHIIeptLArQKdTwN3";
+  constexpr char const * kOsmDevConsumerSecret = "lC124mtm2VqvKJjSh35qBpKfrkeIjpKuGe38Hd1H";
+  return OsmOAuth(kOsmDevConsumerKey, kOsmDevConsumerSecret, kOsmDevServer, kOsmDevServer);
+}
+
+OsmOAuth OsmOAuth::ProductionServerAuth()
+{
+  constexpr char const * kOsmMainSiteURL = "https://www.openstreetmap.org";
+  constexpr char const * kOsmApiURL = "https://api.openstreetmap.org";
+  return OsmOAuth(OSM_CONSUMER_KEY, OSM_CONSUMER_SECRET, kOsmMainSiteURL, kOsmApiURL);
 }
 
 // Opens a login page and extract a cookie and a secret token.
@@ -151,10 +178,10 @@ string OsmOAuth::SendAuthRequest(string const & requestTokenKey, SessionID const
 }
 
 // Given a web session id, fetches an OAuth access token.
-OsmOAuth::AuthResult OsmOAuth::FetchAccessToken(SessionID const & sid, ClientToken & token) const
+OsmOAuth::AuthResult OsmOAuth::FetchAccessToken(SessionID const & sid, TKeySecret & outKeySecret) const
 {
   // Aquire a request token.
-  OAuth::Consumer consumer(m_consumerKey, m_consumerSecret);
+  OAuth::Consumer const consumer(m_consumerKeySecret.first, m_consumerKeySecret.second);
   OAuth::Client oauth(&consumer);
   string const requestTokenUrl = m_baseUrl + "/oauth/request_token";
   string const requestTokenQuery = oauth.getURLQueryString(OAuth::Http::Get, requestTokenUrl + "?oauth_callback=oob");
@@ -179,15 +206,15 @@ OsmOAuth::AuthResult OsmOAuth::FetchAccessToken(SessionID const & sid, ClientTok
   OAuth::KeyValuePairs responseData = OAuth::ParseKeyValuePairs(request2.server_response());
   OAuth::Token accessToken = OAuth::Token::extract(responseData);
 
-  token.m_key = accessToken.key();
-  token.m_secret = accessToken.secret();
+  outKeySecret.first = accessToken.key();
+  outKeySecret.second = accessToken.secret();
 
   LogoutUser(sid);
   
   return AuthResult::OK;
 }
 
-OsmOAuth::AuthResult OsmOAuth::AuthorizePassword(string const & login, string const & password, ClientToken & token) const
+OsmOAuth::AuthResult OsmOAuth::AuthorizePassword(string const & login, string const & password, TKeySecret & outKeySecret) const
 {
   SessionID sid;
   AuthResult result = FetchSessionId(sid);
@@ -198,10 +225,10 @@ OsmOAuth::AuthResult OsmOAuth::AuthorizePassword(string const & login, string co
   if (result != AuthResult::OK)
     return result;
 
-  return FetchAccessToken(sid, token);
+  return FetchAccessToken(sid, outKeySecret);
 }
 
-OsmOAuth::AuthResult OsmOAuth::AuthorizeFacebook(string const & facebookToken, ClientToken & token) const
+OsmOAuth::AuthResult OsmOAuth::AuthorizeFacebook(string const & facebookToken, TKeySecret & outKeySecret) const
 {
   SessionID sid;
   AuthResult result = FetchSessionId(sid);
@@ -212,14 +239,14 @@ OsmOAuth::AuthResult OsmOAuth::AuthorizeFacebook(string const & facebookToken, C
   if (result != AuthResult::OK)
     return result;
 
-  return FetchAccessToken(sid, token);
+  return FetchAccessToken(sid, outKeySecret);
 }
 
-OsmOAuth::Response OsmOAuth::Request(ClientToken const & token, string const & method, string const & httpMethod, string const & body) const
+OsmOAuth::Response OsmOAuth::Request(TKeySecret const & keySecret, string const & method, string const & httpMethod, string const & body) const
 {
-  CHECK(token.IsValid(), ("Empty request token"));
-  OAuth::Consumer const consumer(m_consumerKey, m_consumerSecret);
-  OAuth::Token const oatoken(token.m_key, token.m_secret);
+  CHECK(IsKeySecretValid(keySecret), ("Empty request token"));
+  OAuth::Consumer const consumer(m_consumerKeySecret.first, m_consumerKeySecret.second);
+  OAuth::Token const oatoken(keySecret.first, keySecret.second);
   OAuth::Client oauth(&consumer, &oatoken);
 
   OAuth::Http::RequestType reqType;
@@ -234,7 +261,7 @@ OsmOAuth::Response OsmOAuth::Request(ClientToken const & token, string const & m
   else
   {
     ASSERT(false, ("Unsupported OSM API request method", httpMethod));
-    return Response(ResponseCode::ServerError, string());
+    return Response(ResponseCode::NetworkError, string());
   }
 
   string const url = m_apiUrl + kApiVersion + method;
@@ -244,7 +271,7 @@ OsmOAuth::Response OsmOAuth::Request(ClientToken const & token, string const & m
   if (httpMethod != "GET")
     request.set_body_data(body, "application/xml", httpMethod);
   if (!request.RunHTTPRequest() || request.was_redirected())
-    return Response(ResponseCode::ServerError, string());
+    return Response(ResponseCode::NetworkError, string());
   return Response(static_cast<ResponseCode>(request.error_code()), request.server_response());
 }
 
@@ -253,34 +280,39 @@ OsmOAuth::Response OsmOAuth::DirectRequest(string const & method, bool api) cons
   string const url = api ? m_apiUrl + kApiVersion + method : m_baseUrl + method;
   HTTPClientPlatformWrapper request(url);
   if (!request.RunHTTPRequest())
-    return Response(ResponseCode::ServerError, string());
+    return Response(ResponseCode::NetworkError, string());
+  // TODO(AlexZ): Static cast causes big problems if doesn't match ResponseCode enum.
   return Response(static_cast<ResponseCode>(request.error_code()), request.server_response());
 }
 
-void OsmOAuth::SetToken(ClientToken const & token)
+OsmOAuth & OsmOAuth::SetToken(TKeySecret const & keySecret)
 {
-  m_token.m_key = token.m_key;
-  m_token.m_secret = token.m_secret;
+  m_tokenKeySecret = keySecret;
+  return *this;
 }
+
+TKeySecret const & OsmOAuth::GetToken() const { return m_tokenKeySecret; }
+
+bool OsmOAuth::IsAuthorized() const { return IsKeySecretValid(m_tokenKeySecret); }
 
 OsmOAuth::AuthResult OsmOAuth::FetchAccessToken(SessionID const & sid)
 {
-  return FetchAccessToken(sid, m_token);
+  return FetchAccessToken(sid, m_tokenKeySecret);
 }
 
 OsmOAuth::AuthResult OsmOAuth::AuthorizePassword(string const & login, string const & password)
 {
-  return AuthorizePassword(login, password, m_token);
+  return AuthorizePassword(login, password, m_tokenKeySecret);
 }
 
 OsmOAuth::AuthResult OsmOAuth::AuthorizeFacebook(string const & facebookToken)
 {
-  return AuthorizeFacebook(facebookToken, m_token);
+  return AuthorizeFacebook(facebookToken, m_tokenKeySecret);
 }
 
 OsmOAuth::Response OsmOAuth::Request(string const & method, string const & httpMethod, string const & body) const
 {
-  return Request(m_token, method, httpMethod, body);
+  return Request(m_tokenKeySecret, method, httpMethod, body);
 }
 
 string DebugPrint(OsmOAuth::AuthResult const res)
@@ -303,9 +335,10 @@ string DebugPrint(OsmOAuth::ResponseCode const code)
 {
   switch (code)
   {
-  case OsmOAuth::ResponseCode::ServerError: return "ServerError";
+  case OsmOAuth::ResponseCode::NetworkError: return "NetworkError";
   case OsmOAuth::ResponseCode::OK: return "OK";
   case OsmOAuth::ResponseCode::BadXML: return "BadXML";
+  case OsmOAuth::ResponseCode::BadAuth: return "BadAuth";
   case OsmOAuth::ResponseCode::Redacted: return "Redacted";
   case OsmOAuth::ResponseCode::NotFound: return "NotFound";
   case OsmOAuth::ResponseCode::WrongMethod: return "WrongMethod";

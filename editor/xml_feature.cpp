@@ -5,8 +5,6 @@
 #include "base/string_utils.hpp"
 #include "base/timer.hpp"
 
-#include "geometry/mercator.hpp"
-
 #include "std/set.hpp"
 #include "std/unordered_set.hpp"
 
@@ -32,20 +30,20 @@ pugi::xml_node FindTag(pugi::xml_document const & document, string const & key)
   return document.select_node(("//tag[@k='" + key + "']").data()).node();
 }
 
-m2::PointD PointFromLatLon(pugi::xml_node const node)
+ms::LatLon PointFromLatLon(pugi::xml_node const node)
 {
-  double lat, lon;
-  if (!strings::to_double(node.attribute("lat").value(), lat))
+  ms::LatLon ll;
+  if (!strings::to_double(node.attribute("lat").value(), ll.lat))
   {
     MYTHROW(editor::XMLFeatureNoLatLonError,
             ("Can't parse lat attribute: " + string(node.attribute("lat").value())));
   }
- if (!strings::to_double(node.attribute("lon").value(), lon))
+ if (!strings::to_double(node.attribute("lon").value(), ll.lon))
  {
    MYTHROW(editor::XMLFeatureNoLatLonError,
            ("Can't parse lon attribute: " + string(node.attribute("lon").value())));
  }
-  return MercatorBounds::FromLatLon(lat, lon);
+  return ll;
 }
 
 void ValidateNode(pugi::xml_node const & node)
@@ -59,6 +57,16 @@ void ValidateNode(pugi::xml_node const & node)
   if (!node.attribute(kTimestamp))
     MYTHROW(editor::XMLFeatureNoTimestampError, ("Node has no timestamp attribute"));
 }
+
+void ValidateWay(pugi::xml_node const & way)
+{
+  if (!way)
+    MYTHROW(editor::XMLFeatureNoNodeError, ("Document has no node"));
+
+  if (!way.attribute(kTimestamp))
+    MYTHROW(editor::XMLFeatureNoTimestampError, ("Way has no timestamp attribute"));
+}
+
 } // namespace
 
 namespace editor
@@ -75,20 +83,28 @@ XMLFeature::XMLFeature(Type const type)
 XMLFeature::XMLFeature(string const & xml)
 {
   m_document.load(xml.data());
-  ValidateNode(GetRootNode());
+  auto const r = GetRootNode();
+  r.name() == kNodeType ? ValidateNode(r) : ValidateWay(r);
 }
 
 XMLFeature::XMLFeature(pugi::xml_document const & xml)
 {
   m_document.reset(xml);
-  ValidateNode(GetRootNode());
+  auto const r = GetRootNode();
+  r.name() == kNodeType ? ValidateNode(r) : ValidateWay(r);
 }
 
 XMLFeature::XMLFeature(pugi::xml_node const & xml)
 {
   m_document.reset();
   m_document.append_copy(xml);
-  ValidateNode(GetRootNode());
+  auto const r = GetRootNode();
+  r.name() == kNodeType ? ValidateNode(r) : ValidateWay(r);
+}
+
+bool XMLFeature::operator==(XMLFeature const & other) const
+{
+  return ToOSMString() == other.ToOSMString();
 }
 
 XMLFeature::Type XMLFeature::GetType() const
@@ -98,10 +114,30 @@ XMLFeature::Type XMLFeature::GetType() const
 
 void XMLFeature::Save(ostream & ost) const
 {
-  m_document.save(ost, "  ", pugi::format_indent_attributes);
+  m_document.save(ost, "  ");
 }
 
-m2::PointD XMLFeature::GetCenter() const
+string XMLFeature::ToOSMString() const
+{
+  ostringstream ost;
+  // Ugly way to wrap into <osm>..</osm> tags.
+  // Unfortunately, pugi xml library doesn't allow to insert documents into other documents.
+  ost << "<?xml version=\"1.0\"?>" << endl;
+  ost << "<osm>" << endl;
+  m_document.save(ost, "  ", pugi::format_no_declaration | pugi::format_indent);
+  ost << "</osm>" << endl;
+  return ost.str();
+}
+
+void XMLFeature::ApplyPatch(XMLFeature const & featureWithChanges)
+{
+  featureWithChanges.ForEachTag([this](string const & k, string const & v)
+  {
+    SetTagValue(k, v);
+  });
+}
+
+ms::LatLon XMLFeature::GetCenter() const
 {
   return PointFromLatLon(GetRootNode());
 }
@@ -266,4 +302,12 @@ bool XMLFeature::AttachToParentNode(pugi::xml_node parent) const
 {
   return !parent.append_copy(GetRootNode()).empty();
 }
+
+string DebugPrint(XMLFeature const & feature)
+{
+  ostringstream ost;
+  feature.Save(ost);
+  return ost.str();
+}
+
 } // namespace editor
