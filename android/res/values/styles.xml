@@ -6,13 +6,6 @@
   <style name="MwmWidget.ProgressWheel"/>
   <style name="MwmWidget.FrameLayout"/>
 
-
-  <style name="BottomSheet.Icon">
-    <item name="android:layout_width">0dp</item>
-    <item name="android:layout_height">0dp</item>
-    <item name="android:layout_marginLeft">0dp</item>
-  </style>
-
   <style name="MwmWidget.MapButton"
          parent="android:Widget.ImageButton">
     <item name="android:scaleType">center</item>
@@ -155,4 +148,30 @@
     <item name="android:progressDrawable">@drawable/rating_bar</item>
     <item name="android:indeterminateDrawable">@drawable/rating_bar</item>
   </style>
+
+  <style name="MwmWidget.Editor.TimePicker" parent="MwmWidget">
+    <item name="colorPrimary">@color/base_blue_light</item>
+    <item name="android:headerBackground">@null</item>
+    <item name="android:headerTimeTextAppearance" tools:targetApi="lollipop">@style/MwmTextAppearance.Editor.TimePicker</item>
+    <item name="android:numbersSelectorColor" tools:targetApi="lollipop">@color/base_blue</item>
+    <item name="android:numbersBackgroundColor" tools:targetApi="lollipop">@color/divider_standard</item>
+    <item name="android:headerAmPmTextAppearance" tools:targetApi="lollipop">@style/MwmTextAppearance.Editor.Buttons</item>
+    <item name="android:timePickerMode" tools:targetApi="lollipop">clock</item>
+  </style>
+
+  <style name="MwmWidget.Tab">
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:gravity">center</item>
+    <item name="android:padding">@dimen/margin_half_plus</item>
+    <item name="android:singleLine">true</item>
+    <item name="android:textAllCaps">true</item>
+  </style>
+
+  <style name="BottomSheet.Icon">
+    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_height">0dp</item>
+    <item name="android:layout_marginLeft">0dp</item>
+  </style>
+
 </resources>

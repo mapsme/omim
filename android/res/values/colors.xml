@@ -27,6 +27,7 @@
   <!-- other colors -->
   <color name="base_blue_light">#1E96F0</color>
   <color name="base_blue">#0569AF</color>
+  <color name="base_blue_lightest">#8A1E96F0</color>
   <color name="base_red">#F54137</color>
   <color name="base_yellow">#FFCD00</color>
   <color name="base_bg_secondary">#F5F5F5</color>
@@ -82,4 +83,9 @@
   <!-- What's new -->
   <color name="news_marker_active">#8A000000</color>
   <color name="news_marker_inactive">#1F000000</color>
+  
+  <!-- Editor -->
+  <color name="editor_background">#EEEEEE</color>
+  <color name="editor_complement_disabled">#12000000</color>
+  <color name="editor_complement_text_disabled">#42000000</color>
 </resources>
