@@ -28,8 +28,8 @@
 
 namespace android
 {
-  class Framework : public storage::CountryTree::CountryTreeListener,
-                    public storage::ActiveMapsLayout::ActiveMapsListener
+  class Framework //: public storage::CountryTree::CountryTreeListener,
+                  //  public storage::ActiveMapsLayout::ActiveMapsListener
   {
   private:
     drape_ptr<dp::ThreadSafeFactory> m_contextFactory;
@@ -41,7 +41,7 @@ namespace android
     TListenerMap m_javaActiveMapListeners;
     int m_currentSlotID;
 
-    int m_activeMapsConnectionID;
+    //int m_activeMapsConnectionID;
 
     math::LowPassVector<float, 3> m_sensors[2];
     double m_lastCompass;
@@ -62,8 +62,9 @@ namespace android
 
     storage::Storage & Storage();
 
-    void ShowCountry(storage::TIndex const & idx, bool zoomToDownloadButton);
-    storage::TStatus GetCountryStatus(storage::TIndex const & idx) const;
+    void ShowCountry(storage::TCountryId const & countryId, bool zoomToDownloadButton);
+    // TODO (trashkalmar): remove old downloader's stuff
+    //storage::TStatus GetCountryStatus(storage::TIndex const & idx) const;
 
     void OnLocationError(int/* == location::TLocationStatus*/ newStatus);
     void OnLocationUpdated(location::GpsInfo const & info);
@@ -120,8 +121,9 @@ namespace android
     void AddLocalMaps();
     void RemoveLocalMaps();
 
-    storage::TIndex GetCountryIndex(double lat, double lon) const;
-    string GetCountryCode(double lat, double lon) const;
+    // TODO (trashkalmar): remove old downloader's stuff
+    //storage::TIndex GetCountryIndex(double lat, double lon) const;
+    //string GetCountryCode(double lat, double lon) const;
 
     string GetCountryNameIfAbsent(m2::PointD const & pt) const;
     m2::PointD GetViewportCenter() const;
@@ -174,7 +176,8 @@ namespace android
   public:
     virtual void ItemStatusChanged(int childPosition);
     virtual void ItemProgressChanged(int childPosition, storage::LocalAndRemoteSizeT const & sizes);
-
+/*
+    TODO (trashkalmar): remove old downloader's stuff
     virtual void CountryGroupChanged(storage::ActiveMapsLayout::TGroup const & oldGroup, int oldPosition,
                                      storage::ActiveMapsLayout::TGroup const & newGroup, int newPosition);
     virtual void CountryStatusChanged(storage::ActiveMapsLayout::TGroup const & group, int position,
@@ -184,7 +187,7 @@ namespace android
                                        MapOptions const & newOpt);
     virtual void DownloadingProgressUpdate(storage::ActiveMapsLayout::TGroup const & group, int position,
                                            storage::LocalAndRemoteSizeT const & progress);
-
+*/
   private:
     vector<TDrapeTask> m_drapeTasksQueue;
     mutex m_drapeQueueMutex;

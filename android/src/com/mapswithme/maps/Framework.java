@@ -153,6 +153,7 @@ public class Framework
 
   public native static String nativeGetViewportCountryNameIfAbsent();
 
+  // TODO (trashkalmar): Change first param to String
   public native static void nativeShowCountry(Index idx, boolean zoomToDownloadButton);
 
   // TODO consider removal of that methods
