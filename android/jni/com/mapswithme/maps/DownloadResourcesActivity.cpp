@@ -1,5 +1,6 @@
 #include "Framework.hpp"
-#include "MapStorage.hpp"
+
+#include "../core/jni_helper.hpp"
 
 #include "defines.hpp"
 

@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mapswithme.country.ActiveCountryTree;
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.MwmActivity;
 import com.mapswithme.maps.MwmApplication;
@@ -314,7 +313,7 @@ public class MainMenu
 
   private void updateMarker()
   {
-    int count = ActiveCountryTree.getOutOfDateCount();
+    int count = 0;//ActiveCountryTree.getOutOfDateCount();
     UiUtils.showIf((!mCollapsed || mCollapseViews.isEmpty()) && (count > 0) && !isOpen(), mNewsMarker);
     UiUtils.showIf(count > 0, mNewsCounter);
 

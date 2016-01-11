@@ -1,7 +1,4 @@
 #include "Framework.hpp"
-#include "MapStorage.hpp"
-
-#include "../country/country_helper.hpp"
 
 #include "../core/jni_helper.hpp"
 
@@ -31,29 +28,45 @@ extern "C"
 
 #pragma clang pop_options
 
-  static void CallOnDownloadCountryClicked(shared_ptr<jobject> const & obj, storage::TIndex const & idx, int options, jmethodID methodID)
+  JNIEXPORT jfloatArray JNICALL
+  Java_com_mapswithme_maps_location_LocationHelper_nativeUpdateCompassSensor(JNIEnv * env, jclass clazz, jint ind, jfloatArray arr)
   {
-    JNIEnv * env = jni::GetEnv();
-    env->CallVoidMethod(*obj.get(), methodID, idx.m_group, idx.m_country, idx.m_region, options);
+    int const kCoordsCount = 3;
+
+    // Extract coords
+    jfloat coords[kCoordsCount];
+    env->GetFloatArrayRegion(arr, 0, kCoordsCount, coords);
+    g_framework->UpdateCompassSensor(ind, coords);
+
+    // Put coords back to java result array
+    jfloatArray ret = (jfloatArray)env->NewFloatArray(kCoordsCount);
+    env->SetFloatArrayRegion(ret, 0, kCoordsCount, coords);
+    return ret;
+  }
+
+  static void CallOnDownloadCountryClicked(shared_ptr<jobject> const & obj, storage::TCountryId const & countryId, int options, jmethodID methodID)
+  {
+    //JNIEnv * env = jni::GetEnv();
+    //env->CallVoidMethod(*obj.get(), methodID, idx.m_group, idx.m_country, idx.m_region, options);
   }
 
   JNIEXPORT void JNICALL
   Java_com_mapswithme_maps_MapFragment_nativeConnectDownloadButton(JNIEnv * env, jobject thiz)
   {
-    jmethodID methodID = jni::GetJavaMethodID(env, thiz, "onDownloadCountryClicked", "(IIII)V");
-    g_framework->NativeFramework()->SetDownloadCountryListener(bind(&CallOnDownloadCountryClicked,
-                                                               jni::make_global_ref(thiz), _1, _2, methodID));
+    //jmethodID methodID = jni::GetJavaMethodID(env, thiz, "onDownloadCountryClicked", "(IIII)V");
+    //g_framework->NativeFramework()->SetDownloadCountryListener(bind(&CallOnDownloadCountryClicked,
+    //                                                           jni::make_global_ref(thiz), _1, _2, methodID));
   }
 
   JNIEXPORT void JNICALL
-  Java_com_mapswithme_maps_MapFragment_nativeDownloadCountry(JNIEnv * env, jclass clazz, jobject idx, jint options)
+  Java_com_mapswithme_maps_MapFragment_nativeDownloadCountry(JNIEnv * env, jclass clazz, jobject countryId, jint options)
   {
-    storage::TIndex index = storage::ToNative(idx);
+    /*storage::TIndex index = storage::ToNative(idx);
     storage::ActiveMapsLayout & layout = storage_utils::GetMapLayout();
     if (options == -1)
       layout.RetryDownloading(index);
     else
-      layout.DownloadMap(index, storage_utils::ToOptions(options));
+      layout.DownloadMap(index, storage_utils::ToOptions(options));*/
   }
 
   JNIEXPORT void JNICALL

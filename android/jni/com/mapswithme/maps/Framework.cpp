@@ -1,11 +1,8 @@
 #include "Framework.hpp"
-#include "MapStorage.hpp"
 
 #include "../opengl/androidoglcontextfactory.hpp"
 
 #include "../core/jni_helper.hpp"
-
-#include "../country/country_helper.hpp"
 
 #include "../platform/Platform.hpp"
 
@@ -68,12 +65,12 @@ Framework::Framework()
 {
   ASSERT_EQUAL ( g_framework, 0, () );
   g_framework = this;
-  m_activeMapsConnectionID = m_work.GetCountryTree().GetActiveMapLayout().AddListener(this);
+  //m_activeMapsConnectionID = m_work.GetCountryTree().GetActiveMapLayout().AddListener(this);
 }
 
 Framework::~Framework()
 {
-  m_work.GetCountryTree().GetActiveMapLayout().RemoveListener(m_activeMapsConnectionID);
+  //m_work.GetCountryTree().GetActiveMapLayout().RemoveListener(m_activeMapsConnectionID);
 }
 
 void Framework::OnLocationError(int errorCode)
@@ -208,23 +205,25 @@ Storage & Framework::Storage()
   return m_work.Storage();
 }
 
-void Framework::ShowCountry(TIndex const & idx, bool zoomToDownloadButton)
+void Framework::ShowCountry(TCountryId const & countryId, bool zoomToDownloadButton)
 {
   if (zoomToDownloadButton)
   {
-    m2::RectD const rect = m_work.GetCountryBounds(idx);
+    m2::RectD const rect = m_work.GetCountryBounds(countryId);
     double const lon = MercatorBounds::XToLon(rect.Center().x);
     double const lat = MercatorBounds::YToLat(rect.Center().y);
     m_work.ShowRect(lat, lon, 10);
   }
   else
-    m_work.ShowCountry(idx);
+    m_work.ShowCountry(countryId);
 }
 
+/* TODO (trashkalmar): remove old downloader's stuff
 TStatus Framework::GetCountryStatus(TIndex const & idx) const
 {
   return m_work.GetCountryStatus(idx);
 }
+*/
 
 void Framework::Touch(int action, Finger const & f1, Finger const & f2, uint8_t maskedPointer)
 {
@@ -268,6 +267,7 @@ void Framework::ShowAllSearchResults(search::Results const & results)
   m_work.ShowAllSearchResults(results);
 }
 
+/* TODO (trashkalmar): remove old downloader's stuff
 TIndex Framework::GetCountryIndex(double lat, double lon) const
 {
   return m_work.GetCountryIndex(MercatorBounds::FromLatLon(lat, lon));
@@ -277,15 +277,17 @@ string Framework::GetCountryCode(double lat, double lon) const
 {
   return m_work.GetCountryCode(MercatorBounds::FromLatLon(lat, lon));
 }
-
+*/
 string Framework::GetCountryNameIfAbsent(m2::PointD const & pt) const
 {
+/* TODO (trashkalmar): remove old downloader's stuff
   TIndex const idx = m_work.GetCountryIndex(pt);
   TStatus const status = m_work.GetCountryStatus(idx);
   if (status != TStatus::EOnDisk && status != TStatus::EOnDiskOutOfDate)
     return m_work.GetCountryName(idx);
-  else
+  else*/
     return string();
+
 }
 
 m2::PointD Framework::GetViewportCenter() const
@@ -384,12 +386,12 @@ void Framework::ShowTrack(int category, int track)
 void Framework::SetCountryTreeListener(shared_ptr<jobject> objPtr)
 {
   m_javaCountryListener = objPtr;
-  m_work.GetCountryTree().SetListener(this);
+  //m_work.GetCountryTree().SetListener(this);
 }
 
 void Framework::ResetCountryTreeListener()
 {
-  m_work.GetCountryTree().ResetListener();
+  //m_work.GetCountryTree().ResetListener();
   m_javaCountryListener.reset();
 }
 
@@ -465,7 +467,7 @@ void Framework::ItemStatusChanged(int childPosition)
 
 void Framework::ItemProgressChanged(int childPosition, LocalAndRemoteSizeT const & sizes)
 {
-  if (m_javaCountryListener == NULL)
+  /*if (m_javaCountryListener == NULL)
     return;
 
   JNIEnv * env = jni::GetEnv();
@@ -475,8 +477,10 @@ void Framework::ItemProgressChanged(int childPosition, LocalAndRemoteSizeT const
                                                   "(I[J)V");
   ASSERT ( methodID, () );
 
-  env->CallVoidMethod(*m_javaCountryListener, methodID, childPosition, storage_utils::ToArray(env, sizes));
+  env->CallVoidMethod(*m_javaCountryListener, methodID, childPosition, storage_utils::ToArray(env, sizes));*/
 }
+/*
+TODO (trashkalmar): remove old downloader's stuff
 
 void Framework::CountryGroupChanged(ActiveMapsLayout::TGroup const & oldGroup, int oldPosition,
                                     ActiveMapsLayout::TGroup const & newGroup, int newPosition)
@@ -531,7 +535,7 @@ void Framework::DownloadingProgressUpdate(ActiveMapsLayout::TGroup const & group
     env->CallVoidMethod(*(it->second), methodID, group, position, storage_utils::ToArray(env, progress));
   }
 }
-
+*/
 // Fills mapobject's metadata from UserMark
 void Framework::InjectMetadata(JNIEnv * env, jclass const clazz, jobject const mapObject, UserMark const * userMark)
 {
@@ -774,8 +778,9 @@ extern "C"
     }
   }
 
-  void CallRoutingListener(shared_ptr<jobject> obj, int errorCode, vector<storage::TIndex> const & absentCountries, vector<storage::TIndex> const & absentRoutes)
+  void CallRoutingListener(shared_ptr<jobject> obj, int errorCode, vector<storage::TCountryId> const & absentCountries, vector<storage::TCountryId> const & absentRoutes)
   {
+  /*
     JNIEnv * env = jni::GetEnv();
     // cache methodID - it cannot change after class is loaded.
     // http://developer.android.com/training/articles/perf-jni.html#jclass_jmethodID_and_jfieldID more details here
@@ -802,6 +807,7 @@ extern "C"
     env->CallVoidMethod(*obj.get(), methodId, errorCode, countriesJava, routesJava);
 
     env->DeleteLocalRef(countriesJava);
+    */
   }
 
   void CallRouteProgressListener(shared_ptr<jobject> sharedListener, float progress)
@@ -1220,19 +1226,20 @@ extern "C"
   Java_com_mapswithme_maps_Framework_nativeGetCountryIndex(JNIEnv * env, jobject thiz,
       jdouble lat, jdouble lon)
   {
+    /* TODO (trashkalmar): remove old downloader's stuff
     TIndex const idx = g_framework->GetCountryIndex(lat, lon);
 
     // Return 0 if no any country.
     if (idx.IsValid())
       return ToJava(idx);
-    else
+    else*/
       return 0;
   }
 
   JNIEXPORT void JNICALL
-  Java_com_mapswithme_maps_Framework_nativeShowCountry(JNIEnv * env, jobject thiz, jobject idx, jboolean zoomToDownloadButton)
+  Java_com_mapswithme_maps_Framework_nativeShowCountry(JNIEnv * env, jobject thiz, jstring countryId, jboolean zoomToDownloadButton)
   {
-    g_framework->ShowCountry(ToNative(idx), (bool) zoomToDownloadButton);
+    g_framework->ShowCountry(jni::ToNativeString(env, countryId), (bool) zoomToDownloadButton);
   }
 
   JNIEXPORT void JNICALL
@@ -1250,7 +1257,7 @@ extern "C"
   JNIEXPORT void JNICALL
   Java_com_mapswithme_maps_Framework_downloadCountry(JNIEnv * env, jobject thiz, jobject idx)
   {
-    storage_utils::GetMapLayout().DownloadMap(storage::ToNative(idx), MapOptions::Map);
+    //storage_utils::GetMapLayout().DownloadMap(storage::ToNative(idx), MapOptions::Map);
   }
 
   JNIEXPORT void JNICALL

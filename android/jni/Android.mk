@@ -61,7 +61,6 @@ LOCAL_HEADER_FILES := \
 	com/mapswithme/core/jni_helper.hpp \
 	com/mapswithme/core/logging.hpp \
 	com/mapswithme/maps/Framework.hpp \
-	com/mapswithme/maps/MapStorage.hpp \
 	com/mapswithme/platform/Platform.hpp \
 	com/mapswithme/platform/MethodRef.hpp \
 	com/mapswithme/platform/http_thread_android.hpp \
@@ -72,9 +71,6 @@ LOCAL_HEADER_FILES := \
 LOCAL_SRC_FILES := \
 	com/mapswithme/core/jni_helper.cpp \
 	com/mapswithme/core/logging.cpp \
-	com/mapswithme/country/country_helper.cpp \
-	com/mapswithme/country/CountryTree.cpp \
-	com/mapswithme/country/ActiveCountryTree.cpp \
 	com/mapswithme/maps/Framework.cpp \
 	com/mapswithme/maps/bookmarks/data/Bookmark.cpp \
 	com/mapswithme/maps/bookmarks/data/BookmarkManager.cpp \
