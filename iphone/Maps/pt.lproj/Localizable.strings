@@ -1340,3 +1340,28 @@
 "whats_new_3d_on" = "Habilitar visão em perspectiva";
 
 "whats_new_3d_buildings_on" = "Habilitar Prédios em 3D";
+
+/* «Add place» button in place page. */
+"pp_place_add" = "Add place";
+
+/* «Edit place» button in place page. */
+"pp_place_edit" = "Edit place";
+
+"editor_time_add" = "Add schedule";
+
+"editor_time_delete" = "Delete schedule";
+
+/* Text for allday switch. */
+"editor_time_allday" = "All day(24 hours)";
+
+"editor_time_open" = "Open time";
+
+"editor_time_close" = "Close time";
+
+"editor_time_add_closed" = "Add hours closed";
+
+"editor_time_title" = "Opening hours";
+
+"editor_time_advanced" = "Advanced mode";
+
+"editor_time_simple" = "Simple mode";
