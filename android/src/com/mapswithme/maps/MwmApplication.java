@@ -9,6 +9,8 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import java.io.File;
+
 import com.google.gson.Gson;
 import com.mapswithme.country.ActiveCountryTree;
 import com.mapswithme.country.CountryItem;
@@ -25,8 +27,6 @@ import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.SaveCallback;
-
-import java.io.File;
 
 public class MwmApplication extends Application
                          implements ActiveCountryTree.ActiveCountryListener
@@ -114,7 +114,7 @@ public class MwmApplication extends Application
       return;
 
     nativeInitFramework();
-    ActiveCountryTree.addListener(this);
+    //ActiveCountryTree.addListener(this);
     initNativeStrings();
     BookmarkManager.getIcons(); // init BookmarkManager (automatically loads bookmarks)
     TtsPlayer.INSTANCE.init(this);
