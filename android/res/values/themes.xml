@@ -17,7 +17,7 @@
   </style>
 
   <style name="MwmTheme.MainActivity">
-    <item name="android:colorPrimaryDark" tools:ignore="NewApi">@android:color/black</item>
+    <item name="android:colorPrimaryDark" tools:targetApi="lollipop">@android:color/black</item>
     <item name="android:windowBackground">@null</item>
   </style>
 
@@ -31,6 +31,11 @@
     <item name="android:buttonBarStyle">@style/Theme.AppCompat.Dialog</item>
     <item name="listPreferredItemPaddingLeft">16dip</item>
     <item name="listPreferredItemPaddingRight">16dip</item>
+  </style>
+
+  <style name="MwmTheme.EditorActivity">
+    <item name="colorAccent">@color/base_blue_light</item>
+    <item name="android:timePickerStyle" tools:targetApi="lollipop">@style/MwmWidget.Editor.TimePicker</item>
   </style>
 
   <style name="MwmMain.DialogFragment" parent="android:Theme.Holo.Light.Dialog.NoActionBar">
@@ -68,4 +73,12 @@
   <style name="MwmMain.DialogFragment.Fullscreen.SemiTransparent">
     <item name="android:windowBackground">@color/semitransparent_black</item>
   </style>
+
+  <style name="MwmMain.DialogFragment.TimePicker" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <item name="android:fontFamily" tools:targetApi="jelly_bean">@string/robotoMedium</item>
+    <item name="android:background">@android:color/white</item>
+    <item name="colorPrimary">@color/base_blue_light</item>
+    <item name="colorAccent">@color/base_blue_light</item>
+  </style>
+
 </resources>
