@@ -1,7 +1,9 @@
 #include "testing/testing.hpp"
 
+#include "storage/country_info_getter.hpp"
 #include "storage/storage.hpp"
 #include "storage/storage_defines.hpp"
+#include "storage/storage_helpers.hpp"
 #include "storage/storage_tests/fake_map_files_downloader.hpp"
 #include "storage/storage_tests/task_runner.hpp"
 #include "storage/storage_tests/test_map_files_downloader.hpp"
@@ -15,6 +17,8 @@
 #include "platform/platform.hpp"
 #include "platform/platform_tests_support/scoped_dir.hpp"
 #include "platform/platform_tests_support/scoped_file.hpp"
+
+#include "geometry/mercator.hpp"
 
 #include "coding/file_name_utils.hpp"
 #include "coding/file_writer.hpp"
@@ -322,6 +326,15 @@ void InitStorage(Storage & storage, TaskRunner & runner,
   storage.Init(update);
   storage.RegisterAllLocalMaps();
   storage.SetDownloaderForTesting(make_unique<FakeMapFilesDownloader>(runner));
+}
+
+unique_ptr<storage::CountryInfoGetter> CreateCountryInfoGetter(bool isSingleMwm)
+{
+  Platform & platform = GetPlatform();
+  string const packedPolygons = isSingleMwm ? PACKED_POLYGONS_MIGRATE_FILE : PACKED_POLYGONS_FILE;
+  string const countryTxt = isSingleMwm ? COUNTRIES_MIGRATE_FILE : COUNTRIES_FILE;
+  return make_unique<storage::CountryInfoGetter>(platform.GetReader(packedPolygons),
+                                                 platform.GetReader(countryTxt));
 }
 }  // namespace
 
@@ -1030,5 +1043,30 @@ UNIT_TEST(StorageTest_DownloadedMapTests)
 
   TEST(!storage.IsNodeDownloaded("Algeria_Central"), ());
   TEST(!storage.IsNodeDownloaded("Algeria_Coast"), ());
+}
+
+UNIT_TEST(StorageTest_IsPointCoveredByDownloadedMaps)
+{
+  Storage storage;
+  TaskRunner runner;
+  InitStorage(storage, runner);
+
+  bool const isSingleMwm = version::IsSingleMwm(storage.GetCurrentDataVersion());
+  auto const countryInfoGetter = CreateCountryInfoGetter(isSingleMwm);
+  ASSERT(countryInfoGetter, ());
+  string const uruguayId = string("Uruguay");
+  m2::PointD const montevideoUruguay = MercatorBounds::FromLatLon(-34.8094, -56.1558);
+
+  storage.DeleteCountry(uruguayId, MapOptions::Map);
+  TEST(!IsPointCoveredByDownloadedMaps(montevideoUruguay, storage, *countryInfoGetter), ());
+
+  {
+    MY_SCOPE_GUARD(cleanupCountryFiles,
+                   bind(&Storage::DeleteCountry, &storage, uruguayId, MapOptions::Map));
+    auto const checker = AbsentCountryDownloaderChecker(storage, uruguayId, MapOptions::Map);
+    checker->StartDownload();
+    runner.Run();
+    TEST(IsPointCoveredByDownloadedMaps(montevideoUruguay, storage, *countryInfoGetter), ());
+  }
 }
 }  // namespace storage
