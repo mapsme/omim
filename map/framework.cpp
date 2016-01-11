@@ -190,6 +190,17 @@ void Framework::StopLocationFollow()
   CallDrapeFunction(bind(&df::DrapeEngine::StopLocationFollow, _1));
 }
 
+void Framework::Migrate()
+{
+  Storage().Migrate();
+  m_searchEngine.reset();
+  m_infoGetter.reset();
+  InitCountryInfoGetter();
+  InitSearchEngine();
+  m_model.Clear();
+  InvalidateRect(MercatorBounds::FullRect());
+}
+
 Framework::Framework()
   : m_bmManager(*this)
   , m_fixedSearchResults(0)
@@ -204,7 +215,7 @@ Framework::Framework()
 
   // Init strings bundle.
   // @TODO. There are hardcoded strings below which are defined in strings.txt as well.
-  // It's better to use strings form strings.txt intead of hardcoding them here.
+  // It's better to use strings form strings.txt instead of hardcoding them here.
   m_stringsBundle.SetDefaultString("country_status_added_to_queue", "^\nis added to the downloading queue");
   m_stringsBundle.SetDefaultString("country_status_downloading", "Downloading\n^\n^");
   m_stringsBundle.SetDefaultString("country_status_download", "Download map\n(^ ^)");
@@ -397,10 +408,6 @@ void Framework::OnMapDeregistered(platform::LocalCountryFile const & localFile)
 
 void Framework::RegisterAllMaps()
 {
-  ASSERT(!m_storage.IsDownloadInProgress(),
-         ("Registering maps while map downloading leads to removing downloading maps from "
-          "ActiveMapsListener::m_items."));
-
   m_storage.RegisterAllLocalMaps();
 
   int minFormat = numeric_limits<int>::max();

@@ -214,7 +214,10 @@ bool SearchPanel::TryMigrate(QString const & str)
   if (!isMigrate)
     return false;
 
-  m_pDrawWidget->GetFramework().Storage().Migrate();
+  m_pEditor->setText("");
+  parentWidget()->hide();
+
+  m_pDrawWidget->GetFramework().Migrate();
   return true;
 }
 
