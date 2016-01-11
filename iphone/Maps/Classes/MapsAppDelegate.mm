@@ -22,6 +22,7 @@
 
 #include <sys/xattr.h>
 
+#include "base/sunrise_sunset.hpp"
 #include "storage/storage_defines.hpp"
 
 #import "platform/http_thread_apple.h"
@@ -41,6 +42,7 @@ static NSString * const kUDFirstVersionKey = @"FirstVersion";
 static NSString * const kUDLastRateRequestDate = @"LastRateRequestDate";
 extern NSString * const kUDAlreadySharedKey = @"UserAlreadyShared";
 static NSString * const kUDLastShareRequstDate = @"LastShareRequestDate";
+extern NSString * const kUDAutoNightMode = @"AutoNightMode";
 static NSString * const kNewWatchUserEventKey = @"NewWatchUser";
 static NSString * const kOldWatchUserEventKey = @"OldWatchUser";
 static NSString * const kUDWatchEventAlreadyTracked = @"WatchEventAlreadyTracked";
@@ -88,6 +90,7 @@ void InitLocalizedStrings()
 @property (nonatomic) NSInteger standbyCounter;
 
 @property (weak, nonatomic) NSTimer * checkAdServerForbiddenTimer;
+@property (weak, nonatomic) NSTimer * mapStyleSwitchTimer;
 
 @end
 
@@ -219,6 +222,62 @@ void InitLocalizedStrings()
   m_fileURL = nil;
 }
 
+- (void)determineMapStyle
+{
+  [UIColor setNightMode:GetFramework().GetMapStyle() == MapStyleDark];
+  if ([[NSUserDefaults standardUserDefaults] boolForKey:kUDAutoNightMode])
+    [self startMapStyleChecker];
+}
+
+- (void)startMapStyleChecker
+{
+  NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
+  [ud setBool:YES forKey:kUDAutoNightMode];
+  [ud synchronize];
+  self.mapStyleSwitchTimer = [NSTimer scheduledTimerWithTimeInterval:(30 * 60 * 60) target:self selector:@selector(changeMapStyleIfNedeed) userInfo:nil repeats:YES];
+}
+
+- (void)stopMapStyleChecker
+{
+  NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
+  [ud setBool:NO forKey:kUDAutoNightMode];
+  [ud synchronize];
+  [self.mapStyleSwitchTimer invalidate];
+}
+
+- (void)changeMapStyleIfNedeed
+{
+  CLLocation * l = self.m_locationManager.lastLocation;
+  if (!l)
+    return;
+  auto const dayTime = GetDayTime(static_cast<time_t>(NSDate.date.timeIntervalSince1970), l.coordinate.latitude, l.coordinate.longitude);
+  dispatch_async(dispatch_get_main_queue(), ^
+  {
+    auto & f = GetFramework();
+    switch (dayTime)
+    {
+    case DayTimeType::Day:
+    case DayTimeType::PolarDay:
+      if (f.GetMapStyle() != MapStyleClear)
+      {
+        f.SetMapStyle(MapStyleClear);
+        [UIColor setNightMode:NO];
+        [static_cast<ViewController *>(self.mapViewController.navigationController.topViewController) refresh];
+      }
+      break;
+    case DayTimeType::Night:
+    case DayTimeType::PolarNight:
+      if (f.GetMapStyle() != MapStyleDark)
+      {
+        f.SetMapStyle(MapStyleDark);
+        [UIColor setNightMode:YES];
+        [static_cast<ViewController *>(self.mapViewController.navigationController.topViewController) refresh];
+      }
+      break;
+    }
+  });
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   // Initialize all 3party engines.
@@ -235,7 +294,8 @@ void InitLocalizedStrings()
   [self trackWatchUser];
 
   InitLocalizedStrings();
-  
+  [self determineMapStyle];
+
   [self.mapViewController onEnterForeground];
 
   [Preferences setup:self.mapViewController];
@@ -243,7 +303,7 @@ void InitLocalizedStrings()
 
   [self subscribeToStorage];
 
-  [self customizeAppearance];
+  [MapsAppDelegate customizeAppearance];
   
   self.standbyCounter = 0;
 
@@ -394,10 +454,10 @@ void InitLocalizedStrings()
   [self.mapViewController setMapStyle: mapStyle];
 }
 
-- (void)customizeAppearance
++ (void)customizeAppearance
 {
   NSDictionary * attributes = @{
-    NSForegroundColorAttributeName : [UIColor whiteColor],
+    NSForegroundColorAttributeName : [UIColor whitePrimaryText],
     NSFontAttributeName : [UIFont regular18]
   };
 
@@ -409,7 +469,7 @@ void InitLocalizedStrings()
 
   UIBarButtonItem * barBtn = [UIBarButtonItem appearance];
   [barBtn setTitleTextAttributes:attributes forState:UIControlStateNormal];
-  barBtn.tintColor = [UIColor whiteColor];
+  barBtn.tintColor = [UIColor whitePrimaryText];
 
   UIPageControl * pageControl = [UIPageControl appearance];
   pageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
