@@ -1,24 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/ll__place_operator"
   style="@style/PlacePageItemFrame"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:tag="operator"
-  tools:visibility="visible"
-  tools:background="#4000FFFF">
+  tools:background="#4000FFFF"
+  tools:visibility="visible">
   <ImageView
     android:id="@+id/iv__place_operator"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginRight="@dimen/margin_base"
-    android:src="@drawable/ic_bank"
-    android:tint="?iconTint"/>
+    style="@style/PlacePageMetadataIcon"
+    android:src="@drawable/ic_bank"/>
 
   <TextView
     android:id="@+id/tv__place_operator"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:textAppearance="@style/MwmTextAppearance.PlacePage"
+    style="@style/PlacePageMetadataText"
     tools:text="Operator"/>
 </LinearLayout>
