@@ -83,14 +83,15 @@ private:
   // country were successfully downloaded.
   TUpdate m_update;
 
-  // If |folder| is not empty Storage will create version directories and download maps into
+  // If |m_dataDir| is not empty Storage will create version directories and download maps in
   // platform::WritableDir/|m_dataDir|/. Not empty |m_dataDir| can be used only for
   // downloading maps to a special place but not for continue working with them from this place.
-  string const m_dataDir;
+  string m_dataDir;
 
   void DownloadNextCountryFromQueue();
 
-  void LoadCountriesFile(bool forceReload, string const & pathToCountriesFile);
+  void LoadCountriesFile(bool forceReload, string const & pathToCountriesFile,
+                         string const & dataDir);
 
   void ReportProgress(TCountryId const & countryId, pair<int64_t, int64_t> const & p);
 
@@ -116,14 +117,14 @@ public:
   /// \brief Storage will create its directories in Writable Directory
   /// (gotten with platform::WritableDir) by default.
   /// \param pathToCountriesFile is a name of countries.txt file.
-  /// \param folder If |folder| is not empty Storage will create its directory in WritableDir/|folder|.
-  /// \note if |folder| is not empty the instance of Storage can be used only for downloading map files
+  /// \param dataDir If |dataDir| is not empty Storage will create its directory in WritableDir/|dataDir|.
+  /// \note if |dataDir| is not empty the instance of Storage can be used only for downloading map files
   /// but not for continue working with them.
-  /// If |folder| is not empty the work flow is
-  /// * create a instance of Storage with a special countries.txt and |folder|
-  /// * download some maps to WritableDir/|folder|
+  /// If |dataDir| is not empty the work flow is
+  /// * create a instance of Storage with a special countries.txt and |dataDir|
+  /// * download some maps to WritableDir/|dataDir|
   /// * destroy the instance of Storage and move the downloaded maps to proper place
-  Storage(string const & pathToCountriesFile = COUNTRIES_FILE, string const & folder = string());
+  Storage(string const & pathToCountriesFile = COUNTRIES_FILE, string const & dataDir = string());
   /// \brief This constructor should be used for testing only.
   Storage(string const & referenceCountriesTxtJsonForTesting,
           unique_ptr<MapFilesDownloader> mapDownloaderForTesting);
