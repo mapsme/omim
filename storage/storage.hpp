@@ -90,7 +90,7 @@ private:
 
   void DownloadNextCountryFromQueue();
 
-  void LoadCountriesFile(bool forceReload, string const & pathToCountriesFile,
+  void LoadCountriesFile(string const & pathToCountriesFile,
                          string const & dataDir, TMapping * mapping = nullptr);
 
   void ReportProgress(TCountryId const & countryId, pair<int64_t, int64_t> const & p);
