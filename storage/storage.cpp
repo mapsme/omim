@@ -84,8 +84,7 @@ bool HasCountryId(vector<TCountryId> const & sortedCountryIds, TCountryId const 
 }
 
 Storage::Storage(string const & pathToCountriesFile /* = COUNTRIES_FILE */, string const & folder /* = string() */)
-  : m_downloader(new HttpMapFilesDownloader()), m_currentSlotId(0), m_dataDir(folder),
-    m_pathToCountriesFile(pathToCountriesFile)
+  : m_downloader(new HttpMapFilesDownloader()), m_currentSlotId(0), m_dataDir(folder)
 {
   if (!m_dataDir.empty())
   {
@@ -93,7 +92,7 @@ Storage::Storage(string const & pathToCountriesFile /* = COUNTRIES_FILE */, stri
     platform.MkDir(my::JoinFoldersToPath(platform.WritableDir(), m_dataDir));
   }
 
-  LoadCountriesFile(false /* forceReload */);
+  LoadCountriesFile(false /* forceReload */, pathToCountriesFile);
 }
 
 Storage::Storage(string const & referenceCountriesTxtJsonForTesting,
@@ -475,7 +474,7 @@ TCountryId Storage::GetCurrentDownloadingCountryIndex() const
   return IsDownloadInProgress() ? m_queue.front().GetCountryId() : storage::TCountryId();
 }
 
-void Storage::LoadCountriesFile(bool forceReload)
+void Storage::LoadCountriesFile(bool forceReload, string const & pathToCountriesFile)
 {
   if (forceReload)
     m_countries.Clear();
@@ -483,10 +482,10 @@ void Storage::LoadCountriesFile(bool forceReload)
   if (m_countries.ChildrenCount() == 0)
   {
     string json;
-    ReaderPtr<Reader>(GetPlatform().GetReader(m_pathToCountriesFile)).ReadAsString(json);
+    ReaderPtr<Reader>(GetPlatform().GetReader(pathToCountriesFile)).ReadAsString(json);
     m_currentVersion = LoadCountries(json, m_countries);
     if (m_currentVersion < 0)
-      LOG(LERROR, ("Can't load countries file", m_pathToCountriesFile));
+      LOG(LERROR, ("Can't load countries file", pathToCountriesFile));
   }
 }
 
