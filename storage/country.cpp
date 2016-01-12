@@ -26,7 +26,7 @@ void LoadGroupImpl(int depth, json_t * group, ToDo & toDo, int64_t version)
 
       char const * id = json_string_value(json_object_get(j, "id"));
       if (!id)
-        MYTHROW(my::Json::Exception, ("Id is missing"));
+        MYTHROW(my::Json::Exception, ("LoadGroupImpl. Id is missing.", id));
 
       size_t const mwmSize = static_cast<size_t>(json_integer_value(json_object_get(j, "s")));
       // @TODO(bykoianko) After we stop supporting two component mwms (with routing files)
@@ -180,7 +180,7 @@ int64_t LoadCountries(string const & jsonBuffer, TCountriesContainer & countries
     char const * const idKey = version::IsSingleMwm(version) ? "id" : "n";
     char const * id = json_string_value(json_object_get(rootPtr, idKey));
     if (!id)
-      MYTHROW(my::Json::Exception, ("Id is missing"));
+      MYTHROW(my::Json::Exception, ("LoadCountries. Id is missing.", id));
     Country rootCountry(id);
     // @TODO(bykoianko) Add CourtyFile to rootCountry with correct size.
     countries.Value() = rootCountry;
