@@ -199,6 +199,7 @@ public:
   //@}
 
   storage::Storage & Storage() { return m_storage; }
+  storage::CountryInfoGetter & CountryInfoGetter() { return *m_infoGetter; }
 
   /// @name Bookmarks, Tracks and other UserMarks
   //@{
