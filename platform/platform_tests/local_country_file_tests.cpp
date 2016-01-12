@@ -198,7 +198,7 @@ UNIT_TEST(LocalCountryFile_CleanupMapFiles)
 
   // Check FindAllLocalMaps()
   vector<LocalCountryFile> localFiles;
-  FindAllLocalMapsAndCleanup(localFiles, 4 /* latestVersion */);
+  FindAllLocalMapsAndCleanup(4 /* latestVersion */, localFiles);
   TEST(!Contains(localFiles, japanLocalFile), (japanLocalFile, localFiles));
   TEST(!Contains(localFiles, brazilLocalFile), (brazilLocalFile, localFiles));
   TEST(Contains(localFiles, irelandLocalFile), (irelandLocalFile, localFiles));
@@ -309,7 +309,7 @@ UNIT_TEST(LocalCountryFile_AllLocalFilesLookup)
   ScopedFile testItalyMapFile(testDir, italyFile, MapOptions::Map, "Italy-map");
 
   vector<LocalCountryFile> localFiles;
-  FindAllLocalMapsAndCleanup(localFiles, 10101 /* latestVersion */);
+  FindAllLocalMapsAndCleanup(10101 /* latestVersion */, localFiles);
   multiset<LocalCountryFile> localFilesSet(localFiles.begin(), localFiles.end());
 
   bool worldFound = false;
@@ -342,7 +342,7 @@ UNIT_TEST(LocalCountryFile_PreparePlaceForCountryFiles)
   CountryFile italyFile("Italy");
   LocalCountryFile expectedItalyFile(platform.WritableDir(), italyFile, 0 /* version */);
   shared_ptr<LocalCountryFile> italyLocalFile =
-      PreparePlaceForCountryFiles(italyFile, 0 /* version */, string() /* folder */);
+      PreparePlaceForCountryFiles(0 /* version */, italyFile);
   TEST(italyLocalFile.get(), ());
   TEST_EQUAL(expectedItalyFile, *italyLocalFile, ());
 
@@ -351,14 +351,14 @@ UNIT_TEST(LocalCountryFile_PreparePlaceForCountryFiles)
   CountryFile germanyFile("Germany");
   LocalCountryFile expectedGermanyFile(directoryForV1.GetFullPath(), germanyFile, 1 /* version */);
   shared_ptr<LocalCountryFile> germanyLocalFile =
-      PreparePlaceForCountryFiles(germanyFile, 1 /* version */, string() /* folder */);
+      PreparePlaceForCountryFiles(1 /* version */, germanyFile);
   TEST(germanyLocalFile.get(), ());
   TEST_EQUAL(expectedGermanyFile, *germanyLocalFile, ());
 
   CountryFile franceFile("France");
   LocalCountryFile expectedFranceFile(directoryForV1.GetFullPath(), franceFile, 1 /* version */);
   shared_ptr<LocalCountryFile> franceLocalFile =
-      PreparePlaceForCountryFiles(franceFile, 1 /* version */, string() /* folder */);
+      PreparePlaceForCountryFiles(1 /* version */, franceFile);
   TEST(franceLocalFile.get(), ());
   TEST_EQUAL(expectedFranceFile, *franceLocalFile, ());
 }

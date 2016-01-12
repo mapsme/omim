@@ -20,7 +20,7 @@ UNIT_TEST(CheckCrossSections)
 {
   static double constexpr kPointEquality = 0.01;
   vector<platform::LocalCountryFile> localFiles;
-  platform::FindAllLocalMapsAndCleanup(localFiles, numeric_limits<int64_t>::max() /* latestVersion */);
+  platform::FindAllLocalMapsAndCleanup(numeric_limits<int64_t>::max() /* latestVersion */, localFiles);
 
   size_t ingoingErrors = 0;
   size_t outgoingErrors = 0;

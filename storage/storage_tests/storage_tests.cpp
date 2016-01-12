@@ -309,7 +309,7 @@ void OnCountryDownloaded(LocalCountryFile const & localFile)
 
 TLocalFilePtr CreateDummyMapFile(CountryFile const & countryFile, int64_t version, size_t size)
 {
-  TLocalFilePtr localFile = PreparePlaceForCountryFiles(countryFile, version, "" /* folder */);
+  TLocalFilePtr localFile = PreparePlaceForCountryFiles(version, string() /* dataDir */, countryFile);
   TEST(localFile.get(), ("Can't prepare place for", countryFile, "(version", version, ")"));
   {
     string const zeroes(size, '\0');
@@ -779,10 +779,10 @@ UNIT_TEST(StorageTest_FailedDownloading)
 
   // To prevent interference from other tests and on other tests it's
   // better to remove temprorary downloader files.
-  DeleteDownloaderFilesForCountry(countryFile, storage.GetCurrentDataVersion(), string() /* folder */);
+  DeleteDownloaderFilesForCountry(storage.GetCurrentDataVersion(), countryFile);
   MY_SCOPE_GUARD(cleanup, [&]()
   {
-    DeleteDownloaderFilesForCountry(countryFile, storage.GetCurrentDataVersion(), string() /* folder */);
+    DeleteDownloaderFilesForCountry(storage.GetCurrentDataVersion(), countryFile);
   });
 
   {
@@ -793,7 +793,7 @@ UNIT_TEST(StorageTest_FailedDownloading)
 
   // File wasn't downloaded, but temprorary downloader files must exist.
   string const downloadPath =
-      GetFileDownloadPath(countryFile, MapOptions::Map, storage.GetCurrentDataVersion(), string() /* folder */);
+      GetFileDownloadPath(storage.GetCurrentDataVersion(), countryFile, MapOptions::Map);
   TEST(!Platform::IsFileExistsByFullPath(downloadPath), ());
   TEST(Platform::IsFileExistsByFullPath(downloadPath + DOWNLOADING_FILE_EXTENSION), ());
   TEST(Platform::IsFileExistsByFullPath(downloadPath + RESUME_FILE_EXTENSION), ());
