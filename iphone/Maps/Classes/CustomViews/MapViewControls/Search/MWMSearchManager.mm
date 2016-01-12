@@ -1,6 +1,5 @@
 #import "LocationManager.h"
 #import "MapsAppDelegate.h"
-#import "MapsObservers.h"
 #import "MWMConsole.h"
 #import "MWMRoutingProtocol.h"
 #import "MWMSearchDownloadViewController.h"
@@ -13,14 +12,13 @@
 #import "3party/Alohalytics/src/alohalytics_objc.h"
 
 #include "Framework.h"
-#include "map/active_maps_layout.hpp"
 
 extern NSString * const kAlohalyticsTapEventKey;
 extern NSString * const kSearchStateWillChangeNotification = @"SearchStateWillChangeNotification";
 extern NSString * const kSearchStateKey = @"SearchStateKey";
 
 @interface MWMSearchManager ()<MWMSearchTableViewProtocol, MWMSearchDownloadProtocol,
-                               MWMSearchTabbedViewProtocol, ActiveMapsObserverProtocol,
+                               MWMSearchTabbedViewProtocol,
                                MWMSearchTabButtonsViewProtocol, UITextFieldDelegate>
 
 @property (weak, nonatomic) UIView * parentView;
@@ -40,7 +38,6 @@ extern NSString * const kSearchStateKey = @"SearchStateKey";
 
 @implementation MWMSearchManager
 {
-  unique_ptr<ActiveMapsObserver> m_mapsObserver;
   int m_mapsObserverSlotId;
 }
 
@@ -199,36 +196,38 @@ extern NSString * const kSearchStateKey = @"SearchStateKey";
   [self.delegate actionDownloadMaps];
 }
 
-#pragma mark - ActiveMapsObserverProtocol
+//#pragma mark - ActiveMapsObserverProtocol
 
-- (void)countryStatusChangedAtPosition:(int)position inGroup:(ActiveMapsLayout::TGroup const &)group
-{
-  auto const status =
-      GetFramework().GetCountryTree().GetActiveMapLayout().GetCountryStatus(group, position);
-  [self updateTopController];
-  if (status == TStatus::EDownloadFailed)
-    [self.downloadController setDownloadFailed];
-  if (self.state == MWMSearchManagerStateTableSearch ||
-      self.state == MWMSearchManagerStateMapSearch)
-  {
-    NSString * text = self.searchTextField.text;
-    if (text.length > 0)
-      [self.tableViewController searchText:text
-                            forInputLocale:self.searchTextField.textInputMode.primaryLanguage];
-  }
-}
+// TODO (igrechuhin) Add missing implementation
+//- (void)countryStatusChangedAtPosition:(int)position inGroup:(ActiveMapsLayout::TGroup const &)group
+//{
+//  auto const status =
+//      GetFramework().GetCountryTree().GetActiveMapLayout().GetCountryStatus(group, position);
+//  [self updateTopController];
+//  if (status == TStatus::EDownloadFailed)
+//    [self.downloadController setDownloadFailed];
+//  if (self.state == MWMSearchManagerStateTableSearch ||
+//      self.state == MWMSearchManagerStateMapSearch)
+//  {
+//    NSString * text = self.searchTextField.text;
+//    if (text.length > 0)
+//      [self.tableViewController searchText:text
+//                            forInputLocale:self.searchTextField.textInputMode.primaryLanguage];
+//  }
+//}
 
-- (void)countryDownloadingProgressChanged:(LocalAndRemoteSizeT const &)progress
-                               atPosition:(int)position
-                                  inGroup:(ActiveMapsLayout::TGroup const &)group
-{
-  CGFloat const normProgress = (CGFloat)progress.first / progress.second;
-  ActiveMapsLayout & activeMapLayout = GetFramework().GetCountryTree().GetActiveMapLayout();
-  NSString * countryName =
-      @(activeMapLayout.GetFormatedCountryName(activeMapLayout.GetCoreIndex(group, position))
-            .c_str());
-  [self.downloadController downloadProgress:normProgress countryName:countryName];
-}
+// TODO (igrechuhin) Add missing implementation
+//- (void)countryDownloadingProgressChanged:(LocalAndRemoteSizeT const &)progress
+//                               atPosition:(int)position
+//                                  inGroup:(ActiveMapsLayout::TGroup const &)group
+//{
+//  CGFloat const normProgress = (CGFloat)progress.first / progress.second;
+//  ActiveMapsLayout & activeMapLayout = GetFramework().GetCountryTree().GetActiveMapLayout();
+//  NSString * countryName =
+//      @(activeMapLayout.GetFormatedCountryName(activeMapLayout.GetCoreIndex(group, position))
+//            .c_str());
+//  [self.downloadController downloadProgress:normProgress countryName:countryName];
+//}
 
 #pragma mark - State changes
 
@@ -246,15 +245,17 @@ extern NSString * const kSearchStateKey = @"SearchStateKey";
 
 - (void)changeFromHiddenState
 {
-  __weak auto weakSelf = self;
-  m_mapsObserver.reset(new ActiveMapsObserver(weakSelf));
-  m_mapsObserverSlotId = GetFramework().GetCountryTree().GetActiveMapLayout().AddListener(m_mapsObserver.get());
+// TODO (igrechuhin) Add missing implementation
+//  __weak auto weakSelf = self;
+//  m_mapsObserver.reset(new ActiveMapsObserver(weakSelf));
+//  m_mapsObserverSlotId = GetFramework().GetCountryTree().GetActiveMapLayout().AddListener(m_mapsObserver.get());
 }
 
 - (void)changeToHiddenState
 {
   [self endSearch];
-  GetFramework().GetCountryTree().GetActiveMapLayout().RemoveListener(m_mapsObserverSlotId);
+// TODO (igrechuhin) Add missing implementation
+//  GetFramework().GetCountryTree().GetActiveMapLayout().RemoveListener(m_mapsObserverSlotId);
   [self.tabbedController resetSelectedTab];
   self.tableViewController = nil;
   self.downloadController = nil;
@@ -307,12 +308,14 @@ extern NSString * const kSearchStateKey = @"SearchStateKey";
 
 - (UIViewController *)topController
 {
-  auto & f = GetFramework();
-  auto & activeMapLayout = f.GetCountryTree().GetActiveMapLayout();
-  int const outOfDate = activeMapLayout.GetCountInGroup(storage::ActiveMapsLayout::TGroup::EOutOfDate);
-  int const upToDate = activeMapLayout.GetCountInGroup(storage::ActiveMapsLayout::TGroup::EUpToDate);
-  BOOL const haveMap = outOfDate > 0 || upToDate > 0;
-  return haveMap ? self.tabbedController : self.downloadController;
+// TODO (igrechuhin) Add missing implementation
+//  auto & f = GetFramework();
+//  auto & activeMapLayout = f.GetCountryTree().GetActiveMapLayout();
+//  int const outOfDate = activeMapLayout.GetCountInGroup(storage::ActiveMapsLayout::TGroup::EOutOfDate);
+//  int const upToDate = activeMapLayout.GetCountInGroup(storage::ActiveMapsLayout::TGroup::EUpToDate);
+//  BOOL const haveMap = outOfDate > 0 || upToDate > 0;
+//  return haveMap ? self.tabbedController : self.downloadController;
+  return self.tabbedController;
 }
 
 - (MWMSearchDownloadViewController *)downloadController

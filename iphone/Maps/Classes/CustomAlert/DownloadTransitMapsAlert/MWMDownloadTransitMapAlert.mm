@@ -1,4 +1,3 @@
-#import "ActiveMapsVC.h"
 #import "Common.h"
 #import "MWMAlertViewController.h"
 #import "MWMDownloaderDialogCell.h"
@@ -14,25 +13,26 @@
 @property (copy, nonatomic) NSString * size;
 @property (nonatomic) BOOL isMapsFiles;
 
-- (instancetype)initWithIndexes:(vector<storage::TIndex> const &)indexes isMaps:(BOOL)isMaps;
+- (instancetype)initWithIndexes:(vector<storage::TCountryId> const &)indexes isMaps:(BOOL)isMaps;
 
 @end
 
 @implementation MWMDownloaderEntity
 
-- (instancetype)initWithIndexes:(vector<storage::TIndex> const &)indexes isMaps:(BOOL)isMaps
+- (instancetype)initWithIndexes:(vector<storage::TCountryId> const &)indexes isMaps:(BOOL)isMaps
 {
   self = [super init];
   if (self)
   {
-    auto & a = GetFramework().GetCountryTree().GetActiveMapLayout();
+// TODO (igrechuhin) Add missing implementation
+//    auto & a = GetFramework().GetCountryTree().GetActiveMapLayout();
     NSMutableArray * titles = [@[] mutableCopy];
     uint64_t totalRoutingSize = 0;
-    for (auto const & i : indexes)
-    {
-      [titles addObject:@(a.GetCountryName(i).c_str())];
-      totalRoutingSize += a.GetCountrySize(i, isMaps ? MapOptions::MapWithCarRouting : MapOptions::CarRouting).second;
-    }
+//    for (auto const & i : indexes)
+//    {
+//      [titles addObject:@(a.GetCountryName(i).c_str())];
+//      totalRoutingSize += a.GetCountrySize(i, isMaps ? MapOptions::MapWithCarRouting : MapOptions::CarRouting).second;
+//    }
     self.isMapsFiles = isMaps;
     self.titles = titles;
     self.size = [NSString stringWithFormat:@"%@ %@", @(totalRoutingSize / MB), L(@"mb")];
@@ -63,8 +63,8 @@ static NSString * const kStatisticsEvent = @"Map download Alert";
 
 @interface MWMDownloadTransitMapAlert ()
 {
-  vector<storage::TIndex> maps;
-  vector<storage::TIndex> routes;
+  vector<storage::TCountryId> maps;
+  vector<storage::TCountryId> routes;
 }
 
 @property (weak, nonatomic) IBOutlet UILabel * titleLabel;
@@ -85,8 +85,8 @@ static NSString * const kStatisticsEvent = @"Map download Alert";
 
 @implementation MWMDownloadTransitMapAlert
 
-+ (instancetype)downloaderAlertWithMaps:(vector<storage::TIndex> const &)maps
-                                 routes:(vector<storage::TIndex> const &)routes
++ (instancetype)downloaderAlertWithMaps:(vector<storage::TCountryId> const &)maps
+                                 routes:(vector<storage::TCountryId> const &)routes
                                    code:(routing::IRouter::ResultCode)code
 {
   [[Statistics instance] logEvent:kStatisticsEvent withParameters:@{kStatAction : kStatOpen}];
@@ -114,7 +114,7 @@ static NSString * const kStatisticsEvent = @"Map download Alert";
   return alert;
 }
 
-+ (instancetype)alertWithMaps:(vector<storage::TIndex> const &)maps routes:(vector<storage::TIndex> const &)routes
++ (instancetype)alertWithMaps:(vector<storage::TCountryId> const &)maps routes:(vector<storage::TCountryId> const &)routes
 {
   MWMDownloadTransitMapAlert * alert = [[[NSBundle mainBundle] loadNibNamed:kDownloadTransitMapAlertNibName owner:nil options:nil] firstObject];
   NSMutableArray * missedFiles = [@[] mutableCopy];
@@ -134,12 +134,13 @@ static NSString * const kStatisticsEvent = @"Map download Alert";
   __weak MWMDownloadTransitMapAlert * wAlert = alert;
   alert.downloaderBlock = ^()
   {
-    __strong MWMDownloadTransitMapAlert * alert = wAlert;
-    auto & a = GetFramework().GetCountryTree().GetActiveMapLayout();
-    for (auto const & index : alert->maps)
-      a.DownloadMap(index, MapOptions::MapWithCarRouting);
-    for (auto const & index : alert->routes)
-      a.DownloadMap(index, MapOptions::CarRouting);
+// TODO (igrechuhin) Add missing implementation
+//    __strong MWMDownloadTransitMapAlert * alert = wAlert;
+//    auto & a = GetFramework().GetCountryTree().GetActiveMapLayout();
+//    for (auto const & index : alert->maps)
+//      a.DownloadMap(index, MapOptions::MapWithCarRouting);
+//    for (auto const & index : alert->routes)
+//      a.DownloadMap(index, MapOptions::CarRouting);
   };
   [alert configure];
   return alert;
@@ -170,8 +171,8 @@ static NSString * const kStatisticsEvent = @"Map download Alert";
 {
   self.downloaderBlock();
   [self close];
-  ActiveMapsVC * activeMapsViewController = [[ActiveMapsVC alloc] init];
-  [self.alertController.ownerViewController.navigationController pushViewController:activeMapsViewController animated:YES];
+//  ActiveMapsVC * activeMapsViewController = [[ActiveMapsVC alloc] init];
+//  [self.alertController.ownerViewController.navigationController pushViewController:activeMapsViewController animated:YES];
 }
 
 - (void)showDownloadDetail:(UIButton *)sender

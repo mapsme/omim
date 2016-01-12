@@ -500,45 +500,46 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
     TLocationStateModeFn locationStateModeFn = (TLocationStateModeFn)[self methodForSelector:locationStateModeSelector];
     f.SetMyPositionModeListener(bind(locationStateModeFn, self, locationStateModeSelector, _1));
 
-    f.SetDownloadCountryListener([self, &f](storage::TIndex const & idx, int opt)
-    {
-      ActiveMapsLayout & layout = f.GetCountryTree().GetActiveMapLayout();
-      if (opt == -1)
-      {
-        layout.RetryDownloading(idx);
-      }
-      else
-      {
-        LocalAndRemoteSizeT sizes = layout.GetRemoteCountrySizes(idx);
-        uint64_t sizeToDownload = sizes.first;
-        MapOptions options = static_cast<MapOptions>(opt);
-        if(HasOptions(options, MapOptions::CarRouting))
-          sizeToDownload += sizes.second;
+// TODO (igrechuhin) Add missing implementation
+//    f.SetDownloadCountryListener([self, &f](storage::TCountryId const & idx, int opt)
+//    {
+//      ActiveMapsLayout & layout = f.GetCountryTree().GetActiveMapLayout();
+//      if (opt == -1)
+//      {
+//        layout.RetryDownloading(idx);
+//      }
+//      else
+//      {
+//        LocalAndRemoteSizeT sizes = layout.GetRemoteCountrySizes(idx);
+//        uint64_t sizeToDownload = sizes.first;
+//        MapOptions options = static_cast<MapOptions>(opt);
+//        if(HasOptions(options, MapOptions::CarRouting))
+//          sizeToDownload += sizes.second;
+//
+//        NSString * name = @(layout.GetCountryName(idx).c_str());
+//        Platform::EConnectionType const connection = Platform::ConnectionStatus();
+//        if (connection != Platform::EConnectionType::CONNECTION_NONE)
+//        {
+//          if (connection == Platform::EConnectionType::CONNECTION_WWAN && sizeToDownload > 50 * MB)
+//          {
+//            [self.alertController presentnoWiFiAlertWithName:name downloadBlock:^
+//            {
+//              layout.DownloadMap(idx, static_cast<MapOptions>(opt));
+//            }];
+//            return;
+//          }
+//        }
+//        else
+//        {
+//          [self.alertController presentNoConnectionAlert];
+//          return;
+//        }
+//
+//        layout.DownloadMap(idx, static_cast<MapOptions>(opt));
+//      }
+//    });
 
-        NSString * name = @(layout.GetCountryName(idx).c_str());
-        Platform::EConnectionType const connection = Platform::ConnectionStatus();
-        if (connection != Platform::EConnectionType::CONNECTION_NONE)
-        {
-          if (connection == Platform::EConnectionType::CONNECTION_WWAN && sizeToDownload > 50 * MB)
-          {
-            [self.alertController presentnoWiFiAlertWithName:name downloadBlock:^
-            {
-              layout.DownloadMap(idx, static_cast<MapOptions>(opt));
-            }];
-            return;
-          }
-        }
-        else
-        {
-          [self.alertController presentNoConnectionAlert];
-          return;
-        }
-
-        layout.DownloadMap(idx, static_cast<MapOptions>(opt));
-      }
-    });
-
-    f.SetRouteBuildingListener([self, &f](routing::IRouter::ResultCode code, vector<storage::TIndex> const & absentCountries, vector<storage::TIndex> const & absentRoutes)
+    f.SetRouteBuildingListener([self, &f](routing::IRouter::ResultCode code, vector<storage::TCountryId> const & absentCountries, vector<storage::TCountryId> const & absentRoutes)
     {
       dispatch_async(dispatch_get_main_queue(), [=]
       {
@@ -560,8 +561,8 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 }
 
 - (void)processRoutingBuildingEvent:(routing::IRouter::ResultCode)code
-                          countries:(vector<storage::TIndex> const &)absentCountries
-                             routes:(vector<storage::TIndex> const &)absentRoutes
+                          countries:(vector<storage::TCountryId> const &)absentCountries
+                             routes:(vector<storage::TCountryId> const &)absentRoutes
 {
   Framework & f = GetFramework();
   switch (code)
@@ -692,8 +693,8 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 #pragma mark - ShowDialog callback
 
 - (void)presentDownloaderAlert:(routing::IRouter::ResultCode)code
-                     countries:(vector<storage::TIndex> const &)countries
-                        routes:(vector<storage::TIndex> const &)routes
+                     countries:(vector<storage::TCountryId> const &)countries
+                        routes:(vector<storage::TCountryId> const &)routes
 {
   if (countries.size() || routes.size())
     [self.alertController presentDownloaderAlertWithCountries:countries routes:routes code:code];
