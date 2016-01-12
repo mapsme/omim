@@ -87,12 +87,10 @@ private:
   // platform::WritableDir/|m_dataDir|/. Not empty |m_dataDir| can be used only for
   // downloading maps to a special place but not for continue working with them from this place.
   string const m_dataDir;
-  // |m_pathToCountriesFile| is name of countries.txt file which is used by an instance of Storage.
-  string const m_pathToCountriesFile;
 
   void DownloadNextCountryFromQueue();
 
-  void LoadCountriesFile(bool forceReload);
+  void LoadCountriesFile(bool forceReload, string const & pathToCountriesFile);
 
   void ReportProgress(TCountryId const & countryId, pair<int64_t, int64_t> const & p);
 
