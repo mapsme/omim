@@ -858,7 +858,7 @@ UNIT_TEST(StorageTest_GetRootId)
 {
   Storage storage(string(R"({
                            "id": "Countries",
-                           "v": 161227,
+                           "v": )" + strings::to_string(version::FOR_TESTING_SINGLE_MWM1) + R"(,
                            "g": []
                          })"), make_unique<TestMapFilesDownloader>());
 
@@ -870,7 +870,7 @@ UNIT_TEST(StorageTest_GetChildren)
 {
   Storage storage(string(R"({
                         "id": "Countries",
-                        "v": 161227,
+                        "v": )" + strings::to_string(version::FOR_TESTING_SINGLE_MWM1) + R"(,
                         "g": [
                             {
                              "id": "Abkhazia",
