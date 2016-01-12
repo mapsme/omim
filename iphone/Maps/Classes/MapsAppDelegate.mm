@@ -34,7 +34,6 @@
 // If you have a "missing header error" here, then please run configure.sh script in the root repo folder.
 #import "../../../private.h"
 
-extern NSString * const MapsStatusChangedNotification = @"MapsStatusChangedNotification";
 // Alert keys.
 static NSString * const kUDLastLaunchDateKey = @"LastLaunchDate";
 extern NSString * const kUDAlreadyRatedKey = @"UserAlreadyRatedApp";
@@ -103,7 +102,6 @@ void InitLocalizedStrings()
 
   NSString * m_scheme;
   NSString * m_sourceApplication;
-  ActiveMapsObserver * m_mapsObserver;
 }
 
 + (MapsAppDelegate *)theApp
@@ -235,7 +233,8 @@ void InitLocalizedStrings()
   [self trackWatchUser];
   InitLocalizedStrings();
   [Preferences setup];
-  [self subscribeToStorage];
+  // TODO (igrechuhin) Add missing implementation
+//  [self subscribeToStorage];
   [MapsAppDelegate customizeAppearance];
 
   self.standbyCounter = 0;
@@ -243,7 +242,8 @@ void InitLocalizedStrings()
   [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:minimumBackgroundFetchIntervalInSeconds];
   [self startAdServerForbiddenCheckTimer];
   Framework & f = GetFramework();
-  [UIApplication sharedApplication].applicationIconBadgeNumber = f.GetCountryTree().GetActiveMapLayout().GetOutOfDateCount();
+  // TODO (igrechuhin) Add missing implementation
+//  [UIApplication sharedApplication].applicationIconBadgeNumber = f.GetCountryTree().GetActiveMapLayout().GetOutOfDateCount();
   f.InvalidateMyPosition();
 }
 
@@ -331,7 +331,15 @@ void InitLocalizedStrings()
 
   [self.mapViewController onEnterForeground];
   _m_locationManager = [[LocationManager alloc] init];
+
   [self.m_locationManager onForeground];
+  [MapsAppDelegate customizeAppearance];
+  
+  self.standbyCounter = 0;
+
+  NSTimeInterval const minimumBackgroundFetchIntervalInSeconds = 6 * 60 * 60;
+  [application setMinimumBackgroundFetchInterval:minimumBackgroundFetchIntervalInSeconds];
+
   [self registerNotifications:application launchOptions:launchOptions];
   [self commonInit];
 
@@ -342,7 +350,17 @@ void InitLocalizedStrings()
   if ([Alohalytics isFirstSession])
     [self firstLaunchSetup];
   else
-    [self incrementSessionsCountAndCheckForAlert];
+  {
+    [self incrementSessionCount];
+    [self showAlertIfRequired];
+  }
+
+  [self startAdServerForbiddenCheckTimer];
+
+  Framework & f = GetFramework();
+  // TODO (igrechuhin) Add missing implementation
+//  application.applicationIconBadgeNumber = f.GetCountryTree().GetActiveMapLayout().GetOutOfDateCount();
+  f.InvalidateMyPosition();
 
   [self enableTTSForTheFirstTime];
   [MWMTextToSpeech activateAudioSession];
@@ -571,24 +589,9 @@ void InitLocalizedStrings()
   [self.mapViewController dismissPopover];
 }
 
-- (void)subscribeToStorage
-{
-  __weak MapsAppDelegate * weakSelf = self;
-  m_mapsObserver = new ActiveMapsObserver(weakSelf);
-  GetFramework().GetCountryTree().GetActiveMapLayout().AddListener(m_mapsObserver);
-
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(outOfDateCountriesCountChanged:) name:MapsStatusChangedNotification object:nil];
-}
-
-- (void)countryStatusChangedAtPosition:(int)position inGroup:(storage::ActiveMapsLayout::TGroup const &)group
-{
-  ActiveMapsLayout & l = GetFramework().GetCountryTree().GetActiveMapLayout();
-  int const outOfDateCount = l.GetOutOfDateCount();
-  [[NSNotificationCenter defaultCenter] postNotificationName:MapsStatusChangedNotification object:nil userInfo:@{@"OutOfDate" : @(outOfDateCount)}];
-}
-
 - (void)outOfDateCountriesCountChanged:(NSNotification *)notification
 {
+  // TODO (igrechuhin) Add missing implementation
   [UIApplication sharedApplication].applicationIconBadgeNumber = [[notification userInfo][@"OutOfDate"] integerValue];
 }
 

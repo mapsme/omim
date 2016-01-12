@@ -1,5 +1,4 @@
 #import "DownloadIndicatorProtocol.h"
-#import "MapsObservers.h"
 #import "NavigationController.h"
 
 #include "indexer/map_style.hpp"
@@ -16,7 +15,7 @@ typedef NS_ENUM(NSUInteger, MWMRoutingPlaneMode)
 };
 
 @interface MapsAppDelegate : UIResponder<UIApplicationDelegate, UIAlertViewDelegate,
-                                         ActiveMapsObserverProtocol, DownloadIndicatorProtocol>
+                                         DownloadIndicatorProtocol>
 {
   NSInteger m_activeDownloadsCounter;
   UIBackgroundTaskIdentifier m_backgroundTask;

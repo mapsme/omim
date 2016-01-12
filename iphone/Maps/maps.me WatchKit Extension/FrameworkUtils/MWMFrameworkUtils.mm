@@ -5,6 +5,9 @@
 #include "indexer/scales.hpp"
 #include "geometry/mercator.hpp"
 
+#include "storage/storage_helpers.hpp"
+#include "storage/country_info_getter.hpp"
+
 #include "drape_frontend/watch/frame_image.hpp"
 
 #include "platform/location.hpp"
@@ -36,21 +39,14 @@ extern NSString * const kSearchResultPointKey;
 {
   [MWMFrameworkUtils prepareFramework];
   Framework & f = GetFramework();
-  storage::TIndex countryIndex = f.GetCountryIndex(f.GetViewportCenter());
-  if (countryIndex == storage::TIndex())
-    return f.IsCountryLoaded(f.GetViewportCenter());
-  storage::TStatus countryStatus = f.GetCountryTree().GetActiveMapLayout().GetCountryStatus(countryIndex);
-  return (countryStatus == storage::TStatus::EOnDisk || countryStatus == storage::TStatus::EOnDiskOutOfDate);
+  return storage::IsPointCoveredByDownloadedMaps(f.GetViewportCenter(), f.Storage(), f.CountryInfoGetter());
 }
 
 + (NSString *)currentCountryName
 {
   [MWMFrameworkUtils prepareFramework];
   Framework & f = GetFramework();
-  storage::TIndex countryIndex = f.GetCountryIndex(f.GetViewportCenter());
-  if (countryIndex == storage::TIndex())
-    return @"";
-  string countryName = f.GetCountryTree().GetActiveMapLayout().GetFormatedCountryName(countryIndex);
+  string countryName = f.CountryInfoGetter().GetRegionFile(f.GetViewportCenter());
   return @(countryName.c_str());
 }
 
