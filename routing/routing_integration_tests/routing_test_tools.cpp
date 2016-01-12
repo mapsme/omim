@@ -135,8 +135,8 @@ namespace integration
       pl.SetResourceDir(options.m_resourcePath);
 
     vector<LocalCountryFile> localFiles;
-    platform::FindAllLocalMapsAndCleanup(numeric_limits<int64_t>::max() /* latestVersion */,
-                                         localFiles);
+    platform::FindAllLocalMapsAndCleanup(localFiles,
+                                         numeric_limits<int64_t>::max() /* latestVersion */);
     for (auto & file : localFiles)
       file.SyncWithDisk();
     ASSERT(!localFiles.empty(), ());

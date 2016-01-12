@@ -207,13 +207,13 @@ void FindAllLocalMapsInDirectoryAndCleanup(string const & directory, int64_t ver
   }
 }
 
-void FindAllLocalMapsAndCleanup(int64_t latestVersion, vector<LocalCountryFile> & localFiles,
-                                string const & folder)
+void FindAllLocalMapsAndCleanup(vector<LocalCountryFile> & localFiles, int64_t latestVersion,
+                                string const & dataDir /* = string() */)
 {
   Platform & platform = GetPlatform();
 
-  string const dir = folder.empty() ? platform.WritableDir()
-                                    : my::JoinFoldersToPath(platform.WritableDir(), folder);
+  string const dir = dataDir.empty() ? platform.WritableDir()
+                                    : my::JoinFoldersToPath(platform.WritableDir(), dataDir);
   FindAllLocalMapsInDirectoryAndCleanup(dir, 0 /* version */, latestVersion, localFiles);
 
   Platform::TFilesWithType fwts;
@@ -275,7 +275,7 @@ void FindAllLocalMapsAndCleanup(int64_t latestVersion, vector<LocalCountryFile> 
 void CleanupMapsDirectory(int64_t latestVersion)
 {
   vector<LocalCountryFile> localFiles;
-  FindAllLocalMapsAndCleanup(latestVersion, localFiles);
+  FindAllLocalMapsAndCleanup(localFiles, latestVersion);
 }
 
 bool ParseVersion(string const & s, int64_t & version)

@@ -43,8 +43,8 @@ void FindAllLocalMapsInDirectoryAndCleanup(string const & directory, int64_t ver
 //
 // Also, this method performs cleanup described in a comment for
 // CleanupMapsDirectory().
-void FindAllLocalMapsAndCleanup(int64_t latestVersion, vector<LocalCountryFile> & localFiles,
-                                string const & folder = string());
+void FindAllLocalMapsAndCleanup(vector<LocalCountryFile> & localFiles, int64_t latestVersion,
+                                string const & dataDir = string());
 
 // This method removes:
 // * partially downloaded non-latest maps (with version less than |latestVersion|)
