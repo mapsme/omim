@@ -41,8 +41,10 @@ public:
     TooMuchData = 509
   };
 
-  /// A pair of <error code, response contents>
+  /// A pair of <error code, response contents>.
   using Response = std::pair<ResponseCode, string>;
+  /// A pair of <url, key-secret>.
+  using TUrlKeySecret = std::pair<string, TKeySecret>;
 
   /// The constructor. Simply stores a lot of strings in fields.
   /// @param[apiUrl] The OSM API URL defaults to baseUrl, or kDefaultApiURL if not specified.
@@ -59,6 +61,7 @@ public:
   //@{
   AuthResult AuthorizePassword(string const & login, string const & password, TKeySecret & outKeySecret) const;
   AuthResult AuthorizeFacebook(string const & facebookToken, TKeySecret & outKeySecret) const;
+  AuthResult AuthorizeGoogle(string const & googleToken, TKeySecret & outKeySecret) const;
   /// @param[method] The API method, must start with a forward slash.
   Response Request(TKeySecret const & keySecret, string const & method, string const & httpMethod = "GET", string const & body = "") const;
   //@}
@@ -70,8 +73,17 @@ public:
   bool IsAuthorized() const;
   AuthResult AuthorizePassword(string const & login, string const & password);
   AuthResult AuthorizeFacebook(string const & facebookToken);
+  AuthResult AuthorizeGoogle(string const & googleToken);
   /// @param[method] The API method, must start with a forward slash.
   Response Request(string const & method, string const & httpMethod = "GET", string const & body = "") const;
+  //@}
+
+  /// @name Methods for WebView-based authentication.
+  //@{
+  TUrlKeySecret GetFacebookOAuthURL() const;
+  TUrlKeySecret GetGoogleOAuthURL() const;
+  AuthResult FinishAuthorization(TKeySecret const & requestToken, string const & verifier, TKeySecret & outKeySecret) const;
+  AuthResult FinishAuthorization(TKeySecret const & requestToken, string const & verifier);
   //@}
 
   /// Tokenless GET request, for convenience.
@@ -95,8 +107,9 @@ private:
   AuthResult FetchSessionId(SessionID & sid) const;
   AuthResult LogoutUser(SessionID const & sid) const;
   AuthResult LoginUserPassword(string const & login, string const & password, SessionID const & sid) const;
-  AuthResult LoginFacebook(string const & facebookToken, SessionID const & sid) const;
+  AuthResult LoginSocial(string const & callbackPart, string const & socialToken, SessionID const & sid) const;
   string SendAuthRequest(string const & requestTokenKey, SessionID const & sid) const;
+  TKeySecret FetchRequestToken() const;
   AuthResult FetchAccessToken(SessionID const & sid, TKeySecret & outKeySecret) const;
   AuthResult FetchAccessToken(SessionID const & sid);
 };

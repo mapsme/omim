@@ -18,6 +18,10 @@ using alohalytics::HTTPClientPlatformWrapper;
 namespace osm
 {
 constexpr char const * kApiVersion = "/api/0.6";
+constexpr char const * kFacebookCallbackPart = "/auth/facebook_access_token/callback?access_token=";
+constexpr char const * kGoogleCallbackPart = "/auth/google_oauth2_access_token/callback?access_token=";
+constexpr char const * kFacebookOAuthPart = "/auth/facebook?referer=%2Foauth%2Fauthorize%3Frequest_token%3D";
+constexpr char const * kGoogleOAuthPart = "/auth/google?referer=%2Foauth%2Fauthorize%3Frequest_token%3D";
 
 namespace
 {
@@ -135,9 +139,9 @@ OsmOAuth::AuthResult OsmOAuth::LoginUserPassword(string const & login, string co
 }
 
 // Signs a user in using a facebook token.
-OsmOAuth::AuthResult OsmOAuth::LoginFacebook(string const & facebookToken, SessionID const & sid) const
+OsmOAuth::AuthResult OsmOAuth::LoginSocial(string const & callbackPart, string const & socialToken, SessionID const & sid) const
 {
-  string const url = m_baseUrl + "/auth/facebook_access_token/callback?access_token=" + facebookToken;
+  string const url = m_baseUrl + callbackPart + socialToken;
   HTTPClientPlatformWrapper request(url);
   request.set_cookies(sid.m_cookies);
   if (!request.RunHTTPRequest())
@@ -177,27 +181,24 @@ string OsmOAuth::SendAuthRequest(string const & requestTokenKey, SessionID const
   return callbackURL.substr(pos + vKey.length(), end == string::npos ? end : end - pos - vKey.length()+ 1);
 }
 
-// Given a web session id, fetches an OAuth access token.
-OsmOAuth::AuthResult OsmOAuth::FetchAccessToken(SessionID const & sid, TKeySecret & outKeySecret) const
+TKeySecret OsmOAuth::FetchRequestToken() const
 {
-  // Aquire a request token.
   OAuth::Consumer const consumer(m_consumerKeySecret.first, m_consumerKeySecret.second);
   OAuth::Client oauth(&consumer);
   string const requestTokenUrl = m_baseUrl + "/oauth/request_token";
   string const requestTokenQuery = oauth.getURLQueryString(OAuth::Http::Get, requestTokenUrl + "?oauth_callback=oob");
   HTTPClientPlatformWrapper request(requestTokenUrl + "?" + requestTokenQuery);
   if (!(request.RunHTTPRequest() && request.error_code() == 200 && !request.was_redirected()))
-    return AuthResult::NoOAuth;
-  OAuth::Token requestToken = OAuth::Token::extract(request.server_response());
-  
-  // Faking a button press for access rights.
-  string const pin = SendAuthRequest(requestToken.key(), sid);
-  if (pin.empty())
-    return AuthResult::FailAuth;
-  requestToken.setPin(pin);
+    return TKeySecret(string(), string());
+  OAuth::Token reqToken = OAuth::Token::extract(request.server_response());
+  return TKeySecret(reqToken.key(), reqToken.secret());
+}
 
-  // Got pin, exchange it for the access token.
-  oauth = OAuth::Client(&consumer, &requestToken);
+OsmOAuth::AuthResult OsmOAuth::FinishAuthorization(TKeySecret const & requestToken, string const & verifier, TKeySecret & outKeySecret) const
+{
+  OAuth::Consumer const consumer(m_consumerKeySecret.first, m_consumerKeySecret.second);
+  OAuth::Token const reqToken(requestToken.first, requestToken.second, verifier);
+  OAuth::Client oauth(&consumer, &reqToken);
   string const accessTokenUrl = m_baseUrl + "/oauth/access_token";
   string const queryString = oauth.getURLQueryString(OAuth::Http::Get, accessTokenUrl, "", true);
   HTTPClientPlatformWrapper request2(accessTokenUrl + "?" + queryString);
@@ -208,10 +209,25 @@ OsmOAuth::AuthResult OsmOAuth::FetchAccessToken(SessionID const & sid, TKeySecre
 
   outKeySecret.first = accessToken.key();
   outKeySecret.second = accessToken.secret();
-
-  LogoutUser(sid);
-  
   return AuthResult::OK;
+}
+
+// Given a web session id, fetches an OAuth access token.
+OsmOAuth::AuthResult OsmOAuth::FetchAccessToken(SessionID const & sid, TKeySecret & outKeySecret) const
+{
+  // Aquire a request token.
+  TKeySecret const requestToken = FetchRequestToken();
+  if (requestToken.first.empty())
+    return AuthResult::NoOAuth;
+  
+  // Faking a button press for access rights.
+  string const pin = SendAuthRequest(requestToken.first, sid);
+  if (pin.empty())
+    return AuthResult::FailAuth;
+  LogoutUser(sid);
+
+  // Got pin, exchange it for the access token.
+  return FinishAuthorization(requestToken, pin, outKeySecret);
 }
 
 OsmOAuth::AuthResult OsmOAuth::AuthorizePassword(string const & login, string const & password, TKeySecret & outKeySecret) const
@@ -235,11 +251,43 @@ OsmOAuth::AuthResult OsmOAuth::AuthorizeFacebook(string const & facebookToken, T
   if (result != AuthResult::OK)
     return result;
 
-  result = LoginFacebook(facebookToken, sid);
+  result = LoginSocial(kFacebookCallbackPart, facebookToken, sid);
   if (result != AuthResult::OK)
     return result;
 
   return FetchAccessToken(sid, outKeySecret);
+}
+
+OsmOAuth::AuthResult OsmOAuth::AuthorizeGoogle(string const & googleToken, TKeySecret & outKeySecret) const
+{
+  SessionID sid;
+  AuthResult result = FetchSessionId(sid);
+  if (result != AuthResult::OK)
+    return result;
+
+  result = LoginSocial(kGoogleCallbackPart, googleToken, sid);
+  if (result != AuthResult::OK)
+    return result;
+
+  return FetchAccessToken(sid, outKeySecret);
+}
+
+OsmOAuth::TUrlKeySecret OsmOAuth::GetFacebookOAuthURL() const
+{
+  TKeySecret const requestToken = FetchRequestToken();
+  if (requestToken.first.empty())
+    return TUrlKeySecret(string(), requestToken);
+  string const url = m_baseUrl + kFacebookOAuthPart + requestToken.first;
+  return TUrlKeySecret(url, requestToken);
+}
+
+OsmOAuth::TUrlKeySecret OsmOAuth::GetGoogleOAuthURL() const
+{
+  TKeySecret const requestToken = FetchRequestToken();
+  if (requestToken.first.empty())
+    return TUrlKeySecret(string(), requestToken);
+  string const url = m_baseUrl + kGoogleOAuthPart + requestToken.first;
+  return TUrlKeySecret(url, requestToken);
 }
 
 OsmOAuth::Response OsmOAuth::Request(TKeySecret const & keySecret, string const & method, string const & httpMethod, string const & body) const
@@ -300,6 +348,11 @@ OsmOAuth::AuthResult OsmOAuth::FetchAccessToken(SessionID const & sid)
   return FetchAccessToken(sid, m_tokenKeySecret);
 }
 
+OsmOAuth::AuthResult OsmOAuth::FinishAuthorization(TKeySecret const & requestToken, string const & verifier)
+{
+  return FinishAuthorization(requestToken, verifier, m_tokenKeySecret);
+}
+
 OsmOAuth::AuthResult OsmOAuth::AuthorizePassword(string const & login, string const & password)
 {
   return AuthorizePassword(login, password, m_tokenKeySecret);
@@ -308,6 +361,11 @@ OsmOAuth::AuthResult OsmOAuth::AuthorizePassword(string const & login, string co
 OsmOAuth::AuthResult OsmOAuth::AuthorizeFacebook(string const & facebookToken)
 {
   return AuthorizeFacebook(facebookToken, m_tokenKeySecret);
+}
+
+OsmOAuth::AuthResult OsmOAuth::AuthorizeGoogle(string const & googleToken)
+{
+  return AuthorizeGoogle(googleToken, m_tokenKeySecret);
 }
 
 OsmOAuth::Response OsmOAuth::Request(string const & method, string const & httpMethod, string const & body) const
