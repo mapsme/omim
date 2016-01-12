@@ -18,6 +18,8 @@
 #include "platform/platform_tests_support/scoped_dir.hpp"
 #include "platform/platform_tests_support/scoped_file.hpp"
 
+#include "platform/platform_tests_support/scoped_dir.hpp"
+
 #include "geometry/mercator.hpp"
 
 #include "coding/file_name_utils.hpp"
@@ -307,7 +309,7 @@ void OnCountryDownloaded(LocalCountryFile const & localFile)
 
 TLocalFilePtr CreateDummyMapFile(CountryFile const & countryFile, int64_t version, size_t size)
 {
-  TLocalFilePtr localFile = PreparePlaceForCountryFiles(countryFile, version);
+  TLocalFilePtr localFile = PreparePlaceForCountryFiles(countryFile, version, "" /* folder */);
   TEST(localFile.get(), ("Can't prepare place for", countryFile, "(version", version, ")"));
   {
     string const zeroes(size, '\0');
@@ -777,10 +779,10 @@ UNIT_TEST(StorageTest_FailedDownloading)
 
   // To prevent interference from other tests and on other tests it's
   // better to remove temprorary downloader files.
-  DeleteDownloaderFilesForCountry(countryFile, storage.GetCurrentDataVersion());
+  DeleteDownloaderFilesForCountry(countryFile, storage.GetCurrentDataVersion(), string() /* folder */);
   MY_SCOPE_GUARD(cleanup, [&]()
   {
-    DeleteDownloaderFilesForCountry(countryFile, storage.GetCurrentDataVersion());
+    DeleteDownloaderFilesForCountry(countryFile, storage.GetCurrentDataVersion(), string() /* folder */);
   });
 
   {
@@ -791,7 +793,7 @@ UNIT_TEST(StorageTest_FailedDownloading)
 
   // File wasn't downloaded, but temprorary downloader files must exist.
   string const downloadPath =
-      GetFileDownloadPath(countryFile, MapOptions::Map, storage.GetCurrentDataVersion());
+      GetFileDownloadPath(countryFile, MapOptions::Map, storage.GetCurrentDataVersion(), string() /* folder */);
   TEST(!Platform::IsFileExistsByFullPath(downloadPath), ());
   TEST(Platform::IsFileExistsByFullPath(downloadPath + DOWNLOADING_FILE_EXTENSION), ());
   TEST(Platform::IsFileExistsByFullPath(downloadPath + RESUME_FILE_EXTENSION), ());
@@ -856,7 +858,7 @@ UNIT_TEST(StorageTest_GetRootId)
 {
   Storage storage(string(R"({
                            "id": "Countries",
-                           "v": 151227,
+                           "v": 161227,
                            "g": []
                          })"), make_unique<TestMapFilesDownloader>());
 
@@ -868,7 +870,7 @@ UNIT_TEST(StorageTest_GetChildren)
 {
   Storage storage(string(R"({
                         "id": "Countries",
-                        "v": 151227,
+                        "v": 161227,
                         "g": [
                             {
                              "id": "Abkhazia",
@@ -1069,4 +1071,54 @@ UNIT_TEST(StorageTest_IsPointCoveredByDownloadedMaps)
     TEST(IsPointCoveredByDownloadedMaps(montevideoUruguay, storage, *countryInfoGetter), ());
   }
 }
+
+UNIT_TEST(StorageTest_TwoInstance)
+{
+  Platform & platform = GetPlatform();
+  string const writableDir = platform.WritableDir();
+
+  string const testDir1 = string("testdir1");
+  Storage storage1(COUNTRIES_FILE, testDir1);
+  platform::tests_support::ScopedDir removeTestDir1(testDir1);
+  UNUSED_VALUE(removeTestDir1);
+  string const versionDir1 =
+      my::JoinFoldersToPath(testDir1, strings::to_string(storage1.GetCurrentDataVersion()));
+  platform::tests_support::ScopedDir removeVersionDir1(versionDir1);
+  UNUSED_VALUE(removeVersionDir1);
+  TaskRunner runner1;
+  InitStorage(storage1, runner1);
+
+  string const testDir2 = string("testdir2");
+  Storage storage2(COUNTRIES_MIGRATE_FILE, testDir2);
+  platform::tests_support::ScopedDir removeTestDir2(testDir2);
+  UNUSED_VALUE(removeTestDir2);
+  string const versionDir2 =
+      my::JoinFoldersToPath(testDir2, strings::to_string(storage2.GetCurrentDataVersion()));
+  platform::tests_support::ScopedDir removeVersionDir2(versionDir2);
+  UNUSED_VALUE(removeVersionDir2);
+  TaskRunner runner2;
+  InitStorage(storage2, runner2);
+
+  string const uruguayId = string("Uruguay"); // This countyId is valid for single and two component mwms.
+  storage1.DeleteCountry(uruguayId, MapOptions::Map);
+  {
+    MY_SCOPE_GUARD(cleanupCountryFiles,
+                   bind(&Storage::DeleteCountry, &storage1, uruguayId, MapOptions::Map));
+    auto const checker = AbsentCountryDownloaderChecker(storage1, uruguayId, MapOptions::Map);
+    checker->StartDownload();
+    runner1.Run();
+    TEST(platform.IsFileExistsByFullPath(my::JoinFoldersToPath(writableDir, versionDir1)), ());
+  }
+
+  storage2.DeleteCountry(uruguayId, MapOptions::Map);
+  {
+    MY_SCOPE_GUARD(cleanupCountryFiles,
+                   bind(&Storage::DeleteCountry, &storage2, uruguayId, MapOptions::Map));
+    auto const checker = AbsentCountryDownloaderChecker(storage2, uruguayId, MapOptions::Map);
+    checker->StartDownload();
+    runner2.Run();
+    TEST(platform.IsFileExistsByFullPath(my::JoinFoldersToPath(writableDir, versionDir1)), ());
+  }
+}
+
 }  // namespace storage
