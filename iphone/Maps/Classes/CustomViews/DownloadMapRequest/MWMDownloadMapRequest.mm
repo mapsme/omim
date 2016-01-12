@@ -24,7 +24,7 @@
 
 @property (weak, nonatomic) id <MWMDownloadMapRequestDelegate> delegate;
 
-@property (nonatomic) storage::TIndex currentCountryIndex;
+@property (nonatomic) storage::TCountryId currentCountryIndex;
 
 @end
 
@@ -67,37 +67,38 @@
 
 - (void)showRequest
 {
-  auto & f = GetFramework();
-  auto & activeMapLayout = f.GetCountryTree().GetActiveMapLayout();
-  if (activeMapLayout.IsDownloadingActive())
-  {
-    self.currentCountryIndex = activeMapLayout.GetCurrentDownloadingCountryIndex();
-    self.progressView.state = MWMCircularProgressStateProgress;
-    [self updateState:MWMDownloadMapRequestStateDownload];
-  }
-  else
-  {
-    self.currentCountryIndex = storage::TIndex();
-    double lat, lon;
-    if ([[MapsAppDelegate theApp].m_locationManager getLat:lat Lon:lon])
-      self.currentCountryIndex = f.GetCountryIndex(MercatorBounds::FromLatLon(lat, lon));
-
-    if (self.currentCountryIndex.IsValid())
-    {
-      self.mapTitleLabel.text = @(activeMapLayout.GetFormatedCountryName(self.currentCountryIndex).c_str());
-      LocalAndRemoteSizeT const sizes = activeMapLayout.GetRemoteCountrySizes(self.currentCountryIndex);
-      self.mapSize = formattedSize(sizes.first);
-      self.mapAndRouteSize = formattedSize(sizes.first + sizes.second);
-      [self.downloadMapButton setTitle:[NSString stringWithFormat:@"%@ (%@)",
-                                        L(@"downloader_download_map"), self.mapAndRouteSize]
-                              forState:UIControlStateNormal];
-      [self updateState:MWMDownloadMapRequestStateRequestLocation];
-    }
-    else
-    {
-      [self updateState:MWMDownloadMapRequestStateRequestUnknownLocation];
-    }
-  }
+// TODO (igrechuhin) Add missing implementation
+//  auto & f = GetFramework();
+//  auto & activeMapLayout = f.GetCountryTree().GetActiveMapLayout();
+//  if (activeMapLayout.IsDownloadingActive())
+//  {
+//    self.currentCountryIndex = activeMapLayout.GetCurrentDownloadingCountryIndex();
+//    self.progressView.state = MWMCircularProgressStateProgress;
+//    [self updateState:MWMDownloadMapRequestStateDownload];
+//  }
+//  else
+//  {
+//    self.currentCountryIndex = storage::TCountryId();
+//    double lat, lon;
+//    if ([[MapsAppDelegate theApp].m_locationManager getLat:lat Lon:lon])
+//      self.currentCountryIndex = f.GetCountryIndex(MercatorBounds::FromLatLon(lat, lon));
+//
+//    if (self.currentCountryIndex.IsValid())
+//    {
+//      self.mapTitleLabel.text = @(activeMapLayout.GetFormatedCountryName(self.currentCountryIndex).c_str());
+//      LocalAndRemoteSizeT const sizes = activeMapLayout.GetRemoteCountrySizes(self.currentCountryIndex);
+//      self.mapSize = formattedSize(sizes.first);
+//      self.mapAndRouteSize = formattedSize(sizes.first + sizes.second);
+//      [self.downloadMapButton setTitle:[NSString stringWithFormat:@"%@ (%@)",
+//                                        L(@"downloader_download_map"), self.mapAndRouteSize]
+//                              forState:UIControlStateNormal];
+//      [self updateState:MWMDownloadMapRequestStateRequestLocation];
+//    }
+//    else
+//    {
+//      [self updateState:MWMDownloadMapRequestStateRequestUnknownLocation];
+//    }
+//  }
   self.rootView.hidden = NO;
 }
 
@@ -122,16 +123,17 @@
 {
   [[Statistics instance] logEvent:kStatEventName(kStatDownloadRequest, kStatButton)
                    withParameters:@{kStatValue : kStatProgress}];
-  auto & activeMapLayout = GetFramework().GetCountryTree().GetActiveMapLayout();
-  if (progress.state == MWMCircularProgressStateFailed)
-  {
-    activeMapLayout.RetryDownloading(self.currentCountryIndex);
-    [self.progressView startSpinner];
-  }
-  else
-  {
-    activeMapLayout.CancelDownloading(self.currentCountryIndex);
-  }
+// TODO (igrechuhin) Add missing implementation
+//  auto & activeMapLayout = GetFramework().GetCountryTree().GetActiveMapLayout();
+//  if (progress.state == MWMCircularProgressStateFailed)
+//  {
+//    activeMapLayout.RetryDownloading(self.currentCountryIndex);
+//    [self.progressView startSpinner];
+//  }
+//  else
+//  {
+//    activeMapLayout.CancelDownloading(self.currentCountryIndex);
+//  }
   [self showRequest];
 }
 
@@ -140,8 +142,9 @@
 - (IBAction)downloadMapTouchUpInside:(nonnull UIButton *)sender
 {
   [[Statistics instance] logEvent:kStatEventName(kStatDownloadRequest, kStatDownloadMap)];
-  auto const mapType = self.downloadRoutesButton.selected ? MapOptions::MapWithCarRouting : MapOptions::Map;
-  GetFramework().GetCountryTree().GetActiveMapLayout().DownloadMap(self.currentCountryIndex, mapType);
+// TODO (igrechuhin) Add missing implementation
+//  auto const mapType = self.downloadRoutesButton.selected ? MapOptions::MapWithCarRouting : MapOptions::Map;
+//  GetFramework().GetCountryTree().GetActiveMapLayout().DownloadMap(self.currentCountryIndex, mapType);
   self.progressView.progress = 0.0;
   [self showRequest];
   [self.progressView startSpinner];

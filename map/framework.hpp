@@ -465,6 +465,7 @@ public:
   //@}
 
 public:
+  // TODO Consider using one vector parameter since we have route and map in single file
   using TRouteBuildingCallback = function<void(routing::IRouter::ResultCode, 
                                                vector<storage::TCountryId> const &,
                                                vector<storage::TCountryId> const &)>;

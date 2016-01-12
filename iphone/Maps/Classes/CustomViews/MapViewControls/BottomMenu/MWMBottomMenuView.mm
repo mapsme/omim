@@ -310,8 +310,9 @@
   case MWMBottomMenuStateInactive:
     if (MapsAppDelegate.theApp.routingPlaneMode == MWMRoutingPlaneModeNone)
       _leftBound = 0.0;
-    self.downloadBadge.hidden =
-        GetFramework().GetCountryTree().GetActiveMapLayout().GetOutOfDateCount() == 0;
+// TODO (igrechuhin) Add missing implementation
+//    self.downloadBadge.hidden =
+//        GetFramework().GetCountryTree().GetActiveMapLayout().GetOutOfDateCount() == 0;
     self.p2pButton.hidden = self.searchButton.hidden = self.bookmarksButton.hidden = NO;
     self.layoutDuration =
         (_state == MWMBottomMenuStateCompact && !IPAD) ? 0.0 : kDefaultAnimationDuration;

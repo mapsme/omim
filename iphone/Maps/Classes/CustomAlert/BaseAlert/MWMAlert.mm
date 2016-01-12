@@ -57,8 +57,8 @@
   return [MWMDefaultAlert locationServiceNotSupportedAlert];
 }
 
-+ (MWMAlert *)downloaderAlertWithAbsentCountries:(vector<storage::TIndex> const &)countries
-                                          routes:(vector<storage::TIndex> const &)routes
++ (MWMAlert *)downloaderAlertWithAbsentCountries:(vector<storage::TCountryId> const &)countries
+                                          routes:(vector<storage::TCountryId> const &)routes
                                             code:(routing::IRouter::ResultCode)code
 {
   return [MWMDownloadTransitMapAlert downloaderAlertWithMaps:countries routes:routes code:code];

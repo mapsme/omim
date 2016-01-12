@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		34BF0FA41C4507CE00451BF9 /* app_store.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 34BF0FA11C4507CE00451BF9 /* app_store.hpp */; };
+		34BF0FA51C4507CE00451BF9 /* storage_helpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 34BF0FA21C4507CE00451BF9 /* storage_helpers.cpp */; };
+		34BF0FA61C4507CE00451BF9 /* storage_helpers.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 34BF0FA31C4507CE00451BF9 /* storage_helpers.hpp */; };
 		6741251E1B4C05FA00A3E828 /* http_map_files_downloader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 674125181B4C05FA00A3E828 /* http_map_files_downloader.cpp */; };
 		6741251F1B4C05FA00A3E828 /* http_map_files_downloader.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 674125191B4C05FA00A3E828 /* http_map_files_downloader.hpp */; };
 		674125201B4C05FA00A3E828 /* map_files_downloader.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 6741251A1B4C05FA00A3E828 /* map_files_downloader.hpp */; };
@@ -29,6 +32,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		34BF0FA11C4507CE00451BF9 /* app_store.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = app_store.hpp; sourceTree = "<group>"; };
+		34BF0FA21C4507CE00451BF9 /* storage_helpers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = storage_helpers.cpp; sourceTree = "<group>"; };
+		34BF0FA31C4507CE00451BF9 /* storage_helpers.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = storage_helpers.hpp; sourceTree = "<group>"; };
 		670D05A81B0E04450013A7AC /* defaults.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = defaults.xcconfig; path = ../defaults.xcconfig; sourceTree = "<group>"; };
 		674125181B4C05FA00A3E828 /* http_map_files_downloader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = http_map_files_downloader.cpp; sourceTree = "<group>"; };
 		674125191B4C05FA00A3E828 /* http_map_files_downloader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = http_map_files_downloader.hpp; sourceTree = "<group>"; };
@@ -83,6 +89,9 @@
 		675342E21A3F59EF00A0A8C3 /* storage */ = {
 			isa = PBXGroup;
 			children = (
+				34BF0FA11C4507CE00451BF9 /* app_store.hpp */,
+				34BF0FA21C4507CE00451BF9 /* storage_helpers.cpp */,
+				34BF0FA31C4507CE00451BF9 /* storage_helpers.hpp */,
 				67AF49FE1BC579DD0048B1ED /* country_info_getter.cpp */,
 				67AF49FF1BC579DD0048B1ED /* country_info_getter.hpp */,
 				674125181B4C05FA00A3E828 /* http_map_files_downloader.cpp */,
@@ -118,11 +127,13 @@
 				6753430D1A3F5A2600A0A8C3 /* country_polygon.hpp in Headers */,
 				6741251F1B4C05FA00A3E828 /* http_map_files_downloader.hpp in Headers */,
 				675343191A3F5A2600A0A8C3 /* storage_defines.hpp in Headers */,
+				34BF0FA41C4507CE00451BF9 /* app_store.hpp in Headers */,
 				6753430F1A3F5A2600A0A8C3 /* country.hpp in Headers */,
 				675343181A3F5A2600A0A8C3 /* simple_tree.hpp in Headers */,
 				6753430A1A3F5A2600A0A8C3 /* country_decl.hpp in Headers */,
 				67AF4A011BC579DD0048B1ED /* country_info_getter.hpp in Headers */,
 				674125221B4C05FA00A3E828 /* queued_country.hpp in Headers */,
+				34BF0FA61C4507CE00451BF9 /* storage_helpers.hpp in Headers */,
 				6753431B1A3F5A2600A0A8C3 /* storage.hpp in Headers */,
 				675343171A3F5A2600A0A8C3 /* index.hpp in Headers */,
 			);
@@ -186,6 +197,7 @@
 			files = (
 				6753430E1A3F5A2600A0A8C3 /* country.cpp in Sources */,
 				67AF4A001BC579DD0048B1ED /* country_info_getter.cpp in Sources */,
+				34BF0FA51C4507CE00451BF9 /* storage_helpers.cpp in Sources */,
 				675343091A3F5A2600A0A8C3 /* country_decl.cpp in Sources */,
 				674125211B4C05FA00A3E828 /* queued_country.cpp in Sources */,
 				6753431A1A3F5A2600A0A8C3 /* storage.cpp in Sources */,
