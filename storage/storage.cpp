@@ -89,7 +89,7 @@ Storage::Storage(string const & pathToCountriesFile /* = COUNTRIES_FILE */, stri
 {
 
 
-  LoadCountriesFile(false /* forceReload */, pathToCountriesFile, m_dataDir);
+  LoadCountriesFile(pathToCountriesFile, m_dataDir);
   RestoreDownloadQueue();
 }
 
@@ -121,7 +121,8 @@ void Storage::Migrate()
 
   Clear();
   TMapping mapping;
-  LoadCountriesFile(true /* forceReload */, &mapping);
+  m_countries.Clear();
+  LoadCountriesFile(COUNTRIES_MIGRATE_FILE, m_dataDir, &mapping);
 
   for (auto const & country : existingCountries)
   {
@@ -512,8 +513,8 @@ TCountryId Storage::GetCurrentDownloadingCountryIndex() const
   return IsDownloadInProgress() ? m_queue.front().GetCountryId() : storage::TCountryId();
 }
 
-void Storage::LoadCountriesFile(bool forceReload, string const & pathToCountriesFile,
-                                string const & dataDir, TMapping * mapping)
+void Storage::LoadCountriesFile(string const & pathToCountriesFile,
+                                string const & dataDir, TMapping * mapping /* = nullptr */)
 {
   m_dataDir = dataDir;
 
@@ -522,9 +523,6 @@ void Storage::LoadCountriesFile(bool forceReload, string const & pathToCountries
     Platform & platform = GetPlatform();
     platform.MkDir(my::JoinFoldersToPath(platform.WritableDir(), m_dataDir));
   }
-
-  if (forceReload)
-    m_countries.Clear();
 
   if (m_countries.ChildrenCount() == 0)
   {
