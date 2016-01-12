@@ -192,16 +192,16 @@ void Framework::StopLocationFollow()
 
 void Framework::PreMigrate()
 {
-  auto stateChanged = [&](TCountryId const & id)
-  {
-    LOG_SHORT(LINFO, ("Prefetch done. Ready to migrate."));
-    Migrate();
-  };
-  auto progressChanged = [](TCountryId const & id, LocalAndRemoteSizeT const & sz){};
-
-  class Storage prefetchStorage(COUNTRIES_MIGRATE_FILE, "migrate");
-  prefetchStorage.Subscribe(stateChanged, progressChanged);
-  prefetchStorage.DownloadCountry("Angola", MapOptions::MapWithCarRouting);
+//  auto stateChanged = [&](TCountryId const & id)
+//  {
+//    LOG_SHORT(LINFO, ("Prefetch done. Ready to migrate."));
+//    Migrate();
+//  };
+//  auto progressChanged = [](TCountryId const & id, LocalAndRemoteSizeT const & sz){};
+//
+//  class Storage prefetchStorage(COUNTRIES_MIGRATE_FILE, "migrate");
+//  prefetchStorage.Subscribe(stateChanged, progressChanged);
+//  prefetchStorage.DownloadCountry("Angola", MapOptions::MapWithCarRouting);
 }
 
 void Framework::Migrate()

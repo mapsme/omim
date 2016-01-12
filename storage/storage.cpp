@@ -126,6 +126,7 @@ void Storage::Migrate()
 
   for (auto const & country : existingCountries)
   {
+    ASSERT(mapping[country].empty(), ());
     for (auto const & smallCountry : mapping[country])
     {
       DownloadCountry(smallCountry, MapOptions::MapWithCarRouting);
