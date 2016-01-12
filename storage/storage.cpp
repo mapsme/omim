@@ -83,8 +83,15 @@ bool HasCountryId(vector<TCountryId> const & sortedCountryIds, TCountryId const 
   return binary_search(sortedCountryIds.begin(), sortedCountryIds.end(), countryId);
 }
 
-Storage::Storage() : m_downloader(new HttpMapFilesDownloader()), m_currentSlotId(0)
+Storage::Storage(string const & countiesTxt /* = COUNTRIES_FILE */, string const & folder /* = string() */)
+  : m_downloader(new HttpMapFilesDownloader()), m_currentSlotId(0), m_folder(folder), m_countiesTxt(countiesTxt)
 {
+  if (!m_folder.empty())
+  {
+    Platform & platform = GetPlatform();
+    platform.MkDir(my::JoinFoldersToPath(platform.WritableDir(), m_folder));
+  }
+
   LoadCountriesFile(false /* forceReload */);
 }
 
@@ -126,7 +133,7 @@ void Storage::RegisterAllLocalMaps()
   m_localFilesForFakeCountries.clear();
 
   vector<LocalCountryFile> localFiles;
-  FindAllLocalMapsAndCleanup(GetCurrentDataVersion(), localFiles);
+  FindAllLocalMapsAndCleanup(GetCurrentDataVersion(), localFiles, m_folder);
 
   auto compareByCountryAndVersion = [](LocalCountryFile const & lhs, LocalCountryFile const & rhs)
   {
@@ -415,7 +422,7 @@ void Storage::DownloadNextCountryFromQueue()
   // It's not even possible to prepare directory for files before
   // downloading.  Mark this country as failed and switch to next
   // country.
-  if (!PreparePlaceForCountryFiles(GetCountryFile(countryId), GetCurrentDataVersion()))
+  if (!PreparePlaceForCountryFiles(GetCountryFile(countryId), GetCurrentDataVersion(), m_folder))
   {
     OnMapDownloadFinished(countryId, false /* success */, queuedCountry.GetInitOptions());
     NotifyStatusChanged(countryId);
@@ -475,11 +482,10 @@ void Storage::LoadCountriesFile(bool forceReload)
   if (m_countries.ChildrenCount() == 0)
   {
     string json;
-    string name = migrate::NeedMigrate() ? COUNTRIES_FILE : COUNTRIES_MIGRATE_FILE;
-    ReaderPtr<Reader>(GetPlatform().GetReader(name)).ReadAsString(json);
+    ReaderPtr<Reader>(GetPlatform().GetReader(m_countiesTxt)).ReadAsString(json);
     m_currentVersion = LoadCountries(json, m_countries);
     if (m_currentVersion < 0)
-      LOG(LERROR, ("Can't load countries file", name));
+      LOG(LERROR, ("Can't load countries file", m_countiesTxt));
   }
 }
 
@@ -581,7 +587,7 @@ bool Storage::RegisterDownloadedFiles(TCountryId const & countryId, MapOptions f
   CountryFile const countryFile = GetCountryFile(countryId);
   TLocalFilePtr localFile = GetLocalFile(countryId, GetCurrentDataVersion());
   if (!localFile)
-    localFile = PreparePlaceForCountryFiles(countryFile, GetCurrentDataVersion());
+    localFile = PreparePlaceForCountryFiles(countryFile, GetCurrentDataVersion(), m_folder);
   if (!localFile)
   {
     LOG(LERROR, ("Local file data structure can't be prepared for downloaded file(", countryFile,
@@ -864,7 +870,7 @@ bool Storage::DeleteCountryFilesFromDownloader(TCountryId const & countryId, Map
       m_downloader->Reset();
 
     // Remove all files downloader had been created for a country.
-    DeleteDownloaderFilesForCountry(GetCountryFile(countryId), GetCurrentDataVersion());
+    DeleteDownloaderFilesForCountry(GetCountryFile(countryId), GetCurrentDataVersion(), m_folder);
   }
 
   queuedCountry->RemoveOptions(opt);
@@ -892,7 +898,7 @@ uint64_t Storage::GetDownloadSize(QueuedCountry const & queuedCountry) const
 
 string Storage::GetFileDownloadPath(TCountryId const & countryId, MapOptions file) const
 {
-  return platform::GetFileDownloadPath(GetCountryFile(countryId), file, GetCurrentDataVersion());
+  return platform::GetFileDownloadPath(GetCountryFile(countryId), file, GetCurrentDataVersion(), m_folder);
 }
 
 TCountryId const Storage::GetRootId() const

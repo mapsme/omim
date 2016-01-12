@@ -83,6 +83,13 @@ private:
   // country were successfully downloaded.
   TUpdate m_update;
 
+  // If |folder| is not empty Storage will create version directories and download maps into
+  // platform::WritableDir/|m_folder|/. Not empty |m_folder| can be used only for
+  // downloading maps to a special place but not for continue working with them from this place.
+  string const m_folder;
+  // |m_countiesTxt| is name of countries.txt file which is used by an instance of Storage.
+  string const m_countiesTxt;
+
   void DownloadNextCountryFromQueue();
 
   void LoadCountriesFile(bool forceReload);
@@ -108,7 +115,17 @@ private:
   void DownloadNextFile(QueuedCountry const & country);
 
 public:
-  Storage();
+  /// \brief Storage will create its directories in Writable Directory
+  /// (gotten with platform::WritableDir) by default.
+  /// \param countiesTxt is a name of countries.txt file.
+  /// \param folder If |folder| is not empty Storage will create its directory in WritableDir/|folder|.
+  /// \note if |folder| is not empty the instance of Storage can be used only for downloading map files
+  /// but not for continue working with them.
+  /// If |folder| is not empty the work flow is
+  /// * create a instance of Storage with a special countries.txt and |folder|
+  /// * download some maps to WritableDir/|folder|
+  /// * destroy the instance of Storage and move the downloaded maps to proper place
+  Storage(string const & countiesTxt = COUNTRIES_FILE, string const & folder = string());
   /// \brief This constructor should be used for testing only.
   Storage(string const & referenceCountriesTxtJsonForTesting,
           unique_ptr<MapFilesDownloader> mapDownloaderForTesting);

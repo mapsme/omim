@@ -18,7 +18,8 @@ namespace migrate
 }
 
 // Removes all files downloader creates during downloading of a country.
-void DeleteDownloaderFilesForCountry(CountryFile const & countryFile, int64_t version);
+void DeleteDownloaderFilesForCountry(CountryFile const & countryFile,
+                                     int64_t version, string const & folder);
 
 // Finds all local map files in |directory|. Version of these files is
 // passed as an argument. Also, performs cleanup described in comment
@@ -42,7 +43,8 @@ void FindAllLocalMapsInDirectoryAndCleanup(string const & directory, int64_t ver
 //
 // Also, this method performs cleanup described in a comment for
 // CleanupMapsDirectory().
-void FindAllLocalMapsAndCleanup(int64_t latestVersion, vector<LocalCountryFile> & localFiles);
+void FindAllLocalMapsAndCleanup(int64_t latestVersion, vector<LocalCountryFile> & localFiles,
+                                string const & folder = string());
 
 // This method removes:
 // * partially downloaded non-latest maps (with version less than |latestVersion|)
@@ -60,9 +62,10 @@ bool ParseVersion(string const & s, int64_t & version);
 // When version is zero, uses writable directory, otherwise, creates
 // directory with name equal to decimal representation of version.
 shared_ptr<LocalCountryFile> PreparePlaceForCountryFiles(CountryFile const & countryFile,
-                                                         int64_t version);
+                                                         int64_t version, string const & folder);
 
-string GetFileDownloadPath(CountryFile const & countryFile, MapOptions file, int64_t version);
+string GetFileDownloadPath(CountryFile const & countryFile, MapOptions file,
+                           int64_t version, string const & folder);
 
 ModelReader * GetCountryReader(LocalCountryFile const & file, MapOptions options);
 

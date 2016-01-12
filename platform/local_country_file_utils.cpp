@@ -17,6 +17,7 @@
 #include "std/cctype.hpp"
 #include "std/regex.hpp"
 #include "std/sstream.hpp"
+#include "std/string.hpp"
 #include "std/unique_ptr.hpp"
 #include "std/unordered_set.hpp"
 
@@ -127,11 +128,12 @@ bool DirectoryHasIndexesOnly(string const & directory)
 }
 }  // namespace
 
-void DeleteDownloaderFilesForCountry(CountryFile const & countryFile, int64_t version)
+void DeleteDownloaderFilesForCountry(CountryFile const & countryFile,
+                                     int64_t version, string const & folder)
 {
   for (MapOptions file : {MapOptions::Map, MapOptions::CarRouting})
   {
-    string const path = GetFileDownloadPath(countryFile, file, version);
+    string const path = GetFileDownloadPath(countryFile, file, version, folder);
     ASSERT(strings::EndsWith(path, READY_FILE_EXTENSION), ());
     my::DeleteFileX(path);
     my::DeleteFileX(path + RESUME_FILE_EXTENSION);
@@ -205,11 +207,13 @@ void FindAllLocalMapsInDirectoryAndCleanup(string const & directory, int64_t ver
   }
 }
 
-void FindAllLocalMapsAndCleanup(int64_t latestVersion, vector<LocalCountryFile> & localFiles)
+void FindAllLocalMapsAndCleanup(int64_t latestVersion, vector<LocalCountryFile> & localFiles,
+                                string const & folder)
 {
   Platform & platform = GetPlatform();
 
-  string const dir = platform.WritableDir();
+  string const dir = folder.empty() ? platform.WritableDir()
+                                    : my::JoinFoldersToPath(platform.WritableDir(), folder);
   FindAllLocalMapsInDirectoryAndCleanup(dir, 0 /* version */, latestVersion, localFiles);
 
   Platform::TFilesWithType fwts;
@@ -291,25 +295,29 @@ bool ParseVersion(string const & s, int64_t & version)
 }
 
 shared_ptr<LocalCountryFile> PreparePlaceForCountryFiles(CountryFile const & countryFile,
-                                                         int64_t version)
+                                                         int64_t version, string const & folder)
 {
   Platform & platform = GetPlatform();
+  string const dir = folder.empty() ? platform.WritableDir()
+                                    : my::JoinFoldersToPath(platform.WritableDir(), folder);
   if (version == 0)
-    return make_shared<LocalCountryFile>(platform.WritableDir(), countryFile, version);
-  string const directory =
-      my::JoinFoldersToPath(platform.WritableDir(), strings::to_string(version));
+    return make_shared<LocalCountryFile>(dir, countryFile, version);
+  string const directory = my::JoinFoldersToPath(dir, strings::to_string(version));
   if (!MkDirChecked(directory))
     return shared_ptr<LocalCountryFile>();
   return make_shared<LocalCountryFile>(directory, countryFile, version);
 }
 
-string GetFileDownloadPath(CountryFile const & countryFile, MapOptions file, int64_t version)
+string GetFileDownloadPath(CountryFile const & countryFile, MapOptions file,
+                           int64_t version, string const & folder)
 {
   Platform & platform = GetPlatform();
   string const readyFile = GetFileName(countryFile.GetName(), file, version) + READY_FILE_EXTENSION;
+  string const dir = folder.empty() ? platform.WritableDir()
+                                    : my::JoinFoldersToPath(platform.WritableDir(), folder);
   if (version == 0)
-    return my::JoinFoldersToPath(platform.WritableDir(), readyFile);
-  return my::JoinFoldersToPath({platform.WritableDir(), strings::to_string(version)}, readyFile);
+    return my::JoinFoldersToPath(dir, readyFile);
+  return my::JoinFoldersToPath({dir, strings::to_string(version)}, readyFile);
 }
 
 ModelReader * GetCountryReader(platform::LocalCountryFile const & file, MapOptions options)
