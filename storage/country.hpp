@@ -25,6 +25,8 @@ class SizeUpdater;
 
 namespace storage
 {
+using TMapping = map<TCountryId, set<TCountryId>>;
+
 /// Serves as a proxy between GUI and downloaded files
 class Country
 {
@@ -58,7 +60,7 @@ public:
 typedef SimpleTree<Country> TCountriesContainer;
 
 /// @return version of country file or -1 if error was encountered
-int64_t LoadCountries(string const & jsonBuffer, TCountriesContainer & countries);
+int64_t LoadCountries(string const & jsonBuffer, TCountriesContainer & countries, TMapping * mapping = nullptr);
 
 void LoadCountryFile2CountryInfo(string const & jsonBuffer, map<string, CountryInfo> & id2info,
                                  bool & isSingleMwm);

@@ -34,7 +34,7 @@ private:
 
   TCountriesContainer m_countries;
 
-  typedef list<QueuedCountry> TQueue;
+  using TQueue = list<QueuedCountry>;
 
   /// @todo. It appeared that our application uses m_queue from
   /// different threads without any synchronization. To reproduce it
@@ -45,7 +45,7 @@ private:
   TQueue m_queue;
 
   /// stores countries whose download has failed recently
-  typedef set<TCountryId> TCountriesSet;
+  using TCountriesSet = set<TCountryId>;
   TCountriesSet m_failedCountries;
 
   using TLocalFilePtr = shared_ptr<platform::LocalCountryFile>;
@@ -90,8 +90,8 @@ private:
 
   void DownloadNextCountryFromQueue();
 
-  void LoadCountriesFile(bool forceReload, string const & pathToCountriesFile,
-                         string const & dataDir);
+  void LoadCountriesFile(string const & pathToCountriesFile,
+                         string const & dataDir, TMapping * mapping = nullptr);
 
   void ReportProgress(TCountryId const & countryId, pair<int64_t, int64_t> const & p);
 
@@ -212,6 +212,9 @@ public:
     /// \note A client should be ready for any value of error.
     TOnErrorCallback m_onError;
   };
+
+  void SaveDownloadQueue();
+  void RestoreDownloadQueue();
 
   /// \brief Returns root country id of the county tree.
   TCountryId const GetRootId() const;

@@ -7,6 +7,7 @@
 #include "platform/mwm_version.hpp"
 #include "platform/platform.hpp"
 #include "platform/servers_list.hpp"
+#include "platform/settings.hpp"
 
 #include "coding/file_name_utils.hpp"
 #include "coding/internal/file_data.hpp"
@@ -88,7 +89,8 @@ Storage::Storage(string const & pathToCountriesFile /* = COUNTRIES_FILE */, stri
 {
 
 
-  LoadCountriesFile(false /* forceReload */, pathToCountriesFile, m_dataDir);
+  LoadCountriesFile(pathToCountriesFile, m_dataDir);
+  RestoreDownloadQueue();
 }
 
 Storage::Storage(string const & referenceCountriesTxtJsonForTesting,
@@ -103,13 +105,31 @@ void Storage::Init(TUpdate const & update) { m_update = update; }
 
 void Storage::Migrate()
 {
+  vector<TCountryId> existingCountries;
   for (auto const & localFiles : m_localFiles)
   {
     for (auto const & localFile : localFiles.second)
     {
       LOG_SHORT(LINFO, (localFiles.first, DebugPrint(*localFile)));
-//      localFile->SyncWithDisk();
-//      DeleteFromDiskWithIndexes(*localFile, MapOptions::MapWithCarRouting);
+      existingCountries.push_back(localFiles.first);
+      localFile->SyncWithDisk();
+      DeleteFromDiskWithIndexes(*localFile, MapOptions::MapWithCarRouting);
+    }
+  }
+
+  platform::migrate::SetMigrationFlag();
+
+  Clear();
+  TMapping mapping;
+  m_countries.Clear();
+  LoadCountriesFile(COUNTRIES_MIGRATE_FILE, m_dataDir, &mapping);
+
+  for (auto const & country : existingCountries)
+  {
+    ASSERT(mapping[country].empty(), ());
+    for (auto const & smallCountry : mapping[country])
+    {
+      DownloadCountry(smallCountry, MapOptions::MapWithCarRouting);
     }
   }
 }
@@ -327,6 +347,29 @@ void Storage::CountryStatusEx(TCountryId const & countryId, TStatus & status, Ma
   }
 }
 
+void Storage::SaveDownloadQueue()
+{
+  stringstream ss;
+  for (auto const & item : m_queue)
+    ss << (ss.str().empty() ? "" : ";") << item.GetCountryId();
+  Settings::Set("DownloadQueue", ss.str());
+}
+
+void Storage::RestoreDownloadQueue()
+{
+  string queue;
+  if (!Settings::Get("DownloadQueue", queue))
+    return;
+
+  strings::SimpleTokenizer iter(queue, ";");
+  while (iter)
+  {
+    DownloadCountry(*iter, MapOptions::MapWithCarRouting);
+    ++iter;
+  }
+}
+
+
 void Storage::DownloadCountry(TCountryId const & countryId, MapOptions opt)
 {
   opt = NormalizeDownloadFileSet(countryId, opt);
@@ -345,6 +388,7 @@ void Storage::DownloadCountry(TCountryId const & countryId, MapOptions opt)
     DownloadNextCountryFromQueue();
   else
     NotifyStatusChanged(countryId);
+  SaveDownloadQueue();
 }
 
 void Storage::DeleteCountry(TCountryId const & countryId, MapOptions opt)
@@ -470,8 +514,8 @@ TCountryId Storage::GetCurrentDownloadingCountryIndex() const
   return IsDownloadInProgress() ? m_queue.front().GetCountryId() : storage::TCountryId();
 }
 
-void Storage::LoadCountriesFile(bool forceReload, string const & pathToCountriesFile,
-                                string const & dataDir)
+void Storage::LoadCountriesFile(string const & pathToCountriesFile,
+                                string const & dataDir, TMapping * mapping /* = nullptr */)
 {
   m_dataDir = dataDir;
 
@@ -481,14 +525,12 @@ void Storage::LoadCountriesFile(bool forceReload, string const & pathToCountries
     platform.MkDir(my::JoinFoldersToPath(platform.WritableDir(), m_dataDir));
   }
 
-  if (forceReload)
-    m_countries.Clear();
-
   if (m_countries.ChildrenCount() == 0)
   {
     string json;
     ReaderPtr<Reader>(GetPlatform().GetReader(pathToCountriesFile)).ReadAsString(json);
-    m_currentVersion = LoadCountries(json, m_countries);
+    m_currentVersion = LoadCountries(json, m_countries, mapping);
+    LOG_SHORT(LINFO, ("Loaded countries list for version:", m_currentVersion));
     if (m_currentVersion < 0)
       LOG(LERROR, ("Can't load countries file", pathToCountriesFile));
   }
@@ -646,6 +688,7 @@ void Storage::OnMapDownloadFinished(TCountryId const & countryId, bool success, 
   ASSERT(localFile, ());
   DeleteCountryIndexes(*localFile);
   m_update(*localFile);
+  SaveDownloadQueue();
 }
 
 string Storage::GetFileDownloadUrl(string const & baseUrl, TCountryId const & countryId,

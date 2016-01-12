@@ -34,6 +34,17 @@ void LoadGroupImpl(int depth, json_t * group, ToDo & toDo, int64_t version)
       // We expect that mwm and routing files should be less than 2GB.
       toDo(id, id,  mwmSize, 0 /* routingSize */, depth);
 
+
+      json_t * oldIds = json_object_get(j, "old");
+      if (oldIds)
+      {
+        for (size_t k = 0; k < json_array_size(oldIds); ++k)
+        {
+          string oldIdValue = json_string_value(json_array_get(oldIds, k));
+          toDo(oldIdValue, id);
+        }
+      }
+
       json_t * children = json_object_get(j, "g");
       if (children)
         LoadGroupImpl(depth + 1, children, toDo, version);
@@ -92,6 +103,7 @@ namespace
 class DoStoreCountries
 {
   TCountriesContainer & m_cont;
+  TMapping m_idsMapping;
 
 public:
   DoStoreCountries(TCountriesContainer & cont) : m_cont(cont) {}
@@ -108,10 +120,18 @@ public:
     }
     m_cont.AddAtDepth(depth, country);
   }
+
+  void operator()(TCountryId const & oldId, TCountryId const & newId)
+  {
+    m_idsMapping[oldId].insert(newId);
+  }
+
+  TMapping GetMapping() const { return m_idsMapping; }
 };
 
 class DoStoreFile2Info
 {
+  TMapping m_idsMapping;
   map<string, CountryInfo> & m_file2info;
   int64_t const m_version;
 
@@ -135,10 +155,17 @@ public:
       m_file2info[file] = info;
     }
   }
+
+  void operator()(TCountryId const & oldId, TCountryId const & newId)
+  {
+    m_idsMapping[oldId].insert(newId);
+  }
+
+  TMapping GetMapping() const { return m_idsMapping; }
 };
 }  // namespace
 
-int64_t LoadCountries(string const & jsonBuffer, TCountriesContainer & countries)
+int64_t LoadCountries(string const & jsonBuffer, TCountriesContainer & countries, TMapping * mapping /* = nullptr */)
 {
   countries.Clear();
 
@@ -161,6 +188,8 @@ int64_t LoadCountries(string const & jsonBuffer, TCountriesContainer & countries
     DoStoreCountries doStore(countries);
     if (!LoadCountriesImpl(jsonBuffer, doStore, version))
       return -1;
+    if (mapping)
+      *mapping = doStore.GetMapping();
   }
   catch (my::Json::Exception const & e)
   {
