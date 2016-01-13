@@ -10,7 +10,6 @@ ROOT_DIR = ..
 include($$ROOT_DIR/common.pri)
 
 SOURCES += \
-    categories_holder.cpp \
     classificator.cpp \
     classificator_loader.cpp \
     coding_params.cpp \
@@ -43,14 +42,13 @@ SOURCES += \
     mwm_set.cpp \
     old/feature_loader_101.cpp \
     point_to_int64.cpp \
+    rank_table.cpp \
     scales.cpp \
-    search_delimiters.cpp \
-    search_index_builder.cpp \
-    search_string_utils.cpp \
     types_mapping.cpp \
+    types_skipper.cpp \
+
 
 HEADERS += \
-    categories_holder.hpp \
     cell_coverer.hpp \
     cell_id.hpp \
     classificator.hpp \
@@ -91,18 +89,19 @@ HEADERS += \
     old/feature_loader_101.hpp \
     old/interval_index_101.hpp \
     point_to_int64.hpp \
+    rank_table.hpp \
     scale_index.hpp \
     scale_index_builder.hpp \
     scales.hpp \
-    search_delimiters.hpp \
-    search_index_builder.hpp \
-    search_string_utils.hpp \
-    search_trie.hpp \
-    string_file.hpp \
-    string_file_values.hpp \
+    succinct_trie_builder.hpp \
+    succinct_trie_reader.hpp \
     tesselator_decl.hpp \
     tree_structure.hpp \
+    trie.hpp \
+    trie_builder.hpp \
+    trie_reader.hpp \     
     types_mapping.hpp \
+    types_skipper.hpp \
     unique_index.hpp \
 
 OTHER_FILES += drules_struct.proto

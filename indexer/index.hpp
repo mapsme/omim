@@ -117,7 +117,7 @@ private:
                                          pValue->m_factory);
 
         // iterate through intervals
-        CheckUniqueIndexes checkUnique(header.GetFormat() >= version::v5);
+        CheckUniqueIndexes checkUnique(header.GetFormat() >= version::Format::v5);
         MwmId const mwmID = handle.GetId();
 
         for (auto const & i : interval)
@@ -164,7 +164,7 @@ private:
                                          pValue->m_factory);
 
         // iterate through intervals
-        CheckUniqueIndexes checkUnique(header.GetFormat() >= version::v5);
+        CheckUniqueIndexes checkUnique(header.GetFormat() >= version::Format::v5);
         MwmId const mwmID = handle.GetId();
 
         for (auto const & i : interval)
@@ -250,6 +250,7 @@ public:
     string GetCountryFileName() const;
     bool IsWorld() const;
     void GetFeatureByIndex(uint32_t index, FeatureType & ft);
+    inline FeaturesVector const & GetFeaturesVector() const { return m_vector; }
 
   private:
     MwmHandle m_handle;

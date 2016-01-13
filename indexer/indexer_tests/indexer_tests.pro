@@ -4,8 +4,10 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 ROOT_DIR = ../..
-DEPENDENCIES = indexer platform geometry coding base protobuf tomcrypt
+DEPENDENCIES = indexer platform geometry coding base protobuf tomcrypt succinct
+!linux {
 DEPENDENCIES += opening_hours
+}
 
 include($$ROOT_DIR/common.pri)
 
@@ -17,7 +19,6 @@ HEADERS += \
 
 SOURCES += \
     ../../testing/testingmain.cpp \
-    categories_test.cpp \
     cell_coverer_test.cpp \
     cell_id_test.cpp \
     checker_test.cpp \
@@ -31,9 +32,11 @@ SOURCES += \
     interval_index_test.cpp \
     mwm_set_test.cpp \
     point_to_int64_test.cpp \
+    rank_table_test.cpp \
     scales_test.cpp \
-    search_string_utils_test.cpp \
     sort_and_merge_intervals_test.cpp \
+    succinct_trie_test.cpp \
     test_polylines.cpp \
     test_type.cpp \
+    trie_test.cpp \    
     visibility_test.cpp \

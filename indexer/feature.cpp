@@ -1,7 +1,9 @@
 #include "indexer/feature.hpp"
-#include "indexer/feature_visibility.hpp"
-#include "indexer/feature_loader_base.hpp"
+
 #include "indexer/classificator.hpp"
+#include "indexer/feature_algo.hpp"
+#include "indexer/feature_loader_base.hpp"
+#include "indexer/feature_visibility.hpp"
 
 #include "geometry/distance.hpp"
 #include "geometry/robust_orientation.hpp"
@@ -59,7 +61,7 @@ feature::EGeomType FeatureBase::GetFeatureType() const
 
 string FeatureBase::DebugString() const
 {
-  ASSERT(m_bCommonParsed, ());
+  ParseCommon();
 
   Classificator const & c = classif();
 
@@ -162,32 +164,8 @@ namespace
 
 string FeatureType::DebugString(int scale) const
 {
-  ParseAll(scale);
-
-  string s = base_type::DebugString();
-
-  switch (GetFeatureType())
-  {
-  case GEOM_POINT:
-    s += (" Center:" + DebugPrint(m_center));
-    break;
-
-  case GEOM_LINE:
-    s += " Points:";
-    Points2String(s, m_points);
-    break;
-
-  case GEOM_AREA:
-    s += " Triangles:";
-    Points2String(s, m_triangles);
-    break;
-
-  case GEOM_UNDEFINED:
-    ASSERT(false, ("Assume that we have valid feature always"));
-    break;
-  }
-
-  return s;
+  return base_type::DebugString() + "; Center = " +
+         DebugPrint(MercatorBounds::ToLatLon(feature::GetCenter(*this, scale)));
 }
 
 string DebugPrint(FeatureType const & ft)
@@ -372,82 +350,6 @@ bool FeatureType::HasInternet() const
   });
 
   return res;
-}
-
-namespace
-{
-  class DoCalcDistance
-  {
-    m2::PointD m_prev, m_pt;
-    bool m_hasPrev;
-
-    static double Inf() { return numeric_limits<double>::max(); }
-
-    static double GetDistance(m2::PointD const & p1, m2::PointD const & p2, m2::PointD const & p)
-    {
-      m2::DistanceToLineSquare<m2::PointD> calc;
-      calc.SetBounds(p1, p2);
-      return sqrt(calc(p));
-    }
-
-  public:
-    DoCalcDistance(m2::PointD const & pt)
-      : m_pt(pt), m_hasPrev(false), m_dist(Inf())
-    {
-    }
-
-    void TestPoint(m2::PointD const & p)
-    {
-      m_dist = m_pt.Length(p);
-    }
-
-    void operator() (m2::PointD const & pt)
-    {
-      if (m_hasPrev)
-        m_dist = min(m_dist, GetDistance(m_prev, pt, m_pt));
-      else
-        m_hasPrev = true;
-
-      m_prev = pt;
-    }
-
-    void operator() (m2::PointD const & p1, m2::PointD const & p2, m2::PointD const & p3)
-    {
-      m2::PointD arrP[] = { p1, p2, p3 };
-
-      // make right-oriented triangle
-      if (m2::robust::OrientedS(arrP[0], arrP[1], arrP[2]) < 0.0)
-        swap(arrP[1], arrP[2]);
-
-      double d = Inf();
-      for (size_t i = 0; i < 3; ++i)
-      {
-        double const s = m2::robust::OrientedS(arrP[i], arrP[(i + 1) % 3], m_pt);
-        if (s < 0.0)
-          d = min(d, GetDistance(arrP[i], arrP[(i + 1) % 3], m_pt));
-      }
-
-      m_dist = ((d == Inf()) ? 0.0 : min(m_dist, d));
-    }
-
-    double m_dist;
-  };
-}
-
-double FeatureType::GetDistance(m2::PointD const & pt, int scale) const
-{
-  DoCalcDistance calc(pt);
-
-  switch (GetFeatureType())
-  {
-  case GEOM_POINT: calc.TestPoint(GetCenter()); break;
-  case GEOM_LINE: ForEachPointRef(calc, scale); break;
-  case GEOM_AREA: ForEachTriangleRef(calc, scale); break;
-  default:
-    CHECK ( false, () );
-  }
-
-  return calc.m_dist;
 }
 
 void FeatureType::SwapGeometry(FeatureType & r)

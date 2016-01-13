@@ -16,6 +16,7 @@ SOURCES += \
 #    blob_indexer.cpp \
 #    blob_storage.cpp \
     compressed_bit_vector.cpp \
+    old_compressed_bit_vector.cpp \
 #    compressed_varnum_vector.cpp \
     file_container.cpp \
     file_name_utils.cpp \
@@ -30,6 +31,7 @@ SOURCES += \
     reader.cpp \
     reader_streambuf.cpp \
     reader_writer_ops.cpp \
+    simple_dense_coding.cpp \
     sha2.cpp \
     uri.cpp \
 #    varint_vector.cpp \
@@ -51,6 +53,7 @@ HEADERS += \
     coder.hpp \
     coder_util.hpp \
     compressed_bit_vector.hpp \
+    old_compressed_bit_vector.hpp \
 #    compressed_varnum_vector.hpp \
     constants.hpp \
     dd_vector.hpp \
@@ -64,10 +67,12 @@ HEADERS += \
     file_sort.hpp \
     file_writer.hpp \
     file_writer_stream.hpp \
+    fixed_bits_ddvector.hpp \
     hex.hpp \
     huffman.hpp \
     internal/file64_api.hpp \
     internal/file_data.hpp \
+    internal/xmlparser.hpp \
     matrix_traversal.hpp \
     mmap_reader.hpp \
     multilang_utf8_string.hpp \
@@ -80,16 +85,12 @@ HEADERS += \
     reader_streambuf.hpp \
     reader_wrapper.hpp \
     reader_writer_ops.hpp \
+    simple_dense_coding.hpp \
     sha2.hpp \
     streams.hpp \
     streams_common.hpp \
     streams_sink.hpp \
-    succinct_trie.hpp \
-    succinct_trie_builder.hpp \
-    succinct_trie_reader.hpp \
-    trie.hpp \
-    trie_builder.hpp \
-    trie_reader.hpp \
+    succinct_mapper.hpp \
     uri.hpp \
     url_encode.hpp \
     value_opt_string.hpp \
@@ -102,4 +103,3 @@ HEADERS += \
     writer.hpp \
     zip_creator.hpp \
     zip_reader.hpp \
-    internal/xmlparser.hpp \

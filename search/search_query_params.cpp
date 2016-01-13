@@ -114,6 +114,12 @@ void SearchQueryParams::ProcessAddressTokens()
   ForEachToken(DoAddStreetSynonyms(*this));
 }
 
+SearchQueryParams::TSynonymsVector const & SearchQueryParams::GetTokens(size_t i) const
+{
+  ASSERT_LESS_OR_EQUAL(i, m_tokens.size(), ());
+  return i < m_tokens.size() ? m_tokens[i] : m_prefixTokens;
+}
+
 template <class ToDo>
 void SearchQueryParams::ForEachToken(ToDo && toDo)
 {
@@ -131,7 +137,6 @@ void SearchQueryParams::ForEachToken(ToDo && toDo)
     toDo(m_prefixTokens.front(), count);
   }
 }
-}  // namespace search
 
 string DebugPrint(search::SearchQueryParams const & params)
 {
@@ -140,3 +145,4 @@ string DebugPrint(search::SearchQueryParams const & params)
      << ", m_prefixTokens=" << DebugPrint(params.m_prefixTokens) << "]";
   return os.str();
 }
+}  // namespace search

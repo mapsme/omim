@@ -31,6 +31,12 @@ public:
   /// Set center (origin) point of feature and set that feature is point.
   void SetCenter(m2::PointD const & p);
 
+  void SetRank(uint8_t rank);
+
+  void AddHouseNumber(string const & houseNumber);
+
+  void AddStreet(string const & streetName);
+
   /// Add point to geometry.
   void AddPoint(m2::PointD const & p);
 
@@ -81,7 +87,7 @@ public:
   /// @name Serialization.
   //@{
   void Serialize(TBuffer & data) const;
-  void SerializeBase(TBuffer & data, serial::CodingParams const & params, bool needSearializeAdditionalInfo = true) const;
+  void SerializeBase(TBuffer & data, serial::CodingParams const & params, bool saveAddInfo) const;
 
   void Deserialize(TBuffer & data);
   //@}
@@ -239,6 +245,8 @@ public:
   bool PreSerialize(SupportingData const & data);
   void Serialize(SupportingData & data, serial::CodingParams const & params);
   //@}
+
+  feature::AddressData const & GetAddressData() const { return m_params.GetAddressData(); }
 };
 
 namespace feature

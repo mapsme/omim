@@ -1,6 +1,7 @@
 #include "testing/testing.hpp"
 
 #include "search/house_detector.hpp"
+#include "search/search_string_utils.hpp"
 
 #include "indexer/classificator_loader.hpp"
 #include "indexer/data_header.hpp"

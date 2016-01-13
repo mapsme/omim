@@ -37,16 +37,16 @@ string DebugPrint(MwmSet::MwmId const & id)
   return ss.str();
 }
 
-MwmSet::MwmHandle::MwmHandle() : m_mwmSet(nullptr), m_mwmId(), m_value(nullptr) {}
+MwmSet::MwmHandle::MwmHandle() : m_mwmSet(nullptr), m_value(nullptr) {}
 
 MwmSet::MwmHandle::MwmHandle(MwmSet & mwmSet, MwmId const & mwmId,
                              unique_ptr<MwmSet::MwmValueBase> && value)
-  : m_mwmSet(&mwmSet), m_mwmId(mwmId), m_value(move(value))
+  : m_mwmId(mwmId), m_mwmSet(&mwmSet), m_value(move(value))
 {
 }
 
 MwmSet::MwmHandle::MwmHandle(MwmHandle && handle)
-  : m_mwmSet(handle.m_mwmSet), m_mwmId(handle.m_mwmId), m_value(move(handle.m_value))
+  : m_mwmId(handle.m_mwmId), m_mwmSet(handle.m_mwmSet), m_value(move(handle.m_value))
 {
   handle.m_mwmSet = nullptr;
   handle.m_mwmId.Reset();
@@ -193,7 +193,8 @@ unique_ptr<MwmSet::MwmValueBase> MwmSet::LockValue(MwmId const & id)
 
 unique_ptr<MwmSet::MwmValueBase> MwmSet::LockValueImpl(MwmId const & id)
 {
-  CHECK(id.IsAlive(), (id));
+  if (!id.IsAlive())
+    return nullptr;
   shared_ptr<MwmInfo> info = id.GetInfo();
 
   // It's better to return valid "value pointer" even for "out-of-date" files,

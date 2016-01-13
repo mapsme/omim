@@ -1,17 +1,22 @@
 #include "base/SRC_FIRST.hpp"
 
-#include "indexer/feature_loader.hpp"
-#include "indexer/feature.hpp"
-#include "indexer/scales.hpp"
-#include "indexer/geometry_serialization.hpp"
 #include "indexer/classificator.hpp"
+#include "indexer/feature.hpp"
+#include "indexer/feature_loader.hpp"
+#include "indexer/geometry_serialization.hpp"
+#include "indexer/scales.hpp"
 
 #include "geometry/pointu_to_uint64.hpp"
 
 #include "coding/byte_stream.hpp"
 #include "coding/dd_vector.hpp"
 
+#include "base/assert.hpp"
 #include "base/logging.hpp"
+
+#include "std/algorithm.hpp"
+#include "std/limits.hpp"
+
 #include "defines.hpp"
 
 namespace feature
@@ -256,19 +261,29 @@ void LoaderCurrent::ParseMetadata()
 {
   try
   {
-    typedef pair<uint32_t, uint32_t> IdxElementT;
-    DDVector<IdxElementT, FilesContainerR::ReaderT> idx(m_Info.GetMetadataIndexReader());
-    
-    auto it = lower_bound(idx.begin(), idx.end()
-                          , make_pair(uint32_t(m_pF->m_id.m_index), uint32_t(0))
-                          , [](IdxElementT const & v1, IdxElementT const & v2) { return v1.first < v2.first; }
-                          );
-
-    if (it != idx.end() && m_pF->m_id.m_index == it->first)
+    struct TMetadataIndexEntry
     {
-      ReaderSource<FilesContainerR::ReaderT> reader(m_Info.GetMetadataReader());
-      reader.Skip(it->second);
-      m_pF->GetMetadata().DeserializeFromMWM(reader);
+      uint32_t key;
+      uint32_t value;
+    };
+    DDVector<TMetadataIndexEntry, FilesContainerR::ReaderT> idx(m_Info.GetMetadataIndexReader());
+
+    auto it = lower_bound(
+        idx.begin(), idx.end(),
+        TMetadataIndexEntry{static_cast<uint32_t>(m_pF->m_id.m_index), 0},
+        [](TMetadataIndexEntry const & v1, TMetadataIndexEntry const & v2)
+        {
+          return v1.key < v2.key;
+        });
+
+    if (it != idx.end() && m_pF->m_id.m_index == it->key)
+    {
+      ReaderSource<FilesContainerR::ReaderT> src(m_Info.GetMetadataReader());
+      src.Skip(it->value);
+      if (m_Info.GetMWMFormat() <= version::Format::v7)
+        m_pF->GetMetadata().DeserializeFromMWMv7OrLower(src);
+      else
+        m_pF->GetMetadata().Deserialize(src);
     }
   }
   catch (Reader::OpenException const &)

@@ -164,12 +164,11 @@ bool IsDummyName(string const & s)
           s == "Edificio" || s == "edificio");
 }
 
-struct IsBadChar
-{
-  bool operator() (char c) const { return (c == '\n'); }
-};
-
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// FeatureParams implementation
+/////////////////////////////////////////////////////////////////////////////////////////
 
 bool FeatureParams::AddName(string const & lang, string const & s)
 {
@@ -201,7 +200,6 @@ bool FeatureParams::AddHouseName(string const & s)
   return false;
 }
 
-
 bool FeatureParams::AddHouseNumber(string const & ss)
 {
   if (!feature::IsHouseNumber(ss))
@@ -218,35 +216,65 @@ bool FeatureParams::AddHouseNumber(string const & ss)
   return true;
 }
 
-void FeatureParams::AddStreetAddress(string const & s)
+void FeatureParams::AddStreet(string s)
 {
-  m_street = s;
+  // Replace \n with spaces because we write addresses to txt file.
+  replace(s.begin(), s.end(), '\n', ' ');
 
-  // Erase bad chars (\n) because we write addresses to txt file.
-  m_street.erase(remove_if(m_street.begin(), m_street.end(), IsBadChar()), m_street.end());
+  m_addrTags.Add(AddressData::STREET, s);
+}
 
-  // Osm likes to put house numbers into addr:street field.
-  size_t i = m_street.find_last_of("\t ");
+void FeatureParams::AddAddress(string const & s)
+{
+  size_t i = s.find_first_of("\t ");
   if (i != string::npos)
   {
-    ++i;
-    uint64_t n;
-    if (strings::to_uint64(m_street.substr(i), n))
-      m_street.erase(i);
+    string const house = s.substr(0, i);
+    if (feature::IsHouseNumber(house))
+    {
+      AddHouseNumber(house);
+      i = s.find_first_not_of("\t ", i);
+    }
+    else
+    {
+      i = 0;
+    }
   }
+  else
+  {
+    i = 0;
+  }
+
+  AddStreet(s.substr(i));
+}
+
+void FeatureParams::AddPlace(string const & s)
+{
+  m_addrTags.Add(AddressData::PLACE, s);
+}
+
+void FeatureParams::AddPostcode(string const & s)
+{
+  m_addrTags.Add(AddressData::POSTCODE, s);
 }
 
 bool FeatureParams::FormatFullAddress(m2::PointD const & pt, string & res) const
 {
-  if (!m_street.empty() && !house.IsEmpty())
+  string const street = GetStreet();
+  if (!street.empty() && !house.IsEmpty())
   {
-    res = m_street + "|" + house.Get() + "|"
+    res = street + "|" + house.Get() + "|"
         + strings::to_string_dac(MercatorBounds::YToLat(pt.y), 8) + "|"
         + strings::to_string_dac(MercatorBounds::XToLon(pt.x), 8) + '\n';
     return true;
   }
 
   return false;
+}
+
+string FeatureParams::GetStreet() const
+{
+  return m_addrTags.Get(AddressData::STREET);
 }
 
 void FeatureParams::SetGeomType(feature::EGeomType t)

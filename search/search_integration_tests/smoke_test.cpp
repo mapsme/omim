@@ -1,9 +1,12 @@
 #include "testing/testing.hpp"
 
-#include "generator/generator_tests_support/test_mwm_builder.hpp"
-
+#include "search/search_tests_support/test_feature.hpp"
+#include "search/search_tests_support/test_mwm_builder.hpp"
 #include "search/search_tests_support/test_search_engine.hpp"
 #include "search/search_tests_support/test_search_request.hpp"
+
+#include "indexer/classificator_loader.hpp"
+#include "indexer/scales.hpp"
 
 #include "indexer/classificator_loader.hpp"
 #include "indexer/scales.hpp"
@@ -61,11 +64,11 @@ UNIT_TEST(GenerateTestMwm_Smoke)
   platform::LocalCountryFile & file = scopedFile.GetFile();
 
   {
-    TestMwmBuilder builder(file);
-    builder.AddPOI(m2::PointD(0, 0), "Wine shop", "en");
-    builder.AddPOI(m2::PointD(1, 0), "Tequila shop", "en");
-    builder.AddPOI(m2::PointD(0, 1), "Brandy shop", "en");
-    builder.AddPOI(m2::PointD(1, 1), "Russian vodka shop", "en");
+    TestMwmBuilder builder(file, feature::DataHeader::country);
+    builder.Add(TestPOI(m2::PointD(0, 0), "Wine shop", "en"));
+    builder.Add(TestPOI(m2::PointD(1, 0), "Tequila shop", "en"));
+    builder.Add(TestPOI(m2::PointD(0, 1), "Brandy shop", "en"));
+    builder.Add(TestPOI(m2::PointD(1, 1), "Russian vodka shop", "en"));
   }
   TEST_EQUAL(MapOptions::Map, file.GetFiles(), ());
 
@@ -78,14 +81,14 @@ UNIT_TEST(GenerateTestMwm_Smoke)
   TestFeaturesCount(engine, m2::RectD(m2::PointD(-0.5, -0.5), m2::PointD(0.5, 1.5)), 2);
 
   {
-    TestSearchRequest request(engine, "wine ", "en",
+    TestSearchRequest request(engine, "wine ", "en", search::SearchParams::IN_VIEWPORT_ONLY,
                               m2::RectD(m2::PointD(0, 0), m2::PointD(100, 100)));
     request.Wait();
     TEST_EQUAL(1, request.Results().size(), ());
   }
 
   {
-    TestSearchRequest request(engine, "shop ", "en",
+    TestSearchRequest request(engine, "shop ", "en", search::SearchParams::IN_VIEWPORT_ONLY,
                               m2::RectD(m2::PointD(0, 0), m2::PointD(100, 100)));
     request.Wait();
     TEST_EQUAL(4, request.Results().size(), ());
@@ -99,13 +102,13 @@ UNIT_TEST(GenerateTestMwm_NotPrefixFreeNames)
   platform::LocalCountryFile & file = scopedFile.GetFile();
 
   {
-    TestMwmBuilder builder(file);
-    builder.AddPOI(m2::PointD(0, 0), "a", "en");
-    builder.AddPOI(m2::PointD(0, 1), "aa", "en");
-    builder.AddPOI(m2::PointD(1, 1), "aa", "en");
-    builder.AddPOI(m2::PointD(1, 0), "aaa", "en");
-    builder.AddPOI(m2::PointD(2, 0), "aaa", "en");
-    builder.AddPOI(m2::PointD(2, 1), "aaa", "en");
+    TestMwmBuilder builder(file, feature::DataHeader::country);
+    builder.Add(TestPOI(m2::PointD(0, 0), "a", "en"));
+    builder.Add(TestPOI(m2::PointD(0, 1), "aa", "en"));
+    builder.Add(TestPOI(m2::PointD(1, 1), "aa", "en"));
+    builder.Add(TestPOI(m2::PointD(1, 0), "aaa", "en"));
+    builder.Add(TestPOI(m2::PointD(2, 0), "aaa", "en"));
+    builder.Add(TestPOI(m2::PointD(2, 1), "aaa", "en"));
   }
   TEST_EQUAL(MapOptions::Map, file.GetFiles(), ());
 
@@ -117,19 +120,19 @@ UNIT_TEST(GenerateTestMwm_NotPrefixFreeNames)
   TestFeaturesCount(engine, m2::RectD(m2::PointD(0, 0), m2::PointD(2, 2)), 6);
 
   {
-    TestSearchRequest request(engine, "a ", "en",
+    TestSearchRequest request(engine, "a ", "en", search::SearchParams::IN_VIEWPORT_ONLY,
                               m2::RectD(m2::PointD(0, 0), m2::PointD(100, 100)));
     request.Wait();
     TEST_EQUAL(1, request.Results().size(), ());
   }
   {
-    TestSearchRequest request(engine, "aa ", "en",
+    TestSearchRequest request(engine, "aa ", "en", search::SearchParams::IN_VIEWPORT_ONLY,
                               m2::RectD(m2::PointD(0, 0), m2::PointD(100, 100)));
     request.Wait();
     TEST_EQUAL(2, request.Results().size(), ());
   }
   {
-    TestSearchRequest request(engine, "aaa ", "en",
+    TestSearchRequest request(engine, "aaa ", "en", search::SearchParams::IN_VIEWPORT_ONLY,
                               m2::RectD(m2::PointD(0, 0), m2::PointD(100, 100)));
     request.Wait();
     TEST_EQUAL(3, request.Results().size(), ());

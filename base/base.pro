@@ -60,6 +60,7 @@ HEADERS += \
     stats.hpp \
     std_serialization.hpp \
     stl_add.hpp \
+    stl_helpers.hpp \
     stl_iterator.hpp \
     string_format.hpp \
     string_utils.hpp \

@@ -1,3 +1,4 @@
+#include "categories_holder.hpp"
 #include "intermediate_result.hpp"
 #include "geometry_utils.hpp"
 
@@ -7,7 +8,6 @@
 #include "indexer/classificator.hpp"
 #include "indexer/feature.hpp"
 #include "indexer/scales.hpp"
-#include "indexer/categories_holder.hpp"
 
 #include "geometry/angles.hpp"
 
@@ -17,7 +17,6 @@
 #include "base/logging.hpp"
 
 #include "3party/opening_hours/opening_hours.hpp"
-
 
 namespace search
 {
@@ -54,76 +53,34 @@ void ProcessMetadata(FeatureType const & ft, Result::Metadata & meta)
 
 namespace impl
 {
-
-template <class T> bool LessRankT(T const & r1, T const & r2)
-{
-  if (r1.m_rank != r2.m_rank)
-    return (r1.m_rank > r2.m_rank);
-
-  return (r1.m_distance < r2.m_distance);
-}
-
-template <class T> bool LessDistanceT(T const & r1, T const & r2)
-{
-  if (r1.m_distance != r2.m_distance)
-    return (r1.m_distance < r2.m_distance);
-
-  return (r1.m_rank > r2.m_rank);
-}
-
-PreResult1::PreResult1(FeatureID const & fID, uint8_t rank, m2::PointD const & center,
-                       m2::PointD const & pivot, int8_t viewportID)
-  : m_id(fID),
-    m_center(center),
-    m_rank(rank),
-    m_viewportID(viewportID)
+PreResult1::PreResult1(FeatureID const & fID, uint8_t rank, double priority, int8_t viewportID)
+  : m_id(fID), m_priority(priority), m_rank(rank), m_viewportID(viewportID)
 {
   ASSERT(m_id.IsValid(), ());
-
-  CalcParams(pivot);
 }
 
-PreResult1::PreResult1(m2::PointD const & center, m2::PointD const & pivot)
-  : m_center(center)
-{
-  CalcParams(pivot);
-}
+PreResult1::PreResult1(double priority) : m_priority(priority) {}
 
-namespace
-{
-
-void AssertValid(m2::PointD const & p)
-{
-  ASSERT ( my::between_s(-180.0, 180.0, p.x), (p.x) );
-  ASSERT ( my::between_s(-180.0, 180.0, p.y), (p.y) );
-}
-
-}
-
-void PreResult1::CalcParams(m2::PointD const & pivot)
-{
-  AssertValid(m_center);
-  m_distance = PointDistance(m_center, pivot);
-}
-
+// static
 bool PreResult1::LessRank(PreResult1 const & r1, PreResult1 const & r2)
 {
-  return LessRankT(r1, r2);
+  if (r1.m_rank != r2.m_rank)
+    return r1.m_rank > r2.m_rank;
+  return r1.m_priority < r2.m_priority;
 }
 
-bool PreResult1::LessDistance(PreResult1 const & r1, PreResult1 const & r2)
+// static
+bool PreResult1::LessPriority(PreResult1 const & r1, PreResult1 const & r2)
 {
-  return LessDistanceT(r1, r2);
+  if (r1.m_priority != r2.m_priority)
+    return r1.m_priority < r2.m_priority;
+  return r1.m_rank > r2.m_rank;
 }
 
+// static
 bool PreResult1::LessPointsForViewport(PreResult1 const & r1, PreResult1 const & r2)
 {
   return r1.m_id < r2.m_id;
-}
-
-void PreResult2::CalcParams(m2::PointD const & pivot)
-{
-  m_distance = PointDistance(GetCenter(), pivot);
 }
 
 PreResult2::PreResult2(FeatureType const & f, PreResult1 const * p, m2::PointD const & pivot,
@@ -142,16 +99,10 @@ PreResult2::PreResult2(FeatureType const & f, PreResult1 const * p, m2::PointD c
   m_rank = p ? p->GetRank() : 0;
 
   m2::PointD fCenter;
-  if (p && f.GetFeatureType() != feature::GEOM_POINT)
-  {
-    // Optimization tip - use precalculated center point if possible.
-    fCenter = p->GetCenter();
-  }
-  else
-    fCenter = f.GetLimitRect(FeatureType::WORST_GEOMETRY).Center();
+  fCenter = f.GetLimitRect(FeatureType::WORST_GEOMETRY).Center();
 
   m_region.SetParams(fileName, fCenter);
-  CalcParams(pivot);
+  m_distance = PointDistance(GetCenter(), pivot);
 
   ProcessMetadata(f, m_metadata);
 }
@@ -241,21 +192,29 @@ Result PreResult2::GenerateFinalResult(storage::CountryInfoGetter const & infoGe
   }
 }
 
-Result PreResult2::GeneratePointResult(CategoriesHolder const * pCat, set<uint32_t> const * pTypes,
-                                       int8_t locale) const
+Result PreResult2::GeneratePointResult(storage::CountryInfoGetter const & infoGetter,
+                                       CategoriesHolder const * pCat,
+                                       set<uint32_t> const * pTypes, int8_t locale) const
 {
   uint32_t const type = GetBestType(pTypes);
-  return Result(m_id, GetCenter(), m_str, ReadableFeatureType(pCat, type, locale));
+  return Result(m_id, GetCenter(), m_str, GetRegionName(infoGetter, type),
+                ReadableFeatureType(pCat, type, locale));
 }
 
+// static
 bool PreResult2::LessRank(PreResult2 const & r1, PreResult2 const & r2)
 {
-  return LessRankT(r1, r2);
+  if (r1.m_rank != r2.m_rank)
+    return r1.m_rank > r2.m_rank;
+  return r1.m_distance < r2.m_distance;
 }
 
+// static
 bool PreResult2::LessDistance(PreResult2 const & r1, PreResult2 const & r2)
 {
-  return LessDistanceT(r1, r2);
+  if (r1.m_distance != r2.m_distance)
+    return r1.m_distance < r2.m_distance;
+  return r1.m_rank > r2.m_rank;
 }
 
 bool PreResult2::StrictEqualF::operator() (PreResult2 const & r) const

@@ -42,6 +42,7 @@
 #include "std/target_os.hpp"
 #include "std/unique_ptr.hpp"
 #include "std/vector.hpp"
+#include "std/weak_ptr.hpp"
 
 namespace search
 {
@@ -100,13 +101,18 @@ protected:
 
   StringsBundle m_stringsBundle;
 
-  // The order matters here: storage::CountryInfoGetter must be
-  // initialized before search::Engine.
-  unique_ptr<storage::CountryInfoGetter> m_infoGetter;
-  unique_ptr<search::Engine> m_searchEngine;
-  search::QuerySaver m_searchQuerySaver;
+  // The order matters here: storage::CountryInfoGetter and
+  // m_model::FeaturesFetcher must be initialized before
+  // search::Engine and, therefore, destroyed after search::Engine.
 
   model::FeaturesFetcher m_model;
+
+  unique_ptr<storage::CountryInfoGetter> m_infoGetter;
+
+  unique_ptr<search::Engine> m_searchEngine;
+
+  search::QuerySaver m_searchQuerySaver;
+
   ScreenBase m_currentModelView;
 
   routing::RoutingSession m_routingSession;
@@ -328,7 +334,8 @@ private:
   void InitCountryInfoGetter();
   void InitSearchEngine();
 
-  search::SearchParams m_lastSearch;
+  // Last search query params for the interactive search.
+  search::SearchParams m_lastInteractiveSearchParams;
   uint8_t m_fixedSearchResults;
 
   void FillSearchResultsMarks(search::Results const & results);
@@ -340,6 +347,21 @@ private:
   void OnUpdateCountryIndex(storage::TIndex const & currentIndex, m2::PointF const & pt);
   void UpdateCountryInfo(storage::TIndex const & countryIndex, bool isCurrentCountry);
 
+  // Search query params and viewport for the latest search
+  // query. These fields are used to check whether a new search query
+  // can be skipped. Note that these fields are not guarded by a mutex
+  // because we're assuming that they will be accessed only from the
+  // UI thread.
+  search::SearchParams m_lastQueryParams;
+  m2::RectD m_lastQueryViewport;
+
+  // A handle for the latest search query.
+  weak_ptr<search::QueryHandle> m_lastQueryHandle;
+
+  // Returns true when |params| and |viewport| are almost the same as
+  // the latest search query's params and viewport.
+  bool QueryMayBeSkipped(search::SearchParams const & params, m2::RectD const & viewport) const;
+
 public:
   using TSearchRequest = search::QuerySaver::TSearchRequest;
 
@@ -347,16 +369,19 @@ public:
 
   /// Call this function before entering search GUI.
   /// While it's loading, we can cache features in viewport.
-  void PrepareSearch();
   bool Search(search::SearchParams const & params);
   bool GetCurrentPosition(double & lat, double & lon) const;
 
   void LoadSearchResultMetadata(search::Result & res) const;
+
   void ShowSearchResult(search::Result const & res);
-  size_t ShowAllSearchResults(search::Results const & results);
 
   void StartInteractiveSearch(search::SearchParams const & params);
-  bool IsISActive() const { return !m_lastSearch.m_query.empty(); }
+
+  size_t ShowSearchResults(search::Results const & results);
+
+  bool IsInteractiveSearchActive() const { return !m_lastInteractiveSearchParams.m_query.empty(); }
+
   void CancelInteractiveSearch();
 
   list<TSearchRequest> const & GetLastSearchQueries() const { return m_searchQuerySaver.Get(); }
@@ -432,12 +457,15 @@ public:
   /// @param[in] pxPoint Current touch point in device pixel coordinates.
   void GetFeatureTypes(m2::PointD const & pxPoint, vector<string> & types) const;
 
-  /// Get address information for point on map.
+  /// Get address information for the point on map.
+  /// Fill only house number and street name. All other params stay unchanged.
+  //@{
   inline void GetAddressInfoForPixelPoint(m2::PointD const & pxPoint, search::AddressInfo & info) const
   {
     GetAddressInfoForGlobalPoint(PtoG(pxPoint), info);
   }
   void GetAddressInfoForGlobalPoint(m2::PointD const & pt, search::AddressInfo & info) const;
+  //@}
 
 private:
   void GetAddressInfo(FeatureType const & ft, m2::PointD const & pt, search::AddressInfo & info) const;

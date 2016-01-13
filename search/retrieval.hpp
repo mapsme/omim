@@ -14,6 +14,12 @@
 #include "std/vector.hpp"
 
 class Index;
+class MwmValue;
+
+namespace coding
+{
+class CompressedBitVector;
+}
 
 namespace search
 {
@@ -29,7 +35,13 @@ public:
     // This method may be called several times for the same mwm,
     // reporting disjoint sets of features.
     virtual void OnFeaturesRetrieved(MwmSet::MwmId const & id, double scale,
-                                     vector<uint32_t> const & featureIds) = 0;
+                                     coding::CompressedBitVector const & features) = 0;
+
+    // Called when all matching features for an mwm were retrieved and
+    // reported.  Cliens may assume that this method is called no more
+    // than once for |id| and after that call there won't be any calls
+    // of OnFeaturesRetrieved() for |id|.
+    virtual void OnMwmProcessed(MwmSet::MwmId const & id) {}
   };
 
   // This class wraps a set of retrieval's limits like number of
@@ -67,7 +79,7 @@ public:
   class Strategy
   {
   public:
-    using TCallback = function<void(vector<uint32_t> &)>;
+    using TCallback = function<void(coding::CompressedBitVector const &)>;
 
     Strategy(MwmSet::MwmHandle & handle, m2::RectD const & viewport);
 
@@ -92,6 +104,17 @@ public:
 
   Retrieval();
 
+  // Retrieves from the search index corresponding to |value| all
+  // features matching to |params|.
+  WARN_UNUSED_RESULT static unique_ptr<coding::CompressedBitVector> RetrieveAddressFeatures(
+      MwmValue & value, my::Cancellable const & cancellable, SearchQueryParams const & params);
+
+  // Retrieves from the geometry index corresponding to |value| all features belonging to |rect|.
+  WARN_UNUSED_RESULT static unique_ptr<coding::CompressedBitVector> RetrieveGeometryFeatures(
+      MwmValue & value, my::Cancellable const & cancellable, m2::RectD const & rect, int scale);
+
+  // Initializes retrieval process, sets up internal state, takes all
+  // necessary system resources.
   void Init(Index & index, vector<shared_ptr<MwmInfo>> const & infos, m2::RectD const & viewport,
             SearchQueryParams const & params, Limits const & limits);
 
@@ -104,6 +127,9 @@ public:
   // covered by) a rectangle.
   void Go(Callback & callback);
 
+  // Releases all taken system resources.
+  void Release();
+
 private:
   // This class is a wrapper around single mwm during retrieval
   // process.
@@ -113,13 +139,13 @@ private:
 
     MwmSet::MwmHandle m_handle;
     m2::RectD m_bounds;
-    vector<uint32_t> m_addressFeatures;
 
     // The order matters here - strategy may contain references to the
     // fields above, thus it must be destructed before them.
     unique_ptr<Strategy> m_strategy;
 
     size_t m_featuresReported;
+    uint32_t m_numAddressFeatures;
     bool m_intersectsWithViewport : 1;
     bool m_finished : 1;
   };
@@ -129,13 +155,19 @@ private:
   //
   // *NOTE* |scale| of successive calls of this method should be
   // non-decreasing.
-  WARN_UNUSED_RESULT bool RetrieveForScale(double scale, Callback & callback);
+  WARN_UNUSED_RESULT bool RetrieveForScale(Bucket & bucket, double scale, Callback & callback);
+
+  // Inits bucket retrieval strategy. Returns false when cancelled.
+  WARN_UNUSED_RESULT bool InitBucketStrategy(Bucket & bucket, double scale);
+
+  // Marks bucket as finished and invokes callback.
+  void FinishBucket(Bucket & bucket, Callback & callback);
 
   // Returns true when all buckets are marked as finished.
   bool Finished() const;
 
   // Reports features, updates bucket's stats.
-  void ReportFeatures(Bucket & bucket, vector<uint32_t> & featureIds, double scale,
+  void ReportFeatures(Bucket & bucket, coding::CompressedBitVector const & features, double scale,
                       Callback & callback);
 
   Index * m_index;

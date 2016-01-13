@@ -119,7 +119,7 @@ public:
 
   // Mwm handle, which is used to refer to mwm and prevent it from
   // deletion when its FileContainer is used.
-  class MwmHandle final
+  class MwmHandle
   {
   public:
     MwmHandle();
@@ -139,13 +139,15 @@ public:
 
     MwmHandle & operator=(MwmHandle && handle);
 
+  protected:
+    MwmId m_mwmId;
+
   private:
     friend class MwmSet;
 
     MwmHandle(MwmSet & mwmSet, MwmId const & mwmId, unique_ptr<MwmValueBase> && value);
 
     MwmSet * m_mwmSet;
-    MwmId m_mwmId;
     unique_ptr<MwmValueBase> m_value;
 
     DISALLOW_COPY(MwmHandle);
@@ -218,7 +220,6 @@ public:
   }
 
 protected:
-  /// @return True when file format version was successfully read to MwmInfo.
   virtual unique_ptr<MwmInfo> CreateInfo(platform::LocalCountryFile const & localFile) const = 0;
   virtual unique_ptr<MwmValueBase> CreateValue(MwmInfo & info) const = 0;
 
