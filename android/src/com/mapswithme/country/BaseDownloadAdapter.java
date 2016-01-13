@@ -19,6 +19,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.lang.ref.WeakReference;
+
 import com.cocosw.bottomsheet.BottomSheet;
 import com.mapswithme.maps.MapStorage;
 import com.mapswithme.maps.R;
@@ -30,8 +32,7 @@ import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.Utils;
 import com.mapswithme.util.statistics.Statistics;
 
-import java.lang.ref.WeakReference;
-
+@Deprecated
 public abstract class BaseDownloadAdapter extends BaseAdapter
 {
   static final int TYPE_GROUP = 0;

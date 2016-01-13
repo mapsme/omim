@@ -1,12 +1,7 @@
 package com.mapswithme.maps.downloader;
 
 import android.os.AsyncTask;
-import android.os.Build;
 import android.util.Log;
-
-import com.mapswithme.util.Constants;
-import com.mapswithme.util.StringUtils;
-import com.mapswithme.util.Utils;
 
 import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
@@ -19,6 +14,11 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import com.mapswithme.util.Constants;
+import com.mapswithme.util.StringUtils;
+import com.mapswithme.util.Utils;
+
+@SuppressWarnings("unused")
 class DownloadChunkTask extends AsyncTask<Void, byte[], Boolean>
 {
   private static final String TAG = "DownloadChunkTask";
@@ -33,16 +33,16 @@ class DownloadChunkTask extends AsyncTask<Void, byte[], Boolean>
   private byte[] mPostBody;
   private final String mUserAgent;
 
-  private final int NOT_SET = -1;
-  private final int IO_ERROR = -2;
-  private final int INVALID_URL = -3;
-  private final int WRITE_ERROR = -4;
-  private final int FILE_SIZE_CHECK_FAILED = -5;
+  private static final int NOT_SET = -1;
+  private static final int IO_ERROR = -2;
+  private static final int INVALID_URL = -3;
+  private static final int WRITE_ERROR = -4;
+  private static final int FILE_SIZE_CHECK_FAILED = -5;
 
   private int mHttpErrorCode = NOT_SET;
-  private long mDownloadedBytes = 0;
+  private long mDownloadedBytes;
 
-  private static Executor sExecutors = Executors.newFixedThreadPool(4);
+  private static final Executor sExecutors = Executors.newFixedThreadPool(4);
 
   native boolean onWrite(long httpCallbackID, long beg, byte[] data, long size);
 
@@ -103,7 +103,7 @@ class DownloadChunkTask extends AsyncTask<Void, byte[], Boolean>
     executeOnExecutor(sExecutors, (Void[]) null);
   }
 
-  static long parseContentRange(String contentRangeValue)
+  private static long parseContentRange(String contentRangeValue)
   {
     if (contentRangeValue != null)
     {

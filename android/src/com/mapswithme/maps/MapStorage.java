@@ -2,6 +2,7 @@ package com.mapswithme.maps;
 
 import java.io.Serializable;
 
+@Deprecated
 public enum MapStorage
 {
   INSTANCE;

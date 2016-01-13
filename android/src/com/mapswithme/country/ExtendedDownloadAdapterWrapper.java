@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.mapswithme.maps.R;
 
+@Deprecated
 public class ExtendedDownloadAdapterWrapper extends DownloadAdapter
 {
   protected static final int EXTENDED_VIEWS_COUNT = 2; // 3 more views at the top of baseadapter
