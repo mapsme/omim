@@ -156,4 +156,20 @@ public:
       child.ForEachDescendant(f);
     }
   }
+
+  template <class TFunctor>
+  void ForThisAndForEachDescendant(TFunctor && f)
+  {
+    f(*this);
+    for (auto const & child: m_children)
+      child.ForThisAndForEachDescendant(f);
+  }
+
+  template <class TFunctor>
+  void ForThisAndForEachDescendant(TFunctor && f) const
+  {
+    f(*this);
+    for (auto const & child: m_children)
+      child.ForThisAndForEachDescendant(f);
+  }
 };
