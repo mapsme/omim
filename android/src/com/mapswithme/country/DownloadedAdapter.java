@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import com.mapswithme.maps.BuildConfig;
 import com.mapswithme.maps.R;
 
+@Deprecated
 public class DownloadedAdapter extends BaseDownloadAdapter implements ActiveCountryTree.ActiveCountryListener
 {
   private static final String TAG = DownloadedAdapter.class.getSimpleName();
