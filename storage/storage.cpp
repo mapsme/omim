@@ -954,22 +954,20 @@ TCountryId const Storage::GetRootId() const
   return m_countries.Value().Name();
 }
 
-vector<TCountryId> Storage::GetChildren(TCountryId const & parent) const
+void Storage::GetChildren(TCountryId const & parent, vector<TCountryId> & childrenId) const
 {
   TCountriesContainer const * parentNode = m_countries.Find(parent);
   if (parentNode == nullptr)
   {
     ASSERT(false, ("TCountryId =", parent, "not found in m_countries."));
-    return vector<TCountryId>();
+    return;
   }
 
   size_t const childrenCount = parentNode->ChildrenCount();
-  vector<TCountryId> childrenVector;
-  childrenVector.reserve(childrenCount);
+  childrenId.clear();
+  childrenId.reserve(childrenCount);
   for (size_t i = 0; i < childrenCount; ++i)
-    childrenVector.emplace_back(parentNode->Child(i).Value().Name());
-
-  return childrenVector;
+    childrenId.emplace_back(parentNode->Child(i).Value().Name());
 }
 
 void Storage::GetLocalRealMaps(vector<TCountryId> & localMaps) const
@@ -1038,5 +1036,12 @@ bool Storage::IsNodeDownloaded(TCountryId const & countryId) const
       return true;
   }
   return false;
+}
+
+void Storage::GetCountyListToDownload(vector<TCountryId> & countryList) const
+{
+  vector<TCountryId> countryIds;
+  GetChildren(GetRootId(), countryIds);
+  // @TODO(bykoianko) Implement this method. Remove from this method fully downloaded maps.
 }
 }  // namespace storage
