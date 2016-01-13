@@ -10,6 +10,27 @@
 		34BF0FA41C4507CE00451BF9 /* app_store.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 34BF0FA11C4507CE00451BF9 /* app_store.hpp */; };
 		34BF0FA51C4507CE00451BF9 /* storage_helpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 34BF0FA21C4507CE00451BF9 /* storage_helpers.cpp */; };
 		34BF0FA61C4507CE00451BF9 /* storage_helpers.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 34BF0FA31C4507CE00451BF9 /* storage_helpers.hpp */; };
+		670E38F81C469ABE00E9C0A6 /* testingmain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 670E38D61C4699C400E9C0A6 /* testingmain.cpp */; };
+		670E38F91C469AC700E9C0A6 /* country_info_getter_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 670E38C21C46999400E9C0A6 /* country_info_getter_test.cpp */; };
+		670E38FA1C469ACD00E9C0A6 /* fake_map_files_downloader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 670E38C31C46999400E9C0A6 /* fake_map_files_downloader.cpp */; };
+		670E38FB1C469ACD00E9C0A6 /* queued_country_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 670E38C51C46999400E9C0A6 /* queued_country_tests.cpp */; };
+		670E38FC1C469ACD00E9C0A6 /* simple_tree_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 670E38C61C46999400E9C0A6 /* simple_tree_test.cpp */; };
+		670E38FD1C469ACD00E9C0A6 /* storage_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 670E38C71C46999400E9C0A6 /* storage_tests.cpp */; };
+		670E38FE1C469ACD00E9C0A6 /* task_runner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 670E38C81C46999400E9C0A6 /* task_runner.cpp */; };
+		670E38FF1C469ACD00E9C0A6 /* test_map_files_downloader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 670E38CA1C46999400E9C0A6 /* test_map_files_downloader.cpp */; };
+		670E39001C469BA000E9C0A6 /* libstorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 675342E01A3F59EF00A0A8C3 /* libstorage.a */; };
+		670E39031C469BC400E9C0A6 /* libbase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 670E39011C469BC400E9C0A6 /* libbase.a */; };
+		670E39041C469BC400E9C0A6 /* libplatform.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 670E39021C469BC400E9C0A6 /* libplatform.a */; };
+		670E39061C469BDE00E9C0A6 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 670E39051C469BDE00E9C0A6 /* Cocoa.framework */; };
+		670E39081C469BEC00E9C0A6 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 670E39071C469BEC00E9C0A6 /* IOKit.framework */; };
+		670E390F1C469D6B00E9C0A6 /* libcoding.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 670E390D1C469D6B00E9C0A6 /* libcoding.a */; };
+		670E39101C469D6B00E9C0A6 /* libindexer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 670E390E1C469D6B00E9C0A6 /* libindexer.a */; };
+		670E39131C469DA100E9C0A6 /* libalohalitics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 670E39111C469DA100E9C0A6 /* libalohalitics.a */; };
+		670E39141C469DA100E9C0A6 /* libgeometry.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 670E39121C469DA100E9C0A6 /* libgeometry.a */; };
+		670E39161C469DD700E9C0A6 /* libjansson.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 670E39151C469DD700E9C0A6 /* libjansson.a */; };
+		670E39181C469E0500E9C0A6 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 670E39171C469E0500E9C0A6 /* libz.tbd */; };
+		670E391A1C469E1100E9C0A6 /* libtomcrypt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 670E39191C469E1100E9C0A6 /* libtomcrypt.a */; };
+		670E39341C469EBD00E9C0A6 /* libplatform_test_support.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 670E39331C469EBD00E9C0A6 /* libplatform_test_support.a */; };
 		6741251E1B4C05FA00A3E828 /* http_map_files_downloader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 674125181B4C05FA00A3E828 /* http_map_files_downloader.cpp */; };
 		6741251F1B4C05FA00A3E828 /* http_map_files_downloader.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 674125191B4C05FA00A3E828 /* http_map_files_downloader.hpp */; };
 		674125201B4C05FA00A3E828 /* map_files_downloader.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 6741251A1B4C05FA00A3E828 /* map_files_downloader.hpp */; };
@@ -31,11 +52,49 @@
 		67AF4A011BC579DD0048B1ED /* country_info_getter.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 67AF49FF1BC579DD0048B1ED /* country_info_getter.hpp */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		670E38DA1C469A6700E9C0A6 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		34BF0FA11C4507CE00451BF9 /* app_store.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = app_store.hpp; sourceTree = "<group>"; };
 		34BF0FA21C4507CE00451BF9 /* storage_helpers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = storage_helpers.cpp; sourceTree = "<group>"; };
 		34BF0FA31C4507CE00451BF9 /* storage_helpers.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = storage_helpers.hpp; sourceTree = "<group>"; };
 		670D05A81B0E04450013A7AC /* defaults.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = defaults.xcconfig; path = ../defaults.xcconfig; sourceTree = "<group>"; };
+		670E38C21C46999400E9C0A6 /* country_info_getter_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = country_info_getter_test.cpp; sourceTree = "<group>"; };
+		670E38C31C46999400E9C0A6 /* fake_map_files_downloader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fake_map_files_downloader.cpp; sourceTree = "<group>"; };
+		670E38C41C46999400E9C0A6 /* fake_map_files_downloader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = fake_map_files_downloader.hpp; sourceTree = "<group>"; };
+		670E38C51C46999400E9C0A6 /* queued_country_tests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = queued_country_tests.cpp; sourceTree = "<group>"; };
+		670E38C61C46999400E9C0A6 /* simple_tree_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = simple_tree_test.cpp; sourceTree = "<group>"; };
+		670E38C71C46999400E9C0A6 /* storage_tests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = storage_tests.cpp; sourceTree = "<group>"; };
+		670E38C81C46999400E9C0A6 /* task_runner.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = task_runner.cpp; sourceTree = "<group>"; };
+		670E38C91C46999400E9C0A6 /* task_runner.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = task_runner.hpp; sourceTree = "<group>"; };
+		670E38CA1C46999400E9C0A6 /* test_map_files_downloader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test_map_files_downloader.cpp; sourceTree = "<group>"; };
+		670E38CB1C46999400E9C0A6 /* test_map_files_downloader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = test_map_files_downloader.hpp; sourceTree = "<group>"; };
+		670E38D61C4699C400E9C0A6 /* testingmain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = testingmain.cpp; path = ../../testing/testingmain.cpp; sourceTree = "<group>"; };
+		670E38DC1C469A6700E9C0A6 /* storage_tests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = storage_tests; sourceTree = BUILT_PRODUCTS_DIR; };
+		670E39011C469BC400E9C0A6 /* libbase.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbase.a; path = "../../../omim-xcode-build/Debug/libbase.a"; sourceTree = "<group>"; };
+		670E39021C469BC400E9C0A6 /* libplatform.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libplatform.a; path = "../../../omim-xcode-build/Debug/libplatform.a"; sourceTree = "<group>"; };
+		670E39051C469BDE00E9C0A6 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		670E39071C469BEC00E9C0A6 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		670E39091C469CCF00E9C0A6 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		670E390A1C469CCF00E9C0A6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		670E390D1C469D6B00E9C0A6 /* libcoding.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcoding.a; path = "../../../omim-xcode-build/Debug/libcoding.a"; sourceTree = "<group>"; };
+		670E390E1C469D6B00E9C0A6 /* libindexer.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libindexer.a; path = "../../../omim-xcode-build/Debug/libindexer.a"; sourceTree = "<group>"; };
+		670E39111C469DA100E9C0A6 /* libalohalitics.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libalohalitics.a; path = "../../../omim-xcode-build/Debug/libalohalitics.a"; sourceTree = "<group>"; };
+		670E39121C469DA100E9C0A6 /* libgeometry.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgeometry.a; path = "../../../omim-xcode-build/Debug/libgeometry.a"; sourceTree = "<group>"; };
+		670E39151C469DD700E9C0A6 /* libjansson.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjansson.a; path = "../../../omim-xcode-build/Debug/libjansson.a"; sourceTree = "<group>"; };
+		670E39171C469E0500E9C0A6 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		670E39191C469E1100E9C0A6 /* libtomcrypt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtomcrypt.a; path = "../../../omim-xcode-build/Debug/libtomcrypt.a"; sourceTree = "<group>"; };
+		670E39331C469EBD00E9C0A6 /* libplatform_test_support.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libplatform_test_support.a; path = "../../../omim-xcode-build/Debug/libplatform_test_support.a"; sourceTree = "<group>"; };
 		674125181B4C05FA00A3E828 /* http_map_files_downloader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = http_map_files_downloader.cpp; sourceTree = "<group>"; };
 		674125191B4C05FA00A3E828 /* http_map_files_downloader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = http_map_files_downloader.hpp; sourceTree = "<group>"; };
 		6741251A1B4C05FA00A3E828 /* map_files_downloader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = map_files_downloader.hpp; sourceTree = "<group>"; };
@@ -59,6 +118,26 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		670E38D91C469A6700E9C0A6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				670E39341C469EBD00E9C0A6 /* libplatform_test_support.a in Frameworks */,
+				670E391A1C469E1100E9C0A6 /* libtomcrypt.a in Frameworks */,
+				670E39181C469E0500E9C0A6 /* libz.tbd in Frameworks */,
+				670E39161C469DD700E9C0A6 /* libjansson.a in Frameworks */,
+				670E39131C469DA100E9C0A6 /* libalohalitics.a in Frameworks */,
+				670E39141C469DA100E9C0A6 /* libgeometry.a in Frameworks */,
+				670E390F1C469D6B00E9C0A6 /* libcoding.a in Frameworks */,
+				670E39101C469D6B00E9C0A6 /* libindexer.a in Frameworks */,
+				670E39081C469BEC00E9C0A6 /* IOKit.framework in Frameworks */,
+				670E39061C469BDE00E9C0A6 /* Cocoa.framework in Frameworks */,
+				670E39031C469BC400E9C0A6 /* libbase.a in Frameworks */,
+				670E39041C469BC400E9C0A6 /* libplatform.a in Frameworks */,
+				670E39001C469BA000E9C0A6 /* libstorage.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		675342DD1A3F59EF00A0A8C3 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -69,11 +148,53 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		670E38C11C46994400E9C0A6 /* tests */ = {
+			isa = PBXGroup;
+			children = (
+				670E38D61C4699C400E9C0A6 /* testingmain.cpp */,
+				670E38C21C46999400E9C0A6 /* country_info_getter_test.cpp */,
+				670E38C31C46999400E9C0A6 /* fake_map_files_downloader.cpp */,
+				670E38C41C46999400E9C0A6 /* fake_map_files_downloader.hpp */,
+				670E38C51C46999400E9C0A6 /* queued_country_tests.cpp */,
+				670E38C61C46999400E9C0A6 /* simple_tree_test.cpp */,
+				670E38C71C46999400E9C0A6 /* storage_tests.cpp */,
+				670E38C81C46999400E9C0A6 /* task_runner.cpp */,
+				670E38C91C46999400E9C0A6 /* task_runner.hpp */,
+				670E38CA1C46999400E9C0A6 /* test_map_files_downloader.cpp */,
+				670E38CB1C46999400E9C0A6 /* test_map_files_downloader.hpp */,
+			);
+			name = tests;
+			path = ../../storage/storage_tests;
+			sourceTree = "<group>";
+		};
+		670E39351C46A6AD00E9C0A6 /* libs */ = {
+			isa = PBXGroup;
+			children = (
+				670E39331C469EBD00E9C0A6 /* libplatform_test_support.a */,
+				670E39191C469E1100E9C0A6 /* libtomcrypt.a */,
+				670E39151C469DD700E9C0A6 /* libjansson.a */,
+				670E39111C469DA100E9C0A6 /* libalohalitics.a */,
+				670E39121C469DA100E9C0A6 /* libgeometry.a */,
+				670E390D1C469D6B00E9C0A6 /* libcoding.a */,
+				670E390E1C469D6B00E9C0A6 /* libindexer.a */,
+				670E39171C469E0500E9C0A6 /* libz.tbd */,
+				670E39091C469CCF00E9C0A6 /* CoreFoundation.framework */,
+				670E390A1C469CCF00E9C0A6 /* Foundation.framework */,
+				670E39071C469BEC00E9C0A6 /* IOKit.framework */,
+				670E39051C469BDE00E9C0A6 /* Cocoa.framework */,
+				670E39011C469BC400E9C0A6 /* libbase.a */,
+				670E39021C469BC400E9C0A6 /* libplatform.a */,
+			);
+			name = libs;
+			sourceTree = "<group>";
+		};
 		675342D71A3F59EF00A0A8C3 = {
 			isa = PBXGroup;
 			children = (
+				670E39351C46A6AD00E9C0A6 /* libs */,
 				670D05A81B0E04450013A7AC /* defaults.xcconfig */,
 				675342E21A3F59EF00A0A8C3 /* storage */,
+				670E38C11C46994400E9C0A6 /* tests */,
 				675342E11A3F59EF00A0A8C3 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -82,6 +203,7 @@
 			isa = PBXGroup;
 			children = (
 				675342E01A3F59EF00A0A8C3 /* libstorage.a */,
+				670E38DC1C469A6700E9C0A6 /* storage_tests */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -142,6 +264,23 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		670E38DB1C469A6700E9C0A6 /* storage_tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 670E38E01C469A6700E9C0A6 /* Build configuration list for PBXNativeTarget "storage_tests" */;
+			buildPhases = (
+				670E38D81C469A6700E9C0A6 /* Sources */,
+				670E38D91C469A6700E9C0A6 /* Frameworks */,
+				670E38DA1C469A6700E9C0A6 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = storage_tests;
+			productName = storage_tests;
+			productReference = 670E38DC1C469A6700E9C0A6 /* storage_tests */;
+			productType = "com.apple.product-type.tool";
+		};
 		675342DF1A3F59EF00A0A8C3 /* storage */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 675342EB1A3F59EF00A0A8C3 /* Build configuration list for PBXNativeTarget "storage" */;
@@ -168,6 +307,9 @@
 				LastUpgradeCheck = 0630;
 				ORGANIZATIONNAME = maps.me;
 				TargetAttributes = {
+					670E38DB1C469A6700E9C0A6 = {
+						CreatedOnToolsVersion = 7.1.1;
+					};
 					675342DF1A3F59EF00A0A8C3 = {
 						CreatedOnToolsVersion = 6.1;
 					};
@@ -186,11 +328,27 @@
 			projectRoot = "";
 			targets = (
 				675342DF1A3F59EF00A0A8C3 /* storage */,
+				670E38DB1C469A6700E9C0A6 /* storage_tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		670E38D81C469A6700E9C0A6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				670E38F81C469ABE00E9C0A6 /* testingmain.cpp in Sources */,
+				670E38FD1C469ACD00E9C0A6 /* storage_tests.cpp in Sources */,
+				670E38FC1C469ACD00E9C0A6 /* simple_tree_test.cpp in Sources */,
+				670E38FF1C469ACD00E9C0A6 /* test_map_files_downloader.cpp in Sources */,
+				670E38FA1C469ACD00E9C0A6 /* fake_map_files_downloader.cpp in Sources */,
+				670E38F91C469AC700E9C0A6 /* country_info_getter_test.cpp in Sources */,
+				670E38FB1C469ACD00E9C0A6 /* queued_country_tests.cpp in Sources */,
+				670E38FE1C469ACD00E9C0A6 /* task_runner.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		675342DC1A3F59EF00A0A8C3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -210,6 +368,57 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		670E38E11C469A6700E9C0A6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(QT_PATH)/lib";
+				GCC_NO_COMMON_BLOCKS = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(OMIM_ROOT)/3party/jansson/src",
+				);
+				LIBRARY_SEARCH_PATHS = "$(QT_PATH)/lib";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				OTHER_LDFLAGS = (
+					"-framework",
+					QtCore,
+					"-framework",
+					QtNetwork,
+					"-framework",
+					SystemConfiguration,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		670E38E21C469A6700E9C0A6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(QT_PATH)/lib";
+				GCC_NO_COMMON_BLOCKS = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(OMIM_ROOT)/3party/jansson/src",
+				);
+				LIBRARY_SEARCH_PATHS = "$(QT_PATH)/lib";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				OTHER_LDFLAGS = (
+					"-framework",
+					QtCore,
+					"-framework",
+					QtNetwork,
+					"-framework",
+					SystemConfiguration,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		675342E91A3F59EF00A0A8C3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 670D05A81B0E04450013A7AC /* defaults.xcconfig */;
@@ -327,6 +536,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		670E38E01C469A6700E9C0A6 /* Build configuration list for PBXNativeTarget "storage_tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				670E38E11C469A6700E9C0A6 /* Debug */,
+				670E38E21C469A6700E9C0A6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		675342DB1A3F59EF00A0A8C3 /* Build configuration list for PBXProject "storage" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
