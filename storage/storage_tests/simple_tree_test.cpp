@@ -68,10 +68,19 @@ UNIT_TEST(SimpleTree_Smoke)
   tree.ForEachDescendant(c2);
   TEST_EQUAL(c2.count, 8, ());
 
-  tree.Clear();
   Calculator<TreeT> c3;
-  tree.ForEachDescendant(c3);
-  TEST_EQUAL(c3.count, 0, ("Tree should be empty"));
+  tree.ForThisAndForEachDescendant(c3);
+  TEST_EQUAL(c3.count, 9, ());
+
+  tree.Clear();
+
+  Calculator<TreeT> c4;
+  tree.ForEachDescendant(c4);
+  TEST_EQUAL(c4.count, 0, ("Tree should be empty"));
+
+  Calculator<TreeT> c5;
+  tree.ForThisAndForEachDescendant(c5);
+  TEST_EQUAL(c5.count, 1, ("Tree should be without any child."));
 }
 
 UNIT_TEST(SimpleTree_Country)
