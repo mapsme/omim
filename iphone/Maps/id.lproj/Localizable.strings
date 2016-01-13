@@ -534,20 +534,21 @@
 "pref_tts_how_to_set_up_voice" = "Cara mengatur suara";
 
 /* Settings «Map» category: «Record track» title */
-"pref_track_record_enabled_title" = "Record GPS track";
+"pref_track_record_enabled_title" = "Jalur terkini";
 
-/* Settings «Map» category: «Length of recorded track» title */
-"pref_track_record_length_title" = "Record length";
+"duration_1_hour" = "1 jam";
 
-"duration_1_hour" = "1 hour";
+"duration_2_hours" = "2 jam";
 
-"duration_2_hours" = "2 hours";
+"duration_6_hours" = "6 jam";
 
-"duration_6_hours" = "6 hours";
+"duration_12_hours" = "12 jam";
 
-"duration_12_hours" = "12 hours";
+"duration_1_day" = "1 hari";
 
-"duration_1_day" = "1 day";
+"pref_track_ios_caption" = "Jalur terakhir menunjukkan jalur yang sudah Anda lalui.";
+
+"pref_track_ios_subcaption" = "Silakan pilih jangka waktu penyimpanan jalur.";
 
 "placepage_distance" = "Jarak";
 
@@ -1358,3 +1359,7 @@
 "whats_new_3d_buildings_on" = "Aktifkan Bangunan 3D";
 
 "whats_new_next_button" = "Berikut";
+
+"whats_new_rec_track_title" = "Dengan MAPS.ME Anda tidak akan tersesat";
+
+"whats_new_rec_track_body" = "Aplikasi kini menunjukkan jalur yang telah Anda tempuh baru-baru ini.";

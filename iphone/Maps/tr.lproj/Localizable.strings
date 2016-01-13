@@ -534,20 +534,21 @@
 "pref_tts_how_to_set_up_voice" = "Ses nasıl ayarlanır";
 
 /* Settings «Map» category: «Record track» title */
-"pref_track_record_enabled_title" = "Record GPS track";
+"pref_track_record_enabled_title" = "En son yol";
 
-/* Settings «Map» category: «Length of recorded track» title */
-"pref_track_record_length_title" = "Record length";
+"duration_1_hour" = "1 saat";
 
-"duration_1_hour" = "1 hour";
+"duration_2_hours" = "2 saat";
 
-"duration_2_hours" = "2 hours";
+"duration_6_hours" = "6 saat";
 
-"duration_6_hours" = "6 hours";
+"duration_12_hours" = "12 saat";
 
-"duration_12_hours" = "12 hours";
+"duration_1_day" = "1 gün";
 
-"duration_1_day" = "1 day";
+"pref_track_ios_caption" = "En son yol seyahat ettiğiniz yolları gösterir.";
+
+"pref_track_ios_subcaption" = "Lütfen kaydedilecek yol süresini seçin.";
 
 "placepage_distance" = "Mesafe";
 
@@ -1358,3 +1359,7 @@
 "whats_new_3d_buildings_on" = "3D Binalar seçeneğini etkinleştir";
 
 "whats_new_next_button" = "Sonraki";
+
+"whats_new_rec_track_title" = "MAPS.ME ile kaybolmayacaksınız";
+
+"whats_new_rec_track_body" = "Artık uygulama en son seyahat ettiğiniz güzergâhı gösteriyor.";
