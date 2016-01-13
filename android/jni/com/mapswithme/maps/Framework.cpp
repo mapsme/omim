@@ -717,7 +717,7 @@ extern "C"
     auto const * feature = mark->GetFeature();
     if (feature)
     {
-      info = fm->GetPOIAddressInfo(*feature);
+      info = fm->GetFeatureAddressInfo(*feature);
       metadata = feature->GetMetadata();
     }
     else
@@ -1156,7 +1156,7 @@ extern "C"
     if (feature)
     {
       metadata = feature->GetMetadata();
-      info = frm()->GetPOIAddressInfo(*feature);
+      info = frm()->GetFeatureAddressInfo(*feature);
     }
     // TODO(AlexZ): else case?
 
