@@ -503,6 +503,9 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
       m_commutator->PostMessage(ThreadsCommutator::ResourceUploadThread,
                                 make_unique_dp<UpdateReadManagerMessage>(),
                                 MessagePriority::UberHighSingleton);
+
+      m_gpsTrackRenderer->Update();
+
       break;
     }
 
