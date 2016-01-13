@@ -123,6 +123,36 @@ void ReverseGeocoder::GetNearbyAddress(m2::PointD const & center, Address & addr
   }
 }
 
+vector<ReverseGeocoder::Street> ReverseGeocoder::GetNearbyFeatureStreets(FeatureType const & feature) const
+{
+  vector<ReverseGeocoder::Street> streets;
+
+  FeatureID const fid = feature.GetID();
+  MwmSet::MwmHandle const mwmHandle = m_index.GetMwmHandleById(fid.m_mwmId);
+  if (!mwmHandle.IsAlive())
+  {
+    LOG(LERROR, ("Feature handle is not alive", feature));
+    return streets;
+  }
+
+  GetNearbyStreets(feature::GetCenter(feature), streets);
+
+  unique_ptr<search::v2::HouseToStreetTable> const table =
+      search::v2::HouseToStreetTable::Load(*mwmHandle.GetValue<MwmValue>());
+
+  uint32_t const streetIndex = table->Get(fid.m_index);
+  if (streetIndex < streets.size())
+  {
+    // Feature's street should always be first in the list.
+    if (streetIndex != 0)
+      swap(streets[0], streets[streetIndex]);
+  }
+  else if (!streets.empty())
+    LOG(LERROR, ("Invalid street index", streetIndex, "for feature", feature));
+
+  return streets;
+}
+
 void ReverseGeocoder::GetNearbyBuildings(m2::PointD const & center, vector<Building> & buildings) const
 {
   GetNearbyBuildings(center, kLookupRadiusM, buildings);
