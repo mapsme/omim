@@ -97,7 +97,7 @@ UNIT_TEST(QueuedCountry_Bits)
   QueuedCountry country(countryId, MapOptions::MapWithCarRouting);
   TEST_EQUAL(MapOptions::Nothing, country.GetDownloadedFiles(), ());
 
-  TEST(country.SwitchToNextFile(), ());
+  TEST(!country.SwitchToNextFile(), ());
   TEST_EQUAL(MapOptions::Map, country.GetDownloadedFiles(), ());
 
   TEST(!country.SwitchToNextFile(), ());
