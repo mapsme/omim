@@ -601,9 +601,11 @@ void Storage::OnServerListDownloaded(vector<string> const & urls)
   TCountryId const & countryId = queuedCountry.GetCountryId();
   MapOptions const file = queuedCountry.GetCurrentFile();
 
+  vector<string> const downloadingUrls =
+      m_downloadingUrlsForTesting.empty() ? urls : m_downloadingUrlsForTesting;
   vector<string> fileUrls;
-  fileUrls.reserve(urls.size());
-  for (string const & url : urls)
+  fileUrls.reserve(downloadingUrls.size());
+  for (string const & url : downloadingUrls)
     fileUrls.push_back(GetFileDownloadUrl(url, countryId, file));
 
   string const filePath = GetFileDownloadPath(countryId, file);
@@ -644,7 +646,11 @@ bool Storage::RegisterDownloadedFiles(TCountryId const & countryId, MapOptions f
   }
 
   bool ok = true;
-  for (MapOptions file : {MapOptions::Map, MapOptions::CarRouting})
+  vector<MapOptions> mapOpt = { MapOptions::Map };
+  if (!version::IsSingleMwm(GetCurrentDataVersion()))
+    mapOpt.emplace_back(MapOptions::CarRouting);
+
+  for (MapOptions file : mapOpt)
   {
     if (!HasOptions(files, file))
       continue;
@@ -766,6 +772,7 @@ TStatus Storage::CountryStatusFull(TCountryId const & countryId, TStatus const s
 
 MapOptions Storage::NormalizeDownloadFileSet(TCountryId const & countryId, MapOptions options) const
 {
+  MapOptions const start = options;
   auto const & country = GetCountryFile(countryId);
 
   // Car routing files are useless without map files.
@@ -790,6 +797,8 @@ MapOptions Storage::NormalizeDownloadFileSet(TCountryId const & countryId, MapOp
     }
   }
 
+  if (start != options)
+    return start;
   return options;
 }
 
@@ -1044,5 +1053,29 @@ void Storage::GetCountyListToDownload(vector<TCountryId> & countryList) const
   vector<TCountryId> countryIds;
   GetChildren(GetRootId(), countryIds);
   // @TODO(bykoianko) Implement this method. Remove from this method fully downloaded maps.
+}
+
+void Storage::DownloadNode(TCountryId const & countryId)
+{
+  TCountriesContainer const * const node = m_countries.Find(countryId);
+  CHECK(node, ());
+  node->ForThisAndForEachDescendant([this](TCountriesContainer const & descendantNode)
+                                   {
+                                     if (descendantNode.ChildrenCount() == 0)
+                                       this->DownloadCountry(descendantNode.Value().Name(),
+                                                             MapOptions::MapWithCarRouting);
+                                   });
+}
+
+void Storage::DeleteNode(TCountryId const & countryId)
+{
+  TCountriesContainer const * const node = m_countries.Find(countryId);
+  CHECK(node, ());
+  node->ForThisAndForEachDescendant([this](TCountriesContainer const & descendantNode)
+                                   {
+                                     if (descendantNode.ChildrenCount() == 0)
+                                       this->DeleteCountry(descendantNode.Value().Name(),
+                                                           MapOptions::MapWithCarRouting);
+                                   });
 }
 }  // namespace storage

@@ -88,6 +88,10 @@ private:
   // downloading maps to a special place but not for continue working with them from this place.
   string m_dataDir;
 
+  // A list of urls or severes for downloading maps. It's necessary for storage integration tests.
+  // For example { "http://eu1.mapswithme.com/direct/mac/" }http://eu1.mapswithme.com/direct/160107/Angola.mwm
+  vector<string> m_downloadingUrlsForTesting;
+
   void DownloadNextCountryFromQueue();
 
   void LoadCountriesFile(string const & pathToCountriesFile,
@@ -261,10 +265,10 @@ public:
   /// If node is expandable downloads all children (grandchildren) by the node
   /// until they havn't been downloaded before. Update all downloaded mwm if it's necessary.
   /// \return false in case of error and true otherwise.
-  bool DownloadNode(TCountryId const & countryId);
+  void DownloadNode(TCountryId const & countryId);
   /// \brief Delete one node (expandable or not).
   /// \return false in case of error and true otherwise.
-  bool DeleteNode(TCountryId const & countryId);
+  void DeleteNode(TCountryId const & countryId);
   /// \brief Updates one node (expandable or not).
   /// \note If you want to update all the maps and this update is without changing
   /// borders or hierarchy just call UpdateNode(GetRootId()).
@@ -385,6 +389,8 @@ public:
 
   void SetDownloaderForTesting(unique_ptr<MapFilesDownloader> && downloader);
   void SetCurrentDataVersionForTesting(int64_t currentVersion);
+  void SetDownloadingUrlsForTesting(vector<string> const & downloadingUrls)
+      { m_downloadingUrlsForTesting = downloadingUrls; }
 
 private:
   friend void UnitTest_StorageTest_DeleteCountry();
