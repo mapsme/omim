@@ -325,6 +325,7 @@ TLocalFilePtr CreateDummyMapFile(CountryFile const & countryFile, int64_t versio
 void InitStorage(Storage & storage, TaskRunner & runner,
                  Storage::TUpdate const & update = &OnCountryDownloaded)
 {
+  storage.Clear();
   storage.Init(update);
   storage.RegisterAllLocalMaps();
   storage.SetDownloaderForTesting(make_unique<FakeMapFilesDownloader>(runner));
