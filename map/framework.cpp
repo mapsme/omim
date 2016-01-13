@@ -472,7 +472,7 @@ void Framework::RegisterAllMaps()
 
   m_activeMaps->Init(maps);
 
-  m_searchEngine->SetSupportOldFormat(minFormat < version::v3);
+  m_searchEngine->SetSupportOldFormat(minFormat < static_cast<int>(version::Format::v3));
 }
 
 void Framework::DeregisterAllMaps()
@@ -1497,7 +1497,7 @@ bool Framework::ShowMapForURL(string const & url)
 
     return true;
   }
-  
+
   return false;
 }
 
