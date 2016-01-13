@@ -468,43 +468,6 @@ UNIT_TEST(StorageTest_DeleteTwoVersionsOfTheSameCountry)
   TEST_EQUAL(TStatus::ENotDownloaded, storage.CountryStatusEx(countryId), ());
 }
 
-UNIT_TEST(StorageTest_DownloadCountryAndDeleteRoutingOnly)
-{
-  Storage storage;
-  if (version::IsSingleMwm(storage.GetCurrentDataVersion()))
-    return; // Test on routing mwm is not relevant for single mwm data.
-
-  TaskRunner runner;
-  InitStorage(storage, runner);
-
-  TCountryId const countryId = storage.FindCountryIdByFile("Azerbaijan");
-  TEST(IsCountryIdValid(countryId), ());
-  storage.DeleteCountry(countryId, MapOptions::MapWithCarRouting);
-
-  {
-    unique_ptr<CountryDownloaderChecker> checker =
-        AbsentCountryDownloaderChecker(storage, countryId, MapOptions::MapWithCarRouting);
-    checker->StartDownload();
-    runner.Run();
-  }
-
-  // Delete routing file only and check that latest local file wasn't changed.
-  TLocalFilePtr localFileA = storage.GetLatestLocalFile(countryId);
-  TEST(localFileA.get(), ());
-  TEST_EQUAL(MapOptions::MapWithCarRouting, localFileA->GetFiles(), ());
-
-  storage.DeleteCountry(countryId, MapOptions::CarRouting);
-
-  TLocalFilePtr localFileB = storage.GetLatestLocalFile(countryId);
-  TEST(localFileB.get(), ());
-  TEST_EQUAL(localFileA.get(), localFileB.get(), (*localFileA, *localFileB));
-  TEST_EQUAL(MapOptions::Map, localFileB->GetFiles(), ());
-
-  storage.DeleteCountry(countryId, MapOptions::Map);
-  TLocalFilePtr localFileC = storage.GetLatestLocalFile(countryId);
-  TEST(!localFileC.get(), (*localFileC));
-}
-
 UNIT_TEST(StorageTest_DownloadMapAndRoutingSeparately)
 {
   Storage storage;
@@ -798,35 +761,6 @@ UNIT_TEST(StorageTest_FailedDownloading)
   TEST(!Platform::IsFileExistsByFullPath(downloadPath), ());
   TEST(Platform::IsFileExistsByFullPath(downloadPath + DOWNLOADING_FILE_EXTENSION), ());
   TEST(Platform::IsFileExistsByFullPath(downloadPath + RESUME_FILE_EXTENSION), ());
-}
-
-// "South Georgia and the South Sandwich" doesn't have roads, so there
-// is no routing file for this island.
-UNIT_TEST(StorageTest_EmptyRoutingFile)
-{
-  Storage storage;
-  if (version::IsSingleMwm(storage.GetCurrentDataVersion()))
-    return; // Following code tests car routing files, and is not relevant for a single mwm case.
-
-  TaskRunner runner;
-  InitStorage(storage, runner, [](LocalCountryFile const & localFile)
-              {
-                TEST_EQUAL(localFile.GetFiles(), MapOptions::Map, ());
-              });
-
-  TCountryId const countryId = storage.FindCountryIdByFile("South Georgia and the South Sandwich Islands");
-  TEST(IsCountryIdValid(countryId), ());
-  storage.DeleteCountry(countryId, MapOptions::MapWithCarRouting);
-  MY_SCOPE_GUARD(cleanup,
-                 bind(&Storage::DeleteCountry, &storage, countryId, MapOptions::MapWithCarRouting));
-
-  CountryFile const country = storage.GetCountryFile(countryId);
-  TEST_NOT_EQUAL(country.GetRemoteSize(MapOptions::Map), 0, ());
-  TEST_EQUAL(country.GetRemoteSize(MapOptions::CarRouting), 0, ());
-
-  auto checker = AbsentCountryDownloaderChecker(storage, countryId, MapOptions::MapWithCarRouting);
-  checker->StartDownload();
-  runner.Run();
 }
 
 UNIT_TEST(StorageTest_ObsoleteMapsRemoval)
@@ -1124,5 +1058,4 @@ UNIT_TEST(StorageTest_TwoInstance)
     TEST(platform.IsFileExistsByFullPath(my::JoinFoldersToPath(writableDir, versionDir1)), ());
   }
 }
-
 }  // namespace storage
