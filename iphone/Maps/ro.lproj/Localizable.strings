@@ -1170,7 +1170,7 @@
 
 "dialog_routing_disclaimer_recommendations" = "— Traseele sugerate au numai rol de recomandări;";
 
-"dialog_routing_disclaimer_borders" = "Aveți grijă în zonele de graniță: rutele create de aplicația noastră ar putea, ocazional, să treacă granița prin locuri nepermise.";
+"dialog_routing_disclaimer_borders" = "— Aveți grijă în zonele de graniță: rutele create de aplicația noastră ar putea, ocazional, să treacă granița prin locuri nepermise;";
 
 "dialog_routing_disclaimer_beware" = "Rămâneţi vigilenţi şi conduceţi în siguranţă!";
 
@@ -1340,3 +1340,5 @@
 "whats_new_3d_on" = "Activare vizualizare în perspectivă";
 
 "whats_new_3d_buildings_on" = "Activare Clădiri 3D";
+
+"whats_new_next_button" = "Următoarea";

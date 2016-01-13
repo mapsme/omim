@@ -1170,7 +1170,7 @@
 
 "dialog_routing_disclaimer_recommendations" = "— 建议的路线仅作为推荐路线供您采纳。；";
 
-"dialog_routing_disclaimer_borders" = "小心对待国界区的路线：我们应用创造的路线有时会在未经授权的地方跨越国界。";
+"dialog_routing_disclaimer_borders" = "— 小心对待国界区的路线：我们应用创造的路线有时会在未经授权的地方跨越国界;";
 
 "dialog_routing_disclaimer_beware" = "上路时请当心，祝您一路平安！";
 
@@ -1340,3 +1340,5 @@
 "whats_new_3d_on" = "启用透视图";
 
 "whats_new_3d_buildings_on" = "启用3D建筑";
+
+"whats_new_next_button" = "下一页";

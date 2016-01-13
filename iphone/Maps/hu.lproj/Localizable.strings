@@ -1170,7 +1170,7 @@
 
 "dialog_routing_disclaimer_recommendations" = "— A javasolt útvonalakat mindössze javaslatoknak kell tekinteni;";
 
-"dialog_routing_disclaimer_borders" = "A határmenti útvonalakon közlekedjen óvatosan: az alkalmazásunk által létrehozott útvonalak néha olyan helyeken szelhetik át az országhatárokat, amelyek nem engedélyezettek.";
+"dialog_routing_disclaimer_borders" = "— A határmenti útvonalakon közlekedjen óvatosan: az alkalmazásunk által létrehozott útvonalak néha olyan helyeken szelhetik át az országhatárokat, amelyek nem engedélyezettek;";
 
 "dialog_routing_disclaimer_beware" = "Kérjük, mindig maradjon éber és vezessen biztonságosan az utakon!";
 
@@ -1340,3 +1340,5 @@
 "whats_new_3d_on" = "Távlati kép engedélyezése";
 
 "whats_new_3d_buildings_on" = "3D Épületek engedélyezése";
+
+"whats_new_next_button" = "Következő";

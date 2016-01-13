@@ -263,7 +263,7 @@
 	<!-- Subject for emailed bookmark -->
 	<string name="bookmark_share_email_subject">Hey, tjek min knappenål på MAPS.ME kortet ud!</string>
 	<!-- Share one specific bookmark using EMail, %1$@ is bookmark's name, %2$@ is ge0:// link and %3$@ http://ge0.me -->
-	<string name="bookmark_share_email">Hey,\n\nI har lagt en knappenål: %1$s på MAPS.ME, offline kort over hele Verden. Tryk pådettelink: %2$sellerdette%3$sforatseknappenåletpåkortet.\n\nTak.</string>
+	<string name="bookmark_share_email">Hey,\n\nI har lagt en knappenål: %1$s på MAPS.ME, offline kort over hele Verden. Tryk pådettelink: %2$s ellerdette %3$s foratseknappenåletpåkortet.\n\nTak.</string>
 	<!-- Subject for emailed position -->
 	<string name="my_position_share_email_subject">Hey, tjek min nuværende lokation ud på MAPS.ME kortet!</string>
 	<!-- Share my position using EMail, %1$@ is ge0:// and %2$@ is http://ge0.me link WITHOUT NAME -->
@@ -725,7 +725,7 @@
 	<string name="dialog_routing_disclaimer_priority">— Vejforhold, færdselsregler og skiltning skal prioriteres højere end anvisningerne fra navigationsappen;</string>
 	<string name="dialog_routing_disclaimer_precision">— Kortet kan være unøjagtigt, og den foreslåede rute er ikke nødvendigvis altid den bedste måde at nå destinationen på;</string>
 	<string name="dialog_routing_disclaimer_recommendations">— De foreslåede ruter skal kun betragtes som anbefalinger;</string>
-	<string name="dialog_routing_disclaimer_borders">Vær forsigtig med ruter i grænseområder: de ruter, vores app har skabt, kan nogle gange krydse landegrænser på uautoriserede steder.</string>
+	<string name="dialog_routing_disclaimer_borders">— Vær forsigtig med ruter i grænseområder: de ruter, vores app har skabt, kan nogle gange krydse landegrænser på uautoriserede steder;</string>
 	<string name="dialog_routing_disclaimer_beware">Vær altid særligt opmærksom og årvågen, når du sidder bag rattet!</string>
 	<string name="dialog_routing_check_gps">Tjek GPS-signalet</string>
 	<string name="dialog_routing_error_location_not_found">Det lykkedes ikke at planlægge en rute. GPS-koordinaterne kunne ikke identificeres korrekt.</string>
@@ -814,4 +814,5 @@
 	<string name="whats_new_3d_update_maps">For at udnytte denne funktion fuldt ud skal du opdatere dine kortdata.</string>
 	<string name="whats_new_3d_on">Aktivér perspektivvisning</string>
 	<string name="whats_new_3d_buildings_on">Aktivér 3D-bygninger</string>
+	<string name="whats_new_next_button">Næste</string>
 </resources>

@@ -1170,7 +1170,7 @@
 
 "dialog_routing_disclaimer_recommendations" = "— I percorsi suggeriti devono essere considerati solo come consigli;";
 
-"dialog_routing_disclaimer_borders" = "Fai attenzione ai percorsi nelle zone di confine: i percorsi creati dalla nostra app possono, a volte, attraversare i confini di stato in zone non autorizzate.";
+"dialog_routing_disclaimer_borders" = "— Fai attenzione ai percorsi nelle zone di confine: i percorsi creati dalla nostra app possono, a volte, attraversare i confini di stato in zone non autorizzate;";
 
 "dialog_routing_disclaimer_beware" = "Fai sempre attenzione e guida con prudenza!";
 
@@ -1340,3 +1340,5 @@
 "whats_new_3d_on" = "Attiva vista in prospettiva";
 
 "whats_new_3d_buildings_on" = "Attiva Edifici in 3D";
+
+"whats_new_next_button" = "Avanti";

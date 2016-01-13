@@ -260,7 +260,7 @@ void GLFunctions::glDepthFunc(glConst depthFunc) {}
 
 void GLFunctions::glUniformValueiv(int8_t location, int32_t * v, uint32_t size) {}
 
-void * GLFunctions::glMapBuffer(glConst target) { return 0; }
+void * GLFunctions::glMapBuffer(glConst, glConst) { return 0; }
 
 void GLFunctions::glUnmapBuffer(glConst target) {}
 

@@ -1497,7 +1497,7 @@ bool Framework::ShowMapForURL(string const & url)
 
     return true;
   }
-  
+
   return false;
 }
 
@@ -1910,6 +1910,9 @@ void Framework::BuildRoute(m2::PointD const & start, m2::PointD const & finish, 
 void Framework::FollowRoute()
 {
   ASSERT(m_drapeEngine != nullptr, ());
+
+  if (!m_routingSession.EnableFollowMode())
+    return;
 
   int const scale = (m_currentRouterType == RouterType::Pedestrian) ? scales::GetPedestrianNavigationScale()
                                                                     : scales::GetNavigationScale();

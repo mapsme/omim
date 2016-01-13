@@ -1170,7 +1170,7 @@
 
 "dialog_routing_disclaimer_recommendations" = "— Die vorgeschlagenen Routen sind als Empfehlungen zu verstehen;";
 
-"dialog_routing_disclaimer_borders" = "Bitte seien Sie vorsichtig bei Routen in Grenzgebieten: die Routen, die unsere App erstellt, können manchmal Landesgrenzen überschreiten und durch Sperrgebiete führen.";
+"dialog_routing_disclaimer_borders" = "— Bitte seien Sie vorsichtig bei Routen in Grenzgebieten: die Routen, die unsere App erstellt, können manchmal Landesgrenzen überschreiten und durch Sperrgebiete führen;";
 
 "dialog_routing_disclaimer_beware" = "Bitte fahren Sie aufmerksam und sicher!";
 
@@ -1340,3 +1340,5 @@
 "whats_new_3d_on" = "Perspektivenansicht aktualisieren";
 
 "whats_new_3d_buildings_on" = "3D-Gebäude aktivieren";
+
+"whats_new_next_button" = "Weiter";
