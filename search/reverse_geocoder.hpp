@@ -68,6 +68,9 @@ public:
 
   void GetNearbyAddress(m2::PointD const & center, Address & addr) const;
 
+  /// First returned street segment (if any) is either feature's street from OSM or the closest street nearby.
+  /// @NOTE: Can have duplicate street names, because street in OSM usually has several segments with the same name.
+  vector<Street> GetNearbyFeatureStreets(FeatureType const & feature) const;
 
   void GetNearbyBuildings(m2::PointD const & center, vector<Building> & buildings) const;
 
