@@ -342,8 +342,10 @@ if [ "$MODE" == "features" ]; then
     fi
   fi
   [ -n "$OPT_WORLD" -a ! -s "$INTDIR/WorldCoasts.rawgeom" ] && fail "You need WorldCoasts.rawgeom in $INTDIR to build a world file"
-  # Replace style with a merged one
-  if [ -n "${STYLE-}" -a -e "${STYLE-}" ]; then
+  # Replace style with a merged one. Use STYLE=path_to_bin or STYLE=merged
+  if [ -n "${STYLE-}" ]; then
+    [[ $STYLE != *bin ]] && STYLE="$DATA_PATH/drules_proto_$STYLE.bin"
+    [ ! -e "$STYLE" ] && fail "Cannot file style file $STYLE"
     mv "$DATA_PATH/drules_proto.bin" "$DATA_PATH/drules_proto.bin.bak"
     cp "$STYLE" "$DATA_PATH/drules_proto.bin"
   fi
