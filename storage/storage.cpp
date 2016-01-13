@@ -141,6 +141,7 @@ void Storage::Clear()
   m_failedCountries.clear();
   m_localFiles.clear();
   m_localFilesForFakeCountries.clear();
+  SaveDownloadQueue();
 }
 
 void Storage::RegisterAllLocalMaps()
