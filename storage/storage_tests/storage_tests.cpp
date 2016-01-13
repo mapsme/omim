@@ -915,15 +915,18 @@ UNIT_TEST(StorageTest_GetChildren)
   TCountryId const world = storage.GetRootId();
   TEST_EQUAL(world, "Countries", ());
 
-  vector<TCountryId> const countriesList = storage.GetChildren(world);
+  vector<TCountryId> countriesList;
+  storage.GetChildren(world, countriesList);
   TEST_EQUAL(countriesList.size(), 3, ());
   TEST_EQUAL(countriesList.front(), "Abkhazia", ());
   TEST_EQUAL(countriesList.back(), "South Korea_South", ());
 
-  vector<TCountryId> const abkhaziaList = storage.GetChildren("Abkhazia");
+  vector<TCountryId> abkhaziaList;
+  storage.GetChildren("Abkhazia", abkhaziaList);
   TEST(abkhaziaList.empty(), ());
 
-  vector<TCountryId> const algeriaList = storage.GetChildren("Algeria");
+  vector<TCountryId> algeriaList;
+  storage.GetChildren("Algeria", algeriaList);
   TEST_EQUAL(algeriaList.size(), 2, ());
   TEST_EQUAL(algeriaList.front(), "Algeria_Central", ());
 }

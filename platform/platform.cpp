@@ -141,6 +141,7 @@ string Platform::DeviceName() const
 void Platform::SetWritableDirForTests(string const & path)
 {
   m_writableDir = my::AddSlashIfNeeded(path);
+  m_settingsDir = m_writableDir;
 }
 
 void Platform::SetResourceDir(string const & path)
