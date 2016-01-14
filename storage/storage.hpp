@@ -88,7 +88,7 @@ private:
   // downloading maps to a special place but not for continue working with them from this place.
   string m_dataDir;
 
-  // A list of urls or severes for downloading maps. It's necessary for storage integration tests.
+  // A list of urls of servers for downloading maps. It's necessary for storage integration tests.
   // For example { "http://eu1.mapswithme.com/direct/mac/" }http://eu1.mapswithme.com/direct/160107/Angola.mwm
   vector<string> m_downloadingUrlsForTesting;
 
@@ -264,10 +264,8 @@ public:
   /// \brief Downloads one node (expandable or not) by countryId.
   /// If node is expandable downloads all children (grandchildren) by the node
   /// until they havn't been downloaded before. Update all downloaded mwm if it's necessary.
-  /// \return false in case of error and true otherwise.
   void DownloadNode(TCountryId const & countryId);
   /// \brief Delete one node (expandable or not).
-  /// \return false in case of error and true otherwise.
   void DeleteNode(TCountryId const & countryId);
   /// \brief Updates one node (expandable or not).
   /// \note If you want to update all the maps and this update is without changing
@@ -397,11 +395,6 @@ private:
 
   TStatus CountryStatusWithoutFailed(TCountryId const & countryId) const;
   TStatus CountryStatusFull(TCountryId const & countryId, TStatus const status) const;
-
-  // Modifies file set of requested files - always adds a map file
-  // when routing file is requested for downloading, but drops all
-  // already downloaded and up-to-date files.
-  MapOptions NormalizeDownloadFileSet(TCountryId const & countryId, MapOptions options) const;
 
   // Modifies file set of file to deletion - always adds (marks for
   // removal) a routing file when map file is marked for deletion.
