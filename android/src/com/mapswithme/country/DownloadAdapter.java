@@ -2,6 +2,7 @@ package com.mapswithme.country;
 
 import android.view.View;
 
+@Deprecated
 class DownloadAdapter extends BaseDownloadAdapter implements CountryTree.CountryTreeListener
 {
   public DownloadAdapter(DownloadFragment fragment)
@@ -46,6 +47,7 @@ class DownloadAdapter extends BaseDownloadAdapter implements CountryTree.Country
     mFragment.navigateUpToParent();
   }
 
+  @Override
   protected void expandGroup(int position)
   {
     CountryTree.setChildAsRoot(position);

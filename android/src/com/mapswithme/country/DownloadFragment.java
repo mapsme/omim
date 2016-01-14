@@ -15,6 +15,7 @@ import com.mapswithme.maps.base.BaseMwmListFragment;
 import com.mapswithme.maps.base.OnBackPressListener;
 import com.mapswithme.util.Utils;
 
+@Deprecated
 public class DownloadFragment extends BaseMwmListFragment implements View.OnClickListener, ActiveCountryTree.ActiveCountryListener, OnBackPressListener
 {
   private ExtendedDownloadAdapterWrapper mExtendedAdapter;

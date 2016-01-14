@@ -80,6 +80,7 @@ LOCAL_SRC_FILES := \
 	com/mapswithme/maps/MwmApplication.cpp \
 	com/mapswithme/maps/LocationState.cpp \
 	com/mapswithme/maps/MapStorage.cpp \
+	com/mapswithme/maps/MapManager.cpp \
 	com/mapswithme/maps/DownloadResourcesActivity.cpp \
 	com/mapswithme/maps/PrivateVariables.cpp \
 	com/mapswithme/maps/SearchEngine.cpp \

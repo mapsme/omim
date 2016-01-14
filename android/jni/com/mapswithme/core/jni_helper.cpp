@@ -44,7 +44,7 @@ extern "C"
 //    g_findClassMethod = env->GetMethodID(classLoaderClass, "findClass",
 //                                    "(Ljava/lang/String;)Ljava/lang/Class;");
 //    ASSERT(g_findClassMethod, ("FindClass methodId can't be 0"));
-    g_indexClazz = static_cast<jclass>(env->NewGlobalRef(env->FindClass("com/mapswithme/maps/MapStorage$Index")));
+    g_indexClazz = jni::GetGlobalClassRef(env, "com/mapswithme/maps/MapStorage$Index");
     ASSERT(g_indexClazz, ("Index class not found!"));
 
     return JNI_VERSION_1_6;
