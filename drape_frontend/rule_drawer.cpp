@@ -148,12 +148,25 @@ void RuleDrawer::operator()(FeatureType const & f)
     {
       f.ParseMetadata();
       feature::Metadata const & md = f.GetMetadata();
-      string value = md.Get(feature::Metadata::FMD_HEIGHT);
 
-      double const kDefaultHeightInMeters = 3.0;
+      constexpr double kDefaultHeightInMeters = 3.0;
+      constexpr double kMetersPerLevel = 3.0;
       double heightInMeters = kDefaultHeightInMeters;
+
+      string value = md.Get(feature::Metadata::FMD_HEIGHT);
       if (!value.empty())
+      {
         strings::to_double(value, heightInMeters);
+      }
+      else
+      {
+        value = md.Get(feature::Metadata::FMD_BUILDING_LEVELS);
+        if (!value.empty())
+        {
+          if (strings::to_double(value, heightInMeters))
+            heightInMeters *= kMetersPerLevel;
+        }
+      }
 
       value = md.Get(feature::Metadata::FMD_MIN_HEIGHT);
       double minHeigthInMeters = 0.0;
