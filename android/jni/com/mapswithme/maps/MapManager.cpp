@@ -65,7 +65,7 @@ using namespace data;
 
 // static native boolean nativeIsLegacyMode();
 JNIEXPORT jboolean JNICALL
-Java_com_mapswithme_maps_downloader_DataManager_nativeIsLegacyMode(JNIEnv * env, jclass clazz)
+Java_com_mapswithme_maps_downloader_MapManager_nativeIsLegacyMode(JNIEnv * env, jclass clazz)
 {
   // TODO (trashkalmar): use appropriate method
   return version::IsSingleMwm(g_framework->Storage().GetCurrentDataVersion());
@@ -73,7 +73,7 @@ Java_com_mapswithme_maps_downloader_DataManager_nativeIsLegacyMode(JNIEnv * env,
 
 // static @Nullable UpdateInfo nativeGetUpdateInfo();
 JNIEXPORT jobject JNICALL
-Java_com_mapswithme_maps_downloader_DataManager_nativeGetUpdateInfo(JNIEnv * env, jclass clazz)
+Java_com_mapswithme_maps_downloader_MapManager_nativeGetUpdateInfo(JNIEnv * env, jclass clazz)
 {
   // FIXME (trashkalmar): Uncomment after Storage::GetUpdateInfo() is implemented
   static Storage::UpdateInfo info = { 0 };
@@ -88,7 +88,7 @@ Java_com_mapswithme_maps_downloader_DataManager_nativeGetUpdateInfo(JNIEnv * env
   return env->NewObject(infoClass, ctor, info.m_numberOfMwmFilesToUpdate, info.m_totalUpdateSizeInBytes);
 }
 
-static void PutItemsToList(JNIEnv * env, jobject const list,  vector<TCountryId> const & children, TCountryId const & parent, function<void (jobject const &)> const & callback)
+static void PutItemsToList(JNIEnv * env, jobject const list,  vector<TCountryId> const & children, TCountryId const & parent, function<void (jobject const)> const & callback)
 {
   static jmethodID const countryItemCtor = env->GetMethodID(g_countryItemClass, "<init>", "()V");
   static jfieldID const countryItemFieldId = env->GetFieldID(g_countryItemClass, "id", "Ljava/lang/String;");
@@ -128,7 +128,7 @@ static void PutItemsToList(JNIEnv * env, jobject const list,  vector<TCountryId>
 
 // static void nativeListItems(@Nullable String parent, List<CountryItem> result);
 JNIEXPORT void JNICALL
-Java_com_mapswithme_maps_downloader_DataManager_nativeListItems(JNIEnv * env, jclass clazz, jstring parent, jobject result)
+Java_com_mapswithme_maps_downloader_MapManager_nativeListItems(JNIEnv * env, jclass clazz, jstring parent, jobject result)
 {
   PrepareClassRefs(env);
 
@@ -139,7 +139,7 @@ Java_com_mapswithme_maps_downloader_DataManager_nativeListItems(JNIEnv * env, jc
   {
     vector<TCountryId> children;
     storage.GetChildren(parentId, children);
-    PutItemsToList(env, result, children, parentId, [](jobject const & item)
+    PutItemsToList(env, result, children, parentId, [](jobject const item)
     {
 
     });
@@ -152,7 +152,7 @@ Java_com_mapswithme_maps_downloader_DataManager_nativeListItems(JNIEnv * env, jc
     vector<TCountryId> children;
     storage.GetDownloadedChildren(parentId, children);
 
-    PutItemsToList(env, result, children, parentId, [](jobject const & item)
+    PutItemsToList(env, result, children, parentId, [](jobject const item)
     {
 
     });
@@ -165,7 +165,7 @@ Java_com_mapswithme_maps_downloader_DataManager_nativeListItems(JNIEnv * env, jc
 
 // static boolean nativeStartDownload(String countryId);
 JNIEXPORT jboolean JNICALL
-Java_com_mapswithme_maps_downloader_DataManager_nativeStartDownload(JNIEnv * env, jclass clazz, jstring countryId)
+Java_com_mapswithme_maps_downloader_MapManager_nativeStartDownload(JNIEnv * env, jclass clazz, jstring countryId)
 {
   // FIXME (trashkalmar): Uncomment after Storage::DownloadNode() is implemented
   return true;//GetStorage().DownloadNode(jni::ToNativeString(env, countryId));
@@ -173,7 +173,7 @@ Java_com_mapswithme_maps_downloader_DataManager_nativeStartDownload(JNIEnv * env
 
 // static boolean nativeCancelDownload(String countryId);
 JNIEXPORT jboolean JNICALL
-Java_com_mapswithme_maps_downloader_DataManager_nativeCancelDownload(JNIEnv * env, jclass clazz, jstring countryId)
+Java_com_mapswithme_maps_downloader_MapManager_nativeCancelDownload(JNIEnv * env, jclass clazz, jstring countryId)
 {
   // FIXME (trashkalmar): Uncomment after Storage::DeleteNode() is implemented
   return true;//GetStorage().DeleteNode(jni::ToNativeString(env, countryId));
@@ -197,7 +197,7 @@ static void ProgressChangedCallback(shared_ptr<jobject> const & listenerRef, TCo
 
 // static int nativeSubscribe(StorageCallback listener);
 JNIEXPORT jint JNICALL
-Java_com_mapswithme_maps_downloader_DataManager_nativeSubscribe(JNIEnv * env, jclass clazz, jobject listener)
+Java_com_mapswithme_maps_downloader_MapManager_nativeSubscribe(JNIEnv * env, jclass clazz, jobject listener)
 {
   return GetStorage().Subscribe(bind(&StatusChangedCallback, jni::make_global_ref(listener), _1),
                                 bind(&ProgressChangedCallback, jni::make_global_ref(listener), _1, _2));
@@ -205,7 +205,7 @@ Java_com_mapswithme_maps_downloader_DataManager_nativeSubscribe(JNIEnv * env, jc
 
 // static void nativeUnsubscribe(int slot);
 JNIEXPORT void JNICALL
-Java_com_mapswithme_maps_downloader_DataManager_nativeUnsubscribe(JNIEnv * env, jclass clazz, jint slot)
+Java_com_mapswithme_maps_downloader_MapManager_nativeUnsubscribe(JNIEnv * env, jclass clazz, jint slot)
 {
   GetStorage().Unsubscribe(slot);
 }
