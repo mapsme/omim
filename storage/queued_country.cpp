@@ -45,6 +45,6 @@ bool QueuedCountry::SwitchToNextFile()
          ("Current file (", m_current, ") is not specified in left files (", m_left, ")."));
   m_left = UnsetOptions(m_left, m_current);
   m_current = LeastSignificantOption(m_left);
-  return m_current != MapOptions::Nothing && m_current != MapOptions::CarRouting;
+  return m_current != MapOptions::Nothing;
 }
 }  // namespace storage

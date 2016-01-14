@@ -88,8 +88,8 @@ private:
   // downloading maps to a special place but not for continue working with them from this place.
   string m_dataDir;
 
-  // A list of urls of servers for downloading maps. It's necessary for storage integration tests.
-  // For example {"http://eu1.mapswithme.com/direct/mac/"}.
+  // A list of urls for downloading maps. It's necessary for storage integration tests.
+  // For example {"http://new-search.mapswithme.com/"}.
   vector<string> m_downloadingUrlsForTesting;
 
   void DownloadNextCountryFromQueue();

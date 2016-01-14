@@ -600,7 +600,7 @@ void Storage::OnServerListDownloaded(vector<string> const & urls)
   TCountryId const & countryId = queuedCountry.GetCountryId();
   MapOptions const file = queuedCountry.GetCurrentFile();
 
-  vector<string> const downloadingUrls =
+  vector<string> const & downloadingUrls =
       m_downloadingUrlsForTesting.empty() ? urls : m_downloadingUrlsForTesting;
   vector<string> fileUrls;
   fileUrls.reserve(downloadingUrls.size());
@@ -1029,8 +1029,10 @@ void Storage::DownloadNode(TCountryId const & countryId)
   node->ForEachInSubtree([this](TCountriesContainer const & descendantNode)
                          {
                            if (descendantNode.ChildrenCount() == 0)
+                           {
                              this->DownloadCountry(descendantNode.Value().Name(),
                                                    MapOptions::MapWithCarRouting);
+                           }
                          });
 }
 
@@ -1041,8 +1043,10 @@ void Storage::DeleteNode(TCountryId const & countryId)
   node->ForEachInSubtree([this](TCountriesContainer const & descendantNode)
                          {
                            if (descendantNode.ChildrenCount() == 0)
+                           {
                              this->DeleteCountry(descendantNode.Value().Name(),
                                                  MapOptions::MapWithCarRouting);
+                           }
                          });
 }
 }  // namespace storage
