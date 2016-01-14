@@ -6,7 +6,7 @@
 namespace storage
 {
 /// Country queued for downloading.
-/// @TODO(bykoianko) This class assume that a map may consist of one or two mwm files.
+/// @TODO(bykoianko) This class assumes that a map may consist of one or two mwm files.
 /// But single mwm files are used now. So this class should be redisigned to support
 /// only single mwm case.
 class QueuedCountry
