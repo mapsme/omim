@@ -9,12 +9,12 @@ import java.util.Comparator;
 @SuppressWarnings("unused")
 public final class CountryItem implements Comparator<CountryItem>
 {
-  // Must correspond to ItemCategory in DataManager.cpp
+  // Must correspond to ItemCategory in MapManager.cpp
   public static final int CATEGORY_NEAR_ME = 0;
   public static final int CATEGORY_DOWNLOADED = 1;
   public static final int CATEGORY_OTHER = 2;
 
-  // Must correspond to ItemStatus in DataManager.cpp
+  // Must correspond to ItemStatus in MapManager.cpp
   public static final int STATUS_UPDATABLE = 0;
   public static final int STATUS_DOWNLOADABLE = 1;
   public static final int STATUS_ENQUEUED = 2;
