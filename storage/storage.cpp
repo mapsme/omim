@@ -645,7 +645,7 @@ bool Storage::RegisterDownloadedFiles(TCountryId const & countryId, MapOptions f
   }
 
   bool ok = true;
-  vector<MapOptions> mapOpt = { MapOptions::Map };
+  vector<MapOptions> mapOpt = {MapOptions::Map};
   if (!version::IsSingleMwm(GetCurrentDataVersion()))
     mapOpt.emplace_back(MapOptions::CarRouting);
 
@@ -1027,11 +1027,11 @@ void Storage::DownloadNode(TCountryId const & countryId)
   TCountriesContainer const * const node = m_countries.Find(countryId);
   CHECK(node, ());
   node->ForEachInSubtree([this](TCountriesContainer const & descendantNode)
-                                   {
-                                     if (descendantNode.ChildrenCount() == 0)
-                                       this->DownloadCountry(descendantNode.Value().Name(),
-                                                             MapOptions::MapWithCarRouting);
-                                   });
+                         {
+                           if (descendantNode.ChildrenCount() == 0)
+                             this->DownloadCountry(descendantNode.Value().Name(),
+                                                   MapOptions::MapWithCarRouting);
+                         });
 }
 
 void Storage::DeleteNode(TCountryId const & countryId)
@@ -1039,10 +1039,10 @@ void Storage::DeleteNode(TCountryId const & countryId)
   TCountriesContainer const * const node = m_countries.Find(countryId);
   CHECK(node, ());
   node->ForEachInSubtree([this](TCountriesContainer const & descendantNode)
-                                   {
-                                     if (descendantNode.ChildrenCount() == 0)
-                                       this->DeleteCountry(descendantNode.Value().Name(),
-                                                           MapOptions::MapWithCarRouting);
-                                   });
+                         {
+                           if (descendantNode.ChildrenCount() == 0)
+                             this->DeleteCountry(descendantNode.Value().Name(),
+                                                 MapOptions::MapWithCarRouting);
+                         });
 }
 }  // namespace storage

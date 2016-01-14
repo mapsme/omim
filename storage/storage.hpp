@@ -89,7 +89,7 @@ private:
   string m_dataDir;
 
   // A list of urls of servers for downloading maps. It's necessary for storage integration tests.
-  // For example { "http://eu1.mapswithme.com/direct/mac/" }http://eu1.mapswithme.com/direct/160107/Angola.mwm
+  // For example {"http://eu1.mapswithme.com/direct/mac/"}.
   vector<string> m_downloadingUrlsForTesting;
 
   void DownloadNextCountryFromQueue();
@@ -388,7 +388,9 @@ public:
   void SetDownloaderForTesting(unique_ptr<MapFilesDownloader> && downloader);
   void SetCurrentDataVersionForTesting(int64_t currentVersion);
   void SetDownloadingUrlsForTesting(vector<string> const & downloadingUrls)
-      { m_downloadingUrlsForTesting = downloadingUrls; }
+  {
+    m_downloadingUrlsForTesting = downloadingUrls;
+  }
 
 private:
   friend void UnitTest_StorageTest_DeleteCountry();
