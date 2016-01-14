@@ -92,3 +92,14 @@ UNIT_TEST(CountryInfoGetter_SomeRects)
 
   LOG(LINFO, ("Canada: ", getter->CalcLimitRect("Canada_")));
 }
+
+UNIT_TEST(CountryInfoGetter_GetRegionsCountryId)
+{
+  auto const getter = CreateCountryInfoGetter();
+
+  vector<TCountryId> countryIds;
+  m2::PointD const montevideoUruguay = MercatorBounds::FromLatLon(-34.8094, -56.1558);
+  getter->GetRegionsCountryId(montevideoUruguay, countryIds);
+  TEST_EQUAL(countryIds.size(), 1, ());
+  TEST_EQUAL(countryIds[0], string("Uruguay"), ());
+}
