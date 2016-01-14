@@ -92,7 +92,6 @@ class Framework
 
 protected:
   using TDrapeFunction = function<void (df::DrapeEngine *)>;
-  using TDownloadCountryListener = function<void(storage::TCountryId const &, int)>;
 
   StringsBundle m_stringsBundle;
 
@@ -176,8 +175,6 @@ public:
   //@{
   /// options - flags that signal about parts of map that must be downloaded
   void DownloadCountry(storage::TCountryId const & countryId, MapOptions opt);
-
-  void SetDownloadCountryListener(TDownloadCountryListener const & listener);
 
   storage::TStatus GetCountryStatus(storage::TCountryId const & countryId) const;
   string GetCountryName(storage::TCountryId const & countryId) const;
