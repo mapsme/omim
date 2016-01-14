@@ -66,6 +66,17 @@ string CountryInfoGetter::GetRegionFile(m2::PointD const & pt) const
   return id != kInvalidId ? m_countries[id].m_name : string();
 }
 
+void CountryInfoGetter::GetRegionsCountryId(m2::PointD const & pt, vector<TCountryId> & closestCoutryIds)
+{
+  // @TODO(bykoianko) Now this method fills |closestCoutryIds| with only a country id of mwm
+  // which covers |pt|. This method should fill |closestCoutryIds| with several mwms
+  // which cover |pt| and close to |pt|.
+  closestCoutryIds.clear();
+  TCountryId countryId = GetRegionFile(pt);
+  if (!countryId.empty())
+    closestCoutryIds.emplace_back(countryId);
+}
+
 void CountryInfoGetter::GetRegionInfo(m2::PointD const & pt, CountryInfo & info) const
 {
   IdType const id = FindFirstCountry(pt);
