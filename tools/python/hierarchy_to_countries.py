@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import sys, json, re
+from optparse import OptionParser
 import os.path
 
 class CountryDict(dict):
@@ -40,14 +41,29 @@ def collapse_single(root):
       else:
         collapse_single(root['g'][i])
 
-if len(sys.argv) < 2:
-  print 'Usage: {0} {{<path_to_mwm>|0}} [<hierarchy.txt>]'.format(sys.argv[0])
-  sys.exit(1)
+parser = OptionParser(add_help_option=False)
+parser.add_option('-t', '--target', help='Path to mwm files')
+parser.add_option('-h', '--hierarchy', default='hierarchy.txt', help='Hierarchy file')
+parser.add_option('-c', '--old', help='old_vs_new.csv file')
+parser.add_option('-v', '--version', type='int', default=151231, help='Version')
+parser.add_option('-o', '--output', help='Output countries.txt file (default is stdout)')
+parser.add_option('-m', '--help', action='store_true', help='Display this help')
+(options, args) = parser.parse_args()
 
+if options.help:
+  parser.print_help()
+  sys.exit(0)
+
+if not os.path.isfile(options.hierarchy):
+  parser.error('Hierarchy file is required.')
+
+if options.old is None or not os.path.isfile(options.old):
+  ovnpath = os.path.join(os.path.dirname(options.hierarchy), 'old_vs_new.csv')
+else:
+  ovnpath = options.old
 oldvs = {}
 try:
-  ovnpath = '.' if len(sys.argv) < 2 else os.path.dirname(sys.argv[2])
-  with open(os.path.join(ovnpath, 'old_vs_new.csv'), 'r') as f:
+  with open(ovnpath, 'r') as f:
     for line in f:
       m = re.match(r'(.+?)\t(.+)', line.strip())
       if m:
@@ -56,13 +72,12 @@ try:
         else:
           oldvs[m.group(2)] = [m.group(1)]
 except IOError:
-  pass
+  sys.stderr.write('Could not read old_vs_new file from {0}\n'.format(ovnpath))
 
-mwmpath = sys.argv[1]
-filename = 'hierarchy.txt' if len(sys.argv) < 3 else sys.argv[2]
-stack = [CountryDict({ "v": 151231, "id": "Countries", "g": [] })]
+mwmpath = '0' if not options.target else options.target
+stack = [CountryDict({ "v": options.version, "id": "Countries", "g": [] })]
 last = None
-with open(filename, 'r') as f:
+with open(options.hierarchy, 'r') as f:
   for line in f:
     m = re.match('( *)(.+?)\n', line)
     if m:
@@ -81,13 +96,16 @@ with open(filename, 'r') as f:
       while depth < len(stack) - 1:
         # group ended, add it to higher group
         g = stack.pop()
-        stack[-1]['g'].append(g)
+        if len(g['g']) > 0:
+          stack[-1]['g'].append(g)
       items = m.group(2).split(';')
       last = CountryDict({ "id": items[0], "d": depth })
       if items[0] in oldvs:
         last['old'] = oldvs[items[0]]
-      #if len(items) > 2:
+      #if len(items) > 2 and len(items[2]) > 0::
       #  last['c'] = items[2]
+      #if len(items) > 3 and len(items[3]) > 0:
+      #  last['lang'] = items[3].split(',')
 
 # the last line is always a file
 del last['d']
@@ -96,7 +114,12 @@ if last['s'] >= 0:
   stack[-1]['g'].append(last)
 while len(stack) > 1:
   g = stack.pop()
-  stack[-1]['g'].append(g)
+  if len(g['g']) > 0:
+    stack[-1]['g'].append(g)
 
 collapse_single(stack[-1])
-print json.dumps(stack[-1], indent=1)
+if options.output:
+  with open(options.output, 'w') as f:
+    json.dump(stack[-1], f, indent=1)
+else:
+  print json.dumps(stack[-1], indent=1)

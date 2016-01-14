@@ -149,7 +149,7 @@ OSRM_FLAG="$INTDIR/osrm_done"
 SCRIPTS_PATH="$(dirname "$0")"
 ROUTING_SCRIPT="$SCRIPTS_PATH/generate_planet_routing.sh"
 TESTING_SCRIPT="$SCRIPTS_PATH/test_planet.sh"
-UPDATE_DATE="$(date +%y%m%d)"
+VERSION="${VERSION:-$(date +%y%m%d)}"
 LOG_PATH="${LOG_PATH:-$TARGET/logs}"
 mkdir -p "$LOG_PATH"
 PLANET_LOG="$LOG_PATH/generate_planet.log"
@@ -361,10 +361,10 @@ if [ "$MODE" == "mwm" ]; then
   PARAMS="--data_path=$TARGET --intermediate_data_path=$INTDIR/ --user_resource_path=$DATA_PATH/ --node_storage=$NODE_STORAGE -generate_geometry -generate_index"
   if [ -n "$OPT_WORLD" ]; then
     (
-      "$GENERATOR_TOOL" $PARAMS --planet_version="$UPDATE_DATE" --output=World 2>> "$LOG_PATH/World.log"
-      "$GENERATOR_TOOL" --data_path="$TARGET" --planet_version="$UPDATE_DATE" --user_resource_path="$DATA_PATH/" -generate_search_index --output=World 2>> "$LOG_PATH/World.log"
+      "$GENERATOR_TOOL" $PARAMS --planet_version="$VERSION" --output=World 2>> "$LOG_PATH/World.log"
+      "$GENERATOR_TOOL" --data_path="$TARGET" --planet_version="$VERSION" --user_resource_path="$DATA_PATH/" -generate_search_index --output=World 2>> "$LOG_PATH/World.log"
     ) &
-    "$GENERATOR_TOOL" $PARAMS --planet_version="$UPDATE_DATE" --output=WorldCoasts 2>> "$LOG_PATH/WorldCoasts.log" &
+    "$GENERATOR_TOOL" $PARAMS --planet_version="$VERSION" --output=WorldCoasts 2>> "$LOG_PATH/WorldCoasts.log" &
   fi
 
   if [ -z "$NO_REGIONS" ]; then
@@ -372,7 +372,7 @@ if [ "$MODE" == "mwm" ]; then
     for file in "$INTDIR"/tmp/*.mwm.tmp; do
       if [[ "$file" != *minsk-pass* && "$file" != *World* ]]; then
         BASENAME="$(basename "$file" .mwm.tmp)"
-        "$GENERATOR_TOOL" $PARAMS_WITH_SEARCH --planet_version="$UPDATE_DATE" --output="$BASENAME" 2>> "$LOG_PATH/$BASENAME.log" &
+        "$GENERATOR_TOOL" $PARAMS_WITH_SEARCH --planet_version="$VERSION" --output="$BASENAME" 2>> "$LOG_PATH/$BASENAME.log" &
         forky
       fi
     done
@@ -407,13 +407,7 @@ fi
 if [ "$MODE" == "resources" ]; then
   putmode "Step 7: Updating resource lists"
   # Update countries list
-  "$SCRIPTS_PATH/../python/hierarchy_to_countries.py" "$TARGET" "$DATA_PATH/hierarchy.txt" > "$TARGET/countries.txt"
-  # If we know the planet's version, update it in countries.txt
-  if [ -n "${UPDATE_DATE-}" ]; then
-    # In-place editing works differently on OS X and Linux, hence two steps
-    sed -e "s/\"v\":[0-9]\\{6\\}/\"v\":$UPDATE_DATE/" "$TARGET/countries.txt" > "$INTDIR/countries.txt"
-    mv "$INTDIR/countries.txt" "$TARGET"
-  fi
+  "$SCRIPTS_PATH/../python/hierarchy_to_countries.py" --target "$TARGET" --hierarchy "$DATA_PATH/hierarchy.txt" --version "$VERSION" --output "$TARGET/countries.txt" >> "$PLANET_LOG" 2>&1
 
   # A quick fix: chmodding to a+rw all generated files
   for file in "$TARGET"/*.mwm*; do
