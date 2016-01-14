@@ -373,7 +373,6 @@ void Storage::RestoreDownloadQueue()
 
 void Storage::DownloadCountry(TCountryId const & countryId, MapOptions opt)
 {
-  opt = NormalizeDownloadFileSet(countryId, opt);
   if (opt == MapOptions::Nothing)
     return;
 
@@ -601,9 +600,11 @@ void Storage::OnServerListDownloaded(vector<string> const & urls)
   TCountryId const & countryId = queuedCountry.GetCountryId();
   MapOptions const file = queuedCountry.GetCurrentFile();
 
+  vector<string> const & downloadingUrls =
+      m_downloadingUrlsForTesting.empty() ? urls : m_downloadingUrlsForTesting;
   vector<string> fileUrls;
-  fileUrls.reserve(urls.size());
-  for (string const & url : urls)
+  fileUrls.reserve(downloadingUrls.size());
+  for (string const & url : downloadingUrls)
     fileUrls.push_back(GetFileDownloadUrl(url, countryId, file));
 
   string const filePath = GetFileDownloadPath(countryId, file);
@@ -644,7 +645,11 @@ bool Storage::RegisterDownloadedFiles(TCountryId const & countryId, MapOptions f
   }
 
   bool ok = true;
-  for (MapOptions file : {MapOptions::Map, MapOptions::CarRouting})
+  vector<MapOptions> mapOpt = {MapOptions::Map};
+  if (!version::IsSingleMwm(GetCurrentDataVersion()))
+    mapOpt.emplace_back(MapOptions::CarRouting);
+
+  for (MapOptions file : mapOpt)
   {
     if (!HasOptions(files, file))
       continue;
@@ -762,35 +767,6 @@ TStatus Storage::CountryStatusFull(TCountryId const & countryId, TStatus const s
   if (localFile->GetVersion() != GetCurrentDataVersion())
     return TStatus::EOnDiskOutOfDate;
   return TStatus::EOnDisk;
-}
-
-MapOptions Storage::NormalizeDownloadFileSet(TCountryId const & countryId, MapOptions options) const
-{
-  auto const & country = GetCountryFile(countryId);
-
-  // Car routing files are useless without map files.
-  if (HasOptions(options, MapOptions::CarRouting))
-    options = SetOptions(options, MapOptions::Map);
-
-  TLocalFilePtr localCountryFile = GetLatestLocalFile(countryId);
-  for (MapOptions option : {MapOptions::Map, MapOptions::CarRouting})
-  {
-    // Check whether requested files are on disk and up-to-date.
-    if (HasOptions(options, option) && localCountryFile && localCountryFile->OnDisk(option) &&
-        localCountryFile->GetVersion() == GetCurrentDataVersion())
-    {
-      options = UnsetOptions(options, option);
-    }
-
-    // Check whether requested file is not empty.
-    if (GetRemoteSize(country, option, GetCurrentDataVersion()) == 0)
-    {
-      ASSERT_NOT_EQUAL(MapOptions::Map, option, ("Map can't be empty."));
-      options = UnsetOptions(options, option);
-    }
-  }
-
-  return options;
 }
 
 // @TODO(bykoianko) This method does nothing and should be removed.
@@ -1044,5 +1020,33 @@ void Storage::GetCountyListToDownload(vector<TCountryId> & countryList) const
   vector<TCountryId> countryIds;
   GetChildren(GetRootId(), countryIds);
   // @TODO(bykoianko) Implement this method. Remove from this method fully downloaded maps.
+}
+
+void Storage::DownloadNode(TCountryId const & countryId)
+{
+  TCountriesContainer const * const node = m_countries.Find(countryId);
+  CHECK(node, ());
+  node->ForEachInSubtree([this](TCountriesContainer const & descendantNode)
+                         {
+                           if (descendantNode.ChildrenCount() == 0)
+                           {
+                             this->DownloadCountry(descendantNode.Value().Name(),
+                                                   MapOptions::MapWithCarRouting);
+                           }
+                         });
+}
+
+void Storage::DeleteNode(TCountryId const & countryId)
+{
+  TCountriesContainer const * const node = m_countries.Find(countryId);
+  CHECK(node, ());
+  node->ForEachInSubtree([this](TCountriesContainer const & descendantNode)
+                         {
+                           if (descendantNode.ChildrenCount() == 0)
+                           {
+                             this->DeleteCountry(descendantNode.Value().Name(),
+                                                 MapOptions::MapWithCarRouting);
+                           }
+                         });
 }
 }  // namespace storage

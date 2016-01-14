@@ -105,6 +105,10 @@ SUBDIRS = 3party base coding geometry indexer routing
     storage_tests.depends = 3party base coding geometry platform storage indexer stats
     SUBDIRS *= storage_tests
 
+    storage_integration_tests.subdir = storage/storage_integration_tests
+    storage_integration_tests.depends = 3party base coding geometry platform storage indexer stats
+    SUBDIRS *= storage_integration_tests
+
     search_tests.subdir = search/search_tests
     search_tests.depends = 3party base coding geometry platform indexer search
     SUBDIRS *= search_tests

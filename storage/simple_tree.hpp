@@ -3,7 +3,6 @@
 #include "base/assert.hpp"
 
 #include "std/algorithm.hpp"
-#include "std/utility.hpp"
 #include "std/vector.hpp"
 
 template <class T>
@@ -155,5 +154,21 @@ public:
       f(child);
       child.ForEachDescendant(f);
     }
+  }
+
+  template <class TFunctor>
+  void ForEachInSubtree(TFunctor && f)
+  {
+    f(*this);
+    for (auto const & child: m_children)
+      child.ForEachInSubtree(f);
+  }
+
+  template <class TFunctor>
+  void ForEachInSubtree(TFunctor && f) const
+  {
+    f(*this);
+    for (auto const & child: m_children)
+      child.ForEachInSubtree(f);
   }
 };

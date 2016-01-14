@@ -89,18 +89,4 @@ UNIT_TEST(QueuedCountry_RemoveOptions)
     TEST_EQUAL(MapOptions::CarRouting, country.GetDownloadedFiles(), ());
   }
 }
-
-UNIT_TEST(QueuedCountry_Bits)
-{
-  Storage storage;
-  TCountryId const countryId = storage.FindCountryIdByFile("USA_Georgia");
-  QueuedCountry country(countryId, MapOptions::MapWithCarRouting);
-  TEST_EQUAL(MapOptions::Nothing, country.GetDownloadedFiles(), ());
-
-  TEST(country.SwitchToNextFile(), ());
-  TEST_EQUAL(MapOptions::Map, country.GetDownloadedFiles(), ());
-
-  TEST(!country.SwitchToNextFile(), ());
-  TEST_EQUAL(MapOptions::MapWithCarRouting, country.GetDownloadedFiles(), ());
-}
 }  // namespace storage
