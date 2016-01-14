@@ -1,6 +1,7 @@
 #pragma once
 
 #include "storage/country_decl.hpp"
+#include "storage/index.hpp"
 
 #include "geometry/region2d.hpp"
 
@@ -9,6 +10,7 @@
 #include "base/cache.hpp"
 
 #include "std/mutex.hpp"
+#include "std/vector.hpp"
 
 namespace storage
 {
@@ -29,6 +31,12 @@ public:
   // belongs to. If there are no such country, returns an empty
   // string.
   string GetRegionFile(m2::PointD const & pt) const;
+
+  // Returns a list of country ids by a |pt| in mercator.
+  // |closestCoutryIds| is filled with country ids of mwm which covers |pt| or close to it.
+  // |closestCoutryIds| is not filled with country world.mwm country id and with custom mwm.
+  // If |pt| is covered by a sea or a ocean closestCoutryIds may be left empty.
+  void GetRegionsCountryId(m2::PointD const & pt, vector<TCountryId> & closestCoutryIds);
 
   // Returns info for a region |pt| belongs to.
   void GetRegionInfo(m2::PointD const & pt, CountryInfo & info) const;
