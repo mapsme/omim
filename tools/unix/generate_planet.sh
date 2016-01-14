@@ -342,6 +342,13 @@ if [ "$MODE" == "features" ]; then
     fi
   fi
   [ -n "$OPT_WORLD" -a ! -s "$INTDIR/WorldCoasts.rawgeom" ] && fail "You need WorldCoasts.rawgeom in $INTDIR to build a world file"
+  # Replace style with a merged one. Use STYLE=path_to_bin or STYLE=merged
+  if [ -n "${STYLE-}" ]; then
+    [[ $STYLE != *bin ]] && STYLE="$DATA_PATH/drules_proto_$STYLE.bin"
+    [ ! -e "$STYLE" ] && fail "Cannot file style file $STYLE"
+    mv "$DATA_PATH/drules_proto.bin" "$DATA_PATH/drules_proto.bin.bak"
+    cp "$STYLE" "$DATA_PATH/drules_proto.bin"
+  fi
   # 2nd pass - paralleled in the code
   PARAMS_SPLIT="-generate_features -emit_coasts"
   [ -z "$NO_REGIONS" ] && PARAMS_SPLIT="$PARAMS_SPLIT -split_by_polygons"
@@ -387,6 +394,9 @@ fi
 
 # The following steps require *.mwm and *.osrm files complete
 wait
+
+# If the style was replaced, restore it
+[ -e "$DATA_PATH/drules_proto.bin.bak" ] && mv "$DATA_PATH/drules_proto.bin.bak" "$DATA_PATH/drules_proto.bin"
 
 if [ "$MODE" == "routing" ]; then
   putmode "Step 6: Using freshly generated *.mwm and *.osrm to create routing files"
