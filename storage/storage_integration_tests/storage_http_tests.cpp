@@ -24,10 +24,11 @@ class WritableDirChanger
   static string const kMapTestDir;
   string const m_writableDirBeforeTest;
   string const m_mapTestDirFullPath;
+
 public:
   WritableDirChanger()
-    : m_writableDirBeforeTest(GetPlatform().WritableDir()),
-      m_mapTestDirFullPath(m_writableDirBeforeTest + kMapTestDir)
+    : m_writableDirBeforeTest(GetPlatform().WritableDir())
+    , m_mapTestDirFullPath(m_writableDirBeforeTest + kMapTestDir)
   {
     Platform & platform = GetPlatform();
     platform.MkDir(m_mapTestDirFullPath);
@@ -43,9 +44,9 @@ public:
 };
 string const WritableDirChanger::kMapTestDir("map-tests");
 
-void ChangeCountryFunctionForAngola(TCountryId const &countryId) {}
+void ChangeCountryFunctionForAngola(TCountryId const & countryId) {}
 
-void ProgressFunctionForAngola(TCountryId const &countryId, LocalAndRemoteSizeT const & mapSize)
+void ProgressFunctionForAngola(TCountryId const & countryId, LocalAndRemoteSizeT const & mapSize)
 {
   if (mapSize.first != mapSize.second)
     return;
@@ -59,7 +60,7 @@ UNIT_TEST(StorageDownloadNodeAndDeleteNodeTests)
 {
   Storage storage;
   if (!version::IsSingleMwm(storage.GetCurrentDataVersion()))
-    return; // Test is valid for single mwm case only.
+    return;  // Test is valid for single mwm case only.
 
   WritableDirChanger writableDirChanger;
   UNUSED_VALUE(writableDirChanger);
@@ -67,7 +68,7 @@ UNIT_TEST(StorageDownloadNodeAndDeleteNodeTests)
   storage.Init(UpdateForAngola);
   storage.RegisterAllLocalMaps();
   storage.Subscribe(ChangeCountryFunctionForAngola, ProgressFunctionForAngola);
-  storage.SetDownloadingUrlsForTesting({ "http://eu1.mapswithme.com/" });
+  storage.SetDownloadingUrlsForTesting({"http://eu1.mapswithme.com/"});
   string const angolaCountryId = "Angola";
   string const versionStr = strings::to_string(storage.GetCurrentDataVersion());
   platform::tests_support::ScopedDir cleanupVersionDir(versionStr);
@@ -75,14 +76,14 @@ UNIT_TEST(StorageDownloadNodeAndDeleteNodeTests)
   MY_SCOPE_GUARD(cleanupAngola,
                  bind(&Storage::DeleteCountry, &storage, angolaCountryId, MapOptions::Map));
 
-  string const angolaMwmFullPath = my::JoinFoldersToPath({GetPlatform().WritableDir(), versionStr },
+  string const angolaMwmFullPath = my::JoinFoldersToPath({GetPlatform().WritableDir(), versionStr},
                                                          angolaCountryId + DATA_FILE_EXTENSION);
-  string const angolaDownloadingFullPath =
-      my::JoinFoldersToPath({GetPlatform().WritableDir(), versionStr }, angolaCountryId +
-                            DATA_FILE_EXTENSION READY_FILE_EXTENSION DOWNLOADING_FILE_EXTENSION);
-  string const angolaResumeFullPath =
-      my::JoinFoldersToPath({GetPlatform().WritableDir(), versionStr },
-                            angolaCountryId + DATA_FILE_EXTENSION READY_FILE_EXTENSION RESUME_FILE_EXTENSION);
+  string const angolaDownloadingFullPath = my::JoinFoldersToPath(
+      {GetPlatform().WritableDir(), versionStr},
+      angolaCountryId + DATA_FILE_EXTENSION READY_FILE_EXTENSION DOWNLOADING_FILE_EXTENSION);
+  string const angolaResumeFullPath = my::JoinFoldersToPath(
+      {GetPlatform().WritableDir(), versionStr},
+      angolaCountryId + DATA_FILE_EXTENSION READY_FILE_EXTENSION RESUME_FILE_EXTENSION);
   Platform & platform = GetPlatform();
   TEST(!platform.IsFileExistsByFullPath(angolaMwmFullPath), ());
   TEST(!platform.IsFileExistsByFullPath(angolaDownloadingFullPath), ());
