@@ -373,7 +373,6 @@ void Storage::RestoreDownloadQueue()
 
 void Storage::DownloadCountry(TCountryId const & countryId, MapOptions opt)
 {
-  opt = NormalizeDownloadFileSet(countryId, opt);
   if (opt == MapOptions::Nothing)
     return;
 
@@ -770,38 +769,6 @@ TStatus Storage::CountryStatusFull(TCountryId const & countryId, TStatus const s
   return TStatus::EOnDisk;
 }
 
-MapOptions Storage::NormalizeDownloadFileSet(TCountryId const & countryId, MapOptions options) const
-{
-  MapOptions const start = options;
-  auto const & country = GetCountryFile(countryId);
-
-  // Car routing files are useless without map files.
-  if (HasOptions(options, MapOptions::CarRouting))
-    options = SetOptions(options, MapOptions::Map);
-
-  TLocalFilePtr localCountryFile = GetLatestLocalFile(countryId);
-  for (MapOptions option : {MapOptions::Map, MapOptions::CarRouting})
-  {
-    // Check whether requested files are on disk and up-to-date.
-    if (HasOptions(options, option) && localCountryFile && localCountryFile->OnDisk(option) &&
-        localCountryFile->GetVersion() == GetCurrentDataVersion())
-    {
-      options = UnsetOptions(options, option);
-    }
-
-    // Check whether requested file is not empty.
-    if (GetRemoteSize(country, option, GetCurrentDataVersion()) == 0)
-    {
-      ASSERT_NOT_EQUAL(MapOptions::Map, option, ("Map can't be empty."));
-      options = UnsetOptions(options, option);
-    }
-  }
-
-  if (start != options)
-    return start;
-  return options;
-}
-
 // @TODO(bykoianko) This method does nothing and should be removed.
 MapOptions Storage::NormalizeDeleteFileSet(MapOptions options) const
 {
@@ -1059,7 +1026,7 @@ void Storage::DownloadNode(TCountryId const & countryId)
 {
   TCountriesContainer const * const node = m_countries.Find(countryId);
   CHECK(node, ());
-  node->ForThisAndForEachDescendant([this](TCountriesContainer const & descendantNode)
+  node->ForEachInSubtree([this](TCountriesContainer const & descendantNode)
                                    {
                                      if (descendantNode.ChildrenCount() == 0)
                                        this->DownloadCountry(descendantNode.Value().Name(),
@@ -1071,7 +1038,7 @@ void Storage::DeleteNode(TCountryId const & countryId)
 {
   TCountriesContainer const * const node = m_countries.Find(countryId);
   CHECK(node, ());
-  node->ForThisAndForEachDescendant([this](TCountriesContainer const & descendantNode)
+  node->ForEachInSubtree([this](TCountriesContainer const & descendantNode)
                                    {
                                      if (descendantNode.ChildrenCount() == 0)
                                        this->DeleteCountry(descendantNode.Value().Name(),

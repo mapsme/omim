@@ -158,18 +158,16 @@ public:
   }
 
   template <class TFunctor>
-  void ForThisAndForEachDescendant(TFunctor && f)
+  void ForEachInSubtree(TFunctor && f)
   {
     f(*this);
-    for (auto const & child: m_children)
-      child.ForThisAndForEachDescendant(f);
+    ForEachDescendant(f);
   }
 
   template <class TFunctor>
-  void ForThisAndForEachDescendant(TFunctor && f) const
+  void ForEachInSubtree(TFunctor && f) const
   {
     f(*this);
-    for (auto const & child: m_children)
-      child.ForThisAndForEachDescendant(f);
+    ForEachDescendant(f);
   }
 };

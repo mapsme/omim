@@ -41,7 +41,7 @@ public:
     platform.RmDir(writableDirForTest);
   }
 };
-string const WritableDirChanger::kMapTestDir = string("map-tests");
+string const WritableDirChanger::kMapTestDir("map-tests");
 
 void ChangeCountryFunctionForAngola(TCountryId const &countryId) {}
 
@@ -76,11 +76,13 @@ UNIT_TEST(StorageDownloadNodeAndDeleteNodeTests)
                  bind(&Storage::DeleteCountry, &storage, angolaCountryId, MapOptions::Map));
 
   string const angolaMwmFullPath = my::JoinFoldersToPath({GetPlatform().WritableDir(), versionStr },
-                                                         angolaCountryId + string(".mwm"));
-  string const angolaDownloadingFullPath = my::JoinFoldersToPath({GetPlatform().WritableDir(), versionStr },
-                                                                 angolaCountryId + string(".mwm.ready.downloading"));
-  string const angolaResumeFullPath = my::JoinFoldersToPath({GetPlatform().WritableDir(), versionStr },
-                                                            angolaCountryId + string(".mwm.ready.resume"));
+                                                         angolaCountryId + DATA_FILE_EXTENSION);
+  string const angolaDownloadingFullPath =
+      my::JoinFoldersToPath({GetPlatform().WritableDir(), versionStr }, angolaCountryId +
+                            DATA_FILE_EXTENSION READY_FILE_EXTENSION DOWNLOADING_FILE_EXTENSION);
+  string const angolaResumeFullPath =
+      my::JoinFoldersToPath({GetPlatform().WritableDir(), versionStr },
+                            angolaCountryId + DATA_FILE_EXTENSION READY_FILE_EXTENSION RESUME_FILE_EXTENSION);
   Platform & platform = GetPlatform();
   TEST(!platform.IsFileExistsByFullPath(angolaMwmFullPath), ());
   TEST(!platform.IsFileExistsByFullPath(angolaDownloadingFullPath), ());
