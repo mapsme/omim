@@ -103,8 +103,7 @@ Storage::Storage(string const & referenceCountriesTxtJsonForTesting,
 
 void Storage::Init(TUpdate const & update) { m_update = update; }
 
-
-void Storage::DeleteAllLocalMaps(vector<TCountryId> * existedCountries /* = nullptr */)
+void Storage::DeleteAllLocalMaps(TCountriesVec * existedCountries /* = nullptr */)
 {
   for (auto const & localFiles : m_localFiles)
   {
@@ -125,7 +124,7 @@ void Storage::PrefetchMigrateData()
   m_prefetchStorage->Init([](LocalCountryFile const &){});
 }
 
-void Storage::Migrate(vector<TCountryId> const & existedCountries)
+void Storage::Migrate(TCountriesVec const & existedCountries)
 {
   platform::migrate::SetMigrationFlag();
 
@@ -373,7 +372,6 @@ void Storage::CountryStatusEx(TCountryId const & countryId, TStatus & status, Ma
       options = SetOptions(options, MapOptions::CarRouting);
   }
 }
-
 
 void Storage::SaveDownloadQueue()
 {

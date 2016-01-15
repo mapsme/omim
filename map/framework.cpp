@@ -232,7 +232,8 @@ void Framework::PreMigrate()
   {
     TStatus const nextStatus = Storage().m_prefetchStorage->CountryStatusEx(id);
     LOG_SHORT(LINFO, (id, "status :", nextStatus));
-    if (nextStatus == TStatus::EOnDisk) {
+    if (nextStatus == TStatus::EOnDisk)
+    {
       LOG_SHORT(LINFO, ("Prefetch done. Ready to migrate."));
       Migrate();
     }
@@ -243,12 +244,12 @@ void Framework::PreMigrate()
   };
 
   Storage().m_prefetchStorage->Subscribe(stateChanged, progressChanged);
-  Storage().m_prefetchStorage->DownloadCountry(currentCountryId, MapOptions::Map);
+  Storage().m_prefetchStorage->DownloadNode(currentCountryId);
 }
 
 void Framework::Migrate()
 {
-  vector<TCountryId> existedCountries;
+  TCountriesVec existedCountries;
   Storage().DeleteAllLocalMaps(&existedCountries);
   DeregisterAllMaps();
   m_model.Clear();

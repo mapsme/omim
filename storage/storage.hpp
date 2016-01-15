@@ -311,11 +311,11 @@ public:
   void Init(TUpdate const & update);
 
   /// Delete local maps and aggregate their Id if needed
-  void DeleteAllLocalMaps(vector<TCountryId> * existedCountries = nullptr);
+  void DeleteAllLocalMaps(TCountriesVec * existedCountries = nullptr);
 
   /// Switch on new storage version, remove old mwm
   /// and add required mwm's into download queue.
-  void Migrate(vector<TCountryId> const & existedCountries);
+  void Migrate(TCountriesVec const & existedCountries);
 
   // Clears local files registry and downloader's queue.
   void Clear();
