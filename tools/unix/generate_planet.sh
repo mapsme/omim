@@ -149,7 +149,7 @@ OSRM_FLAG="$INTDIR/osrm_done"
 SCRIPTS_PATH="$(dirname "$0")"
 ROUTING_SCRIPT="$SCRIPTS_PATH/generate_planet_routing.sh"
 TESTING_SCRIPT="$SCRIPTS_PATH/test_planet.sh"
-VERSION="${VERSION:-$(date +%y%m%d)}"
+VERSION_FORMAT="%y%m%d"
 LOG_PATH="${LOG_PATH:-$TARGET/logs}"
 mkdir -p "$LOG_PATH"
 PLANET_LOG="$LOG_PATH/generate_planet.log"
@@ -350,6 +350,18 @@ if [ "$MODE" == "features" ]; then
   "$GENERATOR_TOOL" --intermediate_data_path="$INTDIR/" --node_storage=$NODE_STORAGE --osm_file_type=o5m --osm_file_name="$PLANET" \
     --data_path="$TARGET" --user_resource_path="$DATA_PATH/" $PARAMS_SPLIT 2>> "$PLANET_LOG"
   MODE=mwm
+fi
+
+# Get version from the planet file
+if [ -z "${VERSION-}" ]; then
+  PLANET_VERSION="$("$OSMCTOOLS/osmconvert" --out-timestamp "$PLANET")"
+  if [[ $PLANET_VERSION == *nvalid* ]]; then
+    VERSION="$(date "+$VERSION_FORMAT")"
+  elif [ "$(uname -s)" == "Darwin" ]; then
+    VERSION="$(date -j -u -f "%Y-%m-%dT%H:%M:%SZ" "$PLANET_VERSION" "+$VERSION_FORMAT")"
+  else
+    VERSION="$(date -d "$(echo "$PLANET_VERSION" | sed -e 's/T/ /')" "+$VERSION_FORMAT")"
+  fi
 fi
 
 if [ "$MODE" == "mwm" ]; then

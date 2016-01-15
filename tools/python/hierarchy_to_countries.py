@@ -48,6 +48,8 @@ parser.add_option('-c', '--old', help='old_vs_new.csv file')
 parser.add_option('-v', '--version', type='int', default=151231, help='Version')
 parser.add_option('-o', '--output', help='Output countries.txt file (default is stdout)')
 parser.add_option('-m', '--help', action='store_true', help='Display this help')
+parser.add_option('--flag', action='store_true', help='Add flags ("c") to countries')
+parser.add_option('--lang', action='store_true', help='Add languages ("lang") to countries')
 (options, args) = parser.parse_args()
 
 if options.help:
@@ -102,10 +104,10 @@ with open(options.hierarchy, 'r') as f:
       last = CountryDict({ "id": items[0], "d": depth })
       if items[0] in oldvs:
         last['old'] = oldvs[items[0]]
-      #if len(items) > 2 and len(items[2]) > 0::
-      #  last['c'] = items[2]
-      #if len(items) > 3 and len(items[3]) > 0:
-      #  last['lang'] = items[3].split(',')
+      if options.flag and len(items) > 2 and len(items[2]) > 0:
+        last['c'] = items[2]
+      if options.lang and len(items) > 3 and len(items[3]) > 0:
+        last['lang'] = items[3].split(',')
 
 # the last line is always a file
 del last['d']
