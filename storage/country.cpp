@@ -28,7 +28,7 @@ void LoadGroupImpl(int depth, json_t * group, ToDo & toDo, int64_t version)
       if (!id)
         MYTHROW(my::Json::Exception, ("LoadGroupImpl. Id is missing.", id));
 
-      size_t const mwmSize = static_cast<size_t>(json_integer_value(json_object_get(j, "s")));
+      uint32_t const mwmSize = static_cast<uint32_t>(json_integer_value(json_object_get(j, "s")));
       // @TODO(bykoianko) After we stop supporting two component mwms (with routing files)
       // rewrite toDo function to use id and mwmSize only once.
       // We expect that mwm and routing files should be less than 2GB.

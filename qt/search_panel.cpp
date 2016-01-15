@@ -217,7 +217,7 @@ bool SearchPanel::TryMigrate(QString const & str)
   m_pEditor->setText("");
   parentWidget()->hide();
 
-  m_pDrawWidget->GetFramework().Migrate();
+  m_pDrawWidget->GetFramework().PreMigrate();
   return true;
 }
 

@@ -215,6 +215,8 @@ public:
     TOnErrorCallback m_onError;
   };
 
+  unique_ptr<Storage> m_prefetchStorage;
+  void PrefetchMigrateData();
   void SaveDownloadQueue();
   void RestoreDownloadQueue();
 
@@ -308,10 +310,12 @@ public:
 
   void Init(TUpdate const & update);
 
+  /// Delete local maps and aggregate their Id if needed
+  void DeleteAllLocalMaps(vector<TCountryId> * existedCountries = nullptr);
 
-  // Switch on new storage version, remove old mwm
-  // and add required mwm's into download queue.
-  void Migrate();
+  /// Switch on new storage version, remove old mwm
+  /// and add required mwm's into download queue.
+  void Migrate(vector<TCountryId> const & existedCountries);
 
   // Clears local files registry and downloader's queue.
   void Clear();
