@@ -13,8 +13,6 @@
 
 #include "geometry/rect2d.hpp"
 
-#include "base/buffer_vector.hpp"
-
 #include "std/string.hpp"
 #include "std/vector.hpp"
 
@@ -33,27 +31,20 @@ class Country
   friend class update::SizeUpdater;
   /// Name in the country node tree
   TCountryId m_name;
-  /// stores squares with world pieces which are part of the country
-  buffer_vector<platform::CountryFile, 1> m_files;
+  /// |m_file| is a CountryFile of mwm with id == |m_name|.
+  /// if |m_name| is an node id of a group of mwms |m_file| is empty.
+  platform::CountryFile m_file;
 
 public:
   Country() = default;
   Country(TCountryId const & name) : m_name(name) {}
 
   bool operator<(Country const & other) const { return Name() < other.Name(); }
-
-  void AddFile(platform::CountryFile const & file);
-
-  size_t GetFilesCount() const { return m_files.size(); }
+  void SetFile(platform::CountryFile const & file) { m_file = file; }
 
   /// This function valid for current logic - one file for one country (region).
   /// If the logic will be changed, replace GetFile with ForEachFile.
-  platform::CountryFile const & GetFile() const
-  {
-    ASSERT_EQUAL(m_files.size(), 1, (m_name));
-    return m_files.front();
-  }
-
+  platform::CountryFile const & GetFile() const { return m_file; }
   TCountryId const & Name() const { return m_name; }
 };
 
@@ -64,6 +55,4 @@ int64_t LoadCountries(string const & jsonBuffer, TCountriesContainer & countries
 
 void LoadCountryFile2CountryInfo(string const & jsonBuffer, map<string, CountryInfo> & id2info,
                                  bool & isSingleMwm);
-
-bool SaveCountries(int64_t version, TCountriesContainer const & countries, string & jsonBuffer);
 }  // namespace storage
