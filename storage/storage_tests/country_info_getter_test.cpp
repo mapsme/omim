@@ -97,7 +97,7 @@ UNIT_TEST(CountryInfoGetter_GetRegionsCountryId)
 {
   auto const getter = CreateCountryInfoGetter();
 
-  vector<TCountryId> countryIds;
+  TCountriesVec countryIds;
   m2::PointD const montevideoUruguay = MercatorBounds::FromLatLon(-34.8094, -56.1558);
   getter->GetRegionsCountryId(montevideoUruguay, countryIds);
   TEST_EQUAL(countryIds.size(), 1, ());

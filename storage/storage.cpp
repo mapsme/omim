@@ -78,7 +78,7 @@ void DeleteFromDiskWithIndexes(LocalCountryFile const & localFile, MapOptions op
 }
 }  // namespace
 
-bool HasCountryId(vector<TCountryId> const & sortedCountryIds, TCountryId const & countryId)
+bool HasCountryId(TCountriesVec const & sortedCountryIds, TCountryId const & countryId)
 {
   ASSERT(is_sorted(sortedCountryIds.begin(), sortedCountryIds.end()), ());
   return binary_search(sortedCountryIds.begin(), sortedCountryIds.end(), countryId);
@@ -105,7 +105,7 @@ void Storage::Init(TUpdate const & update) { m_update = update; }
 
 void Storage::Migrate()
 {
-  vector<TCountryId> existingCountries;
+  TCountriesVec existingCountries;
   for (auto const & localFiles : m_localFiles)
   {
     for (auto const & localFile : localFiles.second)
@@ -718,11 +718,11 @@ TCountryId Storage::FindCountryIdByFile(string const & name) const
   return TCountryId(name);
 }
 
-vector<TCountryId> Storage::FindAllIndexesByFile(string const & name) const
+TCountriesVec Storage::FindAllIndexesByFile(string const & name) const
 {
   // @TODO(bykoianko) This method should be rewritten. At list now name and the param of Find
   // have different types: string and TCountryId.
-  vector<TCountryId> result;
+  TCountriesVec result;
   if (m_countries.Find(name))
     result.push_back(name);
   return result;
@@ -931,7 +931,7 @@ TCountryId const Storage::GetRootId() const
   return m_countries.Value().Name();
 }
 
-void Storage::GetChildren(TCountryId const & parent, vector<TCountryId> & childrenId) const
+void Storage::GetChildren(TCountryId const & parent, TCountriesVec & childrenId) const
 {
   TCountriesContainer const * parentNode = m_countries.Find(parent);
   if (parentNode == nullptr)
@@ -947,7 +947,7 @@ void Storage::GetChildren(TCountryId const & parent, vector<TCountryId> & childr
     childrenId.emplace_back(parentNode->Child(i).Value().Name());
 }
 
-void Storage::GetLocalRealMaps(vector<TCountryId> & localMaps) const
+void Storage::GetLocalRealMaps(TCountriesVec & localMaps) const
 {
   localMaps.clear();
   localMaps.reserve(m_localFiles.size());
@@ -956,7 +956,7 @@ void Storage::GetLocalRealMaps(vector<TCountryId> & localMaps) const
     localMaps.push_back(keyValue.first);
 }
 
-void Storage::GetDownloadedChildren(TCountryId const & parent, vector<TCountryId> & localChildren) const
+void Storage::GetDownloadedChildren(TCountryId const & parent, TCountriesVec & localChildren) const
 {
   TCountriesContainer const * parentNode = m_countries.Find(parent);
   if (parentNode == nullptr)
@@ -966,7 +966,7 @@ void Storage::GetDownloadedChildren(TCountryId const & parent, vector<TCountryId
   }
 
   localChildren.clear();
-  vector<TCountryId> localMaps;
+  TCountriesVec localMaps;
   GetLocalRealMaps(localMaps);
   if (localMaps.empty())
     return;
@@ -1015,9 +1015,9 @@ bool Storage::IsNodeDownloaded(TCountryId const & countryId) const
   return false;
 }
 
-void Storage::GetCountyListToDownload(vector<TCountryId> & countryList) const
+void Storage::GetCountyListToDownload(TCountriesVec & countryList) const
 {
-  vector<TCountryId> countryIds;
+  TCountriesVec countryIds;
   GetChildren(GetRootId(), countryIds);
   // @TODO(bykoianko) Implement this method. Remove from this method fully downloaded maps.
 }

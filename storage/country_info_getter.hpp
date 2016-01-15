@@ -36,7 +36,7 @@ public:
   // |closestCoutryIds| is filled with country ids of mwm which covers |pt| or close to it.
   // |closestCoutryIds| is not filled with country world.mwm country id and with custom mwm.
   // If |pt| is covered by a sea or a ocean closestCoutryIds may be left empty.
-  void GetRegionsCountryId(m2::PointD const & pt, vector<TCountryId> & closestCoutryIds);
+  void GetRegionsCountryId(m2::PointD const & pt, TCountriesVec & closestCoutryIds);
 
   // Returns info for a region |pt| belongs to.
   void GetRegionInfo(m2::PointD const & pt, CountryInfo & info) const;

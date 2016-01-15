@@ -850,17 +850,17 @@ UNIT_TEST(StorageTest_GetChildren)
   TCountryId const world = storage.GetRootId();
   TEST_EQUAL(world, "Countries", ());
 
-  vector<TCountryId> countriesList;
+  TCountriesVec countriesList;
   storage.GetChildren(world, countriesList);
   TEST_EQUAL(countriesList.size(), 3, ());
   TEST_EQUAL(countriesList.front(), "Abkhazia", ());
   TEST_EQUAL(countriesList.back(), "South Korea_South", ());
 
-  vector<TCountryId> abkhaziaList;
+  TCountriesVec abkhaziaList;
   storage.GetChildren("Abkhazia", abkhaziaList);
   TEST(abkhaziaList.empty(), ());
 
-  vector<TCountryId> algeriaList;
+  TCountriesVec algeriaList;
   storage.GetChildren("Algeria", algeriaList);
   TEST_EQUAL(algeriaList.size(), 2, ());
   TEST_EQUAL(algeriaList.front(), "Algeria_Central", ());
@@ -868,7 +868,7 @@ UNIT_TEST(StorageTest_GetChildren)
 
 UNIT_TEST(StorageTest_HasCountryId)
 {
-  vector<TCountryId> middleEarthCountryIdVec =
+  TCountriesVec middleEarthCountryIdVec =
       {"Arnor", "Mordor", "Rhovanion", "Rhun", "Gondor", "Eriador", "Rohan"};
   sort(middleEarthCountryIdVec.begin(), middleEarthCountryIdVec.end());
 
@@ -916,7 +916,7 @@ UNIT_TEST(StorageTest_DownloadedMapTests)
   }
 
   // Storage::GetLocalRealMaps() test.
-  vector<TCountryId> localRealMaps;
+  TCountriesVec localRealMaps;
   storage.GetLocalRealMaps(localRealMaps);
   sort(localRealMaps.begin(), localRealMaps.end());
   TEST(HasCountryId(localRealMaps, "Algeria_Central"), ());
@@ -934,38 +934,38 @@ UNIT_TEST(StorageTest_DownloadedMapTests)
   // Storage::GetDownloadedChildren test when at least Algeria_Central and Algeria_Coast have been downloaded.
   TCountryId const rootCountryId = storage.GetRootId();
   TEST_EQUAL(rootCountryId, "Countries", ());
-  vector<TCountryId> rootChildrenCountriesId;
+  TCountriesVec rootChildrenCountriesId;
   storage.GetDownloadedChildren(rootCountryId, rootChildrenCountriesId);
   sort(rootChildrenCountriesId.begin(), rootChildrenCountriesId.end());
   TEST(HasCountryId(rootChildrenCountriesId, "Algeria"), ());
   TEST(!HasCountryId(rootChildrenCountriesId, "Algeria_Central"), ());
   TEST(!HasCountryId(rootChildrenCountriesId, "Algeria_Coast"), ());
 
-  vector<TCountryId> algeriaChildrenCountriesId;
+  TCountriesVec algeriaChildrenCountriesId;
   storage.GetDownloadedChildren("Algeria", algeriaChildrenCountriesId);
   sort(algeriaChildrenCountriesId.begin(), algeriaChildrenCountriesId.end());
   TEST(HasCountryId(algeriaChildrenCountriesId, "Algeria_Central"), ());
   TEST(HasCountryId(algeriaChildrenCountriesId, "Algeria_Coast"), ());
 
-  vector<TCountryId> algeriaCentralChildrenCountriesId;
+  TCountriesVec algeriaCentralChildrenCountriesId;
   storage.GetDownloadedChildren("Algeria_Central", algeriaCentralChildrenCountriesId);
   TEST(algeriaCentralChildrenCountriesId.empty(), ());
 
   storage.DeleteCountry(algeriaCentralCountryId, MapOptions::Map);
   // Storage::GetDownloadedChildren test when Algeria_Coast has been downloaded and
   // Algeria_Central has been deleted.
-  vector<TCountryId> rootChildrenCountriesId2;
+  TCountriesVec rootChildrenCountriesId2;
   storage.GetDownloadedChildren(rootCountryId, rootChildrenCountriesId2);
   sort(rootChildrenCountriesId2.begin(), rootChildrenCountriesId2.end());
   TEST(!HasCountryId(rootChildrenCountriesId2, "Algeria"), ());
   TEST(!HasCountryId(rootChildrenCountriesId2, "Algeria_Central"), ());
   TEST(HasCountryId(rootChildrenCountriesId2, "Algeria_Coast"), ());
 
-  vector<TCountryId> childrenOfAbsentCountry;
+  TCountriesVec childrenOfAbsentCountry;
   storage.GetDownloadedChildren("Algeria_Central", childrenOfAbsentCountry);
   TEST(childrenOfAbsentCountry.empty(), ());
 
-  vector<TCountryId> algeriaCoastChildrenCountriesId;
+  TCountriesVec algeriaCoastChildrenCountriesId;
   storage.GetDownloadedChildren("Algeria_Coast", algeriaCoastChildrenCountriesId);
   TEST(algeriaCoastChildrenCountriesId.empty(), ());
 
@@ -974,7 +974,7 @@ UNIT_TEST(StorageTest_DownloadedMapTests)
 
   storage.DeleteCountry(algeriaCoastCountryId, MapOptions::Map);
   // Storage::GetDownloadedChildren test when Algeria_Coast and Algeria_Central have been deleted.
-  vector<TCountryId> rootChildrenCountriesId3;
+  TCountriesVec rootChildrenCountriesId3;
   storage.GetDownloadedChildren(rootCountryId, rootChildrenCountriesId3);
   sort(rootChildrenCountriesId3.begin(), rootChildrenCountriesId3.end());
   TEST(!HasCountryId(rootChildrenCountriesId3, "Algeria"), ());
