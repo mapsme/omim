@@ -220,32 +220,52 @@ void Framework::StopLocationFollow()
 
 void Framework::PreMigrate()
 {
-//  auto stateChanged = [&](TCountryId const & id)
-//  {
-//    LOG_SHORT(LINFO, ("Prefetch done. Ready to migrate."));
-//    Migrate();
-//  };
-//  auto progressChanged = [](TCountryId const & id, LocalAndRemoteSizeT const & sz){};
-//
-//  class Storage prefetchStorage(COUNTRIES_MIGRATE_FILE, "migrate");
-//  prefetchStorage.Subscribe(stateChanged, progressChanged);
-//  prefetchStorage.DownloadCountry("Angola", MapOptions::MapWithCarRouting);
+  ms::LatLon curPos(55.7, 37.7);
+  Storage().PrefetchMigrateData();
+
+  storage::CountryInfoGetter infoGetter(GetPlatform().GetReader(PACKED_POLYGONS_MIGRATE_FILE),
+                                        GetPlatform().GetReader(COUNTRIES_MIGRATE_FILE));
+
+  TCountryId currentCountryId = infoGetter.GetRegionFile(MercatorBounds::FromLatLon(curPos));
+
+  auto stateChanged = [&](TCountryId const & id)
+  {
+    TStatus const nextStatus = Storage().m_prefetchStorage->CountryStatusEx(id);
+    LOG_SHORT(LINFO, (id, "status :", nextStatus));
+    if (nextStatus == TStatus::EOnDisk)
+    {
+      LOG_SHORT(LINFO, ("Prefetch done. Ready to migrate."));
+      Migrate();
+    }
+  };
+  auto progressChanged = [](TCountryId const & id, LocalAndRemoteSizeT const & sz)
+  {
+   LOG(LINFO, (id, "downloading progress:", sz));
+  };
+
+  Storage().m_prefetchStorage->Subscribe(stateChanged, progressChanged);
+  Storage().m_prefetchStorage->DownloadNode(currentCountryId);
 }
 
 void Framework::Migrate()
 {
-  Storage().Migrate();
+  TCountriesVec existedCountries;
+  Storage().DeleteAllLocalMaps(&existedCountries);
+  DeregisterAllMaps();
+  m_model.Clear();
+  Storage().Migrate(existedCountries);
+  RegisterAllMaps();
   m_searchEngine.reset();
   m_infoGetter.reset();
   InitCountryInfoGetter();
   InitSearchEngine();
-  m_model.Clear();
   InvalidateRect(MercatorBounds::FullRect());
 }
 
 Framework::Framework()
   : m_bmManager(*this)
   , m_fixedSearchResults(0)
+  , m_storage(platform::migrate::NeedMigrate() ? COUNTRIES_FILE : COUNTRIES_MIGRATE_FILE)
 {
   // Restore map style before classificator loading
   int mapStyle = MapStyleLight;

@@ -103,33 +103,58 @@ Storage::Storage(string const & referenceCountriesTxtJsonForTesting,
 
 void Storage::Init(TUpdate const & update) { m_update = update; }
 
-void Storage::Migrate()
+void Storage::DeleteAllLocalMaps(TCountriesVec * existedCountries /* = nullptr */)
 {
-  TCountriesVec existingCountries;
   for (auto const & localFiles : m_localFiles)
   {
     for (auto const & localFile : localFiles.second)
     {
       LOG_SHORT(LINFO, (localFiles.first, DebugPrint(*localFile)));
-      existingCountries.push_back(localFiles.first);
+      if (existedCountries)
+        existedCountries->push_back(localFiles.first);
       localFile->SyncWithDisk();
       DeleteFromDiskWithIndexes(*localFile, MapOptions::MapWithCarRouting);
     }
   }
+}
 
+void Storage::PrefetchMigrateData()
+{
+  m_prefetchStorage.reset(new Storage(COUNTRIES_MIGRATE_FILE, "migrate"));
+  m_prefetchStorage->Init([](LocalCountryFile const &){});
+}
+
+void Storage::Migrate(TCountriesVec const & existedCountries)
+{
   platform::migrate::SetMigrationFlag();
 
   Clear();
-  TMapping mapping;
   m_countries.Clear();
+
+  TMapping mapping;
   LoadCountriesFile(COUNTRIES_MIGRATE_FILE, m_dataDir, &mapping);
 
-  for (auto const & country : existingCountries)
+  vector<TCountryId> prefetchedMaps;
+  m_prefetchStorage->GetLocalRealMaps(prefetchedMaps);
+
+  // Move prefetched maps into current storage.
+  for (auto const & countryId : prefetchedMaps)
   {
-    ASSERT(mapping[country].empty(), ());
+    string prefetchedFilename = m_prefetchStorage->GetLatestLocalFile(countryId)->GetPath(MapOptions::Map);
+    CountryFile const countryFile = GetCountryFile(countryId);
+    auto localFile = PreparePlaceForCountryFiles(GetCurrentDataVersion(), m_dataDir, countryFile);
+    string localFilename = localFile->GetPath(MapOptions::Map);
+    LOG_SHORT(LINFO, ("Move", prefetchedFilename, "to", localFilename));
+    my::RenameFileX(prefetchedFilename, localFilename);
+  }
+
+  // Cover old big maps with small ones and add them into download queue
+  for (auto const & country : existedCountries)
+  {
+    ASSERT(!mapping[country].empty(), ());
     for (auto const & smallCountry : mapping[country])
     {
-      DownloadCountry(smallCountry, MapOptions::MapWithCarRouting);
+      DownloadCountry(smallCountry, MapOptions::Map);
     }
   }
 }
@@ -393,6 +418,8 @@ void Storage::DownloadCountry(TCountryId const & countryId, MapOptions opt)
 
 void Storage::DeleteCountry(TCountryId const & countryId, MapOptions opt)
 {
+  ASSERT(m_update != nullptr, ("Storage::Init wasn't called"));
+
   opt = NormalizeDeleteFileSet(opt);
   DeleteCountryFiles(countryId, opt);
   DeleteCountryFilesFromDownloader(countryId, opt);
@@ -578,6 +605,7 @@ void Storage::OnMapFileDownloadFinished(bool success,
 
   OnMapDownloadFinished(countryId, success, queuedCountry.GetInitOptions());
   m_queue.pop_front();
+  SaveDownloadQueue();
 
   NotifyStatusChanged(countryId);
   m_downloader->Reset();
@@ -672,6 +700,7 @@ bool Storage::RegisterDownloadedFiles(TCountryId const & countryId, MapOptions f
 
 void Storage::OnMapDownloadFinished(TCountryId const & countryId, bool success, MapOptions files)
 {
+  ASSERT(m_update != nullptr, ("Storage::Init wasn't called"));
   ASSERT_NOT_EQUAL(MapOptions::Nothing, files,
                    ("This method should not be called for empty files set."));
   {
@@ -694,7 +723,6 @@ void Storage::OnMapDownloadFinished(TCountryId const & countryId, bool success, 
   ASSERT(localFile, ());
   DeleteCountryIndexes(*localFile);
   m_update(*localFile);
-  SaveDownloadQueue();
 }
 
 string Storage::GetFileDownloadUrl(string const & baseUrl, TCountryId const & countryId,
