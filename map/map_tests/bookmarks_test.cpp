@@ -396,11 +396,12 @@ namespace
   {
     search::AddressInfo const info = fm.GetMercatorAddressInfo(MercatorBounds::FromLatLon(lat, lon));
 
-    TEST_EQUAL(info.m_name, poi.m_name, ());
     TEST_EQUAL(info.m_street, poi.m_street, ());
     TEST_EQUAL(info.m_house, poi.m_house, ());
-    TEST_EQUAL(info.m_types.size(), 1, ());
-    TEST_EQUAL(info.GetBestType(), poi.m_type, ());
+    // TODO(AlexZ): AddressInfo should contain addresses only. Refactor.
+    //TEST_EQUAL(info.m_name, poi.m_name, ());
+    //TEST_EQUAL(info.m_types.size(), 1, ());
+    //TEST_EQUAL(info.GetBestType(), poi.m_type, ());
   }
 }
 
