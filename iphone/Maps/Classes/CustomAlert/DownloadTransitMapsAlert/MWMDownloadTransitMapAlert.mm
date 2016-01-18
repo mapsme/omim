@@ -7,32 +7,35 @@
 #import "UIColor+MapsMeColor.h"
 #import "UILabel+RuntimeAttributes.h"
 
+#include "Framework.h"
+
 @interface MWMDownloaderEntity : NSObject 
 
 @property (copy, nonatomic) NSArray * titles;
 @property (copy, nonatomic) NSString * size;
 @property (nonatomic) BOOL isMapsFiles;
 
-- (instancetype)initWithIndexes:(storage::TCountriesVec const &)indexes isMaps:(BOOL)isMaps;
+- (instancetype)initWithIndexes:(storage::TCountriesVec const &)countriesVec isMaps:(BOOL)isMaps;
 
 @end
 
 @implementation MWMDownloaderEntity
 
-- (instancetype)initWithIndexes:(storage::TCountriesVec const &)indexes isMaps:(BOOL)isMaps
+- (instancetype)initWithIndexes:(storage::TCountriesVec const &)countriesVec isMaps:(BOOL)isMaps
 {
   self = [super init];
   if (self)
   {
-// TODO (igrechuhin) Add missing implementation
-//    auto & a = GetFramework().GetCountryTree().GetActiveMapLayout();
     NSMutableArray * titles = [@[] mutableCopy];
-    uint64_t totalRoutingSize = 0;
-//    for (auto const & i : indexes)
-//    {
-//      [titles addObject:@(a.GetCountryName(i).c_str())];
-//      totalRoutingSize += a.GetCountrySize(i, isMaps ? MapOptions::MapWithCarRouting : MapOptions::CarRouting).second;
-//    }
+    size_t totalRoutingSize = 0;
+    auto & s = GetFramework().Storage();
+    for (auto const & countryId : countriesVec)
+    {
+      storage::NodeAttrs attrs;
+      s.GetNodeAttrs(countryId, attrs);
+      [titles addObject:@(attrs.m_nodeLocalName.c_str())];
+      totalRoutingSize += attrs.m_mwmSize;
+    }
     self.isMapsFiles = isMaps;
     self.titles = titles;
     self.size = [NSString stringWithFormat:@"%@ %@", @(totalRoutingSize / MB), L(@"mb")];
@@ -134,13 +137,12 @@ static NSString * const kStatisticsEvent = @"Map download Alert";
   __weak MWMDownloadTransitMapAlert * wAlert = alert;
   alert.downloaderBlock = ^()
   {
-// TODO (igrechuhin) Add missing implementation
-//    __strong MWMDownloadTransitMapAlert * alert = wAlert;
-//    auto & a = GetFramework().GetCountryTree().GetActiveMapLayout();
-//    for (auto const & index : alert->maps)
-//      a.DownloadMap(index, MapOptions::MapWithCarRouting);
-//    for (auto const & index : alert->routes)
-//      a.DownloadMap(index, MapOptions::CarRouting);
+    __strong MWMDownloadTransitMapAlert * alert = wAlert;
+    auto & s = GetFramework().Storage();
+    for (auto const & countryId : alert->maps)
+      s.DownloadNode(countryId);
+    for (auto const & countryId : alert->routes)
+      s.DownloadNode(countryId);
   };
   [alert configure];
   return alert;

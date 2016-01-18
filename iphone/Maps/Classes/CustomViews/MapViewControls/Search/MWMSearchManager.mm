@@ -199,34 +199,37 @@ extern NSString * const kSearchStateKey = @"SearchStateKey";
 
 - (void)processCountryEvent:(storage::TCountryId const &)countryId
 {
-// TODO (igrechuhin) Add missing implementation
-  //  auto const status =
-  //      GetFramework().GetCountryTree().GetActiveMapLayout().GetCountryStatus(group, position);
-  //  [self updateTopController];
-  //  if (status == TStatus::EDownloadFailed)
-  //    [self.downloadController setDownloadFailed];
-  //  if (self.state == MWMSearchManagerStateTableSearch ||
-  //      self.state == MWMSearchManagerStateMapSearch)
-  //  {
-  //    NSString * text = self.searchTextField.text;
-  //    if (text.length > 0)
-  //      [self.tableViewController searchText:text
-  //                            forInputLocale:self.searchTextField.textInputMode.primaryLanguage];
-  //  }
+  using namespace storage;
+  [self updateTopController];
+  NodeAttrs attrs;
+  GetFramework().Storage().GetNodeAttrs(countryId, attrs);
+  if (attrs.m_downloadingErrCode != ErrorCode::NoError)
+    [self.downloadController setDownloadFailed];
+  if (self.state == MWMSearchManagerStateTableSearch || self.state == MWMSearchManagerStateMapSearch)
+  {
+    NSString * text = self.searchTextField.text;
+    if (text.length > 0)
+      [self.tableViewController searchText:text
+                            forInputLocale:self.searchTextField.textInputMode.primaryLanguage];
+  }
 }
 
 - (void)processCountry:(storage::TCountryId const &)countryId progress:(storage::LocalAndRemoteSizeT const &)progress
 {
-// TODO (igrechuhin) Add missing implementation
-  //  CGFloat const normProgress = (CGFloat)progress.first / progress.second;
-  //  ActiveMapsLayout & activeMapLayout = GetFramework().GetCountryTree().GetActiveMapLayout();
-  //  NSString * countryName =
-  //      @(activeMapLayout.GetFormatedCountryName(activeMapLayout.GetCoreIndex(group, position))
-  //            .c_str());
-  //  [self.downloadController downloadProgress:normProgress countryName:countryName];
+  using namespace storage;
+  CGFloat const normProgress = (CGFloat)progress.first / progress.second;
+  NodeAttrs attrs;
+  GetFramework().Storage().GetNodeAttrs(countryId, attrs);
+  NSString * countryName = @(attrs.m_nodeLocalName.c_str());
+  [self.downloadController downloadProgress:normProgress countryName:countryName];
 }
 
-#pragma mark - MWMSearchDownloadMapRequest
+#pragma mark - MWMSearchDownloadProtocol
+
+- (MWMAlertViewController *)alertController
+{
+  return self.delegate.alertController;
+}
 
 - (void)selectMapsAction
 {
@@ -277,7 +280,7 @@ extern NSString * const kSearchStateKey = @"SearchStateKey";
 
 - (void)changeToMapSearchState
 {
-  Framework & f = GetFramework();
+  auto & f = GetFramework();
   UITextField * textField = self.searchTextField;
 
   string const locale = textField.textInputMode.primaryLanguage ?
@@ -305,14 +308,12 @@ extern NSString * const kSearchStateKey = @"SearchStateKey";
 
 - (UIViewController *)topController
 {
-// TODO (igrechuhin) Add missing implementation
-//  auto & f = GetFramework();
-//  auto & activeMapLayout = f.GetCountryTree().GetActiveMapLayout();
-//  int const outOfDate = activeMapLayout.GetCountInGroup(storage::ActiveMapsLayout::TGroup::EOutOfDate);
-//  int const upToDate = activeMapLayout.GetCountInGroup(storage::ActiveMapsLayout::TGroup::EUpToDate);
-//  BOOL const haveMap = outOfDate > 0 || upToDate > 0;
-//  return haveMap ? self.tabbedController : self.downloadController;
-  return self.tabbedController;
+  using namespace storage;
+  auto & s = GetFramework().Storage();
+  TCountriesVec downloadedCountries;
+  s.GetDownloadedChildren(s.GetRootId(), downloadedCountries);
+  BOOL const haveMap = (downloadedCountries.size() != 0);
+  return haveMap ? self.tabbedController : self.downloadController;
 }
 
 - (MWMSearchDownloadViewController *)downloadController

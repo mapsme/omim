@@ -2,7 +2,7 @@
 #import "MWMSearchDownloadView.h"
 #import "MWMSearchDownloadViewController.h"
 
-@interface MWMSearchDownloadViewController () <MWMDownloadMapRequestDelegate>
+@interface MWMSearchDownloadViewController () <MWMDownloadMapRequestProtocol>
 
 @property (nonatomic) IBOutlet UIView * downloadRequestHolder;
 
@@ -96,7 +96,12 @@
   [UIApplication.sharedApplication.keyWindow endEditing:YES];
 }
 
-#pragma mark - MWMDownloadMapRequestDelegate
+#pragma mark - MWMDownloadMapRequestProtocol
+
+- (MWMAlertViewController *)alertController
+{
+  return self.delegate.alertController;
+}
 
 - (void)stateUpdated:(enum MWMDownloadMapRequestState)state
 {

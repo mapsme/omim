@@ -46,8 +46,7 @@ extern NSString * const kSearchResultPointKey;
 {
   [MWMFrameworkUtils prepareFramework];
   Framework & f = GetFramework();
-  string countryName = f.CountryInfoGetter().GetRegionFile(f.GetViewportCenter());
-  return @(countryName.c_str());
+  return @(f.CountryInfoGetter().GetRegionCountryId(f.GetViewportCenter()).c_str());
 }
 
 + (void)initSoftwareRenderer:(CGFloat)screenScale

@@ -86,8 +86,7 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 @end
 
 @interface MapViewController ()<MTRGNativeAppwallAdDelegate, MWMFrameworkRouteBuilderObserver,
-                                MWMFrameworkMyPositionObserver, MWMFrameworkUserMarkObserver,
-                                MWMFrameworkStorageObserver>
+                                MWMFrameworkMyPositionObserver, MWMFrameworkUserMarkObserver>
 
 @property (nonatomic, readwrite) MWMMapViewControlsManager * controlsManager;
 @property (nonatomic) MWMBottomMenuState menuRestoreState;
@@ -95,7 +94,7 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 @property (nonatomic) ForceRoutingStateChange forceRoutingStateChange;
 @property (nonatomic) BOOL disableStandbyOnLocationStateMode;
 
-@property (nonatomic) MWMAlertViewController * alertController;
+@property (nonatomic, readwrite) MWMAlertViewController * alertController;
 
 @property (nonatomic) UserTouchesAction userTouchesAction;
 @property (nonatomic) MWMPageController * pageViewController;
@@ -562,50 +561,6 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
     self.controlsManager.hidden = NO;
     [self.controlsManager showPlacePage];
   }
-}
-
-#pragma mark - MWMFrameworkStorageObserver
-
-- (void)processCountryEvent:(storage::TCountryId const &)countryId
-{
-  // TODO (igrechuhin) Add missing implementation
-//      f.SetDownloadCountryListener([self, &f](storage::TCountryId const & idx, int opt)
-//      {
-//        ActiveMapsLayout & layout = f.GetCountryTree().GetActiveMapLayout();
-//        if (opt == -1)
-//        {
-//          layout.RetryDownloading(idx);
-//        }
-//        else
-//        {
-//          LocalAndRemoteSizeT sizes = layout.GetRemoteCountrySizes(idx);
-//          uint64_t sizeToDownload = sizes.first;
-//          MapOptions options = static_cast<MapOptions>(opt);
-//          if(HasOptions(options, MapOptions::CarRouting))
-//            sizeToDownload += sizes.second;
-//  
-//          NSString * name = @(layout.GetCountryName(idx).c_str());
-//          Platform::EConnectionType const connection = Platform::ConnectionStatus();
-//          if (connection != Platform::EConnectionType::CONNECTION_NONE)
-//          {
-//            if (connection == Platform::EConnectionType::CONNECTION_WWAN && sizeToDownload > 50 * MB)
-//            {
-//              [self.alertController presentnoWiFiAlertWithName:name downloadBlock:^
-//              {
-//                layout.DownloadMap(idx, static_cast<MapOptions>(opt));
-//              }];
-//              return;
-//            }
-//          }
-//          else
-//          {
-//            [self.alertController presentNoConnectionAlert];
-//            return;
-//          }
-//  
-//          layout.DownloadMap(idx, static_cast<MapOptions>(opt));
-//        }
-//      });
 }
 
 #pragma mark - Bookmarks
