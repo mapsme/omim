@@ -23,7 +23,9 @@ win32*|linux* {
 }
 
 HEADERS += \
+  write_dir_changer.hpp \
 
 SOURCES += \
   ../../testing/testingmain.cpp \
   storage_http_tests.cpp \
+  write_dir_changer.cpp \
