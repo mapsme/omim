@@ -1,8 +1,8 @@
+#include "map/user_mark.hpp"
+#include "platform/location.hpp"
 #include "routing/router.hpp"
 #include "storage/index.hpp"
 #include "storage/storage_defines.hpp"
-#include "platform/location.hpp"
-#include "map/user_mark.hpp"
 
 @protocol MWMFrameworkObserver <NSObject>
 
@@ -11,8 +11,8 @@
 @protocol MWMFrameworkRouteBuilderObserver <MWMFrameworkObserver>
 
 - (void)processRouteBuilderEvent:(routing::IRouter::ResultCode)code
-                       countries:(vector<storage::TCountryId> const &)absentCountries
-                          routes:(vector<storage::TCountryId> const &)absentRoutes;
+                       countries:(storage::TCountriesVec const &)absentCountries
+                          routes:(storage::TCountriesVec const &)absentRoutes;
 
 @optional
 

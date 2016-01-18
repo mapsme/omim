@@ -507,8 +507,8 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 #pragma mark - MWMFrameworkRouteBuilderObserver
 
 - (void)processRouteBuilderEvent:(routing::IRouter::ResultCode)code
-                       countries:(vector<storage::TCountryId> const &)absentCountries
-                          routes:(vector<storage::TCountryId> const &)absentRoutes
+                       countries:(storage::TCountriesVec const &)absentCountries
+                          routes:(storage::TCountriesVec const &)absentRoutes
 {
   switch (code)
   {
@@ -695,8 +695,8 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 #pragma mark - ShowDialog callback
 
 - (void)presentDownloaderAlert:(routing::IRouter::ResultCode)code
-                     countries:(vector<storage::TCountryId> const &)countries
-                        routes:(vector<storage::TCountryId> const &)routes
+                     countries:(storage::TCountriesVec const &)countries
+                        routes:(storage::TCountriesVec const &)routes
 {
   if (countries.size() || routes.size())
     [self.alertController presentDownloaderAlertWithCountries:countries routes:routes code:code];

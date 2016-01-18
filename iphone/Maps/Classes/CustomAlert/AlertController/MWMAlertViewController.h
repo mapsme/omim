@@ -12,8 +12,8 @@ typedef void (^CloseAlertCompletion)();
 
 - (nonnull instancetype)initWithViewController:(nonnull UIViewController *)viewController;
 - (void)presentAlert:(routing::IRouter::ResultCode)type;
-- (void)presentDownloaderAlertWithCountries:(vector<storage::TCountryId> const &)countries
-                                     routes:(vector<storage::TCountryId> const &)routes
+- (void)presentDownloaderAlertWithCountries:(storage::TCountriesVec const &)countries
+                                     routes:(storage::TCountriesVec const &)routes
                                        code:(routing::IRouter::ResultCode)code;
 - (void)presentRateAlert;
 - (void)presentFacebookAlert;

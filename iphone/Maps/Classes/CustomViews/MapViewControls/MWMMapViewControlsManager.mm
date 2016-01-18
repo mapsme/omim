@@ -73,8 +73,8 @@ extern NSString * const kAlohalyticsTapEventKey;
 #pragma mark - MWMFrameworkRouteBuilderObserver
 
 - (void)processRouteBuilderEvent:(routing::IRouter::ResultCode)code
-                       countries:(vector<storage::TCountryId> const &)absentCountries
-                          routes:(vector<storage::TCountryId> const &)absentRoutes
+                       countries:(storage::TCountriesVec const &)absentCountries
+                          routes:(storage::TCountriesVec const &)absentRoutes
 {
   switch (code)
   {

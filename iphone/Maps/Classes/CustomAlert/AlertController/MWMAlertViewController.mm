@@ -96,8 +96,8 @@ static NSString * const kAlertControllerNibIdentifier = @"MWMAlertViewController
   [self displayAlert:[MWMAlert updateMapsAlert]];
 }
 
-- (void)presentDownloaderAlertWithCountries:(vector<storage::TCountryId> const &)countries
-                                     routes:(vector<storage::TCountryId> const &)routes
+- (void)presentDownloaderAlertWithCountries:(storage::TCountriesVec const &)countries
+                                     routes:(storage::TCountriesVec const &)routes
                                        code:(routing::IRouter::ResultCode)code
 {
   [self displayAlert:[MWMAlert downloaderAlertWithAbsentCountries:countries routes:routes code:code]];

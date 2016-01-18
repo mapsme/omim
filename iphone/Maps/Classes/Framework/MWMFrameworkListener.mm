@@ -96,7 +96,7 @@ void loopWrappers(TWrapperSet * wrappers, TLoopBlock block)
 {
   TWrapperSet * wrappers = self.routeBuildingObservers;
   auto & f = GetFramework();
-  f.SetRouteBuildingListener([wrappers](routing::IRouter::ResultCode code, vector<storage::TCountryId> const & absentCountries, vector<storage::TCountryId> const & absentRoutes)
+  f.SetRouteBuildingListener([wrappers](routing::IRouter::ResultCode code, storage::TCountriesVec const & absentCountries, storage::TCountriesVec const & absentRoutes)
   {
     loopWrappers(wrappers, ^(TRouteBuildingObserver observer)
     {
