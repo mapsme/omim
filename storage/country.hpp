@@ -34,6 +34,12 @@ class Country
   /// |m_file| is a CountryFile of mwm with id == |m_name|.
   /// if |m_name| is an node id of a group of mwms |m_file| is empty.
   platform::CountryFile m_file;
+  /// A number of descendants mwm files of |m_name|. Only files (leaves in tree) are counted.
+  /// If |m_name| is a mwm file |m_childrenNumber| == 1.
+  uint32_t m_subtreeMwmNumber;
+  /// Size of descendants mwm files of |m_name|.
+  /// If |m_name| is a mwm file |m_subtreeMwmSizeBytes| is equal to size of the mwm.
+  size_t m_subtreeMwmSizeBytes;
 
 public:
   Country() = default;
@@ -41,6 +47,13 @@ public:
 
   bool operator<(Country const & other) const { return Name() < other.Name(); }
   void SetFile(platform::CountryFile const & file) { m_file = file; }
+  void SetSubtreeAttrs(uint32_t subtreeMwmNumber, size_t subtreeMwmSizeBytes)
+  {
+    m_subtreeMwmNumber = subtreeMwmNumber;
+    m_subtreeMwmSizeBytes = subtreeMwmSizeBytes;
+  }
+  uint32_t GetSubtreeMwmCounter() const { return m_subtreeMwmNumber; }
+  size_t GetSubtreeMwmSizeBytes() const { return m_subtreeMwmSizeBytes; }
 
   /// This function valid for current logic - one file for one country (region).
   /// If the logic will be changed, replace GetFile with ForEachFile.
