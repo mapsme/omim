@@ -66,7 +66,7 @@ namespace integration
   unique_ptr<storage::CountryInfoGetter> CreateCountryInfoGetter()
   {
     Platform const & platform = GetPlatform();
-    return make_unique<storage::CountryInfoGetter>(platform.GetReader(PACKED_POLYGONS_FILE),
+    return make_unique<storage::CountryInfoGetter>(platform.GetReader(PACKED_POLYGONS_MIGRATE_FILE),
                                                    platform.GetReader(COUNTRIES_FILE));
   }
 
@@ -301,13 +301,15 @@ namespace integration
     routing::OnlineCrossFetcher fetcher(OSRM_ONLINE_SERVER_URL, startPoint, finalPoint);
     fetcher.Do();
     vector<m2::PointD> const & points = fetcher.GetMwmPoints();
-    TEST_EQUAL(points.size(), expected.size(), ());
+    set<string> foundMwms;
+
     for (m2::PointD const & point : points)
     {
       string const mwmName = routerComponents.GetCountryInfoGetter().GetRegionFile(point);
       TEST(find(expected.begin(), expected.end(), mwmName) != expected.end(),
            ("Can't find ", mwmName));
+      foundMwms.insert(mwmName);
     }
-    TestOnlineFetcher(startPoint, finalPoint, expected, routerComponents);
+    TEST_EQUAL(expected.size(), foundMwms.size(), ());
   }
 }
