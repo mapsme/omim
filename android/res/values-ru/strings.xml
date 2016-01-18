@@ -808,7 +808,7 @@
 
 	<!-- SECTION: Strings for downloading map from search -->
 	<string name="search_without_internet_advertisement">Для поиска мест и построения маршрутов скачайте карту, и интернет вам больше не понадобится.</string>
-	<string name="search_select_map">Выбрать карту </string>
+	<string name="search_select_map">Выбрать карту</string>
 	<string name="search_select_other_map">Выбрать другую карту</string>
 	<string name="search_vehicle_routes">Автомобильные маршруты</string>
 	<!-- «Show» context menu -->
@@ -867,4 +867,8 @@
 	<string name="whats_new_rec_track_body">Теперь приложение показывает недавно пройденный путь.</string>
 	<string name="whats_new_night_caption">Переходи на тёмную сторону!</string>
 	<string name="whats_new_night_body">Каждый день после заката солнца MAPS.ME активирует ночной режим.</string>
+	<!-- «Add place» button in place page. -->
+	<string name="pp_place_add">Добавить место</string>
+	<!-- «Edit place» button in place page. -->
+	<string name="pp_place_edit">Редактировать место</string>
 </resources>
