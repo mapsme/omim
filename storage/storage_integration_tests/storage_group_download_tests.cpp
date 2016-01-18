@@ -11,7 +11,7 @@
 
 #include "storage/storage.hpp"
 
-#include "write_dir_changer.hpp"
+#include "storage/storage_integration_tests/write_dir_changer.hpp"
 
 #include "base/assert.hpp"
 
@@ -113,13 +113,13 @@ UNIT_TEST(SmallMwms_GroupDownload_Test)
 
   TCountriesVec v;
   storage.GetChildren(kGroupCountryId, v);
-  set<TCountryId> const children(v.begin(), v.end());
+  TCountriesSet const children(v.begin(), v.end());
   v.clear();
 
   // Check children for the kGroupCountryId
   TEST(children == kLeafCountriesIds, ());
 
-  set<TCountryId> udpated;
+  TCountriesSet udpated;
   auto onUpdatedFn = [&](LocalCountryFile const & localCountryFile)
   {
     TCountryId const countryId = localCountryFile.GetCountryName();
@@ -127,14 +127,14 @@ UNIT_TEST(SmallMwms_GroupDownload_Test)
     udpated.insert(countryId);
   };
 
-  set<TCountryId> changed;
+  TCountriesSet changed;
   auto onChangeCountryFn = [&](TCountryId const & countryId)
   {
     TEST(children.find(countryId) != children.end(), ());
     changed.insert(countryId);
   };
 
-  set<TCountryId> downloaded;
+  TCountriesSet downloaded;
   auto onProgressFn = [&](TCountryId const & countryId, LocalAndRemoteSizeT const & mapSize)
   {
     TEST(children.find(countryId) != children.end(), ());
