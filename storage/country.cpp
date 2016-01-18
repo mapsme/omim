@@ -13,17 +13,18 @@ using platform::CountryFile;
 
 namespace storage
 {
-// Mwm subtree attributes which can be calculate based on coutnries.txt.
-// The first in the pair is number of mwms in a subtree. The second is the size of
+// Mwm subtree attributes. They can be calculated based on information contained in countries.txt.
+// The first in the pair is number of mwms in a subtree. The second is sum of sizes of
 // all mwms in a subtree.
 using TMwmSubtreeAttrs = pair<uint32_t, size_t>;
 
 template <class ToDo>
 TMwmSubtreeAttrs LoadGroupSingleMwmsImpl(int depth, json_t * group, ToDo & toDo)
 {
-  int16_t mwmCounter = 0;
-  int64_t mwmSize = 0;
-  for (size_t i = 0; i < json_array_size(group); ++i)
+  uint32_t mwmCounter = 0;
+  size_t mwmSize = 0;
+  size_t const groupListSize = json_array_size(group);
+  for (size_t i = 0; i < groupListSize; ++i)
   {
     json_t * j = json_array_get(group, i);
 
@@ -31,22 +32,23 @@ TMwmSubtreeAttrs LoadGroupSingleMwmsImpl(int depth, json_t * group, ToDo & toDo)
     if (!id)
       MYTHROW(my::Json::Exception, ("LoadGroupImpl. Id is missing.", id));
 
-    size_t const nodeSize = static_cast<int64_t>(json_integer_value(json_object_get(j, "s")));
+    size_t const nodeSize = static_cast<size_t>(json_integer_value(json_object_get(j, "s")));
     // We expect that mwm and routing files should be less than 2GB.
     Country * addedNode = toDo(id, nodeSize, depth);
 
     json_t * oldIds = json_object_get(j, "old");
     if (oldIds)
     {
-      for (size_t k = 0; k < json_array_size(oldIds); ++k)
+      size_t const oldListSize = json_array_size(oldIds);
+      for (size_t k = 0; k < oldListSize; ++k)
       {
         string oldIdValue = json_string_value(json_array_get(oldIds, k));
         toDo(oldIdValue, id);
       }
     }
 
-    size_t mwmChildCounter = 0;
-    int32_t mwmChildSize = 0;
+    uint32_t mwmChildCounter = 0;
+    size_t mwmChildSize = 0;
     json_t * children = json_object_get(j, "g");
     if (children)
     {
@@ -73,7 +75,8 @@ void LoadGroupTwoComponentMwmsImpl(int depth, json_t * group, ToDo & toDo)
 {
   // @TODO(bykoianko) After we stop supporting two component mwms (with routing files)
   // remove code below.
-  for (size_t i = 0; i < json_array_size(group); ++i)
+  size_t const groupListSize = json_array_size(group);
+  for (size_t i = 0; i < groupListSize; ++i)
   {
     json_t * j = json_array_get(group, i);
 
@@ -202,7 +205,7 @@ public:
   DoStoreFile2InfoSingleMwms(map<string, CountryInfo> & file2info)
     : m_file2info(file2info) {}
 
-  Country * operator()(string const & id, uint32_t, int)
+  Country * operator()(string const & id, uint32_t /* mapSize */, int /* depth */)
   {
     CountryInfo info(id);
     m_file2info[id] = move(info);
@@ -227,7 +230,7 @@ public:
   DoStoreFile2InfoTwoComponentMwms(map<string, CountryInfo> & file2info)
     : m_file2info(file2info) {}
 
-  void operator()(string const & id, uint32_t mapSize, uint32_t, int)
+  void operator()(string const & id, uint32_t mapSize, uint32_t /* routingSize */, int /* depth */)
   {
     if (mapSize == 0)
       return;

@@ -17,13 +17,13 @@
 
 namespace storage
 {
-/// \brief This enum describes status of a downloaded mwm or a group of downloaded mwm.
+/// \brief This enum describes status of a downloaded mwm or a group of downloaded mwms.
 enum class NodeStatus
 {
   Undefined,
-  UpToDate,              /**< Downloaded mwm(s) is up to date. No need update it. */
-  DownloadingInProcess,  /**< Downloading a new mwm or updating a old one. */
-  DownloadWasPaused,     /**< Downloading was paused or stopped by some reasons. E.g lost connection. */
+  UpToDate,              /**< Downloaded mwm(s) is up to date. No need to update it. */
+  DownloadInProgress,    /**< Downloading a new mwm or updating an old one. */
+  DownloadPaused,        /**< Downloading was paused or stopped by some reasons. E.g lost connection. */
   NeedsToUpdate,         /**< An update for a downloaded mwm is ready according to county_attributes.txt. */
   InQueue,               /**< A mwm is waiting for downloading in the queue. */
 };
@@ -41,46 +41,48 @@ enum class ErrorCode
 struct NodeAttrs
 {
   NodeAttrs() : m_mwmCounter(0), m_localMwmCounter(0), m_mwmSize(0), m_localMwmSize(0),
-    m_downloadingMwmSize(0), m_mwmVersion(0), m_downloadingProgress(0),
+    m_downloadingMwmSize(0), m_localMwmVersion(0), m_downloadingProgress(0),
     m_status(NodeStatus::Undefined), m_downloadingErrCode(ErrorCode::NoError) {}
-  /// If the node is expandable (a big country) |m_mwmCounter| is number of mwm
-  /// belongs to the node. If the node isn't expandable m_mapsDownloaded == 1.
+  /// If the node is expandable (a big country) |m_mwmCounter| is number of mwm files (leaves)
+  /// belongs to the node. If the node isn't expandable |m_mapsDownloaded| == 1.
   uint32_t m_mwmCounter;
 
-  /// Number of mwms belongs to the node which has been donwloaded.
+  /// Number of mwms belonging to the node which has been donwloaded.
   uint32_t m_localMwmCounter;
 
-  /// If it's not an extandable m_nodeSize is size of one mwm according to countries.txt.
-  /// Otherwise |m_nodeSize| is a sum of all mwm sizes which belong to the group
-  ///  according to countries.txt.
+  /// If it's not an expandable node, |m_nodeSize| is size of one mwm according to countries.txt.
+  /// Otherwise |m_nodeSize| is the sum of all mwm file sizes which belong to the group
+  /// according to countries.txt.
   size_t m_mwmSize;
 
-  /// If it's not an extandable node m_nodeSize is size of one downloaded mwm.
-  /// Otherwise |m_localNodeSize| is a sum of all mwm sizes which belong to the group and
+  /// If it's not an expandable node, |m_localMwmSize| is size of one downloaded mwm.
+  /// Otherwise |m_localNodeSize| is the sum of all mwm file sizes which belong to the group and
   /// have been downloaded.
   size_t m_localMwmSize;
 
   /// If downloading or updating an mwm is in progress apart from a local mwm
-  /// which is used there's a partly downloading mwm. |m_downloadingMwmSize| is
-  /// size of partly downloaded mwm if downloading in progress or zero otherwise.
+  /// which is currently used there's a partly downloading mwm of the same region.
+  /// |m_downloadingMwmSize| is size of partly downloaded mwm if downloading is in progress.
+  /// And |m_downloadingMwmSize| == 0 otherwise.
   size_t m_downloadingMwmSize;
 
-  /// The name of the node in a local language.
+  /// The name of the node in a local language. That means the language dependent on
+  /// a device locale.
   string m_nodeLocalName;
 
-  /// The name of the parent if a local language. For counties and for the root
-  /// m_parentLocalName == "".
+  /// The name of the parent in a local language. That means the language dependent on
+  /// a device locale. For countries and for the root m_parentLocalName == "".
   string m_parentLocalName;
 
-  /// \brief It's an mwm version which was taken for mwm header if the node is not extandable.
-  /// Overwise |m_mwmVersion| == 0.
+  /// It's a version of downloaded mwm if the node is not expandable.
+  /// If the mwm has not been downloaded or if the node is expandable |m_localMwmVersion| == 0.
   /// @TODO Discuss a version format. It should represent date and time (one second precision).
   /// It should be converted easily to unix time.
-  /// \note It's set to zero in it's attributes of expandable node.
-  size_t m_mwmVersion;
+  size_t m_localMwmVersion;
 
-  /// A number for 0 to 100. It reflects downloading progress in case of
-  /// downloading and updating mwm.
+  /// A number for 0 to 99. It reflects downloading progress in case of
+  /// downloading and updating mwm. If downloading or updating is not in progress
+  /// |m_downloadingProgress| == 0.
   uint8_t m_downloadingProgress;
 
   NodeStatus m_status;
@@ -238,7 +240,7 @@ public:
   /// \brief Returns root country id of the county tree.
   TCountryId const GetRootId() const;
   /// \param childrenId is filled with children node ids by a parent. For example GetChildren(GetRootId())
-  /// returns in param all counties ids. It's content of map downloader list by default.
+  /// returns in param all countries ids. It's content of map downloader list by default.
   void GetChildren(TCountryId const & parent, TCountriesVec & childrenId) const;
   /// \brief Fills localChildren with children of parent.
   /// The result of the method is composed in a special way because of design requirements.
@@ -265,16 +267,16 @@ public:
   /// and World.mwm and WorldCoasts.mwm.
   bool IsNodeDownloaded(TCountryId const & countryId) const;
 
-  /// \brief Gets all the attributes for a node by countryId.
-  /// \param |nodeAttrs| is filled with attibutes in this method.
+  /// \brief Gets all the attributes for a node by its countryId.
+  /// \param |nodeAttrs| is filled with attributes in this method.
   void GetNodeAttrs(TCountryId const & countryId, NodeAttrs & nodeAttrs) const;
 
   /// \brief Downloads one node (expandable or not) by countryId.
   /// If node is expandable downloads all children (grandchildren) by the node
   /// until they havn't been downloaded before. Update all downloaded mwm if it's necessary.
-  void DownloadNode(TCountryId const & countryId);
+  bool DownloadNode(TCountryId const & countryId);
   /// \brief Delete one node (expandable or not).
-  void DeleteNode(TCountryId const & countryId);
+  bool DeleteNode(TCountryId const & countryId);
   /// \brief Updates one node (expandable or not).
   /// \note If you want to update all the maps and this update is without changing
   /// borders or hierarchy just call UpdateNode(GetRootId()).
@@ -437,7 +439,7 @@ private:
   void RegisterCountryFiles(TLocalFilePtr localFile);
 
   // Registers disk files for a country. This method must be used only
-  // for real (listed in counties.txt) countries.
+  // for real (listed in countries.txt) countries.
   void RegisterCountryFiles(TCountryId const & countryId, string const & directory, int64_t version);
 
   // Registers disk files for a country. This method must be used only

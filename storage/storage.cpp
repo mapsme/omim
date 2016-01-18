@@ -1057,7 +1057,7 @@ void Storage::GetCountyListToDownload(TCountriesVec & countryList) const
   // @TODO(bykoianko) Implement this method. Remove from this method fully downloaded maps.
 }
 
-void Storage::DownloadNode(TCountryId const & countryId)
+bool Storage::DownloadNode(TCountryId const & countryId)
 {
   // @TODO(bykoianko) Before downloading it's necessary to check if file(s) has been downloaded.
   // If so, the method should be left with false.
@@ -1071,9 +1071,10 @@ void Storage::DownloadNode(TCountryId const & countryId)
                                                    MapOptions::MapWithCarRouting);
                            }
                          });
+  return true;
 }
 
-void Storage::DeleteNode(TCountryId const & countryId)
+bool Storage::DeleteNode(TCountryId const & countryId)
 {
   // @TODO(bykoianko) Before deleting it's necessary to check if file(s) has been deleted.
   // If so, the method should be left with false.
@@ -1087,6 +1088,7 @@ void Storage::DeleteNode(TCountryId const & countryId)
                                                  MapOptions::MapWithCarRouting);
                            }
                          });
+    return true;
 }
 
 void Storage::GetNodeAttrs(TCountryId const & countryId, NodeAttrs & nodeAttrs) const
