@@ -13,13 +13,13 @@
 @property (copy, nonatomic) NSString * size;
 @property (nonatomic) BOOL isMapsFiles;
 
-- (instancetype)initWithIndexes:(vector<storage::TCountryId> const &)indexes isMaps:(BOOL)isMaps;
+- (instancetype)initWithIndexes:(storage::TCountriesVec const &)indexes isMaps:(BOOL)isMaps;
 
 @end
 
 @implementation MWMDownloaderEntity
 
-- (instancetype)initWithIndexes:(vector<storage::TCountryId> const &)indexes isMaps:(BOOL)isMaps
+- (instancetype)initWithIndexes:(storage::TCountriesVec const &)indexes isMaps:(BOOL)isMaps
 {
   self = [super init];
   if (self)
@@ -63,8 +63,8 @@ static NSString * const kStatisticsEvent = @"Map download Alert";
 
 @interface MWMDownloadTransitMapAlert ()
 {
-  vector<storage::TCountryId> maps;
-  vector<storage::TCountryId> routes;
+  storage::TCountriesVec maps;
+  storage::TCountriesVec routes;
 }
 
 @property (weak, nonatomic) IBOutlet UILabel * titleLabel;
@@ -85,8 +85,8 @@ static NSString * const kStatisticsEvent = @"Map download Alert";
 
 @implementation MWMDownloadTransitMapAlert
 
-+ (instancetype)downloaderAlertWithMaps:(vector<storage::TCountryId> const &)maps
-                                 routes:(vector<storage::TCountryId> const &)routes
++ (instancetype)downloaderAlertWithMaps:(storage::TCountriesVec const &)maps
+                                 routes:(storage::TCountriesVec const &)routes
                                    code:(routing::IRouter::ResultCode)code
 {
   [[Statistics instance] logEvent:kStatisticsEvent withParameters:@{kStatAction : kStatOpen}];
@@ -114,7 +114,7 @@ static NSString * const kStatisticsEvent = @"Map download Alert";
   return alert;
 }
 
-+ (instancetype)alertWithMaps:(vector<storage::TCountryId> const &)maps routes:(vector<storage::TCountryId> const &)routes
++ (instancetype)alertWithMaps:(storage::TCountriesVec const &)maps routes:(storage::TCountriesVec const &)routes
 {
   MWMDownloadTransitMapAlert * alert = [[[NSBundle mainBundle] loadNibNamed:kDownloadTransitMapAlertNibName owner:nil options:nil] firstObject];
   NSMutableArray * missedFiles = [@[] mutableCopy];

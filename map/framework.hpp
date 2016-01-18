@@ -476,8 +476,8 @@ public:
 public:
   // TODO Consider using one vector parameter since we have route and map in single file
   using TRouteBuildingCallback = function<void(routing::IRouter::ResultCode, 
-                                               vector<storage::TCountryId> const &,
-                                               vector<storage::TCountryId> const &)>;
+                                               storage::TCountriesVec const &,
+                                               storage::TCountriesVec const &)>;
   using TRouteProgressCallback = function<void(float)>;
 
   /// @name Routing mode
@@ -543,8 +543,8 @@ private:
   void InsertRoute(routing::Route const & route);
   void CheckLocationForRouting(location::GpsInfo const & info);
   void CallRouteBuilded(routing::IRouter::ResultCode code,
-                        vector<storage::TCountryId> const & absentCountries,
-                        vector<storage::TCountryId> const & absentRoutingFiles);
+                        storage::TCountriesVec const & absentCountries,
+                        storage::TCountriesVec const & absentRoutingFiles);
   void MatchLocationToRoute(location::GpsInfo & info, location::RouteMatchingInfo & routeMatchingInfo) const;
   string GetRoutingErrorMessage(routing::IRouter::ResultCode code);
 

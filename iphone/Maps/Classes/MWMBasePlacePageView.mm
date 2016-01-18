@@ -1,4 +1,5 @@
 #import "MWMBasePlacePageView.h"
+#import "MWMFrameworkListener.h"
 #import "MWMPlacePage.h"
 #import "MWMPlacePageActionBar.h"
 #import "MWMPlacePageBookmarkCell.h"
@@ -73,8 +74,9 @@ extern CGFloat const kBasePlacePageViewTitleBottomOffset = 2.;
   BOOL const isMyPosition = type == MWMPlacePageEntityTypeMyPosition;
   BOOL const isHeadingAvaible = [CLLocationManager headingAvailable];
   using namespace location;
-  EMyPositionMode const mode = self.ownerPlacePage.manager.myPositionMode;
-  BOOL const noLocation = (mode == EMyPositionMode::MODE_UNKNOWN_POSITION || mode == EMyPositionMode::MODE_PENDING_POSITION);
+  auto const mode = [MWMFrameworkListener listener].myPositionMode;
+  BOOL const noLocation = (mode == EMyPositionMode::MODE_UNKNOWN_POSITION ||
+                           mode == EMyPositionMode::MODE_PENDING_POSITION);
   self.distanceLabel.hidden = noLocation || isMyPosition;
   BOOL const hideDirection = noLocation || isMyPosition || !isHeadingAvaible;
   self.directionArrow.hidden = hideDirection;

@@ -96,22 +96,15 @@ static inline CGFloat angleWithProgress(CGFloat progress)
   switch (self.state)
   {
     case MWMCircularProgressStateNormal:
-      normalImage = self.images[@(MWMCircularProgressStateNormal)];
+      normalImage = self.images[@(self.state)];
       self.button.mwm_coloring = MWMButtonColoringBlack;
       break;
-    case MWMCircularProgressStateSelected:
-      normalImage = self.images[@(MWMCircularProgressStateSelected)];
-      self.button.mwm_coloring = MWMButtonColoringBlue;
-      break;
-    case MWMCircularProgressStateProgress:
-      normalImage = self.images[@(MWMCircularProgressStateProgress)];
-      self.button.mwm_coloring = MWMButtonColoringBlue;
-      break;
     case MWMCircularProgressStateFailed:
+    case MWMCircularProgressStateFailedHighlighted:
       self.button.mwm_coloring = MWMButtonColoringBlue;
       break;
-    case MWMCircularProgressStateCompleted:
-      normalImage = self.images[@(MWMCircularProgressStateCompleted)];
+    default:
+      normalImage = self.images[@(self.state)];
       self.button.mwm_coloring = MWMButtonColoringBlue;
       break;
   }

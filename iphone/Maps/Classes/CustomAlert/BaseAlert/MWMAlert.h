@@ -11,8 +11,8 @@ typedef void (^RightButtonAction)();
 @property (weak, nonatomic) MWMAlertViewController * alertController;
 
 + (MWMAlert *)alert:(routing::IRouter::ResultCode)type;
-+ (MWMAlert *)downloaderAlertWithAbsentCountries:(vector<storage::TCountryId> const &)countries
-                                          routes:(vector<storage::TCountryId> const &)routes
++ (MWMAlert *)downloaderAlertWithAbsentCountries:(storage::TCountriesVec const &)countries
+                                          routes:(storage::TCountriesVec const &)routes
                                             code:(routing::IRouter::ResultCode)code;
 + (MWMAlert *)rateAlert;
 + (MWMAlert *)facebookAlert;

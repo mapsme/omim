@@ -647,6 +647,14 @@ void InitLocalizedStrings()
   return [(UINavigationController *)self.window.rootViewController viewControllers].firstObject;
 }
 
+@synthesize frameworkListener = _frameworkListener;
+- (MWMFrameworkListener *)frameworkListener
+{
+  if (!_frameworkListener)
+    _frameworkListener = [[MWMFrameworkListener alloc] init];
+  return _frameworkListener;
+}
+
 #pragma mark - Route state
 
 - (void)restoreRouteState

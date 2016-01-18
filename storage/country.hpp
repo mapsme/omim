@@ -23,7 +23,7 @@ class SizeUpdater;
 
 namespace storage
 {
-using TMapping = map<TCountryId, set<TCountryId>>;
+using TMapping = map<TCountryId, TCountriesSet>;
 
 /// Serves as a proxy between GUI and downloaded files
 class Country

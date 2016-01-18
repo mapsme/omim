@@ -1861,7 +1861,7 @@ void Framework::BuildRoute(m2::PointD const & finish, uint32_t timeoutSec)
   m2::PointD start;
   if (!m_drapeEngine->GetMyPosition(start))
   {
-    CallRouteBuilded(IRouter::NoCurrentPosition, vector<storage::TCountryId>(), vector<storage::TCountryId>());
+    CallRouteBuilded(IRouter::NoCurrentPosition, TCountriesVec(), TCountriesVec());
     return;
   }
 
@@ -1881,8 +1881,8 @@ void Framework::BuildRoute(m2::PointD const & start, m2::PointD const & finish, 
 
   auto readyCallback = [this] (Route const & route, IRouter::ResultCode code)
   {
-    vector<storage::TCountryId> absentCountries;
-    vector<storage::TCountryId> absentRoutingIndexes;
+    TCountriesVec absentCountries;
+    TCountriesVec absentRoutingIndexes;
     if (code == IRouter::NoError)
     {
       double const kRouteScaleMultiplier = 1.5;
@@ -2045,8 +2045,8 @@ void Framework::MatchLocationToRoute(location::GpsInfo & location, location::Rou
   m_routingSession.MatchLocationToRoute(location, routeMatchingInfo);
 }
 
-void Framework::CallRouteBuilded(IRouter::ResultCode code, vector<storage::TCountryId> const & absentCountries,
-                                 vector<storage::TCountryId> const & absentRoutingFiles)
+void Framework::CallRouteBuilded(IRouter::ResultCode code, TCountriesVec const & absentCountries,
+                                 TCountriesVec const & absentRoutingFiles)
 {
   if (code == IRouter::Cancelled)
     return;

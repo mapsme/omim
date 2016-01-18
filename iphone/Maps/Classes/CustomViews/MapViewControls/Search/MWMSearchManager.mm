@@ -1,6 +1,7 @@
 #import "LocationManager.h"
 #import "MapsAppDelegate.h"
 #import "MWMConsole.h"
+#import "MWMFrameworkListener.h"
 #import "MWMRoutingProtocol.h"
 #import "MWMSearchDownloadViewController.h"
 #import "MWMSearchManager.h"
@@ -18,8 +19,8 @@ extern NSString * const kSearchStateWillChangeNotification = @"SearchStateWillCh
 extern NSString * const kSearchStateKey = @"SearchStateKey";
 
 @interface MWMSearchManager ()<MWMSearchTableViewProtocol, MWMSearchDownloadProtocol,
-                               MWMSearchTabbedViewProtocol,
-                               MWMSearchTabButtonsViewProtocol, UITextFieldDelegate>
+                               MWMSearchTabbedViewProtocol, MWMSearchTabButtonsViewProtocol,
+                               UITextFieldDelegate, MWMFrameworkStorageObserver>
 
 @property (weak, nonatomic) UIView * parentView;
 @property (nonatomic) IBOutlet MWMSearchView * rootView;
@@ -52,6 +53,7 @@ extern NSString * const kSearchStateKey = @"SearchStateKey";
     self.rootView.delegate = delegate;
     self.parentView = view;
     self.state = MWMSearchManagerStateHidden;
+    [[MWMFrameworkListener listener] addObserver:self];
   }
   return self;
 }
@@ -193,45 +195,43 @@ extern NSString * const kSearchStateKey = @"SearchStateKey";
   self.state = MWMSearchManagerStateHidden;
 }
 
+#pragma mark - MWMFrameworkStorageObserver
+
+- (void)processCountryEvent:(storage::TCountryId const &)countryId
+{
+// TODO (igrechuhin) Add missing implementation
+  //  auto const status =
+  //      GetFramework().GetCountryTree().GetActiveMapLayout().GetCountryStatus(group, position);
+  //  [self updateTopController];
+  //  if (status == TStatus::EDownloadFailed)
+  //    [self.downloadController setDownloadFailed];
+  //  if (self.state == MWMSearchManagerStateTableSearch ||
+  //      self.state == MWMSearchManagerStateMapSearch)
+  //  {
+  //    NSString * text = self.searchTextField.text;
+  //    if (text.length > 0)
+  //      [self.tableViewController searchText:text
+  //                            forInputLocale:self.searchTextField.textInputMode.primaryLanguage];
+  //  }
+}
+
+- (void)processCountry:(storage::TCountryId const &)countryId progress:(storage::LocalAndRemoteSizeT const &)progress
+{
+// TODO (igrechuhin) Add missing implementation
+  //  CGFloat const normProgress = (CGFloat)progress.first / progress.second;
+  //  ActiveMapsLayout & activeMapLayout = GetFramework().GetCountryTree().GetActiveMapLayout();
+  //  NSString * countryName =
+  //      @(activeMapLayout.GetFormatedCountryName(activeMapLayout.GetCoreIndex(group, position))
+  //            .c_str());
+  //  [self.downloadController downloadProgress:normProgress countryName:countryName];
+}
+
 #pragma mark - MWMSearchDownloadMapRequest
 
 - (void)selectMapsAction
 {
   [self.delegate actionDownloadMaps];
 }
-
-//#pragma mark - ActiveMapsObserverProtocol
-
-// TODO (igrechuhin) Add missing implementation
-//- (void)countryStatusChangedAtPosition:(int)position inGroup:(ActiveMapsLayout::TGroup const &)group
-//{
-//  auto const status =
-//      GetFramework().GetCountryTree().GetActiveMapLayout().GetCountryStatus(group, position);
-//  [self updateTopController];
-//  if (status == TStatus::EDownloadFailed)
-//    [self.downloadController setDownloadFailed];
-//  if (self.state == MWMSearchManagerStateTableSearch ||
-//      self.state == MWMSearchManagerStateMapSearch)
-//  {
-//    NSString * text = self.searchTextField.text;
-//    if (text.length > 0)
-//      [self.tableViewController searchText:text
-//                            forInputLocale:self.searchTextField.textInputMode.primaryLanguage];
-//  }
-//}
-
-// TODO (igrechuhin) Add missing implementation
-//- (void)countryDownloadingProgressChanged:(LocalAndRemoteSizeT const &)progress
-//                               atPosition:(int)position
-//                                  inGroup:(ActiveMapsLayout::TGroup const &)group
-//{
-//  CGFloat const normProgress = (CGFloat)progress.first / progress.second;
-//  ActiveMapsLayout & activeMapLayout = GetFramework().GetCountryTree().GetActiveMapLayout();
-//  NSString * countryName =
-//      @(activeMapLayout.GetFormatedCountryName(activeMapLayout.GetCoreIndex(group, position))
-//            .c_str());
-//  [self.downloadController downloadProgress:normProgress countryName:countryName];
-//}
 
 #pragma mark - State changes
 
@@ -247,19 +247,9 @@ extern NSString * const kSearchStateKey = @"SearchStateKey";
   [self.navigationController setViewControllers:viewControllers animated:NO];
 }
 
-- (void)changeFromHiddenState
-{
-// TODO (igrechuhin) Add missing implementation
-//  __weak auto weakSelf = self;
-//  m_mapsObserver.reset(new ActiveMapsObserver(weakSelf));
-//  m_mapsObserverSlotId = GetFramework().GetCountryTree().GetActiveMapLayout().AddListener(m_mapsObserver.get());
-}
-
 - (void)changeToHiddenState
 {
   [self endSearch];
-// TODO (igrechuhin) Add missing implementation
-//  GetFramework().GetCountryTree().GetActiveMapLayout().RemoveListener(m_mapsObserverSlotId);
   [self.tabbedController resetSelectedTab];
   self.tableViewController = nil;
   self.downloadController = nil;
@@ -376,8 +366,6 @@ extern NSString * const kSearchStateKey = @"SearchStateKey";
                                                     userInfo:@{
                                                       kSearchStateKey : @(state)
                                                     }];
-  if (_state == MWMSearchManagerStateHidden)
-    [self changeFromHiddenState];
   _state = state;
   switch (state)
   {
