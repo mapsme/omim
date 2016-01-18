@@ -27,7 +27,8 @@ public class SimpleTimetableFragment extends BaseMwmRecyclerFragment
   @Override
   protected RecyclerView.Adapter createAdapter()
   {
-    mAdapter = new SimpleTimetableAdapter(this);
+    if (mAdapter == null)
+      mAdapter = new SimpleTimetableAdapter(this);
     return mAdapter;
   }
 

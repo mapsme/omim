@@ -219,7 +219,7 @@ public class RoutingController
     mBuildState = newState;
 
     if (mBuildState == BuildState.BUILT &&
-        !(mStartPoint instanceof MapObject.MyPosition))
+        mStartPoint.getMapObjectType() != MapObject.MY_POSITION)
       Framework.nativeDisableFollowing();
   }
 
@@ -353,7 +353,7 @@ public class RoutingController
   {
     Log.d(TAG, "start");
 
-    if (!(mStartPoint instanceof MapObject.MyPosition))
+    if (mStartPoint.getMapObjectType() != MapObject.MY_POSITION)
     {
       Statistics.INSTANCE.trackEvent(Statistics.EventName.ROUTING_START_SUGGEST_REBUILD);
       AlohaHelper.logClick(AlohaHelper.ROUTING_START_SUGGEST_REBUILD);
@@ -361,7 +361,7 @@ public class RoutingController
       return;
     }
 
-    MapObject.MyPosition my = LocationHelper.INSTANCE.getMyPosition();
+    MapObject my = LocationHelper.INSTANCE.getMyPosition();
     if (my == null)
     {
       mRoutingListener.onRoutingEvent(ResultCodesHelper.NO_POSITION, null, null);
@@ -389,7 +389,7 @@ public class RoutingController
     titleView.setText(R.string.p2p_only_from_current);
     builder.setCustomTitle(titleView);
 
-    if (mEndPoint instanceof MapObject.MyPosition)
+    if (mEndPoint.getMapObjectType() == MapObject.MY_POSITION)
     {
       builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
       {
@@ -546,7 +546,7 @@ public class RoutingController
       Framework.nativeSetRouteStartPoint(0.0, 0.0, false);
     else
       Framework.nativeSetRouteStartPoint(mStartPoint.getLat(), mStartPoint.getLon(),
-                                         !(mStartPoint instanceof MapObject.MyPosition));
+                                         mStartPoint.getMapObjectType() != MapObject.MY_POSITION);
 
     if (mEndPoint == null)
       Framework.nativeSetRouteEndPoint(0.0, 0.0, false);

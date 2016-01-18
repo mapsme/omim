@@ -39,9 +39,10 @@ public class RoutingPlanInplaceController extends RoutingPlanController
 
     if (show)
     {
-      boolean open = (mSlotsRestoredState == null ? !(RoutingController.get().getStartPoint() instanceof MapObject.MyPosition) ||
-                                                    (RoutingController.get().getEndPoint() == null)
-                                                  : mSlotsRestoredState);
+      boolean open = (mSlotsRestoredState == null
+                      ? (RoutingController.get().getStartPoint().getMapObjectType() != MapObject.MY_POSITION) ||
+                        (RoutingController.get().getEndPoint() == null)
+                      : mSlotsRestoredState);
       showSlots(open, false);
       mSlotsRestoredState = null;
     }

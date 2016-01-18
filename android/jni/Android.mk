@@ -92,6 +92,7 @@ LOCAL_SRC_FILES := \
 	com/mapswithme/maps/PrivateVariables.cpp \
 	com/mapswithme/maps/SearchEngine.cpp \
 	com/mapswithme/maps/SearchRecents.cpp \
+	com/mapswithme/maps/UserMarkHelper.cpp \
 	com/mapswithme/maps/settings/UnitLocale.cpp \
 	com/mapswithme/platform/Platform.cpp \
 	com/mapswithme/platform/HttpThread.cpp \
@@ -104,6 +105,7 @@ LOCAL_SRC_FILES := \
 	com/mapswithme/opengl/androidoglcontext.cpp \
 	com/mapswithme/opengl/androidoglcontextfactory.cpp \
 	com/mapswithme/maps/editor/OpeningHours.cpp \
+	com/mapswithme/maps/editor/Editor.cpp
 
 LOCAL_LDLIBS := -llog -landroid -lEGL -lGLESv2 -latomic -lz
 
