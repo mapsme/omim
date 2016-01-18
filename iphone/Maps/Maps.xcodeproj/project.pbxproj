@@ -97,8 +97,6 @@
 		34A575441C46814400F0A851 /* Framework.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 34A5753A1C46788400F0A851 /* Framework.cpp */; };
 		34A5754B1C46834C00F0A851 /* MWMFrameworkObserverWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 34A5754A1C46834C00F0A851 /* MWMFrameworkObserverWrapper.mm */; };
 		34A5754C1C46834C00F0A851 /* MWMFrameworkObserverWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 34A5754A1C46834C00F0A851 /* MWMFrameworkObserverWrapper.mm */; };
-		34A742FE1AE5461A00CE15EB /* index.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 34A742FD1AE5461A00CE15EB /* index.cpp */; };
-		34A743001AE5468200CE15EB /* storage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 34A742FF1AE5468200CE15EB /* storage.cpp */; };
 		34AF5FB41BE38863002AEAEE /* MWMMapDownloaderCountryTableViewCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 34AF5FB31BE38863002AEAEE /* MWMMapDownloaderCountryTableViewCell.mm */; };
 		34AF5FB71BE38F51002AEAEE /* MWMMapDownloaderPlaceTableViewCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 34AF5FB61BE38F51002AEAEE /* MWMMapDownloaderPlaceTableViewCell.mm */; };
 		34AF5FBA1BE39473002AEAEE /* MWMMapDownloaderLargeCountryTableViewCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 34AF5FB91BE39473002AEAEE /* MWMMapDownloaderLargeCountryTableViewCell.mm */; };
@@ -215,8 +213,6 @@
 		560634F21B78806100F3D670 /* MWMTextToSpeech.mm in Sources */ = {isa = PBXBuildFile; fileRef = 560634F11B78806100F3D670 /* MWMTextToSpeech.mm */; };
 		6741A8E01BF3407C002C974C /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F6D434581AD2AB96007C7728 /* Interface.storyboard */; };
 		6741A8E11BF3407C002C974C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F672A6B61AD423A7009060C3 /* Images.xcassets */; };
-		6741A8F31BF340D1002C974C /* storage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 34A742FF1AE5468200CE15EB /* storage.cpp */; };
-		6741A8F41BF340D1002C974C /* index.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 34A742FD1AE5461A00CE15EB /* index.cpp */; };
 		6741A8F51BF340D1002C974C /* MWMWatchNotification.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6C93FAEB1AD8063900A2C4AE /* MWMWatchNotification.mm */; };
 		6741A8F61BF340D1002C974C /* MWMCategoriesInterfaceCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 345C316E1AE798DD00EA0CC2 /* MWMCategoriesInterfaceCell.mm */; };
 		6741A8F71BF340D1002C974C /* MWMFinishInterfaceController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6CFBB8761AD84E1C009845A3 /* MWMFinishInterfaceController.mm */; };
@@ -998,8 +994,6 @@
 		34A575421C467D9400F0A851 /* MWMFrameworkObservers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWMFrameworkObservers.h; sourceTree = "<group>"; };
 		34A575491C46834C00F0A851 /* MWMFrameworkObserverWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWMFrameworkObserverWrapper.h; sourceTree = "<group>"; };
 		34A5754A1C46834C00F0A851 /* MWMFrameworkObserverWrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MWMFrameworkObserverWrapper.mm; sourceTree = "<group>"; };
-		34A742FD1AE5461A00CE15EB /* index.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = index.cpp; path = ../../../storage/index.cpp; sourceTree = "<group>"; };
-		34A742FF1AE5468200CE15EB /* storage.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = storage.cpp; path = ../../../storage/storage.cpp; sourceTree = "<group>"; };
 		34AF5FB21BE38863002AEAEE /* MWMMapDownloaderCountryTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWMMapDownloaderCountryTableViewCell.h; sourceTree = "<group>"; };
 		34AF5FB31BE38863002AEAEE /* MWMMapDownloaderCountryTableViewCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MWMMapDownloaderCountryTableViewCell.mm; sourceTree = "<group>"; };
 		34AF5FB51BE38F51002AEAEE /* MWMMapDownloaderPlaceTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWMMapDownloaderPlaceTableViewCell.h; sourceTree = "<group>"; };
@@ -2731,8 +2725,6 @@
 		F6D434481AD2AB96007C7728 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				34A742FD1AE5461A00CE15EB /* index.cpp */,
-				34A742FF1AE5468200CE15EB /* storage.cpp */,
 				F6D434491AD2AB96007C7728 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -3654,8 +3646,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				34A575441C46814400F0A851 /* Framework.cpp in Sources */,
-				6741A8F31BF340D1002C974C /* storage.cpp in Sources */,
-				6741A8F41BF340D1002C974C /* index.cpp in Sources */,
 				6741A8F51BF340D1002C974C /* MWMWatchNotification.mm in Sources */,
 				6741A8F61BF340D1002C974C /* MWMCategoriesInterfaceCell.mm in Sources */,
 				6741A8F71BF340D1002C974C /* MWMFinishInterfaceController.mm in Sources */,
@@ -3842,8 +3832,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				34A575431C46813900F0A851 /* Framework.cpp in Sources */,
-				34A743001AE5468200CE15EB /* storage.cpp in Sources */,
-				34A742FE1AE5461A00CE15EB /* index.cpp in Sources */,
 				6C93FAED1AD8063900A2C4AE /* MWMWatchNotification.mm in Sources */,
 				345C31711AE798DD00EA0CC2 /* MWMCategoriesInterfaceCell.mm in Sources */,
 				6CFBB8771AD84E1C009845A3 /* MWMFinishInterfaceController.mm in Sources */,
