@@ -17,6 +17,76 @@
 
 namespace storage
 {
+/// \brief This enum describes status of a downloaded mwm or a group of downloaded mwm.
+enum class NodeStatus
+{
+  Undefined,
+  UpToDate,              /**< Downloaded mwm(s) is up to date. No need update it. */
+  DownloadingInProcess,  /**< Downloading a new mwm or updating a old one. */
+  DownloadWasPaused,     /**< Downloading was paused or stopped by some reasons. E.g lost connection. */
+  NeedsToUpdate,         /**< An update for a downloaded mwm is ready according to county_attributes.txt. */
+  InQueue,               /**< A mwm is waiting for downloading in the queue. */
+};
+
+/// \brief Error code of MapRepository.
+enum class ErrorCode
+{
+  NoError,                /**< An operation was finished without errors. */
+  NotEnoughSpace,         /**< No space on flash memory to download a file. */
+  NoInternetConnection,   /**< No internet connection. */
+};
+
+/// \brief Contains all properties for a node in the country tree.
+/// It's applicable for expandable and not expandable node id.
+struct NodeAttrs
+{
+  NodeAttrs() : m_mwmCounter(0), m_localMwmCounter(0), m_mwmSize(0), m_localMwmSize(0),
+    m_downloadingMwmSize(0), m_mwmVersion(0), m_downloadingProgress(0),
+    m_status(NodeStatus::Undefined), m_downloadingErrCode(ErrorCode::NoError) {}
+  /// If the node is expandable (a big country) |m_mwmCounter| is number of mwm
+  /// belongs to the node. If the node isn't expandable m_mapsDownloaded == 1.
+  uint32_t m_mwmCounter;
+
+  /// Number of mwms belongs to the node which has been donwloaded.
+  uint32_t m_localMwmCounter;
+
+  /// If it's not an extandable m_nodeSize is size of one mwm according to countries.txt.
+  /// Otherwise |m_nodeSize| is a sum of all mwm sizes which belong to the group
+  ///  according to countries.txt.
+  size_t m_mwmSize;
+
+  /// If it's not an extandable node m_nodeSize is size of one downloaded mwm.
+  /// Otherwise |m_localNodeSize| is a sum of all mwm sizes which belong to the group and
+  /// have been downloaded.
+  size_t m_localMwmSize;
+
+  /// If downloading or updating an mwm is in progress apart from a local mwm
+  /// which is used there's a partly downloading mwm. |m_downloadingMwmSize| is
+  /// size of partly downloaded mwm if downloading in progress or zero otherwise.
+  size_t m_downloadingMwmSize;
+
+  /// The name of the node in a local language.
+  string m_nodeLocalName;
+
+  /// The name of the parent if a local language. For counties and for the root
+  /// m_parentLocalName == "".
+  string m_parentLocalName;
+
+  /// \brief It's an mwm version which was taken for mwm header if the node is not extandable.
+  /// Overwise |m_mwmVersion| == 0.
+  /// @TODO Discuss a version format. It should represent date and time (one second precision).
+  /// It should be converted easily to unix time.
+  /// \note It's set to zero in it's attributes of expandable node.
+  size_t m_mwmVersion;
+
+  /// A number for 0 to 100. It reflects downloading progress in case of
+  /// downloading and updating mwm.
+  uint8_t m_downloadingProgress;
+
+  NodeStatus m_status;
+  ErrorCode m_downloadingErrCode;
+};
+
 /// This class is used for downloading, updating and deleting maps.
 class Storage
 {
@@ -137,64 +207,9 @@ public:
   /// The term node id means a string id of mwm or a group of mwm. The sting contains
   /// a name of file with mwm of a name country(territory).
   //@{
-  enum class ErrorCode;
   using TOnSearchResultCallback = function<void (TCountryId const &)>;
   using TOnStatusChangedCallback = function<void (TCountryId const &)>;
   using TOnErrorCallback = function<void (TCountryId const &, ErrorCode)>;
-
-  /// \brief This enum describes status of a downloaded mwm or a group of downloaded mwm.
-  enum class ClientNodeStatus
-  {
-    UpToDate,              /**< Downloaded mwm(s) is up to date. No need update it. */
-    DownloadingInProcess,  /**< Downloading a new mwm or updating a old one. */
-    DownloadWasPaused,     /**< Downloading was paused or stopped by some reasons. E.g lost connection. */
-    NeedsToUpdate,         /**< An update for a downloaded mwm is ready according to county_attributes.txt. */
-    InQueue,               /**< A mwm is waiting for downloading in the queue. */
-  };
-
-  /// \brief Contains all properties for a node on the server.
-  struct ServerNodeAttrs
-  {
-    /// If it's not an extandable m_nodeSize is size of one mwm.
-    /// Otherwise m_nodeSize is a sum of all mwm sizes which belong to the group.
-    size_t m_nodeSize;
-    /// If the node is expandalbe (a big country) m_childrenCounter is number of children of this node.
-    /// If the node isn't expandable m_childrenCounter == -1.
-    int m_childrenCounter;
-    /// parentId is a node id of parent of the node.
-    /// If the node is "world" (that means the root) parentId == "".
-    TCountryId parentId;
-  };
-
-  /// \brief Contains all properties for a downloaded mwm.
-  /// It's applicable for expandable and not expandable node id.
-  struct ClientNodeAttrs
-  {
-    /// If it's not an extandable node m_nodeSize is size of one mwm.
-    /// Otherwise m_nodeSize is a sum of all mwm sizes which belong to the group and
-    /// have been downloaded.
-    size_t m_nodeSize;
-    /// If the node is expandable (a big country) m_mapsDownloaded is number of maps has been downloaded.
-    /// If the node isn't expandable m_mapsDownloaded == -1.
-    int m_mapsDownloaded;
-    /// \brief It's an mwm version which was taken for mwm header.
-    /// @TODO Discuss a version format. It should represent date and time (one second precision).
-    /// It should be converted easily to unix time.
-    /// \note It's set to zero in it's attributes of expandable node.
-    size_t m_mwmVersion;
-    /// A number for 0 to 100. It reflects downloading progress in case of
-    /// downloading and updating mwm.
-    uint8_t m_downloadingProgress;
-    ClientNodeStatus m_status;
-  };
-
-  /// \brief Error code of MapRepository.
-  enum class ErrorCode
-  {
-    NoError,                /**< An operation was finished without errors. */
-    NotEnoughSpace,         /**< No space on flash memory to download a file. */
-    NoInternetConnection,   /**< No internet connection. */
-  };
 
   /// \brief Information for "Update all mwms" button.
   struct UpdateInfo
@@ -250,16 +265,9 @@ public:
   /// and World.mwm and WorldCoasts.mwm.
   bool IsNodeDownloaded(TCountryId const & countryId) const;
 
-  /// \brief Gets attributes for an available on server node by countryId.
-  /// \param countryId is id of single mwm or a group of mwm.
-  /// \param ServerNodeAttrs is filled with attibutes of node which is available for downloading.
-  /// I.e. is written in county_attributes.txt.
-  /// \return false in case of error and true otherwise.
-  bool GetServerNodeAttrs(TCountryId const & countryId, ClientNodeAttrs & serverNodeAttrs) const;
-  /// \brief Gets attributes for downloaded a node by countryId.
-  /// \param ClientNodeAttrs is filled with attibutes in this method.
-  /// \return false in case of error and true otherwise.
-  bool GetClientNodeAttrs(TCountryId const & countryId, ClientNodeAttrs & clientNodeAttrs) const;
+  /// \brief Gets all the attributes for a node by countryId.
+  /// \param |nodeAttrs| is filled with attibutes in this method.
+  void GetNodeAttrs(TCountryId const & countryId, NodeAttrs & nodeAttrs) const;
 
   /// \brief Downloads one node (expandable or not) by countryId.
   /// If node is expandable downloads all children (grandchildren) by the node
@@ -335,7 +343,9 @@ public:
   int Subscribe(TChangeCountryFunction const & change, TProgressFunction const & progress);
   void Unsubscribe(int slotId);
 
+  Country const & CountryLeafByCountryId(TCountryId const & countryId) const;
   Country const & CountryByCountryId(TCountryId const & countryId) const;
+
   TCountryId FindCountryIdByFile(string const & name) const;
   /// @todo Temporary function to gel all associated indexes for the country file name.
   /// Will be removed in future after refactoring.

@@ -854,7 +854,7 @@ void Framework::UpdateCountryInfo(storage::TCountryId const & countryId, bool is
 
   int64_t const currentVersion = m_storage.GetCurrentDataVersion();
 
-  string const countryFile = m_storage.CountryByCountryId(countryId).GetFile().GetName();
+  string const countryFile = m_storage.CountryLeafByCountryId(countryId).GetFile().GetName();
   CHECK(!countryFile.empty(), ());
 
   // Note. MapOptions::Map is used below to be sure fileName has mwm extension
