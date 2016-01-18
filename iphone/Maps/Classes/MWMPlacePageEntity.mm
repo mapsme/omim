@@ -1,6 +1,8 @@
+#import "MapViewController.h"
+#import "MWMFrameworkListener.h"
 #import "MWMPlacePageEntity.h"
 #import "MWMPlacePageViewManager.h"
-#import "MapViewController.h"
+
 #include "platform/measurement_utils.hpp"
 
 extern NSArray * const kBookmarkColorsVariant = @[@"placemark-red", @"placemark-yellow", @"placemark-blue", @"placemark-green", @"placemark-purple", @"placemark-orange", @"placemark-brown", @"placemark-pink"];
@@ -20,17 +22,18 @@ using feature::Metadata;
 
 @implementation MWMPlacePageEntity
 
-- (instancetype)initWithUserMark:(UserMark const *)mark
+- (instancetype)init
 {
   self = [super init];
   if (self)
-    [self configureWithUserMark:mark];
+    [self configureWithUserMark:[MWMFrameworkListener listener].userMark];
 
   return self;
 }
 
 - (void)configureWithUserMark:(UserMark const *)mark
 {
+  NSAssert(mark, @"UserMark can not be nullptr");
   UserMark::Type const type = mark->GetMarkType();
   double x, y;
   mark->GetLatLon(x, y);

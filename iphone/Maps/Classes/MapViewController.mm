@@ -85,7 +85,9 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 
 @end
 
-@interface MapViewController () <MTRGNativeAppwallAdDelegate>
+@interface MapViewController ()<MTRGNativeAppwallAdDelegate, MWMFrameworkRouteBuilderObserver,
+                                MWMFrameworkMyPositionObserver, MWMFrameworkUserMarkObserver,
+                                MWMFrameworkStorageObserver>
 
 @property (nonatomic, readwrite) MWMMapViewControlsManager * controlsManager;
 @property (nonatomic) MWMBottomMenuState menuRestoreState;
@@ -177,33 +179,6 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
     GetFramework().OnCompassUpdate(info);
 }
 
-- (void)onLocationStateModeChanged:(location::EMyPositionMode)newMode
-{
-  [m_predictor setMode:newMode];
-  [self.controlsManager setMyPositionMode:newMode];
-
-  switch (newMode)
-  {
-    case location::MODE_UNKNOWN_POSITION:
-    {
-      self.disableStandbyOnLocationStateMode = NO;
-      [[MapsAppDelegate theApp].m_locationManager stop:self];
-      break;
-    }
-    case location::MODE_PENDING_POSITION:
-      self.disableStandbyOnLocationStateMode = NO;
-      [[MapsAppDelegate theApp].m_locationManager start:self];
-      break;
-    case location::MODE_NOT_FOLLOW:
-      self.disableStandbyOnLocationStateMode = NO;
-      break;
-    case location::MODE_FOLLOW:
-    case location::MODE_ROTATE_AND_FOLLOW:
-      self.disableStandbyOnLocationStateMode = YES;
-      break;
-  }
-}
-
 #pragma mark - Restore route
 
 - (void)restoreRoute
@@ -217,23 +192,6 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 - (void)dismissPlacePage
 {
   [self.controlsManager dismissPlacePage];
-}
-
-- (void)onUserMarkClicked:(unique_ptr<UserMarkCopy>)mark
-{
-  if (mark == nullptr)
-  {
-    [self dismissPlacePage];
-    
-    auto & f = GetFramework();
-    if (!f.HasActiveUserMark() && self.controlsManager.searchHidden && !f.IsRouteNavigable())
-      self.controlsManager.hidden = !self.controlsManager.hidden;
-  }
-  else
-  {
-    self.controlsManager.hidden = NO;
-    [self.controlsManager showPlacePageWithUserMark:move(mark)];
-  }
 }
 
 - (void)onMyPositionClicked:(id)sender
@@ -422,7 +380,6 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 
 - (void)refresh
 {
-//  [super refresh];
   [self.controlsManager refresh];
 }
 
@@ -511,98 +468,58 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 
 - (void)initialize
 {
-  Framework & f = GetFramework();
-
-  using UserMarkActivatedFnT = void (*)(id, SEL, unique_ptr<UserMarkCopy>);
-  using PlacePageDismissedFnT = void (*)(id, SEL);
-
-  SEL userMarkSelector = @selector(onUserMarkClicked:);
-  UserMarkActivatedFnT userMarkFn = (UserMarkActivatedFnT)[self methodForSelector:userMarkSelector];
-  f.SetUserMarkActivationListener(bind(userMarkFn, self, userMarkSelector, _1));
   m_predictor = [[LocationPredictor alloc] initWithObserver:self];
   self.forceRoutingStateChange = ForceRoutingStateChangeNone;
   self.userTouchesAction = UserTouchesActionNone;
   self.menuRestoreState = MWMBottomMenuStateInactive;
-  f.LoadBookmarks();
-
-  using TLocationStateModeFn = void (*)(id, SEL, location::EMyPositionMode);
-  SEL locationStateModeSelector = @selector(onLocationStateModeChanged:);
-  TLocationStateModeFn locationStateModeFn = (TLocationStateModeFn)[self methodForSelector:locationStateModeSelector];
-  f.SetMyPositionModeListener(bind(locationStateModeFn, self, locationStateModeSelector, _1));
-
-
-// TODO (igrechuhin) Add missing implementation
-//    f.SetDownloadCountryListener([self, &f](storage::TCountryId const & idx, int opt)
-//    {
-//      ActiveMapsLayout & layout = f.GetCountryTree().GetActiveMapLayout();
-//      if (opt == -1)
-//      {
-//        layout.RetryDownloading(idx);
-//      }
-//      else
-//      {
-//        LocalAndRemoteSizeT sizes = layout.GetRemoteCountrySizes(idx);
-//        uint64_t sizeToDownload = sizes.first;
-//        MapOptions options = static_cast<MapOptions>(opt);
-//        if(HasOptions(options, MapOptions::CarRouting))
-//          sizeToDownload += sizes.second;
-//
-//        NSString * name = @(layout.GetCountryName(idx).c_str());
-//        Platform::EConnectionType const connection = Platform::ConnectionStatus();
-//        if (connection != Platform::EConnectionType::CONNECTION_NONE)
-//        {
-//          if (connection == Platform::EConnectionType::CONNECTION_WWAN && sizeToDownload > 50 * MB)
-//          {
-//            [self.alertController presentnoWiFiAlertWithName:name downloadBlock:^
-//            {
-//              layout.DownloadMap(idx, static_cast<MapOptions>(opt));
-//            }];
-//            return;
-//          }
-//        }
-//        else
-//        {
-//          [self.alertController presentNoConnectionAlert];
-//          return;
-//        }
-//
-//        layout.DownloadMap(idx, static_cast<MapOptions>(opt));
-//      }
-//    });
-
-  f.SetRouteBuildingListener([self, &f](routing::IRouter::ResultCode code, vector<storage::TCountryId> const & absentCountries, vector<storage::TCountryId> const & absentRoutes)
-  {
-    [self processRoutingBuildingEvent:code countries:absentCountries routes:absentRoutes];
-  });
-
-  f.SetRouteProgressListener([self](float progress)
-  {
-    dispatch_async(dispatch_get_main_queue(), ^
-    {
-      self.controlsManager.routeBuildingProgress = progress;
-    });
-  });
+  GetFramework().LoadBookmarks();
+  [[MWMFrameworkListener listener] addObserver:self];
 }
 
-- (void)processRoutingBuildingEvent:(routing::IRouter::ResultCode)code
-                          countries:(vector<storage::TCountryId> const &)absentCountries
-                             routes:(vector<storage::TCountryId> const &)absentRoutes
+#pragma mark - MWMFrameworkMyPositionObserver
+
+- (void)processMyPositionStateModeChange:(location::EMyPositionMode)mode
 {
-  Framework & f = GetFramework();
+  [m_predictor setMode:mode];
+
+  switch (mode)
+  {
+    case location::MODE_UNKNOWN_POSITION:
+    {
+      self.disableStandbyOnLocationStateMode = NO;
+      [[MapsAppDelegate theApp].m_locationManager stop:self];
+      break;
+    }
+    case location::MODE_PENDING_POSITION:
+      self.disableStandbyOnLocationStateMode = NO;
+      [[MapsAppDelegate theApp].m_locationManager start:self];
+      break;
+    case location::MODE_NOT_FOLLOW:
+      self.disableStandbyOnLocationStateMode = NO;
+      break;
+    case location::MODE_FOLLOW:
+    case location::MODE_ROTATE_AND_FOLLOW:
+      self.disableStandbyOnLocationStateMode = YES;
+      break;
+  }
+}
+
+#pragma mark - MWMFrameworkRouteBuilderObserver
+
+- (void)processRouteBuilderEvent:(routing::IRouter::ResultCode)code
+                       countries:(vector<storage::TCountryId> const &)absentCountries
+                          routes:(vector<storage::TCountryId> const &)absentRoutes
+{
   switch (code)
   {
     case routing::IRouter::ResultCode::NoError:
     {
-      self.controlsManager.routeBuildingProgress = 100.;
-      f.ActivateUserMark(nullptr, true);
-      self.controlsManager.routeBuildingProgress = 100.;
-      self.controlsManager.searchHidden = YES;
+      GetFramework().ActivateUserMark(nullptr, true);
       if (self.forceRoutingStateChange == ForceRoutingStateChangeStartFollowing)
         [self.controlsManager routingNavigation];
       else
         [self.controlsManager routingReady];
       [self updateRoutingInfo];
-      self.forceRoutingStateChange = ForceRoutingStateChangeNone;
       bool isDisclaimerApproved = false;
       (void)Settings::Get("IsDisclaimerApproved", isDisclaimerApproved);
       if (!isDisclaimerApproved)
@@ -617,20 +534,81 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
     case routing::IRouter::NeedMoreMaps:
     case routing::IRouter::FileTooOld:
     case routing::IRouter::RouteNotFound:
-      [self.controlsManager handleRoutingError];
       [self presentDownloaderAlert:code countries:absentCountries routes:absentRoutes];
-      self.forceRoutingStateChange = ForceRoutingStateChangeNone;
       break;
     case routing::IRouter::Cancelled:
-      self.forceRoutingStateChange = ForceRoutingStateChangeNone;
       break;
     default:
-      [self.controlsManager handleRoutingError];
       [self presentDefaultAlert:code];
-      self.forceRoutingStateChange = ForceRoutingStateChangeNone;
       break;
   }
+  self.forceRoutingStateChange = ForceRoutingStateChangeNone;
 }
+
+#pragma mark - MWMFrameworkUserMarkObserver
+
+- (void)processUserMarkActivation:(UserMark const *)mark
+{
+  if (mark == nullptr)
+  {
+    [self dismissPlacePage];
+
+    auto & f = GetFramework();
+    if (!f.HasActiveUserMark() && self.controlsManager.searchHidden && !f.IsRouteNavigable())
+      self.controlsManager.hidden = !self.controlsManager.hidden;
+  }
+  else
+  {
+    self.controlsManager.hidden = NO;
+    [self.controlsManager showPlacePage];
+  }
+}
+
+#pragma mark - MWMFrameworkStorageObserver
+
+- (void)processCountryEvent:(storage::TCountryId const &)countryId
+{
+  // TODO (igrechuhin) Add missing implementation
+//      f.SetDownloadCountryListener([self, &f](storage::TCountryId const & idx, int opt)
+//      {
+//        ActiveMapsLayout & layout = f.GetCountryTree().GetActiveMapLayout();
+//        if (opt == -1)
+//        {
+//          layout.RetryDownloading(idx);
+//        }
+//        else
+//        {
+//          LocalAndRemoteSizeT sizes = layout.GetRemoteCountrySizes(idx);
+//          uint64_t sizeToDownload = sizes.first;
+//          MapOptions options = static_cast<MapOptions>(opt);
+//          if(HasOptions(options, MapOptions::CarRouting))
+//            sizeToDownload += sizes.second;
+//  
+//          NSString * name = @(layout.GetCountryName(idx).c_str());
+//          Platform::EConnectionType const connection = Platform::ConnectionStatus();
+//          if (connection != Platform::EConnectionType::CONNECTION_NONE)
+//          {
+//            if (connection == Platform::EConnectionType::CONNECTION_WWAN && sizeToDownload > 50 * MB)
+//            {
+//              [self.alertController presentnoWiFiAlertWithName:name downloadBlock:^
+//              {
+//                layout.DownloadMap(idx, static_cast<MapOptions>(opt));
+//              }];
+//              return;
+//            }
+//          }
+//          else
+//          {
+//            [self.alertController presentNoConnectionAlert];
+//            return;
+//          }
+//  
+//          layout.DownloadMap(idx, static_cast<MapOptions>(opt));
+//        }
+//      });
+}
+
+#pragma mark - Bookmarks
 
 - (void)openBookmarks
 {

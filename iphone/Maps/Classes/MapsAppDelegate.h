@@ -1,4 +1,5 @@
 #import "DownloadIndicatorProtocol.h"
+#import "MWMFrameworkListener.h"
 #import "NavigationController.h"
 
 #include "indexer/map_style.hpp"
@@ -27,6 +28,8 @@ typedef NS_ENUM(NSUInteger, MWMRoutingPlaneMode)
 
 @property (nonatomic, readonly) MapViewController * mapViewController;
 @property (nonatomic, readonly) LocationManager * m_locationManager;
+
+@property (nonatomic, readonly) MWMFrameworkListener * frameworkListener;
 
 + (MapsAppDelegate *)theApp;
 

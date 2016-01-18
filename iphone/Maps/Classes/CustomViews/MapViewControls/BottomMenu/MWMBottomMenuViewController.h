@@ -29,6 +29,5 @@
 - (void)refreshLayout;
 - (void)refresh;
 
-- (void)onLocationStateModeChanged:(location::EMyPositionMode)state;
-
 @end
+

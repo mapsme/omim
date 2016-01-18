@@ -52,7 +52,6 @@ typedef NS_ENUM (NSUInteger, MWMPlacePageEntityType)
 - (void)insertBookmarkInTypes;
 - (void)removeBookmarkFromTypes;
 
-- (instancetype)initWithUserMark:(UserMark const *)mark;
 - (void)synchronize;
 
 @end
