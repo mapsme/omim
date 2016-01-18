@@ -17,41 +17,30 @@ public:
   template <typename T> using TReadCallback = function<void (T const &)>;
   using TReadFeaturesFn = function<void (TReadCallback<FeatureType> const & , vector<FeatureID> const &)>;
   using TReadIDsFn = function<void (TReadCallback<FeatureID> const & , m2::RectD const &, int)>;
-  using TUpdateCountryIdFn = function<void (storage::TCountryId const & , m2::PointF const &)>;
   using TIsCountryLoadedFn = function<bool (m2::PointD const &)>;
   using TIsCountryLoadedByNameFn = function<bool (string const &)>;
-  using TDownloadFn = function<void (storage::TCountryId const &)>;
+  using TUpdateCurrentCountryFn = function<void (m2::PointD const &, int)>;
 
   MapDataProvider(TReadIDsFn const & idsReader,
                   TReadFeaturesFn const & featureReader,
-                  TUpdateCountryIdFn const & countryIndexUpdater,
                   TIsCountryLoadedFn const & isCountryLoadedFn,
                   TIsCountryLoadedByNameFn const & isCountryLoadedByNameFn,
-                  TDownloadFn const & downloadMapHandler,
-                  TDownloadFn const & downloadMapRoutingHandler,
-                  TDownloadFn const & downloadRetryHandler);
+                  TUpdateCurrentCountryFn const & updateCurrentCountry);
 
   void ReadFeaturesID(TReadCallback<FeatureID> const & fn, m2::RectD const & r, int scale) const;
   void ReadFeatures(TReadCallback<FeatureType> const & fn, vector<FeatureID> const & ids) const;
 
-  void UpdateCountryId(storage::TCountryId const & currentCountryId, m2::PointF const & pt);
   TIsCountryLoadedFn const & GetIsCountryLoadedFn() const;
-
-  TDownloadFn const & GetDownloadMapHandler() const;
-  TDownloadFn const & GetDownloadMapRoutingHandler() const;
-  TDownloadFn const & GetDownloadRetryHandler() const;
+  TUpdateCurrentCountryFn const & UpdateCurrentCountryFn() const;
 
 private:
   TReadFeaturesFn m_featureReader;
   TReadIDsFn m_idsReader;
-  TUpdateCountryIdFn m_countryIdUpdater;
-  TIsCountryLoadedFn m_isCountryLoadedFn;
-  TDownloadFn m_downloadMapHandler;
-  TDownloadFn m_downloadMapRoutingHandler;
-  TDownloadFn m_downloadRetryHandler;
+  TIsCountryLoadedFn m_isCountryLoaded;
+  TUpdateCurrentCountryFn m_updateCurrentCountry;
 
 public:
-  TIsCountryLoadedByNameFn m_isCountryLoadedByNameFn;
+  TIsCountryLoadedByNameFn m_isCountryLoadedByName;
 };
 
-}
+} // namespace df

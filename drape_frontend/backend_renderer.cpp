@@ -26,6 +26,7 @@ namespace df
 BackendRenderer::BackendRenderer(Params const & params)
   : BaseRenderer(ThreadsCommutator::ResourceUploadThread, params)
   , m_model(params.m_model)
+  , m_updateCurrentCountryFn(params.m_updateCurrentCountryFn)
   , m_readManager(make_unique_dp<ReadManager>(params.m_commutator, m_model, params.m_allow3dBuildings))
   , m_requestedTiles(params.m_requestedTiles)
 {
@@ -33,12 +34,7 @@ BackendRenderer::BackendRenderer(Params const & params)
   m_isTeardowned = false;
 #endif
 
-  gui::DrapeGui::Instance().SetRecacheCountryStatusSlot([this]()
-  {
-    m_commutator->PostMessage(ThreadsCommutator::ResourceUploadThread,
-                              make_unique_dp<CountryStatusRecacheMessage>(),
-                              MessagePriority::High);
-  });
+  ASSERT(m_updateCurrentCountryFn != nullptr, ());
 
   m_routeBuilder = make_unique_dp<RouteBuilder>([this](drape_ptr<RouteData> && routeData)
   {
@@ -62,7 +58,6 @@ BackendRenderer::~BackendRenderer()
 
 void BackendRenderer::Teardown()
 {
-  gui::DrapeGui::Instance().ClearRecacheCountryStatusSlot();
   StopThread();
 #ifdef DEBUG
   m_isTeardowned = true;
@@ -81,13 +76,6 @@ void BackendRenderer::RecacheGui(gui::TWidgetsInitInfo const & initInfo, gui::TW
   m_commutator->PostMessage(ThreadsCommutator::RenderThread, move(outputMsg), MessagePriority::Normal);
 }
 
-void BackendRenderer::RecacheCountryStatus()
-{
-  drape_ptr<gui::LayerRenderer> layerRenderer = m_guiCacher.RecacheCountryStatus(m_texMng);
-  drape_ptr<Message> outputMsg = make_unique_dp<GuiLayerRecachedMessage>(move(layerRenderer));
-  m_commutator->PostMessage(ThreadsCommutator::RenderThread, move(outputMsg), MessagePriority::Normal);
-}
-
 void BackendRenderer::AcceptMessage(ref_ptr<Message> message)
 {
   switch (message->GetType())
@@ -101,11 +89,7 @@ void BackendRenderer::AcceptMessage(ref_ptr<Message> message)
         bool const is3dBuildings = m_requestedTiles->Is3dBuildings();
         m_readManager->UpdateCoverage(screen, is3dBuildings, tiles, m_texMng);
 
-        gui::CountryStatusHelper & helper = gui::DrapeGui::Instance().GetCountryStatusHelper();
-        if ((*tiles.begin()).m_zoomLevel > scales::GetUpperWorldScale())
-          m_model.UpdateCountryId(helper.GetCountryId(), screen.ClipRect().Center());
-        else
-          helper.Clear();
+        m_updateCurrentCountryFn(screen.ClipRect().Center(), (*tiles.begin()).m_zoomLevel);
       }
       break;
     }
@@ -113,11 +97,6 @@ void BackendRenderer::AcceptMessage(ref_ptr<Message> message)
     {
       ref_ptr<InvalidateReadManagerRectMessage> msg = message;
       m_readManager->Invalidate(msg->GetTilesForInvalidate());
-      break;
-    }
-  case Message::CountryStatusRecache:
-    {
-      RecacheCountryStatus();
       break;
     }
   case Message::GuiRecache:
@@ -132,7 +111,6 @@ void BackendRenderer::AcceptMessage(ref_ptr<Message> message)
       m_commutator->PostMessage(ThreadsCommutator::RenderThread,
                                 make_unique_dp<GuiLayerLayoutMessage>(msg->AcceptLayoutInfo()),
                                 MessagePriority::Normal);
-      RecacheCountryStatus();
       break;
     }
   case Message::TileReadStarted:
@@ -183,26 +161,6 @@ void BackendRenderer::AcceptMessage(ref_ptr<Message> message)
         m_batchersPool->ReleaseBatcher(key);
       }
       msg->EndProcess();
-      break;
-    }
-  case Message::CountryInfoUpdate:
-    {
-      ref_ptr<CountryInfoUpdateMessage> msg = message;
-      gui::CountryStatusHelper & helper = gui::DrapeGui::Instance().GetCountryStatusHelper();
-      if (!msg->NeedShow())
-      {
-        // Country is already loaded, so there is no need to show status GUI
-        // even if this country is updating.
-        helper.Clear();
-      }
-      else
-      {
-        gui::CountryInfo const & info = msg->GetCountryInfo();
-        if (msg->IsCurrentCountry() || helper.GetCountryId() == info.m_countryId)
-        {
-          helper.SetCountryInfo(info);
-        }
-      }
       break;
     }
   case Message::AddRoute:
