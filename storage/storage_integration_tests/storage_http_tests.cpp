@@ -7,7 +7,6 @@
 #include "platform/platform_tests_support/scoped_dir.hpp"
 
 #include "coding/file_name_utils.hpp"
-#include "coding/internal/file_data.hpp"
 
 #include "base/scope_guard.hpp"
 #include "base/string_utils.hpp"
@@ -15,59 +14,16 @@
 
 #include "std/string.hpp"
 
+#include "write_dir_changer.hpp"
+
 #include <QtCore/QCoreApplication>
 
 using namespace platform;
 using namespace storage;
 
-class WritableDirChanger
-{
-public:
-  static string const kMapTestDir;
-private:
-  string const m_writableDirBeforeTest;
-  string const m_mapTestDirFullPath;
+static string const kCountryId = "Angola";
 
-public:
-  WritableDirChanger()
-    : m_writableDirBeforeTest(GetPlatform().WritableDir())
-    , m_mapTestDirFullPath(m_writableDirBeforeTest + kMapTestDir)
-  {
-    Platform & platform = GetPlatform();
-    Platform::EError const err = platform.MkDir(m_mapTestDirFullPath);
-    switch (err)
-    {
-    case Platform::ERR_OK:
-      break;
-    case Platform::ERR_FILE_ALREADY_EXISTS:
-      Platform::EFileType type;
-      TEST_EQUAL(platform.GetFileType(m_mapTestDirFullPath, type), Platform::ERR_OK, ());
-      TEST_EQUAL(type, Platform::FILE_TYPE_DIRECTORY, ());
-      break;
-    default:
-      TEST(false, ("Can't create directory:", m_mapTestDirFullPath));
-      break;
-    }
-
-    platform.SetWritableDirForTests(m_mapTestDirFullPath);
-  }
-  ~WritableDirChanger()
-  {
-    Platform & platform = GetPlatform();
-    string const writableDirForTest = platform.WritableDir();
-    platform.SetWritableDirForTests(m_writableDirBeforeTest);
-    string const settingsFileFullPath = my::JoinFoldersToPath(writableDirForTest, SETTINGS_FILE_NAME);
-    if (platform.IsFileExistsByFullPath(settingsFileFullPath))
-      my::DeleteFileX(settingsFileFullPath);
-    platform.RmDir(writableDirForTest);
-  }
-};
-
-string const WritableDirChanger::kMapTestDir = "map-tests";
-
-WritableDirChanger g_writableDirChanger;
-
-string const kCountryId = string("Angola");
+static string const kMapTestDir = "map-tests";
 
 void ChangeCountryFunction(TCountryId const & countryId) {}
 
@@ -87,6 +43,8 @@ void Update(LocalCountryFile const & localCountryFile)
 
 UNIT_TEST(StorageDownloadNodeAndDeleteNodeTests)
 {
+  WritableDirChanger writableDirChanger(kMapTestDir);
+
   Storage storage;
   if (!version::IsSingleMwm(storage.GetCurrentDataVersion()))
     return;  // Test is valid for single mwm case only.
@@ -100,7 +58,7 @@ UNIT_TEST(StorageDownloadNodeAndDeleteNodeTests)
   MY_SCOPE_GUARD(cleanup,
                  bind(&Storage::DeleteNode, &storage, kCountryId));
   DeleteDownloaderFilesForCountry(storage.GetCurrentDataVersion(),
-                                  WritableDirChanger::kMapTestDir, CountryFile(kCountryId));
+                                  kMapTestDir, CountryFile(kCountryId));
 
   string const mwmFullPath = my::JoinFoldersToPath({GetPlatform().WritableDir(), version},
                                                    kCountryId + DATA_FILE_EXTENSION);
