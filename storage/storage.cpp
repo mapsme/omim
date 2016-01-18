@@ -234,16 +234,23 @@ size_t Storage::GetDownloadedFilesCount() const
   return m_localFiles.size();
 }
 
-TCountriesContainer const & NodeFromIndex(TCountriesContainer const & root, TCountryId const & countryId)
+TCountriesContainer const & NodeFromCountryId(TCountriesContainer const & root,
+                                              TCountryId const & countryId)
 {
   SimpleTree<Country> const * node = root.FindLeaf(Country(countryId));
-  CHECK(node, ("Node with id =", countryId, "not found in country tree."));
+  CHECK(node, ("Node with id =", countryId, "not found in country tree as a leaf."));
   return *node;
 }
 
+Country const & Storage::CountryLeafByCountryId(TCountryId const & countryId) const
+{
+  return NodeFromCountryId(m_countries, countryId).Value();
+}
 Country const & Storage::CountryByCountryId(TCountryId const & countryId) const
 {
-  return NodeFromIndex(m_countries, countryId).Value();
+  SimpleTree<Country> const * node = m_countries.Find(Country(countryId));
+  CHECK(node, ("Node with id =", countryId, "not found in country tree."));
+  return node->Value();
 }
 
 void Storage::GetGroupAndCountry(TCountryId const & countryId, string & group, string & country) const
@@ -256,19 +263,19 @@ void Storage::GetGroupAndCountry(TCountryId const & countryId, string & group, s
   // 3. To translate the ids got in (1) and (2) into strings for filling group and country
   //    use platform/get_text_by_id subsystem based on twine.
 
-  string fName = CountryByCountryId(countryId).GetFile().GetName();
+  string fName = CountryLeafByCountryId(countryId).GetFile().GetName();
   CountryInfo::FileName2FullName(fName);
   CountryInfo::FullName2GroupAndMap(fName, group, country);
 }
 
 size_t Storage::CountriesCount(TCountryId const & countryId) const
 {
-  return NodeFromIndex(m_countries, countryId).ChildrenCount();
+  return NodeFromCountryId(m_countries, countryId).ChildrenCount();
 }
 
 string const & Storage::CountryName(TCountryId const & countryId) const
 {
-  return NodeFromIndex(m_countries, countryId).Value().Name();
+  return NodeFromCountryId(m_countries, countryId).Value().Name();
 }
 
 bool Storage::IsCoutryIdInCountryTree(TCountryId const & countryId) const
@@ -299,7 +306,7 @@ LocalAndRemoteSizeT Storage::CountrySizeInBytes(TCountryId const & countryId, Ma
 
 CountryFile const & Storage::GetCountryFile(TCountryId const & countryId) const
 {
-  return CountryByCountryId(countryId).GetFile();
+  return CountryLeafByCountryId(countryId).GetFile();
 }
 
 Storage::TLocalFilePtr Storage::GetLatestLocalFile(CountryFile const & countryFile) const
@@ -766,7 +773,7 @@ void Storage::GetOutdatedCountries(vector<Country const *> & countries) const
     if (file && file->GetVersion() != GetCurrentDataVersion() &&
         name != WORLD_COASTS_FILE_NAME && name != WORLD_COASTS_MIGRATE_FILE_NAME && name != WORLD_FILE_NAME)
     {
-      countries.push_back(&CountryByCountryId(countryId));
+      countries.push_back(&CountryLeafByCountryId(countryId));
     }
   }
 }
@@ -1050,8 +1057,10 @@ void Storage::GetCountyListToDownload(TCountriesVec & countryList) const
   // @TODO(bykoianko) Implement this method. Remove from this method fully downloaded maps.
 }
 
-void Storage::DownloadNode(TCountryId const & countryId)
+bool Storage::DownloadNode(TCountryId const & countryId)
 {
+  // @TODO(bykoianko) Before downloading it's necessary to check if file(s) has been downloaded.
+  // If so, the method should be left with false.
   TCountriesContainer const * const node = m_countries.Find(countryId);
   CHECK(node, ());
   node->ForEachInSubtree([this](TCountriesContainer const & descendantNode)
@@ -1062,10 +1071,13 @@ void Storage::DownloadNode(TCountryId const & countryId)
                                                    MapOptions::MapWithCarRouting);
                            }
                          });
+  return true;
 }
 
-void Storage::DeleteNode(TCountryId const & countryId)
+bool Storage::DeleteNode(TCountryId const & countryId)
 {
+  // @TODO(bykoianko) Before deleting it's necessary to check if file(s) has been deleted.
+  // If so, the method should be left with false.
   TCountriesContainer const * const node = m_countries.Find(countryId);
   CHECK(node, ());
   node->ForEachInSubtree([this](TCountriesContainer const & descendantNode)
@@ -1076,5 +1088,16 @@ void Storage::DeleteNode(TCountryId const & countryId)
                                                  MapOptions::MapWithCarRouting);
                            }
                          });
+    return true;
+}
+
+void Storage::GetNodeAttrs(TCountryId const & countryId, NodeAttrs & nodeAttrs) const
+{
+  TCountriesContainer const * const node = m_countries.Find(countryId);
+  CHECK(node, ());
+
+  Country const & nodeValue = node->Value();
+  nodeAttrs.m_mwmCounter = nodeValue.GetSubtreeMwmCounter();
+  nodeAttrs.m_mwmSize = nodeValue.GetSubtreeMwmSizeBytes();
 }
 }  // namespace storage
