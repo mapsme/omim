@@ -47,8 +47,98 @@ namespace storage
 {
 namespace
 {
-
 using TLocalFilePtr = shared_ptr<LocalCountryFile>;
+
+string const kSingleMwmCountriesTxt =
+    string(R"({
+           "id": "Countries",
+           "v": )" + strings::to_string(version::FOR_TESTING_SINGLE_MWM1) + R"(,
+           "g": [
+               {
+                "id": "Abkhazia",
+                "s": 4689718,
+                "old": [
+                 "Georgia"
+                ]
+               },
+               {
+                "id": "Algeria",
+                "g": [
+                 {
+                  "id": "Algeria_Central",
+                  "s": 24177144,
+                  "old": [
+                   "Algeria"
+                  ]
+                 },
+                 {
+                  "id": "Algeria_Coast",
+                  "s": 66701534,
+                  "old": [
+                   "Algeria"
+                  ]
+                 }
+                ]
+               },
+               {
+                "id": "South Korea_South",
+                "s": 48394664,
+                "old": [
+                 "South Korea"
+                ]
+               }
+            ]})");
+
+string const kTwoComponentMwmCountriesTxt =
+    string(R"({
+           "v": )" + strings::to_string(version::FOR_TESTING_TWO_COMPONENT_MWM1) + R"(,
+           "n": "Countries",
+           "g": [
+            {
+             "n":"Africa",
+             "g":[
+              {
+               "n":"Algeria",
+               "c":"dz",
+               "s":33912897,
+               "rs":56864398
+              },
+              {
+               "n":"Angola",
+               "c":"ao",
+               "s":7384993,
+               "rs":9429135
+              }]
+            },
+            {
+             "n":"Europe",
+             "g":[
+              {
+               "n":"Albania",
+               "c":"al",
+               "s":9785225,
+               "rs":4438392
+              },
+              {
+               "n":"France",
+               "c":"fr",
+               "g":[
+                {
+                 "n":"Alsace",
+                 "c":"fr",
+                 "f":"France_Alsace",
+                 "s":58811438,
+                 "rs":9032707
+                },
+                {
+                 "n":"Aquitaine",
+                 "c":"fr",
+                 "f":"France_Aquitaine",
+                 "s":111693256,
+                 "rs":32365165
+                }]
+               }
+            ]}]})");
 
 // This class checks steps Storage::DownloadMap() performs to download a map.
 class CountryDownloaderChecker
@@ -803,49 +893,7 @@ UNIT_TEST(StorageTest_GetRootId)
 
 UNIT_TEST(StorageTest_GetChildren)
 {
-  Storage storage(string(R"({
-                        "id": "Countries",
-                        "v": )" + strings::to_string(version::FOR_TESTING_SINGLE_MWM1) + R"(,
-                        "g": [
-                            {
-                             "id": "Abkhazia",
-                             "s": 4689718,
-                             "old": [
-                              "Georgia"
-                             ]
-                            },
-                            {
-                             "id": "Algeria",
-                             "g": [
-                              {
-                               "id": "Algeria_Central",
-                               "s": 24177144,
-                               "old": [
-                                "Algeria"
-                               ]
-                              },
-                              {
-                               "id": "Algeria_Coast",
-                               "s": 66701534,
-                               "old": [
-                                "Algeria"
-                               ]
-                              }
-                             ]
-                            },
-                            {
-                             "id": "South Korea_South",
-                             "s": 48394664,
-                             "old": [
-                              "South Korea"
-                             ]
-                            }
-                         ]})"), make_unique<TestMapFilesDownloader>());
-  if (!version::IsSingleMwm(storage.GetCurrentDataVersion()))
-  {
-    // Storage::GetChildren is used only with single (small) mwms.
-    return;
-  }
+  Storage storage(kSingleMwmCountriesTxt, make_unique<TestMapFilesDownloader>());
 
   TCountryId const world = storage.GetRootId();
   TEST_EQUAL(world, "Countries", ());
@@ -1058,4 +1106,40 @@ UNIT_TEST(StorageTest_TwoInstance)
     TEST(platform.IsFileExistsByFullPath(my::JoinFoldersToPath(writableDir, versionDir1)), ());
   }
 }
+
+UNIT_TEST(StorageTest_ChildrenSizeSingleMwm)
+{
+  Storage storage(kSingleMwmCountriesTxt, make_unique<TestMapFilesDownloader>());
+
+  Country const abkhaziaCountry = storage.CountryLeafByCountryId("Abkhazia");
+  TEST_EQUAL(abkhaziaCountry.GetSubtreeMwmCounter(), 1, ());
+  TEST_EQUAL(abkhaziaCountry.GetSubtreeMwmSizeBytes(), 4689718, ());
+
+  Country const algeriaCountry = storage.CountryByCountryId("Algeria");
+  TEST_EQUAL(algeriaCountry.GetSubtreeMwmCounter(), 2, ());
+  TEST_EQUAL(algeriaCountry.GetSubtreeMwmSizeBytes(), 90878678, ());
+
+  Country const southKoreaCountry = storage.CountryLeafByCountryId("South Korea_South");
+  TEST_EQUAL(southKoreaCountry.GetSubtreeMwmCounter(), 1, ());
+  TEST_EQUAL(southKoreaCountry.GetSubtreeMwmSizeBytes(), 48394664, ());
+}
+
+UNIT_TEST(StorageTest_GetNodeAttrsSingleMwm)
+{
+  Storage storage(kSingleMwmCountriesTxt, make_unique<TestMapFilesDownloader>());
+
+  NodeAttrs nodeAttrs;
+  storage.GetNodeAttrs("Abkhazia", nodeAttrs);
+  TEST_EQUAL(nodeAttrs.m_mwmCounter, 1, ());
+  TEST_EQUAL(nodeAttrs.m_mwmSize, 4689718, ());
+
+  storage.GetNodeAttrs("Algeria", nodeAttrs);
+  TEST_EQUAL(nodeAttrs.m_mwmCounter, 2, ());
+  TEST_EQUAL(nodeAttrs.m_mwmSize, 90878678, ());
+
+  storage.GetNodeAttrs("South Korea_South", nodeAttrs);
+  TEST_EQUAL(nodeAttrs.m_mwmCounter, 1, ());
+  TEST_EQUAL(nodeAttrs.m_mwmSize, 48394664, ());
+}
+
 }  // namespace storage
