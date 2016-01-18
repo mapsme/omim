@@ -84,8 +84,8 @@ DrawWidget::DrawWidget(QWidget * parent)
   });
 
   m_framework->SetRouteBuildingListener([](routing::IRouter::ResultCode,
-                                           vector<storage::TCountryId> const &,
-                                           vector<storage::TCountryId> const &)
+                                           TCountriesVec const &,
+                                           TCountriesVec const &)
   {
   });
 
