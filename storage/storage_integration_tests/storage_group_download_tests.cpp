@@ -74,6 +74,11 @@ void DownloadGroup(Storage & storage, bool oneByOne)
   {
     TEST(children.find(countryId) != children.end(), ());
     changed.insert(countryId);
+    if (!storage.IsDownloadInProgress())
+    {
+      // end waiting when all chilren will be downloaded
+      QCoreApplication::exit();
+    }
   };
 
   TCountriesSet downloaded;
@@ -84,11 +89,6 @@ void DownloadGroup(Storage & storage, bool oneByOne)
     {
       auto const res = downloaded.insert(countryId);
       TEST_EQUAL(res.second, true, ()); // every child is downloaded only once
-      if (children == downloaded)
-      {
-        // end waiting when all chilren will be downloaded
-        QCoreApplication::exit();
-      }
     }
   };
 
