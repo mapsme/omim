@@ -218,32 +218,18 @@ void Framework::StopLocationFollow()
   CallDrapeFunction(bind(&df::DrapeEngine::StopLocationFollow, _1));
 }
 
-void Framework::PreMigrate()
+void Framework::PreMigrate(ms::LatLon const & position,
+                           storage::Storage::TChangeCountryFunction const & change,
+                           storage::Storage::TProgressFunction const & progress)
 {
-  ms::LatLon curPos(55.7, 37.7);
   Storage().PrefetchMigrateData();
 
   storage::CountryInfoGetter infoGetter(GetPlatform().GetReader(PACKED_POLYGONS_MIGRATE_FILE),
                                         GetPlatform().GetReader(COUNTRIES_MIGRATE_FILE));
 
-  TCountryId currentCountryId = infoGetter.GetRegionFile(MercatorBounds::FromLatLon(curPos));
+  TCountryId currentCountryId = infoGetter.GetRegionFile(MercatorBounds::FromLatLon(position));
 
-  auto stateChanged = [&](TCountryId const & id)
-  {
-    TStatus const nextStatus = Storage().m_prefetchStorage->CountryStatusEx(id);
-    LOG_SHORT(LINFO, (id, "status :", nextStatus));
-    if (nextStatus == TStatus::EOnDisk)
-    {
-      LOG_SHORT(LINFO, ("Prefetch done. Ready to migrate."));
-      Migrate();
-    }
-  };
-  auto progressChanged = [](TCountryId const & id, LocalAndRemoteSizeT const & sz)
-  {
-   LOG(LINFO, (id, "downloading progress:", sz));
-  };
-
-  Storage().m_prefetchStorage->Subscribe(stateChanged, progressChanged);
+  Storage().m_prefetchStorage->Subscribe(change, progress);
   Storage().m_prefetchStorage->DownloadNode(currentCountryId);
 }
 
