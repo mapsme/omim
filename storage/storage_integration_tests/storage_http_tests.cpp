@@ -21,19 +21,16 @@
 using namespace platform;
 using namespace storage;
 
-static string const kCountryId = "Angola";
+namespace
+{
 
-static string const kMapTestDir = "map-tests";
+string const kCountryId = "Angola";
 
-void ChangeCountryFunction(TCountryId const & countryId) {}
+string const kMapTestDir = "map-tests";
 
 void ProgressFunction(TCountryId const & countryId, LocalAndRemoteSizeT const & mapSize)
 {
   TEST_EQUAL(countryId, kCountryId, ());
-  if (mapSize.first != mapSize.second)
-    return;
-
-  QCoreApplication::exit();
 }
 
 void Update(LocalCountryFile const & localCountryFile)
@@ -41,13 +38,23 @@ void Update(LocalCountryFile const & localCountryFile)
   TEST_EQUAL(localCountryFile.GetCountryName(), kCountryId, ());
 }
 
+} // namespace
+
 UNIT_TEST(StorageDownloadNodeAndDeleteNodeTests)
 {
   WritableDirChanger writableDirChanger(kMapTestDir);
 
   Storage storage(COUNTRIES_MIGRATE_FILE);
-  if (!version::IsSingleMwm(storage.GetCurrentDataVersion()))
-    return;  // Test is valid for single mwm case only.
+  TEST(version::IsSingleMwm(storage.GetCurrentDataVersion()), ());
+
+  auto ChangeCountryFunction = [&](TCountryId const & countryId)
+  {
+    if (!storage.IsDownloadInProgress())
+    {
+      // End wait for downloading complete.
+      QCoreApplication::exit();
+    }
+  };
 
   storage.Init(Update);
   storage.RegisterAllLocalMaps();
@@ -72,6 +79,7 @@ UNIT_TEST(StorageDownloadNodeAndDeleteNodeTests)
 
   // Downloading to an empty directory.
   storage.DownloadNode(kCountryId);
+  // Wait for downloading complete.
   QCoreApplication::exec();
 
   TEST(platform.IsFileExistsByFullPath(mwmFullPath), ());
