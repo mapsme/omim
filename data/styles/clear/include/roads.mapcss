@@ -5,6 +5,16 @@ line[highway]
 
 /* Z-INDEXES */
 /*
+line|z1-[highway=world_level]
+{
+	z-index: 950;
+}
+
+line|z1-[highway=world_towns_level]
+{
+	z-index: 925;
+}
+
 line|z7-[highway=trunk],
 line|z7-[highway=motorway] {
 	z-index: 900;
@@ -73,9 +83,38 @@ line|z7-[highway=residential_link],
 
 */
 
+line|z7-[highway=world_level]
+{
+    color: @trunk_orange_world;
+    width: 1.2;
+	  opacity: 0;
+	z-index: 900;
+}
 
+line|z1-[highway=world_level]
+{
+    color: @trunk_orange_world;
+    width: 1.2;
+	  opacity: 1;
+	z-index: 900;
+}
+
+line|z7-[highway=world_towns_level]
+{
+    color: @trunk_yellow_world;
+    width: 0.9;
+	  opacity: 0;
+	z-index: 900;
+}
+
+line|z1-[highway=world_towns_level]
+{
+    color: @trunk_yellow_world;
+    width: 0.9;
+	  opacity: 1;
+	z-index: 900;
+}
 /* ZOOM 7 */
-
 line|z7[highway=trunk],
 line|z7[highway=motorway] {
     color: @trunk_orange_light;
