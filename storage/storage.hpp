@@ -99,6 +99,8 @@ class Storage
 public:
   struct StatusCallback;
   using TUpdate = function<void(platform::LocalCountryFile const &)>;
+  using TChangeCountryFunction = function<void(TCountryId const &)>;
+  using TProgressFunction = function<void(TCountryId const &, LocalAndRemoteSizeT const &)>;
 
 private:
   /// We support only one simultaneous request at the moment
@@ -135,8 +137,6 @@ private:
 
   /// @name Communicate with GUI
   //@{
-  typedef function<void(TCountryId const &)> TChangeCountryFunction;
-  typedef function<void(TCountryId const &, LocalAndRemoteSizeT const &)> TProgressFunction;
 
   int m_currentSlotId;
 

@@ -155,7 +155,8 @@ public:
   bool IsWatchFrameRendererInited() const;
 
   /// Migrate to new version of very different data.
-  void PreMigrate();
+  void PreMigrate(ms::LatLon const & position, storage::Storage::TChangeCountryFunction const & change,
+                  storage::Storage::TProgressFunction const & progress);
   void Migrate();
 
   /// Registers all local map files in internal indexes.

@@ -217,7 +217,25 @@ bool SearchPanel::TryMigrate(QString const & str)
   m_pEditor->setText("");
   parentWidget()->hide();
 
-  m_pDrawWidget->GetFramework().PreMigrate();
+  auto stateChanged = [&](storage::TCountryId const & id)
+  {
+    storage::TStatus const nextStatus = m_pDrawWidget->GetFramework().Storage().m_prefetchStorage->CountryStatusEx(id);
+    LOG_SHORT(LINFO, (id, "status :", nextStatus));
+    if (nextStatus == storage::TStatus::EOnDisk)
+    {
+      LOG_SHORT(LINFO, ("Prefetch done. Ready to migrate."));
+      m_pDrawWidget->GetFramework().Migrate();
+    }
+  };
+
+  auto progressChanged = [](storage::TCountryId const & id, storage::LocalAndRemoteSizeT const & sz)
+  {
+    LOG(LINFO, (id, "downloading progress:", sz));
+  };
+
+  ms::LatLon curPos(55.7, 37.7);
+
+  m_pDrawWidget->GetFramework().PreMigrate(curPos, stateChanged, progressChanged);
   return true;
 }
 
