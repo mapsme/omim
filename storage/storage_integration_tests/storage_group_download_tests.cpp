@@ -140,7 +140,8 @@ UNIT_TEST(SmallMwms_GroupDownload_Test)
     TEST(children.find(countryId) != children.end(), ());
     if (mapSize.first == mapSize.second)
     {
-      downloaded.insert(countryId);
+      auto const res = downloaded.insert(countryId);
+      TEST_EQUAL(res.second, true, ());
       if (children == downloaded)
         QCoreApplication::exit();
     }
@@ -182,6 +183,28 @@ UNIT_TEST(SmallMwms_GroupDownload_Test)
   TEST(downloaded == children, ());
   TEST(udpated == children, ());
   TEST(changed == children, ());
+
+  // Check status for the all children nodes
+  for (auto const & countryId : children)
+  {
+    TEST_EQUAL(TStatus::EOnDisk, storage.CountryStatusEx(countryId), ());
+    // NodeAttrs m_status and m_downloadingErrCode are not implemented yet
+    /*
+    NodeAttrs attrs;
+    storage.GetNodeAttrs(countryId, attrs);
+    TEST_EQUAL(ErrorCode::NoError, attrs.m_downloadingErrCode, ());
+    TEST_EQUAL(NodeStatus::UpToDate, attrs.m_status, ());
+    */
+  }
+
+  // NodeAttrs m_status and m_downloadingErrCode are not implemented yet
+  /*
+  // Check status for the group node
+  NodeAttrs attrs;
+  storage.GetNodeAttrs(kGroupCountryId, attrs);
+  TEST_EQUAL(ErrorCode::NoError, attrs.m_downloadingErrCode, ());
+  TEST_EQUAL(NodeStatus::UpToDate, attrs.m_status, ());
+  */
 
   // Check there is only mwm files are present and no any other
   for (auto const & countryId : children)
