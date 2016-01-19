@@ -10,7 +10,7 @@ bool IsPointCoveredByDownloadedMaps(m2::PointD const & position,
                                     Storage const & storage,
                                     CountryInfoGetter const & countryInfoGetter)
 {
-  return storage.IsNodeDownloaded(countryInfoGetter.GetRegionFile(position));
+  return storage.IsNodeDownloaded(countryInfoGetter.GetRegionCountryId(position));
 }
 
 } // namespace storage

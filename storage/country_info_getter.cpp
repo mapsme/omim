@@ -60,10 +60,10 @@ CountryInfoGetter::CountryInfoGetter(ModelReaderPtr polyR, ModelReaderPtr countr
   LoadCountryFile2CountryInfo(buffer, m_id2info, m_isSingleMwm);
 }
 
-string CountryInfoGetter::GetRegionFile(m2::PointD const & pt) const
+TCountryId CountryInfoGetter::GetRegionCountryId(m2::PointD const & pt) const
 {
   IdType const id = FindFirstCountry(pt);
-  return id != kInvalidId ? m_countries[id].m_name : string();
+  return id != kInvalidId ? m_countries[id].m_name : TCountryId();
 }
 
 void CountryInfoGetter::GetRegionsCountryId(m2::PointD const & pt, TCountriesVec & closestCoutryIds)
@@ -72,7 +72,7 @@ void CountryInfoGetter::GetRegionsCountryId(m2::PointD const & pt, TCountriesVec
   // which covers |pt|. This method should fill |closestCoutryIds| with several mwms
   // which cover |pt| and close to |pt|.
   closestCoutryIds.clear();
-  TCountryId countryId = GetRegionFile(pt);
+  TCountryId countryId = GetRegionCountryId(pt);
   if (!countryId.empty())
     closestCoutryIds.emplace_back(countryId);
 }

@@ -3,6 +3,8 @@
 #include "indexer/data_header.hpp"
 #include "indexer/index.hpp"
 
+#include "storage/index.hpp"
+
 #include "geometry/rect2d.hpp"
 #include "geometry/point2d.hpp"
 
@@ -56,9 +58,9 @@ class FeaturesFetcher : public Index::Observer
 
     void ClearCaches();
 
-    inline bool IsLoaded(string const & countryFileName) const
+    inline bool IsLoaded(storage::TCountryId const & countryId) const
     {
-      return m_multiIndex.IsLoaded(platform::CountryFile(countryFileName));
+      return m_multiIndex.IsLoaded(platform::CountryFile(countryId));
     }
 
     // Index::Observer overrides:

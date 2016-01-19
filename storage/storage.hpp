@@ -391,7 +391,7 @@ public:
   bool DeleteFromDownloader(TCountryId const & countryId);
   bool IsDownloadInProgress() const;
 
-  TCountryId GetCurrentDownloadingCountryIndex() const;
+  TCountryId GetCurrentDownloadingCountryId() const;
 
   void NotifyStatusChanged(TCountryId const & countryId);
 

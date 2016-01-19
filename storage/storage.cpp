@@ -572,7 +572,7 @@ bool Storage::DeleteFromDownloader(TCountryId const & countryId)
 
 bool Storage::IsDownloadInProgress() const { return !m_queue.empty(); }
 
-TCountryId Storage::GetCurrentDownloadingCountryIndex() const
+TCountryId Storage::GetCurrentDownloadingCountryId() const
 {
   return IsDownloadInProgress() ? m_queue.front().GetCountryId() : storage::TCountryId();
 }
