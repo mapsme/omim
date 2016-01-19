@@ -189,7 +189,7 @@
 		670E38BA1C3C1D0700E9C0A6 /* packed_polygons_mig.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = packed_polygons_mig.bin; sourceTree = "<group>"; };
 		670E38BD1C3D32F700E9C0A6 /* colors.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = colors.txt; sourceTree = "<group>"; };
 		670E38BE1C3D32F700E9C0A6 /* patterns.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = patterns.txt; sourceTree = "<group>"; };
-		670E39461C48060A00E9C0A6 /* WorldCoasts_mig.mwm */ = {isa = PBXFileReference; lastKnownFileType = file; name = WorldCoasts_mig.mwm; path = ../../data/WorldCoasts_mig.mwm; sourceTree = "<group>"; };
+		670E39461C48060A00E9C0A6 /* WorldCoasts_mig.mwm */ = {isa = PBXFileReference; lastKnownFileType = file; path = WorldCoasts_mig.mwm; sourceTree = "<group>"; };
 		6714E5DE1BD13F67008AB603 /* drules_proto_clear.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = drules_proto_clear.bin; sourceTree = "<group>"; };
 		6714E5DF1BD13F67008AB603 /* drules_proto_clear.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = drules_proto_clear.txt; sourceTree = "<group>"; };
 		6714E5E01BD13F67008AB603 /* drules_proto_dark.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = drules_proto_dark.bin; sourceTree = "<group>"; };
@@ -390,6 +390,7 @@
 		6729A5C91A693045007D5872 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				670E39461C48060A00E9C0A6 /* WorldCoasts_mig.mwm */,
 				670E38BD1C3D32F700E9C0A6 /* colors.txt */,
 				670E38BE1C3D32F700E9C0A6 /* patterns.txt */,
 				670E38B91C3C1D0700E9C0A6 /* countries_mig.txt */,
@@ -438,7 +439,6 @@
 		675345401A404C6100A0A8C3 = {
 			isa = PBXGroup;
 			children = (
-				670E39461C48060A00E9C0A6 /* WorldCoasts_mig.mwm */,
 				670D05BC1B0E10640013A7AC /* defaults.xcconfig */,
 				6729A5C91A693045007D5872 /* Resources */,
 				6729A4591A684401007D5872 /* Libs */,
