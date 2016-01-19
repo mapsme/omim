@@ -11,6 +11,50 @@ namespace search
 {
 namespace v2
 {
+namespace
+{
+class OneLevelPOIChecker : public ftypes::BaseChecker
+{
+public:
+  OneLevelPOIChecker() : ftypes::BaseChecker(1 /* level */)
+  {
+    Classificator const & c = classif();
+
+    auto paths = {"amenity", "historic", "office", "railway", "shop", "sport", "tourism"};
+    for (auto const & path : paths)
+      m_types.push_back(c.GetTypeByPath({path}));
+  }
+};
+
+class TwoLevelPOIChecker : public ftypes::BaseChecker
+{
+public:
+  TwoLevelPOIChecker() : ftypes::BaseChecker(2 /* level */)
+  {
+    Classificator const & c = classif();
+    m_types.push_back(c.GetTypeByPath({"highway", "bus_stop"}));
+  }
+};
+
+class IsPoiChecker
+{
+public:
+  IsPoiChecker() {}
+
+  static IsPoiChecker const & Instance()
+  {
+    static const IsPoiChecker inst;
+    return inst;
+  }
+
+  bool operator()(FeatureType const & ft) const { return m_oneLevel(ft) || m_twoLevel(ft); }
+
+private:
+  OneLevelPOIChecker const m_oneLevel;
+  TwoLevelPOIChecker const m_twoLevel;
+};
+}  // namespace
+
 // static
 SearchModel const & SearchModel::Instance()
 {
@@ -23,6 +67,7 @@ SearchModel::SearchType SearchModel::GetSearchType(FeatureType const & feature) 
   static auto const & buildingChecker = IsBuildingChecker::Instance();
   static auto const & streetChecker = IsStreetChecker::Instance();
   static auto const & localityChecker = IsLocalityChecker::Instance();
+  static auto const & poiChecker = IsPoiChecker::Instance();
 
   if (buildingChecker(feature))
     return SEARCH_TYPE_BUILDING;
@@ -36,6 +81,9 @@ SearchModel::SearchType SearchModel::GetSearchType(FeatureType const & feature) 
     switch (type)
     {
     case NONE:
+      ASSERT(false, ("Unknown locality."));
+      return SEARCH_TYPE_COUNT;
+    case STATE:
       return SEARCH_TYPE_COUNT;
     case COUNTRY:
       return SEARCH_TYPE_COUNTRY;
@@ -48,7 +96,10 @@ SearchModel::SearchType SearchModel::GetSearchType(FeatureType const & feature) 
     }
   }
 
-  return SEARCH_TYPE_POI;
+  if (poiChecker(feature))
+    return SEARCH_TYPE_POI;
+
+  return SEARCH_TYPE_COUNT;
 }
 
 string DebugPrint(SearchModel::SearchType type)
