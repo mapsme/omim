@@ -45,7 +45,7 @@ UNIT_TEST(StorageDownloadNodeAndDeleteNodeTests)
 {
   WritableDirChanger writableDirChanger(kMapTestDir);
 
-  Storage storage;
+  Storage storage(COUNTRIES_MIGRATE_FILE);
   if (!version::IsSingleMwm(storage.GetCurrentDataVersion()))
     return;  // Test is valid for single mwm case only.
 
