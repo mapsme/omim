@@ -28,6 +28,8 @@ enum class NodeStatus
   InQueue,               /**< A mwm is waiting for downloading in the queue. */
 };
 
+string DebugPrint(NodeStatus status);
+
 /// \brief Error code of MapRepository.
 enum class ErrorCode
 {
@@ -35,6 +37,8 @@ enum class ErrorCode
   NotEnoughSpace,         /**< No space on flash memory to download a file. */
   NoInternetConnection,   /**< No internet connection. */
 };
+
+string DebugPrint(ErrorCode code);
 
 /// \brief Contains all properties for a node in the country tree.
 /// It's applicable for expandable and not expandable node id.

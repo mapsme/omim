@@ -27,5 +27,6 @@ HEADERS += \
 
 SOURCES += \
   ../../testing/testingmain.cpp \
+  storage_group_download_tests.cpp \
   storage_http_tests.cpp \
   write_dir_changer.cpp \

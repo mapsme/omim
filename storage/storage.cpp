@@ -78,6 +78,35 @@ void DeleteFromDiskWithIndexes(LocalCountryFile const & localFile, MapOptions op
 }
 }  // namespace
 
+string DebugPrint(NodeStatus status)
+{
+  switch (status)
+  {
+  case NodeStatus::Undefined: return "Undefined";
+  case NodeStatus::UpToDate: return "UpToDate";
+  case NodeStatus::DownloadInProgress: return "DownloadInProgress";
+  case NodeStatus::DownloadPaused: return "DownloadPaused";
+  case NodeStatus::NeedsToUpdate: return "NeedsToUpdate";
+  case NodeStatus::InQueue: return "InQueue";
+  }
+  ostringstream s;
+  s << "Unknown NodeStatus " << static_cast<int>(status);
+  return s.str();
+}
+
+string DebugPrint(ErrorCode code)
+{
+  switch (code)
+  {
+  case ErrorCode::NoError: return "NoError";
+  case ErrorCode::NotEnoughSpace: return "NotEnoughSpace";
+  case ErrorCode::NoInternetConnection: return "NoInternetConnection";
+  }
+  ostringstream s;
+  s << "Unknown ErrorCode " << static_cast<int>(code);
+  return s.str();
+}
+
 bool HasCountryId(TCountriesVec const & sortedCountryIds, TCountryId const & countryId)
 {
   ASSERT(is_sorted(sortedCountryIds.begin(), sortedCountryIds.end()), ());
