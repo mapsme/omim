@@ -39,9 +39,6 @@ TCountriesSet const kLeafCountriesIds = {"Tokelau",
                                          "New Zealand South_Canterbury",
                                          "New Zealand South_Southland"};
 
-string const kMwmVersion = "160107";
-size_t const kCountriesTxtFileSize = 131488;
-
 string GetMwmFilePath(string const & version, TCountryId const & countryId)
 {
   return my::JoinFoldersToPath({GetPlatform().WritableDir(), version},
@@ -60,78 +57,28 @@ string GetMwmResumeFilePath(string const & version, TCountryId const & countryId
                                countryId + DATA_FILE_EXTENSION READY_FILE_EXTENSION RESUME_FILE_EXTENSION);
 }
 
-bool DownloadFile(string const & url,
-                  string const & filePath,
-                  size_t fileSize)
+void DownloadGroup(Storage & storage, bool oneByOne)
 {
-  using namespace downloader;
-
-  HttpRequest::StatusT httpStatus;
-  bool finished = false;
-
-  unique_ptr<HttpRequest> request(HttpRequest::GetFile({url}, filePath, fileSize,
-                                  [&](HttpRequest & request)
-  {
-    HttpRequest::StatusT const s = request.Status();
-    if (s == HttpRequest::EFailed || s == HttpRequest::ECompleted)
-    {
-      httpStatus = s;
-      finished = true;
-      QCoreApplication::exit();
-    }
-  }));
-
-  QCoreApplication::exec();
-
-  return httpStatus == HttpRequest::ECompleted;
-}
-
-string GetCountriesTxtWebUrl(string const version)
-{
-  return kTestWebServer + "/direct/" + version + "/countries.txt";
-}
-
-string GetCountriesTxtFilePath()
-{
-  return GetPlatform().WritableDir() + "countries.txt";
-}
-
-} // namespace
-
-UNIT_TEST(SmallMwms_GroupDownloadDelete_Test)
-{
-  WritableDirChanger writableDirChanger(kMapTestDir);
-
-  TEST(DownloadFile(GetCountriesTxtWebUrl(kMwmVersion), GetCountriesTxtFilePath(), kCountriesTxtFileSize), ());
-
   Platform & platform = GetPlatform();
 
-  Storage storage;
   string const version = strings::to_string(storage.GetCurrentDataVersion());
-  TEST(version::IsSingleMwm(storage.GetCurrentDataVersion()), ());
-  TEST_EQUAL(version, kMwmVersion, ());
 
+  //  Get children nodes for the group node
   TCountriesVec v;
   storage.GetChildren(kGroupCountryId, v);
   TCountriesSet const children(v.begin(), v.end());
   v.clear();
-
-  // Check children for the kGroupCountryId
-  TEST_EQUAL(children, kLeafCountriesIds, ());
-
-  TCountriesSet udpated;
-  auto onUpdatedFn = [&](LocalCountryFile const & localCountryFile)
-  {
-    TCountryId const countryId = localCountryFile.GetCountryName();
-    TEST(children.find(countryId) != children.end(), ());
-    udpated.insert(countryId);
-  };
 
   TCountriesSet changed;
   auto onChangeCountryFn = [&](TCountryId const & countryId)
   {
     TEST(children.find(countryId) != children.end(), ());
     changed.insert(countryId);
+    if (!storage.IsDownloadInProgress())
+    {
+      // end waiting when all chilren will be downloaded
+      QCoreApplication::exit();
+    }
   };
 
   TCountriesSet downloaded;
@@ -141,32 +88,21 @@ UNIT_TEST(SmallMwms_GroupDownloadDelete_Test)
     if (mapSize.first == mapSize.second)
     {
       auto const res = downloaded.insert(countryId);
-      TEST_EQUAL(res.second, true, ());
-      if (children == downloaded)
-        QCoreApplication::exit();
+      TEST_EQUAL(res.second, true, ()); // every child is downloaded only once
     }
   };
 
-  storage.Init(onUpdatedFn);
-  storage.RegisterAllLocalMaps();
-  storage.Subscribe(onChangeCountryFn, onProgressFn);
-  storage.SetDownloadingUrlsForTesting({kTestWebServer});
+  int const subsrcibtionId = storage.Subscribe(onChangeCountryFn, onProgressFn);
 
-  tests_support::ScopedDir cleanupVersionDir(version);
-  MY_SCOPE_GUARD(cleanup, bind(&Storage::DeleteNode, &storage, kGroupCountryId));
+  // Check group node is not downloaded
+  storage.GetDownloadedChildren(storage.GetRootId(), v);
+  TEST(v.empty(), ());
 
-  // Download
-
-  // Check there is no downloaded children for the group
+  // Check children nodes are not downloaded
   storage.GetDownloadedChildren(kGroupCountryId, v);
   TEST(v.empty(), ());
 
-  // Check group is not downloaded
-  storage.GetDownloadedChildren(storage.GetRootId(), v);
-  TEST(find(v.begin(), v.end(), kGroupCountryId) == v.end(), ());
-  v.clear();
-
-  // Check there is no mwm or any other files in the writeable dir
+  // Check there is no mwm or any other files for the children nodes
   for (auto const & countryId : children)
   {
     string const mwmFullPath = GetMwmFilePath(version, countryId);
@@ -177,16 +113,30 @@ UNIT_TEST(SmallMwms_GroupDownloadDelete_Test)
     TEST(!platform.IsFileExistsByFullPath(resumeFullPath), ());
   }
 
-  // Download group
-  storage.DownloadNode(kGroupCountryId);
-  QCoreApplication::exec(); // wait for download
+  // Download the group
+  if (oneByOne)
+  {
+    for (auto const & countryId : children)
+      storage.DownloadNode(countryId);
+  }
+  else
+  {
+    storage.DownloadNode(kGroupCountryId);
+  }
+  // wait for downloading of all children
+  QCoreApplication::exec();
 
-  // Check all group children have been downloaded and changed.
-  TEST_EQUAL(downloaded, children, ());
-  TEST_EQUAL(udpated, children, ());
+  // Check all children nodes have been downloaded and changed.
   TEST_EQUAL(changed, children, ());
+  TEST_EQUAL(downloaded, children, ());
 
-  // Check status for the all children nodes
+  // Check state for the group node is set to UpToDate and NoError
+  NodeAttrs attrs;
+  storage.GetNodeAttrs(kGroupCountryId, attrs);
+  TEST_EQUAL(ErrorCode::NoError, attrs.m_downloadingErrCode, ());
+  // TEST_EQUAL(NodeStatus::UpToDate, attrs.m_status, ()); // DOES NOT WORK
+
+  // Check state for the all children nodes is set to UpToDate and NoError
   for (auto const & countryId : children)
   {
     TEST_EQUAL(TStatus::EOnDisk, storage.CountryStatusEx(countryId), ());
@@ -196,13 +146,7 @@ UNIT_TEST(SmallMwms_GroupDownloadDelete_Test)
     // TEST_EQUAL(NodeStatus::UpToDate, attrs.m_status, ()); // DOES NOT WORK
   }
 
-  // Check status for the group node
-  NodeAttrs attrs;
-  storage.GetNodeAttrs(kGroupCountryId, attrs);
-  TEST_EQUAL(ErrorCode::NoError, attrs.m_downloadingErrCode, ());
-  // TEST_EQUAL(NodeStatus::UpToDate, attrs.m_status, ()); // DOES NOT WORK
-
-  // Check there is only mwm files are present and no any other
+  // Check there is only mwm files are present and no any other for the children nodes
   for (auto const & countryId : children)
   {
     string const mwmFullPath = GetMwmFilePath(version, countryId);
@@ -213,41 +157,74 @@ UNIT_TEST(SmallMwms_GroupDownloadDelete_Test)
     TEST(!platform.IsFileExistsByFullPath(resumeFullPath), ());
   }
 
+  // Check group is downloaded
+  storage.GetDownloadedChildren(storage.GetRootId(), v);
+  TEST_EQUAL(v, TCountriesVec({kGroupCountryId}), ());
+  v.clear();
+
   // Check all group children are downloaded
   storage.GetDownloadedChildren(kGroupCountryId, v);
   TEST_EQUAL(children, TCountriesSet(v.begin(), v.end()), ());
   v.clear();
 
-  // Check group is downloaded
+  storage.Unsubscribe(subsrcibtionId);
+}
+
+void DeleteGroup(Storage & storage, bool oneByOne)
+{
+  Platform & platform = GetPlatform();
+
+  string const version = strings::to_string(storage.GetCurrentDataVersion());
+
+  //  Get children nodes for the group node
+  TCountriesVec v;
+  storage.GetChildren(kGroupCountryId, v);
+  TCountriesSet const children(v.begin(), v.end());
+  v.clear();
+
+  // Check group node is downloaded
   storage.GetDownloadedChildren(storage.GetRootId(), v);
-  TEST(find(v.begin(), v.end(), kGroupCountryId) != v.end(), ());
+  TEST_EQUAL(v, TCountriesVec({kGroupCountryId}), ());
   v.clear();
 
-  // Delete
-
-  // Delete first child node
-  storage.DeleteNode(*children.begin());
-
-  // Check all except first child are downloaded
+  // Check children nodes are downloaded
   storage.GetDownloadedChildren(kGroupCountryId, v);
-  TEST_EQUAL(TCountriesSet(++children.begin(), children.end()), TCountriesSet(v.begin(), v.end()), ());
+  TEST_EQUAL(children, TCountriesSet(v.begin(), v.end()), ());
   v.clear();
 
-  // Check mwm files all children except first are present
-  for (auto i = children.begin(); i != children.end(); ++i)
+  // Check there are mwm files for the children nodes
+  for (auto const & countryId : children)
   {
-    TCountryId const & countryId = *i;
     string const mwmFullPath = GetMwmFilePath(version, countryId);
-    if (i == children.begin())
-      TEST(!platform.IsFileExistsByFullPath(mwmFullPath), ())
-    else
-      TEST(platform.IsFileExistsByFullPath(mwmFullPath), ());
+    TEST(platform.IsFileExistsByFullPath(mwmFullPath), ());
   }
 
-  // Delete group node
-  storage.DeleteNode(kGroupCountryId);
+  // Delete the group
+  if (oneByOne)
+  {
+    for (auto const & countryId : children)
+      storage.DeleteNode(countryId);
+  }
+  else
+  {
+    storage.DeleteNode(kGroupCountryId);
+  }
 
-  // Check files are not present for all nodes
+  // Check state for the group node is set to UpToDate and NoError
+  NodeAttrs attrs;
+  storage.GetNodeAttrs(kGroupCountryId, attrs);
+  // TEST_EQUAL(NodeStatus::NotDownloaded, attrs.m_status, ()); // DOES NOT WORK
+
+  // Check state for the all children nodes is set to UpToDate and NoError
+  for (auto const & countryId : children)
+  {
+    TEST_EQUAL(TStatus::ENotDownloaded, storage.CountryStatusEx(countryId), ());
+    NodeAttrs attrs;
+    storage.GetNodeAttrs(countryId, attrs);
+    // TEST_EQUAL(NodeStatus::NotDownloaded, attrs.m_status, ()); // DOES NOT WORK
+  }
+
+  // Check there are no mwm files for the children nodes
   for (auto const & countryId : children)
   {
     string const mwmFullPath = GetMwmFilePath(version, countryId);
@@ -256,6 +233,62 @@ UNIT_TEST(SmallMwms_GroupDownloadDelete_Test)
 
   // Check group is not downloaded
   storage.GetDownloadedChildren(storage.GetRootId(), v);
-  TEST(find(v.begin(), v.end(), kGroupCountryId) == v.end(), ());
-  v.clear();
+  TEST(v.empty(), ());
+
+  // Check all children nodes are not downloaded
+  storage.GetDownloadedChildren(kGroupCountryId, v);
+  TEST(v.empty(), ());
+}
+
+void TestDownloadDelete(bool downloadOneByOne, bool deleteOneByOne)
+{
+  WritableDirChanger writableDirChanger(kMapTestDir);
+
+  Storage storage(COUNTRIES_MIGRATE_FILE);
+
+  TEST(version::IsSingleMwm(storage.GetCurrentDataVersion()), ());
+  string const version = strings::to_string(storage.GetCurrentDataVersion());
+
+  auto onUpdatedFn = [&](LocalCountryFile const & localCountryFile)
+  {
+    TCountryId const countryId = localCountryFile.GetCountryName();
+    TEST(kLeafCountriesIds.find(countryId) != kLeafCountriesIds.end(), ());
+  };
+
+  storage.Init(onUpdatedFn);
+  storage.RegisterAllLocalMaps();
+  storage.SetDownloadingUrlsForTesting({kTestWebServer});
+
+  tests_support::ScopedDir cleanupVersionDir(version);
+
+  // Check children for the kGroupCountryId
+  TCountriesVec children;
+  storage.GetChildren(kGroupCountryId, children);
+  TEST_EQUAL(TCountriesSet(children.begin(), children.end()), kLeafCountriesIds, ());
+
+  DownloadGroup(storage, downloadOneByOne);
+
+  DeleteGroup(storage, deleteOneByOne);
+}
+
+} // namespace
+
+UNIT_TEST(SmallMwms_GroupDownloadDelete_Test1)
+{
+  TestDownloadDelete(false, false);
+}
+
+UNIT_TEST(SmallMwms_GroupDownloadDelete_Test2)
+{
+  TestDownloadDelete(false, true);
+}
+
+UNIT_TEST(SmallMwms_GroupDownloadDelete_Test3)
+{
+  TestDownloadDelete(true, false);
+}
+
+UNIT_TEST(SmallMwms_GroupDownloadDelete_Test4)
+{
+  TestDownloadDelete(true, true);
 }
