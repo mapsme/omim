@@ -3,6 +3,8 @@
 #include "platform/location.hpp"
 #include "platform/location_service.hpp"
 
+#include "storage/index.hpp"
+
 #include "std/unique_ptr.hpp"
 
 #include <QtWidgets/QApplication>
@@ -13,6 +15,8 @@
 #endif
 
 class QDockWidget;
+class QPushButton;
+class QLabel;
 
 namespace search { class Result; }
 
@@ -27,6 +31,11 @@ namespace qt
     DrawWidget * m_pDrawWidget;
 
     QDockWidget * m_Docks[1];
+
+    QPushButton * m_downloadButton;
+    QPushButton * m_retryButton;
+    QLabel * m_downloadingStatusLabel;
+    storage::TCountryId m_lastCountry;
 
     unique_ptr<location::LocationService> const m_locationService;
 
@@ -51,6 +60,7 @@ namespace qt
                          QKeySequence const & hotkey, char const * slot);
     void CreateNavigationBar();
     void CreateSearchBarAndPanel();
+    void CreateCountryStatusControls();
 
 #if defined(Q_WS_WIN)
     /// to handle menu messages
@@ -70,5 +80,8 @@ namespace qt
     void OnSearchButtonClicked();
 
     void OnBeforeEngineCreation();
+
+    void OnDownloadClicked();
+    void OnRetryDownloadClicked();
   };
 }
