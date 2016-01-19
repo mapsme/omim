@@ -117,7 +117,7 @@ UNIT_TEST(SmallMwms_GroupDownload_Test)
   v.clear();
 
   // Check children for the kGroupCountryId
-  TEST(children == kLeafCountriesIds, ());
+  TEST_EQUAL(children, kLeafCountriesIds, ());
 
   TCountriesSet udpated;
   auto onUpdatedFn = [&](LocalCountryFile const & localCountryFile)
@@ -180,9 +180,9 @@ UNIT_TEST(SmallMwms_GroupDownload_Test)
   QCoreApplication::exec(); // wait for download
 
   // Check all group children have been downloaded and changed.
-  TEST(downloaded == children, ());
-  TEST(udpated == children, ());
-  TEST(changed == children, ());
+  TEST_EQUAL(downloaded, children, ());
+  TEST_EQUAL(udpated, children, ());
+  TEST_EQUAL(changed, children, ());
 
   // Check status for the all children nodes
   for (auto const & countryId : children)
@@ -219,7 +219,7 @@ UNIT_TEST(SmallMwms_GroupDownload_Test)
 
   // Check all group children are downloaded
   storage.GetDownloadedChildren(kGroupCountryId, v);
-  TEST(children == set<TCountryId>(v.begin(), v.end()), ());
+  TEST_EQUAL(children, set<TCountryId>(v.begin(), v.end()), ());
   v.clear();
 
   // Check group is downloaded
