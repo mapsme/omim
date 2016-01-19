@@ -33,11 +33,11 @@ string const kTestWebServer = "http://new-search.mapswithme.com/";
 string const kMapTestDir = "map-tests";
 
 TCountryId const kGroupCountryId = "New Zealand";
-set<TCountryId> const kLeafCountriesIds = {"Tokelau",
-                                           "New Zealand North_Auckland",
-                                           "New Zealand North_Wellington",
-                                           "New Zealand South_Canterbury",
-                                           "New Zealand South_Southland"};
+TCountriesSet const kLeafCountriesIds = {"Tokelau",
+                                         "New Zealand North_Auckland",
+                                         "New Zealand North_Wellington",
+                                         "New Zealand South_Canterbury",
+                                         "New Zealand South_Southland"};
 
 string const kMwmVersion = "160107";
 size_t const kCountriesTxtFileSize = 131488;
@@ -219,7 +219,7 @@ UNIT_TEST(SmallMwms_GroupDownload_Test)
 
   // Check all group children are downloaded
   storage.GetDownloadedChildren(kGroupCountryId, v);
-  TEST_EQUAL(children, set<TCountryId>(v.begin(), v.end()), ());
+  TEST_EQUAL(children, TCountriesSet(v.begin(), v.end()), ());
   v.clear();
 
   // Check group is downloaded
