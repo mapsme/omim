@@ -98,7 +98,7 @@ string GetCountriesTxtFilePath()
 
 } // namespace
 
-UNIT_TEST(SmallMwms_GroupDownload_Test)
+UNIT_TEST(SmallMwms_GroupDownloadDelete_Test)
 {
   WritableDirChanger writableDirChanger(kMapTestDir);
 
@@ -155,6 +155,8 @@ UNIT_TEST(SmallMwms_GroupDownload_Test)
   tests_support::ScopedDir cleanupVersionDir(version);
   MY_SCOPE_GUARD(cleanup, bind(&Storage::DeleteNode, &storage, kGroupCountryId));
 
+  // Download
+
   // Check there is no downloaded children for the group
   storage.GetDownloadedChildren(kGroupCountryId, v);
   TEST(v.empty(), ());
@@ -188,23 +190,17 @@ UNIT_TEST(SmallMwms_GroupDownload_Test)
   for (auto const & countryId : children)
   {
     TEST_EQUAL(TStatus::EOnDisk, storage.CountryStatusEx(countryId), ());
-    // NodeAttrs m_status and m_downloadingErrCode are not implemented yet
-    /*
     NodeAttrs attrs;
     storage.GetNodeAttrs(countryId, attrs);
     TEST_EQUAL(ErrorCode::NoError, attrs.m_downloadingErrCode, ());
-    TEST_EQUAL(NodeStatus::UpToDate, attrs.m_status, ());
-    */
+    // TEST_EQUAL(NodeStatus::UpToDate, attrs.m_status, ()); // DOES NOT WORK
   }
 
-  // NodeAttrs m_status and m_downloadingErrCode are not implemented yet
-  /*
   // Check status for the group node
   NodeAttrs attrs;
   storage.GetNodeAttrs(kGroupCountryId, attrs);
   TEST_EQUAL(ErrorCode::NoError, attrs.m_downloadingErrCode, ());
-  TEST_EQUAL(NodeStatus::UpToDate, attrs.m_status, ());
-  */
+  // TEST_EQUAL(NodeStatus::UpToDate, attrs.m_status, ()); // DOES NOT WORK
 
   // Check there is only mwm files are present and no any other
   for (auto const & countryId : children)
@@ -225,5 +221,41 @@ UNIT_TEST(SmallMwms_GroupDownload_Test)
   // Check group is downloaded
   storage.GetDownloadedChildren(storage.GetRootId(), v);
   TEST(find(v.begin(), v.end(), kGroupCountryId) != v.end(), ());
+  v.clear();
+
+  // Delete
+
+  // Delete first child node
+  storage.DeleteNode(*children.begin());
+
+  // Check all except first child are downloaded
+  storage.GetDownloadedChildren(kGroupCountryId, v);
+  TEST_EQUAL(TCountriesSet(++children.begin(), children.end()), TCountriesSet(v.begin(), v.end()), ());
+  v.clear();
+
+  // Check mwm files all children except first are present
+  for (auto i = children.begin(); i != children.end(); ++i)
+  {
+    TCountryId const & countryId = *i;
+    string const mwmFullPath = GetMwmFilePath(version, countryId);
+    if (i == children.begin())
+      TEST(!platform.IsFileExistsByFullPath(mwmFullPath), ())
+    else
+      TEST(platform.IsFileExistsByFullPath(mwmFullPath), ());
+  }
+
+  // Delete group node
+  storage.DeleteNode(kGroupCountryId);
+
+  // Check files are not present for all nodes
+  for (auto const & countryId : children)
+  {
+    string const mwmFullPath = GetMwmFilePath(version, countryId);
+    TEST(!platform.IsFileExistsByFullPath(mwmFullPath), ());
+  }
+
+  // Check group is not downloaded
+  storage.GetDownloadedChildren(storage.GetRootId(), v);
+  TEST(find(v.begin(), v.end(), kGroupCountryId) == v.end(), ());
   v.clear();
 }
