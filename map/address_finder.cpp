@@ -12,7 +12,7 @@
 
 #include "platform/preferred_languages.hpp"
 
-
+/*
 namespace
 {
   class FeatureInfoT
@@ -180,7 +180,6 @@ void Framework::GetFeatureTypes(m2::PointD const & pxPoint, vector<string> & typ
   getTypes.GetFeatureTypes(5, types);
 }
 
-/*
 namespace
 {
   class DoGetAddressBase : public DoGetFeatureInfoBase
@@ -479,12 +478,49 @@ search::AddressInfo Framework::GetFeatureAddressInfo(FeatureType const & ft) con
   //GetLocality(pt, info);
 
   info.m_house = ft.GetHouseNumber();
+  // TODO(vng): Now geocoder assumes that buildings without house numbers also do not have a specified street.
+  if (!info.m_house.empty())
+  {
+    // TODO(vng): Return feature's street only if it was specified in OSM data.
+    search::ReverseGeocoder const coder(m_model.GetIndex());
+    vector<search::ReverseGeocoder::Street> const streets = coder.GetNearbyFeatureStreets(ft);
+    if (!streets.empty())
+      info.m_street = streets.front().m_name;
+  }
 
-  search::ReverseGeocoder const coder(m_model.GetIndex());
-  vector<search::ReverseGeocoder::Street> const streets = coder.GetNearbyFeatureStreets(ft);
-  if (!streets.empty())
-    info.m_street = streets.front().m_name;
+  // TODO(vng): Why AddressInfo is responsible for types and names?
+  string defaultName, intName;
+  ft.GetPreferredNames(defaultName, intName);
+  info.m_name = defaultName.empty() ? intName : defaultName;
+  info.m_types = GetPrintableFeatureTypes(ft);
+
   return info;
+}
+
+vector<string> Framework::GetPrintableFeatureTypes(FeatureType const & ft) const
+{
+  ASSERT(m_searchEngine, ());
+
+  vector<string> results;
+  int8_t const locale = CategoriesHolder::MapLocaleToInteger(languages::GetCurrentOrig());
+
+  feature::TypesHolder types(ft);
+  types.SortBySpec();
+  // Try to add types from categories.
+  for (uint32_t type : types)
+  {
+    string s;
+    if (m_searchEngine->GetNameByType(type, locale, s))
+      results.push_back(s);
+  }
+  // If nothing added - return raw classificator types.
+  if (results.empty())
+  {
+    Classificator const & c = classif();
+    for (uint32_t type : types)
+      results.push_back(c.GetReadableObjectName(type));
+  }
+  return results;
 }
 
 vector<string> Framework::GetNearbyFeatureStreets(FeatureType const & ft) const

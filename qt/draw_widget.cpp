@@ -470,15 +470,14 @@ void DrawWidget::ShowPOIEditor(FeatureType & feature)
 {
   // Show Edit POI dialog.
   auto & editor = osm::Editor::Instance();
-  EditorDialog dlg(this, feature);
+  EditorDialog dlg(this, feature, *m_framework);
   int const result = dlg.exec();
   if (result == QDialog::Accepted)
   {
-    // Save edited data.
     feature.SetNames(dlg.GetEditedNames());
-    // Save edited metadata.
     feature.SetMetadata(dlg.GetEditedMetadata());
-    editor.EditFeature(feature);
+    // TODO(AlexZ): Check that street was actually changed/edited.
+    editor.EditFeature(feature, dlg.GetEditedStreet(), dlg.GetEditedHouseNumber());
   }
   else if (result == QDialogButtonBox::DestructiveRole)
   {
@@ -496,20 +495,18 @@ void DrawWidget::ShowInfoPopup(QMouseEvent * e, m2::PointD const & pt)
   };
 
   search::AddressInfo const info = m_framework->GetMercatorAddressInfo(m_framework->PtoG(pt));
-
-  // Get feature types under cursor.
-  vector<string> types;
-  m_framework->GetFeatureTypes(pt, types);
-  for (size_t i = 0; i < types.size(); ++i)
-    addStringFn(types[i]);
+  for (auto const & type : info.m_types)
+    addStringFn(type);
 
   menu.addSeparator();
 
-  // Format address and types.
   if (!info.m_name.empty())
+  {
     addStringFn(info.m_name);
+    menu.addSeparator();
+  }
+
   addStringFn(info.FormatAddress());
-  addStringFn(info.FormatTypes());
 
   menu.exec(e->pos());
 }

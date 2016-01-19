@@ -38,8 +38,6 @@ public:
     Created
   };
 
-  using TTypes = vector<uint32_t>;
-
   static Editor & Instance();
 
   void SetMwmIdByNameAndVersionFn(TMwmIdByMapNameFn const & fn) { m_mwmIdByMapNameFn = fn; }
@@ -60,21 +58,31 @@ public:
                                        uint32_t scale);
 
   /// Easy way to check if feature was deleted, modified, created or not changed at all.
-  FeatureStatus GetFeatureStatus(MwmSet::MwmId const & mwmId, uint32_t offset) const;
+  FeatureStatus GetFeatureStatus(MwmSet::MwmId const & mwmId, uint32_t index) const;
 
   /// Marks feature as "deleted" from MwM file.
   void DeleteFeature(FeatureType const & feature);
 
   /// @returns false if feature wasn't edited.
   /// @param outFeature is valid only if true was returned.
-  bool GetEditedFeature(MwmSet::MwmId const & mwmId, uint32_t offset, FeatureType & outFeature) const;
+  bool GetEditedFeature(MwmSet::MwmId const & mwmId, uint32_t index, FeatureType & outFeature) const;
 
   /// Original feature with same FeatureID as newFeature is replaced by newFeature.
-  void EditFeature(FeatureType & editedFeature);
+  /// Please pass editedStreet only if it was changed by user.
+  void EditFeature(FeatureType const & editedFeature,
+                   string const & editedStreet = "",
+                   string const & editedHouseNumber = "");
 
   vector<feature::Metadata::EType> EditableMetadataForType(FeatureType const & feature) const;
+  /// @returns true if feature's name is editable.
   bool IsNameEditable(FeatureType const & feature) const;
+  /// @returns true if street and house number are editable.
   bool IsAddressEditable(FeatureType const & feature) const;
+
+  using TChangesetTags = map<string, string>;
+  /// Tries to upload all local changes to OSM server in a separate thread.
+  /// @param[in] tags should provide additional information about client to use in changeset.
+  void UploadChanges(string const & key, string const & secret, TChangesetTags const & tags);
 
 private:
   // TODO(AlexZ): Synchronize Save call/make it on a separate thread.
@@ -84,9 +92,11 @@ private:
   {
     FeatureStatus m_status;
     FeatureType m_feature;
+    /// If not empty contains Feature's addr:street, edited by user.
+    string m_street;
     time_t m_modificationTimestamp = my::INVALID_TIME_STAMP;
     time_t m_uploadAttemptTimestamp = my::INVALID_TIME_STAMP;
-    /// "" | "ok" | "repeat" | "failed"
+    /// Is empty if upload has never occured or one of k* constants above otherwise.
     string m_uploadStatus;
     string m_uploadError;
   };

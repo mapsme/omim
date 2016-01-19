@@ -322,7 +322,11 @@ Framework::Framework()
   editor.SetInvalidateFn([this](){ InvalidateRect(GetCurrentViewport()); });
   editor.SetFeatureLoaderFn([this](FeatureID const & fid) -> unique_ptr<FeatureType>
   {
-    return GetPOIByID(fid);
+    unique_ptr<FeatureType> feature(new FeatureType());
+    Index::FeaturesLoaderGuard const guard(m_model.GetIndex(), fid.m_mwmId);
+    guard.GetOriginalFeatureByIndex(fid.m_index, *feature);
+    feature->ParseEverything();
+    return feature;
   });
   editor.LoadMapEdits();
 }
@@ -1119,12 +1123,7 @@ void Framework::ShowSearchResult(search::Result const & res)
   {
     case Result::RESULT_FEATURE:
     {
-      FeatureID const id = res.GetFeatureID();
-      Index::FeaturesLoaderGuard guard(m_model.GetIndex(), id.m_mwmId);
-
-      ft.reset(new FeatureType);
-      guard.GetFeatureByIndex(id.m_index, *ft);
-
+      ft = GetFeatureByID(res.GetFeatureID());
       scale = GetFeatureViewportScale(TypesHolder(*ft));
       center = GetCenter(*ft, scale);
       break;
@@ -1137,6 +1136,7 @@ void Framework::ShowSearchResult(search::Result const & res)
       break;
 
     default:
+      ASSERT(false, ("Suggests should not be here."));
       return;
   }
 
@@ -1632,7 +1632,7 @@ unique_ptr<FeatureType> Framework::GetFeatureAtMercatorPoint(m2::PointD const & 
   return pointFt ? move(pointFt) : move(areaFt);
 }
 
-unique_ptr<FeatureType> Framework::GetPOIByID(FeatureID const & fid) const
+unique_ptr<FeatureType> Framework::GetFeatureByID(FeatureID const & fid) const
 {
   ASSERT(fid.IsValid(), ());
 
@@ -1688,18 +1688,6 @@ public:
   }
 };
 
-}
-
-void Framework::FindClosestPOIMetadata(m2::PointD const & pt, feature::Metadata & metadata) const
-{
-  m2::RectD rect(pt, pt);
-  double const inf = MercatorBounds::GetCellID2PointAbsEpsilon();
-  rect.Inflate(inf, inf);
-
-  DoFindClosestPOI doFind(pt, 1.1 /* search radius in meters */);
-  m_model.ForEachFeature(rect, doFind, scales::GetUpperScale() /* scale level for POI */);
-
-  doFind.LoadMetadata(m_model, metadata);
 }
 
 BookmarkAndCategory Framework::FindBookmark(UserMark const * mark) const
@@ -1854,7 +1842,7 @@ UserMark const * Framework::OnTapEventImpl(m2::PointD pxPoint, bool isLong, bool
 
   if (fid.IsValid())
   {
-    feature = GetPOIByID(fid);
+    feature = GetFeatureByID(fid);
     mercatorPivot = feature::GetCenter(*feature);
     needMark = true;
   }

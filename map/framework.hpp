@@ -461,19 +461,16 @@ public:
   /// Set correct viewport, parse API, show balloon.
   bool ShowMapForURL(string const & url);
 
-  /// Get classificator types for nearest features.
-  /// @param[in] pxPoint Current touch point in device pixel coordinates.
-  void GetFeatureTypes(m2::PointD const & pxPoint, vector<string> & types) const;
-  //@}
-
 private:
   // TODO(vng): Uncomment when needed.
   //void GetLocality(m2::PointD const & pt, search::AddressInfo & info) const;
 
 public:
-  /// Please use this method for debug purposes only. It always tries to find closest street.
+  /// @returns address of nearby building with house number in approx 1km distance.
   search::AddressInfo GetMercatorAddressInfo(m2::PointD const & mercator) const;
+  /// @returns address only if it was specified for given feature; used in the editor.
   search::AddressInfo GetFeatureAddressInfo(FeatureType const & ft) const;
+  vector<string> GetPrintableFeatureTypes(FeatureType const & ft) const;
   /// If feature does not have explicit street in OSM data, first value can be a closest named street.
   /// If it does have explicit street name in OSM, it goes first in the returned vector.
   /// @returns empty vector if no named streets were found around feature.
@@ -483,8 +480,7 @@ public:
   /// @returns nullptr if no feature was found at the given mercator point.
   unique_ptr<FeatureType> GetFeatureAtMercatorPoint(m2::PointD const & mercator) const;
   // TODO(AlexZ): Do we really need to avoid linear features?
-  unique_ptr<FeatureType> GetPOIByID(FeatureID const & fid) const;
-  void FindClosestPOIMetadata(m2::PointD const & pt, feature::Metadata & metadata) const;
+  unique_ptr<FeatureType> GetFeatureByID(FeatureID const & fid) const;
 
   void MemoryWarning();
   void EnterBackground();

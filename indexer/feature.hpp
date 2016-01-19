@@ -167,6 +167,7 @@ public:
 
   /// @name Editor functions.
   //@{
+  StringUtf8Multilang const & GetNames() const;
   void SetNames(StringUtf8Multilang const & newNames);
   void SetMetadata(feature::Metadata const & newMetadata);
   //@}
@@ -261,6 +262,8 @@ public:
   friend string DebugPrint(FeatureType const & ft);
 
   string GetHouseNumber() const;
+  /// Needed for Editor, to change house numbers in runtime.
+  void SetHouseNumber(string const & number);
 
   /// @name Get names for feature.
   /// @param[out] defaultName corresponds to osm tag "name"

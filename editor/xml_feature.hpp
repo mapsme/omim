@@ -49,6 +49,9 @@ public:
 
   Type GetType() const;
 
+  /// @returns true only if it is a way and it is closed (area).
+  bool IsArea() const;
+
   ms::LatLon GetCenter() const;
   void SetCenter(m2::PointD const & mercatorCenter);
 
@@ -84,8 +87,8 @@ public:
 
   /// @name XML storage format helpers.
   //@{
-  uint32_t GetOffset() const;
-  void SetOffset(uint32_t featureOffset);
+  uint32_t GetMWMFeatureIndex() const;
+  void SetMWMFeatureIndex(uint32_t index);
 
   /// @returns my::INVALID_TIME_STAMP if there were no any upload attempt.
   time_t GetUploadTime() const;
