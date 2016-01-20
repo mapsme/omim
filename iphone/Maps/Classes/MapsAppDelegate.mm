@@ -129,11 +129,14 @@ void InitLocalizedStrings()
       downloadCountry();
       break;
     case Platform::EConnectionType::CONNECTION_WWAN:
-      if (attrs.m_mwmSize > 50 * MB)
+    {
+      size_t const warningSizeForWWAN = 50 * MB;
+      if (attrs.m_mwmSize > warningSizeForWWAN)
         [alertController presentnoWiFiAlertWithName:@(attrs.m_nodeLocalName.c_str()) downloadBlock:downloadCountry];
       else
         downloadCountry();
       break;
+    }
   }
 }
 

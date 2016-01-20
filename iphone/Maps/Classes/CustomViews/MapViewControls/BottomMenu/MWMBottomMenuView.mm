@@ -300,9 +300,11 @@
   if (_state == state)
     return;
   [self refreshLayout];
+  BOOL updateMenuButton = YES;
   switch (state)
   {
     case MWMBottomMenuStateHidden:
+      updateMenuButton = NO;
       break;
     case MWMBottomMenuStateInactive:
     {
@@ -313,11 +315,9 @@
       s.GetUpdateInfo(s.GetRootId(), updateInfo);
       self.downloadBadge.hidden = (updateInfo.m_numberOfMwmFilesToUpdate == 0);
       self.p2pButton.hidden = self.searchButton.hidden = self.bookmarksButton.hidden = NO;
-      self.layoutDuration =
-      (_state == MWMBottomMenuStateCompact && !IPAD) ? 0.0 : kDefaultAnimationDuration;
-      if (_state != MWMBottomMenuStateGo && _state != MWMBottomMenuStatePlanning &&
-          _state != MWMBottomMenuStateText)
-        [self updateMenuButtonFromState:_state toState:state];
+      self.layoutDuration = (_state == MWMBottomMenuStateCompact && !IPAD) ? 0.0 : kDefaultAnimationDuration;
+      updateMenuButton = (_state != MWMBottomMenuStateGo && _state != MWMBottomMenuStatePlanning &&
+                          _state != MWMBottomMenuStateText);
       break;
     }
     case MWMBottomMenuStateActive:
@@ -331,25 +331,23 @@
       break;
     case MWMBottomMenuStateCompact:
       self.layoutDuration = IPAD ? kDefaultAnimationDuration : 0.0;
-      [self updateMenuButtonFromState:_state toState:state];
       break;
     case MWMBottomMenuStatePlanning:
       self.goButton.enabled = NO;
       self.goButton.hidden = NO;
-      [self updateMenuButtonFromState:_state toState:state];
       break;
     case MWMBottomMenuStateGo:
       self.goButton.enabled = YES;
       self.goButton.hidden = NO;
-      [self updateMenuButtonFromState:_state toState:state];
       break;
     case MWMBottomMenuStateText:
       self.streetLabel.font = [UIFont medium16];
       self.streetLabel.hidden = NO;
       self.streetLabel.textColor = [UIColor blackSecondaryText];
-      [self updateMenuButtonFromState:_state toState:state];
       break;
   }
+  if (updateMenuButton)
+    [self updateMenuButtonFromState:_state toState:state];
   _state = state;
 }
 
