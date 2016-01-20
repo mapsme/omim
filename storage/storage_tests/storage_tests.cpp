@@ -1132,14 +1132,17 @@ UNIT_TEST(StorageTest_GetNodeAttrsSingleMwm)
   storage.GetNodeAttrs("Abkhazia", nodeAttrs);
   TEST_EQUAL(nodeAttrs.m_mwmCounter, 1, ());
   TEST_EQUAL(nodeAttrs.m_mwmSize, 4689718, ());
+  TEST_EQUAL(nodeAttrs.m_status, TStatus::ENotDownloaded, ());
 
   storage.GetNodeAttrs("Algeria", nodeAttrs);
   TEST_EQUAL(nodeAttrs.m_mwmCounter, 2, ());
   TEST_EQUAL(nodeAttrs.m_mwmSize, 90878678, ());
+  TEST_EQUAL(nodeAttrs.m_status, TStatus::ENotDownloaded, ());
 
   storage.GetNodeAttrs("South Korea_South", nodeAttrs);
   TEST_EQUAL(nodeAttrs.m_mwmCounter, 1, ());
   TEST_EQUAL(nodeAttrs.m_mwmSize, 48394664, ());
+  TEST_EQUAL(nodeAttrs.m_status, TStatus::ENotDownloaded, ());
 }
 
 }  // namespace storage
