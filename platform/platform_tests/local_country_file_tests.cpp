@@ -102,7 +102,7 @@ UNIT_TEST(LocalCountryFile_DiskFiles)
   CountryFile countryFile("TestCountry");
   countryFile.SetRemoteSizes(1 /* mapSize */, 2 /* routingSize */);
 
-  for (int64_t version : {0, 150312})
+  for (int64_t version : {1, 150312})
   {
     LocalCountryFile localFile(platform.WritableDir(), countryFile, version);
     TEST(!localFile.OnDisk(MapOptions::Map), ());
