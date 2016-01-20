@@ -27,6 +27,12 @@ namespace my
   }
 }
 
+namespace testing
+{
+  void EventLoop();
+  void StopEventLoop();
+} //  namespace testing
+
 // This struct contains parsed command line options. It may contain pointers to argc contents.
 struct CommandLineOptions
 {
