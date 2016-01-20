@@ -1345,8 +1345,22 @@
 
 "p2p_reroute_from_current" = "Do you want us to plan a route from your current location?";
 
+"whats_new_3d_title" = "Your favorite maps from a new perspective";
+
+"whats_new_3d_subtitle" = "We have added perspective view to the navigation mode.";
+
+"whats_new_3d_buildings_title" = "A new dimension in MAPS.ME";
+
+"whats_new_3d_buildings_subtitle" = "With 3D buildings, our maps have become more informative and more beautiful.";
+
+"whats_new_3d_update_maps" = "To take full advantage of this feature, please, update your map data.";
+
 "whats_new_next_button" = "Next";
 
-"whats_new_night_caption" = "Night Mode Navigation";
+"whats_new_rec_track_title" = "With MAPS.ME you won’t get lost";
 
-"whats_new_night_body" = "To facilitate using MAPS.ME when driving in the dark, we have added night mode. It switches on automatically after sunset.";
+"whats_new_rec_track_body" = "Now the app shows your recent traveled path.";
+
+"whats_new_night_caption" = "Join the dark side!";
+
+"whats_new_night_body" = "Each day after sunset, MAPS.ME activates the night mode.";

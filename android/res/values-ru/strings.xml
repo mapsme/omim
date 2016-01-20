@@ -855,7 +855,14 @@
 	<string name="p2p_to_here">Сюда</string>
 	<string name="p2p_only_from_current">Навигация возможна только из текущего местоположения.</string>
 	<string name="p2p_reroute_from_current">Хотите перестроить маршрут от вашего местоположения?</string>
+	<string name="whats_new_3d_title">Любимые карты под новым углом</string>
+	<string name="whats_new_3d_subtitle">Мы добавили перспективный обзор в режим навигации.</string>
+	<string name="whats_new_3d_buildings_title">Новое измерение в MAPS.ME</string>
+	<string name="whats_new_3d_buildings_subtitle">С 3D зданиями наши карты стали более информативными и красивыми.</string>
+	<string name="whats_new_3d_update_maps">Для полноценной работы функции, пожалуйста, обновите карты.</string>
 	<string name="whats_new_next_button">Далее</string>
-	<string name="whats_new_night_caption">Ночной режим навигации</string>
-	<string name="whats_new_night_body">Для удобства использования MAPS.ME во время вождения автомобиля в темное время суток мы добавили ночной режим. Он запускается автоматически после захода солнца.</string>
+	<string name="whats_new_rec_track_title">С MAPS.ME не заблудишься!</string>
+	<string name="whats_new_rec_track_body">Теперь приложение показывает недавно пройденный путь.</string>
+	<string name="whats_new_night_caption">Переходи на тёмную сторону!</string>
+	<string name="whats_new_night_body">Каждый день после заката солнца MAPS.ME активирует ночной режим.</string>
 </resources>
