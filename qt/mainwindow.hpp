@@ -1,9 +1,9 @@
 #pragma once
 
+#include "storage/index.hpp"
+
 #include "platform/location.hpp"
 #include "platform/location_service.hpp"
-
-#include "storage/index.hpp"
 
 #include "std/unique_ptr.hpp"
 
