@@ -17,23 +17,13 @@
 
 namespace storage
 {
-/// \brief Error code of MapRepository.
-enum class ErrorCode
-{
-  NoError,                /**< An operation was finished without errors. */
-  NotEnoughSpace,         /**< No space on flash memory to download a file. */
-  NoInternetConnection,   /**< No internet connection. */
-};
-
-string DebugPrint(ErrorCode code);
-
 /// \brief Contains all properties for a node in the country tree.
 /// It's applicable for expandable and not expandable node id.
 struct NodeAttrs
 {
   NodeAttrs() : m_mwmCounter(0), m_localMwmCounter(0), m_mwmSize(0), m_localMwmSize(0),
     m_downloadingMwmSize(0), m_localMwmVersion(0), m_downloadingProgress(0),
-    m_status(TStatus::ENotDownloaded) {}
+    m_status(TStatus::EUndefined) {}
   /// If the node is expandable (a big country) |m_mwmCounter| is number of mwm files (leaves)
   /// belongs to the node. If the node isn't expandable |m_mapsDownloaded| == 1.
   uint32_t m_mwmCounter;
@@ -204,7 +194,6 @@ public:
   //@{
   using TOnSearchResultCallback = function<void (TCountryId const &)>;
   using TOnStatusChangedCallback = function<void (TCountryId const &)>;
-  using TOnErrorCallback = function<void (TCountryId const &, ErrorCode)>;
 
   /// \brief Information for "Update all mwms" button.
   struct UpdateInfo
@@ -220,9 +209,6 @@ public:
     /// every its parent and grandparents.
     /// \param CountryId is id of mwm or an mwm group which status has been changed.
     TOnStatusChangedCallback m_onStatusChanged;
-    /// \brief m_onError is called when an error happend while async operation.
-    /// \note A client should be ready for any value of error.
-    TOnErrorCallback m_onError;
   };
 
   unique_ptr<Storage> m_prefetchStorage;
@@ -453,6 +439,8 @@ private:
   void CountryStatusEx(TCountryId const & countryId, TStatus & status, MapOptions & options) const;
   /// Fast version, doesn't check if country is out of date
   TStatus CountryStatus(TCountryId const & countryId) const;
+  /// Returns status for a node (group node or not)
+  TStatus NodeStatus(TCountriesContainer const & node) const;
 };
 
 bool HasCountryId(TCountriesVec const & sorted, TCountryId const & countyId);

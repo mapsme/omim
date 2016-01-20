@@ -16,7 +16,9 @@ namespace storage
     EInQueue,         /**< A mwm is waiting for downloading in the queue. */
     EUnknown,         /**< Downloading failed because of unknown error. */
     EOnDiskOutOfDate, /**< An update for a downloaded mwm is ready according to counties.txt. */
-    EOutOfMemFailed   /**< Downloading failed because it's not enough memory */
+    EOutOfMemFailed,  /**< Downloading failed because it's not enough memory */
+    EMixed,           /**< Descendants of a group node has different statuses. */
+    EUndefined
   };
 
   string DebugPrint(TStatus status);

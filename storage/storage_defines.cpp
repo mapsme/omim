@@ -22,6 +22,10 @@ string DebugPrint(TStatus status)
       return "OnDiskOutOfDate";
     case TStatus::EOutOfMemFailed:
       return "OutOfMemFailed";
+    case TStatus::EMixed:
+      return "EMixed";
+  case TStatus::EUndefined:
+    return "EUndefined";
   }
 }
 }  // namespace storage

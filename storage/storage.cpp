@@ -78,19 +78,6 @@ void DeleteFromDiskWithIndexes(LocalCountryFile const & localFile, MapOptions op
 }
 }  // namespace
 
-string DebugPrint(ErrorCode code)
-{
-  switch (code)
-  {
-  case ErrorCode::NoError: return "NoError";
-  case ErrorCode::NotEnoughSpace: return "NotEnoughSpace";
-  case ErrorCode::NoInternetConnection: return "NoInternetConnection";
-  }
-  ostringstream s;
-  s << "Unknown ErrorCode " << static_cast<int>(code);
-  return s.str();
-}
-
 bool HasCountryId(TCountriesVec const & sortedCountryIds, TCountryId const & countryId)
 {
   ASSERT(is_sorted(sortedCountryIds.begin(), sortedCountryIds.end()), ());
@@ -1104,6 +1091,29 @@ bool Storage::DeleteNode(TCountryId const & countryId)
     return true;
 }
 
+TStatus Storage::NodeStatus(TCountriesContainer const & node) const
+{
+  if (node.ChildrenCount() == 0)
+    return CountryStatusEx(node.Value().Name());
+
+  TStatus result = TStatus::EUndefined;
+  bool returnMixStatus = false;
+  auto groupStatusCalculator = [&result, &returnMixStatus, this](TCountriesContainer const & nodeInSubtree)
+  {
+    if (returnMixStatus || nodeInSubtree.ChildrenCount() != 0)
+      return;
+    TStatus status = this->CountryStatusEx(nodeInSubtree.Value().Name());
+    if (result == TStatus::EUndefined)
+      result = status;
+    if (result != status)
+      returnMixStatus = true;
+  };
+
+  node.ForEachDescendant(groupStatusCalculator);
+
+  return (returnMixStatus ? TStatus::EMixed : result);
+}
+
 void Storage::GetNodeAttrs(TCountryId const & countryId, NodeAttrs & nodeAttrs) const
 {
   TCountriesContainer const * const node = m_countries.Find(countryId);
@@ -1112,7 +1122,7 @@ void Storage::GetNodeAttrs(TCountryId const & countryId, NodeAttrs & nodeAttrs) 
   Country const & nodeValue = node->Value();
   nodeAttrs.m_mwmCounter = nodeValue.GetSubtreeMwmCounter();
   nodeAttrs.m_mwmSize = nodeValue.GetSubtreeMwmSizeBytes();
-  nodeAttrs.m_status = CountryStatusEx(countryId);
+  nodeAttrs.m_status = NodeStatus(*node);
   // @TODO(bykoianko) NodeAttrs::m_nodeLocalName should be in local language.
   nodeAttrs.m_nodeLocalName = countryId;
 }
