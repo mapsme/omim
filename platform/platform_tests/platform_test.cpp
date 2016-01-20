@@ -221,3 +221,39 @@ UNIT_TEST(IsSingleMwm)
   TEST(!version::IsSingleMwm(version::FOR_TESTING_TWO_COMPONENT_MWM1), ());
   TEST(!version::IsSingleMwm(version::FOR_TESTING_TWO_COMPONENT_MWM2), ());
 }
+
+UNIT_TEST(RmDirRecursively)
+{
+  Platform & platform = GetPlatform();
+
+  string const testDir1 = my::JoinFoldersToPath(platform.WritableDir(), "test_dir1");
+  TEST_EQUAL(platform.MkDir(testDir1), Platform::ERR_OK, ());
+  MY_SCOPE_GUARD(removeTestDir1, bind(&Platform::RmDir, testDir1));
+
+  string const testDir2 = my::JoinFoldersToPath(testDir1, "test_dir2");
+  TEST_EQUAL(platform.MkDir(testDir2), Platform::ERR_OK, ());
+  MY_SCOPE_GUARD(removeTestDir2, bind(&Platform::RmDir, testDir2));
+
+  string const filePath = my::JoinFoldersToPath(testDir2, "test_file");
+  {
+    FileWriter testFile(filePath);
+    testFile.Write("HOHOHO", 6);
+  }
+  MY_SCOPE_GUARD(removeTestFile, bind(&my::DeleteFileX, filePath));
+
+  TEST(Platform::IsFileExistsByFullPath(filePath), ());
+  TEST(Platform::IsFileExistsByFullPath(testDir1), ());
+  TEST(Platform::IsFileExistsByFullPath(testDir2), ());
+
+  TEST_EQUAL(Platform::ERR_DIRECTORY_NOT_EMPTY, Platform::RmDir(testDir1), ());
+
+  TEST(Platform::IsFileExistsByFullPath(filePath), ());
+  TEST(Platform::IsFileExistsByFullPath(testDir1), ());
+  TEST(Platform::IsFileExistsByFullPath(testDir2), ());
+
+  TEST(Platform::RmDirRecursively(testDir1), ());
+
+  TEST(!Platform::IsFileExistsByFullPath(filePath), ());
+  TEST(!Platform::IsFileExistsByFullPath(testDir1), ());
+  TEST(!Platform::IsFileExistsByFullPath(testDir2), ());
+}
