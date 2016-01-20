@@ -19,11 +19,8 @@ SOURCES += \
     animation/opacity_animation.cpp \
     animation/perspective_animation.cpp \
     animation/show_hide_animation.cpp \
-    gui/button.cpp \
     gui/compass.cpp \
     gui/copyright_label.cpp \
-    gui/country_status.cpp \
-    gui/country_status_helper.cpp \
     gui/drape_gui.cpp \
     gui/gui_text.cpp \
     gui/layer_render.cpp \
@@ -105,11 +102,8 @@ HEADERS += \
     animation/perspective_animation.hpp \
     animation/show_hide_animation.hpp \
     animation/value_mapping.hpp \
-    gui/button.hpp \
     gui/compass.hpp \
     gui/copyright_label.hpp \
-    gui/country_status.hpp \
-    gui/country_status_helper.hpp \
     gui/drape_gui.hpp \
     gui/gui_text.hpp \
     gui/layer_render.hpp \

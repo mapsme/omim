@@ -42,6 +42,8 @@ namespace qt
     void SliderPressed();
     void SliderReleased();
 
+    void OnUpdateCountryStatusByTimer();
+
   public:
     DrawWidget(QWidget * parent);
     ~DrawWidget();
@@ -69,6 +71,13 @@ namespace qt
     Q_SIGNAL void BeforeEngineCreation();
 
     void CreateEngine();
+
+    using TCurrentCountryChanged = function<void(storage::TCountryId const &, string const &,
+                                                 storage::TStatus, uint64_t, uint8_t)>;
+    void SetCurrentCountryChangedListener(TCurrentCountryChanged const & listener);
+
+    void DownloadCountry(storage::TCountryId const & countryId);
+    void RetryToDownloadCountry(storage::TCountryId const & countryId);
 
   protected:
     void initializeGL() override;
@@ -99,6 +108,8 @@ namespace qt
     inline int L2D(int px) const { return px * m_ratio; }
     m2::PointD GetDevicePoint(QMouseEvent * e) const;
 
+    void UpdateCountryStatus(storage::TCountryId const & countryId);
+
     QScaleSlider * m_pScale;
     bool m_enableScaleUpdate;
 
@@ -107,5 +118,8 @@ namespace qt
     void InitRenderPolicy();
 
     unique_ptr<gui::Skin> m_skin;
+
+    TCurrentCountryChanged m_currentCountryChanged;
+    storage::TCountryId m_countryId;
   };
 }

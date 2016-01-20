@@ -250,6 +250,9 @@ public:
 
   void InvalidateRendering();
 
+  using TCurrentCountryChanged = function<void(storage::TCountryId const &)>;
+  void SetCurrentCountryChangedListener(TCurrentCountryChanged const & listener);
+
 private:
   struct TapEventData
   {
@@ -321,8 +324,9 @@ private:
 
   void FillSearchResultsMarks(search::Results const & results);
 
-  void OnUpdateCountryId(storage::TCountryId const & currentCountryId, m2::PointF const & pt);
-  void UpdateCountryInfo(storage::TCountryId const & countryCountryId, bool isCurrentCountry);
+  void OnUpdateCurrentCountry(m2::PointF const & pt, int zoomLevel);
+
+  TCurrentCountryChanged m_currentCountryChanged;
 
   void OnUpdateGpsTrackPointsCallback(vector<pair<size_t, location::GpsTrackInfo>> && toAdd,
                                       pair<size_t, size_t> const & toRemove);
