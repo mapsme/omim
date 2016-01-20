@@ -6,22 +6,26 @@ string DebugPrint(TStatus status)
 {
   switch (status)
   {
+    case TStatus::EUndefined:
+      return string("EUndefined");
     case TStatus::EOnDisk:
-      return "OnDisk";
+      return string("OnDisk");
     case TStatus::ENotDownloaded:
-      return "NotDownloaded";
+      return string("NotDownloaded");
     case TStatus::EDownloadFailed:
-      return "DownloadFailed";
+      return string("DownloadFailed");
     case TStatus::EDownloading:
-      return "Downloading";
+      return string("Downloading");
     case TStatus::EInQueue:
-      return "InQueue";
+      return string("InQueue");
     case TStatus::EUnknown:
-      return "Unknown";
+      return string("Unknown");
     case TStatus::EOnDiskOutOfDate:
-      return "OnDiskOutOfDate";
+      return string("OnDiskOutOfDate");
     case TStatus::EOutOfMemFailed:
-      return "OutOfMemFailed";
+      return string("OutOfMemFailed");
+    case TStatus::EMixed:
+      return string("EMixed");
   }
 }
 }  // namespace storage

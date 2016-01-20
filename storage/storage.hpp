@@ -17,36 +17,12 @@
 
 namespace storage
 {
-/// \brief This enum describes status of a downloaded mwm or a group of downloaded mwms.
-enum class NodeStatus
-{
-  Undefined,
-  UpToDate,              /**< Downloaded mwm(s) is up to date. No need to update it. */
-  DownloadInProgress,    /**< Downloading a new mwm or updating an old one. */
-  DownloadPaused,        /**< Downloading was paused or stopped by some reasons. E.g lost connection. */
-  NeedsToUpdate,         /**< An update for a downloaded mwm is ready according to county_attributes.txt. */
-  InQueue,               /**< A mwm is waiting for downloading in the queue. */
-};
-
-string DebugPrint(NodeStatus status);
-
-/// \brief Error code of MapRepository.
-enum class ErrorCode
-{
-  NoError,                /**< An operation was finished without errors. */
-  NotEnoughSpace,         /**< No space on flash memory to download a file. */
-  NoInternetConnection,   /**< No internet connection. */
-};
-
-string DebugPrint(ErrorCode code);
-
 /// \brief Contains all properties for a node in the country tree.
 /// It's applicable for expandable and not expandable node id.
 struct NodeAttrs
 {
   NodeAttrs() : m_mwmCounter(0), m_localMwmCounter(0), m_mwmSize(0), m_localMwmSize(0),
-    m_downloadingMwmSize(0), m_localMwmVersion(0), m_downloadingProgress(0),
-    m_status(NodeStatus::Undefined), m_downloadingErrCode(ErrorCode::NoError) {}
+    m_downloadingMwmSize(0), m_downloadingProgress(0), m_status(TStatus::EUndefined) {}
   /// If the node is expandable (a big country) |m_mwmCounter| is number of mwm files (leaves)
   /// belongs to the node. If the node isn't expandable |m_mapsDownloaded| == 1.
   uint32_t m_mwmCounter;
@@ -78,19 +54,15 @@ struct NodeAttrs
   /// a device locale. For countries and for the root m_parentLocalName == "".
   string m_parentLocalName;
 
-  /// It's a version of downloaded mwm if the node is not expandable.
-  /// If the mwm has not been downloaded or if the node is expandable |m_localMwmVersion| == 0.
-  /// @TODO Discuss a version format. It should represent date and time (one second precision).
-  /// It should be converted easily to unix time.
-  size_t m_localMwmVersion;
+  /// Node id of the parent of the node. For the root m_parentLocalName == "".
+  TCountryId m_parentCountryId;
 
   /// A number for 0 to 99. It reflects downloading progress in case of
   /// downloading and updating mwm. If downloading or updating is not in progress
   /// |m_downloadingProgress| == 0.
   uint8_t m_downloadingProgress;
 
-  NodeStatus m_status;
-  ErrorCode m_downloadingErrCode;
+  TStatus m_status;
 };
 
 /// This class is used for downloading, updating and deleting maps.
@@ -215,7 +187,6 @@ public:
   //@{
   using TOnSearchResultCallback = function<void (TCountryId const &)>;
   using TOnStatusChangedCallback = function<void (TCountryId const &)>;
-  using TOnErrorCallback = function<void (TCountryId const &, ErrorCode)>;
 
   /// \brief Information for "Update all mwms" button.
   struct UpdateInfo
@@ -231,9 +202,6 @@ public:
     /// every its parent and grandparents.
     /// \param CountryId is id of mwm or an mwm group which status has been changed.
     TOnStatusChangedCallback m_onStatusChanged;
-    /// \brief m_onError is called when an error happend while async operation.
-    /// \note A client should be ready for any value of error.
-    TOnErrorCallback m_onError;
   };
 
   unique_ptr<Storage> m_prefetchStorage;
@@ -367,11 +335,8 @@ public:
   TLocalFilePtr GetLatestLocalFile(platform::CountryFile const & countryFile) const;
   TLocalFilePtr GetLatestLocalFile(TCountryId const & countryId) const;
 
-  /// Fast version, doesn't check if country is out of date
-  TStatus CountryStatus(TCountryId const & countryId) const;
   /// Slow version, but checks if country is out of date
   TStatus CountryStatusEx(TCountryId const & countryId) const;
-  void CountryStatusEx(TCountryId const & countryId, TStatus & status, MapOptions & options) const;
 
   /// Puts country denoted by countryId into the downloader's queue.
   /// During downloading process notifies observers about downloading
@@ -463,6 +428,12 @@ private:
   // Returns a path to a place on disk downloader can use for
   // downloaded files.
   string GetFileDownloadPath(TCountryId const & countryId, MapOptions file) const;
+
+  void CountryStatusEx(TCountryId const & countryId, TStatus & status, MapOptions & options) const;
+  /// Fast version, doesn't check if country is out of date
+  TStatus CountryStatus(TCountryId const & countryId) const;
+  /// Returns status for a node (group node or not)
+  TStatus NodeStatus(TCountriesContainer const & node) const;
 };
 
 bool HasCountryId(TCountriesVec const & sorted, TCountryId const & countyId);
