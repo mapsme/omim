@@ -12,7 +12,7 @@
 
 #include "platform/preferred_languages.hpp"
 
-
+/*
 namespace
 {
   class FeatureInfoT
@@ -179,7 +179,6 @@ void Framework::GetFeatureTypes(m2::PointD const & pxPoint, vector<string> & typ
 
   getTypes.GetFeatureTypes(5, types);
 }
-
 
 namespace
 {
@@ -453,42 +452,100 @@ namespace
     return *g_checker;
   }
 }
-
-void Framework::GetAddressInfoForGlobalPoint(m2::PointD const & pt, search::AddressInfo & info) const
+*/
+search::AddressInfo Framework::GetMercatorAddressInfo(m2::PointD const & mercator) const
 {
-  /// @todo Do not returm MWM's name here.
-  //info.m_country = GetCountryName(pt);
-  //if (info.m_country.empty())
-  //{
-  //  LOG(LINFO, ("Can't find region for point ", pt));
-  //  return;
-  //}
+  search::AddressInfo info;
+  // @TODO(vng): insert correct implementation from new search.
+  //info.m_country = GetCountryName(mercator);
+  // @TODO(vng): Rewrite code to get it from LocalityFinder.
+  //GetLocality(pt, info);
 
   search::ReverseGeocoder coder(m_model.GetIndex());
   search::ReverseGeocoder::Address addr;
-  coder.GetNearbyAddress(pt, addr);
+  coder.GetNearbyAddress(mercator, addr);
   info.m_house = addr.GetHouseNumber();
   info.m_street = addr.GetStreetName();
-
-  /// @todo Rewrite code to get it from LocalityFinder.
-  //GetLocality(pt, info);
+  return info;
 }
 
-void Framework::GetAddressInfo(FeatureType const & ft, m2::PointD const & pt, search::AddressInfo & info) const
+search::AddressInfo Framework::GetFeatureAddressInfo(FeatureType const & ft) const
 {
-  info.Clear();
+  search::AddressInfo info;
+  // @TODO(vng): insert correct implementation from new search.
+  //info.m_country = GetCountryName(feature::GetCenter(ft));
+  // @TODO(vng): Temporarily commented - it's slow and not used in UI.
+  //GetLocality(pt, info);
 
-  double const inf = numeric_limits<double>::max();
-  double addressR[] = { inf, inf, inf };
+  info.m_house = ft.GetHouseNumber();
+  // TODO(vng): Now geocoder assumes that buildings without house numbers also do not have a specified street.
+  if (!info.m_house.empty())
+  {
+    search::ReverseGeocoder const coder(m_model.GetIndex());
+    auto const streets = coder.GetNearbyFeatureStreets(ft);
+    if (streets.second < streets.first.size())
+      info.m_street = streets.first[streets.second].m_name;
+  }
 
-  // FeatureType::WORST_GEOMETRY - no need to check on visibility
-  DoGetAddressInfo getAddress(pt, FeatureType::WORST_GEOMETRY, GetChecker(), addressR);
-  getAddress(ft);
-  getAddress.FillAddress(m_searchEngine.get(), info);
+  // TODO(vng): Why AddressInfo is responsible for types and names? Refactor out.
+  string defaultName, intName;
+  ft.GetPreferredNames(defaultName, intName);
+  info.m_name = defaultName.empty() ? intName : defaultName;
+  info.m_types = GetPrintableFeatureTypes(ft);
 
-  GetAddressInfoForGlobalPoint(pt, info);
+  return info;
 }
 
+vector<string> Framework::GetPrintableFeatureTypes(FeatureType const & ft) const
+{
+  ASSERT(m_searchEngine, ());
+
+  vector<string> results;
+  int8_t const locale = CategoriesHolder::MapLocaleToInteger(languages::GetCurrentOrig());
+
+  feature::TypesHolder types(ft);
+  types.SortBySpec();
+  // Try to add types from categories.
+  for (uint32_t type : types)
+  {
+    string s;
+    if (m_searchEngine->GetNameByType(type, locale, s))
+      results.push_back(s);
+  }
+  // If nothing added - return raw classificator types.
+  if (results.empty())
+  {
+    Classificator const & c = classif();
+    for (uint32_t type : types)
+      results.push_back(c.GetReadableObjectName(type));
+  }
+  return results;
+}
+
+vector<string> Framework::GetNearbyFeatureStreets(FeatureType const & ft) const
+{
+  search::ReverseGeocoder const coder(m_model.GetIndex());
+  // Need to filter out duplicate street names.
+  auto const streets = coder.GetNearbyFeatureStreets(ft);
+  // Reasonable number of different nearby street names to display in UI.
+  size_t const kMinNumberOfNearbyStreets = 5;
+  vector<string> results;
+  // Feature's street from OSM data, if exists, always goes first.
+  if (streets.second < streets.first.size())
+    results.push_back(streets.first[streets.second].m_name);
+  for (auto const & street : streets.first)
+  {
+    auto const e = results.end();
+    if (e == find(results.begin(), e, street.m_name))
+    {
+      results.push_back(street.m_name);
+      if (results.size() >= kMinNumberOfNearbyStreets)
+        break;
+    }
+  }
+  return results;
+}
+/*
 void Framework::GetLocality(m2::PointD const & pt, search::AddressInfo & info) const
 {
   CheckerT & checker = GetChecker();
@@ -504,3 +561,4 @@ void Framework::GetLocality(m2::PointD const & pt, search::AddressInfo & info) c
 
   getLocality.FillLocality(info, *this);
 }
+*/

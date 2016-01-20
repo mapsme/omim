@@ -38,6 +38,7 @@ HEADERS += \
     buffer_vector.hpp \
     cache.hpp \
     cancellable.hpp \
+    collection_cast.hpp \
     condition.hpp \
     const_helper.hpp \
     exception.hpp \
@@ -51,6 +52,7 @@ HEADERS += \
     mutex.hpp \
     object_tracker.hpp \
     observer_list.hpp \
+    range_iterator.hpp \
     regexp.hpp \
     rolling_hash.hpp \
     scope_guard.hpp \

@@ -461,28 +461,26 @@ public:
   /// Set correct viewport, parse API, show balloon.
   bool ShowMapForURL(string const & url);
 
-  /// Get classificator types for nearest features.
-  /// @param[in] pxPoint Current touch point in device pixel coordinates.
-  void GetFeatureTypes(m2::PointD const & pxPoint, vector<string> & types) const;
-
-  /// Get address information for the point on map.
-  /// Fill only house number and street name. All other params stay unchanged.
-  //@{
-  inline void GetAddressInfoForPixelPoint(m2::PointD const & pxPoint, search::AddressInfo & info) const
-  {
-    GetAddressInfoForGlobalPoint(PtoG(pxPoint), info);
-  }
-  void GetAddressInfoForGlobalPoint(m2::PointD const & pt, search::AddressInfo & info) const;
-  //@}
-
 private:
-  void GetAddressInfo(FeatureType const & ft, m2::PointD const & pt, search::AddressInfo & info) const;
-  void GetLocality(m2::PointD const & pt, search::AddressInfo & info) const;
+  // TODO(vng): Uncomment when needed.
+  //void GetLocality(m2::PointD const & pt, search::AddressInfo & info) const;
 
 public:
-  bool GetVisiblePOI(m2::PointD const & glbPoint, search::AddressInfo & info, feature::Metadata & metadata) const;
-  m2::PointD GetVisiblePOI(FeatureID const & id, search::AddressInfo & info, feature::Metadata & metadata) const;
-  void FindClosestPOIMetadata(m2::PointD const & pt, feature::Metadata & metadata) const;
+  /// @returns address of nearby building with house number in approx 1km distance.
+  search::AddressInfo GetMercatorAddressInfo(m2::PointD const & mercator) const;
+  /// @returns valid street address only if it was specified in OSM for given feature; used in the editor.
+  search::AddressInfo GetFeatureAddressInfo(FeatureType const & ft) const;
+  vector<string> GetPrintableFeatureTypes(FeatureType const & ft) const;
+  /// If feature does not have explicit street in OSM data, first value can be a closest named street.
+  /// If it does have explicit street name in OSM, it goes first in the returned vector.
+  /// @returns empty vector if no named streets were found around feature.
+  vector<string> GetNearbyFeatureStreets(FeatureType const & ft) const;
+  /// Get feature at given point even if it's invisible on the screen.
+  /// TODO(AlexZ): Refactor out other similar methods.
+  /// @returns nullptr if no feature was found at the given mercator point.
+  unique_ptr<FeatureType> GetFeatureAtMercatorPoint(m2::PointD const & mercator) const;
+  // TODO(AlexZ): Do we really need to avoid linear features?
+  unique_ptr<FeatureType> GetFeatureByID(FeatureID const & fid) const;
 
   void MemoryWarning();
   void EnterBackground();

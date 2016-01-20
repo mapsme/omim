@@ -1,17 +1,20 @@
+#include "indexer/classificator.hpp"
 #include "indexer/feature.hpp"
 
 #include "indexer/classificator.hpp"
 #include "indexer/feature_algo.hpp"
 #include "indexer/feature_loader_base.hpp"
 #include "indexer/feature_visibility.hpp"
+#include "indexer/osm_editor.hpp"
 
 #include "geometry/distance.hpp"
 #include "geometry/robust_orientation.hpp"
 
 #include "platform/preferred_languages.hpp"
 
-#include "defines.hpp" // just for file extensions
+#include "base/range_iterator.hpp"
 
+#include "std/algorithm.hpp"
 
 using namespace feature;
 
@@ -27,6 +30,109 @@ void FeatureBase::Deserialize(feature::LoaderBase * pLoader, TBuffer buffer)
   m_limitRect = m2::RectD::GetEmptyRect();
   m_bTypesParsed = m_bCommonParsed = false;
   m_header = m_pLoader->GetHeader();
+}
+
+// TODO(mgsergio): No need to create feature from xml, can go with patchig for now.
+//@{
+// FeatureType FeatureType::FromXML(string const & xml)
+// {
+//   pugi::xml_document document;
+//   document.load(xml.data());
+//   return FromXML(document);
+// }
+
+// FeatureType FeatureType::FromXML(editor::XMLFeature const & xml)
+// {
+//   FeatureType feature;
+//   // Should be set to true. Or later call to ParseGeometry will lead to crash.
+//   feature.m_bTrianglesParsed = feature.m_bPointsParsed = true;
+//   feature.m_center = xml.GetCenter();
+
+//   // Preset type for header calculation later in ApplyPatch.
+//   feature.m_header = HEADER_GEOM_POINT;
+
+//   auto const & types = osm::Editor::Instance().GetTypesOfFeature(xml);
+//   copy(begin(types), end(types), begin(feature.m_types));
+//   feature.m_bTypesParsed = true;
+
+//   feature.ApplyPatch(xml);
+
+//   return feature;
+// }
+//@}
+void FeatureType::ApplyPatch(editor::XMLFeature const & xml)
+{
+  xml.ForEachName([this](string const & lang, string const & name)
+                  {
+                    m_params.name.AddString(lang, name);
+                  });
+
+  string const house = xml.GetHouse();
+  if (!house.empty())
+    m_params.house.Set(house);
+
+  // TODO(mgsergio):
+  // m_params.ref =
+  // m_params.layer =
+  // m_params.rank =
+  m_bCommonParsed = true;
+
+  for (auto const i : my::UpTo(1u, static_cast<uint32_t>(feature::Metadata::FMD_COUNT)))
+  {
+    auto const type = static_cast<feature::Metadata::EType>(i);
+    auto const attributeName = DebugPrint(type);
+    if (xml.HasTag(attributeName))
+      m_metadata.Set(type, xml.GetTagValue(attributeName));
+  }
+  m_bMetadataParsed = true;
+
+  // TODO(mgsergio): Get types count from xml.
+  auto constexpr kOnlyOneTypeCount = 1;
+  m_header = CalculateHeader(kOnlyOneTypeCount, Header() & HEADER_GEOTYPE_MASK, m_params);
+  m_bHeader2Parsed = true;
+}
+
+editor::XMLFeature FeatureType::ToXML() const
+{
+  editor::XMLFeature feature(GetFeatureType() == feature::GEOM_POINT
+                                 ? editor::XMLFeature::Type::Node
+                                 : editor::XMLFeature::Type::Way);
+
+  // Only Poins are completely serialized and deserialized.
+  // Other types could only be patched.
+  if (GetFeatureType() == feature::GEOM_POINT)
+    feature.SetCenter(GetCenter());
+
+  ForEachNameRef([&feature](uint8_t const & lang, string const & name)
+                 {
+                   feature.SetName(lang, name);
+                   return true;
+                 });
+
+  string const house = GetHouseNumber();
+  if (!house.empty())
+    feature.SetHouse(house);
+
+  // TODO(mgsergio):
+  // feature.m_params.ref =
+  // feature.m_params.layer =
+  // feature.m_params.rank =
+
+  // TODO(mgsergio): Save/Load types when required by feature creation or type modification.
+  // ParseTypes();
+  // for (auto const i : my::Range(GetTypesCount()))
+  // {
+  //   for (auto const & tag : osm::Editor::Instance().GetTagsForType(m_types[i]))
+  //     feature.SetTagValue(tag.first, tag.second);
+  // }
+
+  for (auto const type : m_metadata.GetPresentTypes())
+  {
+    auto const attributeName = DebugPrint(type);
+    feature.SetTagValue(attributeName, m_metadata.Get(type));
+  }
+
+  return feature;
 }
 
 void FeatureBase::ParseTypes() const
@@ -87,6 +193,15 @@ void FeatureType::Deserialize(feature::LoaderBase * pLoader, TBuffer buffer)
   m_bHeader2Parsed = m_bPointsParsed = m_bTrianglesParsed = m_bMetadataParsed = false;
 
   m_innerStats.MakeZero();
+}
+
+void FeatureType::ParseEverything() const
+{
+  // Also calls ParseCommon() and ParseTypes().
+  ParseHeader2();
+  ParseGeometry(FeatureType::BEST_GEOMETRY);
+  ParseTriangles(FeatureType::BEST_GEOMETRY);
+  ParseMetadata();
 }
 
 void FeatureType::ParseHeader2() const
@@ -151,6 +266,33 @@ void FeatureType::ParseMetadata() const
   m_bMetadataParsed = true;
 }
 
+StringUtf8Multilang const & FeatureType::GetNames() const
+{
+  return m_params.name;
+}
+
+void FeatureType::SetNames(StringUtf8Multilang const & newNames)
+{
+  m_params.name.Clear();
+  // Validate passed string to clean up empty names (if any).
+  newNames.ForEachRef([this](int8_t langCode, string const & name) -> bool
+  {
+    if (!name.empty())
+      m_params.name.AddString(langCode, name);
+    return true;
+  });
+
+  if (m_params.name.IsEmpty())
+    SetHeader(~feature::HEADER_HAS_NAME & Header());
+  else
+    SetHeader(feature::HEADER_HAS_NAME | Header());
+}
+
+void FeatureType::SetMetadata(feature::Metadata const & newMetadata)
+{
+  m_bMetadataParsed = true;
+  m_metadata = newMetadata;
+}
 
 namespace
 {
@@ -164,8 +306,32 @@ namespace
 
 string FeatureType::DebugString(int scale) const
 {
-  return base_type::DebugString() + "; Center = " +
-         DebugPrint(MercatorBounds::ToLatLon(feature::GetCenter(*this, scale)));
+  ParseGeometryAndTriangles(scale);
+
+  string s = base_type::DebugString();
+
+  switch (GetFeatureType())
+  {
+  case GEOM_POINT:
+    s += (" Center:" + DebugPrint(m_center));
+    break;
+
+  case GEOM_LINE:
+    s += " Points:";
+    Points2String(s, m_points);
+    break;
+
+  case GEOM_AREA:
+    s += " Triangles:";
+    Points2String(s, m_triangles);
+    break;
+
+  case GEOM_UNDEFINED:
+    ASSERT(false, ("Assume that we have valid feature always"));
+    break;
+  }
+
+  return s;
 }
 
 string DebugPrint(FeatureType const & ft)
@@ -175,7 +341,7 @@ string DebugPrint(FeatureType const & ft)
 
 bool FeatureType::IsEmptyGeometry(int scale) const
 {
-  ParseAll(scale);
+  ParseGeometryAndTriangles(scale);
 
   switch (GetFeatureType())
   {
@@ -187,7 +353,7 @@ bool FeatureType::IsEmptyGeometry(int scale) const
 
 m2::RectD FeatureType::GetLimitRect(int scale) const
 {
-  ParseAll(scale);
+  ParseGeometryAndTriangles(scale);
 
   if (m_triangles.empty() && m_points.empty() && (GetFeatureType() != GEOM_POINT))
   {
@@ -200,7 +366,7 @@ m2::RectD FeatureType::GetLimitRect(int scale) const
   return m_limitRect;
 }
 
-void FeatureType::ParseAll(int scale) const
+void FeatureType::ParseGeometryAndTriangles(int scale) const
 {
   ParseGeometry(scale);
   ParseTriangles(scale);
@@ -303,6 +469,14 @@ string FeatureType::GetHouseNumber() const
 {
   ParseCommon();
   return m_params.house.Get();
+}
+
+void FeatureType::SetHouseNumber(string const & number)
+{
+  if (number.empty())
+    m_params.house.Clear();
+  else
+    m_params.house.Set(number);
 }
 
 bool FeatureType::GetName(int8_t lang, string & name) const

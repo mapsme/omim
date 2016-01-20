@@ -5,6 +5,7 @@
 #include "indexer/features_offsets_table.hpp"
 #include "indexer/features_vector.hpp"
 #include "indexer/mwm_set.hpp"
+#include "indexer/osm_editor.hpp"
 #include "indexer/scale_index.hpp"
 #include "indexer/unique_index.hpp"
 
@@ -92,8 +93,15 @@ private:
   template <typename F> class ReadMWMFunctor
   {
     F & m_f;
+    osm::Editor & m_editor = osm::Editor::Instance();
   public:
     ReadMWMFunctor(F & f) : m_f(f) {}
+
+    /// Used by Editor to inject new features.
+    void operator()(FeatureType & feature)
+    {
+      m_f(feature);
+    }
 
     void operator()(MwmHandle const & handle, covering::CoveringGetter & cov, uint32_t scale) const
     {
@@ -106,34 +114,46 @@ private:
         uint32_t const lastScale = header.GetLastScale();
 
         // In case of WorldCoasts we should pass correct scale in ForEachInIntervalAndScale.
-        if (scale > lastScale) scale = lastScale;
+        if (scale > lastScale)
+          scale = lastScale;
 
         // Use last coding scale for covering (see index_builder.cpp).
         covering::IntervalsT const & interval = cov.Get(lastScale);
 
-        // prepare features reading
-        FeaturesVector fv(pValue->m_cont, header, pValue->m_table);
+        // Prepare features reading.
+        FeaturesVector const fv(pValue->m_cont, header, pValue->m_table);
         ScaleIndex<ModelReaderPtr> index(pValue->m_cont.GetReader(INDEX_FILE_TAG),
                                          pValue->m_factory);
 
         // iterate through intervals
         CheckUniqueIndexes checkUnique(header.GetFormat() >= version::Format::v5);
-        MwmId const mwmID = handle.GetId();
+        MwmId const & mwmID = handle.GetId();
 
         for (auto const & i : interval)
         {
-          index.ForEachInIntervalAndScale([&] (uint32_t index)
-          {
-            if (checkUnique(index))
-            {
-              FeatureType feature;
-
-              fv.GetByIndex(index, feature);
-              feature.SetID(FeatureID(mwmID, index));
-
-              m_f(feature);
-            }
-          }, i.first, i.second, scale);
+          index.ForEachInIntervalAndScale(
+              [&](uint32_t index)
+              {
+                FeatureType feature;
+                switch (m_editor.GetFeatureStatus(mwmID, index))
+                {
+                case osm::Editor::FeatureStatus::Deleted: return;
+                case osm::Editor::FeatureStatus::Modified:
+                  VERIFY(m_editor.GetEditedFeature(mwmID, index, feature), ());
+                  m_f(feature);
+                  return;
+                case osm::Editor::FeatureStatus::Created:
+                  CHECK(false, ("Created features index should be generated."));
+                case osm::Editor::FeatureStatus::Untouched: break;
+                }
+                if (checkUnique(index))
+                {
+                  fv.GetByIndex(index, feature);
+                  feature.SetID(FeatureID(mwmID, index));
+                  m_f(feature);
+                }
+              },
+              i.first, i.second, scale);
         }
       }
     }
@@ -142,8 +162,15 @@ private:
   template <typename F> class ReadFeatureIndexFunctor
   {
     F & m_f;
+    osm::Editor & m_editor = osm::Editor::Instance();
   public:
     ReadFeatureIndexFunctor(F & f) : m_f(f) {}
+
+    /// Used by Editor to inject new features.
+    void operator()(FeatureID const & fid) const
+    {
+      m_f(fid);
+    }
 
     void operator()(MwmHandle const & handle, covering::CoveringGetter & cov, uint32_t scale) const
     {
@@ -156,24 +183,28 @@ private:
         int const lastScale = header.GetLastScale();
 
         // In case of WorldCoasts we should pass correct scale in ForEachInIntervalAndScale.
-        if (scale > lastScale) scale = lastScale;
+        if (scale > lastScale)
+          scale = lastScale;
 
         // Use last coding scale for covering (see index_builder.cpp).
         covering::IntervalsT const & interval = cov.Get(lastScale);
-        ScaleIndex<ModelReaderPtr> index(pValue->m_cont.GetReader(INDEX_FILE_TAG),
-                                         pValue->m_factory);
+        ScaleIndex<ModelReaderPtr> const index(pValue->m_cont.GetReader(INDEX_FILE_TAG), pValue->m_factory);
 
-        // iterate through intervals
+        // Iterate through intervals.
         CheckUniqueIndexes checkUnique(header.GetFormat() >= version::Format::v5);
-        MwmId const mwmID = handle.GetId();
+        MwmId const & mwmID = handle.GetId();
 
         for (auto const & i : interval)
         {
-          index.ForEachInIntervalAndScale([&] (uint32_t index)
-          {
-            if (checkUnique(index))
-              m_f(FeatureID(mwmID, index));
-          }, i.first, i.second, scale);
+          index.ForEachInIntervalAndScale(
+              [&](uint32_t index)
+              {
+                if (osm::Editor::FeatureStatus::Deleted !=
+                        m_editor.GetFeatureStatus(mwmID, index) &&
+                    checkUnique(index))
+                  m_f(FeatureID(mwmID, index));
+              },
+              i.first, i.second, scale);
         }
       }
     }
@@ -186,13 +217,6 @@ public:
   {
     ReadMWMFunctor<F> implFunctor(f);
     ForEachInIntervals(implFunctor, covering::ViewportWithLowLevels, rect, scale);
-  }
-
-  template <typename F>
-  void ForEachInRect_TileDrawing(F & f, m2::RectD const & rect, uint32_t scale) const
-  {
-    ReadMWMFunctor<F> implFunctor(f);
-    ForEachInIntervals(implFunctor, covering::LowLevelsOnly, rect, scale);
   }
 
   template <typename F>
@@ -215,6 +239,7 @@ public:
   {
     auto fidIter = features.begin();
     auto const endIter = features.end();
+    auto & editor = osm::Editor::Instance();
     while (fidIter != endIter)
     {
       MwmId const & id = fidIter->m_mwmId;
@@ -225,9 +250,19 @@ public:
         FeaturesVector const featureReader(pValue->m_cont, pValue->GetHeader(), pValue->m_table);
         do
         {
+          osm::Editor::FeatureStatus const fts = editor.GetFeatureStatus(id, fidIter->m_index);
+          ASSERT_NOT_EQUAL(osm::Editor::FeatureStatus::Deleted, fts,
+                           ("Deleted feature was cached. Please review your code."));
           FeatureType featureType;
-          featureReader.GetByIndex(fidIter->m_index, featureType);
-          featureType.SetID(*fidIter);
+          if (fts == osm::Editor::FeatureStatus::Modified)
+          {
+            VERIFY(editor.GetEditedFeature(id, fidIter->m_index, featureType), ());
+          }
+          else
+          {
+            featureReader.GetByIndex(fidIter->m_index, featureType);
+            featureType.SetID(*fidIter);
+          }
           f(featureType);
         }
         while (++fidIter != endIter && id == fidIter->m_mwmId);
@@ -244,21 +279,25 @@ public:
   class FeaturesLoaderGuard
   {
   public:
-    FeaturesLoaderGuard(Index const & parent, MwmId id);
+    FeaturesLoaderGuard(Index const & parent, MwmId const & id);
 
-    inline MwmSet::MwmId GetId() const { return m_handle.GetId(); }
+    inline MwmSet::MwmId const & GetId() const { return m_handle.GetId(); }
     string GetCountryFileName() const;
     bool IsWorld() const;
-    void GetFeatureByIndex(uint32_t index, FeatureType & ft);
+    /// Everyone, except Editor core, should use this method.
+    void GetFeatureByIndex(uint32_t index, FeatureType & ft) const;
+    /// Editor core only method, to get 'untouched', original version of feature.
+    void GetOriginalFeatureByIndex(uint32_t index, FeatureType & ft) const;
     inline FeaturesVector const & GetFeaturesVector() const { return m_vector; }
 
   private:
     MwmHandle m_handle;
     FeaturesVector m_vector;
+    osm::Editor & m_editor = osm::Editor::Instance();
   };
 
   template <typename F>
-  void ForEachInRectForMWM(F & f, m2::RectD const & rect, uint32_t scale, MwmId const id) const
+  void ForEachInRectForMWM(F & f, m2::RectD const & rect, uint32_t scale, MwmId const & id) const
   {
     MwmHandle const handle = GetMwmHandleById(id);
     if (handle.IsAlive())
@@ -282,18 +321,23 @@ private:
 
     MwmId worldID[2];
 
+    osm::Editor & editor = osm::Editor::Instance();
+
     for (shared_ptr<MwmInfo> const & info : mwms)
     {
       if (info->m_minScale <= scale && scale <= info->m_maxScale &&
           rect.IsIntersect(info->m_limitRect))
       {
-        MwmId id(info);
+        MwmId const id(info);
         switch (info->GetType())
         {
           case MwmInfo::COUNTRY:
           {
             MwmHandle const handle = GetMwmHandleById(id);
             f(handle, cov, scale);
+            // Check created features container.
+            // Need to do it on a per-mwm basis, because Drape relies on features in a sorted order.
+            editor.ForEachFeatureInMwmRectAndScale(id, f, rect, scale);
           }
           break;
 
@@ -312,12 +356,18 @@ private:
     {
       MwmHandle const handle = GetMwmHandleById(worldID[0]);
       f(handle, cov, scale);
+      // Check edited/created features container.
+      // Need to do it on a per-mwm basis, because Drape relies on features in a sorted order.
+      editor.ForEachFeatureInMwmRectAndScale(worldID[0], f, rect, scale);
     }
 
     if (worldID[1].IsAlive())
     {
       MwmHandle const handle = GetMwmHandleById(worldID[1]);
       f(handle, cov, scale);
+      // Check edited/created features container.
+      // Need to do it on a per-mwm basis, because Drape relies on features in a sorted order.
+      editor.ForEachFeatureInMwmRectAndScale(worldID[1], f, rect, scale);
     }
   }
 

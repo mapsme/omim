@@ -2,7 +2,6 @@
 
 #include "std/sstream.hpp"
 
-
 string DebugPrint(FeatureID const & id)
 {
   ostringstream ss;

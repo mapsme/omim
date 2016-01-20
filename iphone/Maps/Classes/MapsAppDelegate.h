@@ -33,7 +33,9 @@ typedef NS_ENUM(NSUInteger, MWMRoutingPlaneMode)
 
 - (void)enableStandby;
 - (void)disableStandby;
+
 + (void)customizeAppearance;
++ (void)customizeAppearanceForNavigationBar:(UINavigationBar *)navigationBar;
 
 - (void)disableDownloadIndicator;
 - (void)enableDownloadIndicator;

@@ -11,6 +11,8 @@
 
 #include "base/stl_helpers.hpp"
 
+#include "std/limits.hpp"
+
 namespace search
 {
 namespace
@@ -24,12 +26,7 @@ double const ReverseGeocoder::kLookupRadiusM = 500.0;
 
 ReverseGeocoder::ReverseGeocoder(Index const & index) : m_index(index) {}
 
-void ReverseGeocoder::GetNearbyStreets(FeatureType const & addrFt, vector<Street> & streets)
-{
-  GetNearbyStreets(feature::GetCenter(addrFt), streets);
-}
-
-void ReverseGeocoder::GetNearbyStreets(m2::PointD const & center, vector<Street> & streets)
+void ReverseGeocoder::GetNearbyStreets(m2::PointD const & center, vector<Street> & streets) const
 {
   m2::RectD const rect = GetLookupRect(center, kLookupRadiusM);
 
@@ -92,7 +89,7 @@ size_t ReverseGeocoder::GetMatchedStreetIndex(string const & keyName,
   return result;
 }
 
-void ReverseGeocoder::GetNearbyAddress(m2::PointD const & center, Address & addr)
+void ReverseGeocoder::GetNearbyAddress(m2::PointD const & center, Address & addr) const
 {
   vector<Building> buildings;
   GetNearbyBuildings(center, buildings);
@@ -114,10 +111,6 @@ void ReverseGeocoder::GetNearbyAddress(m2::PointD const & center, Address & addr
     GetNearbyStreets(b.m_center, streets);
 
     uint32_t ind;
-
-    // TODO (AlexZ): False result of table->Get(...) means that
-    // there're no street for a building.  Somehow it should be used
-    // in a Features Editor.
     if (table->Get(b.m_id.m_index, ind) && ind < streets.size())
     {
       addr.m_building = b;
@@ -127,13 +120,39 @@ void ReverseGeocoder::GetNearbyAddress(m2::PointD const & center, Address & addr
   }
 }
 
-void ReverseGeocoder::GetNearbyBuildings(m2::PointD const & center, vector<Building> & buildings)
+pair<vector<ReverseGeocoder::Street>, uint32_t> ReverseGeocoder::GetNearbyFeatureStreets(
+    FeatureType const & feature) const
+{
+  pair<vector<ReverseGeocoder::Street>, uint32_t> result;
+  auto & streetIndex = result.second;
+  streetIndex = numeric_limits<uint32_t>::max();
+
+  FeatureID const fid = feature.GetID();
+  MwmSet::MwmHandle const mwmHandle = m_index.GetMwmHandleById(fid.m_mwmId);
+  if (!mwmHandle.IsAlive())
+  {
+    LOG(LERROR, ("Feature handle is not alive", feature));
+    return result;
+  }
+
+  auto & streets = result.first;
+  GetNearbyStreets(feature::GetCenter(feature), streets);
+
+  unique_ptr<search::v2::HouseToStreetTable> const table =
+      search::v2::HouseToStreetTable::Load(*mwmHandle.GetValue<MwmValue>());
+
+  if (table->Get(fid.m_index, streetIndex) && streetIndex >= streets.size())
+    LOG(LERROR, ("Critical reverse geocoder error, returned", streetIndex, "for", feature));
+  return result;
+}
+
+void ReverseGeocoder::GetNearbyBuildings(m2::PointD const & center, vector<Building> & buildings) const
 {
   GetNearbyBuildings(center, kLookupRadiusM, buildings);
 }
 
 void ReverseGeocoder::GetNearbyBuildings(m2::PointD const & center, double radiusM,
-                                         vector<Building> & buildings)
+                                         vector<Building> & buildings) const
 {
   // Seems like a copy-paste here of the GetNearbyStreets function.
   // Trying to factor out common logic will cause many variables logic.

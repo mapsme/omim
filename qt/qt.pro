@@ -1,8 +1,8 @@
 # Main application in qt.
 ROOT_DIR = ..
-DEPENDENCIES = map drape_frontend routing search storage indexer drape platform geometry coding base \
-               freetype expat fribidi tomcrypt jansson protobuf osrm stats_client minizip succinct
-
+DEPENDENCIES = map drape_frontend routing search storage indexer drape platform editor geometry \
+               coding base freetype expat fribidi tomcrypt jansson protobuf osrm stats_client \
+               minizip succinct pugixml oauthcpp
 
 DEPENDENCIES += opening_hours \
 
@@ -111,6 +111,8 @@ SOURCES += \
     update_dialog.cpp \
     qtoglcontext.cpp \
     qtoglcontextfactory.cpp \
+    editor_dialog.cpp \
+    osm_auth_dialog.cpp
 
 HEADERS += \
     mainwindow.hpp \
@@ -124,5 +126,7 @@ HEADERS += \
     update_dialog.hpp \
     qtoglcontext.hpp \
     qtoglcontextfactory.hpp \
+    editor_dialog.hpp \
+    osm_auth_dialog.hpp
 
 RESOURCES += res/resources.qrc

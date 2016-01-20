@@ -30,7 +30,7 @@ typedef NS_ENUM(NSUInteger, MWMPlacePageManagerState)
   MWMPlacePageManagerStateOpen
 };
 
-@interface MWMPlacePageViewManager () <LocationObserver>
+@interface MWMPlacePageViewManager () <LocationObserver, MWMPlacePageEntityProtocol>
 {
   unique_ptr<UserMarkCopy> m_userMark;
 }
@@ -80,16 +80,30 @@ typedef NS_ENUM(NSUInteger, MWMPlacePageManagerState)
 
 - (void)showPlacePageWithUserMark:(unique_ptr<UserMarkCopy>)userMark
 {
-  NSAssert(userMark, @"userMark cannot be nil");
+  NSAssert(userMark, @"userMark can not be nil.");
   m_userMark = move(userMark);
   [[MapsAppDelegate theApp].m_locationManager start:self];
-  self.entity = [[MWMPlacePageEntity alloc] initWithUserMark:m_userMark->GetUserMark()];
+  [self reloadPlacePage];
+}
+
+- (void)reloadPlacePage
+{
+  if (!m_userMark)
+    return;
+  self.entity = [[MWMPlacePageEntity alloc] initWithDelegate:self];
   self.state = MWMPlacePageManagerStateOpen;
   if (IPAD)
     [self setPlacePageForiPad];
   else
     [self setPlacePageForiPhoneWithOrientation:self.ownerViewController.interfaceOrientation];
   [self configPlacePage];
+}
+
+#pragma mark - MWMPlacePageEntityProtocol
+
+- (UserMark const *)userMark
+{
+  return m_userMark->GetUserMark();
 }
 
 #pragma mark - Layout
@@ -242,7 +256,7 @@ typedef NS_ENUM(NSUInteger, MWMPlacePageManagerState)
   [Alohalytics logEvent:kAlohalyticsTapEventKey withValue:@"ppShare"];
   MWMPlacePageEntity * entity = self.entity;
   NSString * title = entity.bookmarkTitle ? entity.bookmarkTitle : entity.title;
-  CLLocationCoordinate2D const coord = CLLocationCoordinate2DMake(entity.point.x, entity.point.y);
+  CLLocationCoordinate2D const coord = CLLocationCoordinate2DMake(entity.latlon.lat, entity.latlon.lon);
   MWMActivityViewController * shareVC =
       [MWMActivityViewController shareControllerForLocationTitle:title
                                                         location:coord
@@ -268,6 +282,12 @@ typedef NS_ENUM(NSUInteger, MWMPlacePageManagerState)
   m_userMark.reset(new UserMarkCopy(bookmark, false));
 }
 
+- (void)editPlace
+{
+  [[Statistics instance] logEvent:kStatEventName(kStatPlacePage, kStatEdit)];
+  [self.ownerViewController performSegueWithIdentifier:@"Map2EditorSegue" sender:self.entity];
+}
+
 - (void)addBookmark
 {
   [[Statistics instance] logEvent:kStatEventName(kStatPlacePage, kStatBookmarks)
@@ -275,13 +295,17 @@ typedef NS_ENUM(NSUInteger, MWMPlacePageManagerState)
   Framework & f = GetFramework();
   BookmarkData data = BookmarkData(self.entity.title.UTF8String, f.LastEditedBMType());
   size_t const categoryIndex = f.LastEditedBMCategory();
-  size_t const bookmarkIndex = f.GetBookmarkManager().AddBookmark(categoryIndex, m_userMark->GetUserMark()->GetPivot(), data);
+  m2::PointD const mercator = m_userMark->GetUserMark()->GetPivot();
+  size_t const bookmarkIndex = f.GetBookmarkManager().AddBookmark(categoryIndex, mercator, data);
   self.entity.bac = make_pair(categoryIndex, bookmarkIndex);
   self.entity.type = MWMPlacePageEntityTypeBookmark;
 
   BookmarkCategory::Guard guard(*f.GetBmCategory(categoryIndex));
 
   UserMark const * bookmark = guard.m_controller.GetUserMark(bookmarkIndex);
+  // TODO(AlexZ): Refactor bookmarks code together to hide this code in the Framework/Drape.
+  // UI code should never know about any guards, pointers to UserMark etc.
+  const_cast<UserMark *>(bookmark)->SetFeature(f.GetFeatureAtMercatorPoint(mercator));
   m_userMark.reset(new UserMarkCopy(bookmark, false));
   [NSNotificationCenter.defaultCenter postNotificationName:kBookmarksChangedNotification
                                                     object:nil
@@ -304,6 +328,8 @@ typedef NS_ENUM(NSUInteger, MWMPlacePageManagerState)
 
   self.entity.type = MWMPlacePageEntityTypeRegular;
 
+  // TODO(AlexZ): SetFeature is called in GetAddressMark here.
+  // UI code should never know about any guards, pointers to UserMark etc.
   PoiMarkPoint const * poi = f.GetAddressMark(bookmark->GetPivot());
   m_userMark.reset(new UserMarkCopy(poi, false));
   if (bookmarkCategory)

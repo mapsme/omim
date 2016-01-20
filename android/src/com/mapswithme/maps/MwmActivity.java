@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -42,6 +43,9 @@ import com.mapswithme.maps.bookmarks.ChooseBookmarkCategoryFragment;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 import com.mapswithme.maps.bookmarks.data.MapObject;
 import com.mapswithme.maps.bookmarks.data.MapObject.ApiPoint;
+import com.mapswithme.maps.bookmarks.data.Metadata;
+import com.mapswithme.maps.editor.EditorActivity;
+import com.mapswithme.maps.editor.EditorFragment;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.location.LocationPredictor;
 import com.mapswithme.maps.routing.NavigationController;
@@ -62,6 +66,7 @@ import com.mapswithme.maps.widget.menu.MainMenu;
 import com.mapswithme.maps.widget.placepage.BasePlacePageAnimationController;
 import com.mapswithme.maps.widget.placepage.PlacePageView;
 import com.mapswithme.maps.widget.placepage.PlacePageView.State;
+import com.mapswithme.maps.widget.placepage.TimetableFragment;
 import com.mapswithme.util.Animations;
 import com.mapswithme.util.BottomSheetHelper;
 import com.mapswithme.util.Config;
@@ -96,7 +101,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   private static final String[] DOCKED_FRAGMENTS = { SearchFragment.class.getName(),
                                                      DownloadFragment.class.getName(),
-                                                     RoutingPlanFragment.class.getName() };
+                                                     RoutingPlanFragment.class.getName(),
+                                                     TimetableFragment.class.getName() };
   // Instance state
   private static final String STATE_PP_OPENED = "PpOpened";
   private static final String STATE_MAP_OBJECT = "MapObject";
@@ -245,6 +251,21 @@ public class MwmActivity extends BaseMwmFragmentActivity
     }
     else
       SearchActivity.start(this, query);
+  }
+
+  public void showEditor(MapObject point)
+  {
+    final String openingTime = point.getMetadata(Metadata.MetadataType.FMD_OPEN_HOURS);
+    // TODO use EditorFragment after is will be finished
+    if (mIsFragmentContainer)
+    {
+      final Bundle args = new Bundle();
+      if (!TextUtils.isEmpty(openingTime))
+        args.putString(TimetableFragment.EXTRA_TIME, openingTime);
+      replaceFragment(TimetableFragment.class, args, null);
+    }
+    else
+      EditorActivity.start(this, point);
   }
 
   private void shareMyLocation()

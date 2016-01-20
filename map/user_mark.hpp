@@ -6,6 +6,7 @@
 
 #include "indexer/feature.hpp"
 
+#include "geometry/latlon.hpp"
 #include "geometry/point2d.hpp"
 
 #include "base/macros.hpp"
@@ -34,6 +35,10 @@ public:
 
   UserMark(m2::PointD const & ptOrg, UserMarkContainer * container);
 
+  /// @returns nullptr if no feature was set.
+  FeatureType * GetFeature() const;
+  void SetFeature(unique_ptr<FeatureType> feature);
+
   virtual ~UserMark() {}
 
   ///////////////////////////////////////////////////////
@@ -46,7 +51,7 @@ public:
   ///////////////////////////////////////////////////////
 
   UserMarkContainer const * GetContainer() const;
-  void GetLatLon(double & lat, double & lon) const;
+  ms::LatLon GetLatLon() const;
   virtual Type GetMarkType() const = 0;
   virtual unique_ptr<UserMarkCopy> Copy() const = 0;
   // Need it to calculate POI rank from all taps to features via statistics.
@@ -56,6 +61,9 @@ public:
 protected:
   m2::PointD m_ptOrg;
   mutable UserMarkContainer * m_container;
+  /// Feature which is displayed (and edited) in Place Page.
+  /// It is initialized after user touches this UserMark.
+  unique_ptr<FeatureType> m_feature;
 };
 
 class UserMarkCopy
@@ -74,28 +82,12 @@ private:
 class SearchMarkPoint : public UserMark
 {
 public:
-  SearchMarkPoint(search::AddressInfo const & info,
-           m2::PointD const & ptOrg,
-           UserMarkContainer * container);
-
   SearchMarkPoint(m2::PointD const & ptOrg, UserMarkContainer * container);
 
   string GetSymbolName() const override;
   UserMark::Type GetMarkType() const override;
 
-  search::AddressInfo const & GetInfo() const;
-  void SetInfo(search::AddressInfo const & info);
-
-  feature::Metadata const & GetMetadata() const;
-  void SetMetadata(feature::Metadata && metadata);
-
   unique_ptr<UserMarkCopy> Copy() const override;
-
-  virtual void FillLogEvent(TEventContainer & details) const override;
-
-protected:
-  search::AddressInfo m_info;
-  feature::Metadata m_metadata;
 };
 
 class PoiMarkPoint : public SearchMarkPoint
@@ -106,7 +98,6 @@ public:
   unique_ptr<UserMarkCopy> Copy() const override;
 
   void SetPtOrg(m2::PointD const & ptOrg);
-  void SetName(string const & name);
 };
 
 class MyPositionMarkPoint : public PoiMarkPoint

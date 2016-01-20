@@ -53,8 +53,6 @@ public:
     }
   };
 
-  void GetNearbyStreets(FeatureType const & addrFt, vector<Street> & streets);
-
   static size_t GetMatchedStreetIndex(string const & keyName, vector<Street> const & streets);
 
   struct Address
@@ -66,16 +64,20 @@ public:
     string GetStreetName() const { return m_street.m_name; }
   };
 
-  void GetNearbyAddress(m2::PointD const & center, Address & addr);
+  void GetNearbyStreets(m2::PointD const & center, vector<Street> & streets) const;
 
-  void GetNearbyBuildings(m2::PointD const & center, vector<Building> & buildings);
+  void GetNearbyAddress(m2::PointD const & center, Address & addr) const;
 
-  void GetNearbyBuildings(m2::PointD const & center, double radiusM, vector<Building> & buildings);
+  /// @returns street segments (can be duplicate names) sorted by distance to feature's center.
+  /// uint32_t, if less than vector.size(), contains index of exact feature's street specified in OSM data.
+  pair<vector<Street>, uint32_t> GetNearbyFeatureStreets(FeatureType const & feature) const;
+
+  void GetNearbyBuildings(m2::PointD const & center, vector<Building> & buildings) const;
+
+  void GetNearbyBuildings(m2::PointD const & center, double radiusM, vector<Building> & buildings) const;
 
 private:
   static m2::RectD GetLookupRect(m2::PointD const & center, double radiusM);
-
-  void GetNearbyStreets(m2::PointD const & center, vector<Street> & streets);
 };
 
 } // namespace search

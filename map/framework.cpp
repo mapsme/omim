@@ -32,6 +32,7 @@
 #include "indexer/drawing_rules.hpp"
 #include "indexer/feature.hpp"
 #include "indexer/map_style_reader.hpp"
+#include "indexer/osm_editor.hpp"
 #include "indexer/scales.hpp"
 
 /// @todo Probably it's better to join this functionality.
@@ -259,7 +260,6 @@ Framework::Framework()
 
   m_stringsBundle.SetDefaultString("dropped_pin", "Dropped Pin");
   m_stringsBundle.SetDefaultString("my_places", "My Places");
-  m_stringsBundle.SetDefaultString("my_position", "My Position");
   m_stringsBundle.SetDefaultString("routes", "Routes");
 
   m_stringsBundle.SetDefaultString("routing_failed_unknown_my_position", "Current location is undefined. Please specify location to create route.");
@@ -313,6 +313,22 @@ Framework::Framework()
   LOG(LDEBUG, ("Routing engine initialized"));
 
   LOG(LINFO, ("System languages:", languages::GetPreferred()));
+
+  osm::Editor & editor = osm::Editor::Instance();
+  editor.SetMwmIdByNameAndVersionFn([this](string const & name) -> MwmSet::MwmId
+  {
+    return m_model.GetIndex().GetMwmIdByCountryFile(platform::CountryFile(name));
+  });
+  editor.SetInvalidateFn([this](){ InvalidateRect(GetCurrentViewport()); });
+  editor.SetFeatureLoaderFn([this](FeatureID const & fid) -> unique_ptr<FeatureType>
+  {
+    unique_ptr<FeatureType> feature(new FeatureType());
+    Index::FeaturesLoaderGuard const guard(m_model.GetIndex(), fid.m_mwmId);
+    guard.GetOriginalFeatureByIndex(fid.m_index, *feature);
+    feature->ParseEverything();
+    return feature;
+  });
+  editor.LoadMapEdits();
 }
 
 Framework::~Framework()
@@ -1100,6 +1116,7 @@ void Framework::ShowSearchResult(search::Result const & res)
 
   int scale;
   m2::PointD center;
+  unique_ptr<FeatureType> ft;
 
   using namespace search;
   using namespace feature;
@@ -1108,14 +1125,9 @@ void Framework::ShowSearchResult(search::Result const & res)
   {
     case Result::RESULT_FEATURE:
     {
-      FeatureID const id = res.GetFeatureID();
-      Index::FeaturesLoaderGuard guard(m_model.GetIndex(), id.m_mwmId);
-
-      FeatureType ft;
-      guard.GetFeatureByIndex(id.m_index, ft);
-
-      scale = GetFeatureViewportScale(TypesHolder(ft));
-      center = GetCenter(ft, scale);
+      ft = GetFeatureByID(res.GetFeatureID());
+      scale = GetFeatureViewportScale(TypesHolder(*ft));
+      center = GetCenter(*ft, scale);
       break;
     }
 
@@ -1126,6 +1138,7 @@ void Framework::ShowSearchResult(search::Result const & res)
       break;
 
     default:
+      ASSERT(false, ("Suggests should not be here."));
       return;
   }
 
@@ -1135,11 +1148,11 @@ void Framework::ShowSearchResult(search::Result const & res)
   else
     ShowRect(df::GetRectForDrawScale(scale, center));
 
-  search::AddressInfo info;
-  info.MakeFrom(res);
-
-  SearchMarkPoint * mark = static_cast<SearchMarkPoint *>(guard.m_controller.CreateUserMark(center));
-  mark->SetInfo(info);
+  UserMark * mark = guard.m_controller.CreateUserMark(center);
+  if (ft)
+    mark->SetFeature(move(ft));
+  else
+    mark->SetFeature(GetFeatureAtMercatorPoint(center));
 
   ActivateUserMark(mark, false);
 }
@@ -1226,14 +1239,7 @@ void Framework::FillSearchResultsMarks(search::Results const & results)
 
     Result const & r = results.GetResult(i);
     if (r.HasPoint())
-    {
-      AddressInfo info;
-      info.MakeFrom(r);
-
-      m2::PointD const pt = r.GetFeatureCenter();
-      SearchMarkPoint * mark = static_cast<SearchMarkPoint *>(guard.m_controller.CreateUserMark(pt));
-      mark->SetInfo(info);
-    }
+      guard.m_controller.CreateUserMark(r.GetFeatureCenter());
   }
 }
 
@@ -1569,9 +1575,9 @@ bool Framework::ShowMapForURL(string const & url)
       }
       else
       {
-        PoiMarkPoint * mark = GetAddressMark(point);
-        if (!name.empty())
-          mark->SetName(name);
+        PoiMarkPoint * mark = UserMarkContainer::UserMarkForPoi();
+        mark->SetPtOrg(point);
+        // TODO(AlexZ): Do we really have to set custom name here if it's not empty?
         ActivateUserMark(mark, false);
       }
     }
@@ -1582,34 +1588,62 @@ bool Framework::ShowMapForURL(string const & url)
   return false;
 }
 
-bool Framework::GetVisiblePOI(m2::PointD const & glbPoint, search::AddressInfo & info, feature::Metadata & metadata) const
+unique_ptr<FeatureType> Framework::GetFeatureAtMercatorPoint(m2::PointD const & mercator) const
 {
-  ASSERT(m_drapeEngine != nullptr, ());
-  FeatureID id = m_drapeEngine->GetVisiblePOI(glbPoint);
-  if (!id.IsValid())
-    return false;
+  constexpr double const kRectWidthInMeters = 1.1;
+  int const kScale = scales::GetUpperScale();
+  m2::RectD const rect = MercatorBounds::RectByCenterXYAndSizeInMeters(mercator, kRectWidthInMeters);
+  unique_ptr<FeatureType> pointFt, areaFt;
+  double minPointDistance = kRectWidthInMeters;
+  auto const & isBuilding = ftypes::IsBuildingChecker::Instance();
+  m_model.ForEachFeature(rect, [&](FeatureType const & ft)
+  {
+    switch (ft.GetFeatureType())
+    {
+      case feature::GEOM_POINT:
+      {
+        double const distance = MercatorBounds::DistanceOnEarth(ft.GetCenter(), mercator);
+        if (distance < minPointDistance)
+        {
+          pointFt.reset(new FeatureType(ft));
+          pointFt->ParseMetadata();
+          minPointDistance = distance;
+        }
+        break;
+      }
+      case feature::GEOM_AREA:
+      {
+        // Quick rough check.
+        if (!ft.GetLimitRect(kScale).IsPointInside(mercator))
+          return;
+        // Distance is 0.0 if point is inside area feature.
+        if (0.0 != feature::GetMinDistanceMeters(ft, mercator))
+          return;
+        // Buildings have higher priority over other types.
+        if (areaFt && isBuilding(*areaFt))
+          return;
+        areaFt.reset(new FeatureType(ft));
+        areaFt->ParseMetadata();
+        break;
+      }
+      // TODO(AlexZ): At the moment, ignore linear features.
+      default: return;
+    }
+  }, kScale);
 
-  GetVisiblePOI(id, info, metadata);
-  return true;
+  return pointFt ? move(pointFt) : move(areaFt);
 }
 
-m2::PointD Framework::GetVisiblePOI(FeatureID const & id, search::AddressInfo & info, feature::Metadata & metadata) const
+unique_ptr<FeatureType> Framework::GetFeatureByID(FeatureID const & fid) const
 {
-  ASSERT(id.IsValid(), ());
-  Index::FeaturesLoaderGuard guard(m_model.GetIndex(), id.m_mwmId);
+  ASSERT(fid.IsValid(), ());
 
-  FeatureType ft;
-  guard.GetFeatureByIndex(id.m_index, ft);
-
-  ft.ParseMetadata();
-  metadata = ft.GetMetadata();
-
-  ASSERT_NOT_EQUAL(ft.GetFeatureType(), feature::GEOM_LINE, ());
-  m2::PointD const center = feature::GetCenter(ft);
-
-  GetAddressInfo(ft, center, info);
-
-  return m_currentModelView.isPerspective() ? GtoP3d(center) : GtoP(center);
+  unique_ptr<FeatureType> feature(new FeatureType);
+  // Note: all parse methods should be called with guard alive.
+  Index::FeaturesLoaderGuard guard(m_model.GetIndex(), fid.m_mwmId);
+  guard.GetFeatureByIndex(fid.m_index, *feature);
+  feature->ParseEverything();
+  return feature;
 }
 
 namespace
@@ -1658,18 +1692,6 @@ public:
 
 }
 
-void Framework::FindClosestPOIMetadata(m2::PointD const & pt, feature::Metadata & metadata) const
-{
-  m2::RectD rect(pt, pt);
-  double const inf = MercatorBounds::GetCellID2PointAbsEpsilon();
-  rect.Inflate(inf, inf);
-
-  DoFindClosestPOI doFind(pt, 1.1 /* search radius in meters */);
-  m_model.ForEachFeature(rect, doFind, scales::GetUpperScale() /* scale level for POI */);
-
-  doFind.LoadMetadata(m_model, metadata);
-}
-
 BookmarkAndCategory Framework::FindBookmark(UserMark const * mark) const
 {
   BookmarkAndCategory empty = MakeEmptyBookmarkAndCategory();
@@ -1700,11 +1722,9 @@ BookmarkAndCategory Framework::FindBookmark(UserMark const * mark) const
 
 PoiMarkPoint * Framework::GetAddressMark(m2::PointD const & globalPoint) const
 {
-  search::AddressInfo info;
-  GetAddressInfoForGlobalPoint(globalPoint, info);
   PoiMarkPoint * mark = UserMarkContainer::UserMarkForPoi();
   mark->SetPtOrg(globalPoint);
-  mark->SetInfo(info);
+  mark->SetFeature(GetFeatureAtMercatorPoint(globalPoint));
   return mark;
 }
 
@@ -1716,7 +1736,6 @@ void Framework::ActivateUserMark(UserMark const * mark, bool needAnim)
   if (mark)
   {
     m_activateUserMarkFn(mark->Copy());
-    m2::PointD pt = mark->GetPivot();
     df::SelectionShape::ESelectedObject object = df::SelectionShape::OBJECT_USER_MARK;
     UserMark::Type type = mark->GetMarkType();
     if (type == UserMark::Type::MY_POSITION)
@@ -1724,7 +1743,7 @@ void Framework::ActivateUserMark(UserMark const * mark, bool needAnim)
     else if (type == UserMark::Type::POI)
       object = df::SelectionShape::OBJECT_POI;
 
-    CallDrapeFunction(bind(&df::DrapeEngine::SelectObject, _1, object, pt, needAnim));
+    CallDrapeFunction(bind(&df::DrapeEngine::SelectObject, _1, object, mark->GetPivot(), needAnim));
   }
   else
   {
@@ -1758,7 +1777,7 @@ void Framework::InvalidateUserMarks()
   }
 }
 
-void Framework::OnTapEvent(m2::PointD pxPoint, bool isLong, bool isMyPosition, FeatureID const & feature)
+void Framework::OnTapEvent(m2::PointD pxPoint, bool isLong, bool isMyPosition, FeatureID const & fid)
 {
   // Back up last tap event to recover selection in case of Drape reinitialization.
   if (!m_lastTapEvent)
@@ -1766,9 +1785,9 @@ void Framework::OnTapEvent(m2::PointD pxPoint, bool isLong, bool isMyPosition, F
   m_lastTapEvent->m_pxPoint = pxPoint;
   m_lastTapEvent->m_isLong = isLong;
   m_lastTapEvent->m_isMyPosition = isMyPosition;
-  m_lastTapEvent->m_feature = feature;
+  m_lastTapEvent->m_feature = fid;
 
-  UserMark const * mark = OnTapEventImpl(pxPoint, isLong, isMyPosition, feature);
+  UserMark const * mark = OnTapEventImpl(pxPoint, isLong, isMyPosition, fid);
 
   {
     alohalytics::TStringMap details {{"isLongPress", isLong ? "1" : "0"}};
@@ -1791,19 +1810,12 @@ void Framework::InvalidateRendering()
     m_drapeEngine->Invalidate();
 }
 
-UserMark const * Framework::OnTapEventImpl(m2::PointD pxPoint, bool isLong, bool isMyPosition, FeatureID const & feature)
+UserMark const * Framework::OnTapEventImpl(m2::PointD pxPoint, bool isLong, bool isMyPosition, FeatureID const & fid)
 {
   m2::PointD const pxPoint2d = m_currentModelView.P3dtoP(pxPoint);
 
   if (isMyPosition)
-  {
-    search::AddressInfo info;
-    info.m_name = m_stringsBundle.GetString("my_position");
-    MyPositionMarkPoint * myPostition = UserMarkContainer::UserMarkForMyPostion();
-    myPostition->SetInfo(info);
-
-    return myPostition;
-  }
+    return UserMarkContainer::UserMarkForMyPostion();
 
   df::VisualParams const & vp = df::VisualParams::Instance();
 
@@ -1827,28 +1839,29 @@ UserMark const * Framework::OnTapEventImpl(m2::PointD pxPoint, bool isLong, bool
     return mark;
 
   bool needMark = false;
-  m2::PointD pxPivot;
-  search::AddressInfo info;
-  feature::Metadata metadata;
+  m2::PointD mercatorPivot;
+  unique_ptr<FeatureType> feature;
 
-  if (feature.IsValid())
+  if (fid.IsValid())
   {
-    pxPivot = GetVisiblePOI(feature, info, metadata);
+    feature = GetFeatureByID(fid);
+    mercatorPivot = feature::GetCenter(*feature);
     needMark = true;
   }
   else if (isLong)
   {
-    GetAddressInfoForPixelPoint(pxPoint2d, info);
-    pxPivot = pxPoint;
+    mercatorPivot = m_currentModelView.PtoG(pxPoint2d);
+    // TODO(AlexZ): Should we change mercatorPivot to found feature's center?
+    feature = GetFeatureAtMercatorPoint(mercatorPivot);
     needMark = true;
   }
 
   if (needMark)
   {
     PoiMarkPoint * poiMark = UserMarkContainer::UserMarkForPoi();
-    poiMark->SetPtOrg(m_currentModelView.PtoG(m_currentModelView.P3dtoP(pxPivot)));
-    poiMark->SetInfo(info);
-    poiMark->SetMetadata(move(metadata));
+    poiMark->SetPtOrg(mercatorPivot);
+    // Set or reset feature.
+    poiMark->SetFeature(move(feature));
     return poiMark;
   }
 
@@ -1897,9 +1910,8 @@ string Framework::GenerateApiBackUrl(ApiMarkPoint const & point)
   string res = m_ParsedMapApi.GetGlobalBackUrl();
   if (!res.empty())
   {
-    double lat, lon;
-    point.GetLatLon(lat, lon);
-    res += "pin?ll=" + strings::to_string(lat) + "," + strings::to_string(lon);
+    ms::LatLon const ll = point.GetLatLon();
+    res += "pin?ll=" + strings::to_string(ll.lat) + "," + strings::to_string(ll.lon);
     if (!point.GetName().empty())
       res += "&n=" + UrlEncode(point.GetName());
     if (!point.GetID().empty())

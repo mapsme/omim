@@ -23,7 +23,7 @@ HEADERS += defines.hpp
   CONFIG *= desktop
 }
 
-SUBDIRS = 3party base coding geometry indexer search routing
+SUBDIRS = 3party base coding geometry editor indexer routing search
 
 !CONFIG(osrm) {
   SUBDIRS *= platform stats storage
@@ -93,7 +93,7 @@ SUBDIRS = 3party base coding geometry indexer search routing
     SUBDIRS *= geometry_tests
 
     indexer_tests.subdir = indexer/indexer_tests
-    indexer_tests.depends = 3party base coding geometry indexer
+    indexer_tests.depends = 3party base coding geometry indexer editor
     SUBDIRS *= indexer_tests
 
     platform_tests.subdir = platform/platform_tests
@@ -158,6 +158,10 @@ SUBDIRS = 3party base coding geometry indexer search routing
     generator_tests.subdir = generator/generator_tests
     generator_tests.depends = $$MapDepLibs routing generator
     SUBDIRS *= generator_tests
+
+    editor_tests.subdir = editor/editor_tests
+    editor_tests.depends = 3party base coding geometry editor
+    SUBDIRS *= editor_tests
 
     SUBDIRS *= qt_tstfrm
 

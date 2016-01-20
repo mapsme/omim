@@ -1,23 +1,29 @@
-#import <Foundation/Foundation.h>
-
 #include "Framework.h"
 
 #include "map/user_mark.hpp"
+#include "indexer/feature_meta.hpp"
 
-typedef NS_ENUM (NSUInteger, MWMPlacePageMetadataType)
+typedef NS_ENUM(NSUInteger, MWMPlacePageCellType)
 {
-  MWMPlacePageMetadataTypePostcode,
-  MWMPlacePageMetadataTypePhoneNumber,
-  MWMPlacePageMetadataTypeWebsite,
-  MWMPlacePageMetadataTypeURL,
-  MWMPlacePageMetadataTypeEmail,
-  MWMPlacePageMetadataTypeOpenHours,
-  MWMPlacePageMetadataTypeCoordinate,
-  MWMPlacePageMetadataTypeWiFi,
-  MWMPlacePageMetadataTypeBookmark
+  MWMPlacePageCellTypePostcode = feature::Metadata::EType::FMD_COUNT,
+  MWMPlacePageCellTypePhoneNumber,
+  MWMPlacePageCellTypeWebsite,
+  MWMPlacePageCellTypeURL,
+  MWMPlacePageCellTypeEmail,
+  MWMPlacePageCellTypeOpenHours,
+  MWMPlacePageCellTypeWiFi,
+  MWMPlacePageCellTypeCoordinate,
+  MWMPlacePageCellTypeBookmark,
+  MWMPlacePageCellTypeEditButton,
+  MWMPlacePageCellTypeName,
+  MWMPlacePageCellTypeStreet,
+  MWMPlacePageCellTypeBuilding,
+  MWMPlacePageCellTypeCuisine,
+  MWMPlacePageCellTypeSpacer,
+  MWMPlacePageCellTypeCount
 };
 
-typedef NS_ENUM (NSUInteger, MWMPlacePageEntityType)
+typedef NS_ENUM(NSUInteger, MWMPlacePageEntityType)
 {
   MWMPlacePageEntityTypeRegular,
   MWMPlacePageEntityTypeBookmark,
@@ -27,7 +33,15 @@ typedef NS_ENUM (NSUInteger, MWMPlacePageEntityType)
   MWMPlacePageEntityTypeMyPosition
 };
 
+using MWMPlacePageCellTypeValueMap = map<MWMPlacePageCellType, string>;
+
 @class MWMPlacePageViewManager;
+
+@protocol MWMPlacePageEntityProtocol <NSObject>
+
+- (UserMark const *)userMark;
+
+@end
 
 @interface MWMPlacePageEntity : NSObject
 
@@ -38,21 +52,30 @@ typedef NS_ENUM (NSUInteger, MWMPlacePageEntityType)
 @property (copy, nonatomic) NSString * bookmarkDescription;
 @property (nonatomic, readonly) BOOL isHTMLDescription;
 @property (copy, nonatomic) NSString * bookmarkColor;
+@property (copy, nonatomic) NSSet<NSString *> * cuisines;
+@property (copy, nonatomic) NSArray<NSString *> * nearbyStreets;
 
 @property (nonatomic) MWMPlacePageEntityType type;
 
 @property (nonatomic) int typeDescriptionValue;
 
 @property (nonatomic) BookmarkAndCategory bac;
-@property (nonatomic) m2::PointD point;
 @property (weak, nonatomic) MWMPlacePageViewManager * manager;
 
-- (NSArray *)metadataTypes;
-- (NSArray *)metadataValues;
-- (void)insertBookmarkInTypes;
-- (void)removeBookmarkFromTypes;
+@property (nonatomic, readonly) ms::LatLon latlon;
 
-- (instancetype)initWithUserMark:(UserMark const *)mark;
+- (void)addBookmarkField;
+- (void)removeBookmarkField;
+
+- (instancetype)initWithDelegate:(id<MWMPlacePageEntityProtocol>)delegate;
 - (void)synchronize;
+
+- (void)toggleCoordinateSystem;
+
+- (NSUInteger)getCellsCount;
+- (MWMPlacePageCellType)getCellType:(NSUInteger)index;
+- (NSString *)getCellValue:(MWMPlacePageCellType)cellType;
+- (BOOL)isCellEditable:(MWMPlacePageCellType)cellType;
+- (void)saveEditedCells:(MWMPlacePageCellTypeValueMap const &)cells;
 
 @end

@@ -7,6 +7,8 @@
 
 #include "base/buffer_vector.hpp"
 
+#include "editor/xml_feature.hpp"
+
 #include "std/string.hpp"
 
 
@@ -20,7 +22,6 @@ namespace old_101 { namespace feature
 {
   class LoaderImpl;
 }}
-
 
 /// Base feature class for storing common data (without geometry).
 class FeatureBase
@@ -86,7 +87,7 @@ public:
       return false;
 
     ParseCommon();
-    m_params.name.ForEachRef(functor);
+    m_params.name.ForEachRef(forward<T>(functor));
     return true;
   }
 
@@ -104,7 +105,7 @@ public:
   }
 
   template <typename ToDo>
-  void ForEachType(ToDo f) const
+  void ForEachType(ToDo && f) const
   {
     ParseTypes();
 
@@ -153,11 +154,28 @@ class FeatureType : public FeatureBase
 public:
   void Deserialize(feature::LoaderBase * pLoader, TBuffer buffer);
 
+  static FeatureType FromXML(string const & xml);
+  static FeatureType FromXML(editor::XMLFeature const & xml);
+
+  /// Rewrites all but geometry.
+  void ApplyPatch(editor::XMLFeature const & xml);
+
+  editor::XMLFeature ToXML() const;
+
   inline void SetID(FeatureID const & id) { m_id = id; }
   inline FeatureID GetID() const { return m_id; }
 
+  /// @name Editor functions.
+  //@{
+  StringUtf8Multilang const & GetNames() const;
+  void SetNames(StringUtf8Multilang const & newNames);
+  void SetMetadata(feature::Metadata const & newMetadata);
+  //@}
+
   /// @name Parse functions. Do simple dispatching to m_pLoader.
   //@{
+  /// Super-method to call all possible Parse* methods.
+  void ParseEverything() const;
   void ParseHeader2() const;
 
   void ResetGeometry() const;
@@ -244,6 +262,8 @@ public:
   friend string DebugPrint(FeatureType const & ft);
 
   string GetHouseNumber() const;
+  /// Needed for Editor, to change house numbers in runtime.
+  void SetHouseNumber(string const & number);
 
   /// @name Get names for feature.
   /// @param[out] defaultName corresponds to osm tag "name"
@@ -310,7 +330,7 @@ public:
   }
 
 private:
-  void ParseAll(int scale) const;
+  void ParseGeometryAndTriangles(int scale) const;
 
   // For better result this value should be greater than 17
   // (number of points in inner triangle-strips).

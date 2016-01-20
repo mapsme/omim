@@ -394,8 +394,7 @@ namespace
 
   void CheckPlace(Framework const & fm, double lat, double lon, POIInfo const & poi)
   {
-    search::AddressInfo info;
-    fm.GetAddressInfoForGlobalPoint(MercatorBounds::FromLatLon(lat, lon), info);
+    search::AddressInfo const info = fm.GetMercatorAddressInfo(MercatorBounds::FromLatLon(lat, lon));
 
     TEST_EQUAL(info.m_street, poi.m_street, ());
     TEST_EQUAL(info.m_house, poi.m_house, ());
@@ -414,30 +413,9 @@ UNIT_TEST(Bookmarks_AddressInfo)
   fm.RegisterMap(platform::LocalCountryFile::MakeForTesting("minsk-pass"));
   fm.OnSize(800, 600);
 
-  // assume that developers have English or Russian system language :)
-  string const lang = languages::GetCurrentNorm();
-  LOG(LINFO, ("Current language =", lang));
-
-  // default name (street in russian, category in english).
-  size_t index = 0;
-  if (lang == "ru")
-    index = 1;
-  if (lang == "en")
-    index = 2;
-
-  POIInfo poi1[] = {
-    { "Планета Pizza", "улица Карла Маркса", "10", "cafe" },
-    { "Планета Pizza", "улица Карла Маркса", "10", "кафе" },
-    { "Планета Pizza", "vulica Karla Marksa", "10", "cafe" }
-  };
-  CheckPlace(fm, 53.8964918, 27.555559, poi1[index]);
-
-  POIInfo poi2[] = {
-    { "Нц Шашек И Шахмат", "улица Карла Маркса", "10", "hotel" },
-    { "Нц Шашек И Шахмат", "улица Карла Маркса", "10", "гостиница" },
-    { "Нц Шашек И Шахмат", "vulica Karla Marksa", "10", "hotel" }
-  };
-  CheckPlace(fm, 53.8964365, 27.5554007, poi2[index]);
+  // Our code always uses "default" street name for addresses.
+  CheckPlace(fm, 53.8964918, 27.555559, { "Планета Pizza", "улица Карла Маркса", "10", "cafe" });
+  CheckPlace(fm, 53.8964365, 27.5554007, { "Нц Шашек И Шахмат", "улица Карла Маркса", "10", "hotel" });
 }
 
 UNIT_TEST(Bookmarks_IllegalFileName)

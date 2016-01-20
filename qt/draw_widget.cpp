@@ -1,5 +1,5 @@
 #include "qt/draw_widget.hpp"
-
+#include "qt/editor_dialog.hpp"
 #include "qt/slider_ctrl.hpp"
 #include "qt/qtoglcontext.hpp"
 
@@ -18,9 +18,10 @@
 #include <QtGui/QOpenGLFunctions>
 #include <QtGui/QVector2D>
 
-#include <QtWidgets/QMenu>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDesktopWidget>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QMenu>
 
 #include <QtCore/QLocale>
 #include <QtCore/QDateTime>
@@ -79,8 +80,15 @@ DrawWidget::DrawWidget(QWidget * parent)
     m_enableScaleUpdate(true),
     m_emulatingLocation(false)
 {
-  m_framework->SetUserMarkActivationListener([](unique_ptr<UserMarkCopy> mark)
+  m_framework->SetUserMarkActivationListener([this](unique_ptr<UserMarkCopy> mark)
   {
+    // TODO: Why do we get empty mark in some cases?
+    if (mark)
+    {
+      FeatureType * feature = mark->GetUserMark()->GetFeature();
+      if (feature)
+        ShowPOIEditor(*feature);
+    }
   });
 
   m_framework->SetRouteBuildingListener([](routing::IRouter::ResultCode,
@@ -323,10 +331,7 @@ void DrawWidget::mousePressEvent(QMouseEvent * e)
     else if (IsLocationEmulation(e))
       SubmitFakeLocationPoint(pt);
     else
-    {
       m_framework->TouchEvent(GetTouchEvent(e, df::TouchEvent::TOUCH_DOWN));
-      setCursor(Qt::CrossCursor);
-    }
   }
   else if (IsRightButton(e))
     ShowInfoPopup(e, pt);
@@ -461,6 +466,25 @@ void DrawWidget::SubmitRoutingPoint(m2::PointD const & pt)
     m_framework->BuildRoute(m_framework->PtoG(pt), 0 /* timeoutSec */);
 }
 
+void DrawWidget::ShowPOIEditor(FeatureType & feature)
+{
+  // Show Edit POI dialog.
+  auto & editor = osm::Editor::Instance();
+  EditorDialog dlg(this, feature, *m_framework);
+  int const result = dlg.exec();
+  if (result == QDialog::Accepted)
+  {
+    feature.SetNames(dlg.GetEditedNames());
+    feature.SetMetadata(dlg.GetEditedMetadata());
+    // TODO(AlexZ): Check that street was actually changed/edited.
+    editor.EditFeature(feature, dlg.GetEditedStreet(), dlg.GetEditedHouseNumber());
+  }
+  else if (result == QDialogButtonBox::DestructiveRole)
+  {
+    editor.DeleteFeature(feature);
+  }
+}
+
 void DrawWidget::ShowInfoPopup(QMouseEvent * e, m2::PointD const & pt)
 {
   // show feature types
@@ -470,22 +494,19 @@ void DrawWidget::ShowInfoPopup(QMouseEvent * e, m2::PointD const & pt)
     menu.addAction(QString::fromUtf8(s.c_str()));
   };
 
-  search::AddressInfo info;
-  m_framework->GetAddressInfoForPixelPoint(pt, info);
-
-  // Get feature types under cursor.
-  vector<string> types;
-  m_framework->GetFeatureTypes(pt, types);
-  for (size_t i = 0; i < types.size(); ++i)
-    addStringFn(types[i]);
+  search::AddressInfo const info = m_framework->GetMercatorAddressInfo(m_framework->PtoG(pt));
+  for (auto const & type : info.m_types)
+    addStringFn(type);
 
   menu.addSeparator();
 
-  // Format address and types.
   if (!info.m_name.empty())
+  {
     addStringFn(info.m_name);
+    menu.addSeparator();
+  }
+
   addStringFn(info.FormatAddress());
-  addStringFn(info.FormatTypes());
 
   menu.exec(e->pos());
 }
