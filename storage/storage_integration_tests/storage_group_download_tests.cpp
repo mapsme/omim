@@ -102,19 +102,24 @@ void DownloadGroup(Storage & storage, bool oneByOne)
   storage.GetDownloadedChildren(kGroupCountryId, v);
   TEST(v.empty(), ());
 
-  NodeAttrs attrs;
-  storage.GetNodeAttrs(kGroupCountryId, attrs);
-  TEST_EQUAL(TStatus::ENotDownloaded, attrs.m_status, ());
-  attrs = NodeAttrs();
-
   // Check status for the all children nodes is set to ENotDownloaded
+  size_t totalGroupSize = 0;
   for (auto const & countryId : children)
   {
     TEST_EQUAL(TStatus::ENotDownloaded, storage.CountryStatusEx(countryId), ());
     NodeAttrs attrs;
     storage.GetNodeAttrs(countryId, attrs);
     TEST_EQUAL(TStatus::ENotDownloaded, attrs.m_status, ());
+    TEST_GREATER(attrs.m_mwmSize, 0, ());
+    totalGroupSize += attrs.m_mwmSize;
   }
+
+  // Check status for the group node is set to ENotDownloaded
+  NodeAttrs attrs;
+  storage.GetNodeAttrs(kGroupCountryId, attrs);
+  TEST_EQUAL(TStatus::ENotDownloaded, attrs.m_status, ());
+  TEST_EQUAL(attrs.m_mwmSize, totalGroupSize, ());
+  attrs = NodeAttrs();
 
   // Check there is no mwm or any other files for the children nodes
   for (auto const & countryId : children)
