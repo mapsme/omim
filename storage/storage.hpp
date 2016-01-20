@@ -22,8 +22,7 @@ namespace storage
 struct NodeAttrs
 {
   NodeAttrs() : m_mwmCounter(0), m_localMwmCounter(0), m_mwmSize(0), m_localMwmSize(0),
-    m_downloadingMwmSize(0), m_localMwmVersion(0), m_downloadingProgress(0),
-    m_status(TStatus::EUndefined) {}
+    m_downloadingMwmSize(0), m_downloadingProgress(0), m_status(TStatus::EUndefined) {}
   /// If the node is expandable (a big country) |m_mwmCounter| is number of mwm files (leaves)
   /// belongs to the node. If the node isn't expandable |m_mapsDownloaded| == 1.
   uint32_t m_mwmCounter;
@@ -57,12 +56,6 @@ struct NodeAttrs
 
   /// Node id of the parent of the node. For the root m_parentLocalName == "".
   TCountryId m_parentCountryId;
-
-  /// It's a version of downloaded mwm if the node is not expandable.
-  /// If the mwm has not been downloaded or if the node is expandable |m_localMwmVersion| == 0.
-  /// @TODO Discuss a version format. It should represent date and time (one second precision).
-  /// It should be converted easily to unix time.
-  size_t m_localMwmVersion;
 
   /// A number for 0 to 99. It reflects downloading progress in case of
   /// downloading and updating mwm. If downloading or updating is not in progress
