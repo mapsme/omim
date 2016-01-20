@@ -821,7 +821,7 @@ void Framework::OnUpdateCurrentCountry(m2::PointF const & pt, int zoomLevel)
 {
   storage::TCountryId newCountryId;
   if (zoomLevel > scales::GetUpperWorldScale())
-    newCountryId = m_storage.FindCountryIdByFile(m_infoGetter->GetRegionFile(m2::PointD(pt)));
+    newCountryId = m_storage.FindCountryIdByFile(m_infoGetter->GetRegionCountryId(m2::PointD(pt)));
 
   GetPlatform().RunOnGuiThread([this, newCountryId]()
   {
