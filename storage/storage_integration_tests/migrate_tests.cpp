@@ -16,11 +16,8 @@
 
 #include "write_dir_changer.hpp"
 
-#include <QtCore/QCoreApplication>
-
 using namespace platform;
 using namespace storage;
-
 
 namespace
 {
@@ -45,7 +42,7 @@ UNIT_TEST(StorageMigrationTests)
     if (!f.Storage().m_prefetchStorage->IsDownloadInProgress())
     {
       LOG_SHORT(LINFO, ("All prefetched. Ready to migrate."));
-      QCoreApplication::exit();
+      testing::StopEventLoop();
     }
   };
 
@@ -54,13 +51,13 @@ UNIT_TEST(StorageMigrationTests)
     if (!f.Storage().IsDownloadInProgress())
     {
       LOG_SHORT(LINFO, ("All downloaded. Check consistency."));
-      QCoreApplication::exit();
+      testing::StopEventLoop();
     }
   };
 
   auto progressChanged = [](TCountryId const & id, LocalAndRemoteSizeT const & sz)
   {
-    LOG(LINFO, (id, "downloading progress:", sz));
+    LOG_SHORT(LINFO, (id, "downloading progress:", sz));
   };
 
   // Somewhere in Moscow, Russia
@@ -72,7 +69,7 @@ UNIT_TEST(StorageMigrationTests)
     s.DownloadNode(countryId);
 
   // Wait for downloading complete.
-  QCoreApplication::exec();
+  testing::EventLoop();
 
   TEST_EQUAL(s.GetDownloadedFilesCount(), kOldCountries.size(), ());
   for (auto const & countryId : kOldCountries)
@@ -80,7 +77,7 @@ UNIT_TEST(StorageMigrationTests)
 
   f.PreMigrate(curPos, statePrefetchChanged, progressChanged);
   // Wait for downloading complete.
-  QCoreApplication::exec();
+  testing::EventLoop();
 
   TEST_EQUAL(s.GetDownloadedFilesCount(), kPrefetchCountries.size(), ());
   for (auto const & countryId : kPrefetchCountries)
@@ -88,7 +85,7 @@ UNIT_TEST(StorageMigrationTests)
 
   f.Migrate();
   // Wait for downloading complete.
-  QCoreApplication::exec();
+  testing::EventLoop();
 
   TEST_EQUAL(s.GetDownloadedFilesCount(), kPrefetchCountries.size() + kNewCountries.size(), ());
   for (auto const & countryId : kNewCountries)

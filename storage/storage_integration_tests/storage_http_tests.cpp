@@ -16,21 +16,24 @@
 
 #include "write_dir_changer.hpp"
 
-#include <QtCore/QCoreApplication>
-
 using namespace platform;
 using namespace storage;
 
 namespace
 {
+  string const kCountryId = "Angola";
+  string const kMapTestDir = "map-tests";
+}
 
-string const kCountryId = "Angola";
-
-string const kMapTestDir = "map-tests";
+void ChangeCountryFunction(TCountryId const & countryId) {}
 
 void ProgressFunction(TCountryId const & countryId, LocalAndRemoteSizeT const & mapSize)
 {
   TEST_EQUAL(countryId, kCountryId, ());
+  if (mapSize.first != mapSize.second)
+    return;
+
+  testing::StopEventLoop();
 }
 
 void Update(LocalCountryFile const & localCountryFile)
@@ -79,8 +82,9 @@ UNIT_TEST(StorageDownloadNodeAndDeleteNodeTests)
 
   // Downloading to an empty directory.
   storage.DownloadNode(kCountryId);
+
   // Wait for downloading complete.
-  QCoreApplication::exec();
+  testing::EventLoop();
 
   TEST(platform.IsFileExistsByFullPath(mwmFullPath), ());
   TEST(!platform.IsFileExistsByFullPath(downloadingFullPath), ());
@@ -88,7 +92,9 @@ UNIT_TEST(StorageDownloadNodeAndDeleteNodeTests)
 
   // Downloading to directory with Angola.mwm.
   storage.DownloadNode(kCountryId);
-  QCoreApplication::exec();
+
+  // Wait for downloading complete.
+  testing::EventLoop();
 
   TEST(platform.IsFileExistsByFullPath(mwmFullPath), ());
   TEST(!platform.IsFileExistsByFullPath(downloadingFullPath), ());
