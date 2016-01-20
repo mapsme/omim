@@ -12,20 +12,9 @@ WritableDirChanger::WritableDirChanger(string testDir)
   , m_testDirFullPath(m_writableDirBeforeTest + testDir)
 {
   Platform & platform = GetPlatform();
-  Platform::EError const err = platform.MkDir(m_testDirFullPath);
-  switch (err)
-  {
-  case Platform::ERR_OK:
-    break;
-  case Platform::ERR_FILE_ALREADY_EXISTS:
-    Platform::EFileType type;
-    TEST_EQUAL(platform.GetFileType(m_testDirFullPath, type), Platform::ERR_OK, ());
-    TEST_EQUAL(type, Platform::FILE_TYPE_DIRECTORY, ());
-    break;
-  default:
-    TEST(false, ("Can't create directory:", m_testDirFullPath));
-    break;
-  }
+  platform.RmDirRecursively(m_testDirFullPath);
+  TEST(!platform.IsFileExistsByFullPath(m_testDirFullPath), ());
+  TEST_EQUAL(Platform::ERR_OK, platform.MkDir(m_testDirFullPath), ());
   platform.SetWritableDirForTests(m_testDirFullPath);
 }
 
@@ -34,8 +23,5 @@ WritableDirChanger::~WritableDirChanger()
   Platform & platform = GetPlatform();
   string const writableDirForTest = platform.WritableDir();
   platform.SetWritableDirForTests(m_writableDirBeforeTest);
-  string const settingsFileFullPath = my::JoinFoldersToPath(writableDirForTest, SETTINGS_FILE_NAME);
-  if (platform.IsFileExistsByFullPath(settingsFileFullPath))
-    my::DeleteFileX(settingsFileFullPath);
-  platform.RmDir(writableDirForTest);
+  platform.RmDirRecursively(writableDirForTest);
 }
