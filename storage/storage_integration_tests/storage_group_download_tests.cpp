@@ -133,7 +133,6 @@ void DownloadGroup(Storage & storage, bool oneByOne)
   // Check state for the group node is set to UpToDate and NoError
   NodeAttrs attrs;
   storage.GetNodeAttrs(kGroupCountryId, attrs);
-  TEST_EQUAL(ErrorCode::NoError, attrs.m_downloadingErrCode, ());
   // TEST_EQUAL(NodeStatus::UpToDate, attrs.m_status, ()); // DOES NOT WORK
 
   // Check state for the all children nodes is set to UpToDate and NoError
@@ -142,7 +141,6 @@ void DownloadGroup(Storage & storage, bool oneByOne)
     TEST_EQUAL(TStatus::EOnDisk, storage.CountryStatusEx(countryId), ());
     NodeAttrs attrs;
     storage.GetNodeAttrs(countryId, attrs);
-    TEST_EQUAL(ErrorCode::NoError, attrs.m_downloadingErrCode, ());
     // TEST_EQUAL(NodeStatus::UpToDate, attrs.m_status, ()); // DOES NOT WORK
   }
 
