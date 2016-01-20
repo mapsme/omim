@@ -163,6 +163,11 @@ extern NSString * const kAlohalyticsTapEventKey;
 
 #pragma mark - MWMSearchManagerProtocol
 
+- (MWMAlertViewController *)alertController
+{
+  return self.ownerController.alertController;
+}
+
 - (void)searchViewDidEnterState:(MWMSearchManagerState)state
 {
   if (state == MWMSearchManagerStateHidden)

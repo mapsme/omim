@@ -1,4 +1,5 @@
 #import "DownloadIndicatorProtocol.h"
+#import "MWMAlertViewController.h"
 #import "MWMFrameworkListener.h"
 #import "NavigationController.h"
 
@@ -6,6 +7,8 @@
 
 @class MapViewController;
 @class LocationManager;
+
+typedef void (^TOnDownloadBlock)();
 
 typedef NS_ENUM(NSUInteger, MWMRoutingPlaneMode)
 {
@@ -32,6 +35,7 @@ typedef NS_ENUM(NSUInteger, MWMRoutingPlaneMode)
 @property (nonatomic, readonly) MWMFrameworkListener * frameworkListener;
 
 + (MapsAppDelegate *)theApp;
++ (void)downloadCountry:(storage::TCountryId const &)countryId alertController:(MWMAlertViewController *)alertController onDownload:(TOnDownloadBlock)onDownload;
 
 - (void)enableStandby;
 - (void)disableStandby;

@@ -3,11 +3,11 @@
 #import "EAGLView.h"
 #import "LocalNotificationManager.h"
 #import "LocationManager.h"
+#import "MapsAppDelegate.h"
+#import "MapViewController.h"
 #import "MWMAlertViewController.h"
 #import "MWMTextToSpeech.h"
 #import "MWMWatchEventInfo.h"
-#import "MapViewController.h"
-#import "MapsAppDelegate.h"
 #import "Preferences.h"
 #import "RouteState.h"
 #import "Statistics.h"
@@ -85,7 +85,7 @@ void InitLocalizedStrings()
   f.AddString("routing_failed_internal_error", [L(@"routing_failed_internal_error") UTF8String]);
 }
 
-@interface MapsAppDelegate ()
+@interface MapsAppDelegate () <MWMFrameworkStorageObserver>
 
 @property (nonatomic) NSInteger standbyCounter;
 
@@ -107,6 +107,37 @@ void InitLocalizedStrings()
 + (MapsAppDelegate *)theApp
 {
   return (MapsAppDelegate *)[UIApplication sharedApplication].delegate;
+}
+
++ (void)downloadCountry:(storage::TCountryId const &)countryId alertController:(MWMAlertViewController *)alertController onDownload:(TOnDownloadBlock)onDownload
+{
+  auto & s = GetFramework().Storage();
+  storage::NodeAttrs attrs;
+  s.GetNodeAttrs(countryId, attrs);
+  auto downloadCountry = ^
+  {
+    s.DownloadNode(countryId);
+    if (onDownload)
+      onDownload();
+  };
+  switch (Platform::ConnectionStatus())
+  {
+    case Platform::EConnectionType::CONNECTION_NONE:
+      [alertController presentNoConnectionAlert];
+      break;
+    case Platform::EConnectionType::CONNECTION_WIFI:
+      downloadCountry();
+      break;
+    case Platform::EConnectionType::CONNECTION_WWAN:
+    {
+      size_t const warningSizeForWWAN = 50 * MB;
+      if (attrs.m_mwmSize > warningSizeForWWAN)
+        [alertController presentnoWiFiAlertWithName:@(attrs.m_nodeLocalName.c_str()) downloadBlock:downloadCountry];
+      else
+        downloadCountry();
+      break;
+    }
+  }
 }
 
 #pragma mark - Notifications
@@ -233,18 +264,16 @@ void InitLocalizedStrings()
   [self trackWatchUser];
   InitLocalizedStrings();
   [Preferences setup];
-  // TODO (igrechuhin) Add missing implementation
-//  [self subscribeToStorage];
+  [[MWMFrameworkListener listener] addObserver:self];
   [MapsAppDelegate customizeAppearance];
 
   self.standbyCounter = 0;
   NSTimeInterval const minimumBackgroundFetchIntervalInSeconds = 6 * 60 * 60;
   [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:minimumBackgroundFetchIntervalInSeconds];
   [self startAdServerForbiddenCheckTimer];
-  Framework & f = GetFramework();
-  // TODO (igrechuhin) Add missing implementation
-//  [UIApplication sharedApplication].applicationIconBadgeNumber = f.GetCountryTree().GetActiveMapLayout().GetOutOfDateCount();
-  f.InvalidateMyPosition();
+  [self updateApplicationIconBadgeNumber];
+
+  GetFramework().InvalidateMyPosition();
 }
 
 - (void)determineMapStyle
@@ -356,11 +385,9 @@ void InitLocalizedStrings()
   }
 
   [self startAdServerForbiddenCheckTimer];
+  [self updateApplicationIconBadgeNumber];
 
-  Framework & f = GetFramework();
-  // TODO (igrechuhin) Add missing implementation
-//  application.applicationIconBadgeNumber = f.GetCountryTree().GetActiveMapLayout().GetOutOfDateCount();
-  f.InvalidateMyPosition();
+  GetFramework().InvalidateMyPosition();
 
   [self enableTTSForTheFirstTime];
   [MWMTextToSpeech activateAudioSession];
@@ -589,10 +616,12 @@ void InitLocalizedStrings()
   [self.mapViewController dismissPopover];
 }
 
-- (void)outOfDateCountriesCountChanged:(NSNotification *)notification
+- (void)updateApplicationIconBadgeNumber
 {
-  // TODO (igrechuhin) Add missing implementation
-  [UIApplication sharedApplication].applicationIconBadgeNumber = [[notification userInfo][@"OutOfDate"] integerValue];
+  auto & s = GetFramework().Storage();
+  storage::Storage::UpdateInfo updateInfo{};
+  s.GetUpdateInfo(s.GetRootId(), updateInfo);
+  [UIApplication sharedApplication].applicationIconBadgeNumber = updateInfo.m_numberOfMwmFilesToUpdate;
 }
 
 - (void)application:(UIApplication *)application handleWatchKitExtensionRequest:(NSDictionary *)userInfo reply:(void (^)(NSDictionary *))reply
@@ -614,7 +643,7 @@ void InitLocalizedStrings()
   if (isIOSVersionLessThan(8))
     return;
 
-  NSUserDefaults *standartDefaults = [NSUserDefaults standardUserDefaults];
+  NSUserDefaults * standartDefaults = [NSUserDefaults standardUserDefaults];
   BOOL const userLaunchAppleWatch = [[[NSUserDefaults alloc] initWithSuiteName:kApplicationGroupIdentifier()] boolForKey:kHaveAppleWatch];
   BOOL const appleWatchLaunchingEventAlreadyTracked = [standartDefaults boolForKey:kUDWatchEventAlreadyTracked];
   if (userLaunchAppleWatch && !appleWatchLaunchingEventAlreadyTracked)
@@ -638,6 +667,13 @@ void InitLocalizedStrings()
 {
   _routingPlaneMode = routingPlaneMode;
   [self.mapViewController updateStatusBarStyle];
+}
+
+#pragma mark - MWMFrameworkStorageObserver
+
+- (void)processCountryEvent:(storage::TCountryId const &)countryId
+{
+  [self updateApplicationIconBadgeNumber];
 }
 
 #pragma mark - Properties

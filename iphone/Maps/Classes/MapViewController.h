@@ -1,5 +1,6 @@
 #import "LocationManager.h"
 #import "LocationPredictor.h"
+#import "MWMAlertViewController.h"
 #import "ViewController.h"
 #import <MyTargetSDKCorp/MTRGNativeAppwallAd.h>
 
@@ -51,5 +52,7 @@ namespace search { struct AddressInfo; }
 @property (nonatomic, readonly) MWMMapViewControlsManager * controlsManager;
 @property (nonatomic) m2::PointD restoreRouteDestination;
 @property (nonatomic) MWMAPIBar * apiBar;
+
+@property (nonatomic, readonly) MWMAlertViewController * alertController;
 
 @end

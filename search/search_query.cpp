@@ -1946,10 +1946,10 @@ void Query::SearchAdditional(Results & res, size_t resCount)
 {
   ClearQueues();
 
-  string const fileName = m_infoGetter.GetRegionFile(m_pivot);
-  if (!fileName.empty())
+  storage::TCountryId const countryId = m_infoGetter.GetRegionCountryId(m_pivot);
+  if (!countryId.empty())
   {
-    LOG(LDEBUG, ("Additional MWM search: ", fileName));
+    LOG(LDEBUG, ("Additional MWM search: ", countryId));
 
     TMWMVector mwmsInfo;
     m_index.GetMwmsInfo(mwmsInfo);
@@ -1961,7 +1961,7 @@ void Query::SearchAdditional(Results & res, size_t resCount)
     {
       Index::MwmHandle const handle = m_index.GetMwmHandleById(info);
       if (handle.IsAlive() &&
-          handle.GetValue<MwmValue>()->GetCountryFileName() == fileName)
+          handle.GetValue<MwmValue>()->GetCountryFileName() == countryId)
       {
         SearchInMWM(handle, params);
       }

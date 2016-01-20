@@ -288,12 +288,12 @@ public:
   bool UpdateNode(TCountryId const & countryId);
   /// \brief Cancels downloading a node if the downloading is in process.
   /// \return false in case of error and true otherwise.
-  bool CancelNodeDownloading(TCountryId const & countryId);
+  bool CancelDownloadNode(TCountryId const & countryId) { return true; }
   /// \brief Downloading process could be interupted because of bad internet connection.
   /// In that case user could want to recover it. This method is done for it.
   /// This method works with expandable and not expandable countryId.
   /// \return false in case of error and true otherwise.
-  bool RestoreNodeDownloading(TCountryId const & countryId);
+  bool RetryDownloadNode(TCountryId const & countryId) { return true; }
 
   /// \brief Shows a node (expandable or not) on the map.
   /// \return false in case of error and true otherwise.
@@ -301,7 +301,7 @@ public:
 
   /// \brief Get information for mwm update button.
   /// \return true if updateInfo is filled correctly and false otherwise.
-  bool GetUpdateInfo(UpdateInfo & updateInfo) const;
+  bool GetUpdateInfo(TCountryId const & countryId, UpdateInfo & updateInfo) const { return true; }
   /// \brief Update all mwm in case of changing mwm hierarchy of mwm borders.
   /// This method:
   /// * removes all mwms
@@ -391,7 +391,7 @@ public:
   bool DeleteFromDownloader(TCountryId const & countryId);
   bool IsDownloadInProgress() const;
 
-  TCountryId GetCurrentDownloadingCountryIndex() const;
+  TCountryId GetCurrentDownloadingCountryId() const;
 
   void NotifyStatusChanged(TCountryId const & countryId);
 

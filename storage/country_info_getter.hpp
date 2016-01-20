@@ -30,7 +30,7 @@ public:
   // Returns country file name without an extension for a country |pt|
   // belongs to. If there are no such country, returns an empty
   // string.
-  string GetRegionFile(m2::PointD const & pt) const;
+  TCountryId GetRegionCountryId(m2::PointD const & pt) const;
 
   // Returns a list of country ids by a |pt| in mercator.
   // |closestCoutryIds| is filled with country ids of mwm which covers |pt| or close to it.

@@ -227,7 +227,7 @@ void Framework::PreMigrate(ms::LatLon const & position,
   storage::CountryInfoGetter infoGetter(GetPlatform().GetReader(PACKED_POLYGONS_MIGRATE_FILE),
                                         GetPlatform().GetReader(COUNTRIES_MIGRATE_FILE));
 
-  TCountryId currentCountryId = infoGetter.GetRegionFile(MercatorBounds::FromLatLon(position));
+  TCountryId currentCountryId = infoGetter.GetRegionCountryId(MercatorBounds::FromLatLon(position));
 
   Storage().m_prefetchStorage->Subscribe(change, progress);
   Storage().m_prefetchStorage->DownloadNode(currentCountryId);
@@ -765,7 +765,7 @@ bool Framework::IsCountryLoaded(m2::PointD const & pt) const
   // obfuscating and should be fixed.
 
   // Correct, but slow version (check country polygon).
-  string const fName = m_infoGetter->GetRegionFile(pt);
+  TCountryId const fName = m_infoGetter->GetRegionCountryId(pt);
   if (fName.empty())
     return true;
 
@@ -822,7 +822,7 @@ void Framework::ClearAllCaches()
 void Framework::OnUpdateCountryId(storage::TCountryId const & currentCountryId, m2::PointF const & pt)
 {
   storage::TCountryId const newCountryId =
-      m_storage.FindCountryIdByFile(m_infoGetter->GetRegionFile(m2::PointD(pt)));
+      m_storage.FindCountryIdByFile(m_infoGetter->GetRegionCountryId(m2::PointD(pt)));
   if (newCountryId.empty())
   {
     m_drapeEngine->SetInvalidCountryInfo();
@@ -1941,11 +1941,11 @@ void Framework::SetRouterImpl(RouterType type)
   unique_ptr<IRouter> router;
   unique_ptr<OnlineAbsentCountriesFetcher> fetcher;
 
-  auto countryFileGetter = [this](m2::PointD const & p) -> string
+  auto countryFileGetter = [this](m2::PointD const & p) -> TCountryId
   {
     // TODO (@gorshenin): fix CountryInfoGetter to return CountryFile
     // instances instead of plain strings.
-    return m_infoGetter->GetRegionFile(p);
+    return m_infoGetter->GetRegionCountryId(p);
   };
 
   if (type == RouterType::Pedestrian)
@@ -2083,7 +2083,7 @@ RouterType Framework::GetBestRouter(m2::PointD const & startPoint, m2::PointD co
     // Return on a short distance the vehicle router flag only if we are already have routing files.
     auto countryFileGetter = [this](m2::PointD const & pt)
     {
-      return m_infoGetter->GetRegionFile(pt);
+      return m_infoGetter->GetRegionCountryId(pt);
     };
     if (!OsrmRouter::CheckRoutingAbility(startPoint, finalPoint, countryFileGetter,
                                          &m_model.GetIndex()))

@@ -1,16 +1,17 @@
 #pragma once
 
+#include "storage/index.hpp"
+
 #include "geometry/rect2d.hpp"
 
 #include "std/string.hpp"
-
 
 namespace storage
 {
   struct CountryDef
   {
     /// File name without extension (equal to english name - used in search for region).
-    string m_name;
+    TCountryId m_name;
     m2::RectD m_rect;
 
     CountryDef() {}

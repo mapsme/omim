@@ -279,13 +279,12 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell)
   {
   case MWMBottomMenuViewCellDownload:
   {
-// TODO (igrechuhin) Add missing implementation
-//    NSUInteger const badgeCount =
-//        GetFramework().GetCountryTree().GetActiveMapLayout().GetOutOfDateCount();
-    NSUInteger const badgeCount = 0;
+    auto & s = GetFramework().Storage();
+    storage::Storage::UpdateInfo updateInfo{};
+    s.GetUpdateInfo(s.GetRootId(), updateInfo);
     [cell configureWithImageName:@"ic_menu_download"
                            label:L(@"download_maps")
-                      badgeCount:badgeCount];
+                      badgeCount:updateInfo.m_numberOfMwmFilesToUpdate];
   }
   break;
   case MWMBottomMenuViewCellSettings:

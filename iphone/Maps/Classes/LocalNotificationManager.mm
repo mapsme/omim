@@ -60,16 +60,17 @@ using namespace storage;
   if ([userInfo[kDownloadMapActionKey] isEqualToString:kDownloadMapActionName])
   {
     [[Statistics instance] logEvent:@"'Download Map' Notification Clicked"];
-    [[MapsAppDelegate theApp].mapViewController.navigationController popToRootViewControllerAnimated:NO];
+    MapViewController * mapViewController = [MapsAppDelegate theApp].mapViewController;
+    [mapViewController.navigationController popToRootViewControllerAnimated:NO];
 
     NSString * notificationCountryId = userInfo[kDownloadMapCountryId];
     TCountryId const countryId = notificationCountryId.UTF8String;
-
-    auto & f = GetFramework();
-    f.Storage().DownloadNode(countryId);
-
-    double const defaultZoom = 10;
-    f.ShowRect(f.GetCountryBounds(countryId), defaultZoom);
+    [MapsAppDelegate downloadCountry:countryId alertController:mapViewController.alertController onDownload:^
+    {
+      auto & f = GetFramework();
+      double const defaultZoom = 10;
+      f.ShowRect(f.GetCountryBounds(countryId), defaultZoom);
+    }];
   }
 }
 
@@ -165,7 +166,7 @@ using namespace storage;
     auto const & countryInfoGetter = f.CountryInfoGetter();
     if (!IsPointCoveredByDownloadedMaps(mercator, f.Storage(), countryInfoGetter))
     {
-      NSString * countryId = @(countryInfoGetter.GetRegionFile(mercator).c_str());
+      NSString * countryId = @(countryInfoGetter.GetRegionCountryId(mercator).c_str());
       if ([self shouldShowNotificationForCountryId:countryId])
       {
         [self markNotificationShownForCountryId:countryId];
