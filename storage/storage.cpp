@@ -78,22 +78,6 @@ void DeleteFromDiskWithIndexes(LocalCountryFile const & localFile, MapOptions op
 }
 }  // namespace
 
-string DebugPrint(NodeStatus status)
-{
-  switch (status)
-  {
-  case NodeStatus::Undefined: return "Undefined";
-  case NodeStatus::UpToDate: return "UpToDate";
-  case NodeStatus::DownloadInProgress: return "DownloadInProgress";
-  case NodeStatus::DownloadPaused: return "DownloadPaused";
-  case NodeStatus::NeedsToUpdate: return "NeedsToUpdate";
-  case NodeStatus::InQueue: return "InQueue";
-  }
-  ostringstream s;
-  s << "Unknown NodeStatus " << static_cast<int>(status);
-  return s.str();
-}
-
 string DebugPrint(ErrorCode code)
 {
   switch (code)
@@ -1128,5 +1112,8 @@ void Storage::GetNodeAttrs(TCountryId const & countryId, NodeAttrs & nodeAttrs) 
   Country const & nodeValue = node->Value();
   nodeAttrs.m_mwmCounter = nodeValue.GetSubtreeMwmCounter();
   nodeAttrs.m_mwmSize = nodeValue.GetSubtreeMwmSizeBytes();
+  nodeAttrs.m_status = CountryStatusEx(countryId);
+  // @TODO(bykoianko) NodeAttrs::m_nodeLocalName should be in local language.
+  nodeAttrs.m_nodeLocalName = countryId;
 }
 }  // namespace storage
