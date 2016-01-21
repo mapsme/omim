@@ -57,7 +57,7 @@ CountryInfoGetter::CountryInfoGetter(ModelReaderPtr polyR, ModelReaderPtr countr
 
   size_t const countrySz = m_countries.size();
   m_countryIndex.reserve(countrySz);
-  for (int i = 0; i < countrySz; ++i)
+  for (size_t i = 0; i < countrySz; ++i)
     m_countryIndex[m_countries[i].m_name] = i;
 
   string buffer;

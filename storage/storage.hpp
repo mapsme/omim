@@ -217,7 +217,7 @@ public:
   void GetChildren(TCountryId const & parent, TCountriesVec & childrenId) const;
   /// \param leavesInSubtree is filled with all leaf nodes ids (file names without extension) by a parent.
   /// If parent is a leaf it is added to leavesInSubtree.
-  /// For example GetChildren(GetRootId()) returns in param all names of mwm files.
+  /// For example GetAllLeavesInSubtree(GetRootId()) returns in param all names of mwm files.
   void GetAllLeavesInSubtree(TCountryId const & parent, TCountriesVec & leavesInSubtree) const;
   /// \brief Fills localChildren with children of parent.
   /// The result of the method is composed in a special way because of design requirements.

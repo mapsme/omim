@@ -1145,4 +1145,34 @@ UNIT_TEST(StorageTest_GetNodeAttrsSingleMwm)
   TEST_EQUAL(nodeAttrs.m_status, TStatus::ENotDownloaded, ());
 }
 
+UNIT_TEST(StorageTest_GetAllLeavesInSubtree)
+{
+  Storage storage(kSingleMwmCountriesTxt, make_unique<TestMapFilesDownloader>());
+
+  TCountriesVec leafVec;
+  storage.GetAllLeavesInSubtree(storage.GetRootId(), leafVec);
+
+  TCountriesVec expectedLeafVec = {"Abkhazia", "Algeria_Central", "Algeria_Coast", "South Korea_South"};
+  TEST_EQUAL(leafVec, expectedLeafVec, ());
+}
+
+UNIT_TEST(StorageTest_CalcLimitRect)
+{
+  double constexpr kEpsilon = 1e-3;
+  Storage storage(COUNTRIES_FILE);
+  if (!version::IsSingleMwm(storage.GetCurrentDataVersion()))
+    return;
+
+  TaskRunner runner;
+  InitStorage(storage, runner);
+
+  auto const countryInfoGetter = CreateCountryInfoGetter(true);
+  ASSERT(countryInfoGetter, ());
+
+  m2::RectD algeriaBoundBox = CalcLimitRect("Algeria", storage, *countryInfoGetter);
+  TEST(my::AlmostEqualAbs(algeriaBoundBox.maxX(), 11.99734, kEpsilon), ());
+  TEST(my::AlmostEqualAbs(algeriaBoundBox.maxY(), 40.2488, kEpsilon), ());
+  TEST(my::AlmostEqualAbs(algeriaBoundBox.minX(), -8.6689, kEpsilon), ());
+  TEST(my::AlmostEqualAbs(algeriaBoundBox.minY(), 19.32443, kEpsilon), ());
+}
 }  // namespace storage
