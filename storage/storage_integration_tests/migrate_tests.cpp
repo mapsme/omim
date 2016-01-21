@@ -7,6 +7,7 @@
 #include "platform/platform_tests_support/scoped_dir.hpp"
 
 #include "coding/file_name_utils.hpp"
+#include "coding/internal/file_data.hpp"
 
 #include "base/scope_guard.hpp"
 #include "base/string_utils.hpp"
@@ -24,6 +25,20 @@ namespace
 static string const kMapTestDir = "map-tests";
 }
 
+UNIT_TEST(StorageFastMigrationTests)
+{
+  WritableDirChanger writableDirChanger(kMapTestDir);
+
+  Framework f;
+  auto & s = f.Storage();
+
+  uint32_t version;
+  Settings::Get("LastMigration", version);
+
+  TEST_GREATER_OR_EQUAL(s.GetCurrentDataVersion(), version, ());
+  Settings::Clear();
+}
+
 UNIT_TEST(StorageMigrationTests)
 {
   TCountriesVec const kOldCountries = {"Estonia"};
@@ -31,6 +46,8 @@ UNIT_TEST(StorageMigrationTests)
   TCountriesVec const kPrefetchCountries = {"Russia_Moscow"};
 
   WritableDirChanger writableDirChanger(kMapTestDir);
+  Settings::Clear();
+  Settings::Set("DisableFastMigrate", true);
 
   Framework f;
   auto & s = f.Storage();

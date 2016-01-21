@@ -118,6 +118,17 @@ void Storage::DeleteAllLocalMaps(TCountriesVec * existedCountries /* = nullptr *
   }
 }
 
+void Storage::FastMigrateIfPossible()
+{
+  bool disableFastMigrate = false;
+  Settings::Get("DisableFastMigrate", disableFastMigrate);
+  if(!disableFastMigrate && platform::migrate::NeedMigrate() && m_localFiles.empty())
+  {
+    PrefetchMigrateData();
+    Migrate(TCountriesVec());
+  }
+}
+
 void Storage::PrefetchMigrateData()
 {
   m_prefetchStorage.reset(new Storage(COUNTRIES_MIGRATE_FILE, "migrate"));
