@@ -91,7 +91,10 @@ Storage::Storage(string const & pathToCountriesFile /* = COUNTRIES_FILE */, stri
 
 
   LoadCountriesFile(pathToCountriesFile, m_dataDir);
-  RestoreDownloadQueue();
+
+  // WARNING! RestoreDownloadQueue should be called after RegisterAllLocalMaps
+  // otherwise RegisterAllLocalMaps breaks downloading queue.
+  // RestoreDownloadQueue();
 }
 
 Storage::Storage(string const & referenceCountriesTxtJsonForTesting,
