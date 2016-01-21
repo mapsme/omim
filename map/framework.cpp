@@ -1204,7 +1204,6 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
   using TReadFeaturesFn = df::MapDataProvider::TReadFeaturesFn;
   using TUpdateCountryIndexFn = df::MapDataProvider::TUpdateCountryIdFn;
   using TIsCountryLoadedFn = df::MapDataProvider::TIsCountryLoadedFn;
-  using TDownloadFn = df::MapDataProvider::TDownloadFn;
 
   TReadIDsFn idReadFn = [this](df::MapDataProvider::TReadCallback<FeatureID> const & fn, m2::RectD const & r, int scale) -> void
   {
@@ -1224,22 +1223,22 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
   TIsCountryLoadedFn isCountryLoadedFn = bind(&Framework::IsCountryLoaded, this, _1);
   auto isCountryLoadedByNameFn = bind(&Framework::IsCountryLoadedByName, this, _1);
 
-  TDownloadFn downloadMapFn = [this](storage::TCountryId const &)
+  TDownloadFn downloadMapFn = [this](storage::TCountryId const & countryId)
   {
-    // @TODO(bykoianko) This method should be removed when map downloader is finished.
-    ASSERT(false, ());
+    // @TODO(bykoianko) It's not a thread safe call. It should be fixed in Storage.
+    GetPlatform().RunOnGuiThread(bind(&Storage::DoClickOnDownloadMap, &(this->Storage()), countryId));
   };
 
   TDownloadFn downloadMapWithoutRoutingFn = [this](storage::TCountryId const &)
   {
-    // @TODO(bykoianko) This method should be removed when map downloader is finished.
+    // @TODO This method should be removed when routing button will be removed from drape.
     ASSERT(false, ());
   };
 
-  TDownloadFn downloadRetryFn = [this](storage::TCountryId const &)
+  TDownloadFn downloadRetryFn = [this](storage::TCountryId const & countryId)
   {
-    // @TODO(bykoianko) This method should be removed when map downloader is finished.
-    ASSERT(false, ());
+    // @TODO(bykoianko) It's not a thread safe call. It should be fixed in Storage.
+    GetPlatform().RunOnGuiThread(bind(&Storage::DoClickOnDownloadMap, &(this->Storage()), countryId));
   };
 
   bool allow3d;

@@ -20,7 +20,6 @@ public:
   using TUpdateCountryIdFn = function<void (storage::TCountryId const & , m2::PointF const &)>;
   using TIsCountryLoadedFn = function<bool (m2::PointD const &)>;
   using TIsCountryLoadedByNameFn = function<bool (string const &)>;
-  using TDownloadFn = function<void (storage::TCountryId const &)>;
 
   MapDataProvider(TReadIDsFn const & idsReader,
                   TReadFeaturesFn const & featureReader,

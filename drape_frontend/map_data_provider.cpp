@@ -42,17 +42,17 @@ MapDataProvider::TIsCountryLoadedFn const & MapDataProvider::GetIsCountryLoadedF
   return m_isCountryLoadedFn;
 }
 
-MapDataProvider::TDownloadFn const & MapDataProvider::GetDownloadMapHandler() const
+TDownloadFn const & MapDataProvider::GetDownloadMapHandler() const
 {
   return m_downloadMapHandler;
 }
 
-MapDataProvider::TDownloadFn const & MapDataProvider::GetDownloadMapRoutingHandler() const
+TDownloadFn const & MapDataProvider::GetDownloadMapRoutingHandler() const
 {
   return m_downloadMapRoutingHandler;
 }
 
-MapDataProvider::TDownloadFn const & MapDataProvider::GetDownloadRetryHandler() const
+TDownloadFn const & MapDataProvider::GetDownloadRetryHandler() const
 {
   return m_downloadRetryHandler;
 }

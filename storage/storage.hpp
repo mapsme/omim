@@ -138,6 +138,10 @@ private:
   // For example {"http://new-search.mapswithme.com/"}.
   vector<string> m_downloadingUrlsForTesting;
 
+  // |m_downloadMapOnTheMap| is called when an end user clicks on download map or retry button
+  // on the map.
+  TDownloadFn m_downloadMapOnTheMap;
+
   void DownloadNextCountryFromQueue();
 
   void LoadCountriesFile(string const & pathToCountriesFile,
@@ -284,6 +288,13 @@ public:
   /// \brief Unsubscribe from change status callback.
   /// \param index is a unique index of callback retruned by SubscribeStatusCallback.
   void UnsubscribeStatusCallback(size_t index);
+  /// \brief Sets callback which will be called in case of a click on download map button on the map.
+  void SetCallbackForClickOnDownloadMap(TDownloadFn & downloadFn) { m_downloadMapOnTheMap  = downloadFn; }
+  /// \brief Calls |m_downloadMapOnTheMap| if one has been set.
+  /// \param |countryId| is country id of a leaf. That means it's a file name.
+  /// \note This method should be called for a click of download map button
+  /// and for a click for retry downloading map button on the map.
+  void DoClickOnDownloadMap(TCountryId const & countryId);
   //@}
 
   /// \returns real (not fake) local maps contained in countries.txt.
