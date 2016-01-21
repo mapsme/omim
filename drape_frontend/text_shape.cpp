@@ -1,6 +1,7 @@
 #include "drape_frontend/text_shape.hpp"
 #include "drape_frontend/text_handle.hpp"
 #include "drape_frontend/text_layout.hpp"
+#include "drape_frontend/stylist.hpp"
 
 #include "drape/utils/vertex_decl.hpp"
 #include "drape/shader_def.hpp"
@@ -277,6 +278,10 @@ void TextShape::DrawSubStringOutlined(StraightTextLayout const & layout, dp::Fon
 
 uint64_t TextShape::GetOverlayPriority() const
 {
+  // Set minimal priority of house number symbol.
+  if (m_params.m_primaryText == kHouseNumberSymbol)
+    return 0;
+
   // Overlay priority for text shapes considers the existance of secondary string and length of primary text.
   // - If the text has secondary string then it has more priority;
   // - The more text length, the more priority.

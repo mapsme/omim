@@ -13,6 +13,8 @@
 namespace df
 {
 
+string kHouseNumberSymbol = "·";
+
 namespace
 {
 
@@ -188,7 +190,7 @@ void CaptionDescription::Init(FeatureType const & f,
   {
     // Mark houses without names/numbers so user can select them by single tap.
     if (m_houseNumber.empty() && m_mainText.empty())
-      m_houseNumber = "·";
+      m_houseNumber = kHouseNumberSymbol;
   }
 
   SwapCaptions(zoomLevel);

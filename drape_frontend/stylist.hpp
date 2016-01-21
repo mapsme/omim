@@ -15,6 +15,8 @@ namespace drule { class BaseRule; }
 namespace df
 {
 
+extern string kHouseNumberSymbol;
+
 struct CaptionDescription
 {
   void Init(FeatureType const & f,
