@@ -845,4 +845,17 @@
 	<string name="whats_new_rec_track_body">Aplikace nyní ukazuje vaše nedávno uskutečněné cesty.</string>
 	<string name="whats_new_night_caption">Přidejte se na temnou stranu!</string>
 	<string name="whats_new_night_body">Každý den po západu slunce aktivují MAPS.ME noční režim.</string>
+	<string name="edit_opening_hours">Otevírací doba</string>
+	<string name="edit_all_day">Celý den (24 hodin)</string>
+	<string name="edit_open">Otevřeno</string>
+	<string name="edit_closed">Zavřeno</string>
+	<string name="edit_add_hours_closed">Přidat dobu, kdy je zavřeno</string>
+	<string name="edit_hours_closed">Doba, kdy je zavřeno</string>
+	<string name="edit_add_schedule">Přidat rozvrh</string>
+	<string name="edit_delete_schedule">Smazat rozvrh</string>
+	<string name="edit_simple_mode">Jednoduchý režim</string>
+	<string name="edit_advanced_mode">Pokročilý režim</string>
+	<string name="edit_example_values">Vzorové hodnoty</string>
+	<string name="edit_correct_mistake">Opravit chybu</string>
+	<string name="edit_correct_mistake_message">Při úpravách jste udělali chybu. Opravte ji prosím, nebo přepněte do jednoduchého režimu.</string>
 </resources>

@@ -838,4 +838,17 @@
 	<string name="whats_new_rec_track_body">Sovellus näyttää nyt viimeiseksi kulkemasi reitin.</string>
 	<string name="whats_new_night_caption">Liity pimeälle puolelle!</string>
 	<string name="whats_new_night_body">Joka päivä auringonlaskun jälkeen, MAPS.ME aktivoi yötilan.</string>
+	<string name="edit_opening_hours">Aukioloajat</string>
+	<string name="edit_all_day">Kaikki päivät (24 tuntia)</string>
+	<string name="edit_open">Avoinna</string>
+	<string name="edit_closed">Suljettu</string>
+	<string name="edit_add_hours_closed">Lisää suljettuna tunnit</string>
+	<string name="edit_hours_closed">Suljettuna tunnit</string>
+	<string name="edit_add_schedule">Lisää aikataulu</string>
+	<string name="edit_delete_schedule">Poista aikataulu</string>
+	<string name="edit_simple_mode">Yksinkertainen malli</string>
+	<string name="edit_advanced_mode">Kehittynyt malli</string>
+	<string name="edit_example_values">Esimerkkiarvot</string>
+	<string name="edit_correct_mistake">Korjaa virhe</string>
+	<string name="edit_correct_mistake_message">Teit muokkausvirheen. Korjaa se tai vaihda yksinkertaiseen malliin.</string>
 </resources>

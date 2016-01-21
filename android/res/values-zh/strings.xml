@@ -842,4 +842,17 @@
 	<string name="whats_new_rec_track_body">现在，应用程序可以显示您最近走过的路径。</string>
 	<string name="whats_new_night_caption">加入黑暗一方！</string>
 	<string name="whats_new_night_body">每天日落之后，MAPS.ME激活夜间模式。</string>
+	<string name="edit_opening_hours">营业时间</string>
+	<string name="edit_all_day">全天（24小时）</string>
+	<string name="edit_open">营业中</string>
+	<string name="edit_closed">未营业</string>
+	<string name="edit_add_hours_closed">添加不营业时间</string>
+	<string name="edit_hours_closed">不营业时间</string>
+	<string name="edit_add_schedule">添加计划</string>
+	<string name="edit_delete_schedule">删除计划</string>
+	<string name="edit_simple_mode">简单模式</string>
+	<string name="edit_advanced_mode">高级模式</string>
+	<string name="edit_example_values">示例值</string>
+	<string name="edit_correct_mistake">纠正错误</string>
+	<string name="edit_correct_mistake_message">出现编辑错误，请纠正或切换至简单模式。</string>
 </resources>

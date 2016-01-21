@@ -1393,3 +1393,29 @@
 "editor_time_advanced" = "Advanced mode";
 
 "editor_time_simple" = "Simple mode";
+
+"edit_opening_hours" = "Öppettider";
+
+"edit_all_day" = "Alla dagar (24 timmar)";
+
+"edit_open" = "Öppet";
+
+"edit_closed" = "Stängt";
+
+"edit_add_hours_closed" = "Lägg till stängda timmar";
+
+"edit_hours_closed" = "Stängda timmar";
+
+"edit_add_schedule" = "Lägg till schema";
+
+"edit_delete_schedule" = "Ta bort schema";
+
+"edit_simple_mode" = "Enkelt läge";
+
+"edit_advanced_mode" = "Avancerat läge";
+
+"edit_example_values" = "Exempelvärden";
+
+"edit_correct_mistake" = "Korrigera fel";
+
+"edit_correct_mistake_message" = "Du har gjort ett fel i redigeringen. Var vänlig korrigera det eller byt till enkelt läge.";

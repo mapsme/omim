@@ -1393,3 +1393,29 @@
 "editor_time_advanced" = "Advanced mode";
 
 "editor_time_simple" = "Simple mode";
+
+"edit_opening_hours" = "Aukioloajat";
+
+"edit_all_day" = "Kaikki päivät (24 tuntia)";
+
+"edit_open" = "Avoinna";
+
+"edit_closed" = "Suljettu";
+
+"edit_add_hours_closed" = "Lisää suljettuna tunnit";
+
+"edit_hours_closed" = "Suljettuna tunnit";
+
+"edit_add_schedule" = "Lisää aikataulu";
+
+"edit_delete_schedule" = "Poista aikataulu";
+
+"edit_simple_mode" = "Yksinkertainen malli";
+
+"edit_advanced_mode" = "Kehittynyt malli";
+
+"edit_example_values" = "Esimerkkiarvot";
+
+"edit_correct_mistake" = "Korjaa virhe";
+
+"edit_correct_mistake_message" = "Teit muokkausvirheen. Korjaa se tai vaihda yksinkertaiseen malliin.";

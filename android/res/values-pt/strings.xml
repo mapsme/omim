@@ -831,4 +831,17 @@
 	<string name="whats_new_next_button">Próxima</string>
 	<string name="whats_new_night_caption">Junte-se ao lado negro!</string>
 	<string name="whats_new_night_body">Todo dia depois do pôr do sol, MAPS.ME ativa o modo noturno.</string>
+	<string name="edit_opening_hours">Horário de Funcionamento</string>
+	<string name="edit_all_day">Todo o Dia (24 horas)</string>
+	<string name="edit_open">Aberto</string>
+	<string name="edit_closed">Fechado</string>
+	<string name="edit_add_hours_closed">Adicionar Horas Fechado</string>
+	<string name="edit_hours_closed">Horas Fechado</string>
+	<string name="edit_add_schedule">Adicionar Horário</string>
+	<string name="edit_delete_schedule">Eliminar Horário</string>
+	<string name="edit_simple_mode">Modo Simples</string>
+	<string name="edit_advanced_mode">Modo Avançado</string>
+	<string name="edit_example_values">Valores do Exemplo</string>
+	<string name="edit_correct_mistake">Corrigir erro</string>
+	<string name="edit_correct_mistake_message">Fez um erro de edição. Corrija-o ou mude para o modo simples.</string>
 </resources>

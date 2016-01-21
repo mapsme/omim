@@ -839,4 +839,17 @@
 	<string name="whats_new_rec_track_body">A MAPS.ME-vel nem fogsz eltévedni</string>
 	<string name="whats_new_night_caption">Csatlakozz a sötét oldalhoz!</string>
 	<string name="whats_new_night_body">Minden nap naplemente után a MAPS.ME bekapcsolja az éjszakai módot.</string>
+	<string name="edit_opening_hours">Nyitvatartási idő</string>
+	<string name="edit_all_day">Egész nap (24 óra)</string>
+	<string name="edit_open">Nyitva</string>
+	<string name="edit_closed">Zárva</string>
+	<string name="edit_add_hours_closed">Zárvatartási idők felvitele</string>
+	<string name="edit_hours_closed">Zárvatartási órák</string>
+	<string name="edit_add_schedule">Időrend felvitele</string>
+	<string name="edit_delete_schedule">Időrend törlése</string>
+	<string name="edit_simple_mode">Egyszerű mód</string>
+	<string name="edit_advanced_mode">Haladó mód</string>
+	<string name="edit_example_values">Példa értékek</string>
+	<string name="edit_correct_mistake">Hiba javítása</string>
+	<string name="edit_correct_mistake_message">Szerkesztési hibát vétett. Javítsa ki vagy váltson egyszerű módba.</string>
 </resources>

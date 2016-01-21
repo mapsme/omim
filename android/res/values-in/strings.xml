@@ -837,4 +837,17 @@
 	<string name="whats_new_rec_track_body">Aplikasi kini menunjukkan jalur yang telah Anda tempuh baru-baru ini.</string>
 	<string name="whats_new_night_caption">Bergabunglah di sisi kegelapan!</string>
 	<string name="whats_new_night_body">Setiap hari setelah matahari terbenam, MAPS.ME mengaktifkan mode malam.</string>
+	<string name="edit_opening_hours">Jam buka</string>
+	<string name="edit_all_day">Setiap Hari (24 jam)</string>
+	<string name="edit_open">Buka</string>
+	<string name="edit_closed">Tutup</string>
+	<string name="edit_add_hours_closed">Tambah Jam Tutup</string>
+	<string name="edit_hours_closed">Jam Tutup</string>
+	<string name="edit_add_schedule">Tambah Jadwal</string>
+	<string name="edit_delete_schedule">Hapus Jadwal</string>
+	<string name="edit_simple_mode">Mode Sederhana</string>
+	<string name="edit_advanced_mode">Mode Lanjutan</string>
+	<string name="edit_example_values">Contoh Nilai</string>
+	<string name="edit_correct_mistake">Koreksi kesalahan</string>
+	<string name="edit_correct_mistake_message">Pengeditan salah. Koreksi atau ubah ke mode sederhana.</string>
 </resources>

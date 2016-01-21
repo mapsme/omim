@@ -835,4 +835,17 @@
 	<string name="whats_new_rec_track_body">Acum, MAPS.ME vă indică ruta folosită recent.</string>
 	<string name="whats_new_night_caption">Alăturați-vă întunericului!</string>
 	<string name="whats_new_night_body">În fiecare zi după apus, MAPS.ME activează modul de noapte.</string>
+	<string name="edit_opening_hours">Program</string>
+	<string name="edit_all_day">Toată ziua (non-stop)</string>
+	<string name="edit_open">Deschidere</string>
+	<string name="edit_closed">Închidere</string>
+	<string name="edit_add_hours_closed">Adăugare oră de închidere</string>
+	<string name="edit_hours_closed">Ora închiderii</string>
+	<string name="edit_add_schedule">Adăugare planificare</string>
+	<string name="edit_delete_schedule">Eliminare planificare</string>
+	<string name="edit_simple_mode">Mod Simplu</string>
+	<string name="edit_advanced_mode">Mod Avansat</string>
+	<string name="edit_example_values">Exemple de valori</string>
+	<string name="edit_correct_mistake">Corectare greșeală</string>
+	<string name="edit_correct_mistake_message">Ați efectuat o eroare de editare. Corectați eroarea sau treceți în modul Simplu.</string>
 </resources>

@@ -1393,3 +1393,29 @@
 "editor_time_advanced" = "Advanced mode";
 
 "editor_time_simple" = "Simple mode";
+
+"edit_opening_hours" = "営業時間";
+
+"edit_all_day" = "終日 (24時間)";
+
+"edit_open" = "営業中";
+
+"edit_closed" = "閉店";
+
+"edit_add_hours_closed" = "閉店時間追加";
+
+"edit_hours_closed" = "閉店時間";
+
+"edit_add_schedule" = "スケジュール追加";
+
+"edit_delete_schedule" = "スケジュール削除";
+
+"edit_simple_mode" = "シンプルモード";
+
+"edit_advanced_mode" = "詳細モード";
+
+"edit_example_values" = "値の例";
+
+"edit_correct_mistake" = "間違いの訂正";
+
+"edit_correct_mistake_message" = "編集の間違いがあります。訂正するか、シンプルモードに切り替えてください。";

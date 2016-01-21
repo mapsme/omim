@@ -840,4 +840,17 @@
 	<string name="whats_new_rec_track_body">ตอนนี้ แอปจะแสดงเส้นทางการท่องเที่ยวล่าสุดของคุณ</string>
 	<string name="whats_new_night_caption">เข้าร่วมด้านมืด!</string>
 	<string name="whats_new_night_body">ทุกวันหลังพระอาทิตย์ตกดิน MAPS.ME จะเปิดใช้งานโหมดกลางคืน</string>
+	<string name="edit_opening_hours">วันเวลาทำการ</string>
+	<string name="edit_all_day">ตลอดวัน (24 ชั่วโมง)</string>
+	<string name="edit_open">เปิด</string>
+	<string name="edit_closed">ปิด</string>
+	<string name="edit_add_hours_closed">เพิ่มเวลาที่ปิดทำการเพิ่มเติม</string>
+	<string name="edit_hours_closed">ปิดเวลา</string>
+	<string name="edit_add_schedule">เพิ่มวัน</string>
+	<string name="edit_delete_schedule">ลบวัน</string>
+	<string name="edit_simple_mode">โหมดแบบง่าย</string>
+	<string name="edit_advanced_mode">โหมดขั้นสูง</string>
+	<string name="edit_example_values">ตัวอย่างของค่าที่ตั้งไว้</string>
+	<string name="edit_correct_mistake">แก้ไขข้อผิดพลาด</string>
+	<string name="edit_correct_mistake_message">มีข้อผิดพลาดเกิดขึ้นจากการแก้ไขของคุณ โปรดแก้ไขให้ถูกต้อง หรือ สลับไปใช้ในโหมดแบบง่าย</string>
 </resources>

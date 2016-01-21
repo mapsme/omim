@@ -842,4 +842,17 @@
 	<string name="whats_new_rec_track_body">بإمكان التطبيق الآن أن يُظهر لك مسار سفرك الأخير.</string>
 	<string name="whats_new_night_caption">انضم إلى الوضع الليلي!</string>
 	<string name="whats_new_night_body">كل يوم بعد غروب الشمس، تقوم MAPS.ME بتنشيط الوضع الليلي.</string>
+	<string name="edit_opening_hours">ساعات العمل</string>
+	<string name="edit_all_day">طوال اليوم (24 ساعة)</string>
+	<string name="edit_open">مفتوح</string>
+	<string name="edit_closed">مغلق</string>
+	<string name="edit_add_hours_closed">إضافة ساعات راحة</string>
+	<string name="edit_hours_closed">ساعات الراحة</string>
+	<string name="edit_add_schedule">إضافة جدول</string>
+	<string name="edit_delete_schedule">حذف جدول</string>
+	<string name="edit_simple_mode">الوضع البسيط</string>
+	<string name="edit_advanced_mode">الوضع المتقدم</string>
+	<string name="edit_example_values">أمثلة على القيم</string>
+	<string name="edit_correct_mistake">تصحيح الخطأ</string>
+	<string name="edit_correct_mistake_message">قمت بخطأ في التحرير. يرجى تصحيح الخطأ أو التبديل إلى الوضع البسيط.</string>
 </resources>

@@ -1393,3 +1393,29 @@
 "editor_time_advanced" = "Advanced mode";
 
 "editor_time_simple" = "Simple mode";
+
+"edit_opening_hours" = "Otevírací doba";
+
+"edit_all_day" = "Celý den (24 hodin)";
+
+"edit_open" = "Otevřeno";
+
+"edit_closed" = "Zavřeno";
+
+"edit_add_hours_closed" = "Přidat dobu, kdy je zavřeno";
+
+"edit_hours_closed" = "Doba, kdy je zavřeno";
+
+"edit_add_schedule" = "Přidat rozvrh";
+
+"edit_delete_schedule" = "Smazat rozvrh";
+
+"edit_simple_mode" = "Jednoduchý režim";
+
+"edit_advanced_mode" = "Pokročilý režim";
+
+"edit_example_values" = "Vzorové hodnoty";
+
+"edit_correct_mistake" = "Opravit chybu";
+
+"edit_correct_mistake_message" = "Při úpravách jste udělali chybu. Opravte ji prosím, nebo přepněte do jednoduchého režimu.";

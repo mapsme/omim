@@ -885,4 +885,17 @@
 	<string name="editor_time_title">Opening hours</string>
 	<string name="editor_time_advanced">Advanced mode</string>
 	<string name="editor_time_simple">Simple mode</string>
+	<string name="edit_opening_hours">Opening hours</string>
+	<string name="edit_all_day">All Day (24 hours)</string>
+	<string name="edit_open">Open</string>
+	<string name="edit_closed">Closed</string>
+	<string name="edit_add_hours_closed">Add Hours Closed</string>
+	<string name="edit_hours_closed">Hours Closed</string>
+	<string name="edit_add_schedule">Add Schedule</string>
+	<string name="edit_delete_schedule">Delete Schedule</string>
+	<string name="edit_simple_mode">Simple Mode</string>
+	<string name="edit_advanced_mode">Advanced Mode</string>
+	<string name="edit_example_values">Example Values</string>
+	<string name="edit_correct_mistake">Correct mistake</string>
+	<string name="edit_correct_mistake_message">You made an editing mistake. Please correct it or switch to simple mode.</string>
 </resources>

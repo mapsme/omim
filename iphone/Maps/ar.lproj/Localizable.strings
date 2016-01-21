@@ -1393,3 +1393,29 @@
 "editor_time_advanced" = "Advanced mode";
 
 "editor_time_simple" = "Simple mode";
+
+"edit_opening_hours" = "ساعات العمل";
+
+"edit_all_day" = "طوال اليوم (24 ساعة)";
+
+"edit_open" = "مفتوح";
+
+"edit_closed" = "مغلق";
+
+"edit_add_hours_closed" = "إضافة ساعات راحة";
+
+"edit_hours_closed" = "ساعات الراحة";
+
+"edit_add_schedule" = "إضافة جدول";
+
+"edit_delete_schedule" = "حذف جدول";
+
+"edit_simple_mode" = "الوضع البسيط";
+
+"edit_advanced_mode" = "الوضع المتقدم";
+
+"edit_example_values" = "أمثلة على القيم";
+
+"edit_correct_mistake" = "تصحيح الخطأ";
+
+"edit_correct_mistake_message" = "قمت بخطأ في التحرير. يرجى تصحيح الخطأ أو التبديل إلى الوضع البسيط.";

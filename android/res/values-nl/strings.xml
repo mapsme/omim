@@ -828,4 +828,17 @@
 	<string name="whats_new_rec_track_body">Nu geeft de app uw recente route weer.</string>
 	<string name="whats_new_night_caption">Treed toe tot de donkere zijde!</string>
 	<string name="whats_new_night_body">Elke dag na de zonsondergang activeert MAPS.ME de nachtmodus.</string>
+	<string name="edit_opening_hours">Openingstijden</string>
+	<string name="edit_all_day">Elke dag (dag en nacht)</string>
+	<string name="edit_open">Open</string>
+	<string name="edit_closed">Gesloten</string>
+	<string name="edit_add_hours_closed">Sluitingstijden toevoegen</string>
+	<string name="edit_hours_closed">Sluitingstijden</string>
+	<string name="edit_add_schedule">Schema toevoegen</string>
+	<string name="edit_delete_schedule">Schema verwijderen</string>
+	<string name="edit_simple_mode">Eenvoudige modus</string>
+	<string name="edit_advanced_mode">Geavanceerde modus</string>
+	<string name="edit_example_values">Voorbeeldwaarden</string>
+	<string name="edit_correct_mistake">Fout corrigeren</string>
+	<string name="edit_correct_mistake_message">U hebt een bewerkingsfout gemaakt. Corrigeer deze of schakel over naar de eenvoudige modus.</string>
 </resources>

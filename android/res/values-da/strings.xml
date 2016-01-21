@@ -838,4 +838,17 @@
 	<string name="whats_new_rec_track_body">Nu viser app\&#39;en den seneste vej, du har rejst.</string>
 	<string name="whats_new_night_caption">Slut dig til den mørke side!</string>
 	<string name="whats_new_night_body">Hver dag efter solnedgang aktiverer MAPS.ME nattilstand.</string>
+	<string name="edit_opening_hours">Åbningstider</string>
+	<string name="edit_all_day">Alle dage (24 timer)</string>
+	<string name="edit_open">Åbent</string>
+	<string name="edit_closed">Lukket</string>
+	<string name="edit_add_hours_closed">Tilføj Lukket-timer</string>
+	<string name="edit_hours_closed">Lukket-timer</string>
+	<string name="edit_add_schedule">Tilføj tidsplan</string>
+	<string name="edit_delete_schedule">Slet tidsplan</string>
+	<string name="edit_simple_mode">Enkel tilstand</string>
+	<string name="edit_advanced_mode">Avanceret tilstand</string>
+	<string name="edit_example_values">Eksempelværdier</string>
+	<string name="edit_correct_mistake">Ret fejl</string>
+	<string name="edit_correct_mistake_message">Du har lavet en redigeringsfejl. Ret den, eller skift til enkel tilstand.</string>
 </resources>

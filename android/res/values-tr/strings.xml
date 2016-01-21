@@ -842,4 +842,17 @@
 	<string name="whats_new_rec_track_body">Artık uygulama en son seyahat ettiğiniz güzergâhı gösteriyor.</string>
 	<string name="whats_new_night_caption">Karanlık tarafa katıl!</string>
 	<string name="whats_new_night_body">Her gün, gün batımından sonra MAPS.ME gece modunu etkinleştirir.</string>
+	<string name="edit_opening_hours">Açık olduğu saatler</string>
+	<string name="edit_all_day">Tüm gün (24 saat)</string>
+	<string name="edit_open">Açık</string>
+	<string name="edit_closed">Kapalı</string>
+	<string name="edit_add_hours_closed">Kapalı olduğu saatleri ekle</string>
+	<string name="edit_hours_closed">Kapalı olduğu saatler</string>
+	<string name="edit_add_schedule">Plan Ekle</string>
+	<string name="edit_delete_schedule">Planı Sil</string>
+	<string name="edit_simple_mode">Basit Mod</string>
+	<string name="edit_advanced_mode">Gelişmiş Mod</string>
+	<string name="edit_example_values">Örnek Değerler</string>
+	<string name="edit_correct_mistake">Hatayı düzelt</string>
+	<string name="edit_correct_mistake_message">Bir düzenleme hatası yaptınız. Lütfen düzeltin veya basit moda geçin.</string>
 </resources>

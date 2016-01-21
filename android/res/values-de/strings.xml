@@ -833,4 +833,17 @@
 	<string name="whats_new_rec_track_body">Die App zeigt jetzt die zuletzt benutzte Strecke an.</string>
 	<string name="whats_new_night_caption">Kommen Sie auf die dunkle Seite!</string>
 	<string name="whats_new_night_body">Jeden Tag nach Sonnenuntergang aktiviert MAPS.ME den Nachtmodus.</string>
+	<string name="edit_opening_hours">Öffnungszeiten</string>
+	<string name="edit_all_day">Ganztägig (24 Stunden)</string>
+	<string name="edit_open">Geöffnet</string>
+	<string name="edit_closed">Geschlossen</string>
+	<string name="edit_add_hours_closed">Schließzeiten hinzufügen</string>
+	<string name="edit_hours_closed">Schließzeiten</string>
+	<string name="edit_add_schedule">Zeitplan hinzufügen</string>
+	<string name="edit_delete_schedule">Zeitplan löschen</string>
+	<string name="edit_simple_mode">Einfachmodus</string>
+	<string name="edit_advanced_mode">Erweiterter Modus</string>
+	<string name="edit_example_values">Beispiele</string>
+	<string name="edit_correct_mistake">Fehler korrigieren</string>
+	<string name="edit_correct_mistake_message">Es ist ein Bearbeitungsfehler aufgetreten. Bitte korrigieren oder zum Einfachmodus wechseln.</string>
 </resources>

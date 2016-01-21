@@ -1393,3 +1393,29 @@
 "editor_time_advanced" = "Advanced mode";
 
 "editor_time_simple" = "Simple mode";
+
+"edit_opening_hours" = "Açık olduğu saatler";
+
+"edit_all_day" = "Tüm gün (24 saat)";
+
+"edit_open" = "Açık";
+
+"edit_closed" = "Kapalı";
+
+"edit_add_hours_closed" = "Kapalı olduğu saatleri ekle";
+
+"edit_hours_closed" = "Kapalı olduğu saatler";
+
+"edit_add_schedule" = "Plan Ekle";
+
+"edit_delete_schedule" = "Planı Sil";
+
+"edit_simple_mode" = "Basit Mod";
+
+"edit_advanced_mode" = "Gelişmiş Mod";
+
+"edit_example_values" = "Örnek Değerler";
+
+"edit_correct_mistake" = "Hatayı düzelt";
+
+"edit_correct_mistake_message" = "Bir düzenleme hatası yaptınız. Lütfen düzeltin veya basit moda geçin.";

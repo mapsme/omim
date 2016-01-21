@@ -838,4 +838,17 @@
 	<string name="whats_new_rec_track_body">Ứng dụng hiện đang hiển thị đường đã đi gần đây của bạn.</string>
 	<string name="whats_new_night_caption">Hãy gia nhập phe bóng đêm!</string>
 	<string name="whats_new_night_body">Mỗi ngày sau buổi hoàng hôn, MAPS.ME kích hoạt chế độ ban đêm.</string>
+	<string name="edit_opening_hours">Giờ mở cửa</string>
+	<string name="edit_all_day">Cả ngày (24 giờ)</string>
+	<string name="edit_open">Mở cửa</string>
+	<string name="edit_closed">Đóng cửa</string>
+	<string name="edit_add_hours_closed">Thêm giờ đóng cửa</string>
+	<string name="edit_hours_closed">Giờ đóng cửa</string>
+	<string name="edit_add_schedule">Thêm lịch biểu</string>
+	<string name="edit_delete_schedule">Xóa lịch biểu</string>
+	<string name="edit_simple_mode">Chế độ đơn giản</string>
+	<string name="edit_advanced_mode">Chế độ nâng cao</string>
+	<string name="edit_example_values">Giá trị ví dụ</string>
+	<string name="edit_correct_mistake">Sửa lỗi</string>
+	<string name="edit_correct_mistake_message">Bạn đã mắc lỗi chỉnh sửa. Vui lòng sửa lỗi hoặc chuyển qua chế độ đơn giản.</string>
 </resources>
