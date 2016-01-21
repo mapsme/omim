@@ -85,7 +85,8 @@ bool HasCountryId(TCountriesVec const & sortedCountryIds, TCountryId const & cou
 }
 
 Storage::Storage(string const & pathToCountriesFile /* = COUNTRIES_FILE */, string const & dataDir /* = string() */)
-  : m_downloader(new HttpMapFilesDownloader()), m_currentSlotId(0), m_dataDir(dataDir)
+  : m_downloader(new HttpMapFilesDownloader()), m_currentSlotId(0), m_dataDir(dataDir),
+    m_downloadMapOnTheMap(nullptr)
 {
 
 
@@ -95,7 +96,8 @@ Storage::Storage(string const & pathToCountriesFile /* = COUNTRIES_FILE */, stri
 
 Storage::Storage(string const & referenceCountriesTxtJsonForTesting,
                  unique_ptr<MapFilesDownloader> mapDownloaderForTesting)
-  : m_downloader(move(mapDownloaderForTesting)), m_currentSlotId(0)
+  : m_downloader(move(mapDownloaderForTesting)), m_currentSlotId(0),
+    m_downloadMapOnTheMap(nullptr)
 {
   m_currentVersion = LoadCountries(referenceCountriesTxtJsonForTesting, m_countries);
   CHECK_LESS_OR_EQUAL(0, m_currentVersion, ("Can't load test countries file"));
@@ -1125,5 +1127,11 @@ void Storage::GetNodeAttrs(TCountryId const & countryId, NodeAttrs & nodeAttrs) 
   nodeAttrs.m_status = NodeStatus(*node);
   // @TODO(bykoianko) NodeAttrs::m_nodeLocalName should be in local language.
   nodeAttrs.m_nodeLocalName = countryId;
+}
+
+void Storage::DoClickOnDownloadMap(TCountryId const & countryId)
+{
+  if (m_downloadMapOnTheMap)
+    m_downloadMapOnTheMap(countryId);
 }
 }  // namespace storage

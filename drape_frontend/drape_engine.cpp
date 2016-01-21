@@ -18,7 +18,7 @@ namespace df
 namespace
 {
 
-void ConnectDownloadFn(gui::CountryStatusHelper::EButtonType buttonType, MapDataProvider::TDownloadFn downloadFn)
+void ConnectDownloadFn(gui::CountryStatusHelper::EButtonType buttonType, TDownloadFn downloadFn)
 {
   gui::DrapeGui & guiSubsystem = gui::DrapeGui::Instance();
   guiSubsystem.ConnectOnButtonPressedHandler(buttonType, [downloadFn, &guiSubsystem]()
