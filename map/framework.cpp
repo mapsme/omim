@@ -861,7 +861,6 @@ void Framework::UpdateCountryInfo(storage::TCountryId const & countryId, bool is
   // @TODO(bykoianko) Valid values for countryInfo fields should be got with new Storage
   // interface when it's ready. Now temporary values are used.
   countryInfo.m_mapSize = 0;
-  countryInfo.m_routingSize = 0;
   countryInfo.m_countryStatus = m_storage.CountryStatusEx(countryId);
   if (countryInfo.m_countryStatus == storage::TStatus::EDownloading)
   {
@@ -1229,12 +1228,6 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
     GetPlatform().RunOnGuiThread(bind(&Storage::DoClickOnDownloadMap, &(this->Storage()), countryId));
   };
 
-  TDownloadFn downloadMapWithoutRoutingFn = [this](storage::TCountryId const &)
-  {
-    // @TODO This method should be removed when routing button will be removed from drape.
-    ASSERT(false, ());
-  };
-
   TDownloadFn downloadRetryFn = [this](storage::TCountryId const & countryId)
   {
     // @TODO(bykoianko) It's not a thread safe call. It should be fixed in Storage.
@@ -1250,8 +1243,7 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
                             df::Viewport(0, 0, params.m_surfaceWidth, params.m_surfaceHeight),
                             df::MapDataProvider(idReadFn, featureReadFn, updateCountryIndex,
                                                 isCountryLoadedFn, isCountryLoadedByNameFn,
-                                                downloadMapFn, downloadMapWithoutRoutingFn,
-                                                downloadRetryFn),
+                                                downloadMapFn, downloadRetryFn),
                             params.m_visualScale,
                             move(params.m_widgetsInitInfo),
                             make_pair(params.m_initialMyPositionState, params.m_hasMyPositionState),
