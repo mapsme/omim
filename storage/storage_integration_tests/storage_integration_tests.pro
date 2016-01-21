@@ -31,4 +31,5 @@ SOURCES += \
   migrate_tests.cpp \
   storage_group_download_tests.cpp \
   storage_http_tests.cpp \
+  storage_update_tests.cpp \
   write_dir_changer.cpp \
