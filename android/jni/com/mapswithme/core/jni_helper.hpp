@@ -7,8 +7,9 @@
 #include "std/string.hpp"
 #include "std/shared_ptr.hpp"
 
-// cache MapIndex jclass
 extern jclass g_indexClazz;
+extern jclass g_mapObjectClazz;
+extern jclass g_bookmarkClazz;
 
 namespace jni
 {
@@ -42,6 +43,13 @@ namespace jni
   string DescribeException();
 
   shared_ptr<jobject> make_global_ref(jobject obj);
+
+  struct LocalRefDeleter
+  {
+    void operator()(jobject *);
+  };
+  using TScopedLocalRef = unique_ptr<jobject, LocalRefDeleter> ;
+  TScopedLocalRef ScopedLocalRef(jobject obj);
 
   jobject GetNewParcelablePointD(JNIEnv * env, m2::PointD const & point);
 

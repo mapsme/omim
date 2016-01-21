@@ -2,6 +2,7 @@
 #include "logging.hpp"
 
 #include "base/assert.hpp"
+#include "base/logging.hpp"
 #include "std/vector.hpp"
 
 static JavaVM * g_jvm = 0;
@@ -18,9 +19,8 @@ extern JavaVM * GetJVM()
 
 // caching is necessary to create class from native threads
 jclass g_indexClazz;
-
-// @TODO remove after refactoring. Needed for NVidia code
-void InitNVEvent(JavaVM * jvm);
+jclass g_mapObjectClazz;
+jclass g_bookmarkClazz;
 
 extern "C"
 {
@@ -44,8 +44,13 @@ extern "C"
 //    g_findClassMethod = env->GetMethodID(classLoaderClass, "findClass",
 //                                    "(Ljava/lang/String;)Ljava/lang/Class;");
 //    ASSERT(g_findClassMethod, ("FindClass methodId can't be 0"));
-    g_indexClazz = static_cast<jclass>(env->NewGlobalRef(env->FindClass("com/mapswithme/maps/MapStorage$Index")));
-    ASSERT(g_indexClazz, ("Index class not found!"));
+
+    g_indexClazz = jni::GetGlobalClassRef(env, "com/mapswithme/maps/MapStorage$Index");
+    ASSERT(g_indexClazz, (jni::DescribeException()));
+    g_mapObjectClazz = jni::GetGlobalClassRef(env, "com/mapswithme/maps/bookmarks/data/MapObject");
+    ASSERT(g_mapObjectClazz, (jni::DescribeException()));
+    g_bookmarkClazz = jni::GetGlobalClassRef(env, "com/mapswithme/maps/bookmarks/data/Bookmark");
+    ASSERT(g_bookmarkClazz, (jni::DescribeException()));
 
     return JNI_VERSION_1_6;
   }
@@ -55,6 +60,8 @@ extern "C"
   {
     g_jvm = 0;
     jni::GetEnv()->DeleteGlobalRef(g_indexClazz);
+    jni::GetEnv()->DeleteGlobalRef(g_mapObjectClazz);
+    jni::GetEnv()->DeleteGlobalRef(g_bookmarkClazz);
   }
 } // extern "C"
 
@@ -161,6 +168,18 @@ namespace jni
     return shared_ptr<jobject>(ref, global_ref_deleter());
   }
 
+  void LocalRefDeleter::operator ()(jobject * obj)
+  {
+    GetEnv()->DeleteLocalRef(*obj);
+  }
+
+  TScopedLocalRef ScopedLocalRef(jobject obj)
+  {
+    jobject * ref = new jobject();
+    *ref = obj;
+    return TScopedLocalRef(ref);
+  }
+
   string DescribeException()
   {
     JNIEnv * env = jni::GetEnv();
@@ -188,14 +207,12 @@ namespace jni
   {
     jclass klass = env->FindClass("com/mapswithme/maps/bookmarks/data/ParcelablePointD");
     ASSERT ( klass, () );
-    jmethodID methodID = env->GetMethodID(
-        klass, "<init>",
-        "(DD)V");
+    jmethodID methodID = env->GetMethodID(klass, "<init>", "(DD)V");
     ASSERT ( methodID, () );
 
     return env->NewObject(klass, methodID,
-                              static_cast<jdouble>(point.x),
-                              static_cast<jdouble>(point.y));
+                          static_cast<jdouble>(point.x),
+                          static_cast<jdouble>(point.y));
   }
 
   jobject GetNewPoint(JNIEnv * env, m2::PointD const & point)
@@ -207,19 +224,13 @@ namespace jni
   {
     jclass klass = env->FindClass("android/graphics/Point");
     ASSERT ( klass, () );
-    jmethodID methodID = env->GetMethodID(
-        klass, "<init>",
-        "(II)V");
+    jmethodID methodID = env->GetMethodID(klass, "<init>", "(II)V");
     ASSERT ( methodID, () );
 
     return env->NewObject(klass, methodID,
                               static_cast<jint>(point.x),
                               static_cast<jint>(point.y));
   }
-
-  // TODO
-  // make ScopedLocalRef wrapper similar to https://android.googlesource.com/platform/libnativehelper/+/jb-mr1.1-dev-plus-aosp/include/nativehelper/ScopedLocalRef.h
-  // for localrefs automatically removed after going out of scope
 
   // This util method dumps content of local and global reference jni tables to logcat for debug and testing purposes
   void DumpDalvikReferenceTables()
