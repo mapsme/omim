@@ -102,18 +102,24 @@ namespace feature
       }
       return false;
     }
+
     void Remove(uint32_t t);
 
     string DebugPrint() const;
 
     /// Sort types by it's specification (more detailed type goes first).
     void SortBySpec();
+
+    /// Returns true if this->m_types and other.m_types contain same values
+    /// in any order. Works in O(n log n).
+    bool Equals(TypesHolder const & other) const;
   };
 
   inline string DebugPrint(TypesHolder const & t)
   {
     return t.DebugPrint();
   }
+
   uint8_t CalculateHeader(uint32_t const typesCount, uint8_t const headerGeomType,
                           FeatureParamsBase const & params);
 }

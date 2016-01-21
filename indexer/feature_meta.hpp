@@ -77,6 +77,11 @@ public:
     }
   }
 
+  inline bool Equals(MetadataBase const & other) const
+  {
+    return m_metadata == other.m_metadata;
+  }
+
 protected:
   map<uint8_t, string> m_metadata;
 };

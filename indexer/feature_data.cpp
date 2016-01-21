@@ -6,8 +6,9 @@
 #include "base/assert.hpp"
 #include "base/stl_add.hpp"
 
+#include "std/algorithm.hpp"
 #include "std/bind.hpp"
-
+#include "std/vector.hpp"
 
 using namespace feature;
 
@@ -37,6 +38,17 @@ string TypesHolder::DebugPrint() const
 void TypesHolder::Remove(uint32_t t)
 {
   (void) RemoveIf(EqualFunctor<uint32_t>(t));
+}
+
+bool TypesHolder::Equals(TypesHolder const & other) const
+{
+  vector<uint32_t> my(this->begin(), this->end());
+  vector<uint32_t> his(other.begin(), other.end());
+
+  sort(::begin(my), ::end(my));
+  sort(::begin(his), ::end(his));
+
+  return my == his;
 }
 
 namespace
