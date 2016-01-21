@@ -19,7 +19,9 @@
 
 #include "drape_frontend/color_constants.hpp"
 #include "drape_frontend/gps_track_point.hpp"
+#include "drape_frontend/gui/country_status_helper.hpp"
 #include "drape_frontend/visual_params.hpp"
+#include "drape_frontend/gui/country_status_helper.hpp"
 #include "drape_frontend/watch/cpu_drawer.hpp"
 #include "drape_frontend/watch/feature_processor.hpp"
 
@@ -817,22 +819,56 @@ void Framework::ClearAllCaches()
   m_searchEngine->ClearAllCaches();
 }
 
-void Framework::OnUpdateCurrentCountry(m2::PointF const & pt, int zoomLevel)
+void Framework::OnUpdateCountryId(storage::TCountryId const & currentCountryId, m2::PointF const & pt)
 {
-  storage::TCountryId newCountryId;
-  if (zoomLevel > scales::GetUpperWorldScale())
-    newCountryId = m_storage.FindCountryIdByFile(m_infoGetter->GetRegionCountryId(m2::PointD(pt)));
-
-  GetPlatform().RunOnGuiThread([this, newCountryId]()
+  storage::TCountryId const newCountryId =
+      m_storage.FindCountryIdByFile(m_infoGetter->GetRegionCountryId(m2::PointD(pt)));
+  if (newCountryId.empty())
   {
-    if (m_currentCountryChanged != nullptr)
-      m_currentCountryChanged(newCountryId);
-  });
+    m_drapeEngine->SetInvalidCountryInfo();
+    return;
+  }
+
+  if (currentCountryId != newCountryId)
+    UpdateCountryInfo(newCountryId, true /* isCurrentCountry */);
 }
 
-void Framework::SetCurrentCountryChangedListener(TCurrentCountryChanged const & listener)
+void Framework::UpdateCountryInfo(storage::TCountryId const & countryId, bool isCurrentCountry)
 {
-  m_currentCountryChanged = listener;
+  if (!m_drapeEngine)
+    return;
+
+  int64_t const currentVersion = m_storage.GetCurrentDataVersion();
+
+  string const countryFile = m_storage.CountryLeafByCountryId(countryId).GetFile().GetName();
+  CHECK(!countryFile.empty(), ());
+
+  // Note. MapOptions::Map is used below to be sure fileName has mwm extension
+  // in case of single mwms and two components mwms.
+  string const fileName = platform::GetFileName(countryFile,
+                                                MapOptions::Map, currentVersion);
+  if (m_model.IsLoaded(fileName))
+  {
+    m_drapeEngine->SetInvalidCountryInfo();
+    return;
+  }
+
+  gui::CountryInfo countryInfo;
+
+  countryInfo.m_countryId = countryId;
+  // @TODO(bykoianko) Locolize country name should be used here.
+  countryInfo.m_currentCountryName = countryId;
+  // @TODO(bykoianko) Valid values for countryInfo fields should be got with new Storage
+  // interface when it's ready. Now temporary values are used.
+  countryInfo.m_mapSize = 0;
+  countryInfo.m_routingSize = 0;
+  countryInfo.m_countryStatus = m_storage.CountryStatusEx(countryId);
+  if (countryInfo.m_countryStatus == storage::TStatus::EDownloading)
+  {
+    countryInfo.m_downloadProgress = 50 /* Just to show that downloading is in progress */;
+  }
+
+  m_drapeEngine->SetCountryInfo(countryInfo, isCurrentCountry);
 }
 
 void Framework::MemoryWarning()
@@ -1164,21 +1200,47 @@ bool Framework::GetDistanceAndAzimut(m2::PointD const & point,
 
 void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory, DrapeCreationParams && params)
 {
-  auto idReadFn = [this](df::MapDataProvider::TReadCallback<FeatureID> const & fn, m2::RectD const & r, int scale) -> void
+  using TReadIDsFn = df::MapDataProvider::TReadIDsFn;
+  using TReadFeaturesFn = df::MapDataProvider::TReadFeaturesFn;
+  using TUpdateCountryIndexFn = df::MapDataProvider::TUpdateCountryIdFn;
+  using TIsCountryLoadedFn = df::MapDataProvider::TIsCountryLoadedFn;
+  using TDownloadFn = df::MapDataProvider::TDownloadFn;
+
+  TReadIDsFn idReadFn = [this](df::MapDataProvider::TReadCallback<FeatureID> const & fn, m2::RectD const & r, int scale) -> void
   {
     m_model.ForEachFeatureID(r, fn, scale);
   };
 
-  auto featureReadFn = [this](df::MapDataProvider::TReadCallback<FeatureType> const & fn, vector<FeatureID> const & ids) -> void
+  TReadFeaturesFn featureReadFn = [this](df::MapDataProvider::TReadCallback<FeatureType> const & fn, vector<FeatureID> const & ids) -> void
   {
     m_model.ReadFeatures(fn, ids);
   };
 
-  auto isCountryLoadedFn = bind(&Framework::IsCountryLoaded, this, _1);
+  TUpdateCountryIndexFn updateCountryIndex = [this](storage::TCountryId const & currentCountryId, m2::PointF const & pt)
+  {
+    GetPlatform().RunOnGuiThread(bind(&Framework::OnUpdateCountryId, this, currentCountryId, pt));
+  };
 
+  TIsCountryLoadedFn isCountryLoadedFn = bind(&Framework::IsCountryLoaded, this, _1);
   auto isCountryLoadedByNameFn = bind(&Framework::IsCountryLoadedByName, this, _1);
 
-  auto updateCurrentCountryFn = bind(&Framework::OnUpdateCurrentCountry, this, _1, _2);
+  TDownloadFn downloadMapFn = [this](storage::TCountryId const &)
+  {
+    // @TODO(bykoianko) This method should be removed when map downloader is finished.
+    ASSERT(false, ());
+  };
+
+  TDownloadFn downloadMapWithoutRoutingFn = [this](storage::TCountryId const &)
+  {
+    // @TODO(bykoianko) This method should be removed when map downloader is finished.
+    ASSERT(false, ());
+  };
+
+  TDownloadFn downloadRetryFn = [this](storage::TCountryId const &)
+  {
+    // @TODO(bykoianko) This method should be removed when map downloader is finished.
+    ASSERT(false, ());
+  };
 
   bool allow3d;
   bool allow3dBuildings;
@@ -1187,8 +1249,10 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
   df::DrapeEngine::Params p(contextFactory,
                             make_ref(&m_stringsBundle),
                             df::Viewport(0, 0, params.m_surfaceWidth, params.m_surfaceHeight),
-                            df::MapDataProvider(idReadFn, featureReadFn, isCountryLoadedFn,
-                                                isCountryLoadedByNameFn, updateCurrentCountryFn),
+                            df::MapDataProvider(idReadFn, featureReadFn, updateCountryIndex,
+                                                isCountryLoadedFn, isCountryLoadedByNameFn,
+                                                downloadMapFn, downloadMapWithoutRoutingFn,
+                                                downloadRetryFn),
                             params.m_visualScale,
                             move(params.m_widgetsInitInfo),
                             make_pair(params.m_initialMyPositionState, params.m_hasMyPositionState),

@@ -5,14 +5,20 @@ namespace df
 
 MapDataProvider::MapDataProvider(TReadIDsFn const & idsReader,
                                  TReadFeaturesFn const & featureReader,
+                                 TUpdateCountryIdFn const & countryIndexUpdater,
                                  TIsCountryLoadedFn const & isCountryLoadedFn,
                                  TIsCountryLoadedByNameFn const & isCountryLoadedByNameFn,
-                                 TUpdateCurrentCountryFn const & updateCurrentCountry)
+                                 TDownloadFn const & downloadMapHandler,
+                                 TDownloadFn const & downloadMapRoutingHandler,
+                                 TDownloadFn const & downloadRetryHandler)
   : m_featureReader(featureReader)
   , m_idsReader(idsReader)
-  , m_isCountryLoaded(isCountryLoadedFn)
-  , m_updateCurrentCountry(updateCurrentCountry)
-  , m_isCountryLoadedByName(isCountryLoadedByNameFn)
+  , m_countryIdUpdater(countryIndexUpdater)
+  , m_isCountryLoadedFn(isCountryLoadedFn)
+  , m_downloadMapHandler(downloadMapHandler)
+  , m_downloadMapRoutingHandler(downloadMapRoutingHandler)
+  , m_downloadRetryHandler(downloadRetryHandler)
+  , m_isCountryLoadedByNameFn(isCountryLoadedByNameFn)
 {
 }
 
@@ -26,14 +32,29 @@ void MapDataProvider::ReadFeatures(TReadCallback<FeatureType> const & fn, vector
   m_featureReader(fn, ids);
 }
 
+void MapDataProvider::UpdateCountryId(storage::TCountryId const & currentCountryId, m2::PointF const & pt)
+{
+  m_countryIdUpdater(currentCountryId, pt);
+}
+
 MapDataProvider::TIsCountryLoadedFn const & MapDataProvider::GetIsCountryLoadedFn() const
 {
-  return m_isCountryLoaded;
+  return m_isCountryLoadedFn;
 }
 
-MapDataProvider::TUpdateCurrentCountryFn const & MapDataProvider::UpdateCurrentCountryFn() const
+MapDataProvider::TDownloadFn const & MapDataProvider::GetDownloadMapHandler() const
 {
-  return m_updateCurrentCountry;
+  return m_downloadMapHandler;
 }
 
-} // namespace df
+MapDataProvider::TDownloadFn const & MapDataProvider::GetDownloadMapRoutingHandler() const
+{
+  return m_downloadMapRoutingHandler;
+}
+
+MapDataProvider::TDownloadFn const & MapDataProvider::GetDownloadRetryHandler() const
+{
+  return m_downloadRetryHandler;
+}
+
+}
