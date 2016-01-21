@@ -12,8 +12,8 @@
 #include "base/string_utils.hpp"
 #include "base/thread.hpp"
 
-#include "std/string.hpp"
 #include "std/exception.hpp"
+#include "std/string.hpp"
 
 #include "write_dir_changer.hpp"
 
