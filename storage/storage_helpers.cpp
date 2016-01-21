@@ -13,4 +13,18 @@ bool IsPointCoveredByDownloadedMaps(m2::PointD const & position,
   return storage.IsNodeDownloaded(countryInfoGetter.GetRegionCountryId(position));
 }
 
+m2::RectD CalcLimitRect(TCountryId countryId,
+                        Storage const & storage,
+                        CountryInfoGetter const & countryInfoGetter)
+{
+  TCountriesVec leafList;
+  storage.GetAllLeavesInSubtree(countryId, leafList);
+
+  m2::RectD boundBox;
+  for (auto const & leaf : leafList)
+    boundBox.Add(countryInfoGetter.CalcLimitRectForLeaf(leaf));
+
+  return boundBox;
+}
+
 } // namespace storage
