@@ -9,14 +9,12 @@ MapDataProvider::MapDataProvider(TReadIDsFn const & idsReader,
                                  TIsCountryLoadedFn const & isCountryLoadedFn,
                                  TIsCountryLoadedByNameFn const & isCountryLoadedByNameFn,
                                  TDownloadFn const & downloadMapHandler,
-                                 TDownloadFn const & downloadMapRoutingHandler,
                                  TDownloadFn const & downloadRetryHandler)
   : m_featureReader(featureReader)
   , m_idsReader(idsReader)
   , m_countryIdUpdater(countryIndexUpdater)
   , m_isCountryLoadedFn(isCountryLoadedFn)
   , m_downloadMapHandler(downloadMapHandler)
-  , m_downloadMapRoutingHandler(downloadMapRoutingHandler)
   , m_downloadRetryHandler(downloadRetryHandler)
   , m_isCountryLoadedByNameFn(isCountryLoadedByNameFn)
 {
@@ -45,11 +43,6 @@ MapDataProvider::TIsCountryLoadedFn const & MapDataProvider::GetIsCountryLoadedF
 TDownloadFn const & MapDataProvider::GetDownloadMapHandler() const
 {
   return m_downloadMapHandler;
-}
-
-TDownloadFn const & MapDataProvider::GetDownloadMapRoutingHandler() const
-{
-  return m_downloadMapRoutingHandler;
 }
 
 TDownloadFn const & MapDataProvider::GetDownloadRetryHandler() const
