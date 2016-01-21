@@ -55,6 +55,11 @@ CountryInfoGetter::CountryInfoGetter(ModelReaderPtr polyR, ModelReaderPtr countr
   ReaderSource<ModelReaderPtr> src(m_reader.GetReader(PACKED_POLYGONS_INFO_TAG));
   rw::Read(src, m_countries);
 
+  size_t const countrySz = m_countries.size();
+  m_countryIndex.reserve(countrySz);
+  for (int i = 0; i < countrySz; ++i)
+    m_countryIndex[m_countries[i].m_name] = i;
+
   string buffer;
   countryR.ReadAsString(buffer);
   LoadCountryFile2CountryInfo(buffer, m_id2info, m_isSingleMwm);

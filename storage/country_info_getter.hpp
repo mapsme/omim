@@ -10,6 +10,7 @@
 #include "base/cache.hpp"
 
 #include "std/mutex.hpp"
+#include "std/unordered_map.hpp"
 #include "std/vector.hpp"
 
 namespace storage
@@ -87,11 +88,11 @@ private:
   // Only cache and reader can be modified from different threads, so
   // they're guarded by m_cacheMutex.
   FilesContainerR m_reader;
-  // @TODO(bykoianko) It looks like the m_cache is always empty. Consider removing it.
   mutable my::Cache<uint32_t, vector<m2::RegionD>> m_cache;
   mutable mutex m_cacheMutex;
   // m_isSingleMwm == true if the system is currently working with single (small) mwms
   // and false otherwise.
   bool m_isSingleMwm;
+  unordered_map<TCountryId, IdType> m_countryIndex;
 };
 }  // namespace storage
