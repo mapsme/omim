@@ -987,6 +987,26 @@ void Storage::GetChildren(TCountryId const & parent, TCountriesVec & childrenId)
     childrenId.emplace_back(parentNode->Child(i).Value().Name());
 }
 
+void Storage::GetAllLeavesInSubtree(TCountryId const & parent, TCountriesVec & leavesInSubtree) const
+{
+  TCountriesContainer const * parentNode = m_countries.Find(parent);
+  if (parentNode == nullptr)
+  {
+    ASSERT(false, ("TCountryId =", parent, "not found in m_countries."));
+    return;
+  }
+
+  leavesInSubtree.clear();
+  auto fillLeavesInSubtree = [&leavesInSubtree](TCountriesContainer const & nodeInSubtree)
+  {
+    if (nodeInSubtree.ChildrenCount() != 0)
+      return;
+    leavesInSubtree.push_back(nodeInSubtree.Value().Name());
+  };
+
+  parentNode->ForEachInSubtree(fillLeavesInSubtree);
+}
+
 void Storage::GetLocalRealMaps(TCountriesVec & localMaps) const
 {
   localMaps.clear();

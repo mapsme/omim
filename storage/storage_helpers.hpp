@@ -1,6 +1,9 @@
 #pragma once
 
+#include "storage/index.hpp"
+
 #include "geometry/point2d.hpp"
+#include "geometry/rect2d.hpp"
 
 namespace storage
 {
@@ -14,4 +17,9 @@ bool IsPointCoveredByDownloadedMaps(m2::PointD const & position,
                                     Storage const & storage,
                                     CountryInfoGetter const & countryInfoGetter);
 
+/// \brief Calculates limit rect for |countryId| (non expandable or not).
+/// \returns bound box in mercator coordinates.
+m2::RectD CalcLimitRect(TCountryId countryId,
+                        Storage const & storage,
+                        CountryInfoGetter const & countryInfoGetter);
 } // namespace storage

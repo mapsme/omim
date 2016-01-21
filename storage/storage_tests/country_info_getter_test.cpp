@@ -18,6 +18,8 @@ using namespace storage;
 
 namespace
 {
+double constexpr kEpsilon = 1e-3;
+
 unique_ptr<CountryInfoGetter> CreateCountryInfoGetter()
 {
   Platform & platform = GetPlatform();
@@ -102,4 +104,32 @@ UNIT_TEST(CountryInfoGetter_GetRegionsCountryId)
   getter->GetRegionsCountryId(montevideoUruguay, countryIds);
   TEST_EQUAL(countryIds.size(), 1, ());
   TEST_EQUAL(countryIds[0], string("Uruguay"), ());
+}
+
+UNIT_TEST(CountryInfoGetter_CalcLimitRectForLeafSingleMwm)
+{
+  auto const getter = CreateCountryInfoGetter();
+  Storage storage(COUNTRIES_FILE);
+  if (!version::IsSingleMwm(storage.GetCurrentDataVersion()))
+    return;
+
+  m2::RectD leafBoundBox = getter->CalcLimitRectForLeaf("Angola");
+  TEST(my::AlmostEqualAbs(leafBoundBox.maxX(), 24.08212, kEpsilon), ());
+  TEST(my::AlmostEqualAbs(leafBoundBox.maxY(), -4.393187, kEpsilon), ());
+  TEST(my::AlmostEqualAbs(leafBoundBox.minX(), 9.205259, kEpsilon), ());
+  TEST(my::AlmostEqualAbs(leafBoundBox.minY(), -18.34456, kEpsilon), ());
+}
+
+UNIT_TEST(CountryInfoGetter_CalcLimitRectForLeafTwoComponentMwm)
+{
+  auto const getter = CreateCountryInfoGetter();
+  Storage storage;
+  if (version::IsSingleMwm(storage.GetCurrentDataVersion()))
+    return;
+
+  m2::RectD leafBoundBox = getter->CalcLimitRectForLeaf("Angola");
+  TEST(my::AlmostEqualAbs(leafBoundBox.maxX(), 24.08212, kEpsilon), ());
+  TEST(my::AlmostEqualAbs(leafBoundBox.maxY(), -4.393187, kEpsilon), ());
+  TEST(my::AlmostEqualAbs(leafBoundBox.minX(), 11.50151, kEpsilon), ());
+  TEST(my::AlmostEqualAbs(leafBoundBox.minY(), -18.344569, kEpsilon), ());
 }

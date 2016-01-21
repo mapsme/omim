@@ -1,5 +1,6 @@
 #pragma once
 
+#include "storage/country.hpp"
 #include "storage/country_decl.hpp"
 #include "storage/index.hpp"
 
@@ -10,6 +11,7 @@
 #include "base/cache.hpp"
 
 #include "std/mutex.hpp"
+#include "std/unordered_map.hpp"
 #include "std/vector.hpp"
 
 namespace storage
@@ -53,6 +55,10 @@ public:
   // Calculates limit rect for all countries whose name starts with
   // |prefix|.
   m2::RectD CalcLimitRect(string const & prefix) const;
+  // Calculates limit rect for |countryId| (non expandable node).
+  // Returns bound box in mercator coordinates if |countryId| is a country id of non expandable node
+  // and zero rect otherwise.
+  m2::RectD CalcLimitRectForLeaf(TCountryId leafCountryId) const;
 
   // Returns identifiers for all regions matching to |enNamePrefix|.
   void GetMatchedRegions(string const & enNamePrefix, IdSet & regions) const;
@@ -87,11 +93,12 @@ private:
   // Only cache and reader can be modified from different threads, so
   // they're guarded by m_cacheMutex.
   FilesContainerR m_reader;
-  // @TODO(bykoianko) It looks like the m_cache is always empty. Consider removing it.
   mutable my::Cache<uint32_t, vector<m2::RegionD>> m_cache;
   mutable mutex m_cacheMutex;
   // m_isSingleMwm == true if the system is currently working with single (small) mwms
   // and false otherwise.
   bool m_isSingleMwm;
+  // Maps all leaf country id (file names) to their index in m_countries.
+  unordered_map<TCountryId, IdType> m_countryIndex;
 };
 }  // namespace storage

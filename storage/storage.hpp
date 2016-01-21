@@ -24,7 +24,8 @@ struct NodeAttrs
   NodeAttrs() : m_mwmCounter(0), m_localMwmCounter(0), m_mwmSize(0), m_localMwmSize(0),
     m_downloadingMwmSize(0), m_downloadingProgress(0), m_status(TStatus::EUndefined) {}
   /// If the node is expandable (a big country) |m_mwmCounter| is number of mwm files (leaves)
-  /// belongs to the node. If the node isn't expandable |m_mapsDownloaded| == 1.
+  /// belongs to the node. If the node isn't expandable |m_mwmCounter| == 1.
+  /// Note. For every expandable node |m_mwmCounter| >= 2.
   uint32_t m_mwmCounter;
 
   /// Number of mwms belonging to the node which has been donwloaded.
@@ -218,6 +219,10 @@ public:
   /// \param childrenId is filled with children node ids by a parent. For example GetChildren(GetRootId())
   /// returns in param all countries ids. It's content of map downloader list by default.
   void GetChildren(TCountryId const & parent, TCountriesVec & childrenId) const;
+  /// \param leavesInSubtree is filled with all leaf nodes ids (file names without extension) by a parent.
+  /// If parent is a leaf it is added to leavesInSubtree.
+  /// For example GetAllLeavesInSubtree(GetRootId()) returns in param all names of mwm files.
+  void GetAllLeavesInSubtree(TCountryId const & parent, TCountriesVec & leavesInSubtree) const;
   /// \brief Fills localChildren with children of parent.
   /// The result of the method is composed in a special way because of design requirements.
   /// If a direct child (of parent) contains two or more downloaded mwms the direct child id will be added to result.
