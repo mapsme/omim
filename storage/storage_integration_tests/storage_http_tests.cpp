@@ -21,9 +21,8 @@ using namespace storage;
 
 namespace
 {
-  string const kCountryId = "Angola";
-  string const kMapTestDir = "map-tests";
-}
+string const kCountryId = "Angola";
+string const kMapTestDir = "map-tests";
 
 void ChangeCountryFunction(TCountryId const & countryId) {}
 
@@ -55,7 +54,7 @@ UNIT_TEST(StorageDownloadNodeAndDeleteNodeTests)
     if (!storage.IsDownloadInProgress())
     {
       // End wait for downloading complete.
-      QCoreApplication::exit();
+      testing::StopEventLoop();
     }
   };
 
