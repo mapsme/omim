@@ -17,6 +17,9 @@
 # include "platform/platform.hpp"
 #endif
 
+#ifdef TARGET_OS_IPHONE
+# include <CoreFoundation/CoreFoundation.h>
+#endif
 
 #ifdef OMIM_UNIT_TEST_WITH_QT_EVENT_LOOP
   #include <QtCore/Qt>
@@ -32,6 +35,33 @@
     #define QAPP QCoreApplication
   #endif
 #endif
+
+namespace testing
+{
+
+void EventLoop()
+{
+#ifdef TARGET_OS_IPHONE
+  CFRunLoopRun();
+#else
+# ifdef QAPP
+  QAPP::exec();
+# endif
+#endif
+}
+
+void StopEventLoop()
+{
+#ifdef TARGET_OS_IPHONE
+  CFRunLoopStop(CFRunLoopGetMain());
+#else
+# ifdef QAPP
+  QAPP::exit();
+# endif
+#endif
+}
+
+} //  namespace testing
 
 namespace
 {
@@ -185,7 +215,7 @@ int main(int argc, char * argv[])
       continue;
     }
 
-    LOG(LINFO, ("Running", testName));
+    LOG_SHORT(LINFO, ("Running", testName));
     if (!g_bLastTestOK)
     {
       // Somewhere else global variables have been reset.
@@ -202,7 +232,7 @@ int main(int argc, char * argv[])
 
       if (g_bLastTestOK)
       {
-        LOG(LINFO, ("OK"));
+        LOG_SHORT(LINFO, ("OK"));
       }
       else
       {
@@ -220,34 +250,34 @@ int main(int argc, char * argv[])
     }
     catch (std::exception const & ex)
     {
-      LOG(LERROR, ("FAILED", "<<<Exception thrown [", ex.what(), "].>>>"));
+      LOG_SHORT(LERROR, ("FAILED", "<<<Exception thrown [", ex.what(), "].>>>"));
       testResults[iTest] = false;
       ++numFailedTests;
     }
     catch (...)
     {
-      LOG(LERROR, ("FAILED<<<Unknown exception thrown.>>>"));
+      LOG_SHORT(LERROR, ("FAILED<<<Unknown exception thrown.>>>"));
       testResults[iTest] = false;
       ++numFailedTests;
     }
     g_bLastTestOK = true;
 
     uint64_t const elapsed = timer.ElapsedNano();
-    LOG(LINFO, ("Test took", elapsed / 1000000, "ms\n"));
+    LOG_SHORT(LINFO, ("Test took", elapsed / 1000000, "ms\n"));
   }
 
   if (numFailedTests != 0)
   {
-    LOG(LINFO, (numFailedTests, " tests failed:"));
+    LOG_SHORT(LINFO, (numFailedTests, " tests failed:"));
     for (size_t i = 0; i < testNames.size(); ++i)
     {
       if (!testResults[i])
-        LOG(LINFO, (testNames[i]));
+        LOG_SHORT(LINFO, (testNames[i]));
     }
-    LOG(LINFO, ("Some tests FAILED."));
+    LOG_SHORT(LINFO, ("Some tests FAILED."));
     return STATUS_FAILED;
   }
 
-  LOG(LINFO, ("All tests passed."));
+  LOG_SHORT(LINFO, ("All tests passed."));
   return STATUS_SUCCESS;
 }

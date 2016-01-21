@@ -209,6 +209,7 @@ public:
   };
 
   unique_ptr<Storage> m_prefetchStorage;
+  void FastMigrateIfPossible();
   void PrefetchMigrateData();
   void SaveDownloadQueue();
   void RestoreDownloadQueue();

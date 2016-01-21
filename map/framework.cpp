@@ -460,6 +460,9 @@ void Framework::RegisterAllMaps()
 {
   m_storage.RegisterAllLocalMaps();
 
+  if(platform::migrate::NeedMigrate())
+    m_storage.FastMigrateIfPossible();
+
   int minFormat = numeric_limits<int>::max();
 
   vector<shared_ptr<LocalCountryFile>> maps;
