@@ -32,6 +32,7 @@
 #include "std/algorithm.hpp"
 #include "std/iterator.hpp"
 #include "std/target_os.hpp"
+#include "std/transform_iterator.hpp"
 
 #include "defines.hpp"
 
@@ -178,7 +179,7 @@ bool HasSearchIndex(MwmValue const & value) { return value.m_cont.IsExist(SEARCH
 
 bool HasGeometryIndex(MwmValue & value) { return value.m_cont.IsExist(INDEX_FILE_TAG); }
 
-MwmSet::MwmHandle FindWorld(Index & index, vector<shared_ptr<MwmInfo>> & infos)
+MwmSet::MwmHandle FindWorld(Index & index, vector<shared_ptr<MwmInfo>> const & infos)
 {
   MwmSet::MwmHandle handle;
   for (auto const & info : infos)
@@ -190,6 +191,24 @@ MwmSet::MwmHandle FindWorld(Index & index, vector<shared_ptr<MwmInfo>> & infos)
     }
   }
   return handle;
+}
+
+strings::UniString AsciiToUniString(char const * s)
+{
+  return strings::UniString(s, s + strlen(s));
+}
+
+bool IsStopWord(strings::UniString const & s)
+{
+  /// @todo Get all common used stop words and factor out this array into
+  /// search_string_utils.cpp module for example.
+  static char const * arr[] = { "a", "de", "da", "la" };
+
+  static set<strings::UniString> const kStopWords(
+      make_transform_iterator(arr, &AsciiToUniString),
+      make_transform_iterator(arr + ARRAY_SIZE(arr), &AsciiToUniString));
+
+  return kStopWords.count(s) > 0;
 }
 
 m2::RectD NormalizeViewport(m2::RectD const & viewport)
@@ -242,6 +261,7 @@ TIt OrderCountries(Geocoder::Params const & params, TIt begin, TIt end)
   sort(begin, end, compareByDistance);
   return stable_partition(begin, end, intersects);
 }
+
 }  // namespace
 
 // Geocoder::Params --------------------------------------------------------------------------------
@@ -264,13 +284,30 @@ Geocoder::~Geocoder() {}
 void Geocoder::SetParams(Params const & params)
 {
   m_params = params;
-  m_retrievalParams = params;
+
+  // Filter stop words.
+  if (m_params.m_tokens.size() > 1)
+  {
+    for (auto & v : m_params.m_tokens)
+      v.erase(remove_if(v.begin(), v.end(), &IsStopWord), v.end());
+
+    auto & v = m_params.m_tokens;
+    v.erase(remove_if(v.begin(), v.end(), mem_fn(&Params::TSynonymsVector::empty)), v.end());
+
+    // If all tokens are stop words - give up.
+    if (m_params.m_tokens.empty())
+      m_params = params;
+  }
+
+  m_retrievalParams = m_params;
   m_numTokens = m_params.m_tokens.size();
   if (!m_params.m_prefixTokens.empty())
     ++m_numTokens;
+
+  LOG(LDEBUG, ("Languages =", m_params.m_langs));
 }
 
-void Geocoder::Go(vector<FeatureID> & results)
+void Geocoder::GoEverywhere(vector<FeatureID> & results)
 {
   // TODO (@y): remove following code as soon as Geocoder::Go() will
   // work fast for most cases (significantly less than 1 second).
@@ -291,11 +328,34 @@ void Geocoder::Go(vector<FeatureID> & results)
 
   m_results = &results;
 
+  vector<shared_ptr<MwmInfo>> infos;
+  m_index.GetMwmsInfo(infos);
+
+  GoImpl(infos, false /* inViewport */);
+}
+
+void Geocoder::GoInViewport(vector<FeatureID> & results)
+{
+  if (m_numTokens == 0)
+    return;
+
+  m_results = &results;
+
+  vector<shared_ptr<MwmInfo>> infos;
+  m_index.GetMwmsInfo(infos);
+
+  infos.erase(remove_if(infos.begin(), infos.end(), [this](shared_ptr<MwmInfo> const & info)
+  {
+    return !m_params.m_viewport.IsIntersect(info->m_limitRect);
+  }), infos.end());
+
+  GoImpl(infos, true /* inViewport */);
+}
+
+void Geocoder::GoImpl(vector<shared_ptr<MwmInfo>> & infos, bool inViewport)
+{
   try
   {
-    vector<shared_ptr<MwmInfo>> infos;
-    m_index.GetMwmsInfo(infos);
-
     // Tries to find world and fill localities table.
     {
       m_cities.clear();
@@ -344,14 +404,26 @@ void Geocoder::Go(vector<FeatureID> & results)
 
       m_matcher.reset(new FeaturesLayerMatcher(m_index, *m_context, *this /* cancellable */));
 
+      unique_ptr<coding::CompressedBitVector> viewportCBV;
+      if (inViewport)
+      {
+        viewportCBV = Retrieval::RetrieveGeometryFeatures(
+              m_context->m_value, static_cast<my::Cancellable const &>(*this),
+              m_params.m_viewport, m_params.m_scale);
+      }
+
       // Creates a cache of posting lists for each token.
       m_addressFeatures.resize(m_numTokens);
       for (size_t i = 0; i < m_numTokens; ++i)
       {
         PrepareRetrievalParams(i, i + 1);
+
         m_addressFeatures[i] = Retrieval::RetrieveAddressFeatures(
             m_context->m_value, *this /* cancellable */, m_retrievalParams);
         ASSERT(m_addressFeatures[i], ());
+
+        if (viewportCBV)
+          m_addressFeatures[i] = coding::CompressedBitVector::Intersect(*m_addressFeatures[i], *viewportCBV);
       }
 
       m_streets = LoadStreets(*m_context);
@@ -443,11 +515,11 @@ void Geocoder::FillLocalitiesTable(MwmContext const & context)
 
   auto const tokensCountFn = [&](Locality const & l)
   {
-    // Important! Don't take into account matched prefix for locality comparison.
-    size_t d = l.m_endToken - l.m_startToken;
+    // Important! Prefix match costs 1 while token match costs 2 for locality comparison.
+    size_t d = 2 * (l.m_endToken - l.m_startToken);
     ASSERT_GREATER(d, 0, ());
     if (l.m_endToken == m_numTokens && !m_params.m_prefixTokens.empty())
-      --d;
+      d -= 1;
     return d;
   };
 
@@ -472,8 +544,10 @@ void Geocoder::FillLocalitiesTable(MwmContext const & context)
   // 4. Leave most popular localities.
   if (preLocalities.size() > kMaxNumLocalities)
   {
-    nth_element(preLocalities.begin(), preLocalities.begin() + kMaxNumLocalities,
-                preLocalities.end(),
+    /// @todo Calculate match costs according to the exact locality name
+    /// (for 'york' query "york city" is better than "new york").
+
+    sort(preLocalities.begin(), preLocalities.end(),
                 [&](Locality const & l1, Locality const & l2)
                 {
                   auto const d1 = tokensCountFn(l1);
@@ -504,6 +578,12 @@ void Geocoder::FillLocalitiesTable(MwmContext const & context)
         city.m_rect = MercatorBounds::RectByCenterXYAndSizeInMeters(
             ft.GetCenter(), ftypes::GetRadiusByPopulation(ft.GetPopulation()));
 
+#if defined(DEBUG)
+        string name;
+        ft.GetName(StringUtf8Multilang::DEFAULT_CODE, name);
+        LOG(LDEBUG, ("City =", name));
+#endif
+
         m_cities[make_pair(l.m_startToken, l.m_endToken)].push_back(city);
       }
       break;
@@ -515,6 +595,9 @@ void Geocoder::FillLocalitiesTable(MwmContext const & context)
         ++numCountries;
         Country country(l);
         GetEnglishName(ft, country.m_enName);
+
+        LOG(LDEBUG, ("Country =", country.m_enName));
+
         m_infoGetter.GetMatchedRegions(country.m_enName, country.m_regions);
         m_countries[make_pair(l.m_startToken, l.m_endToken)].push_back(country);
       }
@@ -623,50 +706,47 @@ void Geocoder::MatchCities()
     if (allFeatures.IsEmpty())
       continue;
 
-    m_filter.SetFilter(allFeatures.Get());
-    MY_SCOPE_GUARD(resetFilter, [&]() {m_filter.SetFilter(nullptr);});
-
     // Filter will be applied for all non-empty bit vectors.
-    m_filter.SetThreshold(0);
-
-    GreedilyMatchStreets();
+    LimitedSearch(allFeatures.Get(), 0);
   }
 }
 
 void Geocoder::MatchViewportAndPosition()
 {
-  m2::RectD viewport = m_params.m_viewport;
-  m2::PointD const & position = m_params.m_position;
-
   CBVPtr allFeatures;
 
   // Extracts features in viewport (but not farther than some limit).
   {
-    m2::RectD const rect = NormalizeViewport(viewport);
+    m2::RectD const rect = NormalizeViewport(m_params.m_viewport);
     allFeatures.Union(RetrieveGeometryFeatures(*m_context, rect, VIEWPORT_ID));
   }
 
   // Extracts features around user position.
-  if (!position.EqualDxDy(viewport.Center(), kComparePoints))
+  if (!m_params.m_viewport.IsPointInside(m_params.m_position))
   {
-    m2::RectD const rect = GetRectAroundPoistion(position);
+    m2::RectD const rect = GetRectAroundPoistion(m_params.m_position);
     allFeatures.Union(RetrieveGeometryFeatures(*m_context, rect, POSITION_ID));
   }
 
-  m_filter.SetFilter(allFeatures.Get());
+  // Filter will be applied only for large bit vectors.
+  LimitedSearch(allFeatures.Get(), m_params.m_maxNumResults);
+}
+
+void Geocoder::LimitedSearch(coding::CompressedBitVector const * filter, size_t filterThreshold)
+{
+  m_filter.SetFilter(filter);
   MY_SCOPE_GUARD(resetFilter, [&]() { m_filter.SetFilter(nullptr); });
 
-  // Filter will be applied only for large bit vectors.
-  m_filter.SetThreshold(m_params.m_maxNumResults);
+  m_filter.SetThreshold(filterThreshold);
+
+  // The order is rather important. Match streets first, then all other stuff.
   GreedilyMatchStreets();
+  MatchPOIsAndBuildings(0 /* curToken */);
 }
 
 void Geocoder::GreedilyMatchStreets()
 {
-  MatchPOIsAndBuildings(0 /* curToken */);
-
   ASSERT(m_layers.empty(), ());
-
   m_layers.emplace_back();
 
   MY_SCOPE_GUARD(cleanupGuard, bind(&vector<FeaturesLayer>::pop_back, &m_layers));
@@ -797,7 +877,7 @@ void Geocoder::MatchPOIsAndBuildings(size_t curToken)
         SearchModel::SearchType const searchType = m_model.GetSearchType(feature);
 
         // All SEARCH_TYPE_CITY features were filtered in DoGeocodingWithLocalities().
-        // All SEARCH_TYPE_STREET features were filtered in GreedyMatchStreets().
+        // All SEARCH_TYPE_STREET features were filtered in GreedilyMatchStreets().
         if (searchType < SearchModel::SEARCH_TYPE_STREET)
           clusters[searchType].push_back(featureId);
       };

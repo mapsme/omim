@@ -8,7 +8,6 @@
 #include "search/v2/mwm_context.hpp"
 #include "search/v2/search_model.hpp"
 
-#include "indexer/mwm_set.hpp"
 #include "indexer/index.hpp"
 
 #include "coding/compressed_bit_vector.hpp"
@@ -26,6 +25,7 @@
 #include "std/unordered_map.hpp"
 #include "std/vector.hpp"
 
+class MwmInfo;
 class MwmValue;
 
 namespace coding
@@ -68,6 +68,7 @@ public:
     Params();
 
     m2::RectD m_viewport;
+    /// User's position or viewport center if there is no valid position.
     m2::PointD m_position;
     size_t m_maxNumResults;
   };
@@ -81,11 +82,14 @@ public:
 
   // Starts geocoding, retrieved features will be appended to
   // |results|.
-  void Go(vector<FeatureID> & results);
+  void GoEverywhere(vector<FeatureID> & results);
+  void GoInViewport(vector<FeatureID> & results);
 
   void ClearCaches();
 
 private:
+  void GoImpl(vector<shared_ptr<MwmInfo>> & infos, bool inViewport);
+
   struct Locality
   {
     uint32_t m_featureId = 0;
@@ -147,6 +151,8 @@ private:
   // city. If during the geocoding too many features are retrieved,
   // viewport is used to throw away excess features.
   void MatchViewportAndPosition();
+
+  void LimitedSearch(coding::CompressedBitVector const * filter, size_t filterThreshold);
 
   // Tries to match some adjacent tokens in the query as streets and
   // then performs geocoding in streets vicinities.

@@ -32,8 +32,6 @@ void SearchQueryV2::Cancel()
 
 void SearchQueryV2::Search(Results & res, size_t resCount)
 {
-  if (IsCancelled())
-    return;
   if (m_tokens.empty())
     SuggestStrings(res);
 
@@ -45,13 +43,27 @@ void SearchQueryV2::Search(Results & res, size_t resCount)
   m_geocoder.SetParams(params);
 
   vector<FeatureID> results;
-  m_geocoder.Go(results);
+  m_geocoder.GoEverywhere(results);
   AddPreResults1(results);
 
-  FlushResults(res, false /* allMWMs */, resCount);
+  FlushResults(res, false /* allMWMs */, resCount, false /* oldHouseSearch */);
 }
 
-void SearchQueryV2::SearchViewportPoints(Results & res) { NOTIMPLEMENTED(); }
+void SearchQueryV2::SearchViewportPoints(Results & res)
+{
+  Geocoder::Params params;
+  InitParams(false /* localitySearch */, params);
+  params.m_viewport = m_viewport[CURRENT_V];
+  params.m_position = m_position;
+  params.m_maxNumResults = kPreResultsCount;
+  m_geocoder.SetParams(params);
+
+  vector<FeatureID> results;
+  m_geocoder.GoInViewport(results);
+  AddPreResults1(results);
+
+  FlushViewportResults(res, false /* oldHouseSearch */);
+}
 
 void SearchQueryV2::ClearCaches()
 {
