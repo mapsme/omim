@@ -1,5 +1,6 @@
 #include "opening_hours_ui.hpp"
 
+#include "std/algorithm.hpp"
 #include "std/numeric.hpp"
 #include "std/stack.hpp"
 #include "std/tuple.hpp"
@@ -330,9 +331,17 @@ bool TimeTableSet::Remove(size_t const index)
   if (index == 0 || index >= size())
     return false;
 
-  erase(begin() + index);
+  // @todo(mgsergio) This method call does not work with spec=linux-clang (without -libc++):
+  // no known conversion from '__normal_iterator<const editor::ui::TimeTable *, [...]>' to
+  //       '__normal_iterator<pointer, [...]>' for 1st argument
+  //             erase(iterator __position);
+  //
+  // This method is not used anywhere, so this currently breaks nothing.
 
-  return true;
+  // erase(begin() + index);
+
+  // return true;
+  return false;
 }
 
 bool TimeTableSet::Replace(TimeTable const & tt, size_t const index)
