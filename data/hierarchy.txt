@@ -6,24 +6,23 @@ Algeria;Q262;dz;ar
  Algeria_Coast;Q262-North
 Andorra;Q228;ad;ca
 Angola;Q916;ao;pt
-Caribees;Q93259
- Anguilla;Q25228;ai;en
- Antigua and Barbuda;Q781;ag;en
- Barbados;Q244;bb;en
- British Virgin Islands;Q25305;vg
- Caribisch Nederland;Q27561
- Dominica;Q784;dm;en
- Grenada;Q769;gd;en
- Guadeloupe;Q17012;gp
- Martinique;Q17054;mq
- Montserrat;Q13353;ms;en
- Saint Barthelemy;Q25362;bl;fr
- Saint Kitts and Nevis;Q763;kn;en
- Saint Lucia;Q760;lc;en
- Saint Martin;Q126125;sx
- Saint Vincent and the Grenadines;Q757;vc;en
- Trinidad and Tobago;Q754;tt;en
- United States Virgin Islands;Q11703;vi;en
+Anguilla;Q25228;ai;en
+Antigua and Barbuda;Q781;ag;en
+Barbados;Q244;bb;en
+British Virgin Islands;Q25305;vg
+Caribisch Nederland;Q27561
+Dominica;Q784;dm;en
+Grenada;Q769;gd;en
+Guadeloupe;Q17012;gp
+Martinique;Q17054;mq
+Montserrat;Q13353;ms;en
+Saint Barthelemy;Q25362;bl;fr
+Saint Kitts and Nevis;Q763;kn;en
+Saint Lucia;Q760;lc;en
+Saint Martin;Q126125;sx
+Saint Vincent and the Grenadines;Q757;vc;en
+Trinidad and Tobago;Q754;tt;en
+United States Virgin Islands;Q11703;vi;en
 Argentina;Q414;ar;es
  Campo de Hielo Sur;Q1031467
  Argentina_Buenos Aires_North;Q44754-North
@@ -360,7 +359,7 @@ Gabon;Q1000;ga;fr
 Georgia;Q230;ge;ka
 Germany;Q183;de;de
  Germany_Baden-Wurttemberg;Q985
-  Germany_Baden-Wurttemberg_Regierungsbezirk Freiburg;Q8161
+  Germany_Baden-Wurttemberg_Regierungsbezirk Freiburg;Q2833
   Germany_Baden-Wurttemberg_Regierungsbezirk Karlsruhe;Q8165
   Germany_Baden-Wurttemberg_Regierungsbezirk Stuttgart_Heilbronn;Q8172-Q715
   Germany_Baden-Wurttemberg_Regierungsbezirk Stuttgart_Stuttgart;Q8172-Q1022
@@ -665,7 +664,7 @@ Norway;Q20;no;no
  Norway_Southern;Q648851
  Norway_Western;Q127598
  Norway_Central;Q585
- Norway_Bouvet Island;Q23480
+ Norway_Bouvet Island;Q23408
 Oman;Q842;om;ar
 Pakistan;Q843;pk;ur,en
 Palau;Q695;pw;en
@@ -758,7 +757,7 @@ Russian Federation;Q159;ru;ru
  Russia_Chelyabinsk Oblast;Q5714
  Russia_Chukotka Autonomous Okrug;Q7984
  Russia_Chuvashia;Q5466;;ru,cv
- Russia_Ingushetia;Q5217
+ Russia_Ingushetia;Q5219
  Russia_Irkutsk Oblast;Q6585
  Russia_Ivanovo Oblast;Q2654
  Russia_Jewish Autonomous Oblast;Q7730
@@ -1104,7 +1103,7 @@ United States of America;Q30;us
  US_New Hampshire;Q759;;en
  New Jersey;Q1408;;en
   US_New Jersey_North;Q1408-North
-  US_New Jersey_South;Q1480-South
+  US_New Jersey_South;Q1408-South
  US_New Mexico;Q1522
  New York;Q1384
   US_New York_East;Q1384-East

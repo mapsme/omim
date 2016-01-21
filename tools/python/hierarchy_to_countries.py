@@ -2,11 +2,12 @@
 import sys, json, re
 from optparse import OptionParser
 import os.path
+import codecs
 
 class CountryDict(dict):
   def __init__(self, *args, **kwargs):
     dict.__init__(self, *args, **kwargs)
-    self.order = ['id', 'v', 'c', 's', 'g']
+    self.order = ['id',  'n', 'f', 'v', 'c', 's', 'rs', 'g']
 
   def __iter__(self):
     for key in self.order:
@@ -50,6 +51,8 @@ parser.add_option('-o', '--output', help='Output countries.txt file (default is 
 parser.add_option('-m', '--help', action='store_true', help='Display this help')
 parser.add_option('--flag', action='store_true', help='Add flags ("c") to countries')
 parser.add_option('--lang', action='store_true', help='Add languages ("lang") to countries')
+parser.add_option('-l', '--legacy', action='store_true', help='Produce a legacy format file')
+parser.add_option('-n', '--names', help='Translations for file names (for legacy format)')
 (options, args) = parser.parse_args()
 
 if options.help:
@@ -76,8 +79,20 @@ try:
 except IOError:
   sys.stderr.write('Could not read old_vs_new file from {0}\n'.format(ovnpath))
 
+names = {}
+if options.names:
+  with codecs.open(options.names, 'r', 'utf-8') as f:
+    for line in f:
+      pair = [x.strip() for x in line.split('=', 1)]
+      if len(pair) == 2 and pair[0] != pair[1]:
+        try:
+          names[pair[0]] = pair[1]
+        except Error:
+          sys.stderr.write('Could not read translation for {0}\n'.format(pair[0]))
+
+nameattr = 'n' if options.legacy else 'id'
 mwmpath = '0' if not options.target else options.target
-stack = [CountryDict({ "v": options.version, "id": "Countries", "g": [] })]
+stack = [CountryDict({ "v": options.version, nameattr: "World" if options.legacy else "Countries", "g": [] })]
 last = None
 with open(options.hierarchy, 'r') as f:
   for line in f:
@@ -90,9 +105,13 @@ with open(options.hierarchy, 'r') as f:
         if lastd < depth:
           # last is a group
           last['g'] = []
+          if options.legacy and 'f' in last:
+            del last['f']
           stack.append(last)
         else:
-          last['s'] = get_size(mwmpath, last['id'])
+          last['s'] = get_size(mwmpath, last['f' if 'f' in last else nameattr])
+          if options.legacy:
+            last['rs'] = 0
           if last['s'] >= 0:
             stack[-1]['g'].append(last)
       while depth < len(stack) - 1:
@@ -101,17 +120,22 @@ with open(options.hierarchy, 'r') as f:
         if len(g['g']) > 0:
           stack[-1]['g'].append(g)
       items = m.group(2).split(';')
-      last = CountryDict({ "id": items[0], "d": depth })
-      if items[0] in oldvs:
+      last = CountryDict({ nameattr: items[0], "d": depth })
+      if not options.legacy and items[0] in oldvs:
         last['old'] = oldvs[items[0]]
-      if options.flag and len(items) > 2 and len(items[2]) > 0:
+      if (options.legacy or options.flag) and len(items) > 2 and len(items[2]) > 0:
         last['c'] = items[2]
       if options.lang and len(items) > 3 and len(items[3]) > 0:
         last['lang'] = items[3].split(',')
+      if options.legacy and items[0] in names:
+        last['f'] = last[nameattr]
+        last[nameattr] = names[items[0]]
 
 # the last line is always a file
 del last['d']
-last['s'] = get_size(mwmpath, last['id'])
+last['s'] = get_size(mwmpath, last['f' if 'f' in last else nameattr])
+if options.legacy:
+  last['rs'] = 0
 if last['s'] >= 0:
   stack[-1]['g'].append(last)
 while len(stack) > 1:
