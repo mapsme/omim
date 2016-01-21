@@ -88,6 +88,7 @@ UNIT_TEST(SmallMwms_InterruptDownloadResumeDownload_Test)
 
   storage.Init(Update);
   storage.RegisterAllLocalMaps();
+  storage.RestoreDownloadQueue();
   storage.Subscribe(onChangeCountryFn, onProgressFn);
   storage.SetDownloadingUrlsForTesting({kTestWebServer});
 
