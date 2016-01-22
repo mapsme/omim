@@ -15324,3 +15324,9 @@
   [editor_time_simple]
     tags = ios, android
     en = Simple mode
+
+  [migrate_title]
+    en = Important!
+
+  [migrate_subtitle]
+    en = In order to support new data format we have to erase installed maps. Then you should download maps again.
