@@ -47,6 +47,8 @@ public:
   void SetFeatureOriginalStretFn(TFeatureOriginalStreetFn const & fn) { m_featureOriginalStreet = fn; }
 
   void LoadMapEdits();
+  /// Resets editor to initial state: no any edits or created/deleted features.
+  void ClearAllLocalEdits();
 
   using TFeatureIDFunctor = function<void(FeatureID const &)>;
   void ForEachFeatureInMwmRectAndScale(MwmSet::MwmId const & id,
