@@ -92,6 +92,14 @@ public:
   /// @param[in] tags should provide additional information about client to use in changeset.
   void UploadChanges(string const & key, string const & secret, TChangesetTags const & tags);
 
+  struct Stats
+  {
+    /// <id, feature status string>
+    vector<pair<FeatureID, string>> m_edits;
+    size_t m_uploadedCount = 0;
+  };
+  Stats GetStats() const;
+
 private:
   // TODO(AlexZ): Synchronize Save call/make it on a separate thread.
   void Save(string const & fullFilePath) const;
