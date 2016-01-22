@@ -61,12 +61,12 @@ static NSString * const kAlertControllerNibIdentifier = @"MWMAlertViewController
 //  });
 }
 
-- (void)presentPoint2PointAlertWithOkBlock:(nonnull CloseAlertCompletion)block needToRebuild:(BOOL)needToRebuild
+- (void)presentPoint2PointAlertWithOkBlock:(nonnull TMWMVoidBlock)block needToRebuild:(BOOL)needToRebuild
 {
   [self displayAlert:[MWMAlert point2PointAlertWithOkBlock:block needToRebuild:needToRebuild]];
 }
 
-- (void)presentNeedMigrationAlertWithOkBlock:(nonnull CloseAlertCompletion)block
+- (void)presentNeedMigrationAlertWithOkBlock:(nonnull TMWMVoidBlock)block
 {
   [self displayAlert:[MWMAlert needMigrationAlertWithOkBlock:block]];
 }
@@ -86,7 +86,7 @@ static NSString * const kAlertControllerNibIdentifier = @"MWMAlertViewController
   [self displayAlert:MWMAlert.noConnectionAlert];
 }
 
-- (void)presentnoWiFiAlertWithName:(nonnull NSString *)name downloadBlock:(nullable RightButtonAction)block
+- (void)presentnoWiFiAlertWithName:(nonnull NSString *)name downloadBlock:(nullable TMWMVoidBlock)block
 {
   [self displayAlert:[MWMAlert noWiFiAlertWithName:name downloadBlock:block]];
 }
@@ -140,7 +140,7 @@ static NSString * const kAlertControllerNibIdentifier = @"MWMAlertViewController
   }];
 }
 
-- (void)closeAlertWithCompletion:(nullable CloseAlertCompletion)completion
+- (void)closeAlertWithCompletion:(nullable TMWMVoidBlock)completion
 {
   MWMAlert * alert = self.view.subviews.firstObject;
   [UIView animateWithDuration:kDefaultAnimationDuration animations:^

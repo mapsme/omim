@@ -26,12 +26,12 @@
   return [MWMFacebookAlert alert];
 }
 
-+ (MWMAlert *)point2PointAlertWithOkBlock:(RightButtonAction)block needToRebuild:(BOOL)needToRebuild
++ (MWMAlert *)point2PointAlertWithOkBlock:(TMWMVoidBlock)block needToRebuild:(BOOL)needToRebuild
 {
   return [MWMDefaultAlert point2PointAlertWithOkBlock:block needToRebuild:needToRebuild];
 }
 
-+ (MWMAlert *)needMigrationAlertWithOkBlock:(RightButtonAction)block
++ (MWMAlert *)needMigrationAlertWithOkBlock:(TMWMVoidBlock)block
 {
   return [MWMDefaultAlert needMigrationAlertWithOkBlock:block];
 }
@@ -46,7 +46,7 @@
   return [MWMDefaultAlert disabledLocationAlert];
 }
 
-+ (MWMAlert *)noWiFiAlertWithName:(NSString *)name downloadBlock:(RightButtonAction)block
++ (MWMAlert *)noWiFiAlertWithName:(NSString *)name downloadBlock:(TMWMVoidBlock)block
 {
   return [MWMDefaultAlert noWiFiAlertWithName:name downloadBlock:block];
 }

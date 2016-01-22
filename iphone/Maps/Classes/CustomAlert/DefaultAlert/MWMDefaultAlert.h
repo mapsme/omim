@@ -10,10 +10,10 @@
 + (instancetype)noCurrentPositionAlert;
 + (instancetype)pointsInDifferentMWMAlert;
 + (instancetype)disabledLocationAlert;
-+ (instancetype)noWiFiAlertWithName:(NSString *)name downloadBlock:(RightButtonAction)block;
++ (instancetype)noWiFiAlertWithName:(NSString *)name downloadBlock:(TMWMVoidBlock)block;
 + (instancetype)noConnectionAlert;
 + (instancetype)locationServiceNotSupportedAlert;
-+ (instancetype)point2PointAlertWithOkBlock:(RightButtonAction)block needToRebuild:(BOOL)needToRebuild;
-+ (instancetype)needMigrationAlertWithOkBlock:(RightButtonAction)block;
++ (instancetype)point2PointAlertWithOkBlock:(TMWMVoidBlock)block needToRebuild:(BOOL)needToRebuild;
++ (instancetype)needMigrationAlertWithOkBlock:(TMWMVoidBlock)block;
 
 @end
