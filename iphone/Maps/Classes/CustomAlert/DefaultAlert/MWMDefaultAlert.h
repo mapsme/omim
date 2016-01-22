@@ -14,5 +14,6 @@
 + (instancetype)noConnectionAlert;
 + (instancetype)locationServiceNotSupportedAlert;
 + (instancetype)point2PointAlertWithOkBlock:(RightButtonAction)block needToRebuild:(BOOL)needToRebuild;
++ (instancetype)needMigrationAlertWithOkBlock:(RightButtonAction)block;
 
 @end
