@@ -481,7 +481,7 @@ NSString * const kAuthorizationSegue = @"Map2AuthorizationSegue";
 
 - (void)presentViewController:(UIViewController *)viewControllerToPresent
                      animated:(BOOL)flag
-                   completion:(void (^__nullable)(void))completion
+                   completion:(TMWMVoidBlock)completion
 {
   if (isIOSVersionLessThan(8))
     self.menuRestoreState = self.controlsManager.menuState;
