@@ -45,7 +45,6 @@ import com.mapswithme.maps.bookmarks.data.MapObject;
 import com.mapswithme.maps.bookmarks.data.MapObject.ApiPoint;
 import com.mapswithme.maps.bookmarks.data.Metadata;
 import com.mapswithme.maps.editor.EditorActivity;
-import com.mapswithme.maps.editor.EditorFragment;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.location.LocationPredictor;
 import com.mapswithme.maps.routing.NavigationController;
@@ -283,19 +282,31 @@ public class MwmActivity extends BaseMwmFragmentActivity
     new AlertDialog.Builder(MwmActivity.this)
         .setMessage(R.string.unknown_current_position)
         .setCancelable(true)
-        .setPositiveButton(android.R.string.ok, new Dialog.OnClickListener()
-        {
-          @Override
-          public void onClick(DialogInterface dialog, int which)
-          {
-            dialog.dismiss();
-          }
-        }).show();
+        .setPositiveButton(android.R.string.ok, null)
+        .show();
   }
 
   @Override
-  public void showDownloader(boolean openDownloadedList)
+  public void showDownloader(final boolean openDownloadedList)
   {
+    if (ActiveCountryTree.isLegacyMode())
+    {
+      new AlertDialog.Builder(MwmActivity.this)
+          .setTitle(R.string.migrate_title)
+          .setMessage(R.string.migrate_subtitle)
+          .setPositiveButton(android.R.string.ok, new Dialog.OnClickListener()
+          {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+              ActiveCountryTree.migrate();
+              showDownloader(openDownloadedList);
+            }
+          }).show();
+
+      return;
+    }
+
     final Bundle args = new Bundle();
     args.putBoolean(DownloadActivity.EXTRA_OPEN_DOWNLOADED_LIST, openDownloadedList);
     if (mIsFragmentContainer)
