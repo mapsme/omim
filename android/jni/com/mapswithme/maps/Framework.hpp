@@ -166,6 +166,9 @@ namespace android
     // Posts a task which must be executed when Drape Engine is alive.
     void PostDrapeTask(TDrapeTask && task);
 
+    bool NeedMigrate();
+    void Migrate();
+
   public:
     virtual void ItemStatusChanged(int childPosition);
     virtual void ItemProgressChanged(int childPosition, storage::LocalAndRemoteSizeT const & sizes);
