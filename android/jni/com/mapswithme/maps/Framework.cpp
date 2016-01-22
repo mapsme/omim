@@ -558,6 +558,16 @@ void Framework::ExecuteDrapeTasks()
   m_drapeTasksQueue.clear();
 }
 
+bool Framework::NeedMigrate()
+{
+  return platform::migrate::NeedMigrate();
+}
+
+void Framework::Migrate()
+{
+  m_work.Migrate();
+}
+
 } // namespace android
 
 template <class T>
