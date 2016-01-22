@@ -26,9 +26,14 @@
   return [MWMFacebookAlert alert];
 }
 
-+ (MWMAlert *)point2PointAlertWithOkBlock:(RightButtonAction)block needToRebuild:(BOOL)needToRebuild
++ (MWMAlert *)point2PointAlertWithOkBlock:(TMWMVoidBlock)block needToRebuild:(BOOL)needToRebuild
 {
   return [MWMDefaultAlert point2PointAlertWithOkBlock:block needToRebuild:needToRebuild];
+}
+
++ (MWMAlert *)needMigrationAlertWithOkBlock:(TMWMVoidBlock)block
+{
+  return [MWMDefaultAlert needMigrationAlertWithOkBlock:block];
 }
 
 + (MWMAlert *)routingDisclaimerAlertWithInitialOrientation:(UIInterfaceOrientation)orientation
@@ -41,7 +46,7 @@
   return [MWMDefaultAlert disabledLocationAlert];
 }
 
-+ (MWMAlert *)noWiFiAlertWithName:(NSString *)name downloadBlock:(RightButtonAction)block
++ (MWMAlert *)noWiFiAlertWithName:(NSString *)name downloadBlock:(TMWMVoidBlock)block
 {
   return [MWMDefaultAlert noWiFiAlertWithName:name downloadBlock:block];
 }
@@ -59,8 +64,9 @@
 + (MWMAlert *)downloaderAlertWithAbsentCountries:(vector<storage::TIndex> const &)countries
                                           routes:(vector<storage::TIndex> const &)routes
                                             code:(routing::IRouter::ResultCode)code
+                                           block:(TMWMVoidBlock)block
 {
-  return [MWMDownloadTransitMapAlert downloaderAlertWithMaps:countries routes:routes code:code];
+  return [MWMDownloadTransitMapAlert downloaderAlertWithMaps:countries routes:routes code:code block:block];
 }
 
 + (MWMAlert *)alert:(routing::IRouter::ResultCode)type

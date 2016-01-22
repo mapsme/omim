@@ -42,8 +42,6 @@
 
 @end
 
-typedef void (^MWMDownloaderBlock)();
-
 typedef NS_ENUM(NSUInteger, SelectionState)
 {
   SelectionStateNone,
@@ -69,7 +67,7 @@ static NSString * const kStatisticsEvent = @"Map download Alert";
 
 @property (weak, nonatomic) IBOutlet UILabel * titleLabel;
 @property (weak, nonatomic) IBOutlet UILabel * messageLabel;
-@property (copy, nonatomic) MWMDownloaderBlock downloaderBlock;
+@property (copy, nonatomic) TMWMVoidBlock downloaderBlock;
 @property (weak, nonatomic) IBOutlet UITableView * dialogsTableView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint * tableViewHeight;
 @property (copy, nonatomic) NSArray * missedFiles;
@@ -88,6 +86,7 @@ static NSString * const kStatisticsEvent = @"Map download Alert";
 + (instancetype)downloaderAlertWithMaps:(vector<storage::TIndex> const &)maps
                                  routes:(vector<storage::TIndex> const &)routes
                                    code:(routing::IRouter::ResultCode)code
+                                  block:(TMWMVoidBlock)block
 {
   [[Statistics instance] logEvent:kStatisticsEvent withParameters:@{kStatAction : kStatOpen}];
   MWMDownloadTransitMapAlert * alert = [self alertWithMaps:maps routes:routes];
@@ -111,6 +110,7 @@ static NSString * const kStatisticsEvent = @"Map download Alert";
       NSAssert(false, @"Incorrect code!");
       break;
   }
+  alert.downloaderBlock = block;
   return alert;
 }
 
@@ -131,16 +131,6 @@ static NSString * const kStatisticsEvent = @"Map download Alert";
   alert.missedFiles = missedFiles;
   alert->maps = maps;
   alert->routes = routes;
-  __weak MWMDownloadTransitMapAlert * wAlert = alert;
-  alert.downloaderBlock = ^()
-  {
-    __strong MWMDownloadTransitMapAlert * alert = wAlert;
-    auto & a = GetFramework().GetCountryTree().GetActiveMapLayout();
-    for (auto const & index : alert->maps)
-      a.DownloadMap(index, MapOptions::MapWithCarRouting);
-    for (auto const & index : alert->routes)
-      a.DownloadMap(index, MapOptions::CarRouting);
-  };
   [alert configure];
   return alert;
 }
