@@ -1,5 +1,6 @@
 #include "testing/testing.hpp"
 
+#include "platform/mwm_version.hpp"
 #include "platform/platform.hpp"
 
 #include "defines.hpp"
@@ -211,4 +212,12 @@ UNIT_TEST(GetWritableStorageStatus)
 {
   TEST_EQUAL(Platform::STORAGE_OK, GetPlatform().GetWritableStorageStatus(100000), ());
   TEST_EQUAL(Platform::NOT_ENOUGH_SPACE, GetPlatform().GetWritableStorageStatus(uint64_t(-1)), ());
+}
+
+UNIT_TEST(IsSingleMwm)
+{
+  TEST(version::IsSingleMwm(version::FOR_TESTING_SINGLE_MWM1), ());
+  TEST(version::IsSingleMwm(version::FOR_TESTING_SINGLE_MWM_LATEST), ());
+  TEST(!version::IsSingleMwm(version::FOR_TESTING_TWO_COMPONENT_MWM1), ());
+  TEST(!version::IsSingleMwm(version::FOR_TESTING_TWO_COMPONENT_MWM2), ());
 }
