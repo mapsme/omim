@@ -989,7 +989,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
         return;
 
       request.setPointData(object.getLat(), object.getLon(), object.getName(), object.getSearchId());
-      object.setType(request.getCallerName(MwmApplication.get()).toString());
+      object.setTypeName(request.getCallerName(MwmApplication.get()).toString());
 
     }
     else if (object.getMapObjectType() == MapObject.MY_POSITION)

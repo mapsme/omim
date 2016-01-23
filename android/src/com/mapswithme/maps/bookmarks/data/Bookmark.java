@@ -93,7 +93,7 @@ public class Bookmark extends MapObject
   }
 
   @Override
-  public String getPoiTypeName()
+  public String getType()
   {
     return getCategory().getName();
   }

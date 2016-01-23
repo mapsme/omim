@@ -418,8 +418,8 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
     mTvTitle.setText(mMapObject.getName());
     if (mToolbar != null)
       mToolbar.setTitle(mMapObject.getName());
-    String subtitle = mMapObject.getCuisine().isEmpty() ? mMapObject.getPoiTypeName()
-                                                        : mMapObject.getPoiTypeName()  + ", " + mMapObject.getCuisine();
+    String subtitle = mMapObject.getCuisine().isEmpty() ? mMapObject.getTypeName()
+                                                        : mMapObject.getTypeName()  + ", " + mMapObject.getCuisine();
     mTvSubtitle.setText(subtitle);
     mAvDirection.setVisibility(View.GONE);
   }

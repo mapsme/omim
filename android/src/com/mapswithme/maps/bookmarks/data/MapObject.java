@@ -123,7 +123,7 @@ public class MapObject implements Parcelable
 
   public double getLon() { return mLon; }
 
-  public String getPoiTypeName() { return mTypeName; }
+  public String getTypeName() { return mTypeName; }
 
   public boolean getIsDroppedPin()
   {
@@ -190,9 +190,9 @@ public class MapObject implements Parcelable
     mLon = lon;
   }
 
-  public void setType(String type)
+  public void setTypeName(String typeName)
   {
-    mTypeName = type;
+    mTypeName = typeName;
   }
 
   public void addMetadata(int type, String value)
