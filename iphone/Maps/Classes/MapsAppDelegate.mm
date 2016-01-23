@@ -32,6 +32,8 @@
 #include "platform/preferred_languages.hpp"
 #include "storage/storage_defines.hpp"
 
+#include "std/mutex.hpp"
+
 // If you have a "missing header error" here, then please run configure.sh script in the root repo folder.
 #import "../../../private.h"
 
@@ -105,6 +107,10 @@ void InitLocalizedStrings()
   NSString * m_scheme;
   NSString * m_sourceApplication;
   ActiveMapsObserver * m_mapsObserver;
+
+  mutex m_fetchTaskMutex;
+  NSUInteger m_fetchRunningTasks;
+  UIBackgroundFetchResult m_fetchResult;
 }
 
 + (MapsAppDelegate *)theApp
@@ -371,24 +377,54 @@ void InitLocalizedStrings()
 
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
-  // TODO(@igrechuhin): correctly call completionHandler once after all three tasks have finished.
+  m_fetchRunningTasks = 3; // Update on task add/remove.
+  m_fetchResult = UIBackgroundFetchResultNewData;
+  auto checkFetchResult = ^(UIBackgroundFetchResult result, UIBackgroundFetchResult checkResult)
+  {
+    BOOL const isCheckResult = (self->m_fetchResult == checkResult || result == checkResult);
+    return isCheckResult ? checkResult : self->m_fetchResult;
+  };
+  auto callback = ^(UIBackgroundFetchResult result)
+  {
+    lock_guard<mutex> lock(self->m_fetchTaskMutex);
+    self->m_fetchResult = checkFetchResult(result, UIBackgroundFetchResultFailed);
+    self->m_fetchResult = checkFetchResult(result, UIBackgroundFetchResultNewData);
+    self->m_fetchResult = checkFetchResult(result, UIBackgroundFetchResultNoData);
+    if (--self->m_fetchRunningTasks == 0)
+      completionHandler(self->m_fetchResult);
+  };
+
+  NSTimeInterval const completionTimeIndent = 1.0;
+  NSTimeInterval const backgroundTimeRemaining = UIApplication.sharedApplication.backgroundTimeRemaining - completionTimeIndent;
+  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(backgroundTimeRemaining * NSEC_PER_SEC)), dispatch_get_main_queue(), ^
+  {
+    completionHandler(self->m_fetchResult);
+  });
 
   // At the moment, we need to perform 3 asynchronous background tasks simultaneously:
   // 1. Try to send collected statistics (if any) to our server.
-  [Alohalytics forceUpload:^(UIBackgroundFetchResult result)
-  {
-    // TODO(@igrechuhin): use result to correctly call completionHandler.
-  }];
+  [Alohalytics forceUpload:callback];
   // 2. Upload map edits (if any).
   if (osm::Editor::Instance().HaveSomethingToUpload() && MWMAuthorizationHaveCredentials())
   {
     [MapsAppDelegate uploadLocalMapEdits:^(osm::Editor::UploadResult result)
     {
-      // TODO(@igrechuhin): use result to correctly call completionHandler.
+      switch (result)
+      {
+      case osm::Editor::UploadResult::Success:
+        callback(UIBackgroundFetchResultNewData);
+        break;
+      case osm::Editor::UploadResult::Error:
+        callback(UIBackgroundFetchResultFailed);
+        break;
+      case osm::Editor::UploadResult::NothingToUpload:
+        callback(UIBackgroundFetchResultNoData);
+        break;
+      }
     } with:MWMAuthorizationGetCredentials()];
   }
   // 3. Check if map for current location is already downloaded, and if not - notify user to download it.
-  [[LocalNotificationManager sharedManager] showDownloadMapNotificationIfNeeded:completionHandler];
+  [[LocalNotificationManager sharedManager] showDownloadMapNotificationIfNeeded:callback];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
