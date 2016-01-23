@@ -17,6 +17,7 @@ public class SimpleTimetableFragment extends BaseMwmRecyclerFragment
                                              HoursMinutesPickerFragment.OnPickListener
 {
   private SimpleTimetableAdapter mAdapter;
+  private Timetable[] mInitTts;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState)
@@ -27,8 +28,9 @@ public class SimpleTimetableFragment extends BaseMwmRecyclerFragment
   @Override
   protected RecyclerView.Adapter createAdapter()
   {
-    if (mAdapter == null)
-      mAdapter = new SimpleTimetableAdapter(this);
+    mAdapter = new SimpleTimetableAdapter(this);
+    if (mInitTts != null)
+      mAdapter.setTimetables(mInitTts);
     return mAdapter;
   }
 
@@ -61,8 +63,6 @@ public class SimpleTimetableFragment extends BaseMwmRecyclerFragment
   {
     if (tts == null)
       return;
-
-    createAdapter();
-    mAdapter.setTimetables(tts);
+    mInitTts = tts;
   }
 }
