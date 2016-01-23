@@ -58,7 +58,7 @@ public abstract class ShareOption
     {
       final String ge0Url = Framework.nativeGetGe0Url(mapObject.getLat(), mapObject.getLon(), mapObject.getScale(), "");
       final String httpUrl = Framework.getHttpGe0Url(mapObject.getLat(), mapObject.getLon(), mapObject.getScale(), "");
-      final int bodyId = mapObject.getMapObjectType() == MapObject.MY_POSITION ? R.string.my_position_share_sms : R.string.bookmark_share_sms;
+      final int bodyId = mapObject.isMyPosition() ? R.string.my_position_share_sms : R.string.bookmark_share_sms;
       final String body = activity.getString(bodyId, ge0Url, httpUrl);
 
       shareWithText(activity, body);

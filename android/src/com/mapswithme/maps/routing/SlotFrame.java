@@ -96,7 +96,7 @@ public class SlotFrame extends LinearLayout
         return;
       }
 
-      if (mMapObject.getMapObjectType() == MapObject.MY_POSITION)
+      if (mMapObject.isMyPosition())
         mText.setText(R.string.p2p_your_location);
       else
         mText.setText(mMapObject.getName());

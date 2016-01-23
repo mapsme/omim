@@ -505,7 +505,7 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
     if (mMapObject == null)
       return;
 
-    if (mMapObject.getMapObjectType() == MapObject.MY_POSITION)
+    if (mMapObject.isMyPosition())
       refreshMyPosition(l);
     else
       refreshDistanceToObject(l);
@@ -587,8 +587,8 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
   public void refreshAzimuth(double northAzimuth)
   {
     if (getState() == State.HIDDEN ||
-            mMapObject == null ||
-            mMapObject.getMapObjectType() == MapObject.MY_POSITION)
+        mMapObject == null ||
+        mMapObject.isMyPosition())
       return;
 
     final Location location = LocationHelper.INSTANCE.getLastLocation();
@@ -623,7 +623,7 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
   // TODO remove that method completely. host activity should check that itself
   private void checkApiWasCanceled()
   {
-    if (mMapObject.getMapObjectType() == MapObject.API_POINT && !ParsedMwmRequest.hasRequest())
+    if (mMapObject.isApi() && !ParsedMwmRequest.hasRequest())
       setMapObject(null);
   }
 
@@ -631,7 +631,7 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
   private void checkBookmarkWasDeleted()
   {
     // We need to check, if content of body is still valid
-    if (mMapObject.getMapObjectType() == MapObject.BOOKMARK)
+    if (mMapObject.isBookmark())
     {
       final Bookmark bmk = (Bookmark) mMapObject;
       boolean deleted = false;
@@ -813,7 +813,7 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
   {
     if (mMapObject == null)
       return;
-    if (mMapObject.getMapObjectType() == MapObject.BOOKMARK)
+    if (mMapObject.isBookmark())
     {
       final Bookmark currentBookmark = (Bookmark) mMapObject;
       MapObject p;

@@ -982,7 +982,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   @Override
   public void onMapObjectActivated(MapObject object)
   {
-    if (object.getMapObjectType() == MapObject.API_POINT)
+    if (object.isApi())
     {
       final ParsedMwmRequest request = ParsedMwmRequest.getCurrentRequest();
       if (request == null)
@@ -992,7 +992,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
       object.setTypeName(request.getCallerName(MwmApplication.get()).toString());
 
     }
-    else if (object.getMapObjectType() == MapObject.MY_POSITION)
+    else if (object.isMyPosition())
     {
       if (Framework.nativeIsRoutingActive())
         return;

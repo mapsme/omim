@@ -19,6 +19,7 @@ public class MapObject implements Parcelable
   @Retention(RetentionPolicy.SOURCE)
   @IntDef({POI, API_POINT, BOOKMARK, MY_POSITION, SEARCH})
   public @interface MapObjectType {}
+
   public static final int POI = 0;
   public static final int API_POINT = 1;
   public static final int BOOKMARK = 2;
@@ -138,7 +139,8 @@ public class MapObject implements Parcelable
   /**
    * @return properly formatted and translated cuisine string.
    */
-  public @NonNull String getCuisine()
+  @NonNull
+  public String getCuisine()
   {
     final String rawCuisine = mMetadata.getMetadata(Metadata.MetadataType.FMD_CUISINE);
     if (TextUtils.isEmpty(rawCuisine))
@@ -173,6 +175,31 @@ public class MapObject implements Parcelable
   public int getMapObjectType()
   {
     return mMapObjectType;
+  }
+
+  public boolean isMyPosition()
+  {
+    return mMapObjectType == MY_POSITION;
+  }
+
+  public boolean isBookmark()
+  {
+    return mMapObjectType == BOOKMARK;
+  }
+
+  public boolean isSearch()
+  {
+    return mMapObjectType == SEARCH;
+  }
+
+  public boolean isApi()
+  {
+    return mMapObjectType == API_POINT;
+  }
+
+  public boolean isPoi()
+  {
+    return mMapObjectType == POI;
   }
 
   public String getSearchId()
