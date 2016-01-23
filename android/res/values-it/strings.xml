@@ -835,4 +835,17 @@
 	<string name="whats_new_rec_track_body">Ora, l\&#39;app mostra i percorsi effettuati di recente.</string>
 	<string name="whats_new_night_caption">Unisciti al lato oscuro!</string>
 	<string name="whats_new_night_body">Ogni giorno, dopo il tramonto, MAPS.ME attiva la modalità notturna.</string>
+	<string name="edit_opening_hours">Orari di apertura</string>
+	<string name="edit_all_day">Tutto il giorno (24 ore)</string>
+	<string name="edit_open">Aperto</string>
+	<string name="edit_closed">Chiuso</string>
+	<string name="edit_add_hours_closed">Aggiungi orari di chiusura</string>
+	<string name="edit_hours_closed">Orari di chiusura</string>
+	<string name="edit_add_schedule">Aggiungi orari</string>
+	<string name="edit_delete_schedule">Elimina orari</string>
+	<string name="edit_simple_mode">Modalità semplice</string>
+	<string name="edit_advanced_mode">Modalità avanzata</string>
+	<string name="edit_example_values">Valori esemplificativi</string>
+	<string name="edit_correct_mistake">Correggi errore</string>
+	<string name="edit_correct_mistake_message">Hai commesso un errore nella modifica. Correggerlo o passare alla modalità semplice.</string>
 </resources>

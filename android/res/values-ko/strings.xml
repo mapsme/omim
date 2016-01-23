@@ -828,4 +828,17 @@
 	<string name="whats_new_rec_track_body">지금 앱은 최근 여행한 경로를 보여줍니다.</string>
 	<string name="whats_new_night_caption">어두운 환경으로 진입!</string>
 	<string name="whats_new_night_body">매일 해가 진 후, 맵스.미 나이트 모드로 활성화.</string>
+	<string name="edit_opening_hours">영업 시간</string>
+	<string name="edit_all_day">종일 영업(24시간)</string>
+	<string name="edit_open">개점</string>
+	<string name="edit_closed">폐점</string>
+	<string name="edit_add_hours_closed">폐점 시간 추가</string>
+	<string name="edit_hours_closed">폐점 시간</string>
+	<string name="edit_add_schedule">스케줄 추가</string>
+	<string name="edit_delete_schedule">스케줄 삭제</string>
+	<string name="edit_simple_mode">기본 모드</string>
+	<string name="edit_advanced_mode">고급 모드</string>
+	<string name="edit_example_values">예제</string>
+	<string name="edit_correct_mistake">입력 수정</string>
+	<string name="edit_correct_mistake_message">잘못 입력했습니다. 수정하거나 기본 모드로 전환하세요.</string>
 </resources>

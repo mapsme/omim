@@ -1393,3 +1393,29 @@
 "editor_time_advanced" = "Advanced mode";
 
 "editor_time_simple" = "Simple mode";
+
+"edit_opening_hours" = "Åpningstider";
+
+"edit_all_day" = "Hele dagen (24 timer)";
+
+"edit_open" = "Åpen";
+
+"edit_closed" = "Stengt";
+
+"edit_add_hours_closed" = "Legg til stengt tid";
+
+"edit_hours_closed" = "Stengt";
+
+"edit_add_schedule" = "Legg til tidsrom";
+
+"edit_delete_schedule" = "Slett tidsrom";
+
+"edit_simple_mode" = "Enkel modus";
+
+"edit_advanced_mode" = "Avansert modus";
+
+"edit_example_values" = "Eksempelverdier";
+
+"edit_correct_mistake" = "Rett feil";
+
+"edit_correct_mistake_message" = "Du har gjort en redigeringsfeil. Rett den eller bytt til enkel modus.";

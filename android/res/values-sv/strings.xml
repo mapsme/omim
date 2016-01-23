@@ -840,4 +840,17 @@
 	<string name="whats_new_rec_track_body">Appen visar nu din senaste resväg.</string>
 	<string name="whats_new_night_caption">Gå med i den mörka sidan!</string>
 	<string name="whats_new_night_body">Varje dag efter solnedgången aktiverar MAPS.ME nattläget.</string>
+	<string name="edit_opening_hours">Öppettider</string>
+	<string name="edit_all_day">Alla dagar (24 timmar)</string>
+	<string name="edit_open">Öppet</string>
+	<string name="edit_closed">Stängt</string>
+	<string name="edit_add_hours_closed">Lägg till stängda timmar</string>
+	<string name="edit_hours_closed">Stängda timmar</string>
+	<string name="edit_add_schedule">Lägg till schema</string>
+	<string name="edit_delete_schedule">Ta bort schema</string>
+	<string name="edit_simple_mode">Enkelt läge</string>
+	<string name="edit_advanced_mode">Avancerat läge</string>
+	<string name="edit_example_values">Exempelvärden</string>
+	<string name="edit_correct_mistake">Korrigera fel</string>
+	<string name="edit_correct_mistake_message">Du har gjort ett fel i redigeringen. Var vänlig korrigera det eller byt till enkelt läge.</string>
 </resources>

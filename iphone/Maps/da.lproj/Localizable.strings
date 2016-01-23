@@ -1393,3 +1393,29 @@
 "editor_time_advanced" = "Advanced mode";
 
 "editor_time_simple" = "Simple mode";
+
+"edit_opening_hours" = "Åbningstider";
+
+"edit_all_day" = "Alle dage (24 timer)";
+
+"edit_open" = "Åbent";
+
+"edit_closed" = "Lukket";
+
+"edit_add_hours_closed" = "Tilføj Lukket-timer";
+
+"edit_hours_closed" = "Lukket-timer";
+
+"edit_add_schedule" = "Tilføj tidsplan";
+
+"edit_delete_schedule" = "Slet tidsplan";
+
+"edit_simple_mode" = "Enkel tilstand";
+
+"edit_advanced_mode" = "Avanceret tilstand";
+
+"edit_example_values" = "Eksempelværdier";
+
+"edit_correct_mistake" = "Ret fejl";
+
+"edit_correct_mistake_message" = "Du har lavet en redigeringsfejl. Ret den, eller skift til enkel tilstand.";

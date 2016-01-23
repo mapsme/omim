@@ -1393,3 +1393,29 @@
 "editor_time_advanced" = "Advanced mode";
 
 "editor_time_simple" = "Simple mode";
+
+"edit_opening_hours" = "Nyitvatartási idő";
+
+"edit_all_day" = "Egész nap (24 óra)";
+
+"edit_open" = "Nyitva";
+
+"edit_closed" = "Zárva";
+
+"edit_add_hours_closed" = "Zárvatartási idők felvitele";
+
+"edit_hours_closed" = "Zárvatartási órák";
+
+"edit_add_schedule" = "Időrend felvitele";
+
+"edit_delete_schedule" = "Időrend törlése";
+
+"edit_simple_mode" = "Egyszerű mód";
+
+"edit_advanced_mode" = "Haladó mód";
+
+"edit_example_values" = "Példa értékek";
+
+"edit_correct_mistake" = "Hiba javítása";
+
+"edit_correct_mistake_message" = "Szerkesztési hibát vétett. Javítsa ki vagy váltson egyszerű módba.";

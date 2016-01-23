@@ -1393,3 +1393,29 @@
 "editor_time_advanced" = "Advanced mode";
 
 "editor_time_simple" = "Simple mode";
+
+"edit_opening_hours" = "Giờ mở cửa";
+
+"edit_all_day" = "Cả ngày (24 giờ)";
+
+"edit_open" = "Mở cửa";
+
+"edit_closed" = "Đóng cửa";
+
+"edit_add_hours_closed" = "Thêm giờ đóng cửa";
+
+"edit_hours_closed" = "Giờ đóng cửa";
+
+"edit_add_schedule" = "Thêm lịch biểu";
+
+"edit_delete_schedule" = "Xóa lịch biểu";
+
+"edit_simple_mode" = "Chế độ đơn giản";
+
+"edit_advanced_mode" = "Chế độ nâng cao";
+
+"edit_example_values" = "Giá trị ví dụ";
+
+"edit_correct_mistake" = "Sửa lỗi";
+
+"edit_correct_mistake_message" = "Bạn đã mắc lỗi chỉnh sửa. Vui lòng sửa lỗi hoặc chuyển qua chế độ đơn giản.";

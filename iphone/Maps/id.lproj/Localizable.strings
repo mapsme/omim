@@ -1393,3 +1393,29 @@
 "editor_time_advanced" = "Advanced mode";
 
 "editor_time_simple" = "Simple mode";
+
+"edit_opening_hours" = "Jam buka";
+
+"edit_all_day" = "Setiap Hari (24 jam)";
+
+"edit_open" = "Buka";
+
+"edit_closed" = "Tutup";
+
+"edit_add_hours_closed" = "Tambah Jam Tutup";
+
+"edit_hours_closed" = "Jam Tutup";
+
+"edit_add_schedule" = "Tambah Jadwal";
+
+"edit_delete_schedule" = "Hapus Jadwal";
+
+"edit_simple_mode" = "Mode Sederhana";
+
+"edit_advanced_mode" = "Mode Lanjutan";
+
+"edit_example_values" = "Contoh Nilai";
+
+"edit_correct_mistake" = "Koreksi kesalahan";
+
+"edit_correct_mistake_message" = "Pengeditan salah. Koreksi atau ubah ke mode sederhana.";

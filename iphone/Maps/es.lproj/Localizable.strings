@@ -1393,3 +1393,29 @@
 "editor_time_advanced" = "Advanced mode";
 
 "editor_time_simple" = "Simple mode";
+
+"edit_opening_hours" = "Horario de apertura";
+
+"edit_all_day" = "Todo el día (24 horas)";
+
+"edit_open" = "Abierto";
+
+"edit_closed" = "Cerrado";
+
+"edit_add_hours_closed" = "Añadir horas de cierre";
+
+"edit_hours_closed" = "Horas de cierre";
+
+"edit_add_schedule" = "Añadir horario";
+
+"edit_delete_schedule" = "Eliminar horario";
+
+"edit_simple_mode" = "Modo sencillo";
+
+"edit_advanced_mode" = "Modo avanzado";
+
+"edit_example_values" = "Valores de ejemplo";
+
+"edit_correct_mistake" = "Corregir error";
+
+"edit_correct_mistake_message" = "Ha cometido un error de edición. Por favor, corríjalo o cambie a modo sencillo.";

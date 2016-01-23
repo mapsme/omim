@@ -1393,3 +1393,29 @@
 "editor_time_advanced" = "Advanced mode";
 
 "editor_time_simple" = "Simple mode";
+
+"edit_opening_hours" = "Openingstijden";
+
+"edit_all_day" = "Elke dag (dag en nacht)";
+
+"edit_open" = "Open";
+
+"edit_closed" = "Gesloten";
+
+"edit_add_hours_closed" = "Sluitingstijden toevoegen";
+
+"edit_hours_closed" = "Sluitingstijden";
+
+"edit_add_schedule" = "Schema toevoegen";
+
+"edit_delete_schedule" = "Schema verwijderen";
+
+"edit_simple_mode" = "Eenvoudige modus";
+
+"edit_advanced_mode" = "Geavanceerde modus";
+
+"edit_example_values" = "Voorbeeldwaarden";
+
+"edit_correct_mistake" = "Fout corrigeren";
+
+"edit_correct_mistake_message" = "U hebt een bewerkingsfout gemaakt. Corrigeer deze of schakel over naar de eenvoudige modus.";

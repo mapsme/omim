@@ -1393,3 +1393,29 @@
 "editor_time_advanced" = "Advanced mode";
 
 "editor_time_simple" = "Simple mode";
+
+"edit_opening_hours" = "Час роботи";
+
+"edit_all_day" = "Весь день (24 години)";
+
+"edit_open" = "Відчинено";
+
+"edit_closed" = "Зачинено";
+
+"edit_add_hours_closed" = "Додати перерву";
+
+"edit_hours_closed" = "Перерва";
+
+"edit_add_schedule" = "Додати графік";
+
+"edit_delete_schedule" = "Видалити графік";
+
+"edit_simple_mode" = "Простий режим";
+
+"edit_advanced_mode" = "Розширений режим";
+
+"edit_example_values" = "Приклади значень";
+
+"edit_correct_mistake" = "Виправте помилку";
+
+"edit_correct_mistake_message" = "Під час редагування часу роботи ви зробили помилку. Виправте її або перейдіть у простий режим.";

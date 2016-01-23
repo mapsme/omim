@@ -841,4 +841,17 @@
 	<string name="whats_new_rec_track_body">Тепер програма відображає ваш недавній маршрут.</string>
 	<string name="whats_new_night_caption">Приєднайтесь до темної сторони!</string>
 	<string name="whats_new_night_body">Кожного дня після заходу сонця MAPS.ME активує нічний режим.</string>
+	<string name="edit_opening_hours">Час роботи</string>
+	<string name="edit_all_day">Весь день (24 години)</string>
+	<string name="edit_open">Відчинено</string>
+	<string name="edit_closed">Зачинено</string>
+	<string name="edit_add_hours_closed">Додати перерву</string>
+	<string name="edit_hours_closed">Перерва</string>
+	<string name="edit_add_schedule">Додати графік</string>
+	<string name="edit_delete_schedule">Видалити графік</string>
+	<string name="edit_simple_mode">Простий режим</string>
+	<string name="edit_advanced_mode">Розширений режим</string>
+	<string name="edit_example_values">Приклади значень</string>
+	<string name="edit_correct_mistake">Виправте помилку</string>
+	<string name="edit_correct_mistake_message">Під час редагування часу роботи ви зробили помилку. Виправте її або перейдіть у простий режим.</string>
 </resources>

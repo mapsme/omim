@@ -1393,3 +1393,29 @@
 "editor_time_advanced" = "Advanced mode";
 
 "editor_time_simple" = "Simple mode";
+
+"edit_opening_hours" = "营业时间";
+
+"edit_all_day" = "全天（24小时）";
+
+"edit_open" = "营业中";
+
+"edit_closed" = "未营业";
+
+"edit_add_hours_closed" = "添加不营业时间";
+
+"edit_hours_closed" = "不营业时间";
+
+"edit_add_schedule" = "添加计划";
+
+"edit_delete_schedule" = "删除计划";
+
+"edit_simple_mode" = "简单模式";
+
+"edit_advanced_mode" = "高级模式";
+
+"edit_example_values" = "示例值";
+
+"edit_correct_mistake" = "纠正错误";
+
+"edit_correct_mistake_message" = "出现编辑错误，请纠正或切换至简单模式。";

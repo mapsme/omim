@@ -1393,3 +1393,29 @@
 "editor_time_advanced" = "Advanced mode";
 
 "editor_time_simple" = "Simple mode";
+
+"edit_opening_hours" = "วันเวลาทำการ";
+
+"edit_all_day" = "ตลอดวัน (24 ชั่วโมง)";
+
+"edit_open" = "เปิด";
+
+"edit_closed" = "ปิด";
+
+"edit_add_hours_closed" = "เพิ่มเวลาที่ปิดทำการเพิ่มเติม";
+
+"edit_hours_closed" = "ปิดเวลา";
+
+"edit_add_schedule" = "เพิ่มวัน";
+
+"edit_delete_schedule" = "ลบวัน";
+
+"edit_simple_mode" = "โหมดแบบง่าย";
+
+"edit_advanced_mode" = "โหมดขั้นสูง";
+
+"edit_example_values" = "ตัวอย่างของค่าที่ตั้งไว้";
+
+"edit_correct_mistake" = "แก้ไขข้อผิดพลาด";
+
+"edit_correct_mistake_message" = "มีข้อผิดพลาดเกิดขึ้นจากการแก้ไขของคุณ โปรดแก้ไขให้ถูกต้อง หรือ สลับไปใช้ในโหมดแบบง่าย";

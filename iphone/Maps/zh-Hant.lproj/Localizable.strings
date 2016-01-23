@@ -1393,3 +1393,29 @@
 "editor_time_advanced" = "Advanced mode";
 
 "editor_time_simple" = "Simple mode";
+
+"edit_opening_hours" = "營業時間";
+
+"edit_all_day" = "全天 (24 小時)";
+
+"edit_open" = "營業時間";
+
+"edit_closed" = "休息時間";
+
+"edit_add_hours_closed" = "新增休息時間";
+
+"edit_hours_closed" = "休息時間";
+
+"edit_add_schedule" = "新增排程";
+
+"edit_delete_schedule" = "刪除排程";
+
+"edit_simple_mode" = "簡易模式";
+
+"edit_advanced_mode" = "進階模式";
+
+"edit_example_values" = "範例值";
+
+"edit_correct_mistake" = "修正錯誤";
+
+"edit_correct_mistake_message" = "編輯時出錯。請修正或切換到簡易模式。";

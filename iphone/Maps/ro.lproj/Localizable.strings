@@ -1393,3 +1393,29 @@
 "editor_time_advanced" = "Advanced mode";
 
 "editor_time_simple" = "Simple mode";
+
+"edit_opening_hours" = "Program";
+
+"edit_all_day" = "Toată ziua (non-stop)";
+
+"edit_open" = "Deschidere";
+
+"edit_closed" = "Închidere";
+
+"edit_add_hours_closed" = "Adăugare oră de închidere";
+
+"edit_hours_closed" = "Ora închiderii";
+
+"edit_add_schedule" = "Adăugare planificare";
+
+"edit_delete_schedule" = "Eliminare planificare";
+
+"edit_simple_mode" = "Mod Simplu";
+
+"edit_advanced_mode" = "Mod Avansat";
+
+"edit_example_values" = "Exemple de valori";
+
+"edit_correct_mistake" = "Corectare greșeală";
+
+"edit_correct_mistake_message" = "Ați efectuat o eroare de editare. Corectați eroarea sau treceți în modul Simplu.";
