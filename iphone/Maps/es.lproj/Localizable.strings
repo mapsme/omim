@@ -1375,21 +1375,29 @@
 /* «Edit place» button in place page. */
 "pp_place_edit" = "Edit place";
 
-"editor_time_add" = "Add schedule";
+"editor_time_add" = "Añadir horario";
 
-"editor_time_delete" = "Delete schedule";
+"editor_time_delete" = "Eliminar horario";
 
 /* Text for allday switch. */
-"editor_time_allday" = "All day(24 hours)";
+"editor_time_allday" = "Todo el día (24 horas)";
 
-"editor_time_open" = "Open time";
+"editor_time_open" = "Abierto";
 
-"editor_time_close" = "Close time";
+"editor_time_close" = "Cerrado";
 
-"editor_time_add_closed" = "Add hours closed";
+"editor_time_add_closed" = "Añadir horas de cierre";
 
-"editor_time_title" = "Opening hours";
+"editor_time_title" = "Horario de apertura";
 
-"editor_time_advanced" = "Advanced mode";
+"editor_time_advanced" = "Modo avanzado";
 
-"editor_time_simple" = "Simple mode";
+"editor_time_simple" = "Modo sencillo";
+
+"editor_hours_closed" = "Horas de cierre";
+
+"editor_example_values" = "Valores de ejemplo";
+
+"editor_correct_mistake" = "Corregir error";
+
+"editor_correct_mistake_message" = "Ha cometido un error de edición. Por favor, corríjalo o cambie a modo sencillo.";

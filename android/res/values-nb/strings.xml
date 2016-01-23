@@ -838,4 +838,18 @@
 	<string name="whats_new_rec_track_body">Nå vil appen vise deg den siste ruten du fulgte.</string>
 	<string name="whats_new_night_caption">Slutt deg til den mørke siden!</string>
 	<string name="whats_new_night_body">Hver dag etter solnedgang aktiverer MAPS.ME nattmodus.</string>
+	<string name="editor_time_add">Legg til tidsrom</string>
+	<string name="editor_time_delete">Slett tidsrom</string>
+	<!-- Text for allday switch. -->
+	<string name="editor_time_allday">Hele dagen (24 timer)</string>
+	<string name="editor_time_open">Åpen</string>
+	<string name="editor_time_close">Stengt</string>
+	<string name="editor_time_add_closed">Legg til stengt tid</string>
+	<string name="editor_time_title">Åpningstider</string>
+	<string name="editor_time_advanced">Avansert modus</string>
+	<string name="editor_time_simple">Enkel modus</string>
+	<string name="editor_hours_closed">Stengt</string>
+	<string name="editor_example_values">Eksempelverdier</string>
+	<string name="editor_correct_mistake">Rett feil</string>
+	<string name="editor_correct_mistake_message">Du har gjort en redigeringsfeil. Rett den eller bytt til enkel modus.</string>
 </resources>

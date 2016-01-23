@@ -1375,21 +1375,29 @@
 /* «Edit place» button in place page. */
 "pp_place_edit" = "Edit place";
 
-"editor_time_add" = "Add schedule";
+"editor_time_add" = "Adăugare planificare";
 
-"editor_time_delete" = "Delete schedule";
+"editor_time_delete" = "Eliminare planificare";
 
 /* Text for allday switch. */
-"editor_time_allday" = "All day(24 hours)";
+"editor_time_allday" = "Toată ziua (non-stop)";
 
-"editor_time_open" = "Open time";
+"editor_time_open" = "Deschidere";
 
-"editor_time_close" = "Close time";
+"editor_time_close" = "Închidere";
 
-"editor_time_add_closed" = "Add hours closed";
+"editor_time_add_closed" = "Adăugare oră de închidere";
 
-"editor_time_title" = "Opening hours";
+"editor_time_title" = "Program";
 
-"editor_time_advanced" = "Advanced mode";
+"editor_time_advanced" = "Mod Avansat";
 
-"editor_time_simple" = "Simple mode";
+"editor_time_simple" = "Mod Simplu";
+
+"editor_hours_closed" = "Ora închiderii";
+
+"editor_example_values" = "Exemple de valori";
+
+"editor_correct_mistake" = "Corectare greșeală";
+
+"editor_correct_mistake_message" = "Ați efectuat o eroare de editare. Corectați eroarea sau treceți în modul Simplu.";
