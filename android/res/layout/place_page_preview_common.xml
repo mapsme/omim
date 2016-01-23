@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<merge
+  xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools">
 
   <RelativeLayout
@@ -14,7 +15,7 @@
       android:ellipsize="end"
       android:maxLines="@integer/pp_title_lines"
       android:textAppearance="@style/MwmTextAppearance.Title"
-      android:textSize="@dimen/text_size_headline" />
+      android:textSize="@dimen/text_size_headline"/>
 
     <TextView
       android:id="@+id/tv__subtitle"
@@ -22,7 +23,7 @@
       android:layout_height="wrap_content"
       android:layout_below="@id/tv__title"
       android:layout_marginRight="@dimen/margin_base"
-      android:textAppearance="@style/MwmTextAppearance.Body1.Secondary" />
+      android:textAppearance="@style/MwmTextAppearance.Body1.Secondary"/>
 
     <TextView
       android:id="@+id/tv__opened_till"
@@ -31,7 +32,7 @@
       android:layout_below="@id/tv__subtitle"
       android:gravity="center_vertical"
       android:textAppearance="@style/MwmTextAppearance.Body1.Secondary"
-      android:visibility="gone" />
+      android:visibility="gone"/>
 
     <RatingBar
       android:id="@+id/rb__stars"
@@ -45,7 +46,7 @@
       android:progressDrawable="@drawable/rating_bar_stars"
       android:stepSize="1"
       android:visibility="gone"
-      tools:visibility="visible" />
+      tools:visibility="visible"/>
 
     <TextView
       android:id="@+id/tv__peak_elevation"
@@ -57,7 +58,7 @@
       android:textAppearance="@style/MwmTextAppearance.Body1.Secondary"
       android:visibility="gone"
       tools:text="Das ist Mountain!"
-      tools:visibility="visible" />
+      tools:visibility="visible"/>
   </RelativeLayout>
 
   <TextView
@@ -65,7 +66,7 @@
     android:layout_width="72dp"
     android:layout_height="wrap_content"
     android:gravity="right"
-    android:textAppearance="@style/MwmTextAppearance.PlacePage" />
+    android:textAppearance="@style/MwmTextAppearance.PlacePage"/>
 
   <com.mapswithme.maps.widget.ArrowView
     android:id="@+id/av__direction"
@@ -73,5 +74,5 @@
     android:layout_height="wrap_content"
     android:layout_marginRight="-8dp"
     android:clickable="true"
-    android:padding="@dimen/margin_half" />
+    android:padding="@dimen/margin_half"/>
 </merge>
