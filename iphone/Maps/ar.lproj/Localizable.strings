@@ -1375,21 +1375,29 @@
 /* «Edit place» button in place page. */
 "pp_place_edit" = "Edit place";
 
-"editor_time_add" = "Add schedule";
+"editor_time_add" = "إضافة جدول";
 
-"editor_time_delete" = "Delete schedule";
+"editor_time_delete" = "حذف جدول";
 
 /* Text for allday switch. */
-"editor_time_allday" = "All day(24 hours)";
+"editor_time_allday" = "طوال اليوم (24 ساعة)";
 
-"editor_time_open" = "Open time";
+"editor_time_open" = "مفتوح";
 
-"editor_time_close" = "Close time";
+"editor_time_close" = "مغلق";
 
-"editor_time_add_closed" = "Add hours closed";
+"editor_time_add_closed" = "إضافة ساعات راحة";
 
-"editor_time_title" = "Opening hours";
+"editor_time_title" = "ساعات العمل";
 
-"editor_time_advanced" = "Advanced mode";
+"editor_time_advanced" = "الوضع المتقدم";
 
-"editor_time_simple" = "Simple mode";
+"editor_time_simple" = "الوضع البسيط";
+
+"editor_hours_closed" = "ساعات الراحة";
+
+"editor_example_values" = "أمثلة على القيم";
+
+"editor_correct_mistake" = "تصحيح الخطأ";
+
+"editor_correct_mistake_message" = "قمت بخطأ في التحرير. يرجى تصحيح الخطأ أو التبديل إلى الوضع البسيط.";

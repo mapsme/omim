@@ -1375,21 +1375,29 @@
 /* «Edit place» button in place page. */
 "pp_place_edit" = "Edit place";
 
-"editor_time_add" = "Add schedule";
+"editor_time_add" = "Додати розклад";
 
-"editor_time_delete" = "Delete schedule";
+"editor_time_delete" = "Видалити розклад";
 
 /* Text for allday switch. */
-"editor_time_allday" = "All day(24 hours)";
+"editor_time_allday" = "Весь день (24 години)";
 
-"editor_time_open" = "Open time";
+"editor_time_open" = "Відчинено";
 
-"editor_time_close" = "Close time";
+"editor_time_close" = "Зачинено";
 
-"editor_time_add_closed" = "Add hours closed";
+"editor_time_add_closed" = "Додати перерву";
 
-"editor_time_title" = "Opening hours";
+"editor_time_title" = "Час роботи";
 
-"editor_time_advanced" = "Advanced mode";
+"editor_time_advanced" = "Розширений режим";
 
-"editor_time_simple" = "Simple mode";
+"editor_time_simple" = "Простий режим";
+
+"editor_hours_closed" = "Перерва";
+
+"editor_example_values" = "Приклади значень";
+
+"editor_correct_mistake" = "Виправте помилку";
+
+"editor_correct_mistake_message" = "Під час редагування часу роботи ви зробили помилку. Виправте її або перейдіть у простий режим.";
