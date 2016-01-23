@@ -27,6 +27,12 @@ public class AuthFragment extends BaseMwmToolbarFragment implements View.OnClick
       super(root, activity);
       mToolbar.setNavigationIcon(Graphics.tint(activity, ThemeUtils.getResource(activity, R.attr.homeAsUpIndicator)));
     }
+
+    @Override
+    public void onUpClick()
+    {
+      super.onUpClick();
+    }
   }
 
   private static final String PREF_OSM_CONTRIBUTION_CONFIRMED = "OsmContributionConfirmed";
@@ -98,7 +104,7 @@ public class AuthFragment extends BaseMwmToolbarFragment implements View.OnClick
       public void run()
       {
         final String[] auth;
-        auth = OsmOAuth.nativeAuthWithPassword(OsmOAuth.IZ_SERVER, username, password);
+        auth = OsmOAuth.nativeAuthWithPassword(username, password);
 
         UiThread.run(new Runnable()
         {
