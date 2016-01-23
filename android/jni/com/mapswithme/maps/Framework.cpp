@@ -508,7 +508,7 @@ void Framework::DownloadingProgressUpdate(ActiveMapsLayout::TGroup const & group
   JNIEnv * env = jni::GetEnv();
   for (TListenerMap::const_iterator it = m_javaActiveMapListeners.begin(); it != m_javaActiveMapListeners.end(); ++it)
   {
-    jmethodID const methodID = jni::GetJavaMethodID(env, *(it->second), "onCountryProgressChanged", "(II[J)V");
+    jmethodID const methodID = jni::GetMethodID(env, *(it->second), "onCountryProgressChanged", "(II[J)V");
     ASSERT ( methodID, () );
 
     env->CallVoidMethod(*(it->second), methodID, group, position, storage_utils::ToArray(env, progress));
@@ -559,7 +559,7 @@ extern "C"
   {
     JNIEnv * env = jni::GetEnv();
     static jmethodID const methodId =
-        jni::GetJavaMethodID(env, *listener.get(), "onMapObjectActivated",
+        jni::GetMethodID(env, *listener.get(), "onMapObjectActivated",
                              "(Lcom/mapswithme/maps/bookmarks/data/MapObject;)V");
     ASSERT(methodId, ());
     //public MapObject(@MapObjectType int mapObjectType, String name, double lat, double lon, String typeName)
@@ -569,7 +569,7 @@ extern "C"
   void CallOnDismissListener(shared_ptr<jobject> obj)
   {
     JNIEnv * env = jni::GetEnv();
-    static jmethodID const methodId = jni::GetJavaMethodID(env, *obj.get(), "onDismiss", "()V");
+    static jmethodID const methodId = jni::GetMethodID(env, *obj.get(), "onDismiss", "()V");
     ASSERT(methodId, ());
     env->CallVoidMethod(*obj.get(), methodId);
   }
@@ -594,7 +594,7 @@ extern "C"
     JNIEnv * env = jni::GetEnv();
     // cache methodID - it cannot change after class is loaded.
     // http://developer.android.com/training/articles/perf-jni.html#jclass_jmethodID_and_jfieldID more details here
-    static jmethodID const methodId = jni::GetJavaMethodID(env, *obj.get(), "onRoutingEvent",
+    static jmethodID const methodId = jni::GetMethodID(env, *obj.get(), "onRoutingEvent",
                                                            "(I[Lcom/mapswithme/maps/MapStorage$Index;[Lcom/mapswithme/maps/MapStorage$Index;)V");
     ASSERT(methodId, ());
 
@@ -623,7 +623,7 @@ extern "C"
   {
     JNIEnv * env = jni::GetEnv();
     jobject listener = *sharedListener.get();
-    static jmethodID const methodId = jni::GetJavaMethodID(env, listener, "onRouteBuildingProgress", "(F)V");
+    static jmethodID const methodId = jni::GetMethodID(env, listener, "onRouteBuildingProgress", "(F)V");
     env->CallVoidMethod(listener, methodId, progress);
   }
 

@@ -3,6 +3,7 @@
 #include "ScopedLocalRef.hpp"
 
 #include "base/assert.hpp"
+#include "base/exception.hpp"
 #include "base/logging.hpp"
 #include "std/vector.hpp"
 
@@ -28,11 +29,8 @@ extern "C"
 
     JNIEnv * env = jni::GetEnv();
     g_indexClazz = jni::GetGlobalClassRef(env, "com/mapswithme/maps/MapStorage$Index");
-    ASSERT(g_indexClazz, (jni::DescribeException()));
     g_mapObjectClazz = jni::GetGlobalClassRef(env, "com/mapswithme/maps/bookmarks/data/MapObject");
-    ASSERT(g_mapObjectClazz, (jni::DescribeException()));
     g_bookmarkClazz = jni::GetGlobalClassRef(env, "com/mapswithme/maps/bookmarks/data/Bookmark");
-    ASSERT(g_bookmarkClazz, (jni::DescribeException()));
 
     return JNI_VERSION_1_6;
   }
