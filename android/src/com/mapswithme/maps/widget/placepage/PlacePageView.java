@@ -861,8 +861,8 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
   {
     final Bundle args = new Bundle();
     args.putString(BookmarkColorDialogFragment.ICON_TYPE, ((Bookmark) mMapObject).getIcon().getType());
-    final BookmarkColorDialogFragment dialogFragment = (BookmarkColorDialogFragment) BookmarkColorDialogFragment.
-                                                                                                                    instantiate(getContext(), BookmarkColorDialogFragment.class.getName(), args);
+    final BookmarkColorDialogFragment dialogFragment =
+        (BookmarkColorDialogFragment) Fragment.instantiate(getContext(), BookmarkColorDialogFragment.class.getName(), args);
 
     dialogFragment.setOnColorSetListener(new BookmarkColorDialogFragment.OnBookmarkColorChangeListener()
     {
