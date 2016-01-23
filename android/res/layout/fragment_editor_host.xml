@@ -19,7 +19,6 @@
       android:layout_height="?actionBarSize"
       android:layout_gravity="end|center_vertical"
       android:background="?selectableItemBackgroundBorderless"
-      android:padding="@dimen/margin_half_plus"
       android:scaleType="center"
       android:src="@drawable/ic_toolbar_check"/>
 
