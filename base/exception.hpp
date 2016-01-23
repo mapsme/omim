@@ -41,3 +41,9 @@ private:
 
 #define MYTHROW1(exception_name, param1, msg) throw exception_name(param1, \
   #exception_name " " __FILE__ ":" TO_STRING(__LINE__), ::my::impl::Message msg)
+
+template <typename TNewException, typename TOldException>
+void RethrowDifferent(TOldException const & e)
+{
+  throw TNewException(e.what(), e.Msg());
+}

@@ -1,14 +1,12 @@
 #include "editor/xml_feature.hpp"
+#include "editor/osm_utils.hpp"
 
 #include "base/assert.hpp"
 #include "base/macros.hpp"
 #include "base/string_utils.hpp"
 #include "base/timer.hpp"
 
-#include "std/set.hpp"
-#include "std/unordered_set.hpp"
-
-#include <boost/functional/hash.hpp>
+#include "geometry/latlon.hpp"
 
 #include "3party/pugixml/src/pugixml.hpp"
 
@@ -30,20 +28,18 @@ pugi::xml_node FindTag(pugi::xml_document const & document, string const & key)
   return document.select_node(("//tag[@k='" + key + "']").data()).node();
 }
 
-ms::LatLon PointFromLatLon(pugi::xml_node const node)
+ms::LatLon PointFromLatLon(pugi::xml_node const & node)
 {
-  ms::LatLon ll;
-  if (!strings::to_double(node.attribute("lat").value(), ll.lat))
+  ms::LatLon result;
+  try
   {
-    MYTHROW(editor::XMLFeatureNoLatLonError,
-            ("Can't parse lat attribute: " + string(node.attribute("lat").value())));
+    result = editor::utils::PointFromLatLon(node);
   }
-  if (!strings::to_double(node.attribute("lon").value(), ll.lon))
+  catch (editor::utils::NoLatLonError const & e)
   {
-    MYTHROW(editor::XMLFeatureNoLatLonError,
-            ("Can't parse lon attribute: " + string(node.attribute("lon").value())));
+    RethrowDifferent<editor::XMLFeatureNoLatLonError>(e);
   }
-  return ll;
+  return result;
 }
 
 void ValidateNode(pugi::xml_node const & node)

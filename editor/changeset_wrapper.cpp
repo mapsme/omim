@@ -1,13 +1,81 @@
+#include "base/logging.hpp"
+
 #include "indexer/feature.hpp"
 
 #include "editor/changeset_wrapper.hpp"
+#include "editor/osm_utils.hpp"
 
 #include "std/algorithm.hpp"
 #include "std/sstream.hpp"
 
+#include "geometry/mercator.hpp"
+
 #include "private.h"
 
 using editor::XMLFeature;
+
+namespace
+{
+double scoreLatLon(pugi::xml_node const & node, ms::LatLon const & latLon)
+{
+  return 0;
+}
+
+double scoreNames(pugi::xml_node const & mode, StringUtf8Multilang const & names)
+{
+  return 0;
+}
+
+double scoreMetadata(pugi::xml_node const & node, feature::Metadata const & metadata)
+{
+  return 0;
+}
+
+bool TypesEqual(pugi::xml_node const & node, feature::TypesHolder const & types)
+{
+  return false;
+}
+
+pugi::xml_node GetBestOsmNode(pugi::xml_document const & osmRespose, FeatureType const & ft)
+{
+  double bestScore = -1;
+  pugi::xml_node bestMatchNode;
+
+  for (auto const & xNode : osmRespose.select_nodes("node"))
+  {
+    try
+    {
+      auto const & node = xNode.node();
+
+      if (!TypesEqual(node, feature::TypesHolder(ft)))
+        continue;
+
+      double nodeScore = scoreLatLon(node, MercatorBounds::ToLatLon(ft.GetCenter()));
+      if (nodeScore < 0)
+        continue;
+
+      nodeScore += scoreNames(node, ft.GetNames());
+      nodeScore += scoreMetadata(node, ft.GetMetadata());
+
+      if (bestScore < nodeScore)
+      {
+        bestScore = nodeScore;
+        bestMatchNode = node;
+      }
+    }
+    catch (editor::utils::NoLatLonError)
+    {
+      LOG(LWARNING, ("No lat/lon attribute in osm response node."));
+      continue;
+    }
+  }
+
+  // if (bestScore < minimumScoreThreashold)
+  //   return pugi::xml_node;
+
+  return bestMatchNode;
+}
+}  // namespace
 
 string DebugPrint(pugi::xml_document const & doc)
 {
@@ -54,8 +122,8 @@ XMLFeature ChangesetWrapper::GetMatchingFeatureFromOSM(XMLFeature const & ourPat
     // Throws!
     LoadXmlFromOSM(ll, doc);
 
-    // TODO(AlexZ): Select best matching OSM node, not just the first one.
-    pugi::xml_node const firstNode = doc.child("osm").child("node");
+    // feature must be the original one, not patched!
+    pugi::xml_node const firstNode = GetBestOsmNode(doc, feature);
     if (firstNode.empty())
       MYTHROW(OsmObjectWasDeletedException, ("OSM does not have any nodes at the coordinates", ll, ", server has returned:", doc));
 
