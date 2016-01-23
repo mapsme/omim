@@ -50,8 +50,8 @@ public:
 
   void SetMwmIdByNameAndVersionFn(TMwmIdByMapNameFn const & fn) { m_mwmIdByMapNameFn = fn; }
   void SetInvalidateFn(TInvalidateFn const & fn) { m_invalidateFn = fn; }
-  void SetFeatureLoaderFn(TFeatureLoaderFn const & fn) { m_featureLoaderFn = fn; }
-  void SetFeatureOriginalStretFn(TFeatureOriginalStreetFn const & fn) { m_featureOriginalStreet = fn; }
+  void SetFeatureLoaderFn(TFeatureLoaderFn const & fn) { m_getOriginalFeatureFn = fn; }
+  void SetFeatureOriginalStretFn(TFeatureOriginalStreetFn const & fn) { m_getOriginalFeatureStreetFn = fn; }
 
   void LoadMapEdits();
 
@@ -80,9 +80,9 @@ public:
   /// @param outFeatureStreet is valid only if true was returned.
   bool GetEditedFeatureStreet(FeatureType const & feature, string & outFeatureStreet) const;
 
-  /// Original feature with same FeatureID as newFeature is replaced by newFeature.
-  /// Please pass editedStreet only if it was changed by user.
-  void EditFeature(FeatureType const & editedFeature,
+  /// Editor checks internally if any feature params were actually edited.
+  /// House number is correctly updated for editedFeature (if it's valid).
+  void EditFeature(FeatureType & editedFeature,
                    string const & editedStreet = "",
                    string const & editedHouseNumber = "");
 
@@ -101,7 +101,7 @@ public:
 private:
   // TODO(AlexZ): Synchronize Save call/make it on a separate thread.
   void Save(string const & fullFilePath) const;
-  void RemoveFeatureFromStorage(MwmSet::MwmId const & mwmId, uint32_t index);
+  void RemoveFeatureFromStorageIfExists(MwmSet::MwmId const & mwmId, uint32_t index);
   /// Notify framework that something has changed and should be redisplayed.
   void Invalidate();
 
@@ -127,9 +127,9 @@ private:
   /// Invalidate map viewport after edits.
   TInvalidateFn m_invalidateFn;
   /// Get FeatureType from mwm.
-  TFeatureLoaderFn m_featureLoaderFn;
+  TFeatureLoaderFn m_getOriginalFeatureFn;
   /// Get feature original street name or empty string.
-  TFeatureOriginalStreetFn m_featureOriginalStreet;
+  TFeatureOriginalStreetFn m_getOriginalFeatureStreetFn;
 };  // class Editor
 
 inline string DebugPrint(Editor::FeatureStatus fs)
