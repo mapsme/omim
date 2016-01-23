@@ -60,14 +60,14 @@ Java_com_mapswithme_maps_editor_OsmOAuth_nativeAuthWithWebviewToken(JNIEnv * env
 JNIEXPORT jobjectArray JNICALL
 Java_com_mapswithme_maps_editor_OsmOAuth_nativeGetFacebookAuthUrl(JNIEnv * env, jclass clazz)
 {
-  OsmOAuth::TUrlKeySecret keySecret = authForType(authType).GetFacebookOAuthURL();
+  OsmOAuth::TUrlKeySecret keySecret = OsmOAuth::ServerAuth().GetFacebookOAuthURL();
   return ToStringArray(env, keySecret.first, keySecret.second.first, keySecret.second.second);
 }
 
 JNIEXPORT jobjectArray JNICALL
 Java_com_mapswithme_maps_editor_OsmOAuth_nativeAuthGoogle(JNIEnv * env, jclass clazz)
 {
-  OsmOAuth::TUrlKeySecret keySecret = authForType(authType).GetGoogleOAuthURL();
+  OsmOAuth::TUrlKeySecret keySecret = OsmOAuth::ServerAuth().GetGoogleOAuthURL();
   return ToStringArray(env, keySecret.first, keySecret.second.first, keySecret.second.second);
 }
 } // extern "C"
