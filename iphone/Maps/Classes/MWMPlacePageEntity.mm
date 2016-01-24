@@ -116,8 +116,11 @@ NSString * mwmToOSMCuisineString(NSString * mwmCuisine)
       [self configureForMyPosition:static_cast<MyPositionMarkPoint const *>(mark)];
       break;
     case Type::SEARCH:
+      [self configureWithFeature:mark->GetFeature() andCustomName:nil];
+      break;
     case Type::POI:
-      [self configureWithFeature:mark->GetFeature()];
+      [self configureWithFeature:mark->GetFeature()
+                   andCustomName:@(static_cast<PoiMarkPoint const *>(mark)->GetCustomName().c_str())];
       break;
     case Type::BOOKMARK:
       [self configureForBookmark:mark];
@@ -186,7 +189,7 @@ NSString * mwmToOSMCuisineString(NSString * mwmCuisine)
   _isHTMLDescription = strings::IsHTML(description);
   self.bookmarkColor = @(data.GetType().c_str());
 
-  [self configureWithFeature:bookmark->GetFeature()];
+  [self configureWithFeature:bookmark->GetFeature() andCustomName:nil];
   [self addBookmarkField];
 }
 
@@ -205,15 +208,18 @@ NSString * mwmToOSMCuisineString(NSString * mwmCuisine)
   [self addMetaField:MWMPlacePageCellTypeCoordinate];
 }
 
-// feature can be nullptr if user selected any empty area.
-- (void)configureWithFeature:(FeatureType const *)feature
+- (void)configureWithFeature:(FeatureType const *)feature andCustomName:(NSString *)customName
 {
+  // Custom name is used in shared links and should override default feature's name in PP.
+  self.title = customName;
+  // feature can be nullptr if user selected any empty area.
   if (feature)
   {
     search::AddressInfo const info = GetFramework().GetFeatureAddressInfo(*feature);
     feature::Metadata const & metadata = feature->GetMetadata();
     NSString * const name = @(info.GetPinName().c_str());
-    self.title = name.length > 0 ? name : L(@"dropped_pin");
+    if (0 == self.title.length)
+      self.title = name.length > 0 ? name : L(@"dropped_pin");
     self.category = @(info.GetPinType().c_str());
 
     if (!info.m_house.empty())
