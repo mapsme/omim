@@ -14,8 +14,6 @@
 #include "indexer/mwm_set.hpp"
 #include "indexer/rank_table.hpp"
 
-#include "storage/country_info_getter.hpp"
-
 #include "coding/multilang_utf8_string.hpp"
 
 #include "platform/preferred_languages.hpp"
@@ -52,8 +50,13 @@ namespace v2
 namespace
 {
 size_t constexpr kMaxNumCities = 5;
+size_t constexpr kMaxNumStates = 5;
 size_t constexpr kMaxNumCountries = 5;
-size_t constexpr kMaxNumLocalities = kMaxNumCities + kMaxNumCountries;
+size_t constexpr kMaxNumLocalities = kMaxNumCities + kMaxNumStates + kMaxNumCountries;
+
+// List of countries we're supporting search by state. Elements of the
+// list should be valid prefixes of corresponding mwms names.
+string const kCountriesWithStates[] = {"USA_", "Canada_"};
 double constexpr kComparePoints = MercatorBounds::GetCellID2PointAbsEpsilon();
 
 template <typename T>
@@ -391,7 +394,8 @@ void Geocoder::GoImpl(vector<shared_ptr<MwmInfo>> & infos, bool inViewport)
     // Tries to find world and fill localities table.
     {
       m_cities.clear();
-      m_countries.clear();
+      for (auto & regions : m_regions)
+        regions.clear();
       MwmSet::MwmHandle handle = FindWorld(m_index, infos);
       if (handle.IsAlive())
       {
@@ -464,7 +468,7 @@ void Geocoder::GoImpl(vector<shared_ptr<MwmInfo>> & infos, bool inViewport)
       m_streets = LoadStreets(*m_context);
 
       m_usedTokens.assign(m_numTokens, false);
-      MatchCountries();
+      MatchRegions(REGION_TYPE_COUNTRY);
 
       if (index < numIntersectingMaps || m_results->empty())
         MatchViewportAndPosition();
@@ -596,6 +600,7 @@ void Geocoder::FillLocalitiesTable(MwmContext const & context)
 
   // 5. Fill result container.
   size_t numCities = 0;
+  size_t numStates = 0;
   size_t numCountries = 0;
   for (auto & l : preLocalities)
   {
@@ -623,18 +628,47 @@ void Geocoder::FillLocalitiesTable(MwmContext const & context)
       }
       break;
     }
+    case SearchModel::SEARCH_TYPE_STATE:
+    {
+      if (numStates < kMaxNumStates && ft.GetFeatureType() == feature::GEOM_POINT)
+      {
+        Region state(l, REGION_TYPE_STATE);
+
+        string name;
+        GetEnglishName(ft, name);
+
+        for (auto const & prefix : kCountriesWithStates)
+        {
+          state.m_enName = prefix + name;
+          strings::AsciiToLower(state.m_enName);
+
+          state.m_ids.clear();
+          m_infoGetter.GetMatchedRegions(state.m_enName, state.m_ids);
+          if (!state.m_ids.empty())
+          {
+            LOG(LDEBUG, ("State =", state.m_enName));
+            ++numStates;
+            m_regions[REGION_TYPE_STATE][make_pair(l.m_startToken, l.m_endToken)].push_back(state);
+          }
+        }
+      }
+      break;
+    }
     case SearchModel::SEARCH_TYPE_COUNTRY:
     {
       if (numCountries < kMaxNumCountries && ft.GetFeatureType() == feature::GEOM_POINT)
       {
-        ++numCountries;
-        Country country(l);
+        Region country(l, REGION_TYPE_COUNTRY);
         GetEnglishName(ft, country.m_enName);
 
-        LOG(LDEBUG, ("Country =", country.m_enName));
-
-        m_infoGetter.GetMatchedRegions(country.m_enName, country.m_regions);
-        m_countries[make_pair(l.m_startToken, l.m_endToken)].push_back(country);
+        m_infoGetter.GetMatchedRegions(country.m_enName, country.m_ids);
+        if (!country.m_ids.empty())
+        {
+          LOG(LDEBUG, ("Country =", country.m_enName));
+          ++numCountries;
+          m_regions[REGION_TYPE_COUNTRY][make_pair(l.m_startToken, l.m_endToken)].push_back(
+              country);
+        }
       }
       break;
     default:
@@ -662,15 +696,31 @@ void Geocoder::ForEachCountry(vector<shared_ptr<MwmInfo>> const & infos, TFn && 
   }
 }
 
-void Geocoder::MatchCountries()
+void Geocoder::MatchRegions(RegionType type)
 {
-  // Try to skip countries matching.
-  MatchCities();
+  switch (type)
+  {
+    case REGION_TYPE_STATE:
+      // Tries to skip state matching and go to cities matching.
+      // Then, performs states matching.
+      MatchCities();
+      break;
+    case REGION_TYPE_COUNTRY:
+      // Tries to skip country matching and go to states matching.
+      // Then, performs countries matching.
+      MatchRegions(REGION_TYPE_STATE);
+      break;
+    case REGION_TYPE_COUNT:
+      ASSERT(false, ("Invalid region type."));
+      return;
+  }
+
+  auto const & regions = m_regions[type];
 
   auto const & fileName = m_context->m_handle.GetId().GetInfo()->GetCountryName();
 
-  // Try to match countries.
-  for (auto const & p : m_countries)
+  // Try to match regions.
+  for (auto const & p : regions)
   {
     BailIfCancelled();
 
@@ -682,24 +732,37 @@ void Geocoder::MatchCountries()
     ScopedMarkTokens mark(m_usedTokens, startToken, endToken);
     if (AllTokensUsed())
     {
-      // Countries match to search query.
-      for (auto const & country : p.second)
-        m_results->emplace_back(m_worldId, country.m_featureId);
+      // Region matches to search query, we need to emit it as is.
+      for (auto const & region : p.second)
+        m_results->emplace_back(m_worldId, region.m_featureId);
       continue;
     }
 
     bool matches = false;
-    for (auto const & country : p.second)
+    for (auto const & region : p.second)
     {
-      if (m_infoGetter.IsBelongToRegions(fileName, country.m_regions))
+      if (m_infoGetter.IsBelongToRegions(fileName, region.m_ids))
       {
         matches = true;
         break;
       }
     }
 
-    if (matches)
-      MatchCities();
+    if (!matches)
+      continue;
+
+    switch (type)
+    {
+      case REGION_TYPE_STATE:
+        MatchCities();
+        break;
+      case REGION_TYPE_COUNTRY:
+        MatchRegions(REGION_TYPE_STATE);
+        break;
+      case REGION_TYPE_COUNT:
+        ASSERT(false, ("Invalid region type."));
+        break;
+    }
   }
 }
 
