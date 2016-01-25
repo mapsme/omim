@@ -146,30 +146,39 @@ public class EditorFragment extends BaseMwmFragment implements View.OnClickListe
 
     UiUtils.show(mMetadataBlock);
     UiUtils.hide(mOpeningHours, mEditOpeningHours, mPhoneBlock, mWebBlock, mEmailBlock, mCuisineBlock, mWifiBlock);
+    boolean anyEditableMeta = false;
     for (int type : editableMeta)
     {
       switch (Metadata.MetadataType.fromInt(type))
       {
       case FMD_OPEN_HOURS:
+        anyEditableMeta = true;
         UiUtils.show(mOpeningHours, mEditOpeningHours);
         break;
       case FMD_PHONE_NUMBER:
+        anyEditableMeta = true;
         UiUtils.show(mPhoneBlock);
         break;
       case FMD_WEBSITE:
+        anyEditableMeta = true;
         UiUtils.show(mWebBlock);
         break;
       case FMD_EMAIL:
+        anyEditableMeta = true;
         UiUtils.show(mEmailBlock);
         break;
       case FMD_CUISINE:
+        anyEditableMeta = true;
         UiUtils.show(mCuisineBlock);
         break;
       case FMD_INTERNET:
+        anyEditableMeta = true;
         UiUtils.show(mWifiBlock);
         break;
       }
     }
+    if (!anyEditableMeta)
+      UiUtils.hide(mMetadataBlock);
   }
 
   private void refreshOpeningTime()
