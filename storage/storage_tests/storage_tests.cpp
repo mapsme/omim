@@ -674,7 +674,7 @@ UNIT_TEST(StorageTest_DeleteCountry)
 
   storage.DeleteCustomCountryVersion(file);
   TEST(!map.Exists(), ());
-  if (!version::IsSingleMwm(storage.GetCurrentDataVersion()))
+  if (!version::IsSingleMwm(file.GetVersion()))
     TEST(!routing.Exists(), ());
   TEST(!Platform::IsFileExistsByFullPath(bitsPath), (bitsPath));
 
