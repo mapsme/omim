@@ -39,9 +39,10 @@ extern "C"
   JNI_OnUnload(JavaVM *, void *)
   {
     g_jvm = 0;
-    jni::GetEnv()->DeleteGlobalRef(g_indexClazz);
-    jni::GetEnv()->DeleteGlobalRef(g_mapObjectClazz);
-    jni::GetEnv()->DeleteGlobalRef(g_bookmarkClazz);
+    JNIEnv * env = jni::GetEnv();
+    env->DeleteGlobalRef(g_indexClazz);
+    env->DeleteGlobalRef(g_mapObjectClazz);
+    env->DeleteGlobalRef(g_bookmarkClazz);
   }
 } // extern "C"
 
