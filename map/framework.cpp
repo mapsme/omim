@@ -521,9 +521,18 @@ void Framework::RegisterAllMaps()
           "ActiveMapsListener::m_items."));
 
   m_storage.RegisterAllLocalMaps();
-  
+
+  // Fast migrate if possible.
   if(platform::migrate::NeedMigrate())
-    m_storage.FastMigrateIfPossible();
+  {
+    bool disableFastMigrate = false;
+    Settings::Get("DisableFastMigrate", disableFastMigrate);
+    if(!disableFastMigrate && m_storage.HaveDownloadedCountries())
+    {
+      Migrate();
+      return;
+    }
+  }
   
   int minFormat = numeric_limits<int>::max();
 

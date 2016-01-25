@@ -444,6 +444,10 @@ UNIT_TEST(StorageTest_DeleteTwoVersionsOfTheSameCountry)
 UNIT_TEST(StorageTest_DownloadCountryAndDeleteRoutingOnly)
 {
   Storage storage;
+
+  if (version::IsSingleMwm(storage.GetCurrentDataVersion()))
+    return;
+
   TaskRunner runner;
   InitStorage(storage, runner);
 
