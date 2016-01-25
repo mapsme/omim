@@ -7,7 +7,6 @@ import android.widget.Button;
 
 import com.mapswithme.maps.MwmActivity;
 import com.mapswithme.maps.R;
-import com.mapswithme.maps.bookmarks.data.MapObject;
 import com.mapswithme.util.ThemeUtils;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.statistics.AlohaHelper;
@@ -39,9 +38,9 @@ public class RoutingPlanInplaceController extends RoutingPlanController
 
     if (show)
     {
-      boolean open = (mSlotsRestoredState == null ? !(RoutingController.get().getStartPoint() instanceof MapObject.MyPosition) ||
-                                                    (RoutingController.get().getEndPoint() == null)
-                                                  : mSlotsRestoredState);
+      boolean open = (mSlotsRestoredState == null
+                        ? (!RoutingController.get().getStartPoint().isMyPosition()) || (RoutingController.get().getEndPoint() == null)
+                        : mSlotsRestoredState);
       showSlots(open, false);
       mSlotsRestoredState = null;
     }

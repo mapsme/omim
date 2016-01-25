@@ -194,7 +194,9 @@ TKeySecret OsmOAuth::FetchRequestToken() const
   string const requestTokenUrl = m_baseUrl + "/oauth/request_token";
   string const requestTokenQuery = oauth.getURLQueryString(OAuth::Http::Get, requestTokenUrl + "?oauth_callback=oob");
   HTTPClientPlatformWrapper request(requestTokenUrl + "?" + requestTokenQuery);
-  if (!(request.RunHTTPRequest() && request.error_code() == 200 && !request.was_redirected()))
+  bool res = request.RunHTTPRequest();
+  LOG(LINFO, ("Http result : ", res, ", errcode : ", request.error_code(), ", redir : ", request.was_redirected()));
+  if (!(res && request.error_code() == 200 && !request.was_redirected()))
     return TKeySecret(string(), string());
   OAuth::Token reqToken = OAuth::Token::extract(request.server_response());
   return TKeySecret(reqToken.key(), reqToken.secret());

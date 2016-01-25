@@ -40,7 +40,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mapswithme.maps.BuildConfig;
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.MwmActivity;
 import com.mapswithme.maps.MwmApplication;
@@ -52,9 +51,8 @@ import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 import com.mapswithme.maps.bookmarks.data.DistanceAndAzimut;
 import com.mapswithme.maps.bookmarks.data.Icon;
 import com.mapswithme.maps.bookmarks.data.MapObject;
-import com.mapswithme.maps.bookmarks.data.MapObject.MapObjectType;
-import com.mapswithme.maps.bookmarks.data.MapObject.Poi;
 import com.mapswithme.maps.bookmarks.data.Metadata;
+import com.mapswithme.maps.editor.Editor;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.routing.RoutingController;
 import com.mapswithme.maps.widget.ArrowView;
@@ -90,23 +88,23 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
   private TextView mTvElevation;
   // Place page details
   private ScrollView mPpDetails;
-  private LinearLayout mPhone;
+  private View mPhone;
   private TextView mTvPhone;
-  private LinearLayout mWebsite;
+  private View mWebsite;
   private TextView mTvWebsite;
   private TextView mTvLatlon;
-  private LinearLayout mSchedule;
+  private View mSchedule;
   private TextView mTvSchedule;
-  private LinearLayout mWifi;
-  private LinearLayout mEmail;
+  private View mWifi;
+  private View mEmail;
   private TextView mTvEmail;
-  private LinearLayout mOperator;
+  private View mOperator;
   private TextView mTvOperator;
-  private LinearLayout mCuisine;
+  private View mCuisine;
   private TextView mTvCuisine;
-  private LinearLayout mWiki;
+  private View mWiki;
   private TextView mTvWiki;
-  private LinearLayout mEntrance;
+  private View mEntrance;
   private TextView mTvEntrance;
   private View mEditor;
   private TextView mTvEditor;
@@ -177,32 +175,32 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
     mTvElevation = (TextView) ppPreview.findViewById(R.id.tv__peak_elevation);
 
     mPpDetails = (ScrollView) findViewById(R.id.pp__details);
-    RelativeLayout address = (RelativeLayout)mPpDetails.findViewById(R.id.ll__place_name);
-    mPhone = (LinearLayout) mPpDetails.findViewById(R.id.ll__place_phone);
+    RelativeLayout address = (RelativeLayout) mPpDetails.findViewById(R.id.ll__place_name);
+    mPhone = mPpDetails.findViewById(R.id.ll__place_phone);
     mPhone.setOnClickListener(this);
     mTvPhone = (TextView) mPpDetails.findViewById(R.id.tv__place_phone);
-    mWebsite = (LinearLayout) mPpDetails.findViewById(R.id.ll__place_website);
+    mWebsite = mPpDetails.findViewById(R.id.ll__place_website);
     mWebsite.setOnClickListener(this);
     mTvWebsite = (TextView) mPpDetails.findViewById(R.id.tv__place_website);
-    LinearLayout latlon = (LinearLayout)mPpDetails.findViewById(R.id.ll__place_latlon);
+    LinearLayout latlon = (LinearLayout) mPpDetails.findViewById(R.id.ll__place_latlon);
     latlon.setOnClickListener(this);
     mTvLatlon = (TextView) mPpDetails.findViewById(R.id.tv__place_latlon);
-    mSchedule = (LinearLayout) mPpDetails.findViewById(R.id.ll__place_schedule);
+    mSchedule = mPpDetails.findViewById(R.id.ll__place_schedule);
     mTvSchedule = (TextView) mPpDetails.findViewById(R.id.tv__place_schedule);
-    mWifi = (LinearLayout) mPpDetails.findViewById(R.id.ll__place_wifi);
+    mWifi = mPpDetails.findViewById(R.id.ll__place_wifi);
     mIvColor = (ImageView) mPpDetails.findViewById(R.id.iv__bookmark_color);
     mIvColor.setOnClickListener(this);
-    mEmail = (LinearLayout) mPpDetails.findViewById(R.id.ll__place_email);
+    mEmail = mPpDetails.findViewById(R.id.ll__place_email);
     mEmail.setOnClickListener(this);
     mTvEmail = (TextView) mEmail.findViewById(R.id.tv__place_email);
-    mOperator = (LinearLayout) mPpDetails.findViewById(R.id.ll__place_operator);
+    mOperator = mPpDetails.findViewById(R.id.ll__place_operator);
     mOperator.setOnClickListener(this);
     mTvOperator = (TextView) mOperator.findViewById(R.id.tv__place_operator);
-    mCuisine = (LinearLayout) mPpDetails.findViewById(R.id.ll__place_cuisine);
+    mCuisine = mPpDetails.findViewById(R.id.ll__place_cuisine);
     mTvCuisine = (TextView) mCuisine.findViewById(R.id.tv__place_cuisine);
-    mWiki = (LinearLayout) mPpDetails.findViewById(R.id.ll__place_wiki);
+    mWiki = mPpDetails.findViewById(R.id.ll__place_wiki);
     mWiki.setOnClickListener(this);
-    mEntrance = (LinearLayout) mPpDetails.findViewById(R.id.ll__place_entrance);
+    mEntrance = mPpDetails.findViewById(R.id.ll__place_entrance);
     mTvEntrance = (TextView) mEntrance.findViewById(R.id.tv__place_entrance);
     mEditor = mPpDetails.findViewById(R.id.ll__place_editor);
     mTvEditor = (TextView) mEditor.findViewById(R.id.tv__editor);
@@ -232,7 +230,7 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
       }
     });
 
-    TextView tvNotes = (TextView)mPpDetails.findViewById(R.id.tv__bookmark_notes);
+    TextView tvNotes = (TextView) mPpDetails.findViewById(R.id.tv__bookmark_notes);
     tvNotes.setOnClickListener(this);
 
     mTvBookmarkGroup = (TextView) mPpDetails.findViewById(R.id.tv__bookmark_group);
@@ -337,7 +335,7 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
     mPpDetails.scrollTo(0, 0);
 
     if (mMapObject != null)
-      mAnimationController.setState(state, mMapObject.getType());
+      mAnimationController.setState(state, mMapObject.getMapObjectType());
   }
 
   public MapObject getMapObject()
@@ -379,25 +377,25 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
     refreshDetails();
     final Location loc = LocationHelper.INSTANCE.getLastLocation();
 
-    switch (mMapObject.getType())
+    switch (mMapObject.getMapObjectType())
     {
-    case BOOKMARK:
+    case MapObject.BOOKMARK:
       refreshDistanceToObject(loc);
       showBookmarkDetails();
       refreshButtons(false, true);
       break;
-    case POI:
-    case ADDITIONAL_LAYER:
+    case MapObject.POI:
+    case MapObject.SEARCH:
       refreshDistanceToObject(loc);
       hideBookmarkDetails();
       refreshButtons(false, true);
       break;
-    case API_POINT:
+    case MapObject.API_POINT:
       refreshDistanceToObject(loc);
       hideBookmarkDetails();
       refreshButtons(true, true);
       break;
-    case MY_POSITION:
+    case MapObject.MY_POSITION:
       refreshMyPosition(loc);
       hideBookmarkDetails();
       refreshButtons(false, false);
@@ -420,32 +418,10 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
     mTvTitle.setText(mMapObject.getName());
     if (mToolbar != null)
       mToolbar.setTitle(mMapObject.getName());
-    String subtitle = mMapObject.getPoiTypeName();
-    final String cuisine = mMapObject.getMetadata(Metadata.MetadataType.FMD_CUISINE);
-    if (cuisine != null)
-      subtitle += ", " + translateCuisine(cuisine);
+    String subtitle = mMapObject.getCuisine().isEmpty() ? mMapObject.getTypeName()
+                                                        : mMapObject.getTypeName()  + ", " + mMapObject.getCuisine();
     mTvSubtitle.setText(subtitle);
     mAvDirection.setVisibility(View.GONE);
-    // TODO show/hide mTvOpened after schedule fill be parsed
-  }
-
-  public String translateCuisine(String cuisine)
-  {
-    if (TextUtils.isEmpty(cuisine))
-      return cuisine;
-
-    // cuisines translations can contain unsupported symbols, and res ids
-    // replace them with supported "_"( so ', ' and ' ' are replaced with underlines)
-    final String[] cuisines = cuisine.split(";");
-    String result = "";
-    // search translations for each cuisine
-    for (String cuisineRaw : cuisines)
-    {
-      final String cuisineKey = cuisineRaw.replace(", ", "_").replace(' ', '_').toLowerCase();
-      int resId = getResources().getIdentifier("cuisine_" + cuisineKey, "string", BuildConfig.APPLICATION_ID);
-      result += resId == 0 ? cuisineRaw : getResources().getString(resId);
-    }
-    return result;
   }
 
   private void refreshDetails()
@@ -456,9 +432,9 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
     refreshMetadataOrHide(mMapObject.getMetadata(Metadata.MetadataType.FMD_PHONE_NUMBER), mPhone, mTvPhone);
     refreshMetadataOrHide(mMapObject.getMetadata(Metadata.MetadataType.FMD_EMAIL), mEmail, mTvEmail);
     refreshMetadataOrHide(mMapObject.getMetadata(Metadata.MetadataType.FMD_OPERATOR), mOperator, mTvOperator);
-    refreshMetadataOrHide(translateCuisine(mMapObject.getMetadata(Metadata.MetadataType.FMD_CUISINE)), mCuisine, mTvCuisine);
+    refreshMetadataOrHide(mMapObject.getCuisine(), mCuisine, mTvCuisine);
     // TODO @yunikkk uncomment wiki display when data with correct wiki representation(urlencoded once) will be ready
-//    refreshMetadataOrHide(mMapObject.getMetadata(Metadata.MetadataType.FMD_WIKIPEDIA), mWiki, null);
+    //    refreshMetadataOrHide(mMapObject.getMetadata(Metadata.MetadataType.FMD_WIKIPEDIA), mWiki, null);
     refreshMetadataOrHide(mMapObject.getMetadata(Metadata.MetadataType.FMD_INTERNET), mWifi, null);
     refreshMetadataOrHide(mMapObject.getMetadata(Metadata.MetadataType.FMD_FLATS), mEntrance, mTvEntrance);
     // TODO throw away parsing hack when data will be parsed correctly in core
@@ -466,6 +442,17 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
     refreshMetadataOrHide(TextUtils.isEmpty(rawSchedule) ? null : rawSchedule.replace("; ", "\n").replace(';', '\n'), mSchedule, mTvSchedule);
     refreshMetadataStars(mMapObject.getMetadata(Metadata.MetadataType.FMD_STARS));
     UiUtils.setTextAndHideIfEmpty(mTvElevation, mMapObject.getMetadata(Metadata.MetadataType.FMD_ELE));
+
+    if (hasMapObject(null) || !Editor.hasEditableAttributes())
+    {
+      UiUtils.hide(mEditor);
+    }
+    else
+    {
+      UiUtils.show(mEditor);
+      mTvEditor.setText(mMapObject.getIsDroppedPin() ? R.string.pp_place_add
+                                                     : R.string.pp_place_edit);
+    }
   }
 
   private void hideBookmarkDetails()
@@ -506,12 +493,7 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
     else
     {
       UiUtils.show(mGeneralButtonsFrame);
-      UiUtils.showIf(!hasMapObject(null), mEditor);
       UiUtils.hide(mRouteButtonsFrame);
-
-      if (!hasMapObject(null))
-        mTvEditor.setText(mMapObject.isDroppedPin() ? R.string.pp_place_add
-                                                    : R.string.pp_place_edit);
 
       UiUtils.showIf(showBackButton || ParsedMwmRequest.isPickPointMode(), mApiBack);
       UiUtils.showIf(showRoutingButton, mRoutingButton);
@@ -523,7 +505,7 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
     if (mMapObject == null)
       return;
 
-    if (mMapObject.getType() == MapObjectType.MY_POSITION)
+    if (mMapObject.isMyPosition())
       refreshMyPosition(l);
     else
       refreshDistanceToObject(l);
@@ -572,7 +554,7 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
       mTvLatlon.setText(latLon[0] + ", " + latLon[1]);
   }
 
-  private static void refreshMetadataOrHide(String metadata, LinearLayout metaLayout, TextView metaTv)
+  private static void refreshMetadataOrHide(String metadata, View metaLayout, TextView metaTv)
   {
     if (!TextUtils.isEmpty(metadata))
     {
@@ -604,7 +586,9 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
 
   public void refreshAzimuth(double northAzimuth)
   {
-    if (getState() == State.HIDDEN || mMapObject == null || mMapObject.getType() == MapObjectType.MY_POSITION)
+    if (getState() == State.HIDDEN ||
+        mMapObject == null ||
+        mMapObject.isMyPosition())
       return;
 
     final Location location = LocationHelper.INSTANCE.getLastLocation();
@@ -639,7 +623,7 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
   // TODO remove that method completely. host activity should check that itself
   private void checkApiWasCanceled()
   {
-    if ((mMapObject.getType() == MapObjectType.API_POINT) && !ParsedMwmRequest.hasRequest())
+    if (mMapObject.isApi() && !ParsedMwmRequest.hasRequest())
       setMapObject(null);
   }
 
@@ -647,7 +631,7 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
   private void checkBookmarkWasDeleted()
   {
     // We need to check, if content of body is still valid
-    if (mMapObject.getType() == MapObjectType.BOOKMARK)
+    if (mMapObject.isBookmark())
     {
       final Bookmark bmk = (Bookmark) mMapObject;
       boolean deleted = false;
@@ -663,7 +647,7 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
       if (deleted)
       {
         // Make Poi from bookmark
-        final MapObject p = new Poi(mMapObject.getName(), mMapObject.getLat(), mMapObject.getLon(), null);
+        final MapObject p = new MapObject(MapObject.POI, mMapObject.getName(), mMapObject.getLat(), mMapObject.getLon(), "", "", "");
         setMapObject(p);
         // TODO how to handle the case, when bookmark was moved to another group?
       }
@@ -691,14 +675,15 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
   /**
    * Adds listener to {@link EditDescriptionFragment} to catch notification about bookmark description edit is complete.
    * <br/>When the user rotates device screen the listener is lost, so we must re-subscribe again.
+   *
    * @param fragment if specified - explicitely subscribe to this fragment. Otherwise try to find the fragment by hands.
    */
   private void subscribeBookmarkEditFragment(@Nullable EditDescriptionFragment fragment)
   {
     if (fragment == null)
     {
-      FragmentManager fm = ((FragmentActivity)getContext()).getSupportFragmentManager();
-      fragment = (EditDescriptionFragment)fm.findFragmentByTag(EditDescriptionFragment.class.getName());
+      FragmentManager fm = ((FragmentActivity) getContext()).getSupportFragmentManager();
+      fragment = (EditDescriptionFragment) fm.findFragmentByTag(EditDescriptionFragment.class.getName());
     }
 
     if (fragment == null)
@@ -718,7 +703,7 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
 
   private void showEditor()
   {
-    ((MwmActivity)getContext()).showEditor(mMapObject);
+    ((MwmActivity) getContext()).showEditor(mMapObject);
   }
 
   @Override
@@ -729,7 +714,6 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
     case R.id.ll__place_editor:
       showEditor();
       break;
-
     case R.id.iv__bookmark_color:
       saveBookmarkNameIfUpdated();
       selectBookmarkColor();
@@ -829,7 +813,7 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
   {
     if (mMapObject == null)
       return;
-    if (mMapObject.getType() == MapObjectType.BOOKMARK)
+    if (mMapObject.isBookmark())
     {
       final Bookmark currentBookmark = (Bookmark) mMapObject;
       MapObject p;
@@ -877,8 +861,8 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
   {
     final Bundle args = new Bundle();
     args.putString(BookmarkColorDialogFragment.ICON_TYPE, ((Bookmark) mMapObject).getIcon().getType());
-    final BookmarkColorDialogFragment dialogFragment = (BookmarkColorDialogFragment) BookmarkColorDialogFragment.
-        instantiate(getContext(), BookmarkColorDialogFragment.class.getName(), args);
+    final BookmarkColorDialogFragment dialogFragment =
+        (BookmarkColorDialogFragment) Fragment.instantiate(getContext(), BookmarkColorDialogFragment.class.getName(), args);
 
     dialogFragment.setOnColorSetListener(new BookmarkColorDialogFragment.OnBookmarkColorChangeListener()
     {

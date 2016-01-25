@@ -15,7 +15,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
-import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,7 +30,7 @@ import java.util.Stack;
 import com.mapswithme.country.ActiveCountryTree;
 import com.mapswithme.country.DownloadActivity;
 import com.mapswithme.country.DownloadFragment;
-import com.mapswithme.maps.Framework.OnBalloonListener;
+import com.mapswithme.maps.Framework.MapObjectListener;
 import com.mapswithme.maps.MapStorage.Index;
 import com.mapswithme.maps.activity.CustomNavigateUpListener;
 import com.mapswithme.maps.ads.LikesManager;
@@ -42,10 +41,8 @@ import com.mapswithme.maps.bookmarks.BookmarkCategoriesActivity;
 import com.mapswithme.maps.bookmarks.ChooseBookmarkCategoryFragment;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 import com.mapswithme.maps.bookmarks.data.MapObject;
-import com.mapswithme.maps.bookmarks.data.MapObject.ApiPoint;
-import com.mapswithme.maps.bookmarks.data.Metadata;
 import com.mapswithme.maps.editor.EditorActivity;
-import com.mapswithme.maps.editor.EditorFragment;
+import com.mapswithme.maps.editor.EditorHostFragment;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.location.LocationPredictor;
 import com.mapswithme.maps.routing.NavigationController;
@@ -66,7 +63,6 @@ import com.mapswithme.maps.widget.menu.MainMenu;
 import com.mapswithme.maps.widget.placepage.BasePlacePageAnimationController;
 import com.mapswithme.maps.widget.placepage.PlacePageView;
 import com.mapswithme.maps.widget.placepage.PlacePageView.State;
-import com.mapswithme.maps.widget.placepage.TimetableFragment;
 import com.mapswithme.util.Animations;
 import com.mapswithme.util.BottomSheetHelper;
 import com.mapswithme.util.Config;
@@ -86,7 +82,7 @@ import ru.mail.android.mytarget.nativeads.banners.NativeAppwallBanner;
 
 public class MwmActivity extends BaseMwmFragmentActivity
                       implements LocationHelper.LocationListener,
-                                 OnBalloonListener,
+                                 MapObjectListener,
                                  View.OnTouchListener,
                                  BasePlacePageAnimationController.OnVisibilityChangedListener,
                                  OnClickListener,
@@ -102,7 +98,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   private static final String[] DOCKED_FRAGMENTS = { SearchFragment.class.getName(),
                                                      DownloadFragment.class.getName(),
                                                      RoutingPlanFragment.class.getName(),
-                                                     TimetableFragment.class.getName() };
+                                                     EditorHostFragment.class.getName() };
   // Instance state
   private static final String STATE_PP_OPENED = "PpOpened";
   private static final String STATE_MAP_OBJECT = "MapObject";
@@ -255,14 +251,11 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   public void showEditor(MapObject point)
   {
-    final String openingTime = point.getMetadata(Metadata.MetadataType.FMD_OPEN_HOURS);
-    // TODO use EditorFragment after is will be finished
     if (mIsFragmentContainer)
     {
       final Bundle args = new Bundle();
-      if (!TextUtils.isEmpty(openingTime))
-        args.putString(TimetableFragment.EXTRA_TIME, openingTime);
-      replaceFragment(TimetableFragment.class, args, null);
+      args.putParcelable(EditorHostFragment.EXTRA_MAP_OBJECT, point);
+      replaceFragment(EditorHostFragment.class, args, null);
     }
     else
       EditorActivity.start(this, point);
@@ -337,7 +330,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
     Statistics.INSTANCE.trackConnectionState();
 
-    Framework.nativeSetBalloonListener(this);
+    Framework.nativeSetMapObjectListener(this);
 
     mSearchController = new FloatingSearchToolbarController(this);
     mLocationPredictor = new LocationPredictor(new Handler(), this);
@@ -368,9 +361,11 @@ public class MwmActivity extends BaseMwmFragmentActivity
     mFrame = findViewById(R.id.map_fragment_container);
 
     mFadeView = (FadeView) findViewById(R.id.fade_view);
-    mFadeView.setListener(new FadeView.Listener() {
+    mFadeView.setListener(new FadeView.Listener()
+    {
       @Override
-      public void onTouch() {
+      public void onTouch()
+      {
         mMainMenu.close(true);
       }
     });
@@ -449,9 +444,11 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   private void startLocationToPoint(String statisticsEvent, String alohaEvent, final @Nullable MapObject endPoint)
   {
-    closeMenu(statisticsEvent, alohaEvent, new Runnable() {
+    closeMenu(statisticsEvent, alohaEvent, new Runnable()
+    {
       @Override
-      public void run() {
+      public void run()
+      {
         RoutingController.get().prepare(endPoint);
 
         if (mPlacePage.isDocked() || !mPlacePage.isFloating())
@@ -589,7 +586,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   @Override
   public void onDestroy()
   {
-    Framework.nativeRemoveBalloonListener();
+    Framework.nativeRemoveMapObjectListener();
     BottomSheetHelper.free();
     RoutingController.get().detach();
     super.onDestroy();
@@ -982,93 +979,50 @@ public class MwmActivity extends BaseMwmFragmentActivity
     return true;
   }
 
-  // Callbacks from native touch events on map objects.
   @Override
-  public void onApiPointActivated(final double lat, final double lon, final String name, final String id)
+  public void onMapObjectActivated(MapObject object)
   {
-    final ParsedMwmRequest request = ParsedMwmRequest.getCurrentRequest();
-    if (request == null)
+    if (object.isApi())
+    {
+      final ParsedMwmRequest request = ParsedMwmRequest.getCurrentRequest();
+      if (request == null)
+        return;
+
+      request.setPointData(object.getLat(), object.getLon(), object.getName(), object.getSearchId());
+      object.setTypeName(request.getCallerName(MwmApplication.get()).toString());
+
+    }
+    else if (object.isMyPosition())
+    {
+      if (Framework.nativeIsRoutingActive())
+        return;
+    }
+
+    setFullscreen(false);
+    if (mPlacePage.hasMapObject(object))
       return;
 
-    request.setPointData(lat, lon, name, id);
+    mPlacePage.setMapObject(object);
+    mPlacePage.setState(State.PREVIEW);
 
-    runOnUiThread(new Runnable()
-    {
-      @Override
-      public void run()
-      {
-        final String poiType = request.getCallerName(MwmApplication.get()).toString();
-        activateMapObject(new ApiPoint(name, id, poiType, lat, lon));
-      }
-    });
-  }
-
-  @Override
-  public void onPoiActivated(final String name, final String type, final String address, final double lat, final double lon,
-                             final int[] metaTypes, final String[] metaValues)
-  {
-    final MapObject poi = new MapObject.Poi(name, lat, lon, address);
-    poi.addMetadata(metaTypes, metaValues);
-    activateMapObject(poi);
-  }
-
-  @Override
-  public void onBookmarkActivated(final int category, final int bookmarkIndex)
-  {
-    activateMapObject(BookmarkManager.INSTANCE.getBookmark(category, bookmarkIndex));
-  }
-
-  @Override
-  public void onMyPositionActivated(final double lat, final double lon)
-  {
-    final MapObject mypos = new MapObject.MyPosition(lat, lon);
-
-    runOnUiThread(new Runnable()
-    {
-      @Override
-      public void run()
-      {
-        if (!Framework.nativeIsRoutingActive())
-        {
-          activateMapObject(mypos);
-        }
-      }
-    });
-  }
-
-  @Override
-  public void onAdditionalLayerActivated(final String name, final String type, final double lat, final double lon, final int[] metaTypes, final String[] metaValues)
-  {
-    final MapObject sr = new MapObject.SearchResult(name, type, lat, lon);
-    sr.addMetadata(metaTypes, metaValues);
-    activateMapObject(sr);
-  }
-
-  private void activateMapObject(MapObject object)
-  {
-    setFullscreen(false);
-    if (!mPlacePage.hasMapObject(object))
-    {
-      mPlacePage.setMapObject(object);
-      mPlacePage.setState(State.PREVIEW);
-
-      if (UiUtils.isVisible(mFadeView))
-        mFadeView.fadeOut(false);
-    }
+    if (UiUtils.isVisible(mFadeView))
+      mFadeView.fadeOut(false);
   }
 
   @Override
   public void onDismiss()
   {
-    if (!mPlacePage.hasMapObject(null))
-      mPlacePage.hide();
-    else
+    if (mPlacePage.hasMapObject(null))
     {
       if ((mPanelAnimator != null && mPanelAnimator.isVisible()) ||
           UiUtils.isVisible(mSearchController.getToolbar()))
         return;
 
       setFullscreen(!mIsFullscreen);
+    }
+    else
+    {
+      mPlacePage.hide();
     }
   }
 
@@ -1325,7 +1279,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   {
     if (mIsFragmentContainer)
     {
-      RoutingPlanFragment fragment = (RoutingPlanFragment)getFragment(RoutingPlanFragment.class);
+      RoutingPlanFragment fragment = (RoutingPlanFragment) getFragment(RoutingPlanFragment.class);
       if (fragment != null)
         fragment.updatePoints();
     }
@@ -1340,7 +1294,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   {
     if (mIsFragmentContainer)
     {
-      RoutingPlanFragment fragment = (RoutingPlanFragment)getFragment(RoutingPlanFragment.class);
+      RoutingPlanFragment fragment = (RoutingPlanFragment) getFragment(RoutingPlanFragment.class);
       if (fragment != null)
         fragment.updateBuildProgress(progress, router);
     }
