@@ -35,7 +35,7 @@
   <color name="bg_cards">@android:color/white</color>
   <color name="bg_cards_night">#FF3C4044</color>
   <color name="bg_panel">@color/bg_window</color>
-  <color name="bg_panel_night">@color/bg_cards_night</color>
+  <color name="bg_panel_night">@color/bg_window_night</color>
   <color name="bg_side_panel">@color/bg_cards</color>
   <color name="bg_side_panel_night">@color/bg_panel_night</color>
 
