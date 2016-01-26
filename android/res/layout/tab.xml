@@ -6,4 +6,3 @@
   android:textAppearance="@style/MwmTextAppearance.Body4"
   tools:drawableLeft="@drawable/ic_menu_open"
   tools:text="Some tab"/>
-
