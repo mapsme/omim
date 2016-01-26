@@ -1,4 +1,5 @@
 #include "platform/local_country_file.hpp"
+#include "platform/mwm_version.hpp"
 #include "platform/platform.hpp"
 
 #include "coding/internal/file_data.hpp"
@@ -45,7 +46,10 @@ void LocalCountryFile::SyncWithDisk()
 
 void LocalCountryFile::DeleteFromDisk(MapOptions files) const
 {
-  for (MapOptions file : {MapOptions::Map, MapOptions::CarRouting})
+  vector<MapOptions> const mapOptions =
+      version::IsSingleMwm(GetVersion()) ? vector<MapOptions>({MapOptions::Map})
+                                         : vector<MapOptions>({MapOptions::Map, MapOptions::CarRouting});
+  for (MapOptions file : mapOptions)
   {
     if (OnDisk(file) && HasOptions(files, file))
     {
@@ -57,7 +61,11 @@ void LocalCountryFile::DeleteFromDisk(MapOptions files) const
 
 string LocalCountryFile::GetPath(MapOptions file) const
 {
-  return my::JoinFoldersToPath(m_directory, m_countryFile.GetNameWithExt(file));
+  // todo(@m): Refactor with MwmTraits after merge new-search branch.
+  bool const singleFile = version::IsSingleMwm(GetVersion());
+  string const & countryFilePath = singleFile ? m_countryFile.GetNameWithExt(MapOptions::Map)
+                                              : m_countryFile.GetNameWithExt(file);
+  return my::JoinFoldersToPath(m_directory, countryFilePath);
 }
 
 uint32_t LocalCountryFile::GetSize(MapOptions filesMask) const
@@ -92,10 +100,10 @@ bool LocalCountryFile::operator==(LocalCountryFile const & rhs) const
 }
 
 // static
-LocalCountryFile LocalCountryFile::MakeForTesting(string const & countryFileName)
+LocalCountryFile LocalCountryFile::MakeForTesting(string const & countryFileName, int64_t version)
 {
   CountryFile const countryFile(countryFileName);
-  LocalCountryFile localFile(GetPlatform().WritableDir(), countryFile, 0 /* version */);
+  LocalCountryFile localFile(GetPlatform().WritableDir(), countryFile, version);
   localFile.SyncWithDisk();
   return localFile;
 }

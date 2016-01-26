@@ -13,7 +13,7 @@ extern "C"
   JNIEXPORT jint JNICALL
   Java_com_mapswithme_country_ActiveCountryTree_getOutOfDateCount(JNIEnv * env, jclass clazz)
   {
-    return GetMapLayout().GetOutOfDateCount();
+    return (g_framework->NeedMigrate() ? 0 : GetMapLayout().GetOutOfDateCount());
   }
 
   JNIEXPORT jint JNICALL
@@ -144,5 +144,17 @@ extern "C"
   Java_com_mapswithme_country_ActiveCountryTree_downloadMapForIndex(JNIEnv * env, jclass clazz, jobject index, jint options)
   {
     GetMapLayout().DownloadMap(storage::ToNative(index), ToOptions(options));
+  }
+
+  JNIEXPORT jboolean JNICALL
+  Java_com_mapswithme_country_ActiveCountryTree_isLegacyMode(JNIEnv * env, jclass clazz)
+  {
+    return g_framework->NeedMigrate();
+  }
+
+  JNIEXPORT void JNICALL
+  Java_com_mapswithme_country_ActiveCountryTree_migrate(JNIEnv * env, jclass clazz)
+  {
+    g_framework->Migrate();
   }
 }

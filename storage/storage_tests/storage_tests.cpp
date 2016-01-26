@@ -14,6 +14,7 @@
 #include "platform/platform.hpp"
 #include "platform/platform_tests_support/scoped_dir.hpp"
 #include "platform/platform_tests_support/scoped_file.hpp"
+#include "platform/settings.hpp"
 
 #include "coding/file_name_utils.hpp"
 #include "coding/file_writer.hpp"
@@ -31,6 +32,8 @@
 #include "std/shared_ptr.hpp"
 #include "std/unique_ptr.hpp"
 #include "std/vector.hpp"
+
+#include "storage/storage_tests/write_dir_changer.hpp"
 
 #include <QtCore/QCoreApplication>
 
@@ -322,16 +325,28 @@ void InitStorage(Storage & storage, TaskRunner & runner,
   storage.RegisterAllLocalMaps();
   storage.SetDownloaderForTesting(make_unique<FakeMapFilesDownloader>(runner));
 }
+
+string const kTestDir = "storage_tests";
+
+void SetMigrationComplete()
+{
+  int constexpr kSmallMwmVersion = 160107;
+  Settings::Set("LastMigration", kSmallMwmVersion);
+}
 }  // namespace
 
 UNIT_TEST(StorageTest_Smoke)
 {
+  WritableDirChanger writableDirChanger(kTestDir);
+
+  SetMigrationComplete();
+
   Storage storage;
 
-  TIndex const usaGeorgiaIndex = storage.FindIndexByFile("USA_Georgia");
+  TIndex const usaGeorgiaIndex = storage.FindIndexByFile("US_Georgia_North");
   TEST(usaGeorgiaIndex.IsValid(), ());
   CountryFile usaGeorgiaFile = storage.GetCountryFile(usaGeorgiaIndex);
-  TEST_EQUAL(usaGeorgiaFile.GetNameWithExt(MapOptions::Map), "USA_Georgia" DATA_FILE_EXTENSION,
+  TEST_EQUAL(usaGeorgiaFile.GetNameWithExt(MapOptions::Map), "US_Georgia_North" DATA_FILE_EXTENSION,
              ());
 
   TIndex const georgiaIndex = storage.FindIndexByFile("Georgia");
@@ -345,30 +360,32 @@ UNIT_TEST(StorageTest_Smoke)
 
 UNIT_TEST(StorageTest_SingleCountryDownloading)
 {
+  WritableDirChanger writableDirChanger(kTestDir);
+
   Storage storage;
   TaskRunner runner;
   InitStorage(storage, runner);
 
-  TIndex const azerbaijanIndex = storage.FindIndexByFile("Azerbaijan");
-  TEST(azerbaijanIndex.IsValid(), ());
+  TIndex const index = storage.FindIndexByFile("Angola");
+  TEST(index.IsValid(), ());
 
-  CountryFile azerbaijanFile = storage.GetCountryFile(azerbaijanIndex);
-  storage.DeleteCountry(azerbaijanIndex, MapOptions::MapWithCarRouting);
+  CountryFile azerbaijanFile = storage.GetCountryFile(index);
+  storage.DeleteCountry(index, MapOptions::MapWithCarRouting);
 
   {
     MY_SCOPE_GUARD(cleanupCountryFiles,
-                   bind(&Storage::DeleteCountry, &storage, azerbaijanIndex, MapOptions::Map));
+                   bind(&Storage::DeleteCountry, &storage, index, MapOptions::Map));
     unique_ptr<CountryDownloaderChecker> checker =
-        AbsentCountryDownloaderChecker(storage, azerbaijanIndex, MapOptions::MapWithCarRouting);
+        AbsentCountryDownloaderChecker(storage, index, MapOptions::MapWithCarRouting);
     checker->StartDownload();
     runner.Run();
   }
 
   {
-    MY_SCOPE_GUARD(cleanupCountryFiles, bind(&Storage::DeleteCountry, &storage, azerbaijanIndex,
+    MY_SCOPE_GUARD(cleanupCountryFiles, bind(&Storage::DeleteCountry, &storage, index,
                                              MapOptions::MapWithCarRouting));
     unique_ptr<CountryDownloaderChecker> checker =
-        AbsentCountryDownloaderChecker(storage, azerbaijanIndex, MapOptions::MapWithCarRouting);
+        AbsentCountryDownloaderChecker(storage, index, MapOptions::MapWithCarRouting);
     checker->StartDownload();
     runner.Run();
   }
@@ -376,26 +393,28 @@ UNIT_TEST(StorageTest_SingleCountryDownloading)
 
 UNIT_TEST(StorageTest_TwoCountriesDownloading)
 {
+  WritableDirChanger writableDirChanger(kTestDir);
+
   Storage storage;
   TaskRunner runner;
   InitStorage(storage, runner);
 
-  TIndex const uruguayIndex = storage.FindIndexByFile("Uruguay");
-  TEST(uruguayIndex.IsValid(), ());
-  storage.DeleteCountry(uruguayIndex, MapOptions::Map);
-  MY_SCOPE_GUARD(cleanupUruguayFiles,
-                 bind(&Storage::DeleteCountry, &storage, uruguayIndex, MapOptions::Map));
+  TIndex const index1 = storage.FindIndexByFile("Yemen");
+  TEST(index1.IsValid(), ());
+  storage.DeleteCountry(index1, MapOptions::Map);
+  MY_SCOPE_GUARD(cleanupFiles1,
+                 bind(&Storage::DeleteCountry, &storage, index1, MapOptions::Map));
 
-  TIndex const venezuelaIndex = storage.FindIndexByFile("Venezuela");
-  TEST(venezuelaIndex.IsValid(), ());
-  storage.DeleteCountry(venezuelaIndex, MapOptions::MapWithCarRouting);
-  MY_SCOPE_GUARD(cleanupVenezuelaFiles, bind(&Storage::DeleteCountry, &storage, venezuelaIndex,
+  TIndex const index2 = storage.FindIndexByFile("Angola");
+  TEST(index2.IsValid(), ());
+  storage.DeleteCountry(index2, MapOptions::MapWithCarRouting);
+  MY_SCOPE_GUARD(cleanupFiles2, bind(&Storage::DeleteCountry, &storage, index2,
                                              MapOptions::MapWithCarRouting));
 
   unique_ptr<CountryDownloaderChecker> uruguayChecker =
-      AbsentCountryDownloaderChecker(storage, uruguayIndex, MapOptions::Map);
+      AbsentCountryDownloaderChecker(storage, index1, MapOptions::Map);
   unique_ptr<CountryDownloaderChecker> venezuelaChecker =
-      QueuedCountryDownloaderChecker(storage, venezuelaIndex, MapOptions::MapWithCarRouting);
+      QueuedCountryDownloaderChecker(storage, index2, MapOptions::MapWithCarRouting);
   uruguayChecker->StartDownload();
   venezuelaChecker->StartDownload();
   runner.Run();
@@ -403,11 +422,13 @@ UNIT_TEST(StorageTest_TwoCountriesDownloading)
 
 UNIT_TEST(StorageTest_DeleteTwoVersionsOfTheSameCountry)
 {
+  WritableDirChanger writableDirChanger(kTestDir);
+
   Storage storage;
   storage.Init(&OnCountryDownloaded);
   storage.RegisterAllLocalMaps();
 
-  TIndex const index = storage.FindIndexByFile("Azerbaijan");
+  TIndex const index = storage.FindIndexByFile("Angola");
   TEST(index.IsValid(), ());
   CountryFile const countryFile = storage.GetCountryFile(index);
 
@@ -443,11 +464,17 @@ UNIT_TEST(StorageTest_DeleteTwoVersionsOfTheSameCountry)
 
 UNIT_TEST(StorageTest_DownloadCountryAndDeleteRoutingOnly)
 {
+  WritableDirChanger writableDirChanger(kTestDir);
+
   Storage storage;
+
+  if (version::IsSingleMwm(storage.GetCurrentDataVersion()))
+    return;
+
   TaskRunner runner;
   InitStorage(storage, runner);
 
-  TIndex const index = storage.FindIndexByFile("Azerbaijan");
+  TIndex const index = storage.FindIndexByFile("Angola");
   TEST(index.IsValid(), ());
   storage.DeleteCountry(index, MapOptions::MapWithCarRouting);
 
@@ -477,6 +504,8 @@ UNIT_TEST(StorageTest_DownloadCountryAndDeleteRoutingOnly)
 
 UNIT_TEST(StorageTest_DownloadMapAndRoutingSeparately)
 {
+  WritableDirChanger writableDirChanger(kTestDir);
+
   Storage storage;
   TaskRunner runner;
   tests::TestMwmSet mwmSet;
@@ -558,6 +587,8 @@ UNIT_TEST(StorageTest_DownloadMapAndRoutingSeparately)
 
 UNIT_TEST(StorageTest_DeletePendingCountry)
 {
+  WritableDirChanger writableDirChanger(kTestDir);
+
   Storage storage;
   TaskRunner runner;
   InitStorage(storage, runner);
@@ -577,27 +608,29 @@ UNIT_TEST(StorageTest_DeletePendingCountry)
 
 UNIT_TEST(StorageTest_DownloadTwoCountriesAndDelete)
 {
+  WritableDirChanger writableDirChanger(kTestDir);
+
   Storage storage;
   TaskRunner runner;
   InitStorage(storage, runner);
 
-  TIndex const uruguayIndex = storage.FindIndexByFile("Uruguay");
-  TEST(uruguayIndex.IsValid(), ());
-  storage.DeleteCountry(uruguayIndex, MapOptions::MapWithCarRouting);
-  MY_SCOPE_GUARD(cleanupUruguayFiles, bind(&Storage::DeleteCountry, &storage, uruguayIndex,
+  TIndex const angolaIndex = storage.FindIndexByFile("Angola");
+  TEST(angolaIndex.IsValid(), ());
+  storage.DeleteCountry(angolaIndex, MapOptions::MapWithCarRouting);
+  MY_SCOPE_GUARD(cleanupUruguayFiles, bind(&Storage::DeleteCountry, &storage, angolaIndex,
                                            MapOptions::MapWithCarRouting));
 
-  TIndex const venezuelaIndex = storage.FindIndexByFile("Venezuela");
-  TEST(venezuelaIndex.IsValid(), ());
-  storage.DeleteCountry(venezuelaIndex, MapOptions::MapWithCarRouting);
-  MY_SCOPE_GUARD(cleanupVenezuelaFiles, bind(&Storage::DeleteCountry, &storage, venezuelaIndex,
+  TIndex const zambiaIndex = storage.FindIndexByFile("Zambia");
+  TEST(zambiaIndex.IsValid(), ());
+  storage.DeleteCountry(zambiaIndex, MapOptions::MapWithCarRouting);
+  MY_SCOPE_GUARD(cleanupVenezuelaFiles, bind(&Storage::DeleteCountry, &storage, zambiaIndex,
                                              MapOptions::MapWithCarRouting));
 
   {
     // Map file will be deleted for Uruguay, thus, routing file should also be deleted. Therefore,
     // Uruguay should pass through following states: NotDownloaded -> Downloading -> NotDownloaded.
     unique_ptr<CountryDownloaderChecker> uruguayChecker = make_unique<CountryDownloaderChecker>(
-        storage, uruguayIndex, MapOptions::MapWithCarRouting,
+        storage, angolaIndex, MapOptions::MapWithCarRouting,
         vector<TStatus>{TStatus::ENotDownloaded, TStatus::EDownloading, TStatus::ENotDownloaded});
     // Only routing file will be deleted for Venezuela, thus, Venezuela should pass through
     // following
@@ -605,21 +638,22 @@ UNIT_TEST(StorageTest_DownloadTwoCountriesAndDelete)
     // NotDownloaded -> InQueue (Venezuela is added after Uruguay) -> Downloading -> Downloading
     // (second notification will be sent after deletion of a routing file) -> OnDisk.
     unique_ptr<CountryDownloaderChecker> venezuelaChecker = make_unique<CountryDownloaderChecker>(
-        storage, venezuelaIndex, MapOptions::MapWithCarRouting,
+        storage, zambiaIndex, MapOptions::MapWithCarRouting,
         vector<TStatus>{TStatus::ENotDownloaded, TStatus::EInQueue, TStatus::EDownloading,
                         TStatus::EDownloading, TStatus::EOnDisk});
     uruguayChecker->StartDownload();
     venezuelaChecker->StartDownload();
-    storage.DeleteCountry(uruguayIndex, MapOptions::Map);
-    storage.DeleteCountry(venezuelaIndex, MapOptions::CarRouting);
+    storage.DeleteCountry(angolaIndex, MapOptions::Map);
+    storage.DeleteCountry(zambiaIndex, MapOptions::CarRouting);
     runner.Run();
   }
-  TLocalFilePtr uruguayFile = storage.GetLatestLocalFile(uruguayIndex);
-  TEST(!uruguayFile.get(), (*uruguayFile));
+  TLocalFilePtr angolaFile = storage.GetLatestLocalFile(angolaIndex);
+  TEST(!angolaFile.get(), (*angolaFile));
 
-  TLocalFilePtr venezuelaFile = storage.GetLatestLocalFile(venezuelaIndex);
-  TEST(venezuelaFile.get(), ());
-  TEST_EQUAL(MapOptions::Map, venezuelaFile->GetFiles(), ());
+  TLocalFilePtr zambiaFile = storage.GetLatestLocalFile(zambiaIndex);
+  TEST(zambiaFile.get(), ());
+  bool const isSingled = version::IsSingleMwm(storage.GetCurrentDataVersion());
+  TEST_EQUAL(isSingled ? MapOptions::MapWithCarRouting : MapOptions::Map, zambiaFile->GetFiles(), ());
 }
 
 UNIT_TEST(StorageTest_CancelDownloadingWhenAlmostDone)
@@ -628,7 +662,7 @@ UNIT_TEST(StorageTest_CancelDownloadingWhenAlmostDone)
   TaskRunner runner;
   InitStorage(storage, runner);
 
-  TIndex const index = storage.FindIndexByFile("Uruguay");
+  TIndex const index = storage.FindIndexByFile("Angola");
   TEST(index.IsValid(), ());
   storage.DeleteCountry(index, MapOptions::MapWithCarRouting);
   MY_SCOPE_GUARD(cleanupFiles,
@@ -645,13 +679,15 @@ UNIT_TEST(StorageTest_CancelDownloadingWhenAlmostDone)
 
 UNIT_TEST(StorageTest_DeleteCountry)
 {
+  WritableDirChanger writableDirChanger(kTestDir);
+
   Storage storage;
   TaskRunner runner;
   InitStorage(storage, runner);
 
   tests_support::ScopedFile map("Wonderland.mwm", "map");
   tests_support::ScopedFile routing("Wonderland.mwm.routing", "routing");
-  LocalCountryFile file = LocalCountryFile::MakeForTesting("Wonderland");
+  LocalCountryFile file = LocalCountryFile::MakeForTesting("Wonderland", storage.GetCurrentDataVersion());
   TEST_EQUAL(MapOptions::MapWithCarRouting, file.GetFiles(), ());
 
   CountryIndexes::PreparePlaceOnDisk(file);
@@ -668,8 +704,9 @@ UNIT_TEST(StorageTest_DeleteCountry)
   TEST(Platform::IsFileExistsByFullPath(bitsPath), (bitsPath));
 
   storage.DeleteCustomCountryVersion(file);
-  TEST(!map.Exists(), ())
-  TEST(!routing.Exists(), ())
+  TEST(!map.Exists(), ());
+  if (!version::IsSingleMwm(storage.GetCurrentDataVersion()))
+    TEST(!routing.Exists(), ());
   TEST(!Platform::IsFileExistsByFullPath(bitsPath), (bitsPath));
 
   map.Reset();
@@ -678,12 +715,14 @@ UNIT_TEST(StorageTest_DeleteCountry)
 
 UNIT_TEST(StorageTest_FailedDownloading)
 {
+  WritableDirChanger writableDirChanger(kTestDir);
+
   Storage storage;
   storage.Init(&OnCountryDownloaded);
   storage.SetDownloaderForTesting(make_unique<TestMapFilesDownloader>());
   storage.SetCurrentDataVersionForTesting(1234);
 
-  TIndex const index = storage.FindIndexByFile("Uruguay");
+  TIndex const index = storage.FindIndexByFile("Angola");
   CountryFile const countryFile = storage.GetCountryFile(index);
 
   // To prevent interference from other tests and on other tests it's
@@ -712,6 +751,8 @@ UNIT_TEST(StorageTest_FailedDownloading)
 // is no routing file for this island.
 UNIT_TEST(StorageTest_EmptyRoutingFile)
 {
+  WritableDirChanger writableDirChanger(kTestDir);
+
   Storage storage;
   TaskRunner runner;
   InitStorage(storage, runner, [](LocalCountryFile const & localFile)
@@ -736,6 +777,8 @@ UNIT_TEST(StorageTest_EmptyRoutingFile)
 
 UNIT_TEST(StorageTest_ObsoleteMapsRemoval)
 {
+  WritableDirChanger writableDirChanger(kTestDir);
+
   CountryFile country("Azerbaijan");
 
   tests_support::ScopedDir dir1("1");

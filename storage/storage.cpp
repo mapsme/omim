@@ -4,8 +4,10 @@
 #include "defines.hpp"
 
 #include "platform/local_country_file_utils.hpp"
+#include "platform/mwm_version.hpp"
 #include "platform/platform.hpp"
 #include "platform/servers_list.hpp"
+#include "platform/settings.hpp"
 
 #include "coding/file_name_utils.hpp"
 #include "coding/internal/file_data.hpp"
@@ -105,6 +107,36 @@ void Storage::Clear()
   m_localFilesForFakeCountries.clear();
 }
 
+bool Storage::HaveDownloadedCountries()
+{
+  return !m_localFiles.empty();
+}
+
+void Storage::Migrate()
+{
+  platform::migrate::SetMigrationFlag();
+  
+  Clear();
+  m_countries.Clear();
+  
+  LoadCountriesFile(true /* forceReload */);
+}
+
+void Storage::DeleteAllLocalMaps(vector<TIndex> * existedCountries /* = nullptr */)
+{
+  for (auto const & localFiles : m_localFiles)
+  {
+    if (existedCountries)
+      existedCountries->push_back(localFiles.first);
+    for (auto const & localFile : localFiles.second)
+    {
+      LOG_SHORT(LINFO, ("Removing:", localFiles.first, DebugPrint(*localFile)));
+      localFile->SyncWithDisk();
+      DeleteFromDiskWithIndexes(*localFile, MapOptions::MapWithCarRouting);
+    }
+  }
+}
+  
 void Storage::RegisterAllLocalMaps()
 {
   m_localFiles.clear();
@@ -458,10 +490,11 @@ void Storage::LoadCountriesFile(bool forceReload)
   if (m_countries.SiblingsCount() == 0)
   {
     string json;
-    ReaderPtr<Reader>(GetPlatform().GetReader(COUNTRIES_FILE)).ReadAsString(json);
+    string const name = migrate::NeedMigrate() ? COUNTRIES_FILE : COUNTRIES_MIGRATE_FILE;
+    ReaderPtr<Reader>(GetPlatform().GetReader(name)).ReadAsString(json);
     m_currentVersion = LoadCountries(json, m_countries);
     if (m_currentVersion < 0)
-      LOG(LERROR, ("Can't load countries file", COUNTRIES_FILE));
+      LOG(LERROR, ("Can't load countries file", name));
   }
 }
 
@@ -691,7 +724,7 @@ void Storage::GetOutdatedCountries(vector<Country const *> & countries) const
     string const name = GetCountryFile(index).GetNameWithoutExt();
     TLocalFilePtr file = GetLatestLocalFile(index);
     if (file && file->GetVersion() != GetCurrentDataVersion() &&
-        name != WORLD_COASTS_FILE_NAME && name != WORLD_FILE_NAME)
+        name != WORLD_COASTS_FILE_NAME && name != WORLD_COASTS_MIGRATE_FILE_NAME && name != WORLD_FILE_NAME)
     {
       countries.push_back(&CountryByIndex(index));
     }
@@ -743,7 +776,8 @@ MapOptions Storage::NormalizeDownloadFileSet(TIndex const & index, MapOptions op
     }
 
     // Check whether requested file is not empty.
-    if (GetRemoteSize(country, option) == 0)
+    if ((version::IsSingleMwm(GetCurrentDataVersion()) && option == MapOptions::CarRouting)
+        || GetRemoteSize(country, option) == 0)
     {
       ASSERT_NOT_EQUAL(MapOptions::Map, option, ("Map can't be empty."));
       options = UnsetOptions(options, option);

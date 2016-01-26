@@ -54,9 +54,9 @@ void FormatMapSize(uint64_t sizeInBytes, string & units, size_t & sizeToDownload
   }
 }
 
-char const * DownloadMapButtonID = "country_status_download_without_routing";
-char const * DownloadMapRoutingButtonID = "country_status_download";
+char const * DownloadMapButtonID = "country_status_download";
 char const * TryAgainButtonID = "try_again";
+char const * DownloadCancelButtonID = "country_download_cancel";
 char const * DownloadingLabelID = "country_status_downloading";
 char const * DownloadingFailedID = "country_status_download_failed";
 char const * InQueueID = "country_status_added_to_queue";
@@ -175,7 +175,6 @@ void CountryStatusHelper::FillControlsForEmpty()
 {
   ASSERT(m_controls.empty(), ());
   m_controls.push_back(MakeLabel(m_countryInfo.m_currentCountryName));
-  m_controls.push_back(MakeButton(FormatDownloadMapRouting(), BUTTON_TYPE_MAP_ROUTING));
   m_controls.push_back(MakeButton(FormatDownloadMap(), BUTTON_TYPE_MAP));
 }
 
@@ -204,6 +203,8 @@ void CountryStatusHelper::FillControlsForLoading()
     strings::Trim(secondLabel , "\n ");
     m_controls.push_back(MakeLabel(secondLabel));
   }
+
+  m_controls.push_back(MakeButton(FormatCancel(), BUTTON_CANCEL));
 }
 
 void CountryStatusHelper::FillControlsForInQueue()
@@ -227,14 +228,6 @@ string CountryStatusHelper::FormatDownloadMap()
   return strings::Format(GetLocalizedString(DownloadMapButtonID), size, units);
 }
 
-string CountryStatusHelper::FormatDownloadMapRouting()
-{
-  size_t size;
-  string units;
-  FormatMapSize(m_countryInfo.m_mapSize + m_countryInfo.m_routingSize, units, size);
-  return strings::Format(GetLocalizedString(DownloadMapRoutingButtonID), size, units);
-}
-
 string CountryStatusHelper::FormatInQueueMap()
 {
   return strings::Format(GetLocalizedString(InQueueID), m_countryInfo.m_currentCountryName);
@@ -248,6 +241,12 @@ string CountryStatusHelper::FormatFailed()
 string CountryStatusHelper::FormatTryAgain()
 {
   return GetLocalizedString(TryAgainButtonID);
+}
+
+string CountryStatusHelper::FormatCancel()
+{
+  //TODO: Uncomment after adding localization for country_download_cancel
+  return "Cancel";//GetLocalizedString(DownloadCancelButtonID);
 }
 
 }  // namespace gui

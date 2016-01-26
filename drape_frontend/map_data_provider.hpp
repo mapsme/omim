@@ -28,8 +28,8 @@ public:
                   TIsCountryLoadedFn const & isCountryLoadedFn,
                   TIsCountryLoadedByNameFn const & isCountryLoadedByNameFn,
                   TDownloadFn const & downloadMapHandler,
-                  TDownloadFn const & downloadMapRoutingHandler,
-                  TDownloadFn const & downloadRetryHandler);
+                  TDownloadFn const & downloadRetryHandler,
+                  TDownloadFn const & downloadCancelHandler);
 
   void ReadFeaturesID(TReadCallback<FeatureID> const & fn, m2::RectD const & r, int scale) const;
   void ReadFeatures(TReadCallback<FeatureType> const & fn, vector<FeatureID> const & ids) const;
@@ -38,8 +38,8 @@ public:
   TIsCountryLoadedFn const & GetIsCountryLoadedFn() const;
 
   TDownloadFn const & GetDownloadMapHandler() const;
-  TDownloadFn const & GetDownloadMapRoutingHandler() const;
   TDownloadFn const & GetDownloadRetryHandler() const;
+  TDownloadFn const & GetDownloadCancelHandler() const;
 
 private:
   TReadFeaturesFn m_featureReader;
@@ -47,8 +47,8 @@ private:
   TUpdateCountryIndexFn m_countryIndexUpdater;
   TIsCountryLoadedFn m_isCountryLoadedFn;
   TDownloadFn m_downloadMapHandler;
-  TDownloadFn m_downloadMapRoutingHandler;
   TDownloadFn m_downloadRetryHandler;
+  TDownloadFn m_downloadCancelHandler;
 
 public:
   TIsCountryLoadedByNameFn m_isCountryLoadedByNameFn;

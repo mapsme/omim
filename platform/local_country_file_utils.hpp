@@ -12,6 +12,13 @@ class ModelReader;
 
 namespace platform
 {
+
+namespace migrate
+{
+bool NeedMigrate();
+void SetMigrationFlag();
+}
+
 // Removes all files downloader creates during downloading of a country.
 void DeleteDownloaderFilesForCountry(CountryFile const & countryFile, int64_t version);
 

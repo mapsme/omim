@@ -27,6 +27,8 @@ namespace
  */
 bool CheckMwmConsistency(LocalCountryFile const & localFile)
 {
+  if (localFile.GetPath(MapOptions::CarRouting) == localFile.GetPath(MapOptions::Map))
+    return true;
   ModelReaderPtr r1 = FilesContainerR(localFile.GetPath(MapOptions::CarRouting))
       .GetReader(VERSION_FILE_TAG);
   ReaderSrc src1(r1.GetPtr());
@@ -67,12 +69,19 @@ RoutingMapping::RoutingMapping(string const & countryFile, MwmSet & index)
     return;
   }
 
-  m_container.Open(localFile.GetPath(MapOptions::CarRouting));
   if (!CheckMwmConsistency(localFile))
   {
     m_error = IRouter::ResultCode::InconsistentMWMandRoute;
-    m_container.Close();
     m_handle = MwmSet::MwmHandle();
+    return;
+  }
+
+  m_container.Open(localFile.GetPath(MapOptions::CarRouting));
+  if (!m_container.IsExist(ROUTING_MATRIX_FILE_TAG))
+  {
+    m_error = IRouter::ResultCode::RouteFileNotExist;
+    m_handle = MwmSet::MwmHandle();
+    m_container.Close();
     return;
   }
 

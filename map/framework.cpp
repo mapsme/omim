@@ -237,6 +237,20 @@ void Framework::StopLocationFollow()
   CallDrapeFunction(bind(&df::DrapeEngine::StopLocationFollow, _1));
 }
 
+void Framework::Migrate()
+{
+  m_searchEngine.reset();
+  m_infoGetter.reset();
+  Storage().DeleteAllLocalMaps();
+  DeregisterAllMaps();
+  m_model.Clear();
+  Storage().Migrate();
+  InitCountryInfoGetter();
+  InitSearchEngine();
+  RegisterAllMaps();
+  InvalidateRect(MercatorBounds::FullRect());
+}
+
 Framework::Framework()
   : m_bmManager(*this)
   , m_fixedSearchResults(0)
@@ -515,6 +529,18 @@ void Framework::RegisterAllMaps()
 
   m_storage.RegisterAllLocalMaps();
 
+  // Fast migrate in case there are no downloaded MWM.
+  if (platform::migrate::NeedMigrate())
+  {
+    bool disableFastMigrate = false;
+    Settings::Get("DisableFastMigrate", disableFastMigrate);
+    if (!disableFastMigrate && !m_storage.HaveDownloadedCountries())
+    {
+      Migrate();
+      return;
+    }
+  }
+  
   int minFormat = numeric_limits<int>::max();
 
   vector<shared_ptr<LocalCountryFile>> maps;
@@ -884,6 +910,16 @@ void Framework::SetDownloadCountryListener(TDownloadCountryListener const & list
   m_downloadCountryListener = listener;
 }
 
+void Framework::SetDownloadCancelListener(TDownloadCancelListener const & listener)
+{
+  m_downloadCancelListener = listener;
+}
+
+void Framework::SetAutoDownloadListener(TAutoDownloadListener const & listener)
+{
+  m_autoDownloadListener = listener;
+}
+
 void Framework::OnDownloadMapCallback(storage::TIndex const & countryIndex)
 {
   if (m_downloadCountryListener != nullptr)
@@ -892,20 +928,23 @@ void Framework::OnDownloadMapCallback(storage::TIndex const & countryIndex)
     m_activeMaps->DownloadMap(countryIndex, MapOptions::Map);
 }
 
-void Framework::OnDownloadMapRoutingCallback(storage::TIndex const & countryIndex)
-{
-  if (m_downloadCountryListener != nullptr)
-    m_downloadCountryListener(countryIndex, static_cast<int>(MapOptions::MapWithCarRouting));
-  else
-    m_activeMaps->DownloadMap(countryIndex, MapOptions::MapWithCarRouting);
-}
-
 void Framework::OnDownloadRetryCallback(storage::TIndex const & countryIndex)
 {
   if (m_downloadCountryListener != nullptr)
-    m_downloadCountryListener(countryIndex, -1);
+    m_downloadCountryListener(countryIndex, -1 /* option for retry downloading */);
   else
     m_activeMaps->RetryDownloading(countryIndex);
+}
+
+void Framework::OnDownloadCancelCallback(storage::TIndex const & countryIndex)
+{
+  // Any cancel leads to disable auto-downloading.
+  m_autoDownloadingOn = false;
+
+  if (m_downloadCancelListener != nullptr)
+    m_downloadCancelListener(countryIndex);
+  else
+    m_activeMaps->CancelDownloading(countryIndex);
 }
 
 void Framework::OnUpdateCountryIndex(storage::TIndex const & currentIndex, m2::PointF const & pt)
@@ -918,7 +957,16 @@ void Framework::OnUpdateCountryIndex(storage::TIndex const & currentIndex, m2::P
   }
 
   if (currentIndex != newCountryIndex)
+  {
+    // Enable auto-downloading after return from the world map.
+    if (!currentIndex.IsValid())
+      m_autoDownloadingOn = true;
+
+    if (m_autoDownloadingOn && m_autoDownloadListener != nullptr)
+      m_autoDownloadListener(newCountryIndex);
+
     UpdateCountryInfo(newCountryIndex, true /* isCurrentCountry */);
+  }
 }
 
 void Framework::UpdateCountryInfo(storage::TIndex const & countryIndex, bool isCurrentCountry)
@@ -940,7 +988,6 @@ void Framework::UpdateCountryInfo(storage::TIndex const & countryIndex, bool isC
   countryInfo.m_countryIndex = countryIndex;
   countryInfo.m_currentCountryName = m_activeMaps->GetFormatedCountryName(countryIndex);
   countryInfo.m_mapSize = m_activeMaps->GetRemoteCountrySizes(countryIndex).first;
-  countryInfo.m_routingSize = m_activeMaps->GetRemoteCountrySizes(countryIndex).second;
   countryInfo.m_countryStatus = m_activeMaps->GetCountryStatus(countryIndex);
   if (countryInfo.m_countryStatus == storage::TStatus::EDownloading)
   {
@@ -1049,8 +1096,16 @@ void Framework::InitCountryInfoGetter()
   Platform const & platform = GetPlatform();
   try
   {
-    m_infoGetter.reset(new storage::CountryInfoReader(platform.GetReader(PACKED_POLYGONS_FILE),
-                                                      platform.GetReader(COUNTRIES_FILE)));
+    if (platform::migrate::NeedMigrate())
+    {
+      m_infoGetter.reset(new storage::CountryInfoReader(platform.GetReader(PACKED_POLYGONS_FILE),
+                                                        platform.GetReader(COUNTRIES_FILE)));
+    }
+    else
+    {
+      m_infoGetter.reset(new storage::CountryInfoReader(platform.GetReader(PACKED_POLYGONS_MIGRATE_FILE),
+                                                        platform.GetReader(COUNTRIES_MIGRATE_FILE)));
+    }
   }
   catch (RootException const & e)
   {
@@ -1350,14 +1405,14 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
     GetPlatform().RunOnGuiThread(bind(&Framework::OnDownloadMapCallback, this, countryIndex));
   };
 
-  TDownloadFn downloadMapWithoutRoutingFn = [this](storage::TIndex const & countryIndex)
-  {
-    GetPlatform().RunOnGuiThread(bind(&Framework::OnDownloadMapRoutingCallback, this, countryIndex));
-  };
-
   TDownloadFn downloadRetryFn = [this](storage::TIndex const & countryIndex)
   {
     GetPlatform().RunOnGuiThread(bind(&Framework::OnDownloadRetryCallback, this, countryIndex));
+  };
+
+  TDownloadFn downloadCancelFn = [this](storage::TIndex const & countryIndex)
+  {
+    GetPlatform().RunOnGuiThread(bind(&Framework::OnDownloadCancelCallback, this, countryIndex));
   };
 
   bool allow3d;
@@ -1369,8 +1424,7 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
                             df::Viewport(0, 0, params.m_surfaceWidth, params.m_surfaceHeight),
                             df::MapDataProvider(idReadFn, featureReadFn, updateCountryIndex,
                                                 isCountryLoadedFn, isCountryLoadedByNameFn,
-                                                downloadMapFn, downloadMapWithoutRoutingFn,
-                                                downloadRetryFn),
+                                                downloadMapFn, downloadRetryFn, downloadCancelFn),
                             params.m_visualScale,
                             move(params.m_widgetsInitInfo),
                             make_pair(params.m_initialMyPositionState, params.m_hasMyPositionState),
