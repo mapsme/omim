@@ -1384,6 +1384,133 @@
 
 "editor_correct_mistake_message" = "잘못 입력했습니다. 수정하거나 기본 모드로 전환하세요.";
 
-"migrate_title" = "Important!";
+"editor_closed_now" = "지금 닫힘";
 
-"migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";
+"editor_daily" = "일별";
+
+"editor_twentyfour_seven" = "24/7";
+
+"editor_day_off_today" = "오늘 휴가";
+
+"editor_day_off" = "휴가";
+
+"editor_today" = "오늘";
+
+"editor_sunrise_to_sunset" = "일출에서 일몰로";
+
+"editor_add_business_hours" = "영업일 추가";
+
+"editor_edit_business_hours" = "영업일 편집";
+
+"editor_profile" = "프로필";
+
+"editor_no_osm_acc" = "OpenStreetMap에서 계정이 없습니까?";
+
+"editor_register" = "등록";
+
+"editor_not_now" = "지금 아님";
+
+"editor_login" = "로그인";
+
+"editor_login_with" = "다음으로 로그인";
+
+"editor_password" = "암호";
+
+"editor_forgot_password" = "암호를 잊으 셨나요?";
+
+"editor_restore_password" = "암호 복원";
+
+"editor_enter_reg_email" = "등록시 사용한 이메일 주소를 입력하면 암호를 갱신하도록 링크를 전송할 것입니다.";
+
+"editor_email" = "이메일";
+
+"editor_reset_password" = "비밀번호 재 설정";
+
+"editor_registration" = "등록";
+
+"editor_reg_w_google" = "Google로 등록";
+
+"editor_reg_with_facebook" = "Facebook으로 등록";
+
+"editor_username" = "사용자 이름";
+
+"editor_register" = "등록";
+
+"editor_reg_in_browser" = "브라우저에서 등록";
+
+"editor_terms_of_service" = "서비스 약관";
+
+"editor_osm_account" = "OSM 계정";
+
+"editor_resend" = "다시 전송";
+
+"editor_logout" = "로그 아웃";
+
+"editor_edit_business_hours" = "업무 시간 편집";
+
+"editor_whats_new_message" = "로그인하고 지도 상의 개체 정보를 편집하면 다른 수백만 명의 사용자가 사용할 수 있도록 하겠습니다. 함께 더 나은 세상으로 만들어 봅시다.";
+
+"editor_not_sent" = "전송되지 않음";
+
+"editor_latest_update" = "최신 업데이트";
+
+/* The number of changes made. As in "changes: 123". */
+"editor_changes" = "가지 변경";
+
+"editor_first_edit" = "로그인하고 전 세계 수백만 사람들을 위해 변화를 더하십시오!";
+
+"editor_login_to_save_changes" = "로그인하고 우리는 전세계 수백만 명의 변경을 추가합니다.";
+
+"editor_thank_you" = "고맙습니다.";
+
+"editor_login_with_openstreetmap" = "www.openstreetmap.org에 로그인";
+
+"editor_edit_place" = "장소 편집";
+
+"editor_place_name" = "지명";
+
+"editor_place_name_caption" = "이 장소의 기호와 같이 이름 입력";
+
+"editor_multilanguage" = "여러 언어";
+
+"editor_show" = "표시";
+
+"editor_hide" = "숨기기";
+
+"editor_add_language" = "언어 추가";
+
+"editor_address" = "주소";
+
+"editor_street" = "거리";
+
+"editor_building" = "건물";
+
+"editor_details" = "세부 정보";
+
+"editor_add_street" = "거리 추가";
+
+"editor_choose_lang" = "언어 선택";
+
+"editor_choose_street" = "거리 선택";
+
+"editor_type" = "유형";
+
+"editor_index" = "색인";
+
+"mwm_download_all" = "모두 다운로드";
+
+"mwm_split_mwms_message" = "지도를 여러 부분으로 나눴습니다. 이제는 전체 국가가 아닌 개별 지역을 다운로드할 수 있습니다. 새 지도를 다운로드하기 전에 오래된 지도를 제거하십시오.";
+
+"mwm_youve_been_asking" = "여러분이 요청한 것을 저희가 해냈습니다";
+
+"mwm_migrate_title" = "중요!";
+
+"migrate_subtitle" = "새로운 데이터 형태를 지원하기 위해, 우리는 설치된 지도를 삭제해야 합니다. 그런 다음, 다시 지도를 다운로드해야 합니다.";
+
+"mwm_download_all" = "모두 다운로드";
+
+"mwm_delete_all" = "모두 삭제";
+
+"mwm_email_or_username" = "이메일 또는 사용자 이름";
+
+"mwm_autodownload" = "자동 다운로드";

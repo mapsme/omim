@@ -369,7 +369,7 @@
 "share_bookmarks_email_subject" = "Paylaşılan MAPS.ME yer imleri";
 
 /* Email text when sharing bookmarks category */
-"share_bookmarks_email_body" = "Selamlar,\n\nEkte MAPS.ME çevrimdışı haritalarından yer imlerim var. Lütfen MAPS.ME sende yüklü ise aç. Değilse  iOS veya Android cihazın için aşağıdaki bağlantıdan uygulamayı indir: http://maps.me/get?kmz.\n\nMAPS.ME ile iyi seyahatler!";
+"share_bookmarks_email_body" = "Selamlar,\n\nEkte MAPS.ME çevrimdışı haritalarından yer imlerim var. Lütfen MAPS.ME sende yüklü ise aç. Değilse iOS veya Android cihazın için aşağıdaki bağlantıdan uygulamayı indir: http://maps.me/get?kmz.\n\nMAPS.ME ile iyi seyahatler!";
 
 /* message title of loading file */
 "load_kmz_title" = "Yer İmleri Yükleniyor";
@@ -1384,6 +1384,133 @@
 
 "editor_correct_mistake_message" = "Bir düzenleme hatası yaptınız. Lütfen düzeltin veya basit moda geçin.";
 
-"migrate_title" = "Important!";
+"editor_closed_now" = "Şu anda kapalı";
 
-"migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";
+"editor_daily" = "Günlük";
+
+"editor_twentyfour_seven" = "24/7";
+
+"editor_day_off_today" = "Bugün izin günü";
+
+"editor_day_off" = "İzin günü";
+
+"editor_today" = "Bugün";
+
+"editor_sunrise_to_sunset" = "Güneşin doğuşundan batışına kadar";
+
+"editor_add_business_hours" = "İş saatlerini ekle";
+
+"editor_edit_business_hours" = "İş saatlerini düzenle";
+
+"editor_profile" = "Profil";
+
+"editor_no_osm_acc" = "OpenStreetMap' hesabın yok mu?";
+
+"editor_register" = "Kaydol";
+
+"editor_not_now" = "Şimdi değil";
+
+"editor_login" = "Oturum aç";
+
+"editor_login_with" = "Şununla oturum aç:";
+
+"editor_password" = "Şifre";
+
+"editor_forgot_password" = "Şifreni mi unuttun?";
+
+"editor_restore_password" = "Şifreyi yenile";
+
+"editor_enter_reg_email" = "Kayıt sırasında kullandığınız e-posta adresini girin ve şifrenizi yenileyeceğiniz bağlantıyı gönderelim";
+
+"editor_email" = "E-posta";
+
+"editor_reset_password" = "Parolayı sıfırla";
+
+"editor_registration" = "Kayıt";
+
+"editor_reg_w_google" = "Google ile Kaydol";
+
+"editor_reg_with_facebook" = "Facebook ile Kaydol";
+
+"editor_username" = "Kullanıcı Adı";
+
+"editor_register" = "Kaydol";
+
+"editor_reg_in_browser" = "Tarayıcıda kaydol";
+
+"editor_terms_of_service" = "Hizmet şartları";
+
+"editor_osm_account" = "OSM Hesabı";
+
+"editor_resend" = "Tekrar gönder";
+
+"editor_logout" = "Oturumu kapat";
+
+"editor_edit_business_hours" = "Çalışma saatlerini düzenle";
+
+"editor_whats_new_message" = "Oturum aç ve haritada nesne bilgilerini düzenleyip diğer milyonlarca kullanıcıya aç. Birlikte dünyayı daha iyi bir yer haline getirelim.";
+
+"editor_not_sent" = "Gönderilmedi";
+
+"editor_latest_update" = "En yeni güncelleme";
+
+/* The number of changes made. As in "changes: 123". */
+"editor_changes" = "değişiklik";
+
+"editor_first_edit" = "İlk nesneni düzenledin!";
+
+"editor_login_to_save_changes" = "Oturum aç ve dünya çapında milyonlarca kişi için değişiklikleri ekleyelim.";
+
+"editor_thank_you" = "Teşekkür ederiz";
+
+"editor_login_with_openstreetmap" = "www.openstreetmap.org adresinden oturum aç";
+
+"editor_edit_place" = "Yeri düzenle";
+
+"editor_place_name" = "Yer ismi";
+
+"editor_place_name_caption" = "Yerin adını tabelada olduğu şekliyle girin";
+
+"editor_multilanguage" = "Çok dilli";
+
+"editor_show" = "Göster";
+
+"editor_hide" = "Gizle";
+
+"editor_add_language" = "Bir dil ekle";
+
+"editor_address" = "Adres";
+
+"editor_street" = "Sokak";
+
+"editor_building" = "Bina";
+
+"editor_details" = "Detaylar";
+
+"editor_add_street" = "Bir sokak ekle";
+
+"editor_choose_lang" = "Bir dil seç";
+
+"editor_choose_street" = "Bir sokak seç";
+
+"editor_type" = "Tür";
+
+"editor_index" = "İşaret";
+
+"mwm_download_all" = "Tümünü indir";
+
+"mwm_split_mwms_message" = "Haritaları parçalara ayırdık. Artık tüm ülke yerine belirli bölgeleri indirebilirsiniz. Yeni haritaları indirmeden önce lütfen eski haritaları kaldırın.";
+
+"mwm_youve_been_asking" = "Siz istediniz biz yaptık";
+
+"mwm_migrate_title" = "Önemli!";
+
+"migrate_subtitle" = "Yeni veri biçimini desteklemek için kurulu haritaları silmemiz gerekmektedir. Ardından haritaları tekrar indirmelisiniz.";
+
+"mwm_download_all" = "Tümünü indir";
+
+"mwm_delete_all" = "Tümünü sil";
+
+"mwm_email_or_username" = "E-posta veya kullanıcı adı";
+
+"mwm_autodownload" = "Otomatik indir";

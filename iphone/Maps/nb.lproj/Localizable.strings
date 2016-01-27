@@ -1384,6 +1384,133 @@
 
 "editor_correct_mistake_message" = "Du har gjort en redigeringsfeil. Rett den eller bytt til enkel modus.";
 
-"migrate_title" = "Important!";
+"editor_closed_now" = "Lukket nå";
 
-"migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";
+"editor_daily" = "Daglig";
+
+"editor_twentyfour_seven" = "24/7";
+
+"editor_day_off_today" = "Fridag i dag";
+
+"editor_day_off" = "Fridag";
+
+"editor_today" = "I dag";
+
+"editor_sunrise_to_sunset" = "Fra morgen til kveld";
+
+"editor_add_business_hours" = "Legg til åpningstider";
+
+"editor_edit_business_hours" = "Rediger åpningstider";
+
+"editor_profile" = "Profil";
+
+"editor_no_osm_acc" = "Har du ingen konto hos OpenStreetMap?";
+
+"editor_register" = "Registrer deg";
+
+"editor_not_now" = "Ikke nå";
+
+"editor_login" = "Logg inn";
+
+"editor_login_with" = "Logg inn med";
+
+"editor_password" = "Passord";
+
+"editor_forgot_password" = "Glemt passordet?";
+
+"editor_restore_password" = "Gjenopprett passordet";
+
+"editor_enter_reg_email" = "Skriv inn e-postadressen du brukte ved registreringen, så vil vi sende deg en kobling for å fornye passordet ditt";
+
+"editor_email" = "E-post";
+
+"editor_reset_password" = "Tilbakestill passord";
+
+"editor_registration" = "Registrering";
+
+"editor_reg_w_google" = "Registrering med Google";
+
+"editor_reg_with_facebook" = "Registrering med Facebook";
+
+"editor_username" = "Brukernavn";
+
+"editor_register" = "Registrer deg";
+
+"editor_reg_in_browser" = "Registrer i nettleseren";
+
+"editor_terms_of_service" = "Vilkår for tjenesten";
+
+"editor_osm_account" = "OSM-konto";
+
+"editor_resend" = "Send på nytt";
+
+"editor_logout" = "Logg ut";
+
+"editor_edit_business_hours" = "Rediger arbeidstid";
+
+"editor_whats_new_message" = "Logg deg inn og rediger informasjonen til objektene på kartet, så vil vi gjøre den tilgjengelig for millioner av andre brukere. La oss gjøre verden bedre sammen.";
+
+"editor_not_sent" = "Ikke sendt";
+
+"editor_latest_update" = "Siste oppdatering";
+
+/* The number of changes made. As in "changes: 123". */
+"editor_changes" = "endringer";
+
+"editor_first_edit" = "Du har redigert ditt første objekt!";
+
+"editor_login_to_save_changes" = "Logg deg inn, så vil vi legge til endringene til glede for millioner av personer over hele verden.";
+
+"editor_thank_you" = "Takk skal du ha";
+
+"editor_login_with_openstreetmap" = "Logg deg inn på www.openstreetmap.org";
+
+"editor_edit_place" = "Rediger stedet";
+
+"editor_place_name" = "Stedsnavn";
+
+"editor_place_name_caption" = "Skriv inn navnet slik det står på stedets navneskilt";
+
+"editor_multilanguage" = "Flerspråklig";
+
+"editor_show" = "Vis";
+
+"editor_hide" = "Skjul";
+
+"editor_add_language" = "Legg til et språk";
+
+"editor_address" = "Adresse";
+
+"editor_street" = "Gate";
+
+"editor_building" = "Bygning";
+
+"editor_details" = "Detaljer";
+
+"editor_add_street" = "Legg til en gate";
+
+"editor_choose_lang" = "Velg et språk";
+
+"editor_choose_street" = "Velg en gate";
+
+"editor_type" = "Type";
+
+"editor_index" = "Indeks";
+
+"mwm_download_all" = "Last ned alle";
+
+"mwm_split_mwms_message" = "Vi har delt opp kartene i separate deler. Nå kan du laste ned separate regioner istedenfor hele land. Sørg for at du fjerner de gamle kartene før du begynner å laste ned nye.";
+
+"mwm_youve_been_asking" = "Dere har bedt om det og vi har fått det til";
+
+"mwm_migrate_title" = "Viktig!";
+
+"migrate_subtitle" = "For å kunne støtte nye dataformater må vi slette installerte kart. Du bør så laste ned kartene igjen.";
+
+"mwm_download_all" = "Last ned alle";
+
+"mwm_delete_all" = "Slett alle";
+
+"mwm_email_or_username" = "E-postadresse eller brukernavn";
+
+"mwm_autodownload" = "Automatisk nedlasting";

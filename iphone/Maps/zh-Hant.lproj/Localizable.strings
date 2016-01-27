@@ -1384,6 +1384,133 @@
 
 "editor_correct_mistake_message" = "編輯時出錯。請修正或切換到簡易模式。";
 
-"migrate_title" = "Important!";
+"editor_closed_now" = "現在關門";
 
-"migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";
+"editor_daily" = "每天";
+
+"editor_twentyfour_seven" = "全天候24/7";
+
+"editor_day_off_today" = "今天休息日";
+
+"editor_day_off" = "休息日";
+
+"editor_today" = "今天";
+
+"editor_sunrise_to_sunset" = "從日出到日落";
+
+"editor_add_business_hours" = "添加工作時間";
+
+"editor_edit_business_hours" = "編輯工作時間";
+
+"editor_profile" = "資料";
+
+"editor_no_osm_acc" = "OpenStreetMap上沒有賬戶嗎？";
+
+"editor_register" = "註冊";
+
+"editor_not_now" = "現在不要";
+
+"editor_login" = "登錄";
+
+"editor_login_with" = "登錄用";
+
+"editor_password" = "密碼";
+
+"editor_forgot_password" = "忘記密碼";
+
+"editor_restore_password" = "恢復密碼";
+
+"editor_enter_reg_email" = "輸入您在註冊時所用的郵箱地址，我們會給您發送鏈接更新密碼";
+
+"editor_email" = "郵箱";
+
+"editor_reset_password" = "重置密碼";
+
+"editor_registration" = "註冊";
+
+"editor_reg_w_google" = "用Google註冊";
+
+"editor_reg_with_facebook" = "用Facebook註冊";
+
+"editor_username" = "用戶名";
+
+"editor_register" = "註冊";
+
+"editor_reg_in_browser" = "在瀏覽器註冊";
+
+"editor_terms_of_service" = "服務條款";
+
+"editor_osm_account" = "OSM賬戶";
+
+"editor_resend" = "重新發送";
+
+"editor_logout" = "登出";
+
+"editor_edit_business_hours" = "編輯工作時";
+
+"editor_whats_new_message" = "登錄並編輯地圖上的物品信息，我們就會讓數百萬其他用戶看到。";
+
+"editor_not_sent" = "讓我們共同把世界變得更美好。";
+
+"editor_latest_update" = "未發送";
+
+/* The number of changes made. As in "changes: 123". */
+"editor_changes" = "次改變";
+
+"editor_first_edit" = "您已編輯您的第一件物品！";
+
+"editor_login_to_save_changes" = "登錄，我們就能為全世界數百萬人添加更改。";
+
+"editor_thank_you" = "謝謝您";
+
+"editor_login_with_openstreetmap" = "登錄到www.openstreetmap.org";
+
+"editor_edit_place" = "編輯地點";
+
+"editor_place_name" = "地點名稱";
+
+"editor_place_name_caption" = "依照地點標牌輸入名稱";
+
+"editor_multilanguage" = "多語言";
+
+"editor_show" = "顯示";
+
+"editor_hide" = "隱藏";
+
+"editor_add_language" = "添加語言";
+
+"editor_address" = "地址";
+
+"editor_street" = "街道";
+
+"editor_building" = "樓房";
+
+"editor_details" = "詳細資訊";
+
+"editor_add_street" = "添加街道";
+
+"editor_choose_lang" = "選擇語言";
+
+"editor_choose_street" = "選擇街道";
+
+"editor_type" = "類型";
+
+"editor_index" = "索引";
+
+"mwm_download_all" = "全部下載。";
+
+"mwm_split_mwms_message" = "我們已將地圖分為若干部分。現在，您可下載各個地區，而非整個國家的地圖。您在開始下載新地圖前，請刪除老地圖。";
+
+"mwm_youve_been_asking" = "您一直在尋求，而我們已經完成";
+
+"mwm_migrate_title" = "重要！";
+
+"migrate_subtitle" = "為了支持新數據格式，我們必須刪除已安裝的地圖。然後您應該重新下載地圖。";
+
+"mwm_download_all" = "全部下載。";
+
+"mwm_delete_all" = "刪除全部";
+
+"mwm_email_or_username" = "郵箱或用戶名";
+
+"mwm_autodownload" = "自動下載";

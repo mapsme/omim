@@ -271,7 +271,7 @@
 "set" = "Set";
 
 /* Text hint in Bookmarks dialog when no any bookmarks are added */
-"bookmarks_usage_hint" = "Belum ada yang ditandai.\nSentuh lokasi apa pun pada peta untuk menandai.\nPenanda dari sumber lainnya juga dapat di impor dan ditampilkan pada MAPS.ME. Buka berkas KML/KMZ  tersebut dengan penanda yang disimpan dari surel, Dropbox atau tautan jaringan.";
+"bookmarks_usage_hint" = "Belum ada yang ditandai.\nSentuh lokasi apa pun pada peta untuk menandai.\nPenanda dari sumber lainnya juga dapat di impor dan ditampilkan pada MAPS.ME. Buka berkas KML/KMZ tersebut dengan penanda yang disimpan dari surel, Dropbox atau tautan jaringan.";
 
 /* Text hint in Bookmarks dialog when at least one bookmark is added */
 "bookmarks_usage_hint_import_only" = "Penanda dari sumber lainnya dapat diimpor dan ditampilkan pada MAPS.ME. Buka berkas KML/KMZ tersebut dengan penanda yang disimpan dari surel, Dropbox atau tautan jaringan.";
@@ -1384,6 +1384,133 @@
 
 "editor_correct_mistake_message" = "Pengeditan salah. Koreksi atau ubah ke mode sederhana.";
 
-"migrate_title" = "Important!";
+"editor_closed_now" = "Sekarang Tutup";
 
-"migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";
+"editor_daily" = "Setiap Hari";
+
+"editor_twentyfour_seven" = "24 jam sehari, 7 jam seminggu";
+
+"editor_day_off_today" = "Hari ini libur";
+
+"editor_day_off" = "Libur";
+
+"editor_today" = "Hari ini";
+
+"editor_sunrise_to_sunset" = "Dari matahari terbit sampai matahari terbenam";
+
+"editor_add_business_hours" = "Tambah jam kerja";
+
+"editor_edit_business_hours" = "Sunting jam kerja";
+
+"editor_profile" = "Profil";
+
+"editor_no_osm_acc" = "Tidak ada akun di OpenStreetMap?";
+
+"editor_register" = "Mendaftar";
+
+"editor_not_now" = "Jangan sekarang";
+
+"editor_login" = "Masuk";
+
+"editor_login_with" = "Masuk dengan";
+
+"editor_password" = "Kata sandi";
+
+"editor_forgot_password" = "Lupa kata sandi?";
+
+"editor_restore_password" = "Pulihkan kata sandi";
+
+"editor_enter_reg_email" = "Masukkan alamat surek yang Anda gunakan pada saat pendaftaran dan kami akan mengirim tautan untuk memperbarui kata sandi Anda";
+
+"editor_email" = "Surel";
+
+"editor_reset_password" = "Atur ulang kata sandi";
+
+"editor_registration" = "Pendaftaran";
+
+"editor_reg_w_google" = "Pendaftaran dengan Google";
+
+"editor_reg_with_facebook" = "Pendaftaran dengan Facebook";
+
+"editor_username" = "Nama pengguna";
+
+"editor_register" = "Mendaftar";
+
+"editor_reg_in_browser" = "Mendaftar di peramban";
+
+"editor_terms_of_service" = "Syarat layanan";
+
+"editor_osm_account" = "Akun OSM";
+
+"editor_resend" = "Kirim ulang";
+
+"editor_logout" = "Keluar";
+
+"editor_edit_business_hours" = "Sunting jam kerja";
+
+"editor_whats_new_message" = "Masuk dan sunting informasi objek pada peta dan kami akan membuatnya tersedia bagi jutaan pengguna lain. Mari kita menjadikan dunia lebih baik bersama-sama.";
+
+"editor_not_sent" = "Tidak terkirim";
+
+"editor_latest_update" = "Pembaruan terkini";
+
+/* The number of changes made. As in "changes: 123". */
+"editor_changes" = "perubahan";
+
+"editor_first_edit" = "Anda menyunting objek pertama Anda!";
+
+"editor_login_to_save_changes" = "Masuk dan kita akan menambah perubahan bagi jutaan orang di seluruh dunia.";
+
+"editor_thank_you" = "Terima kasih";
+
+"editor_login_with_openstreetmap" = "Masuk di www.openstreetmap.org";
+
+"editor_edit_place" = "Sunting tempat";
+
+"editor_place_name" = "Nama tempat";
+
+"editor_place_name_caption" = "Masukkan nama seperti pada tanda tempat";
+
+"editor_multilanguage" = "Multibahasa";
+
+"editor_show" = "Tampilkan";
+
+"editor_hide" = "Sembunyikan";
+
+"editor_add_language" = "Tambahkan bahasa";
+
+"editor_address" = "Alamat";
+
+"editor_street" = "Jalan";
+
+"editor_building" = "Bangunan";
+
+"editor_details" = "Detail";
+
+"editor_add_street" = "Tambahkan jalan";
+
+"editor_choose_lang" = "Pilih bahasa";
+
+"editor_choose_street" = "Pilih jalan";
+
+"editor_type" = "Jenis";
+
+"editor_index" = "Indeks";
+
+"mwm_download_all" = "Unduh semua";
+
+"mwm_split_mwms_message" = "Kami telah membagi peta menjadi beberapa bagian. Sekarang Anda dapat mengunduh wilayah-wilayah yang terpisah, bukan seluruh negara. Sebelum Anda mulai mengunduh peta-peta baru, harap menghapus peta-peta yang lama.";
+
+"mwm_youve_been_asking" = "Anda memintanya dan kami telah malakukannya";
+
+"mwm_migrate_title" = "Penting!";
+
+"migrate_subtitle" = "Untuk mendukung format data yang baru, kami harus menghapus peta-peta yang sudah terpasang. Oleh karena itu, Anda perlu mengunduh peta kembali.";
+
+"mwm_download_all" = "Unduh semua";
+
+"mwm_delete_all" = "Hapus semua";
+
+"mwm_email_or_username" = "Surel atau nama pengguna";
+
+"mwm_autodownload" = "Unduhan otomatis";

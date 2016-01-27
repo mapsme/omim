@@ -1384,6 +1384,133 @@
 
 "editor_correct_mistake_message" = "Ați efectuat o eroare de editare. Corectați eroarea sau treceți în modul Simplu.";
 
-"migrate_title" = "Important!";
+"editor_closed_now" = "Închis acum";
 
-"migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";
+"editor_daily" = "Zilnic";
+
+"editor_twentyfour_seven" = "24/7";
+
+"editor_day_off_today" = "Zi liberă azi";
+
+"editor_day_off" = "Zi liberă";
+
+"editor_today" = "Azi";
+
+"editor_sunrise_to_sunset" = "De la răsărit până la apus";
+
+"editor_add_business_hours" = "Adăugare ore de funcționare";
+
+"editor_edit_business_hours" = "Editare ore de funcționare";
+
+"editor_profile" = "Profil";
+
+"editor_no_osm_acc" = "Nu aveți un cont în OpenStreetMap?";
+
+"editor_register" = "Înregistrați-vă";
+
+"editor_not_now" = "Nu acum";
+
+"editor_login" = "Autentificare";
+
+"editor_login_with" = "Autentificare cu";
+
+"editor_password" = "Parolă";
+
+"editor_forgot_password" = "Ați uitat parola?";
+
+"editor_restore_password" = "Recuperare parolă";
+
+"editor_enter_reg_email" = "Introduceți adresa de e-mail pe care ați utilizat-o în momentul înregistrării, iar noi vă vom trimite link-ul pentru a vă reînnoi parola";
+
+"editor_email" = "Adresă de e-mail";
+
+"editor_reset_password" = "Resetare parolă";
+
+"editor_registration" = "Înregistrare";
+
+"editor_reg_w_google" = "Înregistrare cu Google";
+
+"editor_reg_with_facebook" = "Înregistrare cu Facebook";
+
+"editor_username" = "Nume de utilizator";
+
+"editor_register" = "Înregistrați-vă";
+
+"editor_reg_in_browser" = "Înregistrați-vă în browser";
+
+"editor_terms_of_service" = "Termenii de utilizare";
+
+"editor_osm_account" = "Cont OSM";
+
+"editor_resend" = "Retrimitere";
+
+"editor_logout" = "Ieșire";
+
+"editor_edit_business_hours" = "Editare ore de funcționare";
+
+"editor_whats_new_message" = "Autentificați-vă și editați informația despre obiectele de pe hartă, iar noi le vom face disponibile pentru milioane de alți utilizatori. Să facem împreună lumea mai bună.";
+
+"editor_not_sent" = "Nu a fost trimis";
+
+"editor_latest_update" = "Cea mai recentă actualizare";
+
+/* The number of changes made. As in "changes: 123". */
+"editor_changes" = "modificări";
+
+"editor_first_edit" = "Ați editat primul dvs. obiect!";
+
+"editor_login_to_save_changes" = "Autentificați-vă, iar noi vom adăuga modificările pentru milioane de oameni din întreaga lume.";
+
+"editor_thank_you" = "Vă mulțumim";
+
+"editor_login_with_openstreetmap" = "Autentificați-vă pe www.openstreetmap.org";
+
+"editor_edit_place" = "Editați loc";
+
+"editor_place_name" = "Denumire loc";
+
+"editor_place_name_caption" = "Introduceți denumirea astfel cum apare aceasta pe semnul locului";
+
+"editor_multilanguage" = "Multi-lingvistic";
+
+"editor_show" = "Afișează";
+
+"editor_hide" = "Ascunde";
+
+"editor_add_language" = "Adăugare limbă";
+
+"editor_address" = "Adresă";
+
+"editor_street" = "Stradă";
+
+"editor_building" = "Clădire";
+
+"editor_details" = "Detalii";
+
+"editor_add_street" = "Adăugare stradă";
+
+"editor_choose_lang" = "Alegeți o limbă";
+
+"editor_choose_street" = "Alegeți o stradă";
+
+"editor_type" = "Tip";
+
+"editor_index" = "Index";
+
+"mwm_download_all" = "Descarcă toate";
+
+"mwm_split_mwms_message" = "Am împărțit hărțile în mai multe secțiuni. Acum, puteți descărca și regiuni separate, nu doar țara întreagă. Înainte de a începe să descărcați hărți noi, vă rugăm să le ștergeți pe cele vechi.";
+
+"mwm_youve_been_asking" = "Ne-ați cerut, iar noi am făcut";
+
+"mwm_migrate_title" = "Important!";
+
+"migrate_subtitle" = "Pentru a fi suportat noul format de date, trebuie să ștergeți hărțile instalate. Apoi trebuie să descărcați hărțile încă o dată.";
+
+"mwm_download_all" = "Descarcă toate";
+
+"mwm_delete_all" = "Ștergere toate";
+
+"mwm_email_or_username" = "Adresa de e-mail sau numele de utilizator";
+
+"mwm_autodownload" = "Descărcare automată";
