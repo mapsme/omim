@@ -898,4 +898,7 @@
 	<string name="editor_choose_street">通りを選択</string>
 	<string name="editor_type">タイプ</string>
 	<string name="editor_index">索引</string>
+	<string name="mwm_download_all">全てをダウンロード</string>
+	<string name="mwm_split_mwms_message">マップを分割し、国全体でなく個別の地域をダウンロードできるようにしました。新しいマップをダウンロードする前に、古いものを削除してください。</string>
+	<string name="mwm_youve_been_asking">皆様のご要望にお応えして、実現を果たしました</string>
 </resources>

@@ -904,4 +904,7 @@
 	<string name="editor_choose_street">Вибрати вулицю</string>
 	<string name="editor_type">Тип</string>
 	<string name="editor_index">Індекс</string>
+	<string name="mwm_download_all">Стягнути всі</string>
+	<string name="mwm_split_mwms_message">Ми поділили карти на частини. Тепер ви можете стягувати окремі регіони, а не країну цілком. Перед тим як розпочати стягнення нових мап, видаліть старі мапи.</string>
+	<string name="mwm_youve_been_asking">Ви просили і ми це зробили</string>
 </resources>

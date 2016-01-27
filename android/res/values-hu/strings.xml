@@ -902,4 +902,7 @@
 	<string name="editor_choose_street">Utca kiválasztása</string>
 	<string name="editor_type">Típus</string>
 	<string name="editor_index">Tartalommutató</string>
+	<string name="mwm_download_all">Összes letöltése</string>
+	<string name="mwm_split_mwms_message">Felosztottuk részekre a térképeket. Mostantól az egyes régiókat is letöltheted, nem csak az egész országot. Az új térképek letöltése előtt kérjük, távolítsd el a régieket.</string>
+	<string name="mwm_youve_been_asking">Te kérted, mi elkészítettük</string>
 </resources>

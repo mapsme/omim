@@ -908,4 +908,7 @@
 	<string name="editor_choose_street">Zvolit ulici</string>
 	<string name="editor_type">Typ</string>
 	<string name="editor_index">Obsah</string>
+	<string name="mwm_download_all">Stáhnout vše</string>
+	<string name="mwm_split_mwms_message">Rozdělili jsme mapy na části. Nyní si můžete stáhnout jednotlivé regiony namísto celé země. Než začnete stahovat nové mapy, prosím, odstraňte ty staré.</string>
+	<string name="mwm_youve_been_asking">Říkali jste si o to, a my to udělali</string>
 </resources>

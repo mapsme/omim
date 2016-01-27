@@ -891,4 +891,7 @@
 	<string name="editor_choose_street">거리 선택</string>
 	<string name="editor_type">유형</string>
 	<string name="editor_index">색인</string>
+	<string name="mwm_download_all">모두 다운로드</string>
+	<string name="mwm_split_mwms_message">지도를 여러 부분으로 나눴습니다. 이제는 전체 국가가 아닌 개별 지역을 다운로드할 수 있습니다. 새 지도를 다운로드하기 전에 오래된 지도를 제거하십시오.</string>
+	<string name="mwm_youve_been_asking">여러분이 요청한 것을 저희가 해냈습니다</string>
 </resources>

@@ -903,4 +903,7 @@
 	<string name="editor_choose_street">Välj en gata</string>
 	<string name="editor_type">Typ</string>
 	<string name="editor_index">Index</string>
+	<string name="mwm_download_all">Ladda ner alla</string>
+	<string name="mwm_split_mwms_message">Vi har delat in kartor i delar. Nu kan du ladda ner separata regioner, inte hela landet. Innan du börjar ladda ner nya kartor, ta bort de gamla.</string>
+	<string name="mwm_youve_been_asking">Du har bett om det och vi har gjort det</string>
 </resources>

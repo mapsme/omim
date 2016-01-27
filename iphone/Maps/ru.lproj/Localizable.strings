@@ -1498,6 +1498,12 @@
 
 "editor_index" = "Индекс";
 
+"mwm_download_all" = "Загрузить все";
+
+"mwm_split_mwms_message" = "Мы разрезали большие карты на части: теперь загружай только нужную область, а не всю страну целиком. Прежде чем начать загружать маленькие карты, удалите все старые.";
+
+"mwm_youve_been_asking" = "Вы долго просили — мы наконец сделали";
+
 "migrate_title" = "Important!";
 
 "migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";

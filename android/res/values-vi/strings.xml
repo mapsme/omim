@@ -901,4 +901,7 @@
 	<string name="editor_choose_street">Đã chọn con đường</string>
 	<string name="editor_type">Kiểu</string>
 	<string name="editor_index">Mục lục</string>
+	<string name="mwm_download_all">Tải về tất cả</string>
+	<string name="mwm_split_mwms_message">Chúng tôi đã chia bản đồ thành nhiều phần. Bây giờ bạn có thể tải về các vùng riêng biệt, không phải là toàn bộ quốc gia. Trước khi bạn bắt đầu tải những bản đồ mới, hãy loại bỏ những cái cũ.</string>
+	<string name="mwm_youve_been_asking">Bạn đã yêu cầu điều đó và chúng tôi đã thực hiện nó</string>
 </resources>

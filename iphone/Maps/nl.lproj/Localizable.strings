@@ -1498,6 +1498,12 @@
 
 "editor_index" = "Index";
 
+"mwm_download_all" = "Alles downloaden";
+
+"mwm_split_mwms_message" = "We hebben kaarten in delen verdeeld. Nu kunt u afzonderlijke regio's downloaden in plaats van het hele land. Verwijder eerst de oude kaarten voordat uw nieuwe gaat downloaden.";
+
+"mwm_youve_been_asking" = "Op veler verzoek hebben we het voor elkaar gekregen";
+
 "migrate_title" = "Important!";
 
 "migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";

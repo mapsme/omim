@@ -1498,6 +1498,12 @@
 
 "editor_index" = "Indice";
 
+"mwm_download_all" = "Scarica tutto";
+
+"mwm_split_mwms_message" = "Abbiamo diviso le mappe in parti. Ora puoi scaricare le regioni separate, non l'intero paese. Prima di iniziare lo scaricamento di nuove mappe, elimina quelle vecchie.";
+
+"mwm_youve_been_asking" = "Ce lo avete chiesto e noi lo abbiamo fatto";
+
 "migrate_title" = "Important!";
 
 "migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";

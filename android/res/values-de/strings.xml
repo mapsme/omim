@@ -923,4 +923,7 @@
 	<string name="editor_choose_street">Eine Straße wählen</string>
 	<string name="editor_type">Typ</string>
 	<string name="editor_index">Inhaltsangabe</string>
+	<string name="mwm_download_all">Alle herunterladen</string>
+	<string name="mwm_split_mwms_message">Wir haben die Karten aufgeteilt. Jetzt können Sie einzelne Regionen herunterladen, ohne das ganze Land herunterzuladen. Bevor Sie damit beginnen, neue Karten herunterzuladen, löschen Sie bitte Ihre alten Karten.</string>
+	<string name="mwm_youve_been_asking">Sie haben darum gebeten, und wir haben es geschafft</string>
 </resources>

@@ -1496,6 +1496,12 @@
 
 "editor_index" = "Zip Code";
 
+"mwm_download_all" = "Download all";
+
+"mwm_split_mwms_message" = "We have divided maps into parts. Now you can download separate regions, not the whole country. Before you start downloading new maps, please remove the old ones.";
+
+"mwm_youve_been_asking" = "You've been asking for it and we've done it";
+
 "migrate_title" = "Important!";
 
 "migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";

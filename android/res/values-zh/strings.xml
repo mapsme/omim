@@ -905,4 +905,7 @@
 	<string name="editor_choose_street">选择街道</string>
 	<string name="editor_type">类型</string>
 	<string name="editor_index">索引</string>
+	<string name="mwm_download_all">下载所有</string>
+	<string name="mwm_split_mwms_message">我们将地图分成了几部分。现在，您可以下载独立的区域，而不是整个国家。在开始下载新地图前，请删除旧地图。</string>
+	<string name="mwm_youve_been_asking">我们满足了您一直以来的要求</string>
 </resources>

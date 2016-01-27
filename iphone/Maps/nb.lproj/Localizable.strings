@@ -1498,6 +1498,12 @@
 
 "editor_index" = "Indeks";
 
+"mwm_download_all" = "Last ned alle";
+
+"mwm_split_mwms_message" = "Vi har delt opp kartene i separate deler. Nå kan du laste ned separate regioner istedenfor hele land. Sørg for at du fjerner de gamle kartene før du begynner å laste ned nye.";
+
+"mwm_youve_been_asking" = "Dere har bedt om det og vi har fått det til";
+
 "migrate_title" = "Important!";
 
 "migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";

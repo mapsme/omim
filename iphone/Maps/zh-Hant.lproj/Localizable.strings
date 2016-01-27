@@ -1498,6 +1498,12 @@
 
 "editor_index" = "索引";
 
+"mwm_download_all" = "全部下載。";
+
+"mwm_split_mwms_message" = "我們已將地圖分為若干部分。現在，您可下載各個地區，而非整個國家的地圖。您在開始下載新地圖前，請刪除老地圖。";
+
+"mwm_youve_been_asking" = "您一直在尋求，而我們已經完成";
+
 "migrate_title" = "Important!";
 
 "migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";

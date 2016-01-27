@@ -896,4 +896,7 @@
 	<string name="editor_choose_street">Escolher uma rua</string>
 	<string name="editor_type">Tipo</string>
 	<string name="editor_index">Índice</string>
+	<string name="mwm_download_all">Baixar tudo</string>
+	<string name="mwm_split_mwms_message">Dividimos os mapas em partes. Agora vocês podem baixar regiões separadas em vez do país inteiro. Antes de começarem a baixar novos mapas, apaguem os mapas antigos.</string>
+	<string name="mwm_youve_been_asking">Vocês têm pedido por isso e nós atendemos</string>
 </resources>

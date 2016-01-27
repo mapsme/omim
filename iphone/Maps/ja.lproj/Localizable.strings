@@ -1498,6 +1498,12 @@
 
 "editor_index" = "索引";
 
+"mwm_download_all" = "全てをダウンロード";
+
+"mwm_split_mwms_message" = "マップを分割し、国全体でなく個別の地域をダウンロードできるようにしました。新しいマップをダウンロードする前に、古いものを削除してください。";
+
+"mwm_youve_been_asking" = "皆様のご要望にお応えして、実現を果たしました";
+
 "migrate_title" = "Important!";
 
 "migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";

@@ -1498,6 +1498,12 @@
 
 "editor_index" = "Індекс";
 
+"mwm_download_all" = "Стягнути всі";
+
+"mwm_split_mwms_message" = "Ми поділили карти на частини. Тепер ви можете стягувати окремі регіони, а не країну цілком. Перед тим як розпочати стягнення нових мап, видаліть старі мапи.";
+
+"mwm_youve_been_asking" = "Ви просили і ми це зробили";
+
 "migrate_title" = "Important!";
 
 "migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";

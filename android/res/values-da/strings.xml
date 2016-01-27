@@ -901,4 +901,7 @@
 	<string name="editor_choose_street">Vælg en gade</string>
 	<string name="editor_type">Type</string>
 	<string name="editor_index">Indeks</string>
+	<string name="mwm_download_all">Download alle</string>
+	<string name="mwm_split_mwms_message">Vi har delt kort op i dele. Nu kan man downloade separate regioner, ikke hele landet. Før du begynder på at downloade nye kort, så venligst fjern de gamle.</string>
+	<string name="mwm_youve_been_asking">I har bedt om det, og vi har gjort det</string>
 </resources>

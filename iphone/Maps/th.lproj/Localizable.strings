@@ -1498,6 +1498,12 @@
 
 "editor_index" = "ดัชนี";
 
+"mwm_download_all" = "ดาวน์โหลดทั้งหมด";
+
+"mwm_split_mwms_message" = "เราได้แบ่งแผนที่ออกเป็นส่วน ๆ ตอนนี้คุณสามารถดาวน์โหลดภูมิภาคแยกต่างหากได้แล้ว ไม่ต้องโหลดทุกประเทศ ก่อนที่คุณจะเริ่มการดาวน์โหลดแผนที่ใหม่ ขอความกรุณาลบแผนที่อันเก่าออกไปก่อน";
+
+"mwm_youve_been_asking" = "คุณได้ขอมา เราจึงทำมัน";
+
 "migrate_title" = "Important!";
 
 "migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";

@@ -891,4 +891,7 @@
 	<string name="editor_choose_street">Een straat kiezen</string>
 	<string name="editor_type">Type</string>
 	<string name="editor_index">Index</string>
+	<string name="mwm_download_all">Alles downloaden</string>
+	<string name="mwm_split_mwms_message">We hebben kaarten in delen verdeeld. Nu kunt u afzonderlijke regio\&#39;s downloaden in plaats van het hele land. Verwijder eerst de oude kaarten voordat uw nieuwe gaat downloaden.</string>
+	<string name="mwm_youve_been_asking">Op veler verzoek hebben we het voor elkaar gekregen</string>
 </resources>

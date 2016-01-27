@@ -912,4 +912,7 @@
 	<string name="editor_choose_street">Choisir une rue</string>
 	<string name="editor_type">Type</string>
 	<string name="editor_index">Indice</string>
+	<string name="mwm_download_all">Tout télécharger</string>
+	<string name="mwm_split_mwms_message">Nous avons divisé la carte en plusieurs parties. Désormais, vous pouvez télécharger des régions bien précises, et non plus le pays tout entier. Avant de commencer à télécharger de nouvelles cartes , veillez à effacer les anciennes.</string>
+	<string name="mwm_youve_been_asking">Vous avez été nombreux à nous le demander et nous avons satisfait votre requête.</string>
 </resources>
