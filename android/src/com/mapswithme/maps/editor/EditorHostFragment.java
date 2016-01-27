@@ -12,7 +12,6 @@ import com.mapswithme.maps.base.BaseMwmToolbarFragment;
 import com.mapswithme.maps.base.OnBackPressListener;
 import com.mapswithme.maps.bookmarks.data.MapObject;
 import com.mapswithme.maps.bookmarks.data.Metadata;
-import com.mapswithme.maps.widget.placepage.TimetableFragment;
 import com.mapswithme.util.Utils;
 
 
@@ -43,6 +42,7 @@ public class EditorHostFragment extends BaseMwmToolbarFragment
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
   {
     super.onViewCreated(view, savedInstanceState);
+    getArguments().setClassLoader(MapObject.class.getClassLoader());
     mEditedObject = getArguments().getParcelable(EditorHostFragment.EXTRA_MAP_OBJECT);
     editMapObject();
     mToolbarController.findViewById(R.id.save).setOnClickListener(this);
@@ -64,9 +64,11 @@ public class EditorHostFragment extends BaseMwmToolbarFragment
     case STREET:
     case CUISINE:
       editMapObject();
-      return true;
+      break;
+    default:
+      Utils.navigateToParent(getActivity());
     }
-    return false;
+    return true;
   }
 
   protected void editMapObject()
@@ -96,7 +98,13 @@ public class EditorHostFragment extends BaseMwmToolbarFragment
   protected void editStreet()
   {
     mMode = Mode.STREET;
-    // TODO choose street
+    mToolbarController.setTitle("Add Street");
+    final Bundle args = new Bundle();
+    args.putString(StreetFragment.EXTRA_CURRENT_STREET, mEditedObject.getStreet());
+    final Fragment streetFragment = Fragment.instantiate(getActivity(), StreetFragment.class.getName(), args);
+    getChildFragmentManager().beginTransaction()
+                             .replace(R.id.fragment_container, streetFragment, StreetFragment.class.getName())
+                             .commit();
   }
 
   protected void editCuisine()
@@ -108,9 +116,8 @@ public class EditorHostFragment extends BaseMwmToolbarFragment
   @Override
   public void onClick(View v)
   {
-    switch (v.getId())
+    if (v.getId() == R.id.save)
     {
-    case R.id.save:
       switch (mMode)
       {
       case OPENING_HOURS:
@@ -119,7 +126,9 @@ public class EditorHostFragment extends BaseMwmToolbarFragment
         editMapObject();
         break;
       case STREET:
-        // get street
+        final String street = ((StreetFragment) getChildFragmentManager().findFragmentByTag(StreetFragment.class.getName())).getStreet();
+        mEditedObject.setStreet(street);
+        editMapObject();
         break;
       case CUISINE:
         // get cuisine
@@ -139,7 +148,6 @@ public class EditorHostFragment extends BaseMwmToolbarFragment
           showAuthorization();
         break;
       }
-      break;
     }
   }
 
