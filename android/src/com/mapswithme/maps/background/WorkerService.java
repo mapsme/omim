@@ -30,7 +30,7 @@ public class WorkerService extends IntentService
    *
    * @see IntentService
    */
-  public static void startActionCheckUpdate(Context context)
+  static void startActionCheckUpdate(Context context)
   {
     Intent intent = new Intent(context, WorkerService.class);
     intent.setAction(ACTION_CHECK_UPDATE);
@@ -43,7 +43,7 @@ public class WorkerService extends IntentService
    *
    * @see IntentService
    */
-  public static void startActionDownload(Context context)
+  static void startActionDownload(Context context)
   {
     final Intent intent = new Intent(context, WorkerService.class);
     intent.setAction(WorkerService.ACTION_DOWNLOAD_COUNTRY);
@@ -95,6 +95,9 @@ public class WorkerService extends IntentService
 
   private void handleActionCheckLocation()
   {
+    if (ActiveCountryTree.isLegacyMode())
+      return;
+
     final long delayMillis = 60000; // 60 seconds
     boolean isLocationValid = processLocation();
     Statistics.INSTANCE.trackWifiConnected(isLocationValid);
@@ -133,7 +136,7 @@ public class WorkerService extends IntentService
   /**
    * Adds notification with download country suggest.
    */
-  private void placeDownloadNotification(Location l)
+  private static void placeDownloadNotification(Location l)
   {
     final String country = Framework.nativeGetCountryNameIfAbsent(l.getLatitude(), l.getLongitude());
     if (!TextUtils.isEmpty(country))
