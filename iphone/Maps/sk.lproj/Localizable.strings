@@ -1384,6 +1384,120 @@
 
 "editor_correct_mistake_message" = "Chyba pri úprave. Opravte chybu, alebo sa prepnite do jednoduchého režimu.";
 
+"editor_closed_now" = "Teraz zatvorené";
+
+"editor_daily" = "Denne";
+
+"editor_twentyfour_seven" = "24/7";
+
+"editor_day_off_today" = "Dnes deň voľna";
+
+"editor_day_off" = "Deň voľna";
+
+"editor_today" = "Dnes";
+
+"editor_sunrise_to_sunset" = "Od rána do večera";
+
+"editor_add_business_hours" = "Pridať otváracie hodiny";
+
+"editor_edit_business_hours" = "Upraviť otváracie hodiny";
+
+"editor_profile" = "Profil";
+
+"editor_no_osm_acc" = "Nemáte účet v OpenStreetMap?";
+
+"editor_register" = "Zaregistrovať sa";
+
+"editor_not_now" = "Teraz nie";
+
+"editor_login" = "Prihlásiť sa";
+
+"editor_login_with" = "Prihlásiť sa cez";
+
+"editor_password" = "Heslo";
+
+"editor_forgot_password" = "Zabudli ste heslo?";
+
+"editor_restore_password" = "Obnovenie hesla";
+
+"editor_enter_reg_email" = "Zadajte e-mailovú adresu, ktorú ste použili pri registrácii, a my Vám zašleme odkaz na obnovenie hesla";
+
+"editor_email" = "E-mail";
+
+/* en = Renew the password */
+"editor_reset_password" = "Obnoviť heslo";
+
+"editor_registration" = "Registrácia";
+
+"editor_reg_w_google" = "Registrácia cez Google";
+
+"editor_reg_with_facebook" = "Registrácia cez Facebook";
+
+"editor_username" = "Používateľské meno";
+
+"editor_register" = "Zaregistrujte sa";
+
+"editor_reg_in_browser" = "Registrácia v prehliadači";
+
+"editor_terms_of_service" = "Podmienky používania";
+
+"editor_osm_account" = "OSM účet";
+
+"editor_resend" = "Poslať znovu";
+
+"editor_logout" = "Odhlásiť sa";
+
+"editor_edit_business_hours" = "Upraviť otváracie hodiny";
+
+"editor_whats_new_message" = "Prihláste sa a upravte informácie o objektoch na mape, a my ich sprístupníme miliónom ďalších používateľov. Urobme svet spoločne lepším.";
+
+"editor_not_sent" = "Neodoslaný";
+
+"editor_latest_update" = "Posledná aktualizácia";
+
+/* The number of changes made. As in "changes: 123". */
+"editor_changes" = "zmien";
+
+"editor_first_edit" = "Upravili ste svoj prvý objekt!";
+
+"editor_login_to_save_changes" = "Prihláste sa a my pridáme zmeny miliónom ľudí na celom svete.";
+
+"editor_thank_you" = "Ďakujeme Vám";
+
+"editor_login_with_openstreetmap" = "Prihláste sa na adrese www.openstreetmap.org";
+
+"editor_edit_place" = "Upraviť miesto";
+
+"editor_place_name" = "Názov miesta";
+
+"editor_place_name_caption" = "Zadajte skutočný názov miesta";
+
+"editor_multilanguage" = "Viacjazyčné";
+
+"editor_show" = "Zobraziť";
+
+"editor_hide" = "Skryť";
+
+"editor_add_language" = "Pridať jazyk";
+
+"editor_address" = "Adresa";
+
+"editor_street" = "Ulica";
+
+"editor_building" = "Budova";
+
+"editor_details" = "Podrobnosti";
+
+"editor_add_street" = "Pridať ulicu";
+
+"editor_choose_lang" = "Vybrať jazyk";
+
+"editor_choose_street" = "Vybrať ulicu";
+
+"editor_type" = "Druh";
+
+"editor_index" = "Zoznam";
+
 "migrate_title" = "Important!";
 
 "migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";

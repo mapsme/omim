@@ -1384,6 +1384,120 @@
 
 "editor_correct_mistake_message" = "มีข้อผิดพลาดเกิดขึ้นจากการแก้ไขของคุณ โปรดแก้ไขให้ถูกต้อง หรือ สลับไปใช้ในโหมดแบบง่าย";
 
+"editor_closed_now" = "ปิดตอนนี้";
+
+"editor_daily" = "ทุกวัน";
+
+"editor_twentyfour_seven" = "24/7";
+
+"editor_day_off_today" = "ปิดในวันนี้";
+
+"editor_day_off" = "วันปิด";
+
+"editor_today" = "วันนี้";
+
+"editor_sunrise_to_sunset" = "ตั้งแต่เช้าจรดค่ำ";
+
+"editor_add_business_hours" = "เพิ่มชั่วโมงทำการ";
+
+"editor_edit_business_hours" = "แก้ไขชั่วโมงทำการ";
+
+"editor_profile" = "โปรไฟล์";
+
+"editor_no_osm_acc" = "ไม่มีบัญชีใน OpenStreetMap?";
+
+"editor_register" = "ลงทะเบียน";
+
+"editor_not_now" = "ไม่ใช่ตอนนี้";
+
+"editor_login" = "ล็อกอิน";
+
+"editor_login_with" = "ล็อกอินด้วย";
+
+"editor_password" = "รหัสผ่าน";
+
+"editor_forgot_password" = "ลืมรหัสผ่าน?";
+
+"editor_restore_password" = "เรียกคืนรหัสผ่าน";
+
+"editor_enter_reg_email" = "ใส่ที่อยู่อีเมลที่คุณใช้ระหว่างการลงทะเบียนแล้วเราจะส่งลิงก์ไปยังคุณเพื่อต่ออายุรหัสผ่านของคุณ";
+
+"editor_email" = "อีเมล";
+
+/* en = Renew the password */
+"editor_reset_password" = "ต่ออายุรหัสผ่าน";
+
+"editor_registration" = "การลงทะเบียน";
+
+"editor_reg_w_google" = "การลงทะเบียนด้วย Google";
+
+"editor_reg_with_facebook" = "การลงทะเบียนด้วย Facebook";
+
+"editor_username" = "ชื่อผู้ใช้";
+
+"editor_register" = "ลงทะเบียน";
+
+"editor_reg_in_browser" = "ลงทะเบียนในเบราว์เซอร์";
+
+"editor_terms_of_service" = "ข้อกำหนดการใช้บริการ";
+
+"editor_osm_account" = "บัญชี OSM";
+
+"editor_resend" = "ส่งใหม่";
+
+"editor_logout" = "ออกจากระบบ";
+
+"editor_edit_business_hours" = "แก้ไขชั่วโมงทำการ";
+
+"editor_whats_new_message" = "ล็อกอินและแก้ไขข้อมูลวัตถุบนแผนที่ และเราจะทำให้มันสามารถใช้งานได้สำหรับผู้ใช้ท่านอื่น ๆ อีกนับล้าน มาช่วยกันทำให้โลกดียิ่งขึ้นร่วมกัน";
+
+"editor_not_sent" = "ไม่มีการส่ง";
+
+"editor_latest_update" = "การอัปเดตล่าสุด";
+
+/* The number of changes made. As in "changes: 123". */
+"editor_changes" = "การเปลี่ยนแปลง";
+
+"editor_first_edit" = "คุณได้แก้ไขวัตถุแรกของคุณ!";
+
+"editor_login_to_save_changes" = "ล็อกอินแล้วเราจะเพิ่มการเปลี่ยนแปลงให้กับผู้คนนับล้านที่อยู่รอบโลก";
+
+"editor_thank_you" = "ขอบพระคุณ";
+
+"editor_login_with_openstreetmap" = "ล็อกอินที่ www.openstreetmap.org";
+
+"editor_edit_place" = "แก้ไขสถานที่";
+
+"editor_place_name" = "ชื่อสถานที่";
+
+"editor_place_name_caption" = "ใส่ชื่อเนื่องจากมันอยู่บนสัญลักษณ์ของสถานที่";
+
+"editor_multilanguage" = "หลายภาษา";
+
+"editor_show" = "แสดง";
+
+"editor_hide" = "ซ่อน";
+
+"editor_add_language" = "เพิ่มภาษา";
+
+"editor_address" = "ที่อยู่";
+
+"editor_street" = "ถนน";
+
+"editor_building" = "อาคาร";
+
+"editor_details" = "รายละเอียด";
+
+"editor_add_street" = "เพิ่มถนน";
+
+"editor_choose_lang" = "เลือกภาษา";
+
+"editor_choose_street" = "เลือกถนน";
+
+"editor_type" = "ประเภท";
+
+"editor_index" = "ดัชนี";
+
 "migrate_title" = "Important!";
 
 "migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";

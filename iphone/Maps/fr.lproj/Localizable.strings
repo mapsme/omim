@@ -1384,6 +1384,120 @@
 
 "editor_correct_mistake_message" = "Vous avez fait une erreur d'édition. Veuillez la corriger ou passer en mode simple.";
 
+"editor_closed_now" = "Fermé actuellement";
+
+"editor_daily" = "Tous les jours";
+
+"editor_twentyfour_seven" = "24 h et 7 j";
+
+"editor_day_off_today" = "Jour de fermeture aujourd'hui";
+
+"editor_day_off" = "Jour de fermeture";
+
+"editor_today" = "Aujourd'hui";
+
+"editor_sunrise_to_sunset" = "Du lever du jour à la tombée de la nuit";
+
+"editor_add_business_hours" = "Ajouter les heures d'ouverture";
+
+"editor_edit_business_hours" = "Modifier les heures d'ouverture";
+
+"editor_profile" = "Profil";
+
+"editor_no_osm_acc" = "Vous n'avez pas de compte sur OpenStreetMap ?";
+
+"editor_register" = "Inscription";
+
+"editor_not_now" = "Pas maintenant";
+
+"editor_login" = "Connexion";
+
+"editor_login_with" = "Se connecter avec";
+
+"editor_password" = "Mot de passe";
+
+"editor_forgot_password" = "Mot de passe oublié ?";
+
+"editor_restore_password" = "Réinitialiser le mot de passe";
+
+"editor_enter_reg_email" = "Entrez l'adresse e-mail que vous avez utilisé lors de l'inscription et nous vous ferons parvenir le lien pour renouveler votre mot de passe";
+
+"editor_email" = "E-mail";
+
+/* en = Renew the password */
+"editor_reset_password" = "Renouveler le mot de passe";
+
+"editor_registration" = "Inscription";
+
+"editor_reg_w_google" = "Inscription avec Google";
+
+"editor_reg_with_facebook" = "Inscription avec Facebook";
+
+"editor_username" = "Nom d'utilisateur";
+
+"editor_register" = "Inscription";
+
+"editor_reg_in_browser" = "Inscrivez-vous en utilisant le navigateur";
+
+"editor_terms_of_service" = "Conditions de service";
+
+"editor_osm_account" = "Compte OSM";
+
+"editor_resend" = "Renvoyer";
+
+"editor_logout" = "Déconnexion";
+
+"editor_edit_business_hours" = "Modifier les heures d'ouverture";
+
+"editor_whats_new_message" = "Connectez-vous et modifiez les informations des objets présents sur la carte et nous allons les rendre disponibles pour des millions d'autres utilisateurs. Rendons le monde meilleur ensemble.";
+
+"editor_not_sent" = "Non envoyé";
+
+"editor_latest_update" = "Dernière mise à jour";
+
+/* The number of changes made. As in "changes: 123". */
+"editor_changes" = "modifications";
+
+"editor_first_edit" = "Vous avez modifié votre premier objet !";
+
+"editor_login_to_save_changes" = "Connectez-vous et nous allons ajouter des changements pour des millions de personnes dans le monde.";
+
+"editor_thank_you" = "Merci";
+
+"editor_login_with_openstreetmap" = "Connectez-vous sur www.openstreetmap.org";
+
+"editor_edit_place" = "Modifier le lieu";
+
+"editor_place_name" = "Nom du lieu";
+
+"editor_place_name_caption" = "Saisissez le nom tel qu'il apparaît sur le panneau du lieu";
+
+"editor_multilanguage" = "Multilingue";
+
+"editor_show" = "Afficher";
+
+"editor_hide" = "Masquer";
+
+"editor_add_language" = "Ajouter une langue";
+
+"editor_address" = "Adresse";
+
+"editor_street" = "Rue";
+
+"editor_building" = "Immeuble";
+
+"editor_details" = "Détails";
+
+"editor_add_street" = "Ajouter une rue";
+
+"editor_choose_lang" = "Choisir une langue";
+
+"editor_choose_street" = "Choisir une rue";
+
+"editor_type" = "Type";
+
+"editor_index" = "Indice";
+
 "migrate_title" = "Important!";
 
 "migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";

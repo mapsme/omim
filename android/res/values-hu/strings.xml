@@ -167,9 +167,9 @@
 	<!-- Add bookmark dialog - bookmark set, Bookmarks dialog - Bookmark set cell -->
 	<string name="set">Csoport</string>
 	<!-- Text hint in Bookmarks dialog when no any bookmarks are added -->
-	<string name="bookmarks_usage_hint">Nincsenek megjelölt helyeid.\nHely megjelöléséhez koppints a térkép bármelyik pontjára.\nSzintén más forrásokból származó könyvjelzőket is beolvashat a MAPS.ME programba. Nyisson meg  KML/KMZ fájlt egy levélből, Dropbox-ból vagy internetről.</string>
+	<string name="bookmarks_usage_hint">Nincsenek megjelölt helyeid.\nHely megjelöléséhez koppints a térkép bármelyik pontjára.\nSzintén más forrásokból származó könyvjelzőket is beolvashat a MAPS.ME programba. Nyisson meg KML/KMZ fájlt egy levélből, Dropbox-ból vagy internetről.</string>
 	<!-- Text hint in Bookmarks dialog when at least one bookmark is added -->
-	<string name="bookmarks_usage_hint_import_only">Más forrásokból származó könyvjelzőket is beolvashat a MAPS.ME programba. Nyisson meg  KML/KMZ fájlt egy levélből, Dropbox-ból vagy internetről.</string>
+	<string name="bookmarks_usage_hint_import_only">Más forrásokból származó könyvjelzőket is beolvashat a MAPS.ME programba. Nyisson meg KML/KMZ fájlt egy levélből, Dropbox-ból vagy internetről.</string>
 	<!-- Settings button in system menu -->
 	<string name="settings">Beállítások</string>
 	<!-- Header of settings activity where user defines storage path -->
@@ -844,4 +844,62 @@
 	<string name="editor_example_values">Példa értékek</string>
 	<string name="editor_correct_mistake">Hiba javítása</string>
 	<string name="editor_correct_mistake_message">Szerkesztési hibát vétett. Javítsa ki vagy váltson egyszerű módba.</string>
+	<string name="editor_closed_now">Most zárva</string>
+	<string name="editor_daily">Naponta</string>
+	<string name="editor_twentyfour_seven">24/7</string>
+	<string name="editor_day_off_today">Ma szabadnap</string>
+	<string name="editor_day_off">Szabadnap</string>
+	<string name="editor_today">Ma</string>
+	<string name="editor_sunrise_to_sunset">Napkeltétől napnyugtáig</string>
+	<string name="editor_add_business_hours">Nyitvatartás hozzáadása</string>
+	<string name="editor_edit_business_hours">Nyitvatartás szerkesztése</string>
+	<string name="editor_profile">Profil</string>
+	<string name="editor_no_osm_acc">Nem rendelkezel még OpenStreetMap-felhasználói fiókkal?</string>
+	<string name="editor_register">Regisztráció</string>
+	<string name="editor_not_now">Most nem</string>
+	<string name="editor_login">Bejelentkezés</string>
+	<string name="editor_login_with">Bejelentkezés ezzel:</string>
+	<string name="editor_password">Jelszó</string>
+	<string name="editor_forgot_password">Elfelejtett jelszó?</string>
+	<string name="editor_restore_password">Jelszó visszaállítása</string>
+	<string name="editor_enter_reg_email">Add meg a regisztrációkor használt e-mail-címedet és elküldjük neked a jelszavad megújításához szükséges linket</string>
+	<string name="editor_email">E-mail</string>
+	<!-- en = Renew the password -->
+	<string name="editor_reset_password">Jelszó megújítása</string>
+	<string name="editor_registration">Regisztráció</string>
+	<string name="editor_reg_w_google">Regisztráció Googlelel</string>
+	<string name="editor_reg_with_facebook">Regisztráció Facebookkal</string>
+	<string name="editor_username">Felhasználónév</string>
+	<string name="editor_register">Regisztráció</string>
+	<string name="editor_reg_in_browser">Regisztráció böngészőben</string>
+	<string name="editor_terms_of_service">Felhasználási feltételek</string>
+	<string name="editor_osm_account">OSM-felhasználói fiók</string>
+	<string name="editor_resend">Újraküldés</string>
+	<string name="editor_logout">Kijelentkezés</string>
+	<string name="editor_edit_business_hours">Nyitva tartási idő szerkesztése</string>
+	<string name="editor_whats_new_message">Jelentkezz be és szerkeszd az egyes objektumokhoz tartozó információkat a térképen, valamint tedd őket elérhetővé több millió felhasználó számára.</string>
+	<string name="editor_not_sent">Nincs elküldve</string>
+	<string name="editor_latest_update">Legújabb frissítés</string>
+	<!-- The number of changes made. As in "changes: 123". -->
+	<string name="editor_changes">változtatás</string>
+	<string name="editor_first_edit">Szerkesztetted az első objektumod!</string>
+	<string name="editor_login_to_save_changes">Jelentkezz be és adj hozzá változtatásokat, hogy azok a világon több millió ember számára elérhetővé váljanak.</string>
+	<string name="editor_thank_you">Köszönjük</string>
+	<string name="editor_login_with_openstreetmap">Jelentkezz be a www.openstreetmap.org oldalon</string>
+	<string name="editor_edit_place">Hely szerkesztése</string>
+	<string name="editor_place_name">Hely neve</string>
+	<string name="editor_place_name_caption">Add meg a nevet, ami a helyet jelzi</string>
+	<string name="editor_multilanguage">Többnyelvű</string>
+	<string name="editor_show">Megjelenítés</string>
+	<string name="editor_hide">Elrejtés</string>
+	<string name="editor_add_language">Nyelv hozzáadása</string>
+	<string name="editor_address">Cím</string>
+	<string name="editor_street">Utca</string>
+	<string name="editor_building">Épület</string>
+	<string name="editor_details">Részletek</string>
+	<string name="editor_add_street">Utca hozzáadása</string>
+	<string name="editor_choose_lang">Nyelv kiválasztása</string>
+	<string name="editor_choose_street">Utca kiválasztása</string>
+	<string name="editor_type">Típus</string>
+	<string name="editor_index">Tartalommutató</string>
 </resources>

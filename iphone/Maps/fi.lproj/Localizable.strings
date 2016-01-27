@@ -1384,6 +1384,120 @@
 
 "editor_correct_mistake_message" = "Teit muokkausvirheen. Korjaa se tai vaihda yksinkertaiseen malliin.";
 
+"editor_closed_now" = "Suljettu nyt";
+
+"editor_daily" = "Päivittäin";
+
+"editor_twentyfour_seven" = "24/7";
+
+"editor_day_off_today" = "Vapaapäivä tänään";
+
+"editor_day_off" = "Vapaapäivä";
+
+"editor_today" = "Tänään";
+
+"editor_sunrise_to_sunset" = "Aamusta iltaan";
+
+"editor_add_business_hours" = "Lisää aukioloajat";
+
+"editor_edit_business_hours" = "Muokkaa aukioloaikoja";
+
+"editor_profile" = "Profiili";
+
+"editor_no_osm_acc" = "Eikö sinulla ole tiliä OpenStreetMap?";
+
+"editor_register" = "Rekisteröidy";
+
+"editor_not_now" = "Ei nyt";
+
+"editor_login" = "Kirjaudu sisään";
+
+"editor_login_with" = "Kirjaudu sisään käyttäen";
+
+"editor_password" = "Salasana";
+
+"editor_forgot_password" = "Unohtuiko salasana?";
+
+"editor_restore_password" = "Palauta salasana";
+
+"editor_enter_reg_email" = "Syötä rekisteröitymisessä käyttämäsi sähköpostiosoite, niin lähetämme sinulle linkin salasanasi vaihtamista varten";
+
+"editor_email" = "Sähköposti";
+
+/* en = Renew the password */
+"editor_reset_password" = "Vaihda salasana";
+
+"editor_registration" = "Rekisteröityminen";
+
+"editor_reg_w_google" = "Rekisteröityminen Googleia käyttäen";
+
+"editor_reg_with_facebook" = "Rekisteröityminen Facebookia käyttäen";
+
+"editor_username" = "Käyttäjänimi";
+
+"editor_register" = "Rekisteröidy";
+
+"editor_reg_in_browser" = "Rekisteröidy selaimessa";
+
+"editor_terms_of_service" = "Palveluehdot";
+
+"editor_osm_account" = "OSM-tili";
+
+"editor_resend" = "Lähetä uudelleen";
+
+"editor_logout" = "Kirjaudu ulos";
+
+"editor_edit_business_hours" = "Muokkaa aukioloaikoja";
+
+"editor_whats_new_message" = "Kirjaudu sisään ja muokkaa kartan kohteiden tietoja, ja me asetamme kohteet miljoonien muiden käyttäjien saataville. Tehdään maailmasta yhdessä parempi paikka.";
+
+"editor_not_sent" = "Ei lähetetty";
+
+"editor_latest_update" = "Uusin päivitys";
+
+/* The number of changes made. As in "changes: 123". */
+"editor_changes" = "muutosta";
+
+"editor_first_edit" = "Olet muokannut ensimmäistä kohdettasi!";
+
+"editor_login_to_save_changes" = "Kirjaudu sisään, niin me lisäämme muutoksia miljoonille ihmisille kaikkialla maailmassa.";
+
+"editor_thank_you" = "Kiitos";
+
+"editor_login_with_openstreetmap" = "Kirjaudu sisään osoitteessa www.openstreetmap.org";
+
+"editor_edit_place" = "Muokkaa sijaintia";
+
+"editor_place_name" = "Paikan nimi";
+
+"editor_place_name_caption" = "Syötä paikan nimi siinä muodossa kun se kyltissä on";
+
+"editor_multilanguage" = "Monikieli";
+
+"editor_show" = "Näytä";
+
+"editor_hide" = "Piilota";
+
+"editor_add_language" = "Lisää kieli";
+
+"editor_address" = "Osoite";
+
+"editor_street" = "Katu";
+
+"editor_building" = "Rakennus";
+
+"editor_details" = "Lisätiedot";
+
+"editor_add_street" = "Lisää katu";
+
+"editor_choose_lang" = "Valitse kieli";
+
+"editor_choose_street" = "Valitse katu";
+
+"editor_type" = "Tyyppi";
+
+"editor_index" = "Indeksi";
+
 "migrate_title" = "Important!";
 
 "migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";
