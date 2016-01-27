@@ -32,7 +32,7 @@ uint32_t FeaturesLayerMatcher::GetMatchingStreet(uint32_t houseId)
     return it->second;
 
   FeatureType houseFeature;
-  m_context.m_vector.GetByIndex(houseId, houseFeature);
+  GetByIndex(houseId, houseFeature);
 
   return GetMatchingStreetImpl(houseId, houseFeature);
 }
@@ -53,7 +53,7 @@ vector<ReverseGeocoder::Street> const & FeaturesLayerMatcher::GetNearbyStreets(u
     return it->second;
 
   FeatureType feature;
-  m_context.m_vector.GetByIndex(featureId, feature);
+  GetByIndex(featureId, feature);
 
   return GetNearbyStreetsImpl(featureId, feature);
 }
