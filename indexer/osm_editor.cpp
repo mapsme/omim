@@ -1,4 +1,5 @@
 #include "indexer/classificator.hpp"
+#include "indexer/feature_algo.hpp"
 #include "indexer/feature_decl.hpp"
 #include "indexer/feature_impl.hpp"
 #include "indexer/feature_meta.hpp"
@@ -18,10 +19,12 @@
 #include "base/exception.hpp"
 #include "base/logging.hpp"
 #include "base/string_utils.hpp"
+#include "base/timer.hpp"
 
 #include "std/algorithm.hpp"
 #include "std/chrono.hpp"
 #include "std/future.hpp"
+#include "std/mutex.hpp"
 #include "std/target_os.hpp"
 #include "std/tuple.hpp"
 #include "std/unordered_map.hpp"
@@ -349,6 +352,10 @@ void Editor::LoadMapEdits()
 
 void Editor::Save(string const & fullFilePath) const
 {
+  // TODO(AlexZ): Improve synchronization in Editor code.
+  static mutex saveMutex;
+  lock_guard<mutex> lock(saveMutex);
+
   if (m_features.empty())
   {
     my::DeleteFileX(GetEditorFilePath());
@@ -631,15 +638,27 @@ bool Editor::HaveSomethingToUpload() const
 void Editor::UploadChanges(string const & key, string const & secret, TChangesetTags tags,
                            TFinishUploadCallback callBack)
 {
-  tags["created_by"] = "MAPS.ME " OMIM_OS_NAME;
-
-  // TODO(AlexZ): features access should be synchronized.
-  auto const lambda = [this](string key, string secret, TChangesetTags tags, TFinishUploadCallback callBack)
+  if (!HaveSomethingToUpload())
   {
+    LOG(LDEBUG, ("There are no local edits to upload."));
+    return;
+  }
+  {
+    auto const stats = GetStats();
+    tags["total_edits"] = strings::to_string(stats.m_edits.size());
+    tags["uploaded_edits"] = strings::to_string(stats.m_uploadedCount);
+    tags["created_by"] = "MAPS.ME " OMIM_OS_NAME;
+  }
+  // TODO(AlexZ): features access should be synchronized.
+  auto const upload = [this](string key, string secret, TChangesetTags tags, TFinishUploadCallback callBack)
+  {
+    // This lambda was designed to start after app goes into background. But for cases when user is immediately
+    // coming back to the app we work with a copy, because 'for' loops below can take a significant amount of time.
+    auto features = m_features;
+
     int uploadedFeaturesCount = 0, errorsCount = 0;
-    // TODO(AlexZ): insert usefull changeset comments.
     ChangesetWrapper changeset({key, secret}, tags);
-    for (auto & id : m_features)
+    for (auto & id : features)
     {
       for (auto & index : id.second)
       {
@@ -681,8 +700,8 @@ void Editor::UploadChanges(string const & key, string const & secret, TChangeset
           fti.m_uploadStatus = kDeletedFromOSMServer;
           fti.m_uploadAttemptTimestamp = time(nullptr);
           fti.m_uploadError = ex.what();
-          LOG(LWARNING, (fti.m_uploadError, ex.what()));
           ++errorsCount;
+          LOG(LWARNING, (ex.what()));
         }
         catch (RootException const & ex)
         {
@@ -691,10 +710,10 @@ void Editor::UploadChanges(string const & key, string const & secret, TChangeset
           fti.m_uploadAttemptTimestamp = time(nullptr);
           fti.m_uploadError = ex.what();
           ++errorsCount;
+          LOG(LWARNING, (ex.what()));
         }
-        // TODO(AlexZ): Synchronize save after edits.
         // Call Save every time we modify each feature's information.
-        Save(GetEditorFilePath());
+        SaveUploadedInformation(fti);
       }
     }
 
@@ -710,10 +729,27 @@ void Editor::UploadChanges(string const & key, string const & secret, TChangeset
   };
 
   // Do not run more than one upload thread at a time.
-  static auto future = async(launch::async, lambda, key, secret, tags, callBack);
+  static auto future = async(launch::async, upload, key, secret, tags, callBack);
   auto const status = future.wait_for(milliseconds(0));
   if (status == future_status::ready)
-    future = async(launch::async, lambda, key, secret, tags, callBack);
+    future = async(launch::async, upload, key, secret, tags, callBack);
+}
+
+void Editor::SaveUploadedInformation(FeatureTypeInfo const & fromUploader)
+{
+  // TODO(AlexZ): Correctly synchronize this call and Save() at the end.
+  FeatureID const & fid = fromUploader.m_feature.GetID();
+  auto id = m_features.find(fid.m_mwmId);
+  if (id == m_features.end())
+    return;  // Rare case: feature was deleted at the time of changes uploading.
+  auto index = id->second.find(fid.m_index);
+  if (index == id->second.end())
+    return;  // Rare case: feature was deleted at the time of changes uploading.
+  auto & fti = index->second;
+  fti.m_uploadAttemptTimestamp = fromUploader.m_uploadAttemptTimestamp;
+  fti.m_uploadStatus = fromUploader.m_uploadStatus;
+  fti.m_uploadError = fromUploader.m_uploadError;
+  Save(GetEditorFilePath());
 }
 
 void Editor::RemoveFeatureFromStorageIfExists(MwmSet::MwmId const & mwmId, uint32_t index)
@@ -739,6 +775,7 @@ void Editor::Invalidate()
 Editor::Stats Editor::GetStats() const
 {
   Stats stats;
+  LOG(LDEBUG, ("Edited features status:"));
   for (auto const & id : m_features)
   {
     for (auto const & index : id.second)
@@ -746,6 +783,9 @@ Editor::Stats Editor::GetStats() const
       Editor::FeatureTypeInfo const & fti = index.second;
       stats.m_edits.push_back(make_pair(FeatureID(id.first, index.first),
                                         fti.m_uploadStatus + " " + fti.m_uploadError));
+      LOG(LDEBUG, (fti.m_uploadAttemptTimestamp == my::INVALID_TIME_STAMP
+                   ? "NOT_UPLOADED_YET" : my::TimestampToString(fti.m_uploadAttemptTimestamp), fti.m_uploadStatus,
+                   fti.m_uploadError, fti.m_feature.GetFeatureType(), feature::GetCenter(fti.m_feature)));
       if (fti.m_uploadStatus == kUploaded)
       {
         ++stats.m_uploadedCount;
@@ -755,6 +795,17 @@ Editor::Stats Editor::GetStats() const
     }
   }
   return stats;
+}
+
+string DebugPrint(Editor::FeatureStatus fs)
+{
+  switch (fs)
+  {
+  case Editor::FeatureStatus::Untouched: return "Untouched";
+  case Editor::FeatureStatus::Deleted: return "Deleted";
+  case Editor::FeatureStatus::Modified: return "Modified";
+  case Editor::FeatureStatus::Created: return "Created";
+  };
 }
 
 }  // namespace osm
