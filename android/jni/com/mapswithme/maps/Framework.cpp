@@ -542,6 +542,11 @@ void Framework::SetActiveUserMark(UserMark const * mark)
   m_activeUserMark = mark;
 }
 
+UserMark const * Framework::GetActiveUserMark()
+{
+  return m_activeUserMark;
+}
+
 bool Framework::NeedMigrate()
 {
   return platform::migrate::NeedMigrate();
@@ -552,10 +557,6 @@ void Framework::Migrate()
   m_work.Migrate();
 }
 
-UserMark const * Framework::GetActiveUserMark()
-{
-  return m_activeUserMark;
-}
 } // namespace android
 
 //============ GLUE CODE for com.mapswithme.maps.Framework class =============//
@@ -572,10 +573,8 @@ extern "C"
   void CallOnMapObjectActivatedListener(shared_ptr<jobject> listener, jobject mapObject)
   {
     JNIEnv * env = jni::GetEnv();
-    static jmethodID const methodId =
-        jni::GetMethodID(env, *listener.get(), "onMapObjectActivated",
-                             "(Lcom/mapswithme/maps/bookmarks/data/MapObject;)V");
-    ASSERT(methodId, ());
+    static jmethodID const methodId = jni::GetMethodID(env, *listener.get(), "onMapObjectActivated",
+                                                       "(Lcom/mapswithme/maps/bookmarks/data/MapObject;)V");
     //public MapObject(@MapObjectType int mapObjectType, String name, double lat, double lon, String typeName)
     env->CallVoidMethod(*listener.get(), methodId, mapObject);
   }

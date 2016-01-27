@@ -1384,6 +1384,124 @@
 
 "editor_correct_mistake_message" = "You made an editing mistake. Please correct it or switch to simple mode.";
 
+"editor_closed_now" = "Closed now";
+
+"editor_daily" = "Daily";
+
+"editor_twentyfour_seven" = "24/7";
+
+"editor_day_off_today" = "Day off today";
+
+"editor_day_off" = "Day off";
+
+"editor_today" = "Today";
+
+"editor_sunrise_to_sunset" = "From sunrise to sunset";
+
+"editor_add_business_hours" = "Add business hours";
+
+"editor_edit_business_hours" = "Edit business hours";
+
+"editor_profile" = "Profile";
+
+"editor_no_osm_acc" = "No account in OpenStreetMap?";
+
+"editor_register" = "Register";
+
+"editor_not_now" = "Not now";
+
+"editor_login" = "Log in";
+
+"editor_login_with" = "Log in with";
+
+"editor_password" = "Password";
+
+"editor_forgot_password" = "Forgot password?";
+
+"editor_restore_password" = "Restore password";
+
+"editor_enter_reg_email" = "Enter the email address you used during registration and we will send you the link to renew your password";
+
+"editor_email" = "Email";
+
+
+"editor_registration" = "Registration";
+
+"editor_reg_w_google" = "Registration with Google";
+
+"editor_reg_with_facebook" = "Registration with Facebook";
+
+"editor_username" = "Username";
+
+"editor_register" = "Register";
+
+"editor_reg_in_browser" = "Register in browser";
+
+"editor_terms_of_service" = "Terms of service";
+
+"editor_osm_account" = "OSM Account";
+
+"editor_resend" = "Resend";
+
+"editor_logout" = "Log out";
+
+"editor_edit_business_hours" = "Edit business hours";
+
+"editor_whats_new_message" = "Log in and edit information of the objects on the map and we will make them available for millions of users. Let’s make the world better together.";
+
+"editor_not_sent" = "Not sent";
+
+"editor_latest_update" = "Latest update";
+
+/* The number of changes made. As in "changes: 123". */
+"editor_changes" = "changes";
+
+"editor_first_edit" = "You’ve edited your first object!";
+
+"editor_login_to_save_changes" = "Log in and we will add changes for millions of people around the world.";
+
+"editor_thank_you" = "Thank you";
+
+"editor_login_with_openstreetmap" = "Log in at www.openstreetmap.org";
+
+"editor_edit_place" = "Edit the place";
+
+"editor_place_name" = "Place Name";
+
+"editor_place_name_caption" = "Enter the name as it is on the sign of the place";
+
+"editor_multilanguage" = "Multiple languages";
+
+"editor_show" = "Show";
+
+"editor_hide" = "Hide";
+
+"editor_add_language" = "Add a language";
+
+"editor_address" = "Address";
+
+"editor_street" = "Street";
+
+"editor_building" = "Building";
+
+"editor_details" = "Details";
+
+"editor_add_street" = "Add a street";
+
+"editor_choose_lang" = "Choose a language";
+
+"editor_choose_street" = "Choose a street";
+
+"editor_type" = "Type";
+
+"editor_index" = "Zip Code";
+
+"mwm_download_all" = "Download all";
+
+"mwm_split_mwms_message" = "We have divided maps into parts. Now you can download separate regions, not the whole country. Before you start downloading new maps, please remove the old ones.";
+
+"mwm_youve_been_asking" = "You've been asking for it and we've done it";
+
 "migrate_title" = "Important!";
 
 "migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";

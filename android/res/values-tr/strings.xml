@@ -235,7 +235,7 @@
 	<!-- Email Subject when sharing bookmarks category -->
 	<string name="share_bookmarks_email_subject">Paylaşılan MAPS.ME yer imleri</string>
 	<!-- Email text when sharing bookmarks category -->
-	<string name="share_bookmarks_email_body">Selamlar,\n\nEkte MAPS.ME çevrimdışı haritalarından yer imlerim var. Lütfen MAPS.ME sende yüklü ise aç. Değilse  iOS veya Android cihazın için aşağıdaki bağlantıdan uygulamayı indir: http://maps.me/get?kmz.\n\nMAPS.ME ile iyi seyahatler!</string>
+	<string name="share_bookmarks_email_body">Selamlar,\n\nEkte MAPS.ME çevrimdışı haritalarından yer imlerim var. Lütfen MAPS.ME sende yüklü ise aç. Değilse iOS veya Android cihazın için aşağıdaki bağlantıdan uygulamayı indir: http://maps.me/get?kmz.\n\nMAPS.ME ile iyi seyahatler!</string>
 	<!-- message title of loading file -->
 	<string name="load_kmz_title">Yer İmleri Yükleniyor</string>
 	<!-- Kmz file successful loading -->
@@ -847,4 +847,65 @@
 	<string name="editor_example_values">Örnek Değerler</string>
 	<string name="editor_correct_mistake">Hatayı düzelt</string>
 	<string name="editor_correct_mistake_message">Bir düzenleme hatası yaptınız. Lütfen düzeltin veya basit moda geçin.</string>
+	<string name="editor_closed_now">Şu anda kapalı</string>
+	<string name="editor_daily">Günlük</string>
+	<string name="editor_twentyfour_seven">24/7</string>
+	<string name="editor_day_off_today">Bugün izin günü</string>
+	<string name="editor_day_off">İzin günü</string>
+	<string name="editor_today">Bugün</string>
+	<string name="editor_sunrise_to_sunset">Şafaktan gün batımına</string>
+	<string name="editor_add_business_hours">İş saatlerini ekle</string>
+	<string name="editor_edit_business_hours">İş saatlerini düzenle</string>
+	<string name="editor_profile">Profil</string>
+	<string name="editor_no_osm_acc">OpenStreetMap\&#39; hesabın yok mu?</string>
+	<string name="editor_register">Kaydol</string>
+	<string name="editor_not_now">Şimdi değil</string>
+	<string name="editor_login">Oturum aç</string>
+	<string name="editor_login_with">Şununla oturum aç:</string>
+	<string name="editor_password">Şifre</string>
+	<string name="editor_forgot_password">Şifreni mi unuttun?</string>
+	<string name="editor_restore_password">Şifreyi yenile</string>
+	<string name="editor_enter_reg_email">Kayıt sırasında kullandığınız e-posta adresini girin ve şifrenizi yenileyeceğiniz bağlantıyı gönderelim</string>
+	<string name="editor_email">E-posta</string>
+	<!-- en = Renew the password -->
+	<string name="editor_reset_password">Şifreyi yenile</string>
+	<string name="editor_registration">Kayıt</string>
+	<string name="editor_reg_w_google">Google ile Kaydol</string>
+	<string name="editor_reg_with_facebook">Facebook ile Kaydol</string>
+	<string name="editor_username">Kullanıcı Adı</string>
+	<string name="editor_register">Kaydol</string>
+	<string name="editor_reg_in_browser">Tarayıcıda kaydol</string>
+	<string name="editor_terms_of_service">Hizmet şartları</string>
+	<string name="editor_osm_account">OSM Hesabı</string>
+	<string name="editor_resend">Tekrar gönder</string>
+	<string name="editor_logout">Oturumu kapat</string>
+	<string name="editor_edit_business_hours">Çalışma saatlerini düzenle</string>
+	<string name="editor_whats_new_message">Oturum aç ve haritada nesne bilgilerini düzenleyip diğer milyonlarca kullanıcıya aç. Birlikte dünyayı daha iyi bir yer haline getirelim.</string>
+	<string name="editor_not_sent">Gönderilmedi</string>
+	<string name="editor_latest_update">En yeni güncelleme</string>
+	<!-- The number of changes made. As in "changes: 123". -->
+	<string name="editor_changes">değişiklik</string>
+	<string name="editor_first_edit">İlk nesneni düzenledin!</string>
+	<string name="editor_login_to_save_changes">Oturum aç ve dünya çapında milyonlarca kişi için değişiklikleri ekleyelim.</string>
+	<string name="editor_thank_you">Teşekkür ederiz</string>
+	<string name="editor_login_with_openstreetmap">www.openstreetmap.org adresinden oturum aç</string>
+	<string name="editor_edit_place">Yeri düzenle</string>
+	<string name="editor_place_name">Yer ismi</string>
+	<string name="editor_place_name_caption">Yerin adını tabelada olduğu şekliyle girin</string>
+	<string name="editor_multilanguage">Çok dilli</string>
+	<string name="editor_show">Göster</string>
+	<string name="editor_hide">Gizle</string>
+	<string name="editor_add_language">Bir dil ekle</string>
+	<string name="editor_address">Adres</string>
+	<string name="editor_street">Sokak</string>
+	<string name="editor_building">Bina</string>
+	<string name="editor_details">Detaylar</string>
+	<string name="editor_add_street">Bir sokak ekle</string>
+	<string name="editor_choose_lang">Bir dil seç</string>
+	<string name="editor_choose_street">Bir sokak seç</string>
+	<string name="editor_type">Tür</string>
+	<string name="editor_index">İşaret</string>
+	<string name="mwm_download_all">Tümünü indir</string>
+	<string name="mwm_split_mwms_message">Haritaları parçalara ayırdık. Artık tüm ülke yerine belirli bölgeleri indirebilirsiniz. Yeni haritaları indirmeden önce lütfen eski haritaları kaldırın.</string>
+	<string name="mwm_youve_been_asking">Siz istediniz biz yaptık</string>
 </resources>

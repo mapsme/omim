@@ -1384,6 +1384,126 @@
 
 "editor_correct_mistake_message" = "При редактировании времени работы вы допустили ошибку. Исправьте её или переключитесь в простой режим.";
 
+"editor_closed_now" = "Сейчас закрыто";
+
+"editor_daily" = "Ежедневно";
+
+"editor_twentyfour_seven" = "Круглосуточно";
+
+"editor_day_off_today" = "Сегодня выходной";
+
+"editor_day_off" = "Выходной";
+
+"editor_today" = "Сегодня";
+
+"editor_sunrise_to_sunset" = "От рассвета до заката";
+
+"editor_add_business_hours" = "Добавить время работы";
+
+"editor_edit_business_hours" = "Редактировать время работы";
+
+"editor_profile" = "Профиль";
+
+"editor_no_osm_acc" = "Нет аккаунта OpenStreetMap?";
+
+"editor_register" = "Зарегистрироваться";
+
+"editor_not_now" = "Не сейчас";
+
+"editor_login" = "Войти";
+
+"editor_login_with" = "Войти с помощью";
+
+"editor_password" = "Mot de passe";
+
+"editor_forgot_password" = "Забыли пароль?";
+
+"editor_restore_password" = "Восстановление пароля";
+
+"editor_enter_reg_email" = "Введите почтовый ящик, который вы использовали для регистрации, и мы вышлем на него ссылку для сброса пароля.";
+
+"editor_email" = "Email";
+
+/* en = Renew the password */
+"editor_reset_password" = "Сбросить пароль";
+
+"editor_registration" = "Регистрация";
+
+"editor_reg_w_google" = "Регистрация с помощью Google";
+
+"editor_reg_with_facebook" = "Регистрация с помощью Facebook";
+
+"editor_username" = "Имя пользователя";
+
+"editor_register" = "Зарегистрироваться";
+
+"editor_reg_in_browser" = "Регистрация в браузере";
+
+"editor_terms_of_service" = "Правила использования";
+
+"editor_osm_account" = "OSM Аккаунт";
+
+"editor_resend" = "Отправить повторно";
+
+"editor_logout" = "Выйти";
+
+"editor_edit_business_hours" = "Редактировать время работы";
+
+"editor_whats_new_message" = "Авторизуйтесь и редактируйте информацию об объектах на карте. А мы сделаем ее доступной для миллионов пользователей. Улучшим мир вместе!";
+
+"editor_not_sent" = "Не отправлено";
+
+"editor_latest_update" = "Последняя загрузка";
+
+/* The number of changes made. As in "changes: 123". */
+"editor_changes" = "изменений";
+
+"editor_first_edit" = "Вы отредактировали свой первый объект!";
+
+"editor_login_to_save_changes" = "Авторизуйтесь, и мы добавим изменения на карту для миллионов людей по всему миру.";
+
+"editor_thank_you" = "Спасибо";
+
+"editor_login_with_openstreetmap" = "Войти через www.openstreetmap.org";
+
+"editor_edit_place" = "Редактировать место";
+
+"editor_place_name" = "Имя объекта";
+
+"editor_place_name_caption" = "Вводите название, как на вывеске заведения";
+
+"editor_multilanguage" = "Мультиязычность";
+
+"editor_show" = "Показать";
+
+"editor_hide" = "Спрятать";
+
+"editor_add_language" = "Добавить язык";
+
+"editor_address" = "Адрес";
+
+"editor_street" = "Улица";
+
+"editor_building" = "Здание";
+
+"editor_details" = "Детали";
+
+"editor_add_street" = "Добавить улицу";
+
+"editor_choose_lang" = "Выбрать язык";
+
+"editor_choose_street" = "Выбрать улицу";
+
+"editor_type" = "Тип";
+
+"editor_index" = "Индекс";
+
+"mwm_download_all" = "Загрузить все";
+
+"mwm_split_mwms_message" = "Мы разрезали большие карты на части: теперь загружай только нужную область, а не всю страну целиком. Прежде чем начать загружать маленькие карты, удалите все старые.";
+
+"mwm_youve_been_asking" = "Вы долго просили — мы наконец сделали";
+
 "migrate_title" = "Important!";
 
 "migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";

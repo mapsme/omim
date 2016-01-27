@@ -1,4 +1,6 @@
 #import "MWMEditorTextTableViewCell.h"
+#import "UIColor+MapsMeColor.h"
+#import "UIImageView+Coloring.h"
 #import "UITextField+RuntimeAttributes.h"
 
 @interface MWMEditorTextTableViewCell () <UITextFieldDelegate>
@@ -17,13 +19,18 @@
                       icon:(UIImage *)icon
                       text:(NSString *)text
                placeholder:(NSString *)placeholder
+              keyboardType:(UIKeyboardType)keyboardType
                   lastCell:(BOOL)lastCell
 {
   self.delegate = delegate;
   self.icon.image = icon;
-  self.icon.hidden = (icon == nil);
+  self.icon.mwm_coloring = MWMImageColoringBlack;
+  BOOL isNameCell = (icon == nil);
+  self.icon.hidden = isNameCell;
+  self.backgroundColor = isNameCell ? [UIColor clearColor] : [UIColor white];
   self.textField.text = text;
   self.textField.placeholder = placeholder;
+  self.textField.keyboardType = keyboardType;
   self.bottomSeparatorLeadingOffset.priority = lastCell ? UILayoutPriorityDefaultHigh : UILayoutPriorityDefaultLow;
 }
 

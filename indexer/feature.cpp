@@ -86,9 +86,7 @@ void FeatureType::ApplyPatch(editor::XMLFeature const & xml)
   }
   m_bMetadataParsed = true;
 
-  // TODO(mgsergio): Get types count from xml.
-  auto constexpr kOnlyOneTypeCount = 1;
-  m_header = CalculateHeader(kOnlyOneTypeCount, Header() & HEADER_GEOTYPE_MASK, m_params);
+  m_header = CalculateHeader(GetTypesCount(), Header() & HEADER_GEOTYPE_MASK, m_params);
   m_bHeader2Parsed = true;
 }
 
@@ -128,7 +126,7 @@ editor::XMLFeature FeatureType::ToXML() const
 
   for (auto const type : m_metadata.GetPresentTypes())
   {
-    auto const attributeName = DebugPrint(type);
+    auto const attributeName = DebugPrint(static_cast<Metadata::EType>(type));
     feature.SetTagValue(attributeName, m_metadata.Get(type));
   }
 

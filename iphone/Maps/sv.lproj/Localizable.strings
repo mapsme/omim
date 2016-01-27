@@ -1384,6 +1384,126 @@
 
 "editor_correct_mistake_message" = "Du har gjort ett fel i redigeringen. Var vänlig korrigera det eller byt till enkelt läge.";
 
+"editor_closed_now" = "Stängt just nu";
+
+"editor_daily" = "Dagligen";
+
+"editor_twentyfour_seven" = "24/7";
+
+"editor_day_off_today" = "Stängt idag";
+
+"editor_day_off" = "Stängt";
+
+"editor_today" = "Idag";
+
+"editor_sunrise_to_sunset" = "Från gryning till skymning";
+
+"editor_add_business_hours" = "Lägg till öppettider";
+
+"editor_edit_business_hours" = "Redigera öppettider";
+
+"editor_profile" = "Profil";
+
+"editor_no_osm_acc" = "Inget konto hos OpenStreetMap?";
+
+"editor_register" = "Registrera";
+
+"editor_not_now" = "Inte nu";
+
+"editor_login" = "Logga in";
+
+"editor_login_with" = "Logga in med";
+
+"editor_password" = "Lösenord";
+
+"editor_forgot_password" = "Glömt lösenord?";
+
+"editor_restore_password" = "Återställ lösenord?";
+
+"editor_enter_reg_email" = "Mata in e-postadressen som du använde vid registrering så skickar vi en återställningslänk till dig";
+
+"editor_email" = "E-post";
+
+/* en = Renew the password */
+"editor_reset_password" = "Återställ lösenordet";
+
+"editor_registration" = "Registrering";
+
+"editor_reg_w_google" = "Registrera med Google";
+
+"editor_reg_with_facebook" = "Registrera med Facebook";
+
+"editor_username" = "Användarnamn";
+
+"editor_register" = "Registrera";
+
+"editor_reg_in_browser" = "Registrera i webbläsare";
+
+"editor_terms_of_service" = "Användningsavtal";
+
+"editor_osm_account" = "OSM-konto";
+
+"editor_resend" = "Återsänd";
+
+"editor_logout" = "Logga ut";
+
+"editor_edit_business_hours" = "Redigera öppettider";
+
+"editor_whats_new_message" = "Logga in och redigera informationen om objekten på kartan så kommer vi att göra ändringarna tillgängliga för miljontals andra användare. Låt oss göra världen bättre tillsammans.";
+
+"editor_not_sent" = "Ej skickat";
+
+"editor_latest_update" = "Senaste uppdatering";
+
+/* The number of changes made. As in "changes: 123". */
+"editor_changes" = "ändringar";
+
+"editor_first_edit" = "Du har redigerat ditt första objekt!";
+
+"editor_login_to_save_changes" = "Logga in så syns dina ändringar för miljontals människor runt om världen.";
+
+"editor_thank_you" = "Tack";
+
+"editor_login_with_openstreetmap" = "Logga in på www.openstreetmap.org";
+
+"editor_edit_place" = "Ändra platsen";
+
+"editor_place_name" = "Platsens namn";
+
+"editor_place_name_caption" = "Skriv in namnet så som det står på platsens skylt";
+
+"editor_multilanguage" = "Flera språk";
+
+"editor_show" = "Visa";
+
+"editor_hide" = "Göm";
+
+"editor_add_language" = "Lägg till ett språk";
+
+"editor_address" = "Adress";
+
+"editor_street" = "Gata";
+
+"editor_building" = "Byggnad";
+
+"editor_details" = "Detaljer";
+
+"editor_add_street" = "Lägg till en gata";
+
+"editor_choose_lang" = "Välj ett språk";
+
+"editor_choose_street" = "Välj en gata";
+
+"editor_type" = "Typ";
+
+"editor_index" = "Index";
+
+"mwm_download_all" = "Ladda ner alla";
+
+"mwm_split_mwms_message" = "Vi har delat in kartor i delar. Nu kan du ladda ner separata regioner, inte hela landet. Innan du börjar ladda ner nya kartor, ta bort de gamla.";
+
+"mwm_youve_been_asking" = "Du har bett om det och vi har gjort det";
+
 "migrate_title" = "Important!";
 
 "migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";

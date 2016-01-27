@@ -275,8 +275,10 @@ Framework::Framework()
   m_stringsBundle.SetDefaultString("country_status_added_to_queue", "^\nis added to the downloading queue");
   m_stringsBundle.SetDefaultString("country_status_downloading", "Downloading\n^\n^");
   m_stringsBundle.SetDefaultString("country_status_download", "Download map\n(^ ^)");
+  m_stringsBundle.SetDefaultString("country_status_download_without_size", "Download map");
   m_stringsBundle.SetDefaultString("country_status_download_failed", "Downloading\n^\nhas failed");
   m_stringsBundle.SetDefaultString("country_status_download_without_routing", "Download map\nwithout routing (^ ^)");
+  m_stringsBundle.SetDefaultString("country_download_cancel", "Cancel");
   m_stringsBundle.SetDefaultString("try_again", "Try Again");
   m_stringsBundle.SetDefaultString("not_enough_free_space_on_sdcard", "Not enough space for downloading");
 
@@ -988,6 +990,7 @@ void Framework::UpdateCountryInfo(storage::TIndex const & countryIndex, bool isC
   countryInfo.m_countryIndex = countryIndex;
   countryInfo.m_currentCountryName = m_activeMaps->GetFormatedCountryName(countryIndex);
   countryInfo.m_mapSize = m_activeMaps->GetRemoteCountrySizes(countryIndex).first;
+  countryInfo.m_showMapSize = !platform::migrate::NeedMigrate();
   countryInfo.m_countryStatus = m_activeMaps->GetCountryStatus(countryIndex);
   if (countryInfo.m_countryStatus == storage::TStatus::EDownloading)
   {
@@ -1004,9 +1007,6 @@ void Framework::UpdateUserViewportChanged()
   {
     (void)GetCurrentPosition(m_lastInteractiveSearchParams.m_lat,
                              m_lastInteractiveSearchParams.m_lon);
-    m_lastInteractiveSearchParams.SetSearchMode(search::SearchParams::IN_VIEWPORT_ONLY);
-    m_lastInteractiveSearchParams.SetForceSearch(false);
-
     Search(m_lastInteractiveSearchParams);
   }
 }
@@ -1433,7 +1433,8 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
   m_drapeEngine = make_unique_dp<df::DrapeEngine>(move(p));
   AddViewportListener([this](ScreenBase const & screen)
   {
-    UpdateUserViewportChanged();
+    if (!screen.GlobalRect().EqualDxDy(m_currentModelView.GlobalRect(), 1.0E-4))
+      UpdateUserViewportChanged();
     m_currentModelView = screen;
   });
   m_drapeEngine->SetTapEventInfoListener(bind(&Framework::OnTapEvent, this, _1, _2, _3, _4));
