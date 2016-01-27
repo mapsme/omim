@@ -168,7 +168,7 @@ namespace android
 
     void SetActiveUserMark(UserMark const * mark);
     UserMark const * GetActiveUserMark();
-    
+
     bool NeedMigrate();
     void Migrate();
 
