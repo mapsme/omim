@@ -6,7 +6,7 @@
 #include "indexer/feature_data.hpp"
 #include "indexer/map_style_reader.hpp"
 
-#include "Platform/platform.hpp"
+#include "platform/platform.hpp"
 
 #include "base/logging.hpp"
 
