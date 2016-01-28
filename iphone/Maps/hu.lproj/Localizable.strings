@@ -1378,6 +1378,133 @@
 
 "editor_correct_mistake_message" = "Szerkesztési hibát vétett. Javítsa ki vagy váltson egyszerű módba.";
 
-"migrate_title" = "Important!";
+"editor_closed_now" = "Most zárva";
 
-"migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";
+"editor_daily" = "Naponta";
+
+"editor_twentyfour_seven" = "24/7";
+
+"editor_day_off_today" = "Ma szabadnap";
+
+"editor_day_off" = "Szabadnap";
+
+"editor_today" = "Ma";
+
+"editor_sunrise_to_sunset" = "Napkeltétől napnyugtáig";
+
+"editor_add_business_hours" = "Nyitvatartás hozzáadása";
+
+"editor_edit_business_hours" = "Nyitvatartás szerkesztése";
+
+"editor_profile" = "Profil";
+
+"editor_no_osm_acc" = "Nem rendelkezel még OpenStreetMap-felhasználói fiókkal?";
+
+"editor_register" = "Regisztráció";
+
+"editor_not_now" = "Most nem";
+
+"editor_login" = "Bejelentkezés";
+
+"editor_login_with" = "Bejelentkezés ezzel:";
+
+"editor_password" = "Jelszó";
+
+"editor_forgot_password" = "Elfelejtett jelszó?";
+
+"editor_restore_password" = "Jelszó visszaállítása";
+
+"editor_enter_reg_email" = "Add meg a regisztrációkor használt e-mail-címedet és elküldjük neked a jelszavad megújításához szükséges linket";
+
+"editor_email" = "E-mail";
+
+"editor_reset_password" = "Jelszó visszaállítása";
+
+"editor_registration" = "Regisztráció";
+
+"editor_reg_w_google" = "Regisztráció Googlelel";
+
+"editor_reg_with_facebook" = "Regisztráció Facebookkal";
+
+"editor_username" = "Felhasználónév";
+
+"editor_register" = "Regisztráció";
+
+"editor_reg_in_browser" = "Regisztráció böngészőben";
+
+"editor_terms_of_service" = "Felhasználási feltételek";
+
+"editor_osm_account" = "OSM-felhasználói fiók";
+
+"editor_resend" = "Újraküldés";
+
+"editor_logout" = "Kijelentkezés";
+
+"editor_edit_business_hours" = "Nyitva tartási idő szerkesztése";
+
+"editor_whats_new_message" = "Jelentkezz be és szerkeszd az egyes objektumokhoz tartozó információkat a térképen, valamint tedd őket elérhetővé több millió felhasználó számára.";
+
+"editor_not_sent" = "Nincs elküldve";
+
+"editor_latest_update" = "Legújabb frissítés";
+
+/* The number of changes made. As in "changes: 123". */
+"editor_changes" = "változtatás";
+
+"editor_first_edit" = "Szerkesztetted az első objektumod!";
+
+"editor_login_to_save_changes" = "Jelentkezz be és adj hozzá változtatásokat, hogy azok a világon több millió ember számára elérhetővé váljanak.";
+
+"editor_thank_you" = "Köszönjük";
+
+"editor_login_with_openstreetmap" = "Jelentkezz be a www.openstreetmap.org oldalon";
+
+"editor_edit_place" = "Hely szerkesztése";
+
+"editor_place_name" = "Hely neve";
+
+"editor_place_name_caption" = "Add meg a nevet, ami a helyet jelzi";
+
+"editor_multilanguage" = "Többnyelvű";
+
+"editor_show" = "Megjelenítés";
+
+"editor_hide" = "Elrejtés";
+
+"editor_add_language" = "Nyelv hozzáadása";
+
+"editor_address" = "Cím";
+
+"editor_street" = "Utca";
+
+"editor_building" = "Épület";
+
+"editor_details" = "Részletek";
+
+"editor_add_street" = "Utca hozzáadása";
+
+"editor_choose_lang" = "Nyelv kiválasztása";
+
+"editor_choose_street" = "Utca kiválasztása";
+
+"editor_type" = "Típus";
+
+"editor_index" = "Tartalommutató";
+
+"mwm_download_all" = "Összes letöltése";
+
+"mwm_split_mwms_message" = "Felosztottuk részekre a térképeket. Mostantól az egyes régiókat is letöltheted, nem csak az egész országot. Az új térképek letöltése előtt kérjük, távolítsd el a régieket.";
+
+"mwm_youve_been_asking" = "Te kérted, mi elkészítettük";
+
+"mwm_migrate_title" = "Fontos!";
+
+"migrate_subtitle" = "Egy új adatformátum támogatásához törölnünk kell a telepített térképeket. A törlést követően újra le kell töltene őket.";
+
+"mwm_download_all" = "Összes letöltése";
+
+"mwm_delete_all" = "Összes térkép törlése";
+
+"mwm_email_or_username" = "E-mail vagy felhasználónév";
+
+"mwm_autodownload" = "Automatikus letöltés";

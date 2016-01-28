@@ -1378,6 +1378,133 @@
 
 "editor_correct_mistake_message" = "Při úpravách jste udělali chybu. Opravte ji prosím, nebo přepněte do jednoduchého režimu.";
 
-"migrate_title" = "Important!";
+"editor_closed_now" = "Nyní je zavřeno";
 
-"migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";
+"editor_daily" = "Denně";
+
+"editor_twentyfour_seven" = "24/7";
+
+"editor_day_off_today" = "Dnes je den volna";
+
+"editor_day_off" = "Den volna";
+
+"editor_today" = "Dnes";
+
+"editor_sunrise_to_sunset" = "Od úsvitu do soumraku";
+
+"editor_add_business_hours" = "Přidat otevírací dobu";
+
+"editor_edit_business_hours" = "Upravit otevírací dobu";
+
+"editor_profile" = "Profil";
+
+"editor_no_osm_acc" = "Nemáte účet u OpenStreetMap?";
+
+"editor_register" = "Registrace";
+
+"editor_not_now" = "Nyní ne";
+
+"editor_login" = "Přihlásit se";
+
+"editor_login_with" = "Přihlásit se s";
+
+"editor_password" = "Heslo";
+
+"editor_forgot_password" = "Zapomenuté heslo?";
+
+"editor_restore_password" = "Obnovit heslo";
+
+"editor_enter_reg_email" = "Zadejte emailovou adresu, kterou jste používali během registrace a my Vám pošleme odkaz, abyste mohli obnovit svoje heslo";
+
+"editor_email" = "Email";
+
+"editor_reset_password" = "Resetovat heslo";
+
+"editor_registration" = "Registrace";
+
+"editor_reg_w_google" = "Registrace s Googleem";
+
+"editor_reg_with_facebook" = "Registrace s Facebookem";
+
+"editor_username" = "Uživatelské jméno";
+
+"editor_register" = "Registrace";
+
+"editor_reg_in_browser" = "Registrace v prohlížeči";
+
+"editor_terms_of_service" = "Podmínky služby";
+
+"editor_osm_account" = "Účet OSM";
+
+"editor_resend" = "Poslat znovu";
+
+"editor_logout" = "Odhlášení";
+
+"editor_edit_business_hours" = "Editovat pracovní dobu";
+
+"editor_whats_new_message" = "Přihlaste se a editujte informace o objektech na mapě a my je zpřístupníme miliónům dalších uživatelů. Udělejme společně svět dokonalejším místem.";
+
+"editor_not_sent" = "Neposláno";
+
+"editor_latest_update" = "Poslední aktualizace";
+
+/* The number of changes made. As in "changes: 123". */
+"editor_changes" = "změn";
+
+"editor_first_edit" = "Editovali jste svůj první objekt!";
+
+"editor_login_to_save_changes" = "Přihlaste se a my přidáme změny pro milióny lidí na celém světě.";
+
+"editor_thank_you" = "Děkujeme Vám";
+
+"editor_login_with_openstreetmap" = "Log in at www.openstreetmap.org";
+
+"editor_edit_place" = "Upravit místo";
+
+"editor_place_name" = "Název místa";
+
+"editor_place_name_caption" = "Zadejte název, jak je uveden na vývěsním štítu místa";
+
+"editor_multilanguage" = "Vícejazyčné";
+
+"editor_show" = "Zobrazit";
+
+"editor_hide" = "Skrýt";
+
+"editor_add_language" = "Přidat jazyk";
+
+"editor_address" = "Adresa";
+
+"editor_street" = "Ulice";
+
+"editor_building" = "Budova";
+
+"editor_details" = "Podrobnosti";
+
+"editor_add_street" = "Přidat ulici";
+
+"editor_choose_lang" = "Zvolit jazyk";
+
+"editor_choose_street" = "Zvolit ulici";
+
+"editor_type" = "Typ";
+
+"editor_index" = "Obsah";
+
+"mwm_download_all" = "Stáhnout vše";
+
+"mwm_split_mwms_message" = "Rozdělili jsme mapy na části. Nyní si můžete stáhnout jednotlivé regiony namísto celé země. Než začnete stahovat nové mapy, prosím, odstraňte ty staré.";
+
+"mwm_youve_been_asking" = "Říkali jste si o to, a my to udělali";
+
+"mwm_migrate_title" = "Důležité!";
+
+"migrate_subtitle" = "Kvůli podpoře nového formátu dat musíme smazat nainstalované mapy. Poté byste měli mapy stáhnout znovu.";
+
+"mwm_download_all" = "Stáhnout vše";
+
+"mwm_delete_all" = "Odstranit vše";
+
+"mwm_email_or_username" = "E-mail nebo uživatelské jméno";
+
+"mwm_autodownload" = "Automaticky stahovat";

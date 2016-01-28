@@ -1378,6 +1378,133 @@
 
 "editor_correct_mistake_message" = "Bạn đã mắc lỗi chỉnh sửa. Vui lòng sửa lỗi hoặc chuyển qua chế độ đơn giản.";
 
-"migrate_title" = "Important!";
+"editor_closed_now" = "Hiện đã đóng";
 
-"migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";
+"editor_daily" = "Hàng ngày";
+
+"editor_twentyfour_seven" = "24/7";
+
+"editor_day_off_today" = "Nghỉ hôm nay";
+
+"editor_day_off" = "Ngày nghỉ";
+
+"editor_today" = "Hôm nay";
+
+"editor_sunrise_to_sunset" = "Từ bình minh đến hoàng hôn";
+
+"editor_add_business_hours" = "Thêm giờ làm việc";
+
+"editor_edit_business_hours" = "Sửa giờ làm việc";
+
+"editor_profile" = "Hồ sơ";
+
+"editor_no_osm_acc" = "Bạn chưa có tài khoản tại OpenStreetMap ư?";
+
+"editor_register" = "Đăng ký";
+
+"editor_not_now" = "Không phải bây giờ";
+
+"editor_login" = "Đăng nhập";
+
+"editor_login_with" = "Đăng nhập với";
+
+"editor_password" = "Mật khẩu";
+
+"editor_forgot_password" = "Quên mật khẩu?";
+
+"editor_restore_password" = "Khôi phục mật khẩu";
+
+"editor_enter_reg_email" = "Nhập địa chỉ email bạn đã sử dụng trong quá trình đăng ký và chúng tôi sẽ gửi cho bạn liên kết để tạo mới mật khẩu của bạn";
+
+"editor_email" = "E-mail";
+
+"editor_reset_password" = "đặt lại mật khẩu";
+
+"editor_registration" = "Đăng ký";
+
+"editor_reg_w_google" = "Đăng ký với Google";
+
+"editor_reg_with_facebook" = "Đăng ký với Facebook";
+
+"editor_username" = "Tên đăng nhập";
+
+"editor_register" = "Đăng ký";
+
+"editor_reg_in_browser" = "Đăng ký trong trình duyệt";
+
+"editor_terms_of_service" = "Điều khoản dịch vụ";
+
+"editor_osm_account" = "Tài khoản OSM";
+
+"editor_resend" = "Gửi lại";
+
+"editor_logout" = "Đăng xuất";
+
+"editor_edit_business_hours" = "Chỉnh sửa giờ làm việc";
+
+"editor_whats_new_message" = "Đăng nhập và chỉnh sửa thông tin của các đối tượng trên bản đồ và chúng tôi sẽ hiển thị chúng cho hàng triệu người dùng khác. Hãy cùng nhau làm cho thế giới tốt đẹp hơn.";
+
+"editor_not_sent" = "Chưa được gửi";
+
+"editor_latest_update" = "Cập nhật mới nhất";
+
+/* The number of changes made. As in "changes: 123". */
+"editor_changes" = "thay đổi";
+
+"editor_first_edit" = "Bạn đã chỉnh sửa đối tượng đầu tiên của mình!";
+
+"editor_login_to_save_changes" = "Đăng nhập và chúng tôi sẽ thêm thay đổi cho hàng triệu người trên khắp thế giới.";
+
+"editor_thank_you" = "Cảm ơn bạn";
+
+"editor_login_with_openstreetmap" = "Đăng nhập tại www.openstreetmap.org";
+
+"editor_edit_place" = "Chỉnh sửa địa điểm";
+
+"editor_place_name" = "Tên địa điểm";
+
+"editor_place_name_caption" = "Nhập tên như nó trên dấu hiệu của địa điểm";
+
+"editor_multilanguage" = "Đa ngôn ngữ";
+
+"editor_show" = "Hiển thị";
+
+"editor_hide" = "Ẩn";
+
+"editor_add_language" = "Thêm ngôn ngữ";
+
+"editor_address" = "Địa chỉ";
+
+"editor_street" = "Đường";
+
+"editor_building" = "Tòa nhà";
+
+"editor_details" = "Chi tiết";
+
+"editor_add_street" = "Thêm con đường";
+
+"editor_choose_lang" = "Đã chọn ngôn ngữ";
+
+"editor_choose_street" = "Đã chọn con đường";
+
+"editor_type" = "Kiểu";
+
+"editor_index" = "Mục lục";
+
+"mwm_download_all" = "Tải về tất cả";
+
+"mwm_split_mwms_message" = "Chúng tôi đã chia bản đồ thành nhiều phần. Bây giờ bạn có thể tải về các vùng riêng biệt, không phải là toàn bộ quốc gia. Trước khi bạn bắt đầu tải những bản đồ mới, hãy loại bỏ những cái cũ.";
+
+"mwm_youve_been_asking" = "Bạn đã yêu cầu điều đó và chúng tôi đã thực hiện nó";
+
+"mwm_migrate_title" = "Quan trọng!";
+
+"migrate_subtitle" = "Để hỗ trợ định dạng dữ liệu mới, chúng tôi phải xóa các bản đồ đã cài trước. Sau đó bạn nên tải bản đồ lại.";
+
+"mwm_download_all" = "Tải về tất cả";
+
+"mwm_delete_all" = "Xóa tất cả";
+
+"mwm_email_or_username" = "Email hoặc tên người dùng";
+
+"mwm_autodownload" = "Tự động tải về";

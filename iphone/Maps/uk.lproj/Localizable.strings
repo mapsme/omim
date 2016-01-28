@@ -1378,6 +1378,133 @@
 
 "editor_correct_mistake_message" = "Під час редагування часу роботи ви зробили помилку. Виправте її або перейдіть у простий режим.";
 
-"migrate_title" = "Important!";
+"editor_closed_now" = "Зараз закрито";
 
-"migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";
+"editor_daily" = "Щоденно";
+
+"editor_twentyfour_seven" = "24/7";
+
+"editor_day_off_today" = "Сьогодні вихідний";
+
+"editor_day_off" = "Вихідний";
+
+"editor_today" = "Сьогодні";
+
+"editor_sunrise_to_sunset" = "Від світанку до заходу";
+
+"editor_add_business_hours" = "Додайте години праці";
+
+"editor_edit_business_hours" = "Відредагуйте години праці";
+
+"editor_profile" = "Профіль";
+
+"editor_no_osm_acc" = "Немає облікового запису в OpenStreetMap?";
+
+"editor_register" = "Зареєструватися";
+
+"editor_not_now" = "Не зараз";
+
+"editor_login" = "Увійти";
+
+"editor_login_with" = "Увійти з";
+
+"editor_password" = "Пароль";
+
+"editor_forgot_password" = "Забули пароль?";
+
+"editor_restore_password" = "Відновити пароль";
+
+"editor_enter_reg_email" = "Введіть адресу ел. пошти, яку ви використали під час реєстрації і ми надішлемо вам посилання для відновлення паролю";
+
+"editor_email" = "Ел. пошта";
+
+"editor_reset_password" = "Змінити пароль";
+
+"editor_registration" = "Реєстрація";
+
+"editor_reg_w_google" = "Реєстрація з Google";
+
+"editor_reg_with_facebook" = "Реєстрація з Facebook";
+
+"editor_username" = "Ім'я користувача";
+
+"editor_register" = "Зареєструватися";
+
+"editor_reg_in_browser" = "Зареєструватися у браузері";
+
+"editor_terms_of_service" = "Правила користування";
+
+"editor_osm_account" = "Обліковий запис OSM";
+
+"editor_resend" = "Надіслати знову";
+
+"editor_logout" = "Вийти";
+
+"editor_edit_business_hours" = "Редагувати робочі години";
+
+"editor_whats_new_message" = "Увійдіть та редагуйте інформацію про об'єкти на карті, і ми зробимо їх доступними для мільйонів інших користувачів. Давайте зробимо світ кращим разом.";
+
+"editor_not_sent" = "Не надіслано";
+
+"editor_latest_update" = "Останнє оновлення";
+
+/* The number of changes made. As in "changes: 123". */
+"editor_changes" = "змін";
+
+"editor_first_edit" = "Ви редагували свій перший об'єкт!";
+
+"editor_login_to_save_changes" = "Увійдіть і ми додамо зміни для мільйонів людей по всьому світу.";
+
+"editor_thank_you" = "Дякуємо";
+
+"editor_login_with_openstreetmap" = "Увійдіть на www.openstreetmap.org";
+
+"editor_edit_place" = "Редагувати місце";
+
+"editor_place_name" = "Назва місця";
+
+"editor_place_name_caption" = "Введіть назву, оскільки вона на знаку місця";
+
+"editor_multilanguage" = "Багатомовність";
+
+"editor_show" = "Показати";
+
+"editor_hide" = "Приховати";
+
+"editor_add_language" = "Додати мову";
+
+"editor_address" = "Адреса";
+
+"editor_street" = "Вулиця";
+
+"editor_building" = "Будинок";
+
+"editor_details" = "Деталі";
+
+"editor_add_street" = "Додати вулицю";
+
+"editor_choose_lang" = "Вибрати мову";
+
+"editor_choose_street" = "Вибрати вулицю";
+
+"editor_type" = "Тип";
+
+"editor_index" = "Індекс";
+
+"mwm_download_all" = "Стягнути всі";
+
+"mwm_split_mwms_message" = "Ми поділили карти на частини. Тепер ви можете стягувати окремі регіони, а не країну цілком. Перед тим як розпочати стягнення нових мап, видаліть старі мапи.";
+
+"mwm_youve_been_asking" = "Ви просили і ми це зробили";
+
+"mwm_migrate_title" = "Важливо!";
+
+"migrate_subtitle" = "Для того, щоб перейти на новий формат даних, нам потрібно видалити попередньо встановлені карти. Потім потрібно завантажити карти знову.";
+
+"mwm_download_all" = "Стягнути всі";
+
+"mwm_delete_all" = "Видалити всі";
+
+"mwm_email_or_username" = "Ел. пошта або ім'я користувача";
+
+"mwm_autodownload" = "Автоматичне завантаження";

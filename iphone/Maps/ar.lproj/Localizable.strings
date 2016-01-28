@@ -1378,6 +1378,133 @@
 
 "editor_correct_mistake_message" = "قمت بخطأ في التحرير. يرجى تصحيح الخطأ أو التبديل إلى الوضع البسيط.";
 
-"migrate_title" = "Important!";
+"editor_closed_now" = "مغلق الآن";
 
-"migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";
+"editor_daily" = "يوميا";
+
+"editor_twentyfour_seven" = "24/7";
+
+"editor_day_off_today" = "اليوم عطلة";
+
+"editor_day_off" = "عطلة";
+
+"editor_today" = "اليوم";
+
+"editor_sunrise_to_sunset" = "من الشروق إلى المغيب";
+
+"editor_add_business_hours" = "اضف ساعات عمل";
+
+"editor_edit_business_hours" = "حرر ساعات عمل";
+
+"editor_profile" = "الملف الشخصي";
+
+"editor_no_osm_acc" = "ليس لديك حساب في OpenStreetMap ؟";
+
+"editor_register" = "التسجيل";
+
+"editor_not_now" = "ليس الآن";
+
+"editor_login" = "تسجيل الدخول";
+
+"editor_login_with" = "تسجيل الدخول عبر";
+
+"editor_password" = "كلمة المرور";
+
+"editor_forgot_password" = "هل نسيت كلمة المرور؟";
+
+"editor_restore_password" = "استعادة كلمة المرور";
+
+"editor_enter_reg_email" = "أدخل عنوان البريد الإلكتروني الذي استخدمته عند التسجيل وسنرسل لك رابط لتجديد كلمة المرور";
+
+"editor_email" = "البريد الإلكتروني";
+
+"editor_reset_password" = "إعادة تعيين كلمة المرور";
+
+"editor_registration" = "التسجيل";
+
+"editor_reg_w_google" = "التسجيل عبر Google";
+
+"editor_reg_with_facebook" = "التسجيل عبر Facebook";
+
+"editor_username" = "اسم المستخدم";
+
+"editor_register" = "التسجيل";
+
+"editor_reg_in_browser" = "التسجيل في المتصفح";
+
+"editor_terms_of_service" = "شروط الخدمة";
+
+"editor_osm_account" = "حساب OSM";
+
+"editor_resend" = "إعادة إرسال";
+
+"editor_logout" = "تسجيل الخروج";
+
+"editor_edit_business_hours" = "تعديل ساعات العمل";
+
+"editor_whats_new_message" = "قم بتسجيل الدخول وعدل البيانات الخاصة بالمكان على الخريطة وسنجعلها متاحة لملايين المستخدمين الآخرين. لنجعل العالم أفضل معا.";
+
+"editor_not_sent" = "لم ترسل";
+
+"editor_latest_update" = "آخر تحديث";
+
+/* The number of changes made. As in "changes: 123". */
+"editor_changes" = "تغييرات";
+
+"editor_first_edit" = "لقد قمت بتعديلك الأول!";
+
+"editor_login_to_save_changes" = "قم بتسجيل الدخول وسنقوم بإضافة هذه التغييرات للملايين من الناس في جميع أنحاء العالم.";
+
+"editor_thank_you" = "شكرا لك";
+
+"editor_login_with_openstreetmap" = "قم بتسجيل الدخول في www.openstreetmap.org";
+
+"editor_edit_place" = "تعديل المكان";
+
+"editor_place_name" = "اسم المكان";
+
+"editor_place_name_caption" = "أدخل الاسم كما هو مبين على الإشارة الخاصة بالمكان";
+
+"editor_multilanguage" = "متعدد اللغات";
+
+"editor_show" = "إظهار";
+
+"editor_hide" = "إخفاء";
+
+"editor_add_language" = "إضافة لغة";
+
+"editor_address" = "العنوان";
+
+"editor_street" = "الشارع";
+
+"editor_building" = "المبني";
+
+"editor_details" = "التفاصيل";
+
+"editor_add_street" = "إضافة شارع";
+
+"editor_choose_lang" = "اختر اللغة";
+
+"editor_choose_street" = "اختر الشارع";
+
+"editor_type" = "اكتب";
+
+"editor_index" = "فهرس";
+
+"mwm_download_all" = "تنزيل الكل";
+
+"mwm_split_mwms_message" = "لقد قسمنا الخرائط إلى أجزاء. الآن يمكنك تنزيل مناطق منفصلة، وليس البلد بأكمله. قبل البدء في تنزيل الخرائط الجديدة، يرجى إزالة النسخ القديمة.";
+
+"mwm_youve_been_asking" = "لقد طلبتم ذلك، وها نحن قد لبينا طلبكم";
+
+"mwm_migrate_title" = "هام!";
+
+"migrate_subtitle" = "من أجل دعم تنسيق البيانات الجديدة فيتعين علينا حذف الخرائط المثبتة. ينبغي عليك بعد ذلك تنزيل الخرائط من جديد.";
+
+"mwm_download_all" = "تنزيل الكل";
+
+"mwm_delete_all" = "حذف الكل";
+
+"mwm_email_or_username" = "البريد الإلكتروني أو اسم المستخدم";
+
+"mwm_autodownload" = "التنزيل التلقائي";

@@ -1378,6 +1378,133 @@
 
 "editor_correct_mistake_message" = "U hebt een bewerkingsfout gemaakt. Corrigeer deze of schakel over naar de eenvoudige modus.";
 
-"migrate_title" = "Important!";
+"editor_closed_now" = "Nu gesloten";
 
-"migrate_subtitle" = "In order to support new data format we have to erase installed maps. Then you should download maps again.";
+"editor_daily" = "Dagelijks";
+
+"editor_twentyfour_seven" = "24/7";
+
+"editor_day_off_today" = "Vrije dag vandaag";
+
+"editor_day_off" = "Vrije dag";
+
+"editor_today" = "Vandaag";
+
+"editor_sunrise_to_sunset" = "Van zonsopgang tot zonsondergang";
+
+"editor_add_business_hours" = "Openingsuren toevoegen";
+
+"editor_edit_business_hours" = "Openingsuren bewerken";
+
+"editor_profile" = "Profiel";
+
+"editor_no_osm_acc" = "Geen account bij OpenStreetMap?";
+
+"editor_register" = "Registeren";
+
+"editor_not_now" = "Net nu";
+
+"editor_login" = "Log in";
+
+"editor_login_with" = "Log in met";
+
+"editor_password" = "Wachtwoord";
+
+"editor_forgot_password" = "Wachtwoord vergeten?";
+
+"editor_restore_password" = "Wachtwoord herstellen";
+
+"editor_enter_reg_email" = "Voer het e-mailadres in dat u heeft gebruikt tijdens de registratie, dan sturen wij u de link om uw wachtwoord te vernieuwen";
+
+"editor_email" = "E-mailadres";
+
+"editor_reset_password" = "Wachtwoord resetten";
+
+"editor_registration" = "Registratie";
+
+"editor_reg_w_google" = "Registratie via Google";
+
+"editor_reg_with_facebook" = "Registratie via Facebook";
+
+"editor_username" = "Gebruikersnaam";
+
+"editor_register" = "Registeren";
+
+"editor_reg_in_browser" = "Registreren in browser";
+
+"editor_terms_of_service" = "Servicevoorwaarden";
+
+"editor_osm_account" = "OSM-account";
+
+"editor_resend" = "Opnieuw verzenden";
+
+"editor_logout" = "Uitloggen";
+
+"editor_edit_business_hours" = "Openingsuren bewerken";
+
+"editor_whats_new_message" = "Log in en bewerk gegevens van de objecten op de kaart, dan zullen wij ze beschikbaar maken voor miljoenen andere gebruikers. Laten we samen de wereld beter maken.";
+
+"editor_not_sent" = "Niet verzonden";
+
+"editor_latest_update" = "Laatste update";
+
+/* The number of changes made. As in "changes: 123". */
+"editor_changes" = "wijzigingen";
+
+"editor_first_edit" = "Je hebt je eerste object aangepast!";
+
+"editor_login_to_save_changes" = "Log in, dan zullen we wijzigingen toevoegen voor miljoenen mensen over de hele wereld.";
+
+"editor_thank_you" = "Dank je wel";
+
+"editor_login_with_openstreetmap" = "Log in op www.openstreetmap.org";
+
+"editor_edit_place" = "De locatie bewerken";
+
+"editor_place_name" = "Locatienaam";
+
+"editor_place_name_caption" = "Voer de naam in zoals die op het bord van de locatie wordt weergegeven";
+
+"editor_multilanguage" = "Meerdere talen";
+
+"editor_show" = "Tonen";
+
+"editor_hide" = "Verbergen";
+
+"editor_add_language" = "Een taal toevoegen";
+
+"editor_address" = "Adres";
+
+"editor_street" = "Straat";
+
+"editor_building" = "Gebouw";
+
+"editor_details" = "Details";
+
+"editor_add_street" = "Een straat toevoegen";
+
+"editor_choose_lang" = "Een taal kiezen";
+
+"editor_choose_street" = "Een straat kiezen";
+
+"editor_type" = "Type";
+
+"editor_index" = "Index";
+
+"mwm_download_all" = "Alles downloaden";
+
+"mwm_split_mwms_message" = "We hebben kaarten in delen verdeeld. Nu kunt u afzonderlijke regio's downloaden in plaats van het hele land. Verwijder eerst de oude kaarten voordat uw nieuwe gaat downloaden.";
+
+"mwm_youve_been_asking" = "Op veler verzoek hebben we het voor elkaar gekregen";
+
+"mwm_migrate_title" = "Belangrijk!";
+
+"migrate_subtitle" = "Om de nieuwe gegevensindeling te kunnen ondersteunen, moeten we geïnstalleerde kaarten verwijderen. Vervolgens dient u de kaarten opnieuw te downloaden.";
+
+"mwm_download_all" = "Alles downloaden";
+
+"mwm_delete_all" = "Alles verwijderen";
+
+"mwm_email_or_username" = "E-mailadres of gebruikersnaam";
+
+"mwm_autodownload" = "Automatische download";
