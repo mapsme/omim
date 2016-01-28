@@ -90,7 +90,7 @@ SearchModel::SearchType SearchModel::GetSearchType(FeatureType const & feature) 
     case CITY:
     case TOWN:
       return SEARCH_TYPE_CITY;
-    case VILLAGE:
+    case VILLAGE: 
       return SEARCH_TYPE_VILLAGE;
     case LOCALITY_COUNT:
       return SEARCH_TYPE_COUNT;
@@ -115,8 +115,8 @@ string DebugPrint(SearchModel::SearchType type)
     return "STREET";
   case SearchModel::SEARCH_TYPE_CITY:
     return "CITY";
-  case SearchModel::SEARCH_TYPE_VILLAGE:
-    return "VILLAGE";    
+  case SearchModel::SEARCH_TYPE_VILLAGE: 
+    return "VILLAGE";
   case SearchModel::SEARCH_TYPE_STATE:
     return "STATE";
   case SearchModel::SEARCH_TYPE_COUNTRY:

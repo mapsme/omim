@@ -80,8 +80,9 @@ UNIT_TEST(SearchQueryV2_Smoke)
   auto const losAlamosCity =
       make_shared<TestCity>(m2::PointD(10, 10), "Los Alamos", "en", 100 /* rank */);
   auto const mskCity = make_shared<TestCity>(m2::PointD(0, 0), "Moscow", "en", 100 /* rank */);
-  auto const longPondVillage = make_shared<TestCity>(m2::PointD(15, 15), "Long Pond Village", "en", 10 /* rank */);
-  
+  auto const longPondVillage =
+      make_shared<TestVillage>(m2::PointD(15, 15), "Long Pond Village", "en", 10 /* rank */);
+
   auto const feynmanStreet = make_shared<TestStreet>(
       vector<m2::PointD>{m2::PointD(9.999, 9.999), m2::PointD(10, 10), m2::PointD(10.001, 10.001)},
       "Feynman street", "en");
@@ -95,9 +96,8 @@ UNIT_TEST(SearchQueryV2_Smoke)
       vector<m2::PointD>{m2::PointD(10.002, 9.998), m2::PointD(10.003, 9.997)}, "Bohr street",
       "en");
   auto const firstAprilStreet = make_shared<TestStreet>(
-      vector<m2::PointD>{m2::PointD(14.998, 15), m2::PointD(15.002, 15)}, "1st April street",
-      "en");
-      
+      vector<m2::PointD>{m2::PointD(14.998, 15), m2::PointD(15.002, 15)}, "1st April street", "en");
+
   auto const feynmanHouse = make_shared<TestBuilding>(m2::PointD(10, 10), "Feynman house",
                                                       "1 unit 1", *feynmanStreet, "en");
   auto const bohrHouse =
@@ -108,7 +108,8 @@ UNIT_TEST(SearchQueryV2_Smoke)
       "Hilbert house", "1 unit 2", *bohrStreet1, "en");
   auto const descartesHouse =
       make_shared<TestBuilding>(m2::PointD(10, 10), "Descartes house", "2", "en");
-  auto const bornHouse = make_shared<TestBuilding>(m2::PointD(14.999, 15), "Born house", "8", *firstAprilStreet, "en");
+  auto const bornHouse =
+      make_shared<TestBuilding>(m2::PointD(14.999, 15), "Born house", "8", *firstAprilStreet, "en");
 
   auto const busStop = make_shared<TestPOI>(m2::PointD(0, 0), "Bus stop", "en");
   auto const tramStop = make_shared<TestPOI>(m2::PointD(0.0001, 0.0001), "Tram stop", "en");
@@ -116,7 +117,7 @@ UNIT_TEST(SearchQueryV2_Smoke)
       make_shared<TestPOI>(m2::PointD(0.0002, 0.0002), "Quantum teleport 1", "en");
   auto const quantumTeleport2 =
       make_shared<TestPOI>(m2::PointD(10, 10), "Quantum teleport 2", "en");
-  auto const quantumCafe = make_shared<TestPOI>(m2::PointD(-0.0002, -0.0002), "Quantum cafe", "en");    
+  auto const quantumCafe = make_shared<TestPOI>(m2::PointD(-0.0002, -0.0002), "Quantum cafe", "en");
   auto const lantern1 = make_shared<TestPOI>(m2::PointD(10.0005, 10.0005), "lantern 1", "en");
   auto const lantern2 = make_shared<TestPOI>(m2::PointD(10.0006, 10.0005), "lantern 2", "en");
 
@@ -144,7 +145,7 @@ UNIT_TEST(SearchQueryV2_Smoke)
     builder.Add(*quantumTeleport2);
     builder.Add(*quantumCafe);
     builder.Add(*lantern1);
-    builder.Add(*lantern2);    
+    builder.Add(*lantern2);
   }
 
   {
@@ -152,7 +153,6 @@ UNIT_TEST(SearchQueryV2_Smoke)
     builder.Add(*wonderlandCountry);
     builder.Add(*losAlamosCity);
     builder.Add(*mskCity);
-    builder.Add(*longPondVillage);
   }
 
   auto const wonderlandResult = engine.RegisterMap(wonderland);
@@ -267,9 +267,10 @@ UNIT_TEST(SearchQueryV2_Smoke)
         make_shared<ExactMatch>(wonderlandId, quantumTeleport2)};
     TEST(MatchResults(engine, rules, request.Results()), ());
   }
-  
+
   {
-    TestSearchRequest request(engine, "long pond 1st april street 8", "en", search::SearchParams::ALL, viewport);
+    TestSearchRequest request(engine, "long pond 1st april street 8", "en",
+                              search::SearchParams::ALL, viewport);
     request.Wait();
     vector<shared_ptr<MatchingRule>> rules = {make_shared<ExactMatch>(wonderlandId, bornHouse)};
     TEST(MatchResults(engine, rules, request.Results()), ());
