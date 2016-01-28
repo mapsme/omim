@@ -16,17 +16,14 @@ import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.MapStorage;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.base.BaseMwmFragment;
-import com.mapswithme.maps.base.BaseMwmFragmentActivity;
 import com.mapswithme.maps.location.LocationHelper;
+import com.mapswithme.maps.search.SearchFragment;
 import com.mapswithme.maps.widget.WheelProgressView;
 import com.mapswithme.util.StringUtils;
 import com.mapswithme.util.UiUtils;
 
 public class CountrySuggestFragment extends BaseMwmFragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener
 {
-  public static final String EXTRA_LAT = "Latitude";
-  public static final String EXTRA_LON = "Longitude";
-
   private double mLat;
   private double mLon;
   private MapStorage.Index mCurrentLocationCountryIndex;
@@ -107,13 +104,10 @@ public class CountrySuggestFragment extends BaseMwmFragment implements View.OnCl
   {
     super.onResume();
 
-    readArguments();
-    if (mLat == 0 || mLon == 0)
-    {
-      final Location last = LocationHelper.INSTANCE.getLastLocation();
-      if (last != null)
-        setLatLon(last.getLatitude(), last.getLongitude());
-    }
+    final Location last = LocationHelper.INSTANCE.getLastLocation();
+    if (last != null)
+      setLatLon(last.getLatitude(), last.getLongitude());
+
     refreshViews();
   }
 
@@ -135,15 +129,6 @@ public class CountrySuggestFragment extends BaseMwmFragment implements View.OnCl
   {
     mTvCountry.setText(name);
     mTvActiveCountry.setText(name);
-  }
-
-  private void readArguments()
-  {
-    final Bundle args = getArguments();
-    if (args == null)
-      return;
-
-    setLatLon(args.getDouble(EXTRA_LAT), args.getDouble(EXTRA_LON));
   }
 
   private void initViews(View view)
@@ -226,15 +211,15 @@ public class CountrySuggestFragment extends BaseMwmFragment implements View.OnCl
     ActiveCountryTree.downloadMapForIndex(mCurrentLocationCountryIndex, storageOptionsRequested());
   }
 
-  private int storageOptionsRequested()
+  private static int storageOptionsRequested()
   {
     return StorageOptions.MAP_OPTION_MAP_ONLY;
   }
 
   private void selectMapForDownload()
   {
-    final BaseMwmFragmentActivity parent = (BaseMwmFragmentActivity) getActivity();
-    parent.replaceFragment(DownloadFragment.class, null, null);
+    SearchFragment parent = (SearchFragment)getParentFragment();
+    parent.showDownloader();
   }
 
   private void cancelCurrentDownload()
