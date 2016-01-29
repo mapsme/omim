@@ -660,6 +660,9 @@ void InitLocalizedStrings()
   pageControl.pageIndicatorTintColor = [UIColor blackHintText];
   pageControl.currentPageIndicatorTintColor = [UIColor blackSecondaryText];
   pageControl.backgroundColor = [UIColor white];
+
+  UITextField * textField = [UITextField appearance];
+  textField.keyboardAppearance = [UIColor isNightMode] ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
 }
 
 
