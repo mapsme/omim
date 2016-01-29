@@ -13,15 +13,11 @@ include($$ROOT_DIR/common.pri)
 DEFINES += OMIM_UNIT_TEST_DISABLE_PLATFORM_INIT
 
 SOURCES += ../../testing/testingmain.cpp \
-    arithmetic_codec_test.cpp \
     base64_for_user_id_test.cpp \
     base64_test.cpp \
     bit_streams_test.cpp \
-#    blob_storage_test.cpp \
     coder_util_test.cpp \
     compressed_bit_vector_test.cpp \
-    old_compressed_bit_vector_test.cpp \
-#    compressed_varnum_vector_test.cpp \
     dd_vector_test.cpp \
     diff_test.cpp \
     endianness_test.cpp \
@@ -55,5 +51,4 @@ SOURCES += ../../testing/testingmain.cpp \
 
 HEADERS += \
     coder_test.hpp \
-    compressor_test_utils.hpp \
     reader_test.hpp \
