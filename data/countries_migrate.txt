@@ -1,23 +1,23 @@
 {
  "n": "World",
- "v": 160126,
+ "v": 160128,
  "g": [
   {
    "n": "Abkhazia",
-   "s": 4677679,
-   "rs": 1
+   "s": 4680567,
+   "rs": 0
   },
   {
    "n": "Afghanistan",
    "c": "af",
-   "s": 20916864,
-   "rs": 1
+   "s": 21291763,
+   "rs": 0
   },
   {
    "n": "Albania",
    "c": "al",
-   "s": 13757470,
-   "rs": 1
+   "s": 13779654,
+   "rs": 0
   },
   {
    "n": "Algeria",
@@ -26,45 +26,45 @@
     {
      "n": "Algeria \u2014 Centre",
      "f": "Algeria_Central",
-     "s": 24806362,
-     "rs": 1
+     "s": 24953162,
+     "rs": 0
     },
     {
      "n": "Algeria \u2014 North",
      "f": "Algeria_Coast",
-     "s": 68563261,
-     "rs": 1
+     "s": 68691733,
+     "rs": 0
     }
    ]
   },
   {
    "n": "Andorra",
    "c": "ad",
-   "s": 802180,
-   "rs": 1
+   "s": 802999,
+   "rs": 0
   },
   {
    "n": "Angola",
    "c": "ao",
-   "s": 16797115,
-   "rs": 1
+   "s": 16801435,
+   "rs": 0
   },
   {
    "n": "Anguilla",
    "c": "ai",
-   "s": 408440,
-   "rs": 1
+   "s": 408504,
+   "rs": 0
   },
   {
    "n": "Antarctica",
-   "s": 14606459,
-   "rs": 1
+   "s": 14668651,
+   "rs": 0
   },
   {
    "n": "Antigua and Barbuda",
    "c": "ag",
-   "s": 1121155,
-   "rs": 1
+   "s": 1123083,
+   "rs": 0
   },
   {
    "n": "Argentina",
@@ -73,58 +73,58 @@
     {
      "n": "Argentine Northwest",
      "f": "Argentina_Northwest",
-     "s": 41034348,
-     "rs": 1
+     "s": 41065020,
+     "rs": 0
     },
     {
      "n": "Buenos Aires Province \u2014 North",
      "f": "Argentina_Buenos Aires_North",
-     "s": 74527319,
-     "rs": 1
+     "s": 74510823,
+     "rs": 0
     },
     {
      "n": "Buenos Aires Province \u2014 South",
      "f": "Argentina_Buenos Aires_South",
-     "s": 22696271,
-     "rs": 1
+     "s": 22730951,
+     "rs": 0
     },
     {
      "n": "Cuyo",
      "f": "Argentina_Cuyo",
-     "s": 18526688,
-     "rs": 1
+     "s": 18564048,
+     "rs": 0
     },
     {
      "n": "Mesopotamia",
      "f": "Argentina_Mesopotamia",
-     "s": 36825355,
-     "rs": 1
+     "s": 36883323,
+     "rs": 0
     },
     {
      "n": "Pampas",
      "f": "Argentina_Pampas",
-     "s": 59349235,
-     "rs": 1
+     "s": 59545363,
+     "rs": 0
     },
     {
      "n": "Patagonia",
      "f": "Argentina_Patagonia",
-     "s": 31800005,
-     "rs": 1
+     "s": 31836581,
+     "rs": 0
     },
     {
      "n": "Southern Patagonian Ice Field",
      "f": "Campo de Hielo Sur",
-     "s": 213946,
-     "rs": 1
+     "s": 213970,
+     "rs": 0
     }
    ]
   },
   {
    "n": "Armenia",
    "c": "am",
-   "s": 13510035,
-   "rs": 1
+   "s": 13525155,
+   "rs": 0
   },
   {
    "n": "Australia",
@@ -133,50 +133,50 @@
     {
      "n": "Melbourne",
      "f": "Australia_Melbourne",
-     "s": 45822170,
-     "rs": 1
+     "s": 45901618,
+     "rs": 0
     },
     {
      "n": "New South Wales",
      "f": "Australia_New South Wales",
-     "s": 72558057,
-     "rs": 1
+     "s": 72758809,
+     "rs": 0
     },
     {
      "n": "Northern Territory",
      "f": "Australia_Northern Territory",
-     "s": 6281631,
-     "rs": 1
+     "s": 6288335,
+     "rs": 0
     },
     {
      "n": "Queensland",
      "f": "Australia_Queensland",
-     "s": 56535058,
-     "rs": 1
+     "s": 56612627,
+     "rs": 0
     },
     {
      "n": "South Australia",
      "f": "Australia_South Australia",
-     "s": 34602812,
-     "rs": 1
+     "s": 34639348,
+     "rs": 0
     },
     {
      "n": "Tasmania",
      "f": "Australia_Tasmania",
-     "s": 14572495,
-     "rs": 1
+     "s": 14621487,
+     "rs": 0
     },
     {
      "n": "Victoria",
      "f": "Australia_Victoria",
-     "s": 36032608,
-     "rs": 1
+     "s": 36067080,
+     "rs": 0
     },
     {
      "n": "Western Australia",
      "f": "Australia_Western Australia",
-     "s": 42338453,
-     "rs": 1
+     "s": 42437717,
+     "rs": 0
     },
     {
      "n": "Willis Island",
@@ -192,56 +192,56 @@
     {
      "n": "Burgenland",
      "f": "Austria_Burgenland",
-     "s": 10806846,
-     "rs": 1
+     "s": 10820550,
+     "rs": 0
     },
     {
      "n": "Carinthia",
      "f": "Austria_Carinthia",
-     "s": 28410854,
-     "rs": 1
+     "s": 28462214,
+     "rs": 0
     },
     {
      "n": "Lower Austria \u2014 West",
      "f": "Austria_Lower Austria_West",
-     "s": 37030331,
-     "rs": 1
+     "s": 37147259,
+     "rs": 0
     },
     {
      "n": "Salzburg",
      "f": "Austria_Salzburg",
-     "s": 27177182,
-     "rs": 1
+     "s": 27272598,
+     "rs": 0
     },
     {
      "n": "Styria",
      "f": "Austria_Styria",
-     "s": 60094073,
-     "rs": 1
+     "s": 60228985,
+     "rs": 0
     },
     {
      "n": "Tyrol",
      "f": "Austria_Tyrol",
-     "s": 41737946,
-     "rs": 1
+     "s": 41797362,
+     "rs": 0
     },
     {
      "n": "Upper Austria",
      "f": "Austria_Upper Austria",
-     "s": 68208075,
-     "rs": 1
+     "s": 68353595,
+     "rs": 0
     },
     {
      "n": "Vienna",
      "f": "Austria_Lower Austria_Wien",
-     "s": 49132780,
-     "rs": 1
+     "s": 49217052,
+     "rs": 0
     },
     {
      "n": "Vorarlberg",
      "f": "Austria_Vorarlberg",
-     "s": 14721380,
-     "rs": 1
+     "s": 14735828,
+     "rs": 0
     }
    ]
   },
@@ -251,33 +251,33 @@
    "g": [
     {
      "n": "Azerbaijan",
-     "s": 25144183,
-     "rs": 1
+     "s": 25161807,
+     "rs": 0
     },
     {
      "n": "Nagorno-Karabakh",
-     "s": 1991195,
-     "rs": 1
+     "s": 1991835,
+     "rs": 0
     }
    ]
   },
   {
    "n": "Bahrain",
    "c": "bh",
-   "s": 3911828,
-   "rs": 1
+   "s": 3912732,
+   "rs": 0
   },
   {
    "n": "Bangladesh",
    "c": "bd",
-   "s": 15947953,
-   "rs": 1
+   "s": 15962361,
+   "rs": 0
   },
   {
    "n": "Barbados",
    "c": "bb",
-   "s": 1606417,
-   "rs": 1
+   "s": 1607809,
+   "rs": 0
   },
   {
    "n": "Belarus",
@@ -286,38 +286,38 @@
     {
      "n": "Brest Region",
      "f": "Belarus_Brest Region",
-     "s": 14869478,
-     "rs": 1
+     "s": 14876958,
+     "rs": 0
     },
     {
      "n": "Gomel Region",
      "f": "Belarus_Homiel Region",
-     "s": 22108144,
-     "rs": 1
+     "s": 22147432,
+     "rs": 0
     },
     {
      "n": "Grodno Region",
      "f": "Belarus_Hrodna Region",
-     "s": 20261374,
-     "rs": 1
+     "s": 20273838,
+     "rs": 0
     },
     {
      "n": "Minsk Region",
      "f": "Belarus_Minsk Region",
-     "s": 35050679,
-     "rs": 1
+     "s": 35171555,
+     "rs": 0
     },
     {
      "n": "Mogilev Region",
      "f": "Belarus_Maglieu Region",
-     "s": 18361921,
-     "rs": 1
+     "s": 18373225,
+     "rs": 0
     },
     {
      "n": "Vitebsk Region",
      "f": "Belarus_Vitebsk Region",
-     "s": 32615041,
-     "rs": 1
+     "s": 32647401,
+     "rs": 0
     }
    ]
   },
@@ -328,94 +328,94 @@
     {
      "n": "Antwerp Province",
      "f": "Belgium_Antwerp",
-     "s": 35231879,
-     "rs": 1
+     "s": 35304455,
+     "rs": 0
     },
     {
      "n": "East Flanders Province",
      "f": "Belgium_East Flanders",
-     "s": 26865182,
-     "rs": 1
+     "s": 26900770,
+     "rs": 0
     },
     {
      "n": "Flemish Brabant Province",
      "f": "Belgium_Flemish Brabant",
-     "s": 37244169,
-     "rs": 1
+     "s": 37286761,
+     "rs": 0
     },
     {
      "n": "Hainaut Province",
      "f": "Belgium_Hainaut",
-     "s": 18955268,
-     "rs": 1
+     "s": 18970076,
+     "rs": 0
     },
     {
      "n": "Limburg Province",
      "f": "Belgium_Limburg",
-     "s": 22522300,
-     "rs": 1
+     "s": 22536779,
+     "rs": 0
     },
     {
      "n": "Li\u00e8ge Province",
      "f": "Belgium_Liege",
-     "s": 24427185,
-     "rs": 1
+     "s": 24466529,
+     "rs": 0
     },
     {
      "n": "Luxembourg Province",
      "f": "Belgium_Luxembourg",
-     "s": 8998599,
-     "rs": 1
+     "s": 9026031,
+     "rs": 0
     },
     {
      "n": "Namur Province",
      "f": "Belgium_Namur",
-     "s": 9740042,
-     "rs": 1
+     "s": 9763018,
+     "rs": 0
     },
     {
      "n": "Walloon Brabant Province",
      "f": "Belgium_Walloon Brabant",
-     "s": 5850591,
-     "rs": 1
+     "s": 5875023,
+     "rs": 0
     },
     {
      "n": "West Flanders Province",
      "f": "Belgium_West Flanders",
-     "s": 28703853,
-     "rs": 1
+     "s": 28707837,
+     "rs": 0
     }
    ]
   },
   {
    "n": "Belize",
    "c": "bz",
-   "s": 3571786,
-   "rs": 1
+   "s": 3573098,
+   "rs": 0
   },
   {
    "n": "Benin",
    "c": "bj",
-   "s": 12647031,
-   "rs": 1
+   "s": 12689212,
+   "rs": 0
   },
   {
    "n": "Bermuda",
    "c": "bm",
-   "s": 641768,
-   "rs": 1
+   "s": 641832,
+   "rs": 0
   },
   {
    "n": "Bhutan",
    "c": "bt",
-   "s": 1374811,
-   "rs": 1
+   "s": 1378059,
+   "rs": 0
   },
   {
    "n": "Bolivia",
    "c": "bo",
-   "s": 72342220,
-   "rs": 1
+   "s": 72437660,
+   "rs": 0
   },
   {
    "n": "Bosnia and Herzegovina",
@@ -424,28 +424,28 @@
     {
      "n": "Br\u010dko District",
      "f": "Bosnia and Herzegovina_Brcko district of Bosnia and Herzegowina",
-     "s": 874822,
-     "rs": 1
+     "s": 874966,
+     "rs": 0
     },
     {
      "n": "Federation of Bosnia and Herzegovina",
      "f": "Bosnia and Herzegovina_Entity Federation of Bosnia and Herzegovina",
-     "s": 35570458,
-     "rs": 1
+     "s": 35597961,
+     "rs": 0
     },
     {
      "n": "Republika Srpska",
      "f": "Bosnia and Herzegovina_Republic of Srpska",
-     "s": 30455077,
-     "rs": 1
+     "s": 30449228,
+     "rs": 0
     }
    ]
   },
   {
    "n": "Botswana",
    "c": "bw",
-   "s": 17427545,
-   "rs": 1
+   "s": 17444321,
+   "rs": 0
   },
   {
    "n": "Brazil",
@@ -454,148 +454,148 @@
     {
      "n": "Bahia",
      "f": "Brazil_Bahia",
-     "s": 37069960,
-     "rs": 1
+     "s": 37188624,
+     "rs": 0
     },
     {
      "n": "Esp\u00edrito Santo",
      "f": "Brazil_Southeast Region_Espirito Santo",
-     "s": 19761360,
-     "rs": 1
+     "s": 19776248,
+     "rs": 0
     },
     {
      "n": "Goi\u00e1s",
      "f": "Brazil_Goias",
-     "s": 54230188,
-     "rs": 1
+     "s": 54293916,
+     "rs": 0
     },
     {
      "n": "Mato Grosso",
      "f": "Brazil_Mato Grosso",
-     "s": 21203996,
-     "rs": 1
+     "s": 21240684,
+     "rs": 0
     },
     {
      "n": "Mato Grosso do Sul",
      "f": "Brazil_Mato Grosso Do Sul",
-     "s": 19479143,
-     "rs": 1
+     "s": 19549535,
+     "rs": 0
     },
     {
      "n": "Minas Gerais \u2014 Contagem",
      "f": "Brazil_Southeast Region_Minas Gerais_Contagem",
-     "s": 54815883,
-     "rs": 1
+     "s": 54971227,
+     "rs": 0
     },
     {
      "n": "Minas Gerais \u2014 North",
      "f": "Brazil_Southeast Region_Minas Gerais_North",
-     "s": 33117301,
-     "rs": 1
+     "s": 33198421,
+     "rs": 0
     },
     {
      "n": "North Region, Brazil",
      "f": "Brazil_North Region",
-     "s": 57858362,
-     "rs": 1
+     "s": 57946186,
+     "rs": 0
     },
     {
      "n": "Northeast Region",
      "f": "Brazil_Northeast Region",
-     "s": 78256961,
-     "rs": 1
+     "s": 78438001,
+     "rs": 0
     },
     {
      "n": "Paran\u00e1",
      "f": "Brazil_Parana",
-     "s": 63249726,
-     "rs": 1
+     "s": 63328038,
+     "rs": 0
     },
     {
      "n": "Para\u00edba",
      "f": "Brazil_Paraiba",
-     "s": 12517734,
-     "rs": 1
+     "s": 12525270,
+     "rs": 0
     },
     {
      "n": "Rio de Janeiro",
      "f": "Brazil_Southeast Region_Rio de Janeiro",
-     "s": 41996156,
-     "rs": 1
+     "s": 42038300,
+     "rs": 0
     },
     {
      "n": "Rio Grande do Norte",
      "f": "Brazil_Rio Grande do Norte",
-     "s": 10649631,
-     "rs": 1
+     "s": 10703207,
+     "rs": 0
     },
     {
      "n": "Santa Catarina",
      "f": "Brazil_Santa Catarina",
-     "s": 40349419,
-     "rs": 1
+     "s": 40470915,
+     "rs": 0
     },
     {
      "n": "Southern Brazil",
      "f": "Brazil_South Region",
-     "s": 60963039,
-     "rs": 1
+     "s": 61183655,
+     "rs": 0
     },
     {
      "n": "S\u00e3o Paulo \u2014 Campinas",
      "f": "Brazil_Southeast Region_Sao Paulo_Campinas",
-     "s": 50708060,
-     "rs": 1
+     "s": 50766668,
+     "rs": 0
     },
     {
      "n": "S\u00e3o Paulo \u2014 Ribeir\u00e3o Preto",
      "f": "Brazil_Southeast Region_Sao Paulo_West",
-     "s": 47779972,
-     "rs": 1
+     "s": 47778671,
+     "rs": 0
     },
     {
      "n": "S\u00e3o Paulo \u2014 Santos",
      "f": "Brazil_Southeast Region_Sao Paulo_City",
-     "s": 57244643,
-     "rs": 1
+     "s": 57297203,
+     "rs": 0
     }
    ]
   },
   {
    "n": "British Virgin Islands",
    "c": "vg",
-   "s": 354970,
-   "rs": 1
+   "s": 355010,
+   "rs": 0
   },
   {
    "n": "Brunei",
    "c": "bn",
-   "s": 1265908,
-   "rs": 1
+   "s": 1266436,
+   "rs": 0
   },
   {
    "n": "Bulgaria",
    "c": "bg",
-   "s": 72033804,
-   "rs": 1
+   "s": 72155060,
+   "rs": 0
   },
   {
    "n": "Burkina Faso",
    "c": "bf",
-   "s": 20396966,
-   "rs": 1
+   "s": 20423046,
+   "rs": 0
   },
   {
    "n": "Burundi",
    "c": "bi",
-   "s": 8456839,
-   "rs": 1
+   "s": 8477343,
+   "rs": 0
   },
   {
    "n": "Cambodia",
    "c": "kh",
-   "s": 11111630,
-   "rs": 1
+   "s": 11137583,
+   "rs": 0
   },
   {
    "n": "Cameroon",
@@ -604,14 +604,14 @@
     {
      "n": "Cameroon \u2014 Centre",
      "f": "Cameroon_Central",
-     "s": 45576582,
-     "rs": 1
+     "s": 45742238,
+     "rs": 0
     },
     {
      "n": "Cameroon \u2014 West",
      "f": "Cameroon_West",
-     "s": 40866137,
-     "rs": 1
+     "s": 41985497,
+     "rs": 0
     }
    ]
   },
@@ -625,20 +625,20 @@
       {
        "n": "Alberta \u2014 North",
        "f": "Canada_Alberta_North",
-       "s": 25157030,
-       "rs": 1
+       "s": 25169318,
+       "rs": 0
       },
       {
        "n": "Alberta \u2014 South",
        "f": "Canada_Alberta_South",
-       "s": 29962802,
-       "rs": 1
+       "s": 29975162,
+       "rs": 0
       },
       {
        "n": "Edmonton",
        "f": "Canada_Alberta_Edmonton",
-       "s": 61975884,
-       "rs": 1
+       "s": 62007492,
+       "rs": 0
       }
      ]
     },
@@ -648,44 +648,44 @@
       {
        "n": "British Columbia \u2014 Centre",
        "f": "Canada_British Columbia_Central",
-       "s": 43465303,
-       "rs": 1
+       "s": 43475391,
+       "rs": 0
       },
       {
        "n": "British Columbia \u2014 East",
        "f": "Canada_British Columbia_Far_North",
-       "s": 26252757,
-       "rs": 1
+       "s": 26253413,
+       "rs": 0
       },
       {
        "n": "British Columbia \u2014 North",
        "f": "Canada_British Columbia_Northeast",
-       "s": 43715011,
-       "rs": 1
+       "s": 43718283,
+       "rs": 0
       },
       {
        "n": "British Columbia \u2014 West",
        "f": "Canada_British Columbia_North",
-       "s": 37062351,
-       "rs": 1
+       "s": 37064495,
+       "rs": 0
       },
       {
        "n": "Kelowna",
        "f": "Canada_British Columbia_Southeast",
-       "s": 42403517,
-       "rs": 1
+       "s": 42442741,
+       "rs": 0
       },
       {
        "n": "Vancouver",
        "f": "Canada_British Columbia_Vancouver",
-       "s": 41260444,
-       "rs": 1
+       "s": 41325340,
+       "rs": 0
       },
       {
        "n": "Vancouver Island",
        "f": "Canada_British Columbia_Islands",
-       "s": 36584608,
-       "rs": 1
+       "s": 36605192,
+       "rs": 0
       }
      ]
     },
@@ -695,20 +695,20 @@
       {
        "n": "Labrador \u2014 North",
        "f": "Canada_Labrador_North",
-       "s": 46069188,
-       "rs": 1
+       "s": 46094052,
+       "rs": 0
       },
       {
        "n": "Labrador \u2014 South",
        "f": "Canada_Labrador_South",
-       "s": 35745459,
-       "rs": 1
+       "s": 35766027,
+       "rs": 0
       },
       {
        "n": "Labrador \u2014 West",
        "f": "Canada_Labrador_West",
-       "s": 47883094,
-       "rs": 1
+       "s": 47916118,
+       "rs": 0
       }
      ]
     },
@@ -718,34 +718,34 @@
       {
        "n": "Brandon",
        "f": "Canada_Manitoba_South",
-       "s": 40628672,
-       "rs": 1
+       "s": 40635512,
+       "rs": 0
       },
       {
        "n": "Manitoba \u2014 North",
        "f": "Canada_Manitoba_Northeast",
-       "s": 33053905,
-       "rs": 1
+       "s": 33058369,
+       "rs": 0
       },
       {
        "n": "Manitoba \u2014 West",
        "f": "Canada_Manitoba_Northwest",
-       "s": 38679535,
-       "rs": 1
+       "s": 38679431,
+       "rs": 0
       },
       {
        "n": "Winnipeg",
        "f": "Canada_Manitoba_Winnipeg",
-       "s": 36002716,
-       "rs": 1
+       "s": 36022156,
+       "rs": 0
       }
      ]
     },
     {
      "n": "New Brunswick",
      "f": "Canada_New Brunswick",
-     "s": 48053719,
-     "rs": 1
+     "s": 48063919,
+     "rs": 0
     },
     {
      "n": "Newfoundland",
@@ -753,26 +753,26 @@
       {
        "n": "Newfoundland \u2014 East",
        "f": "Canada_Newfoundland_East",
-       "s": 19192571,
-       "rs": 1
+       "s": 19220019,
+       "rs": 0
       },
       {
        "n": "Newfoundland \u2014 North",
        "f": "Canada_Newfoundland_North",
-       "s": 20531381,
-       "rs": 1
+       "s": 20559493,
+       "rs": 0
       },
       {
        "n": "Newfoundland \u2014 South",
        "f": "Canada_Newfoundland_South",
-       "s": 16843682,
-       "rs": 1
+       "s": 16853858,
+       "rs": 0
       },
       {
        "n": "Newfoundland \u2014 West",
        "f": "Canada_Newfoundland_West",
-       "s": 19987733,
-       "rs": 1
+       "s": 20021141,
+       "rs": 0
       }
      ]
     },
@@ -782,20 +782,20 @@
       {
        "n": "Northwest Territories \u2014 East",
        "f": "Canada_Northwest Territories_East",
-       "s": 16395715,
-       "rs": 1
+       "s": 16395643,
+       "rs": 0
       },
       {
        "n": "Northwest Territories \u2014 North",
        "f": "Canada_Northwest Territories_North",
-       "s": 27414399,
-       "rs": 1
+       "s": 27510087,
+       "rs": 0
       },
       {
        "n": "Yellowknife",
        "f": "Canada_Northwest Territories_Yellowknife",
-       "s": 41739784,
-       "rs": 1
+       "s": 41740264,
+       "rs": 0
       }
      ]
     },
@@ -805,14 +805,14 @@
       {
        "n": "Halifax",
        "f": "Canada_Nova Scotia_Halifax",
-       "s": 42140665,
-       "rs": 1
+       "s": 42140017,
+       "rs": 0
       },
       {
        "n": "Sydney",
        "f": "Canada_Nova Scotia_Sydney",
-       "s": 18574085,
-       "rs": 1
+       "s": 18574501,
+       "rs": 0
       }
      ]
     },
@@ -822,14 +822,14 @@
       {
        "n": "Nunavut \u2014 North",
        "f": "Canada_Nunavut_North",
-       "s": 31439180,
-       "rs": 1
+       "s": 31439284,
+       "rs": 0
       },
       {
        "n": "Nunavut \u2014 South",
        "f": "Canada_Nunavut_South",
-       "s": 31290724,
-       "rs": 1
+       "s": 31293212,
+       "rs": 0
       }
      ]
     },
@@ -839,82 +839,82 @@
       {
        "n": "Barrie",
        "f": "Canada_Ontario_Bame",
-       "s": 44529635,
-       "rs": 1
+       "s": 44546779,
+       "rs": 0
       },
       {
        "n": "Greater Sudbury",
        "f": "Canada_Ontario_Northeastern_S",
-       "s": 35714415,
-       "rs": 1
+       "s": 35698423,
+       "rs": 0
       },
       {
        "n": "Kingston",
        "f": "Canada_Ontario_Kingston",
-       "s": 57725758,
-       "rs": 1
+       "s": 57779774,
+       "rs": 0
       },
       {
        "n": "London",
        "f": "Canada_Ontario_London",
-       "s": 48243784,
-       "rs": 1
+       "s": 48252272,
+       "rs": 0
       },
       {
        "n": "Moose Factory",
        "f": "Canada_Ontario_Northeastern_North",
-       "s": 35936436,
-       "rs": 1
+       "s": 35937348,
+       "rs": 0
       },
       {
        "n": "North Bay",
        "f": "Canada_Ontario_Northeastern_SE",
-       "s": 19993541,
-       "rs": 1
+       "s": 19995717,
+       "rs": 0
       },
       {
        "n": "Ontario \u2014 North",
        "f": "Canada_Ontario_Northwestern",
-       "s": 53190076,
-       "rs": 1
+       "s": 53284996,
+       "rs": 0
       },
       {
        "n": "Sault Ste. Marie",
        "f": "Canada_Ontario_Northeastern_SW",
-       "s": 40054374,
-       "rs": 1
+       "s": 39958421,
+       "rs": 0
       },
       {
        "n": "Thunder Bay",
        "f": "Canada_Ontario_Northern",
-       "s": 40609106,
-       "rs": 1
+       "s": 40615066,
+       "rs": 0
       },
       {
        "n": "Timmins",
        "f": "Canada_Ontario_Northeastern_Central",
-       "s": 31476576,
-       "rs": 1
+       "s": 31476720,
+       "rs": 0
       },
       {
        "n": "Toronto",
        "f": "Canada_Ontario_Toronto",
-       "s": 59828630,
-       "rs": 1
+       "s": 59923678,
+       "rs": 0
       },
       {
        "n": "Wawa",
        "f": "Canada_Ontario_Northeastern_W",
-       "s": 30354136,
-       "rs": 1
+       "s": 30355192,
+       "rs": 0
       }
      ]
     },
     {
      "n": "Prince Edward Island",
      "f": "Canada_Prince Edward Island",
-     "s": 7366892,
-     "rs": 1
+     "s": 7347516,
+     "rs": 0
     },
     {
      "n": "Quebec",
@@ -922,50 +922,50 @@
       {
        "n": "Chibougamau",
        "f": "Canada_Quebek_West_Chibougamau",
-       "s": 47247670,
-       "rs": 1
+       "s": 47248726,
+       "rs": 0
       },
       {
        "n": "Montreal",
        "f": "Canada_Quebek_Montreal",
-       "s": 72425806,
-       "rs": 1
+       "s": 72489894,
+       "rs": 0
       },
       {
        "n": "Quebec City",
        "f": "Canada_Quebec_Quebec",
-       "s": 47410997,
-       "rs": 1
+       "s": 47464909,
+       "rs": 0
       },
       {
        "n": "Quebec \u2014 North",
        "f": "Canada_Quebek_Far North",
-       "s": 34695492,
-       "rs": 1
+       "s": 34704868,
+       "rs": 0
       },
       {
        "n": "Rimouski",
        "f": "Canada_Quebek_Southeast_Rimouski",
-       "s": 19615150,
-       "rs": 1
+       "s": 19630270,
+       "rs": 0
       },
       {
        "n": "Rouyn-Noranda",
        "f": "Canada_Quebek_West_Rouyn-Noranda",
-       "s": 30970042,
-       "rs": 1
+       "s": 30975658,
+       "rs": 0
       },
       {
        "n": "Saguenay",
        "f": "Canada_Quebek_Southeast_Saguenay",
-       "s": 35388381,
-       "rs": 1
+       "s": 35398005,
+       "rs": 0
       },
       {
        "n": "Sept-\u00celes",
        "f": "Canada_Quebek_North",
-       "s": 41884976,
-       "rs": 1
+       "s": 41890344,
+       "rs": 0
       }
      ]
     },
@@ -975,14 +975,14 @@
       {
        "n": "Saskatchewan \u2014 North",
        "f": "Canada_Saskatchewan_North",
-       "s": 32897810,
-       "rs": 1
+       "s": 32920730,
+       "rs": 0
       },
       {
        "n": "Saskatchewan \u2014 South",
        "f": "Canada_Saskatchewan_South",
-       "s": 69758773,
-       "rs": 1
+       "s": 69770893,
+       "rs": 0
       }
      ]
     },
@@ -992,14 +992,14 @@
       {
        "n": "Whitehorse",
        "f": "Canada_Yukon_Whitehorse",
-       "s": 34331350,
-       "rs": 1
+       "s": 34332718,
+       "rs": 0
       },
       {
        "n": "Yukon \u2014 North",
        "f": "Canada_Yukon_North",
-       "s": 28065521,
-       "rs": 1
+       "s": 28069033,
+       "rs": 0
       }
      ]
     }
@@ -1008,32 +1008,32 @@
   {
    "n": "Cape Verde",
    "c": "cv",
-   "s": 2630336,
-   "rs": 1
+   "s": 2631488,
+   "rs": 0
   },
   {
    "n": "Caribbean Netherlands",
    "f": "Caribisch Nederland",
-   "s": 3894757,
-   "rs": 1
+   "s": 3899317,
+   "rs": 0
   },
   {
    "n": "Cayman Islands",
    "c": "ky",
-   "s": 1109897,
-   "rs": 1
+   "s": 1110969,
+   "rs": 0
   },
   {
    "n": "Central African Republic",
    "c": "cf",
-   "s": 15859090,
-   "rs": 1
+   "s": 15862490,
+   "rs": 0
   },
   {
    "n": "Chad",
    "c": "td",
-   "s": 9530089,
-   "rs": 1
+   "s": 9552945,
+   "rs": 0
   },
   {
    "n": "Chile",
@@ -1042,20 +1042,20 @@
     {
      "n": "Chile \u2014 North",
      "f": "Chile_North",
-     "s": 68458143,
-     "rs": 1
+     "s": 68547815,
+     "rs": 0
     },
     {
      "n": "Chile \u2014 South",
      "f": "Chile_South",
-     "s": 49416782,
-     "rs": 1
+     "s": 49467366,
+     "rs": 0
     },
     {
      "n": "Southern Patagonian Ice Field",
      "f": "Campo de Hielo Sur",
-     "s": 213946,
-     "rs": 1
+     "s": 213970,
+     "rs": 0
     }
    ]
   },
@@ -1066,58 +1066,58 @@
     {
      "n": "Colombia \u2014 East",
      "f": "Colombia_East",
-     "s": 12349288,
-     "rs": 1
+     "s": 12370672,
+     "rs": 0
     },
     {
      "n": "Colombia \u2014 North",
      "f": "Colombia_North",
-     "s": 47544217,
-     "rs": 1
+     "s": 47790409,
+     "rs": 0
     },
     {
      "n": "Colombia \u2014 West",
      "f": "Colombia_West",
-     "s": 48516744,
-     "rs": 1
+     "s": 48594480,
+     "rs": 0
     }
    ]
   },
   {
    "n": "Comoros",
    "c": "km",
-   "s": 682023,
-   "rs": 1
+   "s": 683663,
+   "rs": 0
   },
   {
    "n": "Cook Islands",
    "c": "ck",
-   "s": 464376,
-   "rs": 1
+   "s": 464472,
+   "rs": 0
   },
   {
    "n": "Costa Rica",
    "c": "cr",
-   "s": 16796878,
-   "rs": 1
+   "s": 16902838,
+   "rs": 0
   },
   {
    "n": "Croatia",
    "c": "hr",
-   "s": 64131290,
-   "rs": 1
+   "s": 64282930,
+   "rs": 0
   },
   {
    "n": "Cuba",
    "c": "cu",
-   "s": 34155280,
-   "rs": 1
+   "s": 34253560,
+   "rs": 0
   },
   {
    "n": "Cyprus",
    "c": "cy",
-   "s": 12983497,
-   "rs": 1
+   "s": 12993865,
+   "rs": 0
   },
   {
    "n": "Czech Republic",
@@ -1126,92 +1126,92 @@
     {
      "n": "Central Bohemian Region \u2014 East",
      "f": "Czech_Stredni Cechy_East",
-     "s": 37638844,
-     "rs": 1
+     "s": 37686263,
+     "rs": 0
     },
     {
      "n": "Central Bohemian Region \u2014 West",
      "f": "Czech_Stredni Cechy_West",
-     "s": 27844780,
-     "rs": 1
+     "s": 27887540,
+     "rs": 0
     },
     {
      "n": "Hradec Kr\u00e1lov\u00e9 Region",
      "f": "Czech_Severovychod_Kralovehradecky kraj",
-     "s": 27746702,
-     "rs": 1
+     "s": 27803918,
+     "rs": 0
     },
     {
      "n": "Karlovy Vary Region",
      "f": "Czech_Karlovasky kraj",
-     "s": 13000667,
-     "rs": 1
+     "s": 13009587,
+     "rs": 0
     },
     {
      "n": "Liberec Region",
      "f": "Czech_Severovychod_Liberecky kraj",
-     "s": 20618843,
-     "rs": 1
+     "s": 20645059,
+     "rs": 0
     },
     {
      "n": "Moravian-Silesian Region",
      "f": "Czech_Moravskoslezsko",
-     "s": 37644746,
-     "rs": 1
+     "s": 37696074,
+     "rs": 0
     },
     {
      "n": "Olomouc Region",
      "f": "Czech_Olomoucky kraj",
-     "s": 25390543,
-     "rs": 1
+     "s": 25446143,
+     "rs": 0
     },
     {
      "n": "Pardubice Region",
      "f": "Czech_Severovychod_Pardubicky kraj",
-     "s": 23995845,
-     "rs": 1
+     "s": 24027357,
+     "rs": 0
     },
     {
      "n": "Plze\u0148 Region",
      "f": "Czech_Jihozapad_Plzensky kraj",
-     "s": 32546792,
-     "rs": 1
+     "s": 32596536,
+     "rs": 0
     },
     {
      "n": "Prague",
      "f": "Czech_Praha",
-     "s": 17753788,
-     "rs": 1
+     "s": 17807404,
+     "rs": 0
     },
     {
      "n": "South Bohemia Region",
      "f": "Czech_Jihozapad_Jihocesky kraj",
-     "s": 45842692,
-     "rs": 1
+     "s": 45945548,
+     "rs": 0
     },
     {
      "n": "South Moravian Region",
      "f": "Czech_Jihovychod_Jihomoravsky kraj",
-     "s": 39819749,
-     "rs": 1
+     "s": 39893077,
+     "rs": 0
     },
     {
      "n": "Vyso\u010dina Region",
      "f": "Czech_Jihovychod_Kraj Vysocina",
-     "s": 36848694,
-     "rs": 1
+     "s": 36887054,
+     "rs": 0
     },
     {
      "n": "Zl\u00edn Region",
      "f": "Czech_Zlinsky Kraj",
-     "s": 22795393,
-     "rs": 1
+     "s": 22825497,
+     "rs": 0
     },
     {
      "n": "\u00dast\u00ed nad Labem Region",
      "f": "Czech_Ustecky kraj",
-     "s": 29543302,
-     "rs": 1
+     "s": 29583870,
+     "rs": 0
     }
    ]
   },
@@ -1219,8 +1219,8 @@
    "n": "Democratic Republic of the Congo",
    "f": "Congo-Kinshasa",
    "c": "cd",
-   "s": 56272150,
-   "rs": 1
+   "s": 56362038,
+   "rs": 0
   },
   {
    "n": "Denmark",
@@ -1229,88 +1229,88 @@
     {
      "n": "Capital Region of Denmark",
      "f": "Denmark_Capital Region of Denmark",
-     "s": 31112720,
-     "rs": 1
+     "s": 31160032,
+     "rs": 0
     },
     {
      "n": "Central Denmark Region",
      "f": "Denmark_Central Denmark Region",
-     "s": 44855393,
-     "rs": 1
+     "s": 44912089,
+     "rs": 0
     },
     {
      "n": "North Denmark Region",
      "f": "Denmark_North Denmark Region",
-     "s": 26143880,
-     "rs": 1
+     "s": 26171720,
+     "rs": 0
     },
     {
      "n": "Region of Southern Denmark",
      "f": "Denmark_Region of Southern Denmark",
-     "s": 51056403,
-     "rs": 1
+     "s": 51112723,
+     "rs": 0
     },
     {
      "n": "Region Zealand",
      "f": "Denmark_Region Zealand",
-     "s": 27929744,
-     "rs": 1
+     "s": 28005152,
+     "rs": 0
     }
    ]
   },
   {
    "n": "Djibouti",
    "c": "dj",
-   "s": 1686667,
-   "rs": 1
+   "s": 1687075,
+   "rs": 0
   },
   {
    "n": "Dominica",
    "c": "dm",
-   "s": 1526683,
-   "rs": 1
+   "s": 1527643,
+   "rs": 0
   },
   {
    "n": "Dominican Republic",
    "c": "do",
-   "s": 24267667,
-   "rs": 1
+   "s": 24273939,
+   "rs": 0
   },
   {
    "n": "East Timor",
    "c": "tl",
-   "s": 2717743,
-   "rs": 1
+   "s": 2721583,
+   "rs": 0
   },
   {
    "n": "Ecuador",
    "c": "ec",
-   "s": 55149184,
-   "rs": 1
+   "s": 55219000,
+   "rs": 0
   },
   {
    "n": "Egypt",
    "c": "eg",
-   "s": 39541725,
-   "rs": 1
+   "s": 39728421,
+   "rs": 0
   },
   {
    "n": "El Salvador",
    "c": "sv",
-   "s": 11074407,
-   "rs": 1
+   "s": 11446983,
+   "rs": 0
   },
   {
    "n": "Equatorial Guinea",
    "c": "gq",
-   "s": 1410203,
-   "rs": 1
+   "s": 1410235,
+   "rs": 0
   },
   {
    "n": "Eritrea",
    "c": "er",
-   "s": 3028937,
-   "rs": 1
+   "s": 3029945,
+   "rs": 0
   },
   {
    "n": "Estonia",
@@ -1319,40 +1319,40 @@
     {
      "n": "Estonia \u2014 East",
      "f": "Estonia_East",
-     "s": 38026105,
-     "rs": 1
+     "s": 38054777,
+     "rs": 0
     },
     {
      "n": "Estonia \u2014 West",
      "f": "Estonia_West",
-     "s": 33080924,
-     "rs": 1
+     "s": 33092132,
+     "rs": 0
     }
    ]
   },
   {
    "n": "Ethiopia",
    "c": "et",
-   "s": 29947637,
-   "rs": 1
+   "s": 30024893,
+   "rs": 0
   },
   {
    "n": "Faroe Islands",
    "c": "fo",
-   "s": 1392937,
-   "rs": 1
+   "s": 1394841,
+   "rs": 0
   },
   {
    "n": "Federated States of Micronesia",
    "c": "fm",
-   "s": 1002926,
-   "rs": 1
+   "s": 1004070,
+   "rs": 0
   },
   {
    "n": "Fiji",
    "c": "fj",
-   "s": 2148574,
-   "rs": 1
+   "s": 2149334,
+   "rs": 0
   },
   {
    "n": "Finland",
@@ -1361,38 +1361,38 @@
     {
      "n": "Eastern Finland",
      "f": "Finland_Eastern Finland",
-     "s": 51982119,
-     "rs": 1
+     "s": 52018023,
+     "rs": 0
     },
     {
      "n": "Northern Finland",
      "f": "Finland_Northern Finland",
-     "s": 33612852,
-     "rs": 1
+     "s": 33670108,
+     "rs": 0
     },
     {
      "n": "Southern Finland \u2014 Helsinki",
      "f": "Finland_Southern Finland_Helsinki",
-     "s": 55130601,
-     "rs": 1
+     "s": 55211281,
+     "rs": 0
     },
     {
      "n": "Southern Finland \u2014 Lappeenranta",
      "f": "Finland_Southern Finland_Lappeenranta",
-     "s": 27629230,
-     "rs": 1
+     "s": 27668286,
+     "rs": 0
     },
     {
      "n": "Southwest Finland",
      "f": "Finland_Southern Finland_West",
-     "s": 20329033,
-     "rs": 1
+     "s": 20350961,
+     "rs": 0
     },
     {
      "n": "Western Finland",
      "f": "Finland_Western Finland",
-     "s": 59727186,
-     "rs": 1
+     "s": 59765594,
+     "rs": 0
     }
    ]
   },
@@ -1406,14 +1406,14 @@
       {
        "n": "Bas-Rhin",
        "f": "France_Alsace_Bas-Rhin",
-       "s": 37960089,
-       "rs": 1
+       "s": 38005609,
+       "rs": 0
       },
       {
        "n": "Haut-Rhin",
        "f": "France_Alsace_Haut-Rhin",
-       "s": 27323766,
-       "rs": 1
+       "s": 27337142,
+       "rs": 0
       }
      ]
     },
@@ -1423,32 +1423,32 @@
       {
        "n": "Dordogne",
        "f": "France_Aquitaine_Dordogne",
-       "s": 22083083,
-       "rs": 1
+       "s": 22108699,
+       "rs": 0
       },
       {
        "n": "Gironde",
        "f": "France_Aquitaine_Gironde",
-       "s": 47992207,
-       "rs": 1
+       "s": 48030207,
+       "rs": 0
       },
       {
        "n": "Landes",
        "f": "France_Aquitaine_Landes",
-       "s": 21137622,
-       "rs": 1
+       "s": 21199414,
+       "rs": 0
       },
       {
        "n": "Lot-et-Garonne",
        "f": "France_Aquitaine_Lot-et-Garonne",
-       "s": 16953889,
-       "rs": 1
+       "s": 16960232,
+       "rs": 0
       },
       {
        "n": "Pyr\u00e9n\u00e9es-Atlantiques",
        "f": "France_Aquitaine_Pyrenees-Atlantiques",
-       "s": 32684884,
-       "rs": 1
+       "s": 32699340,
+       "rs": 0
       }
      ]
     },
@@ -1458,26 +1458,26 @@
       {
        "n": "Allier",
        "f": "France_Auvergne_Allier",
-       "s": 21232051,
-       "rs": 1
+       "s": 21248907,
+       "rs": 0
       },
       {
        "n": "Cantal",
        "f": "France_Auvergne_Cantal",
-       "s": 12905235,
-       "rs": 1
+       "s": 12929036,
+       "rs": 0
       },
       {
        "n": "Haute-Loire",
        "f": "France_Auvergne_Haute-Loire",
-       "s": 13697744,
-       "rs": 1
+       "s": 13712824,
+       "rs": 0
       },
       {
        "n": "Puy-de-D\u00f4me",
        "f": "France_Auvergne_Puy-de-Dome",
-       "s": 33213860,
-       "rs": 1
+       "s": 33274484,
+       "rs": 0
       }
      ]
     },
@@ -1487,26 +1487,26 @@
       {
        "n": "C\u00f4tes-d'Armor",
        "f": "France_Brittany_Cotes-dArmor",
-       "s": 34327407,
-       "rs": 1
+       "s": 34355247,
+       "rs": 0
       },
       {
        "n": "Finist\u00e8re",
        "f": "France_Brittany_Finistere",
-       "s": 49667173,
-       "rs": 1
+       "s": 49738197,
+       "rs": 0
       },
       {
        "n": "Ille-et-Vilaine",
        "f": "France_Brittany_Ille-et-Vilaine",
-       "s": 42505698,
-       "rs": 1
+       "s": 42549338,
+       "rs": 0
       },
       {
        "n": "Morbihan",
        "f": "France_Brittany_Morbihan",
-       "s": 36300613,
-       "rs": 1
+       "s": 36259269,
+       "rs": 0
       }
      ]
     },
@@ -1516,26 +1516,26 @@
       {
        "n": "C\u00f4te-d'Or",
        "f": "France_Burgundy_Cote-dOr",
-       "s": 23938857,
-       "rs": 1
+       "s": 23961473,
+       "rs": 0
       },
       {
        "n": "Ni\u00e8vre",
        "f": "France_Burgundy_Nievre",
-       "s": 12795337,
-       "rs": 1
+       "s": 12804257,
+       "rs": 0
       },
       {
        "n": "Sa\u00f4ne-et-Loire",
        "f": "France_Burgundy_Saone-et-Loire",
-       "s": 40884263,
-       "rs": 1
+       "s": 40915911,
+       "rs": 0
       },
       {
        "n": "Yonne",
        "f": "France_Burgundy_Yonne",
-       "s": 21300316,
-       "rs": 1
+       "s": 21335580,
+       "rs": 0
       }
      ]
     },
@@ -1545,75 +1545,75 @@
       {
        "n": "Cher",
        "f": "France_Centre-Val de Loire_Cher",
-       "s": 14729404,
-       "rs": 1
+       "s": 14737780,
+       "rs": 0
       },
       {
        "n": "Eure-et-Loir",
        "f": "France_Centre-Val de Loire_Eure-et-Loir",
-       "s": 13227154,
-       "rs": 1
+       "s": 13230054,
+       "rs": 0
       },
       {
        "n": "Indre",
        "f": "France_Centre-Val de Loire_Indre",
-       "s": 18027937,
-       "rs": 1
+       "s": 18046516,
+       "rs": 0
       },
       {
        "n": "Indre-et-Loire",
        "f": "France_Centre-Val de Loire_Indre-et-Loire",
-       "s": 25192804,
-       "rs": 1
+       "s": 25225756,
+       "rs": 0
       },
       {
        "n": "Loir-et-Cher",
        "f": "France_Centre-Val de Loire_Loir-et-Cher",
-       "s": 14868773,
-       "rs": 1
+       "s": 14879213,
+       "rs": 0
       },
       {
        "n": "Loiret",
        "f": "France_Centre-Val de Loire_Loiret",
-       "s": 23902759,
-       "rs": 1
+       "s": 23925007,
+       "rs": 0
       }
      ]
     },
     {
      "n": "Champagne-Ardenne",
      "f": "France_Champagne-Ardenne",
-     "s": 45520344,
-     "rs": 1
+     "s": 45637388,
+     "rs": 0
     },
     {
      "n": "Corsica",
      "f": "France_Corsica",
-     "s": 10039628,
-     "rs": 1
+     "s": 10048324,
+     "rs": 0
     },
     {
      "n": "Franche-Comt\u00e9",
      "f": "France_Free County",
-     "s": 54490833,
-     "rs": 1
+     "s": 54548345,
+     "rs": 0
     },
     {
      "n": "French Guiana",
      "f": "France_French Guiana",
-     "s": 5594902,
-     "rs": 1
+     "s": 5599606,
+     "rs": 0
     },
     {
      "n": "French Polynesia",
-     "s": 2599567,
-     "rs": 1
+     "s": 2601376,
+     "rs": 0
     },
     {
      "n": "French Southern and Antarctic Lands",
      "f": "France_Southern Islands",
-     "s": 19627722,
-     "rs": 1
+     "s": 19632954,
+     "rs": 0
     },
     {
      "n": "Languedoc-Roussillon",
@@ -1621,40 +1621,40 @@
       {
        "n": "Aude",
        "f": "France_Languedoc-Roussillon_Aude",
-       "s": 24033313,
-       "rs": 1
+       "s": 24047945,
+       "rs": 0
       },
       {
        "n": "Gard",
        "f": "France_Languedoc-Roussillon_Gard",
-       "s": 26736942,
-       "rs": 1
+       "s": 26747878,
+       "rs": 0
       },
       {
        "n": "H\u00e9rault",
        "f": "France_Languedoc-Roussillon_Herault",
-       "s": 37635513,
-       "rs": 1
+       "s": 37676809,
+       "rs": 0
       },
       {
        "n": "Loz\u00e8re",
        "f": "France_Languedoc-Roussillon_Lozere",
-       "s": 9259816,
-       "rs": 1
+       "s": 9263464,
+       "rs": 0
       },
       {
        "n": "Pyr\u00e9n\u00e9es-Orientales",
        "f": "France_Languedoc-Roussillon_Pyrenees-Orientales",
-       "s": 21054413,
-       "rs": 1
+       "s": 21060165,
+       "rs": 0
       }
      ]
     },
     {
      "n": "Limousin",
      "f": "France_Limousin",
-     "s": 50308651,
-     "rs": 1
+     "s": 50343034,
+     "rs": 0
     },
     {
      "n": "Lorraine",
@@ -1662,26 +1662,26 @@
       {
        "n": "Meurthe-et-Moselle",
        "f": "France_Lorraine_Meurthe-et-Moselle",
-       "s": 23477902,
-       "rs": 1
+       "s": 23492689,
+       "rs": 0
       },
       {
        "n": "Meuse",
        "f": "France_Lorraine_Meuse",
-       "s": 11278747,
-       "rs": 1
+       "s": 11290927,
+       "rs": 0
       },
       {
        "n": "Moselle",
        "f": "France_Lorraine_Moselle",
-       "s": 33431971,
-       "rs": 1
+       "s": 33456787,
+       "rs": 0
       },
       {
        "n": "Vosges",
        "f": "France_Lorraine_Vosges",
-       "s": 22365391,
-       "rs": 1
+       "s": 22398311,
+       "rs": 0
       }
      ]
     },
@@ -1691,20 +1691,20 @@
       {
        "n": "Calvados",
        "f": "France_Lower Normandy_Calvados",
-       "s": 26433876,
-       "rs": 1
+       "s": 26456452,
+       "rs": 0
       },
       {
        "n": "Manche",
        "f": "France_Lower Normandy_Manche",
-       "s": 26736761,
-       "rs": 1
+       "s": 26758137,
+       "rs": 0
       },
       {
        "n": "Orne",
        "f": "France_Lower Normandy_Orne",
-       "s": 18509691,
-       "rs": 1
+       "s": 18548123,
+       "rs": 0
       }
      ]
     },
@@ -1714,58 +1714,58 @@
       {
        "n": "Ari\u00e8ge",
        "f": "France_Midi-Pyrenees_Ariege",
-       "s": 10061256,
-       "rs": 1
+       "s": 10070760,
+       "rs": 0
       },
       {
        "n": "Aveyron",
        "f": "France_Midi-Pyrenees_Aveyron",
-       "s": 27080672,
-       "rs": 1
+       "s": 27103312,
+       "rs": 0
       },
       {
        "n": "Gers",
        "f": "France_Midi-Pyrenees_Gers",
-       "s": 15758446,
-       "rs": 1
+       "s": 15780862,
+       "rs": 0
       },
       {
        "n": "Haute-Garonne",
        "f": "France_Midi-Pyrenees_Haute-Garonne",
-       "s": 44000214,
-       "rs": 1
+       "s": 44036358,
+       "rs": 0
       },
       {
        "n": "Hautes-Pyr\u00e9n\u00e9es",
        "f": "France_Midi-Pyrenees_Hautes-Pyrenees",
-       "s": 29641503,
-       "rs": 1
+       "s": 29691583,
+       "rs": 0
       },
       {
        "n": "Lot",
        "f": "France_Midi-Pyrenees_Lot",
-       "s": 14877293,
-       "rs": 1
+       "s": 14879800,
+       "rs": 0
       },
       {
        "n": "Tarn",
        "f": "France_Midi-Pyrenees_Tarn",
-       "s": 19316278,
-       "rs": 1
+       "s": 19374078,
+       "rs": 0
       },
       {
        "n": "Tarn-et-Garonne",
        "f": "France_Midi-Pyrenees_Tarn-et-Garonne",
-       "s": 13210783,
-       "rs": 1
+       "s": 13215343,
+       "rs": 0
       }
      ]
     },
     {
      "n": "New Caledonia",
      "f": "France_New Caledonia",
-     "s": 5317696,
-     "rs": 1
+     "s": 5322120,
+     "rs": 0
     },
     {
      "n": "Nord-Pas-de-Calais",
@@ -1773,20 +1773,20 @@
       {
        "n": "Lille",
        "f": "France_Nord-Pas-de-Calais_Lille",
-       "s": 35620547,
-       "rs": 1
+       "s": 35680267,
+       "rs": 0
       },
       {
        "n": "Nord",
        "f": "France_Nord-Pas-de-Calais_Nord",
-       "s": 31484187,
-       "rs": 1
+       "s": 31500521,
+       "rs": 0
       },
       {
        "n": "Pas-de-Calais",
        "f": "France_Nord-Pas-de-Calais_Pas-de-Calais",
-       "s": 49128064,
-       "rs": 1
+       "s": 49136056,
+       "rs": 0
       }
      ]
     },
@@ -1796,32 +1796,32 @@
       {
        "n": "Loire-Atlantique",
        "f": "France_Pays de la Loire_Loire-Atlantique",
-       "s": 54096113,
-       "rs": 1
+       "s": 54145974,
+       "rs": 0
       },
       {
        "n": "Maine-et-Loire",
        "f": "France_Pays de la Loire_Maine-et-Loire",
-       "s": 36821707,
-       "rs": 1
+       "s": 36890832,
+       "rs": 0
       },
       {
        "n": "Mayenne",
        "f": "France_Pays de la Loire_Mayenne",
-       "s": 19309745,
-       "rs": 1
+       "s": 19322449,
+       "rs": 0
       },
       {
        "n": "Sarthe",
        "f": "France_Pays de la Loire_Sarthe",
-       "s": 31672379,
-       "rs": 1
+       "s": 31696403,
+       "rs": 0
       },
       {
        "n": "Vend\u00e9e",
        "f": "France_Pays de la Loire_Vendee",
-       "s": 46179031,
-       "rs": 1
+       "s": 46205551,
+       "rs": 0
       }
      ]
     },
@@ -1831,20 +1831,20 @@
       {
        "n": "Aisne",
        "f": "France_Picardy_Aisne",
-       "s": 21996187,
-       "rs": 1
+       "s": 22077611,
+       "rs": 0
       },
       {
        "n": "Oise",
        "f": "France_Picardy_Oise",
-       "s": 27743577,
-       "rs": 1
+       "s": 27800545,
+       "rs": 0
       },
       {
        "n": "Somme",
        "f": "France_Picardy_Somme",
-       "s": 26257684,
-       "rs": 1
+       "s": 26264564,
+       "rs": 0
       }
      ]
     },
@@ -1854,26 +1854,26 @@
       {
        "n": "Charente",
        "f": "France_Poitou-Charentes_Charente",
-       "s": 22936560,
-       "rs": 1
+       "s": 22944264,
+       "rs": 0
       },
       {
        "n": "Charente-Maritime",
        "f": "France_Poitou-Charentes_Charente-Maritime",
-       "s": 42249695,
-       "rs": 1
+       "s": 42306287,
+       "rs": 0
       },
       {
        "n": "Deux-S\u00e8vres",
        "f": "France_Poitou-Charentes_Deux-Sevres",
-       "s": 30174005,
-       "rs": 1
+       "s": 30195509,
+       "rs": 0
       },
       {
        "n": "Vienne",
        "f": "France_Poitou-Charentes_Vienne",
-       "s": 26591356,
-       "rs": 1
+       "s": 26607308,
+       "rs": 0
       }
      ]
     },
@@ -1883,38 +1883,38 @@
       {
        "n": "Alpes-de-Haute-Provence",
        "f": "France_Provence-Alpes-Cote dAzur_Alpes-de-Haute-Provence",
-       "s": 12609179,
-       "rs": 1
+       "s": 12620339,
+       "rs": 0
       },
       {
        "n": "Alpes-Maritimes",
        "f": "France_Provence-Alpes-Cote dAzur_Maritime Alps",
-       "s": 23776475,
-       "rs": 1
+       "s": 23794571,
+       "rs": 0
       },
       {
        "n": "Bouches-du-Rh\u00f4ne",
        "f": "France_Provence-Alpes-Cote dAzur_Bouches-du-Rhone",
-       "s": 43977602,
-       "rs": 1
+       "s": 43992066,
+       "rs": 0
       },
       {
        "n": "Hautes-Alpes",
        "f": "France_Provence-Alpes-Cote dAzur_Hautes-Alpes",
-       "s": 11411974,
-       "rs": 1
+       "s": 11419750,
+       "rs": 0
       },
       {
        "n": "Var",
        "f": "France_Provence-Alpes-Cote dAzur_Var",
-       "s": 33382327,
-       "rs": 1
+       "s": 33393215,
+       "rs": 0
       },
       {
        "n": "Vaucluse",
        "f": "France_Provence-Alpes-Cote dAzur_Vaucluse",
-       "s": 24825456,
-       "rs": 1
+       "s": 24838832,
+       "rs": 0
       }
      ]
     },
@@ -1924,63 +1924,63 @@
       {
        "n": "Ain",
        "f": "France_Rhone-Alpes_Ain",
-       "s": 29893764,
-       "rs": 1
+       "s": 29916780,
+       "rs": 0
       },
       {
        "n": "Ard\u00e8che",
        "f": "France_Rhone-Alpes_Ardeche",
-       "s": 19539573,
-       "rs": 1
+       "s": 19556949,
+       "rs": 0
       },
       {
        "n": "Dr\u00f4me",
        "f": "France_Rhone-Alpes_Drome",
-       "s": 25667813,
-       "rs": 1
+       "s": 25689561,
+       "rs": 0
       },
       {
        "n": "Haute-Savoie",
        "f": "France_Rhone-Alpes_Haute-Savoie",
-       "s": 26957939,
-       "rs": 1
+       "s": 27029627,
+       "rs": 0
       },
       {
        "n": "Is\u00e8re",
        "f": "France_Rhone-Alpes_Isere",
-       "s": 40482342,
-       "rs": 1
+       "s": 40514342,
+       "rs": 0
       },
       {
        "n": "Loire",
        "f": "France_Rhone-Alpes_Loire",
-       "s": 24371418,
-       "rs": 1
+       "s": 24394186,
+       "rs": 0
       },
       {
        "n": "Rh\u00f4ne",
        "f": "France_Rhone-Alpes_Rhone",
-       "s": 37653505,
-       "rs": 1
+       "s": 37697425,
+       "rs": 0
       },
       {
        "n": "Savoie",
        "f": "France_Rhone-Alpes_Savoie",
-       "s": 19473425,
-       "rs": 1
+       "s": 19499145,
+       "rs": 0
       }
      ]
     },
     {
      "n": "Upper Normandy",
      "f": "France_Upper Normandy",
-     "s": 50517168,
-     "rs": 1
+     "s": 50525992,
+     "rs": 0
     },
     {
      "n": "Wallis and Futuna",
-     "s": 313610,
-     "rs": 1
+     "s": 313666,
+     "rs": 0
     },
     {
      "n": "\u00cele-de-France",
@@ -1988,50 +1988,50 @@
       {
        "n": "Essonne",
        "f": "France_Ile-de-France_Essonne",
-       "s": 24967279,
-       "rs": 1
+       "s": 24983671,
+       "rs": 0
       },
       {
        "n": "Hauts-de-Seine",
        "f": "France_Ile-de-France_Hauts-de-Seine",
-       "s": 11747621,
-       "rs": 1
+       "s": 11763005,
+       "rs": 0
       },
       {
        "n": "Paris",
        "f": "France_Ile-de-France_Paris",
-       "s": 13876793,
-       "rs": 1
+       "s": 13908324,
+       "rs": 0
       },
       {
        "n": "Seine-et-Marne",
        "f": "France_Ile-de-France_Seine-et-Marne",
-       "s": 32858426,
-       "rs": 1
+       "s": 32874906,
+       "rs": 0
       },
       {
        "n": "Seine-Saint-Denis",
        "f": "France_Ile-de-France_Seine-Saint-Denis",
-       "s": 15091363,
-       "rs": 1
+       "s": 15105967,
+       "rs": 0
       },
       {
        "n": "Val-d'Oise",
        "f": "France_Ile-de-France_Val-dOise",
-       "s": 16400569,
-       "rs": 1
+       "s": 16538625,
+       "rs": 0
       },
       {
        "n": "Val-de-Marne",
        "f": "France_Ile-de-France_Val-de-Marne",
-       "s": 13944268,
-       "rs": 1
+       "s": 13947600,
+       "rs": 0
       },
       {
        "n": "Yvelines",
        "f": "France_Ile-de-France_Yvelines",
-       "s": 23072527,
-       "rs": 1
+       "s": 23084519,
+       "rs": 0
       }
      ]
     }
@@ -2040,21 +2040,21 @@
   {
    "n": "Gabon",
    "c": "ga",
-   "s": 4395523,
-   "rs": 1
+   "s": 4397539,
+   "rs": 0
   },
   {
    "n": "Gambia",
    "f": "The Gambia",
    "c": "gm",
-   "s": 4128843,
-   "rs": 1
+   "s": 4130003,
+   "rs": 0
   },
   {
    "n": "Georgia",
    "c": "ge",
-   "s": 34097987,
-   "rs": 1
+   "s": 34126955,
+   "rs": 0
   },
   {
    "n": "Germany",
@@ -2066,32 +2066,32 @@
       {
        "n": "Freiburg im Breisgau",
        "f": "Germany_Baden-Wurttemberg_Regierungsbezirk Freiburg",
-       "s": 68790731,
-       "rs": 1
+       "s": 68909707,
+       "rs": 0
       },
       {
        "n": "Karlsruhe",
        "f": "Germany_Baden-Wurttemberg_Regierungsbezirk Karlsruhe",
-       "s": 68269007,
-       "rs": 1
+       "s": 68434375,
+       "rs": 0
       },
       {
        "n": "Stuttgart \u2014 Heilbronn",
        "f": "Germany_Baden-Wurttemberg_Regierungsbezirk Stuttgart_Heilbronn",
-       "s": 23379819,
-       "rs": 1
+       "s": 23417227,
+       "rs": 0
       },
       {
        "n": "Stuttgart \u2014 Stuttgart",
        "f": "Germany_Baden-Wurttemberg_Regierungsbezirk Stuttgart_Stuttgart",
-       "s": 63459059,
-       "rs": 1
+       "s": 63610827,
+       "rs": 0
       },
       {
        "n": "T\u00fcbingen",
        "f": "Germany_Baden-Wurttemberg_Regierungsbezirk Tubingen",
-       "s": 48852791,
-       "rs": 1
+       "s": 48925943,
+       "rs": 0
       }
      ]
     },
@@ -2101,82 +2101,82 @@
       {
        "n": "Lower Bavaria",
        "f": "Germany_Free State of Bavaria_Lower Bavaria",
-       "s": 43821062,
-       "rs": 1
+       "s": 43917695,
+       "rs": 0
       },
       {
        "n": "Lower Franconia",
        "f": "Germany_Free State of Bavaria_Lower Franconia",
-       "s": 37896592,
-       "rs": 1
+       "s": 37957960,
+       "rs": 0
       },
       {
        "n": "Middle Franconia",
        "f": "Germany_Free State of Bavaria_Middle Franconia",
-       "s": 41895073,
-       "rs": 1
+       "s": 41968802,
+       "rs": 0
       },
       {
        "n": "Swabia",
        "f": "Germany_Free State of Bavaria_Swabia",
-       "s": 58431437,
-       "rs": 1
+       "s": 58527013,
+       "rs": 0
       },
       {
        "n": "Upper Bavaria \u2014 East",
        "f": "Germany_Free State of Bavaria_Upper Bavaria_East",
-       "s": 37428862,
-       "rs": 1
+       "s": 37505742,
+       "rs": 0
       },
       {
        "n": "Upper Bavaria \u2014 Ingolstadt",
        "f": "Germany_Free State of Bavaria_Upper Bavaria_Ingolstadt",
-       "s": 19215953,
-       "rs": 1
+       "s": 19245801,
+       "rs": 0
       },
       {
        "n": "Upper Bavaria \u2014 Munich",
        "f": "Germany_Free State of Bavaria_Upper Bavaria_Munchen",
-       "s": 52734158,
-       "rs": 1
+       "s": 52831686,
+       "rs": 0
       },
       {
        "n": "Upper Franconia",
        "f": "Germany_Free State of Bavaria_Upper Franconia",
-       "s": 38650228,
-       "rs": 1
+       "s": 38705100,
+       "rs": 0
       },
       {
        "n": "Upper Palatinate",
        "f": "Germany_Free State of Bavaria_Upper Palatinate",
-       "s": 38820794,
-       "rs": 1
+       "s": 38903250,
+       "rs": 0
       }
      ]
     },
     {
      "n": "Berlin",
      "f": "Germany_Berlin",
-     "s": 35740261,
-     "rs": 1
+     "s": 35821469,
+     "rs": 0
     },
     {
      "n": "Brandenburg \u2014 North",
      "f": "Germany_Brandenburg_North",
-     "s": 37348760,
-     "rs": 1
+     "s": 37441536,
+     "rs": 0
     },
     {
      "n": "Brandenburg \u2014 South",
      "f": "Germany_Brandenburg_South",
-     "s": 39774687,
-     "rs": 1
+     "s": 39831855,
+     "rs": 0
     },
     {
      "n": "Hamburg",
      "f": "Germany_Hamburg_main",
-     "s": 19003225,
-     "rs": 1
+     "s": 19052377,
+     "rs": 0
     },
     {
      "n": "Hesse",
@@ -2184,20 +2184,20 @@
       {
        "n": "Darmstadt",
        "f": "Germany_Hesse_Regierungsbezirk Darmstadt",
-       "s": 67753554,
-       "rs": 1
+       "s": 67917242,
+       "rs": 0
       },
       {
        "n": "Giessen",
        "f": "Germany_Hesse_Regierungsbezirk Giessen",
-       "s": 29711724,
-       "rs": 1
+       "s": 29755260,
+       "rs": 0
       },
       {
        "n": "Kassel",
        "f": "Germany_Hesse_Regierungsbezirk Kassel",
-       "s": 42294878,
-       "rs": 1
+       "s": 42380222,
+       "rs": 0
       }
      ]
     },
@@ -2207,34 +2207,34 @@
       {
        "n": "Bremen",
        "f": "Germany_Lower Saxony_Bremen_Bremen",
-       "s": 39747392,
-       "rs": 1
+       "s": 39846480,
+       "rs": 0
       },
       {
        "n": "Hanover",
        "f": "Germany_Lower Saxony_Hannover",
-       "s": 75866317,
-       "rs": 1
+       "s": 76014517,
+       "rs": 0
       },
       {
        "n": "L\u00fcneburg",
        "f": "Germany_Lower Saxony_Bremen_Munster",
-       "s": 41966857,
-       "rs": 1
+       "s": 42072490,
+       "rs": 0
       },
       {
        "n": "Oldenburg",
        "f": "Germany_Lower Saxony_Oldenburg",
-       "s": 63833075,
-       "rs": 1
+       "s": 63952931,
+       "rs": 0
       }
      ]
     },
     {
      "n": "Mecklenburg-Vorpommern",
      "f": "Germany_Mecklenburg-Vorpommern",
-     "s": 59302383,
-     "rs": 1
+     "s": 59419775,
+     "rs": 0
     },
     {
      "n": "North Rhine-Westphalia",
@@ -2242,126 +2242,126 @@
       {
        "n": "Arnsberg \u2014 Arnsberg",
        "f": "Germany_North Rhine-Westphalia_Regierungsbezirk Arnsberg_Arnsberg",
-       "s": 34282883,
-       "rs": 1
+       "s": 34361115,
+       "rs": 0
       },
       {
        "n": "Arnsberg \u2014 Dortmund",
        "f": "Germany_North Rhine-Westphalia_Regierungsbezirk Arnsberg_Dortmund",
-       "s": 55309205,
-       "rs": 1
+       "s": 55374605,
+       "rs": 0
       },
       {
        "n": "Cologne \u2014 Aachen",
        "f": "Germany_North Rhine-Westphalia_Regierungsbezirk Koln_Aachen",
-       "s": 46598454,
-       "rs": 1
+       "s": 46635974,
+       "rs": 0
       },
       {
        "n": "Cologne \u2014 Cologne",
        "f": "Germany_North Rhine-Westphalia_Regierungsbezirk Koln_Koln",
-       "s": 57954442,
-       "rs": 1
+       "s": 58054146,
+       "rs": 0
       },
       {
        "n": "Detmold",
        "f": "Germany_North Rhine-Westphalia_Regierungsbezirk Detmold",
-       "s": 62001012,
-       "rs": 1
+       "s": 62049100,
+       "rs": 0
       },
       {
        "n": "D\u00fcsseldorf \u2014 D\u00fcsseldorf",
        "f": "Germany_North Rhine-Westphalia_Regierungsbezirk Dusseldorf_Dusseldorf",
-       "s": 47190872,
-       "rs": 1
+       "s": 47252928,
+       "rs": 0
       },
       {
        "n": "D\u00fcsseldorf \u2014 M\u00fclheim an der Ruhr",
        "f": "Germany_North Rhine-Westphalia_Regierungsbezirk Dusseldorf_Mulheim",
-       "s": 39225477,
-       "rs": 1
+       "s": 39310733,
+       "rs": 0
       },
       {
        "n": "D\u00fcsseldorf \u2014 Wesel",
        "f": "Germany_North Rhine-Westphalia_Regierungsbezirk Dusseldorf_Wesel",
-       "s": 13792727,
-       "rs": 1
+       "s": 13811559,
+       "rs": 0
       },
       {
        "n": "M\u00fcnster \u2014 M\u00fcnster",
        "f": "Germany_North Rhine-Westphalia_Regierungsbezirk Munster_Munster",
-       "s": 33778994,
-       "rs": 1
+       "s": 33825250,
+       "rs": 0
       },
       {
        "n": "M\u00fcnster \u2014 Recklinghausen",
        "f": "Germany_North Rhine-Westphalia_Regierungsbezirk Munster_Recklinghausen",
-       "s": 38684845,
-       "rs": 1
+       "s": 38721629,
+       "rs": 0
       }
      ]
     },
     {
      "n": "Rhineland-Palatinate \u2014 Koblenz",
      "f": "Germany_Rhineland-Palatinate_Koblenz",
-     "s": 50255474,
-     "rs": 1
+     "s": 50362634,
+     "rs": 0
     },
     {
      "n": "Rhineland-Palatinate \u2014 Mainz",
      "f": "Germany_Rhineland-Palatinate_South",
-     "s": 45617361,
-     "rs": 1
+     "s": 45719689,
+     "rs": 0
     },
     {
      "n": "Saarland",
      "f": "Germany_Saarland",
-     "s": 22171996,
-     "rs": 1
+     "s": 22202860,
+     "rs": 0
     },
     {
      "n": "Saxony \u2014 Dresden",
      "f": "Germany_Saxony_Dresden",
-     "s": 41682972,
-     "rs": 1
+     "s": 41780492,
+     "rs": 0
     },
     {
      "n": "Saxony \u2014 Leipzig",
      "f": "Germany_Saxony_Leipzig",
-     "s": 69949890,
-     "rs": 1
+     "s": 70073866,
+     "rs": 0
     },
     {
      "n": "Saxony-Anhalt",
      "f": "Germany_Saxony-Anhalt",
-     "s": 65239996,
-     "rs": 1
+     "s": 65369532,
+     "rs": 0
     },
     {
      "n": "Schleswig-Holstein",
      "f": "Germany_Schleswig-Holstein",
-     "s": 75084015,
-     "rs": 1
+     "s": 75183983,
+     "rs": 0
     },
     {
      "n": "Thuringia",
      "f": "Germany_Thuringia",
-     "s": 65649152,
-     "rs": 1
+     "s": 65808472,
+     "rs": 0
     }
    ]
   },
   {
    "n": "Ghana",
    "c": "gh",
-   "s": 13319181,
-   "rs": 1
+   "s": 13353149,
+   "rs": 0
   },
   {
    "n": "Gibraltar",
    "c": "gi",
-   "s": 296843,
-   "rs": 1
+   "s": 297123,
+   "rs": 0
   },
   {
    "n": "Greece",
@@ -2370,106 +2370,106 @@
     {
      "n": "Aegean",
      "f": "Greece_Decentralized Administration of Aegean",
-     "s": 13207985,
-     "rs": 1
+     "s": 13216505,
+     "rs": 0
     },
     {
      "n": "Attica",
      "f": "Greece_Decentralized Administration of Attica",
-     "s": 23754069,
-     "rs": 1
+     "s": 23779277,
+     "rs": 0
     },
     {
      "n": "Crete",
      "f": "Greece_Decentralized Administration of Crete",
-     "s": 8000845,
-     "rs": 1
+     "s": 8006789,
+     "rs": 0
     },
     {
      "n": "Epirus and Western Macedonia",
      "f": "Greece_Decentralized Administration of Epirus - Western Macedonia",
-     "s": 13946615,
-     "rs": 1
+     "s": 13952279,
+     "rs": 0
     },
     {
      "n": "Macedonia and Thrace",
      "f": "Greece_Decentralized Administration of Macedonia and Thrace",
-     "s": 29732333,
-     "rs": 1
+     "s": 29747677,
+     "rs": 0
     },
     {
      "n": "Peloponnese",
      "f": "Greece_Decentralized Administration of West Greece",
-     "s": 22476771,
-     "rs": 1
+     "s": 22494243,
+     "rs": 0
     },
     {
      "n": "Thessaly and Central Greece",
      "f": "Greece_Decentralized Administration of Thessaly - Central Greece",
-     "s": 30249773,
-     "rs": 1
+     "s": 30261613,
+     "rs": 0
     }
    ]
   },
   {
    "n": "Greenland",
    "c": "gl",
-   "s": 22055292,
-   "rs": 1
+   "s": 22065084,
+   "rs": 0
   },
   {
    "n": "Grenada",
    "c": "gd",
-   "s": 572137,
-   "rs": 1
+   "s": 572233,
+   "rs": 0
   },
   {
    "n": "Guadeloupe",
    "c": "gp",
-   "s": 11119258,
-   "rs": 1
+   "s": 11121226,
+   "rs": 0
   },
   {
    "n": "Guatemala",
    "c": "gt",
-   "s": 16849332,
-   "rs": 1
+   "s": 16895476,
+   "rs": 0
   },
   {
    "n": "Guernsey",
    "c": "gg",
-   "s": 827637,
-   "rs": 1
+   "s": 827821,
+   "rs": 0
   },
   {
    "n": "Guinea",
    "c": "gn",
-   "s": 28743215,
-   "rs": 1
+   "s": 28768071,
+   "rs": 0
   },
   {
    "n": "Guinea-Bissau",
    "c": "gw",
-   "s": 3740146,
-   "rs": 1
+   "s": 3742746,
+   "rs": 0
   },
   {
    "n": "Guyana",
    "c": "gy",
-   "s": 2900579,
-   "rs": 1
+   "s": 2902395,
+   "rs": 0
   },
   {
    "n": "Haiti",
    "c": "ht",
-   "s": 20947159,
-   "rs": 1
+   "s": 20981479,
+   "rs": 0
   },
   {
    "n": "Honduras",
    "c": "hn",
-   "s": 13562024,
-   "rs": 1
+   "s": 13561693,
+   "rs": 0
   },
   {
    "n": "Hungary",
@@ -2478,28 +2478,28 @@
     {
      "n": "Central Hungary",
      "f": "Hungary_Kozep-Magyarorszag",
-     "s": 27144751,
-     "rs": 1
+     "s": 27192503,
+     "rs": 0
     },
     {
      "n": "Hungary \u2014 East",
      "f": "Hungary_Northern Great Plain",
-     "s": 44976036,
-     "rs": 1
+     "s": 45010180,
+     "rs": 0
     },
     {
      "n": "Hungary \u2014 West",
      "f": "Hungary_Transdanubia",
-     "s": 49070168,
-     "rs": 1
+     "s": 49132216,
+     "rs": 0
     }
    ]
   },
   {
    "n": "Iceland",
    "c": "is",
-   "s": 16333626,
-   "rs": 1
+   "s": 16345450,
+   "rs": 0
   },
   {
    "n": "India",
@@ -2508,200 +2508,200 @@
     {
      "n": "Andaman and Nicobar Islands",
      "f": "India_Andaman and Nicobar Islands",
-     "s": 694085,
-     "rs": 1
+     "s": 694261,
+     "rs": 0
     },
     {
      "n": "Andhra Pradesh",
      "f": "India_Andhra Pradesh",
-     "s": 15563278,
-     "rs": 1
+     "s": 15583894,
+     "rs": 0
     },
     {
      "n": "Arunachal Pradesh",
      "f": "India_Arunachal Pradesh",
-     "s": 1482676,
-     "rs": 1
+     "s": 1484044,
+     "rs": 0
     },
     {
      "n": "Assam",
      "f": "India_Assam",
-     "s": 2896780,
-     "rs": 1
+     "s": 2905300,
+     "rs": 0
     },
     {
      "n": "Bihar",
      "f": "India_Bihar",
-     "s": 7243087,
-     "rs": 1
+     "s": 7311527,
+     "rs": 0
     },
     {
      "n": "Chandigarh",
      "f": "India_Chandigarh",
-     "s": 1068284,
-     "rs": 1
+     "s": 1069876,
+     "rs": 0
     },
     {
      "n": "Chhattisgarh",
      "f": "India_Chhattisgarh",
-     "s": 4744771,
-     "rs": 1
+     "s": 4750235,
+     "rs": 0
     },
     {
      "n": "Delhi",
      "f": "India_Delhi",
-     "s": 12367561,
-     "rs": 1
+     "s": 12383801,
+     "rs": 0
     },
     {
      "n": "Goa",
      "f": "India_Goa",
-     "s": 1424821,
-     "rs": 1
+     "s": 1425693,
+     "rs": 0
     },
     {
      "n": "Gujarat",
      "f": "India_Gujarat",
-     "s": 21199203,
-     "rs": 1
+     "s": 21203987,
+     "rs": 0
     },
     {
      "n": "Haryana",
      "f": "India_Haryana",
-     "s": 27554234,
-     "rs": 1
+     "s": 27577802,
+     "rs": 0
     },
     {
      "n": "Himachal Pradesh",
      "f": "India_Himachal Pradesh",
-     "s": 3057425,
-     "rs": 1
+     "s": 3060569,
+     "rs": 0
     },
     {
      "n": "Jammu and Kashmir",
      "f": "India_Jammu and Kashmir",
-     "s": 4808736,
-     "rs": 1
+     "s": 4811376,
+     "rs": 0
     },
     {
      "n": "Jharkhand",
      "f": "India_Jharkhand",
-     "s": 3622379,
-     "rs": 1
+     "s": 3625963,
+     "rs": 0
     },
     {
      "n": "Karnataka",
      "f": "India_Karnataka",
-     "s": 68904003,
-     "rs": 1
+     "s": 68989939,
+     "rs": 0
     },
     {
      "n": "Kerala",
      "f": "India_Kerala",
-     "s": 10251244,
-     "rs": 1
+     "s": 10266068,
+     "rs": 0
     },
     {
      "n": "Lakshadweep",
      "f": "India_Lakshadweep",
-     "s": 279053,
-     "rs": 1
+     "s": 279189,
+     "rs": 0
     },
     {
      "n": "Madhya Pradesh",
      "f": "India_Madhya Pradesh",
-     "s": 18193167,
-     "rs": 1
+     "s": 18207623,
+     "rs": 0
     },
     {
      "n": "Maharashtra",
      "f": "India_Maharashtra",
-     "s": 50100240,
-     "rs": 1
+     "s": 50139344,
+     "rs": 0
     },
     {
      "n": "Manipur",
      "f": "India_Manipur",
-     "s": 640121,
-     "rs": 1
+     "s": 640665,
+     "rs": 0
     },
     {
      "n": "Meghalaya",
      "f": "India_Meghalaya",
-     "s": 663895,
-     "rs": 1
+     "s": 664567,
+     "rs": 0
     },
     {
      "n": "Mizoram",
      "f": "India_Mizoram",
-     "s": 566541,
-     "rs": 1
+     "s": 566549,
+     "rs": 0
     },
     {
      "n": "Nagaland",
      "f": "India_Nagaland",
-     "s": 514337,
-     "rs": 1
+     "s": 514593,
+     "rs": 0
     },
     {
      "n": "Odisha",
      "f": "India_Odisha",
-     "s": 8338589,
-     "rs": 1
+     "s": 8347405,
+     "rs": 0
     },
     {
      "n": "Punjab",
      "f": "India_Punjab",
-     "s": 12779906,
-     "rs": 1
+     "s": 12829722,
+     "rs": 0
     },
     {
      "n": "Rajasthan",
      "f": "India_Rajasthan",
-     "s": 28242505,
-     "rs": 1
+     "s": 28291425,
+     "rs": 0
     },
     {
      "n": "Sikkim",
      "f": "India_Sikkim",
-     "s": 616926,
-     "rs": 1
+     "s": 617638,
+     "rs": 0
     },
     {
      "n": "Tamil Nadu",
      "f": "India_Tamil Nadu",
-     "s": 47359989,
-     "rs": 1
+     "s": 47412709,
+     "rs": 0
     },
     {
      "n": "Telangana",
      "f": "India_Telangana",
-     "s": 60207176,
-     "rs": 1
+     "s": 60556792,
+     "rs": 0
     },
     {
      "n": "Tripura",
      "f": "India_Tripura",
-     "s": 572539,
-     "rs": 1
+     "s": 573707,
+     "rs": 0
     },
     {
      "n": "Uttar Pradesh",
      "f": "India_Uttar Pradesh",
-     "s": 26953627,
-     "rs": 1
+     "s": 26956362,
+     "rs": 0
     },
     {
      "n": "Uttarakhand",
      "f": "India_Uttarakhand",
-     "s": 5701639,
-     "rs": 1
+     "s": 5706999,
+     "rs": 0
     },
     {
      "n": "West Bengal",
      "f": "India_West Bengal",
-     "s": 27545994,
-     "rs": 1
+     "s": 27593994,
+     "rs": 0
     }
    ]
   },
@@ -2712,44 +2712,44 @@
     {
      "n": "Central Java Province",
      "f": "Indonesia_Jawa Tengah",
-     "s": 28662339,
-     "rs": 1
+     "s": 28729267,
+     "rs": 0
     },
     {
      "n": "East Java Province",
      "f": "Indonesia_Jawa Timur",
-     "s": 33272499,
-     "rs": 1
+     "s": 33327587,
+     "rs": 0
     },
     {
      "n": "Indonesia \u2014 East",
      "f": "Indonesia_East",
-     "s": 9845134,
-     "rs": 1
+     "s": 9858486,
+     "rs": 0
     },
     {
      "n": "Lesser Sunda Islands",
      "f": "Indonesia_Nusa Tenggara",
-     "s": 34199247,
-     "rs": 1
+     "s": 34248735,
+     "rs": 0
     },
     {
      "n": "Sulawesi, Kalimantan",
      "f": "Indonesia_Central",
-     "s": 51533259,
-     "rs": 1
+     "s": 51582427,
+     "rs": 0
     },
     {
      "n": "Sumatra",
      "f": "Indonesia_West",
-     "s": 33498993,
-     "rs": 1
+     "s": 33824185,
+     "rs": 0
     },
     {
      "n": "West Java Province",
      "f": "Indonesia_Jawa Barat",
-     "s": 32990261,
-     "rs": 1
+     "s": 33053325,
+     "rs": 0
     }
    ]
   },
@@ -2760,22 +2760,22 @@
     {
      "n": "Iran \u2014 North",
      "f": "Iran_North",
-     "s": 42720803,
-     "rs": 1
+     "s": 42797563,
+     "rs": 0
     },
     {
      "n": "Iran \u2014 South",
      "f": "Iran_South",
-     "s": 63532586,
-     "rs": 1
+     "s": 67528051,
+     "rs": 0
     }
    ]
   },
   {
    "n": "Iraq",
    "c": "iq",
-   "s": 57858761,
-   "rs": 1
+   "s": 58016201,
+   "rs": 0
   },
   {
    "n": "Ireland",
@@ -2784,34 +2784,34 @@
     {
      "n": "Connacht",
      "f": "Ireland_Connacht",
-     "s": 22553071,
-     "rs": 1
+     "s": 22612191,
+     "rs": 0
     },
     {
      "n": "Leinster",
      "f": "Ireland_Leinster",
-     "s": 39112539,
-     "rs": 1
+     "s": 39159147,
+     "rs": 0
     },
     {
      "n": "Munster",
      "f": "Ireland_Munster",
-     "s": 27195191,
-     "rs": 1
+     "s": 27252055,
+     "rs": 0
     },
     {
      "n": "Ulster",
      "f": "Ireland_Northern Counties",
-     "s": 9966924,
-     "rs": 1
+     "s": 9971636,
+     "rs": 0
     }
    ]
   },
   {
    "n": "Isle of Man",
    "c": "im",
-   "s": 2024857,
-   "rs": 1
+   "s": 2026145,
+   "rs": 0
   },
   {
    "n": "Israel",
@@ -2819,13 +2819,13 @@
    "g": [
     {
      "n": "Israel",
-     "s": 36671518,
-     "rs": 1
+     "s": 36722598,
+     "rs": 0
     },
     {
      "n": "Jerusalem",
-     "s": 3564541,
-     "rs": 1
+     "s": 3575781,
+     "rs": 0
     }
    ]
   },
@@ -2836,38 +2836,38 @@
     {
      "n": "Abruzzo",
      "f": "Italy_Abruzzo",
-     "s": 13236234,
-     "rs": 1
+     "s": 13254170,
+     "rs": 0
     },
     {
      "n": "Aosta Valley",
      "f": "Italy_Aosta Valley",
-     "s": 7348014,
-     "rs": 1
+     "s": 7365006,
+     "rs": 0
     },
     {
      "n": "Apulia",
      "f": "Italy_Apulia",
-     "s": 43951407,
-     "rs": 1
+     "s": 43956543,
+     "rs": 0
     },
     {
      "n": "Basilicata",
      "f": "Italy_Basilicata",
-     "s": 8805385,
-     "rs": 1
+     "s": 8790129,
+     "rs": 0
     },
     {
      "n": "Calabria",
      "f": "Italy_Calabria",
-     "s": 18070093,
-     "rs": 1
+     "s": 18092245,
+     "rs": 0
     },
     {
      "n": "Campania",
      "f": "Italy_Campania",
-     "s": 26853421,
-     "rs": 1
+     "s": 26940661,
+     "rs": 0
     },
     {
      "n": "Emilia-Romagna",
@@ -2875,56 +2875,56 @@
       {
        "n": "Province of Bologna",
        "f": "Italy_Emilia-Romagna_Bologna",
-       "s": 19713320,
-       "rs": 1
+       "s": 19724320,
+       "rs": 0
       },
       {
        "n": "Province of Ferrara",
        "f": "Italy_Emilia-Romagna_Ferrara",
-       "s": 9145116,
-       "rs": 1
+       "s": 9150236,
+       "rs": 0
       },
       {
        "n": "Province of Forl\u00ec-Cesena",
        "f": "Italy_Emilia-Romagna_Forli-Cesena",
-       "s": 8131374,
-       "rs": 1
+       "s": 8138078,
+       "rs": 0
       },
       {
        "n": "Province of Modena",
        "f": "Italy_Emilia-Romagna_Modena",
-       "s": 18182556,
-       "rs": 1
+       "s": 18192260,
+       "rs": 0
       },
       {
        "n": "Province of Parma",
        "f": "Italy_Emilia-Romagna_Parma",
-       "s": 12881300,
-       "rs": 1
+       "s": 12908588,
+       "rs": 0
       },
       {
        "n": "Province of Piacenza",
        "f": "Italy_Emilia-Romagna_Piacenza",
-       "s": 8349107,
-       "rs": 1
+       "s": 8357603,
+       "rs": 0
       },
       {
        "n": "Province of Ravenna",
        "f": "Italy_Emilia-Romagna_Ravenna",
-       "s": 7863865,
-       "rs": 1
+       "s": 7869345,
+       "rs": 0
       },
       {
        "n": "Province of Reggio Emilia",
        "f": "Italy_Emilia-Romagna_Reggio Emilia",
-       "s": 10497386,
-       "rs": 1
+       "s": 10512314,
+       "rs": 0
       },
       {
        "n": "Province of Rimini",
        "f": "Italy_Emilia-Romagna_Rimini",
-       "s": 5462766,
-       "rs": 1
+       "s": 5466134,
+       "rs": 0
       }
      ]
     },
@@ -2934,40 +2934,40 @@
       {
        "n": "Province of Gorizia",
        "f": "Italy_Friuli-Venezia Giulia_Gorizia",
-       "s": 5500713,
-       "rs": 1
+       "s": 5507561,
+       "rs": 0
       },
       {
        "n": "Province of Pordenone",
        "f": "Italy_Friuli-Venezia Giulia_Pordenone",
-       "s": 14804385,
-       "rs": 1
+       "s": 14821193,
+       "rs": 0
       },
       {
        "n": "Province of Trieste",
        "f": "Italy_Friuli-Venezia Giulia_Trieste",
-       "s": 4890677,
-       "rs": 1
+       "s": 4898269,
+       "rs": 0
       },
       {
        "n": "Province of Udine",
        "f": "Italy_Friuli-Venezia Giulia_Udine",
-       "s": 32115181,
-       "rs": 1
+       "s": 32151341,
+       "rs": 0
       }
      ]
     },
     {
      "n": "Lazio",
      "f": "Italy_Lazio",
-     "s": 40751684,
-     "rs": 1
+     "s": 40802652,
+     "rs": 0
     },
     {
      "n": "Liguria",
      "f": "Italy_Liguria",
-     "s": 32834829,
-     "rs": 1
+     "s": 32888733,
+     "rs": 0
     },
     {
      "n": "Lombardy",
@@ -2975,88 +2975,88 @@
       {
        "n": "Province of Bergamo",
        "f": "Italy_Lombardy_Bergamo",
-       "s": 12397782,
-       "rs": 1
+       "s": 12417966,
+       "rs": 0
       },
       {
        "n": "Province of Brescia",
        "f": "Italy_Lombardy_Brescia",
-       "s": 19818278,
-       "rs": 1
+       "s": 19860670,
+       "rs": 0
       },
       {
        "n": "Province of Como",
        "f": "Italy_Lombardy_Como",
-       "s": 9249070,
-       "rs": 1
+       "s": 9255573,
+       "rs": 0
       },
       {
        "n": "Province of Cremona",
        "f": "Italy_Lombardy_Cremona",
-       "s": 4335036,
-       "rs": 1
+       "s": 4344652,
+       "rs": 0
       },
       {
        "n": "Province of Lecco",
        "f": "Italy_Lombardy_Lecco",
-       "s": 7117553,
-       "rs": 1
+       "s": 7125713,
+       "rs": 0
       },
       {
        "n": "Province of Lodi",
        "f": "Italy_Lombardy_Lodi",
-       "s": 4446535,
-       "rs": 1
+       "s": 4450359,
+       "rs": 0
       },
       {
        "n": "Province of Mantua",
        "f": "Italy_Lombardy_Mantua",
-       "s": 5530990,
-       "rs": 1
+       "s": 5533966,
+       "rs": 0
       },
       {
        "n": "Province of Milan",
        "f": "Italy_Lombardy_Milan",
-       "s": 20101301,
-       "rs": 1
+       "s": 20149869,
+       "rs": 0
       },
       {
        "n": "Province of Monza and Brianza",
        "f": "Italy_Lombardy_Monza and Brianza",
-       "s": 7869042,
-       "rs": 1
+       "s": 7875229,
+       "rs": 0
       },
       {
        "n": "Province of Pavia",
        "f": "Italy_Lombardy_Pavia",
-       "s": 15480741,
-       "rs": 1
+       "s": 15543205,
+       "rs": 0
       },
       {
        "n": "Province of Sondrio",
        "f": "Italy_Lombardy_Sondrio",
-       "s": 6720056,
-       "rs": 1
+       "s": 6725136,
+       "rs": 0
       },
       {
        "n": "Province of Varese",
        "f": "Italy_Lombardy_Varese",
-       "s": 11538474,
-       "rs": 1
+       "s": 11554378,
+       "rs": 0
       }
      ]
     },
     {
      "n": "Marche",
      "f": "Italy_Marche",
-     "s": 18071119,
-     "rs": 1
+     "s": 18090583,
+     "rs": 0
     },
     {
      "n": "Molise",
      "f": "Italy_Molise",
-     "s": 6281943,
-     "rs": 1
+     "s": 6286815,
+     "rs": 0
     },
     {
      "n": "Piedmont",
@@ -3064,88 +3064,88 @@
       {
        "n": "Province of Alessandria",
        "f": "Italy_Piemont_Alessandria",
-       "s": 9724411,
-       "rs": 1
+       "s": 9733243,
+       "rs": 0
       },
       {
        "n": "Province of Asti",
        "f": "Italy_Piemont_Asti",
-       "s": 2761909,
-       "rs": 1
+       "s": 2764981,
+       "rs": 0
       },
       {
        "n": "Province of Biella",
        "f": "Italy_Piemont_Biella",
-       "s": 2507474,
-       "rs": 1
+       "s": 2509082,
+       "rs": 0
       },
       {
        "n": "Province of Cuneo",
        "f": "Italy_Piemont_Cuneo",
-       "s": 20594970,
-       "rs": 1
+       "s": 20639338,
+       "rs": 0
       },
       {
        "n": "Province of Novara",
        "f": "Italy_Piemont_Novara",
-       "s": 6083118,
-       "rs": 1
+       "s": 6103287,
+       "rs": 0
       },
       {
        "n": "Province of Turin",
        "f": "Italy_Piemont_Torino",
-       "s": 20306006,
-       "rs": 1
+       "s": 20340918,
+       "rs": 0
       },
       {
        "n": "Province of Vercelli",
        "f": "Italy_Piemont_Vercelli",
-       "s": 6058991,
-       "rs": 1
+       "s": 6070095,
+       "rs": 0
       },
       {
        "n": "Verbano-Cusio-Ossola",
        "f": "Italy_Piemont_Verbano-Cusio-Ossola",
-       "s": 4659507,
-       "rs": 1
+       "s": 4668171,
+       "rs": 0
       }
      ]
     },
     {
      "n": "Sardinia",
      "f": "Italy_Sardinia",
-     "s": 41142291,
-     "rs": 1
+     "s": 41152243,
+     "rs": 0
     },
     {
      "n": "Sicily",
      "f": "Italy_Sicily",
-     "s": 57491231,
-     "rs": 1
+     "s": 57596071,
+     "rs": 0
     },
     {
      "n": "Trentino-South Tyrol",
      "f": "Italy_Trentino-Alto Adige Sudtirol",
-     "s": 44056164,
-     "rs": 1
+     "s": 43957396,
+     "rs": 0
     },
     {
      "n": "Tuscany \u2014 Province of Grosseto",
      "f": "Italy_Tuscany_Grosseto",
-     "s": 18229203,
-     "rs": 1
+     "s": 18255395,
+     "rs": 0
     },
     {
      "n": "Tuscany \u2014 Province of Massa and Carrara",
      "f": "Italy_Tuscany_Massa e Carrara",
-     "s": 41022587,
-     "rs": 1
+     "s": 41129651,
+     "rs": 0
     },
     {
      "n": "Umbria",
      "f": "Italy_Umbria",
-     "s": 14336188,
-     "rs": 1
+     "s": 14341780,
+     "rs": 0
     },
     {
      "n": "Veneto",
@@ -3153,44 +3153,44 @@
       {
        "n": "Province of Belluno",
        "f": "Italy_Veneto_Belluno",
-       "s": 10228577,
-       "rs": 1
+       "s": 10240649,
+       "rs": 0
       },
       {
        "n": "Province of Padua",
        "f": "Italy_Veneto_Padova",
-       "s": 23202419,
-       "rs": 1
+       "s": 23222147,
+       "rs": 0
       },
       {
        "n": "Province of Rovigo",
        "f": "Italy_Veneto_Rovigo",
-       "s": 7699498,
-       "rs": 1
+       "s": 7706130,
+       "rs": 0
       },
       {
        "n": "Province of Treviso",
        "f": "Italy_Veneto_Treviso",
-       "s": 28178495,
-       "rs": 1
+       "s": 28182991,
+       "rs": 0
       },
       {
        "n": "Province of Venice",
        "f": "Italy_Veneto_Venezia",
-       "s": 17057797,
-       "rs": 1
+       "s": 17065285,
+       "rs": 0
       },
       {
        "n": "Province of Verona",
        "f": "Italy_Veneto_Verona",
-       "s": 22600838,
-       "rs": 1
+       "s": 22612510,
+       "rs": 0
       },
       {
        "n": "Province of Vicenza",
        "f": "Italy_Veneto_Vicenza",
-       "s": 21337588,
-       "rs": 1
+       "s": 21377108,
+       "rs": 0
       }
      ]
     }
@@ -3200,14 +3200,14 @@
    "n": "Ivory Coast",
    "f": "Cote dIvoire",
    "c": "ci",
-   "s": 16903756,
-   "rs": 1
+   "s": 16972260,
+   "rs": 0
   },
   {
    "n": "Jamaica",
    "c": "jm",
-   "s": 6365942,
-   "rs": 1
+   "s": 6371686,
+   "rs": 0
   },
   {
    "n": "Japan",
@@ -3219,56 +3219,56 @@
       {
        "n": "Aichi Prefecture",
        "f": "Japan_Chubu Region_Aichi",
-       "s": 81964945,
-       "rs": 1
+       "s": 82069929,
+       "rs": 0
       },
       {
        "n": "Fukui Prefecture",
        "f": "Japan_Chubu Region_Fukui",
-       "s": 14831945,
-       "rs": 1
+       "s": 14838625,
+       "rs": 0
       },
       {
        "n": "Gifu Prefecture",
        "f": "Japan_Chubu Region_Gifu",
-       "s": 32255837,
-       "rs": 1
+       "s": 32268493,
+       "rs": 0
       },
       {
        "n": "Ishikawa Prefecture",
        "f": "Japan_Chubu Region_Ishikawa",
-       "s": 16736493,
-       "rs": 1
+       "s": 16742445,
+       "rs": 0
       },
       {
        "n": "Nagano Prefecture",
        "f": "Japan_Chubu Region_Nagano",
-       "s": 39166179,
-       "rs": 1
+       "s": 39169011,
+       "rs": 0
       },
       {
        "n": "Niigata Prefecture",
        "f": "Japan_Chubu Region_Niigata",
-       "s": 42736788,
-       "rs": 1
+       "s": 42727444,
+       "rs": 0
       },
       {
        "n": "Shizuoka Prefecture",
        "f": "Japan_Chubu Region_Shizuoka",
-       "s": 52457476,
-       "rs": 1
+       "s": 52582996,
+       "rs": 0
       },
       {
        "n": "Toyama Prefecture",
        "f": "Japan_Chubu Region_Toyama",
-       "s": 15850366,
-       "rs": 1
+       "s": 15846302,
+       "rs": 0
       },
       {
        "n": "Yamanashi Prefecture",
        "f": "Japan_Chubu Region_Yamanashi",
-       "s": 17662754,
-       "rs": 1
+       "s": 17683211,
+       "rs": 0
       }
      ]
     },
@@ -3278,32 +3278,32 @@
       {
        "n": "Hiroshima Prefecture",
        "f": "Japan_Chugoku Region_Hiroshima",
-       "s": 35180647,
-       "rs": 1
+       "s": 35254839,
+       "rs": 0
       },
       {
        "n": "Okayama Prefecture",
        "f": "Japan_Chugoku Region_Okayama",
-       "s": 23113669,
-       "rs": 1
+       "s": 23106805,
+       "rs": 0
       },
       {
        "n": "Shimane Prefecture",
        "f": "Japan_Chugoku Region_Shimane",
-       "s": 15160068,
-       "rs": 1
+       "s": 15161932,
+       "rs": 0
       },
       {
        "n": "Tottori Prefecture",
        "f": "Japan_Chugoku Region_Tottori",
-       "s": 12235409,
-       "rs": 1
+       "s": 12269280,
+       "rs": 0
       },
       {
        "n": "Yamaguchi Prefecture",
        "f": "Japan_Chugoku Region_Yamaguchi",
-       "s": 18248637,
-       "rs": 1
+       "s": 18267837,
+       "rs": 0
       }
      ]
     },
@@ -3313,20 +3313,20 @@
       {
        "n": "Hokkaid\u014d \u2014 East",
        "f": "Japan_Hokkaido Region_East",
-       "s": 23118497,
-       "rs": 1
+       "s": 23119353,
+       "rs": 0
       },
       {
        "n": "Hokkaid\u014d \u2014 North",
        "f": "Japan_Hokkaido Region_North",
-       "s": 28885499,
-       "rs": 1
+       "s": 28891483,
+       "rs": 0
       },
       {
        "n": "Hokkaid\u014d \u2014 West",
        "f": "Japan_Hokkaido Region_West",
-       "s": 56577985,
-       "rs": 1
+       "s": 56589921,
+       "rs": 0
       }
      ]
     },
@@ -3336,26 +3336,26 @@
       {
        "n": "Mie Prefecture",
        "f": "Japan_Kinki Region_Mie",
-       "s": 23172079,
-       "rs": 1
+       "s": 23178599,
+       "rs": 0
       },
       {
        "n": "Nara Prefecture",
        "f": "Japan_Kinki Region_Nara",
-       "s": 14514927,
-       "rs": 1
+       "s": 14521511,
+       "rs": 0
       },
       {
        "n": "Wakayama Prefecture",
        "f": "Japan_Kinki Region_Wakayama",
-       "s": 10994776,
-       "rs": 1
+       "s": 11017104,
+       "rs": 0
       },
       {
        "n": "\u014csaka Prefecture",
        "f": "Japan_Kinki Region_Osaka",
-       "s": 84532299,
-       "rs": 1
+       "s": 84605699,
+       "rs": 0
       }
      ]
     },
@@ -3365,44 +3365,44 @@
       {
        "n": "Chiba Prefecture",
        "f": "Japan_Kanto_Chiba",
-       "s": 53493391,
-       "rs": 1
+       "s": 53522095,
+       "rs": 0
       },
       {
        "n": "Gunma Prefecture",
        "f": "Japan_Kanto_Gunma",
-       "s": 32790892,
-       "rs": 1
+       "s": 32803244,
+       "rs": 0
       },
       {
        "n": "Ibaraki Prefecture",
        "f": "Japan_Kanto_Ibaraki",
-       "s": 38818032,
-       "rs": 1
+       "s": 38842344,
+       "rs": 0
       },
       {
        "n": "Kanagawa Prefecture",
        "f": "Japan_Kanto_Kanagawa",
-       "s": 56399085,
-       "rs": 1
+       "s": 56514973,
+       "rs": 0
       },
       {
        "n": "Saitama Prefecture",
        "f": "Japan_Kanto_Saitama",
-       "s": 56219344,
-       "rs": 1
+       "s": 56220640,
+       "rs": 0
       },
       {
        "n": "Tochigi Prefecture",
        "f": "Japan_Kanto_Tochigi",
-       "s": 29781673,
-       "rs": 1
+       "s": 29784217,
+       "rs": 0
       },
       {
        "n": "Tokyo Prefecture",
        "f": "Japan_Kanto_Tokyo",
-       "s": 74476729,
-       "rs": 1
+       "s": 74538689,
+       "rs": 0
       }
      ]
     },
@@ -3412,50 +3412,50 @@
       {
        "n": "Fukuoka Prefecture",
        "f": "Japan_Kyushu Region_Fukuoka",
-       "s": 38939883,
-       "rs": 1
+       "s": 38934883,
+       "rs": 0
       },
       {
        "n": "Kagoshima Prefecture",
        "f": "Japan_Kyushu Region_Kagoshima",
-       "s": 30061606,
-       "rs": 1
+       "s": 30111662,
+       "rs": 0
       },
       {
        "n": "Kumamoto Prefecture",
        "f": "Japan_Kyushu Region_Kumamoto",
-       "s": 23744932,
-       "rs": 1
+       "s": 23755668,
+       "rs": 0
       },
       {
        "n": "Miyazaki Prefecture",
        "f": "Japan_Kyushu Region_Miyazaki",
-       "s": 16822025,
-       "rs": 1
+       "s": 16866545,
+       "rs": 0
       },
       {
        "n": "Nagasaki Prefecture",
        "f": "Japan_Kyushu Region_Nagasaki",
-       "s": 15896632,
-       "rs": 1
+       "s": 15894192,
+       "rs": 0
       },
       {
        "n": "Okinawa Prefecture",
        "f": "Japan_Kyushu Region_Okinawa",
-       "s": 13691209,
-       "rs": 1
+       "s": 13695161,
+       "rs": 0
       },
       {
        "n": "Saga Prefecture",
        "f": "Japan_Kyushu Region_Saga",
-       "s": 12947010,
-       "rs": 1
+       "s": 12948235,
+       "rs": 0
       },
       {
        "n": "\u014cita Prefecture",
        "f": "Japan_Kyushu Region_Oita",
-       "s": 17458656,
-       "rs": 1
+       "s": 17458152,
+       "rs": 0
       }
      ]
     },
@@ -3465,32 +3465,32 @@
       {
        "n": "Ehime Prefecture",
        "f": "Japan_Shikoku Region_Ehime",
-       "s": 21571646,
-       "rs": 1
+       "s": 21657742,
+       "rs": 0
       },
       {
        "n": "Kagawa Prefecture",
        "f": "Japan_Shikoku Region_Kagawa",
-       "s": 9126808,
-       "rs": 1
+       "s": 9126688,
+       "rs": 0
       },
       {
        "n": "Ky\u014dto Prefecture",
        "f": "Japan_Shikoku Region_Kyoto",
-       "s": 41615102,
-       "rs": 1
+       "s": 41643838,
+       "rs": 0
       },
       {
        "n": "K\u014dchi Prefecture",
        "f": "Japan_Shikoku Region_Kochi",
-       "s": 12074657,
-       "rs": 1
+       "s": 12115833,
+       "rs": 0
       },
       {
        "n": "Tokushima Prefecture",
        "f": "Japan_Shikoku Region_Tokushima",
-       "s": 13553467,
-       "rs": 1
+       "s": 13555435,
+       "rs": 0
       }
      ]
     },
@@ -3500,38 +3500,38 @@
       {
        "n": "Akita Prefecture",
        "f": "Japan_Tohoku_Akita",
-       "s": 23266243,
-       "rs": 1
+       "s": 23269291,
+       "rs": 0
       },
       {
        "n": "Aomori Prefecture",
        "f": "Japan_Tohoku_Aomori",
-       "s": 21513978,
-       "rs": 1
+       "s": 21516434,
+       "rs": 0
       },
       {
        "n": "Fukushima Prefecture",
        "f": "Japan_Tohoku_Fukushima",
-       "s": 45817385,
-       "rs": 1
+       "s": 45831673,
+       "rs": 0
       },
       {
        "n": "Iwate Prefecture",
        "f": "Japan_Tohoku_Iwate",
-       "s": 28518652,
-       "rs": 1
+       "s": 28521796,
+       "rs": 0
       },
       {
        "n": "Miyagi Prefecture",
        "f": "Japan_Tohoku_Miyagi",
-       "s": 26728503,
-       "rs": 1
+       "s": 26720735,
+       "rs": 0
       },
       {
        "n": "Yamagata Prefecture",
        "f": "Japan_Tohoku_Yamagata",
-       "s": 21712028,
-       "rs": 1
+       "s": 21732524,
+       "rs": 0
       }
      ]
     }
@@ -3540,171 +3540,171 @@
   {
    "n": "Jersey",
    "c": "je",
-   "s": 1366777,
-   "rs": 1
+   "s": 1367569,
+   "rs": 0
   },
   {
    "n": "Jordan",
    "c": "jo",
-   "s": 19561543,
-   "rs": 1
+   "s": 19649879,
+   "rs": 0
   },
   {
    "n": "Kazakhstan",
    "c": "kz",
-   "s": 69593963,
-   "rs": 1
+   "s": 69510675,
+   "rs": 0
   },
   {
    "n": "Kenya",
    "c": "ke",
-   "s": 20296601,
-   "rs": 1
+   "s": 20336129,
+   "rs": 0
   },
   {
    "n": "Kiribati",
    "c": "ki",
-   "s": 912694,
-   "rs": 1
+   "s": 912726,
+   "rs": 0
   },
   {
    "n": "Kosovo",
    "f": "Republic of Kosovo",
    "c": "xk",
-   "s": 9120007,
-   "rs": 1
+   "s": 8867471,
+   "rs": 0
   },
   {
    "n": "Kuwait",
    "c": "kw",
-   "s": 4747050,
-   "rs": 1
+   "s": 4753338,
+   "rs": 0
   },
   {
    "n": "Kyrgyzstan",
    "c": "kg",
-   "s": 23653949,
-   "rs": 1
+   "s": 23666341,
+   "rs": 0
   },
   {
    "n": "Laos",
    "c": "la",
-   "s": 9108753,
-   "rs": 1
+   "s": 9154721,
+   "rs": 0
   },
   {
    "n": "Latvia",
    "c": "lv",
-   "s": 50924910,
-   "rs": 1
+   "s": 50967383,
+   "rs": 0
   },
   {
    "n": "Lebanon",
    "c": "lb",
-   "s": 12812017,
-   "rs": 1
+   "s": 12839521,
+   "rs": 0
   },
   {
    "n": "Lesotho",
    "f": "Kingdom of Lesotho",
-   "s": 30099874,
-   "rs": 1
+   "s": 30522850,
+   "rs": 0
   },
   {
    "n": "Liberia",
    "c": "lr",
-   "s": 14653134,
-   "rs": 1
+   "s": 14683246,
+   "rs": 0
   },
   {
    "n": "Libya",
    "c": "ly",
-   "s": 18827501,
-   "rs": 1
+   "s": 18842437,
+   "rs": 0
   },
   {
    "n": "Liechtenstein",
    "c": "li",
-   "s": 989911,
-   "rs": 1
+   "s": 990607,
+   "rs": 0
   },
   {
    "n": "Lithuania",
    "c": "lt",
-   "s": 81540036,
-   "rs": 1
+   "s": 81708588,
+   "rs": 0
   },
   {
    "n": "Luxembourg",
    "c": "lu",
-   "s": 13112334,
-   "rs": 1
+   "s": 13141454,
+   "rs": 0
   },
   {
    "n": "Macedonia",
    "c": "mk",
-   "s": 15346802,
-   "rs": 1
+   "s": 15356362,
+   "rs": 0
   },
   {
    "n": "Madagascar",
    "c": "mg",
-   "s": 31930445,
-   "rs": 1
+   "s": 32077541,
+   "rs": 0
   },
   {
    "n": "Malawi",
    "c": "mw",
-   "s": 11527835,
-   "rs": 1
+   "s": 11543684,
+   "rs": 0
   },
   {
    "n": "Malaysia",
    "c": "my",
-   "s": 51390723,
-   "rs": 1
+   "s": 51539459,
+   "rs": 0
   },
   {
    "n": "Maldives",
    "c": "mv",
-   "s": 1761706,
-   "rs": 1
+   "s": 1766914,
+   "rs": 0
   },
   {
    "n": "Mali",
    "c": "ml",
-   "s": 37426459,
-   "rs": 1
+   "s": 37477627,
+   "rs": 0
   },
   {
    "n": "Malta",
    "c": "mt",
-   "s": 3663711,
-   "rs": 1
+   "s": 3674471,
+   "rs": 0
   },
   {
    "n": "Marshall Islands",
    "c": "mh",
-   "s": 791454,
-   "rs": 1
+   "s": 792942,
+   "rs": 0
   },
   {
    "n": "Martinique",
    "c": "mq",
-   "s": 8952652,
-   "rs": 1
+   "s": 8954948,
+   "rs": 0
   },
   {
    "n": "Mauritania",
    "c": "mr",
-   "s": 5532578,
-   "rs": 1
+   "s": 5533978,
+   "rs": 0
   },
   {
    "n": "Mauritius",
    "c": "mu",
-   "s": 2049988,
-   "rs": 1
+   "s": 2049068,
+   "rs": 0
   },
   {
    "n": "Mexico",
@@ -3713,76 +3713,76 @@
     {
      "n": "Baja California",
      "f": "Mexico_California",
-     "s": 18108788,
-     "rs": 1
+     "s": 18115804,
+     "rs": 0
     },
     {
      "n": "Mexico City",
      "f": "Mexico_Mexico",
-     "s": 71107986,
-     "rs": 1
+     "s": 71445114,
+     "rs": 0
     },
     {
      "n": "Mexico \u2014 East",
      "f": "Mexico_East",
-     "s": 37917135,
-     "rs": 1
+     "s": 38112359,
+     "rs": 0
     },
     {
      "n": "Mexico \u2014 North",
      "f": "Mexico_North",
-     "s": 60930365,
-     "rs": 1
+     "s": 60931989,
+     "rs": 0
     },
     {
      "n": "Mexico \u2014 South",
      "f": "Mexico_South",
-     "s": 46937587,
-     "rs": 1
+     "s": 47092531,
+     "rs": 0
     },
     {
      "n": "Nayarit",
      "f": "Mexico_Central_West",
-     "s": 54073466,
-     "rs": 1
+     "s": 54131042,
+     "rs": 0
     },
     {
      "n": "Nuevo Le\u00f3n",
      "f": "Mexico_Central_East",
-     "s": 40789821,
-     "rs": 1
+     "s": 40827157,
+     "rs": 0
     }
    ]
   },
   {
    "n": "Moldova",
    "c": "md",
-   "s": 29264571,
-   "rs": 1
+   "s": 29309939,
+   "rs": 0
   },
   {
    "n": "Monaco",
    "c": "mc",
-   "s": 215232,
-   "rs": 1
+   "s": 215560,
+   "rs": 0
   },
   {
    "n": "Mongolia",
    "c": "mn",
-   "s": 12447138,
-   "rs": 1
+   "s": 12481794,
+   "rs": 0
   },
   {
    "n": "Montenegro",
    "c": "me",
-   "s": 12207465,
-   "rs": 1
+   "s": 12340793,
+   "rs": 0
   },
   {
    "n": "Montserrat",
    "c": "ms",
-   "s": 165027,
-   "rs": 1
+   "s": 165043,
+   "rs": 0
   },
   {
    "n": "Morocco",
@@ -3791,51 +3791,51 @@
     {
      "n": "Doukkala-Abda",
      "f": "Morocco_Doukkala-Abda",
-     "s": 21527466,
-     "rs": 1
+     "s": 21551146,
+     "rs": 0
     },
     {
      "n": "Morocco \u2014 South",
      "f": "Morocco_Southern",
-     "s": 29590478,
-     "rs": 1
+     "s": 29638262,
+     "rs": 0
     },
     {
      "n": "Rabat-Sal\u00e9-Zemmour-Zaer",
      "f": "Morocco_Rabat-Sale-Zemmour-Zaer",
-     "s": 16194643,
-     "rs": 1
+     "s": 16355427,
+     "rs": 0
     },
     {
      "n": "Western Sahara",
      "f": "Morocco_Western Sahara",
-     "s": 5695019,
-     "rs": 1
+     "s": 5710979,
+     "rs": 0
     }
    ]
   },
   {
    "n": "Mozambique",
    "c": "mz",
-   "s": 23285996,
-   "rs": 1
+   "s": 23518262,
+   "rs": 0
   },
   {
    "n": "Myanmar",
-   "s": 38426392,
-   "rs": 1
+   "s": 38460760,
+   "rs": 0
   },
   {
    "n": "Namibia",
    "c": "na",
-   "s": 11571531,
-   "rs": 1
+   "s": 11576435,
+   "rs": 0
   },
   {
    "n": "Nauru",
    "c": "nr",
-   "s": 256856,
-   "rs": 1
+   "s": 256840,
+   "rs": 0
   },
   {
    "n": "Nepal",
@@ -3844,14 +3844,14 @@
     {
      "n": "Nepal \u2014 East",
      "f": "Nepal_East",
-     "s": 55848092,
-     "rs": 1
+     "s": 55885652,
+     "rs": 0
     },
     {
      "n": "Nepal \u2014 West",
      "f": "Nepal_West",
-     "s": 34009528,
-     "rs": 1
+     "s": 34040808,
+     "rs": 0
     }
    ]
   },
@@ -3862,146 +3862,146 @@
     {
      "n": "Drenthe",
      "f": "Netherlands_Drenthe",
-     "s": 31111456,
-     "rs": 1
+     "s": 31128040,
+     "rs": 0
     },
     {
      "n": "Flevoland",
      "f": "Netherlands_Flevoland",
-     "s": 17779773,
-     "rs": 1
+     "s": 17793629,
+     "rs": 0
     },
     {
      "n": "Friesland",
      "f": "Netherlands_Friesland",
-     "s": 41865598,
-     "rs": 1
+     "s": 41902398,
+     "rs": 0
     },
     {
      "n": "Gelderland \u2014 Apeldoorn",
      "f": "Netherlands_Gelderland_North",
-     "s": 45944121,
-     "rs": 1
+     "s": 45979841,
+     "rs": 0
     },
     {
      "n": "Gelderland \u2014 Nijmegen",
      "f": "Netherlands_Gelderland_Nijmegen",
-     "s": 27107551,
-     "rs": 1
+     "s": 27136335,
+     "rs": 0
     },
     {
      "n": "Gelderland \u2014 Zutphen",
      "f": "Netherlands_Gelderland_Zutphen",
-     "s": 20830962,
-     "rs": 1
+     "s": 20848186,
+     "rs": 0
     },
     {
      "n": "Groningen",
      "f": "Netherlands_Groningen",
-     "s": 29844874,
-     "rs": 1
+     "s": 29862426,
+     "rs": 0
     },
     {
      "n": "Limburg",
      "f": "Netherlands_Limburg",
-     "s": 50324656,
-     "rs": 1
+     "s": 50354856,
+     "rs": 0
     },
     {
      "n": "North Brabant \u2014 Eindhoven",
      "f": "Netherlands_North Brabant_Eindhoven",
-     "s": 43782272,
-     "rs": 1
+     "s": 43802800,
+     "rs": 0
     },
     {
      "n": "North Brabant \u2014 Roosendaal",
      "f": "Netherlands_North Brabant_Roosendaal",
-     "s": 15089024,
-     "rs": 1
+     "s": 15095592,
+     "rs": 0
     },
     {
      "n": "North Brabant \u2014 Tilburg",
      "f": "Netherlands_North Brabant_Tiburg",
-     "s": 31979724,
-     "rs": 1
+     "s": 31993484,
+     "rs": 0
     },
     {
      "n": "North Brabant \u2014 Uden",
      "f": "Netherlands_North Brabant_Uden",
-     "s": 16002677,
-     "rs": 1
+     "s": 16006973,
+     "rs": 0
     },
     {
      "n": "North Holland \u2014 Alkmaar",
      "f": "Netherlands_North Holland_Alkmaar",
-     "s": 25473718,
-     "rs": 1
+     "s": 25496961,
+     "rs": 0
     },
     {
      "n": "North Holland \u2014 Amsterdam",
      "f": "Netherlands_North Holland_Amsterdam",
-     "s": 48132634,
-     "rs": 1
+     "s": 48173954,
+     "rs": 0
     },
     {
      "n": "North Holland \u2014 Zaanstad",
      "f": "Netherlands_North Holland_Zaandam",
-     "s": 18782005,
-     "rs": 1
+     "s": 18785012,
+     "rs": 0
     },
     {
      "n": "Overijssel \u2014 Enschede",
      "f": "Netherlands_Overijssel_Enschede",
-     "s": 30788754,
-     "rs": 1
+     "s": 30804094,
+     "rs": 0
     },
     {
      "n": "Overijssel \u2014 Zwolle",
      "f": "Netherlands_Overijssel_Zwolle",
-     "s": 27574083,
-     "rs": 1
+     "s": 27588387,
+     "rs": 0
     },
     {
      "n": "South Holland \u2014 Brielle",
      "f": "Netherlands_South Holland_Brielle",
-     "s": 14378208,
-     "rs": 1
+     "s": 14388352,
+     "rs": 0
     },
     {
      "n": "South Holland \u2014 Leiden",
      "f": "Netherlands_South Holland_Leiden",
-     "s": 16822106,
-     "rs": 1
+     "s": 16832930,
+     "rs": 0
     },
     {
      "n": "South Holland \u2014 Rotterdam",
      "f": "Netherlands_South Holland_Rotterdam",
-     "s": 40247872,
-     "rs": 1
+     "s": 40272120,
+     "rs": 0
     },
     {
      "n": "South Holland \u2014 The Hague",
      "f": "Netherlands_South Holland_Den Haag",
-     "s": 38099661,
-     "rs": 1
+     "s": 38122517,
+     "rs": 0
     },
     {
      "n": "Utrecht \u2014 Amersfoort",
      "f": "Netherlands_Utrecht_Amersfoort",
-     "s": 20486321,
-     "rs": 1
+     "s": 20502257,
+     "rs": 0
     },
     {
      "n": "Utrecht \u2014 Utrecht",
      "f": "Netherlands_Utrecht_Utrecht",
-     "s": 23519842,
-     "rs": 1
+     "s": 23537534,
+     "rs": 0
     },
     {
      "n": "Zeeland",
      "f": "Netherlands_Zeeland",
-     "s": 23649036,
-     "rs": 1
+     "s": 23672532,
+     "rs": 0
     }
    ]
   },
@@ -4012,63 +4012,63 @@
     {
      "n": "North \u2014 Auckland",
      "f": "New Zealand North_Auckland",
-     "s": 50317029,
-     "rs": 1
+     "s": 50365365,
+     "rs": 0
     },
     {
      "n": "North \u2014 Wellington",
      "f": "New Zealand North_Wellington",
-     "s": 38954293,
-     "rs": 1
+     "s": 38984317,
+     "rs": 0
     },
     {
      "n": "South \u2014 Canterbury Region",
      "f": "New Zealand South_Canterbury",
-     "s": 40133433,
-     "rs": 1
+     "s": 40159105,
+     "rs": 0
     },
     {
      "n": "South \u2014 Southland Region",
      "f": "New Zealand South_Southland",
-     "s": 28757272,
-     "rs": 1
+     "s": 28770832,
+     "rs": 0
     },
     {
      "n": "Tokelau",
-     "s": 66629,
-     "rs": 1
+     "s": 66565,
+     "rs": 0
     }
    ]
   },
   {
    "n": "Nicaragua",
    "c": "ni",
-   "s": 12837225,
-   "rs": 1
+   "s": 12965857,
+   "rs": 0
   },
   {
    "n": "Niger",
    "c": "ne",
-   "s": 16139121,
-   "rs": 1
+   "s": 16171705,
+   "rs": 0
   },
   {
    "n": "Nigeria",
    "c": "ng",
-   "s": 68094195,
-   "rs": 1
+   "s": 69660716,
+   "rs": 0
   },
   {
    "n": "Niue",
    "c": "nu",
-   "s": 204617,
-   "rs": 1
+   "s": 204553,
+   "rs": 0
   },
   {
    "n": "North Korea",
    "c": "kp",
-   "s": 17087522,
-   "rs": 1
+   "s": 17113746,
+   "rs": 0
   },
   {
    "n": "Norway",
@@ -4083,8 +4083,8 @@
     {
      "n": "Hedmark",
      "f": "Norway_Hedmark",
-     "s": 34238869,
-     "rs": 1
+     "s": 34368933,
+     "rs": 0
     },
     {
      "n": "Jan Mayen",
@@ -4095,82 +4095,82 @@
     {
      "n": "Northern Norway",
      "f": "Norway_Northern",
-     "s": 51384953,
-     "rs": 1
+     "s": 54061481,
+     "rs": 0
     },
     {
      "n": "Oppland",
      "f": "Norway_Oppland",
-     "s": 30014306,
-     "rs": 1
+     "s": 30051890,
+     "rs": 0
     },
     {
      "n": "Oslo",
      "f": "Norway_Central",
-     "s": 44224293,
-     "rs": 1
+     "s": 44275893,
+     "rs": 0
     },
     {
      "n": "Southern Norway",
      "f": "Norway_Southern",
-     "s": 45308584,
-     "rs": 1
+     "s": 45289368,
+     "rs": 0
     },
     {
      "n": "Svalbard",
      "f": "Norway_Svalbard",
-     "s": 1000341,
-     "rs": 1
+     "s": 1000701,
+     "rs": 0
     },
     {
      "n": "Tr\u00f8ndelag",
      "f": "Norway_Trondelag",
-     "s": 77146281,
-     "rs": 1
+     "s": 77194713,
+     "rs": 0
     },
     {
      "n": "Western Norway",
      "f": "Norway_Western",
-     "s": 89916225,
-     "rs": 1
+     "s": 92188649,
+     "rs": 0
     }
    ]
   },
   {
    "n": "Oman",
    "c": "om",
-   "s": 13746623,
-   "rs": 1
+   "s": 13759847,
+   "rs": 0
   },
   {
    "n": "Pakistan",
    "c": "pk",
-   "s": 44778455,
-   "rs": 1
+   "s": 44893327,
+   "rs": 0
   },
   {
    "n": "Palau",
    "c": "pw",
-   "s": 299130,
-   "rs": 1
+   "s": 299346,
+   "rs": 0
   },
   {
    "n": "Panama",
    "c": "pa",
-   "s": 11045478,
-   "rs": 1
+   "s": 11060638,
+   "rs": 0
   },
   {
    "n": "Papua New Guinea",
    "c": "pg",
-   "s": 5849712,
-   "rs": 1
+   "s": 5874744,
+   "rs": 0
   },
   {
    "n": "Paraguay",
    "c": "py",
-   "s": 27541035,
-   "rs": 1
+   "s": 27563099,
+   "rs": 0
   },
   {
    "n": "People's Republic of China",
@@ -4179,175 +4179,175 @@
     {
      "n": "Anhui",
      "f": "China_Anhui",
-     "s": 9418359,
-     "rs": 1
+     "s": 9450511,
+     "rs": 0
     },
     {
      "n": "Chongqing",
      "f": "China_Chongqing",
-     "s": 4215427,
-     "rs": 1
+     "s": 4221219,
+     "rs": 0
     },
     {
      "n": "Fujian",
      "f": "China_Fujian",
-     "s": 9337289,
-     "rs": 1
+     "s": 9358942,
+     "rs": 0
     },
     {
      "n": "Gansu",
      "f": "China_Gansu",
-     "s": 6071635,
-     "rs": 1
+     "s": 6093507,
+     "rs": 0
     },
     {
      "n": "Guangdong",
      "f": "China_Guangdong",
-     "s": 49107288,
-     "rs": 1
+     "s": 49400360,
+     "rs": 0
     },
     {
      "n": "Guangxi Zhuang Autonomous Region",
      "f": "China_Guangxi",
-     "s": 7111846,
-     "rs": 1
+     "s": 7163980,
+     "rs": 0
     },
     {
      "n": "Guizhou",
      "f": "China_Guizhou",
-     "s": 3978387,
-     "rs": 1
+     "s": 3983667,
+     "rs": 0
     },
     {
      "n": "Hebei",
      "f": "China_Hebei",
-     "s": 23831666,
-     "rs": 1
+     "s": 23918890,
+     "rs": 0
     },
     {
      "n": "Heilongjiang",
      "f": "China_Heilongjiang",
-     "s": 8891364,
-     "rs": 1
+     "s": 8936574,
+     "rs": 0
     },
     {
      "n": "Henan",
      "f": "China_Henan",
-     "s": 10065331,
-     "rs": 1
+     "s": 10082003,
+     "rs": 0
     },
     {
      "n": "Hubei",
      "f": "China_Hubei",
-     "s": 9443249,
-     "rs": 1
+     "s": 9480849,
+     "rs": 0
     },
     {
      "n": "Hunan",
      "f": "China_Hunan",
-     "s": 7917055,
-     "rs": 1
+     "s": 7941895,
+     "rs": 0
     },
     {
      "n": "Inner Mongolia",
      "f": "China_Inner Mongolia",
-     "s": 13494300,
-     "rs": 1
+     "s": 13546958,
+     "rs": 0
     },
     {
      "n": "Jiangsu",
      "f": "China_Jiangsu",
-     "s": 28232565,
-     "rs": 1
+     "s": 28380166,
+     "rs": 0
     },
     {
      "n": "Jiangxi",
      "f": "China_Jiangxi",
-     "s": 9839663,
-     "rs": 1
+     "s": 9848544,
+     "rs": 0
     },
     {
      "n": "Jilin",
      "f": "China_Jilin",
-     "s": 7560437,
-     "rs": 1
+     "s": 7616357,
+     "rs": 0
     },
     {
      "n": "Liaoning",
      "f": "China_Liaoning",
-     "s": 10532960,
-     "rs": 1
+     "s": 10539200,
+     "rs": 0
     },
     {
      "n": "Ningxia Hui Autonomous Region",
      "f": "China_Ningxia Hui",
-     "s": 2695749,
-     "rs": 1
+     "s": 2705437,
+     "rs": 0
     },
     {
      "n": "Qinghai",
      "f": "China_Qinghai",
-     "s": 6240720,
-     "rs": 1
+     "s": 6274000,
+     "rs": 0
     },
     {
      "n": "Shaanxi",
      "f": "China_Shaanxi",
-     "s": 9685534,
-     "rs": 1
+     "s": 9765046,
+     "rs": 0
     },
     {
      "n": "Shandong",
      "f": "China_Shandong",
-     "s": 18893835,
-     "rs": 1
+     "s": 18965616,
+     "rs": 0
     },
     {
      "n": "Shanghai",
      "f": "China_Shanghai",
-     "s": 10623258,
-     "rs": 1
+     "s": 10630898,
+     "rs": 0
     },
     {
      "n": "Shanxi",
      "f": "China_Shanxi",
-     "s": 5527753,
-     "rs": 1
+     "s": 5537705,
+     "rs": 0
     },
     {
      "n": "Sichuan",
      "f": "China_Sichuan",
-     "s": 12835867,
-     "rs": 1
+     "s": 12878555,
+     "rs": 0
     },
     {
      "n": "Taiwan",
-     "s": 82397396,
-     "rs": 1
+     "s": 82552892,
+     "rs": 0
     },
     {
      "n": "Tibet Autonomous Region",
      "f": "China_Tibet Autonomous Region",
-     "s": 9894089,
-     "rs": 1
+     "s": 9924569,
+     "rs": 0
     },
     {
      "n": "Xinjiang Uyghur Autonomous Region",
      "f": "China_Xinjiang",
-     "s": 12597835,
-     "rs": 1
+     "s": 12624323,
+     "rs": 0
     },
     {
      "n": "Yunnan",
      "f": "China_Yunnan",
-     "s": 13516302,
-     "rs": 1
+     "s": 13597414,
+     "rs": 0
     },
     {
      "n": "Zhejiang",
      "f": "China_Zhejiang",
-     "s": 18924692,
-     "rs": 1
+     "s": 18949308,
+     "rs": 0
     }
    ]
   },
@@ -4358,14 +4358,14 @@
     {
      "n": "Peru \u2014 North",
      "f": "Peru_North",
-     "s": 31218517,
-     "rs": 1
+     "s": 31243253,
+     "rs": 0
     },
     {
      "n": "Peru \u2014 South",
      "f": "Peru_South",
-     "s": 56085263,
-     "rs": 1
+     "s": 56188879,
+     "rs": 0
     }
    ]
   },
@@ -4376,32 +4376,32 @@
     {
      "n": "Luzon \u2014 North",
      "f": "Philippines_Luzon_North",
-     "s": 34815494,
-     "rs": 1
+     "s": 34838590,
+     "rs": 0
     },
     {
      "n": "Luzon \u2014 South",
      "f": "Philippines_Luzon_South",
-     "s": 6153847,
-     "rs": 1
+     "s": 6158567,
+     "rs": 0
     },
     {
      "n": "Metro Manila",
      "f": "Philippines_Luzon_Manila",
-     "s": 47829315,
-     "rs": 1
+     "s": 47937267,
+     "rs": 0
     },
     {
      "n": "Mindanao",
      "f": "Philippines_Mindanao",
-     "s": 25174443,
-     "rs": 1
+     "s": 25214315,
+     "rs": 0
     },
     {
      "n": "Visayas",
      "f": "Philippines_Visayas",
-     "s": 36327640,
-     "rs": 1
+     "s": 36388672,
+     "rs": 0
     }
    ]
   },
@@ -4409,8 +4409,8 @@
    "n": "Pitcairn",
    "f": "Pitcairn Islands",
    "c": "pn",
-   "s": 57901,
-   "rs": 1
+   "s": 57821,
+   "rs": 0
   },
   {
    "n": "Poland",
@@ -4419,98 +4419,98 @@
     {
      "n": "Greater Poland Voivodeship",
      "f": "Poland_Greater Poland Voivodeship",
-     "s": 45075056,
-     "rs": 1
+     "s": 45217024,
+     "rs": 0
     },
     {
      "n": "Kuyavian-Pomeranian Voivodeship",
      "f": "Poland_Kuyavian-Pomeranian Voivodeship",
-     "s": 29750603,
-     "rs": 1
+     "s": 29788451,
+     "rs": 0
     },
     {
      "n": "Lesser Poland Voivodeship",
      "f": "Poland_Lesser Poland Voivodeship",
-     "s": 58310194,
-     "rs": 1
+     "s": 58628314,
+     "rs": 0
     },
     {
      "n": "Lower Silesian Voivodeship",
      "f": "Poland_Lower Silesian Voivodeship",
-     "s": 54506862,
-     "rs": 1
+     "s": 54707078,
+     "rs": 0
     },
     {
      "n": "Lublin Voivodeship",
      "f": "Poland_Lublin Voivodeship",
-     "s": 40605619,
-     "rs": 1
+     "s": 40694323,
+     "rs": 0
     },
     {
      "n": "Lubusz Voivodeship",
      "f": "Poland_Lubusz Voivodeship",
-     "s": 23326665,
-     "rs": 1
+     "s": 23342089,
+     "rs": 0
     },
     {
      "n": "Masovian Voivodeship",
      "f": "Poland_Masovian Voivodeship",
-     "s": 68196605,
-     "rs": 1
+     "s": 68467213,
+     "rs": 0
     },
     {
      "n": "Opole Voivodeship",
      "f": "Poland_Opole Voivodeship",
-     "s": 17871367,
-     "rs": 1
+     "s": 17902559,
+     "rs": 0
     },
     {
      "n": "Podkarpackie Voivodeship",
      "f": "Poland_Subcarpathian Voivodeship",
-     "s": 42165346,
-     "rs": 1
+     "s": 42285514,
+     "rs": 0
     },
     {
      "n": "Podlaskie Voivodeship",
      "f": "Poland_Podlaskie Voivodeship",
-     "s": 20761855,
-     "rs": 1
+     "s": 20812775,
+     "rs": 0
     },
     {
      "n": "Pomeranian Voivodeship",
      "f": "Poland_Pomeranian Voivodeship",
-     "s": 38898410,
-     "rs": 1
+     "s": 38969154,
+     "rs": 0
     },
     {
      "n": "Silesian Voivodeship",
      "f": "Poland_Silesian Voivodeship",
-     "s": 71106332,
-     "rs": 1
+     "s": 71278036,
+     "rs": 0
     },
     {
      "n": "Warmian-Masurian Voivodeship",
      "f": "Poland_Warmian-Masurian Voivodeship",
-     "s": 31349839,
-     "rs": 1
+     "s": 31387951,
+     "rs": 0
     },
     {
      "n": "West Pomeranian Voivodeship",
      "f": "Poland_West Pomeranian Voivodeship",
-     "s": 40803668,
-     "rs": 1
+     "s": 40873956,
+     "rs": 0
     },
     {
      "n": "\u0141\u00f3d\u017a Voivodeship",
      "f": "Poland_Lodz Voivodeship",
-     "s": 36735430,
-     "rs": 1
+     "s": 36843030,
+     "rs": 0
     },
     {
      "n": "\u015awi\u0119tokrzyskie Voivodeship",
      "f": "Poland_Swietokrzyskie Voivodeship",
-     "s": 20220080,
-     "rs": 1
+     "s": 20288000,
+     "rs": 0
     }
    ]
   },
@@ -4521,29 +4521,29 @@
     {
      "n": "Portugal \u2014 North",
      "f": "Portugal_North",
-     "s": 76407506,
-     "rs": 1
+     "s": 76553987,
+     "rs": 0
     },
     {
      "n": "Portugal \u2014 South",
      "f": "Portugal_South",
-     "s": 54355850,
-     "rs": 1
+     "s": 54419162,
+     "rs": 0
     }
    ]
   },
   {
    "n": "Qatar",
    "c": "qa",
-   "s": 5907320,
-   "rs": 1
+   "s": 5904856,
+   "rs": 0
   },
   {
    "n": "Republic of the Congo",
    "f": "Congo-Brazzaville",
    "c": "cg",
-   "s": 12568002,
-   "rs": 1
+   "s": 12624722,
+   "rs": 0
   },
   {
    "n": "Romania",
@@ -4552,44 +4552,44 @@
     {
      "n": "Centru",
      "f": "Romania_Centre",
-     "s": 37254961,
-     "rs": 1
+     "s": 37293105,
+     "rs": 0
     },
     {
      "n": "Nord-Est",
      "f": "Romania_North_East",
-     "s": 31621314,
-     "rs": 1
+     "s": 31633650,
+     "rs": 0
     },
     {
      "n": "Nord-Vest",
      "f": "Romania_North_West",
-     "s": 34489783,
-     "rs": 1
+     "s": 34582599,
+     "rs": 0
     },
     {
      "n": "Sud",
      "f": "Romania_South",
-     "s": 36180047,
-     "rs": 1
+     "s": 36249423,
+     "rs": 0
     },
     {
      "n": "Sud-Est",
      "f": "Romania_South_East",
-     "s": 21152691,
-     "rs": 1
+     "s": 21176427,
+     "rs": 0
     },
     {
      "n": "Sud-Vest",
      "f": "Romania_South_West",
-     "s": 21077610,
-     "rs": 1
+     "s": 21092858,
+     "rs": 0
     },
     {
      "n": "Vest",
      "f": "Romania_West",
-     "s": 25992410,
-     "rs": 1
+     "s": 26000338,
+     "rs": 0
     }
    ]
   },
@@ -4600,624 +4600,624 @@
     {
      "n": "Altai Krai",
      "f": "Russia_Altai Krai",
-     "s": 21799248,
-     "rs": 1
+     "s": 21838752,
+     "rs": 0
     },
     {
      "n": "Altai Republic",
      "f": "Russia_Altai Republic",
-     "s": 5996561,
-     "rs": 1
+     "s": 6032777,
+     "rs": 0
     },
     {
      "n": "Amur Oblast",
      "f": "Russia_Amur Oblast",
-     "s": 6907300,
-     "rs": 1
+     "s": 6913676,
+     "rs": 0
     },
     {
      "n": "Arkhangelsk Oblast \u2014 Centre",
      "f": "Russia_Arkhangelsk Oblast_Central",
-     "s": 49503796,
-     "rs": 1
+     "s": 49521988,
+     "rs": 0
     },
     {
      "n": "Arkhangelsk Oblast \u2014 North",
      "f": "Russia_Arkhangelsk Oblast_North",
-     "s": 19392199,
-     "rs": 1
+     "s": 19406183,
+     "rs": 0
     },
     {
      "n": "Astrakhan Oblast",
      "f": "Russia_Astrakhan Oblast",
-     "s": 6459132,
-     "rs": 1
+     "s": 6463116,
+     "rs": 0
     },
     {
      "n": "Belgorod Oblast",
      "f": "Russia_Belgorod Oblast",
-     "s": 16047828,
-     "rs": 1
+     "s": 16064092,
+     "rs": 0
     },
     {
      "n": "Bryansk Oblast",
      "f": "Russia_Bryansk Oblast",
-     "s": 14522355,
-     "rs": 1
+     "s": 14537163,
+     "rs": 0
     },
     {
      "n": "Buryat Republic",
      "f": "Russia_Buryatia",
-     "s": 7543506,
-     "rs": 1
+     "s": 7568535,
+     "rs": 0
     },
     {
      "n": "Chechen Republic",
      "f": "Russia_Chechen Republic",
-     "s": 2908337,
-     "rs": 1
+     "s": 2909769,
+     "rs": 0
     },
     {
      "n": "Chelyabinsk Oblast",
      "f": "Russia_Chelyabinsk Oblast",
-     "s": 42520906,
-     "rs": 1
+     "s": 42558058,
+     "rs": 0
     },
     {
      "n": "Chukotka Autonomous Okrug",
      "f": "Russia_Chukotka Autonomous Okrug",
-     "s": 7022129,
-     "rs": 1
+     "s": 7019825,
+     "rs": 0
     },
     {
      "n": "Chuvash Republic",
      "f": "Russia_Chuvashia",
-     "s": 11886380,
-     "rs": 1
+     "s": 11904279,
+     "rs": 0
     },
     {
      "n": "Crimean Peninsula",
      "f": "Crimea",
-     "s": 22619631,
-     "rs": 1
+     "s": 22693911,
+     "rs": 0
     },
     {
      "n": "Irkutsk Oblast",
      "f": "Russia_Irkutsk Oblast",
-     "s": 21412487,
-     "rs": 1
+     "s": 21536744,
+     "rs": 0
     },
     {
      "n": "Ivanovo Oblast",
      "f": "Russia_Ivanovo Oblast",
-     "s": 10092027,
-     "rs": 1
+     "s": 10107963,
+     "rs": 0
     },
     {
      "n": "Jewish Autonomous Oblast",
      "f": "Russia_Jewish Autonomous Oblast",
-     "s": 3750697,
-     "rs": 1
+     "s": 3782337,
+     "rs": 0
     },
     {
      "n": "Kabardino-Balkar Republic",
      "f": "Russia_Kabardino-Balkaria",
-     "s": 2976217,
-     "rs": 1
+     "s": 2978809,
+     "rs": 0
     },
     {
      "n": "Kaliningrad Oblast",
      "f": "Russia_Kaliningrad Oblast",
-     "s": 7637190,
-     "rs": 1
+     "s": 7667134,
+     "rs": 0
     },
     {
      "n": "Kaluga Oblast",
      "f": "Russia_Kaluga Oblast",
-     "s": 21971320,
-     "rs": 1
+     "s": 21983719,
+     "rs": 0
     },
     {
      "n": "Kamchatka Krai",
      "f": "Russia_Kamchatka Krai",
-     "s": 9281212,
-     "rs": 1
+     "s": 9291588,
+     "rs": 0
     },
     {
      "n": "Karachay-Cherkess Republic",
      "f": "Russia_Karachay-Cherkessia",
-     "s": 6939921,
-     "rs": 1
+     "s": 6945177,
+     "rs": 0
     },
     {
      "n": "Kemerovo Oblast",
      "f": "Russia_Kemerov Oblast",
-     "s": 18324455,
-     "rs": 1
+     "s": 18355631,
+     "rs": 0
     },
     {
      "n": "Khabarovsk Krai",
      "f": "Russia_Khabarovsk Krai",
-     "s": 41386942,
-     "rs": 1
+     "s": 41406062,
+     "rs": 0
     },
     {
      "n": "Khanty-Mansi Autonomous Okrug",
      "f": "Russia_Yugra",
-     "s": 56851663,
-     "rs": 1
+     "s": 56970314,
+     "rs": 0
     },
     {
      "n": "Kirov Oblast",
      "f": "Russia_Kirov Oblast",
-     "s": 44834228,
-     "rs": 1
+     "s": 44879125,
+     "rs": 0
     },
     {
      "n": "Komi Republic",
      "f": "Russia_Komi Republic",
-     "s": 20856726,
-     "rs": 1
+     "s": 20870174,
+     "rs": 0
     },
     {
      "n": "Kostroma Oblast",
      "f": "Russia_Kostroma Oblast",
-     "s": 7840826,
-     "rs": 1
+     "s": 7847821,
+     "rs": 0
     },
     {
      "n": "Krasnodar Krai \u2014 North",
      "f": "Russia_Krasnodar Krai",
-     "s": 50866011,
-     "rs": 1
+     "s": 50946995,
+     "rs": 0
     },
     {
      "n": "Krasnodar Krai, Republic of Adygea",
      "f": "Russia_Krasnodar Krai_Adygeya",
-     "s": 37196511,
-     "rs": 1
+     "s": 37224399,
+     "rs": 0
     },
     {
      "n": "Krasnoyarsk Krai",
      "f": "Russia_Krasnoyarsk Krai",
-     "s": 52716901,
-     "rs": 1
+     "s": 52759109,
+     "rs": 0
     },
     {
      "n": "Kurgan Oblast",
      "f": "Russia_Kurgan Oblast",
-     "s": 10349567,
-     "rs": 1
+     "s": 10348951,
+     "rs": 0
     },
     {
      "n": "Kursk Oblast",
      "f": "Russia_Kursk Oblast",
-     "s": 26636476,
-     "rs": 1
+     "s": 26751972,
+     "rs": 0
     },
     {
      "n": "Leningrad Oblast \u2014 North",
      "f": "Russia_Leningradskaya Oblast_Karelsky",
-     "s": 25302546,
-     "rs": 1
+     "s": 25308034,
+     "rs": 0
     },
     {
      "n": "Leningrad Oblast \u2014 South",
      "f": "Russia_Leningradskaya Oblast_Southeast",
-     "s": 45178913,
-     "rs": 1
+     "s": 45249097,
+     "rs": 0
     },
     {
      "n": "Lipetsk Oblast",
      "f": "Russia_Lipetsk Oblast",
-     "s": 22270172,
-     "rs": 1
+     "s": 22278739,
+     "rs": 0
     },
     {
      "n": "Magadan Oblast",
      "f": "Russia_Magadan Oblast",
-     "s": 3637104,
-     "rs": 1
+     "s": 3642232,
+     "rs": 0
     },
     {
      "n": "Mari El Republic",
      "f": "Russia_Mari El",
-     "s": 12999537,
-     "rs": 1
+     "s": 13081788,
+     "rs": 0
     },
     {
      "n": "Moscow",
      "f": "Russia_Moscow",
-     "s": 36163822,
-     "rs": 1
+     "s": 36275855,
+     "rs": 0
     },
     {
      "n": "Moscow Oblast",
      "f": "Russia_Moscow Oblast",
-     "s": 79493451,
-     "rs": 1
+     "s": 79747896,
+     "rs": 0
     },
     {
      "n": "Murmansk Oblast",
      "f": "Russia_Murmansk Oblast",
-     "s": 31156879,
-     "rs": 1
+     "s": 31168759,
+     "rs": 0
     },
     {
      "n": "Nenets Autonomous Okrug",
      "f": "Russia_Nenets Autonomous Okrug",
-     "s": 12381310,
-     "rs": 1
+     "s": 12383126,
+     "rs": 0
     },
     {
      "n": "Nizhny Novgorod Oblast",
      "f": "Russia_Nizhny Novgorod Oblast",
-     "s": 38075901,
-     "rs": 1
+     "s": 38145285,
+     "rs": 0
     },
     {
      "n": "Novgorod Oblast",
      "f": "Russia_Novgorod Oblast",
-     "s": 13703920,
-     "rs": 1
+     "s": 13715440,
+     "rs": 0
     },
     {
      "n": "Novosibirsk Oblast",
      "f": "Russia_Novosibirsk Oblast",
-     "s": 40015868,
-     "rs": 1
+     "s": 40038812,
+     "rs": 0
     },
     {
      "n": "Omsk Oblast",
      "f": "Russia_Omsk Oblast",
-     "s": 29758346,
-     "rs": 1
+     "s": 29782378,
+     "rs": 0
     },
     {
      "n": "Orenburg Oblast",
      "f": "Russia_Orenburg Oblast",
-     "s": 22595068,
-     "rs": 1
+     "s": 22646412,
+     "rs": 0
     },
     {
      "n": "Oryol Oblast",
      "f": "Russia_Oryol Oblast",
-     "s": 4982164,
-     "rs": 1
+     "s": 4986548,
+     "rs": 0
     },
     {
      "n": "Penza Oblast",
      "f": "Russia_Penza Oblast",
-     "s": 13898142,
-     "rs": 1
+     "s": 13911413,
+     "rs": 0
     },
     {
      "n": "Perm Krai",
      "f": "Russia_Perm Krai",
-     "s": 58278953,
-     "rs": 1
+     "s": 58374449,
+     "rs": 0
     },
     {
      "n": "Primorsky Krai",
      "f": "Russia_Primorsky Krai",
-     "s": 17747068,
-     "rs": 1
+     "s": 17756468,
+     "rs": 0
     },
     {
      "n": "Pskov Oblast",
      "f": "Russia_Pskov Oblast",
-     "s": 24683544,
-     "rs": 1
+     "s": 24716928,
+     "rs": 0
     },
     {
      "n": "Republic of Bashkortostan",
      "f": "Russia_Bashkortostan",
-     "s": 31709924,
-     "rs": 1
+     "s": 31742996,
+     "rs": 0
     },
     {
      "n": "Republic of Dagestan",
      "f": "Russia_Republic of Dagestan",
-     "s": 7914859,
-     "rs": 1
+     "s": 7931587,
+     "rs": 0
     },
     {
      "n": "Republic of Ingushetia",
      "f": "Russia_Ingushetia",
-     "s": 748286,
-     "rs": 1
+     "s": 748406,
+     "rs": 0
     },
     {
      "n": "Republic of Kalmykia",
      "f": "Russia_Republic of Kalmykia",
-     "s": 4032087,
-     "rs": 1
+     "s": 4037519,
+     "rs": 0
     },
     {
      "n": "Republic of Karelia",
      "f": "Russia_Republic of Karelia",
-     "s": 55368042,
-     "rs": 1
+     "s": 55387058,
+     "rs": 0
     },
     {
      "n": "Republic of Khakassia",
      "f": "Russia_Khakassia",
-     "s": 5590607,
-     "rs": 1
+     "s": 5591311,
+     "rs": 0
     },
     {
      "n": "Republic of Mordovia",
      "f": "Russia_Republic of Mordovia",
-     "s": 11712141,
-     "rs": 1
+     "s": 11742357,
+     "rs": 0
     },
     {
      "n": "Republic of North Ossetia-Alania",
      "f": "Russia_North Ossetia-Alania",
-     "s": 2681735,
-     "rs": 1
+     "s": 2704392,
+     "rs": 0
     },
     {
      "n": "Republic of Tatarstan",
      "f": "Russia_Tatarstan",
-     "s": 33658511,
-     "rs": 1
+     "s": 33718020,
+     "rs": 0
     },
     {
      "n": "Rostov Oblast",
      "f": "Russia_Rostov Oblast",
-     "s": 36352463,
-     "rs": 1
+     "s": 36587471,
+     "rs": 0
     },
     {
      "n": "Ryazan Oblast",
      "f": "Russia_Ryazan Oblast",
-     "s": 17342588,
-     "rs": 1
+     "s": 17370924,
+     "rs": 0
     },
     {
      "n": "Saint Petersburg",
      "f": "Russia_Saint Petersburg",
-     "s": 27748893,
-     "rs": 1
+     "s": 27807117,
+     "rs": 0
     },
     {
      "n": "Sakha Republic",
      "f": "Russia_Sakha Republic",
-     "s": 43352520,
-     "rs": 1
+     "s": 43397885,
+     "rs": 0
     },
     {
      "n": "Sakhalin Oblast",
      "f": "Russia_Sakhalin Oblast",
-     "s": 15846023,
-     "rs": 1
+     "s": 17032505,
+     "rs": 0
     },
     {
      "n": "Samara Oblast",
      "f": "Russia_Samara Oblast",
-     "s": 24727958,
-     "rs": 1
+     "s": 24746750,
+     "rs": 0
     },
     {
      "n": "Saratov Oblast",
      "f": "Russia_Saratov Oblast",
-     "s": 18822751,
-     "rs": 1
+     "s": 18832784,
+     "rs": 0
     },
     {
      "n": "Smolensk Oblast",
      "f": "Russia_Smolensk Oblast",
-     "s": 16579290,
-     "rs": 1
+     "s": 16571530,
+     "rs": 0
     },
     {
      "n": "Stavropol Krai",
      "f": "Russia_Stavropol Krai",
-     "s": 18900484,
-     "rs": 1
+     "s": 18954516,
+     "rs": 0
     },
     {
      "n": "Sverdlovsk Oblast",
      "f": "Russia_Sverdlovsk Oblast",
-     "s": 59930527,
-     "rs": 1
+     "s": 59982218,
+     "rs": 0
     },
     {
      "n": "Tambov Oblast",
      "f": "Russia_Tambov Oblast",
-     "s": 8723378,
-     "rs": 1
+     "s": 8733821,
+     "rs": 0
     },
     {
      "n": "Tomsk Oblast",
      "f": "Russia_Tomsk Oblast",
-     "s": 14854708,
-     "rs": 1
+     "s": 14862620,
+     "rs": 0
     },
     {
      "n": "Tula Oblast",
      "f": "Russia_Tula Oblast",
-     "s": 14654111,
-     "rs": 1
+     "s": 14666247,
+     "rs": 0
     },
     {
      "n": "Tuva Republic",
      "f": "Russia_Tuva",
-     "s": 2622318,
-     "rs": 1
+     "s": 2624918,
+     "rs": 0
     },
     {
      "n": "Tver Oblast",
      "f": "Russia_Tver Oblast",
-     "s": 29010321,
-     "rs": 1
+     "s": 29061937,
+     "rs": 0
     },
     {
      "n": "Tyumen Oblast",
      "f": "Russia_Tyumen Oblast",
-     "s": 17793149,
-     "rs": 1
+     "s": 17811021,
+     "rs": 0
     },
     {
      "n": "Udmurt Republic",
      "f": "Russia_Udmurt Republic",
-     "s": 17908132,
-     "rs": 1
+     "s": 17949655,
+     "rs": 0
     },
     {
      "n": "Ulyanovsk Oblast",
      "f": "Russia_Ulyanovsk Oblast",
-     "s": 11733901,
-     "rs": 1
+     "s": 11791720,
+     "rs": 0
     },
     {
      "n": "Vladimir Oblast",
      "f": "Russia_Vladimir Oblast",
-     "s": 32587464,
-     "rs": 1
+     "s": 32636343,
+     "rs": 0
     },
     {
      "n": "Volgograd Oblast",
      "f": "Russia_Volgograd Oblast",
-     "s": 29262462,
-     "rs": 1
+     "s": 29284662,
+     "rs": 0
     },
     {
      "n": "Vologda Oblast",
      "f": "Russia_Vologda Oblast",
-     "s": 26544280,
-     "rs": 1
+     "s": 26569752,
+     "rs": 0
     },
     {
      "n": "Voronezh Oblast",
      "f": "Russia_Voronezh Oblast",
-     "s": 31178785,
-     "rs": 1
+     "s": 31217425,
+     "rs": 0
     },
     {
      "n": "Yamalo-Nenets Autonomous Okrug",
      "f": "Russia_Yamalo-Nenets Autonomous Okrug",
-     "s": 16015197,
-     "rs": 1
+     "s": 16023693,
+     "rs": 0
     },
     {
      "n": "Yaroslavl Oblast",
      "f": "Russia_Yaroslavl Oblast",
-     "s": 27373840,
-     "rs": 1
+     "s": 27390704,
+     "rs": 0
     },
     {
      "n": "Zabaykalsky Krai",
      "f": "Russia_Zabaykalsky Krai",
-     "s": 12834355,
-     "rs": 1
+     "s": 12884000,
+     "rs": 0
     }
    ]
   },
   {
    "n": "Rwanda",
    "c": "rw",
-   "s": 5742788,
-   "rs": 1
+   "s": 5743412,
+   "rs": 0
   },
   {
    "n": "Sahrawi Arab Democratic Republic",
    "c": "eh",
-   "s": 261566,
-   "rs": 1
+   "s": 261646,
+   "rs": 0
   },
   {
    "n": "Saint Helena, Ascension and Tristan da Cunha",
    "f": "Saint Helena Ascension and Tristan da Cunha",
    "c": "sh",
-   "s": 248981,
-   "rs": 1
+   "s": 249213,
+   "rs": 0
   },
   {
    "n": "Saint Kitts and Nevis",
    "c": "kn",
-   "s": 429766,
-   "rs": 1
+   "s": 429726,
+   "rs": 0
   },
   {
    "n": "Saint Lucia",
    "c": "lc",
-   "s": 718449,
-   "rs": 1
+   "s": 720665,
+   "rs": 0
   },
   {
    "n": "Saint Martin",
    "c": "sx",
-   "s": 1219675,
-   "rs": 1
+   "s": 1225987,
+   "rs": 0
   },
   {
    "n": "Saint Vincent and the Grenadines",
    "c": "vc",
-   "s": 449399,
-   "rs": 1
+   "s": 449631,
+   "rs": 0
   },
   {
    "n": "Saint-Barth\u00e9lemy",
    "f": "Saint Barthelemy",
    "c": "bl",
-   "s": 223513,
-   "rs": 1
+   "s": 223521,
+   "rs": 0
   },
   {
    "n": "Samoa",
    "c": "ws",
-   "s": 1696163,
-   "rs": 1
+   "s": 1696483,
+   "rs": 0
   },
   {
    "n": "San Marino",
-   "s": 317598,
-   "rs": 1
+   "s": 317830,
+   "rs": 0
   },
   {
    "n": "Sao Tom\u00e9 and Pr\u00edncipe",
    "f": "Sao Tome and Principe",
    "c": "st",
-   "s": 453800,
-   "rs": 1
+   "s": 454144,
+   "rs": 0
   },
   {
    "n": "Saudi Arabia",
    "c": "sa",
-   "s": 63776856,
-   "rs": 1
+   "s": 63817632,
+   "rs": 0
   },
   {
    "n": "Senegal",
    "c": "sn",
-   "s": 36376237,
-   "rs": 1
+   "s": 36472029,
+   "rs": 0
   },
   {
    "n": "Serbia",
    "c": "rs",
-   "s": 44408871,
-   "rs": 1
+   "s": 44231359,
+   "rs": 0
   },
   {
    "n": "Seychelles",
    "c": "sc",
-   "s": 467087,
-   "rs": 1
+   "s": 467279,
+   "rs": 0
   },
   {
    "n": "Sierra Leone",
    "c": "sl",
-   "s": 21844834,
-   "rs": 1
+   "s": 21854650,
+   "rs": 0
   },
   {
    "n": "Singapore",
    "c": "sg",
-   "s": 6755611,
-   "rs": 1
+   "s": 6781467,
+   "rs": 0
   },
   {
    "n": "Slovakia",
@@ -5226,70 +5226,70 @@
     {
      "n": "Bansk\u00e1 Bystrica Region",
      "f": "Slovakia_Region of Banska Bystrica",
-     "s": 19729783,
-     "rs": 1
+     "s": 19760295,
+     "rs": 0
     },
     {
      "n": "Bratislava Region",
      "f": "Slovakia_Region of Bratislava",
-     "s": 11068653,
-     "rs": 1
+     "s": 11091765,
+     "rs": 0
     },
     {
      "n": "Ko\u0161ice Region",
      "f": "Slovakia_Region of Kosice",
-     "s": 16707031,
-     "rs": 1
+     "s": 16726775,
+     "rs": 0
     },
     {
      "n": "Nitra Region",
      "f": "Slovakia_Region of Nitra",
-     "s": 14680373,
-     "rs": 1
+     "s": 14693197,
+     "rs": 0
     },
     {
      "n": "Pre\u0161ov Region",
      "f": "Slovakia_Region of Presov",
-     "s": 18685872,
-     "rs": 1
+     "s": 18710976,
+     "rs": 0
     },
     {
      "n": "Tren\u010d\u00edn Region",
      "f": "Slovakia_Region of Trencin",
-     "s": 14503282,
-     "rs": 1
+     "s": 14528211,
+     "rs": 0
     },
     {
      "n": "Trnava Region",
      "f": "Slovakia_Region of Trnava",
-     "s": 11649903,
-     "rs": 1
+     "s": 11664583,
+     "rs": 0
     },
     {
      "n": "\u017dilina Region",
      "f": "Slovakia_Region of Zilina",
-     "s": 18853958,
-     "rs": 1
+     "s": 18876414,
+     "rs": 0
     }
    ]
   },
   {
    "n": "Slovenia",
    "c": "si",
-   "s": 68035316,
-   "rs": 1
+   "s": 68398844,
+   "rs": 0
   },
   {
    "n": "Solomon Islands",
    "c": "sb",
-   "s": 1400611,
-   "rs": 1
+   "s": 1400971,
+   "rs": 0
   },
   {
    "n": "Somalia",
    "c": "so",
-   "s": 17895170,
-   "rs": 1
+   "s": 17905650,
+   "rs": 0
   },
   {
    "n": "South Africa",
@@ -5298,63 +5298,63 @@
     {
      "n": "Eastern Cape",
      "f": "South Africa_Eastern Cape",
-     "s": 15551931,
-     "rs": 1
+     "s": 15584803,
+     "rs": 0
     },
     {
      "n": "Free State",
      "f": "South Africa_Free State",
-     "s": 10473278,
-     "rs": 1
+     "s": 10477142,
+     "rs": 0
     },
     {
      "n": "Gauteng",
      "f": "South Africa_Gauteng",
-     "s": 28507264,
-     "rs": 1
+     "s": 28514192,
+     "rs": 0
     },
     {
      "n": "KwaZulu-Natal",
      "f": "South Africa_KwaZulu-Natal",
-     "s": 21064341,
-     "rs": 1
+     "s": 21099362,
+     "rs": 0
     },
     {
      "n": "Limpopo",
      "f": "South Africa_Limpopo",
-     "s": 14011192,
-     "rs": 1
+     "s": 14015088,
+     "rs": 0
     },
     {
      "n": "Mpumalanga",
      "f": "South Africa_Mpumalanga",
-     "s": 9087821,
-     "rs": 1
+     "s": 9101426,
+     "rs": 0
     },
     {
      "n": "North West",
      "f": "South Africa_North West",
-     "s": 8956356,
-     "rs": 1
+     "s": 8968100,
+     "rs": 0
     },
     {
      "n": "Northern Cape",
      "f": "South Africa_Northern Cape",
-     "s": 7372707,
-     "rs": 1
+     "s": 7374755,
+     "rs": 0
     },
     {
      "n": "Western Cape",
      "f": "South Africa_Western Cape",
-     "s": 25113770,
-     "rs": 1
+     "s": 25133978,
+     "rs": 0
     }
    ]
   },
   {
    "n": "South Georgia and the South Sandwich Islands",
    "c": "gs",
-   "s": 287179,
+   "s": 287211,
    "rs": 0
   },
   {
@@ -5364,27 +5364,27 @@
     {
      "n": "South Korea \u2014 North",
      "f": "South Korea_North",
-     "s": 60787034,
-     "rs": 1
+     "s": 60948970,
+     "rs": 0
     },
     {
      "n": "South Korea \u2014 South",
      "f": "South Korea_South",
-     "s": 50453933,
-     "rs": 1
+     "s": 50896053,
+     "rs": 0
     }
    ]
   },
   {
    "n": "South Ossetia",
-   "s": 1509512,
-   "rs": 1
+   "s": 1509795,
+   "rs": 0
   },
   {
    "n": "South Sudan",
    "c": "ss",
-   "s": 24152623,
-   "rs": 1
+   "s": 24151423,
+   "rs": 0
   },
   {
    "n": "Spain",
@@ -5393,142 +5393,142 @@
     {
      "n": "Andalusia",
      "f": "Spain_Andalusia",
-     "s": 72089868,
-     "rs": 1
+     "s": 72250956,
+     "rs": 0
     },
     {
      "n": "Aragon",
      "f": "Spain_Aragon",
-     "s": 26621438,
-     "rs": 1
+     "s": 26693166,
+     "rs": 0
     },
     {
      "n": "Asturias",
      "f": "Spain_Principado de Asturias",
-     "s": 16847035,
-     "rs": 1
+     "s": 16899315,
+     "rs": 0
     },
     {
      "n": "Balearic Islands",
      "f": "Spain_Balearic Islands",
-     "s": 15591185,
-     "rs": 1
+     "s": 15609729,
+     "rs": 0
     },
     {
      "n": "Barcelona Province",
      "f": "Spain_Catalonia_Provincia de Barcelona",
-     "s": 34726913,
-     "rs": 1
+     "s": 34773465,
+     "rs": 0
     },
     {
      "n": "Basque Country",
      "f": "Spain_Basque Country",
-     "s": 25218678,
-     "rs": 1
+     "s": 25294262,
+     "rs": 0
     },
     {
      "n": "Canary Islands",
      "f": "Spain_Canary Islands",
-     "s": 24427771,
-     "rs": 1
+     "s": 24517035,
+     "rs": 0
     },
     {
      "n": "Cantabria",
      "f": "Spain_Cantabria",
-     "s": 13331750,
-     "rs": 1
+     "s": 13351310,
+     "rs": 0
     },
     {
      "n": "Castile and Le\u00f3n",
      "f": "Spain_Castile and Leon",
-     "s": 78135851,
-     "rs": 1
+     "s": 78328923,
+     "rs": 0
     },
     {
      "n": "Castile-La Mancha",
      "f": "Spain_Castile-La Mancha",
-     "s": 47585042,
-     "rs": 1
+     "s": 47720467,
+     "rs": 0
     },
     {
      "n": "Ceuta",
      "f": "Spain_Ceuta",
-     "s": 276867,
-     "rs": 1
+     "s": 277227,
+     "rs": 0
     },
     {
      "n": "Community of Madrid",
      "f": "Spain_Community of Madrid",
-     "s": 35337781,
-     "rs": 1
+     "s": 35418189,
+     "rs": 0
     },
     {
      "n": "Extremadura",
      "f": "Spain_Extremadura",
-     "s": 19761117,
-     "rs": 1
+     "s": 19801165,
+     "rs": 0
     },
     {
      "n": "Galicia",
      "f": "Spain_Galicia",
-     "s": 57465127,
-     "rs": 1
+     "s": 57576535,
+     "rs": 0
     },
     {
      "n": "Girona Province",
      "f": "Spain_Catalonia_Provincia de Girona",
-     "s": 17271688,
-     "rs": 1
+     "s": 17294496,
+     "rs": 0
     },
     {
      "n": "La Rioja",
      "f": "Spain_La Rioja",
-     "s": 4849728,
-     "rs": 1
+     "s": 4856747,
+     "rs": 0
     },
     {
      "n": "Lleida Province",
      "f": "Spain_Catalonia_Provincia de Lleida",
-     "s": 17066170,
-     "rs": 1
+     "s": 17104610,
+     "rs": 0
     },
     {
      "n": "Melilla",
      "f": "Spain_Melilla",
-     "s": 637751,
-     "rs": 1
+     "s": 637863,
+     "rs": 0
     },
     {
      "n": "Navarre",
      "f": "Spain_Comunidad Foral de Navarra",
-     "s": 11304051,
-     "rs": 1
+     "s": 11325803,
+     "rs": 0
     },
     {
      "n": "Region of Murcia",
      "f": "Spain_Region de Murcia",
-     "s": 15972708,
-     "rs": 1
+     "s": 15997436,
+     "rs": 0
     },
     {
      "n": "Tarragona Province",
      "f": "Spain_Catalonia_Provincia de Tarragona",
-     "s": 13272465,
-     "rs": 1
+     "s": 13287945,
+     "rs": 0
     },
     {
      "n": "Valencian Country",
      "f": "Spain_Valencian Community",
-     "s": 49278542,
-     "rs": 1
+     "s": 49369518,
+     "rs": 0
     }
    ]
   },
   {
    "n": "Sri Lanka",
    "c": "lk",
-   "s": 28426769,
-   "rs": 1
+   "s": 28521681,
+   "rs": 0
   },
   {
    "n": "State of Palestine",
@@ -5536,34 +5536,34 @@
    "g": [
     {
      "n": "Jerusalem",
-     "s": 3564541,
-     "rs": 1
+     "s": 3575781,
+     "rs": 0
     },
     {
      "n": "State of Palestine",
      "f": "Palestine",
-     "s": 17763243,
-     "rs": 1
+     "s": 17844957,
+     "rs": 0
     }
    ]
   },
   {
    "n": "Sudan",
    "c": "sd",
-   "s": 64851199,
-   "rs": 1
+   "s": 64861839,
+   "rs": 0
   },
   {
    "n": "Suriname",
    "c": "sr",
-   "s": 4476744,
-   "rs": 1
+   "s": 4474776,
+   "rs": 0
   },
   {
    "n": "Swaziland",
    "c": "sz",
-   "s": 6623378,
-   "rs": 1
+   "s": 6912148,
+   "rs": 0
   },
   {
    "n": "Sweden",
@@ -5572,44 +5572,44 @@
     {
      "n": "Bergslagen",
      "f": "Sweden_Bergslagen",
-     "s": 47662899,
-     "rs": 1
+     "s": 47774803,
+     "rs": 0
     },
     {
      "n": "Capital Region",
      "f": "Sweden_Malardalen",
-     "s": 61053027,
-     "rs": 1
+     "s": 61116715,
+     "rs": 0
     },
     {
      "n": "Eastern G\u00f6taland",
      "f": "Sweden_Ostra Gotaland",
-     "s": 41860282,
-     "rs": 1
+     "s": 41884434,
+     "rs": 0
     },
     {
      "n": "Mellannorrland",
      "f": "Sweden_Mellannorrland",
-     "s": 21862073,
-     "rs": 1
+     "s": 21896873,
+     "rs": 0
     },
     {
      "n": "Northern Sweden",
      "f": "Sweden_Norra Sverige",
-     "s": 28895401,
-     "rs": 1
+     "s": 28940881,
+     "rs": 0
     },
     {
      "n": "Southern G\u00f6taland",
      "f": "Sweden_Sodra Gotaland",
-     "s": 36676340,
-     "rs": 1
+     "s": 36717044,
+     "rs": 0
     },
     {
      "n": "Western G\u00f6taland",
      "f": "Sweden_Vastra Gotaland",
-     "s": 50199009,
-     "rs": 1
+     "s": 50263961,
+     "rs": 0
     }
    ]
   },
@@ -5620,64 +5620,64 @@
     {
      "n": "Central Switzerland",
      "f": "Switzerland_Central",
-     "s": 17035618,
-     "rs": 1
+     "s": 17088122,
+     "rs": 0
     },
     {
      "n": "Eastern Switzerland",
      "f": "Switzerland_Eastern",
-     "s": 34940819,
-     "rs": 1
+     "s": 35035691,
+     "rs": 0
     },
     {
      "n": "Espace Mittelland",
      "f": "Switzerland_Espace Mittelland",
-     "s": 52563279,
-     "rs": 1
+     "s": 52623655,
+     "rs": 0
     },
     {
      "n": "Lake Geneva Region",
      "f": "Switzerland_Lake Geneva region",
-     "s": 42767465,
-     "rs": 1
+     "s": 42811561,
+     "rs": 0
     },
     {
      "n": "Northwestern Switzerland",
      "f": "Switzerland_Northwestern",
-     "s": 23901109,
-     "rs": 1
+     "s": 23940637,
+     "rs": 0
     },
     {
      "n": "Ticino",
      "f": "Switzerland_Ticino",
-     "s": 7637053,
-     "rs": 1
+     "s": 7688493,
+     "rs": 0
     },
     {
      "n": "Zurich Metropolitan Area",
      "f": "Switzerland_Zurich",
-     "s": 27739512,
-     "rs": 1
+     "s": 27780120,
+     "rs": 0
     }
    ]
   },
   {
    "n": "Syria",
    "c": "sy",
-   "s": 42268131,
-   "rs": 1
+   "s": 42374043,
+   "rs": 0
   },
   {
    "n": "Tajikistan",
    "c": "tj",
-   "s": 8731328,
-   "rs": 1
+   "s": 8782594,
+   "rs": 0
   },
   {
    "n": "Tanzania",
    "c": "tz",
-   "s": 41926555,
-   "rs": 1
+   "s": 42125299,
+   "rs": 0
   },
   {
    "n": "Thailand",
@@ -5686,46 +5686,46 @@
     {
      "n": "Thailand \u2014 North",
      "f": "Thailand_North",
-     "s": 68073421,
-     "rs": 1
+     "s": 68158813,
+     "rs": 0
     },
     {
      "n": "Thailand \u2014 South",
      "f": "Thailand_South",
-     "s": 44249027,
-     "rs": 1
+     "s": 44354332,
+     "rs": 0
     }
    ]
   },
   {
    "n": "The Bahamas",
    "c": "bs",
-   "s": 5751493,
-   "rs": 1
+   "s": 5751621,
+   "rs": 0
   },
   {
    "n": "Togo",
    "c": "tg",
-   "s": 13856298,
-   "rs": 1
+   "s": 13867618,
+   "rs": 0
   },
   {
    "n": "Tonga",
    "c": "to",
-   "s": 2738533,
-   "rs": 1
+   "s": 2745453,
+   "rs": 0
   },
   {
    "n": "Trinidad and Tobago",
    "c": "tt",
-   "s": 10334831,
-   "rs": 1
+   "s": 10345639,
+   "rs": 0
   },
   {
    "n": "Tunisia",
    "c": "tn",
-   "s": 38223732,
-   "rs": 1
+   "s": 38265012,
+   "rs": 0
   },
   {
    "n": "Turkey",
@@ -5734,69 +5734,69 @@
     {
      "n": "Aegean Region",
      "f": "Turkey_Aegean Region",
-     "s": 42199408,
-     "rs": 1
+     "s": 42277640,
+     "rs": 0
     },
     {
      "n": "Black Sea Region",
      "f": "Turkey_Black Sea Region",
-     "s": 27147688,
-     "rs": 1
+     "s": 27294464,
+     "rs": 0
     },
     {
      "n": "Central Anatolia Region",
-     "s": 54802129,
-     "rs": 1
+     "s": 54808673,
+     "rs": 0
     },
     {
      "n": "Eastern Anatolia Region",
      "f": "Turkey_Eastern Anatolia Region",
-     "s": 23122524,
-     "rs": 1
+     "s": 23157092,
+     "rs": 0
     },
     {
      "n": "Marmara Region",
      "f": "Turkey_Marmara Region",
-     "s": 77154252,
-     "rs": 1
+     "s": 77232196,
+     "rs": 0
     },
     {
      "n": "Mediterranean Region",
      "f": "Turkey_Mediterranean Region",
-     "s": 35689144,
-     "rs": 1
+     "s": 35748344,
+     "rs": 0
     },
     {
      "n": "Southeastern Anatolia Region",
      "f": "Turkey_Southeastern Anatolia Region",
-     "s": 22868535,
-     "rs": 1
+     "s": 22927927,
+     "rs": 0
     }
    ]
   },
   {
    "n": "Turkmenistan",
    "c": "tm",
-   "s": 7402084,
-   "rs": 1
+   "s": 7438276,
+   "rs": 0
   },
   {
    "n": "Turks and Caicos Islands",
    "c": "tc",
-   "s": 450640,
-   "rs": 1
+   "s": 450632,
+   "rs": 0
   },
   {
    "n": "Tuvalu",
    "c": "tv",
-   "s": 238384,
-   "rs": 1
+   "s": 238408,
+   "rs": 0
   },
   {
    "n": "Uganda",
    "c": "ug",
-   "s": 22094979,
-   "rs": 1
+   "s": 22583755,
+   "rs": 0
   },
   {
    "n": "Ukraine",
@@ -5805,160 +5805,160 @@
     {
      "n": "Cherkasy Oblast",
      "f": "Ukraine_Cherkasy Oblast",
-     "s": 9797999,
-     "rs": 1
+     "s": 9899015,
+     "rs": 0
     },
     {
      "n": "Chernihiv Oblast",
      "f": "Ukraine_Chernihiv Oblast",
-     "s": 12066526,
-     "rs": 1
+     "s": 12070878,
+     "rs": 0
     },
     {
      "n": "Chernivtsi Oblast",
      "f": "Ukraine_Chernivtsi Oblast",
-     "s": 8993742,
-     "rs": 1
+     "s": 9008882,
+     "rs": 0
     },
     {
      "n": "Crimean Peninsula",
      "f": "Crimea",
-     "s": 22619631,
-     "rs": 1
+     "s": 22693911,
+     "rs": 0
     },
     {
      "n": "Dnipropetrovsk Oblast",
      "f": "Ukraine_Dnipropetrovsk Oblast",
-     "s": 29348592,
-     "rs": 1
+     "s": 29457176,
+     "rs": 0
     },
     {
      "n": "Donetsk Oblast",
      "f": "Ukraine_Donetsk Oblast",
-     "s": 36015549,
-     "rs": 1
+     "s": 36034517,
+     "rs": 0
     },
     {
      "n": "Ivano-Frankivsk Oblast",
      "f": "Ukraine_Ivano-Frankivsk Oblast",
-     "s": 12278371,
-     "rs": 1
+     "s": 12271247,
+     "rs": 0
     },
     {
      "n": "Kharkiv Oblast",
      "f": "Ukraine_Kharkiv Oblast",
-     "s": 22040899,
-     "rs": 1
+     "s": 22045259,
+     "rs": 0
     },
     {
      "n": "Kherson Oblast",
      "f": "Ukraine_Kherson Oblast",
-     "s": 7073753,
-     "rs": 1
+     "s": 7083609,
+     "rs": 0
     },
     {
      "n": "Khmelnytsky Oblast",
      "f": "Ukraine_Khmelnytskyi Oblast",
-     "s": 10630471,
-     "rs": 1
+     "s": 10636807,
+     "rs": 0
     },
     {
      "n": "Kiev Oblast",
      "f": "Ukraine_Kyiv Oblast",
-     "s": 28264760,
-     "rs": 1
+     "s": 28323545,
+     "rs": 0
     },
     {
      "n": "Kirovohrad Oblast",
      "f": "Ukraine_Kirovohrad Oblast",
-     "s": 10992013,
-     "rs": 1
+     "s": 11041021,
+     "rs": 0
     },
     {
      "n": "Luhansk Oblast",
      "f": "Ukraine_Luhansk Oblast",
-     "s": 16684057,
-     "rs": 1
+     "s": 16767329,
+     "rs": 0
     },
     {
      "n": "Lviv Oblast",
      "f": "Ukraine_Lviv Oblast",
-     "s": 21257004,
-     "rs": 1
+     "s": 21302111,
+     "rs": 0
     },
     {
      "n": "Mykolaiv Oblast",
      "f": "Ukraine_Mykolaiv Oblast",
-     "s": 8244221,
-     "rs": 1
+     "s": 8248805,
+     "rs": 0
     },
     {
      "n": "Odessa Oblast",
      "f": "Ukraine_Odessa Oblast",
-     "s": 19126088,
-     "rs": 1
+     "s": 19137432,
+     "rs": 0
     },
     {
      "n": "Poltava Oblast",
      "f": "Ukraine_Poltava Oblast",
-     "s": 11876660,
-     "rs": 1
+     "s": 11885724,
+     "rs": 0
     },
     {
      "n": "Rivne Oblast",
      "f": "Ukraine_Rivne Oblast",
-     "s": 7571726,
-     "rs": 1
+     "s": 7577430,
+     "rs": 0
     },
     {
      "n": "Sumy Oblast",
      "f": "Ukraine_Sumy Oblast",
-     "s": 12697875,
-     "rs": 1
+     "s": 12748282,
+     "rs": 0
     },
     {
      "n": "Ternopil Oblast",
      "f": "Ukraine_Ternopil Oblast",
-     "s": 13940875,
-     "rs": 1
+     "s": 13960083,
+     "rs": 0
     },
     {
      "n": "Vinnytsia Oblast",
      "f": "Ukraine_Vinnytsia Oblast",
-     "s": 12252240,
-     "rs": 1
+     "s": 12347928,
+     "rs": 0
     },
     {
      "n": "Volyn Oblast",
      "f": "Ukraine_Volyn Oblast",
-     "s": 9783387,
-     "rs": 1
+     "s": 9796403,
+     "rs": 0
     },
     {
      "n": "Zakarpattia Oblast",
      "f": "Ukraine_Zakarpattia Oblast",
-     "s": 10204441,
-     "rs": 1
+     "s": 10212665,
+     "rs": 0
     },
     {
      "n": "Zaporizhzhya Oblast",
      "f": "Ukraine_Zaporizhia Oblast",
-     "s": 8636605,
-     "rs": 1
+     "s": 8646765,
+     "rs": 0
     },
     {
      "n": "Zhytomyr Oblast",
      "f": "Ukraine_Zhytomyr Oblast",
-     "s": 6303906,
-     "rs": 1
+     "s": 6306574,
+     "rs": 0
     }
    ]
   },
   {
    "n": "United Arab Emirates",
    "c": "ae",
-   "s": 23369766,
-   "rs": 1
+   "s": 23391038,
+   "rs": 0
   },
   {
    "n": "United Kingdom",
@@ -5966,109 +5966,109 @@
    "g": [
     {
      "n": "British Indian Ocean Territory",
-     "s": 116438,
-     "rs": 1
+     "s": 116622,
+     "rs": 0
     },
     {
      "n": "East Midlands",
      "f": "UK_England_East Midlands",
-     "s": 62778183,
-     "rs": 1
+     "s": 62885239,
+     "rs": 0
     },
     {
      "n": "East of England \u2014 Essex",
      "f": "UK_England_East of England_Essex",
-     "s": 39531051,
-     "rs": 1
+     "s": 39563131,
+     "rs": 0
     },
     {
      "n": "East of England \u2014 Norfolk",
      "f": "UK_England_East of England_Norfolk",
-     "s": 47335010,
-     "rs": 1
+     "s": 47643602,
+     "rs": 0
     },
     {
      "n": "Falkland Islands",
-     "s": 1410449,
-     "rs": 1
+     "s": 1410737,
+     "rs": 0
     },
     {
      "n": "Greater London",
      "f": "UK_England_Greater London",
-     "s": 42934823,
-     "rs": 1
+     "s": 42997231,
+     "rs": 0
     },
     {
      "n": "North East England",
      "f": "UK_England_North East England",
-     "s": 28919994,
-     "rs": 1
+     "s": 28956338,
+     "rs": 0
     },
     {
      "n": "North West England",
      "f": "UK_England_North West England",
-     "s": 73700442,
-     "rs": 1
+     "s": 73762434,
+     "rs": 0
     },
     {
      "n": "Northern Ireland",
      "f": "UK_Northern Ireland",
-     "s": 19384056,
-     "rs": 1
+     "s": 19421512,
+     "rs": 0
     },
     {
      "n": "Scotland \u2014 North",
      "f": "UK_Scotland_North",
-     "s": 55365451,
-     "rs": 1
+     "s": 55394987,
+     "rs": 0
     },
     {
      "n": "Scotland \u2014 South",
      "f": "UK_Scotland_South",
-     "s": 51643334,
-     "rs": 1
+     "s": 51765982,
+     "rs": 0
     },
     {
      "n": "South East England \u2014 Brighton",
      "f": "UK_England_South East_Brighton",
-     "s": 47451647,
-     "rs": 1
+     "s": 47517079,
+     "rs": 0
     },
     {
      "n": "South East England \u2014 Oxford",
      "f": "UK_England_South East_Oxford",
-     "s": 51162961,
-     "rs": 1
+     "s": 51250921,
+     "rs": 0
     },
     {
      "n": "South West England \u2014 Bristol",
      "f": "UK_England_South West England_Bristol",
-     "s": 52873297,
-     "rs": 1
+     "s": 52954417,
+     "rs": 0
     },
     {
      "n": "South West England \u2014 Cornwall",
      "f": "UK_England_South West England_Cornwall",
-     "s": 29979351,
-     "rs": 1
+     "s": 30019991,
+     "rs": 0
     },
     {
      "n": "Wales",
      "f": "UK_Wales",
-     "s": 49503246,
-     "rs": 1
+     "s": 49557550,
+     "rs": 0
     },
     {
      "n": "West Midlands",
      "f": "UK_England_West Midlands",
-     "s": 71815898,
-     "rs": 1
+     "s": 71927506,
+     "rs": 0
     },
     {
      "n": "Yorkshire and the Humber",
      "f": "UK_England_Yorkshire and the Humber",
-     "s": 72072524,
-     "rs": 1
+     "s": 72154556,
+     "rs": 0
     }
    ]
   },
@@ -6082,22 +6082,22 @@
       {
        "n": "Birmingham",
        "f": "US_Alabama_Birmingham",
-       "s": 43386747,
-       "rs": 1
+       "s": 43401483,
+       "rs": 0
       },
       {
        "n": "Montgomery",
        "f": "US_Alabama_Montgomery",
-       "s": 51185642,
-       "rs": 1
+       "s": 51199530,
+       "rs": 0
       }
      ]
     },
     {
      "n": "Alaska",
      "f": "US_Alaska",
-     "s": 39685520,
-     "rs": 1
+     "s": 39779536,
+     "rs": 0
     },
     {
      "n": "Arizona",
@@ -6105,28 +6105,28 @@
       {
        "n": "Flagstaff",
        "f": "US_Arizona_Flagstaff",
-       "s": 32211205,
-       "rs": 1
+       "s": 32470389,
+       "rs": 0
       },
       {
        "n": "Phoenix",
        "f": "US_Arizona_Phoenix",
-       "s": 57225303,
-       "rs": 1
+       "s": 57265935,
+       "rs": 0
       },
       {
        "n": "Tucson",
        "f": "US_Arizona_Tucson",
-       "s": 21852682,
-       "rs": 1
+       "s": 21866802,
+       "rs": 0
       }
      ]
     },
     {
      "n": "Arkansas",
      "f": "US_Arkansas",
-     "s": 65800812,
-     "rs": 1
+     "s": 65835308,
+     "rs": 0
     },
     {
      "n": "California",
@@ -6134,74 +6134,74 @@
       {
        "n": "Bakersfield",
        "f": "US_California_Bakersfield_Bakersfield",
-       "s": 35362443,
-       "rs": 1
+       "s": 35389083,
+       "rs": 0
       },
       {
        "n": "Chico",
        "f": "US_California_Chico",
-       "s": 33714518,
-       "rs": 1
+       "s": 33725038,
+       "rs": 0
       },
       {
        "n": "Fresno",
        "f": "US_California_Sacramento_Fresno",
-       "s": 31655893,
-       "rs": 1
+       "s": 31655133,
+       "rs": 0
       },
       {
        "n": "Lancaster",
        "f": "US_California_Bakersfield_Lancaster",
-       "s": 21448302,
-       "rs": 1
+       "s": 21456002,
+       "rs": 0
       },
       {
        "n": "Los Angeles",
        "f": "US_California_LA",
-       "s": 71598931,
-       "rs": 1
+       "s": 71691867,
+       "rs": 0
       },
       {
        "n": "Los Angeles \u2014 North",
        "f": "US_California_LA North",
-       "s": 19258515,
-       "rs": 1
+       "s": 19280347,
+       "rs": 0
       },
       {
        "n": "Redding",
        "f": "US_California_Redding",
-       "s": 40894195,
-       "rs": 1
+       "s": 40902859,
+       "rs": 0
       },
       {
        "n": "Sacramento",
        "f": "US_California_Sacramento_Sacramento",
-       "s": 26948314,
-       "rs": 1
+       "s": 26970586,
+       "rs": 0
       },
       {
        "n": "San Diego",
        "f": "US_California_San Diego",
-       "s": 45847527,
-       "rs": 1
+       "s": 45886463,
+       "rs": 0
       },
       {
        "n": "San Francisco",
        "f": "US_California_Santa_Clara_Palo Alto",
-       "s": 73907657,
-       "rs": 1
+       "s": 74216793,
+       "rs": 0
       },
       {
        "n": "Santa Cruz",
        "f": "US_California_Santa_Clara_Santa Cruz",
-       "s": 17679779,
-       "rs": 1
+       "s": 17689723,
+       "rs": 0
       },
       {
        "n": "Stockton",
        "f": "US_California_Sacramento_Stockton",
-       "s": 34523579,
-       "rs": 1
+       "s": 34534843,
+       "rs": 0
       }
      ]
     },
@@ -6211,34 +6211,34 @@
       {
        "n": "Aspen",
        "f": "US_Colorado_Aspen",
-       "s": 35081396,
-       "rs": 1
+       "s": 35062980,
+       "rs": 0
       },
       {
        "n": "Colorado \u2014 South",
        "f": "US_Colorado_South",
-       "s": 37038879,
-       "rs": 1
+       "s": 37068503,
+       "rs": 0
       },
       {
        "n": "Denver",
        "f": "US_Colorado_Denver",
-       "s": 66503589,
-       "rs": 1
+       "s": 66579365,
+       "rs": 0
       }
      ]
     },
     {
      "n": "Connecticut",
      "f": "US_Connecticut",
-     "s": 30606961,
-     "rs": 1
+     "s": 30638961,
+     "rs": 0
     },
     {
      "n": "Delaware",
      "f": "US_Delaware",
-     "s": 10469199,
-     "rs": 1
+     "s": 10473639,
+     "rs": 0
     },
     {
      "n": "Florida",
@@ -6246,26 +6246,26 @@
       {
        "n": "Jacksonville",
        "f": "US_Florida_Jacksonville",
-       "s": 37849409,
-       "rs": 1
+       "s": 37878321,
+       "rs": 0
       },
       {
        "n": "Miami",
        "f": "US_Florida_Miami",
-       "s": 56639552,
-       "rs": 1
+       "s": 56665904,
+       "rs": 0
       },
       {
        "n": "Orlando",
        "f": "US_Florida_Orlando",
-       "s": 56995161,
-       "rs": 1
+       "s": 57027625,
+       "rs": 0
       },
       {
        "n": "Tampa",
        "f": "US_Florida_Tampa",
-       "s": 53766147,
-       "rs": 1
+       "s": 53790891,
+       "rs": 0
       }
      ]
     },
@@ -6275,46 +6275,46 @@
       {
        "n": "Atlanta",
        "f": "US_Georgia_Atlanta",
-       "s": 56387460,
-       "rs": 1
+       "s": 56583796,
+       "rs": 0
       },
       {
        "n": "Georgia \u2014 North",
        "f": "US_Georgia_North",
-       "s": 29099245,
-       "rs": 1
+       "s": 29121301,
+       "rs": 0
       },
       {
        "n": "Georgia \u2014 South",
        "f": "US_Georgia_South",
-       "s": 43931694,
-       "rs": 1
+       "s": 43939542,
+       "rs": 0
       },
       {
        "n": "Macon",
        "f": "US_Georgia_Macon",
-       "s": 47528328,
-       "rs": 1
+       "s": 47592928,
+       "rs": 0
       }
      ]
     },
     {
      "n": "Guam",
      "f": "US_Guam",
-     "s": 2440605,
-     "rs": 1
+     "s": 2441109,
+     "rs": 0
     },
     {
      "n": "Hawaii",
      "f": "US_Hawaii",
-     "s": 9264122,
-     "rs": 1
+     "s": 9266338,
+     "rs": 0
     },
     {
      "n": "Idaho",
      "f": "US_Idaho",
-     "s": 58262712,
-     "rs": 1
+     "s": 58287720,
+     "rs": 0
     },
     {
      "n": "Illinois",
@@ -6322,32 +6322,32 @@
       {
        "n": "Chicago",
        "f": "US_Illinois_Chickago",
-       "s": 67805237,
-       "rs": 1
+       "s": 67809325,
+       "rs": 0
       },
       {
        "n": "Elgin",
        "f": "US_Illinois_Elgin",
-       "s": 27221855,
-       "rs": 1
+       "s": 27209247,
+       "rs": 0
       },
       {
        "n": "Illinois \u2014 South",
        "f": "US_Illinois_South",
-       "s": 39056929,
-       "rs": 1
+       "s": 39056033,
+       "rs": 0
       },
       {
        "n": "Rockford",
        "f": "US_Illinois_Rockford",
-       "s": 19922785,
-       "rs": 1
+       "s": 19927545,
+       "rs": 0
       },
       {
        "n": "Springfield",
        "f": "US_Illinois_Springfield",
-       "s": 48996387,
-       "rs": 1
+       "s": 49002635,
+       "rs": 0
       }
      ]
     },
@@ -6357,14 +6357,14 @@
       {
        "n": "Indiana \u2014 North",
        "f": "US_Indiana_North",
-       "s": 46245048,
-       "rs": 1
+       "s": 46250984,
+       "rs": 0
       },
       {
        "n": "Indiana \u2014 South",
        "f": "US_Indiana_South",
-       "s": 60576544,
-       "rs": 1
+       "s": 60694592,
+       "rs": 0
       }
      ]
     },
@@ -6374,20 +6374,20 @@
       {
        "n": "Des Moines",
        "f": "US_Iowa_Des Moines",
-       "s": 33366776,
-       "rs": 1
+       "s": 33419400,
+       "rs": 0
       },
       {
        "n": "Iowa \u2014 West",
        "f": "US_Iowa_West",
-       "s": 37615442,
-       "rs": 1
+       "s": 37631122,
+       "rs": 0
       },
       {
        "n": "Waterloo",
        "f": "US_Iowa_Waterloo",
-       "s": 29554606,
-       "rs": 1
+       "s": 29559214,
+       "rs": 0
       }
      ]
     },
@@ -6397,14 +6397,14 @@
       {
        "n": "Kansas \u2014 East",
        "f": "US_Kansas_East",
-       "s": 37816783,
-       "rs": 1
+       "s": 37840639,
+       "rs": 0
       },
       {
        "n": "Kansas \u2014 West",
        "f": "US_Kansas_West",
-       "s": 56951802,
-       "rs": 1
+       "s": 56964201,
+       "rs": 0
       }
      ]
     },
@@ -6414,14 +6414,14 @@
       {
        "n": "Kentucky \u2014 East",
        "f": "US_Kentucky_East",
-       "s": 34507312,
-       "rs": 1
+       "s": 34518648,
+       "rs": 0
       },
       {
        "n": "Kentucky \u2014 West",
        "f": "US_Kentucky_West",
-       "s": 52926976,
-       "rs": 1
+       "s": 52941376,
+       "rs": 0
       }
      ]
     },
@@ -6431,22 +6431,22 @@
       {
        "n": "Louisiana \u2014 West",
        "f": "US_Louisiana_Central",
-       "s": 46807610,
-       "rs": 1
+       "s": 46890810,
+       "rs": 0
       },
       {
        "n": "New Orleans",
        "f": "US_Louisiana_New Orleans",
-       "s": 50590323,
-       "rs": 1
+       "s": 50610267,
+       "rs": 0
       }
      ]
     },
     {
      "n": "Maine",
      "f": "US_Maine",
-     "s": 35050155,
-     "rs": 1
+     "s": 35084147,
+     "rs": 0
     },
     {
      "n": "Maryland",
@@ -6454,14 +6454,14 @@
       {
        "n": "Baltimore",
        "f": "US_Maryland_Baltimore",
-       "s": 70604267,
-       "rs": 1
+       "s": 70594043,
+       "rs": 0
       },
       {
        "n": "West, Washington, D.C.",
        "f": "US_Maryland_and_DC",
-       "s": 43937703,
-       "rs": 1
+       "s": 44009831,
+       "rs": 0
       }
      ]
     },
@@ -6471,32 +6471,32 @@
       {
        "n": "Barnstable",
        "f": "US_Massachusetts_Southeastern",
-       "s": 14951182,
-       "rs": 1
+       "s": 14967646,
+       "rs": 0
       },
       {
        "n": "Boston",
        "f": "US_Massachusetts_Boston",
-       "s": 58804315,
-       "rs": 1
+       "s": 58835059,
+       "rs": 0
       },
       {
        "n": "Plymouth",
        "f": "US_Massachusetts_Plymouth",
-       "s": 30355875,
-       "rs": 1
+       "s": 30366571,
+       "rs": 0
       },
       {
        "n": "Springfield",
        "f": "US_Massachusetts_West",
-       "s": 24205269,
-       "rs": 1
+       "s": 24219525,
+       "rs": 0
       },
       {
        "n": "Worcester",
        "f": "US_Massachusetts_Central",
-       "s": 27820701,
-       "rs": 1
+       "s": 27831949,
+       "rs": 0
       }
      ]
     },
@@ -6506,20 +6506,20 @@
       {
        "n": "Detroit",
        "f": "US_Michigan_Detroit",
-       "s": 41700729,
-       "rs": 1
+       "s": 41775129,
+       "rs": 0
       },
       {
        "n": "Michigan \u2014 North",
        "f": "US_Michigan_North",
-       "s": 32667368,
-       "rs": 1
+       "s": 32673192,
+       "rs": 0
       },
       {
        "n": "Michigan \u2014 South",
        "f": "US_Michigan_South",
-       "s": 77261115,
-       "rs": 1
+       "s": 77348275,
+       "rs": 0
       }
      ]
     },
@@ -6529,34 +6529,34 @@
       {
        "n": "Minneapolis",
        "f": "US_Minnesota_Minneapolis",
-       "s": 38682211,
-       "rs": 1
+       "s": 38690939,
+       "rs": 0
       },
       {
        "n": "Minnesota \u2014 North",
        "f": "US_Minnesota_North",
-       "s": 43013683,
-       "rs": 1
+       "s": 43032707,
+       "rs": 0
       },
       {
        "n": "Rochester",
        "f": "US_Minnesota_Rochester",
-       "s": 39627710,
-       "rs": 1
+       "s": 39644198,
+       "rs": 0
       },
       {
        "n": "St. Cloud",
        "f": "US_Minnesota_Saint Cloud",
-       "s": 33078027,
-       "rs": 1
+       "s": 33085450,
+       "rs": 0
       }
      ]
     },
     {
      "n": "Mississippi",
      "f": "US_Mississippi",
-     "s": 65617160,
-     "rs": 1
+     "s": 65641208,
+     "rs": 0
     },
     {
      "n": "Missouri",
@@ -6564,40 +6564,40 @@
       {
        "n": "Missouri \u2014 East",
        "f": "US_Missouri_East",
-       "s": 53847780,
-       "rs": 1
+       "s": 53994604,
+       "rs": 0
       },
       {
        "n": "Missouri \u2014 West",
        "f": "US_Missouri_West",
-       "s": 68774808,
-       "rs": 1
+       "s": 68889784,
+       "rs": 0
       }
      ]
     },
     {
      "n": "Montana",
      "f": "US_Montana",
-     "s": 59916733,
-     "rs": 1
+     "s": 59963621,
+     "rs": 0
     },
     {
      "n": "Nebraska",
      "f": "US_Nebraska",
-     "s": 75405183,
-     "rs": 1
+     "s": 75398791,
+     "rs": 0
     },
     {
      "n": "Nevada",
      "f": "US_Nevada",
-     "s": 36661705,
-     "rs": 1
+     "s": 36737145,
+     "rs": 0
     },
     {
      "n": "New Hampshire",
      "f": "US_New Hampshire",
-     "s": 31375522,
-     "rs": 1
+     "s": 31389290,
+     "rs": 0
     },
     {
      "n": "New Jersey",
@@ -6605,22 +6605,22 @@
       {
        "n": "New Jersey \u2014 North",
        "f": "US_New Jersey_North",
-       "s": 37165344,
-       "rs": 1
+       "s": 37206808,
+       "rs": 0
       },
       {
        "n": "New Jersey \u2014 South",
        "f": "US_New Jersey_South",
-       "s": 50732828,
-       "rs": 1
+       "s": 50748188,
+       "rs": 0
       }
      ]
     },
     {
      "n": "New Mexico",
      "f": "US_New Mexico",
-     "s": 74035662,
-     "rs": 1
+     "s": 74135374,
+     "rs": 0
     },
     {
      "n": "New York",
@@ -6628,26 +6628,26 @@
       {
        "n": "New York \u2014 East",
        "f": "US_New York_East",
-       "s": 32215252,
-       "rs": 1
+       "s": 32293060,
+       "rs": 0
       },
       {
        "n": "New York \u2014 New York City",
        "f": "US_New York_New York",
-       "s": 58366053,
-       "rs": 1
+       "s": 58385517,
+       "rs": 0
       },
       {
        "n": "New York \u2014 North",
        "f": "US_New York_North",
-       "s": 38921022,
-       "rs": 1
+       "s": 38947694,
+       "rs": 0
       },
       {
        "n": "New York \u2014 West",
        "f": "US_New York_West",
-       "s": 57045805,
-       "rs": 1
+       "s": 57073669,
+       "rs": 0
       }
      ]
     },
@@ -6657,38 +6657,38 @@
       {
        "n": "Asheville",
        "f": "US_North Carolina_Asheville",
-       "s": 27044726,
-       "rs": 1
+       "s": 27051238,
+       "rs": 0
       },
       {
        "n": "Charlotte",
        "f": "US_North Carolina_Charlotte",
-       "s": 34947545,
-       "rs": 1
+       "s": 34965897,
+       "rs": 0
       },
       {
        "n": "Greensboro",
        "f": "US_North Carolina_Greensboro",
-       "s": 32392845,
-       "rs": 1
+       "s": 32390605,
+       "rs": 0
       },
       {
        "n": "Raleigh",
        "f": "US_North Carolina_Raleigh",
-       "s": 37947469,
-       "rs": 1
+       "s": 37971669,
+       "rs": 0
       },
       {
        "n": "Wilmington",
        "f": "US_North Carolina_Wilmington",
-       "s": 29907989,
-       "rs": 1
+       "s": 29896005,
+       "rs": 0
       },
       {
        "n": "Wilson",
        "f": "US_North Carolina_Wilson",
-       "s": 30209948,
-       "rs": 1
+       "s": 30220828,
+       "rs": 0
       }
      ]
     },
@@ -6698,20 +6698,20 @@
       {
        "n": "Bismarck",
        "f": "US_North Dakota_Bismarck",
-       "s": 21688439,
-       "rs": 1
+       "s": 21691307,
+       "rs": 0
       },
       {
        "n": "Fargo",
        "f": "US_North Dakota_East",
-       "s": 34042357,
-       "rs": 1
+       "s": 34017860,
+       "rs": 0
       },
       {
        "n": "Minot",
        "f": "US_North Dakota_Minot",
-       "s": 21327063,
-       "rs": 1
+       "s": 21330983,
+       "rs": 0
       }
      ]
     },
@@ -6721,14 +6721,14 @@
       {
        "n": "Cleveland",
        "f": "US_Ohio_Cleveland",
-       "s": 75021207,
-       "rs": 1
+       "s": 75037423,
+       "rs": 0
       },
       {
        "n": "Dayton",
        "f": "US_Ohio_Dayton",
-       "s": 72392062,
-       "rs": 1
+       "s": 72424158,
+       "rs": 0
       }
      ]
     },
@@ -6738,14 +6738,14 @@
       {
        "n": "Oklahoma \u2014 East",
        "f": "US_Oklahoma_East",
-       "s": 57586243,
-       "rs": 1
+       "s": 57593491,
+       "rs": 0
       },
       {
        "n": "Oklahoma \u2014 West",
        "f": "US_Oklahoma_West",
-       "s": 59943520,
-       "rs": 1
+       "s": 59979928,
+       "rs": 0
       }
      ]
     },
@@ -6755,20 +6755,20 @@
       {
        "n": "Eugene",
        "f": "US_Oregon_Eugene",
-       "s": 27841228,
-       "rs": 1
+       "s": 27869884,
+       "rs": 0
       },
       {
        "n": "Oregon \u2014 West",
        "f": "US_Oregon_West",
-       "s": 31588361,
-       "rs": 1
+       "s": 31620097,
+       "rs": 0
       },
       {
        "n": "Portland",
        "f": "US_Oregon_Portland",
-       "s": 62415815,
-       "rs": 1
+       "s": 62465495,
+       "rs": 0
       }
      ]
     },
@@ -6778,40 +6778,40 @@
       {
        "n": "Altoona",
        "f": "US_Pennsylvania_Central",
-       "s": 47282016,
-       "rs": 1
+       "s": 47306608,
+       "rs": 0
       },
       {
        "n": "Pittsburgh",
        "f": "US_Pennsylvania_Pittsburgh",
-       "s": 39929671,
-       "rs": 1
+       "s": 39962719,
+       "rs": 0
       },
       {
        "n": "Reading",
        "f": "US_Pennsylvania_Reading",
-       "s": 38979650,
-       "rs": 1
+       "s": 38967498,
+       "rs": 0
       },
       {
        "n": "Scranton",
        "f": "US_Pennsylvania_Scranton",
-       "s": 45123243,
-       "rs": 1
+       "s": 45158331,
+       "rs": 0
       }
      ]
     },
     {
      "n": "Puerto Rico",
      "f": "US_Puerto Rico",
-     "s": 33470704,
-     "rs": 1
+     "s": 33465560,
+     "rs": 0
     },
     {
      "n": "Rhode Island",
      "f": "US_Rhode Island",
-     "s": 10980335,
-     "rs": 1
+     "s": 10976167,
+     "rs": 0
     },
     {
      "n": "South Carolina",
@@ -6819,22 +6819,22 @@
       {
        "n": "Columbia",
        "f": "US_South Carolina_Columbia",
-       "s": 64224694,
-       "rs": 1
+       "s": 64206142,
+       "rs": 0
       },
       {
        "n": "Florence",
        "f": "US_South Carolina_Florence",
-       "s": 30596096,
-       "rs": 1
+       "s": 30605080,
+       "rs": 0
       }
      ]
     },
     {
      "n": "South Dakota",
      "f": "US_South Dakota",
-     "s": 39273390,
-     "rs": 1
+     "s": 39278910,
+     "rs": 0
     },
     {
      "n": "Tennessee",
@@ -6842,14 +6842,14 @@
       {
        "n": "Tennessee \u2014 East",
        "f": "US_Tennessee_East",
-       "s": 54203611,
-       "rs": 1
+       "s": 54247835,
+       "rs": 0
       },
       {
        "n": "Tennessee \u2014 West",
        "f": "US_Tennessee_West",
-       "s": 39971336,
-       "rs": 1
+       "s": 40005672,
+       "rs": 0
       }
      ]
     },
@@ -6859,76 +6859,76 @@
       {
        "n": "Amarillo",
        "f": "US_Texas_Northwest",
-       "s": 53023338,
-       "rs": 1
+       "s": 53005922,
+       "rs": 0
       },
       {
        "n": "Austin",
        "f": "US_Texas_Austin",
-       "s": 70898785,
-       "rs": 1
+       "s": 70926697,
+       "rs": 0
       },
       {
        "n": "Dallas",
        "f": "US_Texas_Dallas",
-       "s": 56550156,
-       "rs": 1
+       "s": 56553396,
+       "rs": 0
       },
       {
        "n": "Houston",
        "f": "US_Texas_Houston",
-       "s": 60438563,
-       "rs": 1
+       "s": 60424027,
+       "rs": 0
       },
       {
        "n": "Laredo",
        "f": "US_Texas_Southwest",
-       "s": 28561177,
-       "rs": 1
+       "s": 28566673,
+       "rs": 0
       },
       {
        "n": "Odessa",
        "f": "US_Texas_West",
-       "s": 42217670,
-       "rs": 1
+       "s": 42221038,
+       "rs": 0
       },
       {
        "n": "San Antonio",
        "f": "US_Texas_San Antonio",
-       "s": 39194276,
-       "rs": 1
+       "s": 39244652,
+       "rs": 0
       },
       {
        "n": "Tyler",
        "f": "US_Texas_Tyler",
-       "s": 38745784,
-       "rs": 1
+       "s": 38758555,
+       "rs": 0
       },
       {
        "n": "Waco",
        "f": "US_Texas_Wako",
-       "s": 27779848,
-       "rs": 1
+       "s": 27795456,
+       "rs": 0
       }
      ]
     },
     {
      "n": "US Minor Outlying Islands",
      "f": "US_United States Minor Outlying Islands",
-     "s": 458946,
-     "rs": 1
+     "s": 459018,
+     "rs": 0
     },
     {
      "n": "Utah",
      "f": "US_Utah",
-     "s": 51823651,
-     "rs": 1
+     "s": 51858011,
+     "rs": 0
     },
     {
      "n": "Vermont",
      "f": "US_Vermont",
-     "s": 16570710,
-     "rs": 1
+     "s": 16578206,
+     "rs": 0
     },
     {
      "n": "Virginia",
@@ -6936,26 +6936,26 @@
       {
        "n": "Chesapeake",
        "f": "US_Virginia_Chesapeake",
-       "s": 44746861,
-       "rs": 1
+       "s": 44750533,
+       "rs": 0
       },
       {
        "n": "Lynchburg",
        "f": "US_Virginia_Lynchburg",
-       "s": 45732428,
-       "rs": 1
+       "s": 45751020,
+       "rs": 0
       },
       {
        "n": "Richmond",
        "f": "US_Virginia_Richmond",
-       "s": 61579765,
-       "rs": 1
+       "s": 61629637,
+       "rs": 0
       },
       {
        "n": "Roanoke",
        "f": "US_Virginia_Roanoke",
-       "s": 38444996,
-       "rs": 1
+       "s": 38456524,
+       "rs": 0
       }
      ]
     },
@@ -6965,28 +6965,28 @@
       {
        "n": "Seattle",
        "f": "US_Washington_Seattle",
-       "s": 40256912,
-       "rs": 1
+       "s": 40311138,
+       "rs": 0
       },
       {
        "n": "Tacoma",
        "f": "US_Washington_Coast",
-       "s": 50844511,
-       "rs": 1
+       "s": 50875225,
+       "rs": 0
       },
       {
        "n": "Yakima",
        "f": "US_Washington_Yakima",
-       "s": 37492742,
-       "rs": 1
+       "s": 37545718,
+       "rs": 0
       }
      ]
     },
     {
      "n": "West Virginia",
      "f": "US_West Virginia",
-     "s": 37518262,
-     "rs": 1
+     "s": 37543438,
+     "rs": 0
     },
     {
      "n": "Wisconsin",
@@ -6994,78 +6994,78 @@
       {
        "n": "Eau Claire",
        "f": "US_Wisconsin_North",
-       "s": 54966995,
-       "rs": 1
+       "s": 55000691,
+       "rs": 0
       },
       {
        "n": "Milwaukee",
        "f": "US_Wisconsin_Milwaukee",
-       "s": 67312570,
-       "rs": 1
+       "s": 67419282,
+       "rs": 0
       }
      ]
     },
     {
      "n": "Wyoming",
      "f": "US_Wyoming",
-     "s": 38279961,
-     "rs": 1
+     "s": 38293513,
+     "rs": 0
     }
    ]
   },
   {
    "n": "United States Virgin Islands",
    "c": "vi",
-   "s": 1342496,
-   "rs": 1
+   "s": 1343032,
+   "rs": 0
   },
   {
    "n": "Uruguay",
    "c": "uy",
-   "s": 28566730,
-   "rs": 1
+   "s": 28561682,
+   "rs": 0
   },
   {
    "n": "Uzbekistan",
    "c": "uz",
-   "s": 42446607,
-   "rs": 1
+   "s": 42534447,
+   "rs": 0
   },
   {
    "n": "Vanuatu",
    "c": "vu",
-   "s": 3323629,
-   "rs": 1
+   "s": 3324181,
+   "rs": 0
   },
   {
    "n": "Venezuela",
    "c": "ve",
-   "s": 52325800,
-   "rs": 1
+   "s": 52360264,
+   "rs": 0
   },
   {
    "n": "Vietnam",
    "c": "vn",
-   "s": 41662526,
-   "rs": 1
+   "s": 41701422,
+   "rs": 0
   },
   {
    "n": "Yemen",
    "c": "ye",
-   "s": 18219305,
-   "rs": 1
+   "s": 18245337,
+   "rs": 0
   },
   {
    "n": "Zambia",
    "c": "zm",
-   "s": 18830608,
-   "rs": 1
+   "s": 18871587,
+   "rs": 0
   },
   {
    "n": "Zimbabwe",
    "c": "zw",
-   "s": 17696158,
-   "rs": 1
+   "s": 17718470,
+   "rs": 0
   }
  ]
 }
