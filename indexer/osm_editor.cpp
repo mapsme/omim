@@ -7,6 +7,7 @@
 #include "indexer/index.hpp"
 #include "indexer/osm_editor.hpp"
 
+#include "platform/local_country_file_utils.hpp"
 #include "platform/platform.hpp"
 
 #include "editor/changeset_wrapper.hpp"
@@ -582,6 +583,10 @@ vector<uint32_t> Editor::GetFeaturesByStatus(MwmSet::MwmId const & mwmId, Featur
 
 vector<Metadata::EType> Editor::EditableMetadataForType(FeatureType const & feature) const
 {
+  // Cannot edit old mwm data.
+  if (platform::migrate::NeedMigrate())
+    return {};
+
   // TODO(mgsergio): Load editable fields into memory from XML and query them here.
   feature::TypesHolder const types(feature);
   set<Metadata::EType> fields;
@@ -613,6 +618,10 @@ vector<Metadata::EType> Editor::EditableMetadataForType(FeatureType const & feat
 
 bool Editor::IsNameEditable(FeatureType const & feature) const
 {
+  // Cannot edit old mwm data.
+  if (platform::migrate::NeedMigrate())
+    return false;
+
   feature::TypesHolder const types(feature);
   for (auto type : types)
   {
@@ -625,6 +634,10 @@ bool Editor::IsNameEditable(FeatureType const & feature) const
 
 bool Editor::IsAddressEditable(FeatureType const & feature) const
 {
+  // Cannot edit old mwm data.
+  if (platform::migrate::NeedMigrate())
+    return false;
+
   feature::TypesHolder const types(feature);
   auto & isBuilding = ftypes::IsBuildingChecker::Instance();
   for (auto type : types)
