@@ -114,7 +114,7 @@ extern NSString * const MapsStatusChangedNotification;
   {
     LocalAndRemoteSizeT const size = self.mapsLayout.GetRemoteCountrySizes(group, position);
 
-    cell.sizeLabel.text = [NSString stringWithFormat:@"%@ / %@", formattedSize(size.first), formattedSize(size.second)];
+    cell.sizeLabel.text = formattedSize(size.first);
   }
   else if (status == TStatus::EOnDisk || status == TStatus::EOnDiskOutOfDate)
     cell.sizeLabel.text = formattedSize(self.mapsLayout.GetCountrySize(group, position, options).second);
@@ -315,13 +315,28 @@ extern NSString * const MapsStatusChangedNotification;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+  [tableView deselectRowAtIndexPath:indexPath animated:YES];
   [self markSelectedMapIndexPath:indexPath];
 
-  MapCell * cell = [self cellAtPosition:self.selectedPosition inGroup:self.selectedGroup];
-  UIActionSheet * actionSheet = [self actionSheetToPerformActionOnSelectedMap];
-  [actionSheet showFromRect:cell.frame inView:cell.superview animated:YES];
-
-  [tableView deselectRowAtIndexPath:indexPath animated:YES];
+  switch ([self selectedMapStatus])
+  {
+    case TStatus::ENotDownloaded:
+    case TStatus::EDownloadFailed:
+    case TStatus::EOutOfMemFailed:
+      [self performAction:DownloaderActionDownloadMap withSizeCheck:NO];
+      break;
+    case TStatus::EDownloading:
+    case TStatus::EInQueue:
+      [self performAction:DownloaderActionCancelDownloading withSizeCheck:NO];
+      break;
+    default:
+    {
+      MapCell * cell = [self cellAtPosition:self.selectedPosition inGroup:self.selectedGroup];
+      UIActionSheet * actionSheet = [self actionSheetToPerformActionOnSelectedMap];
+      [actionSheet showFromRect:cell.frame inView:cell.superview animated:YES];
+      break;
+    }
+  }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
