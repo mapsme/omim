@@ -11,10 +11,14 @@
 #include "base/logging.hpp"
 #include "base/macros.hpp"
 
+#include "build_style/build_style.h"
+
 #include "std/cstdio.hpp"
 #include "std/cstdlib.hpp"
 
 #include "3party/Alohalytics/src/alohalytics.h"
+
+#include <QMessageBox>
 
 #include <QtCore/QDir>
 
@@ -103,12 +107,15 @@ int main(int argc, char * argv[])
   }
 
   int returnCode = -1;
+  QString mapcssFilePath;
   if (eulaAccepted)   // User has accepted EULA
   {
-    QString mapcssFilePath;
 #ifdef BUILD_DESIGNER
-    mapcssFilePath = QFileDialog::getOpenFileName(nullptr,
-      "Open MapCSS file", "~/", "MapCSS Files (*.mapcss)");
+    if (argc >= 2 && GetPlatform().IsFileExistsByFullPath(argv[1]))
+        mapcssFilePath = argv[1];
+    if (0 == mapcssFilePath.length())
+        mapcssFilePath = QFileDialog::getOpenFileName(nullptr,
+          "Open MapCSS file", "~/", "MapCSS Files (*.mapcss)");
 #endif // BUILD_DESIGNER
 
     Framework framework;
@@ -116,6 +123,25 @@ int main(int argc, char * argv[])
     w.show();
     returnCode = a.exec();
   }
+
+  if (build_style::NeedRecalculate && mapcssFilePath.length() != 0)
+  {
+    try
+    {
+      build_style::RunRecalculationGeometryScript(mapcssFilePath);
+    }
+    catch (exception & e)
+    {
+      QMessageBox msgBox;
+      msgBox.setWindowTitle("Error");
+      msgBox.setText(e.what());
+      msgBox.setStandardButtons(QMessageBox::Ok);
+      msgBox.setDefaultButton(QMessageBox::Ok);
+      msgBox.exec();
+    }
+  }
+
+  dbg::ObjectTracker::PrintLeaks();
 
   LOG_SHORT(LINFO, ("MapsWithMe finished with code", returnCode));
   return returnCode;

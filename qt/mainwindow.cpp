@@ -640,7 +640,9 @@ void MainWindow::OnBuildStyle()
   try
   {
     build_style::BuildAndApply(m_mapcssFilePath);
-    m_pDrawWidget->RefreshDrawingRules();
+    // m_pDrawWidget->RefreshDrawingRules();
+    build_style::NeedRecalculate = true;
+    QMainWindow::close();
   }
   catch (exception & e)
   {
