@@ -71,6 +71,14 @@ public class EditorHostFragment extends BaseMwmToolbarFragment
     return true;
   }
 
+  @Override
+  public void onSaveInstanceState(Bundle outState)
+  {
+    super.onSaveInstanceState(outState);
+    saveEditedPoi();
+    outState.putParcelable(EXTRA_MAP_OBJECT, mEditedObject);
+  }
+
   protected void editMapObject()
   {
     mMode = Mode.MAP_OBJECT;
@@ -85,6 +93,7 @@ public class EditorHostFragment extends BaseMwmToolbarFragment
 
   protected void editTimetable()
   {
+    saveEditedPoi();
     mMode = Mode.OPENING_HOURS;
     mToolbarController.setTitle("Opening hours");
     final Bundle args = new Bundle();
@@ -97,6 +106,7 @@ public class EditorHostFragment extends BaseMwmToolbarFragment
 
   protected void editStreet()
   {
+    saveEditedPoi();
     mMode = Mode.STREET;
     mToolbarController.setTitle("Add Street");
     final Bundle args = new Bundle();
@@ -109,8 +119,29 @@ public class EditorHostFragment extends BaseMwmToolbarFragment
 
   protected void editCuisine()
   {
+    saveEditedPoi();
     mMode = Mode.CUISINE;
-    // TODO choose cuisine
+    mToolbarController.setTitle("Cuisine");
+    final Bundle args = new Bundle();
+    args.putString(CuisineFragment.EXTRA_CURRENT_CUISINE, mEditedObject.getMetadata(Metadata.MetadataType.FMD_CUISINE));
+    final Fragment cuisineFragment = Fragment.instantiate(getActivity(), CuisineFragment.class.getName(), args);
+    getChildFragmentManager().beginTransaction()
+                             .replace(R.id.fragment_container, cuisineFragment, CuisineFragment.class.getName())
+                             .commit();
+  }
+
+  protected void saveEditedPoi()
+  {
+    final EditorFragment editorFragment = (EditorFragment) getChildFragmentManager().findFragmentByTag(EditorFragment.class.getName());
+    mEditedObject.addMetadata(Metadata.MetadataType.FMD_PHONE_NUMBER.toInt(), editorFragment.getPhone());
+    mEditedObject.addMetadata(Metadata.MetadataType.FMD_WEBSITE.toInt(), editorFragment.getWebsite());
+    mEditedObject.addMetadata(Metadata.MetadataType.FMD_EMAIL.toInt(), editorFragment.getEmail());
+    final String cuisine = mEditedObject.getMetadata(Metadata.MetadataType.FMD_CUISINE);
+    mEditedObject.addMetadata(Metadata.MetadataType.FMD_CUISINE.toInt(), cuisine == null ? "" : cuisine);
+    mEditedObject.addMetadata(Metadata.MetadataType.FMD_INTERNET.toInt(), editorFragment.getWifi());
+    mEditedObject.setName(editorFragment.getName());
+    mEditedObject.setStreet(editorFragment.getStreet());
+    mEditedObject.setHouseNumber(editorFragment.getHouseNumber());
   }
 
   @Override
@@ -131,14 +162,17 @@ public class EditorHostFragment extends BaseMwmToolbarFragment
         editMapObject();
         break;
       case CUISINE:
-        // get cuisine
+        String cuisine = ((CuisineFragment) getChildFragmentManager().findFragmentByTag(CuisineFragment.class.getName())).getCuisine();
+        mEditedObject.addMetadata(Metadata.MetadataType.FMD_CUISINE.toInt(), cuisine);
+        editMapObject();
         break;
       case MAP_OBJECT:
         final EditorFragment editorFragment = (EditorFragment) getChildFragmentManager().findFragmentByTag(EditorFragment.class.getName());
         Editor.nativeSetMetadata(Metadata.MetadataType.FMD_PHONE_NUMBER.toInt(), editorFragment.getPhone());
         Editor.nativeSetMetadata(Metadata.MetadataType.FMD_WEBSITE.toInt(), editorFragment.getWebsite());
         Editor.nativeSetMetadata(Metadata.MetadataType.FMD_EMAIL.toInt(), editorFragment.getEmail());
-        Editor.nativeSetMetadata(Metadata.MetadataType.FMD_CUISINE.toInt(), editorFragment.getCuisine());
+        cuisine = mEditedObject.getMetadata(Metadata.MetadataType.FMD_CUISINE);
+        Editor.nativeSetMetadata(Metadata.MetadataType.FMD_CUISINE.toInt(), cuisine == null ? "" : cuisine);
         Editor.nativeSetMetadata(Metadata.MetadataType.FMD_INTERNET.toInt(), editorFragment.getWifi());
         Editor.nativeSetName(editorFragment.getName());
         Editor.nativeEditFeature(editorFragment.getStreet(), editorFragment.getHouseNumber());

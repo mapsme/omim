@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import java.lang.annotation.Retention;
@@ -131,6 +132,7 @@ public class MapObject implements Parcelable
     return mIsDroppedPin;
   }
 
+  @Nullable
   public String getMetadata(Metadata.MetadataType type)
   {
     return mMetadata.getMetadata(type);
@@ -140,25 +142,24 @@ public class MapObject implements Parcelable
    * @return properly formatted and translated cuisine string.
    */
   @NonNull
-  public String getCuisine()
+  public String getFormattedCuisine()
   {
-    final String rawCuisine = mMetadata.getMetadata(Metadata.MetadataType.FMD_CUISINE);
-    if (TextUtils.isEmpty(rawCuisine))
+    final String rawCuisines = mMetadata.getMetadata(Metadata.MetadataType.FMD_CUISINE);
+    if (TextUtils.isEmpty(rawCuisines))
       return "";
 
-    // cuisines translations can contain unsupported symbols, and res ids
-    // replace them with supported "_"( so ', ' and ' ' are replaced with underlines)
-    final String[] cuisines = rawCuisine.split(";");
-    String result = "";
+    final StringBuilder result = new StringBuilder();
     // search translations for each cuisine
     final Resources resources = MwmApplication.get().getResources();
-    for (String cuisineRaw : cuisines)
+    for (String rawCuisine : Metadata.splitCuisines(rawCuisines))
     {
-      final String cuisineKey = cuisineRaw.replace(", ", "_").replace(' ', '_').toLowerCase();
-      int resId = resources.getIdentifier("cuisine_" + cuisineKey, "string", BuildConfig.APPLICATION_ID);
-      result += resId == 0 ? cuisineRaw : resources.getString(resId);
+      int resId = resources.getIdentifier(Metadata.osmCuisineToStringName(Metadata.normalizeCuisine(rawCuisine)), "string", BuildConfig.APPLICATION_ID);
+      if (result.length() > 0)
+        result.append(", ");
+      result.append(resId == 0 ? rawCuisine : resources.getString(resId));
     }
-    return result;
+
+    return result.toString();
   }
 
   public String getStreet()
@@ -180,6 +181,16 @@ public class MapObject implements Parcelable
   public String getSearchId()
   {
     return mSearchId;
+  }
+
+  public void setName(String name)
+  {
+    mName = name;
+  }
+
+  public void setHouseNumber(String houseNumber)
+  {
+    mHouseNumber = houseNumber;
   }
 
   public void setLat(double lat)
