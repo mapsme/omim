@@ -28,20 +28,11 @@
 
 namespace android
 {
-  class Framework : public storage::CountryTree::CountryTreeListener,
-                    public storage::ActiveMapsLayout::ActiveMapsListener
+  class Framework
   {
   private:
     drape_ptr<dp::ThreadSafeFactory> m_contextFactory;
     ::Framework m_work;
-
-    typedef shared_ptr<jobject> TJobject;
-    TJobject m_javaCountryListener;
-    typedef map<int, TJobject> TListenerMap;
-    TListenerMap m_javaActiveMapListeners;
-    int m_currentSlotID;
-
-    int m_activeMapsConnectionID;
 
     math::LowPassVector<float, 3> m_sensors[2];
     double m_lastCompass;
@@ -62,12 +53,10 @@ namespace android
 
   public:
     Framework();
-    ~Framework();
 
     storage::Storage & Storage();
 
-    void ShowCountry(storage::TIndex const & idx, bool zoomToDownloadButton);
-    storage::TStatus GetCountryStatus(storage::TIndex const & idx) const;
+    void ShowCountry(storage::TCountryId const & countryId, bool zoomToDownloadButton);
 
     void OnLocationError(int/* == location::TLocationStatus*/ newStatus);
     void OnLocationUpdated(location::GpsInfo const & info);
@@ -117,10 +106,6 @@ namespace android
     void AddLocalMaps();
     void RemoveLocalMaps();
 
-    storage::TIndex GetCountryIndex(double lat, double lon) const;
-    string GetCountryCode(double lat, double lon) const;
-
-    string GetCountryNameIfAbsent(m2::PointD const & pt) const;
     m2::PointD GetViewportCenter() const;
 
     void AddString(string const & name, string const & value);
@@ -142,12 +127,6 @@ namespace android
     string GetOutdatedCountriesString();
 
     void ShowTrack(int category, int track);
-
-    void SetCountryTreeListener(shared_ptr<jobject> objPtr);
-    void ResetCountryTreeListener();
-
-    int AddActiveMapsListener(shared_ptr<jobject> obj);
-    void RemoveActiveMapsListener(int slotID);
 
     void SetMyPositionModeListener(location::TMyPositionModeChanged const & fn);
     location::EMyPositionMode GetMyPositionMode() const;
@@ -172,20 +151,6 @@ namespace android
 
     bool NeedMigrate();
     void Migrate();
-
-  public:
-    virtual void ItemStatusChanged(int childPosition);
-    virtual void ItemProgressChanged(int childPosition, storage::LocalAndRemoteSizeT const & sizes);
-
-    virtual void CountryGroupChanged(storage::ActiveMapsLayout::TGroup const & oldGroup, int oldPosition,
-                                     storage::ActiveMapsLayout::TGroup const & newGroup, int newPosition);
-    virtual void CountryStatusChanged(storage::ActiveMapsLayout::TGroup const & group, int position,
-                                      storage::TStatus const & oldStatus, storage::TStatus const & newStatus);
-    virtual void CountryOptionsChanged(storage::ActiveMapsLayout::TGroup const & group,
-                                       int position, MapOptions const & oldOpt,
-                                       MapOptions const & newOpt);
-    virtual void DownloadingProgressUpdate(storage::ActiveMapsLayout::TGroup const & group, int position,
-                                           storage::LocalAndRemoteSizeT const & progress);
 
   private:
     vector<TDrapeTask> m_drapeTasksQueue;

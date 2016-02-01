@@ -117,7 +117,7 @@ public final class Config
    * Increments counter of app starts.
    * @return Previous value before increment.
    */
-  public static int incrementLaunchNumber()
+  private static int incrementLaunchNumber()
   {
     return increment(KEY_APP_LAUNCH_NUMBER);
   }
@@ -214,16 +214,6 @@ public final class Config
     setBool(KEY_PREF_STATISTICS, enabled);
   }
 
-  public static boolean isAutoDownloadEnabled()
-  {
-    return getBool(KEY_PREF_AUTODOWNLOAD, true);
-  }
-
-  public static void setAutoDownloadEnabled(boolean enabled)
-  {
-    setBool(KEY_PREF_AUTODOWNLOAD, enabled);
-  }
-
   public static boolean isRatingApplied(Class<? extends DialogFragment> dialogFragmentClass)
   {
     return getBool(KEY_LIKES_RATED_DIALOG + dialogFragmentClass.getSimpleName());
@@ -308,6 +298,16 @@ public final class Config
 
     setString(KEY_MISC_UI_THEME_SETTINGS, theme);
     return true;
+  }
+
+  public static boolean isAutodownloadMaps()
+  {
+    return getBool(KEY_PREF_AUTODOWNLOAD, true);
+  }
+
+  public static void setAutodownloadMaps(boolean set)
+  {
+    setBool(KEY_PREF_AUTODOWNLOAD, set);
   }
 
   private static native boolean nativeGetBoolean(String name, boolean defaultValue);

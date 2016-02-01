@@ -1,8 +1,6 @@
 #include "Framework.hpp"
-#include "MapStorage.hpp"
 #include "UserMarkHelper.hpp"
 #include "com/mapswithme/core/jni_helper.hpp"
-#include "com/mapswithme/country/country_helper.hpp"
 #include "com/mapswithme/opengl/androidoglcontextfactory.hpp"
 #include "com/mapswithme/platform/Platform.hpp"
 
@@ -67,12 +65,6 @@ Framework::Framework()
 {
   ASSERT_EQUAL ( g_framework, 0, () );
   g_framework = this;
-  m_activeMapsConnectionID = m_work.GetCountryTree().GetActiveMapLayout().AddListener(this);
-}
-
-Framework::~Framework()
-{
-  m_work.GetCountryTree().GetActiveMapLayout().RemoveListener(m_activeMapsConnectionID);
 }
 
 void Framework::OnLocationError(int errorCode)
@@ -220,7 +212,7 @@ Storage & Framework::Storage()
   return m_work.Storage();
 }
 
-void Framework::ShowCountry(TIndex const & idx, bool zoomToDownloadButton)
+void Framework::ShowCountry(TCountryId const & idx, bool zoomToDownloadButton)
 {
   if (zoomToDownloadButton)
   {
@@ -231,11 +223,6 @@ void Framework::ShowCountry(TIndex const & idx, bool zoomToDownloadButton)
   }
   else
     m_work.ShowCountry(idx);
-}
-
-TStatus Framework::GetCountryStatus(TIndex const & idx) const
-{
-  return m_work.GetCountryStatus(idx);
 }
 
 void Framework::Touch(int action, Finger const & f1, Finger const & f2, uint8_t maskedPointer)
@@ -268,26 +255,6 @@ void Framework::Touch(int action, Finger const & f1, Finger const & f2, uint8_t 
 
   event.SetFirstMaskedPointer(maskedPointer);
   m_work.TouchEvent(event);
-}
-
-TIndex Framework::GetCountryIndex(double lat, double lon) const
-{
-  return m_work.GetCountryIndex(MercatorBounds::FromLatLon(lat, lon));
-}
-
-string Framework::GetCountryCode(double lat, double lon) const
-{
-  return m_work.GetCountryCode(MercatorBounds::FromLatLon(lat, lon));
-}
-
-string Framework::GetCountryNameIfAbsent(m2::PointD const & pt) const
-{
-  TIndex const idx = m_work.GetCountryIndex(pt);
-  TStatus const status = m_work.GetCountryStatus(idx);
-  if (status != TStatus::EOnDisk && status != TStatus::EOnDiskOutOfDate)
-    return m_work.GetCountryName(idx);
-  else
-    return string();
 }
 
 m2::PointD Framework::GetViewportCenter() const
@@ -372,29 +339,6 @@ void Framework::ShowTrack(int category, int track)
   NativeFramework()->ShowTrack(*nTrack);
 }
 
-void Framework::SetCountryTreeListener(shared_ptr<jobject> objPtr)
-{
-  m_javaCountryListener = objPtr;
-  m_work.GetCountryTree().SetListener(this);
-}
-
-void Framework::ResetCountryTreeListener()
-{
-  m_work.GetCountryTree().ResetListener();
-  m_javaCountryListener.reset();
-}
-
-int Framework::AddActiveMapsListener(shared_ptr<jobject> obj)
-{
-  m_javaActiveMapListeners[m_currentSlotID] = obj;
-  return m_currentSlotID++;
-}
-
-void Framework::RemoveActiveMapsListener(int slotID)
-{
-  m_javaActiveMapListeners.erase(slotID);
-}
-
 void Framework::SetMyPositionModeListener(location::TMyPositionModeChanged const & fn)
 {
   m_myPositionModeSignal = fn;
@@ -436,87 +380,6 @@ void Framework::CleanWidgets()
 void Framework::SetupMeasurementSystem()
 {
   m_work.SetupMeasurementSystem();
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-void Framework::ItemStatusChanged(int childPosition)
-{
-  if (m_javaCountryListener == NULL)
-    return;
-
-  JNIEnv * env = jni::GetEnv();
-  static jmethodID const methodID = jni::GetMethodID(env, *m_javaCountryListener,
-                                                     "onItemStatusChanged", "(I)V");
-  ASSERT ( methodID, () );
-
-  env->CallVoidMethod(*m_javaCountryListener, methodID, childPosition);
-}
-
-void Framework::ItemProgressChanged(int childPosition, LocalAndRemoteSizeT const & sizes)
-{
-  if (m_javaCountryListener == NULL)
-    return;
-
-  JNIEnv * env = jni::GetEnv();
-  static jmethodID const methodID = jni::GetMethodID(env, *m_javaCountryListener,
-                                                     "onItemProgressChanged", "(I[J)V");
-  ASSERT ( methodID, () );
-
-  env->CallVoidMethod(*m_javaCountryListener, methodID, childPosition, storage_utils::ToArray(env, sizes));
-}
-
-void Framework::CountryGroupChanged(ActiveMapsLayout::TGroup const & oldGroup, int oldPosition,
-                                    ActiveMapsLayout::TGroup const & newGroup, int newPosition)
-{
-  JNIEnv * env = jni::GetEnv();
-  for (TListenerMap::const_iterator it = m_javaActiveMapListeners.begin(); it != m_javaActiveMapListeners.end(); ++it)
-  {
-    jmethodID const methodID = jni::GetMethodID(env, *(it->second), "onCountryGroupChanged", "(IIII)V");
-    ASSERT ( methodID, () );
-
-    env->CallVoidMethod(*(it->second), methodID, oldGroup, oldPosition, newGroup, newPosition);
-  }
-}
-
-void Framework::CountryStatusChanged(ActiveMapsLayout::TGroup const & group, int position,
-                                     TStatus const & oldStatus, TStatus const & newStatus)
-{
-  JNIEnv * env = jni::GetEnv();
-  for (TListenerMap::const_iterator it = m_javaActiveMapListeners.begin(); it != m_javaActiveMapListeners.end(); ++it)
-  {
-    jmethodID const methodID = jni::GetMethodID(env, *(it->second), "onCountryStatusChanged", "(IIII)V");
-    ASSERT ( methodID, () );
-
-    env->CallVoidMethod(*(it->second), methodID, group, position,
-                           static_cast<jint>(oldStatus), static_cast<jint>(newStatus));
-  }
-}
-
-void Framework::CountryOptionsChanged(ActiveMapsLayout::TGroup const & group, int position,
-                                      MapOptions const & oldOpt, MapOptions const & newOpt)
-{
-  JNIEnv * env = jni::GetEnv();
-  for (TListenerMap::const_iterator it = m_javaActiveMapListeners.begin(); it != m_javaActiveMapListeners.end(); ++it)
-  {
-    jmethodID const methodID = jni::GetMethodID(env, *(it->second), "onCountryOptionsChanged", "(IIII)V");
-    ASSERT ( methodID, () );
-
-    env->CallVoidMethod(*(it->second), methodID, group, position,
-                            static_cast<jint>(oldOpt), static_cast<jint>(newOpt));
-  }
-}
-
-void Framework::DownloadingProgressUpdate(ActiveMapsLayout::TGroup const & group, int position,
-                                          LocalAndRemoteSizeT const & progress)
-{
-  JNIEnv * env = jni::GetEnv();
-  for (TListenerMap::const_iterator it = m_javaActiveMapListeners.begin(); it != m_javaActiveMapListeners.end(); ++it)
-  {
-    jmethodID const methodID = jni::GetMethodID(env, *(it->second), "onCountryProgressChanged", "(II[J)V");
-    ASSERT ( methodID, () );
-
-    env->CallVoidMethod(*(it->second), methodID, group, position, storage_utils::ToArray(env, progress));
-  }
 }
 
 void Framework::PostDrapeTask(TDrapeTask && task)
@@ -572,8 +435,8 @@ extern "C"
   void CallOnMapObjectActivatedListener(shared_ptr<jobject> listener, jobject mapObject)
   {
     JNIEnv * env = jni::GetEnv();
-    static jmethodID const methodId = jni::GetMethodID(env, *listener.get(), "onMapObjectActivated",
-                                                       "(Lcom/mapswithme/maps/bookmarks/data/MapObject;)V");
+    jmethodID const methodId = jni::GetMethodID(env, *listener.get(), "onMapObjectActivated",
+                                                "(Lcom/mapswithme/maps/bookmarks/data/MapObject;)V");
     //public MapObject(@MapObjectType int mapObjectType, String name, double lat, double lon, String typeName)
     env->CallVoidMethod(*listener.get(), methodId, mapObject);
   }
@@ -581,7 +444,7 @@ extern "C"
   void CallOnDismissListener(shared_ptr<jobject> obj)
   {
     JNIEnv * env = jni::GetEnv();
-    static jmethodID const methodId = jni::GetMethodID(env, *obj.get(), "onDismiss", "()V");
+    jmethodID const methodId = jni::GetMethodID(env, *obj.get(), "onDismiss", "()V");
     ASSERT(methodId, ());
     env->CallVoidMethod(*obj.get(), methodId);
   }
@@ -601,42 +464,28 @@ extern "C"
     CallOnMapObjectActivatedListener(obj, mapObject.get());
   }
 
-  void CallRoutingListener(shared_ptr<jobject> obj, int errorCode, vector<storage::TIndex> const & absentCountries, vector<storage::TIndex> const & absentRoutes)
+  // TODO (gardster or trashkalmar): Remove absentRoutes param after core is modified
+  void CallRoutingListener(shared_ptr<jobject> listener, int errorCode, vector<storage::TCountryId> const & absentMaps, vector<storage::TCountryId> const & absentRoutes)
   {
     JNIEnv * env = jni::GetEnv();
-    // cache methodID - it cannot change after class is loaded.
-    // http://developer.android.com/training/articles/perf-jni.html#jclass_jmethodID_and_jfieldID more details here
-    static jmethodID const methodId = jni::GetMethodID(env, *obj.get(), "onRoutingEvent",
-                                                           "(I[Lcom/mapswithme/maps/MapStorage$Index;[Lcom/mapswithme/maps/MapStorage$Index;)V");
-    ASSERT(methodId, ());
+    jmethodID const method = jni::GetMethodID(env, *listener.get(), "onRoutingEvent", "(I[Ljava/lang/String;)V");
+    ASSERT(method, ());
 
-    jobjectArray const countriesJava = env->NewObjectArray(absentCountries.size(), g_indexClazz, 0);
-    for (size_t i = 0; i < absentCountries.size(); i++)
+    jni::ScopedLocalRef<jobjectArray> const countries(env, env->NewObjectArray(absentMaps.size(), jni::GetStringClass(env), 0));
+    for (size_t i = 0; i < absentMaps.size(); i++)
     {
-      jobject country = storage::ToJava(absentCountries[i]);
-      env->SetObjectArrayElement(countriesJava, i, country);
-      env->DeleteLocalRef(country);
+      jni::TScopedLocalRef id(env, jni::ToJavaString(env, absentMaps[i]));
+      env->SetObjectArrayElement(countries.get(), i, id.get());
     }
 
-    jobjectArray const routesJava = env->NewObjectArray(absentRoutes.size(), g_indexClazz, 0);
-    for (size_t i = 0; i < absentRoutes.size(); i++)
-    {
-      jobject route = storage::ToJava(absentRoutes[i]);
-      env->SetObjectArrayElement(routesJava, i, route);
-      env->DeleteLocalRef(route);
-    }
-
-    env->CallVoidMethod(*obj.get(), methodId, errorCode, countriesJava, routesJava);
-
-    env->DeleteLocalRef(countriesJava);
+    env->CallVoidMethod(*listener.get(), method, errorCode, countries.get());
   }
 
-  void CallRouteProgressListener(shared_ptr<jobject> sharedListener, float progress)
+  void CallRouteProgressListener(shared_ptr<jobject> listener, float progress)
   {
     JNIEnv * env = jni::GetEnv();
-    jobject listener = *sharedListener.get();
-    static jmethodID const methodId = jni::GetMethodID(env, listener, "onRouteBuildingProgress", "(F)V");
-    env->CallVoidMethod(listener, methodId, progress);
+    jmethodID const methodId = jni::GetMethodID(env, *listener.get(), "onRouteBuildingProgress", "(F)V");
+    env->CallVoidMethod(*listener.get(), methodId, progress);
   }
 
   /// @name JNI EXPORTS
@@ -706,10 +555,8 @@ extern "C"
   JNIEXPORT jobject JNICALL
   Java_com_mapswithme_maps_Framework_nativeFormatLatLon(JNIEnv * env, jclass clazz, jdouble lat, jdouble lon, jboolean useDMSFormat)
   {
-    if (useDMSFormat)
-      return jni::ToJavaString(env,  MeasurementUtils::FormatLatLonAsDMS(lat, lon, 2));
-    else
-      return jni::ToJavaString(env,  MeasurementUtils::FormatLatLon(lat, lon, 6));
+    return jni::ToJavaString(env, (useDMSFormat ? MeasurementUtils::FormatLatLonAsDMS(lat, lon, 2)
+                                                : MeasurementUtils::FormatLatLon(lat, lon, 6)));
   }
 
   JNIEXPORT jobjectArray JNICALL
@@ -981,39 +828,10 @@ extern "C"
     return result;
   }
 
-  JNIEXPORT jstring JNICALL
-  Java_com_mapswithme_maps_Framework_nativeGetCountryNameIfAbsent(JNIEnv * env, jobject thiz,
-                                                                  jdouble lat, jdouble lon)
-  {
-    string const name = g_framework->GetCountryNameIfAbsent(MercatorBounds::FromLatLon(lat, lon));
-
-    return (name.empty() ? 0 : jni::ToJavaString(env, name));
-  }
-
-  JNIEXPORT jstring JNICALL
-  Java_com_mapswithme_maps_Framework_nativeGetViewportCountryNameIfAbsent(JNIEnv * env, jobject thiz)
-  {
-    string const name = g_framework->GetCountryNameIfAbsent(g_framework->GetViewportCenter());
-    return (name.empty() ? 0 : jni::ToJavaString(env, name));
-  }
-
-  JNIEXPORT jobject JNICALL
-  Java_com_mapswithme_maps_Framework_nativeGetCountryIndex(JNIEnv * env, jobject thiz,
-                                                           jdouble lat, jdouble lon)
-  {
-    TIndex const idx = g_framework->GetCountryIndex(lat, lon);
-
-    // Return 0 if no any country.
-    if (idx.IsValid())
-      return ToJava(idx);
-    else
-      return 0;
-  }
-
   JNIEXPORT void JNICALL
-  Java_com_mapswithme_maps_Framework_nativeShowCountry(JNIEnv * env, jobject thiz, jobject idx, jboolean zoomToDownloadButton)
+  Java_com_mapswithme_maps_Framework_nativeShowCountry(JNIEnv * env, jobject thiz, jstring countryId, jboolean zoomToDownloadButton)
   {
-    g_framework->ShowCountry(ToNative(idx), (bool) zoomToDownloadButton);
+    g_framework->ShowCountry(jni::ToNativeString(env, countryId), (bool) zoomToDownloadButton);
   }
 
   JNIEXPORT void JNICALL
@@ -1026,12 +844,6 @@ extern "C"
   Java_com_mapswithme_maps_Framework_nativeSetRouteProgressListener(JNIEnv * env, jobject thiz, jobject listener)
   {
     frm()->SetRouteProgressListener(bind(&CallRouteProgressListener, jni::make_global_ref(listener), _1));
-  }
-
-  JNIEXPORT void JNICALL
-  Java_com_mapswithme_maps_Framework_nativeDownloadCountry(JNIEnv * env, jobject thiz, jobject idx)
-  {
-    storage_utils::GetMapLayout().DownloadMap(storage::ToNative(idx), MapOptions::Map);
   }
 
   JNIEXPORT void JNICALL

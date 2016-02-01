@@ -27,11 +27,7 @@ import android.widget.Toast;
 import java.io.Serializable;
 import java.util.Stack;
 
-import com.mapswithme.country.ActiveCountryTree;
-import com.mapswithme.country.DownloadActivity;
-import com.mapswithme.country.DownloadFragment;
 import com.mapswithme.maps.Framework.MapObjectListener;
-import com.mapswithme.maps.MapStorage.Index;
 import com.mapswithme.maps.activity.CustomNavigateUpListener;
 import com.mapswithme.maps.ads.LikesManager;
 import com.mapswithme.maps.api.ParsedMwmRequest;
@@ -41,6 +37,10 @@ import com.mapswithme.maps.bookmarks.BookmarkCategoriesActivity;
 import com.mapswithme.maps.bookmarks.ChooseBookmarkCategoryFragment;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 import com.mapswithme.maps.bookmarks.data.MapObject;
+import com.mapswithme.maps.downloader.DownloaderActivity;
+import com.mapswithme.maps.downloader.DownloaderFragment;
+import com.mapswithme.maps.downloader.MapManager;
+import com.mapswithme.maps.downloader.OnmapDownloader;
 import com.mapswithme.maps.editor.EditorActivity;
 import com.mapswithme.maps.editor.EditorHostFragment;
 import com.mapswithme.maps.location.LocationHelper;
@@ -97,7 +97,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   private static final String EXTRA_UPDATE_COUNTRIES = ".extra.update.countries";
 
   private static final String[] DOCKED_FRAGMENTS = { SearchFragment.class.getName(),
-                                                     DownloadFragment.class.getName(),
+                                                     DownloaderFragment.class.getName(),
                                                      RoutingPlanFragment.class.getName(),
                                                      EditorHostFragment.class.getName() };
   // Instance state
@@ -108,7 +108,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   private final Stack<MapTask> mTasks = new Stack<>();
   private final StoragePathManager mPathManager = new StoragePathManager();
 
-  private View mFrame;
+  private View mMapFrame;
 
   // map
   private MapFragment mMapFragment;
@@ -120,6 +120,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   private MainMenu mMainMenu;
   private PanelAnimator mPanelAnimator;
+  private OnmapDownloader mOnmapDownloader;
   private MytargetHelper mMytargetHelper;
 
   private FadeView mFadeView;
@@ -158,11 +159,11 @@ public class MwmActivity extends BaseMwmFragmentActivity
     }
   }
 
-  public static Intent createShowMapIntent(Context context, Index index, boolean doAutoDownload)
+  public static Intent createShowMapIntent(Context context, String countryId, boolean doAutoDownload)
   {
     return new Intent(context, DownloadResourcesActivity.class)
-        .putExtra(DownloadResourcesActivity.EXTRA_COUNTRY_INDEX, index)
-        .putExtra(DownloadResourcesActivity.EXTRA_AUTODOWNLOAD_COUNTRY, doAutoDownload);
+               .putExtra(DownloadResourcesActivity.EXTRA_COUNTRY, countryId)
+               .putExtra(DownloadResourcesActivity.EXTRA_AUTODOWNLOAD, doAutoDownload);
   }
 
   public static Intent createUpdateMapsIntent()
@@ -298,32 +299,32 @@ public class MwmActivity extends BaseMwmFragmentActivity
             Statistics.INSTANCE.trackEvent(Statistics.EventName.DOWNLOADER_MIGRATE_PERFORMED);
 
             RoutingController.get().cancel();
-            ActiveCountryTree.migrate();
+            MapManager.nativeMigrate();
             showDownloader(false);
           }
         }).show();
   }
 
   @Override
-  public void showDownloader(boolean openDownloadedList)
+  public void showDownloader(boolean openDownloaded)
   {
-    if (ActiveCountryTree.isLegacyMode())
+    if (MapManager.nativeIsLegacyMode())
     {
       showMigrateDialog();
       return;
     }
 
     final Bundle args = new Bundle();
-    args.putBoolean(DownloadActivity.EXTRA_OPEN_DOWNLOADED_LIST, openDownloadedList);
+    args.putBoolean(DownloaderActivity.EXTRA_OPEN_DOWNLOADED, openDownloaded);
     if (mIsFragmentContainer)
     {
       SearchEngine.cancelSearch();
       mSearchController.refreshToolbar();
-      replaceFragment(DownloadFragment.class, args, null);
+      replaceFragment(DownloaderFragment.class, args, null);
     }
     else
     {
-      startActivity(new Intent(this, DownloadActivity.class).putExtras(args));
+      startActivity(new Intent(this, DownloaderActivity.class).putExtras(args));
     }
   }
 
@@ -378,11 +379,12 @@ public class MwmActivity extends BaseMwmFragmentActivity
     mNavigationController = new NavigationController(this);
     RoutingController.get().attach(this);
     initMenu();
+    initOnmapDownloader();
   }
 
   private void initMap()
   {
-    mFrame = findViewById(R.id.map_fragment_container);
+    mMapFrame = findViewById(R.id.map_fragment_container);
 
     mFadeView = (FadeView) findViewById(R.id.fade_view);
     mFadeView.setListener(new FadeView.Listener()
@@ -403,7 +405,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
           .replace(R.id.map_fragment_container, mMapFragment, MapFragment.class.getName())
           .commit();
     }
-    mFrame.setOnTouchListener(this);
+    mMapFrame.setOnTouchListener(this);
   }
 
   private void initNavigationButtons()
@@ -601,13 +603,21 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
     if (mIsFragmentContainer)
     {
-      mPanelAnimator = new PanelAnimator(this, mMainMenu.getLeftAnimationTrackListener());
+      mPanelAnimator = new PanelAnimator(this);
+      mPanelAnimator.registerListener(mMainMenu.getLeftAnimationTrackListener());
       return;
     }
 
     mRoutingPlanInplaceController.setStartButton();
     if (mPlacePage.isDocked())
       mPlacePage.setLeftAnimationTrackListener(mMainMenu.getLeftAnimationTrackListener());
+  }
+
+  private void initOnmapDownloader()
+  {
+    mOnmapDownloader = new OnmapDownloader(this);
+    if (mIsFragmentContainer)
+      mPanelAnimator.registerListener(mOnmapDownloader);
   }
 
   @Override
@@ -661,7 +671,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
       addTask(intent);
     else if (intent.hasExtra(EXTRA_UPDATE_COUNTRIES))
     {
-      ActiveCountryTree.updateAll();
+      // TODO (trashkalmar): Update all maps in downloader
+      //OldActiveCountryTree.updateAll();
       showDownloader(true);
     }
   }
@@ -789,6 +800,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     }
 
     mMainMenu.onResume();
+    mOnmapDownloader.onResume();
   }
 
   @Override
@@ -848,12 +860,12 @@ public class MwmActivity extends BaseMwmFragmentActivity
     if (!show)
       return;
 
-    mFrame.post(new Runnable()
+    mMapFrame.post(new Runnable()
     {
       @Override
       public void run()
       {
-        int height = mFrame.getMeasuredHeight();
+        int height = mMapFrame.getMeasuredHeight();
         int top = UiUtils.dimen(R.dimen.zoom_buttons_top_required_space);
         int bottom = UiUtils.dimen(R.dimen.zoom_buttons_bottom_max_space);
 
@@ -878,6 +890,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     pauseLocation();
     TtsPlayer.INSTANCE.stop();
     LikesManager.INSTANCE.cancelDialogs();
+    mOnmapDownloader.onPause();
     super.onPause();
   }
 
@@ -1204,12 +1217,12 @@ public class MwmActivity extends BaseMwmFragmentActivity
   public static class ShowCountryTask implements MapTask
   {
     private static final long serialVersionUID = 1L;
-    private final Index mIndex;
+    private final String mCountryId;
     private final boolean mDoAutoDownload;
 
-    public ShowCountryTask(Index index, boolean doAutoDownload)
+    public ShowCountryTask(String countryId, boolean doAutoDownload)
     {
-      mIndex = index;
+      mCountryId = countryId;
       mDoAutoDownload = doAutoDownload;
     }
 
@@ -1217,8 +1230,9 @@ public class MwmActivity extends BaseMwmFragmentActivity
     public boolean run(MwmActivity target)
     {
       if (mDoAutoDownload)
-        Framework.nativeDownloadCountry(mIndex);
-      Framework.nativeShowCountry(mIndex, mDoAutoDownload);
+        MapManager.nativeDownload(mCountryId);
+
+      Framework.nativeShowCountry(mCountryId, mDoAutoDownload);
       return true;
     }
   }
