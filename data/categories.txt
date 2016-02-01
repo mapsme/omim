@@ -2843,7 +2843,7 @@ place-locality
 en:locality
 ru:местность|регион
 uk:місцевість|регіон
-de:Örtlichkeit|Lokalität|Region|Raum
+de:Örtlichkeit|Lokalität|Region|Ort
 fr:localité
 it:località|luogo|regione|area
 es:localidad
