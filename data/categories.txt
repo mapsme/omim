@@ -195,7 +195,7 @@ ar:1مطعم|مقهى|طعام|الطعام
 da:3restaurant|café|mad
 tr:3restoran|3kafeterya|3yemek
 sv:3restaurang|3café|3mat
-vi:quán ăn|cà phê||ẩm thực
+vi:quán ăn|cà phê|ẩm thực
 id:restoran|3kafe|makanan
 ro:3restaurant|3cafenea|alimentație
 nb:3restaurant|mat
@@ -1249,7 +1249,7 @@ amenity-place_of_worship
 en:place of worship|4temple|sights|U+1F64F|U+26EA
 ru:3храм|церковь|достопримечательность
 uk:3храм|церква|собор|пам’ятка|алтарь|мавзолей|пам’ятні місця
-de:Anbetungsstätte|Kirche||Moschee|Sehenswürdigkeit
+de:Anbetungsstätte|Kirche|Moschee|Sehenswürdigkeit
 fr:4lieu de culte|site touristique
 it:4tempio|cattedrale|duomo|turistico
 es:4templo|lugar de culto|turismo
@@ -3098,7 +3098,7 @@ ar:نزُل|فندق|فندق رخيص|الفندق
 da:3hostel|kro|vandrerhjem|hotel|motel
 tr:3pansiyon|otel|motel
 sv:3vandrarhem|hotell|motell
-vi:nhà khách||khách sạn
+vi:nhà khách|khách sạn
 id:hostel|hotel
 ro:hostel|hotel
 nb:vandrerhjem|hotell
@@ -3156,7 +3156,7 @@ ar:دار الضيافة|فندق|نزُل|الفندق
 da:gæstehus|gæstehjem|hotel|hostel
 tr:misafir evi|pansiyon|otel
 sv:gästhus|hotell|vandrarhem
-vi:nhà khách||khách sạn
+vi:nhà khách|khách sạn
 id:wisma tamu|hotel
 ro:pensiune|hotel
 nb:gjestehus|hotell
