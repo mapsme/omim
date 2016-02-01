@@ -1017,7 +1017,7 @@ amenity-ferry_terminal
 en:3ferry|terminal|transport|U+1F6A2|U+1F6A4|U+2693
 ru:3паром|транспорт
 uk:3пором|транспорт
-de:2Fähre|Terminal|Verkehr|ÖPNV
+de:2Fähre|Terminal|Verkehr
 fr:3traversier|terminal|transport
 it:3traghetto|transporto
 es:3transbordador|transporte
