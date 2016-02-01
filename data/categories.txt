@@ -1278,36 +1278,204 @@ amenity-place_of_worship-christian
 en:church|sights
 ru:храм|костел|церковь|достопримечательность
 de:Kirche|Dom|3Kathedrale|4Münster|Sehenswürdigkeit
+fr:église|site touristique
+da:kirke|seværdigheder
+id:gereja|pemandangan
+ko:교회|관광
+sv:kyrka|sevärdheter
+tr:kilise|görülecek yerler
+uk:церква|пам’ятні місця
+vi:chùa|diểm tham quan
+hu:templom|látnivaló
+fi:kirkko|nähtävyydet
+cs:kostel|pamětihodnost
+it:chiesa|duomo|turistico
+nb:kirke|severdigheter
+zh-Hant:教堂|旅遊景點
+zh-Hans:教堂|景点
+th:โบสถ์|สถานที่ท่องเที่ยว
+ja:教会|観光スポット
+ro:biserică|obiective turistice
+ar:كنيسة|سياح
+sk:kostol|pamätihodnosť
+es:iglesia|lugar de culto
+pl:kościół|turystyka|osobliwości miasta
+nl:kerk|toerisme
+pt:igreja|vistas
 
 amenity-place_of_worship-muslim
 en:mosque|sights
 ru:мечеть|достопримечательность
 de:Moschee|Sehenswürdigkeit
+fr:mosquée|site touristique
+da:moske|seværdigheder
+id:masjid|pemandangan
+ko:모스크|관광
+sv:moské|sevärdheter
+tr:cami|görülecek yerler
+uk:мечеть|пам’ятні місця
+vi:nhà thờ Hồi Giáo|diểm tham quan
+hu:mecset|látnivaló
+fi:moskeija|nähtävyydet
+cs:mešita|pamětihodnost
+it:moschea|duomo|turistico
+nb:moské|severdigheter
+zh-Hant:清真寺|旅遊景點
+zh-Hans:清真寺|景点
+th:มัสยิด|สถานที่ท่องเที่ยว
+ja:モスク|観光スポット
+ro:moschee|obiective turistice
+ar:مسجد|سياح
+sk:mešita|pamätihodnosť
+es:mezquita|lugar de culto
+pl:meczet|turystyka|osobliwości miasta
+nl:moskee|toerisme
+pt:mesquita|vistas
 
 amenity-place_of_worship-buddhist
 en:4temple|sights|U+1F64F|U+26EA
 ru:храм|достопримечательность
 de:Tempel|Sehenswürdigkeit
+fr:temple|site touristique
+da:tempel|seværdigheder
+id:kuil|pemandangan
+ko:절|관광
+sv:tempel|sevärdheter
+tr:tapınak|görülecek yerler
+uk:храм|пам’ятні місця
+vi:đền|diểm tham quan
+hu:templom|látnivaló
+fi:temppeli|nähtävyydet
+cs:chrám|pamětihodnost
+it:tempio|duomo|turistico
+nb:tempel|severdigheter
+zh-Hant:寺廟|旅遊景點
+zh-Hans:寺庙|景点
+th:วัด|สถานที่ท่องเที่ยว
+ja:寺|観光スポット
+ro:templu|obiective turistice
+ar:معبد|سياح
+sk:chrám|pamätihodnosť
+es:templo|lugar de culto
+pl:świątynia|turystyka|osobliwości miasta
+nl:tempel|toerisme
+pt:templo|vistas
 
 amenity-place_of_worship-hindu
 en:4temple|sights|U+1F64F|U+26EA
 ru:храм|достопримечательность
 de:Tempel|Sehenswürdigkeit
+fr:temple|site touristique
+da:tempel|seværdigheder
+id:kuil|pemandangan
+ko:절|관광
+sv:tempel|sevärdheter
+tr:tapınak|görülecek yerler
+uk:храм|пам’ятні місця
+vi:đền|diểm tham quan
+hu:templom|látnivaló
+fi:temppeli|nähtävyydet
+cs:chrám|pamětihodnost
+it:tempio|duomo|turistico
+nb:tempel|severdigheter
+zh-Hant:寺廟|旅遊景點
+zh-Hans:寺庙|景点
+th:วัด|สถานที่ท่องเที่ยว
+ja:寺|観光スポット
+ro:templu|obiective turistice
+ar:معبد|سياح
+sk:chrám|pamätihodnosť
+es:templo|lugar de culto
+pl:świątynia|turystyka|osobliwości miasta
+nl:tempel|toerisme
+pt:templo|vistas
 
 amenity-place_of_worship-shinto
 en:shrine|sights
 ru:святилище|достопримечательность
 de:Schrein|Sehenswürdigkeit
+fr:sanctuaire|site touristique
+da:helligdom|seværdigheder
+id:kuil|pemandangan
+ko:성지|관광
+sv:altare|sevärdheter
+tr:mabet|görülecek yerler
+uk:святиня|пам’ятні місця
+vi:miếu thờ|diểm tham quan
+hu:kegyhely|látnivaló
+fi:pyhäkkö|nähtävyydet
+cs:posvátné místo|pamětihodnost
+it:santuario|duomo|turistico
+nb:alter|severdigheter
+zh-Hant:聖殿|旅遊景點
+zh-Hans:圣殿|景点
+th:ศาลเจ้า|สถานที่ท่องเที่ยว
+ja:神社|観光スポット
+ro:sanctuar|obiective turistice
+ar:مزار|سياح
+sk:svätyňa|pamätihodnosť
+es:ermita|lugar de culto
+pl:kapliczka|turystyka|osobliwości miasta
+nl:heiligdom|toerisme
+pt:santuário|vistas
 
 amenity-place_of_worship-jewish
 en:synagogue|sights
 ru:синагога|достопримечательность
 de:Synagoge|Sehenswürdigkeit
+fr:synagogue|site touristique
+da:synagoge|seværdigheder
+id:sinagoge|pemandangan
+ko:유태교 회당|관광
+sv:synagoga|sevärdheter
+tr:sinagog|görülecek yerler
+uk:синагога|пам’ятні місця
+vi:giáo đường Do Thái|diểm tham quan
+hu:zsinagóga|látnivaló
+fi:synagoga|nähtävyydet
+cs:synagoga|pamětihodnost
+it:sinagoga|duomo|turistico
+nb:synagoge|severdigheter
+zh-Hant:猶太教堂|旅遊景點
+zh-Hans:犹太教堂|景点
+th:มัสยิดยิว|สถานที่ท่องเที่ยว
+ja:ユダヤ教会|観光スポット
+ro:sinagogă|obiective turistice
+ar:معبد يهودي|سياح
+sk:synagóga|pamätihodnosť
+es:sinagoga|lugar de culto
+pl:synagoga|turystyka|osobliwości miasta
+nl:synagoge|toerisme
+pt:sinagoga|vistas
 
 amenity-place_of_worship-taoist
 en:4temple|sights|U+1F64F|U+26EA
 ru:храм|достопримечательность
 de:Tempel|Sehenswürdigkeit
+fr:temple|site touristique
+da:tempel|seværdigheder
+id:kuil|pemandangan
+ko:절|관광
+sv:tempel|sevärdheter
+tr:tapınak|görülecek yerler
+uk:храм|пам’ятні місця
+vi:đền|diểm tham quan
+hu:templom|látnivaló
+fi:temppeli|nähtävyydet
+cs:chrám|pamětihodnost
+it:tempio|duomo|turistico
+nb:tempel|severdigheter
+zh-Hant:寺廟|旅遊景點
+zh-Hans:寺庙|景点
+th:วัด|สถานที่ท่องเที่ยว
+ja:寺|観光スポット
+ro:templu|obiective turistice
+ar:معبد|سياح
+sk:chrám|pamätihodnosť
+es:templo|lugar de culto
+pl:świątynia|turystyka|osobliwości miasta
+nl:tempel|toerisme
+pt:templo|vistas
 
 tourism-museum
 en:2museum|attraction|tourism|sights|U+1F3A8
@@ -1801,7 +1969,6 @@ id:kampus
 ro:colegiu
 nb:høyskole
 fi:college
-
 
 amenity-drinking_water
 en:4drinking water|U+1F6B0
