@@ -785,7 +785,7 @@ shop-car
 en:car shop|U+1F697|U+1F698|U+1F699
 ru:автосалон|магазин
 uk:автосалон|магазин
-de:Autohaus
+de:Autohaus|Laden
 fr:réparation auto|voitures|auto
 it:car negozio|negozio
 es:venta de coches|tienda
@@ -1162,7 +1162,7 @@ tourism-viewpoint
 en:4viewpoint|tourism|sights
 ru:4обзорная площадка|туризм|достопримечательность
 uk:4оглядний майданчик|4місце огляду|туризм|пам’ятка|пам’ятні місця
-de:3Panorama|Ausblick|Sehenswürdigkeit|Aussichtspunkt
+de:3Panorama|Ausblick|Aussichtspunkt|Sehenswürdigkeit
 fr:4belvédère|4point de vue|4panorama|tourisme|site touristique
 it:3panorama|turistico
 es:3vista panorámica|turismo
@@ -1191,7 +1191,7 @@ tourism-information
 en:4tourist information|4information|sights|U+2139|U+1F481
 ru:4туринформация|информация|достопримечательность
 uk:4турінформація|інформація|пам’ятка|пам’ятні місця
-de:4Information|Tourist-Information
+de:4Tourist-Information|Information|Sehenswürdigkeit
 fr:4informations touritiques|4informations|site touristique
 it:4informazione|turistico
 es:4información|turismo
@@ -1220,7 +1220,7 @@ tourism-picnic_site|amenity-bbq
 en:3picnic site|sights
 ru:3пикник|достопримечательность
 uk:3пікнік|зупинка|відпочинок|пам’ятні місця
-de:3Picknick|Grillplatz
+de:3Picknickplatz|Grillplatz|Sehenswürdigkeit
 fr:3terrain de pique-nique|3aire de pique-nique|site touristique
 it:3picnic|turistico
 es:3picnic|turismo
@@ -1249,7 +1249,7 @@ amenity-place_of_worship
 en:place of worship|4temple|sights|U+1F64F|U+26EA
 ru:3храм|церковь|достопримечательность
 uk:3храм|церква|собор|пам’ятка|алтарь|мавзолей|пам’ятні місця
-de:Anbetungsstätte|Kirche|Dom|Tempel|Kathedrale|Kapelle|Moschee|Sehenswürdigkeit
+de:Anbetungsstätte|Kirche||Moschee|Sehenswürdigkeit
 fr:4lieu de culte|site touristique
 it:4tempio|cattedrale|duomo|turistico
 es:4templo|lugar de culto|turismo
