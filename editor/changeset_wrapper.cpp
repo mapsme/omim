@@ -1,6 +1,12 @@
+#include "editor/changeset_wrapper.hpp"
+#include "editor/osm_feature_matcher.hpp"
+
 #include "indexer/feature.hpp"
 
-#include "editor/changeset_wrapper.hpp"
+#include "geometry/mercator.hpp"
+
+#include "base/assert.hpp"
+#include "base/logging.hpp"
 
 #include "std/algorithm.hpp"
 #include "std/sstream.hpp"
@@ -44,60 +50,47 @@ void ChangesetWrapper::LoadXmlFromOSM(ms::LatLon const & ll, pugi::xml_document 
     MYTHROW(OsmXmlParseException, ("Can't parse OSM server response for GetXmlFeaturesAtLatLon request", response.second));
 }
 
-XMLFeature ChangesetWrapper::GetMatchingFeatureFromOSM(XMLFeature const & ourPatch, FeatureType const & feature)
+XMLFeature ChangesetWrapper::GetMatchingNodeFeatureFromOSM(m2::PointD const & center)
 {
-  if (feature.GetFeatureType() == feature::EGeomType::GEOM_POINT)
+  // Match with OSM node.
+  ms::LatLon const ll = MercatorBounds::ToLatLon(center);
+  pugi::xml_document doc;
+  // Throws!
+  LoadXmlFromOSM(ll, doc);
+
+  pugi::xml_node const bestNode = GetBestOsmNode(doc, ll);
+  if (bestNode.empty())
   {
-    // Match with OSM node.
-    ms::LatLon const ll = ourPatch.GetCenter();
+    MYTHROW(OsmObjectWasDeletedException,
+            ("OSM does not have any nodes at the coordinates", ll, ", server has returned:", doc));
+  }
+
+  return XMLFeature(bestNode);
+}
+
+XMLFeature ChangesetWrapper::GetMatchingAreaFeatureFromOSM(vector<m2::PointD> const & geometry)
+{
+  // TODO: Make two/four requests using points on inscribed rectagle.
+  for (auto const & pt : geometry)
+  {
+    ms::LatLon const ll = MercatorBounds::ToLatLon(pt);
     pugi::xml_document doc;
     // Throws!
     LoadXmlFromOSM(ll, doc);
 
-    // TODO(AlexZ): Select best matching OSM node, not just the first one.
-    pugi::xml_node const firstNode = doc.child("osm").child("node");
-    if (firstNode.empty())
-      MYTHROW(OsmObjectWasDeletedException, ("OSM does not have any nodes at the coordinates", ll, ", server has returned:", doc));
+    pugi::xml_node const bestWay = GetBestOsmWay(doc, geometry);
+    if (bestWay.empty())
+      continue;
 
-    return XMLFeature(firstNode);
+    XMLFeature const way(bestWay);
+    ASSERT(way.IsArea(), ("Best way must be area."));
+
+    // AlexZ: TODO: Check that this way is really match our feature.
+    // If we had some way to check it, why not to use it in selecting our feature?
+
+    return way;
   }
-  else if (feature.GetFeatureType() == feature::EGeomType::GEOM_AREA)
-  {
-    using m2::PointD;
-    // Set filters out duplicate points for closed ways or triangles' vertices.
-    set<PointD> geometry;
-    feature.ForEachTriangle([&geometry](PointD const & p1, PointD const & p2, PointD const & p3)
-    {
-      geometry.insert(p1);
-      geometry.insert(p2);
-      geometry.insert(p3);
-    }, FeatureType::BEST_GEOMETRY);
-
-    ASSERT_GREATER_OR_EQUAL(geometry.size(), 3, ("Is it an area feature?"));
-
-    for (auto const & pt : geometry)
-    {
-      ms::LatLon const ll = MercatorBounds::ToLatLon(pt);
-      pugi::xml_document doc;
-      // Throws!
-      LoadXmlFromOSM(ll, doc);
-
-      // TODO(AlexZ): Select best matching OSM way from possible many ways.
-      pugi::xml_node const firstWay = doc.child("osm").child("way");
-      if (firstWay.empty())
-        continue;
-
-      XMLFeature const way(firstWay);
-      if (!way.IsArea())
-        continue;
-
-      // TODO: Check that this way is really match our feature.
-
-      return way;
-    }
-    MYTHROW(OsmObjectWasDeletedException, ("OSM does not have any matching way for feature", feature));
-  }
-  MYTHROW(LinearFeaturesAreNotSupportedException, ("We don't edit linear features yet."));
+  MYTHROW(OsmObjectWasDeletedException, ("OSM does not have any matching way for feature"));
 }
 
 void ChangesetWrapper::ModifyNode(XMLFeature node)
