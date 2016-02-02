@@ -68,7 +68,7 @@ ko:1환전|돈|교환을
 ja:1為替|マネー|お金|通貨|金|両替
 cs:3směnárna|peníze
 sk:3zmenáreň|peniaze
-nl:3geld wisselen|3wisselen|geld
+nl:3wisselkantoor|3geld wisselen|wisselen|geld
 zh-Hant:1匯率|理財|外幣|兌換|貨幣
 pl:4kantor|5wymiana|pieniądze
 pt:3câmbio|3troca|dinheiro
@@ -97,7 +97,7 @@ ko:바|술집|맥주|음료|음식
 ja:1居酒屋|バー|パブ|ビール|飲食|飲み屋|呑み屋|酒
 cs:2bar|pivo|pití|jídlo|voda|pitná voda|tekutiny
 sk:2bar|pivo|pitie|jedlo|voda|pitná voda|tekutiny
-nl:2bar|2pub|bier|drinken|eten
+nl:2bar|2pub|2café|bier|drinken|eten
 zh-Hant:1酒吧|酒館|飲酒|PUB|吧台|飲食
 pl:2bar|2pub|piwo|napoje|jedzenie
 pt:2bar|2pub|cerveja|beber|alimentação
@@ -118,7 +118,7 @@ amenity-cafe
 en:3cafe|3restaurant|3food|U+2615|U+1F356|U+1F357|U+1F35A|U+1F35B|U+1F35C|U+1F35D|U+1F363|U+1F366|U+1F367|U+1F368|U+1F369|U+1F370|U+1F372|U+1F374|U+1F377|U+1F60B|U+1F375
 ru:3кафе|3ресторан|3еда
 uk:3кафе|3ресторан|2їжа|2їсти
-de:3Cafe|3Restautant|Kaffee|essen
+de:3Café|3Restaurant|Kaffee|essen
 fr:3café|3restaurant|3resto|3nourriture
 it:3caffè|3ristorante|pasto|mangiare
 es:3café|3restaurante|comer
@@ -126,7 +126,7 @@ ko:1카페|레스토랑|음식
 ja:1カフェ|喫茶|食べ物|飲食|コーヒー|珈琲|お茶|茶|紅茶|食事|軽食
 cs:3kavárna|restaurace|hospoda|jídlo
 sk:3kaviareň|reštaurácia|pohostinstvo|jedlo
-nl:3café|3restaurant|3eten
+nl:3tearoom|3brasserie|3café|3restaurant|3eten
 zh-Hant:2咖啡廳|咖啡|3cafe|餐廳|飲食
 pl:3kawiarnia|4restauracja|kawa|jedzenie
 pt:3café|3restaurante|alimentação
@@ -147,7 +147,7 @@ amenity-fast_food
 en:4fast food|3restaurant|3cafe|takeaway|3food|U+1F354|U+1F355|U+1F35F|U+1F363|U+1F366|U+1F367|U+1F368|U+1F369|U+1F370|U+1F372|U+1F374
 ru:3фастфуд|3ресторан|3кафе|еда
 uk:3фастфуд|3ресторан|3кафе|2їжа|2їсти
-de:4Fastfood|takeaway|Restaurant|Cafe|Pizzeria|essen
+de:4Fast-Food|Takeaway|Restaurant|Café|Pizzeria|essen
 fr:4restauration rapide|3restaurant|3café|à emporter|3nourriture|3resto
 it:4fast food|takeaway|caffè|ristorante|pasto|mangiare
 es:4comida rápida|restaurante|café|comer
@@ -155,7 +155,7 @@ ko:1패스트 푸드|레스토랑|카페|테이크 아웃|푸드
 ja:1ファストフード|レストラン|テイクアウト|持ち帰り|軽食|飲食|食事
 cs:2rychlé občerstvení|4fastfood|kavárna|restaurace|jídlo
 sk:2rýchle občerstvenie|4fastfood|3kaviareň|reštaurácia|jedlo
-nl:4fast food|3restaurant|3cafe|afhaaleten|3eten
+nl:4fast food|3frituur|fritkot|3restaurant|afhaaleten|3eten
 zh-Hant:1速食店|麥當勞|肯德雞|漢堡王|頂呱呱|薯條|速食|用餐|飲食
 pl:4fast food|restauracja szybkiej obsługi|5na wynos|jedzenie
 pt:4comida de plástico|comida para levar|3café|3alimentação
@@ -176,7 +176,7 @@ amenity-restaurant
 en:3restaurant|3cafe|3food|U+1F356|U+1F357|U+1F35A|U+1F35B|U+1F35C|U+1F35D|U+1F363|U+1F366|U+1F367|U+1F368|U+1F369|U+1F370|U+1F372|U+1F374|U+1F377|U+1F60B
 ru:3ресторан|3кафе|еда
 uk:3ресторан|3кафе|2їжа|2їсти
-de:3Restaurant|3Cafe|Gasthaus|Gaststube|3essen
+de:3Restaurant|3Café|Gasthaus|Gaststube|3essen
 fr:3restaurant|3café|3nourriture|3resto
 it:3ristorante|3caffè|mangiare
 es:3restaurante|3café|comer
@@ -195,7 +195,7 @@ ar:1مطعم|مقهى|طعام|الطعام
 da:3restaurant|café|mad
 tr:3restoran|3kafeterya|3yemek
 sv:3restaurang|3café|3mat
-vi:quán ăn|cà phê||ẩm thực
+vi:quán ăn|cà phê|ẩm thực
 id:restoran|3kafe|makanan
 ro:3restaurant|3cafenea|alimentație
 nb:3restaurant|mat
@@ -213,7 +213,7 @@ ko:1가스가 역|연료|가스
 ja:1ガソリンスタンド|ガスステーション|ガス|燃料|軽油|給油
 cs:3čerpací stanice|2pumpa
 sk:3čerpacia stanica|3benzínová pumpa
-nl:3tankstation|2benzine
+nl:3tankstation|2benzine|3brandstof
 zh-Hant:1加油站|2加氣站|汽油|加油|天然氣
 pl:3stacja benzynowa|3benzyna|4paliwo
 pt:3combustível|gás
@@ -242,7 +242,7 @@ ko:1베이커리|쇼핑
 ja:1パン屋|ベーカリー|パン|軽食|持ち帰り
 cs:3pekárna|obchod
 sk:3pekáreň|obchod
-nl:3bakker|winkel
+nl:3bakkerij|winkel
 zh-Hant:1麵包店|2蛋糕店|烘焙|麵包|蛋糕|購物
 pl:4piekarnia|sklep
 pt:3padaria|compras
@@ -343,7 +343,7 @@ ar:ججزارة|متجر|المتجر
 sk:mäsiar|2obchod
 es:carnicería|2tienda
 pl:rzeźnik|3sklep|towary
-nl:slager|2winkel
+nl:slager|beenhouwer|2winkel
 pt:açougueiro|2loja|compras
 
 shop-furniture
@@ -430,7 +430,7 @@ ar:مكتبة لبيع الكتب|متجر|المتجر
 sk:kníhkupectvo|2obchod
 es:librería|2tienda
 pl:księgarnia|3sklep|towary
-nl:boekwinkel|2winkel
+nl:boekenwinkel|boekwinkel|2winkel
 pt:livraria|2loja|compras
 
 shop-shoes
@@ -459,7 +459,7 @@ ar:متجر أحذية|متجر|المتجر
 sk:obuvníctvo|2obchod
 es:zapatería|2tienda
 pl:sklep obuwniczy|3sklep|towary
-nl:schoenenwinkel|2winkel
+nl:schoenenwinkel|schoenwinkel|2winkel
 pt:sapataria|loja de calçados|2loja|compras
 
 shop-electronics
@@ -633,7 +633,7 @@ ar:مركز أدوات تجميل|متجر|المتجر
 sk:drogéria|2obchod
 es:tienda de productos de belleza|2tienda
 pl:sklep kosmetyczny|3sklep|towary
-nl:winkel voor schoonheidsproducten|2winkel
+nl:cosmeticawinkel|winkel voor schoonheidsproducten|2winkel
 pt:loja de cosméticos|2loja|compras
 
 shop-greengrocer
@@ -662,7 +662,7 @@ ar:محل خضراوات|متجر|المتجر
 sk:zelovoc|2obchod
 es:frutería|2tienda
 pl:warzywniak|3sklep|towary
-nl:groenteboer|2winkel
+nl:groentenwinkel|groenteboer|2winkel
 pt:quitanda|2loja|compras
 
 shop-sports
@@ -756,7 +756,7 @@ shop-clothes
 en:clothes shop|4clothes|U+1F45A|U+1F457|U+1F456|U+1F455
 ru:магазин одежды|4одежда
 uk:магазин одягу|речі|4одяг|2крамниця
-de:Bekleidungsgeschäft|Klamotten|Laden
+de:Bekleidungsgeschäft|Kleidung|Laden
 fr:boutique de vêtements|4vêtements
 it:negozio di abbigliamento|negozio
 es:tienda de ropa|3ropa|tienda
@@ -785,7 +785,7 @@ shop-car
 en:car shop|U+1F697|U+1F698|U+1F699
 ru:автосалон|магазин
 uk:автосалон|магазин
-de:Auto-Shop|Laden
+de:Autohaus|Laden
 fr:réparation auto|voitures|auto
 it:car negozio|negozio
 es:venta de coches|tienda
@@ -793,7 +793,7 @@ ko:1자동차 가게|쇼핑
 ja:1カーディーラー|車|車販売|ディーラー
 cs:obchod s auty|obchod
 sk:predajňa áut|obchod
-nl:auto winkel
+nl:autohandelaar|winkel
 zh-Hant:1買車|購車
 pl:3salon samochodowy|samochody|sklep
 pt:loja de carros|compras
@@ -872,7 +872,7 @@ highway-bus_stop
 en:bus stop|2bus|stop|4transport|U+1F68C|U+1F68F|U+1F68E|U+1F690
 ru:4остановка|4автобус|4транспорт
 uk:4зупинка|4автобус|4траспорт
-de:Bushaltestelle|Haltestelle|2Bus|Autobus|Verkehr
+de:Bushaltestelle|Haltestelle|2Bus|Autobus|Verkehr|ÖPNV
 fr:arrêt de bus|2bus|arrêt|2autobus|4transport
 it:3fermata|autobus|4transporto
 es:parada de autobuses|4transporte
@@ -901,7 +901,7 @@ railway-tram_stop
 en:tram stop|3tram|stop|4transport|U+1F683
 ru:4остановка|4трамвай|4транспорт
 uk:4зупинка|4трамвай|4транспорт
-de:4Straßenbahnhaltestelle|Tramhaltestelle|Haltestelle|Tram|Verkehr
+de:4Straßenbahnhaltestelle|Tramhaltestelle|Haltestelle|Tram|Verkehr|ÖPNV
 fr:arrêt de tramway|3tramway|3tram|arrêt|4transport
 it:fermata|tram|4transporto
 es:parada|4transporte
@@ -930,7 +930,7 @@ amenity-bus_station
 en:bus station|2bus|station|4transport|U+1F68C|U+1F68F|U+1F68D
 ru:автостанция|4автобус|4остановка|4транспорт
 uk:автовокзал|4автобус|4зупинка|4транспорт
-de:4Busbahnhof|Haltestelle|Bus|Autobus|Verkehr
+de:4Busbahnhof|Haltestelle|Bus|Autobus|Verkehr|ÖPNV
 fr:gare routière|2bus|2autobus|arrêt|4transport
 it:autostazione|fermata|autobus|4transporto
 es:estación de autobuses|4transporte
@@ -959,7 +959,7 @@ railway-station|railway-halt
 en:3train station|4railway|railroad|3train|4station|4transport|U+1F684|U+1F685|U+1F689|U+1F682|U+1F686|U+1F688|U+1F68A|U+1F68B
 ru:ж/д станция|3поезд|3станция|4транспорт
 uk:залізничний вокзал|3поїзд|залізниця|3станція|4транспорт
-de:4Bahnhof|3Haltepunkt|3Station|Zug|Bahn|Verkehr
+de:4Bahnhof|3Haltepunkt|3Station|Zug|Bahn|Verkehr|ÖPNV
 fr:3gare|4chemin de fer|3train|4transport
 it:3stazione ferroviaria|3treno|transporto
 es:3estación de tren|3tren|transporte
@@ -988,7 +988,7 @@ railway-subway_entrance|railway-station-subway
 en:3subway|3tube|3metro|3underground|transport|U+1F687
 ru:3метро|транспорт
 uk:3метро|транспорт
-de:2U-Bahn|Metro|Verkehr
+de:2U-Bahn|Metro|Verkehr|ÖPNV
 fr:3métro|transport
 it:3metrò|transporto
 es:3metro|3subte|transporte
@@ -1025,7 +1025,7 @@ ko:1나룻배|수송
 ja:1フェリー|交通機関
 cs:3trajekt|doprava
 sk:3trajekt|doprava
-nl:2pont|transport
+nl:3veerpont|veerboot|veer|pont|overzetboot|transport
 zh-Hant:1渡船|運輸
 pl:2prom|transport
 pt:2balsa|transporte
@@ -1046,7 +1046,7 @@ amenity-taxi
 en:3taxi|transport|U+1F695|U+1F696
 ru:3такси|транспорт
 uk:3таксі|транспорт
-de:3Taxi|Taxe|Verkehr
+de:3Taxi|Taxe|Verkehr|ÖPNV
 fr:3taxi|transport
 it:3taxi|3tassì|transporto
 es:3taxi|4colectivo|transporte
@@ -1162,7 +1162,7 @@ tourism-viewpoint
 en:4viewpoint|tourism|sights
 ru:4обзорная площадка|туризм|достопримечательность
 uk:4оглядний майданчик|4місце огляду|туризм|пам’ятка|пам’ятні місця
-de:3Panorama|Ausblick|Sehenswürdigkeit
+de:3Panorama|Ausblick|Aussichtspunkt|Sehenswürdigkeit
 fr:4belvédère|4point de vue|4panorama|tourisme|site touristique
 it:3panorama|turistico
 es:3vista panorámica|turismo
@@ -1170,7 +1170,7 @@ ko:1관점|관 광|명소|관광
 ja:1観光スポット|見どころ|観光|名所|観光名所
 cs:3vyhlídka|zajímavost|pamětihodnost
 sk:3vyhliadka|pamätihodnosť
-nl:4uitzicht|toerisme
+nl:4uitzicht|panorama|toerisme
 zh-Hant:1視野|景觀|景點|觀光|3旅遊景點
 pl:3punkt widokowy|widok|krajobraz|osobliwości miasta
 pt:4ponto de vista|turismo|vistas
@@ -1191,7 +1191,7 @@ tourism-information
 en:4tourist information|4information|sights|U+2139|U+1F481
 ru:4туринформация|информация|достопримечательность
 uk:4турінформація|інформація|пам’ятка|пам’ятні місця
-de:4Information|Sehenswürdigkeit
+de:4Tourist-Information|Information|Sehenswürdigkeit
 fr:4informations touritiques|4informations|site touristique
 it:4informazione|turistico
 es:4información|turismo
@@ -1199,7 +1199,7 @@ ko:1관광 정보|정보|명소|관광
 ja:1インフォメーション|観光情報|情報|案内
 cs:4infocentrum|4turistické informace|pamětihodnost|Íčko
 sk:4infocentrum|4turistické informácie|pamätihodnosť
-nl:4toeristen informatie|4informatie|toerisme
+nl:4toeristische informatie|3VVV|4informatie|toerisme
 zh-Hant:2觀光諮詢|旅遊中心|旅遊問題|資訊|旅遊資訊
 pl:4informacja turystyczna|punkt informacji|osobliwości miasta
 pt:4informações turísticas|4informação|vistas
@@ -1220,7 +1220,7 @@ tourism-picnic_site|amenity-bbq
 en:3picnic site|sights
 ru:3пикник|достопримечательность
 uk:3пікнік|зупинка|відпочинок|пам’ятні місця
-de:3Picknick|Sehenswürdigkeit
+de:3Picknickplatz|Grillplatz|Sehenswürdigkeit
 fr:3terrain de pique-nique|3aire de pique-nique|site touristique
 it:3picnic|turistico
 es:3picnic|turismo
@@ -1228,7 +1228,7 @@ ko:1소풍 사이트|명소|피크닉|관광
 ja:1ピクニック|ピクニックサイト|観光|ハイキング
 cs:3piknik|picnic|picnik|pamětihodnost
 sk:3piknik|pamätihodnosť
-nl:3picnic locatie|toerisme
+nl:3picnicplaats|3picnicweide|3picnictafel|toerisme
 zh-Hant:1野餐|旅遊
 pl:4pole piknikowe|plener|piknik|osobliwości miasta
 pt:4local de piquenique|vistas
@@ -1246,68 +1246,236 @@ nb:3rasteplasser|severdigheter
 fi:3piknikpaikat|nähtävyydet
 
 amenity-place_of_worship
-en:place of worship|4temple|sights|U+1F64F|U+26EA
-ru:3храм|церковь|достопримечательность
-uk:3храм|церква|собор|пам’ятка|алтарь|мавзолей|пам’ятні місця
-de:Anbetungsstätte|Sehenswürdigkeit
-fr:4lieu de culte|site touristique
-it:4tempio|cattedrale|duomo|turistico
-es:4templo|lugar de culto|turismo
-ko:1예배 장소|사찰|볼거리|관광
-ja:1礼拝|寺院|神社|仏閣|教会|歴史|観光スポット|観光|お寺
-cs:4chrám|posvátné místo|pamětihodnost
-sk:4kostol|posvätné miesto|pamätihodnosť
-nl:tempel|4temple|toerisme
-zh-Hant:1寺廟|佛|景點|寺院|教堂|做禮拜|觀光|古蹟|歷史|拜拜|燒香|禱告|寺|精舍|禪寺
-pl:4świątynia|kościół|turystyka|osobliwości miasta
-pt:local de culto|4templo|vistas
-hu:templom|látványosság|látnivaló
+en:4place of worship|3temple|sights|U+1F64F
+ru:3храм|достопримечательность
+uk:3храм|пам’ятка|алтарь|мавзолей|пам’ятні місця
+de:3Anbetungsstätte|Tempel|Gotteshaus|Sehenswürdigkeit
+fr:4lieu de culte|3temple|site touristique
+it:3tempio|turistico
+es:4lugar de culto|templo|turismo
+ko:1예배 장소|1사찰|볼거리|관광
+ja:1礼拝|1寺院|1神社|仏閣|神殿|お寺|観光
+cs:4posvátné místo|3chrám|pamětihodnost
+sk:3svätyňa|3chrám|3posvätné miesto|pamätihodnosť
+nl:3gebedsplaats|3gebedshuis|3tempel|toerisme
+zh-Hant:1寺廟|1禱告|寺|禪寺|旅遊景點
+pl:3świątynia|osobliwości miasta
+pt:local de culto|3templo|vistas
+hu:3templom|látnivaló
 th:2สถานที่ประกอบพิธีกรรม|สถานที่ท่องเที่ยว
-zh-Hans:1礼拜场所|景点
-ar:مكان للعبادة|مناظر|سياحة
-da:3tempel|kirke|kultsted|sightseeing|seværdigheder
-tr:3ibadet yerleri|4tapınak|görülecek yerler
-sv:plats för tillbedjan|4tempel|sevärdheter
-vi:ghế dài|diểm tham quan
-id:tempat ibadah|pemandangan
-ro:3loc de cult|obiective turistice
-nb:3gudshus|severdigheter
-fi:3uskonnollinen kohde|nähtävyydet
+zh-Hans:1礼拜场所|庙|景点
+ar:1مكان للعبادة|1معبد|سياحة
+da:3tempel|3kultsted|seværdigheder
+tr:4ibadet yerleri|3tapınak|görülecek yerler
+sv:4plats för tillbedjan|3tempel|sevärdheter
+vi:chùa|diểm tham quan
+id:4tempat ibadah|pemandangan
+ro:3loc de cult|3templu|obiective turistice
+nb:3gudshus|3tempel|severdigheter
+fi:4uskonnollinen kohde|3temppeli|nähtävyydet
 
 amenity-place_of_worship-christian
-en:church|sights
-ru:храм|костел|церковь|достопримечательность
-de:Kirche|Dom|3Kathedrale|4Münster|Sehenswürdigkeit
+en:church|place of worship|temple|sights|U+1F64F|U+26EA|U+271D|U+2626
+ru:храм|костел|церковь|собор|достопримечательность
+de:Kirche|Dom|3Kathedrale|4Münster|Anbetungsstätte|Tempel|Sehenswürdigkeit
+fr:église|lieu de culte|temple|site touristique
+da:kirke|tempel|kultsted|seværdigheder
+id:gereja|tempat ibadah|pemandangan
+ko:교회|예배 장소|사찰|관광
+sv:kyrka|plats för tillbedjan|tempel|sevärdheter
+tr:kilise|ibadet yerleri|tapınak|görülecek yerler
+uk:церква|пам’ятні місця
+vi:chùa|nhà thờ|diểm tham quan
+hu:templom|látnivaló
+fi:kirkko|uskonnollinen kohde|nähtävyydet
+cs:chrám|kostel|posvátné místo|pamětihodnost
+it:chiesa|duomo|cattedrale|tempio|turistico
+nb:kirke|gudshus|severdigheter
+zh-Hant:教堂|寺廟|禱告|寺|禪寺|旅遊景點
+zh-Hans:教堂|礼拜场所|庙|景点
+th:โบสถ์|สถานที่ประกอบพิธีกรรม|สถานที่ท่องเที่ยว
+ja:教会|寺院|神社|仏閣|神殿|お寺|観光
+ro:biserică|loc de cult|templu|obiective turistice
+ar:كنيسة|مكان للعبادة|معبد|سياحة
+sk:chrám|kostol|svätyňa|posvätné miesto|pamätihodnosť
+es:iglesia|templo|lugar de culto|turismo
+pl:kościół|świątynia|osobliwości miasta
+nl:kerk|tempel|kathedraal|gebedsplaats|gebedshuis|toerisme
+pt:igreja|local de culto|templo|vistas
 
 amenity-place_of_worship-muslim
-en:mosque|sights
-ru:мечеть|достопримечательность
-de:Moschee|Sehenswürdigkeit
+en:mosque|tekke|place of worship|temple|sights|U+1F64F|U+262A|U+1F54B|U+1F54C|U+262A
+ru:мечеть|храм|достопримечательность
+de:Moschee|Tekke|Anbetungsstätte|Tempel|Sehenswürdigkeit
+fr:mosquée|lieu de culte|temple|site touristique
+da:moske|tempel|kultsted|seværdigheder
+id:masjid|tempat ibadah|pemandangan
+ko:모스크|예배 장소|사찰|관광
+sv:moské|plats för tillbedjan|tempel|sevärdheter
+tr:cami|ibadet yerleri|tapınak|görülecek yerler
+uk:мечеть|пам’ятні місця
+vi:nhà thờ Hồi Giáo|chùa|diểm tham quan
+hu:mecset|templom|látnivaló
+fi:moskeija|uskonnollinen kohde|nähtävyydet
+cs:mešita|chrám|posvátné místo|pamětihodnost
+it:moschea|duomo|tempio|turistico
+nb:moské|gudshus|severdigheter
+zh-Hant:清真寺|寺廟|禱告|寺|禪寺|旅遊景點
+zh-Hans:清真寺|礼拜场所|庙|景点
+th:มัสยิด|สถานที่ประกอบพิธีกรรม|สถานที่ท่องเที่ยว
+ja:モスク|寺院|神社|仏閣|神殿|お寺|観光
+ro:moschee|loc de cult|templu|obiective turistice
+ar:مسجد|مكان للعبادة|معبد|سياحة
+sk:mešita|chrám|svätyňa|posvätné miesto|pamätihodnosť
+es:mezquita|templo|lugar de culto|turismo
+pl:meczet|świątynia|osobliwości miasta
+nl:moskee|tempel|gebedsplaats|gebedshuis|toerisme
+pt:mesquita|local de culto|templo|vistas
 
 amenity-place_of_worship-buddhist
-en:4temple|sights|U+1F64F|U+26EA
+en:temple|place of worship|sights|U+1F64F|U+26EA|U+2638
 ru:храм|достопримечательность
-de:Tempel|Sehenswürdigkeit
+de:Tempel|Anbetungsstätte|Sehenswürdigkeit
+fr:temple|lieu de culte|site touristique
+da:tempel|kultsted|seværdigheder
+id:kuil|tempat ibadah|pemandangan
+ko:절|예배 장소|사찰|관광
+sv:tempel|plats för tillbedjan|sevärdheter
+tr:tapınak|ibadet yerleri|görülecek yerler
+uk:храм|пам’ятні місця
+vi:đền|chùa|diểm tham quan
+hu:templom|látnivaló
+fi:temppeli|uskonnollinen kohde|nähtävyydet
+cs:chrám|posvátné místo|pamětihodnost
+it:tempio|duomo|turistico
+nb:tempel|gudshus|severdigheter
+zh-Hant:寺廟|佛|寺廟|禱告|寺|禪寺|旅遊景點
+zh-Hans:寺庙|礼拜场所|庙|景点
+th:วัด|สถานที่ประกอบพิธีกรรม|สถานที่ท่องเที่ยว
+ja:寺|寺院|神社|仏閣|神殿|お寺|観光
+ro:templu|loc de cult|obiective turistice
+ar:معبد|مكان للعبادة|سياحة
+sk:chrám|svätyňa|posvätné miesto|pamätihodnosť
+es:templo|lugar de culto|turismo
+pl:świątynia|osobliwości miasta
+nl:tempel|gebedsplaats|gebedshuis|toerisme
+pt:templo|local de culto|vistas
 
 amenity-place_of_worship-hindu
-en:4temple|sights|U+1F64F|U+26EA
+en:temple|place of worship|sights|U+1F64F|U+1F549
 ru:храм|достопримечательность
-de:Tempel|Sehenswürdigkeit
+de:Tempel|Anbetungsstätte|Sehenswürdigkeit
+fr:temple|lieu de culte|site touristique
+da:tempel|kultsted|seværdigheder
+id:kuil|tempat ibadah|pemandangan
+ko:절|예배 장소|사찰|관광
+sv:tempel|plats för tillbedjan|sevärdheter
+tr:tapınak|ibadet yerleri|görülecek yerler
+uk:храм|пам’ятні місця
+vi:đền|chùa|diểm tham quan
+hu:templom|látnivaló
+fi:temppeli|uskonnollinen kohde|nähtävyydet
+cs:chrám|posvátné místo|pamětihodnost
+it:tempio|duomo|turistico
+nb:tempel|gudshus|severdigheter
+zh-Hant:寺廟|寺廟|禱告|寺|禪寺|旅遊景點
+zh-Hans:寺庙|礼拜场所|庙|景点
+th:วัด|สถานที่ประกอบพิธีกรรม|สถานที่ท่องเที่ยว
+ja:寺|寺院|神社|仏閣|神殿|お寺|観光
+ro:templu|loc de cult|obiective turistice
+ar:معبد|مكان للعبادة|سياحة
+sk:chrám|svätyňa|posvätné miesto|pamätihodnosť
+es:templo|lugar de culto|turismo
+pl:świątynia|osobliwości miasta
+nl:tempel|gebedsplaats|gebedshuis|toerisme
+pt:templo|local de culto|vistas
 
 amenity-place_of_worship-shinto
-en:shrine|sights
-ru:святилище|достопримечательность
-de:Schrein|Sehenswürdigkeit
+en:shrine|place of worship|temple|sights|U+1F64F|U+26E9
+ru:святилище|храм|достопримечательность
+de:Schrein|Anbetungsstätte|Tempel|Sehenswürdigkeit
+fr:sanctuaire|lieu de culte|temple|site touristique
+da:helligdom|tempel|kultsted|seværdigheder
+id:kuil|tempat ibadah|pemandangan
+ko:성지|예배 장소|사찰|관광
+sv:altare|plats för tillbedjan|tempel|sevärdheter
+tr:mabet|ibadet yerleri|tapınak|görülecek yerler
+uk:святиня|пам’ятні місця
+vi:miếu thờ|chùa|diểm tham quan
+hu:kegyhely|templom|látnivaló
+fi:pyhäkkö|uskonnollinen kohde|nähtävyydet
+cs:posvátné místo|chrám|pamětihodnost
+it:santuario|tempio|turistico
+nb:alter|gudshus|severdigheter
+zh-Hant:聖殿|寺廟|禱告|寺|禪寺|旅遊景點
+zh-Hans:圣殿|礼拜场所|庙|景点
+th:ศาลเจ้า|สถานที่ประกอบพิธีกรรม|สถานที่ท่องเที่ยว
+ja:神社|寺院|神社|仏閣|神殿|お寺|観光
+ro:sanctuar|templu|loc de cult|obiective turistice
+ar:مزار|مكان للعبادة|معبد|سياحة
+sk:svätyňa|chrám|svätyňa|posvätné miesto|pamätihodnosť
+es:ermita|templo|lugar de culto|turismo
+pl:kapliczka|świątynia|osobliwości miasta
+nl:heiligdom|tempel|gebedsplaats|gebedshuis|toerisme
+pt:santuário|templo|local de culto|vistas
 
 amenity-place_of_worship-jewish
-en:synagogue|sights
-ru:синагога|достопримечательность
-de:Synagoge|Sehenswürdigkeit
+en:synagogue|place of worship|temple|sights|U+1F64F|U+1F54D|U+2721
+ru:синагога|храм|достопримечательность
+de:Synagoge|Anbetungsstätte|Tempel|Sehenswürdigkeit
+fr:synagogue|lieu de culte|temple|site touristique
+da:synagoge|tempel|kultsted|seværdigheder
+id:sinagoge|tempat ibadah|pemandangan
+ko:유태교 회당|예배 장소|사찰|관광
+sv:synagoga|plats för tillbedjan|tempel|sevärdheter
+tr:sinagog|ibadet yerleri|tapınak|görülecek yerler
+uk:синагога|пам’ятні місця
+vi:giáo đường Do Thái|chùa|diểm tham quan
+hu:zsinagóga|templom|látnivaló
+fi:synagoga|uskonnollinen kohde|nähtävyydet
+cs:synagoga|chrám|posvátné místo|pamětihodnost
+it:sinagoga|tempio|turistico
+nb:synagoge|gudshus|severdigheter
+zh-Hant:猶太教堂|寺廟|禱告|寺|禪寺|旅遊景點
+zh-Hans:犹太教堂|礼拜场所|庙|景点
+th:มัสยิดยิว|สถานที่ประกอบพิธีกรรม|สถานที่ท่องเที่ยว
+ja:ユダヤ教会|シナゴーグ|寺院|神社|仏閣|神殿|お寺|観光
+ro:sinagogă|templu|loc de cult|obiective turistice
+ar:معبد يهودي|مكان للعبادة|معبد|سياحة
+sk:synagóga|chrám|svätyňa|posvätné miesto|pamätihodnosť
+es:sinagoga|templo|lugar de culto|turismo
+pl:synagoga|świątynia|osobliwości miasta
+nl:synagoge|tempel|gebedsplaats|gebedshuis|toerisme
+pt:sinagoga|templo|local de culto|vistas
 
 amenity-place_of_worship-taoist
-en:4temple|sights|U+1F64F|U+26EA
+en:temple|place of worship|sights|U+1F64F|U+262F
 ru:храм|достопримечательность
-de:Tempel|Sehenswürdigkeit
+de:Tempel|Anbetungsstätte|Sehenswürdigkeit
+fr:temple|lieu de culte|site touristique
+da:tempel|kultsted|seværdigheder
+id:kuil|tempat ibadah|pemandangan
+ko:절|예배 장소|사찰|관광
+sv:tempel|plats för tillbedjan|sevärdheter
+tr:tapınak|ibadet yerleri|görülecek yerler
+uk:храм|пам’ятні місця
+vi:đền|chùa|diểm tham quan
+hu:templom|látnivaló
+fi:temppeli|uskonnollinen kohde|nähtävyydet
+cs:chrám|posvátné místo|pamětihodnost
+it:tempio|turistico
+nb:tempel|gudshus|severdigheter
+zh-Hant:寺廟|禱告|寺|禪寺|旅遊景點
+zh-Hans:寺庙|礼拜场所|庙|景点
+th:วัด|สถานที่ประกอบพิธีกรรม|สถานที่ท่องเที่ยว
+ja:寺|寺院|神社|仏閣|神殿|お寺|観光
+ro:templu|loc de cult|obiective turistice
+ar:معبد|مكان للعبادة|سياحة
+sk:chrám|svätyňa|posvätné miesto|pamätihodnosť
+es:templo|lugar de culto|turismo
+pl:świątynia|osobliwości miasta
+nl:tempel|gebedsplaats|gebedshuis|toerisme
+pt:templo|local de culto|vistas
 
 tourism-museum
 en:2museum|attraction|tourism|sights|U+1F3A8
@@ -1348,7 +1516,7 @@ fr:3cascade|site touristique
 it:3cascata|turistico
 ja:滝|観光
 ko:1폭포|관광
-nl:2waterval|toerisme
+nl:2watervallen|waterval|toerisme
 ru:2водопад|достопримечательность
 uk:2водоспад|пам’ятні місця
 zh-Hant:1瀑布|旅遊景點
@@ -1466,7 +1634,7 @@ ko:대저택|관광
 ja:城|観光|お城|砦|城砦
 cs:zámek|zajímavost|pamětihodnost
 sk:zámok|atrakcia|pamätihodnosť
-nl:kasteel|attractie|toerisme
+nl:kasteel|burcht|attractie|toerisme
 zh-Hant:城堡|堡|古蹟|歷史|旅遊景點
 pl:3zamek|turystyka|zwiedzanie|osobliwości miasta
 pt:castelo|turismo|vistas
@@ -1495,7 +1663,7 @@ ko:1발굴|관광
 ja:1考古遺跡|発掘|観光|発掘現場|考古学|遺跡
 cs:vykopávky|zajímavost|pamětihodnost
 sk:vykopávky|pamätihodnosť
-nl:archeologische opgraving|attractie|toerisme
+nl:archeologische site|opgravingen|attractie|toerisme
 zh-Hant:1考古遺址|考古|遺址|古蹟|歷史|旅遊景點
 pl:5miejsce arhceologiczne|wykopaliska|osobliwości miasta
 pt:sítio arqueológico|turismo|vistas
@@ -1553,7 +1721,7 @@ ko:1벤치|작업대
 ja:ベンチ|縁台|椅子
 cs:lavička
 sk:lavička
-nl:bankje
+nl:zitbank|bankje
 zh-Hant:1長板凳|板凳|長椅|長椅子|條凳
 pl:ławka
 pt:banco
@@ -1611,7 +1779,7 @@ ko:1자동차 공유|자동차|자동차 임대|임대의
 ja:1カーシェアリング|車|レンタカー|レンタル
 cs:3půjčovna aut|auto|pronájem|nájemné
 sk:3autopožičovňa|požičovňa áut
-nl:3autoverhuur|auto|huur
+nl:3autoverhuur|autodelen|auto|huur
 zh-Hant:1租車|出租|租金|租錢
 pl:Wynajem samochodów|samochód|auto|Wynajem
 pt:aluguel de automóveis|carro|aluguel
@@ -1640,7 +1808,7 @@ ko:1영화|엔터테인먼트
 ja:1映画館|シネマ|エンターテイメント|映画
 cs:3kino|biograf|zábava
 sk:3kino|zábava
-nl:3bioscoop|uitgaan
+nl:3bioscoop|cinema|uitgaan
 zh-Hant:1電影院|電影|娛樂
 pl:3kino|filmy|rozrywka
 pt:3cinema|entretenimento
@@ -1669,7 +1837,7 @@ ko:1연극|엔터테인먼트
 ja:1劇場|エンターテイメント|シアター
 cs:3divadlo|zábava
 sk:3divadlo|zábava
-nl:3theater|uitgaan
+nl:3theater|schouwburg|uitgaan
 zh-Hant:1劇場|戲院|劇院|娛樂
 pl:3teatr|rozrywka
 pt:3teatro|entretenimento
@@ -1698,7 +1866,7 @@ ko:1나이트 클럽|엔터테인먼트
 ja:1ナイトクラブ|クラブ|ダンス|エンターテイメント
 cs:4noční klub|3disco|3klub|zábava
 sk:4nočný klub|3disco|3nightclub|zábava
-nl:3nightclub|3disco|dansen|uitgaan
+nl:3discotheek|3disco|dansen|uitgaan
 zh-Hant:1夜店|2俱樂部|酒|喝酒|跳舞|舞|2夜生活|娛樂
 pl:3dyskoteka|klub nocny|rozrywka
 pt:3discoteca|3dançar|entretenimento
@@ -1748,7 +1916,7 @@ amenity-casino
 en:casino|entertainment|U+1F3B0|U+1F3B2|U+1F3B4
 ru:казино|развлечения
 uk:казино|розваги
-de:Kasino|Spielkasino|Spielhalle|Unterhaltung
+de:Casino|Kasino|Spielkasino|Spielhalle|Unterhaltung
 fr:casino|divertissement
 it:casinò|divertimento
 es:casino|entretenimiento
@@ -1756,7 +1924,7 @@ ko:카지노|엔터테인먼트
 ja:カジノ|エンターテイメント
 cs:casino|zábava
 sk:kasíno|zábava
-nl:casino|uitgaan
+nl:casino|goktent|uitgaan
 zh-Hant:賭場|娛樂
 pl:kasyno|rozrywka
 pt:casino|entretenimento
@@ -1777,7 +1945,7 @@ amenity-college
 en:college|U+1F3EB
 ru:колледж
 uk:коледж
-de:College|Fachschule
+de:Hochschule|Fachschule|Kolleg
 fr:enseignement post-secondaire
 it:collegio
 es:colegio
@@ -1785,7 +1953,7 @@ ko:1칼리지|대학
 ja:1大学|カレッジ
 cs:vysoká škola
 sk:vysoká škola
-nl:college
+nl:hogeschool|hoger beroepsonderwijs|hbo
 zh-Hant:1大學|學院|專科院校|院校
 pl:szkoła wyższa|college
 pt:faculdade
@@ -1801,7 +1969,6 @@ id:kampus
 ro:colegiu
 nb:høyskole
 fi:college
-
 
 amenity-drinking_water
 en:4drinking water|U+1F6B0
@@ -1865,7 +2032,7 @@ amenity-fountain
 en:fountain|U+26F2
 ru:фонтан
 uk:фонтан
-de:Brunnen|Fontäne
+de:Springbrunnen|Fontäne
 fr:fontaine
 it:fontana|zampillo
 es:fuente
@@ -1891,10 +2058,10 @@ nb:fontene
 fi:lähde
 
 amenity-grave_yard|landuse-cemetery
-en:graveyard
+en:graveyard|cemetery
 ru:кладбище
 uk:цвинтар
-de:Friedhof
+de:Friedhof|Gottesacker|Kirchhof
 fr:cimetière
 it:cimitero
 es:cementerio
@@ -1902,7 +2069,7 @@ ko:1묘소
 ja:1墓地|墓場|お墓|墓苑|霊場
 cs:hřbitov
 sk:cintorín
-nl:begraafplaats
+nl:begraafplaats|kerkhof
 zh-Hant:1墓地
 pl:3cmentarz|pochówek
 pt:cemitério
@@ -1923,7 +2090,7 @@ amenity-hospital|amenity-doctors|amenity-dentist|amenity-clinic
 en:3hospital|clinic|3doctor|U+1F691|U+1F3E5|U+1F489|U+1F48A
 ru:3больница|3госпиталь|врач|доктор
 uk:3лікарня|клініка|лікар|травмпункт
-de:Krankenhaus|3Spital
+de:3Krankenhaus|Spital|3Arzt|Doktor|medizinische Einrichtung|Gesundheitswesen
 fr:3hôpital|clinique|3médecin|3docteur
 it:3ospedale
 es:3hospital
@@ -1931,7 +2098,7 @@ ko:1병원|병원|의사|의사가
 ja:1病院|クリニック|医師|医者|ドクター|救急|診療
 cs:3nemocnice|klinika|pohotovost|zdravotnické centrum|3lékař|doktor
 sk:3nemocnica|klinika|pohotovosť|zdravotnícke zariadenie|3lekár|doktor
-nl:3ziekenhuis|kliniek|3dokter
+nl:3ziekenhuis|kliniek|hospitaal|tandarts|3dokter
 zh-Hant:1醫院|醫生|診所|醫療|診療
 pl:3szpital|klinika|lekarz|doktor|leczenie
 pt:3clínica|clínica|3médico
@@ -1952,7 +2119,7 @@ amenity-hunting_stand
 en:hunting stand
 ru:охотничья вышка
 uk:мисливська башта
-de:Hochsitz
+de:Hochsitz|Anstand
 fr:mirador
 it:torre di caccio
 ko:1사냥 스탠드
@@ -2046,7 +2213,7 @@ ko:1주차
 ja:1駐車場|パーキング|コインパーキング
 cs:3parkoviště
 sk:3parkovisko
-nl:3parkeerplaats
+nl:3parkeerplaats|parking
 zh-Hant:1停車場|停車|泊車
 pl:3parking
 pt:3parking
@@ -2067,7 +2234,7 @@ amenity-pharmacy
 en:3pharmacy|3drugstore|apothecary|dispensary|U+1F489|U+1F48A
 ru:3аптека
 uk:3аптека|3ліки
-de:3Apotheke|3Drogerie
+de:3Apotheke
 fr:3pharmacie|dispensaire
 it:3farmacia
 es:3farmacia
@@ -2133,7 +2300,7 @@ ko:1우편
 ja:1郵便局
 cs:3pošta
 sk:3pošta|poštový úrad
-nl:3post
+nl:3postkantoor|post
 zh-Hant:1郵局|郵筒
 pl:4poczta|listy
 pt:3correios
@@ -2162,7 +2329,7 @@ ko:1휴지통|휴지통|쓰레기
 ja:1ごみ箱|ゴミ|ごみ|リサイクル|再利用|ダストボックス
 cs:koš|odpadkový koš|popelnice|uložiště odpadu
 sk:kôš na smeti|odpadkový kôš
-nl:recycling|afval|prullenbak|vuilnis
+nl:recyclage|afval|prullenbak|vuilnis
 zh-Hant:1垃圾桶|垃圾|回收|回收場
 pl:3recykling|ponowne odtworzenie|odpady
 pt:reciclagem|lixo
@@ -2191,7 +2358,7 @@ ko:1학교
 ja:1学校
 cs:3škola
 sk:3škola
-nl:3school
+nl:3school|basisschool|middelbare school
 zh-Hant:1學校
 pl:3szkoła
 pt:3escola
@@ -2212,7 +2379,7 @@ amenity-shelter
 en:shelter
 ru:укрытие
 uk:укриття
-de:Schutzraum|Zivilschutz
+de:Schutzhütte|Schutzraum|Zivilschutz
 fr:refuge
 it:riparo
 es:abrigo
@@ -2249,7 +2416,7 @@ ko:1전화
 ja:1公衆電話|電話|緑電話|電話ボックス
 cs:2telefon|telefonní budka|telefonní automat
 sk:2telefón|telefónna búdka|telefónny automat
-nl:2telefoon
+nl:2telefoon|publieke telefoon
 zh-Hant:1電話|2電話亭|2公共電話|3公用電話
 pl:3telefon|budka telefoniczna
 pt:telefone
@@ -2365,7 +2532,7 @@ ko:1나라
 ja:国|国家
 cs:země
 sk:krajina
-nl:land
+nl:land|staat
 zh-Hant:國|國家
 pl:kraj|państwo
 pt:país
@@ -2394,7 +2561,7 @@ ko:1도시|타운
 ja:市|町
 cs:velkoměsto
 sk:mesto
-nl:stad|dorp
+nl:stad
 zh-Hant:1城鎮|城市|市|鎮市
 pl:miasto|metropolia
 pt:cidade
@@ -2481,7 +2648,7 @@ ko:군
 ja:郡
 cs:země
 sk:krajina
-nl:land
+nl:graafschap
 zh-Hant:縣
 pl:wieś|ląd
 pt:município
@@ -2510,7 +2677,7 @@ ko:1상태|지역
 ja:州
 cs:země|provincie|kraj
 sk:štát|kraj
-nl:regio|provincie
+nl:deelstaat|regio|provincie
 zh-Hant:省|州
 pl:3stan|4region|5prowincja
 pt:estado|província
@@ -2568,7 +2735,7 @@ ko:섬
 ja:島|小島|島嶼|群島
 cs:ostrov
 sk:ostrov
-nl:eiland
+nl:eilandje
 zh-Hant:島|小島|島嶼
 pl:4wyspa
 pt:ilha
@@ -2597,7 +2764,7 @@ ko:1교외|지역
 ja:1区|地区
 cs:předměstí|městská část|městská zóna
 sk:predmestie|mestská časť
-nl:buitenwijken|wijk
+nl:buitenwijken|voorstad|wijk
 zh-Hant:1郊區|近郊
 pl:5przedmieścia|okolice miasta
 pt:subúrbio|distrito
@@ -2626,7 +2793,7 @@ ko:1햄릿|마을
 ja:村
 cs:vesnička
 sk:dedina
-nl:dorpje|dorp
+nl:gehucht|buurschap|dorpje|dorp
 zh-Hant:村|1村莊|鄉下
 pl:wieś|wioska
 pt:lugarejo
@@ -2676,7 +2843,7 @@ place-locality
 en:locality
 ru:местность|регион
 uk:місцевість|регіон
-de:Örtlichkeit|Lokalität|Region|Raum
+de:Örtlichkeit|Lokalität|Region|Ort
 fr:localité
 it:località|luogo|regione|area
 es:localidad
@@ -2684,7 +2851,7 @@ ko:1장소
 ja:1地域|僻地
 cs:lokalita
 sk:lokalita
-nl:lokaal
+nl:plaats|localiteit
 zh-Hant:1當地|地方
 pl:lokalne|region
 pt:localidade
@@ -2742,7 +2909,7 @@ ko:강
 ja:河川|川|河|流域|河川流域
 cs:řeka
 sk:rieka
-nl:rivier
+nl:rivier|beek|stroom|waterloop
 zh-Hant:1河流|河
 pl:3rzeka|strumień
 pt:rio
@@ -2771,7 +2938,7 @@ ko:1운하
 ja:1運河
 cs:kanál
 sk:kanál
-nl:kanaal
+nl:kanaal|waterloop|gracht
 zh-Hant:1運河
 pl:4kanał
 pt:canal
@@ -2829,7 +2996,7 @@ ko:1경로
 ja:1歩道|小道|小路|小径|階段|獣道|遊歩道|パス
 cs:cesta
 sk:cesta
-nl:pad
+nl:pad|voetweg|trappen
 zh-Hant:1人行步道|步道
 pl:3ścieżka|dróżka|droga
 pt:caminho
@@ -2850,7 +3017,7 @@ highway-primary|highway-primary_link|highway-residential|highway-secondary|highw
 en:street|st|str|ave|road|rd
 ru:улица|переулок|проезд|тракт|проспект|ул
 uk:вулиця|провулок|проїзд|проспект|бульвар|вул
-de:Strasse|Weg|Avenue|Gasse|Str
+de:Straße|Boulevard|Avenue|Weg|Gasse
 fr:rue|avenue|av|boul|boulevard|route
 it:via|strada|corso|vicolo
 es:calle|avenue|camino
@@ -2858,7 +3025,7 @@ ko:1거리|가도
 ja:1ストリート|通り|道路|辻|筋
 cs:ulice|cesta|silnice|ul
 sk:ulica|cesta|ul
-nl:straat|st|str|laan
+nl:straat|st|str|laan|weg
 zh-Hant:路|街
 pl:3ulica|droga
 pt:rua
@@ -2884,7 +3051,7 @@ de:4Ausfahrt|Abfahrt
 cs:dopravní uzel|3dálnice
 sk:dopravný uzol|3diaľnica
 ja:1ジャンクション|料金所|高速道路|インターチェンジ
-nl:3uitgang|3kruising
+nl:3afrit|3uitgang|3kruising
 zh-Hant:1交流道|出口處|高速公路|公路
 pl:3wyjazd|wyjście
 pt:4saída|3junção
@@ -2913,7 +3080,7 @@ ko:1피크|산
 ja:1山頂|山|頂|頂上|峰
 cs:hora|pohoří
 sk:hora|pohorie
-nl:top|berg
+nl:top|berg|bergtop|heuvel|heuveltop
 zh-Hant:1山峰|1山脈|山|峰
 pl:3góra|szczyt|wierzchołek
 pt:pico|montanha
@@ -3021,7 +3188,7 @@ natural-wood|landuse-forest
 en:forest|U+1F332|U+1F333
 ru:лес
 uk:ліс
-de:Wald
+de:Wald|Urwald
 fr:forêt|bois
 it:foresta
 es:bosque
@@ -3029,7 +3196,7 @@ ko:숲
 ja:1森林|森|林|人工林|自然林
 cs:les
 sk:les
-nl:bos
+nl:bos|woud
 zh-Hant:1樹林|森林|樹木
 pl:las
 pt:floresta
@@ -3079,7 +3246,7 @@ tourism-hostel
 en:3hostel|hotel|motel|U+1F3E8
 ru:3хостел|гостиница|отель|мотель
 uk:3хостел|отель|мотель|вітальниця|готель
-de:3Herberge|Hostel|Gasthaus
+de:3Herberge|Hostel|Gasthaus|Unterkunft
 fr:3auberge de jeunesse|hôtel|motel
 it:3ostello
 es:3albergue juvenil|4residencia
@@ -3087,7 +3254,7 @@ ko:1호스텔
 ja:1ホステル|宿泊|宿|ホテル|民宿
 cs:3hostel|hotel|ubytovna|motel
 sk:3hostel|hotel|ubytovňa|motel
-nl:3hostel|hotel|motel
+nl:3hostel|jeugdherberg|hotel|motel
 zh-Hant:1旅舍|旅館|青年旅舍|青年旅館|住宿|飯店|3汽車旅館|3motel
 pl:4hostel|4hotel|4motel
 pt:3pousada|4hotel|motel
@@ -3098,7 +3265,7 @@ ar:نزُل|فندق|فندق رخيص|الفندق
 da:3hostel|kro|vandrerhjem|hotel|motel
 tr:3pansiyon|otel|motel
 sv:3vandrarhem|hotell|motell
-vi:nhà khách||khách sạn
+vi:nhà khách|khách sạn
 id:hostel|hotel
 ro:hostel|hotel
 nb:vandrerhjem|hotell
@@ -3137,7 +3304,7 @@ tourism-guest_house
 en:guest house|hotel|hostel|U+1F3E8
 ru:гостевой дом|гостиница|отель|хостел
 uk:гостинний дім|готель|хостел|постояльний двір
-de:Gästehaus|Hotel|Wohnheim
+de:Gästehaus|Hotel|Wohnheim|Unterkunft
 fr:maison d'hôtes|hôtel|auberge de jeunesse
 it:guest house|hôtel|albergo|ostello
 es:casa de huéspedes|hotel|albergue juvenil|residencia
@@ -3145,7 +3312,7 @@ ko:1영빈관|호텔|호스텔
 ja:1ゲストハウス|ホテル|ホステル|民宿
 cs:penzion|hotel|hostel|ubytovna
 sk:penzión|hotel|hostel|ubytovňa
-nl:gasthuis|hotel|hostel
+nl:gasthuis|hotel|B&B|bed and breakfast|hostel
 zh-Hant:1賓館|旅館|飯店|酒店|旅舍|住宿|招待所
 pl:4pensjonat|hotel|hostel|gościnne pokoje
 pt:casa de hóspedes|pousada|motel
@@ -3156,7 +3323,7 @@ ar:دار الضيافة|فندق|نزُل|الفندق
 da:gæstehus|gæstehjem|hotel|hostel
 tr:misafir evi|pansiyon|otel
 sv:gästhus|hotell|vandrarhem
-vi:nhà khách||khách sạn
+vi:nhà khách|khách sạn
 id:wisma tamu|hotel
 ro:pensiune|hotel
 nb:gjestehus|hotell
@@ -3195,7 +3362,7 @@ tourism-alpine_hut
 en:mountains lodging|hotel|hostel|alpine hut|U+1F3E8
 ru:горный отель|отель
 uk:гірський готель|гірська хатинка|готель
-de:4Berghütte|Almhütte|Berghotel|hotel
+de:4Berghütte|Almhütte|Berghotel|Hotel|Unterkunft
 fr:hôtel de montagne|hôtel|auberge de jeunesse|cabane alpine
 it:hotel di montagna|baita|capanna|capanna di montagna|capanna alpina|hotel
 es:4cabaña|cabaña de los Alpes|hotel de montaña|hotel
@@ -3224,7 +3391,7 @@ shop-hairdresser
 en:3hairdresser|U+2702|U+1F488
 ru:3парикмахерская
 uk:3перукарня
-de:3Friseur|Frisiersalon|Coiffeure
+de:3Friseur|Frisiersalon|Frisör|Coiffeur
 fr:3coiffeur|salon de coiffure
 it:4parrucchiera
 es:4peluquero
@@ -3253,7 +3420,7 @@ aeroway-aerodrome
 en:3airport|3plane|U+2708
 ru:3аэропорт|4самолёт
 uk:3аеропорт|літак|аеродром|рейс
-de:3Flughafen|4Flugzeug
+de:3Flughafen|4Flugzeug|Flugplatz
 fr:3aéroport|3aérodrome|3avion
 it:3aeroporto|4aeroplano
 es:3aeropuerto|3avión
@@ -3319,7 +3486,7 @@ ko:1운동장
 ja:1児童公園|公園|遊び場
 cs:hřiště
 sk:ihrisko
-nl:speelplaats
+nl:speeltuin|speelplaats
 zh-Hant:1遊樂場
 pl:4plac zabaw
 pt:recreio
@@ -3340,7 +3507,7 @@ leisure-sports_centre
 en:sports center|sport|U+26BD|U+26BE|U+1F3BE|U+1F4AA|U+1F3C8|U+1F3C0|U+1F3C9
 ru:спорткомплекс|спорт
 uk:спорткомплекс|спорт|спортцентр
-de:Sportzentrum|Sport
+de:Sportzentrum|Sport|Fitness-Zentrum|Fitness-Center
 fr:centre sportif|sport
 it:centro sportivo|sport
 es:centro deportivo|deporte
@@ -3543,7 +3710,7 @@ natural-bay
 en:bay
 ru:залив
 uk:затока
-de:Bucht
+de:Bucht|Bay
 fr:baie
 it:baia
 es:bahía
@@ -3601,7 +3768,7 @@ shop-car_repair
 en:3car repair shop|4service station|auto|U+1F527
 ru:3СТО|3автомастерская|автосервис|авто
 uk:3СТО|3автомайстерня|автосервіс|ремонт авто
-de:3Autowerkstatt|Car|Auto
+de:3Autowerkstatt|Kfz|Auto
 fr:3réparation d'automobiles|3garage|4station service|voiture|auto
 it:3riparazione auto|auto|macchina|3automobile|vettura
 es:3reparaciones auto|coche|automóvil|3auto|carro
@@ -3630,7 +3797,7 @@ tourism-camp_site
 en:4camping|campsite|campground|U+26FA
 ru:4кемпинг
 uk:4кемпінг|табір|стоянка
-de:4Camping|Campingplatz|Zelten
+de:4Zeltplatz|Zelten|Campingplatz|Camping
 fr:4camping|terrain de camping
 it:4campeggio|campeggi|camping
 es:4campamento|cámping|acampar|acampada
@@ -3667,7 +3834,7 @@ ko:1대상 사이트
 ja:1キャラバンサイト
 cs:kemp pro obytné přívěsy
 sk:kemp pre karavany|kemp pre obytné prívesy
-nl:caravan site
+nl:caravan site|camping
 zh-Hant:1營區|營地
 pl:4pole namiotowe
 pt:4parque de campismo|caravanismo
@@ -3688,7 +3855,7 @@ office|office-company|office-government
 en:3office|company|U+1F454|U+1F4BC|U+1F3E2|
 ru:2офис|компания|контора|фирма
 uk:2офіс
-de:Amt
+de:Büro|Amt
 fr:3bureau|compagnie
 it:3ufficio
 es:3oficina
@@ -3717,7 +3884,7 @@ area:highway-footway|area:highway-pedestrian|area:highway-steps
 en:3square
 ru:3площадь
 uk:3майдан
-de:3Platz
+de:3Platz|Fußgängerzone
 fr:3place
 it:3piazza
 es:3plaza
@@ -3864,10 +4031,12 @@ vi:camera tốc độ
 id:kamera kecepatan
 ro:radar
 nb:fartskamera
-de:Blitzer
+nl:flitscamera|snelheidscamera
+de:Blitzer|Radarkontrolle|Radarfalle
 fi:nopeuskamera
 
 man_made-lighthouse
 en:lighthouse
+nl:vuurtoren
 ru:маяк
 de:Leuchtturm
