@@ -976,6 +976,12 @@ void Geocoder::GreedilyMatchStreets()
     unique_ptr<coding::CompressedBitVector> allFeatures;
 
     size_t curToken = startToken;
+
+    // This variable is used for prevention of duplicate calls to
+    // CreateStreetsLayerAndMatchLowerLayers() with the same
+    // arguments.
+    size_t lastStopToken = curToken;
+
     for (; curToken < m_numTokens && !m_usedTokens[curToken]; ++curToken)
     {
       auto const & token = m_params.GetTokens(curToken).front();
@@ -983,7 +989,10 @@ void Geocoder::GreedilyMatchStreets()
         continue;
 
       if (feature::IsHouseNumber(token))
+      {
         CreateStreetsLayerAndMatchLowerLayers(startToken, curToken, allFeatures);
+        lastStopToken = curToken;
+      }
 
       unique_ptr<coding::CompressedBitVector> buffer;
       if (startToken == curToken || coding::CompressedBitVector::IsEmpty(allFeatures))
@@ -997,7 +1006,8 @@ void Geocoder::GreedilyMatchStreets()
       allFeatures.swap(buffer);
     }
 
-    CreateStreetsLayerAndMatchLowerLayers(startToken, curToken, allFeatures);
+    if (curToken != lastStopToken)
+      CreateStreetsLayerAndMatchLowerLayers(startToken, curToken, allFeatures);
   }
 }
 
