@@ -1,5 +1,6 @@
 #include "search_engine.hpp"
 
+#include "categories_holder.hpp"
 #include "geometry_utils.hpp"
 #include "search_query.hpp"
 #include "search_string_utils.hpp"
@@ -18,6 +19,7 @@
 #include "base/scope_guard.hpp"
 #include "base/stl_add.hpp"
 
+#include "std/algorithm.hpp"
 #include "std/bind.hpp"
 #include "std/map.hpp"
 #include "std/vector.hpp"
@@ -138,6 +140,38 @@ bool Engine::GetNameByType(uint32_t type, int8_t locale, string & name) const
   return false;
 }
 
+void Engine::EmitResults(SearchParams const & params, m2::RectD const & viewport, Results & res)
+{
+  size_t const kMaxNumResultsToSend = 10;
+
+  size_t numResultsToSend = min(kMaxNumResultsToSend, res.GetCount());
+  string resultString = strings::to_string(numResultsToSend);
+  for (size_t i = 0; i < numResultsToSend; ++i)
+    resultString.append("\t" + DebugPrint(static_cast<search::Result const &>(res.GetResult(i))));
+
+  double lat = -1;
+  double lon = -1;
+  if (params.IsValidPosition())
+  {
+    lat = params.m_lat;
+    lon = params.m_lon;
+  }
+
+  alohalytics::TStringMap stats = {
+      {"lat", strings::to_string(lat)},
+      {"lon", strings::to_string(lon)},
+      {"viewportMinX", strings::to_string(viewport.minX())},
+      {"viewportMinY", strings::to_string(viewport.minY())},
+      {"viewportMaxX", strings::to_string(viewport.maxX())},
+      {"viewportMaxY", strings::to_string(viewport.maxY())},
+      {"query", params.m_query},
+      {"results", resultString},
+  };
+  alohalytics::LogEvent("searchEmitResults", stats);
+  
+  params.m_callback(res);
+}
+
 void Engine::SetRankPivot(SearchParams const & params,
                           m2::RectD const & viewport, bool viewportSearch)
 {
@@ -152,16 +186,6 @@ void Engine::SetRankPivot(SearchParams const & params,
   }
 
   m_query->SetRankPivot(viewport.Center());
-}
-
-void Engine::EmitResults(SearchParams const & params, Results & res)
-{
-  // Basic test of our statistics engine.
-  alohalytics::LogEvent(
-      "searchEmitResults",
-      alohalytics::TStringMap({{params.m_query, strings::to_string(res.GetCount())}}));
-
-  params.m_callback(res);
 }
 
 void Engine::MainLoop()
@@ -239,7 +263,7 @@ void Engine::DoSearch(SearchParams const & params, m2::RectD const & viewport,
       m_query->Search(res, kResultsCount);
     }
 
-    EmitResults(params, res);
+    EmitResults(params, viewport, res);
   }
   catch (Query::CancelException const &)
   {
