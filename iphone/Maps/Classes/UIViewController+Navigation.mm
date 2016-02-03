@@ -3,16 +3,22 @@
 
 @implementation UIViewController (Navigation)
 
+- (UIButton *)backButton
+{
+  UIImage * backImage = [UIImage imageNamed:@"ic_nav_bar_back"];
+  UIImage * backHighlightedImage = [UIImage imageNamed:@"ic_nav_bar_back_press"];
+  CGFloat const buttonSide = 44.0;
+  UIButton * button = [[UIButton alloc] initWithFrame:{{0, 0}, {buttonSide, buttonSide}}];
+  [button setImage:backImage forState:UIControlStateNormal];
+  [button setImage:backHighlightedImage forState:UIControlStateHighlighted];
+  [button addTarget:self action:@selector(backTap) forControlEvents:UIControlEventTouchUpInside];
+  button.imageEdgeInsets = {0, -buttonSide, 0, 0};
+  return button;
+}
+
 - (void)showBackButton
 {
-  UIImage * backImage = [UIImage imageNamed:@"NavigationBarBackButton"];
-  CGFloat const imageSide = backImage.size.width;
-  UIButton * button = [[UIButton alloc] initWithFrame:CGRectMake(0., 0., imageSide, imageSide)];
-  [button setImage:backImage forState:UIControlStateNormal];
-  [button addTarget:self action:@selector(backTap) forControlEvents:UIControlEventTouchUpInside];
-  button.imageEdgeInsets = UIEdgeInsetsMake(0., -imageSide, 0., 0.);
-  UIBarButtonItem * leftItem = [[UIBarButtonItem alloc] initWithCustomView:button];
-  self.navigationItem.leftBarButtonItem = leftItem;
+  self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[self backButton]];
 }
 
 - (void)backTap
