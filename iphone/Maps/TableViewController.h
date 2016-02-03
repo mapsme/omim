@@ -1,6 +1,6 @@
-#import <UIKit/UIKit.h>
-
 @interface TableViewController : UITableViewController
+
+@property (nonatomic, readonly) BOOL hasNavigationBar;
 
 - (void)refresh;
 
