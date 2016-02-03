@@ -10,6 +10,12 @@
 #include "editor/osm_auth.hpp"
 #include "editor/server_api.hpp"
 
+#include "indexer/osm_editor.hpp"
+
+#include "platform/platform.hpp"
+
+#include "base/logging.hpp"
+
 namespace
 {
 NSString * const kWebViewAuthSegue = @"Authorization2WebViewAuthorizationSegue";

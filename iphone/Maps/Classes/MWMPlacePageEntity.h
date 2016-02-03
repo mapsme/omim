@@ -37,12 +37,6 @@ using MWMPlacePageCellTypeValueMap = map<MWMPlacePageCellType, string>;
 
 @class MWMPlacePageViewManager;
 
-@protocol MWMPlacePageEntityProtocol <NSObject>
-
-- (UserMark const *)userMark;
-
-@end
-
 @interface MWMPlacePageEntity : NSObject
 
 + (NSString *)makeMWMCuisineString:(NSSet<NSString *> *)cuisines;
@@ -70,7 +64,6 @@ using MWMPlacePageCellTypeValueMap = map<MWMPlacePageCellType, string>;
 - (void)addBookmarkField;
 - (void)removeBookmarkField;
 
-- (instancetype)initWithDelegate:(id<MWMPlacePageEntityProtocol>)delegate;
 - (void)synchronize;
 
 - (void)toggleCoordinateSystem;
