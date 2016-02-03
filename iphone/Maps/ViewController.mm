@@ -61,4 +61,11 @@
   }
 }
 
+#pragma mark - Properties
+
+- (BOOL)hasNavigationBar
+{
+  return YES;
+}
+
 @end

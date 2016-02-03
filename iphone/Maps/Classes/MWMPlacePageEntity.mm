@@ -1,3 +1,4 @@
+#import "MWMFrameworkListener.h"
 #import "MWMPlacePageEntity.h"
 #import "MWMPlacePageViewManager.h"
 #import "MapViewController.h"
@@ -64,8 +65,6 @@ void initFieldsMap()
 
 @interface MWMPlacePageEntity ()
 
-@property (weak, nonatomic) id<MWMPlacePageEntityProtocol> delegate;
-
 @end
 
 @implementation MWMPlacePageEntity
@@ -93,13 +92,11 @@ void initFieldsMap()
   return [localizedCuisines componentsJoinedByString:kMWMCuisineSeparator];
 }
 
-- (instancetype)initWithDelegate:(id<MWMPlacePageEntityProtocol>)delegate
+- (instancetype)init
 {
-  NSAssert(delegate, @"delegate can not be nil.");
   self = [super init];
   if (self)
   {
-    _delegate = delegate;
     initFieldsMap();
     [self config];
   }
@@ -108,7 +105,7 @@ void initFieldsMap()
 
 - (void)config
 {
-  UserMark const * mark = self.delegate.userMark;
+  UserMark const * mark = [MWMFrameworkListener listener].userMark;
   _latlon = mark->GetLatLon();
   using Type = UserMark::Type;
   switch (mark->GetMarkType())
@@ -326,7 +323,7 @@ void initFieldsMap()
 
 - (void)processStreets
 {
-  FeatureType * feature = self.delegate.userMark->GetFeature();
+  FeatureType * feature = [MWMFrameworkListener listener].userMark->GetFeature();
   if (!feature)
     return;
 
@@ -345,7 +342,7 @@ void initFieldsMap()
 
 - (void)setEditableTypes
 {
-  FeatureType * feature = self.delegate.userMark->GetFeature();
+  FeatureType const * feature = [MWMFrameworkListener listener].userMark->GetFeature();
   if (!feature)
     return;
 
@@ -377,7 +374,7 @@ void initFieldsMap()
 
 - (void)saveEditedCells:(MWMPlacePageCellTypeValueMap const &)cells
 {
-  FeatureType * feature = self.delegate.userMark->GetFeature();
+  FeatureType * feature = [MWMFrameworkListener listener].userMark->GetFeature();
   NSAssert(feature != nullptr, @"Feature is null");
   if (!feature)
     return;
