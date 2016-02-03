@@ -97,7 +97,7 @@ private:
 
   void SetRankPivot(SearchParams const & params, m2::RectD const & viewport, bool viewportSearch);
 
-  void EmitResults(SearchParams const & params, m2::RectD const & viewport, Results & res);
+  void EmitResults(SearchParams const & params, Results const & res);
 
   // This method executes tasks from |m_tasks| in a FIFO manner.
   void MainLoop();

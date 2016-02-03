@@ -57,6 +57,35 @@ public:
       suggests.emplace_back(s.first.first, s.second, s.first.second);
   }
 };
+
+void SendStatistics(SearchParams const & params, m2::RectD const & viewport, Results const & res)
+{
+  size_t const kMaxNumResultsToSend = 10;
+
+  size_t const numResultsToSend = min(kMaxNumResultsToSend, res.GetCount());
+  string resultString = strings::to_string(numResultsToSend);
+  for (size_t i = 0; i < numResultsToSend; ++i)
+    resultString.append("\t" + res.GetResult(i).ToStringForStats());
+
+  string posX, posY;
+  if (params.IsValidPosition())
+  {
+    posX = strings::to_string(MercatorBounds::LonToX(params.m_lon));
+    posY = strings::to_string(MercatorBounds::LatToY(params.m_lat));
+  }
+
+  alohalytics::TStringMap const stats = {
+      {"posX", posX},
+      {"posY", posY},
+      {"viewportMinX", strings::to_string(viewport.minX())},
+      {"viewportMinY", strings::to_string(viewport.minY())},
+      {"viewportMaxX", strings::to_string(viewport.maxX())},
+      {"viewportMaxY", strings::to_string(viewport.maxY())},
+      {"query", params.m_query},
+      {"results", resultString},
+  };
+  alohalytics::LogEvent("searchEmitResultsAndCoords", stats);
+}
 }  // namespace
 
 QueryHandle::QueryHandle() : m_query(nullptr), m_cancelled(false) {}
@@ -140,38 +169,6 @@ bool Engine::GetNameByType(uint32_t type, int8_t locale, string & name) const
   return false;
 }
 
-void Engine::EmitResults(SearchParams const & params, m2::RectD const & viewport, Results & res)
-{
-  size_t const kMaxNumResultsToSend = 10;
-
-  size_t numResultsToSend = min(kMaxNumResultsToSend, res.GetCount());
-  string resultString = strings::to_string(numResultsToSend);
-  for (size_t i = 0; i < numResultsToSend; ++i)
-    resultString.append("\t" + DebugPrint(static_cast<search::Result const &>(res.GetResult(i))));
-
-  double lat = -1;
-  double lon = -1;
-  if (params.IsValidPosition())
-  {
-    lat = params.m_lat;
-    lon = params.m_lon;
-  }
-
-  alohalytics::TStringMap stats = {
-      {"lat", strings::to_string(lat)},
-      {"lon", strings::to_string(lon)},
-      {"viewportMinX", strings::to_string(viewport.minX())},
-      {"viewportMinY", strings::to_string(viewport.minY())},
-      {"viewportMaxX", strings::to_string(viewport.maxX())},
-      {"viewportMaxY", strings::to_string(viewport.maxY())},
-      {"query", params.m_query},
-      {"results", resultString},
-  };
-  alohalytics::LogEvent("searchEmitResults", stats);
-  
-  params.m_callback(res);
-}
-
 void Engine::SetRankPivot(SearchParams const & params,
                           m2::RectD const & viewport, bool viewportSearch)
 {
@@ -186,6 +183,11 @@ void Engine::SetRankPivot(SearchParams const & params,
   }
 
   m_query->SetRankPivot(viewport.Center());
+}
+
+void Engine::EmitResults(SearchParams const & params, Results const & res)
+{
+  params.m_callback(res);
 }
 
 void Engine::MainLoop()
@@ -263,12 +265,15 @@ void Engine::DoSearch(SearchParams const & params, m2::RectD const & viewport,
       m_query->Search(res, kResultsCount);
     }
 
-    EmitResults(params, viewport, res);
+    EmitResults(params, res);
   }
   catch (Query::CancelException const &)
   {
     LOG(LDEBUG, ("Search has been cancelled."));
   }
+
+  if (!viewportSearch && !m_query->IsCancelled())
+    SendStatistics(params, viewport, res);
 
   // Emit finish marker to client.
   params.m_callback(Results::GetEndMarker(m_query->IsCancelled()));

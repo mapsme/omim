@@ -92,6 +92,14 @@ public:
 
   void AppendCity(string const & name);
 
+  int32_t GetPositionInResults() const { return m_positionInResults; }
+  void SetPositionInResults(int32_t pos) { m_positionInResults = pos; }
+
+  // Returns a representation of this result that is
+  // sent to the statistics servers and later used to measure
+  // the quality of our search engine.
+  string ToStringForStats() const;
+
 private:
   void Init(bool metadataInitialized);
 
@@ -101,6 +109,10 @@ private:
   uint32_t m_featureType;
   string m_suggestionStr;
   buffer_vector<pair<uint16_t, uint16_t>, 4> m_hightlightRanges;
+
+  // The position that this result occupied in the vector returned
+  // by a search query. -1 if undefined.
+  int32_t m_positionInResults;
 
 public:
   Metadata m_metadata;
@@ -138,6 +150,7 @@ public:
   /// Used in viewport search only.
   void AddResultNoChecks(Result && res)
   {
+    res.SetPositionInResults(m_vec.size());
     m_vec.push_back(move(res));
   }
 
@@ -194,7 +207,5 @@ struct AddressInfo
 
   void Clear();
 };
-
-string DebugPrint(search::Result const &);
 
 }  // namespace search
