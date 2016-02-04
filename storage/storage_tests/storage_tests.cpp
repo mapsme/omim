@@ -47,6 +47,8 @@ namespace storage
 {
 namespace
 {
+string const kMapTestDir = "map-tests";
+
 using TLocalFilePtr = shared_ptr<LocalCountryFile>;
 
 string const kSingleMwmCountriesTxt =
@@ -773,7 +775,7 @@ UNIT_TEST(StorageTest_DownloadTwoCountriesAndDeleteTwoComponentMwm)
 
 UNIT_TEST(StorageTest_CancelDownloadingWhenAlmostDone)
 {
-  Storage storage;
+  Storage storage(COUNTRIES_FILE, kMapTestDir);
   TaskRunner runner;
   InitStorage(storage, runner);
 
@@ -792,14 +794,45 @@ UNIT_TEST(StorageTest_CancelDownloadingWhenAlmostDone)
   TEST(!file, (*file));
 }
 
-UNIT_TEST(StorageTest_DeleteCountry)
+UNIT_TEST(StorageTest_DeleteCountrySingleMwm)
+{
+  Storage storage(COUNTRIES_MIGRATE_FILE, kMapTestDir);
+  TaskRunner runner;
+  InitStorage(storage, runner);
+
+  tests_support::ScopedFile map("Wonderland.mwm", "map");
+  LocalCountryFile file = LocalCountryFile::MakeForTesting("Wonderland",
+                                                           version::FOR_TESTING_SINGLE_MWM1);
+  TEST_EQUAL(MapOptions::MapWithCarRouting, file.GetFiles(), ());
+
+  CountryIndexes::PreparePlaceOnDisk(file);
+  string const bitsPath = CountryIndexes::GetPath(file, CountryIndexes::Index::Bits);
+  {
+    FileWriter writer(bitsPath);
+    string const data = "bits";
+    writer.Write(data.data(), data.size());
+  }
+
+  storage.RegisterFakeCountryFiles(file);
+  TEST(map.Exists(), ());
+  TEST(Platform::IsFileExistsByFullPath(bitsPath), (bitsPath));
+
+  storage.DeleteCustomCountryVersion(file);
+  TEST(!map.Exists(), ())
+  TEST(!Platform::IsFileExistsByFullPath(bitsPath), (bitsPath));
+
+  map.Reset();
+}
+
+UNIT_TEST(StorageTest_DeleteCountryTwoComponentsMwm)
 {
   Storage storage;
   TaskRunner runner;
   InitStorage(storage, runner);
 
   tests_support::ScopedFile map("Wonderland.mwm", "map");
-  LocalCountryFile file = LocalCountryFile::MakeForTesting("Wonderland");
+  LocalCountryFile file = LocalCountryFile::MakeForTesting("Wonderland",
+                                                           version::FOR_TESTING_TWO_COMPONENT_MWM1);
   TEST_EQUAL(MapOptions::Map, file.GetFiles(), ());
 
   CountryIndexes::PreparePlaceOnDisk(file);
@@ -820,6 +853,7 @@ UNIT_TEST(StorageTest_DeleteCountry)
 
   map.Reset();
 }
+
 
 UNIT_TEST(StorageTest_FailedDownloading)
 {
