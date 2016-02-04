@@ -12,6 +12,8 @@ typedef NS_OPTIONS(NSUInteger, MWMFieldCorrect)
   MWMFieldCorrectAll = MWMFieldCorrectEmail | MWMFieldCorrectLogin | MWMFieldCorrectPassword
 };
 
+using namespace osm_auth_ios;
+
 @interface MWMAuthorizationSignupViewController ()  <UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UIButton * signupGoogleButton;
@@ -34,9 +36,9 @@ typedef NS_OPTIONS(NSUInteger, MWMFieldCorrect)
   [super viewDidLoad];
   self.title = L(@"sign_up");
 
-  MWMAuthorizationConfigButton(self.signupGoogleButton, MWMAuthorizationButtonTypeGoogle);
-  MWMAuthorizationConfigButton(self.signupFacebookButton, MWMAuthorizationButtonTypeFacebook);
-  MWMAuthorizationConfigButton(self.signupOSMButton, MWMAuthorizationButtonTypeOSM);
+  AuthorizationConfigButton(self.signupGoogleButton, AuthorizationButtonType::AuthorizationButtonTypeGoogle);
+  AuthorizationConfigButton(self.signupFacebookButton, AuthorizationButtonType::AuthorizationButtonTypeFacebook);
+  AuthorizationConfigButton(self.signupOSMButton, AuthorizationButtonType::AuthorizationButtonTypeOSM);
 
   self.isCorrect = MWMFieldCorrectNO;
 }
@@ -51,7 +53,7 @@ typedef NS_OPTIONS(NSUInteger, MWMFieldCorrect)
   self.signupOSMButton.enabled = enabled;
   CALayer * layer = self.signupOSMButton.layer;
   layer.borderColor =
-      (enabled ? MWMAuthorizationButtonBackgroundColor(MWMAuthorizationButtonTypeOSM)
+  (enabled ? AuthorizationButtonBackgroundColor(AuthorizationButtonType::AuthorizationButtonTypeOSM)
                : [UIColor clearColor])
           .CGColor;
 }

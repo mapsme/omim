@@ -1,22 +1,24 @@
 #import "Common.h"
 #import "MapsAppDelegate.h"
 #import "MWMAuthorizationCommon.h"
-#import "MWMAuthorizationCommon.h"
 #import "MWMAuthorizationLoginViewController.h"
 #import "MWMAuthorizationWebViewLoginViewController.h"
 #import "Statistics.h"
 #import "UIColor+MapsMeColor.h"
 
-#include "editor/osm_auth.hpp"
 #include "editor/server_api.hpp"
 
 namespace
 {
 NSString * const kWebViewAuthSegue = @"Authorization2WebViewAuthorizationSegue";
 NSString * const kOSMAuthSegue = @"Authorization2OSMAuthorizationSegue";
+
+// I don't use block here because there is big chance to get retain cycle and std::function syntax looks prety easy and cute.
+using TActionSheetFunctor = std::function<void()>;
 } // namespace
 
 using namespace osm;
+using namespace osm_auth_ios;
 
 @interface MWMAuthorizationLoginViewController () <UIActionSheetDelegate>
 
@@ -34,18 +36,20 @@ using namespace osm;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem * leftBarButton;
 
 @property (weak, nonatomic) IBOutlet UIView * profileView;
+@property (weak, nonatomic) IBOutlet UIView * localChangesView;
 @property (weak, nonatomic) IBOutlet UILabel * localChangesLabel;
-@property (weak, nonatomic) IBOutlet UILabel * localChangesNotUploadedLabel;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * localChangesViewHeight;
 @property (weak, nonatomic) IBOutlet UIButton * localChangesActionButton;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * localChangesLabelCenter;
 
+@property (weak, nonatomic) IBOutlet UIView * uploadedChangesView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * uploadedChangesViewTopOffset;
 @property (weak, nonatomic) IBOutlet UILabel * uploadedChangesLabel;
 @property (weak, nonatomic) IBOutlet UILabel * lastUploadLabel;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint * uploadedChangesViewHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint * uploadedChangesLabelCenter;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint * messageTopOffset;
+
+@property (nonatomic) TActionSheetFunctor actionSheetFunctor;
 @end
 
 @implementation MWMAuthorizationLoginViewController
@@ -61,10 +65,10 @@ using namespace osm;
 - (void)viewWillAppear:(BOOL)animated
 {
   [super viewWillAppear:animated];
-  if (MWMAuthorizationHaveCredentials())
+  if (AuthorizationHaveCredentials())
     [self configHaveAuth];
   else
-    [self configNoAuth:MWMAuthorizationIsNeedCheck() && !MWMAuthorizationIsUserSkip()];
+    [self configNoAuth:AuthorizationIsNeedCheck() && !AuthorizationIsUserSkip()];
 
   [self configChanges];
   UINavigationBar * navBar = self.navigationController.navigationBar;
@@ -75,7 +79,7 @@ using namespace osm;
   navBar.shadowImage = [[UIImage alloc] init];
   [navBar setBackgroundImage:[[UIImage alloc] init] forBarMetrics:UIBarMetricsDefault];
   navBar.translucent = YES;
-  MWMAuthorizationSetNeedCheck(NO);
+  AuthorizationSetNeedCheck(NO);
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -96,9 +100,9 @@ using namespace osm;
   self.loginFacebookButton.enabled = isConnected;
   self.signupButton.enabled = isConnected;
 
-  MWMAuthorizationConfigButton(self.loginGoogleButton, MWMAuthorizationButtonTypeGoogle);
-  MWMAuthorizationConfigButton(self.loginFacebookButton, MWMAuthorizationButtonTypeFacebook);
-  MWMAuthorizationConfigButton(self.loginOSMButton, MWMAuthorizationButtonTypeOSM);
+  AuthorizationConfigButton(self.loginGoogleButton, AuthorizationButtonType::AuthorizationButtonTypeGoogle);
+  AuthorizationConfigButton(self.loginFacebookButton, AuthorizationButtonType::AuthorizationButtonTypeFacebook);
+  AuthorizationConfigButton(self.loginOSMButton, AuthorizationButtonType::AuthorizationButtonTypeOSM);
 
   if (!isConnected)
   {
@@ -109,25 +113,8 @@ using namespace osm;
 
 - (void)configHaveAuth
 {
-  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^
-  {
-    ServerApi06 const api(OsmOAuth::ServerAuth(MWMAuthorizationGetCredentials()));
-    try
-    {
-      UserPreferences const prefs = api.GetUserPreferences();
-      dispatch_async(dispatch_get_main_queue(), ^
-      {
-        self.title = @(prefs.m_displayName.c_str());
-      });
-    }
-    catch (exception const & ex)
-    {
-      LOG(LWARNING, ("Can't load user preferences from OSM server:", ex.what()));
-    }
-  });
-  // TODO(@igrechuhin): Cache user name and other info to display while offline.
-  // Note that this cache should be reset if user logs out.
-  self.title = L(@"osm_account").capitalizedString;
+  NSString * osmUserName = OSMUserName();
+  self.title = osmUserName.length > 0 ? osmUserName : L(@"osm_account").capitalizedString;
   self.message.hidden = YES;
   self.loginGoogleButton.hidden = YES;
   self.loginFacebookButton.hidden = YES;
@@ -168,7 +155,7 @@ using namespace osm;
 - (void)configChanges
 {
   auto const stats = Editor::Instance().GetStats();
-  if (stats.m_edits.empty() && !MWMAuthorizationHaveCredentials())
+  if (stats.m_edits.empty() && !AuthorizationHaveCredentials())
   {
     self.profileView.hidden = YES;
     self.messageTopOffset.priority = UILayoutPriorityDefaultHigh;
@@ -179,14 +166,13 @@ using namespace osm;
     size_t const uploadedChanges = stats.m_uploadedCount;
     size_t const localChanges = totalChanges - uploadedChanges;
 
-    self.localChangesLabel.text = [NSString stringWithFormat:@"%@: %@", L(@"changes").capitalizedString, @(localChanges)];
     BOOL const noLocalChanges = (localChanges == 0);
-    self.localChangesNotUploadedLabel.hidden = noLocalChanges;
-    self.localChangesActionButton.hidden = noLocalChanges;
-    self.localChangesViewHeight.constant = noLocalChanges ? 44.0 : 64.0;
-    self.localChangesLabelCenter.priority = noLocalChanges ? UILayoutPriorityDefaultHigh : UILayoutPriorityDefaultLow;
+    [self setLocalChangesHidden:noLocalChanges];
+    if (!noLocalChanges)
+      self.localChangesLabel.text = [NSString stringWithFormat:@"%@: %@", L(@"not_sent").capitalizedString, @(localChanges)];
 
     BOOL const noUploadedChanges = (uploadedChanges == 0);
+    [self setUploadedChangesDisabled:noUploadedChanges];
     self.uploadedChangesLabel.text = [NSString stringWithFormat:@"%@: %@", L(@"changes").capitalizedString, @(uploadedChanges)];
     self.lastUploadLabel.hidden = noUploadedChanges;
     if (!noUploadedChanges)
@@ -201,6 +187,17 @@ using namespace osm;
     self.uploadedChangesLabelCenter.priority = noUploadedChanges ? UILayoutPriorityDefaultHigh : UILayoutPriorityDefaultLow;
     self.messageTopOffset.priority = UILayoutPriorityDefaultLow;
   }
+}
+
+- (void)setLocalChangesHidden:(BOOL)isHidden
+{
+  self.localChangesView.hidden = isHidden;
+  self.uploadedChangesViewTopOffset.priority = isHidden ? UILayoutPriorityDefaultHigh : UILayoutPriorityDefaultLow;
+}
+
+- (void)setUploadedChangesDisabled:(BOOL)isDisabled
+{
+  self.uploadedChangesView.alpha = isDisabled ? 0.4 : 1.;
 }
 
 #pragma mark - Actions
@@ -253,15 +250,19 @@ using namespace osm;
 
 - (IBAction)logout
 {
-  [[Statistics instance] logEvent:kStatEventName(kStatAuthorization, kStatLogout)];
-  MWMAuthorizationStoreCredentials({});
-  [self cancel];
+  self.actionSheetFunctor = [self]
+  {
+    [[Statistics instance] logEvent:kStatEventName(kStatAuthorization, kStatLogout)];
+    AuthorizationStoreCredentials({});
+    [self cancel];
+  };
+  [self showWarningActionSheetWithActionTitle:L(@"logout")];
 }
 
 - (IBAction)cancel
 {
   if (!self.isCalledFromSettings)
-    MWMAuthorizationSetUserSkip();
+    AuthorizationSetUserSkip();
   UINavigationController * parentNavController = self.navigationController.navigationController;
   if (parentNavController)
     [parentNavController popViewControllerAnimated:YES];
@@ -271,24 +272,34 @@ using namespace osm;
 
 - (IBAction)localChangesAction
 {
+  self.actionSheetFunctor = [self]
+  {
+    Editor::Instance().ClearAllLocalEdits();
+    [self configChanges];
+  };
+  [self showWarningActionSheetWithActionTitle:L(@"delete")];
+}
+
+#pragma mark - ActionSheet
+
+- (void)showWarningActionSheetWithActionTitle:(NSString *)title
+{
   NSString * cancel = L(@"cancel");
-  NSString * del = L(@"delete");
   if (isIOS7)
   {
-    UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:cancel destructiveButtonTitle:del otherButtonTitles:nil];
+    UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:cancel destructiveButtonTitle:title otherButtonTitles:nil];
     [actionSheet showInView:self.view];
   }
   else
   {
     UIAlertController * alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     UIAlertAction * cancelAction = [UIAlertAction actionWithTitle:cancel style:UIAlertActionStyleCancel handler:nil];
-    UIAlertAction * openSettingsAction = [UIAlertAction actionWithTitle:del style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action)
+    UIAlertAction * commonAction = [UIAlertAction actionWithTitle:title style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action)
     {
-      Editor::Instance().ClearAllLocalEdits();
-      [self configChanges];
+      [self performActionSheetFunctor];
     }];
     [alertController addAction:cancelAction];
-    [alertController addAction:openSettingsAction];
+    [alertController addAction:commonAction];
     [self presentViewController:alertController animated:YES completion:nil];
   }
 }
@@ -299,8 +310,15 @@ using namespace osm;
 {
   if (actionSheet.destructiveButtonIndex != buttonIndex)
     return;
-  Editor::Instance().ClearAllLocalEdits();
-  [self configChanges];
+  [self performActionSheetFunctor];
+}
+
+- (void)performActionSheetFunctor
+{
+  if (!self.actionSheetFunctor)
+    return;
+  self.actionSheetFunctor();
+  self.actionSheetFunctor = nullptr;
 }
 
 #pragma mark - Segue
