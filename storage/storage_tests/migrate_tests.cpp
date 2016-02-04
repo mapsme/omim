@@ -8,6 +8,7 @@
 
 using namespace platform;
 
+// PLEASE DO NOT MERGE THIS PR.
 UNIT_TEST(StorageTest_FastMigrate)
 {
   // Set clear state.
