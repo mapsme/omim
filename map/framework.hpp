@@ -490,12 +490,12 @@ public:
   /// If it does have explicit street name in OSM, it goes first in the returned vector.
   /// @returns empty vector if no named streets were found around feature.
   vector<string> GetNearbyFeatureStreets(FeatureType const & ft) const;
-  /// Get feature at given point even if it's invisible on the screen.
-  /// TODO(AlexZ): Refactor out other similar methods.
+  /// Get "best for the user" feature at given point even if it's invisible on the screen.
   /// @returns nullptr if no feature was found at the given mercator point.
-  unique_ptr<FeatureType> GetFeatureAtMercatorPoint(m2::PointD const & mercator) const;
-  // TODO(AlexZ): Do we really need to avoid linear features?
-  unique_ptr<FeatureType> GetFeatureByID(FeatureID const & fid) const;
+  unique_ptr<FeatureType> GetFeatureAtMercatorPoint(m2::PointD const & mercator, bool parse = true) const;
+  vector<unique_ptr<FeatureType>> GetAllFeaturesAtMercatorPoint(m2::PointD const & mercator, bool parse = true) const;
+  /// Set parse to false if you don't need all feature fields ready.
+  unique_ptr<FeatureType> GetFeatureByID(FeatureID const & fid, bool parse = true) const;
 
   void MemoryWarning();
   void EnterBackground();
