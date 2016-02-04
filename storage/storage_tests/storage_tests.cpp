@@ -147,7 +147,7 @@ class CountryDownloaderChecker
 {
 public:
   CountryDownloaderChecker(Storage & storage, TCountryId const & countryId, MapOptions files,
-                           vector<TStatus> const & transitionList)
+                           vector<Status> const & transitionList)
       : m_storage(storage),
         m_countryId(countryId),
         m_countryFile(storage.GetCountryFile(m_countryId)),
@@ -185,21 +185,21 @@ protected:
     if (countryId != m_countryId)
       return;
 
-    TStatus const nextStatus = m_storage.CountryStatusEx(m_countryId);
+    Status const nexStatus = m_storage.CountryStatusEx(m_countryId);
     LOG(LINFO, (m_countryFile, "status transition: from", m_transitionList[m_currStatus], "to",
-                nextStatus));
+                nexStatus));
     TEST_LESS(m_currStatus + 1, m_transitionList.size(), (m_countryFile));
-    TEST_EQUAL(nextStatus, m_transitionList[m_currStatus + 1], (m_countryFile));
+    TEST_EQUAL(nexStatus, m_transitionList[m_currStatus + 1], (m_countryFile));
     ++m_currStatus;
-    if (m_transitionList[m_currStatus] == TStatus::EDownloading)
+    if (m_transitionList[m_currStatus] == Status::EDownloading)
     {
-      LocalAndRemoteSizeT localAndRemoteSize = m_storage.CountrySizeInBytes(m_countryId, m_files);
+      TLocalAndRemoteSize localAndRemoteSize = m_storage.CountrySizeInBytes(m_countryId, m_files);
       m_totalBytesToDownload = localAndRemoteSize.second;
     }
   }
 
   virtual void OnCountryDownloadingProgress(TCountryId const & countryId,
-                                            LocalAndRemoteSizeT const & progress)
+                                            TLocalAndRemoteSize const & progress)
   {
     if (countryId != m_countryId)
       return;
@@ -210,7 +210,7 @@ protected:
     m_bytesDownloaded = progress.first;
     TEST_LESS_OR_EQUAL(m_bytesDownloaded, m_totalBytesToDownload, (m_countryFile));
 
-    LocalAndRemoteSizeT localAndRemoteSize = m_storage.CountrySizeInBytes(m_countryId, m_files);
+    TLocalAndRemoteSize localAndRemoteSize = m_storage.CountrySizeInBytes(m_countryId, m_files);
     TEST_EQUAL(m_totalBytesToDownload, localAndRemoteSize.second, (m_countryFile));
   }
 
@@ -223,7 +223,7 @@ protected:
   int m_slot;
 
   size_t m_currStatus;
-  vector<TStatus> m_transitionList;
+  vector<Status> m_transitionList;
 };
 
 class CancelDownloadingWhenAlmostDoneChecker : public CountryDownloaderChecker
@@ -232,8 +232,8 @@ public:
   CancelDownloadingWhenAlmostDoneChecker(Storage & storage, TCountryId const & countryId,
                                          TaskRunner & runner)
       : CountryDownloaderChecker(storage, countryId, MapOptions::Map,
-                                 vector<TStatus>{TStatus::ENotDownloaded, TStatus::EDownloading,
-                                                 TStatus::ENotDownloaded}),
+                                 vector<Status>{Status::ENotDownloaded, Status::EDownloading,
+                                                 Status::ENotDownloaded}),
         m_runner(runner)
   {
   }
@@ -241,7 +241,7 @@ public:
 protected:
   // CountryDownloaderChecker overrides:
   void OnCountryDownloadingProgress(TCountryId const & countryId,
-                                    LocalAndRemoteSizeT const & progress) override
+                                    TLocalAndRemoteSize const & progress) override
   {
     CountryDownloaderChecker::OnCountryDownloadingProgress(countryId, progress);
 
@@ -266,7 +266,7 @@ unique_ptr<CountryDownloaderChecker> AbsentCountryDownloaderChecker(Storage & st
 {
   return make_unique<CountryDownloaderChecker>(
       storage, countryId, files,
-      vector<TStatus>{TStatus::ENotDownloaded, TStatus::EDownloading, TStatus::EOnDisk});
+      vector<Status>{Status::ENotDownloaded, Status::EDownloading, Status::EOnDisk});
 }
 
 // Checks following state transitions:
@@ -277,7 +277,7 @@ unique_ptr<CountryDownloaderChecker> PresentCountryDownloaderChecker(Storage & s
 {
   return make_unique<CountryDownloaderChecker>(
       storage, countryId, files,
-      vector<TStatus>{TStatus::EOnDisk, TStatus::EDownloading, TStatus::EOnDisk});
+      vector<Status>{Status::EOnDisk, Status::EDownloading, Status::EOnDisk});
 }
 
 // Checks following state transitions:
@@ -287,8 +287,8 @@ unique_ptr<CountryDownloaderChecker> QueuedCountryDownloaderChecker(Storage & st
                                                                     MapOptions files)
 {
   return make_unique<CountryDownloaderChecker>(
-      storage, countryId, files, vector<TStatus>{TStatus::ENotDownloaded, TStatus::EInQueue,
-                                             TStatus::EDownloading, TStatus::EOnDisk});
+      storage, countryId, files, vector<Status>{Status::ENotDownloaded, Status::EInQueue,
+                                             Status::EDownloading, Status::EOnDisk});
 }
 
 // Checks following state transitions:
@@ -299,13 +299,13 @@ unique_ptr<CountryDownloaderChecker> CancelledCountryDownloaderChecker(Storage &
 {
   return make_unique<CountryDownloaderChecker>(
       storage, countryId, files,
-      vector<TStatus>{TStatus::ENotDownloaded, TStatus::EDownloading, TStatus::ENotDownloaded});
+      vector<Status>{Status::ENotDownloaded, Status::EDownloading, Status::ENotDownloaded});
 }
 
 class CountryStatusChecker
 {
 public:
-  CountryStatusChecker(Storage & storage, TCountryId const & countryId, TStatus status)
+  CountryStatusChecker(Storage & storage, TCountryId const & countryId, Status status)
       : m_storage(storage), m_countryId(countryId), m_status(status), m_triggered(false)
   {
     m_slot = m_storage.Subscribe(
@@ -325,20 +325,20 @@ private:
     if (countryId != m_countryId)
       return;
     TEST(!m_triggered, ("Status checker can be triggered only once."));
-    TStatus status = m_storage.CountryStatusEx(m_countryId);
+    Status status = m_storage.CountryStatusEx(m_countryId);
     TEST_EQUAL(m_status, status, ());
     m_triggered = true;
   }
 
   void OnCountryDownloadingProgress(TCountryId const & /* countryId */,
-                                    LocalAndRemoteSizeT const & /* progress */)
+                                    TLocalAndRemoteSize const & /* progress */)
   {
     TEST(false, ("Unexpected country downloading progress."));
   }
 
   Storage & m_storage;
   TCountryId const & m_countryId;
-  TStatus m_status;
+  Status m_status;
   bool m_triggered;
   int m_slot;
 };
@@ -372,8 +372,8 @@ public:
   {
     if (countryId != m_countryId)
       return;
-    TStatus const status = m_storage.CountryStatusEx(countryId);
-    if (status != TStatus::EDownloadFailed)
+    Status const status = m_storage.CountryStatusEx(countryId);
+    if (status != Status::EDownloadFailed)
       return;
     lock_guard<mutex> lock(m_mu);
     m_finished = true;
@@ -382,7 +382,7 @@ public:
     QCoreApplication::exit();
   }
 
-  void OnProgress(TCountryId const & /* countryId */, LocalAndRemoteSizeT const & /* progress */) {}
+  void OnProgress(TCountryId const & /* countryId */, TLocalAndRemoteSize const & /* progress */) {}
 
 private:
   Storage & m_storage;
@@ -533,21 +533,21 @@ UNIT_TEST(StorageTest_DeleteTwoVersionsOfTheSameCountry)
   storage.DeleteCountry(countryId, MapOptions::Map);
   TLocalFilePtr latestLocalFile = storage.GetLatestLocalFile(countryId);
   TEST(!latestLocalFile.get(), ("Country wasn't deleted from disk."));
-  TEST_EQUAL(TStatus::ENotDownloaded, storage.CountryStatusEx(countryId), ());
+  TEST_EQUAL(Status::ENotDownloaded, storage.CountryStatusEx(countryId), ());
 
   TLocalFilePtr localFileV1 = CreateDummyMapFile(countryFile, v1, 1024 /* size */);
   storage.RegisterAllLocalMaps();
   latestLocalFile = storage.GetLatestLocalFile(countryId);
   TEST(latestLocalFile.get(), ("Created map file wasn't found by storage."));
   TEST_EQUAL(latestLocalFile->GetVersion(), localFileV1->GetVersion(), ());
-  TEST_EQUAL(TStatus::EOnDiskOutOfDate, storage.CountryStatusEx(countryId), ());
+  TEST_EQUAL(Status::EOnDiskOutOfDate, storage.CountryStatusEx(countryId), ());
 
   TLocalFilePtr localFileV2 = CreateDummyMapFile(countryFile, v2, 2048 /* size */);
   storage.RegisterAllLocalMaps();
   latestLocalFile = storage.GetLatestLocalFile(countryId);
   TEST(latestLocalFile.get(), ("Created map file wasn't found by storage."));
   TEST_EQUAL(latestLocalFile->GetVersion(), localFileV2->GetVersion(), ());
-  TEST_EQUAL(TStatus::EOnDiskOutOfDate, storage.CountryStatusEx(countryId), ());
+  TEST_EQUAL(Status::EOnDiskOutOfDate, storage.CountryStatusEx(countryId), ());
 
   storage.DeleteCountry(countryId, MapOptions::Map);
 
@@ -557,7 +557,7 @@ UNIT_TEST(StorageTest_DeleteTwoVersionsOfTheSameCountry)
   localFileV2->SyncWithDisk();
   TEST_EQUAL(MapOptions::Nothing, localFileV2->GetFiles(), ());
 
-  TEST_EQUAL(TStatus::ENotDownloaded, storage.CountryStatusEx(countryId), ());
+  TEST_EQUAL(Status::ENotDownloaded, storage.CountryStatusEx(countryId), ());
 }
 
 UNIT_TEST(StorageTest_DownloadMapAndRoutingSeparately)
@@ -622,7 +622,7 @@ UNIT_TEST(StorageTest_DownloadMapAndRoutingSeparately)
 
   // Delete routing file and check status update.
   {
-    CountryStatusChecker checker(storage, countryId, TStatus::EOnDisk);
+    CountryStatusChecker checker(storage, countryId, Status::EOnDisk);
     storage.DeleteCountry(countryId, MapOptions::CarRouting);
   }
   TLocalFilePtr localFileC = storage.GetLatestLocalFile(countryId);
@@ -635,7 +635,7 @@ UNIT_TEST(StorageTest_DownloadMapAndRoutingSeparately)
 
   // Delete map file and check status update.
   {
-    CountryStatusChecker checker(storage, countryId, TStatus::ENotDownloaded);
+    CountryStatusChecker checker(storage, countryId, Status::ENotDownloaded);
     storage.DeleteCountry(countryId, MapOptions::Map);
   }
 
@@ -688,12 +688,12 @@ UNIT_TEST(StorageTest_DownloadTwoCountriesAndDeleteSingleMwm)
   {
     unique_ptr<CountryDownloaderChecker> uruguayChecker = make_unique<CountryDownloaderChecker>(
         storage, uruguayCountryId, MapOptions::Map,
-        vector<TStatus>{TStatus::ENotDownloaded, TStatus::EDownloading, TStatus::EOnDisk});
+        vector<Status>{Status::ENotDownloaded, Status::EDownloading, Status::EOnDisk});
 
     unique_ptr<CountryDownloaderChecker> venezuelaChecker = make_unique<CountryDownloaderChecker>(
         storage, venezuelaCountryId, MapOptions::Map,
-        vector<TStatus>{TStatus::ENotDownloaded, TStatus::EInQueue,
-                        TStatus::EDownloading, TStatus::EOnDisk});
+        vector<Status>{Status::ENotDownloaded, Status::EInQueue,
+                        Status::EDownloading, Status::EOnDisk});
 
     uruguayChecker->StartDownload();
     venezuelaChecker->StartDownload();
@@ -703,11 +703,11 @@ UNIT_TEST(StorageTest_DownloadTwoCountriesAndDeleteSingleMwm)
   {
     unique_ptr<CountryDownloaderChecker> uruguayChecker = make_unique<CountryDownloaderChecker>(
         storage, uruguayCountryId, MapOptions::Map,
-        vector<TStatus>{TStatus::EOnDisk, TStatus::ENotDownloaded});
+        vector<Status>{Status::EOnDisk, Status::ENotDownloaded});
 
     unique_ptr<CountryDownloaderChecker> venezuelaChecker = make_unique<CountryDownloaderChecker>(
         storage, venezuelaCountryId, MapOptions::Map,
-        vector<TStatus>{TStatus::EOnDisk, TStatus::ENotDownloaded});
+        vector<Status>{Status::EOnDisk, Status::ENotDownloaded});
 
     storage.DeleteCountry(uruguayCountryId, MapOptions::Map);
     storage.DeleteCountry(venezuelaCountryId, MapOptions::Map);
@@ -747,7 +747,7 @@ UNIT_TEST(StorageTest_DownloadTwoCountriesAndDeleteTwoComponentMwm)
     // Uruguay should pass through following states: NotDownloaded -> Downloading -> NotDownloaded.
     unique_ptr<CountryDownloaderChecker> uruguayChecker = make_unique<CountryDownloaderChecker>(
         storage, uruguayCountryId, MapOptions::MapWithCarRouting,
-        vector<TStatus>{TStatus::ENotDownloaded, TStatus::EDownloading, TStatus::ENotDownloaded});
+        vector<Status>{Status::ENotDownloaded, Status::EDownloading, Status::ENotDownloaded});
     // Only routing file will be deleted for Venezuela, thus, Venezuela should pass through
     // following
     // states:
@@ -755,8 +755,8 @@ UNIT_TEST(StorageTest_DownloadTwoCountriesAndDeleteTwoComponentMwm)
     // (second notification will be sent after deletion of a routing file) -> OnDisk.
     unique_ptr<CountryDownloaderChecker> venezuelaChecker = make_unique<CountryDownloaderChecker>(
         storage, venezuelaCountryId, MapOptions::MapWithCarRouting,
-        vector<TStatus>{TStatus::ENotDownloaded, TStatus::EInQueue, TStatus::EDownloading,
-                        TStatus::EDownloading, TStatus::EOnDisk});
+        vector<Status>{Status::ENotDownloaded, Status::EInQueue, Status::EDownloading,
+                        Status::EDownloading, Status::EOnDisk});
     uruguayChecker->StartDownload();
     venezuelaChecker->StartDownload();
     storage.DeleteCountry(uruguayCountryId, MapOptions::Map);
@@ -985,12 +985,12 @@ UNIT_TEST(StorageTest_DownloadedMapTests)
   {
     auto algeriaCentralChecker = make_unique<CountryDownloaderChecker>(
         storage, algeriaCentralCountryId, MapOptions::Map,
-        vector<TStatus>{TStatus::ENotDownloaded, TStatus::EDownloading, TStatus::EOnDisk});
+        vector<Status>{Status::ENotDownloaded, Status::EDownloading, Status::EOnDisk});
 
     auto algeriaCoastChecker = make_unique<CountryDownloaderChecker>(
         storage, algeriaCoastCountryId, MapOptions::Map,
-        vector<TStatus>{TStatus::ENotDownloaded, TStatus::EInQueue,
-                        TStatus::EDownloading, TStatus::EOnDisk});
+        vector<Status>{Status::ENotDownloaded, Status::EInQueue,
+                        Status::EDownloading, Status::EOnDisk});
 
     algeriaCentralChecker->StartDownload();
     algeriaCoastChecker->StartDownload();
@@ -1166,17 +1166,29 @@ UNIT_TEST(StorageTest_GetNodeAttrsSingleMwm)
   storage.GetNodeAttrs("Abkhazia", nodeAttrs);
   TEST_EQUAL(nodeAttrs.m_mwmCounter, 1, ());
   TEST_EQUAL(nodeAttrs.m_mwmSize, 4689718, ());
-  TEST_EQUAL(nodeAttrs.m_status, TStatus::ENotDownloaded, ());
+  TEST_EQUAL(nodeAttrs.m_status, NodeStatus::NotDownloaded, ());
+  TEST_EQUAL(nodeAttrs.m_error, NodeErrorCode::NoError, ());
 
   storage.GetNodeAttrs("Algeria", nodeAttrs);
   TEST_EQUAL(nodeAttrs.m_mwmCounter, 2, ());
   TEST_EQUAL(nodeAttrs.m_mwmSize, 90878678, ());
-  TEST_EQUAL(nodeAttrs.m_status, TStatus::ENotDownloaded, ());
+  TEST_EQUAL(nodeAttrs.m_status, NodeStatus::NotDownloaded, ());
+  TEST_EQUAL(nodeAttrs.m_error, NodeErrorCode::NoError, ());
 
   storage.GetNodeAttrs("South Korea_South", nodeAttrs);
   TEST_EQUAL(nodeAttrs.m_mwmCounter, 1, ());
   TEST_EQUAL(nodeAttrs.m_mwmSize, 48394664, ());
-  TEST_EQUAL(nodeAttrs.m_status, TStatus::ENotDownloaded, ());
+  TEST_EQUAL(nodeAttrs.m_status, NodeStatus::NotDownloaded, ());
+  TEST_EQUAL(nodeAttrs.m_error, NodeErrorCode::NoError, ());
 }
 
+UNIT_TEST(StorageTest_ParseStatus)
+{
+  TEST_EQUAL(StatusAndError(NodeStatus::Undefined, NodeErrorCode::NoError),
+             ParseStatus(Status::EUndefined), ());
+  TEST_EQUAL(StatusAndError(NodeStatus::Error, NodeErrorCode::NoInetConnection),
+             ParseStatus(Status::EDownloadFailed), ());
+  TEST_EQUAL(StatusAndError(NodeStatus::Downloading, NodeErrorCode::NoError),
+             ParseStatus(Status::EDownloading), ());
+}
 }  // namespace storage

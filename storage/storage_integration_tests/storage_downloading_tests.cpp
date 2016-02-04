@@ -67,7 +67,7 @@ UNIT_TEST(SmallMwms_InterruptDownloadResumeDownload_Test)
     Storage storage(COUNTRIES_MIGRATE_FILE);
     TEST(version::IsSingleMwm(storage.GetCurrentDataVersion()), ());
 
-    auto onProgressFn = [](TCountryId const & countryId, LocalAndRemoteSizeT const & mapSize)
+    auto onProgressFn = [](TCountryId const & countryId, TLocalAndRemoteSize const & mapSize)
     {
       TEST_EQUAL(countryId, kCountryId, ());
       // Interrupt download
@@ -90,7 +90,7 @@ UNIT_TEST(SmallMwms_InterruptDownloadResumeDownload_Test)
 
   Storage storage(COUNTRIES_MIGRATE_FILE);
 
-  auto onProgressFn = [](TCountryId const & countryId, LocalAndRemoteSizeT const & mapSize)
+  auto onProgressFn = [](TCountryId const & countryId, TLocalAndRemoteSize const & mapSize)
   {
     TEST_EQUAL(countryId, kCountryId, ());
   };
@@ -101,11 +101,11 @@ UNIT_TEST(SmallMwms_InterruptDownloadResumeDownload_Test)
 
   NodeAttrs attrs;
   storage.GetNodeAttrs(kCountryId, attrs);
-  TEST_EQUAL(TStatus::EDownloading, attrs.m_status, ());
+  TEST_EQUAL(NodeStatus::Downloading, attrs.m_status, ());
 
   storage.DownloadNode(kCountryId);
   testing::RunEventLoop();
 
   storage.GetNodeAttrs(kCountryId, attrs);
-  TEST_EQUAL(TStatus::EOnDisk, attrs.m_status, ());
+  TEST_EQUAL(NodeStatus::OnDisk, attrs.m_status, ());
 }

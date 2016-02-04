@@ -84,7 +84,7 @@ UNIT_TEST(SmallMwms_Update_Test)
 
   Platform & platform = GetPlatform();
 
-  auto onProgressFn = [&](TCountryId const & countryId, LocalAndRemoteSizeT const & mapSize) {};
+  auto onProgressFn = [&](TCountryId const & countryId, TLocalAndRemoteSize const & mapSize) {};
 
   // Download countries.txt for version 1
   TEST(DownloadFile(GetCountriesTxtWebUrl(kMwmVersion1), GetCountriesTxtFilePath(), kCountriesTxtFileSize1), ());
@@ -113,7 +113,7 @@ UNIT_TEST(SmallMwms_Update_Test)
     // Check group node status is EOnDisk
     NodeAttrs attrs;
     storage.GetNodeAttrs(kGroupCountryId, attrs);
-    TEST_EQUAL(TStatus::EOnDisk, attrs.m_status, ());
+    TEST_EQUAL(NodeStatus::OnDisk, attrs.m_status, ());
 
     // Check mwm files for version 1 are present
     for (auto const & child : children)
@@ -147,14 +147,14 @@ UNIT_TEST(SmallMwms_Update_Test)
     // Check group node status is EOnDiskOutOfDate
     NodeAttrs attrs;
     storage.GetNodeAttrs(kGroupCountryId, attrs);
-    TEST_EQUAL(TStatus::EOnDiskOutOfDate, attrs.m_status, ());
+    TEST_EQUAL(NodeStatus::OnDiskOutOfDate, attrs.m_status, ());
 
     // Check children node status is EOnDiskOutOfDate
     for (auto const & child : children)
     {
       NodeAttrs attrs;
       storage.GetNodeAttrs(child, attrs);
-      TEST_EQUAL(TStatus::EOnDiskOutOfDate, attrs.m_status, ());
+      TEST_EQUAL(NodeStatus::OnDiskOutOfDate, attrs.m_status, ());
     }
 
     // Check mwm files for version 1 are present
@@ -170,14 +170,14 @@ UNIT_TEST(SmallMwms_Update_Test)
 
     // Check group node status is EOnDisk
     storage.GetNodeAttrs(kGroupCountryId, attrs);
-    TEST_EQUAL(TStatus::EOnDisk, attrs.m_status, ());
+    TEST_EQUAL(NodeStatus::OnDisk, attrs.m_status, ());
 
     // Check children node status is EOnDisk
     for (auto const & child : children)
     {
       NodeAttrs attrs;
       storage.GetNodeAttrs(child, attrs);
-      TEST_EQUAL(TStatus::EOnDisk, attrs.m_status, ());
+      TEST_EQUAL(NodeStatus::OnDisk, attrs.m_status, ());
     }
 
     // Check mwm files for version 2 are present and not present for version 1
