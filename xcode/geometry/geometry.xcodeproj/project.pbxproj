@@ -73,6 +73,8 @@
 		675344DE1A3F68F900A0A8C3 /* binary_operators.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 675344DB1A3F68F900A0A8C3 /* binary_operators.cpp */; };
 		675344DF1A3F68F900A0A8C3 /* binary_operators.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 675344DC1A3F68F900A0A8C3 /* binary_operators.hpp */; };
 		675344E01A3F68F900A0A8C3 /* boost_concept.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 675344DD1A3F68F900A0A8C3 /* boost_concept.hpp */; };
+		676C842A1C64CE9500DC9603 /* segment2d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 676C84281C64CE9500DC9603 /* segment2d.cpp */; };
+		676C842B1C64CE9500DC9603 /* segment2d.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 676C84291C64CE9500DC9603 /* segment2d.hpp */; };
 		E92D8BD11C15AF9100A98D17 /* mercator_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E92D8BD01C15AF9100A98D17 /* mercator_test.cpp */; };
 		E92D8BD41C15AFAA00A98D17 /* mercator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E92D8BD21C15AFAA00A98D17 /* mercator.cpp */; };
 		E92D8BD51C15AFAA00A98D17 /* mercator.hpp in Headers */ = {isa = PBXBuildFile; fileRef = E92D8BD31C15AFAA00A98D17 /* mercator.hpp */; };
@@ -159,6 +161,8 @@
 		675344DB1A3F68F900A0A8C3 /* binary_operators.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = binary_operators.cpp; sourceTree = "<group>"; };
 		675344DC1A3F68F900A0A8C3 /* binary_operators.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = binary_operators.hpp; sourceTree = "<group>"; };
 		675344DD1A3F68F900A0A8C3 /* boost_concept.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = boost_concept.hpp; sourceTree = "<group>"; };
+		676C84281C64CE9500DC9603 /* segment2d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = segment2d.cpp; sourceTree = "<group>"; };
+		676C84291C64CE9500DC9603 /* segment2d.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = segment2d.hpp; sourceTree = "<group>"; };
 		E92D8BD01C15AF9100A98D17 /* mercator_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mercator_test.cpp; sourceTree = "<group>"; };
 		E92D8BD21C15AFAA00A98D17 /* mercator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mercator.cpp; sourceTree = "<group>"; };
 		E92D8BD31C15AFAA00A98D17 /* mercator.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = mercator.hpp; sourceTree = "<group>"; };
@@ -254,6 +258,8 @@
 		675344931A3F684600A0A8C3 /* geometry */ = {
 			isa = PBXGroup;
 			children = (
+				676C84281C64CE9500DC9603 /* segment2d.cpp */,
+				676C84291C64CE9500DC9603 /* segment2d.hpp */,
 				347F336E1C454205009758CC /* triangle2d.cpp */,
 				347F336F1C454205009758CC /* triangle2d.hpp */,
 				E92D8BD21C15AFAA00A98D17 /* mercator.cpp */,
@@ -315,6 +321,7 @@
 				675344E01A3F68F900A0A8C3 /* boost_concept.hpp in Headers */,
 				675344C01A3F687400A0A8C3 /* cellid.hpp in Headers */,
 				675344CB1A3F687400A0A8C3 /* polyline2d.hpp in Headers */,
+				676C842B1C64CE9500DC9603 /* segment2d.hpp in Headers */,
 				675344D21A3F687400A0A8C3 /* screenbase.hpp in Headers */,
 				E92D8BD51C15AFAA00A98D17 /* mercator.hpp in Headers */,
 				675344BF1A3F687400A0A8C3 /* avg_vector.hpp in Headers */,
@@ -464,6 +471,7 @@
 				E92D8BD11C15AF9100A98D17 /* mercator_test.cpp in Sources */,
 				675344C61A3F687400A0A8C3 /* packer.cpp in Sources */,
 				675344DE1A3F68F900A0A8C3 /* binary_operators.cpp in Sources */,
+				676C842A1C64CE9500DC9603 /* segment2d.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
