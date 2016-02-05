@@ -194,8 +194,6 @@ void TestBuilding::Serialize(FeatureBuilder1 & fb) const
 
   auto const & classificator = classif();
   fb.SetType(classificator.GetTypeByPath({"building"}));
-
-  fb.PreSerialize();
 }
 
 bool TestBuilding::Matches(FeatureType const & feature) const
@@ -211,6 +209,30 @@ string TestBuilding::ToString() const
   ostringstream os;
   os << "TestBuilding [" << m_name << ", " << m_houseNumber << ", " << m_lang << ", "
      << DebugPrint(m_center) << "]";
+  return os.str();
+}
+
+// TestPark ----------------------------------------------------------------------------------------
+TestPark::TestPark(vector<m2::PointD> const & boundary, string const & name, string const & lang)
+  : TestFeature(name, lang), m_boundary(boundary)
+{
+}
+
+void TestPark::Serialize(FeatureBuilder1 & fb) const
+{
+  TestFeature::Serialize(fb);
+  for (auto const & point : m_boundary)
+    fb.AddPoint(point);
+  fb.SetArea();
+
+  auto const & classificator = classif();
+  fb.SetType(classificator.GetTypeByPath({"leisure", "park"}));
+}
+
+string TestPark::ToString() const
+{
+  ostringstream os;
+  os << "TestPark [" << m_name << ", " << m_lang << "]";
   return os.str();
 }
 
