@@ -2,24 +2,24 @@
 #import "BookmarksVC.h"
 #import "Common.h"
 #import "EAGLView.h"
-#import "MapsAppDelegate.h"
-#import "MapViewController.h"
-#import "MWMAlertViewController.h"
 #import "MWMAPIBar.h"
+#import "MWMAlertViewController.h"
 #import "MWMAuthorizationCommon.h"
 #import "MWMAuthorizationLoginViewController.h"
 #import "MWMEditorViewController.h"
+#import "MWMMapDownloaderViewController.h"
 #import "MWMMapViewControlsManager.h"
 #import "MWMPageController.h"
 #import "MWMPlacePageEntity.h"
 #import "MWMTextToSpeech.h"
+#import "MapViewController.h"
+#import "MapsAppDelegate.h"
 #import "RouteState.h"
 #import "Statistics.h"
+#import "UIColor+MapsMeColor.h"
 #import "UIFont+MapsMeFonts.h"
 #import "UIViewController+Navigation.h"
 #import <MyTargetSDKCorp/MTRGManager_Corp.h>
-
-#import "UIColor+MapsMeColor.h"
 
 #import "3party/Alohalytics/src/alohalytics_objc.h"
 
@@ -62,6 +62,8 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 namespace
 {
 NSString * const kAuthorizationSegue = @"Map2AuthorizationSegue";
+NSString * const kDownloaderSegue = @"Map2MapDownloaderSegue";
+NSString * const kEditorSegue = @"Map2EditorSegue";
 } // namespace
 
 @interface NSValueWrapper : NSObject
@@ -490,10 +492,25 @@ NSString * const kAuthorizationSegue = @"Map2AuthorizationSegue";
   [[MWMFrameworkListener listener] addObserver:self];
 }
 
+#pragma mark - Open controllers
+
+- (void)openBookmarks
+{
+  BOOL const oneCategory = (GetFramework().GetBmCategoriesCount() == 1);
+  TableViewController * vc = oneCategory ? [[BookmarksVC alloc] initWithCategory:0] : [[BookmarksRootVC alloc] init];
+  [self.navigationController pushViewController:vc animated:YES];
+}
+
 - (void)openMapsDownloader
 {
   [Alohalytics logEvent:kAlohalyticsTapEventKey withValue:@"downloader"];
-  [self performSegueWithIdentifier:@"Map2MapDownloaderSegue" sender:self];
+  [self performSegueWithIdentifier:kDownloaderSegue sender:self];
+}
+
+- (void)openEditor
+{
+  [[Statistics instance] logEvent:kStatEventName(kStatPlacePage, kStatEdit)];
+  [self performSegueWithIdentifier:kEditorSegue sender:self.controlsManager.placePageEntity];
 }
 
 #pragma mark - MWMFrameworkMyPositionObserver
@@ -592,16 +609,6 @@ NSString * const kAuthorizationSegue = @"Map2AuthorizationSegue";
     self.controlsManager.hidden = NO;
     [self.controlsManager showPlacePage];
   }
-}
-
-#pragma mark - Bookmarks
-
-- (void)openBookmarks
-{
-  BOOL const oneCategory = (GetFramework().GetBmCategoriesCount() == 1);
-  TableViewController * vc =
-      oneCategory ? [[BookmarksVC alloc] initWithCategory:0] : [[BookmarksRootVC alloc] init];
-  [self.navigationController pushViewController:vc animated:YES];
 }
 
 #pragma mark - Authorization
@@ -776,7 +783,7 @@ NSString * const kAuthorizationSegue = @"Map2AuthorizationSegue";
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-  if ([segue.identifier isEqualToString:@"Map2EditorSegue"])
+  if ([segue.identifier isEqualToString:kEditorSegue])
   {
     self.skipPlacePageDismissOnViewDisappear = YES;
     UINavigationController * dvc = segue.destinationViewController;
@@ -788,6 +795,11 @@ NSString * const kAuthorizationSegue = @"Map2AuthorizationSegue";
     UINavigationController * dvc = segue.destinationViewController;
     MWMAuthorizationLoginViewController * authVC = (MWMAuthorizationLoginViewController *)[dvc topViewController];
     authVC.isCalledFromSettings = NO;
+  }
+  else if ([segue.identifier isEqualToString:kDownloaderSegue])
+  {
+    MWMMapDownloaderViewController * dvc = segue.destinationViewController;
+    [dvc SetRootCountryId:GetFramework().Storage().GetRootId()];
   }
 }
 

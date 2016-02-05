@@ -1,7 +1,9 @@
 #import "MWMMapDownloaderTableViewCell.h"
 #import "ViewController.h"
 
-@interface MWMMapCountryDownloaderViewController : ViewController <UITableViewDelegate, UITableViewDataSource>
+#include "storage/index.hpp"
+
+@interface MWMBaseMapDownloaderViewController : ViewController <UITableViewDelegate, UITableViewDataSource>
 
 @property (weak, nonatomic) IBOutlet UILabel * allMapsLabel;
 
@@ -11,5 +13,8 @@
 
 - (void)configTable;
 - (void)configAllMapsView;
+
+- (storage::TCountryId)GetRootCountryId;
+- (void)SetRootCountryId:(storage::TCountryId)rootId;
 
 @end

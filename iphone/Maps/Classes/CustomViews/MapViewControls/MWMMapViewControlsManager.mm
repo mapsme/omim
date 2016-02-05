@@ -5,6 +5,7 @@
 #import "MWMBottomMenuViewController.h"
 #import "MWMButton.h"
 #import "MWMMapViewControlsManager.h"
+#import "MWMPlacePageEntity.h"
 #import "MWMPlacePageViewManager.h"
 #import "MWMPlacePageViewManagerDelegate.h"
 #import "MWMRoutePreview.h"
@@ -645,6 +646,11 @@ extern NSString * const kAlohalyticsTapEventKey;
 - (MWMNavigationDashboardState)navigationState
 {
   return self.navigationManager.state;
+}
+
+- (MWMPlacePageEntity *)placePageEntity
+{
+  return self.placePageManager.entity;
 }
 
 - (BOOL)isDirectionViewShown
