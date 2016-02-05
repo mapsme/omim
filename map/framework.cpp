@@ -1225,7 +1225,7 @@ void Framework::ShowSearchResult(search::Result const & res)
   if (ft)
     mark->SetFeature(move(ft));
   else
-    mark->SetFeature(GetFeatureAtMercatorPoint(center));
+    mark->SetFeature(GetFeatureAtPoint(center));
 
   ActivateUserMark(mark, false);
 }
@@ -1683,53 +1683,66 @@ bool Framework::ShowMapForURL(string const & url)
   return false;
 }
 
-unique_ptr<FeatureType> Framework::GetFeatureAtMercatorPoint(m2::PointD const & mercator) const
+void Framework::ForEachFeatureAtPoint(TFeatureTypeFn && fn, m2::PointD const & mercator) const
 {
-  constexpr double const kRectWidthInMeters = 1.1;
-  int const kScale = scales::GetUpperScale();
-  m2::RectD const rect = MercatorBounds::RectByCenterXYAndSizeInMeters(mercator, kRectWidthInMeters);
-  unique_ptr<FeatureType> pointFt, areaFt;
-  double minPointDistance = kRectWidthInMeters;
-  auto const & isBuilding = ftypes::IsBuildingChecker::Instance();
-  m_model.ForEachFeature(rect, [&](FeatureType const & ft)
+  constexpr double kSelectRectWidthInMeters = 1.1;
+  constexpr double kMetersToLinearFeature = 3;
+  constexpr int kScale = scales::GetUpperScale();
+  m2::RectD const rect = MercatorBounds::RectByCenterXYAndSizeInMeters(mercator, kSelectRectWidthInMeters);
+  m_model.ForEachFeature(rect, [&](FeatureType & ft)
   {
     switch (ft.GetFeatureType())
     {
-      case feature::GEOM_POINT:
+    case feature::GEOM_POINT:
+      if (rect.IsPointInside(ft.GetCenter()))
+        fn(ft);
+      break;
+    case feature::GEOM_LINE:
+      if (feature::GetMinDistanceMeters(ft, mercator) < kMetersToLinearFeature)
+        fn(ft);
+      break;
+    case feature::GEOM_AREA:
+      if (ft.GetLimitRect(kScale).IsPointInside(mercator) &&
+          feature::GetMinDistanceMeters(ft, mercator) == 0.0)
       {
-        double const distance = MercatorBounds::DistanceOnEarth(ft.GetCenter(), mercator);
-        if (distance < minPointDistance)
-        {
-          pointFt.reset(new FeatureType(ft));
-          pointFt->ParseMetadata();
-          minPointDistance = distance;
-        }
-        break;
+        fn(ft);
       }
-      case feature::GEOM_AREA:
-      {
-        // Quick rough check.
-        if (!ft.GetLimitRect(kScale).IsPointInside(mercator))
-          return;
-        // Distance is 0.0 if point is inside area feature.
-        if (0.0 != feature::GetMinDistanceMeters(ft, mercator))
-          return;
-        // Buildings have higher priority over other types.
-        if (areaFt && isBuilding(*areaFt))
-          return;
-        areaFt.reset(new FeatureType(ft));
-        areaFt->ParseMetadata();
-        break;
-      }
-      // TODO(AlexZ): At the moment, ignore linear features.
-      default: return;
+      break;
+    case feature::GEOM_UNDEFINED:
+      ASSERT(false, ("case feature::GEOM_UNDEFINED"));
+      break;
     }
   }, kScale);
-
-  return pointFt ? move(pointFt) : move(areaFt);
 }
 
-unique_ptr<FeatureType> Framework::GetFeatureByID(FeatureID const & fid) const
+unique_ptr<FeatureType> Framework::GetFeatureAtPoint(m2::PointD const & mercator) const
+{
+  unique_ptr<FeatureType> poi, line, area;
+  ForEachFeatureAtPoint([&](FeatureType & ft)
+  {
+    switch (ft.GetFeatureType())
+    {
+    case feature::GEOM_POINT:
+      poi.reset(new FeatureType(ft));
+      break;
+    case feature::GEOM_LINE:
+      line.reset(new FeatureType(ft));
+      break;
+    case feature::GEOM_AREA:
+      // Buildings have higher priority over other types.
+      if (area && ftypes::IsBuildingChecker::Instance()(*area))
+        return;
+      area.reset(new FeatureType(ft));
+      break;
+    case feature::GEOM_UNDEFINED:
+      ASSERT(false, ("case feature::GEOM_UNDEFINED"));
+      break;
+    }
+  }, mercator);
+  return poi ? move(poi) : (area ? move(area) : move(line));
+}
+
+unique_ptr<FeatureType> Framework::GetFeatureByID(FeatureID const & fid, bool parse) const
 {
   ASSERT(fid.IsValid(), ());
 
@@ -1737,7 +1750,8 @@ unique_ptr<FeatureType> Framework::GetFeatureByID(FeatureID const & fid) const
   // Note: all parse methods should be called with guard alive.
   Index::FeaturesLoaderGuard guard(m_model.GetIndex(), fid.m_mwmId);
   guard.GetFeatureByIndex(fid.m_index, *feature);
-  feature->ParseEverything();
+  if (parse)
+    feature->ParseEverything();
   return feature;
 }
 
@@ -1780,7 +1794,6 @@ public:
     FeatureType ft;
     guard.GetFeatureByIndex(m_id.m_index, ft);
 
-    ft.ParseMetadata();
     metadata = ft.GetMetadata();
   }
 };
@@ -1819,7 +1832,7 @@ PoiMarkPoint * Framework::GetAddressMark(m2::PointD const & globalPoint) const
 {
   PoiMarkPoint * mark = UserMarkContainer::UserMarkForPoi();
   mark->SetPtOrg(globalPoint);
-  mark->SetFeature(GetFeatureAtMercatorPoint(globalPoint));
+  mark->SetFeature(GetFeatureAtPoint(globalPoint));
   return mark;
 }
 
@@ -1938,7 +1951,7 @@ UserMark const * Framework::OnTapEventImpl(m2::PointD pxPoint, bool isLong, bool
     {
       const_cast<UserMark *>(mark)->SetFeature(fid.IsValid() ?
                                                GetFeatureByID(fid) :
-                                               GetFeatureAtMercatorPoint(mark->GetPivot()));
+                                               GetFeatureAtPoint(mark->GetPivot()));
     }
     return mark;
   }
@@ -1957,7 +1970,7 @@ UserMark const * Framework::OnTapEventImpl(m2::PointD pxPoint, bool isLong, bool
   {
     mercatorPivot = m_currentModelView.PtoG(pxPoint2d);
     // TODO(AlexZ): Should we change mercatorPivot to found feature's center?
-    feature = GetFeatureAtMercatorPoint(mercatorPivot);
+    feature = GetFeatureAtPoint(mercatorPivot);
     needMark = true;
   }
 
