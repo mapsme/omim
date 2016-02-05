@@ -1683,53 +1683,78 @@ bool Framework::ShowMapForURL(string const & url)
   return false;
 }
 
-unique_ptr<FeatureType> Framework::GetFeatureAtMercatorPoint(m2::PointD const & mercator) const
+vector<unique_ptr<FeatureType>> Framework::GetAllFeaturesAtMercatorPoint(m2::PointD const & mercator, bool parse) const
 {
-  constexpr double const kRectWidthInMeters = 1.1;
+  constexpr double kSelectRectWidthInMeters = 1.1;
+  constexpr double kMetersToLinearFeature = 3;
   int const kScale = scales::GetUpperScale();
-  m2::RectD const rect = MercatorBounds::RectByCenterXYAndSizeInMeters(mercator, kRectWidthInMeters);
-  unique_ptr<FeatureType> pointFt, areaFt;
-  double minPointDistance = kRectWidthInMeters;
-  auto const & isBuilding = ftypes::IsBuildingChecker::Instance();
+  m2::RectD const rect = MercatorBounds::RectByCenterXYAndSizeInMeters(mercator, kSelectRectWidthInMeters);
+  vector<unique_ptr<FeatureType>> results;
   m_model.ForEachFeature(rect, [&](FeatureType const & ft)
   {
     switch (ft.GetFeatureType())
     {
-      case feature::GEOM_POINT:
+    case feature::GEOM_POINT:
+      if (rect.IsPointInside(ft.GetCenter()))
       {
-        double const distance = MercatorBounds::DistanceOnEarth(ft.GetCenter(), mercator);
-        if (distance < minPointDistance)
-        {
-          pointFt.reset(new FeatureType(ft));
-          pointFt->ParseMetadata();
-          minPointDistance = distance;
-        }
-        break;
+        if (parse)
+          ft.ParseEverything();
+        results.emplace_back(new FeatureType(ft));
       }
-      case feature::GEOM_AREA:
+      break;
+    case feature::GEOM_LINE:
+      if (feature::GetMinDistanceMeters(ft, mercator) < kMetersToLinearFeature)
       {
-        // Quick rough check.
-        if (!ft.GetLimitRect(kScale).IsPointInside(mercator))
-          return;
-        // Distance is 0.0 if point is inside area feature.
-        if (0.0 != feature::GetMinDistanceMeters(ft, mercator))
-          return;
-        // Buildings have higher priority over other types.
-        if (areaFt && isBuilding(*areaFt))
-          return;
-        areaFt.reset(new FeatureType(ft));
-        areaFt->ParseMetadata();
-        break;
+        if (parse)
+          ft.ParseEverything();
+        results.emplace_back(new FeatureType(ft));
       }
-      // TODO(AlexZ): At the moment, ignore linear features.
-      default: return;
+      break;
+    case feature::GEOM_AREA:
+      if (ft.GetLimitRect(kScale).IsPointInside(mercator) && feature::GetMinDistanceMeters(ft, mercator) == 0.0)
+      {
+        if (parse)
+          ft.ParseEverything();
+        results.emplace_back(new FeatureType(ft));
+      }
+      break;
+    case feature::GEOM_UNDEFINED:
+      ASSERT(false, ("case feature::GEOM_UNDEFINED"));
+      break;
     }
   }, kScale);
-
-  return pointFt ? move(pointFt) : move(areaFt);
+  return results;
 }
 
-unique_ptr<FeatureType> Framework::GetFeatureByID(FeatureID const & fid) const
+unique_ptr<FeatureType> Framework::GetFeatureAtMercatorPoint(m2::PointD const & mercator, bool parse) const
+{
+  auto features = GetAllFeaturesAtMercatorPoint(mercator, parse);
+  unique_ptr<FeatureType> poi, line, area;
+  for (auto & feature : features)
+  {
+    switch (feature->GetFeatureType())
+    {
+    case feature::GEOM_POINT:
+      poi = move(feature);
+      break;
+    case feature::GEOM_LINE:
+      line = move(feature);
+      break;
+    case feature::GEOM_AREA:
+      // Buildings have higher priority over other types.
+      if (area && ftypes::IsBuildingChecker::Instance()(*area))
+        continue;
+      area = move(feature);
+      break;
+    case feature::GEOM_UNDEFINED:
+      ASSERT(false, ("case feature::GEOM_UNDEFINED"));
+      break;
+    }
+  }
+  return poi ? move(poi) : (area ? move(area) : move(line));
+}
+
+unique_ptr<FeatureType> Framework::GetFeatureByID(FeatureID const & fid, bool parse) const
 {
   ASSERT(fid.IsValid(), ());
 
@@ -1737,7 +1762,8 @@ unique_ptr<FeatureType> Framework::GetFeatureByID(FeatureID const & fid) const
   // Note: all parse methods should be called with guard alive.
   Index::FeaturesLoaderGuard guard(m_model.GetIndex(), fid.m_mwmId);
   guard.GetFeatureByIndex(fid.m_index, *feature);
-  feature->ParseEverything();
+  if (parse)
+    feature->ParseEverything();
   return feature;
 }
 
