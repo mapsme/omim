@@ -142,6 +142,12 @@ string const kTwoComponentMwmCountriesTxt =
                }
             ]}]})");
 
+bool ParentOf(Storage const & storage, string const & parent, string const & country)
+{
+  Country const c = storage.CountryByCountryId(country);
+  return c.GetParent() == parent;
+}
+
 // This class checks steps Storage::DownloadMap() performs to download a map.
 class CountryDownloaderChecker
 {
@@ -1158,6 +1164,26 @@ UNIT_TEST(StorageTest_ChildrenSizeSingleMwm)
   TEST_EQUAL(southKoreaCountry.GetSubtreeMwmSizeBytes(), 48394664, ());
 }
 
+UNIT_TEST(StorageTest_ParentSingleMwm)
+{
+  Storage storage(kSingleMwmCountriesTxt, make_unique<TestMapFilesDownloader>());
+
+  TEST(ParentOf(storage, "Countries", "Abkhazia"), ());
+  TEST(ParentOf(storage, "Algeria", "Algeria_Central"), ());
+  TEST(ParentOf(storage, "Countries", "South Korea_South"), ());
+  TEST(ParentOf(storage, kInvalidCountryId, "Countries"), ());
+}
+
+UNIT_TEST(StorageTest_ParentTwoComponentsMwm)
+{
+  Storage storage(kTwoComponentMwmCountriesTxt, make_unique<TestMapFilesDownloader>());
+
+  TEST(ParentOf(storage, "Countries", "Africa"), ());
+  TEST(ParentOf(storage, "Africa", "Algeria"), ());
+  TEST(ParentOf(storage, "France", "France_Alsace"), ());
+  TEST(ParentOf(storage, kInvalidCountryId, "Countries"), ());
+}
+
 UNIT_TEST(StorageTest_GetNodeAttrsSingleMwm)
 {
   Storage storage(kSingleMwmCountriesTxt, make_unique<TestMapFilesDownloader>());
@@ -1168,18 +1194,28 @@ UNIT_TEST(StorageTest_GetNodeAttrsSingleMwm)
   TEST_EQUAL(nodeAttrs.m_mwmSize, 4689718, ());
   TEST_EQUAL(nodeAttrs.m_status, NodeStatus::NotDownloaded, ());
   TEST_EQUAL(nodeAttrs.m_error, NodeErrorCode::NoError, ());
+  TEST_EQUAL(nodeAttrs.m_parentCountryId, "Countries", ());
 
   storage.GetNodeAttrs("Algeria", nodeAttrs);
   TEST_EQUAL(nodeAttrs.m_mwmCounter, 2, ());
   TEST_EQUAL(nodeAttrs.m_mwmSize, 90878678, ());
   TEST_EQUAL(nodeAttrs.m_status, NodeStatus::NotDownloaded, ());
   TEST_EQUAL(nodeAttrs.m_error, NodeErrorCode::NoError, ());
+  TEST_EQUAL(nodeAttrs.m_parentCountryId, "Countries", ());
+
+  storage.GetNodeAttrs("Algeria_Coast", nodeAttrs);
+  TEST_EQUAL(nodeAttrs.m_mwmCounter, 1, ());
+  TEST_EQUAL(nodeAttrs.m_mwmSize, 66701534, ());
+  TEST_EQUAL(nodeAttrs.m_status, NodeStatus::NotDownloaded, ());
+  TEST_EQUAL(nodeAttrs.m_error, NodeErrorCode::NoError, ());
+  TEST_EQUAL(nodeAttrs.m_parentCountryId, "Algeria", ());
 
   storage.GetNodeAttrs("South Korea_South", nodeAttrs);
   TEST_EQUAL(nodeAttrs.m_mwmCounter, 1, ());
   TEST_EQUAL(nodeAttrs.m_mwmSize, 48394664, ());
   TEST_EQUAL(nodeAttrs.m_status, NodeStatus::NotDownloaded, ());
   TEST_EQUAL(nodeAttrs.m_error, NodeErrorCode::NoError, ());
+  TEST_EQUAL(nodeAttrs.m_parentCountryId, "Countries", ());
 }
 
 UNIT_TEST(StorageTest_ParseStatus)
