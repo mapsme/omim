@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Wns-nH-AQU">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Wns-nH-AQU">
     <dependencies>
         <deployment version="2048" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
@@ -90,7 +90,7 @@
                                             <userDefinedRuntimeAttribute type="string" keyPath="localizedText" value="downloader_update_all"/>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
-                                            <action selector="allMapsAction" destination="eCI-mf-eCv" eventType="touchUpInside" id="iOm-Tm-DBV"/>
+                                            <action selector="allMapsAction" destination="eCI-mf-eCv" eventType="touchUpInside" id="slj-0v-XS7"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -234,7 +234,7 @@
                                             <userDefinedRuntimeAttribute type="string" keyPath="localizedText" value="downloader_download_all"/>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
-                                            <action selector="allMapsAction" destination="eCI-mf-eCv" eventType="touchUpInside" id="d0V-lN-czG"/>
+                                            <action selector="allMapsAction" destination="cIk-gU-IeI" eventType="touchUpInside" id="BFl-NK-h9n"/>
                                         </connections>
                                     </button>
                                 </subviews>
