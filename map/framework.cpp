@@ -1862,6 +1862,7 @@ void Framework::ActivateUserMark(UserMark const * mark, bool needAnim)
 
 void Framework::DeactivateUserMark()
 {
+  m_lastTapEvent.reset();
   CallDrapeFunction(bind(&df::DrapeEngine::DeselectObject, _1));
 }
 
@@ -1905,11 +1906,6 @@ void Framework::OnTapEvent(m2::PointD pxPoint, bool isLong, bool isMyPosition, F
   }
 
   ActivateUserMark(mark, true);
-}
-
-void Framework::ResetLastTapEvent()
-{
-  m_lastTapEvent.reset();
 }
 
 void Framework::InvalidateRendering()
