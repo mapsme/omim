@@ -392,11 +392,11 @@ NSString * const kEditorSegue = @"Map2EditorSegue";
   self.controlsManager = [[MWMMapViewControlsManager alloc] initWithParentController:self];
 }
 
-- (void)refresh
+- (void)mwm_refreshUI
 {
   [MapsAppDelegate customizeAppearance];
-  [self.navigationController.navigationBar refresh];
-  [self.controlsManager refresh];
+  [self.navigationController.navigationBar mwm_refreshUI];
+  [self.controlsManager mwm_refreshUI];
 }
 
 - (void)showWhatsNewIfNeeded

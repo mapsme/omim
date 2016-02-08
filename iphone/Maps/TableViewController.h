@@ -1,7 +1,5 @@
 @interface TableViewController : UITableViewController
 
-@property (nonatomic, readonly) BOOL hasNavigationBar;
-
-- (void)refresh;
+- (void)mwm_refreshUI;
 
 @end
