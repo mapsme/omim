@@ -23,7 +23,7 @@
 #pragma mark - Layout
 
 - (void)refreshLayout;
-- (void)refresh;
+- (void)mwm_refreshUI;
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
                                 duration:(NSTimeInterval)duration;

@@ -17,7 +17,7 @@
 - (void)showPlacePage;
 - (void)reloadPlacePage;
 - (void)refreshPlacePage;
-- (void)refresh;
+- (void)mwm_refreshUI;
 - (BOOL)hasPlacePage;
 - (void)dismissPlacePage;
 - (void)hidePlacePage;
