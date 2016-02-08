@@ -237,8 +237,18 @@ string AddressInfo::FormatPinText() const
   return (ret.empty() ? type : (ret + " (" + type + ')'));
 }
 
-string AddressInfo::FormatAddress() const
+string AddressInfo::FormatHouseAndStreet(AddressType type /* = DEFAULT */) const
 {
+  // Check whether we can format address according to the query type and actual address distance.
+  /// @todo We can add "Near" prefix here in future according to the distance.
+  if (m_distanceMeters > 0.0)
+  {
+    if (type == SEARCH_RESULT && m_distanceMeters > 50.0)
+      return string();
+    if (m_distanceMeters > 200.0)
+      return string();
+  }
+
   string result = m_street;
   if (!m_house.empty())
   {
@@ -246,6 +256,13 @@ string AddressInfo::FormatAddress() const
       result += ", ";
     result += m_house;
   }
+
+  return result;
+}
+
+string AddressInfo::FormatAddress(AddressType type /* = DEFAULT */) const
+{
+  string result = FormatHouseAndStreet(type);
   if (!m_city.empty())
   {
     if (!result.empty())
@@ -261,6 +278,12 @@ string AddressInfo::FormatAddress() const
   return result;
 }
 
+string AddressInfo::FormatNameAndAddress(AddressType type /* = DEFAULT */) const
+{
+  string const addr = FormatAddress(type);
+  return (m_name.empty() ? addr : m_name + ", " + addr);
+}
+
 string AddressInfo::FormatTypes() const
 {
   string result;
@@ -272,12 +295,6 @@ string AddressInfo::FormatTypes() const
     result += m_types[i];
   }
   return result;
-}
-
-string AddressInfo::FormatNameAndAddress() const
-{
-  string const addr = FormatAddress();
-  return (m_name.empty() ? addr : m_name + ", " + addr);
 }
 
 string AddressInfo::GetBestType() const
