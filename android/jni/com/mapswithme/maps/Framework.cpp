@@ -130,8 +130,7 @@ bool Framework::CreateDrapeEngine(JNIEnv * env, jobject jSurface, int densityDpi
   m_work.CreateDrapeEngine(make_ref(m_contextFactory), move(p));
   m_work.EnterForeground();
 
-  // Load initial state of the map and execute drape tasks which set up custom state.
-  LoadState();
+  // Execute drape tasks which set up custom state.
   {
     lock_guard<mutex> lock(m_drapeQueueMutex);
     if (!m_drapeTasksQueue.empty())
@@ -143,7 +142,8 @@ bool Framework::CreateDrapeEngine(JNIEnv * env, jobject jSurface, int densityDpi
 
 void Framework::DeleteDrapeEngine()
 {
-  SaveState();
+  m_work.EnterBackground();
+
   m_work.DestroyDrapeEngine();
 }
 
@@ -160,7 +160,7 @@ void Framework::Resize(int w, int h)
 
 void Framework::DetachSurface()
 {
-  m_work.EnterBackground();
+  m_work.SetRenderingEnabled(false);
 
   ASSERT(m_contextFactory != nullptr, ());
   AndroidOGLContextFactory * factory = m_contextFactory->CastFactory<AndroidOGLContextFactory>();
@@ -173,7 +173,7 @@ void Framework::AttachSurface(JNIEnv * env, jobject jSurface)
   AndroidOGLContextFactory * factory = m_contextFactory->CastFactory<AndroidOGLContextFactory>();
   factory->SetSurface(env, jSurface);
 
-  m_work.EnterForeground();
+  m_work.SetRenderingEnabled(true);
 }
 
 void Framework::SetMapStyle(MapStyle mapStyle)
@@ -307,16 +307,6 @@ bool Framework::Search(search::SearchParams const & params)
   return m_work.Search(params);
 }
 
-void Framework::LoadState()
-{
-  m_work.LoadState();
-}
-
-void Framework::SaveState()
-{
-  m_work.SaveState();
-}
-
 void Framework::AddLocalMaps()
 {
   m_work.RegisterAllMaps();
@@ -349,7 +339,6 @@ bool Framework::ShowMapForURL(string const & url)
 
 void Framework::DeactivatePopup()
 {
-  m_work.ResetLastTapEvent();
   m_work.DeactivateUserMark();
 }
 

@@ -274,6 +274,10 @@ public:
   bool HasActiveUserMark();
   void InvalidateUserMarks();
   PoiMarkPoint * GetAddressMark(m2::PointD const & globalPoint) const;
+  // TODO(AlexZ): Temporary workaround to get last active UserMark on Android.
+  // Refactor it out together with UserMarks.
+  /// @returns nullptr if there is no selection on the map.
+  UserMark const * GetActiveUserMark() const;
 
   using TActivateCallbackFn = function<void (unique_ptr<UserMarkCopy> mark)>;
   void SetUserMarkActivationListener(TActivateCallbackFn const & fn) { m_activateUserMarkFn = fn; }
@@ -283,22 +287,16 @@ public:
   void InvalidateRendering();
 
 private:
-  struct TapEventData
-  {
-    m2::PointD m_pxPoint;
-    bool m_isLong;
-    bool m_isMyPosition;
-    FeatureID m_feature;
-  };
-  unique_ptr<TapEventData> m_lastTapEvent;
+  /// UI callback is called when tap event is "restored" after Drape engine restart.
+  void SimulateLastTapEventIfNeeded();
+  unique_ptr<df::TapInfo> m_lastTapEvent;
 #ifdef OMIM_OS_ANDROID
   unique_ptr<location::CompassInfo> m_lastCompassInfo;
   unique_ptr<location::GpsInfo> m_lastGPSInfo;
 #endif
 
-  void OnTapEvent(m2::PointD pxPoint, bool isLong, bool isMyPosition, FeatureID const & feature);
-  UserMark const * OnTapEventImpl(m2::PointD pxPoint, bool isLong, bool isMyPosition, FeatureID const & feature);
-  //@}
+  void OnTapEvent(df::TapInfo const & tapInfo);
+  UserMark const * OnTapEventImpl(df::TapInfo const & tapInfo) const;
 
   TActivateCallbackFn m_activateUserMarkFn;
 
@@ -332,7 +330,15 @@ public:
   void CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory, DrapeCreationParams && params);
   ref_ptr<df::DrapeEngine> GetDrapeEngine();
   void DestroyDrapeEngine();
+  /// Called when graphics engine should be temporarily paused and then resumed.
+  void SetRenderingEnabled(bool enable);
+private:
+  /// Depends on initialized Drape engine.
+  void SaveViewport();
+  /// Depends on initialized Drape engine.
+  void LoadViewport();
 
+public:
   void ConnectToGpsTracker();
   void DisconnectFromGpsTracker();
 
@@ -425,9 +431,6 @@ public:
   inline m2::PointD PtoG(m2::PointD const & p) const { return m_currentModelView.PtoG(p); }
   inline m2::PointD GtoP(m2::PointD const & p) const { return m_currentModelView.GtoP(p); }
   inline m2::PointD GtoP3d(m2::PointD const & p) const { return m_currentModelView.PtoP3d(m_currentModelView.GtoP(p)); }
-
-  void SaveState();
-  void LoadState();
 
   /// Show all model by it's world rect.
   void ShowAll();

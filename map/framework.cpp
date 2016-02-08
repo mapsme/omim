@@ -726,7 +726,7 @@ void Framework::PrepareToShutdown()
   DestroyDrapeEngine();
 }
 
-void Framework::SaveState()
+void Framework::SaveViewport()
 {
   m2::AnyRectD rect;
   if (m_currentModelView.isPerspective())
@@ -742,7 +742,7 @@ void Framework::SaveState()
   Settings::Set("ScreenClipRect", rect);
 }
 
-void Framework::LoadState()
+void Framework::LoadViewport()
 {
   m2::AnyRectD rect;
   if (Settings::Get("ScreenClipRect", rect) && df::GetWorldRect().IsRectInside(rect.GetGlobalRect()))
@@ -1047,7 +1047,10 @@ void Framework::MemoryWarning()
 
 void Framework::EnterBackground()
 {
-  const ms::LatLon ll = MercatorBounds::ToLatLon(GetViewportCenter());
+  SetRenderingEnabled(false);
+  SaveViewport();
+
+  ms::LatLon const ll = MercatorBounds::ToLatLon(GetViewportCenter());
   alohalytics::Stats::Instance().LogEvent("Framework::EnterBackground", {{"zoom", strings::to_string(GetDrawScale())},
                                           {"foregroundSeconds", strings::to_string(
                                            static_cast<int>(my::Timer::LocalTime() - m_startForegroundTime))}},
@@ -1058,9 +1061,6 @@ void Framework::EnterBackground()
 #ifndef OMIM_OS_ANDROID
   ClearAllCaches();
 #endif
-
-  if (m_drapeEngine != nullptr)
-    m_drapeEngine->SetRenderingEnabled(false);
 }
 
 void Framework::EnterForeground()
@@ -1068,8 +1068,11 @@ void Framework::EnterForeground()
   m_startForegroundTime = my::Timer::LocalTime();
 
   // Drape can be not initialized here in case of the first launch
-  if (m_drapeEngine != nullptr)
-    m_drapeEngine->SetRenderingEnabled(true);
+  // TODO(AlexZ): Why it can't be initialized here? Is it because we call EnterForeground in Android for every
+  // time when activity is created? If yes, then this code should be refactored:
+  // EnterForeground and EnterBackground should be called only when user opens the app and
+  // when user completely leaves the app (and is not just switching between app's activities).
+  SetRenderingEnabled(true);
 }
 
 bool Framework::GetCurrentPosition(double & lat, double & lon) const
@@ -1435,7 +1438,7 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
     if (GetDrawScale() <= scales::GetUpperWorldScale())
       m_autoDownloadingOn = true;
   });
-  m_drapeEngine->SetTapEventInfoListener(bind(&Framework::OnTapEvent, this, _1, _2, _3, _4));
+  m_drapeEngine->SetTapEventInfoListener(bind(&Framework::OnTapEvent, this, _1));
   m_drapeEngine->SetUserPositionListener(bind(&Framework::OnUserPositionChanged, this, _1));
   OnSize(params.m_surfaceWidth, params.m_surfaceHeight);
 
@@ -1443,15 +1446,6 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
   m_drapeEngine->InvalidateMyPosition();
 
   InvalidateUserMarks();
-
-  // In case of the engine reinitialization simulate the last tap to show selection mark.
-  if (m_lastTapEvent != nullptr)
-  {
-    UserMark const * mark = OnTapEventImpl(m_lastTapEvent->m_pxPoint, m_lastTapEvent->m_isLong,
-                                           m_lastTapEvent->m_isMyPosition, m_lastTapEvent->m_feature);
-    if (mark != nullptr)
-      ActivateUserMark(mark, true);
-  }
 
 #ifdef OMIM_OS_ANDROID
   // In case of the engine reinitialization recover compass and location data
@@ -1474,6 +1468,21 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
 
   if (m_connectToGpsTrack)
     GpsTracker::Instance().Connect(bind(&Framework::OnUpdateGpsTrackPointsCallback, this, _1, _2));
+
+  LoadViewport();
+
+  // In case of the engine reinitialization simulate the last tap to show selection mark.
+  SimulateLastTapEventIfNeeded();
+}
+
+void Framework::SimulateLastTapEventIfNeeded()
+{
+  if (m_lastTapEvent)
+  {
+    UserMark const * mark = OnTapEventImpl(*m_lastTapEvent);
+    if (mark)
+      ActivateUserMark(mark, true);
+  }
 }
 
 ref_ptr<df::DrapeEngine> Framework::GetDrapeEngine()
@@ -1485,6 +1494,12 @@ void Framework::DestroyDrapeEngine()
 {
   GpsTracker::Instance().Disconnect();
   m_drapeEngine.reset();
+}
+
+void Framework::SetRenderingEnabled(bool enable)
+{
+  if (m_drapeEngine)
+    m_drapeEngine->SetRenderingEnabled(enable);
 }
 
 void Framework::ConnectToGpsTracker()
@@ -1862,6 +1877,7 @@ void Framework::ActivateUserMark(UserMark const * mark, bool needAnim)
 
 void Framework::DeactivateUserMark()
 {
+  m_lastTapEvent.reset();
   CallDrapeFunction(bind(&df::DrapeEngine::DeselectObject, _1));
 }
 
@@ -1871,6 +1887,13 @@ bool Framework::HasActiveUserMark()
     return false;
 
   return m_drapeEngine->GetSelectedObject() != df::SelectionShape::OBJECT_EMPTY;
+}
+
+UserMark const * Framework::GetActiveUserMark() const
+{
+  if (m_lastTapEvent)
+    return OnTapEventImpl(*m_lastTapEvent);
+  return nullptr;
 }
 
 void Framework::InvalidateUserMarks()
@@ -1885,20 +1908,15 @@ void Framework::InvalidateUserMarks()
   }
 }
 
-void Framework::OnTapEvent(m2::PointD pxPoint, bool isLong, bool isMyPosition, FeatureID const & fid)
+void Framework::OnTapEvent(df::TapInfo const & tapInfo)
 {
   // Back up last tap event to recover selection in case of Drape reinitialization.
-  if (!m_lastTapEvent)
-    m_lastTapEvent = make_unique<TapEventData>();
-  m_lastTapEvent->m_pxPoint = pxPoint;
-  m_lastTapEvent->m_isLong = isLong;
-  m_lastTapEvent->m_isMyPosition = isMyPosition;
-  m_lastTapEvent->m_feature = fid;
+  m_lastTapEvent.reset(new df::TapInfo(tapInfo));
 
-  UserMark const * mark = OnTapEventImpl(pxPoint, isLong, isMyPosition, fid);
+  UserMark const * mark = OnTapEventImpl(tapInfo);
 
   {
-    alohalytics::TStringMap details {{"isLongPress", isLong ? "1" : "0"}};
+    alohalytics::TStringMap details {{"isLongPress", tapInfo.m_isLong ? "1" : "0"}};
     if (mark)
       mark->FillLogEvent(details);
     alohalytics::Stats::Instance().LogEvent("$GetUserMark", details);
@@ -1907,22 +1925,17 @@ void Framework::OnTapEvent(m2::PointD pxPoint, bool isLong, bool isMyPosition, F
   ActivateUserMark(mark, true);
 }
 
-void Framework::ResetLastTapEvent()
-{
-  m_lastTapEvent.reset();
-}
-
 void Framework::InvalidateRendering()
 {
   if (m_drapeEngine != nullptr)
     m_drapeEngine->Invalidate();
 }
 
-UserMark const * Framework::OnTapEventImpl(m2::PointD pxPoint, bool isLong, bool isMyPosition, FeatureID const & fid)
+UserMark const * Framework::OnTapEventImpl(const df::TapInfo & tapInfo) const
 {
-  m2::PointD const pxPoint2d = m_currentModelView.P3dtoP(pxPoint);
+  m2::PointD const pxPoint2d = m_currentModelView.P3dtoP(tapInfo.m_pixelPoint);
 
-  if (isMyPosition)
+  if (tapInfo.m_isMyPositionTapped)
     return UserMarkContainer::UserMarkForMyPostion();
 
   df::VisualParams const & vp = df::VisualParams::Instance();
@@ -1943,6 +1956,7 @@ UserMark const * Framework::OnTapEventImpl(m2::PointD pxPoint, bool isLong, bool
           return (type == UserMarkType::BOOKMARK_MARK ? bmSearchRect : rect);
         });
 
+  FeatureID const & fid = tapInfo.m_featureTapped;
   if (mark != nullptr)
   {
     // TODO(AlexZ): Refactor out together with UserMarks.
@@ -1966,7 +1980,7 @@ UserMark const * Framework::OnTapEventImpl(m2::PointD pxPoint, bool isLong, bool
     mercatorPivot = feature::GetCenter(*feature);
     needMark = true;
   }
-  else if (isLong)
+  else if (tapInfo.m_isLong)
   {
     mercatorPivot = m_currentModelView.PtoG(pxPoint2d);
     // TODO(AlexZ): Should we change mercatorPivot to found feature's center?

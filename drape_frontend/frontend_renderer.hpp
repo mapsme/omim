@@ -53,10 +53,9 @@ class TransparentLayer;
 struct TapInfo
 {
   m2::PointD const m_pixelPoint;
-  bool m_isLong;
-
-  bool m_isMyPositionTapped;
-  FeatureID m_featureTapped;
+  bool const m_isLong;
+  bool const m_isMyPositionTapped;
+  FeatureID const m_featureTapped;
 };
 
 class FrontendRenderer : public BaseRenderer
@@ -66,7 +65,7 @@ class FrontendRenderer : public BaseRenderer
 public:
   using TModelViewChanged = function<void (ScreenBase const & screen)>;
   using TIsCountryLoaded = TIsCountryLoaded;
-  using TTapEventInfoFn = function<void (m2::PointD const & pxPoint, bool isLong, bool isMyPosition, FeatureID const & id)>;
+  using TTapEventInfoFn = function<void (TapInfo const &)>;
   using TUserPositionChangedFn = function<void (m2::PointD const & pt)>;
 
   struct Params : BaseRenderer::Params
