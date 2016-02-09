@@ -56,10 +56,10 @@ public:
 
   /// Strings that is displayed in the GUI.
   //@{
-  char const * GetString() const { return m_str.c_str(); }
-  char const * GetRegionString() const { return m_region.c_str(); }
-  char const * GetFeatureType() const { return m_type.c_str(); }
-  char const * GetCuisine() const { return m_metadata.m_cuisine.c_str(); }
+  string const & GetString() const { return m_str; }
+  string const & GetRegion() const { return m_region; }
+  string const & GetFeatureType() const { return m_type; }
+  string const & GetCuisine() const { return m_metadata.m_cuisine; }
   //@}
 
   bool IsClosed() const { return m_metadata.m_isClosed; }
@@ -172,18 +172,25 @@ struct AddressInfo
 {
   string m_country, m_city, m_street, m_house, m_name;
   vector<string> m_types;
-
-  void MakeFrom(search::Result const & res);
+  double m_distanceMeters = -1.0;
 
   string GetPinName() const;    // Caroline
   string GetPinType() const;    // shop
 
   string FormatPinText() const; // Caroline (clothes shop)
-  string FormatAddress() const; // 7 vulica Frunze, Belarus
   string FormatTypes() const;   // clothes shop
-  string FormatNameAndAddress() const;  // Caroline, 7 vulica Frunze, Belarus
   string GetBestType() const;
   bool IsEmptyName() const;
+
+  enum AddressType { DEFAULT, SEARCH_RESULT };
+  // 7 vulica Frunze
+  string FormatHouseAndStreet(AddressType type = DEFAULT) const;
+  // 7 vulica Frunze, Minsk, Belarus
+  string FormatAddress(AddressType type = DEFAULT) const;
+  // Caroline, 7 vulica Frunze, Minsk, Belarus
+  string FormatNameAndAddress(AddressType type = DEFAULT) const;
+
+  friend string DebugPrint(AddressInfo const & info);
 
   void Clear();
 };

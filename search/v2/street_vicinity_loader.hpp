@@ -37,6 +37,9 @@ public:
     m2::RectD m_rect;
     unique_ptr<ProjectionOnStreetCalculator> m_calculator;
 
+    /// @todo Cache GetProjection results for features here, because
+    /// feature::GetCenter and ProjectionOnStreetCalculator::GetProjection are not so fast.
+
     DISALLOW_COPY(Street);
   };
 
@@ -46,8 +49,12 @@ public:
   // Calls |fn| on each index in |sortedIds| where sortedIds[index]
   // belongs to the street's vicinity.
   template <typename TFn>
-  void ForEachInVicinity(uint32_t streetId, vector<uint32_t> const & sortedIds, TFn const & fn)
+  void ForEachInVicinity(uint32_t streetId, vector<uint32_t> const & sortedIds,
+                         double offsetMeters, TFn const & fn)
   {
+    // Passed offset param should be less than the cached one, or the cache is invalid otherwise.
+    ASSERT_LESS_OR_EQUAL(offsetMeters, m_offsetMeters, ());
+
     Street const & street = GetStreet(streetId);
     if (street.IsEmpty())
       return;
@@ -61,11 +68,13 @@ public:
         continue;
 
       FeatureType ft;
-      m_context->m_vector.GetByIndex(id, ft);
-      if (!calculator.GetProjection(feature::GetCenter(ft, FeatureType::WORST_GEOMETRY), proj))
-        continue;
+      m_context->GetFeature(id, ft);
 
-      fn(id);
+      if (calculator.GetProjection(feature::GetCenter(ft, FeatureType::WORST_GEOMETRY), proj) &&
+          proj.m_distMeters <= offsetMeters)
+      {
+        fn(id);
+      }
     }
   }
 

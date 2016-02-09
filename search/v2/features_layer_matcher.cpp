@@ -10,8 +10,10 @@ namespace search
 {
 namespace v2
 {
-// static
-double const FeaturesLayerMatcher::kBuildingRadiusMeters = 50;
+
+/// Max distance from house to street where we do search matching
+/// even if there is no exact street written for this house.
+int constexpr kMaxApproxStreetDistanceM = 100;
 
 FeaturesLayerMatcher::FeaturesLayerMatcher(Index & index, my::Cancellable const & cancellable)
   : m_context(nullptr)
@@ -65,7 +67,8 @@ uint32_t FeaturesLayerMatcher::GetMatchingStreet(uint32_t houseId, FeatureType &
   return entry.first;
 }
 
-vector<ReverseGeocoder::Street> const & FeaturesLayerMatcher::GetNearbyStreets(uint32_t featureId)
+FeaturesLayerMatcher::TStreets const &
+FeaturesLayerMatcher::GetNearbyStreets(uint32_t featureId)
 {
   auto entry = m_nearbyStreetsCache.Get(featureId);
   if (!entry.second)
@@ -74,33 +77,47 @@ vector<ReverseGeocoder::Street> const & FeaturesLayerMatcher::GetNearbyStreets(u
   FeatureType feature;
   GetByIndex(featureId, feature);
 
-  m_reverseGeocoder.GetNearbyStreets(feature::GetCenter(feature), entry.first);
+  GetNearbyStreetsImpl(feature, entry.first);
   return entry.first;
 }
 
-vector<ReverseGeocoder::Street> const & FeaturesLayerMatcher::GetNearbyStreets(
-    uint32_t featureId, FeatureType & feature)
+FeaturesLayerMatcher::TStreets const &
+FeaturesLayerMatcher::GetNearbyStreets(uint32_t featureId, FeatureType & feature)
 {
   auto entry = m_nearbyStreetsCache.Get(featureId);
   if (!entry.second)
     return entry.first;
 
-  m_reverseGeocoder.GetNearbyStreets(feature::GetCenter(feature), entry.first);
+  GetNearbyStreetsImpl(feature, entry.first);
   return entry.first;
+}
+
+void FeaturesLayerMatcher::GetNearbyStreetsImpl(FeatureType & feature, TStreets & streets)
+{
+  m_reverseGeocoder.GetNearbyStreets(feature, streets);
+  for (size_t i = 0; i < streets.size(); ++i)
+  {
+    if (streets[i].m_distanceMeters > ReverseGeocoder::kLookupRadiusM)
+    {
+      streets.resize(i);
+      return;
+    }
+  }
 }
 
 uint32_t FeaturesLayerMatcher::GetMatchingStreetImpl(uint32_t houseId, FeatureType & houseFeature)
 {
   auto const & streets = GetNearbyStreets(houseId, houseFeature);
 
-  uint32_t streetId = kInvalidId;
-  uint32_t streetIndex;
-  if (!m_houseToStreetTable->Get(houseId, streetIndex))
-    streetIndex = streets.size();
+  uint32_t index;
+  if (m_houseToStreetTable->Get(houseId, index) && index < streets.size())
+    return streets[index].m_id.m_index;
 
-  if (streetIndex < streets.size() && streets[streetIndex].m_id.m_mwmId == m_context->m_id)
-    streetId = streets[streetIndex].m_id.m_index;
-  return streetId;
+  // If there is no saved street for feature, assume that it's a nearest street if it's too close.
+  if (!streets.empty() && streets[0].m_distanceMeters < kMaxApproxStreetDistanceM)
+    return streets[0].m_id.m_index;
+
+  return kInvalidId;
 }
 
 }  // namespace v2

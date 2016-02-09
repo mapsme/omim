@@ -544,10 +544,10 @@ string const & MergedStreet::GetName() const
   return m_cont.front()->GetName();
 }
 
-bool MergedStreet::IsHousesReaded() const
+bool MergedStreet::IsHousesRead() const
 {
   ASSERT(!m_cont.empty(), ());
-  return m_cont.front()->m_housesReaded;
+  return m_cont.front()->m_housesRead;
 }
 
 void MergedStreet::Next(Index & i) const
@@ -579,7 +579,7 @@ void MergedStreet::FinishReadingHouses()
         m_cont[i]->m_houses[j].m_streetDistance += length;
 
     length += m_cont[i]->m_length;
-    m_cont[i]->m_housesReaded = true;
+    m_cont[i]->m_housesRead = true;
   }
 
   // Unique projections for merged street.
@@ -669,7 +669,7 @@ void HouseDetector::ReadHouse(FeatureType const & f, Street * st, ProjectionCalc
     m2::PointD const pt = isNew ? f.GetLimitRect(FeatureType::BEST_GEOMETRY).Center() : it->second->GetPosition();
 
     HouseProjection pr;
-    if (calc.GetProjection(pt, pr))
+    if (calc.GetProjection(pt, pr) && pr.m_distMeters <= m_houseOffsetM)
     {
       pr.m_streetDistance =
           st->GetPrefixLength(pr.m_segIndex) + st->m_points[pr.m_segIndex].Length(pr.m_proj);
@@ -692,15 +692,15 @@ void HouseDetector::ReadHouse(FeatureType const & f, Street * st, ProjectionCalc
   }
 }
 
-void HouseDetector::ReadHouses(Street * st, double offsetMeters)
+void HouseDetector::ReadHouses(Street * st)
 {
-  if (st->m_housesReaded)
+  if (st->m_housesRead)
     return;
 
   //offsetMeters = max(HN_MIN_READ_OFFSET_M, min(GetApprLengthMeters(st->m_number) / 2, offsetMeters));
 
-  ProjectionOnStreetCalculator calc(st->m_points, offsetMeters);
-  m_loader.ForEachInRect(st->GetLimitRect(offsetMeters),
+  ProjectionOnStreetCalculator calc(st->m_points);
+  m_loader.ForEachInRect(st->GetLimitRect(m_houseOffsetM),
                          bind(&HouseDetector::ReadHouse<ProjectionOnStreetCalculator>, this, _1, st, ref(calc)));
 
   st->m_length = st->GetLength();
@@ -711,24 +711,24 @@ void HouseDetector::ReadAllHouses(double offsetMeters)
 {
   m_houseOffsetM = offsetMeters;
 
-  for (StreetMapT::iterator it = m_id2st.begin(); it != m_id2st.end(); ++it)
-    ReadHouses(it->second, offsetMeters);
+  for (auto const & e : m_id2st)
+    ReadHouses(e.second);
 
-  for (size_t i = 0; i < m_streets.size(); ++i)
+  for (auto & st : m_streets)
   {
-    if (!m_streets[i].IsHousesReaded())
-      m_streets[i].FinishReadingHouses();
+    if (!st.IsHousesRead())
+      st.FinishReadingHouses();
   }
 }
 
 void HouseDetector::ClearCaches()
 {
-  for (StreetMapT::iterator it = m_id2st.begin(); it != m_id2st.end(); ++it)
-    delete it->second;
+  for (auto & st : m_id2st)
+    delete st.second;
   m_id2st.clear();
 
-  for (HouseMapT::iterator it = m_id2house.begin(); it != m_id2house.end(); ++it)
-    delete it->second;
+  for (auto & h : m_id2house)
+    delete h.second;
 
   m_streetNum = 0;
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "search/v2/house_to_street_table.hpp"
+
 #include "indexer/feature_decl.hpp"
 
 #include "std/string.hpp"
@@ -23,7 +25,7 @@ class ReverseGeocoder
     double m_distanceMeters;
     string m_name;
 
-    Object() : m_distanceMeters(0.0) {}
+    Object() : m_distanceMeters(-1.0) {}
     Object(FeatureID const & id, double dist, string const & name)
       : m_id(id), m_distanceMeters(dist), m_name(name)
     {
@@ -33,7 +35,8 @@ class ReverseGeocoder
   };
 
 public:
-  static double const kLookupRadiusM;
+  /// All "Nearby" functions work in this lookup radius.
+  static int constexpr kLookupRadiusM = 500;
 
   explicit ReverseGeocoder(Index const & index);
 
@@ -62,21 +65,45 @@ public:
 
     string GetHouseNumber() const { return m_building.m_name; }
     string GetStreetName() const { return m_street.m_name; }
+    double GetDistance() const { return m_building.m_distanceMeters; }
   };
 
-  void GetNearbyStreets(m2::PointD const & center, vector<Street> & streets) const;
+  /// @return Sorted by distance streets vector for the specified MwmId.
+  //@{
+  void GetNearbyStreets(MwmSet::MwmId const & id, m2::PointD const & center,
+                        vector<Street> & streets) const;
+  void GetNearbyStreets(FeatureType & ft, vector<Street> & streets) const;
+  //@}
 
+  /// @todo Leave const reference for now to support client's legacy code.
+  /// It's better to use honest non-const reference when feature can be modified in any way.
+  pair<vector<Street>, uint32_t> GetNearbyFeatureStreets(FeatureType const & ft) const;
+
+  /// @return The nearest exact address where building has house number and valid street match.
   void GetNearbyAddress(m2::PointD const & center, Address & addr) const;
-
-  /// @returns street segments (can be duplicate names) sorted by distance to feature's center.
-  /// uint32_t, if less than vector.size(), contains index of exact feature's street specified in OSM data.
-  pair<vector<Street>, uint32_t> GetNearbyFeatureStreets(FeatureType const & feature) const;
-
-  void GetNearbyBuildings(m2::PointD const & center, vector<Building> & buildings) const;
-
-  void GetNearbyBuildings(m2::PointD const & center, double radiusM, vector<Building> & buildings) const;
+  /// @return The exact address for feature.
+  /// @precondition ft Should have house number.
+  void GetNearbyAddress(FeatureType & ft, Address & addr) const;
 
 private:
+
+  /// Helper class to incapsulate house 2 street table reloading.
+  class HouseTable
+  {
+    Index const & m_index;
+    unique_ptr<search::v2::HouseToStreetTable> m_table;
+    MwmSet::MwmHandle m_handle;
+  public:
+    explicit HouseTable(Index const & index) : m_index(index) {}
+    bool Get(FeatureID const & fid, uint32_t & streetIndex);
+  };
+
+  bool GetNearbyAddress(HouseTable & table, Building const & bld, Address & addr) const;
+
+  /// @return Sorted by distance houses vector with valid house number.
+  void GetNearbyBuildings(m2::PointD const & center, vector<Building> & buildings) const;
+
+  static Building FromFeature(FeatureType & ft, double distMeters);
   static m2::RectD GetLookupRect(m2::PointD const & center, double radiusM);
 };
 

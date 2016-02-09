@@ -144,13 +144,9 @@ pair<uint16_t, uint16_t> const & Result::GetHighlightRange(size_t idx) const
 
 void Result::AppendCity(string const & name)
 {
-  if (name.empty())
-    return;
-
-  if (m_region.empty())
+  // No need to store mwm file name if we have valid city name.
+  if (!name.empty())
     m_region = name;
-  else
-    m_region += (", " + name);
 }
 
 bool Results::AddResult(Result && res)
@@ -211,20 +207,6 @@ size_t Results::GetSuggestsCount() const
 // AddressInfo implementation
 ////////////////////////////////////////////////////////////////////////////////////
 
-void AddressInfo::MakeFrom(Result const & res)
-{
-  ASSERT_NOT_EQUAL(res.GetResultType(), Result::RESULT_SUGGEST_PURE, ());
-
-  string const & type = res.GetFeatureType();
-  if (!type.empty())
-    m_types.push_back(type);
-
-  // assign name if it's not equal with type
-  string const & name = res.GetString();
-  if (name != type)
-    m_name = name;
-}
-
 bool AddressInfo::IsEmptyName() const
 {
   return m_name.empty() && m_house.empty();
@@ -255,15 +237,32 @@ string AddressInfo::FormatPinText() const
   return (ret.empty() ? type : (ret + " (" + type + ')'));
 }
 
-string AddressInfo::FormatAddress() const
+string AddressInfo::FormatHouseAndStreet(AddressType type /* = DEFAULT */) const
 {
-  string result = m_house;
-  if (!m_street.empty())
+  // Check whether we can format address according to the query type and actual address distance.
+  /// @todo We can add "Near" prefix here in future according to the distance.
+  if (m_distanceMeters > 0.0)
+  {
+    if (type == SEARCH_RESULT && m_distanceMeters > 50.0)
+      return string();
+    if (m_distanceMeters > 200.0)
+      return string();
+  }
+
+  string result = m_street;
+  if (!m_house.empty())
   {
     if (!result.empty())
-      result += ' ';
-    result += m_street;
+      result += ", ";
+    result += m_house;
   }
+
+  return result;
+}
+
+string AddressInfo::FormatAddress(AddressType type /* = DEFAULT */) const
+{
+  string result = FormatHouseAndStreet(type);
   if (!m_city.empty())
   {
     if (!result.empty())
@@ -279,6 +278,12 @@ string AddressInfo::FormatAddress() const
   return result;
 }
 
+string AddressInfo::FormatNameAndAddress(AddressType type /* = DEFAULT */) const
+{
+  string const addr = FormatAddress(type);
+  return (m_name.empty() ? addr : m_name + ", " + addr);
+}
+
 string AddressInfo::FormatTypes() const
 {
   string result;
@@ -290,12 +295,6 @@ string AddressInfo::FormatTypes() const
     result += m_types[i];
   }
   return result;
-}
-
-string AddressInfo::FormatNameAndAddress() const
-{
-  string const addr = FormatAddress();
-  return (m_name.empty() ? addr : m_name + ", " + addr);
 }
 
 string AddressInfo::GetBestType() const
@@ -316,6 +315,11 @@ void AddressInfo::Clear()
   m_house.clear();
   m_name.clear();
   m_types.clear();
+}
+
+string DebugPrint(AddressInfo const & info)
+{
+  return info.FormatNameAndAddress();
 }
 
 }  // namespace search

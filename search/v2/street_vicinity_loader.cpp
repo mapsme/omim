@@ -49,7 +49,7 @@ StreetVicinityLoader::Street const & StreetVicinityLoader::GetStreet(uint32_t fe
 void StreetVicinityLoader::LoadStreet(uint32_t featureId, Street & street)
 {
   FeatureType feature;
-  m_context->m_vector.GetByIndex(featureId, feature);
+  m_context->GetFeature(featureId, feature);
 
   if (feature.GetFeatureType() != feature::GEOM_LINE)
     return;
@@ -69,7 +69,7 @@ void StreetVicinityLoader::LoadStreet(uint32_t featureId, Street & street)
                                                  interval.first, interval.second, m_scale);
   }
 
-  street.m_calculator = make_unique<ProjectionOnStreetCalculator>(points, m_offsetMeters);
+  street.m_calculator = make_unique<ProjectionOnStreetCalculator>(points);
 }
 }  // namespace v2
 }  // namespace search
