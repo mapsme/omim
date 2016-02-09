@@ -34,6 +34,22 @@ int GetLevelCount(Storage & storage, TCountryId const & countryId)
   return 1 + level;
 }
 
+template <typename F>
+void ForEachLeaf(Storage & storage, TCountryId const & countryId, F && f)
+{
+  TCountriesVec children;
+  storage.GetChildren(countryId, children);
+  if (children.empty())
+  {
+    f(countryId);
+  }
+  else
+  {
+    for (auto const & child : children)
+      ForEachLeaf(storage, child, f);
+  }
+}
+
 } // namespace
 
 UNIT_TEST(SmallMwms_3levels_Test)
@@ -81,6 +97,16 @@ UNIT_TEST(SmallMwms_3levels_Test)
   files.clear();
   platform.GetFilesByExt(mapDir, DATA_FILE_EXTENSION, files);
   TEST_GREATER(files.size(), 0, ());
+
+  TCountriesVec children;
+  ForEachLeaf(storage, kCountryId, [&](TCountryId const & leaf){
+    children.emplace_back(leaf);
+  });
+  for (auto const & child : children)
+  {
+    string const mwmFile = my::JoinFoldersToPath(mapDir, child + DATA_FILE_EXTENSION);
+    TEST(platform.IsFileExistsByFullPath(mwmFile), ());
+  }
 
   storage.DeleteNode(kCountryId);
 
