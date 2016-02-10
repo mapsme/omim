@@ -658,6 +658,17 @@ using namespace osm_auth_ios;
 
   UITextField * textField = [UITextField appearance];
   textField.keyboardAppearance = [UIColor isNightMode] ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+
+  UISearchBar * searchBar = [UISearchBar appearance];
+  searchBar.barTintColor = [UIColor primary];
+  UITextField * textFieldInSearchBar = nil;
+  if (isIOS7 || isIOS8)
+    textFieldInSearchBar = [UITextField appearanceWhenContainedIn:[UISearchBar class], nil];
+  else
+    textFieldInSearchBar = [UITextField appearanceWhenContainedInInstancesOfClasses:@[[UISearchBar class]]];
+  
+  textField.backgroundColor = [UIColor white];
+  textFieldInSearchBar.defaultTextAttributes = @{NSForegroundColorAttributeName : [UIColor blackPrimaryText]};
 }
 
 
@@ -784,7 +795,6 @@ using namespace osm_auth_ios;
     return;
   [ud setBool:YES forKey:kUserDafaultsNeedToEnableTTS];
   [ud synchronize];
-
 }
 
 #pragma mark - Standby
