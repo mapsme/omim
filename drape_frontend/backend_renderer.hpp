@@ -28,18 +28,23 @@ class RouteBuilder;
 class BackendRenderer : public BaseRenderer
 {
 public:
+  using TUpdateCurrentCountryFn = function<void (m2::PointD const &, int)>;
+
   struct Params : BaseRenderer::Params
   {
     Params(ref_ptr<ThreadsCommutator> commutator, ref_ptr<dp::OGLContextFactory> factory,
            ref_ptr<dp::TextureManager> texMng, MapDataProvider const & model,
+           TUpdateCurrentCountryFn const & updateCurrentCountryFn,
            ref_ptr<RequestedTiles> requestedTiles, bool allow3dBuildings)
       : BaseRenderer::Params(commutator, factory, texMng)
       , m_model(model)
+      , m_updateCurrentCountryFn(updateCurrentCountryFn)
       , m_requestedTiles(requestedTiles)
       , m_allow3dBuildings(allow3dBuildings)
     {}
 
     MapDataProvider const & m_model;
+    TUpdateCurrentCountryFn m_updateCurrentCountryFn;
     ref_ptr<RequestedTiles> m_requestedTiles;
     bool m_allow3dBuildings;
   };
@@ -54,7 +59,6 @@ protected:
 
 private:
   void RecacheGui(gui::TWidgetsInitInfo const  & initInfo, gui::TWidgetsSizeInfo & sizeInfo);
-  void RecacheCountryStatus();
   void RecacheMyPosition();
 
   void AcceptMessage(ref_ptr<Message> message) override;
@@ -83,6 +87,8 @@ private:
   gui::LayerCacher m_guiCacher;
 
   ref_ptr<RequestedTiles> m_requestedTiles;
+
+  TUpdateCurrentCountryFn m_updateCurrentCountryFn;
 
 #ifdef DEBUG
   bool m_isTeardowned;
