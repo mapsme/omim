@@ -4,7 +4,9 @@
 #include "storage/storage.hpp"
 #include "storage/storage_defines.hpp"
 #include "storage/storage_helpers.hpp"
+
 #include "storage/storage_tests/fake_map_files_downloader.hpp"
+#include "storage/storage_tests/helpers.hpp"
 #include "storage/storage_tests/task_runner.hpp"
 #include "storage/storage_tests/test_map_files_downloader.hpp"
 
@@ -427,15 +429,6 @@ void InitStorage(Storage & storage, TaskRunner & runner,
   storage.Init(update);
   storage.RegisterAllLocalMaps();
   storage.SetDownloaderForTesting(make_unique<FakeMapFilesDownloader>(runner));
-}
-
-unique_ptr<storage::CountryInfoGetter> CreateCountryInfoGetter(bool isSingleMwm)
-{
-  Platform & platform = GetPlatform();
-  string const packedPolygons = isSingleMwm ? PACKED_POLYGONS_MIGRATE_FILE : PACKED_POLYGONS_FILE;
-  string const countryTxt = isSingleMwm ? COUNTRIES_MIGRATE_FILE : COUNTRIES_FILE;
-  return make_unique<storage::CountryInfoReader>(platform.GetReader(packedPolygons),
-                                                 platform.GetReader(countryTxt));
 }
 }  // namespace
 
@@ -1080,7 +1073,8 @@ UNIT_TEST(StorageTest_IsPointCoveredByDownloadedMaps)
   InitStorage(storage, runner);
 
   bool const isSingleMwm = version::IsSingleMwm(storage.GetCurrentDataVersion());
-  auto const countryInfoGetter = CreateCountryInfoGetter(isSingleMwm);
+  auto const countryInfoGetter = isSingleMwm ? CreateCountryInfoGetterMigrate()
+                                             : CreateCountryInfoGetter();
   ASSERT(countryInfoGetter, ());
   string const uruguayId = string("Uruguay");
   m2::PointD const montevideoUruguay = MercatorBounds::FromLatLon(-34.8094, -56.1558);
@@ -1226,5 +1220,40 @@ UNIT_TEST(StorageTest_ParseStatus)
              ParseStatus(Status::EDownloadFailed), ());
   TEST_EQUAL(StatusAndError(NodeStatus::Downloading, NodeErrorCode::NoError),
              ParseStatus(Status::EDownloading), ());
+}
+
+UNIT_TEST(StorageTest_ForEachInSubtree)
+{
+  Storage storage(kSingleMwmCountriesTxt, make_unique<TestMapFilesDownloader>());
+
+  TCountriesVec leafVec;
+  auto const forEach = [&leafVec](TCountryId const & descendantId, bool expandableNode)
+  {
+    if (!expandableNode)
+      leafVec.push_back(descendantId);
+  };
+  storage.ForEachInSubtree(storage.GetRootId(), forEach);
+
+  TCountriesVec const expectedLeafVec = {"Abkhazia", "Algeria_Central", "Algeria_Coast", "South Korea_South"};
+  TEST_EQUAL(leafVec, expectedLeafVec, ());
+}
+
+UNIT_TEST(StorageTest_CalcLimitRect)
+{
+  Storage storage(COUNTRIES_MIGRATE_FILE);
+  if (!version::IsSingleMwm(storage.GetCurrentDataVersion()))
+    return;
+
+  TaskRunner runner;
+  InitStorage(storage, runner);
+
+  auto const countryInfoGetter = CreateCountryInfoGetterMigrate();
+  ASSERT(countryInfoGetter, ());
+
+  m2::RectD const boundingBox = CalcLimitRect("Algeria", storage, *countryInfoGetter);
+  m2::RectD const expectedBoundingBox = {-8.6689 /* minX */, 19.32443 /* minY */,
+                                         11.99734 /* maxX */, 40.2488 /* maxY */};
+
+  TEST(AlmostEqualRectsAbs(boundingBox, expectedBoundingBox), ());
 }
 }  // namespace storage

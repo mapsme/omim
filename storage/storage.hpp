@@ -25,7 +25,8 @@ struct NodeAttrs
     m_downloadingMwmSize(0), m_downloadingProgress(0),
     m_status(NodeStatus::Undefined), m_error(NodeErrorCode::NoError) {}
   /// If the node is expandable (a big country) |m_mwmCounter| is number of mwm files (leaves)
-  /// belongs to the node. If the node isn't expandable |m_mapsDownloaded| == 1.
+  /// belongs to the node. If the node isn't expandable |m_mwmCounter| == 1.
+  /// Note. For every expandable node |m_mwmCounter| >= 2.
   uint32_t m_mwmCounter;
 
   /// Number of mwms belonging to the node which has been donwloaded.
@@ -278,6 +279,25 @@ public:
   /// \note This method is used in very rare case.
   /// \return false in case of error and true otherwise.
   bool UpdateAllAndChangeHierarchy();
+
+  /// \brief Calls |toDo| for each node for subtree with |root|.
+  /// For example ForEachInSubtree(GetRootId()) calls |toDo| for every node including
+  /// the result of GetRootId() call.
+  template <class ToDo>
+  void ForEachInSubtree(TCountryId const & root, ToDo && toDo) const
+  {
+    TCountriesContainer const * const rootNode = m_countries.Find(Country(root));
+    if (rootNode == nullptr)
+    {
+      ASSERT(false, ("TCountryId =", root, "not found in m_countries."));
+      return;
+    }
+    rootNode->ForEachInSubtree([&toDo](TCountriesContainer const & countryContainer)
+    {
+      Country const & value = countryContainer.Value();
+      toDo(value.Name(), value.GetSubtreeMwmCounter() != 1 /* expandableNode. */);
+    });
+  }
 
   /// \brief Subscribe on change status callback.
   /// \returns a unique index of added status callback structure.

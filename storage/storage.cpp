@@ -976,7 +976,7 @@ TCountryId const Storage::GetRootId() const
 
 void Storage::GetChildren(TCountryId const & parent, TCountriesVec & childrenId) const
 {
-  TCountriesContainer const * parentNode = m_countries.Find(Country(parent));
+  TCountriesContainer const * const parentNode = m_countries.Find(Country(parent));
   if (parentNode == nullptr)
   {
     ASSERT(false, ("TCountryId =", parent, "not found in m_countries."));
@@ -1001,7 +1001,7 @@ void Storage::GetLocalRealMaps(TCountriesVec & localMaps) const
 
 void Storage::GetDownloadedChildren(TCountryId const & parent, TCountriesVec & localChildren) const
 {
-  TCountriesContainer const * parentNode = m_countries.Find(Country(parent));
+  TCountriesContainer const * const parentNode = m_countries.Find(Country(parent));
   if (parentNode == nullptr)
   {
     ASSERT(false, ("TCountryId =", parent, "not found in m_countries."));
