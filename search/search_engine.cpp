@@ -1,5 +1,6 @@
 #include "search_engine.hpp"
 
+#include "categories_holder.hpp"
 #include "geometry_utils.hpp"
 #include "search_query.hpp"
 #include "search_string_utils.hpp"
@@ -18,6 +19,7 @@
 #include "base/scope_guard.hpp"
 #include "base/stl_add.hpp"
 
+#include "std/algorithm.hpp"
 #include "std/bind.hpp"
 #include "std/map.hpp"
 #include "std/vector.hpp"
@@ -55,6 +57,35 @@ public:
       suggests.emplace_back(s.first.first, s.second, s.first.second);
   }
 };
+
+void SendStatistics(SearchParams const & params, m2::RectD const & viewport, Results const & res)
+{
+  size_t const kMaxNumResultsToSend = 10;
+
+  size_t const numResultsToSend = min(kMaxNumResultsToSend, res.GetCount());
+  string resultString = strings::to_string(numResultsToSend);
+  for (size_t i = 0; i < numResultsToSend; ++i)
+    resultString.append("\t" + res.GetResult(i).ToStringForStats());
+
+  string posX, posY;
+  if (params.IsValidPosition())
+  {
+    posX = strings::to_string(MercatorBounds::LonToX(params.m_lon));
+    posY = strings::to_string(MercatorBounds::LatToY(params.m_lat));
+  }
+
+  alohalytics::TStringMap const stats = {
+      {"posX", posX},
+      {"posY", posY},
+      {"viewportMinX", strings::to_string(viewport.minX())},
+      {"viewportMinY", strings::to_string(viewport.minY())},
+      {"viewportMaxX", strings::to_string(viewport.maxX())},
+      {"viewportMaxY", strings::to_string(viewport.maxY())},
+      {"query", params.m_query},
+      {"results", resultString},
+  };
+  alohalytics::LogEvent("searchEmitResultsAndCoords", stats);
+}
 }  // namespace
 
 QueryHandle::QueryHandle() : m_query(nullptr), m_cancelled(false) {}
@@ -154,13 +185,8 @@ void Engine::SetRankPivot(SearchParams const & params,
   m_query->SetRankPivot(viewport.Center());
 }
 
-void Engine::EmitResults(SearchParams const & params, Results & res)
+void Engine::EmitResults(SearchParams const & params, Results const & res)
 {
-  // Basic test of our statistics engine.
-  alohalytics::LogEvent(
-      "searchEmitResults",
-      alohalytics::TStringMap({{params.m_query, strings::to_string(res.GetCount())}}));
-
   params.m_callback(res);
 }
 
@@ -245,6 +271,9 @@ void Engine::DoSearch(SearchParams const & params, m2::RectD const & viewport,
   {
     LOG(LDEBUG, ("Search has been cancelled."));
   }
+
+  if (!viewportSearch && !m_query->IsCancelled())
+    SendStatistics(params, viewport, res);
 
   // Emit finish marker to client.
   params.m_callback(Results::GetEndMarker(m_query->IsCancelled()));
