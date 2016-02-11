@@ -955,7 +955,7 @@ ro:3stație de autobuz|transport
 nb:3busstasjon|transport
 fi:3bussiasema|liikenne
 
-railway-station|railway-halt
+railway-station|railway-halt|building-train_station
 en:3train station|4railway|railroad|3train|4station|4transport|U+1F684|U+1F685|U+1F689|U+1F682|U+1F686|U+1F688|U+1F68A|U+1F68B
 ru:ж/д станция|3поезд|3станция|4транспорт
 uk:залізничний вокзал|3поїзд|залізниця|3станція|4транспорт
