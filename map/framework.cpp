@@ -1178,7 +1178,7 @@ void Framework::LoadSearchResultMetadata(search::Result & res) const
   FeatureID const & id = res.GetFeatureID();
   if (id.IsValid())
     search::ProcessMetadata(*GetFeatureByID(id), res.m_metadata);
-  res.m_metadata.m_isInitialized = true;
+  // res.m_metadata.m_isInitialized is set to true in ProcessMetadata.
 }
 
 void Framework::ShowSearchResult(search::Result const & res)
@@ -1813,51 +1813,6 @@ unique_ptr<FeatureType> Framework::GetFeatureByID(FeatureID const & fid, bool pa
   return feature;
 }
 
-namespace
-{
-
-/// POI - is a point or area feature.
-class DoFindClosestPOI
-{
-  m2::PointD const & m_pt;
-  double m_distMeters;
-  FeatureID m_id;
-
-public:
-  DoFindClosestPOI(m2::PointD const & pt, double tresholdMeters)
-    : m_pt(pt), m_distMeters(tresholdMeters)
-  {
-  }
-
-  void operator() (FeatureType & ft)
-  {
-    if (ft.GetFeatureType() == feature::GEOM_LINE)
-      return;
-
-    double const dist = MercatorBounds::DistanceOnEarth(m_pt, feature::GetCenter(ft));
-    if (dist < m_distMeters)
-    {
-      m_distMeters = dist;
-      m_id = ft.GetID();
-    }
-  }
-
-  void LoadMetadata(model::FeaturesFetcher const & model, feature::Metadata & metadata) const
-  {
-    if (!m_id.IsValid())
-      return;
-
-    Index::FeaturesLoaderGuard guard(model.GetIndex(), m_id.m_mwmId);
-
-    FeatureType ft;
-    guard.GetFeatureByIndex(m_id.m_index, ft);
-
-    metadata = ft.GetMetadata();
-  }
-};
-
-}
-
 BookmarkAndCategory Framework::FindBookmark(UserMark const * mark) const
 {
   BookmarkAndCategory empty = MakeEmptyBookmarkAndCategory();
@@ -2427,7 +2382,7 @@ namespace feature
 {
 string GetPrintableTypes(FeatureType const & ft)
 {
-  return feature::TypesHolder(ft).DebugPrint();
+  return DebugPrint(feature::TypesHolder(ft));
 }
 uint32_t GetBestType(FeatureType const & ft)
 {
@@ -2451,7 +2406,7 @@ bool Framework::ParseEditorDebugCommand(search::SearchParams const & params)
       feature::TypesHolder const types(*feature);
       search::Result::Metadata smd;
       results.AddResultNoChecks(search::Result(fid, feature::GetCenter(*feature), name, edit.second,
-                                           types.DebugPrint(), types.GetBestType(), smd));
+                                               DebugPrint(types), types.GetBestType(), smd));
     }
     params.m_callback(results);
     params.m_callback(search::Results::GetEndMarker(false));
