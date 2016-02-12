@@ -1,4 +1,4 @@
-#import "ViewController.h"
+#import "MWMViewController.h"
 
 @protocol MWMSearchDownloadProtocol <NSObject>
 
@@ -8,7 +8,7 @@
 
 @end
 
-@interface MWMSearchDownloadViewController : ViewController
+@interface MWMSearchDownloadViewController : MWMViewController
 
 - (nonnull instancetype)init __attribute__((unavailable("init is not available")));
 - (nonnull instancetype)initWithDelegate:(nonnull id<MWMSearchDownloadProtocol>)delegate;

@@ -106,8 +106,6 @@ NSString * const kEditorSegue = @"Map2EditorSegue";
 @property (nonatomic) ForceRoutingStateChange forceRoutingStateChange;
 @property (nonatomic) BOOL disableStandbyOnLocationStateMode;
 
-@property (nonatomic, readwrite) MWMAlertViewController * alertController;
-
 @property (nonatomic) UserTouchesAction userTouchesAction;
 @property (nonatomic) MWMPageController * pageViewController;
 
@@ -493,7 +491,7 @@ NSString * const kEditorSegue = @"Map2EditorSegue";
 - (void)openBookmarks
 {
   BOOL const oneCategory = (GetFramework().GetBmCategoriesCount() == 1);
-  TableViewController * vc = oneCategory ? [[BookmarksVC alloc] initWithCategory:0] : [[BookmarksRootVC alloc] init];
+  MWMTableViewController * vc = oneCategory ? [[BookmarksVC alloc] initWithCategory:0] : [[BookmarksRootVC alloc] init];
   [self.navigationController pushViewController:vc animated:YES];
 }
 
@@ -721,15 +719,6 @@ NSString * const kEditorSegue = @"Map2EditorSegue";
 - (void)presentRoutingDisclaimerAlert
 {
   [self.alertController presentRoutingDisclaimerAlert];
-}
-
-#pragma mark - Getters
-
-- (MWMAlertViewController *)alertController
-{
-  if (!_alertController)
-    _alertController = [[MWMAlertViewController alloc] initWithViewController:self];
-  return _alertController;
 }
 
 #pragma mark - Private methods

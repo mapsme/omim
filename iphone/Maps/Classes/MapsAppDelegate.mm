@@ -3,11 +3,12 @@
 #import "EAGLView.h"
 #import "LocalNotificationManager.h"
 #import "LocationManager.h"
+#import "MapsAppDelegate.h"
+#import "MapViewController.h"
 #import "MWMAlertViewController.h"
 #import "MWMAuthorizationCommon.h"
+#import "MWMController.h"
 #import "MWMTextToSpeech.h"
-#import "MapViewController.h"
-#import "MapsAppDelegate.h"
 #import "Preferences.h"
 #import "RouteState.h"
 #import "Statistics.h"
@@ -110,32 +111,50 @@ using namespace osm_auth_ios;
   return (MapsAppDelegate *)[UIApplication sharedApplication].delegate;
 }
 
-+ (void)downloadCountry:(storage::TCountryId const &)countryId alertController:(MWMAlertViewController *)alertController onDownload:(TMWMVoidBlock)onDownload
+#pragma mark - Storage
+
++ (void)downloadNode:(storage::TCountryId const &)countryId alertController:(MWMAlertViewController *)alertController onSuccess:(TMWMVoidBlock)onSuccess
 {
-  auto & s = GetFramework().Storage();
-  storage::NodeAttrs attrs;
-  s.GetNodeAttrs(countryId, attrs);
-  auto downloadCountry = ^
+  [self countryId:countryId alertController:alertController performAction:^
   {
-    s.DownloadNode(countryId);
-    if (onDownload)
-      onDownload();
-  };
+    GetFramework().Storage().DownloadNode(countryId);
+    if (onSuccess)
+      onSuccess();
+  }];
+}
+
++ (void)updateNode:(storage::TCountryId const &)countryId alertController:(MWMAlertViewController *)alertController
+{
+  [self countryId:countryId alertController:alertController performAction:^
+  {
+    GetFramework().Storage().UpdateNode(countryId);
+  }];
+}
+
++ (void)deleteNode:(storage::TCountryId const &)countryId
+{
+  GetFramework().Storage().DeleteNode(countryId);
+}
+
++ (void)countryId:(storage::TCountryId const &)countryId alertController:(MWMAlertViewController *)alertController performAction:(TMWMVoidBlock)action
+{
   switch (Platform::ConnectionStatus())
   {
     case Platform::EConnectionType::CONNECTION_NONE:
       [alertController presentNoConnectionAlert];
       break;
     case Platform::EConnectionType::CONNECTION_WIFI:
-      downloadCountry();
+      action();
       break;
     case Platform::EConnectionType::CONNECTION_WWAN:
     {
+      storage::NodeAttrs attrs;
+      GetFramework().Storage().GetNodeAttrs(countryId, attrs);
       size_t const warningSizeForWWAN = 50 * MB;
       if (attrs.m_mwmSize > warningSizeForWWAN)
-        [alertController presentnoWiFiAlertWithName:@(attrs.m_nodeLocalName.c_str()) downloadBlock:downloadCountry];
+        [alertController presentNoWiFiAlertWithName:@(attrs.m_nodeLocalName.c_str()) downloadBlock:action];
       else
-        downloadCountry();
+        action();
       break;
     }
   }
@@ -326,7 +345,7 @@ using namespace osm_auth_ios;
     return;
   f.SetMapStyle(MapStyleClear);
   [UIColor setNightMode:NO];
-  [static_cast<ViewController *>(app.mapViewController.navigationController.topViewController) mwm_refreshUI];
+  [static_cast<id<MWMController>>(app.mapViewController.navigationController.topViewController) mwm_refreshUI];
   [app stopMapStyleChecker];
 }
 
@@ -341,7 +360,7 @@ using namespace osm_auth_ios;
   dispatch_async(dispatch_get_main_queue(), [&f, l, self, app]
   {
     auto const dayTime = GetDayTime(static_cast<time_t>(NSDate.date.timeIntervalSince1970), l.coordinate.latitude, l.coordinate.longitude);
-    ViewController * vc = static_cast<ViewController *>(app.mapViewController.navigationController.topViewController);
+    id<MWMController> vc = static_cast<id<MWMController>>(app.mapViewController.navigationController.topViewController);
     auto style = f.GetMapStyle();
     switch (dayTime)
     {
