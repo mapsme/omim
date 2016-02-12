@@ -213,7 +213,7 @@ using namespace osm_auth_ios;
   if (Platform::IsConnected())
     block();
   else
-    [self showAlert:L(@"no_internet_connection_detected") withButtonTitle:L(@"ok")];
+    [self.alertController presentNoConnectionAlert];
 }
 
 - (IBAction)loginGoogle

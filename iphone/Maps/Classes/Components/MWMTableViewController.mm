@@ -1,12 +1,19 @@
 #import "MapsAppDelegate.h"
 #import "MapViewController.h"
+#import "MWMAlertViewController.h"
 #import "MWMTableViewCell.h"
-#import "TableViewController.h"
+#import "MWMTableViewController.h"
 #import "UIColor+MapsMeColor.h"
 
 #import "3party/Alohalytics/src/alohalytics_objc.h"
 
-@implementation TableViewController
+@interface MWMTableViewController ()
+
+@property (nonatomic, readwrite) MWMAlertViewController * alertController;
+
+@end
+
+@implementation MWMTableViewController
 
 - (BOOL)prefersStatusBarHidden
 {
@@ -51,6 +58,13 @@
 - (BOOL)hasNavigationBar
 {
   return YES;
+}
+
+- (MWMAlertViewController *)alertController
+{
+  if (!_alertController)
+    _alertController = [[MWMAlertViewController alloc] initWithViewController:self];
+  return _alertController;
 }
 
 @end

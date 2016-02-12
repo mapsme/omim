@@ -1,4 +1,0 @@
-
-@interface NavigationController : UINavigationController
-
-@end

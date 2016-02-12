@@ -81,7 +81,7 @@ static NSString * const kAlertControllerNibIdentifier = @"MWMAlertViewController
   [self displayAlert:MWMAlert.noConnectionAlert];
 }
 
-- (void)presentnoWiFiAlertWithName:(nonnull NSString *)name downloadBlock:(nullable TMWMVoidBlock)block
+- (void)presentNoWiFiAlertWithName:(nonnull NSString *)name downloadBlock:(nullable TMWMVoidBlock)block
 {
   [self displayAlert:[MWMAlert noWiFiAlertWithName:name downloadBlock:block]];
 }
@@ -89,6 +89,16 @@ static NSString * const kAlertControllerNibIdentifier = @"MWMAlertViewController
 - (void)presentPedestrianToastAlert:(BOOL)isFirstLaunch
 {
   [self displayAlert:[MWMAlert pedestrianToastShareAlert:isFirstLaunch]];
+}
+
+- (void)presentInternalErrorAlert
+{
+  [self displayAlert:[MWMAlert internalErrorAlert]];
+}
+
+- (void)presentInvalidUserNameOrPasswordAlert
+{
+  [self displayAlert:[MWMAlert invalidUserNameOrPasswordAlert]];
 }
 
 - (void)presentUpdateMapsAlertWithOkBlock:(nonnull TMWMVoidBlock)block

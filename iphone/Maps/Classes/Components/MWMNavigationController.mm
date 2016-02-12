@@ -1,14 +1,13 @@
 #import "MapsAppDelegate.h"
-#import "NavigationController.h"
-#import "TableViewController.h"
+#import "MWMController.h"
+#import "MWMNavigationController.h"
 #import "UIViewController+Navigation.h"
-#import "ViewController.h"
 
-@interface NavigationController () <UINavigationControllerDelegate>
+@interface MWMNavigationController () <UINavigationControllerDelegate>
 
 @end
 
-@implementation NavigationController
+@implementation MWMNavigationController
 
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
@@ -23,10 +22,8 @@
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
-  NSAssert([viewController isKindOfClass:[ViewController class]] ||
-               [viewController isKindOfClass:[TableViewController class]],
-           @"Controller must inherit ViewController or TableViewController class");
-  ViewController * vc = (ViewController *)viewController;
+  NSAssert([viewController conformsToProtocol:@protocol(MWMController)], @"Controller must inherit ViewController or TableViewController class");
+  id<MWMController> vc = static_cast<id<MWMController>>(viewController);
   [navigationController setNavigationBarHidden:!vc.hasNavigationBar animated:animated];
 
   if ([navigationController.viewControllers count] > 1)
