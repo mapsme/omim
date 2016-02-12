@@ -54,7 +54,7 @@ IRouter::ResultCode CrossMwmGraph::SetStartNode(CrossNode const & startNode)
   {
     if (IsValidEdgeWeight(weights[i]))
     {
-      vector<BorderCross> nextCrosses = ConstructBorderCross(outgoingNodes[i], startMapping);
+      vector<BorderCross> const & nextCrosses = ConstructBorderCross(outgoingNodes[i], startMapping);
       for (auto const & nextCross : nextCrosses)
         dummyEdges.emplace_back(nextCross, weights[i]);
     }
@@ -205,7 +205,7 @@ void CrossMwmGraph::GetOutgoingEdgesList(BorderCross const & v,
                                        EdgeWeight const outWeight = currentContext.GetAdjacencyCost(ingoingNode, node);
                                        if (outWeight != kInvalidContextEdgeWeight && outWeight != 0)
                                        {
-                                         vector<BorderCross> targets = ConstructBorderCross(node, currentMapping);
+                                         vector<BorderCross> const & targets = ConstructBorderCross(node, currentMapping);
                                          for (auto const & target : targets)
                                            adj.emplace_back(target, outWeight);
                                        }
