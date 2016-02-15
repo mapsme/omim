@@ -51,7 +51,6 @@ namespace android
 
   public:
     Framework();
-    ~Framework();
 
     storage::Storage & Storage();
 
@@ -105,7 +104,6 @@ namespace android
     void AddLocalMaps();
     void RemoveLocalMaps();
 
-    string GetCountryNameIfAbsent(m2::PointD const & pt) const;
     m2::PointD GetViewportCenter() const;
 
     void AddString(string const & name, string const & value);
