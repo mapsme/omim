@@ -4,61 +4,55 @@
 
 #include "indexer/classificator.hpp"
 #include "indexer/feature.hpp"
+#include "indexer/feature_algo.hpp"
+#include "indexer/feature_meta.hpp"
 #include "indexer/ftypes_matcher.hpp"
 
 #include "coding/multilang_utf8_string.hpp"
 
 #include "base/assert.hpp"
 
+#include "std/atomic.hpp"
 #include "std/sstream.hpp"
 
 namespace search
 {
 namespace tests_support
 {
+namespace
+{
+uint64_t GenUniqueId()
+{
+  static atomic<uint64_t> id;
+  return id.fetch_add(1);
+}
+}  // namespace
+
 // TestFeature -------------------------------------------------------------------------------------
 TestFeature::TestFeature(string const & name, string const & lang)
-  : m_center(0, 0), m_hasCenter(false), m_name(name), m_lang(lang)
+  : m_id(GenUniqueId()), m_center(0, 0), m_hasCenter(false), m_name(name), m_lang(lang)
 {
 }
 
 TestFeature::TestFeature(m2::PointD const & center, string const & name, string const & lang)
-  : m_center(center), m_hasCenter(true), m_name(name), m_lang(lang)
+  : m_id(GenUniqueId()), m_center(center), m_hasCenter(true), m_name(name), m_lang(lang)
 {
-}
-
-void TestFeature::Serialize(FeatureBuilder1 & fb) const
-{
-  if (m_hasCenter)
-    fb.SetCenter(m_center);
-  CHECK(fb.AddName(m_lang, m_name), ("Can't set feature name:", m_name, "(", m_lang, ")"));
 }
 
 bool TestFeature::Matches(FeatureType const & feature) const
 {
-  uint8_t const langIndex = StringUtf8Multilang::GetLangIndex(m_lang);
-  string name;
-  return feature.GetName(langIndex, name) && m_name == name;
+  istringstream is(feature.GetMetadata().Get(feature::Metadata::FMD_TEST_ID));
+  uint64_t id;
+  is >> id;
+  return id == m_id;
 }
 
-// TestPOI -----------------------------------------------------------------------------------------
-TestPOI::TestPOI(m2::PointD const & center, string const & name, string const & lang)
-  : TestFeature(center, name, lang)
+void TestFeature::Serialize(FeatureBuilder1 & fb) const
 {
-}
-
-void TestPOI::Serialize(FeatureBuilder1 & fb) const
-{
-  TestFeature::Serialize(fb);
-  auto const & classificator = classif();
-  fb.SetType(classificator.GetTypeByPath({"railway", "station"}));
-}
-
-string TestPOI::ToString() const
-{
-  ostringstream os;
-  os << "TestPOI [" << m_name << ", " << m_lang << ", " << DebugPrint(m_center) << "]";
-  return os.str();
+  fb.SetTestId(m_id);
+  if (m_hasCenter)
+    fb.SetCenter(m_center);
+  CHECK(fb.AddName(m_lang, m_name), ("Can't set feature name:", m_name, "(", m_lang, ")"));
 }
 
 // TestCountry -------------------------------------------------------------------------------------
@@ -153,6 +147,35 @@ string TestStreet::ToString() const
   return os.str();
 }
 
+// TestPOI -----------------------------------------------------------------------------------------
+TestPOI::TestPOI(m2::PointD const & center, string const & name, string const & lang)
+  : TestFeature(center, name, lang)
+{
+}
+
+void TestPOI::Serialize(FeatureBuilder1 & fb) const
+{
+  TestFeature::Serialize(fb);
+  auto const & classificator = classif();
+  fb.SetType(classificator.GetTypeByPath({"railway", "station"}));
+  if (!m_houseNumber.empty())
+    fb.AddHouseNumber(m_houseNumber);
+  if (!m_streetName.empty())
+    fb.AddStreet(m_streetName);
+}
+
+string TestPOI::ToString() const
+{
+  ostringstream os;
+  os << "TestPOI [" << m_name << ", " << m_lang << ", " << DebugPrint(m_center);
+  if (!m_houseNumber.empty())
+    os << ", " << m_houseNumber;
+  if (!m_streetName.empty())
+    os << ", " << m_streetName;
+  os << "]";
+  return os.str();
+}
+
 // TestBuilding ------------------------------------------------------------------------------------
 TestBuilding::TestBuilding(m2::PointD const & center, string const & name,
                            string const & houseNumber, string const & lang)
@@ -177,6 +200,7 @@ TestBuilding::TestBuilding(vector<m2::PointD> const & boundary, string const & n
   , m_houseNumber(houseNumber)
   , m_streetName(street.GetName())
 {
+  ASSERT(!m_boundary.empty(), ());
 }
 
 void TestBuilding::Serialize(FeatureBuilder1 & fb) const
@@ -194,14 +218,6 @@ void TestBuilding::Serialize(FeatureBuilder1 & fb) const
 
   auto const & classificator = classif();
   fb.SetType(classificator.GetTypeByPath({"building"}));
-}
-
-bool TestBuilding::Matches(FeatureType const & feature) const
-{
-  auto const & checker = ftypes::IsBuildingChecker::Instance();
-  if (!checker(feature))
-    return false;
-  return TestFeature::Matches(feature) && m_houseNumber == feature.GetHouseNumber();
 }
 
 string TestBuilding::ToString() const

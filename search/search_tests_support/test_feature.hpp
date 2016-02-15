@@ -17,30 +17,21 @@ class TestFeature
 public:
   virtual ~TestFeature() = default;
 
-  virtual void Serialize(FeatureBuilder1 & fb) const;
-  virtual bool Matches(FeatureType const & feature) const;
-  virtual string ToString() const = 0;
-
+  bool Matches(FeatureType const & feature) const;
   inline string const & GetName() const { return m_name; }
+
+  virtual void Serialize(FeatureBuilder1 & fb) const;
+  virtual string ToString() const = 0;
 
 protected:
   TestFeature(string const & name, string const & lang);
   TestFeature(m2::PointD const & center, string const & name, string const & lang);
 
+  uint64_t const m_id;
   m2::PointD const m_center;
   bool const m_hasCenter;
   string const m_name;
   string const m_lang;
-};
-
-class TestPOI : public TestFeature
-{
-public:
-  TestPOI(m2::PointD const & center, string const & name, string const & lang);
-
-  // TestFeature overrides:
-  void Serialize(FeatureBuilder1 & fb) const override;
-  string ToString() const override;
 };
 
 class TestCountry : public TestFeature
@@ -92,6 +83,23 @@ private:
   vector<m2::PointD> m_points;
 };
 
+class TestPOI : public TestFeature
+{
+public:
+  TestPOI(m2::PointD const & center, string const & name, string const & lang);
+
+  // TestFeature overrides:
+  void Serialize(FeatureBuilder1 & fb) const override;
+  string ToString() const override;
+
+  inline void SetHouseNumber(string const & houseNumber) { m_houseNumber = houseNumber; }
+  inline void SetStreet(TestStreet const & street) { m_streetName = street.GetName(); }
+
+private:
+  string m_houseNumber;
+  string m_streetName;
+};
+
 class TestBuilding : public TestFeature
 {
 public:
@@ -104,10 +112,9 @@ public:
 
   // TestFeature overrides:
   void Serialize(FeatureBuilder1 & fb) const override;
-  bool Matches(FeatureType const & feature) const override;
   string ToString() const override;
 
-protected:
+private:
   vector<m2::PointD> const m_boundary;
   string const m_houseNumber;
   string const m_streetName;
