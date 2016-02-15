@@ -6,6 +6,7 @@
 #include "indexer/feature_meta.hpp"
 #include "indexer/ftypes_matcher.hpp"
 #include "indexer/index.hpp"
+#include "indexer/edits_migration.hpp"
 #include "indexer/osm_editor.hpp"
 
 #include "platform/local_country_file_utils.hpp"
@@ -336,7 +337,7 @@ void Editor::LoadMapEdits()
         {
           XMLFeature const xml(nodeOrWay.node());
           auto const fid = needMigrateEdits
-                               ? MigrateFeatureIndex(m_forEachFeatureAtPointFn, xml)
+                               ? editor::MigrateFeatureIndex(m_forEachFeatureAtPointFn, xml)
                                : FeatureID(mwmId, xml.GetMWMFeatureIndex());
 
           FeatureTypeInfo & fti = m_features[fid.m_mwmId][fid.m_index];
