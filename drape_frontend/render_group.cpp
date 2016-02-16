@@ -46,6 +46,7 @@ bool BaseRenderGroup::IsOverlay() const
 RenderGroup::RenderGroup(dp::GLState const & state, df::TileKey const & tileKey)
   : TBase(state, tileKey)
   , m_pendingOnDelete(false)
+  , m_sharedFeaturesWaiting(false)
 {
 }
 
@@ -64,13 +65,19 @@ void RenderGroup::Update(ScreenBase const & modelView)
 
 void RenderGroup::CollectOverlay(ref_ptr<dp::OverlayTree> tree)
 {
-  if (m_pendingOnDelete || GetOpacity() < 1.0)
+  if (CanBeDeleted() || GetOpacity() < 1.0)
     return;
 
   ASSERT(m_shader != nullptr, ());
   ASSERT(m_generalUniforms != nullptr, ());
   for (auto & renderBucket : m_renderBuckets)
     renderBucket->CollectOverlayHandles(tree);
+}
+
+void RenderGroup::RemoveOverlay(ref_ptr<dp::OverlayTree> tree)
+{
+  for (auto & renderBucket : m_renderBuckets)
+    renderBucket->RemoveOverlayHandles(tree);
 }
 
 void RenderGroup::Render(ScreenBase const & screen)
@@ -92,13 +99,13 @@ void RenderGroup::Render(ScreenBase const & screen)
     dp::ApplyUniforms(m_uniforms, shader);
 
     for(auto & renderBucket : m_renderBuckets)
-      renderBucket->Render(screen);
+      renderBucket->Render();
 
     m_uniforms.SetFloatValue("u_contrastGamma", params.m_contrast, params.m_gamma);
     m_uniforms.SetFloatValue("u_isOutlinePass", 0.0f);
     dp::ApplyUniforms(m_uniforms, shader);
     for(auto & renderBucket : m_renderBuckets)
-      renderBucket->Render(screen);
+      renderBucket->Render();
   }
   else if (programIndex == gpu::TEXT_PROGRAM ||
            program3dIndex == gpu::TEXT_BILLBOARD_PROGRAM)
@@ -106,14 +113,14 @@ void RenderGroup::Render(ScreenBase const & screen)
     m_uniforms.SetFloatValue("u_contrastGamma", params.m_contrast, params.m_gamma);
     dp::ApplyUniforms(m_uniforms, shader);
     for(auto & renderBucket : m_renderBuckets)
-      renderBucket->Render(screen);
+      renderBucket->Render();
   }
   else
   {
     dp::ApplyUniforms(m_uniforms, shader);
 
     for(drape_ptr<dp::RenderBucket> & renderBucket : m_renderBuckets)
-      renderBucket->Render(screen);
+      renderBucket->Render();
   }
 
 #ifdef RENDER_DEBUG_RECTS
@@ -178,14 +185,33 @@ void RenderGroup::Disappear()
   //  m_disappearAnimation = make_unique<OpacityAnimation>(0.1 /* duration */, 0.1 /* delay */,
   //                                                       1.0 /* startOpacity */, 0.0 /* endOpacity */);
   //}
-  //else
+}
+
+bool RenderGroup::UpdateFeaturesWaitingStatus(TCheckFeaturesWaiting isFeaturesWaiting, ref_ptr<dp::OverlayTree> tree)
+{
+  if (!m_sharedFeaturesWaiting)
+    return false;
+
+  m2::RectD const tileRect = GetTileKey().GetGlobalRect();
+  bool const isTileVisible = isFeaturesWaiting(tileRect);
+
+  for (size_t i = 0; i < m_renderBuckets.size(); )
   {
-    // Create separate disappearing animation for area objects to eliminate flickering.
-    if (m_state.GetProgramIndex() == gpu::AREA_PROGRAM ||
-        m_state.GetProgramIndex() == gpu::AREA_3D_PROGRAM)
-      m_disappearAnimation = make_unique<OpacityAnimation>(0.01 /* duration */, 0.25 /* delay */,
-                                                           1.0 /* startOpacity */, 1.0 /* endOpacity */);
+    bool visibleBucket = m_renderBuckets[i]->IsShared() ? m_renderBuckets[i]->IsFeaturesWaiting(isFeaturesWaiting)
+                                                        : isTileVisible;
+    if (!visibleBucket)
+    {
+      m_renderBuckets[i]->RemoveOverlayHandles(tree);
+      swap(m_renderBuckets[i], m_renderBuckets.back());
+      m_renderBuckets.pop_back();
+    }
+    else
+    {
+      ++i;
+    }
   }
+  m_sharedFeaturesWaiting = !m_renderBuckets.empty();
+  return m_renderBuckets.empty();
 }
 
 bool RenderGroupComparator::operator()(drape_ptr<RenderGroup> const & l, drape_ptr<RenderGroup> const & r)
@@ -249,7 +275,7 @@ void UserMarkRenderGroup::Render(ScreenBase const & screen)
   if (m_renderBucket != nullptr)
   {
     m_renderBucket->GetBuffer()->Build(shader);
-    m_renderBucket->Render(screen);
+    m_renderBucket->Render();
   }
 }
 

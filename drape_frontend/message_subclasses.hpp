@@ -7,13 +7,14 @@
 #include "drape_frontend/color_constants.hpp"
 #include "drape_frontend/gps_track_point.hpp"
 #include "drape_frontend/gps_track_shape.hpp"
-#include "drape_frontend/route_builder.hpp"
-#include "drape_frontend/my_position.hpp"
-#include "drape_frontend/selection_shape.hpp"
 #include "drape_frontend/message.hpp"
-#include "drape_frontend/viewport.hpp"
+#include "drape_frontend/my_position.hpp"
+#include "drape_frontend/overlay_batcher.hpp"
+#include "drape_frontend/route_builder.hpp"
+#include "drape_frontend/selection_shape.hpp"
 #include "drape_frontend/tile_utils.hpp"
 #include "drape_frontend/user_marks_provider.hpp"
+#include "drape_frontend/viewport.hpp"
 
 #include "geometry/polyline2d.hpp"
 #include "geometry/rect2d.hpp"
@@ -87,38 +88,26 @@ private:
   TileKey m_tileKey;
 };
 
-class TileReadStartMessage : public BaseTileMessage
-{
-public:
-  TileReadStartMessage(TileKey const & key)
-    : BaseTileMessage(key) {}
-
-  Type GetType() const override { return Message::TileReadStarted; }
-};
-
-class TileReadEndMessage : public BaseTileMessage
-{
-public:
-  TileReadEndMessage(TileKey const & key)
-    : BaseTileMessage(key) {}
-
-  Type GetType() const override { return Message::TileReadEnded; }
-};
-
 class FinishReadingMessage : public Message
 {
 public:
-  template<typename T> FinishReadingMessage(T && tiles)
+  template<typename T> FinishReadingMessage(T && tiles, uint64_t tileRequestGeneration, bool enableFlushOverlays = true)
     : m_tiles(forward<T>(tiles))
+    , m_tileRequestGeneration(tileRequestGeneration)
+    , m_enableFlushOverlays(enableFlushOverlays)
   {}
 
   Type GetType() const override { return Message::FinishReading; }
 
-  TTilesCollection const & GetTiles() { return m_tiles; }
+  TTilesCollection const & GetTiles() const { return m_tiles; }
   TTilesCollection && MoveTiles() { return move(m_tiles); }
+  uint64_t GetTileRequestGeneration() const { return m_tileRequestGeneration; }
+  bool IsEnableFlushOverlays() const { return m_enableFlushOverlays; }
 
 private:
   TTilesCollection m_tiles;
+  uint64_t m_tileRequestGeneration;
+  bool m_enableFlushOverlays;
 };
 
 class FlushRenderBucketMessage : public BaseTileMessage
@@ -138,6 +127,18 @@ public:
 private:
   dp::GLState m_state;
   drape_ptr<dp::RenderBucket> m_buffer;
+};
+
+class FlushOverlaysMessage : public Message
+{
+public:
+  FlushOverlaysMessage(TOverlaysRenderData && data) : m_data(move(data)) {}
+
+  Type GetType() const override { return Message::FlushOverlays; }
+  TOverlaysRenderData && AcceptRenderData() { return move(m_data); }
+
+private:
+  TOverlaysRenderData m_data;
 };
 
 class InvalidateRectMessage : public Message

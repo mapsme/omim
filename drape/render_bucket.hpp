@@ -1,6 +1,9 @@
 #pragma once
 
+#include "drape/feature_geometry_decl.hpp"
 #include "drape/pointers.hpp"
+
+#include "std/function.hpp"
 
 class ScreenBase;
 
@@ -33,7 +36,8 @@ public:
 
   void Update(ScreenBase const & modelView);
   void CollectOverlayHandles(ref_ptr<OverlayTree> tree);
-  void Render(ScreenBase const & screen);
+  void RemoveOverlayHandles(ref_ptr<OverlayTree> tree);
+  void Render();
 
   // Only for testing! Don't use this function in production code!
   void RenderDebug(ScreenBase const & screen) const;
@@ -46,7 +50,32 @@ public:
       todo(make_ref(h));
   }
 
+  bool IsShared() const { return !m_featuresGeometryInfo.empty(); }
+  void StartFeatureRecord(FeatureGeometryId feature, m2::RectD const & limitRect);
+  void EndFeatureRecord(bool featureCompleted);
+
+  using TCheckFeaturesWaiting = function<bool(m2::RectD const &)>;
+  bool IsFeaturesWaiting(TCheckFeaturesWaiting isFeaturesWaiting);
+
+  void AddFeaturesInfo(RenderBucket const & bucket);
+
 private:
+  struct FeatureGeometryInfo
+  {
+    FeatureGeometryInfo() = default;
+    FeatureGeometryInfo(m2::RectD const & limitRect)
+      : m_limitRect(limitRect)
+    {}
+
+    m2::RectD m_limitRect;
+    bool m_featureCompleted = false;
+  };
+  using TFeaturesGeometryInfo = map<FeatureGeometryId, FeatureGeometryInfo>;
+  using TFeatureInfo = pair<FeatureGeometryId, FeatureGeometryInfo>;
+
+  TFeatureInfo m_featureInfo;
+  TFeaturesGeometryInfo m_featuresGeometryInfo;
+
   vector<drape_ptr<OverlayHandle> > m_overlay;
   drape_ptr<VertexArrayBuffer> m_buffer;
 };

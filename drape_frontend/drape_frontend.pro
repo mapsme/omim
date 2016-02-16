@@ -54,6 +54,7 @@ SOURCES += \
     my_position.cpp \
     my_position_controller.cpp \
     navigator.cpp \
+    overlay_batcher.cpp \
     path_symbol_shape.cpp \
     path_text_shape.cpp \
     poi_symbol_shape.cpp \
@@ -74,8 +75,6 @@ SOURCES += \
     threads_commutator.cpp \
     tile_info.cpp \
     tile_key.cpp \
-    tile_tree.cpp \
-    tile_tree_builder.cpp \
     tile_utils.cpp \
     transparent_layer.cpp \
     user_event_stream.cpp \
@@ -146,6 +145,7 @@ HEADERS += \
     my_position.hpp \
     my_position_controller.hpp \
     navigator.hpp \
+    overlay_batcher.hpp \
     path_symbol_shape.hpp \
     path_text_shape.hpp \
     poi_symbol_shape.hpp \
@@ -167,8 +167,6 @@ HEADERS += \
     threads_commutator.hpp \
     tile_info.hpp \
     tile_key.hpp \
-    tile_tree.hpp \
-    tile_tree_builder.hpp \
     tile_utils.hpp \
     transparent_layer.hpp \
     user_event_stream.hpp \

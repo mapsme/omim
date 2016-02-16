@@ -94,12 +94,13 @@ void BackendRenderer::AcceptMessage(ref_ptr<Message> message)
   {
   case Message::UpdateReadManager:
     {
-      TTilesCollection tiles = m_requestedTiles->GetTiles();
+      uint64_t tileRequestGeneration;
+      TTilesCollection tiles = m_requestedTiles->GetTiles(tileRequestGeneration);
       if (!tiles.empty())
       {
         ScreenBase const screen = m_requestedTiles->GetScreen();
         bool const is3dBuildings = m_requestedTiles->Is3dBuildings();
-        m_readManager->UpdateCoverage(screen, is3dBuildings, tiles, m_texMng);
+        m_readManager->UpdateCoverage(screen, is3dBuildings, tileRequestGeneration, tiles, m_texMng);
 
         gui::CountryStatusHelper & helper = gui::DrapeGui::Instance().GetCountryStatusHelper();
         if ((*tiles.begin()).m_zoomLevel > scales::GetUpperWorldScale())
@@ -152,8 +153,21 @@ void BackendRenderer::AcceptMessage(ref_ptr<Message> message)
   case Message::FinishReading:
     {
       ref_ptr<FinishReadingMessage> msg = message;
+      if (msg->IsEnableFlushOverlays())
+      {
+        TOverlaysRenderData overlays;
+        overlays.swap(m_overlays);
+        if (!overlays.empty())
+        {
+          m_commutator->PostMessage(ThreadsCommutator::RenderThread,
+                                    make_unique_dp<FlushOverlaysMessage>(move(overlays)),
+                                    MessagePriority::Normal);
+        }
+      }
+
       m_commutator->PostMessage(ThreadsCommutator::RenderThread,
-                                make_unique_dp<FinishReadingMessage>(move(msg->MoveTiles())),
+                                make_unique_dp<FinishReadingMessage>(move(msg->MoveTiles()),
+                                                                     msg->GetTileRequestGeneration()),
                                 MessagePriority::Normal);
       break;
     }
@@ -165,7 +179,36 @@ void BackendRenderer::AcceptMessage(ref_ptr<Message> message)
       {
         ref_ptr<dp::Batcher> batcher = m_batchersPool->GetTileBatcher(tileKey);
         for (drape_ptr<MapShape> const & shape : msg->GetShapes())
+        {
+          bool const sharedFeature = shape->GetFeatureInfo().IsValid();
+          if (sharedFeature)
+            batcher->StartFeatureRecord(shape->GetFeatureInfo(), shape->GetFeatureLimitRect());
+
           shape->Draw(batcher, m_texMng);
+
+          if (sharedFeature)
+            batcher->EndFeatureRecord();
+        }
+      }
+      break;
+    }
+  case Message::OverlayMapShapeReaded:
+    {
+      ref_ptr<OverlayMapShapeReadedMessage> msg = message;
+      auto const & tileKey = msg->GetKey();
+      if (m_requestedTiles->CheckTileKey(tileKey) && m_readManager->CheckTileKey(tileKey))
+      {
+        OverlayBatcher batcher(tileKey);
+        for (drape_ptr<MapShape> const & shape : msg->GetShapes())
+          batcher.Batch(shape, m_texMng);
+
+        TOverlaysRenderData renderData;
+        batcher.Finish(renderData);
+        if (!renderData.empty())
+        {
+          m_overlays.reserve(m_overlays.size() + renderData.size());
+          move(renderData.begin(), renderData.end(), back_inserter(m_overlays));
+        }
       }
       break;
     }

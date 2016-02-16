@@ -11,6 +11,8 @@
 #include "indexer/ftypes_matcher.hpp"
 
 #include "base/assert.hpp"
+#include "base/logging.hpp"
+
 #include "std/bind.hpp"
 
 //#define DRAW_TILE_NET
@@ -28,19 +30,16 @@ namespace df
 int const kLineSimplifyLevelStart = 10;
 int const kLineSimplifyLevelEnd = 12;
 
-size_t kMinFlushSizes[df::PrioritiesCount] =
-{
-  1, // AreaPriority
-  5, // TextAndPoiPriority
-  10, // LinePriority
-};
-
 RuleDrawer::RuleDrawer(TDrawerCallback const & fn,
                        TCheckCancelledCallback const & checkCancelled,
+                       TSetOwnerCallback const & setOwnerFn,
+                       TDiscardFeature const & discardFeature,
                        TIsCountryLoadedByNameFn const & isLoadedFn,
                        ref_ptr<EngineContext> context, bool is3dBuildings)
   : m_callback(fn)
   , m_checkCancelled(checkCancelled)
+  , m_setOwnerFn(setOwnerFn)
+  , m_discardFeatureFn(discardFeature)
   , m_isLoadedFn(isLoadedFn)
   , m_context(context)
   , m_is3dBuidings(is3dBuildings)
@@ -52,14 +51,14 @@ RuleDrawer::RuleDrawer(TDrawerCallback const & fn,
   m_globalRect = m_context->GetTileKey().GetGlobalRect();
 
   int32_t tileSize = df::VisualParams::Instance().GetTileSize();
-  m2::RectD const r = m_context->GetTileKey().GetGlobalRect(true /* considerStyleZoom */);
+  m2::RectD const r = m_context->GetTileKey().GetGlobalRect(false /* clipByDataMaxZoom */);
   ScreenBase geometryConvertor;
   geometryConvertor.OnSize(0, 0, tileSize, tileSize);
   geometryConvertor.SetFromRect(m2::AnyRectD(r));
   m_currentScaleGtoP = 1.0f / geometryConvertor.GetScale();
 
-  for (size_t i = 0; i < m_mapShapes.size(); i++)
-    m_mapShapes[i].reserve(kMinFlushSizes[i] + 1);
+  int const kAverageOverlaysCount = 200;
+  m_mapShapes[df::OverlayType].reserve(kAverageOverlaysCount);
 }
 
 RuleDrawer::~RuleDrawer()
@@ -67,15 +66,14 @@ RuleDrawer::~RuleDrawer()
   if (m_wasCancelled)
     return;
 
-  for (auto & shapes : m_mapShapes)
+  for (auto const & shape : m_mapShapes[df::OverlayType])
+    shape->Prepare(m_context->GetTextureManager());
+
+  if (!m_mapShapes[df::OverlayType].empty())
   {
-    if (shapes.empty())
-      continue;
-
-    for (auto const & shape : shapes)
-      shape->Prepare(m_context->GetTextureManager());
-
-    m_context->Flush(move(shapes));
+    TMapShapes overlayShapes;
+    overlayShapes.swap(m_mapShapes[df::OverlayType]);
+    m_context->FlushOverlays(move(overlayShapes));
   }
 }
 
@@ -87,13 +85,28 @@ bool RuleDrawer::CheckCancelled()
 
 void RuleDrawer::operator()(FeatureType const & f)
 {
+  if (CheckCancelled())
+    return;
+
+  int const zoomLevel = m_context->GetTileKey().m_zoomLevel;
+
+  m2::RectD const limitRect = f.GetLimitRect(zoomLevel);
+  m2::RectD const tileRect = m_context->GetTileKey().GetGlobalRect();
+
+  if (!tileRect.IsIntersect(limitRect))
+  {
+    m_discardFeatureFn(f.GetID());
+    return;
+  }
+
+  if (!m_setOwnerFn(f.GetID()))
+    return;
+
   Stylist s;
   m_callback(f, s);
 
   if (s.IsEmpty())
     return;
-
-  int const zoomLevel = m_context->GetTileKey().m_zoomLevel;
 
   if (s.IsCoastLine() &&
       zoomLevel > scales::GetUpperWorldScale() &&
@@ -125,11 +138,19 @@ void RuleDrawer::operator()(FeatureType const & f)
 
   int const minVisibleScale = feature::GetMinDrawableScale(f);
 
-  auto insertShape = [this](drape_ptr<MapShape> && shape)
+  uint32_t shapesCount = 0;
+  auto insertShape = [this, zoomLevel, &tileRect, &limitRect, &shapesCount, &f](drape_ptr<MapShape> && shape)
   {
-    int const index = static_cast<int>(shape->GetPriority());
+    int const index = static_cast<int>(shape->GetType());
     ASSERT_LESS(index, m_mapShapes.size(), ());
+
+    if (!tileRect.IsRectInside(limitRect))
+    {
+      shape->SetFeatureInfo(dp::FeatureGeometryId(f.GetID(), shapesCount));
+      shape->SetFeatureLimitRect(limitRect);
+    }
     m_mapShapes[index].push_back(move(shape));
+    ++shapesCount;
   };
 
   if (s.AreaStyleExists())
@@ -257,23 +278,20 @@ void RuleDrawer::operator()(FeatureType const & f)
 
   tp.m_primaryTextFont = dp::FontDecl(dp::Color::Red(), 30);
 
-  insertShape(make_unique_dp<TextShape>(r.Center(), tp, false));
+  insertShape(make_unique_dp<TextShape>(r.Center(), tp, false, 0, true));
 #endif
 
   if (CheckCancelled())
     return;
 
-  for (size_t i = 0; i < m_mapShapes.size(); i++)
+  for (auto const & shape : m_mapShapes[df::GeometryType])
+    shape->Prepare(m_context->GetTextureManager());
+
+  if (!m_mapShapes[df::GeometryType].empty())
   {
-    if (m_mapShapes[i].size() < kMinFlushSizes[i])
-      continue;
-
-    for (auto const & shape : m_mapShapes[i])
-      shape->Prepare(m_context->GetTextureManager());
-
-    TMapShapes mapShapes;
-    mapShapes.swap(m_mapShapes[i]);
-    m_context->Flush(move(mapShapes));
+    TMapShapes geomShapes;
+    geomShapes.swap(m_mapShapes[df::GeometryType]);
+    m_context->Flush(move(geomShapes));
   }
 }
 

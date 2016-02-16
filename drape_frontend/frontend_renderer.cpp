@@ -53,13 +53,13 @@ struct MergedGroupKey
   {
     if (!(m_state == other.m_state))
       return m_state < other.m_state;
-
     return m_key.LessStrict(other.m_key);
   }
 };
 
 template <typename ToDo>
-bool RemoveGroups(ToDo & filter, vector<drape_ptr<RenderGroup>> & groups)
+bool RemoveGroups(ToDo & filter, vector<drape_ptr<RenderGroup>> & groups,
+                  ref_ptr<dp::OverlayTree> tree)
 {
   size_t startCount = groups.size();
   size_t count = startCount;
@@ -67,39 +67,21 @@ bool RemoveGroups(ToDo & filter, vector<drape_ptr<RenderGroup>> & groups)
   while (current < count)
   {
     drape_ptr<RenderGroup> & group = groups[current];
-    if (filter(move(group)))
+    if (filter(group))
     {
+      group->RemoveOverlay(tree);
       swap(group, groups.back());
       groups.pop_back();
       --count;
     }
     else
+    {
       ++current;
+    }
   }
 
   return startCount != count;
 }
-
-struct ActivateTilePredicate
-{
-  TileKey const & m_tileKey;
-
-  ActivateTilePredicate(TileKey const & tileKey)
-    : m_tileKey(tileKey)
-  {
-  }
-
-  bool operator()(drape_ptr<RenderGroup> & group) const
-  {
-    if (group->GetTileKey() == m_tileKey)
-    {
-      group->Appear();
-      return true;
-    }
-
-    return false;
-  }
-};
 
 struct RemoveTilePredicate
 {
@@ -108,10 +90,9 @@ struct RemoveTilePredicate
 
   RemoveTilePredicate(function<bool(drape_ptr<RenderGroup> const &)> const & predicate)
     : m_predicate(predicate)
-  {
-  }
+  {}
 
-  bool operator()(drape_ptr<RenderGroup> && group) const
+  bool operator()(drape_ptr<RenderGroup> const & group) const
   {
     if (m_predicate(group))
     {
@@ -119,30 +100,6 @@ struct RemoveTilePredicate
       group->DeleteLater();
       m_deletionMark = true;
       return group->CanBeDeleted();
-    }
-
-    return false;
-  }
-};
-
-template <typename TPredicate>
-struct MoveTileFunctor
-{
-  TPredicate m_predicate;
-  vector<drape_ptr<RenderGroup>> & m_targetGroups;
-
-  MoveTileFunctor(TPredicate predicate, vector<drape_ptr<RenderGroup>> & groups)
-    : m_predicate(predicate)
-    , m_targetGroups(groups)
-  {
-  }
-
-  bool operator()(drape_ptr<RenderGroup> && group)
-  {
-    if (m_predicate(group))
-    {
-      m_targetGroups.push_back(move(group));
-      return true;
     }
 
     return false;
@@ -167,7 +124,6 @@ FrontendRenderer::FrontendRenderer(Params const & params)
   , m_modelViewChangedFn(params.m_modelViewChangedFn)
   , m_tapEventInfoFn(params.m_tapEventFn)
   , m_userPositionChangedFn(params.m_positionChangedFn)
-  , m_tileTree(new TileTree())
   , m_requestedTiles(params.m_requestedTiles)
   , m_maxGeneration(0)
 {
@@ -249,23 +205,36 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
       dp::GLState const & state = msg->GetState();
       TileKey const & key = msg->GetKey();
       drape_ptr<dp::RenderBucket> bucket = msg->AcceptBuffer();
-      ref_ptr<dp::GpuProgram> program = m_gpuProgramManager->GetProgram(state.GetProgramIndex());
-      ref_ptr<dp::GpuProgram> program3d = m_gpuProgramManager->GetProgram(state.GetProgram3dIndex());
-      bool const isPerspective = m_userEventStream.GetCurrentScreen().isPerspective();
-      if (isPerspective)
-        program3d->Bind();
-      else
-        program->Bind();
-      bucket->GetBuffer()->Build(isPerspective ? program3d : program);
+      PrepareBucket(state, bucket);
       if (!IsUserMarkLayer(key))
       {
-        if (CheckTileGenerations(key))
-          m_tileTree->ProcessTile(key, GetCurrentZoomLevelForData(), state, move(bucket));
+        if (key.m_zoomLevel == m_currentZoomLevel && CheckTileGenerations(key))
+          AddToRenderGroup(state, move(bucket), key);
       }
       else
       {
+        ref_ptr<dp::GpuProgram> program = m_gpuProgramManager->GetProgram(state.GetProgramIndex());
+        ref_ptr<dp::GpuProgram> program3d = m_gpuProgramManager->GetProgram(state.GetProgram3dIndex());
+
         m_userMarkRenderGroups.emplace_back(make_unique_dp<UserMarkRenderGroup>(state, key, move(bucket)));
         m_userMarkRenderGroups.back()->SetRenderParams(program, program3d, make_ref(&m_generalUniforms));
+      }
+      break;
+    }
+
+  case Message::FlushOverlays:
+    {
+      ref_ptr<FlushOverlaysMessage> msg = message;
+      TOverlaysRenderData renderData = msg->AcceptRenderData();
+      for (auto & overlayRenderData : renderData)
+      {
+        ASSERT(!IsUserMarkLayer(overlayRenderData.m_tileKey), ());
+        if (overlayRenderData.m_tileKey.m_zoomLevel == m_currentZoomLevel &&
+            CheckTileGenerations(overlayRenderData.m_tileKey))
+        {
+          PrepareBucket(overlayRenderData.m_state, overlayRenderData.m_bucket);
+          AddToRenderGroup(overlayRenderData.m_state, move(overlayRenderData.m_bucket), overlayRenderData.m_tileKey);
+        }
       }
       break;
     }
@@ -273,9 +242,16 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
   case Message::FinishReading:
     {
       ref_ptr<FinishReadingMessage> msg = message;
+      bool const isLastRequest = m_tileRequestGeneration == msg->GetTileRequestGeneration();
       for (auto const & tileKey : msg->GetTiles())
-        CheckTileGenerations(tileKey);
-      m_tileTree->FinishTiles(msg->GetTiles(), GetCurrentZoomLevelForData());
+      {
+        if (CheckTileGenerations(tileKey) && isLastRequest)
+        {
+          auto it = m_notFinishedTiles.find(tileKey);
+          if (it != m_notFinishedTiles.end())
+            m_notFinishedTiles.erase(it);
+        }
+      }
       break;
     }
 
@@ -415,7 +391,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
         double offsetZ = 0.0;
         if (m_userEventStream.GetCurrentScreen().isPerspective())
         {
-          dp::OverlayTree::TSelectResult selectResult;
+          dp::TOverlayContainer selectResult;
           m_overlayTree->Select(msg->GetPosition(), selectResult);
           for (ref_ptr<dp::OverlayHandle> handle : selectResult)
             offsetZ = max(offsetZ, handle->GetPivotZ());
@@ -522,14 +498,10 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
 
   case Message::UpdateMapStyle:
     {
-      // Clear tile tree.
-      m_tileTree->Invalidate();
-
       // Clear all graphics.
       for (RenderLayer & layer : m_layers)
       {
         layer.m_renderGroups.clear();
-        layer.m_deferredRenderGroups.clear();
         layer.m_isDirty = false;
       }
 
@@ -585,7 +557,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
       ScreenBase screen = m_userEventStream.GetCurrentScreen();
       ResolveTileKeys(screen.ClipRect(), tiles);
 
-      m_requestedTiles->Set(screen, m_isIsometry || screen.isPerspective(), move(tiles));
+      m_requestedTiles->Set(screen, m_isIsometry || screen.isPerspective(), m_tileRequestGeneration, move(tiles));
       m_commutator->PostMessage(ThreadsCommutator::ResourceUploadThread,
                                 make_unique_dp<UpdateReadManagerMessage>(),
                                 MessagePriority::UberHighSingleton);
@@ -705,18 +677,16 @@ void FrontendRenderer::InvalidateRect(m2::RectD const & gRect)
   m2::RectD rect = gRect;
   if (rect.Intersect(screen.ClipRect()))
   {
-    m_tileTree->Invalidate();
     ResolveTileKeys(rect, tiles);
 
-    auto eraseFunction = [&tiles](drape_ptr<RenderGroup> && group)
+    auto eraseFunction = [&tiles](drape_ptr<RenderGroup> const & group)
     {
-        return tiles.count(group->GetTileKey()) == 0;
+      return tiles.count(group->GetTileKey()) == 0;
     };
 
     for (RenderLayer & layer : m_layers)
     {
-      RemoveGroups(eraseFunction, layer.m_renderGroups);
-      RemoveGroups(eraseFunction, layer.m_deferredRenderGroups);
+      RemoveGroups(eraseFunction, layer.m_renderGroups, make_ref(m_overlayTree));
       layer.m_isDirty = true;
     }
 
@@ -726,7 +696,7 @@ void FrontendRenderer::InvalidateRect(m2::RectD const & gRect)
                               MessagePriority::High);
     blocker.Wait();
 
-    m_requestedTiles->Set(screen, m_isIsometry || screen.isPerspective(), move(tiles));
+    m_requestedTiles->Set(screen, m_isIsometry || screen.isPerspective(), m_tileRequestGeneration, move(tiles));
     m_commutator->PostMessage(ThreadsCommutator::ResourceUploadThread,
                               make_unique_dp<UpdateReadManagerMessage>(),
                               MessagePriority::UberHighSingleton);
@@ -748,65 +718,32 @@ void FrontendRenderer::OnResize(ScreenBase const & screen)
   m_framebuffer->SetSize(viewportRect.SizeX(), viewportRect.SizeY());
 }
 
-void FrontendRenderer::AddToRenderGroup(vector<drape_ptr<RenderGroup>> & groups,
-                                        dp::GLState const & state,
+void FrontendRenderer::AddToRenderGroup(dp::GLState const & state,
                                         drape_ptr<dp::RenderBucket> && renderBucket,
                                         TileKey const & newTile)
 {
+  RenderLayer::RenderLayerID id = RenderLayer::GetLayerID(state);
+  RenderLayer & layer = m_layers[id];
+
   drape_ptr<RenderGroup> group = make_unique_dp<RenderGroup>(state, newTile);
   ref_ptr<dp::GpuProgram> program = m_gpuProgramManager->GetProgram(state.GetProgramIndex());
   ref_ptr<dp::GpuProgram> program3d = m_gpuProgramManager->GetProgram(state.GetProgram3dIndex());
-
   group->SetRenderParams(program, program3d, make_ref(&m_generalUniforms));
   group->AddBucket(move(renderBucket));
-  groups.push_back(move(group));
-}
 
-void FrontendRenderer::OnAddRenderGroup(TileKey const & tileKey, dp::GLState const & state,
-                                        drape_ptr<dp::RenderBucket> && renderBucket)
-{
-  RenderLayer::RenderLayerID id = RenderLayer::GetLayerID(state);
-  RenderLayer & layer = m_layers[id];
-  AddToRenderGroup(layer.m_renderGroups, state, move(renderBucket), tileKey);
+  layer.m_renderGroups.push_back(move(group));
   layer.m_renderGroups.back()->Appear();
   layer.m_isDirty = true;
-}
-
-void FrontendRenderer::OnDeferRenderGroup(TileKey const & tileKey, dp::GLState const & state,
-                                          drape_ptr<dp::RenderBucket> && renderBucket)
-{
-  RenderLayer::RenderLayerID id = RenderLayer::GetLayerID(state);
-  AddToRenderGroup(m_layers[id].m_deferredRenderGroups, state, move(renderBucket), tileKey);
-}
-
-void FrontendRenderer::OnActivateTile(TileKey const & tileKey)
-{
-  for (RenderLayer & layer : m_layers)
-  {
-    MoveTileFunctor<ActivateTilePredicate> f(ActivateTilePredicate(tileKey), layer.m_renderGroups);
-    layer.m_isDirty |= RemoveGroups(f, layer.m_deferredRenderGroups);
-  }
-}
-
-void FrontendRenderer::OnRemoveTile(TileKey const & tileKey)
-{
-  auto removePredicate = [&tileKey](drape_ptr<RenderGroup> const & group)
-  {
-    return group->GetTileKey() == tileKey;
-  };
-  RemoveRenderGroups(removePredicate);
 }
 
 void FrontendRenderer::RemoveRenderGroups(TRenderGroupRemovePredicate const & predicate)
 {
   ASSERT(predicate != nullptr, ());
-  m_overlayTree->ForceUpdate();
 
   for (RenderLayer & layer : m_layers)
   {
     RemoveTilePredicate f(predicate);
-    RemoveGroups(f, layer.m_renderGroups);
-    RemoveGroups(predicate, layer.m_deferredRenderGroups);
+    RemoveGroups(f, layer.m_renderGroups, make_ref(m_overlayTree));
     layer.m_isDirty |= f.m_deletionMark;
   }
 }
@@ -844,7 +781,7 @@ FeatureID FrontendRenderer::GetVisiblePOI(m2::PointD const & pixelPoint) const
 FeatureID FrontendRenderer::GetVisiblePOI(m2::RectD const & pixelRect) const
 {
   m2::PointD pt = pixelRect.Center();
-  dp::OverlayTree::TSelectResult selectResult;
+  dp::TOverlayContainer selectResult;
   m_overlayTree->Select(pixelRect, selectResult);
 
   double dist = numeric_limits<double>::max();
@@ -873,7 +810,7 @@ void FrontendRenderer::PrepareGpsTrackPoints(size_t pointsCount)
 
 void FrontendRenderer::BeginUpdateOverlayTree(ScreenBase const & modelView)
 {
-  if (m_overlayTree->Frame(modelView.isPerspective()))
+  if (m_overlayTree->Frame())
     m_overlayTree->StartOverlayPlacing(modelView);
 }
 
@@ -896,6 +833,19 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
 #ifdef DRAW_INFO
   BeforeDrawFrame();
 #endif
+
+  bool const waitFeatures = !m_notFinishedTiles.empty();
+  m2::RectD const & screenRect = modelView.ClipRect();
+  auto isFeaturesWaiting = [&screenRect, waitFeatures](m2::RectD const & rect)
+  {
+    return waitFeatures && rect.IsIntersect(screenRect);
+  };
+
+  for (RenderLayer & layer : m_layers)
+  {
+    for (auto & group : layer.m_renderGroups)
+      layer.m_isDirty |= group->UpdateFeaturesWaitingStatus(isFeaturesWaiting, make_ref(m_overlayTree));
+  }
 
   bool const isPerspective = modelView.isPerspective();
 
@@ -955,7 +905,7 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
   GLFunctions::glClearDepth();
   RenderOverlayLayer(modelView);
 
-  m_gpsTrackRenderer->RenderTrack(modelView, GetCurrentZoomLevel(),
+  m_gpsTrackRenderer->RenderTrack(modelView, m_currentZoomLevel,
                                   make_ref(m_gpuProgramManager), m_generalUniforms);
 
   GLFunctions::glDisable(gl_const::GLDepthTest);
@@ -1007,7 +957,7 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
 void FrontendRenderer::Render2dLayer(ScreenBase const & modelView)
 {
   RenderLayer & layer2d = m_layers[RenderLayer::Geometry2dID];
-  layer2d.Sort();
+  layer2d.Sort(make_ref(m_overlayTree));
 
   for (drape_ptr<RenderGroup> const & group : layer2d.m_renderGroups)
     RenderSingleGroup(modelView, make_ref(group));
@@ -1017,7 +967,7 @@ void FrontendRenderer::Render3dLayer(ScreenBase const & modelView)
 {
   GLFunctions::glEnable(gl_const::GLDepthTest);
   RenderLayer & layer = m_layers[RenderLayer::Geometry3dID];
-  layer.Sort();
+  layer.Sort(make_ref(m_overlayTree));
   for (drape_ptr<RenderGroup> const & group : layer.m_renderGroups)
     RenderSingleGroup(modelView, make_ref(group));
 }
@@ -1025,13 +975,25 @@ void FrontendRenderer::Render3dLayer(ScreenBase const & modelView)
 void FrontendRenderer::RenderOverlayLayer(ScreenBase const & modelView)
 {
   RenderLayer & overlay = m_layers[RenderLayer::OverlayID];
-  overlay.Sort();
+  overlay.Sort(make_ref(m_overlayTree));
   BeginUpdateOverlayTree(modelView);
   for (drape_ptr<RenderGroup> & group : overlay.m_renderGroups)
     UpdateOverlayTree(modelView, group);
   EndUpdateOverlayTree();
   for (drape_ptr<RenderGroup> & group : overlay.m_renderGroups)
     RenderSingleGroup(modelView, make_ref(group));
+}
+
+void FrontendRenderer::PrepareBucket(dp::GLState const & state, drape_ptr<dp::RenderBucket> & bucket)
+{
+  ref_ptr<dp::GpuProgram> program = m_gpuProgramManager->GetProgram(state.GetProgramIndex());
+  ref_ptr<dp::GpuProgram> program3d = m_gpuProgramManager->GetProgram(state.GetProgram3dIndex());
+  bool const isPerspective = m_userEventStream.GetCurrentScreen().isPerspective();
+  if (isPerspective)
+    program3d->Bind();
+  else
+    program->Bind();
+  bucket->GetBuffer()->Build(isPerspective ? program3d : program);
 }
 
 void FrontendRenderer::MergeBuckets()
@@ -1071,7 +1033,15 @@ void FrontendRenderer::MergeBuckets()
     }
 
     for (TGroupMap::value_type & node : forMerge)
-      BatchMergeHelper::MergeBatches(node.second, newGroups, isPerspective);
+    {
+      if (node.second.size() < 2)
+        newGroups.emplace_back(move(node.second.front()));
+      else
+      {
+        BatchMergeHelper::MergeBatches(node.second, newGroups, isPerspective, true);
+        BatchMergeHelper::MergeBatches(node.second, newGroups, isPerspective, false);
+      }
+    }
 
     layer.m_renderGroups = move(newGroups);
     layer.m_isDirty = true;
@@ -1145,17 +1115,6 @@ void FrontendRenderer::RefreshBgColor()
   uint32_t color = drule::rules().GetBgColor(df::GetDrawTileScale(m_userEventStream.GetCurrentScreen()));
   dp::Color c = dp::Extract(color, 0 /*255 - (color >> 24)*/);
   GLFunctions::glClearColor(c.GetRedF(), c.GetGreenF(), c.GetBlueF(), 1.0f);
-}
-
-int FrontendRenderer::GetCurrentZoomLevel() const
-{
-  return m_currentZoomLevel;
-}
-
-int FrontendRenderer::GetCurrentZoomLevelForData() const
-{
-  int const upperScale = scales::GetUpperScale();
-  return (m_currentZoomLevel <= upperScale ? m_currentZoomLevel : upperScale);
 }
 
 void FrontendRenderer::DisablePerspective()
@@ -1311,33 +1270,37 @@ void FrontendRenderer::ResolveTileKeys(ScreenBase const & screen, TTilesCollecti
 
 void FrontendRenderer::ResolveTileKeys(m2::RectD const & rect, TTilesCollection & tiles)
 {
-  // equal for x and y
-  int const zoomLevel = GetCurrentZoomLevelForData();
+  int const dataZoomLevel = ClipTileZoomByMaxDataZoom(m_currentZoomLevel);
 
-  double const range = MercatorBounds::maxX - MercatorBounds::minX;
-  double const rectSize = range / (1 << zoomLevel);
+  m_notFinishedTiles.clear();
 
-  int const minTileX = static_cast<int>(floor(rect.minX() / rectSize));
-  int const maxTileX = static_cast<int>(ceil(rect.maxX() / rectSize));
-  int const minTileY = static_cast<int>(floor(rect.minY() / rectSize));
-  int const maxTileY = static_cast<int>(ceil(rect.maxY() / rectSize));
-
-  // request new tiles
-  m_tileTree->BeginRequesting(zoomLevel, rect);
-  for (int tileY = minTileY; tileY < maxTileY; ++tileY)
+  // Request new tiles.
+  buffer_vector<TileKey, 8> tilesToDelete;
+  CoverageResult result = CalcTilesCoverage(rect, dataZoomLevel,
+                                            [this, &rect, &tiles, &tilesToDelete](int tileX, int tileY)
   {
-    for (int tileX = minTileX; tileX < maxTileX; ++tileX)
+    TileKey key(tileX, tileY, m_currentZoomLevel);
+    if (rect.IsIntersect(key.GetGlobalRect()))
     {
-      TileKey key(tileX, tileY, zoomLevel);
-      if (rect.IsIntersect(key.GetGlobalRect()))
-      {
-        key.m_styleZoomLevel = GetCurrentZoomLevel();
-        tiles.insert(key);
-        m_tileTree->RequestTile(key);
-      }
+      tiles.insert(key);
+      m_notFinishedTiles.insert(key);
     }
-  }
-  m_tileTree->EndRequesting();
+    else
+    {
+      tilesToDelete.push_back(key);
+    }
+  });
+
+  // Remove old tiles.
+  auto removePredicate = [this, &result, &tilesToDelete](drape_ptr<RenderGroup> const & group)
+  {
+    TileKey const & key = group->GetTileKey();
+    return key.m_zoomLevel != m_currentZoomLevel ||
+           key.m_x < result.m_minTileX || key.m_x > result.m_maxTileX ||
+           key.m_y < result.m_minTileY || key.m_y > result.m_maxTileY ||
+           find(tilesToDelete.begin(), tilesToDelete.end(), key) != tilesToDelete.end();
+  };
+  RemoveRenderGroups(removePredicate);
 }
 
 FrontendRenderer::Routine::Routine(FrontendRenderer & renderer) : m_renderer(renderer) {}
@@ -1347,11 +1310,6 @@ void FrontendRenderer::Routine::Do()
   gui::DrapeGui::Instance().ConnectOnCompassTappedHandler(bind(&FrontendRenderer::OnCompassTapped, &m_renderer));
   m_renderer.m_myPositionController->SetListener(ref_ptr<MyPositionController::Listener>(&m_renderer));
   m_renderer.m_userEventStream.SetListener(ref_ptr<UserEventStream::Listener>(&m_renderer));
-
-  m_renderer.m_tileTree->SetHandlers(bind(&FrontendRenderer::OnAddRenderGroup, &m_renderer, _1, _2, _3),
-                                     bind(&FrontendRenderer::OnDeferRenderGroup, &m_renderer, _1, _2, _3),
-                                     bind(&FrontendRenderer::OnActivateTile, &m_renderer, _1),
-                                     bind(&FrontendRenderer::OnRemoveTile, &m_renderer, _1));
 
   dp::OGLContext * context = m_renderer.m_contextFactory->getDrawContext();
   context->makeCurrent();
@@ -1371,6 +1329,7 @@ void FrontendRenderer::Routine::Do()
   GLFunctions::glFrontFace(gl_const::GLClockwise);
   GLFunctions::glCullFace(gl_const::GLBack);
   GLFunctions::glEnable(gl_const::GLCullFace);
+  GLFunctions::glEnable(gl_const::GLScissorTest);
 
   m_renderer.m_gpuProgramManager->Init();
 
@@ -1464,12 +1423,9 @@ void FrontendRenderer::Routine::Do()
 
 void FrontendRenderer::ReleaseResources()
 {
-  m_tileTree.reset();
   for (RenderLayer & layer : m_layers)
-  {
     layer.m_renderGroups.clear();
-    layer.m_deferredRenderGroups.clear();
-  }
+
   m_userMarkRenderGroups.clear();
   m_guiRenderer.reset();
   m_myPositionController.reset();
@@ -1541,11 +1497,17 @@ void FrontendRenderer::UpdateScene(ScreenBase const & modelView)
 
   auto removePredicate = [this](drape_ptr<RenderGroup> const & group)
   {
-    return group->IsOverlay() && group->GetTileKey().m_styleZoomLevel > GetCurrentZoomLevel();
+    return group->IsOverlay() && group->GetTileKey().m_zoomLevel > m_currentZoomLevel;
   };
-  RemoveRenderGroups(removePredicate);
+  for (RenderLayer & layer : m_layers)
+    layer.m_isDirty |= RemoveGroups(removePredicate, layer.m_renderGroups, make_ref(m_overlayTree));
 
-  m_requestedTiles->Set(modelView, m_isIsometry || modelView.isPerspective(), move(tiles));
+  if (m_lastReadModelView != modelView)
+  {
+    ++m_tileRequestGeneration;
+    m_lastReadModelView = modelView;
+  }
+  m_requestedTiles->Set(modelView, m_isIsometry || modelView.isPerspective(), m_tileRequestGeneration, move(tiles));
   m_commutator->PostMessage(ThreadsCommutator::ResourceUploadThread,
                             make_unique_dp<UpdateReadManagerMessage>(),
                             MessagePriority::UberHighSingleton);
@@ -1567,7 +1529,7 @@ FrontendRenderer::RenderLayer::RenderLayerID FrontendRenderer::RenderLayer::GetL
   return Geometry2dID;
 }
 
-void FrontendRenderer::RenderLayer::Sort()
+void FrontendRenderer::RenderLayer::Sort(ref_ptr<dp::OverlayTree> overlayTree)
 {
   if (!m_isDirty)
     return;
@@ -1577,7 +1539,10 @@ void FrontendRenderer::RenderLayer::Sort()
   m_isDirty = comparator.m_pendingOnDeleteFound;
 
   while (!m_renderGroups.empty() && m_renderGroups.back()->CanBeDeleted())
+  {
+    m_renderGroups.back()->RemoveOverlay(overlayTree);
     m_renderGroups.pop_back();
+  }
 }
 
 } // namespace df

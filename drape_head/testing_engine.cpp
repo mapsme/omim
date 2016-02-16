@@ -398,7 +398,7 @@ void TestingEngine::Draw()
     for (size_t i = 0; i < buckets.size(); ++i)
       buckets[i]->CollectOverlayHandles(make_ref(&tree));
     for (size_t i = 0; i < buckets.size(); ++i)
-      buckets[i]->Render(m_modelView);
+      buckets[i]->Render();
     tree.EndOverlayPlacing();
   }
 }
@@ -442,7 +442,7 @@ void TestingEngine::DrawImpl()
   params.m_primaryOffset = m2::PointF(12.0, 20.0);
   params.m_primaryOptional = true;
   params.m_secondaryOptional = true;
-  TextShape sh1(m2::PointF(82.277071f, 46.9271164f), params, false);
+  TextShape sh1(m2::PointF(82.277071f, 46.9271164f), params, false, 0, true);
   sh1.Draw(make_ref(m_batcher), make_ref(m_textures));
 
   vector<m2::PointD> path;

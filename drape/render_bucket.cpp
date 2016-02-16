@@ -71,7 +71,13 @@ void RenderBucket::CollectOverlayHandles(ref_ptr<OverlayTree> tree)
     tree->Add(make_ref(overlayHandle));
 }
 
-void RenderBucket::Render(ScreenBase const & screen)
+void RenderBucket::RemoveOverlayHandles(ref_ptr<OverlayTree> tree)
+{
+  for (drape_ptr<OverlayHandle> const & overlayHandle : m_overlay)
+    tree->Remove(make_ref(overlayHandle));
+}
+
+void RenderBucket::Render()
 {
   ASSERT(m_buffer != nullptr, ());
 
@@ -94,12 +100,42 @@ void RenderBucket::Render(ScreenBase const & screen)
       }
 
       if (handle->HasDynamicAttributes())
-        handle->GetAttributeMutation(rfpAttrib, screen);
+        handle->GetAttributeMutation(rfpAttrib);
     }
 
     m_buffer->ApplyMutation(hasIndexMutation ? rfpIndex : nullptr, rfpAttrib);
   }
   m_buffer->Render();
+}
+
+void RenderBucket::StartFeatureRecord(FeatureGeometryId feature, const m2::RectD & limitRect)
+{
+  m_featureInfo = make_pair(feature, FeatureGeometryInfo(limitRect));
+  m_buffer->ResetChangingTracking();
+}
+
+void RenderBucket::EndFeatureRecord(bool featureCompleted)
+{
+  ASSERT(m_featureInfo.first.IsValid(), ());
+  m_featureInfo.second.m_featureCompleted = featureCompleted;
+  if (m_buffer->IsChanged())
+    m_featuresGeometryInfo.insert(m_featureInfo);
+  m_featureInfo = TFeatureInfo();
+}
+
+void RenderBucket::AddFeaturesInfo(RenderBucket const & bucket)
+{
+  for (auto const & info : bucket.m_featuresGeometryInfo)
+    m_featuresGeometryInfo.insert(info);
+}
+
+bool RenderBucket::IsFeaturesWaiting(TCheckFeaturesWaiting isFeaturesWaiting)
+{
+  ASSERT(IsShared(), ());
+  for (auto const & featureRange : m_featuresGeometryInfo)
+    if (isFeaturesWaiting(featureRange.second.m_limitRect))
+      return true;
+  return false;
 }
 
 void RenderBucket::RenderDebug(ScreenBase const & screen) const
@@ -119,7 +155,8 @@ void RenderBucket::RenderDebug(ScreenBase const & screen) const
         if (screen.isPerspective() && !screen.PixelRectIn3d().IsIntersect(m2::RectD(rect)))
           continue;
 
-        DebugRectRenderer::Instance().DrawRect(screen, rect);
+        DebugRectRenderer::Instance().DrawRect(screen, rect, handle->IsVisible() ?
+                                               dp::Color::Green() : dp::Color::Red());
       }
     }
   }

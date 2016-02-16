@@ -57,14 +57,29 @@ public:
 
   void Update(ScreenBase const & modelView);
   void CollectOverlay(ref_ptr<dp::OverlayTree> tree);
+  void RemoveOverlay(ref_ptr<dp::OverlayTree> tree);
   void Render(ScreenBase const & screen) override;
 
   void AddBucket(drape_ptr<dp::RenderBucket> && bucket);
 
   bool IsEmpty() const { return m_renderBuckets.empty(); }
-  void DeleteLater() const { m_pendingOnDelete = true; }
+
+  void DeleteLater() const
+  {
+    m_sharedFeaturesWaiting = true;
+    m_pendingOnDelete = true;
+  }
+
+  bool IsSharedFeaturesWaiting() const { return m_sharedFeaturesWaiting; }
   bool IsPendingOnDelete() const { return m_pendingOnDelete; }
-  bool CanBeDeleted() const { return IsPendingOnDelete() && !IsAnimating(); }
+
+  bool CanBeDeleted() const
+  {
+    return IsPendingOnDelete() && !IsAnimating() && !IsSharedFeaturesWaiting();
+  }
+
+  using TCheckFeaturesWaiting = function<bool(m2::RectD const &)>;
+  bool UpdateFeaturesWaitingStatus(TCheckFeaturesWaiting isFeaturesWaiting, ref_ptr<dp::OverlayTree> tree);
 
   bool IsLess(RenderGroup const & other) const;
 
@@ -81,6 +96,7 @@ private:
   unique_ptr<OpacityAnimation> m_appearAnimation;
 
   mutable bool m_pendingOnDelete;
+  mutable bool m_sharedFeaturesWaiting;
 
 private:
   friend string DebugPrint(RenderGroup const & group);
