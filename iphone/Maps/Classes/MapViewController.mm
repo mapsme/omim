@@ -2,18 +2,19 @@
 #import "BookmarksVC.h"
 #import "Common.h"
 #import "EAGLView.h"
-#import "MWMAPIBar.h"
+#import "MapsAppDelegate.h"
+#import "MapViewController.h"
 #import "MWMAlertViewController.h"
+#import "MWMAPIBar.h"
 #import "MWMAuthorizationCommon.h"
 #import "MWMAuthorizationLoginViewController.h"
 #import "MWMEditorViewController.h"
+#import "MWMMapDownloadDialog.h"
 #import "MWMMapDownloaderViewController.h"
 #import "MWMMapViewControlsManager.h"
 #import "MWMPageController.h"
 #import "MWMPlacePageEntity.h"
 #import "MWMTextToSpeech.h"
-#import "MapViewController.h"
-#import "MapsAppDelegate.h"
 #import "RouteState.h"
 #import "Statistics.h"
 #import "UIColor+MapsMeColor.h"
@@ -43,7 +44,6 @@ extern NSString * const kAlohalyticsTapEventKey = @"$onClick";
 extern NSString * const kUDWhatsNewWasShown = @"WhatsNewWithNightModeWasShown";
 extern char const * kAdForbiddenSettingsKey;
 extern char const * kAdServerForbiddenKey;
-extern char const * kAutoDownloadEnabledKey;
 
 typedef NS_ENUM(NSUInteger, ForceRoutingStateChange)
 {
@@ -108,6 +108,7 @@ NSString * const kEditorSegue = @"Map2EditorSegue";
 
 @property (nonatomic) UserTouchesAction userTouchesAction;
 @property (nonatomic) MWMPageController * pageViewController;
+@property (nonatomic) MWMMapDownloadDialog * downloadDialog;
 
 @property (nonatomic) BOOL skipForceTouch;
 
@@ -384,6 +385,7 @@ NSString * const kEditorSegue = @"Map2EditorSegue";
   self.view.clipsToBounds = YES;
   [MTRGManager setMyCom:YES];
   self.controlsManager = [[MWMMapViewControlsManager alloc] initWithParentController:self];
+  self.downloadDialog = [MWMMapDownloadDialog dialogForController:self];
 }
 
 - (void)mwm_refreshUI
@@ -483,7 +485,7 @@ NSString * const kEditorSegue = @"Map2EditorSegue";
   self.userTouchesAction = UserTouchesActionNone;
   self.menuRestoreState = MWMBottomMenuStateInactive;
   GetFramework().LoadBookmarks();
-  [[MWMFrameworkListener listener] addObserver:self];
+  [MWMFrameworkListener addObserver:self];
 }
 
 #pragma mark - Open controllers
@@ -509,7 +511,7 @@ NSString * const kEditorSegue = @"Map2EditorSegue";
 
 #pragma mark - MWMFrameworkMyPositionObserver
 
-- (void)processMyPositionStateModeChange:(location::EMyPositionMode)mode
+- (void)processMyPositionStateModeEvent:(location::EMyPositionMode)mode
 {
   [m_predictor setMode:mode];
 
@@ -588,7 +590,7 @@ NSString * const kEditorSegue = @"Map2EditorSegue";
 
 #pragma mark - MWMFrameworkUserMarkObserver
 
-- (void)processUserMarkActivation:(UserMark const *)mark
+- (void)processUserMarkEvent:(UserMark const *)mark
 {
   if (mark == nullptr)
   {
