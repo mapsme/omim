@@ -267,6 +267,7 @@ public:
   void InvalidateRendering();
 
   using TCurrentCountryChanged = function<void(storage::TCountryId const &)>;
+  storage::TCountryId const & GetLastReportedCountry() { return m_lastReportedCountry; }
   void SetCurrentCountryChangedListener(TCurrentCountryChanged const & listener);
 
 private:
