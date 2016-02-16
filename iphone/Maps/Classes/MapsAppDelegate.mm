@@ -283,7 +283,7 @@ using namespace osm_auth_ios;
   [HttpThread setDownloadIndicatorProtocol:self];
   InitLocalizedStrings();
   [Preferences setup];
-  [[MWMFrameworkListener listener] addObserver:self];
+  [MWMFrameworkListener addObserver:self];
   [MapsAppDelegate customizeAppearance];
 
   self.standbyCounter = 0;
@@ -811,14 +811,6 @@ using namespace osm_auth_ios;
 - (MapViewController *)mapViewController
 {
   return [(UINavigationController *)self.window.rootViewController viewControllers].firstObject;
-}
-
-@synthesize frameworkListener = _frameworkListener;
-- (MWMFrameworkListener *)frameworkListener
-{
-  if (!_frameworkListener)
-    _frameworkListener = [[MWMFrameworkListener alloc] init];
-  return _frameworkListener;
 }
 
 #pragma mark - Route state
