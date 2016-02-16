@@ -1,13 +1,13 @@
 #include "generator/dumper.hpp"
 
-#include "search/search_delimiters.hpp"
 #include "search/search_index_values.hpp"
-#include "search/search_string_utils.hpp"
 #include "search/search_trie.hpp"
 
 #include "indexer/classificator.hpp"
 #include "indexer/feature_processor.hpp"
 #include "indexer/trie_reader.hpp"
+#include "indexer/search_delimiters.hpp"
+#include "indexer/search_string_utils.hpp"
 
 #include "coding/multilang_utf8_string.hpp"
 
@@ -219,7 +219,7 @@ namespace feature
     auto printName = [&](int8_t langCode, string const & name) -> bool
     {
       CHECK(!name.empty(), ("Feature name is empty"));
-      if (langIndex == StringUtf8Multilang::UNSUPPORTED_LANGUAGE_CODE)
+      if (langIndex == StringUtf8Multilang::kUnsupportedLanguageCode)
         cout << StringUtf8Multilang::GetLangByCode(langCode) << ' ' << name << endl;
       else if (langCode == langIndex)
         cout << name << endl;

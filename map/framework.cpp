@@ -13,7 +13,6 @@
 #include "routing/route.hpp"
 #include "routing/routing_algorithm.hpp"
 
-#include "search/categories_holder.hpp"
 #include "search/geometry_utils.hpp"
 #include "search/intermediate_result.hpp"
 #include "search/result.hpp"
@@ -29,6 +28,7 @@
 #include "drape_frontend/watch/cpu_drawer.hpp"
 #include "drape_frontend/watch/feature_processor.hpp"
 
+#include "indexer/categories_holder.hpp"
 #include "indexer/classificator_loader.hpp"
 #include "indexer/drawing_rules.hpp"
 #include "indexer/feature.hpp"
@@ -1116,12 +1116,10 @@ void Framework::InitSearchEngine()
 {
   ASSERT(!m_searchEngine.get(), ("InitSearchEngine() must be called only once."));
   ASSERT(m_infoGetter.get(), ());
-  Platform const & platform = GetPlatform();
-
   try
   {
     m_searchEngine.reset(new search::Engine(
-        const_cast<Index &>(m_model.GetIndex()), platform.GetReader(SEARCH_CATEGORIES_FILE_NAME),
+        const_cast<Index &>(m_model.GetIndex()), GetDefaultCategories(),
         *m_infoGetter, languages::GetCurrentOrig(), make_unique<search::SearchQueryFactory>()));
   }
   catch (RootException const & e)
@@ -1645,7 +1643,7 @@ bool Framework::ShowMapForURL(string const & url)
   m2::PointD point;
   m2::RectD rect;
   string name;
-  UserMark const * apiMark = 0;
+  ApiMarkPoint const * apiMark = nullptr;
 
   enum ResultT { FAILED, NEED_CLICK, NO_NEED_CLICK };
   ResultT result = FAILED;

@@ -1,10 +1,11 @@
 #pragma once
 
-#include "categories_holder.hpp"
 #include "params.hpp"
 #include "result.hpp"
 #include "search_query_factory.hpp"
 #include "suggest.hpp"
+
+#include "indexer/categories_holder.hpp"
 
 #include "geometry/rect2d.hpp"
 
@@ -77,7 +78,7 @@ class Engine
 {
 public:
   // Doesn't take ownership of index. Takes ownership of categoriesR.
-  Engine(Index & index, Reader * categoriesR, storage::CountryInfoGetter const & infoGetter,
+  Engine(Index & index, CategoriesHolder const & categories, storage::CountryInfoGetter const & infoGetter,
          string const & locale, unique_ptr<SearchQueryFactory> && factory);
   ~Engine();
 
@@ -111,7 +112,7 @@ private:
 
   void DoClearCaches();
 
-  CategoriesHolder m_categories;
+  CategoriesHolder const & m_categories;
   vector<Suggest> m_suggests;
 
   unique_ptr<Query> m_query;

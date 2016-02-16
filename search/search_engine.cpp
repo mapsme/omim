@@ -1,14 +1,14 @@
 #include "search_engine.hpp"
 
-#include "categories_holder.hpp"
 #include "geometry_utils.hpp"
 #include "search_query.hpp"
-#include "search_string_utils.hpp"
 
 #include "storage/country_info_getter.hpp"
 
+#include "indexer/categories_holder.hpp"
 #include "indexer/classificator.hpp"
 #include "indexer/scales.hpp"
+#include "indexer/search_string_utils.hpp"
 
 #include "platform/platform.hpp"
 
@@ -112,9 +112,9 @@ void QueryHandle::Detach()
   m_query = nullptr;
 }
 
-Engine::Engine(Index & index, Reader * categoriesR, storage::CountryInfoGetter const & infoGetter,
+Engine::Engine(Index & index, CategoriesHolder const & categories, storage::CountryInfoGetter const & infoGetter,
                string const & locale, unique_ptr<SearchQueryFactory> && factory)
-  : m_categories(categoriesR), m_factory(move(factory)), m_shutdown(false)
+  : m_categories(categories), m_factory(move(factory)), m_shutdown(false)
 {
   InitSuggestions doInit;
   m_categories.ForEachName(bind<void>(ref(doInit), _1));

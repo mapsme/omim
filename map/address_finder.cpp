@@ -1,11 +1,11 @@
 #include "map/framework.hpp"
 
-#include "search/categories_holder.hpp"
 #include "search/result.hpp"
 #include "search/reverse_geocoder.hpp"
 
 #include "drape_frontend/visual_params.hpp"
 
+#include "indexer/categories_holder.hpp"
 #include "indexer/classificator.hpp"
 #include "indexer/feature_algo.hpp"
 #include "indexer/feature_visibility.hpp"
@@ -467,6 +467,11 @@ search::AddressInfo Framework::GetAddressInfoAtPoint(m2::PointD const & pt) cons
   return info;
 }
 
+search::AddressInfo Framework::GetFeatureAddressInfo(FeatureID const & fid) const
+{
+  return GetFeatureAddressInfo(*GetFeatureByID(fid));
+}
+
 search::AddressInfo Framework::GetFeatureAddressInfo(FeatureType & ft) const
 {
   search::AddressInfo info;
@@ -514,6 +519,11 @@ vector<string> Framework::GetPrintableFeatureTypes(FeatureType const & ft) const
       results.push_back(c.GetReadableObjectName(type));
   }
   return results;
+}
+
+vector<string> Framework::GetNearbyFeatureStreets(FeatureID const & fid) const
+{
+  return GetNearbyFeatureStreets(*GetFeatureByID(fid));
 }
 
 vector<string> Framework::GetNearbyFeatureStreets(FeatureType const & ft) const
