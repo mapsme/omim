@@ -15,11 +15,8 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.mapswithme.country.ActiveCountryTree;
 import com.mapswithme.maps.base.BaseMwmFragment;
-import com.mapswithme.maps.downloader.DownloadHelper;
 import com.mapswithme.util.UiUtils;
-import com.mapswithme.util.concurrency.UiThread;
 
 public class MapFragment extends BaseMwmFragment
                       implements View.OnTouchListener,
@@ -191,7 +188,7 @@ public class MapFragment extends BaseMwmFragment
       nativeDetachSurface();
   }
 
-  public void destroyEngine()
+  void destroyEngine()
   {
     if (!mEngineCreated)
       return;
@@ -222,14 +219,14 @@ public class MapFragment extends BaseMwmFragment
     super.onViewCreated(view, savedInstanceState);
     final SurfaceView surfaceView = (SurfaceView) view.findViewById(R.id.map_surfaceview);
     surfaceView.getHolder().addCallback(this);
-    nativeConnectDownloaderListeners();
+    nativeSubscribeOnCountryChanged();
   }
 
   @Override
   public void onDestroyView()
   {
     super.onDestroyView();
-    nativeDisconnectListeners();
+    nativeUnsubscribeOnCountryChanged();
   }
 
   @Override
@@ -281,42 +278,14 @@ public class MapFragment extends BaseMwmFragment
   }
 
   @SuppressWarnings("UnusedDeclaration")
-  public void onDownloadClicked(final int group, final int country, final int region, final int options)
+  public void onCountryChanged(final String countryId)
   {
-    UiThread.run(new Runnable()
-    {
-      @Override
-      public void run()
-      {
-        if (ActiveCountryTree.isLegacyMode())
-        {
-          ((MwmActivity)getActivity()).showMigrateDialog();
-          return;
-        }
-
-        final MapStorage.Index index = new MapStorage.Index(group, country, region);
-        if (options == -1)
-        {
-          nativeDownloadCountry(index, options);
-          return;
-        }
-
-        final long size = MapStorage.INSTANCE.countryRemoteSizeInBytes(index, options);
-        DownloadHelper.downloadWithCellularCheck(getActivity(), size, MapStorage.INSTANCE.countryName(index), new DownloadHelper.OnDownloadListener()
-        {
-          @Override
-          public void onDownload()
-          {
-            nativeDownloadCountry(index, options);
-          }
-        });
-      }
-    });
+    // TODO
   }
 
-  private native void nativeConnectDownloaderListeners();
-  private static native void nativeDisconnectListeners();
-  private static native void nativeDownloadCountry(MapStorage.Index index, int options);
+  private native void nativeSubscribeOnCountryChanged();
+  private static native void nativeUnsubscribeOnCountryChanged();
+
   static native void nativeCompassUpdated(double magneticNorth, double trueNorth, boolean forceRedraw);
   static native void nativeScalePlus();
   static native void nativeScaleMinus();
