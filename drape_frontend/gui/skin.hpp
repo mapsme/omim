@@ -15,8 +15,9 @@ enum EWidget
   WIDGET_COMPASS = 0x2,
   WIDGET_COPYRIGHT = 0x4,
   WIDGET_SCALE_LABEL = 0x8,
-  /// WIDGET_COUNTRY_STATUS - controlled by rendering kernel. Don't use it in platform code
-  WIDGET_COUNTRY_STATUS = 0x8000
+  /// Following widgets controlled by rendering kernel. Don't use them in platform code
+  WIDGET_COUNTRY_STATUS = 0x8000,
+  WIDGET_CHOOSE_POSITION_MARK = 0x8001
 };
 
 enum EGuiHandle
@@ -33,7 +34,8 @@ enum EGuiHandle
   GuiHandleRetryButton,
   GuiHandleRetryButtonLabel,
   GuiHandleCancelButton,
-  GuiHandleCancelButtonLabel
+  GuiHandleCancelButtonLabel,
+  GuiHandleChoosePositionMark
 };
 
 struct Position
