@@ -174,6 +174,11 @@ string MetadataTagProcessorImpl::ValidateAndFormat_denomination(string const & v
   return v;
 }
 
+string MetadataTagProcessorImpl::ValidateAndFormat_description(string const & v) const
+{
+  return v;
+}
+
 string MetadataTagProcessorImpl::ValidateAndFormat_cuisine(string v) const
 {
   strings::MakeLowerCaseInplace(v);

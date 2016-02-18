@@ -31,6 +31,7 @@ struct MetadataTagProcessorImpl
   string ValidateAndFormat_building_levels(string const & v) const;
   string ValidateAndFormat_denomination(string const & v) const;
   string ValidateAndFormat_wikipedia(string v) const;
+  string ValidateAndFormat_description(string v) const;
 
 protected:
   FeatureParams & m_params;
@@ -188,6 +189,12 @@ public:
       string const & value = ValidateAndFormat_denomination(v);
       if (!value.empty())
         md.Set(Metadata::FMD_DENOMINATION, value);
+    }
+    else if (k == "description")
+    {
+      string const & value = ValidateAndFormat_description(v);
+      if (!value.empty())
+        md.Set(Metadata::FMD_DESCRIPTION, value);
     }
     // FMD_INTERNET is set in FeatureType::ParseMetadata.
     return false;

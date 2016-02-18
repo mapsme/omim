@@ -96,7 +96,7 @@ class Metadata : public MetadataBase
 {
 public:
   /// @note! Do not change values here.
-  /// Add new types to the end of list, before FMD_COUNT.
+  /// Add new types to the end of list, before FMD_TEST_ID.
   enum EType
   {
     FMD_CUISINE = 1,
@@ -121,7 +121,9 @@ public:
     FMD_MIN_HEIGHT = 20,
     FMD_DENOMINATION = 21,
     FMD_BUILDING_LEVELS = 22,
-    FMD_TEST_ID = 23,
+    FMD_DESCRIPTION = 23,
+    // Insert new fields before this line.
+    FMD_TEST_ID,
     FMD_COUNT
   };
 
