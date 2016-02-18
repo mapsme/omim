@@ -149,7 +149,7 @@ static void UpdateItem(JNIEnv * env, jobject item, NodeAttrs const & attrs)
   env->SetIntField(item, countryItemFieldProgress,static_cast<jint>(attrs.m_downloadingMwmSize));
 }
 
-static void PutItemsToList(JNIEnv * env, jobject const list,  vector<TCountryId> const & children, TCountryId const & parent, int category)
+static void PutItemsToList(JNIEnv * env, jobject const list,  vector<TCountryId> const & children, int category)
 {
   static jmethodID const countryItemCtor = jni::GetConstructorID(env, g_countryItemClass, "(Ljava/lang/String;)V");
   static jfieldID const countryItemFieldCategory = env->GetFieldID(g_countryItemClass, "category", "I");
@@ -178,28 +178,20 @@ Java_com_mapswithme_maps_downloader_MapManager_nativeListItems(JNIEnv * env, jcl
 
   Storage const & storage = GetStorage();
   TCountryId const parentId = (parent ? jni::ToNativeString(env, parent) : storage.GetRootId());
+  vector<TCountryId> children;
 
-  static jfieldID const countryItemFieldParentId = env->GetFieldID(g_countryItemClass, "parentId", "Ljava/lang/String;");
-
-  if (parent)
-  {
-    vector<TCountryId> children;
-    storage.GetChildren(parentId, children);
-    PutItemsToList(env, result, children, parentId, ItemCategory::ALL);
-  }
-  else
+  if (!parent)
   {
     // TODO (trashkalmar): Countries near me
 
     // Downloaded
     vector<TCountryId> children;
     storage.GetDownloadedChildren(parentId, children);
-    PutItemsToList(env, result, children, parentId, ItemCategory::DOWNLOADED);
-
-    // All
-    storage.GetChildren(parentId, children);
-    PutItemsToList(env, result, children, parentId, ItemCategory::ALL);
+    PutItemsToList(env, result, children, ItemCategory::DOWNLOADED);
   }
+
+  storage.GetChildren(parentId, children);
+  PutItemsToList(env, result, children, ItemCategory::ALL);
 }
 
 // static void nativeUpdateItem(CountryItem item);
