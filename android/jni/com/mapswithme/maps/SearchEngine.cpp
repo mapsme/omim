@@ -77,7 +77,7 @@ jobject ToJavaResult(Result result, bool hasPosition, double lat, double lon)
                                                 featureType.get(), region.get(),
                                                 dist.get(), cuisine.get(),
                                                 result.GetStarsCount(),
-                                                static_cast<jint>(result.IsOpenNow()));
+                                                static_cast<jint>(result.IsOpenNow())));
 
   jni::TScopedLocalRef name(env, jni::ToJavaString(env, result.GetString()));
   jobject ret = env->NewObject(g_resultClass, g_resultConstructor, name.get(), desc.get(), ll.lat, ll.lon, ranges.get());
@@ -186,7 +186,7 @@ extern "C"
     params.m_query = jni::ToNativeString(env, bytes);
     params.SetInputLocale(ReplaceDeprecatedLanguageCode(jni::ToNativeString(env, lang)));
     params.SetForceSearch(true);
-    params.SetSearchMode(search::SearchParams::SearchModeT::SEARCH_WORLD);
+    params.SetMode(search::Mode::World);
     params.m_callback = bind(&OnResults, _1, timestamp, false /* isMapAndTable */, false /* hasPosition */, 0.0, 0.0);
 
     g_framework->NativeFramework()->Search(params);
