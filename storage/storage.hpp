@@ -9,6 +9,8 @@
 
 #include "platform/local_country_file.hpp"
 
+#include "base/thread_checker.hpp"
+
 #include "std/function.hpp"
 #include "std/list.hpp"
 #include "std/shared_ptr.hpp"
@@ -159,6 +161,10 @@ private:
   TDownloadFn m_downloadMapOnTheMap;
 
   CountryNameGetter m_countryNameGetter;
+
+  unique_ptr<Storage> m_prefetchStorage;
+
+  DECLARE_THREAD_CHECKER(m_threadChecker);
 
   void DownloadNextCountryFromQueue();
 
@@ -322,7 +328,7 @@ public:
   void UnsubscribeStatusCallback(size_t index) {}
 
   /// \brief Sets callback which will be called in case of a click on download map button on the map.
-  void SetCallbackForClickOnDownloadMap(TDownloadFn & downloadFn) { m_downloadMapOnTheMap = downloadFn; }
+  void SetCallbackForClickOnDownloadMap(TDownloadFn & downloadFn);
 
   /// \brief Calls |m_downloadMapOnTheMap| if one has been set.
   /// \param |countryId| is country id of a leaf. That means it's a file name.
@@ -338,12 +344,12 @@ public:
   /// Do we have downloaded countries
   bool HaveDownloadedCountries() const;
 
-  /// Prefetch MWMs before migrate
-  unique_ptr<Storage> m_prefetchStorage;
-  void PrefetchMigrateData();
-
   /// Delete local maps and aggregate their Id if needed
   void DeleteAllLocalMaps(TCountriesVec * existedCountries = nullptr);
+
+  /// Prefetch MWMs before migrate
+  Storage * GetPrefetchStorage();
+  void PrefetchMigrateData();
 
   /// Switch on new storage version, remove old mwm
   /// and add required mwm's into download queue.
