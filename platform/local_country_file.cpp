@@ -33,11 +33,17 @@ void LocalCountryFile::SyncWithDisk()
   m_files = MapOptions::Nothing;
   m_mapSize = 0;
   m_routingSize = 0;
-
   Platform & platform = GetPlatform();
 
   if (platform.GetFileSizeByFullPath(GetPath(MapOptions::Map), m_mapSize))
     m_files = SetOptions(m_files, MapOptions::Map);
+
+  if (version::IsSingleMwm(GetVersion()))
+  {
+    if (m_files == MapOptions::Map)
+      m_files = SetOptions(m_files, MapOptions::CarRouting);
+    return;
+  }
 
   string const routingPath = GetPath(MapOptions::CarRouting);
   if (platform.GetFileSizeByFullPath(routingPath, m_routingSize))
@@ -61,11 +67,7 @@ void LocalCountryFile::DeleteFromDisk(MapOptions files) const
 
 string LocalCountryFile::GetPath(MapOptions file) const
 {
-  // todo(@m): Refactor with MwmTraits after merge new-search branch.
-  bool const singleFile = version::IsSingleMwm(GetVersion());
-  string const & countryFilePath = singleFile ? m_countryFile.GetNameWithExt(MapOptions::Map)
-                                              : m_countryFile.GetNameWithExt(file);
-  return my::JoinFoldersToPath(m_directory, countryFilePath);
+  return my::JoinFoldersToPath(m_directory, GetFileName(m_countryFile.GetName(), file, GetVersion()));
 }
 
 uint32_t LocalCountryFile::GetSize(MapOptions filesMask) const
@@ -73,8 +75,9 @@ uint32_t LocalCountryFile::GetSize(MapOptions filesMask) const
   uint64_t size64 = 0;
   if (HasOptions(filesMask, MapOptions::Map))
     size64 += m_mapSize;
-  if (HasOptions(filesMask, MapOptions::CarRouting))
+  if (!version::IsSingleMwm(GetVersion()) && HasOptions(filesMask, MapOptions::CarRouting))
     size64 += m_routingSize;
+
   uint32_t const size32 = static_cast<uint32_t>(size64);
   ASSERT_EQUAL(size32, size64, ());
   return size32;

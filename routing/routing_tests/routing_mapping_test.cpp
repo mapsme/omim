@@ -24,13 +24,11 @@ namespace
 class LocalFileGenerator
 {
 public:
-  // Note. m_localFile has version == 0. That means it is considered as a two components mwm file
-  // with routing and map sections. It has mwm extention. So, to get correct path
-  // MapOptions::Map is used as a parameter of CountryFile::GetNameWithExt() method.
   LocalFileGenerator(string const & fileName)
       : m_countryFile(fileName),
-        m_testDataFile(m_countryFile.GetNameWithExt(MapOptions::Map), "routing"),
-        m_localFile(GetPlatform().WritableDir(), m_countryFile, 0 /* version */)
+        m_testDataFile(platform::GetFileName(m_countryFile.GetName(), MapOptions::MapWithCarRouting,
+                                             version::FOR_TESTING_SINGLE_MWM1), "routing"),
+        m_localFile(GetPlatform().WritableDir(), m_countryFile, version::FOR_TESTING_SINGLE_MWM1)
   {
     m_localFile.SyncWithDisk();
     TEST(m_localFile.OnDisk(MapOptions::MapWithCarRouting), ());
@@ -43,11 +41,12 @@ public:
 
   TestMwmSet & GetMwmSet() { return m_testSet; }
 
-  string const & GetCountryName() { return m_countryFile.GetNameWithoutExt(); }
+  string const & GetCountryName() { return m_countryFile.GetName(); }
 
   size_t GetNumRefs() { return m_result.first.GetInfo()->GetNumRefs(); }
 
 private:
+
   void GenerateNecessarySections(LocalCountryFile const & localFile)
   {
     FilesContainerW dataCont(localFile.GetPath(MapOptions::CarRouting));

@@ -1,6 +1,6 @@
 # Storage library tests.
 
-TARGET = storage_tests
+TARGET = storage_integration_tests
 CONFIG += console warn_on
 CONFIG -= app_bundle
 TEMPLATE = app
@@ -17,7 +17,7 @@ DEFINES *= OMIM_UNIT_TEST_WITH_QT_EVENT_LOOP
 QT *= core
 
 macx-* {
-  QT *= gui widgets # needed for QApplication with event loop, to test async events (downloader, etc.)
+  QT *= gui widgets network # needed for QApplication with event loop, to test async events (downloader, etc.)
   LIBS *= "-framework IOKit" "-framework QuartzCore" "-framework SystemConfiguration"
 }
 win32*|linux* {
@@ -25,19 +25,12 @@ win32*|linux* {
 }
 
 HEADERS += \
-  fake_map_files_downloader.hpp \
-  helpers.hpp \
-  task_runner.hpp \
-  test_map_files_downloader.hpp \
 
 SOURCES += \
   ../../testing/testingmain.cpp \
-  country_info_getter_test.cpp \
-  country_name_getter_test.cpp \
-  fake_map_files_downloader.cpp \
-  helpers.cpp \
-  queued_country_tests.cpp \
-  simple_tree_test.cpp \
-  storage_tests.cpp \
-  task_runner.cpp \
-  test_map_files_downloader.cpp \
+  migrate_tests.cpp \
+  storage_3levels_tests.cpp \
+  storage_downloading_tests.cpp \
+  storage_group_download_tests.cpp \
+  storage_http_tests.cpp \
+  storage_update_tests.cpp \
