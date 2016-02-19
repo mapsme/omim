@@ -26,18 +26,18 @@ win32*|linux* {
 
 HEADERS += \
   fake_map_files_downloader.hpp \
+  helpers.hpp \
   task_runner.hpp \
   test_map_files_downloader.hpp \
-  write_dir_changer.hpp \
 
 SOURCES += \
   ../../testing/testingmain.cpp \
   country_info_getter_test.cpp \
+  country_name_getter_test.cpp \
   fake_map_files_downloader.cpp \
-  migrate_tests.cpp \
+  helpers.cpp \
   queued_country_tests.cpp \
   simple_tree_test.cpp \
   storage_tests.cpp \
   task_runner.cpp \
   test_map_files_downloader.cpp \
-  write_dir_changer.cpp \

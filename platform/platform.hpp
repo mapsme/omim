@@ -32,6 +32,10 @@ public:
     ERR_ACCESS_FAILED,
     ERR_DIRECTORY_NOT_EMPTY,
     ERR_FILE_ALREADY_EXISTS,
+    ERR_NAME_TOO_LONG,
+    ERR_NOT_A_DIRECTORY,
+    ERR_SYMLINK_LOOP,
+    ERR_IO_ERROR,
     ERR_UNKNOWN
   };
 
@@ -168,6 +172,7 @@ public:
     NOT_ENOUGH_SPACE
   };
   TStorageStatus GetWritableStorageStatus(uint64_t neededSize) const;
+  uint64_t GetWritableStorageSpace() const;
 
   /// @name Functions for concurrent tasks.
   //@{

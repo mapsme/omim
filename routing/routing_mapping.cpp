@@ -27,8 +27,9 @@ namespace
  */
 bool CheckMwmConsistency(LocalCountryFile const & localFile)
 {
-  if (localFile.GetPath(MapOptions::CarRouting) == localFile.GetPath(MapOptions::Map))
+  if (version::IsSingleMwm(localFile.GetVersion()))
     return true;
+
   ModelReaderPtr r1 = FilesContainerR(localFile.GetPath(MapOptions::CarRouting))
       .GetReader(VERSION_FILE_TAG);
   ReaderSrc src1(r1.GetPtr());
@@ -62,6 +63,7 @@ RoutingMapping::RoutingMapping(string const & countryFile, MwmSet & index)
     return;
 
   LocalCountryFile const & localFile = m_handle.GetInfo()->GetLocalFile();
+
   if (!HasOptions(localFile.GetFiles(), MapOptions::MapWithCarRouting))
   {
     m_error = IRouter::ResultCode::RouteFileNotExist;

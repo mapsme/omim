@@ -9,10 +9,10 @@ import android.location.LocationManager;
 import android.os.Handler;
 import android.text.TextUtils;
 
-import com.mapswithme.country.ActiveCountryTree;
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.R;
+import com.mapswithme.maps.downloader.MapManager;
 import com.mapswithme.maps.editor.Editor;
 import com.mapswithme.util.LocationUtils;
 
@@ -22,7 +22,6 @@ public class WorkerService extends IntentService
   private static final String ACTION_DOWNLOAD_COUNTRY = "com.mapswithme.maps.action.download_country";
   private static final String ACTION_UPLOAD_OSM_CHANGES = "com.mapswithme.maps.action.upload_osm_changes";
 
-  private static final MwmApplication APP = MwmApplication.get();
   private static final SharedPreferences PREFS = MwmApplication.prefs();
 
   /**
@@ -92,7 +91,7 @@ public class WorkerService extends IntentService
   }
   private static void handleActionCheckUpdate()
   {
-    if (!Framework.nativeIsDataVersionChanged() || ActiveCountryTree.isLegacyMode())
+    if (!Framework.nativeIsDataVersionChanged() || MapManager.nativeIsLegacyMode())
       return;
 
     final String countriesToUpdate = Framework.nativeGetOutdatedCountriesString();
@@ -104,7 +103,7 @@ public class WorkerService extends IntentService
 
   private void handleActionCheckLocation()
   {
-    if (ActiveCountryTree.isLegacyMode())
+    if (MapManager.nativeIsLegacyMode())
       return;
 
     final long delayMillis = 60000; // 60 seconds
@@ -151,23 +150,21 @@ public class WorkerService extends IntentService
    */
   private static void placeDownloadNotification(Location l)
   {
-    final String country = Framework.nativeGetCountryNameIfAbsent(l.getLatitude(), l.getLongitude());
-    if (!TextUtils.isEmpty(country))
+    final String country = MapManager.nativeFindCountry(l.getLatitude(), l.getLongitude());
+    if (TextUtils.isEmpty(country))
+      return;
+
+    final String lastNotification = PREFS.getString(country, null);
+    if (lastNotification != null)
     {
-
-      final String lastNotification = PREFS.getString(country, null);
-      if (lastNotification != null)
-      {
-        // Do not place notification if it was displayed less than 180 days ago.
-        final long timeStamp = Long.valueOf(lastNotification);
-        final long outdatedMillis = 180L * 24 * 60 * 60 * 1000;
-        if (System.currentTimeMillis() - timeStamp < outdatedMillis)
-          return;
-      }
-
-      Notifier.notifyDownloadSuggest(country, String.format(APP.getString(R.string.download_location_country), country),
-          Framework.nativeGetCountryIndex(l.getLatitude(), l.getLongitude()));
-      PREFS.edit().putString(country, String.valueOf(System.currentTimeMillis())).apply();
+      // Do not place notification if it was displayed less than 180 days ago.
+      final long timeStamp = Long.valueOf(lastNotification);
+      final long outdatedMillis = 180L * 24 * 60 * 60 * 1000;
+      if (System.currentTimeMillis() - timeStamp < outdatedMillis)
+        return;
     }
+
+    Notifier.notifyDownloadSuggest(country, MwmApplication.get().getString(R.string.download_location_country, country), country);
+    PREFS.edit().putString(country, String.valueOf(System.currentTimeMillis())).apply();
   }
 }

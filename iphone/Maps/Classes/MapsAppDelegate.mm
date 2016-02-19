@@ -32,8 +32,6 @@
 #include "platform/preferred_languages.hpp"
 #include "storage/storage_defines.hpp"
 
-#include "std/mutex.hpp"
-
 // If you have a "missing header error" here, then please run configure.sh script in the root repo folder.
 #import "../../../private.h"
 
@@ -89,7 +87,7 @@ void InitLocalizedStrings()
 
 using namespace osm_auth_ios;
 
-@interface MapsAppDelegate ()
+@interface MapsAppDelegate () <MWMFrameworkStorageObserver>
 
 @property (nonatomic) NSInteger standbyCounter;
 
@@ -106,12 +104,60 @@ using namespace osm_auth_ios;
 
   NSString * m_scheme;
   NSString * m_sourceApplication;
-  ActiveMapsObserver * m_mapsObserver;
 }
 
 + (MapsAppDelegate *)theApp
 {
   return (MapsAppDelegate *)[UIApplication sharedApplication].delegate;
+}
+
+#pragma mark - Storage
+
++ (void)downloadNode:(storage::TCountryId const &)countryId alertController:(MWMAlertViewController *)alertController onSuccess:(TMWMVoidBlock)onSuccess
+{
+  [self countryId:countryId alertController:alertController performAction:^
+  {
+    GetFramework().Storage().DownloadNode(countryId);
+    if (onSuccess)
+      onSuccess();
+  }];
+}
+
++ (void)updateNode:(storage::TCountryId const &)countryId alertController:(MWMAlertViewController *)alertController
+{
+  [self countryId:countryId alertController:alertController performAction:^
+  {
+    GetFramework().Storage().UpdateNode(countryId);
+  }];
+}
+
++ (void)deleteNode:(storage::TCountryId const &)countryId
+{
+  GetFramework().Storage().DeleteNode(countryId);
+}
+
++ (void)countryId:(storage::TCountryId const &)countryId alertController:(MWMAlertViewController *)alertController performAction:(TMWMVoidBlock)action
+{
+  switch (Platform::ConnectionStatus())
+  {
+    case Platform::EConnectionType::CONNECTION_NONE:
+      [alertController presentNoConnectionAlert];
+      break;
+    case Platform::EConnectionType::CONNECTION_WIFI:
+      action();
+      break;
+    case Platform::EConnectionType::CONNECTION_WWAN:
+    {
+      storage::NodeAttrs attrs;
+      GetFramework().Storage().GetNodeAttrs(countryId, attrs);
+      size_t const warningSizeForWWAN = 50 * MB;
+      if (attrs.m_mwmSize > warningSizeForWWAN)
+        [alertController presentNoWiFiAlertWithName:@(attrs.m_nodeLocalName.c_str()) okBlock:action];
+      else
+        action();
+      break;
+    }
+  }
 }
 
 #pragma mark - Notifications
@@ -237,16 +283,16 @@ using namespace osm_auth_ios;
   [HttpThread setDownloadIndicatorProtocol:self];
   InitLocalizedStrings();
   [Preferences setup];
-  [self subscribeToStorage];
+  [MWMFrameworkListener addObserver:self];
   [MapsAppDelegate customizeAppearance];
 
   self.standbyCounter = 0;
   NSTimeInterval const minimumBackgroundFetchIntervalInSeconds = 6 * 60 * 60;
   [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:minimumBackgroundFetchIntervalInSeconds];
   [self startAdServerForbiddenCheckTimer];
-  Framework & f = GetFramework();
-  [UIApplication sharedApplication].applicationIconBadgeNumber = f.GetCountryTree().GetActiveMapLayout().GetOutOfDateCount();
-  f.InvalidateMyPosition();
+  [self updateApplicationIconBadgeNumber];
+
+  GetFramework().InvalidateMyPosition();
 }
 
 - (void)determineMapStyle
@@ -672,7 +718,6 @@ using namespace osm_auth_ios;
   textFieldInSearchBar.defaultTextAttributes = @{NSForegroundColorAttributeName : [UIColor blackPrimaryText]};
 }
 
-
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
 {
   [[LocalNotificationManager sharedManager] processNotification:notification onLaunch:NO];
@@ -740,31 +785,25 @@ using namespace osm_auth_ios;
   [self.mapViewController dismissPopover];
 }
 
-- (void)subscribeToStorage
+- (void)updateApplicationIconBadgeNumber
 {
-  __weak MapsAppDelegate * weakSelf = self;
-  m_mapsObserver = new ActiveMapsObserver(weakSelf);
-  GetFramework().GetCountryTree().GetActiveMapLayout().AddListener(m_mapsObserver);
-
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(outOfDateCountriesCountChanged:) name:MapsStatusChangedNotification object:nil];
-}
-
-- (void)countryStatusChangedAtPosition:(int)position inGroup:(storage::ActiveMapsLayout::TGroup const &)group
-{
-  ActiveMapsLayout & l = GetFramework().GetCountryTree().GetActiveMapLayout();
-  int const outOfDateCount = l.GetOutOfDateCount();
-  [[NSNotificationCenter defaultCenter] postNotificationName:MapsStatusChangedNotification object:nil userInfo:@{@"OutOfDate" : @(outOfDateCount)}];
-}
-
-- (void)outOfDateCountriesCountChanged:(NSNotification *)notification
-{
-  [UIApplication sharedApplication].applicationIconBadgeNumber = [[notification userInfo][@"OutOfDate"] integerValue];
+  auto & s = GetFramework().Storage();
+  storage::Storage::UpdateInfo updateInfo{};
+  s.GetUpdateInfo(s.GetRootId(), updateInfo);
+  [UIApplication sharedApplication].applicationIconBadgeNumber = updateInfo.m_numberOfMwmFilesToUpdate;
 }
 
 - (void)setRoutingPlaneMode:(MWMRoutingPlaneMode)routingPlaneMode
 {
   _routingPlaneMode = routingPlaneMode;
   [self.mapViewController updateStatusBarStyle];
+}
+
+#pragma mark - MWMFrameworkStorageObserver
+
+- (void)processCountryEvent:(storage::TCountryId const &)countryId
+{
+  [self updateApplicationIconBadgeNumber];
 }
 
 #pragma mark - Properties
