@@ -74,7 +74,7 @@ public:
   TCountryId const & Name() const { return m_name; }
 };
 
-typedef SimpleTree<Country> TCountriesContainer;
+typedef CountryTree<Country> TCountriesContainer;
 
 /// @return version of country file or -1 if error was encountered
 int64_t LoadCountries(string const & jsonBuffer, TCountriesContainer & countries, TMapping * mapping = nullptr);
