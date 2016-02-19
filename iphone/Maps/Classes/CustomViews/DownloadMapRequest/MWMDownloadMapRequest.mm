@@ -4,6 +4,7 @@
 #import "MWMCircularProgress.h"
 #import "MWMDownloadMapRequest.h"
 #import "MWMDownloadMapRequestView.h"
+#import "MWMStorage.h"
 #import "Statistics.h"
 
 #include "Framework.h"
@@ -40,20 +41,21 @@
   {
     [[NSBundle mainBundle] loadNibNamed:self.class.className owner:self options:nil];
     [parentView addSubview:self.rootView];
-    self.progressView = [[MWMCircularProgress alloc] initWithParentView:self.progressViewWrapper];
-    self.progressView.delegate = self;
-    [self setupProgressImages];
+    [self setupProgressView];
     self.delegate = delegate;
     [self showRequest];
   }
   return self;
 }
 
-- (void)setupProgressImages
+- (void)setupProgressView
 {
+  self.progressView = [[MWMCircularProgress alloc] initWithParentView:self.progressViewWrapper];
+  self.progressView.delegate = self;
   [self.progressView setImage:[UIImage imageNamed:@"ic_download"] forState:MWMCircularProgressStateNormal];
   [self.progressView setImage:[UIImage imageNamed:@"ic_download"] forState:MWMCircularProgressStateSelected];
   [self.progressView setImage:[UIImage imageNamed:@"ic_close_spinner"] forState:MWMCircularProgressStateProgress];
+  [self.progressView setImage:[UIImage imageNamed:@"ic_close_spinner"] forState:MWMCircularProgressStateSpinner];
   [self.progressView setImage:[UIImage imageNamed:@"ic_download_error"] forState:MWMCircularProgressStateFailed];
   [self.progressView setImage:[UIImage imageNamed:@"ic_check"] forState:MWMCircularProgressStateCompleted];
 }
@@ -75,13 +77,13 @@
   }
   else
   {
-    m_countryId = kInvalidCountryId;
+    m_countryId = storage::kInvalidCountryId;
     auto const & countryInfoGetter = f.CountryInfoGetter();
     LocationManager * locationManager = [MapsAppDelegate theApp].m_locationManager;
     if (locationManager.lastLocationIsValid)
       m_countryId = countryInfoGetter.GetRegionCountryId(locationManager.lastLocation.mercator);
 
-    if (m_countryId != kInvalidCountryId)
+    if (m_countryId != storage::kInvalidCountryId)
     {
       storage::NodeAttrs attrs;
       s.GetNodeAttrs(m_countryId, attrs);
@@ -112,7 +114,6 @@
 - (void)setDownloadFailed
 {
   self.progressView.state = MWMCircularProgressStateFailed;
-  [self.progressView stopSpinner];
 }
 
 #pragma mark - MWMCircularProgressDelegate
@@ -121,15 +122,14 @@
 {
   [[Statistics instance] logEvent:kStatEventName(kStatDownloadRequest, kStatButton)
                    withParameters:@{kStatValue : kStatProgress}];
-  auto & s = GetFramework().Storage();
   if (progress.state == MWMCircularProgressStateFailed)
   {
-    s.RetryDownloadNode(m_countryId);
-    [self.progressView startSpinner:NO];
+    [MWMStorage retryDownloadNode:m_countryId];
+    self.progressView.state = MWMCircularProgressStateSpinner;
   }
   else
   {
-    s.CancelDownloadNode(m_countryId);
+    [MWMStorage cancelDownloadNode:m_countryId];
   }
   [self showRequest];
 }
@@ -139,11 +139,10 @@
 - (IBAction)downloadMapTouchUpInside:(nonnull UIButton *)sender
 {
   [[Statistics instance] logEvent:kStatEventName(kStatDownloadRequest, kStatDownloadMap)];
-  [MapsAppDelegate downloadNode:m_countryId alertController:self.delegate.alertController onSuccess:^
+  [MWMStorage downloadNode:m_countryId alertController:self.delegate.alertController onSuccess:^
   {
-    self.progressView.progress = 0.0;
     [self showRequest];
-    [self.progressView startSpinner:NO];
+    self.progressView.state = MWMCircularProgressStateSpinner;
   }];
 }
 
