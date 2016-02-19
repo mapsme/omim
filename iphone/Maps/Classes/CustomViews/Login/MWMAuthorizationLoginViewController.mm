@@ -8,6 +8,12 @@
 
 #include "editor/server_api.hpp"
 
+#include "indexer/osm_editor.hpp"
+
+#include "platform/platform.hpp"
+
+#include "base/logging.hpp"
+
 namespace
 {
 NSString * const kWebViewAuthSegue = @"Authorization2WebViewAuthorizationSegue";
@@ -75,7 +81,6 @@ using namespace osm_auth_ios;
   navBar.barStyle = UIBarStyleBlack;
   navBar.tintColor = [UIColor clearColor];
   navBar.barTintColor = [UIColor clearColor];
-  navBar.shadowImage = [UIImage imageWithColor:[UIColor clearColor]];
   navBar.shadowImage = [[UIImage alloc] init];
   [navBar setBackgroundImage:[[UIImage alloc] init] forBarMetrics:UIBarMetricsDefault];
   navBar.translucent = YES;

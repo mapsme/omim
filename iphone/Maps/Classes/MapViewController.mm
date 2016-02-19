@@ -1,7 +1,6 @@
 #import "BookmarksRootVC.h"
 #import "BookmarksVC.h"
 #import "Common.h"
-#import "CountryTreeVC.h"
 #import "EAGLView.h"
 #import "MapsAppDelegate.h"
 #import "MapViewController.h"
@@ -10,6 +9,8 @@
 #import "MWMAuthorizationCommon.h"
 #import "MWMAuthorizationLoginViewController.h"
 #import "MWMEditorViewController.h"
+#import "MWMMapDownloadDialog.h"
+#import "MWMMapDownloaderViewController.h"
 #import "MWMMapViewControlsManager.h"
 #import "MWMPageController.h"
 #import "MWMPlacePageEntity.h"
@@ -17,11 +18,10 @@
 #import "MWMTextToSpeech.h"
 #import "RouteState.h"
 #import "Statistics.h"
+#import "UIColor+MapsMeColor.h"
 #import "UIFont+MapsMeFonts.h"
 #import "UIViewController+Navigation.h"
 #import <MyTargetSDKCorp/MTRGManager_Corp.h>
-
-#import "UIColor+MapsMeColor.h"
 
 #import "3party/Alohalytics/src/alohalytics_objc.h"
 
@@ -45,7 +45,6 @@ extern NSString * const kAlohalyticsTapEventKey = @"$onClick";
 extern NSString * const kUDWhatsNewWasShown = @"WhatsNewWithNightModeWasShown";
 extern char const * kAdForbiddenSettingsKey;
 extern char const * kAdServerForbiddenKey;
-extern char const * kAutoDownloadEnabledKey;
 
 typedef NS_ENUM(NSUInteger, ForceRoutingStateChange)
 {
@@ -64,6 +63,9 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
 namespace
 {
 NSString * const kAuthorizationSegue = @"Map2AuthorizationSegue";
+NSString * const kDownloaderSegue = @"Map2MapDownloaderSegue";
+NSString * const kMigrationSegue = @"Map2MigrationSegue";
+NSString * const kEditorSegue = @"Map2EditorSegue";
 } // namespace
 
 @interface NSValueWrapper : NSObject
@@ -97,7 +99,8 @@ NSString * const kAuthorizationSegue = @"Map2AuthorizationSegue";
 
 @end
 
-@interface MapViewController () <MTRGNativeAppwallAdDelegate>
+@interface MapViewController ()<MTRGNativeAppwallAdDelegate, MWMFrameworkRouteBuilderObserver,
+                                MWMFrameworkMyPositionObserver, MWMFrameworkUserMarkObserver>
 
 @property (nonatomic, readwrite) MWMMapViewControlsManager * controlsManager;
 @property (nonatomic) MWMBottomMenuState menuRestoreState;
@@ -107,6 +110,7 @@ NSString * const kAuthorizationSegue = @"Map2AuthorizationSegue";
 
 @property (nonatomic) UserTouchesAction userTouchesAction;
 @property (nonatomic) MWMPageController * pageViewController;
+@property (nonatomic) MWMMapDownloadDialog * downloadDialog;
 
 @property (nonatomic) BOOL skipForceTouch;
 
@@ -181,33 +185,6 @@ NSString * const kAuthorizationSegue = @"Map2AuthorizationSegue";
     GetFramework().OnCompassUpdate(info);
 }
 
-- (void)onLocationStateModeChanged:(location::EMyPositionMode)newMode
-{
-  [m_predictor setMode:newMode];
-  [self.controlsManager setMyPositionMode:newMode];
-
-  switch (newMode)
-  {
-    case location::MODE_UNKNOWN_POSITION:
-    {
-      self.disableStandbyOnLocationStateMode = NO;
-      [[MapsAppDelegate theApp].m_locationManager stop:self];
-      break;
-    }
-    case location::MODE_PENDING_POSITION:
-      self.disableStandbyOnLocationStateMode = NO;
-      [[MapsAppDelegate theApp].m_locationManager start:self];
-      break;
-    case location::MODE_NOT_FOLLOW:
-      self.disableStandbyOnLocationStateMode = NO;
-      break;
-    case location::MODE_FOLLOW:
-    case location::MODE_ROTATE_AND_FOLLOW:
-      self.disableStandbyOnLocationStateMode = YES;
-      break;
-  }
-}
-
 #pragma mark - Restore route
 
 - (void)restoreRoute
@@ -221,23 +198,6 @@ NSString * const kAuthorizationSegue = @"Map2AuthorizationSegue";
 - (void)dismissPlacePage
 {
   [self.controlsManager dismissPlacePage];
-}
-
-- (void)onUserMarkClicked:(unique_ptr<UserMarkCopy>)mark
-{
-  if (mark == nullptr)
-  {
-    [self dismissPlacePage];
-    
-    auto & f = GetFramework();
-    if (!f.HasActiveUserMark() && self.controlsManager.searchHidden && !f.IsRouteNavigable())
-      self.controlsManager.hidden = !self.controlsManager.hidden;
-  }
-  else
-  {
-    self.controlsManager.hidden = NO;
-    [self.controlsManager showPlacePageWithUserMark:move(mark)];
-  }
 }
 
 - (void)onMyPositionClicked:(id)sender
@@ -427,6 +387,7 @@ NSString * const kAuthorizationSegue = @"Map2AuthorizationSegue";
   self.view.clipsToBounds = YES;
   [MTRGManager setMyCom:YES];
   self.controlsManager = [[MWMMapViewControlsManager alloc] initWithParentController:self];
+  self.downloadDialog = [MWMMapDownloadDialog dialogForController:self];
 }
 
 - (void)mwm_refreshUI
@@ -440,7 +401,6 @@ NSString * const kAuthorizationSegue = @"Map2AuthorizationSegue";
 {
   if (isIOS7)
     return;
-    
   NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
   BOOL const whatsNewWasShown = [ud boolForKey:kUDWhatsNewWasShown];
   if (whatsNewWasShown)
@@ -522,155 +482,80 @@ NSString * const kAuthorizationSegue = @"Map2AuthorizationSegue";
 
 - (void)initialize
 {
-  Framework & f = GetFramework();
-
-  using UserMarkActivatedFnT = void (*)(id, SEL, unique_ptr<UserMarkCopy>);
-  using PlacePageDismissedFnT = void (*)(id, SEL);
-
-  SEL userMarkSelector = @selector(onUserMarkClicked:);
-  UserMarkActivatedFnT userMarkFn = (UserMarkActivatedFnT)[self methodForSelector:userMarkSelector];
-  f.SetUserMarkActivationListener(bind(userMarkFn, self, userMarkSelector, _1));
   m_predictor = [[LocationPredictor alloc] initWithObserver:self];
   self.forceRoutingStateChange = ForceRoutingStateChangeNone;
   self.userTouchesAction = UserTouchesActionNone;
   self.menuRestoreState = MWMBottomMenuStateInactive;
-  f.LoadBookmarks();
-
-  using TLocationStateModeFn = void (*)(id, SEL, location::EMyPositionMode);
-  SEL locationStateModeSelector = @selector(onLocationStateModeChanged:);
-  TLocationStateModeFn locationStateModeFn = (TLocationStateModeFn)[self methodForSelector:locationStateModeSelector];
-  f.SetMyPositionModeListener(bind(locationStateModeFn, self, locationStateModeSelector, _1));
-
-  f.SetDownloadCountryListener([self](storage::TIndex const & idx, int opt)
-  {
-    if (opt == -1)
-    {
-      GetFramework().GetCountryTree().GetActiveMapLayout().RetryDownloading(idx);
-    }
-    else
-    {
-      [self checkMigrationAndCallBlock:^
-      {
-        ActiveMapsLayout & layout = GetFramework().GetCountryTree().GetActiveMapLayout();
-        LocalAndRemoteSizeT sizes = layout.GetRemoteCountrySizes(idx);
-        uint64_t sizeToDownload = sizes.first;
-        MapOptions options = static_cast<MapOptions>(opt);
-        if (HasOptions(options, MapOptions::CarRouting))
-          sizeToDownload += sizes.second;
-
-        NSString * name = @(layout.GetCountryName(idx).c_str());
-        Platform::EConnectionType const connection = Platform::ConnectionStatus();
-        if (connection != Platform::EConnectionType::CONNECTION_NONE)
-        {
-          if (connection == Platform::EConnectionType::CONNECTION_WWAN && sizeToDownload > 50 * MB)
-          {
-            [self.alertController presentNoWiFiAlertWithName:name downloadBlock:^
-            {
-              layout.DownloadMap(idx, static_cast<MapOptions>(opt));
-            }];
-            return;
-          }
-        }
-        else
-        {
-          [self.alertController presentNoConnectionAlert];
-          return;
-        }
-
-        layout.DownloadMap(idx, static_cast<MapOptions>(opt));
-      }];
-    }
-  });
-
-  f.SetDownloadCancelListener([self](storage::TIndex const & idx)
-  {
-    GetFramework().GetCountryTree().GetActiveMapLayout().CancelDownloading(idx);
-  });
-
-  f.SetAutoDownloadListener([self](storage::TIndex const & idx)
-  {
-    if (![self isEqual:self.navigationController.topViewController] || platform::migrate::NeedMigrate())
-      return;
-    bool autoDownloadEnabled = true;
-    (void)Settings::Get(kAutoDownloadEnabledKey, autoDownloadEnabled);
-    if (autoDownloadEnabled && Platform::ConnectionStatus() == Platform::EConnectionType::CONNECTION_WIFI)
-      GetFramework().GetCountryTree().GetActiveMapLayout().DownloadMap(idx, MapOptions::MapWithCarRouting);
-  });
-
-  f.SetRouteBuildingListener([self, &f](routing::IRouter::ResultCode code, vector<storage::TIndex> const & absentCountries, vector<storage::TIndex> const & absentRoutes)
-  {
-    dispatch_async(dispatch_get_main_queue(), [=]
-    {
-      if (code != routing::IRouter::ResultCode::NoError && platform::migrate::NeedMigrate())
-      {
-        [self.controlsManager routingHidden];
-        [self checkMigrationAndCallBlock:^{}];
-      }
-      else
-      {
-        [self processRoutingBuildingEvent:code countries:absentCountries routes:absentRoutes];
-      }
-    });
-  });
-  
-  f.SetRouteProgressListener([self](float progress)
-  {
-    dispatch_async(dispatch_get_main_queue(), ^
-    {
-      self.controlsManager.routeBuildingProgress = progress;
-    });
-  });
+  GetFramework().LoadBookmarks();
+  [MWMFrameworkListener addObserver:self];
 }
 
-- (void)checkMigrationAndCallBlock:(TMWMVoidBlock)block
+#pragma mark - Open controllers
+
+- (void)openBookmarks
 {
-  if (platform::migrate::NeedMigrate())
+  BOOL const oneCategory = (GetFramework().GetBmCategoriesCount() == 1);
+  MWMTableViewController * vc = oneCategory ? [[BookmarksVC alloc] initWithCategory:0] : [[BookmarksRootVC alloc] init];
+  [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (void)openMapsDownloader
+{
+  [Alohalytics logEvent:kAlohalyticsTapEventKey withValue:@"downloader"];
+  bool const needMigrate = platform::migrate::NeedMigrate();
+  [self performSegueWithIdentifier:needMigrate ? kMigrationSegue : kDownloaderSegue sender:self];
+}
+
+- (void)openEditor
+{
+  [[Statistics instance] logEvent:kStatEventName(kStatPlacePage, kStatEdit)];
+  [self performSegueWithIdentifier:kEditorSegue sender:self.controlsManager.placePageEntity];
+}
+
+#pragma mark - MWMFrameworkMyPositionObserver
+
+- (void)processMyPositionStateModeEvent:(location::EMyPositionMode)mode
+{
+  [m_predictor setMode:mode];
+
+  switch (mode)
   {
-    [[Statistics instance] logEvent:kStatShowBig2SmallMWM];
-    [self.alertController presentNeedMigrationAlertWithOkBlock:^
+    case location::MODE_UNKNOWN_POSITION:
     {
-      [[Statistics instance] logEvent:kStatMigrationBig2SmallMWM];
-      [self.controlsManager routingHidden];
-      GetFramework().Migrate();
-      [self.controlsManager refreshLayout];
-      block();
-    }];
-  }
-  else
-  {
-    block();
+      self.disableStandbyOnLocationStateMode = NO;
+      [[MapsAppDelegate theApp].m_locationManager stop:self];
+      break;
+    }
+    case location::MODE_PENDING_POSITION:
+      self.disableStandbyOnLocationStateMode = NO;
+      [[MapsAppDelegate theApp].m_locationManager start:self];
+      break;
+    case location::MODE_NOT_FOLLOW:
+      self.disableStandbyOnLocationStateMode = NO;
+      break;
+    case location::MODE_FOLLOW:
+    case location::MODE_ROTATE_AND_FOLLOW:
+      self.disableStandbyOnLocationStateMode = YES;
+      break;
   }
 }
 
-- (void)downloadMaps
-{
-  [self checkMigrationAndCallBlock:^
-  {
-    [Alohalytics logEvent:kAlohalyticsTapEventKey withValue:@"downloader"];
-    CountryTreeVC * vc = [[CountryTreeVC alloc] initWithNodePosition:-1];
-    [self.navigationController pushViewController:vc animated:YES];
-  }];
-}
+#pragma mark - MWMFrameworkRouteBuilderObserver
 
-- (void)processRoutingBuildingEvent:(routing::IRouter::ResultCode)code
-                          countries:(vector<storage::TIndex> const &)absentCountries
-                             routes:(vector<storage::TIndex> const &)absentRoutes
+- (void)processRouteBuilderEvent:(routing::IRouter::ResultCode)code
+                       countries:(storage::TCountriesVec const &)absentCountries
+                          routes:(storage::TCountriesVec const &)absentRoutes
 {
-  Framework & f = GetFramework();
   switch (code)
   {
     case routing::IRouter::ResultCode::NoError:
     {
-      self.controlsManager.routeBuildingProgress = 100.;
-      f.ActivateUserMark(nullptr, true);
-      self.controlsManager.routeBuildingProgress = 100.;
-      self.controlsManager.searchHidden = YES;
+      GetFramework().ActivateUserMark(nullptr, true);
       if (self.forceRoutingStateChange == ForceRoutingStateChangeStartFollowing)
         [self.controlsManager routingNavigation];
       else
         [self.controlsManager routingReady];
       [self updateRoutingInfo];
-      self.forceRoutingStateChange = ForceRoutingStateChangeNone;
       bool isDisclaimerApproved = false;
       (void)Settings::Get("IsDisclaimerApproved", isDisclaimerApproved);
       if (!isDisclaimerApproved)
@@ -686,35 +571,43 @@ NSString * const kAuthorizationSegue = @"Map2AuthorizationSegue";
     case routing::IRouter::FileTooOld:
     case routing::IRouter::RouteNotFound:
     {
-      [self.controlsManager handleRoutingError];
-      [self presentDownloaderAlert:code countries:absentCountries routes:absentRoutes block:[=]
+      [self presentDownloaderAlert:code countries:absentCountries routes:absentRoutes okBlock:[=]
       {
-        auto & a = GetFramework().GetCountryTree().GetActiveMapLayout();
-        for (auto const & index : absentCountries)
-          a.DownloadMap(index, MapOptions::MapWithCarRouting);
-        for (auto const & index : absentRoutes)
-          a.DownloadMap(index, MapOptions::CarRouting);
+        auto & s = GetFramework().Storage();
+        for (auto const & countryId : absentCountries)
+          s.DownloadNode(countryId);
+        for (auto const & countryId : absentRoutes)
+          s.DownloadNode(countryId);
+        [self openMapsDownloader];
       }];
-      self.forceRoutingStateChange = ForceRoutingStateChangeNone;
       break;
     }
     case routing::IRouter::Cancelled:
-      self.forceRoutingStateChange = ForceRoutingStateChangeNone;
       break;
     default:
-      [self.controlsManager handleRoutingError];
       [self presentDefaultAlert:code];
-      self.forceRoutingStateChange = ForceRoutingStateChangeNone;
       break;
   }
+  self.forceRoutingStateChange = ForceRoutingStateChangeNone;
 }
 
-- (void)openBookmarks
+#pragma mark - MWMFrameworkUserMarkObserver
+
+- (void)processUserMarkEvent:(UserMark const *)mark
 {
-  BOOL const oneCategory = (GetFramework().GetBmCategoriesCount() == 1);
-  MWMTableViewController * vc =
-      oneCategory ? [[BookmarksVC alloc] initWithCategory:0] : [[BookmarksRootVC alloc] init];
-  [self.navigationController pushViewController:vc animated:YES];
+  if (mark == nullptr)
+  {
+    [self dismissPlacePage];
+
+    auto & f = GetFramework();
+    if (!f.HasActiveUserMark() && self.controlsManager.searchHidden && !f.IsRouteNavigable())
+      self.controlsManager.hidden = !self.controlsManager.hidden;
+  }
+  else
+  {
+    self.controlsManager.hidden = NO;
+    [self.controlsManager showPlacePage];
+  }
 }
 
 #pragma mark - Authorization
@@ -808,12 +701,12 @@ NSString * const kAuthorizationSegue = @"Map2AuthorizationSegue";
 #pragma mark - ShowDialog callback
 
 - (void)presentDownloaderAlert:(routing::IRouter::ResultCode)code
-                     countries:(vector<storage::TIndex> const &)countries
-                        routes:(vector<storage::TIndex> const &)routes
-                         block:(TMWMVoidBlock)block
+                     countries:(storage::TCountriesVec const &)countries
+                        routes:(storage::TCountriesVec const &)routes
+                       okBlock:(TMWMVoidBlock)okBlock
 {
   if (countries.size() || routes.size())
-    [self.alertController presentDownloaderAlertWithCountries:countries routes:routes code:code block:block];
+    [self.alertController presentDownloaderAlertWithCountries:countries routes:routes code:code okBlock:okBlock];
   else
     [self presentDefaultAlert:code];
 }
@@ -880,7 +773,7 @@ NSString * const kAuthorizationSegue = @"Map2AuthorizationSegue";
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-  if ([segue.identifier isEqualToString:@"Map2EditorSegue"])
+  if ([segue.identifier isEqualToString:kEditorSegue])
   {
     self.skipPlacePageDismissOnViewDisappear = YES;
     UINavigationController * dvc = segue.destinationViewController;
@@ -892,6 +785,11 @@ NSString * const kAuthorizationSegue = @"Map2AuthorizationSegue";
     UINavigationController * dvc = segue.destinationViewController;
     MWMAuthorizationLoginViewController * authVC = (MWMAuthorizationLoginViewController *)[dvc topViewController];
     authVC.isCalledFromSettings = NO;
+  }
+  else if ([segue.identifier isEqualToString:kDownloaderSegue])
+  {
+    MWMMapDownloaderViewController * dvc = segue.destinationViewController;
+    dvc.parentCountryId = GetFramework().Storage().GetRootId();
   }
 }
 
