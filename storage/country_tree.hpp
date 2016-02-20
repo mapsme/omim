@@ -3,16 +3,23 @@
 #include "base/assert.hpp"
 
 #include "std/algorithm.hpp"
+#include "std/unique_ptr.hpp"
 #include "std/vector.hpp"
 
+/// This class is developed for using in Storage. It's a implementation of a tree.
+/// It should be filled with AddAtDepth method.
+/// This class is used in Storage and filled based on countries.txt (countries_migrate.txt).
+/// While filling CountryTree nodes in countries.txt should be visited in DFS order.
 template <class T>
-class SimpleTree
+class CountryTree
 {
   T m_value;
-  // @TODO(bykoianko) Remove on unnecessary methods of SimpleTree if any.
 
   /// \brief m_children contains all first generation descendants of the node.
-  vector<SimpleTree<T>> m_children;
+  /// Note. Once created the order of elements of |m_children| should not be changed.
+  /// See implementation of AddAtDepth and Add methods for details.
+  vector<unique_ptr<CountryTree<T>>> m_children;
+  CountryTree<T> * m_parent;
 
   static bool IsEqual(T const & v1, T const & v2)
   {
@@ -20,7 +27,8 @@ class SimpleTree
   }
 
 public:
-  SimpleTree(T const & value = T()) : m_value(value)
+  CountryTree(T const & value = T(), CountryTree<T> * parent = nullptr)
+    : m_value(value), m_parent(parent)
   {
   }
 
@@ -39,17 +47,18 @@ public:
   /// @return reference is valid only up to the next tree structure modification
   T & AddAtDepth(int level, T const & value)
   {
-    SimpleTree<T> * node = this;
+    CountryTree<T> * node = this;
     while (level-- > 0 && !node->m_children.empty())
-      node = &node->m_children.back();
+      node = node->m_children.back().get();
+    ASSERT_EQUAL(level, -1, ());
     return node->Add(value);
   }
 
   /// @return reference is valid only up to the next tree structure modification
   T & Add(T const & value)
   {
-    m_children.emplace_back(SimpleTree(value));
-    return m_children.back().Value();
+    m_children.emplace_back(make_unique<CountryTree<T>>(value, this));
+    return m_children.back()->Value();
   }
 
   /// Deletes all children and makes tree empty
@@ -58,17 +67,9 @@ public:
     m_children.clear();
   }
 
-  bool operator<(SimpleTree<T> const & other) const
+  bool operator<(CountryTree<T> const & other) const
   {
     return Value() < other.Value();
-  }
-
-  /// sorts children independently on each level by default
-  void Sort()
-  {
-    sort(m_children.begin(), m_children.end());
-    for (auto & child : m_children)
-      child.Sort();
   }
 
   /// \brief Checks all nodes in tree to find an equal one. If there're several equal nodes
@@ -77,22 +78,22 @@ public:
   /// @TODO(bykoianko) The complexity of the method is O(n). But the structure (tree) is built on the start of the program
   /// and then actively used on run time. This method (and class) should be redesigned to make the function work faster.
   /// A hash table is being planned to use.
-  void Find(T const & value, vector<SimpleTree<T> const *> & found) const
+  void Find(T const & value, vector<CountryTree<T> const *> & found) const
   {
     if (IsEqual(m_value, value))
       found.push_back(this);
     for (auto const & child : m_children)
-      child.Find(value, found);
+      child->Find(value, found);
   }
 
-  SimpleTree<T> const * const FindFirst(T const & value) const
+  CountryTree<T> const * const FindFirst(T const & value) const
   {
     if (IsEqual(m_value, value))
       return this;
 
     for (auto const & child : m_children)
     {
-      SimpleTree<T> const * const found = child.FindFirst(value);
+      CountryTree<T> const * const found = child->FindFirst(value);
       if (found != nullptr)
         return found;
     }
@@ -104,24 +105,32 @@ public:
   /// When new countries.txt with unique ids will be added FindLeaf will be removed
   /// and Find will be used intead.
   /// @TODO(bykoianko) Remove this method on countries.txt update.
-  SimpleTree<T> const * const FindFirstLeaf(T const & value) const
+  CountryTree<T> const * const FindFirstLeaf(T const & value) const
   {
     if (IsEqual(m_value, value) && m_children.empty())
       return this; // It's a leaf.
 
     for (auto const & child : m_children)
     {
-      SimpleTree<T> const * const found = child.FindFirstLeaf(value);
+      CountryTree<T> const * const found = child->FindFirstLeaf(value);
       if (found != nullptr)
         return found;
     }
     return nullptr;
   }
 
-  SimpleTree<T> const & Child(size_t index) const
+  bool HasParent() const { return m_parent != nullptr; }
+
+  CountryTree<T> const & Parent() const
+  {
+    CHECK(HasParent(), ());
+    return *m_parent;
+  }
+
+  CountryTree<T> const & Child(size_t index) const
   {
     ASSERT_LESS(index, m_children.size(), ());
-    return m_children[index];
+    return *m_children[index];
   }
 
   size_t ChildrenCount() const
@@ -134,14 +143,14 @@ public:
   void ForEachChild(TFunctor && f)
   {
     for (auto & child : m_children)
-      f(child);
+      f(*child);
   }
 
   template <class TFunctor>
   void ForEachChild(TFunctor && f) const
   {
     for (auto const & child : m_children)
-      f(child);
+      f(*child);
   }
 
   /// \brief Calls functor f for all nodes (add descendant) in the tree.
@@ -150,8 +159,8 @@ public:
   {
     for (auto & child : m_children)
     {
-      f(child);
-      child.ForEachDescendant(f);
+      f(*child);
+      child->ForEachDescendant(f);
     }
   }
 
@@ -160,8 +169,8 @@ public:
   {
     for (auto const & child: m_children)
     {
-      f(child);
-      child.ForEachDescendant(f);
+      f(*child);
+      child->ForEachDescendant(f);
     }
   }
 
@@ -170,7 +179,7 @@ public:
   {
     f(*this);
     for (auto & child: m_children)
-      child.ForEachInSubtree(f);
+      child->ForEachInSubtree(f);
   }
 
   template <class TFunctor>
@@ -178,6 +187,24 @@ public:
   {
     f(*this);
     for (auto const & child: m_children)
-      child.ForEachInSubtree(f);
+      child->ForEachInSubtree(f);
+  }
+
+  template <class TFunctor>
+  void ForEachAncestorExceptForTheRoot(TFunctor && f)
+  {
+    if (m_parent == nullptr || m_parent->m_parent == nullptr)
+      return;
+    f(*m_parent);
+    m_parent->ForEachAncestorExceptForTheRoot(f);
+  }
+
+  template <class TFunctor>
+  void ForEachAncestorExceptForTheRoot(TFunctor && f) const
+  {
+    if (m_parent == nullptr || m_parent->m_parent == nullptr)
+      return;
+    f(*m_parent);
+    m_parent->ForEachAncestorExceptForTheRoot(f);
   }
 };

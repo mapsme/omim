@@ -79,6 +79,7 @@ using namespace storage;
     self.progressView.state = MWMCircularProgressStateNormal;
     [self removeFromSuperview];
   };
+
   switch (nodeAttrs.m_status)
   {
     case NodeStatus::NotDownloaded:
@@ -98,7 +99,8 @@ using namespace storage;
       break;
     }
     case NodeStatus::Downloading:
-      [self showDownloading:static_cast<CGFloat>(nodeAttrs.m_downloadingProgress) / 100.0];
+      if (nodeAttrs.m_downloadingProgress.second != 0)
+        [self showDownloading:static_cast<CGFloat>(nodeAttrs.m_downloadingProgress.first) / nodeAttrs.m_downloadingProgress.second];
       addSubview();
       break;
     case NodeStatus::InQueue:
@@ -112,7 +114,6 @@ using namespace storage;
       break;
     case NodeStatus::OnDisk:
     case NodeStatus::OnDiskOutOfDate:
-    case NodeStatus::Mixed:
       removeSubview();
       break;
   }

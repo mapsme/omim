@@ -1227,14 +1227,18 @@ UNIT_TEST(StorageTest_GetNodeAttrsSingleMwm)
   TEST_EQUAL(nodeAttrs.m_error, NodeErrorCode::NoError, ());
   TEST_EQUAL(nodeAttrs.m_parentInfo.size(), 1, ());
   TEST_EQUAL(nodeAttrs.m_parentInfo[0].m_id, "Countries", ());
+  TEST_EQUAL(nodeAttrs.m_downloadingProgress.first, 0, ());
+  TEST_EQUAL(nodeAttrs.m_downloadingProgress.second, 0, ());
 
   storage.GetNodeAttrs("Algeria", nodeAttrs);
   TEST_EQUAL(nodeAttrs.m_mwmCounter, 2, ());
   TEST_EQUAL(nodeAttrs.m_mwmSize, 90878678, ());
-  TEST_EQUAL(nodeAttrs.m_status, NodeStatus::NotDownloaded, ());
+  TEST_EQUAL(nodeAttrs.m_status, NodeStatus::OnDisk, ()); // It's a status of expandable node.
   TEST_EQUAL(nodeAttrs.m_error, NodeErrorCode::NoError, ());
   TEST_EQUAL(nodeAttrs.m_parentInfo.size(), 1, ());
   TEST_EQUAL(nodeAttrs.m_parentInfo[0].m_id, "Countries", ());
+  TEST_EQUAL(nodeAttrs.m_downloadingProgress.first, 0, ());
+  TEST_EQUAL(nodeAttrs.m_downloadingProgress.second, 0, ());
 
   storage.GetNodeAttrs("Algeria_Coast", nodeAttrs);
   TEST_EQUAL(nodeAttrs.m_mwmCounter, 1, ());
@@ -1243,6 +1247,8 @@ UNIT_TEST(StorageTest_GetNodeAttrsSingleMwm)
   TEST_EQUAL(nodeAttrs.m_error, NodeErrorCode::NoError, ());
   TEST_EQUAL(nodeAttrs.m_parentInfo.size(), 1, ());
   TEST_EQUAL(nodeAttrs.m_parentInfo[0].m_id, "Algeria", ());
+  TEST_EQUAL(nodeAttrs.m_downloadingProgress.first, 0, ());
+  TEST_EQUAL(nodeAttrs.m_downloadingProgress.second, 0, ());
 
   storage.GetNodeAttrs("South Korea_South", nodeAttrs);
   TEST_EQUAL(nodeAttrs.m_mwmCounter, 1, ());
@@ -1251,16 +1257,20 @@ UNIT_TEST(StorageTest_GetNodeAttrsSingleMwm)
   TEST_EQUAL(nodeAttrs.m_error, NodeErrorCode::NoError, ());
   TEST_EQUAL(nodeAttrs.m_parentInfo.size(), 1, ());
   TEST_EQUAL(nodeAttrs.m_parentInfo[0].m_id, "Countries", ());
+  TEST_EQUAL(nodeAttrs.m_downloadingProgress.first, 0, ());
+  TEST_EQUAL(nodeAttrs.m_downloadingProgress.second, 0, ());
 
   storage.GetNodeAttrs("Disputable Territory", nodeAttrs);
   TEST_EQUAL(nodeAttrs.m_mwmCounter, 1, ());
   TEST_EQUAL(nodeAttrs.m_mwmSize, 1234, ());
   TEST_EQUAL(nodeAttrs.m_status, NodeStatus::NotDownloaded, ());
   TEST_EQUAL(nodeAttrs.m_error, NodeErrorCode::NoError, ());
-  vector<TCountryId> expectedParents = {"Country1", "Country2"};
+  vector<TCountryId> const expectedParents = {"Country1", "Country2"};
   TEST_EQUAL(nodeAttrs.m_parentInfo.size(), 2, ());
   TEST_EQUAL(nodeAttrs.m_parentInfo[0].m_id, "Country1", ());
   TEST_EQUAL(nodeAttrs.m_parentInfo[1].m_id, "Country2", ());
+  TEST_EQUAL(nodeAttrs.m_downloadingProgress.first, 0, ());
+  TEST_EQUAL(nodeAttrs.m_downloadingProgress.second, 0, ());
 }
 
 UNIT_TEST(StorageTest_ParseStatus)
@@ -1289,6 +1299,58 @@ UNIT_TEST(StorageTest_ForEachInSubtree)
                                          "Disputable Territory", "Indisputable Territory Of Country1",
                                          "Indisputable Territory Of Country2", "Disputable Territory"};
   TEST_EQUAL(leafVec, expectedLeafVec, ());
+}
+
+UNIT_TEST(StorageTest_ForEachAncestorExceptForTheRoot)
+{
+  Storage storage(kSingleMwmCountriesTxt, make_unique<TestMapFilesDownloader>());
+
+  // Two parent case.
+  auto const forEachParentDisputableTerritory
+      = [](TCountryId const & parentId, TCountriesContainer const & parentNode)
+  {
+    TCountriesVec descendants;
+    parentNode.ForEachDescendant([&descendants](TCountriesContainer const & container)
+    {
+      descendants.push_back(container.Value().Name());
+    });
+
+    if (parentId == "Country1")
+    {
+      TCountriesVec const expectedDescendants = {"Disputable Territory", "Indisputable Territory Of Country1"};
+      TEST_EQUAL(descendants, expectedDescendants, ());
+      return;
+    }
+    if (parentId == "Country2")
+    {
+      TCountriesVec const expectedDescendants = {"Indisputable Territory Of Country2", "Disputable Territory"};
+      TEST_EQUAL(descendants, expectedDescendants, ());
+      return;
+    }
+    TEST(false, ());
+  };
+  storage.ForEachAncestorExceptForTheRoot("Disputable Territory", forEachParentDisputableTerritory);
+
+  // One parent case.
+  auto const forEachParentIndisputableTerritory
+      = [](TCountryId const & parentId, TCountriesContainer const & parentNode)
+  {
+    TCountriesVec descendants;
+    parentNode.ForEachDescendant([&descendants](TCountriesContainer const & container)
+    {
+      descendants.push_back(container.Value().Name());
+    });
+
+    if (parentId == "Country1")
+    {
+      TCountriesVec const expectedDescendants = {"Disputable Territory", "Indisputable Territory Of Country1"};
+      TEST_EQUAL(descendants, expectedDescendants, ());
+      return;
+    }
+    TEST(false, ());
+  };
+  storage.ForEachAncestorExceptForTheRoot("Indisputable Territory Of Country1",
+                                          forEachParentIndisputableTerritory);
 }
 
 UNIT_TEST(StorageTest_CalcLimitRect)

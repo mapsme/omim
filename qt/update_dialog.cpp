@@ -186,9 +186,6 @@ namespace qt
       st.DeleteNode(countryId);
       break;
 
-    case NodeStatus::Mixed:
-      break;
-
     default:
       ASSERT(false, ("We shouldn't be here"));
       break;
@@ -237,7 +234,7 @@ namespace qt
     NodeAttrs attrs;
     st.GetNodeAttrs(countryId, attrs);
 
-    size.first = attrs.m_downloadingMwmSize;
+    size.first = attrs.m_downloadingProgress.first;
     size.second = attrs.m_mwmSize;
 
     switch (attrs.m_status)
@@ -271,11 +268,6 @@ namespace qt
     case NodeStatus::InQueue:
       statusString = tr("Marked for download");
       rowColor = COLOR_INQUEUE;
-      break;
-
-    case NodeStatus::Mixed:
-      statusString = tr("Mixed status");
-      rowColor = COLOR_MIXED;
       break;
 
     default:
@@ -435,7 +427,7 @@ namespace qt
   }
 
   void UpdateDialog::OnCountryDownloadProgress(TCountryId const & countryId,
-                                               pair<int64_t, int64_t> const & progress)
+                                               MapFilesDownloader::TProgress const & progress)
   {
     auto const items = GetTreeItemsByCountryId(countryId);
     for (auto const item : items)
