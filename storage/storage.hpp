@@ -16,6 +16,7 @@
 #include "std/shared_ptr.hpp"
 #include "std/string.hpp"
 #include "std/unique_ptr.hpp"
+#include "std/utility.hpp"
 #include "std/vector.hpp"
 
 namespace storage
@@ -31,7 +32,7 @@ struct CountryIdAndName
 struct NodeAttrs
 {
   NodeAttrs() : m_mwmCounter(0), m_localMwmCounter(0), m_mwmSize(0), m_localMwmSize(0),
-    m_downloadingMwmSize(0), m_downloadingProgress(0),
+    m_downloadingProgress(make_pair(0, 0)),
     m_status(NodeStatus::Undefined), m_error(NodeErrorCode::NoError), m_present(false) {}
 
   /// If the node is expandable (a big country) |m_mwmCounter| is number of mwm files (leaves)
@@ -52,12 +53,6 @@ struct NodeAttrs
   /// have been downloaded.
   size_t m_localMwmSize;
 
-  /// If downloading or updating an mwm is in progress apart from a local mwm
-  /// which is currently used there's a partly downloading mwm of the same region.
-  /// |m_downloadingMwmSize| is size of partly downloaded mwm if downloading is in progress.
-  /// And |m_downloadingMwmSize| == 0 otherwise.
-  size_t m_downloadingMwmSize;
-
   /// The name of the node in a local language. That means the language dependent on
   /// a device locale.
   string m_nodeLocalName;
@@ -69,10 +64,12 @@ struct NodeAttrs
   /// an mwm could have two or even more parents. See Country description for details.
   vector<CountryIdAndName> m_parentInfo;
 
-  /// A number for 0 to 99. It reflects downloading progress in case of
-  /// downloading and updating mwm. If downloading or updating is not in progress
-  /// |m_downloadingProgress| == 0.
-  uint8_t m_downloadingProgress;
+  /// Progress of downloading for the node expandable or not. It reflects downloading progress in case of
+  /// downloading and updating mwm.
+  /// m_downloadingProgress.first is number of downloaded bytes.
+  /// m_downloadingProgress.second is size of file(s) in bytes to download.
+  /// So m_downloadingProgress.first <= m_downloadingProgress.second.
+  MapFilesDownloader::TProgress m_downloadingProgress;
 
   NodeStatus m_status;
   NodeErrorCode m_error;
@@ -91,6 +88,7 @@ public:
   using TUpdate = function<void(platform::LocalCountryFile const &)>;
   using TChangeCountryFunction = function<void(TCountryId const &)>;
   using TProgressFunction = function<void(TCountryId const &, TLocalAndRemoteSize const &)>;
+  using TQueue = list<QueuedCountry>;
 
 private:
   /// We support only one simultaneous request at the moment
@@ -101,8 +99,6 @@ private:
 
   TCountriesContainer m_countries;
 
-  using TQueue = list<QueuedCountry>;
-
   /// @todo. It appeared that our application uses m_queue from
   /// different threads without any synchronization. To reproduce it
   /// just download a map "from the map" on Android. (CountryStatus is
@@ -110,6 +106,12 @@ private:
   /// can call all the methods from a single thread using
   /// RunOnUIThread.  If not, at least use a syncronization object.
   TQueue m_queue;
+  /// Set of mwm files which have been downloaded recently.
+  /// When a mwm file is downloaded it's moved from |m_queue| to |m_justDownloaded|.
+  /// When a new mwm file is added to |m_queue| |m_justDownloaded| is cleared.
+  /// Note. This set is necessary for implementation of downloading progress of
+  /// mwm group.
+  TCountriesSet m_justDownloaded;
 
   /// stores countries whose download has failed recently
   TCountriesSet m_failedCountries;
@@ -171,7 +173,9 @@ private:
   void LoadCountriesFile(string const & pathToCountriesFile,
                          string const & dataDir, TMapping * mapping = nullptr);
 
-  void ReportProgress(TCountryId const & countryId, pair<int64_t, int64_t> const & p);
+  void ReportProgress(TCountryId const & countryId, MapFilesDownloader::TProgress const & p);
+  void ReportProgressForHierarchy(TCountryId const & countryId,
+                                  MapFilesDownloader::TProgress const & leafProgress);
 
   /// Called on the main thread by MapFilesDownloader when list of
   /// suitable servers is received.
@@ -235,7 +239,7 @@ public:
     TOnStatusChangedCallback m_onStatusChanged;
   };
 
-  /// \brief Returns root country id of the county tree.
+  /// \brief Returns root country id of the country tree.
   TCountryId const GetRootId() const;
 
   /// \param childrenId is filled with children node ids by a parent. For example GetChildren(GetRootId())
@@ -297,10 +301,6 @@ public:
   /// \return false in case of error and true otherwise.
   bool RetryDownloadNode(TCountryId const & countryId) { return true; }
 
-  /// \brief Shows a node (expandable or not) on the map.
-  /// \return false in case of error and true otherwise.
-  bool ShowNode(TCountryId const & countryId) { return true; }
-
   /// \brief Get information for mwm update button.
   /// \return true if updateInfo is filled correctly and false otherwise.
   bool GetUpdateInfo(TCountryId const & countryId, UpdateInfo & updateInfo) const { return true; }
@@ -318,6 +318,8 @@ public:
   /// the result of GetRootId() call.
   template <class ToDo>
   void ForEachInSubtree(TCountryId const & root, ToDo && toDo) const;
+  template <class ToDo>
+  void ForEachAncestorExceptForTheRoot(TCountryId const & childId, ToDo && toDo) const;
 
   /// \brief Subscribe on change status callback.
   /// \returns a unique index of added status callback structure.
@@ -499,6 +501,18 @@ private:
   /// @todo Temporary function to gel all associated indexes for the country file name.
   /// Will be removed in future after refactoring.
   TCountriesVec FindAllIndexesByFile(TCountryId const & name) const;
+
+  /// Calculates progress of downloading for expandable nodes in country tree.
+  /// |descendants| All descendants of the parent node.
+  /// |downloadingMwm| Downloading leaf node country id if any. If not, downloadingMwm == kInvalidCountryId.
+  /// If downloadingMwm != kInvalidCountryId |downloadingMwmProgress| is a progress of downloading
+  /// the leaf node in bytes. |downloadingMwmProgress.first| == number of downloaded bytes.
+  /// |downloadingMwmProgress.second| == number of bytes in downloading files.
+  /// |mwmsInQueue| hash table made from |m_queue|.
+  MapFilesDownloader::TProgress CalculateProgress(TCountriesVec const & descendants,
+                                           TCountryId const & downloadingMwm,
+                                           MapFilesDownloader::TProgress const & downloadingMwmProgress,
+                                           TCountriesSet const & mwmsInQueue) const;
 };
 
 template <class ToDo>
@@ -510,11 +524,45 @@ void Storage::ForEachInSubtree(TCountryId const & root, ToDo && toDo) const
     ASSERT(false, ("TCountryId =", root, "not found in m_countries."));
     return;
   }
-  rootNode->ForEachInSubtree([&toDo](TCountriesContainer const & countryContainer)
+  rootNode->ForEachInSubtree([&toDo](TCountriesContainer const & container)
   {
-    Country const & value = countryContainer.Value();
+    Country const & value = container.Value();
     toDo(value.Name(), value.GetSubtreeMwmCounter() != 1 /* expandableNode. */);
   });
+}
+
+/// Calls functor |toDo| with signature
+/// void(const TCountryId const & parentId, TCountriesVec const & descendantCountryId)
+/// for each ancestor except for the main root of the tree.
+/// |descendantsCountryId| is a vector of country id of descendats of |parentId|.
+/// Note. In case of disputable territories several nodes with the same name may be
+/// present in the country tree. In that case ForEachAncestorExceptForTheRoot calls
+/// |toDo| for parents of each way to the root in the country tree.
+template <class ToDo>
+void Storage::ForEachAncestorExceptForTheRoot(TCountryId const & countryId, ToDo && toDo) const
+{
+  vector<CountryTree<Country> const *> nodes;
+  m_countries.Find(Country(countryId), nodes);
+  if (nodes.empty())
+  {
+    ASSERT(false, ("TCountryId =", countryId, "not found in m_countries."));
+    return;
+  }
+
+  TCountriesSet visitedAncestors;
+  // In most cases nodes.size() == 1. In case of disputable territories nodes.size()
+  // may be more than one. It means |childId| is present in the country tree more than once.
+  for (auto const & node : nodes)
+  {
+    node->ForEachAncestorExceptForTheRoot([&](TCountriesContainer const & container)
+    {
+      TCountryId const ancestorId = container.Value().Name();
+      if (visitedAncestors.find(ancestorId) != visitedAncestors.end())
+        return;  // The node was visited before because countryId is present in the tree more than once.
+      visitedAncestors.insert(ancestorId);
+      toDo(ancestorId, container);
+    });
+  }
 }
 
 bool HasCountryId(TCountriesVec const & sorted, TCountryId const & countyId);

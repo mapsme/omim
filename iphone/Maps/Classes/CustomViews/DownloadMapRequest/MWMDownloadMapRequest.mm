@@ -88,7 +88,7 @@
       storage::NodeAttrs attrs;
       s.GetNodeAttrs(m_countryId, attrs);
       self.mapTitleLabel.text = @(attrs.m_nodeLocalName.c_str());
-      self.mapAndRouteSize = @(attrs.m_downloadingMwmSize).stringValue;
+      self.mapAndRouteSize = @(attrs.m_downloadingProgress.first).stringValue;
       [self.downloadMapButton setTitle:[NSString stringWithFormat:@"%@ (%@)",
                                         L(@"downloader_download_map"), self.mapAndRouteSize]
                               forState:UIControlStateNormal];

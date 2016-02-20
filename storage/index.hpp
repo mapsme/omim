@@ -2,6 +2,7 @@
 
 #include "std/set.hpp"
 #include "std/string.hpp"
+#include "std/unordered_set.hpp"
 #include "std/vector.hpp"
 
 namespace storage
