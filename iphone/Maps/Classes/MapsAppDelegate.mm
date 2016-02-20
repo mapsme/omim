@@ -33,6 +33,7 @@
 #include "platform/platform.hpp"
 #include "platform/preferred_languages.hpp"
 #include "storage/storage_defines.hpp"
+#include "storage/storage_helpers.hpp"
 
 // If you have a "missing header error" here, then please run configure.sh script in the root repo folder.
 #import "../../../private.h"
@@ -115,7 +116,9 @@ using namespace osm_auth_ios;
 
 + (void)showNode:(storage::TCountryId const &)countryId
 {
-  // TODO (igrechuhin) Add implementation
+  auto & f = GetFramework();
+  m2::RectD const countryRect = storage::CalcLimitRect(countryId, f.Storage(), f.CountryInfoGetter());
+  f.ShowRect(countryRect);
 }
 
 #pragma mark - Notifications
