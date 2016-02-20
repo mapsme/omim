@@ -31,11 +31,6 @@
   return [MWMDefaultAlert point2PointAlertWithOkBlock:block needToRebuild:needToRebuild];
 }
 
-+ (MWMAlert *)needMigrationAlertWithOkBlock:(TMWMVoidBlock)block
-{
-  return [MWMDefaultAlert needMigrationAlertWithOkBlock:block];
-}
-
 + (MWMAlert *)routingDisclaimerAlertWithInitialOrientation:(UIInterfaceOrientation)orientation
 {
   return [MWMRoutingDisclaimerAlert alertWithInitialOrientation:orientation];
@@ -46,9 +41,9 @@
   return [MWMDefaultAlert disabledLocationAlert];
 }
 
-+ (MWMAlert *)noWiFiAlertWithName:(NSString *)name downloadBlock:(TMWMVoidBlock)block
++ (MWMAlert *)noWiFiAlertWithName:(NSString *)name okBlock:(TMWMVoidBlock)okBlock
 {
-  return [MWMDefaultAlert noWiFiAlertWithName:name downloadBlock:block];
+  return [MWMDefaultAlert noWiFiAlertWithName:name okBlock:okBlock];
 }
 
 + (MWMAlert *)noConnectionAlert
@@ -61,12 +56,12 @@
   return [MWMDefaultAlert locationServiceNotSupportedAlert];
 }
 
-+ (MWMAlert *)downloaderAlertWithAbsentCountries:(vector<storage::TIndex> const &)countries
-                                          routes:(vector<storage::TIndex> const &)routes
++ (MWMAlert *)downloaderAlertWithAbsentCountries:(storage::TCountriesVec const &)countries
+                                          routes:(storage::TCountriesVec const &)routes
                                             code:(routing::IRouter::ResultCode)code
-                                           block:(TMWMVoidBlock)block
+                                         okBlock:(TMWMVoidBlock)okBlock
 {
-  return [MWMDownloadTransitMapAlert downloaderAlertWithMaps:countries routes:routes code:code block:block];
+  return [MWMDownloadTransitMapAlert downloaderAlertWithMaps:countries routes:routes code:code okBlock:okBlock];
 }
 
 + (MWMAlert *)alert:(routing::IRouter::ResultCode)type
@@ -109,6 +104,26 @@
 + (MWMAlert *)invalidUserNameOrPasswordAlert
 {
   return [MWMDefaultAlert invalidUserNameOrPasswordAlert];
+}
+
++ (MWMAlert *)downloaderNoConnectionAlertWithOkBlock:(TMWMVoidBlock)okBlock
+{
+  return [MWMDefaultAlert downloaderNoConnectionAlertWithOkBlock:okBlock];
+}
+
++ (MWMAlert *)downloaderNotEnoughSpaceAlert
+{
+  return [MWMDefaultAlert downloaderNotEnoughSpaceAlert];
+}
+
++ (MWMAlert *)downloaderInternalErrorAlertForMap:(NSString *)name okBlock:(TMWMVoidBlock)okBlock
+{
+  return [MWMDefaultAlert downloaderInternalErrorAlertForMap:name okBlock:okBlock];
+}
+
++ (MWMAlert *)downloaderNeedUpdateAlertWithOkBlock:(TMWMVoidBlock)okBlock
+{
+  return [MWMDefaultAlert downloaderNeedUpdateAlertWithOkBlock:okBlock];
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)orientation

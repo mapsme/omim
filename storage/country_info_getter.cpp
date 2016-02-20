@@ -4,11 +4,15 @@
 
 #include "indexer/geometry_serialization.hpp"
 
+#include "geometry/latlon.hpp"
+#include "geometry/mercator.hpp"
 #include "geometry/region2d.hpp"
 
 #include "coding/read_write_utils.hpp"
 
 #include "base/string_utils.hpp"
+
+#include "3party/Alohalytics/src/alohalytics.h"
 
 #include "std/bind.hpp"
 #include "std/function.hpp"
@@ -46,10 +50,25 @@ private:
 }  // namespace
 
 // CountryInfoGetter -------------------------------------------------------------------------------
-string CountryInfoGetter::GetRegionFile(m2::PointD const & pt) const
+TCountryId CountryInfoGetter::GetRegionCountryId(m2::PointD const & pt) const
 {
   IdType const id = FindFirstCountry(pt);
-  return id != kInvalidId ? m_countries[id].m_name : string();
+  return id != kInvalidId ? m_countries[id].m_name : TCountryId();
+}
+
+void CountryInfoGetter::GetRegionsCountryId(m2::PointD const & pt, TCountriesVec & closestCoutryIds)
+{
+  double const kLookupRadiusM = 30 /* km */ * 1000;
+
+  closestCoutryIds.clear();
+
+  m2::RectD const lookupRect = MercatorBounds::RectByCenterXYAndSizeInMeters(pt, kLookupRadiusM);
+
+  for (size_t id = 0; id < m_countries.size(); ++id)
+  {
+    if (m_countries[id].m_rect.Intersect(lookupRect) && IsCloseEnough(id, pt, kLookupRadiusM))
+      closestCoutryIds.emplace_back(m_countries[id].m_name);
+  }
 }
 
 void CountryInfoGetter::GetRegionInfo(m2::PointD const & pt, CountryInfo & info) const
@@ -85,6 +104,14 @@ m2::RectD CountryInfoGetter::CalcLimitRect(string const & prefix) const
     rect.Add(c.m_rect);
   });
   return rect;
+}
+
+m2::RectD CountryInfoGetter::GetLimitRectForLeaf(TCountryId const & leafCountryId) const
+{
+  auto const it = this->m_countryIndex.find(leafCountryId);
+  ASSERT(it != this->m_countryIndex.end(), ());
+  ASSERT_LESS(it->second, this->m_countries.size(), ());
+  return m_countries[it->second].m_rect;
 }
 
 void CountryInfoGetter::GetMatchedRegions(string const & enNamePrefix, IdSet & regions) const
@@ -127,6 +154,11 @@ CountryInfoGetter::IdType CountryInfoGetter::FindFirstCountry(m2::PointD const &
     if (m_countries[id].m_rect.IsPointInside(pt) && IsBelongToRegionImpl(id, pt))
       return id;
   }
+
+  ms::LatLon const latLon = MercatorBounds::ToLatLon(pt);
+  alohalytics::LogEvent(m_isSingleMwm ? "Small mwm case. CountryInfoGetter could not find any mwm by point."
+                                      : "Big mwm case. CountryInfoGetter could not find any mwm by point.",
+                        alohalytics::Location::FromLatLon(latLon.lat, latLon.lon));
   return kInvalidId;
 }
 
@@ -142,14 +174,19 @@ void CountryInfoGetter::ForEachCountry(string const & prefix, ToDo && toDo) cons
 
 // CountryInfoReader -------------------------------------------------------------------------------
 CountryInfoReader::CountryInfoReader(ModelReaderPtr polyR, ModelReaderPtr countryR)
-  : m_reader(polyR), m_cache(3)
+  : CountryInfoGetter(true), m_reader(polyR), m_cache(3)
 {
   ReaderSource<ModelReaderPtr> src(m_reader.GetReader(PACKED_POLYGONS_INFO_TAG));
   rw::Read(src, m_countries);
 
+  size_t const countrySz = m_countries.size();
+  m_countryIndex.reserve(countrySz);
+  for (size_t i = 0; i < countrySz; ++i)
+    m_countryIndex[m_countries[i].m_name] = i;
+
   string buffer;
   countryR.ReadAsString(buffer);
-  LoadCountryFile2CountryInfo(buffer, m_id2info);
+  LoadCountryFile2CountryInfo(buffer, m_id2info, m_isSingleMwm);
 }
 
 void CountryInfoReader::ClearCachesImpl() const
@@ -160,19 +197,20 @@ void CountryInfoReader::ClearCachesImpl() const
   m_cache.Reset();
 }
 
-bool CountryInfoReader::IsBelongToRegionImpl(size_t id, m2::PointD const & pt) const
+template <typename TFn>
+typename result_of<TFn(vector<m2::RegionD>)>::type CountryInfoReader::WithRegion(size_t id, TFn && fn) const
 {
   lock_guard<mutex> lock(m_cacheMutex);
-
+  
   bool isFound = false;
   vector<m2::RegionD> & rgns = m_cache.Find(static_cast<uint32_t>(id), isFound);
-
+  
   if (!isFound)
   {
     rgns.clear();
     // Load regions from file.
     ReaderSource<ModelReaderPtr> src(m_reader.GetReader(strings::to_string(id)));
-
+    
     uint32_t const count = ReadVarUint<uint32_t>(src);
     for (size_t i = 0; i < count; ++i)
     {
@@ -182,16 +220,44 @@ bool CountryInfoReader::IsBelongToRegionImpl(size_t id, m2::PointD const & pt) c
     }
   }
 
-  for (auto const & rgn : rgns)
+  return fn(rgns);
+}
+
+  
+bool CountryInfoReader::IsBelongToRegionImpl(size_t id, m2::PointD const & pt) const
+{
+  auto contains = [&pt](vector<m2::RegionD> const & regions)
   {
-    if (rgn.Contains(pt))
-      return true;
-  }
-  return false;
+    for (auto const & region : regions)
+    {
+      if (region.Contains(pt))
+        return true;
+    }
+    return false;
+  };
+  
+  return WithRegion(id, contains);
+}
+
+bool CountryInfoReader::IsCloseEnough(size_t id, m2::PointD const & pt, double distance)
+{
+  m2::RectD const lookupRect = MercatorBounds::RectByCenterXYAndSizeInMeters(pt, distance);
+  auto isCloseEnough = [&](vector<m2::RegionD> const & regions)
+  {
+    for (auto const & region : regions)
+    {
+      if (region.Contains(pt) || region.AtBorder(pt, lookupRect.SizeX() / 2))
+        return true;
+    }
+    return false;
+  };
+
+  return WithRegion(id, isCloseEnough);
 }
 
 // CountryInfoGetterForTesting ---------------------------------------------------------------------
 CountryInfoGetterForTesting::CountryInfoGetterForTesting(vector<CountryDef> const & countries)
+  : CountryInfoGetter(true)
 {
   for (auto const & country : countries)
     AddCountry(country);
@@ -211,5 +277,20 @@ bool CountryInfoGetterForTesting::IsBelongToRegionImpl(size_t id,
 {
   CHECK_LESS(id, m_countries.size(), ());
   return m_countries[id].m_rect.IsPointInside(pt);
+}
+
+bool CountryInfoGetterForTesting::IsCloseEnough(size_t id, m2::PointD const & pt, double distance)
+{
+  CHECK_LESS(id, m_countries.size(), ());
+
+  m2::RegionD rgn;
+  rgn.AddPoint(m_countries[id].m_rect.LeftTop());
+  rgn.AddPoint(m_countries[id].m_rect.RightTop());
+  rgn.AddPoint(m_countries[id].m_rect.RightBottom());
+  rgn.AddPoint(m_countries[id].m_rect.LeftBottom());
+  rgn.AddPoint(m_countries[id].m_rect.LeftTop());
+
+  m2::RectD const lookupRect = MercatorBounds::RectByCenterXYAndSizeInMeters(pt, distance);
+  return rgn.Contains(pt) || rgn.AtBorder(pt, lookupRect.SizeX() / 2);
 }
 }  // namespace storage

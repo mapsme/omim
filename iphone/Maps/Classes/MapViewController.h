@@ -35,7 +35,8 @@ namespace search { struct AddressInfo; }
 - (void)performAction:(NSString *)action;
 
 - (void)openBookmarks;
-- (void)downloadMaps;
+- (void)openMapsDownloader;
+- (void)openEditor;
 
 - (void)refreshAd;
 
@@ -48,7 +49,6 @@ namespace search { struct AddressInfo; }
 @property (nonatomic, readonly) MWMMapViewControlsManager * controlsManager;
 @property (nonatomic) m2::PointD restoreRouteDestination;
 @property (nonatomic) MWMAPIBar * apiBar;
-
 @property (nonatomic) BOOL skipPlacePageDismissOnViewDisappear;
 
 @end

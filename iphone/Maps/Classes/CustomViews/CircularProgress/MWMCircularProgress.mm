@@ -16,10 +16,17 @@
   if (self)
   {
     [[NSBundle mainBundle] loadNibNamed:self.class.className owner:self options:nil];
+    [parentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     [parentView addSubview:self.rootView];
     [self reset];
+    self.state = MWMCircularProgressStateNormal;
   }
   return self;
+}
+
+- (void)dealloc
+{
+  [self.rootView removeFromSuperview];
 }
 
 - (void)reset
@@ -39,17 +46,9 @@
   [self.rootView setColor:color forState:state];
 }
 
-#pragma mark - Spinner
-
-- (void)startSpinner:(BOOL)isInvert
+- (void)setInvertColor:(BOOL)invertColor
 {
-  [self reset];
-  [self.rootView startSpinner:isInvert];
-}
-
-- (void)stopSpinner
-{
-  [self.rootView stopSpinner];
+  self.rootView.isInvertColor = invertColor;
 }
 
 #pragma mark - Animation
@@ -75,7 +74,11 @@
 - (void)setProgress:(CGFloat)progress
 {
   if (progress <= _progress)
+  {
+    self.state = MWMCircularProgressStateSpinner;
     return;
+  }
+  self.rootView.state = MWMCircularProgressStateProgress;
   if (self.rootView.animating)
   {
     if (progress > self.nextProgressToAnimate.floatValue)
@@ -83,14 +86,21 @@
   }
   else
   {
-    [self.rootView animateFromValue:_progress toValue:progress];
+    dispatch_async(dispatch_get_main_queue(), ^
+    {
+      [self.rootView animateFromValue:self->_progress toValue:progress];
+    });
     _progress = progress;
   }
 }
 
 - (void)setState:(MWMCircularProgressState)state
 {
-  self.rootView.state = state;
+  dispatch_async(dispatch_get_main_queue(), ^
+  {
+    [self reset];
+    self.rootView.state = state;
+  });
 }
 
 - (MWMCircularProgressState)state

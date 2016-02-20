@@ -9,6 +9,8 @@
 #include "base/cache.hpp"
 
 #include "std/mutex.hpp"
+#include "std/unordered_map.hpp"
+#include "std/type_traits.hpp"
 
 namespace storage
 {
@@ -23,12 +25,19 @@ public:
   using IdType = size_t;
   using IdSet = vector<IdType>;
 
+  CountryInfoGetter(bool isSingleMwm) : m_isSingleMwm(isSingleMwm) {}
   virtual ~CountryInfoGetter() = default;
 
   // Returns country file name without an extension for a country |pt|
   // belongs to. If there are no such country, returns an empty
   // string.
-  string GetRegionFile(m2::PointD const & pt) const;
+  TCountryId GetRegionCountryId(m2::PointD const & pt) const;
+
+  // Returns a list of country ids by a |pt| in mercator.
+  // |closestCoutryIds| is filled with country ids of mwm which covers |pt| or close to it.
+  // |closestCoutryIds| is not filled with country world.mwm country id and with custom mwm.
+  // If |pt| is covered by a sea or a ocean closestCoutryIds may be left empty.
+  void GetRegionsCountryId(m2::PointD const & pt, TCountriesVec & closestCoutryIds);
 
   // Returns info for a region |pt| belongs to.
   void GetRegionInfo(m2::PointD const & pt, CountryInfo & info) const;
@@ -45,6 +54,10 @@ public:
   // Calculates limit rect for all countries whose name starts with
   // |prefix|.
   m2::RectD CalcLimitRect(string const & prefix) const;
+  // Returns limit rect for |countryId| (non-expandable node).
+  // Returns bounding box in mercator coordinates if |countryId| is a country id of non-expandable node
+  // and zero rect otherwise.
+  m2::RectD GetLimitRectForLeaf(TCountryId const & leafCountryId) const;
 
   // Returns identifiers for all regions matching to |enNamePrefix|.
   void GetMatchedRegions(string const & enNamePrefix, IdSet & regions) const;
@@ -76,11 +89,23 @@ protected:
   // Returns true when |pt| belongs to a country identified by |id|.
   virtual bool IsBelongToRegionImpl(size_t id, m2::PointD const & pt) const = 0;
 
+  // Returns true when the distance from |pt| to country identified by |id| less then |distance|.
+  virtual bool IsCloseEnough(size_t id, m2::PointD const & pt, double distance) = 0;
+
+  // @TODO(bykoianko): consider to get rid of m_countryIndex.
+  // The possibility should be considered.
   // List of all known countries.
   vector<CountryDef> m_countries;
+  // Maps all leaf country id (file names) to their indices in m_countries.
+  unordered_map<TCountryId, IdType> m_countryIndex;
 
   // Maps country file name without an extension to a country info.
   map<string, CountryInfo> m_id2info;
+
+  // m_isSingleMwm == true if the system is currently working with single (small) mwms
+  // and false otherwise.
+  // @TODO(bykoianko) Init m_isSingleMwm correctly.
+  bool m_isSingleMwm;
 };
 
 // This class reads info about countries from polygons file and
@@ -94,7 +119,11 @@ protected:
   // CountryInfoGetter overrides:
   void ClearCachesImpl() const override;
   bool IsBelongToRegionImpl(size_t id, m2::PointD const & pt) const override;
+  bool IsCloseEnough(size_t id, m2::PointD const & pt, double distance) override;
 
+  template <typename TFn>
+  typename result_of<TFn(vector<m2::RegionD>)>::type WithRegion(size_t id, TFn && fn) const;
+  
   FilesContainerR m_reader;
   mutable my::Cache<uint32_t, vector<m2::RegionD>> m_cache;
   mutable mutex m_cacheMutex;
@@ -115,5 +144,6 @@ protected:
   // CountryInfoGetter overrides:
   void ClearCachesImpl() const override;
   bool IsBelongToRegionImpl(size_t id, m2::PointD const & pt) const override;
+  bool IsCloseEnough(size_t id, m2::PointD const & pt, double distance) override;
 };
 }  // namespace storage

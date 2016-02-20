@@ -1,5 +1,6 @@
 #import "Common.h"
 #import "MapsAppDelegate.h"
+#import "MWMAlertViewController.h"
 #import "MWMAuthorizationCommon.h"
 #import "MWMAuthorizationLoginViewController.h"
 #import "MWMAuthorizationWebViewLoginViewController.h"
@@ -7,6 +8,12 @@
 #import "UIColor+MapsMeColor.h"
 
 #include "editor/server_api.hpp"
+
+#include "indexer/osm_editor.hpp"
+
+#include "platform/platform.hpp"
+
+#include "base/logging.hpp"
 
 namespace
 {
@@ -75,7 +82,6 @@ using namespace osm_auth_ios;
   navBar.barStyle = UIBarStyleBlack;
   navBar.tintColor = [UIColor clearColor];
   navBar.barTintColor = [UIColor clearColor];
-  navBar.shadowImage = [UIImage imageWithColor:[UIColor clearColor]];
   navBar.shadowImage = [[UIImage alloc] init];
   [navBar setBackgroundImage:[[UIImage alloc] init] forBarMetrics:UIBarMetricsDefault];
   navBar.translucent = YES;

@@ -1,9 +1,9 @@
 #import "DownloadIndicatorProtocol.h"
-#import "MapsObservers.h"
-#import "MWMAlertViewController.h"
 #import "MWMNavigationController.h"
 
 #include "indexer/map_style.hpp"
+
+#include "storage/index.hpp"
 
 @class MapViewController;
 @class LocationManager;
@@ -17,7 +17,7 @@ typedef NS_ENUM(NSUInteger, MWMRoutingPlaneMode)
 };
 
 @interface MapsAppDelegate : UIResponder<UIApplicationDelegate, UIAlertViewDelegate,
-                                         ActiveMapsObserverProtocol, DownloadIndicatorProtocol>
+                                         DownloadIndicatorProtocol>
 {
   NSInteger m_activeDownloadsCounter;
   UIBackgroundTaskIdentifier m_backgroundTask;
@@ -32,6 +32,7 @@ typedef NS_ENUM(NSUInteger, MWMRoutingPlaneMode)
 @property (nonatomic, readonly) LocationManager * m_locationManager;
 
 + (MapsAppDelegate *)theApp;
++ (void)showNode:(storage::TCountryId const &)countryId;
 
 - (void)enableStandby;
 - (void)disableStandby;

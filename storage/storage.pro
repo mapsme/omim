@@ -14,6 +14,7 @@ HEADERS += \
   country.hpp \
   country_decl.hpp \
   country_info_getter.hpp \
+  country_name_getter.hpp \
   country_polygon.hpp \
   http_map_files_downloader.hpp \
   index.hpp \
@@ -22,13 +23,16 @@ HEADERS += \
   simple_tree.hpp \
   storage.hpp \
   storage_defines.hpp \
+  storage_helpers.hpp \
 
 SOURCES += \
   country.cpp \
   country_decl.cpp \
   country_info_getter.cpp \
+  country_name_getter.cpp \
   http_map_files_downloader.cpp \
   index.cpp \
   queued_country.cpp \
   storage.cpp \
   storage_defines.cpp \
+  storage_helpers.cpp \
