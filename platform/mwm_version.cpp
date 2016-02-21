@@ -46,7 +46,7 @@ void ReadVersionT(TSource & src, MwmVersion & version)
   // with the correspondent return value.
   version.SetFormat(static_cast<Format>(ReadVarUint<uint32_t>(src)));
   if (version.GetFormat() < Format::v9)
-      version.SetVersion(ReadVarUint<uint32_t>(src));
+    version.SetVersion(ReadVarUint<uint32_t>(src));
   else
     version.SetVersion(ReadVarUint<uint64_t>(src));
 }
@@ -58,7 +58,7 @@ int64_t MwmVersion::GetTimestamp() const
 {
   auto constexpr partsCount = 6;
   auto version = m_version;
-  // From left to right YY MM DD HH MM SS.
+  // From left to right: YY MM DD HH MM SS.
   array<int, partsCount> parts{};  // Initialize with zeros.
   for (auto i = (m_format< Format::v9 ? 3 : 0); i < partsCount; ++i)
   {
@@ -96,7 +96,7 @@ bool ReadVersion(FilesContainerR const & container, MwmVersion & version)
   return true;
 }
 
-uint32_t ReadVersionDate(ModelReaderPtr const & reader)
+uint64_t ReadVersionValue(ModelReaderPtr const & reader)
 {
   MwmVersion version;
   if (!ReadVersion(FilesContainerR(reader), version))
@@ -105,10 +105,10 @@ uint32_t ReadVersionDate(ModelReaderPtr const & reader)
   return version.GetVersion();
 }
 
-bool IsSingleMwm(int64_t version)
+bool IsSingleMwm(uint64_t version)
 {
   #pragma message("Check this version and move if necessary before small mwm release.")
-  int64_t constexpr kMinSingleMwmVersion = 160107;
+  uint64_t constexpr kMinSingleMwmVersion = 160107;
   return version >= kMinSingleMwmVersion || version == 0 /* Version of mwm in the root directory. */;
 }
 }  // namespace version

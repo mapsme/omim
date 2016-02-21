@@ -18,7 +18,7 @@ LocalCountryFile::LocalCountryFile()
 }
 
 LocalCountryFile::LocalCountryFile(string const & directory, CountryFile const & countryFile,
-                                   int64_t version)
+                                   uint64_t version)
     : m_directory(directory),
       m_countryFile(countryFile),
       m_version(version),

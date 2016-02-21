@@ -271,7 +271,7 @@ void FindAllLocalMapsAndCleanup(int64_t latestVersion, string const & dataDir,
 
       // Assume that empty path means the resource file.
       LocalCountryFile worldFile{string(), CountryFile(file),
-                                 version::ReadVersionDate(reader)};
+                                 version::ReadVersionValue(reader)};
       worldFile.m_files = MapOptions::Map;
       if (i != localFiles.end())
       {
@@ -436,7 +436,7 @@ string CountryIndexes::IndexesDir(LocalCountryFile const & localFile)
   if (dir.empty())
   {
     // Local file is stored in resources. Need to prepare index folder in the writable directory.
-    int64_t const version = localFile.GetVersion();
+    auto const version = localFile.GetVersion();
     ASSERT_GREATER(version, 0, ());
 
     dir = my::JoinFoldersToPath(GetPlatform().WritableDir(), strings::to_string(version));

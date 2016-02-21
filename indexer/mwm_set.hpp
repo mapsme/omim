@@ -62,7 +62,7 @@ public:
 
   inline string const & GetCountryName() const { return m_file.GetCountryName(); }
 
-  inline int64_t GetVersion() const { return m_file.GetVersion(); }
+  inline uint64_t GetVersion() const { return m_file.GetVersion(); }
 
   MwmTypeT GetType() const;
 

@@ -21,7 +21,7 @@ enum class Format
   v6,      // October 2015 (offsets vector is in mwm now).
   v7,      // November 2015 (supply different search index formats).
   v8,      // January 2016 (long strings in metadata).
-  v9,      // February 2016 (Store time in unix timestamp in MwmVersion.m_timestamp).
+  v9,      // February 2016 (Store YYMMDDHHMMSS as a version mark in mwm).
   lastFormat = v9
 };
 
@@ -35,7 +35,6 @@ public:
   Format GetFormat() const { return m_format; }
   int64_t GetTimestamp() const;
 
-  /// \return version as YYMMDDHHMMSS
   uint64_t GetVersion() const { return m_version; }
 
   void SetFormat(Format format) { m_format = format; }
@@ -60,11 +59,11 @@ void ReadVersion(ReaderSrc & src, MwmVersion & version);
 bool ReadVersion(FilesContainerR const & container, MwmVersion & version);
 
 /// Helper function that is used in FindAllLocalMaps.
-uint32_t ReadVersionDate(ModelReaderPtr const & reader);
+uint64_t ReadVersionValue(ModelReaderPtr const & reader);
 
 /// \returns true if version is version of an mwm which was generated after small mwm update.
 /// This means it contains routing file as well.
-bool IsSingleMwm(int64_t version);
+bool IsSingleMwm(uint64_t version);
 
 /// \brief This enum sets constants which are used for writing test to set a version of mwm
 /// which should be processed as either single or two components (mwm and routing) mwms.
