@@ -243,16 +243,16 @@ public:
 };
 }  // namespace
 
-int64_t LoadCountries(string const & jsonBuffer, TCountriesContainer & countries, TMapping * mapping /* = nullptr */)
+uint64_t LoadCountries(string const & jsonBuffer, TCountriesContainer & countries, TMapping * mapping /* = nullptr */)
 {
   countries.Clear();
 
-  int64_t version = -1;
+  uint64_t version = 0;
   try
   {
     my::Json root(jsonBuffer.c_str());
     json_t * const rootPtr = root.get();
-    version = json_integer_value(json_object_get(rootPtr, "v"));
+    version = static_cast<uint64_t>(json_integer_value(json_object_get(rootPtr, "v")));
 
     // Extracting root id.
     bool const isSingleMwm = version::IsSingleMwm(version);
@@ -268,7 +268,7 @@ int64_t LoadCountries(string const & jsonBuffer, TCountriesContainer & countries
     {
       DoStoreCountriesSingleMwms doStore(countries);
       if (!LoadCountriesSingleMwmsImpl(jsonBuffer, id, doStore))
-        return -1;
+        return 0;
       if (mapping)
         *mapping = doStore.GetMapping();
     }
@@ -276,7 +276,7 @@ int64_t LoadCountries(string const & jsonBuffer, TCountriesContainer & countries
     {
       DoStoreCountriesTwoComponentMwms doStore(countries);
       if (!LoadCountriesTwoComponentMwmsImpl(jsonBuffer, id, doStore))
-        return -1;
+        return 0;
     }
   }
   catch (my::Json::Exception const & e)

@@ -95,7 +95,7 @@ private:
   unique_ptr<MapFilesDownloader> m_downloader;
 
   /// stores timestamp for update checks
-  int64_t m_currentVersion;
+  uint64_t m_currentVersion;
 
   TCountriesContainer m_countries;
 
@@ -459,7 +459,7 @@ private:
   // Returns local country files of a particular version, or wrapped
   // nullptr if there're no country files corresponding to the
   // version.
-  TLocalFilePtr GetLocalFile(TCountryId const & countryId, int64_t version) const;
+  TLocalFilePtr GetLocalFile(TCountryId const & countryId, uint64_t version) const;
 
   // Tries to register disk files for a real (listed in countries.txt)
   // country. If map files of the same version were already
@@ -468,7 +468,7 @@ private:
 
   // Registers disk files for a country. This method must be used only
   // for real (listed in countries.txt) countries.
-  void RegisterCountryFiles(TCountryId const & countryId, string const & directory, int64_t version);
+  void RegisterCountryFiles(TCountryId const & countryId, string const & directory, uint64_t version);
 
   // Registers disk files for a country. This method must be used only
   // for custom (made by user) map files.

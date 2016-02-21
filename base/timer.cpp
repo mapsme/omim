@@ -1,7 +1,7 @@
-#include "base/timer.hpp"
 #include "base/assert.hpp"
 #include "base/macros.hpp"
 #include "base/timegm.hpp"
+#include "base/timer.hpp"
 
 #include "std/target_os.hpp"
 #include "std/systime.hpp"
@@ -49,17 +49,25 @@ string FormatCurrentTime()
   return s;
 }
 
-uint32_t GenerateTimestamp(int year, int month, int day)
+uint64_t GenerateYYMMDDHHMMSS(int year, int month, int day,
+                              int hours, int minutes, int seconds)
 {
-  return (year - 100) * 10000 + (month + 1) * 100 + day;
+  uint64_t result = (year - 100) * 100;
+  result = (result + month + 1) * 100;
+  result = (result + day) * 100;
+  result = (result + hours) * 100;
+  result = (result + minutes) * 100;
+  result = result + seconds;
+  return result;
 }
 
-uint32_t TodayAsYYMMDD()
+uint64_t TodayAsYYMMDDHHMMSS()
 {
   time_t rawTime = time(NULL);
   tm const * const pTm = gmtime(&rawTime);
   CHECK(pTm, ("Can't get current date."));
-  return GenerateTimestamp(pTm->tm_year, pTm->tm_mon, pTm->tm_mday);
+  return GenerateYYMMDDHHMMSS(pTm->tm_year, pTm->tm_mon, pTm->tm_mday,
+                              pTm->tm_hour, pTm->tm_min, pTm->tm_sec);
 }
 
 string TimestampToString(time_t time)
@@ -156,5 +164,4 @@ double HighResTimer::ElapsedSeconds() const
 {
   return duration_cast<duration<double>>(high_resolution_clock::now() - m_start).count();
 }
-
 }

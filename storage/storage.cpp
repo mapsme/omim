@@ -624,7 +624,7 @@ void Storage::LoadCountriesFile(string const & pathToCountriesFile,
     ReaderPtr<Reader>(GetPlatform().GetReader(pathToCountriesFile)).ReadAsString(json);
     m_currentVersion = LoadCountries(json, m_countries, mapping);
     LOG_SHORT(LINFO, ("Loaded countries list for version:", m_currentVersion));
-    if (m_currentVersion < 0)
+    if (m_currentVersion == 0)
       LOG(LERROR, ("Can't load countries file", pathToCountriesFile));
   }
 }
@@ -962,7 +962,7 @@ void Storage::SetLocaleForTesting(string const & jsonBuffer, string const & loca
   m_countryNameGetter.SetLocaleForTesting(jsonBuffer, locale);
 }
 
-Storage::TLocalFilePtr Storage::GetLocalFile(TCountryId const & countryId, int64_t version) const
+Storage::TLocalFilePtr Storage::GetLocalFile(TCountryId const & countryId, uint64_t version) const
 {
   auto const it = m_localFiles.find(countryId);
   if (it == m_localFiles.end() || it->second.empty())
@@ -991,7 +991,7 @@ void Storage::RegisterCountryFiles(TLocalFilePtr localFile)
   }
 }
 
-void Storage::RegisterCountryFiles(TCountryId const & countryId, string const & directory, int64_t version)
+void Storage::RegisterCountryFiles(TCountryId const & countryId, string const & directory, uint64_t version)
 {
   TLocalFilePtr localFile = GetLocalFile(countryId, version);
   if (localFile)

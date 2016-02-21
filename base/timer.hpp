@@ -36,13 +36,17 @@ public:
 string FormatCurrentTime();
 
 /// Generates timestamp for a specified day.
-/// \param year  The number of years since 1900.
-/// \param month The number of month since January, in the range 0 to 11.
-/// \param day   The day of the month, in the range 1 to 31.
+/// \param year     The number of years since 1900.
+/// \param month    The number of month since January, in the range 0 to 11.
+/// \param day      The day of the month, in the range 1 to 31.
+/// \param hours    The number of hours since midnight in the range 0 to 23
+/// \param minutes  The number of minutes after the hour in the range 0 to 23
+/// \param seconds  The number of seconds after the minute in the range 0 to 61
 /// \return Timestamp.
-uint32_t GenerateTimestamp(int year, int month, int day);
+uint64_t GenerateYYMMDDHHMMSS(int year, int month, int day,
+                              int hours, int minutes, int seconds);
 
-uint32_t TodayAsYYMMDD();
+uint64_t TodayAsYYMMDDHHMMSS();
 
 /// Always creates strings in UTC time: 1997-07-16T07:30:15Z
 /// Returns empty string on error
@@ -70,5 +74,4 @@ public:
   uint64_t ElapsedMillis() const;
   double ElapsedSeconds() const;
 };
-
 }

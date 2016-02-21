@@ -31,7 +31,7 @@ public:
   // Creates an instance holding a path to countryFile's in a
   // directory. Note that no disk operations are not performed until
   // SyncWithDisk() is called.
-  LocalCountryFile(string const & directory, CountryFile const & countryFile, int64_t version);
+  LocalCountryFile(string const & directory, CountryFile const & countryFile, uint64_t version);
 
   // Syncs internal state like availability of map and routing files,
   // their sizes etc. with disk.
@@ -67,7 +67,7 @@ public:
 
   inline string const & GetDirectory() const { return m_directory; }
   inline string const & GetCountryName() const { return m_countryFile.GetName(); }
-  inline int64_t GetVersion() const { return m_version; }
+  inline uint64_t GetVersion() const { return m_version; }
   inline CountryFile const & GetCountryFile() const { return m_countryFile; }
 
   bool operator<(LocalCountryFile const & rhs) const;
@@ -92,7 +92,7 @@ private:
   /// In this case, the only valid params are m_countryFile and m_version.
   string m_directory;
   CountryFile m_countryFile;
-  int64_t m_version;
+  uint64_t m_version;
 
   MapOptions m_files;
 
