@@ -61,7 +61,7 @@ ar:صرف العملات|الصرف|الأموال
 cs:3Směnárna|peníze
 da:3Veksel|3penge
 de:3Geldwechselstelle|Wechselstube|Geld
-en:3Currency exchange|3exchange|money|U+1F4B1|U+1F4B2|U+1F4B4|U+1F4B5|U+1F4B6|U+1F4B7
+en:3Currency Exchange|3exchange|money|U+1F4B1|U+1F4B2|U+1F4B4|U+1F4B5|U+1F4B6|U+1F4B7
 es:3Cambio de devisas|dinero
 fi:4Rahanvaihto
 fr:3Bureau de change|3change|3devises|argent
@@ -148,7 +148,7 @@ ar:وجبات سريعة|مطعم|مقهى|وجبة جاهزة|طعام|الطع
 cs:2Rychlé občerstvení|4fastfood|kavárna|restaurace|jídlo
 da:4Fastfood|restaurant|café|takeaway|mad
 de:4Fast-Food|Takeaway|Restaurant|Café|Pizzeria|essen
-en:4Fast food|3restaurant|3cafe|takeaway|3food|U+1F354|U+1F355|U+1F35F|U+1F363|U+1F366|U+1F367|U+1F368|U+1F369|U+1F370|U+1F372|U+1F374
+en:4Fast Food|3restaurant|3cafe|takeaway|3food|U+1F354|U+1F355|U+1F35F|U+1F363|U+1F366|U+1F367|U+1F368|U+1F369|U+1F370|U+1F372|U+1F374
 es:4Comida rápida|restaurante|café|comer
 fi:3Pikaruokala|ruoka
 fr:4Restauration rapide|3restaurant|3café|à emporter|3nourriture|3resto
@@ -206,7 +206,7 @@ ar:1محطة وقود|وقود|غاز|الغاز
 cs:3Čerpací stanice|2pumpa
 da:3Tankstation|benzin
 de:3Tankstelle|Tankstation
-en:Gas station|3fuel|2gas|U+26FD
+en:Gas Station|3fuel|2gas|U+26FD
 es:3Gasolinera
 fi:3Huoltoasema
 fr:Station-service|3carburant|2essence
@@ -351,7 +351,7 @@ ar:معرض أثاث|متجر|المتجر
 cs:Nábytek|2obchod
 da:Møbelbutik|2butik
 de:Möbelgeschäft|Geschäft|2Laden
-en:Furniture store|2shop
+en:Furniture Store|2shop
 es:Tienda de muebles|2tienda
 fi:Huonekalukauppa|3kauppa
 fr:Magasin de meubles|2magasin
@@ -380,7 +380,7 @@ ar:متجر مشروبات كحولية|خمور|متجر|المتجر
 cs:Obchod s alkoholem|2obchod
 da:Vinhandel|2butik
 de:Spirituosengeschäft|Spirituosen|Geschäft|2Laden
-en:Liquor store|liquor|U+1F377|2shop
+en:Liquor Store|liquor|U+1F377|2shop
 es:Licorería|licor|2tienda
 fi:Alkoholikauppa|alkoholi|3kauppa
 fr:Magasin de vins et spiritueux|vins et spiritueux|2magasin
@@ -438,7 +438,7 @@ ar:متجر أحذية|متجر|المتجر
 cs:Obuv|2obchod
 da:Skobutik|2butik
 de:Schuhgeschäft|Schuhladen|Geschäft|2Laden
-en:Shoe store|U+1F461|U+1F460|U+1F462|U+1F45E|U+1F45F|2shop
+en:Shoe Store|U+1F461|U+1F460|U+1F462|U+1F45E|U+1F45F|2shop
 es:Zapatería|2tienda
 fi:Kenkäkauppa|3kauppa
 fr:Magasin de chaussures|2magasin
@@ -496,7 +496,7 @@ ar:متجر حواسيب|متجر|المتجر
 cs:Železářství|2obchod
 da:Isenkræmmer|2butik
 de:Eisenwarengeschäft|Eisenwarenhandlung|Geschäft|2Laden
-en:Hardware store|U+1F50B|U+1F50C|U+1F4A1|U+1F526|U+1F529|U+1F528|U+2614|2shop
+en:Hardware Store|U+1F50B|U+1F50C|U+1F4A1|U+1F526|U+1F529|U+1F528|U+2614|2shop
 es:Ferretería|2tienda
 fi:Työkalukauppa|3kauppa
 fr:Quincaillerie|2magasin
@@ -506,7 +506,7 @@ it:Ferramenta|2negozio
 ja:工具店|1買い物|お買い物|ショップ|商店|雑貨
 ko:철물점|1쇼핑|가게
 nb:Jernvareforretning|3butikk
-nl:Ijzerhandel|2winkel
+nl:IJzerhandel|2winkel
 pl:Sklep narzędziowy|3sklep|towary
 pt:Loja de ferramentas|2loja|compras
 ro:Magazin hardware|3magazin
@@ -583,7 +583,7 @@ ar:متجر هدايا|متجر|المتجر
 cs:Obchod s dárkovým zbožím|2obchod
 da:Gavebutik|2butik
 de:Geschenkladen|Geschenke|Geschäft|2Laden
-en:Gift shop|U+1F381|2shop
+en:Gift Shop|U+1F381|2shop
 es:Tienda de regalos|2tienda
 fi:Lahjakauppa|3kauppa
 fr:Boutique de souvenirs|2magasin
@@ -612,7 +612,7 @@ ar:مركز أدوات تجميل|متجر|المتجر
 cs:Kosmetický salón|2obchod
 da:Skønhedsbutik|2butik
 de:Kosmetikgeschäft|Geschäft|2Laden
-en:Beauty shop|U+1F484|2shop
+en:Beauty Shop|U+1F484|2shop
 es:Tienda de productos de belleza|2tienda
 fi:Kauneusliike|3kauppa
 fr:Institut de beauté|2magasin
@@ -670,7 +670,7 @@ ar:أدوات رياضية|متجر|المتجر
 cs:Sportovní zboží|2obchod
 da:Sportsudstyr|2butik
 de:Sportartikel|Fitnessgeschäft|Geschäft|2Laden
-en:Sports goods|U+1F3BF|U+1F3A3|U+1F3C2|U+1F6B4|U+26BD|U+1F3C0|U+1F3C8|U+26BE|U+1F3BE|U+1F3C9|U+26F3|2shop
+en:Sports Goods|U+1F3BF|U+1F3A3|U+1F3C2|U+1F6B4|U+26BD|U+1F3C0|U+1F3C8|U+26BE|U+1F3BE|U+1F3C9|U+26F3|2shop
 es:Productos de deporte|2tienda
 fi:Urheilukauppa|3kauppa
 fr:Articles de sport|2magasin
@@ -757,7 +757,7 @@ ar:متجر ألبسة|المتجر
 cs:Oblečení|obchod
 da:Tøjbutik|tøj|butik
 de:Bekleidungsgeschäft|Kleidung|Laden
-en:Clothes shop|4clothes|U+1F45A|U+1F457|U+1F456|U+1F455
+en:Clothes Shop|4clothes|U+1F45A|U+1F457|U+1F456|U+1F455
 es:Tienda de ropa|3ropa|tienda
 fi:Vaatekauppa|kauppa
 fr:Boutique de vêtements|4vêtements
@@ -786,7 +786,7 @@ ar:متجر سيارات|المتجر
 cs:Obchod s auty|obchod
 da:Bilforhandler|butik
 de:Autohaus|Laden
-en:Car shop|U+1F697|U+1F698|U+1F699
+en:Car Shop|U+1F697|U+1F698|U+1F699
 es:Venta de coches|tienda
 fi:3Autokorjaamo|kauppa
 fr:Réparation auto|voitures|auto
@@ -815,7 +815,7 @@ ar:دراجة هوائية|المتجر
 cs:3Cyklistický obchod|jízdní kolo|3kolo|obchod
 da:Cykelforretning|butik
 de:3Fahrradladen|Fahrrad|Velo|Laden
-en:4Bicycle shop|cycle|bike|shop|U+1F6B2|U+1F6B4|U+1F6B5
+en:4Bicycle Shop|cycle|bike|shop|U+1F6B2|U+1F6B4|U+1F6B5
 es:Bicicletería|bicicleta|tienda
 fi:3Polkupyörä|kauppa
 fr:4Magasin de vélos|vélo|bicyclette|magasin
@@ -873,7 +873,7 @@ ar:محطة الحافلة์|حافلة|نقل|النقل
 cs:Autobusová zastávka|4autobus|2bus|zastávka|stanice|doprava
 da:3Busstoppested|bus|transport
 de:Bushaltestelle|Haltestelle|2Bus|Autobus|Verkehr|ÖPNV
-en:Bus stop|2bus|stop|4transport|U+1F68C|U+1F68F|U+1F68E|U+1F690
+en:Bus Stop|2bus|stop|4transport|U+1F68C|U+1F68F|U+1F68E|U+1F690
 es:Parada de autobuses|4transporte
 fi:3Bussipysäkki|liikenne
 fr:Arrêt de bus|2bus|arrêt|2autobus|4transport
@@ -902,7 +902,7 @@ ar:محطة الترام|نقل|النقل
 cs:Tramvajová zastávka|3tramvaj|4zastávka|stanice|doprava
 da:3Sporvogn|station|transport
 de:4Straßenbahnhaltestelle|Tramhaltestelle|Haltestelle|Tram|Verkehr|ÖPNV
-en:Tram stop|3tram|stop|4transport|U+1F683
+en:Tram Stop|3tram|stop|4transport|U+1F683
 es:Parada|4transporte
 fi:4Raitiovaunupysäkki|liikenne
 fr:Arrêt de tramway|3tramway|3tram|arrêt|4transport
@@ -931,7 +931,7 @@ ar:محطة الباص|حافلة|نقل|النقل
 cs:Autobusové nádraží|zastávka|bus|doprava
 da:2Busstation|2bus|station|4transport
 de:4Busbahnhof|Haltestelle|Bus|Autobus|Verkehr|ÖPNV
-en:Bus station|2bus|station|4transport|U+1F68C|U+1F68F|U+1F68D
+en:Bus Station|2bus|station|4transport|U+1F68C|U+1F68F|U+1F68D
 es:Estación de autobuses|4transporte
 fi:3Bussiasema|liikenne
 fr:Gare routière|2bus|2autobus|arrêt|4transport
@@ -960,7 +960,7 @@ ar:سكة الحديدี|محطة القطارี|محطةี|نقل|النقل
 cs:3Železniční stanice|vlakové nádraží|2vlak|doprava
 da:3Jernbane|4togstationี|4stationี|transport
 de:4Bahnhof|3Haltepunkt|3Station|Zug|Bahn|Verkehr|ÖPNV
-en:3Train station|4railway|railroad|3train|4station|4transport|U+1F684|U+1F685|U+1F689|U+1F682|U+1F686|U+1F688|U+1F68A|U+1F68B
+en:3Train Station|4railway|railroad|3train|4station|4transport|U+1F684|U+1F685|U+1F689|U+1F682|U+1F686|U+1F688|U+1F68A|U+1F68B
 es:3Estación de tren|3tren|transporte
 fi:Rautatieasema|liikenne
 fr:3Gare|4chemin de fer|3train|4transport
@@ -1076,7 +1076,7 @@ ar:مبنى البلدية|سياحة|مناظر
 cs:3Radnice|3pamětihodnost
 da:3Rådhus|3turisme|3sightseeing|3seværdigheder
 de:3Rathaus|3Sehenswürdigkeit
-en:3Town hall|3tourism|3sights
+en:3Town Hall|3tourism|3sights
 es:3Ayuntamiento|3turismo
 fi:Kaupungintalo|nähtävyydet
 fr:3Mairie|3tourisme|3site touristique
@@ -1192,7 +1192,7 @@ ar:معلومات سياحية|معلومات|مناظر|سياحة
 cs:4Infocentrum|4turistické informace|pamětihodnost|Íčko
 da:4Turistinformation|turistinformation|4information|seværdigheder
 de:4Tourist-Information|Information|Sehenswürdigkeit
-en:4Tourist information|4information|sights|U+2139|U+1F481
+en:4Tourist Information|4information|sights|U+2139|U+1F481
 es:4Información|turismo
 fi:3Matkailuinfo|nähtävyydet
 fr:4Informations touritiques|4informations|site touristique
@@ -1221,7 +1221,7 @@ ar:أماكن للرحلات|مناظر|سياحة
 cs:3Piknik|picnic|picnik|pamětihodnost
 da:3Picnic|seværdigheder
 de:3Picknickplatz|Grillplatz|Sehenswürdigkeit
-en:3Picnic site|sights
+en:3Picnic Site|sights
 es:3Picnic|turismo
 fi:3Piknikpaikat|nähtävyydet
 fr:3Terrain de pique-nique|3aire de pique-nique|site touristique
@@ -1250,7 +1250,7 @@ ar:1مكان للعبادة|1معبد|سياحة
 cs:4Posvátné místo|3chrám|pamětihodnost
 da:3Tempel|3kultsted|seværdigheder
 de:3Anbetungsstätte|Tempel|Gotteshaus|Sehenswürdigkeit
-en:4Place of worship|3temple|sights|U+1F64F
+en:4Place of Worship|3temple|sights|U+1F64F
 es:4Lugar de culto|templo|turismo
 fi:4Uskonnollinen kohde|3temppeli|nähtävyydet
 fr:4Lieu de culte|3temple|site touristique
@@ -1656,7 +1656,7 @@ ar:موقع أثري|أماكن الجذب|سياحة|مناظر
 cs:Vykopávky|zajímavost|pamětihodnost
 da:Arkæologisk sted|seværdigheder|turisme
 de:Ausgrabungen|Sehenswürdigkeit
-en:Archaeological site|attraction|tourism|sights
+en:Archaeological Site|attraction|tourism|sights
 es:Sitio arqueológico|turismo
 fi:Arkeologinen kohde|nähtävyydet
 fr:Site archéologique|attraction|tourisme|site touristique
@@ -1743,7 +1743,7 @@ ar:دراجة هوائية
 cs:2Půjčovna kol|4jízdní kolo|3kolo|3pronájem|3nájemné
 da:4Cykel
 de:3Fahrradverleih|Fahrrad|Velo|3Verleih
-en:4Bicycle rental|cycle|bike|3rental|U+1F6B2|U+1F6B4|U+1F6B5
+en:4Bicycle Rental|cycle|bike|3rental|U+1F6B2|U+1F6B4|U+1F6B5
 es:Alquiler de bicicletas|4bicicleta|3alquiler
 fi:Polkupyörä
 fr:Location de vélos|vélo|bicyclette|3location
@@ -1772,7 +1772,7 @@ ar:تأجير سيارات|سيارة
 cs:3Půjčovna aut|auto|pronájem|nájemné
 da:4Biludlejning|bil
 de:3Autoverleih|Mietauto|Auto|Fahrzeug Mieten|Verleih
-en:3Car rental|car|rental|sharing|U+1F697|U+1F698|U+1F699
+en:3Car Rental|car|rental|sharing|U+1F697|U+1F698|U+1F699
 es:3Coche compartido|alquiler
 fi:Autovuokraamo
 fr:4Location de voitures|auto|loueur|location|partage
@@ -1975,7 +1975,7 @@ ar:مياه الشرب
 cs:4Pitná voda
 da:3Vand|4drikkevand
 de:4Trinkwasser|Brunnen
-en:4Drinking water|U+1F6B0
+en:4Drinking Water|U+1F6B0
 es:4Agua potable
 fi:Juomavesi
 fr:4Eau potable
@@ -2004,7 +2004,7 @@ ar:محطة إطفائية
 cs:Hasiči
 da:2Brandstation
 de:Feuerwehr|Feuerwache
-en:Fire station|U+1F692
+en:Fire Station|U+1F692
 es:Parque de bomberos
 fi:Paloasema
 fr:Caserne de pompiers
@@ -2120,7 +2120,7 @@ ar:منصة صيد
 cs:Lovecké stanoviště|posed
 da:Jagt|jagtsted
 de:Hochsitz|Anstand
-en:Hunting stand
+en:Hunting Stand
 fi:Metsästyspaikka
 fr:Mirador
 hu:Céllövölde
@@ -3305,7 +3305,7 @@ ar:دار الضيافة|فندق|نزُل|الفندق
 cs:Penzion|hotel|hostel|ubytovna
 da:Gæstehus|gæstehjem|hotel|hostel
 de:Gästehaus|Hotel|Wohnheim|Unterkunft
-en:Guest house|hotel|hostel|U+1F3E8
+en:Guest House|hotel|hostel|U+1F3E8
 es:Casa de huéspedes|hotel|albergue juvenil|residencia
 fi:Majatalo|hotelli
 fr:Maison d'hôtes|hôtel|auberge de jeunesse
@@ -3363,7 +3363,7 @@ ar:مساكن جبلية|فندق|الفندق
 cs:4Horská chata|horský hotel|hotel
 da:Bjerg logi|hotel
 de:4Berghütte|Almhütte|Berghotel|Hotel|Unterkunft
-en:Mountains lodging|hotel|hostel|alpine hut|U+1F3E8
+en:Mountains Lodging|hotel|hostel|alpine hut|U+1F3E8
 es:4Cabaña|cabaña de los Alpes|hotel de montaña|hotel
 fi:Vuorimajoitus|hotelli
 fr:Hôtel de montagne|hôtel|auberge de jeunesse|cabane alpine
@@ -3508,7 +3508,7 @@ ar:رياضة
 cs:Sportovní centrum|sport
 da:Sport
 de:Sportzentrum|Sport|Fitness-Zentrum|Fitness-Center
-en:Sports center|sport|U+26BD|U+26BE|U+1F3BE|U+1F4AA|U+1F3C8|U+1F3C0|U+1F3C9
+en:Sports Center|sport|U+26BD|U+26BE|U+1F3BE|U+1F4AA|U+1F3C8|U+1F3C0|U+1F3C9
 es:Centro deportivo|deporte
 fi:Urheilukeskus
 fr:Centre sportif|sport
@@ -3537,7 +3537,7 @@ ar:ملعب جولف|
 cs:Golf
 da:Golf|golfbane
 de:Golfplatz|Sport
-en:Golf course|sport|U+26F3
+en:Golf Course|sport|U+26F3
 es:Campo de golf|deporte
 fi:Golf-rata
 fr:Terrain de golf|sport
@@ -3566,7 +3566,7 @@ ar:ميدان اللعب|رياضة |ملاعب رياضية
 cs:Sportovní hřiště|sport
 da:Teltplads|fiskested|fodboldbane|bane|sportsplads
 de:Sportplatz|Feld|Sport
-en:Sports ground|sport|U+26BD|U+26BE|U+1F3BE|U+1F3C0|U+1F3C8|U+1F3C9|U+1F3C3
+en:Sports Ground|sport|U+26BD|U+26BE|U+1F3BE|U+1F3C0|U+1F3C8|U+1F3C9|U+1F3C3
 es:Complejo deportivo|terreno|deporte
 fi:Urheilukenttä|nimikkopaikka
 fr:Terrain de sport|sport
@@ -3595,7 +3595,7 @@ ar:حوض سباحة|رياضة
 cs:4Koupaliště|3bazén|aquapark|4lázně
 da:2Pool|svømmingpool|swimmingpool
 de:4Schwimmbad|Sport
-en:4Swimming pool|sport|U+1F3CA
+en:4Swimming Pool|sport|U+1F3CA
 es:4Piscina|deporte
 fi:Uima-allas
 fr:4Piscine|sport
@@ -3769,7 +3769,7 @@ ar:محل صيانة السيارات|محطة خدمات
 cs:3Auto opravna|auto|auta|Půjčení
 da:3Garage|3bilværksted|service station
 de:3Autowerkstatt|Kfz|Auto
-en:3Car repair shop|4service station|auto|U+1F527
+en:3Car Repair Shop|4service station|auto|U+1F527
 es:3Reparaciones auto|coche|automóvil|3auto|carro
 fi:Autokorjaamo
 fr:3Réparation d'automobiles|3garage|4station service|voiture|auto
@@ -3827,7 +3827,7 @@ ar:موقع البيت المتنقل
 cs:Kemp pro obytné přívěsy
 da:Campingvogn|husvogn
 de:4Wohnwagenstellplatz|Campingplatz|Wohnwagenplatz|Wohnmobilpark
-en:4Caravan site|RV site|U+1F69A|U+26FA|U+1F69B
+en:4Caravan Site|RV site|U+1F69A|U+26FA|U+1F69B
 es:Zona de caravanas|zona de camping
 fi:Retkeily
 fr:4Parc caravanier|VR|caravane|camping-car
@@ -4026,7 +4026,7 @@ zh-Hant:海灘
 
 highway-speed_camera
 de:Blitzer|Radarkontrolle|Radarfalle
-en:3Speed camera
+en:3Speed Camera
 fi:Nopeuskamera
 id:Kamera kecepatan
 nb:Fartskamera
