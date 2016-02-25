@@ -3343,7 +3343,7 @@
     de = Essen
     es = Comer
     fr = Nourriture
-    it = Ristoranti
+    it = Cibo
     ja = 飲食
     ko = 음식
     nl = Eten
