@@ -89,28 +89,28 @@ void SendStatistics(SearchParams const & params, m2::RectD const & viewport, Res
 }  // namespace
 
 // QueryHandle -------------------------------------------------------------------------------------
-QueryHandle::QueryHandle() : m_query(nullptr), m_cancelled(false) {}
+QueryHandle::QueryHandle() : m_processor(nullptr), m_cancelled(false) {}
 
 void QueryHandle::Cancel()
 {
   lock_guard<mutex> lock(m_mu);
   m_cancelled = true;
-  if (m_query)
-    m_query->Cancel();
+  if (m_processor)
+    m_processor->Cancel();
 }
 
-void QueryHandle::Attach(Query & query)
+void QueryHandle::Attach(Query & processor)
 {
   lock_guard<mutex> lock(m_mu);
-  m_query = &query;
+  m_processor = &processor;
   if (m_cancelled)
-    m_query->Cancel();
+    m_processor->Cancel();
 }
 
 void QueryHandle::Detach()
 {
   lock_guard<mutex> lock(m_mu);
-  m_query = nullptr;
+  m_processor = nullptr;
 }
 
 // Engine::Params ----------------------------------------------------------------------------------
@@ -131,21 +131,17 @@ Engine::Engine(Index & index, CategoriesHolder const & categories,
   m_categories.ForEachName(bind<void>(ref(doInit), _1));
   doInit.GetSuggests(m_suggests);
 
-  m_queries.reserve(params.m_numThreads);
+  m_contexts.resize(params.m_numThreads);
   for (size_t i = 0; i < params.m_numThreads; ++i)
   {
-    auto query = factory->BuildSearchQuery(index, m_categories, m_suggests, infoGetter);
-    query->SetPreferredLocale(params.m_locale);
-    m_queries.push_back(move(query));
+    auto processor = factory->BuildSearchQuery(index, m_categories, m_suggests, infoGetter);
+    processor->SetPreferredLocale(params.m_locale);
+    m_contexts[i].m_processor = move(processor);
   }
 
-  m_broadcast.resize(params.m_numThreads);
   m_threads.reserve(params.m_numThreads);
   for (size_t i = 0; i < params.m_numThreads; ++i)
-  {
-    m_threads.emplace_back(&Engine::MainLoop, this, ref(*m_queries[i]), ref(m_tasks),
-                           ref(m_broadcast[i]));
-  }
+    m_threads.emplace_back(&Engine::MainLoop, this, ref(m_contexts[i]));
 }
 
 Engine::~Engine()
@@ -163,31 +159,43 @@ Engine::~Engine()
 weak_ptr<QueryHandle> Engine::Search(SearchParams const & params, m2::RectD const & viewport)
 {
   shared_ptr<QueryHandle> handle(new QueryHandle());
-  PostTask(bind(&Engine::DoSearch, this, params, viewport, handle, _1));
+  PostMessage(Message::TYPE_TASK, [this, params, viewport, handle](Query & query)
+              {
+                DoSearch(params, viewport, handle, query);
+              });
   return handle;
 }
 
 void Engine::SetSupportOldFormat(bool support)
 {
-  PostBroadcast(bind(&Engine::DoSupportOldFormat, this, support, _1));
+  PostMessage(Message::TYPE_BROADCAST, [this, support](Query & processor)
+              {
+                processor.SupportOldFormat(support);
+              });
 }
 
-void Engine::ClearCaches() { PostBroadcast(bind(&Engine::DoClearCaches, this, _1)); }
+void Engine::ClearCaches()
+{
+  PostMessage(Message::TYPE_BROADCAST, [this](Query & processor)
+              {
+                processor.ClearCaches();
+              });
+}
 
 void Engine::SetRankPivot(SearchParams const & params, m2::RectD const & viewport,
-                          bool viewportSearch, Query & query)
+                          bool viewportSearch, Query & processor)
 {
   if (!viewportSearch && params.IsValidPosition())
   {
     m2::PointD const pos = MercatorBounds::FromLatLon(params.m_lat, params.m_lon);
     if (m2::Inflate(viewport, viewport.SizeX() / 4.0, viewport.SizeY() / 4.0).IsPointInside(pos))
     {
-      query.SetRankPivot(pos);
+      processor.SetRankPivot(pos);
       return;
     }
   }
 
-  query.SetRankPivot(viewport.Center());
+  processor.SetRankPivot(viewport.Center());
 }
 
 void Engine::EmitResults(SearchParams const & params, Results const & res)
@@ -195,93 +203,110 @@ void Engine::EmitResults(SearchParams const & params, Results const & res)
   params.m_onResults(res);
 }
 
-void Engine::MainLoop(Query & query, queue<TTask> & tasks, queue<TTask> & broadcast)
+void Engine::MainLoop(Context & context)
 {
   while (true)
   {
-    unique_lock<mutex> lock(m_mu);
-    m_cv.wait(lock, [&]()
+    bool hasBroadcast = false;
+    queue<Message> messages;
+
     {
-      return m_shutdown || !tasks.empty() || !broadcast.empty();
-    });
+      unique_lock<mutex> lock(m_mu);
+      m_cv.wait(lock, [&]()
+                {
+                  return m_shutdown || !m_messages.empty() || !context.m_messages.empty();
+                });
 
-    if (m_shutdown)
-      break;
+      if (m_shutdown)
+        break;
 
-    queue<TTask> ts;
-    // Execute all broadcast tasks at once.
-    ts.swap(broadcast);
+      // As SearchEngine is thread-safe, there is a global order on
+      // public API requests, and this order is kept by the global
+      // |m_messages| queue.  When a broadcast message arrives, it
+      // must be executed in any case by all threads, therefore the
+      // first free thread extracts as many as possible broadcast
+      // messages from |m_messages| front and replicates them to all
+      // thread-specific |m_messages| queues.
+      while (!m_messages.empty() && m_messages.front().m_type == Message::TYPE_BROADCAST)
+      {
+        for (auto & b : m_contexts)
+          b.m_messages.push(m_messages.front());
+        m_messages.pop();
+        hasBroadcast = true;
+      }
 
-    if (!tasks.empty())
-    {
-      // Execute only first task from the common pool.
-      ts.push(move(tasks.front()));
-      tasks.pop();
+      // Consumes first non-broadcast message, if any.  We process
+      // only a single task message (in constrast with broadcast
+      // messages) because task messages are actually search queries,
+      // whose processing may take an arbitrary amount of time. So
+      // it's better to process only one message and leave rest to the
+      // next free search thread.
+      if (!m_messages.empty())
+      {
+        context.m_messages.push(move(m_messages.front()));
+        m_messages.pop();
+      }
+
+      messages.swap(context.m_messages);
     }
 
-    lock.unlock();
+    if (hasBroadcast)
+      m_cv.notify_all();
 
-    while (!ts.empty())
+    while (!messages.empty())
     {
-      ts.front()(query);
-      ts.pop();
+      messages.front()(*context.m_processor);
+      messages.pop();
     }
   }
 }
 
-void Engine::PostTask(TTask && task)
+template <typename... TArgs>
+void Engine::PostMessage(TArgs && ... args)
 {
   lock_guard<mutex> lock(m_mu);
-  m_tasks.push(move(task));
+  m_messages.emplace(forward<TArgs>(args)...);
   m_cv.notify_one();
 }
 
-void Engine::PostBroadcast(TTask const & task)
-{
-  lock_guard<mutex> lock(m_mu);
-  for (auto & pool : m_broadcast)
-    pool.push(task);
-  m_cv.notify_all();
-}
-
 void Engine::DoSearch(SearchParams const & params, m2::RectD const & viewport,
-                      shared_ptr<QueryHandle> handle, Query & query)
+                      shared_ptr<QueryHandle> handle, Query & processor)
 {
   bool const viewportSearch = params.GetMode() == Mode::Viewport;
 
-  // Initialize query.
-  query.Init(viewportSearch);
-  handle->Attach(query);
+  // Initialize query processor.
+  processor.Init(viewportSearch);
+  handle->Attach(processor);
   MY_SCOPE_GUARD(detach, [&handle] { handle->Detach(); });
 
-  // Early exit when query is cancelled.
-  if (query.IsCancelled())
+  // Early exit when query processing is cancelled.
+  if (processor.IsCancelled())
   {
     params.m_onResults(Results::GetEndMarker(true /* isCancelled */));
     return;
   }
 
-  SetRankPivot(params, viewport, viewportSearch, query);
+  SetRankPivot(params, viewport, viewportSearch, processor);
 
   if (params.IsValidPosition())
-    query.SetPosition(MercatorBounds::FromLatLon(params.m_lat, params.m_lon));
+    processor.SetPosition(MercatorBounds::FromLatLon(params.m_lat, params.m_lon));
   else
-    query.SetPosition(viewport.Center());
+    processor.SetPosition(viewport.Center());
 
-  query.SetMode(params.GetMode());
+  processor.SetMode(params.GetMode());
 
   // This flag is needed for consistency with old search algorithm
   // only. It will be gone when we remove old search code.
-  query.SetSearchInWorld(true);
+  processor.SetSearchInWorld(true);
 
-  query.SetInputLocale(params.m_inputLocale);
+  processor.SetInputLocale(params.m_inputLocale);
 
   ASSERT(!params.m_query.empty(), ());
-  query.SetQuery(params.m_query);
+  processor.SetQuery(params.m_query);
 
   Results res;
 
-  query.SearchCoordinates(res);
+  processor.SearchCoordinates(res);
 
   try
   {
@@ -290,13 +315,13 @@ void Engine::DoSearch(SearchParams const & params, m2::RectD const & viewport,
 
     if (viewportSearch)
     {
-      query.SetViewport(viewport, true /* forceUpdate */);
-      query.SearchViewportPoints(res);
+      processor.SetViewport(viewport, true /* forceUpdate */);
+      processor.SearchViewportPoints(res);
     }
     else
     {
-      query.SetViewport(viewport, params.IsSearchAroundPosition() /* forceUpdate */);
-      query.Search(res, kResultsCount);
+      processor.SetViewport(viewport, params.IsSearchAroundPosition() /* forceUpdate */);
+      processor.Search(res, kResultsCount);
     }
 
     EmitResults(params, res);
@@ -306,14 +331,10 @@ void Engine::DoSearch(SearchParams const & params, m2::RectD const & viewport,
     LOG(LDEBUG, ("Search has been cancelled."));
   }
 
-  if (!viewportSearch && !query.IsCancelled())
+  if (!viewportSearch && !processor.IsCancelled())
     SendStatistics(params, viewport, res);
 
   // Emit finish marker to client.
-  params.m_onResults(Results::GetEndMarker(query.IsCancelled()));
+  params.m_onResults(Results::GetEndMarker(processor.IsCancelled()));
 }
-
-void Engine::DoSupportOldFormat(bool support, Query & query) { query.SupportOldFormat(support); }
-
-void Engine::DoClearCaches(Query & query) { query.ClearCaches(); }
 }  // namespace search
