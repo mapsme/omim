@@ -1,6 +1,7 @@
 package com.mapswithme.maps.downloader;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -9,22 +10,30 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.base.BaseMwmRecyclerFragment;
 import com.mapswithme.maps.base.OnBackPressListener;
-import com.mapswithme.maps.widget.SearchToolbarController;
+import com.mapswithme.maps.search.NativeSearchListener;
+import com.mapswithme.maps.search.SearchEngine;
+import com.mapswithme.maps.search.SearchResult;
 import com.mapswithme.util.StringUtils;
 import com.mapswithme.util.UiUtils;
 
 public class DownloaderFragment extends BaseMwmRecyclerFragment
                              implements OnBackPressListener
 {
-  private ToolbarController mToolbarController;
+  private DownloaderToolbarController mToolbarController;
 
   private View mBottomPanel;
   private Button mPanelAction;
   private TextView mPanelText;
   private DownloaderAdapter mAdapter;
+
+  private long mCurrentSearch;
+  private boolean mSearchRunning;
 
   private int mSubscriberSlot;
 
@@ -37,91 +46,83 @@ public class DownloaderFragment extends BaseMwmRecyclerFragment
     }
   };
 
-  private class ToolbarController extends SearchToolbarController
+  private final NativeSearchListener mSearchListener = new NativeSearchListener()
   {
-    private final View mDownloadAll;
-    private final View mUpdateAll;
-    private final View mCancelAll;
+    private final Map<String, CountryItem> mResults = new HashMap<>();
 
-    ToolbarController(View root, Activity activity)
+    @Override
+    public void onResultsUpdate(SearchResult[] results, long timestamp)
     {
-      super(root, activity);
+      if (!mSearchRunning || timestamp != mCurrentSearch)
+        return;
 
-      mDownloadAll = mContainer.findViewById(R.id.download_all);
-      mUpdateAll = mContainer.findViewById(R.id.update_all);
-      mCancelAll = mContainer.findViewById(R.id.cancel_all);
-
-      mDownloadAll.setOnClickListener(new View.OnClickListener()
+      for (SearchResult result : results)
       {
-        @Override
-        public void onClick(View v)
+        String id = MapManager.nativeFindCountry(result.lat, result.lon);
+        if (!TextUtils.isEmpty(id) && !mResults.containsKey(id))
         {
-          MapManager.nativeDownload(mAdapter.getCurrentParent());
+          CountryItem item = CountryItem.fill(id);
+          item.category = CountryItem.CATEGORY_ALL;
+          mResults.put(id, item);
         }
-      });
-
-      mUpdateAll.setOnClickListener(new View.OnClickListener()
-      {
-        @Override
-        public void onClick(View v)
-        {
-          MapManager.nativeUpdate(mAdapter.getCurrentParent());
-        }
-      });
-
-      mCancelAll.setOnClickListener(new View.OnClickListener()
-      {
-        @Override
-        public void onClick(View v)
-        {
-          MapManager.nativeCancel(mAdapter.getCurrentParent());
-        }
-      });
-
-      update();
+      }
     }
 
     @Override
-    public void onUpClick()
+    public void onResultsEnd(long timestamp)
     {
-      if (!onBackPressed())
-        super.onUpClick();
+      if (!mSearchRunning || timestamp != mCurrentSearch)
+        return;
+
+      mAdapter.setSearchResultsMode(mResults.values());
+      mResults.clear();
+
+      onSearchEnd();
     }
+  };
 
-    public void update()
-    {
-      boolean cancel = MapManager.nativeIsDownloading();
-
-      boolean update = !cancel;
-      if (update)
-      {
-        // TODO (trashkalmar): Use appropriate function
-        update = false;
-      }
-
-      boolean onTop = !mAdapter.canGoUpdwards();
-
-      boolean download = (!cancel && !update && !onTop);
-      if (download)
-      {
-        // TODO (trashkalmar): Use appropriate function
-        download = true;
-      }
-
-      UiUtils.showIf(cancel, mCancelAll);
-      UiUtils.showIf(update, mUpdateAll);
-      UiUtils.showIf(download, mDownloadAll);
-      UiUtils.showIf(onTop, mQuery);
-    }
+  void startSearch()
+  {
+    mSearchRunning = true;
+    mCurrentSearch = System.nanoTime();
+    SearchEngine.searchMaps(mToolbarController.getQuery(), mCurrentSearch);
+    mToolbarController.showProgress(true);
   }
 
-  private void updateBottomPanel()
+  void cancelSearch()
   {
-    UpdateInfo info = MapManager.nativeGetUpdateInfo();
-    boolean show = (info != null && info.filesCount > 0);
-    UiUtils.showIf(show, mBottomPanel);
-    if (show)
-      mPanelText.setText(getString(R.string.downloader_maps_to_update, info.filesCount, StringUtils.getFileSizeString(info.totalSize)));
+    onSearchEnd();
+    mAdapter.cancelSearch();
+  }
+
+  private void onSearchEnd()
+  {
+    mSearchRunning = false;
+    mToolbarController.showProgress(false);
+  }
+
+  void update()
+  {
+    String rootName = mAdapter.getCurrentParentName();
+    boolean onTop = (mAdapter.isSearchResultsMode() || rootName == null);
+
+    // Toolbar
+    mToolbarController.update();
+    if (!onTop)
+      mToolbarController.setTitle(rootName);  // FIXME: Title not shown. Investigate this.
+
+    // Bottom panel
+    boolean showBottom = onTop;
+    if (showBottom)
+    {
+      UpdateInfo info = MapManager.nativeGetUpdateInfo();
+      showBottom = (info != null && info.filesCount > 0);
+
+      if (showBottom)
+        mPanelText.setText(getString(R.string.downloader_maps_to_update, info.filesCount, StringUtils.getFileSizeString(info.totalSize)));
+    }
+
+    UiUtils.showIf(showBottom, mBottomPanel);
   }
 
   @Override
@@ -145,13 +146,14 @@ public class DownloaderFragment extends BaseMwmRecyclerFragment
         if (!isAdded())
           return;
 
-        mToolbarController.update();
-        updateBottomPanel();
+        update();
       }
 
       @Override
       public void onProgress(String countryId, long localSize, long remoteSize) {}
     });
+
+    SearchEngine.INSTANCE.addListener(mSearchListener);
   }
 
   @Override
@@ -163,6 +165,8 @@ public class DownloaderFragment extends BaseMwmRecyclerFragment
       MapManager.nativeUnsubscribe(mSubscriberSlot);
       mSubscriberSlot = 0;
     }
+
+    SearchEngine.INSTANCE.removeListener(mSearchListener);
   }
 
   @Override
@@ -178,8 +182,9 @@ public class DownloaderFragment extends BaseMwmRecyclerFragment
     mPanelText = (TextView) mBottomPanel.findViewById(R.id.tv__text);
     UiUtils.updateButton(mPanelAction);
 
-    mToolbarController = new ToolbarController(view, getActivity());
-    updateBottomPanel();
+    mToolbarController = new DownloaderToolbarController(view, getActivity(), this);
+
+    update();
   }
 
   @Override
@@ -200,6 +205,12 @@ public class DownloaderFragment extends BaseMwmRecyclerFragment
   @Override
   public boolean onBackPressed()
   {
+    if (mToolbarController.hasQuery())
+    {
+      mToolbarController.clear();
+      return true;
+    }
+
     return mAdapter.goUpwards();
   }
 
@@ -213,21 +224,21 @@ public class DownloaderFragment extends BaseMwmRecyclerFragment
   protected RecyclerView.Adapter createAdapter()
   {
     if (mAdapter == null)
-    {
-      mAdapter = new DownloaderAdapter(getRecyclerView(), getActivity());
-      mAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver()
-      {
-        @Override
-        public void onChanged()
-        {
-          boolean root = TextUtils.isEmpty(mAdapter.getCurrentParent());
-          mToolbarController.show(root);
-          if (!root)
-            mToolbarController.setTitle(R.string.download_maps);
-        }
-      });
-    }
+      mAdapter = new DownloaderAdapter(this);
 
+    return mAdapter;
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data)
+  {
+    super.onActivityResult(requestCode, resultCode, data);
+    mToolbarController.onActivityResult(requestCode, resultCode, data);
+  }
+
+  @Override
+  public DownloaderAdapter getAdapter()
+  {
     return mAdapter;
   }
 }

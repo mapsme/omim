@@ -146,10 +146,10 @@ static void UpdateItem(JNIEnv * env, jobject item, NodeAttrs const & attrs)
   env->SetBooleanField(item, countryItemFieldPresent, attrs.m_present);
 
   // Progress
-  env->SetIntField(item, countryItemFieldProgress,static_cast<jint>(attrs.m_downloadingProgress.first));
+  env->SetIntField(item, countryItemFieldProgress, static_cast<jint>(attrs.m_downloadingProgress.first));
 }
 
-static void PutItemsToList(JNIEnv * env, jobject const list,  vector<TCountryId> const & children, TCountryId const & parent, int category)
+static void PutItemsToList(JNIEnv * env, jobject const list, TCountriesVec const & children, int category)
 {
   static jmethodID const countryItemCtor = jni::GetConstructorID(env, g_countryItemClass, "(Ljava/lang/String;)V");
   static jfieldID const countryItemFieldCategory = env->GetFieldID(g_countryItemClass, "category", "I");
@@ -178,14 +178,13 @@ Java_com_mapswithme_maps_downloader_MapManager_nativeListItems(JNIEnv * env, jcl
 
   Storage const & storage = GetStorage();
   TCountryId const parentId = (parent ? jni::ToNativeString(env, parent) : storage.GetRootId());
-
   static jfieldID const countryItemFieldParentId = env->GetFieldID(g_countryItemClass, "parentId", "Ljava/lang/String;");
 
   if (parent)
   {
-    vector<TCountryId> children;
+    TCountriesVec children;
     storage.GetChildren(parentId, children);
-    PutItemsToList(env, result, children, parentId, ItemCategory::ALL);
+    PutItemsToList(env, result, children, ItemCategory::ALL);
   }
   else
   {
@@ -194,12 +193,12 @@ Java_com_mapswithme_maps_downloader_MapManager_nativeListItems(JNIEnv * env, jcl
     // Downloaded
     TCountriesVec downloaded, available;
     storage.GetChildrenInGroups(parentId, downloaded, available);
-    PutItemsToList(env, result, downloaded, parentId, ItemCategory::DOWNLOADED);
+    PutItemsToList(env, result, downloaded, ItemCategory::DOWNLOADED);
 
     // All
     TCountriesVec children(downloaded.begin(), downloaded.end());
     children.insert(children.end(), available.begin(), available.end());
-    PutItemsToList(env, result, children, parentId, ItemCategory::ALL);
+    PutItemsToList(env, result, children, ItemCategory::ALL);
   }
 }
 

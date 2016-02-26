@@ -1,7 +1,5 @@
 package com.mapswithme.maps.search;
 
-import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Build;
@@ -24,20 +22,15 @@ import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.MwmActivity;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.base.BaseMwmFragment;
-import com.mapswithme.maps.base.BaseMwmFragmentActivity;
 import com.mapswithme.maps.base.OnBackPressListener;
 import com.mapswithme.maps.bookmarks.data.MapObject;
 import com.mapswithme.maps.downloader.CountrySuggestFragment;
-import com.mapswithme.maps.downloader.DownloaderFragment;
 import com.mapswithme.maps.downloader.MapManager;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.routing.RoutingController;
 import com.mapswithme.maps.widget.SearchToolbarController;
-import com.mapswithme.util.InputUtils;
-import com.mapswithme.util.Language;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.Utils;
-import com.mapswithme.util.statistics.AlohaHelper;
 import com.mapswithme.util.statistics.Statistics;
 
 
@@ -47,7 +40,6 @@ public class SearchFragment extends BaseMwmFragment
                                     SearchToolbarController.Container,
                                     CategoriesAdapter.OnCategorySelectedListener
 {
-  private static final int RC_VOICE_RECOGNITION = 0xCA11;
   private long mLastQueryTimestamp;
 
   private static class LastPosition
@@ -100,15 +92,15 @@ public class SearchFragment extends BaseMwmFragment
     }
 
     @Override
-    protected void onVoiceInputClick()
+    protected int getVoiceInputPrompt()
     {
-      try
-      {
-        startActivityForResult(InputUtils.createIntentForVoiceRecognition(getString(R.string.search_map)), RC_VOICE_RECOGNITION);
-      } catch (ActivityNotFoundException e)
-      {
-        AlohaHelper.logException(e);
-      }
+      return R.string.search_map;
+    }
+
+    @Override
+    protected void startVoiceRecognition(Intent intent, int code)
+    {
+      startActivityForResult(intent, code);
     }
 
     @Override
@@ -185,18 +177,12 @@ public class SearchFragment extends BaseMwmFragment
              .commit();
   }
 
-  public void showDownloader()
-  {
-    ((BaseMwmFragmentActivity)getActivity()).replaceFragment(DownloaderFragment.class, null, null);
-    UiUtils.hide(mResultsFrame, mResultsPlaceholder, mTabFrame);
-  }
-
   private void updateFrames()
   {
-    final boolean active = searchActive();
-    UiUtils.showIf(active, mResultsFrame);
+    final boolean hasQuery = mToolbarController.hasQuery();
+    UiUtils.showIf(hasQuery, mResultsFrame);
 
-    if (active)
+    if (hasQuery)
       hideDownloadSuggest();
     else if (doShowDownloadSuggest())
       showDownloadSuggest();
@@ -208,7 +194,7 @@ public class SearchFragment extends BaseMwmFragment
   {
     final boolean show = (!mSearchRunning &&
                           mSearchAdapter.getItemCount() == 0 &&
-                          searchActive());
+                          mToolbarController.hasQuery());
 
     UiUtils.showIf(show, mResultsPlaceholder);
   }
@@ -314,11 +300,6 @@ public class SearchFragment extends BaseMwmFragment
     mToolbarController.setQuery(text);
   }
 
-  private boolean searchActive()
-  {
-    return !getQuery().isEmpty();
-  }
-
   private void readArguments()
   {
     final Bundle arguments = getArguments();
@@ -391,7 +372,7 @@ public class SearchFragment extends BaseMwmFragment
     final String query = getQuery();
     SearchRecents.add(query);
     mLastQueryTimestamp = System.nanoTime();
-    SearchEngine.runInteractiveSearch(query, Language.getKeyboardLocale(), mLastQueryTimestamp, false /* isMapAndTable */);
+    SearchEngine.searchInteractive(query, mLastQueryTimestamp, false /* isMapAndTable */);
     SearchEngine.showAllResults(query);
     Utils.navigateToParent(getActivity());
 
@@ -419,14 +400,11 @@ public class SearchFragment extends BaseMwmFragment
     // TODO @yunitsky Implement more elegant solution.
     if (getActivity() instanceof MwmActivity)
     {
-      SearchEngine.runInteractiveSearch(getQuery(), Language.getKeyboardLocale(),
-              mLastQueryTimestamp, true /* isMapAndTable */);
+      SearchEngine.searchInteractive(getQuery(), mLastQueryTimestamp, true /* isMapAndTable */);
     }
     else
     {
-      final boolean searchStarted = SearchEngine.runSearch(getQuery(), Language.getKeyboardLocale(), mLastQueryTimestamp, true,
-                                                           mLastPosition.valid, mLastPosition.lat, mLastPosition.lon);
-      if (!searchStarted)
+      if (!SearchEngine.search(getQuery(), mLastQueryTimestamp, true, mLastPosition.valid, mLastPosition.lat, mLastPosition.lon))
         return;
     }
 
@@ -439,7 +417,7 @@ public class SearchFragment extends BaseMwmFragment
   @Override
   public void onResultsUpdate(SearchResult[] results, long timestamp)
   {
-    if (!isAdded() || !searchActive())
+    if (!isAdded() || !mToolbarController.hasQuery())
       return;
 
     // Search is running hence results updated.
@@ -466,19 +444,13 @@ public class SearchFragment extends BaseMwmFragment
   public void onActivityResult(int requestCode, int resultCode, Intent data)
   {
     super.onActivityResult(requestCode, resultCode, data);
-
-    if (requestCode == RC_VOICE_RECOGNITION && resultCode == Activity.RESULT_OK)
-    {
-      String result = InputUtils.getBestRecognitionResult(data);
-      if (!TextUtils.isEmpty(result))
-        setQuery(result);
-    }
+    mToolbarController.onActivityResult(requestCode, resultCode, data);
   }
 
   @Override
   public boolean onBackPressed()
   {
-    if (searchActive())
+    if (mToolbarController.hasQuery())
     {
       mToolbarController.clear();
       return true;
