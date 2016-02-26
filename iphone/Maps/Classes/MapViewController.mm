@@ -103,7 +103,7 @@ NSString * const kEditorSegue = @"Map2EditorSegue";
 
 @interface MapViewController ()<MTRGNativeAppwallAdDelegate, MWMFrameworkRouteBuilderObserver,
                                 MWMFrameworkMyPositionObserver, MWMFrameworkUserMarkObserver,
-                                MWMFrameworkDrapeObserver>
+                                MWMFrameworkDrapeObserver, MWMFrameworkStorageObserver>
 
 @property (nonatomic, readwrite) MWMMapViewControlsManager * controlsManager;
 @property (nonatomic) MWMBottomMenuState menuRestoreState;
@@ -504,9 +504,16 @@ NSString * const kEditorSegue = @"Map2EditorSegue";
 
 - (void)openMapsDownloader
 {
-  [Alohalytics logEvent:kAlohalyticsTapEventKey withValue:@"downloader"];
-  bool const needMigrate = platform::migrate::NeedMigrate();
-  [self performSegueWithIdentifier:needMigrate ? kMigrationSegue : kDownloaderSegue sender:self];
+  if (platform::migrate::NeedMigrate())
+  {
+    [Statistics logEvent:kStatDownloaderMigrationDialogue withParameters:@{kStatFrom : kStatDownloader}];
+    [self performSegueWithIdentifier:kMigrationSegue sender:self];
+  }
+  else
+  {
+    [Alohalytics logEvent:kAlohalyticsTapEventKey withValue:@"downloader"];
+    [self performSegueWithIdentifier:kDownloaderSegue sender:self];
+  }
 }
 
 - (void)openEditor
@@ -601,9 +608,14 @@ NSString * const kEditorSegue = @"Map2EditorSegue";
   if (![self.navigationController.topViewController isEqual:self])
     return;
   if (countryId != kInvalidCountryId && platform::migrate::NeedMigrate())
+  {
+    [Statistics logEvent:kStatDownloaderMigrationDialogue withParameters:@{kStatFrom : kStatMap}];
     [self performSegueWithIdentifier:kMigrationSegue sender:self];
+  }
   else
+  {
     [self.downloadDialog processViewportCountryEvent:countryId];
+  }
 }
 
 #pragma mark - MWMFrameworkUserMarkObserver
@@ -622,6 +634,30 @@ NSString * const kEditorSegue = @"Map2EditorSegue";
   {
     self.controlsManager.hidden = NO;
     [self.controlsManager showPlacePage];
+  }
+}
+
+#pragma mark - MWMFrameworkStorageObserver
+
+- (void)processCountryEvent:(TCountryId const &)countryId
+{
+  storage::NodeAttrs nodeAttrs;
+  GetFramework().Storage().GetNodeAttrs(countryId, nodeAttrs);
+  if (nodeAttrs.m_status != NodeStatus::Error)
+    return;
+  switch (nodeAttrs.m_error)
+  {
+    case NodeErrorCode::NoError:
+      break;
+    case NodeErrorCode::UnknownError:
+      [Statistics logEvent:[NSString stringWithFormat:@"%@%@", kStatDownloaderError, kStatUnknownError]];
+      break;
+    case NodeErrorCode::OutOfMemFailed:
+      [Statistics logEvent:[NSString stringWithFormat:@"%@%@", kStatDownloaderError, kStatNotEnoughSpaceError]];
+      break;
+    case NodeErrorCode::NoInetConnection:
+      [Statistics logEvent:[NSString stringWithFormat:@"%@%@", kStatDownloaderError, kStatNetworkError]];
+      break;
   }
 }
 

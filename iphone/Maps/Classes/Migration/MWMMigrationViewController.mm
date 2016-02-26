@@ -5,6 +5,7 @@
 #import "MWMMigrationView.h"
 #import "MWMMigrationViewController.h"
 #import "MWMStorage.h"
+#import "Statistics.h"
 
 #include "Framework.h"
 
@@ -44,6 +45,8 @@ using namespace storage;
 
 - (void)performLimitedMigration:(BOOL)limited
 {
+  [Statistics logEvent:kStatDownloaderMigrationStarted
+        withParameters:@{kStatType : limited ? kStatCurrentMap : kStatAllMaps}];
   auto & f = GetFramework();
   LocationManager * lm = [MapsAppDelegate theApp].m_locationManager;
   ms::LatLon position{};
@@ -54,6 +57,7 @@ using namespace storage;
   {
     GetFramework().Migrate(!limited);
     [self performSegueWithIdentifier:kDownloaderSegue sender:self];
+    [Statistics logEvent:kStatDownloaderMigrationCompleted];
   };
 
   auto onStatusChanged = [self, migrate](TCountryId const & countryId)
@@ -91,12 +95,15 @@ using namespace storage;
     case NodeErrorCode::NoError:
       break;
     case NodeErrorCode::UnknownError:
+      [Statistics logEvent:[NSString stringWithFormat:@"%@%@", kStatDownloaderError, kStatUnknownError]];
       [avc presentInternalErrorAlert];
       break;
     case NodeErrorCode::OutOfMemFailed:
+      [Statistics logEvent:[NSString stringWithFormat:@"%@%@", kStatDownloaderError, kStatNotEnoughSpaceError]];
       [avc presentDownloaderNotEnoughSpaceAlert];
       break;
     case NodeErrorCode::NoInetConnection:
+      [Statistics logEvent:[NSString stringWithFormat:@"%@%@", kStatDownloaderError, kStatNetworkError]];
       [avc presentDownloaderNoConnectionAlertWithOkBlock:^
       {
         [MWMStorage retryDownloadNode:countryId];
