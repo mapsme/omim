@@ -84,12 +84,6 @@ TCountriesContainer const & LeafNodeFromCountryId(TCountriesContainer const & ro
   return *node;
 }
 
-void GetQueuedCountries(Storage::TQueue const & queue, TCountriesSet & countries)
-{
-  for (auto const & country : queue)
-    countries.insert(country.GetCountryId());
-}
-
 void CorrectJustDownloaded(Storage::TQueue::iterator justDownloadedItem, Storage::TQueue & queue,
                            TCountriesSet & justDownloaded)
 {
@@ -117,6 +111,12 @@ bool IsPartlyDownloaded(Status status)
   return status == Status::ENotDownloaded;
 }
 }  // namespace
+
+void GetQueuedCountries(Storage::TQueue const & queue, TCountriesSet & resultCountries)
+{
+  for (auto const & country : queue)
+    resultCountries.insert(country.GetCountryId());
+}
 
 bool HasCountryId(TCountriesVec const & sortedCountryIds, TCountryId const & countryId)
 {
@@ -1382,5 +1382,32 @@ MapFilesDownloader::TProgress Storage::CalculateProgress(TCountryId const & down
   }
 
   return localAndRemoteBytes;
+}
+
+void Storage::UpdateNode(TCountryId const & countryId)
+{
+  ForEachInSubtree(countryId, [this](TCountryId const & descendantId, bool groupNode)
+  {
+    if (!groupNode && m_localFiles.find(descendantId) != m_localFiles.end())
+      this->DownloadNode(descendantId);
+  });
+}
+
+void Storage::CancelDownloadNode(TCountryId const & countryId)
+{
+  ForEachInSubtreeAndInQueue(countryId, [this](TCountryId const & descendantId, bool groupNode)
+  {
+    ASSERT(!groupNode, ());
+    DeleteNode(descendantId);
+  });
+}
+
+void Storage::RetryDownloadNode(TCountryId const & countryId)
+{
+  ForEachInSubtreeAndInQueue(countryId, [this](TCountryId const & descendantId, bool groupNode)
+  {
+    ASSERT(!groupNode, ());
+    DownloadNode(descendantId);
+  });
 }
 }  // namespace storage

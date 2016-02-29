@@ -284,21 +284,21 @@ public:
   /// \brief Delete node with all children (expandable or not).
   void DeleteNode(TCountryId const & countryId);
 
-  /// \brief Updates one node (expandable or not).
+  /// \brief Updates one node. It works for leaf and group mwms.
   /// \note If you want to update all the maps and this update is without changing
   /// borders or hierarchy just call UpdateNode(GetRootId()).
-  /// \return false in case of error and true otherwise.
-  bool UpdateNode(TCountryId const & countryId) { return true; }
+  void UpdateNode(TCountryId const & countryId);
 
-  /// \brief Cancels downloading a node if the downloading is in process.
-  /// \return false in case of error and true otherwise.
-  bool CancelDownloadNode(TCountryId const & countryId) { return true; }
+  /// \brief If the downloading is in process cancels downloading a node and deletes
+  /// downloaded part of the map. If the map is in queue, remove the map from the queue.
+  /// It works for leaf and for group mwms.
+  void CancelDownloadNode(TCountryId const & countryId);
 
   /// \brief Downloading process could be interupted because of bad internet connection.
   /// In that case user could want to recover it. This method is done for it.
-  /// This method works with expandable and not expandable countryId.
-  /// \return false in case of error and true otherwise.
-  bool RetryDownloadNode(TCountryId const & countryId) { return true; }
+  /// This method works with leaf and group mwm.
+  /// In case of group mwm this method retries downloading ...
+  void RetryDownloadNode(TCountryId const & countryId);
 
   /// \brief Get information for mwm update button.
   /// \return true if updateInfo is filled correctly and false otherwise.
@@ -505,7 +505,16 @@ private:
                                                   TCountriesVec const & descendants,
                                                   MapFilesDownloader::TProgress const & downloadingMwmProgress,
                                                   TCountriesSet const & mwmsInQueue) const;
+
+  template <class ToDo>
+  void ForEachInSubtreeAndInQueue(TCountryId const & root, ToDo && toDo) const;
 };
+
+void GetQueuedCountries(Storage::TQueue const & queue, TCountriesSet & resultCountries);
+
+/// \returns true if |sortedCountryIds| contains |countryId|.
+/// \note. |sortedCountryIds| should be sorted.
+bool HasCountryId(TCountriesVec const & sortedCountryIds, TCountryId const & countryId);
 
 template <class ToDo>
 void Storage::ForEachInSubtree(TCountryId const & root, ToDo && toDo) const
@@ -519,7 +528,20 @@ void Storage::ForEachInSubtree(TCountryId const & root, ToDo && toDo) const
   rootNode->ForEachInSubtree([&toDo](TCountriesContainer const & container)
   {
     Country const & value = container.Value();
-    toDo(value.Name(), value.GetSubtreeMwmCounter() != 1 /* expandableNode. */);
+    toDo(value.Name(), value.GetSubtreeMwmCounter() != 1 /* groupNode. */);
+  });
+}
+
+template <class ToDo>
+void Storage::ForEachInSubtreeAndInQueue(TCountryId const & root, ToDo && toDo) const
+{
+  TCountriesSet setQueue;
+  GetQueuedCountries(m_queue, setQueue);
+
+  ForEachInSubtree(root, [&setQueue, &toDo](TCountryId const & descendantId, bool groupNode)
+  {
+    if (setQueue.count(descendantId) != 0)
+      toDo(descendantId, groupNode);
   });
 }
 
@@ -556,6 +578,4 @@ void Storage::ForEachAncestorExceptForTheRoot(TCountryId const & countryId, ToDo
     });
   }
 }
-
-bool HasCountryId(TCountriesVec const & sorted, TCountryId const & countyId);
 }  // storage
