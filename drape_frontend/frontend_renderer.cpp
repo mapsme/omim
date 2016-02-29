@@ -96,7 +96,6 @@ struct RemoveTilePredicate
   {
     if (m_predicate(group))
     {
-      group->Disappear();
       group->DeleteLater();
       m_deletionMark = true;
       return group->CanBeDeleted();
@@ -206,14 +205,18 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
       dp::GLState const & state = msg->GetState();
       TileKey const & key = msg->GetKey();
       drape_ptr<dp::RenderBucket> bucket = msg->AcceptBuffer();
-      PrepareBucket(state, bucket);
       if (!IsUserMarkLayer(key))
       {
         if (key.m_zoomLevel == m_currentZoomLevel && CheckTileGenerations(key))
+        {
+          PrepareBucket(state, bucket);
           AddToRenderGroup(state, move(bucket), key);
+        }
       }
       else
       {
+        PrepareBucket(state, bucket);
+
         ref_ptr<dp::GpuProgram> program = m_gpuProgramManager->GetProgram(state.GetProgramIndex());
         ref_ptr<dp::GpuProgram> program3d = m_gpuProgramManager->GetProgram(state.GetProgram3dIndex());
 
@@ -735,6 +738,16 @@ void FrontendRenderer::AddToRenderGroup(dp::GLState const & state,
   RenderLayer::RenderLayerID id = RenderLayer::GetLayerID(state);
   RenderLayer & layer = m_layers[id];
 
+  for (auto const & g : layer.m_renderGroups)
+  {
+    if (!g->IsPendingOnDelete() && g->GetState() == state && g->GetTileKey().EqualStrict(newTile))
+    {
+      g->AddBucket(move(renderBucket));
+      layer.m_isDirty = true;
+      return;
+    }
+  }
+
   drape_ptr<RenderGroup> group = make_unique_dp<RenderGroup>(state, newTile);
   ref_ptr<dp::GpuProgram> program = m_gpuProgramManager->GetProgram(state.GetProgramIndex());
   ref_ptr<dp::GpuProgram> program3d = m_gpuProgramManager->GetProgram(state.GetProgram3dIndex());
@@ -742,7 +755,6 @@ void FrontendRenderer::AddToRenderGroup(dp::GLState const & state,
   group->AddBucket(move(renderBucket));
 
   layer.m_renderGroups.push_back(move(group));
-  layer.m_renderGroups.back()->Appear();
   layer.m_isDirty = true;
 }
 
@@ -769,7 +781,8 @@ bool FrontendRenderer::CheckTileGenerations(TileKey const & tileKey)
   {
     return group->GetTileKey() == tileKey && group->GetTileKey().m_generation < tileKey.m_generation;
   };
-  RemoveRenderGroups(removePredicate);
+  for (RenderLayer & layer : m_layers)
+    layer.m_isDirty |= RemoveGroups(removePredicate, layer.m_renderGroups, make_ref(m_overlayTree));
 
   return result;
 }
@@ -854,7 +867,8 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
   for (RenderLayer & layer : m_layers)
   {
     for (auto & group : layer.m_renderGroups)
-      layer.m_isDirty |= group->UpdateFeaturesWaitingStatus(isFeaturesWaiting, m_currentZoomLevel, make_ref(m_overlayTree));
+      layer.m_isDirty |= group->UpdateFeaturesWaitingStatus(isFeaturesWaiting, m_currentZoomLevel,
+                                                            make_ref(m_overlayTree), m_bucketsToDelete);
   }
 
   bool const isPerspective = modelView.isPerspective();
@@ -962,6 +976,13 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
 #endif
 
   MergeBuckets();
+
+  int countToDelete = max(1, static_cast<int>(m_bucketsToDelete.size()) / 2);
+  while (!m_bucketsToDelete.empty() && countToDelete > 0)
+  {
+    m_bucketsToDelete.pop_front();
+    countToDelete--;
+  }
 }
 
 void FrontendRenderer::Render2dLayer(ScreenBase const & modelView)
@@ -1039,13 +1060,17 @@ void FrontendRenderer::MergeBuckets()
         forMerge[MergedGroupKey(state, group->GetTileKey())].push_back(move(layer.m_renderGroups[i]));
       }
       else
+      {
         newGroups.push_back(move(layer.m_renderGroups[i]));
+      }
     }
 
     for (TGroupMap::value_type & node : forMerge)
     {
       if (node.second.size() < 2)
+      {
         newGroups.emplace_back(move(node.second.front()));
+      }
       else
       {
         BatchMergeHelper::MergeBatches(node.second, newGroups, isPerspective, true);
@@ -1374,7 +1399,7 @@ void FrontendRenderer::Routine::Do()
       m_renderer.PrepareScene(modelView);
 
     // Check for a frame is active.
-    bool isActiveFrame = modelViewChanged || viewportChanged;
+    bool isActiveFrame = modelViewChanged || viewportChanged || !m_renderer.m_bucketsToDelete.empty();
 
     isActiveFrame |= m_renderer.m_texMng->UpdateDynamicTextures();
     m_renderer.RenderScene(modelView);
@@ -1510,7 +1535,10 @@ void FrontendRenderer::UpdateScene(ScreenBase const & modelView)
 
   auto removePredicate = [this](drape_ptr<RenderGroup> const & group)
   {
-    return group->IsOverlay() && group->GetTileKey().m_zoomLevel > m_currentZoomLevel;
+    uint32_t const kMaxGenerationRange = 5;
+    TileKey const & key = group->GetTileKey();
+    return (group->IsOverlay() && key.m_zoomLevel > m_currentZoomLevel) ||
+            (m_maxGeneration - key.m_generation > kMaxGenerationRange);
   };
   for (RenderLayer & layer : m_layers)
     layer.m_isDirty |= RemoveGroups(removePredicate, layer.m_renderGroups, make_ref(m_overlayTree));

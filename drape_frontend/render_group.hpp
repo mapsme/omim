@@ -75,26 +75,18 @@ public:
 
   bool CanBeDeleted() const
   {
-    return IsPendingOnDelete() && !IsAnimating() && !IsSharedFeaturesWaiting();
+    return IsPendingOnDelete() && !IsSharedFeaturesWaiting();
   }
 
   using TCheckFeaturesWaiting = function<bool(m2::RectD const &)>;
-  bool UpdateFeaturesWaitingStatus(TCheckFeaturesWaiting isFeaturesWaiting, int currentZoom, ref_ptr<dp::OverlayTree> tree);
+  bool UpdateFeaturesWaitingStatus(TCheckFeaturesWaiting isFeaturesWaiting,
+                                   int currentZoom, ref_ptr<dp::OverlayTree> tree,
+                                   deque<drape_ptr<dp::RenderBucket>> & bucketsToDelete);
 
   bool IsLess(RenderGroup const & other) const;
 
-  void UpdateAnimation() override;
-  double GetOpacity() const;
-  bool IsAnimating() const;
-
-  void Appear();
-  void Disappear();
-
 private:
   vector<drape_ptr<dp::RenderBucket> > m_renderBuckets;
-  unique_ptr<OpacityAnimation> m_disappearAnimation;
-  unique_ptr<OpacityAnimation> m_appearAnimation;
-
   mutable bool m_pendingOnDelete;
   mutable bool m_sharedFeaturesWaiting;
 
