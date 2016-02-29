@@ -261,7 +261,7 @@ OsrmRouter::ResultCode OsrmRouter::CalculateRoute(m2::PointD const & startPoint,
   MappingGuard finalMappingGuard(targetMapping);
   UNUSED_VALUE(startMappingGuard);
   UNUSED_VALUE(finalMappingGuard);
-  LOG(LINFO, ("Duration of the MWM loading", timer.ElapsedNano()));
+  LOG(LINFO, ("Duration of the MWM loading", timer.ElapsedNano(), "ns."));
   timer.Reset();
 
   delegate.OnProgress(kMwmLoadedProgress);
@@ -288,7 +288,7 @@ OsrmRouter::ResultCode OsrmRouter::CalculateRoute(m2::PointD const & startPoint,
   }
   INTERRUPT_WHEN_CANCELLED(delegate);
 
-  LOG(LINFO, ("Duration of the start/stop points lookup", timer.ElapsedNano()));
+  LOG(LINFO, ("Duration of the start/stop points lookup", timer.ElapsedNano(), "ns."));
   timer.Reset();
   delegate.OnProgress(kPointsFoundProgress);
 
@@ -310,7 +310,7 @@ OsrmRouter::ResultCode OsrmRouter::CalculateRoute(m2::PointD const & startPoint,
                                   });
     ResultCode crossCode = CalculateCrossMwmPath(startTask, m_cachedTargets, m_indexManager, crossCost,
                                                  delegate, finalPath);
-    LOG(LINFO, ("Found cross path", timer.ElapsedNano()));
+    LOG(LINFO, ("Found cross path in", timer.ElapsedNano(), "ns."));
     if (!FindRouteFromCases(startTask, m_cachedTargets, startMapping->m_dataFacade,
                             routingResult))
     {

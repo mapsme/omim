@@ -136,10 +136,9 @@ vector<BorderCross> const & CrossMwmGraph::ConstructBorderCross(OutgoingCrossNod
     return it->second;
 
   // Cache miss case. I suppose that cache will be invalidated after a search.
-  vector<BorderCross> crosses;
+  auto & crosses = m_cachedNextNodes[key];
   ConstructBorderCrossImpl(startNode, currentMapping, crosses);
-  auto const inserted = m_cachedNextNodes.insert(make_pair(key, crosses));
-  return inserted.first->second;
+  return crosses;
 }
 
 bool CrossMwmGraph::ConstructBorderCrossImpl(OutgoingCrossNode const & startNode,
@@ -152,7 +151,7 @@ bool CrossMwmGraph::ConstructBorderCrossImpl(OutgoingCrossNode const & startNode
   // If we haven't this routing file, we skip this path.
   if (!nextMapping->IsValid())
     return false;
-  crosses.clear();
+  ASSERT(crosses.empty(), ());
   nextMapping->LoadCrossContext();
   nextMapping->m_crossContext.ForEachIngoingNode([&](IngoingCrossNode const & node)
   {
