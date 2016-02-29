@@ -22,6 +22,8 @@
 
 #include "geometry/any_rect2d.hpp"
 
+#include "platform/platform.hpp"
+
 #include "base/timer.hpp"
 #include "base/assert.hpp"
 #include "base/logging.hpp"
@@ -1371,6 +1373,20 @@ void FrontendRenderer::Routine::Do()
 
   m_renderer.m_gpuProgramManager->Init();
 
+  dp::TextureManager::Params params;
+  params.m_resPostfix = VisualParams::Instance().GetResourcePostfix();
+  params.m_visualScale = df::VisualParams::Instance().GetVisualScale();
+  params.m_colors = "colors.txt";
+  params.m_patterns = "patterns.txt";
+  params.m_glyphMngParams.m_uniBlocks = "unicode_blocks.txt";
+  params.m_glyphMngParams.m_whitelist = "fonts_whitelist.txt";
+  params.m_glyphMngParams.m_blacklist = "fonts_blacklist.txt";
+  params.m_glyphMngParams.m_sdfScale = VisualParams::Instance().GetGlyphSdfScale();
+  params.m_glyphMngParams.m_baseGlyphHeight = VisualParams::Instance().GetGlyphBaseSize();
+  GetPlatform().GetFontNames(params.m_glyphMngParams.m_fonts);
+
+  m_renderer.m_texMng->Init(params);
+
   dp::BlendingParams blendingParams;
   blendingParams.Apply();
 
@@ -1473,6 +1489,9 @@ void FrontendRenderer::ReleaseResources()
   m_transparentLayer.reset();
 
   m_gpuProgramManager.reset();
+
+  m_texMng->Release();
+
   m_contextFactory->getDrawContext()->doneCurrent();
 }
 

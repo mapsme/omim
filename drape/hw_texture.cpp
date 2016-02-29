@@ -23,11 +23,6 @@ HWTexture::HWTexture()
 {
 }
 
-void HWTexture::Create(Params const & params)
-{
-  Create(params, nullptr);
-}
-
 void HWTexture::Create(Params const & params, ref_ptr<void> /*data*/)
 {
   m_width = params.m_width;
@@ -53,35 +48,6 @@ void HWTexture::Create(Params const & params, ref_ptr<void> /*data*/)
   dp::GPUMemTracker::Inst().AddAllocated("Texture", m_textureID, memSize);
   dp::GPUMemTracker::Inst().SetUsed("Texture", m_textureID, memSize);
 #endif
-}
-
-TextureFormat HWTexture::GetFormat() const
-{
-  return m_format;
-}
-
-uint32_t HWTexture::GetWidth() const
-{
-  ASSERT_ID;
-  return m_width;
-}
-
-uint32_t HWTexture::GetHeight() const
-{
-  ASSERT_ID;
-  return m_height;
-}
-
-float HWTexture::GetS(uint32_t x) const
-{
-  ASSERT_ID;
-  return x / (float)m_width;
-}
-
-float HWTexture::GetT(uint32_t y) const
-{
-  ASSERT_ID;
-  return y / (float)m_height;
 }
 
 void HWTexture::UnpackFormat(TextureFormat format, glConst & layout, glConst & pixelType)
@@ -133,12 +99,6 @@ void OpenGLHWTexture::Create(Params const & params, ref_ptr<void> data)
 {
   TBase::Create(params, data);
 
-  if (!GLExtensionsList::Instance().IsSupported(GLExtensionsList::TextureNPOT))
-  {
-    m_width = my::NextPowOf2(m_width);
-    m_height = my::NextPowOf2(m_height);
-  }
-
   m_textureID = GLFunctions::glGenTexture();
   Bind();
 
@@ -152,7 +112,6 @@ void OpenGLHWTexture::Create(Params const & params, ref_ptr<void> data)
   GLFunctions::glTexParameter(gl_const::GLWrapS, params.m_wrapSMode);
   GLFunctions::glTexParameter(gl_const::GLWrapT, params.m_wrapTMode);
 
-  GLFunctions::glFlush();
   GLFunctions::glBindTexture(0);
 }
 

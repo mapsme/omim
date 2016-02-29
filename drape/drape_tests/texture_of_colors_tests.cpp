@@ -100,7 +100,7 @@ UNIT_TEST(ColorPalleteUploadingSingleRow)
   p.m_height = height;
 
   DummyTexture texture;
-  texture.Create(p);
+  texture.Create(p, nullptr);
   DummyColorPallete cp(m2::PointU(width, height));
   cp.UploadResources(make_ref(&texture));
 
@@ -198,7 +198,7 @@ UNIT_TEST(ColorPalleteUploadingPartialyRow)
   p.m_height = height;
 
   DummyTexture texture;
-  texture.Create(p);
+  texture.Create(p, nullptr);
 
   DummyColorPallete cp(m2::PointU(width, height));
 
@@ -286,7 +286,7 @@ UNIT_TEST(ColorPalleteUploadingMultiplyRow)
   p.m_height = height;
 
   DummyTexture texture;
-  texture.Create(p);
+  texture.Create(p, nullptr);
 
   DummyColorPallete cp(m2::PointU(width, height));
   cp.SetIsDebug(true);

@@ -141,8 +141,8 @@ public:
     params.m_format = TextureFormat::ALPHA;
     params.m_filter = gl_const::GLLinear;
 
-    vector<uint8_t> initData(params.m_size.x * params.m_size.y, 0);
-    TBase::Init(allocator, make_ref(&m_index), params, make_ref(initData.data()));
+    //vector<uint8_t> initData(params.m_size.x * params.m_size.y, 0);
+    TBase::Init(allocator, make_ref(&m_index), params, nullptr);
   }
 
   ~FontTexture() { TBase::Reset(); }

@@ -9,7 +9,7 @@ iosOGLContextFactory::iosOGLContextFactory(CAEAGLLayer * layer)
 iosOGLContextFactory::~iosOGLContextFactory()
 {
   delete m_drawContext;
-  delete m_uploadContext;
+  //delete m_uploadContext;
 }
 
 dp::OGLContext * iosOGLContextFactory::getDrawContext()
@@ -21,8 +21,8 @@ dp::OGLContext * iosOGLContextFactory::getDrawContext()
 
 dp::OGLContext * iosOGLContextFactory::getResourcesUploadContext()
 {
-  if (m_uploadContext == NULL)
-    m_uploadContext = new iosOGLContext(m_layer, m_drawContext, false);
+  //if (m_uploadContext == NULL)
+  //  m_uploadContext = new iosOGLContext(m_layer, m_drawContext, false);
   return m_uploadContext;
 }
 
@@ -33,5 +33,5 @@ bool iosOGLContextFactory::isDrawContextCreated() const
 
 bool iosOGLContextFactory::isUploadContextCreated() const
 {
-  return m_uploadContext != nullptr;
+  return true;//m_uploadContext != nullptr;
 }

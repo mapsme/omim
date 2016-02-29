@@ -54,7 +54,6 @@ public:
 
   using Params = HWTexture::Params;
 
-  void Create(Params const & params);
   void Create(Params const & params, ref_ptr<void> data);
 
   void UploadData(uint32_t x, uint32_t y, uint32_t width, uint32_t height, ref_ptr<void> data);
@@ -65,12 +64,10 @@ public:
   float GetS(uint32_t x) const;
   float GetT(uint32_t y) const;
 
-  void Bind() const;
+  void Bind();
 
   // Texture must be bound before calling this method.
   void SetFilter(glConst filter);
-
-  static uint32_t GetMaxTextureSize();
 
 protected:
   void Destroy();
@@ -78,6 +75,7 @@ protected:
 
 private:
   drape_ptr<HWTexture> m_hwTexture;
+  Params m_сreationParams;
 };
 
 } // namespace dp

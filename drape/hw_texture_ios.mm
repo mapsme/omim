@@ -161,7 +161,7 @@ void HWTextureApple::Create(Params const & params, ref_ptr<void> data)
 
 void HWTextureApple::UploadData(uint32_t x, uint32_t y, uint32_t width, uint32_t height, ref_ptr<void> data)
 {
-  uint8_t bytesPerPixel = GetBytesPerPixel(GetFormat());
+  uint8_t bytesPerPixel = GetBytesPerPixel(m_format);
   Lock();
   if (bytesPerPixel == 1)
   {

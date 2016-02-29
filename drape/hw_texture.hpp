@@ -36,7 +36,6 @@ public:
     ref_ptr<HWTextureAllocator> m_allocator;
   };
 
-  void Create(Params const & params);
   virtual void Create(Params const & params, ref_ptr<void> data) = 0;
   virtual void UploadData(uint32_t x, uint32_t y, uint32_t width, uint32_t height, ref_ptr<void> data) = 0;
 
@@ -44,12 +43,6 @@ public:
 
   // Texture must be bound before calling this method.
   void SetFilter(glConst filter);
-
-  TextureFormat GetFormat() const;
-  uint32_t GetWidth() const;
-  uint32_t GetHeight() const;
-  float GetS(uint32_t x) const;
-  float GetT(uint32_t y) const;
 
 protected:
   void UnpackFormat(TextureFormat format, glConst & layout, glConst & pixelType);

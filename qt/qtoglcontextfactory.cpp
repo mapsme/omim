@@ -7,20 +7,20 @@ QtOGLContextFactory::QtOGLContextFactory(QOpenGLContext * rootContext)
   , m_drawContext(nullptr)
   , m_uploadContext(nullptr)
 {
-  m_uploadSurface = createSurface();
+  //m_uploadSurface = createSurface();
   m_drawSurface = createSurface();
 }
 
 QtOGLContextFactory::~QtOGLContextFactory()
 {
   delete m_drawContext;
-  delete m_uploadContext;
+  //delete m_uploadContext;
 
   m_drawSurface->destroy();
-  m_uploadSurface->destroy();
+  //m_uploadSurface->destroy();
 
   delete m_drawSurface;
-  delete m_uploadSurface;
+  //delete m_uploadSurface;
 }
 
 bool QtOGLContextFactory::LockFrame()
@@ -60,8 +60,8 @@ dp::OGLContext * QtOGLContextFactory::getDrawContext()
 
 dp::OGLContext * QtOGLContextFactory::getResourcesUploadContext()
 {
-  if (m_uploadContext == nullptr)
-    m_uploadContext = new QtUploadOGLContext(m_rootContext, m_uploadSurface);
+  //if (m_uploadContext == nullptr)
+  //  m_uploadContext = new QtUploadOGLContext(m_rootContext, m_uploadSurface);
 
   return m_uploadContext;
 }

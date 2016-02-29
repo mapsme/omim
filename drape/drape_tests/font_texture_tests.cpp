@@ -108,7 +108,7 @@ UNIT_TEST(UploadingGlyphs)
   p.m_width = p.m_height = 128;
 
   DummyTexture tex;
-  tex.Create(p);
+  tex.Create(p, nullptr);
   EXPECTGL(glTexSubImage2D(_, _, _, _, _, _, _)).WillOnce(Invoke(&r, &UploadedRender::glMemoryToQImage));
   index.UploadResources(make_ref(&tex));
 

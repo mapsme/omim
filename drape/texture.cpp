@@ -19,27 +19,25 @@ m2::RectF const & Texture::ResourceInfo::GetTexRect() const
   return m_texRect;
 }
 
-//////////////////////////////////////////////////////////////////
-
 Texture::Texture()
-{
-}
+{}
 
 Texture::~Texture()
 {
   Destroy();
 }
 
-void Texture::Create(Params const & params)
-{
-  if (AllocateTexture(params.m_allocator))
-    m_hwTexture->Create(params);
-}
-
 void Texture::Create(Params const & params, ref_ptr<void> data)
 {
-  if (AllocateTexture(params.m_allocator))
-    m_hwTexture->Create(params, data);
+  m_сreationParams = params;
+  if (!GLExtensionsList::Instance().IsSupported(GLExtensionsList::TextureNPOT))
+  {
+    m_сreationParams.m_width = my::NextPowOf2(m_сreationParams.m_width);
+    m_сreationParams.m_height = my::NextPowOf2(m_сreationParams.m_height);
+  }
+
+  if (data != nullptr && AllocateTexture(m_сreationParams.m_allocator))
+    m_hwTexture->Create(m_сreationParams, data);
 }
 
 void Texture::UploadData(uint32_t x, uint32_t y, uint32_t width, uint32_t height, ref_ptr<void> data)
@@ -50,36 +48,34 @@ void Texture::UploadData(uint32_t x, uint32_t y, uint32_t width, uint32_t height
 
 TextureFormat Texture::GetFormat() const
 {
-  ASSERT(m_hwTexture != nullptr, ());
-  return m_hwTexture->GetFormat();
+  return m_сreationParams.m_format;
 }
 
 uint32_t Texture::GetWidth() const
 {
-  ASSERT(m_hwTexture != nullptr, ());
-  return m_hwTexture->GetWidth();
+  return m_сreationParams.m_width;
 }
 
 uint32_t Texture::GetHeight() const
 {
-  ASSERT(m_hwTexture != nullptr, ());
-  return m_hwTexture->GetHeight();
+  return m_сreationParams.m_height;
 }
 
 float Texture::GetS(uint32_t x) const
 {
-  ASSERT(m_hwTexture != nullptr, ());
-  return m_hwTexture->GetS(x);
+  return x / (float)m_сreationParams.m_width;
 }
 
 float Texture::GetT(uint32_t y) const
 {
-  ASSERT(m_hwTexture != nullptr, ());
-  return m_hwTexture->GetT(y);
+  return y / (float)m_сreationParams.m_height;
 }
 
-void Texture::Bind() const
+void Texture::Bind()
 {
+  if (m_hwTexture == nullptr && AllocateTexture(m_сreationParams.m_allocator))
+    m_hwTexture->Create(m_сreationParams, nullptr);
+
   ASSERT(m_hwTexture != nullptr, ());
   m_hwTexture->Bind();
 }
@@ -88,11 +84,6 @@ void Texture::SetFilter(glConst filter)
 {
   ASSERT(m_hwTexture != nullptr, ());
   m_hwTexture->SetFilter(filter);
-}
-
-uint32_t Texture::GetMaxTextureSize()
-{
-  return GLFunctions::glGetInteger(gl_const::GLMaxTextureSize);
 }
 
 void Texture::Destroy()

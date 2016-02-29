@@ -110,25 +110,25 @@ void BackendRenderer::AcceptMessage(ref_ptr<Message> message)
         m_readManager->Invalidate(msg->GetTilesForInvalidate());
       break;
     }
-  case Message::ShowChoosePositionMark:
-    {
-      RecacheChoosePositionMark();
-      break;
-    }
-  case Message::GuiRecache:
-    {
-      ref_ptr<GuiRecacheMessage> msg = message;
-      RecacheGui(msg->GetInitInfo(), msg->GetSizeInfoMap(), msg->NeedResetOldGui());
-      break;
-    }
-  case Message::GuiLayerLayout:
-    {
-      ref_ptr<GuiLayerLayoutMessage> msg = message;
-      m_commutator->PostMessage(ThreadsCommutator::RenderThread,
-                                make_unique_dp<GuiLayerLayoutMessage>(msg->AcceptLayoutInfo()),
-                                MessagePriority::Normal);
-      break;
-    }
+  //case Message::ShowChoosePositionMark:
+  //  {
+  //    RecacheChoosePositionMark();
+  //    break;
+  //  }
+  //case Message::GuiRecache:
+  //  {
+  //    ref_ptr<GuiRecacheMessage> msg = message;
+  //    RecacheGui(msg->GetInitInfo(), msg->GetSizeInfoMap(), msg->NeedResetOldGui());
+  //    break;
+  //  }
+  //case Message::GuiLayerLayout:
+  //  {
+  //    ref_ptr<GuiLayerLayoutMessage> msg = message;
+  //    m_commutator->PostMessage(ThreadsCommutator::RenderThread,
+  //                              make_unique_dp<GuiLayerLayoutMessage>(msg->AcceptLayoutInfo()),
+  //                              MessagePriority::Normal);
+  //    break;
+  //  }
   case Message::TileReadStarted:
     {
       m_batchersPool->ReserveBatcher(static_cast<ref_ptr<BaseTileMessage>>(message)->GetKey());
@@ -205,25 +205,25 @@ void BackendRenderer::AcceptMessage(ref_ptr<Message> message)
       }
       break;
     }
-  case Message::UpdateUserMarkLayer:
-    {
-      ref_ptr<UpdateUserMarkLayerMessage> msg = message;
-      TileKey const & key = msg->GetKey();
-
-      UserMarksProvider const * marksProvider = msg->StartProcess();
-      if (marksProvider->IsDirty())
-      {
-        m_commutator->PostMessage(ThreadsCommutator::RenderThread,
-                                  make_unique_dp<ClearUserMarkLayerMessage>(key),
-                                  MessagePriority::Normal);
-
-        m_batchersPool->ReserveBatcher(key);
-        CacheUserMarks(marksProvider, m_batchersPool->GetTileBatcher(key), m_texMng);
-        m_batchersPool->ReleaseBatcher(key);
-      }
-      msg->EndProcess();
-      break;
-    }
+  //case Message::UpdateUserMarkLayer:
+  //  {
+  //    ref_ptr<UpdateUserMarkLayerMessage> msg = message;
+  //    TileKey const & key = msg->GetKey();
+  //
+  //    UserMarksProvider const * marksProvider = msg->StartProcess();
+  //    if (marksProvider->IsDirty())
+  //    {
+  //      m_commutator->PostMessage(ThreadsCommutator::RenderThread,
+  //                                make_unique_dp<ClearUserMarkLayerMessage>(key),
+  //                                MessagePriority::Normal);
+  //
+  //      m_batchersPool->ReserveBatcher(key);
+  //      CacheUserMarks(marksProvider, m_batchersPool->GetTileBatcher(key), m_texMng);
+  //      m_batchersPool->ReleaseBatcher(key);
+  //    }
+  //    msg->EndProcess();
+  //    break;
+  //  }
   case Message::AddRoute:
     {
       ref_ptr<AddRouteMessage> msg = message;
@@ -276,7 +276,7 @@ void BackendRenderer::AcceptMessage(ref_ptr<Message> message)
       break;
     }
   default:
-    ASSERT(false, ());
+    //ASSERT(false, ());
     break;
   }
 }
@@ -288,18 +288,12 @@ void BackendRenderer::ReleaseResources()
   m_readManager.reset();
   m_batchersPool.reset();
   m_routeBuilder.reset();
-
-  m_texMng->Release();
-  m_contextFactory->getResourcesUploadContext()->doneCurrent();
 }
 
 BackendRenderer::Routine::Routine(BackendRenderer & renderer) : m_renderer(renderer) {}
 
 void BackendRenderer::Routine::Do()
 {
-  m_renderer.m_contextFactory->getResourcesUploadContext()->makeCurrent();
-  GLFunctions::Init();
-
   m_renderer.InitGLDependentResource();
 
   while (!IsCancelled())
@@ -315,21 +309,7 @@ void BackendRenderer::InitGLDependentResource()
 {
   m_batchersPool = make_unique_dp<BatchersPool>(ReadManager::ReadCount(), bind(&BackendRenderer::FlushGeometry, this, _1));
 
-  dp::TextureManager::Params params;
-  params.m_resPostfix = VisualParams::Instance().GetResourcePostfix();
-  params.m_visualScale = df::VisualParams::Instance().GetVisualScale();
-  params.m_colors = "colors.txt";
-  params.m_patterns = "patterns.txt";
-  params.m_glyphMngParams.m_uniBlocks = "unicode_blocks.txt";
-  params.m_glyphMngParams.m_whitelist = "fonts_whitelist.txt";
-  params.m_glyphMngParams.m_blacklist = "fonts_blacklist.txt";
-  params.m_glyphMngParams.m_sdfScale = VisualParams::Instance().GetGlyphSdfScale();
-  params.m_glyphMngParams.m_baseGlyphHeight = VisualParams::Instance().GetGlyphBaseSize();
-  GetPlatform().GetFontNames(params.m_glyphMngParams.m_fonts);
-
-  m_texMng->Init(params);
-
-  RecacheMyPosition();
+  //RecacheMyPosition();
 }
 
 void BackendRenderer::RecacheMyPosition()
@@ -343,7 +323,6 @@ void BackendRenderer::RecacheMyPosition()
 
 void BackendRenderer::FlushGeometry(drape_ptr<Message> && message)
 {
-  GLFunctions::glFlush();
   m_commutator->PostMessage(ThreadsCommutator::RenderThread, move(message), MessagePriority::Normal);
 }
 

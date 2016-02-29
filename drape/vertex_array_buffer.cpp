@@ -22,7 +22,7 @@ VertexArrayBuffer::VertexArrayBuffer(uint32_t indexBufferSize, uint32_t dataBuff
 
   // Adreno 200 GPUs aren't able to share OpenGL resources between 2 OGL-contexts correctly,
   // so we have to create and destroy VBO on one context.
-  m_moveToGpuOnBuild = SupportManager::Instance().IsAdreno200Device();
+  m_moveToGpuOnBuild = true;//SupportManager::Instance().IsAdreno200Device();
 }
 
 VertexArrayBuffer::~VertexArrayBuffer()
