@@ -40,9 +40,6 @@ extern NSString * const kSearchStateKey = @"SearchStateKey";
 @end
 
 @implementation MWMSearchManager
-{
-  int m_mapsObserverSlotId;
-}
 
 - (nullable instancetype)initWithParentView:(nonnull UIView *)view
                                    delegate:(nonnull id<MWMSearchManagerProtocol, MWMSearchViewProtocol, MWMRoutingProtocol>)delegate
@@ -55,7 +52,6 @@ extern NSString * const kSearchStateKey = @"SearchStateKey";
     self.rootView.delegate = delegate;
     self.parentView = view;
     self.state = MWMSearchManagerStateHidden;
-    [MWMFrameworkListener addObserver:self];
   }
   return self;
 }
@@ -314,19 +310,25 @@ extern NSString * const kSearchStateKey = @"SearchStateKey";
 
 - (UIViewController *)topController
 {
-  using namespace storage;
-  auto & s = GetFramework().Storage();
-  TCountriesVec downloadedCountries, availCountries;
-  s.GetChildrenInGroups(s.GetRootId(), downloadedCountries, availCountries);
-  BOOL const haveMap = (downloadedCountries.size() != 0);
-  return haveMap ? self.tabbedController : self.downloadController;
+  if (self.state == MWMSearchManagerStateHidden || GetFramework().Storage().HaveDownloadedCountries())
+  {
+    return self.tabbedController;
+  }
+  else
+  {
+    if (!self.downloadController)
+      self.downloadController = [[MWMSearchDownloadViewController alloc] initWithDelegate:self];
+    return self.downloadController;
+  }
 }
 
-- (MWMSearchDownloadViewController *)downloadController
+- (void)setDownloadController:(MWMSearchDownloadViewController *)downloadController
 {
-  if (!_downloadController)
-    _downloadController = [[MWMSearchDownloadViewController alloc] initWithDelegate:self];
-  return _downloadController;
+  _downloadController = downloadController;
+  if (downloadController)
+    [MWMFrameworkListener addObserver:self];
+  else
+    [MWMFrameworkListener removeObserver:self];
 }
 
 - (MWMSearchTabbedViewController *)tabbedController
