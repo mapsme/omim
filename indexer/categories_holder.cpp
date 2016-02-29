@@ -202,21 +202,9 @@ bool CategoriesHolder::GetNameByType(uint32_t type, int8_t locale, string & name
 string CategoriesHolder::GetReadableFeatureType(uint32_t type, int8_t locale) const
 {
   ASSERT_NOT_EQUAL(type, 0, ());
-  uint8_t level = ftype::GetLevel(type);
-  ASSERT_GREATER(level, 0, ());
-
   string name;
-  while (true)
-  {
-    if (GetNameByType(type, locale, name))
-      return name;
-
-    if (--level == 0)
-      break;
-
-    ftype::TruncValue(type, level);
-  }
-
+  if (GetNameByType(type, locale, name))
+    return name;
   return classif().GetReadableObjectName(type);
 }
 
@@ -263,6 +251,9 @@ int8_t CategoriesHolder::MapLocaleToInteger(string const & locale)
     {"ro", 25 },
     {"nb", 26 },
     {"fi", 27 },
+    {"el", 28 },
+    {"he", 29 },
+    {"sw", 30 }
   };
   for (size_t i = 0; i < ARRAY_SIZE(mapping); ++i)
     if (locale.find(mapping[i].m_name) == 0)

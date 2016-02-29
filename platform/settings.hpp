@@ -6,55 +6,57 @@
 
 namespace Settings
 {
-  template <class T> bool FromString(string const & str, T & outValue);
-  template <class T> string ToString(T const & value);
+// Current location state mode. @See location::EMyPositionMode.
+extern char const * kLocationStateMode;
 
-  class StringStorage
-  {
-    typedef map<string, string> ContainerT;
-    ContainerT m_values;
+template <class T>
+bool FromString(string const & str, T & outValue);
+template <class T>
+string ToString(T const & value);
 
-    mutable mutex m_mutex;
+class StringStorage
+{
+  typedef map<string, string> ContainerT;
+  ContainerT m_values;
 
-    StringStorage();
-    void Save() const;
+  mutable mutex m_mutex;
 
-  public:
-    static StringStorage & Instance();
+  StringStorage();
+  void Save() const;
 
-    void Clear();
-    bool GetValue(string const & key, string & outValue) const;
-    void SetValue(string const & key, string && value);
-    void DeleteKeyAndValue(string const & key);
-  };
+public:
+  static StringStorage & Instance();
 
-  /// Retrieve setting
-  /// @return false if setting is absent
-  template <class ValueT> bool Get(string const & key, ValueT & outValue)
-  {
-    string strVal;
-    return StringStorage::Instance().GetValue(key, strVal)
-        && FromString(strVal, outValue);
-  }
-  /// Automatically saves setting to external file
-  template <class ValueT> void Set(string const & key, ValueT const & value)
-  {
-    StringStorage::Instance().SetValue(key, ToString(value));
-  }
+  void Clear();
+  bool GetValue(string const & key, string & outValue) const;
+  void SetValue(string const & key, string && value);
+  void DeleteKeyAndValue(string const & key);
+};
 
-  inline void Delete(string const & key)
-  {
-    StringStorage::Instance().DeleteKeyAndValue(key);
-  }
+/// Retrieve setting
+/// @return false if setting is absent
+template <class ValueT>
+bool Get(string const & key, ValueT & outValue)
+{
+  string strVal;
+  return StringStorage::Instance().GetValue(key, strVal) && FromString(strVal, outValue);
+}
+/// Automatically saves setting to external file
+template <class ValueT>
+void Set(string const & key, ValueT const & value)
+{
+  StringStorage::Instance().SetValue(key, ToString(value));
+}
 
-  inline void Clear()
-  {
-    StringStorage::Instance().Clear();
-  }
+inline void Delete(string const & key) { StringStorage::Instance().DeleteKeyAndValue(key); }
+inline void Clear() { StringStorage::Instance().Clear(); }
+enum Units
+{
+  Metric = 0,
+  Foot
+};
 
-  enum Units { Metric = 0, Foot };
-
-  /// Use this function for running some stuff once according to date.
-  /// @param[in]  date  Current date in format yymmdd.
-  bool IsFirstLaunchForDate(int date);
+/// Use this function for running some stuff once according to date.
+/// @param[in]  date  Current date in format yymmdd.
+bool IsFirstLaunchForDate(int date);
 }
