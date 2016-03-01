@@ -1,5 +1,6 @@
 #import "Common.h"
 #import "MWMMapDownloaderDefaultDataSource.h"
+#import "MWMStorage.h"
 
 #include "Framework.h"
 
@@ -82,7 +83,7 @@ using namespace storage;
   self.needFullReload = (hadDownloadedCountries != self.haveDownloadedCountries || countryIds.count == 0);
   if (self.needFullReload)
     return;
-  if (hadDownloadedCountries && ![downloadedCoutryIds isEqualToArray:self.downloadedCoutryIds])
+  if (hadDownloadedCountries || ![downloadedCoutryIds isEqualToArray:self.downloadedCoutryIds])
     m_reloadSections.push_back(self.downloadedCountrySection);
   [countryIds enumerateKeysAndObjectsUsingBlock:^(NSString * key, NSArray<NSString *> * obj, BOOL * stop)
   {
@@ -174,7 +175,10 @@ using namespace storage;
   {
     NodeAttrs nodeAttrs;
     GetFramework().Storage().GetNodeAttrs(m_parentId, nodeAttrs);
-    return [NSString stringWithFormat:@"%@ (%@)", L(@"downloader_downloaded"), formattedSize(nodeAttrs.m_localMwmSize)];
+    if (nodeAttrs.m_localMwmSize == 0)
+      return [NSString stringWithFormat:@"%@", L(@"downloader_downloaded")];
+    else
+      return [NSString stringWithFormat:@"%@ (%@)", L(@"downloader_downloaded"), formattedSize(nodeAttrs.m_localMwmSize)];
   }
   return self.indexes[section - self.countrySectionsShift];
 }
@@ -182,6 +186,20 @@ using namespace storage;
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
   return nil;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+  NodeAttrs nodeAttrs;
+  GetFramework().Storage().GetNodeAttrs([self countryIdForIndexPath:indexPath], nodeAttrs);
+  NodeStatus const status = nodeAttrs.m_status;
+  return (status == NodeStatus::OnDisk || status == NodeStatus::OnDiskOutOfDate || nodeAttrs.m_localMwmCounter != 0);
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+  if (editingStyle == UITableViewCellEditingStyleDelete)
+    [MWMStorage deleteNode:[self countryIdForIndexPath:indexPath]];
 }
 
 #pragma mark - MWMMapDownloaderDataSource
