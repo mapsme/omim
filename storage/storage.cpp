@@ -184,6 +184,7 @@ void Storage::PrefetchMigrateData()
   ASSERT_THREAD_CHECKER(m_threadChecker, ());
 
   m_prefetchStorage.reset(new Storage(COUNTRIES_FILE, "migrate"));
+  m_prefetchStorage->EnableKeepDownloadingQueue(false);
   m_prefetchStorage->Init([](LocalCountryFile const &){});
   if (!m_downloadingUrlsForTesting.empty())
     m_prefetchStorage->SetDownloadingUrlsForTesting(m_downloadingUrlsForTesting);
@@ -215,6 +216,9 @@ void Storage::Migrate(TCountriesVec const & existedCountries)
     my::RenameFileX(prefetchedFilename, localFilename);
   }
 
+  // Remove empty migrate folder
+  Platform::RmDir(m_prefetchStorage->m_dataDir);
+  
   // Cover old big maps with small ones and prepare them to add into download queue
   stringstream ss;
   for (auto const & country : existedCountries)
@@ -432,6 +436,9 @@ void Storage::SaveDownloadQueue()
 {
   ASSERT_THREAD_CHECKER(m_threadChecker, ());
 
+  if (!m_keepDownloadingQueue)
+    return;
+  
   stringstream ss;
   for (auto const & item : m_queue)
     ss << (ss.str().empty() ? "" : ";") << item.GetCountryId();
@@ -440,6 +447,9 @@ void Storage::SaveDownloadQueue()
 
 void Storage::RestoreDownloadQueue()
 {
+  if (!m_keepDownloadingQueue)
+    return;
+  
   string queue;
   if (!Settings::Get("DownloadQueue", queue))
     return;
@@ -1407,6 +1417,7 @@ void Storage::CancelDownloadNode(TCountryId const & countryId)
     ASSERT(!groupNode, ());
     DeleteNode(descendantId);
   });
+  SaveDownloadQueue();
 }
 
 void Storage::RetryDownloadNode(TCountryId const & countryId)
