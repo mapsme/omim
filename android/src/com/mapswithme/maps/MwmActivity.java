@@ -743,7 +743,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
     if (!RoutingController.get().isNavigating())
     {
-      if (!NewsFragment.showOn(this))
+//      if (!NewsFragment.showOn(this))
         LikesManager.INSTANCE.showDialogs(this);
     }
 
