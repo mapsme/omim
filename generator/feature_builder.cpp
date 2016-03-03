@@ -529,6 +529,8 @@ bool FeatureBuilder1::IsDrawableInRange(int lowScale, int highScale) const
     while (lowScale <= highScale)
       if (feature::IsDrawableForIndex(fb, lowScale++))
         return true;
+
+    return IsDrawarbleByException(fb);
   }
 
   return false;
