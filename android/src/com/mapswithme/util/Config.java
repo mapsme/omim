@@ -20,6 +20,7 @@ public final class Config
   private static final String KEY_PREF_ZOOM_BUTTONS = "ZoomButtonsEnabled";
   private static final String KEY_PREF_STATISTICS = "StatisticsEnabled";
   private static final String KEY_PREF_AUTODOWNLOAD = "AutoDownloadEnabled";
+  private static final String KEY_PREF_AUTODOWNLOAD_LOCK = "AutoDownloadLock";
 
   private static final String KEY_LIKES_RATED_DIALOG = "RatedDialog";
   private static final String KEY_LIKES_LAST_RATED_SESSION = "LastRatedSession";
@@ -29,6 +30,8 @@ public final class Config
   private static final String KEY_MISC_NEWS_LAST_VERSION = "WhatsNewShownVersion";
   private static final String KEY_MISC_UI_THEME = "UiTheme";
   private static final String KEY_MISC_UI_THEME_SETTINGS = "UiThemeSettings";
+
+  private static final long TIMEOUT_AUTODOWNLOAD_LOCK = 24 * 60 * 60 * 1000L;
 
   private Config() {}
 
@@ -308,6 +311,27 @@ public final class Config
   public static void setAutodownloadMaps(boolean set)
   {
     setBool(KEY_PREF_AUTODOWNLOAD, set);
+    setAutodownloadMapsLocked(false);
+  }
+
+  public static boolean isAutodownloadMapsLocked()
+  {
+    long lock = getLong(KEY_PREF_AUTODOWNLOAD_LOCK);
+    long now = System.currentTimeMillis();
+    if (lock + TIMEOUT_AUTODOWNLOAD_LOCK < now)
+    {
+      if (lock != 0)
+        setAutodownloadMapsLocked(false);
+
+      return false;
+    }
+
+    return true;
+  }
+
+  public static void setAutodownloadMapsLocked(boolean locked)
+  {
+    setLong(KEY_PREF_AUTODOWNLOAD_LOCK, locked ? System.currentTimeMillis() : 0);
   }
 
   private static native boolean nativeGetBoolean(String name, boolean defaultValue);

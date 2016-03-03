@@ -111,6 +111,7 @@ public class OnmapDownloader implements MwmActivity.LeftAnimationTrackListener
             if (!failed &&
                 !MapManager.nativeIsLegacyMode() &&
                 Config.isAutodownloadMaps() &&
+                !Config.isAutodownloadMapsLocked() &&
                 ConnectionState.isWifiConnected())
             {
               MapManager.nativeDownload(mCurrentCountry.id);
@@ -120,6 +121,7 @@ public class OnmapDownloader implements MwmActivity.LeftAnimationTrackListener
                                                        .add(Statistics.EventParam.FROM, "map")
                                                        .add("is_auto", "true")
                                                        .add("scenario", "download"));
+              return;
             }
 
             mButton.setText(failed ? R.string.downloader_retry
@@ -148,6 +150,7 @@ public class OnmapDownloader implements MwmActivity.LeftAnimationTrackListener
       @Override
       public void onClick(View v)
       {
+        Config.setAutodownloadMapsLocked(true);
         MapManager.nativeCancel(mCurrentCountry.id);
         Statistics.INSTANCE.trackEvent(Statistics.EventName.DOWNLOADER_CANCEL,
                                        Statistics.params().add(Statistics.EventParam.FROM, "map"));
@@ -170,6 +173,8 @@ public class OnmapDownloader implements MwmActivity.LeftAnimationTrackListener
           MapManager.nativeRetry(mCurrentCountry.id);
         else
           MapManager.nativeDownload(mCurrentCountry.id);
+
+        Config.setAutodownloadMapsLocked(false);
 
         Statistics.INSTANCE.trackEvent(Statistics.EventName.DOWNLOADER_ACTION,
                                        Statistics.params().add(Statistics.EventParam.ACTION, (retry ? "retry" : "download"))
