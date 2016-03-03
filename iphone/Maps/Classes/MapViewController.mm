@@ -400,7 +400,7 @@ typedef NS_ENUM(NSUInteger, UserTouchesAction)
   [self refreshAd];
 
   GetFramework().InvalidateRendering();
-  [self showWhatsNewIfNeeded];
+//  [self showWhatsNewIfNeeded];
 }
 
 - (void)viewDidLoad
