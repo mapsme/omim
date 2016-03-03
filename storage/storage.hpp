@@ -2,6 +2,7 @@
 
 #include "storage/country.hpp"
 #include "storage/country_name_getter.hpp"
+#include "storage/country_tree.hpp"
 #include "storage/index.hpp"
 #include "storage/map_files_downloader.hpp"
 #include "storage/queued_country.hpp"
@@ -97,7 +98,7 @@ private:
   /// stores timestamp for update checks
   int64_t m_currentVersion;
 
-  TCountriesContainer m_countries;
+  TCountryTree m_countries;
 
   /// @todo. It appeared that our application uses m_queue from
   /// different threads without any synchronization. To reproduce it
@@ -491,7 +492,7 @@ private:
   Status CountryStatus(TCountryId const & countryId) const;
 
   /// Returns status for a node (group node or not)
-  Status NodeStatus(TCountriesContainer const & node) const;
+  Status NodeStatus(TCountryTreeNode const & node) const;
 
   void NotifyStatusChanged(TCountryId const & countryId);
   void NotifyStatusChangedForHierarchy(TCountryId const & countryId);
@@ -525,17 +526,18 @@ bool HasCountryId(TCountriesVec const & sortedCountryIds, TCountryId const & cou
 template <class ToDo>
 void Storage::ForEachInSubtree(TCountryId const & root, ToDo && toDo) const
 {
-  TCountriesContainer const * const rootNode = m_countries.FindFirst(Country(root));
+  TCountryTreeNode const * const rootNode = m_countries.FindFirst(root);
   if (rootNode == nullptr)
   {
     ASSERT(false, ("TCountryId =", root, "not found in m_countries."));
     return;
   }
-  rootNode->ForEachInSubtree([&toDo](TCountriesContainer const & container)
-  {
-    Country const & value = container.Value();
-    toDo(value.Name(), value.GetSubtreeMwmCounter() != 1 /* groupNode. */);
-  });
+  rootNode->ForEachInSubtree([&toDo](TCountryTreeNode const & container)
+                             {
+                               Country const & value = container.Value();
+                               toDo(value.Name(),
+                                    value.GetSubtreeMwmCounter() != 1 /* groupNode. */);
+                             });
 }
 
 template <class ToDo>
@@ -561,8 +563,8 @@ void Storage::ForEachInSubtreeAndInQueue(TCountryId const & root, ToDo && toDo) 
 template <class ToDo>
 void Storage::ForEachAncestorExceptForTheRoot(TCountryId const & countryId, ToDo && toDo) const
 {
-  vector<CountryTree<Country> const *> nodes;
-  m_countries.Find(Country(countryId), nodes);
+  vector<TCountryTreeNode const *> nodes;
+  m_countries.Find(countryId, nodes);
   if (nodes.empty())
   {
     ASSERT(false, ("TCountryId =", countryId, "not found in m_countries."));
@@ -574,14 +576,16 @@ void Storage::ForEachAncestorExceptForTheRoot(TCountryId const & countryId, ToDo
   // may be more than one. It means |childId| is present in the country tree more than once.
   for (auto const & node : nodes)
   {
-    node->ForEachAncestorExceptForTheRoot([&](TCountriesContainer const & container)
-    {
-      TCountryId const ancestorId = container.Value().Name();
-      if (visitedAncestors.find(ancestorId) != visitedAncestors.end())
-        return;  // The node was visited before because countryId is present in the tree more than once.
-      visitedAncestors.insert(ancestorId);
-      toDo(ancestorId, container);
-    });
+    node->ForEachAncestorExceptForTheRoot(
+        [&](TCountryTreeNode const & container)
+        {
+          TCountryId const ancestorId = container.Value().Name();
+          if (visitedAncestors.find(ancestorId) != visitedAncestors.end())
+            return;  // The node was visited before because countryId is present in the tree more
+                     // than once.
+          visitedAncestors.insert(ancestorId);
+          toDo(ancestorId, container);
+        });
   }
 }
 }  // storage
