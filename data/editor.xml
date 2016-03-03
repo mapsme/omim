@@ -1,7 +1,8 @@
 <mapsme>
   <editor>
     <disable everywhere="no">
-      <!--bbox minlon="37.6120" minlat="55.7479" maxlon="37.6239" maxlat="55.7553" editable="no" /-->
+      <!-- Kremlin. Cannot edit or add anything. -->
+      <bbox minlon="37.6120" minlat="55.7479" maxlon="37.6239" maxlat="55.7553" editable="no" />
     </disable>
 
     <fields>
