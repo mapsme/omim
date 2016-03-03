@@ -741,7 +741,6 @@ using namespace osm_auth_ios;
 - (void)showMap
 {
   [(UINavigationController *)self.window.rootViewController popToRootViewControllerAnimated:YES];
-  [self.mapViewController dismissPopover];
 }
 
 - (void)updateApplicationIconBadgeNumber
