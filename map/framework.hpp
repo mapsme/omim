@@ -31,6 +31,7 @@
 #include "geometry/rect2d.hpp"
 #include "geometry/screenbase.hpp"
 
+#include "base/deferred_task.hpp"
 #include "base/macros.hpp"
 #include "base/strings_bundle.hpp"
 #include "base/thread_checker.hpp"
@@ -38,6 +39,7 @@
 #include "std/list.hpp"
 #include "std/shared_ptr.hpp"
 #include "std/target_os.hpp"
+#include "std/thread.hpp"
 #include "std/unique_ptr.hpp"
 #include "std/vector.hpp"
 #include "std/weak_ptr.hpp"
@@ -120,6 +122,7 @@ protected:
   double m_startForegroundTime;
 
   storage::Storage m_storage;
+  DeferredTask m_watchdogCountryUpdate;
 
   location::TMyPositionModeChanged m_myPositionListener;
 
@@ -344,6 +347,7 @@ private:
 
   void FillSearchResultsMarks(search::Results const & results);
 
+  void OnCheckUpdateCurrentCountry(m2::PointF const & pt, int zoomLevel);
   void OnUpdateCurrentCountry(m2::PointF const & pt, int zoomLevel);
 
   storage::TCountryId m_lastReportedCountry;
