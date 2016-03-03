@@ -3,11 +3,13 @@
 #include "../core/jni_helper.hpp"
 
 #include "coding/internal/file_data.hpp"
-#include "platform/mwm_version.hpp"
 #include "storage/storage.hpp"
+
+#include "base/thread_checker.hpp"
 
 #include "std/bind.hpp"
 #include "std/shared_ptr.hpp"
+#include "std/unordered_map.hpp"
 
 namespace
 {
@@ -18,13 +20,30 @@ enum ItemCategory : uint32_t
 {
   NEAR_ME,
   DOWNLOADED,
-  ALL,
+  AVAILABLE,
+};
+
+struct TBatchedData
+{
+  TCountryId const m_countryId;
+  NodeStatus const m_newStatus;
+  bool const m_isLeaf;
+
+  TBatchedData(TCountryId const & countryId, NodeStatus const newStatus, bool isLeaf)
+    : m_countryId(countryId)
+    , m_newStatus(newStatus)
+    , m_isLeaf(isLeaf)
+  {}
 };
 
 jmethodID g_listAddMethod;
 jclass g_countryItemClass;
 jobject g_countryChangedListener;
 jobject g_migrationListener;
+
+DECLARE_THREAD_CHECKER(g_batchingThreadChecker);
+unordered_map<jobject, vector<TBatchedData>> g_batchedCallbackData;
+bool g_isBatched;
 
 Storage & GetStorage()
 {
@@ -157,13 +176,6 @@ Java_com_mapswithme_maps_downloader_MapManager_nativeGetDownloadedCount(JNIEnv *
   return GetStorage().GetDownloadedFilesCount();
 }
 
-// static String nativeGetRootNode();
-JNIEXPORT jstring JNICALL
-Java_com_mapswithme_maps_downloader_MapManager_nativeGetRootNode(JNIEnv * env, jclass clazz)
-{
-  return jni::ToJavaString(env, Storage().GetRootId());
-}
-
 // static @Nullable UpdateInfo nativeGetUpdateInfo();
 JNIEXPORT jobject JNICALL
 Java_com_mapswithme_maps_downloader_MapManager_nativeGetUpdateInfo(JNIEnv * env, jclass clazz)
@@ -269,21 +281,17 @@ Java_com_mapswithme_maps_downloader_MapManager_nativeListItems(JNIEnv * env, jcl
   {
     TCountriesVec children;
     storage.GetChildren(parentId, children);
-    PutItemsToList(env, result, children, ItemCategory::ALL);
+    PutItemsToList(env, result, children, ItemCategory::AVAILABLE);
   }
   else
   {
     // TODO (trashkalmar): Countries near me
 
-    // Downloaded
     TCountriesVec downloaded, available;
     storage.GetChildrenInGroups(parentId, downloaded, available);
-    PutItemsToList(env, result, downloaded, ItemCategory::DOWNLOADED);
 
-    // All
-    TCountriesVec children(downloaded.begin(), downloaded.end());
-    children.insert(children.end(), available.begin(), available.end());
-    PutItemsToList(env, result, children, ItemCategory::ALL);
+    PutItemsToList(env, result, downloaded, ItemCategory::DOWNLOADED);
+    PutItemsToList(env, result, available, ItemCategory::AVAILABLE);
   }
 }
 
@@ -315,51 +323,113 @@ Java_com_mapswithme_maps_downloader_MapManager_nativeIsDownloading(JNIEnv * env,
   return GetStorage().IsDownloadInProgress();
 }
 
+static void StartBatchingCallbacks()
+{
+  ASSERT_THREAD_CHECKER(g_batchingThreadChecker, ("StartBatchingCallbacks"));
+  ASSERT(!g_isBatched, ());
+  ASSERT(g_batchedCallbackData.empty(), ());
+
+  g_isBatched = true;
+}
+
+static void EndBatchingCallbacks(JNIEnv * env)
+{
+  ASSERT_THREAD_CHECKER(g_batchingThreadChecker, ("EndBatchingCallbacks"));
+
+  static jclass arrayListClass = jni::GetGlobalClassRef(env, "java/util/ArrayList");
+  static jmethodID arrayListCtor = jni::GetConstructorID(env, arrayListClass, "(I)V");
+  static jmethodID arrayListAdd = env->GetMethodID(arrayListClass, "add", "(Ljava/lang/Object;)Z");
+
+  for (auto & key : g_batchedCallbackData)
+  {
+    // Allocate resulting ArrayList
+    jni::TScopedLocalRef const list(env, env->NewObject(arrayListClass, arrayListCtor, key.second.size()));
+
+    for (TBatchedData const & dataItem : key.second)
+    {
+      // Create StorageCallbackData instance…
+      static jclass batchDataClass = jni::GetGlobalClassRef(env, "com/mapswithme/maps/downloader/MapManager$StorageCallbackData");
+      static jmethodID batchDataCtor = jni::GetConstructorID(env, batchDataClass, "(Ljava/lang/String;IZ)V");
+
+      jni::TScopedLocalRef const item(env, env->NewObject(batchDataClass, batchDataCtor, jni::ToJavaString(env, dataItem.m_countryId),
+                                                                                         static_cast<jint>(dataItem.m_newStatus),
+                                                                                         dataItem.m_isLeaf));
+      // …and put it into the resulting list
+      env->CallBooleanMethod(list.get(), arrayListAdd, item.get());
+    }
+
+    // Invoke Java callback
+    jmethodID const method = jni::GetMethodID(env, key.first, "onStatusChanged", "(Ljava/util/List;)V");
+    env->CallVoidMethod(key.first, method, list.get());
+  }
+
+  g_batchedCallbackData.clear();
+  g_isBatched = false;
+}
+
 // static void nativeDownload(String root);
 JNIEXPORT void JNICALL
 Java_com_mapswithme_maps_downloader_MapManager_nativeDownload(JNIEnv * env, jclass clazz, jstring root)
 {
+  StartBatchingCallbacks();
   GetStorage().DownloadNode(jni::ToNativeString(env, root));
+  EndBatchingCallbacks(env);
 }
 
 // static boolean nativeRetry(String root);
 JNIEXPORT void JNICALL
 Java_com_mapswithme_maps_downloader_MapManager_nativeRetry(JNIEnv * env, jclass clazz, jstring root)
 {
- GetStorage().RetryDownloadNode(jni::ToNativeString(env, root));
+  StartBatchingCallbacks();
+  GetStorage().RetryDownloadNode(jni::ToNativeString(env, root));
+  EndBatchingCallbacks(env);
 }
 
 // static void nativeUpdate(String root);
 JNIEXPORT void JNICALL
 Java_com_mapswithme_maps_downloader_MapManager_nativeUpdate(JNIEnv * env, jclass clazz, jstring root)
 {
+  StartBatchingCallbacks();
   GetStorage().UpdateNode(jni::ToNativeString(env, root));
+  EndBatchingCallbacks(env);
 }
 
 // static void nativeCancel(String root);
 JNIEXPORT void JNICALL
 Java_com_mapswithme_maps_downloader_MapManager_nativeCancel(JNIEnv * env, jclass clazz, jstring root)
 {
+  StartBatchingCallbacks();
   GetStorage().CancelDownloadNode(jni::ToNativeString(env, root));
+  EndBatchingCallbacks(env);
 }
 
 // static void nativeDelete(String root);
 JNIEXPORT void JNICALL
 Java_com_mapswithme_maps_downloader_MapManager_nativeDelete(JNIEnv * env, jclass clazz, jstring root)
 {
+  StartBatchingCallbacks();
   GetStorage().DeleteNode(jni::ToNativeString(env, root));
+  EndBatchingCallbacks(env);
+}
+
+// static void nativeShow(String root);
+JNIEXPORT void JNICALL
+Java_com_mapswithme_maps_downloader_MapManager_nativeShow(JNIEnv * env, jclass clazz, jstring root)
+{
+  g_framework->NativeFramework()->ShowNode(jni::ToNativeString(env, root));
 }
 
 static void StatusChangedCallback(shared_ptr<jobject> const & listenerRef, TCountryId const & countryId)
 {
-  JNIEnv * env = jni::GetEnv();
-
   // TODO: The core will do this itself
   NodeAttrs attrs;
   GetStorage().GetNodeAttrs(countryId, attrs);
 
-  jmethodID const methodID = jni::GetMethodID(env, *listenerRef, "onStatusChanged", "(Ljava/lang/String;IZ)V");
-  env->CallVoidMethod(*listenerRef, methodID, jni::ToJavaString(env, countryId), attrs.m_status, (attrs.m_mwmCounter == 1));
+  TBatchedData const data(countryId, attrs.m_status, (attrs.m_mwmCounter == 1));
+  g_batchedCallbackData[*listenerRef].push_back(move(data));
+
+  if (!g_isBatched)
+    EndBatchingCallbacks(jni::GetEnv());
 }
 
 static void ProgressChangedCallback(shared_ptr<jobject> const & listenerRef, TCountryId const & countryId, TLocalAndRemoteSize const & sizes)

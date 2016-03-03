@@ -9,9 +9,24 @@ import com.mapswithme.util.statistics.Statistics;
 public final class MapManager
 {
   @SuppressWarnings("unused")
+  public static class StorageCallbackData
+  {
+    public final String countryId;
+    public final int newStatus;
+    public final boolean isLeafNode;
+
+    public StorageCallbackData(String countryId, int newStatus, boolean isLeafNode)
+    {
+      this.countryId = countryId;
+      this.newStatus = newStatus;
+      this.isLeafNode = isLeafNode;
+    }
+  }
+
+  @SuppressWarnings("unused")
   public interface StorageCallback
   {
-    void onStatusChanged(String countryId, int newStatus, boolean isLeafNode);
+    void onStatusChanged(List<StorageCallbackData> data);
     void onProgress(String countryId, long localSize, long remoteSize);
   }
 
@@ -77,12 +92,6 @@ public final class MapManager
    * Aborts migration. Affects only prefetch process.
    */
   public static native void nativeCancelMigration();
-
-  /**
-   * Returns country ID of the root node.
-   * KILLME (trashkalmar): Unused?
-   */
-  public static native String nativeGetRootNode();
 
   /**
    * Return count of fully downloaded maps (excluding fake MWMs).
@@ -153,6 +162,11 @@ public final class MapManager
    * Deletes given installed {@code root} node with its children.
    */
   public static native void nativeDelete(String root);
+
+  /**
+   * Focuses map on the given {@code root}.
+   */
+  public static native void nativeShow(String root);
 
   /**
    * Registers {@code callback} of storage status changed. Returns slot ID which should be used to unsubscribe in {@link #nativeUnsubscribe(int)}.
