@@ -102,7 +102,6 @@ NSString * const kEditorSegue = @"Map2EditorSegue";
 @end
 
 @interface MapViewController ()<MTRGNativeAppwallAdDelegate, MWMFrameworkRouteBuilderObserver,
-                                MWMFrameworkMyPositionObserver, MWMFrameworkUserMarkObserver,
                                 MWMFrameworkDrapeObserver, MWMFrameworkStorageObserver>
 
 @property (nonatomic, readwrite) MWMMapViewControlsManager * controlsManager;
@@ -203,9 +202,19 @@ NSString * const kEditorSegue = @"Map2EditorSegue";
   [self.controlsManager dismissPlacePage];
 }
 
-- (void)onMyPositionClicked:(id)sender
+- (void)onMapObjectDeselected:(bool)switchFullScreenMode
 {
-  GetFramework().SwitchMyPositionNextMode();
+  [self dismissPlacePage];
+
+  auto & f = GetFramework();
+  if (switchFullScreenMode && self.controlsManager.searchHidden && !f.IsRouteNavigable())
+    self.controlsManager.hidden = !self.controlsManager.hidden;
+}
+
+- (void)onMapObjectSelected:(place_page::Info const &)info
+{
+  self.controlsManager.hidden = NO;
+  [self.controlsManager showPlacePage:info];
 }
 
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
@@ -365,8 +374,6 @@ NSString * const kEditorSegue = @"Map2EditorSegue";
     return;
   [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
 
-  self.skipPlacePageDismissOnViewDisappear = NO;
-  [self.controlsManager reloadPlacePage];
   self.controlsManager.menuState = self.menuRestoreState;
 
   [self refreshAd];
@@ -426,8 +433,6 @@ NSString * const kEditorSegue = @"Map2EditorSegue";
 {
   [super viewWillDisappear:animated];
   self.menuRestoreState = self.controlsManager.menuState;
-  if (!self.skipPlacePageDismissOnViewDisappear)
-    [self dismissPlacePage];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
 }
 
@@ -485,6 +490,20 @@ NSString * const kEditorSegue = @"Map2EditorSegue";
 
 - (void)initialize
 {
+  Framework & f = GetFramework();
+  // TODO: Review and improve this code.
+  f.SetMapSelectionListeners([self](place_page::Info const & info) { [self onMapObjectSelected:info]; },
+                             [self](bool switchFullScreen) { [self onMapObjectDeselected:switchFullScreen]; });
+  // TODO: Review and improve this code.
+  f.SetMyPositionModeListener([self](location::EMyPositionMode mode)
+  {
+    // TODO: Two global listeners are subscribed to the same event from the core.
+    // Probably it's better to subscribe only wnen needed and usubscribe in other cases.
+    // May be better solution would be multiobservers support in the C++ core.
+    [self processMyPositionStateModeEvent:mode];
+    [self.controlsManager.menuController processMyPositionStateModeEvent:mode];
+  });
+
   m_predictor = [[LocationPredictor alloc] initWithObserver:self];
   self.forceRoutingStateChange = ForceRoutingStateChangeNone;
   self.userTouchesAction = UserTouchesActionNone;
@@ -522,8 +541,6 @@ NSString * const kEditorSegue = @"Map2EditorSegue";
   [self performSegueWithIdentifier:kEditorSegue sender:self.controlsManager.placePageEntity];
 }
 
-#pragma mark - MWMFrameworkMyPositionObserver
-
 - (void)processMyPositionStateModeEvent:(location::EMyPositionMode)mode
 {
   [m_predictor setMode:mode];
@@ -559,7 +576,7 @@ NSString * const kEditorSegue = @"Map2EditorSegue";
   {
     case routing::IRouter::ResultCode::NoError:
     {
-      GetFramework().ActivateUserMark(nullptr, true);
+      GetFramework().DeactivateMapSelection(true);
       if (self.forceRoutingStateChange == ForceRoutingStateChangeStartFollowing)
         [self.controlsManager routingNavigation];
       else
@@ -612,25 +629,6 @@ NSString * const kEditorSegue = @"Map2EditorSegue";
   else
   {
     [self.downloadDialog processViewportCountryEvent:countryId];
-  }
-}
-
-#pragma mark - MWMFrameworkUserMarkObserver
-
-- (void)processUserMarkEvent:(UserMark const *)mark
-{
-  if (mark == nullptr)
-  {
-    [self dismissPlacePage];
-
-    auto & f = GetFramework();
-    if (!f.HasActiveUserMark() && self.controlsManager.searchHidden && !f.IsRouteNavigable())
-      self.controlsManager.hidden = !self.controlsManager.hidden;
-  }
-  else
-  {
-    self.controlsManager.hidden = NO;
-    [self.controlsManager showPlacePage];
   }
 }
 
@@ -784,7 +782,7 @@ NSString * const kEditorSegue = @"Map2EditorSegue";
 {
   Framework & f = GetFramework();
   if (self.popoverVC)
-    f.ActivateUserMark(nullptr, true);
+    f.DeactivateMapSelection(true);
 
   CGFloat const sf = self.view.contentScaleFactor;
 
@@ -822,10 +820,9 @@ NSString * const kEditorSegue = @"Map2EditorSegue";
 {
   if ([segue.identifier isEqualToString:kEditorSegue])
   {
-    self.skipPlacePageDismissOnViewDisappear = YES;
     UINavigationController * dvc = segue.destinationViewController;
     MWMEditorViewController * editorVC = (MWMEditorViewController *)[dvc topViewController];
-    editorVC.entity = sender;
+    [editorVC setFeatureToEdit:static_cast<MWMPlacePageEntity *>(sender).featureID];
   }
   else if ([segue.identifier isEqualToString:kAuthorizationSegue])
   {

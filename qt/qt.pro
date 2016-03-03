@@ -100,12 +100,14 @@ macx-* {
 
 SOURCES += \
     about.cpp \
+    create_feature_dialog.cpp \
     draw_widget.cpp \
     editor_dialog.cpp \
     info_dialog.cpp \
     main.cpp \
     mainwindow.cpp \
     osm_auth_dialog.cpp \
+    place_page_dialog.cpp \
     preferences_dialog.cpp \
     proxystyle.cpp \
     qtoglcontext.cpp \
@@ -116,11 +118,13 @@ SOURCES += \
 
 HEADERS += \
     about.hpp \
+    create_feature_dialog.hpp \
     draw_widget.hpp \
     editor_dialog.hpp \
     info_dialog.hpp \
     mainwindow.hpp \
     osm_auth_dialog.hpp \
+    place_page_dialog.hpp \
     preferences_dialog.hpp \
     proxystyle.hpp \
     qtoglcontext.hpp \

@@ -1,3 +1,4 @@
+#include "indexer/categories_holder.hpp"
 #include "indexer/classificator.hpp"
 #include "indexer/edits_migration.hpp"
 #include "indexer/feature_algo.hpp"
@@ -10,6 +11,7 @@
 
 #include "platform/local_country_file_utils.hpp"
 #include "platform/platform.hpp"
+#include "platform/preferred_languages.hpp"
 
 #include "editor/changeset_wrapper.hpp"
 #include "editor/osm_auth.hpp"
@@ -385,7 +387,7 @@ void Editor::LoadMapEdits()
   LOG(LINFO, ("Loaded", modified, "modified,", created, "created and", deleted, "deleted features."));
 }
 
-void Editor::Save(string const & fullFilePath) const
+bool Editor::Save(string const & fullFilePath) const
 {
   // TODO(AlexZ): Improve synchronization in Editor code.
   static mutex saveMutex;
@@ -394,7 +396,7 @@ void Editor::Save(string const & fullFilePath) const
   if (m_features.empty())
   {
     my::DeleteFileX(GetEditorFilePath());
-    return;
+    return true;
   }
 
   xml_document doc;
@@ -436,14 +438,18 @@ void Editor::Save(string const & fullFilePath) const
     }
   }
 
-  if (doc)
+  string const tmpFileName = fullFilePath + ".tmp";
+  if (!doc.save_file(tmpFileName.data(), "  "))
   {
-    string const tmpFileName = fullFilePath + ".tmp";
-    if (!doc.save_file(tmpFileName.data(), "  "))
-      LOG(LERROR, ("Can't save map edits into", tmpFileName));
-    else if (!my::RenameFileX(tmpFileName, fullFilePath))
-      LOG(LERROR, ("Can't rename file", tmpFileName, "to", fullFilePath));
+    LOG(LERROR, ("Can't save map edits into", tmpFileName));
+    return false;
   }
+  else if (!my::RenameFileX(tmpFileName, fullFilePath))
+  {
+    LOG(LERROR, ("Can't rename file", tmpFileName, "to", fullFilePath));
+    return false;
+  }
+  return true;
 }
 
 void Editor::ClearAllLocalEdits()
@@ -485,17 +491,8 @@ void Editor::DeleteFeature(FeatureType const & feature)
   Invalidate();
 }
 
-//namespace
-//{
-//FeatureID GenerateNewFeatureId(FeatureID const & oldFeatureId)
-//{
-//  // TODO(AlexZ): Stable & unique features ID generation.
-//  static uint32_t newIndex = 0x0effffff;
-//  return FeatureID(oldFeatureId.m_mwmId, newIndex++);
-//}
-//}  // namespace
-
-void Editor::EditFeature(FeatureType & editedFeature, string const & editedStreet, string const & editedHouseNumber)
+Editor::SaveResult Editor::SaveEditedFeature(FeatureType & editedFeature, string const & editedStreet,
+                                             string const & editedHouseNumber)
 {
   // Check house number for validity.
   if (editedHouseNumber.empty() || feature::IsHouseNumber(editedHouseNumber))
@@ -510,7 +507,7 @@ void Editor::EditFeature(FeatureType & editedFeature, string const & editedStree
     // TODO(AlexZ): Synchronize Save call/make it on a separate thread.
     Save(GetEditorFilePath());
     Invalidate();
-    return;
+    return NothingWasChanged;
   }
 
   FeatureTypeInfo fti;
@@ -522,8 +519,9 @@ void Editor::EditFeature(FeatureType & editedFeature, string const & editedStree
   m_features[fid.m_mwmId][fid.m_index] = move(fti);
 
   // TODO(AlexZ): Synchronize Save call/make it on a separate thread.
-  Save(GetEditorFilePath());
+  bool const savedSuccessfully = Save(GetEditorFilePath());
   Invalidate();
+  return savedSuccessfully ? SavedSuccessfully : NoFreeSpaceError;
 }
 
 void Editor::ForEachFeatureInMwmRectAndScale(MwmSet::MwmId const & id,
@@ -829,6 +827,57 @@ Editor::Stats Editor::GetStats() const
     }
   }
   return stats;
+}
+
+NewFeatureCategories Editor::GetNewFeatureCategories() const
+{
+  // TODO(mgsergio): Load types user can create from XML file.
+  // TODO: Not every editable type can be created by user.
+  CategoriesHolder const & cats = GetDefaultCategories();
+  int8_t const locale = CategoriesHolder::MapLocaleToInteger(languages::GetCurrentOrig());
+  Classificator const & cl = classif();
+  NewFeatureCategories res;
+  for (auto const & elem : gEditableTypes)
+  {
+    uint32_t const type = cl.GetTypeByReadableObjectName(elem.first);
+    if (type == 0)
+    {
+      LOG(LWARNING, ("Unknown type in Editor's config:", elem.first));
+      continue;
+    }
+    res.m_allSorted.emplace_back(type, cats.GetReadableFeatureType(type, locale));
+  }
+  sort(res.m_allSorted.begin(), res.m_allSorted.end(), [](Category const & c1, Category const & c2)
+  {
+    return c1.m_name < c2.m_name;
+  });
+  // TODO(mgsergio): Store in Settings:: recent history of created types and use them here.
+  // Max history items count shoud be set in the config.
+  uint32_t const cafe = cl.GetTypeByPath({"amenity", "cafe"});
+  res.m_lastUsed.emplace_back(cafe, cats.GetReadableFeatureType(cafe, locale));
+  uint32_t const restaurant = cl.GetTypeByPath({"amenity", "restaurant"});
+  res.m_lastUsed.emplace_back(restaurant, cats.GetReadableFeatureType(restaurant, locale));
+  uint32_t const atm = cl.GetTypeByPath({"amenity", "atm"});
+  res.m_lastUsed.emplace_back(atm, cats.GetReadableFeatureType(atm, locale));
+
+  return res;
+}
+
+namespace
+{
+FeatureID GenerateNewFeatureId(FeatureID const & oldFeatureId)
+{
+  // TODO(AlexZ): Stable & unique features ID generation.
+  // TODO(vng): Looks like new feature indexes should uninterruptedly continue after existing indexes in mwm file.
+  static uint32_t newIndex = 0x0effffff;
+  return FeatureID(oldFeatureId.m_mwmId, newIndex++);
+}
+}  // namespace
+
+bool Editor::CreatePoint(uint32_t type, m2::PointD const & mercator, MwmSet::MwmId const & id, EditableMapObject & outFeature)
+{
+  // TODO(AlexZ): Finish impl.
+  return false;
 }
 
 string DebugPrint(Editor::FeatureStatus fs)

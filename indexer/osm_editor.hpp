@@ -2,10 +2,12 @@
 
 #include "geometry/rect2d.hpp"
 
+#include "indexer/editable_map_object.hpp"
 #include "indexer/feature.hpp"
 #include "indexer/feature_meta.hpp"
 #include "indexer/mwm_set.hpp"
 
+#include "editor/new_feature_categories.hpp"
 #include "editor/xml_feature.hpp"
 
 #include "base/timer.hpp"
@@ -18,16 +20,6 @@
 
 namespace osm
 {
-/// Holds information to construct editor's UI.
-struct EditableProperties
-{
-  bool m_name = false;
-  /// If true, enables editing of house number, street address and post code.
-  bool m_address = false;
-  vector<feature::Metadata::EType> m_metadata;
-  bool IsEditable() const { return m_name || m_address || !m_metadata.empty(); }
-};
-
 class Editor final
 {
   Editor() = default;
@@ -97,11 +89,16 @@ public:
   /// @returns sorted features indices with specified status.
   vector<uint32_t> GetFeaturesByStatus(MwmSet::MwmId const & mwmId, FeatureStatus status) const;
 
+  enum SaveResult
+  {
+    NothingWasChanged,
+    SavedSuccessfully,
+    NoFreeSpaceError
+  };
   /// Editor checks internally if any feature params were actually edited.
   /// House number is correctly updated for editedFeature (if it's valid).
-  void EditFeature(FeatureType & editedFeature,
-                   string const & editedStreet = "",
-                   string const & editedHouseNumber = "");
+  SaveResult SaveEditedFeature(FeatureType & editedFeature, string const & editedStreet = "",
+                               string const & editedHouseNumber = "");
 
   EditableProperties GetEditableProperties(FeatureType const & feature) const;
 
@@ -111,6 +108,11 @@ public:
   /// @param[in] tags should provide additional information about client to use in changeset.
   void UploadChanges(string const & key, string const & secret, TChangesetTags tags,
                      TFinishUploadCallback callBack = TFinishUploadCallback());
+  // TODO(mgsergio): Test new types from new config but with old classificator (where these types are absent).
+  // Editor should silently ignore all types in config which are unknown to him.
+  NewFeatureCategories GetNewFeatureCategories() const;
+
+  bool CreatePoint(uint32_t type, m2::PointD const & mercator, MwmSet::MwmId const & id, EditableMapObject & outFeature);
 
   struct Stats
   {
@@ -123,7 +125,8 @@ public:
 
 private:
   // TODO(AlexZ): Synchronize Save call/make it on a separate thread.
-  void Save(string const & fullFilePath) const;
+  /// @returns false if fails.
+  bool Save(string const & fullFilePath) const;
   void RemoveFeatureFromStorageIfExists(MwmSet::MwmId const & mwmId, uint32_t index);
   /// Notify framework that something has changed and should be redisplayed.
   void Invalidate();
@@ -131,6 +134,7 @@ private:
   struct FeatureTypeInfo
   {
     FeatureStatus m_status;
+    // TODO(AlexZ): Integrate EditableMapObject class into an editor instead of FeatureType.
     FeatureType m_feature;
     /// If not empty contains Feature's addr:street, edited by user.
     string m_street;

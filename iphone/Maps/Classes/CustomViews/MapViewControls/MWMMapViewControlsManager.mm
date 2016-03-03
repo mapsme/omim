@@ -153,15 +153,10 @@ extern NSString * const kAlohalyticsTapEventKey;
   [self.placePageManager hidePlacePage];
 }
 
-- (void)showPlacePage
+- (void)showPlacePage:(place_page::Info const &)info
 {
-  [self.placePageManager showPlacePage];
+  [self.placePageManager showPlacePage:info];
   [self refreshHelperPanels:UIInterfaceOrientationIsLandscape(self.ownerController.interfaceOrientation)];
-}
-
-- (void)reloadPlacePage
-{
-  [self.placePageManager reloadPlacePage];
 }
 
 - (void)apiBack
@@ -479,10 +474,7 @@ extern NSString * const kAlohalyticsTapEventKey;
   {
     MWMAlertViewController * controller = [[MWMAlertViewController alloc] initWithViewController:self.ownerController];
     LocationManager * manager = MapsAppDelegate.theApp.m_locationManager;
-    auto const m = [MWMFrameworkListener listener].myPositionMode;
-    BOOL const needToRebuild = manager.lastLocationIsValid &&
-                               m != location::MODE_PENDING_POSITION &&
-                               m != location::MODE_UNKNOWN_POSITION && !isDestinationMyPosition;
+    BOOL const needToRebuild = manager.lastLocationIsValid && !manager.isLocationModeUnknownOrPending && !isDestinationMyPosition;
     m2::PointD const locationPoint = manager.lastLocation.mercator;
     [controller presentPoint2PointAlertWithOkBlock:^
     {

@@ -22,6 +22,7 @@ SOURCES += \
     drawing_rules.cpp \
     drules_selector.cpp \
     drules_selector_parser.cpp \
+    editable_map_object.cpp \
     edits_migration.cpp \
     feature.cpp \
     feature_algo.cpp \
@@ -41,6 +42,7 @@ SOURCES += \
     geometry_serialization.cpp \
     index.cpp \
     index_builder.cpp \
+    map_object.cpp \
     map_style.cpp \
     map_style_reader.cpp \
     mwm_set.cpp \
@@ -69,6 +71,7 @@ HEADERS += \
     drules_include.hpp \
     drules_selector.hpp \
     drules_selector_parser.hpp \
+    editable_map_object.hpp \
     edits_migration.hpp \
     feature.hpp \
     feature_algo.hpp \
@@ -92,6 +95,7 @@ HEADERS += \
     interval_index.hpp \
     interval_index_builder.hpp \
     interval_index_iface.hpp \
+    map_object.hpp \
     map_style.hpp \
     map_style_reader.hpp \
     mwm_set.hpp \

@@ -15,6 +15,7 @@
 @property (nonatomic) MWMBottomMenuState menuState;
 @property (nonatomic, readonly) MWMNavigationDashboardState navigationState;
 @property (nonatomic, readonly) MWMPlacePageEntity * placePageEntity;
+@property (nonatomic, readonly) MWMBottomMenuViewController * menuController;
 @property (nonatomic) BOOL searchHidden;
 
 - (instancetype)init __attribute__((unavailable("init is not available")));
@@ -35,8 +36,7 @@
 @property (nonatomic, readonly) BOOL isDirectionViewShown;
 
 - (void)dismissPlacePage;
-- (void)showPlacePage;
-- (void)reloadPlacePage;
+- (void)showPlacePage:(place_page::Info const &)info;
 
 #pragma mark - MWMNavigationDashboardManager
 

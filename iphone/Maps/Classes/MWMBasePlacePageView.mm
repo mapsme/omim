@@ -1,5 +1,6 @@
+#import "LocationManager.h"
+#import "MapsAppDelegate.h"
 #import "MWMBasePlacePageView.h"
-#import "MWMFrameworkListener.h"
 #import "MWMPlacePage.h"
 #import "MWMPlacePageActionBar.h"
 #import "MWMPlacePageBookmarkCell.h"
@@ -7,14 +8,14 @@
 #import "MWMPlacePageEntity.h"
 #import "MWMPlacePageInfoCell.h"
 #import "MWMPlacePageOpeningHoursCell.h"
-#import "MWMPlacePageTypeDescription.h"
 #import "MWMPlacePageViewManager.h"
 #import "Statistics.h"
 #import "UIColor+MapsMeColor.h"
 
+#include "map/place_page_info.hpp"
+
 extern CGFloat const kBottomPlacePageOffset = 15.;
 extern CGFloat const kLabelsBetweenOffset = 8.;
-extern NSString * const kMWMCuisineSeparator;
 
 namespace
 {
@@ -82,7 +83,7 @@ CGFloat placePageWidth()
 
 vector<NSRange> separatorsLocationInString(NSString * str)
 {
-  vector<NSRange> r {};
+  vector<NSRange> r;
   if (str.length == 0)
     return r;
 
@@ -90,7 +91,7 @@ vector<NSRange> separatorsLocationInString(NSString * str)
   while (searchRange.location < str.length)
   {
     searchRange.length = str.length - searchRange.location;
-    NSRange const foundRange = [str rangeOfString:kMWMCuisineSeparator options:NSCaseInsensitiveSearch range:searchRange];
+    NSRange const foundRange = [str rangeOfString:@(place_page::Info::kSubtitleSeparator) options:NSCaseInsensitiveSearch range:searchRange];
     if (foundRange.location == NSNotFound)
       break;
     searchRange.location = foundRange.location + foundRange.length;
@@ -171,21 +172,18 @@ enum class AttributePosition
 - (void)configure
 {
   MWMPlacePageEntity * entity = self.entity;
-  MWMPlacePageEntityType const type = entity.type;
-
-  if (type == MWMPlacePageEntityTypeBookmark)
+  if (entity.isBookmark)
   {
     self.titleLabel.text = entity.bookmarkTitle.length > 0 ? entity.bookmarkTitle : entity.title;
-    self.typeLabel.text = [entity.bookmarkCategory capitalizedString];
+    self.typeLabel.text = entity.bookmarkCategory;
   }
   else
   {
     self.titleLabel.text = entity.title;
-    NSString * typeString = entity.category.capitalizedString;
-    auto const ranges = separatorsLocationInString(typeString);
+    auto const ranges = separatorsLocationInString(entity.category);
     if (!ranges.empty())
     {
-      NSMutableAttributedString * str = [[NSMutableAttributedString alloc] initWithString:typeString];
+      NSMutableAttributedString * str = [[NSMutableAttributedString alloc] initWithString:entity.category];
       for (auto const & r : ranges)
         [str addAttributes:@{NSForegroundColorAttributeName : [UIColor blackHintText]} range:r];
 
@@ -193,30 +191,14 @@ enum class AttributePosition
     }
     else
     {
-      self.typeLabel.text = typeString;
+      self.typeLabel.text = entity.category;
     }
   }
 
-  [self.typeDescriptionView removeFromSuperview];
-  if (type == MWMPlacePageEntityTypeEle || type == MWMPlacePageEntityTypeHotel)
-  {
-    MWMPlacePageTypeDescription * description = [[MWMPlacePageTypeDescription alloc] initWithPlacePageEntity:entity];
-    self.typeDescriptionView = static_cast<MWMPlacePageTypeDescriptionView *>(type == MWMPlacePageEntityTypeEle ?
-                                                                              description.eleDescription :
-                                                                              description.hotelDescription);
-    [self addSubview:self.typeDescriptionView];
-  }
-  else
-  {
-    self.typeDescriptionView = nil;
-  }
-
+  BOOL const isMyPosition = entity.isMyPosition;
   self.addressLabel.text = entity.address;
-  BOOL const isMyPosition = type == MWMPlacePageEntityTypeMyPosition;
   BOOL const isHeadingAvaible = [CLLocationManager headingAvailable];
-  using namespace location;
-  auto const mode = [MWMFrameworkListener listener].myPositionMode;
-  BOOL const noLocation = (mode == EMyPositionMode::MODE_UNKNOWN_POSITION || mode == EMyPositionMode::MODE_PENDING_POSITION);
+  BOOL const noLocation = MapsAppDelegate.theApp.m_locationManager.isLocationModeUnknownOrPending;
   self.distanceLabel.hidden = noLocation || isMyPosition;
   BOOL const hideDirection = noLocation || isMyPosition || !isHeadingAvaible;
   self.directionArrow.hidden = hideDirection;
@@ -231,9 +213,9 @@ enum class AttributePosition
 
 - (AttributePosition)distanceAttributePosition
 {
-  if ((self.typeLabel.text.length || self.typeDescriptionView))
+  if (self.typeLabel.text.length)
     return AttributePosition::Type;
-  else if ((!self.typeLabel.text.length && !self.typeDescriptionView) && self.addressLabel.text.length)
+  else if (!self.typeLabel.text.length && self.addressLabel.text.length)
     return AttributePosition::Address;
   else
     return AttributePosition::Title;
@@ -281,7 +263,6 @@ enum class AttributePosition
   [self.typeLabel sizeToFit];
   [self.addressLabel sizeToFit];
   [self layoutLabels];
-  [self.typeDescriptionView layoutNearPoint:{self.typeLabel.maxX, self.typeLabel.minY}];
   [self layoutDistanceBoxWithPosition:position];
   [self layoutTableViewWithPosition:position];
   self.height = self.featureTable.height + self.separatorView.height + self.titleLabel.height +
@@ -348,9 +329,6 @@ enum class AttributePosition
 {
   [[Statistics instance] logEvent:kStatEventName(kStatPlacePage, kStatToggleBookmark)
                    withParameters:@{kStatValue : kStatAdd}];
-  self.entity.type = MWMPlacePageEntityTypeBookmark;
-  [self.typeDescriptionView removeFromSuperview];
-  self.typeDescriptionView = nil;
   [self.typeLabel sizeToFit];
 
   m_sections.push_back(PlacePageSection::Bookmark);
@@ -364,7 +342,6 @@ enum class AttributePosition
 {
   [[Statistics instance] logEvent:kStatEventName(kStatPlacePage, kStatToggleBookmark)
                    withParameters:@{kStatValue : kStatRemove}];
-  self.entity.type = MWMPlacePageEntityTypeRegular;
 
   auto const it = find(m_sections.begin(), m_sections.end(), PlacePageSection::Bookmark);
   if (it != m_sections.end())

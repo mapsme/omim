@@ -9,16 +9,12 @@ namespace
 {
 using TObserver = id<MWMFrameworkObserver>;
 using TRouteBuildingObserver = id<MWMFrameworkRouteBuilderObserver>;
-using TMyPositionObserver = id<MWMFrameworkMyPositionObserver>;
-using TUsermarkObserver = id<MWMFrameworkUserMarkObserver>;
 using TStorageObserver = id<MWMFrameworkStorageObserver>;
 using TDrapeObserver = id<MWMFrameworkDrapeObserver>;
 
 using TObservers = NSHashTable<__kindof TObserver>;
 
 Protocol * pRouteBuildingObserver = @protocol(MWMFrameworkRouteBuilderObserver);
-Protocol * pMyPositionObserver = @protocol(MWMFrameworkMyPositionObserver);
-Protocol * pUserMarkObserver = @protocol(MWMFrameworkUserMarkObserver);
 Protocol * pStorageObserver = @protocol(MWMFrameworkStorageObserver);
 Protocol * pDrapeObserver = @protocol(MWMFrameworkDrapeObserver);
 
@@ -40,20 +36,12 @@ void loopWrappers(TObservers * observers, TLoopBlock block)
 @interface MWMFrameworkListener ()
 
 @property (nonatomic) TObservers * routeBuildingObservers;
-@property (nonatomic) TObservers * myPositionObservers;
-@property (nonatomic) TObservers * userMarkObservers;
 @property (nonatomic) TObservers * storageObservers;
 @property (nonatomic) TObservers * drapeObservers;
-
-@property (nonatomic, readwrite) location::EMyPositionMode myPositionMode;
 
 @end
 
 @implementation MWMFrameworkListener
-{
-  unique_ptr<UserMarkCopy> m_userMark;
-  mutex m_userMarkMutex;
-}
 
 + (MWMFrameworkListener *)listener
 {
@@ -70,10 +58,6 @@ void loopWrappers(TObservers * observers, TLoopBlock block)
     MWMFrameworkListener * listener = [MWMFrameworkListener listener];
     if ([observer conformsToProtocol:pRouteBuildingObserver])
       [listener.routeBuildingObservers addObject:observer];
-    if ([observer conformsToProtocol:pMyPositionObserver])
-      [listener.myPositionObservers addObject:observer];
-    if ([observer conformsToProtocol:pUserMarkObserver])
-      [listener.userMarkObservers addObject:observer];
     if ([observer conformsToProtocol:pStorageObserver])
       [listener.storageObservers addObject:observer];
     if ([observer conformsToProtocol:pDrapeObserver])
@@ -87,8 +71,6 @@ void loopWrappers(TObservers * observers, TLoopBlock block)
   {
     MWMFrameworkListener * listener = [MWMFrameworkListener listener];
     [listener.routeBuildingObservers removeObject:observer];
-    [listener.myPositionObservers removeObject:observer];
-    [listener.userMarkObservers removeObject:observer];
     [listener.storageObservers removeObject:observer];
     [listener.drapeObservers removeObject:observer];
   });
@@ -100,14 +82,10 @@ void loopWrappers(TObservers * observers, TLoopBlock block)
   if (self)
   {
     _routeBuildingObservers = [TObservers weakObjectsHashTable];
-    _myPositionObservers = [TObservers weakObjectsHashTable];
-    _userMarkObservers = [TObservers weakObjectsHashTable];
     _storageObservers = [TObservers weakObjectsHashTable];
     _drapeObservers = [TObservers weakObjectsHashTable];
 
     [self registerRouteBuilderListener];
-    [self registerMyPositionListener];
-    [self registerUserMarkObserver];
     [self registerStorageObserver];
     [self registerDrapeObserver];
   }
@@ -144,43 +122,6 @@ void loopWrappers(TObservers * observers, TLoopBlock block)
   });
 }
 
-#pragma mark - MWMFrameworkMyPositionObserver
-
-- (void)registerMyPositionListener
-{
-  TObservers * observers = self.myPositionObservers;
-  auto & f = GetFramework();
-  f.SetMyPositionModeListener([self, observers](location::EMyPositionMode mode)
-  {
-    self.myPositionMode = mode;
-    loopWrappers(observers, [mode](TMyPositionObserver observer)
-    {
-      [observer processMyPositionStateModeEvent:mode];
-    });
-  });
-}
-
-#pragma mark - MWMFrameworkUserMarkObserver
-
-- (void)registerUserMarkObserver
-{
-  TObservers * observers = self.userMarkObservers;
-  auto & f = GetFramework();
-  f.SetUserMarkActivationListener([self, observers](unique_ptr<UserMarkCopy> mark)
-  {
-    lock_guard<mutex> lock(m_userMarkMutex);
-    m_userMark = move(mark);
-    loopWrappers(observers, [self](TUsermarkObserver observer)
-    {
-      lock_guard<mutex> lock(self->m_userMarkMutex);
-      if (self->m_userMark != nullptr)
-        [observer processUserMarkEvent:self->m_userMark->GetUserMark()];
-      else
-        [observer processUserMarkEvent:nullptr];
-    });
-  });
-}
-
 #pragma mark - MWMFrameworkStorageObserver
 
 - (void)registerStorageObserver
@@ -213,21 +154,6 @@ void loopWrappers(TObservers * observers, TLoopBlock block)
     for (TDrapeObserver observer in observers)
       [observer processViewportCountryEvent:countryId];
   });
-}
-
-#pragma mark - Properties
-
-- (UserMark const *)userMark
-{
-  return m_userMark ? m_userMark->GetUserMark() : nullptr;
-}
-
-- (void)setUserMark:(UserMark const *)userMark
-{
-  if (userMark)
-    m_userMark.reset(new UserMarkCopy(userMark, false));
-  else
-    m_userMark = nullptr;
 }
 
 @end
