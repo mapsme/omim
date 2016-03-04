@@ -23,8 +23,18 @@ MwmContext::MwmContext(MwmSet::MwmHandle handle)
 
 void MwmContext::GetFeature(uint32_t index, FeatureType & ft) const
 {
-  m_vector.GetByIndex(index, ft);
-  ft.SetID(FeatureID(GetId(), index));
+  switch (GetEditedStatus(index))
+  {
+  case osm::Editor::FeatureStatus::Deleted: return;
+  case osm::Editor::FeatureStatus::Modified:
+  case osm::Editor::FeatureStatus::Created:
+    VERIFY(osm::Editor::Instance().GetEditedFeature(GetId(), index, ft), ());
+    return;
+  case osm::Editor::FeatureStatus::Untouched:
+    m_vector.GetByIndex(index, ft);
+    ft.SetID(FeatureID(GetId(), index));
+    break;
+  }
 }
 
 }  // namespace v2

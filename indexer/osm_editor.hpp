@@ -97,9 +97,7 @@ public:
     NoFreeSpaceError
   };
   /// Editor checks internally if any feature params were actually edited.
-  /// House number is correctly updated for editedFeature (if it's valid).
-  SaveResult SaveEditedFeature(FeatureType & editedFeature, string const & editedStreet = "",
-                               string const & editedHouseNumber = "");
+  SaveResult SaveEditedFeature(EditableMapObject const & emo);
 
   EditableProperties GetEditableProperties(FeatureType const & feature) const;
 
@@ -131,6 +129,9 @@ private:
   void RemoveFeatureFromStorageIfExists(MwmSet::MwmId const & mwmId, uint32_t index);
   /// Notify framework that something has changed and should be redisplayed.
   void Invalidate();
+
+  FeatureID GenerateNewFeatureId(MwmSet::MwmId const & id);
+  EditableProperties GetEditablePropertiesForTypes(feature::TypesHolder const & types) const;
 
   struct FeatureTypeInfo
   {

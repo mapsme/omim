@@ -2326,6 +2326,26 @@ bool Framework::CreateMapObject(m2::PointD const & mercator, uint32_t const feat
         platform::CountryFile(m_infoGetter->GetRegionCountryId(mercator)));
   if (!mwmId.IsAlive())
     return false;
+
+  // TODO(AlexZ): refactor.
+  search::ReverseGeocoder const coder(m_model.GetIndex());
+  // Need to filter out duplicate street names.
+  vector<search::ReverseGeocoder::Street> streets;
+  coder.GetNearbyStreets(mwmId, mercator, streets);
+  vector<string> results;
+  // Reasonable number of different nearby street names to display in UI.
+  size_t const kMinNumberOfNearbyStreets = 8;
+  for (auto const & street : streets)
+  {
+    auto const e = results.end();
+    if (e == find(results.begin(), e, street.m_name))
+    {
+      results.push_back(street.m_name);
+      if (results.size() >= kMinNumberOfNearbyStreets)
+        break;
+    }
+  }
+  emo.SetNearbyStreets(results);
   return osm::Editor::Instance().CreatePoint(featureType, mercator, mwmId, emo);
 }
 
@@ -2344,13 +2364,14 @@ bool Framework::GetEditableMapObject(FeatureID const & fid, osm::EditableMapObje
   return true;
 }
 
-osm::Editor::SaveResult Framework::SaveEditedMapObject(osm::EditableMapObject const & emo) const
+osm::Editor::SaveResult Framework::SaveEditedMapObject(osm::EditableMapObject const & emo)
 {
-  // TODO(AlexZ): Move this code to the Editor.
-  auto feature = GetFeatureByID(emo.GetID());
-  FeatureType & ft = *feature;
-  ft.ApplyPatch(emo);
-  return osm::Editor::Instance().SaveEditedFeature(ft, emo.GetStreet(), emo.GetHouseNumber());
+  if (!m_lastTapEvent)
+  {
+    // Automatically select newly created objects.
+    m_lastTapEvent.reset(new df::TapInfo { m_currentModelView.GtoP(emo.GetMercator()), false, false, emo.GetID() });
+  }
+  return osm::Editor::Instance().SaveEditedFeature(emo);
 }
 
 void Framework::DeleteFeature(FeatureID const & fid) const

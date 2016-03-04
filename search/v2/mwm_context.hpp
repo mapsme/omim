@@ -50,19 +50,6 @@ struct MwmContext
                      [&](uint32_t index)
                      {
                        FeatureType ft;
-
-                       switch (GetEditedStatus(index))
-                       {
-                       case osm::Editor::FeatureStatus::Deleted: return;
-                       case osm::Editor::FeatureStatus::Modified:
-                         VERIFY(osm::Editor::Instance().GetEditedFeature(GetId(), index, ft), ());
-                         fn(ft);
-                         return;
-                       case osm::Editor::FeatureStatus::Created:
-                         CHECK(false, ("Created features index should be generated."));
-                       case osm::Editor::FeatureStatus::Untouched: break;
-                       }
-
                        GetFeature(index, ft);
                        fn(ft);
                      });

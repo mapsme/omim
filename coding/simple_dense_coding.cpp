@@ -60,7 +60,9 @@ SimpleDenseCoding::SimpleDenseCoding(SimpleDenseCoding && rhs)
 
 uint8_t SimpleDenseCoding::Get(uint64_t i) const
 {
-  ASSERT_LESS(i, Size(), ());
+//  ASSERT_LESS(i, Size(), ());
+  if (i >= Size())
+    return 0;
   return m_symbols[m_ranks[i]];
 }
 }  // namespace coding

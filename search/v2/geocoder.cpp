@@ -1448,7 +1448,7 @@ SearchModel::SearchType Geocoder::GetSearchTypeInGeocoding(uint32_t featureId)
     return SearchModel::SEARCH_TYPE_VILLAGE;
 
   FeatureType feature;
-  m_context->m_vector.GetByIndex(featureId, feature);
+  m_context->GetFeature(featureId, feature);
   return m_model.GetSearchType(feature);
 }
 

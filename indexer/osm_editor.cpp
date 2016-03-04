@@ -193,7 +193,7 @@ void Editor::LoadMapEdits()
 
           if (section.first == FeatureStatus::Created)
           {
-            // TODO(mgsergio): Create features which are not present in mwm.
+            fti.m_feature.FromXml(xml);
           }
           else
           {
@@ -342,31 +342,37 @@ void Editor::DeleteFeature(FeatureType const & feature)
   Invalidate();
 }
 
-Editor::SaveResult Editor::SaveEditedFeature(FeatureType & editedFeature, string const & editedStreet,
-                                             string const & editedHouseNumber)
+namespace
 {
-  // Check house number for validity.
-  if (editedHouseNumber.empty() || feature::IsHouseNumber(editedHouseNumber))
-    editedFeature.SetHouseNumber(editedHouseNumber);
-  // TODO(AlexZ): Store edited house number as house name if feature::IsHouseNumber() returned false.
+constexpr uint32_t kStartIndexForCreatedFeatures = numeric_limits<uint32_t>::max() - 0xffff;
+bool IsCreatedFeature(FeatureID const & fid) { return fid.m_index >= kStartIndexForCreatedFeatures; }
+}  // namespace
 
-  FeatureID const fid = editedFeature.GetID();
-  if (AreFeaturesEqualButStreet(editedFeature, *m_getOriginalFeatureFn(fid)) &&
-      m_getOriginalFeatureStreetFn(editedFeature) == editedStreet)
-  {
-    RemoveFeatureFromStorageIfExists(fid.m_mwmId, fid.m_index);
-    // TODO(AlexZ): Synchronize Save call/make it on a separate thread.
-    Save(GetEditorFilePath());
-    Invalidate();
-    return NothingWasChanged;
-  }
-
+Editor::SaveResult Editor::SaveEditedFeature(EditableMapObject const & emo)
+{
+  FeatureID const & fid = emo.GetID();
   FeatureTypeInfo fti;
-  fti.m_status = FeatureStatus::Modified;
-  fti.m_feature = editedFeature;
+  fti.m_feature.ApplyPatch(emo);
+  if (IsCreatedFeature(fid))
+  {
+    fti.m_status = FeatureStatus::Created;
+  }
+  else
+  {
+    if (AreFeaturesEqualButStreet(fti.m_feature, *m_getOriginalFeatureFn(fid)) &&
+        m_getOriginalFeatureStreetFn(fti.m_feature) == emo.GetStreet())
+    {
+      RemoveFeatureFromStorageIfExists(fid.m_mwmId, fid.m_index);
+      // TODO(AlexZ): Synchronize Save call/make it on a separate thread.
+      Save(GetEditorFilePath());
+      Invalidate();
+      return NothingWasChanged;
+    }
+    fti.m_status = FeatureStatus::Modified;
+  }
   // TODO: What if local client time is absolutely wrong?
   fti.m_modificationTimestamp = time(nullptr);
-  fti.m_street = editedStreet;
+  fti.m_street = emo.GetStreet();
   m_features[fid.m_mwmId][fid.m_index] = move(fti);
 
   // TODO(AlexZ): Synchronize Save call/make it on a separate thread.
@@ -389,8 +395,8 @@ void Editor::ForEachFeatureInMwmRectAndScale(MwmSet::MwmId const & id,
   for (auto const & index : mwmFound->second)
   {
     FeatureTypeInfo const & ftInfo = index.second;
-    if (ftInfo.m_status == FeatureStatus::Created &&
-        rect.IsPointInside(ftInfo.m_feature.GetCenter()))
+    if (ftInfo.m_status == FeatureStatus::Created /*&&
+        rect.IsPointInside(ftInfo.m_feature.GetCenter())*/)
       f(FeatureID(id, index.first));
   }
 }
@@ -409,8 +415,8 @@ void Editor::ForEachFeatureInMwmRectAndScale(MwmSet::MwmId const & id,
   for (auto & index : mwmFound->second)
   {
     FeatureTypeInfo & ftInfo = index.second;
-    if (ftInfo.m_status == FeatureStatus::Created &&
-        rect.IsPointInside(ftInfo.m_feature.GetCenter()))
+    if (ftInfo.m_status == FeatureStatus::Created /*&&
+        rect.IsPointInside(ftInfo.m_feature.GetCenter())*/)
       f(ftInfo.m_feature);
   }
 }
@@ -463,7 +469,12 @@ vector<uint32_t> Editor::GetFeaturesByStatus(MwmSet::MwmId const & mwmId, Featur
 
 EditableProperties Editor::GetEditableProperties(FeatureType const & feature) const
 {
-  feature::TypesHolder const types(feature);
+  // TODO(mgsergio): Check if feature is in the area where editing is disabled in the config.
+  return GetEditablePropertiesForTypes(feature::TypesHolder(feature));
+}
+// private
+EditableProperties Editor::GetEditablePropertiesForTypes(feature::TypesHolder const & types) const
+{
   editor::TypeAggregatedDescription desc;
   if (m_config.GetTypeDescription(types.ToObjectNames(), desc))
     return {desc.GetEditableFields(), desc.IsNameEditable(), desc.IsAddressEditable()};
@@ -678,21 +689,31 @@ NewFeatureCategories Editor::GetNewFeatureCategories() const
   return res;
 }
 
-namespace
+FeatureID Editor::GenerateNewFeatureId(MwmSet::MwmId const & id)
 {
-FeatureID GenerateNewFeatureId(FeatureID const & oldFeatureId)
-{
-  // TODO(AlexZ): Stable & unique features ID generation.
   // TODO(vng): Looks like new feature indexes should uninterruptedly continue after existing indexes in mwm file.
-  static uint32_t newIndex = 0x0effffff;
-  return FeatureID(oldFeatureId.m_mwmId, newIndex++);
+  uint32_t featureIndex = kStartIndexForCreatedFeatures;
+  auto const found = m_features.find(id);
+  if (found != m_features.end())
+  {
+    // Scan all already created features and choose next available ID.
+    for (auto const & feature : found->second)
+    {
+      if (feature.second.m_status == FeatureStatus::Created && featureIndex <= feature.first)
+        featureIndex = feature.first + 1;
+    }
+  }
+  return FeatureID(id, featureIndex);
 }
-}  // namespace
 
 bool Editor::CreatePoint(uint32_t type, m2::PointD const & mercator, MwmSet::MwmId const & id, EditableMapObject & outFeature)
 {
-  // TODO(AlexZ): Finish impl.
-  return false;
+  ASSERT(id.IsAlive(), ("Please check that feature is created in valid MWM file before calling this method."));
+  outFeature.SetMercator(mercator);
+  outFeature.SetID(GenerateNewFeatureId(id));
+  outFeature.SetType(type);
+  outFeature.SetEditableProperties(GetEditablePropertiesForTypes(outFeature.GetTypes()));
+  return true;
 }
 
 string DebugPrint(Editor::FeatureStatus fs)
@@ -705,5 +726,4 @@ string DebugPrint(Editor::FeatureStatus fs)
   case Editor::FeatureStatus::Created: return "Created";
   };
 }
-
 }  // namespace osm

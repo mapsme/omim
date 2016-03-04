@@ -161,14 +161,13 @@ class FeatureType : public FeatureBase
 public:
   void Deserialize(feature::LoaderBase * pLoader, TBuffer buffer);
 
-  static FeatureType FromXML(string const & xml);
-  static FeatureType FromXML(editor::XMLFeature const & xml);
-
-  /// Rewrites all but geometry.
+  /// Rewrites all but geometry and types.
   void ApplyPatch(editor::XMLFeature const & xml);
   void ApplyPatch(osm::EditableMapObject const & ef);
 
   editor::XMLFeature ToXML() const;
+  /// Creates new feature, including geometry and types.
+  bool FromXml(editor::XMLFeature const & xml);
 
   inline void SetID(FeatureID const & id) { m_id = id; }
   inline FeatureID GetID() const { return m_id; }
