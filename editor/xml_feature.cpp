@@ -161,6 +161,11 @@ void XMLFeature::ApplyPatch(XMLFeature const & featureWithChanges)
   });
 }
 
+m2::PointD XMLFeature::GetMercatorCenter() const
+{
+  return GetMercatorPointFromNode(GetRootNode());
+}
+
 ms::LatLon XMLFeature::GetCenter() const
 {
   return GetLatLonFromNode(GetRootNode());
