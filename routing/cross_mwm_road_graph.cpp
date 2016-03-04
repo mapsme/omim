@@ -56,7 +56,10 @@ IRouter::ResultCode CrossMwmGraph::SetStartNode(CrossNode const & startNode)
     {
       vector<BorderCross> const & nextCrosses = ConstructBorderCross(outgoingNodes[i], startMapping);
       for (auto const & nextCross : nextCrosses)
-        dummyEdges.emplace_back(nextCross, weights[i]);
+      {
+        if (nextCross.toNode.IsValid())
+          dummyEdges.emplace_back(nextCross, weights[i]);
+      }
     }
   }
 
@@ -135,7 +138,7 @@ vector<BorderCross> const & CrossMwmGraph::ConstructBorderCross(OutgoingCrossNod
   if (it != m_cachedNextNodes.end())
     return it->second;
 
-  // Cache miss case. I suppose that cache will be invalidated after a search.
+  // Cache miss case.
   auto & crosses = m_cachedNextNodes[key];
   ConstructBorderCrossImpl(startNode, currentMapping, crosses);
   return crosses;
@@ -153,14 +156,10 @@ bool CrossMwmGraph::ConstructBorderCrossImpl(OutgoingCrossNode const & startNode
     return false;
   ASSERT(crosses.empty(), ());
   nextMapping->LoadCrossContext();
-  nextMapping->m_crossContext.ForEachIngoingNode([&](IngoingCrossNode const & node)
+  nextMapping->m_crossContext.ForEachIngoingNodeNearPoint(startNode.m_point, [&](IngoingCrossNode const & node)
   {
-    if (node.m_point == startNode.m_point)
-    {
-      auto const toCross = CrossNode(node.m_nodeId, nextMapping->GetMwmId(), node.m_point);
-      if (toCross.IsValid())
-        crosses.emplace_back(fromCross, toCross);
-    }
+      crosses.emplace_back(CrossNode(startNode.m_nodeId, currentMapping->GetMwmId(), node.m_point),
+                           CrossNode(node.m_nodeId, nextMapping->GetMwmId(), node.m_point));
   });
   return !crosses.empty();
 }
@@ -187,16 +186,18 @@ void CrossMwmGraph::GetOutgoingEdgesList(BorderCross const & v,
 
   // Find income node.
   IngoingCrossNode ingoingNode;
-  CHECK(currentContext.FindIngoingNodeByPoint(v.toNode.point, ingoingNode), ());
-  if (ingoingNode.m_nodeId != v.toNode.node)
-  {
-    LOG(LDEBUG, ("Several nodes stores in one border point.", v.toNode.point));
-    currentContext.ForEachIngoingNode([&ingoingNode, &v](IngoingCrossNode const & node)
-                                      {
-                                        if (node.m_nodeId == v.toNode.node)
-                                          ingoingNode = node;
-                                      });
-  }
+  bool found = false;
+  auto findingFn = [&ingoingNode, &v, &found](IngoingCrossNode const & node)
+                                             {
+                                               if (node.m_nodeId == v.toNode.node)
+                                               {
+                                                 found = true;
+                                                 ingoingNode = node;
+                                               }
+                                             };
+  CHECK(currentContext.ForEachIngoingNodeNearPoint(v.toNode.point, findingFn), ());
+
+  CHECK(found, ());
 
   // Find outs. Generate adjacency list.
   currentContext.ForEachOutgoingNode([&, this](OutgoingCrossNode const & node)
@@ -206,7 +207,10 @@ void CrossMwmGraph::GetOutgoingEdgesList(BorderCross const & v,
                                        {
                                          vector<BorderCross> const & targets = ConstructBorderCross(node, currentMapping);
                                          for (auto const & target : targets)
-                                           adj.emplace_back(target, outWeight);
+                                         {
+                                           if (target.toNode.IsValid())
+                                             adj.emplace_back(target, outWeight);
+                                         }
                                        }
                                      });
 }
