@@ -530,7 +530,7 @@ bool FeatureBuilder1::IsDrawableInRange(int lowScale, int highScale) const
       if (feature::IsDrawableForIndex(fb, lowScale++))
         return true;
 
-    return IsDrawarbleByException(fb);
+    return RequireGeometryInIndex(fb);
   }
 
   return false;
