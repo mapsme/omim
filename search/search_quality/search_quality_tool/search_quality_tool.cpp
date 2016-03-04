@@ -52,7 +52,8 @@ using namespace search::tests_support;
 DEFINE_string(data_path, "", "Path to data directory (resources dir)");
 DEFINE_string(locale, "en", "Locale of all the search queries");
 DEFINE_int32(num_threads, 1, "Number of search engine threads");
-DEFINE_string(mwm_list_path, "", "Path to a file containing the names of available mwms, one per line");
+DEFINE_string(mwm_list_path, "",
+              "Path to a file containing the names of available mwms, one per line");
 DEFINE_string(mwm_path, "", "Path to mwm files (writable dir)");
 DEFINE_string(queries_path, "", "Path to the file with queries");
 DEFINE_int32(top, 1, "Number of top results to show for every query");
@@ -219,13 +220,16 @@ int FindResult(TestSearchEngine & engine, string const & mwmName, uint64_t const
 
   // Another attempt. If the queries are stale, feature id is useless.
   // However, some information may be recovered from (lat, lon).
-  double const kEps = 1e-6;
+  double const kEps = 1e-2;
   for (size_t i = 0; i < results.size(); ++i)
   {
     auto const & r = results[i];
     if (r.HasPoint() &&
         my::AlmostEqualAbs(r.GetFeatureCenter(), MercatorBounds::FromLatLon(lat, lon), kEps))
     {
+      double const dist = MercatorBounds::DistanceOnEarth(r.GetFeatureCenter(),
+                                                          MercatorBounds::FromLatLon(lat, lon));
+      LOG(LDEBUG, ("dist =", dist));
       return i;
     }
   }
@@ -442,7 +446,8 @@ int main(int argc, char * argv[])
     requests[i]->Wait();
     auto rt = duration_cast<milliseconds>(requests[i]->ResponseTime()).count();
     responseTimes[i] = static_cast<double>(rt) / 1000;
-    PrintTopResults(MakePrefixFree(queries[i]), requests[i]->Results(), FLAGS_top, responseTimes[i]);
+    PrintTopResults(MakePrefixFree(queries[i]), requests[i]->Results(), FLAGS_top,
+                    responseTimes[i]);
   }
 
   double averageTime;
