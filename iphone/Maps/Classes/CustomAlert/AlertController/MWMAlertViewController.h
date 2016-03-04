@@ -23,6 +23,7 @@
 - (void)presentNoConnectionAlert;
 - (void)presentNoWiFiAlertWithName:(nonnull NSString *)name okBlock:(nullable TMWMVoidBlock)okBlock;
 - (void)presentPedestrianToastAlert:(BOOL)isFirstLaunch;
+- (void)presentIncorrectFeauturePositionAlert;
 - (void)presentInternalErrorAlert;
 - (void)presentInvalidUserNameOrPasswordAlert;
 - (void)presentDownloaderNoConnectionAlertWithOkBlock:(nonnull TMWMVoidBlock)okBlock;
