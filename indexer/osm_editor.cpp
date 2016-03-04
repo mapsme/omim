@@ -127,8 +127,6 @@ namespace osm
 // TODO(AlexZ): Normalize osm multivalue strings for correct merging
 // (e.g. insert/remove spaces after ';' delimeter);
 
-Editor::Editor() : m_config("editor.xml") { }
-
 Editor & Editor::Instance()
 {
   static Editor instance;
@@ -465,11 +463,11 @@ vector<uint32_t> Editor::GetFeaturesByStatus(MwmSet::MwmId const & mwmId, Featur
 
 EditableProperties Editor::GetEditableProperties(FeatureType const & feature) const
 {
-
   feature::TypesHolder const types(feature);
-  auto const desc = m_config.GetTypeDescription(types.ToObjectNames());
-  return {{begin(desc.GetEditableFields()), end(desc.GetEditableFields())},
-          desc.IsNameEditable(), desc.IsAddressEditable()};
+  editor::TypeAggregatedDescription desc;
+  if (m_config.GetTypeDescription(types.ToObjectNames(), desc))
+    return {desc.GetEditableFields(), desc.IsNameEditable(), desc.IsAddressEditable()};
+  return {};
 }
 
 bool Editor::HaveSomethingToUpload() const
