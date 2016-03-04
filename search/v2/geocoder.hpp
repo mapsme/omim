@@ -6,9 +6,12 @@
 #include "search/v2/features_layer.hpp"
 #include "search/v2/features_layer_path_finder.hpp"
 #include "search/v2/mwm_context.hpp"
+#include "search/v2/pre_ranking_info.hpp"
+#include "search/v2/ranking_utils.hpp"
 #include "search/v2/search_model.hpp"
 
 #include "indexer/index.hpp"
+#include "indexer/mwm_set.hpp"
 
 #include "storage/country_info_getter.hpp"
 
@@ -21,6 +24,7 @@
 #include "base/macros.hpp"
 #include "base/string_utils.hpp"
 
+#include "std/limits.hpp"
 #include "std/set.hpp"
 #include "std/string.hpp"
 #include "std/unique_ptr.hpp"
@@ -118,10 +122,14 @@ public:
   // states and Locality for smaller settlements.
   struct City : public Locality
   {
-    City(Locality const & l): Locality(l) {}
+    City(Locality const & l, SearchModel::SearchType type) : Locality(l), m_type(type) {}
 
     m2::RectD m_rect;
+    SearchModel::SearchType m_type;
   };
+
+  using TResult = pair<FeatureID, PreRankingInfo>;
+  using TResultList = vector<TResult>;
 
   Geocoder(Index & index, storage::CountryInfoGetter const & infoGetter);
 
@@ -132,8 +140,8 @@ public:
 
   // Starts geocoding, retrieved features will be appended to
   // |results|.
-  void GoEverywhere(vector<FeatureID> & results);
-  void GoInViewport(vector<FeatureID> & results);
+  void GoEverywhere(TResultList & results);
+  void GoInViewport(TResultList & results);
 
   void ClearCaches();
 
@@ -215,7 +223,14 @@ private:
   // the lowest layer.
   void FindPaths();
 
-  void EmitResult(MwmSet::MwmId const & mwmId, uint32_t featureId);
+  // Forms result and appends it to |m_results|.
+  void EmitResult(MwmSet::MwmId const & mwmId, uint32_t ftId, SearchModel::SearchType type,
+                  size_t startToken, size_t endToken);
+  void EmitResult(Region const & region, size_t startToken, size_t endToken);
+  void EmitResult(City const & city, size_t startToken, size_t endToken);
+
+  // Computes rank for all results in |m_results|.
+  void FillResultRanks();
 
   // Tries to match unclassified objects from lower layers, like
   // parks, forests, lakes, rivers, etc. This method finds all
@@ -326,7 +341,7 @@ private:
   vector<FeaturesLayer> m_layers;
 
   // Non-owning pointer to a vector of results.
-  vector<FeatureID> * m_results;
+  TResultList * m_results;
 };
 
 string DebugPrint(Geocoder::Locality const & locality);

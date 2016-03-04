@@ -12,7 +12,6 @@
 #include "indexer/feature_impl.hpp"
 #include "indexer/ftypes_matcher.hpp"
 #include "indexer/index.hpp"
-#include "indexer/mwm_set.hpp"
 #include "indexer/rank_table.hpp"
 #include "indexer/search_delimiters.hpp"
 #include "indexer/search_string_utils.hpp"
@@ -387,6 +386,11 @@ void UniteCBVs(vector<unique_ptr<coding::CompressedBitVector>> & cbvs)
     cbvs.resize(i);
   }
 }
+
+bool SameMwm(Geocoder::TResult const & lhs, Geocoder::TResult const & rhs)
+{
+  return lhs.first.m_mwmId == rhs.first.m_mwmId;
+}
 }  // namespace
 
 // Geocoder::Params --------------------------------------------------------------------------------
@@ -453,7 +457,7 @@ void Geocoder::SetParams(Params const & params)
   LOG(LDEBUG, ("Languages =", m_params.m_langs));
 }
 
-void Geocoder::GoEverywhere(vector<FeatureID> & results)
+void Geocoder::GoEverywhere(TResultList & results)
 {
   // TODO (@y): remove following code as soon as Geocoder::Go() will
   // work fast for most cases (significantly less than 1 second).
@@ -480,7 +484,7 @@ void Geocoder::GoEverywhere(vector<FeatureID> & results)
   GoImpl(infos, false /* inViewport */);
 }
 
-void Geocoder::GoInViewport(vector<FeatureID> & results)
+void Geocoder::GoInViewport(TResultList & results)
 {
   if (m_numTokens == 0)
     return;
@@ -608,6 +612,9 @@ void Geocoder::GoImpl(vector<shared_ptr<MwmInfo>> & infos, bool inViewport)
   catch (CancelException & e)
   {
   }
+
+  // Fill results ranks, as they were missed.
+  FillResultRanks();
 }
 
 void Geocoder::ClearCaches()
@@ -714,7 +721,7 @@ void Geocoder::FillLocalitiesTable()
       if (numCities < kMaxNumCities && ft.GetFeatureType() == feature::GEOM_POINT)
       {
         ++numCities;
-        City city = l;
+        City city(l, SearchModel::SEARCH_TYPE_CITY);
         city.m_rect = MercatorBounds::RectByCenterXYAndSizeInMeters(
             feature::GetCenter(ft), ftypes::GetRadiusByPopulation(ft.GetPopulation()));
 
@@ -801,7 +808,7 @@ void Geocoder::FillVillageLocalities()
       continue;
 
     ++numVillages;
-    City village = l;
+    City village(l, SearchModel::SEARCH_TYPE_VILLAGE);
     village.m_rect = MercatorBounds::RectByCenterXYAndSizeInMeters(
         feature::GetCenter(ft), ftypes::GetRadiusByPopulation(ft.GetPopulation()));
 
@@ -895,7 +902,7 @@ void Geocoder::MatchRegions(RegionType type)
       if (AllTokensUsed())
       {
         // Region matches to search query, we need to emit it as is.
-        EmitResult(m_worldId, region.m_featureId);
+        EmitResult(region, startToken, endToken);
         continue;
       }
 
@@ -940,8 +947,8 @@ void Geocoder::MatchCities()
       ScopedMarkTokens mark(m_usedTokens, startToken, endToken);
       if (AllTokensUsed())
       {
-        // City matches to search query.
-        EmitResult(city.m_countryId, city.m_featureId);
+        // City matches to search query, we need to emit it as is.
+        EmitResult(city, startToken, endToken);
         continue;
       }
 
@@ -1236,19 +1243,86 @@ void Geocoder::FindPaths()
     sortedLayers.push_back(&layer);
   sort(sortedLayers.begin(), sortedLayers.end(), my::CompareBy(&FeaturesLayer::m_type));
 
+  auto const & innermostLayer = *sortedLayers.front();
+
   m_finder.ForEachReachableVertex(*m_matcher, sortedLayers,
-                                  [this](IntersectionResult const & result)
+                                  [this, &innermostLayer](IntersectionResult const & result)
   {
     ASSERT(result.IsValid(), ());
     // TODO(@y, @m, @vng): use rest fields of IntersectionResult for
     // better scoring.
-    EmitResult(m_context->GetId(), result.InnermostResult());
+    EmitResult(m_context->GetId(), result.InnermostResult(), innermostLayer.m_type,
+               innermostLayer.m_startToken, innermostLayer.m_endToken);
   });
 }
 
-void Geocoder::EmitResult(MwmSet::MwmId const & mwmId, uint32_t featureId)
+void Geocoder::EmitResult(MwmSet::MwmId const & mwmId, uint32_t ftId, SearchModel::SearchType type,
+                          size_t startToken, size_t endToken)
 {
-  m_results->emplace_back(mwmId, featureId);
+  FeatureID id(mwmId, ftId);
+
+  PreRankingInfo info;
+  info.m_searchType = type;
+  info.m_startToken = startToken;
+  info.m_endToken = endToken;
+  if (auto const & mwmInfo = mwmId.GetInfo())
+  {
+    auto const center = mwmInfo->m_limitRect.Center();
+    info.m_mwmDistanceToViewport =
+        MercatorBounds::DistanceOnEarth(center, m_params.m_viewport.Center());
+    info.m_mwmDistanceToPosition = MercatorBounds::DistanceOnEarth(center, m_params.m_position);
+  }
+  // info.m_ranks will be filled at the end, for all results at once.
+
+  m_results->emplace_back(move(id), move(info));
+}
+
+void Geocoder::EmitResult(Region const & region, size_t startToken, size_t endToken)
+{
+  SearchModel::SearchType type;
+  switch (region.m_type)
+  {
+  case REGION_TYPE_STATE: type = SearchModel::SEARCH_TYPE_STATE; break;
+  case REGION_TYPE_COUNTRY: type = SearchModel::SEARCH_TYPE_COUNTRY; break;
+  case REGION_TYPE_COUNT: type = SearchModel::SEARCH_TYPE_COUNT; break;
+  }
+  EmitResult(m_worldId, region.m_featureId, type, startToken, endToken);
+}
+
+void Geocoder::EmitResult(City const & city, size_t startToken, size_t endToken)
+{
+  EmitResult(city.m_countryId, city.m_featureId, city.m_type, startToken, endToken);
+}
+
+void Geocoder::FillResultRanks()
+{
+  sort(m_results->begin(), m_results->end(), my::CompareBy(&TResult::first));
+
+  auto ib = m_results->begin();
+  while (ib != m_results->end())
+  {
+    auto ie = ib;
+    while (ie != m_results->end() && SameMwm(*ib, *ie))
+      ++ie;
+
+    /// @todo Add RankTableCache here?
+    MwmSet::MwmHandle handle = m_index.GetMwmHandleById(ib->first.m_mwmId);
+    if (handle.IsAlive())
+    {
+      auto rankTable = RankTable::Load(handle.GetValue<MwmValue>()->m_cont);
+      if (!rankTable.get())
+        rankTable.reset(new DummyRankTable());
+
+      for (auto ii = ib; ii != ie; ++ii)
+      {
+        auto const & id = ii->first;
+        auto & info = ii->second;
+
+        info.m_rank = rankTable->Get(id.m_index);
+      }
+    }
+    ib = ie;
+  }
 }
 
 void Geocoder::MatchUnclassified(size_t curToken)
@@ -1268,6 +1342,7 @@ void Geocoder::MatchUnclassified(size_t curToken)
   CBVPtr allFeatures;
   allFeatures.SetFull();
 
+  auto startToken = curToken;
   for (curToken = SkipUsedTokens(curToken); curToken < m_numTokens && !m_usedTokens[curToken];
        ++curToken)
   {
@@ -1282,8 +1357,9 @@ void Geocoder::MatchUnclassified(size_t curToken)
 
   auto emitUnclassified = [&](uint32_t featureId)
   {
-    if (GetSearchTypeInGeocoding(featureId) == SearchModel::SEARCH_TYPE_UNCLASSIFIED)
-      EmitResult(m_context->GetId(), featureId);
+    auto type = GetSearchTypeInGeocoding(featureId);
+    if (type == SearchModel::SEARCH_TYPE_UNCLASSIFIED)
+      EmitResult(m_context->GetId(), featureId, type, startToken, curToken);
   };
   coding::CompressedBitVectorEnumerator::ForEach(*allFeatures, emitUnclassified);
 }
