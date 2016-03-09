@@ -34,6 +34,7 @@
 #include "geometry/rect2d.hpp"
 #include "geometry/screenbase.hpp"
 
+#include "base/deferred_task.hpp"
 #include "base/macros.hpp"
 #include "base/strings_bundle.hpp"
 #include "base/thread_checker.hpp"
@@ -126,6 +127,7 @@ protected:
   double m_startForegroundTime;
 
   storage::Storage m_storage;
+  my::DeferredTask m_deferredCountryUpdate;
 
   location::TMyPositionModeChanged m_myPositionListener;
 
@@ -357,6 +359,7 @@ private:
 
   void FillSearchResultsMarks(search::Results const & results);
 
+  void OnCheckUpdateCurrentCountry(m2::PointF const & pt, int zoomLevel);
   void OnUpdateCurrentCountry(m2::PointF const & pt, int zoomLevel);
 
   storage::TCountryId m_lastReportedCountry;
