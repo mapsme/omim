@@ -2,6 +2,8 @@
 
 #include "editor/editor_config.hpp"
 
+#include "base/stl_helpers.hpp"
+
 #include "std/set.hpp"
 
 using namespace editor;
@@ -38,6 +40,7 @@ UNIT_TEST(EditorConfig_TypeDescription)
     TEST(desc.IsAddressEditable(), ());
     auto fields = poi;
     fields.push_back(EType::FMD_INTERNET);
+    my::SortUnique(fields);
     TEST_EQUAL(desc.GetEditableFields(), fields, ());
   }
   {
@@ -48,6 +51,7 @@ UNIT_TEST(EditorConfig_TypeDescription)
     TEST(desc.IsAddressEditable(), ());
     auto fields = poi;
     fields.push_back(EType::FMD_OPERATOR);
+    my::SortUnique(fields);
     TEST_EQUAL(desc.GetEditableFields(), fields, ());
   }
   // TODO(mgsergio): Test case with priority="high" when there is one on editor.config.
@@ -60,4 +64,6 @@ UNIT_TEST(EditorConfig_GetTypesThatGenBeAdded)
   auto const types = config.GetTypesThatCanBeAdded();
   TEST(find(begin(types), end(types), "amenity-cafe") != end(types), ());
   TEST(find(begin(types), end(types), "natural-peak") == end(types), ());
+  // Marked as "editable=no".
+  TEST(find(begin(types), end(types), "aeroway-airport") == end(types), ());
 }
