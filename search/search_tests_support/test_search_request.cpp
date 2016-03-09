@@ -2,6 +2,9 @@
 
 #include "search/search_tests_support/test_search_engine.hpp"
 
+#include "geometry/latlon.hpp"
+#include "geometry/mercator.hpp"
+
 #include "base/logging.hpp"
 
 namespace search
