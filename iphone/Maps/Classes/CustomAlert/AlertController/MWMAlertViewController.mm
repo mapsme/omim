@@ -173,6 +173,11 @@ static NSString * const kAlertControllerNibIdentifier = @"MWMAlertViewController
   [self displayAlert:[MWMAlert downloaderNeedUpdateAlertWithOkBlock:okBlock]];
 }
 
+- (void)presentEditorViralAlertWithShareBlock:(nonnull TMWMVoidBlock)share
+{
+  [self displayAlert:[MWMAlert editorViralAlertWithShareBlock:share]];
+}
+
 - (void)closeAlertWithCompletion:(nullable TMWMVoidBlock)completion
 {
   MWMAlert * alert = self.view.subviews.firstObject;

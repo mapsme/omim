@@ -28,6 +28,7 @@
 + (MWMAlert *)downloaderNotEnoughSpaceAlert;
 + (MWMAlert *)downloaderInternalErrorAlertForMap:(NSString *)name okBlock:(TMWMVoidBlock)okBlock;
 + (MWMAlert *)downloaderNeedUpdateAlertWithOkBlock:(TMWMVoidBlock)okBlock;
++ (MWMAlert *)editorViralAlertWithShareBlock:(TMWMVoidBlock)share;
 - (void)close;
 
 - (void)setNeedsCloseAlertAfterEnterBackground;

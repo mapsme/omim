@@ -3,6 +3,7 @@
 #import "MWMAlertViewController.h"
 #import "MWMDefaultAlert.h"
 #import "MWMDownloadTransitMapAlert.h"
+#import "MWMEditorViralAlert.h"
 #import "MWMFacebookAlert.h"
 #import "MWMLocationAlert.h"
 #import "MWMPedestrianShareAlert.h"
@@ -133,6 +134,11 @@
 + (MWMAlert *)downloaderNeedUpdateAlertWithOkBlock:(TMWMVoidBlock)okBlock
 {
   return [MWMDefaultAlert downloaderNeedUpdateAlertWithOkBlock:okBlock];
+}
+
++ (MWMAlert *)editorViralAlertWithShareBlock:(TMWMVoidBlock)share
+{
+  return [MWMEditorViralAlert alertWithShareBlock:share];
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)orientation
