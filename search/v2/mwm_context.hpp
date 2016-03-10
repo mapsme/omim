@@ -35,6 +35,7 @@ struct MwmContext
   {
     ForEachIndexImpl(intervals, scale, [&](uint32_t index)
     {
+      // TODO: Optimize deleted checks by getting vector of deleted indexes from the Editor.
       if (GetEditedStatus(index) != osm::Editor::FeatureStatus::Deleted)
         fn(index);
     });
@@ -50,25 +51,13 @@ struct MwmContext
                      [&](uint32_t index)
                      {
                        FeatureType ft;
-
-                       switch (GetEditedStatus(index))
-                       {
-                       case osm::Editor::FeatureStatus::Deleted: return;
-                       case osm::Editor::FeatureStatus::Modified:
-                         VERIFY(osm::Editor::Instance().GetEditedFeature(GetId(), index, ft), ());
+                       if (GetFeature(index, ft))
                          fn(ft);
-                         return;
-                       case osm::Editor::FeatureStatus::Created:
-                         CHECK(false, ("Created features index should be generated."));
-                       case osm::Editor::FeatureStatus::Untouched: break;
-                       }
-
-                       GetFeature(index, ft);
-                       fn(ft);
                      });
   }
 
-  void GetFeature(uint32_t index, FeatureType & ft) const;
+  // @returns false if feature was deleted by user.
+  bool GetFeature(uint32_t index, FeatureType & ft) const;
 
 private:
   osm::Editor::FeatureStatus GetEditedStatus(uint32_t index) const

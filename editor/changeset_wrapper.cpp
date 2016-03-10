@@ -6,6 +6,7 @@
 #include "geometry/mercator.hpp"
 
 #include "base/logging.hpp"
+#include "base/macros.hpp"
 
 #include "std/algorithm.hpp"
 #include "std/sstream.hpp"
@@ -14,12 +15,15 @@
 
 using editor::XMLFeature;
 
-string DebugPrint(pugi::xml_document const & doc)
+namespace pugi
+{
+string DebugPrint(xml_document const & doc)
 {
   ostringstream stream;
   doc.print(stream, "  ");
   return stream.str();
 }
+}  // namespace pugi
 
 namespace osm
 {
@@ -98,6 +102,17 @@ XMLFeature ChangesetWrapper::GetMatchingAreaFeatureFromOSM(vector<m2::PointD> co
   MYTHROW(OsmObjectWasDeletedException, ("OSM does not have any matching way for feature"));
 }
 
+void ChangesetWrapper::Create(XMLFeature node)
+{
+  if (m_changesetId == kInvalidChangesetId)
+    m_changesetId = m_api.CreateChangeSet(m_changesetComments);
+
+  // Changeset id should be updated for every OSM server commit.
+  node.SetAttribute("changeset", strings::to_string(m_changesetId));
+  // TODO(AlexZ): Think about storing/logging returned OSM ids.
+  UNUSED_VALUE(m_api.CreateElement(node));
+}
+
 void ChangesetWrapper::Modify(XMLFeature node)
 {
   if (m_changesetId == kInvalidChangesetId)
@@ -106,6 +121,16 @@ void ChangesetWrapper::Modify(XMLFeature node)
   // Changeset id should be updated for every OSM server commit.
   node.SetAttribute("changeset", strings::to_string(m_changesetId));
   m_api.ModifyElement(node);
+}
+
+void ChangesetWrapper::Delete(XMLFeature node)
+{
+  if (m_changesetId == kInvalidChangesetId)
+    m_changesetId = m_api.CreateChangeSet(m_changesetComments);
+
+  // Changeset id should be updated for every OSM server commit.
+  node.SetAttribute("changeset", strings::to_string(m_changesetId));
+  m_api.DeleteElement(node);
 }
 
 } // namespace osm

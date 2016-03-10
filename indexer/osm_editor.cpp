@@ -26,6 +26,7 @@
 #include "base/logging.hpp"
 #include "base/stl_helpers.hpp"
 #include "base/string_utils.hpp"
+#include "base/thread_checker.hpp"
 #include "base/timer.hpp"
 
 #include "std/algorithm.hpp"
@@ -189,11 +190,10 @@ void Editor::LoadMapEdits()
           if (needMigrateEdits && IsObsolete(xml, fid))
             continue;
 
-          FeatureTypeInfo & fti = m_features[fid.m_mwmId][fid.m_index];
-
+          FeatureTypeInfo fti;
           if (section.first == FeatureStatus::Created)
           {
-            // TODO(mgsergio): Create features which are not present in mwm.
+            fti.m_feature.FromXML(xml);
           }
           else
           {
@@ -217,6 +217,8 @@ void Editor::LoadMapEdits()
           case FeatureStatus::Created: ++created; break;
           case FeatureStatus::Untouched: ASSERT(false, ()); break;
           }
+          // Insert initialized structure at the end: exceptions are possible in above code.
+          m_features[fid.m_mwmId].emplace(fid.m_index, move(fti));
         }
         catch (editor::XMLFeatureError const & ex)
         {
@@ -265,6 +267,7 @@ bool Editor::Save(string const & fullFilePath) const
     for (auto const & index : mwm.second)
     {
       FeatureTypeInfo const & fti = index.second;
+      // TODO: Do we really need to serialize deleted features in full details? Looks like mwm ID and meta fields are enough.
       XMLFeature xf = fti.m_feature.ToXML();
       xf.SetMWMFeatureIndex(index.first);
       if (!fti.m_street.empty())
@@ -329,12 +332,25 @@ Editor::FeatureStatus Editor::GetFeatureStatus(MwmSet::MwmId const & mwmId, uint
 
 void Editor::DeleteFeature(FeatureType const & feature)
 {
-  FeatureID const fid = feature.GetID();
-  FeatureTypeInfo & ftInfo = m_features[fid.m_mwmId][fid.m_index];
-  ftInfo.m_status = FeatureStatus::Deleted;
-  ftInfo.m_feature = feature;
+  FeatureID const & fid = feature.GetID();
+  auto const mwm = m_features.find(fid.m_mwmId);
+  if (mwm != m_features.end())
+  {
+    auto const f = mwm->second.find(fid.m_index);
+    // Created feature is deleted by removing all traces of it.
+    if (f != mwm->second.end() && f->second.m_status == FeatureStatus::Created)
+    {
+      mwm->second.erase(f);
+      return;
+    }
+  }
+
+  FeatureTypeInfo & fti = m_features[fid.m_mwmId][fid.m_index];
+  fti.m_status = FeatureStatus::Deleted;
   // TODO: What if local client time is absolutely wrong?
-  ftInfo.m_modificationTimestamp = time(nullptr);
+  fti.m_modificationTimestamp = time(nullptr);
+  // TODO: We don't really need to serialize whole feature. Improve this code in the future.
+  fti.m_feature = feature;
 
   // TODO(AlexZ): Synchronize Save call/make it on a separate thread.
   Save(GetEditorFilePath());
@@ -342,31 +358,37 @@ void Editor::DeleteFeature(FeatureType const & feature)
   Invalidate();
 }
 
-Editor::SaveResult Editor::SaveEditedFeature(FeatureType & editedFeature, string const & editedStreet,
-                                             string const & editedHouseNumber)
+namespace
 {
-  // Check house number for validity.
-  if (editedHouseNumber.empty() || feature::IsHouseNumber(editedHouseNumber))
-    editedFeature.SetHouseNumber(editedHouseNumber);
-  // TODO(AlexZ): Store edited house number as house name if feature::IsHouseNumber() returned false.
+constexpr uint32_t kStartIndexForCreatedFeatures = numeric_limits<uint32_t>::max() - 0xfffff;
+bool IsCreatedFeature(FeatureID const & fid) { return fid.m_index >= kStartIndexForCreatedFeatures; }
+}  // namespace
 
-  FeatureID const fid = editedFeature.GetID();
-  if (AreFeaturesEqualButStreet(editedFeature, *m_getOriginalFeatureFn(fid)) &&
-      m_getOriginalFeatureStreetFn(editedFeature) == editedStreet)
-  {
-    RemoveFeatureFromStorageIfExists(fid.m_mwmId, fid.m_index);
-    // TODO(AlexZ): Synchronize Save call/make it on a separate thread.
-    Save(GetEditorFilePath());
-    Invalidate();
-    return NothingWasChanged;
-  }
-
+Editor::SaveResult Editor::SaveEditedFeature(EditableMapObject const & emo)
+{
+  FeatureID const & fid = emo.GetID();
   FeatureTypeInfo fti;
-  fti.m_status = FeatureStatus::Modified;
-  fti.m_feature = editedFeature;
+  fti.m_feature.ReplaceBy(emo);
+  if (IsCreatedFeature(fid))
+  {
+    fti.m_status = FeatureStatus::Created;
+  }
+  else
+  {
+    if (AreFeaturesEqualButStreet(fti.m_feature, *m_getOriginalFeatureFn(fid)) &&
+        m_getOriginalFeatureStreetFn(fti.m_feature) == emo.GetStreet())
+    {
+      RemoveFeatureFromStorageIfExists(fid.m_mwmId, fid.m_index);
+      // TODO(AlexZ): Synchronize Save call/make it on a separate thread.
+      Save(GetEditorFilePath());
+      Invalidate();
+      return NothingWasChanged;
+    }
+    fti.m_status = FeatureStatus::Modified;
+  }
   // TODO: What if local client time is absolutely wrong?
   fti.m_modificationTimestamp = time(nullptr);
-  fti.m_street = editedStreet;
+  fti.m_street = emo.GetStreet();
   m_features[fid.m_mwmId][fid.m_index] = move(fti);
 
   // TODO(AlexZ): Synchronize Save call/make it on a separate thread.
@@ -463,7 +485,12 @@ vector<uint32_t> Editor::GetFeaturesByStatus(MwmSet::MwmId const & mwmId, Featur
 
 EditableProperties Editor::GetEditableProperties(FeatureType const & feature) const
 {
-  feature::TypesHolder const types(feature);
+  // TODO(mgsergio): Check if feature is in the area where editing is disabled in the config.
+  return GetEditablePropertiesForTypes(feature::TypesHolder(feature));
+}
+// private
+EditableProperties Editor::GetEditablePropertiesForTypes(feature::TypesHolder const & types) const
+{
   editor::TypeAggregatedDescription desc;
   if (m_config.GetTypeDescription(types.ToObjectNames(), desc))
     return {desc.GetEditableFields(), desc.IsNameEditable(), desc.IsAddressEditable()};
@@ -514,30 +541,45 @@ void Editor::UploadChanges(string const & key, string const & secret, TChangeset
         // Do not process already uploaded features or those failed permanently.
         if (!NeedsUpload(fti.m_uploadStatus))
           continue;
-
-        // TODO(AlexZ): Create/delete nodes support.
-        if (fti.m_status != FeatureStatus::Modified)
-          continue;
-
-        XMLFeature feature = fti.m_feature.ToXML();
-        if (!fti.m_street.empty())
-          feature.SetTagValue(kAddrStreetTag, fti.m_street);
         try
         {
-          XMLFeature osmFeature =
-              GetMatchingFeatureFromOSM(changeset, m_getOriginalFeatureFn(fti.m_feature.GetID()));
-          XMLFeature const osmFeatureCopy = osmFeature;
-          osmFeature.ApplyPatch(feature);
-          // Check to avoid duplicates.
-          if (osmFeature == osmFeatureCopy)
+          XMLFeature feature = fti.m_feature.ToXML();
+          if (!fti.m_street.empty())
+            feature.SetTagValue(kAddrStreetTag, fti.m_street);
+
+          switch (fti.m_status)
           {
-            LOG(LWARNING, ("Local changes are equal to OSM, feature was not uploaded, local changes were deleted.", osmFeatureCopy));
-            // TODO(AlexZ): Delete local change.
-            continue;
+          case FeatureStatus::Untouched: CHECK(false, ("It's impossible.")); break;
+
+          case FeatureStatus::Created: changeset.Create(feature); break;
+
+          case FeatureStatus::Modified:
+          {
+            XMLFeature osmFeature =
+                GetMatchingFeatureFromOSM(changeset, m_getOriginalFeatureFn(fti.m_feature.GetID()));
+            XMLFeature const osmFeatureCopy = osmFeature;
+            osmFeature.ApplyPatch(feature);
+            // Check to avoid duplicates.
+            if (osmFeature == osmFeatureCopy)
+            {
+              LOG(LWARNING, ("Local changes are equal to OSM, feature was not uploaded, local "
+                             "changes were deleted.",
+                             osmFeatureCopy));
+              // TODO(AlexZ): Delete local change.
+              continue;
+            }
+            LOG(LDEBUG, ("Uploading patched feature", osmFeature));
+            changeset.Modify(osmFeature);
           }
-          LOG(LDEBUG, ("Uploading patched feature", osmFeature));
-          changeset.Modify(osmFeature);
+          break;
+
+          case FeatureStatus::Deleted:
+            changeset.Delete(GetMatchingFeatureFromOSM(
+                changeset, m_getOriginalFeatureFn(fti.m_feature.GetID())));
+            break;
+          }
           fti.m_uploadStatus = kUploaded;
+          // TODO(AlexZ): Use timestamp from the server.
           fti.m_uploadAttemptTimestamp = time(nullptr);
           fti.m_uploadError.clear();
           ++uploadedFeaturesCount;
@@ -678,21 +720,32 @@ NewFeatureCategories Editor::GetNewFeatureCategories() const
   return res;
 }
 
-namespace
+FeatureID Editor::GenerateNewFeatureId(MwmSet::MwmId const & id)
 {
-FeatureID GenerateNewFeatureId(FeatureID const & oldFeatureId)
-{
-  // TODO(AlexZ): Stable & unique features ID generation.
-  // TODO(vng): Looks like new feature indexes should uninterruptedly continue after existing indexes in mwm file.
-  static uint32_t newIndex = 0x0effffff;
-  return FeatureID(oldFeatureId.m_mwmId, newIndex++);
+  DECLARE_AND_ASSERT_THREAD_CHECKER("GenerateNewFeatureId is single-threaded.");
+  // TODO(vng): Double-check if new feature indexes should uninterruptedly continue after existing indexes in mwm file.
+  uint32_t featureIndex = kStartIndexForCreatedFeatures;
+  auto const found = m_features.find(id);
+  if (found != m_features.end())
+  {
+    // Scan all already created features and choose next available ID.
+    for (auto const & feature : found->second)
+    {
+      if (feature.second.m_status == FeatureStatus::Created && featureIndex <= feature.first)
+        featureIndex = feature.first + 1;
+    }
+  }
+  return FeatureID(id, featureIndex);
 }
-}  // namespace
 
 bool Editor::CreatePoint(uint32_t type, m2::PointD const & mercator, MwmSet::MwmId const & id, EditableMapObject & outFeature)
 {
-  // TODO(AlexZ): Finish impl.
-  return false;
+  ASSERT(id.IsAlive(), ("Please check that feature is created in valid MWM file before calling this method."));
+  outFeature.SetMercator(mercator);
+  outFeature.SetID(GenerateNewFeatureId(id));
+  outFeature.SetType(type);
+  outFeature.SetEditableProperties(GetEditablePropertiesForTypes(outFeature.GetTypes()));
+  return true;
 }
 
 string DebugPrint(Editor::FeatureStatus fs)
@@ -705,5 +758,4 @@ string DebugPrint(Editor::FeatureStatus fs)
   case Editor::FeatureStatus::Created: return "Created";
   };
 }
-
 }  // namespace osm
