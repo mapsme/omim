@@ -9,6 +9,7 @@
 #import "MWMAuthorizationCommon.h"
 #import "MWMAuthorizationLoginViewController.h"
 #import "MWMEditorViewController.h"
+#import "MWMFirstLaunchController.h"
 #import "MWMFrameworkListener.h"
 #import "MWMFrameworkObservers.h"
 #import "MWMMapDownloadDialog.h"
@@ -18,6 +19,7 @@
 #import "MWMPlacePageEntity.h"
 #import "MWMTableViewController.h"
 #import "MWMTextToSpeech.h"
+#import "MWMWhatsNewNightModeController.h"
 #import "RouteState.h"
 #import "Statistics.h"
 #import "UIColor+MapsMeColor.h"
@@ -46,7 +48,6 @@
 #import "../../../private.h"
 
 extern NSString * const kAlohalyticsTapEventKey = @"$onClick";
-extern NSString * const kUDWhatsNewWasShown = @"WhatsNewWithNightModeWasShown";
 extern char const * kAdForbiddenSettingsKey;
 extern char const * kAdServerForbiddenKey;
 
@@ -372,7 +373,7 @@ NSString * const kReportSegue = @"Map2ReportSegue";
 
   [self updateStatusBarStyle];
   GetFramework().InvalidateRendering();
-  [self showWhatsNewIfNeeded];
+  [self showWelcomeScreenIfNeeded];
   [self showViralAlertIfNeeded];
 }
 
@@ -400,19 +401,23 @@ NSString * const kReportSegue = @"Map2ReportSegue";
   [self.downloadDialog mwm_refreshUI];
 }
 
-- (void)showWhatsNewIfNeeded
+- (void)showWelcomeScreenIfNeeded
 {
   if (isIOS7)
     return;
+
+  BOOL const isFirstSession = [Alohalytics isFirstSession];
+  Class<MWMWelcomeControllerProtocol> welcomeClass =
+  isFirstSession ? [MWMFirstLaunchController class] : [MWMWhatsNewNightModeController class];
+
   NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
-  BOOL const whatsNewWasShown = [ud boolForKey:kUDWhatsNewWasShown];
-  if (whatsNewWasShown)
+  if ([ud boolForKey:[welcomeClass udWelcomeWasShownKey]])
     return;
 
-  if (![Alohalytics isFirstSession])
-    [self configureAndShowPageController];
+  self.pageViewController = [MWMPageController pageControllerWithParent:self];
+  [self.pageViewController show:welcomeClass];
 
-  [ud setBool:YES forKey:kUDWhatsNewWasShown];
+  [ud setBool:YES forKey:[welcomeClass udWelcomeWasShownKey]];
   [ud synchronize];
 }
 
@@ -437,12 +442,6 @@ NSString * const kReportSegue = @"Map2ReportSegue";
 
   [ud setObject:[NSDate date] forKey:kUDViralAlertWasShown];
   [ud synchronize];
-}
-
-- (void)configureAndShowPageController
-{
-  self.pageViewController = [MWMPageController pageControllerWithParent:self];
-  [self.pageViewController show];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
