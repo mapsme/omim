@@ -116,7 +116,7 @@ fi:2Baari|ruoka
 
 amenity-pub
 en:2Pub|bar|beer|food|U+1F37A|U+1F37B
-ar:بار
+ar:بار|الحانة|خمارة์|بيرة ์|شراب|الطعام
 cs:2Hospoda|2Bar|pivo|pití|jídlo|voda|pitná voda|tekutiny
 da:Kro|2Bar|øl|drink|mad
 de:2Bar|Kneipe|Bier|Essen
@@ -432,14 +432,14 @@ uk:Товари для саду|товари для саду та відпочи
 vi:Nhà trẻ
 
 shop-mobile_phone
-en:3Mobile Phone Store|electronics store|U+1F3EC|U+1F3EA|U+1F4F1|U+1F4F2
+en:2Cell Phones|3Mobile Phones|electronics store|U+1F3EC|U+1F3EA|U+1F4F1|U+1F4F2
 ar:متجر هواتف محمولة|متجر إلكترونيات
 zh-Hans:手机商店
 zh-Hant:手機專賣店
-cs:Obchod s mobilními telefony|obchod s elektronikou
+cs:3Mobily|Obchod s mobilními telefony|obchod s elektronikou
 da:3Mobiltelefon butik|elektronikforretning
 de:Handyladen|Eletronikgeschäft
-es:Tienda de telefonía móvil|tienda de electrónica
+es:3Celulares|Tienda de telefonía móvil|tienda de electrónica
 fi:2Elektroniikkakauppa
 fr:Magasin de téléphonie|magasin d'électronique
 hu:Mobiltelefon üzlet|elektronikai szaküzlet
@@ -452,7 +452,7 @@ no:3Mobiltelefonbutikk|elektronikkbutikk
 pl:Sklep z elektroniką|sklep elektroniczny
 pt:Loja de telemóveis|loja de aparelhos eletrónicos
 ro:Magazin de telefoane mobile|magazin de electronice
-ru:3Мобильные телефоны|электроника|салон связи
+ru:3Сотовые|3Мобильные телефоны|электроника|салон связи
 sk:Mobilné telefóny
 sv:Mobilbutik|elektronikaffär
 th:ร้านขายโทรศัพท์มือถือ|ร้านขายอุปกรณ์อิเล็กโทรนิก
@@ -896,33 +896,36 @@ nb:3Supermarked|butikk
 fi:3Supermarketti|kauppa
 
 shop-mall
-en:3Mall|3Supermarket|shop|U+1F3EA|U+1F3EC
-ru:3Торговый центр|3Универсам|3супермаркет|магазин
-uk:3Супермаркет|3універсам|2магазин|крамниця
-de:3Supermarkt|Laden
-fr:3Supermarché|2magasin
-it:3Supermercato|negozio
-es:3Supermercado|tienda
-ko:1슈퍼마켓|쇼핑|가게
-ja:1スーパーマーケット|ショップ|お買い物|買い物|商店
-cs:3Supermarket|2obchod
-sk:3Supermarket|2obchod
-nl:3Supermarkt|winkel
-zh-Hant:1超級市場|市場|購物
-pl:4Supermarket|zakupy|sklep
-pt:3Supermercado|compras
-hu:3Bevásárlóközpont|bolt
-th:3ซูเปอร์มาร์เก็ต|ร้านค้า
-zh-Hans:超市|商店
-ar:سوبر ماركت|متجر|المتجر
-da:3Supermarked|butik
-tr:3Süpermarket|mağaza
-sv:3Stormarknad|butik
-vi:Siêu thị|cửa hàng
-id:3Supermarket|toko
-ro:3Supermarket|magazin
-nb:3Supermarked|butikk
-fi:3Supermarketti|kauppa
+en:3Mall
+ar:ﻝﻮﻣ
+cs:Obchoďák
+da:Centeret
+de:Das Einkaufszentrum
+el:Το εμπορικό κέντρο
+es:El centro comercial
+fi:Ostoskeskus
+fr:Le centre commercial
+he:ןוינקה
+hu:A pláza
+id:Mall
+it:Il centro commerciale
+ja:モール
+ko:몰
+nb:Kjøpesenteret
+nl:Het winkelcentrum
+pl:Centrum handlowe
+pt:O Shopping
+ro:Mall-ul
+ru:Торговый центр
+sk:the Mall
+sv:Gallerian
+sw:Soko
+th:เดอะมอลล์
+tr:Alışveriş merkezi
+uk:Торговий центр
+vi:Khu mua sắm
+zh-Hans:商场
+zh-Hant:商场
 
 shop-department_store
 en:3Department Store|U+1F3EC|U+1F3EA
@@ -953,7 +956,7 @@ uk:2Універмаг
 vi:Cửa hàng bách hóa
 
 shop-beverages
-en:2Drinks|3beverages|U+1F379
+en:3Beverages|2drinks|U+1F379
 ar:مشروبات|عصائر
 zh-Hans:饮料
 zh-Hant:飲料|飲料店
@@ -973,7 +976,7 @@ no:2Drinker|drikke
 pl:3Napoje
 pt:3Bebidas
 ro:Băuturi
-ru:3Напитки
+ru:3Напитки|соки
 sk:2Nápoje
 sv:3Drinkar|drycker
 th:เครื่องดื่ม
