@@ -115,8 +115,7 @@ nb:2Bar|mat
 fi:2Baari|ruoka
 
 amenity-pub
-en:2Pub|bar|beer|food
-ru:2Бар|пиво|выпить|еда
+en:2Pub|bar|beer|food|U+1F37A|U+1F37B
 ar:بار
 cs:2Hospoda|2Bar|pivo|pití|jídlo|voda|pitná voda|tekutiny
 da:Kro|2Bar|øl|drink|mad
@@ -318,7 +317,7 @@ nb:3Butikk
 fi:3Kauppa
 
 shop-chemist
-en:3Beauty Care|home care|shop
+en:3Beauty Care|home care|shop|U+1F3EC|U+1F3EA
 ar:العناية بالجمال|تجميل
 zh-Hans:1美容护理
 zh-Hant:1美容保養|美妝店
@@ -347,7 +346,7 @@ uk:3Косметика
 vi:Thẩm mỹ viện
 
 shop-convenience
-en:3Convenience Store|shop
+en:3Convenience Store|shop|U+1F3EC|U+1F3EA
 ar:متجر|متجر صغير
 zh-Hans:2便利店
 zh-Hant:2便利商店|便利超商
@@ -375,7 +374,7 @@ uk:3Продуктовий
 vi:Cửa hàng tạp hóa
 
 shop-doityourself
-en:3DIY Store|home improvement
+en:3DIY Store|home improvement|U+1F3EC|U+1F3EA
 ar:متجر مستلزمات تشطيب|متجر ديكور
 zh-Hans:自助商店
 zh-Hant:3DIY 商店
@@ -404,7 +403,7 @@ uk:3Будматеріали|усе для дому|будівельні мат�
 vi:Cửa hàng bán đồ tự làm
 
 shop-garden_centre
-en:3Garden Store
+en:3Garden Store|U+1F3EC|U+1F3EA|U+1F3E1
 ar:حضانة|روضة
 zh-Hans:幼儿园
 zh-Hant:園藝店
@@ -433,7 +432,7 @@ uk:Товари для саду|товари для саду та відпочи
 vi:Nhà trẻ
 
 shop-mobile_phone
-en:3Mobile Phone Store|electronics store
+en:3Mobile Phone Store|electronics store|U+1F3EC|U+1F3EA|U+1F4F1|U+1F4F2
 ar:متجر هواتف محمولة|متجر إلكترونيات
 zh-Hans:手机商店
 zh-Hant:手機專賣店
@@ -926,7 +925,7 @@ nb:3Supermarked|butikk
 fi:3Supermarketti|kauppa
 
 shop-department_store
-en:3Department Store
+en:3Department Store|U+1F3EC|U+1F3EA
 ar:متجر شامل|مركز تجاري
 zh-Hans:百货商店
 zh-Hant:百貨公司
@@ -954,7 +953,7 @@ uk:2Універмаг
 vi:Cửa hàng bách hóa
 
 shop-beverages
-en:2Drinks|3beverages
+en:2Drinks|3beverages|U+1F379
 ar:مشروبات|عصائر
 zh-Hans:饮料
 zh-Hant:飲料|飲料店
@@ -983,7 +982,7 @@ uk:3Напої
 vi:Đồ uống
 
 shop-computer
-en:3Computer Store
+en:3Computer Store|U+1F4BB
 ar:متجر كمبيوتر
 zh-Hans:电脑商店
 zh-Hant:電腦商店|電腦專賣店
@@ -1011,7 +1010,7 @@ uk:3Комп'ютерний магазин|комп'ютерна техніка
 vi:Cửa hàng máy tính
 
 shop-confectionery
-en:3Confectionery|candy store
+en:3Confectionery|candy store|shop|U+1F36C|U+1F36D
 ar:حلواني|متجر حلويات
 zh-Hans:糖果店
 zh-Hant:糕餅店|糕餅行
@@ -2489,7 +2488,7 @@ nb:Sykehus
 fi:Sairaala
 
 amenity-clinic
-en:2Clinic|1hospital
+en:2Clinic|1hospital|U+1F3E5|U+1F489
 ar:عيادة|مستشفى
 zh-Hans:诊所
 zh-Hant:診所
@@ -2518,7 +2517,7 @@ uk:2Поліклініка
 vi:Bệnh viện|BV
 
 amenity-doctors
-en:2Doctor
+en:2Doctor|U+1F489|U+1F3E5|U+1F691
 ar:مكتب طبيب
 zh-Hans:1医师办公室
 zh-Hant:1醫師診間
@@ -2805,7 +2804,7 @@ nb:Resirkulering
 fi:Kierrätys
 
 amenity-recycling
-en:2Recycling Center
+en:2Recycling Center|U+1F6AE|U+267B
 ar:مركز إعادة تدوير
 zh-Hans:1回收中心
 zh-Hant:1回收中心|回收站
