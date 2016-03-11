@@ -33,9 +33,10 @@ jmethodID g_suggestConstructor;
 jclass g_descriptionClass;
 jmethodID g_descriptionConstructor;
 
-jobject ToJavaResult(Result result, bool hasPosition, double lat, double lon)
+jobject ToJavaResult(Result & result, bool hasPosition, double lat, double lon)
 {
   JNIEnv * env = jni::GetEnv();
+  ::Framework * fr = g_framework->NativeFramework();
 
   jni::TScopedLocalIntArrayRef ranges(env, env->NewIntArray(result.GetHighlightRangesCount() * 2));
   jint * rawArr = env->GetIntArrayElements(ranges.get(), nullptr);
@@ -47,7 +48,18 @@ jobject ToJavaResult(Result result, bool hasPosition, double lat, double lon)
   }
   env->ReleaseIntArrayElements(ranges.get(), rawArr, 0);
 
-  ms::LatLon const ll = MercatorBounds::ToLatLon(result.GetFeatureCenter());
+  ms::LatLon ll = ms::LatLon::Zero();
+  string distance;
+  if (result.HasPoint())
+  {
+    ll = MercatorBounds::ToLatLon(result.GetFeatureCenter());
+    if (hasPosition)
+    {
+      double dummy;
+      (void) fr->GetDistanceAndAzimut(result.GetFeatureCenter(), lat, lon, 0, distance, dummy);
+    }
+  }
+
   if (result.IsSuggest())
   {
     jni::TScopedLocalRef name(env, jni::ToJavaString(env, result.GetString()));
@@ -56,20 +68,18 @@ jobject ToJavaResult(Result result, bool hasPosition, double lat, double lon)
     ASSERT(ret, ());
     return ret;
   }
-  g_framework->NativeFramework()->LoadSearchResultMetadata(result);
 
-  string distance;
-  if (hasPosition)
+  search::AddressInfo info;
+  if (result.GetResultType() == Result::RESULT_FEATURE)
   {
-    double dummy;
-    (void) g_framework->NativeFramework()->GetDistanceAndAzimut(result.GetFeatureCenter(), lat, lon, 0, distance, dummy);
+    fr->LoadSearchResultMetadata(result);
+    info = fr->GetFeatureAddressInfo(result.GetFeatureID());
   }
-
-
-  auto const address = g_framework->NativeFramework()->GetSearchResultAddress(result);
+  else if (result.HasPoint())
+    info = fr->GetAddressInfoAtPoint(result.GetFeatureCenter());
 
   jni::TScopedLocalRef featureType(env, jni::ToJavaString(env, result.GetFeatureType()));
-  jni::TScopedLocalRef region(env, jni::ToJavaString(env, address.FormatAddress(search::AddressInfo::SEARCH_RESULT)));
+  jni::TScopedLocalRef region(env, jni::ToJavaString(env, info.FormatAddress(search::AddressInfo::SEARCH_RESULT)));
   jni::TScopedLocalRef dist(env, jni::ToJavaString(env, distance));
   jni::TScopedLocalRef cuisine(env, jni::ToJavaString(env, result.GetCuisine()));
   jni::TScopedLocalRef desc(env, env->NewObject(g_descriptionClass, g_descriptionConstructor,
