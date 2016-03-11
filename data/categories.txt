@@ -106,7 +106,7 @@ th:2บาร์|ผับ|เบียร์|เครื่องดื่ม|
 zh-Hans:1酒吧์|酒馆์|啤酒|饮料|食物
 ar:الحانة|خمارة์|بيرة ์|شراب|الطعام
 da:2Bar|øl|drink|mad
-tr:2bira|içki|yemek
+tr:2Bira|içki|yemek
 sv:2Bar|öl|drink|mat
 vi:2Quán bar|quán rượu|đồ uống|ẩm thực
 id:2Bar|minuman|makanan
@@ -115,33 +115,33 @@ nb:2Bar|mat
 fi:2Baari|ruoka
 
 amenity-pub
-en:2Pub|bar
+en:2Pub|bar|beer|food
+ru:2Бар|пиво|выпить|еда
 ar:بار
-ch:酒吧
-ch-hant:酒吧
-cs:2Hospoda|bar
-da:Kro|bar
-de:Bar
-es:2Pub|bar
-fi:2Pubi|baari
-fr:Bistrot|bar
-hu:2Kocsma|szórakozóhely|mulató|bár
-id:2Pub|bar
-it:2Pub|bar
-ja:バー|パブ
-ko:바|주점
-nl:Bar|café
-no:2Pub|bar
-pl:2Pub|bar
-pt:2Pub|bar
-ro:2Pub|bar
-ru:1паб
-sk:Pohostinstvo|bar
-sv:2Krog|pub
-th:บาร์|ผับ
-tr:2Pub|bar
-uk:1паб
-vi:Quán bar|bar
+cs:2Hospoda|2Bar|pivo|pití|jídlo|voda|pitná voda|tekutiny
+da:Kro|2Bar|øl|drink|mad
+de:2Bar|Kneipe|Bier|Essen
+es:2Pub|2Bar|comer
+fi:2Pubi|2Baari|ruoka
+fr:Bistrot|2Bar|bière|boisson|nourriture
+hu:2Kocsma|2Bár|sör|ital|élelmiszer
+id:2Pub|2Bar|minuman|makanan
+it:2Pub|2Bar|2birra|mangiare|cibo
+ja:バー|パブ|ビール|1居酒屋|飲食|飲み屋|呑み屋|酒
+ko:바|술집|맥주|음료|음식
+nb:2Bar|mat
+nl:2Bar|2café|bier|drinken|eten
+pl:2Pub|2Bar|piwo|napoje|jedzenie
+pt:2Pub|2Bar|cerveja|beber|alimentação
+ro:2Pub|2Bar|2cârciumă|băutură|alimentație
+sk:4Pohostinstvo|2Bar|pivo|pitie|jedlo|voda|pitná voda|tekutiny
+sv:2Krog|2Bar|öl|drink|mat
+th:2บาร์|ผับ|เบียร์|เครื่องดื่ม|อาหาร
+tr:2Pub|2Bira|içki|yemek
+uk:1Паб|2Бар|пиво|напої|їжа
+vi:2Quán bar|quán rượu|đồ uống|ẩm thực
+zh-Hans:1酒吧์|酒馆์|啤酒|饮料|食物
+zh-Hant:1酒吧|酒館|飲酒|PUB|吧台|飲食
 
 amenity-cafe
 en:3Cafe|3restaurant|3food|U+2615|U+1F356|U+1F357|U+1F35A|U+1F35B|U+1F35C|U+1F35D|U+1F363|U+1F366|U+1F367|U+1F368|U+1F369|U+1F370|U+1F372|U+1F374|U+1F377|U+1F60B|U+1F375
@@ -288,7 +288,7 @@ ro:3Brutărie|magazin
 nb:3Bakeri|butikk
 fi:3Leipomo|kauppa
 
-shop|shop-mall
+shop
 en:2Shop|U+1F3EA|U+1F3EC
 ru:2Магазин
 uk:2Магазин|крамниця
@@ -318,10 +318,10 @@ nb:3Butikk
 fi:3Kauppa
 
 shop-chemist
-en:3Beauty Care|home care
+en:3Beauty Care|home care|shop
 ar:العناية بالجمال|تجميل
-ch:1美容护理
-ch-hant:1美容保養|美妝店
+zh-Hans:1美容护理
+zh-Hant:1美容保養|美妝店
 cs:3Salon krásy|domácí péče
 da:Skønhedspleje|hjemmepleje
 de:4Schönheitssalon
@@ -338,7 +338,7 @@ no:Skjønnhetspleie|hjemmepleie
 pl:Opieka domowa
 pt:Cuidados de beleza|estética
 ro:Centru de înfrumusețare|centru de îngrijire
-ru:3Косметика|бытовая химия
+ru:3Косметика|бытовая химия|магазин
 sk:3Kozmetický salón
 sv:Skönhetsvård
 th:สถานเสริมความงาม
@@ -347,10 +347,10 @@ uk:3Косметика
 vi:Thẩm mỹ viện
 
 shop-convenience
-en:3Convenience Store
+en:3Convenience Store|shop
 ar:متجر|متجر صغير
-ch:2便利店
-ch-hant:2便利商店|便利超商
+zh-Hans:2便利店
+zh-Hant:2便利商店|便利超商
 cs:Smíšené zboží|koloniál
 da:Dagligvarebutik
 de:Gemischtwarenladen
@@ -366,7 +366,7 @@ nl:Buurtwinkel|kruidenier
 no:Nærbutikk|nærbutikk
 pt:Loja de conveniência
 ro:3Magazin mixt
-ru:3Продуктовый
+ru:3Продуктовый|2магазин
 sk:Príležitostné potreby
 sv:Närbutik
 th:ร้านสะดวกซื้อ
@@ -377,8 +377,8 @@ vi:Cửa hàng tạp hóa
 shop-doityourself
 en:3DIY Store|home improvement
 ar:متجر مستلزمات تشطيب|متجر ديكور
-ch:自助商店
-ch-hant:3DIY 商店
+zh-Hans:自助商店
+zh-Hant:3DIY 商店
 cs:3Hobby market|potřeby pro domácnost a zahradu
 da:Byggemarked
 de:Baumarkt|Heimwerkermarkt
@@ -406,8 +406,8 @@ vi:Cửa hàng bán đồ tự làm
 shop-garden_centre
 en:3Garden Store
 ar:حضانة|روضة
-ch:幼儿园
-ch-hant:園藝店
+zh-Hans:幼儿园
+zh-Hant:園藝店
 cs:Školka|zahradní centrum
 da:3Planteskole|havebutik
 de:3Gärtnerei|Garten-Center
@@ -435,8 +435,8 @@ vi:Nhà trẻ
 shop-mobile_phone
 en:3Mobile Phone Store|electronics store
 ar:متجر هواتف محمولة|متجر إلكترونيات
-ch:手机商店
-ch-hant:手機專賣店
+zh-Hans:手机商店
+zh-Hant:手機專賣店
 cs:Obchod s mobilními telefony|obchod s elektronikou
 da:3Mobiltelefon butik|elektronikforretning
 de:Handyladen|Eletronikgeschäft
@@ -896,11 +896,40 @@ ro:3Supermarket|magazin
 nb:3Supermarked|butikk
 fi:3Supermarketti|kauppa
 
+shop-mall
+en:3Mall|3Supermarket|shop|U+1F3EA|U+1F3EC
+ru:3Торговый центр|3Универсам|3супермаркет|магазин
+uk:3Супермаркет|3універсам|2магазин|крамниця
+de:3Supermarkt|Laden
+fr:3Supermarché|2magasin
+it:3Supermercato|negozio
+es:3Supermercado|tienda
+ko:1슈퍼마켓|쇼핑|가게
+ja:1スーパーマーケット|ショップ|お買い物|買い物|商店
+cs:3Supermarket|2obchod
+sk:3Supermarket|2obchod
+nl:3Supermarkt|winkel
+zh-Hant:1超級市場|市場|購物
+pl:4Supermarket|zakupy|sklep
+pt:3Supermercado|compras
+hu:3Bevásárlóközpont|bolt
+th:3ซูเปอร์มาร์เก็ต|ร้านค้า
+zh-Hans:超市|商店
+ar:سوبر ماركت|متجر|المتجر
+da:3Supermarked|butik
+tr:3Süpermarket|mağaza
+sv:3Stormarknad|butik
+vi:Siêu thị|cửa hàng
+id:3Supermarket|toko
+ro:3Supermarket|magazin
+nb:3Supermarked|butikk
+fi:3Supermarketti|kauppa
+
 shop-department_store
 en:3Department Store
 ar:متجر شامل|مركز تجاري
-ch:百货商店
-ch-hant:百貨公司
+zh-Hans:百货商店
+zh-Hant:百貨公司
 cs:Obchodní dům
 da:3Stormagasin
 de:3Kaufhaus
@@ -927,8 +956,8 @@ vi:Cửa hàng bách hóa
 shop-beverages
 en:2Drinks|3beverages
 ar:مشروبات|عصائر
-ch:饮料
-ch-hant:飲料|飲料店
+zh-Hans:饮料
+zh-Hant:飲料|飲料店
 cs:Nápoje|nápoje
 da:3Drikkevarer
 de:3Getränke
@@ -956,8 +985,8 @@ vi:Đồ uống
 shop-computer
 en:3Computer Store
 ar:متجر كمبيوتر
-ch:电脑商店
-ch-hant:電腦商店|電腦專賣店
+zh-Hans:电脑商店
+zh-Hant:電腦商店|電腦專賣店
 cs:Obchod s počítači
 da:3Computerforretning
 de:3Computergeschäft
@@ -982,10 +1011,10 @@ uk:3Комп'ютерний магазин|комп'ютерна техніка
 vi:Cửa hàng máy tính
 
 shop-confectionery
-en:i3Confectionery|candy Store
+en:3Confectionery|candy store
 ar:حلواني|متجر حلويات
-ch:糖果店
-ch-hant:糕餅店|糕餅行
+zh-Hans:糖果店
+zh-Hant:糕餅店|糕餅行
 cs:3Cukrárna
 da:3Konfektureforretning|slikbutik
 de:Süßwarengeschäft
@@ -1013,8 +1042,8 @@ vi:Cửa hàng kẹo
 shop-laundry
 en:3Laundry|laundromat
 ar:مغسلة|غسيل ملابس
-ch:1洗衣店
-ch-hant:洗衣店
+zh-Hans:1洗衣店
+zh-Hant:洗衣店
 cs:3Prádelna|veřejná prádelna
 da:3Vaskeri
 de:Wäscherei|Waschsalon
@@ -1042,8 +1071,8 @@ vi:Giặt là
 shop-toys
 en:3Toy Store
 ar:محل لعب
-ch:玩具店
-ch-hant:玩具商店
+zh-Hans:玩具店
+zh-Hant:玩具商店
 cs:3Hračkářství
 da:3Legetøjsbutik
 de:3Spielzeuggeschäft
@@ -2462,15 +2491,15 @@ fi:Sairaala
 amenity-clinic
 en:2Clinic|1hospital
 ar:عيادة|مستشفى
-ch:诊所
-ch-hant:診所
+zh-Hans:诊所
+zh-Hant:診所
 cs:2Klinika|nemocnice
 da:2Klinik|hospital
 de:3Krankenhaus|Klinik
 es:2Clínica|hospital
 fi:2Klinikka|sairaala
 fr:2Clinique|hôpital
-hu:2Klinika|kórház, szanatórium
+hu:2Klinika|kórház|szanatórium
 id:2Klinik|rumah sakit
 it:2Clinica|ospedale
 ja:クリニック|病院、診療所
@@ -2481,7 +2510,7 @@ pl:2Szpital
 pt:2Clínica|centro de saúde
 ro:2Clinică|spital
 ru:2Поликлиника
-sk:2Poliklinika|nemocnica, zdravotné stredisko
+sk:2Poliklinika|nemocnica|zdravotné stredisko
 sv:2Klinik|sjukhus
 th:1คลินิก|โรงพยาบาล
 tr:2Klinik
@@ -2489,10 +2518,10 @@ uk:2Поліклініка
 vi:Bệnh viện|BV
 
 amenity-doctors
-en:2Doctor's Office
+en:2Doctor
 ar:مكتب طبيب
-ch:1医师办公室
-ch-hant:1醫師診間
+zh-Hans:1医师办公室
+zh-Hant:1醫師診間
 cs:1Lékařská ordinace
 da:2Lægekontor
 de:2Arztpraxis
@@ -2519,8 +2548,8 @@ vi:2Phòng khám
 amenity-dentist
 en:2Dentist
 ar:طبيب أسنان
-ch:1牙科医生
-ch-hant:牙醫
+zh-Hans:1牙科医生
+zh-Hant:牙醫
 cs:2Zubař
 da:3Tandlæge
 de:2Zahnarzt
@@ -2536,13 +2565,13 @@ nl:3Tandarts
 no:3Tannlege
 pt:2Dentista
 ro:2Dentist
-ru:2Дантист
+ru:3Стоматолог|2дантист
 sk:2Zubár
 sv:2Tandläkare
 th:ทันตแพทย์
 tr:Diş hekimi|dişçi
-uk:2Дантист|3стоматолог
-vi:Nha sĩ
+uk:3Стоматолог|2дантист
+Сi:Nha sĩ
 
 amenity-hunting_stand
 en:Hunting Stand
@@ -2778,8 +2807,8 @@ fi:Kierrätys
 amenity-recycling
 en:2Recycling Center
 ar:مركز إعادة تدوير
-ch:1回收中心
-ch-hant:1回收中心|回收站
+zh-Hans:1回收中心
+zh-Hant:1回收中心|回收站
 cs:2Recyklační středisko
 da:3Genbrugsplads
 de:2Recyclinghof
@@ -4340,8 +4369,8 @@ fi:Toimisto
 office-company
 en:3Company Office
 ar:مكتب شركة
-ch:公司办公室
-ch-hant:公司辦公室
+zh-Hans:公司办公室
+zh-Hant:公司辦公室
 cs:3Kancelář společnosti
 da:3Selskabskontor
 de:Niederlassung
@@ -4368,8 +4397,8 @@ vi:Văn phòng công ty
 office-government
 en:3Government Office
 ar:مكتب حكومي
-ch:政府机构
-ch-hant:政府辦公室|政府機關
+zh-Hans:政府机构
+zh-Hant:政府辦公室|政府機關
 cs:Úřad vlády
 da:3Regeringskontor
 de:3Regierungsstelle
@@ -4385,19 +4414,19 @@ nl:3Overheidskantoor|overheidspand
 no:3Offentlig kontor
 pt:3Gabinete governamental
 ro:3Birou guvernamental
-ru:2Адм. учреждение|административное учереждение
+ru:2Госучреждение|административное учреждение
 sk:Štátny úrad
 sv:Ämbetsverk|myndighet
 th:หน่วยงานราชการ
 tr:Devlet dairesi
-uk:3Адм. установа|адміністративна установа
+uk:3Держустанова|адміністративна установа
 vi:Văn phòng chính phủ
 
 office-lawyer
-en:3Lawyer Office
+en:3Lawyer|advocate|attorney|barrister|counsel|councellor|solicitor
 ar:مكتب محامي|مكتب محاماة
-ch:律师事务所
-ch-hant:律師事務所
+zh-Hans:律师事务所
+zh-Hant:律師事務所
 cs:3Právní kancelář
 da:3Advokatkontor
 de:3Anwaltsbüro|Anwaltskanzlei
@@ -4424,8 +4453,8 @@ vi:Văn phòng luật sư
 office-telecommunication
 en:3Mobile Operator
 ar:شركة اتصالات|شركة محمول
-ch:移动运营商
-ch-hant:行動電話業者|電信業者
+zh-Hans:移动运营商
+zh-Hant:行動電話業者|電信業者
 cs:3Mobilní operátor
 da:3Mobiloperatør
 de:3Mobilbetreiber|Mobilfunkanbieter
@@ -4452,8 +4481,8 @@ vi:Điều hành di động
 craft-brewery
 en:3Brewery
 ar:مصنع جعة
-ch:1酿酒厂
-ch-hant:1釀酒廠
+zh-Hans:1酿酒厂
+zh-Hant:1釀酒廠
 cs:3Pivovar
 da:3Bryggeri
 de:3Brauerei|Brauhaus
@@ -4480,8 +4509,8 @@ vi:Nhà máy bia
 craft-carpenter
 en:4Carpenter
 ar:نجار
-ch:木工
-ch-hant:木工
+zh-Hans:木工
+zh-Hant:木工
 cs:4Truhlář
 da:3Tømrer
 de:3Zimmermann
@@ -4508,8 +4537,8 @@ vi:Thợ mộc
 craft-electrician
 en:3Electrician
 ar:كهربائي
-ch:电工
-ch-hant:電工
+zh-Hans:电工
+zh-Hant:電工
 cs:3Elektrikář
 da:3Elektriker
 de:3Elektriker
@@ -4534,10 +4563,10 @@ uk:3Електрик
 vi:Thợ điện
 
 craft-gardener
-en:Landscaper
+en:4Gardener|Landscaper
 ar:مهندس مناظر
-ch:园林设计师
-ch-hant:園藝師
+zh-Hans:园林设计师
+zh-Hant:園藝師
 cs:Zahradník
 da:3Gartner
 de:4Landschaftsgärtner
@@ -4564,8 +4593,8 @@ vi:Người thiết kế và xây dựng cảnh quan
 craft-hvac
 en:2Hvac|3Air Conditioner
 ar:تكييف|مكيف هواء
-ch:暖通工程师
-ch-hant:空調設備
+zh-Hans:暖通工程师
+zh-Hant:空調設備
 cs:2HVAC|montér vzduchotechniky
 da:3Blikkenslager|klimaanlæg
 de:Heizung|Lüftung|Klima|Installateur
@@ -4593,8 +4622,8 @@ vi:Điều hòa nhiệt độ
 craft-metal_construction
 en:4Metal Worker
 ar:عامل معادن
-ch:金属制造工
-ch-hant:鐵工
+zh-Hans:金属制造工
+zh-Hant:鐵工
 cs:4Kovodílna
 da:4Metalarbejder
 de:5Schlosser
@@ -4621,8 +4650,8 @@ vi:Nhà kim khí
 craft-painter
 en:3Painter
 ar:رسام
-ch:油漆匠
-ch-hant:油漆工
+zh-Hans:油漆匠
+zh-Hant:油漆工
 cs:3Malíř
 da:3Maler
 de:3Maler
@@ -4649,8 +4678,8 @@ vi:Họa sỹ
 craft-photographer
 en:3Photographer|photography Studio
 ar:مصور فوتوغرافي|استوديو تصوير
-ch:摄影师
-ch-hant:攝影師
+zh-Hans:摄影师
+zh-Hant:攝影師
 cs:3Fotograf|fotografické studio
 da:3Fotograf|studio
 de:3Fotograf|Fotostudio
@@ -4678,8 +4707,8 @@ vi:Thợ chụp ảnh
 craft-plumber
 en:3Plumber
 ar:سمكري
-ch:管道工
-ch-hant:水管工人|水電工
+zh-Hans:管道工
+zh-Hant:水管工人|水電工
 cs:Instalatér
 da:VVS-mand
 de:Installateur
@@ -4706,8 +4735,8 @@ vi:Thợ đường ống
 craft-shoemaker
 en:4Shoe Repair
 ar:تصليح الاحذية
-ch:修鞋匠
-ch-hant:修鞋工
+zh-Hans:修鞋匠
+zh-Hant:修鞋工
 cs:Opravna obuvi
 da:3Sko reparation
 de:Schuhreparatur
@@ -4734,8 +4763,8 @@ vi:Sửa giày
 craft-tailor
 en:4Tailor
 ar:خياط|ترزي
-ch:裁缝
-ch-hant:裁縫師
+zh-Hans:裁缝
+zh-Hant:裁縫師
 cs:Krejčí
 da:4Skrædder
 de:Schneider
@@ -4751,12 +4780,12 @@ nl:Kleermaker|kledingreparatie
 no:4Skredder
 pt:Alfaiate
 ro:4Croitor
-ru:Ремонт одежды|3ателье
+ru:3Ателье|портной|ремонт одежды
 sk:4Krajčírstvo
 sv:4Skräddare
 th:ช่างตัดเสื้อ
 tr:Terzi
-uk:Ремонт одягу|3швейна майстерня
+uk:3Ательє|Ремонт одягу|3швейна майстерня
 vi:Thợ may
 
 area:highway-footway|area:highway-pedestrian|area:highway-steps
