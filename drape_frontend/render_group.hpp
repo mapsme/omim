@@ -8,6 +8,7 @@
 #include "drape/glstate.hpp"
 #include "drape/render_bucket.hpp"
 
+#include "std/deque.hpp"
 #include "std/vector.hpp"
 #include "std/set.hpp"
 #include "std/unique_ptr.hpp"
@@ -64,31 +65,19 @@ public:
 
   bool IsEmpty() const { return m_renderBuckets.empty(); }
 
-  void DeleteLater() const
-  {
-    m_sharedFeaturesWaiting = true;
-    m_pendingOnDelete = true;
-  }
-
-  bool IsSharedFeaturesWaiting() const { return m_sharedFeaturesWaiting; }
+  void DeleteLater() const { m_pendingOnDelete = true; }
   bool IsPendingOnDelete() const { return m_pendingOnDelete; }
+  bool CanBeDeleted() const { return m_canBeDeleted; }
 
-  bool CanBeDeleted() const
-  {
-    return IsPendingOnDelete() && !IsSharedFeaturesWaiting();
-  }
-
-  using TCheckFeaturesWaiting = function<bool(m2::RectD const &)>;
-  bool UpdateFeaturesWaitingStatus(TCheckFeaturesWaiting isFeaturesWaiting,
-                                   int currentZoom, ref_ptr<dp::OverlayTree> tree,
-                                   deque<drape_ptr<dp::RenderBucket>> & bucketsToDelete);
+  bool UpdateCanBeDeletedStatus(bool canBeDeleted, int currentZoom, ref_ptr<dp::OverlayTree> tree,
+                                deque<drape_ptr<dp::RenderBucket>> & bucketsToDelete);
 
   bool IsLess(RenderGroup const & other) const;
 
 private:
   vector<drape_ptr<dp::RenderBucket> > m_renderBuckets;
   mutable bool m_pendingOnDelete;
-  mutable bool m_sharedFeaturesWaiting;
+  mutable bool m_canBeDeleted;
 
 private:
   friend string DebugPrint(RenderGroup const & group);

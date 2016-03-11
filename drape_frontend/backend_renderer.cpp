@@ -140,25 +140,25 @@ void BackendRenderer::AcceptMessage(ref_ptr<Message> message)
       m_batchersPool->ReleaseBatcher(msg->GetKey());
       break;
     }
+  case Message::FinishTileRead:
+    {
+      ref_ptr<FinishTileReadMessage> msg = message;
+      m_commutator->PostMessage(ThreadsCommutator::RenderThread,
+                                make_unique_dp<FinishTileReadMessage>(msg->MoveTiles(),
+                                                                      msg->GetTileRequestGeneration()),
+                                MessagePriority::Normal);
+      break;
+    }
   case Message::FinishReading:
     {
-      ref_ptr<FinishReadingMessage> msg = message;
-      if (msg->IsEnableFlushOverlays())
+      TOverlaysRenderData overlays;
+      overlays.swap(m_overlays);
+      if (!overlays.empty())
       {
-        TOverlaysRenderData overlays;
-        overlays.swap(m_overlays);
-        if (!overlays.empty())
-        {
-          m_commutator->PostMessage(ThreadsCommutator::RenderThread,
-                                    make_unique_dp<FlushOverlaysMessage>(move(overlays)),
-                                    MessagePriority::Normal);
-        }
+        m_commutator->PostMessage(ThreadsCommutator::RenderThread,
+                                  make_unique_dp<FlushOverlaysMessage>(move(overlays)),
+                                  MessagePriority::Normal);
       }
-
-      m_commutator->PostMessage(ThreadsCommutator::RenderThread,
-                                make_unique_dp<FinishReadingMessage>(move(msg->MoveTiles()),
-                                                                     msg->GetTileRequestGeneration()),
-                                MessagePriority::Normal);
       break;
     }
   case Message::MapShapeReaded:
@@ -171,14 +171,7 @@ void BackendRenderer::AcceptMessage(ref_ptr<Message> message)
         for (drape_ptr<MapShape> const & shape : msg->GetShapes())
         {
           batcher->SetFeatureMinZoom(shape->GetFeatureMinZoom());
-          bool const sharedFeature = shape->GetFeatureInfo().IsValid();
-          if (sharedFeature)
-            batcher->StartFeatureRecord(shape->GetFeatureInfo(), shape->GetFeatureLimitRect());
-
           shape->Draw(batcher, m_texMng);
-
-          if (sharedFeature)
-            batcher->EndFeatureRecord();
         }
       }
       break;

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "drape/attribute_provider.hpp"
-#include "drape/feature_geometry_decl.hpp"
 #include "drape/glstate.hpp"
 #include "drape/overlay_handle.hpp"
 #include "drape/pointers.hpp"
@@ -50,9 +49,6 @@ public:
   void StartSession(TFlushFn const & flusher);
   void EndSession();
 
-  // Begin/end processing of feature with FeatureGeometryId in the batcher.
-  void StartFeatureRecord(FeatureGeometryId feature, m2::RectD const & limitRect);
-  void EndFeatureRecord();
   void SetFeatureMinZoom(int minZoom);
 
 private:
@@ -71,33 +67,12 @@ private:
   TFlushFn m_flushInterface;
 
 private:
-  struct BucketId
-  {
-    BucketId() = default;
-    BucketId(GLState const & state, bool sharedFeatures)
-      : m_state(state)
-      , m_sharedFeatures(sharedFeatures)
-    {}
-
-    bool operator < (BucketId const & other) const
-    {
-      if (m_state != other.m_state)
-        return m_state < other.m_state;
-      return m_sharedFeatures < other.m_sharedFeatures;
-    }
-
-    GLState m_state;
-    bool m_sharedFeatures = false;
-  };
-
-  using TBuckets = map<BucketId, drape_ptr<RenderBucket>>;
+  using TBuckets = map<GLState, drape_ptr<RenderBucket>>;
   TBuckets m_buckets;
 
   uint32_t m_indexBufferSize;
   uint32_t m_vertexBufferSize;
 
-  FeatureGeometryId m_currentFeature;
-  m2::RectD m_featureLimitRect;
   int m_featureMinZoom = 0;
 };
 

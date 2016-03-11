@@ -195,6 +195,45 @@ void FrontendRenderer::AfterDrawFrame()
 
 #endif
 
+void FrontendRenderer::UpdateCanBeDeletedStatus()
+{
+  m2::RectD const & screenRect = m_userEventStream.GetCurrentScreen().ClipRect();
+
+  vector<m2::RectD> notFinishedTileRects;
+  notFinishedTileRects.reserve(m_notFinishedTiles.size());
+  for (auto const & tileKey : m_notFinishedTiles)
+    notFinishedTileRects.push_back(tileKey.GetGlobalRect());
+
+  for (RenderLayer & layer : m_layers)
+  {
+    for (auto & group : layer.m_renderGroups)
+    {
+      if (group->IsPendingOnDelete())
+      {
+        bool canBeDeleted = true;
+        if (!notFinishedTileRects.empty())
+        {
+          m2::RectD const tileRect = group->GetTileKey().GetGlobalRect();
+          if (tileRect.IsIntersect(screenRect))
+          {
+            for (auto const & notFinishedRect : notFinishedTileRects)
+            {
+              if (notFinishedRect.IsIntersect(tileRect))
+              {
+                canBeDeleted = false;
+                break;
+              }
+            }
+          }
+        }
+
+        layer.m_isDirty |= group->UpdateCanBeDeletedStatus(canBeDeleted, m_currentZoomLevel,
+                                                           make_ref(m_overlayTree), m_bucketsToDelete);
+      }
+    }
+  }
+}
+
 void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
 {
   switch (message->GetType())
@@ -243,19 +282,29 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
       break;
     }
 
-  case Message::FinishReading:
+  case Message::FinishTileRead:
     {
-      ref_ptr<FinishReadingMessage> msg = message;
+      ref_ptr<FinishTileReadMessage> msg = message;
       bool const isLastRequest = m_tileRequestGeneration == msg->GetTileRequestGeneration();
+      if (!isLastRequest)
+        break;
+
+      bool changed = false;
       for (auto const & tileKey : msg->GetTiles())
       {
-        if (CheckTileGenerations(tileKey) && isLastRequest)
+        if (CheckTileGenerations(tileKey))
         {
           auto it = m_notFinishedTiles.find(tileKey);
           if (it != m_notFinishedTiles.end())
+          {
             m_notFinishedTiles.erase(it);
+            changed = true;
+          }
         }
       }
+
+      if (changed)
+        UpdateCanBeDeletedStatus();
       break;
     }
 
@@ -781,8 +830,7 @@ bool FrontendRenderer::CheckTileGenerations(TileKey const & tileKey)
   {
     return group->GetTileKey() == tileKey && group->GetTileKey().m_generation < tileKey.m_generation;
   };
-  for (RenderLayer & layer : m_layers)
-    layer.m_isDirty |= RemoveGroups(removePredicate, layer.m_renderGroups, make_ref(m_overlayTree));
+  RemoveRenderGroups(removePredicate);
 
   return result;
 }
@@ -856,20 +904,6 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
 #ifdef DRAW_INFO
   BeforeDrawFrame();
 #endif
-
-  bool const waitFeatures = !m_notFinishedTiles.empty();
-  m2::RectD const & screenRect = modelView.ClipRect();
-  auto isFeaturesWaiting = [&screenRect, waitFeatures](m2::RectD const & rect)
-  {
-    return waitFeatures && rect.IsIntersect(screenRect);
-  };
-
-  for (RenderLayer & layer : m_layers)
-  {
-    for (auto & group : layer.m_renderGroups)
-      layer.m_isDirty |= group->UpdateFeaturesWaitingStatus(isFeaturesWaiting, m_currentZoomLevel,
-                                                            make_ref(m_overlayTree), m_bucketsToDelete);
-  }
 
   bool const isPerspective = modelView.isPerspective();
 
@@ -1068,14 +1102,9 @@ void FrontendRenderer::MergeBuckets()
     for (TGroupMap::value_type & node : forMerge)
     {
       if (node.second.size() < 2)
-      {
         newGroups.emplace_back(move(node.second.front()));
-      }
       else
-      {
-        BatchMergeHelper::MergeBatches(node.second, newGroups, isPerspective, true);
-        BatchMergeHelper::MergeBatches(node.second, newGroups, isPerspective, false);
-      }
+        BatchMergeHelper::MergeBatches(node.second, newGroups, isPerspective);
     }
 
     layer.m_renderGroups = move(newGroups);
@@ -1185,7 +1214,11 @@ void FrontendRenderer::CheckPerspectiveMinScale()
 
 void FrontendRenderer::ResolveZoomLevel(ScreenBase const & screen)
 {
+  int const prevZoomLevel = m_currentZoomLevel;
   m_currentZoomLevel = GetDrawTileScale(screen);
+
+  if (prevZoomLevel != m_currentZoomLevel)
+    UpdateCanBeDeletedStatus();
 
   CheckIsometryMinScale(screen);
   CheckPerspectiveMinScale();

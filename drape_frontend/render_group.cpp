@@ -46,7 +46,7 @@ bool BaseRenderGroup::IsOverlay() const
 RenderGroup::RenderGroup(dp::GLState const & state, df::TileKey const & tileKey)
   : TBase(state, tileKey)
   , m_pendingOnDelete(false)
-  , m_sharedFeaturesWaiting(false)
+  , m_canBeDeleted(false)
 {
 }
 
@@ -139,21 +139,15 @@ bool RenderGroup::IsLess(RenderGroup const & other) const
   return m_state < other.m_state;
 }
 
-bool RenderGroup::UpdateFeaturesWaitingStatus(TCheckFeaturesWaiting isFeaturesWaiting,
-                                              int currentZoom, ref_ptr<dp::OverlayTree> tree,
-                                              deque<drape_ptr<dp::RenderBucket>> & bucketsToDelete)
+bool RenderGroup::UpdateCanBeDeletedStatus(bool canBeDeleted, int currentZoom, ref_ptr<dp::OverlayTree> tree,
+                                           deque<drape_ptr<dp::RenderBucket>> & bucketsToDelete)
 {
-  if (!m_sharedFeaturesWaiting)
+  if (!IsPendingOnDelete())
     return false;
-
-  m2::RectD const tileRect = GetTileKey().GetGlobalRect();
-  bool const isTileVisible = isFeaturesWaiting(tileRect);
 
   for (size_t i = 0; i < m_renderBuckets.size(); )
   {
-    bool visibleBucket = (m_renderBuckets[i]->GetMinZoom() <= currentZoom) &&
-        (m_renderBuckets[i]->IsShared() ? m_renderBuckets[i]->IsFeaturesWaiting(isFeaturesWaiting)
-                                        : isTileVisible);
+    bool visibleBucket = !canBeDeleted && (m_renderBuckets[i]->GetMinZoom() <= currentZoom);
     if (!visibleBucket)
     {
       m_renderBuckets[i]->RemoveOverlayHandles(tree);
@@ -166,8 +160,8 @@ bool RenderGroup::UpdateFeaturesWaitingStatus(TCheckFeaturesWaiting isFeaturesWa
       ++i;
     }
   }
-  m_sharedFeaturesWaiting = !m_renderBuckets.empty();
-  return m_renderBuckets.empty();
+  m_canBeDeleted = m_renderBuckets.empty();
+  return m_canBeDeleted;
 }
 
 bool RenderGroupComparator::operator()(drape_ptr<RenderGroup> const & l, drape_ptr<RenderGroup> const & r)
