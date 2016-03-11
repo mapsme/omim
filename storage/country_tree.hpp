@@ -32,7 +32,6 @@ public:
     vector<unique_ptr<Node>> m_children;
     Node * m_parent;
 
-    /// @return reference is valid only up to the next tree structure modification
     Node * Add(TValue const & value)
     {
       m_children.emplace_back(make_unique<Node>(value, this));
@@ -45,26 +44,26 @@ public:
     {
     }
 
-    /// @return reference is valid only up to the next tree structure modification
     TValue const & Value() const { return m_value; }
-
-    /// @return reference is valid only up to the next tree structure modification
     TValue & Value() { return m_value; }
 
-    /// @return reference is valid only up to the next tree structure modification
-    Node * AddAtDepth(int level, TValue const & value)
+    /// \brief Adds a node to a tree with root == |this|.
+    /// \param level is depth where a node with |value| will be add. |level| == 0 means |this|.
+    /// When the method is called the node |this| exists. So it's wrong call it with |level| == 0.
+    /// If |level| == 1 the node with |value| will be added as a child of this.
+    /// If |level| == 2 the node with |value| will be added as a child of the last added child of the |this|.
+    /// And so on.
+    /// \param value is a value of node which will be added.
+    /// \note This method does not let to add a node to an arbitrary place in the tree.
+    /// It's posible to add children only from "right side".
+    Node * AddAtDepth(size_t level, TValue const & value)
     {
       Node * node = this;
-      while (level-- > 0 && !node->m_children.empty())
+      while (--level > 0 && !node->m_children.empty())
         node = node->m_children.back().get();
-      ASSERT_EQUAL(level, -1, ());
+      ASSERT_EQUAL(level, 0, ());
       return node->Add(value);
     }
-
-    /// Deletes all children and makes tree empty
-    void Clear() { m_children.clear(); }
-
-    bool operator<(Node const & other) const { return Value() < other.Value(); }
 
     bool HasParent() const { return m_parent != nullptr; }
 
@@ -157,18 +156,34 @@ private:
   using TCountryTreeHashTable = unordered_multimap<TKey, Node *>;
 
 public:
-  CountryTree(TValue const & value = TValue(), Node * parent = nullptr)
-    : m_countryTree(make_unique<Node>(value, parent))
+  bool IsEmpty() const { return m_countryTree == nullptr; }
+
+  Node const & GetRoot() const
   {
+    CHECK(m_countryTree, ());
+    return *m_countryTree;
   }
 
-  Node const & GetRoot() const { return *m_countryTree; }
-  Node & GetRoot() { return *m_countryTree; }
-
-  /// @return reference is valid only up to the next tree structure modification
-  TValue & AddAtDepth(int level, TValue const & value)
+  Node & GetRoot()
   {
-    Node * const added = m_countryTree->AddAtDepth(level, value);
+    CHECK(m_countryTree, ());
+    return *m_countryTree;
+  }
+
+  TValue & AddAtDepth(size_t level, TValue const & value)
+  {
+    Node * added = nullptr;
+    if (level == 0)
+    {
+      ASSERT(IsEmpty(), ());
+      m_countryTree = make_unique<Node>(value, nullptr);  // Creating the root node.
+      added = m_countryTree.get();
+    }
+    else
+    {
+      added = m_countryTree->AddAtDepth(level, value);
+    }
+
     ASSERT(added, ());
     m_countryTreeHashTable.insert(make_pair(value.Name(), added));
     return added->Value();
@@ -177,7 +192,7 @@ public:
   /// Deletes all children and makes tree empty
   void Clear()
   {
-    m_countryTree->Clear();
+    m_countryTree.reset();
     m_countryTreeHashTable.clear();
   }
 
@@ -187,6 +202,8 @@ public:
   void Find(TKey const & key, vector<Node const *> & found) const
   {
     found.clear();
+    if (IsEmpty())
+      return;
 
     if (key == m_countryTree->Value().Name())
       found.push_back(m_countryTree.get());
@@ -198,12 +215,15 @@ public:
     for_each(range.first, range.second,
              [&found](typename TCountryTreeHashTable::value_type const & node)
     {
-      found.push_back(&*node.second);
+      found.push_back(node.second);
     });
   }
 
   Node const * const FindFirst(TKey const & key) const
   {
+    if (IsEmpty())
+      return nullptr;
+
     vector<Node const *> found;
     Find(key, found);
     if (found.empty())
@@ -218,6 +238,9 @@ public:
   /// @TODO(bykoianko) Remove this method on countries.txt update.
   Node const * const FindFirstLeaf(TKey const & key) const
   {
+    if (IsEmpty())
+      return nullptr;
+
     vector<Node const *> found;
     Find(key, found);
 
@@ -229,13 +252,7 @@ public:
     return nullptr;
   }
 
-  size_t ChildrenCount() const { return m_countryTree->ChildrenCount(); }
-
 private:
-  /// @TODO(bykoianko) The root of the tree currently is processed in a special way.
-  /// It's never deleted. Because of it it's necessary to work with the root in a special way.
-  /// See SetCountriesContainerAttrs method for example. And CountryTree::Clear() method
-  /// does not delete the root. It should be fixed.
   unique_ptr<Node> m_countryTree;
   TCountryTreeHashTable m_countryTreeHashTable;
 };

@@ -23,7 +23,8 @@ class SizeUpdater;
 
 namespace storage
 {
-using TMapping = map<TCountryId, TCountriesSet>;
+using TMappingOldMwm = map<TCountryId, TCountriesSet>;
+using TMappingAffiliations = unordered_multimap<TCountryId, string>;
 
 /// This class keeps all the information about a country in country tree (TCountryTree).
 /// It is guaranteed that every node represent a unique region has a unique |m_name| in country
@@ -58,8 +59,6 @@ public:
   explicit Country(TCountryId const & name, TCountryId const & parent = kInvalidCountryId)
     : m_name(name), m_parent(parent) {}
 
-  bool operator<(Country const & other) const { return Name() < other.Name(); }
-  bool operator==(Country const & other) const { return Name() == other.Name(); }
   void SetFile(platform::CountryFile const & file) { m_file = file; }
   void SetSubtreeAttrs(uint32_t subtreeMwmNumber, size_t subtreeMwmSizeBytes)
   {
@@ -81,7 +80,7 @@ using TCountryTreeNode = TCountryTree::Node;
 
 /// @return version of country file or -1 if error was encountered
 int64_t LoadCountries(string const & jsonBuffer, TCountryTree & countries,
-                      TMapping * mapping = nullptr);
+                      TMappingAffiliations & affiliations, TMappingOldMwm * mapping = nullptr);
 
 void LoadCountryFile2CountryInfo(string const & jsonBuffer, map<string, CountryInfo> & id2info,
                                  bool & isSingleMwm);

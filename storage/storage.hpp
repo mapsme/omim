@@ -191,12 +191,21 @@ private:
 
   unique_ptr<Storage> m_prefetchStorage;
 
+  // |m_affiliations| is a mapping from countryId to the list of names of
+  // geographical objects (such as countries) that encompass this countryId.
+  // Note. Affiliations is inherited from ancestors of the countryId in country tree.
+  // |m_affiliations| is filled during Storage initialization or during migration process.
+  // It is filled with data of countries.txt (field "affiliations").
+  // Once filled |m_affiliations| is not changed.
+  // Note. |m_affiliations| is empty in case of countries_obsolete.txt.
+  TMappingAffiliations m_affiliations;
+
   DECLARE_THREAD_CHECKER(m_threadChecker);
 
   void DownloadNextCountryFromQueue();
 
-  void LoadCountriesFile(string const & pathToCountriesFile,
-                         string const & dataDir, TMapping * mapping = nullptr);
+  void LoadCountriesFile(string const & pathToCountriesFile, string const & dataDir,
+                         TMappingOldMwm * mapping = nullptr);
 
   void ReportProgress(TCountryId const & countryId, MapFilesDownloader::TProgress const & p);
   void ReportProgressForHierarchy(TCountryId const & countryId,
@@ -333,6 +342,8 @@ public:
   /// \brief Get information for mwm update button.
   /// \return true if updateInfo is filled correctly and false otherwise.
   bool GetUpdateInfo(TCountryId const & countryId, UpdateInfo & updateInfo) const;
+
+  TMappingAffiliations const & GetAffiliations() const { return m_affiliations; }
 
   /// \brief Calls |toDo| for each node for subtree with |root|.
   /// For example ForEachInSubtree(GetRootId()) calls |toDo| for every node including
@@ -573,10 +584,10 @@ void Storage::ForEachInSubtreeAndInQueue(TCountryId const & root, ToDo && toDo) 
 /// Calls functor |toDo| with signature
 /// void(const TCountryId const & parentId, TCountriesVec const & descendantCountryId)
 /// for each ancestor except for the main root of the tree.
-/// |descendantsCountryId| is a vector of country id of descendats of |parentId|.
 /// Note. In case of disputable territories several nodes with the same name may be
 /// present in the country tree. In that case ForEachAncestorExceptForTheRoot calls
-/// |toDo| for parents of each way to the root in the country tree.
+/// |toDo| for parents of each way to the root in the country tree. In case of diamond
+/// trees toDo is called for common part of ways to the root only once.
 template <class ToDo>
 void Storage::ForEachAncestorExceptForTheRoot(TCountryId const & countryId, ToDo && toDo) const
 {

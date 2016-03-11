@@ -18,139 +18,34 @@ namespace storage
 // all mwms in a subtree.
 using TMwmSubtreeAttrs = pair<uint32_t, size_t>;
 
-template <class ToDo>
-TMwmSubtreeAttrs LoadGroupSingleMwmsImpl(int depth, json_t * group, TCountryId const & parent, ToDo & toDo)
-{
-  uint32_t mwmCounter = 0;
-  size_t mwmSize = 0;
-  size_t const groupListSize = json_array_size(group);
-  for (size_t i = 0; i < groupListSize; ++i)
-  {
-    json_t * j = json_array_get(group, i);
-
-    char const * id = json_string_value(json_object_get(j, "id"));
-    if (!id)
-      MYTHROW(my::Json::Exception, ("LoadGroupImpl. Id is missing.", id));
-
-    uint32_t const nodeSize = static_cast<uint32_t>(json_integer_value(json_object_get(j, "s")));
-    // We expect that mwm and routing files should be less than 2GB.
-    Country * addedNode = toDo(id, nodeSize, depth, parent);
-
-    json_t * oldIds = json_object_get(j, "old");
-    if (oldIds)
-    {
-      size_t const oldListSize = json_array_size(oldIds);
-      for (size_t k = 0; k < oldListSize; ++k)
-      {
-        string oldIdValue = json_string_value(json_array_get(oldIds, k));
-        toDo(oldIdValue, id);
-      }
-    }
-
-    uint32_t mwmChildCounter = 0;
-    size_t mwmChildSize = 0;
-    json_t * children = json_object_get(j, "g");
-    if (children)
-    {
-      TMwmSubtreeAttrs childAttr = LoadGroupSingleMwmsImpl(depth + 1, children, id, toDo);
-      mwmChildCounter = childAttr.first;
-      mwmChildSize = childAttr.second;
-    }
-    else
-    {
-      mwmChildCounter = 1; // It's a leaf. Any leaf contains one mwm.
-      mwmChildSize = nodeSize;
-    }
-    mwmCounter += mwmChildCounter;
-    mwmSize += mwmChildSize;
-
-    if (addedNode != nullptr)
-      addedNode->SetSubtreeAttrs(mwmChildCounter, mwmChildSize);
-  }
-  return make_pair(mwmCounter, mwmSize);
-}
-
-template <class ToDo>
-void LoadGroupTwoComponentMwmsImpl(int depth, json_t * group, TCountryId const & parent, ToDo & toDo)
-{
-  // @TODO(bykoianko) After we stop supporting two component mwms (with routing files)
-  // remove code below.
-  size_t const groupListSize = json_array_size(group);
-  for (size_t i = 0; i < groupListSize; ++i)
-  {
-    json_t * j = json_array_get(group, i);
-
-    char const * file = json_string_value(json_object_get(j, "f"));
-    // if file is empty, it's the same as the name
-    if (!file)
-    {
-      file = json_string_value(json_object_get(j, "n"));
-      if (!file)
-        MYTHROW(my::Json::Exception, ("Country name is missing"));
-    }
-
-    // We expect that mwm and routing files should be less than 2GB.
-    uint32_t const mwmSize = static_cast<uint32_t>(json_integer_value(json_object_get(j, "s")));
-    uint32_t const routingSize = static_cast<uint32_t>(json_integer_value(json_object_get(j, "rs")));
-    toDo(file, mwmSize, routingSize, depth, parent);
-
-    json_t * children = json_object_get(j, "g");
-    if (children)
-      LoadGroupTwoComponentMwmsImpl(depth + 1, children, file, toDo);
-  }
-}
-
-template <class ToDo>
-bool LoadCountriesSingleMwmsImpl(string const & jsonBuffer,TCountryId const & parent, ToDo & toDo)
-{
-  try
-  {
-    my::Json root(jsonBuffer.c_str());
-    json_t * children = json_object_get(root.get(), "g");
-    if (!children)
-      MYTHROW(my::Json::Exception, ("Root country doesn't have any groups"));
-    TMwmSubtreeAttrs const treeAttrs = LoadGroupSingleMwmsImpl(0 /* depth */, children, parent, toDo);
-    toDo.SetCountriesContainerAttrs(treeAttrs.first /* mwmNumber */,
-                                    treeAttrs.second /* mwmSizeBytes */);
-    return true;
-  }
-  catch (my::Json::Exception const & e)
-  {
-    LOG(LERROR, (e.Msg()));
-    return false;
-  }
-}
-
-template <class ToDo>
-bool LoadCountriesTwoComponentMwmsImpl(string const & jsonBuffer, TCountryId const & parent, ToDo & toDo)
-{
-  try
-  {
-    my::Json root(jsonBuffer.c_str());
-    json_t * children = json_object_get(root.get(), "g");
-    if (!children)
-      MYTHROW(my::Json::Exception, ("Root country doesn't have any groups"));
-    LoadGroupTwoComponentMwmsImpl(0 /* depth */, children, parent, toDo);
-    return true;
-  }
-  catch (my::Json::Exception const & e)
-  {
-    LOG(LERROR, (e.Msg()));
-    return false;
-  }
-}
-
 namespace
 {
-class DoStoreCountriesSingleMwms
+class StoreSingleMwmInterface
+{
+public:
+  virtual ~StoreSingleMwmInterface() = default;
+  virtual Country * InsertToCountryTree(TCountryId const & id, uint32_t mapSize, size_t depth,
+                                        TCountryId const & parent) = 0;
+  virtual void InsertOldMwmMapping(TCountryId const & newId, TCountryId const & oldId) = 0;
+  virtual void InsertAffiliation(TCountryId const & countryId, string const & affilation) = 0;
+  virtual TMappingOldMwm GetMapping() const = 0;
+};
+
+class StoreCountriesSingleMwms : public StoreSingleMwmInterface
 {
   TCountryTree & m_countries;
-  TMapping m_idsMapping;
+  TMappingAffiliations & m_affiliations;
+  TMappingOldMwm m_idsMapping;
 
 public:
-  DoStoreCountriesSingleMwms(TCountryTree & countries) : m_countries(countries) {}
+  StoreCountriesSingleMwms(TCountryTree & countries, TMappingAffiliations & affiliations)
+    : m_countries(countries), m_affiliations(affiliations)
+  {
+  }
 
-  Country * operator()(TCountryId const & id, uint32_t mapSize, int depth, TCountryId const & parent)
+  // StoreSingleMwmInterface overrides:
+  Country * InsertToCountryTree(TCountryId const & id, uint32_t mapSize, size_t depth,
+                                TCountryId const & parent) override
   {
     Country country(id, parent);
     if (mapSize)
@@ -162,33 +57,151 @@ public:
     return &m_countries.AddAtDepth(depth, country);
   }
 
-  void operator()(TCountryId const & oldId, TCountryId const & newId)
+  void InsertOldMwmMapping(TCountryId const & newId, TCountryId const & oldId) override
   {
     m_idsMapping[oldId].insert(newId);
   }
 
-  void SetCountriesContainerAttrs(uint32_t mwmNumber, size_t mwmSizeBytes)
+  void InsertAffiliation(TCountryId const & countryId, string const & affilation) override
   {
-    m_countries.GetRoot().Value().SetSubtreeAttrs(mwmNumber, mwmSizeBytes);
+    auto const countryIdRange = m_affiliations.equal_range(countryId);
+    for (auto it = countryIdRange.first; it != countryIdRange.second; ++it)
+    {
+      if (it->second == affilation)
+        return; // No need key with the same value. It could happend in case of a disputable territory.
+    }
+
+    m_affiliations.insert(make_pair(countryId, affilation));
   }
 
-  TMapping GetMapping() const { return m_idsMapping; }
+  TMappingOldMwm GetMapping() const override { return m_idsMapping; }
 };
 
-class DoStoreCountriesTwoComponentMwms
+class StoreFile2InfoSingleMwms : public StoreSingleMwmInterface
+{
+  TMappingOldMwm m_idsMapping;
+  map<string, CountryInfo> & m_file2info;
+
+public:
+  StoreFile2InfoSingleMwms(map<string, CountryInfo> & file2info) : m_file2info(file2info) {}
+
+  // StoreSingleMwmInterface overrides:
+  Country * InsertToCountryTree(TCountryId const & id, uint32_t /* mapSize */, size_t /* depth */,
+                                TCountryId const & /* parent */) override
+  {
+    CountryInfo info(id);
+    m_file2info[id] = move(info);
+    return nullptr;
+  }
+
+  void InsertOldMwmMapping(TCountryId const & /* newId */, TCountryId const & /* oldId */) override
+  {
+  }
+  void InsertAffiliation(TCountryId const & /* countryId */,
+                         string const & /* affilation */) override
+  {
+  }
+  TMappingOldMwm GetMapping() const override
+  {
+    ASSERT(false, ());
+    return map<TCountryId, TCountriesSet>();
+  }
+};
+}  // namespace
+
+TMwmSubtreeAttrs LoadGroupSingleMwmsImpl(size_t depth, json_t * node, TCountryId const & parent,
+                                         StoreSingleMwmInterface & store)
+{
+  TCountryId id;
+  my::FromJSONObject(node, "id", id);
+
+  // Mapping two component (big) mwms to one componenst (small) ones.
+  vector<string> oldIds;
+  my::FromJSONObjectOptionalField(node, "old", oldIds);
+  for (auto const & oldId : oldIds)
+    store.InsertOldMwmMapping(id, oldId);
+
+  // Mapping affiliations to one component (small) mwms.
+  vector<string> affiliations;
+  my::FromJSONObjectOptionalField(node, "affiliations", affiliations);
+  for (auto const & affilationValue : affiliations)
+    store.InsertAffiliation(id, affilationValue);
+
+  json_int_t nodeSize;
+  my::FromJSONObjectOptionalField(node, "s", nodeSize);
+  ASSERT_LESS_OR_EQUAL(0, nodeSize, ());
+  // We expect that mwm and routing files should be less than 2GB.
+  Country * addedNode = store.InsertToCountryTree(id, nodeSize, depth, parent);
+
+  uint32_t mwmCounter = 0;
+  size_t mwmSize = 0;
+  vector<json_t *> children;
+  my::FromJSONObjectOptionalField(node, "g", children);
+  if (children.empty())
+  {
+    mwmCounter = 1;  // It's a leaf. Any leaf contains one mwm.
+    mwmSize = nodeSize;
+  }
+  else
+  {
+    for (json_t * child : children)
+    {
+      TMwmSubtreeAttrs const childAttr = LoadGroupSingleMwmsImpl(depth + 1, child, id, store);
+      mwmCounter += childAttr.first;
+      mwmSize += childAttr.second;
+    }
+  }
+
+  if (addedNode != nullptr)
+    addedNode->SetSubtreeAttrs(mwmCounter, mwmSize);
+
+  return make_pair(mwmCounter, mwmSize);
+}
+
+bool LoadCountriesSingleMwmsImpl(string const & jsonBuffer, StoreSingleMwmInterface & store)
+{
+  try
+  {
+    my::Json root(jsonBuffer.c_str());
+    LoadGroupSingleMwmsImpl(0 /* depth */, root.get(), kInvalidCountryId, store);
+    return true;
+  }
+  catch (my::Json::Exception const & e)
+  {
+    LOG(LERROR, (e.Msg()));
+    return false;
+  }
+}
+
+namespace
+{
+class StoreTwoComponentMwmInterface
+{
+public:
+  virtual ~StoreTwoComponentMwmInterface() = default;
+  virtual void Insert(string const & id, uint32_t mapSize, uint32_t /* routingSize */, size_t depth,
+                      TCountryId const & parent) = 0;
+};
+
+class StoreCountriesTwoComponentMwms : public StoreTwoComponentMwmInterface
 {
   TCountryTree & m_countries;
 
 public:
-  DoStoreCountriesTwoComponentMwms(TCountryTree & cont) : m_countries(cont) {}
-
-  void operator()(string const & file, uint32_t mapSize,
-                  uint32_t routingSize, int depth, TCountryId const & parent)
+  StoreCountriesTwoComponentMwms(TCountryTree & countries,
+                                 TMappingAffiliations & /* affiliations */)
+    : m_countries(countries)
   {
-    Country country(file, parent);
+  }
+
+  // StoreTwoComponentMwmInterface overrides:
+  void Insert(string const & id, uint32_t mapSize, uint32_t routingSize, size_t depth,
+              TCountryId const & parent) override
+  {
+    Country country(id, parent);
     if (mapSize)
     {
-      CountryFile countryFile(file);
+      CountryFile countryFile(id);
       countryFile.SetRemoteSizes(mapSize, routingSize);
       country.SetFile(countryFile);
     }
@@ -196,43 +209,17 @@ public:
   }
 };
 
-class DoStoreFile2InfoSingleMwms
+class StoreFile2InfoTwoComponentMwms : public StoreTwoComponentMwmInterface
 {
-  TMapping m_idsMapping;
+  TMappingOldMwm m_idsMapping;
   map<string, CountryInfo> & m_file2info;
 
 public:
-  DoStoreFile2InfoSingleMwms(map<string, CountryInfo> & file2info)
-    : m_file2info(file2info) {}
+  StoreFile2InfoTwoComponentMwms(map<string, CountryInfo> & file2info) : m_file2info(file2info) {}
 
-  Country * operator()(TCountryId const & id, uint32_t /* mapSize */, int /* depth */,
-                       TCountryId const & /* parent */)
-  {
-    CountryInfo info(id);
-    m_file2info[id] = move(info);
-    return nullptr;
-  }
-
-  void operator()(TCountryId const & oldId, TCountryId const & newId)
-  {
-    m_idsMapping[oldId].insert(newId);
-  }
-
-  void SetCountriesContainerAttrs(uint32_t, size_t) {}
-  TMapping GetMapping() const { return m_idsMapping; }
-};
-
-class DoStoreFile2InfoTwoComponentMwms
-{
-  TMapping m_idsMapping;
-  map<string, CountryInfo> & m_file2info;
-
-public:
-  DoStoreFile2InfoTwoComponentMwms(map<string, CountryInfo> & file2info)
-    : m_file2info(file2info) {}
-
-  void operator()(string const & id, uint32_t mapSize, uint32_t /* routingSize */, int /* depth */,
-                  TCountryId const & /* parent */)
+  // StoreTwoComponentMwmInterface overrides:
+  void Insert(string const & id, uint32_t mapSize, uint32_t /* routingSize */, size_t /* depth */,
+              TCountryId const & /* parent */) override
   {
     if (mapSize == 0)
       return;
@@ -243,40 +230,72 @@ public:
 };
 }  // namespace
 
-int64_t LoadCountries(string const & jsonBuffer, TCountryTree & countries,
-                      TMapping * mapping /* = nullptr */)
+void LoadGroupTwoComponentMwmsImpl(size_t depth, json_t * node, TCountryId const & parent,
+                                   StoreTwoComponentMwmInterface & store)
 {
-  countries.Clear();
+  // @TODO(bykoianko) After we stop supporting two component mwms (with routing files)
+  // remove code below.
+  TCountryId file;
+  my::FromJSONObjectOptionalField(node, "f", file);
+  if (file.empty())
+    my::FromJSONObject(node, "n", file);  // If file is empty, it's the same as the name.
 
-  int64_t version = -1;
+  // We expect that mwm and routing files should be less than 2GB.
+  json_int_t mwmSize, routingSize;
+  my::FromJSONObjectOptionalField(node, "s", mwmSize);
+  my::FromJSONObjectOptionalField(node, "rs", routingSize);
+  ASSERT_LESS_OR_EQUAL(0, mwmSize, ());
+  ASSERT_LESS_OR_EQUAL(0, routingSize, ());
+
+  store.Insert(file, static_cast<uint32_t>(mwmSize), static_cast<uint32_t>(routingSize), depth,
+               parent);
+
+  vector<json_t *> children;
+  my::FromJSONObjectOptionalField(node, "g", children);
+  for (json_t * child : children)
+    LoadGroupTwoComponentMwmsImpl(depth + 1, child, file, store);
+}
+
+bool LoadCountriesTwoComponentMwmsImpl(string const & jsonBuffer,
+                                       StoreTwoComponentMwmInterface & store)
+{
   try
   {
     my::Json root(jsonBuffer.c_str());
-    json_t * const rootPtr = root.get();
-    version = json_integer_value(json_object_get(rootPtr, "v"));
+    LoadGroupTwoComponentMwmsImpl(0 /* depth */, root.get(), kInvalidCountryId, store);
+    return true;
+  }
+  catch (my::Json::Exception const & e)
+  {
+    LOG(LERROR, (e.Msg()));
+    return false;
+  }
+}
 
-    // Extracting root id.
-    bool const isSingleMwm = version::IsSingleMwm(version);
-    char const * const idKey = isSingleMwm ? "id" : "n";
-    char const * id = json_string_value(json_object_get(rootPtr, idKey));
-    if (!id)
-      MYTHROW(my::Json::Exception, ("LoadCountries. Id is missing.", id));
-    Country rootCountry(id, kInvalidCountryId);
-    // @TODO(bykoianko) Add CourtyFile to rootCountry with correct size.
-    countries.GetRoot().Value() = rootCountry;
+int64_t LoadCountries(string const & jsonBuffer, TCountryTree & countries,
+                      TMappingAffiliations & affiliations, TMappingOldMwm * mapping /* = nullptr */)
+{
+  countries.Clear();
+  affiliations.clear();
 
-    if (isSingleMwm)
+  json_int_t version = -1;
+  try
+  {
+    my::Json root(jsonBuffer.c_str());
+    my::FromJSONObject(root.get(), "v", version);
+
+    if (version::IsSingleMwm(static_cast<int64_t>(version)))
     {
-      DoStoreCountriesSingleMwms doStore(countries);
-      if (!LoadCountriesSingleMwmsImpl(jsonBuffer, id, doStore))
+      StoreCountriesSingleMwms store(countries, affiliations);
+      if (!LoadCountriesSingleMwmsImpl(jsonBuffer, store))
         return -1;
       if (mapping)
-        *mapping = doStore.GetMapping();
+        *mapping = store.GetMapping();
     }
     else
     {
-      DoStoreCountriesTwoComponentMwms doStore(countries);
-      if (!LoadCountriesTwoComponentMwmsImpl(jsonBuffer, id, doStore))
+      StoreCountriesTwoComponentMwms store(countries, affiliations);
+      if (!LoadCountriesTwoComponentMwmsImpl(jsonBuffer, store))
         return -1;
     }
   }
@@ -292,21 +311,21 @@ void LoadCountryFile2CountryInfo(string const & jsonBuffer, map<string, CountryI
 {
   ASSERT(id2info.empty(), ());
 
-  int64_t version = -1;
+  json_int_t version = -1;
   try
   {
     my::Json root(jsonBuffer.c_str());
-    version = json_integer_value(json_object_get(root.get(), "v"));
-    isSingleMwm = version::IsSingleMwm(version);
+    my::FromJSONObjectOptionalField(root.get(), "v", version);
+    isSingleMwm = version::IsSingleMwm(static_cast<int64_t>(version));
     if (isSingleMwm)
     {
-      DoStoreFile2InfoSingleMwms doStore(id2info);
-      LoadCountriesSingleMwmsImpl(jsonBuffer, kInvalidCountryId, doStore);
+      StoreFile2InfoSingleMwms store(id2info);
+      LoadCountriesSingleMwmsImpl(jsonBuffer, store);
     }
     else
     {
-      DoStoreFile2InfoTwoComponentMwms doStore(id2info);
-      LoadCountriesTwoComponentMwmsImpl(jsonBuffer, kInvalidCountryId, doStore);
+      StoreFile2InfoTwoComponentMwms store(id2info);
+      LoadCountriesTwoComponentMwmsImpl(jsonBuffer, store);
     }
   }
   catch (my::Json::Exception const & e)
