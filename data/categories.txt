@@ -85,34 +85,62 @@ ro:3Schimb valutar|schimb
 nb:4Valutaveksling
 fi:4Rahanvaihto
 
-amenity-bar|amenity-pub
-en:2Bar|2pub|beer|drink|food|U+1F37A|U+1F37B|U+1F376
-ru:2Бар|2паб|пиво|выпить|еда
-uk:2Бар|2паб|пиво|напої|їжа
-de:2Bar|2Pub|Kneipe|Bier|Essen
-fr:2Bar|2pub|bière|boisson|nourriture
-it:2Bar|2birra|pub|mangiare|cibo
-es:2Bar|2pub|comer
+amenity-bar
+en:2Bar|beer|drink|food|U+1F37A|U+1F37B|U+1F376
+ru:2Бар|пиво|выпить|еда
+uk:2Бар|пиво|напої|їжа
+de:2Bar|Kneipe|Bier|Essen
+fr:2Bar|bière|boisson|nourriture
+it:2Bar|2birra|mangiare|cibo
+es:2Bar|comer
 ko:바|술집|맥주|음료|음식
 ja:1居酒屋|バー|パブ|ビール|飲食|飲み屋|呑み屋|酒
 cs:2Bar|pivo|pití|jídlo|voda|pitná voda|tekutiny
 sk:2Bar|pivo|pitie|jedlo|voda|pitná voda|tekutiny
-nl:2Bar|2pub|2café|bier|drinken|eten
+nl:2Bar|2café|bier|drinken|eten
 zh-Hant:1酒吧|酒館|飲酒|PUB|吧台|飲食
-pl:2Bar|2pub|piwo|napoje|jedzenie
-pt:2Bar|2pub|cerveja|beber|alimentação
+pl:2Bar|piwo|napoje|jedzenie
+pt:2Bar|cerveja|beber|alimentação
 hu:2Bár|2kocsma|sör|ital|élelmiszer
 th:2บาร์|ผับ|เบียร์|เครื่องดื่ม|อาหาร
 zh-Hans:1酒吧์|酒馆์|啤酒|饮料|食物
 ar:الحانة|خمارة์|بيرة ์|شراب|الطعام
-da:2Bar|øl|pub|drink|mad
-tr:2Pub|2bira|içki|yemek
-sv:2Bar|2pub|öl|drink|mat
+da:2Bar|øl|drink|mad
+tr:2Bira|içki|yemek
+sv:2Bar|öl|drink|mat
 vi:2Quán bar|quán rượu|đồ uống|ẩm thực
-id:2Bar|2pub|minuman|makanan
+id:2Bar|minuman|makanan
 ro:2Bar|2cârciumă|băutură|alimentație
 nb:2Bar|mat
 fi:2Baari|ruoka
+
+amenity-pub
+en:2Pub|bar|beer|food|U+1F37A|U+1F37B
+ar:بار|الحانة|خمارة์|بيرة ์|شراب|الطعام
+cs:2Hospoda|2Bar|pivo|pití|jídlo|voda|pitná voda|tekutiny
+da:Kro|2Bar|øl|drink|mad
+de:2Bar|Kneipe|Bier|Essen
+es:2Pub|2Bar|comer
+fi:2Pubi|2Baari|ruoka
+fr:Bistrot|2Bar|bière|boisson|nourriture
+hu:2Kocsma|2Bár|sör|ital|élelmiszer
+id:2Pub|2Bar|minuman|makanan
+it:2Pub|2Bar|2birra|mangiare|cibo
+ja:バー|パブ|ビール|1居酒屋|飲食|飲み屋|呑み屋|酒
+ko:바|술집|맥주|음료|음식
+nb:2Bar|mat
+nl:2Bar|2café|bier|drinken|eten
+pl:2Pub|2Bar|piwo|napoje|jedzenie
+pt:2Pub|2Bar|cerveja|beber|alimentação
+ro:2Pub|2Bar|2cârciumă|băutură|alimentație
+sk:4Pohostinstvo|2Bar|pivo|pitie|jedlo|voda|pitná voda|tekutiny
+sv:2Krog|2Bar|öl|drink|mat
+th:2บาร์|ผับ|เบียร์|เครื่องดื่ม|อาหาร
+tr:2Pub|2Bira|içki|yemek
+uk:1Паб|2Бар|пиво|напої|їжа
+vi:2Quán bar|quán rượu|đồ uống|ẩm thực
+zh-Hans:1酒吧์|酒馆์|啤酒|饮料|食物
+zh-Hant:1酒吧|酒館|飲酒|PUB|吧台|飲食
 
 amenity-cafe
 en:3Cafe|3restaurant|3food|U+2615|U+1F356|U+1F357|U+1F35A|U+1F35B|U+1F35C|U+1F35D|U+1F363|U+1F366|U+1F367|U+1F368|U+1F369|U+1F370|U+1F372|U+1F374|U+1F377|U+1F60B|U+1F375
@@ -259,7 +287,7 @@ ro:3Brutărie|magazin
 nb:3Bakeri|butikk
 fi:3Leipomo|kauppa
 
-shop|shop-convenience|shop-mall|shop-doityourself|shop-mobile_phone|shop-chemist|shop-garden_centre
+shop
 en:2Shop|U+1F3EA|U+1F3EC
 ru:2Магазин
 uk:2Магазин|крамниця
@@ -287,6 +315,150 @@ id:2Toko
 ro:3Magazin
 nb:3Butikk
 fi:3Kauppa
+
+shop-chemist
+en:3Beauty Care|home care|shop|U+1F3EC|U+1F3EA
+ar:العناية بالجمال|تجميل
+zh-Hans:1美容护理
+zh-Hant:1美容保養|美妝店
+cs:3Salon krásy|domácí péče
+da:Skønhedspleje|hjemmepleje
+de:4Schönheitssalon
+es:3Perfumería
+fi:Kauneudenhoito|kotihoito
+fr:3Salon de beauté|soins de beauté
+hu:3Szépséggondozás|házi gondozás
+id:3Salon kecantikan
+it:Centro estetico|materiale per la casa
+ja:ビューティケア|ホームケア
+ko:미용|뷰티케어
+nl:4Schoonheidssalon
+no:Skjønnhetspleie|hjemmepleie
+pl:Opieka domowa
+pt:Cuidados de beleza|estética
+ro:Centru de înfrumusețare|centru de îngrijire
+ru:3Косметика|бытовая химия|магазин
+sk:3Kozmetický salón
+sv:Skönhetsvård
+th:สถานเสริมความงาม
+tr:Güzellik ve bakım|güzellik merkezi
+uk:3Косметика
+vi:Thẩm mỹ viện
+
+shop-convenience
+en:3Convenience Store|shop|U+1F3EC|U+1F3EA
+ar:متجر|متجر صغير
+zh-Hans:2便利店
+zh-Hant:2便利商店|便利超商
+cs:Smíšené zboží|koloniál
+da:Dagligvarebutik
+de:Gemischtwarenladen
+es:Chino
+fi:Lähikauppa
+fr:Supérette
+hu:Csemegebolt|ábécé
+id:Mini market
+it:Minimarket
+ja:コンビニエンスストア|コンビニ
+ko:편의점
+nl:Buurtwinkel|kruidenier
+no:Nærbutikk|nærbutikk
+pt:Loja de conveniência
+ro:3Magazin mixt
+ru:3Продуктовый|2магазин
+sk:Príležitostné potreby
+sv:Närbutik
+th:ร้านสะดวกซื้อ
+tr:24 saat açık market
+uk:3Продуктовий
+vi:Cửa hàng tạp hóa
+
+shop-doityourself
+en:3DIY Store|home improvement|U+1F3EC|U+1F3EA
+ar:متجر مستلزمات تشطيب|متجر ديكور
+zh-Hans:自助商店
+zh-Hant:3DIY 商店
+cs:3Hobby market|potřeby pro domácnost a zahradu
+da:Byggemarked
+de:Baumarkt|Heimwerkermarkt
+es:Tienda de bricolaje|ferretería
+fi:3Rautakauppa
+fr:Magasin de bricolage
+hu:Barkácsüzlet|ezermester bolt
+id:Toko bahan bangunan
+it:Negozio di bricolage|negozio di fai da te
+ja:3DIY ストア|日曜大工
+ko:3DIY 상점
+nl:Bouwmarkt|doe-het-zelfzaak
+no:Gjør-det-selv-butikk|hjemmeforbedring
+pl:Majsterkowanie w domu|remont domu
+pt:Loja de ferragens
+ro:Magazin de bricolaj|amenajarea casei
+ru:3Стройтовары|3хозяйственный|товары для дома
+sk:Náradie|potreby pe domácich majstrov
+sv:Järnhandel
+th:ร้านขายวัสดุอุปกรณ์|การซ่อมแซมบ้าน
+tr:Nalbur|hırdavatçı
+uk:3Будматеріали|усе для дому|будівельні матеріали
+vi:Cửa hàng bán đồ tự làm
+
+shop-garden_centre
+en:3Garden Store|U+1F3EC|U+1F3EA|U+1F3E1
+ar:حضانة|روضة
+zh-Hans:幼儿园
+zh-Hant:園藝店
+cs:Školka|zahradní centrum
+da:3Planteskole|havebutik
+de:3Gärtnerei|Garten-Center
+es:Vivero|tienda de jardinería
+fi:Taimitarha
+fr:Crèche|garderie d'enfants
+hu:Faiskola|kertészeti üzlet
+id:3Penitipan anak
+it:Vivaio|articoli da giardinaggio
+ja:保育園|託児所
+ko:종묘점|원예 용품점
+nl:3Tuincentrum
+no:3Planteskole|hagesenter
+pl:Sklep ogrodniczy
+pt:Creche|infantário
+ro:Pepinieră|magazin cu articole de grădinărit
+ru:3Садовые товары
+sk:Škôlka|materská škôlka
+sv:Daghem|trädgårdsbutik
+th:สถานรับเลี้ยงเด็ก|เนอร์สเซอรี่
+tr:3Çocuk yuvası|kreş
+uk:Товари для саду|товари для саду та відпочинку|товари для саду та городу
+vi:Nhà trẻ
+
+shop-mobile_phone
+en:2Cell Phones|3Mobile Phones|electronics store|U+1F3EC|U+1F3EA|U+1F4F1|U+1F4F2
+ar:متجر هواتف محمولة|متجر إلكترونيات
+zh-Hans:手机商店
+zh-Hant:手機專賣店
+cs:3Mobily|Obchod s mobilními telefony|obchod s elektronikou
+da:3Mobiltelefon butik|elektronikforretning
+de:Handyladen|Eletronikgeschäft
+es:3Celulares|Tienda de telefonía móvil|tienda de electrónica
+fi:2Elektroniikkakauppa
+fr:Magasin de téléphonie|magasin d'électronique
+hu:Mobiltelefon üzlet|elektronikai szaküzlet
+id:Toko telepon
+it:Negozio di telefonia mobile|negozio di elettronica
+ja:携帯ショップ
+ko:휴대폰 대리점
+nl:3Mobiele telefoonwinkel|elektronicawinkel
+no:3Mobiltelefonbutikk|elektronikkbutikk
+pl:Sklep z elektroniką|sklep elektroniczny
+pt:Loja de telemóveis|loja de aparelhos eletrónicos
+ro:Magazin de telefoane mobile|magazin de electronice
+ru:3Сотовые|3Мобильные телефоны|электроника|салон связи
+sk:Mobilné telefóny
+sv:Mobilbutik|elektronikaffär
+th:ร้านขายโทรศัพท์มือถือ|ร้านขายอุปกรณ์อิเล็กโทรนิก
+tr:Cep telefonu mağazası|elektronik mağazası
+uk:Мобільні телефони|салон мобільного зв'язку|салон мобільних телефонів
+vi:Cửa hàng điện thoại di động|cửa hàng ĐTDĐ
 
 shop-florist
 en:Florist’s|U+1F337|U+1F338|U+1F339|U+1F33A|U+1F33B|U+1F33C|U+1F490|U+1F33E|2shop
@@ -694,7 +866,7 @@ pl:Sklep sportowy|3sklep|towary
 nl:Sportartikelen|2winkel
 pt:Artigos esportivos|2loja|compras
 
-shop-supermarket|shop-department_store
+shop-supermarket
 en:3Supermarket|shop|U+1F3EA|U+1F3EC
 ru:3Универсам|3супермаркет|магазин
 uk:3Супермаркет|3універсам|2магазин|крамниця
@@ -722,6 +894,209 @@ id:3Supermarket|toko
 ro:3Supermarket|magazin
 nb:3Supermarked|butikk
 fi:3Supermarketti|kauppa
+
+shop-mall
+en:3Mall
+ar:ﻝﻮﻣ
+cs:Obchoďák
+da:Centeret
+de:Das Einkaufszentrum
+el:Το εμπορικό κέντρο
+es:El centro comercial
+fi:Ostoskeskus
+fr:Le centre commercial
+he:ןוינקה
+hu:A pláza
+id:Mall
+it:Il centro commerciale
+ja:モール
+ko:몰
+nb:Kjøpesenteret
+nl:Het winkelcentrum
+pl:Centrum handlowe
+pt:O Shopping
+ro:Mall-ul
+ru:Торговый центр
+sk:the Mall
+sv:Gallerian
+sw:Soko
+th:เดอะมอลล์
+tr:Alışveriş merkezi
+uk:Торговий центр
+vi:Khu mua sắm
+zh-Hans:商场
+zh-Hant:商场
+
+shop-department_store
+en:3Department Store|U+1F3EC|U+1F3EA
+ar:متجر شامل|مركز تجاري
+zh-Hans:百货商店
+zh-Hant:百貨公司
+cs:Obchodní dům
+da:3Stormagasin
+de:3Kaufhaus
+es:Grandes almacenes
+fi:Tavaratalo
+fr:Grand magasin
+hu:3Áruház
+id:Toko serba ada
+it:Grandi magazzini|centro commerciale
+ja:デパート
+ko:백화점
+nl:Warenhuis
+no:Varehus
+pt:Armazém retalhista
+ro:Magazin universal
+ru:2Универмаг
+sk:Obchodný dom
+sv:Varuhus
+th:ห้างสรรพสินค้า
+tr:Alışveriş merkezi
+uk:2Універмаг
+vi:Cửa hàng bách hóa
+
+shop-beverages
+en:3Beverages|2drinks|U+1F379
+ar:مشروبات|عصائر
+zh-Hans:饮料
+zh-Hant:飲料|飲料店
+cs:Nápoje|nápoje
+da:3Drikkevarer
+de:3Getränke
+es:3Bebidas
+fi:3Juomat
+fr:3Boissons
+hu:3Italok|üdítők
+id:3Minuman
+it:3Bibite|bevande
+ja:ドリンク|飲料
+ko:음료
+nl:2Drank|slijterij
+no:2Drinker|drikke
+pl:3Napoje
+pt:3Bebidas
+ro:Băuturi
+ru:3Напитки|соки
+sk:2Nápoje
+sv:3Drinkar|drycker
+th:เครื่องดื่ม
+tr:3Içecek
+uk:3Напої
+vi:Đồ uống
+
+shop-computer
+en:3Computer Store|U+1F4BB
+ar:متجر كمبيوتر
+zh-Hans:电脑商店
+zh-Hant:電腦商店|電腦專賣店
+cs:Obchod s počítači
+da:3Computerforretning
+de:3Computergeschäft
+es:Tienda de informática|tienda de ordenadores
+fi:3Tietokonekauppa
+fr:Magasin d'informatique
+hu:Számítógép üzlet
+id:Toko komputer
+it:Negozio di computer|negozio di articoli informatici
+ja:コンピュータショップ
+ko:컴퓨터 판매점
+nl:3Computerwinkel
+no:3Databutikk
+pt:Loja de informática
+ro:Magazin de calculatoare
+ru:3Компьютерный магазин
+sk:Obchod s výpočtovou technikou
+sv:3Datorbutik
+th:ร้านขายคอมพิวเตอร์
+tr:Bilgisayar mağazası
+uk:3Комп'ютерний магазин|комп'ютерна техніка
+vi:Cửa hàng máy tính
+
+shop-confectionery
+en:3Confectionery|candy store|shop|U+1F36C|U+1F36D
+ar:حلواني|متجر حلويات
+zh-Hans:糖果店
+zh-Hant:糕餅店|糕餅行
+cs:3Cukrárna
+da:3Konfektureforretning|slikbutik
+de:Süßwarengeschäft
+es:Tienda de golosinas|confitería
+fi:3Makeiskauppa
+fr:3Pâtisserie|confiserie
+hu:3Cukrászüzlet|édességbolt
+id:Toko roti
+it:4Pasticceria|drogheria
+ja:菓子類|菓子屋
+ko:제과점|베이커리
+nl:Banketbakker|snoepwinkel
+no:3Søtsaker|godtebutikk
+pl:Sklep ze słodyczami
+pt:Confeitaria|loja de doces
+ro:3Cofetărie
+ru:3Кондитерская
+sk:Cukrovinky
+sv:3Konditori|godisbutik
+th:ร้านขายขนมหวาน|ร้านขายลูกกวาด
+tr:Şekerci|tatlıcı
+uk:3Кондитерська
+vi:Cửa hàng kẹo
+
+shop-laundry
+en:3Laundry|laundromat
+ar:مغسلة|غسيل ملابس
+zh-Hans:1洗衣店
+zh-Hant:洗衣店
+cs:3Prádelna|veřejná prádelna
+da:3Vaskeri
+de:Wäscherei|Waschsalon
+es:Lavandería
+fi:3Pesula
+fr:3Blanchisserie|laverie automatique
+hu:3Mosoda|önkiszolgáló mosoda
+id:3Londri|binatu
+it:3Lavanderia|lavanderia automatica
+ja:ランドリー|洗濯屋、クリーニング屋
+ko:세탁소|빨래방
+nl:3Wasserette
+no:3Vaskeri|vaskeautomat
+pl:3Pralnia samoobsługowa
+pt:3Lavandaria
+ro:Spălătorie
+ru:3Прачечная
+sk:3Práčovňa
+sv:Tvättstuga|tvättomat
+th:ร้านซักรีด
+tr:3Çamaşırhane
+uk:3Пральня
+vi:Giặt là
+
+shop-toys
+en:3Toy Store
+ar:محل لعب
+zh-Hans:玩具店
+zh-Hant:玩具商店
+cs:3Hračkářství
+da:3Legetøjsbutik
+de:3Spielzeuggeschäft
+es:3Tienda de juguetes|juguetería
+fi:3Leikkikalukauppa
+fr:Magasin de jouets
+hu:3Játékbolt
+id:3Toko mainan
+it:Negozio di giocattoli
+ja:おもちゃ屋|玩具店
+ko:장난감 가게
+nl:3Speelgoedwinkel
+no:3Legebutikk
+pt:Loja de brinquedos
+ro:Magazin de jucării
+ru:Магазин игрушек
+sk:Hračkárstvo
+sv:Leksaksaffär
+th:ร้านขายของเล่น
+tr:Oyuncakçı
+uk:Магазин іграшок
+vi:Cửa hàng đồ chơi
 
 amenity-marketplace
 en:3Marketplace|market|shop
@@ -2086,7 +2461,7 @@ ro:Cimitir
 nb:Gravplass
 fi:Hautausmaa
 
-amenity-hospital|amenity-doctors|amenity-dentist|amenity-clinic
+amenity-hospital
 en:3Hospital|clinic|3doctor|U+1F691|U+1F3E5|U+1F489|U+1F48A
 ru:3Больница|3госпиталь|врач|доктор
 uk:3Лікарня|клініка|лікар|травмпункт
@@ -2114,6 +2489,91 @@ id:Rumah sakit
 ro:Spital
 nb:Sykehus
 fi:Sairaala
+
+amenity-clinic
+en:2Clinic|1hospital|U+1F3E5|U+1F489
+ar:عيادة|مستشفى
+zh-Hans:诊所
+zh-Hant:診所
+cs:2Klinika|nemocnice
+da:2Klinik|hospital
+de:3Krankenhaus|Klinik
+es:2Clínica|hospital
+fi:2Klinikka|sairaala
+fr:2Clinique|hôpital
+hu:2Klinika|kórház|szanatórium
+id:2Klinik|rumah sakit
+it:2Clinica|ospedale
+ja:クリニック|病院、診療所
+ko:병원|의원
+nl:2Kliniek|ziekenhuis
+no:2Klinikk|sykehus
+pl:2Szpital
+pt:2Clínica|centro de saúde
+ro:2Clinică|spital
+ru:2Поликлиника
+sk:2Poliklinika|nemocnica|zdravotné stredisko
+sv:2Klinik|sjukhus
+th:1คลินิก|โรงพยาบาล
+tr:2Klinik
+uk:2Поліклініка
+vi:Bệnh viện|BV
+
+amenity-doctors
+en:2Doctor|U+1F489|U+1F3E5|U+1F691
+ar:مكتب طبيب
+zh-Hans:1医师办公室
+zh-Hant:1醫師診間
+cs:1Lékařská ordinace
+da:2Lægekontor
+de:2Arztpraxis
+es:Consulta del médico
+fi:2Lääkärin vastaanotto
+fr:3Cabinet médical
+hu:Rendelő|orvosi rendelő
+id:2Praktik dokter
+it:Studio medico|ambulatorio
+ja:医者のオフィス
+ko:개인병원
+nl:2Huisartsenpost|huisarts
+no:2Legekontor|legesenter
+pt:Gabinete do médico
+ro:2Cabinet medical
+ru:2Врач
+sk:3Ambulancia
+sv:Läkarmottagning
+th:ห้องแพทย์
+tr:2Doktor muayenehanesi
+uk:2Лікар
+vi:2Phòng khám
+
+amenity-dentist
+en:2Dentist
+ar:طبيب أسنان
+zh-Hans:1牙科医生
+zh-Hant:牙醫
+cs:2Zubař
+da:3Tandlæge
+de:2Zahnarzt
+es:2Dentista
+fi:3Hammaslääkäri
+fr:2Dentiste
+hu:3Fogorvos
+id:Dokter gigi
+it:2Dentista|studio odontoiatrico
+ja:1歯科医|歯医者
+ko:치과
+nl:3Tandarts
+no:3Tannlege
+pt:2Dentista
+ro:2Dentist
+ru:3Стоматолог|2дантист
+sk:2Zubár
+sv:2Tandläkare
+th:ทันตแพทย์
+tr:Diş hekimi|dişçi
+uk:3Стоматолог|2дантист
+Сi:Nha sĩ
 
 amenity-hunting_stand
 en:Hunting Stand
@@ -2317,9 +2777,9 @@ ro:Poştă
 nb:Post
 fi:Posti
 
-amenity-recycling|amenity-waste_disposal
-en:Recycling|trash|bin|garbage|U+1F6AE
-ru:Мусорка
+amenity-waste_disposal
+en:Trash|bin|garbage|waste disposal|dumpster|U+1F6AE
+ru:Мусорный бак|мусорка
 uk:Сміттєвий бак|сміття|корзина
 de:Recycling|Abfälle|Müll
 fr:Recyclage|poubelle|déchet
@@ -2345,6 +2805,34 @@ id:Daur ulang
 ro:Reciclare
 nb:Resirkulering
 fi:Kierrätys
+
+amenity-recycling
+en:2Recycling Center|U+1F6AE|U+267B
+ar:مركز إعادة تدوير
+zh-Hans:1回收中心
+zh-Hant:1回收中心|回收站
+cs:2Recyklační středisko
+da:3Genbrugsplads
+de:2Recyclinghof
+es:Centro de reciclaje|punto limpio
+fi:3Kierrätyskeskus
+fr:Centre de recyclage
+hu:Újrahasznosító központ|hulladékgyűjtő központ
+id:TPA
+it:Centro di riciclaggio
+ja:2リサクルセンター
+ko:재활용센터
+nl:Milieustraat
+no:3Resirkuleringssenter|innsamlingsstasjon
+pt:Centro de reciclagem
+ro:Centru de reciclare
+ru:3Приём вторсырья|сбор сырья
+sk:Zberné suroviny
+sv:Återvinningscentral
+th:ศูนย์รีไซเคิล
+tr:3Geri dönüşüm merkezi
+uk:3Прийом вторсировини|прийом вторинної сировини|збір вторсировини
+vi:3Trung tâm tái sinh
 
 amenity-school
 en:3School|U+1F392|U+1F3EB
@@ -3851,7 +4339,7 @@ ro:Teren pentru campare
 nb:Camping
 fi:Retkeily
 
-office|office-company|office-government
+office
 en:3Office|company|U+1F454|U+1F4BC|U+1F3E2|
 ru:2Офис|компания|контора|фирма
 uk:2Офіс
@@ -3879,6 +4367,428 @@ id:Kantor
 ro:Birou
 nb:Kontor
 fi:Toimisto
+
+office-company
+en:3Company Office
+ar:مكتب شركة
+zh-Hans:公司办公室
+zh-Hant:公司辦公室
+cs:3Kancelář společnosti
+da:3Selskabskontor
+de:Niederlassung
+es:2Oficina de empresa
+fi:Yhtiön toimisto
+fr:2Bureaux d'entreprise
+hu:Vállalati iroda
+id:3Kantor perusahaan
+it:2Ufficio aziendale
+ja:会社事務所
+ko:회사
+nl:3Bedrijfskantoor|bedrijfspand
+no:2Firmakontor
+pt:3Escritório da empresa
+ro:Sediu companei
+ru:2Организация|частная фирма
+sk:Sídlo spoločnosti
+sv:2Företagskontor
+th:สำนักงานบริษัท
+tr:2Şirket bürosu|ofis
+uk:2Організація|приватне підприємство
+vi:Văn phòng công ty
+
+office-government
+en:3Government Office
+ar:مكتب حكومي
+zh-Hans:政府机构
+zh-Hant:政府辦公室|政府機關
+cs:Úřad vlády
+da:3Regeringskontor
+de:3Regierungsstelle
+es:Oficina gubernamental
+fi:Viranomaistoimito
+fr:3Administration publique
+hu:Állami iroda
+id:Kantor pemerintah
+it:2Ufficio governativo|ufficio amministrativo
+ja:官庁
+ko:관공서
+nl:3Overheidskantoor|overheidspand
+no:3Offentlig kontor
+pt:3Gabinete governamental
+ro:3Birou guvernamental
+ru:2Госучреждение|административное учреждение
+sk:Štátny úrad
+sv:Ämbetsverk|myndighet
+th:หน่วยงานราชการ
+tr:Devlet dairesi
+uk:3Держустанова|адміністративна установа
+vi:Văn phòng chính phủ
+
+office-lawyer
+en:3Lawyer|advocate|attorney|barrister|counsel|councellor|solicitor
+ar:مكتب محامي|مكتب محاماة
+zh-Hans:律师事务所
+zh-Hant:律師事務所
+cs:3Právní kancelář
+da:3Advokatkontor
+de:3Anwaltsbüro|Anwaltskanzlei
+es:Despacho de abogados|bufete
+fi:3Lakitoimisto
+fr:Cabinet d'avocat
+hu:3Ügyvédi iroda
+id:Kantor pengacara
+it:Studio legale
+ja:弁護士事務所
+ko:법률 사무소
+nl:3Advocatenkantoor
+no:3Advokatkontor
+pt:Escritório de advogados
+ro:Firmă de avocatură
+ru:3Адвокат|нотариус
+sk:3Advokátska kancelária
+sv:3Advokatkontor
+th:สำนักงานทนายความ
+tr:2Avukatlık bürosu
+uk:3Адвокат|нотаріус
+vi:Văn phòng luật sư
+
+office-telecommunication
+en:3Mobile Operator
+ar:شركة اتصالات|شركة محمول
+zh-Hans:移动运营商
+zh-Hant:行動電話業者|電信業者
+cs:3Mobilní operátor
+da:3Mobiloperatør
+de:3Mobilbetreiber|Mobilfunkanbieter
+es:4Operadora de telefonía móvil
+fi:3Matkapuhelinoperaattori
+fr:4Opérateur mobile
+hu:3Mobilüzemeltető
+id:Operator seluler
+it:Operatore di telefonia mobile
+ja:携帯電話事業者|キャリア
+ko:이동통신 사업자
+nl:3Mobiele provider
+no:3Mobiloperatør
+pt:Operadora móvel
+ro:Operator de telefonie mobilă
+ru:3Мобильный оператор
+sk:3Mobilný operátor
+sv:3Mobiloperatör
+th:ผู้ให้บริการโทรศัพท์มือถือ
+tr:Cep telefonu operatörü
+uk:3Мобільний оператор|оператор мобільного зв'язку
+vi:Điều hành di động
+
+craft-brewery
+en:3Brewery
+ar:مصنع جعة
+zh-Hans:1酿酒厂
+zh-Hant:1釀酒廠
+cs:3Pivovar
+da:3Bryggeri
+de:3Brauerei|Brauhaus
+es:Fábrica de cerveza|cervecera
+fi:3Panimo
+fr:3Brasserie
+hu:3Sörfőzde|söröző
+id:Toko minuman
+it:3Birrificio
+ja:1醸造所
+ko:양조장
+nl:3Brouwerij
+no:3Bryggeri
+pt:3Cervejeira
+ro:3Berărie
+ru:3Пивоварня
+sk:3Pivovar
+sv:3Bryggeri
+th:โรงเบียร์|โรงผลิตเบียร์
+tr:3Bira fabrikası
+uk:3Пивоварня|броварня
+vi:Nhà máy bia
+
+craft-carpenter
+en:4Carpenter
+ar:نجار
+zh-Hans:木工
+zh-Hant:木工
+cs:4Truhlář
+da:3Tømrer
+de:3Zimmermann
+es:4Carpintero
+fi:Puuseppä
+fr:Menuisier|charpentier
+hu:Ács
+id:Tukang kayu
+it:Falegname
+ja:大工
+ko:목수
+nl:3Timmerman
+no:3Snekker
+pt:4Carpinteiro
+ro:Tâmplar
+ru:3Столяр|мастерская столяра
+sk:3Tesár
+sv:Snickare
+th:ช่างไม้
+tr:3Marangoz
+uk:3Столяр|столярна майстерня
+vi:Thợ mộc
+
+craft-electrician
+en:3Electrician
+ar:كهربائي
+zh-Hans:电工
+zh-Hant:電工
+cs:3Elektrikář
+da:3Elektriker
+de:3Elektriker
+es:3Electricista
+fi:3Sähkömies
+fr:3Électricien
+hu:3Villanyszerelő
+id:Tukang listrik
+it:3Elettricista
+ja:電気技師
+ko:전기기술자
+nl:3Elektricien
+no:3Elektriker
+pt:3Eletricista
+ro:3Electrician
+ru:3Электрик
+sk:3Elektrikár
+sv:3Elektriker
+th:ช่างไฟฟ้า
+tr:3Elektrikçi
+uk:3Електрик
+vi:Thợ điện
+
+craft-gardener
+en:4Gardener|Landscaper
+ar:مهندس مناظر
+zh-Hans:园林设计师
+zh-Hant:園藝師
+cs:Zahradník
+da:3Gartner
+de:4Landschaftsgärtner
+es:3Paisajista
+fi:3Maisemoija
+fr:3Paysagiste
+hu:Kertész
+id:Tukang kebun
+it:4Giardiniere|architetto di esterni
+ja:造園家
+ko:조경사
+nl:3Tuinarchitect|landschapsarchitect
+no:3Anleggsgartner
+pt:4Paisagista
+ro:4Peisagist
+ru:4Садовник
+sk:Záhradníctvo
+sv:4Landskapsarkitekt
+th:คนจัดสวน
+tr:Bahçe düzenleyici|peyzaj
+uk:4Садівник
+vi:Người thiết kế và xây dựng cảnh quan
+
+craft-hvac
+en:2Hvac|3Air Conditioner
+ar:تكييف|مكيف هواء
+zh-Hans:暖通工程师
+zh-Hant:空調設備
+cs:2HVAC|montér vzduchotechniky
+da:3Blikkenslager|klimaanlæg
+de:Heizung|Lüftung|Klima|Installateur
+es:3Aire acondicionado
+fi:3Ilmastointilaite
+fr:4Climatiseur
+hu:Hűtés-fűtés szerelő|légkondicionáló
+id:2Hvac
+it:Impianti HVAC|aria condizionata
+ja:冷暖房空調|エアコン
+ko:냉난방기|에어컨
+nl:3Airconditioning|luchtbehandeling
+no:4Klimaanlegg|aircondition
+pl:4Klimatyzacja
+pt:Ar-condicionado
+ro:2Hvac|aparate de aer condiționat
+ru:4Кондиционеры
+sk:3Vzduchotechnika
+sv:Vvs|luftkonditionering
+th:ระบบปรับอากาศ|เครื่องปรับอากาศ
+tr:4Klimacı
+uk:4Кондиціонери
+vi:Điều hòa nhiệt độ
+
+craft-metal_construction
+en:4Metal Worker
+ar:عامل معادن
+zh-Hans:金属制造工
+zh-Hant:鐵工
+cs:4Kovodílna
+da:4Metalarbejder
+de:5Schlosser
+es:Trabajador del metal
+fi:4Metallimies
+fr:4Métallo|métallurgiste
+hu:3Lakatos|szerelő
+id:Tukang besi
+it:3Fabbro
+ja:金属工
+ko:금속공
+nl:4Metaalarbeider
+no:4Metallarbeider
+pt:4Metalúrgico
+ro:4Metalurgist
+ru:4Ковка металла|3кузнец
+sk:4Kovorobotník|kovospracovanie
+sv:4Metallarbetare
+th:ช่างเหล็ก
+tr:Dökümcü|metal işleri
+uk:3Кування металу|3ковальня
+vi:Nhà kim khí
+
+craft-painter
+en:3Painter
+ar:رسام
+zh-Hans:油漆匠
+zh-Hant:油漆工
+cs:3Malíř
+da:3Maler
+de:3Maler
+es:4Pintor
+fi:4Maalari
+fr:3Peintre
+hu:3Festő
+id:Tukang cat
+it:Imbianchino|pittore
+ja:塗装工
+ko:페인트공
+nl:4Schilder
+no:3Maler
+pt:3Pintor
+ro:3Pictor
+ru:3Маляр|мастерская маляра
+sk:3Maliar natierač
+sv:3Målare
+th:ช่างทาสี
+tr:4Boyacı
+uk:3Маляр|малярська майстерня
+vi:Họa sỹ
+
+craft-photographer
+en:3Photographer|photography Studio
+ar:مصور فوتوغرافي|استوديو تصوير
+zh-Hans:摄影师
+zh-Hant:攝影師
+cs:3Fotograf|fotografické studio
+da:3Fotograf|studio
+de:3Fotograf|Fotostudio
+es:Fotógrafo|estudio de fotografía
+fi:4Valokuvaaja
+fr:3Photographe|studio photographique
+hu:Fényképész|fényképész stúdió
+id:Juru foto
+it:3Fotografo|studio di fotografia
+ja:写真家|写真撮影スタジオ
+ko:사진작가|사진 스튜디오
+nl:3Fotograaf
+no:3Fotograf|fotostudio
+pl:Studio fotograficzne|3fotograf
+pt:3Fotógrafo|estúdio de fotografia
+ro:3Fotograf|studio de fotografie
+ru:3Фотограф|фотоателье
+sk:3Fotograf|fotoateliér
+sv:3Fotograf|fotostudio
+th:ช่างภาพ|สตูดิโอถ่ายภาพ
+tr:3Fotoğraf stüdyosu
+uk:3Фотограф|фотостудія
+vi:Thợ chụp ảnh
+
+craft-plumber
+en:3Plumber
+ar:سمكري
+zh-Hans:管道工
+zh-Hant:水管工人|水電工
+cs:Instalatér
+da:VVS-mand
+de:Installateur
+es:Fontanero
+fi:Putkimies
+fr:Plombier
+hu:Vízvezeték-szerelő
+id:Tukang pipa
+it:Idraulico|tubista
+ja:配管工
+ko:배관공
+nl:Loodgieter
+no:Rørlegger
+pt:4Canalizador
+ro:Instalator
+ru:3Сантехник
+sk:Klampiarstvo
+sv:Vvs-montör|rörmokare
+th:ช่างประปา
+tr:Sıhhi tesisatçı|tesisatçı
+uk:3Сантехнік
+vi:Thợ đường ống
+
+craft-shoemaker
+en:4Shoe Repair
+ar:تصليح الاحذية
+zh-Hans:修鞋匠
+zh-Hant:修鞋工
+cs:Opravna obuvi
+da:3Sko reparation
+de:Schuhreparatur
+es:4Zapatero|zapatería
+fi:4Suutari
+fr:4Cordonnier
+hu:Cipész
+id:Tukang sepatu
+it:4Calzolaio
+ja:靴修理
+ko:구두수선
+nl:5Schoenmaker|schoenmakerij
+no:Skoreparasjon
+pt:4Sapateiro
+ro:Reparații încălțăminte
+ru:4Ремонт обуви
+sk:Oprava obuvy
+sv:Skomakare
+th:ช่างซ่อมรองเท้า
+tr:Ayakkabı tamircisi
+uk:4Ремонт взуття
+vi:Sửa giày
+
+craft-tailor
+en:4Tailor
+ar:خياط|ترزي
+zh-Hans:裁缝
+zh-Hant:裁縫師
+cs:Krejčí
+da:4Skrædder
+de:Schneider
+es:4Sastre|sastrería
+fi:4Räätäli
+fr:4Tailleur
+hu:4Szabó
+id:Tukang jahit
+it:Sarto
+ja:仕立て屋
+ko:양복점
+nl:Kleermaker|kledingreparatie
+no:4Skredder
+pt:Alfaiate
+ro:4Croitor
+ru:3Ателье|портной|ремонт одежды
+sk:4Krajčírstvo
+sv:4Skräddare
+th:ช่างตัดเสื้อ
+tr:Terzi
+uk:3Ательє|Ремонт одягу|3швейна майстерня
+vi:Thợ may
 
 area:highway-footway|area:highway-pedestrian|area:highway-steps
 en:3Square
