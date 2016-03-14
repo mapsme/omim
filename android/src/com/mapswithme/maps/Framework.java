@@ -2,6 +2,7 @@ package com.mapswithme.maps;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.Size;
 
 import com.mapswithme.maps.bookmarks.data.DistanceAndAzimut;
 import com.mapswithme.maps.bookmarks.data.MapObject;
@@ -59,14 +60,16 @@ public class Framework
 
   public static native int nativeGetDrawScale();
 
+  @Size(2)
   public static native double[] nativeGetScreenRectCenter();
 
-  public static native DistanceAndAzimut nativeGetDistanceAndAzimut(double dstMerX, double dstMerY, double srcLat, double srcLon, double north);
+  public static native DistanceAndAzimut nativeGetDistanceAndAzimuth(double dstMerX, double dstMerY, double srcLat, double srcLon, double north);
 
-  public static native DistanceAndAzimut nativeGetDistanceAndAzimutFromLatLon(double dstLat, double dstLon, double srcLat, double srcLon, double north);
+  public static native DistanceAndAzimut nativeGetDistanceAndAzimuthFromLatLon(double dstLat, double dstLon, double srcLat, double srcLon, double north);
 
   public static native String nativeFormatLatLon(double lat, double lon, boolean useDmsFormat);
 
+  @Size(2)
   public static native String[] nativeFormatLatLonToArr(double lat, double lon, boolean useDmsFormat);
 
   public static native String nativeFormatAltitude(double alt);
@@ -191,4 +194,10 @@ public class Framework
   public static native MapObject nativeDeleteBookmarkFromMapObject();
 
   public static native void nativeZoomToPoint(double lat, double lon, int zoom, boolean animate);
+
+
+  public static native void nativeTurnChoosePositionMode(boolean turnedOn);
+
+  public static native boolean nativeIsDownloadedMapAtScreenCenter();
+
 }

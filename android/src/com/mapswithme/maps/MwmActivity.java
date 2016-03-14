@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -45,6 +46,7 @@ import com.mapswithme.maps.editor.AuthFragment;
 import com.mapswithme.maps.editor.Editor;
 import com.mapswithme.maps.editor.EditorActivity;
 import com.mapswithme.maps.editor.EditorHostFragment;
+import com.mapswithme.maps.editor.FeatureCategoryActivity;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.location.LocationPredictor;
 import com.mapswithme.maps.news.FirstStartFragment;
@@ -132,6 +134,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
   private ImageButton mBtnZoomIn;
   private ImageButton mBtnZoomOut;
 
+  private View mPositionChooser;
+
   private boolean mIsFragmentContainer;
   private boolean mIsFullscreen;
   private boolean mIsFullscreenAnimating;
@@ -173,7 +177,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   public static Intent createUpdateMapsIntent()
   {
     return new Intent(MwmApplication.get(), MwmActivity.class)
-        .putExtra(EXTRA_UPDATE_COUNTRIES, true);
+               .putExtra(EXTRA_UPDATE_COUNTRIES, true);
   }
 
   @Override
@@ -211,7 +215,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
                                  : super.getFragmentContentResId());
   }
 
-  public @Nullable Fragment getFragment(Class<? extends Fragment> clazz)
+  @Nullable
+  public Fragment getFragment(Class<? extends Fragment> clazz)
   {
     if (!mIsFragmentContainer)
       throw new IllegalStateException("Must be called for tablets only!");
@@ -354,6 +359,44 @@ public class MwmActivity extends BaseMwmFragmentActivity
     RoutingController.get().attach(this);
     initMenu();
     initOnmapDownloader();
+    initPositionChooser();
+  }
+
+  private void initPositionChooser()
+  {
+    mPositionChooser = findViewById(R.id.position_chooser);
+    final Toolbar toolbar = (Toolbar) mPositionChooser.findViewById(R.id.toolbar_position_chooser);
+    UiUtils.showHomeUpButton(toolbar);
+    toolbar.setNavigationOnClickListener(new OnClickListener()
+    {
+      @Override
+      public void onClick(View v)
+      {
+        showPositionChooser(false);
+      }
+    });
+    mPositionChooser.findViewById(R.id.done).setOnClickListener(new OnClickListener()
+    {
+      @Override
+      public void onClick(View v)
+      {
+        showPositionChooser(false);
+        if (Framework.nativeIsDownloadedMapAtScreenCenter())
+          startActivity(new Intent(MwmActivity.this, FeatureCategoryActivity.class));
+        else
+          // TODO uncomment
+          // UiUtils.showAlertDialog(getActivity(), R.string.message_invalid_feature_position);
+          UiUtils.showAlertDialog(getActivity(), R.string.invalid_username_or_password);
+      }
+    });
+    UiUtils.hide(mPositionChooser);
+  }
+
+  private void showPositionChooser(boolean show)
+  {
+    UiUtils.showIf(show, mPositionChooser);
+    setFullscreen(show);
+    Framework.nativeTurnChoosePositionMode(show);
   }
 
   private void initMap()
@@ -498,6 +541,10 @@ public class MwmActivity extends BaseMwmFragmentActivity
           Statistics.INSTANCE.trackEvent(Statistics.EventName.TOOLBAR_MENU);
           AlohaHelper.logClick(AlohaHelper.TOOLBAR_MENU);
           toggleMenu();
+          break;
+
+        case ADD_PLACE:
+          showPositionChooser(true);
           break;
 
         case SEARCH:
@@ -1033,7 +1080,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     if (switchFullScreenMode)
     {
       if ((mPanelAnimator != null && mPanelAnimator.isVisible()) ||
-          UiUtils.isVisible(mSearchController.getToolbar()))
+           UiUtils.isVisible(mSearchController.getToolbar()))
         return;
 
       setFullscreen(!mIsFullscreen);

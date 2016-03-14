@@ -6,6 +6,16 @@
   android:layout_height="wrap_content"
   android:orientation="horizontal"
   tools:background="#200000F0">
+
+  <!-- TODO add correct text
+       TODO check if button fits on narrow screens (eg nexus 7)-->
+  <TextView
+    android:id="@+id/add_place"
+    style="@style/MwmTheme.Menu.Content.GridItem.Text"
+    android:drawableTop="@drawable/ic_plus"
+    android:text="Add place"
+    tools:background="#200000FF"/>
+
   <TextView
     android:id="@+id/search"
     style="@style/MwmTheme.Menu.Content.GridItem.Text"
@@ -57,6 +67,7 @@
     android:text="@string/share_my_location"
     tools:background="#200000FF"/>
 
+  <!-- TODO check if button fits on narrow screens (eg nexus 7)-->
   <TextView
     android:id="@+id/showcase"
     style="@style/MwmTheme.Menu.Content.GridItem.Text"
