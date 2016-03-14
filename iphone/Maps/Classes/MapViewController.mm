@@ -390,7 +390,6 @@ NSString * const kReportSegue = @"Map2ReportSegue";
     return;
   self.view.clipsToBounds = YES;
   [MTRGManager setMyCom:YES];
-  self.controlsManager = [[MWMMapViewControlsManager alloc] initWithParentController:self];
 }
 
 - (void)mwm_refreshUI
@@ -655,11 +654,11 @@ NSString * const kReportSegue = @"Map2ReportSegue";
 
 - (void)processCountryEvent:(TCountryId const &)countryId
 {
-  storage::NodeAttrs nodeAttrs;
-  GetFramework().Storage().GetNodeAttrs(countryId, nodeAttrs);
-  if (nodeAttrs.m_status != NodeStatus::Error)
+  NodeStatuses nodeStatuses{};
+  GetFramework().Storage().GetNodeStatuses(countryId, nodeStatuses);
+  if (nodeStatuses.m_status != NodeStatus::Error)
     return;
-  switch (nodeAttrs.m_error)
+  switch (nodeStatuses.m_error)
   {
     case NodeErrorCode::NoError:
       break;
