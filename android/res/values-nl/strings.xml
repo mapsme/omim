@@ -14,8 +14,6 @@
 	<string name="cancel_download">Download annuleer</string>
 	<!-- Button which deletes downloaded country -->
 	<string name="delete">Verwijder</string>
-	<!-- Button in iOS Downloader, displayed only when upgrading from v1 to v2 -->
-	<string name="delete_old_maps">Verwijder oude kaarten en ga door</string>
 	<!-- Button to dismiss dialog forever -->
 	<string name="do_not_ask_me_again">Nooit meer vragen</string>
 	<!-- Button "do not interrupt download" if user touched actively downloading country -->
@@ -46,8 +44,6 @@
 	<string name="miles">Mijlen</string>
 	<!-- View and button titles for accessibility -->
 	<string name="my_position">Mijn Locatie</string>
-	<!-- Settings/Downloader - No internet connection dialog title -->
-	<string name="no_internet_connection_detected">Geen Internet verbinding gedetecteerd</string>
 	<!-- Settings/Downloader - 3G download warning dialog title -->
 	<string name="no_wifi_ask_cellular_download">Geen WiFi verbinding gedetecteerd. Wilt u mobiele data (GPRS, EDGE, 3G of LTE) gebruiken om %s te downloaden?</string>
 	<!-- not used? Search View - Location is disabled by user warning text -->
@@ -64,8 +60,6 @@
 	<string name="search">Zoeken</string>
 	<!-- Search box placeholder text -->
 	<string name="search_map">Zoek Kaart</string>
-	<!-- Settings/Downloader - No free space dialog title -->
-	<string name="not_enough_disk_space">Er is niet genoeg vrije ruimte</string>
 	<!-- Settings/Downloader - info for not downloaded country -->
 	<string name="touch_to_download">Klik om te downloaden</string>
 	<!-- Settings/Downloader - 3G download warning dialog confirm button -->
@@ -410,12 +404,8 @@
 	<string name="routing_map_outdated">Werk de kaart bij om een route te maken.</string>
 	<!-- Update maps suggestion -->
 	<string name="routing_update_maps">Met de nieuwe versie van MAPS.ME kunt u routes maken vanaf uw huidige positie naar een punt van bestemming. Werk kaarten bij om deze functie te gebruiken.</string>
-	<!-- Update all button text -->
-	<string name="downloader_update_all">Alles bijwerken</string>
 	<!-- Cancel all button text -->
 	<string name="downloader_cancel_all">Alles annuleren</string>
-	<!-- Downloaded maps category -->
-	<string name="downloader_downloaded">Gedownload</string>
 	<!-- Country queued for download -->
 	<string name="downloader_queued">in de wachtrij</string>
 	<!-- Disclaimer message -->
@@ -809,8 +799,6 @@
 	<string name="p2p_only_from_current">Navigatie is uitsluitend beschikbaar vanuit uw huidige locatie.</string>
 	<string name="p2p_reroute_from_current">Wilt u dat wij een route plannen vanaf uw huidige locatie?</string>
 	<string name="whats_new_next_button">Volgende</string>
-	<string name="whats_new_night_caption">Nachtmodusnavigatie</string>
-	<string name="whats_new_night_body">Om het gebruik van MAPS.ME te vergemakkelijken tijdens het rijden in het donker, hebben we de nachtmodus toegevoegd. Deze wordt automatisch ingeschakeld na zonsondergang.</string>
 	<string name="editor_time_add">Schema toevoegen</string>
 	<string name="editor_time_delete">Schema verwijderen</string>
 	<!-- Text for allday switch. -->
@@ -826,9 +814,6 @@
 	<string name="editor_correct_mistake">Fout corrigeren</string>
 	<string name="editor_correct_mistake_message">U hebt een bewerkingsfout gemaakt. Corrigeer deze of schakel over naar de eenvoudige modus.</string>
 	<string name="migrate_title">Belangrijk!</string>
-	<!-- Used in 2 places: What's new and Delete All maps dialog. -->
-	<string name="migrate_and_split_mwms_message">We hebben kaarten in delen verdeeld. Nu kunt u afzonderlijke regio\&#39;s downloaden in plaats van het hele land. Verwijder eerst de oude kaarten voordat uw nieuwe gaat downloaden.</string>
-	<string name="youve_been_asking">Op veler verzoek hebben we het voor elkaar gekregen</string>
 	<!-- Android uses image instead of text. -->
 	<string name="download_all">Alles downloaden</string>
 	<string name="delete_all">Alles verwijderen</string>
@@ -892,8 +877,6 @@
 	<!-- login text field -->
 	<string name="email_or_username">E-mailadres of gebruikersnaam</string>
 	<string name="phone">Telefoonnummer</string>
-	<string name="whats_new_editor_caption">Bewerk de kaart direct vanuit MAPS.ME</string>
-	<string name="whats_new_editor_message">Jouw wijzigingen zullen miljoenen gebruikers helpen. Laten we samen de wereld verbeteren!</string>
 	<string name="please_note">Opgelet</string>
 	<string name="common_no_wifi_dialog">Geen WiFi-verbinding. Wil je doorgaan via mobiele data?</string>
 	<string name="downloader_delete_map_dialog">Alle wijzigingen aan de kaart zullen samen met de kaart worden verwijderd.</string>
@@ -924,6 +907,4 @@
 	<string name="whatsnew_smallmwm_header">Op veler verzoek hebben we het voor elkaar gekregen</string>
 	<string name="whatsnew_smallmwm_message">We hebben kaarten in delen verdeeld. Nu kunt u afzonderlijke regio\&#39;s downloaden in plaats van het hele land.</string>
 	<string name="whatsnew_search_message">We hebben het zoeken op adres significant verbeterd. Bekijk het zelf.</string>
-	<string name="whatsnew_editor_header">Bewerk de kaart direct vanuit MAPS.ME</string>
-	<string name="whatsnew_editor_message">Jouw wijzigingen zullen miljoenen gebruikers helpen. Laten we samen de wereld verbeteren!</string>
 </resources>

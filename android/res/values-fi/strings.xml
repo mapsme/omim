@@ -14,8 +14,6 @@
 	<string name="cancel_download">Peruuta lataus</string>
 	<!-- Button which deletes downloaded country -->
 	<string name="delete">Poista</string>
-	<!-- Button in iOS Downloader, displayed only when upgrading from v1 to v2 -->
-	<string name="delete_old_maps">Poista vanhat kartat ja jatka</string>
 	<!-- Button to dismiss dialog forever -->
 	<string name="do_not_ask_me_again">Älä kysy uudelleen</string>
 	<!-- Button "do not interrupt download" if user touched actively downloading country -->
@@ -52,8 +50,6 @@
 	<string name="miles">Mailit</string>
 	<!-- View and button titles for accessibility -->
 	<string name="my_position">Sijaintini</string>
-	<!-- Settings/Downloader - No internet connection dialog title -->
-	<string name="no_internet_connection_detected">Internet-yhteyttä ei havaittu</string>
 	<!-- Settings/Downloader - 3G download warning dialog title -->
 	<string name="no_wifi_ask_cellular_download">WiFi-yhteyttä ei havaittu. Haluatko käyttää mobiilidataa (GPRS, EDGE, 3G tai LTE) ladataksesi tiedoston %s?</string>
 	<string name="ok">OK</string>
@@ -73,8 +69,6 @@
 	<string name="search">Haku</string>
 	<!-- Search box placeholder text -->
 	<string name="search_map">Hae kartalta</string>
-	<!-- Settings/Downloader - No free space dialog title -->
-	<string name="not_enough_disk_space">Ei tarpeeksi tyhjää levytilaa</string>
 	<!-- Settings/Downloader - info for not downloaded country -->
 	<string name="touch_to_download">Lataa koskettamalla</string>
 	<!-- Settings/Downloader - 3G download warning dialog confirm button -->
@@ -418,12 +412,8 @@
 	<string name="routing_map_outdated">Päivitä kartta luodaksesi reitin</string>
 	<!-- Update maps suggestion -->
 	<string name="routing_update_maps">Uusi MAPS.ME -versio mahdollistaa reittien luonnin nykyisestä sijainnista määränpäähäsi.Päivitä kartat käyttääksesi tätä ominaisuutta.</string>
-	<!-- Update all button text -->
-	<string name="downloader_update_all">Päivitä kaikki</string>
 	<!-- Cancel all button text -->
 	<string name="downloader_cancel_all">Peruuta kaikki</string>
-	<!-- Downloaded maps category -->
-	<string name="downloader_downloaded">Ladattu</string>
 	<!-- Country queued for download -->
 	<string name="downloader_queued">jonossa</string>
 	<!-- Disclaimer message -->
@@ -819,8 +809,6 @@
 	<string name="p2p_only_from_current">Navigointi onnistuu vain nykyisestä sijainnistasi.</string>
 	<string name="p2p_reroute_from_current">Haluatko valita vaihtoehtoisen reitin?</string>
 	<string name="whats_new_next_button">Seuraava</string>
-	<string name="whats_new_night_caption">Yötilanavigaatio</string>
-	<string name="whats_new_night_body">Olemme lisänneet yötilan helpottaaksemme MAPS.ME:n käyttöä pimeällä ajettaessa. Se menee automaattisesti päälle auringonlaskun jälkeen.</string>
 	<string name="editor_time_add">Lisää aikataulu</string>
 	<string name="editor_time_delete">Poista aikataulu</string>
 	<!-- Text for allday switch. -->
@@ -836,9 +824,6 @@
 	<string name="editor_correct_mistake">Korjaa virhe</string>
 	<string name="editor_correct_mistake_message">Teit muokkausvirheen. Korjaa se tai vaihda yksinkertaiseen malliin.</string>
 	<string name="migrate_title">Tärkeää!</string>
-	<!-- Used in 2 places: What's new and Delete All maps dialog. -->
-	<string name="migrate_and_split_mwms_message">Olemme jakaneet kartat osiin, joten voitkin nyt ladata pelkkiä alueita lataamatta koko maan karttaa. Ennen uusien karttojen lataamista tulee sinun kuitenkin poistaa vanhat kartat laitteeltasi.</string>
-	<string name="youve_been_asking">Sitä on pyydetty, ja nyt se on tarjolla</string>
 	<!-- Android uses image instead of text. -->
 	<string name="download_all">Lataa kaikki</string>
 	<string name="delete_all">Poista kaikki</string>
@@ -902,8 +887,6 @@
 	<!-- login text field -->
 	<string name="email_or_username">Sähköposti tai käyttäjätunnus</string>
 	<string name="phone">Puhelinnumero</string>
-	<string name="whats_new_editor_caption">Muokkaa karttoja suoraan MAPS.ME -sovelluksessa</string>
-	<string name="whats_new_editor_message">Muokkauksesi auttavat miljoonia käyttäjiä — parannetaan maailmaa yhdessä!</string>
 	<string name="please_note">Huomaathan, että</string>
 	<string name="common_no_wifi_dialog">Ei Wi-Fi -yhteyttä. Haluatko jatkaa mobiilidatan avulla?</string>
 	<string name="downloader_delete_map_dialog">Kaikki karttaan tehdyt muutokset poistetaan kartan mukana.</string>
@@ -934,6 +917,4 @@
 	<string name="whatsnew_smallmwm_header">Sitä on pyydetty, ja nyt se on tarjolla</string>
 	<string name="whatsnew_smallmwm_message">Olemme jakaneet kartat osiin, joten voitkin nyt ladata pelkkiä alueita lataamatta koko maan karttaa.</string>
 	<string name="whatsnew_search_message">Olemme selkeästi parantaneet osoitehakua - kokeile vaikka itse.</string>
-	<string name="whatsnew_editor_header">Muokkaa karttoja suoraan MAPS.ME -sovelluksessa</string>
-	<string name="whatsnew_editor_message">Muokkauksesi auttavat miljoonia käyttäjiä - parannetaan maailmaa yhdessä!</string>
 </resources>

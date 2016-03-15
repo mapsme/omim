@@ -14,8 +14,6 @@
 	<string name="cancel_download">Zrušit stahování</string>
 	<!-- Button which deletes downloaded country -->
 	<string name="delete">Smazat</string>
-	<!-- Button in iOS Downloader, displayed only when upgrading from v1 to v2 -->
-	<string name="delete_old_maps">Smazat staré mapy a pokračovat</string>
 	<!-- Button to dismiss dialog forever -->
 	<string name="do_not_ask_me_again">Už se neptat</string>
 	<!-- Button "do not interrupt download" if user touched actively downloading country -->
@@ -48,8 +46,6 @@
 	<string name="miles">Míle</string>
 	<!-- View and button titles for accessibility -->
 	<string name="my_position">Moje poloha</string>
-	<!-- Settings/Downloader - No internet connection dialog title -->
-	<string name="no_internet_connection_detected">Připojení k Internetu nenalezeno</string>
 	<!-- Settings/Downloader - 3G download warning dialog title -->
 	<string name="no_wifi_ask_cellular_download">Připojení k WiFi nenalezeno. Chcete použít mobilní sítě (GPRS, EDGE, 3G nebo LTE) pro stažení %s?</string>
 	<!-- not used? Search View - Location is disabled by user warning text -->
@@ -68,8 +64,6 @@
 	<string name="search">Hledat</string>
 	<!-- Search box placeholder text -->
 	<string name="search_map">Prohledat mapu</string>
-	<!-- Settings/Downloader - No free space dialog title -->
-	<string name="not_enough_disk_space">Nedostatek volného úložného prostoru</string>
 	<!-- Settings/Downloader - info for not downloaded country -->
 	<string name="touch_to_download">Klepněte pro stažení</string>
 	<!-- Settings/Downloader - 3G download warning dialog confirm button -->
@@ -425,12 +419,8 @@
 	<string name="routing_map_outdated">Pro funkci vytváření tras je nutné aktualizovat mapu.</string>
 	<!-- Update maps suggestion -->
 	<string name="routing_update_maps">Nová verze MAPS.ME umožňuje vytvářet trasy z vaší aktuální polohy do cílového bodu. Chcete-li tuto funkci používat, aktualizujte mapy.</string>
-	<!-- Update all button text -->
-	<string name="downloader_update_all">Aktualizovat vše</string>
 	<!-- Cancel all button text -->
 	<string name="downloader_cancel_all">Zrušit vše</string>
-	<!-- Downloaded maps category -->
-	<string name="downloader_downloaded">Stažené</string>
 	<!-- Country queued for download -->
 	<string name="downloader_queued">ve frontě</string>
 	<!-- Disclaimer message -->
@@ -826,8 +816,6 @@
 	<string name="p2p_only_from_current">Navigace je dostupná pouze z vašeho současného umístění.</string>
 	<string name="p2p_reroute_from_current">Chcete, abychom naplánovali trasu z vašeho současného umístění?</string>
 	<string name="whats_new_next_button">Další</string>
-	<string name="whats_new_night_caption">Navigace v nočním režimu</string>
-	<string name="whats_new_night_body">Přidali jsme noční režim, abyste mohli MAPS.ME používat při řízení v noci. Zapíná se automaticky po západu slunce.</string>
 	<string name="editor_time_add">Přidat rozvrh</string>
 	<string name="editor_time_delete">Smazat rozvrh</string>
 	<!-- Text for allday switch. -->
@@ -843,9 +831,6 @@
 	<string name="editor_correct_mistake">Opravit chybu</string>
 	<string name="editor_correct_mistake_message">Při úpravách jste udělali chybu. Opravte ji prosím, nebo přepněte do jednoduchého režimu.</string>
 	<string name="migrate_title">Důležité!</string>
-	<!-- Used in 2 places: What's new and Delete All maps dialog. -->
-	<string name="migrate_and_split_mwms_message">Rozdělili jsme mapy na části. Nyní si můžete stáhnout jednotlivé regiony namísto celé země. Než začnete stahovat nové mapy, prosím, odstraňte ty staré.</string>
-	<string name="youve_been_asking">Říkali jste si o to, a my to udělali</string>
 	<!-- Android uses image instead of text. -->
 	<string name="download_all">Stáhnout vše</string>
 	<string name="delete_all">Odstranit vše</string>
@@ -909,8 +894,6 @@
 	<!-- login text field -->
 	<string name="email_or_username">E-mail nebo uživatelské jméno</string>
 	<string name="phone">Telefon</string>
-	<string name="whats_new_editor_caption">Upravujte mapu přímo z MAPS.ME</string>
-	<string name="whats_new_editor_message">Vaše změny pomůžou miliónům uživatelů. Pojďme společně vylepšit svět!</string>
 	<string name="please_note">Vezměte prosím na vědomí</string>
 	<string name="common_no_wifi_dialog">Žádné Wi-Fi připojení. Chcete pokračovat s mobilními daty?</string>
 	<string name="downloader_delete_map_dialog">Zároveň s touto mapou budou odstraněny také všechny změny na této mapě.</string>
@@ -941,6 +924,4 @@
 	<string name="whatsnew_smallmwm_header">Říkali jste si o to, a my to udělali</string>
 	<string name="whatsnew_smallmwm_message">Rozdělili jsme mapy na části. Nyní si můžete stáhnout jednotlivé regiony namísto celé země.</string>
 	<string name="whatsnew_search_message">Výrazně jsme vylepšili vyhledávání podle adresy. Podívejte se sami.</string>
-	<string name="whatsnew_editor_header">Upravujte mapu přímo z MAPS.ME</string>
-	<string name="whatsnew_editor_message">Vaše změny pomůžou miliónům uživatelů. Pojďme společně vylepšit svět!</string>
 </resources>

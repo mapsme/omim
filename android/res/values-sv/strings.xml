@@ -14,8 +14,6 @@
 	<string name="cancel_download">Avbryt nedladdning</string>
 	<!-- Button which deletes downloaded country -->
 	<string name="delete">Ta bort</string>
-	<!-- Button in iOS Downloader, displayed only when upgrading from v1 to v2 -->
-	<string name="delete_old_maps">Ta bort gamla kartor och fortsätt</string>
 	<!-- Button to dismiss dialog forever -->
 	<string name="do_not_ask_me_again">Fråga mig inte igen</string>
 	<!-- Button "do not interrupt download" if user touched actively downloading country -->
@@ -48,8 +46,6 @@
 	<string name="miles">Mil</string>
 	<!-- View and button titles for accessibility -->
 	<string name="my_position">Min position</string>
-	<!-- Settings/Downloader - No internet connection dialog title -->
-	<string name="no_internet_connection_detected">Ingen internetanslutning upptäcktes</string>
 	<!-- Settings/Downloader - 3G download warning dialog title -->
 	<string name="no_wifi_ask_cellular_download">Ingen WiFi-anslutning upptäcktes. Vill du använda mobildata (GPRS, EDGE, 3G eller LTE) till att ladda ner %s?</string>
 	<string name="ok">OK</string>
@@ -69,8 +65,6 @@
 	<string name="search">Sök</string>
 	<!-- Search box placeholder text -->
 	<string name="search_map">Sök karta</string>
-	<!-- Settings/Downloader - No free space dialog title -->
-	<string name="not_enough_disk_space">Det finns inte tillräckligt mycket ledigt utrymme på telefonen</string>
 	<!-- Settings/Downloader - info for not downloaded country -->
 	<string name="touch_to_download">Trycka för att ladda ner</string>
 	<!-- Settings/Downloader - 3G download warning dialog confirm button -->
@@ -422,12 +416,8 @@
 	<string name="routing_map_outdated">Uppdatera kartan för att skapa en rutt.</string>
 	<!-- Update maps suggestion -->
 	<string name="routing_update_maps">Den nya versionen av MAPS.ME låter dig skapa rutter från din nuvarande position till en destinationspunkt. Uppdatera kartan för att använda den här funktionen.</string>
-	<!-- Update all button text -->
-	<string name="downloader_update_all">Uppdatera alla</string>
 	<!-- Cancel all button text -->
 	<string name="downloader_cancel_all">Avbryt alla</string>
-	<!-- Downloaded maps category -->
-	<string name="downloader_downloaded">Nedladdade</string>
 	<!-- Country queued for download -->
 	<string name="downloader_queued">Köade</string>
 	<!-- Disclaimer message -->
@@ -823,8 +813,6 @@
 	<string name="p2p_only_from_current">Navigering är endast tillgänglig från din aktuella plats.</string>
 	<string name="p2p_reroute_from_current">Vill du att vi planerar en färdväg från din nuvarande plats?</string>
 	<string name="whats_new_next_button">Nästa</string>
-	<string name="whats_new_night_caption">Navigering i nattläge</string>
-	<string name="whats_new_night_body">För att underlätta användandet av MAPS.ME under mörkerkörning har vi lagt till nattläget. Det slås automatiskt på efter att solen gått ned.</string>
 	<string name="editor_time_add">Lägg till schema</string>
 	<string name="editor_time_delete">Ta bort schema</string>
 	<!-- Text for allday switch. -->
@@ -840,9 +828,6 @@
 	<string name="editor_correct_mistake">Korrigera fel</string>
 	<string name="editor_correct_mistake_message">Du har gjort ett fel i redigeringen. Var vänlig korrigera det eller byt till enkelt läge.</string>
 	<string name="migrate_title">Viktigt!</string>
-	<!-- Used in 2 places: What's new and Delete All maps dialog. -->
-	<string name="migrate_and_split_mwms_message">Vi har delat in kartor i delar. Nu kan du ladda ner separata regioner, inte hela landet. Innan du börjar ladda ner nya kartor, ta bort de gamla.</string>
-	<string name="youve_been_asking">Du har bett om det och vi har gjort det</string>
 	<!-- Android uses image instead of text. -->
 	<string name="download_all">Ladda ner alla</string>
 	<string name="delete_all">Radera alla</string>
@@ -906,8 +891,6 @@
 	<!-- login text field -->
 	<string name="email_or_username">E-postadress eller användarnamn</string>
 	<string name="phone">Telefon</string>
-	<string name="whats_new_editor_caption">Redigera kartan direkt från MAPS.ME</string>
-	<string name="whats_new_editor_message">Dina ändringar kommer att hjälpa miljontals användare. Låt oss förbättra världen tillsammans!</string>
 	<string name="please_note">Observera</string>
 	<string name="common_no_wifi_dialog">Ingen wifi-anslutning. Vill du fortsätta med mobildata?</string>
 	<string name="downloader_delete_map_dialog">Alla kartändringar kommer att raderas tillsammans med kartan.</string>
@@ -938,6 +921,4 @@
 	<string name="whatsnew_smallmwm_header">Du har bett om det och vi har gjort det</string>
 	<string name="whatsnew_smallmwm_message">Vi har delat in kartor i delar. Nu kan du ladda ner separata regioner, inte hela landet.</string>
 	<string name="whatsnew_search_message">Vi har avsevärt förbättrat sökningen på adress. Se själv.</string>
-	<string name="whatsnew_editor_header">Redigera kartan direkt från MAPS.ME</string>
-	<string name="whatsnew_editor_message">Dina ändringar kommer att hjälpa miljontals användare. Låt oss förbättra världen tillsammans!</string>
 </resources>

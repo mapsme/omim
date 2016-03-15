@@ -14,8 +14,6 @@
 	<string name="cancel_download">İndirme İşlemini İptal Et</string>
 	<!-- Button which deletes downloaded country -->
 	<string name="delete">Sil</string>
-	<!-- Button in iOS Downloader, displayed only when upgrading from v1 to v2 -->
-	<string name="delete_old_maps">Eski haritaları sil ve ilerle</string>
 	<!-- Button to dismiss dialog forever -->
 	<string name="do_not_ask_me_again">Bunu tekrar sorma</string>
 	<!-- Button "do not interrupt download" if user touched actively downloading country -->
@@ -52,8 +50,6 @@
 	<string name="miles">Mil</string>
 	<!-- View and button titles for accessibility -->
 	<string name="my_position">Konumum</string>
-	<!-- Settings/Downloader - No internet connection dialog title -->
-	<string name="no_internet_connection_detected">İnternet bağlantısı bulunamadı</string>
 	<!-- Settings/Downloader - 3G download warning dialog title -->
 	<string name="no_wifi_ask_cellular_download">WiFi bağlantısı bulunamadı. %s indirmek için hücresel veri (GPRS, EDGE, 3G veya LTE) kullanmak ister misiniz?</string>
 	<string name="ok">Tamam</string>
@@ -73,8 +69,6 @@
 	<string name="search">Ara</string>
 	<!-- Search box placeholder text -->
 	<string name="search_map">Haritada Ara</string>
-	<!-- Settings/Downloader - No free space dialog title -->
-	<string name="not_enough_disk_space">Yeterli boş disk alanı yok</string>
 	<!-- Settings/Downloader - info for not downloaded country -->
 	<string name="touch_to_download">İndirmek için dokunun</string>
 	<!-- Settings/Downloader - 3G download warning dialog confirm button -->
@@ -424,12 +418,8 @@
 	<string name="routing_map_outdated">Yeni bir rota oluşturmak için lütfen haritayı güncelleyin.</string>
 	<!-- Update maps suggestion -->
 	<string name="routing_update_maps">MAPS.ME\&#39;nin yeni sürümü mevcut pozisyonunuzdan varış noktasına rotalar oluşturmanıza imkan verir. Lütfen bu özelliği kullanmak için haritaları güncelleyin.</string>
-	<!-- Update all button text -->
-	<string name="downloader_update_all">Tümünü güncelle</string>
 	<!-- Cancel all button text -->
 	<string name="downloader_cancel_all">Tümünü İptal Et</string>
-	<!-- Downloaded maps category -->
-	<string name="downloader_downloaded">İndirilenler</string>
 	<!-- Country queued for download -->
 	<string name="downloader_queued">sıraya alındı</string>
 	<!-- Disclaimer message -->
@@ -825,8 +815,6 @@
 	<string name="p2p_only_from_current">Navigasyon sadece şu anki konumunuzdan mevcut.</string>
 	<string name="p2p_reroute_from_current">Mevcut konumunuzdan bir rota planlamamızı ister misiniz?</string>
 	<string name="whats_new_next_button">Sonraki</string>
-	<string name="whats_new_night_caption">Gece modu navigasyon</string>
-	<string name="whats_new_night_body">Karanlıkta sürerken MAPS.ME kullanmayı kolaylaştırmak için gece modunu ekledik. Gün batımından sonra otomatik olarak devreye girer.</string>
 	<string name="editor_time_add">Plan Ekle</string>
 	<string name="editor_time_delete">Planı Sil</string>
 	<!-- Text for allday switch. -->
@@ -842,9 +830,6 @@
 	<string name="editor_correct_mistake">Hatayı düzelt</string>
 	<string name="editor_correct_mistake_message">Bir düzenleme hatası yaptınız. Lütfen düzeltin veya basit moda geçin.</string>
 	<string name="migrate_title">Önemli!</string>
-	<!-- Used in 2 places: What's new and Delete All maps dialog. -->
-	<string name="migrate_and_split_mwms_message">Haritaları parçalara ayırdık. Artık tüm ülke yerine belirli bölgeleri indirebilirsiniz. Yeni haritaları indirmeden önce lütfen eski haritaları kaldırın.</string>
-	<string name="youve_been_asking">Siz istediniz biz yaptık</string>
 	<!-- Android uses image instead of text. -->
 	<string name="download_all">Tümünü indir</string>
 	<string name="delete_all">Tümünü sil</string>
@@ -908,8 +893,6 @@
 	<!-- login text field -->
 	<string name="email_or_username">E-posta veya kullanıcı adı</string>
 	<string name="phone">Telefon</string>
-	<string name="whats_new_editor_caption">Haritayı doğrudan MAPS.ME\&#39;den düzenleyin</string>
-	<string name="whats_new_editor_message">Değişiklikleriniz milyonlarca kullanıcıya yardımcı olacaktır. Haydi dünyayı birlikte geliştirelim!</string>
 	<string name="please_note">Lütfen dikkat</string>
 	<string name="common_no_wifi_dialog">WiFi bağlantısı yok. Mobil veri ile devam etmek istiyor musunuz?</string>
 	<string name="downloader_delete_map_dialog">Harita ile birlikte tüm harita değişiklikleri de silinecektir.</string>
@@ -940,6 +923,4 @@
 	<string name="whatsnew_smallmwm_header">Siz istediniz biz yaptık</string>
 	<string name="whatsnew_smallmwm_message">Haritaları parçalara ayırdık. Artık tüm ülke yerine belirli bölgeleri indirebilirsiniz.</string>
 	<string name="whatsnew_search_message">Adres ile aramayı önemli ölçüde geliştirdik. Kendiniz görün.</string>
-	<string name="whatsnew_editor_header">Haritayı doğrudan MAPS.ME\&#39;den düzenleyin</string>
-	<string name="whatsnew_editor_message">Değişiklikleriniz milyonlarca kullanıcıya yardımcı olacaktır. Haydi dünyayı birlikte geliştirelim!</string>
 </resources>

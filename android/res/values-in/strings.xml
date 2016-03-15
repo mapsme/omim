@@ -14,8 +14,6 @@
 	<string name="cancel_download">Batalkan Pengunduhan</string>
 	<!-- Button which deletes downloaded country -->
 	<string name="delete">Hapus</string>
-	<!-- Button in iOS Downloader, displayed only when upgrading from v1 to v2 -->
-	<string name="delete_old_maps">Hapus peta tua dan lanjutkan</string>
 	<!-- Button to dismiss dialog forever -->
 	<string name="do_not_ask_me_again">Jangan tanyai saya lagi</string>
 	<!-- Button "do not interrupt download" if user touched actively downloading country -->
@@ -52,8 +50,6 @@
 	<string name="miles">Mil</string>
 	<!-- View and button titles for accessibility -->
 	<string name="my_position">Posisi Saya</string>
-	<!-- Settings/Downloader - No internet connection dialog title -->
-	<string name="no_internet_connection_detected">Tidak ada koneksi internet yang terdeteksi</string>
 	<!-- Settings/Downloader - 3G download warning dialog title -->
 	<string name="no_wifi_ask_cellular_download">Tidak ada koneksi WiFi yang terdeteksi. Apakah Anda ingin menggunakan paket data seluler (GPRS, EDGE, 3G or LTE) untuk mengunduh %s?</string>
 	<string name="ok">OK</string>
@@ -73,8 +69,6 @@
 	<string name="search">Cari</string>
 	<!-- Search box placeholder text -->
 	<string name="search_map">Cari Peta</string>
-	<!-- Settings/Downloader - No free space dialog title -->
-	<string name="not_enough_disk_space">Tidak ada ruang kosong yang cukup</string>
 	<!-- Settings/Downloader - info for not downloaded country -->
 	<string name="touch_to_download">Sentuh untuk mengunduh</string>
 	<!-- Settings/Downloader - 3G download warning dialog confirm button -->
@@ -418,12 +412,8 @@
 	<string name="routing_map_outdated">Mohon perbarui peta untuk membuat rute</string>
 	<!-- Update maps suggestion -->
 	<string name="routing_update_maps">Versi MAPS.ME yang terbaru memungkinkan pembuatan rute dari posisi Anda saat itu ke titik tujuan. Mohon perbarui peta untuk menggunakan fitur ini.</string>
-	<!-- Update all button text -->
-	<string name="downloader_update_all">Perbarui semuanya</string>
 	<!-- Cancel all button text -->
 	<string name="downloader_cancel_all">Batalkan Semuanya</string>
-	<!-- Downloaded maps category -->
-	<string name="downloader_downloaded">Telah Diunduh</string>
 	<!-- Country queued for download -->
 	<string name="downloader_queued">telah diantrekan</string>
 	<!-- Disclaimer message -->
@@ -818,8 +808,6 @@
 	<string name="p2p_only_from_current">Navigasi tersedia hanya dari lokasi Anda saat ini.</string>
 	<string name="p2p_reroute_from_current">Apakah Anda ingin kami merencanakan sebuah rute dari lokasi Anda saat ini?</string>
 	<string name="whats_new_next_button">Berikut</string>
-	<string name="whats_new_night_caption">Navigasi mode malam</string>
-	<string name="whats_new_night_body">Untuk memfasilitasi penggunaan MAPS.ME saat berkendara dalam gelap, kami telah menambahkan mode malam. Mode ini diaktifkan secara otomatis setelah matahari terbenam.</string>
 	<string name="editor_time_add">Tambah Jadwal</string>
 	<string name="editor_time_delete">Hapus Jadwal</string>
 	<!-- Text for allday switch. -->
@@ -835,9 +823,6 @@
 	<string name="editor_correct_mistake">Koreksi kesalahan</string>
 	<string name="editor_correct_mistake_message">Pengeditan salah. Koreksi atau ubah ke mode sederhana.</string>
 	<string name="migrate_title">Penting!</string>
-	<!-- Used in 2 places: What's new and Delete All maps dialog. -->
-	<string name="migrate_and_split_mwms_message">Kami telah membagi peta menjadi beberapa bagian. Sekarang Anda dapat mengunduh wilayah-wilayah yang terpisah, bukan seluruh negara. Sebelum Anda mulai mengunduh peta-peta baru, harap menghapus peta-peta yang lama.</string>
-	<string name="youve_been_asking">Anda memintanya dan kami telah malakukannya</string>
 	<!-- Android uses image instead of text. -->
 	<string name="download_all">Unduh semua</string>
 	<string name="delete_all">Hapus semua</string>
@@ -901,8 +886,6 @@
 	<!-- login text field -->
 	<string name="email_or_username">Surel atau nama pengguna</string>
 	<string name="phone">Telepon</string>
-	<string name="whats_new_editor_caption">Edit peta secara langsung dari MAPS.ME</string>
-	<string name="whats_new_editor_message">Perubahan yang anda lakukan akan membantu jutaan pengguna. Marilah meningkatkan dunia bersama-sama!</string>
 	<string name="please_note">Harap diperhatikan</string>
 	<string name="common_no_wifi_dialog">Tidak ada koneksi WiFi. Apakah Anda ingin melanjutkan dengan data seluler?</string>
 	<string name="downloader_delete_map_dialog">Semua perubahan peta akan dihapus bersama dengan peta.</string>
@@ -933,6 +916,4 @@
 	<string name="whatsnew_smallmwm_header">Anda memintanya dan kami telah malakukannya</string>
 	<string name="whatsnew_smallmwm_message">Kami telah membagi peta menjadi beberapa bagian. Sekarang Anda dapat mengunduh wilayah-wilayah yang terpisah, bukan seluruh negara.</string>
 	<string name="whatsnew_search_message">Kami secara signifikan telah meningkatkan pencarian menurut alamat. Lihat sendiri.</string>
-	<string name="whatsnew_editor_header">Edit peta secara langsung dari MAPS.ME</string>
-	<string name="whatsnew_editor_message">Perubahan yang anda lakukan akan membantu jutaan pengguna. Marilah meningkatkan dunia bersama-sama!</string>
 </resources>

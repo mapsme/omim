@@ -21,9 +21,6 @@
 /* Button which deletes downloaded country */
 "delete" = "刪除";
 
-/* Button in iOS Downloader, displayed only when upgrading from v1 to v2 */
-"delete_old_maps" = "刪除舊的地圖並繼續";
-
 /* Button to dismiss dialog forever */
 "do_not_ask_me_again" = "別再問我";
 
@@ -79,9 +76,6 @@
 /* View and button titles for accessibility */
 "my_position" = "我的位置";
 
-/* Settings/Downloader - No internet connection dialog title */
-"no_internet_connection_detected" = "無網路連線";
-
 /* Settings/Downloader - 3G download warning dialog title */
 "no_wifi_ask_cellular_download" = "未發現WiFi訊號!您想使用其他的網路連線方式(GPRS, EDGE, 3G 或 LTE)來下載嗎 %@？";
 
@@ -110,9 +104,6 @@
 
 /* Search box placeholder text */
 "search_map" = "搜尋地圖";
-
-/* Settings/Downloader - No free space dialog title */
-"not_enough_disk_space" = "沒有足夠的儲存空間";
 
 /* Settings/Downloader - info for not downloaded country */
 "touch_to_download" = "輕觸後下載";
@@ -694,20 +685,20 @@
 "routing_update_maps" = "使用新版本的MAPS.ME可以創建從您的當前位置至一個目的地的路線。請更新地圖以使用該功能。";
 
 /* Update all button text */
-"downloader_update_all" = "更新全部";
+"downloader_update_all_button" = "Update all";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "取消全部";
 
 /* Downloaded maps category */
-"downloader_downloaded" = "已下載";
+"downloader_downloaded_subtitle" = "Downloaded";
 
 /* Country queued for download */
 "downloader_queued" = "已佇列";
 
-"downloader_near_me" = "Near me";
+"downloader_near_me_subtitle" = "Near me";
 
-"downloader_maps_to_update" = "Maps: %1$d (%2$s)";
+"downloader_status_maps" = "Maps: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "在MAPS.ME應用中制定路線時請謹記以下幾點：\n\n  - 建議路線僅可當作推薦路線。\n - 路況、交通規則以及標誌應優先於導航建議。\n - 地圖可能會不正確或者過時，路線也可能不是以最佳可能方式制定的。\n\n  行車安全，請照顧好您自己！";
@@ -767,9 +758,6 @@
 
 /* Item in context menu. */
 "downloader_map_and_routing" = "地圖 + 布置路線";
-
-/* Dialog confirmation when trying to delete map and there are unsaved changes present on it. */
-"downloader_delete_editor_changes" = "Unsaved changes for this map will be removed too. Continue anyway?";
 
 /* Item in context menu. */
 "downloader_delete_map" = "刪除地圖";
@@ -1342,10 +1330,6 @@
 
 "whats_new_next_button" = "下一頁";
 
-"whats_new_night_caption" = "夜間模式導航";
-
-"whats_new_night_body" = "為了便於天黑行駛時使用MAPS.ME，我們增加了夜間模式。該模式在日落之後會自動開啟。";
-
 "editor_time_add" = "新增排程";
 
 "editor_time_delete" = "刪除排程";
@@ -1374,11 +1358,6 @@
 "editor_correct_mistake_message" = "編輯時出錯。請修正或切換到簡易模式。";
 
 "migrate_title" = "重要！";
-
-/* Used in 2 places: What's new and Delete All maps dialog. */
-"migrate_and_split_mwms_message" = "我們已將地圖分為若干部分。現在，您可下載各個地區，而非整個國家的地圖。您在開始下載新地圖前，請刪除老地圖。";
-
-"youve_been_asking" = "您一直在尋求，而我們已經完成";
 
 /* Android uses image instead of text. */
 "download_all" = "全部下載。";
@@ -1501,10 +1480,6 @@
 
 "phone" = "電話";
 
-"whats_new_editor_caption" = "直接從MAPS.ME編輯地圖";
-
-"whats_new_editor_message" = "您的修改將幫助上百萬用戶。讓我們一起讓世界變好！";
-
 "please_note" = "請註意";
 
 "common_no_wifi_dialog" = "無WiFi連接。您想繼續使用移動數據進行連接嗎？";
@@ -1514,6 +1489,18 @@
 "downloader_update_maps" = "更新地圖";
 
 "downloader_mwm_migration_dialog" = "為了創建路線，您需要更新全部地圖並重新規劃路線。";
+
+"downloader_search_field_hint" = "Find the map";
+
+"migration_update_all_button" = "Update all maps";
+
+"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+
+"migration_prefetch_status" = "Preparing maps update…";
+
+"migration_download_error_dialog" = "Download error";
+
+"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
 
 "downloader_no_space_title" = "無足夠的空間";
 
@@ -1563,8 +1550,24 @@
 
 "whatsnew_smallmwm_message" = "我們已將地圖分為若干部分。現在，您可下載各個地區，而非整個國家的地圖。";
 
+"whatsnew_search_header" = "New search!";
+
 "whatsnew_search_message" = "我們已明顯改進了按地址的搜索。親自看看。";
 
-"whatsnew_editor_header" = "直接從MAPS.ME編輯地圖";
+"whatsnew_editor_title" = "Edit the map*";
 
-"whatsnew_editor_message" = "您的修改將幫助上百萬用戶。讓我們一起讓世界變好！";
+"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+
+"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+
+"onboarding_offline_navigation_title" = "You will never get lost again";
+
+"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+
+"onboarding_offline_navigation_title_2" = "Offline navigation";
+
+"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+
+"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+
+"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";

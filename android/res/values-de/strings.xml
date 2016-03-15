@@ -14,8 +14,6 @@
 	<string name="cancel_download">Herunterladen abbrechen</string>
 	<!-- Button which deletes downloaded country -->
 	<string name="delete">Löschen</string>
-	<!-- Button in iOS Downloader, displayed only when upgrading from v1 to v2 -->
-	<string name="delete_old_maps">Alte Karten löschen und fortsetzen</string>
 	<!-- Button to dismiss dialog forever -->
 	<string name="do_not_ask_me_again">Nicht mehr fragen</string>
 	<!-- Button "do not interrupt download" if user touched actively downloading country -->
@@ -52,8 +50,6 @@
 	<string name="miles">Meilen</string>
 	<!-- View and button titles for accessibility -->
 	<string name="my_position">Mein Standort</string>
-	<!-- Settings/Downloader - No internet connection dialog title -->
-	<string name="no_internet_connection_detected">Keine Internetverbindung</string>
 	<!-- Settings/Downloader - 3G download warning dialog title -->
 	<string name="no_wifi_ask_cellular_download">Keine WLAN-Verbindung. Möchten Sie %s über das Mobilnetz (GPRS, EDGE, 3G oder LTE) herunterladen?</string>
 	<string name="ok">OK</string>
@@ -73,8 +69,6 @@
 	<string name="search">Suche</string>
 	<!-- Search box placeholder text -->
 	<string name="search_map">Auf der Karte suchen</string>
-	<!-- Settings/Downloader - No free space dialog title -->
-	<string name="not_enough_disk_space">Speicherplatz reicht nicht aus</string>
 	<!-- Settings/Downloader - info for not downloaded country -->
 	<string name="touch_to_download">Antippen, um herunterzuladen</string>
 	<!-- Settings/Downloader - 3G download warning dialog confirm button -->
@@ -440,12 +434,8 @@
 	<string name="routing_map_outdated">Bitte aktualisieren Sie die Karte, um eine Route zu erstellen.</string>
 	<!-- Update maps suggestion -->
 	<string name="routing_update_maps">Die neue Version von MAPS.ME ermöglicht das Erzeugen von Routen von Ihrem aktuellen Standort bis zum gewünschten Ziel. Bitte aktualisieren Sie Karten, um diese Funktion nutzen zu können.</string>
-	<!-- Update all button text -->
-	<string name="downloader_update_all">Alles aktualisieren</string>
 	<!-- Cancel all button text -->
 	<string name="downloader_cancel_all">Alle abbrechen</string>
-	<!-- Downloaded maps category -->
-	<string name="downloader_downloaded">Heruntergeladen</string>
 	<!-- Country queued for download -->
 	<string name="downloader_queued">in der Warteschlange</string>
 	<!-- Disclaimer message -->
@@ -841,8 +831,6 @@
 	<string name="p2p_only_from_current">Die Navigation ist nur von Ihrem aktuellen Standort verfügbar.</string>
 	<string name="p2p_reroute_from_current">Soll eine Route von Ihrem aktuellen Standort aus berechnet werden?</string>
 	<string name="whats_new_next_button">Weiter</string>
-	<string name="whats_new_night_caption">Nachtmodus-Navigation</string>
-	<string name="whats_new_night_body">Um die Nutzung von MAPS.ME beim Fahren im Dunkeln zu erleichtern, haben wir den Nachtmodus hinzugefügt. Dieser wird automatisch nach Sonnenuntergang aktiviert.</string>
 	<string name="editor_time_add">Zeitplan hinzufügen</string>
 	<string name="editor_time_delete">Zeitplan löschen</string>
 	<!-- Text for allday switch. -->
@@ -858,9 +846,6 @@
 	<string name="editor_correct_mistake">Fehler korrigieren</string>
 	<string name="editor_correct_mistake_message">Es ist ein Bearbeitungsfehler aufgetreten. Bitte korrigieren oder zum Einfachmodus wechseln.</string>
 	<string name="migrate_title">Wichtig!</string>
-	<!-- Used in 2 places: What's new and Delete All maps dialog. -->
-	<string name="migrate_and_split_mwms_message">Wir haben die Karten aufgeteilt. Jetzt können Sie einzelne Regionen herunterladen, ohne das ganze Land herunterzuladen. Bevor Sie damit beginnen, neue Karten herunterzuladen, löschen Sie bitte Ihre alten Karten.</string>
-	<string name="youve_been_asking">Sie haben darum gebeten, und wir haben es geschafft</string>
 	<!-- Android uses image instead of text. -->
 	<string name="download_all">Alle herunterladen</string>
 	<string name="delete_all">Alle löschen</string>
@@ -924,8 +909,6 @@
 	<!-- login text field -->
 	<string name="email_or_username">E-Mail oder Benutzername</string>
 	<string name="phone">Telefon</string>
-	<string name="whats_new_editor_caption">Bearbeiten der Karte direkt in MAPS.ME</string>
-	<string name="whats_new_editor_message">Ihre Veränderungen werden Millionen von Benutzern helfen. Lasst uns zusammen die Welt verbessern!</string>
 	<string name="please_note">Bitte beachten</string>
 	<string name="common_no_wifi_dialog">Keine WLAN-Verbindung. Möchten Sie mit mobilen Daten fortfahren?</string>
 	<string name="downloader_delete_map_dialog">Alle Kartenänderungen werden zusammen mit der Karte gelöscht.</string>
@@ -956,6 +939,4 @@
 	<string name="whatsnew_smallmwm_header">Sie haben darum gebeten, und wir haben es geschafft</string>
 	<string name="whatsnew_smallmwm_message">Wir haben die Karten aufgeteilt. Jetzt können Sie einzelne Regionen herunterladen, ohne das ganze Land herunterzuladen.</string>
 	<string name="whatsnew_search_message">Wir haben die Adresssuche dramatisch verbessert. Sehen Sie selbst.</string>
-	<string name="whatsnew_editor_header">Bearbeiten der Karte direkt in MAPS.ME</string>
-	<string name="whatsnew_editor_message">Ihre Veränderungen werden Millionen von Benutzern helfen. Lasst uns zusammen die Welt verbessern!</string>
 </resources>

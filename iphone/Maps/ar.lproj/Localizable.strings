@@ -21,9 +21,6 @@
 /* Button which deletes downloaded country */
 "delete" = "حذف";
 
-/* Button in iOS Downloader, displayed only when upgrading from v1 to v2 */
-"delete_old_maps" = "حذف الخرائط القديمة و المتابعة";
-
 /* Button to dismiss dialog forever */
 "do_not_ask_me_again" = "لا تسئلني مرة أخرى";
 
@@ -79,9 +76,6 @@
 /* View and button titles for accessibility */
 "my_position" = "موقعي";
 
-/* Settings/Downloader - No internet connection dialog title */
-"no_internet_connection_detected" = "لم يتم اكتشاف أي اتصال مع الانترنت";
-
 /* Settings/Downloader - 3G download warning dialog title */
 "no_wifi_ask_cellular_download" = "لم يتم العثور على أي اتصال واي فاي. هل ترغب باستخدام حزمة البيانات الخليوية (GPRS ، EDGE ، 3G أو LTE) من أجل تنزيل %@؟";
 
@@ -110,9 +104,6 @@
 
 /* Search box placeholder text */
 "search_map" = "ابحث في الخريطة";
-
-/* Settings/Downloader - No free space dialog title */
-"not_enough_disk_space" = "لا يوجد مساحة كافية على القرص";
 
 /* Settings/Downloader - info for not downloaded country */
 "touch_to_download" = "انقر للتنزيل";
@@ -694,20 +685,20 @@
 "routing_update_maps" = "إصدار MAPS.ME الجديد يسمح بإنشاء مسارات انطلاقاً من موقعك الحالي نحو المكان الذي تتجه إليه. يرجى تحديث الخرائط لاستخدام هذه الميزة.";
 
 /* Update all button text */
-"downloader_update_all" = "تحديث الكل";
+"downloader_update_all_button" = "Update all";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "إلغاء الكل";
 
 /* Downloaded maps category */
-"downloader_downloaded" = "المُنزَّلة";
+"downloader_downloaded_subtitle" = "Downloaded";
 
 /* Country queued for download */
 "downloader_queued" = "مَصْفوف";
 
-"downloader_near_me" = "Near me";
+"downloader_near_me_subtitle" = "Near me";
 
-"downloader_maps_to_update" = "Maps: %1$d (%2$s)";
+"downloader_status_maps" = "Maps: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "عند إنشاء مسارات الطرق في تطبيق MAPS.ME، يرجى أخذ التالي في الحسبان:\n\n  - المسارات المقترحة تعتبر مجرد اقتراحات فقط.\n - حالة الطريق وقوانينه والإشارات الموجودة فيه لها الأولولية أثناء تقديم نصائح الملاحة.\n - قد تكون الخريطة خاطئة أو قديمة، لذا فإنه يمكن ألا تُرسم المسارات بالشكل الأمثل.\n\n  كن آمنا على الطريق وانتبه لتفسك!";
@@ -767,9 +758,6 @@
 
 /* Item in context menu. */
 "downloader_map_and_routing" = "الخريطة + تحديد المسار";
-
-/* Dialog confirmation when trying to delete map and there are unsaved changes present on it. */
-"downloader_delete_editor_changes" = "Unsaved changes for this map will be removed too. Continue anyway?";
 
 /* Item in context menu. */
 "downloader_delete_map" = "حذف الخريطة";
@@ -1342,10 +1330,6 @@
 
 "whats_new_next_button" = "التالي";
 
-"whats_new_night_caption" = "وضع التجول الليلي";
-
-"whats_new_night_body" = "لتسهيل استخدام MAPS.ME أثناء القيادة في الظلام، فقد أضفنا وضع التجول الليلي. إنه يعمل تلقائيا بعد غروب الشمس.";
-
 "editor_time_add" = "إضافة جدول";
 
 "editor_time_delete" = "حذف جدول";
@@ -1374,11 +1358,6 @@
 "editor_correct_mistake_message" = "قمت بخطأ في التحرير. يرجى تصحيح الخطأ أو التبديل إلى الوضع البسيط.";
 
 "migrate_title" = "هام!";
-
-/* Used in 2 places: What's new and Delete All maps dialog. */
-"migrate_and_split_mwms_message" = "لقد قسمنا الخرائط إلى أجزاء. الآن يمكنك تنزيل مناطق منفصلة، وليس البلد بأكمله. قبل البدء في تنزيل الخرائط الجديدة، يرجى إزالة النسخ القديمة.";
-
-"youve_been_asking" = "لقد طلبتم ذلك، وها نحن قد لبينا طلبكم";
 
 /* Android uses image instead of text. */
 "download_all" = "تنزيل الكل";
@@ -1501,10 +1480,6 @@
 
 "phone" = "الهاتف";
 
-"whats_new_editor_caption" = "حرر خريطتك على MAPS.ME";
-
-"whats_new_editor_message" = "تغييراتك سوف تساعد الملايين من المستخدمين. هيا نطور من العالم سويا!";
-
 "please_note" = "يرجى العلم أنه،";
 
 "common_no_wifi_dialog" = "لا يوجد اتصال واي فاي. هل ترغب في استخدام بيانات الهاتف للاتصال؟";
@@ -1514,6 +1489,18 @@
 "downloader_update_maps" = "تحديث الخرائط";
 
 "downloader_mwm_migration_dialog" = "لإنشاء مسار، فأنت تحتاج إلى تحديث كافة الخرائط ثم إعادة تخطيط المسار مرة أخرى.";
+
+"downloader_search_field_hint" = "Find the map";
+
+"migration_update_all_button" = "Update all maps";
+
+"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+
+"migration_prefetch_status" = "Preparing maps update…";
+
+"migration_download_error_dialog" = "Download error";
+
+"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
 
 "downloader_no_space_title" = "مساحة غير كافية";
 
@@ -1563,8 +1550,24 @@
 
 "whatsnew_smallmwm_message" = "لقد قسمنا الخرائط إلى أجزاء. الآن يمكنك تنزيل مناطق منفصلة، وليس البلد بأكمله.";
 
+"whatsnew_search_header" = "New search!";
+
 "whatsnew_search_message" = "لقد طورنا كليا البحث بالعنوان. فلترى بنفسك.";
 
-"whatsnew_editor_header" = "حرر خريطتك على MAPS.ME";
+"whatsnew_editor_title" = "Edit the map*";
 
-"whatsnew_editor_message" = "تغييراتك سوف تساعد الملايين من المستخدمين. هيا نطور من العالم سويا!";
+"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+
+"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+
+"onboarding_offline_navigation_title" = "You will never get lost again";
+
+"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+
+"onboarding_offline_navigation_title_2" = "Offline navigation";
+
+"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+
+"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+
+"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";

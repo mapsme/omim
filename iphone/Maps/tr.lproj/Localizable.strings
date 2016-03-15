@@ -21,9 +21,6 @@
 /* Button which deletes downloaded country */
 "delete" = "Sil";
 
-/* Button in iOS Downloader, displayed only when upgrading from v1 to v2 */
-"delete_old_maps" = "Eski haritaları sil ve ilerle";
-
 /* Button to dismiss dialog forever */
 "do_not_ask_me_again" = "Bunu tekrar sorma";
 
@@ -79,9 +76,6 @@
 /* View and button titles for accessibility */
 "my_position" = "Konumum";
 
-/* Settings/Downloader - No internet connection dialog title */
-"no_internet_connection_detected" = "İnternet bağlantısı bulunamadı";
-
 /* Settings/Downloader - 3G download warning dialog title */
 "no_wifi_ask_cellular_download" = "WiFi bağlantısı bulunamadı. %@ indirmek için hücresel veri (GPRS, EDGE, 3G veya LTE) kullanmak ister misiniz?";
 
@@ -110,9 +104,6 @@
 
 /* Search box placeholder text */
 "search_map" = "Haritada Ara";
-
-/* Settings/Downloader - No free space dialog title */
-"not_enough_disk_space" = "Yeterli boş disk alanı yok";
 
 /* Settings/Downloader - info for not downloaded country */
 "touch_to_download" = "İndirmek için dokunun";
@@ -694,20 +685,20 @@
 "routing_update_maps" = "MAPS.ME'nin yeni sürümü mevcut pozisyonunuzdan varış noktasına rotalar oluşturmanıza imkan verir. Lütfen bu özelliği kullanmak için haritaları güncelleyin.";
 
 /* Update all button text */
-"downloader_update_all" = "Tümünü güncelle";
+"downloader_update_all_button" = "Update all";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "Tümünü İptal Et";
 
 /* Downloaded maps category */
-"downloader_downloaded" = "İndirilenler";
+"downloader_downloaded_subtitle" = "Downloaded";
 
 /* Country queued for download */
 "downloader_queued" = "sıraya alındı";
 
-"downloader_near_me" = "Near me";
+"downloader_near_me_subtitle" = "Near me";
 
-"downloader_maps_to_update" = "Maps: %1$d (%2$s)";
+"downloader_status_maps" = "Maps: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "MAPS.ME uygulamasında rota yaratırken lütfen aşağıdakileri dikkate alın:\n\n  - Önerilen rotalar sadece tavsiyeler olarak düşünülmelidir.\n - Yol koşulları, trafik kuralları ve işaretleri navigasyon tavsiyelerden daha önceliklidir.\n - Harita doğru olmayabilir ya da eskimiş olabilir ve rotalar en iyi mümkün yola göre oluşturulmamış olabilir.\n\n  Yollarda güvende olun ve kendinize dikkat edin!";
@@ -767,9 +758,6 @@
 
 /* Item in context menu. */
 "downloader_map_and_routing" = "Harita + Rota";
-
-/* Dialog confirmation when trying to delete map and there are unsaved changes present on it. */
-"downloader_delete_editor_changes" = "Unsaved changes for this map will be removed too. Continue anyway?";
 
 /* Item in context menu. */
 "downloader_delete_map" = "Haritayı Sil";
@@ -1342,10 +1330,6 @@
 
 "whats_new_next_button" = "Sonraki";
 
-"whats_new_night_caption" = "Gece modu navigasyon";
-
-"whats_new_night_body" = "Karanlıkta sürerken MAPS.ME kullanmayı kolaylaştırmak için gece modunu ekledik. Gün batımından sonra otomatik olarak devreye girer.";
-
 "editor_time_add" = "Plan Ekle";
 
 "editor_time_delete" = "Planı Sil";
@@ -1374,11 +1358,6 @@
 "editor_correct_mistake_message" = "Bir düzenleme hatası yaptınız. Lütfen düzeltin veya basit moda geçin.";
 
 "migrate_title" = "Önemli!";
-
-/* Used in 2 places: What's new and Delete All maps dialog. */
-"migrate_and_split_mwms_message" = "Haritaları parçalara ayırdık. Artık tüm ülke yerine belirli bölgeleri indirebilirsiniz. Yeni haritaları indirmeden önce lütfen eski haritaları kaldırın.";
-
-"youve_been_asking" = "Siz istediniz biz yaptık";
 
 /* Android uses image instead of text. */
 "download_all" = "Tümünü indir";
@@ -1501,10 +1480,6 @@
 
 "phone" = "Telefon";
 
-"whats_new_editor_caption" = "Haritayı doğrudan MAPS.ME'den düzenleyin";
-
-"whats_new_editor_message" = "Değişiklikleriniz milyonlarca kullanıcıya yardımcı olacaktır. Haydi dünyayı birlikte geliştirelim!";
-
 "please_note" = "Lütfen dikkat";
 
 "common_no_wifi_dialog" = "WiFi bağlantısı yok. Mobil veri ile devam etmek istiyor musunuz?";
@@ -1514,6 +1489,18 @@
 "downloader_update_maps" = "Haritaları güncelle";
 
 "downloader_mwm_migration_dialog" = "Bir rota oluşturmak için tüm haritaları güncellemeli ve ardından rotayı tekrar planlamalısınız.";
+
+"downloader_search_field_hint" = "Find the map";
+
+"migration_update_all_button" = "Update all maps";
+
+"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+
+"migration_prefetch_status" = "Preparing maps update…";
+
+"migration_download_error_dialog" = "Download error";
+
+"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
 
 "downloader_no_space_title" = "Yeterli alan yok";
 
@@ -1563,8 +1550,24 @@
 
 "whatsnew_smallmwm_message" = "Haritaları parçalara ayırdık. Artık tüm ülke yerine belirli bölgeleri indirebilirsiniz.";
 
+"whatsnew_search_header" = "New search!";
+
 "whatsnew_search_message" = "Adres ile aramayı önemli ölçüde geliştirdik. Kendiniz görün.";
 
-"whatsnew_editor_header" = "Haritayı doğrudan MAPS.ME'den düzenleyin";
+"whatsnew_editor_title" = "Edit the map*";
 
-"whatsnew_editor_message" = "Değişiklikleriniz milyonlarca kullanıcıya yardımcı olacaktır. Haydi dünyayı birlikte geliştirelim!";
+"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+
+"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+
+"onboarding_offline_navigation_title" = "You will never get lost again";
+
+"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+
+"onboarding_offline_navigation_title_2" = "Offline navigation";
+
+"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+
+"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+
+"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";
