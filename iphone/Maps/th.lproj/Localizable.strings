@@ -1558,3 +1558,13 @@
 "placepage_add_place_button" = "เพิ่มสถานที่";
 
 "placepage_report_problem_button" = "แจ้งปัญหา";
+
+"whatsnew_smallmwm_header" = "คุณได้ขอมา เราจึงทำมัน";
+
+"whatsnew_smallmwm_message" = "เราได้แบ่งแผนที่ออกเป็นส่วน ๆ ตอนนี้คุณสามารถดาวน์โหลดภูมิภาคแยกต่างหากได้แล้ว";
+
+"whatsnew_search_message" = "เราได้ปรับปรุงครั้งใหญ่สำหรับการค้นหาตามที่อยู่ ลองดูด้วยตัวเอง";
+
+"whatsnew_editor_header" = "แก้ไขแผนที่โดยตรงจาก MAPS.ME";
+
+"whatsnew_editor_message" = "การแก้ไขของคุณจะช่วยผู้ใช้หลายล้านคนได้ มาช่วยทำให้โลกน่าอยู่ขึ้น!";

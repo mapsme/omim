@@ -1558,3 +1558,13 @@
 "placepage_add_place_button" = "Tilføj et sted";
 
 "placepage_report_problem_button" = "Anmeld et problem";
+
+"whatsnew_smallmwm_header" = "I har bedt om det, og vi har gjort det";
+
+"whatsnew_smallmwm_message" = "Vi har delt kort op i dele. Nu kan man downloade separate regioner, ikke hele landet.";
+
+"whatsnew_search_message" = "Vi har forbedret søgningen efter adresse betydeligt. Se selv.";
+
+"whatsnew_editor_header" = "Redigér kortet direkte fra MAPS.ME";
+
+"whatsnew_editor_message" = "Dine ændringer vil hjælpe millioner af brugere. Lad os forbedre verden sammen!";

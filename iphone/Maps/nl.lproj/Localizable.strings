@@ -1558,3 +1558,13 @@
 "placepage_add_place_button" = "Voeg een plaats toe";
 
 "placepage_report_problem_button" = "Meld een probleem";
+
+"whatsnew_smallmwm_header" = "Op veler verzoek hebben we het voor elkaar gekregen";
+
+"whatsnew_smallmwm_message" = "We hebben kaarten in delen verdeeld. Nu kunt u afzonderlijke regio's downloaden in plaats van het hele land.";
+
+"whatsnew_search_message" = "We hebben het zoeken op adres significant verbeterd. Bekijk het zelf.";
+
+"whatsnew_editor_header" = "Bewerk de kaart direct vanuit MAPS.ME";
+
+"whatsnew_editor_message" = "Jouw wijzigingen zullen miljoenen gebruikers helpen. Laten we samen de wereld verbeteren!";

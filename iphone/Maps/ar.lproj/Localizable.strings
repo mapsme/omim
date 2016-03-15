@@ -1558,3 +1558,13 @@
 "placepage_add_place_button" = "إضافة مكان";
 
 "placepage_report_problem_button" = "الإبلاغ عن مشكلة";
+
+"whatsnew_smallmwm_header" = "لقد طلبتم ذلك، وها نحن قد لبينا طلبكم";
+
+"whatsnew_smallmwm_message" = "لقد قسمنا الخرائط إلى أجزاء. الآن يمكنك تنزيل مناطق منفصلة، وليس البلد بأكمله.";
+
+"whatsnew_search_message" = "لقد طورنا كليا البحث بالعنوان. فلترى بنفسك.";
+
+"whatsnew_editor_header" = "حرر خريطتك على MAPS.ME";
+
+"whatsnew_editor_message" = "تغييراتك سوف تساعد الملايين من المستخدمين. هيا نطور من العالم سويا!";

@@ -1558,3 +1558,13 @@
 "placepage_add_place_button" = "Bir yer ekle";
 
 "placepage_report_problem_button" = "Bir problem bildirin";
+
+"whatsnew_smallmwm_header" = "Siz istediniz biz yaptık";
+
+"whatsnew_smallmwm_message" = "Haritaları parçalara ayırdık. Artık tüm ülke yerine belirli bölgeleri indirebilirsiniz.";
+
+"whatsnew_search_message" = "Adres ile aramayı önemli ölçüde geliştirdik. Kendiniz görün.";
+
+"whatsnew_editor_header" = "Haritayı doğrudan MAPS.ME'den düzenleyin";
+
+"whatsnew_editor_message" = "Değişiklikleriniz milyonlarca kullanıcıya yardımcı olacaktır. Haydi dünyayı birlikte geliştirelim!";

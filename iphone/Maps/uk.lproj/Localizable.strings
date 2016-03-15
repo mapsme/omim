@@ -1558,3 +1558,13 @@
 "placepage_add_place_button" = "Додати місце";
 
 "placepage_report_problem_button" = "Повідомити про проблему";
+
+"whatsnew_smallmwm_header" = "Ви просили і ми це зробили";
+
+"whatsnew_smallmwm_message" = "Ми поділили карти на частини. Тепер ви можете стягувати окремі регіони, а не країну цілком.";
+
+"whatsnew_search_message" = "Якісно покращили пошук по адресам. Перевірте.";
+
+"whatsnew_editor_header" = "Редагуйте карту відразу з MAPS.ME";
+
+"whatsnew_editor_message" = "Ваші зміни допоможуть мільйонам користувачів. Вдосконалимо світ разом!";

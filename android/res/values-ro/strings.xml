@@ -928,4 +928,9 @@
 	<string name="editor_edit_place_atm_title">ATM</string>
 	<string name="placepage_add_place_button">Adăugați o locație</string>
 	<string name="placepage_report_problem_button">Raportați o problemă</string>
+	<string name="whatsnew_smallmwm_header">Ne-ați cerut, iar noi am făcut</string>
+	<string name="whatsnew_smallmwm_message">Am împărțit hărțile în mai multe secțiuni. Acum, puteți descărca și regiuni separate, nu doar țara întreagă.</string>
+	<string name="whatsnew_search_message">Am îmbunătățit semnificativ căutarea după adresă. Convinge-te singur.</string>
+	<string name="whatsnew_editor_header">Editează harta direct de pe MAPS.ME</string>
+	<string name="whatsnew_editor_message">Modificările tale vor ajuta milioane de utilizatori. Hai să facem lumea mai bună împreună!</string>
 </resources>

@@ -1558,3 +1558,13 @@
 "placepage_add_place_button" = "Lägg till en plats";
 
 "placepage_report_problem_button" = "Rapportera ett problem";
+
+"whatsnew_smallmwm_header" = "Du har bett om det och vi har gjort det";
+
+"whatsnew_smallmwm_message" = "Vi har delat in kartor i delar. Nu kan du ladda ner separata regioner, inte hela landet.";
+
+"whatsnew_search_message" = "Vi har avsevärt förbättrat sökningen på adress. Se själv.";
+
+"whatsnew_editor_header" = "Redigera kartan direkt från MAPS.ME";
+
+"whatsnew_editor_message" = "Dina ändringar kommer att hjälpa miljontals användare. Låt oss förbättra världen tillsammans!";

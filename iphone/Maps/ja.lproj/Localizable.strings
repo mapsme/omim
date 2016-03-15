@@ -1558,3 +1558,13 @@
 "placepage_add_place_button" = "場所を追加";
 
 "placepage_report_problem_button" = "問題を報告";
+
+"whatsnew_smallmwm_header" = "皆様のご要望にお応えして、実現を果たしました";
+
+"whatsnew_smallmwm_message" = "マップを分割し、国全体でなく個別の地域をダウンロードできるようにしました。";
+
+"whatsnew_search_message" = "住所での検索機能を大幅に改善しました。ご自身の目でご覧ください。";
+
+"whatsnew_editor_header" = "MAPS.MEで直接地図を編集可能";
+
+"whatsnew_editor_message" = "地図を修正すると、何百万人ものユーザーの役に立ちます。一緒に世界を改善していきましょう！";

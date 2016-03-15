@@ -930,4 +930,9 @@
 	<string name="editor_edit_place_atm_title">ATM</string>
 	<string name="placepage_add_place_button">Tambahkan tempat</string>
 	<string name="placepage_report_problem_button">Laporkan masalah</string>
+	<string name="whatsnew_smallmwm_header">Anda memintanya dan kami telah malakukannya</string>
+	<string name="whatsnew_smallmwm_message">Kami telah membagi peta menjadi beberapa bagian. Sekarang Anda dapat mengunduh wilayah-wilayah yang terpisah, bukan seluruh negara.</string>
+	<string name="whatsnew_search_message">Kami secara signifikan telah meningkatkan pencarian menurut alamat. Lihat sendiri.</string>
+	<string name="whatsnew_editor_header">Edit peta secara langsung dari MAPS.ME</string>
+	<string name="whatsnew_editor_message">Perubahan yang anda lakukan akan membantu jutaan pengguna. Marilah meningkatkan dunia bersama-sama!</string>
 </resources>

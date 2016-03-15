@@ -921,4 +921,9 @@
 	<string name="editor_edit_place_atm_title">Pinautomaat</string>
 	<string name="placepage_add_place_button">Voeg een plaats toe</string>
 	<string name="placepage_report_problem_button">Meld een probleem</string>
+	<string name="whatsnew_smallmwm_header">Op veler verzoek hebben we het voor elkaar gekregen</string>
+	<string name="whatsnew_smallmwm_message">We hebben kaarten in delen verdeeld. Nu kunt u afzonderlijke regio\&#39;s downloaden in plaats van het hele land.</string>
+	<string name="whatsnew_search_message">We hebben het zoeken op adres significant verbeterd. Bekijk het zelf.</string>
+	<string name="whatsnew_editor_header">Bewerk de kaart direct vanuit MAPS.ME</string>
+	<string name="whatsnew_editor_message">Jouw wijzigingen zullen miljoenen gebruikers helpen. Laten we samen de wereld verbeteren!</string>
 </resources>

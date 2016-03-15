@@ -937,4 +937,9 @@
 	<string name="editor_edit_place_atm_title">ماكينة صراف آلي</string>
 	<string name="placepage_add_place_button">إضافة مكان</string>
 	<string name="placepage_report_problem_button">الإبلاغ عن مشكلة</string>
+	<string name="whatsnew_smallmwm_header">لقد طلبتم ذلك، وها نحن قد لبينا طلبكم</string>
+	<string name="whatsnew_smallmwm_message">لقد قسمنا الخرائط إلى أجزاء. الآن يمكنك تنزيل مناطق منفصلة، وليس البلد بأكمله.</string>
+	<string name="whatsnew_search_message">لقد طورنا كليا البحث بالعنوان. فلترى بنفسك.</string>
+	<string name="whatsnew_editor_header">حرر خريطتك على MAPS.ME</string>
+	<string name="whatsnew_editor_message">تغييراتك سوف تساعد الملايين من المستخدمين. هيا نطور من العالم سويا!</string>
 </resources>

@@ -926,4 +926,9 @@
 	<string name="editor_edit_place_atm_title">Cajero automático</string>
 	<string name="placepage_add_place_button">Añadir un lugar</string>
 	<string name="placepage_report_problem_button">Informar de un problema</string>
+	<string name="whatsnew_smallmwm_header">Llevas tiempo pidiéndolo y lo hemos hecho</string>
+	<string name="whatsnew_smallmwm_message">Hemos dividido el mapa por partes. Ahora, puedes descargar regiones individuales, en vez de el país entero.</string>
+	<string name="whatsnew_search_message">Hemos mejorado notablemente la búsqueda por dirección. Compruébalo.</string>
+	<string name="whatsnew_editor_header">Edita el mapa directamente desde MAPS.ME</string>
+	<string name="whatsnew_editor_message">Tus cambios ayudarán a millones de usuarios. ¡Vamos a mejorar juntos el mundo!</string>
 </resources>

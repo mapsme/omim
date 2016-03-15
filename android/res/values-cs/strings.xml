@@ -938,4 +938,9 @@
 	<string name="editor_edit_place_atm_title">Bankomat</string>
 	<string name="placepage_add_place_button">Přidat místo</string>
 	<string name="placepage_report_problem_button">Nahlásit problém</string>
+	<string name="whatsnew_smallmwm_header">Říkali jste si o to, a my to udělali</string>
+	<string name="whatsnew_smallmwm_message">Rozdělili jsme mapy na části. Nyní si můžete stáhnout jednotlivé regiony namísto celé země.</string>
+	<string name="whatsnew_search_message">Výrazně jsme vylepšili vyhledávání podle adresy. Podívejte se sami.</string>
+	<string name="whatsnew_editor_header">Upravujte mapu přímo z MAPS.ME</string>
+	<string name="whatsnew_editor_message">Vaše změny pomůžou miliónům uživatelů. Pojďme společně vylepšit svět!</string>
 </resources>

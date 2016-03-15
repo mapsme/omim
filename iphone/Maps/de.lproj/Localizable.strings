@@ -1558,3 +1558,13 @@
 "placepage_add_place_button" = "Einen Ort hinzufügen";
 
 "placepage_report_problem_button" = "Problem melden";
+
+"whatsnew_smallmwm_header" = "Sie haben darum gebeten, und wir haben es geschafft";
+
+"whatsnew_smallmwm_message" = "Wir haben die Karten aufgeteilt. Jetzt können Sie einzelne Regionen herunterladen, ohne das ganze Land herunterzuladen.";
+
+"whatsnew_search_message" = "Wir haben die Adresssuche dramatisch verbessert. Sehen Sie selbst.";
+
+"whatsnew_editor_header" = "Bearbeiten der Karte direkt in MAPS.ME";
+
+"whatsnew_editor_message" = "Ihre Veränderungen werden Millionen von Benutzern helfen. Lasst uns zusammen die Welt verbessern!";

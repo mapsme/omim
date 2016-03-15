@@ -932,4 +932,9 @@
 	<string name="editor_edit_place_atm_title">ATM</string>
 	<string name="placepage_add_place_button">Hely hozzáadása</string>
 	<string name="placepage_report_problem_button">Hibabejelentés</string>
+	<string name="whatsnew_smallmwm_header">Te kérted, mi elkészítettük</string>
+	<string name="whatsnew_smallmwm_message">Felosztottuk részekre a térképeket. Mostantól az egyes régiókat is letöltheted, nem csak az egész országot.</string>
+	<string name="whatsnew_search_message">Jelentősen javítottunk a címen alapuló keresésünkön. Nézd meg magadnak.</string>
+	<string name="whatsnew_editor_header">Térkép szerkesztése közvetlenül a MAPS.ME-ből</string>
+	<string name="whatsnew_editor_message">Javításaid felhasználóik millióinak fognak majd segíteni. Javítsunk együtt a világon!</string>
 </resources>
