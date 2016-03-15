@@ -1558,3 +1558,13 @@
 "placepage_add_place_button" = "Hely hozzáadása";
 
 "placepage_report_problem_button" = "Hibabejelentés";
+
+"whatsnew_smallmwm_header" = "Te kérted, mi elkészítettük";
+
+"whatsnew_smallmwm_message" = "Felosztottuk részekre a térképeket. Mostantól az egyes régiókat is letöltheted, nem csak az egész országot.";
+
+"whatsnew_search_message" = "Jelentősen javítottunk a címen alapuló keresésünkön. Nézd meg magadnak.";
+
+"whatsnew_editor_header" = "Térkép szerkesztése közvetlenül a MAPS.ME-ből";
+
+"whatsnew_editor_message" = "Javításaid felhasználóik millióinak fognak majd segíteni. Javítsunk együtt a világon!";

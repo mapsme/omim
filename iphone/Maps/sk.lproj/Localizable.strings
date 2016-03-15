@@ -1558,3 +1558,13 @@
 "placepage_add_place_button" = "Pridať miesto";
 
 "placepage_report_problem_button" = "Nahlásiť problém";
+
+"whatsnew_smallmwm_header" = "Dožadovali ste sa toho a my sme vám vyhoveli";
+
+"whatsnew_smallmwm_message" = "Mapy sme rozdelili na časti. Teraz si môžete stiahnuť jednotlivé regióny, nie celú krajinu.";
+
+"whatsnew_search_message" = "Významne sme zlepšili vyhľadávanie pomocou adresy. Pozrite sa sami.";
+
+"whatsnew_editor_header" = "Upravte mapu priamo cez MAPS.ME";
+
+"whatsnew_editor_message" = "Vaše zmeny pomôžu miliónom používateľov. Spoločne zlepšíme svet!";

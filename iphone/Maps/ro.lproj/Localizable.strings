@@ -1558,3 +1558,13 @@
 "placepage_add_place_button" = "Adăugați o locație";
 
 "placepage_report_problem_button" = "Raportați o problemă";
+
+"whatsnew_smallmwm_header" = "Ne-ați cerut, iar noi am făcut";
+
+"whatsnew_smallmwm_message" = "Am împărțit hărțile în mai multe secțiuni. Acum, puteți descărca și regiuni separate, nu doar țara întreagă.";
+
+"whatsnew_search_message" = "Am îmbunătățit semnificativ căutarea după adresă. Convinge-te singur.";
+
+"whatsnew_editor_header" = "Editează harta direct de pe MAPS.ME";
+
+"whatsnew_editor_message" = "Modificările tale vor ajuta milioane de utilizatori. Hai să facem lumea mai bună împreună!";

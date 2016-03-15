@@ -1558,3 +1558,13 @@
 "placepage_add_place_button" = "Add a place";
 
 "placepage_report_problem_button" = "Report a problem";
+
+"whatsnew_smallmwm_header" = "You've been asking for it and we've done it";
+
+"whatsnew_smallmwm_message" = "We have divided maps into parts. Now you can download separate regions, not the whole country.";
+
+"whatsnew_search_message" = "We have significantly improved the search by address. See for yourself.";
+
+"whatsnew_editor_header" = "Edit the map directly from MAPS.ME";
+
+"whatsnew_editor_message" = "Your changes will help millions of users. Let's improve the world together!";

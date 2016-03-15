@@ -1558,3 +1558,13 @@
 "placepage_add_place_button" = "장소 추가";
 
 "placepage_report_problem_button" = "문제 신고";
+
+"whatsnew_smallmwm_header" = "여러분이 요청한 것을 저희가 해냈습니다";
+
+"whatsnew_smallmwm_message" = "지도를 여러 부분으로 나눴습니다. 이제는 전체 국가가 아닌 개별 지역을 다운로드할 수 있습니다.";
+
+"whatsnew_search_message" = "저희는 주소에 의한 검색을 놀랍게 개선 했습니다. 직접 경험해 보세요.";
+
+"whatsnew_editor_header" = "MAPS.ME 와 직접 지도 편집";
+
+"whatsnew_editor_message" = "귀하의 변화는 수 백만 사용자를 도울 것입니다. 자 함께 세상의 발전을!";

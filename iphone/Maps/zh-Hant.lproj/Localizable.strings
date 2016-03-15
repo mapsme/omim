@@ -1558,3 +1558,13 @@
 "placepage_add_place_button" = "添加一個地點";
 
 "placepage_report_problem_button" = "報告一個問題";
+
+"whatsnew_smallmwm_header" = "您一直在尋求，而我們已經完成";
+
+"whatsnew_smallmwm_message" = "我們已將地圖分為若干部分。現在，您可下載各個地區，而非整個國家的地圖。";
+
+"whatsnew_search_message" = "我們已明顯改進了按地址的搜索。親自看看。";
+
+"whatsnew_editor_header" = "直接從MAPS.ME編輯地圖";
+
+"whatsnew_editor_message" = "您的修改將幫助上百萬用戶。讓我們一起讓世界變好！";

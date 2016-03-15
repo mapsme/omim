@@ -1558,3 +1558,13 @@
 "placepage_add_place_button" = "Add a place";
 
 "placepage_report_problem_button" = "Report a problem";
+
+"whatsnew_smallmwm_header" = "Bạn đã yêu cầu điều đó và chúng tôi đã thực hiện nó";
+
+"whatsnew_smallmwm_message" = "Chúng tôi đã chia bản đồ thành nhiều phần. Bây giờ bạn có thể tải về các vùng riêng biệt, không phải là toàn bộ quốc gia.";
+
+"whatsnew_search_message" = "Chúng tôi đã cải thiện đáng kể việc tìm kiếm theo địa chỉ. Bạn hãy tự xem thử.";
+
+"whatsnew_editor_header" = "Chỉnh sửa bản đồ trực tiếp từ MAPS.ME";
+
+"whatsnew_editor_message" = "Thay đổi của bạn sẽ giúp cho hàng triệu người dùng. Hãy cùng nhau cải thiện thế giới!";

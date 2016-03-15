@@ -931,4 +931,9 @@
 	<string name="editor_edit_place_atm_title">Minibank</string>
 	<string name="placepage_add_place_button">Legg til et sted</string>
 	<string name="placepage_report_problem_button">Rapporter et problem</string>
+	<string name="whatsnew_smallmwm_header">Dere har bedt om det og vi har fått det til</string>
+	<string name="whatsnew_smallmwm_message">Vi har delt opp kartene i separate deler. Nå kan du laste ned separate regioner istedenfor hele land.</string>
+	<string name="whatsnew_search_message">Nå er det mye enklere å søke etter adresse. Se selv.</string>
+	<string name="whatsnew_editor_header">Rediger kartet direkte fra MAPS.ME</string>
+	<string name="whatsnew_editor_message">Endringene dine vil hjelpe millioner av brukere. La oss forbedre verden sammen!</string>
 </resources>

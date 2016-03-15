@@ -1558,3 +1558,13 @@
 "placepage_add_place_button" = "Lisää paikka";
 
 "placepage_report_problem_button" = "Ilmoita ongelmasta";
+
+"whatsnew_smallmwm_header" = "Sitä on pyydetty, ja nyt se on tarjolla";
+
+"whatsnew_smallmwm_message" = "Olemme jakaneet kartat osiin, joten voitkin nyt ladata pelkkiä alueita lataamatta koko maan karttaa.";
+
+"whatsnew_search_message" = "Olemme selkeästi parantaneet osoitehakua - kokeile vaikka itse.";
+
+"whatsnew_editor_header" = "Muokkaa karttoja suoraan MAPS.ME -sovelluksessa";
+
+"whatsnew_editor_message" = "Muokkauksesi auttavat miljoonia käyttäjiä - parannetaan maailmaa yhdessä!";

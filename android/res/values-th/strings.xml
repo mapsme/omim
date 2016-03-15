@@ -935,4 +935,9 @@
 	<string name="editor_edit_place_atm_title">ATM</string>
 	<string name="placepage_add_place_button">เพิ่มสถานที่</string>
 	<string name="placepage_report_problem_button">แจ้งปัญหา</string>
+	<string name="whatsnew_smallmwm_header">คุณได้ขอมา เราจึงทำมัน</string>
+	<string name="whatsnew_smallmwm_message">เราได้แบ่งแผนที่ออกเป็นส่วน ๆ ตอนนี้คุณสามารถดาวน์โหลดภูมิภาคแยกต่างหากได้แล้ว</string>
+	<string name="whatsnew_search_message">เราได้ปรับปรุงครั้งใหญ่สำหรับการค้นหาตามที่อยู่ ลองดูด้วยตัวเอง</string>
+	<string name="whatsnew_editor_header">แก้ไขแผนที่โดยตรงจาก MAPS.ME</string>
+	<string name="whatsnew_editor_message">การแก้ไขของคุณจะช่วยผู้ใช้หลายล้านคนได้ มาช่วยทำให้โลกน่าอยู่ขึ้น!</string>
 </resources>

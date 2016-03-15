@@ -904,4 +904,9 @@
 	<string name="phone">Điện thoại</string>
 	<string name="whats_new_editor_caption">Chỉnh sửa bản đồ trực tiếp từ MAPS.ME</string>
 	<string name="whats_new_editor_message">Thay đổi của bạn sẽ giúp cho hàng triệu người dùng. Hãy cùng nhau cải thiện thế giới!</string>
+	<string name="whatsnew_smallmwm_header">Bạn đã yêu cầu điều đó và chúng tôi đã thực hiện nó</string>
+	<string name="whatsnew_smallmwm_message">Chúng tôi đã chia bản đồ thành nhiều phần. Bây giờ bạn có thể tải về các vùng riêng biệt, không phải là toàn bộ quốc gia.</string>
+	<string name="whatsnew_search_message">Chúng tôi đã cải thiện đáng kể việc tìm kiếm theo địa chỉ. Bạn hãy tự xem thử.</string>
+	<string name="whatsnew_editor_header">Chỉnh sửa bản đồ trực tiếp từ MAPS.ME</string>
+	<string name="whatsnew_editor_message">Thay đổi của bạn sẽ giúp cho hàng triệu người dùng. Hãy cùng nhau cải thiện thế giới!</string>
 </resources>

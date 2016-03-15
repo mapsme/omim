@@ -1558,3 +1558,13 @@
 "placepage_add_place_button" = "Tambahkan tempat";
 
 "placepage_report_problem_button" = "Laporkan masalah";
+
+"whatsnew_smallmwm_header" = "Anda memintanya dan kami telah malakukannya";
+
+"whatsnew_smallmwm_message" = "Kami telah membagi peta menjadi beberapa bagian. Sekarang Anda dapat mengunduh wilayah-wilayah yang terpisah, bukan seluruh negara.";
+
+"whatsnew_search_message" = "Kami secara signifikan telah meningkatkan pencarian menurut alamat. Lihat sendiri.";
+
+"whatsnew_editor_header" = "Edit peta secara langsung dari MAPS.ME";
+
+"whatsnew_editor_message" = "Perubahan yang anda lakukan akan membantu jutaan pengguna. Marilah meningkatkan dunia bersama-sama!";

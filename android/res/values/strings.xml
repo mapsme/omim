@@ -972,4 +972,9 @@
 	<string name="editor_edit_place_atm_title">ATM</string>
 	<string name="placepage_add_place_button">Add a place</string>
 	<string name="placepage_report_problem_button">Report a problem</string>
+	<string name="whatsnew_smallmwm_header">You\&#39;ve been asking for it and we\&#39;ve done it</string>
+	<string name="whatsnew_smallmwm_message">We have divided maps into parts. Now you can download separate regions, not the whole country.</string>
+	<string name="whatsnew_search_message">We have significantly improved the search by address. See for yourself.</string>
+	<string name="whatsnew_editor_header">Edit the map directly from MAPS.ME</string>
+	<string name="whatsnew_editor_message">Your changes will help millions of users. Let\&#39;s improve the world together!</string>
 </resources>

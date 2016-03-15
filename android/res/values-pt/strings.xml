@@ -928,4 +928,9 @@
 	<string name="editor_edit_place_atm_title">Caixa multibanco</string>
 	<string name="placepage_add_place_button">Adicionar um lugar</string>
 	<string name="placepage_report_problem_button">Comunicar um problema</string>
+	<string name="whatsnew_smallmwm_header">Vocês têm pedido por isso e nós atendemos</string>
+	<string name="whatsnew_smallmwm_message">Dividimos os mapas em partes. Agora vocês podem baixar regiões separadas em vez do país inteiro.</string>
+	<string name="whatsnew_search_message">Melhoramos consideravelmente a busca por endereço. Veja você mesmo.</string>
+	<string name="whatsnew_editor_header">Modifique o mapa diretamente do MAPS.ME</string>
+	<string name="whatsnew_editor_message">As suas alterações vão ajudar milhões de usuários. Vamos melhorar o mundo juntos!</string>
 </resources>

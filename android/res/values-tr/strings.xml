@@ -937,4 +937,9 @@
 	<string name="editor_edit_place_atm_title">ATM</string>
 	<string name="placepage_add_place_button">Bir yer ekle</string>
 	<string name="placepage_report_problem_button">Bir problem bildirin</string>
+	<string name="whatsnew_smallmwm_header">Siz istediniz biz yaptık</string>
+	<string name="whatsnew_smallmwm_message">Haritaları parçalara ayırdık. Artık tüm ülke yerine belirli bölgeleri indirebilirsiniz.</string>
+	<string name="whatsnew_search_message">Adres ile aramayı önemli ölçüde geliştirdik. Kendiniz görün.</string>
+	<string name="whatsnew_editor_header">Haritayı doğrudan MAPS.ME\&#39;den düzenleyin</string>
+	<string name="whatsnew_editor_message">Değişiklikleriniz milyonlarca kullanıcıya yardımcı olacaktır. Haydi dünyayı birlikte geliştirelim!</string>
 </resources>

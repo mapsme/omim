@@ -931,4 +931,9 @@
 	<string name="editor_edit_place_atm_title">Pankkiautomaatti</string>
 	<string name="placepage_add_place_button">Lisää paikka</string>
 	<string name="placepage_report_problem_button">Ilmoita ongelmasta</string>
+	<string name="whatsnew_smallmwm_header">Sitä on pyydetty, ja nyt se on tarjolla</string>
+	<string name="whatsnew_smallmwm_message">Olemme jakaneet kartat osiin, joten voitkin nyt ladata pelkkiä alueita lataamatta koko maan karttaa.</string>
+	<string name="whatsnew_search_message">Olemme selkeästi parantaneet osoitehakua - kokeile vaikka itse.</string>
+	<string name="whatsnew_editor_header">Muokkaa karttoja suoraan MAPS.ME -sovelluksessa</string>
+	<string name="whatsnew_editor_message">Muokkauksesi auttavat miljoonia käyttäjiä - parannetaan maailmaa yhdessä!</string>
 </resources>

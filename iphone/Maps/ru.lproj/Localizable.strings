@@ -1558,3 +1558,13 @@
 "placepage_add_place_button" = "Добавить место";
 
 "placepage_report_problem_button" = "Report a problem";
+
+"whatsnew_smallmwm_header" = "Вы долго просили — мы наконец сделали";
+
+"whatsnew_smallmwm_message" = "Мы разрезали большие карты на части: теперь загружай только нужную область, а не всю страну целиком.";
+
+"whatsnew_search_message" = "Качественно улучшили поиск по адресам. Проверяйте.";
+
+"whatsnew_editor_header" = "Редактируйте карту прямо из MAPS.ME";
+
+"whatsnew_editor_message" = "Ваши изменения помогут миллионам пользователей. Улучшим мир вместе!";

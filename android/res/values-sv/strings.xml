@@ -935,4 +935,9 @@
 	<string name="editor_edit_place_atm_title">Bankomat</string>
 	<string name="placepage_add_place_button">Lägg till en plats</string>
 	<string name="placepage_report_problem_button">Rapportera ett problem</string>
+	<string name="whatsnew_smallmwm_header">Du har bett om det och vi har gjort det</string>
+	<string name="whatsnew_smallmwm_message">Vi har delat in kartor i delar. Nu kan du ladda ner separata regioner, inte hela landet.</string>
+	<string name="whatsnew_search_message">Vi har avsevärt förbättrat sökningen på adress. Se själv.</string>
+	<string name="whatsnew_editor_header">Redigera kartan direkt från MAPS.ME</string>
+	<string name="whatsnew_editor_message">Dina ändringar kommer att hjälpa miljontals användare. Låt oss förbättra världen tillsammans!</string>
 </resources>
