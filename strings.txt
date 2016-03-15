@@ -17043,31 +17043,31 @@
 
   [please_note]
     tags = ios, android
-    en = Please note,
-    ru = Обратите внимание,
-    tr = Lütfen dikkat,
-    sv = Observera,
-    nb = Vær oppmerksom på at,
+    en = Please note
+    ru = Обратите внимание
+    tr = Lütfen dikkat
+    sv = Observera
+    nb = Vær oppmerksom på at
     ko = 참고 사항
-    id = Harap diperhatikan,
-    hu = Megjegyzés,
-    de = Bitte beachten,
+    id = Harap diperhatikan
+    hu = Megjegyzés
+    de = Bitte beachten
     fi = Huomaathan, että
-    nl = Opgelet,
+    nl = Opgelet
     da = Bemærk venligst
-    cs = Vezměte prosím na vědomí,
-    zh-Hans = 请注意，
-    zh-Hant = 請註意，
+    cs = Vezměte prosím na vědomí
+    zh-Hans = 请注意
+    zh-Hant = 請註意
     ar = يرجى العلم أنه،
     th = โปรดทราบ
-    uk = Будь ласка, зверніть увагу,
-    pt = Por favor note,
-    es = Aviso,
+    uk = Будь ласка, зверніть увагу
+    pt = Por favor note
+    es = Aviso
     ro = Actualizați hărțile
     pl = Uwaga! 
     sk = Upozorňujeme vás, že
-    it = Si prega di notare,
-    fr = À noter :
+    it = Si prega di notare
+    fr = À noter
     ja = ご注意ください
 
   [common_no_wifi_dialog]
