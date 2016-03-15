@@ -21,9 +21,6 @@
 /* Button which deletes downloaded country */
 "delete" = "Hapus";
 
-/* Button in iOS Downloader, displayed only when upgrading from v1 to v2 */
-"delete_old_maps" = "Hapus peta tua dan lanjutkan";
-
 /* Button to dismiss dialog forever */
 "do_not_ask_me_again" = "Jangan tanyai saya lagi";
 
@@ -79,9 +76,6 @@
 /* View and button titles for accessibility */
 "my_position" = "Posisi Saya";
 
-/* Settings/Downloader - No internet connection dialog title */
-"no_internet_connection_detected" = "Tidak ada koneksi internet yang terdeteksi";
-
 /* Settings/Downloader - 3G download warning dialog title */
 "no_wifi_ask_cellular_download" = "Tidak ada koneksi WiFi yang terdeteksi. Apakah Anda ingin menggunakan paket data seluler (GPRS, EDGE, 3G or LTE) untuk mengunduh %@?";
 
@@ -110,9 +104,6 @@
 
 /* Search box placeholder text */
 "search_map" = "Cari Peta";
-
-/* Settings/Downloader - No free space dialog title */
-"not_enough_disk_space" = "Tidak ada ruang kosong yang cukup";
 
 /* Settings/Downloader - info for not downloaded country */
 "touch_to_download" = "Sentuh untuk mengunduh";
@@ -694,20 +685,20 @@
 "routing_update_maps" = "Versi MAPS.ME yang terbaru memungkinkan pembuatan rute dari posisi Anda saat itu ke titik tujuan. Mohon perbarui peta untuk menggunakan fitur ini.";
 
 /* Update all button text */
-"downloader_update_all" = "Perbarui semuanya";
+"downloader_update_all_button" = "Update all";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "Batalkan Semuanya";
 
 /* Downloaded maps category */
-"downloader_downloaded" = "Telah Diunduh";
+"downloader_downloaded_subtitle" = "Downloaded";
 
 /* Country queued for download */
 "downloader_queued" = "telah diantrekan";
 
-"downloader_near_me" = "Near me";
+"downloader_near_me_subtitle" = "Near me";
 
-"downloader_maps_to_update" = "Maps: %1$d (%2$s)";
+"downloader_status_maps" = "Maps: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "Dalam membuat rute di aplikasi MAPS.ME, mohon ingat:\n\n- Rute yang disarankan hanya dapat dianggap sebagai rekomendasi.\n- Kondisi jalan, peraturan dan tanda-tanda lalu lintas memiliki prioritas yang lebih tinggi daripada saran navigasi.\n- Kondisi jalan, peraturan dan tanda-tanda lalu lintas memiliki prioritas yang lebih tinggi daripada saran navigasi.\n- Peta bisa saja salah atau sudah usang, dan rute yang dibuat mungkin bukan yang terbaik.\n\nBerhati-hatilah di jalan dan jagalah diri Anda sendiri!";
@@ -767,9 +758,6 @@
 
 /* Item in context menu. */
 "downloader_map_and_routing" = "Peta + Rute";
-
-/* Dialog confirmation when trying to delete map and there are unsaved changes present on it. */
-"downloader_delete_editor_changes" = "Unsaved changes for this map will be removed too. Continue anyway?";
 
 /* Item in context menu. */
 "downloader_delete_map" = "Hapus Peta";
@@ -1342,10 +1330,6 @@
 
 "whats_new_next_button" = "Berikut";
 
-"whats_new_night_caption" = "Navigasi mode malam";
-
-"whats_new_night_body" = "Untuk memfasilitasi penggunaan MAPS.ME saat berkendara dalam gelap, kami telah menambahkan mode malam. Mode ini diaktifkan secara otomatis setelah matahari terbenam.";
-
 "editor_time_add" = "Tambah Jadwal";
 
 "editor_time_delete" = "Hapus Jadwal";
@@ -1374,11 +1358,6 @@
 "editor_correct_mistake_message" = "Pengeditan salah. Koreksi atau ubah ke mode sederhana.";
 
 "migrate_title" = "Penting!";
-
-/* Used in 2 places: What's new and Delete All maps dialog. */
-"migrate_and_split_mwms_message" = "Kami telah membagi peta menjadi beberapa bagian. Sekarang Anda dapat mengunduh wilayah-wilayah yang terpisah, bukan seluruh negara. Sebelum Anda mulai mengunduh peta-peta baru, harap menghapus peta-peta yang lama.";
-
-"youve_been_asking" = "Anda memintanya dan kami telah malakukannya";
 
 /* Android uses image instead of text. */
 "download_all" = "Unduh semua";
@@ -1501,10 +1480,6 @@
 
 "phone" = "Telepon";
 
-"whats_new_editor_caption" = "Edit peta secara langsung dari MAPS.ME";
-
-"whats_new_editor_message" = "Perubahan yang anda lakukan akan membantu jutaan pengguna. Marilah meningkatkan dunia bersama-sama!";
-
 "please_note" = "Harap diperhatikan";
 
 "common_no_wifi_dialog" = "Tidak ada koneksi WiFi. Apakah Anda ingin melanjutkan dengan data seluler?";
@@ -1514,6 +1489,18 @@
 "downloader_update_maps" = "Perbarui peta";
 
 "downloader_mwm_migration_dialog" = "Untuk membuat rute, Anda perlu memperbarui semua peta dan kemudian merencanakan rute tersebut lagi.";
+
+"downloader_search_field_hint" = "Find the map";
+
+"migration_update_all_button" = "Update all maps";
+
+"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+
+"migration_prefetch_status" = "Preparing maps update…";
+
+"migration_download_error_dialog" = "Download error";
+
+"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
 
 "downloader_no_space_title" = "Tidak cukup ruang";
 
@@ -1563,8 +1550,24 @@
 
 "whatsnew_smallmwm_message" = "Kami telah membagi peta menjadi beberapa bagian. Sekarang Anda dapat mengunduh wilayah-wilayah yang terpisah, bukan seluruh negara.";
 
+"whatsnew_search_header" = "New search!";
+
 "whatsnew_search_message" = "Kami secara signifikan telah meningkatkan pencarian menurut alamat. Lihat sendiri.";
 
-"whatsnew_editor_header" = "Edit peta secara langsung dari MAPS.ME";
+"whatsnew_editor_title" = "Edit the map*";
 
-"whatsnew_editor_message" = "Perubahan yang anda lakukan akan membantu jutaan pengguna. Marilah meningkatkan dunia bersama-sama!";
+"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+
+"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+
+"onboarding_offline_navigation_title" = "You will never get lost again";
+
+"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+
+"onboarding_offline_navigation_title_2" = "Offline navigation";
+
+"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+
+"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+
+"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";

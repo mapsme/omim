@@ -21,9 +21,6 @@
 /* Button which deletes downloaded country */
 "delete" = "Eliminar";
 
-/* Button in iOS Downloader, displayed only when upgrading from v1 to v2 */
-"delete_old_maps" = "Eliminar mapas antigos e continuar";
-
 /* Button to dismiss dialog forever */
 "do_not_ask_me_again" = "Não volte a perguntar-me";
 
@@ -79,9 +76,6 @@
 /* View and button titles for accessibility */
 "my_position" = "A minha posição";
 
-/* Settings/Downloader - No internet connection dialog title */
-"no_internet_connection_detected" = "Não foi detetada uma ligação à Internet";
-
 /* Settings/Downloader - 3G download warning dialog title */
 "no_wifi_ask_cellular_download" = "Não detetada uma ligação WiFi. Pretende utilizar os dados por pacotes (GPRS, EDGE, 3G or LTE) para descarregar %@?";
 
@@ -110,9 +104,6 @@
 
 /* Search box placeholder text */
 "search_map" = "Procurar mapa";
-
-/* Settings/Downloader - No free space dialog title */
-"not_enough_disk_space" = "Não há espaço livre suficiente em disco";
 
 /* Settings/Downloader - info for not downloaded country */
 "touch_to_download" = "Toque para descarregar";
@@ -694,20 +685,20 @@
 "routing_update_maps" = "A nova versão do MAPS.ME permite criar rotas a partir da sua posição atual para um ponto de destino. Por favor, atualize o maps para utilizar esta funcionalidade.";
 
 /* Update all button text */
-"downloader_update_all" = "Atualizar tudo";
+"downloader_update_all_button" = "Update all";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "Cancelar Tudo";
 
 /* Downloaded maps category */
-"downloader_downloaded" = "Descarregados";
+"downloader_downloaded_subtitle" = "Downloaded";
 
 /* Country queued for download */
 "downloader_queued" = "Na fila";
 
-"downloader_near_me" = "Near me";
+"downloader_near_me_subtitle" = "Near me";
 
-"downloader_maps_to_update" = "Maps: %1$d (%2$s)";
+"downloader_status_maps" = "Maps: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "Ao criar rotas na aplicação MAPS.ME, por favor, lembre-se do seguinte:\n\n  - As rotas sugeridas podem apenas ser consideradas como recomendações.\n - As condições da estrada, regras de trânsito e sinais têm maior prioridade do que os conselhos de navegação.\n - O mapa poderá estar errado, ou desatualizado, e as rotas poderão não ser criadas da melhor forma possível.\n\n  Circule em segurança nas estradas e cuide do seu bem estar!";
@@ -767,9 +758,6 @@
 
 /* Item in context menu. */
 "downloader_map_and_routing" = "Mapa + Criação de Trajeto";
-
-/* Dialog confirmation when trying to delete map and there are unsaved changes present on it. */
-"downloader_delete_editor_changes" = "Unsaved changes for this map will be removed too. Continue anyway?";
 
 /* Item in context menu. */
 "downloader_delete_map" = "Apagar Mapa";
@@ -1342,10 +1330,6 @@
 
 "whats_new_next_button" = "Próxima";
 
-"whats_new_night_caption" = "Navegação em modo noturno";
-
-"whats_new_night_body" = "Para facilitar o uso do MAPS.ME ao dirigir no escuro, adicionamos o modo noturno. Ele é acionado automaticamente após o pôr do sol.";
-
 "editor_time_add" = "Adicionar Horário";
 
 "editor_time_delete" = "Eliminar Horário";
@@ -1374,11 +1358,6 @@
 "editor_correct_mistake_message" = "Fez um erro de edição. Corrija-o ou mude para o modo simples.";
 
 "migrate_title" = "Importante!";
-
-/* Used in 2 places: What's new and Delete All maps dialog. */
-"migrate_and_split_mwms_message" = "Dividimos os mapas em partes. Agora vocês podem baixar regiões separadas em vez do país inteiro. Antes de começarem a baixar novos mapas, apaguem os mapas antigos.";
-
-"youve_been_asking" = "Vocês têm pedido por isso e nós atendemos";
 
 /* Android uses image instead of text. */
 "download_all" = "Baixar tudo";
@@ -1501,10 +1480,6 @@
 
 "phone" = "Telefone";
 
-"whats_new_editor_caption" = "Modifique o mapa diretamente do MAPS.ME";
-
-"whats_new_editor_message" = "As suas alterações vão ajudar milhões de usuários. Vamos melhorar o mundo juntos!";
-
 "please_note" = "Por favor note";
 
 "common_no_wifi_dialog" = "Nenhuma ligação Wi-Fi. Deseja continuar com os dados móveis?";
@@ -1514,6 +1489,18 @@
 "downloader_update_maps" = "Atualizar mapas";
 
 "downloader_mwm_migration_dialog" = "Para criar um itinerário, é necessário atualizar todos os mapas e, em seguida, voltar a planear o itinerário.";
+
+"downloader_search_field_hint" = "Find the map";
+
+"migration_update_all_button" = "Update all maps";
+
+"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+
+"migration_prefetch_status" = "Preparing maps update…";
+
+"migration_download_error_dialog" = "Download error";
+
+"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
 
 "downloader_no_space_title" = "Não há espaço suficiente";
 
@@ -1563,8 +1550,24 @@
 
 "whatsnew_smallmwm_message" = "Dividimos os mapas em partes. Agora vocês podem baixar regiões separadas em vez do país inteiro.";
 
+"whatsnew_search_header" = "New search!";
+
 "whatsnew_search_message" = "Melhoramos consideravelmente a busca por endereço. Veja você mesmo.";
 
-"whatsnew_editor_header" = "Modifique o mapa diretamente do MAPS.ME";
+"whatsnew_editor_title" = "Edit the map*";
 
-"whatsnew_editor_message" = "As suas alterações vão ajudar milhões de usuários. Vamos melhorar o mundo juntos!";
+"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+
+"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+
+"onboarding_offline_navigation_title" = "You will never get lost again";
+
+"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+
+"onboarding_offline_navigation_title_2" = "Offline navigation";
+
+"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+
+"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+
+"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";

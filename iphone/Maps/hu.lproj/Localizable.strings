@@ -21,9 +21,6 @@
 /* Button which deletes downloaded country */
 "delete" = "Törlés";
 
-/* Button in iOS Downloader, displayed only when upgrading from v1 to v2 */
-"delete_old_maps" = "Régi térképek törlése és folytatás";
-
 /* Button to dismiss dialog forever */
 "do_not_ask_me_again" = "Ne kérdezze többször";
 
@@ -79,9 +76,6 @@
 /* View and button titles for accessibility */
 "my_position" = "Saját helyzet";
 
-/* Settings/Downloader - No internet connection dialog title */
-"no_internet_connection_detected" = "Nem találtam internet kapcsolatot";
-
 /* Settings/Downloader - 3G download warning dialog title */
 "no_wifi_ask_cellular_download" = "Nem találtam WiFi kapcsolatot. Használjunk mobil kapcsolatot (GPRS, EDGE, 3G vagy LTE) %@ letöltéséhez?";
 
@@ -110,9 +104,6 @@
 
 /* Search box placeholder text */
 "search_map" = "Keresés a térképen";
-
-/* Settings/Downloader - No free space dialog title */
-"not_enough_disk_space" = "Nincs elég szabad hely a lemezen";
 
 /* Settings/Downloader - info for not downloaded country */
 "touch_to_download" = "Érintse meg letöltéshez";
@@ -694,20 +685,20 @@
 "routing_update_maps" = "A MAPS.ME új verziójában már útvonalakt is létrehozhatsz tartózkodási helyedtől az úticélodig. Kérjük, ennek a funkciónak a használatához frissítsd a térképeket.";
 
 /* Update all button text */
-"downloader_update_all" = "Mind frissítése";
+"downloader_update_all_button" = "Update all";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "Mindent visszavon";
 
 /* Downloaded maps category */
-"downloader_downloaded" = "Letöltve";
+"downloader_downloaded_subtitle" = "Downloaded";
 
 /* Country queued for download */
 "downloader_queued" = "várólistás";
 
-"downloader_near_me" = "Near me";
+"downloader_near_me_subtitle" = "Near me";
 
-"downloader_maps_to_update" = "Maps: %1$d (%2$s)";
+"downloader_status_maps" = "Maps: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "Amikor útvonalakat készít a MAPS.ME appban, kérjük, vegye figyelembe a következőket:\n\n  - Az ajánlott útvonalak csak javaslatoknak tekintendők.\n - Az utak kondíciója, a forgalmi szabályok és jelzőtáblák magasabb prioritásúak, mint a navigációs javaslatok.\n - A térkép lehet, hogy hibás vagy idejétmúlt, az útvonalak pedig lehet, hogy nem a lehető legjobb módon készülnek el.\n\n  Legyen óvatos az utakon és vigyázzon magára!";
@@ -767,9 +758,6 @@
 
 /* Item in context menu. */
 "downloader_map_and_routing" = "Térkép + útvonal megállapítása";
-
-/* Dialog confirmation when trying to delete map and there are unsaved changes present on it. */
-"downloader_delete_editor_changes" = "Unsaved changes for this map will be removed too. Continue anyway?";
 
 /* Item in context menu. */
 "downloader_delete_map" = "Térkép törlése";
@@ -1342,10 +1330,6 @@
 
 "whats_new_next_button" = "Következő";
 
-"whats_new_night_caption" = "Navigáció éjszakai módban";
-
-"whats_new_night_body" = "A MAPS.ME használatának sötétben való vezetés közbeni elősegítése érdekében hozzáadtuk a funkciókhoz az éjszakai módot. Naplemente után automatikusan bekapcsol.";
-
 "editor_time_add" = "Időrend felvitele";
 
 "editor_time_delete" = "Időrend törlése";
@@ -1374,11 +1358,6 @@
 "editor_correct_mistake_message" = "Szerkesztési hibát vétett. Javítsa ki vagy váltson egyszerű módba.";
 
 "migrate_title" = "Fontos!";
-
-/* Used in 2 places: What's new and Delete All maps dialog. */
-"migrate_and_split_mwms_message" = "Felosztottuk részekre a térképeket. Mostantól az egyes régiókat is letöltheted, nem csak az egész országot. Az új térképek letöltése előtt kérjük, távolítsd el a régieket.";
-
-"youve_been_asking" = "Te kérted, mi elkészítettük";
 
 /* Android uses image instead of text. */
 "download_all" = "Összes letöltése";
@@ -1501,10 +1480,6 @@
 
 "phone" = "Telefonszám";
 
-"whats_new_editor_caption" = "Térkép szerkesztése közvetlenül a MAPS.ME-ből";
-
-"whats_new_editor_message" = "Javításaid felhasználóik millióinak fognak majd segíteni. Javítsunk együtt a világon!";
-
 "please_note" = "Megjegyzés";
 
 "common_no_wifi_dialog" = "Nincs WiFi-kapcsolat. Szeretnéd folytatni mobil adatforgalom használatával?";
@@ -1514,6 +1489,18 @@
 "downloader_update_maps" = "Térképek frissítése";
 
 "downloader_mwm_migration_dialog" = "Útvonal létrehozásához frissítsd az összes térképet, majd tervezd meg újra az útvonalat.";
+
+"downloader_search_field_hint" = "Find the map";
+
+"migration_update_all_button" = "Update all maps";
+
+"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+
+"migration_prefetch_status" = "Preparing maps update…";
+
+"migration_download_error_dialog" = "Download error";
+
+"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
 
 "downloader_no_space_title" = "Nincs elegendő tárhely";
 
@@ -1563,8 +1550,24 @@
 
 "whatsnew_smallmwm_message" = "Felosztottuk részekre a térképeket. Mostantól az egyes régiókat is letöltheted, nem csak az egész országot.";
 
+"whatsnew_search_header" = "New search!";
+
 "whatsnew_search_message" = "Jelentősen javítottunk a címen alapuló keresésünkön. Nézd meg magadnak.";
 
-"whatsnew_editor_header" = "Térkép szerkesztése közvetlenül a MAPS.ME-ből";
+"whatsnew_editor_title" = "Edit the map*";
 
-"whatsnew_editor_message" = "Javításaid felhasználóik millióinak fognak majd segíteni. Javítsunk együtt a világon!";
+"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+
+"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+
+"onboarding_offline_navigation_title" = "You will never get lost again";
+
+"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+
+"onboarding_offline_navigation_title_2" = "Offline navigation";
+
+"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+
+"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+
+"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";

@@ -21,9 +21,6 @@
 /* Button which deletes downloaded country */
 "delete" = "Slet";
 
-/* Button in iOS Downloader, displayed only when upgrading from v1 to v2 */
-"delete_old_maps" = "Slet gamle kort og gå videre";
-
 /* Button to dismiss dialog forever */
 "do_not_ask_me_again" = "Spørg mig ikke igen";
 
@@ -79,9 +76,6 @@
 /* View and button titles for accessibility */
 "my_position" = "Min position";
 
-/* Settings/Downloader - No internet connection dialog title */
-"no_internet_connection_detected" = "Ingen internetforbindelse registreret";
-
 /* Settings/Downloader - 3G download warning dialog title */
 "no_wifi_ask_cellular_download" = "Ingen WiFi forbindelse registreret. Vil du bruge mobildata (GPRS, EDGE, 3G eller LTE) til download %@?";
 
@@ -110,9 +104,6 @@
 
 /* Search box placeholder text */
 "search_map" = "Søg kort";
-
-/* Settings/Downloader - No free space dialog title */
-"not_enough_disk_space" = "Der er ikke nok ledig plads på telefonen";
 
 /* Settings/Downloader - info for not downloaded country */
 "touch_to_download" = "Tryk for at downloade";
@@ -694,20 +685,20 @@
 "routing_update_maps" = "Den nye version af MAPS.ME gør det muligt at oprette ruter fra din nuværende position til et destinationspunkt. Venligst opdatér kortene for at bruge denne funktion.";
 
 /* Update all button text */
-"downloader_update_all" = "Opdater alle";
+"downloader_update_all_button" = "Update all";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "Aflys Alt";
 
 /* Downloaded maps category */
-"downloader_downloaded" = "Downloadede";
+"downloader_downloaded_subtitle" = "Downloaded";
 
 /* Country queued for download */
 "downloader_queued" = "i kø";
 
-"downloader_near_me" = "Near me";
+"downloader_near_me_subtitle" = "Near me";
 
-"downloader_maps_to_update" = "Maps: %1$d (%2$s)";
+"downloader_status_maps" = "Maps: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "Creating routes in MAPS.ME app, please keep in mind the following:\n\n  - Suggested routes can be considered as recommendations only.\n - Road conditions, traffic rules and signs have higher priority than navigation advice.\n - The map may be incorrect or outdated, and routes may not be created the best possible way.\n\n  Be safe on roads and take care of yourself!";
@@ -767,9 +758,6 @@
 
 /* Item in context menu. */
 "downloader_map_and_routing" = "Kort og rutevejledning";
-
-/* Dialog confirmation when trying to delete map and there are unsaved changes present on it. */
-"downloader_delete_editor_changes" = "Unsaved changes for this map will be removed too. Continue anyway?";
 
 /* Item in context menu. */
 "downloader_delete_map" = "Slet kort";
@@ -1342,10 +1330,6 @@
 
 "whats_new_next_button" = "Næste";
 
-"whats_new_night_caption" = "Navigering i nattilstand";
-
-"whats_new_night_body" = "For at hjælpe med brugen af MAPS.ME ved kørsel om natten har vi tilføjet nattilstand. Den slår automatisk til efter solnedgang.";
-
 "editor_time_add" = "Tilføj tidsplan";
 
 "editor_time_delete" = "Slet tidsplan";
@@ -1374,11 +1358,6 @@
 "editor_correct_mistake_message" = "Du har lavet en redigeringsfejl. Ret den, eller skift til enkel tilstand.";
 
 "migrate_title" = "Vigtigt!";
-
-/* Used in 2 places: What's new and Delete All maps dialog. */
-"migrate_and_split_mwms_message" = "Vi har delt kort op i dele. Nu kan man downloade separate regioner, ikke hele landet. Før du begynder på at downloade nye kort, så venligst fjern de gamle.";
-
-"youve_been_asking" = "I har bedt om det, og vi har gjort det";
 
 /* Android uses image instead of text. */
 "download_all" = "Download alle";
@@ -1501,10 +1480,6 @@
 
 "phone" = "Telefon";
 
-"whats_new_editor_caption" = "Redigér kortet direkte fra MAPS.ME";
-
-"whats_new_editor_message" = "Dine ændringer vil hjælpe millioner af brugere. Lad os forbedre verden sammen!";
-
 "please_note" = "Bemærk venligst";
 
 "common_no_wifi_dialog" = "Ingen WiFi-forbindelse. Vil du fortsætte med mobildata?";
@@ -1514,6 +1489,18 @@
 "downloader_update_maps" = "Opdatér kort";
 
 "downloader_mwm_migration_dialog" = "For at oprette en rute skal du opdatere alle kort og så planlægge ruten igen.";
+
+"downloader_search_field_hint" = "Find the map";
+
+"migration_update_all_button" = "Update all maps";
+
+"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+
+"migration_prefetch_status" = "Preparing maps update…";
+
+"migration_download_error_dialog" = "Download error";
+
+"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
 
 "downloader_no_space_title" = "Ikke nok plads";
 
@@ -1563,8 +1550,24 @@
 
 "whatsnew_smallmwm_message" = "Vi har delt kort op i dele. Nu kan man downloade separate regioner, ikke hele landet.";
 
+"whatsnew_search_header" = "New search!";
+
 "whatsnew_search_message" = "Vi har forbedret søgningen efter adresse betydeligt. Se selv.";
 
-"whatsnew_editor_header" = "Redigér kortet direkte fra MAPS.ME";
+"whatsnew_editor_title" = "Edit the map*";
 
-"whatsnew_editor_message" = "Dine ændringer vil hjælpe millioner af brugere. Lad os forbedre verden sammen!";
+"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+
+"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+
+"onboarding_offline_navigation_title" = "You will never get lost again";
+
+"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+
+"onboarding_offline_navigation_title_2" = "Offline navigation";
+
+"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+
+"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+
+"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";

@@ -14,8 +14,6 @@
 	<string name="cancel_download">Huỷ bỏ Tải xuống</string>
 	<!-- Button which deletes downloaded country -->
 	<string name="delete">Xóa</string>
-	<!-- Button in iOS Downloader, displayed only when upgrading from v1 to v2 -->
-	<string name="delete_old_maps">Xóa bản đồ cũ và tiếp tục</string>
 	<!-- Button to dismiss dialog forever -->
 	<string name="do_not_ask_me_again">Không hỏi tôi một lần nữa</string>
 	<!-- Button "do not interrupt download" if user touched actively downloading country -->
@@ -52,8 +50,6 @@
 	<string name="miles">Dặm</string>
 	<!-- View and button titles for accessibility -->
 	<string name="my_position">Vị trí của Tôi</string>
-	<!-- Settings/Downloader - No internet connection dialog title -->
-	<string name="no_internet_connection_detected">Không có kết nối Internet</string>
 	<!-- Settings/Downloader - 3G download warning dialog title -->
 	<string name="no_wifi_ask_cellular_download">Không có kết nối WiFi. Bạn có muốn sử dụng dữ liệu di động (GPRS, EDGE, 3G hoặc LTE) để tải xuống %s không?</string>
 	<string name="ok">OK</string>
@@ -73,8 +69,6 @@
 	<string name="search">Tìm kiếm</string>
 	<!-- Search box placeholder text -->
 	<string name="search_map">Tìm kiếm Bản đồ</string>
-	<!-- Settings/Downloader - No free space dialog title -->
-	<string name="not_enough_disk_space">Không có đủ dung lượng trống trên ổ đĩa</string>
 	<!-- Settings/Downloader - info for not downloaded country -->
 	<string name="touch_to_download">Chạm để tải xuống</string>
 	<!-- Settings/Downloader - 3G download warning dialog confirm button -->
@@ -418,12 +412,8 @@
 	<string name="routing_map_outdated">Vui lòng cập nhật bản đồ để tạo tuyến đường</string>
 	<!-- Update maps suggestion -->
 	<string name="routing_update_maps">Phiên bản MAPS.ME mới cho phép tạo các tuyến đường từ vị trí hiện tại của bạn đến điểm đến. Vui lòng cập nhật bản đồ để sử dụng tính năng này.</string>
-	<!-- Update all button text -->
-	<string name="downloader_update_all">Cập nhật tất cả</string>
 	<!-- Cancel all button text -->
 	<string name="downloader_cancel_all">Hủy tất cả</string>
-	<!-- Downloaded maps category -->
-	<string name="downloader_downloaded">Đã tải xuống</string>
 	<!-- Country queued for download -->
 	<string name="downloader_queued">đã xếp hàng chờ</string>
 	<!-- Disclaimer message -->
@@ -819,8 +809,6 @@
 	<string name="p2p_only_from_current">Chức năng tìm đường chỉ có sẵn từ vị trí hiện tại của bạn.</string>
 	<string name="p2p_reroute_from_current">Bạn có muốn chúng tôi vạch đường từ vị trí hiện tại của bạn không?</string>
 	<string name="whats_new_next_button">Tiếp theo</string>
-	<string name="whats_new_night_caption">Điều hướng chế độ ban đêm</string>
-	<string name="whats_new_night_body">Để tạo điều kiện sử dụng MAPS.ME khi lái xe trong đêm tối, chúng tôi đã thêm chế độ ban đêm. Nó tự động mở sau khi mặt trời lặn.</string>
 	<string name="editor_time_add">Thêm lịch biểu</string>
 	<string name="editor_time_delete">Xóa lịch biểu</string>
 	<!-- Text for allday switch. -->
@@ -836,9 +824,6 @@
 	<string name="editor_correct_mistake">Sửa lỗi</string>
 	<string name="editor_correct_mistake_message">Bạn đã mắc lỗi chỉnh sửa. Vui lòng sửa lỗi hoặc chuyển qua chế độ đơn giản.</string>
 	<string name="migrate_title">Quan trọng!</string>
-	<!-- Used in 2 places: What's new and Delete All maps dialog. -->
-	<string name="migrate_and_split_mwms_message">Chúng tôi đã chia bản đồ thành nhiều phần. Bây giờ bạn có thể tải về các vùng riêng biệt, không phải là toàn bộ quốc gia. Trước khi bạn bắt đầu tải những bản đồ mới, hãy loại bỏ những cái cũ.</string>
-	<string name="youve_been_asking">Bạn đã yêu cầu điều đó và chúng tôi đã thực hiện nó</string>
 	<!-- Android uses image instead of text. -->
 	<string name="download_all">Tải về tất cả</string>
 	<string name="delete_all">Xóa tất cả</string>
@@ -902,11 +887,7 @@
 	<!-- login text field -->
 	<string name="email_or_username">E-mail hoặc tên người dùng</string>
 	<string name="phone">Điện thoại</string>
-	<string name="whats_new_editor_caption">Chỉnh sửa bản đồ trực tiếp từ MAPS.ME</string>
-	<string name="whats_new_editor_message">Thay đổi của bạn sẽ giúp cho hàng triệu người dùng. Hãy cùng nhau cải thiện thế giới!</string>
 	<string name="whatsnew_smallmwm_header">Bạn đã yêu cầu điều đó và chúng tôi đã thực hiện nó</string>
 	<string name="whatsnew_smallmwm_message">Chúng tôi đã chia bản đồ thành nhiều phần. Bây giờ bạn có thể tải về các vùng riêng biệt, không phải là toàn bộ quốc gia.</string>
 	<string name="whatsnew_search_message">Chúng tôi đã cải thiện đáng kể việc tìm kiếm theo địa chỉ. Bạn hãy tự xem thử.</string>
-	<string name="whatsnew_editor_header">Chỉnh sửa bản đồ trực tiếp từ MAPS.ME</string>
-	<string name="whatsnew_editor_message">Thay đổi của bạn sẽ giúp cho hàng triệu người dùng. Hãy cùng nhau cải thiện thế giới!</string>
 </resources>

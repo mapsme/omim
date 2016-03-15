@@ -21,9 +21,6 @@
 /* Button which deletes downloaded country */
 "delete" = "Verwijder";
 
-/* Button in iOS Downloader, displayed only when upgrading from v1 to v2 */
-"delete_old_maps" = "Verwijder oude kaarten en ga door";
-
 /* Button to dismiss dialog forever */
 "do_not_ask_me_again" = "Nooit meer vragen";
 
@@ -79,9 +76,6 @@
 /* View and button titles for accessibility */
 "my_position" = "Mijn Locatie";
 
-/* Settings/Downloader - No internet connection dialog title */
-"no_internet_connection_detected" = "Geen Internet verbinding gedetecteerd";
-
 /* Settings/Downloader - 3G download warning dialog title */
 "no_wifi_ask_cellular_download" = "Geen WiFi verbinding gedetecteerd. Wilt u mobiele data (GPRS, EDGE, 3G of LTE) gebruiken om %@ te downloaden?";
 
@@ -110,9 +104,6 @@
 
 /* Search box placeholder text */
 "search_map" = "Zoek Kaart";
-
-/* Settings/Downloader - No free space dialog title */
-"not_enough_disk_space" = "Er is niet genoeg vrije ruimte";
 
 /* Settings/Downloader - info for not downloaded country */
 "touch_to_download" = "Klik om te downloaden";
@@ -694,20 +685,20 @@
 "routing_update_maps" = "Met de nieuwe versie van MAPS.ME kunt u routes maken vanaf uw huidige positie naar een punt van bestemming. Werk kaarten bij om deze functie te gebruiken.";
 
 /* Update all button text */
-"downloader_update_all" = "Alles bijwerken";
+"downloader_update_all_button" = "Update all";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "Alles annuleren";
 
 /* Downloaded maps category */
-"downloader_downloaded" = "Gedownload";
+"downloader_downloaded_subtitle" = "Downloaded";
 
 /* Country queued for download */
 "downloader_queued" = "in de wachtrij";
 
-"downloader_near_me" = "Near me";
+"downloader_near_me_subtitle" = "Near me";
 
-"downloader_maps_to_update" = "Maps: %1$d (%2$s)";
+"downloader_status_maps" = "Maps: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "Bij het creëren van routes in MAPS.ME-app, dient u rekening te houden met het volgende:\n\n  - Voorgestelde routes kunnen uitsluitend als aanbevelingen beschouwd worden.\n - Wegconditie, verkeersregels en borden hebben een hogere prioriteit dan het navigatie-advies.\n - De kaart kan onjuist of verouderd zijn en de routes kunnen niet op de beste mogelijke manier gecreëerd zijn.\n\n  Wees veilig op wegen en zorg goed voor uzelf!";
@@ -767,9 +758,6 @@
 
 /* Item in context menu. */
 "downloader_map_and_routing" = "Kaart + route";
-
-/* Dialog confirmation when trying to delete map and there are unsaved changes present on it. */
-"downloader_delete_editor_changes" = "Unsaved changes for this map will be removed too. Continue anyway?";
 
 /* Item in context menu. */
 "downloader_delete_map" = "Kaart verwijderen";
@@ -1342,10 +1330,6 @@
 
 "whats_new_next_button" = "Volgende";
 
-"whats_new_night_caption" = "Nachtmodusnavigatie";
-
-"whats_new_night_body" = "Om het gebruik van MAPS.ME te vergemakkelijken tijdens het rijden in het donker, hebben we de nachtmodus toegevoegd. Deze wordt automatisch ingeschakeld na zonsondergang.";
-
 "editor_time_add" = "Schema toevoegen";
 
 "editor_time_delete" = "Schema verwijderen";
@@ -1374,11 +1358,6 @@
 "editor_correct_mistake_message" = "U hebt een bewerkingsfout gemaakt. Corrigeer deze of schakel over naar de eenvoudige modus.";
 
 "migrate_title" = "Belangrijk!";
-
-/* Used in 2 places: What's new and Delete All maps dialog. */
-"migrate_and_split_mwms_message" = "We hebben kaarten in delen verdeeld. Nu kunt u afzonderlijke regio's downloaden in plaats van het hele land. Verwijder eerst de oude kaarten voordat uw nieuwe gaat downloaden.";
-
-"youve_been_asking" = "Op veler verzoek hebben we het voor elkaar gekregen";
 
 /* Android uses image instead of text. */
 "download_all" = "Alles downloaden";
@@ -1501,10 +1480,6 @@
 
 "phone" = "Telefoonnummer";
 
-"whats_new_editor_caption" = "Bewerk de kaart direct vanuit MAPS.ME";
-
-"whats_new_editor_message" = "Jouw wijzigingen zullen miljoenen gebruikers helpen. Laten we samen de wereld verbeteren!";
-
 "please_note" = "Opgelet";
 
 "common_no_wifi_dialog" = "Geen WiFi-verbinding. Wil je doorgaan via mobiele data?";
@@ -1514,6 +1489,18 @@
 "downloader_update_maps" = "Kaarten updaten";
 
 "downloader_mwm_migration_dialog" = "Om een route te creëren, moet je alle kaarten updaten en dan de route opnieuw plannen.";
+
+"downloader_search_field_hint" = "Find the map";
+
+"migration_update_all_button" = "Update all maps";
+
+"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+
+"migration_prefetch_status" = "Preparing maps update…";
+
+"migration_download_error_dialog" = "Download error";
+
+"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
 
 "downloader_no_space_title" = "Niet genoeg ruimte";
 
@@ -1563,8 +1550,24 @@
 
 "whatsnew_smallmwm_message" = "We hebben kaarten in delen verdeeld. Nu kunt u afzonderlijke regio's downloaden in plaats van het hele land.";
 
+"whatsnew_search_header" = "New search!";
+
 "whatsnew_search_message" = "We hebben het zoeken op adres significant verbeterd. Bekijk het zelf.";
 
-"whatsnew_editor_header" = "Bewerk de kaart direct vanuit MAPS.ME";
+"whatsnew_editor_title" = "Edit the map*";
 
-"whatsnew_editor_message" = "Jouw wijzigingen zullen miljoenen gebruikers helpen. Laten we samen de wereld verbeteren!";
+"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+
+"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+
+"onboarding_offline_navigation_title" = "You will never get lost again";
+
+"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+
+"onboarding_offline_navigation_title_2" = "Offline navigation";
+
+"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+
+"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+
+"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";

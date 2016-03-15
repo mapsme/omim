@@ -14,8 +14,6 @@
 	<string name="cancel_download">取消下载</string>
 	<!-- Button which deletes downloaded country -->
 	<string name="delete">删除</string>
-	<!-- Button in iOS Downloader, displayed only when upgrading from v1 to v2 -->
-	<string name="delete_old_maps">删除旧地图，然后继续</string>
 	<!-- Button to dismiss dialog forever -->
 	<string name="do_not_ask_me_again">不要再问我</string>
 	<!-- Button "do not interrupt download" if user touched actively downloading country -->
@@ -48,8 +46,6 @@
 	<string name="miles">英里</string>
 	<!-- View and button titles for accessibility -->
 	<string name="my_position">我的位置</string>
-	<!-- Settings/Downloader - No internet connection dialog title -->
-	<string name="no_internet_connection_detected">未检测到互联网连接</string>
 	<!-- Settings/Downloader - 3G download warning dialog title -->
 	<string name="no_wifi_ask_cellular_download">未检测到 WiFi 连接。您想使用蜂窝数据 (GPRS, EDGE, 3G 或 LTE)下载%s吗?</string>
 	<string name="ok">好</string>
@@ -69,8 +65,6 @@
 	<string name="search">搜索</string>
 	<!-- Search box placeholder text -->
 	<string name="search_map">搜索地图</string>
-	<!-- Settings/Downloader - No free space dialog title -->
-	<string name="not_enough_disk_space">没有足够的可用磁盘空间</string>
 	<!-- Settings/Downloader - info for not downloaded country -->
 	<string name="touch_to_download">轻触下载</string>
 	<!-- Settings/Downloader - 3G download warning dialog confirm button -->
@@ -426,12 +420,8 @@
 	<string name="routing_map_outdated">请更新地图以创建一条路线。</string>
 	<!-- Update maps suggestion -->
 	<string name="routing_update_maps">使用新版本的MAPS.ME可以创建从您的当前位置至一个目的地的路线。请更新地图以使用该功能。</string>
-	<!-- Update all button text -->
-	<string name="downloader_update_all">更新全部</string>
 	<!-- Cancel all button text -->
 	<string name="downloader_cancel_all">全部取消</string>
-	<!-- Downloaded maps category -->
-	<string name="downloader_downloaded">已下载</string>
 	<!-- Country queued for download -->
 	<string name="downloader_queued">已排队</string>
 	<!-- Disclaimer message -->
@@ -825,8 +815,6 @@
 	<string name="p2p_only_from_current">导航只能从您目前的位置开始。</string>
 	<string name="p2p_reroute_from_current">你是否想要规划当前位置的路线？</string>
 	<string name="whats_new_next_button">下一页</string>
-	<string name="whats_new_night_caption">夜间模式导航</string>
-	<string name="whats_new_night_body">为了便于天黑行驶时使用MAPS.ME，我们增加了夜间模式。该模式在日落之后会自动开启。</string>
 	<string name="editor_time_add">添加计划</string>
 	<string name="editor_time_delete">删除计划</string>
 	<!-- Text for allday switch. -->
@@ -842,9 +830,6 @@
 	<string name="editor_correct_mistake">纠正错误</string>
 	<string name="editor_correct_mistake_message">出现编辑错误，请纠正或切换至简单模式。</string>
 	<string name="migrate_title">重要！</string>
-	<!-- Used in 2 places: What's new and Delete All maps dialog. -->
-	<string name="migrate_and_split_mwms_message">我们将地图分成了几部分。现在，您可以下载独立的区域，而不是整个国家。在开始下载新地图前，请删除旧地图。</string>
-	<string name="youve_been_asking">我们满足了您一直以来的要求</string>
 	<!-- Android uses image instead of text. -->
 	<string name="download_all">下载所有</string>
 	<string name="delete_all">删除全部</string>
@@ -908,8 +893,6 @@
 	<!-- login text field -->
 	<string name="email_or_username">邮箱或用户名</string>
 	<string name="phone">电话</string>
-	<string name="whats_new_editor_caption">直接从MAPS.ME编辑地图</string>
-	<string name="whats_new_editor_message">您的修改将帮助上百万用户。让我们一起让世界变好！</string>
 	<string name="please_note">请注意</string>
 	<string name="common_no_wifi_dialog">无WiFi连接。您想继续使用移动数据进行连接吗？</string>
 	<string name="downloader_delete_map_dialog">所有对地图的修改都将与地图一起被删除。</string>
@@ -940,6 +923,4 @@
 	<string name="whatsnew_smallmwm_header">我们满足了您一直以来的要求</string>
 	<string name="whatsnew_smallmwm_message">我们将地图分成了几部分。现在，您可以下载独立的区域，而不是整个国家。</string>
 	<string name="whatsnew_search_message">我们已明显改进了按地址的搜索。亲自看看。</string>
-	<string name="whatsnew_editor_header">直接从MAPS.ME编辑地图</string>
-	<string name="whatsnew_editor_message">您的修改将帮助上百万用户。让我们一起让世界变好！</string>
 </resources>

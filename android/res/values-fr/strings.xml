@@ -14,8 +14,6 @@
 	<string name="cancel_download">Annuler le téléchargement</string>
 	<!-- Button which deletes downloaded country -->
 	<string name="delete">Supprimer</string>
-	<!-- Button in iOS Downloader, displayed only when upgrading from v1 to v2 -->
-	<string name="delete_old_maps">Supprimer les anciennes cartes et continuer</string>
 	<!-- Button to dismiss dialog forever -->
 	<string name="do_not_ask_me_again">Ne plus me demander</string>
 	<!-- Button "do not interrupt download" if user touched actively downloading country -->
@@ -52,8 +50,6 @@
 	<string name="miles">Miles</string>
 	<!-- View and button titles for accessibility -->
 	<string name="my_position">Ma position</string>
-	<!-- Settings/Downloader - No internet connection dialog title -->
-	<string name="no_internet_connection_detected">Aucune connexion Internet détectée</string>
 	<!-- Settings/Downloader - 3G download warning dialog title -->
 	<string name="no_wifi_ask_cellular_download">Aucun connexion Wi-Fi détectée. Désirez-vous utiliser les données mobiles (GPRS, EDGE, 3G ou LTE) pour télécharger %s ?</string>
 	<!-- not used? Search View - Location is disabled by user warning text -->
@@ -72,8 +68,6 @@
 	<string name="search">Recherche</string>
 	<!-- Search box placeholder text -->
 	<string name="search_map">Rechercher sur la carte</string>
-	<!-- Settings/Downloader - No free space dialog title -->
-	<string name="not_enough_disk_space">Il n\&#39;y a pas assez d\&#39;espace disque libre</string>
 	<!-- Settings/Downloader - info for not downloaded country -->
 	<string name="touch_to_download">Toucher pour télécharger</string>
 	<!-- Settings/Downloader - 3G download warning dialog confirm button -->
@@ -429,12 +423,8 @@
 	<string name="routing_map_outdated">Veuillez mettre à jour la carte pour créer un itinéraire.</string>
 	<!-- Update maps suggestion -->
 	<string name="routing_update_maps">La nouvelle version de MAPS.ME permet de créer des itinéraires à partir de votre position actuelle vers un point de destination. Veuillez mettre à jour les cartes pour utiliser cette fonctionnalité.</string>
-	<!-- Update all button text -->
-	<string name="downloader_update_all">Tout mettre à jour</string>
 	<!-- Cancel all button text -->
 	<string name="downloader_cancel_all">Tout annuler</string>
-	<!-- Downloaded maps category -->
-	<string name="downloader_downloaded">Téléchargé</string>
 	<!-- Country queued for download -->
 	<string name="downloader_queued">en file d\&#39;attente</string>
 	<!-- Disclaimer message -->
@@ -830,8 +820,6 @@
 	<string name="p2p_only_from_current">La navigation est uniquement disponible à partir de votre emplacement actuel.</string>
 	<string name="p2p_reroute_from_current">Souhaitez-vous que nous planifiions un itinéraire à partir de votre emplacement actuel ?</string>
 	<string name="whats_new_next_button">Neste</string>
-	<string name="whats_new_night_caption">Navigation en mode nuit</string>
-	<string name="whats_new_night_body">Pour faciliter l\&#39;utilisation de MAPS.ME en conduisant dans l\&#39;obscurité, nous avons ajouté le mode nuit. Il se met automatiquement en marche après le coucher du soleil.</string>
 	<string name="editor_time_add">Ajouter au planning</string>
 	<string name="editor_time_delete">Supprimer du planning</string>
 	<!-- Text for allday switch. -->
@@ -847,9 +835,6 @@
 	<string name="editor_correct_mistake">Corriger l\&#39;erreur</string>
 	<string name="editor_correct_mistake_message">Vous avez fait une erreur d\&#39;édition. Veuillez la corriger ou passer en mode simple.</string>
 	<string name="migrate_title">Important !</string>
-	<!-- Used in 2 places: What's new and Delete All maps dialog. -->
-	<string name="migrate_and_split_mwms_message">Nous avons divisé la carte en plusieurs parties. Désormais, vous pouvez télécharger des régions bien précises, et non plus le pays tout entier. Avant de commencer à télécharger de nouvelles cartes , veillez à effacer les anciennes.</string>
-	<string name="youve_been_asking">Vous avez été nombreux à nous le demander et nous avons satisfait votre requête.</string>
 	<!-- Android uses image instead of text. -->
 	<string name="download_all">Tout télécharger</string>
 	<string name="delete_all">Supprimer tout</string>
@@ -913,8 +898,6 @@
 	<!-- login text field -->
 	<string name="email_or_username">E-mail ou nom d\&#39;utilisateur</string>
 	<string name="phone">Numéro de téléphone</string>
-	<string name="whats_new_editor_caption">Modifiez la carte directement depuis MAPS.ME</string>
-	<string name="whats_new_editor_message">Vos modifications aideront des millions d\&#39;utilisateurs. Améliorons le monde ensemble !</string>
 	<string name="please_note">À noter</string>
 	<string name="common_no_wifi_dialog">Aucune connexion Wi-Fi. Voulez-vous continuer avec les données mobiles ?</string>
 	<string name="downloader_delete_map_dialog">Toutes les modifications de la carte seront supprimées avec elle.</string>
@@ -945,6 +928,4 @@
 	<string name="whatsnew_smallmwm_header">Vous avez été nombreux à nous le demander et nous avons satisfait votre requête</string>
 	<string name="whatsnew_smallmwm_message">Nous avons divisé la carte en plusieurs parties. Désormais, vous pouvez télécharger des régions bien précises, et non plus le pays tout entier.</string>
 	<string name="whatsnew_search_message">Nous avons apporté des améliorations considérables à la recherche par adresse. Voyez par vous-même.</string>
-	<string name="whatsnew_editor_header">Modifiez la carte directement depuis MAPS.ME</string>
-	<string name="whatsnew_editor_message">Vos modifications aideront des millions d\&#39;utilisateurs. Améliorons le monde ensemble !</string>
 </resources>

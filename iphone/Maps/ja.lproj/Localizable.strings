@@ -21,9 +21,6 @@
 /* Button which deletes downloaded country */
 "delete" = "削除";
 
-/* Button in iOS Downloader, displayed only when upgrading from v1 to v2 */
-"delete_old_maps" = "古いマップを削除して処理を続行";
-
 /* Button to dismiss dialog forever */
 "do_not_ask_me_again" = "以後、このメッセージを表示しない";
 
@@ -79,9 +76,6 @@
 /* View and button titles for accessibility */
 "my_position" = "現在地";
 
-/* Settings/Downloader - No internet connection dialog title */
-"no_internet_connection_detected" = "インターネットに接続されていません";
-
 /* Settings/Downloader - 3G download warning dialog title */
 "no_wifi_ask_cellular_download" = "WiFi接続が見つかりません。GPRS、EDGE、3G、LTE等の携帯電話回線で%@をダウンロードしますか？";
 
@@ -110,9 +104,6 @@
 
 /* Search box placeholder text */
 "search_map" = "マップを検索";
-
-/* Settings/Downloader - No free space dialog title */
-"not_enough_disk_space" = "ディスクに十分な空き領域がありません";
 
 /* Settings/Downloader - info for not downloaded country */
 "touch_to_download" = "タッチしてダウンロード";
@@ -694,20 +685,20 @@
 "routing_update_maps" = "新バージョンのMAPS.MEは現在地から目的地までのルートを作成可能です。 この機能を使うためにマップを更新してください。";
 
 /* Update all button text */
-"downloader_update_all" = "全てをアップデート";
+"downloader_update_all_button" = "Update all";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "すべてキャンセル";
 
 /* Downloaded maps category */
-"downloader_downloaded" = "ダウンロード済";
+"downloader_downloaded_subtitle" = "Downloaded";
 
 /* Country queued for download */
 "downloader_queued" = "待ち行列型の";
 
-"downloader_near_me" = "Near me";
+"downloader_near_me_subtitle" = "Near me";
 
-"downloader_maps_to_update" = "Maps: %1$d (%2$s)";
+"downloader_status_maps" = "Maps: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "MAPS.MEアプリでルートを作成する時は、以下のことに留意してください：\n\n  - 提案されたルートは推奨するだけです。\n - 道路状況、交通規則と標識はナビゲーションのアドバイスより優先度が高くなっています。\n - マップが不正確または古くなっている場合や、ルートが最適な方法で作成されていないことがあります。\n\n  安全運転でご自愛ください！";
@@ -767,9 +758,6 @@
 
 /* Item in context menu. */
 "downloader_map_and_routing" = "地図とルート";
-
-/* Dialog confirmation when trying to delete map and there are unsaved changes present on it. */
-"downloader_delete_editor_changes" = "Unsaved changes for this map will be removed too. Continue anyway?";
 
 /* Item in context menu. */
 "downloader_delete_map" = "地図を削除";
@@ -1342,10 +1330,6 @@
 
 "whats_new_next_button" = "次へ";
 
-"whats_new_night_caption" = "夜間モードナビゲーション";
-
-"whats_new_night_body" = "MAPS.MEを夜間の運転中に使いやすくするため、夜間モードを追加しました。日の入り後に自動的に切り替わります。";
-
 "editor_time_add" = "スケジュール追加";
 
 "editor_time_delete" = "スケジュール削除";
@@ -1374,11 +1358,6 @@
 "editor_correct_mistake_message" = "編集の間違いがあります。訂正するか、シンプルモードに切り替えてください。";
 
 "migrate_title" = "重要！";
-
-/* Used in 2 places: What's new and Delete All maps dialog. */
-"migrate_and_split_mwms_message" = "マップを分割し、国全体でなく個別の地域をダウンロードできるようにしました。新しいマップをダウンロードする前に、古いものを削除してください。";
-
-"youve_been_asking" = "皆様のご要望にお応えして、実現を果たしました";
 
 /* Android uses image instead of text. */
 "download_all" = "全てをダウンロード";
@@ -1501,10 +1480,6 @@
 
 "phone" = "電話";
 
-"whats_new_editor_caption" = "MAPS.MEで直接地図を編集可能";
-
-"whats_new_editor_message" = "地図を修正すると、何百万人ものユーザーの役に立ちます。一緒に世界を改善していきましょう！";
-
 "please_note" = "ご注意ください";
 
 "common_no_wifi_dialog" = "WiFi接続がありません。モバイルデータ通信を続行しますか?";
@@ -1514,6 +1489,18 @@
 "downloader_update_maps" = "地図をアップデート";
 
 "downloader_mwm_migration_dialog" = "ルートを作成するには、全ての地図をアップデートした後で再びルート計画を行う必要があります。";
+
+"downloader_search_field_hint" = "Find the map";
+
+"migration_update_all_button" = "Update all maps";
+
+"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+
+"migration_prefetch_status" = "Preparing maps update…";
+
+"migration_download_error_dialog" = "Download error";
+
+"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
 
 "downloader_no_space_title" = "十分な空き容量がありません";
 
@@ -1563,8 +1550,24 @@
 
 "whatsnew_smallmwm_message" = "マップを分割し、国全体でなく個別の地域をダウンロードできるようにしました。";
 
+"whatsnew_search_header" = "New search!";
+
 "whatsnew_search_message" = "住所での検索機能を大幅に改善しました。ご自身の目でご覧ください。";
 
-"whatsnew_editor_header" = "MAPS.MEで直接地図を編集可能";
+"whatsnew_editor_title" = "Edit the map*";
 
-"whatsnew_editor_message" = "地図を修正すると、何百万人ものユーザーの役に立ちます。一緒に世界を改善していきましょう！";
+"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+
+"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+
+"onboarding_offline_navigation_title" = "You will never get lost again";
+
+"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+
+"onboarding_offline_navigation_title_2" = "Offline navigation";
+
+"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+
+"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+
+"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";

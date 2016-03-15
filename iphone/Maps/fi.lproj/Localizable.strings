@@ -21,9 +21,6 @@
 /* Button which deletes downloaded country */
 "delete" = "Poista";
 
-/* Button in iOS Downloader, displayed only when upgrading from v1 to v2 */
-"delete_old_maps" = "Poista vanhat kartat ja jatka";
-
 /* Button to dismiss dialog forever */
 "do_not_ask_me_again" = "Älä kysy uudelleen";
 
@@ -79,9 +76,6 @@
 /* View and button titles for accessibility */
 "my_position" = "Sijaintini";
 
-/* Settings/Downloader - No internet connection dialog title */
-"no_internet_connection_detected" = "Internet-yhteyttä ei havaittu";
-
 /* Settings/Downloader - 3G download warning dialog title */
 "no_wifi_ask_cellular_download" = "WiFi-yhteyttä ei havaittu. Haluatko käyttää mobiilidataa (GPRS, EDGE, 3G tai LTE) ladataksesi tiedoston %@?";
 
@@ -110,9 +104,6 @@
 
 /* Search box placeholder text */
 "search_map" = "Hae kartalta";
-
-/* Settings/Downloader - No free space dialog title */
-"not_enough_disk_space" = "Ei tarpeeksi tyhjää levytilaa";
 
 /* Settings/Downloader - info for not downloaded country */
 "touch_to_download" = "Lataa koskettamalla";
@@ -694,20 +685,20 @@
 "routing_update_maps" = "Uusi MAPS.ME -versio mahdollistaa reittien luonnin nykyisestä sijainnista määränpäähäsi.Päivitä kartat käyttääksesi tätä ominaisuutta.";
 
 /* Update all button text */
-"downloader_update_all" = "Päivitä kaikki";
+"downloader_update_all_button" = "Update all";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "Peruuta kaikki";
 
 /* Downloaded maps category */
-"downloader_downloaded" = "Ladattu";
+"downloader_downloaded_subtitle" = "Downloaded";
 
 /* Country queued for download */
 "downloader_queued" = "jonossa";
 
-"downloader_near_me" = "Near me";
+"downloader_near_me_subtitle" = "Near me";
 
-"downloader_maps_to_update" = "Maps: %1$d (%2$s)";
+"downloader_status_maps" = "Maps: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "Pidä mielessä seuraavat seikat luodessasi reittejä MAPS.ME -sovelluksella:\n\n- Ehdotettuja reittejä tulee pitää vain suosituksina.\n- Teiden kunto, liikennesäännöt ja -merkit on aina otettava huomioon navigointiehdotuksista huolimatta.\n - Kartassa saattaa olla virheitä, tai se saattaa olla vanhentunut, eikä reittejä sen takia voida luoda parhaalla mahdollisella tavalla.\n\nPysy valppaana liikenteessä ja pidä huolta itsestäsi!";
@@ -767,9 +758,6 @@
 
 /* Item in context menu. */
 "downloader_map_and_routing" = "Kartta + reititys";
-
-/* Dialog confirmation when trying to delete map and there are unsaved changes present on it. */
-"downloader_delete_editor_changes" = "Unsaved changes for this map will be removed too. Continue anyway?";
 
 /* Item in context menu. */
 "downloader_delete_map" = "Poista kartta";
@@ -1342,10 +1330,6 @@
 
 "whats_new_next_button" = "Seuraava";
 
-"whats_new_night_caption" = "Yötilanavigaatio";
-
-"whats_new_night_body" = "Olemme lisänneet yötilan helpottaaksemme MAPS.ME:n käyttöä pimeällä ajettaessa. Se menee automaattisesti päälle auringonlaskun jälkeen.";
-
 "editor_time_add" = "Lisää aikataulu";
 
 "editor_time_delete" = "Poista aikataulu";
@@ -1374,11 +1358,6 @@
 "editor_correct_mistake_message" = "Teit muokkausvirheen. Korjaa se tai vaihda yksinkertaiseen malliin.";
 
 "migrate_title" = "Tärkeää!";
-
-/* Used in 2 places: What's new and Delete All maps dialog. */
-"migrate_and_split_mwms_message" = "Olemme jakaneet kartat osiin, joten voitkin nyt ladata pelkkiä alueita lataamatta koko maan karttaa. Ennen uusien karttojen lataamista tulee sinun kuitenkin poistaa vanhat kartat laitteeltasi.";
-
-"youve_been_asking" = "Sitä on pyydetty, ja nyt se on tarjolla";
 
 /* Android uses image instead of text. */
 "download_all" = "Lataa kaikki";
@@ -1501,10 +1480,6 @@
 
 "phone" = "Puhelinnumero";
 
-"whats_new_editor_caption" = "Muokkaa karttoja suoraan MAPS.ME -sovelluksessa";
-
-"whats_new_editor_message" = "Muokkauksesi auttavat miljoonia käyttäjiä — parannetaan maailmaa yhdessä!";
-
 "please_note" = "Huomaathan, että";
 
 "common_no_wifi_dialog" = "Ei Wi-Fi -yhteyttä. Haluatko jatkaa mobiilidatan avulla?";
@@ -1514,6 +1489,18 @@
 "downloader_update_maps" = "Päivitä kartat";
 
 "downloader_mwm_migration_dialog" = "Sinun täytyy päivittää kaikki kartat ja suunnitella reitti uudelleen luodaksesi uuden reitin.";
+
+"downloader_search_field_hint" = "Find the map";
+
+"migration_update_all_button" = "Update all maps";
+
+"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+
+"migration_prefetch_status" = "Preparing maps update…";
+
+"migration_download_error_dialog" = "Download error";
+
+"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
 
 "downloader_no_space_title" = "Ei tarpeeksi tilaa";
 
@@ -1563,8 +1550,24 @@
 
 "whatsnew_smallmwm_message" = "Olemme jakaneet kartat osiin, joten voitkin nyt ladata pelkkiä alueita lataamatta koko maan karttaa.";
 
+"whatsnew_search_header" = "New search!";
+
 "whatsnew_search_message" = "Olemme selkeästi parantaneet osoitehakua - kokeile vaikka itse.";
 
-"whatsnew_editor_header" = "Muokkaa karttoja suoraan MAPS.ME -sovelluksessa";
+"whatsnew_editor_title" = "Edit the map*";
 
-"whatsnew_editor_message" = "Muokkauksesi auttavat miljoonia käyttäjiä - parannetaan maailmaa yhdessä!";
+"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+
+"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+
+"onboarding_offline_navigation_title" = "You will never get lost again";
+
+"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+
+"onboarding_offline_navigation_title_2" = "Offline navigation";
+
+"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+
+"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+
+"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";

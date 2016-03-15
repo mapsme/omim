@@ -14,8 +14,6 @@
 	<string name="cancel_download">Avbryt nedlasting</string>
 	<!-- Button which deletes downloaded country -->
 	<string name="delete">Slett</string>
-	<!-- Button in iOS Downloader, displayed only when upgrading from v1 to v2 -->
-	<string name="delete_old_maps">Slett gamle kart og fortsett</string>
 	<!-- Button to dismiss dialog forever -->
 	<string name="do_not_ask_me_again">Ikke spør meg igjen</string>
 	<!-- Button "do not interrupt download" if user touched actively downloading country -->
@@ -52,8 +50,6 @@
 	<string name="miles">Miles</string>
 	<!-- View and button titles for accessibility -->
 	<string name="my_position">Min posisjon</string>
-	<!-- Settings/Downloader - No internet connection dialog title -->
-	<string name="no_internet_connection_detected">Ingen Internett-tilkobling oppdaget</string>
 	<!-- Settings/Downloader - 3G download warning dialog title -->
 	<string name="no_wifi_ask_cellular_download">Ingen WiFi-tilkobling oppdaget. Har du lyst til å bruke mobildata (GPRS, EDGE, 3G eller LTE) for å laste ned %s?</string>
 	<string name="ok">OK</string>
@@ -73,8 +69,6 @@
 	<string name="search">Søk</string>
 	<!-- Search box placeholder text -->
 	<string name="search_map">Søk kart</string>
-	<!-- Settings/Downloader - No free space dialog title -->
-	<string name="not_enough_disk_space">Det er ikke nok ledig diskplass</string>
 	<!-- Settings/Downloader - info for not downloaded country -->
 	<string name="touch_to_download">Trykk for å laste ned</string>
 	<!-- Settings/Downloader - 3G download warning dialog confirm button -->
@@ -418,12 +412,8 @@
 	<string name="routing_map_outdated">Oppdater kartet for å opprette en rute</string>
 	<!-- Update maps suggestion -->
 	<string name="routing_update_maps">Med den nye versjonen av MAPS.ME kan du opprette ruter fra din nåværende posisjon til et ankomststed på kartet. Oppdater kartene for å bruke denne funksjonen.</string>
-	<!-- Update all button text -->
-	<string name="downloader_update_all">Oppdater alle</string>
 	<!-- Cancel all button text -->
 	<string name="downloader_cancel_all">Avbryt alle</string>
-	<!-- Downloaded maps category -->
-	<string name="downloader_downloaded">Lastet ned</string>
 	<!-- Country queued for download -->
 	<string name="downloader_queued">lagt i kø</string>
 	<!-- Disclaimer message -->
@@ -819,8 +809,6 @@
 	<string name="p2p_only_from_current">Navigering er kun tilgjengelig fra din nåværende beliggenhet.</string>
 	<string name="p2p_reroute_from_current">Vil du vi skal planlegge en rute fra din nåværende posisjon?</string>
 	<string name="whats_new_next_button">Neste</string>
-	<string name="whats_new_night_caption">Nattmodus-navigering</string>
-	<string name="whats_new_night_body">For å tilrettelegge bruk av MAPS.ME under mørkekjøring har vi lagt til funksjonen nattmodus. Funksjonen skrues automatisk på etter solnedgang.</string>
 	<string name="editor_time_add">Legg til tidsrom</string>
 	<string name="editor_time_delete">Slett tidsrom</string>
 	<!-- Text for allday switch. -->
@@ -836,9 +824,6 @@
 	<string name="editor_correct_mistake">Rett feil</string>
 	<string name="editor_correct_mistake_message">Du har gjort en redigeringsfeil. Rett den eller bytt til enkel modus.</string>
 	<string name="migrate_title">Viktig!</string>
-	<!-- Used in 2 places: What's new and Delete All maps dialog. -->
-	<string name="migrate_and_split_mwms_message">Vi har delt opp kartene i separate deler. Nå kan du laste ned separate regioner istedenfor hele land. Sørg for at du fjerner de gamle kartene før du begynner å laste ned nye.</string>
-	<string name="youve_been_asking">Dere har bedt om det og vi har fått det til</string>
 	<!-- Android uses image instead of text. -->
 	<string name="download_all">Last ned alle</string>
 	<string name="delete_all">Slett alle</string>
@@ -902,8 +887,6 @@
 	<!-- login text field -->
 	<string name="email_or_username">E-postadresse eller brukernavn</string>
 	<string name="phone">Telefon</string>
-	<string name="whats_new_editor_caption">Rediger kartet direkte fra MAPS.ME</string>
-	<string name="whats_new_editor_message">Endringene dine vil hjelpe millioner av brukere. La oss forbedre verden sammen!</string>
 	<string name="please_note">Vær oppmerksom på at</string>
 	<string name="common_no_wifi_dialog">Ingen trådløs forbindelse. Vil du fortsette med mobildata?</string>
 	<string name="downloader_delete_map_dialog">Alle endringer i kartet vil slettes sammen med kartet.</string>
@@ -934,6 +917,4 @@
 	<string name="whatsnew_smallmwm_header">Dere har bedt om det og vi har fått det til</string>
 	<string name="whatsnew_smallmwm_message">Vi har delt opp kartene i separate deler. Nå kan du laste ned separate regioner istedenfor hele land.</string>
 	<string name="whatsnew_search_message">Nå er det mye enklere å søke etter adresse. Se selv.</string>
-	<string name="whatsnew_editor_header">Rediger kartet direkte fra MAPS.ME</string>
-	<string name="whatsnew_editor_message">Endringene dine vil hjelpe millioner av brukere. La oss forbedre verden sammen!</string>
 </resources>

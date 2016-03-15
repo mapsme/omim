@@ -14,8 +14,6 @@
 	<string name="cancel_download">إلغاء التنزيل</string>
 	<!-- Button which deletes downloaded country -->
 	<string name="delete">حذف</string>
-	<!-- Button in iOS Downloader, displayed only when upgrading from v1 to v2 -->
-	<string name="delete_old_maps">حذف الخرائط القديمة و المتابعة</string>
 	<!-- Button to dismiss dialog forever -->
 	<string name="do_not_ask_me_again">لا تسئلني مرة أخرى</string>
 	<!-- Button "do not interrupt download" if user touched actively downloading country -->
@@ -52,8 +50,6 @@
 	<string name="miles">ميل</string>
 	<!-- View and button titles for accessibility -->
 	<string name="my_position">موقعي</string>
-	<!-- Settings/Downloader - No internet connection dialog title -->
-	<string name="no_internet_connection_detected">لم يتم اكتشاف أي اتصال مع الانترنت</string>
 	<!-- Settings/Downloader - 3G download warning dialog title -->
 	<string name="no_wifi_ask_cellular_download">لم يتم العثور على أي اتصال واي فاي. هل ترغب باستخدام حزمة البيانات الخليوية (GPRS ، EDGE ، 3G أو LTE) من أجل تنزيل %s؟</string>
 	<string name="ok">موافق</string>
@@ -73,8 +69,6 @@
 	<string name="search">البحث</string>
 	<!-- Search box placeholder text -->
 	<string name="search_map">ابحث في الخريطة</string>
-	<!-- Settings/Downloader - No free space dialog title -->
-	<string name="not_enough_disk_space">لا يوجد مساحة كافية على القرص</string>
 	<!-- Settings/Downloader - info for not downloaded country -->
 	<string name="touch_to_download">انقر للتنزيل</string>
 	<!-- Settings/Downloader - 3G download warning dialog confirm button -->
@@ -424,12 +418,8 @@
 	<string name="routing_map_outdated">يرجى تحديث الخريطة لإنشاء مسار.</string>
 	<!-- Update maps suggestion -->
 	<string name="routing_update_maps">إصدار MAPS.ME الجديد يسمح بإنشاء مسارات انطلاقاً من موقعك الحالي نحو المكان الذي تتجه إليه. يرجى تحديث الخرائط لاستخدام هذه الميزة.</string>
-	<!-- Update all button text -->
-	<string name="downloader_update_all">تحديث الكل</string>
 	<!-- Cancel all button text -->
 	<string name="downloader_cancel_all">إلغاء الكل</string>
-	<!-- Downloaded maps category -->
-	<string name="downloader_downloaded">المُنزَّلة</string>
 	<!-- Country queued for download -->
 	<string name="downloader_queued">مَصْفوف</string>
 	<!-- Disclaimer message -->
@@ -825,8 +815,6 @@
 	<string name="p2p_only_from_current">تتوافر إمكانية التنقل فقط من خلال موقعك الحالي. هل تريد أن نخطط لك طريقاً بديلاً؟</string>
 	<string name="p2p_reroute_from_current">هل ترغب في أن نرسم مسار لك من موقعك الحالي؟</string>
 	<string name="whats_new_next_button">التالي</string>
-	<string name="whats_new_night_caption">وضع التجول الليلي</string>
-	<string name="whats_new_night_body">لتسهيل استخدام MAPS.ME أثناء القيادة في الظلام، فقد أضفنا وضع التجول الليلي. إنه يعمل تلقائيا بعد غروب الشمس.</string>
 	<string name="editor_time_add">إضافة جدول</string>
 	<string name="editor_time_delete">حذف جدول</string>
 	<!-- Text for allday switch. -->
@@ -842,9 +830,6 @@
 	<string name="editor_correct_mistake">تصحيح الخطأ</string>
 	<string name="editor_correct_mistake_message">قمت بخطأ في التحرير. يرجى تصحيح الخطأ أو التبديل إلى الوضع البسيط.</string>
 	<string name="migrate_title">هام!</string>
-	<!-- Used in 2 places: What's new and Delete All maps dialog. -->
-	<string name="migrate_and_split_mwms_message">لقد قسمنا الخرائط إلى أجزاء. الآن يمكنك تنزيل مناطق منفصلة، وليس البلد بأكمله. قبل البدء في تنزيل الخرائط الجديدة، يرجى إزالة النسخ القديمة.</string>
-	<string name="youve_been_asking">لقد طلبتم ذلك، وها نحن قد لبينا طلبكم</string>
 	<!-- Android uses image instead of text. -->
 	<string name="download_all">تنزيل الكل</string>
 	<string name="delete_all">حذف الكل</string>
@@ -908,8 +893,6 @@
 	<!-- login text field -->
 	<string name="email_or_username">البريد الإلكتروني أو اسم المستخدم</string>
 	<string name="phone">الهاتف</string>
-	<string name="whats_new_editor_caption">حرر خريطتك على MAPS.ME</string>
-	<string name="whats_new_editor_message">تغييراتك سوف تساعد الملايين من المستخدمين. هيا نطور من العالم سويا!</string>
 	<string name="please_note">يرجى العلم أنه،</string>
 	<string name="common_no_wifi_dialog">لا يوجد اتصال واي فاي. هل ترغب في استخدام بيانات الهاتف للاتصال؟</string>
 	<string name="downloader_delete_map_dialog">سيتم حذف جميع التغييرات بالخريطة بالإضافة إلى حذف الخريطة نفسها.</string>
@@ -940,6 +923,4 @@
 	<string name="whatsnew_smallmwm_header">لقد طلبتم ذلك، وها نحن قد لبينا طلبكم</string>
 	<string name="whatsnew_smallmwm_message">لقد قسمنا الخرائط إلى أجزاء. الآن يمكنك تنزيل مناطق منفصلة، وليس البلد بأكمله.</string>
 	<string name="whatsnew_search_message">لقد طورنا كليا البحث بالعنوان. فلترى بنفسك.</string>
-	<string name="whatsnew_editor_header">حرر خريطتك على MAPS.ME</string>
-	<string name="whatsnew_editor_message">تغييراتك سوف تساعد الملايين من المستخدمين. هيا نطور من العالم سويا!</string>
 </resources>

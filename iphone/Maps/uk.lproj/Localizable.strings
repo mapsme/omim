@@ -21,9 +21,6 @@
 /* Button which deletes downloaded country */
 "delete" = "Видалити";
 
-/* Button in iOS Downloader, displayed only when upgrading from v1 to v2 */
-"delete_old_maps" = "Видалити старі карти та продовжити";
-
 /* Button to dismiss dialog forever */
 "do_not_ask_me_again" = "Більше не питати";
 
@@ -79,9 +76,6 @@
 /* View and button titles for accessibility */
 "my_position" = "Моє місце розташування";
 
-/* Settings/Downloader - No internet connection dialog title */
-"no_internet_connection_detected" = "Відсутнє підключення до інтернету";
-
 /* Settings/Downloader - 3G download warning dialog title */
 "no_wifi_ask_cellular_download" = "Відсутнє WiFi з'єднання. Ви бажаєте завантажити %@ через стільникового оператора (GPRS, EDGE, 3G або LTE)?";
 
@@ -110,9 +104,6 @@
 
 /* Search box placeholder text */
 "search_map" = "Пошук на картi";
-
-/* Settings/Downloader - No free space dialog title */
-"not_enough_disk_space" = "Немає вільного місця";
 
 /* Settings/Downloader - info for not downloaded country */
 "touch_to_download" = "Натисніть для завантаження";
@@ -694,20 +685,20 @@
 "routing_update_maps" = "В новій версії MAPS.ME ви зможете прокладати маршрут від поточного місця перебування до точки призначення. Щоб скористатися цією функцією, будь ласка, оновіть карти.";
 
 /* Update all button text */
-"downloader_update_all" = "Оновити все";
+"downloader_update_all_button" = "Update all";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "Скасувати всі";
 
 /* Downloaded maps category */
-"downloader_downloaded" = "Завантажено";
+"downloader_downloaded_subtitle" = "Downloaded";
 
 /* Country queued for download */
 "downloader_queued" = "в черзі";
 
-"downloader_near_me" = "Near me";
+"downloader_near_me_subtitle" = "Near me";
 
-"downloader_maps_to_update" = "Maps: %1$d (%2$s)";
+"downloader_status_maps" = "Maps: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "Використовуючи маршрути в програмі MAPS.ME, будь ласка, враховуйте наступне:\n\n  - Пропоновані маршрути можуть розглядатися тільки в якості рекомендації.\n - Дорожні умови, правила дорожнього руху, знаки являються більш пріоритетними в порівнянні з порадами навігаційної програми.\n - Карта може бути неточною або неактуальною , а запропонований маршрут не найоптимальнішим.\n\n  Будьте уважні на дорозі та бережіть себе!";
@@ -767,9 +758,6 @@
 
 /* Item in context menu. */
 "downloader_map_and_routing" = "Мапа + Маршрути";
-
-/* Dialog confirmation when trying to delete map and there are unsaved changes present on it. */
-"downloader_delete_editor_changes" = "Unsaved changes for this map will be removed too. Continue anyway?";
 
 /* Item in context menu. */
 "downloader_delete_map" = "Видалити мапу";
@@ -1342,10 +1330,6 @@
 
 "whats_new_next_button" = "Далі";
 
-"whats_new_night_caption" = "Нічний режим навігації";
-
-"whats_new_night_body" = "Для зручності використання MAPS.ME під час водіння автомобіля в темну пору доби ми додали нічний режим. Він запускається автоматично після заходу сонця.";
-
 "editor_time_add" = "Додати розклад";
 
 "editor_time_delete" = "Видалити розклад";
@@ -1374,11 +1358,6 @@
 "editor_correct_mistake_message" = "Під час редагування часу роботи ви зробили помилку. Виправте її або перейдіть у простий режим.";
 
 "migrate_title" = "Важливо!";
-
-/* Used in 2 places: What's new and Delete All maps dialog. */
-"migrate_and_split_mwms_message" = "Ми поділили великі мапи на частини: тепер можна завантажити необхідну область окремо від всієї країни. Перед тим як розпочати завантажувати зменьшені мапи, будь ласка, видаліть всі старі.";
-
-"youve_been_asking" = "Ви просили і ми це зробили";
 
 /* Android uses image instead of text. */
 "download_all" = "Завантажити всі";
@@ -1501,10 +1480,6 @@
 
 "phone" = "Телефон";
 
-"whats_new_editor_caption" = "Редагуйте карту відразу з MAPS.ME";
-
-"whats_new_editor_message" = "Ваші зміни допоможуть мільйонам користувачів. Вдосконалимо світ разом!";
-
 "please_note" = "Будь ласка, зверніть увагу";
 
 "common_no_wifi_dialog" = "Немає WiFi з’єднання. Ви бажаєте продовжити роботу через мобільний інтернет?";
@@ -1514,6 +1489,18 @@
 "downloader_update_maps" = "Оновити мапи";
 
 "downloader_mwm_migration_dialog" = "Для побудови маршруту необхідно оновити усі мапи та побудувати маршрут заново.";
+
+"downloader_search_field_hint" = "Find the map";
+
+"migration_update_all_button" = "Update all maps";
+
+"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+
+"migration_prefetch_status" = "Preparing maps update…";
+
+"migration_download_error_dialog" = "Download error";
+
+"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
 
 "downloader_no_space_title" = "Недостатньо місця";
 
@@ -1563,8 +1550,24 @@
 
 "whatsnew_smallmwm_message" = "Ми поділили карти на частини. Тепер ви можете стягувати окремі регіони, а не країну цілком.";
 
+"whatsnew_search_header" = "New search!";
+
 "whatsnew_search_message" = "Якісно покращили пошук по адресам. Перевірте.";
 
-"whatsnew_editor_header" = "Редагуйте карту відразу з MAPS.ME";
+"whatsnew_editor_title" = "Edit the map*";
 
-"whatsnew_editor_message" = "Ваші зміни допоможуть мільйонам користувачів. Вдосконалимо світ разом!";
+"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+
+"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+
+"onboarding_offline_navigation_title" = "You will never get lost again";
+
+"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+
+"onboarding_offline_navigation_title_2" = "Offline navigation";
+
+"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+
+"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+
+"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";
