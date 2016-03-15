@@ -4,10 +4,12 @@
 #include "std/map.hpp"
 #include "std/mutex.hpp"
 
-namespace Settings
+namespace settings
 {
-// Current location state mode. @See location::EMyPositionMode.
+/// Current location state mode. @See location::EMyPositionMode.
 extern char const * kLocationStateMode;
+/// Metric or Feet.
+extern char const * kMeasurementUnits;
 
 template <class T>
 bool FromString(string const & str, T & outValue);

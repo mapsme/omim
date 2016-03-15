@@ -3,12 +3,34 @@
 #include "platform/measurement_utils.hpp"
 #include "platform/settings.hpp"
 
-
 using namespace MeasurementUtils;
+using namespace settings;
+
+struct ScopedSettings
+{
+  ScopedSettings() { m_wasSet = Get(kMeasurementUnits, m_oldUnits); }
+
+  /// Saves/restores previous units and sets new units for a scope.
+  ScopedSettings(Units newUnits) : ScopedSettings()
+  {
+    Set(kMeasurementUnits, newUnits);
+  }
+
+  ~ScopedSettings()
+  {
+    if (m_wasSet)
+      Set(kMeasurementUnits, m_oldUnits);
+    else
+      Delete(kMeasurementUnits);
+  }
+
+  bool m_wasSet;
+  Units m_oldUnits;
+};
 
 UNIT_TEST(Measurement_Smoke)
 {
-  Settings::Set("Units", Settings::Metric);
+  ScopedSettings guard(settings::Metric);
 
   typedef pair<double, char const *> PairT;
 
@@ -66,15 +88,16 @@ UNIT_TEST(LatLonToDMS_NoRounding)
 
 UNIT_TEST(FormatAltitude)
 {
-  Settings::Set("Units", Settings::Foot);
+  ScopedSettings guard;
+  settings::Set(settings::kMeasurementUnits, settings::Foot);
   TEST_EQUAL(FormatAltitude(10000), "32808ft", ());
-  Settings::Set("Units", Settings::Metric);
+  settings::Set(settings::kMeasurementUnits, settings::Metric);
   TEST_EQUAL(FormatAltitude(5), "5m", ());
 }
 
 UNIT_TEST(FormatSpeed)
 {
-  Settings::Set("Units", Settings::Metric);
+  ScopedSettings guard(settings::Metric);
   TEST_EQUAL(FormatSpeed(10), "36km/h", ());
   TEST_EQUAL(FormatSpeed(1), "3.6km/h", ());
 }

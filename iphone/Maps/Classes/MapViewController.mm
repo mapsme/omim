@@ -598,11 +598,11 @@ NSString * const kReportSegue = @"Map2ReportSegue";
         [self.controlsManager routingReady];
       [self updateRoutingInfo];
       bool isDisclaimerApproved = false;
-      (void)Settings::Get("IsDisclaimerApproved", isDisclaimerApproved);
+      (void)settings::Get("IsDisclaimerApproved", isDisclaimerApproved);
       if (!isDisclaimerApproved)
       {
         [self presentRoutingDisclaimerAlert];
-        Settings::Set("IsDisclaimerApproved", true);
+        settings::Set("IsDisclaimerApproved", true);
       }
       break;
     }
@@ -711,9 +711,9 @@ NSString * const kReportSegue = @"Map2ReportSegue";
 - (void)refreshAd
 {
   bool adServerForbidden = false;
-  (void)Settings::Get(kAdServerForbiddenKey, adServerForbidden);
+  (void)settings::Get(kAdServerForbiddenKey, adServerForbidden);
   bool adForbidden = false;
-  (void)Settings::Get(kAdForbiddenSettingsKey, adForbidden);
+  (void)settings::Get(kAdForbiddenSettingsKey, adForbidden);
   if (isIOS7 || adServerForbidden || adForbidden)
   {
     self.appWallAd = nil;
