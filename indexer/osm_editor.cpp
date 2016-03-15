@@ -539,7 +539,6 @@ void Editor::UploadChanges(string const & key, string const & secret, TChangeset
     auto const stats = GetStats();
     tags["total_edits"] = strings::to_string(stats.m_edits.size());
     tags["uploaded_edits"] = strings::to_string(stats.m_uploadedCount);
-    tags["created_by"] = "MAPS.ME " OMIM_OS_NAME;
   }
   // TODO(AlexZ): features access should be synchronized.
   auto const upload = [this](string key, string secret, TChangesetTags tags, TFinishUploadCallback callBack)
@@ -757,6 +756,7 @@ FeatureID Editor::GenerateNewFeatureId(MwmSet::MwmId const & id)
 
 bool Editor::CreatePoint(uint32_t type, m2::PointD const & mercator, MwmSet::MwmId const & id, EditableMapObject & outFeature)
 {
+  outFeature = {};
   ASSERT(id.IsAlive(), ("Please check that feature is created in valid MWM file before calling this method."));
   outFeature.SetMercator(mercator);
   outFeature.SetID(GenerateNewFeatureId(id));
