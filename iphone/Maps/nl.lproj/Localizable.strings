@@ -1504,3 +1504,57 @@
 "whats_new_editor_caption" = "Bewerk de kaart direct vanuit MAPS.ME";
 
 "whats_new_editor_message" = "Jouw wijzigingen zullen miljoenen gebruikers helpen. Laten we samen de wereld verbeteren!";
+
+"please_note" = "Opgelet";
+
+"common_no_wifi_dialog" = "Geen WiFi-verbinding. Wil je doorgaan via mobiele data?";
+
+"downloader_delete_map_dialog" = "Alle wijzigingen aan de kaart zullen samen met de kaart worden verwijderd.";
+
+"downloader_update_maps" = "Kaarten updaten";
+
+"downloader_mwm_migration_dialog" = "Om een route te creëren, moet je alle kaarten updaten en dan de route opnieuw plannen.";
+
+"downloader_no_space_title" = "Niet genoeg ruimte";
+
+"downloader_no_space_message" = "Verwijder overbodige gegevens";
+
+"editor_general_auth_error_dialog" = "Algemene inlogfout.";
+
+"editor_login_error_dialog" = "Inlogfout.";
+
+"editor_login_failed_dialog" = "Inloggen mislukt";
+
+"editor_username_error_dialog" = "Gebruikersnaam is ongeldig";
+
+"editor_place_edited_dialog" = "Je hebt een object bewerkt!";
+
+"editor_login_with_osm" = "Log in met OpenStreetMap";
+
+"editor_profile_changes" = "Wijzigingen:";
+
+"editor_profile_unsent_changes" = "Niet verzonden";
+
+"editor_focus_map_on_location" = "Trek aan de kaart om de juiste locatie van het object te selecteren.";
+
+"editor_add_select_category" = "Selecteer categorie";
+
+"editor_add_select_category_popular_subtitle" = "Populair";
+
+"editor_add_select_category_all_subtitle" = "Alle categorieën";
+
+"editor_edit_place_title" = "Aan het aanpassen";
+
+"editor_add_place_title" = "Aan het toevoegen";
+
+"editor_edit_place_name_title" = "Naam";
+
+"editor_edit_place_name_hint" = "Naam van de plaats";
+
+"editor_edit_place_category_title" = "Categorie";
+
+"editor_edit_place_atm_title" = "Pinautomaat";
+
+"placepage_add_place_button" = "Voeg een plaats toe";
+
+"placepage_report_problem_button" = "Meld een probleem";

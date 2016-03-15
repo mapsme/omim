@@ -1504,3 +1504,57 @@
 "whats_new_editor_caption" = "Rediger kartet direkte fra MAPS.ME";
 
 "whats_new_editor_message" = "Endringene dine vil hjelpe millioner av brukere. La oss forbedre verden sammen!";
+
+"please_note" = "Vær oppmerksom på at";
+
+"common_no_wifi_dialog" = "Ingen trådløs forbindelse. Vil du fortsette med mobildata?";
+
+"downloader_delete_map_dialog" = "Alle endringer i kartet vil slettes sammen med kartet.";
+
+"downloader_update_maps" = "Oppdater kart";
+
+"downloader_mwm_migration_dialog" = "For å opprette en reiserute må du oppdatere alle kartene og deretter planlegge reiseruten på nytt.";
+
+"downloader_no_space_title" = "Ikke nok plass";
+
+"downloader_no_space_message" = "Fjern unødvendig data";
+
+"editor_general_auth_error_dialog" = "Generell innloggingsfeil.";
+
+"editor_login_error_dialog" = "Innloggingsfeil.";
+
+"editor_login_failed_dialog" = "Innloggingen mislyktes";
+
+"editor_username_error_dialog" = "Brukernavnet er ugyldig";
+
+"editor_place_edited_dialog" = "Du har redigert et objekt!";
+
+"editor_login_with_osm" = "Logg inn med OpenStreetMat";
+
+"editor_profile_changes" = "Endringer:";
+
+"editor_profile_unsent_changes" = "Ikke sendt";
+
+"editor_focus_map_on_location" = "Dra kartet for å velge riktig beliggenhet for objektet.";
+
+"editor_add_select_category" = "Velg kategori";
+
+"editor_add_select_category_popular_subtitle" = "Populære";
+
+"editor_add_select_category_all_subtitle" = "Alle kategorier";
+
+"editor_edit_place_title" = "Redigerer";
+
+"editor_add_place_title" = "Legger til";
+
+"editor_edit_place_name_title" = "Navn";
+
+"editor_edit_place_name_hint" = "Navn på stedet";
+
+"editor_edit_place_category_title" = "Kategori";
+
+"editor_edit_place_atm_title" = "Minibank";
+
+"placepage_add_place_button" = "Legg til et sted";
+
+"placepage_report_problem_button" = "Rapporter et problem";

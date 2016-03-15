@@ -1504,3 +1504,57 @@
 "whats_new_editor_caption" = "Editează harta direct de pe MAPS.ME";
 
 "whats_new_editor_message" = "Modificările tale vor ajuta milioane de utilizatori. Hai să facem lumea mai bună împreună!";
+
+"please_note" = "Actualizați hărțile";
+
+"common_no_wifi_dialog" = "Nu există conexiune WiFi. Doriți să continuați cu conexiunea de pe mobil?";
+
+"downloader_delete_map_dialog" = "Pentru a crea un traseu, trebuie să actualizați toate hărțile, iar apoi să planificați traseul încă o dată.";
+
+"downloader_update_maps" = "Actualizați hărțile";
+
+"downloader_mwm_migration_dialog" = "Pentru a crea un traseu, trebuie să actualizați toate hărțile, iar apoi să planificați traseul încă o dată.";
+
+"downloader_no_space_title" = "Spațiu insuficient";
+
+"downloader_no_space_message" = "Vă rugăm să ștergeți datele care nu sunt necesare";
+
+"editor_general_auth_error_dialog" = "Eroare generală de conectare.";
+
+"editor_login_error_dialog" = "Eroare de conectare.";
+
+"editor_login_failed_dialog" = "Conectare eșuată";
+
+"editor_username_error_dialog" = "Nume de utilizator nevalid";
+
+"editor_place_edited_dialog" = "Ați editat un obiect!";
+
+"editor_login_with_osm" = "Conectați-vă cu OpenStreetMap";
+
+"editor_profile_changes" = "Modificări:";
+
+"editor_profile_unsent_changes" = "Netrimis";
+
+"editor_focus_map_on_location" = "Trageți de hartă pentru a selecta locația corectă a obiectului.";
+
+"editor_add_select_category" = "Selectați categoria";
+
+"editor_add_select_category_popular_subtitle" = "Popular";
+
+"editor_add_select_category_all_subtitle" = "Toate categoriile";
+
+"editor_edit_place_title" = "Editare";
+
+"editor_add_place_title" = "Adăugare";
+
+"editor_edit_place_name_title" = "Nume";
+
+"editor_edit_place_name_hint" = "Denumirea locației";
+
+"editor_edit_place_category_title" = "Categorie";
+
+"editor_edit_place_atm_title" = "ATM";
+
+"placepage_add_place_button" = "Adăugați o locație";
+
+"placepage_report_problem_button" = "Raportați o problemă";

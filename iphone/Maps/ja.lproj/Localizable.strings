@@ -1504,3 +1504,57 @@
 "whats_new_editor_caption" = "MAPS.MEで直接地図を編集可能";
 
 "whats_new_editor_message" = "地図を修正すると、何百万人ものユーザーの役に立ちます。一緒に世界を改善していきましょう！";
+
+"please_note" = "ご注意ください";
+
+"common_no_wifi_dialog" = "WiFi接続がありません。モバイルデータ通信を続行しますか?";
+
+"downloader_delete_map_dialog" = "この地図を削除すると、今まで行った変更の全ても一緒に削除されます。";
+
+"downloader_update_maps" = "地図をアップデート";
+
+"downloader_mwm_migration_dialog" = "ルートを作成するには、全ての地図をアップデートした後で再びルート計画を行う必要があります。";
+
+"downloader_no_space_title" = "十分な空き容量がありません";
+
+"downloader_no_space_message" = "不必要なデータを削除してください";
+
+"editor_general_auth_error_dialog" = "一般的なログインエラー。";
+
+"editor_login_error_dialog" = "ログインエラー。";
+
+"editor_login_failed_dialog" = "ログインに失敗しました";
+
+"editor_username_error_dialog" = "ユーザー名が無効です";
+
+"editor_place_edited_dialog" = "オブジェクトを編集しました!";
+
+"editor_login_with_osm" = "OpenStreetMapを使ってログイン";
+
+"editor_profile_changes" = "変更回数:";
+
+"editor_profile_unsent_changes" = "未送信";
+
+"editor_focus_map_on_location" = "地図をプルしてオブジェクトの正しい場所を選択します。";
+
+"editor_add_select_category" = "カテゴリを選択";
+
+"editor_add_select_category_popular_subtitle" = "人気";
+
+"editor_add_select_category_all_subtitle" = "全てのカテゴリ";
+
+"editor_edit_place_title" = "編集中";
+
+"editor_add_place_title" = "追加中";
+
+"editor_edit_place_name_title" = "名前";
+
+"editor_edit_place_name_hint" = "場所の名前";
+
+"editor_edit_place_category_title" = "カテゴリ";
+
+"editor_edit_place_atm_title" = "ATM";
+
+"placepage_add_place_button" = "場所を追加";
+
+"placepage_report_problem_button" = "問題を報告";

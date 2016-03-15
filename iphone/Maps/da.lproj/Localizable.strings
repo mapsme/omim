@@ -1504,3 +1504,57 @@
 "whats_new_editor_caption" = "Redigér kortet direkte fra MAPS.ME";
 
 "whats_new_editor_message" = "Dine ændringer vil hjælpe millioner af brugere. Lad os forbedre verden sammen!";
+
+"please_note" = "Bemærk venligst";
+
+"common_no_wifi_dialog" = "Ingen WiFi-forbindelse. Vil du fortsætte med mobildata?";
+
+"downloader_delete_map_dialog" = "Alle kortændringer vil blive slettet sammen med kortet.";
+
+"downloader_update_maps" = "Opdatér kort";
+
+"downloader_mwm_migration_dialog" = "For at oprette en rute skal du opdatere alle kort og så planlægge ruten igen.";
+
+"downloader_no_space_title" = "Ikke nok plads";
+
+"downloader_no_space_message" = "Fjern unødvendig data";
+
+"editor_general_auth_error_dialog" = "Generel fejl ved login.";
+
+"editor_login_error_dialog" = "Login-fejl.";
+
+"editor_login_failed_dialog" = "Login mislykkedes";
+
+"editor_username_error_dialog" = "Ugyldigt brugernavn";
+
+"editor_place_edited_dialog" = "Du har redigeret et objekt!";
+
+"editor_login_with_osm" = "Login med OpenStreetMap";
+
+"editor_profile_changes" = "Ændringer:";
+
+"editor_profile_unsent_changes" = "Ikke sendt";
+
+"editor_focus_map_on_location" = "Træk kortet for at vælge objektets korrekte placering.";
+
+"editor_add_select_category" = "Vælg kategori";
+
+"editor_add_select_category_popular_subtitle" = "Populær";
+
+"editor_add_select_category_all_subtitle" = "Alle kategorier";
+
+"editor_edit_place_title" = "Redigerer";
+
+"editor_add_place_title" = "Tilføjer";
+
+"editor_edit_place_name_title" = "Navn";
+
+"editor_edit_place_name_hint" = "Stedets navn";
+
+"editor_edit_place_category_title" = "Kategori";
+
+"editor_edit_place_atm_title" = "Hæveautomat";
+
+"placepage_add_place_button" = "Tilføj et sted";
+
+"placepage_report_problem_button" = "Anmeld et problem";

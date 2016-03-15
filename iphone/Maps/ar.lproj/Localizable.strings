@@ -1504,3 +1504,57 @@
 "whats_new_editor_caption" = "حرر خريطتك على MAPS.ME";
 
 "whats_new_editor_message" = "تغييراتك سوف تساعد الملايين من المستخدمين. هيا نطور من العالم سويا!";
+
+"please_note" = "يرجى العلم أنه،";
+
+"common_no_wifi_dialog" = "لا يوجد اتصال واي فاي. هل ترغب في استخدام بيانات الهاتف للاتصال؟";
+
+"downloader_delete_map_dialog" = "سيتم حذف جميع التغييرات بالخريطة بالإضافة إلى حذف الخريطة نفسها.";
+
+"downloader_update_maps" = "تحديث الخرائط";
+
+"downloader_mwm_migration_dialog" = "لإنشاء مسار، فأنت تحتاج إلى تحديث كافة الخرائط ثم إعادة تخطيط المسار مرة أخرى.";
+
+"downloader_no_space_title" = "مساحة غير كافية";
+
+"downloader_no_space_message" = "من فضلك، قم بإزالة البيانات غير الضرورية";
+
+"editor_general_auth_error_dialog" = "خطأ بتسجيل الدخول العام.";
+
+"editor_login_error_dialog" = "خطأ في تسجيل الدخول.";
+
+"editor_login_failed_dialog" = "فشل تسجيل الدخول";
+
+"editor_username_error_dialog" = "اسم المستخدم غير صحيح";
+
+"editor_place_edited_dialog" = "لقد قمت بتعديل هدف!";
+
+"editor_login_with_osm" = "تسجيل الدخول عبر OpenStreetMap";
+
+"editor_profile_changes" = "التغيرات:";
+
+"editor_profile_unsent_changes" = "لم ترسل";
+
+"editor_focus_map_on_location" = "اسحب الخريطة لتحدد الموقع الصحيح للهدف.";
+
+"editor_add_select_category" = "اختر الفئة";
+
+"editor_add_select_category_popular_subtitle" = "شائع";
+
+"editor_add_select_category_all_subtitle" = "جميع الفئات";
+
+"editor_edit_place_title" = "تعديل";
+
+"editor_add_place_title" = "إٍضافة";
+
+"editor_edit_place_name_title" = "اسم";
+
+"editor_edit_place_name_hint" = "اسم المكان";
+
+"editor_edit_place_category_title" = "الفئة";
+
+"editor_edit_place_atm_title" = "ماكينة صراف آلي";
+
+"placepage_add_place_button" = "إضافة مكان";
+
+"placepage_report_problem_button" = "الإبلاغ عن مشكلة";

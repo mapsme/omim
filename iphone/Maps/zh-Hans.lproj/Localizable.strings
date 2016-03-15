@@ -1504,3 +1504,57 @@
 "whats_new_editor_caption" = "直接从MAPS.ME编辑地图";
 
 "whats_new_editor_message" = "您的修改将帮助上百万用户。让我们一起让世界变好！";
+
+"please_note" = "请注意";
+
+"common_no_wifi_dialog" = "无WiFi连接。您想继续使用移动数据进行连接吗？";
+
+"downloader_delete_map_dialog" = "所有对地图的修改都将与地图一起被删除。";
+
+"downloader_update_maps" = "更新地图";
+
+"downloader_mwm_migration_dialog" = "为了创建路线，您需要更新全部地图并重新规划路线。";
+
+"downloader_no_space_title" = "无足够的空间";
+
+"downloader_no_space_message" = "请删除不必要的数据";
+
+"editor_general_auth_error_dialog" = "一般登录错误。";
+
+"editor_login_error_dialog" = "登录错误。";
+
+"editor_login_failed_dialog" = "登录失败";
+
+"editor_username_error_dialog" = "用户名不存在";
+
+"editor_place_edited_dialog" = "您已编辑了一个对象！";
+
+"editor_login_with_osm" = "使用OpenStreetMap进行登录";
+
+"editor_profile_changes" = "更改数目：";
+
+"editor_profile_unsent_changes" = "未发送";
+
+"editor_focus_map_on_location" = "拖动地图以选择此对象的正确位置。";
+
+"editor_add_select_category" = "选择类别";
+
+"editor_add_select_category_popular_subtitle" = "受欢迎的";
+
+"editor_add_select_category_all_subtitle" = "所有类别";
+
+"editor_edit_place_title" = "编辑中";
+
+"editor_add_place_title" = "添加中";
+
+"editor_edit_place_name_title" = "名称";
+
+"editor_edit_place_name_hint" = "该地点的名称";
+
+"editor_edit_place_category_title" = "类别";
+
+"editor_edit_place_atm_title" = "自动取款机";
+
+"placepage_add_place_button" = "添加一个地点";
+
+"placepage_report_problem_button" = "报告一个问题";

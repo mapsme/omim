@@ -1504,3 +1504,57 @@
 "whats_new_editor_caption" = "Muokkaa karttoja suoraan MAPS.ME -sovelluksessa";
 
 "whats_new_editor_message" = "Muokkauksesi auttavat miljoonia käyttäjiä — parannetaan maailmaa yhdessä!";
+
+"please_note" = "Huomaathan, että";
+
+"common_no_wifi_dialog" = "Ei Wi-Fi -yhteyttä. Haluatko jatkaa mobiilidatan avulla?";
+
+"downloader_delete_map_dialog" = "Kaikki karttaan tehdyt muutokset poistetaan kartan mukana.";
+
+"downloader_update_maps" = "Päivitä kartat";
+
+"downloader_mwm_migration_dialog" = "Sinun täytyy päivittää kaikki kartat ja suunnitella reitti uudelleen luodaksesi uuden reitin.";
+
+"downloader_no_space_title" = "Ei tarpeeksi tilaa";
+
+"downloader_no_space_message" = "Poista tarpeeton data";
+
+"editor_general_auth_error_dialog" = "Yleinen kirjautumisvirhe.";
+
+"editor_login_error_dialog" = "Kirjautumisvirhe.";
+
+"editor_login_failed_dialog" = "Kirjautuminen epäonnistui";
+
+"editor_username_error_dialog" = "Käyttäjätunnus on virheellinen";
+
+"editor_place_edited_dialog" = "Olet muokannut kohdetta!";
+
+"editor_login_with_osm" = "Kirjaudu sisään OpenStreetMapissa";
+
+"editor_profile_changes" = "Muutokset:";
+
+"editor_profile_unsent_changes" = "Ei lähetetty";
+
+"editor_focus_map_on_location" = "Vedä karttaa valitaksesi kohteelle oikean sijainnin.";
+
+"editor_add_select_category" = "Valitse kategoria";
+
+"editor_add_select_category_popular_subtitle" = "Suositut";
+
+"editor_add_select_category_all_subtitle" = "Kaikki kategoriat";
+
+"editor_edit_place_title" = "Muokkaus";
+
+"editor_add_place_title" = "Lisääminen";
+
+"editor_edit_place_name_title" = "Nimi";
+
+"editor_edit_place_name_hint" = "Paikan nimi";
+
+"editor_edit_place_category_title" = "Kategoria";
+
+"editor_edit_place_atm_title" = "Pankkiautomaatti";
+
+"placepage_add_place_button" = "Lisää paikka";
+
+"placepage_report_problem_button" = "Ilmoita ongelmasta";

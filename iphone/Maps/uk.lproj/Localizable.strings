@@ -1504,3 +1504,57 @@
 "whats_new_editor_caption" = "Редагуйте карту відразу з MAPS.ME";
 
 "whats_new_editor_message" = "Ваші зміни допоможуть мільйонам користувачів. Вдосконалимо світ разом!";
+
+"please_note" = "Будь ласка, зверніть увагу";
+
+"common_no_wifi_dialog" = "Немає WiFi з’єднання. Ви бажаєте продовжити роботу через мобільний інтернет?";
+
+"downloader_delete_map_dialog" = "Разом з мапою будуть видалені й внесені Вами правки на цій мапі.";
+
+"downloader_update_maps" = "Оновити мапи";
+
+"downloader_mwm_migration_dialog" = "Для побудови маршруту необхідно оновити усі мапи та побудувати маршрут заново.";
+
+"downloader_no_space_title" = "Недостатньо місця";
+
+"downloader_no_space_message" = "Видаліть непотрібні дані";
+
+"editor_general_auth_error_dialog" = "Загальна помилка входу.";
+
+"editor_login_error_dialog" = "Виникла помилка при авторизації.";
+
+"editor_login_failed_dialog" = "Помилка входу";
+
+"editor_username_error_dialog" = "Ім'я користувача є недійсним";
+
+"editor_place_edited_dialog" = "Ви відредагували об’єкт!";
+
+"editor_login_with_osm" = "Увійти через OpenStreetMap";
+
+"editor_profile_changes" = "Правки:";
+
+"editor_profile_unsent_changes" = "Не відправлено";
+
+"editor_focus_map_on_location" = "Потягніть мапу, щоб вибрати правильне місцезнаходження об’єкту.";
+
+"editor_add_select_category" = "Вибрати категорію";
+
+"editor_add_select_category_popular_subtitle" = "Популярні";
+
+"editor_add_select_category_all_subtitle" = "Усі Категорії";
+
+"editor_edit_place_title" = "Редагування";
+
+"editor_add_place_title" = "Додовання";
+
+"editor_edit_place_name_title" = "Назва";
+
+"editor_edit_place_name_hint" = "Назва місця";
+
+"editor_edit_place_category_title" = "Категорія";
+
+"editor_edit_place_atm_title" = "АТМ";
+
+"placepage_add_place_button" = "Додати місце";
+
+"placepage_report_problem_button" = "Повідомити про проблему";

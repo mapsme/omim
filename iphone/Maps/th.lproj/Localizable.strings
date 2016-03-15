@@ -1504,3 +1504,57 @@
 "whats_new_editor_caption" = "แก้ไขแผนที่โดยตรงจาก MAPS.ME";
 
 "whats_new_editor_message" = "การแก้ไขของคุณจะช่วยผู้ใช้หลายล้านคนได้ มาช่วยทำให้โลกน่าอยู่ขึ้น!";
+
+"please_note" = "โปรดทราบ";
+
+"common_no_wifi_dialog" = "ไม่มีการเชื่อมต่อ WiFi คุณต้องการดำเนินการต่อโดยใช้ข้อมูลมือถือหรือไม่?";
+
+"downloader_delete_map_dialog" = "การเปลี่ยนแปลงแผนที่ทั้งหมดจะถูกลบไปพร้อมกับแผนที่";
+
+"downloader_update_maps" = "อัปเดตแผนที่";
+
+"downloader_mwm_migration_dialog" = "ในการสร้างเส้นทาง คุณต้องอัปเดตแผนที่ทั้งหมดแล้ววางแผนเส้นทางอีกครั้ง";
+
+"downloader_no_space_title" = "มีพื้นที่ไม่เพียงพอ";
+
+"downloader_no_space_message" = "กรุณาลบข้อมูลที่ไม่จำเป็น";
+
+"editor_general_auth_error_dialog" = "ข้อผิดพลาดในการล็อกอินทั่วไป";
+
+"editor_login_error_dialog" = "ข้อผิดพลาดในการล็อกอิน";
+
+"editor_login_failed_dialog" = "การล็อกอินล้มเหลว";
+
+"editor_username_error_dialog" = "ชื่อผู้ใช้ไม่ถูกต้อง";
+
+"editor_place_edited_dialog" = "คุณได้แก้ไขวัตถุ!";
+
+"editor_login_with_osm" = "ล็อกอินด้วย OpenStreetMap";
+
+"editor_profile_changes" = "การเปลี่ยนแปลง:";
+
+"editor_profile_unsent_changes" = "ไม่ได้ส่ง";
+
+"editor_focus_map_on_location" = "ดึงแผนที่เพื่อเลือกตำแหน่งวัตถุที่ถูกต้อง";
+
+"editor_add_select_category" = "เลือกหมวดหมู่";
+
+"editor_add_select_category_popular_subtitle" = "ยอดนิยม";
+
+"editor_add_select_category_all_subtitle" = "หมวดหมูทั้งหมด";
+
+"editor_edit_place_title" = "กำลังแก้ไข";
+
+"editor_add_place_title" = "กำลังเพิ่ม";
+
+"editor_edit_place_name_title" = "ชื่อ";
+
+"editor_edit_place_name_hint" = "ชื่อสถานที่";
+
+"editor_edit_place_category_title" = "หมวดหมู่";
+
+"editor_edit_place_atm_title" = "ATM";
+
+"placepage_add_place_button" = "เพิ่มสถานที่";
+
+"placepage_report_problem_button" = "แจ้งปัญหา";

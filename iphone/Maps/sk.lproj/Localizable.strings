@@ -1504,3 +1504,57 @@
 "whats_new_editor_caption" = "Upravte mapu priamo cez MAPS.ME";
 
 "whats_new_editor_message" = "Vaše zmeny pomôžu miliónom používateľov. Spoločne zlepšíme svet!";
+
+"please_note" = "Upozorňujeme vás, že";
+
+"common_no_wifi_dialog" = "Pripojenie k WiFi nie je k dispozícii. Chcete pokračovať s využitím mobilných dát?";
+
+"downloader_delete_map_dialog" = "Všetky zmeny týkajúce sa mapy budú vymazané spolu s mapou.";
+
+"downloader_update_maps" = "Aktualizovať mapy";
+
+"downloader_mwm_migration_dialog" = "Ak chcete vytvoriť cestu, musíte najskôr aktualizovať všetky mapy a potom odznova naplánovať trasu.";
+
+"downloader_no_space_title" = "Nemáte dostatok miesta";
+
+"downloader_no_space_message" = "Prosím, odstráňte prebytočné dáta";
+
+"editor_general_auth_error_dialog" = "Pri prihlasovaní sa vyskytla všeobecná chyba.";
+
+"editor_login_error_dialog" = "Pri prihlasovaní sa vyskytla chyba.";
+
+"editor_login_failed_dialog" = "Prihlasovanie bolo neúspešné";
+
+"editor_username_error_dialog" = "Používateľské meno je neplatné";
+
+"editor_place_edited_dialog" = "Práve ste upravili objekt!";
+
+"editor_login_with_osm" = "Prihlásiť sa prostredníctvom OpenStreetMap";
+
+"editor_profile_changes" = "Zmeny:";
+
+"editor_profile_unsent_changes" = "Neodoslané";
+
+"editor_focus_map_on_location" = "Ak chcete nastaviť správnu polohu objektu, posuňte mapu.";
+
+"editor_add_select_category" = "Vybrať kategóriu";
+
+"editor_add_select_category_popular_subtitle" = "Obľúbené";
+
+"editor_add_select_category_all_subtitle" = "Všetky kategórie";
+
+"editor_edit_place_title" = "Úprava";
+
+"editor_add_place_title" = "Nové";
+
+"editor_edit_place_name_title" = "Názov";
+
+"editor_edit_place_name_hint" = "Názov miesta";
+
+"editor_edit_place_category_title" = "Kategória";
+
+"editor_edit_place_atm_title" = "Bankomat";
+
+"placepage_add_place_button" = "Pridať miesto";
+
+"placepage_report_problem_button" = "Nahlásiť problém";
