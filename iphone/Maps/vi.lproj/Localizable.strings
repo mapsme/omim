@@ -21,9 +21,6 @@
 /* Button which deletes downloaded country */
 "delete" = "Xóa";
 
-/* Button in iOS Downloader, displayed only when upgrading from v1 to v2 */
-"delete_old_maps" = "Xóa bản đồ cũ và tiếp tục";
-
 /* Button to dismiss dialog forever */
 "do_not_ask_me_again" = "Không hỏi tôi một lần nữa";
 
@@ -79,9 +76,6 @@
 /* View and button titles for accessibility */
 "my_position" = "Vị trí của Tôi";
 
-/* Settings/Downloader - No internet connection dialog title */
-"no_internet_connection_detected" = "Không có kết nối Internet";
-
 /* Settings/Downloader - 3G download warning dialog title */
 "no_wifi_ask_cellular_download" = "Không có kết nối WiFi. Bạn có muốn sử dụng dữ liệu di động (GPRS, EDGE, 3G hoặc LTE) để tải xuống %@ không?";
 
@@ -110,9 +104,6 @@
 
 /* Search box placeholder text */
 "search_map" = "Tìm kiếm Bản đồ";
-
-/* Settings/Downloader - No free space dialog title */
-"not_enough_disk_space" = "Không có đủ dung lượng trống trên ổ đĩa";
 
 /* Settings/Downloader - info for not downloaded country */
 "touch_to_download" = "Chạm để tải xuống";
@@ -694,20 +685,20 @@
 "routing_update_maps" = "Phiên bản MAPS.ME mới cho phép tạo các tuyến đường từ vị trí hiện tại của bạn đến điểm đến. Vui lòng cập nhật bản đồ để sử dụng tính năng này.";
 
 /* Update all button text */
-"downloader_update_all" = "Cập nhật tất cả";
+"downloader_update_all_button" = "Update all";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "Hủy tất cả";
 
 /* Downloaded maps category */
-"downloader_downloaded" = "Đã tải xuống";
+"downloader_downloaded_subtitle" = "Downloaded";
 
 /* Country queued for download */
 "downloader_queued" = "đã xếp hàng chờ";
 
-"downloader_near_me" = "Near me";
+"downloader_near_me_subtitle" = "Near me";
 
-"downloader_maps_to_update" = "Maps: %1$d (%2$s)";
+"downloader_status_maps" = "Maps: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "Tạo các tuyến đường trong ứng dụng MAPS.ME, xin lưu ý điều sau:\n\n – Các tuyến đường được gợi ý chỉ có thể được xem là đề xuất.\n – Điều kiện con đường, luật giao thông và biển báo có mức ưu tiên cao hơn lời khuyên dẫn hướng.\n – Bản đồ có thể không chính xác hoặc lỗi thời, tuyến đường có thể không được tạo theo cách tốt nhất có thể.\n\n Hãy lái xe an toàn trên đường và bảo trọng!";
@@ -767,9 +758,6 @@
 
 /* Item in context menu. */
 "downloader_map_and_routing" = "Bản đồ + Định tuyến";
-
-/* Dialog confirmation when trying to delete map and there are unsaved changes present on it. */
-"downloader_delete_editor_changes" = "Unsaved changes for this map will be removed too. Continue anyway?";
 
 /* Item in context menu. */
 "downloader_delete_map" = "Xóa Bản đồ";
@@ -1342,10 +1330,6 @@
 
 "whats_new_next_button" = "Tiếp theo";
 
-"whats_new_night_caption" = "Điều hướng chế độ ban đêm";
-
-"whats_new_night_body" = "Để tạo điều kiện sử dụng MAPS.ME khi lái xe trong đêm tối, chúng tôi đã thêm chế độ ban đêm. Nó tự động mở sau khi mặt trời lặn.";
-
 "editor_time_add" = "Thêm lịch biểu";
 
 "editor_time_delete" = "Xóa lịch biểu";
@@ -1374,11 +1358,6 @@
 "editor_correct_mistake_message" = "Bạn đã mắc lỗi chỉnh sửa. Vui lòng sửa lỗi hoặc chuyển qua chế độ đơn giản.";
 
 "migrate_title" = "Quan trọng!";
-
-/* Used in 2 places: What's new and Delete All maps dialog. */
-"migrate_and_split_mwms_message" = "Chúng tôi đã chia bản đồ thành nhiều phần. Bây giờ bạn có thể tải về các vùng riêng biệt, không phải là toàn bộ quốc gia. Trước khi bạn bắt đầu tải những bản đồ mới, hãy loại bỏ những cái cũ.";
-
-"youve_been_asking" = "Bạn đã yêu cầu điều đó và chúng tôi đã thực hiện nó";
 
 /* Android uses image instead of text. */
 "download_all" = "Tải về tất cả";
@@ -1501,6 +1480,94 @@
 
 "phone" = "Điện thoại";
 
-"whats_new_editor_caption" = "Chỉnh sửa bản đồ trực tiếp từ MAPS.ME";
+"please_note" = "Please note";
 
-"whats_new_editor_message" = "Thay đổi của bạn sẽ giúp cho hàng triệu người dùng. Hãy cùng nhau cải thiện thế giới!";
+"common_no_wifi_dialog" = "No WiFi connection. Do you want to continue with mobile data?";
+
+"downloader_delete_map_dialog" = "All map changes will be deleted together with the map.";
+
+"downloader_update_maps" = "Update Maps";
+
+"downloader_mwm_migration_dialog" = "To create a route, you need to update all maps and then plan the route again.";
+
+"downloader_search_field_hint" = "Find the map";
+
+"migration_update_all_button" = "Update all maps";
+
+"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+
+"migration_prefetch_status" = "Preparing maps update…";
+
+"migration_download_error_dialog" = "Download error";
+
+"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
+
+"downloader_no_space_title" = "Not enough space";
+
+"downloader_no_space_message" = "Please, remove unnecessary data";
+
+"editor_general_auth_error_dialog" = "General login error.";
+
+"editor_login_error_dialog" = "Login error.";
+
+"editor_login_failed_dialog" = "Login failed";
+
+"editor_username_error_dialog" = "Username is invalid";
+
+"editor_place_edited_dialog" = "You’ve edited an object!";
+
+"editor_login_with_osm" = "Login with OpenStreetMap";
+
+"editor_profile_changes" = "Changes:";
+
+"editor_profile_unsent_changes" = "Not sent";
+
+"editor_focus_map_on_location" = "Pull the map to select the correct location of the object.";
+
+"editor_add_select_category" = "Select category";
+
+"editor_add_select_category_popular_subtitle" = "Popular";
+
+"editor_add_select_category_all_subtitle" = "All categories";
+
+"editor_edit_place_title" = "Editing";
+
+"editor_add_place_title" = "Adding";
+
+"editor_edit_place_name_title" = "Name";
+
+"editor_edit_place_name_hint" = "Name of the place";
+
+"editor_edit_place_category_title" = "Category";
+
+"editor_edit_place_atm_title" = "ATM";
+
+"placepage_add_place_button" = "Add a place";
+
+"placepage_report_problem_button" = "Report a problem";
+
+"whatsnew_smallmwm_header" = "Bạn đã yêu cầu điều đó và chúng tôi đã thực hiện nó";
+
+"whatsnew_smallmwm_message" = "Chúng tôi đã chia bản đồ thành nhiều phần. Bây giờ bạn có thể tải về các vùng riêng biệt, không phải là toàn bộ quốc gia.";
+
+"whatsnew_search_header" = "New search!";
+
+"whatsnew_search_message" = "Chúng tôi đã cải thiện đáng kể việc tìm kiếm theo địa chỉ. Bạn hãy tự xem thử.";
+
+"whatsnew_editor_title" = "Edit the map*";
+
+"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+
+"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+
+"onboarding_offline_navigation_title" = "You will never get lost again";
+
+"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+
+"onboarding_offline_navigation_title_2" = "Offline navigation";
+
+"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+
+"onboarding_offline_maps_title" = "MAPS.ME - offline maps";
+
+"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";
