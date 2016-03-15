@@ -418,10 +418,16 @@
 	<string name="routing_map_outdated">Yeni bir rota oluşturmak için lütfen haritayı güncelleyin.</string>
 	<!-- Update maps suggestion -->
 	<string name="routing_update_maps">MAPS.ME\&#39;nin yeni sürümü mevcut pozisyonunuzdan varış noktasına rotalar oluşturmanıza imkan verir. Lütfen bu özelliği kullanmak için haritaları güncelleyin.</string>
+	<!-- Update all button text -->
+	<string name="downloader_update_all_button">Hepsini güncelle</string>
 	<!-- Cancel all button text -->
 	<string name="downloader_cancel_all">Tümünü İptal Et</string>
+	<!-- Downloaded maps category -->
+	<string name="downloader_downloaded_subtitle">İndirildi</string>
 	<!-- Country queued for download -->
 	<string name="downloader_queued">sıraya alındı</string>
+	<string name="downloader_near_me_subtitle">Yakınlarımda</string>
+	<string name="downloader_status_maps">Haritalar: %s</string>
 	<!-- Disclaimer message -->
 	<string name="routing_disclaimer">MAPS.ME uygulamasında rota yaratırken lütfen aşağıdakileri dikkate alın:\n\n  - Önerilen rotalar sadece tavsiyeler olarak düşünülmelidir.\n - Yol koşulları, trafik kuralları ve işaretleri navigasyon tavsiyelerden daha önceliklidir.\n - Harita doğru olmayabilir ya da eskimiş olabilir ve rotalar en iyi mümkün yola göre oluşturulmamış olabilir.\n\n  Yollarda güvende olun ve kendinize dikkat edin!</string>
 	<!-- Outdated maps category -->
@@ -898,6 +904,12 @@
 	<string name="downloader_delete_map_dialog">Harita ile birlikte tüm harita değişiklikleri de silinecektir.</string>
 	<string name="downloader_update_maps">Haritaları güncelle</string>
 	<string name="downloader_mwm_migration_dialog">Bir rota oluşturmak için tüm haritaları güncellemeli ve ardından rotayı tekrar planlamalısınız.</string>
+	<string name="downloader_search_field_hint">Harita bul</string>
+	<string name="migration_update_all_button">Haritaları güncelle</string>
+	<string name="migration_delete_all_download_current_button">Mevcut haritayı indir ve tüm eski haritaları sil</string>
+	<string name="migration_prefetch_status">Harita güncellemesi hazırlanıyor...</string>
+	<string name="migration_download_error_dialog">İndirme hatası</string>
+	<string name="common_check_internet_connection_dialog">Lütfen ayarlarınızı kontrol edin ve cihazınızın internete bağlı olduğundan emin olun.</string>
 	<string name="downloader_no_space_title">Yeterli alan yok</string>
 	<string name="downloader_no_space_message">Lütfen gereksiz verileri silin</string>
 	<string name="editor_general_auth_error_dialog">Genel giriş hatası.</string>
@@ -923,4 +935,13 @@
 	<string name="whatsnew_smallmwm_header">Siz istediniz biz yaptık</string>
 	<string name="whatsnew_smallmwm_message">Haritaları parçalara ayırdık. Artık tüm ülke yerine belirli bölgeleri indirebilirsiniz.</string>
 	<string name="whatsnew_search_message">Adres ile aramayı önemli ölçüde geliştirdik. Kendiniz görün.</string>
+	<string name="whatsnew_editor_title">Haritayı düzenleyin*</string>
+	<string name="whatsnew_editor_message_1">Doğrudan uygulamadan haritaya yeni yerler ekle ve mevcut yerleri düzenleyin.</string>
+	<string name="whatsnew_editor_message_2">*MAPS.ME, OpenStreetMap topluluğu verilerini kullanmaktadır.</string>
+	<string name="onboarding_offline_navigation_title">Bir daha asla kaybolmayacaksınız</string>
+	<string name="onboarding_offline_navigation_message">En iyi araba ve yaya rotalarını planlayın, hatta internet bağlantısı olmadığında bile!</string>
+	<string name="onboarding_offline_navigation_title_2">Farklı bir problem</string>
+	<string name="onboarding_offline_navigation_message_2">En iyi araba ve yaya rotalarını planlayın.</string>
+	<string name="onboarding_offline_maps_title">MAPS.ME - çevrimdışı haritalar</string>
+	<string name="onboarding_offline_maps_message">İlk önce istenilen alanın haritasını indirin ve internet bağlantısı olmadan navigasyonu ve arama fonksiyonlarını kullanın.</string>
 </resources>

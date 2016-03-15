@@ -410,10 +410,16 @@
 	<string name="routing_map_outdated">Vă rugăm să actualizați harta pentru a crea o rută.</string>
 	<!-- Update maps suggestion -->
 	<string name="routing_update_maps">Noua versiune a MAPS.ME vă permite să creați rute din poziția dvs. actuală către un punct de destinație. Vă rugăm să actualizați harta pentru a utiliza această funcție.</string>
+	<!-- Update all button text -->
+	<string name="downloader_update_all_button">Actualizați toate</string>
 	<!-- Cancel all button text -->
 	<string name="downloader_cancel_all">Anulare toate</string>
+	<!-- Downloaded maps category -->
+	<string name="downloader_downloaded_subtitle">Descărcat</string>
 	<!-- Country queued for download -->
 	<string name="downloader_queued">în lista de așteptare</string>
+	<string name="downloader_near_me_subtitle">Aproape de mine</string>
+	<string name="downloader_status_maps">Hărți: %s</string>
 	<!-- Disclaimer message -->
 	<string name="routing_disclaimer">Atunci când creați rute în aplicația MAPS.ME, vă rugăm să nu uitați următoarele:\n\n- Rutele sugerate pot fi luate în considerare numai ca recomandări.\n- Harta poate fi incorectă sau neactualizată, iar rutele pot să nu fie create în cel mai bun mod posibil.\n- Condițiile de trafic, regulile și semnele de circulație au prioritate mai mare decât sugestiile de navigare.\n\nCirculați cu atenție și aveți grijă de dvs.!</string>
 	<!-- Outdated maps category -->
@@ -889,6 +895,12 @@
 	<string name="downloader_delete_map_dialog">Pentru a crea un traseu, trebuie să actualizați toate hărțile, iar apoi să planificați traseul încă o dată.</string>
 	<string name="downloader_update_maps">Actualizați hărțile</string>
 	<string name="downloader_mwm_migration_dialog">Pentru a crea un traseu, trebuie să actualizați toate hărțile, iar apoi să planificați traseul încă o dată.</string>
+	<string name="downloader_search_field_hint">Găsiți harta</string>
+	<string name="migration_update_all_button">Actualizați toate hărțile</string>
+	<string name="migration_delete_all_download_current_button">Descărcați harta actuală și ștergeți toate hărțile vechi</string>
+	<string name="migration_prefetch_status">Pregătește actualizarea hărților…</string>
+	<string name="migration_download_error_dialog">Eroare de descărcare</string>
+	<string name="common_check_internet_connection_dialog">Vă rugăm să vă verificați setările și să vă asigurați că dispozitivul dvs. este conectat la Internet.</string>
 	<string name="downloader_no_space_title">Spațiu insuficient</string>
 	<string name="downloader_no_space_message">Vă rugăm să ștergeți datele care nu sunt necesare</string>
 	<string name="editor_general_auth_error_dialog">Eroare generală de conectare.</string>
@@ -914,4 +926,13 @@
 	<string name="whatsnew_smallmwm_header">Ne-ați cerut, iar noi am făcut</string>
 	<string name="whatsnew_smallmwm_message">Am împărțit hărțile în mai multe secțiuni. Acum, puteți descărca și regiuni separate, nu doar țara întreagă.</string>
 	<string name="whatsnew_search_message">Am îmbunătățit semnificativ căutarea după adresă. Convinge-te singur.</string>
+	<string name="whatsnew_editor_title">Editați harta*</string>
+	<string name="whatsnew_editor_message_1">Adăugați locuri noi pe hartă și modificați-le pe cele existente direct din aplicație.</string>
+	<string name="whatsnew_editor_message_2">*MAPS.ME folosește datele comunității OpenStreetMap community.</string>
+	<string name="onboarding_offline_navigation_title">Niciodată nu vă veți rătăci din nou</string>
+	<string name="onboarding_offline_navigation_message">Planificați traseele optime cu mașina și cele pietonale, chiar dacă nu există conexiune la Internet!</string>
+	<string name="onboarding_offline_navigation_title_2">Navigare offline</string>
+	<string name="onboarding_offline_navigation_message_2">Planificați traseele optime cu mașina și cele pietonale.</string>
+	<string name="onboarding_offline_maps_title">MAPS.ME – hărți offline</string>
+	<string name="onboarding_offline_maps_message">Descărcați o dată hărțile pentru zona dorită, pentru a naviga și folosi funcțiile de căutare fără conexiune la Internet.</string>
 </resources>

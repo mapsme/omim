@@ -411,10 +411,16 @@
 	<string name="routing_map_outdated">ルートを作成するためにマップを更新してください。</string>
 	<!-- Update maps suggestion -->
 	<string name="routing_update_maps">新バージョンのMAPS.MEは現在地から目的地までのルートを作成可能です。 この機能を使うためにマップを更新してください。</string>
+	<!-- Update all button text -->
+	<string name="downloader_update_all_button">全てをアップデート</string>
 	<!-- Cancel all button text -->
 	<string name="downloader_cancel_all">すべてキャンセル</string>
+	<!-- Downloaded maps category -->
+	<string name="downloader_downloaded_subtitle">ダウンロード済み</string>
 	<!-- Country queued for download -->
 	<string name="downloader_queued">待ち行列型の</string>
+	<string name="downloader_near_me_subtitle">付近</string>
+	<string name="downloader_status_maps">地図: %s</string>
 	<!-- Disclaimer message -->
 	<string name="routing_disclaimer">MAPS.MEアプリでルートを作成する時は、以下のことに留意してください：\n\n  - 提案されたルートは推奨するだけです。\n - 道路状況、交通規則と標識はナビゲーションのアドバイスより優先度が高くなっています。\n - マップが不正確または古くなっている場合や、ルートが最適な方法で作成されていないことがあります。\n\n  安全運転でご自愛ください！</string>
 	<!-- Outdated maps category -->
@@ -891,6 +897,12 @@
 	<string name="downloader_delete_map_dialog">この地図を削除すると、今まで行った変更の全ても一緒に削除されます。</string>
 	<string name="downloader_update_maps">地図をアップデート</string>
 	<string name="downloader_mwm_migration_dialog">ルートを作成するには、全ての地図をアップデートした後で再びルート計画を行う必要があります。</string>
+	<string name="downloader_search_field_hint">地図を検索</string>
+	<string name="migration_update_all_button">全ての地図をアップデート</string>
+	<string name="migration_delete_all_download_current_button">現在の地図をダウンロードして古い地図を削除</string>
+	<string name="migration_prefetch_status">地図のアップデートの準備中…</string>
+	<string name="migration_download_error_dialog">ダウンロードエラー</string>
+	<string name="common_check_internet_connection_dialog">設定をチェックし、デバイスがインターネットに接続されているか確認してください。</string>
 	<string name="downloader_no_space_title">十分な空き容量がありません</string>
 	<string name="downloader_no_space_message">不必要なデータを削除してください</string>
 	<string name="editor_general_auth_error_dialog">一般的なログインエラー。</string>
@@ -916,4 +928,13 @@
 	<string name="whatsnew_smallmwm_header">皆様のご要望にお応えして、実現を果たしました</string>
 	<string name="whatsnew_smallmwm_message">マップを分割し、国全体でなく個別の地域をダウンロードできるようにしました。</string>
 	<string name="whatsnew_search_message">住所での検索機能を大幅に改善しました。ご自身の目でご覧ください。</string>
+	<string name="whatsnew_editor_title">地図を編集*</string>
+	<string name="whatsnew_editor_message_1">アプリから直接地図に新しい場所を追加したり、既存の場所を編集できます。</string>
+	<string name="whatsnew_editor_message_2">*MAPS.MEはOpenStreetMapコミュニティのデータを使用しています。</string>
+	<string name="onboarding_offline_navigation_title">もう道に迷うことは絶対ありません</string>
+	<string name="onboarding_offline_navigation_message">インターネット接続がなくても、車や徒歩での最短ルートを計画できます!</string>
+	<string name="onboarding_offline_navigation_title_2">オフラインナビゲーション</string>
+	<string name="onboarding_offline_navigation_message_2">車や徒歩での最短ルートを計画できます。</string>
+	<string name="onboarding_offline_maps_title">MAPS.ME - オフライン地図</string>
+	<string name="onboarding_offline_maps_message">希望するエリアの地図を一回ダウンロードするだけで、インターネット接続なしでもナビゲーションや検索の機能を使用できます。</string>
 </resources>

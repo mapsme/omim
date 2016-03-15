@@ -685,20 +685,20 @@
 "routing_update_maps" = "Den nye version af MAPS.ME gør det muligt at oprette ruter fra din nuværende position til et destinationspunkt. Venligst opdatér kortene for at bruge denne funktion.";
 
 /* Update all button text */
-"downloader_update_all_button" = "Update all";
+"downloader_update_all_button" = "Opdatér alle";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "Aflys Alt";
 
 /* Downloaded maps category */
-"downloader_downloaded_subtitle" = "Downloaded";
+"downloader_downloaded_subtitle" = "Downloadet";
 
 /* Country queued for download */
 "downloader_queued" = "i kø";
 
-"downloader_near_me_subtitle" = "Near me";
+"downloader_near_me_subtitle" = "I nærheden";
 
-"downloader_status_maps" = "Maps: %s";
+"downloader_status_maps" = "Kort: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "Creating routes in MAPS.ME app, please keep in mind the following:\n\n  - Suggested routes can be considered as recommendations only.\n - Road conditions, traffic rules and signs have higher priority than navigation advice.\n - The map may be incorrect or outdated, and routes may not be created the best possible way.\n\n  Be safe on roads and take care of yourself!";
@@ -1490,17 +1490,17 @@
 
 "downloader_mwm_migration_dialog" = "For at oprette en rute skal du opdatere alle kort og så planlægge ruten igen.";
 
-"downloader_search_field_hint" = "Find the map";
+"downloader_search_field_hint" = "Find kortet";
 
-"migration_update_all_button" = "Update all maps";
+"migration_update_all_button" = "Opdatér alle kort";
 
-"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+"migration_delete_all_download_current_button" = "Download aktuelt kort og slet de gamle";
 
-"migration_prefetch_status" = "Preparing maps update…";
+"migration_prefetch_status" = "Forbereder kortopdatering...";
 
-"migration_download_error_dialog" = "Download error";
+"migration_download_error_dialog" = "Fejl ved download";
 
-"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
+"common_check_internet_connection_dialog" = "Tjek dine indstillinger og sørg for, din enhed er forbundet til internettet.";
 
 "downloader_no_space_title" = "Ikke nok plads";
 
@@ -1554,20 +1554,20 @@
 
 "whatsnew_search_message" = "Vi har forbedret søgningen efter adresse betydeligt. Se selv.";
 
-"whatsnew_editor_title" = "Edit the map*";
+"whatsnew_editor_title" = "Redigér kortet*";
 
-"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+"whatsnew_editor_message_1" = "Tilføj nye steder til kortet og redigér eksisterende direkte fra app'en.";
 
-"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+"whatsnew_editor_message_2" = "*MAPS.ME bruger fællesskabsdata fra OpenStreetMap.";
 
-"onboarding_offline_navigation_title" = "You will never get lost again";
+"onboarding_offline_navigation_title" = "Du vil aldrig fare vild igen";
 
-"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+"onboarding_offline_navigation_message" = "Planlæg de optimale ruter i bil og til fods selv uden internetforbindelse!";
 
-"onboarding_offline_navigation_title_2" = "Offline navigation";
+"onboarding_offline_navigation_title_2" = "Offline navigering";
 
-"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+"onboarding_offline_navigation_message_2" = "Planlæg de optimale ruter i bil og til fods.";
 
-"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+"onboarding_offline_maps_title" = "MAPS.ME - offline kort";
 
-"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";
+"onboarding_offline_maps_message" = "Download kortene til det ønskede område en gang, og brug navigerings- og søgefunktionerne uden internetforbindelse.";

@@ -685,20 +685,20 @@
 "routing_update_maps" = "В новой версии MAPS.ME вы сможете строить маршруты от текущего местоположения до точки назначения. Чтобы воспользоваться этой функцией, обновите, пожалуйста, карты.";
 
 /* Update all button text */
-"downloader_update_all_button" = "Update all";
+"downloader_update_all_button" = "Обновить все";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "Отменить все";
 
 /* Downloaded maps category */
-"downloader_downloaded_subtitle" = "Downloaded";
+"downloader_downloaded_subtitle" = "Загруженные";
 
 /* Country queued for download */
 "downloader_queued" = "в очереди";
 
-"downloader_near_me_subtitle" = "Рядом со мной";
+"downloader_near_me_subtitle" = "Возле меня";
 
-"downloader_status_maps" = "Maps: %s";
+"downloader_status_maps" = "Карт: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "Используя маршруты в приложении MAPS.ME, пожалуйста, учитывайте следующее:\n\n  - Предлагаемые маршруты могут рассматриваться только в качестве рекомендации.\n - Дорожная обстановка, правила дорожного движения, знаки являются более приоритетными по сравнению с советами навигационной программы.\n - Карта может быть неточной или неактуальной, а предложенный маршрут не самым оптимальным.\n\n  Будьте внимательны на дорогах и берегите себя!";
@@ -1490,17 +1490,17 @@
 
 "downloader_mwm_migration_dialog" = "Для построения маршрутов необходимо обновить все карты и построить маршрут заново.";
 
-"downloader_search_field_hint" = "Find the map";
+"downloader_search_field_hint" = "Найти карту";
 
-"migration_update_all_button" = "Update all maps";
+"migration_update_all_button" = "Обновить все карты";
 
-"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+"migration_delete_all_download_current_button" = "Скачать текущую и удалить все старые карты";
 
-"migration_prefetch_status" = "Preparing maps update…";
+"migration_prefetch_status" = "Подготовка обновления карт…";
 
-"migration_download_error_dialog" = "Download error";
+"migration_download_error_dialog" = "Ошибка загрузки";
 
-"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
+"common_check_internet_connection_dialog" = "Проверьте настройки и убедитесь, что устройство подключено к интернету.";
 
 "downloader_no_space_title" = "Недостаточно места";
 
@@ -1554,20 +1554,20 @@
 
 "whatsnew_search_message" = "Качественно улучшили поиск по адресам. Проверяйте.";
 
-"whatsnew_editor_title" = "Edit the map*";
+"whatsnew_editor_title" = "Редактируйте карту*";
 
-"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+"whatsnew_editor_message_1" = "Добавляйте новые объекты и редактируйте информацию о старых прямо из приложения.";
 
-"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+"whatsnew_editor_message_2" = "*MAPS.ME использует данные открытых карт сообщества OpenStreetMap.";
 
-"onboarding_offline_navigation_title" = "You will never get lost again";
+"onboarding_offline_navigation_title" = "Вы никогда больше не заблудитесь";
 
-"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+"onboarding_offline_navigation_message" = "Прокладывайте самые оптимальные автомобильные и пешеходные маршруты даже там, где нет связи!";
 
-"onboarding_offline_navigation_title_2" = "Offline navigation";
+"onboarding_offline_navigation_title_2" = "Оффлайн навигация";
 
-"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+"onboarding_offline_navigation_message_2" = "Прокладывайте оптимальные автомобильные и пешеходные маршруты.";
 
-"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+"onboarding_offline_maps_title" = "MAPS.ME — оффлайн карты";
 
-"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";
+"onboarding_offline_maps_message" = "Загрузите карты необходимого региона один раз и пользуйтесь навигацией и поиском без подключения к интернету.";

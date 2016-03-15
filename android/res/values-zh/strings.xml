@@ -420,10 +420,16 @@
 	<string name="routing_map_outdated">请更新地图以创建一条路线。</string>
 	<!-- Update maps suggestion -->
 	<string name="routing_update_maps">使用新版本的MAPS.ME可以创建从您的当前位置至一个目的地的路线。请更新地图以使用该功能。</string>
+	<!-- Update all button text -->
+	<string name="downloader_update_all_button">更新全部</string>
 	<!-- Cancel all button text -->
 	<string name="downloader_cancel_all">全部取消</string>
+	<!-- Downloaded maps category -->
+	<string name="downloader_downloaded_subtitle">已下载</string>
 	<!-- Country queued for download -->
 	<string name="downloader_queued">已排队</string>
+	<string name="downloader_near_me_subtitle">在我附近</string>
+	<string name="downloader_status_maps">地图： %s</string>
 	<!-- Disclaimer message -->
 	<string name="routing_disclaimer">在MAPS.ME应用中制定路线时请谨记以下 几点：\n\n  - 建议路线仅可当作推荐路线。\n - 路况、交通规则以及标志应优先于导航建议。\n - 地图可能会不正确或者过时，路线也可能不是以最佳可能方式制定的。\n\n  行车安全，请照顾好您自己！</string>
 	<!-- Outdated maps category -->
@@ -898,6 +904,12 @@
 	<string name="downloader_delete_map_dialog">所有对地图的修改都将与地图一起被删除。</string>
 	<string name="downloader_update_maps">更新地图</string>
 	<string name="downloader_mwm_migration_dialog">为了创建路线，您需要更新全部地图并重新规划路线。</string>
+	<string name="downloader_search_field_hint">找到地图</string>
+	<string name="migration_update_all_button">更新全部地图</string>
+	<string name="migration_delete_all_download_current_button">下载当前地图并删除旧地图</string>
+	<string name="migration_prefetch_status">正在准备地图更新…</string>
+	<string name="migration_download_error_dialog">下载错误</string>
+	<string name="common_check_internet_connection_dialog">请检查您的设置并确保您的设备已连接至网络。</string>
 	<string name="downloader_no_space_title">无足够的空间</string>
 	<string name="downloader_no_space_message">请删除不必要的数据</string>
 	<string name="editor_general_auth_error_dialog">一般登录错误。</string>
@@ -923,4 +935,13 @@
 	<string name="whatsnew_smallmwm_header">我们满足了您一直以来的要求</string>
 	<string name="whatsnew_smallmwm_message">我们将地图分成了几部分。现在，您可以下载独立的区域，而不是整个国家。</string>
 	<string name="whatsnew_search_message">我们已明显改进了按地址的搜索。亲自看看。</string>
+	<string name="whatsnew_editor_title">编辑此地图*</string>
+	<string name="whatsnew_editor_message_1">添加新地点到该地图，并直接通过此应用编辑已存在的地点。</string>
+	<string name="whatsnew_editor_message_2">*MAPS.ME使用OpenStreetMap社区的数据。</string>
+	<string name="onboarding_offline_navigation_title">您将不再迷路</string>
+	<string name="onboarding_offline_navigation_message">规划最佳的驾车和步行路线，即使在没有网络连接的情况下！</string>
+	<string name="onboarding_offline_navigation_title_2">离线导航</string>
+	<string name="onboarding_offline_navigation_message_2">规划最佳的驾车和步行路线。</string>
+	<string name="onboarding_offline_maps_title">MAPS.ME - 离线地图</string>
+	<string name="onboarding_offline_maps_message">下载一次所需区域的地图，您便可以在无网络连接的情况下使用导航和搜索功能。</string>
 </resources>

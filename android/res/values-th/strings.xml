@@ -416,10 +416,16 @@
 	<string name="routing_map_outdated">โปรดอัปเดตแผนที่เพื่อสร้างเส้นทาง</string>
 	<!-- Update maps suggestion -->
 	<string name="routing_update_maps">เวอร์ชันใหม่ของ MAPS.ME อนุญาติให้สร้างเส้นทางจากตำแหน่งปัจจุบันของคุณไปยังจุดปลายทาง โปรดอัปเดตแผนเพื่อใช้ฟีเจอร์นี้</string>
+	<!-- Update all button text -->
+	<string name="downloader_update_all_button">อัปเดตทั้งหมด</string>
 	<!-- Cancel all button text -->
 	<string name="downloader_cancel_all">ยกเลิกทั้งหมด</string>
+	<!-- Downloaded maps category -->
+	<string name="downloader_downloaded_subtitle">ดาวน์โหลดแล้ว</string>
 	<!-- Country queued for download -->
 	<string name="downloader_queued">ต่อแถว</string>
+	<string name="downloader_near_me_subtitle">ใกล้ฉัน</string>
+	<string name="downloader_status_maps">แผนที่: %s</string>
 	<!-- Disclaimer message -->
 	<string name="routing_disclaimer">การสร้างเส้นทางในแอป MAPS.ME มีสิ่งที่ควรทราบดังต่อไปนี้:\n\n  - พึงพิจารณาเส้นทางที่แนะนำไว้ในฐานะที่เป็นการแนะนำเท่านั้น\n - สภาพถนน กฎจราจรและป้ายมีความสำคัญมากกว่าคำแนะนำในการนำทาง\n - แผนที่อาจไม่ถูกต้องหรือล้าสมัย และอาจไม่ได้มีการสร้างเส้นทางในรูปแบบพอจะเป็นไปได้ที่ดีที่สุด\n\n  ขอให้ปลอดภัยบนท้องถนนและดูแลตัวคุณเองด้วย!</string>
 	<!-- Outdated maps category -->
@@ -896,6 +902,12 @@
 	<string name="downloader_delete_map_dialog">การเปลี่ยนแปลงแผนที่ทั้งหมดจะถูกลบไปพร้อมกับแผนที่</string>
 	<string name="downloader_update_maps">อัปเดตแผนที่</string>
 	<string name="downloader_mwm_migration_dialog">ในการสร้างเส้นทาง คุณต้องอัปเดตแผนที่ทั้งหมดแล้ววางแผนเส้นทางอีกครั้ง</string>
+	<string name="downloader_search_field_hint">ค้นหาแผนที่</string>
+	<string name="migration_update_all_button">อัปเดตแผนที่ทั้งหมด</string>
+	<string name="migration_delete_all_download_current_button">ดาวน์โหลดแผนที่ปัจจุบันและลบแผนที่เก่า</string>
+	<string name="migration_prefetch_status">กำลังเตรียมการอัปเดตแผนที่...</string>
+	<string name="migration_download_error_dialog">ข้อผิดพลาดในการดาวน์โหลด</string>
+	<string name="common_check_internet_connection_dialog">กรุณาตรวจสอบการตั้งค่าของคุณแล้วทำให้แน่ใจว่าอุปกรณ์ของคุณได้รับการเชื่อมต่ออินเทอร์เน็ต</string>
 	<string name="downloader_no_space_title">มีพื้นที่ไม่เพียงพอ</string>
 	<string name="downloader_no_space_message">กรุณาลบข้อมูลที่ไม่จำเป็น</string>
 	<string name="editor_general_auth_error_dialog">ข้อผิดพลาดในการล็อกอินทั่วไป</string>
@@ -921,4 +933,13 @@
 	<string name="whatsnew_smallmwm_header">คุณได้ขอมา เราจึงทำมัน</string>
 	<string name="whatsnew_smallmwm_message">เราได้แบ่งแผนที่ออกเป็นส่วน ๆ ตอนนี้คุณสามารถดาวน์โหลดภูมิภาคแยกต่างหากได้แล้ว</string>
 	<string name="whatsnew_search_message">เราได้ปรับปรุงครั้งใหญ่สำหรับการค้นหาตามที่อยู่ ลองดูด้วยตัวเอง</string>
+	<string name="whatsnew_editor_title">แก้ไขแผนที่*</string>
+	<string name="whatsnew_editor_message_1">เพิ่มสถานที่ใหม่ ๆ ไปยังแผนที่ และแก้ไขสถานที่ที่มีอยู่เดิมจากแอปโดยตรง</string>
+	<string name="whatsnew_editor_message_2">*MAPS.ME ใช้ข้อมูลจากชุมชน OpenStreetMap</string>
+	<string name="onboarding_offline_navigation_title">คุณจะไม่หลงทางอีกต่อไป</string>
+	<string name="onboarding_offline_navigation_message">วางแผนเส้นทางรถยนต์และเส้นทางเดินที่เหมาะสมที่สุด แม้ว่าจะไม่มีการเชื่อมต่ออินเทอร์เน็ต!</string>
+	<string name="onboarding_offline_navigation_title_2">การนำทางออฟไลน์</string>
+	<string name="onboarding_offline_navigation_message_2">วางแผนเส้นทางรถยนต์และเส้นทางเดินที่เหมาะสมที่สุด</string>
+	<string name="onboarding_offline_maps_title">MAPS.ME - แผนที่ออฟไลน์</string>
+	<string name="onboarding_offline_maps_message">ดาวน์โหลดแผนที่สำหรับพื้นที่ที่ต้องการเพียงหนึ่งครั้ง แล้วใช้การฟังก์ชันการนำทางและการค้นหาโดยไม่ต้องเชื่อมต่ออินเทอร์เน็ต</string>
 </resources>

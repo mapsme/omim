@@ -416,10 +416,16 @@
 	<string name="routing_map_outdated">Uppdatera kartan för att skapa en rutt.</string>
 	<!-- Update maps suggestion -->
 	<string name="routing_update_maps">Den nya versionen av MAPS.ME låter dig skapa rutter från din nuvarande position till en destinationspunkt. Uppdatera kartan för att använda den här funktionen.</string>
+	<!-- Update all button text -->
+	<string name="downloader_update_all_button">Uppdatera alla</string>
 	<!-- Cancel all button text -->
 	<string name="downloader_cancel_all">Avbryt alla</string>
+	<!-- Downloaded maps category -->
+	<string name="downloader_downloaded_subtitle">Nedladdade</string>
 	<!-- Country queued for download -->
 	<string name="downloader_queued">Köade</string>
+	<string name="downloader_near_me_subtitle">Nära mig</string>
+	<string name="downloader_status_maps">Kartor: %s</string>
 	<!-- Disclaimer message -->
 	<string name="routing_disclaimer">När du skapar rutter i appen MAPS.ME, vänligen tänk på följande:\n\n  - Föreslagna rutter kan endast ses som rekommendationer.\n - Vägskick, trafikregler och skyltar har högre prioritet än navigeringsråd.\n - Kartan kan vara felaktig eller förlegad, och rutter skapas inte alltid på bästa tänkbara sätt.\n\n  Kör säkert på vägarna och ta hand om dig själv!</string>
 	<!-- Outdated maps category -->
@@ -896,6 +902,12 @@
 	<string name="downloader_delete_map_dialog">Alla kartändringar kommer att raderas tillsammans med kartan.</string>
 	<string name="downloader_update_maps">Uppdatera kartor</string>
 	<string name="downloader_mwm_migration_dialog">För att skapa en rutt måste du uppdatera alla kartor och sedan planera rutten igen.</string>
+	<string name="downloader_search_field_hint">Hitta kartan</string>
+	<string name="migration_update_all_button">Uppdatera alla kartor</string>
+	<string name="migration_delete_all_download_current_button">Ladda ned senaste kartan och radera de gamla</string>
+	<string name="migration_prefetch_status">Förbereder kartuppdatering…</string>
+	<string name="migration_download_error_dialog">Nedladdningsfel</string>
+	<string name="common_check_internet_connection_dialog">Kontrollera dina inställningar och se till att din enhet är ansluten till internet.</string>
 	<string name="downloader_no_space_title">Ej tillräckligt utrymme</string>
 	<string name="downloader_no_space_message">Ta bort onödig data</string>
 	<string name="editor_general_auth_error_dialog">Allmänt fel vid inloggning.</string>
@@ -921,4 +933,13 @@
 	<string name="whatsnew_smallmwm_header">Du har bett om det och vi har gjort det</string>
 	<string name="whatsnew_smallmwm_message">Vi har delat in kartor i delar. Nu kan du ladda ner separata regioner, inte hela landet.</string>
 	<string name="whatsnew_search_message">Vi har avsevärt förbättrat sökningen på adress. Se själv.</string>
+	<string name="whatsnew_editor_title">Redigera kartan*</string>
+	<string name="whatsnew_editor_message_1">Lägg till nya platser till kartan och redigera de befintliga direkt från appen.</string>
+	<string name="whatsnew_editor_message_2">*MAPS.ME använder data från OpenStreetMaps community.</string>
+	<string name="onboarding_offline_navigation_title">Du kommer aldrig att gå vilse igen</string>
+	<string name="onboarding_offline_navigation_message">Planera dina optimala bil- eller promenadrutter även när du saknar internetanslutning!</string>
+	<string name="onboarding_offline_navigation_title_2">Navigering offline</string>
+	<string name="onboarding_offline_navigation_message_2">Planera optimala bil- och promenadrutter.</string>
+	<string name="onboarding_offline_maps_title">MAPS.ME - kartor offline</string>
+	<string name="onboarding_offline_maps_message">Ladda ned kartorna för önskat område en gång och använd funktionerna för navigering och sökning utan en internetanslutning.</string>
 </resources>

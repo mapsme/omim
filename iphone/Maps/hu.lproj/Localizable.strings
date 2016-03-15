@@ -685,20 +685,20 @@
 "routing_update_maps" = "A MAPS.ME új verziójában már útvonalakt is létrehozhatsz tartózkodási helyedtől az úticélodig. Kérjük, ennek a funkciónak a használatához frissítsd a térképeket.";
 
 /* Update all button text */
-"downloader_update_all_button" = "Update all";
+"downloader_update_all_button" = "Mindegyik frissítése";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "Mindent visszavon";
 
 /* Downloaded maps category */
-"downloader_downloaded_subtitle" = "Downloaded";
+"downloader_downloaded_subtitle" = "Letöltve";
 
 /* Country queued for download */
 "downloader_queued" = "várólistás";
 
-"downloader_near_me_subtitle" = "Near me";
+"downloader_near_me_subtitle" = "A közelemben";
 
-"downloader_status_maps" = "Maps: %s";
+"downloader_status_maps" = "Térképek: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "Amikor útvonalakat készít a MAPS.ME appban, kérjük, vegye figyelembe a következőket:\n\n  - Az ajánlott útvonalak csak javaslatoknak tekintendők.\n - Az utak kondíciója, a forgalmi szabályok és jelzőtáblák magasabb prioritásúak, mint a navigációs javaslatok.\n - A térkép lehet, hogy hibás vagy idejétmúlt, az útvonalak pedig lehet, hogy nem a lehető legjobb módon készülnek el.\n\n  Legyen óvatos az utakon és vigyázzon magára!";
@@ -1490,17 +1490,17 @@
 
 "downloader_mwm_migration_dialog" = "Útvonal létrehozásához frissítsd az összes térképet, majd tervezd meg újra az útvonalat.";
 
-"downloader_search_field_hint" = "Find the map";
+"downloader_search_field_hint" = "Térkép keresése";
 
-"migration_update_all_button" = "Update all maps";
+"migration_update_all_button" = "Minden térkép frissítése";
 
-"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+"migration_delete_all_download_current_button" = "Töltsd le a jelenlegi térképet és töröld a régieket";
 
-"migration_prefetch_status" = "Preparing maps update…";
+"migration_prefetch_status" = "Térképfrissítések előkészítése…";
 
-"migration_download_error_dialog" = "Download error";
+"migration_download_error_dialog" = "Letöltési hiba";
 
-"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
+"common_check_internet_connection_dialog" = "Kérjük, ellenőrizd a beállításaid és győződj meg arról, hogy a készüléked kapcsolódik az internethez.";
 
 "downloader_no_space_title" = "Nincs elegendő tárhely";
 
@@ -1554,20 +1554,20 @@
 
 "whatsnew_search_message" = "Jelentősen javítottunk a címen alapuló keresésünkön. Nézd meg magadnak.";
 
-"whatsnew_editor_title" = "Edit the map*";
+"whatsnew_editor_title" = "Térkép szerkesztése*";
 
-"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+"whatsnew_editor_message_1" = "Adj hozzá új helyeket a térképhez, és szerkeszd a meglévőket közvetlenül az alkalmazásból.";
 
-"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+"whatsnew_editor_message_2" = "*A MAPS.ME az OpenStreetMap közösség adatait használja.";
 
-"onboarding_offline_navigation_title" = "You will never get lost again";
+"onboarding_offline_navigation_title" = "Többé nem fogsz eltévedni";
 
-"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+"onboarding_offline_navigation_message" = "Tervezd meg az optimális autós és gyalogos útvonalakat, akkor is, ha nincs internetkapcsolat!";
 
-"onboarding_offline_navigation_title_2" = "Offline navigation";
+"onboarding_offline_navigation_title_2" = "Offline navigáció";
 
-"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+"onboarding_offline_navigation_message_2" = "Tervezd meg az optimális autós és gyalogos útvonalakat.";
 
-"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+"onboarding_offline_maps_title" = "MAPS.ME - offline térképek";
 
-"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";
+"onboarding_offline_maps_message" = "Mindössze egyszer kell letöltened egy adott helyszín térképét, azt követően internetkapcsolat nélkül is használhatod a navigációs és keresési funkciókat.";

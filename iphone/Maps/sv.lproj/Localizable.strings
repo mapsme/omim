@@ -685,20 +685,20 @@
 "routing_update_maps" = "Den nya versionen av MAPS.ME låter dig skapa rutter från din nuvarande position till en destinationspunkt. Uppdatera kartan för att använda den här funktionen.";
 
 /* Update all button text */
-"downloader_update_all_button" = "Update all";
+"downloader_update_all_button" = "Uppdatera alla";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "Avbryt alla";
 
 /* Downloaded maps category */
-"downloader_downloaded_subtitle" = "Downloaded";
+"downloader_downloaded_subtitle" = "Nedladdade";
 
 /* Country queued for download */
 "downloader_queued" = "Köade";
 
-"downloader_near_me_subtitle" = "Near me";
+"downloader_near_me_subtitle" = "Nära mig";
 
-"downloader_status_maps" = "Maps: %s";
+"downloader_status_maps" = "Kartor: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "När du skapar rutter i appen MAPS.ME, vänligen tänk på följande:\n\n  - Föreslagna rutter kan endast ses som rekommendationer.\n - Vägskick, trafikregler och skyltar har högre prioritet än navigeringsråd.\n - Kartan kan vara felaktig eller förlegad, och rutter skapas inte alltid på bästa tänkbara sätt.\n\n  Kör säkert på vägarna och ta hand om dig själv!";
@@ -1490,17 +1490,17 @@
 
 "downloader_mwm_migration_dialog" = "För att skapa en rutt måste du uppdatera alla kartor och sedan planera rutten igen.";
 
-"downloader_search_field_hint" = "Find the map";
+"downloader_search_field_hint" = "Hitta kartan";
 
-"migration_update_all_button" = "Update all maps";
+"migration_update_all_button" = "Uppdatera alla kartor";
 
-"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+"migration_delete_all_download_current_button" = "Ladda ned senaste kartan och radera de gamla";
 
-"migration_prefetch_status" = "Preparing maps update…";
+"migration_prefetch_status" = "Förbereder kartuppdatering…";
 
-"migration_download_error_dialog" = "Download error";
+"migration_download_error_dialog" = "Nedladdningsfel";
 
-"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
+"common_check_internet_connection_dialog" = "Kontrollera dina inställningar och se till att din enhet är ansluten till internet.";
 
 "downloader_no_space_title" = "Ej tillräckligt utrymme";
 
@@ -1554,20 +1554,20 @@
 
 "whatsnew_search_message" = "Vi har avsevärt förbättrat sökningen på adress. Se själv.";
 
-"whatsnew_editor_title" = "Edit the map*";
+"whatsnew_editor_title" = "Redigera kartan*";
 
-"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+"whatsnew_editor_message_1" = "Lägg till nya platser till kartan och redigera de befintliga direkt från appen.";
 
-"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+"whatsnew_editor_message_2" = "*MAPS.ME använder data från OpenStreetMaps community.";
 
-"onboarding_offline_navigation_title" = "You will never get lost again";
+"onboarding_offline_navigation_title" = "Du kommer aldrig att gå vilse igen";
 
-"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+"onboarding_offline_navigation_message" = "Planera dina optimala bil- eller promenadrutter även när du saknar internetanslutning!";
 
-"onboarding_offline_navigation_title_2" = "Offline navigation";
+"onboarding_offline_navigation_title_2" = "Navigering offline";
 
-"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+"onboarding_offline_navigation_message_2" = "Planera optimala bil- och promenadrutter.";
 
-"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+"onboarding_offline_maps_title" = "MAPS.ME - kartor offline";
 
-"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";
+"onboarding_offline_maps_message" = "Ladda ned kartorna för önskat område en gång och använd funktionerna för navigering och sökning utan en internetanslutning.";

@@ -685,20 +685,20 @@
 "routing_update_maps" = "إصدار MAPS.ME الجديد يسمح بإنشاء مسارات انطلاقاً من موقعك الحالي نحو المكان الذي تتجه إليه. يرجى تحديث الخرائط لاستخدام هذه الميزة.";
 
 /* Update all button text */
-"downloader_update_all_button" = "Update all";
+"downloader_update_all_button" = "تحديث الكل";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "إلغاء الكل";
 
 /* Downloaded maps category */
-"downloader_downloaded_subtitle" = "Downloaded";
+"downloader_downloaded_subtitle" = "تم تنزيلها";
 
 /* Country queued for download */
 "downloader_queued" = "مَصْفوف";
 
-"downloader_near_me_subtitle" = "Near me";
+"downloader_near_me_subtitle" = "بالقرب مني";
 
-"downloader_status_maps" = "Maps: %s";
+"downloader_status_maps" = "الخرائط: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "عند إنشاء مسارات الطرق في تطبيق MAPS.ME، يرجى أخذ التالي في الحسبان:\n\n  - المسارات المقترحة تعتبر مجرد اقتراحات فقط.\n - حالة الطريق وقوانينه والإشارات الموجودة فيه لها الأولولية أثناء تقديم نصائح الملاحة.\n - قد تكون الخريطة خاطئة أو قديمة، لذا فإنه يمكن ألا تُرسم المسارات بالشكل الأمثل.\n\n  كن آمنا على الطريق وانتبه لتفسك!";
@@ -1490,17 +1490,17 @@
 
 "downloader_mwm_migration_dialog" = "لإنشاء مسار، فأنت تحتاج إلى تحديث كافة الخرائط ثم إعادة تخطيط المسار مرة أخرى.";
 
-"downloader_search_field_hint" = "Find the map";
+"downloader_search_field_hint" = "اعثر على الخريطة";
 
-"migration_update_all_button" = "Update all maps";
+"migration_update_all_button" = "تحديث جميع الخرائط";
 
-"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+"migration_delete_all_download_current_button" = "تنزيل الخريطة الحالية وحذف الخرائط القديمة";
 
-"migration_prefetch_status" = "Preparing maps update…";
+"migration_prefetch_status" = "جار الإعداد لتحديث الخرائط...";
 
-"migration_download_error_dialog" = "Download error";
+"migration_download_error_dialog" = "خطأ بالتنزيل";
 
-"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
+"common_check_internet_connection_dialog" = "يرجى التحقق من الإعدادات والتأكد من اتصال جهازك بالإنترنت.";
 
 "downloader_no_space_title" = "مساحة غير كافية";
 
@@ -1554,20 +1554,20 @@
 
 "whatsnew_search_message" = "لقد طورنا كليا البحث بالعنوان. فلترى بنفسك.";
 
-"whatsnew_editor_title" = "Edit the map*";
+"whatsnew_editor_title" = "تعديل الخريطة *";
 
-"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+"whatsnew_editor_message_1" = "قم بإضافة أماكن جديدة للخريطة، وعدل أماكن حالية مباشرة من التطبيق.";
 
-"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+"whatsnew_editor_message_2" = "*تستخدم MAPS.ME البيانات الخاصة بخريطة OpenStreetMap.";
 
-"onboarding_offline_navigation_title" = "You will never get lost again";
+"onboarding_offline_navigation_title" = "لن تضل الطريق أبدا بعد الآن";
 
-"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+"onboarding_offline_navigation_message" = "قم بتخطيط أفضل طرق السيارات والمشاة، حتى مع عدم وجود اتصال بالإنترنت!";
 
-"onboarding_offline_navigation_title_2" = "Offline navigation";
+"onboarding_offline_navigation_title_2" = "الملاحة في وضع غير متصل";
 
-"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+"onboarding_offline_navigation_message_2" = "خطط أفضل طرق السيارات والمشاة.";
 
-"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+"onboarding_offline_maps_title" = "MAPS.ME – خرائط غير متصلة بالإنترنت";
 
-"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";
+"onboarding_offline_maps_message" = "قم بتنزيل خرائط للمنطقة المطلوب مرة واحدة، واستخدم وظائف الملاحة والبحث دون الحاجة للاتصال بالإنترنت.";

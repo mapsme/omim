@@ -685,20 +685,20 @@
 "routing_update_maps" = "Med den nye versjonen av MAPS.ME kan du opprette ruter fra din nåværende posisjon til et ankomststed på kartet. Oppdater kartene for å bruke denne funksjonen.";
 
 /* Update all button text */
-"downloader_update_all_button" = "Update all";
+"downloader_update_all_button" = "Oppdater alle";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "Avbryt alle";
 
 /* Downloaded maps category */
-"downloader_downloaded_subtitle" = "Downloaded";
+"downloader_downloaded_subtitle" = "Lastet ned";
 
 /* Country queued for download */
 "downloader_queued" = "lagt i kø";
 
-"downloader_near_me_subtitle" = "Near me";
+"downloader_near_me_subtitle" = "I nærheten";
 
-"downloader_status_maps" = "Maps: %s";
+"downloader_status_maps" = "Kart: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "Når du oppretter ruter i MAPS.ME-appen må du huske på følgende:\n\n- Foreslåtte ruter må bare betraktes som anbefalinger.\n- Veiforhold, trafikkregler og skilt må gis høyere prioritet enn navigasjonsråd.\n- Kartet kan være feil eller utdatert, og det er ikke sikkert at rutene opprettes på best mulig måte.\n\nVær nøye med veisikkerheten og pass på deg selv!";
@@ -1490,17 +1490,17 @@
 
 "downloader_mwm_migration_dialog" = "For å opprette en reiserute må du oppdatere alle kartene og deretter planlegge reiseruten på nytt.";
 
-"downloader_search_field_hint" = "Find the map";
+"downloader_search_field_hint" = "Finn kartet";
 
-"migration_update_all_button" = "Update all maps";
+"migration_update_all_button" = "Oppdater alle kart";
 
-"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+"migration_delete_all_download_current_button" = "Last ned det oppdaterte kartet og slett de gamle";
 
-"migration_prefetch_status" = "Preparing maps update…";
+"migration_prefetch_status" = "Forbereder oppdatering av kart...";
 
-"migration_download_error_dialog" = "Download error";
+"migration_download_error_dialog" = "Nedlastningsfeil";
 
-"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
+"common_check_internet_connection_dialog" = "Kontroller innstillingene dine og sørg for at enheten din er koblet til internett.";
 
 "downloader_no_space_title" = "Ikke nok plass";
 
@@ -1554,20 +1554,20 @@
 
 "whatsnew_search_message" = "Nå er det mye enklere å søke etter adresse. Se selv.";
 
-"whatsnew_editor_title" = "Edit the map*";
+"whatsnew_editor_title" = "Rediger kartet*";
 
-"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+"whatsnew_editor_message_1" = "Legg til nye steder i kartet og rediger eksisterende steder direkte fra appen.";
 
-"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+"whatsnew_editor_message_2" = "*MAPS.ME bruker data fra OpenStreetMap-samfunnet.";
 
-"onboarding_offline_navigation_title" = "You will never get lost again";
+"onboarding_offline_navigation_title" = "Du vil aldri havne på villspor igjen";
 
-"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+"onboarding_offline_navigation_message" = "Planlegg optimale reiseruter med bil og til fots, selv uten internettforbindelse!";
 
-"onboarding_offline_navigation_title_2" = "Offline navigation";
+"onboarding_offline_navigation_title_2" = "Offline-navigering";
 
-"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+"onboarding_offline_navigation_message_2" = "Planlegg optimale reiseruter med bil og til fots.";
 
-"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+"onboarding_offline_maps_title" = "MAPS.ME - offline-kart";
 
-"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";
+"onboarding_offline_maps_message" = "Last ned kartene for et ønsket område én gang, og bruk navigeringen og andre søkefunksjoner uten internettforbindelse.";

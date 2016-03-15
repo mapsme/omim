@@ -413,10 +413,16 @@
 	<string name="routing_map_outdated">Kérjük, útvonal létrehozásához frissítsd a térképet.</string>
 	<!-- Update maps suggestion -->
 	<string name="routing_update_maps">A MAPS.ME új verziójában már útvonalakt is létrehozhatsz tartózkodási helyedtől az úticélodig. Kérjük, ennek a funkciónak a használatához frissítsd a térképeket.</string>
+	<!-- Update all button text -->
+	<string name="downloader_update_all_button">Mindegyik frissítése</string>
 	<!-- Cancel all button text -->
 	<string name="downloader_cancel_all">Mindent visszavon</string>
+	<!-- Downloaded maps category -->
+	<string name="downloader_downloaded_subtitle">Letöltve</string>
 	<!-- Country queued for download -->
 	<string name="downloader_queued">várólistás</string>
+	<string name="downloader_near_me_subtitle">A közelemben</string>
+	<string name="downloader_status_maps">Térképek: %s</string>
 	<!-- Disclaimer message -->
 	<string name="routing_disclaimer">Amikor útvonalakat készít a MAPS.ME appban, kérjük, vegye figyelembe a következőket:\n\n  - Az ajánlott útvonalak csak javaslatoknak tekintendők.\n - Az utak kondíciója, a forgalmi szabályok és jelzőtáblák magasabb prioritásúak, mint a navigációs javaslatok.\n - A térkép lehet, hogy hibás vagy idejétmúlt, az útvonalak pedig lehet, hogy nem a lehető legjobb módon készülnek el.\n\n  Legyen óvatos az utakon és vigyázzon magára!</string>
 	<!-- Outdated maps category -->
@@ -893,6 +899,12 @@
 	<string name="downloader_delete_map_dialog">A térképekkel együtt minden rajtuk végzett módosítás is törlésre kerül.</string>
 	<string name="downloader_update_maps">Térképek frissítése</string>
 	<string name="downloader_mwm_migration_dialog">Útvonal létrehozásához frissítsd az összes térképet, majd tervezd meg újra az útvonalat.</string>
+	<string name="downloader_search_field_hint">Térkép keresése</string>
+	<string name="migration_update_all_button">Minden térkép frissítése</string>
+	<string name="migration_delete_all_download_current_button">Töltsd le a jelenlegi térképet és töröld a régieket</string>
+	<string name="migration_prefetch_status">Térképfrissítések előkészítése…</string>
+	<string name="migration_download_error_dialog">Letöltési hiba</string>
+	<string name="common_check_internet_connection_dialog">Kérjük, ellenőrizd a beállításaid és győződj meg arról, hogy a készüléked kapcsolódik az internethez.</string>
 	<string name="downloader_no_space_title">Nincs elegendő tárhely</string>
 	<string name="downloader_no_space_message">Kérjük, töröld a szükségtelen adatokat</string>
 	<string name="editor_general_auth_error_dialog">Általános bejelentkezési hiba.</string>
@@ -918,4 +930,13 @@
 	<string name="whatsnew_smallmwm_header">Te kérted, mi elkészítettük</string>
 	<string name="whatsnew_smallmwm_message">Felosztottuk részekre a térképeket. Mostantól az egyes régiókat is letöltheted, nem csak az egész országot.</string>
 	<string name="whatsnew_search_message">Jelentősen javítottunk a címen alapuló keresésünkön. Nézd meg magadnak.</string>
+	<string name="whatsnew_editor_title">Térkép szerkesztése*</string>
+	<string name="whatsnew_editor_message_1">Adj hozzá új helyeket a térképhez, és szerkeszd a meglévőket közvetlenül az alkalmazásból.</string>
+	<string name="whatsnew_editor_message_2">*A MAPS.ME az OpenStreetMap közösség adatait használja.</string>
+	<string name="onboarding_offline_navigation_title">Többé nem fogsz eltévedni</string>
+	<string name="onboarding_offline_navigation_message">Tervezd meg az optimális autós és gyalogos útvonalakat, akkor is, ha nincs internetkapcsolat!</string>
+	<string name="onboarding_offline_navigation_title_2">Offline navigáció</string>
+	<string name="onboarding_offline_navigation_message_2">Tervezd meg az optimális autós és gyalogos útvonalakat.</string>
+	<string name="onboarding_offline_maps_title">MAPS.ME - offline térképek</string>
+	<string name="onboarding_offline_maps_message">Mindössze egyszer kell letöltened egy adott helyszín térképét, azt követően internetkapcsolat nélkül is használhatod a navigációs és keresési funkciókat.</string>
 </resources>

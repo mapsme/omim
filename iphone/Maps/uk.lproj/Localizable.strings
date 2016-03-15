@@ -685,20 +685,20 @@
 "routing_update_maps" = "В новій версії MAPS.ME ви зможете прокладати маршрут від поточного місця перебування до точки призначення. Щоб скористатися цією функцією, будь ласка, оновіть карти.";
 
 /* Update all button text */
-"downloader_update_all_button" = "Update all";
+"downloader_update_all_button" = "Оновити всі";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "Скасувати всі";
 
 /* Downloaded maps category */
-"downloader_downloaded_subtitle" = "Downloaded";
+"downloader_downloaded_subtitle" = "Завантажено";
 
 /* Country queued for download */
 "downloader_queued" = "в черзі";
 
-"downloader_near_me_subtitle" = "Near me";
+"downloader_near_me_subtitle" = "Поблизу";
 
-"downloader_status_maps" = "Maps: %s";
+"downloader_status_maps" = "Карти: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "Використовуючи маршрути в програмі MAPS.ME, будь ласка, враховуйте наступне:\n\n  - Пропоновані маршрути можуть розглядатися тільки в якості рекомендації.\n - Дорожні умови, правила дорожнього руху, знаки являються більш пріоритетними в порівнянні з порадами навігаційної програми.\n - Карта може бути неточною або неактуальною , а запропонований маршрут не найоптимальнішим.\n\n  Будьте уважні на дорозі та бережіть себе!";
@@ -1490,17 +1490,17 @@
 
 "downloader_mwm_migration_dialog" = "Для побудови маршруту необхідно оновити усі мапи та побудувати маршрут заново.";
 
-"downloader_search_field_hint" = "Find the map";
+"downloader_search_field_hint" = "Знайти карту";
 
-"migration_update_all_button" = "Update all maps";
+"migration_update_all_button" = "Оновити всі карти";
 
-"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+"migration_delete_all_download_current_button" = "Завантажте поточну карту і видаліть старі";
 
-"migration_prefetch_status" = "Preparing maps update…";
+"migration_prefetch_status" = "Підготовка до оновлення карт...";
 
-"migration_download_error_dialog" = "Download error";
+"migration_download_error_dialog" = "Помилка завантаження";
 
-"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
+"common_check_internet_connection_dialog" = "Будь ласка, перевірте свої налаштування і переконайтеся, що ваш пристрій підлючено до Інтернету.";
 
 "downloader_no_space_title" = "Недостатньо місця";
 
@@ -1554,20 +1554,20 @@
 
 "whatsnew_search_message" = "Якісно покращили пошук по адресам. Перевірте.";
 
-"whatsnew_editor_title" = "Edit the map*";
+"whatsnew_editor_title" = "Редагувати карту*";
 
-"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+"whatsnew_editor_message_1" = "Додати нові місця до карти і редагувати існуючі місця прямо з програми.";
 
-"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+"whatsnew_editor_message_2" = "*MAPS.ME використовує дані спільноти OpenStreetMap.";
 
-"onboarding_offline_navigation_title" = "You will never get lost again";
+"onboarding_offline_navigation_title" = "Ви ніколи не загубитеся знову";
 
-"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+"onboarding_offline_navigation_message" = "Плануйте оптимальні маршрути для поїздок і піших походів навіть без Інтернет з'єднання!";
 
-"onboarding_offline_navigation_title_2" = "Offline navigation";
+"onboarding_offline_navigation_title_2" = "Офлайн навігація";
 
-"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+"onboarding_offline_navigation_message_2" = "Плануйте оптимальні маршрути для поїздок і піших походів.";
 
-"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+"onboarding_offline_maps_title" = "MAPS.ME — офлайн мапи";
 
-"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";
+"onboarding_offline_maps_message" = "Завантажте мапи необхідного регіону один раз та користуйтесь навігацією та пошуком без підключення до інтернету.";

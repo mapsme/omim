@@ -685,20 +685,20 @@
 "routing_update_maps" = "Nová verzia aplikácie MAPS.ME umožňuje vytvárať trasy z vašej aktuálnej polohy do cieľového bodu. Pre použitie tejto funkcie si, prosím, aktualizujte mapy.";
 
 /* Update all button text */
-"downloader_update_all_button" = "Update all";
+"downloader_update_all_button" = "Aktualizovať všetko";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "Zrušiť všetko";
 
 /* Downloaded maps category */
-"downloader_downloaded_subtitle" = "Downloaded";
+"downloader_downloaded_subtitle" = "Stiahnuté";
 
 /* Country queued for download */
 "downloader_queued" = "V rade";
 
-"downloader_near_me_subtitle" = "Near me";
+"downloader_near_me_subtitle" = "Neďaleko mňa";
 
-"downloader_status_maps" = "Maps: %s";
+"downloader_status_maps" = "Mapy: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "Tvorenie trás v aplikácii MAPS.ME, prosím, majte na pamäti nasledovné:\n\n  - Navrhnuté trasy možno považovať iba za odporúčanie.\n - Stav vozovky, dopravné predpisy a značenie majú vyššiu prioritu, ako navigačné rady.\n - Mapa môže byť nesprávna alebo zastaraná a trasy nemusia byť vytvorené tým najlepším možným spôsobom.\n\n  Buďte na cestách v bezpečí a postarajte sa o seba!";
@@ -1490,17 +1490,17 @@
 
 "downloader_mwm_migration_dialog" = "Ak chcete vytvoriť cestu, musíte najskôr aktualizovať všetky mapy a potom odznova naplánovať trasu.";
 
-"downloader_search_field_hint" = "Find the map";
+"downloader_search_field_hint" = "Nájsť mapu";
 
-"migration_update_all_button" = "Update all maps";
+"migration_update_all_button" = "Aktualizovať všetky mapy";
 
-"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+"migration_delete_all_download_current_button" = "Stiahnite si aktuálnu mapu a odstráňte neaktuálne mapy";
 
-"migration_prefetch_status" = "Preparing maps update…";
+"migration_prefetch_status" = "Prebieha príprava aktualizácie máp...";
 
-"migration_download_error_dialog" = "Download error";
+"migration_download_error_dialog" = "Chyba pri sťahovaní";
 
-"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
+"common_check_internet_connection_dialog" = "Prosím, skontrolujte svoje nastavenia a uistite sa, že váš počítač je pripojený k internetu.";
 
 "downloader_no_space_title" = "Nemáte dostatok miesta";
 
@@ -1554,20 +1554,20 @@
 
 "whatsnew_search_message" = "Významne sme zlepšili vyhľadávanie pomocou adresy. Pozrite sa sami.";
 
-"whatsnew_editor_title" = "Edit the map*";
+"whatsnew_editor_title" = "Upraviť mapu*";
 
-"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+"whatsnew_editor_message_1" = "Na mapu môžete pridávať nové miesta a upravovať tie, ktoré sú už pridané.";
 
-"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+"whatsnew_editor_message_2" = "*MAPS.ME využíva dáta komunity OpenStreetMap.";
 
-"onboarding_offline_navigation_title" = "You will never get lost again";
+"onboarding_offline_navigation_title" = "Už sa nikdy nestratíte";
 
-"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+"onboarding_offline_navigation_message" = "Naplánujte si vhodné trasy na cestu autom alebo peši. Internetové pripojenie sa nevyžaduje!";
 
-"onboarding_offline_navigation_title_2" = "Offline navigation";
+"onboarding_offline_navigation_title_2" = "Offline navigácia";
 
-"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+"onboarding_offline_navigation_message_2" = "Naplánujte si vhodné trasy na cestu autom alebo peši.";
 
-"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+"onboarding_offline_maps_title" = "MAPS.ME - offline mapy";
 
-"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";
+"onboarding_offline_maps_message" = "Stiahnite si jednorázovo potrebné mapy - navigáciu a funkcie vyhľadávania môžete využívať aj bez internetového pripojenia.";

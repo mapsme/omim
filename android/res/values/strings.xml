@@ -974,6 +974,6 @@
 	<string name="onboarding_offline_navigation_message">Plan optimal car and pedestrian routes, even if there is no internet connection!</string>
 	<string name="onboarding_offline_navigation_title_2">Offline navigation</string>
 	<string name="onboarding_offline_navigation_message_2">Plan optimal car and pedestrian routes.</string>
-	<string name="onboarding_offline_maps_title">MAPS.ME — offline maps</string>
+	<string name="onboarding_offline_maps_title">MAPS.ME - offline maps</string>
 	<string name="onboarding_offline_maps_message">Download the maps for the desired area once, and use the navigation and search functions without an internet connection.</string>
 </resources>

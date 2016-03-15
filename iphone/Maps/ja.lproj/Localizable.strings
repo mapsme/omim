@@ -685,20 +685,20 @@
 "routing_update_maps" = "新バージョンのMAPS.MEは現在地から目的地までのルートを作成可能です。 この機能を使うためにマップを更新してください。";
 
 /* Update all button text */
-"downloader_update_all_button" = "Update all";
+"downloader_update_all_button" = "全てをアップデート";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "すべてキャンセル";
 
 /* Downloaded maps category */
-"downloader_downloaded_subtitle" = "Downloaded";
+"downloader_downloaded_subtitle" = "ダウンロード済み";
 
 /* Country queued for download */
 "downloader_queued" = "待ち行列型の";
 
-"downloader_near_me_subtitle" = "Near me";
+"downloader_near_me_subtitle" = "付近";
 
-"downloader_status_maps" = "Maps: %s";
+"downloader_status_maps" = "地図: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "MAPS.MEアプリでルートを作成する時は、以下のことに留意してください：\n\n  - 提案されたルートは推奨するだけです。\n - 道路状況、交通規則と標識はナビゲーションのアドバイスより優先度が高くなっています。\n - マップが不正確または古くなっている場合や、ルートが最適な方法で作成されていないことがあります。\n\n  安全運転でご自愛ください！";
@@ -1490,17 +1490,17 @@
 
 "downloader_mwm_migration_dialog" = "ルートを作成するには、全ての地図をアップデートした後で再びルート計画を行う必要があります。";
 
-"downloader_search_field_hint" = "Find the map";
+"downloader_search_field_hint" = "地図を検索";
 
-"migration_update_all_button" = "Update all maps";
+"migration_update_all_button" = "全ての地図をアップデート";
 
-"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+"migration_delete_all_download_current_button" = "現在の地図をダウンロードして古い地図を削除";
 
-"migration_prefetch_status" = "Preparing maps update…";
+"migration_prefetch_status" = "地図のアップデートの準備中…";
 
-"migration_download_error_dialog" = "Download error";
+"migration_download_error_dialog" = "ダウンロードエラー";
 
-"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
+"common_check_internet_connection_dialog" = "設定をチェックし、デバイスがインターネットに接続されているか確認してください。";
 
 "downloader_no_space_title" = "十分な空き容量がありません";
 
@@ -1554,20 +1554,20 @@
 
 "whatsnew_search_message" = "住所での検索機能を大幅に改善しました。ご自身の目でご覧ください。";
 
-"whatsnew_editor_title" = "Edit the map*";
+"whatsnew_editor_title" = "地図を編集*";
 
-"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+"whatsnew_editor_message_1" = "アプリから直接地図に新しい場所を追加したり、既存の場所を編集できます。";
 
-"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+"whatsnew_editor_message_2" = "*MAPS.MEはOpenStreetMapコミュニティのデータを使用しています。";
 
-"onboarding_offline_navigation_title" = "You will never get lost again";
+"onboarding_offline_navigation_title" = "もう道に迷うことは絶対ありません";
 
-"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+"onboarding_offline_navigation_message" = "インターネット接続がなくても、車や徒歩での最短ルートを計画できます!";
 
-"onboarding_offline_navigation_title_2" = "Offline navigation";
+"onboarding_offline_navigation_title_2" = "オフラインナビゲーション";
 
-"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+"onboarding_offline_navigation_message_2" = "車や徒歩での最短ルートを計画できます。";
 
-"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+"onboarding_offline_maps_title" = "MAPS.ME - オフライン地図";
 
-"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";
+"onboarding_offline_maps_message" = "希望するエリアの地図を一回ダウンロードするだけで、インターネット接続なしでもナビゲーションや検索の機能を使用できます。";

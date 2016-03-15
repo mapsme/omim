@@ -412,10 +412,16 @@
 	<string name="routing_map_outdated">Päivitä kartta luodaksesi reitin</string>
 	<!-- Update maps suggestion -->
 	<string name="routing_update_maps">Uusi MAPS.ME -versio mahdollistaa reittien luonnin nykyisestä sijainnista määränpäähäsi.Päivitä kartat käyttääksesi tätä ominaisuutta.</string>
+	<!-- Update all button text -->
+	<string name="downloader_update_all_button">Päivitä kaikki</string>
 	<!-- Cancel all button text -->
 	<string name="downloader_cancel_all">Peruuta kaikki</string>
+	<!-- Downloaded maps category -->
+	<string name="downloader_downloaded_subtitle">Ladatut</string>
 	<!-- Country queued for download -->
 	<string name="downloader_queued">jonossa</string>
+	<string name="downloader_near_me_subtitle">Minun lähelläni</string>
+	<string name="downloader_status_maps">Kartat: %s</string>
 	<!-- Disclaimer message -->
 	<string name="routing_disclaimer">Pidä mielessä seuraavat seikat luodessasi reittejä MAPS.ME -sovelluksella:\n\n- Ehdotettuja reittejä tulee pitää vain suosituksina.\n- Teiden kunto, liikennesäännöt ja -merkit on aina otettava huomioon navigointiehdotuksista huolimatta.\n - Kartassa saattaa olla virheitä, tai se saattaa olla vanhentunut, eikä reittejä sen takia voida luoda parhaalla mahdollisella tavalla.\n\nPysy valppaana liikenteessä ja pidä huolta itsestäsi!</string>
 	<!-- Outdated maps category -->
@@ -892,6 +898,12 @@
 	<string name="downloader_delete_map_dialog">Kaikki karttaan tehdyt muutokset poistetaan kartan mukana.</string>
 	<string name="downloader_update_maps">Päivitä kartat</string>
 	<string name="downloader_mwm_migration_dialog">Sinun täytyy päivittää kaikki kartat ja suunnitella reitti uudelleen luodaksesi uuden reitin.</string>
+	<string name="downloader_search_field_hint">Etsi kartta</string>
+	<string name="migration_update_all_button">Päivitä kaikki kartat</string>
+	<string name="migration_delete_all_download_current_button">Lataa nykyinen kartta ja poista kaikki vanhat kartat</string>
+	<string name="migration_prefetch_status">Karttojen päivitystä ladataan...</string>
+	<string name="migration_download_error_dialog">Latausvirhe</string>
+	<string name="common_check_internet_connection_dialog">Tarkista asetuksesi ja varmista, että laitteesi on yhteydessä Internetiin.</string>
 	<string name="downloader_no_space_title">Ei tarpeeksi tilaa</string>
 	<string name="downloader_no_space_message">Poista tarpeeton data</string>
 	<string name="editor_general_auth_error_dialog">Yleinen kirjautumisvirhe.</string>
@@ -917,4 +929,13 @@
 	<string name="whatsnew_smallmwm_header">Sitä on pyydetty, ja nyt se on tarjolla</string>
 	<string name="whatsnew_smallmwm_message">Olemme jakaneet kartat osiin, joten voitkin nyt ladata pelkkiä alueita lataamatta koko maan karttaa.</string>
 	<string name="whatsnew_search_message">Olemme selkeästi parantaneet osoitehakua - kokeile vaikka itse.</string>
+	<string name="whatsnew_editor_title">Muokkaa karttaa*</string>
+	<string name="whatsnew_editor_message_1">Lisää karttaan uusia paikkoja ja muokkaa sovelluksessa olevia karttoja suoraan sovelluksessa.</string>
+	<string name="whatsnew_editor_message_2">*MAPS.ME käyttää OpenStreetMap -yhteisön dataa.</string>
+	<string name="onboarding_offline_navigation_title">Et eksy enää koskaan</string>
+	<string name="onboarding_offline_navigation_message">Suunnittele ihanteellinen autoilu- tai kävelyreitti jopa ilman Internet-yhteyttä!</string>
+	<string name="onboarding_offline_navigation_title_2">Offline-navigointi</string>
+	<string name="onboarding_offline_navigation_message_2">Suunnittele ihanteelliset autoilu- ja kävelyreitit.</string>
+	<string name="onboarding_offline_maps_title">MAPS.ME - offline-kartat</string>
+	<string name="onboarding_offline_maps_message">Lataa haluamasi alueen kartat yhden kerran ja voit käyttää navigointi- ja hakutoimintoja ilman Internet-yhteyttä.</string>
 </resources>

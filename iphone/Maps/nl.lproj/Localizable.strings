@@ -685,20 +685,20 @@
 "routing_update_maps" = "Met de nieuwe versie van MAPS.ME kunt u routes maken vanaf uw huidige positie naar een punt van bestemming. Werk kaarten bij om deze functie te gebruiken.";
 
 /* Update all button text */
-"downloader_update_all_button" = "Update all";
+"downloader_update_all_button" = "Update alles";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "Alles annuleren";
 
 /* Downloaded maps category */
-"downloader_downloaded_subtitle" = "Downloaded";
+"downloader_downloaded_subtitle" = "Gedownload";
 
 /* Country queued for download */
 "downloader_queued" = "in de wachtrij";
 
-"downloader_near_me_subtitle" = "Near me";
+"downloader_near_me_subtitle" = "Bij mij in de buurt";
 
-"downloader_status_maps" = "Maps: %s";
+"downloader_status_maps" = "Kaarten: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "Bij het creëren van routes in MAPS.ME-app, dient u rekening te houden met het volgende:\n\n  - Voorgestelde routes kunnen uitsluitend als aanbevelingen beschouwd worden.\n - Wegconditie, verkeersregels en borden hebben een hogere prioriteit dan het navigatie-advies.\n - De kaart kan onjuist of verouderd zijn en de routes kunnen niet op de beste mogelijke manier gecreëerd zijn.\n\n  Wees veilig op wegen en zorg goed voor uzelf!";
@@ -1490,17 +1490,17 @@
 
 "downloader_mwm_migration_dialog" = "Om een route te creëren, moet je alle kaarten updaten en dan de route opnieuw plannen.";
 
-"downloader_search_field_hint" = "Find the map";
+"downloader_search_field_hint" = "Vind de kaart";
 
-"migration_update_all_button" = "Update all maps";
+"migration_update_all_button" = "Update alle kaarten";
 
-"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+"migration_delete_all_download_current_button" = "Download de huidige kaart en verwijder de oude";
 
-"migration_prefetch_status" = "Preparing maps update…";
+"migration_prefetch_status" = "Het voorbereiden van de update van de kaart…";
 
-"migration_download_error_dialog" = "Download error";
+"migration_download_error_dialog" = "Downloadfout";
 
-"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
+"common_check_internet_connection_dialog" = "Controleer je instellingen en zorg ervoor dat het apparaat is verbonden met het internet.";
 
 "downloader_no_space_title" = "Niet genoeg ruimte";
 
@@ -1554,20 +1554,20 @@
 
 "whatsnew_search_message" = "We hebben het zoeken op adres significant verbeterd. Bekijk het zelf.";
 
-"whatsnew_editor_title" = "Edit the map*";
+"whatsnew_editor_title" = "Bewerk de kaart*";
 
-"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+"whatsnew_editor_message_1" = "Voeg nieuwe plaatsen toe aan de kaart en bewerk de bestaande rechtstreeks vanuit de app.";
 
-"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+"whatsnew_editor_message_2" = "*MAPS.ME gebruikt OpenStreetMap-communitiedata.";
 
-"onboarding_offline_navigation_title" = "You will never get lost again";
+"onboarding_offline_navigation_title" = "Je zult nooit meer verdwalen";
 
-"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+"onboarding_offline_navigation_message" = "Plan optimale auto- en wandelroutes, zelfs als er geen internetverbinding is!";
 
-"onboarding_offline_navigation_title_2" = "Offline navigation";
+"onboarding_offline_navigation_title_2" = "Offline navigatie";
 
-"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+"onboarding_offline_navigation_message_2" = "Plan optimale auto- en wandelroutes.";
 
-"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+"onboarding_offline_maps_title" = "MAPS.ME - offline kaarten";
 
-"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";
+"onboarding_offline_maps_message" = "Download eenmaal de kaarten voor het gewenste gebied en gebruik de navigatie- en zoekfuncties zonder een internetverbinding.";

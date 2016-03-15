@@ -416,10 +416,16 @@
 	<string name="routing_map_outdated">Venligst opdatér kortet for at oprette en rute.</string>
 	<!-- Update maps suggestion -->
 	<string name="routing_update_maps">Den nye version af MAPS.ME gør det muligt at oprette ruter fra din nuværende position til et destinationspunkt. Venligst opdatér kortene for at bruge denne funktion.</string>
+	<!-- Update all button text -->
+	<string name="downloader_update_all_button">Opdatér alle</string>
 	<!-- Cancel all button text -->
 	<string name="downloader_cancel_all">Aflys Alt</string>
+	<!-- Downloaded maps category -->
+	<string name="downloader_downloaded_subtitle">Downloadet</string>
 	<!-- Country queued for download -->
 	<string name="downloader_queued">i kø</string>
+	<string name="downloader_near_me_subtitle">I nærheden</string>
+	<string name="downloader_status_maps">Kort: %s</string>
 	<!-- Outdated maps category -->
 	<string name="downloader_outdated_maps">Uddateret</string>
 	<!-- Up to date maps category -->
@@ -894,6 +900,12 @@
 	<string name="downloader_delete_map_dialog">Alle kortændringer vil blive slettet sammen med kortet.</string>
 	<string name="downloader_update_maps">Opdatér kort</string>
 	<string name="downloader_mwm_migration_dialog">For at oprette en rute skal du opdatere alle kort og så planlægge ruten igen.</string>
+	<string name="downloader_search_field_hint">Find kortet</string>
+	<string name="migration_update_all_button">Opdatér alle kort</string>
+	<string name="migration_delete_all_download_current_button">Download aktuelt kort og slet de gamle</string>
+	<string name="migration_prefetch_status">Forbereder kortopdatering...</string>
+	<string name="migration_download_error_dialog">Fejl ved download</string>
+	<string name="common_check_internet_connection_dialog">Tjek dine indstillinger og sørg for, din enhed er forbundet til internettet.</string>
 	<string name="downloader_no_space_title">Ikke nok plads</string>
 	<string name="downloader_no_space_message">Fjern unødvendig data</string>
 	<string name="editor_general_auth_error_dialog">Generel fejl ved login.</string>
@@ -919,4 +931,13 @@
 	<string name="whatsnew_smallmwm_header">I har bedt om det, og vi har gjort det</string>
 	<string name="whatsnew_smallmwm_message">Vi har delt kort op i dele. Nu kan man downloade separate regioner, ikke hele landet.</string>
 	<string name="whatsnew_search_message">Vi har forbedret søgningen efter adresse betydeligt. Se selv.</string>
+	<string name="whatsnew_editor_title">Redigér kortet*</string>
+	<string name="whatsnew_editor_message_1">Tilføj nye steder til kortet og redigér eksisterende direkte fra app\&#39;en.</string>
+	<string name="whatsnew_editor_message_2">*MAPS.ME bruger fællesskabsdata fra OpenStreetMap.</string>
+	<string name="onboarding_offline_navigation_title">Du vil aldrig fare vild igen</string>
+	<string name="onboarding_offline_navigation_message">Planlæg de optimale ruter i bil og til fods selv uden internetforbindelse!</string>
+	<string name="onboarding_offline_navigation_title_2">Offline navigering</string>
+	<string name="onboarding_offline_navigation_message_2">Planlæg de optimale ruter i bil og til fods.</string>
+	<string name="onboarding_offline_maps_title">MAPS.ME - offline kort</string>
+	<string name="onboarding_offline_maps_message">Download kortene til det ønskede område en gang, og brug navigerings- og søgefunktionerne uden internetforbindelse.</string>
 </resources>

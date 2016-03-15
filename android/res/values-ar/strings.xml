@@ -418,10 +418,16 @@
 	<string name="routing_map_outdated">يرجى تحديث الخريطة لإنشاء مسار.</string>
 	<!-- Update maps suggestion -->
 	<string name="routing_update_maps">إصدار MAPS.ME الجديد يسمح بإنشاء مسارات انطلاقاً من موقعك الحالي نحو المكان الذي تتجه إليه. يرجى تحديث الخرائط لاستخدام هذه الميزة.</string>
+	<!-- Update all button text -->
+	<string name="downloader_update_all_button">تحديث الكل</string>
 	<!-- Cancel all button text -->
 	<string name="downloader_cancel_all">إلغاء الكل</string>
+	<!-- Downloaded maps category -->
+	<string name="downloader_downloaded_subtitle">تم تنزيلها</string>
 	<!-- Country queued for download -->
 	<string name="downloader_queued">مَصْفوف</string>
+	<string name="downloader_near_me_subtitle">بالقرب مني</string>
+	<string name="downloader_status_maps">الخرائط: %s</string>
 	<!-- Disclaimer message -->
 	<string name="routing_disclaimer">عند إنشاء مسارات الطرق في تطبيق MAPS.ME، يرجى أخذ التالي في الحسبان:\n\n  - المسارات المقترحة تعتبر مجرد اقتراحات فقط.\n - حالة الطريق وقوانينه والإشارات الموجودة فيه لها الأولولية أثناء تقديم نصائح الملاحة.\n - قد تكون الخريطة خاطئة أو قديمة، لذا فإنه يمكن ألا تُرسم المسارات بالشكل الأمثل.\n\n  كن آمنا على الطريق وانتبه لتفسك!</string>
 	<!-- Outdated maps category -->
@@ -898,6 +904,12 @@
 	<string name="downloader_delete_map_dialog">سيتم حذف جميع التغييرات بالخريطة بالإضافة إلى حذف الخريطة نفسها.</string>
 	<string name="downloader_update_maps">تحديث الخرائط</string>
 	<string name="downloader_mwm_migration_dialog">لإنشاء مسار، فأنت تحتاج إلى تحديث كافة الخرائط ثم إعادة تخطيط المسار مرة أخرى.</string>
+	<string name="downloader_search_field_hint">اعثر على الخريطة</string>
+	<string name="migration_update_all_button">تحديث جميع الخرائط</string>
+	<string name="migration_delete_all_download_current_button">تنزيل الخريطة الحالية وحذف الخرائط القديمة</string>
+	<string name="migration_prefetch_status">جار الإعداد لتحديث الخرائط...</string>
+	<string name="migration_download_error_dialog">خطأ بالتنزيل</string>
+	<string name="common_check_internet_connection_dialog">يرجى التحقق من الإعدادات والتأكد من اتصال جهازك بالإنترنت.</string>
 	<string name="downloader_no_space_title">مساحة غير كافية</string>
 	<string name="downloader_no_space_message">من فضلك، قم بإزالة البيانات غير الضرورية</string>
 	<string name="editor_general_auth_error_dialog">خطأ بتسجيل الدخول العام.</string>
@@ -923,4 +935,13 @@
 	<string name="whatsnew_smallmwm_header">لقد طلبتم ذلك، وها نحن قد لبينا طلبكم</string>
 	<string name="whatsnew_smallmwm_message">لقد قسمنا الخرائط إلى أجزاء. الآن يمكنك تنزيل مناطق منفصلة، وليس البلد بأكمله.</string>
 	<string name="whatsnew_search_message">لقد طورنا كليا البحث بالعنوان. فلترى بنفسك.</string>
+	<string name="whatsnew_editor_title">تعديل الخريطة *</string>
+	<string name="whatsnew_editor_message_1">قم بإضافة أماكن جديدة للخريطة، وعدل أماكن حالية مباشرة من التطبيق.</string>
+	<string name="whatsnew_editor_message_2">*تستخدم MAPS.ME البيانات الخاصة بخريطة OpenStreetMap.</string>
+	<string name="onboarding_offline_navigation_title">لن تضل الطريق أبدا بعد الآن</string>
+	<string name="onboarding_offline_navigation_message">قم بتخطيط أفضل طرق السيارات والمشاة، حتى مع عدم وجود اتصال بالإنترنت!</string>
+	<string name="onboarding_offline_navigation_title_2">الملاحة في وضع غير متصل</string>
+	<string name="onboarding_offline_navigation_message_2">خطط أفضل طرق السيارات والمشاة.</string>
+	<string name="onboarding_offline_maps_title">MAPS.ME – خرائط غير متصلة بالإنترنت</string>
+	<string name="onboarding_offline_maps_message">قم بتنزيل خرائط للمنطقة المطلوب مرة واحدة، واستخدم وظائف الملاحة والبحث دون الحاجة للاتصال بالإنترنت.</string>
 </resources>

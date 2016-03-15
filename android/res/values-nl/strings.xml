@@ -404,10 +404,16 @@
 	<string name="routing_map_outdated">Werk de kaart bij om een route te maken.</string>
 	<!-- Update maps suggestion -->
 	<string name="routing_update_maps">Met de nieuwe versie van MAPS.ME kunt u routes maken vanaf uw huidige positie naar een punt van bestemming. Werk kaarten bij om deze functie te gebruiken.</string>
+	<!-- Update all button text -->
+	<string name="downloader_update_all_button">Update alles</string>
 	<!-- Cancel all button text -->
 	<string name="downloader_cancel_all">Alles annuleren</string>
+	<!-- Downloaded maps category -->
+	<string name="downloader_downloaded_subtitle">Gedownload</string>
 	<!-- Country queued for download -->
 	<string name="downloader_queued">in de wachtrij</string>
+	<string name="downloader_near_me_subtitle">Bij mij in de buurt</string>
+	<string name="downloader_status_maps">Kaarten: %s</string>
 	<!-- Disclaimer message -->
 	<string name="routing_disclaimer">Bij het creëren van routes in MAPS.ME-app, dient u rekening te houden met het volgende:\n\n  - Voorgestelde routes kunnen uitsluitend als aanbevelingen beschouwd worden.\n - Wegconditie, verkeersregels en borden hebben een hogere prioriteit dan het navigatie-advies.\n - De kaart kan onjuist of verouderd zijn en de routes kunnen niet op de beste mogelijke manier gecreëerd zijn.\n\n  Wees veilig op wegen en zorg goed voor uzelf!</string>
 	<!-- Outdated maps category -->
@@ -882,6 +888,12 @@
 	<string name="downloader_delete_map_dialog">Alle wijzigingen aan de kaart zullen samen met de kaart worden verwijderd.</string>
 	<string name="downloader_update_maps">Kaarten updaten</string>
 	<string name="downloader_mwm_migration_dialog">Om een route te creëren, moet je alle kaarten updaten en dan de route opnieuw plannen.</string>
+	<string name="downloader_search_field_hint">Vind de kaart</string>
+	<string name="migration_update_all_button">Update alle kaarten</string>
+	<string name="migration_delete_all_download_current_button">Download de huidige kaart en verwijder de oude</string>
+	<string name="migration_prefetch_status">Het voorbereiden van de update van de kaart…</string>
+	<string name="migration_download_error_dialog">Downloadfout</string>
+	<string name="common_check_internet_connection_dialog">Controleer je instellingen en zorg ervoor dat het apparaat is verbonden met het internet.</string>
 	<string name="downloader_no_space_title">Niet genoeg ruimte</string>
 	<string name="downloader_no_space_message">Verwijder overbodige gegevens</string>
 	<string name="editor_general_auth_error_dialog">Algemene inlogfout.</string>
@@ -907,4 +919,13 @@
 	<string name="whatsnew_smallmwm_header">Op veler verzoek hebben we het voor elkaar gekregen</string>
 	<string name="whatsnew_smallmwm_message">We hebben kaarten in delen verdeeld. Nu kunt u afzonderlijke regio\&#39;s downloaden in plaats van het hele land.</string>
 	<string name="whatsnew_search_message">We hebben het zoeken op adres significant verbeterd. Bekijk het zelf.</string>
+	<string name="whatsnew_editor_title">Bewerk de kaart*</string>
+	<string name="whatsnew_editor_message_1">Voeg nieuwe plaatsen toe aan de kaart en bewerk de bestaande rechtstreeks vanuit de app.</string>
+	<string name="whatsnew_editor_message_2">*MAPS.ME gebruikt OpenStreetMap-communitiedata.</string>
+	<string name="onboarding_offline_navigation_title">Je zult nooit meer verdwalen</string>
+	<string name="onboarding_offline_navigation_message">Plan optimale auto- en wandelroutes, zelfs als er geen internetverbinding is!</string>
+	<string name="onboarding_offline_navigation_title_2">Offline navigatie</string>
+	<string name="onboarding_offline_navigation_message_2">Plan optimale auto- en wandelroutes.</string>
+	<string name="onboarding_offline_maps_title">MAPS.ME - offline kaarten</string>
+	<string name="onboarding_offline_maps_message">Download eenmaal de kaarten voor het gewenste gebied en gebruik de navigatie- en zoekfuncties zonder een internetverbinding.</string>
 </resources>

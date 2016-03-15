@@ -685,20 +685,20 @@
 "routing_update_maps" = "Versi MAPS.ME yang terbaru memungkinkan pembuatan rute dari posisi Anda saat itu ke titik tujuan. Mohon perbarui peta untuk menggunakan fitur ini.";
 
 /* Update all button text */
-"downloader_update_all_button" = "Update all";
+"downloader_update_all_button" = "Perbarui semua";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "Batalkan Semuanya";
 
 /* Downloaded maps category */
-"downloader_downloaded_subtitle" = "Downloaded";
+"downloader_downloaded_subtitle" = "Diunduh";
 
 /* Country queued for download */
 "downloader_queued" = "telah diantrekan";
 
-"downloader_near_me_subtitle" = "Near me";
+"downloader_near_me_subtitle" = "Dekat saya";
 
-"downloader_status_maps" = "Maps: %s";
+"downloader_status_maps" = "Peta: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "Dalam membuat rute di aplikasi MAPS.ME, mohon ingat:\n\n- Rute yang disarankan hanya dapat dianggap sebagai rekomendasi.\n- Kondisi jalan, peraturan dan tanda-tanda lalu lintas memiliki prioritas yang lebih tinggi daripada saran navigasi.\n- Kondisi jalan, peraturan dan tanda-tanda lalu lintas memiliki prioritas yang lebih tinggi daripada saran navigasi.\n- Peta bisa saja salah atau sudah usang, dan rute yang dibuat mungkin bukan yang terbaik.\n\nBerhati-hatilah di jalan dan jagalah diri Anda sendiri!";
@@ -1490,17 +1490,17 @@
 
 "downloader_mwm_migration_dialog" = "Untuk membuat rute, Anda perlu memperbarui semua peta dan kemudian merencanakan rute tersebut lagi.";
 
-"downloader_search_field_hint" = "Find the map";
+"downloader_search_field_hint" = "Temukan peta";
 
-"migration_update_all_button" = "Update all maps";
+"migration_update_all_button" = "Perbarui semua peta";
 
-"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+"migration_delete_all_download_current_button" = "Unduh peta sekarang dan hapus peta lama";
 
-"migration_prefetch_status" = "Preparing maps update…";
+"migration_prefetch_status" = "Mempersiapkan pembaruan peta…";
 
-"migration_download_error_dialog" = "Download error";
+"migration_download_error_dialog" = "Unduh kesalahan";
 
-"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
+"common_check_internet_connection_dialog" = "Harap memeriksa pengaturan Anda dan pastikan perangkat Anda terhubung dengan internet.";
 
 "downloader_no_space_title" = "Tidak cukup ruang";
 
@@ -1554,20 +1554,20 @@
 
 "whatsnew_search_message" = "Kami secara signifikan telah meningkatkan pencarian menurut alamat. Lihat sendiri.";
 
-"whatsnew_editor_title" = "Edit the map*";
+"whatsnew_editor_title" = "Edit peta*";
 
-"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+"whatsnew_editor_message_1" = "Tambahkan tempat-tempat baru di peta, dan edit peta-peta yang ada langsung dari aplikasi.";
 
-"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+"whatsnew_editor_message_2" = "*MAPS.ME menggunakan data komunitas OpenStreetMap.";
 
-"onboarding_offline_navigation_title" = "You will never get lost again";
+"onboarding_offline_navigation_title" = "Anda tidak akan tersesat lagi";
 
-"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+"onboarding_offline_navigation_message" = "Rencanakan rute mobil dan pejalan kaki yang optimal, meskipun tidak ada koneksi internet!";
 
-"onboarding_offline_navigation_title_2" = "Offline navigation";
+"onboarding_offline_navigation_title_2" = "Navigasi Offline";
 
-"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+"onboarding_offline_navigation_message_2" = "Rencanakan rute mobil dan pejalan kaki yang optimal.";
 
-"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+"onboarding_offline_maps_title" = "MAPS.ME - peta offline";
 
-"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";
+"onboarding_offline_maps_message" = "Unduh peta untuk daerah yang diinginkan sekali, dan gunakan navigasi dan fungsi pencarian tanpa koneksi internet.";

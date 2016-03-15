@@ -685,20 +685,20 @@
 "routing_update_maps" = "MAPS.ME'nin yeni sürümü mevcut pozisyonunuzdan varış noktasına rotalar oluşturmanıza imkan verir. Lütfen bu özelliği kullanmak için haritaları güncelleyin.";
 
 /* Update all button text */
-"downloader_update_all_button" = "Update all";
+"downloader_update_all_button" = "Hepsini güncelle";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "Tümünü İptal Et";
 
 /* Downloaded maps category */
-"downloader_downloaded_subtitle" = "Downloaded";
+"downloader_downloaded_subtitle" = "İndirildi";
 
 /* Country queued for download */
 "downloader_queued" = "sıraya alındı";
 
-"downloader_near_me_subtitle" = "Near me";
+"downloader_near_me_subtitle" = "Yakınlarımda";
 
-"downloader_status_maps" = "Maps: %s";
+"downloader_status_maps" = "Haritalar: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "MAPS.ME uygulamasında rota yaratırken lütfen aşağıdakileri dikkate alın:\n\n  - Önerilen rotalar sadece tavsiyeler olarak düşünülmelidir.\n - Yol koşulları, trafik kuralları ve işaretleri navigasyon tavsiyelerden daha önceliklidir.\n - Harita doğru olmayabilir ya da eskimiş olabilir ve rotalar en iyi mümkün yola göre oluşturulmamış olabilir.\n\n  Yollarda güvende olun ve kendinize dikkat edin!";
@@ -1490,17 +1490,17 @@
 
 "downloader_mwm_migration_dialog" = "Bir rota oluşturmak için tüm haritaları güncellemeli ve ardından rotayı tekrar planlamalısınız.";
 
-"downloader_search_field_hint" = "Find the map";
+"downloader_search_field_hint" = "Harita bul";
 
-"migration_update_all_button" = "Update all maps";
+"migration_update_all_button" = "Haritaları güncelle";
 
-"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+"migration_delete_all_download_current_button" = "Mevcut haritayı indir ve tüm eski haritaları sil";
 
-"migration_prefetch_status" = "Preparing maps update…";
+"migration_prefetch_status" = "Harita güncellemesi hazırlanıyor...";
 
-"migration_download_error_dialog" = "Download error";
+"migration_download_error_dialog" = "İndirme hatası";
 
-"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
+"common_check_internet_connection_dialog" = "Lütfen ayarlarınızı kontrol edin ve cihazınızın internete bağlı olduğundan emin olun.";
 
 "downloader_no_space_title" = "Yeterli alan yok";
 
@@ -1554,20 +1554,20 @@
 
 "whatsnew_search_message" = "Adres ile aramayı önemli ölçüde geliştirdik. Kendiniz görün.";
 
-"whatsnew_editor_title" = "Edit the map*";
+"whatsnew_editor_title" = "Haritayı düzenleyin*";
 
-"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+"whatsnew_editor_message_1" = "Doğrudan uygulamadan haritaya yeni yerler ekle ve mevcut yerleri düzenleyin.";
 
-"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+"whatsnew_editor_message_2" = "*MAPS.ME, OpenStreetMap topluluğu verilerini kullanmaktadır.";
 
-"onboarding_offline_navigation_title" = "You will never get lost again";
+"onboarding_offline_navigation_title" = "Bir daha asla kaybolmayacaksınız";
 
-"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+"onboarding_offline_navigation_message" = "En iyi araba ve yaya rotalarını planlayın, hatta internet bağlantısı olmadığında bile!";
 
-"onboarding_offline_navigation_title_2" = "Offline navigation";
+"onboarding_offline_navigation_title_2" = "Farklı bir problem";
 
-"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+"onboarding_offline_navigation_message_2" = "En iyi araba ve yaya rotalarını planlayın.";
 
-"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+"onboarding_offline_maps_title" = "MAPS.ME - çevrimdışı haritalar";
 
-"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";
+"onboarding_offline_maps_message" = "İlk önce istenilen alanın haritasını indirin ve internet bağlantısı olmadan navigasyonu ve arama fonksiyonlarını kullanın.";

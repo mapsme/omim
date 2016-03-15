@@ -685,20 +685,20 @@
 "routing_update_maps" = "Uusi MAPS.ME -versio mahdollistaa reittien luonnin nykyisestä sijainnista määränpäähäsi.Päivitä kartat käyttääksesi tätä ominaisuutta.";
 
 /* Update all button text */
-"downloader_update_all_button" = "Update all";
+"downloader_update_all_button" = "Päivitä kaikki";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "Peruuta kaikki";
 
 /* Downloaded maps category */
-"downloader_downloaded_subtitle" = "Downloaded";
+"downloader_downloaded_subtitle" = "Ladatut";
 
 /* Country queued for download */
 "downloader_queued" = "jonossa";
 
-"downloader_near_me_subtitle" = "Near me";
+"downloader_near_me_subtitle" = "Minun lähelläni";
 
-"downloader_status_maps" = "Maps: %s";
+"downloader_status_maps" = "Kartat: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "Pidä mielessä seuraavat seikat luodessasi reittejä MAPS.ME -sovelluksella:\n\n- Ehdotettuja reittejä tulee pitää vain suosituksina.\n- Teiden kunto, liikennesäännöt ja -merkit on aina otettava huomioon navigointiehdotuksista huolimatta.\n - Kartassa saattaa olla virheitä, tai se saattaa olla vanhentunut, eikä reittejä sen takia voida luoda parhaalla mahdollisella tavalla.\n\nPysy valppaana liikenteessä ja pidä huolta itsestäsi!";
@@ -1490,17 +1490,17 @@
 
 "downloader_mwm_migration_dialog" = "Sinun täytyy päivittää kaikki kartat ja suunnitella reitti uudelleen luodaksesi uuden reitin.";
 
-"downloader_search_field_hint" = "Find the map";
+"downloader_search_field_hint" = "Etsi kartta";
 
-"migration_update_all_button" = "Update all maps";
+"migration_update_all_button" = "Päivitä kaikki kartat";
 
-"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+"migration_delete_all_download_current_button" = "Lataa nykyinen kartta ja poista kaikki vanhat kartat";
 
-"migration_prefetch_status" = "Preparing maps update…";
+"migration_prefetch_status" = "Karttojen päivitystä ladataan...";
 
-"migration_download_error_dialog" = "Download error";
+"migration_download_error_dialog" = "Latausvirhe";
 
-"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
+"common_check_internet_connection_dialog" = "Tarkista asetuksesi ja varmista, että laitteesi on yhteydessä Internetiin.";
 
 "downloader_no_space_title" = "Ei tarpeeksi tilaa";
 
@@ -1554,20 +1554,20 @@
 
 "whatsnew_search_message" = "Olemme selkeästi parantaneet osoitehakua - kokeile vaikka itse.";
 
-"whatsnew_editor_title" = "Edit the map*";
+"whatsnew_editor_title" = "Muokkaa karttaa*";
 
-"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+"whatsnew_editor_message_1" = "Lisää karttaan uusia paikkoja ja muokkaa sovelluksessa olevia karttoja suoraan sovelluksessa.";
 
-"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+"whatsnew_editor_message_2" = "*MAPS.ME käyttää OpenStreetMap -yhteisön dataa.";
 
-"onboarding_offline_navigation_title" = "You will never get lost again";
+"onboarding_offline_navigation_title" = "Et eksy enää koskaan";
 
-"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+"onboarding_offline_navigation_message" = "Suunnittele ihanteellinen autoilu- tai kävelyreitti jopa ilman Internet-yhteyttä!";
 
-"onboarding_offline_navigation_title_2" = "Offline navigation";
+"onboarding_offline_navigation_title_2" = "Offline-navigointi";
 
-"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+"onboarding_offline_navigation_message_2" = "Suunnittele ihanteelliset autoilu- ja kävelyreitit.";
 
-"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+"onboarding_offline_maps_title" = "MAPS.ME - offline-kartat";
 
-"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";
+"onboarding_offline_maps_message" = "Lataa haluamasi alueen kartat yhden kerran ja voit käyttää navigointi- ja hakutoimintoja ilman Internet-yhteyttä.";

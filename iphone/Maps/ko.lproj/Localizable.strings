@@ -685,20 +685,20 @@
 "routing_update_maps" = "MAPS.ME의 새로운 버전으로 당신의 현재 위치에서 목적지 지점으로 경로를 생성할 수 있습니다. 이 기능을 사용하려면 지도를 업데이트하십시오.";
 
 /* Update all button text */
-"downloader_update_all_button" = "Update all";
+"downloader_update_all_button" = "모두 업데이트";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "모두 취소";
 
 /* Downloaded maps category */
-"downloader_downloaded_subtitle" = "Downloaded";
+"downloader_downloaded_subtitle" = "다운로드";
 
 /* Country queued for download */
 "downloader_queued" = "대기";
 
-"downloader_near_me_subtitle" = "Near me";
+"downloader_near_me_subtitle" = "내 근처";
 
-"downloader_status_maps" = "Maps: %s";
+"downloader_status_maps" = "지도: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "MAPS.ME 앱에서 경로를 작성할 때, 다음에 유의하시기 바랍니다:\n\n  - 추천 루트는 권장 사항으로만 간주될 수 있습니다.\n - 도로 조건, 교통 규칙 및 징후는 탐색 조언보다 더 높은 우선 순위를 갖습니다.\n -지도는 잘못되었거나 만료되었을 수 있으며, 경로는 최상의 방법을 만들어지지 않을 수 있습니다.\n\n  도로에서 안전하게 몸조심하세요!";
@@ -1490,17 +1490,17 @@
 
 "downloader_mwm_migration_dialog" = "경로를 만들려면, 모든 지도를 업데이트한 다음, 다시 경로를 계획해야 합니다.";
 
-"downloader_search_field_hint" = "Find the map";
+"downloader_search_field_hint" = "지도 찾기";
 
-"migration_update_all_button" = "Update all maps";
+"migration_update_all_button" = "모든지도 업데이트";
 
-"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+"migration_delete_all_download_current_button" = "현재 지도 다운로드 및 기존 지도 삭제";
 
-"migration_prefetch_status" = "Preparing maps update…";
+"migration_prefetch_status" = "지도 업데이트 준비 중...";
 
-"migration_download_error_dialog" = "Download error";
+"migration_download_error_dialog" = "다운로드 오류";
 
-"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
+"common_check_internet_connection_dialog" = "설정을 확인하고 장치가 인터넷에 연결되어 있는지 확인하십시오.";
 
 "downloader_no_space_title" = "충분하지 않은 여유 공간";
 
@@ -1554,20 +1554,20 @@
 
 "whatsnew_search_message" = "저희는 주소에 의한 검색을 놀랍게 개선 했습니다. 직접 경험해 보세요.";
 
-"whatsnew_editor_title" = "Edit the map*";
+"whatsnew_editor_title" = "지도 편집*";
 
-"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+"whatsnew_editor_message_1" = "지도에 새로운 장소를 추가하고 응용 프로그램에서 직접 기존 편집 할 수 있습니다.";
 
-"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+"whatsnew_editor_message_2" = "*MAPS.ME는 OpenStreetMap 커뮤니티 데이터를 사용합니다.";
 
-"onboarding_offline_navigation_title" = "You will never get lost again";
+"onboarding_offline_navigation_title" = "다시 손실되지 않을 것임";
 
-"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+"onboarding_offline_navigation_message" = "인터넷에 연결이 없는 경우에도, 최적의 자동차와 보행자 경로를 계획하십시오!";
 
-"onboarding_offline_navigation_title_2" = "Offline navigation";
+"onboarding_offline_navigation_title_2" = "오프라인 탐색";
 
-"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+"onboarding_offline_navigation_message_2" = "최적의 자동차와 보행자 경로를 계획합니다.";
 
-"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+"onboarding_offline_maps_title" = "MAPS.ME - 오프라인지도";
 
-"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";
+"onboarding_offline_maps_message" = "한 번에 원하는 지역의 지도를 다운로드하고, 인터넷 연결없이 탐색 및 검색 기능을 사용합니다.";

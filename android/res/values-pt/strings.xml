@@ -409,10 +409,16 @@
 	<string name="routing_map_outdated">Por favor, atualize o mapa para criar uma rota.</string>
 	<!-- Update maps suggestion -->
 	<string name="routing_update_maps">A nova versão do MAPS.ME permite criar rotas a partir da sua posição atual para um ponto de destino. Por favor, atualize o maps para utilizar esta funcionalidade.</string>
+	<!-- Update all button text -->
+	<string name="downloader_update_all_button">Atualizar tudo</string>
 	<!-- Cancel all button text -->
 	<string name="downloader_cancel_all">Cancelar Tudo</string>
+	<!-- Downloaded maps category -->
+	<string name="downloader_downloaded_subtitle">Descarregado</string>
 	<!-- Country queued for download -->
 	<string name="downloader_queued">Na fila</string>
+	<string name="downloader_near_me_subtitle">Perto de mim</string>
+	<string name="downloader_status_maps">Mapas: %s</string>
 	<!-- Disclaimer message -->
 	<string name="routing_disclaimer">Ao criar rotas na aplicação MAPS.ME, por favor, lembre-se do seguinte:\n\n  - As rotas sugeridas podem apenas ser consideradas como recomendações.\n - As condições da estrada, regras de trânsito e sinais têm maior prioridade do que os conselhos de navegação.\n - O mapa poderá estar errado, ou desatualizado, e as rotas poderão não ser criadas da melhor forma possível.\n\n  Circule em segurança nas estradas e cuide do seu bem estar!</string>
 	<!-- Outdated maps category -->
@@ -889,6 +895,12 @@
 	<string name="downloader_delete_map_dialog">Todas as alterações ao mapa serão eliminadas juntamente com o mapa.</string>
 	<string name="downloader_update_maps">Atualizar mapas</string>
 	<string name="downloader_mwm_migration_dialog">Para criar um itinerário, é necessário atualizar todos os mapas e, em seguida, voltar a planear o itinerário.</string>
+	<string name="downloader_search_field_hint">Encontrar o mapa</string>
+	<string name="migration_update_all_button">Atualizar todos os mapas</string>
+	<string name="migration_delete_all_download_current_button">Descarregue o mapa atual e elimine os antigos</string>
+	<string name="migration_prefetch_status">A preparar a atualização de mapas...</string>
+	<string name="migration_download_error_dialog">Erro de download</string>
+	<string name="common_check_internet_connection_dialog">Por favor, verifique as suas opções e certifique-se de que o dispositivo está ligado à Internet.</string>
 	<string name="downloader_no_space_title">Não há espaço suficiente</string>
 	<string name="downloader_no_space_message">Por favor, remova os dados desnecessários</string>
 	<string name="editor_general_auth_error_dialog">Erro geral de início de sessão.</string>
@@ -914,4 +926,13 @@
 	<string name="whatsnew_smallmwm_header">Vocês têm pedido por isso e nós atendemos</string>
 	<string name="whatsnew_smallmwm_message">Dividimos os mapas em partes. Agora vocês podem baixar regiões separadas em vez do país inteiro.</string>
 	<string name="whatsnew_search_message">Melhoramos consideravelmente a busca por endereço. Veja você mesmo.</string>
+	<string name="whatsnew_editor_title">Editar o mapa*</string>
+	<string name="whatsnew_editor_message_1">Adicione novos lugares ao mapa e edite os já existentes diretamente a partir da app.</string>
+	<string name="whatsnew_editor_message_2">*A MAPS.ME utiliza dados da comunidade OpenStreetMap.</string>
+	<string name="onboarding_offline_navigation_title">Nunca mais voltará a perder-se</string>
+	<string name="onboarding_offline_navigation_message">Planeie itinerários ideais de automóvel e a pé, mesmo se não houver ligação à Internet!</string>
+	<string name="onboarding_offline_navigation_title_2">Navegação offline</string>
+	<string name="onboarding_offline_navigation_message_2">Planeie itinerários ideais de automóvel e a pé.</string>
+	<string name="onboarding_offline_maps_title">MAPS.ME - mapas offline</string>
+	<string name="onboarding_offline_maps_message">Descarregue uma vez os mapas para a área desejada e utilize as funções de navegação e de pesquisa sem uma ligação à Internet.</string>
 </resources>

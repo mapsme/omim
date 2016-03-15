@@ -434,10 +434,16 @@
 	<string name="routing_map_outdated">Bitte aktualisieren Sie die Karte, um eine Route zu erstellen.</string>
 	<!-- Update maps suggestion -->
 	<string name="routing_update_maps">Die neue Version von MAPS.ME ermöglicht das Erzeugen von Routen von Ihrem aktuellen Standort bis zum gewünschten Ziel. Bitte aktualisieren Sie Karten, um diese Funktion nutzen zu können.</string>
+	<!-- Update all button text -->
+	<string name="downloader_update_all_button">Alle aktualisieren</string>
 	<!-- Cancel all button text -->
 	<string name="downloader_cancel_all">Alle abbrechen</string>
+	<!-- Downloaded maps category -->
+	<string name="downloader_downloaded_subtitle">Heruntergeladen</string>
 	<!-- Country queued for download -->
 	<string name="downloader_queued">in der Warteschlange</string>
+	<string name="downloader_near_me_subtitle">In meiner Nähe</string>
+	<string name="downloader_status_maps">Karten: %s</string>
 	<!-- Disclaimer message -->
 	<string name="routing_disclaimer">Beim Erstellen von Routen mit der MAPS.ME-App sollten Sie Folgendes beachten:\n\n  - Vorgeschlagenen Routen können nur als Empfehlungen angesehen werden.\n - Straßenbedingungen, Verkehrsregeln und Schilder haben höhere Priorität als Navigationsratschläge.\n - Die Karte kann falsch oder veraltet sein und Routen könnten somit nicht auf die bestmögliche Weise erstellt worden sein.\n\n  Bleiben Sie auf der Straße sicher und achten Sie auf sich selbst!</string>
 	<!-- Outdated maps category -->
@@ -914,6 +920,12 @@
 	<string name="downloader_delete_map_dialog">Alle Kartenänderungen werden zusammen mit der Karte gelöscht.</string>
 	<string name="downloader_update_maps">Karten aktualisieren</string>
 	<string name="downloader_mwm_migration_dialog">Um eine Strecke zu erstellen, müssen Sie alle Karten aktualisieren und dann die Strecken erneut planen.</string>
+	<string name="downloader_search_field_hint">Karte finden</string>
+	<string name="migration_update_all_button">Alle Karten aktualisieren</string>
+	<string name="migration_delete_all_download_current_button">Laden Sie die aktuelle Karte herunter und löschen Sie alte Karten</string>
+	<string name="migration_prefetch_status">Karten-Update wird vorbereitet …</string>
+	<string name="migration_download_error_dialog">Download-Fehler</string>
+	<string name="common_check_internet_connection_dialog">Bitte überprüfen Sie Ihre Einstellungen und stellen Sie sicher, dass Ihr Gerät mit dem Internet verbunden ist.</string>
 	<string name="downloader_no_space_title">Nicht genügend Platz</string>
 	<string name="downloader_no_space_message">Bitte entfernen Sie unnötige Daten</string>
 	<string name="editor_general_auth_error_dialog">Allgemeiner Login-Fehler.</string>
@@ -939,4 +951,13 @@
 	<string name="whatsnew_smallmwm_header">Sie haben darum gebeten, und wir haben es geschafft</string>
 	<string name="whatsnew_smallmwm_message">Wir haben die Karten aufgeteilt. Jetzt können Sie einzelne Regionen herunterladen, ohne das ganze Land herunterzuladen.</string>
 	<string name="whatsnew_search_message">Wir haben die Adresssuche dramatisch verbessert. Sehen Sie selbst.</string>
+	<string name="whatsnew_editor_title">Karte bearbeiten*</string>
+	<string name="whatsnew_editor_message_1">Fügen Sie auf der Karte einen neuen Ort hinzu und bearbeiten Sie existierende Ort direkt in der App.</string>
+	<string name="whatsnew_editor_message_2">*MAPS.ME verwendet Community-Daten von OpenStreetMap.</string>
+	<string name="onboarding_offline_navigation_title">Sie werden sich nie wieder verfahren oder verlaufen</string>
+	<string name="onboarding_offline_navigation_message">Planen Sie die optimalen Auto- und Fußgängerstrecken, selbst wenn es keine Internetverbindung gibt!</string>
+	<string name="onboarding_offline_navigation_title_2">Offline-Navigation</string>
+	<string name="onboarding_offline_navigation_message_2">Planen Sie optimale Auto- und Fußgängerstrecken.</string>
+	<string name="onboarding_offline_maps_title">MAPS.ME - Offline-Karten</string>
+	<string name="onboarding_offline_maps_message">Laden Sie die Karten für das gewünschte Gebiet auf einmal herunter und verwenden Sie die Navigation- und Such-Funktion ohne eine Internetverbindung.</string>
 </resources>

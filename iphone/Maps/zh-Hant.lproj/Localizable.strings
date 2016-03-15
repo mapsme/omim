@@ -685,20 +685,20 @@
 "routing_update_maps" = "使用新版本的MAPS.ME可以創建從您的當前位置至一個目的地的路線。請更新地圖以使用該功能。";
 
 /* Update all button text */
-"downloader_update_all_button" = "Update all";
+"downloader_update_all_button" = "更新全部";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "取消全部";
 
 /* Downloaded maps category */
-"downloader_downloaded_subtitle" = "Downloaded";
+"downloader_downloaded_subtitle" = "已下載";
 
 /* Country queued for download */
 "downloader_queued" = "已佇列";
 
-"downloader_near_me_subtitle" = "Near me";
+"downloader_near_me_subtitle" = "在我附近";
 
-"downloader_status_maps" = "Maps: %s";
+"downloader_status_maps" = "地圖： %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "在MAPS.ME應用中制定路線時請謹記以下幾點：\n\n  - 建議路線僅可當作推薦路線。\n - 路況、交通規則以及標誌應優先於導航建議。\n - 地圖可能會不正確或者過時，路線也可能不是以最佳可能方式制定的。\n\n  行車安全，請照顧好您自己！";
@@ -1490,17 +1490,17 @@
 
 "downloader_mwm_migration_dialog" = "為了創建路線，您需要更新全部地圖並重新規劃路線。";
 
-"downloader_search_field_hint" = "Find the map";
+"downloader_search_field_hint" = "找到地圖";
 
-"migration_update_all_button" = "Update all maps";
+"migration_update_all_button" = "更新全部地圖";
 
-"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+"migration_delete_all_download_current_button" = "下載當前地圖並刪除舊地圖";
 
-"migration_prefetch_status" = "Preparing maps update…";
+"migration_prefetch_status" = "正在準備地圖更新…";
 
-"migration_download_error_dialog" = "Download error";
+"migration_download_error_dialog" = "下載錯誤";
 
-"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
+"common_check_internet_connection_dialog" = "請檢查您的設置並確保您的設備已連接至網絡。";
 
 "downloader_no_space_title" = "無足夠的空間";
 
@@ -1554,20 +1554,20 @@
 
 "whatsnew_search_message" = "我們已明顯改進了按地址的搜索。親自看看。";
 
-"whatsnew_editor_title" = "Edit the map*";
+"whatsnew_editor_title" = "編輯此地圖*";
 
-"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+"whatsnew_editor_message_1" = "添加新地點到該地圖，並直接通過此應用編輯已存在的地點。";
 
-"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+"whatsnew_editor_message_2" = "*MAPS.ME使用OpenStreetMap社區的數據。";
 
-"onboarding_offline_navigation_title" = "You will never get lost again";
+"onboarding_offline_navigation_title" = "您將不再迷路";
 
-"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+"onboarding_offline_navigation_message" = "規劃最佳的駕車和步行路線，即使在沒有網絡連接的情況下！";
 
-"onboarding_offline_navigation_title_2" = "Offline navigation";
+"onboarding_offline_navigation_title_2" = "離線導航";
 
-"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+"onboarding_offline_navigation_message_2" = "規劃最佳的駕車和步行路線。";
 
-"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+"onboarding_offline_maps_title" = "MAPS.ME - 離線地圖";
 
-"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";
+"onboarding_offline_maps_message" = "一次下載所需地區的地圖，無需網絡連接就能使用導航和搜索功能。";

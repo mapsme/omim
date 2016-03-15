@@ -685,20 +685,20 @@
 "routing_update_maps" = "La nueva versión de MAPS.ME permite crear rutas desde tu ubicación actual hasta un punto de destino. Por favor, actualiza los mapas para utilizar esta característica.";
 
 /* Update all button text */
-"downloader_update_all_button" = "Update all";
+"downloader_update_all_button" = "Actualizar todos";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "Cancelar todo";
 
 /* Downloaded maps category */
-"downloader_downloaded_subtitle" = "Downloaded";
+"downloader_downloaded_subtitle" = "Descargado";
 
 /* Country queued for download */
 "downloader_queued" = "En cola";
 
-"downloader_near_me_subtitle" = "Near me";
+"downloader_near_me_subtitle" = "Cerca de mí";
 
-"downloader_status_maps" = "Maps: %s";
+"downloader_status_maps" = "Mapas: %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "Creando rutas en la aplicación MAPS.ME, por favor, tenga en cuenta lo siguiente:\n\n  - Las rutas sugeridas se pueden considerar únicamente como recomendaciones.\n - Las condiciones de la carretera, las normas y las señales de tráfico tienen mayor prioridad que el consejo de navegación.\n - El mapa podría ser incorrecto o estar obsoleto y las rutas pueden no crear el mejor camino posible.\n\n  ¡Esté seguro en las carreteras y cuídese!";
@@ -1490,17 +1490,17 @@
 
 "downloader_mwm_migration_dialog" = "Los mapas empiezan a descargarse automáticamente cuando te aproximas al mapa.";
 
-"downloader_search_field_hint" = "Find the map";
+"downloader_search_field_hint" = "Encontrar el mapa";
 
-"migration_update_all_button" = "Update all maps";
+"migration_update_all_button" = "Actualizar todos los mapas";
 
-"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+"migration_delete_all_download_current_button" = "Descargar el mapa actual y eliminar los mapas antiguos";
 
-"migration_prefetch_status" = "Preparing maps update…";
+"migration_prefetch_status" = "Preparando la actualización de mapas…";
 
-"migration_download_error_dialog" = "Download error";
+"migration_download_error_dialog" = "Error de descarga";
 
-"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
+"common_check_internet_connection_dialog" = "Por favor, verifica la configuración y asegúrate de que tu dispositivo está conectado a Internet.";
 
 "downloader_no_space_title" = "Sin espacio suficiente";
 
@@ -1554,20 +1554,20 @@
 
 "whatsnew_search_message" = "Hemos mejorado notablemente la búsqueda por dirección. Compruébalo.";
 
-"whatsnew_editor_title" = "Edit the map*";
+"whatsnew_editor_title" = "Editar el mapa*";
 
-"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+"whatsnew_editor_message_1" = "Añadir lugares nuevos al mapa y editar los lugares actuales directamente desde la aplicación.";
 
-"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+"whatsnew_editor_message_2" = "*MAPS.ME utiliza datos de la comunidad de OpenStreetMap.";
 
-"onboarding_offline_navigation_title" = "You will never get lost again";
+"onboarding_offline_navigation_title" = "Nunca volverás a perderte";
 
-"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+"onboarding_offline_navigation_message" = "Planifica rutas óptimas en coche y a pie, ¡incluso si no hay conexión a Internet!";
 
-"onboarding_offline_navigation_title_2" = "Offline navigation";
+"onboarding_offline_navigation_title_2" = "Navegación fuera de línea";
 
-"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+"onboarding_offline_navigation_message_2" = "Planifica rutas óptimas en coche y a pie.";
 
-"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+"onboarding_offline_maps_title" = "MAPS.ME - mapas sin conexión";
 
-"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";
+"onboarding_offline_maps_message" = "Descarga una vez los mapas para el área deseada, y utiliza las funciones de navegación y búsqueda sin conexión a Internet.";

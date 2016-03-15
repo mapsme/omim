@@ -415,10 +415,16 @@
 	<string name="routing_map_outdated">Будь ласка, оновіть карту, щоб прокласти маршрут.</string>
 	<!-- Update maps suggestion -->
 	<string name="routing_update_maps">В новій версії MAPS.ME ви зможете прокладати маршрут від поточного місця перебування до точки призначення. Щоб скористатися цією функцією, будь ласка, оновіть карти.</string>
+	<!-- Update all button text -->
+	<string name="downloader_update_all_button">Оновити всі</string>
 	<!-- Cancel all button text -->
 	<string name="downloader_cancel_all">Скасувати всі</string>
+	<!-- Downloaded maps category -->
+	<string name="downloader_downloaded_subtitle">Завантажено</string>
 	<!-- Country queued for download -->
 	<string name="downloader_queued">в черзі</string>
+	<string name="downloader_near_me_subtitle">Поблизу</string>
+	<string name="downloader_status_maps">Карти: %s</string>
 	<!-- Disclaimer message -->
 	<string name="routing_disclaimer">Використовуючи маршрути в програмі MAPS.ME, будь ласка, враховуйте наступне:\n\n  - Пропоновані маршрути можуть розглядатися тільки в якості рекомендації.\n - Дорожні умови, правила дорожнього руху, знаки являються більш пріоритетними в порівнянні з порадами навігаційної програми.\n - Карта може бути неточною або неактуальною , а запропонований маршрут не найоптимальнішим.\n\n  Будьте уважні на дорозі та бережіть себе!</string>
 	<!-- Outdated maps category -->
@@ -895,6 +901,12 @@
 	<string name="downloader_delete_map_dialog">Разом з мапою будуть видалені й внесені Вами правки на цій мапі.</string>
 	<string name="downloader_update_maps">Оновити мапи</string>
 	<string name="downloader_mwm_migration_dialog">Для побудови маршруту необхідно оновити усі мапи та побудувати маршрут заново.</string>
+	<string name="downloader_search_field_hint">Знайти карту</string>
+	<string name="migration_update_all_button">Оновити всі карти</string>
+	<string name="migration_delete_all_download_current_button">Завантажте поточну карту і видаліть старі</string>
+	<string name="migration_prefetch_status">Підготовка до оновлення карт...</string>
+	<string name="migration_download_error_dialog">Помилка завантаження</string>
+	<string name="common_check_internet_connection_dialog">Будь ласка, перевірте свої налаштування і переконайтеся, що ваш пристрій підлючено до Інтернету.</string>
 	<string name="downloader_no_space_title">Недостатньо місця</string>
 	<string name="downloader_no_space_message">Видаліть непотрібні дані</string>
 	<string name="editor_general_auth_error_dialog">Загальна помилка входу.</string>
@@ -920,4 +932,13 @@
 	<string name="whatsnew_smallmwm_header">Ви просили і ми це зробили</string>
 	<string name="whatsnew_smallmwm_message">Ми поділили карти на частини. Тепер ви можете стягувати окремі регіони, а не країну цілком.</string>
 	<string name="whatsnew_search_message">Якісно покращили пошук по адресам. Перевірте.</string>
+	<string name="whatsnew_editor_title">Редагувати карту*</string>
+	<string name="whatsnew_editor_message_1">Додати нові місця до карти і редагувати існуючі місця прямо з програми.</string>
+	<string name="whatsnew_editor_message_2">*MAPS.ME використовує дані спільноти OpenStreetMap.</string>
+	<string name="onboarding_offline_navigation_title">Ви ніколи не загубитеся знову</string>
+	<string name="onboarding_offline_navigation_message">Плануйте оптимальні маршрути для поїздок і піших походів навіть без Інтернет з\&#39;єднання!</string>
+	<string name="onboarding_offline_navigation_title_2">Офлайн навігація</string>
+	<string name="onboarding_offline_navigation_message_2">Плануйте оптимальні маршрути для поїздок і піших походів.</string>
+	<string name="onboarding_offline_maps_title">MAPS.ME — офлайн мапи</string>
+	<string name="onboarding_offline_maps_message">Завантажте мапи необхідного регіону один раз та користуйтесь навігацією та пошуком без підключення до інтернету.</string>
 </resources>

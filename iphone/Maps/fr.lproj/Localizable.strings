@@ -685,20 +685,20 @@
 "routing_update_maps" = "La nouvelle version de MAPS.ME permet de créer des itinéraires à partir de votre position actuelle vers un point de destination. Veuillez mettre à jour les cartes pour utiliser cette fonctionnalité.";
 
 /* Update all button text */
-"downloader_update_all_button" = "Update all";
+"downloader_update_all_button" = "Mettre à jour tout";
 
 /* Cancel all button text */
 "downloader_cancel_all" = "Tout annuler";
 
 /* Downloaded maps category */
-"downloader_downloaded_subtitle" = "Downloaded";
+"downloader_downloaded_subtitle" = "Téléchargé";
 
 /* Country queued for download */
 "downloader_queued" = "en file d'attente";
 
-"downloader_near_me_subtitle" = "Near me";
+"downloader_near_me_subtitle" = "Près de moi";
 
-"downloader_status_maps" = "Maps: %s";
+"downloader_status_maps" = "Cartes : %s";
 
 /* Disclaimer message */
 "routing_disclaimer" = "Quand vous créez des itinéraires sur l'application MAPS.ME, veuillez garder à l'esprit les points suivants :\n\n  - Les itinéraires suggérés ne doivent être considérés que comme des recommandations.\n\n  - Les conditions des routes, les règlementations de circulations et les panneaux sont prioritaires sur les conseils de navigation.\n\n  - Il est possible qu'une carte soit incorrecte ou obsolète, et les itinéraires ne sont pas toujours créés de la meilleure façon possible.\n\n  Soyez prudents sur les routes et prenez soin de vous.";
@@ -1490,17 +1490,17 @@
 
 "downloader_mwm_migration_dialog" = "Pour créer un itinéraire, vous devez mettre à jour toutes les cartes puis reprogrammer l'itinéraire.";
 
-"downloader_search_field_hint" = "Find the map";
+"downloader_search_field_hint" = "Trouver la carte";
 
-"migration_update_all_button" = "Update all maps";
+"migration_update_all_button" = "Mettre à jour toutes les cartes";
 
-"migration_delete_all_download_current_button" = "Download current map and delete the old ones";
+"migration_delete_all_download_current_button" = "Téléchargez la carte actuelle et supprimez les anciennes";
 
-"migration_prefetch_status" = "Preparing maps update…";
+"migration_prefetch_status" = "Préparation de la mise à jour des cartes…";
 
-"migration_download_error_dialog" = "Download error";
+"migration_download_error_dialog" = "Erreur de téléchargement";
 
-"common_check_internet_connection_dialog" = "Please check your settings and make sure your device is connected to the internet.";
+"common_check_internet_connection_dialog" = "Veuillez vérifier vos paramètres et vous assurer que votre appareil est bien connecté à Internet.";
 
 "downloader_no_space_title" = "Espace insuffisant";
 
@@ -1554,20 +1554,20 @@
 
 "whatsnew_search_message" = "Nous avons apporté des améliorations considérables à la recherche par adresse. Voyez par vous-même.";
 
-"whatsnew_editor_title" = "Edit the map*";
+"whatsnew_editor_title" = "Modifier la carte*";
 
-"whatsnew_editor_message_1" = "Add new places to the map, and edit existing ones directly from the app.";
+"whatsnew_editor_message_1" = "Ajoutez de nouveaux lieux sur la carte et modifiez les lieux existants directement depuis l'appli.";
 
-"whatsnew_editor_message_2" = "*MAPS.ME uses OpenStreetMap community data.";
+"whatsnew_editor_message_2" = "*MAPS.ME utilise les données de la communauté OpenStreetMap.";
 
-"onboarding_offline_navigation_title" = "You will never get lost again";
+"onboarding_offline_navigation_title" = "Vous ne vous perdrez plus jamais";
 
-"onboarding_offline_navigation_message" = "Plan optimal car and pedestrian routes, even if there is no internet connection!";
+"onboarding_offline_navigation_message" = "Planifiez des itinéraires optimaux en voiture ou à pied, même en l'absence de connexion Internet !";
 
-"onboarding_offline_navigation_title_2" = "Offline navigation";
+"onboarding_offline_navigation_title_2" = "Navigation hors-ligne";
 
-"onboarding_offline_navigation_message_2" = "Plan optimal car and pedestrian routes.";
+"onboarding_offline_navigation_message_2" = "Planifiez des itinéraires optimaux en voiture ou à pied.";
 
-"onboarding_offline_maps_title" = "MAPS.ME — offline maps";
+"onboarding_offline_maps_title" = "MAPS.ME – cartes hors-ligne";
 
-"onboarding_offline_maps_message" = "Download the maps for the desired area once, and use the navigation and search functions without an internet connection.";
+"onboarding_offline_maps_message" = "Téléchargez une seule fois les cartes de la zone désirée, et utilisez les fonctions de navigation et de recherche sans connexion Internet.";
