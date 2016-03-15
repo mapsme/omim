@@ -1504,3 +1504,57 @@
 "whats_new_editor_caption" = "Bearbeiten der Karte direkt in MAPS.ME";
 
 "whats_new_editor_message" = "Ihre Veränderungen werden Millionen von Benutzern helfen. Lasst uns zusammen die Welt verbessern!";
+
+"please_note" = "Bitte beachten";
+
+"common_no_wifi_dialog" = "Keine WLAN-Verbindung. Möchten Sie mit mobilen Daten fortfahren?";
+
+"downloader_delete_map_dialog" = "Alle Kartenänderungen werden zusammen mit der Karte gelöscht.";
+
+"downloader_update_maps" = "Karten aktualisieren";
+
+"downloader_mwm_migration_dialog" = "Um eine Strecke zu erstellen, müssen Sie alle Karten aktualisieren und dann die Strecken erneut planen.";
+
+"downloader_no_space_title" = "Nicht genügend Platz";
+
+"downloader_no_space_message" = "Bitte entfernen Sie unnötige Daten";
+
+"editor_general_auth_error_dialog" = "Allgemeiner Login-Fehler.";
+
+"editor_login_error_dialog" = "Login-Fehler.";
+
+"editor_login_failed_dialog" = "Login fehlgeschlagen";
+
+"editor_username_error_dialog" = "Benutzername ist ungültig";
+
+"editor_place_edited_dialog" = "Sie haben ein Objekt bearbeitet!";
+
+"editor_login_with_osm" = "Mit OpenStreetMap anmelden";
+
+"editor_profile_changes" = "Änderungen:";
+
+"editor_profile_unsent_changes" = "Nicht gesendet";
+
+"editor_focus_map_on_location" = "Ziehen Sie die Karte, um den Standort des Objektes zu korrigieren.";
+
+"editor_add_select_category" = "Kategorie auswählen";
+
+"editor_add_select_category_popular_subtitle" = "Beliebt";
+
+"editor_add_select_category_all_subtitle" = "Alle Kategorien";
+
+"editor_edit_place_title" = "Wird bearbeitet";
+
+"editor_add_place_title" = "Wird hinzugefügt";
+
+"editor_edit_place_name_title" = "Name";
+
+"editor_edit_place_name_hint" = "Name des Orts";
+
+"editor_edit_place_category_title" = "Kategorie";
+
+"editor_edit_place_atm_title" = "Geldautomat";
+
+"placepage_add_place_button" = "Einen Ort hinzufügen";
+
+"placepage_report_problem_button" = "Problem melden";

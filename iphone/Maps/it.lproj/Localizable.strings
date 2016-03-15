@@ -1504,3 +1504,57 @@
 "whats_new_editor_caption" = "Modifica la mappa direttamente da MAPS.ME";
 
 "whats_new_editor_message" = "Le tue modifiche aiuteranno milioni di utenti. Cerchiamo di migliorare il mondo insieme!";
+
+"please_note" = "Si prega di notare";
+
+"common_no_wifi_dialog" = "Nessuna connessione WiFi. Vuoi continuare con la connessione dati?";
+
+"downloader_delete_map_dialog" = "tutti i cambiamenti nella mappa saranno cancellati insieme alla mappa.";
+
+"downloader_update_maps" = "Aggiorna mappe";
+
+"downloader_mwm_migration_dialog" = "Per creare un percorso, devi aggiornare tutte le mappe e pianificare nuovamente il percorso.";
+
+"downloader_no_space_title" = "Spazio insufficiente";
+
+"downloader_no_space_message" = "Si prega di rimuovere i dati non necessari";
+
+"editor_general_auth_error_dialog" = "Errore generale di accesso.";
+
+"editor_login_error_dialog" = "Errore accesso.";
+
+"editor_login_failed_dialog" = "Accesso fallito";
+
+"editor_username_error_dialog" = "Nome utente non valido";
+
+"editor_place_edited_dialog" = "Hai modificato un oggetto!";
+
+"editor_login_with_osm" = "Accedi con OpenStreetMap";
+
+"editor_profile_changes" = "Modifiche:";
+
+"editor_profile_unsent_changes" = "Non inviato";
+
+"editor_focus_map_on_location" = "Sposta la mappa per selezionare l’esatta posizione dell’oggetto.";
+
+"editor_add_select_category" = "Seleziona categoria";
+
+"editor_add_select_category_popular_subtitle" = "Popolari";
+
+"editor_add_select_category_all_subtitle" = "Tutte le categorie";
+
+"editor_edit_place_title" = "Modifica";
+
+"editor_add_place_title" = "Aggiunta";
+
+"editor_edit_place_name_title" = "Nome";
+
+"editor_edit_place_name_hint" = "Nome del luogo";
+
+"editor_edit_place_category_title" = "Categoria";
+
+"editor_edit_place_atm_title" = "Bancomat";
+
+"placepage_add_place_button" = "Aggiungi un luogo";
+
+"placepage_report_problem_button" = "Riporta un problema";

@@ -1504,3 +1504,57 @@
 "whats_new_editor_caption" = "Redigera kartan direkt från MAPS.ME";
 
 "whats_new_editor_message" = "Dina ändringar kommer att hjälpa miljontals användare. Låt oss förbättra världen tillsammans!";
+
+"please_note" = "Observera";
+
+"common_no_wifi_dialog" = "Ingen wifi-anslutning. Vill du fortsätta med mobildata?";
+
+"downloader_delete_map_dialog" = "Alla kartändringar kommer att raderas tillsammans med kartan.";
+
+"downloader_update_maps" = "Uppdatera kartor";
+
+"downloader_mwm_migration_dialog" = "För att skapa en rutt måste du uppdatera alla kartor och sedan planera rutten igen.";
+
+"downloader_no_space_title" = "Ej tillräckligt utrymme";
+
+"downloader_no_space_message" = "Ta bort onödig data";
+
+"editor_general_auth_error_dialog" = "Allmänt fel vid inloggning.";
+
+"editor_login_error_dialog" = "Inloggningsfel.";
+
+"editor_login_failed_dialog" = "Inloggningen misslyckades";
+
+"editor_username_error_dialog" = "Användarnamnet är ogiltigt";
+
+"editor_place_edited_dialog" = "Du har redigerat ett objekt!";
+
+"editor_login_with_osm" = "Logga in med OpenStreetMap";
+
+"editor_profile_changes" = "Ändringar:";
+
+"editor_profile_unsent_changes" = "Inte skickade";
+
+"editor_focus_map_on_location" = "Dra på kartan för att välja objektets rätta plats.";
+
+"editor_add_select_category" = "Välj kategori";
+
+"editor_add_select_category_popular_subtitle" = "Populära";
+
+"editor_add_select_category_all_subtitle" = "Alla kategorier";
+
+"editor_edit_place_title" = "Redigerar";
+
+"editor_add_place_title" = "Lägger till";
+
+"editor_edit_place_name_title" = "Namn";
+
+"editor_edit_place_name_hint" = "Namn på platsen";
+
+"editor_edit_place_category_title" = "Kategori";
+
+"editor_edit_place_atm_title" = "Bankomat";
+
+"placepage_add_place_button" = "Lägg till en plats";
+
+"placepage_report_problem_button" = "Rapportera ett problem";

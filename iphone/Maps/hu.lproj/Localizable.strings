@@ -1504,3 +1504,57 @@
 "whats_new_editor_caption" = "Térkép szerkesztése közvetlenül a MAPS.ME-ből";
 
 "whats_new_editor_message" = "Javításaid felhasználóik millióinak fognak majd segíteni. Javítsunk együtt a világon!";
+
+"please_note" = "Megjegyzés";
+
+"common_no_wifi_dialog" = "Nincs WiFi-kapcsolat. Szeretnéd folytatni mobil adatforgalom használatával?";
+
+"downloader_delete_map_dialog" = "A térképekkel együtt minden rajtuk végzett módosítás is törlésre kerül.";
+
+"downloader_update_maps" = "Térképek frissítése";
+
+"downloader_mwm_migration_dialog" = "Útvonal létrehozásához frissítsd az összes térképet, majd tervezd meg újra az útvonalat.";
+
+"downloader_no_space_title" = "Nincs elegendő tárhely";
+
+"downloader_no_space_message" = "Kérjük, töröld a szükségtelen adatokat";
+
+"editor_general_auth_error_dialog" = "Általános bejelentkezési hiba.";
+
+"editor_login_error_dialog" = "Bejelentkezési hiba.";
+
+"editor_login_failed_dialog" = "Sikertelen bejelentkezés";
+
+"editor_username_error_dialog" = "Érvénytelen felhasználónév";
+
+"editor_place_edited_dialog" = "Szerkesztettél egy objektumot!";
+
+"editor_login_with_osm" = "Bejelentkezés OpenStreetMappel";
+
+"editor_profile_changes" = "Változások:";
+
+"editor_profile_unsent_changes" = "Nincs elküldve";
+
+"editor_focus_map_on_location" = "Húzd a térképet a megfelelő helyre az objektum helyes helyszínének kiválasztásához.";
+
+"editor_add_select_category" = "Válassz kategóriát";
+
+"editor_add_select_category_popular_subtitle" = "Népszerűek";
+
+"editor_add_select_category_all_subtitle" = "Minden kategória";
+
+"editor_edit_place_title" = "Szerkesztés";
+
+"editor_add_place_title" = "Hozzáadás";
+
+"editor_edit_place_name_title" = "Név";
+
+"editor_edit_place_name_hint" = "Hely neve";
+
+"editor_edit_place_category_title" = "Kategória";
+
+"editor_edit_place_atm_title" = "ATM";
+
+"placepage_add_place_button" = "Hely hozzáadása";
+
+"placepage_report_problem_button" = "Hibabejelentés";

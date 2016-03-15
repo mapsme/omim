@@ -1504,3 +1504,57 @@
 "whats_new_editor_caption" = "Upravujte mapu přímo z MAPS.ME";
 
 "whats_new_editor_message" = "Vaše změny pomůžou miliónům uživatelů. Pojďme společně vylepšit svět!";
+
+"please_note" = "Vezměte prosím na vědomí";
+
+"common_no_wifi_dialog" = "Žádné Wi-Fi připojení. Chcete pokračovat s mobilními daty?";
+
+"downloader_delete_map_dialog" = "Zároveň s touto mapou budou odstraněny také všechny změny na této mapě.";
+
+"downloader_update_maps" = "Aktualizujte mapy";
+
+"downloader_mwm_migration_dialog" = "Chcete-li vytvořit trasu, pak musíte aktualizovat všechny mapy a poté trasu naplánovat znovu.";
+
+"downloader_no_space_title" = "Nedostatek místa";
+
+"downloader_no_space_message" = "Odstraňte prosím nepotřebná data";
+
+"editor_general_auth_error_dialog" = "Obecná chyba při přihlašování.";
+
+"editor_login_error_dialog" = "Chyba při přihlašování.";
+
+"editor_login_failed_dialog" = "Přihlašování selhalo";
+
+"editor_username_error_dialog" = "Uživatelské jméno není platné";
+
+"editor_place_edited_dialog" = "Upravili jste objekt!";
+
+"editor_login_with_osm" = "Přihlásit se pomocí OpenStreetMap";
+
+"editor_profile_changes" = "Změny:";
+
+"editor_profile_unsent_changes" = "Neodesláno";
+
+"editor_focus_map_on_location" = "Táhněte mapu, abyste vybrali správné umístění objektu.";
+
+"editor_add_select_category" = "Vyberte kategorii";
+
+"editor_add_select_category_popular_subtitle" = "Populární";
+
+"editor_add_select_category_all_subtitle" = "Všechny kategorie";
+
+"editor_edit_place_title" = "Probíhají úpravy";
+
+"editor_add_place_title" = "Probíhá přidávání";
+
+"editor_edit_place_name_title" = "Název";
+
+"editor_edit_place_name_hint" = "Název místa";
+
+"editor_edit_place_category_title" = "Kategorie";
+
+"editor_edit_place_atm_title" = "Bankomat";
+
+"placepage_add_place_button" = "Přidat místo";
+
+"placepage_report_problem_button" = "Nahlásit problém";

@@ -1504,3 +1504,57 @@
 "whats_new_editor_caption" = "Edit the map directly from MAPS.ME";
 
 "whats_new_editor_message" = "Your changes will help millions of users. Let's improve the world together!";
+
+"please_note" = "Please note";
+
+"common_no_wifi_dialog" = "No WiFi connection. Do you want to continue with mobile data?";
+
+"downloader_delete_map_dialog" = "All map changes will be deleted together with the map.";
+
+"downloader_update_maps" = "Update Maps";
+
+"downloader_mwm_migration_dialog" = "To create a route, you need to update all maps and then plan the route again.";
+
+"downloader_no_space_title" = "Not enough space";
+
+"downloader_no_space_message" = "Please, remove unnecessary data";
+
+"editor_general_auth_error_dialog" = "General login error.";
+
+"editor_login_error_dialog" = "Login error.";
+
+"editor_login_failed_dialog" = "Login failed";
+
+"editor_username_error_dialog" = "Username is invalid";
+
+"editor_place_edited_dialog" = "You’ve edited an object!";
+
+"editor_login_with_osm" = "Login with OpenStreetMap";
+
+"editor_profile_changes" = "Changes:";
+
+"editor_profile_unsent_changes" = "Not sent";
+
+"editor_focus_map_on_location" = "Pull the map to select the correct location of the object.";
+
+"editor_add_select_category" = "Select category";
+
+"editor_add_select_category_popular_subtitle" = "Popular";
+
+"editor_add_select_category_all_subtitle" = "All categories";
+
+"editor_edit_place_title" = "Editing";
+
+"editor_add_place_title" = "Adding";
+
+"editor_edit_place_name_title" = "Name";
+
+"editor_edit_place_name_hint" = "Name of the place";
+
+"editor_edit_place_category_title" = "Category";
+
+"editor_edit_place_atm_title" = "ATM";
+
+"placepage_add_place_button" = "Add a place";
+
+"placepage_report_problem_button" = "Report a problem";

@@ -1504,3 +1504,57 @@
 "whats_new_editor_caption" = "Редактируйте карту прямо из MAPS.ME";
 
 "whats_new_editor_message" = "Ваши изменения помогут миллионам пользователей. Улучшим мир вместе!";
+
+"please_note" = "Обратите внимание";
+
+"common_no_wifi_dialog" = "Нет WiFi соединения. Вы хотите продолжить работу через мобильный интернет?";
+
+"downloader_delete_map_dialog" = "Вместе с картой удалятся и внесенные вами правки на этой карте.";
+
+"downloader_update_maps" = "Обновите карты";
+
+"downloader_mwm_migration_dialog" = "Для построения маршрутов необходимо обновить все карты и построить маршрут заново.";
+
+"downloader_no_space_title" = "Недостаточно места";
+
+"downloader_no_space_message" = "Удалите ненужные данные";
+
+"editor_general_auth_error_dialog" = "Общая ошибка авторизации.";
+
+"editor_login_error_dialog" = "Произошла ошибка при авторизации.";
+
+"editor_login_failed_dialog" = "Войти не удалось";
+
+"editor_username_error_dialog" = "Неверное имя пользователя";
+
+"editor_place_edited_dialog" = "Вы отредактировали объект!";
+
+"editor_login_with_osm" = "Войти через OpenStreetMap";
+
+"editor_profile_changes" = "Правки:";
+
+"editor_profile_unsent_changes" = "Не отправлено";
+
+"editor_focus_map_on_location" = "Потяните карту, чтобы выбрать правильное местоположение объекта.";
+
+"editor_add_select_category" = "Выбрать категорию";
+
+"editor_add_select_category_popular_subtitle" = "Популярные";
+
+"editor_add_select_category_all_subtitle" = "Все Категории";
+
+"editor_edit_place_title" = "Редактирование";
+
+"editor_add_place_title" = "Добавление";
+
+"editor_edit_place_name_title" = "Название";
+
+"editor_edit_place_name_hint" = "Название места";
+
+"editor_edit_place_category_title" = "Категория";
+
+"editor_edit_place_atm_title" = "Банкомат";
+
+"placepage_add_place_button" = "Добавить место";
+
+"placepage_report_problem_button" = "Report a problem";
