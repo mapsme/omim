@@ -700,6 +700,8 @@
 
 "downloader_status_maps" = "地圖： %s";
 
+"downloader_download_all_button" = "下載全部";
+
 /* Disclaimer message */
 "routing_disclaimer" = "在MAPS.ME應用中制定路線時請謹記以下幾點：\n\n  - 建議路線僅可當作推薦路線。\n - 路況、交通規則以及標誌應優先於導航建議。\n - 地圖可能會不正確或者過時，路線也可能不是以最佳可能方式制定的。\n\n  行車安全，請照顧好您自己！";
 
@@ -1571,3 +1573,11 @@
 "onboarding_offline_maps_title" = "MAPS.ME - 離線地圖";
 
 "onboarding_offline_maps_message" = "一次下載所需地區的地圖，無需網絡連接就能使用導航和搜索功能。";
+
+"onboarding_notifications_message" = "為了接收最新的地圖，請獲取更新通知";
+
+"onboarding_notifications_title" = "啟用更新通知";
+
+"onboarding_location_title" = "幫我們找到您";
+
+"onboarding_location_message" = "如要使用導航和其他功能，我們需要能獲取您的地理位置.";

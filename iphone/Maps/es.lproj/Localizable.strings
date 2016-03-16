@@ -700,6 +700,8 @@
 
 "downloader_status_maps" = "Mapas: %s";
 
+"downloader_download_all_button" = "Descarar todos";
+
 /* Disclaimer message */
 "routing_disclaimer" = "Creando rutas en la aplicación MAPS.ME, por favor, tenga en cuenta lo siguiente:\n\n  - Las rutas sugeridas se pueden considerar únicamente como recomendaciones.\n - Las condiciones de la carretera, las normas y las señales de tráfico tienen mayor prioridad que el consejo de navegación.\n - El mapa podría ser incorrecto o estar obsoleto y las rutas pueden no crear el mejor camino posible.\n\n  ¡Esté seguro en las carreteras y cuídese!";
 
@@ -1571,3 +1573,11 @@
 "onboarding_offline_maps_title" = "MAPS.ME - mapas sin conexión";
 
 "onboarding_offline_maps_message" = "Descarga una vez los mapas para el área deseada, y utiliza las funciones de navegación y búsqueda sin conexión a Internet.";
+
+"onboarding_notifications_message" = "Para recibir los mapas más recientes, obtén las notificaciones de actualización";
+
+"onboarding_notifications_title" = "Permitir notificaciones de actualización";
+
+"onboarding_location_title" = "Ayúdanos a encontrarte";
+
+"onboarding_location_message" = "Para utilizar la navegación y otras funciones, necesitamos acceso a tu geolocalización.";

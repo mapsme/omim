@@ -427,6 +427,7 @@
 	<string name="downloader_queued">V rade</string>
 	<string name="downloader_near_me_subtitle">Neďaleko mňa</string>
 	<string name="downloader_status_maps">Mapy: %s</string>
+	<string name="downloader_download_all_button">Stiahnuť všetko</string>
 	<!-- Disclaimer message -->
 	<string name="routing_disclaimer">Tvorenie trás v aplikácii MAPS.ME, prosím, majte na pamäti nasledovné:\n\n  - Navrhnuté trasy možno považovať iba za odporúčanie.\n - Stav vozovky, dopravné predpisy a značenie majú vyššiu prioritu, ako navigačné rady.\n - Mapa môže byť nesprávna alebo zastaraná a trasy nemusia byť vytvorené tým najlepším možným spôsobom.\n\n  Buďte na cestách v bezpečí a postarajte sa o seba!</string>
 	<!-- Outdated maps category -->
@@ -941,4 +942,8 @@
 	<string name="onboarding_offline_navigation_message_2">Naplánujte si vhodné trasy na cestu autom alebo peši.</string>
 	<string name="onboarding_offline_maps_title">MAPS.ME - offline mapy</string>
 	<string name="onboarding_offline_maps_message">Stiahnite si jednorázovo potrebné mapy - navigáciu a funkcie vyhľadávania môžete využívať aj bez internetového pripojenia.</string>
+	<string name="onboarding_notifications_message">Ak chcete získavať najnovšie mapy, zapnite si notifikácie aktualizácií</string>
+	<string name="onboarding_notifications_title">Povoliť notifikácie aktualizácií</string>
+	<string name="onboarding_location_title">Pomôžte nám a my vás nájdeme</string>
+	<string name="onboarding_location_message">Ak chcete používať navigáciu a ostatné funkcie, potrebujeme prístup k vašej aktuálnej polohe.</string>
 </resources>

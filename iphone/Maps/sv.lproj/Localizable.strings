@@ -700,6 +700,8 @@
 
 "downloader_status_maps" = "Kartor: %s";
 
+"downloader_download_all_button" = "Ladda ned alla";
+
 /* Disclaimer message */
 "routing_disclaimer" = "När du skapar rutter i appen MAPS.ME, vänligen tänk på följande:\n\n  - Föreslagna rutter kan endast ses som rekommendationer.\n - Vägskick, trafikregler och skyltar har högre prioritet än navigeringsråd.\n - Kartan kan vara felaktig eller förlegad, och rutter skapas inte alltid på bästa tänkbara sätt.\n\n  Kör säkert på vägarna och ta hand om dig själv!";
 
@@ -1571,3 +1573,11 @@
 "onboarding_offline_maps_title" = "MAPS.ME - kartor offline";
 
 "onboarding_offline_maps_message" = "Ladda ned kartorna för önskat område en gång och använd funktionerna för navigering och sökning utan en internetanslutning.";
+
+"onboarding_notifications_message" = "Få avisering om uppdateringar för de senaste kartorna";
+
+"onboarding_notifications_title" = "Aktivera avisering om uppdateringar";
+
+"onboarding_location_title" = "Hjälp oss att hitta dig";
+
+"onboarding_location_message" = "För att använda navigering och andra funktioner behöver vi tillgång till din geografiska plats.";

@@ -700,6 +700,8 @@
 
 "downloader_status_maps" = "Mapy: %s";
 
+"downloader_download_all_button" = "Stiahnuť všetko";
+
 /* Disclaimer message */
 "routing_disclaimer" = "Tvorenie trás v aplikácii MAPS.ME, prosím, majte na pamäti nasledovné:\n\n  - Navrhnuté trasy možno považovať iba za odporúčanie.\n - Stav vozovky, dopravné predpisy a značenie majú vyššiu prioritu, ako navigačné rady.\n - Mapa môže byť nesprávna alebo zastaraná a trasy nemusia byť vytvorené tým najlepším možným spôsobom.\n\n  Buďte na cestách v bezpečí a postarajte sa o seba!";
 
@@ -1571,3 +1573,11 @@
 "onboarding_offline_maps_title" = "MAPS.ME - offline mapy";
 
 "onboarding_offline_maps_message" = "Stiahnite si jednorázovo potrebné mapy - navigáciu a funkcie vyhľadávania môžete využívať aj bez internetového pripojenia.";
+
+"onboarding_notifications_message" = "Ak chcete získavať najnovšie mapy, zapnite si notifikácie aktualizácií";
+
+"onboarding_notifications_title" = "Povoliť notifikácie aktualizácií";
+
+"onboarding_location_title" = "Pomôžte nám a my vás nájdeme";
+
+"onboarding_location_message" = "Ak chcete používať navigáciu a ostatné funkcie, potrebujeme prístup k vašej aktuálnej polohe.";

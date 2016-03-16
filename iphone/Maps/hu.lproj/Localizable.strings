@@ -700,6 +700,8 @@
 
 "downloader_status_maps" = "Térképek: %s";
 
+"downloader_download_all_button" = "Mindegyik letöltése";
+
 /* Disclaimer message */
 "routing_disclaimer" = "Amikor útvonalakat készít a MAPS.ME appban, kérjük, vegye figyelembe a következőket:\n\n  - Az ajánlott útvonalak csak javaslatoknak tekintendők.\n - Az utak kondíciója, a forgalmi szabályok és jelzőtáblák magasabb prioritásúak, mint a navigációs javaslatok.\n - A térkép lehet, hogy hibás vagy idejétmúlt, az útvonalak pedig lehet, hogy nem a lehető legjobb módon készülnek el.\n\n  Legyen óvatos az utakon és vigyázzon magára!";
 
@@ -1571,3 +1573,11 @@
 "onboarding_offline_maps_title" = "MAPS.ME - offline térképek";
 
 "onboarding_offline_maps_message" = "Mindössze egyszer kell letöltened egy adott helyszín térképét, azt követően internetkapcsolat nélkül is használhatod a navigációs és keresési funkciókat.";
+
+"onboarding_notifications_message" = "Fogadj értesítő üzeneteket a legfrissebb térképekről";
+
+"onboarding_notifications_title" = "Értesítések engedélyezése";
+
+"onboarding_location_title" = "Segíts, hogy megtaláljunk";
+
+"onboarding_location_message" = "A navigáció és egyéb funkciók használatához hozzá kell férnünk a geolokációdhoz.";

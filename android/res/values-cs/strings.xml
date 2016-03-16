@@ -429,6 +429,7 @@
 	<string name="downloader_queued">ve frontě</string>
 	<string name="downloader_near_me_subtitle">Poblíž mě</string>
 	<string name="downloader_status_maps">Mapy: %s</string>
+	<string name="downloader_download_all_button">Stáhnout vše</string>
 	<!-- Disclaimer message -->
 	<string name="routing_disclaimer">Při vytváření tras v aplikaci MAPS.ME mějte, prosím, na paměti následující:\n\n • Navrhované trasy lze brát jen jako doporučení.\n • Pravidla silničního provozu, aktuální podmínky na silnici a dopravní značení mají přednost před údaji z navigace.\n • Mapa může být nepřesná nebo zastaralá a navržené cesty nemusí být ideální.\n\nCestujte bezpečně a ohleduplně. Šťastnou cestu!</string>
 	<!-- Outdated maps category -->
@@ -945,4 +946,8 @@
 	<string name="onboarding_offline_navigation_message_2">Naplánujte si optimální trasy pro auto nebo pěší chůzi.</string>
 	<string name="onboarding_offline_maps_title">MAPS.ME - offline mapy</string>
 	<string name="onboarding_offline_maps_message">Stáhněte si jednou mapy požadované oblasti a poté používejte navigaci a vyhledávací funkce bez připojení k internetu.</string>
+	<string name="onboarding_notifications_message">Chcete-li získat nejnovější mapy, pak zapněte upozornění na aktualizace</string>
+	<string name="onboarding_notifications_title">Povolit upozornění na aktualizace</string>
+	<string name="onboarding_location_title">Pomozte nám vás najít</string>
+	<string name="onboarding_location_message">Chcete-li používat navigaci a další funkce, pak potřebujeme přístup k vaší zeměpisné poloze.</string>
 </resources>

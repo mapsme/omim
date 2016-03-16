@@ -700,6 +700,8 @@
 
 "downloader_status_maps" = "地図: %s";
 
+"downloader_download_all_button" = "全てをダウンロード";
+
 /* Disclaimer message */
 "routing_disclaimer" = "MAPS.MEアプリでルートを作成する時は、以下のことに留意してください：\n\n  - 提案されたルートは推奨するだけです。\n - 道路状況、交通規則と標識はナビゲーションのアドバイスより優先度が高くなっています。\n - マップが不正確または古くなっている場合や、ルートが最適な方法で作成されていないことがあります。\n\n  安全運転でご自愛ください！";
 
@@ -1571,3 +1573,11 @@
 "onboarding_offline_maps_title" = "MAPS.ME - オフライン地図";
 
 "onboarding_offline_maps_message" = "希望するエリアの地図を一回ダウンロードするだけで、インターネット接続なしでもナビゲーションや検索の機能を使用できます。";
+
+"onboarding_notifications_message" = "最新地図の入手のためにアップデート通知を受信";
+
+"onboarding_notifications_title" = "アップデート通知を有効にする";
+
+"onboarding_location_title" = "現在地判定のお手伝い";
+
+"onboarding_location_message" = "ナビゲーションやその他の機能の使用のために、アプリがGeolocationにアクセスする必要があります";

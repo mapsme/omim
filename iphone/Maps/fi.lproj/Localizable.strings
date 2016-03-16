@@ -700,6 +700,8 @@
 
 "downloader_status_maps" = "Kartat: %s";
 
+"downloader_download_all_button" = "Lataa kaikki";
+
 /* Disclaimer message */
 "routing_disclaimer" = "Pidä mielessä seuraavat seikat luodessasi reittejä MAPS.ME -sovelluksella:\n\n- Ehdotettuja reittejä tulee pitää vain suosituksina.\n- Teiden kunto, liikennesäännöt ja -merkit on aina otettava huomioon navigointiehdotuksista huolimatta.\n - Kartassa saattaa olla virheitä, tai se saattaa olla vanhentunut, eikä reittejä sen takia voida luoda parhaalla mahdollisella tavalla.\n\nPysy valppaana liikenteessä ja pidä huolta itsestäsi!";
 
@@ -1571,3 +1573,11 @@
 "onboarding_offline_maps_title" = "MAPS.ME - offline-kartat";
 
 "onboarding_offline_maps_message" = "Lataa haluamasi alueen kartat yhden kerran ja voit käyttää navigointi- ja hakutoimintoja ilman Internet-yhteyttä.";
+
+"onboarding_notifications_message" = "Ota päivitysilmoitukset käyttöön saadaksesi tuoreimmat kartat";
+
+"onboarding_notifications_title" = "Ota päivitysilmoitukset käyttöön";
+
+"onboarding_location_title" = "Auta meitä löytämään sinut";
+
+"onboarding_location_message" = "Tarvitsemme sijaintisi käyttääksemme navigointia ja muita ominaisuuksia.";

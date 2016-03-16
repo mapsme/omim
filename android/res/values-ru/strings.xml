@@ -449,6 +449,7 @@
 	<string name="downloader_queued">в очереди</string>
 	<string name="downloader_near_me_subtitle">Возле меня</string>
 	<string name="downloader_status_maps">Карт: %s</string>
+	<string name="downloader_download_all_button">Загрузить все</string>
 	<!-- Disclaimer message -->
 	<string name="routing_disclaimer">Используя маршруты в приложении MAPS.ME, пожалуйста, учитывайте следующее:\n\n  - Предлагаемые маршруты могут рассматриваться только в качестве рекомендации.\n - Дорожная обстановка, правила дорожного движения, знаки являются более приоритетными по сравнению с советами навигационной программы.\n - Карта может быть неточной или неактуальной, а предложенный маршрут не самым оптимальным.\n\n  Будьте внимательны на дорогах и берегите себя!</string>
 	<!-- Outdated maps category -->
@@ -971,4 +972,8 @@
 	<string name="onboarding_offline_navigation_message_2">Прокладывайте оптимальные автомобильные и пешеходные маршруты.</string>
 	<string name="onboarding_offline_maps_title">MAPS.ME — оффлайн карты</string>
 	<string name="onboarding_offline_maps_message">Загрузите карты необходимого региона один раз и пользуйтесь навигацией и поиском без подключения к интернету.</string>
+	<string name="onboarding_notifications_message">Получайте уведомления об обновлениях, чтобы всегда иметь актуальные карты</string>
+	<string name="onboarding_notifications_title">Разрешите отправку уведомлений</string>
+	<string name="onboarding_location_title">Помогите найти вас</string>
+	<string name="onboarding_location_message">Чтобы пользоваться навигацией и другими функциями приложения, нам необходим доступ к вашей геопозиции.</string>
 </resources>

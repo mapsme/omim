@@ -414,6 +414,7 @@
 	<string name="downloader_queued">대기</string>
 	<string name="downloader_near_me_subtitle">내 근처</string>
 	<string name="downloader_status_maps">지도: %s</string>
+	<string name="downloader_download_all_button">모두 다운로드</string>
 	<!-- Disclaimer message -->
 	<string name="routing_disclaimer">MAPS.ME 앱에서 경로를 작성할 때, 다음에 유의하시기 바랍니다:\n\n  - 추천 루트는 권장 사항으로만 간주될 수 있습니다.\n - 도로 조건, 교통 규칙 및 징후는 탐색 조언보다 더 높은 우선 순위를 갖습니다.\n -지도는 잘못되었거나 만료되었을 수 있으며, 경로는 최상의 방법을 만들어지지 않을 수 있습니다.\n\n  도로에서 안전하게 몸조심하세요!</string>
 	<!-- Outdated maps category -->
@@ -930,4 +931,8 @@
 	<string name="onboarding_offline_navigation_message_2">최적의 자동차와 보행자 경로를 계획합니다.</string>
 	<string name="onboarding_offline_maps_title">MAPS.ME - 오프라인지도</string>
 	<string name="onboarding_offline_maps_message">한 번에 원하는 지역의 지도를 다운로드하고, 인터넷 연결없이 탐색 및 검색 기능을 사용합니다.</string>
+	<string name="onboarding_notifications_message">최신지도를 받으려면, 업데이트 알림 받기</string>
+	<string name="onboarding_notifications_title">업데이트 알림 활성화</string>
+	<string name="onboarding_location_title">사용자를 찾도록 돕기</string>
+	<string name="onboarding_location_message">탐색 및 기타 기능을 사용하려면, 위치 정보에 액세스해야 합니다.</string>
 </resources>

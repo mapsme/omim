@@ -428,6 +428,7 @@
 	<string name="downloader_queued">مَصْفوف</string>
 	<string name="downloader_near_me_subtitle">بالقرب مني</string>
 	<string name="downloader_status_maps">الخرائط: %s</string>
+	<string name="downloader_download_all_button">تنزيل الكل</string>
 	<!-- Disclaimer message -->
 	<string name="routing_disclaimer">عند إنشاء مسارات الطرق في تطبيق MAPS.ME، يرجى أخذ التالي في الحسبان:\n\n  - المسارات المقترحة تعتبر مجرد اقتراحات فقط.\n - حالة الطريق وقوانينه والإشارات الموجودة فيه لها الأولولية أثناء تقديم نصائح الملاحة.\n - قد تكون الخريطة خاطئة أو قديمة، لذا فإنه يمكن ألا تُرسم المسارات بالشكل الأمثل.\n\n  كن آمنا على الطريق وانتبه لتفسك!</string>
 	<!-- Outdated maps category -->
@@ -944,4 +945,8 @@
 	<string name="onboarding_offline_navigation_message_2">خطط أفضل طرق السيارات والمشاة.</string>
 	<string name="onboarding_offline_maps_title">MAPS.ME – خرائط غير متصلة بالإنترنت</string>
 	<string name="onboarding_offline_maps_message">قم بتنزيل خرائط للمنطقة المطلوب مرة واحدة، واستخدم وظائف الملاحة والبحث دون الحاجة للاتصال بالإنترنت.</string>
+	<string name="onboarding_notifications_message">تابع إخطارات التحديث للحصول على أحدث الخرائط</string>
+	<string name="onboarding_notifications_title">تفعيل إخطارات التحديث</string>
+	<string name="onboarding_location_title">ساعدنا في العثور عليك</string>
+	<string name="onboarding_location_message">لاستخدام الملاحة والميزات الأخرى، فنحن بحاجة إلى تحديد موقعك الجغرافي.</string>
 </resources>

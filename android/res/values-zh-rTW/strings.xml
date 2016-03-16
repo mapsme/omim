@@ -412,6 +412,7 @@
 	<string name="downloader_queued">已佇列</string>
 	<string name="downloader_near_me_subtitle">在我附近</string>
 	<string name="downloader_status_maps">地圖： %s</string>
+	<string name="downloader_download_all_button">下載全部</string>
 	<!-- Disclaimer message -->
 	<string name="routing_disclaimer">在MAPS.ME應用中制定路線時請謹記以下幾點：\n\n  - 建議路線僅可當作推薦路線。\n - 路況、交通規則以及標誌應優先於導航建議。\n - 地圖可能會不正確或者過時，路線也可能不是以最佳可能方式制定的。\n\n  行車安全，請照顧好您自己！</string>
 	<!-- Outdated maps category -->
@@ -924,4 +925,8 @@
 	<string name="onboarding_offline_navigation_message_2">規劃最佳的駕車和步行路線。</string>
 	<string name="onboarding_offline_maps_title">MAPS.ME - 離線地圖</string>
 	<string name="onboarding_offline_maps_message">一次下載所需地區的地圖，無需網絡連接就能使用導航和搜索功能。</string>
+	<string name="onboarding_notifications_message">為了接收最新的地圖，請獲取更新通知</string>
+	<string name="onboarding_notifications_title">啟用更新通知</string>
+	<string name="onboarding_location_title">幫我們找到您</string>
+	<string name="onboarding_location_message">如要使用導航和其他功能，我們需要能獲取您的地理位置.</string>
 </resources>

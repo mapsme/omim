@@ -700,6 +700,8 @@
 
 "downloader_status_maps" = "Kort: %s";
 
+"downloader_download_all_button" = "Download alle";
+
 /* Disclaimer message */
 "routing_disclaimer" = "Creating routes in MAPS.ME app, please keep in mind the following:\n\n  - Suggested routes can be considered as recommendations only.\n - Road conditions, traffic rules and signs have higher priority than navigation advice.\n - The map may be incorrect or outdated, and routes may not be created the best possible way.\n\n  Be safe on roads and take care of yourself!";
 
@@ -1571,3 +1573,11 @@
 "onboarding_offline_maps_title" = "MAPS.ME - offline kort";
 
 "onboarding_offline_maps_message" = "Download kortene til det ønskede område en gang, og brug navigerings- og søgefunktionerne uden internetforbindelse.";
+
+"onboarding_notifications_message" = "For at modtage de nyeste kort kan du få opdateringsnotifikationer";
+
+"onboarding_notifications_title" = "Aktivér opdateringsnotifikationer";
+
+"onboarding_location_title" = "Hjælp os med at finde dig";
+
+"onboarding_location_message" = "For at bruge navigering og andre funktioner skal vi have adgang til din geolokation.";
