@@ -8,6 +8,7 @@
 #include "coding/writer.hpp"
 
 #include "base/logging.hpp"
+#include "base/string_utils.hpp"
 
 #include "std/target_os.hpp"
 #include "std/thread.hpp"

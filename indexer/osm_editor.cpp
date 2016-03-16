@@ -128,6 +128,7 @@ namespace osm
 // TODO(AlexZ): Normalize osm multivalue strings for correct merging
 // (e.g. insert/remove spaces after ';' delimeter);
 
+Editor::Editor() : m_notes(editor::Notes::MakeNotes()) {}
 Editor & Editor::Instance()
 {
   static Editor instance;
@@ -292,18 +293,12 @@ bool Editor::Save(string const & fullFilePath) const
     }
   }
 
-  string const tmpFileName = fullFilePath + ".tmp";
-  if (!doc.save_file(tmpFileName.data(), "  "))
-  {
-    LOG(LERROR, ("Can't save map edits into", tmpFileName));
-    return false;
-  }
-  else if (!my::RenameFileX(tmpFileName, fullFilePath))
-  {
-    LOG(LERROR, ("Can't rename file", tmpFileName, "to", fullFilePath));
-    return false;
-  }
-  return true;
+  return my::WriteToTempAndRenameToFile(
+      fullFilePath,
+      [&doc](string const & fileName)
+      {
+        return doc.save_file(fileName.data(), "  ");
+      });
 }
 
 void Editor::ClearAllLocalEdits()
@@ -502,6 +497,8 @@ EditableProperties Editor::GetEditablePropertiesForTypes(feature::TypesHolder co
 
 bool Editor::HaveSomethingToUpload() const
 {
+  if (m_notes->NotUploadedNotesCount() != 0)
+    return true;
   for (auto const & id : m_features)
   {
     for (auto const & index : id.second)
@@ -530,6 +527,9 @@ bool Editor::HaveSomethingToUpload(MwmSet::MwmId const & mwmId) const
 void Editor::UploadChanges(string const & key, string const & secret, TChangesetTags tags,
                            TFinishUploadCallback callBack)
 {
+  if (m_notes->NotUploadedNotesCount())
+    UploadNotes(key, secret);
+
   if (!HaveSomethingToUpload())
   {
     LOG(LDEBUG, ("There are no local edits to upload."));
@@ -765,6 +765,16 @@ bool Editor::CreatePoint(uint32_t type, m2::PointD const & mercator, MwmSet::Mwm
   // Only point type features can be created at the moment.
   outFeature.SetPointType();
   return true;
+}
+
+void Editor::CreateNote(m2::PointD const & point, string const & note)
+{
+  m_notes->CreateNote(point, note);
+}
+
+void Editor::UploadNotes(string const & key, string const & secret)
+{
+  m_notes->Upload(OsmOAuth::ServerAuth({key, secret}));
 }
 
 string DebugPrint(Editor::FeatureStatus fs)
