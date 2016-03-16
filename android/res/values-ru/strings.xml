@@ -959,7 +959,7 @@
 	<string name="editor_edit_place_category_title">Категория</string>
 	<string name="editor_edit_place_atm_title">Банкомат</string>
 	<string name="placepage_add_place_button">Добавить место</string>
-	<string name="placepage_report_problem_button">Report a problem</string>
+	<string name="placepage_report_problem_button">Сообщить о проблеме</string>
 	<string name="whatsnew_smallmwm_header">Вы долго просили — мы наконец сделали</string>
 	<string name="whatsnew_smallmwm_message">Мы разрезали большие карты на части: теперь загружай только нужную область, а не всю страну целиком.</string>
 	<string name="whatsnew_search_message">Качественно улучшили поиск по адресам. Проверяйте.</string>
