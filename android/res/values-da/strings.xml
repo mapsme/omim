@@ -426,6 +426,7 @@
 	<string name="downloader_queued">i kø</string>
 	<string name="downloader_near_me_subtitle">I nærheden</string>
 	<string name="downloader_status_maps">Kort: %s</string>
+	<string name="downloader_download_all_button">Download alle</string>
 	<!-- Outdated maps category -->
 	<string name="downloader_outdated_maps">Uddateret</string>
 	<!-- Up to date maps category -->
@@ -940,4 +941,8 @@
 	<string name="onboarding_offline_navigation_message_2">Planlæg de optimale ruter i bil og til fods.</string>
 	<string name="onboarding_offline_maps_title">MAPS.ME - offline kort</string>
 	<string name="onboarding_offline_maps_message">Download kortene til det ønskede område en gang, og brug navigerings- og søgefunktionerne uden internetforbindelse.</string>
+	<string name="onboarding_notifications_message">For at modtage de nyeste kort kan du få opdateringsnotifikationer</string>
+	<string name="onboarding_notifications_title">Aktivér opdateringsnotifikationer</string>
+	<string name="onboarding_location_title">Hjælp os med at finde dig</string>
+	<string name="onboarding_location_message">For at bruge navigering og andre funktioner skal vi have adgang til din geolokation.</string>
 </resources>

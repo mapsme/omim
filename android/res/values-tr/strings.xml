@@ -428,6 +428,7 @@
 	<string name="downloader_queued">sıraya alındı</string>
 	<string name="downloader_near_me_subtitle">Yakınlarımda</string>
 	<string name="downloader_status_maps">Haritalar: %s</string>
+	<string name="downloader_download_all_button">Hepsini indir</string>
 	<!-- Disclaimer message -->
 	<string name="routing_disclaimer">MAPS.ME uygulamasında rota yaratırken lütfen aşağıdakileri dikkate alın:\n\n  - Önerilen rotalar sadece tavsiyeler olarak düşünülmelidir.\n - Yol koşulları, trafik kuralları ve işaretleri navigasyon tavsiyelerden daha önceliklidir.\n - Harita doğru olmayabilir ya da eskimiş olabilir ve rotalar en iyi mümkün yola göre oluşturulmamış olabilir.\n\n  Yollarda güvende olun ve kendinize dikkat edin!</string>
 	<!-- Outdated maps category -->
@@ -944,4 +945,8 @@
 	<string name="onboarding_offline_navigation_message_2">En iyi araba ve yaya rotalarını planlayın.</string>
 	<string name="onboarding_offline_maps_title">MAPS.ME - çevrimdışı haritalar</string>
 	<string name="onboarding_offline_maps_message">İlk önce istenilen alanın haritasını indirin ve internet bağlantısı olmadan navigasyonu ve arama fonksiyonlarını kullanın.</string>
+	<string name="onboarding_notifications_message">En son haritaları almak için güncelleme bildirimlerini alın</string>
+	<string name="onboarding_notifications_title">Güncelleme bildirimlerini etkinleştir</string>
+	<string name="onboarding_location_title">Sizi bulmamıza yardım edin</string>
+	<string name="onboarding_location_message">Navigasyon ve diğer özellikleri kullanmak için konum belirlemenize erişmeye ihtiyacımız var.</string>
 </resources>

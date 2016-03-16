@@ -700,6 +700,8 @@
 
 "downloader_status_maps" = "Peta: %s";
 
+"downloader_download_all_button" = "Unduh semua";
+
 /* Disclaimer message */
 "routing_disclaimer" = "Dalam membuat rute di aplikasi MAPS.ME, mohon ingat:\n\n- Rute yang disarankan hanya dapat dianggap sebagai rekomendasi.\n- Kondisi jalan, peraturan dan tanda-tanda lalu lintas memiliki prioritas yang lebih tinggi daripada saran navigasi.\n- Kondisi jalan, peraturan dan tanda-tanda lalu lintas memiliki prioritas yang lebih tinggi daripada saran navigasi.\n- Peta bisa saja salah atau sudah usang, dan rute yang dibuat mungkin bukan yang terbaik.\n\nBerhati-hatilah di jalan dan jagalah diri Anda sendiri!";
 
@@ -1571,3 +1573,11 @@
 "onboarding_offline_maps_title" = "MAPS.ME - peta offline";
 
 "onboarding_offline_maps_message" = "Unduh peta untuk daerah yang diinginkan sekali, dan gunakan navigasi dan fungsi pencarian tanpa koneksi internet.";
+
+"onboarding_notifications_message" = "Untuk menerima peta-peta terbaru, dapatkan pemberitahuan pembaruan";
+
+"onboarding_notifications_title" = "Aktifkan pemberitahuan pembaruan";
+
+"onboarding_location_title" = "Membantu kami menemukan Anda";
+
+"onboarding_location_message" = "Untuk menggunakan navigasi dan fitur-fitur lainnya, kami perlu mengakses geolokasi Anda.";

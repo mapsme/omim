@@ -423,6 +423,7 @@
 	<string name="downloader_queued">w kolejce</string>
 	<string name="downloader_near_me_subtitle">Blisko mnie</string>
 	<string name="downloader_status_maps">Mapy: %s</string>
+	<string name="downloader_download_all_button">Pobierz wszystkie</string>
 	<!-- Disclaimer message -->
 	<string name="routing_disclaimer">Podczas tworzenia tras w aplikacji MAPS.ME pamiętaj o poniższych zasadach:\n\n  - Sugerowane trasy mogą być traktowane jedynie jako propozycje.\n - Warunki na drodze, przepisy ruchu drogowego i znaki mają większy priorytet niż wskazówki nawigacyjne.\n - Mapa może okazać się nieprawidłowa lub nieaktualna a trasy mogą nie zostać utworzone w sposób najlepszy z możliwych.\n\n  Szerokiej drogi, uważaj na siebie!</string>
 	<!-- Outdated maps category -->
@@ -939,4 +940,8 @@
 	<string name="onboarding_offline_navigation_message_2">Planuj optymalne trasy samochodowe i piesze.</string>
 	<string name="onboarding_offline_maps_title">MAPS.ME - mapy offline</string>
 	<string name="onboarding_offline_maps_message">Pobierz jednorazowo mapy dla wybranego obszaru, aby korzystać z nawigacji i wyszukiwania bez połączenia sieciowego.</string>
+	<string name="onboarding_notifications_message">Aby pobierać najnowsze mapy, włącz powiadomienia o aktualizacjach</string>
+	<string name="onboarding_notifications_title">Włącz powiadomienia o aktualizacjach</string>
+	<string name="onboarding_location_title">Pomaga nam znaleźć Ciebie</string>
+	<string name="onboarding_location_message">Abyś mógł korzystać z nawigacji i innych funkcji, musimy uzyskać dostęp do twojej geolokalizacji.</string>
 </resources>

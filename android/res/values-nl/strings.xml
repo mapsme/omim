@@ -414,6 +414,7 @@
 	<string name="downloader_queued">in de wachtrij</string>
 	<string name="downloader_near_me_subtitle">Bij mij in de buurt</string>
 	<string name="downloader_status_maps">Kaarten: %s</string>
+	<string name="downloader_download_all_button">Alles downloaden</string>
 	<!-- Disclaimer message -->
 	<string name="routing_disclaimer">Bij het creëren van routes in MAPS.ME-app, dient u rekening te houden met het volgende:\n\n  - Voorgestelde routes kunnen uitsluitend als aanbevelingen beschouwd worden.\n - Wegconditie, verkeersregels en borden hebben een hogere prioriteit dan het navigatie-advies.\n - De kaart kan onjuist of verouderd zijn en de routes kunnen niet op de beste mogelijke manier gecreëerd zijn.\n\n  Wees veilig op wegen en zorg goed voor uzelf!</string>
 	<!-- Outdated maps category -->
@@ -928,4 +929,8 @@
 	<string name="onboarding_offline_navigation_message_2">Plan optimale auto- en wandelroutes.</string>
 	<string name="onboarding_offline_maps_title">MAPS.ME - offline kaarten</string>
 	<string name="onboarding_offline_maps_message">Download eenmaal de kaarten voor het gewenste gebied en gebruik de navigatie- en zoekfuncties zonder een internetverbinding.</string>
+	<string name="onboarding_notifications_message">Ontvang update-meldingen om de nieuwste kaarten te ontvangen</string>
+	<string name="onboarding_notifications_title">Schakel update-meldingen in</string>
+	<string name="onboarding_location_title">Help ons om je te vinden</string>
+	<string name="onboarding_location_message">Om de navigatie en andere functies te kunnen gebruiken, hebben we toegang tot je geolocatie nodig.</string>
 </resources>

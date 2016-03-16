@@ -700,6 +700,8 @@
 
 "downloader_status_maps" = "Mapy: %s";
 
+"downloader_download_all_button" = "Pobierz wszystkie";
+
 /* Disclaimer message */
 "routing_disclaimer" = "Podczas tworzenia tras w aplikacji MAPS.ME pamiętaj o poniższych zasadach:\n\n  - Sugerowane trasy mogą być traktowane jedynie jako propozycje.\n - Warunki na drodze, przepisy ruchu drogowego i znaki mają większy priorytet niż wskazówki nawigacyjne.\n - Mapa może okazać się nieprawidłowa lub nieaktualna a trasy mogą nie zostać utworzone w sposób najlepszy z możliwych.\n\n  Szerokiej drogi, uważaj na siebie!";
 
@@ -1571,3 +1573,11 @@
 "onboarding_offline_maps_title" = "MAPS.ME - mapy offline";
 
 "onboarding_offline_maps_message" = "Pobierz jednorazowo mapy dla wybranego obszaru, aby korzystać z nawigacji i wyszukiwania bez połączenia sieciowego.";
+
+"onboarding_notifications_message" = "Aby pobierać najnowsze mapy, włącz powiadomienia o aktualizacjach";
+
+"onboarding_notifications_title" = "Włącz powiadomienia o aktualizacjach";
+
+"onboarding_location_title" = "Pomaga nam znaleźć Ciebie";
+
+"onboarding_location_message" = "Abyś mógł korzystać z nawigacji i innych funkcji, musimy uzyskać dostęp do twojej geolokalizacji.";

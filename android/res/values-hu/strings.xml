@@ -423,6 +423,7 @@
 	<string name="downloader_queued">várólistás</string>
 	<string name="downloader_near_me_subtitle">A közelemben</string>
 	<string name="downloader_status_maps">Térképek: %s</string>
+	<string name="downloader_download_all_button">Mindegyik letöltése</string>
 	<!-- Disclaimer message -->
 	<string name="routing_disclaimer">Amikor útvonalakat készít a MAPS.ME appban, kérjük, vegye figyelembe a következőket:\n\n  - Az ajánlott útvonalak csak javaslatoknak tekintendők.\n - Az utak kondíciója, a forgalmi szabályok és jelzőtáblák magasabb prioritásúak, mint a navigációs javaslatok.\n - A térkép lehet, hogy hibás vagy idejétmúlt, az útvonalak pedig lehet, hogy nem a lehető legjobb módon készülnek el.\n\n  Legyen óvatos az utakon és vigyázzon magára!</string>
 	<!-- Outdated maps category -->
@@ -939,4 +940,8 @@
 	<string name="onboarding_offline_navigation_message_2">Tervezd meg az optimális autós és gyalogos útvonalakat.</string>
 	<string name="onboarding_offline_maps_title">MAPS.ME - offline térképek</string>
 	<string name="onboarding_offline_maps_message">Mindössze egyszer kell letöltened egy adott helyszín térképét, azt követően internetkapcsolat nélkül is használhatod a navigációs és keresési funkciókat.</string>
+	<string name="onboarding_notifications_message">Fogadj értesítő üzeneteket a legfrissebb térképekről</string>
+	<string name="onboarding_notifications_title">Értesítések engedélyezése</string>
+	<string name="onboarding_location_title">Segíts, hogy megtaláljunk</string>
+	<string name="onboarding_location_message">A navigáció és egyéb funkciók használatához hozzá kell férnünk a geolokációdhoz.</string>
 </resources>
