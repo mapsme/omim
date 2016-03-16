@@ -84,17 +84,6 @@ TCountryTreeNode const & LeafNodeFromCountryId(TCountryTree const & root,
   CHECK(node, ("Node with id =", countryId, "not found in country tree as a leaf."));
   return *node;
 }
-
-void CorrectJustDownloaded(Storage::TQueue::iterator justDownloadedItem, Storage::TQueue & queue,
-                           TCountriesSet & justDownloaded)
-{
-  TCountryId const justDownloadedCountry = justDownloadedItem->GetCountryId();
-  queue.erase(justDownloadedItem);
-  if (queue.empty())
-    justDownloaded.clear();
-  else
-    justDownloaded.insert(justDownloadedCountry);
-}
 }  // namespace
 
 void GetQueuedCountries(Storage::TQueue const & queue, TCountriesSet & resultCountries)
@@ -226,6 +215,7 @@ void Storage::Clear()
 
   m_downloader->Reset();
   m_queue.clear();
+  m_justDownloaded.clear();
   m_failedCountries.clear();
   m_localFiles.clear();
   m_localFilesForFakeCountries.clear();
@@ -567,7 +557,7 @@ void Storage::DownloadNextCountryFromQueue()
   {
     OnMapDownloadFinished(countryId, false /* success */, queuedCountry.GetInitOptions());
     NotifyStatusChangedForHierarchy(countryId);
-    CorrectJustDownloaded(m_queue.begin(), m_queue, m_justDownloaded);
+    CorrectJustDownloadedAndQueue(m_queue.begin());
     DownloadNextCountryFromQueue();
     return;
   }
@@ -693,7 +683,7 @@ void Storage::OnMapFileDownloadFinished(bool success,
   }
 
   OnMapDownloadFinished(countryId, success, queuedCountry.GetInitOptions());
-  CorrectJustDownloaded(m_queue.begin(), m_queue, m_justDownloaded);
+  CorrectJustDownloadedAndQueue(m_queue.begin());
   SaveDownloadQueue();
 
   NotifyStatusChangedForHierarchy(countryId);
@@ -1075,7 +1065,19 @@ bool Storage::DeleteCountryFilesFromDownloader(TCountryId const & countryId, Map
 
   // Remove country from the queue if there's nothing to download.
   if (queuedCountry->GetInitOptions() == MapOptions::Nothing)
-    CorrectJustDownloaded(find(m_queue.begin(), m_queue.end(), countryId), m_queue, m_justDownloaded);
+  {
+    auto it = find(m_queue.begin(), m_queue.end(), countryId);
+    ASSERT(it == m_queue.begin(), ());
+    if (m_queue.size() == 1)
+    { // If m_queue is about to be empty.
+      m_justDownloaded.clear();
+      m_queue.clear();
+    }
+    else
+    { // A deleted map should not be moved to m_justDownloaded.
+      m_queue.erase(it);
+    }
+  }
 
   if (!m_queue.empty() && m_downloader->IsIdle())
   {
@@ -1289,22 +1291,32 @@ void Storage::GetNodeAttrs(TCountryId const & countryId, NodeAttrs & nodeAttrs) 
   nodeAttrs.m_error = statusAndErr.error;
   nodeAttrs.m_nodeLocalName = m_countryNameGetter(countryId);
 
-  // Status and progress.
-  TCountriesVec descendants;
-  node->ForEachDescendant([&descendants](TCountryTreeNode const & d)
-                          {
-                            descendants.push_back(d.Value().Name());
-                          });
-  TCountryId const & downloadingMwm = IsDownloadInProgress() ? GetCurrentDownloadingCountryId()
-                                                             : kInvalidCountryId;
-  MapFilesDownloader::TProgress downloadingMwmProgress(0, 0);
-  if (!m_downloader->IsIdle())
-    downloadingMwmProgress = m_downloader->GetDownloadingProgress();
+  // Progress.
+  if (nodeAttrs.m_status == NodeStatus::OnDisk)
+  {
+    // Group or leaf node is on disk and up to date.
+    size_t const subTreeSizeBytes = node->Value().GetSubtreeMwmSizeBytes();
+    nodeAttrs.m_downloadingProgress.first = subTreeSizeBytes;
+    nodeAttrs.m_downloadingProgress.second = subTreeSizeBytes;
+  }
+  else
+  {
+    TCountriesVec subtree;
+    node->ForEachInSubtree([&subtree](TCountryTreeNode const & d)
+                           {
+                             subtree.push_back(d.Value().Name());
+                           });
+    TCountryId const & downloadingMwm = IsDownloadInProgress() ? GetCurrentDownloadingCountryId()
+                                                               : kInvalidCountryId;
+    MapFilesDownloader::TProgress downloadingMwmProgress(0, 0);
+    if (!m_downloader->IsIdle())
+      downloadingMwmProgress = m_downloader->GetDownloadingProgress();
 
-  TCountriesSet setQueue;
-  GetQueuedCountries(m_queue, setQueue);
-  nodeAttrs.m_downloadingProgress =
-      CalculateProgress(downloadingMwm, descendants, downloadingMwmProgress, setQueue);
+    TCountriesSet setQueue;
+    GetQueuedCountries(m_queue, setQueue);
+    nodeAttrs.m_downloadingProgress =
+        CalculateProgress(downloadingMwm, subtree, downloadingMwmProgress, setQueue);
+  }
 
   // Local mwm information.
   nodeAttrs.m_localMwmCounter = 0;
@@ -1371,13 +1383,15 @@ MapFilesDownloader::TProgress Storage::CalculateProgress(TCountryId const & down
                                                          TCountriesSet const & mwmsInQueue) const
 {
   MapFilesDownloader::TProgress localAndRemoteBytes = make_pair(0, 0);
-  if (downloadingMwm != kInvalidCountryId)
-    localAndRemoteBytes = downloadingMwmProgress;
 
   for (auto const & d : mwms)
   {
-    if (d == downloadingMwm)
+    if (downloadingMwm == d && downloadingMwm != kInvalidCountryId)
+    {
+      localAndRemoteBytes.first += downloadingMwmProgress.first;
+      localAndRemoteBytes.second += downloadingMwmProgress.second;
       continue;
+    }
 
     if (mwmsInQueue.count(d) != 0)
     {
@@ -1444,5 +1458,14 @@ bool Storage::GetUpdateInfo(TCountryId const & countryId, UpdateInfo & updateInf
   updateInfo = UpdateInfo();
   node->ForEachInSubtree(updateInfoAccumulator);
   return true;
+}
+
+void Storage::CorrectJustDownloadedAndQueue(TQueue::iterator justDownloadedItem)
+{
+  m_queue.erase(justDownloadedItem);
+  if (m_queue.empty())
+    m_justDownloaded.clear();
+  else
+    m_justDownloaded.insert(justDownloadedItem->GetCountryId());
 }
 }  // namespace storage
