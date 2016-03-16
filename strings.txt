@@ -17773,7 +17773,7 @@
   [placepage_report_problem_button]
     tags = ios, android
     en = Report a problem
-    ru = Report a problem
+    ru = Сообщить о проблеме
     tr = Bir problem bildirin
     sv = Rapportera ett problem
     nb = Rapporter et problem
