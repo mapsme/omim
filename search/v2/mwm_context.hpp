@@ -1,5 +1,6 @@
 #pragma once
 
+#include "search/reverse_geocoder.hpp"
 #include "search/v2/house_to_street_table.hpp"
 
 #include "indexer/features_vector.hpp"
@@ -68,7 +69,7 @@ public:
   // @returns false if feature was deleted by user.
   bool GetFeature(uint32_t index, FeatureType & ft) const;
 
-  bool GetStreetIndex(uint32_t houseId, uint32_t & streetId);
+  bool GetStreetIndex(uint32_t houseId, vector<ReverseGeocoder::Street> const & streets, uint32_t & streetId);
 
 private:
   osm::Editor::FeatureStatus GetEditedStatus(uint32_t index) const

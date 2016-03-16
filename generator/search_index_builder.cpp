@@ -314,7 +314,7 @@ void AddFeatureNameIndexPairs(FeaturesVectorTest const & features,
 void BuildAddressTable(FilesContainerR & container, Writer & writer)
 {
   ReaderSource<ModelReaderPtr> src = container.GetReader(SEARCH_TOKENS_FILE_TAG);
-  uint32_t address = 0, missing = 0;
+  uint32_t address = 0, missing = 0, far = 0;
   map<size_t, size_t> bounds;
 
   Index mwmIndex;
@@ -338,29 +338,46 @@ void BuildAddressTable(FilesContainerR & container, Writer & writer)
       search::GetStreetNameAsKey(data.Get(feature::AddressData::STREET), street);
       if (!street.empty())
       {
+        ++address;
+
         FeatureType ft;
         features.GetVector().GetByIndex(index, ft);
         ft.SetID({res.first, index});
 
         using TStreet = search::ReverseGeocoder::Street;
         vector<TStreet> streets;
-        rgc.GetNearbyStreets(ft, streets);
 
+        rgc.GetNearbyStreets(ft, streets);
         streetIndex = rgc.GetMatchedStreetIndex(street, streets);
         if (streetIndex < streets.size())
         {
+          // Collect the statistics only about the fast path.
           ++bounds[streetIndex];
+          building2Street.PushBack(streetIndex);
           streetMatched = true;
+          continue;
         }
-        else
+
+        // Try to find it in a larger area: we still have time
+        // in the generation stage but we won't have it when searching.
+        streets.clear();
+        rgc.GetNearbyStreets(ft, streets, search::ReverseGeocoder::kExtendedLookupRadiusM);
+        streetIndex = rgc.GetMatchedStreetIndex(street, streets);
+        if (streetIndex < streets.size())
         {
-          ++missing;
+          uint32_t id = streets[streetIndex].m_id.m_index;
+          uint32_t const bit = static_cast<uint32_t>(1) << 31;
+          CHECK_EQUAL(id & bit, 0, ("Building to street bit hack did not work."));
+          // Now it is big enough to fall in the exception table of b2s.
+          building2Street.PushBack(id | bit);
+          streetMatched = true;
+          ++far;
+          continue;
         }
-        ++address;
+
+        ++missing;
       }
-      if (streetMatched)
-        building2Street.PushBack(streetIndex);
-      else
+      if (!streetMatched)
         building2Street.PushBackUndefined();
     }
 
@@ -372,6 +389,7 @@ void BuildAddressTable(FilesContainerR & container, Writer & writer)
     matchedPercent = 100.0 * (1.0 - static_cast<double>(missing) / static_cast<double>(address));
   LOG(LINFO, ("Address: Matched percent", matchedPercent));
   LOG(LINFO, ("Address: Upper bounds", bounds));
+  LOG(LINFO, ("Address: found in the extended radius", far));
 }
 }  // namespace
 

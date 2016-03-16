@@ -21,7 +21,7 @@ FeaturesLayerMatcher::FeaturesLayerMatcher(Index & index, my::Cancellable const 
   , m_reverseGeocoder(index)
   , m_nearbyStreetsCache("FeatureToNearbyStreets")
   , m_matchingStreetsCache("BuildingToStreet")
-  , m_loader(scales::GetUpperScale(), ReverseGeocoder::kLookupRadiusM)
+  , m_loader(scales::GetUpperScale(), ReverseGeocoder::kDefaultLookupRadiusM)
   , m_cancellable(cancellable)
 {
 }
@@ -81,7 +81,7 @@ FeaturesLayerMatcher::GetNearbyStreetsImpl(uint32_t featureId, FeatureType & fea
   m_reverseGeocoder.GetNearbyStreets(feature, streets);
   for (size_t i = 0; i < streets.size(); ++i)
   {
-    if (streets[i].m_distanceMeters > ReverseGeocoder::kLookupRadiusM)
+    if (streets[i].m_distanceMeters > m_loader.GetOffsetMeters())
     {
       streets.resize(i);
       break;
@@ -122,9 +122,7 @@ uint32_t FeaturesLayerMatcher::GetMatchingStreetImpl(uint32_t houseId, FeatureTy
   }
   else
   {
-    uint32_t index;
-    if (m_context->GetStreetIndex(houseId, index) && index < streets.size())
-      result = streets[index].m_id.m_index;
+    m_context->GetStreetIndex(houseId, streets, result);
   }
 
   // If there is no saved street for feature, assume that it's a nearest street if it's too close.

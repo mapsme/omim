@@ -232,6 +232,29 @@ private:
         if (binary_search(streets.begin(), streets.end(), streetId))
           fn(houseId, streetId);
       }
+      
+      // The only known case where geocoder's extended radius
+      // might help us.
+      for (uint32_t const houseId : buildings)
+      {
+        uint32_t const streetId = GetMatchingStreet(houseId);
+        if (streetId == kInvalidId)
+          continue;
+        FeatureType ftWant;
+        GetByIndex(streetId, ftWant);
+        string nameWant;
+        ftWant.GetName(StringUtf8Multilang::kDefaultCode, nameWant);
+        
+        for (uint32_t const id : streets)
+        {
+          FeatureType ftGot;
+          GetByIndex(id, ftGot);
+          string nameGot;
+          ftGot.GetName(StringUtf8Multilang::kDefaultCode, nameGot);
+          if (nameWant == nameGot)
+            fn(houseId, streetId);
+        }
+      }
       return;
     }
 
@@ -299,6 +322,8 @@ private:
 
         if (!loaded)
           GetByIndex(houseId, feature);
+          
+        
 
         // Best geometry is used here as feature::GetCenter(feature)
         // actually modifies internal state of a |feature| by caching
@@ -309,7 +334,7 @@ private:
         // centers of features.
         m2::PointD const center = feature::GetCenter(feature);
         if (calculator.GetProjection(center, proj) &&
-            proj.m_distMeters <= ReverseGeocoder::kLookupRadiusM &&
+            proj.m_distMeters <= ReverseGeocoder::kDefaultLookupRadiusM &&
             GetMatchingStreet(houseId, feature) == streetId)
         {
           fn(houseId, streetId);

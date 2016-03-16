@@ -82,6 +82,8 @@ public:
   void OnQueryFinished();
 
   Street const & GetStreet(uint32_t featureId);
+  
+  double GetOffsetMeters() { return m_offsetMeters; }
 
 private:
   void LoadStreet(uint32_t featureId, Street & street);

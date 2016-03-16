@@ -26,9 +26,9 @@ size_t constexpr kMaxNumTriesToApproxAddress = 10;
 ReverseGeocoder::ReverseGeocoder(Index const & index) : m_index(index) {}
 
 void ReverseGeocoder::GetNearbyStreets(MwmSet::MwmId const & id, m2::PointD const & center,
-                                       vector<Street> & streets) const
+                                       vector<Street> & streets, double const lookupRadiusM) const
 {
-  m2::RectD const rect = GetLookupRect(center, kLookupRadiusM);
+  m2::RectD const rect = GetLookupRect(center, lookupRadiusM);
 
   auto const addStreet = [&](FeatureType & ft)
   {
@@ -55,10 +55,11 @@ void ReverseGeocoder::GetNearbyStreets(MwmSet::MwmId const & id, m2::PointD cons
   }
 }
 
-void ReverseGeocoder::GetNearbyStreets(FeatureType & ft, vector<Street> & streets) const
+void ReverseGeocoder::GetNearbyStreets(FeatureType & ft, vector<Street> & streets,
+                                       double const lookupRadiusM) const
 {
   ASSERT(ft.GetID().IsValid(), ());
-  GetNearbyStreets(ft.GetID().m_mwmId, feature::GetCenter(ft), streets);
+  GetNearbyStreets(ft.GetID().m_mwmId, feature::GetCenter(ft), streets, lookupRadiusM);
 }
 
 // static
@@ -158,16 +159,33 @@ bool ReverseGeocoder::GetNearbyAddress(HouseTable & table, Building const & bld,
     addr.m_street = streets[ind];
     return true;
   }
-  else
+
+  uint32_t const bit = static_cast<uint32_t>(1) << 31;
+  if (ind & bit)
   {
-    LOG(LWARNING, ("Out of bound street index", ind, "for", bld.m_id));
-    return false;
+    LOG(LINFO, ("hacky"));
+    /*
+    FeatureType ft(table.m_handle.GetId(), ind ^ bit);
+    if (!ft.GetName(StringUtf8Multilang::kDefaultCode, addr.m_street))
+    {
+      LOG(LWARNING, ("Empty name of the matching street of", bld.m_id));
+      return false;
+    }
+    string name;
+    addr.m_building = bld;
+    addr.m_street.m_id = ft.m_id;
+    addr.m_distanceMeters = 0.0;
+    return true;
+    */
   }
+
+  LOG(LWARNING, ("Out of bound street index", ind, "for", bld.m_id));
+  return false;
 }
 
 void ReverseGeocoder::GetNearbyBuildings(m2::PointD const & center, vector<Building> & buildings) const
 {
-  m2::RectD const rect = GetLookupRect(center, kLookupRadiusM);
+  m2::RectD const rect = GetLookupRect(center, kDefaultLookupRadiusM);
 
   auto const addBuilding = [&](FeatureType & ft)
   {
