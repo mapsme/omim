@@ -1,6 +1,5 @@
 #include "search/v2/cbv_ptr.hpp"
 
-#include "coding/compressed_bit_vector.hpp"
 
 namespace search
 {

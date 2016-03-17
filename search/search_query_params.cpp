@@ -126,6 +126,27 @@ SearchQueryParams::TSynonymsVector & SearchQueryParams::GetTokens(size_t i)
   return i < m_tokens.size() ? m_tokens[i] : m_prefixTokens;
 }
 
+bool SearchQueryParams::IsNumberTokens(size_t start, size_t end) const
+{
+  ASSERT_LESS(start, end, ());
+  for (; start != end; ++start)
+  {
+    bool number = false;
+    for (auto const & t : GetTokens(start))
+    {
+      if (feature::IsNumber(t))
+      {
+        number = true;
+        break;
+      }
+    }
+    if (!number)
+      return false;
+  }
+
+  return true;
+}
+
 template <class ToDo>
 void SearchQueryParams::ForEachToken(ToDo && toDo)
 {

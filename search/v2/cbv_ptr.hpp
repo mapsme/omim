@@ -1,11 +1,13 @@
 #pragma once
 
+#include "coding/compressed_bit_vector.hpp"
+
+#include "base/assert.hpp"
 #include "base/macros.hpp"
 
-namespace coding
-{
-class CompressedBitVector;
-}
+#include "std/function.hpp"
+#include "std/utility.hpp"
+
 
 namespace search
 {
@@ -46,6 +48,14 @@ public:
 
   void Union(coding::CompressedBitVector const * p);
   void Intersect(coding::CompressedBitVector const * p);
+
+  template <class TFn>
+  void ForEach(TFn && fn) const
+  {
+    ASSERT(!m_isFull, ());
+    if (!IsEmpty())
+      coding::CompressedBitVectorEnumerator::ForEach(*m_ptr, forward<TFn>(fn));
+  }
 };
 
 }  // namespace v2
