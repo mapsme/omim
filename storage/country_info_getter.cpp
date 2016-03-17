@@ -69,7 +69,7 @@ void CountryInfoGetter::GetRegionsCountryId(m2::PointD const & pt, TCountriesVec
 
   for (size_t id = 0; id < m_countries.size(); ++id)
   {
-    if (m_countries[id].m_rect.Intersect(lookupRect) && IsCloseEnough(id, pt, kLookupRadiusM))
+    if (m_countries[id].m_rect.IsIntersect(lookupRect) && IsCloseEnough(id, pt, kLookupRadiusM))
       closestCoutryIds.emplace_back(m_countries[id].m_name);
   }
 }
@@ -247,16 +247,16 @@ template <typename TFn>
 typename result_of<TFn(vector<m2::RegionD>)>::type CountryInfoReader::WithRegion(size_t id, TFn && fn) const
 {
   lock_guard<mutex> lock(m_cacheMutex);
-  
+
   bool isFound = false;
   vector<m2::RegionD> & rgns = m_cache.Find(static_cast<uint32_t>(id), isFound);
-  
+
   if (!isFound)
   {
     rgns.clear();
     // Load regions from file.
     ReaderSource<ModelReaderPtr> src(m_reader.GetReader(strings::to_string(id)));
-    
+
     uint32_t const count = ReadVarUint<uint32_t>(src);
     for (size_t i = 0; i < count; ++i)
     {
@@ -269,7 +269,7 @@ typename result_of<TFn(vector<m2::RegionD>)>::type CountryInfoReader::WithRegion
   return fn(rgns);
 }
 
-  
+
 bool CountryInfoReader::IsBelongToRegionImpl(size_t id, m2::PointD const & pt) const
 {
   auto contains = [&pt](vector<m2::RegionD> const & regions)
@@ -281,7 +281,7 @@ bool CountryInfoReader::IsBelongToRegionImpl(size_t id, m2::PointD const & pt) c
     }
     return false;
   };
-  
+
   return WithRegion(id, contains);
 }
 
