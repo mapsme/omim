@@ -624,12 +624,13 @@ NSString * const kReportSegue = @"Map2ReportSegue";
       }
       else
       {
-        [self presentDownloaderAlert:code countries:absentCountries okBlock:^
-         {
-           auto & s = GetFramework().Storage();
-           for (auto const & countryId : absentCountries)
-             s.DownloadNode(countryId);
-         }];
+        [self presentDownloaderAlert:code countries:absentCountries okBlock:[self, absentCountries]
+        {
+          auto & s = GetFramework().Storage();
+          for (auto const & countryId : absentCountries)
+            s.DownloadNode(countryId);
+          [self openMapsDownloader];
+        }];
       }
       break;
     }
@@ -646,8 +647,7 @@ NSString * const kReportSegue = @"Map2ReportSegue";
 
 - (void)processViewportCountryEvent:(TCountryId const &)countryId
 {
-  if ([self.navigationController.topViewController isEqual:self])
-    [self.downloadDialog processViewportCountryEvent:countryId];
+  [self.downloadDialog processViewportCountryEvent:countryId];
 }
 
 #pragma mark - MWMFrameworkStorageObserver

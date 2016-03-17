@@ -275,8 +275,8 @@ void Framework::Migrate(bool keepDownloaded)
   Storage().DeleteAllLocalMaps(&existedCountries);
   DeregisterAllMaps();
   m_model.Clear();
-  InitCountryInfoGetter();
   Storage().Migrate(keepDownloaded ? existedCountries : TCountriesVec());
+  InitCountryInfoGetter();
   InitSearchEngine();
   RegisterAllMaps();
   SetRenderingEnabled(true);
@@ -490,6 +490,9 @@ bool Framework::OnCountryFileDelete(storage::TCountryId const & countryId, stora
   // Soft reset to signal that mwm file may be out of date in routing caches.
   m_routingSession.Reset();
 
+  if (countryId == m_lastReportedCountry)
+    m_lastReportedCountry = kInvalidCountryId;
+
   if(auto handle = m_lastQueryHandle.lock())
     handle->Cancel();
   
@@ -510,7 +513,10 @@ bool Framework::OnCountryFileDelete(storage::TCountryId const & countryId, stora
 
 void Framework::OnMapDeregistered(platform::LocalCountryFile const & localFile)
 {
-  m_storage.DeleteCustomCountryVersion(localFile);
+  GetPlatform().RunOnGuiThread([this, localFile]
+  {
+    m_storage.DeleteCustomCountryVersion(localFile);
+  });
 }
 
 bool Framework::HasUnsavedEdits(storage::TCountryId const & countryId)
