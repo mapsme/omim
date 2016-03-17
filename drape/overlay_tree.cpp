@@ -22,10 +22,10 @@ public:
 
   bool operator()(ref_ptr<OverlayHandle> const & l, ref_ptr<OverlayHandle> const & r) const
   {
-    return IsGreater(l, r);
+    return IsLower(l, r);
   }
 
-  bool IsGreater(ref_ptr<OverlayHandle> const & l, ref_ptr<OverlayHandle> const & r) const
+  bool IsLower(ref_ptr<OverlayHandle> const & l, ref_ptr<OverlayHandle> const & r) const
   {
     uint64_t const mask = m_enableMask ? l->GetPriorityMask() & r->GetPriorityMask() :
                                          dp::kPriorityMaskAll;
@@ -33,7 +33,7 @@ public:
                                                      l->GetPriority()) & mask;
     uint64_t const priorityRight = (m_followingMode ? r->GetPriorityInFollowingMode() :
                                                       r->GetPriority()) & mask;
-    if (priorityLeft > priorityRight)
+    if (priorityLeft < priorityRight)
       return true;
 
     if (priorityLeft == priorityRight)
@@ -41,11 +41,11 @@ public:
       auto const & hashLeft = l->GetFeatureID();
       auto const & hashRight = r->GetFeatureID();
 
-      if (hashLeft < hashRight)
-        return true;
-
       if (hashLeft == hashRight)
-        return l.get() < r.get();
+        return l.get() > r.get();
+
+      if (!(hashLeft < hashRight))
+        return true;
     }
 
     return false;
@@ -194,7 +194,7 @@ void OverlayTree::InsertHandle(ref_ptr<OverlayHandle> handle,
                       handleToCompare->GetPivot(modelView, true).y > rivalHandle->GetPivot(modelView, true).y;
     }
 
-    if (rejectByDepth || comparator.IsGreater(rivalHandle, handleToCompare))
+    if (rejectByDepth || !comparator.IsLower(rivalHandle, handleToCompare))
     {
       // Handle is displaced and bound to its parent, parent will be displaced too.
       if (boundToParent)
