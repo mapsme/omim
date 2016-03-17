@@ -466,9 +466,9 @@ if [ "$MODE" == "resources" ]; then
     for file in "$TARGET"/World*.mwm "$TARGET"/*.ttf; do
       if [[ "$file" != *roboto_reg* ]]; then
         if [ "$UNAME" == "Darwin" ]; then
-          stat -f "%N %z" "$file" | sed 's#^.*/##' >> "$EXT_RES"
+          stat -f "$COUNTRIES_VERSION %N %z" "$file" | sed 's#^.*/##' >> "$EXT_RES"
         else
-          stat -c "%n %s" "$file" | sed 's#^.*/##' >> "$EXT_RES"
+          stat -c "$COUNTRIES_VERSION %n %s" "$file" | sed 's#^.*/##' >> "$EXT_RES"
         fi
       fi
     done
