@@ -549,16 +549,10 @@ class PreResult2Maker
                        search::v2::RankingInfo & info)
   {
     auto const & preInfo = res.GetInfo();
-    auto const & viewport = m_params.m_viewport;
-    auto const & position = m_params.m_position;
+    m2::PointD pivot = m_params.m_pivot.Center();
 
-    info.m_distanceToViewport = viewport.IsEmptyInterior()
-                                    ? v2::RankingInfo::kMaxDistMeters
-                                    : feature::GetMinDistanceMeters(ft, viewport.Center());
-    info.m_distanceToPosition = feature::GetMinDistanceMeters(ft, position);
-
+    info.m_distanceToPivot = feature::GetMinDistanceMeters(ft, pivot);
     info.m_rank = preInfo.m_rank;
-
     info.m_searchType = preInfo.m_searchType;
 
     info.m_nameScore = v2::NAME_SCORE_ZERO;
@@ -592,8 +586,6 @@ class PreResult2Maker
       if (score > info.m_nameScore)
         info.m_nameScore = score;
     }
-
-    info.m_positionInViewport = viewport.IsPointInside(position);
   }
 
 public:
