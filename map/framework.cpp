@@ -1198,7 +1198,6 @@ void Framework::ShowSearchResult(search::Result const & res)
       break;
 
     case Result::RESULT_LATLON:
-    case Result::RESULT_ADDRESS:
       FillPointInfo(res.GetFeatureCenter(), res.GetString(), info);
       scale = scales::GetUpperComfortScale();
       break;
@@ -1285,42 +1284,6 @@ size_t Framework::ShowSearchResults(search::Results const & results)
   ShowRect(viewport);
 
   return count;
-}
-
-search::AddressInfo Framework::GetSearchResultAddress(search::Result const & res) const
-{
-  search::AddressInfo info;
-  if (res.IsSuggest())
-    return info;
-
-  /// @todo Optimize here according to the fact that feature is
-  /// already read in many cases during search results processing.
-  auto const & id = res.GetFeatureID();
-  if (id.IsValid())
-  {
-    Index::FeaturesLoaderGuard loader(m_model.GetIndex(), id.m_mwmId);
-    FeatureType ft;
-    loader.GetFeatureByIndex(id.m_index, ft);
-    if (ft.GetFeatureType() == feature::GEOM_LINE ||
-        !ftypes::IsAddressObjectChecker::Instance()(ft))
-    {
-      return info;
-    }
-  }
-
-  info = GetAddressInfoAtPoint(res.GetFeatureCenter());
-
-  string const & type = res.GetFeatureType();
-  if (!type.empty())
-    info.m_types.push_back(type);
-
-  // Assign name if it's not equal with type.
-  string const & name = res.GetString();
-  if (name != type)
-    info.m_name = name;
-
-  info.m_city = res.GetRegion();
-  return info;
 }
 
 void Framework::FillSearchResultsMarks(search::Results const & results)

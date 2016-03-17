@@ -2,6 +2,7 @@
 #include "search/intermediate_result.hpp"
 #include "search/keyword_lang_matcher.hpp"
 #include "search/mode.hpp"
+#include "search/reverse_geocoder.hpp"
 #include "search/search_trie.hpp"
 #include "search/suggest.hpp"
 #include "search/v2/geocoder.hpp"
@@ -23,18 +24,11 @@
 #include "std/unordered_set.hpp"
 #include "std/vector.hpp"
 
-
-#define HOUSE_SEARCH_TEST
 #define FIND_LOCALITY_TEST
-
-#ifdef HOUSE_SEARCH_TEST
-#include "search/house_detector.hpp"
-#endif
 
 #ifdef FIND_LOCALITY_TEST
 #include "search/locality_finder.hpp"
 #endif
-
 
 class FeatureType;
 class CategoriesHolder;
@@ -214,12 +208,6 @@ protected:
   strings::UniString m_prefix;
   set<uint32_t> m_prefferedTypes;
 
-#ifdef HOUSE_SEARCH_TEST
-  strings::UniString m_house;
-  vector<FeatureID> m_streetID;
-  HouseDetector m_houseDetector;
-#endif
-
 #ifdef FIND_LOCALITY_TEST
   LocalityFinder m_locality;
 #endif
@@ -286,6 +274,8 @@ protected:
   bool m_viewportSearch;
   bool m_keepHouseNumberInQuery;
   //@}
+
+  search::ReverseGeocoder const m_reverseGeocoder;
 };
 
 }  // namespace search

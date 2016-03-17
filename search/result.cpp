@@ -5,33 +5,20 @@
 namespace search
 {
 Result::Result(FeatureID const & id, m2::PointD const & pt, string const & str,
-               string const & region, string const & type, uint32_t featureType,
+               string const & address, string const & type, uint32_t featureType,
                Metadata const & meta)
   : m_id(id)
   , m_center(pt)
-  , m_str(str)
-  , m_region(region)
+  , m_str(str.empty() ? type : str)  //!< Features with empty names can be found after suggestion.
+  , m_address(address)
   , m_type(type)
   , m_featureType(featureType)
   , m_metadata(meta)
 {
-  Init(true /* metadataInitialized */);
 }
 
-Result::Result(FeatureID const & id, m2::PointD const & pt, string const & str,
-               string const & region, string const & type)
-  : m_id(id)
-  , m_center(pt)
-  , m_str(str)
-  , m_region(region)
-  , m_type(type)
-{
-  Init(false /* metadataInitialized */);
-}
-
-Result::Result(m2::PointD const & pt, string const & str, string const & region,
-               string const & type)
-  : m_center(pt), m_str(str), m_region(region), m_type(type)
+Result::Result(m2::PointD const & pt, string const & latlon, string const & address)
+  : m_center(pt), m_str(latlon), m_address(address)
 {
 }
 
@@ -44,21 +31,12 @@ Result::Result(Result const & res, string const & suggest)
   : m_id(res.m_id)
   , m_center(res.m_center)
   , m_str(res.m_str)
-  , m_region(res.m_region)
+  , m_address(res.m_address)
   , m_type(res.m_type)
   , m_featureType(res.m_featureType)
   , m_suggestionStr(suggest)
   , m_hightlightRanges(res.m_hightlightRanges)
 {
-}
-
-void Result::Init(bool metadataInitialized)
-{
-  // Features with empty names can be found after suggestion.
-  if (m_str.empty())
-    m_str = m_type;
-
-  m_metadata.m_isInitialized = metadataInitialized;
 }
 
 Result::ResultType Result::GetResultType() const
@@ -71,7 +49,7 @@ Result::ResultType Result::GetResultType() const
   if (idValid)
     return RESULT_FEATURE;
   else
-    return (m_type.empty() ? RESULT_LATLON : RESULT_ADDRESS);
+    return RESULT_LATLON;
 }
 
 bool Result::IsSuggest() const
@@ -116,24 +94,19 @@ bool Result::IsEqualFeature(Result const & r) const
   if (type != r.GetResultType())
     return false;
 
-  if (type == RESULT_ADDRESS)
-    return (PointDistance(m_center, r.m_center) < 50.0);
-  else
-  {
-    ASSERT_EQUAL(type, Result::RESULT_FEATURE, ());
+  ASSERT_EQUAL(type, Result::RESULT_FEATURE, ());
 
-    ASSERT(m_id.IsValid() && r.m_id.IsValid(), ());
-    if (m_id == r.m_id)
-      return true;
+  ASSERT(m_id.IsValid() && r.m_id.IsValid(), ());
+  if (m_id == r.m_id)
+    return true;
 
-    // This function is used to filter duplicate results in cases:
-    // - emitted World.mwm and Country.mwm
-    // - after additional search in all mwm
-    // so it's suitable here to test for 500m
-    return (m_str == r.m_str && m_region == r.m_region &&
-            m_featureType == r.m_featureType &&
-            PointDistance(m_center, r.m_center) < 500.0);
-  }
+  // This function is used to filter duplicate results in cases:
+  // - emitted World.mwm and Country.mwm
+  // - after additional search in all mwm
+  // so it's suitable here to test for 500m
+  return (m_str == r.m_str && m_address == r.m_address &&
+          m_featureType == r.m_featureType &&
+          PointDistance(m_center, r.m_center) < 500.0);
 }
 
 void Result::AddHighlightRange(pair<uint16_t, uint16_t> const & range)
@@ -149,9 +122,9 @@ pair<uint16_t, uint16_t> const & Result::GetHighlightRange(size_t idx) const
 
 void Result::AppendCity(string const & name)
 {
-  // No need to store mwm file name if we have valid city name.
-  if (!name.empty())
-    m_region = name;
+  // Prepend only if city is absent in region (mwm) name.
+  if (m_address.find(name) == string::npos)
+    m_address = name + ", " + m_address;
 }
 
 string Result::ToStringForStats() const
@@ -173,7 +146,6 @@ bool Results::AddResult(Result && res)
     switch (r.GetResultType())
     {
     case Result::RESULT_FEATURE:
-    case Result::RESULT_ADDRESS:
       return true;
     default:
       return false;
