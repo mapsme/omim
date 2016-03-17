@@ -47,6 +47,8 @@ import com.mapswithme.maps.editor.Editor;
 import com.mapswithme.maps.editor.EditorActivity;
 import com.mapswithme.maps.editor.EditorHostFragment;
 import com.mapswithme.maps.editor.FeatureCategoryActivity;
+import com.mapswithme.maps.editor.ReportActivity;
+import com.mapswithme.maps.editor.ReportFragment;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.location.LocationPredictor;
 import com.mapswithme.maps.news.FirstStartFragment;
@@ -107,7 +109,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
                                                      MigrationFragment.class.getName(),
                                                      RoutingPlanFragment.class.getName(),
                                                      EditorHostFragment.class.getName(),
-                                                     AuthFragment.class.getName() };
+                                                     AuthFragment.class.getName(),
+                                                     ReportFragment.class.getName() };
   // Instance state
   private static final String STATE_PP_OPENED = "PpOpened";
   private static final String STATE_MAP_OBJECT = "MapObject";
@@ -269,6 +272,14 @@ public class MwmActivity extends BaseMwmFragmentActivity
       replaceFragment(EditorHostFragment.class, null, null);
     else
       EditorActivity.start(this);
+  }
+
+  public void showReportForm()
+  {
+    if (mIsFragmentContainer)
+      replaceFragment(ReportFragment.class, null, null);
+    else
+      ReportActivity.start(this);
   }
 
   private void shareMyLocation()
