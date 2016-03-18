@@ -159,7 +159,7 @@ int MapObject::GetStars() const
   return 0;
 }
 
-string MapObject::GetElevation() const
+string MapObject::GetElevationFormatted() const
 {
   if (m_metadata.Has(feature::Metadata::FMD_ELE))
   {
@@ -171,6 +171,11 @@ string MapObject::GetElevation() const
           ("Invalid metadata for elevation:", m_metadata.Get(feature::Metadata::FMD_ELE)));
   }
   return {};
+}
+
+bool MapObject::GetElevation(double & outElevationInMeters) const
+{
+  return strings::to_double(m_metadata.Get(feature::Metadata::FMD_ELE), outElevationInMeters);
 }
 
 string MapObject::GetWikipediaLink() const { return m_metadata.GetWikiURL(); }
