@@ -18,12 +18,11 @@
 
 namespace
 {
-double constexpr kPOIDisplacementRadiusPixels = 16.;
+double constexpr kPOIDisplacementRadiusPixels = 80.;
 
-// Rendering dramatically affected by a screen resolution. So I will use high resolution to cover
-// case when we have a lot of free space on the screen.
-size_t constexpr kMaxScreenSizeXPixels = 2560;
-size_t constexpr kMaxScreenSizeYPixels = 1440;
+// Displacement radius in pixels * half of the world in degrees / meaned graphics tile size.
+// So average displacement radius will be: this / tiles in row count.
+double constexpr kPOIDisplacementRadiusMultiplier = kPOIDisplacementRadiusPixels * 180. / 512.;
 }  // namespace
 
 namespace covering
@@ -117,7 +116,9 @@ public:
   {
     m4::Tree<DisplaceableNode> acceptedNodes;
 
-    sort(m_storage.begin(), m_storage.end());
+    // Sort in priority descend mode.
+    sort(m_storage.begin(), m_storage.end(), greater<DisplaceableNode>());
+
     for (auto const & node : m_storage)
     {
       uint32_t scale = node.m_minScale;
@@ -158,6 +159,7 @@ private:
   struct DisplaceableNode
   {
     uint32_t m_index;
+    FeatureID m_fID;
     m2::PointD m_center;
     vector<int64_t> m_cells;
 
@@ -170,7 +172,7 @@ private:
     template <class TFeature>
     DisplaceableNode(vector<int64_t> const & cells, TFeature const & ft, uint32_t index,
                     int zoomLevel)
-      : m_index(index), m_center(ft.GetCenter()), m_cells(cells), m_minScale(zoomLevel)
+      : m_index(index), m_fID(ft.GetID()), m_center(ft.GetCenter()), m_cells(cells), m_minScale(zoomLevel)
     {
       feature::TypesHolder const types(ft);
       auto scaleRange = feature::GetDrawableScaleRange(types);
@@ -194,7 +196,13 @@ private:
       m_priority = (static_cast<uint32_t>(d) << 8) | rank;
     }
 
-    bool operator<(DisplaceableNode const & rhs) const { return m_priority < rhs.m_priority; }
+    // Same to dynamic displacement behaviour.
+    bool operator>(DisplaceableNode const & rhs) const
+    {
+      if (m_priority > rhs.m_priority)
+        return true;
+      return (m_priority == rhs.m_priority && m_fID < rhs.m_fID);
+    }
     m2::RectD const GetLimitRect() const { return m2::RectD(m_center, m_center); }
   };
 
@@ -207,15 +215,9 @@ private:
 
   float CalculateDeltaForZoom(int32_t zoom) const
   {
-    double const worldSizeDivisor = 1 << zoom;
-    // Mercator SizeX and SizeY is equal
-    double const rectSize = (MercatorBounds::maxX - MercatorBounds::minX) / worldSizeDivisor;
-
-    ScreenBase geometryConvertor;
-    geometryConvertor.OnSize(0, 0, kMaxScreenSizeXPixels, kMaxScreenSizeYPixels);
-    geometryConvertor.SetFromRect(m2::AnyRectD(m2::RectD(0, 0, rectSize, rectSize)));
-
-    return kPOIDisplacementRadiusPixels * geometryConvertor.GetScale();
+    // zoom - 1 is similar to drape.
+    double const worldSizeDivisor = 1 << (zoom - 1);
+    return kPOIDisplacementRadiusMultiplier / worldSizeDivisor;
   }
 
   void AddNodeToSorter(DisplaceableNode const & node, uint32_t scale)
