@@ -7414,7 +7414,7 @@
     pl = Mapy
     sk = Mapy
     it = Mappe
-    fr = Cartes 
+    fr = Cartes
     ja = 地図
 
   [downloader_download_all_button]
@@ -7444,7 +7444,7 @@
     sk = Stiahnuť všetko
     it = Scarica tutte
     fr = Télécharger tout
-    ja = 全てをダウンロード    
+    ja = 全てをダウンロード
 
   [routing_disclaimer]
     tags = ios,android,tizen
@@ -7610,7 +7610,7 @@
     comment = Displayed in a dialog that appears when a user tries to delete a map while the app is in the follow route mode
     en = To delete map please stop the navigation.
     ru = Чтобы удалить карту, выйдите из режима навигации.
-  
+
   [routing_failed_unknown_my_position]
     tags = android, ios
     comment = Show when user try build route, but we don't know where he
@@ -15175,7 +15175,7 @@
     pt = Fez um erro de edição. Corrija-o ou mude para o modo simples.
 
   [editor_add_select_location]
-    en = Location 
+    en = Location
     ru = Местоположение
 
 
@@ -16817,7 +16817,7 @@
     pt = Por favor note
     es = Aviso
     ro = Actualizați hărțile
-    pl = Uwaga! 
+    pl = Uwaga!
     sk = Upozorňujeme vás, že
     it = Si prega di notare
     fr = À noter
@@ -16865,7 +16865,7 @@
     de = Alle Kartenänderungen werden zusammen mit der Karte gelöscht.
     fi = Kaikki karttaan tehdyt muutokset poistetaan kartan mukana.
     nl = Alle wijzigingen aan de kaart zullen samen met de kaart worden verwijderd.
-    da = Alle kortændringer vil blive slettet sammen med kortet. 
+    da = Alle kortændringer vil blive slettet sammen med kortet.
     cs = Zároveň s touto mapou budou odstraněny také všechny změny na této mapě.
     zh-Hans = 所有对地图的修改都将与地图一起被删除。
     zh-Hant = 所有對地圖的修改都將與地圖一起被刪除。
@@ -16876,7 +16876,7 @@
     es = Todos los cambios en los mapas se borrarán junto con el mapa.
     ro = Pentru a crea un traseu, trebuie să actualizați toate hărțile, iar apoi să planificați traseul încă o dată.
     pl = Wszystkie zmiany dotyczące mapy zostaną usunięte wraz z nią.
-    sk = Všetky zmeny týkajúce sa mapy budú vymazané spolu s mapou. 
+    sk = Všetky zmeny týkajúce sa mapy budú vymazané spolu s mapou.
     it = Tutti i cambiamenti nella mappa saranno cancellati insieme alla mappa.
     fr = Toutes les modifications de la carte seront supprimées avec elle.
     ja = この地図を削除すると、今まで行った変更の全ても一緒に削除されます。
@@ -17174,7 +17174,7 @@
   [editor_general_auth_error_dialog]
     tags = ios, android
     en = General login error.
-    ru = Общая ошибка авторизации. 
+    ru = Общая ошибка авторизации.
     tr = Genel giriş hatası.
     sv = Allmänt fel vid inloggning.
     nb = Generell innloggingsfeil.
@@ -17725,7 +17725,7 @@
 
   [whatsnew_smallmwm_message]
     tags = ios, android
-    en = We have divided maps into parts. Now you can download separate regions, not the whole country. 
+    en = We have divided maps into parts. Now you can download separate regions, not the whole country.
     ru = Мы разрезали большие карты на части: теперь загружай только нужную область, а не всю страну целиком.
     fr = Nous avons divisé la carte en plusieurs parties. Désormais, vous pouvez télécharger des régions bien précises, et non plus le pays tout entier.
     da = Vi har delt kort op i dele. Nu kan man downloade separate regioner, ikke hele landet.
@@ -17733,7 +17733,7 @@
     ko = 지도를 여러 부분으로 나눴습니다. 이제는 전체 국가가 아닌 개별 지역을 다운로드할 수 있습니다.
     sv = Vi har delat in kartor i delar. Nu kan du ladda ner separata regioner, inte hela landet.
     tr = Haritaları parçalara ayırdık. Artık tüm ülke yerine belirli bölgeleri indirebilirsiniz.
-    uk = Ми поділили карти на частини. Тепер ви можете стягувати окремі регіони, а не країну цілком. 
+    uk = Ми поділили карти на частини. Тепер ви можете стягувати окремі регіони, а не країну цілком.
     vi = Chúng tôi đã chia bản đồ thành nhiều phần. Bây giờ bạn có thể tải về các vùng riêng biệt, không phải là toàn bộ quốc gia.
     hu = Felosztottuk részekre a térképeket. Mostantól az egyes régiókat is letöltheted, nem csak az egész országot.
     de = Wir haben die Karten aufgeteilt. Jetzt können Sie einzelne Regionen herunterladen, ohne das ganze Land herunterzuladen.
@@ -17750,7 +17750,7 @@
     sk = Mapy sme rozdelili na časti. Teraz si môžete stiahnuť jednotlivé regióny, nie celú krajinu.
     es = Hemos dividido el mapa por partes. Ahora, puedes descargar regiones individuales, en vez de el país entero.
     pl = Podzieliliśmy mapy na części. Teraz możesz pobierać oddzielne regiony, zamiast całego kraju
-    nl = We hebben kaarten in delen verdeeld. Nu kunt u afzonderlijke regio's downloaden in plaats van het hele land. 
+    nl = We hebben kaarten in delen verdeeld. Nu kunt u afzonderlijke regio's downloaden in plaats van het hele land.
     pt = Dividimos os mapas em partes. Agora vocês podem baixar regiões separadas em vez do país inteiro.
 
   [whatsnew_search_header]
@@ -18076,7 +18076,7 @@
     sk = Ak chcete získavať najnovšie mapy, zapnite si notifikácie aktualizácií
     it = Per ricevere le mappe aggiornate, attiva le notifiche di aggiornamento
     fr = Pour recevoir les dernières cartes, recevez des notifications de mise à jour
-    ja = 最新地図の入手のためにアップデート通知を受信    
+    ja = 最新地図の入手のためにアップデート通知を受信
 
   [onboarding_notifications_title]
     tags = ios, android
@@ -18166,7 +18166,7 @@
     ja = ナビゲーションやその他の機能の使用のために、アプリがGeolocationにアクセスする必要があります
 
   [dialog_incorrect_feature_position]
-    en = Change the location 
+    en = Change the location
     ru = Измените местоположение
 
   [message_ivalid_feature_position]
