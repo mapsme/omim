@@ -38,7 +38,6 @@ public abstract class BasePlacePageAnimationController
   // Visibility
   protected OnVisibilityChangedListener mVisibilityChangedListener;
 
-
   public interface OnVisibilityChangedListener
   {
     void onPreviewVisibilityChanged(boolean isVisible);
@@ -117,4 +116,6 @@ public abstract class BasePlacePageAnimationController
       mVisibilityChangedListener.onPlacePageVisibilityChanged(ppShown);
     }
   }
+
+  protected void alignDetailsFrame() {}
 }
