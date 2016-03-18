@@ -40,7 +40,6 @@ public:
 
   static bool LessRank(PreResult1 const & r1, PreResult1 const & r2);
   static bool LessPriority(PreResult1 const & r1, PreResult1 const & r2);
-  static bool LessPointsForViewport(PreResult1 const & r1, PreResult1 const & r2);
 
   inline FeatureID GetID() const { return m_id; }
   inline double GetPriority() const { return m_priority; }
@@ -65,8 +64,8 @@ public:
   };
 
   /// For RESULT_FEATURE and RESULT_BUILDING.
-  PreResult2(FeatureType const & f, PreResult1 const * p, m2::PointD const & pivot,
-             string const & displayName, string const & fileName);
+  PreResult2(FeatureType const & f, PreResult1 const * p, m2::PointD const & center,
+             m2::PointD const & pivot, string const & displayName, string const & fileName);
 
   /// For RESULT_LATLON.
   PreResult2(double lat, double lon);
@@ -86,9 +85,6 @@ public:
   Result GenerateFinalResult(storage::CountryInfoGetter const & infoGetter,
                              CategoriesHolder const * pCat, set<uint32_t> const * pTypes,
                              int8_t locale, ReverseGeocoder const & coder) const;
-
-  static bool LessRank(PreResult2 const & r1, PreResult2 const & r2);
-  static bool LessDistance(PreResult2 const & r1, PreResult2 const & r2);
 
   /// Filter equal features for different mwm's.
   class StrictEqualF
