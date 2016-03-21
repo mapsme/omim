@@ -21,6 +21,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_base"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:orientation="vertical"
         android:paddingEnd="@dimen/margin_base"
         android:paddingLeft="@dimen/margin_base"
@@ -185,7 +187,6 @@
               android:id="@+id/input"
               style="@style/MwmWidget.Editor.FieldLayout.EditText"
               android:hint="@string/phone"
-              android:textAppearance="@style/MwmTextAppearance.Body1"
               tools:text="+937 99 92"/>
 
           </com.mapswithme.maps.widget.CustomTextInputLayout>
@@ -208,7 +209,6 @@
               android:id="@+id/input"
               style="@style/MwmWidget.Editor.FieldLayout.EditText"
               android:hint="@string/website"
-              android:textAppearance="@style/MwmTextAppearance.Body1"
               tools:text="maps.me"/>
 
           </com.mapswithme.maps.widget.CustomTextInputLayout>
@@ -231,7 +231,6 @@
               android:id="@+id/input"
               style="@style/MwmWidget.Editor.FieldLayout.EditText"
               android:hint="@string/email"
-              android:textAppearance="@style/MwmTextAppearance.Body1"
               tools:text="bugs@maps.me"/>
 
           </com.mapswithme.maps.widget.CustomTextInputLayout>
