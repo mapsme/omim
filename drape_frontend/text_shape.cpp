@@ -281,8 +281,8 @@ uint64_t TextShape::GetOverlayPriority() const
   if (m_disableDisplacing)
     return dp::kPriorityMaskAll;
 
-  // Set up minimal priority for marks which substitute texts.
-  if (m_params.m_hasMark)
+  // Set up minimal priority for marks which substitute texts and for shapes which belong to areas
+  if (m_params.m_hasMark || m_params.m_hasArea)
     return 0;
 
   // Overlay priority for text shapes considers length of the primary text
