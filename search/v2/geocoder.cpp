@@ -2,6 +2,7 @@
 
 #include "search/dummy_rank_table.hpp"
 #include "search/retrieval.hpp"
+#include "search/search_query.hpp"
 #include "search/v2/cbv_ptr.hpp"
 #include "search/v2/features_filter.hpp"
 #include "search/v2/features_layer_matcher.hpp"
@@ -64,10 +65,12 @@ size_t constexpr kMaxNumCountries = 5;
 // included into World map.
 size_t constexpr kMaxNumLocalities = kMaxNumCities + kMaxNumStates + kMaxNumCountries;
 
-// List of countries we're supporting search by state. Elements of the
+size_t constexpr kPivotRectsCacheSize = 10;
+size_t constexpr kLocalityRectsCacheSize = 10;
+
+// list of countries we're supporting search by state. Elements of the
 // list should be valid prefixes of corresponding mwms names.
 string const kCountriesWithStates[] = {"US_", "Canada_"};
-double constexpr kComparePoints = MercatorBounds::GetCellID2PointAbsEpsilon();
 
 strings::UniString const kUniSpace(strings::MakeUniString(" "));
 
@@ -418,6 +421,9 @@ Geocoder::Geocoder(Index & index, storage::CountryInfoGetter const & infoGetter)
   , m_infoGetter(infoGetter)
   , m_numTokens(0)
   , m_model(SearchModel::Instance())
+  , m_pivotRectsCache(kPivotRectsCacheSize, static_cast<my::Cancellable const &>(*this),
+                      Query::kMaxViewportRadiusM)
+  , m_localityRectsCache(kLocalityRectsCacheSize, static_cast<my::Cancellable const &>(*this))
   , m_pivotFeatures(index)
   , m_streets(nullptr)
   , m_villages(nullptr)
@@ -586,14 +592,11 @@ void Geocoder::GoImpl(vector<shared_ptr<MwmInfo>> & infos, bool inViewport)
       m_matcher = it->second.get();
       m_matcher->SetContext(m_context.get());
 
-      unique_ptr<coding::CompressedBitVector> viewportCBV;
-      if (inViewport)
-      {
-        viewportCBV = v2::RetrieveGeometryFeatures(*m_context, cancellable, m_params.m_pivot,
-                                                   m_params.m_scale);
-      }
-
       PrepareAddressFeatures();
+
+      coding::CompressedBitVector const * viewportCBV = nullptr;
+      if (inViewport)
+        viewportCBV = RetrieveGeometryFeatures(*m_context, m_params.m_pivot, RECT_ID_PIVOT);
 
       if (viewportCBV)
       {
@@ -634,12 +637,14 @@ void Geocoder::GoImpl(vector<shared_ptr<MwmInfo>> & infos, bool inViewport)
 
 void Geocoder::ClearCaches()
 {
-  m_geometryFeatures.clear();
+  m_pivotRectsCache.Clear();
+  m_localityRectsCache.Clear();
+  m_pivotFeatures.Clear();
+
   m_addressFeatures.clear();
   m_matchersCache.clear();
   m_streetsCache.clear();
   m_villages.reset();
-  m_pivotFeatures.ClearCaches();
 }
 
 void Geocoder::PrepareRetrievalParams(size_t curToken, size_t endToken)
@@ -746,9 +751,8 @@ void Geocoder::FillLocalitiesTable()
             ft.GetCenter(), ftypes::GetRadiusByPopulation(ft.GetPopulation()));
 
 #if defined(DEBUG)
-        string name;
-        ft.GetName(StringUtf8Multilang::kDefaultCode, name);
-        LOG(LDEBUG, ("City =", name));
+        ft.GetName(StringUtf8Multilang::kDefaultCode, city.m_defaultName);
+        LOG(LDEBUG, ("City =", city.m_defaultName, ftypes::GetRadiusByPopulation(ft.GetPopulation())));
 #endif
 
         m_cities[{l.m_startToken, l.m_endToken}].push_back(city);
@@ -827,9 +831,8 @@ void Geocoder::FillVillageLocalities()
         center, ftypes::GetRadiusByPopulation(ft.GetPopulation()));
 
 #if defined(DEBUG)
-    string name;
-    ft.GetName(StringUtf8Multilang::kDefaultCode, name);
-    LOG(LDEBUG, ("Village =", name));
+    ft.GetName(StringUtf8Multilang::kDefaultCode, village.m_defaultName);
+    LOG(LDEBUG, ("Village =", village.m_defaultName));
 #endif
 
     m_cities[{l.m_startToken, l.m_endToken}].push_back(village);
@@ -972,7 +975,8 @@ void Geocoder::MatchCities()
       if (m_context->GetInfo()->GetType() == MwmInfo::WORLD)
         continue;
 
-      auto const * cityFeatures = RetrieveGeometryFeatures(*m_context, city.m_rect, city.m_featureId);
+      auto const * cityFeatures =
+          RetrieveGeometryFeatures(*m_context, city.m_rect, RECT_ID_LOCALITY);
 
       if (coding::CompressedBitVector::IsEmpty(cityFeatures))
         continue;
@@ -985,7 +989,7 @@ void Geocoder::MatchCities()
 
 void Geocoder::MatchAroundPivot()
 {
-  auto const * features = RetrieveGeometryFeatures(*m_context, m_params.m_pivot, PIVOT_ID);
+  auto const * features = RetrieveGeometryFeatures(*m_context, m_params.m_pivot, RECT_ID_PIVOT);
 
   if (!features)
     return;
@@ -1427,24 +1431,14 @@ unique_ptr<coding::CompressedBitVector> Geocoder::LoadVillages(MwmContext & cont
 
 coding::CompressedBitVector const * Geocoder::RetrieveGeometryFeatures(MwmContext const & context,
                                                                        m2::RectD const & rect,
-                                                                       int id)
+                                                                       RectId id)
 {
-  /// @todo
-  /// - Implement more smart strategy according to id.
-  /// - Move all rect limits here
-
-  auto & features = m_geometryFeatures[context.GetId()];
-  for (auto const & v : features)
+  switch (id)
   {
-    if (v.m_rect.IsRectInside(rect))
-      return v.m_cbv.get();
+  case RECT_ID_PIVOT: return m_pivotRectsCache.Get(context, rect, m_params.m_scale);
+  case RECT_ID_LOCALITY: return m_localityRectsCache.Get(context, rect, m_params.m_scale);
+  case RECT_ID_COUNT: ASSERT(false, ("Invalid RectId.")); return nullptr;
   }
-
-  auto cbv = v2::RetrieveGeometryFeatures(context, *this, rect, m_params.m_scale);
-
-  auto const * result = cbv.get();
-  features.push_back({m2::Inflate(rect, kComparePoints, kComparePoints), move(cbv), id});
-  return result;
 }
 
 SearchModel::SearchType Geocoder::GetSearchTypeInGeocoding(uint32_t featureId)
