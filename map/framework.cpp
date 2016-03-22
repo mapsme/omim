@@ -668,26 +668,31 @@ void Framework::FillFeatureInfo(FeatureID const & fid, place_page::Info & info) 
   Index::FeaturesLoaderGuard const guard(m_model.GetIndex(), fid.m_mwmId);
   FeatureType ft;
   guard.GetFeatureByIndex(fid.m_index, ft);
-  info.SetFromFeatureType(ft);
-  info.m_isEditable = osm::Editor::Instance().GetEditableProperties(ft).IsEditable();
-  info.m_localizedWifiString = m_stringsBundle.GetString("wifi");
+  FillInfoFromFeatureType(ft, info);
 }
 
 void Framework::FillPointInfo(m2::PointD const & mercator, string const & customTitle, place_page::Info & info) const
 {
   auto feature = GetFeatureAtPoint(mercator);
   if (feature)
-  {
-    info.SetFromFeatureType(*feature);
-    info.m_isEditable = osm::Editor::Instance().GetEditableProperties(*feature).IsEditable();
-    info.m_localizedWifiString = m_stringsBundle.GetString("WiFi");
-  }
+    FillInfoFromFeatureType(*feature, info);
   else
-  {
     info.m_customName = customTitle.empty() ? m_stringsBundle.GetString("dropped_pin") : customTitle;
-  }
+
   // This line overwrites mercator center from area feature which can be far away.
   info.SetMercator(mercator);
+}
+
+void Framework::FillInfoFromFeatureType(FeatureType const & ft, place_page::Info & info) const
+{
+  info.SetFromFeatureType(ft);
+  info.m_isEditable = osm::Editor::Instance().GetEditableProperties(ft).IsEditable();
+  info.m_localizedWifiString = m_stringsBundle.GetString("wifi");
+  // TODO: Move FeatureType::GetPreferredNames() code into a separate reusable function which can be used
+  // directly from place_page::Info getter, instead of storing it's result in the variable.
+  string defaultName, intName;
+  ft.GetPreferredNames(defaultName, intName);
+  info.m_nativeOrInternationalName = intName;
 }
 
 void Framework::FillApiMarkInfo(ApiMarkPoint const & api, place_page::Info & info) const
@@ -700,14 +705,9 @@ void Framework::FillApiMarkInfo(ApiMarkPoint const & api, place_page::Info & inf
 void Framework::FillSearchResultInfo(SearchMarkPoint const & smp, place_page::Info & info) const
 {
   if (smp.m_foundFeatureID.IsValid())
-  {
     FillFeatureInfo(smp.m_foundFeatureID, info);
-    info.m_customName = smp.m_matchedName;
-  }
   else
-  {
     FillPointInfo(smp.GetPivot(), smp.m_matchedName, info);
-  }
 }
 
 void Framework::FillMyPositionInfo(place_page::Info & info) const
