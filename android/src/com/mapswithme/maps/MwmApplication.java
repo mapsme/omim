@@ -7,11 +7,14 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.File;
 import java.util.List;
 
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.ndk.CrashlyticsNdk;
 import com.mapswithme.maps.background.AppBackgroundTracker;
 import com.mapswithme.maps.background.Notifier;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
@@ -31,6 +34,8 @@ import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.SaveCallback;
+import io.fabric.sdk.android.Fabric;
+import net.hockeyapp.android.CrashManager;
 
 public class MwmApplication extends Application
 {
@@ -99,6 +104,9 @@ public class MwmApplication extends Application
     super.onCreate();
     mMainLoopHandler = new Handler(getMainLooper());
 
+    initHockeyApp();
+    initCrashlytics();
+
     initPaths();
     nativeInitPlatform(getApkPath(), getDataStoragePath(), getTempPath(), getObbGooglePath(),
                        BuildConfig.FLAVOR, BuildConfig.BUILD_TYPE,
@@ -156,6 +164,20 @@ public class MwmApplication extends Application
     nativeAddLocalization("routing_failed_cross_mwm_building", getString(R.string.routing_failed_cross_mwm_building));
     nativeAddLocalization("routing_failed_route_not_found", getString(R.string.routing_failed_route_not_found));
     nativeAddLocalization("routing_failed_internal_error", getString(R.string.routing_failed_internal_error));
+  }
+
+  private void initHockeyApp()
+  {
+    String id = ("beta".equals(BuildConfig.BUILD_TYPE) ? PrivateVariables.hockeyAppBetaId()
+                                                       : PrivateVariables.hockeyAppId());
+    if (!TextUtils.isEmpty(id))
+      CrashManager.register(this, id);
+  }
+
+  private void initCrashlytics()
+  {
+    if (!BuildConfig.FABRIC_API_KEY.startsWith("0000"))
+      Fabric.with(this, new Crashlytics(), new CrashlyticsNdk());
   }
 
   public boolean isFrameworkInitialized()
