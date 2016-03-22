@@ -743,7 +743,7 @@ void Geocoder::FillLocalitiesTable()
         ++numCities;
         City city(l, SearchModel::SEARCH_TYPE_CITY);
         city.m_rect = MercatorBounds::RectByCenterXYAndSizeInMeters(
-            feature::GetCenter(ft), ftypes::GetRadiusByPopulation(ft.GetPopulation()));
+            ft.GetCenter(), ftypes::GetRadiusByPopulation(ft.GetPopulation()));
 
 #if defined(DEBUG)
         string name;
@@ -818,15 +818,13 @@ void Geocoder::FillVillageLocalities()
 
     if (m_model.GetSearchType(ft) != SearchModel::SEARCH_TYPE_VILLAGE)
       continue;
-    if (ft.GetFeatureType() != feature::GEOM_POINT)
-      continue;
-    if (numVillages >= kMaxNumVillages)
-      continue;
 
+    // We accept lines and areas as village features.
+    auto const center = feature::GetCenter(ft);
     ++numVillages;
     City village(l, SearchModel::SEARCH_TYPE_VILLAGE);
     village.m_rect = MercatorBounds::RectByCenterXYAndSizeInMeters(
-        feature::GetCenter(ft), ftypes::GetRadiusByPopulation(ft.GetPopulation()));
+        center, ftypes::GetRadiusByPopulation(ft.GetPopulation()));
 
 #if defined(DEBUG)
     string name;
@@ -835,6 +833,8 @@ void Geocoder::FillVillageLocalities()
 #endif
 
     m_cities[{l.m_startToken, l.m_endToken}].push_back(village);
+    if (numVillages >= kMaxNumVillages)
+      break;
   }
 }
 
