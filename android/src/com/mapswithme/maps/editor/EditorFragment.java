@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.base.BaseMwmFragment;
-import com.mapswithme.maps.bookmarks.data.MapObject;
 import com.mapswithme.maps.bookmarks.data.Metadata;
 import com.mapswithme.maps.editor.data.TimeFormatUtils;
 import com.mapswithme.maps.editor.data.Timetable;
@@ -66,8 +65,7 @@ public class EditorFragment extends BaseMwmFragment implements View.OnClickListe
     mEtPhone.setText(Editor.getMetadata(Metadata.MetadataType.FMD_PHONE_NUMBER));
     mEtWebsite.setText(Editor.getMetadata(Metadata.MetadataType.FMD_WEBSITE));
     mEtEmail.setText(Editor.getMetadata(Metadata.MetadataType.FMD_EMAIL));
-    // TODO(AlexZ): Localize cuisines in the core.
-    mTvCuisine.setText(MapObject.formatCuisine(Editor.getMetadata(Metadata.MetadataType.FMD_CUISINE)));
+    mTvCuisine.setText(Editor.nativeGetFormattedCuisine());
     mSwWifi.setChecked(Editor.nativeHasWifi());
     refreshOpeningTime();
 
@@ -214,7 +212,7 @@ public class EditorFragment extends BaseMwmFragment implements View.OnClickListe
     mEtEmail = findInput(mEmailBlock);
     mCuisineBlock = view.findViewById(R.id.block_cuisine);
     mCuisineBlock.setOnClickListener(this);
-    mTvCuisine = (TextView) view.findViewById(R.id.tv__cuisine);
+    mTvCuisine = (TextView) view.findViewById(R.id.cuisine);
     mWifiBlock = view.findViewById(R.id.block_wifi);
     mSwWifi = (SwitchCompat) view.findViewById(R.id.sw__wifi);
     mWifiBlock.setOnClickListener(this);
