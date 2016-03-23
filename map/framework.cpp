@@ -1097,8 +1097,10 @@ bool Framework::SearchInDownloader(DownloaderSearchParams const & params)
       TCountryId const & countryId = CountryInfoGetter().GetRegionCountryId(mercator);
       if (countryId == kInvalidCountryId)
         continue;
-      downloaderSearchResults.m_vec.emplace_back(countryId, it->GetString() /* m_matchedName */);
+      downloaderSearchResults.m_results.emplace_back(countryId,
+                                                     it->GetString() /* m_matchedName */);
     }
+    downloaderSearchResults.m_query = params.m_query;
     downloaderSearchResults.m_endMarker = results.IsEndMarker();
     params.m_onResults(downloaderSearchResults);
   };
