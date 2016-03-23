@@ -1,39 +1,28 @@
 #import "MWMAlert.h"
+#import "ViewController.h"
 
 #include "routing/router.hpp"
 #include "storage/storage.hpp"
 
-@interface MWMAlertViewController : UIViewController
+@interface MWMAlertViewController : ViewController
 
-@property (weak, nonatomic, readonly) UIViewController * _Null_unspecified ownerViewController;
+@property (weak, nonatomic, readonly) UIViewController * ownerViewController;
 
 - (nonnull instancetype)initWithViewController:(nonnull UIViewController *)viewController;
 - (void)presentAlert:(routing::IRouter::ResultCode)type;
-- (void)presentRoutingMigrationAlertWithOkBlock:(nonnull TMWMVoidBlock)okBlock;
-- (void)presentDownloaderAlertWithCountries:(storage::TCountriesVec const &)countries
-                                       code:(routing::IRouter::ResultCode)code
-                                    okBlock:(nonnull TMWMVoidBlock)okBlock;
+- (void)presentDownloaderAlertWithCountries:(vector<storage::TIndex> const &)countries
+                                     routes:(vector<storage::TIndex> const &)routes
+                                       code:(routing::IRouter::ResultCode)code;
 - (void)presentRateAlert;
 - (void)presentFacebookAlert;
-- (void)presentPoint2PointAlertWithOkBlock:(nonnull TMWMVoidBlock)okBlock needToRebuild:(BOOL)needToRebuild;
+- (void)presentPoint2PointAlertWithOkBlock:(nonnull TMWMVoidBlock)block needToRebuild:(BOOL)needToRebuild;
 - (void)presentRoutingDisclaimerAlert;
 - (void)presentDisabledLocationAlert;
 - (void)presentLocationAlert;
 - (void)presentLocationServiceNotSupportedAlert;
 - (void)presentNoConnectionAlert;
-- (void)presentMigrationProhibitedAlert;
-- (void)presentUnsavedEditsAlertWithOkBlock:(nonnull TMWMVoidBlock)okBlock;
-- (void)presentNoWiFiAlertWithName:(nonnull NSString *)name okBlock:(nullable TMWMVoidBlock)okBlock;
+- (void)presentnoWiFiAlertWithName:(nonnull NSString *)name downloadBlock:(nullable TMWMVoidBlock)block;
 - (void)presentPedestrianToastAlert:(BOOL)isFirstLaunch;
-- (void)presentIncorrectFeauturePositionAlert;
-- (void)presentInternalErrorAlert;
-- (void)presentInvalidUserNameOrPasswordAlert;
-- (void)presentDisableAutoDownloadAlertWithOkBlock:(nonnull TMWMVoidBlock)okBlock;
-- (void)presentDownloaderNoConnectionAlertWithOkBlock:(nonnull TMWMVoidBlock)okBlock cancelBlock:(nonnull TMWMVoidBlock)cancelBlock;
-- (void)presentDownloaderNotEnoughSpaceAlert;
-- (void)presentDownloaderInternalErrorAlertWithOkBlock:(nonnull TMWMVoidBlock)okBlock cancelBlock:(nonnull TMWMVoidBlock)cancelBlock;
-- (void)presentDownloaderNeedUpdateAlertWithOkBlock:(nonnull TMWMVoidBlock)okBlock;
-- (void)presentEditorViralAlertWithShareBlock:(nonnull TMWMVoidBlock)share;
 - (void)closeAlertWithCompletion:(nullable TMWMVoidBlock)completion;
 
 - (nonnull instancetype)init __attribute__((unavailable("call -initWithViewController: instead!")));

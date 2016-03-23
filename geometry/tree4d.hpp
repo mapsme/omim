@@ -220,20 +220,14 @@ namespace m4
     }
 
     template <class ToDo>
-    void ForEach(ToDo && toDo) const
+    void ForEach(ToDo toDo) const
     {
       for (ValueT const & v : m_tree)
         toDo(v.m_val);
     }
-    template <class ToDo>
-    void ForEachEx(ToDo && toDo) const
-    {
-      for (ValueT const & v : m_tree)
-        toDo(v.GetRect(), v.m_val);
-    }
 
     template <class ToDo>
-    bool FindNode(ToDo && toDo) const
+    bool FindNode(ToDo const & toDo) const
     {
       for (ValueT const & v : m_tree)
         if (toDo(v.m_val))
@@ -243,14 +237,16 @@ namespace m4
     }
 
     template <class ToDo>
-    void ForEachInRect(m2::RectD const & rect, ToDo && toDo) const
+    void ForEachWithRect(ToDo toDo) const
+    {
+      for (ValueT const & v : m_tree)
+        toDo(v.GetRect(), v.m_val);
+    }
+
+    template <class ToDo>
+    void ForEachInRect(m2::RectD const & rect, ToDo toDo) const
     {
       m_tree.for_each(GetFunctor(rect, [&toDo] (ValueT const & v) { toDo(v.m_val); }));
-    }
-    template <class ToDo>
-    void ForEachInRectEx(m2::RectD const & rect, ToDo && toDo) const
-    {
-      m_tree.for_each(GetFunctor(rect, [&toDo] (ValueT const & v) { toDo(v.GetRect(), v.m_val); }));
     }
 
     bool IsEmpty() const { return m_tree.empty(); }

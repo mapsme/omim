@@ -2,11 +2,10 @@
 
 #include "base/macros.hpp"
 
-#include "base/internal/message.hpp"
-#include "base/logging.hpp"
-
 namespace dp
 {
+
+double const k3dAdditionalExtention = 2.0;
 
 struct OverlayHandle::OffsetNodeFinder
 {
@@ -34,16 +33,7 @@ OverlayHandle::OverlayHandle(FeatureID const & id,
   , m_pivotZ(0.0)
   , m_isBillboard(isBillboard)
   , m_isVisible(false)
-  , m_enableCaching(false)
-  , m_extendedShapeDirty(true)
-  , m_extendedRectDirty(true)
-{}
-
-void OverlayHandle::SetCachingEnable(bool enable)
 {
-  m_enableCaching = enable;
-  m_extendedShapeDirty = true;
-  m_extendedRectDirty = true;
 }
 
 bool OverlayHandle::IsVisible() const
@@ -54,6 +44,8 @@ bool OverlayHandle::IsVisible() const
 void OverlayHandle::SetIsVisible(bool isVisible)
 {
   m_isVisible = isVisible;
+  if (m_isVisible && IsMinVisibilityTimeUp())
+    m_visibilityTimestamp = steady_clock::now();
 }
 
 bool OverlayHandle::IsBillboard() const
@@ -85,8 +77,11 @@ m2::PointD OverlayHandle::GetPivot(ScreenBase const & screen, bool perspective) 
 
 bool OverlayHandle::IsIntersect(ScreenBase const & screen, ref_ptr<OverlayHandle> const h) const
 {
-  Rects const & ar1 = GetExtendedPixelShape(screen);
-  Rects const & ar2 = h->GetExtendedPixelShape(screen);
+  Rects ar1;
+  Rects ar2;
+
+  GetExtendedPixelShape(screen, ar1);
+  h->GetExtendedPixelShape(screen, ar2);
 
   for (size_t i = 0; i < ar1.size(); ++i)
     for (size_t j = 0; j < ar2.size(); ++j)
@@ -108,9 +103,11 @@ void OverlayHandle::GetElementIndexes(ref_ptr<IndexBufferMutator> mutator) const
   mutator->AppendIndexes(m_indexes.GetRawConst(), m_indexes.Size());
 }
 
-void OverlayHandle::GetAttributeMutation(ref_ptr<AttributeBufferMutator> mutator) const
+void OverlayHandle::GetAttributeMutation(ref_ptr<AttributeBufferMutator> mutator,
+                                         ScreenBase const & screen) const
 {
   UNUSED_VALUE(mutator);
+  UNUSED_VALUE(screen);
 }
 
 bool OverlayHandle::HasDynamicAttributes() const
@@ -144,26 +141,22 @@ OverlayHandle::TOffsetNode const & OverlayHandle::GetOffsetNode(uint8_t bufferID
 
 m2::RectD OverlayHandle::GetExtendedPixelRect(ScreenBase const & screen) const
 {
-  if (m_enableCaching && !m_extendedRectDirty)
-    return m_extendedRectCache;
-
-  m_extendedRectCache = GetPixelRect(screen, screen.isPerspective());
-  m_extendedRectCache.Inflate(m_extendingSize, m_extendingSize);
-  m_extendedRectDirty = false;
-  return m_extendedRectCache;
+  m2::RectD rect = GetPixelRect(screen, screen.isPerspective());
+  rect.Inflate(m_extendingSize, m_extendingSize);
+  if (Enable3dExtention() && screen.isPerspective())
+    rect.Scale(k3dAdditionalExtention);
+  return rect;
 }
 
-OverlayHandle::Rects const & OverlayHandle::GetExtendedPixelShape(ScreenBase const & screen) const
+void OverlayHandle::GetExtendedPixelShape(ScreenBase const & screen, Rects & rects) const
 {
-  if (m_enableCaching && !m_extendedShapeDirty)
-    return m_extendedShapeCache;
-
-  m_extendedShapeCache.clear();
-  GetPixelShape(screen, screen.isPerspective(), m_extendedShapeCache);
-  for (auto & rect : m_extendedShapeCache)
+  GetPixelShape(screen, rects, screen.isPerspective());
+  for (auto & rect : rects)
+  {
     rect.Inflate(m_extendingSize, m_extendingSize);
-  m_extendedShapeDirty = false;
-  return m_extendedShapeCache;
+    if (Enable3dExtention() && screen.isPerspective())
+      rect.Scale(k3dAdditionalExtention);
+  }
 }
 
 m2::RectD OverlayHandle::GetPerspectiveRect(m2::RectD const & pixelRect, ScreenBase const & screen) const
@@ -194,6 +187,13 @@ m2::RectD OverlayHandle::GetPixelRectPerspective(ScreenBase const & screen) cons
   return GetPerspectiveRect(GetPixelRect(screen, false), screen);
 }
 
+bool OverlayHandle::IsMinVisibilityTimeUp() const
+{
+  uint32_t const kMinVisibilityTimeMs = 500;
+  uint32_t const t = duration_cast<milliseconds>(steady_clock::now() - m_visibilityTimestamp).count();
+  return t > kMinVisibilityTimeMs;
+}
+
 uint64_t OverlayHandle::GetPriorityInFollowingMode() const
 {
   return GetPriority();
@@ -203,14 +203,10 @@ uint64_t OverlayHandle::GetPriorityInFollowingMode() const
 SquareHandle::SquareHandle(FeatureID const & id, dp::Anchor anchor,
                            m2::PointD const & gbPivot, m2::PointD const & pxSize,
                            uint64_t priority,
-                           string const & debugStr,
                            bool isBillboard)
   : TBase(id, anchor, priority, isBillboard)
   , m_gbPivot(gbPivot)
   , m_pxHalfSize(pxSize.x / 2.0, pxSize.y / 2.0)
-#ifdef DEBUG_OVERLAYS_OUTPUT
-  , m_debugStr(debugStr)
-#endif
 {}
 
 m2::RectD SquareHandle::GetPixelRect(ScreenBase const & screen, bool perspective) const
@@ -236,19 +232,10 @@ m2::RectD SquareHandle::GetPixelRect(ScreenBase const & screen, bool perspective
   return result;
 }
 
-void SquareHandle::GetPixelShape(ScreenBase const & screen, bool perspective, Rects & rects) const
+void SquareHandle::GetPixelShape(ScreenBase const & screen, Rects & rects, bool perspective) const
 {
   rects.emplace_back(GetPixelRect(screen, perspective));
 }
-
-#ifdef DEBUG_OVERLAYS_OUTPUT
-string SquareHandle::GetOverlayDebugInfo()
-{
-  ostringstream out;
-  out << "POI Priority(" << GetPriority() << ") " << GetFeatureID().m_index << " " << m_debugStr;
-  return out.str();
-}
-#endif
 
 uint64_t CalculateOverlayPriority(int minZoomLevel, uint8_t rank, float depth)
 {
@@ -261,7 +248,7 @@ uint64_t CalculateOverlayPriority(int minZoomLevel, uint8_t rank, float depth)
 
   float const kMinDepth = -100000.0f;
   float const kMaxDepth = 100000.0f;
-  float const d = my::clamp(depth, kMinDepth, kMaxDepth) - kMinDepth;
+  float const d = my::clamp(depth, kMinDepth, kMaxDepth) + kMaxDepth;
   uint32_t const priority = static_cast<uint32_t>(d);
 
   return (static_cast<uint64_t>(minZoom) << 56) |

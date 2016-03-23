@@ -61,7 +61,7 @@
       return;
     f.SetMapStyle(MapStyleDark);
     [UIColor setNightMode:YES];
-    [self mwm_refreshUI];
+    [self refresh];
     statValue = kStatOn;
   }
   else if ([cell isEqual:self.off])
@@ -71,7 +71,7 @@
       return;
     f.SetMapStyle(MapStyleClear);
     [UIColor setNightMode:NO];
-    [self mwm_refreshUI];
+    [self refresh];
     statValue = kStatOff;
   }
   else if ([cell isEqual:self.autoSwitch])
@@ -82,7 +82,7 @@
       return;
     [UIColor setNightMode:NO];
     f.SetMapStyle(MapStyleClear);
-    [self mwm_refreshUI];
+    [self refresh];
     statValue = kStatValue;
   }
 

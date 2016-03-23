@@ -188,11 +188,7 @@ static id<DownloadIndicatorProtocol> downloadIndicator = nil;
   UNUSED_VALUE(connection);
   int64_t const length = [data length];
   m_downloadedBytes += length;
-  if(!m_callback->OnWrite(m_begRange + m_downloadedBytes - length, [data bytes], length))
-  {
-    [m_connection cancel];
-    m_callback->OnFinish(-1, m_begRange, m_endRange);
-  }
+  m_callback->OnWrite(m_begRange + m_downloadedBytes - length, [data bytes], length);
 }
 
 - (void) connection:(NSURLConnection *)connection didFailWithError:(NSError *)error

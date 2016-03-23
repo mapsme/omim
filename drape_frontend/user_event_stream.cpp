@@ -1,6 +1,5 @@
 #include "drape_frontend/user_event_stream.hpp"
 #include "drape_frontend/animation_constants.hpp"
-#include "drape_frontend/animation_utils.hpp"
 #include "drape_frontend/visual_params.hpp"
 
 #include "indexer/scales.hpp"
@@ -111,8 +110,9 @@ void TouchEvent::Swap()
   SetSecondMaskedPointer(swapIndex(GetSecondMaskedPointer()));
 }
 
-UserEventStream::UserEventStream()
-  : m_state(STATE_EMPTY)
+UserEventStream::UserEventStream(TIsCountryLoaded const & fn)
+  : m_isCountryLoaded(fn)
+  , m_state(STATE_EMPTY)
   , m_startDragOrg(m2::PointD::Zero())
 {
 }
@@ -137,13 +137,12 @@ ScreenBase const & UserEventStream::ProcessEvents(bool & modelViewChange, bool &
     swap(m_events, events);
   }
 
-  modelViewChange = !events.empty() || m_state == STATE_SCALE || m_state == STATE_DRAG;
+  modelViewChange = !events.empty() || m_state != STATE_EMPTY;
+  bool breakAnim = false;
   for (UserEvent const & e : events)
   {
     if (m_perspectiveAnimation != nullptr && FilterEventWhile3dAnimation(e.m_type))
       continue;
-
-    bool breakAnim = false;
 
     switch (e.m_type)
     {
@@ -233,12 +232,12 @@ ScreenBase const & UserEventStream::ProcessEvents(bool & modelViewChange, bool &
       ASSERT(false, ());
       break;
     }
+  }
 
-    if (breakAnim)
-    {
-      m_animation.reset();
-      modelViewChange = true;
-    }
+  if (breakAnim)
+  {
+    m_animation.reset();
+    modelViewChange = true;
   }
 
   if (m_animation != nullptr)
@@ -385,7 +384,7 @@ bool UserEventStream::SetCenter(m2::PointD const & center, int zoom, bool isAnim
 
     localRect = df::GetRectForDrawScale(zoom, center);
     CheckMinGlobalRect(localRect);
-    CheckMinMaxVisibleScale(localRect, zoom);
+    CheckMinMaxVisibleScale(m_isCountryLoaded, localRect, zoom);
 
     localRect.Offset(-center);
     localRect.Scale(scale3d);
@@ -421,7 +420,7 @@ bool UserEventStream::SetCenter(m2::PointD const & center, int zoom, bool isAnim
 bool UserEventStream::SetRect(m2::RectD rect, int zoom, bool applyRotation, bool isAnim)
 {
   CheckMinGlobalRect(rect);
-  CheckMinMaxVisibleScale(rect, zoom);
+  CheckMinMaxVisibleScale(m_isCountryLoaded, rect, zoom);
   m2::AnyRectD targetRect = applyRotation ? ToRotated(m_navigator, rect) : m2::AnyRectD(rect);
   return SetRect(targetRect, isAnim);
 }
@@ -448,10 +447,9 @@ bool UserEventStream::SetRect(m2::AnyRectD const & rect, bool isAnim, TAnimation
     m2::AnyRectD const startRect = GetCurrentRect();
     double const angleDuration = ModelViewAnimation::GetRotateDuration(startRect.Angle().val(), rect.Angle().val());
     double const moveDuration = ModelViewAnimation::GetMoveDuration(startRect.GlobalZero(), rect.GlobalZero(), screen);
-    double scaleDuration = ModelViewAnimation::GetScaleDuration(startRect.GetLocalRect().SizeX(), rect.GetLocalRect().SizeX());
-    if (scaleDuration > kMaxAnimationTimeSec)
-      scaleDuration = kMaxAnimationTimeSec;
-    if (df::IsAnimationAllowed(max(max(angleDuration, moveDuration), scaleDuration), screen))
+    double const scaleDuration = ModelViewAnimation::GetScaleDuration(startRect.GetLocalRect().SizeX(),
+                                                                      rect.GetLocalRect().SizeX());
+    if (max(max(angleDuration, moveDuration), scaleDuration) < kMaxAnimationTimeSec)
     {
       ASSERT(animCreator != nullptr, ());
       animCreator(startRect, rect, angleDuration, moveDuration, scaleDuration);
@@ -475,7 +473,7 @@ bool UserEventStream::SetFollowAndRotate(m2::PointD const & userPos, m2::PointD 
     ScreenBase newScreen = GetCurrentScreen();
     m2::RectD r = df::GetRectForDrawScale(preferredZoomLevel, m2::PointD::Zero());
     CheckMinGlobalRect(r);
-    CheckMinMaxVisibleScale(r, preferredZoomLevel);
+    CheckMinMaxVisibleScale(m_isCountryLoaded, r, preferredZoomLevel);
     newScreen.SetFromRect(m2::AnyRectD(r));
     targetLocalRect = newScreen.GlobalRect().GetLocalRect();
   }
@@ -499,7 +497,7 @@ bool UserEventStream::SetFollowAndRotate(m2::PointD const & userPos, m2::PointD 
     double const angleDuration = ModelViewAnimation::GetRotateDuration(startRect.Angle().val(), -azimuth);
     double const moveDuration = ModelViewAnimation::GetMoveDuration(startRect.GlobalZero(), newCenter, screen);
     double const duration = max(angleDuration, moveDuration);
-    if (df::IsAnimationAllowed(duration, screen))
+    if (duration > 0.0 && duration < kMaxAnimationTimeSec)
     {
       m_animation.reset(new FollowAndRotateAnimation(startRect, targetLocalRect, userPos,
                                                      screen.GtoP(userPos), pixelPos, azimuth, duration));
@@ -699,26 +697,12 @@ bool UserEventStream::TouchMove(array<Touch, 2> const & touches, double timestam
       isMapTouch = false;
     break;
   case STATE_DRAG:
-    if (touchCount > 1)
-    {
-      ASSERT_EQUAL(GetValidTouchesCount(m_touches), 1, ());
-      EndDrag(m_touches[0], true /* cancelled */);
-    }
-    else
-    {
-      Drag(touches[0], timestamp);
-    }
+    ASSERT_EQUAL(touchCount, 1, ());
+    Drag(touches[0], timestamp);
     break;
   case STATE_SCALE:
-    if (touchCount < 2)
-    {
-      ASSERT_EQUAL(GetValidTouchesCount(m_touches), 2, ());
-      EndScale(m_touches[0], m_touches[1]);
-    }
-    else
-    {
-      Scale(touches[0], touches[1]);
-    }
+    ASSERT_EQUAL(touchCount, 2, ());
+    Scale(touches[0], touches[1]);
     break;
   default:
     ASSERT(false, ());
@@ -842,7 +826,7 @@ void UserEventStream::BeginDrag(Touch const & t, double timestamp)
     m_listener->OnDragStarted();
   m_navigator.StartDrag(t.m_location);
 
-  if (m_kineticScrollEnabled && !m_scroller.IsActive())
+  if (!m_scroller.IsActive())
     m_scroller.InitGrab(m_navigator.Screen(), timestamp);
 }
 
@@ -852,7 +836,7 @@ void UserEventStream::Drag(Touch const & t, double timestamp)
   ASSERT_EQUAL(m_state, STATE_DRAG, ());
   m_navigator.DoDrag(t.m_location);
 
-  if (m_kineticScrollEnabled && m_scroller.IsActive())
+  if (m_scroller.IsActive())
     m_scroller.GrabViewRect(m_navigator.Screen(), timestamp);
 }
 
@@ -873,7 +857,7 @@ bool UserEventStream::EndDrag(Touch const & t, bool cancelled)
     return true;
   }
 
-  if (m_kineticScrollEnabled && m_kineticTimer.TimeElapsedAs<milliseconds>().count() >= kKineticDelayMs)
+  if (m_kineticTimer.TimeElapsedAs<milliseconds>().count() >= kKineticDelayMs)
   {
     m_animation = m_scroller.CreateKineticAnimation(m_navigator.Screen());
     if (m_listener)
@@ -1071,14 +1055,6 @@ bool UserEventStream::IsWaitingForActionCompletion() const
 bool UserEventStream::IsInPerspectiveAnimation() const
 {
   return m_perspectiveAnimation != nullptr;
-}
-
-void UserEventStream::SetKineticScrollEnabled(bool enabled)
-{
-  m_kineticScrollEnabled = enabled;
-  m_kineticTimer.Reset();
-  if (!m_kineticScrollEnabled)
-    m_scroller.CancelGrab();
 }
 
 }

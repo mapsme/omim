@@ -49,8 +49,6 @@ public:
   void StartSession(TFlushFn const & flusher);
   void EndSession();
 
-  void SetFeatureMinZoom(int minZoom);
-
 private:
   template<typename TBacher>
   IndicesRange InsertTriangles(GLState const & state, ref_ptr<AttributeProvider> params,
@@ -72,8 +70,6 @@ private:
 
   uint32_t m_indexBufferSize;
   uint32_t m_vertexBufferSize;
-
-  int m_featureMinZoom = 0;
 };
 
 class BatcherFactory

@@ -13,8 +13,8 @@
 
 #include "Framework.h"
 
-extern CGFloat const kBottomPlacePageOffset;
-extern CGFloat const kLabelsBetweenOffset;
+static CGFloat const kPlacePageBottomOffset = 31.;
+extern CGFloat const kBasePlacePageViewTitleBottomOffset;
 
 typedef NS_ENUM(NSUInteger, MWMiPhonePortraitPlacePageState)
 {
@@ -95,24 +95,19 @@ typedef NS_ENUM(NSUInteger, MWMiPhonePortraitPlacePageState)
 - (void)reloadBookmark
 {
   [super reloadBookmark];
-  [self refresh];
+  [self updateTargetPoint];
 }
 
 - (void)updateMyPositionStatus:(NSString *)status
 {
   [super updateMyPositionStatus:status];
-  [self refresh];
-}
-
-- (void)refresh
-{
   [self updateTargetPoint];
 }
 
 - (void)setState:(MWMiPhonePortraitPlacePageState)state
 {
   _state = state;
-  [self refresh];
+  [self updateTargetPoint];
   switch (state)
   {
     case MWMiPhonePortraitPlacePageStateClosed:
@@ -121,7 +116,6 @@ typedef NS_ENUM(NSUInteger, MWMiPhonePortraitPlacePageState)
       [self.manager.ownerViewController.view endEditing:YES];
       break;
     case MWMiPhonePortraitPlacePageStatePreview:
-      self.isHover = NO;
       [MWMPlacePageNavigationBar remove];
       [self.manager.ownerViewController.view endEditing:YES];
       break;
@@ -159,7 +153,11 @@ typedef NS_ENUM(NSUInteger, MWMiPhonePortraitPlacePageState)
   BOOL const isLandscape = size.width > size.height;
   CGFloat const width = isLandscape ? size.height : size.width;
   CGFloat const height = isLandscape ? size.width : size.height;
-  CGFloat const h = height - (self.topPlacePageHeight);
+  MWMBasePlacePageView * basePPV = self.basePlacePageView;
+  CGFloat const typeHeight = basePPV.typeLabel.text.length > 0 ? basePPV.typeLabel.height
+                                                               : basePPV.typeDescriptionView.height;
+  CGFloat const h = height - (basePPV.titleLabel.height + kPlacePageBottomOffset + typeHeight +
+                              self.actionBar.height);
   return {width / 2, height + h};
 }
 
@@ -184,21 +182,12 @@ typedef NS_ENUM(NSUInteger, MWMiPhonePortraitPlacePageState)
   MWMBasePlacePageView * basePPV = self.basePlacePageView;
   CGSize const size = UIScreen.mainScreen.bounds.size;
   CGFloat const height = MAX(size.width, size.height);
-  CGFloat const tableViewHeight = basePPV.featureTable.height;
-  return height - (self.topPlacePageHeight + tableViewHeight);
-}
-
-- (CGFloat)topPlacePageHeight
-{
-  MWMBasePlacePageView * basePPV = self.basePlacePageView;
-  CGFloat const anchorHeight = self.anchorImageView.height;
-  CGFloat const actionBarHeight = self.actionBar.height;
-  BOOL const typeIsNotEmpty = basePPV.typeLabel.text.length > 0;
-  BOOL const addressIsNotEmpty = basePPV.addressLabel.text.length > 0;
-  CGFloat const titleHeight = basePPV.titleLabel.height + (typeIsNotEmpty ? kLabelsBetweenOffset : 0);
-  CGFloat const typeHeight = typeIsNotEmpty ? basePPV.typeLabel.height + (addressIsNotEmpty ? kLabelsBetweenOffset : 0) : 0;
-  CGFloat const addressHeight = addressIsNotEmpty ? basePPV.addressLabel.height : 0;
-  return anchorHeight + titleHeight + typeHeight + addressHeight + kBottomPlacePageOffset + actionBarHeight;
+  CGFloat const typeHeight = basePPV.typeLabel.text.length > 0 ? basePPV.typeLabel.height
+                                                               : basePPV.typeDescriptionView.height;
+  return height -
+         (basePPV.titleLabel.height + kPlacePageBottomOffset + kBasePlacePageViewTitleBottomOffset +
+          typeHeight + [(UITableView *)basePPV.featureTable height] + self.actionBar.height +
+          self.keyboardHeight);
 }
 
 #pragma mark - Actions
@@ -310,7 +299,7 @@ typedef NS_ENUM(NSUInteger, MWMiPhonePortraitPlacePageState)
 - (void)willFinishEditingBookmarkTitle:(NSString *)title
 {
   [super willFinishEditingBookmarkTitle:title];
-  [self refresh];
+  [self updateTargetPoint];
 }
 
 - (void)setAnchorImage
@@ -345,7 +334,7 @@ typedef NS_ENUM(NSUInteger, MWMiPhonePortraitPlacePageState)
   _targetPoint = targetPoint;
   __weak MWMiPhonePortraitPlacePage * weakSelf = self;
   if (self.state == MWMiPhonePortraitPlacePageStateClosed)
-    GetFramework().DeactivateMapSelection(false);
+    GetFramework().DeactivateUserMark();
   
   [self startAnimatingPlacePage:self initialVelocity:{0.0, self.panVelocity} completion:^
   {

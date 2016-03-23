@@ -37,8 +37,7 @@ public:
   };
 
   // Finds nearest segment to a feature geometry.
-  static void FindNearestSegment(FeatureType const & ft, m2::PointD const & point, Candidate & res,
-                                 size_t startIdx = 0, size_t stopIdx = numeric_limits<size_t>::max());
+  static void FindNearestSegment(FeatureType const & ft, m2::PointD const & point, Candidate & res);
 
   // Sets point from where weights are calculated.
   void SetPoint(m2::PointD const & pt) { m_point = pt; }

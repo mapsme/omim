@@ -39,8 +39,7 @@ uint32_t Viewport::GetHeight() const
 
 void Viewport::Apply() const
 {
-  GLCHECK(GLFunctions::glViewport(GetX0(), GetY0(), GetWidth(), GetHeight()));
-  GLCHECK(GLFunctions::glScissor(GetX0(), GetY0(), GetWidth(), GetHeight()));
+  GLFunctions::glViewport(GetX0(), GetY0(), GetWidth(), GetHeight());
 }
 
 } // namespace df

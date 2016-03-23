@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 
-import com.mapswithme.util.Listeners;
 import com.mapswithme.util.UiUtils;
 
 class PanelAnimator
@@ -18,18 +17,14 @@ class PanelAnimator
   private static final int WIDTH = UiUtils.dimen(R.dimen.panel_width);
 
   private final MwmActivity mActivity;
-  private final Listeners<MwmActivity.LeftAnimationTrackListener> mAnimationTrackListeners = new Listeners<>();
+  private final MwmActivity.LeftAnimationTrackListener mAnimationTrackListener;
   private final View mPanel;
 
-  PanelAnimator(MwmActivity activity)
+  public PanelAnimator(MwmActivity activity, @NonNull MwmActivity.LeftAnimationTrackListener animationTrackListener)
   {
     mActivity = activity;
+    mAnimationTrackListener = animationTrackListener;
     mPanel = mActivity.findViewById(R.id.fragment_container);
-  }
-
-  void registerListener(@NonNull MwmActivity.LeftAnimationTrackListener animationTrackListener)
-  {
-    mAnimationTrackListeners.register(animationTrackListener);
   }
 
   private void track(ValueAnimator animation)
@@ -37,10 +32,7 @@ class PanelAnimator
     float offset = (Float) animation.getAnimatedValue();
     mPanel.setTranslationX(offset);
     mPanel.setAlpha(offset / WIDTH + 1.0f);
-
-    for (MwmActivity.LeftAnimationTrackListener listener: mAnimationTrackListeners)
-      listener.onTrackLeftAnimation(offset + WIDTH);
-    mAnimationTrackListeners.finishIterate();
+    mAnimationTrackListener.onTrackLeftAnimation(offset + WIDTH);
   }
 
   /** @param completionListener will be called before the fragment becomes actually visible */
@@ -73,9 +65,7 @@ class PanelAnimator
 
     UiUtils.show(mPanel);
 
-    for (MwmActivity.LeftAnimationTrackListener listener: mAnimationTrackListeners)
-      listener.onTrackStarted(false);
-    mAnimationTrackListeners.finishIterate();
+    mAnimationTrackListener.onTrackStarted(false);
 
     ValueAnimator animator = ValueAnimator.ofFloat(-WIDTH, 0.0f);
     animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
@@ -91,10 +81,7 @@ class PanelAnimator
       @Override
       public void onAnimationEnd(Animator animation)
       {
-        for (MwmActivity.LeftAnimationTrackListener listener: mAnimationTrackListeners)
-          listener.onTrackStarted(true);
-        mAnimationTrackListeners.finishIterate();
-
+        mAnimationTrackListener.onTrackFinished(true);
         mActivity.adjustCompass(WIDTH, 0);
       }
     });
@@ -113,9 +100,7 @@ class PanelAnimator
       return;
     }
 
-    for (MwmActivity.LeftAnimationTrackListener listener: mAnimationTrackListeners)
-      listener.onTrackStarted(true);
-    mAnimationTrackListeners.finishIterate();
+    mAnimationTrackListener.onTrackStarted(true);
 
     ValueAnimator animator = ValueAnimator.ofFloat(0.0f, -WIDTH);
     animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
@@ -132,11 +117,7 @@ class PanelAnimator
       public void onAnimationEnd(Animator animation)
       {
         UiUtils.hide(mPanel);
-
-        for (MwmActivity.LeftAnimationTrackListener listener: mAnimationTrackListeners)
-          listener.onTrackStarted(false);
-        mAnimationTrackListeners.finishIterate();
-
+        mAnimationTrackListener.onTrackFinished(false);
         mActivity.adjustCompass(0, 0);
 
         if (completionListener != null)

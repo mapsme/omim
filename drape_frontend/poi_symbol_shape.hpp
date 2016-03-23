@@ -12,7 +12,7 @@ public:
   PoiSymbolShape(m2::PointF const & mercatorPt, PoiSymbolViewParams const & params);
 
   void Draw(ref_ptr<dp::Batcher> batcher, ref_ptr<dp::TextureManager> textures) const override;
-  MapShapeType GetType() const override { return MapShapeType::OverlayType; }
+  MapShapePriority GetPriority() const override { return MapShapePriority::TextAndPoiPriority; }
 
 private:
   uint64_t GetOverlayPriority() const;

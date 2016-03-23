@@ -10,7 +10,6 @@
 + (UIColor *)red;
 + (UIColor *)orange;
 + (UIColor *)linkBlue;
-+ (UIColor *)linkBlueHighlighted;
 + (UIColor *)linkBlueDark;
 + (UIColor *)blackPrimaryText;
 + (UIColor *)blackSecondaryText;
@@ -21,6 +20,7 @@
 + (UIColor *)whitePrimaryText;
 + (UIColor *)whiteSecondaryText;
 + (UIColor *)whiteDividers;
++ (UIColor *)buttonEnabledBlueText;
 + (UIColor *)buttonDisabledBlueText;
 + (UIColor *)buttonHighlightedBlueText;
 + (UIColor *)alertBackground;

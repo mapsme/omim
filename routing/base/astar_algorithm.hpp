@@ -12,21 +12,6 @@
 namespace routing
 {
 
-template <typename TVertexType>
-struct RoutingResult
-{
-  vector<TVertexType> path;
-  double distance;
-
-  RoutingResult() : distance(0) {}
-
-  void Clear()
-  {
-    path.clear();
-    distance = 0;
-  }
-};
-
 template <typename TGraph>
 class AStarAlgorithm
 {
@@ -63,13 +48,13 @@ public:
 
   Result FindPath(TGraphType const & graph,
                   TVertexType const & startVertex, TVertexType const & finalVertex,
-                  RoutingResult<TVertexType> & result,
+                  vector<TVertexType> & path,
                   my::Cancellable const & cancellable = my::Cancellable(),
                   TOnVisitedVertexCallback onVisitedVertexCallback = nullptr) const;
 
   Result FindPathBidirectional(TGraphType const & graph,
                                TVertexType const & startVertex, TVertexType const & finalVertex,
-                               RoutingResult<TVertexType> & result,
+                               vector<TVertexType> & path,
                                my::Cancellable const & cancellable = my::Cancellable(),
                                TOnVisitedVertexCallback onVisitedVertexCallback = nullptr) const;
 
@@ -184,11 +169,10 @@ template <typename TGraph>
 typename AStarAlgorithm<TGraph>::Result AStarAlgorithm<TGraph>::FindPath(
     TGraphType const & graph,
     TVertexType const & startVertex, TVertexType const & finalVertex,
-    RoutingResult<TVertexType> & result,
+    vector<TVertexType> & path,
     my::Cancellable const & cancellable,
     TOnVisitedVertexCallback onVisitedVertexCallback) const
 {
-  result.Clear();
   if (nullptr == onVisitedVertexCallback)
     onVisitedVertexCallback = [](TVertexType const &, TVertexType const &){};
 
@@ -220,9 +204,7 @@ typename AStarAlgorithm<TGraph>::Result AStarAlgorithm<TGraph>::FindPath(
 
     if (stateV.vertex == finalVertex)
     {
-      ReconstructPath(stateV.vertex, parent, result.path);
-      result.distance = stateV.distance - graph.HeuristicCostEstimate(stateV.vertex, finalVertex) + graph.HeuristicCostEstimate(startVertex, finalVertex);
-      ASSERT_EQUAL(graph.HeuristicCostEstimate(stateV.vertex, finalVertex), 0, ());
+      ReconstructPath(stateV.vertex, parent, path);
       return Result::OK;
     }
 
@@ -259,7 +241,7 @@ template <typename TGraph>
 typename AStarAlgorithm<TGraph>::Result AStarAlgorithm<TGraph>::FindPathBidirectional(
     TGraphType const & graph,
     TVertexType const & startVertex, TVertexType const & finalVertex,
-    RoutingResult<TVertexType> & result,
+    vector<TVertexType> & path,
     my::Cancellable const & cancellable,
     TOnVisitedVertexCallback onVisitedVertexCallback) const
 {
@@ -271,7 +253,6 @@ typename AStarAlgorithm<TGraph>::Result AStarAlgorithm<TGraph>::FindPathBidirect
 
   bool foundAnyPath = false;
   double bestPathReducedLength = 0.0;
-  double bestPathRealLength = 0.0;
 
   forward.bestDistance[startVertex] = 0.0;
   forward.queue.push(State(startVertex, 0.0 /* distance */));
@@ -321,11 +302,10 @@ typename AStarAlgorithm<TGraph>::Result AStarAlgorithm<TGraph>::FindPathBidirect
       if (curTop + nxtTop >= bestPathReducedLength - kEpsilon)
       {
         ReconstructPathBidirectional(cur->bestVertex, nxt->bestVertex, cur->parent, nxt->parent,
-                                     result.path);
-        result.distance = bestPathRealLength;
-        CHECK(!result.path.empty(), ());
+                                     path);
+        CHECK(!path.empty(), ());
         if (!cur->forward)
-          reverse(result.path.begin(), result.path.end());
+          reverse(path.begin(), path.end());
         return Result::OK;
       }
     }
@@ -369,11 +349,6 @@ typename AStarAlgorithm<TGraph>::Result AStarAlgorithm<TGraph>::FindPathBidirect
         if (!foundAnyPath || bestPathReducedLength > curPathReducedLength)
         {
           bestPathReducedLength = curPathReducedLength;
-
-          bestPathRealLength = stateV.distance + len + distW;
-          bestPathRealLength += cur->pS - pV;
-          bestPathRealLength += nxt->pS - nxt->ConsistentHeuristic(stateW.vertex);
-
           foundAnyPath = true;
           cur->bestVertex = stateV.vertex;
           nxt->bestVertex = stateW.vertex;

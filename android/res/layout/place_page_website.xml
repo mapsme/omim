@@ -5,12 +5,13 @@
   android:id="@+id/ll__place_website"
   style="@style/PlacePageItemFrame"
   android:tag="website"
-  tools:background="#20FF0000"
-  tools:visibility="visible">
-
+  tools:visibility="visible"
+  tools:background="#20FF0000">
   <ImageView
     android:id="@+id/iv__place_website"
-    style="@style/PlacePageMetadataIcon"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="@dimen/margin_base"
     android:src="@drawable/ic_website"
     android:tint="?colorAccent"/>
 

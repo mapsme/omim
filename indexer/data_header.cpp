@@ -110,7 +110,7 @@ namespace feature
     version::MwmVersion version;
 
     if (version::ReadVersion(cont, version))
-      Load(headerReader, version.GetFormat());
+      Load(headerReader, version.format);
     else
       LoadV1(headerReader);
   }
@@ -154,6 +154,6 @@ namespace feature
 
     m_type = country;
 
-    m_format = version::Format::v1;
+    m_format = version::v1;
   }
 }

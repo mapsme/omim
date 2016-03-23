@@ -48,8 +48,9 @@ namespace
     int GetApiVersion() const { return m_api.GetApiVersion(); }
     bool TestLatLon(int index, double lat, double lon) const
     {
-      ms::LatLon const ll = GetMark(index)->GetLatLon();
-      return my::AlmostEqualULPs(ll.lat, lat) && my::AlmostEqualULPs(ll.lon, lon);
+      double tLat, tLon;
+      GetMark(index)->GetLatLon(tLat, tLon);
+      return my::AlmostEqualULPs(tLat, lat) && my::AlmostEqualULPs(tLon, lon);
     }
 
     bool TestName(int index, string const & name) const

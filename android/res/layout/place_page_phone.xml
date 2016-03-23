@@ -5,18 +5,20 @@
   android:id="@+id/ll__place_phone"
   style="@style/PlacePageItemFrame"
   android:tag="phone"
-  tools:background="#2000FF00"
-  tools:visibility="visible">
-
+  tools:visibility="visible"
+  tools:background="#2000FF00">
   <ImageView
     android:id="@+id/iv__place_phone"
-    style="@style/PlacePageMetadataIcon"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="@dimen/margin_base"
     android:src="@drawable/ic_phone"
     android:tint="?colorAccent"/>
 
   <TextView
     android:id="@+id/tv__place_phone"
-    style="@style/PlacePageMetadataText"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:textAppearance="@style/MwmTextAppearance.PlacePage.Accent"
     tools:text="+1 234 567-89-00"/>
 </LinearLayout>

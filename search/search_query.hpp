@@ -1,16 +1,11 @@
 #pragma once
-#include "search/intermediate_result.hpp"
-#include "search/keyword_lang_matcher.hpp"
-#include "search/mode.hpp"
-#include "search/reverse_geocoder.hpp"
-#include "search/search_trie.hpp"
-#include "search/suggest.hpp"
-#include "search/v2/geocoder.hpp"
-#include "search/v2/rank_table_cache.hpp"
+#include "intermediate_result.hpp"
+#include "keyword_lang_matcher.hpp"
+#include "suggest.hpp"
 
 #include "indexer/ftypes_matcher.hpp"
-#include "indexer/index.hpp"
-#include "indexer/rank_table.hpp"
+#include "indexer/search_trie.hpp"
+#include "indexer/index.hpp"  // for Index::MwmHandle
 
 #include "geometry/rect2d.hpp"
 
@@ -24,29 +19,26 @@
 #include "std/unordered_set.hpp"
 #include "std/vector.hpp"
 
+
+#define HOUSE_SEARCH_TEST
 #define FIND_LOCALITY_TEST
+
+#ifdef HOUSE_SEARCH_TEST
+#include "search/house_detector.hpp"
+#endif
 
 #ifdef FIND_LOCALITY_TEST
 #include "search/locality_finder.hpp"
 #endif
 
+
 class FeatureType;
 class CategoriesHolder;
 
-namespace coding
-{
-class CompressedBitVector;
-}
-
-namespace storage
-{
-class CountryInfoGetter;
-}
+namespace storage { class CountryInfoGetter; }
 
 namespace search
 {
-struct Locality;
-struct Region;
 struct SearchQueryParams;
 
 namespace impl
@@ -54,26 +46,17 @@ namespace impl
   class FeatureLoader;
   class BestNameFinder;
   class PreResult2Maker;
+  struct Locality;
+  struct Region;
   class DoFindLocality;
   class HouseCompFactory;
 }
 
-namespace v2
-{
-struct PreRankingInfo;
-}
-
-// TODO (@y): rename this class to QueryProcessor.
 class Query : public my::Cancellable
 {
 public:
-  // Maximum result candidates count for each viewport/criteria.
-  static size_t const kPreResultsCount = 200;
-
-  static double const kMinViewportRadiusM;
-  static double const kMaxViewportRadiusM;
-
-  Query(Index & index, CategoriesHolder const & categories, vector<Suggest> const & suggests,
+  Query(Index & index, CategoriesHolder const & categories,
+        vector<Suggest> const & suggests,
         storage::CountryInfoGetter const & infoGetter);
 
   inline void SupportOldFormat(bool b) { m_supportOldFormat = b; }
@@ -83,16 +66,10 @@ public:
   /// @param[in]  forceUpdate Pass true (default) to recache feature's ids even
   /// if viewport is a part of the old cached rect.
   void SetViewport(m2::RectD const & viewport, bool forceUpdate);
-
-  // TODO (@y): this function must be removed.
   void SetRankPivot(m2::PointD const & pivot);
   inline string const & GetPivotRegion() const { return m_region; }
-  inline void SetPosition(m2::PointD const & position) { m_position = position; }
-  inline m2::PointD const & GetPosition() const { return m_position; }
 
-  inline void SetMode(Mode mode) { m_mode = mode; }
   inline void SetSearchInWorld(bool b) { m_worldSearch = b; }
-  inline void SetSuggestsEnabled(bool enabled) { m_suggestsEnabled = enabled; }
 
   /// Suggestions language code, not the same as we use in mwm data
   int8_t m_inputLocaleCode, m_currentLocaleCode;
@@ -105,44 +82,35 @@ public:
 
   /// @name Different search functions.
   //@{
-  virtual void Search(Results & res, size_t resCount);
-  virtual void SearchViewportPoints(Results & res);
+  void SearchCoordinates(string const & query, Results & res) const;
+  void Search(Results & res, size_t resCount);
+  void SearchAdditional(Results & res, size_t resCount);
 
-  // Tries to generate a (lat, lon) result from |m_query|.
-  void SearchCoordinates(Results & res) const;
+  void SearchViewportPoints(Results & res);
   //@}
 
   // Get scale level to make geometry index query for current viewport.
   virtual int GetQueryIndexScale(m2::RectD const & viewport) const;
 
-  virtual void ClearCaches();
+  void ClearCaches();
 
   struct CancelException {};
 
   /// @name This stuff is public for implementation classes in search_query.cpp
   /// Do not use it in client code.
   //@{
+  using TTrieValue = trie::ValueReader::ValueType;
 
   void InitParams(bool localitySearch, SearchQueryParams & params);
 
-protected:
-  enum ViewportID
-  {
-    DEFAULT_V = -1,
-    CURRENT_V = 0,
-    LOCALITY_V = 1,
-    COUNT_V = 2     // Should always be the last
-  };
-
-  friend string DebugPrint(ViewportID viewportId);
-
+private:
   friend class impl::FeatureLoader;
   friend class impl::BestNameFinder;
   friend class impl::PreResult2Maker;
   friend class impl::DoFindLocality;
   friend class impl::HouseCompFactory;
 
-  void ClearResults();
+  void ClearQueues();
 
   int GetCategoryLocales(int8_t (&arr) [3]) const;
   template <class ToDo> void ForEachCategoryTypes(ToDo toDo) const;
@@ -153,30 +121,28 @@ protected:
   using TOffsetsVector = map<MwmSet::MwmId, vector<uint32_t>>;
   using TFHeader = feature::DataHeader;
 
-  m2::PointD GetPivotPoint() const;
-  m2::RectD GetPivotRect() const;
-
   void SetViewportByIndex(TMWMVector const & mwmsInfo, m2::RectD const & viewport, size_t idx,
                           bool forceUpdate);
+  void UpdateViewportOffsets(TMWMVector const & mwmsInfo, m2::RectD const & rect,
+                             TOffsetsVector & offsets);
   void ClearCache(size_t ind);
 
-  void AddPreResult1(MwmSet::MwmId const & mwmId, uint32_t featureId, double priority,
-                     v2::PreRankingInfo const & info, ViewportID viewportId = DEFAULT_V);
+  enum ViewportID
+  {
+    DEFAULT_V = -1,
+    CURRENT_V = 0,
+    LOCALITY_V = 1,
+    COUNT_V = 2     // Should always be the last
+  };
 
-  template <class T>
-  void MakePreResult2(v2::Geocoder::Params const & params, vector<T> & cont,
-                      vector<FeatureID> & streets);
+  void AddResultFromTrie(TTrieValue const & val, MwmSet::MwmId const & mwmID,
+                         ViewportID vID = DEFAULT_V);
 
-  /// @param allMWMs Deprecated, need to support old search algorithm.
-  /// @param oldHouseSearch Deprecated, need to support old search algorithm.
-  //@{
+  template <class T> void MakePreResult2(vector<T> & cont, vector<FeatureID> & streets);
   void FlushHouses(Results & res, bool allMWMs, vector<FeatureID> const & streets);
+  void FlushResults(Results & res, bool allMWMs, size_t resCount);
 
-  void FlushResults(v2::Geocoder::Params const & params, Results & res, bool allMWMs, size_t resCount,
-                    bool oldHouseSearch);
-  void FlushViewportResults(v2::Geocoder::Params const & params, Results & res, bool oldHouseSearch);
-  //@}
-
+  ftypes::Type GetLocalityIndex(feature::TypesHolder const & types) const;
   void RemoveStringPrefix(string const & str, string & res) const;
   void GetSuggestion(string const & name, string & suggest) const;
   template <class T> void ProcessSuggestions(vector<T> & vec, Results & res) const;
@@ -187,16 +153,20 @@ protected:
   /// @param[in]  pMwm  MWM file for World
   /// @param[out] res1  Best city-locality
   /// @param[out] res2  Best region-locality
-  void SearchLocality(MwmValue const * pMwm, Locality & res1, Region & res2);
+  void SearchLocality(MwmValue const * pMwm, impl::Locality & res1, impl::Region & res2);
 
   void SearchFeatures();
-  void SearchFeaturesInViewport(ViewportID viewportId);
-  void SearchFeaturesInViewport(SearchQueryParams const & params, TMWMVector const & mwmsInfo,
-                                ViewportID viewportId);
 
-  /// Do search in a set of maps.
-  void SearchInMwms(TMWMVector const & mwmsInfo, SearchQueryParams const & params,
-                    ViewportID viewportId);
+  /// @param[in] ind Index of viewport rect to search (@see m_viewport).
+  /// If ind == -1, don't do any matching with features in viewport (@see m_offsetsInViewport).
+  //@{
+  /// Do search in all maps from mwmInfo.
+  void SearchFeatures(SearchQueryParams const & params, TMWMVector const & mwmsInfo,
+                      ViewportID vID);
+  /// Do search in particular map (mwmHandle).
+  void SearchInMWM(Index::MwmHandle const & mwmHandle, SearchQueryParams const & params,
+                   ViewportID viewportId = DEFAULT_V);
+  //@}
 
   void SuggestStrings(Results & res);
   void MatchForSuggestionsImpl(strings::UniString const & token, int8_t locale, string const & prolog, Results & res);
@@ -212,26 +182,31 @@ protected:
   storage::CountryInfoGetter const & m_infoGetter;
 
   string m_region;
-  string m_query;
+  string const * m_query;
   buffer_vector<strings::UniString, 32> m_tokens;
   strings::UniString m_prefix;
   set<uint32_t> m_prefferedTypes;
 
+#ifdef HOUSE_SEARCH_TEST
+  strings::UniString m_house;
+  vector<FeatureID> m_streetID;
+  HouseDetector m_houseDetector;
+#endif
+
 #ifdef FIND_LOCALITY_TEST
-  mutable LocalityFinder m_locality;
+  LocalityFinder m_locality;
 #endif
 
   m2::RectD m_viewport[COUNT_V];
   m2::PointD m_pivot;
-  m2::PointD m_position;
-  Mode m_mode;
   bool m_worldSearch;
-  bool m_suggestsEnabled;
 
   /// @name Get ranking params.
   //@{
   /// @return Rect for viewport-distance calculation.
   m2::RectD const & GetViewport(ViewportID vID = DEFAULT_V) const;
+  /// @return Control point for distance-to calculation.
+  m2::PointD GetPosition(ViewportID vID = DEFAULT_V) const;
   //@}
 
   void SetLanguage(int id, int8_t lang);
@@ -239,6 +214,7 @@ protected:
 
   KeywordLangMatcher m_keywordsScorer;
 
+  TOffsetsVector m_offsetsInViewport[COUNT_V];
   bool m_supportOldFormat;
 
   template <class TParam>
@@ -268,7 +244,7 @@ public:
     kQueuesCount = 2
   };
 
-protected:
+private:
   // The values order should be the same as in
   // g_arrCompare1, g_arrCompare2 function arrays.
   enum
@@ -276,13 +252,9 @@ protected:
     DISTANCE_TO_PIVOT,  // LessDistance
     FEATURE_RANK       // LessRank
   };
-
-  vector<impl::PreResult1> m_results;
-  bool m_viewportSearch;
-  bool m_keepHouseNumberInQuery;
+  TQueue m_results[kQueuesCount];
+  size_t m_queuesCount;
   //@}
-
-  search::ReverseGeocoder const m_reverseGeocoder;
 };
 
 }  // namespace search

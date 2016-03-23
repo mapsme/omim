@@ -5,12 +5,20 @@ namespace df
 
 MapDataProvider::MapDataProvider(TReadIDsFn const & idsReader,
                                  TReadFeaturesFn const & featureReader,
+                                 TUpdateCountryIndexFn const & countryIndexUpdater,
+                                 TIsCountryLoadedFn const & isCountryLoadedFn,
                                  TIsCountryLoadedByNameFn const & isCountryLoadedByNameFn,
-                                 TUpdateCurrentCountryFn const & updateCurrentCountryFn)
+                                 TDownloadFn const & downloadMapHandler,
+                                 TDownloadFn const & downloadMapRoutingHandler,
+                                 TDownloadFn const & downloadRetryHandler)
   : m_featureReader(featureReader)
   , m_idsReader(idsReader)
-  , m_updateCurrentCountry(updateCurrentCountryFn)
-  , m_isCountryLoadedByName(isCountryLoadedByNameFn)
+  , m_countryIndexUpdater(countryIndexUpdater)
+  , m_isCountryLoadedFn(isCountryLoadedFn)
+  , m_downloadMapHandler(downloadMapHandler)
+  , m_downloadMapRoutingHandler(downloadMapRoutingHandler)
+  , m_downloadRetryHandler(downloadRetryHandler)
+  , m_isCountryLoadedByNameFn(isCountryLoadedByNameFn)
 {
 }
 
@@ -24,9 +32,29 @@ void MapDataProvider::ReadFeatures(TReadCallback<FeatureType> const & fn, vector
   m_featureReader(fn, ids);
 }
 
-MapDataProvider::TUpdateCurrentCountryFn const & MapDataProvider::UpdateCurrentCountryFn() const
+void MapDataProvider::UpdateCountryIndex(storage::TIndex const & currentIndex, m2::PointF const & pt)
 {
-  return m_updateCurrentCountry;
+  m_countryIndexUpdater(currentIndex, pt);
 }
 
-} // namespace df
+MapDataProvider::TIsCountryLoadedFn const & MapDataProvider::GetIsCountryLoadedFn() const
+{
+  return m_isCountryLoadedFn;
+}
+
+MapDataProvider::TDownloadFn const & MapDataProvider::GetDownloadMapHandler() const
+{
+  return m_downloadMapHandler;
+}
+
+MapDataProvider::TDownloadFn const & MapDataProvider::GetDownloadMapRoutingHandler() const
+{
+  return m_downloadMapRoutingHandler;
+}
+
+MapDataProvider::TDownloadFn const & MapDataProvider::GetDownloadRetryHandler() const
+{
+  return m_downloadRetryHandler;
+}
+
+}

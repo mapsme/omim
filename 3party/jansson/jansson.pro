@@ -19,7 +19,6 @@ SOURCES += \
     src/error.c \
     src/strconv.c \
     jansson_handle.cpp \
-    myjansson.cpp \
 
 HEADERS += \
     myjansson.hpp \

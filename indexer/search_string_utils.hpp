@@ -10,10 +10,11 @@ namespace search
 // It does some magic text transformation which greatly helps us to improve our search.
 inline strings::UniString NormalizeAndSimplifyString(string const & s)
 {
-  strings::UniString uniString = strings::MakeUniString(s);
+  using namespace strings;
+  UniString uniString = MakeUniString(s);
   for (size_t i = 0; i < uniString.size(); ++i)
   {
-    strings::UniChar & c = uniString[i];
+    UniChar & c = uniString[i];
     switch (c)
     {
     // Replace "d with stroke" to simple d letter. Used in Vietnamese.
@@ -47,7 +48,7 @@ inline strings::UniString NormalizeAndSimplifyString(string const & s)
   NormalizeInplace(uniString);
 
   // Remove accents that can appear after NFKD normalization.
-  uniString.erase_if([](strings::UniChar const & c)
+  uniString.erase_if([](UniChar const & c)
   {
     // ̀  COMBINING GRAVE ACCENT
     // ́  COMBINING ACUTE ACCENT
@@ -113,9 +114,4 @@ bool TokenizeStringAndCheckIfLastTokenIsPrefix(string const & s,
 void GetStreetName(strings::SimpleTokenizer iter, string & streetName);
 void GetStreetNameAsKey(string const & name, string & res);
 
-bool IsStreetSynonym(strings::UniString const & s);
-
-/// Normalizes both str and substr, and then returns true if substr is found in str.
-/// Used in native platform code for search in localized strings (cuisines, categories, strings etc.).
-bool ContainsNormalized(string const & str, string const & substr);
 }  // namespace search

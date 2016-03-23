@@ -1,19 +1,17 @@
-#import "MWMViewController.h"
+#import "ViewController.h"
 
 @protocol MWMSearchDownloadProtocol <NSObject>
-
-@property (nonnull, nonatomic, readonly) MWMAlertViewController * alertController;
 
 - (void)selectMapsAction;
 
 @end
 
-@interface MWMSearchDownloadViewController : MWMViewController
+@interface MWMSearchDownloadViewController : ViewController
 
 - (nonnull instancetype)init __attribute__((unavailable("init is not available")));
 - (nonnull instancetype)initWithDelegate:(nonnull id<MWMSearchDownloadProtocol>)delegate;
 
-- (void)downloadProgress:(CGFloat)progress;
+- (void)downloadProgress:(CGFloat)progress countryName:(nonnull NSString *)countryName;
 - (void)setDownloadFailed;
 
 @end

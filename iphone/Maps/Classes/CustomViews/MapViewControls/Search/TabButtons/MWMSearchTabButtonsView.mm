@@ -8,7 +8,7 @@ static CGFloat const kIconToLabelSpacing = 4.0;
 
 @property (nonatomic) IBOutlet UIView * rootView;
 
-@property (weak, nonatomic) IBOutlet UIButton * icon;
+@property (weak, nonatomic) IBOutlet UIImageView * icon;
 @property (weak, nonatomic) IBOutlet UILabel * label;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint * iconLeft;
@@ -36,11 +36,8 @@ static CGFloat const kIconToLabelSpacing = 4.0;
   return self;
 }
 
-- (IBAction)buttonTap
+- (IBAction)buttonTap:(UITapGestureRecognizer *)sender
 {
-  if (self.icon.selected)
-    return;
-
   [self.delegate tabButtonPressed:self];
 }
 
@@ -83,15 +80,14 @@ static CGFloat const kIconToLabelSpacing = 4.0;
 
 - (void)setSelected:(BOOL)selected
 {
-  _selected = self.icon.selected = selected;
+  _selected = self.icon.highlighted = selected;
   self.label.textColor = selected ? UIColor.linkBlue : UIColor.blackSecondaryText;
 }
 
 - (void)setIconImage:(UIImage *)iconImage
 {
-  _iconImage = iconImage;
-  [self.icon setImage:iconImage forState:UIControlStateNormal];
-  [self.icon.imageView makeImageAlwaysTemplate];
+  _iconImage = self.icon.image = iconImage;
+  [self.icon makeImageAlwaysTemplate];
 }
 
 - (void)setLocalizedText:(NSString *)localizedText

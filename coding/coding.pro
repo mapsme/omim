@@ -11,8 +11,12 @@ INCLUDEPATH *= $$ROOT_DIR/3party/tomcrypt/src/headers
 
 SOURCES += \
     $$ROOT_DIR/3party/lodepng/lodepng.cpp \
+    arithmetic_codec.cpp \
     base64.cpp \
+#    blob_indexer.cpp \
+#    blob_storage.cpp \
     compressed_bit_vector.cpp \
+#    compressed_varnum_vector.cpp \
     file_container.cpp \
     file_name_utils.cpp \
     file_reader.cpp \
@@ -26,7 +30,6 @@ SOURCES += \
     reader.cpp \
     reader_streambuf.cpp \
     reader_writer_ops.cpp \
-    simple_dense_coding.cpp \
     sha2.cpp \
     uri.cpp \
 #    varint_vector.cpp \
@@ -38,13 +41,17 @@ HEADERS += \
     $$ROOT_DIR/3party/lodepng/lodepng.hpp \
     $$ROOT_DIR/3party/lodepng/lodepng_io.hpp \
     $$ROOT_DIR/3party/lodepng/lodepng_io_private.hpp \
+    arithmetic_codec.hpp \
     base64.hpp \
     bit_streams.hpp \
+#    blob_indexer.hpp \
+#    blob_storage.hpp \
     buffer_reader.hpp \
     byte_stream.hpp \
     coder.hpp \
     coder_util.hpp \
     compressed_bit_vector.hpp \
+#    compressed_varnum_vector.hpp \
     constants.hpp \
     dd_vector.hpp \
     diff.hpp \
@@ -57,12 +64,10 @@ HEADERS += \
     file_sort.hpp \
     file_writer.hpp \
     file_writer_stream.hpp \
-    fixed_bits_ddvector.hpp \
     hex.hpp \
     huffman.hpp \
     internal/file64_api.hpp \
     internal/file_data.hpp \
-    internal/xmlparser.hpp \
     matrix_traversal.hpp \
     mmap_reader.hpp \
     multilang_utf8_string.hpp \
@@ -75,12 +80,16 @@ HEADERS += \
     reader_streambuf.hpp \
     reader_wrapper.hpp \
     reader_writer_ops.hpp \
-    simple_dense_coding.hpp \
     sha2.hpp \
     streams.hpp \
     streams_common.hpp \
     streams_sink.hpp \
-    succinct_mapper.hpp \
+    succinct_trie.hpp \
+    succinct_trie_builder.hpp \
+    succinct_trie_reader.hpp \
+    trie.hpp \
+    trie_builder.hpp \
+    trie_reader.hpp \
     uri.hpp \
     url_encode.hpp \
     value_opt_string.hpp \
@@ -93,3 +102,4 @@ HEADERS += \
     writer.hpp \
     zip_creator.hpp \
     zip_reader.hpp \
+    internal/xmlparser.hpp \

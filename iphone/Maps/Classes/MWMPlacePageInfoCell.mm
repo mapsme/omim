@@ -8,96 +8,70 @@
 #include "platform/settings.hpp"
 #include "platform/measurement_utils.hpp"
 
+extern NSString * const kUserDefaultsLatLonAsDMSKey;
+
 @interface MWMPlacePageInfoCell () <UITextViewDelegate>
 
 @property (weak, nonatomic, readwrite) IBOutlet UIImageView * icon;
 @property (weak, nonatomic, readwrite) IBOutlet id textContainer;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * textContainerHeight;
 
 @property (weak, nonatomic) IBOutlet UIButton * upperButton;
-@property (weak, nonatomic) IBOutlet UIImageView * toggleImage;
-
-@property (nonatomic) MWMPlacePageCellType type;
+@property (nonatomic) MWMPlacePageMetadataType type;
 
 @end
 
 @implementation MWMPlacePageInfoCell
 
-- (void)awakeFromNib
+- (void)configureWithType:(MWMPlacePageMetadataType)type info:(NSString *)info;
 {
-  [super awakeFromNib];
-  if ([self.textContainer isKindOfClass:[UITextView class]])
-    [(UITextView *)self.textContainer setTextContainerInset:{.top = 12}];
-}
-
-- (void)configureWithType:(MWMPlacePageCellType)type info:(NSString *)info;
-{
-  NSString * typeName;
+  NSString * typeName = nil;
   switch (type)
   {
-    case MWMPlacePageCellTypeURL:
-    case MWMPlacePageCellTypeWebsite:
-      self.toggleImage.hidden = YES;
+    case MWMPlacePageMetadataTypeURL:
+    case MWMPlacePageMetadataTypeWebsite:
       typeName = @"website";
       break;
-    case MWMPlacePageCellTypeEmail:
-      self.toggleImage.hidden = YES;
+    case MWMPlacePageMetadataTypeEmail:
       typeName = @"email";
       break;
-    case MWMPlacePageCellTypePhoneNumber:
-      self.toggleImage.hidden = YES;
+    case MWMPlacePageMetadataTypePhoneNumber:
       typeName = @"phone_number";
       break;
-    case MWMPlacePageCellTypeCoordinate:
-      self.toggleImage.hidden = NO;
+    case MWMPlacePageMetadataTypeCoordinate:
       typeName = @"coordinate";
       break;
-    case MWMPlacePageCellTypePostcode:
-      self.toggleImage.hidden = YES;
+    case MWMPlacePageMetadataTypePostcode:
       typeName = @"postcode";
       break;
-    case MWMPlacePageCellTypeWiFi:
-      self.toggleImage.hidden = YES;
+    case MWMPlacePageMetadataTypeOpenHours:
+      typeName = @"open_hours";
+      break;
+    case MWMPlacePageMetadataTypeWiFi:
       typeName = @"wifi";
       break;
-    default:
+    case MWMPlacePageMetadataTypeBookmark:
       NSAssert(false, @"Incorrect type!");
       break;
   }
-
-  UIImage * image =
-      [UIImage imageNamed:[NSString stringWithFormat:@"%@%@", @"ic_placepage_", typeName]];
+  
+  UIImage * image = [UIImage imageNamed:[NSString stringWithFormat:@"%@%@", @"ic_placepage_", typeName]];
   self.type = type;
   self.icon.image = image;
-  self.icon.mwm_coloring = [self.textContainer isKindOfClass:[UITextView class]] ? MWMImageColoringBlue : MWMImageColoringBlack;
-  [self changeText:info];
-  UILongPressGestureRecognizer * longTap =
-      [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longTap:)];
-  longTap.minimumPressDuration = 0.3;
-  [self.upperButton addGestureRecognizer:longTap];
-}
 
-- (void)changeText:(NSString *)text
-{
   if ([self.textContainer isKindOfClass:[UITextView class]])
   {
-    UITextView * tv = (UITextView *)self.textContainer;
-    [tv setAttributedText:[[NSAttributedString alloc]
-                              initWithString:text
-                                  attributes:@{NSFontAttributeName : [UIFont regular16]}]];
-    [tv sizeToIntegralFit];
-    CGFloat const minTextContainerHeight = 42.0;
-    CGFloat const bottomOffset = 8.0;
-    self.textContainerHeight.constant = MAX(ceil(tv.contentSize.height) + bottomOffset, minTextContainerHeight);
+    [self.textContainer setAttributedText:[[NSAttributedString alloc] initWithString:info attributes:@{NSFontAttributeName : [UIFont light16]}]];
+    self.icon.mwm_coloring = MWMImageColoringBlue;
   }
   else
   {
-    UILabel * lb = (UILabel *)self.textContainer;
-    [lb setText:text];
-    [lb sizeToIntegralFit];
-    CGFloat const trailingOffset = self.width - lb.maxX;
-    lb.font = trailingOffset < 32 ? [UIFont regular15] : [UIFont regular16];
+    [self.textContainer setText:info];
+    self.icon.mwm_coloring = MWMImageColoringBlack;
   }
+
+  UILongPressGestureRecognizer * longTap = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longTap:)];
+  longTap.minimumPressDuration = 0.3;
+  [self.upperButton addGestureRecognizer:longTap];
 }
 
 - (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange
@@ -105,28 +79,43 @@
   return YES;
 }
 
+- (void)layoutSubviews
+{
+  CGFloat const leftOffset = 16.;
+  CGFloat const topOffset = 8.;
+  CGFloat const textOffset= 60.;
+  self.icon.origin = {leftOffset, topOffset};
+  [self.textContainer setMinX:textOffset];
+}
+
 - (IBAction)cellTap
 {
   switch (self.type)
   {
-    case MWMPlacePageCellTypeURL:
-    case MWMPlacePageCellTypeWebsite:
+    case MWMPlacePageMetadataTypeURL:
+    case MWMPlacePageMetadataTypeWebsite:
       [[Statistics instance] logEvent:kStatEventName(kStatPlacePage, kStatOpenSite)];
       break;
-    case MWMPlacePageCellTypeEmail:
+    case MWMPlacePageMetadataTypeEmail:
       [[Statistics instance] logEvent:kStatEventName(kStatPlacePage, kStatSendEmail)];
       break;
-    case MWMPlacePageCellTypePhoneNumber:
+    case MWMPlacePageMetadataTypePhoneNumber:
       [[Statistics instance] logEvent:kStatEventName(kStatPlacePage, kStatCallPhoneNumber)];
       break;
-    case MWMPlacePageCellTypeCoordinate:
+    case MWMPlacePageMetadataTypeCoordinate:
       [[Statistics instance] logEvent:kStatEventName(kStatPlacePage, kStatToggleCoordinates)];
-      [self.currentEntity toggleCoordinateSystem];
-      [self changeText:[self.currentEntity getCellValue:MWMPlacePageCellTypeCoordinate]];
       break;
     default:
       break;
   }
+  if (self.type != MWMPlacePageMetadataTypeCoordinate)
+    return;
+  NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+  BOOL const showLatLonAsDMS = [defaults boolForKey:kUserDefaultsLatLonAsDMSKey];
+  m2::PointD const point = self.currentEntity.point;
+  [self.textContainer setText:@((showLatLonAsDMS ? MeasurementUtils::FormatLatLon(point.x, point.y).c_str() : MeasurementUtils::FormatLatLonAsDMS(point.x, point.y, 2).c_str()))];
+  [defaults setBool:!showLatLonAsDMS forKey:kUserDefaultsLatLonAsDMSKey];
+  [defaults synchronize];
 }
 
 - (void)longTap:(UILongPressGestureRecognizer *)sender

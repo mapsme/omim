@@ -15,7 +15,7 @@ public final class ThemeSwitcher
 
   private static final Runnable sCheckProc = new Runnable()
   {
-    private final LocationHelper.LocationListener mLocationListener = new LocationHelper.SimpleLocationListener()
+    private final LocationHelper.LocationListener mLocationListener = new LocationHelper.LocationListener()
     {
       @Override
       public void onLocationUpdated(Location l)
@@ -29,6 +29,10 @@ public final class ThemeSwitcher
       {
         LocationHelper.INSTANCE.removeLocationListener(this);
       }
+
+      @Override
+      public void onCompassUpdated(long time, double magneticNorth, double trueNorth, double accuracy)
+      {}
     };
 
     @Override

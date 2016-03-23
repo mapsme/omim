@@ -59,7 +59,8 @@ static NSString * const kBookmarksCellIdentifier = @"MWMSearchBookmarksCell";
   {
     cell.tableView.hidden = YES;
     cell.noResultsView.hidden = NO;
-    cell.noResultsImage.image = [UIImage imageNamed:@"img_bookmarks"];
+    cell.noResultsImage.image = [UIImage
+        imageNamed:IPAD ? @"img_no_bookmarks_ipad_light" : @"img_no_bookmarks_iphone_light"];
     cell.noResultsTitle.text = L(@"search_bookmarks_no_results_title");
     cell.noResultsText.text = L(@"search_bookmarks_no_results_text");
   }

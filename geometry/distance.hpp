@@ -37,9 +37,7 @@ public:
     }
   }
 
-  inline double GetLength() const { return m_D2; }
-  inline PointT const & P0() const { return m_P0; }
-  inline PointT const & P1() const { return m_P1; }
+  double GetLength() const { return m_D2; }
 
 protected:
   template <class VectorT> static double SquareLength(VectorT const & v)

@@ -7,15 +7,13 @@
 #import "MWMBottomMenuLayout.h"
 #import "MWMBottomMenuView.h"
 #import "MWMBottomMenuViewController.h"
-#import "MWMButton.h"
-#import "MWMFrameworkListener.h"
-#import "MWMFrameworkObservers.h"
 #import "MWMMapViewControlsManager.h"
 #import "MWMSearchManager.h"
 #import "SettingsAndMoreVC.h"
 #import "Statistics.h"
-#import "UIColor+MapsMeColor.h"
+#import "UIButton+Coloring.h"
 #import "UIImageView+Coloring.h"
+#import "UIColor+MapsMeColor.h"
 #import "UIKitCategories.h"
 
 #import "3party/Alohalytics/src/alohalytics_objc.h"
@@ -33,7 +31,6 @@ static CGFloat const kLayoutThreshold = 420.0;
 
 typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell)
 {
-  MWMBottomMenuViewCellAddPlace,
   MWMBottomMenuViewCellDownload,
   MWMBottomMenuViewCellSettings,
   MWMBottomMenuViewCellShare,
@@ -41,12 +38,12 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell)
   MWMBottomMenuViewCellCount
 };
 
-@interface MWMBottomMenuViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
+@interface MWMBottomMenuViewController ()<UICollectionViewDataSource, UICollectionViewDelegate>
 
 @property (weak, nonatomic) MapViewController * controller;
 @property (weak, nonatomic) IBOutlet UICollectionView * buttonsCollectionView;
 
-@property (weak, nonatomic) IBOutlet MWMButton * locationButton;
+@property (weak, nonatomic) IBOutlet UIButton * locationButton;
 @property (weak, nonatomic) IBOutlet UICollectionView * additionalButtons;
 @property (weak, nonatomic) IBOutlet UILabel * streetLabel;
 
@@ -108,9 +105,9 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell)
   [self refreshLayout];
 }
 
-- (void)mwm_refreshUI
+- (void)refresh
 {
-  [self.view mwm_refreshUI];
+  [self.view refresh];
 }
 
 #pragma mark - Refresh Collection View layout
@@ -166,12 +163,14 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell)
   self.state = MWMBottomMenuStateGo;
 }
 
-- (void)processMyPositionStateModeEvent:(location::EMyPositionMode)mode
+#pragma mark - Location button
+
+- (void)onLocationStateModeChanged:(location::EMyPositionMode)state
 {
   UIButton * locBtn = self.locationButton;
   [locBtn.imageView stopAnimating];
   [locBtn.imageView.layer removeAllAnimations];
-  switch (mode)
+  switch (state)
   {
     case location::MODE_UNKNOWN_POSITION:
     case location::MODE_NOT_FOLLOW:
@@ -207,10 +206,8 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell)
       break;
     }
   }
-  [self refreshLocationButtonState:mode];
+  [self refreshLocationButtonState:state];
 }
-
-#pragma mark - Location button
 
 - (void)refreshLocationButtonState:(location::EMyPositionMode)state
 {
@@ -222,27 +219,27 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell)
     }
     else
     {
-      MWMButton * locBtn = self.locationButton;
+      UIButton * locBtn = self.locationButton;
       switch (state)
       {
         case location::MODE_PENDING_POSITION:
-          locBtn.coloring = MWMButtonColoringBlue;
+          locBtn.mwm_coloring = MWMButtonColoringBlue;
           break;
         case location::MODE_UNKNOWN_POSITION:
           [locBtn setImage:[UIImage imageNamed:@"ic_menu_location_follow"] forState:UIControlStateNormal];
-          locBtn.coloring = MWMButtonColoringGray;
+          locBtn.mwm_coloring = MWMButtonColoringGray;
           break;
         case location::MODE_NOT_FOLLOW:
           [locBtn setImage:[UIImage imageNamed:@"ic_menu_location_get_position"] forState:UIControlStateNormal];
-          locBtn.coloring = MWMButtonColoringBlack;
+          locBtn.mwm_coloring = MWMButtonColoringBlack;
           break;
         case location::MODE_FOLLOW:
           [locBtn setImage:[UIImage imageNamed:@"ic_menu_location_follow"] forState:UIControlStateNormal];
-          locBtn.coloring = MWMButtonColoringBlue;
+          locBtn.mwm_coloring = MWMButtonColoringBlue;
           break;
         case location::MODE_ROTATE_AND_FOLLOW:
           [locBtn setImage:[UIImage imageNamed:@"ic_menu_location_follow_and_rotate"] forState:UIControlStateNormal];
-          locBtn.coloring = MWMButtonColoringBlue;
+          locBtn.mwm_coloring = MWMButtonColoringBlue;
           break;
       }
     }
@@ -276,34 +273,26 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell)
                                                 forIndexPath:indexPath];
   switch (indexPath.item)
   {
-  case MWMBottomMenuViewCellAddPlace:
-    [cell configureWithImageName:@"ic_add_place"
-                           label:L(@"placepage_add_place_button")
-                      badgeCount:0
-                       isEnabled:self.controller.controlsManager.navigationState == MWMNavigationDashboardStateHidden];
-    break;
   case MWMBottomMenuViewCellDownload:
   {
-    auto & s = GetFramework().Storage();
-    storage::Storage::UpdateInfo updateInfo{};
-    s.GetUpdateInfo(s.GetRootId(), updateInfo);
+    NSUInteger const badgeCount =
+        GetFramework().GetCountryTree().GetActiveMapLayout().GetOutOfDateCount();
     [cell configureWithImageName:@"ic_menu_download"
                            label:L(@"download_maps")
-                      badgeCount:updateInfo.m_numberOfMwmFilesToUpdate
-                       isEnabled:YES];
+                      badgeCount:badgeCount];
   }
   break;
   case MWMBottomMenuViewCellSettings:
-    [cell configureWithImageName:@"ic_menu_settings" label:L(@"settings") badgeCount:0 isEnabled:YES];
+    [cell configureWithImageName:@"ic_menu_settings" label:L(@"settings") badgeCount:0];
     break;
   case MWMBottomMenuViewCellShare:
-    [cell configureWithImageName:@"ic_menu_share" label:L(@"share_my_location") badgeCount:0 isEnabled:YES];
+    [cell configureWithImageName:@"ic_menu_share" label:L(@"share_my_location") badgeCount:0];
     break;
   case MWMBottomMenuViewCellAd:
   {
     MTRGNativeAppwallBanner * banner = [self.controller.appWallAd.banners firstObject];
     [self.controller.appWallAd handleShow:banner];
-    [cell configureWithImageName:@"ic_menu_showcase" label:L(@"showcase_more_apps") badgeCount:0 isEnabled:YES];
+    [cell configureWithImageName:@"ic_menu_showcase" label:L(@"showcase_more_apps") badgeCount:0];
   }
     break;
   case MWMBottomMenuViewCellCount:
@@ -317,14 +306,8 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell)
 - (void)collectionView:(nonnull UICollectionView *)collectionView
     didSelectItemAtIndexPath:(nonnull NSIndexPath *)indexPath
 {
-  MWMBottomMenuCollectionViewCell * cell = static_cast<MWMBottomMenuCollectionViewCell *>([collectionView cellForItemAtIndexPath:indexPath]);
-  if (!cell.isEnabled)
-    return;
   switch (indexPath.item)
   {
-  case MWMBottomMenuViewCellAddPlace:
-    [self menuActionAddPlace];
-    break;
   case MWMBottomMenuViewCellDownload:
     [self menuActionDownloadMaps];
     break;
@@ -343,13 +326,6 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell)
 }
 
 #pragma mark - Buttons actions
-
-- (void)menuActionAddPlace
-{
-  [[Statistics instance] logEvent:kStatMenu withParameters:@{kStatButton : kStatAddPlace}];
-  self.state = self.restoreState;
-  [self.delegate addPlace];
-}
 
 - (void)menuActionDownloadMaps
 {
@@ -371,7 +347,7 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell)
 {
   [[Statistics instance] logEvent:kStatMenu withParameters:@{kStatButton : kStatShare}];
   [Alohalytics logEvent:kAlohalyticsTapEventKey withValue:@"share@"];
-  CLLocation * location = [MapsAppDelegate theApp].locationManager.lastLocation;
+  CLLocation * location = [MapsAppDelegate theApp].m_locationManager.lastLocation;
   if (!location)
   {
     [[[UIAlertView alloc] initWithTitle:L(@"unknown_current_position")

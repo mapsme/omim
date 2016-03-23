@@ -64,9 +64,9 @@ extern NSString * const kAlohalyticsTapEventKey;
   GetFramework().Scale(Framework::SCALE_MIN, true);
 }
 
-- (void)mwm_refreshUI
+- (void)refresh
 {
-  [self.zoomView mwm_refreshUI];
+  [self.zoomView refresh];
 }
 
 #pragma mark - Actions
@@ -106,7 +106,7 @@ extern NSString * const kAlohalyticsTapEventKey;
 - (BOOL)isZoomEnabled
 {
   bool zoomButtonsEnabled = true;
-  (void)settings::Get("ZoomButtonsEnabled", zoomButtonsEnabled);
+  (void)Settings::Get("ZoomButtonsEnabled", zoomButtonsEnabled);
   return zoomButtonsEnabled;
 }
 

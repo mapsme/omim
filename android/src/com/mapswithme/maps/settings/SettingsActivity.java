@@ -2,7 +2,6 @@ package com.mapswithme.maps.settings;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -25,7 +24,6 @@ import com.mapswithme.maps.R;
 import com.mapswithme.maps.base.BaseActivity;
 import com.mapswithme.maps.base.BaseActivityDelegate;
 import com.mapswithme.maps.base.OnBackPressListener;
-import com.mapswithme.maps.editor.ProfileActivity;
 import com.mapswithme.util.FragmentListHelper;
 import com.mapswithme.util.ThemeUtils;
 import com.mapswithme.util.UiUtils;
@@ -101,11 +99,6 @@ public class SettingsActivity extends PreferenceActivity
     {
       Statistics.INSTANCE.trackEvent(Statistics.EventName.Settings.ABOUT);
       AlohaHelper.logClick(AlohaHelper.Settings.ABOUT);
-    }
-    else if (header.id == R.id.osm_profile)
-    {
-      Statistics.INSTANCE.trackEvent(Statistics.EventName.Settings.OSM_PROFILE);
-      startActivity(new Intent(this, ProfileActivity.class));
     }
 
     super.onHeaderClick(header, position);

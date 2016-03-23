@@ -35,10 +35,6 @@ public:
 
   // Syncs internal state like availability of map and routing files,
   // their sizes etc. with disk.
-  // In case of one component (single) mwm this method assumed the every mwm has a routing section.
-  // Generality speaking it's not always true. To know it for sure it's necessary to read a mwm in
-  // this method but it's not implemented by performance reasons. This check is done on
-  // building routes stage.
   void SyncWithDisk();
 
   // Removes specified files from disk if they're known for LocalCountryFile, i.e.
@@ -66,7 +62,7 @@ public:
   }
 
   inline string const & GetDirectory() const { return m_directory; }
-  inline string const & GetCountryName() const { return m_countryFile.GetName(); }
+  inline string const & GetCountryName() const { return m_countryFile.GetNameWithoutExt(); }
   inline int64_t GetVersion() const { return m_version; }
   inline CountryFile const & GetCountryFile() const { return m_countryFile; }
 
@@ -76,7 +72,7 @@ public:
   // Creates LocalCountryFile for test purposes, for a country region
   // with countryFileName (without any extensions). Automatically
   // performs sync with disk.
-  static LocalCountryFile MakeForTesting(string const & countryFileName, int64_t version = 0);
+  static LocalCountryFile MakeForTesting(string const & countryFileName);
 
   /// @todo The easiest solution for now. Need to be removed in future.
   /// @param fullPath Full path to the mwm file.
@@ -86,7 +82,7 @@ private:
   friend string DebugPrint(LocalCountryFile const &);
   friend void UnitTest_LocalCountryFile_DirectoryLookup();
   friend void FindAllLocalMapsAndCleanup(int64_t latestVersion,
-                                         string const & dataDir, vector<LocalCountryFile> & localFiles);
+                                         vector<LocalCountryFile> & localFiles);
 
   /// @note! If directory is empty, the file is stored in resources.
   /// In this case, the only valid params are m_countryFile and m_version.
@@ -96,11 +92,7 @@ private:
 
   MapOptions m_files;
 
-  /// Size of file which contains map section in bytes. It's mwm file in any case.
   uint64_t m_mapSize;
-  /// Size of file which contains routing section in bytes.
-  /// It's .mwm.routing file in case of big (two component) mwms.
-  /// And m_routingSize == 0 for small (one compontent) mwms.
   uint64_t m_routingSize;
 };
 

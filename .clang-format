@@ -8,7 +8,6 @@ IndentWidth: 2
 Language: Cpp
 AccessModifierOffset: -2
 AllowShortBlocksOnASingleLine: false
-AllowShortCaseLabelsOnASingleLine: true
 AllowShortFunctionsOnASingleLine: true
 AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false

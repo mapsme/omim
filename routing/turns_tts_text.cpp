@@ -88,10 +88,10 @@ string GetDistanceTextId(Notification const & notification)
 
   switch (notification.m_lengthUnits)
   {
-    case ::settings::Metric:
+    case ::Settings::Metric:
       return DistToTextId(GetAllSoundedDistMeters().cbegin(), GetAllSoundedDistMeters().cend(),
                           notification.m_distanceUnits);
-    case ::settings::Foot:
+    case ::Settings::Foot:
       return DistToTextId(GetAllSoundedDistFeet().cbegin(), GetAllSoundedDistFeet().cend(),
                           notification.m_distanceUnits);
   }

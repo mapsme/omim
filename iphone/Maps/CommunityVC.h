@@ -1,5 +1,7 @@
-#import "MWMTableViewController.h"
 
-@interface CommunityVC : MWMTableViewController
+#import <UIKit/UIKit.h>
+#import "TableViewController.h"
+
+@interface CommunityVC : TableViewController
 
 @end

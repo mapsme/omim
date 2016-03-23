@@ -1,7 +1,5 @@
 #pragma once
 
-#include "storage/index.hpp"
-
 #include "platform/location.hpp"
 #include "platform/location_service.hpp"
 
@@ -15,8 +13,6 @@
 #endif
 
 class QDockWidget;
-class QPushButton;
-class QLabel;
 
 namespace search { class Result; }
 
@@ -27,16 +23,10 @@ namespace qt
   class MainWindow : public QMainWindow, location::LocationObserver
   {
     QAction * m_pMyPositionAction;
-    QAction * m_pCreateFeatureAction;
     QAction * m_pSearchAction;
     DrawWidget * m_pDrawWidget;
 
     QDockWidget * m_Docks[1];
-
-    QPushButton * m_downloadButton;
-    QPushButton * m_retryButton;
-    QLabel * m_downloadingStatusLabel;
-    storage::TCountryId m_lastCountry;
 
     unique_ptr<location::LocationService> const m_locationService;
 
@@ -44,12 +34,15 @@ namespace qt
 
   public:
     MainWindow();
+    virtual ~MainWindow();
 
     virtual void OnLocationError(location::TLocationError errorCode);
     virtual void OnLocationUpdated(location::GpsInfo const & info);
 
   protected:
     string GetIniFile();
+    void SaveState();
+    void LoadState();
 
     void LocationStateModeChanged(location::EMyPositionMode mode);
 
@@ -58,7 +51,6 @@ namespace qt
                          QKeySequence const & hotkey, char const * slot);
     void CreateNavigationBar();
     void CreateSearchBarAndPanel();
-    void CreateCountryStatusControls();
 
 #if defined(Q_WS_WIN)
     /// to handle menu messages
@@ -75,14 +67,8 @@ namespace qt
     void OnPreferences();
     void OnAbout();
     void OnMyPosition();
-    void OnCreateFeatureClicked();
     void OnSearchButtonClicked();
-    void OnLoginMenuItem();
-    void OnUploadEditsMenuItem();
 
     void OnBeforeEngineCreation();
-
-    void OnDownloadClicked();
-    void OnRetryDownloadClicked();
   };
 }

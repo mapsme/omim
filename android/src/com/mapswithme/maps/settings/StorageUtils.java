@@ -4,6 +4,12 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.util.Log;
 
+import com.mapswithme.maps.BuildConfig;
+import com.mapswithme.maps.Framework;
+import com.mapswithme.maps.MwmApplication;
+import com.mapswithme.util.Constants;
+import com.mapswithme.util.Utils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,13 +21,7 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mapswithme.maps.BuildConfig;
-import com.mapswithme.maps.Framework;
-import com.mapswithme.maps.MwmApplication;
-import com.mapswithme.util.Constants;
-import com.mapswithme.util.Utils;
-
-final class StorageUtils
+public final class StorageUtils
 {
   private StorageUtils() {}
 
@@ -81,7 +81,7 @@ final class StorageUtils
   // http://stackoverflow.com/questions/8151779/find-sd-card-volume-label-on-android
   // http://stackoverflow.com/questions/5694933/find-an-external-sd-card-location
   // http://stackoverflow.com/questions/14212969/file-canwrite-returns-false-on-some-devices-although-write-external-storage-pe
-  private static void parseMountFile(String file, int mode, List<String> paths)
+  static void parseMountFile(String file, int mode, List<String> paths)
   {
     Log.i(StoragePathManager.TAG, "Parsing " + file);
 
@@ -207,12 +207,14 @@ final class StorageUtils
       }
     } finally
     {
-      Utils.closeStream(inputChannel);
-      Utils.closeStream(outputChannel);
+      if (inputChannel != null)
+        inputChannel.close();
+      if (outputChannel != null)
+        outputChannel.close();
     }
   }
 
-  private static long getDirSizeRecursively(File file, FilenameFilter fileFilter)
+  static long getDirSizeRecursively(File file, FilenameFilter fileFilter)
   {
     if (file.isDirectory())
     {
@@ -262,7 +264,7 @@ final class StorageUtils
   }
 
   @SuppressWarnings("ResultOfMethodCallIgnored")
-  private static void removeEmptyDirectories(File dir)
+  static void removeEmptyDirectories(File dir)
   {
     for (File file : dir.listFiles())
     {

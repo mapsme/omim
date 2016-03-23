@@ -28,7 +28,6 @@ public:
 
   void BeginReadTile();
   void Flush(TMapShapes && shapes);
-  void FlushOverlays(TMapShapes && shapes);
   void EndReadTile();
 
 private:

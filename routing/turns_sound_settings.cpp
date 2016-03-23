@@ -15,7 +15,7 @@ namespace sound
 void Settings::SetState(uint32_t notificationTimeSeconds, uint32_t minNotificationDistanceUnits,
                         uint32_t maxNotificationDistanceUnits,
                         vector<uint32_t> const & soundedDistancesUnits,
-                        ::settings::Units lengthUnits)
+                        ::Settings::Units lengthUnits)
 {
   m_timeSeconds = notificationTimeSeconds;
   m_minDistanceUnits = minNotificationDistanceUnits;
@@ -64,9 +64,9 @@ double Settings::ConvertMetersPerSecondToUnitsPerSecond(double speedInMetersPerS
 {
   switch (m_lengthUnits)
   {
-    case ::settings::Metric:
+    case ::Settings::Metric:
       return speedInMetersPerSecond;
-    case ::settings::Foot:
+    case ::Settings::Foot:
       return MeasurementUtils::MetersToFeet(speedInMetersPerSecond);
   }
 
@@ -78,9 +78,9 @@ double Settings::ConvertUnitsToMeters(double distanceInUnits) const
 {
   switch (m_lengthUnits)
   {
-    case ::settings::Metric:
+    case ::Settings::Metric:
       return distanceInUnits;
-    case ::settings::Foot:
+    case ::Settings::Foot:
       return MeasurementUtils::FeetToMeters(distanceInUnits);
   }
 
@@ -92,9 +92,9 @@ double Settings::ConvertMetersToUnits(double distanceInMeters) const
 {
   switch (m_lengthUnits)
   {
-    case ::settings::Metric:
+    case ::Settings::Metric:
       return distanceInMeters;
-    case ::settings::Foot:
+    case ::Settings::Foot:
       return MeasurementUtils::MetersToFeet(distanceInMeters);
   }
 

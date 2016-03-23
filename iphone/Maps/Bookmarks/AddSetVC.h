@@ -1,4 +1,5 @@
-#import "MWMTableViewController.h"
+#import <UIKit/UIKit.h>
+#import "TableViewController.h"
 
 @class AddSetVC;
 @protocol AddSetVCDelegate <NSObject>
@@ -7,7 +8,7 @@
 
 @end
 
-@interface AddSetVC : MWMTableViewController
+@interface AddSetVC : TableViewController
 
 @property (weak, nonatomic) id<AddSetVCDelegate> delegate;
 

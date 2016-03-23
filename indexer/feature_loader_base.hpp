@@ -20,7 +20,7 @@ namespace feature
     FilesContainerR const & m_cont;
     DataHeader const & m_header;
 
-    using TReader = FilesContainerR::TReader;
+    typedef FilesContainerR::ReaderT ReaderT;
 
     LoaderBase * m_pLoader;
     void CreateLoader();
@@ -29,15 +29,13 @@ namespace feature
     SharedLoadInfo(FilesContainerR const & cont, DataHeader const & header);
     ~SharedLoadInfo();
 
-    TReader GetDataReader() const;
-    TReader GetMetadataReader() const;
-    TReader GetMetadataIndexReader() const;
-    TReader GetGeometryReader(int ind) const;
-    TReader GetTrianglesReader(int ind) const;
+    ReaderT GetDataReader() const;
+    ReaderT GetMetadataReader() const;
+    ReaderT GetMetadataIndexReader() const;
+    ReaderT GetGeometryReader(int ind) const;
+    ReaderT GetTrianglesReader(int ind) const;
 
     LoaderBase * GetLoader() const { return m_pLoader; }
-
-    inline version::Format GetMWMFormat() const { return m_header.GetFormat(); }
 
     inline serial::CodingParams const & GetDefCodingParams() const
     {
@@ -60,7 +58,7 @@ namespace feature
     virtual ~LoaderBase() {}
 
     // It seems like no need to store a copy of buffer (see FeaturesVector).
-    using TBuffer = char const * ;
+    typedef char const * TBuffer;
 
     /// @name Initialize functions.
     //@{

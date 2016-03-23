@@ -1,10 +1,7 @@
 #include "jni_helper.hpp"
 #include "logging.hpp"
-#include "ScopedLocalRef.hpp"
 
 #include "base/assert.hpp"
-#include "base/exception.hpp"
-#include "base/logging.hpp"
 #include "std/vector.hpp"
 
 static JavaVM * g_jvm = 0;
@@ -13,9 +10,17 @@ extern JavaVM * GetJVM()
   return g_jvm;
 }
 
+// TODO refactor cached jclass to smth more
+// TODO finish this logic after refactoring
+// cached classloader that can be used to find classes & methods from native threads.
+//static shared_ptr<jobject> g_classLoader;
+//static jmethodID g_findClassMethod;
+
 // caching is necessary to create class from native threads
-jclass g_mapObjectClazz;
-jclass g_bookmarkClazz;
+jclass g_indexClazz;
+
+// @TODO remove after refactoring. Needed for NVidia code
+void InitNVEvent(JavaVM * jvm);
 
 extern "C"
 {
@@ -27,8 +32,20 @@ extern "C"
     jni::InitAssertLog();
 
     JNIEnv * env = jni::GetEnv();
-    g_mapObjectClazz = jni::GetGlobalClassRef(env, "com/mapswithme/maps/bookmarks/data/MapObject");
-    g_bookmarkClazz = jni::GetGlobalClassRef(env, "com/mapswithme/maps/bookmarks/data/Bookmark");
+    // TODO
+    // init classloader & findclass methodID.
+//    auto randomClass = env->FindClass("com/mapswithme/maps/MapStorage");
+//    jclass classClass = env->GetObjectClass(randomClass);
+//    auto classLoaderClass = env->FindClass("java/lang/ClassLoader");
+//    auto getClassLoaderMethod = env->GetMethodID(classClass, "getClassLoader",
+//                                             "()Ljava/lang/ClassLoader;");
+//    g_classLoader = jni::make_global_ref(env->CallObjectMethod(randomClass, getClassLoaderMethod));
+//    ASSERT(*g_classLoader, ("Classloader can't be 0"));
+//    g_findClassMethod = env->GetMethodID(classLoaderClass, "findClass",
+//                                    "(Ljava/lang/String;)Ljava/lang/Class;");
+//    ASSERT(g_findClassMethod, ("FindClass methodId can't be 0"));
+    g_indexClazz = static_cast<jclass>(env->NewGlobalRef(env->FindClass("com/mapswithme/maps/MapStorage$Index")));
+    ASSERT(g_indexClazz, ("Index class not found!"));
 
     return JNI_VERSION_1_6;
   }
@@ -37,44 +54,36 @@ extern "C"
   JNI_OnUnload(JavaVM *, void *)
   {
     g_jvm = 0;
-    JNIEnv * env = jni::GetEnv();
-    env->DeleteGlobalRef(g_mapObjectClazz);
-    env->DeleteGlobalRef(g_bookmarkClazz);
+    jni::GetEnv()->DeleteGlobalRef(g_indexClazz);
   }
 } // extern "C"
 
 namespace jni
 {
-  JNIEnv * GetEnv()
+  //
+//  jclass FindClass(char const * name)
+//  {
+//    JNIEnv * env = GetEnv();
+//    jstring className = env->NewStringUTF(name);
+//    jclass clazz = static_cast<jclass>(GetEnv()->CallObjectMethod(*g_classLoader, g_findClassMethod, className));
+//    env->DeleteLocalRef(className);
+//    return clazz;
+//  }
+
+  jmethodID GetJavaMethodID(JNIEnv * env, jobject obj, char const * fn, char const * sig)
   {
-    JNIEnv * env;
-    if (JNI_OK != g_jvm->GetEnv((void **)&env, JNI_VERSION_1_6))
-      MYTHROW(RootException, ("Can't get JNIEnv. Was thread attached to JVM?"));
+    ASSERT(env, ("JNIEnv can't be 0"));
+    ASSERT(obj, ("jobject can't be 0"));
 
-    return env;
-  }
+    jclass cls = env->GetObjectClass(obj);
+    ASSERT(cls, ("Can't get class: ", DescribeException()));
 
-  JavaVM * GetJVM()
-  {
-    ASSERT(g_jvm, ("JVM is not initialized"));
-    return g_jvm;
-  }
-
-  jmethodID GetMethodID(JNIEnv * env, jobject obj, char const * fn, char const * sig)
-  {
-    TScopedLocalClassRef clazz(env, env->GetObjectClass(obj));
-    ASSERT(clazz.get(), ("Can't get class: ", DescribeException()));
-
-    jmethodID mid = env->GetMethodID(clazz.get(), fn, sig);
+    jmethodID mid = env->GetMethodID(cls, fn, sig);
     ASSERT(mid, ("Can't get methodID", fn, sig, DescribeException()));
-    return mid;
-  }
 
-  jmethodID GetConstructorID(JNIEnv * env, jclass clazz, char const * sig)
-  {
-    jmethodID const ctorID = env->GetMethodID(clazz, "<init>", sig);
-    ASSERT(ctorID, (DescribeException()));
-    return ctorID;
+    env->DeleteLocalRef(cls);
+
+    return mid;
   }
 
   jclass GetGlobalClassRef(JNIEnv * env, char const * sig)
@@ -119,11 +128,28 @@ namespace jni
     return "java/lang/String";
   }
 
+  JNIEnv * GetEnv()
+  {
+    JNIEnv * env;
+    if (JNI_OK != g_jvm->GetEnv((void **)&env, JNI_VERSION_1_6))
+    {
+      ASSERT(false, ("Can't get JNIEnv. Was thread attached to JVM?"));
+      return 0;
+    }
+    return env;
+  }
+
+  JavaVM * GetJVM()
+  {
+    ASSERT(g_jvm, ("JVM is not initialized"));
+    return g_jvm;
+  }
+
   struct global_ref_deleter
   {
     void operator()(jobject * ref)
     {
-      GetEnv()->DeleteGlobalRef(*ref);
+      jni::GetEnv()->DeleteGlobalRef(*ref);
       delete ref;
     }
   };
@@ -131,13 +157,13 @@ namespace jni
   shared_ptr<jobject> make_global_ref(jobject obj)
   {
     jobject * ref = new jobject;
-    *ref = GetEnv()->NewGlobalRef(obj);
+    *ref = jni::GetEnv()->NewGlobalRef(obj);
     return shared_ptr<jobject>(ref, global_ref_deleter());
   }
 
   string DescribeException()
   {
-    JNIEnv * env = GetEnv();
+    JNIEnv * env = jni::GetEnv();
 
     if (env->ExceptionCheck())
     {
@@ -162,11 +188,14 @@ namespace jni
   {
     jclass klass = env->FindClass("com/mapswithme/maps/bookmarks/data/ParcelablePointD");
     ASSERT ( klass, () );
-    jmethodID methodID = GetConstructorID(env, klass, "(DD)V");
+    jmethodID methodID = env->GetMethodID(
+        klass, "<init>",
+        "(DD)V");
+    ASSERT ( methodID, () );
 
     return env->NewObject(klass, methodID,
-                          static_cast<jdouble>(point.x),
-                          static_cast<jdouble>(point.y));
+                              static_cast<jdouble>(point.x),
+                              static_cast<jdouble>(point.y));
   }
 
   jobject GetNewPoint(JNIEnv * env, m2::PointD const & point)
@@ -178,20 +207,27 @@ namespace jni
   {
     jclass klass = env->FindClass("android/graphics/Point");
     ASSERT ( klass, () );
-    jmethodID methodID = GetConstructorID(env, klass, "(II)V");
+    jmethodID methodID = env->GetMethodID(
+        klass, "<init>",
+        "(II)V");
+    ASSERT ( methodID, () );
 
     return env->NewObject(klass, methodID,
                               static_cast<jint>(point.x),
                               static_cast<jint>(point.y));
   }
 
+  // TODO
+  // make ScopedLocalRef wrapper similar to https://android.googlesource.com/platform/libnativehelper/+/jb-mr1.1-dev-plus-aosp/include/nativehelper/ScopedLocalRef.h
+  // for localrefs automatically removed after going out of scope
+
   // This util method dumps content of local and global reference jni tables to logcat for debug and testing purposes
   void DumpDalvikReferenceTables()
   {
-    JNIEnv * env = GetEnv();
+    JNIEnv * env = jni::GetEnv();
     jclass vm_class = env->FindClass("dalvik/system/VMDebug");
     jmethodID dump_mid = env->GetStaticMethodID(vm_class, "dumpReferenceTables", "()V");
     env->CallStaticVoidMethod(vm_class, dump_mid);
     env->DeleteLocalRef(vm_class);
   }
-}  // namespace jni
+} // namespace jni

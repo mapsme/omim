@@ -1,19 +1,18 @@
 #pragma once
 #include "indexer/feature_decl.hpp"
-#include "indexer/feature_meta.hpp"
 
 #include "geometry/point2d.hpp"
 
 #include "coding/multilang_utf8_string.hpp"
-#include "coding/reader.hpp"
 #include "coding/value_opt_string.hpp"
+#include "coding/reader.hpp"
 
-#include "std/algorithm.hpp"
 #include "std/string.hpp"
 #include "std/vector.hpp"
-#include "std/utility.hpp"
+#include "std/algorithm.hpp"
 
-struct FeatureParamsBase;
+#include "indexer/feature_meta.hpp"
+
 class FeatureBase;
 
 namespace feature
@@ -36,7 +35,7 @@ namespace feature
     HEADER_GEOM_POINT_EX = 3U << 5  /// point feature (addinfo = house)
   };
 
-  static constexpr int kMaxTypesCount = HEADER_TYPE_MASK + 1;
+  static const int max_types_count = HEADER_TYPE_MASK + 1;
 
   enum ELayerFlags
   {
@@ -50,7 +49,7 @@ namespace feature
 
   class TypesHolder
   {
-    uint32_t m_types[kMaxTypesCount];
+    uint32_t m_types[max_types_count];
     size_t m_size;
 
     EGeomType m_geoType;
@@ -66,11 +65,7 @@ namespace feature
     }
 
     /// Accumulation function.
-    inline void operator() (uint32_t type)
-    {
-      ASSERT_LESS(m_size, kMaxTypesCount, ());
-      m_types[m_size++] = type;
-    }
+    inline void operator() (uint32_t t) { m_types[m_size++] = t; }
 
     /// @name Selectors.
     //@{
@@ -93,37 +88,32 @@ namespace feature
     }
     //@}
 
-    template <class TFn> bool RemoveIf(TFn && fn)
+    template <class FnT> bool RemoveIf(FnT fn)
     {
       if (m_size > 0)
       {
         size_t const oldSize = m_size;
 
-        uint32_t * e = remove_if(m_types, m_types + m_size, forward<TFn>(fn));
+        uint32_t * e = remove_if(m_types, m_types + m_size, fn);
         m_size = distance(m_types, e);
 
         return (m_size != oldSize);
       }
       return false;
     }
+    void Remove(uint32_t t);
 
-    void Remove(uint32_t type);
+    string DebugPrint() const;
 
     /// Sort types by it's specification (more detailed type goes first).
     void SortBySpec();
-
-    /// Returns true if this->m_types and other.m_types contain same values
-    /// in any order. Works in O(n log n).
-    bool Equals(TypesHolder const & other) const;
-
-    vector<string> ToObjectNames() const;
   };
 
-  string DebugPrint(TypesHolder const & holder);
-
-  uint8_t CalculateHeader(uint32_t const typesCount, uint8_t const headerGeomType,
-                          FeatureParamsBase const & params);
-}  // namespace feature
+  inline string DebugPrint(TypesHolder const & t)
+  {
+    return t.DebugPrint();
+  }
+}
 
 /// Feature description struct.
 struct FeatureParamsBase
@@ -211,8 +201,10 @@ class FeatureParams : public FeatureParamsBase
 
   uint8_t m_geomType;
 
+  /// We use it now only for search unit tests
+  string m_street;
+
   feature::Metadata m_metadata;
-  feature::AddressData m_addrTags;
 
 public:
   typedef vector<uint32_t> TTypes;
@@ -228,17 +220,9 @@ public:
 
   /// @name Used in storing full street address only.
   //@{
-  void AddStreet(string s);
-  void AddPlace(string const & s);
-  void AddPostcode(string const & s);
-  void AddAddress(string const & s);
-
+  void AddStreetAddress(string const & s);
   bool FormatFullAddress(m2::PointD const & pt, string & res) const;
   //@}
-
-  /// Used for testing purposes now.
-  string GetStreet() const;
-  feature::AddressData const & GetAddressData() const { return m_addrTags; }
 
   /// Assign parameters except geometry type.
   /// Geometry is independent state and it's set by FeatureType's geometry functions.
@@ -247,7 +231,7 @@ public:
     BaseT::operator=(rhs);
 
     m_Types = rhs.m_Types;
-    m_addrTags = rhs.m_addrTags;
+    m_street = rhs.m_street;
     m_metadata = rhs.m_metadata;
   }
 
@@ -284,10 +268,7 @@ public:
   feature::Metadata const & GetMetadata() const { return m_metadata; }
   feature::Metadata & GetMetadata() { return m_metadata; }
 
-  /// @param[in] fullStoring \n
-  /// - true when saving in temporary files after first generation step \n
-  /// - false when final mwm saving
-  template <class TSink> void Write(TSink & sink, bool fullStoring) const
+  template <class SinkT> void Write(SinkT & sink, bool needStoreMetadata = true) const
   {
     uint8_t const header = GetHeader();
 
@@ -296,16 +277,13 @@ public:
     for (size_t i = 0; i < m_Types.size(); ++i)
       WriteVarUint(sink, GetIndexForType(m_Types[i]));
 
-    if (fullStoring)
-    {
+    if (needStoreMetadata)
       m_metadata.Serialize(sink);
-      m_addrTags.Serialize(sink);
-    }
 
     BaseT::Write(sink, header);
   }
 
-  template <class TSource> void Read(TSource & src)
+  template <class SrcT> void Read(SrcT & src, bool needReadMetadata = true)
   {
     using namespace feature;
 
@@ -316,8 +294,8 @@ public:
     for (size_t i = 0; i < count; ++i)
       m_Types.push_back(GetTypeForIndex(ReadVarUint<uint32_t>(src)));
 
-    m_metadata.Deserialize(src);
-    m_addrTags.Deserialize(src);
+    if (needReadMetadata)
+      m_metadata.Deserialize(src);
 
     BaseT::Read(src, header);
   }

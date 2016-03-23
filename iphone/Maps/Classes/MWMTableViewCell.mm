@@ -11,15 +11,16 @@
   return self;
 }
 
-- (void)awakeFromNib
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
-  [self configure];
+  self = [super initWithCoder:aDecoder];
+  if (self)
+    [self configure];
+  return self;
 }
 
 - (void)configure
 {
-  self.backgroundColor = [UIColor white];
-  self.textLabel.textColor = [UIColor blackPrimaryText];
   self.selectedBackgroundView = [[UIView alloc] init];
   self.selectedBackgroundView.backgroundColor = [UIColor pressBackground];
 }

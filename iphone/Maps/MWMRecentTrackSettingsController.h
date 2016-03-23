@@ -1,5 +1,5 @@
-#import "MWMTableViewController.h"
+#import "TableViewController.h"
 
-@interface MWMRecentTrackSettingsController : MWMTableViewController
+@interface MWMRecentTrackSettingsController : TableViewController
 
 @end

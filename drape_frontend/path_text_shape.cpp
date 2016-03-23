@@ -29,14 +29,14 @@ namespace
 class PathTextHandle : public df::TextHandle
 {
 public:
-  PathTextHandle(FeatureID const & id, m2::SharedSpline const & spl,
+  PathTextHandle(m2::SharedSpline const & spl,
                  df::SharedTextLayout const & layout,
                  float mercatorOffset, float depth,
                  uint32_t textIndex, uint64_t priority,
                  uint64_t priorityFollowingMode,
                  ref_ptr<dp::TextureManager> textureManager,
                  bool isBillboard)
-    : TextHandle(id, layout->GetText(), dp::Center, priority, textureManager, isBillboard)
+    : TextHandle(FeatureID(), layout->GetText(), dp::Center, priority, textureManager, isBillboard)
     , m_spline(spl)
     , m_layout(layout)
     , m_textIndex(textIndex)
@@ -62,18 +62,15 @@ public:
 
     if (screen.isPerspective())
     {
-      // In perspective mode we draw the first label only.
-      if (m_textIndex != 0)
-        return false;
-
       float pixelOffset = 0.0f;
+      uint32_t startIndex = 0;
       bool foundOffset = false;
       for (auto pos : globalPoints)
       {
         pos = screen.GtoP(pos);
         if (!screen.PixelRect().IsPointInside(pos))
         {
-          if ((foundOffset = CalculatePerspectiveOffsets(pixelSpline, pixelOffset)))
+          if ((foundOffset = CalculateOffsets(pixelSpline, startIndex, pixelOffset)))
             break;
 
           pixelSpline = m2::Spline(m_spline->GetSize());
@@ -82,8 +79,7 @@ public:
         pixelSpline.AddPoint(screen.PtoP3d(pos));
       }
 
-      // We aren't able to place the only label anywhere.
-      if (!foundOffset && !CalculatePerspectiveOffsets(pixelSpline, pixelOffset))
+      if (!foundOffset && !CalculateOffsets(pixelSpline, startIndex, pixelOffset))
         return false;
 
       centerPointIter.Attach(pixelSpline);
@@ -130,7 +126,7 @@ public:
     return result;
   }
 
-  void GetPixelShape(ScreenBase const & screen, bool perspective, Rects & rects) const override
+  void GetPixelShape(ScreenBase const & screen, Rects & rects, bool perspective) const override
   {
     m2::PointD const pixelPivot(screen.GtoP(m_globalPivot));
     for (size_t quadIndex = 0; quadIndex < m_buffer.size(); quadIndex += 4)
@@ -151,22 +147,21 @@ public:
           r.Offset(pxPivotPerspective);
         }
         else
-        {
           r = m2::RectF(GetPerspectiveRect(m2::RectD(r), screen));
-        }
       }
 
-      bool const needAddRect = perspective ? !screen.IsReverseProjection3d(r.Center()) : true;
-      if (needAddRect)
+      m2::RectD const screenRect = perspective ? screen.PixelRectIn3d() : screen.PixelRect();
+      if (screenRect.IsIntersect(m2::RectD(r)))
         rects.emplace_back(move(r));
     }
   }
 
-  void GetAttributeMutation(ref_ptr<dp::AttributeBufferMutator> mutator) const override
+  void GetAttributeMutation(ref_ptr<dp::AttributeBufferMutator> mutator,
+                            ScreenBase const & screen) const override
   {
     // for visible text paths we always update normals
     SetForceUpdateNormals(IsVisible());
-    TextHandle::GetAttributeMutation(mutator);
+    TextHandle::GetAttributeMutation(mutator, screen);
   }
 
   uint64_t GetPriorityMask() const override
@@ -186,17 +181,23 @@ public:
   }
 
 private:
-  bool CalculatePerspectiveOffsets(const m2::Spline & pixelSpline, float & pixelOffset) const
+  bool CalculateOffsets(const m2::Spline & pixelSpline, uint32_t & startIndex, float & pixelOffset) const
   {
     if (pixelSpline.GetSize() < 2)
       return false;
 
-    float offset = 0.0f;
-    if (!df::PathTextLayout::CalculatePerspectivePosition(pixelSpline.GetLength(),
-                                                          m_layout->GetPixelLength(), offset))
-      return false;
+    vector<float> offsets;
+    df::PathTextLayout::CalculatePositions(offsets, pixelSpline.GetLength(), 1.0,
+                                           m_layout->GetPixelLength());
 
-    pixelOffset = offset;
+    if (startIndex + offsets.size() <= m_textIndex)
+    {
+      startIndex += offsets.size();
+      return false;
+    }
+
+    ASSERT_LESS_OR_EQUAL(startIndex, m_textIndex, ());
+    pixelOffset = offsets[m_textIndex - startIndex];
     return true;
   }
 
@@ -221,18 +222,17 @@ PathTextShape::PathTextShape(m2::SharedSpline const & spline,
   , m_params(params)
 {}
 
-uint64_t PathTextShape::GetOverlayPriority(size_t textIndex, bool followingMode) const
+uint64_t PathTextShape::GetOverlayPriority(bool followingMode) const
 {
-  // Overlay priority for path text shapes considers length of the text and index of text.
-  // Greater text length has more priority, because smaller texts have more chances to be shown along the road.
-  // [6 bytes - standard overlay priority][1 byte - length][1 byte - path text index].
-  static uint64_t constexpr kMask = ~static_cast<uint64_t>(0xFFFF);
+  // Overlay priority for path text shapes considers length of the text.
+  // Greater test length has more priority, because smaller texts have more chances to be shown along the road.
+  // [6 bytes - standard overlay priority][1 byte - reserved][1 byte - length].
+  static uint64_t constexpr kMask = ~static_cast<uint64_t>(0xFF);
   uint64_t priority = dp::kPriorityMaskAll;
   if (!followingMode)
     priority = dp::CalculateOverlayPriority(m_params.m_minVisibleScale, m_params.m_rank, m_params.m_depth);
   priority &= kMask;
-  priority |= (static_cast<uint8_t>(m_params.m_text.size()) << 8);
-  priority |= static_cast<uint8_t>(textIndex);
+  priority |= (static_cast<uint8_t>(m_params.m_text.size()));
 
   return priority;
 }
@@ -267,10 +267,10 @@ void PathTextShape::DrawPathTextPlain(ref_ptr<dp::TextureManager> textures,
     provider.InitStream(0, gpu::TextStaticVertex::GetBindingInfo(), make_ref(staticBuffer.data()));
     provider.InitStream(1, gpu::TextDynamicVertex::GetBindingInfo(), make_ref(dynBuffer.data()));
 
-    drape_ptr<dp::OverlayHandle> handle = make_unique_dp<PathTextHandle>(m_params.m_featureID, m_spline, layoutPtr, offset,
+    drape_ptr<dp::OverlayHandle> handle = make_unique_dp<PathTextHandle>(m_spline, layoutPtr, offset,
                                                                          m_params.m_depth, textIndex,
-                                                                         GetOverlayPriority(textIndex, false /* followingMode */),
-                                                                         GetOverlayPriority(textIndex, true /* followingMode */),
+                                                                         GetOverlayPriority(false /* followingMode */),
+                                                                         GetOverlayPriority(true /* followingMode */),
                                                                          textures, true);
     batcher->InsertListOfStrip(state, make_ref(&provider), move(handle), 4);
   }
@@ -308,10 +308,10 @@ void PathTextShape::DrawPathTextOutlined(ref_ptr<dp::TextureManager> textures,
     provider.InitStream(0, gpu::TextOutlinedStaticVertex::GetBindingInfo(), make_ref(staticBuffer.data()));
     provider.InitStream(1, gpu::TextDynamicVertex::GetBindingInfo(), make_ref(dynBuffer.data()));
 
-    drape_ptr<dp::OverlayHandle> handle = make_unique_dp<PathTextHandle>(m_params.m_featureID, m_spline, layoutPtr, offset,
+    drape_ptr<dp::OverlayHandle> handle = make_unique_dp<PathTextHandle>(m_spline, layoutPtr, offset,
                                                                          m_params.m_depth, textIndex,
-                                                                         GetOverlayPriority(textIndex, false /* followingMode */),
-                                                                         GetOverlayPriority(textIndex, true /* followingMode */),
+                                                                         GetOverlayPriority(false /* followingMode */),
+                                                                         GetOverlayPriority(true /* followingMode */),
                                                                          textures, true);
     batcher->InsertListOfStrip(state, make_ref(&provider), move(handle), 4);
   }

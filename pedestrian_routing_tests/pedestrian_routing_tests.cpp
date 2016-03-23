@@ -9,20 +9,13 @@
 #include "routing/pedestrian_model.hpp"
 #include "routing/router_delegate.hpp"
 
-#include "storage/country_info_getter.hpp"
-
-#include "platform/platform.hpp"
-
 #include "base/logging.hpp"
 #include "base/macros.hpp"
 #include "base/timer.hpp"
 
-#include "std/set.hpp"
 #include "std/string.hpp"
 #include "std/utility.hpp"
 #include "std/vector.hpp"
-
-#include "defines.hpp"
 
 using platform::CountryFile;
 using platform::LocalCountryFile;
@@ -30,24 +23,7 @@ using platform::LocalCountryFile;
 namespace
 {
 
-// Test preconditions:
-// Files from the kMapFiles set with '.mwm' extension must be placed in ./omim/data folder
-
-set<string> const kMapFiles =
-{
-  "UK_England_East Midlands",
-  "UK_England_East of England_Essex",
-  "UK_England_East of England_Norfolk",
-  "UK_England_Greater London",
-  "UK_England_North East England",
-  "UK_England_North West England",
-  "UK_England_South East_Brighton",
-  "UK_England_South East_Oxford",
-  "UK_England_South West England_Bristol",
-  "UK_England_South West England_Cornwall",
-  "UK_England_West Midlands",
-  "UK_England_Yorkshire and the Humber"
-};
+string const MAP_NAME = "UK_England";
 
 // Since for test purposes we compare routes lengths to check algorithms consistency,
 // we should use simplified pedestrian model, where all available edges have max speed
@@ -82,24 +58,18 @@ private:
   shared_ptr<routing::IVehicleModel> const m_model;
 };
 
-unique_ptr<storage::CountryInfoGetter> CreateCountryInfoGetter()
+unique_ptr<routing::IRouter> CreatePedestrianAStarTestRouter(Index & index)
 {
-  Platform & platform = GetPlatform();
-  return storage::CountryInfoReader::CreateCountryInfoReader(platform);
-}
-
-unique_ptr<routing::IRouter> CreatePedestrianAStarTestRouter(Index & index, storage::CountryInfoGetter & cig)
-{
-  auto UKGetter = [&](m2::PointD const & pt) { return cig.GetRegionCountryId(pt); };
+  auto UKGetter = [](m2::PointD const & /* point */){return "UK_England";};
   unique_ptr<routing::IVehicleModelFactory> vehicleModelFactory(new SimplifiedPedestrianModelFactory());
   unique_ptr<routing::IRoutingAlgorithm> algorithm(new routing::AStarRoutingAlgorithm());
   unique_ptr<routing::IRouter> router(new routing::RoadGraphRouter("test-astar-pedestrian", index, UKGetter, move(vehicleModelFactory), move(algorithm), nullptr));
   return router;
 }
 
-unique_ptr<routing::IRouter> CreatePedestrianAStarBidirectionalTestRouter(Index & index, storage::CountryInfoGetter & cig)
+unique_ptr<routing::IRouter> CreatePedestrianAStarBidirectionalTestRouter(Index & index)
 {
-  auto UKGetter = [&](m2::PointD const & pt) { return cig.GetRegionCountryId(pt); };
+  auto UKGetter = [](m2::PointD const & /* point */){return "UK_England";};
   unique_ptr<routing::IVehicleModelFactory> vehicleModelFactory(new SimplifiedPedestrianModelFactory());
   unique_ptr<routing::IRoutingAlgorithm> algorithm(new routing::AStarBidirectionalRoutingAlgorithm());
   unique_ptr<routing::IRouter> router(new routing::RoadGraphRouter("test-astar-bidirectional-pedestrian", index, UKGetter, move(vehicleModelFactory), move(algorithm), nullptr));
@@ -142,16 +112,14 @@ void TestRouter(routing::IRouter & router, m2::PointD const & startPos, m2::Poin
 
 void TestRouters(Index & index, m2::PointD const & startPos, m2::PointD const & finalPos)
 {
-  auto cig = CreateCountryInfoGetter();
-
   // find route by A*-bidirectional algorithm
   routing::Route routeFoundByAstarBidirectional("");
-  unique_ptr<routing::IRouter> router = CreatePedestrianAStarBidirectionalTestRouter(index, *cig.get());
+  unique_ptr<routing::IRouter> router = CreatePedestrianAStarBidirectionalTestRouter(index);
   TestRouter(*router, startPos, finalPos, routeFoundByAstarBidirectional);
 
   // find route by A* algorithm
   routing::Route routeFoundByAstar("");
-  router = CreatePedestrianAStarTestRouter(index, *cig.get());
+  router = CreatePedestrianAStarTestRouter(index);
 
   TestRouter(*router, startPos, finalPos, routeFoundByAstar);
 
@@ -164,17 +132,14 @@ void TestTwoPointsOnFeature(m2::PointD const & startPos, m2::PointD const & fina
 {
   classificator::Load();
 
-  Index index;
+  CountryFile countryFile(MAP_NAME);
+  LocalCountryFile localFile = LocalCountryFile::MakeForTesting(MAP_NAME);
 
-  for (auto const & mapFile : kMapFiles)
-  {
-    CountryFile countryFile(mapFile);
-    LocalCountryFile localFile = LocalCountryFile::MakeForTesting(mapFile);
-    UNUSED_VALUE(index.RegisterMap(localFile));
-    TEST(index.IsLoaded(countryFile), ());
-    MwmSet::MwmId const id = index.GetMwmIdByCountryFile(countryFile);
-    TEST(id.IsAlive(), ());
-  }
+  Index index;
+  UNUSED_VALUE(index.RegisterMap(localFile));
+  TEST(index.IsLoaded(countryFile), ());
+  MwmSet::MwmId const id = index.GetMwmIdByCountryFile(countryFile);
+  TEST(id.IsAlive(), ());
 
   vector<pair<routing::Edge, m2::PointD>> startEdges;
   GetNearestPedestrianEdges(index, startPos, startEdges);
@@ -196,17 +161,14 @@ void TestTwoPoints(m2::PointD const & startPos, m2::PointD const & finalPos)
 {
   classificator::Load();
 
-  Index index;
+  CountryFile countryFile(MAP_NAME);
+  LocalCountryFile localFile = LocalCountryFile::MakeForTesting(MAP_NAME);
 
-  for (auto const & mapFile : kMapFiles)
-  {
-    CountryFile countryFile(mapFile);
-    LocalCountryFile localFile = LocalCountryFile::MakeForTesting(mapFile);
-    UNUSED_VALUE(index.RegisterMap(localFile));
-    TEST(index.IsLoaded(countryFile), ());
-    MwmSet::MwmId const id = index.GetMwmIdByCountryFile(countryFile);
-    TEST(id.IsAlive(), ());
-  }
+  Index index;
+  UNUSED_VALUE(index.RegisterMap(localFile));
+  TEST(index.IsLoaded(countryFile), ());
+  MwmSet::MwmId const id = index.GetMwmIdByCountryFile(countryFile);
+  TEST(id.IsAlive(), ());
 
   TestRouters(index, startPos, finalPos);
 }

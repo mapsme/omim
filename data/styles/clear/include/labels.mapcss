@@ -15,7 +15,6 @@ node|z1[place=continent]
   text-color: @country_label;
   max-width: 5;
   z-index: 999;
-  -x-me-text-priority:16000;
 }
 
 node|z2[place=continent]
@@ -25,7 +24,6 @@ node|z2[place=continent]
   text-color: @country_label;
   max-width: 5;
   z-index: 999;
-  -x-me-text-priority:16000;
 }
 
 /* COUNTRIES */
@@ -36,7 +34,6 @@ node|z3[place=country]
   font-size: 10;
   text-color: @country_label;
   z-index: 1000;
-  -x-me-text-priority:16000;
 }
 node|z3[place=country]::int_name
 {
@@ -44,7 +41,6 @@ node|z3[place=country]::int_name
   font-size: 8;
   text-color: @country_label;
   z-index: 1000;
-  -x-me-text-priority:16000;
 }
 
 node|z4[place=country]
@@ -53,7 +49,6 @@ node|z4[place=country]
   font-size: 12;
   text-color: @country_label;
   z-index: 1000;
-  -x-me-text-priority:16000;
 }
 
 node|z4[place=country]::int_name
@@ -62,7 +57,6 @@ node|z4[place=country]::int_name
   font-size: 10;
   text-color: @country_label;
   z-index: 1000;
-  -x-me-text-priority:16000;
 }
 
 node|z5[place=country]
@@ -71,7 +65,6 @@ node|z5[place=country]
   font-size: 13;
   text-color: @country_label;
   z-index: 1000;
-  -x-me-text-priority:16000;
 }
 node|z5[place=country]::int_name
 {
@@ -79,7 +72,6 @@ node|z5[place=country]::int_name
   font-size: 11;
   text-color: @country_label;
   z-index: 1000;
--x-me-text-priority:16000;
 }
 node|z6[place=country]
 {
@@ -87,7 +79,6 @@ node|z6[place=country]
   font-size: 15;
   text-color: @country_label;
   z-index: 1000;
-  -x-me-text-priority:16000;
 }
 node|z6[place=country]::int_name
 {
@@ -95,7 +86,6 @@ node|z6[place=country]::int_name
   font-size: 13;
   text-color: @country_label;
   z-index: 1000;
-  -x-me-text-priority:16000;
 }
 node|z7[place=country]
 {
@@ -103,7 +93,6 @@ node|z7[place=country]
   font-size: 17;
   text-color: @country_label;
   z-index: 1000;
-  -x-me-text-priority:16000;
 }
 node|z7[place=country]::int_name
 {
@@ -111,7 +100,6 @@ node|z7[place=country]::int_name
   font-size: 15;
   text-color: @country_label;
   z-index: 1000;
-  -x-me-text-priority:16000;
 }
 node|z8[place=country]
 {
@@ -119,7 +107,6 @@ node|z8[place=country]
   font-size: 19;
   text-color: @country_label;
   z-index: 1000;
-  -x-me-text-priority:16000;
 }
 node|z8[place=country]::int_name
 {
@@ -127,7 +114,6 @@ node|z8[place=country]::int_name
   font-size: 17;
   text-color: @country_label;
   z-index: 1000;
-  -x-me-text-priority:16000;
 }
 node|z9-[place=country]
 {
@@ -135,7 +121,6 @@ node|z9-[place=country]
   font-size: 21;
   text-color: @country_label;
   z-index: 1000;
-  -x-me-text-priority:16000;
 }
 node|z9-[place=country]::int_name
 {
@@ -143,7 +128,6 @@ node|z9-[place=country]::int_name
   font-size: 19;
   text-color: @country_label;
   z-index: 1000;
-  -x-me-text-priority:16000;
 }
 /* Z-INDEXES */
 
@@ -1390,7 +1374,7 @@ node|z18-[entrance]
 {
   font-size: 10;
   text: ref;
-  text-offset-x: 10;
+  text-offset-x: 9;
   z-index: 10;
   text-color: @building_label;
 }
@@ -1760,21 +1744,20 @@ area|z10-[natural=water][bbox_area<100000000000]
 area|z14-[leisure=park][name],
 area|z14-[landuse=forest][name] {
   icon-image: park-s.svg;
-  text-offset: 6;
+  text-offset: 8;
   text: name;
-  font-size: 10;
+  font-size: 11;
   text-color: @park_label;
   text-halo-color: @halo_park_lable;
   text-halo-radius: 0.5;
   text-halo-opacity: 0.8;
-  icon-min-distance: 10;
 }
 area|z14-[leisure=park][!name],
 area|z14-[landuse=forest][!name] {
 }
 area|z14-[leisure=park][name]::int_name,
 area|z14-[landuse=forest][name]::int_name {
-  text-offset: 6;
+  text-offset: 18;
   text: int_name;
   font-size: 10;
   text-color: @park_label;
@@ -1803,10 +1786,21 @@ area|z15-[landuse=forest][name]::int_name  {
   text-halo-radius: 0.5;
   text-halo-opacity: 0.8;
 }
-
+/*
+area|z15[leisure=garden][name] {
+  icon-image: garden-m.svg;
+  text-offset: 8;
+  text: name;
+  font-size: 10;
+  text-color: @park_label;
+  text-halo-color: @label_halo_light;
+  text-halo-radius: 0.4;
+  text-halo-opacity: 0.4;
+}
+*/
 area|z15[leisure=park][!name],
 area|z15[landuse=forest][!name]
- {
+/*area|z15[leisure=garden][!name]*/ {
 
 }
 
@@ -1972,12 +1966,6 @@ area|z17-[landuse=vineyard],
 
 
 /* MILITARY */
-area|z16[landuse=military],
-node|z16[landuse=military] {
-  icon-image: military-m.svg;
-  z-index: 1000;
-  icon-min-distance: 10;
-}
 
 area|z17-[landuse=military],
 node|z17-[landuse=military] {

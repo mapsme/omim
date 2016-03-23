@@ -12,23 +12,23 @@ import android.text.TextUtils;
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.R;
-import com.mapswithme.maps.downloader.MapManager;
-import com.mapswithme.maps.editor.Editor;
 import com.mapswithme.util.LocationUtils;
 
 public class WorkerService extends IntentService
 {
   private static final String ACTION_CHECK_UPDATE = "com.mapswithme.maps.action.update";
   private static final String ACTION_DOWNLOAD_COUNTRY = "com.mapswithme.maps.action.download_country";
-  private static final String ACTION_UPLOAD_OSM_CHANGES = "com.mapswithme.maps.action.upload_osm_changes";
 
+  private static final MwmApplication APP = MwmApplication.get();
   private static final SharedPreferences PREFS = MwmApplication.prefs();
 
   /**
    * Starts this service to check map updates available with the given parameters. If the
    * service is already performing a task this action will be queued.
+   *
+   * @see IntentService
    */
-  static void startActionCheckUpdate(Context context)
+  public static void startActionCheckUpdate(Context context)
   {
     Intent intent = new Intent(context, WorkerService.class);
     intent.setAction(ACTION_CHECK_UPDATE);
@@ -38,22 +38,14 @@ public class WorkerService extends IntentService
   /**
    * Starts this service to check if map download for current location is available. If the
    * service is already performing a task this action will be queued.
+   *
+   * @see IntentService
    */
-  static void startActionDownload(Context context)
+  public static void startActionDownload(Context context)
   {
     final Intent intent = new Intent(context, WorkerService.class);
     intent.setAction(WorkerService.ACTION_DOWNLOAD_COUNTRY);
     context.startService(intent);
-  }
-
-  /**
-   * Starts this service to upload map edits to osm servers.
-   */
-  public static void startActionUploadOsmChanges()
-  {
-    final Intent intent = new Intent(MwmApplication.get(), WorkerService.class);
-    intent.setAction(WorkerService.ACTION_UPLOAD_OSM_CHANGES);
-    MwmApplication.get().startService(intent);
   }
 
   public WorkerService()
@@ -83,15 +75,13 @@ public class WorkerService extends IntentService
       case ACTION_DOWNLOAD_COUNTRY:
         handleActionCheckLocation();
         break;
-      case ACTION_UPLOAD_OSM_CHANGES:
-        handleActionUploadOsmChanges();
-        break;
       }
     }
   }
+
   private static void handleActionCheckUpdate()
   {
-    if (!Framework.nativeIsDataVersionChanged() || MapManager.nativeIsLegacyMode())
+    if (!Framework.nativeIsDataVersionChanged())
       return;
 
     final String countriesToUpdate = Framework.nativeGetOutdatedCountriesString();
@@ -103,9 +93,6 @@ public class WorkerService extends IntentService
 
   private void handleActionCheckLocation()
   {
-    if (MapManager.nativeIsLegacyMode())
-      return;
-
     final long delayMillis = 60000; // 60 seconds
     boolean isLocationValid = processLocation();
     if (!isLocationValid)
@@ -120,11 +107,6 @@ public class WorkerService extends IntentService
         }
       }, delayMillis);
     }
-  }
-
-  private void handleActionUploadOsmChanges()
-  {
-    Editor.uploadChanges();
   }
 
   /**
@@ -148,23 +130,25 @@ public class WorkerService extends IntentService
   /**
    * Adds notification with download country suggest.
    */
-  private static void placeDownloadNotification(Location l)
+  private void placeDownloadNotification(Location l)
   {
-    final String country = MapManager.nativeFindCountry(l.getLatitude(), l.getLongitude());
-    if (TextUtils.isEmpty(country))
-      return;
-
-    final String lastNotification = PREFS.getString(country, null);
-    if (lastNotification != null)
+    final String country = Framework.nativeGetCountryNameIfAbsent(l.getLatitude(), l.getLongitude());
+    if (!TextUtils.isEmpty(country))
     {
-      // Do not place notification if it was displayed less than 180 days ago.
-      final long timeStamp = Long.valueOf(lastNotification);
-      final long outdatedMillis = 180L * 24 * 60 * 60 * 1000;
-      if (System.currentTimeMillis() - timeStamp < outdatedMillis)
-        return;
-    }
 
-    Notifier.notifyDownloadSuggest(country, MwmApplication.get().getString(R.string.download_location_country, country), country);
-    PREFS.edit().putString(country, String.valueOf(System.currentTimeMillis())).apply();
+      final String lastNotification = PREFS.getString(country, null);
+      if (lastNotification != null)
+      {
+        // Do not place notification if it was displayed less than 180 days ago.
+        final long timeStamp = Long.valueOf(lastNotification);
+        final long outdatedMillis = 180L * 24 * 60 * 60 * 1000;
+        if (System.currentTimeMillis() - timeStamp < outdatedMillis)
+          return;
+      }
+
+      Notifier.notifyDownloadSuggest(country, String.format(APP.getString(R.string.download_location_country), country),
+          Framework.nativeGetCountryIndex(l.getLatitude(), l.getLongitude()));
+      PREFS.edit().putString(country, String.valueOf(System.currentTimeMillis())).apply();
+    }
   }
 }

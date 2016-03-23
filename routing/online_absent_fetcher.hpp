@@ -12,7 +12,7 @@
 
 namespace routing
 {
-using TCountryLocalFileFn = function<bool(string const &)>;
+using TCountryLocalFileFn = function<shared_ptr<platform::LocalCountryFile>(string const &)>;
 
 class IOnlineFetcher
 {

@@ -11,8 +11,6 @@
 #include "indexer/ftypes_matcher.hpp"
 
 #include "base/assert.hpp"
-#include "base/logging.hpp"
-
 #include "std/bind.hpp"
 
 //#define DRAW_TILE_NET
@@ -29,6 +27,13 @@ namespace df
 
 int const kLineSimplifyLevelStart = 10;
 int const kLineSimplifyLevelEnd = 12;
+
+size_t kMinFlushSizes[df::PrioritiesCount] =
+{
+  1, // AreaPriority
+  5, // TextAndPoiPriority
+  10, // LinePriority
+};
 
 RuleDrawer::RuleDrawer(TDrawerCallback const & fn,
                        TCheckCancelledCallback const & checkCancelled,
@@ -47,14 +52,14 @@ RuleDrawer::RuleDrawer(TDrawerCallback const & fn,
   m_globalRect = m_context->GetTileKey().GetGlobalRect();
 
   int32_t tileSize = df::VisualParams::Instance().GetTileSize();
-  m2::RectD const r = m_context->GetTileKey().GetGlobalRect(false /* clipByDataMaxZoom */);
+  m2::RectD const r = m_context->GetTileKey().GetGlobalRect(true /* considerStyleZoom */);
   ScreenBase geometryConvertor;
   geometryConvertor.OnSize(0, 0, tileSize, tileSize);
   geometryConvertor.SetFromRect(m2::AnyRectD(r));
   m_currentScaleGtoP = 1.0f / geometryConvertor.GetScale();
 
-  int const kAverageOverlaysCount = 200;
-  m_mapShapes[df::OverlayType].reserve(kAverageOverlaysCount);
+  for (size_t i = 0; i < m_mapShapes.size(); i++)
+    m_mapShapes[i].reserve(kMinFlushSizes[i] + 1);
 }
 
 RuleDrawer::~RuleDrawer()
@@ -62,14 +67,15 @@ RuleDrawer::~RuleDrawer()
   if (m_wasCancelled)
     return;
 
-  for (auto const & shape : m_mapShapes[df::OverlayType])
-    shape->Prepare(m_context->GetTextureManager());
-
-  if (!m_mapShapes[df::OverlayType].empty())
+  for (auto & shapes : m_mapShapes)
   {
-    TMapShapes overlayShapes;
-    overlayShapes.swap(m_mapShapes[df::OverlayType]);
-    m_context->FlushOverlays(move(overlayShapes));
+    if (shapes.empty())
+      continue;
+
+    for (auto const & shape : shapes)
+      shape->Prepare(m_context->GetTextureManager());
+
+    m_context->Flush(move(shapes));
   }
 }
 
@@ -81,28 +87,20 @@ bool RuleDrawer::CheckCancelled()
 
 void RuleDrawer::operator()(FeatureType const & f)
 {
-  if (CheckCancelled())
-    return;
-
-  int const zoomLevel = m_context->GetTileKey().m_zoomLevel;
-
-  m2::RectD const limitRect = f.GetLimitRect(zoomLevel);
-
-  if (!m_globalRect.IsIntersect(limitRect))
-    return;
-
   Stylist s;
   m_callback(f, s);
 
   if (s.IsEmpty())
     return;
 
+  int const zoomLevel = m_context->GetTileKey().m_zoomLevel;
+
   if (s.IsCoastLine() &&
       zoomLevel > scales::GetUpperWorldScale() &&
       f.GetID().m_mwmId.GetInfo()->GetType() == MwmInfo::COASTS)
   {
     string name;
-    if (f.GetName(StringUtf8Multilang::kDefaultCode, name))
+    if (f.GetName(StringUtf8Multilang::DEFAULT_CODE, name))
     {
       ASSERT(!name.empty(), ());
       strings::SimpleTokenizer iter(name, ";");
@@ -126,12 +124,11 @@ void RuleDrawer::operator()(FeatureType const & f)
 #endif
 
   int const minVisibleScale = feature::GetMinDrawableScale(f);
-  auto insertShape = [this, minVisibleScale](drape_ptr<MapShape> && shape)
-  {
-    int const index = static_cast<int>(shape->GetType());
-    ASSERT_LESS(index, m_mapShapes.size(), ());
 
-    shape->SetFeatureMinZoom(minVisibleScale);
+  auto insertShape = [this](drape_ptr<MapShape> && shape)
+  {
+    int const index = static_cast<int>(shape->GetPriority());
+    ASSERT_LESS(index, m_mapShapes.size(), ());
     m_mapShapes[index].push_back(move(shape));
   };
 
@@ -140,10 +137,7 @@ void RuleDrawer::operator()(FeatureType const & f)
     bool is3dBuilding = false;
     if (m_is3dBuidings && f.GetLayer() >= 0)
     {
-      // Looks like nonsense, but there are some osm objects with types
-      // highway-path-bridge and building (sic!) at the same time (pedestrian crossing).
-      is3dBuilding = (ftypes::IsBuildingChecker::Instance()(f) ||
-                      ftypes::IsBuildingPartChecker::Instance()(f)) &&
+      is3dBuilding = (ftypes::IsBuildingChecker::Instance()(f) || ftypes::IsBuildingPartChecker::Instance()(f)) &&
           !ftypes::IsBridgeChecker::Instance()(f) &&
           !ftypes::IsTunnelChecker::Instance()(f);
     }
@@ -152,26 +146,14 @@ void RuleDrawer::operator()(FeatureType const & f)
     float areaMinHeight = 0.0f;
     if (is3dBuilding)
     {
+      f.ParseMetadata();
       feature::Metadata const & md = f.GetMetadata();
-
-      constexpr double kDefaultHeightInMeters = 3.0;
-      constexpr double kMetersPerLevel = 3.0;
-      double heightInMeters = kDefaultHeightInMeters;
-
       string value = md.Get(feature::Metadata::FMD_HEIGHT);
+
+      double const kDefaultHeightInMeters = 3.0;
+      double heightInMeters = kDefaultHeightInMeters;
       if (!value.empty())
-      {
         strings::to_double(value, heightInMeters);
-      }
-      else
-      {
-        value = md.Get(feature::Metadata::FMD_BUILDING_LEVELS);
-        if (!value.empty())
-        {
-          if (strings::to_double(value, heightInMeters))
-            heightInMeters *= kMetersPerLevel;
-        }
-      }
 
       value = md.Get(feature::Metadata::FMD_MIN_HEIGHT);
       double minHeigthInMeters = 0.0;
@@ -189,13 +171,12 @@ void RuleDrawer::operator()(FeatureType const & f)
       areaMinHeight = m2::PointD(rectMercator.SizeX(), rectMercator.SizeY()).Length();
     }
 
-    ApplyAreaFeature apply(insertShape, f.GetID(), m_globalRect, areaMinHeight, areaHeight,
+    ApplyAreaFeature apply(insertShape, f.GetID(), areaMinHeight, areaHeight,
                            minVisibleScale, f.GetRank(), s.GetCaptionDescription());
-    f.ForEachTriangle(apply, zoomLevel);
+    f.ForEachTriangleRef(apply, zoomLevel);
 
-    m2::PointD const featureCenter = feature::GetCenter(f, zoomLevel);
-    if (s.PointStyleExists() && m_globalRect.IsPointInside(featureCenter))
-      apply(featureCenter);
+    if (s.PointStyleExists())
+      apply(feature::GetCenter(f, zoomLevel));
 
     if (CheckCancelled())
       return;
@@ -205,11 +186,11 @@ void RuleDrawer::operator()(FeatureType const & f)
   }
   else if (s.LineStyleExists())
   {
-    ApplyLineFeature apply(insertShape, f.GetID(), m_globalRect, minVisibleScale, f.GetRank(),
+    ApplyLineFeature apply(insertShape, f.GetID(), minVisibleScale, f.GetRank(),
                            s.GetCaptionDescription(), m_currentScaleGtoP,
                            zoomLevel >= kLineSimplifyLevelStart && zoomLevel <= kLineSimplifyLevelEnd,
                            f.GetPointsCount());
-    f.ForEachPoint(apply, zoomLevel);
+    f.ForEachPointRef(apply, zoomLevel);
 
     if (CheckCancelled())
       return;
@@ -222,7 +203,7 @@ void RuleDrawer::operator()(FeatureType const & f)
   {
     ASSERT(s.PointStyleExists(), ());
     ApplyPointFeature apply(insertShape, f.GetID(), minVisibleScale, f.GetRank(), s.GetCaptionDescription(), 0.0f /* posZ */);
-    f.ForEachPoint(apply, zoomLevel);
+    f.ForEachPointRef(apply, zoomLevel);
 
     if (CheckCancelled())
       return;
@@ -254,29 +235,30 @@ void RuleDrawer::operator()(FeatureType const & f)
 
   df::TextViewParams tp;
   tp.m_anchor = dp::Center;
-  tp.m_depth = 20000;
+  tp.m_depth = 0;
   tp.m_primaryText = strings::to_string(key.m_x) + " " +
                      strings::to_string(key.m_y) + " " +
                      strings::to_string(key.m_zoomLevel);
 
   tp.m_primaryTextFont = dp::FontDecl(dp::Color::Red(), 30);
 
-  drape_ptr<TextShape> textShape = make_unique_dp<TextShape>(r.Center(), tp, false, 0, false);
-  textShape->DisableDisplacing();
-  insertShape(move(textShape));
+  insertShape(make_unique_dp<TextShape>(r.Center(), tp, false));
 #endif
 
   if (CheckCancelled())
     return;
 
-  for (auto const & shape : m_mapShapes[df::GeometryType])
-    shape->Prepare(m_context->GetTextureManager());
-
-  if (!m_mapShapes[df::GeometryType].empty())
+  for (size_t i = 0; i < m_mapShapes.size(); i++)
   {
-    TMapShapes geomShapes;
-    geomShapes.swap(m_mapShapes[df::GeometryType]);
-    m_context->Flush(move(geomShapes));
+    if (m_mapShapes[i].size() < kMinFlushSizes[i])
+      continue;
+
+    for (auto const & shape : m_mapShapes[i])
+      shape->Prepare(m_context->GetTextureManager());
+
+    TMapShapes mapShapes;
+    mapShapes.swap(m_mapShapes[i]);
+    m_context->Flush(move(mapShapes));
   }
 }
 

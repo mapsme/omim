@@ -2,12 +2,16 @@
 
 #include "std/sstream.hpp"
 
+
 namespace storage
 {
-storage::TCountryId const kInvalidCountryId;
+  // GCC bug? Can't move initialization to hpp file (linker error).
+  const int TIndex::INVALID = -1;
 
-bool IsCountryIdValid(TCountryId const & countryId)
-{
-  return countryId != kInvalidCountryId;
+  string DebugPrint(TIndex const & r)
+  {
+    ostringstream out;
+    out << "storage::TIndex(" << r.m_group << ", " << r.m_country << ", " << r.m_region << ")";
+    return out.str();
+  }
 }
-} //  namespace storage

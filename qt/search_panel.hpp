@@ -20,6 +20,7 @@ class QTimer;
 
 namespace qt
 {
+
 class DrawWidget;
 
 class SearchPanel : public QWidget
@@ -58,7 +59,7 @@ private slots:
   void OnSearchTextChanged(QString const &);
 
   /// Called via signal to support multithreading
-  void OnSearchResult(ResultsT * results);
+  void OnSearchResult(ResultsT * result);
 
   void OnAnimationTimer();
   void OnClearButton();
@@ -66,6 +67,6 @@ private slots:
   bool TryChangeMapStyleCmd(QString const & str);
   bool TryChangeRouterCmd(QString const & str);
   bool Try3dModeCmd(QString const & str);
-  bool TryMigrate(QString const & str);
 };
-}  // namespace qt
+
+}

@@ -59,7 +59,7 @@
           pivot += m2::PointF(self.leftBound, -self.bottomBound) * self.visualScale;
           break;
         case gui::WIDGET_SCALE_LABEL:
-        case gui::WIDGET_CHOOSE_POSITION_MARK:
+        case gui::WIDGET_COUNTRY_STATUS:
           break;
       }
       layout[w] = pivot;

@@ -352,12 +352,4 @@ class PlacePageBottomAnimationController extends BasePlacePageAnimationControlle
     animator.setInterpolator(new AccelerateInterpolator());
     animator.start();
   }
-
-  @Override
-  protected void alignDetailsFrame()
-  {
-    final ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mFrame.getLayoutParams();
-    params.topMargin = mPreview.getHeight();
-    mFrame.setLayoutParams(params);
-  }
 }

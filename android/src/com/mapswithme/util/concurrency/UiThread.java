@@ -3,7 +3,7 @@ package com.mapswithme.util.concurrency;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.mapswithme.util.Utils;
+import com.mapswithme.util.Proc;
 
 public class UiThread
 {
@@ -26,7 +26,7 @@ public class UiThread
     protected abstract void runUi();
   }
 
-  public static abstract class UiProc<T> implements Utils.Proc<T>
+  public static abstract class UiProc<T> implements Proc<T>
   {
     @Override
     public final void invoke(final T param)

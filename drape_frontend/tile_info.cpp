@@ -31,52 +31,60 @@ void TileInfo::ReadFeatureIndex(MapDataProvider const & model)
   if (DoNeedReadIndex())
   {
     CheckCanceled();
+    model.ReadFeaturesID(bind(&TileInfo::ProcessID, this, _1), GetGlobalRect(), GetZoomLevel());
 
-    size_t const kAverageFeaturesCount = 256;
-    m_featureInfo.reserve(kAverageFeaturesCount);
-
+    //sort(m_featureInfo.begin(), m_featureInfo.end());
+    // Do debug check instead of useless sorting.
 #ifdef DEBUG
     set<MwmSet::MwmId> existing;
-    MwmSet::MwmId lastMwm;
-    model.ReadFeaturesID([this, &existing, &lastMwm](FeatureID const & id)
+    auto i = m_featureInfo.begin();
+    while (i != m_featureInfo.end())
     {
-      if (existing.empty() || lastMwm != id.m_mwmId)
+      auto const & id = i->m_id.m_mwmId;
+      ASSERT(existing.insert(id).second, ());
+      i = find_if(i+1, m_featureInfo.end(), [&id](FeatureInfo const & info)
       {
-        ASSERT(existing.insert(id.m_mwmId).second, ());
-        lastMwm = id.m_mwmId;
-      }
-#else
-    model.ReadFeaturesID([this](FeatureID const & id)
-    {
+        return (id != info.m_id.m_mwmId);
+      });
+    }
 #endif
-      m_featureInfo.push_back(id);
-    }, GetGlobalRect(), GetZoomLevel());
   }
 }
 
-void TileInfo::ReadFeatures(MapDataProvider const & model)
+void TileInfo::ReadFeatures(MapDataProvider const & model, MemoryFeatureIndex & memIndex)
 {
   m_context->BeginReadTile();
 
   // Reading can be interrupted by exception throwing
   MY_SCOPE_GUARD(ReleaseReadTile, bind(&EngineContext::EndReadTile, m_context.get()));
 
-  ReadFeatureIndex(model);
-  CheckCanceled();
-
-  if (!m_featureInfo.empty())
+  vector<FeatureID> featuresToRead;
   {
-    RuleDrawer drawer(bind(&TileInfo::InitStylist, this, _1, _2),
+    MemoryFeatureIndex::Lock lock(memIndex);
+    UNUSED_VALUE(lock);
+
+    ReadFeatureIndex(model);
+    CheckCanceled();
+    featuresToRead.reserve(kAverageFeaturesCount);
+    memIndex.ReadFeaturesRequest(m_featureInfo, featuresToRead);
+  }
+
+  if (!featuresToRead.empty())
+  {
+    RuleDrawer drawer(bind(&TileInfo::InitStylist, this, _1 ,_2),
                       bind(&TileInfo::IsCancelled, this),
-                      model.m_isCountryLoadedByName,
+                      model.m_isCountryLoadedByNameFn,
                       make_ref(m_context), m_is3dBuildings);
-    model.ReadFeatures(bind<void>(ref(drawer), _1), m_featureInfo);
+    model.ReadFeatures(bind<void>(ref(drawer), _1), featuresToRead);
   }
 }
 
-void TileInfo::Cancel()
+void TileInfo::Cancel(MemoryFeatureIndex & memIndex)
 {
   m_isCanceled = true;
+  MemoryFeatureIndex::Lock lock(memIndex);
+  UNUSED_VALUE(lock);
+  memIndex.RemoveFeatures(m_featureInfo);
 }
 
 bool TileInfo::IsCancelled() const
@@ -84,10 +92,15 @@ bool TileInfo::IsCancelled() const
   return m_isCanceled;
 }
 
+void TileInfo::ProcessID(FeatureID const & id)
+{
+  m_featureInfo.push_back(id);
+}
+
 void TileInfo::InitStylist(FeatureType const & f, Stylist & s)
 {
   CheckCanceled();
-  df::InitStylist(f, m_context->GetTileKey().m_zoomLevel, m_is3dBuildings, s);
+  df::InitStylist(f, m_context->GetTileKey().m_styleZoomLevel, m_is3dBuildings, s);
 }
 
 bool TileInfo::DoNeedReadIndex() const
@@ -103,7 +116,8 @@ void TileInfo::CheckCanceled() const
 
 int TileInfo::GetZoomLevel() const
 {
-  return ClipTileZoomByMaxDataZoom(m_context->GetTileKey().m_zoomLevel);
+  ASSERT_LESS_OR_EQUAL(m_context->GetTileKey().m_zoomLevel, scales::GetUpperScale(), ());
+  return m_context->GetTileKey().m_zoomLevel;
 }
 
 } // namespace df

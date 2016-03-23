@@ -13,7 +13,7 @@
 string Platform::UniqueClientId() const
 {
   string res;
-  if (!settings::Get("UniqueClientID", res))
+  if (!Settings::Get("UniqueClientID", res))
   {
     JNIEnv * env = jni::GetEnv();
     if (!env)
@@ -44,7 +44,7 @@ string Platform::UniqueClientId() const
 
     res = HashUniqueID(res);
 
-    settings::Set("UniqueClientID", res);
+    Settings::Set("UniqueClientID", res);
   }
 
   return res;
@@ -59,10 +59,10 @@ string Platform::GetMemoryInfo() const
   static shared_ptr<jobject> classMemLogging = jni::make_global_ref(env->FindClass("com/mapswithme/util/log/MemLogging"));
   ASSERT(classMemLogging, ());
 
-  static jmethodID const getMemoryInfoId = env->GetStaticMethodID(static_cast<jclass>(*classMemLogging), "getMemoryInfo", "()Ljava/lang/String;");
+  static jmethodID const getMemoryInfoId = env->GetStaticMethodID(static_cast<jclass>(*classMemLogging.get()), "getMemoryInfo", "()Ljava/lang/String;");
   ASSERT(getMemoryInfoId, ());
 
-  jstring const memInfoString = (jstring)env->CallStaticObjectMethod(static_cast<jclass>(*classMemLogging), getMemoryInfoId);
+  jstring const memInfoString = (jstring)env->CallStaticObjectMethod(static_cast<jclass>(*classMemLogging.get()), getMemoryInfoId);
   ASSERT(memInfoString, ());
 
   return jni::ToNativeString(env, memInfoString);
@@ -82,25 +82,25 @@ Platform::EConnectionType Platform::ConnectionStatus()
   static shared_ptr<jobject> clazzConnectionState = jni::make_global_ref(env->FindClass("com/mapswithme/util/ConnectionState"));
   ASSERT(clazzConnectionState, ());
 
-  static jmethodID const getConnectionMethodId = env->GetStaticMethodID(static_cast<jclass>(*clazzConnectionState), "getConnectionState", "()B");
+  static jmethodID const getConnectionMethodId = env->GetStaticMethodID(static_cast<jclass>(*clazzConnectionState.get()), "getConnectionState", "()B");
   ASSERT(getConnectionMethodId, ());
 
-  return static_cast<Platform::EConnectionType>(env->CallStaticByteMethod(static_cast<jclass>(*clazzConnectionState), getConnectionMethodId));
+  return static_cast<Platform::EConnectionType>(env->CallStaticByteMethod(static_cast<jclass>(*clazzConnectionState.get()), getConnectionMethodId));
 }
 
 namespace android
 {
+  Platform::Platform()
+    : m_runOnUI("runNativeFunctorOnUiThread", "(J)V")
+  {
+  }
+
   void Platform::Initialize(JNIEnv * env,
-                            jobject functorProcessObject,
                             jstring apkPath, jstring storagePath,
                             jstring tmpPath, jstring obbGooglePath,
                             jstring flavorName, jstring buildType,
                             bool isYota, bool isTablet)
   {
-    m_functorProcessObject = env->NewGlobalRef(functorProcessObject);
-    jclass const functorProcessClass = env->GetObjectClass(functorProcessObject);
-    m_functorProcessMethod = env->GetMethodID(functorProcessClass, "forwardToMainThread", "(J)V");
-
     string const flavor = jni::ToNativeString(env, flavorName);
     string const build = jni::ToNativeString(env, buildType);
     LOG(LINFO, ("Flavor name:", flavor));
@@ -121,7 +121,7 @@ namespace android
     m_settingsDir = jni::ToNativeString(env, storagePath);
     m_tmpDir = jni::ToNativeString(env, tmpPath);
 
-    if (!settings::Get("StoragePath", m_writableDir) || !HasAvailableSpaceForWriting(1024))
+    if (!Settings::Get("StoragePath", m_writableDir) || !HasAvailableSpaceForWriting(1024))
     {
       LOG(LINFO, ("Could not read writable dir. Use primary storage."));
       m_writableDir = m_settingsDir;
@@ -145,7 +145,12 @@ namespace android
     (void) ConnectionStatus();
   }
 
-  void Platform::ProcessFunctor(jlong functionPointer)
+  void Platform::InitAppMethodRefs(jobject appObject)
+  {
+    m_runOnUI.Init(appObject);
+  }
+
+  void Platform::CallNativeFunctor(jlong functionPointer)
   {
     TFunctor * fn = reinterpret_cast<TFunctor *>(functionPointer);
     (*fn)();
@@ -170,7 +175,7 @@ namespace android
   void Platform::SetStoragePath(string const & path)
   {
     m_writableDir = path;
-    settings::Set("StoragePath", m_writableDir);
+    Settings::Set("StoragePath", m_writableDir);
   }
 
   bool Platform::HasAvailableSpaceForWriting(uint64_t size) const
@@ -186,9 +191,7 @@ namespace android
 
   void Platform::RunOnGuiThread(TFunctor const & fn)
   {
-    // Pointer will be deleted in Platform::ProcessFunctor
-    TFunctor * functor = new TFunctor(fn);
-    jni::GetEnv()->CallVoidMethod(m_functorProcessObject, m_functorProcessMethod, reinterpret_cast<jlong>(functor));
+    m_runOnUI.CallVoid(reinterpret_cast<jlong>(new TFunctor(fn)));
   }
 }
 

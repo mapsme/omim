@@ -15,13 +15,10 @@ class TextShape : public MapShape
 {
 public:
   TextShape(m2::PointF const & basePoint, TextViewParams const & params,
-            bool hasPOI, size_t textIndex, bool affectedByZoomPriority);
+            bool hasPOI, bool affectedByZoomPriority = true);
 
   void Draw(ref_ptr<dp::Batcher> batcher, ref_ptr<dp::TextureManager> textures) const override;
-  MapShapeType GetType() const override { return MapShapeType::OverlayType; }
-
-  // Only for testing purposes!
-  void DisableDisplacing() { m_disableDisplacing = true; }
+  MapShapePriority GetPriority() const override { return MapShapePriority::TextAndPoiPriority; }
 
 private:
   void DrawSubString(StraightTextLayout const & layout, dp::FontDecl const & font,
@@ -41,9 +38,6 @@ private:
   TextViewParams m_params;
   bool m_hasPOI;
   bool m_affectedByZoomPriority;
-  size_t m_textIndex;
-
-  bool m_disableDisplacing = false;
 };
 
 } // namespace df

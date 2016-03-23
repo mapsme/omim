@@ -83,7 +83,10 @@ world  +
         post_office  -
         pub  -
         recycling  -
-        restaurant  -
+        restaurant  +
+            vegan  -
+            vegetarian  -
+            {}
         school  -
         shelter  -
         speed_trap  -
@@ -159,7 +162,6 @@ world  +
         {}
     building  +
         address  -
-        train_station  -
         {}
     building:part  -
     communication  +
@@ -331,8 +333,6 @@ world  +
             bridge  -
             tunnel  -
             {}
-        world_level  -
-        world_towns_level  -
         {}
     historic  +
         archaeological_site  -
@@ -705,7 +705,6 @@ world  +
             motor_vehicle  -
             motorcar  -
             {}
-        shuttle_train  -
         {}
     shop  +
         alcohol  -

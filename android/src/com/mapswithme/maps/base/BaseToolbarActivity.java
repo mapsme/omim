@@ -25,8 +25,7 @@ public abstract class BaseToolbarActivity extends BaseMwmFragmentActivity
     displayToolbarAsActionBar();
   }
 
-  @StringRes
-  protected int getToolbarTitle()
+  protected @StringRes int getToolbarTitle()
   {
     return 0;
   }

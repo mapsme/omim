@@ -6,27 +6,24 @@
 namespace storage
 {
 /// Country queued for downloading.
-/// @TODO(bykoianko) This class assumes that a map may consist of one or two mwm files.
-/// But single mwm files are used now. So this class should be redisigned to support
-/// only single mwm case.
 class QueuedCountry
 {
 public:
-  QueuedCountry(TCountryId const & m_countryId, MapOptions opt);
+  QueuedCountry(TIndex const & index, MapOptions opt);
 
   void AddOptions(MapOptions opt);
   void RemoveOptions(MapOptions opt);
   bool SwitchToNextFile();
 
-  inline TCountryId const & GetCountryId() const { return m_countryId; }
+  inline TIndex const & GetIndex() const { return m_index; }
   inline MapOptions GetInitOptions() const { return m_init; }
   inline MapOptions GetCurrentFile() const { return m_current; }
   inline MapOptions GetDownloadedFiles() const { return UnsetOptions(m_init, m_left); }
 
-  inline bool operator==(TCountryId const & countryId) const { return m_countryId == countryId; }
+  inline bool operator==(TIndex const & index) const { return m_index == index; }
 
 private:
-  TCountryId m_countryId;
+  TIndex m_index;
   MapOptions m_init;
   MapOptions m_left;
   MapOptions m_current;

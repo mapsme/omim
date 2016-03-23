@@ -1,10 +1,10 @@
-#include "qt/about.hpp"
-#include "qt/draw_widget.hpp"
 #include "qt/mainwindow.hpp"
-#include "qt/osm_auth_dialog.hpp"
+
+#include "qt/draw_widget.hpp"
+#include "qt/slider_ctrl.hpp"
+#include "qt/about.hpp"
 #include "qt/preferences_dialog.hpp"
 #include "qt/search_panel.hpp"
-#include "qt/slider_ctrl.hpp"
 
 #include "defines.hpp"
 
@@ -12,8 +12,6 @@
 #include "platform/platform.hpp"
 
 #include "std/bind.hpp"
-#include "std/sstream.hpp"
-#include "std/target_os.hpp"
 
 #include <QtGui/QCloseEvent>
 
@@ -24,9 +22,6 @@
   #include <QtGui/QMenu>
   #include <QtGui/QMenuBar>
   #include <QtGui/QToolBar>
-  #include <QtGui/QPushButton>
-  #include <QtGui/QHBoxLayout>
-  #include <QtGui/QLabel>
 #else
   #include <QtWidgets/QAction>
   #include <QtWidgets/QDesktopWidget>
@@ -34,9 +29,6 @@
   #include <QtWidgets/QMenu>
   #include <QtWidgets/QMenuBar>
   #include <QtWidgets/QToolBar>
-  #include <QtWidgets/QPushButton>
-  #include <QtWidgets/QHBoxLayout>
-  #include <QtWidgets/QLabel>
 #endif
 
 
@@ -56,10 +48,6 @@
 
 namespace qt
 {
-
-// Defined in osm_auth_dialog.cpp.
-extern char const * kTokenKeySetting;
-extern char const * kTokenSecretSetting;
 
 MainWindow::MainWindow() : m_locationService(CreateDesktopLocationService(*this))
 {
@@ -91,7 +79,6 @@ MainWindow::MainWindow() : m_locationService(CreateDesktopLocationService(*this)
 
   QObject::connect(m_pDrawWidget, SIGNAL(BeforeEngineCreation()), this, SLOT(OnBeforeEngineCreation()));
 
-  CreateCountryStatusControls();
   CreateNavigationBar();
   CreateSearchBarAndPanel();
 
@@ -103,8 +90,6 @@ MainWindow::MainWindow() : m_locationService(CreateDesktopLocationService(*this)
   menuBar()->addMenu(helpMenu);
   helpMenu->addAction(tr("About"), this, SLOT(OnAbout()));
   helpMenu->addAction(tr("Preferences"), this, SLOT(OnPreferences()));
-  helpMenu->addAction(tr("OpenStreetMap Login"), this, SLOT(OnLoginMenuItem()));
-  helpMenu->addAction(tr("Upload Edits"), this, SLOT(OnUploadEditsMenuItem()));
 #else
   {
     // create items in the system menu
@@ -128,13 +113,12 @@ MainWindow::MainWindow() : m_locationService(CreateDesktopLocationService(*this)
   }
 #endif
 
-  // Always show on full screen.
-  showMaximized();
+  LoadState();
 
 #ifndef NO_DOWNLOADER
   // Show intro dialog if necessary
   bool bShow = true;
-  (void)settings::Get("ShowWelcome", bShow);
+  (void)Settings::Get("ShowWelcome", bShow);
 
   if (bShow)
   {
@@ -156,7 +140,7 @@ MainWindow::MainWindow() : m_locationService(CreateDesktopLocationService(*this)
       if (welcomeDlg.exec() == QDialog::Rejected)
         bShowUpdateDialog = false;
     }
-    settings::Set("ShowWelcome", false);
+    Settings::Set("ShowWelcome", false);
 
     if (bShowUpdateDialog)
       ShowUpdateDialog();
@@ -186,6 +170,27 @@ bool MainWindow::winEvent(MSG * msg, long * result)
   return false;
 }
 #endif
+
+MainWindow::~MainWindow()
+{
+  SaveState();
+}
+
+void MainWindow::SaveState()
+{
+  pair<int, int> xAndY(x(), y());
+  pair<int, int> widthAndHeight(width(), height());
+  Settings::Set("MainWindowXY", xAndY);
+  Settings::Set("MainWindowSize", widthAndHeight);
+
+  m_pDrawWidget->SaveState();
+}
+
+void MainWindow::LoadState()
+{
+  // do always show on full screen
+  showMaximized();
+}
 
 void MainWindow::LocationStateModeChanged(location::EMyPositionMode mode)
 {
@@ -229,27 +234,6 @@ namespace
     int key;
     char const * slot;
   };
-
-  void FormatMapSize(uint64_t sizeInBytes, string & units, size_t & sizeToDownload)
-  {
-    int const mbInBytes = 1024 * 1024;
-    int const kbInBytes = 1024;
-    if (sizeInBytes > mbInBytes)
-    {
-      sizeToDownload = (sizeInBytes + mbInBytes - 1) / mbInBytes;
-      units = "MB";
-    }
-    else if (sizeInBytes > kbInBytes)
-    {
-      sizeToDownload = (sizeInBytes + kbInBytes -1) / kbInBytes;
-      units = "KB";
-    }
-    else
-    {
-      sizeToDownload = sizeInBytes;
-      units = "B";
-    }
-  }
 }
 
 void MainWindow::CreateNavigationBar()
@@ -259,15 +243,13 @@ void MainWindow::CreateNavigationBar()
   pToolBar->setIconSize(QSize(32, 32));
 
   {
-    // Add navigation hot keys.
-    hotkey_t const arr[] = {
+    // add navigation hot keys
+    hotkey_t arr[] = {
       { Qt::Key_Equal, SLOT(ScalePlus()) },
       { Qt::Key_Minus, SLOT(ScaleMinus()) },
       { Qt::ALT + Qt::Key_Equal, SLOT(ScalePlusLight()) },
       { Qt::ALT + Qt::Key_Minus, SLOT(ScaleMinusLight()) },
-      { Qt::Key_A, SLOT(ShowAll()) },
-      // Use CMD+n (New Item hotkey) to activate Create Feature mode.
-      { Qt::Key_Escape, SLOT(ChoosePositionModeDisable()) }
+      { Qt::Key_A, SLOT(ShowAll()) }
     };
 
     for (size_t i = 0; i < ARRAY_SIZE(arr); ++i)
@@ -280,18 +262,7 @@ void MainWindow::CreateNavigationBar()
   }
 
   {
-    // TODO(AlexZ): Replace icon.
-    m_pCreateFeatureAction = pToolBar->addAction(QIcon(":/navig64/select.png"),
-                                           tr("Create Feature"),
-                                           this,
-                                           SLOT(OnCreateFeatureClicked()));
-    m_pCreateFeatureAction->setCheckable(true);
-    m_pCreateFeatureAction->setToolTip(tr("Please select position on a map."));
-    m_pCreateFeatureAction->setShortcut(QKeySequence::New);
-
-    pToolBar->addSeparator();
-
-    // Add search button with "checked" behavior.
+    // add search button with "checked" behavior
     m_pSearchAction = pToolBar->addAction(QIcon(":/navig64/search.png"),
                                            tr("Search"),
                                            this,
@@ -352,86 +323,6 @@ void MainWindow::CreateNavigationBar()
   addToolBar(Qt::RightToolBarArea, pToolBar);
 }
 
-void MainWindow::CreateCountryStatusControls()
-{
-  QHBoxLayout * mainLayout = new QHBoxLayout();
-
-  m_downloadButton = new QPushButton("Download");
-  mainLayout->addWidget(m_downloadButton, 0, Qt::AlignHCenter);
-  m_downloadButton->setVisible(false);
-  connect(m_downloadButton, SIGNAL(released()), this, SLOT(OnDownloadClicked()));
-
-  m_retryButton = new QPushButton("Retry downloading");
-  mainLayout->addWidget(m_retryButton, 0, Qt::AlignHCenter);
-  m_retryButton->setVisible(false);
-  connect(m_retryButton, SIGNAL(released()), this, SLOT(OnRetryDownloadClicked()));
-
-  m_downloadingStatusLabel = new QLabel("Downloading");
-  mainLayout->addWidget(m_downloadingStatusLabel, 0, Qt::AlignHCenter);
-  m_downloadingStatusLabel->setVisible(false);
-
-  m_pDrawWidget->setLayout(mainLayout);
-
-  m_pDrawWidget->SetCurrentCountryChangedListener([this](storage::TCountryId const & countryId,
-                                                         string const & countryName, storage::Status status,
-                                                         uint64_t sizeInBytes, uint8_t progress)
-  {
-    m_lastCountry = countryId;
-    if (m_lastCountry.empty() || status == storage::Status::EOnDisk || status == storage::Status::EOnDiskOutOfDate)
-    {
-      m_downloadButton->setVisible(false);
-      m_retryButton->setVisible(false);
-      m_downloadingStatusLabel->setVisible(false);
-    }
-    else
-    {
-      if (status == storage::Status::ENotDownloaded)
-      {
-        m_downloadButton->setVisible(true);
-        m_retryButton->setVisible(false);
-        m_downloadingStatusLabel->setVisible(false);
-
-        string units;
-        size_t sizeToDownload = 0;
-        FormatMapSize(sizeInBytes, units, sizeToDownload);
-        stringstream str;
-        str << "Download (" << countryName << ") " << sizeToDownload << units;
-        m_downloadButton->setText(str.str().c_str());
-      }
-      else if (status == storage::Status::EDownloading)
-      {
-        m_downloadButton->setVisible(false);
-        m_retryButton->setVisible(false);
-        m_downloadingStatusLabel->setVisible(true);
-
-        stringstream str;
-        str << "Downloading (" << countryName << ") " << (int)progress << "%";
-        m_downloadingStatusLabel->setText(str.str().c_str());
-      }
-      else if (status == storage::Status::EInQueue)
-      {
-        m_downloadButton->setVisible(false);
-        m_retryButton->setVisible(false);
-        m_downloadingStatusLabel->setVisible(true);
-
-        stringstream str;
-        str << countryName << " is waiting for downloading";
-        m_downloadingStatusLabel->setText(str.str().c_str());
-      }
-      else
-      {
-        m_downloadButton->setVisible(false);
-        m_retryButton->setVisible(true);
-        m_downloadingStatusLabel->setVisible(false);
-
-        stringstream str;
-        str << "Retry to download " << countryName;
-        m_retryButton->setText(str.str().c_str());
-      }
-    }
-  });
-}
-
 void MainWindow::OnAbout()
 {
   AboutDialog dlg(this);
@@ -465,45 +356,17 @@ void MainWindow::OnMyPosition()
     m_pDrawWidget->GetFramework().SwitchMyPositionNextMode();
 }
 
-void MainWindow::OnCreateFeatureClicked()
-{
-  if (m_pCreateFeatureAction->isChecked())
-  {
-    m_pDrawWidget->ChoosePositionModeEnable();
-  }
-  else
-  {
-    m_pDrawWidget->ChoosePositionModeDisable();
-    m_pDrawWidget->CreateFeature();
-  }
-}
-
 void MainWindow::OnSearchButtonClicked()
 {
   if (m_pSearchAction->isChecked())
+  {
+    m_pDrawWidget->GetFramework().PrepareSearch();
+
     m_Docks[0]->show();
-  else
-    m_Docks[0]->hide();
-}
-
-void MainWindow::OnLoginMenuItem()
-{
-  OsmAuthDialog dlg(this);
-  dlg.exec();
-}
-
-void MainWindow::OnUploadEditsMenuItem()
-{
-  string key, secret;
-  settings::Get(kTokenKeySetting, key);
-  settings::Get(kTokenSecretSetting, secret);
-  if (key.empty() || secret.empty())
-    OnLoginMenuItem();
+  }
   else
   {
-    auto & editor = osm::Editor::Instance();
-    if (editor.HaveSomethingToUpload())
-      editor.UploadChanges(key, secret, {{"created_by", "MAPS.ME " OMIM_OS_NAME}});
+    m_Docks[0]->hide();
   }
 }
 
@@ -566,16 +429,6 @@ void MainWindow::closeEvent(QCloseEvent * e)
 {
   m_pDrawWidget->PrepareShutdown();
   e->accept();
-}
-
-void MainWindow::OnDownloadClicked()
-{
-  m_pDrawWidget->DownloadCountry(m_lastCountry);
-}
-
-void MainWindow::OnRetryDownloadClicked()
-{
-  m_pDrawWidget->RetryToDownloadCountry(m_lastCountry);
 }
 
 }

@@ -134,10 +134,10 @@ bool Platform::GetFileSizeByName(string const & fileName, uint64_t & size) const
   }
 }
 
-unique_ptr<ModelReader> Platform::GetReader(string const & file, string const & searchScope) const
+ModelReader * Platform::GetReader(string const & file, string const & searchScope) const
 {
-  return make_unique<FileReader>(ReadPathForFile(file, searchScope),
-                                 READER_CHUNK_LOG_SIZE, READER_CHUNK_LOG_COUNT);
+  return new FileReader(ReadPathForFile(file, searchScope),
+                        READER_CHUNK_LOG_SIZE, READER_CHUNK_LOG_COUNT);
 }
 
 int Platform::VideoMemoryLimit() const
@@ -262,12 +262,12 @@ Platform::EConnectionType Platform::ConnectionStatus()
 
 void Platform::SetupMeasurementSystem() const
 {
-  settings::Units u;
-  if (settings::Get(settings::kMeasurementUnits, u))
+  Settings::Units u;
+  if (Settings::Get("Units", u))
     return;
   BOOL const isMetric = [[[NSLocale autoupdatingCurrentLocale] objectForKey:NSLocaleUsesMetricSystem] boolValue];
-  u = isMetric ? settings::Metric : settings::Foot;
-  settings::Set(settings::kMeasurementUnits, u);
+  u = isMetric ? Settings::Metric : Settings::Foot;
+  Settings::Set("Units", u);
 }
 
 ////////////////////////////////////////////////////////////////////////

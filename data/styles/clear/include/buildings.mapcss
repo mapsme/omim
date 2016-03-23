@@ -1,14 +1,12 @@
 area|z14[building],
-area|z14[landuse=garages],
-area|z14[building=train_station],
+area|z14[landuse=garages]
 {
   fill-color: @building;
   fill-opacity: 0.5;
   z-index: 150;
 }
 area|z15[building],
-area|z15[landuse=garages],
-area|z15[building=train_station],
+area|z15[landuse=garages]
 {
   fill-color: @building;
   fill-opacity: 0.6;
@@ -17,8 +15,7 @@ area|z15[building=train_station],
 
 area|z16[building],
 area|z16[building:part],
-area|z16[landuse=garages],
-area|z16[building=train_station],
+area|z16[landuse=garages]
 {
   fill-color: @building;
   fill-opacity: 0.8;
@@ -27,8 +24,7 @@ area|z16[building=train_station],
 
 area|z17[building],
 area|z17[building:part],
-area|z17[landuse=garages],
-area|z17[building=train_station],
+area|z17[landuse=garages]
 {
   fill-color: @building_dark;
   opacity: 0.9;
@@ -37,8 +33,7 @@ area|z17[building=train_station],
 
 area|z18-[building],
 area|z18-[building:part],
-area|z18-[landuse=garages],
-area|z18-[building=train_station],
+area|z18-[landuse=garages]
 {
   fill-color: @building_dark;
   opacity: 1;

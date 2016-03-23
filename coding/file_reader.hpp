@@ -17,10 +17,10 @@ public:
 
   class FileReaderData;
 
-  uint64_t Size() const override;
-  void Read(uint64_t pos, void * p, size_t size) const override;
+  uint64_t Size() const;
+  void Read(uint64_t pos, void * p, size_t size) const;
   FileReader SubReader(uint64_t pos, uint64_t size) const;
-  unique_ptr<Reader> CreateSubReader(uint64_t pos, uint64_t size) const override;
+  FileReader * CreateSubReader(uint64_t pos, uint64_t size) const;
 
   inline uint64_t GetOffset() const { return m_Offset; }
 

@@ -1,8 +1,10 @@
-#import "MWMTableViewController.h"
+
+#import <UIKit/UIKit.h>
+#import "TableViewController.h"
 
 @class MWMPlacePageViewManager;
 
-@interface SelectSetVC : MWMTableViewController
+@interface SelectSetVC : TableViewController
 
 - (instancetype)initWithPlacePageManager:(MWMPlacePageViewManager *)manager;
 

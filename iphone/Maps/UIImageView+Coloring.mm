@@ -1,4 +1,3 @@
-#import "Common.h"
 #import "UIImageView+Coloring.h"
 #import "UIColor+MapsMeColor.h"
 
@@ -36,8 +35,6 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
   self.tintColor = [[UIColor class] performSelector:self.coloringSelector];
-  if (isIOS7 && self.mwm_coloring == MWMImageColoringSeparator)
-    self.backgroundColor = [[UIColor class] performSelector:self.coloringSelector];
 #pragma clang diagnostic pop
 }
 
@@ -65,8 +62,6 @@
     return @selector(blackHintText);
   case MWMImageColoringOther:
     return @selector(white);
-  case MWMImageColoringSeparator:
-    return @selector(blackDividers);
   }
 }
 
@@ -75,7 +70,7 @@
   switch (self.mwm_coloring)
   {
   case MWMImageColoringBlack:
-    self.tintColor = highlighted ? [UIColor blackHintText] : [UIColor blackSecondaryText];
+    self.tintColor = highlighted ? [UIColor linkBlue] : [UIColor blackSecondaryText];
     break;
 
   case MWMImageColoringGray:
@@ -83,7 +78,6 @@
     break;
   case MWMImageColoringOther:
   case MWMImageColoringBlue:
-  case MWMImageColoringSeparator:
     break;
   }
 }
@@ -98,8 +92,6 @@
     self.mwm_coloring = MWMImageColoringOther;
   else if ([coloring isEqualToString:@"MWMGray"])
     self.mwm_coloring = MWMImageColoringGray;
-  else if ([coloring isEqualToString:@"MWMSeparator"])
-    self.mwm_coloring = MWMImageColoringSeparator;
   else
     NSAssert(false, @"Incorrect UIImageView's coloring");
 }

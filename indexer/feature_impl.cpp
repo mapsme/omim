@@ -2,7 +2,6 @@
 
 #include "base/string_utils.hpp"
 #include "base/logging.hpp"
-#include "base/math.hpp"
 
 
 namespace feature
@@ -68,19 +67,4 @@ bool IsHouseNumber(string const & s)
   return (!s.empty() && IsDigit(s[0]));
 }
 
-bool IsHouseNumber(strings::UniString const & s)
-{
-  return (!s.empty() && IsDigit(s[0]));
 }
-
-uint8_t PopulationToRank(uint64_t p)
-{
-  return static_cast<uint8_t>(min(0xFF, my::rounds(log(double(p)) / log(1.1))));
-}
-
-uint64_t RankToPopulation(uint8_t r)
-{
-  return static_cast<uint64_t>(pow(1.1, r));
-}
-
-} // namespace feature

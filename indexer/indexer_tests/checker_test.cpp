@@ -4,7 +4,6 @@
 
 #include "indexer/index.hpp"
 #include "indexer/classificator.hpp"
-#include "indexer/classificator_loader.hpp"
 
 #include "base/logging.hpp"
 
@@ -85,8 +84,6 @@ vector<uint32_t> GetBridgeAndTunnelTypes()
 
 UNIT_TEST(IsTypeConformed)
 {
-  classificator::Load();
-
   char const * arr[][roadArrColumnCount] =
   {
     {"highway", "trunk", "bridge"},
@@ -104,29 +101,19 @@ UNIT_TEST(IsTypeConformed)
 
 UNIT_TEST(IsStreetChecker)
 {
-  classificator::Load();
-
   TEST(ftypes::IsStreetChecker::Instance()(GetStreetTypes()), ());
   TEST(ftypes::IsStreetChecker::Instance()(GetStreetAndNotStreetTypes()), ());
-  // TODO (@y, @m, @vng): need to investigate - do we really need this
-  // TEST for absence of links, because IsStreetChecker() is used for
-  // search only.
-  //
-  // TEST(!ftypes::IsStreetChecker::Instance()(GetLinkTypes()), ());
+  TEST(!ftypes::IsStreetChecker::Instance()(GetLinkTypes()), ());
 }
 
 UNIT_TEST(IsLinkChecker)
 {
-  classificator::Load();
-
   TEST(ftypes::IsLinkChecker::Instance()(GetLinkTypes()), ());
   TEST(!ftypes::IsLinkChecker::Instance()(GetStreetTypes()), ());
 }
 
 UNIT_TEST(IsBridgeChecker)
 {
-  classificator::Load();
-
   TEST(ftypes::IsBridgeChecker::Instance()(GetBridgeTypes()), ());
   TEST(ftypes::IsBridgeChecker::Instance()(GetBridgeAndTunnelTypes()), ());
   TEST(!ftypes::IsBridgeChecker::Instance()(GetTunnelTypes()), ());
@@ -134,8 +121,6 @@ UNIT_TEST(IsBridgeChecker)
 
 UNIT_TEST(IsTunnelChecker)
 {
-  classificator::Load();
-
   TEST(ftypes::IsTunnelChecker::Instance()(GetTunnelTypes()), ());
   TEST(ftypes::IsTunnelChecker::Instance()(GetBridgeAndTunnelTypes()), ());
   TEST(!ftypes::IsTunnelChecker::Instance()(GetBridgeTypes()), ());
@@ -143,8 +128,6 @@ UNIT_TEST(IsTunnelChecker)
 
 UNIT_TEST(GetHighwayClassTest)
 {
-  classificator::Load();
-
   Classificator const & c = classif();
 
   feature::TypesHolder types1;

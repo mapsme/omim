@@ -13,8 +13,6 @@ class LatLon
 public:
   double lat, lon;
 
-  /// Does NOT initialize lat and lon. Allows to use it as a property of an ObjC class.
-  LatLon() = default;
   LatLon(double lat, double lon) : lat(lat), lon(lon) {}
 
   static LatLon Zero() { return LatLon(0., 0.); }

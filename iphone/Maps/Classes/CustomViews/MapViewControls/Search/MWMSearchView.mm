@@ -32,10 +32,10 @@ static CGFloat const kWidthForiPad = 320.0;
   sl.rasterizationScale = sbl.rasterizationScale = tbl.rasterizationScale = scale;
 }
 
-- (void)mwm_refreshUI
+- (void)refresh
 {
-  [self.searchBar mwm_refreshUI];
-  [self.infoWrapper mwm_refreshUI];
+  [self.searchBar refresh];
+  [self.infoWrapper refresh];
 }
 
 - (void)setFrame:(CGRect)frame

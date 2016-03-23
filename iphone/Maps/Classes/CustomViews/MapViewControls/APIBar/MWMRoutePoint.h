@@ -3,7 +3,7 @@
 class MWMRoutePoint
 {
 public:
-  MWMRoutePoint() = default;
+  MWMRoutePoint() {}
 
   MWMRoutePoint(m2::PointD const & p, NSString * n) : m_point(p), m_name(n), m_isMyPosition(false) {}
 
@@ -42,5 +42,5 @@ public:
 private:
   m2::PointD m_point;
   NSString * m_name;
-  bool m_isMyPosition = false;
+  bool m_isMyPosition;
 };

@@ -84,8 +84,8 @@ public class DirectionFragment extends BaseMwmDialogFragment implements Location
   {
     if (mMapObject != null && isResumed())
     {
-      mTvTitle.setText(mMapObject.getTitle());
-      mTvSubtitle.setText(mMapObject.getSubtitle());
+      mTvTitle.setText(mMapObject.getName());
+      mTvSubtitle.setText(mMapObject.getPoiTypeName());
     }
   }
 
@@ -110,9 +110,8 @@ public class DirectionFragment extends BaseMwmDialogFragment implements Location
   {
     if (mMapObject != null)
     {
-      final DistanceAndAzimut distanceAndAzimuth =
-          Framework.nativeGetDistanceAndAzimuthFromLatLon(mMapObject.getLat(), mMapObject.getLon(),
-                                                          location.getLatitude(), location.getLongitude(), 0.0);
+      final DistanceAndAzimut distanceAndAzimuth = Framework.nativeGetDistanceAndAzimutFromLatLon(mMapObject.getLat(),
+          mMapObject.getLon(), location.getLatitude(), location.getLongitude(), 0.0);
       mTvDistance.setText(distanceAndAzimuth.getDistance());
     }
   }
@@ -129,7 +128,7 @@ public class DirectionFragment extends BaseMwmDialogFragment implements Location
     trueNorth = LocationUtils.correctCompassAngle(rotation, trueNorth);
     final double north = (trueNorth >= 0.0) ? trueNorth : magneticNorth;
 
-    final DistanceAndAzimut da = Framework.nativeGetDistanceAndAzimuthFromLatLon(
+    final DistanceAndAzimut da = Framework.nativeGetDistanceAndAzimutFromLatLon(
         mMapObject.getLat(), mMapObject.getLon(),
         last.getLatitude(), last.getLongitude(), north);
 

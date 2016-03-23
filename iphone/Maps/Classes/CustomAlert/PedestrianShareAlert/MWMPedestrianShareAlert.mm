@@ -53,7 +53,7 @@ static NSString * const kStatisticsEvent = @"Pedestrian Share Alert";
   [[Statistics instance] logEvent:kStatisticsEvent withParameters:@{kStatAction : kStatApply}];
   [Alohalytics logEvent:kStatisticsEvent withValue:@"shareTap"];
   MWMActivityViewController * shareVC = [MWMActivityViewController shareControllerForPedestrianRoutesToast];
-  if (IPAD && !isIOS7)
+  if (IPAD && !isIOSVersionLessThan(8))
   {
     shareVC.completionWithItemsHandler = ^(NSString * activityType, BOOL completed, NSArray * returnedItems,
                                            NSError * activityError)
@@ -77,12 +77,12 @@ static NSString * const kStatisticsEvent = @"Pedestrian Share Alert";
 
 - (void)rotate:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
-  // Overridden implemantation left empty since this view is added to the view controller handling device rotation
+  // Overriden implemantation left empty since this view is added to the view controller handling device rotation
 }
 
 - (void)addControllerViewToWindow
 {
-  // Overridden implemantation left empty to let sharing view appear above
+  // Overriden implemantation left empty to let sharing view appear above
 }
 
 @end

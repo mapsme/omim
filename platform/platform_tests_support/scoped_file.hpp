@@ -18,7 +18,6 @@ class ScopedDir;
 class ScopedFile
 {
 public:
-  ScopedFile(string const & relativePath);
   ScopedFile(string const & relativePath, string const & contents);
 
   ScopedFile(ScopedDir const & dir, CountryFile const & countryFile, MapOptions file,

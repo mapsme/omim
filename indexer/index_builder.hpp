@@ -20,5 +20,5 @@ void BuildIndex(feature::DataHeader const & header, TFeaturesVector const & feat
   }
 
   // doesn't throw exceptions
-  bool BuildIndexFromDataFile(string const & datFile, string const & tmpFile);
+  bool BuildIndexFromDatFile(string const & datFile, string const & tmpFile);
 }

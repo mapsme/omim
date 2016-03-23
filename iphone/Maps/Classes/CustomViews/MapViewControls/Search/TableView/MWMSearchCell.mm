@@ -13,7 +13,6 @@
 
 - (void)awakeFromNib
 {
-  [super awakeFromNib];
   if (IPAD)
     self.contentView.backgroundColor = [UIColor white];
   CALayer * sl = self.layer;
@@ -26,7 +25,7 @@
   if (result.GetResultType() == search::Result::RESULT_FEATURE)
     GetFramework().LoadSearchResultMetadata(result);
 
-  NSString * title = @(result.GetString().c_str());
+  NSString * title = @(result.GetString());
   if (!title)
   {
     self.titleLabel.text = @"";

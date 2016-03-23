@@ -1,10 +1,12 @@
 #pragma once
 
+#include "map/user_mark.hpp"
+
 #include "geometry/rect2d.hpp"
 
 #include "std/string.hpp"
 
-class ApiMarkPoint;
+class ScalesProcessor;
 class BookmarkManager;
 
 namespace url_scheme
@@ -39,7 +41,7 @@ public:
 
   /// @name Used in settings map viewport after invoking API.
   bool GetViewportRect(m2::RectD & rect) const;
-  ApiMarkPoint const * GetSinglePoint() const;
+  UserMark const * GetSinglePoint() const;
 
 private:
   bool Parse(Uri const & uri);
