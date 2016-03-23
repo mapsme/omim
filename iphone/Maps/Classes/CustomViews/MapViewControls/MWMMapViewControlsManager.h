@@ -6,7 +6,6 @@
 #include "platform/location.hpp"
 
 @class MapViewController;
-@class MWMPlacePageEntity;
 
 @interface MWMMapViewControlsManager : NSObject <MWMRoutingProtocol>
 
@@ -14,9 +13,8 @@
 @property (nonatomic) BOOL zoomHidden;
 @property (nonatomic) MWMBottomMenuState menuState;
 @property (nonatomic, readonly) MWMNavigationDashboardState navigationState;
-@property (nonatomic, readonly) MWMPlacePageEntity * placePageEntity;
-@property (nonatomic, readonly) MWMBottomMenuViewController * menuController;
 @property (nonatomic) BOOL searchHidden;
+@property (nonatomic) location::EMyPositionMode myPositionMode;
 
 - (instancetype)init __attribute__((unavailable("init is not available")));
 - (instancetype)initWithParentController:(MapViewController *)controller;
@@ -24,7 +22,7 @@
 #pragma mark - Layout
 
 - (void)refreshLayout;
-- (void)mwm_refreshUI;
+- (void)refresh;
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
                                 duration:(NSTimeInterval)duration;
@@ -36,7 +34,7 @@
 @property (nonatomic, readonly) BOOL isDirectionViewShown;
 
 - (void)dismissPlacePage;
-- (void)showPlacePage:(place_page::Info const &)info;
+- (void)showPlacePageWithUserMark:(unique_ptr<UserMarkCopy>)userMark;
 
 #pragma mark - MWMNavigationDashboardManager
 
@@ -47,5 +45,6 @@
 - (void)routingPrepare;
 - (void)routingNavigation;
 - (void)handleRoutingError;
+- (void)setRouteBuildingProgress:(CGFloat)progress;
 
 @end

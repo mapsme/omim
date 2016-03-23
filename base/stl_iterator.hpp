@@ -4,10 +4,12 @@
 
 namespace detail
 {
+
 struct Dummy
 {
   template <class T> Dummy & operator=(T const &) { return *this; }
 };
+
 }
 
 class CounterIterator :

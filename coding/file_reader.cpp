@@ -96,11 +96,10 @@ FileReader FileReader::SubReader(uint64_t pos, uint64_t size) const
   return FileReader(*this, m_Offset + pos, size);
 }
 
-unique_ptr<Reader> FileReader::CreateSubReader(uint64_t pos, uint64_t size) const
+FileReader * FileReader::CreateSubReader(uint64_t pos, uint64_t size) const
 {
   ASSERT ( AssertPosAndSize(pos, size), () );
-  // Can't use make_unique with private constructor.
-  return unique_ptr<Reader>(new FileReader(*this, m_Offset + pos, size));
+  return new FileReader(*this, m_Offset + pos, size);
 }
 
 bool FileReader::AssertPosAndSize(uint64_t pos, uint64_t size) const

@@ -105,14 +105,14 @@ public:
 class FilesContainerR : public FilesContainerBase
 {
 public:
-  using TReader = ModelReaderPtr;
+  typedef ModelReaderPtr ReaderT;
 
   explicit FilesContainerR(string const & filePath,
                            uint32_t logPageSize = 10,
                            uint32_t logPageCount = 10);
-  explicit FilesContainerR(TReader const & file);
+  explicit FilesContainerR(ReaderT const & file);
 
-  TReader GetReader(Tag const & tag) const;
+  ReaderT GetReader(Tag const & tag) const;
 
   template <typename F> void ForEachTag(F f) const
   {
@@ -126,11 +126,12 @@ public:
   pair<uint64_t, uint64_t> GetAbsoluteOffsetAndSize(Tag const & tag) const;
 
 private:
-  TReader m_source;
+  ReaderT m_source;
 };
 
 namespace detail
 {
+
 class MappedFile
 {
   DISALLOW_COPY(MappedFile);

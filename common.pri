@@ -247,7 +247,6 @@ HEADERS += \
   $$ROOT_DIR/std/fstream.hpp \
   $$ROOT_DIR/std/function.hpp \
   $$ROOT_DIR/std/functional.hpp \
-  $$ROOT_DIR/std/future.hpp \
   $$ROOT_DIR/std/initializer_list.hpp \
   $$ROOT_DIR/std/iomanip.hpp \
   $$ROOT_DIR/std/ios.hpp \

@@ -17,68 +17,65 @@ public class BookmarkCategory
 
   public String getName()
   {
-    return (mName == null ? nativeGetName(mId) : mName);
-  }
-
-  public void setName(String name)
-  {
-    nativeSetName(mId, name);
-    mName = name;
+    return (mName == null ? getName(mId) : mName);
   }
 
   public boolean isVisible()
   {
-    return nativeIsVisible(mId);
+    return isVisible(mId);
   }
 
-  public void setVisibility(boolean visible)
+  public void setVisibility(boolean b)
   {
-    nativeSetVisibility(mId, visible);
+    setVisibility(mId, b);
   }
 
-  /**
-   * @return total count - tracks + bookmarks
-   */
+  public void setName(String name)
+  {
+    setName(mId, name);
+    mName = name;
+  }
+
   public int getSize()
   {
-    return nativeGetSize(mId);
+    return getSize(mId);
   }
 
   public int getBookmarksCount()
   {
-    return nativeGetBookmarksCount(mId);
+    return getBookmarksCount(mId);
   }
 
   public int getTracksCount()
   {
-    return nativeGetTracksCount(mId);
+    return getTracksCount(mId);
   }
 
-  public Bookmark getBookmark(int bookmarkId)
+  public Bookmark getBookmark(int index)
   {
-    return nativeGetBookmark(mId, bookmarkId);
+    return getBookmark(mId, index, Bookmark.class);
   }
 
-  public Track nativeGetTrack(int trackId)
+  public Track getTrack(int index)
   {
-    return nativeGetTrack(mId, trackId, Track.class);
+    return getTrack(mId, index, Track.class);
   }
 
-  private native int nativeGetBookmarksCount(int id);
+  private native int getBookmarksCount(int id);
 
-  private native int nativeGetTracksCount(int id);
+  private native int getTracksCount(int id);
 
-  private native int nativeGetSize(int id);
+  private native int getSize(int id);
 
-  private native Bookmark nativeGetBookmark(int catId, int bmkId);
+  private native Bookmark getBookmark(int id, int index, Class<Bookmark> bookmarkClazz);
 
-  private native Track nativeGetTrack(int catId, int bmkId, Class<Track> trackClazz);
+  private native Track getTrack(int id, int index, Class<Track> trackClazz);
 
-  private native boolean nativeIsVisible(int id);
+  private native boolean isVisible(int id);
 
-  private native void nativeSetVisibility(int id, boolean visible);
+  private native void setVisibility(int id, boolean v);
 
-  private native String nativeGetName(int id);
+  private native String getName(int id);
 
-  private native void nativeSetName(int id, String n);
+  private native void setName(int old, String n);
 }

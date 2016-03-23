@@ -13,16 +13,8 @@
 #include "std/target_os.hpp"
 #include "std/vector.hpp"
 
-#ifdef TARGET_OS_IPHONE
-# include <CoreFoundation/CoreFoundation.h>
-#endif
-
-#ifndef OMIM_UNIT_TEST_DISABLE_PLATFORM_INIT
-# include "platform/platform.hpp"
-#endif
-
-#if defined(OMIM_UNIT_TEST_WITH_QT_EVENT_LOOP) && !defined(OMIM_OS_IPHONE)
-  #include <QtCore/Qt>
+#ifdef OMIM_UNIT_TEST_WITH_QT_EVENT_LOOP
+  #include <Qt>
   #ifdef OMIM_OS_MAC // on Mac OS X native run loop works only for QApplication :(
     #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
       #include <QtGui/QApplication>
@@ -35,29 +27,6 @@
     #define QAPP QCoreApplication
   #endif
 #endif
-
-namespace testing
-{
-
-void RunEventLoop()
-{
-#if defined(OMIM_OS_IPHONE)
-  CFRunLoopRun();
-#elif defined (QAPP)
-  QAPP::exec();
-#endif
-}
-
-void StopEventLoop()
-{
-#if defined(OMIM_OS_IPHONE)
-  CFRunLoopStop(CFRunLoopGetMain());
-#elif defined(QAPP)
-  QAPP::exit();
-#endif
-}
-
-} //  namespace testing
 
 namespace
 {
@@ -133,7 +102,7 @@ CommandLineOptions const & GetTestingOptions()
 
 int main(int argc, char * argv[])
 {
-#if defined(OMIM_UNIT_TEST_WITH_QT_EVENT_LOOP) && !defined(OMIM_OS_IPHONE)
+#ifdef OMIM_UNIT_TEST_WITH_QT_EVENT_LOOP
   QAPP theApp(argc, argv);
   UNUSED_VALUE(theApp);
 #else
@@ -141,8 +110,8 @@ int main(int argc, char * argv[])
   UNUSED_VALUE(argv);
 #endif
 
-  my::ScopedLogLevelChanger const infoLogLevel(LINFO);
-#if defined(OMIM_OS_MAC) || defined(OMIM_OS_LINUX) || defined(OMIM_OS_IPHONE)
+  my::g_LogLevel = LINFO;
+#if defined(OMIM_OS_MAC) || defined(OMIM_OS_LINUX)
   my::SetLogMessageFn(my::LogMessageTests);
 #endif
 
@@ -164,16 +133,6 @@ int main(int argc, char * argv[])
   regex suppressRegExp;
   if (g_testingOptions.m_suppressRegExp)
     suppressRegExp.assign(g_testingOptions.m_suppressRegExp);
-
-#ifndef OMIM_UNIT_TEST_DISABLE_PLATFORM_INIT
-  // Setting stored paths from testingmain.cpp
-  Platform & pl = GetPlatform();
-  CommandLineOptions const & options = GetTestingOptions();
-  if (options.m_dataPath)
-    pl.SetWritableDirForTests(options.m_dataPath);
-  if (options.m_resourcePath)
-    pl.SetResourceDir(options.m_resourcePath);
-#endif
 
   for (TestRegister * pTest = TestRegister::FirstRegister(); pTest; pTest = pTest->m_pNext)
   {

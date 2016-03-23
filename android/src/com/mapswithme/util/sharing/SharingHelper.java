@@ -11,6 +11,14 @@ import android.content.pm.ResolveInfo;
 import android.support.annotation.StringRes;
 import android.text.TextUtils;
 
+import com.cocosw.bottomsheet.BottomSheet;
+import com.mapswithme.maps.MwmApplication;
+import com.mapswithme.maps.R;
+import com.mapswithme.maps.bookmarks.data.BookmarkManager;
+import com.mapswithme.util.BottomSheetHelper;
+import com.mapswithme.util.concurrency.ThreadPool;
+import com.mapswithme.util.concurrency.UiThread;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -20,14 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.cocosw.bottomsheet.BottomSheet;
-import com.google.gson.Gson;
-import com.mapswithme.maps.MwmApplication;
-import com.mapswithme.maps.R;
-import com.mapswithme.maps.bookmarks.data.BookmarkManager;
-import com.mapswithme.util.BottomSheetHelper;
-import com.mapswithme.util.concurrency.ThreadPool;
-import com.mapswithme.util.concurrency.UiThread;
+import static com.mapswithme.maps.MwmApplication.gson;
 
 public final class SharingHelper
 {
@@ -75,7 +76,7 @@ public final class SharingHelper
 
     try
     {
-      return new Gson().fromJson(json, SharingTarget[].class);
+      return gson().fromJson(json, SharingTarget[].class);
     } catch (Exception e)
     {
       return null;
@@ -84,7 +85,7 @@ public final class SharingHelper
 
   private void save()
   {
-    String json = new Gson().toJson(mItems.values());
+    String json = gson().toJson(mItems.values());
     mPrefs.edit().putString(PREFS_KEY_ITEMS, json).apply();
   }
 
@@ -219,7 +220,7 @@ public final class SharingHelper
   public static void shareBookmarksCategory(Activity context, int id)
   {
     String path = MwmApplication.get().getTempPath();
-    String name = BookmarkManager.INSTANCE.nativeSaveToKmzFile(id, path);
+    String name = BookmarkManager.INSTANCE.saveToKmzFile(id, path);
     if (name == null)
       // some error occurred
       return;

@@ -354,8 +354,6 @@ namespace pugi
 		// Set attribute value with type conversion (numbers are converted to strings, boolean is converted to "true"/"false")
 		bool set_value(int rhs);
 		bool set_value(unsigned int rhs);
-		bool set_value(long rhs);
-		bool set_value(unsigned long rhs);
 		bool set_value(double rhs);
 		bool set_value(float rhs);
 		bool set_value(bool rhs);
@@ -369,8 +367,6 @@ namespace pugi
 		xml_attribute& operator=(const char_t* rhs);
 		xml_attribute& operator=(int rhs);
 		xml_attribute& operator=(unsigned int rhs);
-		xml_attribute& operator=(long rhs);
-		xml_attribute& operator=(unsigned long rhs);
 		xml_attribute& operator=(double rhs);
 		xml_attribute& operator=(float rhs);
 		xml_attribute& operator=(bool rhs);
@@ -705,8 +701,6 @@ namespace pugi
 		// Set text with type conversion (numbers are converted to strings, boolean is converted to "true"/"false")
 		bool set(int rhs);
 		bool set(unsigned int rhs);
-		bool set(long rhs);
-		bool set(unsigned long rhs);
 		bool set(double rhs);
 		bool set(float rhs);
 		bool set(bool rhs);
@@ -720,8 +714,6 @@ namespace pugi
 		xml_text& operator=(const char_t* rhs);
 		xml_text& operator=(int rhs);
 		xml_text& operator=(unsigned int rhs);
-		xml_text& operator=(long rhs);
-		xml_text& operator=(unsigned long rhs);
 		xml_text& operator=(double rhs);
 		xml_text& operator=(float rhs);
 		xml_text& operator=(bool rhs);

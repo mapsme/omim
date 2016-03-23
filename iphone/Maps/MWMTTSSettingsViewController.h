@@ -1,6 +1,6 @@
-#import "MWMTableViewController.h"
+#import "TableViewController.h"
 
-@interface MWMTTSSettingsViewController : MWMTableViewController
+@interface MWMTTSSettingsViewController : TableViewController
 
 - (void)setAdditionalTTSLanguage:(std::pair<string, string> const &)l;
 

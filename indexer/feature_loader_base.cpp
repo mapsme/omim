@@ -29,34 +29,34 @@ SharedLoadInfo::~SharedLoadInfo()
   delete m_pLoader;
 }
 
-SharedLoadInfo::TReader SharedLoadInfo::GetDataReader() const
+SharedLoadInfo::ReaderT SharedLoadInfo::GetDataReader() const
 {
   return m_cont.GetReader(DATA_FILE_TAG);
 }
 
-SharedLoadInfo::TReader SharedLoadInfo::GetMetadataReader() const
+SharedLoadInfo::ReaderT SharedLoadInfo::GetMetadataReader() const
 {
   return m_cont.GetReader(METADATA_FILE_TAG);
 }
 
-SharedLoadInfo::TReader SharedLoadInfo::GetMetadataIndexReader() const
+SharedLoadInfo::ReaderT SharedLoadInfo::GetMetadataIndexReader() const
 {
   return m_cont.GetReader(METADATA_INDEX_FILE_TAG);
 }
 
-SharedLoadInfo::TReader SharedLoadInfo::GetGeometryReader(int ind) const
+SharedLoadInfo::ReaderT SharedLoadInfo::GetGeometryReader(int ind) const
 {
   return m_cont.GetReader(GetTagForIndex(GEOMETRY_FILE_TAG, ind));
 }
 
-SharedLoadInfo::TReader SharedLoadInfo::GetTrianglesReader(int ind) const
+SharedLoadInfo::ReaderT SharedLoadInfo::GetTrianglesReader(int ind) const
 {
   return m_cont.GetReader(GetTagForIndex(TRIANGLE_FILE_TAG, ind));
 }
 
 void SharedLoadInfo::CreateLoader()
 {
-  if (m_header.GetFormat() == version::Format::v1)
+  if (m_header.GetFormat() == version::v1)
     m_pLoader = new old_101::feature::LoaderImpl(*this);
   else
     m_pLoader = new LoaderCurrent(*this);

@@ -11,12 +11,13 @@
 @property (nonatomic) CGFloat topBound;
 @property (nonatomic) CGFloat leftBound;
 @property (nonatomic, readonly) BOOL isDirectionViewShown;
+@property (nonatomic, readonly) location::EMyPositionMode myPositionMode;
 
 - (instancetype)initWithViewController:(UIViewController *)viewController
                               delegate:(id<MWMPlacePageViewManagerProtocol>)delegate;
-- (void)showPlacePage:(place_page::Info const &)info;
+- (void)showPlacePageWithUserMark:(unique_ptr<UserMarkCopy>)userMark;
 - (void)refreshPlacePage;
-- (void)mwm_refreshUI;
+- (void)refresh;
 - (BOOL)hasPlacePage;
 - (void)dismissPlacePage;
 - (void)hidePlacePage;
@@ -24,8 +25,6 @@
 - (void)routeFrom;
 - (void)routeTo;
 - (void)share;
-- (void)editPlace;
-- (void)reportProblem;
 - (void)addBookmark;
 - (void)removeBookmark;
 - (void)apiBack;
@@ -33,6 +32,7 @@
 - (void)viewWillTransitionToSize:(CGSize)size
        withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator;
 - (void)reloadBookmark;
+- (void)changeBookmarkCategory:(BookmarkAndCategory)bac;
 - (void)dragPlacePage:(CGRect)frame;
 - (void)showDirectionViewWithTitle:(NSString *)title type:(NSString *)type;
 - (void)hideDirectionView;

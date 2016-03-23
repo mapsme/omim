@@ -1,5 +1,5 @@
-#import "MWMTableViewController.h"
+#import "TableViewController.h"
 
-@interface MWMNightModeController : MWMTableViewController
+@interface MWMNightModeController : TableViewController
 
 @end

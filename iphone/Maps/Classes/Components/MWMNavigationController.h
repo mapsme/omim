@@ -1,4 +1,0 @@
-
-@interface MWMNavigationController : UINavigationController
-
-@end

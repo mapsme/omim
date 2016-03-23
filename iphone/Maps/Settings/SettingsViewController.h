@@ -1,5 +1,7 @@
-#import "MWMTableViewController.h"
 
-@interface SettingsViewController : MWMTableViewController
+#import <UIKit/UIKit.h>
+#import "TableViewController.h"
+
+@interface SettingsViewController : TableViewController
 
 @end

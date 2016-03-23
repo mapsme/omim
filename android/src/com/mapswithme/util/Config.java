@@ -26,7 +26,6 @@ public final class Config
   private static final String KEY_MISC_DISCLAIMER_ACCEPTED = "IsDisclaimerApproved";
   private static final String KEY_MISC_KITKAT_MIGRATED = "KitKatMigrationCompleted";
   private static final String KEY_MISC_NEWS_LAST_VERSION = "WhatsNewShownVersion";
-  private static final String KEY_MISC_FIRST_START_DIALOG_SEEN = "FirstStartDialogSeen";
   private static final String KEY_MISC_UI_THEME = "UiTheme";
   private static final String KEY_MISC_UI_THEME_SETTINGS = "UiThemeSettings";
 
@@ -117,7 +116,7 @@ public final class Config
    * Increments counter of app starts.
    * @return Previous value before increment.
    */
-  private static int incrementLaunchNumber()
+  public static int incrementLaunchNumber()
   {
     return increment(KEY_APP_LAUNCH_NUMBER);
   }
@@ -221,7 +220,7 @@ public final class Config
 
   public static void setRatingApplied(Class<? extends DialogFragment> dialogFragmentClass)
   {
-    setBool(KEY_LIKES_RATED_DIALOG + dialogFragmentClass.getSimpleName());
+    setBool(KEY_LIKES_RATED_DIALOG + dialogFragmentClass.getSimpleName(), true);
   }
 
   public static boolean isSessionRated(int session)
@@ -241,7 +240,7 @@ public final class Config
 
   public static void acceptRoutingDisclaimer()
   {
-    setBool(KEY_MISC_DISCLAIMER_ACCEPTED);
+    setBool(KEY_MISC_DISCLAIMER_ACCEPTED, true);
   }
 
   public static boolean isKitKatMigrationComplete()
@@ -262,16 +261,6 @@ public final class Config
   public static void setWhatsNewShown()
   {
     setInt(KEY_MISC_NEWS_LAST_VERSION, BuildConfig.VERSION_CODE);
-  }
-
-  public static boolean isFirstStartDialogSeen()
-  {
-    return getBool(KEY_MISC_FIRST_START_DIALOG_SEEN);
-  }
-
-  public static void setFirstStartDialogSeen()
-  {
-    setBool(KEY_MISC_FIRST_START_DIALOG_SEEN);
   }
 
   public static String getCurrentUiTheme()

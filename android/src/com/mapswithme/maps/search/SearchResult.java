@@ -9,11 +9,6 @@ public class SearchResult
   public static final int TYPE_SUGGEST = 0;
   public static final int TYPE_RESULT = 1;
 
-  // Values should match osm::YesNoUnknown enum.
-  public static final int OPEN_NOW_UNKNOWN = 0;
-  public static final int OPEN_NOW_YES = 1;
-  public static final int OPEN_NOW_NO = 2;
-
   public static class Description
   {
     public final String featureType;
@@ -21,16 +16,16 @@ public class SearchResult
     public final String distance;
     public final String cuisine;
     public final int stars;
-    public final int openNow;
+    public final boolean closedNow;
 
-    public Description(String featureType, String region, String distance, String cuisine, int stars, int openNow)
+    public Description(String featureType, String region, String distance, String cuisine, int stars, boolean closedNow)
     {
       this.featureType = featureType;
       this.region = region;
       this.distance = distance;
       this.cuisine = cuisine;
       this.stars = stars;
-      this.openNow = openNow;
+      this.closedNow = closedNow;
     }
   }
 
@@ -45,12 +40,12 @@ public class SearchResult
   // Consecutive pairs of indexes (each pair contains : start index, length), specifying highlighted matches of original query in result
   public final int[] highlightRanges;
 
-  public SearchResult(String name, String suggestion, double lat, double lon, int[] highlightRanges)
+  public SearchResult(String name, String suggestion, int[] highlightRanges)
   {
     this.name = name;
     this.suggestion = suggestion;
-    this.lat = lat;
-    this.lon = lon;
+    this.lat = 0.0;
+    this.lon = 0.0;
     description = null;
     type = TYPE_SUGGEST;
 

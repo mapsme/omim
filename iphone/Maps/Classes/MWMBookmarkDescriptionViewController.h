@@ -1,8 +1,9 @@
-#import "MWMViewController.h"
+#import <UIKit/UIKit.h>
+#import "ViewController.h"
 
 @class MWMPlacePageViewManager;
 
-@interface MWMBookmarkDescriptionViewController : MWMViewController
+@interface MWMBookmarkDescriptionViewController : ViewController
 
 - (instancetype)initWithPlacePageManager:(MWMPlacePageViewManager *)manager;
 

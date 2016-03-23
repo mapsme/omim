@@ -1,5 +1,4 @@
 #include "testing/testing.hpp"
-
 #include "search/keyword_lang_matcher.hpp"
 
 #include "indexer/search_delimiters.hpp"

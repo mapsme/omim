@@ -24,7 +24,6 @@ public:
   static void glClear();
   static void glClearDepth();
   static void glViewport(uint32_t x, uint32_t y, uint32_t w, uint32_t h);
-  static void glScissor(uint32_t x, uint32_t y, uint32_t w, uint32_t h);
   static void glFlush();
   static void glFinish();
 

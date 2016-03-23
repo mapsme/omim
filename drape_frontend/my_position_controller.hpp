@@ -26,7 +26,7 @@ public:
     virtual ~Listener() {}
     virtual void PositionChanged(m2::PointD const & position) = 0;
     /// Show map with center in "center" point and current zoom
-    virtual void ChangeModelView(m2::PointD const & center, int zoomLevel) = 0;
+    virtual void ChangeModelView(m2::PointD const & center) = 0;
     /// Change azimuth of current ModelView
     virtual void ChangeModelView(double azimuth) = 0;
     /// Somehow show map that "rect" will see
@@ -69,6 +69,8 @@ public:
 
   void SetRenderShape(drape_ptr<MyPosition> && shape);
 
+  void SetFixedZoom();
+
   void ActivateRouting();
   void DeactivateRouting();
 
@@ -104,7 +106,7 @@ private:
   bool IsVisible() const { return m_isVisible; }
   void SetIsVisible(bool isVisible) { m_isVisible = isVisible; }
 
-  void ChangeModelView(m2::PointD const & center, int zoomLevel);
+  void ChangeModelView(m2::PointD const & center);
   void ChangeModelView(double azimuth);
   void ChangeModelView(m2::RectD const & rect);
   void ChangeModelView(m2::PointD const & userPos, double azimuth, m2::PointD const & pxZero,
@@ -125,6 +127,7 @@ private:
 private:
   // Mode bits
   // {
+  static uint32_t const FixedZoomBit = 0x20;
   static uint32_t const RoutingSessionBit = 0x40;
   static uint32_t const KnownDirectionBit = 0x80;
   static uint32_t const BlockAnimation = 0x100;
@@ -160,8 +163,6 @@ private:
 
   using TAnimationCreator = function<void()>;
   TAnimationCreator m_animCreator;
-
-  bool m_isPositionAssigned;
 };
 
 }

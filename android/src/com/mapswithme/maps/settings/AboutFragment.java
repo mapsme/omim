@@ -127,7 +127,7 @@ public class AboutFragment extends BaseSettingsFragment
       case R.id.copyright:
         Statistics.INSTANCE.trackEvent(Statistics.EventName.Settings.COPYRIGHT);
         AlohaHelper.logClick(AlohaHelper.Settings.COPYRIGHT);
-        getSettingsActivity().switchToFragment(CopyrightFragment.class, R.string.copyright);
+        ((SettingsActivity) getActivity()).switchToFragment(CopyrightFragment.class, R.string.copyright);
         break;
       }
     } catch (ActivityNotFoundException e)

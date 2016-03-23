@@ -93,6 +93,15 @@ uint8_t GetWeekNumber(std::tm const & date)
   return weekNumber;
 }
 
+bool IsBetweenLooped(osmoh::Weekday const start,
+                     osmoh::Weekday const end,
+                     osmoh::Weekday const p)
+{
+  if (start <= end)
+    return start <= p && p <= end;
+  return p >= end || start <= p;
+}
+
 osmoh::RuleState ModifierToRuleState(osmoh::RuleSequence::Modifier const modifier)
 {
   using Modifier = osmoh::RuleSequence::Modifier;
@@ -187,9 +196,6 @@ std::tm MakeTimetuple(time_t const timestamp)
 
 namespace osmoh
 {
-// ADL shadows ::operator==.
-using ::operator==;
-
 bool IsActive(Timespan const & span, std::tm const & time)
 {
   // Timespan with e.h. should be split into parts with no e.h.
@@ -230,7 +236,10 @@ bool IsActive(WeekdayRange const & range, std::tm const & date)
   if (wday == Weekday::None)
     return false;
 
-  return range.HasWday(wday);
+  if (range.HasEnd())
+    return IsBetweenLooped(range.GetStart(), range.GetEnd(), wday);
+
+  return range.GetStart() == wday;
 }
 
 bool IsActive(Holiday const & holiday, std::tm const & date)

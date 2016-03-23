@@ -44,7 +44,7 @@ public class BookmarksListFragment extends BaseMwmListFragment
     super.onCreate(savedInstanceState);
 
     mCategoryIndex = getArguments().getInt(ChooseBookmarkCategoryFragment.CATEGORY_ID, -1);
-    mCategory = BookmarkManager.INSTANCE.getCategory(mCategoryIndex);
+    mCategory = BookmarkManager.INSTANCE.getCategoryById(mCategoryIndex);
   }
 
   @Override
@@ -96,7 +96,7 @@ public class BookmarksListFragment extends BaseMwmListFragment
       return;
     case BookmarkListAdapter.TYPE_BOOKMARK:
       final Bookmark bookmark = (Bookmark) mAdapter.getItem(position);
-      BookmarkManager.INSTANCE.nativeShowBookmarkOnMap(mCategoryIndex, bookmark.getBookmarkId());
+      BookmarkManager.INSTANCE.showBookmarkOnMap(mCategoryIndex, bookmark.getBookmarkId());
       break;
     case BookmarkListAdapter.TYPE_TRACK:
       final Track track = (Track) mAdapter.getItem(position);
@@ -123,7 +123,7 @@ public class BookmarksListFragment extends BaseMwmListFragment
       break;
 
     case BookmarkListAdapter.TYPE_BOOKMARK:
-      BottomSheetHelper.Builder bs = BottomSheetHelper.create(getActivity(), ((Bookmark) item).getTitle())
+      BottomSheetHelper.Builder bs = BottomSheetHelper.create(getActivity(), ((Bookmark) item).getName())
                                                       .sheet(R.menu.menu_bookmarks)
                                                       .listener(this);
       if (!ShareOption.SMS.isSupported(getActivity()))

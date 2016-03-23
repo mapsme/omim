@@ -37,7 +37,6 @@ bool IsResource(string const & file, string const & ext)
   if (ext == DATA_FILE_EXTENSION)
   {
     return (strings::StartsWith(file, WORLD_COASTS_FILE_NAME) ||
-            strings::StartsWith(file, WORLD_COASTS_OBSOLETE_FILE_NAME) ||
             strings::StartsWith(file, WORLD_FILE_NAME));
   }
   else if (ext == BOOKMARKS_FILE_EXTENSION ||
@@ -91,7 +90,7 @@ public:
 
 }
 
-unique_ptr<ModelReader> Platform::GetReader(string const & file, string const & searchScope) const
+ModelReader * Platform::GetReader(string const & file, string const & searchScope) const
 {
   string const ext = my::GetFileExtension(file);
   ASSERT(!ext.empty(), ());
@@ -138,7 +137,7 @@ unique_ptr<ModelReader> Platform::GetReader(string const & file, string const & 
       {
         try
         {
-          return make_unique<ZipFileReader>(m_extResFiles[j], file, logPageSize, logPageCount);
+          return new ZipFileReader(m_extResFiles[j], file, logPageSize, logPageCount);
         }
         catch (Reader::OpenException const &)
         {
@@ -150,7 +149,7 @@ unique_ptr<ModelReader> Platform::GetReader(string const & file, string const & 
     {
       string const path = m_writableDir + file;
       if (IsFileExistsByFullPath(path))
-        return make_unique<FileReader>(path, logPageSize, logPageCount);
+        return new FileReader(path, logPageSize, logPageCount);
       break;
     }
 
@@ -158,20 +157,20 @@ unique_ptr<ModelReader> Platform::GetReader(string const & file, string const & 
     {
       string const path = m_settingsDir + file;
       if (IsFileExistsByFullPath(path))
-        return make_unique<FileReader>(path, logPageSize, logPageCount);
+        return new FileReader(path, logPageSize, logPageCount);
       break;
     }
 
     case FULL_PATH:
       if (IsFileExistsByFullPath(file))
-        return make_unique<FileReader>(file, logPageSize, logPageCount);
+        return new FileReader(file, logPageSize, logPageCount);
       break;
 
     case RESOURCE:
       ASSERT_EQUAL(file.find("assets/"), string::npos, ());
       try
       {
-        return make_unique<ZipFileReader>(m_resourcesDir, "assets/" + file, logPageSize, logPageCount);
+        return new ZipFileReader(m_resourcesDir, "assets/" + file, logPageSize, logPageCount);
       }
       catch (Reader::OpenException const &)
       {
@@ -186,7 +185,7 @@ unique_ptr<ModelReader> Platform::GetReader(string const & file, string const & 
 
   LOG(LWARNING, ("Can't get reader for:", file));
   MYTHROW(FileAbsentException, ("File not found", file));
-  return nullptr;
+  return 0;
 }
 
 void Platform::GetFilesByRegExp(string const & directory, string const & regexp, FilesList & res)
@@ -251,12 +250,12 @@ Platform::EError Platform::MkDir(string const & dirName) const
 
 void Platform::SetupMeasurementSystem() const
 {
-  settings::Units u;
-  if (settings::Get(settings::kMeasurementUnits, u))
+  Settings::Units u;
+  if (Settings::Get("Units", u))
     return;
   // @TODO Add correct implementation
-  u = settings::Metric;
-  settings::Set(settings::kMeasurementUnits, u);
+  u = Settings::Metric;
+  Settings::Set("Units", u);
 }
 
 namespace

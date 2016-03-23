@@ -4,19 +4,21 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/ll__place_wiki"
   style="@style/PlacePageItemFrame"
-  android:tag="wiki"
-  tools:background="#20FF0000"
-  tools:visibility="visible">
-
+  android:tag="website"
+  tools:visibility="visible"
+  tools:background="#20FF0000">
   <ImageView
     android:id="@+id/iv__place_wiki"
-    style="@style/PlacePageMetadataIcon"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="@dimen/margin_base"
     android:src="@drawable/ic_wiki"
     android:tint="?colorAccent"/>
 
   <TextView
     android:id="@+id/tv__place_wiki"
-    style="@style/PlacePageMetadataText"
-    android:text="@string/read_in_wikipedia"
-    android:textAppearance="@style/MwmTextAppearance.PlacePage.Accent"/>
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textAppearance="@style/MwmTextAppearance.PlacePage.Accent"
+    android:text="@string/read_in_wikipedia"/>
 </LinearLayout>

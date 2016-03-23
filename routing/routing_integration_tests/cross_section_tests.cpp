@@ -39,12 +39,6 @@ UNIT_TEST(CheckCrossSections)
       continue;
     }
     FilesMappingContainer container(file.GetPath(MapOptions::CarRouting));
-    if (!container.IsExist(ROUTING_CROSS_CONTEXT_TAG))
-    {
-      noRouting++;
-      LOG(LINFO, ("Warning! Mwm file has not cross mwm section:", file.GetCountryName()));
-      continue;
-    }
     crossReader.Load(container.GetReader(ROUTING_CROSS_CONTEXT_TAG));
 
     bool error = false;

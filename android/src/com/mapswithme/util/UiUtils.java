@@ -3,8 +3,10 @@ package com.mapswithme.util;
 import android.animation.Animator;
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
+import android.provider.Settings;
 import android.support.annotation.DimenRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
@@ -16,7 +18,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.mapswithme.maps.MwmApplication;
@@ -212,6 +213,49 @@ public final class UiUtils
     showIf(!TextUtils.isEmpty(text), tv);
   }
 
+  public static void checkConnectionAndShowAlert(final Activity activity, final String message)
+  {
+    if (!ConnectionState.isConnected())
+    {
+      activity.runOnUiThread(new Runnable()
+      {
+        @Override
+        public void run()
+        {
+          new AlertDialog.Builder(activity)
+                  .setCancelable(false)
+                  .setMessage(message)
+                  .setPositiveButton(activity.getString(R.string.connection_settings), new DialogInterface.OnClickListener()
+                  {
+                    @Override
+                    public void onClick(DialogInterface dlg, int which)
+                    {
+                      try
+                      {
+                        activity.startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                      } catch (final Exception ex)
+                      {
+                        ex.printStackTrace();
+                      }
+
+                      dlg.dismiss();
+                    }
+                  })
+                  .setNegativeButton(activity.getString(R.string.close), new DialogInterface.OnClickListener()
+                  {
+                    @Override
+                    public void onClick(DialogInterface dlg, int which)
+                    {
+                      dlg.dismiss();
+                    }
+                  })
+                  .create()
+                  .show();
+        }
+      });
+    }
+  }
+
   public static void showHomeUpButton(Toolbar toolbar)
   {
     toolbar.setNavigationIcon(ThemeUtils.getResource(toolbar.getContext(), R.attr.homeAsUpIndicator));
@@ -274,18 +318,7 @@ public final class UiUtils
     return (int) (dp * sScreenDensity + 0.5);
   }
 
-  public static void updateButton(Button button)
-  {
-    button.setTextColor(ThemeUtils.getColor(button.getContext(), button.isEnabled() ? R.attr.buttonTextColor
-                                                                                    : R.attr.buttonTextColorDisabled));
-  }
-
-  public static void updateAccentButton(Button button)
-  {
-    button.setTextColor(ThemeUtils.getColor(button.getContext(), button.isEnabled() ? R.attr.accentButtonTextColor
-                                                                                    : R.attr.accentButtonTextColorDisabled));
-  }
-
   // utility class
-  private UiUtils() {}
+  private UiUtils()
+  {}
 }

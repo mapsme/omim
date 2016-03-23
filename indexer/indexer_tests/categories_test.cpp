@@ -1,11 +1,11 @@
 #include "testing/testing.hpp"
 
 #include "indexer/categories_holder.hpp"
+
 #include "indexer/classificator.hpp"
 #include "indexer/classificator_loader.hpp"
 
 #include "coding/multilang_utf8_string.hpp"
-#include "coding/reader.hpp"
 
 #include "std/sstream.hpp"
 
@@ -87,7 +87,10 @@ UNIT_TEST(LoadCategories)
 {
   classificator::Load();
 
-  CategoriesHolder h(make_unique<MemReader>(TEST_STRING, strlen(TEST_STRING)));
+  CategoriesHolder h;
+  istringstream buffer(TEST_STRING);
+  h.LoadFromStream(buffer);
+
   size_t count = 0;
   Checker f(count);
   h.ForEachCategory(f);

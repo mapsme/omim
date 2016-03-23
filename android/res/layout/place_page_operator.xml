@@ -5,16 +5,20 @@
   android:id="@+id/ll__place_operator"
   style="@style/PlacePageItemFrame"
   android:tag="operator"
-  tools:background="#4000FFFF"
-  tools:visibility="visible">
-
+  tools:visibility="visible"
+  tools:background="#4000FFFF">
   <ImageView
     android:id="@+id/iv__place_operator"
-    style="@style/PlacePageMetadataIcon"
-    android:src="@drawable/ic_bank" />
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="@dimen/margin_base"
+    android:src="@drawable/ic_bank"
+    android:tint="?iconTint"/>
 
   <TextView
     android:id="@+id/tv__place_operator"
-    style="@style/PlacePageMetadataText"
-    tools:text="Operator" />
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textAppearance="@style/MwmTextAppearance.PlacePage"
+    tools:text="Operator"/>
 </LinearLayout>

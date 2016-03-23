@@ -79,11 +79,10 @@ void MmapReader::Read(uint64_t pos, void * p, size_t size) const
   memcpy(p, m_data->m_memory + m_offset + pos, size);
 }
 
-unique_ptr<Reader> MmapReader::CreateSubReader(uint64_t pos, uint64_t size) const
+MmapReader * MmapReader::CreateSubReader(uint64_t pos, uint64_t size) const
 {
   ASSERT_LESS_OR_EQUAL(pos + size, Size(), (pos, size));
-  // Can't use make_unique with private constructor.
-  return unique_ptr<Reader>(new MmapReader(*this, m_offset + pos, size));
+  return new MmapReader(*this, m_offset + pos, size);
 }
 
 uint8_t * MmapReader::Data() const

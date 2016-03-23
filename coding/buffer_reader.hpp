@@ -40,10 +40,9 @@ public:
     return BufferReader(*this, pos, size);
   }
 
-  inline unique_ptr<Reader> CreateSubReader(uint64_t pos, uint64_t size) const
+  inline BufferReader * CreateSubReader(uint64_t pos, uint64_t size) const
   {
-    // Can't use make_unique with private constructor.
-    return unique_ptr<Reader>(new BufferReader(*this, pos, size));
+    return new BufferReader(*this, pos, size);
   }
 
 private:

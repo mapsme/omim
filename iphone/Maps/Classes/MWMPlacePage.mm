@@ -1,5 +1,4 @@
 #import "MapsAppDelegate.h"
-#import "MapViewController.h"
 #import "MWMBasePlacePageView.h"
 #import "MWMBookmarkColorViewController.h"
 #import "MWMBookmarkDescriptionViewController.h"
@@ -36,18 +35,15 @@ static NSString * const kPlacePageViewCenterKeyPath = @"center";
                                       options:NSKeyValueObservingOptionNew
                                       context:nullptr];
     }
-    dispatch_async(dispatch_get_main_queue(), ^
-    {
-      [[NSNotificationCenter defaultCenter] addObserver:self
-                                               selector:@selector(keyboardWillShow:)
-                                                   name:UIKeyboardWillShowNotification
-                                                 object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
 
-      [[NSNotificationCenter defaultCenter] addObserver:self
-                                               selector:@selector(keyboardWillHide)
-                                                   name:UIKeyboardWillHideNotification
-                                                 object:nil];
-    });
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillHide)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
   }
   return self;
 }
@@ -123,24 +119,14 @@ static NSString * const kPlacePageViewCenterKeyPath = @"center";
 
 - (void)addBookmark
 {
-  [self.manager addBookmark];
   [self.basePlacePageView addBookmark];
+  [self.manager addBookmark];
 }
 
 - (void)removeBookmark
 {
-  [self.manager removeBookmark];
   [self.basePlacePageView removeBookmark];
-}
-
-- (void)editPlace
-{
-  [self.manager editPlace];
-}
-
-- (void)reportProblem
-{
-  [self.manager reportProblem];
+  [self.manager removeBookmark];
 }
 
 - (void)share
@@ -183,9 +169,8 @@ static NSString * const kPlacePageViewCenterKeyPath = @"center";
 - (void)changeBookmarkCategory
 {
   MWMPlacePageViewManager * manager = self.manager;
-  MapViewController * ovc = static_cast<MapViewController *>(manager.ownerViewController);
   SelectSetVC * vc = [[SelectSetVC alloc] initWithPlacePageManager:manager];
-  [ovc.navigationController pushViewController:vc animated:YES];
+  [manager.ownerViewController.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)changeBookmarkColor
@@ -197,10 +182,8 @@ static NSString * const kPlacePageViewCenterKeyPath = @"center";
 
 - (void)changeBookmarkDescription
 {
-  MWMPlacePageViewManager * manager = self.manager;
-  MapViewController * ovc = static_cast<MapViewController *>(manager.ownerViewController);
-  MWMBookmarkDescriptionViewController * viewController = [[MWMBookmarkDescriptionViewController alloc] initWithPlacePageManager:manager];
-  [ovc.navigationController pushViewController:viewController animated:YES];
+  MWMBookmarkDescriptionViewController * viewController = [[MWMBookmarkDescriptionViewController alloc] initWithPlacePageManager:self.manager];
+  [self.manager.ownerViewController.navigationController pushViewController:viewController animated:YES];
 }
 
 - (void)reloadBookmark
@@ -211,7 +194,7 @@ static NSString * const kPlacePageViewCenterKeyPath = @"center";
 - (void)willStartEditingBookmarkTitle
 {
   [[Statistics instance] logEvent:kStatEventName(kStatPlacePage, kStatRename)];
-// This method should be оverridden.
+// This method should be ovverriden.
 }
 
 - (void)willFinishEditingBookmarkTitle:(NSString *)title
@@ -222,17 +205,12 @@ static NSString * const kPlacePageViewCenterKeyPath = @"center";
 
 - (IBAction)didTap:(UITapGestureRecognizer *)sender
 {
-// This method should be оverridden if you want to process custom tap.
+// This method should be ovverriden if you want to process custom tap.
 }
 
 - (IBAction)didPan:(UIPanGestureRecognizer *)sender
 {
-  // This method should be оverridden if you want to process custom pan.
-}
-
-- (void)refresh
-{
-  // This method should be оverridden.
+  // This method should be ovverriden if you want to process custom pan.
 }
 
 #pragma mark - Properties

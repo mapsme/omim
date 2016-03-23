@@ -1,13 +1,10 @@
 #include "generator/dumper.hpp"
 
-#include "search/search_index_values.hpp"
-#include "search/search_trie.hpp"
-
-#include "indexer/classificator.hpp"
-#include "indexer/feature_processor.hpp"
-#include "indexer/trie_reader.hpp"
 #include "indexer/search_delimiters.hpp"
 #include "indexer/search_string_utils.hpp"
+#include "indexer/classificator.hpp"
+#include "indexer/feature_processor.hpp"
+#include "indexer/search_trie.hpp"
 
 #include "coding/multilang_utf8_string.hpp"
 
@@ -15,42 +12,10 @@
 
 #include "std/algorithm.hpp"
 #include "std/bind.hpp"
-#include "std/functional.hpp"
 #include "std/iostream.hpp"
 #include "std/map.hpp"
+#include "std/queue.hpp"
 #include "std/vector.hpp"
-
-namespace
-{
-template <typename TValue>
-struct SearchTokensCollector
-{
-  SearchTokensCollector() : m_currentS(), m_currentCount(0) {}
-
-  void operator()(strings::UniString const & s, TValue const & /* value */)
-  {
-    if (m_currentS != s)
-    {
-      if (m_currentCount > 0)
-        m_tokens.emplace_back(m_currentCount, m_currentS);
-      m_currentS = s;
-      m_currentCount = 0;
-    }
-    ++m_currentCount;
-  }
-
-  void Finish()
-  {
-    if (m_currentCount > 0)
-      m_tokens.emplace_back(m_currentCount, m_currentS);
-    sort(m_tokens.begin(), m_tokens.end(), greater<pair<uint32_t, strings::UniString>>());
-  }
-
-  vector<pair<uint32_t, strings::UniString>> m_tokens;
-  strings::UniString m_currentS;
-  uint32_t m_currentCount;
-};
-}  // namespace
 
 namespace feature
 {
@@ -151,7 +116,7 @@ namespace feature
 
     void operator()(FeatureType & f, uint32_t)
     {
-      f.ForEachName(*this);
+      f.ForEachNameRef(*this);
     }
   };
 
@@ -191,45 +156,64 @@ namespace feature
     }
   }
 
-  void DumpSearchTokens(string const & fPath, size_t maxTokensToShow)
+  struct SearchTokensCollector
   {
-    using TValue = FeatureIndexValue;
+    priority_queue<pair<uint32_t, strings::UniString> > tokens;
+    strings::UniString m_currentS;
+    uint32_t m_currentCount;
 
-    FilesContainerR container(make_unique<FileReader>(fPath));
+    SearchTokensCollector() : m_currentS(), m_currentCount(0) {}
+
+    void operator()(strings::UniString const & s, trie::ValueReader::ValueType const &)
+    {
+      if (m_currentS == s)
+      {
+        ++m_currentCount;
+      }
+      else
+      {
+        if (m_currentCount > 0)
+        {
+          tokens.push(make_pair(m_currentCount, m_currentS));
+          if (tokens.size() > 100)
+            tokens.pop();
+        }
+        m_currentS = s;
+        m_currentCount = 0;
+      }
+    }
+
+    void Finish()
+    {
+      if (m_currentCount > 0)
+      {
+        tokens.push(make_pair(m_currentCount, m_currentS));
+        if (tokens.size() > 100)
+          tokens.pop();
+      }
+    }
+  };
+
+  void DumpSearchTokens(string const & fPath)
+  {
+    FilesContainerR container(new FileReader(fPath));
     feature::DataHeader header(container);
-    serial::CodingParams codingParams(trie::GetCodingParams(header.GetDefCodingParams()));
+    serial::CodingParams cp(trie::GetCodingParams(header.GetDefCodingParams()));
 
-    auto const trieRoot = trie::ReadTrie<ModelReaderPtr, ValueList<TValue>>(
-        container.GetReader(SEARCH_INDEX_FILE_TAG), SingleValueSerializer<TValue>(codingParams));
+    unique_ptr<trie::DefaultIterator> const pTrieRoot(
+        trie::ReadTrie(container.GetReader(SEARCH_INDEX_FILE_TAG), trie::ValueReader(cp),
+                       trie::TEdgeValueReader()));
 
-    SearchTokensCollector<TValue> f;
-    trie::ForEachRef(*trieRoot, f, strings::UniString());
+    SearchTokensCollector f;
+    trie::ForEachRef(*pTrieRoot, f, strings::UniString());
     f.Finish();
 
-    for (size_t i = 0; i < min(maxTokensToShow, f.m_tokens.size()); ++i)
+    while (!f.tokens.empty())
     {
-      auto const & s = f.m_tokens[i].second;
-      cout << f.m_tokens[i].first << " " << strings::ToUtf8(s) << endl;
+      strings::UniString const & s = f.tokens.top().second;
+      cout << f.tokens.top().first << " '" << strings::ToUtf8(s) << "'" << endl;
+      f.tokens.pop();
     }
-  }
-
-  void DumpFeatureNames(string const & fPath, string const & lang)
-  {
-    int8_t const langIndex = StringUtf8Multilang::GetLangIndex(lang);
-    auto printName = [&](int8_t langCode, string const & name) -> bool
-    {
-      CHECK(!name.empty(), ("Feature name is empty"));
-      if (langIndex == StringUtf8Multilang::kUnsupportedLanguageCode)
-        cout << StringUtf8Multilang::GetLangByCode(langCode) << ' ' << name << endl;
-      else if (langCode == langIndex)
-        cout << name << endl;
-      return true;
-    };
-
-    feature::ForEachFromDat(fPath, [&](FeatureType & f, uint32_t)
-                            {
-                              f.ForEachName(printName);
-                            });
   }
 
 }  // namespace feature

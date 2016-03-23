@@ -8,8 +8,6 @@ namespace my { class FileData; }
 // FileWriter, not thread safe.
 class FileWriter : public Writer
 {
-  DISALLOW_COPY(FileWriter);
-
 public:
   // Values actually match internal FileData::Op enum.
   enum Op
@@ -25,7 +23,9 @@ public:
     OP_APPEND = 3
   };
 
-  FileWriter(FileWriter && rhs);
+  /// Works like "move semantics".
+  /// Added for use in FilesContainerW interface.
+  FileWriter(FileWriter const & rhs);
 
   explicit FileWriter(string const & fileName,
                       Op operation = OP_WRITE_TRUNCATE, bool bTruncOnClose = false);
@@ -36,6 +36,7 @@ public:
   void Write(void const * p, size_t size);
 
   void WritePaddingByEnd(size_t factor);
+
   void WritePaddingByPos(size_t factor);
 
   uint64_t Size() const;

@@ -10,44 +10,16 @@
 
 @implementation MWMCircularProgress
 
-+ (nonnull instancetype)downloaderProgressForParentView:(nonnull UIView *)parentView
-{
-  MWMCircularProgress * progress = [[MWMCircularProgress alloc] initWithParentView:parentView];
-
-  [progress setImage:[UIImage imageNamed:@"ic_download"]
-           forStates:{MWMCircularProgressStateNormal, MWMCircularProgressStateSelected}];
-  [progress setImage:[UIImage imageNamed:@"ic_close_spinner"]
-           forStates:{MWMCircularProgressStateProgress, MWMCircularProgressStateSpinner}];
-  [progress setImage:[UIImage imageNamed:@"ic_download_error"]
-           forStates:{MWMCircularProgressStateFailed}];
-  [progress setImage:[UIImage imageNamed:@"ic_check"]
-           forStates:{MWMCircularProgressStateCompleted}];
-
-  [progress setColoring:MWMButtonColoringBlack
-              forStates:{MWMCircularProgressStateNormal, MWMCircularProgressStateSelected,
-                         MWMCircularProgressStateProgress, MWMCircularProgressStateSpinner}];
-  [progress setColoring:MWMButtonColoringOther forStates:{MWMCircularProgressStateFailed}];
-  [progress setColoring:MWMButtonColoringBlue forStates:{MWMCircularProgressStateCompleted}];
-
-  return progress;
-}
-
 - (nonnull instancetype)initWithParentView:(nonnull UIView *)parentView
 {
   self = [super init];
   if (self)
   {
     [[NSBundle mainBundle] loadNibNamed:self.class.className owner:self options:nil];
-    [parentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     [parentView addSubview:self.rootView];
-    self.state = MWMCircularProgressStateNormal;
+    [self reset];
   }
   return self;
-}
-
-- (void)dealloc
-{
-  [self.rootView removeFromSuperview];
 }
 
 - (void)reset
@@ -57,27 +29,27 @@
   self.nextProgressToAnimate = nil;
 }
 
-- (void)setImage:(nonnull UIImage *)image forStates:(MWMCircularProgressStateVec const &)states
+- (void)setImage:(nonnull UIImage *)image forState:(MWMCircularProgressState)state
 {
-  for (auto const & state : states)
-    [self.rootView setImage:image forState:state];
+  [self.rootView setImage:image forState:state];
 }
 
-- (void)setColor:(nonnull UIColor *)color forStates:(MWMCircularProgressStateVec const &)states
+- (void)setColor:(nonnull UIColor *)color forState:(MWMCircularProgressState)state
 {
-  for (auto const & state : states)
-    [self.rootView setColor:color forState:state];
+  [self.rootView setColor:color forState:state];
 }
 
-- (void)setColoring:(MWMButtonColoring)coloring forStates:(MWMCircularProgressStateVec const &)states
+#pragma mark - Spinner
+
+- (void)startSpinner
 {
-  for (auto const & state : states)
-    [self.rootView setColoring:coloring forState:state];
+  [self reset];
+  [self.rootView startSpinner];
 }
 
-- (void)setInvertColor:(BOOL)invertColor
+- (void)stopSpinner
 {
-  self.rootView.isInvertColor = invertColor;
+  [self.rootView stopSpinner];
 }
 
 #pragma mark - Animation
@@ -102,12 +74,8 @@
 
 - (void)setProgress:(CGFloat)progress
 {
-  if (progress < _progress || progress <= 0)
-  {
-    self.state = MWMCircularProgressStateSpinner;
+  if (progress <= _progress)
     return;
-  }
-  self.rootView.state = MWMCircularProgressStateProgress;
   if (self.rootView.animating)
   {
     if (progress > self.nextProgressToAnimate.floatValue)
@@ -115,21 +83,14 @@
   }
   else
   {
-    dispatch_async(dispatch_get_main_queue(), ^
-    {
-      [self.rootView animateFromValue:self->_progress toValue:progress];
-      self->_progress = progress;
-    });
+    [self.rootView animateFromValue:_progress toValue:progress];
+    _progress = progress;
   }
 }
 
 - (void)setState:(MWMCircularProgressState)state
 {
-  dispatch_async(dispatch_get_main_queue(), ^
-  {
-    [self reset];
-    self.rootView.state = state;
-  });
+  self.rootView.state = state;
 }
 
 - (MWMCircularProgressState)state

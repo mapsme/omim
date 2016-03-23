@@ -2,7 +2,7 @@
 #import "MWMSearchDownloadView.h"
 #import "MWMSearchDownloadViewController.h"
 
-@interface MWMSearchDownloadViewController () <MWMDownloadMapRequestProtocol>
+@interface MWMSearchDownloadViewController () <MWMDownloadMapRequestDelegate>
 
 @property (nonatomic) IBOutlet UIView * downloadRequestHolder;
 
@@ -30,9 +30,9 @@
       [[MWMDownloadMapRequest alloc] initWithParentView:self.downloadRequestHolder delegate:self];
 }
 
-- (void)mwm_refreshUI
+- (void)refresh
 {
-  [self.view mwm_refreshUI];
+  [self.view refresh];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -83,10 +83,10 @@
 
 #pragma mark - Process control
 
-- (void)downloadProgress:(CGFloat)progress
+- (void)downloadProgress:(CGFloat)progress countryName:(nonnull NSString *)countryName
 {
   [self stateUpdated:MWMDownloadMapRequestStateDownload];
-  [self.downloadRequest downloadProgress:progress];
+  [self.downloadRequest downloadProgress:progress countryName:countryName];
 }
 
 - (void)setDownloadFailed
@@ -101,12 +101,7 @@
   [UIApplication.sharedApplication.keyWindow endEditing:YES];
 }
 
-#pragma mark - MWMDownloadMapRequestProtocol
-
-- (MWMAlertViewController *)alertController
-{
-  return self.delegate.alertController;
-}
+#pragma mark - MWMDownloadMapRequestDelegate
 
 - (void)stateUpdated:(enum MWMDownloadMapRequestState)state
 {

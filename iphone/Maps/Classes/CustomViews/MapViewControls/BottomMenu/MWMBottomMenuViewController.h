@@ -1,22 +1,21 @@
 #import "MWMBottomMenuView.h"
+#import "ViewController.h"
 
 #include "platform/location.hpp"
 
-@class MapViewController, MWMButton;
+@class MapViewController;
 
 @protocol MWMBottomMenuControllerProtocol<NSObject>
 
 - (void)actionDownloadMaps;
 - (void)closeInfoScreens;
-- (void)addPlace;
-- (void)didFinishAddingPlace;
 
 @end
 
-@interface MWMBottomMenuViewController : UIViewController
+@interface MWMBottomMenuViewController : ViewController
 
 @property(nonatomic) MWMBottomMenuState state;
-@property(weak, nonatomic) IBOutlet MWMButton * p2pButton;
+@property(weak, nonatomic) IBOutlet UIButton * p2pButton;
 @property(nonatomic) CGFloat leftBound;
 
 - (instancetype)initWithParentController:(MapViewController *)controller
@@ -26,9 +25,10 @@
 - (void)setInactive;
 - (void)setPlanning;
 - (void)setGo;
-- (void)mwm_refreshUI;
-- (void)refreshLayout;
 
-- (void)processMyPositionStateModeEvent:(location::EMyPositionMode)mode;
+- (void)refreshLayout;
+- (void)refresh;
+
+- (void)onLocationStateModeChanged:(location::EMyPositionMode)state;
 
 @end

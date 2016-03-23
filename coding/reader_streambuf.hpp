@@ -2,7 +2,6 @@
 
 #include "std/cstdint.hpp"
 #include "std/iostream.hpp"
-#include "std/unique_ptr.hpp"
 
 class Reader;
 class Writer;
@@ -18,11 +17,12 @@ public:
 
 class ReaderStreamBuf : public BaseStreamBuf
 {
-  unique_ptr<Reader> m_p;
+  Reader * m_p;
   uint64_t m_pos, m_size;
 
 public:
-  ReaderStreamBuf(unique_ptr<Reader> && p);
+  /// Takes the ownership of p. Reader should be allocated in dynamic memory.
+  ReaderStreamBuf(Reader * p);
   virtual ~ReaderStreamBuf();
 
 private:

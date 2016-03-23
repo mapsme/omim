@@ -35,5 +35,4 @@ namespace borders
   bool LoadCountriesList(string const & baseDir, CountriesContainerT & countries);
 
   void GeneratePackedBorders(string const & baseDir);
-  void UnpackBorders(string const & baseDir, string const & targetDir);
 }

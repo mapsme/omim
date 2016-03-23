@@ -37,16 +37,16 @@ string DebugPrint(MwmSet::MwmId const & id)
   return ss.str();
 }
 
-MwmSet::MwmHandle::MwmHandle() : m_mwmSet(nullptr), m_value(nullptr) {}
+MwmSet::MwmHandle::MwmHandle() : m_mwmSet(nullptr), m_mwmId(), m_value(nullptr) {}
 
 MwmSet::MwmHandle::MwmHandle(MwmSet & mwmSet, MwmId const & mwmId,
                              unique_ptr<MwmSet::MwmValueBase> && value)
-  : m_mwmId(mwmId), m_mwmSet(&mwmSet), m_value(move(value))
+  : m_mwmSet(&mwmSet), m_mwmId(mwmId), m_value(move(value))
 {
 }
 
 MwmSet::MwmHandle::MwmHandle(MwmHandle && handle)
-  : m_mwmId(handle.m_mwmId), m_mwmSet(handle.m_mwmSet), m_value(move(handle.m_value))
+  : m_mwmSet(handle.m_mwmSet), m_mwmId(handle.m_mwmId), m_value(move(handle.m_value))
 {
   handle.m_mwmSet = nullptr;
   handle.m_mwmId.Reset();
@@ -75,7 +75,7 @@ MwmSet::MwmHandle & MwmSet::MwmHandle::operator=(MwmHandle && handle)
 
 MwmSet::MwmId MwmSet::GetMwmIdByCountryFileImpl(CountryFile const & countryFile) const
 {
-  string const & name = countryFile.GetName();
+  string const & name = countryFile.GetNameWithoutExt();
   ASSERT(!name.empty(), ());
   auto const it = m_info.find(name);
   if (it == m_info.cend() || it->second.empty())
@@ -85,59 +85,38 @@ MwmSet::MwmId MwmSet::GetMwmIdByCountryFileImpl(CountryFile const & countryFile)
 
 pair<MwmSet::MwmId, MwmSet::RegResult> MwmSet::Register(LocalCountryFile const & localFile)
 {
-  pair<MwmSet::MwmId, MwmSet::RegResult> result;
-  auto registerFile = [&](EventList & events)
+  lock_guard<mutex> lock(m_lock);
+
+  CountryFile const & countryFile = localFile.GetCountryFile();
+  MwmId const id = GetMwmIdByCountryFileImpl(countryFile);
+  if (!id.IsAlive())
+    return RegisterImpl(localFile);
+
+  shared_ptr<MwmInfo> info = id.GetInfo();
+
+  // Deregister old mwm for the country.
+  if (info->GetVersion() < localFile.GetVersion())
   {
-    CountryFile const & countryFile = localFile.GetCountryFile();
-    MwmId const id = GetMwmIdByCountryFileImpl(countryFile);
-    if (!id.IsAlive())
-    {
-      result = RegisterImpl(localFile, events);
-      return;
-    }
+    DeregisterImpl(id);
+    return RegisterImpl(localFile);
+  }
 
-    shared_ptr<MwmInfo> info = id.GetInfo();
+  string const name = countryFile.GetNameWithoutExt();
+  // Update the status of the mwm with the same version.
+  if (info->GetVersion() == localFile.GetVersion())
+  {
+    LOG(LINFO, ("Updating already registered mwm:", name));
+    info->SetStatus(MwmInfo::STATUS_REGISTERED);
+    info->m_file = localFile;
+    return make_pair(id, RegResult::VersionAlreadyExists);
+  }
 
-    // Deregister old mwm for the country.
-    if (info->GetVersion() < localFile.GetVersion())
-    {
-      EventList subEvents;
-      DeregisterImpl(id, subEvents);
-      result = RegisterImpl(localFile, subEvents);
-
-      // In the case of success all sub-events are
-      // replaced with a single UPDATE event. Otherwise,
-      // sub-events are reported as is.
-      if (result.second == MwmSet::RegResult::Success)
-        events.Add(Event(Event::TYPE_UPDATED, localFile, info->GetLocalFile()));
-      else
-        events.Append(subEvents);
-      return;
-    }
-
-    string const name = countryFile.GetName();
-    // Update the status of the mwm with the same version.
-    if (info->GetVersion() == localFile.GetVersion())
-    {
-      LOG(LINFO, ("Updating already registered mwm:", name));
-      SetStatus(*info, MwmInfo::STATUS_REGISTERED, events);
-      info->m_file = localFile;
-      result = make_pair(id, RegResult::VersionAlreadyExists);
-      return;
-    }
-
-    LOG(LWARNING, ("Trying to add too old (", localFile.GetVersion(), ") mwm (", name,
-                   "), current version:", info->GetVersion()));
-    result = make_pair(MwmId(), RegResult::VersionTooOld);
-    return;
-  };
-
-  WithEventLog(registerFile);
-  return result;
+  LOG(LWARNING, ("Trying to add too old (", localFile.GetVersion(), ") mwm (", name,
+                 "), current version:", info->GetVersion()));
+  return make_pair(MwmId(), RegResult::VersionTooOld);
 }
 
-pair<MwmSet::MwmId, MwmSet::RegResult> MwmSet::RegisterImpl(LocalCountryFile const & localFile,
-                                                            EventList & events)
+pair<MwmSet::MwmId, MwmSet::RegResult> MwmSet::RegisterImpl(LocalCountryFile const & localFile)
 {
   // This function can throw an exception for a bad mwm file.
   shared_ptr<MwmInfo> info(CreateInfo(localFile));
@@ -145,13 +124,13 @@ pair<MwmSet::MwmId, MwmSet::RegResult> MwmSet::RegisterImpl(LocalCountryFile con
     return make_pair(MwmId(), RegResult::UnsupportedFileFormat);
 
   info->m_file = localFile;
-  SetStatus(*info, MwmInfo::STATUS_REGISTERED, events);
+  info->SetStatus(MwmInfo::STATUS_REGISTERED);
   m_info[localFile.GetCountryName()].push_back(info);
 
   return make_pair(MwmId(info), RegResult::Success);
 }
 
-bool MwmSet::DeregisterImpl(MwmId const & id, EventList & events)
+bool MwmSet::DeregisterImpl(MwmId const & id)
 {
   if (!id.IsAlive())
     return false;
@@ -159,32 +138,29 @@ bool MwmSet::DeregisterImpl(MwmId const & id, EventList & events)
   shared_ptr<MwmInfo> const & info = id.GetInfo();
   if (info->m_numRefs == 0)
   {
-    SetStatus(*info, MwmInfo::STATUS_DEREGISTERED, events);
+    info->SetStatus(MwmInfo::STATUS_DEREGISTERED);
     vector<shared_ptr<MwmInfo>> & infos = m_info[info->GetCountryName()];
     infos.erase(remove(infos.begin(), infos.end(), info), infos.end());
+    OnMwmDeregistered(info->GetLocalFile());
     return true;
   }
 
-  SetStatus(*info, MwmInfo::STATUS_MARKED_TO_DEREGISTER, events);
+  info->SetStatus(MwmInfo::STATUS_MARKED_TO_DEREGISTER);
   return false;
 }
 
 bool MwmSet::Deregister(CountryFile const & countryFile)
 {
-  bool deregistered = false;
-  WithEventLog([&](EventList & events)
-               {
-                 deregistered = DeregisterImpl(countryFile, events);
-               });
-  return deregistered;
+  lock_guard<mutex> lock(m_lock);
+  return DeregisterImpl(countryFile);
 }
 
-bool MwmSet::DeregisterImpl(CountryFile const & countryFile, EventList & events)
+bool MwmSet::DeregisterImpl(CountryFile const & countryFile)
 {
   MwmId const id = GetMwmIdByCountryFileImpl(countryFile);
   if (!id.IsAlive())
     return false;
-  bool const deregistered = DeregisterImpl(id, events);
+  bool const deregistered = DeregisterImpl(id);
   ClearCache(id);
   return deregistered;
 }
@@ -209,57 +185,15 @@ void MwmSet::GetMwmsInfo(vector<shared_ptr<MwmInfo>> & info) const
   }
 }
 
-void MwmSet::SetStatus(MwmInfo & info, MwmInfo::Status status, EventList & events)
-{
-  MwmInfo::Status oldStatus = info.SetStatus(status);
-  if (oldStatus == status)
-    return;
-
-  switch (status)
-  {
-  case MwmInfo::STATUS_REGISTERED:
-    events.Add(Event(Event::TYPE_REGISTERED, info.GetLocalFile()));
-    break;
-  case MwmInfo::STATUS_MARKED_TO_DEREGISTER: break;
-  case MwmInfo::STATUS_DEREGISTERED:
-    events.Add(Event(Event::TYPE_DEREGISTERED, info.GetLocalFile()));
-    break;
-  }
-}
-
-void MwmSet::ProcessEventList(EventList & events)
-{
-  for (auto const & event : events.Get())
-  {
-    switch (event.m_type)
-    {
-    case Event::TYPE_REGISTERED:
-      m_observers.ForEach(&Observer::OnMapRegistered, event.m_file);
-      break;
-    case Event::TYPE_UPDATED:
-      m_observers.ForEach(&Observer::OnMapUpdated, event.m_file, event.m_oldFile);
-      break;
-    case Event::TYPE_DEREGISTERED:
-      m_observers.ForEach(&Observer::OnMapDeregistered, event.m_file);
-      break;
-    }
-  }
-}
-
 unique_ptr<MwmSet::MwmValueBase> MwmSet::LockValue(MwmId const & id)
 {
-  unique_ptr<MwmSet::MwmValueBase> result;
-  WithEventLog([&](EventList & events)
-               {
-                 result = LockValueImpl(id, events);
-               });
-  return result;
+  lock_guard<mutex> lock(m_lock);
+  return LockValueImpl(id);
 }
 
-unique_ptr<MwmSet::MwmValueBase> MwmSet::LockValueImpl(MwmId const & id, EventList & events)
+unique_ptr<MwmSet::MwmValueBase> MwmSet::LockValueImpl(MwmId const & id)
 {
-  if (!id.IsAlive())
-    return nullptr;
+  CHECK(id.IsAlive(), (id));
   shared_ptr<MwmInfo> info = id.GetInfo();
 
   // It's better to return valid "value pointer" even for "out-of-date" files,
@@ -289,23 +223,20 @@ unique_ptr<MwmSet::MwmValueBase> MwmSet::LockValueImpl(MwmId const & id, EventLi
     LOG(LERROR, ("Can't create MWMValue for", info->GetCountryName(), "Reason", ex.what()));
 
     --info->m_numRefs;
-    DeregisterImpl(id, events);
+    DeregisterImpl(id);
     return nullptr;
   }
 }
 
-void MwmSet::UnlockValue(MwmId const & id, unique_ptr<MwmValueBase> p)
+void MwmSet::UnlockValue(MwmId const & id, unique_ptr<MwmValueBase> && p)
 {
-  WithEventLog([&](EventList & events)
-               {
-                 UnlockValueImpl(id, move(p), events);
-               });
+  lock_guard<mutex> lock(m_lock);
+  UnlockValueImpl(id, move(p));
 }
 
-void MwmSet::UnlockValueImpl(MwmId const & id, unique_ptr<MwmValueBase> p, EventList & events)
+void MwmSet::UnlockValueImpl(MwmId const & id, unique_ptr<MwmValueBase> && p)
 {
-  ASSERT(id.IsAlive(), (id));
-  ASSERT(p.get() != nullptr, ());
+  ASSERT(id.IsAlive() && p, (id));
   if (!id.IsAlive() || !p)
     return;
 
@@ -313,7 +244,7 @@ void MwmSet::UnlockValueImpl(MwmId const & id, unique_ptr<MwmValueBase> p, Event
   ASSERT_GREATER(info->m_numRefs, 0, ());
   --info->m_numRefs;
   if (info->m_numRefs == 0 && info->GetStatus() == MwmInfo::STATUS_MARKED_TO_DEREGISTER)
-    VERIFY(DeregisterImpl(id, events), ());
+    VERIFY(DeregisterImpl(id), ());
 
   if (info->IsUpToDate())
   {
@@ -350,29 +281,21 @@ MwmSet::MwmId MwmSet::GetMwmIdByCountryFile(CountryFile const & countryFile) con
 
 MwmSet::MwmHandle MwmSet::GetMwmHandleByCountryFile(CountryFile const & countryFile)
 {
-  MwmSet::MwmHandle handle;
-  WithEventLog([&](EventList & events)
-               {
-                 handle = GetMwmHandleByIdImpl(GetMwmIdByCountryFileImpl(countryFile), events);
-               });
-  return handle;
+  lock_guard<mutex> lock(m_lock);
+  return GetMwmHandleByIdImpl(GetMwmIdByCountryFileImpl(countryFile));
 }
 
 MwmSet::MwmHandle MwmSet::GetMwmHandleById(MwmId const & id)
 {
-  MwmSet::MwmHandle handle;
-  WithEventLog([&](EventList & events)
-               {
-                 handle = GetMwmHandleByIdImpl(id, events);
-               });
-  return handle;
+  lock_guard<mutex> lock(m_lock);
+  return GetMwmHandleByIdImpl(id);
 }
 
-MwmSet::MwmHandle MwmSet::GetMwmHandleByIdImpl(MwmId const & id, EventList & events)
+MwmSet::MwmHandle MwmSet::GetMwmHandleByIdImpl(MwmId const & id)
 {
   unique_ptr<MwmValueBase> value;
   if (id.IsAlive())
-    value = LockValueImpl(id, events);
+    value = LockValueImpl(id);
   return MwmHandle(*this, id, move(value));
 }
 
@@ -405,25 +328,4 @@ string DebugPrint(MwmSet::RegResult result)
     case MwmSet::RegResult::UnsupportedFileFormat:
       return "UnsupportedFileFormat";
   }
-}
-
-string DebugPrint(MwmSet::Event::Type type)
-{
-  switch (type)
-  {
-    case MwmSet::Event::TYPE_REGISTERED: return "Registered";
-    case MwmSet::Event::TYPE_UPDATED: return "Updated";
-    case MwmSet::Event::TYPE_DEREGISTERED: return "Deregistered";
-  }
-  return "Undefined";
-}
-
-string DebugPrint(MwmSet::Event const & event)
-{
-  ostringstream os;
-  os << "MwmSet::Event [" << DebugPrint(event.m_type) << ", " << DebugPrint(event.m_file);
-  if (event.m_type == MwmSet::Event::TYPE_UPDATED)
-    os << ", " << DebugPrint(event.m_oldFile);
-  os << "]";
-  return os.str();
 }

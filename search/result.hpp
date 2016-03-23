@@ -1,9 +1,5 @@
 #pragma once
-#include "search/v2/ranking_info.hpp"
-
 #include "indexer/feature_decl.hpp"
-
-#include "editor/yes_no_unknown.hpp"
 
 #include "geometry/point2d.hpp"
 #include "geometry/rect2d.hpp"
@@ -24,6 +20,7 @@ public:
   {
     RESULT_FEATURE,
     RESULT_LATLON,
+    RESULT_ADDRESS,
     RESULT_SUGGEST_PURE,
     RESULT_SUGGEST_FROM_FEATURE
   };
@@ -33,18 +30,22 @@ public:
   {
     string m_cuisine;         // Valid only if not empty. Used for restaurants.
     int m_stars = 0;          // Valid only if not 0. Used for hotels.
-    osm::YesNoUnknown m_isOpenNow = osm::Unknown;  // Valid for any result.
+    bool m_isClosed = false;  // Valid for any result.
 
     /// True if the struct is already assigned or need to be calculated otherwise.
     bool m_isInitialized = false;
   };
 
   /// For RESULT_FEATURE.
-  Result(FeatureID const & id, m2::PointD const & pt, string const & str, string const & address,
-         string const & type, uint32_t featureType, Metadata const & meta = {});
+  Result(FeatureID const & id, m2::PointD const & pt, string const & str, string const & region,
+         string const & type, uint32_t featureType, Metadata const & meta);
 
-  /// For RESULT_LATLON.
-  Result(m2::PointD const & pt, string const & latlon, string const & address);
+  /// Used for generation viewport results.
+  Result(FeatureID const & id, m2::PointD const & pt, string const & str, string const & type);
+
+  /// @param[in] type Empty string - RESULT_LATLON, building address otherwise.
+  Result(m2::PointD const & pt, string const & str,
+         string const & region, string const & type);
 
   /// For RESULT_SUGGESTION_PURE.
   Result(string const & str, string const & suggest);
@@ -54,13 +55,13 @@ public:
 
   /// Strings that is displayed in the GUI.
   //@{
-  string const & GetString() const { return m_str; }
-  string const & GetAddress() const { return m_address; }
-  string const & GetFeatureType() const { return m_type; }
-  string const & GetCuisine() const { return m_metadata.m_cuisine; }
+  char const * GetString() const { return m_str.c_str(); }
+  char const * GetRegionString() const { return m_region.c_str(); }
+  char const * GetFeatureType() const { return m_type.c_str(); }
+  char const * GetCuisine() const { return m_metadata.m_cuisine.c_str(); }
   //@}
 
-  osm::YesNoUnknown IsOpenNow() const { return m_metadata.m_isOpenNow; }
+  bool IsClosed() const { return m_metadata.m_isClosed; }
   int GetStarsCount() const { return m_metadata.m_stars; }
 
   bool IsSuggest() const;
@@ -71,7 +72,7 @@ public:
 
   /// Feature id in mwm.
   /// @precondition GetResultType() == RESULT_FEATURE
-  FeatureID const & GetFeatureID() const;
+  FeatureID GetFeatureID() const;
 
   /// Center point of a feature.
   /// @precondition HasPoint() == true
@@ -93,32 +94,24 @@ public:
   int32_t GetPositionInResults() const { return m_positionInResults; }
   void SetPositionInResults(int32_t pos) { m_positionInResults = pos; }
 
-  inline v2::RankingInfo const & GetRankingInfo() const { return m_info; }
-
-  template <typename TInfo>
-  inline void SetRankingInfo(TInfo && info)
-  {
-    m_info = forward<TInfo>(info);
-  }
-
   // Returns a representation of this result that is
   // sent to the statistics servers and later used to measure
   // the quality of our search engine.
   string ToStringForStats() const;
 
 private:
+  void Init(bool metadataInitialized);
+
   FeatureID m_id;
   m2::PointD m_center;
-  string m_str, m_address, m_type;
+  string m_str, m_region, m_type;
   uint32_t m_featureType;
   string m_suggestionStr;
   buffer_vector<pair<uint16_t, uint16_t>, 4> m_hightlightRanges;
 
-  v2::RankingInfo m_info;
-
   // The position that this result occupied in the vector returned
   // by a search query. -1 if undefined.
-  int32_t m_positionInResults = -1;
+  int32_t m_positionInResults;
 
 public:
   Metadata m_metadata;
@@ -156,8 +149,7 @@ public:
   /// Used in viewport search only.
   void AddResultNoChecks(Result && res)
   {
-    ASSERT_LESS(m_vec.size(), numeric_limits<int32_t>::max(), ());
-    res.SetPositionInResults(static_cast<int32_t>(m_vec.size()));
+    res.SetPositionInResults(m_vec.size());
     m_vec.push_back(move(res));
   }
 
@@ -192,29 +184,20 @@ struct AddressInfo
 {
   string m_country, m_city, m_street, m_house, m_name;
   vector<string> m_types;
-  double m_distanceMeters = -1.0;
+
+  void MakeFrom(search::Result const & res);
 
   string GetPinName() const;    // Caroline
   string GetPinType() const;    // shop
 
   string FormatPinText() const; // Caroline (clothes shop)
+  string FormatAddress() const; // 7 vulica Frunze, Belarus
   string FormatTypes() const;   // clothes shop
+  string FormatNameAndAddress() const;  // Caroline, 7 vulica Frunze, Belarus
   string GetBestType() const;
   bool IsEmptyName() const;
 
-  enum AddressType { DEFAULT, SEARCH_RESULT };
-  // 7 vulica Frunze
-  string FormatHouseAndStreet(AddressType type = DEFAULT) const;
-  // 7 vulica Frunze, Minsk, Belarus
-  string FormatAddress(AddressType type = DEFAULT) const;
-  // Caroline, 7 vulica Frunze, Minsk, Belarus
-  string FormatNameAndAddress(AddressType type = DEFAULT) const;
-
-  friend string DebugPrint(AddressInfo const & info);
-
   void Clear();
 };
-
-string DebugPrint(search::Result const &);
 
 }  // namespace search

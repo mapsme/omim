@@ -149,19 +149,58 @@ UNIT_TEST(FBuilder_RemoveUselessNames)
   TEST(fb1.CheckValid(), ());
 }
 
-UNIT_TEST(FeatureParams_Parsing)
+UNIT_TEST(FBuilder_WithoutName)
+{
+  classificator::Load();
+  char const * arr1[][1] = { { "amenity" } };
+
+  {
+    FeatureParams params;
+    AddTypes(params, arr1);
+    params.AddName("default", "Name");
+
+    FeatureBuilder1 fb;
+    fb.SetParams(params);
+    fb.SetCenter(m2::PointD(0, 0));
+
+    TEST(fb.PreSerialize(), ());
+    TEST(fb.RemoveInvalidTypes(), ());
+  }
+
+  {
+    FeatureParams params;
+    AddTypes(params, arr1);
+
+    FeatureBuilder1 fb;
+    fb.SetParams(params);
+    fb.SetCenter(m2::PointD(0, 0));
+
+    TEST(fb.PreSerialize(), ());
+    TEST(!fb.RemoveInvalidTypes(), ());
+  }
+}
+
+UNIT_TEST(FBuilder_PointAddress)
 {
   classificator::Load();
 
-  {
-    FeatureParams params;
-    params.AddStreet("Embarcadero\nstreet");
-    TEST_EQUAL(params.GetStreet(), "Embarcadero street", ());
-  }
+  char const * arr[][2] = { { "addr:housenumber", "39/79" } };
 
-  {
-    FeatureParams params;
-    params.AddAddress("165 \t\t Dolliver Street");
-    TEST_EQUAL(params.GetStreet(), "Dolliver Street", ());
-  }
+  OsmElement e;
+  FillXmlElement(arr, ARRAY_SIZE(arr), &e);
+
+  FeatureParams params;
+  ftype::GetNameAndType(&e, params);
+
+  TEST_EQUAL(params.m_Types.size(), 1, ());
+  TEST(params.IsTypeExist(GetType({"building", "address"})), ());
+  TEST_EQUAL(params.house.Get(), "39/79", ());
+
+  FeatureBuilder1 fb;
+  fb.SetParams(params);
+  fb.SetCenter(m2::PointD(0, 0));
+
+  TEST(fb.PreSerialize(), ());
+  TEST(fb.RemoveInvalidTypes(), ());
+  TEST(fb.CheckValid(), ());
 }

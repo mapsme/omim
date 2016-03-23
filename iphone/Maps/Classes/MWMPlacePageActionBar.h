@@ -2,7 +2,7 @@
 
 @class MWMPlacePage;
 
-@interface MWMPlacePageActionBar : SolidTouchView
+@interface MWMPlacePageActionBar : UIView
 
 @property (nonatomic) BOOL isBookmark;
 @property (nonatomic) BOOL isPrepareRouteMode;

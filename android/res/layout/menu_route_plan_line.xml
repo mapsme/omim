@@ -12,6 +12,8 @@
       android:layout_gravity="center"
       android:layout_margin="@dimen/margin_quarter_plus"
       android:text="@string/p2p_start"
-      style="@style/MwmWidget.Button.Accent"
-      android:textAppearance="@style/MwmTextAppearance.Body1"/>
+      android:textAppearance="@style/MwmTextAppearance.Body1"
+      android:fontFamily="@string/robotoMedium"
+      android:textAllCaps="true"
+      android:background="?routingStartButton"/>
 </FrameLayout>

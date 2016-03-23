@@ -2,65 +2,34 @@ package com.mapswithme.maps.bookmarks.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.IntDef;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import com.mapswithme.maps.MwmApplication;
+import com.mapswithme.maps.R;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
-// TODO(yunikkk): Refactor. Displayed information is different from edited information, and it's better to
-// separate them. Simple getters from jni place_page::Info and osm::EditableFeature should be enough.
-public class MapObject implements Parcelable
+public abstract class MapObject implements Parcelable
 {
-  @Retention(RetentionPolicy.SOURCE)
-  @IntDef({POI, API_POINT, BOOKMARK, MY_POSITION, SEARCH})
-  public @interface MapObjectType {}
-
-  public static final int POI = 0;
-  public static final int API_POINT = 1;
-  public static final int BOOKMARK = 2;
-  public static final int MY_POSITION = 3;
-  public static final int SEARCH = 4;
-
-  @MapObjectType protected final int mMapObjectType;
-
-  protected String mTitle;
-  protected String mSubtitle;
+  protected String mName;
   protected double mLat;
   protected double mLon;
-  protected String mAddress;
+  protected String mTypeName;
   protected Metadata mMetadata;
-  protected String mApiId;
 
-  public MapObject(@MapObjectType int mapObjectType, String title, String subtitle, String address, double lat, double lon, String apiId)
+  public MapObject(String name, double lat, double lon, String typeName)
   {
-    this(mapObjectType, title, subtitle, address, lat, lon, new Metadata(), apiId);
-  }
-
-  public MapObject(@MapObjectType int mapObjectType, String title, String subtitle, String address, double lat, double lon, Metadata metadata, String apiId)
-  {
-    mMapObjectType = mapObjectType;
-    mTitle = title;
-    mSubtitle = subtitle;
-    mAddress = address;
+    mName = name;
     mLat = lat;
     mLon = lon;
-    mMetadata = metadata;
-    mApiId = apiId;
+    mTypeName = typeName;
+    mMetadata = new Metadata();
   }
 
-  protected MapObject(Parcel source)
+  public void setDefaultIfEmpty()
   {
-    //noinspection ResourceType
-    this(source.readInt(),    // MapObjectType
-         source.readString(), // Title
-         source.readString(), // Subtitle
-         source.readString(), // Address
-         source.readDouble(), // Lat
-         source.readDouble(), // Lon
-         (Metadata) source.readParcelable(Metadata.class.getClassLoader()),
-         source.readString()); // ApiId;
+    if (TextUtils.isEmpty(mName))
+      mName = TextUtils.isEmpty(mTypeName) ? MwmApplication.get().getString(R.string.dropped_pin) : mTypeName;
+
+    if (TextUtils.isEmpty(mTypeName))
+      mTypeName = MwmApplication.get().getString(R.string.placepage_unsorted);
   }
 
   /**
@@ -82,8 +51,8 @@ public class MapObject implements Parcelable
 
     return Double.doubleToLongBits(mLon) == Double.doubleToLongBits(other.mLon) &&
            Double.doubleToLongBits(mLat) == Double.doubleToLongBits(other.mLat) &&
-           TextUtils.equals(mTitle, other.mTitle) &&
-           TextUtils.equals(mSubtitle, other.mSubtitle);
+           TextUtils.equals(mName, other.mName) &&
+           TextUtils.equals(mTypeName, other.mTypeName);
   }
 
   public static boolean same(MapObject one, MapObject another)
@@ -97,33 +66,11 @@ public class MapObject implements Parcelable
 
   public double getScale() { return 0; }
 
-  public String getTitle() { return mTitle; }
-
-  public String getSubtitle() { return mSubtitle; }
+  public String getName() { return mName; }
 
   public double getLat() { return mLat; }
 
   public double getLon() { return mLon; }
-
-  public String getAddress() { return mAddress; }
-
-  @NonNull
-  public String getMetadata(Metadata.MetadataType type)
-  {
-    final String res = mMetadata.getMetadata(type);
-    return res == null ? "" : res;
-  }
-
-  @MapObjectType
-  public int getMapObjectType()
-  {
-    return mMapObjectType;
-  }
-
-  public String getApiId()
-  {
-    return mApiId;
-  }
 
   public void setLat(double lat)
   {
@@ -135,15 +82,7 @@ public class MapObject implements Parcelable
     mLon = lon;
   }
 
-  public void setSubtitle(String typeName)
-  {
-    mSubtitle = typeName;
-  }
-
-  public void addMetadata(Metadata.MetadataType type, String value)
-  {
-    mMetadata.addMetadata(type.toInt(), value);
-  }
+  public String getPoiTypeName() { return mTypeName; }
 
   public void addMetadata(int type, String value)
   {
@@ -156,19 +95,12 @@ public class MapObject implements Parcelable
       addMetadata(types[i], values[i]);
   }
 
-  public static boolean isOfType(@MapObjectType int type, MapObject object)
+  public String getMetadata(Metadata.MetadataType type)
   {
-    return object != null && object.getMapObjectType() == type;
+    return mMetadata.getMetadata(type);
   }
 
-  protected static MapObject readFromParcel(Parcel source)
-  {
-    @MapObjectType int type = source.readInt();
-    if (type == BOOKMARK)
-      return new Bookmark(source);
-
-    return new MapObject(source);
-  }
+  public abstract MapObjectType getType();
 
   @Override
   public int describeContents()
@@ -179,15 +111,12 @@ public class MapObject implements Parcelable
   @Override
   public void writeToParcel(Parcel dest, int flags)
   {
-    dest.writeInt(mMapObjectType); // write map object type twice - first int is used to distinguish created object (MapObject or Bookmark)
-    dest.writeInt(mMapObjectType);
-    dest.writeString(mTitle);
-    dest.writeString(mSubtitle);
-    dest.writeString(mAddress);
+    dest.writeString(getType().toString());
+    dest.writeString(mName);
     dest.writeDouble(mLat);
     dest.writeDouble(mLon);
+    dest.writeString(mTypeName);
     dest.writeParcelable(mMetadata, 0);
-    dest.writeString(mApiId);
   }
 
   public static final Creator<MapObject> CREATOR = new Creator<MapObject>()
@@ -204,4 +133,146 @@ public class MapObject implements Parcelable
       return new MapObject[size];
     }
   };
+
+  protected static MapObject readFromParcel(Parcel source)
+  {
+    final MapObjectType type = MapObjectType.valueOf(source.readString());
+    switch (type)
+    {
+    case POI:
+      return new Poi(source);
+    case ADDITIONAL_LAYER:
+      return new SearchResult(source);
+    case MY_POSITION:
+      return new MyPosition(source);
+    case API_POINT:
+      return new ApiPoint(source);
+    case BOOKMARK:
+      return new Bookmark(source);
+    }
+    return null;
+  }
+
+  protected MapObject(Parcel source)
+  {
+    mName = source.readString();
+    mLat = source.readDouble();
+    mLon = source.readDouble();
+    mTypeName = source.readString();
+    mMetadata = source.readParcelable(Metadata.class.getClassLoader());
+  }
+
+  public enum MapObjectType
+  {
+    POI,
+    API_POINT,
+    BOOKMARK,
+    MY_POSITION,
+    ADDITIONAL_LAYER
+  }
+
+  public static class Poi extends MapObject
+  {
+    public Poi(String name, double lat, double lon, String typeName)
+    {
+      super(name, lat, lon, typeName);
+    }
+
+    protected Poi(Parcel source)
+    {
+      super(source);
+    }
+
+    @Override
+    public MapObjectType getType()
+    {
+      return MapObjectType.POI;
+    }
+  }
+
+  public static class SearchResult extends MapObject
+  {
+    public SearchResult(String name, String type, double lat, double lon)
+    {
+      super(name, lat, lon, type);
+    }
+
+    protected SearchResult(Parcel source)
+    {
+      super(source);
+    }
+
+    @Override
+    public MapObjectType getType()
+    {
+      return MapObjectType.ADDITIONAL_LAYER;
+    }
+  }
+
+  public static class ApiPoint extends MapObject
+  {
+    private final String mId;
+
+    public ApiPoint(String name, String id, String poiType, double lat, double lon)
+    {
+      super(name, lat, lon, poiType);
+      mId = id;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
+    {
+      super.writeToParcel(dest, flags);
+      dest.writeString(mId);
+    }
+
+    protected ApiPoint(Parcel source)
+    {
+      super(source);
+      mId = source.readString();
+    }
+
+    @Override
+    public MapObjectType getType()
+    {
+      return MapObjectType.API_POINT;
+    }
+
+    public String getId()
+    {
+      return mId;
+    }
+  }
+
+  public static class MyPosition extends MapObject
+  {
+    public MyPosition(double lat, double lon)
+    {
+      super(MwmApplication.get().getString(R.string.my_position), lat, lon, "");
+    }
+
+    protected MyPosition(Parcel source)
+    {
+      super(source);
+    }
+
+    @Override
+    public MapObjectType getType()
+    {
+      return MapObjectType.MY_POSITION;
+    }
+
+    @Override
+    public void setDefaultIfEmpty()
+    {
+      if (TextUtils.isEmpty(mName))
+        mName = MwmApplication.get().getString(R.string.my_position);
+    }
+
+    @Override
+    public boolean sameAs(MapObject other)
+    {
+      return ((other instanceof MyPosition) || super.sameAs(other));
+    }
+  }
 }

@@ -3,8 +3,7 @@ typedef NS_ENUM(NSUInteger, MWMImageColoring)
   MWMImageColoringOther,
   MWMImageColoringBlue,
   MWMImageColoringBlack,
-  MWMImageColoringGray,
-  MWMImageColoringSeparator
+  MWMImageColoringGray
 };
 
 @interface UIImageView (Coloring)

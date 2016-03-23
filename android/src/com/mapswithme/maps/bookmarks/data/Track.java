@@ -1,14 +1,19 @@
 package com.mapswithme.maps.bookmarks.data;
 
+
 public class Track
 {
+
+  //{@ Populate on create
   private final int mTrackId;
   private final int mCategoryId;
   private final String mName;
   private final String mLengthString;
   private final int mColor;
+  //}@
 
-  Track(int trackId, int categoryId, String name, String lengthString, int color)
+
+  /* package */ Track(int trackId, int categoryId, String name, String lengthString, int color)
   {
     mTrackId = trackId;
     mCategoryId = categoryId;

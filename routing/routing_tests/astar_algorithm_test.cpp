@@ -57,21 +57,19 @@ private:
   map<unsigned, vector<Edge>> m_adjs;
 };
 
-void TestAStar(UndirectedGraph const & graph, vector<unsigned> const & expectedRoute, double const & expectedDistance)
+void TestAStar(UndirectedGraph const & graph, vector<unsigned> const & expectedRoute)
 {
   using TAlgorithm = AStarAlgorithm<UndirectedGraph>;
 
   TAlgorithm algo;
 
-  RoutingResult<unsigned> actualRoute;
+  vector<unsigned> actualRoute;
   TEST_EQUAL(TAlgorithm::Result::OK, algo.FindPath(graph, 0u, 4u, actualRoute), ());
-  TEST_EQUAL(expectedRoute, actualRoute.path, ());
-  TEST_ALMOST_EQUAL_ULPS(expectedDistance, actualRoute.distance, ());
+  TEST_EQUAL(expectedRoute, actualRoute, ());
 
-  actualRoute.path.clear();
+  actualRoute.clear();
   TEST_EQUAL(TAlgorithm::Result::OK, algo.FindPathBidirectional(graph, 0u, 4u, actualRoute), ());
-  TEST_EQUAL(expectedRoute, actualRoute.path, ());
-  TEST_ALMOST_EQUAL_ULPS(expectedDistance, actualRoute.distance, ());
+  TEST_EQUAL(expectedRoute, actualRoute, ());
 }
 
 UNIT_TEST(AStarAlgorithm_Sample)
@@ -87,7 +85,7 @@ UNIT_TEST(AStarAlgorithm_Sample)
 
   vector<unsigned> const expectedRoute = {0, 1, 2, 3, 4};
 
-  TestAStar(graph, expectedRoute, 23);
+  TestAStar(graph, expectedRoute);
 }
 
 }  // namespace routing_test

@@ -1,14 +1,7 @@
 #import "MWMSearchManager.h"
-#import "MWMSearchTabbedViewProtocol.h"
 #import "MWMSearchTextField.h"
-#import "MWMViewController.h"
-
-#include "Framework.h"
-
-namespace search
-{
-  class Result;
-}
+#import "MWMSearchTabbedViewProtocol.h"
+#import "ViewController.h"
 
 @protocol MWMSearchTableViewProtocol <MWMSearchTabbedViewProtocol>
 
@@ -21,7 +14,7 @@ namespace search
 
 @end
 
-@interface MWMSearchTableViewController : MWMViewController
+@interface MWMSearchTableViewController : ViewController
 
 @property (nonatomic) BOOL searchOnMap;
 

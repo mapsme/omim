@@ -43,8 +43,6 @@ public:
     char const * arr[][2] = {
       { "highway", "proposed" },
       { "highway", "bus_stop" },
-      { "highway", "world_level" },
-      { "highway", "world_towns_level" }
     };
 
     for (size_t i = 0; i < ARRAY_SIZE(arr); ++i)

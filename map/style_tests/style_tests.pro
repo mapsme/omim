@@ -6,7 +6,7 @@ TEMPLATE = app
 INCLUDEPATH += ../../3party/protobuf/src
 
 ROOT_DIR = ../..
-DEPENDENCIES = map indexer platform geometry coding base expat protobuf tomcrypt
+DEPENDENCIES = map indexer platform geometry coding base expat protobuf
 
 macx-*: LIBS *= "-framework IOKit"
 

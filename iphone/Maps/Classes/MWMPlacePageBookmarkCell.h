@@ -2,7 +2,7 @@
 
 @class MWMPlacePage;
 
-@interface MWMPlacePageBookmarkCell : MWMTableViewCell
+@interface MWMPlacePageBookmarkCell : UITableViewCell
 
 - (void)config:(MWMPlacePage *)placePage forHeight:(BOOL)forHeight;
 

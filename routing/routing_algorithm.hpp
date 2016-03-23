@@ -4,7 +4,6 @@
 
 #include "routing/road_graph.hpp"
 #include "routing/router.hpp"
-#include "routing/base/astar_algorithm.hpp"
 
 #include "std/functional.hpp"
 #include "std/string.hpp"
@@ -27,7 +26,7 @@ public:
 
   virtual Result CalculateRoute(IRoadGraph const & graph, Junction const & startPos,
                                 Junction const & finalPos, RouterDelegate const & delegate,
-                                RoutingResult<Junction> & path) = 0;
+                                vector<Junction> & path) = 0;
 };
 
 string DebugPrint(IRoutingAlgorithm::Result const & result);
@@ -39,7 +38,7 @@ public:
   // IRoutingAlgorithm overrides:
   Result CalculateRoute(IRoadGraph const & graph, Junction const & startPos,
                         Junction const & finalPos, RouterDelegate const & delegate,
-                        RoutingResult<Junction> & path) override;
+                        vector<Junction> & path) override;
 };
 
 // AStar-bidirectional routing algorithm implementation
@@ -49,7 +48,7 @@ public:
   // IRoutingAlgorithm overrides:
   Result CalculateRoute(IRoadGraph const & graph, Junction const & startPos,
                         Junction const & finalPos, RouterDelegate const & delegate,
-                        RoutingResult<Junction> & path) override;
+                        vector<Junction> & path) override;
 };
 
 }  // namespace routing

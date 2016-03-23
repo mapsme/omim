@@ -3,7 +3,6 @@
 #import "MWMAlertViewController.h"
 #import "MWMDefaultAlert.h"
 #import "MWMDownloadTransitMapAlert.h"
-#import "MWMEditorViralAlert.h"
 #import "MWMFacebookAlert.h"
 #import "MWMLocationAlert.h"
 #import "MWMPedestrianShareAlert.h"
@@ -42,9 +41,9 @@
   return [MWMDefaultAlert disabledLocationAlert];
 }
 
-+ (MWMAlert *)noWiFiAlertWithName:(NSString *)name okBlock:(TMWMVoidBlock)okBlock
++ (MWMAlert *)noWiFiAlertWithName:(NSString *)name downloadBlock:(TMWMVoidBlock)block
 {
-  return [MWMDefaultAlert noWiFiAlertWithName:name okBlock:okBlock];
+  return [MWMDefaultAlert noWiFiAlertWithName:name downloadBlock:block];
 }
 
 + (MWMAlert *)noConnectionAlert
@@ -52,31 +51,16 @@
   return [MWMDefaultAlert noConnectionAlert];
 }
 
-+ (MWMAlert *)migrationProhibitedAlert
-{
-  return [MWMDefaultAlert migrationProhibitedAlert];
-}
-
-+ (MWMAlert *)unsavedEditsAlertWithOkBlock:(TMWMVoidBlock)okBlock
-{
-  return [MWMDefaultAlert unsavedEditsAlertWithOkBlock:okBlock];
-}
-
 + (MWMAlert *)locationServiceNotSupportedAlert
 {
   return [MWMDefaultAlert locationServiceNotSupportedAlert];
 }
 
-+ (MWMAlert *)routingMigrationAlertWithOkBlock:(TMWMVoidBlock)okBlock
-{
-  return [MWMDefaultAlert routingMigrationAlertWithOkBlock:okBlock];
-}
-
-+ (MWMAlert *)downloaderAlertWithAbsentCountries:(storage::TCountriesVec const &)countries
++ (MWMAlert *)downloaderAlertWithAbsentCountries:(vector<storage::TIndex> const &)countries
+                                          routes:(vector<storage::TIndex> const &)routes
                                             code:(routing::IRouter::ResultCode)code
-                                         okBlock:(TMWMVoidBlock)okBlock
 {
-  return [MWMDownloadTransitMapAlert downloaderAlertWithMaps:countries code:code okBlock:okBlock];
+  return [MWMDownloadTransitMapAlert downloaderAlertWithMaps:countries routes:routes code:code];
 }
 
 + (MWMAlert *)alert:(routing::IRouter::ResultCode)type
@@ -98,7 +82,7 @@
     case routing::IRouter::FileTooOld:
       return [MWMDefaultAlert routeFileNotExistAlert];
     case routing::IRouter::InternalError:
-      return [MWMDefaultAlert internalRoutingErrorAlert];
+      return [MWMDefaultAlert internalErrorAlert];
     case routing::IRouter::Cancelled:
     case routing::IRouter::NoError:
     case routing::IRouter::NeedMoreMaps:
@@ -109,51 +93,6 @@
 + (MWMAlert *)pedestrianToastShareAlert:(BOOL)isFirstLaunch
 {
   return [MWMPedestrianShareAlert alert:isFirstLaunch];
-}
-
-+ (MWMAlert *)incorrectFeauturePositionAlert
-{
-  return [MWMDefaultAlert incorrectFeauturePositionAlert];
-}
-
-+ (MWMAlert *)internalErrorAlert
-{
-  return [MWMDefaultAlert internalErrorAlert];
-}
-
-+ (MWMAlert *)invalidUserNameOrPasswordAlert
-{
-  return [MWMDefaultAlert invalidUserNameOrPasswordAlert];
-}
-
-+ (MWMAlert *)disableAutoDownloadAlertWithOkBlock:(TMWMVoidBlock)okBlock
-{
-  return [MWMDefaultAlert disableAutoDownloadAlertWithOkBlock:okBlock];
-}
-
-+ (MWMAlert *)downloaderNoConnectionAlertWithOkBlock:(TMWMVoidBlock)okBlock cancelBlock:(TMWMVoidBlock)cancelBlock
-{
-  return [MWMDefaultAlert downloaderNoConnectionAlertWithOkBlock:okBlock cancelBlock:cancelBlock];
-}
-
-+ (MWMAlert *)downloaderNotEnoughSpaceAlert
-{
-  return [MWMDefaultAlert downloaderNotEnoughSpaceAlert];
-}
-
-+ (MWMAlert *)downloaderInternalErrorAlertWithOkBlock:(TMWMVoidBlock)okBlock cancelBlock:(TMWMVoidBlock)cancelBlock
-{
-  return [MWMDefaultAlert downloaderInternalErrorAlertWithOkBlock:okBlock cancelBlock:cancelBlock];
-}
-
-+ (MWMAlert *)downloaderNeedUpdateAlertWithOkBlock:(TMWMVoidBlock)okBlock
-{
-  return [MWMDefaultAlert downloaderNeedUpdateAlertWithOkBlock:okBlock];
-}
-
-+ (MWMAlert *)editorViralAlertWithShareBlock:(TMWMVoidBlock)share
-{
-  return [MWMEditorViralAlert alertWithShareBlock:share];
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)orientation
@@ -187,7 +126,7 @@
 
 - (void)rotate:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
-  if (isIOS7 && [self respondsToSelector:@selector(setTransform:)])
+  if (isIOSVersionLessThan(8) && [self respondsToSelector:@selector(setTransform:)])
   {
     [UIView animateWithDuration:duration animations:^
     {

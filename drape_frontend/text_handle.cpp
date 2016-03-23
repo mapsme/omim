@@ -2,8 +2,6 @@
 
 #include "drape/texture_manager.hpp"
 
-#include "base/logging.hpp"
-
 namespace df
 {
 
@@ -33,8 +31,11 @@ TextHandle::TextHandle(FeatureID const & id, strings::UniString const & text,
   , m_glyphsReady(false)
 {}
 
-void TextHandle::GetAttributeMutation(ref_ptr<dp::AttributeBufferMutator> mutator) const
+void TextHandle::GetAttributeMutation(ref_ptr<dp::AttributeBufferMutator> mutator,
+                                      ScreenBase const & screen) const
 {
+  UNUSED_VALUE(screen);
+
   bool const isVisible = IsVisible();
   if (!m_forceUpdateNormals && m_isLastVisible == isVisible)
     return;
@@ -68,22 +69,12 @@ bool TextHandle::Update(ScreenBase const & screen)
 
 bool TextHandle::IndexesRequired() const
 {
-  // Disable indices usage for text handles.
-  return false;
+  return true;
 }
 
 void TextHandle::SetForceUpdateNormals(bool forceUpdate) const
 {
   m_forceUpdateNormals = forceUpdate;
 }
-
-#ifdef DEBUG_OVERLAYS_OUTPUT
-string TextHandle::GetOverlayDebugInfo()
-{
-  ostringstream out;
-  out << "Text Priority(" << GetPriority() << ") " << GetFeatureID().m_index << " " << strings::ToUtf8(m_text);
-  return out.str();
-}
-#endif
 
 } // namespace df

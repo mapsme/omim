@@ -1,9 +1,9 @@
 # Generator binary
 
 ROOT_DIR = ../..
-DEPENDENCIES = generator search routing storage indexer platform editor geometry coding base \
+DEPENDENCIES = generator routing storage indexer platform geometry coding base \
                osrm gflags expat tess2 jansson protobuf tomcrypt \
-               succinct stats_client pugixml
+               succinct stats_client
 
 include($$ROOT_DIR/common.pri)
 

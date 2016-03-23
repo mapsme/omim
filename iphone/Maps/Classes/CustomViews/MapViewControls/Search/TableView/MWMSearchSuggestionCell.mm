@@ -13,7 +13,6 @@
 
 - (void)awakeFromNib
 {
-  [super awakeFromNib];
   if (IPAD)
     self.contentView.backgroundColor = [UIColor white];
 }

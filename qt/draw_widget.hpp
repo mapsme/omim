@@ -42,10 +42,6 @@ namespace qt
     void SliderPressed();
     void SliderReleased();
 
-    void ChoosePositionModeEnable();
-    void ChoosePositionModeDisable();
-    void OnUpdateCountryStatusByTimer();
-
   public:
     DrawWidget(QWidget * parent);
     ~DrawWidget();
@@ -56,9 +52,10 @@ namespace qt
     string GetDistance(search::Result const & res) const;
     void ShowSearchResult(search::Result const & res);
 
-    void CreateFeature();
-
     void OnLocationUpdate(location::GpsInfo const & info);
+
+    void SaveState();
+    void LoadState();
 
     void UpdateAfterSettingsChanged();
 
@@ -72,13 +69,6 @@ namespace qt
     Q_SIGNAL void BeforeEngineCreation();
 
     void CreateEngine();
-
-    using TCurrentCountryChanged = function<void(storage::TCountryId const &, string const &,
-                                                 storage::Status, uint64_t, uint8_t)>;
-    void SetCurrentCountryChangedListener(TCurrentCountryChanged const & listener);
-
-    void DownloadCountry(storage::TCountryId const & countryId);
-    void RetryToDownloadCountry(storage::TCountryId const & countryId);
 
   protected:
     void initializeGL() override;
@@ -99,7 +89,6 @@ namespace qt
     void SubmitFakeLocationPoint(m2::PointD const & pt);
     void SubmitRoutingPoint(m2::PointD const & pt);
     void ShowInfoPopup(QMouseEvent * e, m2::PointD const & pt);
-    void ShowPlacePage(place_page::Info const & info);
 
     void OnViewportChanged(ScreenBase const & screen);
     void UpdateScaleControl();
@@ -110,8 +99,6 @@ namespace qt
     inline int L2D(int px) const { return px * m_ratio; }
     m2::PointD GetDevicePoint(QMouseEvent * e) const;
 
-    void UpdateCountryStatus(storage::TCountryId const & countryId);
-
     QScaleSlider * m_pScale;
     bool m_enableScaleUpdate;
 
@@ -120,8 +107,5 @@ namespace qt
     void InitRenderPolicy();
 
     unique_ptr<gui::Skin> m_skin;
-
-    TCurrentCountryChanged m_currentCountryChanged;
-    storage::TCountryId m_countryId;
   };
 }

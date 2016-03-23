@@ -2,11 +2,8 @@
 
 #include "base/base.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/initializer_list.hpp"
-#include "std/string.hpp"
-#include "std/utility.hpp"
 #include "std/vector.hpp"
+#include "std/string.hpp"
 
 namespace feature { class TypesHolder; }
 class FeatureType;
@@ -17,16 +14,15 @@ namespace ftypes
 class BaseChecker
 {
   size_t const m_level;
+  virtual bool IsMatched(uint32_t type) const;
 
 protected:
   vector<uint32_t> m_types;
 
-  virtual bool IsMatched(uint32_t type) const;
-
-  BaseChecker(size_t level = 2) : m_level(level) {}
-  virtual ~BaseChecker() = default;
-
 public:
+  BaseChecker(size_t level = 2) : m_level(level) {}
+  virtual ~BaseChecker() {}
+
   bool operator() (feature::TypesHolder const & types) const;
   bool operator() (FeatureType const & ft) const;
   bool operator() (vector<uint32_t> const & types) const;
@@ -36,84 +32,57 @@ public:
 
 class IsPeakChecker : public BaseChecker
 {
-  IsPeakChecker();
 public:
+  IsPeakChecker();
+
   static IsPeakChecker const & Instance();
 };
 
 class IsATMChecker : public BaseChecker
 {
-  IsATMChecker();
 public:
+  IsATMChecker();
+
   static IsATMChecker const & Instance();
 };
 
 class IsSpeedCamChecker : public BaseChecker
 {
   IsSpeedCamChecker();
+
 public:
   static IsSpeedCamChecker const & Instance();
 };
 
 class IsFuelStationChecker : public BaseChecker
 {
+public:
   IsFuelStationChecker();
-public:
-  static IsFuelStationChecker const & Instance();
-};
 
-class IsRailwayStationChecker : public BaseChecker
-{
-  IsRailwayStationChecker();
-public:
-  static IsRailwayStationChecker const & Instance();
+  static IsFuelStationChecker const & Instance();
 };
 
 class IsStreetChecker : public BaseChecker
 {
-  IsStreetChecker();
 public:
-  template <typename TFn>
-  void ForEachType(TFn && fn) const
-  {
-    for_each(m_types.cbegin(), m_types.cend(), forward<TFn>(fn));
-  }
+  IsStreetChecker();
 
   static IsStreetChecker const & Instance();
 };
 
-class IsAddressObjectChecker : public BaseChecker
-{
-  IsAddressObjectChecker();
-public:
-  static IsAddressObjectChecker const & Instance();
-};
-
-class IsVillageChecker : public BaseChecker
-{
-  IsVillageChecker();
-
-public:
-  template <typename TFn>
-  void ForEachType(TFn && fn) const
-  {
-    for_each(m_types.cbegin(), m_types.cend(), forward<TFn>(fn));
-  }
-
-  static IsVillageChecker const & Instance();
-};
-
 class IsOneWayChecker : public BaseChecker
 {
-  IsOneWayChecker();
 public:
+  IsOneWayChecker();
+
   static IsOneWayChecker const & Instance();
 };
 
 class IsRoundAboutChecker : public BaseChecker
 {
-  IsRoundAboutChecker();
 public:
+  IsRoundAboutChecker();
+
   static IsRoundAboutChecker const & Instance();
 };
 
@@ -134,26 +103,25 @@ public:
 
 class IsBuildingPartChecker : public BaseChecker
 {
-  IsBuildingPartChecker();
+  virtual bool IsMatched(uint32_t type) const;
 public:
+  IsBuildingPartChecker();
   static IsBuildingPartChecker const & Instance();
 };
 
 class IsBridgeChecker : public BaseChecker
 {
-  virtual bool IsMatched(uint32_t type) const override;
-
-  IsBridgeChecker();
+  virtual bool IsMatched(uint32_t type) const;
 public:
+  IsBridgeChecker();
   static IsBridgeChecker const & Instance();
 };
 
 class IsTunnelChecker : public BaseChecker
 {
-  virtual bool IsMatched(uint32_t type) const override;
-
-  IsTunnelChecker();
+  virtual bool IsMatched(uint32_t type) const;
 public:
+  IsTunnelChecker();
   static IsTunnelChecker const & Instance();
 };
 
@@ -163,8 +131,9 @@ enum Type { NONE = -1, COUNTRY = 0, STATE, CITY, TOWN, VILLAGE, LOCALITY_COUNT }
 
 class IsLocalityChecker : public BaseChecker
 {
-  IsLocalityChecker();
 public:
+  IsLocalityChecker();
+
   Type GetType(feature::TypesHolder const & types) const;
   Type GetType(FeatureType const & f) const;
 
@@ -177,27 +146,26 @@ public:
 uint32_t GetPopulation(FeatureType const & ft);
 double GetRadiusByPopulation(uint32_t p);
 uint32_t GetPopulationByRadius(double r);
-//@}
 
 /// Check if type conforms the path. Strings in the path can be
 /// feature types like "highway", "living_street", "bridge" and so on
 ///  or *. * means any class.
 /// The root name ("world") is ignored
-bool IsTypeConformed(uint32_t type, StringIL const & path);
+bool IsTypeConformed(uint32_t type, vector<string> const & path);
 
 // Highway class. The order is important.
 // The enum values follow from the biggest roads (Trunk) to the smallest ones (Service).
 enum class HighwayClass
 {
   Undefined = 0,  // There has not been any attempt of calculating HighwayClass.
-  Error,          // There was an attempt of calculating HighwayClass but it was not successful.
+  Error,   // There was an attempt of calculating HighwayClass but it was not successful.
   Trunk,
   Primary,
   Secondary,
   Tertiary,
   LivingStreet,
   Service,
-  Count           // This value is used for internals only.
+  Count  // This value is used for internals only.
 };
 
 string DebugPrint(HighwayClass const cls);
@@ -205,4 +173,5 @@ string DebugPrint(HighwayClass const cls);
 HighwayClass GetHighwayClass(feature::TypesHolder const & types);
 HighwayClass GetHighwayClass(FeatureType const & ft);
 
+//@}
 }  // namespace ftypes

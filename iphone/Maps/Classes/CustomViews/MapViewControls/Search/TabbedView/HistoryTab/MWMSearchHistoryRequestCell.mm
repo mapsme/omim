@@ -14,7 +14,6 @@
 
 - (void)awakeFromNib
 {
-  [super awakeFromNib];
   if (IPAD)
     self.contentView.backgroundColor = [UIColor white];
   self.layer.shouldRasterize = YES;
@@ -25,7 +24,7 @@
 {
   self.title.text = title;
   [self.title sizeToFit];
-  if (isIOS7)
+  if (isIOSVersionLessThan(8))
     [self layoutIfNeeded];
 }
 

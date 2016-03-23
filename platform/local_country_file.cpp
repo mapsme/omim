@@ -1,5 +1,4 @@
 #include "platform/local_country_file.hpp"
-#include "platform/mwm_version.hpp"
 #include "platform/platform.hpp"
 
 #include "coding/internal/file_data.hpp"
@@ -13,7 +12,7 @@
 namespace platform
 {
 LocalCountryFile::LocalCountryFile()
-    : m_version(0), m_files(MapOptions::Nothing), m_mapSize(0), m_routingSize(0)
+    : m_version(0), m_files(MapOptions::Nothing), m_mapSize(0), m_routingSize()
 {
 }
 
@@ -33,17 +32,11 @@ void LocalCountryFile::SyncWithDisk()
   m_files = MapOptions::Nothing;
   m_mapSize = 0;
   m_routingSize = 0;
+
   Platform & platform = GetPlatform();
 
   if (platform.GetFileSizeByFullPath(GetPath(MapOptions::Map), m_mapSize))
     m_files = SetOptions(m_files, MapOptions::Map);
-
-  if (version::IsSingleMwm(GetVersion()))
-  {
-    if (m_files == MapOptions::Map)
-      m_files = SetOptions(m_files, MapOptions::CarRouting);
-    return;
-  }
 
   string const routingPath = GetPath(MapOptions::CarRouting);
   if (platform.GetFileSizeByFullPath(routingPath, m_routingSize))
@@ -52,10 +45,7 @@ void LocalCountryFile::SyncWithDisk()
 
 void LocalCountryFile::DeleteFromDisk(MapOptions files) const
 {
-  vector<MapOptions> const mapOptions =
-      version::IsSingleMwm(GetVersion()) ? vector<MapOptions>({MapOptions::Map})
-                                         : vector<MapOptions>({MapOptions::Map, MapOptions::CarRouting});
-  for (MapOptions file : mapOptions)
+  for (MapOptions file : {MapOptions::Map, MapOptions::CarRouting})
   {
     if (OnDisk(file) && HasOptions(files, file))
     {
@@ -67,7 +57,7 @@ void LocalCountryFile::DeleteFromDisk(MapOptions files) const
 
 string LocalCountryFile::GetPath(MapOptions file) const
 {
-  return my::JoinFoldersToPath(m_directory, GetFileName(m_countryFile.GetName(), file, GetVersion()));
+  return my::JoinFoldersToPath(m_directory, m_countryFile.GetNameWithExt(file));
 }
 
 uint32_t LocalCountryFile::GetSize(MapOptions filesMask) const
@@ -75,9 +65,8 @@ uint32_t LocalCountryFile::GetSize(MapOptions filesMask) const
   uint64_t size64 = 0;
   if (HasOptions(filesMask, MapOptions::Map))
     size64 += m_mapSize;
-  if (!version::IsSingleMwm(GetVersion()) && HasOptions(filesMask, MapOptions::CarRouting))
+  if (HasOptions(filesMask, MapOptions::CarRouting))
     size64 += m_routingSize;
-
   uint32_t const size32 = static_cast<uint32_t>(size64);
   ASSERT_EQUAL(size32, size64, ());
   return size32;
@@ -103,10 +92,10 @@ bool LocalCountryFile::operator==(LocalCountryFile const & rhs) const
 }
 
 // static
-LocalCountryFile LocalCountryFile::MakeForTesting(string const & countryFileName, int64_t version)
+LocalCountryFile LocalCountryFile::MakeForTesting(string const & countryFileName)
 {
   CountryFile const countryFile(countryFileName);
-  LocalCountryFile localFile(GetPlatform().WritableDir(), countryFile, version);
+  LocalCountryFile localFile(GetPlatform().WritableDir(), countryFile, 0 /* version */);
   localFile.SyncWithDisk();
   return localFile;
 }

@@ -2,9 +2,6 @@ package com.mapswithme.maps.bookmarks.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.IntRange;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,11 +29,7 @@ public class Metadata implements Parcelable
     // TODO: It is hacked in jni and returns full Wikipedia url. Should use separate getter instead.
     FMD_WIKIPEDIA(16),
     FMD_MAXSPEED(17),
-    FMD_FLATS(18),
-    FMD_HEIGHT(19),
-    FMD_MIN_HEIGHT(20),
-    FMD_DENOMINATION(21),
-    FMD_BUILDING_LEVELS(22);
+    FMD_FLATS(18);
 
     private int mMetaType;
 
@@ -45,19 +38,13 @@ public class Metadata implements Parcelable
       mMetaType = metadataType;
     }
 
-    @NonNull
-    public static MetadataType fromInt(@IntRange(from = 1, to = 22) int metaType)
+    public static MetadataType fromInt(int metaType)
     {
       for (MetadataType type : values())
         if (type.mMetaType == metaType)
           return type;
 
-      throw new IllegalArgumentException("Illegal metaType arg!");
-    }
-
-    public int toInt()
-    {
-      return mMetaType;
+      return null;
     }
   }
 
@@ -71,6 +58,9 @@ public class Metadata implements Parcelable
   public boolean addMetadata(int metaType, String metaValue)
   {
     final MetadataType type = MetadataType.fromInt(metaType);
+    if (type == null)
+      return false;
+
     mMetadataMap.put(type, metaValue);
     return true;
   }
@@ -86,7 +76,10 @@ public class Metadata implements Parcelable
     return true;
   }
 
-  @Nullable
+  /**
+   * @param type
+   * @return null if metadata doesn't exist
+   */
   public String getMetadata(MetadataType type)
   {
     return mMetadataMap.get(type);

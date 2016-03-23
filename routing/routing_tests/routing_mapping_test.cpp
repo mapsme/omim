@@ -26,13 +26,13 @@ class LocalFileGenerator
 public:
   LocalFileGenerator(string const & fileName)
       : m_countryFile(fileName),
-        m_testDataFile(platform::GetFileName(m_countryFile.GetName(), MapOptions::MapWithCarRouting,
-                                             version::FOR_TESTING_SINGLE_MWM1), "routing"),
-        m_localFile(GetPlatform().WritableDir(), m_countryFile, version::FOR_TESTING_SINGLE_MWM1)
+        m_testMapFile(m_countryFile.GetNameWithExt(MapOptions::Map), "map"),
+        m_testRoutingFile(m_countryFile.GetNameWithExt(MapOptions::CarRouting), "routing"),
+        m_localFile(GetPlatform().WritableDir(), m_countryFile, 0 /* version */)
   {
     m_localFile.SyncWithDisk();
     TEST(m_localFile.OnDisk(MapOptions::MapWithCarRouting), ());
-    GenerateNecessarySections(m_localFile);
+    GenerateVersionSections(m_localFile);
 
     m_result = m_testSet.Register(m_localFile);
     TEST_EQUAL(m_result.second, MwmSet::RegResult::Success,
@@ -41,24 +41,26 @@ public:
 
   TestMwmSet & GetMwmSet() { return m_testSet; }
 
-  string const & GetCountryName() { return m_countryFile.GetName(); }
+  string const & GetCountryName() { return m_countryFile.GetNameWithoutExt(); }
 
   size_t GetNumRefs() { return m_result.first.GetInfo()->GetNumRefs(); }
 
 private:
-
-  void GenerateNecessarySections(LocalCountryFile const & localFile)
+  void GenerateVersionSections(LocalCountryFile const & localFile)
   {
-    FilesContainerW dataCont(localFile.GetPath(MapOptions::CarRouting));
+    FilesContainerW routingCont(localFile.GetPath(MapOptions::CarRouting));
+    // Write version for routing file that is equal to correspondent mwm file.
+    FilesContainerW mwmCont(localFile.GetPath(MapOptions::Map));
 
-    FileWriter w1 = dataCont.GetWriter(VERSION_FILE_TAG);
-    version::WriteVersion(w1, my::SecondsSinceEpoch());
-    FileWriter w2 = dataCont.GetWriter(ROUTING_MATRIX_FILE_TAG);
-    w2.Write("smth", 4);
+    FileWriter w1 = routingCont.GetWriter(VERSION_FILE_TAG);
+    FileWriter w2 = mwmCont.GetWriter(VERSION_FILE_TAG);
+    version::WriteVersion(w1, my::TodayAsYYMMDD());
+    version::WriteVersion(w2, my::TodayAsYYMMDD());
   }
 
   CountryFile m_countryFile;
-  ScopedFile m_testDataFile;
+  ScopedFile m_testMapFile;
+  ScopedFile m_testRoutingFile;
   LocalCountryFile m_localFile;
   TestMwmSet m_testSet;
   pair<MwmSet::MwmId, MwmSet::RegResult> m_result;

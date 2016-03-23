@@ -1,5 +1,3 @@
-#import "MWMAlertViewController.h"
-
 typedef NS_ENUM(NSUInteger, MWMDownloadMapRequestState)
 {
   MWMDownloadMapRequestStateDownload,
@@ -7,9 +5,7 @@ typedef NS_ENUM(NSUInteger, MWMDownloadMapRequestState)
   MWMDownloadMapRequestStateRequestUnknownLocation
 };
 
-@protocol MWMDownloadMapRequestProtocol <NSObject>
-
-@property (nonnull, nonatomic, readonly) MWMAlertViewController * alertController;
+@protocol MWMDownloadMapRequestDelegate <NSObject>
 
 - (void)stateUpdated:(enum MWMDownloadMapRequestState)state;
 - (void)selectMapsAction;
@@ -20,11 +16,11 @@ typedef NS_ENUM(NSUInteger, MWMDownloadMapRequestState)
 
 - (nonnull instancetype)init __attribute__((unavailable("init is not available")));
 - (nonnull instancetype)initWithParentView:(nonnull UIView *)parentView
-                                  delegate:(nonnull id <MWMDownloadMapRequestProtocol>)delegate;
+                                  delegate:(nonnull id <MWMDownloadMapRequestDelegate>)delegate;
 
 - (void)showRequest;
 
-- (void)downloadProgress:(CGFloat)progress;
+- (void)downloadProgress:(CGFloat)progress countryName:(nonnull NSString *)countryName;
 - (void)setDownloadFailed;
 
 @end

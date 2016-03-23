@@ -69,7 +69,6 @@ public:
 
   bool operator<(GLState const & other) const;
   bool operator==(GLState const & other) const;
-  bool operator!=(GLState const & other) const;
 
 private:
   uint32_t m_gpuProgramIndex;

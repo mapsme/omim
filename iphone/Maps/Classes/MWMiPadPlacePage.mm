@@ -5,17 +5,17 @@
 #import "MWMiPadPlacePage.h"
 #import "MWMPlacePageActionBar.h"
 #import "MWMPlacePageViewManager.h"
-#import "MWMViewController.h"
 #import "SelectSetVC.h"
 #import "UIColor+MapsMeColor.h"
 #import "UIViewController+Navigation.h"
+#import "ViewController.h"
 
 static CGFloat const kLeftOffset = 12.;
 static CGFloat const kTopOffset = 36.;
 static CGFloat const kBottomOffset = 60.;
 static CGFloat const kKeyboardOffset = 12.;
 
-@interface MWMiPadPlacePageViewController : MWMViewController
+@interface MWMiPadPlacePageViewController : ViewController
 
 @property (nonatomic) UIView * placePageView;
 @property (nonatomic) UIView * actionBarView;
@@ -210,23 +210,18 @@ static CGFloat const kKeyboardOffset = 12.;
 - (void)addBookmark
 {
   [super addBookmark];
-  [self refresh];
+  [self updatePlacePageLayoutAnimated:YES];
 }
 
 - (void)removeBookmark
 {
   [super removeBookmark];
-  [self refresh];
+  [self updatePlacePageLayoutAnimated:YES];
 }
 
 - (void)reloadBookmark
 {
   [super reloadBookmark];
-  [self refresh];
-}
-
-- (void)refresh
-{
   [self updatePlacePageLayoutAnimated:YES];
 }
 
@@ -321,13 +316,13 @@ static CGFloat const kKeyboardOffset = 12.;
 - (void)keyboardWillShow:(NSNotification *)aNotification
 {
   [super keyboardWillShow:aNotification];
-  [self refresh];
+  [self updatePlacePageLayoutAnimated:YES];
 }
 
 - (void)keyboardWillHide
 {
   [super keyboardWillHide];
-  [self refresh];
+  [self updatePlacePageLayoutAnimated:YES];
 }
 
 - (CGFloat)getAvailableHeight

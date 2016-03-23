@@ -23,6 +23,7 @@ import com.mapswithme.util.Graphics;
 
 
 public class BookmarkListAdapter extends BaseAdapter
+    implements LocationHelper.LocationListener
 {
   private final Activity mActivity;
   private final BookmarkCategory mCategory;
@@ -35,15 +36,6 @@ public class BookmarkListAdapter extends BaseAdapter
   private static final int SECTION_TRACKS = 0;
   private static final int SECTION_BMKS = 1;
 
-  private final LocationHelper.LocationListener mLocationListener = new LocationHelper.SimpleLocationListener()
-  {
-    @Override
-    public void onLocationUpdated(Location l)
-    {
-      notifyDataSetChanged();
-    }
-  };
-
   public BookmarkListAdapter(Activity activity, BookmarkCategory cat)
   {
     mActivity = activity;
@@ -52,12 +44,12 @@ public class BookmarkListAdapter extends BaseAdapter
 
   public void startLocationUpdate()
   {
-    LocationHelper.INSTANCE.addLocationListener(mLocationListener, true);
+    LocationHelper.INSTANCE.addLocationListener(this, true);
   }
 
   public void stopLocationUpdate()
   {
-    LocationHelper.INSTANCE.removeLocationListener(mLocationListener);
+    LocationHelper.INSTANCE.removeLocationListener(this);
   }
 
   @Override
@@ -136,7 +128,7 @@ public class BookmarkListAdapter extends BaseAdapter
   public Object getItem(int position)
   {
     if (getItemViewType(position) == TYPE_TRACK)
-      return mCategory.nativeGetTrack(position - 1);
+      return mCategory.getTrack(position - 1);
     else
       return mCategory.getBookmark(position - 1
           - (isSectionEmpty(SECTION_TRACKS) ? 0 : mCategory.getTracksCount() + 1));
@@ -146,6 +138,23 @@ public class BookmarkListAdapter extends BaseAdapter
   public long getItemId(int position)
   {
     return position;
+  }
+
+  @Override
+  public void onLocationUpdated(final Location l)
+  {
+    notifyDataSetChanged();
+  }
+
+  @Override
+  public void onCompassUpdated(long time, double magneticNorth, double trueNorth, double accuracy)
+  {
+    // We don't show any arrows for bookmarks any more.
+  }
+
+  @Override
+  public void onLocationError(int errorCode)
+  {
   }
 
   private class PinHolder
@@ -163,7 +172,7 @@ public class BookmarkListAdapter extends BaseAdapter
 
     void setName(Bookmark bmk)
     {
-      name.setText(bmk.getTitle());
+      name.setText(bmk.getName());
     }
 
     void setName(Track trk)

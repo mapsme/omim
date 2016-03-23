@@ -35,3 +35,8 @@ bool MemReader::AssertPosAndSize(uint64_t pos, uint64_t size) const
 {
   return AssertPosAndSizeImpl(pos, size, Size());
 }
+
+bool SharedMemReader::AssertPosAndSize(uint64_t pos, uint64_t size) const
+{
+  return AssertPosAndSizeImpl(pos, size, Size());
+}

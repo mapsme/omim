@@ -58,12 +58,6 @@
       <FileRef
          location = "group:stb_image/stb_image.xcodeproj">
       </FileRef>
-      <FileRef
-         location = "group:pugixml/pugixml.xcodeproj">
-      </FileRef>
-      <FileRef
-         location = "group:oauthcpp/oauthcpp.xcodeproj">
-      </FileRef>
    </Group>
    <FileRef
       location = "container:api/api.xcodeproj">
@@ -119,8 +113,5 @@
    </Group>
    <FileRef
       location = "group:mapshot/mapshot.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:editor/editor.xcodeproj">
    </FileRef>
 </Workspace>

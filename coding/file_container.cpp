@@ -64,18 +64,18 @@ void FilesContainerBase::ReadInfo(ReaderT & reader)
 FilesContainerR::FilesContainerR(string const & filePath,
                                  uint32_t logPageSize,
                                  uint32_t logPageCount)
-  : m_source(make_unique<FileReader>(filePath, logPageSize, logPageCount))
+  : m_source(new FileReader(filePath, logPageSize, logPageCount))
 {
   ReadInfo(m_source);
 }
 
-FilesContainerR::FilesContainerR(TReader const & file)
+FilesContainerR::FilesContainerR(ReaderT const & file)
   : m_source(file)
 {
   ReadInfo(m_source);
 }
 
-FilesContainerR::TReader FilesContainerR::GetReader(Tag const & tag) const
+FilesContainerR::ReaderT FilesContainerR::GetReader(Tag const & tag) const
 {
   Info const * p = GetInfo(tag);
   if (!p)
@@ -413,7 +413,7 @@ FileWriter FilesContainerW::GetWriter(Tag const & tag)
 
 void FilesContainerW::Write(string const & fPath, Tag const & tag)
 {
-  Write(ModelReaderPtr(make_unique<FileReader>(fPath)), tag);
+  Write(new FileReader(fPath), tag);
 }
 
 void FilesContainerW::Write(ModelReaderPtr reader, Tag const & tag)

@@ -14,7 +14,6 @@
 
 - (void)awakeFromNib
 {
-  [super awakeFromNib];
   if (IPAD)
     self.contentView.backgroundColor = [UIColor white];
   CALayer * sl = self.layer;

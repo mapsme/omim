@@ -168,7 +168,7 @@ void LoaderImpl::ParseCommon()
     string name;
     name.resize(ReadVarUint<uint32_t>(source) + 1);
     source.Read(&name[0], name.size());
-    m_pF->m_params.name.AddString(StringUtf8Multilang::kDefaultCode, name);
+    m_pF->m_params.name.AddString(StringUtf8Multilang::DEFAULT_CODE, name);
   }
 
   if (h & HEADER_HAS_POINT)
@@ -185,8 +185,7 @@ void LoaderImpl::ParseCommon()
 int LoaderImpl::GetScaleIndex(int scale) const
 {
   int const count = m_Info.GetScalesCount();
-  if (scale == FeatureType::BEST_GEOMETRY)
-    return count - 1;
+  if (scale == -1) return count-1;
 
   for (int i = 0; i < count; ++i)
     if (scale <= m_Info.GetScale(i))
@@ -196,7 +195,7 @@ int LoaderImpl::GetScaleIndex(int scale) const
 
 int LoaderImpl::GetScaleIndex(int scale, offsets_t const & offsets) const
 {
-  if (scale == FeatureType::BEST_GEOMETRY)
+  if (scale == -1)
   {
     // Choose the best geometry for the last visible scale.
     int i = static_cast<int>(offsets.size()-1);
@@ -357,7 +356,7 @@ uint32_t LoaderImpl::ParseGeometry(int scale)
       int const ind = GetScaleIndex(scale, m_ptsOffsets);
       if (ind != -1)
       {
-        ReaderSource<FilesContainerR::TReader> src(m_Info.GetGeometryReader(ind));
+        ReaderSource<FilesContainerR::ReaderT> src(m_Info.GetGeometryReader(ind));
         src.Skip(m_ptsOffsets[ind]);
         serial::LoadOuterPath(src, GetDefCodingParams(), m_pF->m_points);
 
@@ -403,7 +402,7 @@ uint32_t LoaderImpl::ParseTriangles(int scale)
       uint32_t const ind = GetScaleIndex(scale, m_trgOffsets);
       if (ind != -1)
       {
-        ReaderSource<FilesContainerR::TReader> src(m_Info.GetTrianglesReader(ind));
+        ReaderSource<FilesContainerR::ReaderT> src(m_Info.GetTrianglesReader(ind));
         src.Skip(m_trgOffsets[ind]);
         serial::LoadOuterTriangles(src, GetDefCodingParams(), m_pF->m_triangles);
 

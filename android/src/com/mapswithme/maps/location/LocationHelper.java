@@ -38,7 +38,6 @@ public enum LocationHelper implements SensorEventListener
   public static final int ERROR_NOT_SUPPORTED = 1;
   public static final int ERROR_DENIED = 2;
   public static final int ERROR_GPS_OFF = 3;
-  public static final int ERROR_UNKNOWN = 0;
 
   public static final String LOCATION_PREDICTOR_PROVIDER = "LocationPredictorProvider";
   private static final float DISTANCE_TO_RECREATE_MAGNETIC_FIELD_M = 1000;
@@ -51,24 +50,12 @@ public enum LocationHelper implements SensorEventListener
     void onLocationError(int errorCode);
   }
 
-  public static class SimpleLocationListener implements LocationListener
-  {
-    @Override
-    public void onLocationUpdated(Location l) {}
-
-    @Override
-    public void onCompassUpdated(long time, double magneticNorth, double trueNorth, double accuracy) {}
-
-    @Override
-    public void onLocationError(int errorCode) {}
-  }
-
   private final Listeners<LocationListener> mListeners = new Listeners<>();
 
   private boolean mActive;
 
   private Location mLastLocation;
-  private MapObject mMyPosition;
+  private MapObject.MyPosition mMyPosition;
   private long mLastLocationTime;
 
   private final SensorManager mSensorManager;
@@ -164,8 +151,7 @@ public enum LocationHelper implements SensorEventListener
       mLocationProvider.startUpdates();
   }
 
-  @Nullable
-  public MapObject getMyPosition()
+  public @Nullable MapObject.MyPosition getMyPosition()
   {
     if (!LocationState.isTurnedOn())
     {
@@ -177,7 +163,7 @@ public enum LocationHelper implements SensorEventListener
       return null;
 
     if (mMyPosition == null)
-      mMyPosition = new MapObject(MapObject.MY_POSITION, "", "", "", mLastLocation.getLatitude(), mLastLocation.getLongitude(), "");
+      mMyPosition = new MapObject.MyPosition(mLastLocation.getLatitude(), mLastLocation.getLongitude());
 
     return mMyPosition;
   }

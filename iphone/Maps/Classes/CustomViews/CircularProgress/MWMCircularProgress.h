@@ -1,18 +1,12 @@
-#import "MWMButton.h"
-
-#include "std/vector.hpp"
 
 typedef NS_ENUM(NSInteger, MWMCircularProgressState)
 {
   MWMCircularProgressStateNormal,
   MWMCircularProgressStateSelected,
   MWMCircularProgressStateProgress,
-  MWMCircularProgressStateSpinner,
   MWMCircularProgressStateFailed,
   MWMCircularProgressStateCompleted
 };
-
-using MWMCircularProgressStateVec = vector<MWMCircularProgressState>;
 
 @class MWMCircularProgress;
 
@@ -24,18 +18,17 @@ using MWMCircularProgressStateVec = vector<MWMCircularProgressState>;
 
 @interface MWMCircularProgress : NSObject
 
-+ (nonnull instancetype)downloaderProgressForParentView:(nonnull UIView *)parentView;
-
 @property (nonatomic) CGFloat progress;
 @property (nonatomic) MWMCircularProgressState state;
 @property (weak, nonatomic) id<MWMCircularProgressProtocol> delegate;
 
-- (void)setImage:(nonnull UIImage *)image forStates:(MWMCircularProgressStateVec const &)states;
-- (void)setColor:(nonnull UIColor *)color forStates:(MWMCircularProgressStateVec const &)states;
-- (void)setColoring:(MWMButtonColoring)coloring forStates:(MWMCircularProgressStateVec const &)states;
-- (void)setInvertColor:(BOOL)invertColor;
+- (void)setImage:(nonnull UIImage *)image forState:(MWMCircularProgressState)state;
+- (void)setColor:(nonnull UIColor *)color forState:(MWMCircularProgressState)state;
 
 - (nonnull instancetype)init __attribute__((unavailable("init is not available")));
 - (nonnull instancetype)initWithParentView:(nonnull UIView *)parentView;
+- (void)reset;
+- (void)startSpinner;
+- (void)stopSpinner;
 
 @end
