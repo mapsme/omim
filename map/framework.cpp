@@ -32,6 +32,7 @@
 #include "indexer/drawing_rules.hpp"
 #include "indexer/editable_map_object.hpp"
 #include "indexer/feature.hpp"
+#include "indexer/feature_visibility.hpp"
 #include "indexer/map_style_reader.hpp"
 #include "indexer/osm_editor.hpp"
 #include "indexer/scales.hpp"
@@ -357,6 +358,8 @@ Framework::Framework()
   m_routingSession.Init(routingStatisticsFn, routingVisualizerFn);
 
   SetRouterImpl(RouterType::Vehicle);
+
+  UpdateMinBuildingsTapZoom();
 
   LOG(LDEBUG, ("Routing engine initialized"));
 
@@ -1552,6 +1555,7 @@ void Framework::SetMapStyle(MapStyle mapStyle)
   MarkMapStyle(mapStyle);
   CallDrapeFunction(bind(&df::DrapeEngine::UpdateMapStyle, _1));
   InvalidateUserMarks();
+  UpdateMinBuildingsTapZoom();
 }
 
 MapStyle Framework::GetMapStyle() const
@@ -1884,6 +1888,32 @@ void Framework::InvalidateRendering()
     m_drapeEngine->Invalidate();
 }
 
+void Framework::UpdateMinBuildingsTapZoom()
+{
+  constexpr int kMinTapZoom = 16;
+  m_minBuildingsTapZoom = max(kMinTapZoom,
+                              feature::GetDrawableScaleRange(classif().GetTypeByPath({"building"})).first);
+}
+
+FeatureID Framework::FindBuildingAtPoint(m2::PointD const & mercator) const
+{
+  FeatureID featureId;
+  if (GetDrawScale() >= m_minBuildingsTapZoom)
+  {
+    constexpr int kScale = scales::GetUpperScale();
+    constexpr double kSelectRectWidthInMeters = 1.1;
+    m2::RectD const rect = MercatorBounds::RectByCenterXYAndSizeInMeters(mercator, kSelectRectWidthInMeters);
+    m_model.ForEachFeature(rect, [&](FeatureType & ft)
+    {
+      if (!featureId.IsValid() &&
+          ft.GetFeatureType() == feature::GEOM_AREA && ftypes::IsBuildingChecker::Instance()(ft) &&
+          ft.GetLimitRect(kScale).IsPointInside(mercator) && feature::GetMinDistanceMeters(ft, mercator) == 0.0)
+        featureId = ft.GetID();
+    }, kScale);
+  }
+  return featureId;
+}
+
 df::SelectionShape::ESelectedObject Framework::OnTapEventImpl(df::TapInfo const & tapInfo,
                                                               place_page::Info & outInfo) const
 {
@@ -1932,10 +1962,15 @@ df::SelectionShape::ESelectedObject Framework::OnTapEventImpl(df::TapInfo const 
     return df::SelectionShape::OBJECT_USER_MARK;
   }
 
+  FeatureID featureTapped = tapInfo.m_featureTapped;
+
+  if (!featureTapped.IsValid())
+    featureTapped = FindBuildingAtPoint(m_currentModelView.PtoG(pxPoint2d));
+
   bool showMapSelection = false;
-  if (tapInfo.m_featureTapped.IsValid())
+  if (featureTapped.IsValid())
   {
-    FillFeatureInfo(tapInfo.m_featureTapped, outInfo);
+    FillFeatureInfo(featureTapped, outInfo);
     showMapSelection = true;
   }
   else if (tapInfo.m_isLong)
