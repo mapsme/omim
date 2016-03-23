@@ -20,3 +20,10 @@ string DebugPrint(feature::EGeomType type)
   case EGeomType::GEOM_AREA: return "GEOM_AREA";
   }
 }
+
+pair<MWMName, MWMVersion> FeatureId::GetMWMNameAndVersion()
+{
+  auto const & mwmInfo = m_mwmId.GetInfo();
+  return {mwmInfo->GetVersion(), mwmInfo->GetCountryName()};
+}
+
