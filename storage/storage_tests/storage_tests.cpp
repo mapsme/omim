@@ -1011,33 +1011,18 @@ UNIT_TEST(StorageTest_GetAffiliations)
 {
   Storage storage(kSingleMwmCountriesTxt, make_unique<TestMapFilesDownloader>());
 
-  string const abkhaziaId = "Abkhazia";
-  TMappingAffiliations const expectedAffiliations1 = {{abkhaziaId.c_str(), "Georgia"},
-                                                      {abkhaziaId.c_str(), "Russia"},
-                                                      {abkhaziaId.c_str(), "Europe"}};
-  auto const rangeResultAffiliations1 = storage.GetAffiliations().equal_range(abkhaziaId);
-  TMappingAffiliations const resultAffiliations1(rangeResultAffiliations1.first,
-                                                 rangeResultAffiliations1.second);
-  TEST(expectedAffiliations1 == resultAffiliations1, ());
-
-  auto const rangeResultNoAffiliations = storage.GetAffiliations().equal_range("Algeria");
-  TEST(rangeResultNoAffiliations.first == rangeResultNoAffiliations.second, ());
+  vector<string> const abkhaziaId = {"Abkhazia"};
+  for (auto const & s : {"Georgia", "Russia", "Europe"})
+    TEST_EQUAL(storage.GetAffiliations().at(s), abkhaziaId, ());
 
   // Affiliation inheritance.
-  string const disputableId = "Disputable Territory";
-  auto const rangeResultAffiliations2 = storage.GetAffiliations().equal_range(disputableId);
-  TMappingAffiliations const resultAffiliations2(rangeResultAffiliations2.first,
-                                                 rangeResultAffiliations2.second);
-  TMappingAffiliations const expectedAffiliations2 = {{disputableId.c_str(), "Stepchild Land1"},
-                                                      {disputableId.c_str(), "Stepchild Land2"}};
-  TEST(expectedAffiliations2 == resultAffiliations2, ());
+  vector<string> const disputableId = {"Disputable Territory"};
+  for (auto const & s : {"Stepchild Land1", "Stepchild Land2"})
+    TEST_EQUAL(storage.GetAffiliations().at(s), disputableId, ());
 
-  string const indisputableId = "Indisputable Territory Of Country1";
-  auto const rangeResultAffiliations3 = storage.GetAffiliations().equal_range(indisputableId);
-  TMappingAffiliations const resultAffiliations3(rangeResultAffiliations3.first,
-                                                 rangeResultAffiliations3.second);
-  TMappingAffiliations const expectedAffiliations3 = {{indisputableId.c_str(), "Child Land1"}};
-  TEST(expectedAffiliations3 == resultAffiliations3, ());
+  vector<string> const indisputableId = {"Indisputable Territory Of Country1"};
+  for (auto const & s : {"Child Land1"})
+    TEST_EQUAL(storage.GetAffiliations().at(s), indisputableId, ());
 }
 
 UNIT_TEST(StorageTest_HasCountryId)

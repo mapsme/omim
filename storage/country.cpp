@@ -4,6 +4,7 @@
 #include "platform/platform.hpp"
 
 #include "base/logging.hpp"
+#include "base/stl_helpers.hpp"
 
 #include "3party/jansson/myjansson.hpp"
 
@@ -42,6 +43,11 @@ public:
     : m_countries(countries), m_affiliations(affiliations)
   {
   }
+  ~StoreCountriesSingleMwms()
+  {
+    for (auto & entry : m_affiliations)
+      my::SortUnique(entry.second);
+  }
 
   // StoreSingleMwmInterface overrides:
   Country * InsertToCountryTree(TCountryId const & id, uint32_t mapSize, size_t depth,
@@ -64,14 +70,10 @@ public:
 
   void InsertAffiliation(TCountryId const & countryId, string const & affilation) override
   {
-    auto const countryIdRange = m_affiliations.equal_range(countryId);
-    for (auto it = countryIdRange.first; it != countryIdRange.second; ++it)
-    {
-      if (it->second == affilation)
-        return; // No need key with the same value. It could happend in case of a disputable territory.
-    }
+    ASSERT(!affilation.empty(), ());
+    ASSERT(!countryId.empty(), ());
 
-    m_affiliations.insert(make_pair(countryId, affilation));
+    m_affiliations[affilation].push_back(countryId);
   }
 
   TMappingOldMwm GetMapping() const override { return m_idsMapping; }

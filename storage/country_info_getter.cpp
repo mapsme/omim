@@ -117,15 +117,16 @@ m2::RectD CountryInfoGetter::GetLimitRectForLeaf(TCountryId const & leafCountryI
   return m_countries[it->second].m_rect;
 }
 
-void CountryInfoGetter::GetMatchedRegions(string const & enNamePrefix, IdSet & regions) const
+void CountryInfoGetter::GetMatchedRegions(string const & affiliation, IdSet & regions) const
 {
+  CHECK(m_affiliations, ());
+  auto it = m_affiliations->find(affiliation);
+  if (it == m_affiliations->end())
+    return;
+
   for (size_t i = 0; i < m_countries.size(); ++i)
   {
-    // Match english name with region file name (they are equal in almost all cases).
-    // @todo Do it smarter in future.
-    string s = m_countries[i].m_name;
-    strings::AsciiToLower(s);
-    if (strings::StartsWith(s, enNamePrefix.c_str()))
+    if (binary_search(it->second.begin(), it->second.end(), m_countries[i].m_name))
       regions.push_back(i);
   }
 }
@@ -148,6 +149,11 @@ bool CountryInfoGetter::IsBelongToRegions(string const & fileName, IdSet const &
       return true;
   }
   return false;
+}
+
+void CountryInfoGetter::InitAffiliationsInfo(TMappingAffiliations const * affiliations)
+{
+  m_affiliations = affiliations;
 }
 
 CountryInfoGetter::IdType CountryInfoGetter::FindFirstCountry(m2::PointD const & pt) const
