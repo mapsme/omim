@@ -38,7 +38,8 @@ class ReverseGeocoder
 
 public:
   /// All "Nearby" functions work in this lookup radius.
-  static int constexpr kLookupRadiusM = 500;
+  static int constexpr kDefaultLookupRadiusM = 500;
+  static int constexpr kExtendedLookupRadiusM = 2000;
 
   explicit ReverseGeocoder(Index const & index);
 
@@ -58,6 +59,8 @@ public:
     }
   };
 
+  // Returns the index of the street that matched |keyName| best or
+  // streets.size() if no satisfactory street is found.
   static size_t GetMatchedStreetIndex(string const & keyName, vector<Street> const & streets);
 
   struct Address
@@ -67,6 +70,7 @@ public:
 
     string const & GetHouseNumber() const { return m_building.m_name; }
     string const & GetStreetName() const { return m_street.m_name; }
+    FeatureID const & GetStreetFeatureID() { return m_street.m_id; }
     double GetDistance() const { return m_building.m_distanceMeters; }
   };
 
@@ -75,8 +79,10 @@ public:
   /// @return Sorted by distance streets vector for the specified MwmId.
   //@{
   void GetNearbyStreets(MwmSet::MwmId const & id, m2::PointD const & center,
-                        vector<Street> & streets) const;
-  void GetNearbyStreets(FeatureType & ft, vector<Street> & streets) const;
+                        vector<Street> & streets,
+                        double const lookupRadius = kDefaultLookupRadiusM) const;
+  void GetNearbyStreets(FeatureType & ft, vector<Street> & streets,
+                        double const lookupRadius = kDefaultLookupRadiusM) const;
   //@}
 
   /// @returns [a lot of] nearby feature's streets and feature's street index, if valid ( < vector.size()).
@@ -96,8 +102,9 @@ private:
   {
     Index const & m_index;
     unique_ptr<search::v2::HouseToStreetTable> m_table;
-    MwmSet::MwmHandle m_handle;
   public:
+    MwmSet::MwmHandle m_handle;
+    
     explicit HouseTable(Index const & index) : m_index(index) {}
     bool Get(FeatureID const & fid, uint32_t & streetIndex);
   };

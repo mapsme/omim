@@ -38,14 +38,37 @@ bool MwmContext::GetFeature(uint32_t index, FeatureType & ft) const
   }
 }
 
-bool MwmContext::GetStreetIndex(uint32_t houseId, uint32_t & streetId)
+bool MwmContext::GetStreetIndex(uint32_t houseId, vector<ReverseGeocoder::Street> const & streets, uint32_t & streetId)
 {
   if (!m_houseToStreetTable)
   {
     m_houseToStreetTable = HouseToStreetTable::Load(m_value);
     ASSERT(m_houseToStreetTable, ());
   }
-  return m_houseToStreetTable->Get(houseId, streetId);
+  uint32_t index;
+  m_houseToStreetTable->Get(houseId, index);
+  
+  if (index < streets.size())
+  {
+    streetId = streets[index].m_id.m_index;
+    LOG(LINFO, ("index in bounds"));
+    return true;
+  }
+  else
+  {
+    uint32_t const bit = static_cast<uint32_t>(1) << 31;
+    if ((index & bit) > 0)
+    {
+      streetId = index ^ bit;
+      LOG(LINFO, ("hacky part!"));
+
+      FeatureType h;
+      m_vector.GetByIndex(streetId, h);
+      LOG(LINFO, ("idx =", streetId, "ft =", h));
+      return true;
+    }
+  }
+  return false;
 }
 
 }  // namespace v2
