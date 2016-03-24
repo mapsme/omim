@@ -437,16 +437,13 @@ NSString * const kReportSegue = @"Map2ReportSegue";
   if (!AuthorizationIsNeedCheck() || [ud objectForKey:kUDViralAlertWasShown] || !AuthorizationHaveCredentials())
     return;
 
-  if (osm::Editor::Instance().GetStats().m_edits.size() < 2)
+  if (osm::Editor::Instance().GetStats().m_edits.size() != 2)
     return;
 
   if (!Platform::IsConnected())
     return;
 
-  [self.alertController presentEditorViralAlertWithShareBlock:^
-  {
-
-  }];
+  [self.alertController presentEditorViralAlert];
 
   [ud setObject:[NSDate date] forKey:kUDViralAlertWasShown];
   [ud synchronize];
@@ -552,6 +549,13 @@ NSString * const kReportSegue = @"Map2ReportSegue";
 
 - (void)openEditor
 {
+  using namespace osm_auth_ios;
+  auto const & featureID = self.controlsManager.placePageEntity.info.GetID();
+
+  [Statistics logEvent:kStatEditorEditStart withParameters:@{kStatEditorIsAuthenticated : @(AuthorizationHaveCredentials()),
+                                                             kStatIsOnline : Platform::IsConnected() ? kStatYes : kStatNo,
+                                                        kStatEditorMWMName : @(featureID.GetMwmName().c_str()),
+                                                     kStatEditorMWMVersion : @(featureID.GetMwmVersion())}];
   [self performSegueWithIdentifier:kEditorSegue sender:self.controlsManager.placePageEntity];
 }
 
@@ -685,7 +689,7 @@ NSString * const kReportSegue = @"Map2ReportSegue";
   BOOL const isAfterFirstEdit = AuthorizationIsNeedCheck() && !AuthorizationHaveCredentials() && !AuthorizationIsUserSkip();
   if (isAfterFirstEdit)
   {
-    [[Statistics instance] logEvent:kStatEventName(kStatPlacePage, kStatEditTime)
+    [Statistics logEvent:kStatEventName(kStatPlacePage, kStatEditTime)
                      withParameters:@{kStatValue : kStatAuthorization}];
     [self performSegueWithIdentifier:kAuthorizationSegue sender:nil];
   }

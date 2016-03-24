@@ -732,6 +732,7 @@ void Framework::ShowBookmark(BookmarkAndCategory const & bnc)
   place_page::Info info;
   FillBookmarkInfo(*mark, bnc, info);
   ActivateMapSelection(true, df::SelectionShape::OBJECT_USER_MARK, info);
+  m_lastTapEvent.reset(new df::TapInfo { m_currentModelView.GtoP(info.GetMercator()), false, false, info.GetID() });
 }
 
 void Framework::ShowTrack(Track const & track)
@@ -1071,26 +1072,58 @@ bool Framework::Search(search::SearchParams const & params)
   return true;
 }
 
+bool Framework::GetGroupCountryIdFromFeature(FeatureType const & ft, string & name) const
+{
+  static vector<int8_t> const langIndices = {StringUtf8Multilang::GetLangIndex("en"),
+                                             FeatureType::DEFAULT_LANG,
+                                             StringUtf8Multilang::kInternationalCode};
+
+  for (auto const langIndex : langIndices)
+  {
+    if (!ft.GetName(langIndex, name))
+      continue;
+    if (Storage().IsCoutryIdCountryTreeInnerNode(name))
+      return true;
+  }
+  return false;
+}
+
 bool Framework::SearchInDownloader(DownloaderSearchParams const & params)
 {
-  // @TODO(bykoianko) It's necessary to implement searching in Storage
-  // for group and leaf mwms based on country tree.
-
-  // Searching based on World.mwm.
   search::SearchParams searchParam;
-
   searchParam.m_query = params.m_query;
   searchParam.m_inputLocale = params.m_inputLocale;
   searchParam.SetMode(search::Mode::World);
   searchParam.SetSuggestsEnabled(false);
   searchParam.SetForceSearch(true);
-  searchParam.m_onResults = [this, &params](search::Results const & results)
+  searchParam.m_onResults = [this, params](search::Results const & results)
   {
     DownloaderSearchResults downloaderSearchResults;
     for (auto it = results.Begin(); it != results.End(); ++it)
     {
       if (!it->HasPoint())
         continue;
+
+      if (it->GetResultType() != search::Result::RESULT_LATLON)
+      {
+        FeatureID const & fid = it->GetFeatureID();
+        Index::FeaturesLoaderGuard loader(m_model.GetIndex(), fid.m_mwmId);
+        FeatureType ft;
+        loader.GetFeatureByIndex(fid.m_index, ft);
+        ftypes::Type const type = ftypes::IsLocalityChecker::Instance().GetType(ft);
+
+        if (type == ftypes::COUNTRY || type == ftypes::STATE)
+        {
+          string groupFeatureName;
+          if (GetGroupCountryIdFromFeature(ft, groupFeatureName))
+          {
+            downloaderSearchResults.m_results.emplace_back(groupFeatureName,
+                                                           it->GetString() /* m_matchedName */);
+            continue;
+          }
+        }
+      }
+
       auto const & mercator = it->GetFeatureCenter();
       TCountryId const & countryId = CountryInfoGetter().GetRegionCountryId(mercator);
       if (countryId == kInvalidCountryId)
@@ -1257,6 +1290,7 @@ void Framework::ShowSearchResult(search::Result const & res)
 
   UserMarkContainer::UserMarkForPoi()->SetPtOrg(center);
   ActivateMapSelection(false, df::SelectionShape::OBJECT_POI, info);
+  m_lastTapEvent.reset(new df::TapInfo { m_currentModelView.GtoP(center), false, false, info.GetID() });
 }
 
 size_t Framework::ShowSearchResults(search::Results const & results)
@@ -1669,6 +1703,7 @@ bool Framework::ShowMapForURL(string const & url)
         FillPointInfo(point, name, info);
         ActivateMapSelection(false, df::SelectionShape::OBJECT_POI, info);
       }
+      m_lastTapEvent.reset(new df::TapInfo{ m_currentModelView.GtoP(info.GetMercator()), false, false, info.GetID() });
     }
 
     return true;

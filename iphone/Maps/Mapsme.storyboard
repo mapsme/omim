@@ -55,11 +55,13 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="zBz-nW-lOz">
                                 <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <gestureRecognizers/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="string" keyPath="backgroundColorName" value="pressBackground"/>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
                                     <outlet property="delegate" destination="eCI-mf-eCv" id="nWw-Fy-ADM"/>
+                                    <outletCollection property="gestureRecognizers" destination="zmI-X6-NfL" appends="YES" id="ms4-To-w5e"/>
                                 </connections>
                             </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="q0y-yK-baH" userLabel="UpdateAllView">
@@ -113,6 +115,9 @@
                                     <constraint firstItem="Nik-XU-pbs" firstAttribute="centerY" secondItem="q0y-yK-baH" secondAttribute="centerY" id="jUI-Oj-8KB"/>
                                     <constraint firstAttribute="trailing" secondItem="yiN-gR-5R2" secondAttribute="trailing" id="v6y-np-1cO"/>
                                 </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="backgroundColorName" value="white"/>
+                                </userDefinedRuntimeAttributes>
                                 <variation key="default">
                                     <mask key="constraints">
                                         <exclude reference="jUI-Oj-8KB"/>
@@ -156,6 +161,7 @@
                             </searchBar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="zBz-nW-lOz" firstAttribute="leading" secondItem="ttZ-X0-Odw" secondAttribute="leading" id="7un-Oz-Ck3"/>
                             <constraint firstItem="XeK-11-Ief" firstAttribute="leading" secondItem="fet-TW-V41" secondAttribute="leading" id="95J-ks-5nO"/>
@@ -185,6 +191,11 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="y2m-cz-WWh" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="zmI-X6-NfL">
+                    <connections>
+                        <action selector="longPress:" destination="eCI-mf-eCv" id="ExE-Gq-m4x"/>
+                    </connections>
+                </pongPressGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="3872" y="1224"/>
         </scene>
@@ -203,11 +214,13 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="1" translatesAutoresizingMaskIntoConstraints="NO" id="RAh-Cr-4I1">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
+                                <gestureRecognizers/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="string" keyPath="backgroundColorName" value="pressBackground"/>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
                                     <outlet property="delegate" destination="cIk-gU-IeI" id="d9Q-ue-dKw"/>
+                                    <outletCollection property="gestureRecognizers" destination="0ix-3r-un4" appends="YES" id="Fyy-gc-1rD"/>
                                 </connections>
                             </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lqq-c4-P1I" userLabel="UpdateAllView">
@@ -260,6 +273,9 @@
                                     <constraint firstItem="etq-PP-stT" firstAttribute="leading" secondItem="Lqq-c4-P1I" secondAttribute="leading" constant="16" id="laV-5t-x5P"/>
                                     <constraint firstItem="etq-PP-stT" firstAttribute="centerY" secondItem="Lqq-c4-P1I" secondAttribute="centerY" id="sBV-HW-CLa"/>
                                 </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="backgroundColorName" value="white"/>
+                                </userDefinedRuntimeAttributes>
                                 <variation key="default">
                                     <mask key="constraints">
                                         <exclude reference="gM5-mR-fRE"/>
@@ -321,6 +337,11 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CQ8-k2-EYn" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="0ix-3r-un4">
+                    <connections>
+                        <action selector="longPress:" destination="cIk-gU-IeI" id="XE7-v6-PXu"/>
+                    </connections>
+                </pongPressGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="4531" y="1224"/>
         </scene>
@@ -475,6 +496,7 @@
                                 <accessibility key="accessibilityConfiguration" identifier="ContainerView"/>
                                 <constraints>
                                     <constraint firstItem="8GY-gg-9ty" firstAttribute="centerX" secondItem="aSi-go-AxL" secondAttribute="centerX" id="0MV-lq-uuk"/>
+                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="B1q-Pf-ckt" secondAttribute="trailing" priority="750" constant="12" id="2rV-MQ-mfy"/>
                                     <constraint firstItem="Kox-tu-DVp" firstAttribute="top" secondItem="aSi-go-AxL" secondAttribute="top" constant="36" id="3Al-j1-FaY"/>
                                     <constraint firstItem="KPp-Sj-AzL" firstAttribute="top" secondItem="Hs7-0i-ftc" secondAttribute="bottom" priority="500" constant="10" id="8X5-JG-GPL"/>
                                     <constraint firstItem="Hs7-0i-ftc" firstAttribute="top" secondItem="Kox-tu-DVp" secondAttribute="bottom" priority="250" constant="80" id="8d5-4Y-Vwo"/>
@@ -482,6 +504,7 @@
                                     <constraint firstItem="Hs7-0i-ftc" firstAttribute="top" secondItem="B1q-Pf-ckt" secondAttribute="bottom" priority="250" constant="16" id="EAh-12-SGQ"/>
                                     <constraint firstItem="KPp-Sj-AzL" firstAttribute="centerX" secondItem="aSi-go-AxL" secondAttribute="centerX" id="JKt-fl-YFD"/>
                                     <constraint firstAttribute="trailing" secondItem="Kox-tu-DVp" secondAttribute="trailing" constant="16" id="LXV-yG-TMr"/>
+                                    <constraint firstItem="B1q-Pf-ckt" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="aSi-go-AxL" secondAttribute="leading" priority="750" constant="12" id="Oob-n6-UtB"/>
                                     <constraint firstItem="Hs7-0i-ftc" firstAttribute="centerX" secondItem="aSi-go-AxL" secondAttribute="centerX" id="b7R-uH-Lrc"/>
                                     <constraint firstAttribute="bottom" secondItem="KPp-Sj-AzL" secondAttribute="bottom" constant="20" id="hs0-7V-gdN"/>
                                     <constraint firstItem="vDh-VK-Hht" firstAttribute="height" secondItem="aSi-go-AxL" secondAttribute="height" multiplier="0.3" priority="750" id="oZ8-dU-N1J"/>
