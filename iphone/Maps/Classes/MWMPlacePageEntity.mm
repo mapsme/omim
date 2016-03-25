@@ -50,7 +50,7 @@ void initFieldsMap()
   place_page::Info m_info;
 }
 
-- (instancetype)initWithInfo:(const place_page::Info &)info
+- (instancetype _Nullable)initWithInfo:(const place_page::Info &)info
 {
   self = [super init];
   if (self)

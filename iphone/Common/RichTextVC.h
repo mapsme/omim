@@ -2,6 +2,6 @@
 
 @interface RichTextVC : MWMViewController
 
-- (instancetype)initWithText:(NSString *)text;
+- (instancetype _Nullable)initWithText:(NSString *)text;
 
 @end

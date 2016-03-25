@@ -43,8 +43,8 @@ NSString * getVerifier(NSString * urlString)
 
 @interface MWMAuthorizationWebViewLoginViewController () <UIWebViewDelegate>
 
-@property (weak, nonatomic) IBOutlet UIWebView * webView;
-@property (weak, nonatomic) IBOutlet UIView * spinnerView;
+@property (weak, nonatomic) IBOutlet UIWebView * _Nullable webView;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable spinnerView;
 
 @property (nonatomic) MWMCircularProgress * spinner;
 

@@ -5,8 +5,8 @@
 
 @interface MWMSearchHistoryRequestCell ()
 
-@property (weak, nonatomic) IBOutlet UILabel * title;
-@property (weak, nonatomic) IBOutlet UIImageView * icon;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable title;
+@property (weak, nonatomic) IBOutlet UIImageView * _Nullable icon;
 
 @end
 

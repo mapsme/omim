@@ -2,7 +2,7 @@
 
 @interface MWMRoutePointCell () <UITextFieldDelegate>
 
-@property (weak, nonatomic) IBOutlet UIView * moveView;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable moveView;
 
 @end
 

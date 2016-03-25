@@ -16,7 +16,7 @@ namespace
 
 @interface MWMMapDownloaderSubplaceTableViewCell ()
 
-@property (weak, nonatomic) IBOutlet UILabel * subPlace;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable subPlace;
 
 @end
 

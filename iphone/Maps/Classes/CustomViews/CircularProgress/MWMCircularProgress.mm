@@ -21,7 +21,7 @@ UINib * const progressViewNib = [UINib nibWithNibName:@"MWMCircularProgress" bun
 
 @implementation MWMCircularProgress
 
-+ (nonnull instancetype)downloaderProgressForParentView:(nonnull UIView *)parentView
++ (instancetype _Nullable)downloaderProgressForParentView:(UIView * _Nonnull)parentView
 {
   MWMCircularProgress * progress = [[MWMCircularProgress alloc] initWithParentView:parentView];
 
@@ -47,7 +47,7 @@ UINib * const progressViewNib = [UINib nibWithNibName:@"MWMCircularProgress" bun
   return progress;
 }
 
-- (nonnull instancetype)initWithParentView:(nonnull UIView *)parentView
+- (instancetype _Nullable)initWithParentView:(UIView * _Nonnull)parentView
 {
   self = [super init];
   if (self)
@@ -72,13 +72,13 @@ UINib * const progressViewNib = [UINib nibWithNibName:@"MWMCircularProgress" bun
   self.nextProgressToAnimate = nil;
 }
 
-- (void)setImage:(nonnull UIImage *)image forStates:(MWMCircularProgressStateVec const &)states
+- (void)setImage:(UIImage * _Nonnull)image forStates:(MWMCircularProgressStateVec const &)states
 {
   for (auto const & state : states)
     [self.rootView setImage:image forState:state];
 }
 
-- (void)setColor:(nonnull UIColor *)color forStates:(MWMCircularProgressStateVec const &)states
+- (void)setColor:(UIColor * _Nonnull)color forStates:(MWMCircularProgressStateVec const &)states
 {
   for (auto const & state : states)
     [self.rootView setColor:color forState:state];

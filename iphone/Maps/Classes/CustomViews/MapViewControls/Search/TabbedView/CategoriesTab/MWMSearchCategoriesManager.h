@@ -3,7 +3,7 @@
 
 @interface MWMSearchCategoriesManager : NSObject <UITableViewDataSource, UITableViewDelegate>
 
-@property (weak, nonatomic) id<MWMSearchTabbedViewProtocol> delegate;
+@property (weak, nonatomic) id<MWMSearchTabbedViewProtocol> _Nullable delegate;
 
 - (void)attachCell:(MWMSearchTabbedCollectionViewCell *)cell;
 

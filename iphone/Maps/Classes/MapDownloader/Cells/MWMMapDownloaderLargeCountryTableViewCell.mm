@@ -3,7 +3,7 @@
 
 @interface MWMMapDownloaderLargeCountryTableViewCell ()
 
-@property (weak, nonatomic) IBOutlet UILabel * mapsCount;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable mapsCount;
 
 @end
 

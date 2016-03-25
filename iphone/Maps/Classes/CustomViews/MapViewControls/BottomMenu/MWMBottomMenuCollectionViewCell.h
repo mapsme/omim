@@ -1,6 +1,6 @@
 @interface MWMBottomMenuCollectionViewCell : UICollectionViewCell
 
-@property (weak, nonatomic) IBOutlet UIImageView * icon;
+@property (weak, nonatomic) IBOutlet UIImageView * _Nullable icon;
 @property (nonatomic, readonly) BOOL isEnabled;
 
 - (void)configureWithImageName:(NSString *)imageName

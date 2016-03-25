@@ -16,7 +16,7 @@ using namespace routing::turns;
 
 @implementation MWMLanesPanel
 
-- (instancetype)initWithParentView:(UIView *)parentView
+- (instancetype _Nullable)initWithParentView:(UIView *)parentView
 {
   self = [super initWithFrame:{{}, {360., self.defaultHeight}}];
   if (self)

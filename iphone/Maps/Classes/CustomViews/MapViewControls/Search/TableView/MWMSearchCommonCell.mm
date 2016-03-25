@@ -12,14 +12,14 @@
 
 @interface MWMSearchCommonCell ()
 
-@property (weak, nonatomic) IBOutlet UILabel * typeLabel;
-@property (weak, nonatomic) IBOutlet UIView * infoView;
-@property (weak, nonatomic) IBOutlet UILabel * infoLabel;
-@property (weak, nonatomic) IBOutlet UIView * infoRatingView;
-@property (nonatomic) IBOutletCollection(UIImageView) NSArray * infoRatingStars;
-@property (weak, nonatomic) IBOutlet UILabel * locationLabel;
-@property (weak, nonatomic) IBOutlet UILabel * distanceLabel;
-@property (weak, nonatomic) IBOutlet UIView * closedView;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable typeLabel;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable infoView;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable infoLabel;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable infoRatingView;
+@property (nonatomic) IBOutletCollection(UIImageView) NSArray * _Nullable infoRatingStars;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable locationLabel;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable distanceLabel;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable closedView;
 
 @end
 

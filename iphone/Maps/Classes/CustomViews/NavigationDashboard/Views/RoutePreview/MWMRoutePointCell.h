@@ -10,8 +10,8 @@
 
 @interface MWMRoutePointCell : UICollectionViewCell
 
-@property (weak, nonatomic) IBOutlet UITextField * title;
-@property (weak, nonatomic) IBOutlet UILabel * number;
-@property (weak, nonatomic) id<MWMRoutePointCellDelegate> delegate;
+@property (weak, nonatomic) IBOutlet UITextField * _Nullable title;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable number;
+@property (weak, nonatomic) id<MWMRoutePointCellDelegate> _Nullable delegate;
 
 @end

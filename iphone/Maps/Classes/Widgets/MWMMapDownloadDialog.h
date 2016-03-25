@@ -6,7 +6,7 @@
 
 @interface MWMMapDownloadDialog : UIView
 
-+ (instancetype)dialogForController:(MapViewController *)controller;
++ (instancetype _Nullable)dialogForController:(MapViewController *)controller;
 
 - (void)processViewportCountryEvent:(storage::TCountryId const &)countryId;
 

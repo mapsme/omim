@@ -2,8 +2,8 @@
 
 @interface AppInfo : NSObject
 
-+ (instancetype)sharedInfo;
-- (instancetype)init __attribute__((unavailable("init is not available")));
++ (instancetype _Nullable)sharedInfo;
+- (instancetype _Nullable)init __attribute__((unavailable("init is not available")));
 
 @property (nonatomic, readonly) NSString * countryCode;
 @property (nonatomic, readonly) NSString * uniqueId;

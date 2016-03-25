@@ -14,17 +14,17 @@ static NSUInteger sWebViewHeight = 0;
 
 @interface MWMPlacePageBookmarkCell () <UITextFieldDelegate, UIWebViewDelegate>
 
-@property (weak, nonatomic) IBOutlet UITextField * title;
-@property (weak, nonatomic) IBOutlet UIButton * categoryButton;
-@property (weak, nonatomic) IBOutlet UIButton * markButton;
+@property (weak, nonatomic) IBOutlet UITextField * _Nullable title;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable categoryButton;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable markButton;
 
-@property (weak, nonatomic) IBOutlet UIView * note;
-@property (weak, nonatomic) IBOutlet UILabel * noteLabel;
-@property (weak, nonatomic) IBOutlet UIWebView * noteWebView;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * noteViewHeight;
-@property (weak, nonatomic) IBOutlet UIButton * editBookmarkButton;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable note;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable noteLabel;
+@property (weak, nonatomic) IBOutlet UIWebView * _Nullable noteWebView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable noteViewHeight;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable editBookmarkButton;
 
-@property (weak, nonatomic) MWMPlacePage * placePage;
+@property (weak, nonatomic) MWMPlacePage * _Nullable placePage;
 
 @property (nonatomic) BOOL forHeight;
 

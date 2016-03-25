@@ -4,7 +4,7 @@
 
 @interface MWMOpeningHoursAddScheduleTableViewCell ()
 
-@property (weak, nonatomic) IBOutlet UIButton * addScheduleButton;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable addScheduleButton;
 
 @end
 

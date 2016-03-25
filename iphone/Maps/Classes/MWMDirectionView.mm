@@ -7,14 +7,14 @@ static CGFloat const kDirectionArrowSide = IPAD ? 260. : 160.;
 
 @interface MWMDirectionView ()
 
-@property (weak, nonatomic) MWMPlacePageViewManager * manager;
+@property (weak, nonatomic) MWMPlacePageViewManager * _Nullable manager;
 @property (nonatomic) CGSize defaultSize;
 
 @end
 
 @implementation MWMDirectionView
 
-- (instancetype)initWithManager:(MWMPlacePageViewManager *)manager
+- (instancetype _Nullable)initWithManager:(MWMPlacePageViewManager *)manager
 {
   self = [[[NSBundle mainBundle] loadNibNamed:kDirectionViewNibName owner:nil options:nil] firstObject];
   [self setup:manager];

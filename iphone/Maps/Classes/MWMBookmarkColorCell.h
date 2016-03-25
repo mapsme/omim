@@ -2,9 +2,9 @@
 
 @interface MWMBookmarkColorCell : MWMTableViewCell
 
-@property (weak, nonatomic) IBOutlet UIButton * colorButton;
-@property (weak, nonatomic) IBOutlet UILabel * titleLabel;
-@property (weak, nonatomic) IBOutlet UIImageView * approveImageView;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable colorButton;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable titleLabel;
+@property (weak, nonatomic) IBOutlet UIImageView * _Nullable approveImageView;
 
 - (void)configureWithColorString:(NSString *)colorString;
 

@@ -7,7 +7,7 @@
   return [UIStoryboard storyboardWithName:@"Welcome" bundle:[NSBundle mainBundle]];
 }
 
-+ (instancetype)welcomeController
++ (instancetype _Nullable)welcomeController
 {
   return [[self welcomeStoryboard] instantiateViewControllerWithIdentifier:[self className]];
 }

@@ -9,6 +9,6 @@
 
 @interface AddSetVC : MWMTableViewController
 
-@property (weak, nonatomic) id<AddSetVCDelegate> delegate;
+@property (weak, nonatomic) id<AddSetVCDelegate> _Nullable delegate;
 
 @end

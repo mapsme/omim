@@ -39,7 +39,7 @@ using MWMPlacePageCellTypeValueMap = map<MWMPlacePageCellType, string>;
 @property (copy, nonatomic) NSString * bookmarkColor;
 
 @property (nonatomic) BookmarkAndCategory bac;
-@property (weak, nonatomic) MWMPlacePageViewManager * manager;
+@property (weak, nonatomic) MWMPlacePageViewManager * _Nullable manager;
 
 - (FeatureID const &)featureID;
 - (BOOL)isMyPosition;
@@ -50,7 +50,7 @@ using MWMPlacePageCellTypeValueMap = map<MWMPlacePageCellType, string>;
 - (NSString *)apiURL;
 - (string)titleForNewBookmark;
 
-- (instancetype)initWithInfo:(place_page::Info const &)info;
+- (instancetype _Nullable)initWithInfo:(place_page::Info const &)info;
 - (void)synchronize;
 
 - (void)toggleCoordinateSystem;

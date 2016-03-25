@@ -4,7 +4,7 @@
 
 @interface MWMLanesPanel : MWMRouteHelperPanel
 
-- (instancetype)initWithParentView:(UIView *)parentView;
+- (instancetype _Nullable)initWithParentView:(UIView *)parentView;
 - (void)configureWithLanes:(vector<location::FollowingInfo::SingleLaneInfoClient> const &)lanes;
 
 @end

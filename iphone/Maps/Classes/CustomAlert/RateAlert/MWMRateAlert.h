@@ -2,6 +2,6 @@
 
 @interface MWMRateAlert : MWMAlert
 
-+ (instancetype)alert;
++ (instancetype _Nullable)alert;
 
 @end

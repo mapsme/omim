@@ -10,7 +10,7 @@ static NSString * const kBookmarksCellIdentifier = @"MWMSearchBookmarksCell";
 
 @interface MWMSearchBookmarksManager ()
 
-@property (weak, nonatomic) MWMSearchTabbedCollectionViewCell * cell;
+@property (weak, nonatomic) MWMSearchTabbedCollectionViewCell * _Nullable cell;
 
 @property (nonatomic) MWMSearchBookmarksCell * sizingCell;
 
@@ -18,7 +18,7 @@ static NSString * const kBookmarksCellIdentifier = @"MWMSearchBookmarksCell";
 
 @implementation MWMSearchBookmarksManager
 
-- (instancetype)init
+- (instancetype _Nullable)init
 {
   self = [super init];
   if (self)

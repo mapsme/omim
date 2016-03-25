@@ -29,18 +29,18 @@ extern NSString * const kBookmarksChangedNotification;
 
 @interface MWMPlacePageViewManager () <LocationObserver>
 
-@property (weak, nonatomic) UIViewController * ownerViewController;
+@property (weak, nonatomic) UIViewController * _Nullable ownerViewController;
 @property (nonatomic, readwrite) MWMPlacePageEntity * entity;
 @property (nonatomic) MWMPlacePage * placePage;
 @property (nonatomic) MWMDirectionView * directionView;
 
-@property (weak, nonatomic) id<MWMPlacePageViewManagerProtocol> delegate;
+@property (weak, nonatomic) id<MWMPlacePageViewManagerProtocol> _Nullable delegate;
 
 @end
 
 @implementation MWMPlacePageViewManager
 
-- (instancetype)initWithViewController:(UIViewController *)viewController
+- (instancetype _Nullable)initWithViewController:(UIViewController *)viewController
                               delegate:(id<MWMPlacePageViewManagerProtocol>)delegate
 {
   self = [super init];

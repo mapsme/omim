@@ -10,23 +10,23 @@ CGFloat const kButtonsLooseSpacing = 60.0;
 
 @interface MWMDownloadMapRequestView ()
 
-@property (weak, nonatomic) IBOutlet UILabel * mapTitleLabel;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * verticalFreeSpace;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * bottomSpacing;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * unknownPositionLabelBottomOffset;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable mapTitleLabel;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable verticalFreeSpace;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable bottomSpacing;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable unknownPositionLabelBottomOffset;
 
-@property (weak, nonatomic) IBOutlet UIButton * downloadMapButton;
-@property (weak, nonatomic) IBOutlet UILabel * undefinedLocationLabel;
-@property (weak, nonatomic) IBOutlet UIButton * selectAnotherMapButton;
-@property (weak, nonatomic) IBOutlet UIView * progressViewWrapper;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable downloadMapButton;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable undefinedLocationLabel;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable selectAnotherMapButton;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable progressViewWrapper;
 
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * betweenButtonsSpace;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable betweenButtonsSpace;
 
 @end
 
 @implementation MWMDownloadMapRequestView
 
-- (instancetype)initWithCoder:(NSCoder *)aDecoder
+- (instancetype _Nullable)initWithCoder:(NSCoder *)aDecoder
 {
   self = [super initWithCoder:aDecoder];
   if (self)

@@ -15,9 +15,9 @@
 
 @interface MWMRoutePreview : MWMNavigationView
 
-@property (weak, nonatomic, readonly) IBOutlet UIButton * extendButton;
-@property (weak, nonatomic) id<MWMRoutePreviewDataSource> dataSource;
-@property (weak, nonatomic) MWMNavigationDashboardManager * dashboardManager;
+@property (weak, nonatomic, readonly) IBOutlet UIButton * _Nullable extendButton;
+@property (weak, nonatomic) id<MWMRoutePreviewDataSource> _Nullable dataSource;
+@property (weak, nonatomic) MWMNavigationDashboardManager * _Nullable dashboardManager;
 
 - (MWMCircularProgress *)pedestrianProgress;
 - (MWMCircularProgress *)vehicleProgress;

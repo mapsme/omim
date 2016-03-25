@@ -24,12 +24,12 @@ BOOL isCompactForCellWidth(CGFloat width)
 
 @interface MWMOpeningHoursClosedSpanTableViewCell ()
 
-@property (weak, nonatomic) IBOutlet UILabel * hoursClosedLabel;
-@property (weak, nonatomic) IBOutlet UILabel * timeSpanLabel;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable hoursClosedLabel;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable timeSpanLabel;
 
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * timeSpanHorizontalAlignment;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * timeSpanVerticalAlignment;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * hoursClosedTrailing;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable timeSpanHorizontalAlignment;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable timeSpanVerticalAlignment;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable hoursClosedTrailing;
 
 @property (nonatomic) BOOL isCompact;
 

@@ -15,14 +15,14 @@ static NSString * kStatisticsEvent = @"Default Alert";
 
 @interface MWMDefaultAlert ()
 
-@property (weak, nonatomic) IBOutlet UILabel * messageLabel;
-@property (weak, nonatomic) IBOutlet UIButton * rightButton;
-@property (weak, nonatomic) IBOutlet UIButton * leftButton;
-@property (weak, nonatomic) IBOutlet UILabel * titleLabel;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * rightButtonWidth;
-@property (copy, nonatomic) TMWMVoidBlock rightButtonAction;
-@property (copy, nonatomic) TMWMVoidBlock leftButtonAction;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *dividerTop;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable messageLabel;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable rightButton;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable leftButton;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable titleLabel;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable rightButtonWidth;
+@property (copy, nonatomic) TMWMVoidBlock _Nullable rightButtonAction;
+@property (copy, nonatomic) TMWMVoidBlock _Nullable leftButtonAction;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable dividerTop;
 
 @end
 
@@ -30,7 +30,7 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
 
 @implementation MWMDefaultAlert
 
-+ (instancetype)routeFileNotExistAlert
++ (instancetype _Nullable)routeFileNotExistAlert
 {
   kStatisticsEvent = @"Route File Not Exist Alert";
   return [self defaultAlertWithTitle:@"dialog_routing_download_files"
@@ -40,7 +40,7 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
                    rightButtonAction:nil];
 }
 
-+ (instancetype)routeNotFoundAlert
++ (instancetype _Nullable)routeNotFoundAlert
 {
   kStatisticsEvent = @"Route File Not Exist Alert";
   NSString * message =
@@ -53,7 +53,7 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
                    rightButtonAction:nil];
 }
 
-+ (instancetype)locationServiceNotSupportedAlert
++ (instancetype _Nullable)locationServiceNotSupportedAlert
 {
   kStatisticsEvent = @"Location Service Not Supported Alert";
   return [self defaultAlertWithTitle:@"device_doesnot_support_location_services"
@@ -63,7 +63,7 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
                    rightButtonAction:nil];
 }
 
-+ (instancetype)noConnectionAlert
++ (instancetype _Nullable)noConnectionAlert
 {
   kStatisticsEvent = @"No Connection Alert";
   MWMDefaultAlert * alert = [self defaultAlertWithTitle:@"common_check_internet_connection_dialog"
@@ -75,7 +75,7 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
   return alert;
 }
 
-+ (instancetype)migrationProhibitedAlert
++ (instancetype _Nullable)migrationProhibitedAlert
 {
   kStatisticsEvent = @"Migration Prohibited Alert";
   MWMDefaultAlert * alert = [self defaultAlertWithTitle:@"no_migration_during_navigation"
@@ -87,7 +87,7 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
   return alert;
 }
 
-+ (instancetype)unsavedEditsAlertWithOkBlock:(TMWMVoidBlock)okBlock
++ (instancetype _Nullable)unsavedEditsAlertWithOkBlock:(TMWMVoidBlock)okBlock
 {
   kStatisticsEvent = @"Editor unsaved changes on delete";
   return [self defaultAlertWithTitle:@"please_note"
@@ -97,7 +97,7 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
                    rightButtonAction:okBlock];
 }
 
-+ (instancetype)noWiFiAlertWithName:(NSString *)name okBlock:(TMWMVoidBlock)okBlock
++ (instancetype _Nullable)noWiFiAlertWithName:(NSString *)name okBlock:(TMWMVoidBlock)okBlock
 {
   kStatisticsEvent = @"No WiFi Alert";
   NSString * title = [NSString stringWithFormat:L(@"common_no_wifi_dialog"), name];
@@ -110,7 +110,7 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
   return alert;
 }
 
-+ (instancetype)endPointNotFoundAlert
++ (instancetype _Nullable)endPointNotFoundAlert
 {
   kStatisticsEvent = @"End Point Not Found Alert";
   NSString * message =
@@ -123,7 +123,7 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
                    rightButtonAction:nil];
 }
 
-+ (instancetype)startPointNotFoundAlert
++ (instancetype _Nullable)startPointNotFoundAlert
 {
   kStatisticsEvent = @"Start Point Not Found Alert";
   NSString * message =
@@ -136,7 +136,7 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
                    rightButtonAction:nil];
 }
 
-+ (instancetype)internalRoutingErrorAlert
++ (instancetype _Nullable)internalRoutingErrorAlert
 {
   kStatisticsEvent = @"Internal Routing Error Alert";
   NSString * message =
@@ -149,7 +149,7 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
                    rightButtonAction:nil];
 }
 
-+ (instancetype)incorrectFeauturePositionAlert
++ (instancetype _Nullable)incorrectFeauturePositionAlert
 {
   kStatisticsEvent = @"Incorrect Feature Possition Alert";
   return [self defaultAlertWithTitle:@"dialog_incorrect_feature_position"
@@ -159,7 +159,7 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
                    rightButtonAction:nil];
 }
 
-+ (instancetype)internalErrorAlert
++ (instancetype _Nullable)internalErrorAlert
 {
   kStatisticsEvent = @"Internal Error Alert";
   return [self defaultAlertWithTitle:@"dialog_routing_system_error"
@@ -169,7 +169,7 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
                    rightButtonAction:nil];
 }
 
-+ (instancetype)invalidUserNameOrPasswordAlert
++ (instancetype _Nullable)invalidUserNameOrPasswordAlert
 {
   kStatisticsEvent = @"Invalid User Name or Password Alert";
   return [self defaultAlertWithTitle:@"invalid_username_or_password"
@@ -179,7 +179,7 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
                    rightButtonAction:nil];
 }
 
-+ (instancetype)noCurrentPositionAlert
++ (instancetype _Nullable)noCurrentPositionAlert
 {
   kStatisticsEvent = @"No Current Position Alert";
   NSString * message =
@@ -192,7 +192,7 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
                    rightButtonAction:nil];
 }
 
-+ (instancetype)disabledLocationAlert
++ (instancetype _Nullable)disabledLocationAlert
 {
   kStatisticsEvent = @"Disabled Location Alert";
   TMWMVoidBlock action = ^{
@@ -205,7 +205,7 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
                               rightButtonAction:action];
 }
 
-+ (instancetype)pointsInDifferentMWMAlert
++ (instancetype _Nullable)pointsInDifferentMWMAlert
 {
   kStatisticsEvent = @"Points In Different MWM Alert";
   return [self defaultAlertWithTitle:@"routing_failed_cross_mwm_building"
@@ -215,7 +215,7 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
                    rightButtonAction:nil];
 }
 
-+ (instancetype)point2PointAlertWithOkBlock:(TMWMVoidBlock)okBlock needToRebuild:(BOOL)needToRebuild
++ (instancetype _Nullable)point2PointAlertWithOkBlock:(TMWMVoidBlock)okBlock needToRebuild:(BOOL)needToRebuild
 {
   if (needToRebuild)
   {
@@ -235,7 +235,7 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
   }
 }
 
-+ (instancetype)disableAutoDownloadAlertWithOkBlock:(TMWMVoidBlock)okBlock
++ (instancetype _Nullable)disableAutoDownloadAlertWithOkBlock:(TMWMVoidBlock)okBlock
 {
   kStatisticsEvent = @"Disable Auto Download Alert";
   MWMDefaultAlert * alert = [self defaultAlertWithTitle:@"disable_auto_download"
@@ -247,7 +247,7 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
   return alert;
 }
 
-+ (instancetype)downloaderNoConnectionAlertWithOkBlock:(TMWMVoidBlock)okBlock cancelBlock:(TMWMVoidBlock)cancelBlock
++ (instancetype _Nullable)downloaderNoConnectionAlertWithOkBlock:(TMWMVoidBlock)okBlock cancelBlock:(TMWMVoidBlock)cancelBlock
 {
   kStatisticsEvent = @"Downloader No Connection Alert";
   MWMDefaultAlert * alert = [self defaultAlertWithTitle:@"downloader_status_failed"
@@ -260,7 +260,7 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
   return alert;
 }
 
-+ (instancetype)downloaderNotEnoughSpaceAlert
++ (instancetype _Nullable)downloaderNotEnoughSpaceAlert
 {
   kStatisticsEvent = @"Downloader Not Enough Space Alert";
   MWMDefaultAlert * alert = [self defaultAlertWithTitle:@"downloader_no_space_title"
@@ -272,7 +272,7 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
   return alert;
 }
 
-+ (instancetype)downloaderInternalErrorAlertWithOkBlock:(TMWMVoidBlock)okBlock cancelBlock:(TMWMVoidBlock)cancelBlock
++ (instancetype _Nullable)downloaderInternalErrorAlertWithOkBlock:(TMWMVoidBlock)okBlock cancelBlock:(TMWMVoidBlock)cancelBlock
 {
   kStatisticsEvent = @"Downloader Internal Error Alert";
   MWMDefaultAlert * alert = [self defaultAlertWithTitle:@"migration_download_error_dialog"
@@ -285,7 +285,7 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
   return alert;
 }
 
-+ (instancetype)downloaderNeedUpdateAlertWithOkBlock:(TMWMVoidBlock)okBlock
++ (instancetype _Nullable)downloaderNeedUpdateAlertWithOkBlock:(TMWMVoidBlock)okBlock
 {
   kStatisticsEvent = @"Downloader Need Update Alert";
   MWMDefaultAlert * alert = [self defaultAlertWithTitle:@"downloader_need_update_title"
@@ -297,7 +297,7 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
   return alert;
 }
 
-+ (instancetype)routingMigrationAlertWithOkBlock:(TMWMVoidBlock)okBlock
++ (instancetype _Nullable)routingMigrationAlertWithOkBlock:(TMWMVoidBlock)okBlock
 {
   kStatisticsEvent = @"Routing Need Migration Alert";
   MWMDefaultAlert * alert = [self defaultAlertWithTitle:@"downloader_update_maps"
@@ -308,11 +308,11 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
   return alert;
 }
 
-+ (instancetype)defaultAlertWithTitle:(nonnull NSString *)title
-                              message:(nullable NSString *)message
-                     rightButtonTitle:(nonnull NSString *)rightButtonTitle
-                      leftButtonTitle:(nullable NSString *)leftButtonTitle
-                    rightButtonAction:(nullable TMWMVoidBlock)action
++ (instancetype _Nullable)defaultAlertWithTitle:(NSString * _Nonnull)title
+                              message:(NSString * _Nullable)message
+                     rightButtonTitle:(NSString * _Nonnull)rightButtonTitle
+                      leftButtonTitle:(NSString * _Nullable)leftButtonTitle
+                    rightButtonAction:(TMWMVoidBlock _Nullable)action
 {
   [Statistics logEvent:kStatisticsEvent withParameters:@{kStatAction : kStatOpen}];
   MWMDefaultAlert * alert = [

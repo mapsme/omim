@@ -3,7 +3,7 @@
 
 @interface MWMSearchHistoryClearCell ()
 
-@property (weak, nonatomic) IBOutlet UIImageView * icon;
+@property (weak, nonatomic) IBOutlet UIImageView * _Nullable icon;
 
 @end
 

@@ -10,7 +10,7 @@ using namespace storage;
 
 @interface MWMMapDownloaderDataSource ()
 
-@property (weak, nonatomic) id<MWMMapDownloaderProtocol> delegate;
+@property (weak, nonatomic) id<MWMMapDownloaderProtocol> _Nullable delegate;
 
 @property (nonatomic, readwrite) BOOL needFullReload;
 
@@ -18,7 +18,7 @@ using namespace storage;
 
 @implementation MWMMapDownloaderDataSource
 
-- (instancetype)initWithDelegate:(id<MWMMapDownloaderProtocol>)delegate
+- (instancetype _Nullable)initWithDelegate:(id<MWMMapDownloaderProtocol>)delegate
 {
   self = [super init];
   if (self)

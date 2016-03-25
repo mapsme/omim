@@ -2,7 +2,7 @@
 
 @interface MWMMapDownloaderDefaultDataSource : MWMMapDownloaderDataSource
 
-- (instancetype)initForRootCountryId:(NSString *)countryId delegate:(id<MWMMapDownloaderProtocol>)delegate;
+- (instancetype _Nullable)initForRootCountryId:(NSString *)countryId delegate:(id<MWMMapDownloaderProtocol>)delegate;
 - (void)reload;
 
 @end

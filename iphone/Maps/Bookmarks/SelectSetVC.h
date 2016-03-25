@@ -4,8 +4,8 @@
 
 @interface SelectSetVC : MWMTableViewController
 
-- (instancetype)initWithPlacePageManager:(MWMPlacePageViewManager *)manager;
+- (instancetype _Nullable)initWithPlacePageManager:(MWMPlacePageViewManager *)manager;
 
-@property (weak, nonatomic) UINavigationController * iPadOwnerNavigationController;
+@property (weak, nonatomic) UINavigationController * _Nullable iPadOwnerNavigationController;
 
 @end

@@ -6,10 +6,10 @@
 
 @interface MWMEditorTextTableViewCell () <UITextFieldDelegate>
 
-@property (weak, nonatomic) IBOutlet UIImageView * icon;
-@property (weak, nonatomic) IBOutlet UITextField * textField;
+@property (weak, nonatomic) IBOutlet UIImageView * _Nullable icon;
+@property (weak, nonatomic) IBOutlet UITextField * _Nullable textField;
 
-@property (weak, nonatomic) id<MWMEditorCellProtocol> delegate;
+@property (weak, nonatomic) id<MWMEditorCellProtocol> _Nullable delegate;
 
 @end
 

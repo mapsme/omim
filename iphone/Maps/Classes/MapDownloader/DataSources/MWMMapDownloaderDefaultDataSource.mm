@@ -49,7 +49,7 @@ using namespace storage;
 
 @synthesize isParentRoot = _isParentRoot;
 
-- (instancetype)initForRootCountryId:(NSString *)countryId delegate:(id<MWMMapDownloaderProtocol>)delegate
+- (instancetype _Nullable)initForRootCountryId:(NSString *)countryId delegate:(id<MWMMapDownloaderProtocol>)delegate
 {
   self = [super initWithDelegate:delegate];
   if (self)

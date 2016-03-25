@@ -13,7 +13,7 @@ static NSString * const kETAKey = @"eta";
 
 @implementation RouteState
 
-+ (instancetype)savedState
++ (instancetype _Nullable)savedState
 {
   RouteState * const state = [[super alloc] init];
   if (state)

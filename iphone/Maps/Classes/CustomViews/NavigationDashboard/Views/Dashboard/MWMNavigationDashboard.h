@@ -4,16 +4,16 @@
 
 @interface MWMNavigationDashboard : MWMNavigationView
 
-@property (weak, nonatomic) IBOutlet UIImageView * direction;
-@property (weak, nonatomic) IBOutlet UILabel * distanceToNextAction;
-@property (weak, nonatomic) IBOutlet UILabel * distanceToNextActionUnits;
-@property (weak, nonatomic) IBOutlet UILabel * distanceLeft;
-@property (weak, nonatomic) IBOutlet UILabel * eta;
-@property (weak, nonatomic) IBOutlet UILabel * arrivalsTimeLabel;
-@property (weak, nonatomic) IBOutlet UILabel * roundRoadLabel;
-@property (weak, nonatomic) IBOutlet UILabel * streetLabel;
-@property (weak, nonatomic) IBOutlet UIButton * soundButton;
-@property (weak, nonatomic) IBOutlet UISlider * progress;
+@property (weak, nonatomic) IBOutlet UIImageView * _Nullable direction;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable distanceToNextAction;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable distanceToNextActionUnits;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable distanceLeft;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable eta;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable arrivalsTimeLabel;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable roundRoadLabel;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable streetLabel;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable soundButton;
+@property (weak, nonatomic) IBOutlet UISlider * _Nullable progress;
 
 - (void)configureWithEntity:(MWMNavigationDashboardEntity *)entity;
 

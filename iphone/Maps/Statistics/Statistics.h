@@ -13,7 +13,7 @@
 - (void)logApiUsage:(NSString *)programName;
 - (void)logLocation:(CLLocation *)location;
 
-+ (instancetype)instance;
++ (instancetype _Nullable)instance;
 + (void)logEvent:(NSString *)eventName;
 + (void)logEvent:(NSString *)eventName withParameters:(NSDictionary *)parameters;
 

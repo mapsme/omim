@@ -8,8 +8,8 @@
 
 @interface AddSetTableViewCell : MWMTableViewCell
 
-@property (weak, nonatomic) IBOutlet UITextField * textField;
+@property (weak, nonatomic) IBOutlet UITextField * _Nullable textField;
 
-@property (weak, nonatomic) id<AddSetTableViewCellProtocol> delegate;
+@property (weak, nonatomic) id<AddSetTableViewCellProtocol> _Nullable delegate;
 
 @end

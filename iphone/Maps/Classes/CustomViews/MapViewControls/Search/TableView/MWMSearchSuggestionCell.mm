@@ -4,8 +4,8 @@
 
 @interface MWMSearchSuggestionCell ()
 
-@property (weak, nonatomic) IBOutlet UIImageView * icon;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * separatorLeftOffset;
+@property (weak, nonatomic) IBOutlet UIImageView * _Nullable icon;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable separatorLeftOffset;
 
 @end
 

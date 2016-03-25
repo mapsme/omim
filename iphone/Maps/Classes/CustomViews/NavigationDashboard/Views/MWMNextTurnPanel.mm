@@ -2,14 +2,14 @@
 
 @interface MWMNextTurnPanel ()
 
-@property (weak, nonatomic) IBOutlet UIView * contentView;
-@property (weak, nonatomic) IBOutlet UIImageView * turnImage;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable contentView;
+@property (weak, nonatomic) IBOutlet UIImageView * _Nullable turnImage;
 
 @end
 
 @implementation MWMNextTurnPanel
 
-+ (instancetype)turnPanelWithOwnerView:(UIView *)ownerView
++ (instancetype _Nullable)turnPanelWithOwnerView:(UIView *)ownerView
 {
   MWMNextTurnPanel * panel = [[[NSBundle mainBundle] loadNibNamed:[MWMNextTurnPanel className]
                                                             owner:nil

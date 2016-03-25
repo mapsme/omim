@@ -23,7 +23,7 @@ extern string const kLanguageKey = "Language";
 
 @implementation AppInfo
 
-+ (instancetype)sharedInfo
++ (instancetype _Nullable)sharedInfo
 {
   static AppInfo * appInfo;
   static dispatch_once_t onceToken;
@@ -34,7 +34,7 @@ extern string const kLanguageKey = "Language";
   return appInfo;
 }
 
-- (instancetype)init
+- (instancetype _Nullable)init
 {
   self = [super init];
   return self;

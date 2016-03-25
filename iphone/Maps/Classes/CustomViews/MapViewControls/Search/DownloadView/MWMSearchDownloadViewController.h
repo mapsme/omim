@@ -2,7 +2,7 @@
 
 @protocol MWMSearchDownloadProtocol <NSObject>
 
-@property (nonnull, nonatomic, readonly) MWMAlertViewController * alertController;
+@property (nonatomic, readonly) MWMAlertViewController * _Nonnull alertController;
 
 - (void)selectMapsAction;
 
@@ -10,8 +10,8 @@
 
 @interface MWMSearchDownloadViewController : MWMViewController
 
-- (nonnull instancetype)init __attribute__((unavailable("init is not available")));
-- (nonnull instancetype)initWithDelegate:(nonnull id<MWMSearchDownloadProtocol>)delegate;
+- (instancetype _Nullable)init __attribute__((unavailable("init is not available")));
+- (instancetype _Nullable)initWithDelegate:(id<MWMSearchDownloadProtocol> _Nonnull)delegate;
 
 - (void)downloadProgress:(CGFloat)progress;
 - (void)setDownloadFailed;

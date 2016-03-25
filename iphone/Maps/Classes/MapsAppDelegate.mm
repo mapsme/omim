@@ -128,8 +128,8 @@ using namespace osm_auth_ios;
 
 @property (nonatomic) NSInteger standbyCounter;
 
-@property (weak, nonatomic) NSTimer * checkAdServerForbiddenTimer;
-@property (weak, nonatomic) NSTimer * mapStyleSwitchTimer;
+@property (weak, nonatomic) NSTimer * _Nullable checkAdServerForbiddenTimer;
+@property (weak, nonatomic) NSTimer * _Nullable mapStyleSwitchTimer;
 
 @property (nonatomic, readwrite) LocationManager * locationManager;
 @property (nonatomic, readwrite) BOOL isDaemonMode;

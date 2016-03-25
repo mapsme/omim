@@ -9,7 +9,7 @@ typedef NS_ENUM(NSUInteger, MWMDownloadMapRequestState)
 
 @protocol MWMDownloadMapRequestProtocol <NSObject>
 
-@property (nonnull, nonatomic, readonly) MWMAlertViewController * alertController;
+@property (nonatomic, readonly) MWMAlertViewController * _Nonnull alertController;
 
 - (void)stateUpdated:(enum MWMDownloadMapRequestState)state;
 - (void)selectMapsAction;
@@ -18,9 +18,9 @@ typedef NS_ENUM(NSUInteger, MWMDownloadMapRequestState)
 
 @interface MWMDownloadMapRequest : NSObject
 
-- (nonnull instancetype)init __attribute__((unavailable("init is not available")));
-- (nonnull instancetype)initWithParentView:(nonnull UIView *)parentView
-                                  delegate:(nonnull id <MWMDownloadMapRequestProtocol>)delegate;
+- (instancetype _Nullable)init __attribute__((unavailable("init is not available")));
+- (instancetype _Nullable)initWithParentView:(UIView * _Nonnull)parentView
+                                  delegate:(id <MWMDownloadMapRequestProtocol> _Nonnull)delegate;
 
 - (void)showRequest;
 

@@ -23,7 +23,7 @@ static NSString * const DEFAULT_LANG = @"en-US";
 
 @implementation MWMTextToSpeech
 
-+ (instancetype)tts
++ (instancetype _Nullable)tts
 {
   static dispatch_once_t onceToken;
   static MWMTextToSpeech * tts = nil;
@@ -34,7 +34,7 @@ static NSString * const DEFAULT_LANG = @"en-US";
   return tts;
 }
 
-- (instancetype)initTTS
+- (instancetype _Nullable)initTTS
 {
   self = [super init];
   if (self)

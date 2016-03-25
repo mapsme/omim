@@ -24,13 +24,13 @@ extern NSString * const kSearchStateKey = @"SearchStateKey";
                                MWMSearchTabbedViewProtocol, MWMSearchTabButtonsViewProtocol,
                                UITextFieldDelegate, MWMFrameworkStorageObserver>
 
-@property (weak, nonatomic) UIView * parentView;
+@property (weak, nonatomic) UIView * _Nullable parentView;
 @property (nonatomic) IBOutlet MWMSearchView * rootView;
-@property (weak, nonatomic) IBOutlet UIView * contentView;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable contentView;
 
 @property (nonatomic) IBOutletCollection(MWMSearchTabButtonsView) NSArray * tabButtons;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * scrollIndicatorOffset;
-@property (weak, nonatomic) IBOutlet UIView * scrollIndicator;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable scrollIndicatorOffset;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable scrollIndicator;
 
 @property (nonatomic) UINavigationController * navigationController;
 @property (nonatomic) MWMSearchTabbedViewController * tabbedController;
@@ -41,8 +41,8 @@ extern NSString * const kSearchStateKey = @"SearchStateKey";
 
 @implementation MWMSearchManager
 
-- (nullable instancetype)initWithParentView:(nonnull UIView *)view
-                                   delegate:(nonnull id<MWMSearchManagerProtocol, MWMSearchViewProtocol, MWMRoutingProtocol>)delegate
+- (instancetype _Nullable)initWithParentView:(UIView * _Nonnull)view
+                                   delegate:(id<MWMSearchManagerProtocol, MWMSearchViewProtocol, MWMRoutingProtocol> _Nonnull)delegate
 {
   self = [super init];
   if (self)
@@ -146,7 +146,7 @@ extern NSString * const kSearchStateKey = @"SearchStateKey";
 
 #pragma mark - UITextFieldDelegate
 
-- (BOOL)textFieldShouldReturn:(nonnull UITextField *)textField
+- (BOOL)textFieldShouldReturn:(UITextField * _Nonnull)textField
 {
   [textField resignFirstResponder];
   if (textField.text.length != 0)

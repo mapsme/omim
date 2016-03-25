@@ -6,13 +6,13 @@ static CGFloat const kWidthForiPad = 320.0;
 
 @interface MWMSearchView ()
 
-@property (weak, nonatomic) IBOutlet UIView * searchBar;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable searchBar;
 
-@property (weak, nonatomic) IBOutlet UIView * infoWrapper;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable infoWrapper;
 
-@property (weak, nonatomic) IBOutlet UIView * tabBar;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * tabBarTopOffset;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * tabBarHeight;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable tabBar;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable tabBarTopOffset;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable tabBarHeight;
 
 @property (nonatomic) CGFloat correctMinX;
 

@@ -10,20 +10,20 @@ static NSString * const kKeyPath = @"subviews";
 @interface MWMAPIBar ()
 
 @property (nonatomic) IBOutlet MWMAPIBarView * rootView;
-@property (weak, nonatomic) IBOutlet UIImageView * backArrow;
-@property (weak, nonatomic) IBOutlet UILabel * backLabel;
-@property (weak, nonatomic) IBOutlet UILabel * timeLabel;
+@property (weak, nonatomic) IBOutlet UIImageView * _Nullable backArrow;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable backLabel;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable timeLabel;
 
 @property (nonatomic) NSDateFormatter * timeFormatter;
 @property (nonatomic) NSTimer * timer;
 
-@property (weak, nonatomic) UIViewController * controller;
+@property (weak, nonatomic) UIViewController * _Nullable controller;
 
 @end
 
 @implementation MWMAPIBar
 
-- (nullable instancetype)initWithController:(nonnull UIViewController *)controller
+- (instancetype _Nullable)initWithController:(UIViewController * _Nonnull)controller
 {
   self = [super init];
   if (self)

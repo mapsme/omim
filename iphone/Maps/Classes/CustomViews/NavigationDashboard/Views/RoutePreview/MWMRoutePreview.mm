@@ -14,23 +14,23 @@ static CGFloat const kAdditionalHeight = 20.;
 
 @interface MWMRoutePreview () <MWMRoutePointCellDelegate>
 
-@property (weak, nonatomic) IBOutlet UIView * pedestrian;
-@property (weak, nonatomic) IBOutlet UIView * vehicle;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * planningRouteViewHeight;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * planningContainerHeight;
-@property (weak, nonatomic, readwrite) IBOutlet UIButton * extendButton;
-@property (weak, nonatomic) IBOutlet UIButton * goButton;
-@property (weak, nonatomic) IBOutlet UICollectionView * collectionView;
-@property (weak, nonatomic) IBOutlet MWMRoutePointLayout * layout;
-@property (weak, nonatomic) IBOutlet UIImageView * arrowImageView;
-@property (weak, nonatomic) IBOutlet UIView * statusBox;
-@property (weak, nonatomic) IBOutlet UIView * planningBox;
-@property (weak, nonatomic) IBOutlet UIView * resultsBox;
-@property (weak, nonatomic) IBOutlet UIView * errorBox;
-@property (weak, nonatomic) IBOutlet UILabel * resultLabel;
-@property (weak, nonatomic) IBOutlet UILabel * arriveLabel;
-@property (weak, nonatomic) IBOutlet UIImageView * completeImageView;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * statusBoxHeight;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable pedestrian;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable vehicle;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable planningRouteViewHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable planningContainerHeight;
+@property (weak, nonatomic, readwrite) IBOutlet UIButton * _Nullable extendButton;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable goButton;
+@property (weak, nonatomic) IBOutlet UICollectionView * _Nullable collectionView;
+@property (weak, nonatomic) IBOutlet MWMRoutePointLayout * _Nullable layout;
+@property (weak, nonatomic) IBOutlet UIImageView * _Nullable arrowImageView;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable statusBox;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable planningBox;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable resultsBox;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable errorBox;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable resultLabel;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable arriveLabel;
+@property (weak, nonatomic) IBOutlet UIImageView * _Nullable completeImageView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable statusBoxHeight;
 @property (nonatomic) UIImageView * movingCellImage;
 
 @property (nonatomic) BOOL isNeedToMove;

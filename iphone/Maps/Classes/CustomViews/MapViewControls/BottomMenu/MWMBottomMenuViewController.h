@@ -16,10 +16,10 @@
 @interface MWMBottomMenuViewController : UIViewController
 
 @property(nonatomic) MWMBottomMenuState state;
-@property(weak, nonatomic) IBOutlet MWMButton * p2pButton;
+@property(weak, nonatomic) IBOutlet MWMButton * _Nullable p2pButton;
 @property(nonatomic) CGFloat leftBound;
 
-- (instancetype)initWithParentController:(MapViewController *)controller
+- (instancetype _Nullable)initWithParentController:(MapViewController *)controller
                                 delegate:(id<MWMBottomMenuControllerProtocol>)delegate;
 
 - (void)setStreetName:(NSString *)streetName;

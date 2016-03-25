@@ -3,7 +3,7 @@
 
 @interface ToastView : UIView
 
-- (instancetype)initWithMessage:(NSString *)message;
+- (instancetype _Nullable)initWithMessage:(NSString *)message;
 - (void)show;
 
 @end

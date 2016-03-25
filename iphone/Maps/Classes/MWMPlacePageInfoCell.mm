@@ -10,12 +10,12 @@
 
 @interface MWMPlacePageInfoCell () <UITextViewDelegate>
 
-@property (weak, nonatomic, readwrite) IBOutlet UIImageView * icon;
-@property (weak, nonatomic, readwrite) IBOutlet id textContainer;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * textContainerHeight;
+@property (weak, nonatomic, readwrite) IBOutlet UIImageView * _Nullable icon;
+@property (weak, nonatomic, readwrite) IBOutlet id _Nullable textContainer;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable textContainerHeight;
 
-@property (weak, nonatomic) IBOutlet UIButton * upperButton;
-@property (weak, nonatomic) IBOutlet UIImageView * toggleImage;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable upperButton;
+@property (weak, nonatomic) IBOutlet UIImageView * _Nullable toggleImage;
 
 @property (nonatomic) MWMPlacePageCellType type;
 

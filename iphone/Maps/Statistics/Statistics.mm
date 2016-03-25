@@ -35,7 +35,7 @@ char const * kStatisticsEnabledSettingsKey = "StatisticsEnabled";
 #endif
 }
 
-- (instancetype)init
+- (instancetype _Nullable)init
 {
   if ((self = [super init]))
   {
@@ -151,7 +151,7 @@ char const * kStatisticsEnabledSettingsKey = "StatisticsEnabled";
   [MWMCustomFacebookEvents optimizeExpenses];
 }
 
-+ (instancetype)instance
++ (instancetype _Nullable)instance
 {
   static Statistics * instance;
   static dispatch_once_t onceToken;

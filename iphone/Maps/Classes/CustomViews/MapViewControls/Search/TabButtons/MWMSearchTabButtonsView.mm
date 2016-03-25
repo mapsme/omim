@@ -9,21 +9,21 @@ static CGFloat const kIconToLabelSpacing = 4.0;
 
 @property (nonatomic) IBOutlet UIView * rootView;
 
-@property (weak, nonatomic) IBOutlet UIButton * icon;
-@property (weak, nonatomic) IBOutlet UILabel * label;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable icon;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable label;
 
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * iconLeft;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * iconTop;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * labelLeft;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * labelTop;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable iconLeft;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable iconTop;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable labelLeft;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable labelTop;
 
-@property (weak, nonatomic) IBOutlet id <MWMSearchTabButtonsViewProtocol> delegate;
+@property (weak, nonatomic) IBOutlet id <MWMSearchTabButtonsViewProtocol> _Nullable delegate;
 
 @end
 
 @implementation MWMSearchTabButtonsView
 
-- (instancetype)initWithCoder:(NSCoder *)aDecoder
+- (instancetype _Nullable)initWithCoder:(NSCoder *)aDecoder
 {
   self = [super initWithCoder:aDecoder];
   if (self)

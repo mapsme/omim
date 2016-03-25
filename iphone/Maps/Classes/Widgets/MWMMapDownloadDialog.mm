@@ -37,14 +37,14 @@ using namespace storage;
 
 @interface MWMMapDownloadDialog ()<MWMFrameworkStorageObserver,
                                    MWMCircularProgressProtocol>
-@property (weak, nonatomic) IBOutlet UILabel * parentNode;
-@property (weak, nonatomic) IBOutlet UILabel * node;
-@property (weak, nonatomic) IBOutlet UILabel * nodeSize;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * nodeTopOffset;
-@property (weak, nonatomic) IBOutlet UIButton * downloadButton;
-@property (weak, nonatomic) IBOutlet UIView * progressWrapper;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable parentNode;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable node;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable nodeSize;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable nodeTopOffset;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable downloadButton;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable progressWrapper;
 
-@property (weak, nonatomic) MapViewController * controller;
+@property (weak, nonatomic) MapViewController * _Nullable controller;
 
 @property (nonatomic) MWMCircularProgress * progress;
 
@@ -60,7 +60,7 @@ using namespace storage;
   TCountryId m_autoDownloadCountryId;
 }
 
-+ (instancetype)dialogForController:(MapViewController *)controller
++ (instancetype _Nullable)dialogForController:(MapViewController *)controller
 {
   MWMMapDownloadDialog * dialog = [[NSBundle mainBundle] loadNibNamed:[self className] owner:nil options:nil].firstObject;
   dialog.autoresizingMask = UIViewAutoresizingFlexibleHeight;
@@ -269,7 +269,7 @@ using namespace storage;
 
 #pragma mark - MWMCircularProgressDelegate
 
-- (void)progressButtonPressed:(nonnull MWMCircularProgress *)progress
+- (void)progressButtonPressed:(MWMCircularProgress * _Nonnull)progress
 {
   if (progress.state == MWMCircularProgressStateFailed)
   {

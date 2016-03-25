@@ -11,10 +11,10 @@
 @property (nonatomic) BOOL isVisible;
 @property (nonatomic) NSUInteger count;
 
-@property (weak, nonatomic) IBOutlet UIButton * visibilityButton;
-@property (weak, nonatomic) IBOutlet UILabel * titleLabel;
-@property (weak, nonatomic) IBOutlet UILabel * countLabel;
-@property (weak, nonatomic) IBOutlet UIImageView * openArrow;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable visibilityButton;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable titleLabel;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable countLabel;
+@property (weak, nonatomic) IBOutlet UIImageView * _Nullable openArrow;
 
 @end
 

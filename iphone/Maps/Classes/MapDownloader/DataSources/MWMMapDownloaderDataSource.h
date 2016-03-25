@@ -9,7 +9,7 @@
 @property (nonatomic, readonly) BOOL needFullReload;
 @property (nonatomic, readonly) NSMutableIndexSet * reloadSections;
 
-- (instancetype)initWithDelegate:(id<MWMMapDownloaderProtocol>)delegate;
+- (instancetype _Nullable)initWithDelegate:(id<MWMMapDownloaderProtocol>)delegate;
 - (NSString *)parentCountryId;
 - (NSString *)countryIdForIndexPath:(NSIndexPath *)indexPath;
 - (NSString *)cellIdentifierForIndexPath:(NSIndexPath *)indexPath;

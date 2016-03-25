@@ -8,7 +8,7 @@ namespace
 
 @interface MWMReportProblemController ()
 
-@property (weak, nonatomic) IBOutlet SelectableCell * placeDoesntExistCell;
+@property (weak, nonatomic) IBOutlet SelectableCell * _Nullable placeDoesntExistCell;
 @property (nonatomic) BOOL isCellSelected;
 
 @end

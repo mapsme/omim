@@ -5,8 +5,8 @@
 
 @interface MWMSearchCategoryCell ()
 
-@property (weak, nonatomic) IBOutlet UIImageView * icon;
-@property (weak, nonatomic) IBOutlet UILabel * label;
+@property (weak, nonatomic) IBOutlet UIImageView * _Nullable icon;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable label;
 
 @end
 

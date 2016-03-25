@@ -4,12 +4,12 @@
 
 @interface MWMEditorSelectTableViewCell ()
 
-@property (weak, nonatomic) IBOutlet UIImageView * icon;
-@property (weak, nonatomic) IBOutlet UILabel * label;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * labelLeadingOffset;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * labelTrailingOffset;
+@property (weak, nonatomic) IBOutlet UIImageView * _Nullable icon;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable label;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable labelLeadingOffset;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable labelTrailingOffset;
 
-@property (weak, nonatomic) id<MWMEditorCellProtocol> delegate;
+@property (weak, nonatomic) id<MWMEditorCellProtocol> _Nullable delegate;
 
 @end
 

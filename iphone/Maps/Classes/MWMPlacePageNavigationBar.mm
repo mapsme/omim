@@ -22,8 +22,8 @@ static inline CGPoint const dismissCenter(CGFloat xPosition)
 
 @interface MWMPlacePageNavigationBar ()
 
-@property (weak, nonatomic) IBOutlet UILabel * titleLabel;
-@property (weak, nonatomic) MWMiPhonePortraitPlacePage * placePage;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable titleLabel;
+@property (weak, nonatomic) MWMiPhonePortraitPlacePage * _Nullable placePage;
 
 @end
 
@@ -84,7 +84,7 @@ static inline CGPoint const dismissCenter(CGFloat xPosition)
   }];
 }
 
-+ (instancetype)navigationBarWithPlacePage:(MWMiPhonePortraitPlacePage *)placePage
++ (instancetype _Nullable)navigationBarWithPlacePage:(MWMiPhonePortraitPlacePage *)placePage
 {
   MWMPlacePageNavigationBar * navBar = [[[NSBundle mainBundle] loadNibNamed:kPlacePageNavigationBarNibName owner:nil options:nil] firstObject];
   navBar.placePage = placePage;

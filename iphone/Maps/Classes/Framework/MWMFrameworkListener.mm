@@ -76,7 +76,7 @@ void loopWrappers(TObservers * observers, TLoopBlock block)
   });
 }
 
-- (instancetype)initListener
+- (instancetype _Nullable)initListener
 {
   self = [super init];
   if (self)

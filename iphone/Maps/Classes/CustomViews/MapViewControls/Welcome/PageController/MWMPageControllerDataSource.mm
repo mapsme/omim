@@ -10,7 +10,7 @@
 
 @implementation MWMPageControllerDataSource
 
-- (instancetype)initWithPageController:(MWMPageController *)pageController welcomeClass:(Class<MWMWelcomeControllerProtocol>)welcomeClass
+- (instancetype _Nullable)initWithPageController:(MWMPageController *)pageController welcomeClass:(Class<MWMWelcomeControllerProtocol>)welcomeClass
 {
   self = [super init];
   if (self)

@@ -2,7 +2,7 @@
 
 @interface MWMSearchTabbedCollectionViewCell ()
 
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * titleTopOffset;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable titleTopOffset;
 
 @end
 

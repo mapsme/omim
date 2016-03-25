@@ -7,7 +7,7 @@ static NSString * const kStatisticsEvent = @"Location Alert";
 
 @implementation MWMLocationAlert
 
-+ (instancetype)alert
++ (instancetype _Nullable)alert
 {
   [Statistics logEvent:kStatisticsEvent withParameters:@{kStatAction : kStatOpen}];
   MWMLocationAlert * alert = [[[NSBundle mainBundle] loadNibNamed:kLocationAlertNibName owner:nil options:nil] firstObject];

@@ -16,19 +16,19 @@ typedef NS_ENUM(NSUInteger, BookmarkDescriptionState)
 
 @interface MWMBookmarkDescriptionViewController () <UIWebViewDelegate>
 
-@property (weak, nonatomic) IBOutlet UITextView * textView;
-@property (weak, nonatomic) IBOutlet UIWebView * webView;
+@property (weak, nonatomic) IBOutlet UITextView * _Nullable textView;
+@property (weak, nonatomic) IBOutlet UIWebView * _Nullable webView;
 
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * textViewBottomOffset;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable textViewBottomOffset;
 
-@property (weak, nonatomic) MWMPlacePageViewManager * manager;
+@property (weak, nonatomic) MWMPlacePageViewManager * _Nullable manager;
 @property (nonatomic) BookmarkDescriptionState state;
 
 @end
 
 @implementation MWMBookmarkDescriptionViewController
 
-- (instancetype)initWithPlacePageManager:(MWMPlacePageViewManager *)manager
+- (instancetype _Nullable)initWithPlacePageManager:(MWMPlacePageViewManager *)manager
 {
   self = [super initWithNibName:kBookmarkDescriptionViewControllerNibName bundle:nil];
   if (self)

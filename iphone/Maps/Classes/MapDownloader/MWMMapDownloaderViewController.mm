@@ -13,7 +13,7 @@ using namespace storage;
 
 @interface MWMBaseMapDownloaderViewController ()
 
-@property (weak, nonatomic) IBOutlet UITableView * tableView;
+@property (weak, nonatomic) IBOutlet UITableView * _Nullable tableView;
 
 @property (nonatomic) MWMMapDownloaderDataSource * dataSource;
 @property (nonatomic) MWMMapDownloaderDataSource * defaultDataSource;
@@ -24,8 +24,8 @@ using namespace storage;
 
 @interface MWMMapDownloaderViewController () <UISearchBarDelegate, UIScrollViewDelegate>
 
-@property (weak, nonatomic) IBOutlet UIView * statusBarBackground;
-@property (weak, nonatomic) IBOutlet UISearchBar * searchBar;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable statusBarBackground;
+@property (weak, nonatomic) IBOutlet UISearchBar * _Nullable searchBar;
 
 @property (nonatomic) MWMMapDownloaderDataSource * searchDataSource;
 

@@ -4,7 +4,7 @@
 @class MWMAlertViewController;
 @interface MWMAlert : UIView
 
-@property (weak, nonatomic) MWMAlertViewController * alertController;
+@property (weak, nonatomic) MWMAlertViewController * _Nullable alertController;
 
 + (MWMAlert *)alert:(routing::IRouter::ResultCode)type;
 + (MWMAlert *)routingMigrationAlertWithOkBlock:(TMWMVoidBlock)okBlock;

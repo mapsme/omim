@@ -8,7 +8,7 @@
 
 @interface MWMAnimator : NSObject
 
-+ (instancetype)animatorWithScreen:(UIScreen *)screen;
++ (instancetype _Nullable)animatorWithScreen:(UIScreen *)screen;
 - (void)addAnimation:(id<Animation>)animatable;
 - (void)removeAnimation:(id<Animation>)animatable;
 

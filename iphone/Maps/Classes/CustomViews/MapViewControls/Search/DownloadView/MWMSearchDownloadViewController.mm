@@ -9,13 +9,13 @@
 @property (nonatomic) MWMDownloadMapRequest * downloadRequest;
 @property (nonatomic) IBOutlet UIButton * dimButton;
 
-@property (weak, nonatomic) id<MWMSearchDownloadProtocol> delegate;
+@property (weak, nonatomic) id<MWMSearchDownloadProtocol> _Nullable delegate;
 
 @end
 
 @implementation MWMSearchDownloadViewController
 
-- (nonnull instancetype)initWithDelegate:(id<MWMSearchDownloadProtocol>)delegate
+- (instancetype _Nullable)initWithDelegate:(id<MWMSearchDownloadProtocol>)delegate
 {
   self = [super init];
   if (self)
@@ -54,7 +54,7 @@
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)keyboardWillShow:(nonnull NSNotification *)aNotification
+- (void)keyboardWillShow:(NSNotification * _Nonnull)aNotification
 {
   UIButton * dim = self.dimButton;
   dim.hidden = NO;
@@ -66,7 +66,7 @@
   }];
 }
 
-- (void)keyboardWillhide:(nonnull NSNotification *)aNotification
+- (void)keyboardWillhide:(NSNotification * _Nonnull)aNotification
 {
   UIButton * dim = self.dimButton;
   dim.alpha = 1.0;
@@ -96,7 +96,7 @@
 
 #pragma mark - Actions
 
-- (IBAction)dimTouchUpInside:(nonnull UIButton *)sender
+- (IBAction)dimTouchUpInside:(UIButton * _Nonnull)sender
 {
   [UIApplication.sharedApplication.keyWindow endEditing:YES];
 }

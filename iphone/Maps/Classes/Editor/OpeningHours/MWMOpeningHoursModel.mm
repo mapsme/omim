@@ -9,7 +9,7 @@ extern UITableViewRowAnimation const kMWMOpeningHoursEditorRowAnimation = UITabl
 
 @interface MWMOpeningHoursModel () <MWMOpeningHoursSectionProtocol>
 
-@property (weak, nonatomic) id<MWMOpeningHoursModelProtocol> delegate;
+@property (weak, nonatomic) id<MWMOpeningHoursModelProtocol> _Nullable delegate;
 
 @property (nonatomic) NSMutableArray<MWMOpeningHoursSection *> * sections;
 

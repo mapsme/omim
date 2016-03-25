@@ -4,11 +4,11 @@
 
 @protocol MWMOpeningHoursModelProtocol <NSObject>
 
-@property (nonnull, copy, nonatomic) NSString * openingHours;
-@property (weak, nonatomic, readonly) UITableView * tableView;
-@property (weak, nonatomic, readonly) UIView * advancedEditor;
-@property (weak, nonatomic, readonly) MWMTextView * editorView;
-@property (weak, nonatomic, readonly) UIButton * toggleModeButton;
+@property (copy, nonatomic) NSString * _Nonnull openingHours;
+@property (weak, nonatomic, readonly) UITableView * _Nullable tableView;
+@property (weak, nonatomic, readonly) UIView * _Nullable advancedEditor;
+@property (weak, nonatomic, readonly) MWMTextView * _Nullable editorView;
+@property (weak, nonatomic, readonly) UIButton * _Nullable toggleModeButton;
 
 @end
 

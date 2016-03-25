@@ -5,40 +5,40 @@
 
 @interface MWMAlertViewController : UIViewController
 
-@property (weak, nonatomic, readonly) UIViewController * _Null_unspecified ownerViewController;
+@property (weak, nonatomic, readonly) UIViewController * _Nullable ownerViewController;
 
-- (nonnull instancetype)initWithViewController:(nonnull UIViewController *)viewController;
+- (instancetype _Nullable)initWithViewController:(UIViewController * _Nonnull)viewController;
 - (void)presentAlert:(routing::IRouter::ResultCode)type;
-- (void)presentRoutingMigrationAlertWithOkBlock:(nonnull TMWMVoidBlock)okBlock;
+- (void)presentRoutingMigrationAlertWithOkBlock:(TMWMVoidBlock _Nonnull)okBlock;
 - (void)presentDownloaderAlertWithCountries:(storage::TCountriesVec const &)countries
                                        code:(routing::IRouter::ResultCode)code
-                                    okBlock:(nonnull TMWMVoidBlock)okBlock;
+                                    okBlock:(TMWMVoidBlock _Nonnull)okBlock;
 - (void)presentRateAlert;
 - (void)presentFacebookAlert;
-- (void)presentPoint2PointAlertWithOkBlock:(nonnull TMWMVoidBlock)okBlock needToRebuild:(BOOL)needToRebuild;
+- (void)presentPoint2PointAlertWithOkBlock:(TMWMVoidBlock _Nonnull)okBlock needToRebuild:(BOOL)needToRebuild;
 - (void)presentRoutingDisclaimerAlert;
 - (void)presentDisabledLocationAlert;
 - (void)presentLocationAlert;
 - (void)presentLocationServiceNotSupportedAlert;
 - (void)presentNoConnectionAlert;
 - (void)presentMigrationProhibitedAlert;
-- (void)presentUnsavedEditsAlertWithOkBlock:(nonnull TMWMVoidBlock)okBlock;
-- (void)presentNoWiFiAlertWithName:(nonnull NSString *)name okBlock:(nullable TMWMVoidBlock)okBlock;
+- (void)presentUnsavedEditsAlertWithOkBlock:(TMWMVoidBlock _Nonnull)okBlock;
+- (void)presentNoWiFiAlertWithName:(NSString * _Nonnull)name okBlock:(TMWMVoidBlock _Nonnull)okBlock;
 - (void)presentPedestrianToastAlert:(BOOL)isFirstLaunch;
 - (void)presentIncorrectFeauturePositionAlert;
 - (void)presentInternalErrorAlert;
 - (void)presentInvalidUserNameOrPasswordAlert;
-- (void)presentDisableAutoDownloadAlertWithOkBlock:(nonnull TMWMVoidBlock)okBlock;
-- (void)presentDownloaderNoConnectionAlertWithOkBlock:(nonnull TMWMVoidBlock)okBlock cancelBlock:(nonnull TMWMVoidBlock)cancelBlock;
+- (void)presentDisableAutoDownloadAlertWithOkBlock:(TMWMVoidBlock _Nonnull)okBlock;
+- (void)presentDownloaderNoConnectionAlertWithOkBlock:(TMWMVoidBlock _Nonnull)okBlock cancelBlock:(TMWMVoidBlock _Nonnull)cancelBlock;
 - (void)presentDownloaderNotEnoughSpaceAlert;
-- (void)presentDownloaderInternalErrorAlertWithOkBlock:(nonnull TMWMVoidBlock)okBlock cancelBlock:(nonnull TMWMVoidBlock)cancelBlock;
-- (void)presentDownloaderNeedUpdateAlertWithOkBlock:(nonnull TMWMVoidBlock)okBlock;
+- (void)presentDownloaderInternalErrorAlertWithOkBlock:(TMWMVoidBlock _Nonnull)okBlock cancelBlock:(TMWMVoidBlock _Nonnull)cancelBlock;
+- (void)presentDownloaderNeedUpdateAlertWithOkBlock:(TMWMVoidBlock _Nonnull)okBlock;
 - (void)presentEditorViralAlert;
 - (void)presentOsmAuthAlert;
-- (void)closeAlertWithCompletion:(nullable TMWMVoidBlock)completion;
+- (void)closeAlertWithCompletion:(TMWMVoidBlock _Nonnull)completion;
 
-- (nonnull instancetype)init __attribute__((unavailable("call -initWithViewController: instead!")));
-+ (nonnull instancetype)new __attribute__((unavailable("call -initWithViewController: instead!")));
-- (nonnull instancetype)initWithCoder:(nonnull NSCoder *)aDecoder __attribute__((unavailable("call -initWithViewController: instead!")));
-- (nonnull instancetype)initWithNibName:(nullable NSString *)nibNameOrNil bundle:(nullable NSBundle *)nibBundleOrNil __attribute__((unavailable("call -initWithViewController: instead!")));
+- (instancetype _Nullable)init __attribute__((unavailable("call -initWithViewController: instead!")));
++ (instancetype _Nullable)new __attribute__((unavailable("call -initWithViewController: instead!")));
+- (instancetype _Nullable)initWithCoder:(NSCoder * _Nonnull)aDecoder __attribute__((unavailable("call -initWithViewController: instead!")));
+- (instancetype _Nullable)initWithNibName:(NSString * _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil __attribute__((unavailable("call -initWithViewController: instead!")));
 @end

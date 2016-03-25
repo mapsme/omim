@@ -27,7 +27,7 @@ vector<string> SliceKeys(vector<pair<string, string>> const & v)
   vector<string> m_untranslatedKeys;
 }
 
-@property (weak, nonatomic) IBOutlet UISearchBar * searchBar;
+@property (weak, nonatomic) IBOutlet UISearchBar * _Nullable searchBar;
 @property (nonatomic) BOOL isSearch;
 
 @end

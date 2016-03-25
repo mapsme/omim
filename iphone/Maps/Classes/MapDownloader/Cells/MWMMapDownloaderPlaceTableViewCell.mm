@@ -16,8 +16,8 @@ namespace
 
 @interface MWMMapDownloaderPlaceTableViewCell ()
 
-@property (weak, nonatomic) IBOutlet UILabel * area;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * titleBottomOffset;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable area;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable titleBottomOffset;
 
 @end
 

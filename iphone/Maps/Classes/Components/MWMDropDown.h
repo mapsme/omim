@@ -1,12 +1,12 @@
 @interface MWMDropDown : NSObject
 
-- (instancetype)initWithSuperview:(UIView *)view;
+- (instancetype _Nullable)initWithSuperview:(UIView *)view;
 - (void)showWithMessage:(NSString *)message;
 - (void)dismiss;
 
-- (instancetype)init __attribute__((unavailable("call -initWithSuperview: instead!")));
-+ (instancetype)new __attribute__((unavailable("call -initWithSuperview: instead!")));
-- (instancetype)initWithCoder:(NSCoder *)aDecoder __attribute__((unavailable("call -initWithSuperview: instead!")));
-- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil __attribute__((unavailable("call -initWithSuperview: instead!")));
+- (instancetype _Nullable)init __attribute__((unavailable("call -initWithSuperview: instead!")));
++ (instancetype _Nullable)new __attribute__((unavailable("call -initWithSuperview: instead!")));
+- (instancetype _Nullable)initWithCoder:(NSCoder *)aDecoder __attribute__((unavailable("call -initWithSuperview: instead!")));
+- (instancetype _Nullable)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil __attribute__((unavailable("call -initWithSuperview: instead!")));
 
 @end

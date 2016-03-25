@@ -10,14 +10,14 @@ static NSString * const kStatisticsEvent = @"Routing Disclaimer Alert";
 
 @interface MWMRoutingDisclaimerAlert ()
 
-@property (weak, nonatomic) IBOutlet UITextView * textView;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * textViewHeight;
+@property (weak, nonatomic) IBOutlet UITextView * _Nullable textView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable textViewHeight;
 
 @end
 
 @implementation MWMRoutingDisclaimerAlert
 
-+ (instancetype)alertWithInitialOrientation:(UIInterfaceOrientation)orientation
++ (instancetype _Nullable)alertWithInitialOrientation:(UIInterfaceOrientation)orientation
 {
   [Statistics logEvent:kStatisticsEvent withParameters:@{kStatAction : kStatOpen}];
   MWMRoutingDisclaimerAlert * alert = [[[NSBundle mainBundle] loadNibNamed:[MWMRoutingDisclaimerAlert className]

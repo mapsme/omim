@@ -24,11 +24,11 @@ using namespace osm;
 
 @interface MWMAuthorizationOSMLoginViewController () <UITextFieldDelegate>
 
-@property (weak, nonatomic) IBOutlet UITextField * loginTextField;
-@property (weak, nonatomic) IBOutlet UITextField * passwordTextField;
-@property (weak, nonatomic) IBOutlet UIButton * loginButton;
-@property (weak, nonatomic) IBOutlet UIButton * forgotButton;
-@property (weak, nonatomic) IBOutlet UIView * spinnerView;
+@property (weak, nonatomic) IBOutlet UITextField * _Nullable loginTextField;
+@property (weak, nonatomic) IBOutlet UITextField * _Nullable passwordTextField;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable loginButton;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable forgotButton;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable spinnerView;
 
 @property (nonatomic) MWMFieldCorrect isCorrect;
 

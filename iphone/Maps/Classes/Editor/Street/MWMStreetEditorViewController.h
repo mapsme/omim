@@ -11,6 +11,6 @@
 
 @interface MWMStreetEditorViewController : MWMTableViewController
 
-@property (weak, nonatomic) id<MWMStreetEditorProtocol> delegate;
+@property (weak, nonatomic) id<MWMStreetEditorProtocol> _Nullable delegate;
 
 @end

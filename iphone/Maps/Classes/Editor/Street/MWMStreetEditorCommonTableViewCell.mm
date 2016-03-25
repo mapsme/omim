@@ -2,10 +2,10 @@
 
 @interface MWMStreetEditorCommonTableViewCell ()
 
-@property (weak, nonatomic) IBOutlet UILabel * label;
-@property (weak, nonatomic) IBOutlet UIImageView * selectedIcon;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable label;
+@property (weak, nonatomic) IBOutlet UIImageView * _Nullable selectedIcon;
 
-@property (weak, nonatomic) id<MWMStreetEditorCommonTableViewCellProtocol> delegate;
+@property (weak, nonatomic) id<MWMStreetEditorCommonTableViewCellProtocol> _Nullable delegate;
 
 @end
 

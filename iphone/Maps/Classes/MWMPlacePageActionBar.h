@@ -7,13 +7,13 @@
 @property (nonatomic) BOOL isBookmark;
 @property (nonatomic) BOOL isPrepareRouteMode;
 
-@property (weak, nonatomic) IBOutlet UIButton * shareButton;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable shareButton;
 
 + (MWMPlacePageActionBar *)actionBarForPlacePage:(MWMPlacePage *)placePage;
 - (void)configureWithPlacePage:(MWMPlacePage *)placePage;
 
-- (instancetype)init __attribute__((unavailable("call actionBarForPlacePage: instead")));
-- (instancetype)initWithCoder:(NSCoder *)aDecoder __attribute__((unavailable("call actionBarForPlacePage: instead")));
-- (instancetype)initWithFrame:(CGRect)frame __attribute__((unavailable("call actionBarForPlacePage: instead")));
+- (instancetype _Nullable)init __attribute__((unavailable("call actionBarForPlacePage: instead")));
+- (instancetype _Nullable)initWithCoder:(NSCoder *)aDecoder __attribute__((unavailable("call actionBarForPlacePage: instead")));
+- (instancetype _Nullable)initWithFrame:(CGRect)frame __attribute__((unavailable("call actionBarForPlacePage: instead")));
 
 @end
