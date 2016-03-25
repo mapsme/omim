@@ -10,7 +10,7 @@
 
 @implementation MWMAnimator
 
-+ (instancetype)animatorWithScreen:(UIScreen *)screen
++ (instancetype _Nullable)animatorWithScreen:(UIScreen *)screen
 {
   if (!screen)
     screen = [UIScreen mainScreen];
@@ -24,7 +24,7 @@
   return animator;
 }
 
-- (instancetype)initWithScreen:(UIScreen *)screen
+- (instancetype _Nullable)initWithScreen:(UIScreen *)screen
 {
   self = [super init];
   if (self)

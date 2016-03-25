@@ -2,6 +2,6 @@
 
 @interface SelectableCell : MWMTableViewCell
 
-@property (weak, nonatomic) IBOutlet UILabel * titleLabel;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable titleLabel;
 
 @end

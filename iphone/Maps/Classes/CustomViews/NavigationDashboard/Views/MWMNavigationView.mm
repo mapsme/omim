@@ -7,7 +7,7 @@ static CGFloat const kStatusbarHeight = 20.0;
 
 @property (nonatomic) BOOL isVisible;
 
-@property (weak, nonatomic, readwrite) IBOutlet UIView * contentView;
+@property (weak, nonatomic, readwrite) IBOutlet UIView * _Nullable contentView;
 
 @end
 

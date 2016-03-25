@@ -16,13 +16,13 @@ static NSString * const kPlacePageViewCenterKeyPath = @"center";
 
 @interface MWMPlacePage ()
 
-@property (weak, nonatomic, readwrite) MWMPlacePageViewManager * manager;
+@property (weak, nonatomic, readwrite) MWMPlacePageViewManager * _Nullable manager;
 
 @end
 
 @implementation MWMPlacePage
 
-- (instancetype)initWithManager:(MWMPlacePageViewManager *)manager
+- (instancetype _Nullable)initWithManager:(MWMPlacePageViewManager *)manager
 {
   self = [super init];
   if (self)

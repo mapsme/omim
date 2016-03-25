@@ -17,7 +17,7 @@ static NSString * const kAddSetCellTableViewCell = @"AddSetTableViewCell";
 
 @implementation AddSetVC
 
-- (instancetype)init
+- (instancetype _Nullable)init
 {
   self = [super initWithStyle:UITableViewStyleGrouped];
   return self;

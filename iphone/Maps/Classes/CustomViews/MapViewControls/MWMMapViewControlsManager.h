@@ -18,8 +18,8 @@
 @property (nonatomic, readonly) MWMBottomMenuViewController * menuController;
 @property (nonatomic) BOOL searchHidden;
 
-- (instancetype)init __attribute__((unavailable("init is not available")));
-- (instancetype)initWithParentController:(MapViewController *)controller;
+- (instancetype _Nullable)init __attribute__((unavailable("init is not available")));
+- (instancetype _Nullable)initWithParentController:(MapViewController *)controller;
 
 #pragma mark - Layout
 

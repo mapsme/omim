@@ -5,10 +5,10 @@
 
 @interface MWMEditorCategoryCell ()
 
-@property (weak, nonatomic) IBOutlet UIImageView * accessoryIcon;
-@property (weak, nonatomic) IBOutlet UILabel * detail;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * detailRightSpace;
-@property (weak, nonatomic) id<MWMEditorCellProtocol> delegate;
+@property (weak, nonatomic) IBOutlet UIImageView * _Nullable accessoryIcon;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable detail;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable detailRightSpace;
+@property (weak, nonatomic) id<MWMEditorCellProtocol> _Nullable delegate;
 
 @end
 

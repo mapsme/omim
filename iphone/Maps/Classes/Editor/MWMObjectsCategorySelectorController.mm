@@ -25,8 +25,8 @@ namespace
   vector<Category> m_filteredCategories;
 }
 
-@property (weak, nonatomic) IBOutlet UITableView * tableView;
-@property (weak, nonatomic) IBOutlet UISearchBar * searchBar;
+@property (weak, nonatomic) IBOutlet UITableView * _Nullable tableView;
+@property (weak, nonatomic) IBOutlet UISearchBar * _Nullable searchBar;
 @property (nonatomic) NSIndexPath * selectedIndexPath;
 @property (nonatomic) BOOL isSearch;
 

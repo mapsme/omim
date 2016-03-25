@@ -3,9 +3,9 @@
 
 @interface MWMStreetEditorEditTableViewCell () <UITextFieldDelegate>
 
-@property (weak, nonatomic) IBOutlet UITextField * textField;
+@property (weak, nonatomic) IBOutlet UITextField * _Nullable textField;
 
-@property (weak, nonatomic) id<MWMStreetEditorEditCellProtocol> delegate;
+@property (weak, nonatomic) id<MWMStreetEditorEditCellProtocol> _Nullable delegate;
 
 @end
 

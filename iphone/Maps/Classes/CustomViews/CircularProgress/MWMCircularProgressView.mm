@@ -25,9 +25,9 @@ static inline CGFloat angleWithProgress(CGFloat progress)
 @property (nonatomic) NSMutableDictionary * images;
 @property (nonatomic) NSMutableDictionary * colors;
 
-@property (weak, nonatomic) IBOutlet MWMCircularProgress * owner;
-@property (weak, nonatomic) IBOutlet UIImageView * spinner;
-@property (weak, nonatomic) IBOutlet MWMButton * button;
+@property (weak, nonatomic) IBOutlet MWMCircularProgress * _Nullable owner;
+@property (weak, nonatomic) IBOutlet UIImageView * _Nullable spinner;
+@property (weak, nonatomic) IBOutlet MWMButton * _Nullable button;
 
 @property (nonatomic) BOOL suspendRefreshProgress;
 
@@ -97,13 +97,13 @@ static inline CGFloat angleWithProgress(CGFloat progress)
   [self.layer addSublayer:self.progressLayer];
 }
 
-- (void)setImage:(nonnull UIImage *)image forState:(MWMCircularProgressState)state
+- (void)setImage:(UIImage * _Nonnull)image forState:(MWMCircularProgressState)state
 {
   self.images[@(state)] = image;
   [self refreshProgress];
 }
 
-- (void)setColor:(nonnull UIColor *)color forState:(MWMCircularProgressState)state
+- (void)setColor:(UIColor * _Nonnull)color forState:(MWMCircularProgressState)state
 {
   self.colors[@(state)] = color;
   [self refreshProgress];

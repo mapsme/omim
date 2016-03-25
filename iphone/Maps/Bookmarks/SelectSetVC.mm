@@ -9,13 +9,13 @@
 
 @interface SelectSetVC () <AddSetVCDelegate>
 
-@property (weak, nonatomic) MWMPlacePageViewManager * manager;
+@property (weak, nonatomic) MWMPlacePageViewManager * _Nullable manager;
 
 @end
 
 @implementation SelectSetVC
 
-- (instancetype)initWithPlacePageManager:(MWMPlacePageViewManager *)manager
+- (instancetype _Nullable)initWithPlacePageManager:(MWMPlacePageViewManager *)manager
 {
   self = [super initWithStyle:UITableViewStyleGrouped];
   if (self)

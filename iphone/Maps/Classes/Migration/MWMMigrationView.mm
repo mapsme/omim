@@ -4,20 +4,20 @@
 
 @interface MWMMigrationView ()
 
-@property (weak, nonatomic) IBOutlet UIImageView * image;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * imageMinHeight;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * imageHeight;
+@property (weak, nonatomic) IBOutlet UIImageView * _Nullable image;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable imageMinHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable imageHeight;
 
-@property (weak, nonatomic) IBOutlet UILabel * title;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * titleTopOffset;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * titleImageOffset;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable title;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable titleTopOffset;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable titleImageOffset;
 
-@property (weak, nonatomic) IBOutlet UILabel * text;
-@property (weak, nonatomic) IBOutlet UILabel * info;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable text;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable info;
 
-@property (weak, nonatomic) IBOutlet UIButton * primaryButton;
-@property (weak, nonatomic) IBOutlet UIButton * secondaryButton;
-@property (weak, nonatomic) IBOutlet UIView * spinnerView;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable primaryButton;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable secondaryButton;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable spinnerView;
 
 @property (nonatomic) MWMCircularProgress * spinner;
 

@@ -2,7 +2,7 @@
 
 @implementation MWMExtendedPlacePageView
 
-- (instancetype)initWithCoder:(NSCoder *)aDecoder
+- (instancetype _Nullable)initWithCoder:(NSCoder *)aDecoder
 {
   self = [super initWithCoder:aDecoder];
   if (self)

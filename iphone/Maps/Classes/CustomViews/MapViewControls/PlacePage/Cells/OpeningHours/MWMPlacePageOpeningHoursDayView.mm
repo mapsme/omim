@@ -4,22 +4,22 @@
 
 @interface MWMPlacePageOpeningHoursDayView ()
 
-@property (weak, nonatomic) IBOutlet UILabel * label;
-@property (weak, nonatomic) IBOutlet UILabel * openTime;
-@property (weak, nonatomic) IBOutlet UILabel * compatibilityLabel;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable label;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable openTime;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable compatibilityLabel;
 
-@property (weak, nonatomic) IBOutlet UILabel * breakLabel;
-@property (weak, nonatomic) IBOutlet UIView * breaksHolder;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable breakLabel;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable breaksHolder;
 
-@property (weak, nonatomic) IBOutlet UILabel * closedLabel;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable closedLabel;
 
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * height;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * labelTopSpacing;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * labelWidth;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * breakLabelWidth;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * breaksHolderHeight;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * openTimeLabelLeadingOffset;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * labelOpenTimeLabelSpacing;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable height;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable labelTopSpacing;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable labelWidth;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable breakLabelWidth;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable breaksHolderHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable openTimeLabelLeadingOffset;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable labelOpenTimeLabelSpacing;
 
 @end
 

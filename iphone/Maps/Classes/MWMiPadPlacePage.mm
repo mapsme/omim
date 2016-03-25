@@ -24,7 +24,7 @@ static CGFloat const kKeyboardOffset = 12.;
 
 @implementation MWMiPadPlacePageViewController
 
-- (instancetype)initWithPlacepageView:(UIView *)ppView actionBar:(UIView *)actionBar
+- (instancetype _Nullable)initWithPlacepageView:(UIView *)ppView actionBar:(UIView *)actionBar
 {
   self = [super init];
   if (self)
@@ -49,14 +49,14 @@ static CGFloat const kKeyboardOffset = 12.;
 
 @interface MWMiPadNavigationController : UINavigationController
 
-@property (weak, nonatomic) MWMiPadPlacePage * placePage;
+@property (weak, nonatomic) MWMiPadPlacePage * _Nullable placePage;
 @property (nonatomic) CGFloat height;
 
 @end
 
 @implementation MWMiPadNavigationController
 
-- (instancetype)initWithViewController:(UIViewController *)viewController frame:(CGRect)frame
+- (instancetype _Nullable)initWithViewController:(UIViewController *)viewController frame:(CGRect)frame
 {
   self = [super initWithRootViewController:viewController];
   if (self)

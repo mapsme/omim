@@ -2,7 +2,7 @@
 
 @interface MWMReportProblemExtendedController ()
 
-@property (weak, nonatomic) IBOutlet UITextView * textView;
+@property (weak, nonatomic) IBOutlet UITextView * _Nullable textView;
 
 @end
 

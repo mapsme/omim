@@ -14,7 +14,7 @@ CGFloat const kTopOffset = 25.;
 
 @interface _MWMDropDownView : UIView
 
-@property (weak, nonatomic) IBOutlet UILabel * message;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable message;
 
 @end
 
@@ -37,7 +37,7 @@ CGFloat const kTopOffset = 25.;
 @interface MWMDropDown ()
 
 @property (nonatomic) IBOutlet _MWMDropDownView * dropDown;
-@property (weak, nonatomic) UIView * superview;
+@property (weak, nonatomic) UIView * _Nullable superview;
 
 @end
 
@@ -45,7 +45,7 @@ CGFloat const kTopOffset = 25.;
 
 #pragma mark - Public
 
-- (instancetype)initWithSuperview:(UIView *)view
+- (instancetype _Nullable)initWithSuperview:(UIView *)view
 {
   self = [super init];
   if (self)

@@ -48,7 +48,7 @@ extern NSString * const kAlohalyticsTapEventKey;
 @property (nonatomic) MWMNavigationDashboardManager * navigationManager;
 @property (nonatomic) MWMSearchManager * searchManager;
 
-@property (weak, nonatomic) MapViewController * ownerController;
+@property (weak, nonatomic) MapViewController * _Nullable ownerController;
 
 @property (nonatomic) BOOL disableStandbyOnRouteFollowing;
 @property (nonatomic) MWMRoutePoint routeSource;
@@ -61,7 +61,7 @@ extern NSString * const kAlohalyticsTapEventKey;
 
 @implementation MWMMapViewControlsManager
 
-- (instancetype)initWithParentController:(MapViewController *)controller
+- (instancetype _Nullable)initWithParentController:(MapViewController *)controller
 {
   if (!controller)
     return nil;

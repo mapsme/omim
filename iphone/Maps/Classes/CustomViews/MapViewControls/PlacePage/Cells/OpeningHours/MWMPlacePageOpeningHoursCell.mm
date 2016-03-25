@@ -15,19 +15,19 @@ using WeekDayView = MWMPlacePageOpeningHoursDayView *;
 
 @interface MWMPlacePageOpeningHoursCell ()
 
-@property (weak, nonatomic) IBOutlet WeekDayView currentDay;
-@property (weak, nonatomic) IBOutlet UIView * middleSeparator;
-@property (weak, nonatomic) IBOutlet UIView * weekDaysView;
-@property (weak, nonatomic) IBOutlet UIImageView * expandImage;
-@property (weak, nonatomic) IBOutlet UIButton * toggleButton;
+@property (weak, nonatomic) IBOutlet WeekDayView _Nullable currentDay;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable middleSeparator;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable weekDaysView;
+@property (weak, nonatomic) IBOutlet UIImageView * _Nullable expandImage;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable toggleButton;
 
-@property (weak, nonatomic) IBOutlet UILabel * openTime;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * openTimeLeadingOffset;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable openTime;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable openTimeLeadingOffset;
 
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * weekDaysViewHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable weekDaysViewHeight;
 @property (nonatomic) CGFloat weekDaysViewEstimatedHeight;
 
-@property (weak, nonatomic) id<MWMPlacePageOpeningHoursCellProtocol> delegate;
+@property (weak, nonatomic) id<MWMPlacePageOpeningHoursCellProtocol> _Nullable delegate;
 
 @property (nonatomic) BOOL isClosed;
 @property (nonatomic) BOOL haveExpandSchedule;

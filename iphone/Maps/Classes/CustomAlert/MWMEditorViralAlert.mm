@@ -16,14 +16,14 @@ namespace
 
 @interface MWMEditorViralAlert ()
 
-@property (weak, nonatomic) IBOutlet UILabel * message;
-@property (weak, nonatomic) IBOutlet UIButton * shareButton;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable message;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable shareButton;
 
 @end
 
 @implementation MWMEditorViralAlert
 
-+ (nonnull instancetype)alert
++ (instancetype _Nullable)alert
 {
   MWMEditorViralAlert * alert = [[[NSBundle mainBundle] loadNibNamed:[MWMEditorViralAlert className] owner:nil options:nil] firstObject];
   int const index = rand() % kMessages.size();

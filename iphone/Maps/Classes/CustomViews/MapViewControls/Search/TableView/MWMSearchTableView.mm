@@ -2,7 +2,7 @@
 
 @interface MWMSearchTableView ()
 
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * textTopOffset;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable textTopOffset;
 
 @end
 

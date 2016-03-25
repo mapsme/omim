@@ -21,7 +21,7 @@ NSString * httpGe0Url(NSString * shortUrl)
 
 @implementation MWMShareLocationActivityItem
 
-- (instancetype)initWithTitle:(NSString *)title location:(CLLocationCoordinate2D)location myPosition:(BOOL)myPosition
+- (instancetype _Nullable)initWithTitle:(NSString *)title location:(CLLocationCoordinate2D)location myPosition:(BOOL)myPosition
 {
   self = [super init];
   if (self)

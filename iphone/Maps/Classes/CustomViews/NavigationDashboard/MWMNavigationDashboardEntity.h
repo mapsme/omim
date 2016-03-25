@@ -17,6 +17,6 @@
 
 - (void)updateWithFollowingInfo:(location::FollowingInfo const &)info;
 
-+ (instancetype)new __attribute__((unavailable("init is not available")));
++ (instancetype _Nullable)new __attribute__((unavailable("init is not available")));
 
 @end

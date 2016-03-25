@@ -1,5 +1,5 @@
 @interface MWMAddPlaceNavigationBar : SolidTouchView
 
-+ (void)showInSuperview:(nonnull UIView *)superview doneBlock:(nonnull TMWMVoidBlock)done cancelBlock:(nonnull TMWMVoidBlock)cancel;
++ (void)showInSuperview:(UIView * _Nonnull)superview doneBlock:(TMWMVoidBlock _Nonnull)done cancelBlock:(TMWMVoidBlock _Nonnull)cancel;
 
 @end

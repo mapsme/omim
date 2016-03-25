@@ -8,14 +8,14 @@
 @property (nonatomic) IBOutlet UIView * extendedPlacePageView;
 @property (nonatomic) IBOutlet UIImageView * anchorImageView;
 @property (nonatomic) IBOutlet UIPanGestureRecognizer * panRecognizer;
-@property (weak, nonatomic, readonly) MWMPlacePageViewManager * manager;
+@property (weak, nonatomic, readonly) MWMPlacePageViewManager * _Nullable manager;
 @property (nonatomic) MWMPlacePageActionBar * actionBar;
 @property (nonatomic) CGFloat topBound;
 @property (nonatomic) CGFloat leftBound;
 @property (nonatomic) CGFloat parentViewHeight;
 @property (nonatomic) CGFloat keyboardHeight;
 
-- (instancetype)initWithManager:(MWMPlacePageViewManager *)manager;
+- (instancetype _Nullable)initWithManager:(MWMPlacePageViewManager *)manager;
 - (void)show;
 - (void)hide;
 - (void)dismiss;
@@ -48,6 +48,6 @@
 
 - (void)refresh;
 
-- (instancetype)init __attribute__((unavailable("call initWithManager: instead")));
+- (instancetype _Nullable)init __attribute__((unavailable("call initWithManager: instead")));
 
 @end

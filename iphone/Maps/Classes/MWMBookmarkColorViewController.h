@@ -4,7 +4,7 @@
 
 @interface MWMBookmarkColorViewController : MWMTableViewController
 
-@property (weak, nonatomic) MWMPlacePageViewManager * placePageManager;
-@property (weak, nonatomic) UINavigationController * iPadOwnerNavigationController;
+@property (weak, nonatomic) MWMPlacePageViewManager * _Nullable placePageManager;
+@property (weak, nonatomic) UINavigationController * _Nullable iPadOwnerNavigationController;
 
 @end

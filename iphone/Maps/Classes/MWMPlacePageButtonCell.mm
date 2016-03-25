@@ -6,8 +6,8 @@
 
 @interface MWMPlacePageButtonCell ()
 
-@property (weak, nonatomic) MWMPlacePage * placePage;
-@property (weak, nonatomic) IBOutlet UIButton * titleButton;
+@property (weak, nonatomic) MWMPlacePage * _Nullable placePage;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable titleButton;
 @property (nonatomic) BOOL isReport;
 
 @end

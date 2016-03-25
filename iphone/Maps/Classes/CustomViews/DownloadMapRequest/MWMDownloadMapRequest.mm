@@ -24,7 +24,7 @@
 
 @property (copy, nonatomic) NSString * mapAndRouteSize;
 
-@property (weak, nonatomic) id <MWMDownloadMapRequestProtocol> delegate;
+@property (weak, nonatomic) id <MWMDownloadMapRequestProtocol> _Nullable delegate;
 
 @end
 
@@ -33,8 +33,8 @@
   storage::TCountryId m_countryId;
 }
 
-- (nonnull instancetype)initWithParentView:(nonnull UIView *)parentView
-                                  delegate:(nonnull id <MWMDownloadMapRequestProtocol>)delegate
+- (instancetype _Nullable)initWithParentView:(UIView * _Nonnull)parentView
+                                  delegate:(id <MWMDownloadMapRequestProtocol> _Nonnull)delegate
 {
   self = [super init];
   if (self)
@@ -103,7 +103,7 @@
 
 #pragma mark - MWMCircularProgressDelegate
 
-- (void)progressButtonPressed:(nonnull MWMCircularProgress *)progress
+- (void)progressButtonPressed:(MWMCircularProgress * _Nonnull)progress
 {
   if (progress.state == MWMCircularProgressStateFailed)
   {
@@ -127,7 +127,7 @@
 
 #pragma mark - Actions
 
-- (IBAction)downloadMapTouchUpInside:(nonnull UIButton *)sender
+- (IBAction)downloadMapTouchUpInside:(UIButton * _Nonnull)sender
 {
   [Statistics logEvent:kStatDownloaderMapAction
         withParameters:@{
@@ -143,7 +143,7 @@
   }];
 }
 
-- (IBAction)selectMapTouchUpInside:(nonnull UIButton *)sender
+- (IBAction)selectMapTouchUpInside:(UIButton * _Nonnull)sender
 {
   [Statistics logEvent:kStatEventName(kStatDownloadRequest, kStatSelectMap)];
   [self.delegate selectMapsAction];

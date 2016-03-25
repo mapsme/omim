@@ -5,7 +5,7 @@
 @protocol MWMWelcomeControllerProtocol <NSObject>
 
 + (UIStoryboard *)welcomeStoryboard;
-+ (instancetype)welcomeController;
++ (instancetype _Nullable)welcomeController;
 + (NSInteger)pagesCount;
 + (NSString *)udWelcomeWasShownKey;
 
@@ -14,7 +14,7 @@
 @interface MWMWelcomeController : MWMViewController <MWMWelcomeControllerProtocol>
 
 @property (nonatomic) NSInteger pageIndex;
-@property (weak, nonatomic) MWMPageController * pageController;
+@property (weak, nonatomic) MWMPageController * _Nullable pageController;
 
 @property (nonatomic) CGSize size;
 

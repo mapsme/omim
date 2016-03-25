@@ -6,10 +6,10 @@
 
 @interface MWMBottomMenuCollectionViewCell ()
 
-@property (weak, nonatomic) IBOutlet UILabel * label;
-@property (weak, nonatomic) IBOutlet UIView * badgeBackground;
-@property (weak, nonatomic) IBOutlet UILabel * badgeCount;
-@property (weak, nonatomic) IBOutlet UIView * separator;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable label;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable badgeBackground;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable badgeCount;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable separator;
 
 @property (nonatomic, readwrite) BOOL isEnabled;
 @property (nonatomic) BOOL isWideMenu;

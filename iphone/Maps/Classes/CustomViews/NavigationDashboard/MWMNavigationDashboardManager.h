@@ -33,15 +33,15 @@ typedef NS_ENUM(NSUInteger, MWMNavigationDashboardState)
 @interface MWMNavigationDashboardManager : NSObject <LocationObserver, MWMCircularProgressProtocol>
 
 @property (nonatomic, readonly) MWMNavigationDashboardEntity * entity;
-@property (weak, nonatomic, readonly) MWMRoutePreview * routePreview;
+@property (weak, nonatomic, readonly) MWMRoutePreview * _Nullable routePreview;
 @property (nonatomic) MWMNavigationDashboardState state;
-@property (weak, nonatomic, readonly) id<MWMNavigationDashboardManagerProtocol> delegate;
+@property (weak, nonatomic, readonly) id<MWMNavigationDashboardManagerProtocol> _Nullable delegate;
 @property (nonatomic) CGFloat topBound;
 @property (nonatomic) CGFloat leftBound;
 @property (nonatomic, readonly) CGFloat height;
 
-- (instancetype)init __attribute__((unavailable("init is not available")));
-- (instancetype)initWithParentView:(UIView *)view delegate:(id<MWMNavigationDashboardManagerProtocol, MWMRoutePreviewDataSource>)delegate;
+- (instancetype _Nullable)init __attribute__((unavailable("init is not available")));
+- (instancetype _Nullable)initWithParentView:(UIView *)view delegate:(id<MWMNavigationDashboardManagerProtocol, MWMRoutePreviewDataSource>)delegate;
 - (void)setupDashboard:(location::FollowingInfo const &)info;
 - (void)updateDashboard;
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)orientation;

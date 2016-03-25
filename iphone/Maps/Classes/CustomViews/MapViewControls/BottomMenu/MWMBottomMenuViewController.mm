@@ -45,14 +45,14 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell)
 
 @interface MWMBottomMenuViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
 
-@property (weak, nonatomic) MapViewController * controller;
-@property (weak, nonatomic) IBOutlet UICollectionView * buttonsCollectionView;
+@property (weak, nonatomic) MapViewController * _Nullable controller;
+@property (weak, nonatomic) IBOutlet UICollectionView * _Nullable buttonsCollectionView;
 
-@property (weak, nonatomic) IBOutlet MWMButton * locationButton;
-@property (weak, nonatomic) IBOutlet UICollectionView * additionalButtons;
-@property (weak, nonatomic) IBOutlet UILabel * streetLabel;
+@property (weak, nonatomic) IBOutlet MWMButton * _Nullable locationButton;
+@property (weak, nonatomic) IBOutlet UICollectionView * _Nullable additionalButtons;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable streetLabel;
 
-@property (weak, nonatomic) id<MWMBottomMenuControllerProtocol> delegate;
+@property (weak, nonatomic) id<MWMBottomMenuControllerProtocol> _Nullable delegate;
 
 @property (nonatomic) BOOL searchIsActive;
 
@@ -66,7 +66,7 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell)
 
 @implementation MWMBottomMenuViewController
 
-- (instancetype)initWithParentController:(MapViewController *)controller
+- (instancetype _Nullable)initWithParentController:(MapViewController *)controller
                                 delegate:(id<MWMBottomMenuControllerProtocol>)delegate
 {
   self = [super init];
@@ -262,14 +262,14 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell)
 
 #pragma mark - UICollectionViewDataSource
 
-- (NSInteger)collectionView:(nonnull UICollectionView *)collectionView
+- (NSInteger)collectionView:(UICollectionView * _Nonnull)collectionView
      numberOfItemsInSection:(NSInteger)section
 {
   return [self additionalButtonsCount];
 }
 
-- (nonnull UICollectionViewCell *)collectionView:(nonnull UICollectionView *)collectionView
-                          cellForItemAtIndexPath:(nonnull NSIndexPath *)indexPath
+- (UICollectionViewCell * _Nonnull)collectionView:(UICollectionView * _Nonnull)collectionView
+                          cellForItemAtIndexPath:(NSIndexPath * _Nonnull)indexPath
 {
   BOOL const isWideMenu = self.view.width > kLayoutThreshold;
   MWMBottomMenuCollectionViewCell * cell =
@@ -320,8 +320,7 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell)
 
 #pragma mark - UICollectionViewDelegate
 
-- (void)collectionView:(nonnull UICollectionView *)collectionView
-    didSelectItemAtIndexPath:(nonnull NSIndexPath *)indexPath
+- (void)collectionView:(UICollectionView * _Nonnull)collectionView didSelectItemAtIndexPath:(NSIndexPath * _Nonnull)indexPath
 {
   MWMBottomMenuCollectionViewCell * cell = static_cast<MWMBottomMenuCollectionViewCell *>([collectionView cellForItemAtIndexPath:indexPath]);
   if (!cell.isEnabled)

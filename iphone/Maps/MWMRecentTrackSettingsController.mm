@@ -17,13 +17,13 @@ typedef NS_ENUM(NSUInteger, DurationInHours)
 
 @interface MWMRecentTrackSettingsController ()
 
-@property (weak, nonatomic) IBOutlet SelectableCell * none;
-@property (weak, nonatomic) IBOutlet SelectableCell * oneHour;
-@property (weak, nonatomic) IBOutlet SelectableCell * twoHours;
-@property (weak, nonatomic) IBOutlet SelectableCell * sixHours;
-@property (weak, nonatomic) IBOutlet SelectableCell * twelveHours;
-@property (weak, nonatomic) IBOutlet SelectableCell * oneDay;
-@property (weak, nonatomic) SelectableCell * selectedCell;
+@property (weak, nonatomic) IBOutlet SelectableCell * _Nullable none;
+@property (weak, nonatomic) IBOutlet SelectableCell * _Nullable oneHour;
+@property (weak, nonatomic) IBOutlet SelectableCell * _Nullable twoHours;
+@property (weak, nonatomic) IBOutlet SelectableCell * _Nullable sixHours;
+@property (weak, nonatomic) IBOutlet SelectableCell * _Nullable twelveHours;
+@property (weak, nonatomic) IBOutlet SelectableCell * _Nullable oneDay;
+@property (weak, nonatomic) SelectableCell * _Nullable selectedCell;
 
 @end
 

@@ -33,13 +33,13 @@ using namespace storage;
 
 @property (nonatomic) CLLocationManager * locationManager;
 @property (copy, nonatomic) CompletionHandler downloadMapCompletionHandler;
-@property (weak, nonatomic) NSTimer * timer;
+@property (weak, nonatomic) NSTimer * _Nullable timer;
 
 @end
 
 @implementation LocalNotificationManager
 
-+ (instancetype)sharedManager
++ (instancetype _Nullable)sharedManager
 {
   static LocalNotificationManager * manager = nil;
   static dispatch_once_t onceToken;

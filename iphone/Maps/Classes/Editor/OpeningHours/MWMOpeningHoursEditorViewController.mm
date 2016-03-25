@@ -18,16 +18,16 @@ extern NSDictionary * const kMWMOpeningHoursEditorTableCells = @{
 @interface MWMOpeningHoursEditorViewController ()<UITableViewDelegate, UITableViewDataSource,
                                                   UITextViewDelegate, MWMOpeningHoursModelProtocol>
 
-@property (weak, nonatomic, readwrite) IBOutlet UITableView * tableView;
-@property (weak, nonatomic, readwrite) IBOutlet UIView * advancedEditor;
-@property (weak, nonatomic, readwrite) IBOutlet MWMTextView * editorView;
-@property (weak, nonatomic) IBOutlet UIView * helpView;
-@property (weak, nonatomic) IBOutlet UIWebView * help;
-@property (weak, nonatomic, readwrite) IBOutlet NSLayoutConstraint * ohTextViewHeight;
-@property (weak, nonatomic) IBOutlet UIView * exampleValuesSeparator;
-@property (weak, nonatomic) IBOutlet UIImageView * exampleValuesExpandView;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * exampesButtonBottomOffset;
-@property (weak, nonatomic, readwrite) IBOutlet UIButton * toggleModeButton;
+@property (weak, nonatomic, readwrite) IBOutlet UITableView * _Nullable tableView;
+@property (weak, nonatomic, readwrite) IBOutlet UIView * _Nullable advancedEditor;
+@property (weak, nonatomic, readwrite) IBOutlet MWMTextView * _Nullable editorView;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable helpView;
+@property (weak, nonatomic) IBOutlet UIWebView * _Nullable help;
+@property (weak, nonatomic, readwrite) IBOutlet NSLayoutConstraint * _Nullable ohTextViewHeight;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable exampleValuesSeparator;
+@property (weak, nonatomic) IBOutlet UIImageView * _Nullable exampleValuesExpandView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable exampesButtonBottomOffset;
+@property (weak, nonatomic, readwrite) IBOutlet UIButton * _Nullable toggleModeButton;
 
 @property (nonatomic) BOOL exampleExpanded;
 @property (nonatomic) BOOL isSimpleMode;

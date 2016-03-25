@@ -7,18 +7,18 @@ static NSString * const kDownloaderDialogHeaderNibName = @"MWMDownloaderDialogHe
 
 @interface MWMDownloaderDialogHeader ()
 
-@property (weak, nonatomic) IBOutlet UILabel * title;
-@property (weak, nonatomic) IBOutlet UILabel * size;
-@property (weak, nonatomic) IBOutlet UIView * dividerView;
-@property (weak, nonatomic) MWMDownloadTransitMapAlert * ownerAlert;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * sizeTrailing;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * titleLeading;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable title;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable size;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable dividerView;
+@property (weak, nonatomic) MWMDownloadTransitMapAlert * _Nullable ownerAlert;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable sizeTrailing;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable titleLeading;
 
 @end
 
 @implementation MWMDownloaderDialogHeader
 
-+ (instancetype)headerForOwnerAlert:(MWMDownloadTransitMapAlert *)alert title:(NSString *)title size:(NSString *)size;
++ (instancetype _Nullable)headerForOwnerAlert:(MWMDownloadTransitMapAlert *)alert title:(NSString *)title size:(NSString *)size;
 {
   MWMDownloaderDialogHeader * header = [[[NSBundle mainBundle] loadNibNamed:kDownloaderDialogHeaderNibName owner:nil options:nil] firstObject];
   header.title.text = title;

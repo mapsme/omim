@@ -2,6 +2,6 @@
 
 @interface MWMRoutingDisclaimerAlert : MWMAlert
 
-+ (instancetype)alertWithInitialOrientation:(UIInterfaceOrientation)orientation;
++ (instancetype _Nullable)alertWithInitialOrientation:(UIInterfaceOrientation)orientation;
 
 @end

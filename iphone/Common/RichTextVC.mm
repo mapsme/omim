@@ -11,7 +11,7 @@
 
 @implementation RichTextVC
 
-- (instancetype)initWithText:(NSString *)text
+- (instancetype _Nullable)initWithText:(NSString *)text
 {
   self = [super init];
 

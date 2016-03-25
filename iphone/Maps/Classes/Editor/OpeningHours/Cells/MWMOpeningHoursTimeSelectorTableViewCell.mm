@@ -2,8 +2,8 @@
 
 @interface MWMOpeningHoursTimeSelectorTableViewCell ()
 
-@property (weak, nonatomic) IBOutlet UIDatePicker * openTimePicker;
-@property (weak, nonatomic) IBOutlet UIDatePicker * closeTimePicker;
+@property (weak, nonatomic) IBOutlet UIDatePicker * _Nullable openTimePicker;
+@property (weak, nonatomic) IBOutlet UIDatePicker * _Nullable closeTimePicker;
 
 @property (nonatomic) NSCalendar * calendar;
 

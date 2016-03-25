@@ -12,7 +12,7 @@ typedef NS_ENUM(NSUInteger, MWMSearchManagerState)
 
 @protocol MWMSearchManagerProtocol <NSObject>
 
-@property (nonnull, nonatomic, readonly) MWMAlertViewController * alertController;
+@property (nonatomic, readonly) MWMAlertViewController * _Nonnull alertController;
 
 - (void)searchViewDidEnterState:(MWMSearchManagerState)state;
 - (void)actionDownloadMaps;
@@ -23,16 +23,16 @@ typedef NS_ENUM(NSUInteger, MWMSearchManagerState)
 
 @interface MWMSearchManager : NSObject
 
-@property (weak, nonatomic) id <MWMSearchManagerProtocol, MWMRoutingProtocol> delegate;
-@property (weak, nonatomic) IBOutlet MWMSearchTextField * searchTextField;
+@property (weak, nonatomic) id <MWMSearchManagerProtocol, MWMRoutingProtocol> _Nullable delegate;
+@property (weak, nonatomic) IBOutlet MWMSearchTextField * _Nullable searchTextField;
 
 @property (nonatomic) MWMSearchManagerState state;
 
-@property (nonnull, nonatomic, readonly) UIView * view;
+@property (nonatomic, readonly) UIView * _Nonnull view;
 
-- (nullable instancetype)init __attribute__((unavailable("init is not available")));
-- (nullable instancetype)initWithParentView:(nonnull UIView *)view
-                                   delegate:(nonnull id<MWMSearchManagerProtocol, MWMSearchViewProtocol, MWMRoutingProtocol>)delegate;
+- (instancetype _Nullable)init __attribute__((unavailable("init is not available")));
+- (instancetype _Nullable)initWithParentView:(UIView * _Nonnull)view
+                                   delegate:(id<MWMSearchManagerProtocol, MWMSearchViewProtocol, MWMRoutingProtocol> _Nonnull)delegate;
 
 - (void)mwm_refreshUI;
 
@@ -41,6 +41,6 @@ typedef NS_ENUM(NSUInteger, MWMSearchManagerState)
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
                                 duration:(NSTimeInterval)duration;
 - (void)viewWillTransitionToSize:(CGSize)size
-       withTransitionCoordinator:(nonnull id<UIViewControllerTransitionCoordinator>)coordinator;
+       withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator> _Nonnull)coordinator;
 
 @end

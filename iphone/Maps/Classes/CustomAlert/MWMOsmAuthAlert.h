@@ -2,6 +2,6 @@
 
 @interface MWMOsmAuthAlert : MWMAlert
 
-+ (instancetype)alert;
++ (instancetype _Nullable)alert;
 
 @end

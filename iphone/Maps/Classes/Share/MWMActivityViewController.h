@@ -1,10 +1,10 @@
 @interface MWMActivityViewController : UIActivityViewController
 
-+ (instancetype)shareControllerForLocationTitle:(NSString *)title location:(CLLocationCoordinate2D)location
++ (instancetype _Nullable)shareControllerForLocationTitle:(NSString *)title location:(CLLocationCoordinate2D)location
                                      myPosition:(BOOL)myPosition;
-+ (instancetype)shareControllerForPedestrianRoutesToast;
++ (instancetype _Nullable)shareControllerForPedestrianRoutesToast;
 
-+ (instancetype)shareControllerForEditorViral;
++ (instancetype _Nullable)shareControllerForEditorViral;
 
 - (void)presentInParentViewController:(UIViewController *)parentVC anchorView:(UIView *)anchorView;
 

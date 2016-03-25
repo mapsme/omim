@@ -38,11 +38,11 @@ NSString * const kUpdateActionTitle = L(@"downloader_status_outdated");
 
 @interface MWMBaseMapDownloaderViewController () <UIActionSheetDelegate, MWMFrameworkStorageObserver>
 
-@property (weak, nonatomic) IBOutlet UITableView * tableView;
+@property (weak, nonatomic) IBOutlet UITableView * _Nullable tableView;
 
-@property (weak, nonatomic) IBOutlet UIView * allMapsView;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * allMapsViewBottomOffset;
-@property (weak, nonatomic) IBOutlet UIButton * allMapsButton;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable allMapsView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable allMapsViewBottomOffset;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable allMapsButton;
 
 @property (nonatomic) UIImage * navBarBackground;
 @property (nonatomic) UIImage * navBarShadow;

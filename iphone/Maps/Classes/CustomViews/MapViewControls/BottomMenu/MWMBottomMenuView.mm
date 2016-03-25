@@ -13,30 +13,30 @@
 
 @interface MWMBottomMenuView ()
 
-@property(weak, nonatomic) IBOutlet UIView * mainButtons;
-@property(weak, nonatomic) IBOutlet UIView * separator;
-@property(weak, nonatomic) IBOutlet UICollectionView * additionalButtons;
+@property(weak, nonatomic) IBOutlet UIView * _Nullable mainButtons;
+@property(weak, nonatomic) IBOutlet UIView * _Nullable separator;
+@property(weak, nonatomic) IBOutlet UICollectionView * _Nullable additionalButtons;
 
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * mainButtonWidth;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * separatorWidth;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * additionalButtonsWidth;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * additionalButtonsHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable mainButtonWidth;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable separatorWidth;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable additionalButtonsWidth;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable additionalButtonsHeight;
 
-@property(weak, nonatomic) IBOutlet UIView * downloadBadge;
+@property(weak, nonatomic) IBOutlet UIView * _Nullable downloadBadge;
 
-@property(weak, nonatomic) IBOutlet MWMButton * locationButton;
-@property(weak, nonatomic) IBOutlet MWMButton * p2pButton;
-@property(weak, nonatomic) IBOutlet MWMButton * searchButton;
-@property(weak, nonatomic) IBOutlet MWMButton * bookmarksButton;
-@property(weak, nonatomic) IBOutlet MWMButton * menuButton;
+@property(weak, nonatomic) IBOutlet MWMButton * _Nullable locationButton;
+@property(weak, nonatomic) IBOutlet MWMButton * _Nullable p2pButton;
+@property(weak, nonatomic) IBOutlet MWMButton * _Nullable searchButton;
+@property(weak, nonatomic) IBOutlet MWMButton * _Nullable bookmarksButton;
+@property(weak, nonatomic) IBOutlet MWMButton * _Nullable menuButton;
 
-@property(weak, nonatomic) IBOutlet UIButton * goButton;
+@property(weak, nonatomic) IBOutlet UIButton * _Nullable goButton;
 
-@property(weak, nonatomic) IBOutlet UILabel * streetLabel;
+@property(weak, nonatomic) IBOutlet UILabel * _Nullable streetLabel;
 
 @property(nonatomic) CGFloat layoutDuration;
 
-@property (weak, nonatomic) IBOutlet MWMBottomMenuViewController * owner;
+@property (weak, nonatomic) IBOutlet MWMBottomMenuViewController * _Nullable owner;
 
 @end
 

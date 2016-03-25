@@ -8,10 +8,10 @@
 
 @interface MWMNightModeController ()
 
-@property (weak, nonatomic) IBOutlet SelectableCell * autoSwitch;
-@property (weak, nonatomic) IBOutlet SelectableCell * on;
-@property (weak, nonatomic) IBOutlet SelectableCell * off;
-@property (weak, nonatomic) SelectableCell * selectedCell;
+@property (weak, nonatomic) IBOutlet SelectableCell * _Nullable autoSwitch;
+@property (weak, nonatomic) IBOutlet SelectableCell * _Nullable on;
+@property (weak, nonatomic) IBOutlet SelectableCell * _Nullable off;
+@property (weak, nonatomic) SelectableCell * _Nullable selectedCell;
 
 @end
 

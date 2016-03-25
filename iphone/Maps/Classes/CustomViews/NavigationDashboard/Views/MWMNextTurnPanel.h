@@ -2,7 +2,7 @@
 
 @interface MWMNextTurnPanel : MWMRouteHelperPanel
 
-+ (instancetype)turnPanelWithOwnerView:(UIView *)ownerView;
++ (instancetype _Nullable)turnPanelWithOwnerView:(UIView *)ownerView;
 - (void)configureWithImage:(UIImage *)image;
 
 @end

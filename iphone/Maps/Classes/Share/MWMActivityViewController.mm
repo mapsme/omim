@@ -5,19 +5,19 @@
 
 @interface MWMActivityViewController ()
 
-@property (weak, nonatomic) UIViewController * ownerViewController;
-@property (weak, nonatomic) UIView * anchorView;
+@property (weak, nonatomic) UIViewController * _Nullable ownerViewController;
+@property (weak, nonatomic) UIView * _Nullable anchorView;
 
 @end
 
 @implementation MWMActivityViewController
 
-- (instancetype)initWithActivityItem:(id<UIActivityItemSource>)activityItem
+- (instancetype _Nullable)initWithActivityItem:(id<UIActivityItemSource>)activityItem
 {
   return [self initWithActivityItems:@[activityItem]];
 }
 
-- (instancetype)initWithActivityItems:(NSArray *)activityItems
+- (instancetype _Nullable)initWithActivityItems:(NSArray *)activityItems
 {
   self = [super initWithActivityItems:activityItems applicationActivities:nil];
   if (self)
@@ -27,7 +27,7 @@
   return self;
 }
 
-+ (instancetype)shareControllerForLocationTitle:(NSString *)title location:(CLLocationCoordinate2D)location
++ (instancetype _Nullable)shareControllerForLocationTitle:(NSString *)title location:(CLLocationCoordinate2D)location
                                      myPosition:(BOOL)myPosition
 {
   MWMShareLocationActivityItem * item = [[MWMShareLocationActivityItem alloc] initWithTitle:title location:location
@@ -35,7 +35,7 @@
   return [[self alloc] initWithActivityItem:item];
 }
 
-+ (instancetype)shareControllerForPedestrianRoutesToast
++ (instancetype _Nullable)shareControllerForPedestrianRoutesToast
 {
   MWMSharePedestrianRoutesToastActivityItem * item = [[MWMSharePedestrianRoutesToastActivityItem alloc] init];
   MWMActivityViewController * vc = [[self alloc] initWithActivityItem:item];
@@ -44,7 +44,7 @@
   return vc;
 }
 
-+ (instancetype)shareControllerForEditorViral
++ (instancetype _Nullable)shareControllerForEditorViral
 {
   MWMEditorViralActivityItem * item = [[MWMEditorViralActivityItem alloc] init];
   UIImage * image = [UIImage imageNamed:@"img_sharing_editor"];

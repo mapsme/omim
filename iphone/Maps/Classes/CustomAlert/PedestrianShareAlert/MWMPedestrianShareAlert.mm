@@ -13,11 +13,11 @@ static NSString * const kStatisticsEvent = @"Pedestrian Share Alert";
 
 @interface MWMPedestrianShareAlert ()
 
-@property (weak, nonatomic) IBOutlet UILabel * title;
-@property (weak, nonatomic) IBOutlet UIView * videoView;
-@property (weak, nonatomic) IBOutlet UIImageView * image;
-@property (weak, nonatomic) IBOutlet UILabel * message;
-@property (weak, nonatomic) IBOutlet UIButton * shareButton;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable title;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable videoView;
+@property (weak, nonatomic) IBOutlet UIImageView * _Nullable image;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable message;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable shareButton;
 
 @property (nonatomic) BOOL isFirstLaunch;
 

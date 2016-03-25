@@ -15,8 +15,8 @@ extern NSString * const kAlohalyticsTapEventKey;
 @interface MWMZoomButtons()
 
 @property (nonatomic) IBOutlet MWMZoomButtonsView * zoomView;
-@property (weak, nonatomic) IBOutlet UIButton * zoomInButton;
-@property (weak, nonatomic) IBOutlet UIButton * zoomOutButton;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable zoomInButton;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable zoomOutButton;
 
 @property (nonatomic) BOOL zoomSwipeEnabled;
 @property (nonatomic, readonly) BOOL isZoomEnabled;
@@ -25,7 +25,7 @@ extern NSString * const kAlohalyticsTapEventKey;
 
 @implementation MWMZoomButtons
 
-- (instancetype)initWithParentView:(UIView *)view
+- (instancetype _Nullable)initWithParentView:(UIView *)view
 {
   self = [super init];
   if (self)

@@ -5,14 +5,14 @@
 
 @interface MWMPlacePageViewManager : NSObject
 
-@property (weak, nonatomic, readonly) UIViewController * ownerViewController;
+@property (weak, nonatomic, readonly) UIViewController * _Nullable ownerViewController;
 @property (nonatomic, readonly) MWMPlacePageEntity * entity;
 @property (nonatomic) MWMPlacePageNavigationBar * iPhoneNavigationBar;
 @property (nonatomic) CGFloat topBound;
 @property (nonatomic) CGFloat leftBound;
 @property (nonatomic, readonly) BOOL isDirectionViewShown;
 
-- (instancetype)initWithViewController:(UIViewController *)viewController
+- (instancetype _Nullable)initWithViewController:(UIViewController *)viewController
                               delegate:(id<MWMPlacePageViewManagerProtocol>)delegate;
 - (void)showPlacePage:(place_page::Info const &)info;
 - (void)refreshPlacePage;
@@ -39,6 +39,6 @@
 - (void)addSubviews:(NSArray *)views withNavigationController:(UINavigationController *)controller;
 - (void)changeHeight:(CGFloat)height;
 
-- (instancetype)init __attribute__((unavailable("call initWithViewController: instead")));
+- (instancetype _Nullable)init __attribute__((unavailable("call initWithViewController: instead")));
 
 @end

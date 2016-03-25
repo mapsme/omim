@@ -12,7 +12,7 @@
 
 @interface MWMObjectsCategorySelectorController : MWMViewController
 
-@property (weak, nonatomic) id<MWMObjectsCategorySelectorDelegate> delegate;
+@property (weak, nonatomic) id<MWMObjectsCategorySelectorDelegate> _Nullable delegate;
 
 - (void)setSelectedCategory:(string const &)category;
 

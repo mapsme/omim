@@ -12,7 +12,7 @@ namespace search
 
 @protocol MWMSearchTableViewProtocol <MWMSearchTabbedViewProtocol>
 
-@property (weak, nonatomic) MWMSearchTextField * searchTextField;
+@property (weak, nonatomic) MWMSearchTextField * _Nullable searchTextField;
 
 @property (nonatomic) MWMSearchManagerState state;
 
@@ -25,10 +25,10 @@ namespace search
 
 @property (nonatomic) BOOL searchOnMap;
 
-- (nonnull instancetype)init __attribute__((unavailable("init is not available")));
-- (nonnull instancetype)initWithDelegate:(nonnull id<MWMSearchTableViewProtocol>)delegate;
+- (instancetype _Nullable)init __attribute__((unavailable("init is not available")));
+- (instancetype _Nullable)initWithDelegate:(id<MWMSearchTableViewProtocol> _Nonnull)delegate;
 
-- (void)searchText:(nonnull NSString *)text forInputLocale:(nullable NSString *)locale;
+- (void)searchText:(NSString * _Nonnull)text forInputLocale:(NSString * _Nullable)locale;
 - (search::SearchParams const &)searchParams;
 
 @end

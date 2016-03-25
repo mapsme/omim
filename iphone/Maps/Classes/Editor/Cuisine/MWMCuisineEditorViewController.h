@@ -12,6 +12,6 @@
 
 @interface MWMCuisineEditorViewController : MWMTableViewController
 
-@property (weak, nonatomic) id<MWMCuisineEditorProtocol> delegate;
+@property (weak, nonatomic) id<MWMCuisineEditorProtocol> _Nullable delegate;
 
 @end

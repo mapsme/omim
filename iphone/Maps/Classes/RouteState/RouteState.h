@@ -7,7 +7,7 @@
 @property (nonatomic, readonly) BOOL hasActualRoute;
 @property (nonatomic) m2::PointD endPoint;
 
-+ (instancetype)savedState;
++ (instancetype _Nullable)savedState;
 
 + (void)save;
 + (void)remove;

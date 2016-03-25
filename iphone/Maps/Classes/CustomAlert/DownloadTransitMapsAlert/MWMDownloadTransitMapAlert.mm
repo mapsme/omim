@@ -15,13 +15,13 @@
 @property (copy, nonatomic) NSString * size;
 @property (nonatomic) BOOL isMapsFiles;
 
-- (instancetype)initWithIndexes:(storage::TCountriesVec const &)countriesVec isMaps:(BOOL)isMaps;
+- (instancetype _Nullable)initWithIndexes:(storage::TCountriesVec const &)countriesVec isMaps:(BOOL)isMaps;
 
 @end
 
 @implementation MWMDownloaderEntity
 
-- (instancetype)initWithIndexes:(storage::TCountriesVec const &)countriesVec isMaps:(BOOL)isMaps
+- (instancetype _Nullable)initWithIndexes:(storage::TCountriesVec const &)countriesVec isMaps:(BOOL)isMaps
 {
   self = [super init];
   if (self)
@@ -67,11 +67,11 @@ static NSString * const kStatisticsEvent = @"Map download Alert";
   storage::TCountriesVec maps;
 }
 
-@property (weak, nonatomic) IBOutlet UILabel * titleLabel;
-@property (weak, nonatomic) IBOutlet UILabel * messageLabel;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable titleLabel;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable messageLabel;
 @property (copy, nonatomic) TMWMVoidBlock downloaderBlock;
-@property (weak, nonatomic) IBOutlet UITableView * dialogsTableView;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * tableViewHeight;
+@property (weak, nonatomic) IBOutlet UITableView * _Nullable dialogsTableView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable tableViewHeight;
 @property (copy, nonatomic) NSArray * missedFiles;
 @property (nonatomic) MWMDownloaderDialogHeader * firstHeader;
 @property (nonatomic) MWMDownloaderDialogHeader * secondHeader;
@@ -85,7 +85,7 @@ static NSString * const kStatisticsEvent = @"Map download Alert";
 
 @implementation MWMDownloadTransitMapAlert
 
-+ (instancetype)downloaderAlertWithMaps:(storage::TCountriesVec const &)maps
++ (instancetype _Nullable)downloaderAlertWithMaps:(storage::TCountriesVec const &)maps
                                    code:(routing::IRouter::ResultCode)code
                                 okBlock:(TMWMVoidBlock)okBlock
 {
@@ -115,7 +115,7 @@ static NSString * const kStatisticsEvent = @"Map download Alert";
   return alert;
 }
 
-+ (instancetype)alertWithMaps:(storage::TCountriesVec const &)maps
++ (instancetype _Nullable)alertWithMaps:(storage::TCountriesVec const &)maps
 {
   MWMDownloadTransitMapAlert * alert = [[[NSBundle mainBundle] loadNibNamed:kDownloadTransitMapAlertNibName owner:nil options:nil] firstObject];
   NSMutableArray * missedFiles = [@[] mutableCopy];

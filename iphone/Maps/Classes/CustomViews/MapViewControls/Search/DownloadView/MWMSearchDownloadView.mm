@@ -3,10 +3,10 @@
 
 @interface MWMSearchDownloadView ()
 
-@property (weak, nonatomic) IBOutlet UILabel * hint;
-@property (weak, nonatomic) IBOutlet UIImageView * image;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * hintTopOffset;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * downloadRequestWrapperTopOffset;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable hint;
+@property (weak, nonatomic) IBOutlet UIImageView * _Nullable image;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable hintTopOffset;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable downloadRequestWrapperTopOffset;
 
 @end
 

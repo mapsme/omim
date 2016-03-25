@@ -18,24 +18,24 @@ using MWMCircularProgressStateVec = vector<MWMCircularProgressState>;
 
 @protocol MWMCircularProgressProtocol <NSObject>
 
-- (void)progressButtonPressed:(nonnull MWMCircularProgress *)progress;
+- (void)progressButtonPressed:(MWMCircularProgress * _Nonnull)progress;
 
 @end
 
 @interface MWMCircularProgress : NSObject
 
-+ (nonnull instancetype)downloaderProgressForParentView:(nonnull UIView *)parentView;
++ (instancetype _Nullable)downloaderProgressForParentView:(UIView * _Nonnull)parentView;
 
 @property (nonatomic) CGFloat progress;
 @property (nonatomic) MWMCircularProgressState state;
 @property (weak, nonatomic) id<MWMCircularProgressProtocol> _Nullable delegate;
 
-- (void)setImage:(nonnull UIImage *)image forStates:(MWMCircularProgressStateVec const &)states;
-- (void)setColor:(nonnull UIColor *)color forStates:(MWMCircularProgressStateVec const &)states;
+- (void)setImage:(UIImage *  _Nonnull)image forStates:(MWMCircularProgressStateVec const &)states;
+- (void)setColor:(UIColor * _Nonnull)color forStates:(MWMCircularProgressStateVec const &)states;
 - (void)setColoring:(MWMButtonColoring)coloring forStates:(MWMCircularProgressStateVec const &)states;
 - (void)setInvertColor:(BOOL)invertColor;
 
-- (nonnull instancetype)init __attribute__((unavailable("init is not available")));
-- (nonnull instancetype)initWithParentView:(nonnull UIView *)parentView;
+- (instancetype _Nullable)init __attribute__((unavailable("init is not available")));
+- (instancetype _Nullable)initWithParentView:(UIView * _Nonnull)parentView;
 
 @end

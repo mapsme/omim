@@ -98,9 +98,9 @@ enum class AttributePosition
   map<PlacePageSection, vector<MWMPlacePageCellType>> m_cells;
 }
 
-@property (weak, nonatomic) MWMPlacePageEntity * entity;
-@property (weak, nonatomic) IBOutlet MWMPlacePage * ownerPlacePage;
-@property (weak, nonatomic) IBOutlet UIView * ppPreview;
+@property (weak, nonatomic) MWMPlacePageEntity * _Nullable entity;
+@property (weak, nonatomic) IBOutlet MWMPlacePage * _Nullable ownerPlacePage;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable ppPreview;
 
 @property (nonatomic) NSMutableDictionary<NSString *, UITableViewCell *> * offscreenCells;
 

@@ -3,12 +3,11 @@
 
 @implementation CopyLabel
 
-- (instancetype)initWithFrame:(CGRect)frame
+- (instancetype _Nonnull)initWithFrame:(CGRect)frame
 {
   self = [super initWithFrame:frame];
-
-  self.userInteractionEnabled = YES;
-
+  if (self)
+    self.userInteractionEnabled = YES;
   return self;
 }
 

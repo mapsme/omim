@@ -13,7 +13,7 @@
 @interface MWMMapDownloaderTableViewCell : MWMTableViewCell <MWMMapDownloaderTableViewCellProtocol, MWMFrameworkStorageObserver>
 
 @property (nonatomic) BOOL isHeightCell;
-@property (weak, nonatomic) id<MWMMapDownloaderProtocol> delegate;
+@property (weak, nonatomic) id<MWMMapDownloaderProtocol> _Nullable delegate;
 
 - (void)config:(storage::NodeAttrs const &)nodeAttrs;
 - (void)setCountryId:(NSString *)countryId searchQuery:(NSString *)query;

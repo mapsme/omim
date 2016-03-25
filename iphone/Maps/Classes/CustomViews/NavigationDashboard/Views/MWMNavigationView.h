@@ -8,8 +8,8 @@
 @property (nonatomic) CGFloat defaultHeight;
 @property (nonatomic, readonly) BOOL isVisible;
 @property (nonatomic) UIView * statusbarBackground;
-@property (weak, nonatomic) id<MWMNavigationViewProtocol> delegate;
-@property (weak, nonatomic, readonly) IBOutlet UIView * contentView;
+@property (weak, nonatomic) id<MWMNavigationViewProtocol> _Nullable delegate;
+@property (weak, nonatomic, readonly) IBOutlet UIView * _Nullable contentView;
 
 - (void)addToView:(UIView *)superview;
 - (void)remove;

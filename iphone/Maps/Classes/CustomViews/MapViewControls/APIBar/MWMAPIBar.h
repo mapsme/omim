@@ -2,7 +2,7 @@
 
 @property (nonatomic) BOOL isVisible;
 
-- (nullable instancetype)initWithController:(nonnull UIViewController *)controller;
+- (instancetype _Nullable)initWithController:(UIViewController * _Nonnull)controller;
 
 - (void)back;
 

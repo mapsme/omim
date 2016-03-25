@@ -10,7 +10,7 @@
 
 NS_CLASS_AVAILABLE_IOS(8_0) @interface MWMPageController : UIPageViewController
 
-+ (instancetype)pageControllerWithParent:(UIViewController<MWMPageControllerProtocol> *)parentViewController;
++ (instancetype _Nullable)pageControllerWithParent:(UIViewController<MWMPageControllerProtocol> *)parentViewController;
 
 - (void)close;
 - (void)nextPage;

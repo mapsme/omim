@@ -3,8 +3,8 @@
 
 @interface MWMOpeningHoursAllDayTableViewCell ()
 
-@property (weak, nonatomic) IBOutlet UISwitch * switcher;
-@property (weak, nonatomic) IBOutlet UILabel * label;
+@property (weak, nonatomic) IBOutlet UISwitch * _Nullable switcher;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable label;
 
 @end
 

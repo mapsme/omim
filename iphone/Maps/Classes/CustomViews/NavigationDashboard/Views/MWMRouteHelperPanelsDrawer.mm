@@ -8,13 +8,13 @@ static CGFloat const kOffsetBetweenPanels = 8.;
 @interface MWMRouteHelperPanelsDrawer ()
 
 @property (nonatomic) UIView * divider;
-@property (weak, nonatomic, readwrite) UIView * topView;
+@property (weak, nonatomic, readwrite) UIView * _Nullable topView;
 
 @end
 
 @implementation MWMRouteHelperPanelsDrawer
 
-- (instancetype)initWithTopView:(UIView *)view
+- (instancetype _Nullable)initWithTopView:(UIView *)view
 {
   self = [super init];
   if (self)

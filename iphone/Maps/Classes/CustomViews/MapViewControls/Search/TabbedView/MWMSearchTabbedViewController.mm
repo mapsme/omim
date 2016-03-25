@@ -27,9 +27,9 @@ BOOL isOffsetInButton(CGFloat offset, MWMSearchTabButtonsView * button)
 
 @interface MWMSearchTabbedViewController () <UICollectionViewDataSource, UIScrollViewDelegate>
 
-@property (weak, nonatomic) IBOutlet UICollectionView * tablesCollectionView;
+@property (weak, nonatomic) IBOutlet UICollectionView * _Nullable tablesCollectionView;
 
-@property (weak, nonatomic) MWMSearchTabButtonsView * selectedButton;
+@property (weak, nonatomic) MWMSearchTabButtonsView * _Nullable selectedButton;
 
 @property (nonatomic) MWMSearchHistoryManager * historyManager;
 @property (nonatomic) MWMSearchCategoriesManager * categoriesManager;
@@ -41,7 +41,7 @@ BOOL isOffsetInButton(CGFloat offset, MWMSearchTabButtonsView * button)
 
 @implementation MWMSearchTabbedViewController
 
-- (instancetype)init
+- (instancetype _Nullable)init
 {
   self = [super init];
   if (self)
@@ -169,14 +169,13 @@ BOOL isOffsetInButton(CGFloat offset, MWMSearchTabButtonsView * button)
 
 #pragma mark - UICollectionViewDataSource
 
-- (NSInteger)collectionView:(nonnull UICollectionView *)collectionView
+- (NSInteger)collectionView:(UICollectionView * _Nonnull)collectionView
      numberOfItemsInSection:(NSInteger)section
 {
   return MWMSearchTabbedViewCellCount;
 }
 
-- (nonnull UICollectionViewCell *)collectionView:(nonnull UICollectionView *)collectionView
-                          cellForItemAtIndexPath:(nonnull NSIndexPath *)indexPath
+- (UICollectionViewCell * _Nonnull)collectionView:(UICollectionView * _Nonnull)collectionView cellForItemAtIndexPath:(NSIndexPath * _Nonnull)indexPath
 {
   MWMSearchTabbedCollectionViewCell * cell =
       [collectionView dequeueReusableCellWithReuseIdentifier:kCollectionCell
@@ -198,7 +197,7 @@ BOOL isOffsetInButton(CGFloat offset, MWMSearchTabButtonsView * button)
 
 #pragma mark - UIScrollViewDelegate
 
-- (void)scrollViewDidScroll:(nonnull UIScrollView *)scrollView
+- (void)scrollViewDidScroll:(UIScrollView * _Nonnull)scrollView
 {
   if (self.isRotating)
     return;

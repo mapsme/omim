@@ -17,9 +17,9 @@ namespace
 @property (nonatomic) MWMCircularProgress * progress;
 @property (copy, nonatomic) NSString * searchQuery;
 
-@property (weak, nonatomic) IBOutlet UIView * stateWrapper;
-@property (weak, nonatomic) IBOutlet UILabel * title;
-@property (weak, nonatomic) IBOutlet UILabel * downloadSize;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable stateWrapper;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable title;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable downloadSize;
 
 @end
 
@@ -142,7 +142,7 @@ namespace
 
 #pragma mark - MWMCircularProgressProtocol
 
-- (void)progressButtonPressed:(nonnull MWMCircularProgress *)progress
+- (void)progressButtonPressed:(MWMCircularProgress * _Nonnull)progress
 {
   storage::NodeAttrs nodeAttrs;
   GetFramework().Storage().GetNodeAttrs(m_countryId, nodeAttrs);

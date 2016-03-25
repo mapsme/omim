@@ -31,7 +31,7 @@ static NSString * const kStatisticsEvent = @"Rate Alert";
 
 @implementation MWMRateAlert
 
-+ (instancetype)alert
++ (instancetype _Nullable)alert
 {
   [Statistics logEvent:kStatisticsEvent withParameters:@{kStatAction : kStatOpen}];
   MWMRateAlert * alert = [[[NSBundle mainBundle] loadNibNamed:kRateAlertNibName owner:self options:nil] firstObject];

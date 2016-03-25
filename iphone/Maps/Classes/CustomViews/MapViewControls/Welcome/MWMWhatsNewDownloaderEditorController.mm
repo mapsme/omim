@@ -3,19 +3,19 @@
 
 @interface MWMWhatsNewDownloaderEditorController ()
 
-@property (weak, nonatomic) IBOutlet UIView * containerView;
-@property (weak, nonatomic) IBOutlet UIImageView * image;
-@property (weak, nonatomic) IBOutlet UILabel * alertTitle;
-@property (weak, nonatomic) IBOutlet UILabel * alertText;
-@property (weak, nonatomic) IBOutlet UIButton * nextPageButton;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * containerWidth;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * containerHeight;
+@property (weak, nonatomic) IBOutlet UIView * _Nullable containerView;
+@property (weak, nonatomic) IBOutlet UIImageView * _Nullable image;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable alertTitle;
+@property (weak, nonatomic) IBOutlet UILabel * _Nullable alertText;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable nextPageButton;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable containerWidth;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable containerHeight;
 
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * imageMinHeight;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * imageHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable imageMinHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable imageHeight;
 
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * titleTopOffset;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * titleImageOffset;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable titleTopOffset;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint * _Nullable titleImageOffset;
 
 @end
 

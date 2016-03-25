@@ -38,13 +38,13 @@ NSString * identifierForType(MWMSearchTableCellType type)
 @interface MWMSearchTableViewController () <UITableViewDataSource, UITableViewDelegate,
 LocationObserver>
 
-@property (weak, nonatomic) IBOutlet UITableView * tableView;
+@property (weak, nonatomic) IBOutlet UITableView * _Nullable tableView;
 
 @property (nonatomic) BOOL watchLocationUpdates;
 
 @property (nonatomic) MWMSearchCommonCell * commonSizingCell;
 
-@property (weak, nonatomic) id<MWMSearchTableViewProtocol> delegate;
+@property (weak, nonatomic) id<MWMSearchTableViewProtocol> _Nullable delegate;
 
 @end
 
@@ -54,7 +54,7 @@ LocationObserver>
   search::Results searchResults;
 }
 
-- (nonnull instancetype)initWithDelegate:(id<MWMSearchTableViewProtocol>)delegate
+- (instancetype _Nullable)initWithDelegate:(id<MWMSearchTableViewProtocol>)delegate
 {
   self = [super init];
   if (self)
@@ -302,7 +302,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 #pragma mark - Search
 
-- (void)searchText:(nonnull NSString *)text forInputLocale:(nullable NSString *)locale
+- (void)searchText:(NSString * _Nonnull)text forInputLocale:(NSString * _Nullable)locale
 {
   if (!text)
     return;

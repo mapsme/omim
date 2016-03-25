@@ -16,7 +16,7 @@ static NSString * const kMyPositionCellIdentifier = @"MWMSearchHistoryMyPosition
 
 @interface MWMSearchHistoryManager ()
 
-@property (weak, nonatomic) MWMSearchTabbedCollectionViewCell * cell;
+@property (weak, nonatomic) MWMSearchTabbedCollectionViewCell * _Nullable cell;
 
 @property (nonatomic) MWMSearchHistoryRequestCell * sizingCell;
 

@@ -4,8 +4,8 @@
 
 @interface MWMAuthorizationForgottenPasswordViewController () <UITextFieldDelegate>
 
-@property (weak, nonatomic) IBOutlet UITextField * emailTextField;
-@property (weak, nonatomic) IBOutlet UIButton * resetPasswordButton;
+@property (weak, nonatomic) IBOutlet UITextField * _Nullable emailTextField;
+@property (weak, nonatomic) IBOutlet UIButton * _Nullable resetPasswordButton;
 
 @property (nonatomic) BOOL isCorrect;
 

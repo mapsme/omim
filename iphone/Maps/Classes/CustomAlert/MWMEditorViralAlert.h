@@ -2,6 +2,6 @@
 
 @interface MWMEditorViralAlert : MWMAlert
 
-+ (nonnull instancetype)alert;
++ (instancetype _Nullable)alert;
 
 @end

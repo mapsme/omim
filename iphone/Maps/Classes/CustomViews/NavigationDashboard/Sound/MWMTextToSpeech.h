@@ -3,7 +3,7 @@
 
 @interface MWMTextToSpeech : NSObject
 
-+ (instancetype)tts;
++ (instancetype _Nullable)tts;
 + (void)activateAudioSession;
 // Returns a list of available languages in the following format:
 // * name in bcp47;
@@ -18,12 +18,12 @@
 - (void)disable;
 - (void)playTurnNotifications;
 
-- (instancetype)init __attribute__((unavailable("call tts instead")));
-- (instancetype)copy __attribute__((unavailable("call tts instead")));
-- (instancetype)copyWithZone:(NSZone *)zone __attribute__((unavailable("call tts instead")));
-+ (instancetype)alloc __attribute__((unavailable("call tts instead")));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable("call tts instead")));
-+ (instancetype)new __attribute__((unavailable("call tts instead")));
+- (instancetype _Nullable)init __attribute__((unavailable("call tts instead")));
+- (instancetype _Nullable)copy __attribute__((unavailable("call tts instead")));
+- (instancetype _Nullable)copyWithZone:(NSZone *)zone __attribute__((unavailable("call tts instead")));
++ (instancetype _Nullable)alloc __attribute__((unavailable("call tts instead")));
++ (instancetype _Nullable)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable("call tts instead")));
++ (instancetype _Nullable)new __attribute__((unavailable("call tts instead")));
 
 @end
 

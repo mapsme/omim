@@ -22,14 +22,14 @@ extern NSString * const kTTSStatusWasChangedNotification;
 
 @property (nonatomic) IBOutlet MWMRoutePreview * iPhoneRoutePreview;
 @property (nonatomic) IBOutlet MWMRoutePreview * iPadRoutePreview;
-@property (weak, nonatomic, readwrite) MWMRoutePreview * routePreview;
+@property (weak, nonatomic, readwrite) MWMRoutePreview * _Nullable routePreview;
 
 @property (nonatomic) IBOutlet MWMNavigationDashboard * navigationDashboardLandscape;
 @property (nonatomic) IBOutlet MWMNavigationDashboard * navigationDashboardPortrait;
-@property (weak, nonatomic) MWMNavigationDashboard * navigationDashboard;
-@property (weak, nonatomic) MWMCircularProgress * activeRouteTypeButton;
+@property (weak, nonatomic) MWMNavigationDashboard * _Nullable navigationDashboard;
+@property (weak, nonatomic) MWMCircularProgress * _Nullable activeRouteTypeButton;
 
-@property (weak, nonatomic) UIView * ownerView;
+@property (weak, nonatomic) UIView * _Nullable ownerView;
 
 @property (nonatomic) MWMNavigationDashboardEntity * entity;
 //@property (nonatomic) MWMLanesPanel * lanesPanel;
@@ -41,7 +41,7 @@ extern NSString * const kTTSStatusWasChangedNotification;
 
 @implementation MWMNavigationDashboardManager
 
-- (instancetype)initWithParentView:(UIView *)view delegate:(id<MWMNavigationDashboardManagerProtocol, MWMRoutePreviewDataSource>)delegate
+- (instancetype _Nullable)initWithParentView:(UIView *)view delegate:(id<MWMNavigationDashboardManagerProtocol, MWMRoutePreviewDataSource>)delegate
 {
   self = [super init];
   if (self)
@@ -230,7 +230,7 @@ extern NSString * const kTTSStatusWasChangedNotification;
 
 #pragma mark - MWMCircularProgressDelegate
 
-- (void)progressButtonPressed:(nonnull MWMCircularProgress *)progress
+- (void)progressButtonPressed:(MWMCircularProgress * _Nonnull)progress
 {
   [Statistics logEvent:kStatEventName(kStatNavigationDashboard, kStatButton)
                    withParameters:@{kStatValue : kStatProgress}];
