@@ -62,11 +62,9 @@ void ReverseGeocoder::GetNearbyStreets(FeatureType & ft, vector<Street> & street
 }
 
 // static
-size_t ReverseGeocoder::GetMatchedStreetIndex(string const & keyName,
+size_t ReverseGeocoder::GetMatchedStreetIndex(strings::UniString const & keyName,
                                               vector<Street> const & streets)
 {
-  strings::UniString const expected = strings::MakeUniString(keyName);
-
   // Find the exact match or the best match in kSimilarityTresholdPercent limit.
   size_t const count = streets.size();
   size_t result = count;
@@ -74,12 +72,10 @@ size_t ReverseGeocoder::GetMatchedStreetIndex(string const & keyName,
 
   for (size_t i = 0; i < count; ++i)
   {
-    string key;
-    search::GetStreetNameAsKey(streets[i].m_name, key);
-    strings::UniString const actual = strings::MakeUniString(key);
+    strings::UniString const actual = GetStreetNameAsKey(streets[i].m_name);
 
-    size_t const editDistance =
-        strings::EditDistance(expected.begin(), expected.end(), actual.begin(), actual.end());
+    size_t const editDistance = strings::EditDistance(keyName.begin(), keyName.end(),
+                                                      actual.begin(), actual.end());
 
     if (editDistance == 0)
       return i;
@@ -129,10 +125,12 @@ void ReverseGeocoder::GetNearbyAddress(m2::PointD const & center, Address & addr
   }
 }
 
-void ReverseGeocoder::GetNearbyAddress(FeatureType & ft, Address & addr) const
+bool ReverseGeocoder::GetExactAddress(FeatureType & ft, Address & addr) const
 {
+  if (ft.GetHouseNumber().empty())
+    return false;
   HouseTable table(m_index);
-  (void)GetNearbyAddress(table, FromFeature(ft, 0.0 /* distMeters */), addr);
+  return GetNearbyAddress(table, FromFeature(ft, 0.0 /* distMeters */), addr);
 }
 
 bool ReverseGeocoder::GetNearbyAddress(HouseTable & table, Building const & bld,

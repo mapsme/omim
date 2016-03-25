@@ -4,6 +4,8 @@
 
 #include "indexer/feature_decl.hpp"
 
+#include "base/string_utils.hpp"
+
 #include "std/string.hpp"
 #include "std/utility.hpp"
 #include "std/vector.hpp"
@@ -58,7 +60,8 @@ public:
     }
   };
 
-  static size_t GetMatchedStreetIndex(string const & keyName, vector<Street> const & streets);
+  static size_t GetMatchedStreetIndex(strings::UniString const & keyName,
+                                      vector<Street> const & streets);
 
   struct Address
   {
@@ -87,7 +90,7 @@ public:
   void GetNearbyAddress(m2::PointD const & center, Address & addr) const;
   /// @return The exact address for feature.
   /// @precondition ft Should have house number.
-  void GetNearbyAddress(FeatureType & ft, Address & addr) const;
+  bool GetExactAddress(FeatureType & ft, Address & addr) const;
 
 private:
 

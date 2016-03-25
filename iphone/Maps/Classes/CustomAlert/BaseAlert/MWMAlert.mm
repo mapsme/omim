@@ -6,6 +6,7 @@
 #import "MWMEditorViralAlert.h"
 #import "MWMFacebookAlert.h"
 #import "MWMLocationAlert.h"
+#import "MWMOsmAuthAlert.h"
 #import "MWMPedestrianShareAlert.h"
 #import "MWMRateAlert.h"
 #import "MWMRoutingDisclaimerAlert.h"
@@ -151,9 +152,14 @@
   return [MWMDefaultAlert downloaderNeedUpdateAlertWithOkBlock:okBlock];
 }
 
-+ (MWMAlert *)editorViralAlertWithShareBlock:(TMWMVoidBlock)share
++ (MWMAlert *)editorViralAlert
 {
-  return [MWMEditorViralAlert alertWithShareBlock:share];
+  return [MWMEditorViralAlert alert];
+}
+
++ (MWMAlert *)osmAuthAlert
+{
+  return [MWMOsmAuthAlert alert];
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)orientation

@@ -214,6 +214,7 @@ public:
   //@}
 
   storage::Storage & Storage() { return m_storage; }
+  storage::Storage const & Storage() const { return m_storage; }
   storage::CountryInfoGetter & CountryInfoGetter() { return *m_infoGetter; }
 
   /// @name Bookmarks, Tracks and other UserMarks
@@ -389,6 +390,7 @@ private:
 
   void OnUpdateGpsTrackPointsCallback(vector<pair<size_t, location::GpsTrackInfo>> && toAdd,
                                       pair<size_t, size_t> const & toRemove);
+  bool GetGroupCountryIdFromFeature(FeatureType const & ft, string & name) const;
 
 public:
   using TSearchRequest = search::QuerySaver::TSearchRequest;
@@ -496,9 +498,14 @@ public:
 
   /// @returns address of nearby building with house number in approx 1km distance.
   search::AddressInfo GetAddressInfoAtPoint(m2::PointD const & pt) const;
-  /// @returns valid street address only if it was specified in OSM for given feature; used in the editor.
+
+  /// @returns Valid street address only if it was specified in OSM for given feature;
+  /// @todo This functions are used in desktop app only. Should we really need them?
+  //@{
   search::AddressInfo GetFeatureAddressInfo(FeatureType & ft) const;
   search::AddressInfo GetFeatureAddressInfo(FeatureID const & fid) const;
+  //@}
+
   vector<string> GetPrintableFeatureTypes(FeatureType const & ft) const;
   /// Get "best for the user" feature at given point even if it's invisible on the screen.
   /// Ignores coastlines and prefers buildings over other area features.

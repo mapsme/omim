@@ -459,15 +459,16 @@ if [ "$MODE" == "resources" ]; then
   if [ -n "$OPT_WORLD" ]; then
     # Update external resources
     [ -z "$(ls "$TARGET" | grep '\.ttf')" ] && cp "$DATA_PATH"/*.ttf "$TARGET"
+    cp "$DATA_PATH/WorldCoasts_obsolete.mwm" "$TARGET"
     EXT_RES="$TARGET/external_resources.txt"
     echo -n > "$EXT_RES"
     UNAME="$(uname)"
     for file in "$TARGET"/World*.mwm "$TARGET"/*.ttf; do
       if [[ "$file" != *roboto_reg* ]]; then
         if [ "$UNAME" == "Darwin" ]; then
-          stat -f "%N %z" "$file" | sed 's#^.*/##' >> "$EXT_RES"
+          stat -f "$COUNTRIES_VERSION %N %z" "$file" | sed 's#^.*/##' >> "$EXT_RES"
         else
-          stat -c "%n %s" "$file" | sed 's#^.*/##' >> "$EXT_RES"
+          stat -c "$COUNTRIES_VERSION %n %s" "$file" | sed 's#^.*/##' >> "$EXT_RES"
         fi
       fi
     done

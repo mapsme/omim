@@ -25,8 +25,10 @@ DECLARE_EXCEPTION(NoHeader, XMLFeatureError);
 class XMLFeature
 {
   static constexpr char const * kDefaultName = "name";
+  static constexpr char const * kIntlName = "int_name";
   static constexpr char const * kLocalName = "name:";
   static char const * const kDefaultLang;
+  static char const * const kIntlLang;
 
 public:
   // Used in point to string serialization.
@@ -138,6 +140,7 @@ public:
   void SetUploadError(string const & error);
   //@}
 
+  bool HasAnyTags() const;
   bool HasTag(string const & key) const;
   bool HasAttribute(string const & key) const;
   bool HasKey(string const & key) const;

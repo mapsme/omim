@@ -4,7 +4,9 @@
 #import "MapViewController.h"
 
 #include "Framework.h"
+
 #include "platform/measurement_utils.hpp"
+#include "platform/mwm_version.hpp"
 
 using feature::Metadata;
 
@@ -82,9 +84,8 @@ void initFieldsMap()
 
 - (void)configureDefault
 {
-  search::AddressInfo const address = GetFramework().GetAddressInfoAtPoint(m_info.GetMercator());
   self.title = @(m_info.GetTitle().c_str());
-  self.address = @(address.FormatAddress().c_str());
+  self.address = @(m_info.GetAddress().c_str());
 }
 
 - (void)configureFeature
@@ -139,6 +140,7 @@ void initFieldsMap()
 
 - (NSString *)getCellValue:(MWMPlacePageCellType)cellType
 {
+  bool const isNewMWM = version::IsSingleMwm(GetFramework().Storage().GetCurrentDataVersion());
   switch (cellType)
   {
     case MWMPlacePageCellTypeName:
@@ -149,9 +151,9 @@ void initFieldsMap()
       return m_info.IsBookmark() ? @"" : nil;
     case MWMPlacePageCellTypeEditButton:
       // TODO(Vlad): It's a really strange way to "display" cell if returned text is not nil.
-      return m_info.IsEditable() ? @"" : nil;
+      return m_info.IsEditable() && isNewMWM ? @"" : nil;
     case MWMPlacePageCellTypeReportButton:
-      return m_info.IsFeature() ? @"" : nil;
+      return m_info.IsFeature() && isNewMWM ? @"" : nil;
     default:
     {
       auto const it = m_values.find(cellType);
@@ -159,6 +161,11 @@ void initFieldsMap()
       return haveField ? @(it->second.c_str()) : nil;
     }
   }
+}
+
+- (place_page::Info const &)info
+{
+  return m_info;
 }
 
 - (FeatureID const &)featureID

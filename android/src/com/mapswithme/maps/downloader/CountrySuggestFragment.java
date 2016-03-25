@@ -3,7 +3,6 @@ package com.mapswithme.maps.downloader;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +17,7 @@ import java.util.Locale;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.base.BaseMwmFragment;
 import com.mapswithme.maps.location.LocationHelper;
+import com.mapswithme.maps.routing.RoutingController;
 import com.mapswithme.maps.widget.WheelProgressView;
 import com.mapswithme.util.StringUtils;
 import com.mapswithme.util.UiUtils;
@@ -153,7 +153,6 @@ public class CountrySuggestFragment extends BaseMwmFragment implements View.OnCl
     Button selectMap = (Button)view.findViewById(R.id.btn__select_map);
     selectMap.setOnClickListener(this);
     mWpvDownloadProgress = (WheelProgressView) view.findViewById(R.id.wpv__download_progress);
-    mWpvDownloadProgress.setCenterDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_close));
     mWpvDownloadProgress.setOnClickListener(this);
     mTvCountry = (TextView) view.findViewById(R.id.tv__country_name);
     mTvActiveCountry = (TextView) view.findViewById(R.id.tv__active_country_name);
@@ -197,7 +196,8 @@ public class CountrySuggestFragment extends BaseMwmFragment implements View.OnCl
       break;
 
     case R.id.btn__select_map:
-      getMwmActivity().replaceFragment(DownloaderFragment.class, null, null);
+      if (!RoutingController.get().checkMigration(getMwmActivity()))
+        getMwmActivity().replaceFragment(DownloaderFragment.class, null, null);
       break;
 
     case R.id.wpv__download_progress:

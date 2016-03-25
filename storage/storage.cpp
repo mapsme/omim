@@ -33,11 +33,6 @@ namespace storage
 {
 namespace
 {
-template <typename T>
-void RemoveIf(vector<T> & v, function<bool(T const & t)> const & p)
-{
-  v.erase(remove_if(v.begin(), v.end(), p), v.end());
-}
 
 uint64_t GetLocalSize(shared_ptr<LocalCountryFile> file, MapOptions opt)
 {
@@ -306,6 +301,14 @@ bool Storage::IsCoutryIdCountryTreeLeaf(TCountryId const & countryId) const
     return false;
   TCountryTreeNode const * const node = m_countries.FindFirst(countryId);
   return node != nullptr && node->ChildrenCount() == 0 /* countryId is a leaf. */;
+}
+
+bool Storage::IsCoutryIdCountryTreeInnerNode(TCountryId const & countryId) const
+{
+  if (!IsCountryIdValid(countryId))
+    return false;
+  TCountryTreeNode const * const node = m_countries.FindFirst(countryId);
+  return node != nullptr && node->ChildrenCount() != 0 /* countryId is an inner node. */;
 }
 
 TLocalAndRemoteSize Storage::CountrySizeInBytes(TCountryId const & countryId, MapOptions opt) const
@@ -1057,6 +1060,7 @@ bool Storage::DeleteCountryFilesFromDownloader(TCountryId const & countryId, Map
     { // A deleted map should not be moved to m_justDownloaded.
       m_queue.erase(it);
     }
+    SaveDownloadQueue();
   }
 
   if (!m_queue.empty() && m_downloader->IsIdle())
@@ -1273,11 +1277,24 @@ void Storage::GetNodeAttrs(TCountryId const & countryId, NodeAttrs & nodeAttrs) 
         CalculateProgress(downloadingMwm, subtree, downloadingMwmProgress, setQueue);
   }
 
-  // Local mwm information.
+  // Local mwm information and information about downloading mwms.
   nodeAttrs.m_localMwmCounter = 0;
   nodeAttrs.m_localMwmSize = 0;
+  nodeAttrs.m_downloadingMwmCounter = 0;
+  nodeAttrs.m_downloadingMwmSize = 0;
   node->ForEachInSubtree([this, &nodeAttrs](TCountryTreeNode const & d)
   {
+    // Downloading mwm information.
+    StatusAndError const statusAndErr = GetNodeStatus(d);
+    ASSERT_NOT_EQUAL(statusAndErr.status, NodeStatus::Undefined, ());
+    if (statusAndErr.status != NodeStatus::NotDownloaded && statusAndErr.status != NodeStatus::Partly
+        && d.ChildrenCount() == 0)
+    {
+      nodeAttrs.m_downloadingMwmCounter += 1;
+      nodeAttrs.m_downloadingMwmSize += d.Value().GetSubtreeMwmSizeBytes();
+    }
+
+    // Local mwm information.
     Storage::TLocalFilePtr const localFile =
         GetLatestLocalFile(d.Value().Name());
     if (localFile == nullptr)

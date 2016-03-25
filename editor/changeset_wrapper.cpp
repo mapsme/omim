@@ -9,6 +9,7 @@
 #include "base/macros.hpp"
 
 #include "std/algorithm.hpp"
+#include "std/random.hpp"
 #include "std/sstream.hpp"
 
 #include "private.h"
@@ -32,6 +33,55 @@ bool OsmFeatureHasTags(pugi::xml_node const & osmFt)
 {
   return osmFt.child("tag");
 }
+
+vector<string> const static kMainTags = {"amenity", "shop",      "tourism", "historic",
+                                         "craft",   "emergency", "barrier", "highway",
+                                         "office",  "entrance",  "building"};
+
+string GetTypeForFeature(XMLFeature const & node)
+{
+  for (string const & key : kMainTags)
+  {
+    if (node.HasTag(key))
+    {
+      string const value = node.GetTagValue(key);
+      if (value == "yes")
+        return key;
+      else if (key == "shop" || key == "office" || key == "building" || key == "entrance")
+        return value + " " + key;  // "convenience shop"
+      else
+        return value;
+    }
+  }
+
+  // Did not find any known tags.
+  return node.HasAnyTags() ? "unknown object" : "empty object";
+}
+
+vector<m2::PointD> NaiveSample(vector<m2::PointD> const & source, size_t count)
+{
+  count = min(count, source.size());
+  vector<m2::PointD> result;
+  result.reserve(count);
+  vector<size_t> indexes;
+  indexes.reserve(count);
+
+  mt19937 engine;
+  uniform_int_distribution<> distrib(0, source.size());
+
+  while (count--)
+  {
+    size_t index;
+    do
+    {
+      index = distrib(engine);
+    } while (find(begin(indexes), end(indexes), index) != end(indexes));
+    result.push_back(source[index]);
+    indexes.push_back(index);
+  }
+
+  return result;
+}
 }  // namespace
 
 namespace pugi
@@ -48,7 +98,8 @@ namespace osm
 {
 ChangesetWrapper::ChangesetWrapper(TKeySecret const & keySecret,
                                    ServerApi06::TKeyValueTags const & comments) noexcept
-  : m_changesetComments(comments), m_api(OsmOAuth::ServerAuth(keySecret))
+    : m_changesetComments(comments),
+      m_api(OsmOAuth::ServerAuth(keySecret))
 {
 }
 
@@ -58,6 +109,8 @@ ChangesetWrapper::~ChangesetWrapper()
   {
     try
     {
+      m_changesetComments["comment"] = GetDescription();
+      m_api.UpdateChangeSet(m_changesetId, m_changesetComments);
       m_api.CloseChangeSet(m_changesetId);
     }
     catch (std::exception const & ex)
@@ -67,24 +120,27 @@ ChangesetWrapper::~ChangesetWrapper()
   }
 }
 
-void ChangesetWrapper::LoadXmlFromOSM(ms::LatLon const & ll, pugi::xml_document & doc)
+void ChangesetWrapper::LoadXmlFromOSM(ms::LatLon const & ll, pugi::xml_document & doc, double radiusInMeters)
 {
-  auto const response = m_api.GetXmlFeaturesAtLatLon(ll.lat, ll.lon);
+  auto const response = m_api.GetXmlFeaturesAtLatLon(ll.lat, ll.lon, radiusInMeters);
   if (response.first != OsmOAuth::HTTP::OK)
     MYTHROW(HttpErrorException, ("HTTP error", response, "with GetXmlFeaturesAtLatLon", ll));
 
   if (pugi::status_ok != doc.load(response.second.c_str()).status)
-    MYTHROW(OsmXmlParseException, ("Can't parse OSM server response for GetXmlFeaturesAtLatLon request", response.second));
+    MYTHROW(
+        OsmXmlParseException,
+        ("Can't parse OSM server response for GetXmlFeaturesAtLatLon request", response.second));
 }
 
-void ChangesetWrapper::LoadXmlFromOSM(m2::RectD const & rect, pugi::xml_document & doc)
+void ChangesetWrapper::LoadXmlFromOSM(ms::LatLon const & min, ms::LatLon const & max, pugi::xml_document & doc)
 {
-  auto const response = m_api.GetXmlFeaturesInRect(rect);
+  auto const response = m_api.GetXmlFeaturesInRect(min.lat, min.lon, max.lat, max.lon);
   if (response.first != OsmOAuth::HTTP::OK)
-    MYTHROW(HttpErrorException, ("HTTP error", response, "with GetXmlFeaturesInRect", rect));
+    MYTHROW(HttpErrorException, ("HTTP error", response, "with GetXmlFeaturesInRect", min, max));
 
   if (pugi::status_ok != doc.load(response.second.c_str()).status)
-    MYTHROW(OsmXmlParseException, ("Can't parse OSM server response for GetXmlFeaturesInRect request", response.second));
+    MYTHROW(OsmXmlParseException,
+            ("Can't parse OSM server response for GetXmlFeaturesInRect request", response.second));
 }
 
 XMLFeature ChangesetWrapper::GetMatchingNodeFeatureFromOSM(m2::PointD const & center)
@@ -115,9 +171,10 @@ XMLFeature ChangesetWrapper::GetMatchingNodeFeatureFromOSM(m2::PointD const & ce
 
 XMLFeature ChangesetWrapper::GetMatchingAreaFeatureFromOSM(vector<m2::PointD> const & geometry)
 {
-  // TODO: Make two/four requests using points on inscribed rectagle.
+  auto const kSamplePointsCount = 3;
   bool hasRelation = false;
-  for (auto const & pt : geometry)
+  // Try several points in case of poor osm response.
+  for (auto const & pt : NaiveSample(geometry, kSamplePointsCount))
   {
     ms::LatLon const ll = MercatorBounds::ToLatLon(pt);
     pugi::xml_document doc;
@@ -127,7 +184,7 @@ XMLFeature ChangesetWrapper::GetMatchingAreaFeatureFromOSM(vector<m2::PointD> co
     if (doc.select_node("osm/relation"))
     {
       auto const rect = GetBoundingRect(geometry);
-      LoadXmlFromOSM(rect, doc);
+      LoadXmlFromOSM(ms::LatLon(rect.minY(), rect.minX()), ms::LatLon(rect.maxY(), rect.maxX()), doc);
       hasRelation = true;
     }
 
@@ -144,8 +201,7 @@ XMLFeature ChangesetWrapper::GetMatchingAreaFeatureFromOSM(vector<m2::PointD> co
       stringstream sstr;
       bestWayOrRelation.print(sstr);
       LOG(LDEBUG, ("Relation is the best match", sstr.str()));
-      MYTHROW(RelationFeatureAreNotSupportedException,
-              ("Got relation as the best matching"));
+      MYTHROW(RelationFeatureAreNotSupportedException, ("Got relation as the best matching"));
     }
 
     if (!OsmFeatureHasTags(bestWayOrRelation))
@@ -177,6 +233,7 @@ void ChangesetWrapper::Create(XMLFeature node)
   node.SetAttribute("changeset", strings::to_string(m_changesetId));
   // TODO(AlexZ): Think about storing/logging returned OSM ids.
   UNUSED_VALUE(m_api.CreateElement(node));
+  m_created_types[GetTypeForFeature(node)]++;
 }
 
 void ChangesetWrapper::Modify(XMLFeature node)
@@ -187,6 +244,7 @@ void ChangesetWrapper::Modify(XMLFeature node)
   // Changeset id should be updated for every OSM server commit.
   node.SetAttribute("changeset", strings::to_string(m_changesetId));
   m_api.ModifyElement(node);
+  m_modified_types[GetTypeForFeature(node)]++;
 }
 
 void ChangesetWrapper::Delete(XMLFeature node)
@@ -197,6 +255,80 @@ void ChangesetWrapper::Delete(XMLFeature node)
   // Changeset id should be updated for every OSM server commit.
   node.SetAttribute("changeset", strings::to_string(m_changesetId));
   m_api.DeleteElement(node);
+  m_deleted_types[GetTypeForFeature(node)]++;
 }
 
-} // namespace osm
+string ChangesetWrapper::TypeCountToString(TTypeCount const & typeCount)
+{
+  if (typeCount.empty())
+    return string();
+
+  // Convert map to vector and sort pairs by count, descending.
+  vector<pair<string, size_t>> items;
+  for (auto const & tc : typeCount)
+    items.push_back(tc);
+
+  sort(items.begin(), items.end(),
+       [](pair<string, size_t> const & a, pair<string, size_t> const & b)
+       {
+         return a.second > b.second;
+       });
+
+  ostringstream ss;
+  auto const limit = min(size_t(3), items.size());
+  for (auto i = 0; i < limit; ++i)
+  {
+    if (i > 0)
+    {
+      // Separator: "A and B" for two, "A, B, and C" for three or more.
+      if (limit > 2)
+        ss << ", ";
+      else
+        ss << " ";
+      if (i == limit - 1)
+        ss << "and ";
+    }
+
+    auto & currentPair = items[i];
+    // If we have more objects left, make the last one a list of these.
+    if (i == limit - 1 && limit < items.size())
+    {
+      int count = 0;
+      for (auto j = i; j < items.size(); ++j)
+        count += items[j].second;
+      currentPair = {"other object", count};
+    }
+
+    // Format a count: "a shop" for single shop, "4 shops" for multiple.
+    if (currentPair.second == 1)
+      ss << "a ";
+    else
+      ss << currentPair.second << ' ';
+    ss << currentPair.first;
+    if (currentPair.second > 1)
+      ss << 's';
+  }
+  return ss.str();
+}
+
+string ChangesetWrapper::GetDescription() const
+{
+  string result;
+  if (!m_created_types.empty())
+    result = "Created " + TypeCountToString(m_created_types);
+  if (!m_modified_types.empty())
+  {
+    if (!result.empty())
+      result += "; ";
+    result += "Updated " + TypeCountToString(m_modified_types);
+  }
+  if (!m_deleted_types.empty())
+  {
+    if (!result.empty())
+      result += "; ";
+    result += "Deleted " + TypeCountToString(m_deleted_types);
+  }
+  return result;
+}
+
+}  // namespace osm

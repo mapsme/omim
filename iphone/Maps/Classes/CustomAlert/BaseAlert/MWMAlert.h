@@ -31,7 +31,8 @@
 + (MWMAlert *)downloaderNotEnoughSpaceAlert;
 + (MWMAlert *)downloaderInternalErrorAlertWithOkBlock:(TMWMVoidBlock)okBlock cancelBlock:(TMWMVoidBlock)cancelBlock;
 + (MWMAlert *)downloaderNeedUpdateAlertWithOkBlock:(TMWMVoidBlock)okBlock;
-+ (MWMAlert *)editorViralAlertWithShareBlock:(TMWMVoidBlock)share;
++ (MWMAlert *)editorViralAlert;
++ (MWMAlert *)osmAuthAlert;
 - (void)close;
 
 - (void)setNeedsCloseAlertAfterEnterBackground;
