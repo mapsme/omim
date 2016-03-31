@@ -93,6 +93,9 @@ public final class CountryItem implements Comparable<CountryItem>
   public void update()
   {
     MapManager.nativeGetAttributes(this);
+    // KILLME: Fix this in the core
+    if ("Countries".equals(directParentName))
+      directParentName = "";
   }
 
   public static CountryItem fill(String countryId)
