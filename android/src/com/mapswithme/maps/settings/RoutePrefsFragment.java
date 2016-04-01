@@ -18,6 +18,7 @@ import com.mapswithme.maps.R;
 import com.mapswithme.maps.sound.LanguageData;
 import com.mapswithme.maps.sound.TtsPlayer;
 import com.mapswithme.util.Config;
+import com.mapswithme.util.Utils;
 import com.mapswithme.util.statistics.Statistics;
 
 public class RoutePrefsFragment extends PreferenceFragment
@@ -89,8 +90,13 @@ public class RoutePrefsFragment extends PreferenceFragment
 
   private void setLanguage(@NonNull LanguageData lang)
   {
+    if (!TtsPlayer.INSTANCE.setLanguage(lang))
+    {
+      Utils.toastShortcut(getActivity(), R.string.dialog_routing_system_error);
+      return;
+    }
+
     Config.setTtsEnabled(true);
-    TtsPlayer.INSTANCE.setLanguage(lang);
     mPrefLanguages.setSummary(lang.name);
 
     update();
