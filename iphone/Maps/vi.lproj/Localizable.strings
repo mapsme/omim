@@ -1369,3 +1369,5 @@
 "download_over_mobile_header" = "Tải xuống qua kết nối mạng di động?";
 
 "download_over_mobile_message" = "Như vậy sẽ rất đắt tiền với một số gói dữ liệu hoặc khi chuyển vùng.";
+
+"migration_no_space_message" = "Để tải xuống, bạn cần thêm dung lượng. Xin xóa mọi dữ liệu không cần thiết.";

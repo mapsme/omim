@@ -801,4 +801,5 @@
 	<string name="downloader_of">%1$d个/共%2$d个</string>
 	<string name="download_over_mobile_header">用手机网络连接下载吗？</string>
 	<string name="download_over_mobile_message">用一些方案或漫游的话这可能相当昂贵。</string>
+	<string name="migration_no_space_message">为了下载，您需要更多的空间。请删除不必要的数据。</string>
 </resources>

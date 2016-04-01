@@ -793,4 +793,5 @@
 	<string name="editor_unsupported_category_message">Du har lagt til et sted i en kategori som enda ikke har støtte. Den vil vises på kartet senere.</string>
 	<!-- Downloaded 10 **of** 20 <- it is that "of" -->
 	<string name="downloader_of">%1$d av %2$d</string>
+	<string name="migration_no_space_message">Du må frigjøre mer lagringsplass for å laste ned. Slett unødvendig data.</string>
 </resources>

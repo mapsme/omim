@@ -832,4 +832,5 @@
 	<string name="downloader_of">%1$d of %2$d</string>
 	<string name="download_over_mobile_header">Download by using a cellular network connection?</string>
 	<string name="download_over_mobile_message">This could be considerably expensive with some plans or if roaming.</string>
+	<string name="migration_no_space_message">To download, you need more space. Please, delete unnecessary data.</string>
 </resources>

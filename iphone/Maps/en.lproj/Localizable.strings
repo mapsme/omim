@@ -1369,3 +1369,5 @@
 "download_over_mobile_header" = "Download by using a cellular network connection?";
 
 "download_over_mobile_message" = "This could be considerably expensive with some plans or if roaming.";
+
+"migration_no_space_message" = "To download, you need more space. Please, delete unnecessary data.";
