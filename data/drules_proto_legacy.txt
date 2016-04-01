@@ -5199,6 +5199,45 @@ cont {
   }
 }
 cont {
+  name: "amenity-swimming_pool"
+  element {
+    scale: 17
+    caption {
+      primary {
+        height: 11
+        color: 4210752
+        stroke_color: 16777215
+        offset_y: 10
+      }
+      priority: 15003
+    }
+  }
+  element {
+    scale: 18
+    caption {
+      primary {
+        height: 11
+        color: 4210752
+        stroke_color: 16777215
+        offset_y: 10
+      }
+      priority: 15003
+    }
+  }
+  element {
+    scale: 19
+    caption {
+      primary {
+        height: 11
+        color: 4210752
+        stroke_color: 16777215
+        offset_y: 10
+      }
+      priority: 15003
+    }
+  }
+}
+cont {
   name: "amenity-taxi"
   element {
     scale: 16
@@ -12484,159 +12523,6 @@ cont {
   }
 }
 cont {
-  name: "highway-footway-no-access"
-  element {
-    scale: 13
-    lines {
-      width: 1.0
-      color: 13683900
-      dashdot {
-        dd: 4.0
-        dd: 4.0
-      }
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-  }
-  element {
-    scale: 14
-    lines {
-      width: 1.0
-      color: 13683900
-      dashdot {
-        dd: 4.0
-        dd: 4.0
-      }
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-  }
-  element {
-    scale: 15
-    lines {
-      width: 1.0
-      color: 13683900
-      dashdot {
-        dd: 4.0
-        dd: 4.0
-      }
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-    path_text {
-      primary {
-        height: 10
-        color: 5263440
-      }
-      priority: 16033
-    }
-  }
-  element {
-    scale: 16
-    lines {
-      width: 2.0
-      color: 13683900
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-    path_text {
-      primary {
-        height: 10
-        color: 5263440
-      }
-      priority: 16033
-    }
-  }
-  element {
-    scale: 17
-    lines {
-      width: 5.0
-      color: 13683900
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-    lines {
-      width: 4.0
-      color: 13683900
-      dashdot {
-        dd: 1.0
-        dd: 3.0
-      }
-      priority: 1766
-      join: ROUNDJOIN
-      cap: BUTTCAP
-    }
-    path_text {
-      primary {
-        height: 10
-        color: 5263440
-      }
-      priority: 16033
-    }
-  }
-  element {
-    scale: 18
-    lines {
-      width: 9.0
-      color: 13683900
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-    lines {
-      width: 8.0
-      color: 13683900
-      dashdot {
-        dd: 1.0
-        dd: 3.0
-      }
-      priority: 1766
-      join: ROUNDJOIN
-      cap: BUTTCAP
-    }
-    path_text {
-      primary {
-        height: 10
-        color: 5263440
-      }
-      priority: 16033
-    }
-  }
-  element {
-    scale: 19
-    lines {
-      width: 17.0
-      color: 13683900
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-    lines {
-      width: 16.0
-      color: 13683900
-      dashdot {
-        dd: 1.0
-        dd: 4.0
-      }
-      priority: 1766
-      join: ROUNDJOIN
-      cap: BUTTCAP
-    }
-    path_text {
-      primary {
-        height: 10
-        color: 5263440
-      }
-      priority: 16033
-    }
-  }
-}
-cont {
   name: "highway-footway-permissive"
   element {
     scale: 13
@@ -16193,438 +16079,6 @@ cont {
   }
 }
 cont {
-  name: "highway-path-bicycle-bridge"
-  element {
-    scale: 13
-    lines {
-      width: 1.0
-      color: 14127921
-      dashdot {
-        dd: 4.0
-        dd: 4.0
-      }
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-  }
-  element {
-    scale: 14
-    lines {
-      width: 1.0
-      color: 14127921
-      dashdot {
-        dd: 4.0
-        dd: 4.0
-      }
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-  }
-  element {
-    scale: 15
-    lines {
-      width: 1.0
-      color: 14127921
-      dashdot {
-        dd: 4.0
-        dd: 4.0
-      }
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-    lines {
-      width: 9.0
-      color: 16777215
-      priority: 1029
-      join: ROUNDJOIN
-      cap: BUTTCAP
-    }
-    lines {
-      width: 11.0
-      color: 7368816
-      priority: 1026
-      join: ROUNDJOIN
-      cap: BUTTCAP
-    }
-    path_text {
-      primary {
-        height: 10
-        color: 7368816
-      }
-      priority: 16033
-    }
-  }
-  element {
-    scale: 16
-    lines {
-      width: 1.0
-      color: 14127921
-      dashdot {
-        dd: 4.0
-        dd: 4.0
-      }
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-    lines {
-      width: 9.0
-      color: 16777215
-      priority: 1029
-      join: ROUNDJOIN
-      cap: BUTTCAP
-    }
-    lines {
-      width: 11.0
-      color: 7368816
-      priority: 1026
-      join: ROUNDJOIN
-      cap: BUTTCAP
-    }
-    path_text {
-      primary {
-        height: 10
-        color: 7368816
-      }
-      priority: 16033
-    }
-  }
-  element {
-    scale: 17
-    lines {
-      width: 1.0
-      color: 14127921
-      dashdot {
-        dd: 4.0
-        dd: 4.0
-      }
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-    lines {
-      width: 9.0
-      color: 16777215
-      priority: 1029
-      join: ROUNDJOIN
-      cap: BUTTCAP
-    }
-    lines {
-      width: 11.0
-      color: 7368816
-      priority: 1026
-      join: ROUNDJOIN
-      cap: BUTTCAP
-    }
-    path_text {
-      primary {
-        height: 10
-        color: 7368816
-      }
-      priority: 16033
-    }
-  }
-  element {
-    scale: 18
-    lines {
-      width: 1.0
-      color: 14127921
-      dashdot {
-        dd: 4.0
-        dd: 4.0
-      }
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-    lines {
-      width: 9.0
-      color: 16777215
-      priority: 1029
-      join: ROUNDJOIN
-      cap: BUTTCAP
-    }
-    lines {
-      width: 11.0
-      color: 7368816
-      priority: 1026
-      join: ROUNDJOIN
-      cap: BUTTCAP
-    }
-    path_text {
-      primary {
-        height: 10
-        color: 7368816
-      }
-      priority: 16033
-    }
-  }
-  element {
-    scale: 19
-    lines {
-      width: 1.0
-      color: 14127921
-      dashdot {
-        dd: 4.0
-        dd: 4.0
-      }
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-    lines {
-      width: 9.0
-      color: 16777215
-      priority: 1029
-      join: ROUNDJOIN
-      cap: BUTTCAP
-    }
-    lines {
-      width: 11.0
-      color: 7368816
-      priority: 1026
-      join: ROUNDJOIN
-      cap: BUTTCAP
-    }
-    path_text {
-      primary {
-        height: 10
-        color: 7368816
-      }
-      priority: 16033
-    }
-  }
-}
-cont {
-  name: "highway-path-bicycle-tunnel"
-  element {
-    scale: 13
-    lines {
-      width: 1.0
-      color: 14127921
-      dashdot {
-        dd: 4.0
-        dd: 4.0
-      }
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-  }
-  element {
-    scale: 14
-    lines {
-      width: 1.0
-      color: 14127921
-      dashdot {
-        dd: 4.0
-        dd: 4.0
-      }
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-  }
-  element {
-    scale: 15
-    lines {
-      width: 1.0
-      color: 14127921
-      dashdot {
-        dd: 4.0
-        dd: 4.0
-      }
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-    lines {
-      width: 9.0
-      color: 16777215
-      priority: 1029
-      join: ROUNDJOIN
-      cap: BUTTCAP
-    }
-    lines {
-      width: 11.0
-      color: 7368816
-      dashdot {
-        dd: 5.0
-        dd: 5.0
-      }
-      priority: 1026
-      join: ROUNDJOIN
-      cap: BUTTCAP
-    }
-    path_text {
-      primary {
-        height: 10
-        color: 7368816
-      }
-      priority: 16033
-    }
-  }
-  element {
-    scale: 16
-    lines {
-      width: 1.0
-      color: 14127921
-      dashdot {
-        dd: 4.0
-        dd: 4.0
-      }
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-    lines {
-      width: 9.0
-      color: 16777215
-      priority: 1029
-      join: ROUNDJOIN
-      cap: BUTTCAP
-    }
-    lines {
-      width: 11.0
-      color: 7368816
-      dashdot {
-        dd: 5.0
-        dd: 5.0
-      }
-      priority: 1026
-      join: ROUNDJOIN
-      cap: BUTTCAP
-    }
-    path_text {
-      primary {
-        height: 10
-        color: 7368816
-      }
-      priority: 16033
-    }
-  }
-  element {
-    scale: 17
-    lines {
-      width: 1.0
-      color: 14127921
-      dashdot {
-        dd: 4.0
-        dd: 4.0
-      }
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-    lines {
-      width: 9.0
-      color: 16777215
-      priority: 1029
-      join: ROUNDJOIN
-      cap: BUTTCAP
-    }
-    lines {
-      width: 11.0
-      color: 7368816
-      dashdot {
-        dd: 5.0
-        dd: 5.0
-      }
-      priority: 1026
-      join: ROUNDJOIN
-      cap: BUTTCAP
-    }
-    path_text {
-      primary {
-        height: 10
-        color: 7368816
-      }
-      priority: 16033
-    }
-  }
-  element {
-    scale: 18
-    lines {
-      width: 1.0
-      color: 14127921
-      dashdot {
-        dd: 4.0
-        dd: 4.0
-      }
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-    lines {
-      width: 9.0
-      color: 16777215
-      priority: 1029
-      join: ROUNDJOIN
-      cap: BUTTCAP
-    }
-    lines {
-      width: 11.0
-      color: 7368816
-      dashdot {
-        dd: 5.0
-        dd: 5.0
-      }
-      priority: 1026
-      join: ROUNDJOIN
-      cap: BUTTCAP
-    }
-    path_text {
-      primary {
-        height: 10
-        color: 7368816
-      }
-      priority: 16033
-    }
-  }
-  element {
-    scale: 19
-    lines {
-      width: 1.0
-      color: 14127921
-      dashdot {
-        dd: 4.0
-        dd: 4.0
-      }
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-    lines {
-      width: 9.0
-      color: 16777215
-      priority: 1029
-      join: ROUNDJOIN
-      cap: BUTTCAP
-    }
-    lines {
-      width: 11.0
-      color: 7368816
-      dashdot {
-        dd: 5.0
-        dd: 5.0
-      }
-      priority: 1026
-      join: ROUNDJOIN
-      cap: BUTTCAP
-    }
-    path_text {
-      primary {
-        height: 10
-        color: 7368816
-      }
-      priority: 16033
-    }
-  }
-}
-cont {
   name: "highway-path-bridge"
   element {
     scale: 13
@@ -17636,142 +17090,6 @@ cont {
       priority: 1033
       join: ROUNDJOIN
       cap: BUTTCAP
-    }
-    path_text {
-      primary {
-        height: 10
-        color: 7368816
-      }
-      priority: 16033
-    }
-  }
-}
-cont {
-  name: "highway-path-no-access"
-  element {
-    scale: 13
-    lines {
-      width: 1.0
-      color: 14127921
-      dashdot {
-        dd: 4.0
-        dd: 4.0
-      }
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-  }
-  element {
-    scale: 14
-    lines {
-      width: 1.0
-      color: 14127921
-      dashdot {
-        dd: 4.0
-        dd: 4.0
-      }
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-  }
-  element {
-    scale: 15
-    lines {
-      width: 1.0
-      color: 14127921
-      dashdot {
-        dd: 4.0
-        dd: 4.0
-      }
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-    path_text {
-      primary {
-        height: 10
-        color: 7368816
-      }
-      priority: 16033
-    }
-  }
-  element {
-    scale: 16
-    lines {
-      width: 1.0
-      color: 14127921
-      dashdot {
-        dd: 4.0
-        dd: 4.0
-      }
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-    path_text {
-      primary {
-        height: 10
-        color: 7368816
-      }
-      priority: 16033
-    }
-  }
-  element {
-    scale: 17
-    lines {
-      width: 1.0
-      color: 14127921
-      dashdot {
-        dd: 4.0
-        dd: 4.0
-      }
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-    path_text {
-      primary {
-        height: 10
-        color: 7368816
-      }
-      priority: 16033
-    }
-  }
-  element {
-    scale: 18
-    lines {
-      width: 1.0
-      color: 14127921
-      dashdot {
-        dd: 4.0
-        dd: 4.0
-      }
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
-    }
-    path_text {
-      primary {
-        height: 10
-        color: 7368816
-      }
-      priority: 16033
-    }
-  }
-  element {
-    scale: 19
-    lines {
-      width: 1.0
-      color: 14127921
-      dashdot {
-        dd: 4.0
-        dd: 4.0
-      }
-      priority: 1033
-      join: ROUNDJOIN
-      cap: ROUNDCAP
     }
     path_text {
       primary {
@@ -42595,6 +41913,45 @@ cont {
   }
 }
 cont {
+  name: "office-travel_agent"
+  element {
+    scale: 17
+    caption {
+      primary {
+        height: 11
+        color: 4210752
+        stroke_color: 16777215
+        offset_y: 10
+      }
+      priority: 15003
+    }
+  }
+  element {
+    scale: 18
+    caption {
+      primary {
+        height: 11
+        color: 4210752
+        stroke_color: 16777215
+        offset_y: 10
+      }
+      priority: 15003
+    }
+  }
+  element {
+    scale: 19
+    caption {
+      primary {
+        height: 11
+        color: 4210752
+        stroke_color: 16777215
+        offset_y: 10
+      }
+      priority: 15003
+    }
+  }
+}
+cont {
   name: "piste:lift-j-bar"
   element {
     scale: 14
@@ -63744,6 +63101,45 @@ cont {
   }
 }
 cont {
+  name: "shop-estate_agent"
+  element {
+    scale: 17
+    caption {
+      primary {
+        height: 11
+        color: 4210752
+        stroke_color: 16777215
+        offset_y: 10
+      }
+      priority: 15003
+    }
+  }
+  element {
+    scale: 18
+    caption {
+      primary {
+        height: 11
+        color: 4210752
+        stroke_color: 16777215
+        offset_y: 10
+      }
+      priority: 15003
+    }
+  }
+  element {
+    scale: 19
+    caption {
+      primary {
+        height: 11
+        color: 4210752
+        stroke_color: 16777215
+        offset_y: 10
+      }
+      priority: 15003
+    }
+  }
+}
+cont {
   name: "shop-florist"
   element {
     scale: 17
@@ -64577,6 +63973,45 @@ cont {
       name: "supermarket"
       priority: 16003
     }
+    caption {
+      primary {
+        height: 11
+        color: 4210752
+        stroke_color: 16777215
+        offset_y: 10
+      }
+      priority: 15003
+    }
+  }
+}
+cont {
+  name: "shop-tailor"
+  element {
+    scale: 17
+    caption {
+      primary {
+        height: 11
+        color: 4210752
+        stroke_color: 16777215
+        offset_y: 10
+      }
+      priority: 15003
+    }
+  }
+  element {
+    scale: 18
+    caption {
+      primary {
+        height: 11
+        color: 4210752
+        stroke_color: 16777215
+        offset_y: 10
+      }
+      priority: 15003
+    }
+  }
+  element {
+    scale: 19
     caption {
       primary {
         height: 11

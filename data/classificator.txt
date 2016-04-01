@@ -90,6 +90,7 @@ world  +
         school  -
         shelter  -
         speed_trap  -
+        swimming_pool  -
         taxi  -
         telephone  -
         theatre  -
@@ -210,7 +211,6 @@ world  +
             difficult_alpine_hiking  -
             hiking  -
             mountain_hiking  -
-            no-access  -
             permissive  -
             tunnel  -
             {}
@@ -231,8 +231,6 @@ world  +
         path  +
             alpine_hiking  -
             bicycle  -
-            bicycle-bridge  -
-            bicycle-tunnel  -
             bridge  -
             demanding_alpine_hiking  -
             demanding_mountain_hiking  -
@@ -240,7 +238,6 @@ world  +
             hiking  -
             horse  -
             mountain_hiking  -
-            no-access  -
             permissive  -
             tunnel  -
             {}
@@ -478,6 +475,7 @@ world  +
         heath  -
         lake  -
         land  -
+        marsh  -
         meadow  -
         orchard  -
         peak  -
@@ -511,6 +509,7 @@ world  +
         government  -
         lawyer  -
         telecommunication  -
+        travel_agent  -
         {}
     piste:lift  +
         j-bar  -
@@ -731,6 +730,7 @@ world  +
         doityourself  -
         dry_cleaning  -
         electronics  -
+        estate_agent  -
         florist  -
         furniture  -
         garden_centre  -
@@ -749,6 +749,7 @@ world  +
         shoes  -
         sports  -
         supermarket  -
+        tailor  -
         toys  -
         travel_agency  -
         tyres  -
