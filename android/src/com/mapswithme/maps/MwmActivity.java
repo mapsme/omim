@@ -676,6 +676,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   @Override
   public void onDestroy()
   {
+    // TODO move listeners attach-deattach to onStart-onStop since onDestroy isn't guaranteed.
     Framework.nativeRemoveMapObjectListener();
     BottomSheetHelper.free();
     RoutingController.get().detach();
