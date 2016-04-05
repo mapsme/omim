@@ -524,6 +524,7 @@ using namespace osm_auth_ios;
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
+  LOG(LINFO, ("applicationDidEnterBackground"));
   [self.locationManager onBackground];
   [self.mapViewController onEnterBackground];
   if (m_activeDownloadsCounter)
@@ -559,6 +560,7 @@ using namespace osm_auth_ios;
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
+  LOG(LINFO, ("applicationWillResignActive"));
   [self.mapViewController onGetFocus: NO];
   [self.mapViewController.appWallAd close];
   [RouteState save];
@@ -567,6 +569,7 @@ using namespace osm_auth_ios;
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
+  LOG(LINFO, ("applicationWillEnterForeground"));
   BOOL const needInit = self.isDaemonMode;
   self.isDaemonMode = NO;
   if (needInit)
@@ -585,7 +588,12 @@ using namespace osm_auth_ios;
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
   if (application.applicationState == UIApplicationStateBackground)
+  {
+    LOG(LINFO, ("applicationDidBecomeActive, applicationState = UIApplicationStateBackground"));
     return;
+  }
+  
+  LOG(LINFO, ("applicationDidBecomeActive"));
   [self.mapViewController onGetFocus: YES];
   [self handleURLs];
   [self restoreRouteState];
