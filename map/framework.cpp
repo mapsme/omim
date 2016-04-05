@@ -270,7 +270,8 @@ void Framework::Migrate(bool keepDownloaded)
   // framework (i.e. m_infoGetter) which are reinitialized during migration process.
   // If we do not suspend drape, it tries to access framework fields (i.e. m_infoGetter) which are null
   // while migration is performed.
-  SetRenderingEnabled(false);
+  if (m_drapeEngine && m_isRenderingEnabled)
+    m_drapeEngine->SetRenderingEnabled(false);
   m_searchEngine.reset();
   m_infoGetter.reset();
   TCountriesVec existedCountries;
@@ -281,7 +282,8 @@ void Framework::Migrate(bool keepDownloaded)
   InitCountryInfoGetter();
   InitSearchEngine();
   RegisterAllMaps();
-  SetRenderingEnabled(true);
+  if (m_drapeEngine && m_isRenderingEnabled)
+    m_drapeEngine->SetRenderingEnabled(true);
   InvalidateRect(MercatorBounds::FullRect());
 }
 
@@ -290,6 +292,7 @@ Framework::Framework()
   , m_bmManager(*this)
   , m_fixedSearchResults(0)
   , m_lastReportedCountry(kInvalidCountryId)
+  , m_isRenderingEnabled(true)
 {
   // Restore map style before classificator loading
   int mapStyle = MapStyleLight;
@@ -1523,6 +1526,7 @@ void Framework::DestroyDrapeEngine()
 
 void Framework::SetRenderingEnabled(bool enable)
 {
+  m_isRenderingEnabled = enable;
   if (m_drapeEngine)
     m_drapeEngine->SetRenderingEnabled(enable);
 }
