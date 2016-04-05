@@ -56,7 +56,7 @@ public:
   StringUtf8Multilang const & GetName() const;
   vector<LocalizedName> GetLocalizedNames() const;
   string const & GetStreet() const;
-  vector<string> const & GetNearbyStreets() const;
+  vector<pair<string /* Default name */, string /* Localized name */>> const & GetNearbyStreets() const;
   string const & GetHouseNumber() const;
   string GetPostcode() const;
   string GetWikipedia() const;
@@ -70,7 +70,7 @@ public:
   void SetID(FeatureID const & fid);
   //  void SetTypes(feature::TypesHolder const & types);
   void SetStreet(string const & street);
-  void SetNearbyStreets(vector<string> && streets);
+  void SetNearbyStreets(vector<pair<string /* Default name */, string /* Localized name */>> && streets);
   void SetHouseNumber(string const & houseNumber);
   void SetPostcode(string const & postcode);
   void SetPhone(string const & phone);
@@ -94,7 +94,7 @@ public:
 private:
   string m_houseNumber;
   string m_street;
-  vector<string> m_nearbyStreets;
+  vector<pair<string /* Default name */, string /* Localized name */>> m_nearbyStreets;
   EditableProperties m_editableProperties;
 };
 }  // namespace osm

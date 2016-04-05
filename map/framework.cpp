@@ -2450,21 +2450,28 @@ bool Framework::ParseEditorDebugCommand(search::SearchParams const & params)
 
 namespace
 {
-vector<string> FilterNearbyStreets(vector<search::ReverseGeocoder::Street> const & streets,
+vector<pair<string /* Default name */, string /* Localized name */>> FilterNearbyStreets(vector<search::ReverseGeocoder::Street> const & streets,
                                    string const & exactFeatureStreet = "")
 {
-  vector<string> results;
+  vector<pair<string, string>> results;
+  //TODO: Push into results localized street name as second parametr.
+
   // Exact feature street always goes first in Editor UI street list.
   if (!exactFeatureStreet.empty())
-    results.push_back(exactFeatureStreet);
+    results.emplace_back(exactFeatureStreet, "");
   // Reasonable number of different nearby street names to display in UI.
   constexpr size_t kMaxNumberOfNearbyStreetsToDisplay = 8;
   for (auto const & street : streets)
   {
     auto const e = results.end();
-    if (e == find(results.begin(), e, street.m_name))
+    auto const it = find_if(results.begin(), e, [&street](pair<string, string> const & p)
     {
-      results.push_back(street.m_name);
+      return p.first == street.m_name;
+    });
+
+    if (e == it)
+    {
+      results.emplace_back(street.m_name, "");
       if (results.size() >= kMaxNumberOfNearbyStreetsToDisplay)
         break;
     }

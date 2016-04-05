@@ -33,7 +33,10 @@ vector<LocalizedName> EditableMapObject::GetLocalizedNames() const
   return result;
 }
 
-vector<string> const & EditableMapObject::GetNearbyStreets() const { return m_nearbyStreets; }
+vector<pair<string /* Default name */, string /* Localized name */>> const & EditableMapObject::GetNearbyStreets() const
+{
+  return m_nearbyStreets;
+}
 string const & EditableMapObject::GetHouseNumber() const { return m_houseNumber; }
 
 string EditableMapObject::GetPostcode() const
@@ -84,16 +87,18 @@ void EditableMapObject::SetType(uint32_t featureType)
 void EditableMapObject::SetID(FeatureID const & fid) { m_featureID = fid; }
 void EditableMapObject::SetStreet(string const & street) { m_street = street; }
 
-void EditableMapObject::SetNearbyStreets(vector<string> && streets)
+void EditableMapObject::SetNearbyStreets(vector<pair<string /* Default name */, string /* Localized name */>> && streets)
 {
   m_nearbyStreets = move(streets);
 }
+
 void EditableMapObject::SetHouseNumber(string const & houseNumber)
 {
   // TODO(AlexZ): Check house number for validity with feature::IsHouseNumber ?
   // TODO(AlexZ): Store edited house number as house name if feature::IsHouseNumber() returned false.
   m_houseNumber = houseNumber;
 }
+
 void EditableMapObject::SetPostcode(string const & postcode)
 {
   m_metadata.Set(feature::Metadata::FMD_POSTCODE, postcode);
