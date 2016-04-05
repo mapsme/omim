@@ -121,6 +121,7 @@ public:
                     CallbackT onFinish, CallbackT onProgress)
     : HttpRequest(onFinish, onProgress), m_writer(m_downloadedData)
   {
+    m_progress = make_pair(0, 0);
     m_thread = CreateNativeHttpThread(url, *this, 0, -1, -1, postData);
     ASSERT ( m_thread, () );
   }
@@ -384,6 +385,12 @@ HttpRequest::HttpRequest(CallbackT const & onFinish, CallbackT const & onProgres
 
 HttpRequest::~HttpRequest()
 {
+}
+
+HttpRequest::ProgressT const & HttpRequest::Progress() const
+{
+  ASSERT(m_progress.first <= m_progress.second, ());
+  return m_progress;
 }
 
 HttpRequest * HttpRequest::Get(string const & url, CallbackT const & onFinish, CallbackT const & onProgress)
