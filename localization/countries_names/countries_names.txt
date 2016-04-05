@@ -29250,19 +29250,19 @@ he = סוריה
 
 [Taiwan]
 en = Taiwan
-ru = Китайская Республика
+ru = Тайвань
 fr = Taïwan
-da = Republikken Kina
+da = Taiwan
 id = Republik Tiongkok
 ko = 중화민국
 sv = Taiwan
 tr = Çin Cumhuriyeti
-uk = Республіка Китай
-vi = Trung Hoa Dân Quốc
+uk = Тайвань
+vi = Đài Loan
 hu = Kínai Köztársaság
-de = Republik China (Taiwan)
+de = Taiwan
 fi = Taiwan
-cs = Čínská republika
+cs = Tchaj-wan
 it = Taiwan
 nb = Republikken Kina
 zh-Hant = 中華民國
@@ -29272,10 +29272,10 @@ ja = 中華民国
 ro = Taiwan
 ar = تايوان
 sk = Taiwan
-es = República de China
-pl = Republika Chińska
+es = Taiwán
+pl = Tajwan
 nl = Taiwan
-pt = República da China
+pt = Taiwan
 he = הרפובליקה הסינית
 
 [Tajikistan]
