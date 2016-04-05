@@ -1,11 +1,14 @@
 #import "MWMTableViewController.h"
 
+#include "std/string.hpp"
+#include "std/utility.hpp"
+#include "std/vector.hpp"
+
 @protocol MWMStreetEditorProtocol <NSObject>
 
-- (NSString *)getStreet;
-- (void)setStreet:(NSString *)street;
-
-- (NSArray<NSString *> *)getNearbyStreets;
+- (string const &)currentStreet;
+- (void)setCurrentStreet:(string const &)street;
+- (vector<pair<string, string>> const &)nearbyStreets;
 
 @end
 

@@ -2450,8 +2450,9 @@ bool Framework::ParseEditorDebugCommand(search::SearchParams const & params)
 
 namespace
 {
-vector<pair<string /* Default name */, string /* Localized name */>> FilterNearbyStreets(vector<search::ReverseGeocoder::Street> const & streets,
-                                   string const & exactFeatureStreet = "")
+vector<pair<string /* Default name */, string /* Localized name */>>
+      FilterNearbyStreets(vector<search::ReverseGeocoder::Street> const & streets,
+                          string const & exactFeatureStreet = "")
 {
   vector<pair<string, string>> results;
   //TODO: Push into results localized street name as second parametr.
