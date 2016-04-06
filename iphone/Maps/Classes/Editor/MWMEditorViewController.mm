@@ -493,6 +493,19 @@ NSString * reuseIdentifier(MWMPlacePageCellType cellType)
   [self performSegueWithIdentifier:kOpeningHoursEditorSegue sender:nil];
 }
 
+- (void)markCellAsInvalid:(MWMPlacePageCellType)cellType indexPath:(NSIndexPath *)indexPath
+{
+  auto const e = m_invalidCells.end();
+  auto it = find_if(m_invalidCells.begin(), e, [](pair<MWMPlacePageCellType, NSIndexPath *> const & p)
+                                                {
+                                                  return p.first == MWMPlacePageCellTypeBuilding;
+                                                });
+  if (it == e)
+    m_invalidCells.emplace_back(cellType, indexPath);
+
+  [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+}
+
 #pragma mark - MWMEditorCellProtocol
 
 - (void)tryToChangeInvalidStateForCell:(MWMEditorTextTableViewCell *)cell
@@ -525,20 +538,8 @@ NSString * reuseIdentifier(MWMPlacePageCellType cellType)
     case MWMPlacePageCellTypeEmail: m_mapObject.SetEmail(val); break;
     case MWMPlacePageCellTypeBuilding:
     {
-      m_mapObject.SetHouseNumber(val);
-      //TODO: Here we need to process validation's result. Code below performs some UI updates and we should call it
-      // if validation finish with error.
-      /*
-      auto const e = m_invalidCells.end();
-      auto it = find_if(m_invalidCells.begin(), e, [](pair<MWMPlacePageCellType, NSIndexPath *> const & p)
-                                                    {
-                                                      return p.first == MWMPlacePageCellTypeBuilding;
-                                                    });
-      if (it == e)
-        m_invalidCells.emplace_back(cellType, indexPath);
-
-      [self.tableView reloadRowsAtIndexPaths:@[[self.tableView indexPathForCell:cell]] withRowAnimation:UITableViewRowAnimationFade];
-       */
+      if (!m_mapObject.SetHouseNumber(val))
+        [self markCellAsInvalid:cellType indexPath:indexPath];
       break;
     }
     default: NSAssert(false, @"Invalid field for changeText");
