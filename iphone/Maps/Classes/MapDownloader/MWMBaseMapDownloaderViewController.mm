@@ -1,4 +1,5 @@
 #import "Common.h"
+#import "Crashlytics/Crashlytics.h"
 #import "MapsAppDelegate.h"
 #import "MWMAlertViewController.h"
 #import "MWMFrameworkListener.h"
@@ -143,6 +144,12 @@ using namespace storage;
 
   BOOL needReload = NO;
   auto const & s = GetFramework().Storage();
+
+  char const * parentId = self.parentCountryId.UTF8String;
+  LOG(LINFO, ("processCountryEvent CountryId:", countryId, "ParentId1:", reinterpret_cast<void const *>(parentId), "length: ", self.parentCountryId.length));
+  CLS_LOG("processCountryEvent ParentId2: %@", self.parentCountryId);
+  LOG(LINFO, ("processCountryEvent ParentId3:", parentId));
+
   s.ForEachInSubtree(self.parentCountryId.UTF8String,
                      [&needReload, &countryId](TCountryId const & descendantId, bool groupNode)
                      {

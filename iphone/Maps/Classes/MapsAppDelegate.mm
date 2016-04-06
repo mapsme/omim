@@ -1,5 +1,6 @@
 #import "AppInfo.h"
 #import "Common.h"
+#import "Crashlytics/Crashlytics.h"
 #import "EAGLView.h"
 #import "LocalNotificationManager.h"
 #import "LocationManager.h"
@@ -214,6 +215,10 @@ using namespace osm_auth_ios;
   Framework & f = GetFramework();
   if (m_geoURL)
   {
+    char const * utfString = [m_geoURL UTF8String];
+    LOG(LINFO, ("handleURLs - m_geoURL1", reinterpret_cast<void const *>(utfString), "length: ", m_geoURL.length));
+    CLS_LOG("handleURLs - m_geoURL2: %@", m_geoURL);
+    LOG(LINFO, ("handleURLs - m_geoURL3", utfString));
     if (f.ShowMapForURL([m_geoURL UTF8String]))
     {
       [Statistics logEvent:kStatEventName(kStatApplication, kStatImport)
@@ -223,6 +228,10 @@ using namespace osm_auth_ios;
   }
   else if (m_mwmURL)
   {
+    char const * utfString = [m_mwmURL UTF8String];
+    LOG(LINFO, ("handleURLs - m_mwmURL1", reinterpret_cast<void const *>(utfString), "length: ", m_mwmURL.length));
+    CLS_LOG("handleURLs - m_mwmURL2: %@", m_mwmURL);
+    LOG(LINFO, ("handleURLs - m_mwmURL3", utfString));
     if (f.ShowMapForURL([m_mwmURL UTF8String]))
     {
       [[Statistics instance] logApiUsage:m_sourceApplication];
@@ -232,6 +241,10 @@ using namespace osm_auth_ios;
   }
   else if (m_fileURL)
   {
+    char const * utfString = [m_fileURL UTF8String];
+    LOG(LINFO, ("handleURLs - m_fileURL1", reinterpret_cast<void const *>(utfString), "length: ", m_fileURL.length));
+    CLS_LOG("handleURLs - m_fileURL2: %@", m_fileURL);
+    LOG(LINFO, ("handleURLs - m_fileURL3", utfString));
     if (!f.AddBookmarksFile([m_fileURL UTF8String]))
       [self showLoadFileAlertIsSuccessful:NO];
 
@@ -245,6 +258,10 @@ using namespace osm_auth_ios;
     UIPasteboard * pasteboard = [UIPasteboard generalPasteboard];
     if ([pasteboard.string length])
     {
+      char const * utfString = [pasteboard.string UTF8String];
+      LOG(LINFO, ("handleURLs - pasteboard.string1", reinterpret_cast<void const *>(utfString), "length: ", pasteboard.string.length));
+      CLS_LOG("handleURLs - pasteboard.string2: %@", pasteboard.string);
+      LOG(LINFO, ("handleURLs - pasteboard.string3", utfString));
       if (f.ShowMapForURL([pasteboard.string UTF8String]))
       {
         [self showMap];
