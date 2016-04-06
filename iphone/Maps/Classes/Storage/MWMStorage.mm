@@ -69,7 +69,7 @@
     {
       storage::NodeAttrs attrs;
       GetFramework().Storage().GetNodeAttrs(countryId, attrs);
-      size_t const warningSizeForWWAN = 50 * MB;
+      storage::TMwmSize const warningSizeForWWAN = 50 * MB;
       if (attrs.m_mwmSize > warningSizeForWWAN)
         [alertController presentNoWiFiAlertWithName:@(attrs.m_nodeLocalName.c_str()) okBlock:action];
       else
