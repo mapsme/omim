@@ -561,23 +561,19 @@ NSString * reuseIdentifier(MWMPlacePageCellType cellType)
 
 #pragma mark - MWMStreetEditorProtocol
 
-- (NSString *)getStreet
+- (string const &)currentStreet
 {
-  return @(m_mapObject.GetStreet().c_str());
+  return m_mapObject.GetStreet();
 }
 
-- (void)setStreet:(NSString *)street
+- (void)setCurrentStreet:(string const &)street
 {
-  m_mapObject.SetStreet(street.UTF8String);
+  m_mapObject.SetStreet(street);
 }
 
-- (NSArray<NSString *> *)getNearbyStreets
+- (vector<pair<string, string>> const &)nearbyStreets
 {
-  auto const & streets = m_mapObject.GetNearbyStreets();
-  NSMutableArray * arr = [[NSMutableArray alloc] initWithCapacity:streets.size()];
-  for (auto const & street : streets)
-    [arr addObject:@(street.c_str())];
-  return arr;
+  return m_mapObject.GetNearbyStreets();
 }
 
 #pragma mark - Segue
