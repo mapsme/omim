@@ -9,7 +9,7 @@
 
 + (void)downloadNode:(storage::TCountryId const &)countryId alertController:(MWMAlertViewController *)alertController onSuccess:(TMWMVoidBlock)onSuccess
 {
-  [self countryId:countryId alertController:alertController performAction:^
+  [self countryId:countryId alertController:alertController performAction:[countryId, onSuccess]
   {
     GetFramework().Storage().DownloadNode(countryId);
     if (onSuccess)
@@ -24,7 +24,7 @@
 
 + (void)updateNode:(storage::TCountryId const &)countryId alertController:(MWMAlertViewController *)alertController
 {
-  [self countryId:countryId alertController:alertController performAction:^
+  [self countryId:countryId alertController:alertController performAction:[countryId]
   {
     GetFramework().Storage().UpdateNode(countryId);
   }];
