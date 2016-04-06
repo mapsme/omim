@@ -356,10 +356,18 @@ NSString * reuseIdentifier(MWMPlacePageCellType cellType)
     case MWMPlacePageCellTypeBuilding:
     {
       MWMEditorTextTableViewCell * tCell = (MWMEditorTextTableViewCell *)cell;
+      auto const e = m_invalidCells.end();
+      BOOL const isValid = find_if(m_invalidCells.begin(), e, [](pair<MWMPlacePageCellType, NSIndexPath *> const & p)
+                           {
+                             return p.first == MWMPlacePageCellTypeBuilding;
+                           }) == e;
+
       [tCell configWithDelegate:self
                            icon:nil
                            text:@(m_mapObject.GetHouseNumber().c_str())
                     placeholder:L(@"house")
+                   errorMessage:@"error_enter_correct_house_number"
+                        isValid:isValid
                    keyboardType:UIKeyboardTypeDefault];
       break;
     }
@@ -515,18 +523,26 @@ NSString * reuseIdentifier(MWMPlacePageCellType cellType)
     case MWMPlacePageCellTypePhoneNumber: m_mapObject.SetPhone(val); break;
     case MWMPlacePageCellTypeWebsite: m_mapObject.SetWebsite(val); break;
     case MWMPlacePageCellTypeEmail: m_mapObject.SetEmail(val); break;
-    case MWMPlacePageCellTypeBuilding: m_mapObject.SetHouseNumber(val); break;
+    case MWMPlacePageCellTypeBuilding:
+    {
+      m_mapObject.SetHouseNumber(val);
+      //TODO: Here we need to process validation's result. Code below performs some UI updates and we should call it
+      // if validation finish with error.
+      /*
+      auto const e = m_invalidCells.end();
+      auto it = find_if(m_invalidCells.begin(), e, [](pair<MWMPlacePageCellType, NSIndexPath *> const & p)
+                                                    {
+                                                      return p.first == MWMPlacePageCellTypeBuilding;
+                                                    });
+      if (it == e)
+        m_invalidCells.emplace_back(cellType, indexPath);
+
+      [self.tableView reloadRowsAtIndexPaths:@[[self.tableView indexPathForCell:cell]] withRowAnimation:UITableViewRowAnimationFade];
+       */
+      break;
+    }
     default: NSAssert(false, @"Invalid field for changeText");
   }
-  //TODO: Here we need to process validation's result. Code below performs some UI updates and we should call it
-  // if validation finish with error.
-
-  /*
-  NSIndexPath * indexPath = [self.tableView indexPathForCell:cell];
-  m_invalidCells.emplace_back(cellType, indexPath);
-  [self.tableView reloadRowsAtIndexPaths:@[[self.tableView indexPathForCell:cell]] withRowAnimation:UITableViewRowAnimationFade];
-   */
-
 }
 
 - (void)cell:(UITableViewCell *)cell changeSwitch:(BOOL)changeSwitch
