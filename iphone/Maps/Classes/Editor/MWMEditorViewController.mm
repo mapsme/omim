@@ -89,6 +89,7 @@ NSString * reuseIdentifier(MWMPlacePageCellType cellType)
   vector<MWMEditorSection> m_sections;
   map<MWMEditorSection, vector<MWMPlacePageCellType>> m_cells;
   osm::EditableMapObject m_mapObject;
+  vector<pair<MWMPlacePageCellType, NSIndexPath *>> m_invalidCells;
 }
 
 - (void)viewDidLoad
@@ -158,6 +159,14 @@ NSString * reuseIdentifier(MWMPlacePageCellType cellType)
   if (![self.view endEditing:YES])
   {
     NSAssert(false, @"We can't save map object because one of text fields can't apply it's text!");
+    return;
+  }
+
+  if (!m_invalidCells.empty())
+  {
+    auto const & firstInvalid = m_invalidCells.front();
+    MWMEditorTextTableViewCell * cell = [self.tableView cellForRowAtIndexPath:firstInvalid.second];
+    [cell.textField becomeFirstResponder];
     return;
   }
 
@@ -347,10 +356,18 @@ NSString * reuseIdentifier(MWMPlacePageCellType cellType)
     case MWMPlacePageCellTypeBuilding:
     {
       MWMEditorTextTableViewCell * tCell = (MWMEditorTextTableViewCell *)cell;
+      auto const e = m_invalidCells.end();
+      BOOL const isValid = find_if(m_invalidCells.begin(), e, [](pair<MWMPlacePageCellType, NSIndexPath *> const & p)
+                           {
+                             return p.first == MWMPlacePageCellTypeBuilding;
+                           }) == e;
+
       [tCell configWithDelegate:self
                            icon:nil
                            text:@(m_mapObject.GetHouseNumber().c_str())
                     placeholder:L(@"house")
+                   errorMessage:@"error_enter_correct_house_number"
+                        isValid:isValid
                    keyboardType:UIKeyboardTypeDefault];
       break;
     }
@@ -476,9 +493,37 @@ NSString * reuseIdentifier(MWMPlacePageCellType cellType)
   [self performSegueWithIdentifier:kOpeningHoursEditorSegue sender:nil];
 }
 
+- (void)markCellAsInvalid:(MWMPlacePageCellType)cellType indexPath:(NSIndexPath *)indexPath
+{
+  auto const e = m_invalidCells.end();
+  auto it = find_if(m_invalidCells.begin(), e, [](pair<MWMPlacePageCellType, NSIndexPath *> const & p)
+                                                {
+                                                  return p.first == MWMPlacePageCellTypeBuilding;
+                                                });
+  if (it == e)
+    m_invalidCells.emplace_back(cellType, indexPath);
+
+  [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+}
+
 #pragma mark - MWMEditorCellProtocol
 
-- (void)cell:(UITableViewCell *)cell changedText:(NSString *)changeText
+- (void)tryToChangeInvalidStateForCell:(MWMEditorTextTableViewCell *)cell
+{
+  [self.tableView beginUpdates];
+  
+  NSIndexPath * indexPath = [self.tableView indexPathForCell:cell];
+
+  m_invalidCells.erase(remove_if(m_invalidCells.begin(), m_invalidCells.end(),
+                            [indexPath](pair<MWMPlacePageCellType, NSIndexPath *> const & p)
+                            {
+                              return [p.second isEqual:indexPath];
+                            }));
+
+  [self.tableView endUpdates];
+}
+
+- (void)cell:(MWMEditorTextTableViewCell *)cell changedText:(NSString *)changeText
 {
   NSAssert(changeText != nil, @"String can't be nil!");
   NSIndexPath * indexPath = [self.tableView indexPathForCell:cell];
@@ -491,7 +536,12 @@ NSString * reuseIdentifier(MWMPlacePageCellType cellType)
     case MWMPlacePageCellTypePhoneNumber: m_mapObject.SetPhone(val); break;
     case MWMPlacePageCellTypeWebsite: m_mapObject.SetWebsite(val); break;
     case MWMPlacePageCellTypeEmail: m_mapObject.SetEmail(val); break;
-    case MWMPlacePageCellTypeBuilding: m_mapObject.SetHouseNumber(val); break;
+    case MWMPlacePageCellTypeBuilding:
+    {
+      if (!m_mapObject.SetHouseNumber(val))
+        [self markCellAsInvalid:cellType indexPath:indexPath];
+      break;
+    }
     default: NSAssert(false, @"Invalid field for changeText");
   }
 }

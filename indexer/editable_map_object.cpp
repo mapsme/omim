@@ -5,6 +5,8 @@
 
 #include "base/macros.hpp"
 
+#include "std/cctype.hpp"
+
 namespace osm
 {
 bool EditableMapObject::IsNameEditable() const { return m_editableProperties.m_name; }
@@ -94,12 +96,34 @@ void EditableMapObject::SetNearbyStreets(vector<string> && streets)
 {
   m_nearbyStreets = move(streets);
 }
-void EditableMapObject::SetHouseNumber(string const & houseNumber)
+
+bool EditableMapObject::SetHouseNumber(string const & houseNumber)
 {
-  // TODO(AlexZ): Check house number for validity with feature::IsHouseNumber ?
+  // TODO: Improve this basic limit.
+  auto constexpr kMaxHouseNumberLength = 25;
+  if (m_houseNumber.size() > kMaxHouseNumberLength)
+    return false;
+
+  bool hasDigits = false;
+  // TODO: Should we allow arabic numbers like U+0661 ١	Arabic-Indic Digit One?
+  for (auto c : m_houseNumber)
+  {
+    if (isdigit(c))
+    {
+      hasDigits = true;
+      break;
+    }
+  }
+
+  if (!hasDigits)
+    return false;
+
   // TODO(AlexZ): Store edited house number as house name if feature::IsHouseNumber() returned false.
+  // TODO(AlexZ): Normalize full-width numbers, see strings::NormalizeDigits().
   m_houseNumber = houseNumber;
+  return true;
 }
+
 void EditableMapObject::SetPostcode(string const & postcode)
 {
   m_metadata.Set(feature::Metadata::FMD_POSTCODE, postcode);
