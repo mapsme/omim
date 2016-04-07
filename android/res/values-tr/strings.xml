@@ -729,7 +729,7 @@
 	<string name="add_language">Bir dil ekle</string>
 	<string name="street">Sokak</string>
 	<!-- Editable House Number text field (in address block). -->
-	<string name="house">Bina</string>
+	<string name="house">Ev numarası</string>
 	<string name="details">Detaylar</string>
 	<!-- Text field to enter non-existing street name, below list of known streets around -->
 	<string name="add_street">Bir sokak ekle</string>

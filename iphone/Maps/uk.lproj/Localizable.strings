@@ -1229,7 +1229,7 @@
 "street" = "Вулиця";
 
 /* Editable House Number text field (in address block). */
-"house" = "Будинок";
+"house" = "Номер будинку";
 
 "details" = "Детальніше";
 

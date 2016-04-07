@@ -1229,7 +1229,7 @@
 "street" = "الشارع";
 
 /* Editable House Number text field (in address block). */
-"house" = "المبني";
+"house" = "رقم الدار";
 
 "details" = "التفاصيل";
 

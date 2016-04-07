@@ -724,7 +724,7 @@
 	<string name="add_language">Dodaj język</string>
 	<string name="street">Ulica</string>
 	<!-- Editable House Number text field (in address block). -->
-	<string name="house">Numer</string>
+	<string name="house">Numer domu</string>
 	<string name="details">Szczegóły</string>
 	<!-- Text field to enter non-existing street name, below list of known streets around -->
 	<string name="add_street">Dodaj ulicę</string>

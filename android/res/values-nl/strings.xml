@@ -713,7 +713,7 @@
 	<string name="add_language">Een taal toevoegen</string>
 	<string name="street">Straat</string>
 	<!-- Editable House Number text field (in address block). -->
-	<string name="house">Gebouw</string>
+	<string name="house">Huisnummer</string>
 	<string name="details">Details</string>
 	<!-- Text field to enter non-existing street name, below list of known streets around -->
 	<string name="add_street">Een straat toevoegen</string>

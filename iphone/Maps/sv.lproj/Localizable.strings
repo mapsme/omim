@@ -1229,7 +1229,7 @@
 "street" = "Gata";
 
 /* Editable House Number text field (in address block). */
-"house" = "Byggnad";
+"house" = "Hus nummer";
 
 "details" = "Detaljer";
 

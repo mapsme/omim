@@ -1229,7 +1229,7 @@
 "street" = "Đường";
 
 /* Editable House Number text field (in address block). */
-"house" = "Tòa nhà";
+"house" = "Số nhà";
 
 "details" = "Chi tiết";
 

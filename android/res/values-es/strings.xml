@@ -718,7 +718,7 @@
 	<string name="add_language">Añadir un idioma</string>
 	<string name="street">Calle</string>
 	<!-- Editable House Number text field (in address block). -->
-	<string name="house">Edificio</string>
+	<string name="house">Número de casa</string>
 	<string name="details">Detalles</string>
 	<!-- Text field to enter non-existing street name, below list of known streets around -->
 	<string name="add_street">Añadir una calle</string>

@@ -720,7 +720,7 @@
 	<string name="add_language">Adăugare limbă</string>
 	<string name="street">Stradă</string>
 	<!-- Editable House Number text field (in address block). -->
-	<string name="house">Clădire</string>
+	<string name="house">Numărul casei</string>
 	<string name="details">Detalii</string>
 	<!-- Text field to enter non-existing street name, below list of known streets around -->
 	<string name="add_street">Adăugare stradă</string>

@@ -756,7 +756,7 @@
 	<string name="add_language">Добавить язык</string>
 	<string name="street">Улица</string>
 	<!-- Editable House Number text field (in address block). -->
-	<string name="house">Дом</string>
+	<string name="house">Номер дома</string>
 	<string name="details">Подробнее</string>
 	<!-- Text field to enter non-existing street name, below list of known streets around -->
 	<string name="add_street">Добавить улицу</string>

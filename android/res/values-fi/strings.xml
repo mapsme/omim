@@ -723,7 +723,7 @@
 	<string name="add_language">Lisää kieli</string>
 	<string name="street">Katu</string>
 	<!-- Editable House Number text field (in address block). -->
-	<string name="house">Rakennus</string>
+	<string name="house">Talonumero</string>
 	<string name="details">Lisätiedot</string>
 	<!-- Text field to enter non-existing street name, below list of known streets around -->
 	<string name="add_street">Lisää katu</string>

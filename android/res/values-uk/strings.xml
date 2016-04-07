@@ -726,7 +726,7 @@
 	<string name="add_language">Додати мову</string>
 	<string name="street">Вулиця</string>
 	<!-- Editable House Number text field (in address block). -->
-	<string name="house">Будинок</string>
+	<string name="house">Номер будинку</string>
 	<string name="details">Детальніше</string>
 	<!-- Text field to enter non-existing street name, below list of known streets around -->
 	<string name="add_street">Додати вулицю</string>

@@ -1229,7 +1229,7 @@
 "street" = "Sokak";
 
 /* Editable House Number text field (in address block). */
-"house" = "Bina";
+"house" = "Ev numarası";
 
 "details" = "Detaylar";
 

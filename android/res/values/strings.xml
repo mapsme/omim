@@ -760,7 +760,7 @@
 	<string name="add_language">Add a language</string>
 	<string name="street">Street</string>
 	<!-- Editable House Number text field (in address block). -->
-	<string name="house">House</string>
+	<string name="house">House number</string>
 	<string name="details">Details</string>
 	<!-- Text field to enter non-existing street name, below list of known streets around -->
 	<string name="add_street">Add a street</string>
