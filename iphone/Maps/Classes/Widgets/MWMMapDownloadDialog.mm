@@ -313,8 +313,13 @@ using namespace storage;
                            kStatFrom : kStatMap,
                            kStatScenario : kStatDownload
                            }];
-    [self showInQueue];
-    [MWMStorage downloadNode:m_countryId alertController:self.controller.alertController onSuccess:nil];
+
+    [MWMStorage downloadNode:m_countryId
+             alertController:self.controller.alertController
+                   onSuccess:^
+    {
+      [self showInQueue];
+    }];
   }
 }
 
