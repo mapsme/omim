@@ -386,6 +386,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
       @Override
       public void onClick(View v)
       {
+        Statistics.INSTANCE.trackEditorLaunch(true);
         showPositionChooser(false);
         if (Framework.nativeIsDownloadedMapAtScreenCenter())
           startActivity(new Intent(MwmActivity.this, FeatureCategoryActivity.class));
@@ -398,10 +399,10 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   public void showPositionChooser(boolean show)
   {
-    Statistics.INSTANCE.trackEditorLaunch(true);
     UiUtils.showIf(show, mPositionChooser);
     setFullscreen(show);
     Framework.nativeTurnChoosePositionMode(show);
+    closePlacePage();
   }
 
   private void initMap()
@@ -490,6 +491,17 @@ public class MwmActivity extends BaseMwmFragmentActivity
     mMainMenu.close(true, procAfterClose);
   }
 
+  private boolean closePositionChooser()
+  {
+    if (UiUtils.isVisible(mPositionChooser))
+    {
+      showPositionChooser(false);
+      return true;
+    }
+
+    return false;
+  }
+
   private void startLocationToPoint(String statisticsEvent, String alohaEvent, final @Nullable MapObject endPoint)
   {
     closeMenu(statisticsEvent, alohaEvent, new Runnable()
@@ -557,6 +569,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
             @Override
             public void run()
             {
+              Statistics.INSTANCE.trackEvent(Statistics.EventName.EDITOR_ADD_CLICK,
+                                             Statistics.params().add(Statistics.EventParam.FROM, "main_menu"));
               showPositionChooser(true);
             }
           });
@@ -1029,7 +1043,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
       return;
     }
 
-    if (!closePlacePage() && !closeSidePanel() && !RoutingController.get().cancel())
+    if (!closePlacePage() && !closeSidePanel() &&
+        !RoutingController.get().cancel() && !closePositionChooser())
       super.onBackPressed();
   }
 
