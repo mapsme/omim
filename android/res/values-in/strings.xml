@@ -794,4 +794,5 @@
 	<string name="downloader_of">%1$d dari %2$d</string>
 	<string name="download_over_mobile_header">Unduh dengan menggunakan koneksi jaringan seluler?</string>
 	<string name="download_over_mobile_message">Ini bisa menjadi jauh mahal pada beberapa paket atau jika roaming.</string>
+	<string name="migration_no_space_message">Untuk mengunduh, Anda perlu ruang lebih banyak. Harap menghapus data yang tidak diperlukan.</string>
 </resources>

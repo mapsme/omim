@@ -16161,3 +16161,32 @@
     pl = Może to być kosztowne przy niektórych planach taryfowych lub w roamingu.
     nl = Met sommige abonnementen of bij roaming kan dit behoorlijk duur zijn.
     pt = Isto pode ser significativamente caro, com alguns planos ou se roaming.
+
+  [migration_no_space_message]
+    en = To download, you need more space. Please, delete unnecessary data.
+    ru = Для загрузки требуется больше свободного места. Пожалуйста, удалите ненужные данные.
+    tr = İndirmek için daha fazla alana ihtiyacınız var. Lütfen gereksiz verileri silin. 
+    sv = Du behöver mer utrymme för att ladda ned. Radera onödig data.
+    nb = Du må frigjøre mer lagringsplass for å laste ned. Slett unødvendig data.
+    ko = 다운로드하려면, 더 많은 여유 공간이 필요합니다. 불필요한 데이터를 삭제하십시오.
+    id = Untuk mengunduh, Anda perlu ruang lebih banyak. Harap menghapus data yang tidak diperlukan.
+    hu = A letöltéshez több szabad tárhelyre van szükség. Kérjük, töröld a szükségtelen adatokat.
+    de = Zum Herunterladen benötigen Sie mehr Platz. Bitte löschen Sie unnötige Daten.
+    fi = Tarvitset lisää tilaa ladataksesi. Poista tarpeeton data.
+    nl = Om te kunnen downloaden, heb je meer ruimte nodig. Verwijder overbodige gegevens.
+    da = For at opdatere app'en skal du bruge mere plads. Slet unødvendig data.
+    cs = Ke stažení potřebujete více volného místa. Odstraňte prosím nepotřebná data.
+    zh-Hans = 为了下载，您需要更多的空间。请删除不必要的数据。
+    zh-Hant = 為了下載，您需要更多的空間。請刪除不必要的數據。
+    ar = للتنزيل، فأنت تحتاج إلى توفير مساحة أكبر. من فضلك، احذف البيانات غير الضرورية.
+    th = ในการดาวน์โหลด คุณต้องมีพื้นที่มากขึ้น กรุณาลบเนื้อหาที่ไม่จำเป็นออกไป
+    uk = Для завантаження потрібно більше вільного місця. Будь ласка, видаліть непотрібні дані.
+    pt = Para descarregar, é necessário mais espaço. Por favor, elimine os dados desnecessários.
+    es = Necesitas más espacio para descargar. Por favor, elimina los datos innecesarios.
+    ro = Aveți nevoie de mai mult spațiu ca să descărcați. Vă rugăm să ștergeți toate informațiile inutile.
+    pl = Aby pobrać, potrzebujesz więcej miejsca. Usuń niepotrzebne dane.
+    sk = Ak chcete pokračovať v sťahovaní, musíte uvoľniť viac miesta na ukladacom priestore. Prosím, odstráňte prebytočné dáta.
+    it = Per scaricare, hai bisogno di più spazio. Sei pregato di eliminare i dati non necessari.
+    fr = Pour télécharger, vous avez besoin de plus d'espace. Veuillez supprimer les données non nécessaires.
+    ja = ダウンロードするには空き容量がさらに必要です。不必要なデータを削除してください。
+    vi = Để tải xuống, bạn cần thêm dung lượng. Xin xóa mọi dữ liệu không cần thiết.

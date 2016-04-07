@@ -785,4 +785,5 @@
 	<string name="downloader_of">%1$d van %2$d</string>
 	<string name="download_over_mobile_header">Downloaden via een mobiele gegevensverbinding?</string>
 	<string name="download_over_mobile_message">Met sommige abonnementen of bij roaming kan dit behoorlijk duur zijn.</string>
+	<string name="migration_no_space_message">Om te kunnen downloaden, heb je meer ruimte nodig. Verwijder overbodige gegevens.</string>
 </resources>

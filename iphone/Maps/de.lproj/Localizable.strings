@@ -1369,3 +1369,5 @@
 "download_over_mobile_header" = "Download mit einer mobilen Netzwerkverbindung?";
 
 "download_over_mobile_message" = "Das könnte mit einigen Tarifen oder beim Roaming sehr teuer werden.";
+
+"migration_no_space_message" = "Zum Herunterladen benötigen Sie mehr Platz. Bitte löschen Sie unnötige Daten.";

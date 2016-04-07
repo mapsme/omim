@@ -1369,3 +1369,5 @@
 "download_over_mobile_header" = "Sťahovať prostredníctvom pripojenia na mobilnú sieť?";
 
 "download_over_mobile_message" = "V prípade niektorých plánov alebo použitím roamingu by to mohlo byť značne nákladné.";
+
+"migration_no_space_message" = "Ak chcete pokračovať v sťahovaní, musíte uvoľniť viac miesta na ukladacom priestore. Prosím, odstráňte prebytočné dáta.";

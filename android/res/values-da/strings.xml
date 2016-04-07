@@ -795,4 +795,5 @@
 	<string name="editor_unsupported_category_message">Du har tilføjet en placering i en kategori som vi ikke understøtter på nuværende tidspunkt. Den vil vises på kortet på et senere tidspunkt.</string>
 	<!-- Downloaded 10 **of** 20 <- it is that "of" -->
 	<string name="downloader_of">%1$d af %2$d</string>
+	<string name="migration_no_space_message">For at opdatere app\&#39;en skal du bruge mere plads. Slet unødvendig data.</string>
 </resources>

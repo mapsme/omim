@@ -1369,3 +1369,5 @@
 "download_over_mobile_header" = "Stáhnout pomocí připojení přes mobilní síť?";
 
 "download_over_mobile_message" = "Toto by mohli být s některými tarify nebo roamingem výrazně dražší.";
+
+"migration_no_space_message" = "Ke stažení potřebujete více volného místa. Odstraňte prosím nepotřebná data.";

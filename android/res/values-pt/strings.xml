@@ -792,4 +792,5 @@
 	<string name="downloader_of">%1$d de %2$d</string>
 	<string name="download_over_mobile_header">Baixar usando uma conexão de rede celular?</string>
 	<string name="download_over_mobile_message">Isto pode ser significativamente caro, com alguns planos ou se roaming.</string>
+	<string name="migration_no_space_message">Para descarregar, é necessário mais espaço. Por favor, elimine os dados desnecessários.</string>
 </resources>

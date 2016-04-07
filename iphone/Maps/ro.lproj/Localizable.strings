@@ -1369,3 +1369,5 @@
 "download_over_mobile_header" = "Descărcați utilizând o conexiune prin rețeaua de telefonie mobilă?";
 
 "download_over_mobile_message" = "Aceasta poate fi destul de costisitoare în cazul unor abonamente sau dacă sunteți pe roaming.";
+
+"migration_no_space_message" = "Aveți nevoie de mai mult spațiu ca să descărcați. Vă rugăm să ștergeți toate informațiile inutile.";

@@ -794,4 +794,5 @@
 	<string name="downloader_of">%2$d中%1$d</string>
 	<string name="download_over_mobile_header">携帯通信ネットワークで接続してダウンロードしますか？</string>
 	<string name="download_over_mobile_message">プランによって、またはローミングしている場合、非常に高額になる可能性があります。</string>
+	<string name="migration_no_space_message">ダウンロードするには空き容量がさらに必要です。不必要なデータを削除してください。</string>
 </resources>
