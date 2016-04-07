@@ -612,3 +612,30 @@ UNIT_TEST(EditDistance)
   testUniStringEditDistance("ll", "l1", 1);
   testUniStringEditDistance("\u0132ij", "\u0133IJ", 3);
 }
+
+UNIT_TEST(NormalizeDigits)
+{
+  auto const nd = [](string str) -> string
+  {
+    strings::NormalizeDigits(str);
+    return str;
+  };
+  TEST_EQUAL(nd(""), "", ());
+  TEST_EQUAL(nd("z12345／／"), "z12345／／", ());
+  TEST_EQUAL(nd("a０１9２ "), "a0192 ", ());
+  TEST_EQUAL(nd("３４５６７８９"), "3456789", ());
+}
+
+UNIT_TEST(NormalizeDigits_UniString)
+{
+  auto const nd = [](string const & utf8) -> string
+  {
+    strings::UniString us = strings::MakeUniString(utf8);
+    strings::NormalizeDigits(us);
+    return strings::ToUtf8(us);
+  };
+  TEST_EQUAL(nd(""), "", ());
+  TEST_EQUAL(nd("z12345／／"), "z12345／／", ());
+  TEST_EQUAL(nd("a０１9２ "), "a0192 ", ());
+  TEST_EQUAL(nd("３４５６７８９"), "3456789", ());
+}
