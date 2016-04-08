@@ -722,7 +722,7 @@
 	<string name="add_language">Aggiungi una lingua</string>
 	<string name="street">Via</string>
 	<!-- Editable House Number text field (in address block). -->
-	<string name="house">Edificio</string>
+	<string name="house">Numero di casa</string>
 	<string name="details">Dettagli</string>
 	<!-- Text field to enter non-existing street name, below list of known streets around -->
 	<string name="add_street">Aggiungi una strada</string>

@@ -1229,7 +1229,7 @@
 "street" = "Jalan";
 
 /* Editable House Number text field (in address block). */
-"house" = "Bangunan";
+"house" = "Nomor rumah";
 
 "details" = "Detail";
 

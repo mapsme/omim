@@ -723,7 +723,7 @@
 	<string name="add_language">Thêm ngôn ngữ</string>
 	<string name="street">Đường</string>
 	<!-- Editable House Number text field (in address block). -->
-	<string name="house">Tòa nhà</string>
+	<string name="house">Số nhà</string>
 	<string name="details">Chi tiết</string>
 	<!-- Text field to enter non-existing street name, below list of known streets around -->
 	<string name="add_street">Thêm con đường</string>

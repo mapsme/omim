@@ -1229,7 +1229,7 @@
 "street" = "Gade";
 
 /* Editable House Number text field (in address block). */
-"house" = "Bygning";
+"house" = "Husnummer";
 
 "details" = "Oplysninger";
 

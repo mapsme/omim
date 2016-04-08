@@ -1229,7 +1229,7 @@
 "street" = "거리";
 
 /* Editable House Number text field (in address block). */
-"house" = "건물";
+"house" = "집 번호";
 
 "details" = "세부 정보";
 

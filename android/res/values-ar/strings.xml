@@ -729,7 +729,7 @@
 	<string name="add_language">إضافة لغة</string>
 	<string name="street">الشارع</string>
 	<!-- Editable House Number text field (in address block). -->
-	<string name="house">المبني</string>
+	<string name="house">رقم الدار</string>
 	<string name="details">التفاصيل</string>
 	<!-- Text field to enter non-existing street name, below list of known streets around -->
 	<string name="add_street">إضافة شارع</string>

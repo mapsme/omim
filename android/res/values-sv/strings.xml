@@ -727,7 +727,7 @@
 	<string name="add_language">Lägg till ett språk</string>
 	<string name="street">Gata</string>
 	<!-- Editable House Number text field (in address block). -->
-	<string name="house">Byggnad</string>
+	<string name="house">Hus nummer</string>
 	<string name="details">Detaljer</string>
 	<!-- Text field to enter non-existing street name, below list of known streets around -->
 	<string name="add_street">Lägg till en gata</string>

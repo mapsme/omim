@@ -1229,7 +1229,7 @@
 "street" = "Ulica";
 
 /* Editable House Number text field (in address block). */
-"house" = "Budova";
+"house" = "Číslo domu";
 
 "details" = "Podrobnosti";
 

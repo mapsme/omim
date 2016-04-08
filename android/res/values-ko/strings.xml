@@ -715,7 +715,7 @@
 	<string name="add_language">언어 추가</string>
 	<string name="street">거리</string>
 	<!-- Editable House Number text field (in address block). -->
-	<string name="house">건물</string>
+	<string name="house">집 번호</string>
 	<string name="details">세부 정보</string>
 	<!-- Text field to enter non-existing street name, below list of known streets around -->
 	<string name="add_street">거리 추가</string>

@@ -1229,7 +1229,7 @@
 "street" = "街道";
 
 /* Editable House Number text field (in address block). */
-"house" = "樓房";
+"house" = "門牌號碼";
 
 "details" = "詳細資訊";
 

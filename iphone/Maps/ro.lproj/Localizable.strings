@@ -1229,7 +1229,7 @@
 "street" = "Stradă";
 
 /* Editable House Number text field (in address block). */
-"house" = "Clădire";
+"house" = "Numărul casei";
 
 "details" = "Detalii";
 

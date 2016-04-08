@@ -1229,7 +1229,7 @@
 "street" = "ถนน";
 
 /* Editable House Number text field (in address block). */
-"house" = "อาคาร";
+"house" = "บ้านเลขที่";
 
 "details" = "รายละเอียด";
 

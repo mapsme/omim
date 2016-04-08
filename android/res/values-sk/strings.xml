@@ -726,7 +726,7 @@
 	<string name="add_language">Pridať jazyk</string>
 	<string name="street">Ulica</string>
 	<!-- Editable House Number text field (in address block). -->
-	<string name="house">Budova</string>
+	<string name="house">Číslo domu</string>
 	<string name="details">Podrobnosti</string>
 	<!-- Text field to enter non-existing street name, below list of known streets around -->
 	<string name="add_street">Pridať ulicu</string>

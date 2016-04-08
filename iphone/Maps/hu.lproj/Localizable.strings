@@ -1229,7 +1229,7 @@
 "street" = "Utca";
 
 /* Editable House Number text field (in address block). */
-"house" = "Épület";
+"house" = "Házszám";
 
 "details" = "Részletek";
 

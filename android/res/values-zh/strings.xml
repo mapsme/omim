@@ -729,7 +729,7 @@
 	<string name="add_language">添加语言</string>
 	<string name="street">街道</string>
 	<!-- Editable House Number text field (in address block). -->
-	<string name="house">楼房</string>
+	<string name="house">门牌号码</string>
 	<string name="details">细节</string>
 	<!-- Text field to enter non-existing street name, below list of known streets around -->
 	<string name="add_street">添加街道</string>

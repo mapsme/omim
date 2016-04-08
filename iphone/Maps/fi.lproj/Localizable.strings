@@ -1229,7 +1229,7 @@
 "street" = "Katu";
 
 /* Editable House Number text field (in address block). */
-"house" = "Rakennus";
+"house" = "Talonumero";
 
 "details" = "Lisätiedot";
 

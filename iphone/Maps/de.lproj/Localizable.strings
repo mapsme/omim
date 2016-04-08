@@ -1229,7 +1229,7 @@
 "street" = "Straße";
 
 /* Editable House Number text field (in address block). */
-"house" = "Gebäude";
+"house" = "Hausnummer";
 
 "details" = "Einzelheiten";
 
