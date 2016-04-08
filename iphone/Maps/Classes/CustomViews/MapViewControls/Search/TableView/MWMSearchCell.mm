@@ -59,7 +59,7 @@
       [Statistics logEvent:@"Incorrect_highlight_range" withParameters:@{@"range.first" : @(range.first),
                                                                         @"range.second" : @(range.second),
                                                                         @"string" : title}];
-      LOG(LERROR, ("Incorrect range: ", range, " for string: ", result.GetString()));
+      LOG(LERROR, ("Incorrect range: ", range, " string: ", result.GetString(), " result: ", result));
     }
   }
   self.titleLabel.attributedText = attributedTitle;
