@@ -666,8 +666,8 @@ void Storage::OnMapFileDownloadFinished(bool success,
   CorrectJustDownloadedAndQueue(m_queue.begin());
   SaveDownloadQueue();
 
-  NotifyStatusChangedForHierarchy(countryId);
   m_downloader->Reset();
+  NotifyStatusChangedForHierarchy(countryId);
   DownloadNextCountryFromQueue();
 }
 
@@ -1437,18 +1437,13 @@ MapFilesDownloader::TProgress Storage::CalculateProgress(TCountryId const & down
     if (downloadingMwm == d && downloadingMwm != kInvalidCountryId)
     {
       localAndRemoteBytes.first += downloadingMwmProgress.first;
-      localAndRemoteBytes.second += downloadingMwmProgress.second;
-      continue;
+      localAndRemoteBytes.second += GetCountryFile(d).GetRemoteSize(MapOptions::Map);
     }
-
-    if (mwmsInQueue.count(d) != 0)
+    else if (mwmsInQueue.count(d) != 0)
     {
-      CountryFile const & remoteCountryFile = GetCountryFile(d);
-      localAndRemoteBytes.second += remoteCountryFile.GetRemoteSize(MapOptions::Map);
-      continue;
+      localAndRemoteBytes.second += GetCountryFile(d).GetRemoteSize(MapOptions::Map);
     }
-
-    if (m_justDownloaded.count(d) != 0)
+    else if (m_justDownloaded.count(d) != 0)
     {
       size_t const localCountryFileSz = GetCountryFile(d).GetRemoteSize(MapOptions::Map);
       localAndRemoteBytes.first += localCountryFileSz;
