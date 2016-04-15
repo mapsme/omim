@@ -145,11 +145,6 @@ using namespace storage;
   BOOL needReload = NO;
   auto const & s = GetFramework().Storage();
 
-  char const * parentId = self.parentCountryId.UTF8String;
-  LOG(LINFO, ("processCountryEvent CountryId:", countryId, "ParentId1:", reinterpret_cast<void const *>(parentId), "length: ", self.parentCountryId.length));
-  CLS_LOG("processCountryEvent ParentId2: %@", self.parentCountryId);
-  LOG(LINFO, ("processCountryEvent ParentId3:", parentId));
-
   s.ForEachInSubtree(self.parentCountryId.UTF8String,
                      [&needReload, &countryId](TCountryId const & descendantId, bool groupNode)
                      {
@@ -643,13 +638,12 @@ using namespace storage;
 
 - (void)setDataSource:(MWMMapDownloaderDataSource *)dataSource
 {
-  self.tableView.dataSource = dataSource;
   self.forceFullReload = YES;
-}
 
-- (MWMMapDownloaderDataSource *)dataSource
-{
-  return static_cast<MWMMapDownloaderDataSource *>(self.tableView.dataSource);
+  // Order matters. _dataSource must be set last since self.tableView does not retain dataSource.
+  // In different order outdated datasource gets reclaimed between assignments.
+  self.tableView.dataSource = dataSource;
+  _dataSource = dataSource;
 }
 
 #pragma mark - Helpers

@@ -11,6 +11,7 @@
 #import "MWMController.h"
 #import "MWMFrameworkListener.h"
 #import "MWMFrameworkObservers.h"
+#import "MWMStorage.h"
 #import "MWMTextToSpeech.h"
 #import "Preferences.h"
 #import "RouteState.h"
@@ -215,10 +216,6 @@ using namespace osm_auth_ios;
   Framework & f = GetFramework();
   if (m_geoURL)
   {
-    char const * utfString = [m_geoURL UTF8String];
-    LOG(LINFO, ("handleURLs - m_geoURL1", reinterpret_cast<void const *>(utfString), "length: ", m_geoURL.length));
-    CLS_LOG("handleURLs - m_geoURL2: %@", m_geoURL);
-    LOG(LINFO, ("handleURLs - m_geoURL3", utfString));
     if (f.ShowMapForURL([m_geoURL UTF8String]))
     {
       [Statistics logEvent:kStatEventName(kStatApplication, kStatImport)
@@ -228,10 +225,6 @@ using namespace osm_auth_ios;
   }
   else if (m_mwmURL)
   {
-    char const * utfString = [m_mwmURL UTF8String];
-    LOG(LINFO, ("handleURLs - m_mwmURL1", reinterpret_cast<void const *>(utfString), "length: ", m_mwmURL.length));
-    CLS_LOG("handleURLs - m_mwmURL2: %@", m_mwmURL);
-    LOG(LINFO, ("handleURLs - m_mwmURL3", utfString));
     if (f.ShowMapForURL([m_mwmURL UTF8String]))
     {
       [[Statistics instance] logApiUsage:m_sourceApplication];
@@ -241,10 +234,6 @@ using namespace osm_auth_ios;
   }
   else if (m_fileURL)
   {
-    char const * utfString = [m_fileURL UTF8String];
-    LOG(LINFO, ("handleURLs - m_fileURL1", reinterpret_cast<void const *>(utfString), "length: ", m_fileURL.length));
-    CLS_LOG("handleURLs - m_fileURL2: %@", m_fileURL);
-    LOG(LINFO, ("handleURLs - m_fileURL3", utfString));
     if (!f.AddBookmarksFile([m_fileURL UTF8String]))
       [self showLoadFileAlertIsSuccessful:NO];
 
@@ -255,17 +244,14 @@ using namespace osm_auth_ios;
   }
   else
   {
-    UIPasteboard * pasteboard = [UIPasteboard generalPasteboard];
-    if ([pasteboard.string length])
+    // Take a copy of pasteboard string since it can accidentally become nil while we still use it.
+    NSString * pasteboard = [[UIPasteboard generalPasteboard].string copy];
+    if (pasteboard && pasteboard.length)
     {
-      char const * utfString = [pasteboard.string UTF8String];
-      LOG(LINFO, ("handleURLs - pasteboard.string1", reinterpret_cast<void const *>(utfString), "length: ", pasteboard.string.length));
-      CLS_LOG("handleURLs - pasteboard.string2: %@", pasteboard.string);
-      LOG(LINFO, ("handleURLs - pasteboard.string3", utfString));
-      if (f.ShowMapForURL([pasteboard.string UTF8String]))
+      if (f.ShowMapForURL([pasteboard UTF8String]))
       {
         [self showMap];
-        pasteboard.string = @"";
+        [UIPasteboard generalPasteboard].string = @"";
       }
     }
   }
@@ -421,6 +407,7 @@ using namespace osm_auth_ios;
   if (launchOptions[UIApplicationLaunchOptionsLocalNotificationKey])
     [notificationManager processNotification:launchOptions[UIApplicationLaunchOptionsLocalNotificationKey] onLaunch:YES];
 
+  [MWMStorage startSession];
   if ([Alohalytics isFirstSession])
     [self firstLaunchSetup];
   else
