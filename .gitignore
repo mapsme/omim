@@ -131,3 +131,6 @@ tools/android/yota.keystore
 android/secure.properties
 android/fabric.properties
 server
+
+# Git and coala backup files
+*.orig
