@@ -242,6 +242,9 @@
 /* Add bookmark dialog - bookmark color */
 "color" = "Color";
 
+/* Unknown Dropped Pin title, when name can't be determined */
+"dropped_pin" = "Etiqueta colocada";
+
 /* Default bookmarks set name */
 "my_places" = "Mis lugares";
 
@@ -1380,3 +1383,5 @@
 "editor_operator" = "Operator";
 
 "placepage_unknown_place" = "Unknown Place";
+
+"placepage_new_mark" = "New Mark";
