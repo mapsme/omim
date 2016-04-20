@@ -305,6 +305,7 @@ Framework::Framework()
   // @TODO. There are hardcoded strings below which are defined in strings.txt as well.
   // It's better to use strings form strings.txt intead of hardcoding them here.
   m_stringsBundle.SetDefaultString("placepage_unknown_place", "Unknown Place");
+  m_stringsBundle.SetDefaultString("dropped_pin", "Dropped Pin");
   m_stringsBundle.SetDefaultString("my_places", "My Places");
   m_stringsBundle.SetDefaultString("routes", "Routes");
   m_stringsBundle.SetDefaultString("wifi", "WiFi");
