@@ -242,6 +242,9 @@
 /* Add bookmark dialog - bookmark color */
 "color" = "สี";
 
+/* Unknown Dropped Pin title, when name can't be determined */
+"dropped_pin" = "ปักหมุด";
+
 /* Default bookmarks set name */
 "my_places" = "สถานที่ของฉัน";
 
@@ -1380,3 +1383,5 @@
 "editor_operator" = "Operator";
 
 "placepage_unknown_place" = "Unknown Place";
+
+"placepage_new_mark" = "New Mark";

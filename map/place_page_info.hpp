@@ -53,6 +53,8 @@ public:
 
   /// Comes from API, shared links etc.
   string m_customName;
+  /// Default bookmark name for case when custom name is Unknown Place.
+  string m_defaultBookmarkName;
   /// If not empty, bookmark is bound to this place page.
   BookmarkAndCategory m_bac = MakeEmptyBookmarkAndCategory();
   /// Api ID passed for the selected object. It's automatically included in api url below.

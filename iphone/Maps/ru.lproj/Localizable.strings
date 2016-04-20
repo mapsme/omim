@@ -242,6 +242,9 @@
 /* Add bookmark dialog - bookmark color */
 "color" = "Цвет";
 
+/* Unknown Dropped Pin title, when name can't be determined */
+"dropped_pin" = "Новая метка";
+
 /* Default bookmarks set name */
 "my_places" = "Мои Метки";
 
@@ -1382,3 +1385,5 @@
 "editor_operator" = "Владелец";
 
 "placepage_unknown_place" = "Неизвестное место";
+
+"placepage_new_mark" = "Новая метка";
