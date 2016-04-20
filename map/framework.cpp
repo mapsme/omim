@@ -688,7 +688,15 @@ void Framework::FillPointInfo(m2::PointD const & mercator, string const & custom
   if (feature)
     FillInfoFromFeatureType(*feature, info);
   else
-    info.m_customName = customTitle.empty() ? m_stringsBundle.GetString("placepage_unknown_place") : customTitle;
+  {
+    if (customTitle.empty())
+    {
+      info.m_customName = m_stringsBundle.GetString("placepage_unknown_place");
+      info.m_defaultBookmarkName = m_stringsBundle.GetString("dropped_pin");
+    }
+    else
+      info.m_customName = customTitle;
+  }
 
   // This line overwrites mercator center from area feature which can be far away.
   info.SetMercator(mercator);

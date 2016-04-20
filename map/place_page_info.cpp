@@ -19,7 +19,7 @@ bool Info::HasWifi() const { return GetInternet() == osm::Internet::Wlan; }
 
 string Info::FormatNewBookmarkName() const
 {
-  string const title = GetTitle();
+  string const title = m_defaultBookmarkName.empty() ? GetTitle() : m_defaultBookmarkName;
   if (title.empty())
     return GetLocalizedType();
   return title;
