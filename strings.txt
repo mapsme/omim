@@ -16217,11 +16217,11 @@
 
   [editor_storey_number]
     tags = ios, android
-    ru = Количество этажей (максимум %1$@)
+    ru = Количество этажей (максимум %d)
 
   [error_enter_correct_storey_number]
     tags = ios, android
-    ru = Редактируйте здания высотой максимум %1$@ этажей.
+    ru = Редактируйте здания высотой максимум %d этажей.
   
   [editor_zip_code]
     tags = ios, android
