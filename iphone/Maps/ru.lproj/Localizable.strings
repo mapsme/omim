@@ -1392,3 +1392,200 @@
 "editor_detailed_description" = "Suggested changes will be send to OpenStreetMap...";
 
 "editor_more_about_osm" = "More about OpenStreetMap";
+
+"add_business_button" = "Добавить организацию";
+
+"download_over_mobile_header" = "Загрузить через сотовую связь?";
+
+/* iOS */
+"location_services_disabled_header" = "Определение местоположения отключено";
+
+/* iOS */
+"location_services_disabled_message" = "Разрешите доступ к геопозиции в настройках устройства.";
+
+/* iOS */
+"location_services_disabled_1" = "1. Откройте Настройки";
+
+/* iOS */
+"location_services_disabled_2" = "2. Нажмите Геопозиция";
+
+/* iOS */
+"location_services_disabled_3" = "3. Выберите «Всегда»";
+
+/* iOS */
+"not_now_button" = "Не сейчас";
+
+/* iOS */
+"settings_button" = "Настройки";
+
+/* Place Page при long tap */
+"placepage_unknown_place" = "Неизвестное место";
+
+/* Parking type in Place Page */
+"placepage_parking_surface" = "Открытая парковка";
+
+/* Parking type in Place Page */
+"placepage_parking_multistorey" = "Многоэтажная наземная парковка";
+
+/* Parking type in Place Page */
+"placepage_parking_underground" = "Подземная парковка";
+
+/* Parking type in Place Page */
+"placepage_parking_rooftop" = "Парковка на крыше здания";
+
+/* Parking type in Place Page */
+"placepage_parking_sheds" = "Частное легкое укрытие для автомобилей";
+
+/* Parking type in Place Page */
+"placepage_parking_carports" = "Капитальный навес";
+
+/* Parking type in Place Page */
+"placepage_parking_boxes" = "Гаражный бокс";
+
+/* Parking type in Place Page */
+"placepage_parking_pay" = "Платная";
+
+/* Parking type in Place Page */
+"placepage_parking_free" = "Бесплатная";
+
+/* Parking type in Place Page */
+"placepage_parking_interval" = "Переменно платная";
+
+/* Entrance number in Place Page */
+"placepage_entrance_number" = "№";
+
+/* Entrance type in Place Page */
+"placepage_entrance_type" = "Подъезд";
+
+/* Flat number in place page */
+"placepage_flat" = "кв.";
+
+/* Place status in Place Page */
+"placepage_open_status" = "Открыто";
+
+/* Place status in Place Page */
+"placepage_closed_status" = "Закрыто";
+
+/* Place status in Place Page */
+"placepage_open_24_7" = "Круглосуточно";
+
+"placepage_place_rating" = "Рейтинг:";
+
+"place_page_starting_from" = "от";
+
+"meter" = "м";
+
+"kilometer" = "км";
+
+"placepage_entrance" = "Вход";
+
+"placepage_place_description" = "Описание";
+
+"placepage_place_details" = "Подробнее";
+
+/* Place Page */
+"placepage_more_button" = "Еще";
+
+"bookingcom_book_button" = "Забронировать";
+
+"placepage_call_button" = "Позвонить";
+
+"placepage_route_from_button" = "Отсюда";
+
+"placepage_route_to_button" = "Сюда";
+
+"placepage_edit_bookmark_button" = "Редактировать метку";
+
+"placepage_bookmark_name_hint" = "Название метки";
+
+"placepage_personal_notes_hint" = "Примечание";
+
+"placepage_delete_bookmark_button" = "Удалить метку";
+
+"placepage_error_on_map_button" = "Ошибка на карте";
+
+"placepage_add_business_button" = "Добавить организацию";
+
+/* Snackber */
+"thank_you" = "Спасибо!";
+
+"editor_edits_sent_message" = "Предложенные вами изменения отправлены";
+
+"editor_comment_hint" = "Коментарий...";
+
+"editor_reset_edits_message" = "Сбросить все локальные правки?";
+
+"editor_reset_edits_button" = "Сбросить";
+
+"editor_remove_place_message" = "Удалить добавленный вами объект?";
+
+"editor_remove_place_button" = "Удалить";
+
+"editor_status_sending" = "Отправка...";
+
+/* Editor */
+"editor_place_doesnt_exist" = "Места не существует";
+
+"editor_storey_number_hint" = "Количество этажей (максимум %25)";
+
+"error_enter_correct_storey_number" = "Редактируйте здания высотой максимум %25 этажей.";
+
+"editor_zip_code" = "Почтовый индекс";
+
+"error_enter_correct_zip_code" = "Введите корректный почтовый индекс";
+
+"editor_additional_info_subtitle" = "Дополнительные сведениея";
+
+"editor_detailed_description_hint" = "Подробный комментарий";
+
+"editor_will_be_sent_message" = "Предложенные вами изменения на карте будут отправлены в OpenStreetMap. Опишите дополнительные сведения об объекте, которые MAPS.ME не позволяет отредактировать.";
+
+"editor_more_about_osm" = "Подробнее об OpenStreetMap";
+
+"error_enter_correct_house_number" = "Введите корректный номера дома";
+
+"editor_operator" = "Владелец";
+
+"editor_tag_description" = "Укажите компанию, организацию или лицо, которое отвечает за работоспособность объекта.";
+
+"editor_no_local_edits_title" = "У вас пока нет локальных правок";
+
+"editor_no_local_edits_description" = "Здесь отображается количество предложенных вами изменений на карте, которые доступны пока только на вашем устройстве.";
+
+"editor_international_names_subtitle" = "Название на других языках";
+
+"editor_send_to_osm" = "Отправить в OSM";
+
+"editor_remove" = "Удалить";
+
+/* Downloader */
+"downloader_my_maps_title" = "Мои карты";
+
+"downloader_no_downloaded_maps_title" = "У вас нет загруженных карт";
+
+"downloader_no_downloaded_maps_message" = "Загрузите необходимые карты, чтобы находить места и пользоваться навигацией без интернета.";
+
+"downloader_find_place_hint" = "Найти город или страну";
+
+"downloader_download_maps_button" = "Загрузить карты";
+
+"downloader_cancel_download_button" = "Отменить загрузку";
+
+"downloader_status_downloading" = "Загрузка...";
+
+"current_location_unknown_title" = "Продолжить поиск местоположения?";
+
+/* My Position */
+"current_location_unknown_message" = "Местоположение не найдено, возможно вы находитесь в  помещении или в туннеле.";
+
+"current_location_unknown_continue_button" = "Продолжить";
+
+"current_location_unknown_stop_button" = "Остановить";
+
+"current_location_unknown_error_title" = "Местоположение не найдено";
+
+"current_location_unknown_error_message" = "При поиске местоположения произошла неизвестная ошибка. Проверьте работоспособность устройства и попробуйте найти местоположение позднее.";
+
+"whatsnew_update_editor_title" = "Мы обновили редактор";
+
+"whatsnew_update_editor_message" = "Пользователи MAPS.ME внесли уже 50 000 правок на карту, вместе мы сделаем карты самыми подробными в мире. Присоединяйся.";

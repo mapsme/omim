@@ -835,4 +835,117 @@
 	<string name="error_enter_correct_zip_code">Введите корректный почтовый индекс</string>
 	<string name="editor_operator">Владелец</string>
 	<string name="placepage_unknown_place">Неизвестное место</string>
+	<string name="add_business_button">Добавить организацию</string>
+	<string name="download_over_mobile_header">Загрузить через сотовую связь?</string>
+	<!-- iOS -->
+	<string name="location_services_disabled_header">Определение местоположения отключено</string>
+	<!-- iOS -->
+	<string name="location_services_disabled_message">Разрешите доступ к геопозиции в настройках устройства.</string>
+	<!-- iOS -->
+	<string name="location_services_disabled_1">1. Откройте Настройки</string>
+	<!-- iOS -->
+	<string name="location_services_disabled_2">2. Нажмите Геопозиция</string>
+	<!-- iOS -->
+	<string name="location_services_disabled_3">3. Выберите «Всегда»</string>
+	<!-- iOS -->
+	<string name="not_now_button">Не сейчас</string>
+	<!-- iOS -->
+	<string name="settings_button">Настройки</string>
+	<!-- Place Page при long tap -->
+	<string name="placepage_unknown_place">Неизвестное место</string>
+	<!-- Parking type in Place Page -->
+	<string name="placepage_parking_surface">Открытая парковка</string>
+	<!-- Parking type in Place Page -->
+	<string name="placepage_parking_multistorey">Многоэтажная наземная парковка</string>
+	<!-- Parking type in Place Page -->
+	<string name="placepage_parking_underground">Подземная парковка</string>
+	<!-- Parking type in Place Page -->
+	<string name="placepage_parking_rooftop">Парковка на крыше здания</string>
+	<!-- Parking type in Place Page -->
+	<string name="placepage_parking_sheds">Частное легкое укрытие для автомобилей</string>
+	<!-- Parking type in Place Page -->
+	<string name="placepage_parking_carports">Капитальный навес</string>
+	<!-- Parking type in Place Page -->
+	<string name="placepage_parking_boxes">Гаражный бокс</string>
+	<!-- Parking type in Place Page -->
+	<string name="placepage_parking_pay">Платная</string>
+	<!-- Parking type in Place Page -->
+	<string name="placepage_parking_free">Бесплатная</string>
+	<!-- Parking type in Place Page -->
+	<string name="placepage_parking_interval">Переменно платная</string>
+	<!-- Entrance number in Place Page -->
+	<string name="placepage_entrance_number">№</string>
+	<!-- Entrance type in Place Page -->
+	<string name="placepage_entrance_type">Подъезд</string>
+	<!-- Flat number in place page -->
+	<string name="placepage_flat">кв.</string>
+	<!-- Place status in Place Page -->
+	<string name="placepage_open_status">Открыто</string>
+	<!-- Place status in Place Page -->
+	<string name="placepage_closed_status">Закрыто</string>
+	<!-- Place status in Place Page -->
+	<string name="placepage_open_24_7">Круглосуточно</string>
+	<string name="placepage_place_rating">Рейтинг:</string>
+	<string name="place_page_starting_from">от</string>
+	<string name="meter">м</string>
+	<string name="kilometer">км</string>
+	<string name="placepage_entrance">Вход</string>
+	<string name="placepage_place_description">Описание</string>
+	<string name="placepage_place_details">Подробнее</string>
+	<!-- Place Page -->
+	<string name="placepage_more_button">Еще</string>
+	<string name="bookingcom_book_button">Забронировать</string>
+	<string name="placepage_call_button">Позвонить</string>
+	<string name="placepage_route_from_button">Отсюда</string>
+	<string name="placepage_route_to_button">Сюда</string>
+	<string name="placepage_edit_bookmark_button">Редактировать метку</string>
+	<string name="placepage_bookmark_name_hint">Название метки</string>
+	<string name="placepage_personal_notes_hint">Примечание</string>
+	<string name="placepage_delete_bookmark_button">Удалить метку</string>
+	<string name="placepage_error_on_map_button">Ошибка на карте</string>
+	<string name="placepage_add_business_button">Добавить организацию</string>
+	<!-- Snackber -->
+	<string name="thank_you">Спасибо!</string>
+	<string name="editor_edits_sent_message">Предложенные вами изменения отправлены</string>
+	<string name="editor_comment_hint">Коментарий...</string>
+	<string name="editor_reset_edits_message">Сбросить все локальные правки?</string>
+	<string name="editor_reset_edits_button">Сбросить</string>
+	<string name="editor_remove_place_message">Удалить добавленный вами объект?</string>
+	<string name="editor_remove_place_button">Удалить</string>
+	<string name="editor_status_sending">Отправка...</string>
+	<!-- Editor -->
+	<string name="editor_place_doesnt_exist">Места не существует</string>
+	<string name="editor_storey_number_hint">Количество этажей (максимум %25)</string>
+	<string name="error_enter_correct_storey_number">Редактируйте здания высотой максимум %25 этажей.</string>
+	<string name="editor_zip_code">Почтовый индекс</string>
+	<string name="error_enter_correct_zip_code">Введите корректный почтовый индекс</string>
+	<string name="editor_additional_info_subtitle">Дополнительные сведениея</string>
+	<string name="editor_detailed_description_hint">Подробный комментарий</string>
+	<string name="editor_will_be_sent_message">Предложенные вами изменения на карте будут отправлены в OpenStreetMap. Опишите дополнительные сведения об объекте, которые MAPS.ME не позволяет отредактировать.</string>
+	<string name="editor_more_about_osm">Подробнее об OpenStreetMap</string>
+	<string name="error_enter_correct_house_number">Введите корректный номера дома</string>
+	<string name="editor_operator">Владелец</string>
+	<string name="editor_tag_description">Укажите компанию, организацию или лицо, которое отвечает за работоспособность объекта.</string>
+	<string name="editor_no_local_edits_title">У вас пока нет локальных правок</string>
+	<string name="editor_no_local_edits_description">Здесь отображается количество предложенных вами изменений на карте, которые доступны пока только на вашем устройстве.</string>
+	<string name="editor_international_names_subtitle">Название на других языках</string>
+	<string name="editor_send_to_osm">Отправить в OSM</string>
+	<string name="editor_remove">Удалить</string>
+	<!-- Downloader -->
+	<string name="downloader_my_maps_title">Мои карты</string>
+	<string name="downloader_no_downloaded_maps_title">У вас нет загруженных карт</string>
+	<string name="downloader_no_downloaded_maps_message">Загрузите необходимые карты, чтобы находить места и пользоваться навигацией без интернета.</string>
+	<string name="downloader_find_place_hint">Найти город или страну</string>
+	<string name="downloader_download_maps_button">Загрузить карты</string>
+	<string name="downloader_cancel_download_button">Отменить загрузку</string>
+	<string name="downloader_status_downloading">Загрузка...</string>
+	<string name="current_location_unknown_title">Продолжить поиск местоположения?</string>
+	<!-- My Position -->
+	<string name="current_location_unknown_message">Местоположение не найдено, возможно вы находитесь в  помещении или в туннеле.</string>
+	<string name="current_location_unknown_continue_button">Продолжить</string>
+	<string name="current_location_unknown_stop_button">Остановить</string>
+	<string name="current_location_unknown_error_title">Местоположение не найдено</string>
+	<string name="current_location_unknown_error_message">При поиске местоположения произошла неизвестная ошибка. Проверьте работоспособность устройства и попробуйте найти местоположение позднее.</string>
+	<string name="whatsnew_update_editor_title">Мы обновили редактор</string>
+	<string name="whatsnew_update_editor_message">Пользователи MAPS.ME внесли уже 50 000 правок на карту, вместе мы сделаем карты самыми подробными в мире. Присоединяйся.</string>
 </resources>

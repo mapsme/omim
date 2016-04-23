@@ -1392,3 +1392,200 @@
 "editor_detailed_description" = "Suggested changes will be send to OpenStreetMap...";
 
 "editor_more_about_osm" = "More about OpenStreetMap";
+
+"add_business_button" = "Add organization";
+
+"download_over_mobile_header" = "Download by using a cellular network connection?";
+
+/* iOS */
+"location_services_disabled_header" = "Location services are disabled";
+
+/* iOS */
+"location_services_disabled_message" = "Enable access to geolocation in the device settings";
+
+/* iOS */
+"location_services_disabled_1" = "1. Open Settings";
+
+/* iOS */
+"location_services_disabled_2" = "2. Tap Location";
+
+/* iOS */
+"location_services_disabled_3" = "3. Select Always";
+
+/* iOS */
+"not_now_button" = "Not now";
+
+/* iOS */
+"settings_button" = "Settings";
+
+/* Place Page при long tap */
+"placepage_unknown_place" = "Unknown Place";
+
+/* Parking type in Place Page */
+"placepage_parking_surface" = "Surface";
+
+/* Parking type in Place Page */
+"placepage_parking_multistorey" = "Multi-storey";
+
+/* Parking type in Place Page */
+"placepage_parking_underground" = "Underground";
+
+/* Parking type in Place Page */
+"placepage_parking_rooftop" = "Rooftop";
+
+/* Parking type in Place Page */
+"placepage_parking_sheds" = "Sheds";
+
+/* Parking type in Place Page */
+"placepage_parking_carports" = "Carports";
+
+/* Parking type in Place Page */
+"placepage_parking_boxes" = "Garage boxes";
+
+/* Parking type in Place Page */
+"placepage_parking_pay" = "Pay";
+
+/* Parking type in Place Page */
+"placepage_parking_free" = "Free";
+
+/* Parking type in Place Page */
+"placepage_parking_interval" = "Interval Pay";
+
+/* Entrance number in Place Page */
+"placepage_entrance_number" = "№";
+
+/* Entrance type in Place Page */
+"placepage_entrance_type" = "Entrance";
+
+/* Flat number in place page */
+"placepage_flat" = "ap.";
+
+/* Place status in Place Page */
+"placepage_open_status" = "Open";
+
+/* Place status in Place Page */
+"placepage_closed_status" = "Closed";
+
+/* Place status in Place Page */
+"placepage_open_24_7" = "24 / 7";
+
+"placepage_place_rating" = "Rating:";
+
+"place_page_starting_from" = "starting from 10";
+
+"meter" = "m";
+
+"kilometer" = "km";
+
+"placepage_entrance" = "Entrance";
+
+"placepage_place_description" = "Discription";
+
+"placepage_place_details" = "Details";
+
+/* Place Page */
+"placepage_more_button" = "More";
+
+"bookingcom_book_button" = "Book";
+
+"placepage_call_button" = "Call";
+
+"placepage_route_from_button" = "Route from";
+
+"placepage_route_to_button" = "Route to";
+
+"placepage_edit_bookmark_button" = "Edit Bookmark";
+
+"placepage_bookmark_name_hint" = "Bookmark Name";
+
+"placepage_personal_notes_hint" = "Personal notes...";
+
+"placepage_delete_bookmark_button" = "Delete Bookmark";
+
+"placepage_error_on_map_button" = "Error on map";
+
+"placepage_add_business_button" = "Add business";
+
+/* Snackber */
+"thank_you" = "Thank you!";
+
+"editor_edits_sent_message" = "Your suggested changes have been sent";
+
+"editor_comment_hint" = "Comment...";
+
+"editor_reset_edits_message" = "Reset all local changes?";
+
+"editor_reset_edits_button" = "Reset";
+
+"editor_remove_place_message" = "Remove an added place?";
+
+"editor_remove_place_button" = "Remove";
+
+"editor_status_sending" = "Sending...";
+
+/* Editor */
+"editor_place_doesnt_exist" = "Place does not exist";
+
+"editor_storey_number_hint" = "Number of floors (max %25)";
+
+"error_enter_correct_storey_number" = "Edit the place only of a hight of 25 floors";
+
+"editor_zip_code" = "ZIP Code";
+
+"error_enter_correct_zip_code" = "Enter the correct ZIP Code";
+
+"editor_additional_info_subtitle" = "Suggest to edit";
+
+"editor_detailed_description_hint" = "Detailed comment";
+
+"editor_will_be_sent_message" = "Your Suggested changes will be sent to OpenStreetMap community.  Describe the details, which can be edited in MAPS.ME";
+
+"editor_more_about_osm" = "Lear more about OpenStreetMap";
+
+"error_enter_correct_house_number" = "Enter correct house number";
+
+"editor_operator" = "Operator";
+
+"editor_tag_description" = "Specify the company, organization or person responsible for the operation of the facility";
+
+"editor_no_local_edits_title" = "You don't have local edits yet";
+
+"editor_no_local_edits_description" = "Here you see the number of edits you made that are available only on your device so far.";
+
+"editor_international_names_subtitle" = "The name in other languages";
+
+"editor_send_to_osm" = "Send to OSM";
+
+"editor_remove" = "Remove";
+
+/* Downloader */
+"downloader_my_maps_title" = "My maps";
+
+"downloader_no_downloaded_maps_title" = "You haven't downloaded any maps yet";
+
+"downloader_no_downloaded_maps_message" = "Download the necessary maps to find places and use navigation without the Internet.";
+
+"downloader_find_place_hint" = "Search city or country";
+
+"downloader_download_maps_button" = "Download the map";
+
+"downloader_cancel_download_button" = "Cancel dwnloading";
+
+"downloader_status_downloading" = "Downloading...";
+
+"current_location_unknown_title" = "Continue detecting your current location?";
+
+/* My Position */
+"current_location_unknown_message" = "Current location is not defined. Perhaps you are in a building or in a tunnel.";
+
+"current_location_unknown_continue_button" = "Continue";
+
+"current_location_unknown_stop_button" = "Stop";
+
+"current_location_unknown_error_title" = "Current location is not defined.";
+
+"current_location_unknown_error_message" = "While defining your current location an error occured. Check if your device operates properly and retry again later.";
+
+"whatsnew_update_editor_title" = "We have updated the editor";
+
+"whatsnew_update_editor_message" = "MAPS.ME users have already made 50 000 edits of the map, together we will make the map the most detailed in the world. Join us!";
