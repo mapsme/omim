@@ -1948,9 +1948,13 @@ FeatureID Framework::FindBuildingAtPoint(m2::PointD const & mercator) const
     m_model.ForEachFeature(rect, [&](FeatureType & ft)
     {
       if (!featureId.IsValid() &&
-          ft.GetFeatureType() == feature::GEOM_AREA && ftypes::IsBuildingChecker::Instance()(ft) &&
-          ft.GetLimitRect(kScale).IsPointInside(mercator) && feature::GetMinDistanceMeters(ft, mercator) == 0.0)
+          ft.GetFeatureType() == feature::GEOM_AREA &&
+          ftypes::IsBuildingChecker::Instance()(ft) &&
+          ft.GetLimitRect(kScale).IsPointInside(mercator) &&
+          feature::GetMinDistanceMeters(ft, mercator) == 0.0)
+      {
         featureId = ft.GetID();
+      }
     }, kScale);
   }
   return featureId;
@@ -2492,6 +2496,76 @@ vector<osm::LocalizedStreet> TakeSomeStreetsAndLocalize(
   }
   return results;
 }
+
+void SetStreet(search::ReverseGeocoder const & coder, Index const & index,
+               FeatureType & ft, osm::EditableMapObject & emo)
+{
+  // Get exact feature's street address (if any) from mwm,
+  // together with all nearby streets.
+  auto const streets = coder.GetNearbyFeatureStreets(ft);
+  auto const & streetsPool = streets.first;
+  auto const & featureStreetIndex = streets.second;
+
+  string street;
+  bool const featureIsInEditor = osm::Editor::Instance().GetEditedFeatureStreet(ft.GetID(), street);
+  bool const featureHasStreetInMwm = featureStreetIndex < streetsPool.size();
+  if (!featureIsInEditor && featureHasStreetInMwm)
+    street = streetsPool[featureStreetIndex].m_name;
+
+  auto localizedStreets = TakeSomeStreetsAndLocalize(streetsPool, index);
+
+  if (!street.empty())
+  {
+    auto it = find_if(begin(streetsPool), end(streetsPool),
+                      [&street](search::ReverseGeocoder::Street const & s)
+                      {
+                        return s.m_name == street;
+                      });
+
+    if (it != end(streetsPool))
+    {
+      auto const localizedStreet = LocalizeStreet(index, it->m_id);
+      emo.SetStreet(localizedStreet);
+
+      // A street that a feature belongs to should alwas be in the first place in the list.
+      auto localizedIt = find(begin(localizedStreets), end(localizedStreets), localizedStreet);
+      if (localizedIt != end(localizedStreets))
+        iter_swap(localizedIt, begin(localizedStreets));
+      else
+        localizedStreets.insert(begin(localizedStreets), localizedStreet);
+    }
+    else
+    {
+      emo.SetStreet({street, ""});
+    }
+  }
+  else
+  {
+    emo.SetStreet({});
+  }
+
+  emo.SetNearbyStreets(move(localizedStreets));
+}
+
+void SetHostingBuilding(FeatureID const & hostingBuildingFid, Index const & index,
+                        search::ReverseGeocoder const & coder, osm::EditableMapObject & emo)
+{
+  if (hostingBuildingFid.IsValid())
+  {
+    FeatureType hostingBuildingFeature;
+
+    Index::FeaturesLoaderGuard g(index, hostingBuildingFid.m_mwmId);
+    g.GetFeatureByIndex(hostingBuildingFid.m_index, hostingBuildingFeature);
+
+    search::ReverseGeocoder::Address address;
+    if (coder.GetExactAddress(hostingBuildingFeature, address))
+    {
+      auto const latLon = MercatorBounds::ToLatLon(feature::GetCenter(hostingBuildingFeature));
+      emo.SetHostingBuilding(hostingBuildingFid, latLon, address.GetStreetName(),
+                             address.GetHouseNumber());
+    }
+  }
+}
 }  // namespace
 
 bool Framework::CreateMapObject(m2::PointD const & mercator, uint32_t const featureType,
@@ -2523,52 +2597,14 @@ bool Framework::GetEditableMapObject(FeatureID const & fid, osm::EditableMapObje
   osm::Editor & editor = osm::Editor::Instance();
   emo.SetEditableProperties(editor.GetEditableProperties(ft));
 
-  // Get exact feature's street address (if any) from mwm,
-  // together with all nearby streets.
   search::ReverseGeocoder const coder(m_model.GetIndex());
-  auto const streets = coder.GetNearbyFeatureStreets(ft);
-  auto const & streetsPool = streets.first;
-  auto const & featureStreetIndex = streets.second;
+  SetStreet(coder, m_model.GetIndex(), ft, emo);
 
-  string street;
-  bool const featureIsInEditor = editor.GetEditedFeatureStreet(fid, street);
-  bool const featureHasStreetInMwm = featureStreetIndex < streetsPool.size();
-  if (!featureIsInEditor && featureHasStreetInMwm)
-    street = streetsPool[featureStreetIndex].m_name;
-
-  auto localizedStreets = TakeSomeStreetsAndLocalize(streetsPool, m_model.GetIndex());
-
-  if (!street.empty())
+  if (!ftypes::IsBuildingChecker::Instance()(ft))
   {
-    auto it = find_if(begin(streetsPool), end(streetsPool),
-                      [&street](search::ReverseGeocoder::Street const & s)
-                      {
-                        return s.m_name == street;
-                      });
-
-    if (it != end(streetsPool))
-    {
-      auto const localizedStreet = LocalizeStreet(m_model.GetIndex(), it->m_id);
-      emo.SetStreet(localizedStreet);
-
-      // A street that a feature belongs to should alwas be in the first place in the list.
-      auto localizedIt = find(begin(localizedStreets), end(localizedStreets), localizedStreet);
-      if (localizedIt != end(localizedStreets))
-        iter_swap(localizedIt, begin(localizedStreets));
-      else
-        localizedStreets.insert(begin(localizedStreets), localizedStreet);
-    }
-    else
-    {
-      emo.SetStreet({street, ""});
-    }
+    SetHostingBuilding(FindBuildingAtPoint(feature::GetCenter(ft)),
+                       m_model.GetIndex(), coder, emo);
   }
-  else
-  {
-    emo.SetStreet({});
-  }
-
-  emo.SetNearbyStreets(move(localizedStreets));
 
   return true;
 }

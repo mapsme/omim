@@ -15,6 +15,19 @@ int8_t const EditableMapObject::kMaximumLevelsEditableByUsers = 25;
 bool EditableMapObject::IsNameEditable() const { return m_editableProperties.m_name; }
 bool EditableMapObject::IsAddressEditable() const { return m_editableProperties.m_address; }
 
+bool EditableMapObject::IsAddressOverridden() const
+{
+  if (!m_hostingBuilding)
+    return false;
+
+  if (!m_street.m_defaultName.empty() || !m_houseNumber.empty())
+    return true;
+
+  return false;
+}
+
+bool EditableMapObject::HasHostingBuilding() const { return m_hostingBuilding != nullptr; }
+
 vector<Props> EditableMapObject::GetEditableProperties() const
 {
   return MetadataToProps(m_editableProperties.m_metadata);
@@ -40,7 +53,17 @@ vector<LocalizedName> EditableMapObject::GetLocalizedNames() const
 }
 
 vector<LocalizedStreet> const & EditableMapObject::GetNearbyStreets() const { return m_nearbyStreets; }
-string const & EditableMapObject::GetHouseNumber() const { return m_houseNumber; }
+
+
+string const & EditableMapObject::GetHouseNumber() const
+{
+  if (m_houseNumber.empty() && m_hostingBuilding)
+    return m_hostingBuilding->m_houseNumber;
+
+  return m_houseNumber;
+}
+
+string const & EditableMapObject::GetOwnHouseNumber() const { return m_houseNumber; }
 
 string EditableMapObject::GetPostcode() const
 {
@@ -50,6 +73,11 @@ string EditableMapObject::GetPostcode() const
 string EditableMapObject::GetWikipedia() const
 {
   return m_metadata.Get(feature::Metadata::FMD_WIKIPEDIA);
+}
+
+BuildingInfo const * EditableMapObject::GetHostingBuilding() const
+{
+  return m_hostingBuilding.get();
 }
 
 void EditableMapObject::SetEditableProperties(osm::EditableProperties const & props)
@@ -88,7 +116,14 @@ void EditableMapObject::SetType(uint32_t featureType)
 }
 
 void EditableMapObject::SetID(FeatureID const & fid) { m_featureID = fid; }
-void EditableMapObject::SetStreet(LocalizedStreet const & st) { m_street = st; }
+
+void EditableMapObject::SetStreet(LocalizedStreet const & st)
+{
+  if (!HasHostingBuilding() || !(st == m_hostingBuilding->m_street))
+    m_street = st;
+  else
+    m_street = {};
+}
 
 void EditableMapObject::SetNearbyStreets(vector<LocalizedStreet> && streets)
 {
@@ -120,7 +155,10 @@ bool EditableMapObject::ValidateHouseNumber(string const & houseNumber)
 
 void EditableMapObject::SetHouseNumber(string const & houseNumber)
 {
-  m_houseNumber = houseNumber;
+  if (!HasHostingBuilding() || houseNumber != m_hostingBuilding->m_houseNumber)
+    m_houseNumber = houseNumber;
+  else
+    m_houseNumber.clear();
 }
 
 void EditableMapObject::SetPostcode(string const & postcode)
@@ -200,7 +238,15 @@ void EditableMapObject::SetBuildingLevels(string const & buildingLevels)
   m_metadata.Set(feature::Metadata::FMD_BUILDING_LEVELS, buildingLevels);
 }
 
-LocalizedStreet const & EditableMapObject::GetStreet() const { return m_street; }
+LocalizedStreet const & EditableMapObject::GetStreet() const
+{
+  if (m_street.m_defaultName.empty() && m_hostingBuilding)
+    return m_hostingBuilding->m_street;
+
+  return m_street;
+}
+
+LocalizedStreet const & EditableMapObject::GetOwnStreet() const { return m_street; }
 
 void EditableMapObject::SetCuisines(vector<string> const & cuisine)
 {
@@ -213,4 +259,15 @@ void EditableMapObject::SetOpeningHours(string const & openingHours)
 }
 
 void EditableMapObject::SetPointType() { m_geomType = feature::EGeomType::GEOM_POINT; }
+
+void EditableMapObject::SetHostingBuilding(FeatureID const & buildingFid, ms::LatLon const & latLon,
+                                           string const & buildingStreet, string const & houseNumber)
+{
+  // TODO(mgsergio): Localize buildingStreet if it's needed in the future.
+  m_hostingBuilding = make_unique<BuildingInfo>(buildingFid, latLon, buildingStreet, houseNumber);
+  if (m_houseNumber == houseNumber)
+    m_houseNumber.clear();
+  if (m_street.m_defaultName == buildingStreet)
+    m_street = {};
+}
 }  // namespace osm
