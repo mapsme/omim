@@ -85,11 +85,17 @@ void FeatureType::ReplaceBy(osm::EditableMapObject const & emo)
   }
 
   m_params.name = emo.GetName();
-  string const & house = emo.GetHouseNumber();
-  if (house.empty())
-    m_params.house.Clear();
+  // GetOwnHouseNumber() is empty if emo's house number equals to it's hosting building's one
+  // (see impl.), so we avoid setting it to keep it from saving to editor and merging to osm.
+  auto const & houseNumber = emo.GetOwnHouseNumber();
+  if (!houseNumber.empty())
+  {
+    m_params.house.Set(houseNumber);
+  }
   else
-    m_params.house.Set(house);
+  {
+    m_params.house.Clear();
+  }
   m_bCommonParsed = true;
 
   m_metadata = emo.GetMetadata();

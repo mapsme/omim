@@ -11,6 +11,7 @@
 #include "coding/multilang_utf8_string.hpp"
 
 #include "std/vector.hpp"
+#include "std/unique_ptr.hpp"
 
 namespace osm
 {
@@ -45,10 +46,44 @@ struct LocalizedName
 
 struct LocalizedStreet
 {
+  LocalizedStreet(string const & defaultName, string const & localizedName)
+    : m_defaultName(defaultName),
+      m_localizedName(localizedName)
+  {
+  }
+
+  LocalizedStreet() = default;
+
   string m_defaultName;
   string m_localizedName;
 
   bool operator==(LocalizedStreet const & st) const { return m_defaultName == st.m_defaultName; }
+  bool operator!=(LocalizedStreet const & st) const { return !(*this == st); }
+};
+
+/// BuildingInfo is used to pic building address and propagate it
+/// to other pois on this building.
+struct BuildingInfo
+{
+  BuildingInfo(FeatureID const & fid,
+               ms::LatLon const & latLon,
+               string const & street,
+               string const & houseNumber)
+      : m_fid(fid),
+        m_latLon(latLon),
+        m_street(street, ""),
+        m_houseNumber(houseNumber)
+  {
+  }
+
+  /// Used to get mwm version and additional feature information.
+  FeatureID m_fid;
+  /// Used when sending note.
+  ms::LatLon m_latLon;
+  /// A street of a building.
+  LocalizedStreet m_street;
+  /// A house number of a building.
+  string m_houseNumber;
 };
 
 class EditableMapObject : public MapObject
@@ -59,17 +94,29 @@ public:
   bool IsNameEditable() const;
   bool IsAddressEditable() const;
 
+  /// @returns true if either street or house number of emo differ from
+  /// ones of it's hosing building.
+  bool IsAddressOverridden() const;
+  bool HasHostingBuilding() const;
+
   vector<Props> GetEditableProperties() const;
   // TODO(AlexZ): Remove this method and use GetEditableProperties() in UI.
   vector<feature::Metadata::EType> const & GetEditableFields() const;
 
   StringUtf8Multilang const & GetName() const;
   vector<LocalizedName> GetLocalizedNames() const;
+
   LocalizedStreet const & GetStreet() const;
+  LocalizedStreet const & GetOwnStreet() const;
   vector<LocalizedStreet> const & GetNearbyStreets() const;
+
   string const & GetHouseNumber() const;
+  string const & GetOwnHouseNumber() const;
+
   string GetPostcode() const;
   string GetWikipedia() const;
+
+  BuildingInfo const * GetHostingBuilding() const;
 
   void SetEditableProperties(osm::EditableProperties const & props);
   //  void SetFeatureID(FeatureID const & fid);
@@ -81,6 +128,8 @@ public:
   //  void SetTypes(feature::TypesHolder const & types);
   void SetStreet(LocalizedStreet const & st);
   void SetNearbyStreets(vector<LocalizedStreet> && streets);
+
+  // TODO(mgsergio): move to anonymous namespace and make setters return bool.
   /// @returns false if house number fails validation.
   static bool ValidateHouseNumber(string const & houseNumber);
   void SetHouseNumber(string const & houseNumber);
@@ -104,10 +153,15 @@ public:
   /// Special mark that it's a point feature, not area or line.
   void SetPointType();
 
+  void SetHostingBuilding(FeatureID const & buildingFid, ms::LatLon const & latLon,
+                          string const & buildingStreet, string const & houseNumber);
+
 private:
   string m_houseNumber;
   LocalizedStreet m_street;
   vector<LocalizedStreet> m_nearbyStreets;
   EditableProperties m_editableProperties;
+
+  unique_ptr<BuildingInfo> m_hostingBuilding;
 };
 }  // namespace osm

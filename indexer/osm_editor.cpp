@@ -76,15 +76,12 @@ bool NeedsUpload(string const & uploadStatus)
 string GetEditorFilePath() { return GetPlatform().WritablePathForFile(kEditorXMLFileName); }
 
 /// Compares editable fields connected with feature ignoring street.
-bool AreFeaturesEqualButStreet(FeatureType const & a, FeatureType const & b)
+bool AreFeaturesEqualButStreetAndHouseNumber(FeatureType const & a, FeatureType const & b)
 {
   feature::TypesHolder const aTypes(a);
   feature::TypesHolder const bTypes(b);
 
   if (!aTypes.Equals(bTypes))
-    return false;
-
-  if (a.GetHouseNumber() != b.GetHouseNumber())
     return false;
 
   if (!a.GetMetadata().Equals(b.GetMetadata()))
@@ -94,6 +91,31 @@ bool AreFeaturesEqualButStreet(FeatureType const & a, FeatureType const & b)
     return false;
 
   return true;
+}
+
+/// Compares a feature and an editable map object with respect to hosting
+/// building address propagation.
+bool AreFeaturesEqual(osm::EditableMapObject const & emo, FeatureType const & ft,
+                      string const & featureStreet)
+{
+  // The was no street set in data/editor, so emo.GetOwnStreet() should be empty.
+  if (featureStreet.empty() && !emo.GetOwnStreet().m_defaultName.empty())
+    return false;
+
+  // The street was set in data/editor, so either hosting building's street match or feature's one.
+  if (!featureStreet.empty() && emo.GetStreet().m_defaultName != featureStreet)
+    return false;
+
+  // Same stands for house number.
+  if (ft.GetHouseNumber().empty() && !emo.GetOwnHouseNumber().empty())
+    return false;
+
+  if (!ft.GetHouseNumber().empty() && emo.GetHouseNumber() != ft.GetHouseNumber())
+    return false;
+
+  FeatureType leftFt;
+  leftFt.ReplaceBy(emo);
+  return AreFeaturesEqualButStreetAndHouseNumber(leftFt, ft);
 }
 
 XMLFeature GetMatchingFeatureFromOSM(osm::ChangesetWrapper & cw,
@@ -401,18 +423,15 @@ Editor::SaveResult Editor::SaveEditedFeature(EditableMapObject const & emo)
         : m_features[fid.m_mwmId][fid.m_index].m_feature;
     fti.m_feature.ReplaceBy(emo);
     bool const sameAsInMWM = featureStatus != FeatureStatus::Created &&
-        AreFeaturesEqualButStreet(fti.m_feature, *m_getOriginalFeatureFn(fid)) &&
-        emo.GetStreet().m_defaultName == m_getOriginalFeatureStreetFn(fti.m_feature);
+                             AreFeaturesEqual(emo, *m_getOriginalFeatureFn(fid),
+                                              m_getOriginalFeatureStreetFn(fti.m_feature));
 
     if (featureStatus != FeatureStatus::Untouched)
     {
       // A feature was modified and equals to the one in editor.
       auto const & editedFeatureInfo = m_features[fid.m_mwmId][fid.m_index];
-      if (AreFeaturesEqualButStreet(fti.m_feature, editedFeatureInfo.m_feature) &&
-          emo.GetStreet().m_defaultName == editedFeatureInfo.m_street)
-      {
+      if (AreFeaturesEqual(emo, editedFeatureInfo.m_feature, editedFeatureInfo.m_street))
         return NothingWasChanged;
-      }
 
       // A feature was modified and equals to the one in mwm (changes are rolled back).
       if (sameAsInMWM)
@@ -444,7 +463,24 @@ Editor::SaveResult Editor::SaveEditedFeature(EditableMapObject const & emo)
 
   // TODO: What if local client time is absolutely wrong?
   fti.m_modificationTimestamp = time(nullptr);
-  fti.m_street = emo.GetStreet().m_defaultName;
+  if (emo.IsAddressOverridden())
+  {
+    // TODO(mgsergio): What if hosting building was eadited as well? (most of logic works thaugh.)
+
+    // Do not send a note on every editing action;
+    // do when address is changed since last sending.
+    auto const * featureInfo = GetFeatureTypeInfo(fid.m_mwmId, fid.m_index);
+    if (featureInfo == nullptr ||  // Feature first modification.
+        // An address was changed since last sending.
+        featureInfo->m_street != emo.GetOwnStreet().m_defaultName ||
+        featureInfo->m_feature.GetHouseNumber() != emo.GetOwnHouseNumber())
+    {
+      CreateNote(emo.GetHostingBuilding()->m_latLon, emo.GetID(),
+                 "The address on this POI is different from the building address. It is either a user's mistake, or an issue in the data. Please check this and fix if needed. (This note was created automatically without a user's input. Feel free to close it if it's wrong).");
+    }
+  }
+  if (emo.IsAddressOverridden() || !emo.HasHostingBuilding())
+    fti.m_street = emo.GetStreet().m_defaultName;
 
   // Reset upload status so already uploaded features can be uploaded again after modification.
   fti.m_uploadStatus = {};
