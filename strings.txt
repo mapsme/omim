@@ -16262,3 +16262,368 @@
   [editor_more_about_osm]
     tags = ios, android
     en = More about OpenStreetMap
+
+  [add_business_button]
+    en = Add organization
+    ru = Добавить организацию
+
+  [download_over_mobile_header]
+    en = Download by using a cellular network connection?
+    ru = Загрузить через сотовую связь?
+
+  [location_services_disabled_header]
+    comment = iOS
+    en = Location services are disabled
+    ru = Определение местоположения отключено
+
+  [location_services_disabled_message]
+    comment = iOS
+    en = Enable access to geolocation in the device settings
+    ru = Разрешите доступ к геопозиции в настройках устройства.
+
+  [location_services_disabled_1]
+    comment = iOS
+    en = 1. Open Settings
+    ru = 1. Откройте Настройки
+
+  [location_services_disabled_2]
+    comment = iOS
+    en = 2. Tap Location
+    ru = 2. Нажмите Геопозиция
+
+  [location_services_disabled_3]
+    comment = iOS
+    en = 3. Select Always
+    ru = 3. Выберите «Всегда»
+
+  [not_now_button]
+    comment = iOS
+    en = Not now
+    ru = Не сейчас
+
+  [settings_button]
+    comment = iOS
+    en = Settings
+    ru = Настройки
+
+  [placepage_unknown_place]
+    comment = Place Page при long tap
+    en = Unknown Place
+    ru = Неизвестное место
+
+  [placepage_parking_surface]
+    comment = Parking type in Place Page
+    en = Surface
+    ru = Открытая парковка
+
+  [placepage_parking_multistorey]
+    comment = Parking type in Place Page
+    en = Multi-storey
+    ru = Многоэтажная наземная парковка
+
+  [placepage_parking_underground]
+    comment = Parking type in Place Page
+    en = Underground
+    ru = Подземная парковка
+
+  [placepage_parking_rooftop]
+    comment = Parking type in Place Page
+    en = Rooftop
+    ru = Парковка на крыше здания
+
+  [placepage_parking_sheds]
+    comment = Parking type in Place Page
+    en = Sheds
+    ru = Частное легкое укрытие для автомобилей
+
+  [placepage_parking_carports]
+    comment = Parking type in Place Page
+    en = Carports
+    ru = Капитальный навес
+
+  [placepage_parking_boxes]
+    comment = Parking type in Place Page
+    en = Garage boxes
+    ru = Гаражный бокс
+
+  [placepage_parking_pay]
+    comment = Parking type in Place Page
+    en = Pay
+    ru = Платная
+
+  [placepage_parking_free]
+    comment = Parking type in Place Page
+    en = Free
+    ru = Бесплатная
+
+  [placepage_parking_interval]
+    comment = Parking type in Place Page
+    en = Interval Pay
+    ru = Переменно платная
+
+  [placepage_entrance_number]
+    comment = Entrance number in Place Page
+    en = №
+    ru = №
+
+  [placepage_entrance_type]
+    comment = Entrance type in Place Page
+    en = Entrance
+    ru = Подъезд
+
+  [placepage_flat]
+    comment = Flat number in place page
+    en = ap.
+    ru = кв.
+
+  [placepage_open_status]
+    comment = Place status in Place Page
+    en = Open
+    ru = Открыто
+
+  [placepage_closed_status]
+    comment = Place status in Place Page
+    en = Closed
+    ru = Закрыто
+
+  [placepage_open_24_7]
+    comment = Place status in Place Page
+    en = 24 / 7 
+    ru = Круглосуточно
+
+  [placepage_place_rating]
+    en = Rating:
+    ru = Рейтинг: 
+
+  [place_page_starting_from]
+    en = starting from 10 
+    ru = от
+
+  [meter]
+    en = m
+    ru = м
+
+  [kilometer]
+    en = km
+    ru = км
+
+  [placepage_entrance]
+    en = Entrance
+    ru = Вход
+
+  [placepage_place_description]
+    en = Discription
+    ru = Описание
+
+  [placepage_place_details]
+    en = Details
+    ru = Подробнее
+
+  [placepage_more_button]
+    comment = Place Page
+    en = More
+    ru = Еще
+
+  [bookingcom_book_button]
+    en = Book
+    ru = Забронировать
+
+  [placepage_call_button]
+    en = Call
+    ru = Позвонить
+
+  [placepage_route_from_button]
+    en = Route from
+    ru = Отсюда
+
+  [placepage_route_to_button]
+    en = Route to
+    ru = Сюда
+
+  [placepage_edit_bookmark_button]
+    en = Edit Bookmark
+    ru = Редактировать метку
+
+  [placepage_bookmark_name_hint]
+    en = Bookmark Name
+    ru = Название метки
+
+  [placepage_personal_notes_hint]
+    en = Personal notes...
+    ru = Примечание
+
+  [placepage_delete_bookmark_button]
+    en = Delete Bookmark
+    ru = Удалить метку
+
+  [placepage_error_on_map_button]
+    en = Error on map
+    ru = Ошибка на карте
+
+  [placepage_add_business_button]
+    en = Add business
+    ru = Добавить организацию
+
+  [thank_you]
+    comment = Snackber
+    en = Thank you! 
+    ru = Спасибо!
+
+  [editor_edits_sent_message]
+    en = Your suggested changes have been sent
+    ru = Предложенные вами изменения отправлены
+
+  [editor_comment_hint]
+    en = Comment...
+    ru = Коментарий...
+
+  [editor_reset_edits_message]
+    en = Reset all local changes?
+    ru = Сбросить все локальные правки?
+
+  [editor_reset_edits_button]
+    en = Reset
+    ru = Сбросить
+
+  [editor_remove_place_message]
+    en = Remove an added place?
+    ru = Удалить добавленный вами объект?
+
+  [editor_remove_place_button]
+    en = Remove
+    ru = Удалить
+
+  [editor_status_sending]
+    en = Sending...
+    ru = Отправка...
+
+  [editor_place_doesnt_exist]
+    comment = Editor
+    en = Place does not exist
+    ru = Места не существует
+
+  [editor_storey_number_hint]
+    en = Number of floors (max %25)
+    ru = Количество этажей (максимум %25)
+
+  [error_enter_correct_storey_number]
+    en = Edit the place only of a hight of 25 floors
+    ru = Редактируйте здания высотой максимум %25 этажей.
+
+  [editor_zip_code]
+    en = ZIP Code
+    ru = Почтовый индекс
+
+  [error_enter_correct_zip_code]
+    en = Enter the correct ZIP Code
+    ru = Введите корректный почтовый индекс
+
+  [editor_additional_info_subtitle]
+    en = Suggest to edit
+    ru = Дополнительные сведениея
+
+  [editor_detailed_description_hint]
+    en = Detailed comment
+    ru = Подробный комментарий
+
+  [editor_will_be_sent_message]
+    en = Your Suggested changes will be sent to OpenStreetMap community.  Describe the details, which can be edited in MAPS.ME
+    ru = Предложенные вами изменения на карте будут отправлены в OpenStreetMap. Опишите дополнительные сведения об объекте, которые MAPS.ME не позволяет отредактировать.
+
+  [editor_more_about_osm]
+    en = Lear more about OpenStreetMap
+    ru = Подробнее об OpenStreetMap
+
+  [error_enter_correct_house_number]
+    en = Enter correct house number
+    ru = Введите корректный номера дома
+
+  [editor_operator]
+    en = Operator
+    ru = Владелец
+
+  [editor_tag_description]
+    en = Specify the company, organization or person responsible for the operation of the facility
+    ru = Укажите компанию, организацию или лицо, которое отвечает за работоспособность объекта.
+
+  [editor_no_local_edits_title]
+    en = You don't have local edits yet
+    ru = У вас пока нет локальных правок
+
+  [editor_no_local_edits_description]
+    en = Here you see the number of edits you made that are available only on your device so far.
+    ru = Здесь отображается количество предложенных вами изменений на карте, которые доступны пока только на вашем устройстве.
+
+  [editor_international_names_subtitle]
+    en = The name in other languages
+    ru = Название на других языках
+
+  [editor_send_to_osm]
+    en = Send to OSM
+    ru = Отправить в OSM
+
+  [editor_remove]
+    en = Remove
+    ru = Удалить
+
+  [downloader_my_maps_title]
+    comment = Downloader
+    en = My maps
+    ru = Мои карты
+
+  [downloader_no_downloaded_maps_title]
+    en = You haven't downloaded any maps yet
+    ru = У вас нет загруженных карт
+
+  [downloader_no_downloaded_maps_message]
+    en = Download the necessary maps to find places and use navigation without the Internet.
+    ru = Загрузите необходимые карты, чтобы находить места и пользоваться навигацией без интернета.
+
+  [downloader_find_place_hint]
+    en = Search city or country
+    ru = Найти город или страну
+
+  [downloader_download_maps_button]
+    en = Download the map
+    ru = Загрузить карты
+
+  [downloader_cancel_download_button]
+    en = Cancel dwnloading
+    ru = Отменить загрузку
+
+  [downloader_status_downloading]
+    en = Downloading...
+    ru = Загрузка...
+
+  [current_location_unknown_title]
+    en = Continue detecting your current location?
+    ru = Продолжить поиск местоположения?
+
+  [current_location_unknown_message]
+    comment = My Position
+    en = Current location is not defined. Perhaps you are in a building or in a tunnel. 
+    ru = Местоположение не найдено, возможно вы находитесь в  помещении или в туннеле.
+
+  [current_location_unknown_continue_button]
+    en = Continue
+    ru = Продолжить
+
+  [current_location_unknown_stop_button]
+    en = Stop
+    ru = Остановить
+
+  [current_location_unknown_error_title]
+    en = Current location is not defined.
+    ru = Местоположение не найдено
+
+  [current_location_unknown_error_message]
+    en = While defining your current location an error occured. Check if your device operates properly and retry again later.
+    ru = При поиске местоположения произошла неизвестная ошибка. Проверьте работоспособность устройства и попробуйте найти местоположение позднее.
+
+  [whatsnew_update_editor_title]
+    en = We have updated the editor
+    ru = Мы обновили редактор
+
+  [whatsnew_update_editor_message]
+    en = MAPS.ME users have already made 50 000 edits of the map, together we will make the map the most detailed in the world. Join us!
+    ru = Пользователи MAPS.ME внесли уже 50 000 правок на карту, вместе мы сделаем карты самыми подробными в мире. Присоединяйся.

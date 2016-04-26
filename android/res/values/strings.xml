@@ -843,4 +843,117 @@
 	<string name="editor_detailed_description_hint">Detailed description</string>
 	<string name="editor_detailed_description">Suggested changes will be send to OpenStreetMap...</string>
 	<string name="editor_more_about_osm">More about OpenStreetMap</string>
+	<string name="add_business_button">Add organization</string>
+	<string name="download_over_mobile_header">Download by using a cellular network connection?</string>
+	<!-- iOS -->
+	<string name="location_services_disabled_header">Location services are disabled</string>
+	<!-- iOS -->
+	<string name="location_services_disabled_message">Enable access to geolocation in the device settings</string>
+	<!-- iOS -->
+	<string name="location_services_disabled_1">1. Open Settings</string>
+	<!-- iOS -->
+	<string name="location_services_disabled_2">2. Tap Location</string>
+	<!-- iOS -->
+	<string name="location_services_disabled_3">3. Select Always</string>
+	<!-- iOS -->
+	<string name="not_now_button">Not now</string>
+	<!-- iOS -->
+	<string name="settings_button">Settings</string>
+	<!-- Place Page при long tap -->
+	<string name="placepage_unknown_place">Unknown Place</string>
+	<!-- Parking type in Place Page -->
+	<string name="placepage_parking_surface">Surface</string>
+	<!-- Parking type in Place Page -->
+	<string name="placepage_parking_multistorey">Multi-storey</string>
+	<!-- Parking type in Place Page -->
+	<string name="placepage_parking_underground">Underground</string>
+	<!-- Parking type in Place Page -->
+	<string name="placepage_parking_rooftop">Rooftop</string>
+	<!-- Parking type in Place Page -->
+	<string name="placepage_parking_sheds">Sheds</string>
+	<!-- Parking type in Place Page -->
+	<string name="placepage_parking_carports">Carports</string>
+	<!-- Parking type in Place Page -->
+	<string name="placepage_parking_boxes">Garage boxes</string>
+	<!-- Parking type in Place Page -->
+	<string name="placepage_parking_pay">Pay</string>
+	<!-- Parking type in Place Page -->
+	<string name="placepage_parking_free">Free</string>
+	<!-- Parking type in Place Page -->
+	<string name="placepage_parking_interval">Interval Pay</string>
+	<!-- Entrance number in Place Page -->
+	<string name="placepage_entrance_number">№</string>
+	<!-- Entrance type in Place Page -->
+	<string name="placepage_entrance_type">Entrance</string>
+	<!-- Flat number in place page -->
+	<string name="placepage_flat">ap.</string>
+	<!-- Place status in Place Page -->
+	<string name="placepage_open_status">Open</string>
+	<!-- Place status in Place Page -->
+	<string name="placepage_closed_status">Closed</string>
+	<!-- Place status in Place Page -->
+	<string name="placepage_open_24_7">24 / 7</string>
+	<string name="placepage_place_rating">Rating:</string>
+	<string name="place_page_starting_from">starting from 10</string>
+	<string name="meter">m</string>
+	<string name="kilometer">km</string>
+	<string name="placepage_entrance">Entrance</string>
+	<string name="placepage_place_description">Discription</string>
+	<string name="placepage_place_details">Details</string>
+	<!-- Place Page -->
+	<string name="placepage_more_button">More</string>
+	<string name="bookingcom_book_button">Book</string>
+	<string name="placepage_call_button">Call</string>
+	<string name="placepage_route_from_button">Route from</string>
+	<string name="placepage_route_to_button">Route to</string>
+	<string name="placepage_edit_bookmark_button">Edit Bookmark</string>
+	<string name="placepage_bookmark_name_hint">Bookmark Name</string>
+	<string name="placepage_personal_notes_hint">Personal notes...</string>
+	<string name="placepage_delete_bookmark_button">Delete Bookmark</string>
+	<string name="placepage_error_on_map_button">Error on map</string>
+	<string name="placepage_add_business_button">Add business</string>
+	<!-- Snackber -->
+	<string name="thank_you">Thank you!</string>
+	<string name="editor_edits_sent_message">Your suggested changes have been sent</string>
+	<string name="editor_comment_hint">Comment...</string>
+	<string name="editor_reset_edits_message">Reset all local changes?</string>
+	<string name="editor_reset_edits_button">Reset</string>
+	<string name="editor_remove_place_message">Remove an added place?</string>
+	<string name="editor_remove_place_button">Remove</string>
+	<string name="editor_status_sending">Sending...</string>
+	<!-- Editor -->
+	<string name="editor_place_doesnt_exist">Place does not exist</string>
+	<string name="editor_storey_number_hint">Number of floors (max %25)</string>
+	<string name="error_enter_correct_storey_number">Edit the place only of a hight of 25 floors</string>
+	<string name="editor_zip_code">ZIP Code</string>
+	<string name="error_enter_correct_zip_code">Enter the correct ZIP Code</string>
+	<string name="editor_additional_info_subtitle">Suggest to edit</string>
+	<string name="editor_detailed_description_hint">Detailed comment</string>
+	<string name="editor_will_be_sent_message">Your Suggested changes will be sent to OpenStreetMap community.  Describe the details, which can be edited in MAPS.ME</string>
+	<string name="editor_more_about_osm">Lear more about OpenStreetMap</string>
+	<string name="error_enter_correct_house_number">Enter correct house number</string>
+	<string name="editor_operator">Operator</string>
+	<string name="editor_tag_description">Specify the company, organization or person responsible for the operation of the facility</string>
+	<string name="editor_no_local_edits_title">You don\&#39;t have local edits yet</string>
+	<string name="editor_no_local_edits_description">Here you see the number of edits you made that are available only on your device so far.</string>
+	<string name="editor_international_names_subtitle">The name in other languages</string>
+	<string name="editor_send_to_osm">Send to OSM</string>
+	<string name="editor_remove">Remove</string>
+	<!-- Downloader -->
+	<string name="downloader_my_maps_title">My maps</string>
+	<string name="downloader_no_downloaded_maps_title">You haven\&#39;t downloaded any maps yet</string>
+	<string name="downloader_no_downloaded_maps_message">Download the necessary maps to find places and use navigation without the Internet.</string>
+	<string name="downloader_find_place_hint">Search city or country</string>
+	<string name="downloader_download_maps_button">Download the map</string>
+	<string name="downloader_cancel_download_button">Cancel dwnloading</string>
+	<string name="downloader_status_downloading">Downloading...</string>
+	<string name="current_location_unknown_title">Continue detecting your current location?</string>
+	<!-- My Position -->
+	<string name="current_location_unknown_message">Current location is not defined. Perhaps you are in a building or in a tunnel.</string>
+	<string name="current_location_unknown_continue_button">Continue</string>
+	<string name="current_location_unknown_stop_button">Stop</string>
+	<string name="current_location_unknown_error_title">Current location is not defined.</string>
+	<string name="current_location_unknown_error_message">While defining your current location an error occured. Check if your device operates properly and retry again later.</string>
+	<string name="whatsnew_update_editor_title">We have updated the editor</string>
+	<string name="whatsnew_update_editor_message">MAPS.ME users have already made 50 000 edits of the map, together we will make the map the most detailed in the world. Join us!</string>
 </resources>
