@@ -289,7 +289,7 @@ public:
           unique_ptr<MapFilesDownloader> mapDownloaderForTesting);
 
   void Init(TUpdateCallback const & didDownload, TDeleteCallback const & willDelete);
-
+  
   inline void SetDownloadingPolicy(DownloadingPolicy * policy) { m_downloadingPolicy = policy; }
 
   /// @name Interface with clients (Android/iOS).

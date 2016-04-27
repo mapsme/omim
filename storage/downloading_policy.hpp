@@ -11,7 +11,6 @@ class DownloadingPolicy
 {
 public:
   using TProcessFunc = function<void(storage::TCountriesSet const &)>;
-
   virtual bool IsDownloadingAllowed() const { return true; }
   virtual void ScheduleRetry(storage::TCountriesSet const &, TProcessFunc const &) {}
 };

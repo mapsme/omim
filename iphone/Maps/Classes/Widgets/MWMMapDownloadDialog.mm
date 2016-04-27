@@ -94,10 +94,16 @@ using namespace storage;
 
 - (void)configDialog
 {
+<<<<<<< HEAD
   auto & f = GetFramework();
   auto const & s = f.Storage();
   auto const & p = f.DownloadingPolicy();
 
+=======
+  auto & s = GetFramework().Storage();
+  auto & p = GetFramework().DownloadingPolicy();
+  
+>>>>>>> [downloader] Refactor logic for disable downloading on cellular network and retry download on lost connection
   NodeAttrs nodeAttrs;
   s.GetNodeAttrs(m_countryId, nodeAttrs);
 
