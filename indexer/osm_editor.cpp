@@ -336,7 +336,7 @@ Editor::FeatureStatus Editor::GetFeatureStatus(FeatureID const & fid) const
 
 bool Editor::IsFeatureUploaded(MwmSet::MwmId const & mwmId, uint32_t index) const
 {
-  auto const * info = GetFeatureTypeInfo(mwmId, index)
+  auto const * info = GetFeatureTypeInfo(mwmId, index);
   return info && info->m_uploadStatus == kUploaded;
 }
 
