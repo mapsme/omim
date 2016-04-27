@@ -241,6 +241,7 @@ private:
   static size_t constexpr kAutoRetryCounterMax = 3;
   size_t m_autoRetryCounter = kAutoRetryCounterMax;
   my::DeferredTask m_autoRetryWorker;
+  bool m_cellularDownloadEnabled = false;
   
   void DownloadNextCountryFromQueue();
 
@@ -320,6 +321,8 @@ public:
   };
 
   inline bool IsAutoRetryDownloadFailed() const { return m_autoRetryCounter == 0; }
+  inline void EnableCellularDownload(bool value) { m_cellularDownloadEnabled = value; }
+  inline bool IsCellularDownloadEnable() const { return m_cellularDownloadEnabled; }
 
   bool CheckFailedCountries(TCountriesVec const & countries) const;
 

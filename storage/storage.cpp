@@ -548,9 +548,13 @@ void Storage::DownloadNextCountryFromQueue()
 {
   ASSERT_THREAD_CHECKER(m_threadChecker, ());
 
+  bool const stopDownload =
+      (GetPlatform().ConnectionStatus() == Platform::EConnectionType::CONNECTION_WWAN &&
+       !IsCellularDownloadEnable());
+
   if (m_queue.empty())
   {
-    if (!m_failedCountries.empty() && m_autoRetryCounter > 0)
+    if (!stopDownload && !m_failedCountries.empty() && m_autoRetryCounter > 0)
     {
       auto needReload = m_failedCountries;
       auto action = [this, needReload]
@@ -579,7 +583,7 @@ void Storage::DownloadNextCountryFromQueue()
   // It's not even possible to prepare directory for files before
   // downloading.  Mark this country as failed and switch to next
   // country.
-  if (!PreparePlaceForCountryFiles(GetCurrentDataVersion(), m_dataDir, GetCountryFile(countryId)))
+  if (stopDownload || !PreparePlaceForCountryFiles(GetCurrentDataVersion(), m_dataDir, GetCountryFile(countryId)))
   {
     OnMapDownloadFinished(countryId, false /* success */, queuedCountry.GetInitOptions());
     NotifyStatusChangedForHierarchy(countryId);
