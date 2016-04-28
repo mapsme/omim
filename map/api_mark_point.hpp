@@ -16,7 +16,7 @@ public:
   {
   }
 
-  string GetSymbolName() const override { return "api-result"; }
+  string GetSymbolName() const override { return m_style.empty() ? "api-result" : m_style; }
 
   UserMark::Type GetMarkType() const override { return UserMark::Type::API; }
 
