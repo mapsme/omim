@@ -3,6 +3,7 @@
 #include "map/geourl_process.hpp"
 #include "map/gps_tracker.hpp"
 
+
 #include "defines.hpp"
 
 #include "routing/online_absent_fetcher.hpp"
