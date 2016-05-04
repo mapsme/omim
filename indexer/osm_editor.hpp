@@ -22,10 +22,8 @@
 
 namespace osm
 {
-class Editor final
+class Editor final : public MwmSet::Observer
 {
-  Editor();
-
 public:
   using TFeatureTypeFn = function<void(FeatureType &)>;  // Mimics Framework::TFeatureTypeFn.
 
@@ -52,7 +50,10 @@ public:
     Created
   };
 
+  Editor();
+
   static Editor & Instance();
+  static void SetInstance(Editor * editor);
 
   void SetMwmIdByNameAndVersionFn(TMwmIdByMapNameFn const & fn) { m_mwmIdByMapNameFn = fn; }
   void SetInvalidateFn(TInvalidateFn const & fn) { m_invalidateFn = fn; }
@@ -63,6 +64,12 @@ public:
   void LoadMapEdits();
   /// Resets editor to initial state: no any edits or created/deleted features.
   void ClearAllLocalEdits();
+
+  void OnMapUpdated(platform::LocalCountryFile const &,
+                    platform::LocalCountryFile const &) override
+  {
+    LoadMapEdits();
+  }
 
   using TFeatureIDFunctor = function<void(FeatureID const &)>;
   void ForEachFeatureInMwmRectAndScale(MwmSet::MwmId const & id,
@@ -202,6 +209,8 @@ private:
 
   /// Notes to be sent to osm.
   shared_ptr<editor::Notes> m_notes;
+
+  static Editor * s_instance;
 };  // class Editor
 
 string DebugPrint(Editor::FeatureStatus fs);
