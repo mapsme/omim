@@ -67,6 +67,8 @@ public:
   bool IsArea() const;
 
   m2::PointD GetMercatorCenter() const;
+  /// @returns precise center for node type and the closest to the center point
+  /// for other types (see feature::GetCenter() for details).
   ms::LatLon GetCenter() const;
   void SetCenter(ms::LatLon const & ll);
   void SetCenter(m2::PointD const & mercatorCenter);

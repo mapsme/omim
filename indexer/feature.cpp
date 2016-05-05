@@ -122,6 +122,7 @@ editor::XMLFeature FeatureType::ToXML(bool serializeType) const
     // Remove duplicates.
     my::SortUnique(geometry);
     feature.SetGeometry(geometry);
+    feature.SetCenter(feature::GetCenter(*this));
   }
 
   ForEachName([&feature](uint8_t const & lang, string const & name)

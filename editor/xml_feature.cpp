@@ -206,7 +206,6 @@ ms::LatLon XMLFeature::GetCenter() const
 
 void XMLFeature::SetCenter(ms::LatLon const & ll)
 {
-  ASSERT_EQUAL(GetRootNode().name(), string(kNodeType), ());
   SetAttribute("lat", strings::to_string_dac(ll.lat, kLatLonTolerance));
   SetAttribute("lon", strings::to_string_dac(ll.lon, kLatLonTolerance));
 }
