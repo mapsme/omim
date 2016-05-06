@@ -2796,9 +2796,23 @@ void Framework::DeleteFeature(FeatureID const & fid) const
 {
   // TODO(AlexZ): Use FeatureID in the editor interface.
   osm::Editor::Instance().DeleteFeature(*GetFeatureByID(fid));
+  if (m_selectedFeature == fid)
+    m_selectedFeature = FeatureID();
 }
 
 osm::NewFeatureCategories Framework::GetEditorCategories() const
 {
   return osm::Editor::Instance().GetNewFeatureCategories();
+}
+
+bool Framework::RollBackChanges(FeatureID const & fid)
+{
+  if (m_selectedFeature == fid) // reset selected feature since it becomes invalid after rollback
+    m_selectedFeature = FeatureID();
+  auto const & editor = osm::Editor::Instance();
+  if (editor.GetFeatureStatus(fid) == osm::Editor::FeatureStatus::Created)
+    DeactivateMapSelection(false);
+  else
+    UpdatePlacePageInfoForCurrentSelection();
+  return editor.RollBackChanges(fid);
 }
