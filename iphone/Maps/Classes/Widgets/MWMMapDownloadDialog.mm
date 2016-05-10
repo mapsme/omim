@@ -173,6 +173,9 @@ using namespace storage;
   {
     [self removeFromSuperview];
   }
+
+  if (self.superview)
+    [self setNeedsLayout];
 }
 
 - (void)addToSuperview
