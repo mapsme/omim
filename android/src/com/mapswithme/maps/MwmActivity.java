@@ -100,7 +100,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
                                  MapFragment.MapRenderingListener,
                                  CustomNavigateUpListener,
                                  ChooseBookmarkCategoryFragment.Listener,
-                                 RoutingController.Container
+                                 RoutingController.Container,
+                                 LocationState.ModeChangeListener
 {
   public static final String EXTRA_TASK = "map_task";
   private static final String EXTRA_CONSUMED = "mwm.extra.intent.processed";
@@ -833,8 +834,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     mNavigationController.updateNorth(mLastCompassData.north);
   }
 
-  // Callback from native location state mode element processing.
-  @SuppressWarnings("unused")
+  @Override
   public void onMyPositionModeChangedCallback(final int newMode, final boolean routingActive)
   {
     mLocationPredictor.myPositionModeChanged(newMode);
@@ -853,7 +853,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     case LocationState.NOT_FOLLOW_NO_POSITION:
       if (sColdStart)
       {
-        LocationState.INSTANCE.switchToNextMode();
+        LocationState.INSTANCE.nativeSwitchToNextMode();
         break;
       }
 
@@ -882,7 +882,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
               @Override
               public void onClick(DialogInterface dialog, int which)
               {
-                LocationState.INSTANCE.switchToNextMode();
+                LocationState.INSTANCE.nativeSwitchToNextMode();
               }
             }).show();
       }
@@ -918,14 +918,20 @@ public class MwmActivity extends BaseMwmFragmentActivity
   protected void onResume()
   {
     super.onResume();
-
-    LocationState.INSTANCE.setMyPositionModeListener(this);
-    refreshLocationState();
-
+    LocationState.INSTANCE.nativeSetListener(this);
+    mMainMenu.getMyPositionButton().update(LocationState.INSTANCE.nativeGetMode());
+    resumeLocation();
     mSearchController.refreshToolbar();
-
     mMainMenu.onResume();
     mOnmapDownloader.onResume();
+  }
+
+  private void resumeLocation()
+  {
+    LocationHelper.INSTANCE.addLocationListener(this, true);
+    // Do not turn off the screen while displaying position
+    Utils.keepScreenOn(true, getWindow());
+    mLocationPredictor.resume();
   }
 
   @Override
@@ -934,39 +940,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
     // Explicitly destroy engine before activity recreation.
     mMapFragment.destroyEngine();
     super.recreate();
-  }
-
-  private void initShowcase()
-  {
-    NativeAppwallAd.AppwallAdListener listener = new NativeAppwallAd.AppwallAdListener()
-    {
-      @Override
-      public void onLoad(NativeAppwallAd nativeAppwallAd)
-      {
-        if (nativeAppwallAd.getBanners().isEmpty())
-        {
-          mMainMenu.setVisible(MainMenu.Item.SHOWCASE, false);
-          return;
-        }
-
-        final NativeAppwallBanner menuBanner = nativeAppwallAd.getBanners().get(0);
-        mMainMenu.setShowcaseText(menuBanner.getTitle());
-        mMainMenu.setVisible(MainMenu.Item.SHOWCASE, true);
-      }
-
-      @Override
-      public void onNoAd(String reason, NativeAppwallAd nativeAppwallAd)
-      {
-        mMainMenu.setVisible(MainMenu.Item.SHOWCASE, false);
-      }
-
-      @Override
-      public void onClick(NativeAppwallBanner nativeAppwallBanner, NativeAppwallAd nativeAppwallAd) {}
-
-      @Override
-      public void onDismissDialog(NativeAppwallAd nativeAppwallAd) {}
-    };
-    mMytargetHelper = new MytargetHelper(listener, this);
   }
 
   @Override
@@ -986,7 +959,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
             public boolean run(MwmActivity target)
             {
               if (LocationState.INSTANCE.isTurnedOn())
-                LocationState.INSTANCE.switchToNextMode();
+                LocationState.INSTANCE.nativeSwitchToNextMode();
               return false;
             }
           });
@@ -1038,20 +1011,12 @@ public class MwmActivity extends BaseMwmFragmentActivity
   @Override
   protected void onPause()
   {
-    LocationState.INSTANCE.removeMyPositionModeListener();
+    LocationState.INSTANCE.nativeRemoveListener();
     pauseLocation();
     TtsPlayer.INSTANCE.stop();
     LikesManager.INSTANCE.cancelDialogs();
     mOnmapDownloader.onPause();
     super.onPause();
-  }
-
-  private void resumeLocation()
-  {
-    LocationHelper.INSTANCE.addLocationListener(this, true);
-    // Do not turn off the screen while displaying position
-    Utils.keepScreenOn(true, getWindow());
-    mLocationPredictor.resume();
   }
 
   private void pauseLocation()
@@ -1062,15 +1027,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
     mLocationPredictor.pause();
   }
 
-  private void refreshLocationState()
-  {
-    int newMode = LocationState.INSTANCE.getLocationStateMode();
-    mMainMenu.getMyPositionButton().update(newMode);
-
-    if (LocationState.INSTANCE.isTurnedOn())
-      resumeLocation();
-  }
-
   @Override
   protected void onStart()
   {
@@ -1079,6 +1035,39 @@ public class MwmActivity extends BaseMwmFragmentActivity
     RoutingController.get().attach(this);
     if (!mIsFragmentContainer)
       mRoutingPlanInplaceController.setStartButton();
+  }
+
+  private void initShowcase()
+  {
+    NativeAppwallAd.AppwallAdListener listener = new NativeAppwallAd.AppwallAdListener()
+    {
+      @Override
+      public void onLoad(NativeAppwallAd nativeAppwallAd)
+      {
+        if (nativeAppwallAd.getBanners().isEmpty())
+        {
+          mMainMenu.setVisible(MainMenu.Item.SHOWCASE, false);
+          return;
+        }
+
+        final NativeAppwallBanner menuBanner = nativeAppwallAd.getBanners().get(0);
+        mMainMenu.setShowcaseText(menuBanner.getTitle());
+        mMainMenu.setVisible(MainMenu.Item.SHOWCASE, true);
+      }
+
+      @Override
+      public void onNoAd(String reason, NativeAppwallAd nativeAppwallAd)
+      {
+        mMainMenu.setVisible(MainMenu.Item.SHOWCASE, false);
+      }
+
+      @Override
+      public void onClick(NativeAppwallBanner nativeAppwallBanner, NativeAppwallAd nativeAppwallAd) {}
+
+      @Override
+      public void onDismissDialog(NativeAppwallAd nativeAppwallAd) {}
+    };
+    mMytargetHelper = new MytargetHelper(listener, this);
   }
 
   @Override
