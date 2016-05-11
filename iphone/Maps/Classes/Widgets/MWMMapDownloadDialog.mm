@@ -15,12 +15,18 @@
 
 #include "platform/local_country_file_utils.hpp"
 
+extern char const * kAutoDownloadEnabledKey;
+
 namespace
 {
 CGSize constexpr kInitialDialogSize = {200, 200};
 
 BOOL canAutoDownload(TCountryId const & countryId)
 {
+  bool autoDownloadEnabled = true;
+  (void)settings::Get(kAutoDownloadEnabledKey, autoDownloadEnabled);
+  if (!autoDownloadEnabled)
+    return NO;
   LocationManager * locationManager = MapsAppDelegate.theApp.locationManager;
   if (![locationManager lastLocationIsValid])
     return NO;
@@ -94,10 +100,16 @@ using namespace storage;
 
 - (void)configDialog
 {
+<<<<<<< HEAD
   auto & f = GetFramework();
   auto const & s = f.Storage();
   auto const & p = f.DownloadingPolicy();
 
+=======
+  auto & s = GetFramework().Storage();
+  auto & p = GetFramework().DownloadingPolicy();
+  
+>>>>>>> [downloader] Refactor logic for disable downloading on cellular network and retry download on lost connection
   NodeAttrs nodeAttrs;
   s.GetNodeAttrs(m_countryId, nodeAttrs);
 
@@ -167,6 +179,9 @@ using namespace storage;
   {
     [self removeFromSuperview];
   }
+
+  if (self.superview)
+    [self setNeedsLayout];
 }
 
 - (void)addToSuperview
