@@ -203,7 +203,7 @@ uk:Пам’ятні місця
 zh-Hant:旅遊景點
 pl:Osobliwości miasta
 pt:Vistas
-pt-BR:Turístico
+pt-BR:Turismo
 hu:Látnivaló
 th:สถานที่ท่องเที่ยว
 zh-Hans:景点
@@ -1886,7 +1886,7 @@ nl:4Toeristische informatie|3VVV|4informatie|toerisme
 zh-Hant:2觀光諮詢|旅遊中心|旅遊問題|資訊|旅遊資訊
 pl:4Informacja turystyczna|punkt informacji|osobliwości miasta
 pt:4Informações turísticas|4informação|vistas
-pt-BR:4Informações turísticas|4informação|vistas
+pt-BR:4Informações turísticas|4informação
 hu:4Túrista információ|4információ|látványosság|látnivaló
 th:4ข้อมูลการท่องเที่ยว|ข้อมูล|สถานที่ท่องเที่ยว
 zh-Hans:1旅游信息|信息|景点
@@ -2220,7 +2220,7 @@ uk:2Водоспад|пам’ятні місця
 zh-Hant:1瀑布|旅遊景點
 pl:2Wodospad|osobliwości miasta
 pt:2Cachoeira|vistas
-pt-BR:2Cachoeira|vistas
+pt-BR:2Cachoeira|vistas|turismo
 hu:2Vízesés|látnivaló
 th:2น้ำตก|สถานที่ท่องเที่ยว
 zh-Hans:2瀑布|景点
