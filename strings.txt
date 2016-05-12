@@ -1547,7 +1547,7 @@
     zh-Hant = 正在下載 %d%%, 輕觸以取消
     pl = Pobieranie %d%%. Naciśnij, aby anulować.
     pt = A descarregar %d%%, toque para cancelar
-    pt-BR = A descarregar %d%%, toque para cancelar
+    pt-BR = Baixando %d%%, toque para cancelar
     hu = %d%% letöltése, elvetéshez érintse meg
     th = กำลังดาวน์โหลด %d%%, แตะเพื่อยกเลิก
     zh-Hans = 正在下载 %d%%，触摸以取消
@@ -1578,7 +1578,7 @@
     zh-Hant = 已下載的 (%@)，輕觸以刪除
     pl = Pobrano (%@). Naciśnij, aby usunąć.
     pt = Descarregado (%@), toque para eliminar
-    pt-BR = Descarregado (%@), toque para eliminar
+    pt-BR = Baixado (%@), toque para apagar
     hu = Letöltve (%@), érintse meg törléshez
     th = ดาวน์โหลดแล้ว (%@), แตะเพื่อลบ
     zh-Hans = 下载了(%@),轻触删除
@@ -1609,7 +1609,7 @@
     zh-Hant = 連線設定
     pl = Ustawienia połączenia
     pt = Definições de Ligação
-    pt-BR = Definições de Ligação
+    pt-BR = Configurações de Conexão
     hu = Kapcsolat beállítások
     th = การตั้งค่าการเชื่อมต่อ
     zh-Hans = 连接设置
@@ -1639,7 +1639,7 @@
     zh-Hant = 下載 %@
     pl = Pobierz %@
     pt = Descarga %@
-    pt-BR = Descarga %@
+    pt-BR = Baixar %@
     hu = Letöltés %@
     th = ดาวน์โหลด %@
     zh-Hans = 下载%@
@@ -1701,7 +1701,7 @@
     zh-Hant = 需要 OpenGL 硬體加速功能的支援。但很不幸的，您的裝置並不支援此功能！
     pl = OpenGL wymaga odpowiedniego urządzenia. Niestety twoje urządzenie nie wspiera tej technologii.
     pt = É necessário um OpenGL acelerado por hardware. Infelizmente o seu dispositivo não é suportado.
-    pt-BR = É necessário um OpenGL acelerado por hardware. Infelizmente o seu dispositivo não é suportado.
+    pt-BR = É necessário OpenGL acelerado por hardware. Infelizmente o seu dispositivo não é suportado.
     hu = Hardware-s gyorsítású OpenGL szükséges. Sajnos az Ön eszköze nem támogatott.
     th = จำเป็นต้องใช้ฮาร์ดแวร์ที่เพิ่มความเร็ว OpenGL โชคไม่ดีที่อุปกรณ์ของคุณไม่รองรับ
     zh-Hans = 硬件加速的 OpenGL 是必需的。遗憾的是您 的设备不支持。
@@ -1732,7 +1732,6 @@
     zh-Hant = 下載
     pl = Pobierz
     pt = Descarga
-    pt-BR = Descarga
     hu = Letöltés
     th = ดาวน์โหลด
     zh-Hans = 下载
@@ -1763,7 +1762,7 @@
     zh-Hant = SD 卡/USB 無法有效儲存下載的地圖
     pl = Karta SD/Pamięć USB z pobranymi mapami nie jest dostępna
     pt = Não está disponível um cartão SD/armazenamento USB com os mapas descarregados
-    pt-BR = Não está disponível um cartão SD/armazenamento USB com os mapas descarregados
+    pt-BR = O cartão SD/armazenamento USB com os mapas transferidos não está disponível
     hu = Nem található téképeket tartalmazó SD kártya / USB tároló
     th = ไม่สามารถใช้การ์ด SD /พื้นที่จัดเก็บ USB ที่มีดาวน์โหลดแผนที่ได้
     zh-Hans = 缺少包含已下载地图的 SD 卡/ USB 储存设备
@@ -1825,7 +1824,7 @@
     zh-Hant = 如要繼續使用，請先釋放一些 SD 卡/ USB 儲存空間
     pl = Proszę zwolnić trochę pamięci na karcie SD/pamięci USB, aby korzystać z aplikacji
     pt = Por favor liberte primeiro algum espaço no cartão SD/armazenamento USB para utilizar a app
-    pt-BR = Por favor liberte primeiro algum espaço no cartão SD/armazenamento USB para utilizar a app
+    pt-BR = Por favor libere primeiro algum espaço no cartão SD/armazenamento USB para utilizar o app
     hu = Kérjük szabadítson fel helyet az SD kártyán / USB tárolón az alkalmazás használatához!
     th = โปรดเพิ่มพื้นที่บางส่วนบนการ์ด SD /พื้นที่จัดเก็บ USB ก่อนเพื่อใช้แอป
     zh-Hans = 请在 SD 卡/ USB 储存设备上释放一些空间以 使用此应用
@@ -1856,7 +1855,7 @@
     zh-Hant = 沒有足夠的記憶體以啟動應用程式
     pl = Za mało pamięci by uruchomić aplikację
     pt = Não há memória suficiente para executar a app
-    pt-BR = Não há memória suficiente para executar a app
+    pt-BR = Não há memória suficiente para executar o app
     hu = Nincs elegendő memória az alkalmazás futtatásához
     th = มีหน่วยความจำไม่เพียงพอสำหรับการเปิดแอป
     zh-Hans = 没有足够的内存来启动应用程序
@@ -1887,7 +1886,7 @@
     zh-Hant = 請先釋放 %1$@ 系統空間以下載 %2$@
     pl = Proszę zwolnić %1$@ na swoim urządzeniu zanim rozpoczniesz pobieranie %2$@
     pt = Por favor liberte primeiro %1$@ no seu dispositivo para descarregar %2$@
-    pt-BR = Por favor liberte primeiro %1$@ no seu dispositivo para descarregar %2$@
+    pt-BR = Por favor libere primeiro %1$@ no seu dispositivo para descarregar %2$@
     hu = Kérjük szabadítson fel %1$@-t az eszközön %2$@ letöltéséhez!
     th = โปรดเพิ่ม %1$@ บนอุปกรณ์ของคุณก่อนเพื่อดาวน์โหลด %2$@
     zh-Hans = 请在您的设备上释放%1$@ 以便于下载%2$@
@@ -1918,7 +1917,7 @@
     zh-Hant = 在您開始之前，先讓我們下載世界地圖到您的裝置中以便瀏覽。\n這需要資料的 %@。
     pl = Zanim rozpoczniesz pozwól nam na pobranie ogólnej mapy świata na swoje urządzenie.\nWymaga to %@ danych.
     pt = Antes de começar permita-nos que descarreguemos um mapa mundial geral para o seu dispositivo.\nÉ necessário %@ de dados.
-    pt-BR = Antes de começar permita-nos que descarreguemos um mapa mundial geral para o seu dispositivo.\nÉ necessário %@ de dados.
+    pt-BR = Antes de começar vamos baixar um mapa mundial geral para o seu dispositivo.\nÉ necessário %@ de dados.
     hu = Első használat előtt letöltjük a világtérképet.\n%@ tárolóhely szükséges.
     th = ก่อนที่คุณจะเริ่มต้น โปรดให้เราดาวน์โหลดแผนที่โลกลงในอุปกรณ์ของคุณ\nจำเป็นต้องใช้ %@ ของข้อมูล
     zh-Hans = 在您开始前请让我们下载通用世界地 图至您的设备中。\n它需要%@的 数据。
@@ -1949,7 +1948,7 @@
     zh-Hant = 取得目前所在位置
     pl = Otrzymywanie informacji o aktualnej pozycji
     pt = A obter a posição atual
-    pt-BR = A obter a posição atual
+    pt-BR = Obtendo posição atual
     hu = Aktuális pozíció meghatározása…
     th = กำลังรับตำแหน่งปัจจุบัน
     zh-Hans = 获取当前位置
@@ -2011,7 +2010,7 @@
     zh-Hant = 正在下載 %@。您現在 可以繼續使用地圖了
     pl = Pobieranie %@. Możesz teraz\notworzyć mapę.
     pt = A descarregar %@. Pode agora\ncontinuar para o mapa.
-    pt-BR = A descarregar %@. Pode agora\ncontinuar para o mapa.
+    pt-BR = Baixando %@. Pode agora\ncontinuar para o mapa.
     hu = %@ letöltése. Mos továbbléphet\na térképhez.
     th = กำลังดาวน์โหลด %@ ตอนนี้คุณสามารถ\nดำเนินการต่อไปยังแผนที่
     zh-Hans = 下载 %@。您现在可\n前往地图。
@@ -2042,7 +2041,7 @@
     zh-Hant = 下載 %@?
     pl = Pobrać %@?
     pt = Descarregar %@?
-    pt-BR = Descarregar %@?
+    pt-BR = Baixar %@?
     hu = Letöltsem %@-t?
     th = ดาวน์โหลด %@?
     zh-Hans = 下载 %@?
@@ -2105,7 +2104,7 @@
     zh-Hant = 您可以下載目前所在位置的地圖。
     pl = Możesz pobrać mapę terenu\nwokół twojej aktualnej pozycji.
     pt = Pode descarregar o mapa\nda sua posição atual.
-    pt-BR = Pode descarregar o mapa\nda sua posição atual.
+    pt-BR = É possível baixar o mapa\nda sua posição atual.
     hu = Letöltheti az aktuális\npozícióhoz tartozó térképet.
     th = คุณสามารถดาวน์โหลดแผนที่\nของตำแหน่งที่ตั้งปัจจุบันของคุณ
     zh-Hans = 您可下载您目前位置的地图。
@@ -2137,7 +2136,7 @@
     zh-Hant = 您可以更新目前所在位置的地圖。
     pl = Możesz zaktualizować mapę terenu\nwokół twojej aktualnej pozycji.
     pt = Pode atualizar o mapa\nda sua posição atual.
-    pt-BR = Pode atualizar o mapa\nda sua posição atual.
+    pt-BR = É possível atualizar o mapa\nda sua posição atual.
     hu = Frissítheti az aktuális pozícióhoz\ntartozó térképet.
     th = คุณสามารถอัปเดตแผนที่\nของตำแหน่งที่ตั้งปัจจุบันของคุณ
     zh-Hans = 您可更新您目前位置的地图。
@@ -2264,7 +2263,7 @@
     zh-Hant = 下載 (%@), 輕觸以更新或刪除
     pl = Pobrano (%@). Naciśnij, aby zaktualizować lub usunąć.
     pt = Descarregado (%@), toque para atualizar ou eliminar
-    pt-BR = Descarregado (%@), toque para atualizar ou eliminar
+    pt-BR = Baixado (%@), toque para atualizar ou apagar
     hu = Letöltve (%@), érintse meg frissítéshez vagy törléshez
     th = ดาวน์โหลด (%@) แล้ว, แตะเพื่ออัปเดตหรือลบ
     zh-Hans = 下载 (%@),轻触更新或删除
@@ -2393,7 +2392,7 @@
     zh-Hant = 你再也不需要 MAPS.ME Lite 了，所以您可以移除它！
     pl = Nie potrzebujesz już więcej MAPS.ME Lite, więc możesz je usunąć.
     pt = Não precisa mais do MAPS.ME Lite, podendo portanto desinstalá-la.
-    pt-BR = Não precisa mais do MAPS.ME Lite, podendo portanto desinstalá-la.
+    pt-BR = Não precisa mais do MAPS.ME Lite, podendo portanto desinstalá-lo.
     hu = Már nincs szüksége a MAPS.ME lite alkalmazásra, nyugodtan letörölheti.
     th = คุณไม่จำเป็นต้องใช้ MAPS.ME ไลท์ (Lite) อีกต่อไปแล้ว ดังนั้นคุณสามารถถอนการติดตั้ง
     zh-Hans = 您不再需要MAPS.ME Lite ，所以，您可以卸载它。
@@ -2426,7 +2425,7 @@
     zh-Hant = %@ 已成功下載
     pl = %@ pobrano pomyślnie
     pt = %@ descarregado com sucesso
-    pt-BR = %@ descarregado com sucesso
+    pt-BR = %@ baixado com sucesso
     hu = %@ letöltése sikeres
     th = %@ ได้รับการดาวน์โหลดสำเร็จแล้ว
     zh-Hans = %@已成功下载
@@ -2459,7 +2458,7 @@
     zh-Hant = %@ 下載失敗
     pl = %@ pobieranie nie powiodło się
     pt = %@ descarga falhou
-    pt-BR = %@ descarga falhou
+    pt-BR = O download de %@ falhou
     hu = %@ letöltése sikertelen
     th = การดาวน์โหลด %@ ล้มเหลว
     zh-Hans = %@下载失败
@@ -2537,6 +2536,8 @@
     ro = Adăugare la „Marcaje”
     nb = Legg til i bokmerker
     fi = Lisää Kirjanmerkkeihin
+    pt = Adicionar aos favoritos
+    pt-BR = Adicionar aos favoritos
 
   [bookmark_color]
     en = Bookmark Color
@@ -2720,7 +2721,7 @@
     zh-Hant = 我的地點
     pl = Moje miejsca
     pt = Os meus locais
-    pt-BR = Os meus locais
+    pt-BR = Meus Locais
     hu = Saját helyeim
     th = สถานที่ของฉัน
     zh-Hans = 我的位置
@@ -2886,7 +2887,7 @@
     zh-Hant = 您還沒有任何書籤。\n點擊地圖上的任何地方以新增書籤。\n其他來源的書籤也可導入在 MAPS.ME 中顯示。從電子郵件、Dropbox 或網站連結開啟有著已儲存書籤的 KML/KMZ 檔案。
     pl = Nie masz jeszcze żadnych zakładek.\nDotknij dowolnego miejsca na mapie, aby dodać zakładkę.\nZakładki z innych źródeł mogą również być importowane i wyświetlane w aplikacji MAPS.ME. Otwieraj pliki KML/KMZ z zapisanymi szpilkami poczty, Dropboxa lub linków internetowych.
     pt = Ainda não tem marcadores.\nToque em qualquer lugar no mapa para adicionar um marcador.\nOs marcadores de outras fontes também podem ser importados e exibidos na aplicação MAPS.ME. Abrir ficheiro KML/KMZ com pinos guardados a partir do mail, Dropbox ou ligação web.
-    pt-BR = Ainda não tem marcadores.\nToque em qualquer lugar no mapa para adicionar um marcador.\nOs marcadores de outras fontes também podem ser 
+    pt-BR = Você ainda não tem marcadores.\nToque em qualquer lugar no mapa para adicionar um marcador.\nOs marcadores de outras fontes também podem ser importados e exibidos na aplicação MAPS.ME. Abrir arqiovp KML/KMZ com pinos guardados a partir do email, Dropbox ou ligação web.
     hu = Nincsenek megjelölt helyeid.\nHely megjelöléséhez koppints a térkép bármelyik pontjára.\nSzintén más forrásokból származó könyvjelzőket is beolvashat a MAPS.ME programba. Nyisson meg KML/KMZ fájlt egy levélből, Dropbox-ból vagy internetről.
     th = คุณยังไม่มีบุ๊กมาร์ก\nแตะที่ใด ๆ บนแผนที่เพื่อเพิ่มบุ๊กมาร์ก\nสามารถนำเข้าบุ๊กมาร์กจากแหล่งอื่น ๆ และแสดงบน MAPS.ME เปิดไฟล์ KML/KMZ ด้วยหมุดที่บันทึกไว้จากอีเมล ดรอปบ็อกซ์ หรือเว็บลิงก์
     zh-Hans = 您还没有书签。\n在地图任何位置轻触以添 加一个书签。\n其他来源的书签也可载入并 显示在 MAPS.ME 中。从邮件、 Dropbox 或 weblink 中打开存储有图钉的 KML/KMZ 文 件。
@@ -2919,7 +2920,7 @@
     zh-Hant = 其他來源的書籤也可導入在 MAPS.ME 中顯示。從電子郵件、Dropbox 或網站連結開啟有著已儲存書籤的 KML/KMZ 檔案。
     pl = Zakładki z innych źródeł mogą być importowane i wyświetlane w aplikacji MAPS.ME. Otwieraj pliki KML/KMZ z zapisanymi szpilkami poczty, Dropboxa lub linków internetowych.
     pt = Os marcadores de outras fontes podem ser importados e exibidos na aplicação MAPS.ME. Abrir ficheiro KML/KMZ com pinos guardados a partir do mail, Dropbox ou ligação web.
-    pt-BR = Os marcadores de outras fontes podem ser importados e exibidos na aplicação MAPS.ME. Abrir ficheiro KML/KMZ com pinos guardados a partir do 
+    pt-BR = Os marcadores de outras fontes podem ser importados e exibidos na aplicação MAPS.ME. Abrir arquivo KML/KMZ com pinos guardados a partir do email, Dropbox ou ligação web.
     hu = Más forrásokból származó könyvjelzőket is beolvashat a MAPS.ME programba. Nyisson meg KML/KMZ fájlt egy levélből, Dropbox-ból vagy internetről.
     th = สามารถนำเข้าบุ๊กมาร์กจากแหล่งอื่น ๆ และแสดงบน MAPS.ME เปิดไฟล์ KML/KMZ ด้วยหมุดที่บันทึกไว้จากอีเมล ดรอปบ็อกซ์ หรือเว็บลิงก์
     zh-Hans = 其他来源的书签也可载入并显示在 MAPS.ME中。从邮件、Dropbox 或 weblink 中打开存储有图钉的 KML/KMZ 文件。
@@ -3018,7 +3019,7 @@
     zh-Hant = 請選擇下載地圖後要放的位置
     pl = Wybierz lokalizację, w której mają być zapisywane pobierane mapy
     pt = Selecione o local para onde os mapas devem ser descarregados
-    pt-BR = Selecione o local para onde os mapas devem ser descarregados
+    pt-BR = Selecione o local para onde os mapas devem ser baixados
     hu = Válassza ki, hogy hova töltsük le a térképeket
     th = เลือกสถานที่ที่ต้องการดาวน์โหลดใช้แผนที่
     zh-Hans = 选取地图应该下载的位置
@@ -3149,7 +3150,7 @@
     zh-Hant = GPS 目前是關閉的，請在系統中設定為啟用
     pl = GPS jest wyłączony. Proszę włączyć go w ustawieniach.
     pt = O GPS está desativado. Por favor ative-o nas Definições.
-    pt-BR = O GPS está desativado. Por favor ative-o nas Definições.
+    pt-BR = O GPS está desativado. Por favor ative-o nas Configurações.
     hu = GPS kikapcsolva. Kérjük kapcsolja be a Beállítások között.
     th = มีการปิดใช้งาน GPS โปรดเปิดใช้งานในการตั้งค่า
     zh-Hans = GPS 已禁用。请在设置中启用它。
@@ -3215,7 +3216,7 @@
     zh-Hant = 請選擇公里或英哩
     pl = Wybierz pomiędzy milami, a kilometrami
     pt = Escolha entre milhas e quilómetros
-    pt-BR = Escolha entre milhas e quilómetros
+    pt-BR = Escolha entre milhas e quilômetros
     hu = Válasszon kilométer és mérföld között
     th = เลือกระหว่างไมล์และกิโลเมตร
     zh-Hans = 选择英里或公里
@@ -3304,7 +3305,7 @@
     zh-Hant = 畫面中
     pl = Na ekranie
     pt = No ecrã
-    pt-BR = No ecrã
+    pt-BR = Na tela
     hu = A képernyőn
     th = บนหน้าจอ
     zh-Hans = 在屏幕上
@@ -3531,7 +3532,7 @@
     zh-Hant = 旅遊景點
     pl = Osobliwości miasta
     pt = Vistas
-    pt-BR = Vistas
+    pt-BR = Turismo
     hu = Látnivaló
     th = สถานที่ท่องเที่ยว
     zh-Hans = 景点
@@ -3597,7 +3598,7 @@
     zh-Hant = 自動櫃員機
     pl = Bankomat
     pt = Multibanco
-    pt-BR = Multibanco
+    pt-BR = Caixa eletrônico
     hu = Pénzautomata
     th = เอทีเอ็ม
     zh-Hans = 自动取款机
@@ -3733,7 +3734,7 @@
     zh-Hant = 廁所
     pl = Toaleta
     pt = WC
-    pt-BR = WC
+    pt-BR = Banheiros
     hu = Mosdó
     th = ห้องน้ำ
     zh-Hans = 厕所
@@ -3897,7 +3898,7 @@
     zh-Hant = 以電子郵件分享
     pl = Udostępnij przez email
     pt = Partilhar por e-mail
-    pt-BR = Partilhar por e-mail
+    pt-BR = Compartilhar por e-mail
     hu = Megosztás email-en
     th = แชร์จากอีเมล
     zh-Hans = 邮件分享
@@ -3930,7 +3931,7 @@
     zh-Hant = 已分享 MAPS.ME 書籤
     pl = Udostępniono ci zakładkę z MAPS.ME
     pt = Os favoritos do MAPS.ME foram partilhados consigo
-    pt-BR = Os favoritos do MAPS.ME foram partilhados consigo
+    pt-BR = Favoritos do MAPS.ME compartilhados
     hu = Egy MAPS.ME könyvjelzőt osztottak meg Önnel
     th = แชร์บุ๊กมาร์กของ MAPS.ME แล้ว
     zh-Hans = MAPS.ME 书签已与您共享
@@ -3963,7 +3964,7 @@
     zh-Hant = 哈囉！\n\n這是我的 MAPS.ME 離線地圖中所夾帶的「%@.kmz」書籤檔案。若您已安裝 MAPS.ME 的話請開啟它，否則請先從 http://maps.me/get?kmz 這個連結下載 iOS 或 Android 平台的應用程式。\n\n祝您使用MAPS.ME愉快!
     pl = Cześć,\n\nOto moje zakładki pochodzące z aplikacji MAPS.ME wraz z załączonymi mapami offline w pliku "%@.kmz". Proszę otwórz to jeśli posiadasz zainstalowaną aplikację MAPS.ME. Jeśli nie, najpierw pobierz ją na swoje urządzenie z systemem iOS lub Android pod tym linkiem: http://maps.me/get?kmz\n\nBaw się dobrze z MAPS.ME!
     pt = Olá,\n\nAqui estão os meus favoritos dos mapas offline do MAPS.ME, anexados no ficheiro "%@.kmz". Por favor abra-os se já tiver instalado o MAPS.ME. Caso contrário, descarregue primeiro a app para o seu dispositivo iOS ou Android a partir desta hiperligação: http://maps.me/get?kmz\n\nDisfrute do MAPS.ME!
-    pt-BR = Olá,\n\nAqui estão os meus favoritos dos mapas offline do MAPS.ME, anexados no ficheiro "%@.kmz". Por favor abra-os se já tiver instalado o 
+    pt-BR = Olá,\n\nAqui estão os meus favoritos dos mapas offline do MAPS.ME, anexados no arquivo "%@.kmz". Por favor abra-os se já tiver instalado o MAPS.ME. Caso contrário, baixe primeiro o app para o seu dispositivo iOS ou Android a partir deste link: http://maps.me/get?kmz\n\nAproveite o MAPS.ME!
     hu = Üdvözlöm!\n\nA mellékelt "%@.kmz" fájl tartalmazza a MAPS.ME könyvjelzőimet. Kérem nyissa meg, ha a MAPS.ME már telepítve van. Ha még nincs, akkor innen töltheti le: http://maps.me/get?kmz\n\nSok sikert a program használatához!
     th = สวัสดี n\nสิ่งที่แนบ "%@.kmz" คือบุ๊กมาร์กของฉันจากแผนที่ MAPS.ME แบบออฟไลฟ์ โปรดเปิดมันหากคุณได้ติดตั้ง MAPS.ME หากยังไม่ได้ดาวน์โหลดแอปสำหรับอุปกรณ์ iOS และ Android ของคุณ โปรดทำตามลิงก์นี้: http://maps.me/get?kmz\n\nสนุกไปกับการเดินทางไปกับ MAPS.ME!
     zh-Hans = 欢迎,\n\n附件是 MAPS.ME 离线地图中我 的书签。如果您已安装 MAPS.ME, 请打开它。若没有,请为您的 iOS 或安卓设 备下载此应用。下载链接: http://maps.me/get?kmz\n\n享 受 和 MAPS.ME 的旅行吧!
@@ -3996,7 +3997,7 @@
     zh-Hant = 正在載入書籤…
     pl = Wczytywanie zakładek
     pt = A carregar favoritos
-    pt-BR = A carregar favoritos
+    pt-BR = Carregando favoritos
     hu = Könyvjelzők letöltése
     th = กำลังโหลดบุ๊กมาร์ก
     zh-Hans = 加载书签
