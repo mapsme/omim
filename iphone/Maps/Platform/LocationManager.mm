@@ -51,8 +51,8 @@ map<GeoMode, GeoModeSettings> const kGeoSettings{
                    .battery = kCLLocationAccuracyBest}}},
     {GeoMode::NotInPosition,
      {.distanceFilter = 15,
-      .accuracy = {.charging = kCLLocationAccuracyNearestTenMeters,
-                   .battery = kCLLocationAccuracyNearestTenMeters}}},
+      .accuracy = {.charging = kCLLocationAccuracyBestForNavigation,
+                   .battery = kCLLocationAccuracyBest}}},
     {GeoMode::FollowAndRotate,
      {.distanceFilter = 5,
       .accuracy = {.charging = kCLLocationAccuracyBestForNavigation,
@@ -166,7 +166,7 @@ map<GeoMode, GeoModeSettings> const kGeoSettings{
       }
     }
     else
-      [self observer:observer onLocationError:location::EDenied];
+      [self observer:observer onLocationError:location::EGPSIsOff];
   }
   else
   {
