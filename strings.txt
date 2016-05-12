@@ -4030,7 +4030,7 @@
     zh-Hant = 書籤上傳成功！ 您可以在地圖上或是書籤管理畫面中找到書籤。
     pl = Zakładki wczytane pomyślnie! Możesz znaleźć je na mapie lub w menedżerze zakładek.
     pt = Favoritos carregados com sucesso! Pode encontrá-los no mapa ou no ecrã de gestão dos favoritos.
-    pt-BR = Favoritos carregados com sucesso! Pode encontrá-los no mapa ou no ecrã de gestão dos favoritos.
+    pt-BR = Favoritos carregados com sucesso! Pode encontrá-los no mapa ou na tela de gestão dos favoritos.
     hu = Könyvjelzők letöltése sikeres! Megtalálja őket a térképen vagy a Könyvjelzők kezelése menüben.
     th = โหลดบุ๊กมาร์กสำเร็จแล้ว! คุณสามารถหาพวกมันได้บนแผนที่หรือบนหน้าจอโปรแกรมจัดการบุ๊กมาร์ก
     zh-Hans = 书签加载成功!您可以在地图或书签管理窗 口中找到它们。
@@ -4063,7 +4063,7 @@
     zh-Hant = 書籤上傳失敗。 檔案可能有毀損或是不完全。
     pl = Przesyłanie zakładek nie powiodło się. Plik może być uszkodzony lub posiadać defekty.
     pt = Falha no envio dos favoritos. O ficheiro pode estar corrompido ou com defeito.
-    pt-BR = Falha no envio dos favoritos. O ficheiro pode estar corrompido ou com defeito.
+    pt-BR = Falha no envio dos favoritos. O arquivo pode estar corrompido ou com defeito.
     hu = Könyvjelzők feltöltése sikertelen. A fájl sérült lehet.
     th = การอัปโหลดล้มเหลว ไฟล์อาจเสียหายหรือมีข้อบกพร่อง
     zh-Hans = 书签上传失败。该文件可能已损坏或有缺陷。
@@ -4158,7 +4158,7 @@
     zh-Hant = 下載您目前所在位置的國家 地圖 (%@)
     pl = Pobierz mapę kraju, w którym aktualnie przebywasz (%@)
     pt = Descarregue o país da sua localização atual (%@)
-    pt-BR = Descarregue o país da sua localização atual (%@)
+    pt-BR = Baixe o país da sua localização atual (%@)
     hu = Töltse le az aktuális helyzet országát (%@)
     th = ดาวน์โหลด (%@) ประเทศของตำแหน่งที่ตั้งปัจจุบันของคุณ
     zh-Hans = 下载您所在位置的国家 (%@)
@@ -4191,7 +4191,7 @@
     zh-Hant = 下載您正在搜尋的國家 地圖 (%@)
     pl = Pobierz mapę kraju, którego aktualnie poszukujesz (%@)
     pt = Descarregue o país em que está a fazer a procura (%@)
-    pt-BR = Descarregue o país em que está a fazer a procura (%@)
+    pt-BR = Baixe o país que você está buscando (%@)
     hu = Töltse le a keresés országát (%@)
     th = ดาวน์โหลดประเทศ (%@) ที่คุณกำลังค้นหา
     zh-Hans = 下载您所搜索的国家 (%@)
@@ -4224,7 +4224,7 @@
     zh-Hant = 很抱歉，地圖儲存設定目前已停用。
     pl = Przepraszamy, ustawienia pamięci mapy są aktualnie wyłączone.
     pt = Lamentamos, as definições do Map Storage estão atualmente desativadas.
-    pt-BR = Lamentamos, as definições do Map Storage estão atualmente desativadas.
+    pt-BR = Lamentamos, as configurações do Map Storage estão atualmente desativadas.
     hu = Sajnáljuk, a térképek tárolása jelenleg ki van kapcsolva.
     th = ขออภัย ไม่มีการเปิดใช้งานการตั้งค่าพื้นที่จัดเก็บแผนที่ในปัจจุบัน
     zh-Hans = 抱歉,地图存储设置目前被禁用
@@ -4257,7 +4257,7 @@
     zh-Hant = 國家地圖正在進行下載
     pl = Pobieranie mapy kraju jest w toku.
     pt = A descarga do país está atualmente em progresso.
-    pt-BR = A descarga do país está atualmente em progresso.
+    pt-BR = O download do país está atualmente em progresso.
     hu = Országletöltés folyamatban.
     th = กำลังดำเนินการดาวน์โหลดประเทศในตอนนี้
     zh-Hans = 国家下载进行中。
@@ -4290,7 +4290,7 @@
     zh-Hant = 祝您使用 MAPS.ME 愉快！ 方便的話，請到 App Store 幫我們評分或寫寫評論。在這短短的時間當中卻能夠真正的協助我們改善，再次感謝您的支持！
     pl = Mamy nadzieję, że podoba ci się aplikacja MAPS.ME! Jeśli tak to proszę oceń ją lub napisz recenzję w AppStore. To zajmie ci mniej niż minutę, a bardzo nam pomoże. Dziękujemy za wsparcie!
     pt = Esperamos que esteja a disfrutar da utilização do MAPS.ME! Se assim for, por favor classifique ou dê a sua opinião sobre a app na App Store. Vai demorar menos de um minuto mas pode mesmo ajudar-nos. Obrigado pelo seu apoio!
-    pt-BR = Esperamos que esteja a disfrutar da utilização do MAPS.ME! Se assim for, por favor classifique ou dê a sua opinião sobre a app na App Store. 
+    pt-BR = Esperamos que esteja a disfrutar da utilização do MAPS.ME! Se assim for, por favor classifique ou dê a sua opinião sobre a app na App Store. Vai demorar menos de um minuto mas pode mesmo ajudar-nos. Obrigado pelo seu apoio!
     hu = Reméljük élvezi a MAPS.ME használatát. Ha igen, kérjük írjon ajánlást az App Store-ban! Kevesebb mint egy perc, és valóban segít nekünk. Köszönjük!
     th = หวังว่าคุณจะสนุกกับการใช้ MAPS.ME! หากเป็นเช่นนั้น โปรดให้คะแนนหรือวิจารณ์แอปได้ที่แอปสโตร์ (App Store) มันจะใช้เวลาไม่เกินหนึ่งนาทีแต่สามารถช่วยเหลือเราได้ ขอบคุณสำหรับการสนับสนุนของคุณ!
     zh-Hans = 希望您喜欢使用 MAPS.ME! 若确实喜欢, 请在应用商店对此应用进行打分和点评。这 花不了一分钟但却可以实在地帮助我们。感 谢您的支持!
@@ -4354,7 +4354,7 @@
     es = Ve mi alfiler en mapa. Abre %1$@ o %2$@
     pl = Mój znacznik w MAPS.ME %1$@ i %2$@
     pt = Veja o meu marcador no mapa do MAPS.ME. Abra a hiperligação: %1$@ ou %2$@
-    pt-BR = Veja o meu marcador no mapa do MAPS.ME. Abra a hiperligação: %1$@ ou %2$@
+    pt-BR = Veja o meu marcador no mapa do MAPS.ME. Abra o link: %1$@ ou %2$@
     hu = Nézd meg a MAPS.ME jelzőt! %1$@ vagy %2$@ A program letöltése: http://maps.me/get
     th = เฮ้ ตรวจสอบหมุดของฉันที่ MAPS.ME! %1$@ หรือ %2$@
 	zh-Hant = 嘿，看看我在 MAPS.ME 標記的圖釘吧！ %1$@ 或%2$@ 沒安裝離線地圖？在此下載: http://maps.me/get
@@ -4386,7 +4386,7 @@
     es = Mira dónde estoy. Abre %1$@ o %2$@
     pl = Zobacz gdzie jestem. Link %1$@ lub %2$@
     pt = Veja onde estou agora. Abra a hiperligação: %1$@ ou %2$@
-    pt-BR = Veja onde estou agora. Abra a hiperligação: %1$@ ou %2$@
+    pt-BR = Veja onde estou agora. Abra o link: %1$@ ou %2$@
     hu = Nézd meg a MAPS.ME helyzetemet! %1$@ vagy %2$@ A program letöltése: http://maps.me/get
     th = เฮ้อ ตรวจสอบตำแหน่งที่ตั้งปัจจุบันของฉันที่ MAPS.ME! %1$@ หรือ %2$@ or %2$@ ไม่มีการติดตั้งแผนที่แบบออฟไลน์? ดาวน์โหลดที่นี่: http://maps.me/get
 	zh-Hant = 嘿，在 MAPS.ME 查看我的目前位置吧！ %1$@ 或%2$@ 沒安裝離線地圖？在此下載: http://maps.me/get
@@ -4452,7 +4452,7 @@
     de = Hi,\n\nIch habe %1$@ auf MAPS.ME, der Offline-Weltkarte, gepinnt. Klicke auf diesen Link %2$@ oder diesen %3$@, um den Ort auf der Karte zu sehen.\n\nVielen Dank.
     pl = Cześć,\n\nDodałem znacznik w: %1$@ w aplikacji MAPS.ME, mapach offline całego świata. Naciśnij ten link %2$@ lub ten %3$@ by zobaczyć to miejsce na mapie.\n\nDziękuję.
     pt = Olá,\n\nFixei:%1$@ na MAPS.ME, mapas offline mundiais. Clique nesta ligação %2$@ ou nesta %3$@ para ver o local no mapa.\n\nObrigado.
-    pt-BR = Olá,\n\nFixei:%1$@ na MAPS.ME, mapas offline mundiais. Clique nesta ligação %2$@ ou nesta %3$@ para ver o local no mapa.\n\nObrigado.
+    pt-BR = Olá,\n\nFixei:%1$@ na MAPS.ME, mapas offline mundiais. Clique neste link %2$@ ou neste %3$@ para ver o local no mapa.\n\nObrigado.
     hu = Üdvözlöm,\n\nleszúrtam egy MAPS.ME jelzőt: %1$@. Kattintson erre a hivatkozásra %2$@ vagy erre %3$@ hogy lássa a helyet a térképen.\n\nKöszönöm.
     th = หวัดดี\n\nฉันปักหมุด: %1$@ ที่ MAPS.ME, โลกแผนที่ออฟไลน์ คลิกลิงก์นี้ %2$@ หรือลิงก์นี้ %3$@ เพื่อดูสถานที่บนแผนที่\n\nขอบคุณ
 	zh-Hant = 嗨，\n\n我在 MAPS.ME 世界離線地圖上標記了%1$@。點擊此連結 %2$@ 或此連結 %3$@ 來察看地圖上的位置。\n\n謝謝。
@@ -4485,7 +4485,7 @@
     de = Sieh dir meinen aktuellen Standort auf der MAPS.ME-Karte an
     pl = Zobacz moją aktualną lokalizację na mapie przy użyciu MAPS.ME
     pt = Veja a minha localização atual em MAPS.ME map
-    pt-BR = Veja a minha localização atual em MAPS.ME map
+    pt-BR = Veja a minha localização atual no mapa MAPS.ME!
     hu = Nézze meg a helyzetemet a MAPS.ME térképen!
 	zh-Hant = 嗨，到 MAPS.ME 地圖查看我的目前位置！
     zh-Hans = 嗨，到 MAPS.ME 查看我的当前位置！
@@ -4517,7 +4517,7 @@
     de = Hi,\n\nich bin gerade hier: %1$@ . Klicke den Link %2$@ oder %3$@ , um den Ort auf der Karte anzuzeigen.\n\nVielen Dank.
     pl = Cześć,\n\nJestem teraz tutaj: %1$@. Naciśnij na ten link %2$@ lub ten %3$@, aby zobaczyć to miejsce na mapie.\n\nDziękuję.
     pt = Olá,\n\nEstou aqui agora: %1$@. Clique nesta ligação %2$@ ou nesta %3$@ para ver o local no mapa.\n\nObrigado.
-    pt-BR = Olá,\n\nEstou aqui agora: %1$@. Clique nesta ligação %2$@ ou nesta %3$@ para ver o local no mapa.\n\nObrigado.
+    pt-BR = Olá,\n\nEstou aqui agora: %1$@. Clique neste link %2$@ ou neste %3$@ para ver o local no mapa.\n\nObrigado.
     hu = Üdvözlöm!\n\nJelenleg itt vagyok: %1$@ Kattintson erre a hivatkozásra %2$@ vagy erre %3$@, hogy lássa a helyet a térképen.\n\nKöszönöm.
     th = หวัดดี\n\nฉันอยู่ที่นี่ตอนนี้: %1$@. คลิกลิงก์นี้ %2$@ หรือลิงก์นี้ %3$@ เพื่อดูสถานที่บนแผนที่\n\nขอบคุณ
 	zh-Hant = 嗨，\n\n我現在在這：%1$@。點擊此連結 %2$@ 或此連結 %3$@ 來查看在地圖上的位置。\n\n謝謝。
@@ -4551,7 +4551,7 @@
     ko = 메시지로 공유
     pl = Udostępnij przez wiadomość
     pt = Partilhar por mensagem
-    pt-BR = Partilhar por mensagem
+    pt-BR = Compartilhar por mensagem
     hu = Megosztás üzenetben
     th = แชร์จากข้อความ
     zh-Hans = 通过消息分享
@@ -4584,7 +4584,7 @@
     ko = 공유
     pl = Udostępnij
     pt = Partilhar
-    pt-BR = Partilhar
+    pt-BR = Compartilhar
     hu = Megosztás
     th = แชร์
     zh-Hans = 分享
@@ -4683,7 +4683,7 @@
     ru = Скопировать ссылку
     pl = Kopiuj link
     pt = Copiar hiperligação
-    pt-BR = Copiar hiperligação
+    pt-BR = Copiar link
     hu = Hivatkozás másolása
     th = คัดลอกลิงก์
     zh-Hans = 复制链接
@@ -4716,7 +4716,7 @@
     pl = Pokaż więcej informacji
     uk = Докладніше
     pt = Mostrar informação adicional
-    pt-BR = Mostrar informação adicional
+    pt-BR = Mostrar mais informações
     hu = Mutasson több adatot
     th = แสดงข้อมูลเพิ่มเติม
     zh-Hans = 显示更多资讯
@@ -4904,7 +4904,7 @@
     uk = Оберіть налаштування заднього екрану
     es = Seleccione la сonfiguración de la pantalla trasera
     pt = Escolha as definições de Ecrã Posterior
-    pt-BR = Escolha as definições de Ecrã Posterior
+    pt-BR = Escolha as configurações de Tela Posterior
     pl = Wybierz ustawienia tylnego ekranu
     it = Selezionate le impostazioni Sfondo
     nl = Kies instellingen voor achtergrondscherm
@@ -4935,7 +4935,7 @@
     uk = Налаштування заднього екрану
     es = Configuración de la pantalla trasera
     pt = Configurações do Ecrã Posterior
-    pt-BR = Configurações do Ecrã Posterior
+    pt-BR = Configurações da Tela Posterior
     pl = Ustawienia tylnego ekranu
     it = Impostazioni Sfondo
     nl = Instellingen voor achtergrondscherm
@@ -4972,7 +4972,7 @@
     nl = Toon op achtergrondscherm
     pl = Pokaż na tylnym ekranie
     pt = Mostrar no Ecrã Posterior
-    pt-BR = Mostrar no Ecrã Posterior
+    pt-BR = Mostrar na Tela Posterior
     uk = Показати на задньому екрані
     hu = Mutassa a vissza képernyőn
     th = แสดงหน้าจอส่วนหลัง
@@ -5029,6 +5029,7 @@
     ru = Версия данных: %d
     de = Datenversion: %d
     zh-Hant = 資料版本： %d
+    pt-BR = Versão dos dados: %d
 
   [are_you_sure]
     tags = android,tizen
@@ -5047,7 +5048,7 @@
     zh-Hant = 確定要繼續嗎？
     pl = Czy na pewno kontynuować?
     pt = Tem a certeza de que pretende continuar?
-    pt-BR = Tem a certeza de que pretende continuar?
+    pt-BR = Tem certeza que deseja continuar?
     ru = Вы уверены, что хотите продолжить?
     hu = Valóban folytatni akarja?
     th = คุณแน่ใจหรือไม่ว่าคุณต้องการดำเนินการต่อ?
@@ -5136,7 +5137,7 @@
     uk = Поділитися моїм місцезнаходженням
     es = Compartir mi ubicación
     pt = Partilhar a minha localização
-    pt-BR = Partilhar a minha localização
+    pt-BR = Compartilhar a minha localização
     pl = Udostępnij moją lokalizację
     it = Condividi la mia location
     nl = Deel mijn locatie
@@ -5325,7 +5326,7 @@
     uk = Відображення на екрані
     es = Visualización en la pantalla
     pt = Mostrar no ecrã
-    pt-BR = Mostrar no ecrã
+    pt-BR = Mostrar na tela
     pl = Wyświetl na ekranie
     it = Condividi la mia location
     nl = Weergave op het scherm
@@ -5762,6 +5763,8 @@
     es = Trayecto reciente
     pl = Ostatnia trasa
     nl = Recente route
+    pt = Gravar percurso
+    pt-BR = Gravar percurso
 
   [duration_disabled]
     tags = ios,android
@@ -6177,7 +6180,7 @@
     fr = Le stockage des données cartographiques a été optimisé. Veuillez redémarrer l'appli.\n\nLe dossier MapsWithMe se trouvant sur la racine de la carte SD n'est plus nécessaire, vous pouvez le supprimer.
     ja = マップデータのストレージは最適化されました。アプリを再起動させてください。\n\nSDカードのルートにあるMapsWithMeフォルダは不要となりましたので削除しても構いません。
     pt = O armazenamento de dados do mapa foi otimizado. Por favor, reinicie a app.\n\nA pasta MapsWithMe na raiz do cartão SD já não é necessária, pode excluí-la.
-    pt-BR = O armazenamento de dados do mapa foi otimizado. Por favor, reinicie a app.\n\nA pasta MapsWithMe na raiz do cartão SD já não é necessária, 
+    pt-BR = O armazenamento de dados do mapa foi otimizado. Por favor, reinicie o app.\n\nA pasta MapsWithMe na raiz do cartão SD já não é necessária, pode excluí-la.
     nl = Opslag van kaartgegevens is geoptimaliseerd. Herstart de app.\n\nMapsWithMe map is niet langer nodig in de root van de SD-kaart, u kunt het verwijderen.
     hu = A tárolt térképadatokat optimalizáltuk. Kérjük, indítsa újra az alkalmazást.\n\nA MapsWithMe mappa az SD-kártya gyökérkönyvtárában már nem szükséges, törölhető.
     cs = Uložiště map bylo optimalizováno. Prosím, restartujte aplikaci.\n\nAdresář MapsWithMe v kořenové složce SD karty již není potřeba, můžete ho smazat.
@@ -6208,7 +6211,7 @@
     fr = En raison de changements dans Android 4.4, nous devons optimiser le stockage des données cartographiques, mais il n'y a pas assez d'espace pour les copier.\n\nVeuillez libérer de la mémoire, sinon les cartes seront disponibles en mode lecture seule.
     ja = Android 4.4の変更に伴いマップデータのストレージを最適化しなければなりませんが、マップデータをコピーするだけの空き容量がありません。\n\nメモリの空き容量を増やさなければ、閲覧モードのみとしてマップをご利用いただくことになります。
     pt = Devido às alterações no Android 4.4, é necessário otimizar o armazenamento de dados do mapa, mas não há espaço suficiente para copiar os dados do mapa.\n\nPor favor, liberte a memória, caso contrário, os mapas estarão disponíveis no modo somente de leitura.
-    pt-BR = Devido às alterações no Android 4.4, é necessário otimizar o armazenamento de dados do mapa, mas não há espaço suficiente para copiar os 
+    pt-BR = Devido às alterações no Android 4.4, é necessário otimizar o armazenamento de dados do mapa, mas não há espaço suficiente para copiar os dados do mapa.\n\nPor favor, libere memória, caso contrário, os mapas estarão disponíveis no modo somente de leitura.
     nl = Door veranderingen in Android 4.4 moeten we de opslag van kaartgegevens optimaliseren, maar er is niet genoeg ruimte om kaartgegevens te kopiëren.\n\nMaak alstublieft geheugen vrij, anders zullen kaarten alleen in de leesmodus beschikbaar zijn.
     hu = Az Android 4.4 változásai miatt optimalizálnunk kell a térképadatok tárolását, azonban ehhez nincs elegendő szabad tárhely.\n\nKérjük, szabadítson fel lemezterületet, ellenkező esetben a térképei csak írásvédett módban lesznek elérhetőek.
     cs = Kvůli změnám v Androidu 4.4 musíme optimalizovat uložiště map, ale není dostatek prostoru pro jejich zkopírování.\n\nProsím, uvolněte paměť, jinak budou mapy dostupné pouze v režimu pro čtení.
@@ -6241,7 +6244,7 @@
     fr = Nous devons déplacer vos signets vers la mémoire interne, mais il n'y a pas d'espace disponible pour eux. Veuillez libérer de la mémoire, sinon les signets ne seront pas disponibles.
     ja = ブックマークを内部メモリに移動させなければなりませんが、メモリの空き容量がありません。空き容量を増やさなければ、ブックマークをご利用いただくことができません。
     pt = É necessário mover os seus marcadores para a memória interna, mas não há espaço disponível para eles. Por favor, liberte a memória, caso contrário, os marcadores não estarão disponíveis.
-    pt-BR = É necessário mover os seus marcadores para a memória interna, mas não há espaço disponível para eles. Por favor, liberte a memória, caso 
+    pt-BR = É necessário mover os seus marcadores para a memória interna, mas não há espaço disponível para eles. Por favor, libere memória, caso contrário, os marcadores não estarão disponíveis.
     nl = We moeten uw bladwijzers naar het interne geheugen verplaatsen, maar er is geen ruimte beschikbaar voor ze. Maak alstublieft geheugen vrij, anders zullen de bladwijzers niet beschikbaar zijn.
     hu = A könyvjelzőit át kell helyeznünk a belső memóriába, azonban ehhez nincs elegendő szabad tárhely. Kérjük, szabadítson fel lemezterületet, ellenkező esetben a könyvjelzői nem lesznek elérhetőek.
     cs = Potřebujeme přesunout tvé záložky do vnitřní paměti zařízení, ale není pro ně volné místo. Prosím, uvolněte paměť, jinak nebudou záložky dostupné.
@@ -6413,7 +6416,6 @@
     nl = Geen route gevonden
     pl = Nie znaleziono trasy
     pt = Não foi encontrado nenhum trajecto
-    pt-BR = Não foi encontrado nenhum trajecto
     pt-BR = Nenhum trajeto encontrado
     ro = Nu a fost găsit nici un traseu
     ru = Маршрут не найден
@@ -6534,6 +6536,7 @@
     nb = Denne applikasjonen bruker geografiske data (inkludert kart, butikkoppføringer, interessepunkter, landegrenser og regiongrenser osv.) som er hentet fra OpenStreetMap-prosjektet. Vi garanterer ikke at data fra OpenStreetMap alltid er konsekvente, nøyaktige, fullstendige eller pålitelige.
     de = Diese Anwendungen verwenden geographische Informationen (inklusive Karten, Geschäftseinträge, Sehenswürdigkeiten, Landes- und Regionsgrenzen, etc.) aus dem OpenStreetMap-Projekt. Wir können weder die Beständigkeit noch die Genauigkeit, Vollständigkeit oder Eignung der OpenStreetMap-Daten garantieren.
     fi = Tämä sovellus käyttää maantieteellistä dataa (mukaan lukien karttoja, yrityslistauksia, mielenkiinnon kohteita, maiden ja alueiden rajoja jne.), joka on noudettu OpenStreetMap-järjestelmästä. Emme takaa OpenStreetMapin datan johdonmukaisuutta, täsmällisyyttä, täydellisyyttä tai sovellettavuutta.
+    pt-BR = Esta aplicação utiliza dados geográficos (incluindo mapas, listas de empresas, pontos de interesses, fronteiras de países e regiões etc.) do projeto OpenStreetMap. Nós não garantimos a consistência, precisão, completude ou aplicabilidade dos dados do OpenStreetMap.
 
   [agree]
     tags = tizen
@@ -6553,6 +6556,7 @@
     nb = Jeg samtykker
     de = Ich stimme zu
     fi = Hyväksyn
+    pt-BR = Eu concordo
 
   [disagree]
     tags = tizen
@@ -6573,6 +6577,8 @@
     nb = Jeg samtykker ikke
     de = Ich stimme nicht zu
     fi = En hyväksy
+    pt-BR = Eu não concordo
+
 
   [download_map_notification]
     tags = ios
@@ -6591,7 +6597,7 @@
     nl = Download de kaart van de plaats waar u bent
     pl = Pobierz mapę miejsca, w którym się zajdujesz
     pt = Descarregue o mapa do local onde estiver
-    pt-BR = Descarregue o mapa do local onde estiver
+    pt-BR = Baixe o mapa do local onde estiver
     ru = Скачайте карту места, где вы находитесь
     th = ดาวน์โหลดแผนที่เกี่ยวกับสถานที่ที่คุณอยู่
     uk = Завантажуйте карту тієї місцевості, де ви знаходитесь
@@ -6624,7 +6630,7 @@
     nl = Volledige versie van MAPS.ME is nu gratis! Download nu en vertel het je vrienden.
     pl = Pełna wersja MAPS.ME jest dziś za darmo! Pobierz teraz i powiedz znajomym.
     pt = A versão completa do MAPS.ME é hoje grátis! Descarregue e conte aos seus amigos.
-    pt-BR = A versão completa do MAPS.ME é hoje grátis! Descarregue e conte aos seus amigos.
+    pt-BR = A versão completa do MAPS.ME é grátis hoje! Baixe e conte aos seus amigos.
     ru = Полная версия MAPS.ME сегодня бесплатна! Скачай сейчас и расскажи друзьям.
     th = เวอร์ชันเต็มของ MAPS.ME วันนี้ฟรี! ดาวน์โหลดตอนนี้แล้วบอกเพื่อน ๆ ของคุณ
     uk = Повна версія MAPS.ME сьогодні безкоштовна! Завантажуй та розкажи друзям.
@@ -6653,7 +6659,7 @@
     zh-Hant = 我們正在將您從 MAPS.ME Lite 下載的地圖傳輸至 MAPS.ME。這可能需要幾分鐘的時間。
     pl = Przenosimy twoje pobrane mapy z MAPS.ME Lite do MAPS.ME. Może to zająć kilka minut.
     pt = Estamos a transferir os seus mapas descarregados da MAPS.ME Lite para a MAPS.ME. Isto pode demorar alguns minutos.
-    pt-BR = Estamos a transferir os seus mapas descarregados da MAPS.ME Lite para a MAPS.ME. Isto pode demorar alguns minutos.
+    pt-BR = Estamos transferindo os seus mapas baixados do MAPS.ME Lite para o MAPS.ME. Isto pode demorar alguns minutos.
     hu = Letöltött térképeidet áthelyezzük a MAPS.ME Lite-ból a MAPS.ME-be. Ez eltarthat pár percig.
     th = เรากำลังโอนแผนที่ที่ดาวน์โหลดของคุณจาก MAPS.ME Lite ไปยัง MAPS.ME อาจใช้เวลาสองสามวินาที
     zh-Hans = 我们正在将您从MAPS.ME Lite 下载的地图传输至 MAPS.ME。这可能需要几分钟的时间。
@@ -6686,7 +6692,7 @@
     zh-Hant = 您下載的地圖已成功傳輸至 MAPS.ME。
     pl = Pomyślnie przeniesiono twoje pobrane mapy do MAPS.ME.
     pt = Os seus mapas descarregados estão transferidos com sucesso para a MAPS.ME.
-    pt-BR = Os seus mapas descarregados estão transferidos com sucesso para a MAPS.ME.
+    pt-BR = Os seus mapas baixados foram transferidos com sucesso para o MAPS.ME.
     hu = Letöltött térképeidet sikeresen áthelyeztük a MAPS.ME-be.
     th = แผนที่ที่ดาวน์โหลดของคุณโอนไปยัง MAPS.ME สำเร็จ
     zh-Hans = 您下载的地图已成功传输至 MAPS.ME。
@@ -6719,7 +6725,7 @@
     zh-Hant = 您的地圖傳輸失敗。請刪除 MAPS.ME Lite，然後再次下載地圖。
     pl = Nie udało się przenieść twoich map. Proszę skasować MAPS.ME Lite i pobrać mapy ponownie.
     pt = Falhou a transferência dos seus mapas. Por favor, elimine a MAPS.ME Lite e descarregue os mapas novamente.
-    pt-BR = Falhou a transferência dos seus mapas. Por favor, elimine a MAPS.ME Lite e descarregue os mapas novamente.
+    pt-BR = A transferência dos seus mapas falhou. Por favor, elimine o MAPS.ME Lite e baixe os mapas novamente.
     hu = Térképeid áthelyezése nem sikerült. Kérjük, töröld a MAPS.ME Lite-t és töltsd le a térképet megint.
     th = ล้มเหลวในการโอนแผนที่ของคุณ โปรดลบ MAPS.ME Lite และดาวน์โหลดแผนที่อีกครั้ง
     zh-Hans = 您的地图传输失败。请删除 MAPS.ME Lite，然后再次下载地图。
@@ -6751,7 +6757,7 @@
     zh-Hant = 設定及更多
     pl = Ustawienia i inne
     pt = Definições e Mais
-    pt-BR = Definições e Mais
+    pt-BR = Configurações e Mais
     hu = Beállítások és egyéb
     th = การตั้งค่า & อื่น ๆ
     zh-Hans = 设置及更多
@@ -6855,7 +6861,7 @@
     zh-Hant = 在 Facebook 上按讚
     pl = Polub nas na Facebooku
     pt = Gostar no Facebook
-    pt-BR = Gostar no Facebook
+    pt-BR = Curtir no Facebook
     hu = Lájkolj minket Facebookon
     th = ถูกใจบน Facebook
     zh-Hans = 在Facebook 上点赞
@@ -6921,7 +6927,7 @@
     zh-Hant = 聯絡我們
     pl = Skontaktuj się z nami
     pt = Contacte-nos
-    pt-BR = Contacte-nos
+    pt-BR = Contate-nos
     hu = Kapcsolat
     th = ติดต่อเรา
     zh-Hans = 联系我们
@@ -6969,7 +6975,7 @@
     zh-Hant = 訂閱我們的新聞
     pl = Subskrybuj nasze wiadomości
     pt = Subscreva as nossas notícias
-    pt-BR = Subscreva as nossas notícias
+    pt-BR = Assine nossas notícias
     hu = Iratkozz fel hírlevelünkre
     th = สมัครรับข่าวของเรา
     zh-Hans = 订阅我们的新闻
@@ -7002,7 +7008,7 @@
     zh-Hant = 為該應用程式評分
     pl = Oceń aplikację
     pt = Classificar a aplicação
-    pt-BR = Classificar a aplicação
+    pt-BR = Avaliar a aplicação
     hu = Értékeld az alkalmazást
     th = ให้คะแนนแอป
     zh-Hans = 为该应用打分
@@ -7024,6 +7030,7 @@
     ru = Оценить в Google Play
     de = Bei Google Play bewerten
 	zh-Hant = 在 Google Play 評分
+    pt-BR = Avaliar no Google Play
 
   [tell_friends]
     tags = android
@@ -7031,6 +7038,7 @@
     en = Tell a Friend
     ru = Рассказать друзьям
     de = Einem Freund empfehlen
+    pt-BR = Compartilhe com um Amigo
 
   [tell_friends_text]
     tags = android
@@ -7039,6 +7047,7 @@
     ru = Привет! Установи Maps.me!
     de = Hallo! Installiere dir MAPS.ME!
 	zh-Hant = 嗨！安裝 Maps.me！
+    pt-BR = Olá! Instale o MAPS.ME!
 
   [help]
     tags = ios, android
@@ -7157,7 +7166,7 @@
     zh-Hant = 請幫我訂閱 MAPS.ME 新聞郵件、
     pl = Chcę subskrybować biuletyn MAPS.ME
     pt = Por favor inscrevam-me na newsletter da MAPS.ME
-    pt-BR = Por favor inscrevam-me na newsletter da MAPS.ME
+    pt-BR = Por favor inscrevam-me na newsletter do MAPS.ME
     hu = Fel szeretnék iratkozni a MAPS.ME hírlevelére
     th = โปรดลงชื่อฉันเพื่อรับจดหมายข่าว MAPS.ME
     zh-Hans = 请帮我订阅MAPS.ME简报
