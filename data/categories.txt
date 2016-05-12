@@ -769,7 +769,7 @@ es:Carnicería|2tienda
 pl:Rzeźnik|3sklep|towary
 nl:Slager|beenhouwer|2winkel
 pt:Açougueiro|2loja|compras
-pt-BR:Açougueiro|2loja|compras
+pt-BR:Açougue|2loja|compras
 
 shop-furniture
 en:Furniture Store|2shop
@@ -1009,7 +1009,7 @@ es:Óptica|2tienda
 pl:Sklep optyczny|3sklep|towary
 nl:Opticien|2winkel
 pt:Oculista|2loja|compras
-pt-BR:Oculista|2loja|compras
+pt-BR:Ótica|2loja|compras
 
 shop-gift
 en:Gift Shop|U+1F381|2shop
