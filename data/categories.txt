@@ -1,3 +1,248 @@
+# Category groups referenced in many categories, should be defined before being referenced.
+@food
+en:Food
+cs:Jídlo
+sk:Jedlo
+de:Essen
+es:Comer
+fr:Nourriture
+it:Cibo
+ja:飲食
+ko:음식
+nl:Eten
+ru:Еда
+uk:Їжа
+zh-Hant:飲食
+pl:Jedzenie
+pt:Alimentação
+hu:Élelmiszer
+th:อาหาร
+zh-Hans:食物
+ar:الطعام
+da:Mad
+tr:Yemek
+sv:Mat
+he:אוכל
+id:Makanan
+vi:ẩm thực
+ro:Alimentație
+nb:Mat
+fi:Ruoka
+
+@transport
+en:Transport
+cs:Doprava
+sk:Doprava
+de:Verkehr
+es:Transporte
+fr:Transport
+it:Transporto
+ja:交通機関
+ko:수송
+nl:Transport
+ru:Транспорт
+uk:Транспорт
+zh-Hant:運輸
+pl:Transport
+pt:Transporte
+hu:Közlekedés
+th:การขนส่ง
+zh-Hans:交通
+ar:النقل
+da:Transport
+tr:Ulaşım
+sv:Transport
+he:תחבורה
+id:Transportasi
+vi:giao thông
+ro:Transport
+nb:Transport
+fi:Liikenne
+
+@fuel
+en:Gas
+cs:Čerpací stanice
+sk:Čerpacia stanica
+de:Tankstelle
+es:Gasolinera
+fr:Essence
+it:Stazione di rifornimento
+ja:ガソリンスタンド
+ko:연료
+nl:Benzine
+ru:Заправка
+uk:Заправка
+zh-Hant:加油站
+pl:Stacja benzynowa
+pt:Combustível
+hu:Benzinkút
+th:ก๊าซ
+zh-Hans:汽油
+ar:الغاز
+da:Benzin
+tr:Benzin
+sv:Bensin
+he:גז
+id:Bahan bakar
+vi:Khí đốt
+ro:Benzină
+nb:Drivstoff
+fi:Huoltoasema
+
+@parking
+en:Parking
+cs:Parkoviště
+sk:Parkovisko
+de:Parkplatz
+es:Estacionamiento
+fr:Stationnement
+it:Parcheggio
+ja:駐車場
+ko:주차
+nl:Parkeerplaats
+ru:Парковка
+uk:Парковка
+zh-Hant:停車場
+pl:Parking
+pt:Estacionamento
+hu:Parkoló
+th:ที่จอดรถ
+zh-Hans:停车
+ar:الاصطفاف
+da:Parkering
+tr:Otopark
+sv:Parkering
+he:חניה
+id:Parkir
+vi:đỗ xe
+ro:Parcare
+nb:Parkering
+fi:Parkkipaikka
+
+@shop
+en:Shop
+cs:Obchod
+sk:Obchod
+de:Geschäft
+es:Tienda
+fr:Magasin
+it:Negozio
+ja:買い物
+ko:쇼핑
+nl:Winkel
+ru:Магазин
+uk:Крамниця
+zh-Hant:購物
+pl:Sklep
+pt:Compras
+hu:Bolt
+th:ร้านค้า
+zh-Hans:商店
+ar:المتجر
+da:Butik
+tr:Mağaza
+sv:Butik
+he:חנות
+id:Toko
+vi:Cửa hàng
+ro:Magazin
+nb:Butikk
+fi:Kauppa
+el:Μαγαζί
+sw:Duka
+
+@hotel
+en:Hotel
+cs:Hotel
+sk:Hotel
+de:Hotel
+es:Hotel
+fr:Hôtel
+it:Hôtel
+ja:ホテル
+ko:호텔
+nl:Hotel
+ru:Гостиница
+uk:Готель
+zh-Hant:飯店
+pl:Hotel
+pt:Hotel
+hu:Szálloda
+th:โรงแรม
+zh-Hans:旅店
+ar:الفندق
+da:Hotel
+tr:Otel
+sv:Hotell
+he:מלון
+id:Hotel
+vi:Khách sạn
+ro:Hotel
+nb:Hotell
+fi:Hotelli
+
+@tourism
+en:Sights
+cs:Pamětihodnost
+sk:Pamätihodnosť
+de:Sehenswürdigkeit
+es:Turismo
+fr:Site touristique
+it:Turistico
+ja:観光
+ko:관광
+nl:Toerisme
+ru:Достопримечательность
+uk:Пам’ятні місця
+zh-Hant:旅遊景點
+pl:Osobliwości miasta
+pt:Vistas
+hu:Látnivaló
+th:สถานที่ท่องเที่ยว
+zh-Hans:景点
+ar:سياحة
+da:Seværdigheder
+tr:Görülecek yerler
+sv:Sevärdheter
+he:נקודות עיניין
+id:Pemandangan
+vi:Diểm tham quan
+ro:Obiective turistice
+nb:Severdigheter
+fi:Nähtävyydet
+
+@entertainment
+en:Entertainment
+cs:Zábava
+sk:Zábava
+de:Unterhaltung
+es:Entretenimiento
+fr:Divertissement
+it:Divertimento
+ja:エンターテイメント
+ko:엔터테인먼트
+nl:Uitgaan
+ru:Развлечения
+uk:Розваги
+zh-Hant:娛樂
+pl:Rozrywka
+pt:Entretenimento
+hu:Szórakozás
+th:แหล่งบันเทิง
+zh-Hans:娱乐
+ar:التسلية
+da:Underholdning
+tr:Eğlence
+sv:Underhållning
+he:בידור
+id:Hiburan
+vi:Giải trí
+ro:Divertisment
+nb:Underholdning
+fi:Viihde
+
+# Categories translations
+
 amenity-atm
 en:3Atm|money|U+1F3E7|U+1F4B2|U+1F4B3|U+1F4B4|U+1F4B5|U+1F4B6|U+1F4B7
 ru:3Банкомат|деньги
@@ -95,7 +340,7 @@ de:2Bar|2Pub|Kneipe|Bier|Essen
 fr:2Bar|2pub|bière|boisson|nourriture
 it:2Bar|2birra|pub|mangiare|cibo
 es:2Bar|2pub|comer
-ko:바|술집|맥주|음료|음식
+ko:주점|맥주|음료|음식
 ja:1居酒屋|バー|パブ|ビール|飲食|飲み屋|呑み屋|酒
 cs:2Bar|pivo|pití|jídlo|voda|pitná voda|tekutiny
 sk:2Bar|pivo|pitie|jedlo|voda|pitná voda|tekutiny
@@ -105,7 +350,7 @@ pl:2Bar|2pub|piwo|napoje|jedzenie
 pt:2Bar|2pub|cerveja|beber|alimentação
 hu:2Bár|2kocsma|sör|ital|élelmiszer
 th:2บาร์|ผับ|เบียร์|เครื่องดื่ม|อาหาร
-zh-Hans:1酒吧์|酒馆์|啤酒|饮料|食物
+zh-Hans:1酒吧|酒馆์|啤酒|饮料|食物
 ar:الحانة|خمارة์|بيرة ์|شراب|الطعام
 da:2Bar|øl|pub|drink|mad
 tr:2Bar|2bira|pub|içki|yemek
@@ -122,7 +367,7 @@ en:2Pub|bar|beer|food|U+1F37A|U+1F37B
 ar:بار|الحانة|خمارة์|بيرة ์|شراب|الطعام
 cs:Hospoda|Bar|pivo|pití|jídlo|voda|pitná voda|tekutiny
 da:Kro|Bar|øl|drink|mad
-de:Bar|Kneipe|Bier|Essen
+de:Kneipe|Bar|Kneipe|Bier|Essen
 es:Pub|Bar|comer
 fi:Pubi|Baari|ruoka
 fr:Bistrot|Bar|bière|boisson|nourriture
@@ -130,21 +375,21 @@ hu:Kocsma|Bár|sör|ital|élelmiszer
 id:Pub|Bar|minuman|makanan
 it:Pub|Bar|birra|mangiare|cibo
 ja:バー|パブ|ビール|居酒屋|飲食|飲み屋|呑み屋|酒
-ko:바|술집|맥주|음료|음식
-nb:Bar|mat
-nl:Bar|bier|drinken|eten
+ko:술집|맥주|음료|음식
+nb:Pub|Bar|mat
+nl:Kroeg|Bar|bier|drinken|eten
 pl:Pub|Bar|piwo|napoje|jedzenie
 pt:Pub|Bar|cerveja|beber|alimentação
 ro:Pub|Bar|cârciumă|băutură|alimentație
 ru:Паб|бар|пиво|выпить|еда
 sk:Pohostinstvo|Bar|pivo|pitie|jedlo|voda|pitná voda|tekutiny
 sv:Krog|Bar|öl|drink|mat
-th:บาร์|ผับ|เบียร์|เครื่องดื่ม|อาหาร
+th:ผับ|บาร์|ผับ|เบียร์|เครื่องดื่ม|อาหาร
 tr:Pub|bar|Bira|içki|yemek
 uk:Паб|Бар|пиво|напої|їжа
-vi:Quán bar|quán rượu|đồ uống|ẩm thực
-zh-Hans:酒吧์|酒馆์|啤酒|饮料|食物
-zh-Hant:酒吧|酒館|飲酒|PUB|吧台|飲食
+vi:Quán rượu|Quán bar|quán rượu|đồ uống|ẩm thực
+zh-Hans:酒馆|酒馆์|啤酒|饮料|食物
+zh-Hant:酒館|啤酒吧|酒吧|飲酒|PUB|吧台|飲食
 
 amenity-cafe
 en:3Cafe|3restaurant|3food|U+2615|U+1F356|U+1F357|U+1F35A|U+1F35B|U+1F35C|U+1F35D|U+1F363|U+1F366|U+1F367|U+1F368|U+1F369|U+1F370|U+1F372|U+1F374|U+1F377|U+1F60B|U+1F375
@@ -237,7 +482,7 @@ sw:Hoteli|restorenti|mgahawa|chakula
 
 amenity-fuel
 en:Gas Station|3fuel|2gas|U+26FD
-ru:3Заправка|бензин|топливо
+ru:3Заправка|бензин|топливо|азс
 uk:3Заправка|бензин|газ
 de:3Tankstelle|Tankstation
 fr:Station-service|3carburant|2essence
@@ -276,7 +521,7 @@ es:3Panadería|tienda
 fi:3Leipomo|kauppa
 fr:3Boulangerie|magasin
 hu:3Pékség|bolt
-id:Toko roti|toko
+id:Toko roti|toko|Roti
 it:3Panetteria|negozio
 ja:1パン屋|ベーカリー|パン|軽食|持ち帰り|買い物
 ko:1베이커리|쇼핑
@@ -325,12 +570,12 @@ nb:3Butikk
 fi:3Kauppa
 sw:Duka
 
-shop-chemist
+shop-cosmetics
 en:4Beauty Care|home care|shop|U+1F3EC|U+1F3EA
 ar:ﻞﻴﻤﺠﺘﻟﺍ ﺕﺍﺮﻀﺤﺘﺴﻣ|تجميل|المتجر
 cs:4Kosmetika|domácí péče|obchod
 da:4Kosmetik|hjemmepleje|butik
-de:4Schönheitssalon|Geschäft
+de:4Kosmetik|Geschäft|Schönheitspflege
 el:Καλλυντικά|Μαγαζί
 es:4Productos cosméticos|tienda
 fi:Kosmetiikka|kotihoito|kauppa
@@ -346,7 +591,7 @@ nl:4Schoonheidsmiddelen|winkel
 pl:Kosmetyki|sklep
 pt:Cosméticos|estética|compras
 ro:Cosmetică|centru de îngrijire|magazin
-ru:4Косметика|бытовая химия|магазин
+ru:Магазин косметики|4Косметика|бытовая химия|магазин
 sk:4Kozmetika|obchod
 sv:Kosmetika|butik
 sw:Vipodozi|Duka
@@ -354,7 +599,7 @@ th:เครื่องสำอาง|ร้านค้า
 tr:Bakım ürünleri|güzellik merkezi|mağaza
 uk:4Косметика|крамниця
 vi:Mỹ phẩm|cửa hàng
-zh-Hans:化妆品|商店
+zh-Hans:化妝品|商店
 zh-Hant:化妆品|美妝店|購物
 
 shop-convenience
@@ -433,7 +678,7 @@ nb:Mobiltelefonbutikk|elektronikkbutikk|butikk
 pl:Sklep z elektroniką|sklep elektroniczny|sklep
 pt:Loja de telemóveis|loja de aparelhos eletrónicos|compras
 ro:Magazin de telefoane mobile|magazin de electronice|magazin
-ru:Сотовые|3Мобильные телефоны|электроника|салон связи|магазин
+ru:Магазин мобильных телефонов|Сотовые|3Мобильные телефоны|электроника|салон связи|магазин
 sk:Mobilné telefóny|obchod
 sv:Mobilbutik|elektronikaffär|butik
 th:ร้านขายโทรศัพท์มือถือ|ร้านขายอุปกรณ์อิเล็กโทรนิก|ร้านค้า
@@ -535,8 +780,8 @@ en:Liquor Store|liquor|U+1F377|2shop
 ru:Магазин алкоголя|4алкоголь|3винный|3вино-водочный|2магазин
 fr:Magasin de vins et spiritueux|vins et spiritueux|2magasin
 da:Vinhandel|2butik
-id:Toko minuman keras|minuman keras|2toko
-ko:주류 판매점|1쇼핑|가게
+id:Toko alkohol|minuman keras|2toko
+ko:주류 샵|1쇼핑|가게
 sv:Spritaffär|alkohol|2butik
 tr:Içki dükkanı|2mağaza
 uk:Винний магазин|крамниця спиртних напоїв|2магазин|крамниця
@@ -603,7 +848,7 @@ hu:Cipőbolt|2bolt
 de:Schuhgeschäft|Schuhladen|Geschäft|2Laden
 fi:Kenkäkauppa|3kauppa
 cs:Obuv|2obchod
-it:Calzolaio|2negozio
+it:Negozio di scarpe|2negozio
 nb:Skobutikk|3butikk
 zh-Hant:鞋店|1購物|店鋪|商店|雜貨店|便利商店
 zh-Hans:鞋店|商店
@@ -634,7 +879,7 @@ fi:Elektroniikka|3kauppa
 cs:Elektronika|2obchod
 it:Negozio di elettronica|2negozio
 nb:Elektronikk forhandler|3butikk
-zh-Hant:電子產品|1購物|店鋪|商店|雜貨店|便利商店
+zh-Hant:電子產品|電器店|1購物|店鋪|商店|雜貨店|便利商店
 zh-Hans:电子产品|商店
 th:ร้านขายอุปกรณ์อิเล็กทรอนิกส์|2ร้านค้า
 ja:電気店|1買い物|お買い物|ショップ|商店|雑貨
@@ -673,7 +918,7 @@ tr:Hırdavatçı|Nalbur|mağaza
 uk:Будматеріали|господарський|магазин|крамниця
 vi:Cửa hàng phần cứng|cửa hàng
 zh-Hans:硬件店|自助商店|商店
-zh-Hant:硬件店|購物|店鋪|商店|雜貨店|便利商店
+zh-Hant:五金行|硬件店|購物|店鋪|商店|雜貨店|便利商店
 
 shop-jewelry
 en:Jewelry|U+1F48D|2shop
@@ -735,7 +980,7 @@ pt:Oculista|2loja|compras
 
 shop-gift
 en:Gift Shop|U+1F381|2shop
-ru:Сувениры|2магазин
+ru:Магазин сувениров|сувенирная лавка|cувениры|2магазин
 fr:Boutique de souvenirs|2magasin
 da:Gavebutik|2butik
 id:Toko hadiah|2toko
@@ -767,7 +1012,7 @@ en:Beauty Shop|beautician|U+1F484
 ar:ﻞﻴﻤﺠﺗ ﻥﻮﻟﺎﺻ
 cs:Kosmetický salon
 da:Skønhedssalon
-de:Schönheitssalon
+de:Schönheitssalon|Schönheitsshop
 el:Ινστιτούτο αισθητικής
 es:Salón de belleza
 fi:Kauneushoitola
@@ -825,7 +1070,7 @@ pt:Quitanda|2loja|compras
 
 shop-sports
 en:Sports Goods|U+1F3BF|U+1F3A3|U+1F3C2|U+1F6B4|U+26BD|U+1F3C0|U+1F3C8|U+26BE|U+1F3BE|U+1F3C9|U+26F3|2shop
-ru:Спорттовары|товары для спорта|2магазин
+ru:Магазин спорттоваров|Спорттовары|товары для спорта|2магазин
 fr:Articles de sport|2magasin
 da:Sportsudstyr|2butik
 id:Barang olahraga|2toko
@@ -1005,11 +1250,11 @@ ar:حلواني|متجر حلويات|المتجر
 cs:Cukrárna|obchod
 da:Konfektureforretning|slikbutik|butik
 de:Süßwarengeschäft|Geschäft
-es:Tienda de golosinas|confitería|tienda
+es:Confitería|confitería|tienda
 fi:Makeiskauppa|kauppa
 fr:Pâtisserie|confiserie|magasin
 hu:Cukrászüzlet|édességbolt|bolt
-id:Toko roti|toko
+id:Penganan|toko|manisan
 it:Pasticceria|drogheria|negozio
 ja:菓子類|菓子屋|買い物
 ko:제과점|베이커리|쇼핑
@@ -1141,7 +1386,7 @@ sv:Kläder butik|4kläder|butik
 vi:Cửa hàng quần áo|cửa hàng
 id:Toko baju|toko
 ro:Magazin de haine|magazin
-nb:Bilverksted|butikk
+nb:Klesbutikk|butikk
 fi:Vaatekauppa|kauppa
 sw:Duka la nguo|nguo
 
@@ -1169,10 +1414,10 @@ da:Bilforhandler|butik
 tr:Otomobil mağazası|mağaza
 sv:Bilåterförsäljare|butik
 vi:Cửa hàng xe|cửa hàng
-id:Bengkel mobil|toko
+id:Toko mobil|toko
 ro:Magazin auto|magazin
-nb:Bensinstasjon|butikk
-fi:Autokorjaamo|kauppa
+nb:Bil butikk|butikk
+fi:Autonäyttelyssä|kauppa
 sw:Yadi|duka la gari|gari
 
 shop-bicycle
@@ -1193,14 +1438,14 @@ pl:Sklep rowerowy|4rower|sklep
 pt:Loja de bicicletas|4bicicleta|compras
 hu:4Kerékpár üzlet|kerékpár|kocsi|bolt
 th:4จักรยาน|ร้าน|ร้านค้า
-zh-Hans:自行车|商店
-ar:دراجة هوائية|المتجر
+zh-Hans:自行车店|商店
+ar:متجر دراجات
 da:Cykelforretning|butik
 tr:Bisiklet|mağaza
 sv:4Cykelaffär|cykel|cykel|butik
-vi:3Thuê ô tô|cửa hàng
-id:3Sepeda|toko
-ro:3Bicicletă|magazin
+vi:3Cửa hàng xe đạp|cửa hàng
+id:3Toko sepeda|toko
+ro:3Bicicletă|magazin|Magazin biciclete
 nb:3Sykkel|butikk
 fi:3Polkupyörä|kauppa
 sw:Duka la baiskeli|baiskeli
@@ -1296,8 +1541,8 @@ fi:4Raitiovaunupysäkki|liikenne
 
 amenity-bus_station
 en:Bus Station|2bus|station|4transport|U+1F68C|U+1F68F|U+1F68D
-ru:Автостанция|4автобус|4остановка|4транспорт
-uk:Автовокзал|4автобус|4зупинка|4транспорт
+ru:Автовокзал|Автостанция|4автобус|4остановка|4транспорт
+uk:Автовокзал|Автостанція|4автобус|4зупинка|4транспорт
 de:4Busbahnhof|Haltestelle|Bus|Autobus|Verkehr|ÖPNV
 fr:Gare routière|2bus|2autobus|arrêt|4transport
 it:Autostazione|fermata|autobus|4transporto
@@ -1315,11 +1560,11 @@ th:สถานีขนส่ง|ขนส่ง|สถานี|การข�
 zh-Hans:1公车站|公交车|运输|交通
 ar:محطة الباص|حافلة|نقل|النقل
 da:2Busstation|2bus|station|4transport
-tr:3Otobüs durağı|3otobüs|2ulaşım
+tr:4Otobüs terminali|3Otobüs durağı|3otobüs|2ulaşım
 sv:Busstation|2buss|station|4transport
-vi:2Bến xe buýt|giao thông
+vi:Trạm xe buýt|2Bến xe buýt|giao thông
 id:3Stasiun bus|transportasi
-ro:3Stație de autobuz|transport
+ro:3Gara de autobuz|transport
 nb:3Busstasjon|transport
 fi:3Bussiasema|liikenne
 sw:Stendi ya basi|basi|stendi|usafiri
@@ -1367,7 +1612,7 @@ ja:1地下鉄|地下鉄駅|電車|鉄道|交通|交通機関|交通|鉄|電
 cs:3Metro|3podzemka|doprava
 sk:3Metro|podzemná doprava|doprava
 nl:3Metro|transport
-zh-Hant:1地鐵|2地下鐵|運輸
+zh-Hant:1地鐵|捷運|2地下鐵|運輸
 pl:3Metro|kolej podziemna|transport
 pt:Metro|transporte
 hu:3Földalatti|3metro|közlekedés
@@ -1520,8 +1765,8 @@ nl:3Kunstwerk|3toerisme
 zh-Hant:1藝術品|3旅遊景點
 pl:3Rzeźba|turystyka|osobliwości miasta
 pt:3Artwork|turismo|vistas
-hu:3Szobor|3látnivaló
-th:3การท่องเที่ยว|สถานที่ท่องเที่ยว
+hu:3Szobor|3látnivaló|Műalkotás
+th:งานศิลปะ|3การท่องเที่ยว|สถานที่ท่องเที่ยว
 zh-Hans:1旅游|景点
 ar:سياحة|مناظر
 da:3Seværdighed|3turisme|3sightseeing|3seværdigheder
@@ -1552,7 +1797,7 @@ pl:3Punkt widokowy|widok|krajobraz|osobliwości miasta
 pt:4Ponto de vista|turismo|vistas
 hu:4Kilátó|kirándulás|látványosság|látnivaló|túrizmus
 th:3จุดชมวิว|การท่องเที่ยว|สถานที่ท่องเที่ยว
-zh-Hans:1景点|旅游|景点
+zh-Hans:1观点|旅游|景点
 ar:أماكن مراقبة|سياحة|مناظر
 da:4Synspunkt|turisme|sightseeing|seværdigheder
 tr:3Bakış|3turizm|3görülecek yerler
@@ -1595,33 +1840,33 @@ fi:3Matkailuinfo|nähtävyydet
 sw:Taarifa ya utalii|taarifa
 
 tourism-picnic_site|amenity-bbq
-en:3Picnic Site|sights
-ru:3Пикник|достопримечательность
-uk:3Пікнік|зупинка|відпочинок|пам’ятні місця
-de:3Picknickplatz|Grillplatz|Sehenswürdigkeit
-fr:3Terrain de pique-nique|3aire de pique-nique|site touristique
-it:3Picnic|turistico
-es:3Picnic|turismo
-ko:1소풍 사이트|명소|피크닉|관광
-ja:1ピクニック|ピクニックサイト|観光|ハイキング
-cs:3Piknik|picnic|picnik|pamětihodnost
-sk:3Piknik|pamätihodnosť
-nl:3Picnicplaats|3picnicweide|3picnictafel|toerisme
+en:3Picnic Site
+ru:Место для пикника|3Пикник
+uk:3Пікнік|зупинка|відпочинок
+de:3Picknickplatz|Grillplatz
+fr:3Terrain de pique-nique|3aire de pique-nique
+it:3Picnic
+es:3Picnic
+ko:1소풍 사이트|명소|피크닉
+ja:1ピクニック|ピクニックサイト|ハイキング
+cs:3Piknik|picnic|picnik
+sk:3Piknik
+nl:3Picnicplaats|3picnicweide|3picnictafel
 zh-Hant:1野餐|旅遊
-pl:4Pole piknikowe|plener|piknik|osobliwości miasta
-pt:4Local de piquenique|vistas
-hu:3Piknikező hely|látványosság|látnivaló
-th:3เว็บไซต์ปิกนิก|สถานที่ท่องเที่ยว
-zh-Hans:1野餐地点|景点
-ar:أماكن للرحلات|مناظر|سياحة
-da:3Picnic|seværdigheder
-tr:3Piknik alanı|görülecek yerler
-sv:3Picknickplatser|sevärdheter
-vi:Điểm cắm trại|diểm tham quan
-id:3Lokasi piknik|pemandangan
-ro:3Locații picnic|obiective turistice
-nb:3Rasteplasser|severdigheter
-fi:3Piknikpaikat|nähtävyydet
+pl:4Pole piknikowe|plener|piknik
+pt:4Local de piquenique
+hu:3Piknikező hely|látványosság
+th:3เว็บไซต์ปิกนิก
+zh-Hans:1野餐地点
+ar:أماكن للرحلات|مناظر
+da:3Picnic
+tr:3Piknik alanı
+sv:3Picknickplatser
+vi:Điểm cắm trại
+id:3Lokasi piknik
+ro:3Locații picnic
+nb:3Rasteplasser
+fi:3Piknikpaikat
 sw:Sehemu ya madhazi
 
 amenity-place_of_worship
@@ -1887,7 +2132,7 @@ nb:3Museum|severdigheter
 fi:3Museo|nähtävyydet
 sw:Makumbusho|kivutio|utalii
 
-waterway-waterfall|natural-waterfall
+waterway-waterfall
 en:2Waterfall|sights
 cs:2Vodopád|zajímavost|pamětihodnost
 sk:2Vodopád|pamätihodnosť
@@ -1925,18 +2170,18 @@ de:Denkmal|Gedenkstätte|Sehenswürdigkeit
 fr:Mémorial|monument|attraction|tourisme|site touristique
 it:Memoriale|monumento|turistico
 es:Memorial|turismo
-ko:1기념물|관광
-ja:1記念碑|観光
+ko:1기념비|관광
+ja:追悼|1記念碑|観光|追悼碑
 cs:Pomník|památka|zajímavost|pamětihodnost
 sk:Pomník|pamiatka|atrakcia|zaujímavosť|pamätihodnosť
 nl:Gedenkteken|monument|attractie|toerisme
-zh-Hant:1紀念碑|紀念館|旅遊景點
+zh-Hant:紀念館|1紀念碑|紀念館|旅遊景點
 pl:3Pomnik|osobliwości miasta
 pt:Memorial|monumento|turismo|vistas
 hu:3Emlékmű|látnivaló|túrizmus|látványosság
 th:ที่ระลึก|สถานที่ท่องเที่ยว
 zh-Hans:纪念馆|景点
-ar:تمثال|سياحة
+ar:مبنى او نصب تزكارى
 da:Mindested|seværdigheder
 tr:Anıt|abide|cazibe merkezleri|turizm|görülecek yerler
 sv:3Minnesmärke|monument|attraktion|turism|sevärdheter
@@ -1955,7 +2200,7 @@ de:Monument|Denkmal|Sehenswürdigkeit
 fr:Monument|attraction|tourisme|site touristique
 it:Monumento|turistico
 es:Monumento|turismo
-ko:1기념물|관광
+ko:1기념탑|관광
 ja:1記念碑|観光
 cs:Zajímavost|pomník|památka|pamětihodnost
 sk:Zaujímavosť|pamätihodnosť|pomník|pamiatka
@@ -1963,10 +2208,10 @@ nl:Monument|attractie|toerisme
 zh-Hant:1紀念碑|紀念塔|紀念館|旅遊景點
 pl:3Pomnik historyczny|osobliwości miasta
 pt:Monumento|turismo|vistas
-hu:Szobor|emlékmű|túrizmus|látványosság|látnivaló
+hu:Műemlék|Szobor|túrizmus|látványosság|látnivaló
 th:3อนุสาวรีย์|การท่องเที่ยว|สถานที่ท่องเที่ยว
 zh-Hans:纪念碑|景点
-ar:تمثال|أماكن الجذب|سياحة
+ar:نصب تزكارى
 da:Monument|seværdigheder
 tr:Abide|cazibe merkezleri|turizm|görülecek yerler
 sv:Monument|attraktion|tursim|sevärdheter
@@ -2051,7 +2296,7 @@ cs:Vykopávky|zajímavost|pamětihodnost
 sk:Vykopávky|pamätihodnosť
 nl:Archeologische site|opgravingen|attractie|toerisme
 zh-Hant:1考古遺址|考古|遺址|古蹟|歷史|旅遊景點
-pl:5Miejsce arhceologiczne|wykopaliska|osobliwości miasta
+pl:5Odkrywka archeologiczna|wykopaliska|osobliwości miasta
 pt:Sítio arqueológico|turismo|vistas
 hu:Ásatás|látnivaló|túrizmus|látványosság
 th:โบราณสถาน|แหล่งท่องเที่ยว|สถานที่ท่องเที่ยว|การท่องเที่ยว
@@ -2112,7 +2357,7 @@ sk:Lavička
 nl:Zitbank|bankje
 zh-Hant:1長板凳|板凳|長椅|長椅子|條凳
 pl:Ławka
-pt:Banco
+pt:Assento|Banco
 hu:Pad
 th:ม้านั่ง
 zh-Hans:长凳
@@ -2122,7 +2367,7 @@ tr:Bank
 sv:Bänk
 vi:Xe đạp
 id:Bangku panjang
-ro:Bancă
+ro:Banchetă|Bancă|Bancă parc
 nb:Benk
 fi:Penkki
 sw:Benchi
@@ -2144,17 +2389,17 @@ zh-Hant:1自行車出租|腳踏車|單車|租金|租錢
 pl:4Wynajem rowerów|4rower|3Wynajem
 pt:Aluguel de bicicletas|4bicicleta|3aluguel
 hu:4Kerékpárkölcsönző|kerékpár|3bérlet
-th:4จักรยาน|บริการรถเช่า|
-zh-Hans:1自行车
-ar:دراجة هوائية
+th:4จักรยานให้เช่า|4จักรยาน|บริการรถเช่า|
+zh-Hans:1自行车租赁
+ar:استئجار دراجات
 da:4Cykel
-tr:4Bisiklet
+tr:Bisiklet kiralama|4Bisiklet
 sv:4Cykeluthyrning|cykel|cykel|3uthyrning
-vi:Thuê ô tô
-id:Sepeda
-ro:Bicicletă
-nb:Bilutleie
-fi:Polkupyörä
+vi:Cho thuê xe đạp
+id:Penyewaan Sepeda
+ro:Închiriere de biciclete|Bicicletă
+nb:Sykkelutleie
+fi:Polkupyöränvuokraus
 sw:Kodi ya baiskeli|baiskeli|kodi
 
 amenity-car_sharing|amenity-car_rental
@@ -2380,7 +2625,7 @@ ja:1水飲み場|飲料水|飲水|水
 cs:4Pitná voda
 sk:4Pitná voda
 nl:4Drinkwater
-zh-Hant:1飲用水|可喝的水|2飲水設施|喝水|口渴
+zh-Hant:1飲用水|飲水機|可喝的水|2飲水設施|喝水|口渴
 pl:4Picie wody|woda|picie
 pt:Água potável
 hu:4Ivóvíz
@@ -2399,7 +2644,7 @@ sw:Maji ya kunywa
 
 amenity-fire_station
 en:Fire Station|U+1F692
-ru:Пожарные
+ru:Пожарная часть|Пожарная станция|Пожарные
 uk:Пожежна частина
 de:Feuerwehr|Feuerwache
 fr:Caserne de pompiers
@@ -2454,7 +2699,7 @@ vi:Đài phun nước
 id:Air mancur
 ro:Fântână
 nb:Fontene
-fi:Lähde
+fi:Suihkulähde
 
 amenity-grave_yard|landuse-cemetery
 en:Graveyard|cemetery
@@ -2501,10 +2746,10 @@ sk:4Nemocnica|klinika|pohotovosť|zdravotnícke zariadenie|3lekár|doktor
 nl:4Ziekenhuis|kliniek|hospitaal|tandarts|3dokter
 zh-Hant:1醫院|醫生|診所|醫療|診療
 pl:4Szpital|klinika|lekarz|doktor|leczenie
-pt:4Clínica|clínica|3médico|hospital
+pt:3Hospital|4Clínica|3médico|hospital
 hu:4Kórház|klinika|3orvos
-th:3คลินิก|แพทย์
-zh-Hans:诊所|医生|医院
+th:3โรงพยาบาล|3คลินิก|แพทย์
+zh-Hans:医院|诊所|医生|医院
 ar:المستشفى|عيادة
 da:4Hospital|klinik
 tr:4Hastane|3klinik|doktor
@@ -2517,11 +2762,11 @@ fi:Sairaala
 sw:Hospitali|zahanati|daktari
 
 amenity-clinic
-en:Clinic|1hospital|U+1F3E5|U+1F489
+en:Clinic|1hospital|doctor|U+1F3E5|U+1F489
 ar:عيادة|مستشفى|المستشفى
 cs:Klinika|nemocnice
 da:Klinik|hospital
-de:Krankenhaus|Klinik
+de:Klinik|Krankenhaus
 es:Clínica|hospital
 fi:Klinikka|sairaala
 fr:Clinique|hôpital
@@ -2529,49 +2774,50 @@ hu:Klinika|kórház|szanatórium
 id:Klinik|rumah sakit
 it:Clinica|ospedale
 ja:クリニック|病院、診療所|病院
-ko:병원|의원
+ko:클리닉|의원
 nl:Kliniek|ziekenhuis
 nb:Klinikk|sykehus
-pl:Szpital
+pl:Klinika|Szpital
 pt:Clínica|centro de saúde|hospital
 ro:Clinică|spital
-ru:Поликлиника|клиника|больница
+ru:Поликлиника|клиника|больница|врач
 sk:Poliklinika|nemocnica|zdravotné stredisko
 sv:Klinik|sjukhus
 th:คลินิก|โรงพยาบาล
 tr:Klinik|hastane
 uk:Поліклініка|клініка|лікарня
-vi:Bệnh viện|BV
+vi:Phòng khám|bịnh viện|dưỡng đường|Bệnh viện|BV
 zh-Hans:诊所|医院
 zh-Hant:診所|醫院
 
 amenity-doctors
-en:Doctor|U+1F489|U+1F3E5|U+1F691|hospital
-ar:مكتب طبيب|المستشفى
-cs:Lékařská ordinace|nemocnice
-da:Lægekontor|hospital
-de:Arztpraxis|krankenhaus
-es:Consulta del médico|hospital
-fi:Lääkärin vastaanotto|sairaala
+en:Doctor|clinic|U+1F489|U+1F3E5|U+1F691|hospital
+ar:مكتب طبيب|عيادة|المستشفى
+cs:Lékařská ordinace|Klinika|nemocnice
+da:Lægekontor|Klinik|hospital
+de:Arztpraxis|Klinik|Krankenhaus
+es:Consulta del médico|Clínica|hospital
+fi:Lääkärin vastaanotto|Klinikka|sairaala
 fr:Cabinet médical|hôpital
-hu:Rendelő|orvosi rendelő|kórház
-id:Praktik dokter|rumah sakit
-it:Studio medico|ambulatorio|ospedale
-ja:医者のオフィス|病院
-ko:개인병원|병원
-nl:Huisartsenpost|huisarts|ziekenhuis
-nb:Legekontor|legesenter|sykehus
-pt:Gabinete do médico|hospital
-ro:Cabinet medical|spital
-ru:Врач|больница
-sk:Ambulancia|nemocnica
-sv:Läkarmottagning|sjukhus
-th:ห้องแพทย์|คลินิก
-tr:Doktor muayenehanesi|hastane
-uk:Лікар|лікарня
-vi:Phòng khám|bệnh viện
-zh-Hans:医师办公室|医院
-zh-Hant:醫師診間|醫院
+hu:Rendelő|Klinika|orvosi rendelő|kórház
+id:Praktik dokter|Klinik|rumah sakit
+it:Studio medico|Clinica|ambulatorio|ospedale
+ja:医者のオフィス|クリニック|病院
+ko:개인병원|병원|병원
+nl:Huisartsenpost|Kliniek|huisarts|ziekenhuis
+nb:Legekontor|Klinikk|legesenter|sykehus
+pl:Lekarz|doktor|klinika|szpital
+pt:Gabinete do médico|Clínica|hospital
+ro:Doctor|medic|Cabinet medical|Clinică|spital
+ru:Врач|больница|клиника|поликлиника
+sk:Ambulancia|Poliklinika|nemocnica
+sv:Läkarmottagning|klinik|sjukhus
+th:ห้องแพทย์|โรงพยาบาล|คลินิก
+tr:Doktor muayenehanesi|Klinik|hastane
+uk:Лікар|Поліклініка|клініка|лікарня
+vi:Bác sĩ|Phòng khám|bịnh viện|dưỡng đường|BVbệnh viện
+zh-Hans:医师办公室|诊所|医院
+zh-Hant:醫師診間|診所|醫院
 
 amenity-dentist
 en:Dentist
@@ -2643,7 +2889,7 @@ ja:1幼稚園|保育園|託児|託児所
 cs:Školka|mateřská škola|dětská školka|mateřská školka
 sk:Škôlka|materská škola|detská škôlka
 nl:Kleuterschool
-zh-Hant:1幼稚園
+zh-Hant:幼兒園|1幼稚園
 pl:4Przedszkole|dzieci|zerówka
 pt:Jardim de infância
 hu:Óvoda
@@ -2678,7 +2924,7 @@ pl:3Biblioteka|książki
 pt:Biblioteca
 hu:3Könyvtár
 th:3ห้องสมุด
-zh-Hans:幼儿园
+zh-Hans:图书馆
 ar:مكتبة
 da:3Bibliotek
 tr:3Kütüphane
@@ -2747,7 +2993,7 @@ vi:3Hiệu thuốc
 id:3Apotek
 ro:3Farmacie
 nb:3Apotek
-fi:3Apteekki
+fi:3Farmasia
 sw:Duka la dawa
 
 amenity-post_box
@@ -2773,9 +3019,9 @@ ar:صندوق بريد|البريد
 da:3Postboks|3postboks|p/o|post
 tr:3Posta kutusu|posta
 sv:3Postlåda|post
-vi:Bưu điện
-id:Pos
-ro:Poştă
+vi:Hòm thư|Bưu điện
+id:Kotak pos
+ro:Cutie poștală
 nb:Postboks
 fi:Postilaatikko
 sw:Sanduku la posta
@@ -2804,23 +3050,23 @@ da:3Post
 tr:3Postane|posta
 sv:3Post
 vi:Bưu điện
-id:Pos
-ro:Poştă
+id:Kantor pos
+ro:Oficiul postal
 nb:Post
 fi:Posti
 sw:Posta
 
 amenity-waste_disposal
-en:Trash|bin|garbage|waste disposal|dumpster|U+1F6AE
-ar:ﺔﻣﺎﻤﻗ
+en:Dumpster|Trash|bin|garbage|waste disposal|U+1F6AE
+ar:القمامة|ﺔﻣﺎﻤﻗ
 cs:Odpadky|koš|popelnice|uložiště odpadu
-da:Skraldespand|Genbrug|skrald
-de:Mülltonne|Abfälle|Müll
+da:Bortskaffelse af affald|Skraldespand|Genbrug|skrald
+de:Müllcontainer|Mülltonne|Abfälle|Müll
 el:Σκουπίδια
 es:Basura
 fi:Roska
 fr:Déchets|poubelle|déchet
-he:הפשא
+he:במכולה|הפשא
 hu:Szemét
 id:Sampah
 it:Spazzatura
@@ -2828,16 +3074,16 @@ ja:ゴミ|ごみ|リサイクル|再利用|ダストボックス
 ko:쓰레기|휴지통
 nb:Søppel
 nl:Uitschot|afval|prullenbak|vuilnis
-pl:Śmieci|ponowne odtworzenie|odpady
+pl:Wysypisko|Śmieci|ponowne odtworzenie|odpady
 pt:Lixo|lixo
 ro:Gunoi
-ru:Мусорный бак|мусорка
+ru:Мусорный контейнер|мусорка
 sk:Odpadky|kôš
-sv:Soptunna|skräp|avfall
+sv:Avfallscontainer|Soptunna|skräp|avfall
 th:ขยะ|ถังขยะ
-tr:Çöp|çöplük
-uk:Сміттєвий бак|сміття|смітник
-vi:Rác
+tr:Çöplüğü|Çöp|çöplük
+uk:Сміттєвий контейнер|сміття|смітник
+vi:Xử lý chất thải|Rác
 zh-Hans:垃圾
 zh-Hant:垃圾|回收|回收場
 
@@ -2859,7 +3105,7 @@ nl:Milieustraat
 nb:Resirkuleringssenter|innsamlingsstasjon
 pt:Centro de reciclagem
 ro:Centru de reciclare
-ru:Приём вторсырья|сбор сырья
+ru:Приём вторсырья|утиль|сырье|сбор сырья|стеклотара|макулатура|прием металлов
 sk:Zberné suroviny
 sv:Återvinningscentral
 th:ศูนย์รีไซเคิล
@@ -2893,7 +3139,7 @@ ar:مدرسة
 da:2Skole
 tr:3Okul
 sv:3Skola
-vi:Rác
+vi:Trường học
 id:Sekolah
 ro:Școală
 nb:Skole
@@ -2923,7 +3169,7 @@ ar:مأوى
 da:Hjem|ly|tilflugtssted
 tr:Barınak
 sv:Logi
-vi:Trường học
+vi:chổ nương thân
 id:Tempat penampungan
 ro:Adăpost
 nb:Tilfluktsrom
@@ -2932,7 +3178,7 @@ sw:Malazi
 
 amenity-telephone
 en:2Phone|U+260E|U+1F4DE
-ru:2Телефон
+ru:2Телефон|таксофон
 uk:2Телефон
 de:2Telefon|Fernsprecher
 fr:2Téléphone
@@ -3122,7 +3368,7 @@ ko:1타운|도시
 ja:町|村
 cs:Město
 sk:Mesto
-nl:Dorp|stad
+nl:Stad
 zh-Hant:鎮|城鎮|鄉|鄉鎮
 pl:Miasteczko|miasto
 pt:Cidade
@@ -3809,15 +4055,15 @@ sk:3Hostel|hotel|ubytovňa|motel
 nl:3Hostel|jeugdherberg|hotel|motel
 zh-Hant:1旅舍|旅館|青年旅舍|青年旅館|住宿|飯店|3汽車旅館|3motel
 pl:4Hostel|4hotel|4motel
-pt:3Pousada|4hotel|motel
+pt:3Hostel|3Pousada|4hotel|motel|Albergue
 hu:3Hostel|szálloda|szállás
 th:3หอพัก|โรงแรม|โมเทล
-zh-Hans:2旅社|旅店
+zh-Hans:2旅馆|旅店
 ar:نزُل|فندق|فندق رخيص|الفندق
 da:3Hostel|kro|vandrerhjem|hotel|motel
 tr:3Pansiyon|otel|motel
 sv:3Vandrarhem|hotell|motell
-vi:Nhà khách|khách sạn
+vi:Nhà trọ|khách sạn
 id:Hostel|hotel
 ro:Hostel|hotel
 nb:Vandrerhjem|hotell
@@ -3842,7 +4088,7 @@ pl:3Hotel|motel
 pt:3Hotel|motel
 hu:3Szálloda|hotel|szállás
 th:3โรงแรม|โมเทล
-zh-Hans:2旅社|汽车旅馆|旅店
+zh-Hans:2宾馆|汽车旅馆|旅店
 ar:فندق|فندق رخيص|الفندق
 da:2Hotel|motel
 tr:2Otel|motel
@@ -3899,7 +4145,7 @@ sk:3Motel|penzión|hotel|hostel|ubytovňa
 nl:3Motel|hotel|hostel
 zh-Hant:1汽車旅館|3motel|旅館|飯店|住宿|
 pl:3Motel|hotel|hostel
-pt:3Pousada|motel
+pt:3Motel|3Pousada
 hu:3Motel|szálloda|szállás
 th:3โมเทล|โรงแรม|หอพัก
 zh-Hans:1汽车旅馆|旅店
@@ -3922,8 +4168,8 @@ fr:Hôtel de montagne|hôtel|auberge de jeunesse|cabane alpine
 it:Hotel di montagna|baita|capanna|capanna di montagna|capanna alpina|hotel
 es:4Cabaña|cabaña de los Alpes|hotel de montaña|hotel
 ko:1고산 오두막|산 호텔|호텔
-ja:1山小屋|高山小屋|ヒュッテ
-cs:4Horská chata|horský hotel|hotel
+ja:1山小屋|高山小屋|ヒュッテ|山の宿泊施設
+cs:4Ubytování v horách|Horská chata|horský hotel|hotel
 sk:4Horská chata|horský hotel|hotel
 nl:3Berghut|alpenhut|hotel
 zh-Hant:1山上住宿|飯店|旅館|住宿|旅舍|2高山住宿
@@ -4388,7 +4634,7 @@ sv:4Camping|campingplats|campingområde
 vi:Cắm trại
 id:Perkemahan
 ro:Camping
-nb:Camping
+nb:Overnatting i bobiler
 fi:Retkeily
 sw:Kambi
 
@@ -4419,7 +4665,7 @@ vi:Khu lễ hội hóa trang
 id:Lokasi perkemahan
 ro:Teren pentru campare
 nb:Camping
-fi:Retkeily
+fi:Asuntovaunupaikka|Retkeily
 
 office
 en:Office|company|U+1F454|U+1F4BC|U+1F3E2|
@@ -4828,7 +5074,7 @@ fi:Suutari
 fr:Cordonnier
 hu:Cipész
 id:Tukang sepatu
-it:Calzolaio
+it:Calzolaio|Riparazione di calzature
 ja:靴修理
 ko:구두수선
 nl:Schoenmaker|schoenmakerij
@@ -5023,20 +5269,61 @@ sw:Pwani
 
 highway-speed_camera
 en:3Speed Camera
-ru:3Камера скорости
-vi:Camera tốc độ
-id:Kamera kecepatan
-ro:Radar
-nb:Fartskamera
-nl:Flitscamera|snelheidscamera
-de:Blitzer|Radarkontrolle|Radarfalle
-fi:Nopeuskamera
+ru:Камера скорости
+fr:Radar de vitesse
+da:Automatisk Trafikkontrol
+id:Kamera Kecepatan
+ko:스피드 카메라
+sv:Hastighetskamera
+tr:Hız Kamerası
+uk:Камера безпеки дорожнього руху
+vi:Camera bắn tốc độ
+hu:Traffipax
+de:Blitzer
+fi:Nopeusvalvontakamera
+cs:Rychlostní kamera
+it:Autovelox
+nb:Fotoboks
+zh-Hant:測速照相機
+zh-Hans:测速照相机
+th:กล้องตรวจจับความเร็ว
+ja:オービス
+ro:Detector de viteză
+ar:كاميرا لرصد السرعة
+sk:Rýchlostná kamera
+es:Radar de velocidad
+pl:Fotoradar
+nl:Flitspaal
+pt:Radar de velocidade
 
 man_made-lighthouse
 en:Lighthouse
-nl:Vuurtoren
 ru:Маяк
+fr:Phare
+da:Fyrtårn
+id:Mercusuar
+ko:등대
+sv:Fyr
+tr:Deniz Feneri
+uk:Маяк
+vi:Hải đăng
+hu:Világítótorony
 de:Leuchtturm
+fi:Majakka
+cs:Maják
+it:Faro
+nb:Fyr
+zh-Hant:燈塔
+zh-Hans:灯塔
+th:ประภาคาร
+ja:灯台
+ro:Far
+ar:منارة
+sk:Maják
+es:Faro
+pl:Latarnia morska
+nl:Vuurtoren
+pt:Farol
 
 shop-copyshop
 en:Copy Shop|Printer
@@ -5126,7 +5413,7 @@ zh-Hant:旅行社|遊覽
 
 shop-outdoor
 en:Outdoor Equipment|trekking|climbing|camping|shop
-ru:Снаряжение|магазин
+ru:Магазин снаряжения|туристический магазин|магазин
 ar:معدات خارجية|ترحال|تسلق|تخييم|محل
 cs:Venkovní vybavení|trekking|lezení|kempování|obchod
 da:Fritidsudstyr|vandring|klatring|camping|butik
@@ -5180,7 +5467,7 @@ tr:Kuru Temizleme|temizleme
 uk:Хімчистка
 vi:Giặt Sấy|giặt giũ
 zh-Hans:干洗|清洁
-zh-Hant:幹洗|清潔
+zh-Hant:乾洗|清潔
 
 shop-tyres
 en:Tyre Shop|shop
@@ -5271,7 +5558,7 @@ zh-Hant:獸醫
 
 amenity-charging_station
 en:Charging Station|charging
-ru:Зарядная станция
+ru:Зарядная станция|станция зарядки
 ar:محطة شحن|شحن
 cs:Nabíjecí stanice|nabíjení
 da:Ladestation|opladning
@@ -5304,7 +5591,7 @@ ru:Детская комната|ясли
 ar:حضانة|رعاية أطفال
 cs:Jesle|Péče o děti
 da:Vuggestue|Børnehave
-de:Kindergarten|Kinderbetreuung
+de:Kindertagesstätte|Kinderzimmer|Kindergarten|Kinderbetreuung
 es:Habitación infantil|guardería
 fi:Päivähoito|Lastenhoito
 fr:Garderie|Garde d'enfant
@@ -5317,12 +5604,1613 @@ nb:Førskole|Barnehage
 nl:Crèche|kinderzorg
 pl:Żłobek|Przedszkole
 pt:Creche|jardim de infância
-ro:Grădiniță|Îngrijire copii
+ro:De îngrijire a copilului|Grădiniță|Îngrijire copii
 sk:Jasle|Starostlivosť o deti
-sv:Förskola|Barnomsorg
+sv:Barnomsorg|Förskola
 th:สถานรับเลี้ยงเด็ก|ดูแลเด็ก
 tr:Çocuk Yuvası|Kreş
 uk:Дитяча кімната|ясла
 vi:Nhà trẻ|Chăm sóc Trẻ em
-zh-Hans:幼儿园|儿童看护
-zh-Hant:幼兒園|兒童看護
+zh-Hans:托儿所|儿童看护
+zh-Hant:保育|幼兒園|兒童看護
+
+amenity-bicycle_parking
+en:Bicycle Parking
+ru:Велостоянка
+ar:أماكن وقوف للدراجات
+cs:Parkování kol
+da:Cykelparkering
+de:Fahrradständer
+es:Estacionamiento de bicis
+fi:Polkupyöräpysäköinti
+fr:Parking à vélo
+hu:Kerékpárparkoló
+id:Parkir Sepeda
+it:Parcheggio biciclette
+ja:駐輪場
+ko:자전거보관소
+nl:Fietsenstalling
+nb:Sykkelparkering
+pl:Parking dla rowerów
+pt:Estacionamento de bicicletas
+ro:Parcare biciclete
+sk:Stojan na bicykle
+sv:Cykelparkering
+th:ที่จอดจักรยาน
+tr:Parking à vélo
+uk:Велозупинка
+vi:Chỗ Đậu Xe Đạp
+zh-Hans:自行车存放处
+zh-Hant:腳踏車停放區
+
+amenity-waste_basket
+en:Trash Bin|Litter Bin|Waste Basket
+ru:Урна|Мусорная корзина
+ar:صندوق قمامة
+cs:Odpadkový koš
+da:Skraldespand
+de:Abfalleimer
+es:Papelera
+fi:Roska-astia
+fr:Poubelle
+hu:Szemétkosár
+id:Kotak sampah
+it:Contenitore per rifiuti
+ja:くずかご
+ko:쓰레기통
+nl:Vuilnisbak
+nb:Søppelkasse
+pl:Kosz na śmieci
+pt:Caixote do lixo
+ro:Pubelă
+sk:Odpadkový kôš
+sv:Pepperskorg
+th:ถังขยะ
+tr:Poubelle
+uk:Бак для сміття
+vi:Thùng rác
+zh-Hans:垃圾篓
+zh-Hant:垃圾箱
+
+emergency-phone
+en:Emergency Phone
+ru:Телефон для экстренных вызовов
+ar:هاتف الطوارئ
+cs:Tísňového volání
+da:Emergency telefon
+de:Nottelefon
+el:τηλεφώνου έκτακτης ανάγκης
+es:Teléfono de emergencia
+fi:Hätänumero
+fr:Téléphone d'urgence
+he:טלפון חירום
+hu:Sürgősségi telefon
+id:Telepon darurat
+it:Telefono di emergenza
+ja:緊急電話
+ko:긴급 전화
+nb:Nødtelefon
+nl:Praatpaal
+pl:Telefon alarmowy
+pt:Telefone de emergência
+ro:Telefon de urgență
+sk:Tiesňového volania
+sv:Nödtelefon
+sw:Simu ya dharura
+th:โทรศัพท์ฉุกเฉิน
+tr:Acil telefon
+uk:Аварійний телефон
+vi:Điện thoại khẩn cấp
+zh-Hans:紧急电话
+zh-Hant:緊急電話
+
+leisure-fitness_centre
+en:Fitness Centre|Gym|U+1F4AA
+ru:Фитнес-клуб|качалка|джим
+ar:مركز للياقة البدنية، نادي رياضي
+cs:Fitness|tělocvična
+da:Trænings- og motionscenter|fitnesscenter
+de:Fitnessstudio
+es:Centro de fitness|gimnasio
+fi:Kuntosali
+fr:Centre fitness|salle de gym
+hu:Fitnesz-terem
+id:Pusat kebugaran|senam
+it:Centro benessere|palestra
+ja:フィットネスセンター、ジム
+ko:피트니스센터|체육관
+nl:Fitnesscentrum|sportschool
+nb:Treningssenter
+pl:Centrum fitness|siłownia
+pt:Centro de fitness|Ginásio
+ro:Centru fitness
+sk:Fitnescentrum|telocvičňa
+sv:Gym
+th:ฟิตเนสเซ็นเตอร์|ยิม
+tr:Centre fitness|salle de gym
+uk:Фітнес-зал
+vi:Phòng Tập
+zh-Hans:健身中心|健身房
+zh-Hant:健身中心|健身房
+
+leisure-sauna
+en:Sauna
+ru:Баня|Сауна
+ar:ساونا
+cs:Sauna
+da:Sauna
+de:Sauna
+es:Sauna
+fi:Sauna
+fr:Sauna
+hu:Szauna
+id:Sauna
+it:Sauna
+ja:サウナ
+ko:사우나
+nl:Sauna
+nb:Badstu
+pl:Sauna
+pt:Sauna
+ro:Saună
+sk:Sauna
+sv:Bastu
+th:ซาวน่า
+tr:Sauna
+uk:Лазня
+vi:Phòng xông hơi
+zh-Hans:桑拿
+zh-Hant:桑拿
+
+man_made-water_well
+en:Water Well
+ru:Колодец
+ar:بئر ماء
+cs:Studna
+da:Brønd
+de:Brunnen
+es:Pozo
+fi:Vesikaivo
+fr:Puits à eau
+hu:Ivókút
+id:Sumur air
+it:Pozzo d'acqua
+ja:井戸
+ko:우물
+nl:Waterbron
+nb:Brønn
+pl:Studnia
+pt:Poço de água
+ro:Puț de apă
+sk:Studňa
+sv:Brunn
+th:บ่อน้ำ
+tr:Puits à eau
+uk:Криниця
+vi:Giếng Nước
+zh-Hans:水井
+zh-Hant:水井
+
+shop-car_repair-tyres
+en:Tyre Repair
+ru:Шиномонтаж
+ar:إصلاح إطارات
+cs:Pneuservis
+da:Dækreparation
+de:Reifenservice
+es:Reparación de neumáticos
+fi:Rengashuolto
+fr:Réparation de pneus
+hu:Gumiszerviz
+id:Tambal ban
+it:Gommista
+ja:タイヤ修理
+ko:타이어수리점
+nl:Bandenreparatie
+nb:Dekkreparasjon
+pl:Wulkanizacja
+pt:Reparação de pneus
+ro:Vulcanizare
+sk:Pneuservis
+sv:Däckverkstad
+th:ร้านปะยาง
+tr:Réparation de pneus
+uk:Шиномонтаж
+vi:Vá Lốp
+zh-Hans:轮胎修理
+zh-Hant:輪胎修補
+
+shop-chemist|@shop
+en:Chemist Shop
+ru:Бытовая химия
+ar:صيدلية
+cs:Drogerie
+da:Medicinbutik|Drugstore
+de:Drogerie
+es:Droguería
+fi:Apteekki
+fr:Droguerie
+hu:Drogéria
+id:Toko bahan kimia
+it:Farmacia
+ja:化学薬品店
+ko:화학자 상점
+nl:Drogisterij
+nb:Dagligvareforretning
+pl:Drogeria
+pt:Farmácia
+ro:Mercerie
+sk:Drogéria
+sv:Apotek
+th:ร้านขายผลิตภัณฑ์ทางเคมี
+tr:Zincir eczane
+uk:Магазин побутової хімії
+vi:Cửa hàng Dược phẩm
+zh-Hant:藥妝店
+zh-Hans:药妆店
+
+shop-pet|@shop
+en:Petshop
+ru:Зоотовары
+ar:متجر للحيوانات الأليفة
+cs:Zverimex
+da:Dyrehandel
+de:Tierhandlung
+es:Tienda de mascotas
+fi:Eläinkauppa
+fr:Animalerie
+hu:Házikedvenc-üzlet
+id:Toko hewan
+it:Negozio di animali
+ja:ペットショップ
+ko:애완동물점
+nl:Dierenwinkel
+nb:Dyrebutikk
+pl:Sklep zoologiczny
+pt:Loja de animais
+ro:Pet shop
+sk:Obchod zo zvieratami
+sv:Djuraffär
+th:เพ็ทชอป
+tr:Animalerie
+uk:Зоотовари
+vi:Cửa Hàng Vật Nuôi
+zh-Hans:宠物店
+zh-Hant:寵物店
+
+tourism-information-office|@tourism
+en:Tourist Office
+ru:Туристический офис
+ar:مكتب سياحة
+cs:Informační centrum
+da:Turistkontor
+de:Reisebüro
+es:Oficina de turismo
+fi:Turistitoimisto
+fr:Office de tourisme
+hu:Idegenforgalmi iroda
+id:Kantor wisata
+it:Ufficio turistico
+ja:観光案内所
+ko:관광정보센터
+nl:Toeristische informatie
+nb:Turistkontor
+pl:Biuro podróży
+pt:Gabinete de turismo
+ro:Birou de informații turistice
+sk:Turistické informačné centrum
+sv:Turistcenter
+th:ศูนย์บริการนักท่องเที่ยว
+tr:Office de tourisme
+uk:Туристичний офіс
+vi:Văn Phòng Du Lịch
+zh-Hans:旅游服务处
+zh-Hant:旅遊辦事處
+
+amenity-community_centre
+en:Community Centre
+ru:Культурно-досуговый центр|Дом культуры
+ar:مركز اجتماعي
+cs:Kulturní centrum
+da:Medborgerhus
+de:Bürgerhaus
+es:Centro comunitario
+fi:Monitoimitalo
+fr:Centre communautaire
+hu:Közösségi központ
+id:Pusat komunitas
+it:Centro ricreativo
+ja:コミュニティセンター
+ko:커뮤니티센터
+nl:Wijkcentrum
+nb:Samfunnshus
+pl:Dom kultury
+pt:Centro comunitário
+ro:Centru comunitar
+sk:Dom kultúry
+sv:Stadshus
+th:ศูนย์ชุมชน
+tr:Centre communautaire
+uk:Центр культури та дозвілля, Дім культури
+vi:Trung Tâm Cộng Đồng
+zh-Hans:社区中心
+zh-Hant:社區活動中心
+
+amenity-courthouse
+en:Courthouse
+ru:Суд
+ar:محكمة
+cs:Soud
+da:Retsbygning
+de:Justizgebäude
+es:Juzgado
+fi:Oikeustalo
+fr:Palais de justice
+hu:Bíróság
+id:Gedung pengadilan
+it:Tribunale
+ja:裁判所
+ko:법원
+nl:Rechtbank
+nb:Domstol
+pl:Sąd
+pt:Tribunal
+ro:Judecătorie
+sk:Súd
+sv:Domstol
+th:ศาล
+tr:Palais de justice
+uk:Суд
+vi:Tòa án
+zh-Hans:法院
+zh-Hant:法院
+
+amenity-vending_machine-cigarettes
+en:Cigarette Dispenser
+ru:Сигаретный автомат
+ar:ماكينة بيع سجائر
+cs:Automat na cigarety
+da:Cigaretmaskine
+de:Zigarettenautomat
+es:Máquina de tabaco
+fi:Savukeautomaatti
+fr:Distributeur de cigarettes
+hu:Cigarettaautomata
+id:Mesin rokok
+it:Distributore automatico di sigarette
+ja:たばこ自動販売機
+ko:담배자판기
+nl:Sigarettenautomaat
+nb:Sigarettautomat
+pl:Automat z papierosami
+pt:Máquina de venda de tabaco
+ro:Automat de țigări
+sk:Automat na cigarety
+sv:Cigarettmaskin
+th:เครื่องขายบุหรี่
+tr:Distributeur de cigarettes
+uk:Автомат з продажу сигарет
+vi:Máy bán thuốc lá
+zh-Hans:自动售烟机
+zh-Hant:香菸自動販賣機
+
+amenity-vending_machine-drinks
+en:Drink Dispenser
+ru:Автомат с напитками
+ar:ماكينة بيع مشروبات
+cs:Automat na nápoje
+da:Automat for drikkevarer
+de:Getränkeautomat
+es:Máquina de bebidas
+fi:Juoma-automaatti
+fr:Distributeur de boissons
+hu:Italautomata
+id:Mesin penjual minuman
+it:Distributore automatico di bibite
+ja:飲料自動販売機
+ko:음료자동판매기
+nl:Drankautomaat
+nb:Drikkeautomat
+pl:Automat z napojami
+pt:Máquina de venda de bebidas
+ro:Automat de băuturi
+sk:Nápojový automat
+sv:Läskautomat
+th:เครื่องขายเครื่องดื่มอัตโนมัติ
+tr:Distributeur de boissons
+uk:Автомат з напоями
+vi:Máy bán thức uống
+zh-Hans:饮料售卖机
+zh-Hant:飲料自動販賣機
+
+building-garage
+en:Garage
+ru:Гараж
+ar:جراج
+cs:Garáž
+da:Garage
+de:Garage
+es:Taller mecánico
+fi:Autotalli
+fr:Garage
+hu:Garázs
+id:Garasi
+it:Garage
+ja:車庫
+ko:정비소
+nl:Garage
+nb:Verksted
+pl:Warsztat samochodowy
+pt:Garagem
+ro:Garaj
+sk:Garáž
+sv:Garage
+th:อาคารจอดรถ
+tr:Garage
+uk:Гараж
+vi:Gara
+zh-Hans:车库
+zh-Hant:車庫
+
+highway-rest_area
+en:Highway Rest Area
+ru:Зона отдыха на трассе
+ar:استراحة
+cs:Odpočívadlo
+da:Rasteplads
+de:Rastplatz
+es:Zona de descanso
+fi:Levähdyspaikka
+fr:Aire de repos
+hu:Pihenőzóna
+id:Tempat istirahat
+it:Area di sosta
+ja:休憩所
+ko:휴게소
+nl:Parkeerplaats
+nb:Rasteplass
+pl:Miejsce wypoczynku
+pt:Área de descanso
+ro:Zonă de odihnă
+sk:Odpočívadlo
+sv:Viloplats
+th:บริเวณพักผ่อน
+tr:Aire de repos
+uk:Зона відпочинку
+vi:Khu Vực Thụt Vào Để Đỗ Xe
+zh-Hans:休息区
+zh-Hant:休息區
+
+highway-traffic_signals
+en:Traffic Lights
+ru:Светофор
+ar:إشارات مرور
+cs:Semafor
+da:Trafiklys
+de:Verkehrsampel
+es:Semáforos
+fi:Liikennevalot
+fr:Feux de circulation
+hu:Közlekedési lámpák
+id:Lampu lalu lintas
+it:Semaforo
+ja:交通信号
+ko:신호등
+nl:Verkeerslichten
+nb:Trafikklys
+pl:Sygnalizacja świetlna
+pt:Semáforos
+ro:Semafoare
+sk:Semafor
+sv:Trafikljus
+th:สัญญาณไฟจราจร
+tr:Feux de circulation
+uk:Світлофор
+vi:Đèn Giao Thông
+zh-Hans:交通信号灯
+zh-Hant:紅綠燈
+
+man_made-chimney
+en:Factory Chimney
+ru:Заводская труба
+ar:مدخنة مصنع
+cs:Tovární komín
+da:Fabriksskorsten
+de:Fabrikschornstein
+es:Chimenea de fábrica
+fi:Tehtaan piippu
+fr:Cheminée d'usine
+hu:Gyárkémény
+id:Cerobong asap pabrik
+it:Ciminiera industriale
+ja:工場煙突
+ko:공장 굴뚝
+nl:Fabrieksschoorsteen
+nb:Fabrikkpipe
+pl:Komin fabryki
+pt:Chaminé de fábrica
+ro:Coș de fabrică
+sk:Komín
+sv:Fabriksskorsten
+th:ปล่องควันโรงงาน
+tr:Cheminée d'usine
+uk:Заводська труба
+vi:Ống Khói Nhà Máy
+zh-Hans:工厂烟囱
+zh-Hant:工廠煙囪
+
+man_made-tower
+en:Tower
+ru:Башня
+ar:برج
+cs:Věž
+da:Tårn
+de:Hochhaus
+es:Torre
+fi:Torni
+fr:Tour
+hu:Torony
+id:Menara
+it:Torre
+ja:タワー
+ko:타워
+nl:Toren
+nb:Tårn
+pl:Wieża
+pt:Torre
+ro:Turn
+sk:Veža
+sv:Torn
+th:หอคอย
+tr:Tour
+uk:Вежа
+vi:Tháp
+zh-Hans:高塔
+zh-Hant:塔
+
+power-substation
+en:Substation
+ru:Подстанция
+ar:محطة كهرباء فرعية
+cs:Rozvodna
+da:Transformerstation
+de:Umspannwerk
+es:Subestación
+fi:Muuntoasema
+fr:Sous-station
+hu:Kapcsolószekrény
+id:Stasiun bawah tanah
+it:Sottostazione elettrica
+ja:変電所
+ko:변전소
+nl:Substation
+nb:Trafo
+pl:Podstacja
+pt:Subestação
+ro:Stație subterană
+sk:Rozvodňa
+sv:Understation
+th:สถานีไฟฟ้า
+tr:Sous-station
+uk:Підстанція
+vi:Trạm biến áp
+zh-Hans:变电站
+zh-Hant:變電所
+
+shop-bookmaker
+en:Bookmaker
+ru:Букмекерская контора
+ar:ناشر
+cs:Knihař
+da:Bookmaker
+de:Buchmacher
+es:Casa de apuestas
+fi:Kustantaja
+fr:Bookmaker
+hu:Fogadóiroda
+id:Bandar judi
+it:Centro scommesse
+ja:ブックメーカー
+ko:마권판매소
+nl:Bookmaker
+nb:Bookmaker
+pl:Bukmacher
+pt:Livreiro
+ro:Casă de pariuri
+sk:Stávková kancelária
+sv:Bokbindare
+th:ร้านรับแทงพนัน
+tr:Bookmaker
+uk:Букмекерська контора
+vi:Người nhận cá cược
+zh-Hans:做书店
+zh-Hant:賭博業者
+
+shop-seafood|@shop
+en:Seafood Shop
+ru:Рыбный магазин
+ar:سماك
+cs:Prodej ryb
+da:Fiskehandler
+de:Fischhändler
+es:Pescadería
+fi:Kalakauppias
+fr:Poissonnier
+hu:Halüzlet
+id:Penjual Ikan
+it:Pescivendolo
+ja:魚屋
+ko:생선가게
+nl:Visboer
+nb:Fiskehandler
+pl:Sklep rybny
+pt:Peixaria
+ro:Pescărie
+sk:Obchodník s rybami
+sv:Fiskhandlare
+th:ร้านขายปลา
+tr:Poissonnier
+uk:Рибна крамниця
+vi:Người bán cá
+zh-Hans:鱼商
+zh-Hant:魚販
+
+shop-ticket|@shop
+en:Ticket Shop
+ru:Билетная касса
+ar:مكتب تذاكر
+cs:Prodej vstupenek
+da:Billetkontor
+de:Fahrkartenschalter
+es:Oficina de venta de entradas
+fi:Lippumyymälä
+fr:Billetterie
+hu:Jegyiroda
+id:Tempat penjualan karcis
+it:Biglietteria
+ja:チケット売り場
+ko:매표소
+nl:Kaartjesverkoop
+nb:Billettkontor
+pl:Kasa biletowa
+pt:Bilheteira
+ro:Casă de bilete
+sk:Pokladnica
+sv:Biljettkontor
+th:จุดจำหน่ายตั๋ว
+tr:Billetterie
+uk:Білетна каса
+vi:Phòng vé
+zh-Hans:售票处
+zh-Hant:售票處
+
+shop-wine|@shop
+en:Wine Shop
+ru:Винный магазин
+ar:متجر مشروبات روحية
+cs:Vinařství
+da:Spiritushandel
+de:Wein- und Spirituosengeschäft
+es:Establecimiento de bebidas alcohólicas
+fi:Alkoholimyymälä
+fr:Hors licence
+hu:Szeszesital-üzlet
+id:Toko anggur
+it:Negozio di alcolici
+ja:ワイン|酒屋|ワインショップ
+ko:와인 샵
+nl:Wijn|Slijterij
+nb:Alkoholutsalg
+pl:Sklep monopolowy
+pt:Vinho|Loja de Vinhos
+ro:Magazin de băuturi alcolice
+sk:Vinotéka
+sv:Spritförsäljning
+th:ร้านขายไวน์
+tr:Caviste
+uk:Винна крамниця
+vi:Rượu|Cửa hàng rượu
+zh-Hans:酒店
+zh-Hant:販酒處
+
+shop-car_parts|@shop
+en:Car Parts
+ar:ﺓﺭﺎﻴﺴﻟﺍ ءﺍﺰﺟﺃ
+cs:Autodíly
+da:Bildele
+de:Autoteile
+el:Εξαρτήματα αυτοκινήτου
+es:Piezas de automóvil
+fi:Auton osat
+fr:Pièces de voiture
+he:תינוכמ יקלח
+hu:Autó alkatrészek
+id:Bagian mobil
+it:Ricambi auto
+ja:車両部品
+ko:자동차 부품
+nb:Bildeler
+nl:Auto onderdelen
+pl:Części samochodowe
+pt:Peças do carro
+ro:Piese auto
+ru:Автомобильные запчасти|Автозапчасти
+sk:Autodiely
+sv:Bildelar
+sw:Vipuri vya magari
+th:อะไหล่รถยนต์
+tr:Araba parçaları
+uk:Автозапчастини
+vi:Những bộ phận xe hơi
+zh-Hans:汽车零件
+zh-Hant:汽車零件
+
+tourism-chalet|@hotel
+en:Chalet
+ru:Шале
+ar:شاليه
+cs:Chalet|Horská chata
+da:Hytte
+de:Hütte
+es:Chalé
+fi:Alppimaja
+fr:Chalet
+hu:Turistaház
+id:Chalet
+it:Chalet
+ja:シャレー|山小屋
+ko:별장
+nl:Chalet
+nb:Chalet
+pl:Domek letniskowy
+pt:Chalé
+ro:Cabană
+sk:Chata
+sv:Stuga
+th:ชาเลต์
+tr:Chalet
+uk:Шале
+vi:Nhà vệ sinh công cộng
+zh-Hans:木屋
+zh-Hant:木屋
+
+tourism-information-board|@tourism
+en:Information Board
+ru:Информационный щит
+ar:لوحة معلومات
+cs:Nástěnka
+da:Informationstavle
+de:Informationstafel
+es:Tablón de información
+fi:Informaatio
+fr:Panneau d'informations
+hu:Információs tábla
+id:Papan informasi
+it:Tabellone informativo
+ja:案内板
+ko:안내소
+nl:Informatiebord
+nb:Informasjonstavle
+pl:Tablica informacyjna
+pt:Painel de informações
+ro:Panou de informații
+sk:Informačné centrum
+sv:Anslagstavla
+th:บอร์ดประชาสัมพันธ์
+tr:Panneau d'informations
+uk:Інформаційний щит
+vi:Bảng Thông Tin
+zh-Hans:公告板
+zh-Hant:資訊中心
+
+tourism-information-map|@tourism
+en:Tourist Map
+ru:Карта
+ar:خريطة سياحية
+cs:Turistická mapa
+da:Turistkort
+de:Touristenkarte
+es:Mapa turístico
+fi:Turistikartta
+fr:Carte touristique
+hu:Turistatérkép
+id:Peta wisata
+it:Mappa turistica
+ja:観光マップ
+ko:관광안내도
+nl:Toeristische kaart
+nb:Turistkart
+pl:Mapa turystyczna
+pt:Mapa turístico
+ro:Hartă turistică
+sk:Turistická mapa
+sv:Turistkarta
+th:แผนที่ท่องเที่ยว
+tr:Carte touristique
+uk:Мапа
+vi:Bản Đồ Du Lịch
+zh-Hans:旅游地图
+zh-Hant:旅遊地圖
+
+aerialway-station
+en:Aerialway Station|Cable Car Station
+ru:Канатная дорога
+ar:محطة تلفريك
+cs:Stanice lanové dráhy
+da:Kabelbanestation
+de:Seilbahn
+es:Estación de teleférico
+fi:Köysirata-asema
+fr:Remontées mécaniques
+hu:Felvonóállomás
+id:Stasiun kereta gantung
+it:Stazione di rifornimento per auto elettriche
+ja:ケーブルカー駅
+ko:케이블카 역
+nl:Kabelwagenstation
+nb:Kabelbanestasjon
+pl:Stacja kolejki linowej
+pt:Paragem de elétricos
+ro:Stație de teleferic
+sk:Lanovka
+sv:Linbanestation
+th:สถานีกระเช้าลอยฟ้า
+tr:Remontées mécaniques
+uk:Канатна дорога
+vi:Trạm Cáp Treo
+zh-Hans:缆车车站
+zh-Hant:纜車站
+
+aeroway-helipad
+en:Helipad
+ru:Вертолётная площадка
+ar:مهبط مروحيات
+cs:Helipad
+da:Helikopterlandingsplads
+de:Hubschrauberlandeplatz
+es:Helipuerto
+fi:Helikopterialusta
+fr:Hélisurface
+hu:Helikopterleszálló
+id:Landasan helikopter
+it:Piattaforma per elicotteri
+ja:ヘリポート
+ko:헬기착륙장
+nl:Heliplatform
+nb:Helipad
+pl:Lądowisko dla helikopterów
+pt:Heliporto
+ro:Heliport
+sk:Pristávacia plocha pre vrtuľníky
+sv:Helikopterplatta
+th:ที่จอดเฮลิคอปเตอร์
+tr:Hélisurface
+uk:Майданчик для гелікоптерів
+vi:Bãi đỗ trực thăng
+zh-Hans:直升机停机坪
+zh-Hant:直升機停機坪
+
+amenity-vending_machine-parking_tickets
+en:Parking Tickets
+ru:Паркомат
+ar:ماكينة دفع تذاكر الموقف
+cs:Parkovací automat
+da:Parkeringsbilletmaskine
+de:Parkautomat
+es:Máquina de pago de tique de aparcamiento
+fi:Pysäköintimaksuautomaatti
+fr:Horodateur
+hu:Parkolóautomata
+id:Mesin pembayaran tiket parkir
+it:Parcometro
+ja:駐車券支払機
+ko:주차티켓판매기
+nl:Betaalautomaat parkeergarage
+nb:Parkeringsautomat
+pl:Parkomat
+pt:Máquina de pagamento de talões de estacionamento
+ro:Parcomat
+sk:Automat na výdaj parkovacích lístkov
+sv:Parkeringsautomat
+th:เครื่องชำระค่าที่จอดรถอัตโนมัติ
+tr:Horodateur
+uk:Паркомат
+vi:Máy trả tiền vé đậu xe
+zh-Hans:停车场付费机
+zh-Hant:違規停車罰單繳費機
+
+barrier-block
+en:Block
+ru:Блок
+ar:حاجز
+cs:Blok
+da:Blok
+de:Block
+es:Bloqueo
+fi:Este
+fr:Bloc
+hu:Blokk
+id:Blok
+it:Blocco
+ja:ブロック
+ko:블록
+nl:Blok
+nb:Blokk
+pl:Blok
+pt:Bloqueio
+ro:Bloc
+sk:Blok
+sv:Byggnad
+th:บล็อก
+tr:Bloc
+uk:Блок
+vi:Khối
+zh-Hans:障碍
+zh-Hant:街區
+
+barrier-bollard
+en:Pillar
+ru:Столбик
+ar:عمود حاجز قصير
+cs:Pilíř
+da:Søjle
+de:Säule
+es:Pilar
+fi:Tolppa
+fr:Pilier
+hu:Oszlop
+id:Pilar
+it:Pilastro
+ja:柱
+ko:기둥
+nl:Pilaar
+nb:Pullert
+pl:Kolumna
+pt:Pilar
+ro:Stâlp
+sk:Pilier
+sv:Stolpe
+th:เสา
+tr:Pilier
+uk:Стовпчик
+vi:Trụ
+zh-Hans:柱子
+zh-Hant:柱
+
+barrier-border_control
+en:Border Control
+ru:Погранконтроль
+ar:أمن الحدود
+cs:Pohraniční kontrola
+da:Grænsekontrol
+de:Grenzkontrolle
+es:Control de fronteras
+fi:Rajavalvonta
+fr:Contrôle aux frontières
+hu:Határállomás
+id:Gerbang perbatasan
+it:Controllo di frontiera
+ja:国境管理
+ko:국경통제소
+nl:Grenscontrole
+nb:Grensekontroll
+pl:Kontrola graniczna
+pt:Controlo fronteiriço
+ro:Control vamal
+sk:Hraničná kontrola
+sv:Gränskontroll
+th:ด่านตรวจคนเข้าเมือง
+tr:Contrôle aux frontières
+uk:Прикордонний контроль
+vi:Biên Phòng
+zh-Hans:边检
+zh-Hant:邊境管制
+
+barrier-entrance
+en:Entrance
+ru:Проход
+ar:مدخل الحاجز
+cs:Vstup
+da:Indgang
+de:Durchgang
+es:Entrada
+fi:Sisäänkäynti
+fr:Entrée
+hu:Bejárat
+id:Pintu masuk
+it:Ingresso
+ja:エントランス
+ko:입구
+nl:Ingang
+nb:Inngangspassasje
+pl:Wejście
+pt:Entrada
+ro:Intrare
+sk:Vstup
+sv:Ingång
+th:ทางเข้า
+tr:Entrée
+uk:Прохід
+vi:Lối vào
+zh-Hans:入口
+zh-Hant:入口
+
+barrier-gate
+en:Gate
+ru:Ворота
+ar:بوابة
+cs:Brána
+da:Port
+de:Tor
+es:Puerta
+fi:Portti
+fr:Porte
+hu:Kapu
+id:Gerbang
+it:Cancello
+ja:ゲート
+ko:게이트
+nl:Poort
+nb:Port
+pl:Brama
+pt:Portão
+ro:Poartă
+sk:Brána
+sv:Grind
+th:ประตู
+tr:Porte
+uk:Ворота
+vi:Cổng
+zh-Hans:门
+zh-Hant:大門
+
+barrier-lift_gate
+en:Lift Gate
+ru:Шлагбаум
+ar:حاجز بوابة
+cs:Závora
+da:Bom
+de:Schranke
+es:Barrera
+fi:Puomieste
+fr:Barrière levante
+hu:Sorompó
+id:Polisi tidur
+it:Barriera ferroviaria
+ja:ブームバリア
+ko:차량차단기
+nl:Slagboom
+nb:Bom
+pl:Szlaban
+pt:Barreira
+ro:Barieră cu braț
+sk:Závora
+sv:Bom
+th:ไม้กั้น
+tr:Barrière levante
+uk:Шлагбаум
+vi:Thanh Chắn
+zh-Hans:水栅门
+zh-Hant:遮斷機
+
+barrier-stile
+en:Stile
+ru:Перелаз
+ar:ممر عبور
+cs:Sloupek
+da:Gærdebro
+de:Zaunübertritt
+es:Escalón
+fi:Portaat
+fr:Échalier
+hu:Átjáró
+id:Undakan
+it:Scaletta per recinzioni
+ja:回転扉
+ko:디딤대
+nl:Tourniquet
+nb:Sperre
+pl:Przełaz
+pt:Elevação
+ro:Barieră
+sk:Turniket
+sv:Stätta
+th:บันไดข้าม
+tr:Échalier
+uk:Перелаз
+vi:Trụ chắn
+zh-Hans:台阶
+zh-Hant:梯磴
+
+barrier-toll_booth
+en:Toll Booth
+ru:Пункт оплаты
+ar:كشك رسوم عبور
+cs:Mýtné
+da:Betalingsstation
+de:Mautstelle
+es:Cabina de peaje
+fi:Tietulliasema
+fr:Poste de péage
+hu:Díjfizető kapu
+id:Gerbang tol
+it:Casello di pedaggio
+ja:料金所
+ko:톨게이트
+nl:Tolhokje
+nb:Bomstasjon
+pl:Kasa
+pt:Cabina de portagem
+ro:Cabină de taxare
+sk:Mýtne
+sv:Tullhus
+th:ด่านเก็บเงิน
+tr:Poste de péage
+uk:Пункт оплати
+vi:Quầy Soát Vé
+zh-Hans:收费亭
+zh-Hant:收費站
+
+entrance
+en:Entrance
+ru:Вход
+ar:مدخل
+cs:Vchod
+da:Indgang
+de:Eingang
+es:Entrada
+fi:Sisäänkäynti
+fr:Entrée
+hu:Bejárat
+id:Pintu masuk
+it:Ingresso
+ja:エントランス
+ko:입구
+nl:Ingang
+nb:Inngang
+pl:Wejście
+pt:Entrada
+ro:Intrare
+sk:Vstup
+sv:Entré
+th:ทางเข้า
+tr:Entrée
+uk:Вхід
+vi:Lối vào
+zh-Hans:入口
+zh-Hant:入口
+
+leisure-water_park
+en:Water Park
+ru:Аквапарк
+ar:ملاهي مائية
+cs:Aquacentrum
+da:Vandpark
+de:Freizeitbad
+es:Parque acuático
+fi:Vesipuisto
+fr:Centre aquatique
+hu:Aquapark
+id:Taman air
+it:Parco acquatico
+ja:ウォーターパーク
+ko:워터파크
+nl:Waterpark
+nb:Vannpark
+pl:Akwapark
+pt:Parque aquático
+ro:Parc acvatic
+sk:Vodný park
+sv:Äventyrspark
+th:สวนน้ำ
+tr:Centre aquatique
+uk:Аквапарк
+vi:Công Viên Nước
+zh-Hans:水上乐园
+zh-Hant:水上樂園
+
+man_made-water_tower
+en:Water Tower
+ru:Водонапорная башня
+ar:برج مياه
+cs:Vodárna
+da:Vandtårn
+de:Wasserturm
+es:Depósito de agua
+fi:Vesitorni
+fr:Château d'eau
+hu:Víztorony
+id:Menara air
+it:Cisterna per acqua
+ja:給水塔
+ko:급수탑
+nl:Watertoren
+nb:Vanntårn
+pl:Wieża wodna
+pt:Torre de água
+ro:Turn de apă
+sk:Vodojem
+sv:Vattentorn
+th:อ่างเก็บน้ำ
+tr:Château d'eau
+uk:Водонапірна вежа
+vi:Tháp Nước
+zh-Hans:水塔
+zh-Hant:水塔
+
+man_made-windmill
+en:Windmill
+ru:Ветряная мельница
+ar:طاحونة هواء
+cs:Větrný mlýn
+da:Vindmølle
+de:Windmühle
+es:Molino
+fi:Tuulimylly
+fr:Moulin
+hu:Szélmalom
+id:Kincir angin
+it:Mulino a vento
+ja:風車
+ko:풍차
+nl:Windmolen
+nb:Vindmølle
+pl:Wiatrak
+pt:Moinho de vento
+ro:Moară de vânt
+sk:Veterný mlyn
+sv:Väderkvarn
+th:กังหันลม
+tr:Moulin
+uk:Вітряк
+vi:Cối xay gió
+zh-Hans:风车
+zh-Hant:風車
+
+military-bunker
+en:Bunker
+ru:Бункер
+ar:مأوى
+cs:Bunkr
+da:Bunker
+de:Bunker
+es:Búnker
+fi:Bunkkeri
+fr:Bunker
+hu:Bunker
+id:Bunker
+it:Bunker
+ja:掩蔽壕
+ko:벙커
+nl:Bunker
+nb:Bunker
+pl:Bunkier
+pt:Bunker
+ro:Buncăr
+sk:Bunker
+sv:Bunker
+th:บังเกอร์
+tr:Bunker
+uk:Бункер
+vi:Boongke
+zh-Hans:地堡
+zh-Hant:地堡
+
+natural-cave_entrance
+en:Cave Entrance
+ru:Пещера
+ar:مدخل كهف
+cs:Vchod do jeskyně
+da:Huleindgang
+de:Höhleneingang
+es:Entrada a cueva
+fi:Luolan sisäänkäynti
+fr:Entrée de la cave
+hu:Barlangbejárat
+id:Mulut gua
+it:Ingresso grotta
+ja:洞穴入口
+ko:동굴입구
+nl:Grotingang
+nb:Grotteåpning
+pl:Wejście do jaskini
+pt:Entrada de caverna
+ro:Intrare peșteră
+sk:Vstup do jaskyne
+sv:Grottöppning
+th:ทางเข้าถ้ำ
+tr:Entrée de la cave
+uk:Печера
+vi:Cửa Hang
+zh-Hans:山洞入口
+zh-Hant:洞穴入口
+
+natural-tree
+en:Tree
+ru:Дерево
+ar:شجرة
+cs:Strom
+da:Træ
+de:Baum
+es:Árbol
+fi:Puu
+fr:Arbre
+hu:Fa
+id:Pohon
+it:Albero
+ja:木
+ko:나무
+nl:Boom
+nb:Tre
+pl:Drzewo
+pt:Árvore
+ro:Arbore
+sk:Strom
+sv:Träd
+th:ต้นไม้
+tr:Arbre
+uk:Дерево
+vi:Cây
+zh-Hans:树
+zh-Hant:樹
+
+natural-volcano
+en:Volcano
+ru:Вулкан
+ar:بركان
+cs:Sopka
+da:Vulkan
+de:Vulkan
+es:Volcán
+fi:Tulivuori
+fr:Volcan
+hu:Tűzhányó
+id:Gunung berapi
+it:Vulcano
+ja:火山
+ko:화산
+nl:Vulkaan
+nb:Vulkan
+pl:Wulkan
+pt:Vulcão
+ro:Vulcan
+sk:Vulkán
+sv:Vulkan
+th:ภูเขาไฟ
+tr:Volcan
+uk:Вулкан
+vi:Núi lửa
+zh-Hans:火山
+zh-Hant:火山
+
+office-estate_agent
+en:Estate Agent|Realtor
+ru:Агентство недвижимости|риэлтор
+ar:وكيل عقاري
+cs:Realitní makléř
+da:Ejendomsmægler
+de:Immobilienmakler
+es:Agente inmobiliario
+fi:Kiinteistönvälittäjä
+fr:Agent immobilier
+hu:Ingatlanügynök
+id:Agen ril estat
+it:Agenzia immobiliare
+ja:不動産業者
+ko:부동산중개소
+nl:Makelaar
+nb:Eiendomsmegler
+pl:Pośrednik handlu nieruchomościami
+pt:Agente imobiliário
+ro:Agent imobiliar
+sk:Realitný agent
+sv:Fastighetsmäklare
+th:นายหน้าอสังหาริมทรัพย์
+tr:Agent immobilier
+uk:Агенція нерухомості/ріелтор
+vi:Đại Lý Bất Động Sản
+zh-Hans:房屋中介
+zh-Hant:地產代理
+
+power-pole|power-tower
+en:Power Tower
+ru:Опора ЛЭП
+ar:عمود كهرباء
+cs:Sloup elektrického vedení
+da:El-pol
+de:Lichtmast
+es:Poste eléctrico
+fi:Sähköpylväs
+fr:Poteau électrique
+hu:Villanyoszlop
+id:Menara listrik
+it:Palo elettrico
+ja:電柱
+ko:전봇대
+nl:Elektriciteitspaal
+nb:Strømmast
+pl:Słup elektryczny
+pt:Poste de eletricidade
+ro:Stâlp de electricitate
+sk:Stĺp elektrického vedenia
+sv:Elstolpe
+th:เสาไฟฟ้า
+tr:Poteau électrique
+uk:Стовп ЛЕП
+vi:Trụ Điện
+zh-Hans:电线杆
+zh-Hant:電塔
+
+waterway-lock_gate
+en:Lock Gate
+ru:Шлюз
+ar:بوابة هويس
+cs:Stavidlo
+da:Låseport
+de:Schleuse
+es:Compuerta
+fi:Kanavasulku
+fr:Écluse
+hu:Zsilip
+id:Gerbang pengunci
+it:Sbarramento
+ja:水門
+ko:수문
+nl:Gesloten poort
+nb:Sluseport
+pl:Wrota śluzy
+pt:Portão de bloqueio
+ro:Ecluză
+sk:Stavidlo
+sv:Slussport
+th:ประตูระบายน้ำ
+tr:Écluse
+uk:Шлюз
+vi:Cổng Khóa
+zh-Hans:锁门
+zh-Hant:閘門
+
+amenity-public_bookcase
+en:Book Exchange|Bookcase|Book swapping
+ru:Книжный шкаф|Обмен книг
+fr:Bibliothèque
+id:Rak Buku|Bursa Buku
+ko:책장, 도서 교환
+sv:Bokskåp|bokutbyte
+tr:Kütüphane|Kitap Değişimi
+uk:Книги|обмін книгами
+vi:Kệ sách|Trao đổi sách
+hu:Nyilvános könyvespolc|könyvcsere
+de:Bücherregal|Büchertausch
+fi:Kirjahylly|Kirjakauppa
+cs:Knihovna|Směnárna knih
+it:Libreria|Scambio libri
+nb:Bokhylle|bokbytte
+zh-Hant:書架|書本交換
+zh-Hans:书架|书本交换
+th:ตู้หนังสือ สถานที่แลกเปลี่ยนหนังสือ
+ja:書棚|図書交換
+ro:Bibliotecă|Schimb de cărți
+ar:مكتبة، تبادل كتب
+sk:Knižnica|možnosť výmeny kníh
+es:Intercambio de libros|librería
+pl:Biblioteka|wymiana książek
+nl:Boekenkast|Boekuitwisseling
+da:Bog udveksling
+pt:Biblioteca livre|troca de livros
+
+leisure-sports_centre-climbing
+en:Climbing Centre
+ru:Скалодром
+fr:Centre d'escalade
+da:Klatring center
+id:Pusat Peralatan Mendaki
+ko:등반 센터
+sv:Klättercentrum
+tr:Tırmanma Merkezi
+uk:Спортивний скеледром
+vi:Trung tâm leo núi
+hu:Hegymászó központ
+de:Kletterzentrum
+fi:Kiipeilykeskus
+cs:Horolezecké centrum
+it:Centro di arrampicata
+nb:Klatresenter
+zh-Hant:攀登中心
+zh-Hans:攀登中心
+th:ศูนย์ปีนเขา
+ja:クライミングセンター
+ro:Centru cățărare
+ar:مركز تسلق
+sk:Lezecké centrum
+es:Centro de escalada
+pl:Centrum wspinaczkowe
+nl:Klimhal
+pt:Ginásio de escalada
+
+leisure-sports_centre-shooting
+en:Shooting Range
+ru:Тир|стрельбище
+fr:Centre de tir
+da:Skydebane
+id:Lapangan tembak
+ko:발사 범위
+sv:Skjutbana
+tr:Poligon
+uk:Тир
+vi:Nơi bắn súng
+hu:Lőtér
+de:Schießanlage
+fi:Ampumarata
+cs:Střelnice
+it:Poligono di tiro
+nb:Skytebane
+zh-Hant:射擊域
+zh-Hans:射击域
+th:สนามยิงปืน
+ja:射撃場
+ro:Tir
+ar:ملعب رماية
+sk:Strelnica
+es:Campo de tiro
+pl:Strzelnica
+nl:Schietbaan
+pt:Clube de tiro
+
+leisure-sports_centre-swimming
+en:Swimming Centre
+ru:Плавательный бассейн
+fr:Piscine
+da:Svømmecenter
+id:Kolam Renang
+ko:수영 센터
+sv:Simhall
+tr:Yüzme Merkezi
+uk:Басейн
+vi:Trung tâm Bơi lội
+hu:Uszoda
+de:Schwimmhalle
+fi:Uimahalli
+cs:Plavecký bazén
+it:Centro natatorio
+nb:Svømmehall
+zh-Hant:遊泳中心
+zh-Hans:游泳中心
+th:ศูนย์ว่ายน้ำ
+ja:スイミングセンター
+ro:Piscină
+ar:مركز سباحة
+sk:Plavecký areál
+es:Centro de natación
+pl:Basen
+nl:Zwembad
+pt:Centro de natação
+
+leisure-sports_centre-yoga
+en:Yoga Studio
+ru:Йога-центр|Студия йоги
+fr:Yoga
+da: Yoga center
+id:Studio Yoga
+ko:요가 스튜디오
+sv:Yogastudio
+tr:Yoga Stüdyosu
+uk:Студія йоги
+vi:Phòng tập yoga
+hu:Jógastúdió
+de:Yoga Studio
+fi:Joogastudio
+cs:Studio jógy
+it:Centro Yoga
+nb:Yogastudio
+zh-Hant:瑜伽工作室
+zh-Hans:瑜伽工作室
+th:โยคะสตูดิโอ
+ja:ヨガスタジオ
+ro:Studio yoga
+ar:نادي يوغا
+sk:Štúdio jogy
+es:Estudio de yoga
+pl:Studio jogi
+nl:Yogastudio
+pt:Estúdio de ioga
