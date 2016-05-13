@@ -1732,6 +1732,7 @@
     zh-Hant = 下載
     pl = Pobierz
     pt = Descarga
+    pt-BR = Baixar
     hu = Letöltés
     th = ดาวน์โหลด
     zh-Hans = 下载
