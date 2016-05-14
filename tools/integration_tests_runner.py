@@ -5,13 +5,11 @@ import multiprocessing
 from optparse import OptionParser
 from os import path
 from Queue import Queue
-from random import shuffle
 import shutil
 import subprocess
 import tempfile
 from threading import Lock
 from threading import Thread
-from time import time
 import traceback
 
 
@@ -31,7 +29,6 @@ class IntegrationRunner:
         logging.info("Number of processors is: {nproc}".format(nproc=self.proc_count))
 
         self.file_lock = Lock()
-        self.start_finish_lock = Lock()
         self.tests = Queue()
         self.key_postfix = ""
         if self.user_resource_path:
@@ -39,17 +36,13 @@ class IntegrationRunner:
         if self.data_path:
             self.key_postfix += ' --data_path="{0}"'.format(self.data_path)
 
-
     def run_tests(self):
-        intermediate_tests = []
         for exec_file in self.runlist:
-            intermediate_tests.extend(map(lambda x: (exec_file, x), self.get_tests_from_exec_file(exec_file, "--list_tests")[0]))
+            tests = self.get_tests_from_exec_file(exec_file, "--list_tests")[0]
+            for test in tests:
+                self.tests.put((exec_file, test))
 
-        shuffle(intermediate_tests)
-        for test in intermediate_tests:
-            self.tests.put(test)
-
-        with open(self.output, "w") as self.file, open("start-finish.log", "w") as self.start_finish_log:
+        with open(self.output, "w") as self.file:
             self.run_parallel_tests()
 
 
@@ -76,21 +69,6 @@ class IntegrationRunner:
                 return
 
 
-    def log_start_finish(self, test_file, keys, start=False, finish=False):
-        if not self.write_start_finish_log:
-            return
-
-        if (not start and not finish) or (start and finish):
-            logging.warning("You need to pass either start=True or finish=True, but only one of them! You passed start={0}, finish={1}".format(start, finish))
-            return
-
-        string = "Started" if start else "Finished"
-
-        with self.start_finish_lock:
-            self.start_finish_log.write("{string} {test_file} {keys} at {time}\n".format(string=string, test_file=test_file, keys=keys, time=time()))
-            self.start_finish_log.flush()
-
-
     def exec_test(self, test_file, test, clean_env=False):
         keys = '"--filter={test}"'.format(test=test)
         if clean_env:
@@ -101,9 +79,7 @@ class IntegrationRunner:
             keys = "{old_key}{resource_path}".format(old_key=keys, resource_path=self.key_postfix)
             logging.debug("Setting user_resource_path and data_path to {resource_path}".format(resource_path=self.key_postfix))
 
-        self.log_start_finish(test_file, keys, start=True)
         out, err, result = self.get_tests_from_exec_file(test_file, keys)
-        self.log_start_finish(test_file, keys, finish=True)
 
         if clean_env:
             try:
@@ -141,8 +117,6 @@ class IntegrationRunner:
         parser.add_option("-i", "--include", dest="runlist", action="append", default=[], help="Include test into execution, comma separated list with no spaces or individual tests, or both. E.g.: -i one -i two -i three,four,five")
         parser.add_option("-r", "--user_resource_path", dest="user_resource_path", default="", help="Path to user resources, such as MWMs")
         parser.add_option("-d", "--data_path", dest="data_path", default="", help="Path to the writable dir")
-        parser.add_option("-l", "--log_start_finish", dest="log_start_finish", action="store_true", default=False,
-                          help="Write to log each time a test starts or finishes. May be useful if you need to find out which of the tests runs for how long, and which test hang. May slow down the execution of tests.")
 
         (options, args) = parser.parse_args()
 
@@ -159,7 +133,6 @@ class IntegrationRunner:
         self.output = options.output
         self.user_resource_path = options.user_resource_path
         self.data_path = options.data_path
-        self.write_start_finish_log = options.log_start_finish
 
 
 if __name__ == "__main__":
