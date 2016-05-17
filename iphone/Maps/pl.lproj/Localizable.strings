@@ -1515,3 +1515,6 @@
 "editor_status_sending" = "Wysyłanie…";
 
 "editor_place_doesnt_exist" = "Takie miejsce nie istnieje";
+
+/* IOS ONLY. Needed to explain why we always require access to GPS coordinates, and not only when the app is active. */
+"always_allow_gps_explanation" = "Określanie w tle bieżącej lokalizacji jest konieczne, aby w pełni korzystać z funkcjonalności aplikacji. Funkcji tej używa się głównie w ramach opcji podążania zgodnie z trasą i zapisywania niedawno przebytej trasy.";

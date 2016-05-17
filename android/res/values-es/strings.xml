@@ -864,4 +864,6 @@
 	<string name="editor_remove_place_button">Eliminar</string>
 	<string name="editor_status_sending">Enviando…</string>
 	<string name="editor_place_doesnt_exist">El lugar no existe</string>
+	<!-- IOS ONLY. Needed to explain why we always require access to GPS coordinates, and not only when the app is active. -->
+	<string name="always_allow_gps_explanation">Es necesario definir la ubicación actual en el entorno para disfrutar al máximo de la funcionalidad de la aplicación. Se emplea principalmente en las opciones de seguir la ruta y guardar el camino recorrido reciente.</string>
 </resources>

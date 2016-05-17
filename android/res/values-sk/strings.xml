@@ -872,4 +872,6 @@
 	<string name="editor_remove_place_button">Odstrániť</string>
 	<string name="editor_status_sending">Odosiela sa…</string>
 	<string name="editor_place_doesnt_exist">Miesto neexistuje</string>
+	<!-- IOS ONLY. Needed to explain why we always require access to GPS coordinates, and not only when the app is active. -->
+	<string name="always_allow_gps_explanation">Definovanie súčasnej polohy na pozadí je potrebné pre plnú funkčnosť appky. Využíva sa to najmä v možnostiach nasledovania trasy či uloženia Vašej nedávnej cesty.</string>
 </resources>

@@ -867,4 +867,6 @@
 	<string name="editor_remove_place_button">Rimuovi</string>
 	<string name="editor_status_sending">Invio…</string>
 	<string name="editor_place_doesnt_exist">Luogo inesistente</string>
+	<!-- IOS ONLY. Needed to explain why we always require access to GPS coordinates, and not only when the app is active. -->
+	<string name="always_allow_gps_explanation">Chcete-li si užívat plnou funkčnost aplikace, pak musíte určit aktuální polohu na pozadí. Používá se především k sledování trasy a ukládání vaší nedávno uskutečněné cesty.</string>
 </resources>

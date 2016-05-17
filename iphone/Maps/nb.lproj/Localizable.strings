@@ -1515,3 +1515,6 @@
 "editor_status_sending" = "Sender…";
 
 "editor_place_doesnt_exist" = "Sted finnes ikke";
+
+/* IOS ONLY. Needed to explain why we always require access to GPS coordinates, and not only when the app is active. */
+"always_allow_gps_explanation" = "Det er nødvendig å fastslå den gjeldende posisjonen i bakgrunnen for å utnytte appens funksjonalitet til fulle. Dette brukes først og fremst når en rute skal følges og når den siste reiseruten din skal lagres.";

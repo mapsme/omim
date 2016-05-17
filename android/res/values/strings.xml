@@ -907,4 +907,6 @@
 	<string name="editor_remove_place_button">Remove</string>
 	<string name="editor_status_sending">Sending…</string>
 	<string name="editor_place_doesnt_exist">Place does not exist</string>
+	<!-- IOS ONLY. Needed to explain why we always require access to GPS coordinates, and not only when the app is active. -->
+	<string name="always_allow_gps_explanation">Defining current location in the background is necessary to fully enjoy the functionality of the app. It is mainly used in the options of following the route and saving your recent travelled path.</string>
 </resources>
