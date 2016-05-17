@@ -873,4 +873,6 @@
 	<string name="editor_remove_place_button">Видалити</string>
 	<string name="editor_status_sending">Відправка…</string>
 	<string name="editor_place_doesnt_exist">Місце не існує</string>
+	<!-- IOS ONLY. Needed to explain why we always require access to GPS coordinates, and not only when the app is active. -->
+	<string name="always_allow_gps_explanation">Визначення місцезнаходження у фоновому режимі необхідно для повноцінного користування додатком. Воно використовується під час руху по маршруту та для збереження шляху, що було нещодавно пройдено.</string>
 </resources>

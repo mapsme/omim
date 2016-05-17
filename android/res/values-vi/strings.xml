@@ -869,4 +869,6 @@
 	<string name="editor_remove_place_button">Xóa</string>
 	<string name="editor_status_sending">Đang gửi …</string>
 	<string name="editor_place_doesnt_exist">Địa điểm không tồn tại</string>
+	<!-- IOS ONLY. Needed to explain why we always require access to GPS coordinates, and not only when the app is active. -->
+	<string name="always_allow_gps_explanation">Xác định vị trí hiện tại ở trạng thái nền là cần thiết để tận hưởng đầy đủ chức năng của ứng dụng. Nó được sử dụng chủ yếu trong các tùy chọn để đi theo tuyến đường và lưu đường đi gần đây của bạn</string>
 </resources>

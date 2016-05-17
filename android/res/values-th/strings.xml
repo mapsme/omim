@@ -873,4 +873,6 @@
 	<string name="editor_remove_place_button">ลบออก</string>
 	<string name="editor_status_sending">กำลังส่ง…</string>
 	<string name="editor_place_doesnt_exist">ไม่พบสถานที่นี้</string>
+	<!-- IOS ONLY. Needed to explain why we always require access to GPS coordinates, and not only when the app is active. -->
+	<string name="always_allow_gps_explanation">จำเป็นต้องทำการระบุตำแหน่งปัจจุบันในพื้นหลังเพื่อเพลิดเพลินกับการใช้งานแอปอย่างเต็มรูปแบบ มันจะได้รับการใช้เป็นหลักสำหรับตัวเลือกในการติดตามเส้นทางและการบันทึกเส้นทางที่คุณเดินทางเมื่อเร็ว ๆ นี้</string>
 </resources>

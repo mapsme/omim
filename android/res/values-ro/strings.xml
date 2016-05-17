@@ -865,4 +865,6 @@
 	<string name="editor_remove_place_button">Eliminare</string>
 	<string name="editor_status_sending">Se trimite…</string>
 	<string name="editor_place_doesnt_exist">Locul nu există</string>
+	<!-- IOS ONLY. Needed to explain why we always require access to GPS coordinates, and not only when the app is active. -->
+	<string name="always_allow_gps_explanation">Definirea locației curente în fundal este necesară pentru a vă bucura pe deplin de funcționalitatea aplicației. Acest lucru este utilizat în principal în opțiunile de urmărire a traseului și salvare a căii parcurse recent.</string>
 </resources>

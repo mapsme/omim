@@ -903,4 +903,6 @@
 	<string name="editor_remove_place_button">Удалить</string>
 	<string name="editor_status_sending">Отправка…</string>
 	<string name="editor_place_doesnt_exist">Места не существует</string>
+	<!-- IOS ONLY. Needed to explain why we always require access to GPS coordinates, and not only when the app is active. -->
+	<string name="always_allow_gps_explanation">Определение местоположения в фоне необходимо для полноценного пользования приложением. Оно используется в движении по маршруту и сохранении недавно пройденного пути.</string>
 </resources>

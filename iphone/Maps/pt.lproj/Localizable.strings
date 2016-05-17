@@ -1515,3 +1515,6 @@
 "editor_status_sending" = "Sending…";
 
 "editor_place_doesnt_exist" = "Place does not exist";
+
+/* IOS ONLY. Needed to explain why we always require access to GPS coordinates, and not only when the app is active. */
+"always_allow_gps_explanation" = "A definição da localização atual em segundo plano é necessária para desfrutar totalmente da funcionalidade do aplicativo. Ela é utilizada principalmente nas opções de seguir a rota e salvar seu caminho recém-viajado.";

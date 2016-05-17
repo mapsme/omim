@@ -860,4 +860,6 @@
 	<string name="editor_remove_place_button">삭제</string>
 	<string name="editor_status_sending">보내는 중…</string>
 	<string name="editor_place_doesnt_exist">존재하지 않는 장소입니다.</string>
+	<!-- IOS ONLY. Needed to explain why we always require access to GPS coordinates, and not only when the app is active. -->
+	<string name="always_allow_gps_explanation">백그라운드에서 현재 위치를 정의하는 것은 완전히 앱의 기능을 즐길 수 있도록 해줍니다. 이는 주로 경로를 따르고 최근 여행 경로를 저장하는 옵션에 사용됩니다.</string>
 </resources>

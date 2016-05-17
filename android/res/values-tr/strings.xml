@@ -875,4 +875,6 @@
 	<string name="editor_remove_place_button">Kaldır</string>
 	<string name="editor_status_sending">Gönderiliyor…</string>
 	<string name="editor_place_doesnt_exist">Bu yer mevcut değil</string>
+	<!-- IOS ONLY. Needed to explain why we always require access to GPS coordinates, and not only when the app is active. -->
+	<string name="always_allow_gps_explanation">Uygulamanın özelliklerini tamamıyla çıkartmak için arka planda mevcut konumu tanımlamak gereklidir. Genellikle rota izleme ve en son gezilen yolları kaydetme seçeneği için kullanılır.</string>
 </resources>

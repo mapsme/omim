@@ -880,4 +880,6 @@
 	<string name="editor_remove_place_button">Supprimer</string>
 	<string name="editor_status_sending">Envoyer…</string>
 	<string name="editor_place_doesnt_exist">La place n\&#39;existe pas</string>
+	<!-- IOS ONLY. Needed to explain why we always require access to GPS coordinates, and not only when the app is active. -->
+	<string name="always_allow_gps_explanation">La localisation actuelle en arrière-plan est nécessaire pour profiter pleinement de toutes les fonctionnalités de l\&#39;application. Elle est principalement utilisée dans les options de navigation et d\&#39;enregistrement de votre chemin récemment parcouru.</string>
 </resources>

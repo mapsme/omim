@@ -801,4 +801,6 @@
 	<string name="location_services_disabled_1">1. Abrir configurações</string>
 	<string name="location_services_disabled_2">2. Tocar em localização</string>
 	<string name="location_services_disabled_3">3. Selecionar sempre</string>
+	<!-- IOS ONLY. Needed to explain why we always require access to GPS coordinates, and not only when the app is active. -->
+	<string name="always_allow_gps_explanation">A definição da localização atual em segundo plano é necessária para desfrutar totalmente da funcionalidade do aplicativo. Ela é utilizada principalmente nas opções de seguir a rota e salvar seu caminho recém-viajado.</string>
 </resources>

@@ -868,4 +868,6 @@
 	<string name="editor_remove_place_button">Hapus</string>
 	<string name="editor_status_sending">Mengirim…</string>
 	<string name="editor_place_doesnt_exist">Tempat tidak ada</string>
+	<!-- IOS ONLY. Needed to explain why we always require access to GPS coordinates, and not only when the app is active. -->
+	<string name="always_allow_gps_explanation">Menentukan lokasi saat ini di latar belakang diperlukan untuk menikmati fungsi aplikasi. Digunakan terutama dalam opsi mengikuti rute dan menyimpan jalur yang telah Anda tempuh baru-baru ini.</string>
 </resources>
