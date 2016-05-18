@@ -16272,6 +16272,8 @@
     es = Número de plantas (máx. %d)
     pl = Liczba pięter (maks. %d)
     nl = Aantal verdiepingen (max. %d)
+    zh-Hant = 樓號（最大 %d）
+    pt = Número de pisos (máx. %d)
 
   [error_enter_correct_storey_number]
     tags = ios, android
@@ -16300,6 +16302,8 @@
     es = Edite el edificio con un máximo de 25 plantas
     pl = Edytuj budynek z maksymalną liczbą 25 pięter
     nl = Bewerk het gebouw met maximaal 25 verdiepingen
+    zh-Hant = 編輯最多 25 層的建築
+    pt = Editar o edifício com um máximo de 25 pisos
 
   [editor_zip_code]
     tags = ios, android
@@ -16328,6 +16332,8 @@
     es = Código postal
     pl = Kod pocztowy
     nl = Postcode
+    zh-Hant = 郵遞區號
+    pt = Código Postal
 
   [error_enter_correct_zip_code]
     tags = ios, android
@@ -16356,6 +16362,8 @@
     es = Introduzca el código postal correcto
     pl = Podaj prawidłowy kod pocztowy
     nl = Voer de juiste postcode in
+    zh-Hant = 輸入正確的郵遞區號
+    pt = Introduza o código postal correto
 
   [placepage_unknown_place]
     tags = ios, android
@@ -16385,6 +16393,8 @@
     es = Lugar desconocido
     pl = Nieznane miejsce
     nl = Onbekende locatie
+    zh-Hant = 未知的位置
+    pt =Local desconhecido
 
   [editor_other_info]
     tags = ios, android
@@ -16413,6 +16423,8 @@
     es = Información adicional
     pl = Dodatkowe informacje
     nl = Aanvullende info
+    zh-Hant = 額外資訊
+    pt = Informações adicionais
 
   [editor_detailed_description_hint]
     tags = ios, android
@@ -16441,6 +16453,8 @@
     es = Comentario detallado
     pl = Szczegółowy komentarz
     nl = Gedetailleerde reactie
+    zh-Hant = 詳細註釋
+    pt = Comentário detalhado
 
   [editor_detailed_description]
     tags = ios, android
@@ -16469,6 +16483,8 @@
     es = Los cambios que ha sugerido se enviarán a la comunidad de OpenStreetMap. Describa los detalles que no pueden editarse en MAPS.ME.
     pl = Twoje sugestie zmian zostaną wysłane do społeczności OpenStreetMap. Opisz szczegóły, których nie można edytować w MAPS.ME.
     nl = Uw voorgestelde wijzigingen worden verzonden naar de OpenStreetMap-community. Beschrijf de details die niet kunnen worden bewerkt in MAPS.ME.
+    zh-Hant = 您建議的變更將傳送至 OpenStreetMap 社群。說明無法在 MAPS.ME 中編輯的詳細資料。
+    pt = As suas alterações sugeridas irão ser enviadas para a comunidade OpenStreetMap. Descreva os dados que não podem ser editados no MAPS.ME
 
   [editor_more_about_osm]
     tags = ios, android
@@ -16497,6 +16513,8 @@
     es = Más acerca de OpenStreetMap
     pl = Więcej o OpenStreetMap
     nl = Meer over OpenStreetMap
+    zh-Hant = 關於 OpenStreetMap 的更多資訊
+    pt = Mais sobre o OpenStreetMap
 
   [editor_operator]
     en = Operator
@@ -16524,6 +16542,8 @@
     es = Operador
     pl = Operator
     nl = Uitvoerder
+    zh-Hant = 營運者
+    pt = Operador
 
   [editor_tag_description]
     en = Enter company, organization or individual responsible for the facilities.
@@ -16551,6 +16571,8 @@
     es = Introduzca la empresa, organización o individuo responsable de las instalaciones.
     pl = Wprowadź nazwę firmy, organizacji lub osoby odpowiedzialnej za obiekty.
     nl = Voer het bedrijf, de organisatie of het individu in dat verantwoordelijk is voor de faciliteiten.
+    zh-Hant = 輸入公司、組織或設施負責人。
+    pt = Introduza a empresa, organização ou indivíduo responsável pelas instalações.
 
   [editor_no_local_edits_title]
     en = You don't have local edits
@@ -16578,6 +16600,8 @@
     es = No tiene ediciones locales
     pl = Nie masz lokalnych edycji
     nl = U hebt geen lokale bewerkingen
+    zh-Hant = 您沒有本機編輯
+    pt = Não tem edições locais
 
   [editor_no_local_edits_description]
     en = This shows the number of your suggested changes on the map that are currently accessible only on your device.
@@ -16605,6 +16629,8 @@
     es = Esto muestra el número de sus cambios sugeridos en el mapa que actualmente solo son accesibles desde su dispositivo.
     pl = Jest to liczba sugerowanych przez ciebie zmian na mapie, które aktualnie dostępne są tylko na twoim urządzeniu.
     nl = Dit toont het aantal voorgestelde wijzigingen voor de kaart die momenteel alleen toegankelijk zijn op uw apparaat.
+    zh-Hant = 這顯示了對目前僅可在您的裝置上存取的地圖的建議修改數量。
+    pt = Isto demonstra o número das suas alterações sugeridas no mapa que atualmente só são acessíveis no seu dispositivo.
 
   [editor_international_names_subtitle]
     en = Name in other languages
@@ -16632,6 +16658,8 @@
     es = Nombre en otros idiomas
     pl = Nazwa w innych językach
     nl = Naam in andere talen
+    zh-Hant = 其他語言的名稱
+    pt = Nome noutras línguas
 
   [editor_send_to_osm]
     en = Send to OSM
@@ -16659,6 +16687,8 @@
     es = Enviar a OSM
     pl = Wyślij do OSM
     nl = Naar OSM sturen
+    zh-Hant = 傳送至 OSM
+    pt = Enviar para OSM
 
   [editor_remove]
     en = Remove
@@ -16686,6 +16716,8 @@
     es = Eliminar
     pl = Usuń
     nl = Verwijderen
+    zh-Hant = 移除
+    pt = Remover
 
   [downloader_my_maps_title]
     en = My maps
@@ -16713,6 +16745,8 @@
     es = Mis mapas
     pl = Moje mapy
     nl = Mijn kaarten
+    zh-Hant = 我的地圖
+    pt = Os meus mapas
 
   [downloader_no_downloaded_maps_title]
     en = You haven't downloaded any maps
@@ -16740,6 +16774,8 @@
     es = No ha descargado ningún mapa
     pl = Nie pobrano żadnych map
     nl = U hebt geen kaarten gedownload
+    zh-Hant = 您尚未下載任何地圖
+    pt = Não descarregou quaisquer mapas
 
   [downloader_no_downloaded_maps_message]
     en = Download maps to search location and use navigation offline.
@@ -16767,6 +16803,8 @@
     es = Descargue mapas para encontrar la ubicación y navegar sin conexión.
     pl = Aby znajdować miejsca i nawigować bez połączenia z internetem, musisz pobrać mapy.
     nl = Download kaarten om de locatie te zoeken en offline te navigeren.
+    zh-Hant = 下載地圖來尋找位置和離線瀏覽。
+    pt = Descarregar mapas para encontrar a localização e navegar offline.
 
   [downloader_find_place_hint]
     en = Search city or country
@@ -16794,6 +16832,8 @@
     es = Buscar ciudad o país
     pl = Szukaj miasta lub kraju
     nl = Stad of land zoeken
+    zh-Hant = 搜尋城市或國家
+    pt = Pesquisar cidade ou país
 
   [current_location_unknown_title]
     comment = Error title that appears after certain time without location.
@@ -16822,6 +16862,8 @@
     es = ¿Continuar detectando su ubicación actual?
     pl = Kontynuować wykrywanie bieżącej lokalizacji?
     nl = Doorgaan met het detecteren van uw huidige locatie?
+    zh-Hant = 繼續偵測您的目前位置？
+    pt = Continuar a detetar a sua localização atual?
 
   [current_location_unknown_message]
     comment = Error that appears after certain time without location.
@@ -16850,6 +16892,8 @@
     es = La ubicación actual es desconocida. Quizá esté en un edificio o en un túnel.
     pl = Aktualna lokalizacja jest nieznana. Może znajdujesz się w budynku lub tunelu.
     nl = Huidige locatie is onbekend. Misschien bevindt u zich in een gebouw of tunnel.
+    zh-Hant = 目前位置未知，可能您在建築物內或隧道內。
+    pt = A localização atual é desconhecida. Talvez esteja num edifício ou num túnel.
 
   [current_location_unknown_continue_button]
     en = Continue
@@ -16877,6 +16921,8 @@
     es = Continuar
     pl = Kontynuuj
     nl = Doorgaan
+    zh-Hant = 繼續
+    pt = Continuar
 
   [current_location_unknown_stop_button]
     en = Stop
@@ -16904,6 +16950,8 @@
     es = Detener
     pl = Stop
     nl = Stoppen
+    zh-Hant = 停止
+    pt = Parar
 
   [current_location_unknown_error_title]
     en = Current location is unknown.
@@ -16930,6 +16978,8 @@
     es = La ubicación actual es desconocida.
     pl = Aktualna lokalizacja jest nieznana.
     nl = Huidige locatie is onbekend.
+    zh-Hant = 目前位置未知。
+    pt = A localização atual é desconhecida.
 
   [current_location_unknown_error_message]
     en = An error occurred while searching for your location. Check that your device is working properly and try again later.
@@ -16957,6 +17007,8 @@
     es = Se ha producido un error al buscar su ubicación. Compruebe que su dispositivo funciona correctamente e inténtelo más tarde.
     pl = Podczas szukania twojej lokalizacji wystąpił błąd. Sprawdź czy twoje urządzenie działa poprawnie i spróbuj ponownie później.
     nl = Er is een fout opgetreden tijdens het zoeken naar uw locatie. Controleer of uw apparaat goed werkt en probeer het later opnieuw.
+    zh-Hant = 搜尋您的位置時發生錯誤。請檢查您的裝置是否正常運作，然後重試。
+    pt = Ocorreu um erro ao pesquisar a sua localização. Verifique se o seu dispositivo está a funcionar devidamente e volte a tentar mais tarde.
 
   [whatsnew_update_editor_title]
     en = We've updated the map editor
@@ -16984,6 +17036,8 @@
     es = Hemos actualizado el editor de mapas
     pl = Zaktualizowaliśmy edytor map
     nl = We hebben de kaarteditor bijgewerkt
+    zh-Hant = 我們已更新地圖編輯器
+    pt = Atualizámos o editor do mapa
 
   [whatsnew_update_editor_message]
     en = MAPS.ME users have made 90 000 map changes. Together we are making the most detailed maps in the World. Join us!
@@ -17011,6 +17065,8 @@
     es = Los usuarios de MAPS.ME han realizado 90 000 cambios de mapas. Juntos estamos creando los mapas más detallados del mundo. ¡Únase a nosotros!
     pl = Użytkownicy MAPS.ME dokonali 90 000 zmian w mapach. Wspólnie tworzymy najbardziej szczegółowe mapy na świecie. Przyłącz się do nas!
     nl = MAPS.ME-gebruikers hebben 90.000 kaartwijzigingen doorgevoerd. Samen maken we de meest gedetailleerde kaarten ter wereld. Doe met ons mee!
+    zh-Hant = MAPS.ME 使用者已經進行了 90,000 處地圖變更。我們正在齊心協力打造世界上最詳細的地圖，加入我們吧！
+    pt = Os utilizadores do MAPS.ME fizeram 90 000 alterações no mapa. Juntos, estamos a fazer os mapas mais detalhados do mundo. Junte-se a nós!
 
   [whatsnew_update_editor_message_update]
     comment = Additional text in whats new
@@ -17221,6 +17277,8 @@
     es = Superficie
     pl = Powierzchnia
     nl = Boven de grond
+    zh-Hant = 表面
+    pt = Superfície
 
   [placepage_parking_multistorey]
     en = Multi-storey
@@ -17248,6 +17306,8 @@
     es = Varias plantas
     pl = Wielopoziomowy
     nl = Meerlaags
+    zh-Hant = 多樓層
+    pt = Vários andares
 
   [placepage_parking_underground]
     en = Underground
@@ -17275,6 +17335,8 @@
     es = Subterráneo
     pl = Podziemny
     nl = Onder de grond
+    zh-Hant = 未知的位置
+    pt = Local desconhecido
 
   [placepage_parking_rooftop]
     en = Rooftop
@@ -17302,6 +17364,8 @@
     es = Azotea
     pl = Na dachu
     nl = Dak
+    zh-Hant = 樓頂
+    pt = Terraço
 
   [placepage_parking_sheds]
     en = Sheds
@@ -17329,6 +17393,8 @@
     es = Cobertizos
     pl = Wiaty
     nl = Afdak
+    zh-Hant = 小屋
+    pt = Abrigos
 
   [placepage_parking_carports]
     en = Carports
@@ -17356,6 +17422,8 @@
     es = Cochera
     pl = Zadaszenia dla samochodów
     nl = Carports
+    zh-Hant = 屋側車庫
+    pt = Garagens
 
   [placepage_parking_boxes]
     en = Garage boxes
@@ -17382,6 +17450,8 @@
     es = Garaje
     pl = Miejsca parkingowe w garażu
     nl = Garageboxen
+    zh-Hant = 停車房
+    pt = Garagens
 
   [placepage_parking_pay]
     en = Pay
@@ -17409,6 +17479,8 @@
     es = De pago
     pl = Płatny
     nl = Betalen
+    zh-Hant = 付款
+    pt = Pagamento
 
   [placepage_parking_free]
     en = Free
@@ -17436,6 +17508,8 @@
     es = Gratuito
     pl = Darmowy
     nl = Gratis
+    zh-Hant = 免費
+    pt = Gratuito
 
   [placepage_parking_interval]
     en = Interval Pay
@@ -17463,6 +17537,8 @@
     es = Pago por intervalos
     pl = Płatny na godziny
     nl = Intervalbetaling
+    zh-Hant = 間隔付款
+    pt = Pagamento intervalado
 
   [placepage_entrance_number]
     en = No.
@@ -17490,6 +17566,8 @@
     es = N.º
     pl = Nr
     nl = Nr.
+    zh-Hant = 編號
+    pt = N.º
 
   [placepage_entrance_type]
     en = Entrance
@@ -17517,6 +17595,8 @@
     es = Entrada
     pl = Wejście
     nl = Ingang
+    zh-Hant = 入口
+    pt = Entrada
 
   [placepage_flat]
     en = app.
@@ -17544,6 +17624,8 @@
     es = aplicación
     pl = Mieszkanie
     nl = app.
+    zh-Hant = 公寓
+    pt = apto.
 
   [placepage_open_24_7]
     en = 24 / 7
@@ -17569,6 +17651,8 @@
     es = 24 / 7
     pl = 24 / 7
     nl = Dag en nacht
+    zh-Hant = 全天候
+    pt =24 / 7
 
   [placepage_place_rating]
     en = Rating:
@@ -17596,6 +17680,8 @@
     es = Valoración:
     pl = Ocena:
     nl = Cijfer:
+    zh-Hant = 評價：
+    pt = Classificação
 
  [place_page_starting_from]
     en = from %d
@@ -17622,6 +17708,8 @@
     sk = od %d
     es = desde %d
     pl = od %d
+    zh-Hant = 從 %d
+    pt = a partir de %d
 
   [meter]
     en = m
@@ -17649,6 +17737,8 @@
     es = m
     pl = m
     nl = m
+    zh-Hant = m
+    pt = m
 
   [kilometer]
     en = km
@@ -17676,6 +17766,8 @@
     es = km
     pl = km
     nl = km
+    zh-Hant = km
+    pt = km
 
   [placepage_place_description]
     en = Description
@@ -17703,6 +17795,8 @@
     es = Descripción
     pl = Opis
     nl = Beschrijving
+    zh-Hant = 說明
+    pt = Descrição
 
   [placepage_more_button]
     en = More
@@ -17730,6 +17824,8 @@
     es = Más
     pl = Więcej
     nl = Meer
+    zh-Hant = 更多
+    pt = Mais
 
   [bookingcom_book_button]
     en = Book
@@ -17757,6 +17853,8 @@
     es = Reservar
     pl = Książka
     nl = Boeken
+    zh-Hant = 圖書
+    pt = Livro
 
   [placepage_call_button]
     en = Call
@@ -17784,6 +17882,8 @@
     es = Llamar
     pl = Zadzwoń
     nl = Bellen
+    zh-Hant = 呼叫
+    pt = Chamada
 
   [placepage_edit_bookmark_button]
     en = Edit Bookmark
@@ -17811,6 +17911,8 @@
     es = Editar marcador
     pl = Edytuj zakładkę
     nl = Bladwijzer bewerken
+    zh-Hant = 編輯書籤
+    pt = Editar marcador
 
   [placepage_bookmark_name_hint]
     en = Bookmark Name
@@ -17838,6 +17940,8 @@
     es = Nombre del marcador
     pl = Nazwa zakładki
     nl = Bladwijzernaam
+    zh-Hant = 書籤名稱
+    pt = Nome do marcador
 
   [placepage_personal_notes_hint]
     en = Personal notes
@@ -17865,6 +17969,8 @@
     es = Notas personales
     pl = Notatki osobiste
     nl = Persoonlijke aantekeningen
+    zh-Hant = 個人備註
+    pt = Notas pessoais
 
   [placepage_delete_bookmark_button]
     en = Delete Bookmark
@@ -17892,6 +17998,8 @@
     es = Eliminar marcador
     pl = Usuń zakładkę
     nl = Bladwijzer verwijderen
+    zh-Hant = 刪除書籤
+    pt = Eliminar marcador
 
   [editor_edits_sent_message]
     en = Your suggested changes have been sent
@@ -17919,6 +18027,8 @@
     es = Se han enviado sus cambios sugeridos
     pl = Twoje sugestie zostały wysłane
     nl = Uw voorgestelde wijzigingen zijn verzonden
+    zh-Hant = 您的建議已傳送
+    pt = As suas alterações sugeridas foram enviadas
 
   [editor_comment_hint]
     en = Comment…
@@ -17945,6 +18055,8 @@
     es = Comentario…
     pl = Komentarz…
     nl = Reactie…
+    zh-Hant = 註解…
+    pt = Comentário…
 
   [editor_reset_edits_message]
     en = Reset all local changes?
@@ -17972,6 +18084,8 @@
     es = ¿Restablecer todos los cambios locales?
     pl = Skasować wszystkie lokalne zmiany?
     nl = Alle lokale wijzigingen herstellen?
+    zh-Hant = 重設所有本機變更？
+    pt = Repor todas as alterações locais?
 
   [editor_reset_edits_button]
     en = Reset
@@ -17999,6 +18113,8 @@
     es = Restablecer
     pl = Skasuj
     nl = Herstellen
+    zh-Hant = 重設
+    pt = Repor
 
   [editor_remove_place_message]
     en = Remove an added place?
@@ -18026,6 +18142,8 @@
     es = ¿Eliminar el lugar añadido?
     pl = Usunąć dodane miejsce?
     nl = Een toegevoegde locatie verwijderen?
+    zh-Hant = 移除已新增的位置？
+    pt = Remover um local adicionado?
 
   [editor_remove_place_button]
     en = Remove
@@ -18053,6 +18171,8 @@
     es = Eliminar
     pl = Usuń
     nl = Verwijderen
+    zh-Hant = 移除
+    pt = Remover
 
   [editor_status_sending]
     en = Sending…
@@ -18080,6 +18200,8 @@
     es = Enviando…
     pl = Wysyłanie…
     nl = Verzenden…
+    zh-Hant = 正在傳送…
+    pt = A enviar…
 
   [editor_place_doesnt_exist]
     en = Place does not exist
@@ -18107,3 +18229,5 @@
     es = El lugar no existe
     pl = Takie miejsce nie istnieje
     nl = Locatie bestaat niet
+    zh-Hant = 位置不存在
+    pt = O local não existe
