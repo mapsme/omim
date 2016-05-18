@@ -770,6 +770,9 @@ public class MwmActivity extends BaseMwmFragmentActivity
   {
     LocationHelper.nativeOnLocationError(errorCode);
 
+    if (sLocationStopped)
+      return;
+
     if (errorCode == LocationHelper.ERROR_DENIED)
     {
       Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -835,13 +838,18 @@ public class MwmActivity extends BaseMwmFragmentActivity
     mNavigationController.updateNorth(mLastCompassData.north);
   }
 
+  public static void enableLocation()
+  {
+    sLocationStopped = false;
+  }
+
   @Override
   public void onMyPositionModeChangedCallback(final int newMode, final boolean routingActive)
   {
     mLocationPredictor.myPositionModeChanged(newMode);
     mMainMenu.getMyPositionButton().update(newMode);
 
-    if (newMode != LocationState.NOT_FOLLOW_NO_POSITION)
+    if (LocationState.isTurnedOn(newMode))
       sLocationStopped = false;
 
     switch (newMode)
@@ -883,6 +891,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
               @Override
               public void onClick(DialogInterface dialog, int which)
               {
+                sLocationStopped = false;
                 LocationState.INSTANCE.nativeSwitchToNextMode();
               }
             }).show();
@@ -920,7 +929,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   {
     super.onResume();
     LocationState.INSTANCE.nativeSetListener(this);
-    mMainMenu.getMyPositionButton().update(LocationState.INSTANCE.nativeGetMode());
+    mMainMenu.getMyPositionButton().update(LocationState.getMode());
     resumeLocation();
     mSearchController.refreshToolbar();
     mMainMenu.onResume(new Runnable()
@@ -964,19 +973,19 @@ public class MwmActivity extends BaseMwmFragmentActivity
       mFirstStart = FirstStartFragment.showOn(this);
       if (mFirstStart)
       {
-        if (LocationState.INSTANCE.isTurnedOn())
+        if (LocationState.isTurnedOn())
           addTask(new MwmActivity.MapTask()
           {
             @Override
             public boolean run(MwmActivity target)
             {
-              if (LocationState.INSTANCE.isTurnedOn())
+              if (LocationState.isTurnedOn())
                 LocationState.INSTANCE.nativeSwitchToNextMode();
               return false;
             }
           });
       }
-      if (!mFirstStart && !SinglePageNewsFragment.showOn(this))
+      else if (!SinglePageNewsFragment.showOn(this))
       {
         if (ViralFragment.shouldDisplay())
           new ViralFragment().show(getSupportFragmentManager(), "");
