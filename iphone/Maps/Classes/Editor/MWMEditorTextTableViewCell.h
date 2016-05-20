@@ -9,7 +9,8 @@
                       text:(NSString *)text
                placeholder:(NSString *)placeholder
               keyboardType:(UIKeyboardType)keyboardType
-            capitalization:(UITextAutocapitalizationType)capitalization;
+            capitalization:(UITextAutocapitalizationType)capitalization
+                 indexPath:(NSIndexPath *)indexPath;
 
 - (void)configWithDelegate:(id<MWMEditorCellProtocol>)delegate
                       icon:(UIImage *)icon
@@ -18,7 +19,8 @@
               errorMessage:(NSString *)errorMessage
                    isValid:(BOOL)isValid
               keyboardType:(UIKeyboardType)keyboardType
-            capitalization:(UITextAutocapitalizationType)capitalization;
+            capitalization:(UITextAutocapitalizationType)capitalization
+                 indexPath:(NSIndexPath *)indexPath;
 
 @property (weak, nonatomic, readonly) IBOutlet UITextField * textField;
 
