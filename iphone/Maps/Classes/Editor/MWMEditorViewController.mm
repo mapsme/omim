@@ -373,7 +373,8 @@ void registerCellsForTableView(vector<MWMPlacePageCellType> const & cells, UITab
                            text:@(m_mapObject.GetPhone().c_str())
                     placeholder:L(@"phone")
                    keyboardType:UIKeyboardTypeNamePhonePad
-                 capitalization:UITextAutocapitalizationTypeNone];
+                 capitalization:UITextAutocapitalizationTypeNone
+                      indexPath:indexPath];
       break;
     }
     case MWMPlacePageCellTypeWebsite:
@@ -384,7 +385,8 @@ void registerCellsForTableView(vector<MWMPlacePageCellType> const & cells, UITab
                            text:@(m_mapObject.GetWebsite().c_str())
                     placeholder:L(@"website")
                    keyboardType:UIKeyboardTypeURL
-                 capitalization:UITextAutocapitalizationTypeNone];
+                 capitalization:UITextAutocapitalizationTypeNone
+                      indexPath:indexPath];
       break;
     }
     case MWMPlacePageCellTypeEmail:
@@ -395,7 +397,8 @@ void registerCellsForTableView(vector<MWMPlacePageCellType> const & cells, UITab
                            text:@(m_mapObject.GetEmail().c_str())
                     placeholder:L(@"email")
                    keyboardType:UIKeyboardTypeEmailAddress
-                 capitalization:UITextAutocapitalizationTypeNone];
+                 capitalization:UITextAutocapitalizationTypeNone
+                      indexPath:indexPath];
       break;
     }
     case MWMPlacePageCellTypeOperator:
@@ -406,7 +409,8 @@ void registerCellsForTableView(vector<MWMPlacePageCellType> const & cells, UITab
                            text:@(m_mapObject.GetOperator().c_str())
                     placeholder:L(@"editor_operator")
                    keyboardType:UIKeyboardTypeDefault
-                 capitalization:UITextAutocapitalizationTypeSentences];
+                 capitalization:UITextAutocapitalizationTypeSentences
+                      indexPath:indexPath];
       break;
     }
     case MWMPlacePageCellTypeOpenHours:
@@ -434,7 +438,8 @@ void registerCellsForTableView(vector<MWMPlacePageCellType> const & cells, UITab
                            text:@(m_mapObject.GetDefaultName().c_str())
                     placeholder:L(@"name")
                    keyboardType:UIKeyboardTypeDefault
-                 capitalization:UITextAutocapitalizationTypeSentences];
+                 capitalization:UITextAutocapitalizationTypeSentences
+                      indexPath:indexPath];
       break;
     }
     case MWMPlacePageCellTypeStreet:
@@ -456,7 +461,8 @@ void registerCellsForTableView(vector<MWMPlacePageCellType> const & cells, UITab
                    errorMessage:L(@"error_enter_correct_house_number")
                         isValid:isValid
                    keyboardType:UIKeyboardTypeDefault
-                 capitalization:UITextAutocapitalizationTypeNone];
+                 capitalization:UITextAutocapitalizationTypeNone
+                      indexPath:indexPath];
       break;
     }
     case MWMPlacePageCellTypeZipCode:
@@ -469,7 +475,8 @@ void registerCellsForTableView(vector<MWMPlacePageCellType> const & cells, UITab
                    errorMessage:L(@"error_enter_correct_zip_code")
                         isValid:isValid
                    keyboardType:UIKeyboardTypeDefault
-                 capitalization:UITextAutocapitalizationTypeAllCharacters];
+                 capitalization:UITextAutocapitalizationTypeAllCharacters
+                      indexPath:indexPath];
       break;
     }
     case MWMPlacePageCellTypeBuildingLevels:
@@ -486,7 +493,8 @@ void registerCellsForTableView(vector<MWMPlacePageCellType> const & cells, UITab
                    errorMessage:errorMessage
                         isValid:isValid
                    keyboardType:UIKeyboardTypeNumberPad
-                 capitalization:UITextAutocapitalizationTypeNone];
+                 capitalization:UITextAutocapitalizationTypeNone
+                      indexPath:indexPath];
       break;
     }
     case MWMPlacePageCellTypeCuisine:
@@ -716,10 +724,9 @@ void registerCellsForTableView(vector<MWMPlacePageCellType> const & cells, UITab
   [self.tableView endUpdates];
 }
 
-- (void)cell:(MWMEditorTextTableViewCell *)cell changedText:(NSString *)changeText
+- (void)cellAtIndexPath:(NSIndexPath *)indexPath changedText:(NSString *)changeText
 {
   NSAssert(changeText != nil, @"String can't be nil!");
-  NSIndexPath * indexPath = [self.tableView indexPathForCell:cell];
   MWMPlacePageCellType const cellType = [self cellTypeForIndexPath:indexPath];
   string const val = changeText.UTF8String;
   switch (cellType)
