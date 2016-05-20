@@ -20,6 +20,8 @@ namespace
 
 @property (weak, nonatomic) id<MWMEditorCellProtocol> delegate;
 
+@property (nonatomic) NSIndexPath * indexPath;
+
 @property (nonatomic) BOOL isValid;
 
 @end
@@ -32,9 +34,11 @@ namespace
                placeholder:(NSString *)placeholder
               keyboardType:(UIKeyboardType)keyboardType
              capitalization:(UITextAutocapitalizationType)capitalization
+                  indexPath:(NSIndexPath *)indexPath
 {
   [self configWithDelegate:delegate icon:icon text:text placeholder:placeholder
-                            errorMessage:nil isValid:YES keyboardType:keyboardType capitalization:capitalization];
+                            errorMessage:nil isValid:YES keyboardType:keyboardType capitalization:capitalization
+                 indexPath:indexPath];
 }
 
 - (void)configWithDelegate:(id<MWMEditorCellProtocol>)delegate
@@ -45,8 +49,10 @@ namespace
                    isValid:(BOOL)isValid
               keyboardType:(UIKeyboardType)keyboardType
              capitalization:(UITextAutocapitalizationType)capitalization
+                  indexPath:(NSIndexPath *)indexPath
 {
   self.delegate = delegate;
+  self.indexPath = indexPath;
   self.icon.image = icon;
   self.icon.mwm_coloring = MWMImageColoringBlack;
   self.icon.hidden = (icon == nil);
@@ -104,7 +110,7 @@ namespace
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
-  [self.delegate cell:self changedText:textField.text];
+  [self.delegate cellAtIndexPath:self.indexPath changedText:textField.text];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
