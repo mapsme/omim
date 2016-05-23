@@ -520,7 +520,7 @@
 "pref_tts_how_to_set_up_voice" = "Como configurar a voz";
 
 /* Settings «Map» category: «Record track» title */
-"pref_track_record_title" = "Recent track";
+"pref_track_record_title" = "Histórico recente";
 
 "duration_disabled" = "Desligado";
 
@@ -1433,7 +1433,7 @@
 
 "whatsnew_update_editor_title" = "Atualizámos o editor do mapa";
 
-"whatsnew_update_editor_message" = "Os utilizadores do MAPS.ME fizeram 90 000 alterações no mapa. Juntos, estamos a fazer os mapas mais detalhados do mundo. Junte-se a nós!";
+"whatsnew_update_editor_message" = "Os utilizadores do MAPS.ME fizeram 100 000 alterações no mapa. Juntos, estamos a fazer os mapas mais detalhados do mundo. Junte-se a nós!";
 
 /* Additional text in whats new */
 "whatsnew_update_editor_message_update" = "Atualize todos os mapas para utilizar o Editor de Mapa.";

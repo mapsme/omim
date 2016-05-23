@@ -196,7 +196,7 @@
 "download_location_update_map_proposal" = "您可以更新目前所在位置的地圖。";
 
 /* REMOVE THIS STRING AFTER REFACTORING */
-"download_location_map_up_to_date" = "您目前所在位置 (%@)\n的地圖已是最新圖資 !";
+"download_location_map_up_to_date" = "您目前所在位置 (%@)\n的地圖已是最新圖資!";
 
 /* REMOVE THIS STRING AFTER REFACTORING */
 "pause" = "暫停";
@@ -786,7 +786,7 @@
 "toolbar_application_menu" = "Application menu";
 
 /* Preference text */
-"pref_use_google_play" = "Use Google Play Services to get your current location";
+"pref_use_google_play" = "使用 Google Play 服務來獲得您的目前位置";
 
 /* Text for rating dialog */
 "rating_just_rated" = "我剛剛評價了您的應用";
@@ -1433,7 +1433,7 @@
 
 "whatsnew_update_editor_title" = "我們已更新地圖編輯器";
 
-"whatsnew_update_editor_message" = "MAPS.ME 使用者已經進行了 90,000 處地圖變更。我們正在齊心協力打造世界上最詳細的地圖，加入我們吧！";
+"whatsnew_update_editor_message" = "MAPS.ME 使用者已經進行了 100,000 處地圖變更。我們正在齊心協力打造世界上最詳細的地圖，加入我們吧！";
 
 /* Additional text in whats new */
 "whatsnew_update_editor_message_update" = "如要使用地圖編輯器，請更新所有地圖。";
