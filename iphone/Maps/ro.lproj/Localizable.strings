@@ -1114,7 +1114,7 @@
 
 "share_with_friends" = "Partajează cu prietenii";
 
-"editor_report_problem_desription_1" = "Vă rugăm să descrieți problema în detaliu , astfel încât comunitatea OpenStreeMap să poată remedia eroarea.";
+"editor_report_problem_desription_1" = "Vă rugăm să descrieți problema în detaliu, astfel încât comunitatea OpenStreeMap să poată remedia eroarea.";
 
 "editor_report_problem_desription_2" = "Sau faceți-o pe http://www.openstreetmap.org/";
 
@@ -1433,7 +1433,7 @@
 
 "whatsnew_update_editor_title" = "Am actualizat editorul de hărți";
 
-"whatsnew_update_editor_message" = "Utilizatorii MAPS.ME au făcut 90.000 de modificări de hărți. Împreună alcătuim cele mai detaliate hărți din lume. Alăturați-vă comunității!";
+"whatsnew_update_editor_message" = "Utilizatorii MAPS.ME au făcut 100.000 de modificări de hărți. Împreună alcătuim cele mai detaliate hărți din lume. Alăturați-vă comunității!";
 
 /* Additional text in whats new */
 "whatsnew_update_editor_message_update" = "Pentru a utiliza funcția editor hartă, vă rugăm să actualizați toate hărțile.";
@@ -1515,5 +1515,3 @@
 "editor_status_sending" = "Se trimite…";
 
 "editor_place_doesnt_exist" = "Locul nu există";
-
-"place_page_booking_rating" = "Rating: %s";

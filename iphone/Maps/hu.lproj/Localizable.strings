@@ -1433,7 +1433,7 @@
 
 "whatsnew_update_editor_title" = "Frissítettük a szerkesztőt";
 
-"whatsnew_update_editor_message" = "A MAPS.ME felhasználói 90 ezer változtatást vittek fel a térképre. Együtt a világ legrészletesebb térképét készítjük. Csatlakozzon hozzánk!";
+"whatsnew_update_editor_message" = "A MAPS.ME felhasználói 100 ezer változtatást vittek fel a térképre. Együtt a világ legrészletesebb térképét készítjük. Csatlakozzon hozzánk!";
 
 /* Additional text in whats new */
 "whatsnew_update_editor_message_update" = "A térképszerkesztő használatához, kérjük, frissítsd az összes térképet.";
@@ -1515,5 +1515,3 @@
 "editor_status_sending" = "Küldés…";
 
 "editor_place_doesnt_exist" = "A hely nem létezik";
-
-"place_page_booking_rating" = "Rating: %s";
