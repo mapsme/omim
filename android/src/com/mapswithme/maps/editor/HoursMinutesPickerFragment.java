@@ -97,6 +97,7 @@ public class HoursMinutesPickerFragment extends BaseMwmDialogFragment
               return;
             }
 
+            saveHoursMinutes();
             dismiss();
             if (getParentFragment() instanceof OnPickListener)
               ((OnPickListener) getParentFragment()).onHoursMinutesPicked(mFrom, mTo, mId);
