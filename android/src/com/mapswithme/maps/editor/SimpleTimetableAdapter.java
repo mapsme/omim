@@ -260,7 +260,7 @@ public class SimpleTimetableAdapter extends RecyclerView.Adapter<SimpleTimetable
         pickTime(getAdapterPosition(), HoursMinutesPickerFragment.TAB_FROM, ID_OPENING);
         break;
       case R.id.time_close:
-        pickTime(getAdapterPosition(), HoursMinutesPickerFragment.TAB_TO, ID_CLOSING);
+        pickTime(getAdapterPosition(), HoursMinutesPickerFragment.TAB_TO, ID_OPENING);
         break;
       case R.id.tv__remove_timetable:
         removeTimetable(getAdapterPosition());
