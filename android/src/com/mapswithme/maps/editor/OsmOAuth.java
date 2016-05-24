@@ -1,13 +1,11 @@
 package com.mapswithme.maps.editor;
 
 import android.support.annotation.IntDef;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.Size;
 import android.support.annotation.WorkerThread;
-import android.text.TextUtils;
 
-import com.mapswithme.maps.MwmApplication;
+import static com.mapswithme.maps.MwmApplication.prefs;
 
 public final class OsmOAuth
 {
@@ -48,41 +46,41 @@ public final class OsmOAuth
 
   public static boolean isAuthorized()
   {
-    return MwmApplication.prefs().contains(PREF_OSM_TOKEN) &&
-           MwmApplication.prefs().contains(PREF_OSM_SECRET);
+    return prefs().contains(PREF_OSM_TOKEN) &&
+           prefs().contains(PREF_OSM_SECRET);
   }
 
   public static String getAuthToken()
   {
-    return MwmApplication.prefs().getString(PREF_OSM_TOKEN, "");
+    return prefs().getString(PREF_OSM_TOKEN, "");
   }
 
   public static String getAuthSecret()
   {
-    return MwmApplication.prefs().getString(PREF_OSM_SECRET, "");
+    return prefs().getString(PREF_OSM_SECRET, "");
   }
 
   public static String getUsername()
   {
-    return MwmApplication.prefs().getString(PREF_OSM_USERNAME, "");
+    return prefs().getString(PREF_OSM_USERNAME, "");
   }
 
   public static void setAuthorization(String token, String secret, String username)
   {
-    MwmApplication.prefs().edit()
-                  .putString(PREF_OSM_TOKEN, token)
-                  .putString(PREF_OSM_SECRET, secret)
-                  .putString(PREF_OSM_USERNAME, username)
-                  .apply();
+    prefs().edit()
+           .putString(PREF_OSM_TOKEN, token)
+           .putString(PREF_OSM_SECRET, secret)
+           .putString(PREF_OSM_USERNAME, username)
+           .apply();
   }
 
   public static void clearAuthorization()
   {
-    MwmApplication.prefs().edit()
-                  .remove(PREF_OSM_TOKEN)
-                  .remove(PREF_OSM_SECRET)
-                  .remove(PREF_OSM_USERNAME)
-                  .apply();
+    prefs().edit()
+           .remove(PREF_OSM_TOKEN)
+           .remove(PREF_OSM_SECRET)
+           .remove(PREF_OSM_USERNAME)
+           .apply();
   }
 
   /**
