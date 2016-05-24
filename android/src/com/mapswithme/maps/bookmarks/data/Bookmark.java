@@ -6,6 +6,7 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 
 import com.mapswithme.maps.Framework;
+import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.util.Constants;
 
 // TODO consider refactoring to remove hack with MapObject unmarshalling itself and Bookmark at the same time.
@@ -21,6 +22,7 @@ public class Bookmark extends MapObject
   Bookmark(@IntRange(from = 0) int categoryId, @IntRange(from = 0) int bookmarkId, String title)
   {
     super(BOOKMARK, title, "", "", 0, 0, "");
+    MwmApplication.get().initNativeCore();
 
     mCategoryId = categoryId;
     mBookmarkId = bookmarkId;
@@ -49,6 +51,8 @@ public class Bookmark extends MapObject
   protected Bookmark(Parcel source)
   {
     super(source);
+    MwmApplication.get().initNativeCore();
+
     mCategoryId = source.readInt();
     mBookmarkId = source.readInt();
     mIcon = getIconInternal();
