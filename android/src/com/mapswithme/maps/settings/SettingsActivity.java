@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +42,7 @@ public class SettingsActivity extends PreferenceActivity
   private AppCompatDelegate mDelegate;
   private CharSequence mNextBreadcrumb;
   private final Map<Long, Header> mHeaders = new HashMap<>();
+  private boolean mAuthorized;
 
   @Override
   public Activity get()
@@ -84,10 +86,14 @@ public class SettingsActivity extends PreferenceActivity
     {
       mHeaders.put(h.id, h);
       // Hack to change profile header to username, if user is logged in.
-      if (h.id == R.id.osm_profile && OsmOAuth.isAuthorized())
+      if (h.id == R.id.osm_profile && mAuthorized)
       {
-        h.titleRes = 0;
-        h.title = OsmOAuth.getUsername();
+        String name = OsmOAuth.getUsername();
+        if (!TextUtils.isEmpty(name))
+        {
+          h.titleRes = 0;
+          h.title = name;
+        }
       }
     }
   }
@@ -127,6 +133,7 @@ public class SettingsActivity extends PreferenceActivity
     getAppDelegate().installViewFactory();
     getAppDelegate().onCreate(savedInstanceState);
 
+    mAuthorized = OsmOAuth.isAuthorized();
     super.onCreate(savedInstanceState);
     setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
@@ -232,6 +239,12 @@ public class SettingsActivity extends PreferenceActivity
   {
     super.onResume();
     mActivityDelegate.onResume();
+
+    if (mAuthorized != OsmOAuth.isAuthorized())
+    {
+      mAuthorized = !mAuthorized;
+      invalidateHeaders();
+    }
   }
 
   @Override
