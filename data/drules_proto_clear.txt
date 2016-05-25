@@ -40465,10 +40465,10 @@ cont {
   element {
     scale: 14
     symbol {
-      name: "swimming-s"
+      name: "swimming-m"
       apply_for_type: 1
       priority: 16068
-      min_distance: 50
+      min_distance: 40
     }
     caption {
       primary {
@@ -55498,6 +55498,15 @@ cont {
 cont {
   name: "railway-station"
   element {
+    scale: 11
+    symbol {
+      name: "train-s"
+      apply_for_type: 1
+      priority: 16863
+      min_distance: 10
+    }
+  }
+  element {
     scale: 13
     symbol {
       name: "train-s"
@@ -55668,6 +55677,15 @@ cont {
 }
 cont {
   name: "railway-station-light_rail"
+  element {
+    scale: 11
+    symbol {
+      name: "train-s"
+      apply_for_type: 1
+      priority: 16863
+      min_distance: 10
+    }
+  }
   element {
     scale: 13
     symbol {
@@ -55840,6 +55858,15 @@ cont {
 cont {
   name: "railway-station-monorail"
   element {
+    scale: 11
+    symbol {
+      name: "train-s"
+      apply_for_type: 1
+      priority: 16863
+      min_distance: 10
+    }
+  }
+  element {
     scale: 13
     symbol {
       name: "train-s"
@@ -56010,6 +56037,15 @@ cont {
 }
 cont {
   name: "railway-station-subway"
+  element {
+    scale: 11
+    symbol {
+      name: "train-s"
+      apply_for_type: 1
+      priority: 16863
+      min_distance: 10
+    }
+  }
   element {
     scale: 13
     symbol {
@@ -56184,6 +56220,15 @@ cont {
 cont {
   name: "railway-station-subway-barcelona"
   element {
+    scale: 11
+    symbol {
+      name: "train-s"
+      apply_for_type: 1
+      priority: 16863
+      min_distance: 10
+    }
+  }
+  element {
     scale: 13
     symbol {
       name: "subway-barcelona-s"
@@ -56356,6 +56401,15 @@ cont {
 }
 cont {
   name: "railway-station-subway-berlin"
+  element {
+    scale: 11
+    symbol {
+      name: "train-s"
+      apply_for_type: 1
+      priority: 16863
+      min_distance: 10
+    }
+  }
   element {
     scale: 13
     symbol {
@@ -56530,6 +56584,15 @@ cont {
 cont {
   name: "railway-station-subway-blue"
   element {
+    scale: 11
+    symbol {
+      name: "train-s"
+      apply_for_type: 1
+      priority: 16863
+      min_distance: 10
+    }
+  }
+  element {
     scale: 13
     symbol {
       name: "subway-s"
@@ -56702,6 +56765,15 @@ cont {
 }
 cont {
   name: "railway-station-subway-brown"
+  element {
+    scale: 11
+    symbol {
+      name: "train-s"
+      apply_for_type: 1
+      priority: 16863
+      min_distance: 10
+    }
+  }
   element {
     scale: 13
     symbol {
@@ -56876,6 +56948,15 @@ cont {
 cont {
   name: "railway-station-subway-darkgreen"
   element {
+    scale: 11
+    symbol {
+      name: "train-s"
+      apply_for_type: 1
+      priority: 16863
+      min_distance: 10
+    }
+  }
+  element {
     scale: 13
     symbol {
       name: "subway-s"
@@ -57048,6 +57129,15 @@ cont {
 }
 cont {
   name: "railway-station-subway-gray"
+  element {
+    scale: 11
+    symbol {
+      name: "train-s"
+      apply_for_type: 1
+      priority: 16863
+      min_distance: 10
+    }
+  }
   element {
     scale: 13
     symbol {
@@ -57222,6 +57312,15 @@ cont {
 cont {
   name: "railway-station-subway-green"
   element {
+    scale: 11
+    symbol {
+      name: "train-s"
+      apply_for_type: 1
+      priority: 16863
+      min_distance: 10
+    }
+  }
+  element {
     scale: 13
     symbol {
       name: "subway-s"
@@ -57394,6 +57493,15 @@ cont {
 }
 cont {
   name: "railway-station-subway-grey"
+  element {
+    scale: 11
+    symbol {
+      name: "train-s"
+      apply_for_type: 1
+      priority: 16863
+      min_distance: 10
+    }
+  }
   element {
     scale: 13
     symbol {
@@ -57568,6 +57676,15 @@ cont {
 cont {
   name: "railway-station-subway-kiev"
   element {
+    scale: 11
+    symbol {
+      name: "train-s"
+      apply_for_type: 1
+      priority: 16863
+      min_distance: 10
+    }
+  }
+  element {
     scale: 13
     symbol {
       name: "subway-kiev-s"
@@ -57732,6 +57849,15 @@ cont {
 }
 cont {
   name: "railway-station-subway-lightblue"
+  element {
+    scale: 11
+    symbol {
+      name: "train-s"
+      apply_for_type: 1
+      priority: 16863
+      min_distance: 10
+    }
+  }
   element {
     scale: 13
     symbol {
@@ -57906,6 +58032,15 @@ cont {
 cont {
   name: "railway-station-subway-lightgreen"
   element {
+    scale: 11
+    symbol {
+      name: "train-s"
+      apply_for_type: 1
+      priority: 16863
+      min_distance: 10
+    }
+  }
+  element {
     scale: 13
     symbol {
       name: "subway-s"
@@ -58078,6 +58213,15 @@ cont {
 }
 cont {
   name: "railway-station-subway-london"
+  element {
+    scale: 11
+    symbol {
+      name: "train-s"
+      apply_for_type: 1
+      priority: 16863
+      min_distance: 10
+    }
+  }
   element {
     scale: 13
     symbol {
@@ -58252,6 +58396,15 @@ cont {
 cont {
   name: "railway-station-subway-madrid"
   element {
+    scale: 11
+    symbol {
+      name: "train-s"
+      apply_for_type: 1
+      priority: 16863
+      min_distance: 10
+    }
+  }
+  element {
     scale: 13
     symbol {
       name: "subway-madrid-s"
@@ -58424,6 +58577,15 @@ cont {
 }
 cont {
   name: "railway-station-subway-minsk"
+  element {
+    scale: 11
+    symbol {
+      name: "train-s"
+      apply_for_type: 1
+      priority: 16863
+      min_distance: 10
+    }
+  }
   element {
     scale: 13
     symbol {
@@ -58789,6 +58951,15 @@ cont {
 cont {
   name: "railway-station-subway-newyork"
   element {
+    scale: 11
+    symbol {
+      name: "train-s"
+      apply_for_type: 1
+      priority: 16863
+      min_distance: 10
+    }
+  }
+  element {
     scale: 13
     symbol {
       name: "subway-newyork-s"
@@ -58961,6 +59132,15 @@ cont {
 }
 cont {
   name: "railway-station-subway-orange"
+  element {
+    scale: 11
+    symbol {
+      name: "train-s"
+      apply_for_type: 1
+      priority: 16863
+      min_distance: 10
+    }
+  }
   element {
     scale: 13
     symbol {
@@ -59135,6 +59315,15 @@ cont {
 cont {
   name: "railway-station-subway-paris"
   element {
+    scale: 11
+    symbol {
+      name: "train-s"
+      apply_for_type: 1
+      priority: 16863
+      min_distance: 10
+    }
+  }
+  element {
     scale: 13
     symbol {
       name: "subway-paris-s"
@@ -59307,6 +59496,15 @@ cont {
 }
 cont {
   name: "railway-station-subway-purple"
+  element {
+    scale: 11
+    symbol {
+      name: "train-s"
+      apply_for_type: 1
+      priority: 16863
+      min_distance: 10
+    }
+  }
   element {
     scale: 13
     symbol {
@@ -59481,6 +59679,15 @@ cont {
 cont {
   name: "railway-station-subway-red"
   element {
+    scale: 11
+    symbol {
+      name: "train-s"
+      apply_for_type: 1
+      priority: 16863
+      min_distance: 10
+    }
+  }
+  element {
     scale: 13
     symbol {
       name: "subway-s"
@@ -59653,6 +59860,15 @@ cont {
 }
 cont {
   name: "railway-station-subway-roma"
+  element {
+    scale: 11
+    symbol {
+      name: "train-s"
+      apply_for_type: 1
+      priority: 16863
+      min_distance: 10
+    }
+  }
   element {
     scale: 13
     symbol {
@@ -60019,6 +60235,15 @@ cont {
 cont {
   name: "railway-station-subway-violet"
   element {
+    scale: 11
+    symbol {
+      name: "train-s"
+      apply_for_type: 1
+      priority: 16863
+      min_distance: 10
+    }
+  }
+  element {
     scale: 13
     symbol {
       name: "subway-s"
@@ -60191,6 +60416,15 @@ cont {
 }
 cont {
   name: "railway-station-subway-yellow"
+  element {
+    scale: 11
+    symbol {
+      name: "train-s"
+      apply_for_type: 1
+      priority: 16863
+      min_distance: 10
+    }
+  }
   element {
     scale: 13
     symbol {
