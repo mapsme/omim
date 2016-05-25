@@ -29022,22 +29022,6 @@ cont {
 cont {
   name: "historic-monument"
   element {
-    scale: 12
-    symbol {
-      name: "monument-s"
-      priority: 16876
-      min_distance: 30
-    }
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-        offset_y: 6
-      }
-      priority: 15876
-    }
-  }
-  element {
     scale: 13
     symbol {
       name: "monument-s"
@@ -70391,7 +70375,7 @@ cont {
     symbol {
       name: "picnic-l"
       priority: 16849
-      min_distance: 20
+      min_distance: 30
     }
     caption {
       primary {
@@ -70407,7 +70391,7 @@ cont {
     symbol {
       name: "picnic-l"
       priority: 16849
-      min_distance: 20
+      min_distance: 30
     }
     caption {
       primary {

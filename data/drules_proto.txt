@@ -34710,13 +34710,6 @@ cont {
 cont {
   name: "historic-monument"
   element {
-    scale: 12
-    symbol {
-      name: "memorial"
-      priority: 16000
-    }
-  }
-  element {
     scale: 13
     symbol {
       name: "memorial"
