@@ -38,6 +38,8 @@ public class HoursMinutesPickerFragment extends BaseMwmDialogFragment
   private HoursMinutes mTo;
 
   private TimePicker mPicker;
+  private View mPickerHoursLabel;
+
   @IntRange(from = 0, to = 1) private int mSelectedTab;
   private TabLayout mTabs;
 
@@ -125,6 +127,17 @@ public class HoursMinutesPickerFragment extends BaseMwmDialogFragment
     @SuppressLint("InflateParams")
     final View root = inflater.inflate(R.layout.fragment_timetable_picker, null);
 
+    mPicker = (TimePicker) root.findViewById(R.id.picker);
+    mPicker.setIs24HourView(DateFormat.is24HourFormat(getActivity()));
+
+    int id = getResources().getIdentifier("hours", "id", "android");
+    if (id != 0)
+    {
+      mPickerHoursLabel = mPicker.findViewById(id);
+      if (!(mPickerHoursLabel instanceof TextView))
+        mPickerHoursLabel = null;
+    }
+
     mTabs = (TabLayout) root.findViewById(R.id.tabs);
     TextView tabView = (TextView) inflater.inflate(R.layout.tab_timepicker, mTabs, false);
     // TODO @yunik add translations
@@ -148,6 +161,8 @@ public class HoursMinutesPickerFragment extends BaseMwmDialogFragment
         saveHoursMinutes();
         mSelectedTab = tab.getPosition();
         refreshPicker();
+        if (mPickerHoursLabel != null)
+          mPickerHoursLabel.performClick();
       }
 
       @Override
@@ -157,8 +172,6 @@ public class HoursMinutesPickerFragment extends BaseMwmDialogFragment
       public void onTabReselected(TabLayout.Tab tab) {}
     });
 
-    mPicker = (TimePicker) root.findViewById(R.id.picker);
-    mPicker.setIs24HourView(DateFormat.is24HourFormat(getActivity()));
     return root;
   }
 
