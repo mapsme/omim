@@ -7156,22 +7156,6 @@ cont {
 cont {
   name: "amenity-theatre"
   element {
-    scale: 12
-    symbol {
-      name: "theatre-s"
-      priority: 16876
-      min_distance: 10
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 6
-      }
-      priority: 15876
-    }
-  }
-  element {
     scale: 13
     symbol {
       name: "theatre-s"
@@ -29165,22 +29149,6 @@ cont {
 cont {
   name: "historic-museum"
   element {
-    scale: 12
-    symbol {
-      name: "museum-s"
-      priority: 16890
-      min_distance: 10
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 6
-      }
-      priority: 15890
-    }
-  }
-  element {
     scale: 13
     symbol {
       name: "museum-s"
@@ -41459,61 +41427,10 @@ cont {
 cont {
   name: "man_made-lighthouse"
   element {
-    scale: 11
-    symbol {
-      name: "lighthouse-s"
-      priority: 16890
-      min_distance: 10
-    }
-  }
-  element {
-    scale: 12
-    symbol {
-      name: "lighthouse-s"
-      priority: 16890
-      min_distance: 10
-    }
-  }
-  element {
-    scale: 13
-    symbol {
-      name: "lighthouse-s"
-      apply_for_type: 1
-      priority: 16890
-      min_distance: 5
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 6
-      }
-      priority: 15890
-    }
-  }
-  element {
-    scale: 14
-    symbol {
-      name: "lighthouse-s"
-      apply_for_type: 1
-      priority: 16890
-      min_distance: 5
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 6
-      }
-      priority: 15890
-    }
-  }
-  element {
     scale: 15
     symbol {
       name: "lighthouse-m"
       priority: 16890
-      min_distance: 5
     }
     caption {
       primary {
@@ -41529,7 +41446,6 @@ cont {
     symbol {
       name: "lighthouse-m"
       priority: 16890
-      min_distance: 5
     }
     caption {
       primary {
@@ -41710,38 +41626,6 @@ cont {
 }
 cont {
   name: "man_made-water_well"
-  element {
-    scale: 13
-    symbol {
-      name: "drinking-water-s"
-      priority: 16863
-      min_distance: 12
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 6
-      }
-      priority: 15863
-    }
-  }
-  element {
-    scale: 14
-    symbol {
-      name: "drinking-water-s"
-      priority: 16863
-      min_distance: 12
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 6
-      }
-      priority: 15863
-    }
-  }
   element {
     scale: 15
     symbol {
@@ -66415,36 +66299,6 @@ cont {
 cont {
   name: "shop-supermarket"
   element {
-    scale: 13
-    symbol {
-      name: "grocery-s"
-      priority: 16000
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 10
-      }
-      priority: 15000
-    }
-  }
-  element {
-    scale: 14
-    symbol {
-      name: "grocery-s"
-      priority: 16000
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 10
-      }
-      priority: 15000
-    }
-  }
-  element {
     scale: 15
     symbol {
       name: "grocery-m"
@@ -69611,40 +69465,6 @@ cont {
 cont {
   name: "tourism-information"
   element {
-    scale: 12
-    symbol {
-      name: "information-s"
-      apply_for_type: 1
-      priority: 16863
-      min_distance: 30
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 6
-      }
-      priority: 15863
-    }
-  }
-  element {
-    scale: 13
-    symbol {
-      name: "information-s"
-      apply_for_type: 1
-      priority: 16863
-      min_distance: 30
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 6
-      }
-      priority: 15863
-    }
-  }
-  element {
     scale: 14
     symbol {
       name: "information-s"
@@ -69746,40 +69566,6 @@ cont {
 }
 cont {
   name: "tourism-information-board"
-  element {
-    scale: 12
-    symbol {
-      name: "information-s"
-      apply_for_type: 1
-      priority: 16863
-      min_distance: 30
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 6
-      }
-      priority: 15863
-    }
-  }
-  element {
-    scale: 13
-    symbol {
-      name: "information-s"
-      apply_for_type: 1
-      priority: 16863
-      min_distance: 30
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 6
-      }
-      priority: 15863
-    }
-  }
   element {
     scale: 14
     symbol {
@@ -69883,40 +69669,6 @@ cont {
 cont {
   name: "tourism-information-guidepost"
   element {
-    scale: 12
-    symbol {
-      name: "information-s"
-      apply_for_type: 1
-      priority: 16863
-      min_distance: 30
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 6
-      }
-      priority: 15863
-    }
-  }
-  element {
-    scale: 13
-    symbol {
-      name: "information-s"
-      apply_for_type: 1
-      priority: 16863
-      min_distance: 30
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 6
-      }
-      priority: 15863
-    }
-  }
-  element {
     scale: 14
     symbol {
       name: "information-s"
@@ -70018,40 +69770,6 @@ cont {
 }
 cont {
   name: "tourism-information-map"
-  element {
-    scale: 12
-    symbol {
-      name: "information-s"
-      apply_for_type: 1
-      priority: 16863
-      min_distance: 30
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 6
-      }
-      priority: 15863
-    }
-  }
-  element {
-    scale: 13
-    symbol {
-      name: "information-s"
-      apply_for_type: 1
-      priority: 16863
-      min_distance: 30
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 6
-      }
-      priority: 15863
-    }
-  }
   element {
     scale: 14
     symbol {
@@ -70526,22 +70244,6 @@ cont {
 cont {
   name: "tourism-museum"
   element {
-    scale: 12
-    symbol {
-      name: "museum-s"
-      priority: 16890
-      min_distance: 10
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 6
-      }
-      priority: 15890
-    }
-  }
-  element {
     scale: 13
     symbol {
       name: "museum-s"
@@ -70819,40 +70521,6 @@ cont {
 cont {
   name: "tourism-viewpoint"
   element {
-    scale: 12
-    symbol {
-      name: "viewpoint-s"
-      apply_for_type: 1
-      priority: 16863
-      min_distance: 12
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 6
-      }
-      priority: 15863
-    }
-  }
-  element {
-    scale: 13
-    symbol {
-      name: "viewpoint-s"
-      apply_for_type: 1
-      priority: 16863
-      min_distance: 12
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 6
-      }
-      priority: 15863
-    }
-  }
-  element {
     scale: 14
     symbol {
       name: "viewpoint-s"
@@ -70954,38 +70622,6 @@ cont {
 }
 cont {
   name: "tourism-zoo"
-  element {
-    scale: 12
-    symbol {
-      name: "zoo-s"
-      priority: 16890
-      min_distance: 10
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 6
-      }
-      priority: 15890
-    }
-  }
-  element {
-    scale: 13
-    symbol {
-      name: "zoo-s"
-      priority: 16890
-      min_distance: 10
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 6
-      }
-      priority: 15890
-    }
-  }
   element {
     scale: 14
     symbol {
