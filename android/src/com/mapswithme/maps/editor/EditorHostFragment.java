@@ -138,8 +138,7 @@ public class EditorHostFragment extends BaseMwmToolbarFragment
 
   private void editWithFragment(Mode newMode, @StringRes int toolbarTitle, @Nullable Bundle args, Class<? extends Fragment> fragmentClass, boolean showSearch)
   {
-    if (!setEdits())
-      return;
+    setEdits(false);
 
     mMode = newMode;
     mToolbarController.setTitle(toolbarTitle);
@@ -160,9 +159,9 @@ public class EditorHostFragment extends BaseMwmToolbarFragment
     startActivity(new Intent(host, FeatureCategoryActivity.class));
   }
 
-  private boolean setEdits()
+  private boolean setEdits(boolean checkFields)
   {
-    return ((EditorFragment) getChildFragmentManager().findFragmentByTag(EditorFragment.class.getName())).setEdits();
+    return ((EditorFragment) getChildFragmentManager().findFragmentByTag(EditorFragment.class.getName())).setEdits(checkFields);
   }
 
   @Override
@@ -194,7 +193,7 @@ public class EditorHostFragment extends BaseMwmToolbarFragment
         editMapObject();
         break;
       case MAP_OBJECT:
-        if (!setEdits())
+        if (!setEdits(true))
           return;
 
         // Save note
