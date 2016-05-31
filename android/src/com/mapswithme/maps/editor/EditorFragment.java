@@ -158,12 +158,12 @@ public class EditorFragment extends BaseMwmFragment implements View.OnClickListe
   public void onSaveInstanceState(Bundle outState)
   {
     super.onSaveInstanceState(outState);
-    setEdits();
+    setEdits(false);
   }
 
-  boolean setEdits()
+  boolean setEdits(boolean checkFields)
   {
-    if (!validateFields())
+    if (checkFields && !validateFields())
       return false;
 
     Editor.nativeSetDefaultName(mName.getText().toString());
