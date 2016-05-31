@@ -396,6 +396,7 @@ BOOL gIsFirstMyPositionMode = YES;
     return;
   self.view.clipsToBounds = YES;
   [MTRGManager setMyCom:YES];
+  [self processMyPositionStateModeEvent:location::PendingPosition];
 }
 
 - (void)mwm_refreshUI
@@ -520,8 +521,6 @@ BOOL gIsFirstMyPositionMode = YES;
     // Probably it's better to subscribe only wnen needed and usubscribe in other cases.
     // May be better solution would be multiobservers support in the C++ core.
     [self processMyPositionStateModeEvent:mode];
-    [self.controlsManager.menuController processMyPositionStateModeEvent:mode];
-    [[MapsAppDelegate theApp].locationManager processMyPositionStateModeEvent:mode];
   });
 
   m_predictor = [[LocationPredictor alloc] initWithObserver:self];
@@ -569,6 +568,8 @@ BOOL gIsFirstMyPositionMode = YES;
   [m_predictor setMode:mode];
 
   LocationManager * lm = [MapsAppDelegate theApp].locationManager;
+  [lm processMyPositionStateModeEvent:mode];
+  [self.controlsManager processMyPositionStateModeEvent:mode];
   switch (mode)
   {
     case location::PendingPosition:
@@ -884,6 +885,8 @@ BOOL gIsFirstMyPositionMode = YES;
 
 - (MWMMapViewControlsManager *)controlsManager
 {
+  if (!self.isViewLoaded)
+    return nil;
   if (!_controlsManager)
     _controlsManager = [[MWMMapViewControlsManager alloc] initWithParentController:self];
   return _controlsManager;
