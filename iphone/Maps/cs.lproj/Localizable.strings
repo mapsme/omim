@@ -1433,7 +1433,7 @@
 
 "whatsnew_update_editor_title" = "Aktualizovali jsme editor map";
 
-"whatsnew_update_editor_message" = "Uživatelé aplikace MAPS.ME už provedli na 90 000 změn map. Přidejte se k nám a pomozte nám vytvořit nejpodrobnější mapy světa!";
+"whatsnew_update_editor_message" = "Uživatelé aplikace MAPS.ME už provedli na 100 000 změn map. Přidejte se k nám a pomozte nám vytvořit nejpodrobnější mapy světa!";
 
 /* Additional text in whats new */
 "whatsnew_update_editor_message_update" = "Chcete-li používat editor map, pak prosím aktualizujte všechny mapy.";
@@ -1515,5 +1515,3 @@
 "editor_status_sending" = "Odesílání…";
 
 "editor_place_doesnt_exist" = "Místo neexistuje";
-
-"place_page_booking_rating" = "Rating: %s";

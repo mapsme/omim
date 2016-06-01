@@ -1433,7 +1433,7 @@
 
 "whatsnew_update_editor_title" = "Olemme päivittäneet karttamuokkaimen";
 
-"whatsnew_update_editor_message" = "MAPS.ME -käyttäjät ovat tehneet 90 000 karttavaihtoehtoa. Yhdessä teemme maailman yksityiskohtaisimmat kartat. Liity meihin!";
+"whatsnew_update_editor_message" = "MAPS.ME -käyttäjät ovat tehneet 100 000 karttavaihtoehtoa. Yhdessä teemme maailman yksityiskohtaisimmat kartat. Liity meihin!";
 
 /* Additional text in whats new */
 "whatsnew_update_editor_message_update" = "Päivitä kaikki kartat käyttääksesi Karttamuokkainta.";
@@ -1515,5 +1515,3 @@
 "editor_status_sending" = "Lähetetään…";
 
 "editor_place_doesnt_exist" = "Paikkaa ei ole";
-
-"place_page_booking_rating" = "Rating: %s";
