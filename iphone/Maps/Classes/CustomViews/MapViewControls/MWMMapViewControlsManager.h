@@ -49,4 +49,6 @@
 - (void)handleRoutingError;
 - (void)buildRoute;
 
+- (void)processMyPositionStateModeEvent:(location::EMyPositionMode)mode;
+
 @end

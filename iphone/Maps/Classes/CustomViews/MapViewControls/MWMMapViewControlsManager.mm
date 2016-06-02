@@ -97,6 +97,13 @@ extern NSString * const kAlohalyticsTapEventKey;
   self.routeDestination = MWMRoutePoint::MWMRoutePointZero();
 }
 
+#pragma mark - My Position
+
+- (void)processMyPositionStateModeEvent:(location::EMyPositionMode)mode
+{
+  [self.menuController processMyPositionStateModeEvent:mode];
+}
+
 #pragma mark - MWMFrameworkRouteBuilderObserver
 
 - (void)processRouteBuilderEvent:(routing::IRouter::ResultCode)code
