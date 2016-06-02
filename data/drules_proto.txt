@@ -6336,13 +6336,6 @@ cont {
 cont {
   name: "amenity-theatre"
   element {
-    scale: 12
-    symbol {
-      name: "theatre"
-      priority: 16000
-    }
-  }
-  element {
     scale: 13
     symbol {
       name: "theatre"
@@ -34717,13 +34710,6 @@ cont {
 cont {
   name: "historic-monument"
   element {
-    scale: 12
-    symbol {
-      name: "memorial"
-      priority: 16000
-    }
-  }
-  element {
     scale: 13
     symbol {
       name: "memorial"
@@ -34802,13 +34788,6 @@ cont {
 }
 cont {
   name: "historic-museum"
-  element {
-    scale: 12
-    symbol {
-      name: "museum"
-      priority: 16000
-    }
-  }
   element {
     scale: 13
     symbol {
@@ -41175,34 +41154,6 @@ cont {
 cont {
   name: "man_made-lighthouse"
   element {
-    scale: 11
-    symbol {
-      name: "lighthouse"
-      priority: 16000
-    }
-  }
-  element {
-    scale: 12
-    symbol {
-      name: "lighthouse"
-      priority: 16000
-    }
-  }
-  element {
-    scale: 13
-    symbol {
-      name: "lighthouse"
-      priority: 16000
-    }
-  }
-  element {
-    scale: 14
-    symbol {
-      name: "lighthouse"
-      priority: 16000
-    }
-  }
-  element {
     scale: 15
     symbol {
       name: "lighthouse"
@@ -41759,49 +41710,17 @@ cont {
 cont {
   name: "man_made-water_well"
   element {
-    scale: 13
-    symbol {
-      name: "drinking-water-s"
-      priority: 16863
-      min_distance: 12
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 6
-      }
-      priority: 15863
-    }
-  }
-  element {
-    scale: 14
-    symbol {
-      name: "drinking-water-s"
-      priority: 16863
-      min_distance: 12
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 6
-      }
-      priority: 15863
-    }
-  }
-  element {
     scale: 15
     symbol {
-      name: "drinking-water-s"
+      name: "drinking-water-m"
       priority: 16863
-      min_distance: 12
+      min_distance: 5
     }
     caption {
       primary {
         height: 10
         color: 4473924
-        offset_y: 6
+        offset_y: 8
       }
       priority: 15863
     }
@@ -41809,15 +41728,15 @@ cont {
   element {
     scale: 16
     symbol {
-      name: "drinking-water-s"
+      name: "drinking-water-m"
       priority: 16863
-      min_distance: 12
+      min_distance: 5
     }
     caption {
       primary {
         height: 10
         color: 4473924
-        offset_y: 6
+        offset_y: 8
       }
       priority: 15863
     }
@@ -41825,15 +41744,15 @@ cont {
   element {
     scale: 17
     symbol {
-      name: "drinking-water-s"
+      name: "drinking-water-m"
       priority: 16863
-      min_distance: 12
+      min_distance: 5
     }
     caption {
       primary {
         height: 10
         color: 4473924
-        offset_y: 6
+        offset_y: 8
       }
       priority: 15863
     }
@@ -41841,15 +41760,15 @@ cont {
   element {
     scale: 18
     symbol {
-      name: "drinking-water-s"
+      name: "drinking-water-m"
       priority: 16863
-      min_distance: 12
+      min_distance: 5
     }
     caption {
       primary {
         height: 10
         color: 4473924
-        offset_y: 6
+        offset_y: 8
       }
       priority: 15863
     }
@@ -59612,6 +59531,20 @@ cont {
 cont {
   name: "railway-station"
   element {
+    scale: 11
+    symbol {
+      name: "railway-station-mini"
+      priority: 16159
+    }
+  }
+  element {
+    scale: 12
+    symbol {
+      name: "railway-station-mini"
+      priority: 16159
+    }
+  }
+  element {
     scale: 13
     symbol {
       name: "railway-station-mini"
@@ -59708,6 +59641,20 @@ cont {
 }
 cont {
   name: "railway-station-light_rail"
+  element {
+    scale: 11
+    symbol {
+      name: "railway-station-mini"
+      priority: 16159
+    }
+  }
+  element {
+    scale: 12
+    symbol {
+      name: "railway-station-mini"
+      priority: 16159
+    }
+  }
   element {
     scale: 13
     symbol {
@@ -59806,6 +59753,20 @@ cont {
 cont {
   name: "railway-station-monorail"
   element {
+    scale: 11
+    symbol {
+      name: "railway-station-mini"
+      priority: 16159
+    }
+  }
+  element {
+    scale: 12
+    symbol {
+      name: "railway-station-mini"
+      priority: 16159
+    }
+  }
+  element {
     scale: 13
     symbol {
       name: "railway-station-mini"
@@ -59902,6 +59863,29 @@ cont {
 }
 cont {
   name: "railway-station-subway"
+  element {
+    scale: 11
+    symbol {
+      name: "subway-station-s"
+      priority: 19100
+    }
+    caption {
+      primary {
+        height: 10
+        color: 3166424
+        stroke_color: 16317695
+        offset_y: 10
+      }
+      secondary {
+        height: 9
+        color: 3166424
+        stroke_color: 16317695
+        offset_y: 10
+        text: "int_name"
+      }
+      priority: 19000
+    }
+  }
   element {
     scale: 12
     symbol {
@@ -60090,6 +60074,29 @@ cont {
 cont {
   name: "railway-station-subway-barcelona"
   element {
+    scale: 11
+    symbol {
+      name: "subway-station-s"
+      priority: 19100
+    }
+    caption {
+      primary {
+        height: 10
+        color: 3166424
+        stroke_color: 16317695
+        offset_y: 10
+      }
+      secondary {
+        height: 9
+        color: 3166424
+        stroke_color: 16317695
+        offset_y: 10
+        text: "int_name"
+      }
+      priority: 19000
+    }
+  }
+  element {
     scale: 12
     symbol {
       name: "subway-station-s"
@@ -60276,6 +60283,29 @@ cont {
 }
 cont {
   name: "railway-station-subway-berlin"
+  element {
+    scale: 11
+    symbol {
+      name: "subway-station-s"
+      priority: 19100
+    }
+    caption {
+      primary {
+        height: 10
+        color: 3166424
+        stroke_color: 16317695
+        offset_y: 10
+      }
+      secondary {
+        height: 9
+        color: 3166424
+        stroke_color: 16317695
+        offset_y: 10
+        text: "int_name"
+      }
+      priority: 19000
+    }
+  }
   element {
     scale: 12
     symbol {
@@ -60464,6 +60494,29 @@ cont {
 cont {
   name: "railway-station-subway-blue"
   element {
+    scale: 11
+    symbol {
+      name: "subway-station-s"
+      priority: 19100
+    }
+    caption {
+      primary {
+        height: 10
+        color: 469129
+        stroke_color: 16317695
+        offset_y: 10
+      }
+      secondary {
+        height: 9
+        color: 469129
+        stroke_color: 16317695
+        offset_y: 10
+        text: "int_name"
+      }
+      priority: 19000
+    }
+  }
+  element {
     scale: 12
     symbol {
       name: "subway-station-s"
@@ -60650,6 +60703,29 @@ cont {
 }
 cont {
   name: "railway-station-subway-brown"
+  element {
+    scale: 11
+    symbol {
+      name: "subway-station-s"
+      priority: 19100
+    }
+    caption {
+      primary {
+        height: 10
+        color: 12285696
+        stroke_color: 16317695
+        offset_y: 10
+      }
+      secondary {
+        height: 9
+        color: 12285696
+        stroke_color: 16317695
+        offset_y: 10
+        text: "int_name"
+      }
+      priority: 19000
+    }
+  }
   element {
     scale: 12
     symbol {
@@ -60838,6 +60914,29 @@ cont {
 cont {
   name: "railway-station-subway-darkgreen"
   element {
+    scale: 11
+    symbol {
+      name: "subway-station-s"
+      priority: 19100
+    }
+    caption {
+      primary {
+        height: 10
+        color: 25600
+        stroke_color: 16317695
+        offset_y: 10
+      }
+      secondary {
+        height: 9
+        color: 25600
+        stroke_color: 16317695
+        offset_y: 10
+        text: "int_name"
+      }
+      priority: 19000
+    }
+  }
+  element {
     scale: 12
     symbol {
       name: "subway-station-s"
@@ -61024,6 +61123,29 @@ cont {
 }
 cont {
   name: "railway-station-subway-gray"
+  element {
+    scale: 11
+    symbol {
+      name: "subway-station-s"
+      priority: 19100
+    }
+    caption {
+      primary {
+        height: 10
+        color: 8421504
+        stroke_color: 16317695
+        offset_y: 10
+      }
+      secondary {
+        height: 9
+        color: 8421504
+        stroke_color: 16317695
+        offset_y: 10
+        text: "int_name"
+      }
+      priority: 19000
+    }
+  }
   element {
     scale: 12
     symbol {
@@ -61212,6 +61334,29 @@ cont {
 cont {
   name: "railway-station-subway-green"
   element {
+    scale: 11
+    symbol {
+      name: "subway-station-s"
+      priority: 19100
+    }
+    caption {
+      primary {
+        height: 10
+        color: 26112
+        stroke_color: 16317695
+        offset_y: 10
+      }
+      secondary {
+        height: 9
+        color: 26112
+        stroke_color: 16317695
+        offset_y: 10
+        text: "int_name"
+      }
+      priority: 19000
+    }
+  }
+  element {
     scale: 12
     symbol {
       name: "subway-station-s"
@@ -61398,6 +61543,29 @@ cont {
 }
 cont {
   name: "railway-station-subway-grey"
+  element {
+    scale: 11
+    symbol {
+      name: "subway-station-s"
+      priority: 19100
+    }
+    caption {
+      primary {
+        height: 10
+        color: 8421504
+        stroke_color: 16317695
+        offset_y: 10
+      }
+      secondary {
+        height: 9
+        color: 8421504
+        stroke_color: 16317695
+        offset_y: 10
+        text: "int_name"
+      }
+      priority: 19000
+    }
+  }
   element {
     scale: 12
     symbol {
@@ -61586,6 +61754,29 @@ cont {
 cont {
   name: "railway-station-subway-kiev"
   element {
+    scale: 11
+    symbol {
+      name: "subway-station-s"
+      priority: 19100
+    }
+    caption {
+      primary {
+        height: 10
+        color: 3166424
+        stroke_color: 16317695
+        offset_y: 10
+      }
+      secondary {
+        height: 9
+        color: 3166424
+        stroke_color: 16317695
+        offset_y: 10
+        text: "int_name"
+      }
+      priority: 19000
+    }
+  }
+  element {
     scale: 12
     symbol {
       name: "subway-station-s"
@@ -61772,6 +61963,29 @@ cont {
 }
 cont {
   name: "railway-station-subway-lightblue"
+  element {
+    scale: 11
+    symbol {
+      name: "subway-station-s"
+      priority: 19100
+    }
+    caption {
+      primary {
+        height: 10
+        color: 11393254
+        stroke_color: 16317695
+        offset_y: 10
+      }
+      secondary {
+        height: 9
+        color: 11393254
+        stroke_color: 16317695
+        offset_y: 10
+        text: "int_name"
+      }
+      priority: 19000
+    }
+  }
   element {
     scale: 12
     symbol {
@@ -61960,6 +62174,29 @@ cont {
 cont {
   name: "railway-station-subway-lightgreen"
   element {
+    scale: 11
+    symbol {
+      name: "subway-station-s"
+      priority: 19100
+    }
+    caption {
+      primary {
+        height: 10
+        color: 9498256
+        stroke_color: 16317695
+        offset_y: 10
+      }
+      secondary {
+        height: 9
+        color: 9498256
+        stroke_color: 16317695
+        offset_y: 10
+        text: "int_name"
+      }
+      priority: 19000
+    }
+  }
+  element {
     scale: 12
     symbol {
       name: "subway-station-s"
@@ -62146,6 +62383,29 @@ cont {
 }
 cont {
   name: "railway-station-subway-london"
+  element {
+    scale: 11
+    symbol {
+      name: "subway-station-s"
+      priority: 19100
+    }
+    caption {
+      primary {
+        height: 10
+        color: 3166424
+        stroke_color: 16317695
+        offset_y: 10
+      }
+      secondary {
+        height: 9
+        color: 3166424
+        stroke_color: 16317695
+        offset_y: 10
+        text: "int_name"
+      }
+      priority: 19000
+    }
+  }
   element {
     scale: 12
     symbol {
@@ -62334,6 +62594,29 @@ cont {
 cont {
   name: "railway-station-subway-madrid"
   element {
+    scale: 11
+    symbol {
+      name: "subway-station-s"
+      priority: 19100
+    }
+    caption {
+      primary {
+        height: 10
+        color: 3166424
+        stroke_color: 16317695
+        offset_y: 10
+      }
+      secondary {
+        height: 9
+        color: 3166424
+        stroke_color: 16317695
+        offset_y: 10
+        text: "int_name"
+      }
+      priority: 19000
+    }
+  }
+  element {
     scale: 12
     symbol {
       name: "subway-station-s"
@@ -62520,6 +62803,29 @@ cont {
 }
 cont {
   name: "railway-station-subway-minsk"
+  element {
+    scale: 11
+    symbol {
+      name: "subway-station-s"
+      priority: 19100
+    }
+    caption {
+      primary {
+        height: 10
+        color: 3166424
+        stroke_color: 16317695
+        offset_y: 10
+      }
+      secondary {
+        height: 9
+        color: 3166424
+        stroke_color: 16317695
+        offset_y: 10
+        text: "int_name"
+      }
+      priority: 19000
+    }
+  }
   element {
     scale: 12
     symbol {
@@ -62918,6 +63224,29 @@ cont {
 cont {
   name: "railway-station-subway-newyork"
   element {
+    scale: 11
+    symbol {
+      name: "subway-station-s"
+      priority: 19100
+    }
+    caption {
+      primary {
+        height: 10
+        color: 3166424
+        stroke_color: 16317695
+        offset_y: 10
+      }
+      secondary {
+        height: 9
+        color: 3166424
+        stroke_color: 16317695
+        offset_y: 10
+        text: "int_name"
+      }
+      priority: 19000
+    }
+  }
+  element {
     scale: 12
     symbol {
       name: "subway-station-s"
@@ -63104,6 +63433,29 @@ cont {
 }
 cont {
   name: "railway-station-subway-orange"
+  element {
+    scale: 11
+    symbol {
+      name: "subway-station-s"
+      priority: 19100
+    }
+    caption {
+      primary {
+        height: 10
+        color: 16742144
+        stroke_color: 16317695
+        offset_y: 10
+      }
+      secondary {
+        height: 9
+        color: 16742144
+        stroke_color: 16317695
+        offset_y: 10
+        text: "int_name"
+      }
+      priority: 19000
+    }
+  }
   element {
     scale: 12
     symbol {
@@ -63292,6 +63644,29 @@ cont {
 cont {
   name: "railway-station-subway-paris"
   element {
+    scale: 11
+    symbol {
+      name: "subway-station-s"
+      priority: 19100
+    }
+    caption {
+      primary {
+        height: 10
+        color: 3166424
+        stroke_color: 16317695
+        offset_y: 10
+      }
+      secondary {
+        height: 9
+        color: 3166424
+        stroke_color: 16317695
+        offset_y: 10
+        text: "int_name"
+      }
+      priority: 19000
+    }
+  }
+  element {
     scale: 12
     symbol {
       name: "subway-station-s"
@@ -63478,6 +63853,29 @@ cont {
 }
 cont {
   name: "railway-station-subway-purple"
+  element {
+    scale: 11
+    symbol {
+      name: "subway-station-s"
+      priority: 19100
+    }
+    caption {
+      primary {
+        height: 10
+        color: 9130140
+        stroke_color: 16317695
+        offset_y: 10
+      }
+      secondary {
+        height: 9
+        color: 9130140
+        stroke_color: 16317695
+        offset_y: 10
+        text: "int_name"
+      }
+      priority: 19000
+    }
+  }
   element {
     scale: 12
     symbol {
@@ -63666,6 +64064,29 @@ cont {
 cont {
   name: "railway-station-subway-red"
   element {
+    scale: 11
+    symbol {
+      name: "subway-station-s"
+      priority: 19100
+    }
+    caption {
+      primary {
+        height: 10
+        color: 14483456
+        stroke_color: 16317695
+        offset_y: 10
+      }
+      secondary {
+        height: 9
+        color: 14483456
+        stroke_color: 16317695
+        offset_y: 10
+        text: "int_name"
+      }
+      priority: 19000
+    }
+  }
+  element {
     scale: 12
     symbol {
       name: "subway-station-s"
@@ -63852,6 +64273,29 @@ cont {
 }
 cont {
   name: "railway-station-subway-roma"
+  element {
+    scale: 11
+    symbol {
+      name: "subway-station-s"
+      priority: 19100
+    }
+    caption {
+      primary {
+        height: 10
+        color: 3166424
+        stroke_color: 16317695
+        offset_y: 10
+      }
+      secondary {
+        height: 9
+        color: 3166424
+        stroke_color: 16317695
+        offset_y: 10
+        text: "int_name"
+      }
+      priority: 19000
+    }
+  }
   element {
     scale: 12
     symbol {
@@ -64250,6 +64694,29 @@ cont {
 cont {
   name: "railway-station-subway-violet"
   element {
+    scale: 11
+    symbol {
+      name: "subway-station-s"
+      priority: 19100
+    }
+    caption {
+      primary {
+        height: 10
+        color: 15631086
+        stroke_color: 16317695
+        offset_y: 10
+      }
+      secondary {
+        height: 9
+        color: 15631086
+        stroke_color: 16317695
+        offset_y: 10
+        text: "int_name"
+      }
+      priority: 19000
+    }
+  }
+  element {
     scale: 12
     symbol {
       name: "subway-station-s"
@@ -64436,6 +64903,29 @@ cont {
 }
 cont {
   name: "railway-station-subway-yellow"
+  element {
+    scale: 11
+    symbol {
+      name: "subway-station-s"
+      priority: 19100
+    }
+    caption {
+      primary {
+        height: 10
+        color: 16238080
+        stroke_color: 16317695
+        offset_y: 10
+      }
+      secondary {
+        height: 9
+        color: 16238080
+        stroke_color: 16317695
+        offset_y: 10
+        text: "int_name"
+      }
+      priority: 19000
+    }
+  }
   element {
     scale: 12
     symbol {
@@ -71614,20 +72104,6 @@ cont {
 cont {
   name: "shop-supermarket"
   element {
-    scale: 13
-    symbol {
-      name: "supermarket"
-      priority: 16000
-    }
-  }
-  element {
-    scale: 14
-    symbol {
-      name: "supermarket"
-      priority: 16000
-    }
-  }
-  element {
     scale: 15
     symbol {
       name: "supermarket"
@@ -73722,38 +74198,6 @@ cont {
 cont {
   name: "tourism-information"
   element {
-    scale: 12
-    symbol {
-      name: "information"
-      priority: 16003
-    }
-    caption {
-      primary {
-        height: 11
-        color: 4210752
-        stroke_color: 16777215
-        offset_y: 10
-      }
-      priority: 15003
-    }
-  }
-  element {
-    scale: 13
-    symbol {
-      name: "information"
-      priority: 16003
-    }
-    caption {
-      primary {
-        height: 11
-        color: 4210752
-        stroke_color: 16777215
-        offset_y: 10
-      }
-      priority: 15003
-    }
-  }
-  element {
     scale: 14
     symbol {
       name: "information"
@@ -73852,38 +74296,6 @@ cont {
 }
 cont {
   name: "tourism-information-board"
-  element {
-    scale: 12
-    symbol {
-      name: "information"
-      priority: 16003
-    }
-    caption {
-      primary {
-        height: 11
-        color: 4210752
-        stroke_color: 16777215
-        offset_y: 10
-      }
-      priority: 15003
-    }
-  }
-  element {
-    scale: 13
-    symbol {
-      name: "information"
-      priority: 16003
-    }
-    caption {
-      primary {
-        height: 11
-        color: 4210752
-        stroke_color: 16777215
-        offset_y: 10
-      }
-      priority: 15003
-    }
-  }
   element {
     scale: 14
     symbol {
@@ -73984,38 +74396,6 @@ cont {
 cont {
   name: "tourism-information-guidepost"
   element {
-    scale: 12
-    symbol {
-      name: "information"
-      priority: 16003
-    }
-    caption {
-      primary {
-        height: 11
-        color: 4210752
-        stroke_color: 16777215
-        offset_y: 10
-      }
-      priority: 15003
-    }
-  }
-  element {
-    scale: 13
-    symbol {
-      name: "information"
-      priority: 16003
-    }
-    caption {
-      primary {
-        height: 11
-        color: 4210752
-        stroke_color: 16777215
-        offset_y: 10
-      }
-      priority: 15003
-    }
-  }
-  element {
     scale: 14
     symbol {
       name: "information"
@@ -74114,38 +74494,6 @@ cont {
 }
 cont {
   name: "tourism-information-map"
-  element {
-    scale: 12
-    symbol {
-      name: "information"
-      priority: 16003
-    }
-    caption {
-      primary {
-        height: 11
-        color: 4210752
-        stroke_color: 16777215
-        offset_y: 10
-      }
-      priority: 15003
-    }
-  }
-  element {
-    scale: 13
-    symbol {
-      name: "information"
-      priority: 16003
-    }
-    caption {
-      primary {
-        height: 11
-        color: 4210752
-        stroke_color: 16777215
-        offset_y: 10
-      }
-      priority: 15003
-    }
-  }
   element {
     scale: 14
     symbol {
@@ -74580,13 +74928,6 @@ cont {
 cont {
   name: "tourism-museum"
   element {
-    scale: 12
-    symbol {
-      name: "museum"
-      priority: 16000
-    }
-  }
-  element {
     scale: 13
     symbol {
       name: "museum"
@@ -74838,20 +75179,6 @@ cont {
 }
 cont {
   name: "tourism-viewpoint"
-  element {
-    scale: 12
-    symbol {
-      name: "viewpoint"
-      priority: 16000
-    }
-  }
-  element {
-    scale: 13
-    symbol {
-      name: "viewpoint"
-      priority: 16000
-    }
-  }
   element {
     scale: 14
     symbol {

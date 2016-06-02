@@ -343,6 +343,13 @@ node|z11[railway=halt],  {
   icon-min-distance: 10;
 }
 
+node|z11[railway=station],  {
+  icon-image: train-s.svg;
+  z-index: 2500;
+  icon-min-distance: 10;
+}
+
+
 node|z12[railway=halt]  {
 	icon-image: train-s.svg;
   text-offset: 6;
