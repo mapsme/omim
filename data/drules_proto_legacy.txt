@@ -64891,40 +64891,6 @@ cont {
   }
 }
 cont {
-  name: "sponsored"
-  element {
-    scale: 18
-    symbol {
-      name: "hotel"
-      priority: 16000
-    }
-  }
-  element {
-    scale: 19
-    symbol {
-      name: "hotel"
-      priority: 16000
-    }
-  }
-}
-cont {
-  name: "sponsored-booking"
-  element {
-    scale: 18
-    symbol {
-      name: "hotel"
-      priority: 16000
-    }
-  }
-  element {
-    scale: 19
-    symbol {
-      name: "hotel"
-      priority: 16000
-    }
-  }
-}
-cont {
   name: "sport-american_football"
   element {
     scale: 17
