@@ -309,7 +309,7 @@ void registerCellsForTableView(vector<MWMPlacePageCellType> const & cells, UITab
     noteInfo[kStatLat] = @(latLon.lat);
     noteInfo[kStatLon] = @(latLon.lon);
     [Statistics logEvent:kStatEditorProblemReport withParameters:noteInfo];
-    osm::Editor::Instance().CreateNote(latLon, featureID, osm::Editor::NoteProblemType::General ,self.note.UTF8String);
+    f.CreateNote(latLon, featureID, osm::Editor::NoteProblemType::General, self.note.UTF8String);
   }
 
   switch (f.SaveEditedMapObject(m_mapObject))
@@ -676,6 +676,7 @@ void registerCellsForTableView(vector<MWMPlacePageCellType> const & cells, UITab
         case osm::Editor::FeatureStatus::Untouched:
           return L(@"editor_place_doesnt_exist");
         case osm::Editor::FeatureStatus::Deleted:
+        case osm::Editor::FeatureStatus::Obsolete:  // TODO(Vlad): Either make a valid button or disable it.
           NSAssert(false, @"Incorrect feature status!");
           return L(@"editor_place_doesnt_exist");
         case osm::Editor::FeatureStatus::Modified:
@@ -899,7 +900,7 @@ void registerCellsForTableView(vector<MWMPlacePageCellType> const & cells, UITab
 - (void)tryToChangeInvalidStateForCell:(MWMEditorTextTableViewCell *)cell
 {
   [self.tableView beginUpdates];
-  
+
   NSIndexPath * indexPath = [self.tableView indexPathForCell:cell];
   [self.invalidCells removeObject:indexPath];
 
@@ -1015,7 +1016,7 @@ void registerCellsForTableView(vector<MWMPlacePageCellType> const & cells, UITab
                                                             kStatEditorMWMVersion : @(fid.GetMwmVersion()),
                                                             kStatProblem : @(osm::Editor::kPlaceDoesNotExistMessage),
                                                             kStatLat : @(latLon.lat), kStatLon : @(latLon.lon)}];
-       osm::Editor::Instance().CreateNote(latLon, fid, osm::Editor::NoteProblemType::PlaceDoesNotExist, additional);
+       GetFramework().CreateNote(latLon, fid, osm::Editor::NoteProblemType::PlaceDoesNotExist, additional);
        [self backTap];
        [self showDropDown];
      }];
