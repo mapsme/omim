@@ -100,7 +100,7 @@ public:
     RoadInfo(RoadInfo const &) = default;
     RoadInfo & operator=(RoadInfo const &) = default;
 
-    buffer_vector<m2::PointD, 32> m_points;
+    buffer_vector<m2::PointD, 8> m_points;
     double m_speedKMPH;
     bool m_bidirectional;
   };
