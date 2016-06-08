@@ -1,5 +1,6 @@
 #pragma once
 
+#include "indexer/feature.hpp"
 #include "indexer/geometry_coding.hpp"
 #include "indexer/tesselator_decl.hpp"
 #include "indexer/point_to_int64.hpp"
@@ -38,7 +39,7 @@ namespace serial
   //@}
 
   typedef buffer_vector<uint64_t, 32> DeltasT;
-  typedef buffer_vector<m2::PointD, 8> OutPointsT;
+  typedef TFeatureBuf OutPointsT;
 
   void Encode(EncodeFunT fn, vector<m2::PointD> const & points, CodingParams const & params,
               DeltasT & deltas);

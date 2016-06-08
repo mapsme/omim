@@ -326,7 +326,7 @@ void LoaderImpl::ParseHeader2()
 
       char const * start = src.PtrC();
 
-      FeatureType::points_t points;
+      TFeatureBuf points;
       src = ArrayByteSource(serial::LoadInnerTriangles(
                               start, trgCount, GetDefCodingParams(), points));
 
@@ -369,7 +369,7 @@ uint32_t LoaderImpl::ParseGeometry(int scale)
       // filter inner geometry
 
       size_t const count = m_pF->m_points.size();
-      FeatureType::points_t points;
+      TFeatureBuf points;
       points.reserve(count);
 
       int const scaleIndex = GetScaleIndex(scale);
