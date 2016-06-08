@@ -19,8 +19,7 @@
 #import "UIFont+MapsMeFonts.h"
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
-#import <Parse/Parse.h>
-#import <ParseFacebookUtilsV4/PFFacebookUtils.h>
+#import <Pushwoosh/PushNotificationManager.h>
 
 #import "3party/Alohalytics/src/alohalytics_objc.h"
 
@@ -164,43 +163,44 @@ using namespace osm_auth_ios;
 
 - (void)initPushNotificationsWithLaunchOptions:(NSDictionary *)launchOptions
 {
-  // Do not initialize Parse for open-source version due to an error:
-  // Terminating app due to uncaught exception 'NSInternalInconsistencyException', reason: ''applicationId' should not be nil.'
-  if (!string(PARSE_APPLICATION_ID).empty())
-  {
-    [Parse enableLocalDatastore];
-    [Parse setApplicationId:@(PARSE_APPLICATION_ID) clientKey:@(PARSE_CLIENT_KEY)];
-  }
-  [PFFacebookUtils initializeFacebookWithApplicationLaunchOptions:launchOptions];
+  // Do not initialize Pushwoosh for open-source version.
+  if (string(PUSHWOOSH_APPLICATION_ID).empty())
+    return;
+  [PushNotificationManager initializeWithAppCode:@(PUSHWOOSH_APPLICATION_ID) appName:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]];
+  PushNotificationManager * pushManager = [PushNotificationManager pushManager];
+
+  // handling push on app start
+  [pushManager handlePushReceived:launchOptions];
+
+  // make sure we count app open in Pushwoosh stats
+  [pushManager sendAppOpen];
+
+  // register for push notifications!
+  [pushManager registerForPushNotifications];
 }
 
+// system push notification registration success callback, delegate to pushManager
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
-  PFInstallation * currentInstallation = [PFInstallation currentInstallation];
-  [currentInstallation setDeviceTokenFromData:deviceToken];
-  AppInfo * appInfo = [AppInfo sharedInfo];
-  NSUUID * advertisingId = appInfo.advertisingId;
-  if (advertisingId)
-    [currentInstallation setObject:advertisingId.UUIDString forKey:kIOSIDFA];
-  [currentInstallation setObject:appInfo.countryCode forKey:@(kCountryCodeKey.c_str())];
-  [currentInstallation setObject:appInfo.uniqueId forKey:@(kUniqueIdKey.c_str())];
-  NSString * languageId = appInfo.languageId;
-  if (languageId)
-    [currentInstallation setObject:languageId forKey:@(kLanguageKey.c_str())];
-  [currentInstallation setObject:appInfo.bundleVersion forKey:kBundleVersion];
-  [currentInstallation saveInBackground];
-
-  [Alohalytics logEvent:kPushDeviceTokenLogEvent withValue:currentInstallation.deviceToken];
+  PushNotificationManager * pushManager = [PushNotificationManager pushManager];
+  [pushManager handlePushRegistration:deviceToken];
+  [Alohalytics logEvent:kPushDeviceTokenLogEvent withValue:pushManager.getHWID];
 }
 
+// system push notification registration error callback, delegate to pushManager
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
+{
+  [[PushNotificationManager pushManager] handlePushRegistrationFailure:error];
+}
+
+// system push notifications callback, delegate to pushManager
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
   [Statistics logEvent:kStatEventName(kStatApplication, kStatPushReceived) withParameters:userInfo];
   if (![self handleURLPush:userInfo])
-    [PFPush handlePush:userInfo];
+    [[PushNotificationManager pushManager] handlePushReceived:userInfo];
   completionHandler(UIBackgroundFetchResultNoData);
 }
-
 - (BOOL)handleURLPush:(NSDictionary *)userInfo
 {
   auto app = UIApplication.sharedApplication;
