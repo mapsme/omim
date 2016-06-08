@@ -6,9 +6,8 @@
 #include "coding/url_encode.hpp"
 
 #include "base/logging.hpp"
+#include "base/thread.hpp"
 #include "base/timer.hpp"
-
-#include "std/thread.hpp"
 
 #include "3party/Alohalytics/src/http_client.h"
 #include "3party/pugixml/src/pugixml.hpp"
@@ -62,7 +61,7 @@ bool UserStats::GetRank(int32_t & rank) const
   return true;
 }
 
-bool UserStats::GetLevelUpRequiredFeat(string & levelUpFeat)
+bool UserStats::GetLevelUpRequiredFeat(string & levelUpFeat)  const
 {
   if (m_levelUpRequiredFeat.empty())
     return false;
@@ -142,7 +141,7 @@ void UserStatsLoader::Update(string const & userName, TOnUpdateCallback fn)
     return;
   }
 
-  thread([this, userName, fn] {
+  threads::SimpleThread([this, userName, fn] {
     if (Update(userName))
       GetPlatform().RunOnGuiThread(fn);
   }).detach();

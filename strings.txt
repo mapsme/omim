@@ -18072,3 +18072,11 @@
     en = Rating: %s
     ru = Рейтинг: %s
 
+  [editor_rating_verified_changes]
+    en = Verified changes
+
+  [editor_rating_your_place]
+    en = Your place
+
+  [editor_rating_changes_to_next_place]
+    en = Changes to the next pla
