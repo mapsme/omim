@@ -39,7 +39,7 @@ namespace serial
   //@}
 
   typedef buffer_vector<uint64_t, 32> DeltasT;
-  typedef TFeatureBuf OutPointsT;
+  typedef TPointsBuf OutPointsT;
 
   void Encode(EncodeFunT fn, vector<m2::PointD> const & points, CodingParams const & params,
               DeltasT & deltas);

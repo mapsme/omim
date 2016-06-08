@@ -162,7 +162,7 @@ void LoaderCurrent::ParseHeader2()
 
       char const * start = static_cast<char const *>(src.PtrC());
 
-      TFeatureBuf points;
+      TPointsBuf points;
       src = ArrayByteSource(serial::LoadInnerTriangles(start, trgCount, cp, points));
 
       m_pF->m_innerStats.m_strips = static_cast<uint32_t>(src.PtrC() - start);
@@ -209,7 +209,7 @@ uint32_t LoaderCurrent::ParseGeometry(int scale)
     {
       // filter inner geometry
 
-      TFeatureBuf points;
+      TPointsBuf points;
       points.reserve(count);
 
       int const scaleIndex = GetScaleIndex(scale);

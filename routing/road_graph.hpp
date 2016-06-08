@@ -101,7 +101,7 @@ public:
     RoadInfo(RoadInfo const &) = default;
     RoadInfo & operator=(RoadInfo const &) = default;
 
-    TFeatureBuf m_points;
+    TPointsBuf m_points;
     double m_speedKMPH;
     bool m_bidirectional;
   };
