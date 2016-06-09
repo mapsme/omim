@@ -845,7 +845,7 @@
 	<string name="placepage_flat">aplicación</string>
 	<string name="placepage_open_24_7">24 / 7</string>
 	<string name="placepage_place_rating">Valoración:</string>
-	<string name="place_page_starting_from">desde %d</string>
+	<string name="place_page_starting_from">desde %s</string>
 	<string name="meter">m</string>
 	<string name="kilometer">km</string>
 	<string name="placepage_place_description">Descripción</string>

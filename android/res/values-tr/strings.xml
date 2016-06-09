@@ -856,7 +856,7 @@
 	<string name="placepage_flat">uygulama</string>
 	<string name="placepage_open_24_7">24 / 7</string>
 	<string name="placepage_place_rating">Derecelendirme:</string>
-	<string name="place_page_starting_from">%d’dan</string>
+	<string name="place_page_starting_from">%s’dan</string>
 	<string name="meter">m</string>
 	<string name="kilometer">km</string>
 	<string name="placepage_place_description">Açıklama</string>

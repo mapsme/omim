@@ -842,7 +842,7 @@
 	<string name="placepage_flat">앱</string>
 	<string name="placepage_open_24_7">연중무휴</string>
 	<string name="placepage_place_rating">평가:</string>
-	<string name="place_page_starting_from">%d에서</string>
+	<string name="place_page_starting_from">%s에서</string>
 	<string name="meter">m</string>
 	<string name="kilometer">km</string>
 	<string name="placepage_place_description">설명</string>

@@ -854,7 +854,7 @@
 	<string name="placepage_flat">кв.</string>
 	<string name="placepage_open_24_7">Цілодобово</string>
 	<string name="placepage_place_rating">Рейтинг:</string>
-	<string name="place_page_starting_from">від %d</string>
+	<string name="place_page_starting_from">від %s</string>
 	<string name="meter">м</string>
 	<string name="kilometer">км</string>
 	<string name="placepage_place_description">Опис</string>

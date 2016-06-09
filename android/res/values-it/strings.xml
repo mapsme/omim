@@ -848,7 +848,7 @@
 	<string name="placepage_entrance_type">Ingresso</string>
 	<string name="placepage_flat">app.</string>
 	<string name="placepage_place_rating">Valutazione:</string>
-	<string name="place_page_starting_from">da %d</string>
+	<string name="place_page_starting_from">da %s</string>
 	<string name="meter">m</string>
 	<string name="kilometer">km</string>
 	<string name="placepage_place_description">Descrizione</string>
