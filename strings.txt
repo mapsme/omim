@@ -17558,30 +17558,30 @@
     sk = Hodnotenie:
 
   [place_page_starting_from]
-    en = from %d
-    ru = от %d
-    ar = من%d
-    cs = od %d
-    da = fra %d
-    fi = %d:stä
-    fr = à partir de %d
-    de = ab %d
-    hu = kezdőár %d
-    id = dari %d
-    it = da %d
-    ja = %dから
-    ko = %d에서
-    nb = fra %d
-    pl = od %d
-    ro = din %d
-    es = desde %d
-    sv = från %d
-    th = จาก %d
-    tr = %d’dan
-    uk = від %d
-    vi = từ %d
-    zh-Hans = 从 %d
-    sk = od %d
+    en = from %s
+    ru = от %s
+    ar = من%s
+    cs = od %s
+    da = fra %s
+    fi = %s:stä
+    fr = à partir de %s
+    de = ab %s
+    hu = kezdőár %s
+    id = dari %s
+    it = da %s
+    ja = %sから
+    ko = %s에서
+    nb = fra %s
+    pl = od %s
+    ro = din %s
+    es = desde %s
+    sv = från %s
+    th = จาก %s
+    tr = %s’dan
+    uk = від %s
+    vi = từ %s
+    zh-Hans = 从 %s
+    sk = od %s
 
   [meter]
     en = m
