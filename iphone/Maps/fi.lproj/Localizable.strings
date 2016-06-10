@@ -1478,7 +1478,7 @@
 
 "placepage_place_rating" = "Luokitus";
 
-"place_page_starting_from" = "%d:stä";
+"place_page_starting_from" = "%s:stä";
 
 "meter" = "m";
 

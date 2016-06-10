@@ -40,8 +40,10 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -84,7 +86,10 @@ import com.mapswithme.util.statistics.AlohaHelper;
 import com.mapswithme.util.statistics.Statistics;
 
 
-public class PlacePageView extends RelativeLayout implements View.OnClickListener, View.OnLongClickListener
+public class PlacePageView extends RelativeLayout
+                        implements View.OnClickListener,
+                                   View.OnLongClickListener,
+                                   SponsoredHotel.OnPriceReceivedListener
 {
   private static final String PREF_USE_DMS = "use_dms";
 
@@ -144,7 +149,8 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
   private MwmActivity.LeftAnimationTrackListener mLeftAnimationTrackListener;
   // Data
   private MapObject mMapObject;
-  private SponsoredHotelInfo mSponsoredHotelInfo;
+  private SponsoredHotel mSponsoredHotel;
+  private String mSponsoredHotelPrice;
   private boolean mIsLatLonDms;
 
   // Downloader`s stuff
@@ -434,6 +440,28 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
 
     if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
       mDetails.setBackgroundResource(0);
+
+    SponsoredHotel.setListener(this);
+  }
+
+  @Override
+  public void onPriceReceived(String id, String price, String currencyCode)
+  {
+    if (mSponsoredHotel == null || !TextUtils.equals(id, mSponsoredHotel.getId()))
+      return;
+
+    String text;
+    try
+    {
+      float value = Float.valueOf(price);
+      text = NumberFormat.getCurrencyInstance().format(value);
+    } catch (NumberFormatException e)
+    {
+      text = (price + " " + currencyCode);
+    }
+
+    mSponsoredHotelPrice = getContext().getString(R.string.place_page_starting_from, text);
+    refreshPreview();
   }
 
   private void onBookingClick(final boolean book)
@@ -447,7 +475,7 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
         if (!result)
           return;
 
-        SponsoredHotelInfo info = mSponsoredHotelInfo;
+        SponsoredHotel info = mSponsoredHotel;
         if (info == null)
           return;
 
@@ -457,8 +485,7 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
         MapObject myPos = LocationHelper.INSTANCE.getMyPosition();
         params.put("lat", (myPos == null ? "N/A" : String.valueOf(myPos.getLat())));
         params.put("lon", (myPos == null ? "N/A" : String.valueOf(myPos.getLon())));
-        // TODO (trashkalmar): Replace with hotel's ID
-        params.put("hotel", info.price);
+        params.put("hotel", info.getId());
 
         String event = (book ? Statistics.EventName.PP_SPONSORED_BOOK
                              : Statistics.EventName.PP_SPONSORED_DETAILS);
@@ -575,11 +602,20 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
       return;
 
     mMapObject = mapObject;
-    mSponsoredHotelInfo = (mMapObject == null ? null : Framework.nativeGetSponsoredHotelInfo());
+    mSponsoredHotel = (mMapObject == null ? null : SponsoredHotel.nativeGetCurrent());
 
     detachCountry();
     if (mMapObject != null)
     {
+      if (mSponsoredHotel != null)
+      {
+        mSponsoredHotel.updateId(mMapObject);
+        mSponsoredHotelPrice = mSponsoredHotel.price;
+
+        Currency currency = Currency.getInstance(Locale.getDefault());
+        SponsoredHotel.requestPrice(mSponsoredHotel.getId(), currency.getCurrencyCode());
+      }
+
       String country = MapManager.nativeGetSelectedCountry();
       if (country != null)
         attachCountry(country);
@@ -660,12 +696,12 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
     UiUtils.hide(mAvDirection);
     UiUtils.setTextAndHideIfEmpty(mTvAddress, mMapObject.getAddress());
 
-    boolean sponsored = (mSponsoredHotelInfo != null);
+    boolean sponsored = (mSponsoredHotel != null);
     UiUtils.showIf(sponsored, mHotelInfo);
     if (sponsored)
     {
-      mTvHotelRating.setText(mSponsoredHotelInfo.rating);
-      UiUtils.setTextAndHideIfEmpty(mTvHotelPrice, mSponsoredHotelInfo.price);
+      mTvHotelRating.setText(mSponsoredHotel.rating);
+      UiUtils.setTextAndHideIfEmpty(mTvHotelPrice, mSponsoredHotelPrice);
     }
   }
 
@@ -673,7 +709,7 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
   {
     refreshLatLon();
 
-    if (mSponsoredHotelInfo == null)
+    if (mSponsoredHotel == null)
     {
       final String website = mMapObject.getMetadata(Metadata.MetadataType.FMD_WEBSITE);
       refreshMetadataOrHide(TextUtils.isEmpty(website) ? mMapObject.getMetadata(Metadata.MetadataType.FMD_URL) : website, mWebsite, mTvWebsite);
@@ -701,7 +737,7 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
       UiUtils.showIf(Editor.nativeShouldShowAddPlace(), mAddPlace);
     }
 
-    UiUtils.showIf(mSponsoredHotelInfo != null, mMoreInfo);
+    UiUtils.showIf(mSponsoredHotel != null, mMoreInfo);
   }
 
   private void refreshOpeningHours()
@@ -799,7 +835,7 @@ public class PlacePageView extends RelativeLayout implements View.OnClickListene
     if (showBackButton || ParsedMwmRequest.isPickPointMode())
       buttons.add(PlacePageButtons.Item.BACK);
 
-    if (mSponsoredHotelInfo != null)
+    if (mSponsoredHotel != null)
       buttons.add(PlacePageButtons.Item.BOOKING);
 
     buttons.add(PlacePageButtons.Item.BOOKMARK);

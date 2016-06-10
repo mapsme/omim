@@ -850,7 +850,7 @@
 	<string name="placepage_flat">sov.</string>
 	<string name="placepage_open_24_7">24_7</string>
 	<string name="placepage_place_rating">Luokitus</string>
-	<string name="place_page_starting_from">%d:stä</string>
+	<string name="place_page_starting_from">%s:stä</string>
 	<string name="meter">m</string>
 	<string name="kilometer">km</string>
 	<string name="placepage_place_description">Kuvaus</string>

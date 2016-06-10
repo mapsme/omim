@@ -849,7 +849,7 @@
 	<string name="placepage_flat">persegi</string>
 	<string name="placepage_open_24_7">24 jam sehari, 7 hari seminggu</string>
 	<string name="placepage_place_rating">Nilai:</string>
-	<string name="place_page_starting_from">dari %d</string>
+	<string name="place_page_starting_from">dari %s</string>
 	<string name="meter">m</string>
 	<string name="kilometer">km</string>
 	<string name="placepage_place_description">Deskripsi</string>

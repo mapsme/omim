@@ -880,7 +880,7 @@
 	<string name="placepage_flat">Wohnung</string>
 	<string name="placepage_open_24_7">Durchgehend geöffnet</string>
 	<string name="placepage_place_rating">Rating:</string>
-	<string name="place_page_starting_from">ab %d</string>
+	<string name="place_page_starting_from">ab %s</string>
 	<string name="meter">m</string>
 	<string name="kilometer">km</string>
 	<string name="placepage_place_description">Beschreibung</string>
