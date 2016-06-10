@@ -10,6 +10,7 @@
 
 #include "platform/measurement_utils.hpp"
 #include "platform/mwm_version.hpp"
+#include "platform/platform.hpp"
 
 using feature::Metadata;
 
@@ -119,6 +120,34 @@ void initFieldsMap()
         break;
     }
   }
+}
+
+- (void)onlinePricingWithCompletionBlock:(TMWMVoidBlock)completion failure:(TMWMVoidBlock)failure
+{
+  if (Platform::ConnectionStatus() == Platform::EConnectionType::CONNECTION_NONE || !self.isBooking)
+  {
+    failure();
+    return;
+  }
+
+  NSNumberFormatter * currencyFormatter = [[NSNumberFormatter alloc] init];
+  [currencyFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+  [currencyFormatter setLocale:[NSLocale currentLocale]];
+  string const currency = currencyFormatter.currencyCode.UTF8String;
+  GetFramework().GetBookingApi().GetMinPrice(m_info.GetMetadata().Get(Metadata::FMD_SPONSORED_ID),
+                                             currency,
+                                             [self, completion, failure, currency, currencyFormatter](string const & minPrice, string const & priceCurrency)
+  {
+    if (currency != priceCurrency)
+    {
+      failure();
+      return;
+    }
+    NSNumberFormatter * decimalFormatter = [[NSNumberFormatter alloc] init];
+    decimalFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+    self.bookingOnlinePrice = [currencyFormatter stringFromNumber:[decimalFormatter numberFromString:@(minPrice.c_str())]];
+    completion();
+  });
 }
 
 - (void)configureBookmark
