@@ -197,6 +197,14 @@ void Editor::LoadMapEdits()
         {
           XMLFeature const xml(nodeOrWay.node());
 
+          // TODO(mgsergio): A map could be renamed, we'll treat it as deleted.
+          // The right thing to do is to try to migrate all changes anyway.
+          if (!mwmId.IsAlive())
+          {
+            LOG(LINFO, ("Mwm", mapName, "was deleted"));
+            goto SECTION_END;
+          }
+
           // TODO(mgsergio): Deleted features are not properly handled yet.
           auto const fid = needMigrateEdits
                                ? editor::MigrateFeatureIndex(
@@ -251,6 +259,8 @@ void Editor::LoadMapEdits()
         }
       } // for nodes
     } // for sections
+ SECTION_END:
+    ;
   } // for mwms
 
   // Save edits with new indexes and mwm version to avoid another migration on next startup.
