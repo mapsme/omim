@@ -1,5 +1,7 @@
 #pragma once
 
+#include "base/string_utils.hpp"
+
 #include "coding/multilang_utf8_string.hpp"
 #include "coding/reader.hpp"
 
@@ -33,6 +35,18 @@ protected:
     }
   }
 
+  void Add(uint8_t type, string const & value)
+  {
+    if (value.empty())
+      return;
+    auto found = m_metadata.find(type);
+    // If not found, simply add, otherwise append after a delimiter.
+    if (found == m_metadata.end())
+      m_metadata[type] = value;
+    else
+      found->second = found->second + kListDelimiter + value;
+  }
+
 public:
   bool Has(uint8_t type) const
   {
@@ -44,6 +58,12 @@ public:
   {
     auto const it = m_metadata.find(type);
     return (it == m_metadata.end()) ? string() : it->second;
+  }
+
+  void GetVector(uint8_t type, vector<string> & target) const
+  {
+    string const & value = Get(type);
+    strings::ParseCSVRow(value, kListDelimiter, target);
   }
 
   vector<uint8_t> GetPresentTypes() const
@@ -90,6 +110,7 @@ public:
 
 protected:
   map<uint8_t, string> m_metadata;
+  static char constexpr kListDelimiter = '\001';
 };
 
 class Metadata : public MetadataBase
@@ -126,6 +147,7 @@ public:
     FMD_SPONSORED_ID = 24,
     FMD_PRICE_RATE = 25,
     FMD_RATING = 26,
+    FMD_FUEL = 27,
     FMD_COUNT
   };
 
@@ -133,6 +155,7 @@ public:
   static bool TypeFromString(string const & osmTagKey, feature::Metadata::EType & outType);
 
   void Set(EType type, string const & value) { MetadataBase::Set(type, value); }
+  void Add(EType type, string const & value) { MetadataBase::Add(type, value); }
   void Drop(EType type) { Set(type, string()); }
   string GetWikiURL() const;
 

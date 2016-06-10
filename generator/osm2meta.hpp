@@ -35,6 +35,7 @@ struct MetadataTagProcessorImpl
   string ValidateAndFormat_price_rate(string const & v) const;
   string ValidateAndFormat_sponsored_id(string const & v) const;
   string ValidateAndFormat_rating(string const & v) const;
+  string ValidateAndFormat_fuel(string const & k, string const & v) const;
 
 protected:
   FeatureParams & m_params;
@@ -70,6 +71,7 @@ public:
     }
 
     string valid;
+    bool append = false;
     switch (mdType)
     {
     case Metadata::FMD_CUISINE: valid = ValidateAndFormat_cuisine(v); break;
@@ -97,11 +99,15 @@ public:
     case Metadata::FMD_SPONSORED_ID: valid = ValidateAndFormat_sponsored_id(v); break;
     case Metadata::FMD_PRICE_RATE: valid = ValidateAndFormat_price_rate(v); break;
     case Metadata::FMD_RATING: valid = ValidateAndFormat_rating(v); break;
+    case Metadata::FMD_FUEL: valid = ValidateAndFormat_fuel(k, v); append = true; break;
 
     case Metadata::FMD_TEST_ID:
     case Metadata::FMD_COUNT: CHECK(false, ("FMD_COUNT can not be used as a type."));
     }
-    md.Set(mdType, valid);
+    if (append)
+      md.Add(mdType, valid);
+    else
+      md.Set(mdType, valid);
     return false;
   }
 };
