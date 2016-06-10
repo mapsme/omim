@@ -2365,12 +2365,12 @@ void Framework::InsertRoute(Route const & route)
   if (m_currentRouterType == RouterType::Pedestrian)
   {
     routeColor = df::RoutePedestrian;
-    pattern = df::RoutePattern(4.0, 2.0);
+    pattern = df::RoutePattern(4.0, 1.6);
   }
   else if (m_currentRouterType == RouterType::Bicycle)
   {
     routeColor = df::RouteBicycle;
-    pattern = df::RoutePattern(8.0, 2.0);
+    pattern = df::RoutePattern(8.0, 1.6);
   }
 
   m_drapeEngine->AddRoute(route.GetPoly(), turns, routeColor, pattern);
