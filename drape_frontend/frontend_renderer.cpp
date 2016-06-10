@@ -998,9 +998,9 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
   Render2dLayer(modelView);
 
   bool hasSelectedPOI = false;
+  GLFunctions::glDisable(gl_const::GLDepthTest);
   if (m_selectionShape != nullptr)
   {
-    GLFunctions::glDisable(gl_const::GLDepthTest);
     SelectionShape::ESelectedObject selectedObject = m_selectionShape->GetSelectedObject();
     if (selectedObject == SelectionShape::OBJECT_MY_POSITION)
     {
@@ -1034,13 +1034,13 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
   {
     GLFunctions::glClearDepth();
     Render3dLayer(modelView);
+    GLFunctions::glDisable(gl_const::GLDepthTest);
   }
 
+  m_routeRenderer->RenderRoute(modelView, make_ref(m_gpuProgramManager), m_generalUniforms);
+
   if (hasSelectedPOI)
-  {
-    GLFunctions::glDisable(gl_const::GLDepthTest);
     m_selectionShape->Render(modelView, make_ref(m_gpuProgramManager), m_generalUniforms);
-  }
 
   GLFunctions::glEnable(gl_const::GLDepthTest);
   GLFunctions::glClearDepth();
@@ -1052,8 +1052,6 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
   GLFunctions::glDisable(gl_const::GLDepthTest);
   if (m_selectionShape != nullptr && m_selectionShape->GetSelectedObject() == SelectionShape::OBJECT_USER_MARK)
     m_selectionShape->Render(modelView, make_ref(m_gpuProgramManager), m_generalUniforms);
-
-  m_routeRenderer->RenderRoute(modelView, make_ref(m_gpuProgramManager), m_generalUniforms);
 
   for (drape_ptr<UserMarkRenderGroup> const & group : m_userMarkRenderGroups)
   {
