@@ -70,7 +70,7 @@ class TokenSlice;
 // part is to find all paths through this layered graph and report all
 // features from the lowest layer, that are reachable from the
 // highest layer.
-class Geocoder : public my::Cancellable
+class Geocoder
 {
 public:
   struct Params : public QueryParams
@@ -140,9 +140,10 @@ public:
 #endif
   };
 
-  Geocoder(Index & index, storage::CountryInfoGetter const & infoGetter);
+  Geocoder(Index & index, storage::CountryInfoGetter const & infoGetter,
+           my::Cancellable const & cancellable);
 
-  ~Geocoder() override;
+  ~Geocoder();
 
   // Sets search query params.
   void SetParams(Params const & params);
@@ -209,7 +210,7 @@ private:
   // Throws CancelException if cancelled.
   inline void BailIfCancelled()
   {
-    ::search::BailIfCancelled(static_cast<my::Cancellable const &>(*this));
+    ::search::BailIfCancelled(m_cancellable);
   }
 
   // Tries to find all countries and states in a search query and then
@@ -305,6 +306,8 @@ private:
   Index & m_index;
 
   storage::CountryInfoGetter const & m_infoGetter;
+
+  my::Cancellable const & m_cancellable;
 
   // Geocoder params.
   Params m_params;
