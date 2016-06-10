@@ -265,7 +265,7 @@ bool PreResult2::IsEqualCommon(PreResult2 const & r) const
 
 bool PreResult2::IsStreet() const
 {
-  return (m_geomType == feature::GEOM_LINE &&
+  return ((m_geomType == feature::GEOM_LINE || m_geomType == feature::GEOM_AREA) &&
           ftypes::IsStreetChecker::Instance()(m_types));
 }
 

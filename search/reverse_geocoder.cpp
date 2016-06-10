@@ -32,7 +32,8 @@ void ReverseGeocoder::GetNearbyStreets(MwmSet::MwmId const & id, m2::PointD cons
 
   auto const addStreet = [&](FeatureType & ft)
   {
-    if (ft.GetFeatureType() != feature::GEOM_LINE ||
+    if ((ft.GetFeatureType() != feature::GEOM_LINE &&
+        ft.GetFeatureType() != feature::GEOM_AREA) ||
         !ftypes::IsStreetChecker::Instance()(ft))
     {
       return;
