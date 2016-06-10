@@ -28,12 +28,14 @@ public:
   bool IsFeature() const;
   bool IsBookmark() const;
   bool IsMyPosition() const;
-  bool ShouldShowAddPlace() const;
   bool IsSponsoredHotel() const;
+
+  bool ShouldShowAddPlace() const;
+  bool ShouldShowAddBusiness() const;
+  bool ShouldShowEditPlace() const;
+
   /// @returns true if Back API button should be displayed.
   bool HasApiUrl() const;
-  /// @returns true if Edit Place button should be displayed.
-  bool IsEditable() const;
 
   /// TODO: Support all possible Internet types in UI. @See MapObject::GetInternet().
   bool HasWifi() const;
@@ -89,7 +91,9 @@ public:
   storage::TCountryId m_countryId = storage::kInvalidCountryId;
 
   bool m_isMyPosition = false;
-  bool m_isEditable = false;
+  /// True if editing of a selected point is allowed by basic logic.
+  /// See initialization in framework.
+  bool m_canEditOrAdd = false;
 
   // TODO(AlexZ): Temporary solution. It's better to use a wifi icon in UI instead of text.
   string m_localizedWifiString;

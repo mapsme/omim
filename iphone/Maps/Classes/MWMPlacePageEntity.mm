@@ -178,7 +178,7 @@ void initFieldsMap()
 - (NSString *)getCellValue:(MWMPlacePageCellType)cellType
 {
   auto const s = MapsAppDelegate.theApp.mapViewController.controlsManager.navigationState;
-  BOOL const editOrAddAreAvailable = version::IsSingleMwm(GetFramework().Storage().GetCurrentDataVersion()) && s == MWMNavigationDashboardStateHidden && m_info.IsEditable();
+  BOOL const navigationIsHidden = s == MWMNavigationDashboardStateHidden;
   switch (cellType)
   {
     case MWMPlacePageCellTypeName:
@@ -186,14 +186,14 @@ void initFieldsMap()
     case MWMPlacePageCellTypeCoordinate:
       return [self coordinate];
     case MWMPlacePageCellTypeAddPlaceButton:
-      return editOrAddAreAvailable && m_info.ShouldShowAddPlace() ? @"" : nil;
+      return navigationIsHidden && m_info.ShouldShowAddPlace() ? @"" : nil;
     case MWMPlacePageCellTypeBookmark:
       return m_info.IsBookmark() ? @"" : nil;
     case MWMPlacePageCellTypeEditButton:
       // TODO(Vlad): It's a really strange way to "display" cell if returned text is not nil.
-      return editOrAddAreAvailable && !m_info.IsMyPosition() && m_info.IsFeature() ? @"": nil;
+      return navigationIsHidden && m_info.ShouldShowEditPlace() ? @"" : nil;
     case MWMPlacePageCellTypeAddBusinessButton:
-      return editOrAddAreAvailable && m_info.IsBuilding() ? @"" : nil;
+      return navigationIsHidden && m_info.ShouldShowAddBusiness() ? @"" : nil;
     case MWMPlacePageCellTypeWebsite:
       return m_info.IsSponsoredHotel() ? nil : [self getDefaultField:cellType];
     case MWMPlacePageCellTypeBookingMore:
@@ -340,7 +340,7 @@ void initFieldsMap()
     Bookmark * bookmark = static_cast<Bookmark *>(guard.m_controller.GetUserMarkForEdit(self.bac.second));
     if (!bookmark)
       return;
-  
+
     if (self.bookmarkColor)
       bookmark->SetType(self.bookmarkColor.UTF8String);
 
@@ -354,7 +354,7 @@ void initFieldsMap()
     if (self.bookmarkTitle)
       bookmark->SetName(self.bookmarkTitle.UTF8String);
   }
-  
+
   category->SaveToKMLFile();
 }
 
