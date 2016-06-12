@@ -6726,17 +6726,17 @@
     comment = Settings: Send feedback button and dialog title
     tags = android
     en = Feedback
-    pl = Zgłoś opinię
     ru = Связаться с нами
     de = Rückmeldung
+    pl = Zgłoś opinię
 
   [feedback_general]
     comment = Settings: "Send general feedback" button
     tags = android
     en = General feedback
-    pl = Ogólne opinie
     ru = Отправить отзыв
     de = Allgemeine Rückmeldung
+    pl = Ogólne opinie
     zh-Hant = 一般意見反應
 
   [subscribe_to_news]
@@ -6807,26 +6807,26 @@
     comment = Rate in Google Play (Android only)
     tags = android
     en = Rate on Google Play
+    ru = Оценить в Google Play
     de = Bei Google Play bewerten
     pl = Oceń w Google Play
-    ru = Оценить в Google Play
     zh-Hant = 在 Google Play 評分
 
   [tell_friends]
     comment = Share with friends: menu item title
     tags = android
     en = Tell a Friend
-    pl = Powiadom znajomego
     ru = Рассказать друзьям
     de = Einem Freund empfehlen
+    pl = Powiadom znajomego
 
   [tell_friends_text]
     comment = Share with friends: sharing text
     tags = android
     en = Hi! Install Maps.me!
-    pl = Cześć! Zainstaluj Maps.me!
     ru = Привет! Установи Maps.me!
     de = Hallo! Installiere dir MAPS.ME!
+    pl = Cześć! Zainstaluj Maps.me!
     zh-Hant = 嗨！安裝 Maps.me！
 
   [help]
@@ -6993,9 +6993,9 @@
     comment = About short text (below logo)
     tags = ios, android
     en = Joined efforts of Mail.Ru Group and OpenStreetMap make the most useful application for travelers!
-    pl = Najbardziej użyteczna aplikacja dla podróżników, powstała przy udziale zespołów Mail.Ru i OpenStreetMap. 
     ru = Объединив усилия Mail.Ru Group и данные OpenStreetMap, мы создаем незаменимое приложение для путешествий.
     de = Gemeinsame Bemühungen der Mail.Ru-Gruppe und OpenStreetMap machen die nützlichste Anwendung für Reisende!
+    pl = Najbardziej użyteczna aplikacja dla podróżników, powstała przy udziale zespołów Mail.Ru i OpenStreetMap.
 
   [about_text]
     comment = About text
@@ -11643,9 +11643,9 @@
     comment = Showcase menu item.
     tags = ios
     en = Plan your trip
-    es = Planifica tu viaje
-    pl = Zaplanuj podróż
     ru = Подготовься к путешествию
+    pl = Zaplanuj podróż
+    es = Planifica tu viaje
 
   [showcase_more_apps]
     tags = ios, android
@@ -18077,6 +18077,31 @@
 
   [place_page_booking_rating]
     en = Rating: %s
-    pl = Ocena: %s
     ru = Рейтинг: %s
+    pl = Ocena: %s
+
+  [text_more_button]
+    en = … more
+    ru = … еще
+    pl = … więcej
+
+  [error_enter_correct_phone]
+    en = Enter a valid phone number
+    ru = Введите корректный номер телефона
+    pl = Proszę wprowadzić poprawny numer telefonu
+
+  [error_enter_correct_web]
+    en = Enter a valid web address
+    ru = Введите корректный веб-сайт
+    pl = Proszę wprowadzić poprawny adres sieciowy
+
+  [error_enter_correct_email]
+    en = Enter a valid email
+    ru = Введите корректный email
+    pl = Proszę wprowadzić poprawny adres email
+
+  [error_enter_correct]
+    en = Enter a valid value
+    ru = Введите корректное значение
+    pl = Proszę wprowadzić poprawną wartość
 
