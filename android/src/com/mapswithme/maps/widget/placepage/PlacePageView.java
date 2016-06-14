@@ -922,7 +922,7 @@ public class PlacePageView extends RelativeLayout
 
   public void refreshAzimuth(double northAzimuth)
   {
-    if (getState() == State.HIDDEN ||
+    if (isHidden() ||
         mMapObject == null ||
         MapObject.isOfType(MapObject.MY_POSITION, mMapObject))
       return;
@@ -1236,6 +1236,11 @@ public class PlacePageView extends RelativeLayout
   {
     detachCountry();
     setState(State.HIDDEN);
+  }
+
+  public boolean isHidden()
+  {
+    return (getState() == State.HIDDEN);
   }
 
   @SuppressWarnings("SimplifiableIfStatement")
