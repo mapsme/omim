@@ -469,7 +469,7 @@ UNIT_CLASS_TEST(ProcessorTest, TestCategories)
   TestPOI noname(m2::PointD(0, 0), "", "en");
   noname.SetTypes({{"amenity", "atm"}});
 
-  TestPOI named(m2::PointD(0.0001, 0.0001), "ATM", "en");
+  TestPOI named(m2::PointD(0.3, 0.3), "ATM", "en");
   named.SetTypes({{"amenity", "atm"}});
 
   TestPOI busStop(m2::PointD(0.00005, 0.0005), "ATM Bus Stop", "en");
