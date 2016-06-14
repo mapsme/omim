@@ -45,10 +45,10 @@ public enum LocationHelper implements SensorEventListener
   public static final int ERROR_UNKNOWN = 0;
 
   private static final long INTERVAL_FOLLOW_AND_ROTATE_MS = 3000;
-  private static final long INTERVAL_FOLLOW_MS = 3000;
-  private static final long INTERVAL_NOT_FOLLOW_MS = 10000;
+  private static final long INTERVAL_FOLLOW_MS = 1000;
+  private static final long INTERVAL_NOT_FOLLOW_MS = 3000;
   private static final long INTERVAL_NAVIGATION_VEHICLE_MS = 500;
-  private static final long INTERVAL_NAVIGATION_PEDESTRIAN_MS = 3000;
+  private static final long INTERVAL_NAVIGATION_PEDESTRIAN_MS = 1000;
 
   public static final String LOCATION_PREDICTOR_PROVIDER = "LocationPredictorProvider";
   private static final float DISTANCE_TO_RECREATE_MAGNETIC_FIELD_M = 1000;
