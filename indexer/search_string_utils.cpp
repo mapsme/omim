@@ -192,6 +192,9 @@ StreetsSynonymsHolder g_streets;
 
 UniString GetStreetNameAsKey(string const & name)
 {
+  if (name.empty())
+    return UniString();
+
   UniString res;
   SimpleTokenizer iter(name, kStreetTokensSeparator);
   while (iter)
@@ -199,11 +202,9 @@ UniString GetStreetNameAsKey(string const & name)
     UniString const s = NormalizeAndSimplifyString(*iter);
     ++iter;
 
-    if (!g_streets.FullMatch(s))
-      res.append(s);
+    res.append(s);
   }
 
-  // In case when street name has only synonym tokens, but we should return valid key.
   return (res.empty() ? NormalizeAndSimplifyString(name) : res);
 }
 
