@@ -41,3 +41,10 @@ UNIT_TEST(RussiaMoscowKashirskoe16ToCapLongRoute)
       integration::GetBicycleComponents(), MercatorBounds::FromLatLon(55.66230, 37.63214), {0., 0.},
       MercatorBounds::FromLatLon(55.68895, 37.70286), 7057.0);
 }
+
+UNIT_TEST(RussiaMoscowNearJewMuseum)
+{
+  integration::CalculateRouteAndTestRouteLength(
+      integration::GetBicycleComponents(), MercatorBounds::FromLatLon(55.77484, 37.54545), {0., 0.},
+      MercatorBounds::FromLatLon(55.79370, 37.56051), 4123.8);
+}
