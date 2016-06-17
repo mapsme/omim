@@ -47,7 +47,7 @@ void StreetVicinityLoader::LoadStreet(uint32_t featureId, Street & street)
   if (!m_context->GetFeature(featureId, feature))
     return;
 
-  if (feature.GetFeatureType() != feature::GEOM_LINE)
+  if (feature.GetFeatureType() != feature::GEOM_LINE && feature.GetFeatureType() != feature::GEOM_AREA)
     return;
 
   vector<m2::PointD> points;
