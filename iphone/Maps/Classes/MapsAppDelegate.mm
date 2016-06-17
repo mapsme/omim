@@ -537,6 +537,7 @@ using namespace osm_auth_ios;
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
   LOG(LINFO, ("applicationDidEnterBackground"));
+  [self.locationManager stop:self.mapViewController];
   [self.locationManager onBackground];
   [self.mapViewController onEnterBackground];
   if (m_activeDownloadsCounter)
@@ -611,6 +612,8 @@ using namespace osm_auth_ios;
   [self restoreRouteState];
   [[Statistics instance] applicationDidBecomeActive];
   GetFramework().SetRenderingEnabled(true);
+  if (![Alohalytics isFirstSession])
+    [self.locationManager start:self.mapViewController];
 }
 
 - (void)dealloc
