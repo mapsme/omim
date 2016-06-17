@@ -237,7 +237,7 @@ void IRoadGraph::ResetFakes()
   m_ingoingEdges.clear();
 }
 
-void IRoadGraph::AddFakeEdges(Junction const & junction, vector<pair<Edge, m2::PointD>> const & vicinity)
+void IRoadGraph::AddFakeOutgoingEdges(Junction const & junction, vector<pair<Edge, m2::PointD>> const & vicinity)
 {
   for (auto const & v : vicinity)
   {
@@ -269,7 +269,7 @@ void IRoadGraph::AddFakeEdges(Junction const & junction, vector<pair<Edge, m2::P
       Edge edgeToSplit = closestEdge;
 
       vector<Edge> splittingToFakeEdges;
-      if (HasBeenSplitToFakes(closestEdge, splittingToFakeEdges))
+      if (HasBeenSplitToOutgoingFakes(closestEdge, splittingToFakeEdges))
       {
         // Edge AB has already been split by some point Q and this point P
         // should split AB one more time
@@ -344,7 +344,7 @@ void IRoadGraph::AddFakeEdges(Junction const & junction, vector<pair<Edge, m2::P
     my::SortUnique(m.second);
 }
 
-bool IRoadGraph::HasBeenSplitToFakes(Edge const & edge, vector<Edge> & fakeEdges) const
+bool IRoadGraph::HasBeenSplitToOutgoingFakes(Edge const & edge, vector<Edge> & fakeEdges) const
 {
   vector<Edge> tmp;
 
@@ -381,8 +381,6 @@ bool IRoadGraph::HasBeenSplitToFakes(Edge const & edge, vector<Edge> & fakeEdges
   return true;
 }
 
-//=================
-
 void IRoadGraph::AddFakeIngoingEdges(Junction const & junction, vector<pair<Edge, m2::PointD>> const & vicinity)
 {
   for (auto const & v : vicinity)
@@ -401,11 +399,11 @@ void IRoadGraph::AddFakeIngoingEdges(Junction const & junction, vector<pair<Edge
       // Here AB is a feature, M is a junction, which is projected to A (where P is projection),
       // P is the closest junction of the feature to the junction M.
 
-      // Add outgoing edges for M.
+      // Add ingoing edges for M.
       TEdgeVector & edgesM = m_ingoingEdges[p]; //*
       edgesM.push_back(Edge::MakeFake(junction, p)); //* delete this section
 
-      // Add outgoing edges for P.
+      // Add ingoing edges for P.
       TEdgeVector & edgesP = m_ingoingEdges[junction]; //*
       GetRegularIngoingEdges(junction, edgesP); //*
       edgesP.push_back(Edge::MakeFake(p, junction)); //*
@@ -462,13 +460,13 @@ void IRoadGraph::AddFakeIngoingEdges(Junction const & junction, vector<pair<Edge
       Edge const bp(ab.GetFeatureId(), false /* forward */, ab.GetSegId(), ab.GetEndJunction(), p); //*
       Edge const mp = Edge::MakeFake(junction, p); //*
 
-      // Add outgoing edges to point P.
+      // Add ingoing edges to point P.
       TEdgeVector & edgesP = m_ingoingEdges[p]; //*
       edgesP.push_back(ap);
       edgesP.push_back(bp);
       edgesP.push_back(mp);
 
-      // Add outgoing edges for point M.
+      // Add ingoing edges for point M.
       m_ingoingEdges[junction].push_back(mp.GetReverseEdge()); //*
 
       // Replace AB edge with AP edge.
