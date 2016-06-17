@@ -195,7 +195,8 @@ public:
 
   /// Adds fake edges from fake position rp to real vicinity
   /// positions.
-  void AddFakeEdges(Junction const & junction, vector<pair<Edge, m2::PointD>> const & vicinities);
+  void AddFakeOutgoingEdges(Junction const & junction, vector<pair<Edge, m2::PointD>> const & vicinities);
+  void AddFakeIngoingEdges(Junction const & junction, vector<pair<Edge, m2::PointD>> const & vicinity);
 
   /// Returns RoadInfo for a road corresponding to featureId.
   virtual RoadInfo GetRoadInfo(FeatureID const & featureId) const = 0;
@@ -244,9 +245,11 @@ private:
   void GetFakeIngoingEdges(Junction const & junction, TEdgeVector & edges) const;
 
   /// Determines if the edge has been split by fake edges and if yes returns these fake edges.
-  bool HasBeenSplitToFakes(Edge const & edge, vector<Edge> & fakeEdges) const;
+  bool HasBeenSplitToOutgoingFakes(Edge const & edge, vector<Edge> & fakeEdges) const;
+  bool HasBeenSplitToIngoingFakes(Edge const & edge, vector<Edge> & fakeEdges) const;
 
   // Map of outgoing edges for junction
   map<Junction, TEdgeVector> m_outgoingEdges;
+  map<Junction, TEdgeVector> m_ingoingEdges;
 };
 }  // namespace routing

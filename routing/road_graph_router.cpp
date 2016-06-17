@@ -190,8 +190,8 @@ IRouter::ResultCode RoadGraphRouter::CalculateRoute(m2::PointD const & startPoin
   Junction const finalPos(finalPoint);
 
   m_roadGraph->ResetFakes();
-  m_roadGraph->AddFakeEdges(startPos, startVicinity);
-  m_roadGraph->AddFakeEdges(finalPos, finalVicinity);
+  m_roadGraph->AddFakeOutgoingEdges(startPos, startVicinity);
+  m_roadGraph->AddFakeIngoingEdges(finalPos, finalVicinity);
 
   RoutingResult<Junction> result;
   IRoutingAlgorithm::Result const resultCode =
