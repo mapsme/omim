@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import logging
+from contextlib import contextmanager
 from multiprocessing import cpu_count
 import multiprocessing
 from optparse import OptionParser
@@ -19,6 +20,15 @@ TEMPFOLDER_TESTS = ["search_integration_tests", "storage_integration_tests"]
 FILTER_KEY = "--filter"
 DATA_PATH_KEY = "--data_path"
 RESOURCE_PATH_KEY = "--user_resource_path"
+
+
+@contextmanager
+def TemporaryDirectory():
+    name = tempfile.mkdtemp()
+    try:
+        yield name
+    finally:
+        shutil.rmtree(name)
 
 
 def setup_test_result_log(log_file, level=logging.INFO):
@@ -41,20 +51,20 @@ def setup_jenkins_console_logger(level=logging.INFO):
     multiprocessing.get_logger().addHandler(stream_handler)
 
 
-def log_start_finish(func):
-    def func_wrapper(test, keys):
+def with_logging(fn):
+    def func_wrapper(test, flags):
         logger = multiprocessing.get_logger()
-        logger.info("start: >{0} {1}".format(test, keys))
-        result = func(test, keys)
-        logger.info("end: >{0} {1}".format(test, keys))
+        logger.info("start: >{0} {1}".format(test, flags))
+        result = fn(test, flags)
+        logger.info("end: >{0} {1}".format(test, flags))
         return result
 
     return func_wrapper
 
 
-@log_start_finish
-def execute_file(test, keys):
-    spell = ["{test} {keys}".format(test=test, keys=keys)]
+@with_logging
+def spawn_test_process(test, flags):
+    spell = ["{0} {1}".format(test, flags)]
 
     process = subprocess.Popen(spell,
                                stdout=subprocess.PIPE,
@@ -75,7 +85,7 @@ def exec_test(a_tuple):
     * the path to the test file (e.g. ..../base_tests)
     * the name of the test to be executed from that file
     * dictionary with all the parameters to be passed to the executable. At
-    this point the keys may contain --user_resource_path and --data_path if the
+    this point the flags may contain --user_resource_path and --data_path if the
     executable file is not in the list of the tests that require temporary folders
 
     :return: (the name of the file, the name of the test),
@@ -84,37 +94,39 @@ def exec_test(a_tuple):
     test_file, test_name, params = a_tuple
     params[FILTER_KEY] = test_name
 
-    tmpdir = path.devnull
     out, err, result = None, None, None
-    try:
-        if test_file in TEMPFOLDER_TESTS:
-            tmpdir = tempfile.mkdtemp()
-            params[DATA_PATH_KEY] = tmpdir
 
-        keys = params_from_dict(params)
-        out, err, result = execute_file(test_file, keys)
-
-    except:
-        logging.exception("Failed to remove the temporary folder {folder}".format(folder=tmpdir))
-
-    finally:
-        if test_file in TEMPFOLDER_TESTS:
-            shutil.rmtree(tmpdir, ignore_errors=True)
+    if test_file in TEMPFOLDER_TESTS:
+        out, err, result = exec_test_with_temp(test_file, params)
+    else:
+        out, err, result = exec_test_without_temp(test_file, params)
 
     return (test_file, test_name), (err, result)
+
+
+def exec_test_with_temp(test_file, params):
+    with TemporaryDirectory() as tmpdir:
+        params[DATA_PATH_KEY] = tmpdir
+        return exec_test_without_temp(test_file, params)
+
+def exec_test_without_temp(test_file, params):
+    flags = params_from_dict(params)
+    return spawn_test_process(test_file, flags)
 
 
 def params_from_dict(params_dict):
     return " ".join(
         '"{0}={1}"'.format(key, value)
         for key, value in params_dict.iteritems()
-        if value
+        if value != ""
     )
 
 
 class IntegrationRunner:
     def __init__(self):
         proc_count = cpu_count() / 5 * 4
+        if proc_count < 1:
+            proc_count = 1
         self.pool = multiprocessing.Pool(proc_count, initializer=setup_jenkins_console_logger)
         self.workspace_path = ""
         self.runlist = []
@@ -134,7 +146,7 @@ class IntegrationRunner:
                 exec_test,
                 self.prepare_list_of_tests()
             )
-            for (test_file, test_name), (err, result) in test_results:
+            for (test_file, _), (err, result) in test_results:
                 logger.info(
                     err,
                     extra={"file" : path.basename(test_file), "result" : result}
@@ -147,11 +159,11 @@ class IntegrationRunner:
 
     def map_args(self, test):
         test_full_path = path.join(self.workspace_path, test)
-        test_in_exec_file = execute_file(test_full_path, "--list_tests")[0]  # a list
+        tests = spawn_test_process(test_full_path, "--list_tests")[0]  # a list
 
         return map(
             lambda tests_in_file: (test_full_path, tests_in_file, self.params),
-            test_in_exec_file
+            tests
         )
 
 
@@ -163,12 +175,11 @@ class IntegrationRunner:
 
     def set_instance_vars_from_options(self, options):
         self.workspace_path = options.folder
-        interim_runlist = list()
         for opt in options.runlist:
-            interim_runlist.extend(map(str.strip, opt.split(",")))
+            self.runlist.extend(map(str.strip, opt.split(",")))
 
         tests_on_disk_list = tests_on_disk(self.workspace_path)
-        self.runlist = filter(lambda x: x in tests_on_disk_list, interim_runlist)
+        self.runlist = filter(lambda x: x in tests_on_disk_list, self.runlist)
 
         self.params[RESOURCE_PATH_KEY] = options.user_resource_path
         self.params[DATA_PATH_KEY] = options.data_path
