@@ -2,7 +2,7 @@
 
 ROOT_DIR = ../..
 DEPENDENCIES = generator search routing storage indexer platform editor geometry coding base \
-               osrm gflags expat tess2 jansson protobuf tomcrypt \
+               minizip osrm gflags expat tess2 jansson protobuf tomcrypt \
                succinct stats_client pugixml
 
 include($$ROOT_DIR/common.pri)
