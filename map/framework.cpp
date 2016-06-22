@@ -1068,6 +1068,7 @@ void Framework::StartInteractiveSearch(search::SearchParams const & params)
       });
     }
   };
+  UpdateUserViewportChanged();
 }
 
 void Framework::ClearAllCaches()
