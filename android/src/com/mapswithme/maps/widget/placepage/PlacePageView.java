@@ -392,7 +392,7 @@ public class PlacePageView extends RelativeLayout
           break;
 
         case BOOKING:
-          onBookingClick(true);
+          onBookingClick(true /* book */);
           break;
         }
       }
@@ -480,18 +480,16 @@ public class PlacePageView extends RelativeLayout
           return;
 
         Map<String, String> params = new HashMap<>();
-        params.put("provider", "Booking.com");
-
-        MapObject myPos = LocationHelper.INSTANCE.getMyPosition();
-        params.put("lat", (myPos == null ? "N/A" : String.valueOf(myPos.getLat())));
-        params.put("lon", (myPos == null ? "N/A" : String.valueOf(myPos.getLon())));
+        params.put("provider", "Booking.Com");
+        params.put("hotel_lat", (mMapObject == null ? "N/A" : String.valueOf(mMapObject.getLat())));
+        params.put("hotel_lon", (mMapObject == null ? "N/A" : String.valueOf(mMapObject.getLon())));
         params.put("hotel", info.getId());
 
         String event = (book ? Statistics.EventName.PP_SPONSORED_BOOK
                              : Statistics.EventName.PP_SPONSORED_DETAILS);
 
-        Statistics.INSTANCE.trackEvent(event, params);
-        org.alohalytics.Statistics.logEvent(event, params);
+        final Location location = LocationHelper.INSTANCE.getLastKnownLocation();
+        Statistics.INSTANCE.trackEvent(event, location, params);
 
         try
         {
@@ -1014,7 +1012,7 @@ public class PlacePageView extends RelativeLayout
       addPlace();
       break;
     case R.id.ll__more:
-      onBookingClick(false);
+      onBookingClick(false /* book */);
       break;
     case R.id.iv__bookmark_color:
       saveBookmarkTitle();
