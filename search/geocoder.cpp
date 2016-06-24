@@ -1416,6 +1416,7 @@ void Geocoder::FillMissingFieldsInResults()
                              {
                                mwmId = id.m_mwmId;
                                mwmHandle = m_index.GetMwmHandleById(mwmId);
+                               rankTable.reset();
                                if (mwmHandle.IsAlive())
                                {
                                  rankTable =
