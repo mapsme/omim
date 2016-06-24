@@ -1416,15 +1416,14 @@ void Geocoder::FillMissingFieldsInResults()
                              {
                                mwmId = id.m_mwmId;
                                mwmHandle = m_index.GetMwmHandleById(mwmId);
+                               rankTable.reset();
                                if (mwmHandle.IsAlive())
                                {
                                  rankTable =
                                      RankTable::Load(mwmHandle.GetValue<MwmValue>()->m_cont);
                                }
-                               else
-                               {
+                               if (!rankTable)
                                  rankTable = make_unique<DummyRankTable>();
-                               }
                              }
 
                              info.m_rank = rankTable->Get(id.m_index);
