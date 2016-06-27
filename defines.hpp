@@ -25,7 +25,7 @@
 #define VERSION_FILE_TAG "version"
 #define METADATA_FILE_TAG "meta"
 #define METADATA_INDEX_FILE_TAG "metaidx"
-#define ALTITUDE_TAG "altitude"
+#define ALTITUDE_FILE_TAG "altitude"
 #define FEATURE_OFFSETS_FILE_TAG "offs"
 #define RANKS_FILE_TAG "ranks"
 // Temporary addresses section that is used in search index generation.
