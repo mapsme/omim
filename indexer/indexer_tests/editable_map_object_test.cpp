@@ -111,5 +111,9 @@ UNIT_TEST(EditableMapObject_ValidateEmail)
   TEST(!EditableMapObject::ValidateEmail("e@ma@il"), ());
   TEST(!EditableMapObject::ValidateEmail("e@ma@i.l"), ());
   TEST(!EditableMapObject::ValidateEmail("e@mail"), ());
+  TEST(!EditableMapObject::ValidateEmail("@email.a"), ());
+  TEST(!EditableMapObject::ValidateEmail("emai.l@"), ());
+  TEST(!EditableMapObject::ValidateEmail(".email@a"), ());
+  TEST(!EditableMapObject::ValidateEmail("emai@l."), ());
 }
 }  // namespace
