@@ -311,13 +311,15 @@ bool EditableMapObject::ValidateEmail(string const & email)
 {
   if (email.empty())
     return true;
-
-  // Email cannot begins and ends with '.' or '@'
-  for (auto const & letter : {email.front(), email.back()})
-  {
-    if (letter == '.' || letter == '@')
-      return false;
-  }
+  
+  if(strings::IsASCIIString(email))
+    return regex_match(email, regex("^[^@\\s]+@[\\w-]+(\\.[\\w-]+)+$"));
+  
+  if('@' == email.front() || '@' == email.back())
+    return false;
+  
+  if('.' == email.back())
+    return false;
 
   auto const atPos = find(begin(email), end(email), '@');
   if (atPos == end(email))
@@ -327,7 +329,7 @@ bool EditableMapObject::ValidateEmail(string const & email)
   if (find(next(atPos), end(email), '@') != end(email))
     return false;
 
-  // There should be at least one '.' sign after '@' ...
+  // There should be at least one '.' sign after '@'
   if (find(next(atPos), end(email), '.') == end(email))
     return false;
 
