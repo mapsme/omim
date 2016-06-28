@@ -70,7 +70,9 @@ DEFINE_string(osm_file_type, "xml", "Input osm area file type [xml, o5m]");
 DEFINE_string(user_resource_path, "", "User defined resource path for classificator.txt and etc.");
 DEFINE_string(booking_data, "", "Path to booking data in .tsv format");
 DEFINE_uint64(planet_version, my::SecondsSinceEpoch(), "Version as seconds since epoch, by default - now");
-DEFINE_string(srtm_path, "", "Path to srtm directory. If When set generates section with altitude information about roads.");
+DEFINE_string(
+    srtm_path, "",
+    "Path to srtm directory. If When set generates section with altitude information about roads.");
 
 int main(int argc, char ** argv)
 {
