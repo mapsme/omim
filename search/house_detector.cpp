@@ -464,7 +464,7 @@ int HouseDetector::LoadStreets(vector<FeatureID> const & ids)
 
     FeatureType f;
     m_loader.Load(ids[i], f);
-    if (f.GetFeatureType() == feature::GEOM_LINE)
+    if (f.GetFeatureType() == feature::GEOM_LINE || f.GetFeatureType() == feature::GEOM_AREA)
     {
       // Use default name as a primary compare key for merging.
       string name;
