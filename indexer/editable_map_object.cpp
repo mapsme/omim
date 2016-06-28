@@ -313,11 +313,11 @@ bool EditableMapObject::ValidateEmail(string const & email)
     return true;
 
   // Email cannot begins and ends with '.' or '@'
-  if (email.front() == '.' || email.back() == '.')
-    return false;
-  
-  if (email.front() == '@' || email.back() == '@')
-    return false;
+  for(auto const& letter : {email.front(), email.back()})
+  {
+    if(letter == '.' || letter == '@')
+      return false;
+  }
   
   auto const atPos = find(begin(email), end(email), '@');
   if (atPos == end(email))
