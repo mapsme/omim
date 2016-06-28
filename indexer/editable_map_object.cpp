@@ -311,14 +311,14 @@ bool EditableMapObject::ValidateEmail(string const & email)
 {
   if (email.empty())
     return true;
-  
-  if(strings::IsASCIIString(email))
+
+  if (strings::IsASCIIString(email))
     return regex_match(email, regex("^[^@\\s]+@[\\w-]+(\\.[\\w-]+)+$"));
-  
-  if('@' == email.front() || '@' == email.back())
+
+  if ('@' == email.front() || '@' == email.back())
     return false;
-  
-  if('.' == email.back())
+
+  if ('.' == email.back())
     return false;
 
   auto const atPos = find(begin(email), end(email), '@');

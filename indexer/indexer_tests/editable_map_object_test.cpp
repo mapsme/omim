@@ -107,7 +107,7 @@ UNIT_TEST(EditableMapObject_ValidateEmail)
   TEST(EditableMapObject::ValidateEmail("e@ma.il"), ());
   TEST(EditableMapObject::ValidateEmail("e@ma.i.l"), ());
   TEST(EditableMapObject::ValidateEmail(".ema@i.l"), ());
-  
+
   TEST(!EditableMapObject::ValidateEmail("e.ma.il"), ());
   TEST(!EditableMapObject::ValidateEmail("e@ma@il"), ());
   TEST(!EditableMapObject::ValidateEmail("e@ma@i.l"), ());
