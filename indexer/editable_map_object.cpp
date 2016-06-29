@@ -313,7 +313,7 @@ bool EditableMapObject::ValidateEmail(string const & email)
     return true;
 
   if (strings::IsASCIIString(email))
-    return regex_match(email, regex(R"delimetr(^[^@\s]+@[\w-][^_]+(\.[\w-][^_]+)+$)delimetr"));
+    return regex_match(email, regex(R"delimetr(^[^@\s]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+$)delimetr"));
 
   if ('@' == email.front() || '@' == email.back())
     return false;
