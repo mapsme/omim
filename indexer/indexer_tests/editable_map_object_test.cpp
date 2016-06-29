@@ -106,7 +106,6 @@ UNIT_TEST(EditableMapObject_ValidateEmail)
   TEST(EditableMapObject::ValidateEmail(""), ());
   TEST(EditableMapObject::ValidateEmail("e@ma.il"), ());
   TEST(EditableMapObject::ValidateEmail("e@ma.i.l"), ());
-  TEST(EditableMapObject::ValidateEmail("._emai@l_.a"), ());
   TEST(EditableMapObject::ValidateEmail("e-m.ail@dot.com.gov"), ());
   TEST(EditableMapObject::ValidateEmail("#$%&'*+-/=?^`_{}|~.@dot.qw.com.gov"), ());
   
@@ -119,6 +118,7 @@ UNIT_TEST(EditableMapObject_ValidateEmail)
   TEST(!EditableMapObject::ValidateEmail("emai@l."), ());
   TEST(!EditableMapObject::ValidateEmail("e mai@l.com"), ());
   TEST(!EditableMapObject::ValidateEmail("emai@.l"), ());
+  TEST(!EditableMapObject::ValidateEmail("emai@l_.a"), ());
   TEST(!EditableMapObject::ValidateEmail("email@e#$%&'*+-/=?^`_{}|~.com"), ());
   
 }
