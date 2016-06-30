@@ -252,6 +252,7 @@ public class MwmApplication extends Application
 
       pushManager.onStartup(this);
       pushManager.registerForPushNotifications();
+      pushManager.startTrackingGeoPushes();
     }
     catch(Exception e)
     {

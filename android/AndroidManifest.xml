@@ -380,6 +380,9 @@
         android:name="com.pushwoosh.GCMRegistrationService"
         android:exported="false" />
 
+    <service
+        android:name="com.pushwoosh.location.GeoLocationService" />
+
     <!-- Catches app upgraded intent -->
     <receiver android:name=".background.UpgradeReceiver">
       <intent-filter>
