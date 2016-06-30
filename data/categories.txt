@@ -287,7 +287,7 @@ cs:3Banka|peníze
 sk:3Banka|peniaze
 nl:3Bank|geld
 zh-Hant:1銀行|錢
-pl:3Placówka banku|bank|pieniądze
+pl:3Bank|placówka banku|pieniądze
 pt:3Banco|dinheiro
 hu:3Bank|pénz
 th:3ธนาคาร|เงิน
@@ -346,7 +346,7 @@ cs:2Bar|pivo|pití|jídlo|voda|pitná voda|tekutiny
 sk:2Bar|pivo|pitie|jedlo|voda|pitná voda|tekutiny
 nl:2Bar|2pub|2café|bier|drinken|eten
 zh-Hant:1酒吧|酒館|飲酒|PUB|吧台|飲食
-pl:2Bar|alkohole|drinki|napoje|jedzenie
+pl:2Bar|pub|alkohole|drinki|piwo|napoje|jedzenie
 pt:2Bar|2pub|cerveja|beber|alimentação
 hu:2Bár|2kocsma|sör|ital|élelmiszer
 th:2บาร์|ผับ|เบียร์|เครื่องดื่ม|อาหาร
@@ -378,7 +378,7 @@ ja:バー|パブ|ビール|居酒屋|飲食|飲み屋|呑み屋|酒
 ko:술집|맥주|음료|음식
 nb:Pub|Bar|mat
 nl:Kroeg|Bar|bier|drinken|eten
-pl:Pub|alkohole|piwo|napoje|jedzenie
+pl:Pub|bar|alkohole|piwo|napoje|jedzenie
 pt:Pub|Bar|cerveja|beber|alimentação
 ro:Pub|Bar|cârciumă|băutură|alimentație
 ru:Паб|бар|пиво|выпить|еда
@@ -6845,7 +6845,7 @@ ja:給水塔
 ko:급수탑
 nl:Watertoren
 nb:Vanntårn
-pl:Wieża ciśnień
+pl:Wieża ciśnień|wieża wodna
 pt:Torre de água
 ro:Turn de apă
 sk:Vodojem
