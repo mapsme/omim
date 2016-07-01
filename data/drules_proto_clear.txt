@@ -40871,140 +40871,49 @@ cont {
     scale: 13
     area {
       color: 9163744
-      priority: -15136
-    }
-    symbol {
-      name: "swimming-s"
-      priority: 16864
-      min_distance: 50
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 10
-      }
-      priority: 15864
+      priority: -15771
     }
   }
   element {
     scale: 14
     area {
       color: 9163744
-      priority: -15136
-    }
-    symbol {
-      name: "swimming-s"
-      priority: 16864
-      min_distance: 50
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 10
-      }
-      priority: 15864
+      priority: -15771
     }
   }
   element {
     scale: 15
     area {
       color: 9163744
-      priority: -15136
-    }
-    symbol {
-      name: "swimming-m"
-      priority: 16864
-      min_distance: 40
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 10
-      }
-      priority: 15864
+      priority: -15771
     }
   }
   element {
     scale: 16
     area {
       color: 9163744
-      priority: -15136
-    }
-    symbol {
-      name: "swimming-m"
-      priority: 16864
-      min_distance: 40
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 10
-      }
-      priority: 15864
+      priority: -15771
     }
   }
   element {
     scale: 17
     area {
       color: 9163744
-      priority: -15136
-    }
-    symbol {
-      name: "swimming-l"
-      priority: 16864
-      min_distance: 10
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 10
-      }
-      priority: 15864
+      priority: -15771
     }
   }
   element {
     scale: 18
     area {
       color: 9163744
-      priority: -15136
-    }
-    symbol {
-      name: "swimming-l"
-      priority: 16864
-      min_distance: 10
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 10
-      }
-      priority: 15864
+      priority: -15771
     }
   }
   element {
     scale: 19
     area {
       color: 9163744
-      priority: -15136
-    }
-    symbol {
-      name: "swimming-l"
-      priority: 16864
-      min_distance: 10
-    }
-    caption {
-      primary {
-        height: 10
-        color: 4473924
-        offset_y: 10
-      }
-      priority: 15864
+      priority: -15771
     }
   }
 }
