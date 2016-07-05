@@ -13,6 +13,8 @@
 		34583BD01C88556800F94664 /* place_page_info.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 34583BCE1C88556800F94664 /* place_page_info.hpp */; };
 		34921F661BFA0A6900737D6E /* api_mark_point.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 34921F611BFA0A6900737D6E /* api_mark_point.hpp */; };
 		45201E931CE4AC90008A4842 /* api_mark_point.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45201E921CE4AC90008A4842 /* api_mark_point.cpp */; };
+		45D2C84E1D33A623001E9B73 /* booking_collector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45D2C84C1D33A623001E9B73 /* booking_collector.cpp */; };
+		45D2C84F1D33A623001E9B73 /* booking_collector.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 45D2C84D1D33A623001E9B73 /* booking_collector.hpp */; };
 		670E39401C46C5C700E9C0A6 /* gps_tracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 670E393E1C46C5C700E9C0A6 /* gps_tracker.cpp */; };
 		670E39411C46C5C700E9C0A6 /* gps_tracker.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 670E393F1C46C5C700E9C0A6 /* gps_tracker.hpp */; };
 		674A29F01B26FD6F001A525C /* testingmain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 674A29EE1B26FD5F001A525C /* testingmain.cpp */; };
@@ -129,6 +131,8 @@
 		34583BCE1C88556800F94664 /* place_page_info.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = place_page_info.hpp; sourceTree = "<group>"; };
 		34921F611BFA0A6900737D6E /* api_mark_point.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = api_mark_point.hpp; sourceTree = "<group>"; };
 		45201E921CE4AC90008A4842 /* api_mark_point.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = api_mark_point.cpp; sourceTree = "<group>"; };
+		45D2C84C1D33A623001E9B73 /* booking_collector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = booking_collector.cpp; sourceTree = "<group>"; };
+		45D2C84D1D33A623001E9B73 /* booking_collector.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = booking_collector.hpp; sourceTree = "<group>"; };
 		670D05A41B0DF4250013A7AC /* defaults.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = defaults.xcconfig; path = ../defaults.xcconfig; sourceTree = "<group>"; };
 		670E393E1C46C5C700E9C0A6 /* gps_tracker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gps_tracker.cpp; sourceTree = "<group>"; };
 		670E393F1C46C5C700E9C0A6 /* gps_tracker.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = gps_tracker.hpp; sourceTree = "<group>"; };
@@ -429,6 +433,8 @@
 				674A2A371B2715FB001A525C /* osm_opening_hours.hpp */,
 				6788507C1D059068004201E1 /* booking_api.cpp */,
 				6788507D1D059068004201E1 /* booking_api.hpp */,
+				45D2C84C1D33A623001E9B73 /* booking_collector.cpp */,
+				45D2C84D1D33A623001E9B73 /* booking_collector.hpp */,
 			);
 			name = map;
 			path = ../../map;
@@ -455,6 +461,7 @@
 				675346491A4054E800A0A8C3 /* bookmark_manager.hpp in Headers */,
 				F6B2830A1C1B03320081957A /* gps_track.hpp in Headers */,
 				675346631A4054E800A0A8C3 /* feature_vec_model.hpp in Headers */,
+				45D2C84F1D33A623001E9B73 /* booking_collector.hpp in Headers */,
 				6753469C1A4054E800A0A8C3 /* track.hpp in Headers */,
 				675346651A4054E800A0A8C3 /* framework.hpp in Headers */,
 				674A2A381B2715FB001A525C /* osm_opening_hours.hpp in Headers */,
@@ -571,6 +578,7 @@
 				F6B283031C1B03320081957A /* gps_track_collection.cpp in Sources */,
 				6753469B1A4054E800A0A8C3 /* track.cpp in Sources */,
 				675346621A4054E800A0A8C3 /* feature_vec_model.cpp in Sources */,
+				45D2C84E1D33A623001E9B73 /* booking_collector.cpp in Sources */,
 				6753469D1A4054E800A0A8C3 /* user_mark_container.cpp in Sources */,
 				674C38621BFF3095000D603B /* user_mark.cpp in Sources */,
 				675346641A4054E800A0A8C3 /* framework.cpp in Sources */,

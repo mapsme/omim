@@ -223,4 +223,6 @@ public class Framework
   public static native boolean nativeIsInChoosePositionMode();
   public static native boolean nativeIsDownloadedMapAtScreenCenter();
   public static native String nativeGetActiveObjectFormattedCuisine();
+
+  public static native void nativeTryToBookHotel(String hotelId);
 }

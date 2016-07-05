@@ -1,10 +1,12 @@
 #pragma once
 
 #include "base/buffer_vector.hpp"
+#include "base/gmtime.hpp"
 #include "base/stl_add.hpp"
 
 #include "std/algorithm.hpp"
 #include "std/cstdint.hpp"
+#include "std/chrono.hpp"
 #include "std/iterator.hpp"
 #include "std/limits.hpp"
 #include "std/regex.hpp"
@@ -518,4 +520,15 @@ size_t EditDistance(TIter const & b1, TIter const & e1, TIter const & b2, TIter 
   }
   return prev[m];
 }
+
+template<size_t BufferSize>
+string FromTimePoint(system_clock::time_point const & timePoint, string const & format)
+{
+  char buffer[BufferSize]{};
+  tm t = my::GmTime(system_clock::to_time_t(timePoint));
+  strftime(buffer, sizeof(buffer), format.c_str(), &t);
+  return buffer;
+}
+
+system_clock::time_point ToTimePoint(string const & str, string const & format);
 }  // namespace strings
