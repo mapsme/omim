@@ -65,7 +65,7 @@ char const * StringUtf8Multilang::GetLangNameByCode(int8_t langCode)
 
 void StringUtf8Multilang::AddString(int8_t lang, string const & utf8s)
 {
-  ASSERT(lang < kMaxSupportedLanguages, ("Incorrect language index"));
+  ASSERT_LESS(lang, (int8_t)kMaxSupportedLanguages, ("Incorrect language index"));
 
   m_strings[lang] = utf8s;
 }
@@ -74,18 +74,41 @@ bool StringUtf8Multilang::GetString(int8_t lang, string & utf8s) const
 {
   auto it = m_strings.find(lang);
 
-  if (m_strings.end() != it)
+  if (m_strings.end() == it)
+    return false;
+
+  utf8s = it->second;
+  return true;
+}
+
+size_t StringUtf8Multilang::GetNextIndex(string const & str, size_t i)
+{
+  ++i;
+  size_t const sz = str.size();
+
+  while (i < sz && (str[i] & 0xC0) != 0x80)
   {
-    utf8s = it->second;
-    return true;
+    if ((str[i] & 0x80) == 0)
+      i += 1;
+    else if ((str[i] & 0xFE) == 0xFE)
+      i += 7;
+    else if ((str[i] & 0xFC) == 0xFC)
+      i += 6;
+    else if ((str[i] & 0xF8) == 0xF8)
+      i += 5;
+    else if ((str[i] & 0xF0) == 0xF0)
+      i += 4;
+    else if ((str[i] & 0xE0) == 0xE0)
+      i += 3;
+    else if ((str[i] & 0xC0) == 0xC0)
+      i += 2;
   }
 
-  return false;
+  return i;
 }
 
 namespace
 {
-  
 struct Printer
 {
   string & m_out;
@@ -112,7 +135,6 @@ struct Finder
     return true;
   }
 };
-
 } // namespace
 
 int8_t StringUtf8Multilang::FindString(string const & utf8s) const
