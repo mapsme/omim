@@ -754,13 +754,11 @@ node|z18-[shop=car_repair][service=tyres], area|z18-[shop=car_repair][service=ty
 
 node|z13-14[sport=soccer], area|z13-14[sport=soccer] { icon-image: soccer-s.svg; text-offset: 10; font-size: 10; text: name; text-color: @poi_label;z-index: 6;icon-min-distance: 50; }
 
-node|z13-14[leisure=swimming_pool],area|z13-14[leisure=swimming_pool] { icon-image: swimming-s.svg;z-index: 2600;icon-min-distance: 50;  }
 node|z13-14[leisure=stadium] { icon-image: pitch-s.svg; text-offset: 10; font-size: 10; text: name; text-color: @poi_label; z-index: 6; icon-min-distance: 50; }
 node|z13-14[leisure=pitch] { icon-image: pitch-s.svg; text-offset: 10; font-size: 10; text: name; text-color: @poi_label; z-index: 6;icon-min-distance: 50; -x-me-text-priority: 16000; }
 node|z13-14[sport=multi] { icon-image: pitch-s.svg; text-offset: 10; font-size: 10; text: name; text-color: @poi_label; z-index: 6; icon-min-distance: 50; }
 node|z13-14[leisure=sports_centre][sport=climbing] { icon-image: climbing-s.svg; text-offset: 10; font-size: 10; text: name; text-color: @poi_label; z-index: 6; -x-me-text-priority: 15500;icon-min-distance: 50; }
 node|z13-14[leisure=sports_centre][sport=swimming] { icon-image: swimming-s.svg; text-offset: 10; font-size: 10; text: name; text-color: @poi_label; z-index: 6; -x-me-text-priority: 15500;icon-min-distance: 50; }
-node|z13-14[leisure=swimming_pool],area|z13-14[leisure=swimming_pool] { icon-image: swimming-s.svg;z-index: 2600; text-offset: 10; font-size: 10; text: name; text-color: @poi_label;icon-min-distance: 50;  }
 node|z13-14[leisure=fitness_centre],area|z13-14[leisure=fitness_centre] { icon-image: gym-s.svg;z-index: 2600; text-offset: 10; font-size: 10; text: name; text-color: @poi_label;icon-min-distance: 50;  }
 node|z13-14[leisure=golf_course], area|z13-14[leisure=golf_course] { icon-image: golf-s.svg;z-index: 50;icon-min-distance: 40;  } /* нельзя другой z-inex^иначе пропадают все объекты на поле */
 
@@ -786,7 +784,6 @@ node|z15-16[leisure=sports_centre] { icon-image: pitch-m.svg; text-offset: 10; f
 node|z15-16[leisure=sports_centre][sport=climbing] { icon-image: climbing-m.svg; text-offset: 10; font-size: 10; text: name; text-color: @poi_label; z-index: 6; -x-me-text-priority: 15500;icon-min-distance: 40; }
 node|z15-16[leisure=sports_centre][sport=swimming] { icon-image: swimming-m.svg; text-offset: 10; font-size: 10; text: name; text-color: @poi_label; z-index: 6; -x-me-text-priority: 15500;icon-min-distance: 40; }
 node|z15-16[leisure=playground] { icon-image: pitch-m.svg; text-offset: 10; font-size: 11; text: name; text-color: @poi_label; z-index: 2400;icon-min-distance: 40;  }
-node|z15-16[leisure=swimming_pool],area|z15-16[leisure=swimming_pool] { icon-image: swimming-m.svg;z-index: 2600; text-offset: 10; font-size: 10; text: name; text-color: @poi_label;icon-min-distance: 40;  }
 node|z15-16[leisure=fitness_centre],area|z15-16[leisure=fitness_centre] { icon-image: gym-m.svg;z-index: 2600; text-offset: 10; font-size: 10; text: name; text-color: @poi_label;icon-min-distance: 40;  }
 node|z15-16[leisure=sauna],area|z15-16[leisure=sauna] { icon-image: sauna-m.svg;z-index: 2600; text-offset: 10; font-size: 10; text: name; text-color: @poi_label;icon-min-distance: 40;  }
 node|z15-16[leisure=golf_course], area|z15-16[leisure=golf_course] { icon-image: golf-m.svg;z-index: 50;icon-min-distance: 20;  } /* нельзя другой z-inex^иначе пропадают все объекты на поле */
@@ -816,7 +813,6 @@ node|z17-[leisure=sports_centre][sport=swimming] { icon-image: swimming-l.svg; t
 node|z17-[leisure=fitness_centre] { icon-image: gym-l.svg; text-offset: 10; font-size: 10; text: name; text-color: @poi_label; z-index: 6; -x-me-text-priority: 15500;icon-min-distance: 10; }
 node|z17-[leisure=sauna] { icon-image: sauna-l.svg; text-offset: 10; font-size: 10; text: name; text-color: @poi_label; z-index: 6; -x-me-text-priority: 15500;icon-min-distance: 10; }
 node|z17-[leisure=playground] { icon-image: pitch-l.svg; text-offset: 10; font-size: 11; text: name; text-color: @poi_label; z-index: 2400; icon-min-distance: 10; }
-node|z17-[leisure=swimming_pool],area|z17-[leisure=swimming_pool] { icon-image: swimming-l.svg;z-index: 2600; text-offset: 10; font-size: 10; text: name; text-color: @poi_label;icon-min-distance: 10;  }
 node|z17-[leisure=golf_course], area|z17-[leisure=golf_course] { icon-image: golf-l.svg;z-index: 50;icon-min-distance: 10;  } /* нельзя другой z-inex^иначе пропадают все объекты на поле */
 
 node|z17-[sport=soccer], area|z17-[sport=soccer] { icon-image: soccer-l.svg; text-offset: 10; font-size: 10; text: name; text-color: @poi_label;z-index: 6;icon-min-distance: 10;  }
