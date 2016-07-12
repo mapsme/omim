@@ -763,14 +763,13 @@ void Framework::FillInfoFromFeatureType(FeatureType const & ft, place_page::Info
   info.m_isHotel = ftypes::IsHotelChecker::Instance()(ft);
   if (ftypes::IsBookingChecker::Instance()(ft))
   {
-    info.m_isSponsoredHotel = true;
     string const & baseUrl = info.GetMetadata().Get(feature::Metadata::FMD_WEBSITE);
     info.m_sponsoredBookingUrl = GetBookingApi().GetBookingUrl(baseUrl);
     info.m_sponsoredDescriptionUrl = GetBookingApi().GetDescriptionUrl(baseUrl);
   }
 
   info.m_canEditOrAdd = featureStatus != osm::Editor::FeatureStatus::Obsolete && CanEditMap() &&
-                        !info.IsSponsoredHotel();
+                        !info.m_placeData.IsSponsoredHotel();
 
   info.m_localizedWifiString = m_stringsBundle.GetString("wifi");
   info.m_localizedRatingString = m_stringsBundle.GetString("place_page_booking_rating");

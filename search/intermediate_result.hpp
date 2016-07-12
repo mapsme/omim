@@ -144,7 +144,7 @@ private:
   RankingInfo m_info;
   feature::EGeomType m_geomType;
 
-  Result::Metadata m_metadata;
+  search::Metadata m_metadata;
 };
 
 inline string DebugPrint(PreResult2 const & t)
@@ -152,7 +152,7 @@ inline string DebugPrint(PreResult2 const & t)
   return t.DebugPrint();
 }
 
-void ProcessMetadata(FeatureType const & ft, Result::Metadata & meta);
+void ProcessMetadata(FeatureType const & ft, search::Metadata & meta);
 
 class IndexedValue
 {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "map/bookmark.hpp"
+#include "map/place_data.hpp"
 
 #include "storage/index.hpp"
 
@@ -19,16 +20,11 @@ namespace place_page
 class Info : public osm::MapObject
 {
 public:
-  static char const * const kSubtitleSeparator;
-  static char const * const kStarSymbol;
-  static char const * const kMountainSymbol;
-  static char const * const kEmptyRatingSymbol;
-  static char const * const kPricingSymbol;
+  void SetFromFeatureType(FeatureType const & ft);
 
   bool IsFeature() const;
   bool IsBookmark() const;
   bool IsMyPosition() const;
-  bool IsSponsoredHotel() const;
   bool IsHotel() const;
 
   bool ShouldShowAddPlace() const;
@@ -51,21 +47,16 @@ public:
   string GetTitle() const;
   /// Convenient wrapper for type, cuisines, elevation, stars, wifi etc.
   string GetSubtitle() const;
-  /// @returns empty string or GetStars() count of ★ symbol.
-  string FormatStars() const;
 
+  string GetFeatureType() const { return GetLocalizedType(); }
   string GetCustomName() const;
   BookmarkAndCategory GetBookmarkAndCategory() const;
   string GetBookmarkCategoryName() const;
+
   string const & GetApiUrl() const;
 
   string const & GetSponsoredBookingUrl() const;
   string const & GetSponsoredDescriptionUrl() const;
-
-  /// @returns formatted rating string for booking object, or empty if it isn't booking object
-  string GetRatingFormatted() const;
-  /// @returns string with |kPricingSymbol| signs or empty string if it isn't booking object
-  string GetApproximatePricing() const;
 
   void SetMercator(m2::PointD const & mercator);
 
@@ -84,7 +75,6 @@ public:
   /// Feature is a hotel.
   bool m_isHotel = false;
   /// Feature is a sponsored hotel.
-  bool m_isSponsoredHotel = false;
   /// Sponsored feature urls.
   string m_sponsoredBookingUrl;
   string m_sponsoredDescriptionUrl;
@@ -100,7 +90,7 @@ public:
 
   // TODO(AlexZ): Temporary solution. It's better to use a wifi icon in UI instead of text.
   string m_localizedWifiString;
-  /// Booking rating string
-  string m_localizedRatingString;
+
+  place_data::Data<Info> m_placeData;
 };
 }  // namespace place_page

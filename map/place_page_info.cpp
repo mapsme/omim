@@ -6,16 +6,15 @@
 
 namespace place_page
 {
-char const * const Info::kSubtitleSeparator = " • ";
-char const * const Info::kStarSymbol = "★";
-char const * const Info::kMountainSymbol = "▲";
-char const * const Info::kEmptyRatingSymbol = "-";
-char const * const Info::kPricingSymbol = "$";
+void Info::SetFromFeatureType(FeatureType const & ft)
+{
+  MapObject::SetFromFeatureType(ft);
+  m_placeData = place_data::Data<Info>(ft, this);
+}
 
 bool Info::IsFeature() const { return m_featureID.IsValid(); }
 bool Info::IsBookmark() const { return m_bac != MakeEmptyBookmarkAndCategory(); }
 bool Info::IsMyPosition() const { return m_isMyPosition; }
-bool Info::IsSponsoredHotel() const { return m_isSponsoredHotel; }
 bool Info::IsHotel() const { return m_isHotel; }
 bool Info::ShouldShowAddPlace() const
 {
@@ -75,39 +74,12 @@ string Info::GetSubtitle() const
   if (IsBookmark())
     values.push_back(m_bookmarkCategoryName);
 
-  // Type.
-  values.push_back(GetLocalizedType());
+  values.push_back(m_placeData.GetSubtitle());
 
-  // Cuisines.
-  for (string const & cuisine : GetLocalizedCuisines())
-    values.push_back(cuisine);
-
-  // Stars.
-  string const stars = FormatStars();
-  if (!stars.empty())
-    values.push_back(stars);
-
-  // Operator.
-  string const op = GetOperator();
-  if (!op.empty())
-    values.push_back(op);
-
-  // Elevation.
-  string const eleStr = GetElevationFormatted();
-  if (!eleStr.empty())
-    values.push_back(kMountainSymbol + eleStr);
   if (HasWifi())
     values.push_back(m_localizedWifiString);
 
-  return strings::JoinStrings(values, kSubtitleSeparator);
-}
-
-string Info::FormatStars() const
-{
-  string stars;
-  for (int i = 0; i < GetStars(); ++i)
-    stars.append(kStarSymbol);
-  return stars;
+  return strings::JoinStrings(values, place_data::kSubtitleSeparator);
 }
 
 string Info::GetCustomName() const { return m_customName; }
@@ -117,39 +89,6 @@ string const & Info::GetApiUrl() const { return m_apiUrl; }
 
 string const & Info::GetSponsoredBookingUrl() const { return m_sponsoredBookingUrl; }
 string const & Info::GetSponsoredDescriptionUrl() const {return m_sponsoredDescriptionUrl; }
-
-string Info::GetRatingFormatted() const
-{
-  if (!IsSponsoredHotel())
-    return string();
-
-  auto const r = GetMetadata().Get(feature::Metadata::FMD_RATING);
-  char const * rating = r.empty() ? kEmptyRatingSymbol : r.c_str();
-  int const size = snprintf(nullptr, 0, m_localizedRatingString.c_str(), rating);
-  if (size < 0)
-  {
-    LOG(LERROR, ("Incorrect size for string:", m_localizedRatingString, ", rating:", rating));
-    return string();
-  }
-
-  vector<char> buf(size + 1);
-  snprintf(buf.data(), buf.size(), m_localizedRatingString.c_str(), rating);
-  return string(buf.begin(), buf.end());
-}
-
-string Info::GetApproximatePricing() const
-{
-  if (!IsSponsoredHotel())
-    return string();
-
-  int pricing;
-  strings::to_int(GetMetadata().Get(feature::Metadata::FMD_PRICE_RATE), pricing);
-  string result;
-  for (auto i = 0; i < pricing; i++)
-    result.append(kPricingSymbol);
-
-  return result;
-}
 
 void Info::SetMercator(m2::PointD const & mercator) { m_mercator = mercator; }
 }  // namespace place_page
