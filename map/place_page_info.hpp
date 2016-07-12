@@ -48,7 +48,6 @@ public:
   /// Convenient wrapper for type, cuisines, elevation, stars, wifi etc.
   string GetSubtitle() const;
 
-  string GetFeatureType() const { return GetLocalizedType(); }
   string GetCustomName() const;
   BookmarkAndCategory GetBookmarkAndCategory() const;
   string GetBookmarkCategoryName() const;
@@ -91,6 +90,6 @@ public:
   // TODO(AlexZ): Temporary solution. It's better to use a wifi icon in UI instead of text.
   string m_localizedWifiString;
 
-  place_data::Data<Info> m_placeData;
+  place_data::Data m_placeData;
 };
 }  // namespace place_page

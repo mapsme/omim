@@ -9,7 +9,7 @@ namespace place_page
 void Info::SetFromFeatureType(FeatureType const & ft)
 {
   MapObject::SetFromFeatureType(ft);
-  m_placeData = place_data::Data<Info>(ft, this);
+  m_placeData = place_data::Data(ft, GetLocalizedType());
 }
 
 bool Info::IsFeature() const { return m_featureID.IsValid(); }

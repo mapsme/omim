@@ -206,7 +206,8 @@ void initFieldsMap()
   case MWMPlacePageCellTypeWebsite:
     return m_info.m_placeData.IsSponsoredHotel() ? nil : [self getDefaultField:cellType];
   case MWMPlacePageCellTypeBookingMore:
-    return m_info.m_placeData.IsSponsoredHotel() ? @(m_info.GetSponsoredDescriptionUrl().c_str()) : nil;
+    return m_info.m_placeData.IsSponsoredHotel() ? @(m_info.GetSponsoredDescriptionUrl().c_str())
+                                                 : nil;
   default: return [self getDefaultField:cellType];
   }
 }

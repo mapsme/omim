@@ -47,7 +47,7 @@ public:
   string const & GetFeatureType() const { return m_type; }
 
   /// Formatted data that should be displayed in the GUI.
-  place_data::Data<Result> const & GetPlaceData() const { return m_placeData; }
+  place_data::Data const & GetPlaceData() const { return m_placeData; }
   /// Formatted address that should be displayed in the GUI.
   string const & GetAddress() const { return m_address; }
 
@@ -97,7 +97,7 @@ public:
 private:
   FeatureID m_id;
   m2::PointD m_center;
-  place_data::Data<Result> m_placeData;
+  place_data::Data m_placeData;
   string m_str, m_address, m_type;
   uint32_t m_featureType;
   string m_suggestionStr;

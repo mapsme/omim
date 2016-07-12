@@ -179,7 +179,7 @@ class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.BaseViewHolder>
 
       // TODO: Support also "Open Now" mark.
       UiUtils.showIf(result.description.openNow == SearchResult.OPEN_NOW_NO, mClosedMarker);
-      UiUtils.setTextAndHideIfEmpty(mDescription, result.description.featureType);
+      UiUtils.setTextAndHideIfEmpty(mDescription, result.description.subtitle);
       UiUtils.setTextAndHideIfEmpty(mRegion, result.description.region);
       UiUtils.setTextAndHideIfEmpty(mDistance, result.description.distance);
     }

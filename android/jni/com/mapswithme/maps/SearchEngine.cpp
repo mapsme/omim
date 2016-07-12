@@ -74,12 +74,11 @@ jobject ToJavaResult(Result & result, bool hasPosition, double lat, double lon)
     return ret;
   }
 
-  jni::TScopedLocalRef featureType(env,
-                                   jni::ToJavaString(env, result.GetPlaceData().GetSubtitle()));
+  jni::TScopedLocalRef subtitle(env, jni::ToJavaString(env, result.GetPlaceData().GetSubtitle()));
   jni::TScopedLocalRef address(env, jni::ToJavaString(env, result.GetAddress()));
   jni::TScopedLocalRef dist(env, jni::ToJavaString(env, distance));
   jni::TScopedLocalRef desc(env, env->NewObject(g_descriptionClass, g_descriptionConstructor,
-                                                featureType.get(), address.get(), dist.get(),
+                                                subtitle.get(), address.get(), dist.get(),
                                                 static_cast<jint>(result.GetPlaceData().IsOpen())));
 
   jni::TScopedLocalRef name(env, jni::ToJavaString(env, result.GetString()));
