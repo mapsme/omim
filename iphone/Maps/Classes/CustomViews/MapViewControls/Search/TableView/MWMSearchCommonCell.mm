@@ -13,10 +13,6 @@
 @interface MWMSearchCommonCell ()
 
 @property (weak, nonatomic) IBOutlet UILabel * typeLabel;
-@property (weak, nonatomic) IBOutlet UIView * infoView;
-@property (weak, nonatomic) IBOutlet UILabel * infoLabel;
-@property (weak, nonatomic) IBOutlet UIView * infoRatingView;
-@property (nonatomic) IBOutletCollection(UIImageView) NSArray * infoRatingStars;
 @property (weak, nonatomic) IBOutlet UILabel * locationLabel;
 @property (weak, nonatomic) IBOutlet UILabel * distanceLabel;
 @property (weak, nonatomic) IBOutlet UIView * closedView;
@@ -25,25 +21,17 @@
 
 @implementation MWMSearchCommonCell
 
-- (void)config:(search::Result &)result forHeight:(BOOL)forHeight
+- (void)config:(search::Result const &)result forHeight:(BOOL)forHeight
 {
   [super config:result];
-  self.typeLabel.text = @(result.GetFeatureType().c_str()).capitalizedString;
+  auto const & pd = result.GetPlaceData();
+  self.typeLabel.text = @(pd.GetSubtitle().c_str()).capitalizedString;
   self.locationLabel.text = @(result.GetAddress().c_str());
   [self.locationLabel sizeToFit];
 
   if (!forHeight)
   {
-    NSUInteger const starsCount = result.GetStarsCount();
-    NSString * cuisine = @(result.GetCuisine().c_str());
-    if (starsCount > 0)
-      [self setInfoRating:starsCount];
-    else if (cuisine.length > 0)
-      [self setInfoText:cuisine.capitalizedString];
-    else
-      [self clearInfo];
-
-    switch (result.IsOpenNow())
+    switch (pd.IsOpen())
     {
       case osm::Unknown:
       // TODO: Correctly handle Open Now = YES value (show "OPEN" mark).
@@ -76,35 +64,10 @@
   if (isIOS7)
   {
     self.typeLabel.preferredMaxLayoutWidth = floor(self.typeLabel.width);
-    self.infoLabel.preferredMaxLayoutWidth = floor(self.infoLabel.width);
     self.locationLabel.preferredMaxLayoutWidth = floor(self.locationLabel.width);
     self.distanceLabel.preferredMaxLayoutWidth = floor(self.distanceLabel.width);
     [super layoutSubviews];
   }
-}
-
-- (void)setInfoText:(NSString *)infoText
-{
-  self.infoView.hidden = NO;
-  self.infoLabel.hidden = NO;
-  self.infoRatingView.hidden = YES;
-  self.infoLabel.text = infoText;
-}
-
-- (void)setInfoRating:(NSUInteger)infoRating
-{
-  self.infoView.hidden = NO;
-  self.infoRatingView.hidden = NO;
-  self.infoLabel.hidden = YES;
-  [self.infoRatingStars enumerateObjectsUsingBlock:^(UIImageView * star, NSUInteger idx, BOOL *stop)
-  {
-    star.highlighted = star.tag <= infoRating;
-  }];
-}
-
-- (void)clearInfo
-{
-  self.infoView.hidden = YES;
 }
 
 - (NSDictionary *)selectedTitleAttributes

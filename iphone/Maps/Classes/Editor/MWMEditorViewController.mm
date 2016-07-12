@@ -1021,7 +1021,8 @@ void registerCellsForTableView(vector<MWMPlacePageCellType> const & cells, UITab
       }];
       break;
     }
-    case osm::Editor::FeatureStatus::Deleted: break;
+    case osm::Editor::FeatureStatus::Deleted:
+    case osm::Editor::FeatureStatus::Obsolete: break;
     }
   }
 }

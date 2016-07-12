@@ -209,7 +209,7 @@ using namespace storage;
   if (entity.subtitle)
   {
     NSMutableAttributedString * str = [[NSMutableAttributedString alloc] initWithString:entity.subtitle];
-    auto const separatorRanges = [entity.subtitle rangesOfString:@(place_page::Info::kSubtitleSeparator)];
+    auto const separatorRanges = [entity.subtitle rangesOfString:@(place_data::kSubtitleSeparator)];
     if (!separatorRanges.empty())
     {
       for (auto const & r : separatorRanges)
@@ -217,7 +217,7 @@ using namespace storage;
 
     }
 
-    auto const starsRanges = [entity.subtitle rangesOfString:@(place_page::Info::kStarSymbol)];
+    auto const starsRanges = [entity.subtitle rangesOfString:@(place_data::kStarSymbol)];
     if (!starsRanges.empty())
     {
       for (auto const & r : starsRanges)
@@ -323,16 +323,17 @@ using namespace storage;
 
 - (void)configureCurrentShedule
 {
-  MWMPlacePageOpeningHoursCell * cell =
-                          static_cast<MWMPlacePageOpeningHoursCell *>(m_offscreenCells[MWMPlacePageCellTypeOpenHours]);
-  if (cell)
+  switch (self.entity.isOpen)
   {
-    self.placeScheduleLabel.text = cell.isClosed ? L(@"closed_now") : L(@"editor_time_open");
-    self.placeScheduleLabel.textColor = cell.isClosed ? [UIColor red] : [UIColor blackSecondaryText];
-  }
-  else
-  {
-    self.placeScheduleLabel.text = @"";
+  case osm::YesNoUnknown::Yes:
+    self.placeScheduleLabel.text = L(@"editor_time_open");
+    self.placeScheduleLabel.textColor = [UIColor blackSecondaryText];
+    break;
+  case osm::YesNoUnknown::No:
+    self.placeScheduleLabel.text = L(@"closed_now");
+    self.placeScheduleLabel.textColor = [UIColor red];
+    break;
+  case osm::YesNoUnknown::Unknown: self.placeScheduleLabel.text = @""; break;
   }
 }
 
