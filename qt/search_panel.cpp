@@ -143,7 +143,8 @@ void SearchPanel::OnSearchResult(ResultsT * results)
 
       if (res.GetResultType() == ResultT::RESULT_FEATURE)
       {
-        m_pTable->setItem(rowCount, 0, CreateItem(QString::fromStdString(res.GetFeatureType())));
+        m_pTable->setItem(rowCount, 0,
+                          CreateItem(QString::fromStdString(res.GetPlaceData().GetSubtitle())));
         m_pTable->setItem(rowCount, 3, CreateItem(m_pDrawWidget->GetDistance(res).c_str()));
       }
 
