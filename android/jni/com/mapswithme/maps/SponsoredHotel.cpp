@@ -38,13 +38,14 @@ Java_com_mapswithme_maps_widget_placepage_SponsoredHotel_nativeGetCurrent(JNIEnv
   PrepareClassRefs(env, clazz);
 
   place_page::Info const & ppInfo = g_framework->GetPlacePageInfo();
-  if (!ppInfo.m_isSponsoredHotel)
+  if (!ppInfo.m_placeData.IsSponsoredHotel())
     return nullptr;
 
-  return env->NewObject(g_hotelClass, g_hotelClassCtor, jni::ToJavaString(env, ppInfo.GetRatingFormatted()),
-                                                        jni::ToJavaString(env, ppInfo.GetApproximatePricing()),
-                                                        jni::ToJavaString(env, ppInfo.GetSponsoredBookingUrl()),
-                                                        jni::ToJavaString(env, ppInfo.GetSponsoredDescriptionUrl()));
+  return env->NewObject(g_hotelClass, g_hotelClassCtor,
+                        jni::ToJavaString(env, ppInfo.m_placeData.GetHotelRating()),
+                        jni::ToJavaString(env, ppInfo.m_placeData.GetApproximatePricing()),
+                        jni::ToJavaString(env, ppInfo.GetSponsoredBookingUrl()),
+                        jni::ToJavaString(env, ppInfo.GetSponsoredDescriptionUrl()));
 }
 
 // static void nativeRequestPrice(String id, String currencyCode);
