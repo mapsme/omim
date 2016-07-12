@@ -37,6 +37,7 @@ HEADERS += \
     locality.hpp \
     locality_finder.hpp \
     locality_scorer.hpp \
+    metadata.hpp \
     mode.hpp \
     model.hpp \
     mwm_context.hpp \
