@@ -14,7 +14,7 @@ Result::Result(FeatureID const & id, m2::PointD const & pt, string const & str,
   , m_address(address)
   , m_type(type)
   , m_featureType(featureType)
-  , m_metadata(meta)
+  , m_placeData(meta, type)
 {
 }
 

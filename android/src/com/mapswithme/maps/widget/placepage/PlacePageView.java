@@ -698,7 +698,7 @@ public class PlacePageView extends RelativeLayout
     UiUtils.showIf(sponsored, mHotelInfo);
     if (sponsored)
     {
-      mTvHotelRating.setText(mSponsoredHotel.rating);
+      mTvHotelRating.setText(MwmApplication.get().getString(R.string.place_page_booking_rating, mSponsoredHotel.rating));
       UiUtils.setTextAndHideIfEmpty(mTvHotelPrice, mSponsoredHotelPrice);
     }
   }

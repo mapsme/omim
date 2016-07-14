@@ -763,17 +763,15 @@ void Framework::FillInfoFromFeatureType(FeatureType const & ft, place_page::Info
   info.m_isHotel = ftypes::IsHotelChecker::Instance()(ft);
   if (ftypes::IsBookingChecker::Instance()(ft))
   {
-    info.m_isSponsoredHotel = true;
     string const & baseUrl = info.GetMetadata().Get(feature::Metadata::FMD_WEBSITE);
     info.m_sponsoredBookingUrl = GetBookingApi().GetBookingUrl(baseUrl);
     info.m_sponsoredDescriptionUrl = GetBookingApi().GetDescriptionUrl(baseUrl);
   }
 
   info.m_canEditOrAdd = featureStatus != osm::Editor::FeatureStatus::Obsolete && CanEditMap() &&
-                        !info.IsSponsoredHotel();
+                        !info.m_placeData.IsSponsoredHotel();
 
   info.m_localizedWifiString = m_stringsBundle.GetString("wifi");
-  info.m_localizedRatingString = m_stringsBundle.GetString("place_page_booking_rating");
 }
 
 void Framework::FillApiMarkInfo(ApiMarkPoint const & api, place_page::Info & info) const
@@ -1337,23 +1335,6 @@ bool Framework::QueryMayBeSkipped(search::SearchParams const & params,
   return true;
 }
 
-void Framework::LoadSearchResultMetadata(search::Result & res) const
-{
-  if (res.m_metadata.m_isInitialized || res.GetResultType() != search::Result::RESULT_FEATURE)
-    return;
-
-  FeatureID const & id = res.GetFeatureID();
-  ASSERT(id.IsValid(), ("Search result doesn't contain valid FeatureID."));
-  // TODO @yunikkk refactor to format search result metadata accordingly with place_page::Info
-
-  FeatureType ft;
-  if (!GetFeatureByID(id, ft))
-    return;
-
-  search::ProcessMetadata(ft, res.m_metadata);
-  // res.m_metadata.m_isInitialized is set to true in ProcessMetadata.
-}
-
 void Framework::ShowSearchResult(search::Result const & res)
 {
   CancelInteractiveSearch();
@@ -1475,7 +1456,7 @@ void Framework::FillSearchResultsMarks(search::Results const & results)
         mark->SetFoundFeature(r.GetFeatureID());
       mark->SetMatchedName(r.GetString());
 
-      if (r.m_metadata.m_isSponsoredHotel)
+      if (r.GetPlaceData().IsSponsoredHotel())
         mark->SetCustomSymbol("search-booking");
     }
   }
@@ -2618,9 +2599,8 @@ bool Framework::ParseEditorDebugCommand(search::SearchParams const & params)
       string name;
       ft.GetReadableName(name);
       feature::TypesHolder const types(ft);
-      search::Result::Metadata smd;
       results.AddResultNoChecks(search::Result(fid, feature::GetCenter(ft), name, edit.second,
-                                               DebugPrint(types), types.GetBestType(), smd));
+                                               DebugPrint(types), types.GetBestType()));
     }
     params.m_onResults(results);
     params.m_onResults(search::Results::GetEndMarker(false));

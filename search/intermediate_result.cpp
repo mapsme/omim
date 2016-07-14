@@ -28,33 +28,26 @@ double const DIST_EQUAL_RESULTS = 100.0;
 double const DIST_SAME_STREET = 5000.0;
 
 
-void ProcessMetadata(FeatureType const & ft, Result::Metadata & meta)
+void ProcessMetadata(FeatureType const & ft, search::Metadata & meta)
 {
   if (meta.m_isInitialized)
     return;
 
+  bool const isSponsoredHotel = ftypes::IsBookingChecker::Instance()(ft);
   feature::Metadata const & src = ft.GetMetadata();
 
   meta.m_cuisine = src.Get(feature::Metadata::FMD_CUISINE);
-
-  string const openHours = src.Get(feature::Metadata::FMD_OPEN_HOURS);
-  if (!openHours.empty())
+  meta.m_stars = src.Get(feature::Metadata::FMD_STARS);
+  meta.m_operator = src.Get(feature::Metadata::FMD_OPERATOR);
+  meta.m_schedule = src.Get(feature::Metadata::FMD_OPEN_HOURS);
+  meta.m_elevation = src.Get(feature::Metadata::FMD_ELE);
+  meta.m_isSponsoredHotel = isSponsoredHotel;
+  if (isSponsoredHotel)
   {
-    osmoh::OpeningHours const oh(openHours);
-    // TODO: We should check closed/open time for specific feature's timezone.
-    time_t const now = time(nullptr);
-    if (oh.IsValid() && !oh.IsUnknown(now))
-      meta.m_isOpenNow = oh.IsOpen(now) ? osm::Yes : osm::No;
-    // In else case value us osm::Unknown, it's set in preview's constructor.
+    meta.m_hotelRating = src.Get(feature::Metadata::FMD_RATING);
+    meta.m_hotelPriceRate = src.Get(feature::Metadata::FMD_PRICE_RATE);
   }
 
-  if (strings::to_int(src.Get(feature::Metadata::FMD_STARS), meta.m_stars))
-    meta.m_stars = my::clamp(meta.m_stars, 0, 5);
-  else
-    meta.m_stars = 0;
-  
-  meta.m_isSponsoredHotel = ftypes::IsBookingChecker::Instance()(ft);
-  
   meta.m_isInitialized = true;
 }
 

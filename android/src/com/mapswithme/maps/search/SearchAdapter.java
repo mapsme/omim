@@ -153,36 +153,6 @@ class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.BaseViewHolder>
       return 0;
     }
 
-    // FIXME: Better format based on result type
-    private CharSequence formatDescription(SearchResult result)
-    {
-      final SpannableStringBuilder res = new SpannableStringBuilder(result.description.featureType);
-      final SpannableStringBuilder tail = new SpannableStringBuilder();
-
-      final int stars = Math.min(result.description.stars, 5);
-      if (stars > 0)
-      {
-        // Colorize last dimmed stars
-        final SpannableStringBuilder sb = new SpannableStringBuilder("★ ★ ★ ★ ★");
-        if (stars < 5)
-        {
-          final int start = sb.length() - ((5 - stars) * 2 - 1);
-          sb.setSpan(new ForegroundColorSpan(itemView.getResources().getColor(R.color.search_star_dimmed)),
-                     start, sb.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        }
-
-        tail.append(sb);
-      }
-      else if (!TextUtils.isEmpty(result.description.cuisine))
-        tail.append(result.description.cuisine);
-
-      if (!TextUtils.isEmpty(tail))
-        res.append(" • ")
-           .append(tail);
-
-      return res;
-    }
-
     ResultViewHolder(View view)
     {
       super(view);
@@ -209,7 +179,7 @@ class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.BaseViewHolder>
 
       // TODO: Support also "Open Now" mark.
       UiUtils.showIf(result.description.openNow == SearchResult.OPEN_NOW_NO, mClosedMarker);
-      UiUtils.setTextAndHideIfEmpty(mDescription, formatDescription(result));
+      UiUtils.setTextAndHideIfEmpty(mDescription, result.description.subtitle);
       UiUtils.setTextAndHideIfEmpty(mRegion, result.description.region);
       UiUtils.setTextAndHideIfEmpty(mDistance, result.description.distance);
     }

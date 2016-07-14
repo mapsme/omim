@@ -90,8 +90,12 @@ void initFieldsMap()
   self.title = @(m_info.GetTitle().c_str());
   self.address = @(m_info.GetAddress().c_str());
   self.subtitle = @(m_info.GetSubtitle().c_str());
-  self.bookingRating = @(m_info.GetRatingFormatted().c_str());
-  self.bookingPrice = @(m_info.GetApproximatePricing().c_str());
+  auto const & rating = m_info.m_placeData.GetHotelRating();
+  self.bookingRating =
+      rating.empty() ? @""
+                     : [NSString stringWithFormat:L(@"place_page_booking_rating"),
+                                                  m_info.m_placeData.GetHotelRating().c_str()];
+  self.bookingPrice = @(m_info.m_placeData.GetApproximatePricing().c_str());
 }
 
 - (void)configureFeature
@@ -200,9 +204,10 @@ void initFieldsMap()
   case MWMPlacePageCellTypeAddBusinessButton:
     return navigationIsHidden && m_info.ShouldShowAddBusiness() ? @"" : nil;
   case MWMPlacePageCellTypeWebsite:
-    return m_info.IsSponsoredHotel() ? nil : [self getDefaultField:cellType];
+    return m_info.m_placeData.IsSponsoredHotel() ? nil : [self getDefaultField:cellType];
   case MWMPlacePageCellTypeBookingMore:
-    return m_info.IsSponsoredHotel() ? @(m_info.GetSponsoredDescriptionUrl().c_str()) : nil;
+    return m_info.m_placeData.IsSponsoredHotel() ? @(m_info.GetSponsoredDescriptionUrl().c_str())
+                                                 : nil;
   default: return [self getDefaultField:cellType];
   }
 }
@@ -226,12 +231,12 @@ void initFieldsMap()
 - (BOOL)isMyPosition { return m_info.IsMyPosition(); }
 - (BOOL)isBookmark { return m_info.IsBookmark(); }
 - (BOOL)isApi { return m_info.HasApiUrl(); }
-- (BOOL)isBooking { return m_info.IsSponsoredHotel(); }
+- (BOOL)isBooking { return m_info.m_placeData.IsSponsoredHotel(); }
 - (NSString *)hotelId
 {
   return self.isBooking ? @(m_info.GetMetadata().Get(Metadata::FMD_SPONSORED_ID).c_str()) : nil;
 }
-
+- (osm::YesNoUnknown)isOpen { return m_info.m_placeData.IsOpen(); }
 - (ms::LatLon)latlon { return m_info.GetLatLon(); }
 - (m2::PointD const &)mercator { return m_info.GetMercator(); }
 - (NSString *)apiURL { return @(m_info.GetApiUrl().c_str()); }

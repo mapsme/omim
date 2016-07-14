@@ -101,7 +101,6 @@ void InitLocalizedStrings()
               [L(@"routing_failed_cross_mwm_building") UTF8String]);
   f.AddString("routing_failed_route_not_found", [L(@"routing_failed_route_not_found") UTF8String]);
   f.AddString("routing_failed_internal_error", [L(@"routing_failed_internal_error") UTF8String]);
-  f.AddString("place_page_booking_rating", [L(@"place_page_booking_rating") UTF8String]);
 }
 
 void InitCrashTrackers()

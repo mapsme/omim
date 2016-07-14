@@ -16,20 +16,16 @@ public class SearchResult
 
   public static class Description
   {
-    public final String featureType;
+    public final String subtitle;
     public final String region;
     public final String distance;
-    public final String cuisine;
-    public final int stars;
     public final int openNow;
 
-    public Description(String featureType, String region, String distance, String cuisine, int stars, int openNow)
+    public Description(String subtitle, String region, String distance, int openNow)
     {
-      this.featureType = featureType;
+      this.subtitle = subtitle;
       this.region = region;
       this.distance = distance;
-      this.cuisine = cuisine;
-      this.stars = stars;
       this.openNow = openNow;
     }
   }

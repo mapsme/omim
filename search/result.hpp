@@ -1,4 +1,5 @@
 #pragma once
+#include "search/metadata.hpp"
 #include "search/ranking_info.hpp"
 
 #include "indexer/feature_decl.hpp"
@@ -12,6 +13,7 @@
 
 #include "std/string.hpp"
 
+#include "map/place_data.hpp"
 
 namespace search
 {
@@ -28,18 +30,6 @@ public:
     RESULT_SUGGEST_FROM_FEATURE
   };
 
-  /// Metadata for search results. Considered valid if m_resultType == RESULT_FEATURE.
-  struct Metadata
-  {
-    string m_cuisine;         // Valid only if not empty. Used for restaurants.
-    int m_stars = 0;          // Valid only if not 0. Used for hotels.
-    bool m_isSponsoredHotel = false; // Used for hotels.
-    osm::YesNoUnknown m_isOpenNow = osm::Unknown;  // Valid for any result.
-
-    /// True if the struct is already assigned or need to be calculated otherwise.
-    bool m_isInitialized = false;
-  };
-
   /// For RESULT_FEATURE.
   Result(FeatureID const & id, m2::PointD const & pt, string const & str, string const & address,
          string const & type, uint32_t featureType, Metadata const & meta = {});
@@ -53,16 +43,13 @@ public:
   /// For RESULT_SUGGESTION_FROM_FEATURE.
   Result(Result const & res, string const & suggest);
 
-  /// Strings that is displayed in the GUI.
-  //@{
   string const & GetString() const { return m_str; }
-  string const & GetAddress() const { return m_address; }
   string const & GetFeatureType() const { return m_type; }
-  string const & GetCuisine() const { return m_metadata.m_cuisine; }
-  //@}
 
-  osm::YesNoUnknown IsOpenNow() const { return m_metadata.m_isOpenNow; }
-  int GetStarsCount() const { return m_metadata.m_stars; }
+  /// Formatted data that should be displayed in the GUI.
+  place_data::Data const & GetPlaceData() const { return m_placeData; }
+  /// Formatted address that should be displayed in the GUI.
+  string const & GetAddress() const { return m_address; }
 
   bool IsSuggest() const;
   bool HasPoint() const;
@@ -110,6 +97,7 @@ public:
 private:
   FeatureID m_id;
   m2::PointD m_center;
+  place_data::Data m_placeData;
   string m_str, m_address, m_type;
   uint32_t m_featureType;
   string m_suggestionStr;
@@ -120,9 +108,6 @@ private:
   // The position that this result occupied in the vector returned
   // by a search query. -1 if undefined.
   int32_t m_positionInResults = -1;
-
-public:
-  Metadata m_metadata;
 };
 
 class Results
