@@ -12977,7 +12977,7 @@
     ru = Или сделайте это самостоятельно на сайте http://www.openstreetmap.org/
     ar = أو افعل ذلك بنفسك من خلال الموقع http://www.openstreetmap.org/
     cs = Nebo to udělejte sami na http://www.openstreetmap.org/
-    pt-BR = Por favor, descreva o problema ao pormenor para que a comunidade OpenStreeMap possa corrigir o erro.
+    pt-BR = Por favor, descreva o problema em detalhes para que a comunidade OpenStreeMap possa corrigir o erro.
     da = Eller gør det selv på http://www.openstreetmap.org/
     nl = Of doe het zelf op http://www.openstreetmap.org/
     fi = Tai tee se itse osoitteessa http://www.openstreetmap.org/
@@ -13007,7 +13007,7 @@
     ru = Отправить
     ar = إرسال
     cs = Odeslat
-    pt-BR = Ou faça-o sozinho em http://www.openstreetmap.org/
+    pt-BR = Ou faça-o você mesmo em http://www.openstreetmap.org/
     da = Send
     nl = Verzenden
     fi = Lähetä
@@ -13157,7 +13157,7 @@
     ru = MAPS.ME готов к работе
     ar = MAPS.ME جاهز للاستخدام
     cs = MAPS.ME jsou připraveny k použití
-    pt-BR = Lugar em duplicado
+    pt-BR = Lugar duplicado
     da = MAPS.ME er klart til brug
     nl = MAPS.ME is klaar voor gebruik
     fi = MAPS.ME on valmiina käyttöön
@@ -13571,7 +13571,7 @@
     de = Von Sonnenauf- bis Sonnenuntergang
     hu = Napkeltétől napnyugtáig
     id = Dari matahari terbit sampai matahari terbenam
-    pt-BR = Do amanhecer ao anoitecer
+    pt-BR = Do amanhecer ao pôr do sol
     it = Dall'alba al tramonto
     ja = 日の出から日没まで
     ko = 일출에서 일몰로
@@ -14450,6 +14450,7 @@
     nb = Andre språk
     pl = Inne języki
     pt = Outros idiomas
+    pt-BR = Mostrar
     ro = Alte limbi
     es = Otros idiomas
     sv = Övriga språk
@@ -14458,6 +14459,7 @@
     uk = Інші мови
     vi = Ngôn ngữ khác
     zh-Hans = 其他语言
+    pt-BR = Mostrar menos
     zh-Hant = 其他語言
     sk = Iné jazyky
 
@@ -14888,7 +14890,7 @@
     en = No WiFi connection. Do you want to continue with mobile data?
     ru = Нет WiFi соединения. Вы хотите продолжить работу через мобильный интернет?
     ar = لا يوجد اتصال واي فاي. هل ترغب في استخدام بيانات الهاتف للاتصال؟
-    pt-BR = Nenhuma ligação Wi-Fi. Deseja continuar com os dados móveis?
+    pt-BR = Nenhuma conexão Wi-Fi. Deseja continuar com os dados móveis?
     cs = Žádné Wi-Fi připojení. Chcete pokračovat s mobilními daty?
     da = Ingen WiFi-forbindelse. Vil du fortsætte med mobildata?
     nl = Geen WiFi-verbinding. Wil je doorgaan via mobiele data?
