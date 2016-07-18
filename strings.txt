@@ -17759,6 +17759,7 @@
     ko = 3. 항상 선택
     nb = 3. Velg Alltid
     pl = 3. Wybierz „Zawsze”
+    pt-BR = Descoberto
     pt = 3. Selecionar sempre
     ro = 3. Selectați Întotdeauna
     es = 3. Selecciona "Siempre"
@@ -17785,6 +17786,7 @@
     hu = Szabadtéri parkoló
     id = Parkir Luar
     it = Superficie
+    pt-BR = Vários andares
     ja = 表面
     ko = 주차공간
     nb = Åpen plass
@@ -17813,6 +17815,7 @@
     de = Tiefgarage mit mehreren Etagen
     hu = Parkolóház
     id = Bertingkat
+    pt-BR = Subsolo
     it = Su più piani
     ja = 複数階
     ko = 주차장 건물
@@ -17840,6 +17843,7 @@
     fi = Maan alla
     fr = Souterrain
     de = Tiefgarage
+    pt-BR = Terraço
     hu = Föld alatti parkoló
     id = Bawah Tanah
     it = Sotterraneo
@@ -17867,6 +17871,7 @@
     da = Tagterrasse
     nl = Dak
     fi = Katolla
+    pt-BR = Abrigo
     fr = Toit
     de = Parkdeck
     hu = Tetőparkoló
@@ -17894,6 +17899,7 @@
     ar = حظائر
     cs = Samostatné
     da = Skure
+    pt-BR = Estacionamento coberto
     nl = Afdak
     fi = Suojat
     fr = Hangars
@@ -17920,6 +17926,7 @@
   [placepage_parking_carports]
     en = Carports
     ru = Капитальный навес
+    pt-BR = Vaga de estacionamento
     ar = مظلات سيارات
     cs = Přístřešek
     da = Carporte
@@ -17947,6 +17954,7 @@
     sk = Otvorené garáže
 
   [placepage_parking_boxes]
+    pt-BR = Pago
     en = Garage boxes
     ru = Гаражный бокс
     ar = صناديق جراج
@@ -17974,6 +17982,7 @@
     zh-Hant = 停車房
     sk = Hromadné garáže
 
+    pt-BR = Gratuito
   [placepage_parking_pay]
     en = Pay
     ru = Платная
@@ -18001,6 +18010,7 @@
     vi = Trả phí
     zh-Hans = 付款
     zh-Hant = 付款
+    pt-BR = Pago por tempo
     sk = Platené
 
   [placepage_parking_free]
@@ -18028,6 +18038,7 @@
     tr = Ücretsiz
     uk = Безкоштовне
     vi = Miễn phí
+    pt-BR = N°
     zh-Hans = 免费
     zh-Hant = 免費
     sk = Zdarma
@@ -18055,6 +18066,7 @@
     sv = Delvis kostnadsbelagd
     th = จ่ายตามช่วงเวลา
     tr = Süre Ücretli
+    pt-BR = Entrada
     uk = Змінно платне
     vi = Trả Phí Cách Quãng
     zh-Hans = 间隔付款
@@ -18082,6 +18094,7 @@
     ro = Nr.
     es = N.º
     sv = Nr
+    pt-BR = app
     th = หมายเลข
     tr = No.
     uk = №
@@ -18107,6 +18120,7 @@
     ko = 입구
     nb = Vindfang
     pl = Wejście
+    pt-BR = 24 / 7
     pt = Entrada
     ro = Intrare
     es = Entrada
@@ -18134,6 +18148,7 @@
     it = app.
     ja = アプリ
     ko = 앱
+    pt-BR = Classificação
     nb = leil.
     pl = Mieszkanie
     pt = apto.
@@ -18161,6 +18176,7 @@
     hu = 24 órás
     id = 24 jam sehari, 7 hari seminggu
     it = 24 / 7
+    pt-BR = a partir de %d
     ja = 24時間体制
     ko = 연중무휴
     nb = Døgnåpen
@@ -18187,6 +18203,7 @@
     fi = Luokitus: %s
     fr = Notation: %s
     de = Rating: %s
+    pt-BR = m
     hu = Kategória: %s
     id = Nilai: %s
     it = Valutazione: %s
@@ -18214,6 +18231,7 @@
     da = fra %s
     nl = van %s
     fi = %s:stä
+    pt-BR = km
     fr = à partir de %s
     de = ab %s
     hu = kezdőár %s
@@ -18241,6 +18259,7 @@
     ar = متر
     cs = m
     da = m
+    pt-BR = Descrição
     nl = m
     fi = m
     fr = m
@@ -18268,6 +18287,7 @@
     en = km
     ru = км
     ar = كم
+    pt-BR = Mais
     cs = km
     da = km
     nl = km
@@ -18295,6 +18315,7 @@
 
   [placepage_place_description]
     en = Description
+    pt-BR = Reservar
     ru = Описание
     ar = الوصف
     cs = Popis
@@ -18322,6 +18343,7 @@
     zh-Hant = 說明
     sk = Popis
 
+    pt-BR = Chamar
   [placepage_more_button]
     en = More
     ru = Ещё
@@ -18349,6 +18371,8 @@
     vi = Bổ sung
     zh-Hans = 更多
     zh-Hant = 更多
+    pt-BR = Editar marcador
+    
     sk = Viac
 
   [bookingcom_book_button]
@@ -18376,6 +18400,7 @@
     tr = Rezervasyon
     uk = Забронювати
     vi = Đặt trước
+    pt-BR = Nome do marcador
     zh-Hans = 图书
     zh-Hant = 圖書
     sk = Rezervovať
@@ -18403,6 +18428,7 @@
     sv = Ring
     th = โทร
     tr = Çağrı
+    pt-BR = Anotações pessoais
     uk = Подзвонити
     vi = Gọi
     zh-Hans = 呼叫
@@ -18430,7 +18456,7 @@
     ro = Editare marcaj
     es = Editar marcador
     sv = Redigera bokmärke
-    pt-BR = Apagar Bookmark
+    pt-BR = Apagar marcador
     th = แก้ไข Bookmark
     tr = Yer İmini Düzenle
     uk = Редагувати мiтку
