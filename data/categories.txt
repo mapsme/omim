@@ -77,7 +77,7 @@ uk:Заправка
 zh-Hant:加油站
 pl:Stacja benzynowa
 pt:Combustível
-pt-BR:Posto de Combustível
+pt-BR:Combustível
 hu:Benzinkút
 th:ก๊าซ
 zh-Hans:汽油
@@ -267,7 +267,7 @@ nl:3Geldautomaat|geld
 zh-Hant:1自動櫃員機|1atm|理財|錢|金錢
 pl:5Bankomat|pieniądze
 pt:3Multibanco|dinheiro
-pt-BR:3Caixa eletrônico|dinheiro
+pt-BR:3Caixa eletrônico|caixa automático|banco 24 horas|saque|dinheiro
 hu:4Pénzautomata|pénz|ATM
 th:2เอทีเอ็ม|เงิน|atm
 zh-Hans:自动取款机|钱|atm
@@ -329,7 +329,7 @@ nl:3Wisselkantoor|3geld wisselen|wisselen|geld
 zh-Hant:1匯率|理財|外幣|兌換|貨幣
 pl:4Kantor|5wymiana|pieniądze
 pt:3Câmbio|3troca|dinheiro
-pt-BR:3Casa de Câmbio|3troca|dinheiro
+pt-BR:3Casa de câmbio|3troca|dinheiro
 hu:3Pénzváltó|pénz
 th:1แลกเปลี่ยนเงินตรา|หลักสูตร|เงิน
 zh-Hans:1货币兑换|兑换|钱
@@ -359,7 +359,7 @@ nl:2Bar|2pub|2café|bier|drinken|eten
 zh-Hant:1酒吧|酒館|飲酒|PUB|吧台|飲食
 pl:2Bar|2pub|piwo|napoje|jedzenie
 pt:2Bar|2pub|cerveja|beber|alimentação
-pt-BR:2Drinqueria|2pub|cerveja|beber|alimentação
+pt-BR:2Drinqueria|bar|drink|beber|alimentação
 hu:2Bár|2kocsma|sör|ital|élelmiszer
 th:2บาร์|ผับ|เบียร์|เครื่องดื่ม|อาหาร
 zh-Hans:1酒吧|酒馆์|啤酒|饮料|食物
@@ -392,7 +392,7 @@ nb:Pub|Bar|mat
 nl:Kroeg|Bar|bier|drinken|eten
 pl:Pub|Bar|piwo|napoje|jedzenie
 pt:Pub|Bar|cerveja|beber|alimentação
-pt-BR:Pub|Bar|Boteco|cerveja|beber|alimentação
+pt-BR:Pub|boteco|bar|cerveja|beber|alimentação
 ro:Pub|Bar|cârciumă|băutură|alimentație
 ru:Паб|бар|пиво|выпить|еда
 sk:Pohostinstvo|Bar|pivo|pitie|jedlo|voda|pitná voda|tekutiny
@@ -420,7 +420,7 @@ nl:3Tearoom|3brasserie|3café|3restaurant|3eten
 zh-Hant:2咖啡廳|咖啡|3cafe|餐廳|飲食
 pl:3Kawiarnia|4restauracja|kawa|jedzenie
 pt:3Café|3restaurante|alimentação
-pt-BR:3Café|Cafeteria|3restaurante|alimentação
+pt-BR:3Café|cafeteria|3restaurante|alimentação
 hu:3Kávézó|3étterem|3élelmiszer
 th:3 คาเฟ่|ร้านอาหาร่|อาหาร
 zh-Hans:1咖啡馆่|餐厅|食物
@@ -451,7 +451,7 @@ nl:4Fast food|3frituur|fritkot|3restaurant|afhaaleten|3eten
 zh-Hant:1速食店|麥當勞|肯德雞|漢堡王|頂呱呱|薯條|速食|用餐|飲食
 pl:4Fast food|restauracja szybkiej obsługi|5na wynos|jedzenie
 pt:4Comida de plástico|comida para levar|3café|3alimentação
-pt-BR:4Lanchonete|Fast-food|3alimentação
+pt-BR:4Lanchonete|fast-food|3alimentação
 hu:4Gyorsétterem|3étterem|3kávézó|3élelmiszer
 th:1อาหารจานด่วน|ร้านอาหาร|คาเฟ่|นำกลับ|อาหาร
 zh-Hans:1快餐|餐厅|外卖|食物
@@ -481,7 +481,7 @@ nl:3Restaurant|3café|3eten
 zh-Hant:1餐廳|餐館|吃飯|餐點|早餐|午餐|晚餐|食堂|飲食|用餐
 pl:4Restauracja|3kawiarnia|2jedzenie
 pt:3Restaurante|3café|3alimentação
-pt-BR:3Restaurante|3café|3alimentação
+pt-BR:3Restaurante|3comida|3alimentação
 hu:3Étterem|3kávézó|3élelmiszer
 th:3ร้านอาหาร|อาหาร
 zh-Hans:1餐厅|咖啡馆|食物
@@ -512,7 +512,7 @@ nl:3Tankstation|2benzine|3brandstof
 zh-Hant:1加油站|2加氣站|汽油|加油|天然氣
 pl:3Stacja benzynowa|3benzyna|4paliwo
 pt:3Combustível|gás
-pt-BR:3Combustível|gás
+pt-BR:3Posto de combustível|3gasolina
 hu:3Benzinkút|benzin
 th:3ปั๊มน้ำมัน|เชื้อเพลิง|ก๊าซ
 zh-Hans:1加油站|燃料|汽油
@@ -546,7 +546,7 @@ nb:3Bakeri|butikk
 nl:3Bakkerij|winkel
 pl:4Piekarnia|sklep
 pt:3Padaria|compras
-pt-BR:3Padaria|compras
+pt-BR:3Padaria|3panificadora|compras
 ro:3Brutărie|magazin
 sk:3Pekáreň|obchod
 sv:3Bageri|butik
@@ -639,7 +639,7 @@ ko:편의점|쇼핑
 nl:Buurtwinkel|kruidenier|winkel
 nb:Nærbutikk|nærbutikk|butikk
 pt:Loja de conveniência|compras
-pt-BR:Loja de conveniência|compras
+pt-BR:Loja de conveniência|4mercadinho|compras
 ro:4Magazin mixt|magazin
 ru:4Продуктовый магазин|2магазин
 sk:Príležitostné potreby|obchod
@@ -669,7 +669,7 @@ nl:Tuincentrum|winkel
 nb:Planteskole|hagesenter|butikk
 pl:Sklep ogrodniczy|sklep
 pt:Loja de plantas|jardim|compras
-pt-BR:Loja de plantas|jardim|compras
+pt-BR:Loja de plantas|jardinagem|jardim|compras
 ro:Pepinieră|magazin cu articole de grădinărit|magazin
 ru:Садовые товары|магазин
 sk:Škôlka|materská škôlka|obchod
@@ -699,7 +699,7 @@ nl:Mobiele telefoonwinkel|elektronicawinkel|winkel
 nb:Mobiltelefonbutikk|elektronikkbutikk|butikk
 pl:Sklep z elektroniką|sklep elektroniczny|sklep
 pt:Loja de telemóveis|loja de aparelhos eletrónicos|compras
-pt-BR:Loja de celulares|loja de aparelhos eletrônicos|compras
+pt-BR:Loja de celulares|telefone|compras
 ro:Magazin de telefoane mobile|magazin de electronice|magazin
 ru:Магазин мобильных телефонов|Сотовые|3Мобильные телефоны|электроника|салон связи|магазин
 sk:Mobilné telefóny|obchod
@@ -739,7 +739,7 @@ es:Floristería|tienda de flores|2tienda
 pl:Kwiaciarnia|3sklep|towary
 nl:Bloemist|bloemenwinkel|2winkel
 pt:Floricultura|2loja|compras
-pt-BR:Floricultura|2loja|compras
+pt-BR:Floricultura|florista|flores|2loja|compras
 
 shop-butcher
 en:Butcher’s|U+1F356|U+1F357|2shop
@@ -769,7 +769,7 @@ es:Carnicería|2tienda
 pl:Rzeźnik|3sklep|towary
 nl:Slager|beenhouwer|2winkel
 pt:Açougueiro|2loja|compras
-pt-BR:Açougue|2loja|compras
+pt-BR:Açougue|açougueiro|2loja|compras
 
 shop-furniture
 en:Furniture Store|2shop
@@ -1009,7 +1009,7 @@ es:Óptica|2tienda
 pl:Sklep optyczny|3sklep|towary
 nl:Opticien|2winkel
 pt:Oculista|2loja|compras
-pt-BR:Ótica|2loja|compras
+pt-BR:Ótica|4oculista|3óculos|2loja|compras
 
 shop-gift
 en:Gift Shop|U+1F381|2shop
@@ -1102,7 +1102,7 @@ es:Frutería|2tienda
 pl:Warzywniak|3sklep|towary
 nl:Groentenwinkel|groenteboer|2winkel
 pt:Quitanda|2loja|compras
-pt-BR:Quitanda|Verdureiro|2loja|compras
+pt-BR:Quitanda|verdureiro|varejão|2loja|compras
 
 shop-sports
 en:Sports Goods|U+1F3BF|U+1F3A3|U+1F3C2|U+1F6B4|U+26BD|U+1F3C0|U+1F3C8|U+26BE|U+1F3BE|U+1F3C9|U+26F3|2shop
@@ -1150,7 +1150,7 @@ nl:3Supermarkt|winkel
 zh-Hant:1超級市場|市場|購物
 pl:4Supermarket|zakupy|sklep
 pt:3Supermercado|compras
-pt-BR:3Supermercado|compras
+pt-BR:3Supermercado|mercado|compras
 hu:3Bevásárlóközpont|bolt
 th:3ซูเปอร์มาร์เก็ต|ร้านค้า
 zh-Hans:超市|商店
@@ -1185,7 +1185,7 @@ nb:Kjøpesenteret|butikk
 nl:Het winkelcentrum|winkel
 pl:Centrum handlowe|sklep
 pt:O Shopping|compras
-pt-BR:Shopping Center|compras
+pt-BR:Shopping center|compras
 ro:Mall-ul|magazin
 ru:Торговый центр|магазин
 sk:the Mall|obchod
@@ -1215,7 +1215,7 @@ ko:백화점|쇼핑
 nl:Warenhuis|winkel
 nb:Varehus|butikk
 pt:Armazém retalhista|compras
-pt-BR:Loja de departamento|compras
+pt-BR:Loja de departamentos|compras
 ro:Magazin universal|magazin
 ru:Универмаг|магазин
 sk:Obchodný dom|obchod
@@ -1391,7 +1391,7 @@ nl:3Markt|winkel
 zh-Hant:1市場|市集|購物
 pl:Targ|targowisko|sklep
 pt:3Mercado|mercado|loja|compras
-pt-BR:3Mercado|mercado|loja|compras
+pt-BR:3Mercado|mercadão|feira-livre|loja|compras
 hu:2Piac|vásárlás|bolt
 th:2ตลาดสินค้า|ตลาด|ร้าน|ร้านค้า
 zh-Hans:2市集|商店
@@ -1453,7 +1453,7 @@ nl:Autohandelaar|winkel
 zh-Hant:1買車|購車|購物
 pl:Salon samochodowy|samochody|sklep
 pt:Loja de carros|compras
-pt-BR:Loja de carros|compras
+pt-BR:Loja de carros|4concessionária|veículos|compras
 hu:Gépkocsi bolt|kocsi|bolt
 th:ร้านค้ารถยนต์|ร้านค้า
 zh-Hans:车店|商店
@@ -1484,7 +1484,7 @@ nl:4Fietsenwinkel|winkel
 zh-Hant:1自行車店|腳踏車|單車|商店|購物
 pl:Sklep rowerowy|4rower|sklep
 pt:Loja de bicicletas|4bicicleta|compras
-pt-BR:Loja de bicicletas|Bicicletaria|4bicicleta|compras
+pt-BR:Loja de bicicletas|4bicicletaria|4bicicleta|bike|compras
 hu:4Kerékpár üzlet|kerékpár|kocsi|bolt
 th:4จักรยาน|ร้าน|ร้านค้า
 zh-Hans:自行车店|商店
@@ -1546,7 +1546,7 @@ nl:Bushalte|2bus|halte|4transport
 zh-Hant:1巴士站|巴士|運輸|交通|客運站|公車|公車站
 pl:2Przystanek autobusowy|autobus|4transport
 pt:2Paragem de autocarro|via férrea|transporte
-pt-BR:2Ponto de ônibus|via férrea|transporte
+pt-BR:2Ponto de ônibus|transporte
 hu:2Buszmegálló|2busz|megálló|4közlekedés
 th:ป้ายรถเมล์|รถเมล์|ขนส่ง|การขนส่ง
 zh-Hans:1公交车站|公交车|运输|交通
@@ -1607,7 +1607,7 @@ nl:Busstation|2bus|station|4transport
 zh-Hant:1巴士|巴士站|交通|運輸
 pl:2Stacja autobusowa|Zajezdnia|transport
 pt:2Estação rodoviária|4transporte
-pt-BR:2Rodoviária|Estação BRT|4transporte
+pt-BR:2Rodoviária|estação BRT|4transporte
 hu:2Buszpályaudvar|2busz|megálló|4közlekedés
 th:สถานีขนส่ง|ขนส่ง|สถานี|การขนส่ง
 zh-Hans:1公车站|公交车|运输|交通
@@ -1638,7 +1638,7 @@ nl:4Station|4spoorwegen|spoor|3trein|4transport
 zh-Hant:1鐵道|鐵路|火車|火車站|高鐵站|運輸
 pl:Dworzec kolejowy|stacja kolejowa|transport
 pt:Estação de comboios|caminhos-de-ferro|transporte
-pt-BR:Estação de trem|Estação de metrô|caminhos-de-ferro|transporte
+pt-BR:Estação de trem|ferrovia|transporte
 hu:3Vonatmegálló|4vonat|4megálló|4közlekedés
 th:3สถานีรถไฟ|รถไฟ|สถานี|ขนส่ง|การขนส่ง
 zh-Hans:1火车站ี|铁路ี|站ี|运输|交通
@@ -1700,7 +1700,7 @@ nl:3Veerpont|veerboot|veer|pont|overzetboot|transport
 zh-Hant:1渡船|運輸
 pl:2Prom|transport
 pt:2Balsa|transporte
-pt-BR:2Estação de barcas|transporte
+pt-BR:2Estação de barcas|balsa|transporte
 hu:2Komp|közlekedés
 th:2เฟอร์รี่|สถานี|การขนส่ง
 zh-Hans:1渡轮|终点站|交通
@@ -1762,7 +1762,7 @@ nl:3Gemeentehuis|3toerisme
 zh-Hant:1市政廳|1市鎮大廳|1旅遊景點
 pl:3Ratusz|turystyka|osobliwości miasta
 pt:3Prefeitura|turismo|vistas
-pt-BR:3Prefeitura|turismo|vistas
+pt-BR:3Prefeitura|turismo|atração
 hu:3Városháza|3látnivaló
 th:3ศาลากลางจังหวัด|การท่องเที่ยว|สถานที่ท่องเที่ยว
 zh-Hans:1市政厅|旅游|景点
@@ -1793,7 +1793,7 @@ nl:3Attractie|3toerisme
 zh-Hant:1景點|3旅遊景點|旅遊|3觀光景點|觀光|名勝
 pl:4Atrakcje|zwiedzanie|turystyka|osobliwości miasta
 pt:3Atração|turismo|vistas
-pt-BR:3Atração turística|turismo|vistas
+pt-BR:3Atração turística|turismo|atração
 hu:3Látnivaló|3kirándulás|3látványosság
 th:3การท่องเที่ยว|แหล่งท่องเที่ยว|สถานที่ท่องเที่ยว
 zh-Hans:1景点|旅游|景点
@@ -1824,7 +1824,7 @@ nl:3Kunstwerk|3toerisme
 zh-Hant:1藝術品|3旅遊景點
 pl:3Rzeźba|turystyka|osobliwości miasta
 pt:3Artwork|turismo|vistas
-pt-BR:3Instalação artística|turismo|vistas
+pt-BR:3Obra de arte|3instalação artística|turismo|atração
 hu:3Szobor|3látnivaló|Műalkotás
 th:งานศิลปะ|3การท่องเที่ยว|สถานที่ท่องเที่ยว
 zh-Hans:1旅游|景点
@@ -1855,7 +1855,7 @@ nl:4Uitzicht|panorama|toerisme
 zh-Hant:1視野|景觀|景點|觀光|3旅遊景點
 pl:3Punkt widokowy|widok|krajobraz|osobliwości miasta
 pt:4Ponto de vista|turismo|vistas
-pt-BR:4Mirante|turismo|vistas
+pt-BR:4Mirante|miradouro|turismo|atração
 hu:4Kilátó|kirándulás|látványosság|látnivaló|túrizmus
 th:3จุดชมวิว|การท่องเที่ยว|สถานที่ท่องเที่ยว
 zh-Hans:1观点|旅游|景点
@@ -1886,7 +1886,7 @@ nl:4Toeristische informatie|3VVV|4informatie|toerisme
 zh-Hant:2觀光諮詢|旅遊中心|旅遊問題|資訊|旅遊資訊
 pl:4Informacja turystyczna|punkt informacji|osobliwości miasta
 pt:4Informações turísticas|4informação|vistas
-pt-BR:4Informações turísticas|4informação
+pt-BR:4Informações turísticas|4informação|turismo|atração
 hu:4Túrista információ|4információ|látványosság|látnivaló
 th:4ข้อมูลการท่องเที่ยว|ข้อมูล|สถานที่ท่องเที่ยว
 zh-Hans:1旅游信息|信息|景点
@@ -1917,7 +1917,7 @@ nl:3Picnicplaats|3picnicweide|3picnictafel
 zh-Hant:1野餐|旅遊
 pl:4Pole piknikowe|plener|piknik
 pt:4Local de piquenique
-pt-BR:4Local de piquenique
+pt-BR:4Local de piquenique|churrasqueira
 hu:3Piknikező hely|látványosság
 th:3เว็บไซต์ปิกนิก
 zh-Hans:1野餐地点
@@ -1948,7 +1948,7 @@ nl:3Gebedsplaats|3gebedshuis|3tempel|toerisme
 zh-Hant:1寺廟|1禱告|寺|禪寺|旅遊景點
 pl:3Świątynia|osobliwości miasta
 pt:Local de culto|3templo|vistas
-pt-BR:Local de culto|3templo|vistas
+pt-BR:Local de culto|3templo|igreja|atração
 hu:3Templom|látnivaló
 th:2สถานที่ประกอบพิธีกรรม|สถานที่ท่องเที่ยว
 zh-Hans:1礼拜场所|庙|景点
@@ -1991,7 +1991,7 @@ es:Iglesia|templo|lugar de culto|turismo
 pl:Kościół|świątynia|osobliwości miasta
 nl:Kerk|tempel|kathedraal|gebedsplaats|gebedshuis|toerisme
 pt:Igreja|local de culto|templo|vistas
-pt-BR:Igreja|local de culto|templo|vistas
+pt-BR:Igreja|local de culto|templo|atração
 
 amenity-place_of_worship-muslim
 en:Mosque|tekke|place of worship|temple|sights|U+1F64F|U+262A|U+1F54B|U+1F54C|U+262A
@@ -2021,7 +2021,7 @@ es:Mezquita|templo|lugar de culto|turismo
 pl:Meczet|świątynia|osobliwości miasta
 nl:Moskee|tempel|gebedsplaats|gebedshuis|toerisme
 pt:Mesquita|local de culto|templo|vistas
-pt-BR:Mesquita|local de culto|templo|vistas
+pt-BR:Mesquita|local de culto|templo|atração
 
 amenity-place_of_worship-buddhist
 en:Temple|place of worship|sights|U+1F64F|U+26EA|U+2638
@@ -2051,7 +2051,7 @@ es:Templo|lugar de culto|turismo
 pl:Świątynia|osobliwości miasta
 nl:Tempel|gebedsplaats|gebedshuis|toerisme
 pt:Templo budista|local de culto|vistas
-pt-BR:Templo budista|local de culto|vistas
+pt-BR:Templo budista|local de culto|atração
 
 amenity-place_of_worship-hindu
 en:Temple|place of worship|sights|U+1F64F|U+1F549
@@ -2081,7 +2081,7 @@ es:Templo|lugar de culto|turismo
 pl:Świątynia|osobliwości miasta
 nl:Tempel|gebedsplaats|gebedshuis|toerisme
 pt:Templo hindu|local de culto|vistas
-pt-BR:Templo hindu|local de culto|vistas
+pt-BR:Templo hindu|local de culto|atração
 
 amenity-place_of_worship-shinto
 en:Shrine|place of worship|temple|sights|U+1F64F|U+26E9
@@ -2111,7 +2111,7 @@ es:Ermita|templo|lugar de culto|turismo
 pl:Kapliczka|świątynia|osobliwości miasta
 nl:Heiligdom|tempel|gebedsplaats|gebedshuis|toerisme
 pt:Templo shintoísta|templo|local de culto|vistas
-pt-BR:Templo shintoísta|templo|local de culto|vistas
+pt-BR:Templo shintoísta|santuário|local de culto|atração
 
 amenity-place_of_worship-jewish
 en:Synagogue|place of worship|temple|sights|U+1F64F|U+1F54D|U+2721
@@ -2141,7 +2141,7 @@ es:Sinagoga|templo|lugar de culto|turismo
 pl:Synagoga|świątynia|osobliwości miasta
 nl:Synagoge|tempel|gebedsplaats|gebedshuis|toerisme
 pt:Sinagoga|templo|local de culto|vistas
-pt-BR:Sinagoga|templo|local de culto|vistas
+pt-BR:Sinagoga|templo|local de culto|atração
 
 amenity-place_of_worship-taoist
 en:Temple|place of worship|sights|U+1F64F|U+262F
@@ -2171,7 +2171,7 @@ es:Templo|lugar de culto|turismo
 pl:Świątynia|osobliwości miasta
 nl:Tempel|gebedsplaats|gebedshuis|toerisme
 pt:Templo taoísta|local de culto|vistas
-pt-BR:Templo taoísta|local de culto|vistas
+pt-BR:Templo taoísta|local de culto|atração
 
 tourism-museum
 en:2Museum|attraction|tourism|sights|U+1F3A8
@@ -2189,7 +2189,7 @@ nl:2Museum|attractie|toerisme
 zh-Hant:1博物館|旅遊|觀光|景點|遊覽|歷史|旅遊景點
 pl:2Muzeum|turystyka|zwiedzanie|osobliwości miasta
 pt:2Museu|turismo|vistas
-pt-BR:2Museu|turismo|vistas
+pt-BR:2Museu|turismo|atração
 hu:2Múzeum|látnivaló|túrizmus|látványosság
 th:2พิพิธภัณฑ์|แหล่งท่องเที่ยว|การท่องเที่ยว|สถานที่ท่องเที่ยว
 zh-Hans:博物馆|景点
@@ -2220,7 +2220,7 @@ uk:2Водоспад|пам’ятні місця
 zh-Hant:1瀑布|旅遊景點
 pl:2Wodospad|osobliwości miasta
 pt:2Cachoeira|vistas
-pt-BR:2Cachoeira|vistas|turismo
+pt-BR:2Cachoeira|atração|turismo
 hu:2Vízesés|látnivaló
 th:2น้ำตก|สถานที่ท่องเที่ยว
 zh-Hans:2瀑布|景点
@@ -2251,7 +2251,7 @@ nl:Gedenkteken|monument|attractie|toerisme
 zh-Hant:紀念館|1紀念碑|紀念館|旅遊景點
 pl:3Pomnik|osobliwości miasta
 pt:Memorial|monumento|turismo|vistas
-pt-BR:Memorial|monumento|turismo|vistas
+pt-BR:Memorial|monumento|turismo|atração
 hu:3Emlékmű|látnivaló|túrizmus|látványosság
 th:ที่ระลึก|สถานที่ท่องเที่ยว
 zh-Hans:纪念馆|景点
@@ -2282,7 +2282,7 @@ nl:Monument|attractie|toerisme
 zh-Hant:1紀念碑|紀念塔|紀念館|旅遊景點
 pl:3Pomnik historyczny|osobliwości miasta
 pt:Monumento|turismo|vistas
-pt-BR:Monumento|turismo|vistas
+pt-BR:Monumento|turismo|atração
 hu:Műemlék|Szobor|túrizmus|látványosság|látnivaló
 th:3อนุสาวรีย์|การท่องเที่ยว|สถานที่ท่องเที่ยว
 zh-Hans:纪念碑|景点
@@ -2313,7 +2313,7 @@ nl:Ruïne|attractie|toerisme
 zh-Hant:1廢墟|古蹟|遺址|旅遊景點
 pl:3Ruiny|turystyka|osobliwości miasta
 pt:Ruínas|turismo|vistas
-pt-BR:Ruínas|turismo|vistas
+pt-BR:Ruínas|turismo|atração
 hu:Romok|látnivaló|túrizmus|látványosság
 th:ซากปรักหักพัง|สถานที่ท่องเที่ยว|การท่องเที่ยว
 zh-Hans:废墟|景点
@@ -2344,7 +2344,7 @@ nl:Kasteel|burcht|attractie|toerisme
 zh-Hant:城堡|堡|古蹟|歷史|旅遊景點
 pl:3Zamek|turystyka|zwiedzanie|osobliwości miasta
 pt:Castelo|turismo|vistas
-pt-BR:Castelo|turismo|vistas
+pt-BR:Castelo|turismo|atração
 hu:Kastély|látnivaló|túrizmus|látványosság
 th:ปราสาท|การท่องเที่ยว|สถานที่ท่องเที่ยว
 zh-Hans:城堡|景点|旅游
@@ -2375,7 +2375,7 @@ nl:Archeologische site|opgravingen|attractie|toerisme
 zh-Hant:1考古遺址|考古|遺址|古蹟|歷史|旅遊景點
 pl:5Odkrywka archeologiczna|wykopaliska|osobliwości miasta
 pt:Sítio arqueológico|turismo|vistas
-pt-BR:Sítio arqueológico|turismo|vistas
+pt-BR:Sítio arqueológico|turismo|atração
 hu:Ásatás|látnivaló|túrizmus|látványosság
 th:โบราณสถาน|แหล่งท่องเที่ยว|สถานที่ท่องเที่ยว|การท่องเที่ยว
 zh-Hans:考古遗址|旅游|景点
@@ -2406,7 +2406,7 @@ nl:2Tuin|toerisme
 zh-Hant:1花園|旅遊景點
 pl:2Ogród|osobliwości miasta
 pt:2Jardim|vistas
-pt-BR:2Jardim|vistas
+pt-BR:2Jardim|lazer|atração
 hu:2Kert|látnivaló
 th:2สวน|สถานที่ท่องเที่ยว
 zh-Hans:2花园|景点
@@ -2592,7 +2592,7 @@ nl:3Discotheek|3disco|dansen|uitgaan
 zh-Hant:1夜店|2俱樂部|酒|喝酒|跳舞|舞|2夜生活|娛樂
 pl:3Dyskoteka|klub nocny|rozrywka
 pt:3Discoteca|3dançar|entretenimento
-pt-BR:3Discoteca|3dançar|entretenimento
+pt-BR:3Boate|3discoteca|4casa noturna|3dançar|entretenimento
 hu:3Éjszakai mulató|3diszkó|tánc|szórakozás
 th:3ไนต์คลับ|การเต้นรำ|แหล่งบันเทิง
 zh-Hans:3夜总会|娱乐
@@ -2685,7 +2685,7 @@ nl:Hogeschool|hoger beroepsonderwijs|hbo
 zh-Hant:1大學|學院|專科院校|院校
 pl:Szkoła wyższa|college
 pt:Faculdade
-pt-BR:Faculdade
+pt-BR:Escola técnica
 hu:Kollégium
 th:วิทยาลัย
 zh-Hans:学院
@@ -2716,7 +2716,7 @@ nl:4Drinkwater
 zh-Hant:1飲用水|飲水機|可喝的水|2飲水設施|喝水|口渴
 pl:4Picie wody|woda|picie
 pt:Água potável
-pt-BR:Água potável|Bebedouro
+pt-BR:Água potável|bebedouro
 hu:4Ivóvíz
 th:4น้ำดื่ม
 zh-Hans:1饮用水
@@ -2747,7 +2747,7 @@ nl:Brandweer
 zh-Hant:1消防局|滅火隊|消防隊|消防車|救難|緊急
 pl:4Straż pożarna|ogień|pożar|katastrofa
 pt:Posto de bombeiros
-pt-BR:Posto de bombeiros
+pt-BR:Posto de bombeiros|corpo de bombeiros
 hu:Tűzoltóság
 th:2สถานีดับเพลิง
 zh-Hans:1消防局
@@ -2778,7 +2778,7 @@ nl:Fontein
 zh-Hant:1噴泉|2噴水池|噴水
 pl:3Fontanna|woda
 pt:Fonte
-pt-BR:Fonte
+pt-BR:Fonte|chafariz
 hu:Szökőkút
 th:น้ำพุ
 zh-Hans:1喷泉
@@ -2839,7 +2839,7 @@ nl:4Ziekenhuis|kliniek|hospitaal|tandarts|3dokter
 zh-Hant:1醫院|醫生|診所|醫療|診療
 pl:4Szpital|klinika|lekarz|doktor|leczenie
 pt:3Hospital|4Clínica|3médico|hospital
-pt-BR:3Hospital|4Clínica|3médico|hospital
+pt-BR:3Hospital|4clínica|3médico|saúde
 hu:4Kórház|klinika|3orvos
 th:3โรงพยาบาล|3คลินิก|แพทย์
 zh-Hans:医院|诊所|医生|医院
@@ -2872,7 +2872,7 @@ nl:Kliniek|ziekenhuis
 nb:Klinikk|sykehus
 pl:Klinika|Szpital
 pt:Clínica|centro de saúde|hospital
-pt-BR:Clínica|centro de saúde|hospital
+pt-BR:Clínica|centro de saúde|posto de saúde|hospital
 ro:Clinică|spital
 ru:Поликлиника|клиника|больница|врач
 sk:Poliklinika|nemocnica|zdravotné stredisko
@@ -2902,7 +2902,7 @@ nl:Huisartsenpost|Kliniek|huisarts|ziekenhuis
 nb:Legekontor|Klinikk|legesenter|sykehus
 pl:Lekarz|doktor|klinika|szpital
 pt:Gabinete do médico|Clínica|hospital
-pt-BR:Gabinete do médico|Clínica|hospital
+pt-BR:Consultório médico|clínica|saúde
 ro:Doctor|medic|Cabinet medical|Clinică|spital
 ru:Врач|больница|клиника|поликлиника
 sk:Ambulancia|Poliklinika|nemocnica
@@ -2931,7 +2931,7 @@ ko:치과
 nl:Tandarts
 nb:Tannlege
 pt:Dentista
-pt-BR:Dentista
+pt-BR:Dentista|cirurgião dentista|centro odontológico
 ro:Dentist
 ru:Стоматолог|дантист
 sk:Zubár
@@ -2958,7 +2958,7 @@ nl:Jaagplek
 zh-Hant:1狩獵場|打獵|狩獵|獵人|獵
 pl:4Budka myśliwska|polowanie|łowiectwo|stanowisko łowieckie
 pt:Suporte de caça
-pt-BR:Suporte de caça
+pt-BR:Estande de caça
 hu:Céllövölde
 th:จุดล่าสัตว์
 zh-Hans:狩猎屋
@@ -2989,7 +2989,7 @@ nl:Kleuterschool
 zh-Hant:幼兒園|1幼稚園
 pl:4Przedszkole|dzieci|zerówka
 pt:Jardim de infância
-pt-BR:Jardim de infância
+pt-BR:Jardim de infância|escola infantil|pré-escola
 hu:Óvoda
 th:4โรงเรียนอนุบาล
 zh-Hans:幼儿园
@@ -3082,7 +3082,7 @@ nl:3Apotheek|verdeelstation
 zh-Hant:1藥局|成藥
 pl:3Apteka
 pt:3Farmacêutico|3farmácia
-pt-BR:3Farmácia|3Drogaria|3farmácia
+pt-BR:3Farmácia|3drogaria
 hu:3Gyógyszertár
 th:3ร้านขายยา|เภสัชกร
 zh-Hans:1药店|药店|药剂师
@@ -3179,7 +3179,7 @@ nb:Søppel
 nl:Uitschot|afval|prullenbak|vuilnis
 pl:Wysypisko|Śmieci|ponowne odtworzenie|odpady
 pt:Lixo|lixo
-pt-BR:Lixo|lixo
+pt-BR:Depósito de lixo|lixo
 ro:Gunoi
 ru:Мусорный контейнер|мусорка
 sk:Odpadky|kôš
@@ -3208,7 +3208,7 @@ ko:재활용센터
 nl:Milieustraat
 nb:Resirkuleringssenter|innsamlingsstasjon
 pt:Centro de reciclagem
-pt-BR:Centro de reciclagem
+pt-BR:Reciclagem|descarte seletivo
 ro:Centru de reciclare
 ru:Приём вторсырья|утиль|сырье|сбор сырья|стеклотара|макулатура|прием металлов
 sk:Zberné suroviny
@@ -3299,7 +3299,7 @@ nl:2Telefoon|publieke telefoon
 zh-Hant:1電話|2電話亭|2公共電話|3公用電話
 pl:3Telefon|budka telefoniczna
 pt:Telefone
-pt-BR:Telefone
+pt-BR:Telefone|3orelhão
 hu:2Telefon
 th:2โทรศัพท์
 zh-Hans:1手机
@@ -3330,7 +3330,7 @@ nl:3Toilet|wc
 zh-Hant:1廁所|2洗手間|wc
 pl:3Toaleta|wc|ubikacja|wychodek
 pt:WC
-pt-BR:Banheiro público
+pt-BR:Banheiro|toalete|wc|sanitários
 hu:3Mosdó|WC
 th:3ห้องน้ำ
 zh-Hans:1厕所
@@ -3361,7 +3361,7 @@ nl:4Universiteit
 zh-Hant:1大學|學院
 pl:3Uniwersytet|szkoła policealna
 pt:4Universidade
-pt-BR:4Universidade
+pt-BR:4Universidade|faculdade
 hu:4Egyetem
 th:4มหาวิทยาลัย
 zh-Hans:1大学
@@ -3670,7 +3670,7 @@ nl:Buitenwijken|voorstad|wijk
 zh-Hant:1郊區|近郊
 pl:5Przedmieścia|okolice miasta
 pt:Subúrbio|distrito
-pt-BR:Bairro|distrito
+pt-BR:Bairro|subúrbio|distrito
 hu:Kerület
 th:1ชานเมือง
 zh-Hans:1市郊
@@ -3701,7 +3701,7 @@ nl:Gehucht|buurschap|dorpje|dorp
 zh-Hant:村|1村莊|鄉下
 pl:Wieś|wioska
 pt:Lugarejo
-pt-BR:Lugarejo
+pt-BR:Lugarejo|aldeia|vila
 hu:Tanya
 th:หมู่บ้านเล็ก ๆ|หมู่บ้าน
 zh-Hans:村庄
@@ -3731,7 +3731,7 @@ nl:Dorp|dorpje
 zh-Hant:1村莊|村|鄉下
 pl:Wioska|wieś
 pt:Aldeia
-pt-BR:Aldeia
+pt-BR:Povoado|aldeia|vila
 hu:Falu
 th:หมู่บ้าน|หมู่บ้านเล็ก ๆ
 zh-Hans:村
@@ -3793,7 +3793,7 @@ nl:Boerderij
 zh-Hant:1農場|農田
 pl:Farma|gospodarstwo
 pt:Quinta
-pt-BR:Fazenda
+pt-BR:Fazenda|sítio|chácara
 hu:Tanya
 th:ฟาร์ม
 zh-Hans:农场
@@ -3916,7 +3916,7 @@ nl:Pad|voetweg|trappen
 zh-Hant:1人行步道|步道
 pl:3Ścieżka|dróżka|droga
 pt:Caminho
-pt-BR:Caminho
+pt-BR:Caminho|trilha
 hu:Ösvény
 th:เส้นทาง
 zh-Hans:路径
@@ -3947,7 +3947,7 @@ nl:Straat|st|str|laan|weg
 zh-Hant:路|街
 pl:3Ulica|droga
 pt:Rua
-pt-BR:Rua|Estrada|Avenida|Via
+pt-BR:Rua|rodovia|estrada|avenida
 hu:Utca|út|u
 th:ถนน
 zh-Hans:街头
@@ -3975,7 +3975,7 @@ nl:3Afrit|3uitgang|3kruising
 zh-Hant:1交流道|出口處|高速公路|公路
 pl:3Wyjazd|wyjście
 pt:4Saída|3junção
-pt-BR:4Saída|3junção
+pt-BR:2Saída|3junção
 hu:4Kijárat|4csatlakozás
 th:4ทางออก
 zh-Hans:2出口|连接点
@@ -4037,7 +4037,7 @@ nl:Water
 zh-Hant:1水庫|盆地|休閒|大自然
 pl:Woda|naturalna woda
 pt:Água
-pt-BR:Água
+pt-BR:Água|reservatório|represa
 hu:Víz
 th:น้ำ
 zh-Hans:水
@@ -4130,7 +4130,7 @@ nl:Bos|woud
 zh-Hant:1樹林|森林|樹木
 pl:Las
 pt:Floresta
-pt-BR:Floresta
+pt-BR:Floresta|mata
 hu:Erdő
 th:ป่า
 zh-Hans:森林
@@ -4161,7 +4161,7 @@ nl:Park
 zh-Hant:1公園
 pl:Park
 pt:Parque
-pt-BR:Parque
+pt-BR:Parque|praça
 hu:Park
 th:สวนสาธารณะ
 zh-Hans:公园
@@ -4192,7 +4192,7 @@ nl:3Hostel|jeugdherberg|hotel|motel
 zh-Hant:1旅舍|旅館|青年旅舍|青年旅館|住宿|飯店|3汽車旅館|3motel
 pl:4Hostel|4hotel|4motel
 pt:3Hostel|3Pousada|4hotel|motel|Albergue
-pt-BR:3Hostel|3Pousada|2Albergue|4hotel|motel
+pt-BR:3Hostel|3pousada|2albergue
 hu:3Hostel|szálloda|szállás
 th:3หอพัก|โรงแรม|โมเทล
 zh-Hans:2旅馆|旅店
@@ -4254,7 +4254,7 @@ nl:Gasthuis|hotel|B&B|bed and breakfast|hostel
 zh-Hant:1賓館|旅館|飯店|酒店|旅舍|住宿|招待所
 pl:4Pensjonat|hotel|hostel|gościnne pokoje
 pt:Casa de hóspedes|pousada|motel
-pt-BR:Casa de hóspedes|pousada|motel
+pt-BR:Pousada|casa de hóspedes|hospedagem
 hu:Vendégház|hotel|szálloda
 th:3เกสท์เฮ้าส์|โรงแรม์|์โรงแรม
 zh-Hans:1招待所์|์旅馆์|์旅社|旅店
@@ -4285,7 +4285,7 @@ nl:3Motel|hotel|hostel
 zh-Hant:1汽車旅館|3motel|旅館|飯店|住宿|
 pl:3Motel|hotel|hostel
 pt:3Motel|3Pousada
-pt-BR:3Motel|3Hotel de Estrada|3Pousada
+pt-BR:3Motel|3hotel de estrada|3pousada
 hu:3Motel|szálloda|szállás
 th:3โมเทล|โรงแรม|หอพัก
 zh-Hans:1汽车旅馆|旅店
@@ -4315,7 +4315,7 @@ nl:3Berghut|alpenhut|hotel
 zh-Hant:1山上住宿|飯店|旅館|住宿|旅舍|2高山住宿
 pl:3Schronisko|chata w górach|goście|hotel|nocleg|bacówka
 pt:Alojamento nas montanhas|cabana alpina|3pousada|motel|hotel
-pt-BR:Alojamento nas montanhas|cabana alpina|3pousada|motel|hotel
+pt-BR:Abrigo de montanha|cabana alpina|3pousada|motel|hotel
 hu:Hegyi menedék|kabin|hotel|szálloda
 th:2ที่พักบนภูเขาโรงแรม
 zh-Hans:山上住宿|旅馆|旅店
@@ -4345,7 +4345,7 @@ nl:3Kapper
 zh-Hant:1理髮師|美髮師|髮型設計師
 pl:4Fryzjer
 pt:Cabeleireiro
-pt-BR:Cabeleireiro
+pt-BR:Cabeleireiro|barbeiro
 hu:3Fodrász
 th:3ช่างทำผม
 zh-Hans:2理发师
@@ -4376,7 +4376,7 @@ nl:3Vliegveld|3vliegtuig
 zh-Hant:1機場|2航空站|3航空公司|2飛機場
 pl:3Lotnisko
 pt:3Aeroporto
-pt-BR:3Aeroporto
+pt-BR:3Aeroporto|aeródromo
 hu:3Repülőtér|3repülő
 th:3สนามบิน|เครื่องบิน
 zh-Hans:机场|飞机
@@ -4438,7 +4438,7 @@ nl:Speeltuin|speelplaats
 zh-Hant:1遊樂場
 pl:4Plac zabaw
 pt:Recreio
-pt-BR:Parquinho
+pt-BR:Parquinho|parque infantil
 hu:Játszótér
 th:สนามเด็กเล่น
 zh-Hans:操场
@@ -4469,7 +4469,7 @@ nl:Sportcentrum|sport
 zh-Hant:1體育中心|2體育館|體育|運動|健身
 pl:Cebtrum sportowe|sport
 pt:Desporto|sport
-pt-BR:Clube|Esporte|sport
+pt-BR:Centro esportivo|clube|esporte
 hu:Sportközpont|sport
 th:กีฬา
 zh-Hans:运动
@@ -4531,7 +4531,7 @@ nl:Sportveld|veld|sport
 zh-Hant:2運動場|體育館|球場|2足球場|體育|運動|健身
 pl:Boisko sportowe|pole|boisko|sport
 pt:Campo de esportes|campo|desporto
-pt-BR:Campo de esportes|campo|esporte
+pt-BR:Campo de esportes|campo|quadra|esporte
 hu:Sportpálya|oszlop|sport
 th:พื้นสนามกีฬา|ขว้าง|กีฬา
 zh-Hans:2球场|运动
@@ -4593,7 +4593,7 @@ nl:Gebouw
 zh-Hant:1建築物
 pl:4Budynek
 pt:Construção
-pt-BR:Construção|Prédio
+pt-BR:Edifício|prédio|construção
 hu:Épület
 th:2อาคาร
 zh-Hans:1建筑
@@ -4717,7 +4717,7 @@ nl:Bron
 zh-Hant:1泉水|泉|玩水
 pl:Źródło
 pt:Primavera
-pt-BR:Fonte
+pt-BR:Nascente
 hu:Forrás
 th:ฤดูใบไม้ผลิ
 zh-Hans:海湾
@@ -4748,7 +4748,7 @@ nl:3Auto reparatie|auto|wagen
 zh-Hant:1汽車維修|維修|汽車|修理
 pl:3Naprawa samochodu|warsztat samochodowy|warsztat|samochód|auto
 pt:Oficina de reparação de automóveis|estação de serviço
-pt-BR:Oficina de automóveis|estação de serviço
+pt-BR:Oficina de automóveis|mecânica|mecânico|auto elétro
 hu:3Gépkocsi szervíz|4javítóműhely|kocsi
 th:3ร้านซ่อมรถยนต์|สถานีบริการ
 zh-Hans:3汽车修理店|服务站|
@@ -4779,7 +4779,7 @@ nl:4Camping|kamperen
 zh-Hant:露營|營地|營區|2露營區
 pl:4Kamping|pole kempingowe
 pt:4Acampamento|área de acampamento|local de acampamento
-pt-BR:4Acampamento|área de acampamento|local de acampamento
+pt-BR:4Local de acampamento|área de acampamento|camping
 hu:4Kemping|sátrazóhely
 th:4การตั้งแคมป์|สถานที่ตั้งแคมป์|ที่ตั้งแคม
 zh-Hans:露营|营地|营地
@@ -4810,7 +4810,7 @@ nl:Caravan site|camping
 zh-Hant:1營區|營地
 pl:4Pole namiotowe
 pt:4Parque de campismo|caravanismo
-pt-BR:4Parque de campismo|caravanismo
+pt-BR:4Área de trailers|caravanismo|acampamento
 hu:4Karaván pihenő|kemping
 th:4ขบวนนักเดินทาง
 zh-Hans:房车宿营地
@@ -4872,7 +4872,7 @@ ko:회사
 nl:Bedrijfskantoor|bedrijfspand
 nb:Firmakontor
 pt:Escritório da empresa
-pt-BR:Escritório da empresa
+pt-BR:Escritório de empresa
 ro:Sediu companei
 ru:Организация
 sk:Sídlo spoločnosti
@@ -4901,7 +4901,7 @@ ko:관공서
 nl:Overheidskantoor|overheidspand
 nb:Offentlig kontor
 pt:Gabinete governamental
-pt-BR:Gabinete governamental
+pt-BR:Gabinete governamental|órgão público
 ro:Birou guvernamental
 ru:Госучреждение|административное учреждение
 sk:Štátny úrad
@@ -4930,7 +4930,7 @@ ko:법률 사무소
 nl:Advocatenkantoor
 nb:Advokatkontor
 pt:Escritório de advogados
-pt-BR:Escritório de advogados
+pt-BR:Escritório de advogado
 ro:Firmă de avocatură
 ru:Адвокат|нотариус
 sk:Advokátska kancelária
@@ -4959,7 +4959,7 @@ ko:이동통신 사업자
 nl:Mobiele provider
 nb:Mobiloperatør
 pt:Operadora móvel
-pt-BR:Operadora móvel
+pt-BR:Operadora de telecomunicações|telefonia|móvel
 ro:Operator de telefonie mobilă
 ru:Мобильный оператор
 sk:Mobilný operátor
@@ -5075,7 +5075,7 @@ ko:조경사
 nl:Tuinarchitect|landschapsarchitect
 nb:Anleggsgartner
 pt:Paisagista
-pt-BR:Jardineiro|Paisagista
+pt-BR:Jardineiro|paisagista
 ro:Peisagist
 ru:Садовник
 sk:Záhradníctvo
@@ -5134,7 +5134,7 @@ ko:금속공
 nl:Metaalarbeider
 nb:Metallarbeider
 pt:Metalúrgico
-pt-BR:Metalúrgico
+pt-BR:Serralheiro|metalúrgico
 ro:Metalurgist
 ru:Ковка металла|кузнец
 sk:Kovorobotník|kovospracovanie
@@ -5222,7 +5222,7 @@ ko:배관공
 nl:Loodgieter
 nb:Rørlegger
 pt:Canalizador
-pt-BR:Encanador
+pt-BR:Encanador|bombeiro hidráulico
 ro:Instalator
 ru:Сантехник
 sk:Klampiarstvo
@@ -5280,7 +5280,7 @@ ko:양복점
 nl:Kleermaker|kledingreparatie
 nb:Skredder
 pt:Alfaiate
-pt-BR:Alfaiate|Costureiro|Conserto de roupas
+pt-BR:Alfaiate|costureiro|conserto de roupas
 ro:Croitor
 ru:Ателье|портной|ремонт одежды
 sk:Krajčírstvo
@@ -5308,7 +5308,7 @@ nl:Plein
 zh-Hant:廣場
 pl:Plac
 pt:Praça
-pt-BR:Praça|Rua de pedestres|Escadaria
+pt-BR:Largo|praça|rua de pedestres|escadaria
 hu:Tér
 th:สี่เหลี่ยม
 zh-Hans:广场
@@ -5473,7 +5473,7 @@ es:Radar de velocidad
 pl:Fotoradar
 nl:Flitspaal
 pt:Radar de velocidade
-pt-BR:Câmera/Radar de velocidade
+pt-BR:Câmera ou radar de velocidade
 
 man_made-lighthouse
 en:Lighthouse
@@ -5523,7 +5523,7 @@ ko:복사 상점|프린터
 nb:Kopieringsbutikk|Trykkeri
 pl:Punkt ksero|Drukarnia
 pt:Copiadora|Impressões
-pt-BR:Copiadora|Impressões
+pt-BR:Copiadora|impressões
 ro:Centru copiere|Imprimare
 sk:Kopírovacie služby|Tlačiarne
 sv:Kopieringsbutik|Tryckare
@@ -5673,7 +5673,7 @@ nb:Dekkforretning|butikk
 nl:Bandenwinkel|winkel
 pl:Wulkanizacja|punkt
 pt:Borracheiro|comércio|compras
-pt-BR:Borracheiro|comércio|compras
+pt-BR:Loja de pneus|borracharia|comércio|compras
 ro:Magazin anvelope|magazin
 sk:Obchod s pneumatikami|obchod
 sv:Däckaffär|butik
@@ -5763,7 +5763,7 @@ nb:Ladestasjon|lading
 nl:Oplaadstation|opladen
 pl:Stacja ładowania|ładowanie
 pt:Posto de combustível|abastecimento
-pt-BR:Posto de combustível|abastecimento
+pt-BR:Eletroposto|recarga|abastecimento
 ro:Stație încărcare|încărcare
 sk:Dobíjacia stanica|dobíjanie
 sv:Laddstation|laddning
@@ -5823,7 +5823,7 @@ nl:Fietsenstalling
 nb:Sykkelparkering
 pl:Parking dla rowerów
 pt:Estacionamento de bicicletas
-pt-BR:Bicicletário|Estacionamento de bicicletas
+pt-BR:Bicicletário|estacionamento de bicicletas
 ro:Parcare biciclete
 sk:Stojan na bicykle
 sv:Cykelparkering
@@ -5853,7 +5853,7 @@ nl:Vuilnisbak
 nb:Søppelkasse
 pl:Kosz na śmieci
 pt:Caixote do lixo
-pt-BR:Cesto de lixo
+pt-BR:Cesto de lixo|lixeira
 ro:Pubelă
 sk:Odpadkový kôš
 sv:Pepperskorg
@@ -5916,7 +5916,7 @@ nl:Fitnesscentrum|sportschool
 nb:Treningssenter
 pl:Centrum fitness|siłownia
 pt:Centro de fitness|Ginásio
-pt-BR:Centro de fitness|Academia|Ginásio
+pt-BR:Academia de ginástica|academia de musculação|centro de fitness|ginásio
 ro:Centru fitness
 sk:Fitnescentrum|telocvičňa
 sv:Gym
@@ -6006,7 +6006,7 @@ nl:Bandenreparatie
 nb:Dekkreparasjon
 pl:Wulkanizacja
 pt:Reparação de pneus
-pt-BR:Reparação de pneus
+pt-BR:Borracheiro|borracharia|pneus
 ro:Vulcanizare
 sk:Pneuservis
 sv:Däckverkstad
@@ -6036,6 +6036,7 @@ nl:Drogisterij
 nb:Dagligvareforretning
 pl:Drogeria
 pt:Farmácia
+pt-BR:Drogaria|farmácia
 ro:Mercerie
 sk:Drogéria
 sv:Apotek
@@ -6065,7 +6066,7 @@ nl:Dierenwinkel
 nb:Dyrebutikk
 pl:Sklep zoologiczny
 pt:Loja de animais
-pt-BR:Pet-shop|Loja de artigos para animais
+pt-BR:Pet-shop|loja de artigos para animais
 ro:Pet shop
 sk:Obchod zo zvieratami
 sv:Djuraffär
@@ -6095,7 +6096,7 @@ nl:Toeristische informatie
 nb:Turistkontor
 pl:Biuro podróży
 pt:Gabinete de turismo
-pt-BR:Gabinete de turismo
+pt-BR:Escritório de turismo
 ro:Birou de informații turistice
 sk:Turistické informačné centrum
 sv:Turistcenter
@@ -6305,7 +6306,7 @@ nl:Verkeerslichten
 nb:Trafikklys
 pl:Sygnalizacja świetlna
 pt:Semáforos
-pt-BR:Semáforos|Sinaleiras|Sinais de trânsito
+pt-BR:Semáforo|sinaleira|sinal de trânsito|farol
 ro:Semafoare
 sk:Semafor
 sv:Trafikljus
@@ -6515,7 +6516,7 @@ nl:Wijn|Slijterij
 nb:Alkoholutsalg
 pl:Sklep monopolowy
 pt:Vinho|Loja de Vinhos
-pt-BR:Vinho|Loja de bebidas
+pt-BR:Loka de vinhos|bebidas
 ro:Magazin de băuturi alcolice
 sk:Vinotéka
 sv:Spritförsäljning
@@ -6546,7 +6547,7 @@ nb:Bildeler
 nl:Auto onderdelen
 pl:Części samochodowe
 pt:Peças do carro
-pt-BR:Peças de carro
+pt-BR:Peças de carro|auto peças
 ro:Piese auto
 ru:Автомобильные запчасти|Автозапчасти
 sk:Autodiely
@@ -6698,7 +6699,7 @@ nl:Heliplatform
 nb:Helipad
 pl:Lądowisko dla helikopterów
 pt:Heliporto
-pt-BR:Heliponto
+pt-BR:Heliponto|heliporto
 ro:Heliport
 sk:Pristávacia plocha pre vrtuľníky
 sv:Helikopterplatta
@@ -6938,7 +6939,7 @@ nl:Tourniquet
 nb:Sperre
 pl:Przełaz
 pt:Elevação
-pt-BR:Porteira
+pt-BR:Travessia em cercar ou muro
 ro:Barieră
 sk:Turniket
 sv:Stätta
@@ -6968,7 +6969,7 @@ nl:Tolhokje
 nb:Bomstasjon
 pl:Kasa
 pt:Cabina de portagem
-pt-BR:Cabina de pedágio
+pt-BR:Cabine de pedágio
 ro:Cabină de taxare
 sk:Mýtne
 sv:Tullhus
@@ -7058,7 +7059,7 @@ nl:Watertoren
 nb:Vanntårn
 pl:Wieża wodna
 pt:Torre de água
-pt-BR:Torre de água
+pt-BR:Torre de água|caixa de água
 ro:Turn de apă
 sk:Vodojem
 sv:Vattentorn
@@ -7238,7 +7239,7 @@ nl:Makelaar
 nb:Eiendomsmegler
 pl:Pośrednik handlu nieruchomościami
 pt:Agente imobiliário
-pt-BR:Agente imobiliário
+pt-BR:Corretor imobiliário|agente imobiliário
 ro:Agent imobiliar
 sk:Realitný agent
 sv:Fastighetsmäklare
@@ -7298,7 +7299,7 @@ nl:Gesloten poort
 nb:Sluseport
 pl:Wrota śluzy
 pt:Portão de bloqueio
-pt-BR:Portão de bloqueio
+pt-BR:Comporta|represa|barragem
 ro:Ecluză
 sk:Stavidlo
 sv:Slussport
@@ -7337,6 +7338,7 @@ pl:Biblioteka|wymiana książek
 nl:Boekenkast|Boekuitwisseling
 da:Bog udveksling
 pt:Biblioteca livre|troca de livros
+pt-BR:Biblioteca livre|troca de livros
 
 leisure-sports_centre-climbing
 en:Climbing Centre
@@ -7366,6 +7368,7 @@ es:Centro de escalada
 pl:Centrum wspinaczkowe
 nl:Klimhal
 pt:Ginásio de escalada
+pt-BR:Ginásio de escalada
 
 leisure-sports_centre-shooting
 en:Shooting Range
@@ -7395,6 +7398,7 @@ es:Campo de tiro
 pl:Strzelnica
 nl:Schietbaan
 pt:Clube de tiro
+pt-BR:Clube de tiro
 
 leisure-sports_centre-swimming
 en:Swimming Centre
@@ -7424,6 +7428,7 @@ es:Centro de natación
 pl:Basen
 nl:Zwembad
 pt:Centro de natação
+pt-BR:Centro de natação
 
 leisure-sports_centre-yoga
 en:Yoga Studio
@@ -7453,6 +7458,7 @@ es:Estudio de yoga
 pl:Studio jogi
 nl:Yogastudio
 pt:Estúdio de ioga
+pt-BR:Estúdio de ioga
 
 tourism-apartment|@hotel
 en:Apartments
@@ -7472,6 +7478,7 @@ ko:아파트
 nb:Leiligheter
 pl:Apartamenty
 pt:Apartamentos
+pt-BR:Apartamentos
 ro:Apartamente
 es:Apartamentos
 sv:Lägenheter
@@ -7501,6 +7508,7 @@ ko:리조트
 nb:Ferieresort
 pl:Dom wczasowy
 pt:Resort
+pt-BR:Resort
 ro:Stațiuni
 es:Resort
 sv:Resorter
