@@ -1732,6 +1732,7 @@
     fr = La carte SD/le stockage USB contenant les cartes téléchargées n'est pas disponible
     de = SD-Karte/USB-Speicher mit heruntergeladenen Karten nicht verfügbar
     hu = Nem található téképeket tartalmazó SD kártya / USB tároló
+    pt-BR = Baixar
     id = Penyimpanan kartu SD/USB dengan peta terunduh tidak tersedia
     it = La scheda/USB/di memoria SD con le mappe scaricate non è disponibile
     ja = マップをダウンロードしたSDカード/USBストレージへ接続できません
