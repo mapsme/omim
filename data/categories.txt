@@ -139,7 +139,7 @@ uk:Крамниця
 zh-Hant:購物
 pl:Sklep
 pt:Compras
-pt-BR:Compras
+pt-BR:Loja
 hu:Bolt
 th:ร้านค้า
 zh-Hans:商店
