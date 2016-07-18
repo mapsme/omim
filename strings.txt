@@ -4030,7 +4030,7 @@
     fr = Échec lors du téléversement des signets. Le fichier peut être corrompu ou défectueux.
     de = Hochladen der Lesezeichen fehlgeschlagen. Die Datei könnte beschädigt oder defekt sein.
     hu = Könyvjelzők feltöltése sikertelen. A fájl sérült lehet.
-    pt-BR = Favoritos carregados com sucesso! Pode encontrá-los no mapa ou no ecrã de gestão dos favoritos.
+    pt-BR = Favoritos carregados com sucesso! Pode encontrá-los no mapa ou na tela de gestão dos favoritos.
     id = Gagal mengunggah penanda lokasi. Berkas mungkin rusak.
     it = Caricamento dei segnalibri non riuscito. Il file potrebbe essere corrotto o difettoso.
     ja = ブックマークのアップロードに失敗しました。ファイルが破損していた、または問題があった可能性があります。
@@ -4063,7 +4063,7 @@
     fr = Modifier
     de = Bearbeiten
     hu = Szerkeszt
-    pt-BR = Falha no envio dos favoritos. O ficheiro pode estar corrompido ou com defeito.
+    pt-BR = Falha no envio dos favoritos. O arquivo pode estar corrompido ou com defeito.
     id = Edit
     it = Copia link
     ko = 편집
@@ -4158,7 +4158,7 @@
     nl = Download land waar je op wilt zoeken (%@)
     fi = Lataa hakemasi sijainnin (%@) maa
     fr = Télécharger le pays que vous recherchez (%@)
-    pt-BR = Descarregue o país da sua localização atual (%@)
+    pt-BR = Baixe o país da sua localização atual (%@)
     de = Land herunterladen, in dem Sie suchen (%@)
     hu = Töltse le a keresés országát (%@)
     id = Unduh negara yang lokasinya sedang Anda cari (%@)
@@ -4191,7 +4191,7 @@
     nl = Sorry, instellingen voor kaartopslag uitgeschakeld.
     fi = Valitettavasti karttatallennusasetukset ovat pois päältä.
     fr = Désolé, les paramètres de stockage des cartes sont présentement désactivés.
-    pt-BR = Descarregue o país em que está a fazer a procura (%@)
+    pt-BR = Baixe o país que você está buscando (%@)
     de = Leider sind die Einstellungen für die Kartenspeicherung deaktiviert.
     hu = Sajnáljuk, a térképek tárolása jelenleg ki van kapcsolva.
     id = Maaf, pengaturan Penyimpanan Peta saat ini sedang non-aktif.
@@ -4224,7 +4224,7 @@
     nl = Het downloaden van het land is nu aan de gang.
     fi = Maata ladataan parhaillaan.
     fr = Le téléchargement du pays est en cours.
-    pt-BR = Lamentamos, as definições do Map Storage estão atualmente desativadas.
+    pt-BR = Lamentamos, as configurações do Map Storage estão atualmente desativadas.
     de = Das Land wird gerade heruntergeladen.
     hu = Országletöltés folyamatban.
     id = Pengunduhan negara sedang berjalan.
@@ -4257,7 +4257,7 @@
     nl = Ik hoop dat u veel plezier hebt met MAPS.ME! Zo ja, geef de app dan een cijfer in de App Store of schrijf een recensie. Dit duurt minder dan een minuut, maar kan ons echt helpen. Bedankt voor uw steun!
     fi = Toivottavasti nautit MAPS.ME -sovelluksen käyttämisestä! Olisimme tyytyväisiä, jos voisit arvioida sovelluksen App Storessa. Se kesää alle minuutin, ja auttaa meitä todella paljon. Kiitos tuestasi!
     fr = Nous espérons que vous appréciez l'utilisation de MAPS.ME ! Si oui, veuillez évaluer l'appli ou laisser une critique sur l'App Store. Cela prend moins d'une minute, mais peut vraiment nous aider. Merci pour votre soutien !
-    pt-BR = A descarga do país está atualmente em progresso.
+    pt-BR = O download do país está atualmente em progresso.
     de = Wir hoffen, dass Ihnen die Verwendung von MAPS.ME Freude bereitet! Wenn ja, geben Sie bitte eine Bewertung oder einen Bericht für die App im App Store ab. Es dauert weniger als eine Minute, kann uns aber wirklich helfen. Danke für Ihre Unterstützung!
     hu = Reméljük élvezi a MAPS.ME használatát. Ha igen, kérjük írjon ajánlást az App Store-ban! Kevesebb mint egy perc, és valóban segít nekünk. Köszönjük!
     id = Kami harap Anda senang menggunakan MAPS.ME! Jika ya, mohon beri nilai atau ulasan untuk aplikasi ini di App Store. Hanya memakan waktu kurang dari satu menit tetapi hal itu dapat benar-benar membantu kami. Terima kasih atas dukungan Anda!
@@ -4290,7 +4290,7 @@
     fi = Ei kiitos
     fr = Non, merci
     de = Nein danke
-    pt-BR = Esperamos que esteja a disfrutar da utilização do MAPS.ME! Se assim for, por favor classifique ou dê a sua opinião sobre a app na App Store. 
+    pt-BR = Esperamos que esteja a disfrutar da utilização do MAPS.ME! Se assim for, por favor classifique ou dê a sua opinião sobre a app na App Store. Vai demorar menos de um minuto mas pode mesmo ajudar-nos. Obrigado pelo seu apoio!
     hu = Köszönöm, nem
     id = Tidak, terima kasih
     it = No, grazie
@@ -4354,7 +4354,7 @@
     nl = Kijk waar ik nu ben. Open %1$@ of %2$@
     fi = Hei, se posisjonen min på MAPS.ME! %1$@ eller %2$@ Har du ikke offline-kart? Last dem ned her: http://maps.me/get
     fr = Hé, regarde ma position actuelle sur MAPS.ME ! %1$@ ou %2$@. Les cartes hors ligne ne sont pas installées ? Les télécharger ici : http://maps.me/get
-    pt-BR = Veja o meu marcador no mapa do MAPS.ME. Abra a hiperligação: %1$@ ou %2$@
+    pt-BR = Veja o meu marcador no mapa do MAPS.ME. Abra o link: %1$@ ou %2$@
     de = Schau wo ich gerade bin. Klicke auf den Link %1$@ oder %2$@ - Keine Offline-Karten installiert? Hier herunterladen: http://maps.me/get
     hu = Nézd meg a MAPS.ME helyzetemet! %1$@ vagy %2$@ A program letöltése: http://maps.me/get
     id = Hei, lihat lokasiku saat ini di MAPS.ME! %1$@ atau %2$@ belum memiliki peta offline? Unduh di sini: http://maps.me/get
@@ -4386,7 +4386,7 @@
     da = Hey, tjek min knappenål på MAPS.ME kortet ud!
     nl = Kijk naar mijn pin op MAPS.ME kaart
     fi = Hei, se merket mitt på MAPS.ME-kartet
-    pt-BR = Veja onde estou agora. Abra a hiperligação: %1$@ ou %2$@
+    pt-BR = Veja onde estou agora. Abra o link: %1$@ ou %2$@
     fr = Hé, regarde mon épingle sur la carte MAPS.ME !
     de = Schau dir meine Stecknadel auf der MAPS.ME-Karte an
     hu = Nézze meg a MAPS.ME jelzőmet
@@ -4452,7 +4452,7 @@
     da = Hey, tjek min nuværende lokation ud på MAPS.ME kortet!
     nl = Kijk naar mijn huidige locatie op MAPS.ME kaart
     fi = Hei, kurkkaa tämänhetkinen sijaintini MAPS.ME:n kartalla!
-    pt-BR = Olá,\n\nFixei:%1$@ na MAPS.ME, mapas offline mundiais. Clique nesta ligação %2$@ ou nesta %3$@ para ver o local no mapa.\n\nObrigado.
+    pt-BR = Olá,\n\nFixei:%1$@ na MAPS.ME, mapas offline mundiais. Clique neste link %2$@ ou neste %3$@ para ver o local no mapa.\n\nObrigado.
     fr = Hé, regarde ma position actuelle sur la carte MAPS.ME !
     de = Sieh dir meinen aktuellen Standort auf der MAPS.ME-Karte an
     hu = Nézze meg a helyzetemet a MAPS.ME térképen!
@@ -4485,7 +4485,7 @@
     da = Hey, her er jeg nu: %1$@. Tryk på dette link %2$@ eller dette %3$@ for at se stedet på kortet. Tak.
     nl = Hoi,\n\nMomenteel ben ik hier: %1$@. Klik op deze %2$@ of deze %3$@ om de plaats op de kaart te zien.\n\nBedankt.
     fi = Hei,n\nOlen nyt täällä: %1$@. Klikkaa linkkiä %2$@ tai %3$@ nähdäksesi paikan kartalla. Kiitos.
-    pt-BR = Veja a minha localização atual em MAPS.ME map
+    pt-BR = Veja a minha localização atual no mapa MAPS.ME!
     fr = Bonjour,\n\nJe suis actuelement ici : %1$@. Clique sur ce lien %2$@ ou sur celui-ci %3$@ pour voir l'endroit sur la carte.\n\nMerci.
     de = Hi,\n\nich bin gerade hier: %1$@. Klicke den Link %2$@ oder %3$@, um den Ort auf der Karte anzuzeigen.\n\nVielen Dank.
     hu = Üdvözlöm!\n\nJelenleg itt vagyok: %1$@ Kattintson erre a hivatkozásra %2$@ vagy erre %3$@, hogy lássa a helyet a térképen.\n\nKöszönöm.
@@ -4517,7 +4517,7 @@
     cs = Sdílet pomocí zprávy
     da = Del via besked
     nl = Delen via bericht
-    pt-BR = Olá,\n\nEstou aqui agora: %1$@. Clique nesta ligação %2$@ ou nesta %3$@ para ver o local no mapa.\n\nObrigado.
+    pt-BR = Olá,\n\nEstou aqui agora: %1$@. Clique neste link %2$@ ou neste %3$@ para ver o local no mapa.\n\nObrigado.
     fi = Jaa viestillä
     fr = Partager par message
     de = Als Nachricht teilen
@@ -4551,7 +4551,7 @@
     da = Del
     nl = Delen
     fi = Jaa
-    pt-BR = Partilhar por mensagem
+    pt-BR = Compartilhar por mensagem
     fr = Partager
     de = Teilen
     hu = Megosztás
@@ -4584,7 +4584,7 @@
     da = Besked
     nl = Bericht
     fi = Viesti
-    pt-BR = Partilhar
+    pt-BR = Compartilhar
     fr = Message
     de = Nachricht
     hu = Üzenet
@@ -4683,7 +4683,7 @@
     nl = Toon meer info
     fi = Näytä lisätietoja
     fr = Afficher plus d'informations
-    pt-BR = Copiar hiperligação
+    pt-BR = Copiar link
     de = Weitere Infos anzeigen
     hu = Mutasson több adatot
     id = Tampilkan Lebih Banyak Info
@@ -4716,7 +4716,7 @@
     nl = Op het klembord gekopieerd: %1$@
     fi = Kopioitu leikepöydälle: %1$@
     fr = Copié dans le presse-papiers : %1$@
-    pt-BR = Mostrar informação adicional
+    pt-BR = Mostrar mais informações
     de = In die Zwischenablage kopiert: %1$@
     hu = A vágólapra másolva: %1$@
     id = Telah Disalin ke Papan Klip: %1$@
@@ -4904,7 +4904,7 @@
   [yopme_pref_title]
     comment = Title for yopme preferences in MWM
     tags = android
-    pt-BR = Escolha as definições de Ecrã Posterior
+    pt-BR = Escolha as configurações de Tela Posterior
     en = Back Screen Settings
     ru = Настройки второго экрана
     ar = اعدادات الشاشة الخلفية
@@ -4935,7 +4935,7 @@
   [show_on_backscreen]
     comment = Hint for upper-right icon p2b
     tags = android
-    pt-BR = Configurações do Ecrã Posterior
+    pt-BR = Configurações da Tela Posterior
     en = Show on Back screen
     ru = Показать на втором экране
     ar = إظهار في الشاشة الخلفية
@@ -4972,7 +4972,7 @@
     cs = Verze: %@
     da = Version: %@
     nl = Versie: %@
-    pt-BR = Mostrar no Ecrã Posterior
+    pt-BR = Mostrar na Tela Posterior
     fi = Versio: %@
     fr = Version : %@
     de = Version: %@
@@ -5004,6 +5004,7 @@
     ru = Версия данных: %d
     de = Datenversion: %d
     zh-Hant = 資料版本： %d
+    pt-BR = Versão dos dados: %d
 
   [are_you_sure]
     comment = Confirmation in downloading countries dialog
@@ -5047,7 +5048,7 @@
     da = Ruter
     nl = Tracks
     fi = Raidat
-    pt-BR = Tem a certeza de que pretende continuar?
+    pt-BR = Tem certeza que deseja continuar?
     fr = Parcours
     de = Strecken
     hu = Csoportok
@@ -5136,7 +5137,7 @@
     sk = Zdielať moje umiestnenie
 
   [menu_search]
-    pt-BR = Partilhar a minha localização
+    pt-BR = Compartilhar a minha localização
     en = Search
     ru = Поиск
     ar = بحث
@@ -5325,7 +5326,7 @@
     sk = Zobraziť na obrazovke
 
   [pref_map_style_title]
-    pt-BR = Mostrar no ecrã
+    pt-BR = Mostrar na tela
     comment = Settings «Map» category: «Night style» title
     tags = android
     en = Night Mode
@@ -5767,6 +5768,8 @@
     es = Desactivada
     sv = Av
     th = ปิด
+    pt = Gravar percurso
+    pt-BR = Gravar percurso
     tr = Kapalı
     uk = Вимкнуто
     vi = Tắt
@@ -6182,7 +6185,7 @@
     tags = android
     en = Due to changes in Android 4.4, we need to optimize map data storage, but there is no enough space to copy map data.\n\nPlease free up the memory, otherwise maps will be available in read-only mode.
     ru = В связи с изменениями на Android 4.4 нам нужно оптимизировать хранение данных. Но сейчас не хватает места ни во внутренней памяти, ни на SD-карте.\n\nПожалуйста, освободите место для переноса карт, иначе карты будут доступны только для просмотра.
-    pt-BR = O armazenamento de dados do mapa foi otimizado. Por favor, reinicie a app.\n\nA pasta MapsWithMe na raiz do cartão SD já não é necessária, 
+    pt-BR = O armazenamento de dados do mapa foi otimizado. Por favor, reinicie o app.\n\nA pasta MapsWithMe na raiz do cartão SD já não é necessária, pode excluí-la.
     ar = بسبب التغييرات في نظام أندرويد4.4 ، نحن بحاجة لتحسين وسيلة تخزين بيانات الخريطة، لكن لا يوجد حيز كافٍ لنسخ بيانات الخريطة.\n\nالرجاء إخلاء الذاكرة، وإلا ستتوافر الخرائط في وضع القراءة فقط.
     cs = Kvůli změnám v Androidu 4.4 musíme optimalizovat uložiště map, ale není dostatek prostoru pro jejich zkopírování.\n\nProsím, uvolněte paměť, jinak budou mapy dostupné pouze v režimu pro čtení.
     da = På grund af ændringer i Android 4.4 er vi nødsaget til at optimere kort data lagringen, men der er ikke nok plads til at kopiere kort dataen.\n\nFrigør venligst noget plads på din enhed, ellers vil kortene være skrivebeskyttede.
@@ -6213,7 +6216,7 @@
     comment = Used to warn user when fixing KitKat issue
     tags = android
     en = We need to move your bookmarks to internal memory, but there is no available space for them. Please free up the memory, otherwise bookmarks won’t be available.
-    pt-BR = Devido às alterações no Android 4.4, é necessário otimizar o armazenamento de dados do mapa, mas não há espaço suficiente para copiar os 
+    pt-BR = Devido às alterações no Android 4.4, é necessário otimizar o armazenamento de dados do mapa, mas não há espaço suficiente para copiar os dados do mapa.\n\nPor favor, libere memória, caso contrário, os mapas estarão disponíveis no modo somente de leitura.
     ru = Для оптимизации хранения данных нам нужно переместить метки во внутреннюю память, но там сейчас нет свободного места. Пожалуйста, освободите место, иначе метки вам будут недоступны.
     ar = نحن بحاجة لنقل الإشارات المرجعية الخاصة بك الى الذاكرة الداخلية، لكن لا يوجد حيز كافٍ لها. الرجاء إخلاء الذاكرة، وإلا لن تكون  الإشارات المرجعية متاحة.
     cs = Potřebujeme přesunout tvé záložky do vnitřní paměti zařízení, ale není pro ně volné místo. Prosím, uvolněte paměť, jinak nebudou záložky dostupné.
@@ -6246,7 +6249,7 @@
     tags = android
     en = Your map storage is being optimized now. Please wait, it may take a few minutes.
     ru = Мы сейчас оптимизируем хранение данных. Это может занять несколько минут, подождите, пожалуйста.
-    pt-BR = É necessário mover os seus marcadores para a memória interna, mas não há espaço disponível para eles. Por favor, liberte a memória, caso 
+    pt-BR = É necessário mover os seus marcadores para a memória interna, mas não há espaço disponível para eles. Por favor, libere memória, caso contrário, os marcadores não estarão disponíveis.
     ar = لقد تم الآن تحسين وسيلة تخزين الخرائط. الرجاء الانتظار، سيستغرق الأمر دقائق قليلة.
     cs = Úložiště map se právě optimalizuje. Může to trvat i pár minut. Prosíme o chvilku strpení.
     da = Din kort lagring bliver optimeret nu. Vent venligst, det kan taget nogle minutter.
@@ -6418,7 +6421,6 @@
     nl = Route
     fi = Reitti
     fr = Itinéraire
-    pt-BR = Não foi encontrado nenhum trajecto
     de = Route
     hu = Útvonal
     id = Rute
@@ -6539,6 +6541,7 @@
     tags = tizen
     en = I disagree
     ru = Я не согласен
+    pt-BR = Esta aplicação utiliza dados geográficos (incluindo mapas, listas de empresas, pontos de interesses, fronteiras de países e regiões etc.) do projeto OpenStreetMap. Nós não garantimos a consistência, precisão, completude ou aplicabilidade dos dados do OpenStreetMap.
     cs = Nesouhlasím
     fi = En hyväksy
     fr = Je ne suis pas d'accord
@@ -6558,10 +6561,11 @@
     comment = text of notification
     tags = ios
     en = Download the map of the place where you are
+    pt-BR = Eu concordo
     ru = Скачайте карту места, где вы находитесь
     ar = تنزيل خريطة المكان الذي توجد فيه
     cs = Stáhněte si mapu místa, kde právě jste
-    pt-BR = Descarregue o mapa do local onde estiver
+    pt-BR = Baixe o mapa do local onde estiver
     da = Download kortet over det sted, hvor du befinder dig
     nl = Download de kaart van de plaats waar u bent
     fi = Lataa sijaintisi kartta
@@ -6578,6 +6582,8 @@
     ro = Descărcați harta locului în care vă aflați
     es = Descarga el mapa del lugar en que te encuentras
     sv = Ladda ner kartan över din nuvarande plats
+    pt-BR = Eu não concordo
+
     th = ดาวน์โหลดแผนที่เกี่ยวกับสถานที่ที่คุณอยู่
     tr = Bulunduğun yerin haritasını indir
     uk = Завантажуйте карту тієї місцевості, де ви знаходитесь
@@ -6594,7 +6600,7 @@
     ru = Полная версия MAPS.ME сегодня бесплатна! Скачай сейчас и расскажи друзьям.
     ar = تطبيق MAPS.ME مجاني اليوم! قم بتنزيله الآن وأخبر أصدقائك.
     cs = Plná verze MAPS.ME je dnes zdarma! Stáhněte si ji nyní a dejte vědět přátelům.
-    pt-BR = A versão completa do MAPS.ME é hoje grátis! Descarregue e conte aos seus amigos.
+    pt-BR = A versão completa do MAPS.ME é grátis hoje! Baixe e conte aos seus amigos.
     da = Fuld version af MAPS.ME er gratis i dag! Download nu og fortæl dine venner om det.
     nl = Volledige versie van MAPS.ME is nu gratis! Download nu en vertel het je vrienden.
     fr = Version complète de MAPS.ME est gratuit aujoud'hui ! Téléchargez-le maintenant et dites-le à vos amis.
@@ -6623,7 +6629,7 @@
     ar = نحن ننقل خرائط التنزيلات الخاصة بك من MAPS.ME Lite إلى MAPS.ME. يمكن أن يستغرق بضع دقائق
     cs = Právě přenášíme vaše stažené mapy z MAPS.ME Lite do MAPS.ME. Může to několik minut trvat.
     da = Vi overfører dine downloadede kort fra MAPS.ME Lite til MAPS.ME. Det kan tage et par minutter.
-    pt-BR = Estamos a transferir os seus mapas descarregados da MAPS.ME Lite para a MAPS.ME. Isto pode demorar alguns minutos.
+    pt-BR = Estamos transferindo os seus mapas baixados do MAPS.ME Lite para o MAPS.ME. Isto pode demorar alguns minutos.
     nl = We verplaatsen uw gedownloade kaarten van MAPS.ME Lite naar MAPS.ME. Dit kan enkele minuten duren.
     fi = Me siirrämme lataamasi kartat MAPS.ME Lite:stä MAPS.ME:hen. Siirtäminen voi viedä muutaman minuutin.
     fr = Nous transférons vos cartes téléchargées de MAPS.ME Lite vers MAPS.ME. Cela peut prendre quelques minutes.
@@ -6656,7 +6662,7 @@
     ar = تم بنجاح نقل خرائطك التي تم تنزيلها إلى MAPS.ME.
     cs = Vaše stažené mapy byly úspěšně přeneseny do MAPS.ME.
     da = Dine downloadede kort er blevet succesfuldt overført til MAPS.ME.
-    pt-BR = Os seus mapas descarregados estão transferidos com sucesso para a MAPS.ME.
+    pt-BR = Os seus mapas baixados foram transferidos com sucesso para o MAPS.ME.
     nl = Uw gedownloade kaarten werden met succes verplaatst naar MAPS.ME.
     fi = Lataamasi kartat on siirretty onnistuneesti MAPS.ME:hen.
     fr = Vos cartes téléchargées ont été transférées avec succès vers MAPS.ME.
@@ -6689,7 +6695,7 @@
     ar = فشل نقل خرائطك يُرجى حذف MAPS.ME Lite وتنزيل الخرائط مرة أخرى.
     cs = Vaše mapy se nepodařilo přenést. Prosím, odstraňte MAPS.ME Lite a stáhněte si mapy znovu.
     da = Det lykkedes ikke at overføre dine kort. Slet venligst MAPS.ME Lite og download kortene igen.
-    pt-BR = Falhou a transferência dos seus mapas. Por favor, elimine a MAPS.ME Lite e descarregue os mapas novamente.
+    pt-BR = A transferência dos seus mapas falhou. Por favor, elimine o MAPS.ME Lite e baixe os mapas novamente.
     nl = Verplaatsing van uw kaarten mislukt. Gelieve MAPS.ME Lite te verwijderen en de kaarten opnieuw te downloaden.
     fi = Karttoja ei voitu siirtää. Ole hyvä ja poista MAPS.ME Lite ja lataa kartat uudelleen.
     fr = Le transfert de vos cartes a échoué. Veuillez supprimer MAPS.ME Lite et télécharger les cartes de nouveau.
@@ -6721,7 +6727,7 @@
     ar = الإعدادات والمزيد
     cs = Nastavení a další
     da = Indstillinger & Mere
-    pt-BR = Definições e Mais
+    pt-BR = Configurações e Mais
     nl = Instellingen & meer
     fi = Asetukset &amp; Lisää
     fr = Paramètres & plus
@@ -6825,7 +6831,7 @@
     ar = أعجبني على الفيسبوك
     cs = Lajknout na Facebooku
     da = Synes godt om på Facebook
-    pt-BR = Gostar no Facebook
+    pt-BR = Curtir no Facebook
     nl = Ons leuk vinden op Facebook
     fi = Tykkää meistä Facebookissa
     fr = Aimer sur Facebook
@@ -6891,7 +6897,7 @@
     ar = أتصل بنا
     cs = Kontaktovat nás
     da = Kontakt os
-    pt-BR = Contacte-nos
+    pt-BR = Contate-nos
     nl = Contact met ons opnemen
     fi = Ota yhteyttä
     fr = Contactez-nous
@@ -6939,7 +6945,7 @@
     en = Subscribe to our news
     ru = Подписаться на новости
     ar = أشترك في نشرتنا الإخبارية
-    pt-BR = Subscreva as nossas notícias
+    pt-BR = Assine nossas notícias
     cs = Přihlásit se k odběru novinek
     da = Abonnér på vores nyheder
     nl = Aanmelden voor onze nieuwtjes
@@ -6972,7 +6978,7 @@
     en = Rate the app
     ru = Оценить приложение
     ar = تقييم التطبيق
-    pt-BR = Classificar a aplicação
+    pt-BR = Avaliar a aplicação
     cs = Ohodnotit aplikaci
     da = Bedøm appen
     nl = App beoordelen
@@ -6994,6 +7000,7 @@
     tr = Uygulamayı değerlendir
     uk = Оцінити застосунок
     vi = Cho điểm ứng dụng
+    pt-BR = Avaliar no Google Play
     zh-Hans = 为该应用打分
     zh-Hant = 為該應用程式評分
     he = דרגו את האפליקציה
@@ -7001,6 +7008,7 @@
 
   [rate_gp]
     comment = Rate in Google Play (Android only)
+    pt-BR = Compartilhe com um Amigo
     tags = android
     en = Rate on Google Play
     ru = Оценить в Google Play
@@ -7009,6 +7017,7 @@
     zh-Hant = 在 Google Play 評分
 
   [tell_friends]
+    pt-BR = Olá! Instale o MAPS.ME!
     comment = Share with friends: menu item title
     tags = android
     en = Tell a Friend
@@ -7127,7 +7136,7 @@
   [subscribe_me_subject]
     comment = Email subject
     tags = ios, android
-    pt-BR = Por favor inscrevam-me na newsletter da MAPS.ME
+    pt-BR = Por favor inscrevam-me na newsletter do MAPS.ME
     en = Please subscribe me to the MAPS.ME newsletter
     ru = Подпишите меня на email-рассылку MAPS.ME
     ar = يرجى اشتراكي في النشرة البريدية لدى MAPS.ME

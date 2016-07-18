@@ -203,7 +203,7 @@ uk:Пам’ятні місця
 zh-Hant:旅遊景點
 pl:Osobliwości miasta
 pt:Vistas
-pt-BR:Vistas
+pt-BR:Turístico
 hu:Látnivaló
 th:สถานที่ท่องเที่ยว
 zh-Hans:景点
