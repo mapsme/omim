@@ -1427,7 +1427,7 @@
 
 "current_location_unknown_continue_button" = "Продолжить";
 
-"current_location_unknown_stop_button" = "Остановить";
+"current_location_unknown_stop_button" = "Стоп";
 
 "current_location_unknown_error_title" = "Местоположение не найдено.";
 
@@ -1527,10 +1527,6 @@
 "error_enter_correct_email" = "Введите корректный email";
 
 "error_enter_correct" = "Введите корректное значение";
-
-"tourism_apartment" = "Апартаменты";
-
-"tourism_resort" = "Дом отдыха﻿";
 
 "editor_profile_changes_for_next_place" = "Правок до следующего места: %d";
 
