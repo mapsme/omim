@@ -16095,7 +16095,7 @@
     en = You will never get lost again
     ru = Вы никогда больше не заблудитесь
     ar = لن تضل الطريق أبدا بعد الآن
-    pt-BR = Nunca mais voltará a perder-se
+    pt-BR = Você nunca mais ficará perdido outra vez
     cs = Již nikdy nezabloudíte
     da = Du vil aldrig fare vild igen
     nl = Je zult nooit meer verdwalen
@@ -16126,7 +16126,7 @@
     en = Plan optimal car and pedestrian routes, even if there is no internet connection!
     ru = Прокладывайте самые оптимальные автомобильные и пешеходные маршруты даже там, где нет связи!
     ar = قم بتخطيط أفضل طرق السيارات والمشاة، حتى مع عدم وجود اتصال بالإنترنت!
-    pt-BR = Planeie itinerários ideais de automóvel e a pé, mesmo se não houver ligação à Internet!
+    pt-BR = Planeje itinerários ideais de automóvel e a pé, mesmo se não houver ligação à Internet!
     cs = Naplánujte si optimální trasy pro auto nebo pěší chůzi, i když tam nebude připojení k internetu!
     da = Planlæg de optimale ruter i bil og til fods selv uden internetforbindelse!
     nl = Plan optimale auto- en wandelroutes, zelfs als er geen internetverbinding is!
@@ -16157,7 +16157,7 @@
     en = Offline navigation
     ru = Оффлайн навигация
     ar = الملاحة في وضع غير متصل
-    pt-BR = Navegação offline
+    pt-BR = Navegação sem conexão
     cs = Offline navigace
     da = Offline navigering
     nl = Offline navigatie
@@ -16188,7 +16188,7 @@
     en = Plan optimal car and pedestrian routes.
     ru = Прокладывайте оптимальные автомобильные и пешеходные маршруты.
     ar = خطط أفضل طرق السيارات والمشاة.
-    pt-BR = Planeie itinerários ideais de automóvel e a pé.
+    pt-BR = Planeje itinerários ideais de automóvel e a pé.
     cs = Naplánujte si optimální trasy pro auto nebo pěší chůzi.
     da = Planlæg de optimale ruter i bil og til fods.
     nl = Plan optimale auto- en wandelroutes.
@@ -16374,7 +16374,7 @@
     en = In order for you to use navigation and the other app functions, MAPS.ME needs access to your geoposition.
     ru = Чтобы пользоваться навигацией и другими функциями приложения, нам необходим доступ к вашей геопозиции.
     ar = لاستخدام الملاحة والميزات الأخرى، فنحن بحاجة إلى تحديد موقعك الجغرافي.
-    pt-BR = Para utilizar a navegação e outros recursos, precisamos de aceder à sua localização geográfica.
+    pt-BR = Para utilizar a navegação e outros recursos, precisamos de acesso à sua localização geográfica.
     cs = Chcete-li používat navigaci a další funkce, pak potřebujeme přístup k vaší zeměpisné poloze.
     da = For at bruge navigering og andre funktioner skal vi have adgang til din geolokation.
     nl = Om de navigatie en andere functies te kunnen gebruiken, hebben we toegang tot je geolocatie nodig.
@@ -16585,7 +16585,7 @@
     en = We will make sure to send your comments to the map editors.
     ru = Мы обязательно отправим ваш комментарий картографам.
     ar = سوف نرسل تعليقك إلى فريق رسم الخرائط.
-    pt-BR = Encaminharemos o seu comentário aos cartógrafos.
+    pt-BR = Encaminharemos o seu comentário aos editores do mapa.
     cs = Váš komentář pošleme kartografům.
     da = Vi vil sende dine kommentarer til kartograferne.
     nl = We zullen uw opmerking doorsturen naar de kaartmakers.
@@ -16710,7 +16710,7 @@
     nl = Met sommige abonnementen of bij roaming kan dit behoorlijk duur zijn.
     fi = Tämä vaihtoehto saattaa olla huomattavasti kalliimpi tietyillä sopimuksilla tai roaming-yhteydellä.
     fr = Cela pourrait être très cher avec certains abonnements ou si vous êtes en déplacement.
-    pt-BR = Isto pode ser significativamente caro, com alguns planos ou se roaming.
+    pt-BR = Isto pode ser significativamente caro com alguns planos ou se estiver em roaming.
     de = Das könnte mit einigen Tarifen oder beim Roaming sehr teuer werden.
     hu = Ez jelentősen drága lehet némely előfizetés vagy roaming keretein belül.
     id = Ini bisa menjadi jauh mahal pada beberapa paket atau jika roaming.
@@ -16740,7 +16740,7 @@
     fi = Syötä oikea talon numero
     fr = Saisir un numéro de maison correct
     de = Richtige Hausnummer eingeben
-    pt-BR = Introduzir um número de casa correto
+    pt-BR = Informe o número correto da casa
     hu = Helyes házszámot adjon meg
     id = Masukkan nomor rumah yang benar
     it = Inserisci numero civico corretto
@@ -16768,6 +16768,7 @@
     cs = Počet poschodí (max. %d)
     da = Antal etager (maks %d)
     nl = Aantal verdiepingen (max. %d)
+    pt-BR = Número de andares (máx. %d)
     fi = Kerrosten määrä (maks. %d)
     fr = Nombre d'étages (max %d)
     de = Anzahl der Etagen (%d maximal)
@@ -16796,6 +16797,7 @@
     ru = Редактируйте здания высотой максимум 25 этажей
     ar = تحرير المبنى بحد أقصى 25 طابقًا
     cs = Opravte počet poschodí, max. 25
+    pt-BR = Somente edifícios até 25 andares podem ser editados
     da = Rediger bygningen med maksimum 25 etager
     nl = Bewerk het gebouw met maximaal 25 verdiepingen
     fi = Muokkaa kerroksia, enintään 25 kerrosta
@@ -16824,6 +16826,7 @@
     tags = ios, android
     en = ZIP Code
     ru = Почтовый индекс
+    pt-BR = CEP
     ar = الرمز البريدي
     cs = PSČ
     da = Postnummer
@@ -16852,6 +16855,7 @@
 
   [error_enter_correct_zip_code]
     tags = ios, android
+    pt-BR = Informe o CEP correto
     en = Enter the correct ZIP Code
     ru = Введите корректный почтовый индекс
     ar = أدخل الرمز البريدي الصحيح
@@ -16881,6 +16885,7 @@
     sk = Zadajte správne PSČ
 
   [placepage_unknown_place]
+    pt-BR = Local desconhecido
     comment = Place Page title for long tap
     tags = ios, android
     en = Unknown Place
@@ -16909,6 +16914,7 @@
     vi = Địa Điểm Chưa Biết
     zh-Hans = 未知位置
     zh-Hant = 未知的位置
+    pt-BR = Informação adicional
     sk = Neznáme miesto
 
   [editor_other_info]
@@ -16937,6 +16943,7 @@
     tr = Ek bilgi
     uk = Додаткові дані
     vi = Thông Tin Bổ Sung
+    pt-BR = Comentário detalhado
     zh-Hans = 附加信息
     zh-Hant = 額外資訊
     sk = Dodatočné informácie
@@ -16965,6 +16972,7 @@
     sv = Detaljerad kommentar
     th = ข้อคิดเห็นอย่างละเอียด
     tr = Ayrıntılı yorum
+    pt-BR = Suas sugestões de mudança serão enviadas para a comunidade OpenStreetMap. Descreva em detalhes o que não pode ser editado com o MAPS.ME.
     uk = Докладний коментар
     vi = Nhận xét chi tiết
     zh-Hans = 详细备注
@@ -18504,7 +18512,7 @@
     pl = Nazwa zakładki
     pt = Nome do marcador
     ro = Nume marcaj
-    pt-BR = Suas sugestões de mudanças foram enviadas
+    pt-BR = Suas sugestões de mudança foram enviadas
     es = Nombre del marcador
     sv = Namn bokmärke
     th = ชื่อของ Bookmark
