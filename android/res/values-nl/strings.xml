@@ -875,8 +875,6 @@
 	<string name="error_enter_correct_web">Voer een geldig webadres in</string>
 	<string name="error_enter_correct_email">Voer een geldig e-mailadres in</string>
 	<string name="error_enter_correct">Voer een geldige waarde in</string>
-	<string name="tourism_apartment">Appartementen</string>
-	<string name="tourism_resort">Complex</string>
 	<string name="editor_profile_changes_for_next_place">Wijzigingen tot de volgende positie: %d</string>
 	<string name="editor_profile_rating_place">Positie in klassement</string>
 	<string name="booking_dialog_not_connect_header">Maak verbinding met internet om het hotel te boeken</string>

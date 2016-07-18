@@ -895,8 +895,6 @@
 	<string name="error_enter_correct_web">輸入有效網址</string>
 	<string name="error_enter_correct_email">輸入有效電子郵箱</string>
 	<string name="error_enter_correct">輸入有效值</string>
-	<string name="tourism_apartment">公寓</string>
-	<string name="tourism_resort">度假酒店</string>
 	<string name="editor_profile_changes_for_next_place">對下一個地點的變更：%d</string>
 	<string name="editor_profile_rating_place">排名位置</string>
 	<string name="booking_dialog_not_connect_header">要預訂酒店，請啟用您的網際網路連線</string>

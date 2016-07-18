@@ -892,8 +892,6 @@
 	<string name="error_enter_correct_web">Wpisz prawidłowy adres strony internetowej</string>
 	<string name="error_enter_correct_email">Wpisz prawidłowy e-mail</string>
 	<string name="error_enter_correct">Wpisz prawidłową wartość</string>
-	<string name="tourism_apartment">Apartamenty</string>
-	<string name="tourism_resort">Dom wczasowy</string>
 	<string name="editor_profile_changes_for_next_place">Zmiany w następnym miejscu: %d</string>
 	<string name="editor_profile_rating_place">Pozycja w rankingu</string>
 	<string name="booking_dialog_not_connect_header">Aby zarezerwować pokój w hotelu, włącz połączenia internetowe</string>
