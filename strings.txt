@@ -14981,7 +14981,7 @@
     en = To create a route, you need to update all maps and then plan the route again.
     ru = Для построения маршрутов необходимо обновить все карты и построить маршрут заново.
     ar = لإنشاء مسار، فأنت تحتاج إلى تحديث كافة الخرائط ثم إعادة تخطيط المسار مرة أخرى.
-    pt-BR = Para criar um itinerário, é necessário atualizar todos os mapas e, em seguida, voltar a planear o itinerário.
+    pt-BR = Para criar um itinerário é necessário atualizar todos os mapas e, em seguida, voltar a planejar o itinerário.
     cs = Chcete-li vytvořit trasu, pak musíte aktualizovat všechny mapy a poté trasu naplánovat znovu.
     da = For at oprette en rute skal du opdatere alle kort og så planlægge ruten igen.
     nl = Om een route te creëren, moet je alle kaarten updaten en dan de route opnieuw plannen.
@@ -15322,7 +15322,7 @@
     en = Username is invalid
     ru = Неверное имя пользователя
     ar = اسم المستخدم غير صحيح
-    pt-BR = O nome de utilizador é inválido
+    pt-BR = O nome de usuário é inválido
     cs = Uživatelské jméno není platné
     da = Ugyldigt brugernavn
     nl = Gebruikersnaam is ongeldig
@@ -15384,7 +15384,7 @@
     en = Login with OpenStreetMap
     ru = Войти через OpenStreetMap
     ar = تسجيل الدخول عبر OpenStreetMap
-    pt-BR = Iniciar sessão com a OpenStreetMap
+    pt-BR = Iniciar sessão no OpenStreetMap
     cs = Přihlásit se pomocí OpenStreetMap
     da = Login med OpenStreetMap
     nl = Log in met OpenStreetMap
