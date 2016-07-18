@@ -17029,6 +17029,7 @@
     vi = Thông tin bổ sung về OpenStreetMap
     zh-Hans = 关于 OpenStreetMap 的更多信息
     zh-Hant = 關於 OpenStreetMap 的更多資訊
+    pt-BR = Mais sobre OpenStreetMap
     sk = Viac o OpenStreetMap
 
   [editor_operator]
@@ -17056,6 +17057,7 @@
     tr = İşletmeci
     uk = Володар
     vi = Đơn vị điều hành
+    pt-BR = Operador
     zh-Hans = 运营者
     zh-Hant = 營運者
     sk = Prevádzkovateľ
@@ -17083,6 +17085,7 @@
     sv = Ange företag, organisation eller person som är ansvarig för lokalerna.
     th = ใส่ชื่อบริษัท, องค์กร หรือ บุคคลที่เป็นผู้รับผิดชอบสถานที่นี้
     tr = Tesislerden sorumlu şirketi, kurumu veya bireyi girin.
+    pt-BR = Informe a companhia, a orgainização ou o indivíduo responsável pelas instalações.
     uk = Вкажіть компанію, організацію або особу, що відповідає за працездатність об'єкта
     vi = Nhập công ty, tổ chức hoặc cá nhân phụ trách cơ sở.
     zh-Hans = 输入公司、组织或设施负责人。
@@ -17110,6 +17113,7 @@
     ro = Nu aveți modificări locale
     es = No tiene ediciones locales
     sv = Du har inga lokala redigeraingar
+    pt-BR = Você não tem edições locais
     th = คุณไม่มีการแก้ไขท้องถิ่น
     tr = Yerel düzenlemeniz yok
     uk = Поки що ви не маєте локальних виправлень
@@ -17137,6 +17141,7 @@
     pl = Jest to liczba sugerowanych przez ciebie zmian na mapie, które aktualnie dostępne są tylko na twoim urządzeniu.
     pt = Isto demonstra o número das suas alterações sugeridas no mapa que atualmente só são acessíveis no seu dispositivo.
     ro = Acesta arată numărul de modificări sugerate pe hartă care sunt momentan accesibile doar pe dispozitivul dvs.
+    pt-BR = Isto mostra o número de mudanças no mapa sugeridas por você que atualmente estão disponíveis apenas no seu dispositivo. 
     es = Esto muestra el número de sus cambios sugeridos en el mapa que actualmente solo son accesibles desde su dispositivo.
     sv = Detta visar antalet föreslagna förändringar på kartan som som endast är tillgängliga på din enhet.
     th = หมายเลขที่แสดงอยู่ คือ หมายเลขที่คุณได้ทำการแนะนำการเปลี่ยนแปลงบนแผนที่ที่สามารถเข้าถึงได้โดยอุปกรณ์ของคุณท่านั้น
@@ -17164,6 +17169,7 @@
     ko = 다른 언어로된 이름
     nb = Navn på andre språk
     pl = Nazwa w innych językach
+    pt-BR = Nome em outros idiomas
     pt = Nome noutras línguas
     ro = Nume în alte limbi
     es = Nombre en otros idiomas
@@ -17191,6 +17197,7 @@
     it = Invia a OSM
     ja = OSMに送信
     ko = OSM에 전송
+    pt-BR = Enviar para o OSM
     nb = Send til OSM
     pl = Wyślij do OSM
     pt = Enviar para OSM
@@ -17218,6 +17225,7 @@
     hu = Eltávolítás
     id = Hapus
     it = Rimuovi
+    pt-BR = Remover
     ja = 削除
     ko = 삭제
     nb = Fjern
@@ -17245,6 +17253,7 @@
     fr = Mes cartes
     de = Meine Karten
     hu = Térképeim
+    pt-BR = Meus mapas
     id = Peta saya
     it = Le mie mappe
     ja = マイマップ
@@ -17272,6 +17281,7 @@
     nl = U hebt geen kaarten gedownload
     fi = Et ole ladannut yhtään karttaa
     fr = Vous n'avez téléchargé aucune carte
+    pt-BR = Você não fez o download de qualquer mapa
     de = Keine Karten geladen
     hu = Még nem töltött le térképet
     id = Tidak ada peta apa pun yang diunduh
@@ -17299,6 +17309,7 @@
     cs = Stáhněte si mapy a hledejte cestu a její cíl, i když jste offline.
     da = Download kort for at finde position og navigere offline.
     nl = Download kaarten om de locatie te zoeken en offline te navigeren.
+    pt-BR = Baixe mapas para pesquisar locais e usar a navegação sem conexão.
     fi = Lataa kartat löytääksesi paikan ja navigoidaksesi offline.
     fr = Téléchargez des cartes pour rechercher l'emplacement et naviguer hors ligne
     de = Laden Sie die für die Suche nach Orten erforderlichen Karten und verwenden Sie die Navigation offline.
@@ -17326,6 +17337,7 @@
     ru = Найти город или страну
     ar = البحث في المدينة أو البلد
     cs = Prohledat město nebo zemi
+    pt-BR = Pesquisar cidade ou país
     da = Søg by eller land
     nl = Stad of land zoeken
     fi = Etsi kaupunki tai maa
@@ -17354,6 +17366,7 @@
     comment = Error title that appears after certain time without location.
     en = Continue detecting your current location?
     ru = Продолжить поиск местоположения?
+    pt-BR = Continuar procurando sua localização atual?
     ar = هل تريد متابعة اكتشاف موقعك الحالي؟
     cs = Pokračovat se zjišťováním současné polohy?
     da = Fortsæt med at registrere din aktuelle position?
@@ -17382,6 +17395,7 @@
 
   [current_location_unknown_message]
     comment = Error that appears after certain time without location.
+    pt-BR = A localização atual é desconhecida. Talvez você esteja em um edifício ou túnel.
     en = Current location is unknown. Maybe you are in a building or in a tunnel.
     ru = Местоположение не найдено. Возможно, вы находитесь в помещении или в туннеле.
     ar = الموقع الحالي غير معروف. ربما تتواجد داخل مبنى أو نفق.
@@ -17409,6 +17423,7 @@
     zh-Hans = 当前位置未知，可能您在建筑内或隧道内。
     zh-Hant = 目前位置未知，可能您在建築物內或隧道內。
     sk = Súčasná pozícia je neznáma. Možno sa nachádzate v budove alebo v tuneli.
+    pt-BR = Continue
 
   [current_location_unknown_continue_button]
     en = Continue
@@ -17436,6 +17451,7 @@
     uk = Продовжити
     vi = Tiếp tục
     zh-Hans = 继续
+    pt-BR = Pare
     zh-Hant = 繼續
     sk = Pokračovať
 
@@ -17462,6 +17478,7 @@
     sv = Stopp
     th = หยุด
     tr = Dur
+    pt-BR = A localização atual é desconhecida.
     uk = Зупинити
     vi = Dừng
     zh-Hans = 停止
@@ -17489,6 +17506,7 @@
     es = La ubicación actual es desconocida.
     sv = Den nuvarande platsen är okänd.
     th = ไม่ทราบชื่อของที่ตั้งปัจจุบัน
+    pt-BR = Ocorreu um erro enquanto procurava por sua localização. Verifique se o seu dispositivo está funcionando adequadamento e tente novamente depois.
     tr = Geçerli konum bilinmiyor.
     uk = Місцезнаходження не знайдено.
     vi = Chưa biết địa điểm hiện tại.
@@ -17516,6 +17534,7 @@
     pt = Ocorreu um erro ao pesquisar a sua localização. Verifique se o seu dispositivo está a funcionar devidamente e volte a tentar mais tarde.
     ro = S-a produs o eroare la căutarea locației. Verificați dacă dispozitivul funcționează corect și încercați din nou.
     es = Se ha producido un error al buscar su ubicación. Compruebe que su dispositivo funciona correctamente e inténtelo más tarde.
+    pt-BR = Nós atualizamos o editor de mapas
     sv = Ett fel inträffade vid sökning efter din plats. Kontrollera att din enhet fungerar och försök igen senare.
     th = มีข้อผิดพลาดเกิดขึ้นในขณะที่กำลังหาที่ตั้งที่คุณอยู่ โปรดตรวจสอบอุปกรณ์ของคุณว่าทำงานถูกต้อง และลองใหม่อีกครั้ง
     tr = Konumunuz aranırken bir hata oluştu. Cihazının düzgün çalışıp çalışmadığını kontrol edip daha sonra tekrar deneyin.
@@ -17543,6 +17562,7 @@
     ko = 지도 편집기를 업데이트했습니다
     nb = Vi har oppdatert kartredigeringsprogrammet
     pl = Zaktualizowaliśmy edytor map
+    pt-BR = Usuários do MAPS.ME realizaram 50 000 alterações no mapa. Juntos nós estamos fazendo o mapa mais detalhado no Mundo. Junte-se a nós!
     pt = Atualizámos o editor do mapa
     ro = Am actualizat editorul de hărți
     es = Hemos actualizado el editor de mapas
@@ -17871,7 +17891,7 @@
     da = Tagterrasse
     nl = Dak
     fi = Katolla
-    pt-BR = Abrigo
+    pt-BR = Coberto
     fr = Toit
     de = Parkdeck
     hu = Tetőparkoló
