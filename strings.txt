@@ -8579,7 +8579,7 @@
     tags = ios,android,tizen
     en = Application menu
     ru = Меню приложения
-    pt-BR = Menu de Aplicação
+    pt-BR = Menu de aplicação
     ar = قائمة التطبيق
     cs = Nabídka aplikace
     da = Programmenu
@@ -8618,7 +8618,7 @@
     fr = Utilisez l'application Google Play Services pour obtenir votre emplacement actuel
     de = Nutzen Sie die Google Play-Dienste, um Ihren aktuellen Standort zu erhalten
     hu = Használja a Google Play szolgáltatást, hogy szert tegyen aktuális helyszínéről
-    pt-BR = Use o Google Play Serviços para determinar a sua localização actual
+    pt-BR = Use o Google Play Serviços para determinar a sua localização atual
     id = Gunakan Layanan Google Play untuk mendapatkan lokasi Anda saat ini
     it = Usa i servizi Google Play per ottenere la tua posizione attuale
     ja = 現在のロケーションを取得するためにGoogle Playのサービスを使う
@@ -8723,7 +8723,7 @@
     nb = Liker du MAPS.ME?
     pl = Lubisz MAPS.ME?
     pt = Você gosta de MAPS.ME?
-    pt-BR = Você gosta de MAPS.ME?
+    pt-BR = Você gosta do MAPS.ME?
     ro = Îți place MAPS.ME?
     es = ¿Te gusta MAPS.ME?
     sv = Gillar du MAPS.ME?
@@ -9184,7 +9184,7 @@
     nb = Du er på vei til å laste ned %@ MB via mobildata (under 'roaming'). Dette kan resultere i påløpende ekstragebyrer, avhengig av din mobiloperatørløsning.
     pl = %@ MB do pobrania przy wykorzystaniu danych mobilnych (w roamingu). Może to oznaczać dodatkowe opłaty w zależności od planu danych mobilnych Twojego dostawcy usług.
     pt = Você fará o download de %@ MB através de Dados Móveis (em Roaming). Isto poderá resultar em cobranças adicionais, dependendo do seu plano de dados móveis.
-    pt-BR = Você fará o download de %@ MB através de Dados Móveis (em Roaming). Isto poderá resultar em cobranças adicionais, dependendo do seu plano de 
+    pt-BR = Você fará o download de %@ MB através de Dados Móveis (em Roaming). Isto poderá resultar em cobranças adicionais, dependendo do seu plano de celular.
     ro = Urmează să descărcați %@ MB folosind abonamentul de date pentru mobil (în roaming). Acest lucru poate genera costuri suplimentare, în funcție de abonamentul dvs. de date, activat de operatorul de telefonie mobilă.
     es = Vas a descargar %@ MB usando datos móviles (en itinerancia). Esto puede dar lugar a cargos adicionales, dependiendo del plan de datos móviles de tu operador.
     sv = Du kommer ladda ner %@ MB med mobildata (i roamingläge). Detta kan resultera i extra kostnader beroende på din operatörs mobildataplan.
@@ -9293,7 +9293,7 @@
     uk = Будь ласка, увімкніть геолокацію
     vi = Bạn vui lòng bật Dịch vụ Định vị
     zh-Hans = 请启用位置服务
-    pt-BR = Por favor active os Serviços de Localização
+    pt-BR = Por favor, ative os Serviços de Localização
     zh-Hant = 請啟用定位服務
     sk = Prosím, povoľte Služby určovania polohy
 
@@ -9518,7 +9518,7 @@
     uk = Не вдалося завантажити
     vi = tải xuống thất bại
     zh-Hans = 下载失败
-    pt-BR = descarga falhou
+    pt-BR = download falhou
     zh-Hant = 下載失敗
     sk = Sťahovanie zlyhalo
 
