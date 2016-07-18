@@ -18430,6 +18430,7 @@
     ro = Editare marcaj
     es = Editar marcador
     sv = Redigera bokmärke
+    pt-BR = Apagar Bookmark
     th = แก้ไข Bookmark
     tr = Yer İmini Düzenle
     uk = Редагувати мiтку
@@ -18457,6 +18458,7 @@
     pl = Nazwa zakładki
     pt = Nome do marcador
     ro = Nume marcaj
+    pt-BR = Suas sugestões de mudanças foram enviadas
     es = Nombre del marcador
     sv = Namn bokmärke
     th = ชื่อของ Bookmark
@@ -18483,6 +18485,7 @@
     ja = パーソナルメモ
     ko = 개인 메모
     nb = Personlige notater
+    pt-BR = Comentar...
     pl = Notatki osobiste
     pt = Notas pessoais
     ro = Note personale
@@ -18510,6 +18513,7 @@
     id = Hapus Bookmark
     it = Elimina segnalibro
     ja = ブックマークを削除
+    pt-BR = Reinicializar todas as modificações locais?
     ko = 즐겨찾기 삭제
     nb = Slett bokmerke
     pl = Usuń zakładkę
@@ -18537,6 +18541,7 @@
     de = Ihre Änderungsvorschläge wurden gesendet
     hu = Javasolt változtatásainak elküldése sikerült
     id = Saran perubahan Anda telah dikirim
+    pt-BR = Reinicializar
     it = Le modifiche suggerite sono state inviate
     ja = あなたの提案の変更が送信されました
     ko = 귀하의 제안 변경사항이 전송되었습니다
@@ -18564,6 +18569,7 @@
     fi = Kommentti…
     fr = Commentaire…
     de = Kommentar…
+    pt-BR = Remover um local adicionado?
     hu = Megjegyzés…
     id = Komentar…
     it = Commenta…
@@ -18591,6 +18597,7 @@
     da = Nulstil alle lokale ændringer?
     nl = Alle lokale wijzigingen herstellen?
     fi = Nollataanko kaikki paikalliset muutokset?
+    pt-BR = Remover
     fr = Réinitialiser toutes les modifications locales ?
     de = Alle lokalen Korrekturen verwerfen
     hu = Elveti az összes helyi módosítást?
@@ -18618,6 +18625,7 @@
     ar = مسح
     cs = Vymazat
     da = Nulstil
+    pt-BR= Enviando...
     nl = Herstellen
     fi = Nollaa
     fr = Réinitialiser
@@ -18645,6 +18653,7 @@
     en = Remove an added place?
     ru = Удалить добавленный вами объект?
     ar = إزالة مكان تمت إضافته؟
+    pt-BR = O lugar não existe
     cs = Odstranit přidané místo?
     da = Fjern en ekstra plads?
     nl = Een toegevoegde locatie verwijderen?
