@@ -1547,7 +1547,7 @@
     de = Heruntergeladen (%@). Antippen, um zu löschen
     hu = Letöltve (%@), érintse meg törléshez
     id = (%@) telah diunduh, sentuh untuk menghapus
-    pt-BR = A descarregar %d%%, toque para cancelar
+    pt-BR = Baixando %d%%, toque para cancelar
     it = Scaricato (%@), tocca per cancellare
     ja = (%@)をダウンロードしました。削除するには画面をタッチしてください。
     ko = (%@)가 다운로드 되었습니다, 두드려 삭제하십시요.
@@ -1578,7 +1578,7 @@
     de = Verbindungseinstellungen
     hu = Kapcsolat beállítások
     id = Pengaturan Koneksi
-    pt-BR = Descarregado (%@), toque para eliminar
+    pt-BR = Baixado (%@), toque para apagar
     it = Impostazioni di connessione
     ja = 接続設定
     ko = 연결 설정
@@ -1609,7 +1609,7 @@
     de = Herunterladen %@
     hu = Letöltés %@
     id = Unduh %@
-    pt-BR = Definições de Ligação
+    pt-BR = Configurações de Conexão
     it = Scarica %@
     ja = %@をダウンロード
     ko = %@ 다운로드하기
@@ -1639,7 +1639,7 @@
     fr = Fermer
     de = Schließen
     hu = Bezár
-    pt-BR = Descarga %@
+    pt-BR = Baixar %@
     id = Tutup
     it = Chiudi
     ja = 閉じる
@@ -1701,7 +1701,7 @@
     fr = Télécharger
     de = Herunterladen
     hu = Letöltés
-    pt-BR = É necessário um OpenGL acelerado por hardware. Infelizmente o seu dispositivo não é suportado.
+    pt-BR = É necessário OpenGL acelerado por hardware. Infelizmente o seu dispositivo não é suportado.
     id = Unduh
     it = Carica
     ja = ダウンロード
@@ -1732,7 +1732,6 @@
     fr = La carte SD/le stockage USB contenant les cartes téléchargées n'est pas disponible
     de = SD-Karte/USB-Speicher mit heruntergeladenen Karten nicht verfügbar
     hu = Nem található téképeket tartalmazó SD kártya / USB tároló
-    pt-BR = Descarga
     id = Penyimpanan kartu SD/USB dengan peta terunduh tidak tersedia
     it = La scheda/USB/di memoria SD con le mappe scaricate non è disponibile
     ja = マップをダウンロードしたSDカード/USBストレージへ接続できません
@@ -1763,7 +1762,7 @@
     fr = Veuillez débrancher le câble USB ou insérer la carte SD pour utiliser MAPS.ME
     de = Bitte USB-Kabel entfernen oder Speicherkarte einsetzen, um MAPS.ME zu verwenden
     hu = Kérjük bontsa az USB kapcsolatot vagy helyezzen be memóriakártyát a MAPS.ME használatához
-    pt-BR = Não está disponível um cartão SD/armazenamento USB com os mapas descarregados
+    pt-BR = O cartão SD/armazenamento USB com os mapas transferidos não está disponível
     id = Mohon lepas kabel USB atau masukkan kartu memori untuk menggunakan MAPS.ME
     it = Coortesemente scollega il cavo USB oppure inserisci la scheda di memoria per l'usco dell'app
     ja = MAPS.MEを利用するにはUSBケーブルを抜くかメモリーカードを挿入してください
@@ -1825,7 +1824,7 @@
     fr = Mémoire insuffisante pour lancer l'appli
     de = Nicht genügend Speicher, um die Anwendung zu starten
     hu = Nincs elegendő memória az alkalmazás futtatásához
-    pt-BR = Por favor liberte primeiro algum espaço no cartão SD/armazenamento USB para utilizar a app
+    pt-BR = Por favor libere primeiro algum espaço no cartão SD/armazenamento USB para utilizar o app
     id = Memori tidak cukup untuk meluncurkan aplikasi
     it = Memoria insufficiente per lanciare l'app
     ja = メモリ不足のためアプリを起動できません
@@ -1856,7 +1855,7 @@
     fr = Veuillez d'abord libérer %1$@ sur votre appareil avant de télécharger %2$@
     de = Bitte zuerst %1$@ Platz schaffen, um %2$@ herunterzuladen
     hu = Kérjük szabadítson fel %1$@-t az eszközön %2$@ letöltéséhez!
-    pt-BR = Não há memória suficiente para executar a app
+    pt-BR = Não há memória suficiente para executar o app
     id = Mohon bebaskan %1$@ pada perangkat Anda terlebih dahulu untuk mengunduh %2$@
     it = Libera %1$@ sul dispositivo prima per poter scaricare %2$@
     ja = %2$@をダウンロードするにはデバイスに%1$@の空き容量が必要です
@@ -1887,7 +1886,7 @@
     fr = Avant de commencer, permettez-nous de télécharger la carte générale du monde dans votre appareil.\n%@ de données sont nécessaires.
     de = Bevor Sie starten, laden Sie die allgemeine Weltkarte auf Ihr Gerät herunter.\nEs wird %@ Speicherplatz benötigt.
     hu = Első használat előtt letöltjük a világtérképet.\n%@ tárolóhely szükséges.
-    pt-BR = Por favor liberte primeiro %1$@ no seu dispositivo para descarregar %2$@
+    pt-BR = Por favor libere primeiro %1$@ no seu dispositivo para descarregar %2$@
     id = Sebelum Anda mulai izinkan kami mengunduh peta dunia secara umum ke perangkat Anda.\nHal ini memerlukan data %@.
     it = Prima di iniziare è necessario scaricare la mappa generale del mondo sul tuo dispositivo.\nLa dimensione del download è di %@.
     ja = 利用を開始する前におおまかな世界地図をダウンロードします。これには%@の空き容量が必要です。
@@ -1918,7 +1917,7 @@
     fr = Obtention de la position actuelle
     de = Ermittle momentane Position
     hu = Aktuális pozíció meghatározása…
-    pt-BR = Antes de começar permita-nos que descarreguemos um mapa mundial geral para o seu dispositivo.\nÉ necessário %@ de dados.
+    pt-BR = Antes de começar vamos baixar um mapa mundial geral para o seu dispositivo.\nÉ necessário %@ de dados.
     id = Sedang mencari lokasi saat ini
     it = Ottieni la posizione corrente
     ja = 現在地を取得中
@@ -1949,7 +1948,7 @@
     fr = Aller sur la carte
     de = Zur Karte
     hu = Térképhez ugrás
-    pt-BR = A obter a posição atual
+    pt-BR = Obtendo posição atual
     id = Pergi ke Peta
     it = Vai alla mappa
     ja = マップを表示
@@ -2011,7 +2010,7 @@
     fr = Télécharger %@ ?
     de = %@ herunterladen?
     hu = Letöltsem %@-t?
-    pt-BR = A descarregar %@. Pode agora\ncontinuar para o mapa.
+    pt-BR = Baixando %@. Pode agora\ncontinuar para o mapa.
     id = Unduh %@?
     it = Vuoi scaricare %@?
     ja = %@をダウンロードしますか？
@@ -2042,7 +2041,7 @@
     fr = Mettre %@ à jour ?
     de = %@ aktualisieren?
     hu = Frissítsem %@-t?
-    pt-BR = Descarregar %@?
+    pt-BR = Baixar %@?
     id = Perbarui %@?
     it = Vuoi aggiornare %@?
     ja = %@を更新しますか？
@@ -2105,7 +2104,7 @@
     fi = Voit päivittää nykyisen sijaintisi kartan.
     fr = Vous pouvez mettre à jour la carte\nde votre position actuelle.
     de = Sie können die Karte Ihres\naktuellen Standorts aktualisieren.
-    pt-BR = Pode descarregar o mapa\nda sua posição atual.
+    pt-BR = É possível baixar o mapa\nda sua posição atual.
     hu = Frissítheti az aktuális pozícióhoz\ntartozó térképet.
     id = Anda dapat memperbarui peta lokasi Anda saat ini.
     it = Puoi aggiornare la mappa\ndella tua posizione corrente.
@@ -2137,7 +2136,7 @@
     fi = Nykyisen sijaintisi (%@) kartta on ajan tasalla
     fr = La carte de votre position\nactuelle (%@) est à jour
     de = Die Karte um Ihren aktuellen\nStandort (%@) ist aktuell
-    pt-BR = Pode atualizar o mapa\nda sua posição atual.
+    pt-BR = É possível atualizar o mapa\nda sua posição atual.
     hu = A jelenlegi pozícióhoz tartozó\ntérkép (%@) naprakész.
     id = Peta lokasi Anda saat ini (%@) sudah yang terkini
     it = La mappa della tua attuale\nposizione (%@) è aggiornata
@@ -2264,7 +2263,7 @@
     fr = Mettre à jour %@
     de = %@ aktualisieren
     hu = %@ Frissítés
-    pt-BR = Descarregado (%@), toque para atualizar ou eliminar
+    pt-BR = Baixado (%@), toque para atualizar ou apagar
     id = Perbarui %@
     it = Aggiorna %@
     ja = %@を更新
@@ -2393,7 +2392,7 @@
     da = %@ download succesfuldt
     nl = %@ is succesvol gedownload
     fi = %@ ladattu onnistuneesti
-    pt-BR = Não precisa mais do MAPS.ME Lite, podendo portanto desinstalá-la.
+    pt-BR = Não precisa mais do MAPS.ME Lite, podendo portanto desinstalá-lo.
     fr = %@, téléchargement réussi
     de = %@ erfolgreich heruntergeladen
     hu = %@ letöltése sikeres
@@ -2426,7 +2425,7 @@
     da = %@ download mislykkedes
     nl = %@ download is afgebroken
     fi = %@ lataus epäonnistui
-    pt-BR = %@ descarregado com sucesso
+    pt-BR = %@ baixado com sucesso
     fr = %@, échec lors du téléchargement
     de = %@ Herunterladen fehlgeschlagen
     hu = %@ letöltése sikertelen
@@ -2459,7 +2458,7 @@
     da = Tilføj nyt sæt
     nl = Voeg nieuwe Groep toe
     fi = Lisää uusi valikoima
-    pt-BR = %@ descarga falhou
+    pt-BR = O download de %@ falhou
     fr = Ajouter un nouveau groupe
     de = Neue Gruppe hinzufügen
     hu = Új csoport létrehozása
@@ -2537,6 +2536,8 @@
     ro = Culoare marcaj
     es = Color del marcador
     sv = Bokmärkesfärg
+    pt = Adicionar aos favoritos
+    pt-BR = Adicionar aos favoritos
     th = สีของบุ๊กมาร์ก
     tr = Yer İmi Rengi
     uk = Колір мiтки
@@ -2720,7 +2721,7 @@
     da = Navn
     nl = Naam
     fi = Nimi
-    pt-BR = Os meus locais
+    pt-BR = Meus Locais
     fr = Nom
     de = Name
     hu = Név
@@ -2886,7 +2887,7 @@
     nl = Bladwijzers uit andere bronnen kunnen worden geïmporteerd en weergegeven in de MAPS.ME app. Open KML/KMZ bestand met opgeslagen speldjes uit mail, Dropbox of weblink.
     fi = Voit tuoda kirjanmerkkejä MAPS.ME:ssä käytettäväksi muista lähteistä avaamalla KML/KMZ-kirjanmerkkitiedoston sähköpostistasi, Dropbox-tililtäsi tai verkko-osoitteesta.
     fr = Les signets provenant d'autres sources peuvent être importés et affichés dans MAPS.ME. Ouvrez des fichiers KML/KMZ contenant des signets enregistrés, à partir d'un courriel, de Dropbox ou d'un lien Web.
-    pt-BR = Ainda não tem marcadores.\nToque em qualquer lugar no mapa para adicionar um marcador.\nOs marcadores de outras fontes também podem ser 
+    pt-BR = Você ainda não tem marcadores.\nToque em qualquer lugar no mapa para adicionar um marcador.\nOs marcadores de outras fontes também podem ser importados e exibidos na aplicação MAPS.ME. Abrir arqiovp KML/KMZ com pinos guardados a partir do email, Dropbox ou ligação web.
     de = Lesezeichen von anderen Quellen können importiert und in der MAPS.ME-App angezeigt werden. KML-/KMZ-Datei mit gespeicherten Stecknadeln aus einer E-Mail, Dropbox oder einem Weblink öffnen.
     hu = Más forrásokból származó könyvjelzőket is beolvashat a MAPS.ME programba. Nyisson meg KML/KMZ fájlt egy levélből, Dropbox-ból vagy internetről.
     id = Penanda dari sumber lainnya dapat diimpor dan ditampilkan pada MAPS.ME. Buka berkas KML/KMZ tersebut dengan penanda yang disimpan dari surel, Dropbox atau tautan jaringan.
@@ -2919,7 +2920,7 @@
     nl = İnstellingen
     fi = İnstellingen
     fr = Paramètres
-    pt-BR = Os marcadores de outras fontes podem ser importados e exibidos na aplicação MAPS.ME. Abrir ficheiro KML/KMZ com pinos guardados a partir do 
+    pt-BR = Os marcadores de outras fontes podem ser importados e exibidos na aplicação MAPS.ME. Abrir arquivo KML/KMZ com pinos guardados a partir do email, Dropbox ou ligação web.
     de = Einstellungen
     hu = Beállítások
     id = Pengaturan
@@ -3018,7 +3019,7 @@
     nl = Kaarten verplaatsen?
     fi = Siirrä karttoja?
     fr = Déplacer les cartes ?
-    pt-BR = Selecione o local para onde os mapas devem ser descarregados
+    pt-BR = Selecione o local para onde os mapas devem ser baixados
     de = Karten verschieben?
     hu = Áthelyezzük a térképeket?
     id = Pindahkan peta?
@@ -3149,7 +3150,7 @@
     nl = Afstandseenheid
     fi = Mittayksiköt
     fr = Unités de mesure
-    pt-BR = O GPS está desativado. Por favor ative-o nas Definições.
+    pt-BR = O GPS está desativado. Por favor ative-o nas Configurações.
     de = Maßeinheiten
     hu = Mértékegységek
     id = Unit Pengukuran
@@ -3215,7 +3216,7 @@
     nl = Overal
     fr = Partout
     de = Überall
-    pt-BR = Escolha entre milhas e quilómetros
+    pt-BR = Escolha entre milhas e quilômetros
     hu = Mindenütt
     it = Ovunque
     ja = 全マップから検索
@@ -3304,7 +3305,7 @@
     id = Makanan
     it = Cibo
     ja = 飲食
-    pt-BR = No ecrã
+    pt-BR = Na tela
     ko = 음식
     nb = Mat
     pl = Jedzenie
@@ -3531,7 +3532,7 @@
     nl = Uitgaan
     fi = Viihde
     fr = Divertissement
-    pt-BR = Vistas
+    pt-BR = Turismo
     de = Unterhaltung
     hu = Szórakozás
     id = Hiburan
@@ -3597,7 +3598,7 @@
     nl = Bank
     fi = Pankki
     fr = Banque
-    pt-BR = Multibanco
+    pt-BR = Caixa eletrônico
     de = Bank
     hu = Bank
     id = Bank
@@ -3733,7 +3734,7 @@
     fr = Poste
     de = Post
     hu = Posta
-    pt-BR = WC
+    pt-BR = Banheiros
     id = Pos
     it = Posta
     ja = 郵便局
@@ -3897,7 +3898,7 @@
     fr = Signets MAPS.ME partagés
     de = MAPS.ME-Lesezeichen mit Ihnen geteilt
     hu = Egy MAPS.ME könyvjelzőt osztottak meg Önnel
-    pt-BR = Partilhar por e-mail
+    pt-BR = Compartilhar por e-mail
     id = Bagikan penanda MAPS.ME
     it = Il segnalibri MAPS.ME è stato condiviso con te
     ja = MAPS.MEの位置情報シェア
@@ -3930,7 +3931,7 @@
     fr = Bonjour,\n\nVous trouverez ci-joints mes signets de MAPS.ME - cartes hors ligne. Veuillez ouvrir le ficher si vous avez MAPS.ME d'installé. Sinon, téléchargez l'appli pour votre appareil iOS ou Android en suivant ce lien http://maps.me/get?kmz\n\nAppréciez vos voyages avec MAPS.ME !
     de = Hallo,\n\nIn der angefügten „%@.KMZ“-Datei befinden sich die Lesezeichen meiner Offline-Karten von MAPS.ME. Falls Sie MAPS.ME bereits installiert haben, müssen Sie die App nur noch öffnen. Sollte dies nicht der Fall sein, müssen Sie zuerst die App für Ihr iOS- oder Androidgerät unter der Adresse http://maps.me/get?kmz herunterladen.\n\nViel Spaß unterwegs mit MAPS.ME!
     hu = Üdvözlöm!\n\nA mellékelt "%@.kmz" fájl tartalmazza a MAPS.ME könyvjelzőimet. Kérem nyissa meg, ha a MAPS.ME már telepítve van. Ha még nincs, akkor innen töltheti le: http://maps.me/get?kmz\n\nSok sikert a program használatához!
-    pt-BR = Os favoritos do MAPS.ME foram partilhados consigo
+    pt-BR = Favoritos do MAPS.ME compartilhados
     id = Salam,\n\nTerlampir penanda lokasi saya dari peta offline MAPS.ME. Mohon dibuka jika Anda memasang MAPS.ME. Jika tidak, unduhlah aplikasinya untuk perangkat iOS atau Android Anda melalui tautan ini: http://maps.me/get?kmz\n\nNikmatilah bepergian menggunakan MAPS.ME!
     it = Ciao,\n\nQuesti sono i miei "preferiti" fra le mappe offline di MAPS.ME, che si trovano nel file allegato "%@.kmz". Il file può essere aperto se l'app MAPS.ME è già stata installata. In caso contrario, occorre scaricare l'app per il tuo iOS o dispositivo Android dal link http://maps.me/get?kmz\n\nBuon divertimento con MAPS.ME!
     ja = MAPS.MEで作成したブックマークを添付ファイル"%@.kmz"で送付します。MAPS.ME がインストールされている端末でファイルを開いてみてください。インストールはこちらから http://maps.me/get?kmz iOSまたはAndroidデバイスで利用可能です。\n\nMAPS.MEで楽しい時間をお過ごしください！
@@ -3963,7 +3964,7 @@
     fr = Chargement des signets
     de = Lesezeichen werden geladen
     hu = Könyvjelzők letöltése
-    pt-BR = Olá,\n\nAqui estão os meus favoritos dos mapas offline do MAPS.ME, anexados no ficheiro "%@.kmz". Por favor abra-os se já tiver instalado o 
+    pt-BR = Olá,\n\nAqui estão os meus favoritos dos mapas offline do MAPS.ME, anexados no arquivo "%@.kmz". Por favor abra-os se já tiver instalado o MAPS.ME. Caso contrário, baixe primeiro o app para o seu dispositivo iOS ou Android a partir deste link: http://maps.me/get?kmz\n\nAproveite o MAPS.ME!
     id = Memuat Penanda
     it = Caricamento segnalibri in corso
     ja = ブックマークの読み込み中
@@ -3996,7 +3997,7 @@
     fr = Les signets ont été chargés avec succès ! Vous pouvez les trouver sur la carte ou sur l'écran du Gestionnaire de signets.
     de = Lesezeichen erfolgreich geladen! Sie können diese nun auf Ihrer Karte oder im Lesezeichen-Manager anzeigen.
     hu = Könyvjelzők letöltése sikeres! Megtalálja őket a térképen vagy a Könyvjelzők kezelése menüben.
-    pt-BR = A carregar favoritos
+    pt-BR = Carregando favoritos
     id = Penanda berhasil dimuat! Anda dapat menemukannya pada peta atau pada layar Pengelola Penanda Lokasi.
     it = Segnalibri caricati con successo! Puoi trovare i segnalibri direttamente sulla mappa, oppure aprendo la schermata dedicata alla Gestione dei segnalibri.
     ja = ブックマークが読み込まれました! ブックマークはマップ上、またはブックマーク管理画面に表示されます。
