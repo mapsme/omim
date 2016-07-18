@@ -10143,7 +10143,7 @@
     hu = Kérjük, mindig maradjon éber és vezessen biztonságosan az utakon!
     id = Jaga selalu kewaspadaan dan keselamatan di jalan!
     it = Fai sempre attenzione e guida con prudenza!
-    pt-BR = — Use de cautela em rotas de zonas fronteiriças: as rotas criadas por nosso aplicativo podem algumas vezes cruzar fronteiras nacionais em 
+    pt-BR = — Use de cautela em rotas de zonas fronteiriças: as rotas criadas por nosso aplicativo podem algumas vezes cruzar fronteiras nacionais em locais não autorizados.
     ja = よく注意して安全運転を心がけましょう！
     ko = 항상 안전에 주의하세요!
     nb = Kjør trygt!
@@ -10847,7 +10847,7 @@
     hu = Probléma bejelentése
     id = Laporkan Masalah
     it = Segnala il problema
-    pt-BR = Tente novamente
+    pt-BR = Por favor, tente novamente
     ja = 問題を報告する
     ko = 문제 신고
     nb = Rapporter problemet
@@ -10879,7 +10879,7 @@
     hu = Szeretne egy közvetlenebb útvonalat létrehozni, amely több, mint egy térképen terül el?
     id = Apakah Anda ingin membuat rute yang lebih langsung yang meliputi lebih dari satu peta?
     it = Vuoi creare un percorso più diretto che si estende su più mappe?
-    pt-BR = Relatar o Problema
+    pt-BR = Relatar o problema
     ja = 複数マップを利用してより最適なルートを作成しますか？
     ko = 두 개 이상의 지도를 통과하는 더 직접적인 경로를 설정하시겠습니까?
     nb = Vil du opprette en mer direkte rute som går over flere kart?
@@ -11007,7 +11007,7 @@
     hu = Létrehozás
     id = Buat
     it = Crea
-    pt-BR = Agora Não
+    pt-BR = Agora não
     ja = 作成する
     ko = 만들기
     nb = Opprett
@@ -11393,7 +11393,7 @@
     de = Ankunft: %s
     hu = Megérkezik: %s
     id = Kedatangan: %s
-    pt-BR = Falhou o Planeamento da Rota
+    pt-BR = Falha no planejamento da rota
     it = Arrivo: %s
     ja = 到着予定: %s
     ko = 도착: %s
@@ -11953,7 +11953,7 @@
     hu = A keresési előzmények törlése
     id = Bersihkan riwayat pencarian
     it = Cancella сronologia ricerche
-    pt-BR = Acesse os termos de busca recentes rapidamente.
+    pt-BR = Acesse os termos de busca recentes.
     ja = 検索履歴を消去
     ko = 이력 검색 지우기
     nb = Tøm søkehistorikk
@@ -12009,6 +12009,7 @@
     ru = Подготовься к путешествию
     pl = Zaplanuj podróż
     es = Planifica tu viaje
+    pt-BR = Planeje sua viagem
 
   [showcase_more_apps]
     tags = ios, android
@@ -12046,6 +12047,7 @@
     tags = ios, android
     en = Wikipedia
     zh-Hant = 維基百科
+    pt-BR = Wikipedia	
 
   [p2p_route_planning]
     tags = ios, android
@@ -12432,7 +12434,7 @@
     de = Zeitplan löschen
     hu = Időrend törlése
     id = Hapus Jadwal
-    pt-BR = Adicionar Horário
+    pt-BR = Adicionar horário
     it = Elimina orari
     ja = スケジュール削除
     ko = 스케줄 삭제
@@ -12743,7 +12745,7 @@
     de = Fehler korrigieren
     hu = Hiba javítása
     id = Koreksi kesalahan
-    pt-BR = Valores do Exemplo
+    pt-BR = Valores do exemplo
     it = Correggi errore
     ja = 間違いの訂正
     ko = 입력 수정
