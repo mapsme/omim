@@ -10594,6 +10594,7 @@
     nb = Ingen rute ble opprettet. Startpunktet ble ikke funnet.
     pl = Nie wyznaczono trasy. Nie można zlokalizować punktu początkowego.
     pt = A rota não foi traçada, pois não foi possível localizar o ponto de partida.
+    pt-BR = A rota não foi traçada, pois não foi possível localizar o ponto de partida.
     ro = Traseul nu a fost creat. Localizarea punctului iniţial a eşuat.
     es = La ruta no se creó. No se pudo encontrar el punto de inicio.
     sv = Ingen väg skapades. Kan inte lokalisera startpunkt.
@@ -10620,12 +10621,12 @@
     hu = Kérjük, válasszon egy úthoz közelebb eső indulási helyet.
     id = Pilih titik mula yang lebih dekat dengan jalan.
     it = Seleziona un punto di partenza più vicino a una strada.
-    pt-BR = A rota não foi traçada, pois não foi possível localizar o ponto de partida.
     ja = 道路に近い位置にある出発地を設定してください。
     ko = 도로와 가까운 출발지를 지정해주세요.
     nb = Velg et startpunkt som er i nærheten av en vei.
     pl = Wybierz punkt początkowy położony bliżej drogi.
     pt = Selecione um ponto de partida mais perto de uma estrada.
+    pt-BR = Selecione um ponto de partida mais perto de uma estrada.
     ro = Setaţi punctul iniţial mai aproape de un drum.
     es = Seleccione un punto de inicio cercano a una carretera.
     sv = Välj en startpunkt närmare en väg.
@@ -10652,12 +10653,12 @@
     hu = Pontosítsa célállomását
     id = Sesuaikan tujuan
     it = Modifica la destinazione
-    pt-BR = Selecione um ponto de partida mais perto de uma estrada.
     ja = 目的地の位置調整をしてください
     ko = 목적지 조정
     nb = Endre bestemmelsessted
     pl = Zmień punkt docelowy
     pt = Ajuste o ponto de chegada
+    pt-BR = Ajuste o ponto de chegada
     ro = Ajustaţi destinaţia finală
     es = Ajustar destino
     sv = Justera destination
@@ -10684,12 +10685,12 @@
     hu = Az útvonal nem lett létrehozva. Nem sikerült meghatározni a célállomást.
     id = Rute tidak dibuat. Tidak dapat menemukan tujuan.
     it = Percorso non creato. Impossibile individuare la destinazione.
-    pt-BR = Ajuste o ponto de chegada
     ja = 案内ルートを作成できません。目的地を確認できませんでした。
     ko = 경로가 설정되지 않았습니다. 목적지를 찾을 수 없습니다.
     nb = Ingen rute ble opprettet. Bestemmelsesstedet ble ikke funnet.
     pl = Nie wyznaczono trasy. Nie można zlokalizować punktu docelowego.
     pt = A rota não foi traçada, pois não foi possível localizar o ponto de chegada.
+    pt-BR = A rota não foi traçada, pois não foi possível localizar o ponto de chegada.
     ro = Traseul nu a fost creat. Localizarea destinaţiei a eşuat.
     es = La ruta no se creó. No se pudo encontrar el destino.
     sv = Ingen väg skapades. Kan inte lokalisera destination.
@@ -10716,12 +10717,12 @@
     hu = Kérjük, válasszon egy úthoz közelebb eső célállomást.
     id = Pilih titik tujuan yang lebih dekat dengan jalan.
     it = Seleziona un punto di destinazione più vicino a una strada.
-    pt-BR = A rota não foi traçada, pois não foi possível localizar o ponto de chegada.
     ja = 道路に近い位置にある目的地を設定してください。
     ko = 도로와 가까운 목적지를 지정해주세요.
     nb = Velg et bestemmelsessted som er i nærheten av en vei.
     pl = Wybierz punkt docelowy położony bliżej drogi.
     pt = Selecione um ponto de chegada mais perto de uma estrada.
+    pt-BR = Selecione um ponto de chegada mais perto de uma estrada.
     ro = Setaţi un punct de destinaţie mai aproape de un drum.
     es = Seleccione un punto de destino cercano a una carretera.
     sv = Välj en destinationspunkt närmare en väg.
@@ -10748,12 +10749,12 @@
     hu = Rendszerhiba
     id = Kesalahan sistem
     it = Errore di sistema
-    pt-BR = Selecione um ponto de chegada mais perto de uma estrada.
     ja = システムエラー
     ko = 시스템 오류
     nb = Systemfeil
     pl = Błąd systemowy
     pt = Erro de sistema
+    pt-BR = Erro de sistema
     ro = Eroare sistem
     es = Error del sistema
     sv = Systemfel
@@ -10780,12 +10781,12 @@
     hu = Egy alkalmazáshiba miatt nem sikerült az útvonal létrehozása.
     id = Tidak dapat membuat rute karena kesalahan aplikasi.
     it = Impossibile creare il percorso a causa di un errore dell'applicazione.
-    pt-BR = Erro de sistema
     ja = アプリケーションのエラーにより案内ルートを作成できませんでした。
     ko = 애플리케이션 오류로 인해 경로를 설정하지 못했습니다.
     nb = En applikasjonsfeil førte til at ruten ikke kunne opprettes.
     pl = Nie można wyznaczyć trasy z powodu błędu aplikacji.
     pt = Não foi possível traçar uma rota devido a um erro no aplicativo.
+    pt-BR = Não foi possível traçar uma rota devido a um erro no aplicativo.
     ro = Crearea traseului a eşuat din cauza unei erori a aplicaţiei.
     es = No se pudo crear la ruta debido a un error en la aplicación.
     sv = Kan inte skapa väg på grund av ett programfel.
@@ -10812,12 +10813,12 @@
     hu = Kérjük, próbálja újra
     id = Mohon coba lagi
     it = Riprova
-    pt-BR = Não foi possível traçar uma rota devido a um erro no aplicativo.
     ja = もう一度お試しください
     ko = 다시 시도해주세요.
     nb = Vennligst prøv igjen
     pl = Spróbuj ponownie
     pt = Tente novamente
+    pt-BR = Por favor, tente novamente
     ro = Încercaţi din nou
     es = Intentar nuevamente
     sv = Försök igen
@@ -10844,12 +10845,12 @@
     hu = Probléma bejelentése
     id = Laporkan Masalah
     it = Segnala il problema
-    pt-BR = Por favor, tente novamente
     ja = 問題を報告する
     ko = 문제 신고
     nb = Rapporter problemet
     pl = Zgłoś problem
     pt = Relatar o Problema
+    pt-BR = Relatar o problema
     ro = Raportaţi problema
     es = Informar el problema
     sv = Rapportera problem
@@ -10876,12 +10877,12 @@
     hu = Szeretne egy közvetlenebb útvonalat létrehozni, amely több, mint egy térképen terül el?
     id = Apakah Anda ingin membuat rute yang lebih langsung yang meliputi lebih dari satu peta?
     it = Vuoi creare un percorso più diretto che si estende su più mappe?
-    pt-BR = Relatar o problema
     ja = 複数マップを利用してより最適なルートを作成しますか？
     ko = 두 개 이상의 지도를 통과하는 더 직접적인 경로를 설정하시겠습니까?
     nb = Vil du opprette en mer direkte rute som går over flere kart?
     pl = Chcesz wyznaczyć lepszą trasę, obejmującą więcej map?
     pt = Deseja traçar uma rota mais direta, mas que se estenda por mais de um mapa?
+    pt-BR = Deseja traçar uma rota mais direta, mas que se estenda por mais de um mapa?
     ro = Doriţi să creaţi un traseu mai direct care include mai mult decât o hartă?
     es = ¿Desea crear una ruta más directa que abarca más de un mapa?
     sv = Vill du skapa en mer direkt väg som sträcker sig över fler än en karta?
@@ -10908,12 +10909,12 @@
     hu = Elérhető egy optimálisabb útvonal, amely áthalad a jelenlegi térkép szélén.
     id = Ada rute yang lebih optimal yang melewati ujung peta ini.
     it = È disponibile un percorso migliore che oltrepassa il limite di questa mappa.
-    pt-BR = Deseja traçar uma rota mais direta, mas que se estenda por mais de um mapa?
     ja = このマップの境界を越えて複数マップを利用すると、より最適なルートを作成できます。
     ko = 이 지도의 경계를 통과하는 더 최적화된 경로를 사용할 수 있습니다.
     nb = En mer optimal rute som går utenfor dette kartet er tilgjengelig.
     pl = Dostępna jest lepsza trasa, wykraczająca poza granice bieżącej mapy.
     pt = Há uma rota disponível que vai além dos limites desse mapa.
+    pt-BR = Há uma rota disponível que vai além dos limites desse mapa.
     ro = Este disponibil un traseu mai adecvat care trece de limita acestei hărţi.
     es = Está disponible una ruta mejor que cruza los límites de este mapa.
     sv = En optimalare väg som sträcker sig utanför den här kartan är tillgänglig.
@@ -10940,12 +10941,12 @@
     hu = Mindig haladjon át ezen a határon
     id = Selalu lewati batas ini
     it = Oltrepassa sempre questo limite
-    pt-BR = Há uma rota disponível que vai além dos limites desse mapa.
     ja = 常にこの境界を越える
     ko = 항상 이 경계 통과
     nb = Kryss alltid denne grensen
     pl = Zawsze przekraczaj tę granicę
     pt = Sempre cruzar esse limite
+    pt-BR = Sempre cruzar esse limite
     ro = Întotdeauna să se treacă această limită
     es = Cruzar siempre este límite
     sv = Korsa alltid den här gränsen
@@ -10972,12 +10973,12 @@
     hu = Most nem
     id = Jangan Sekarang
     it = Non ora
-    pt-BR = Sempre cruzar esse limite
     ja = あとで
     ko = 나중에
     nb = Ikke nå
     pl = Nie teraz
     pt = Agora Não
+    pt-BR = Agora não
     ro = Nu acum
     es = No ahora
     sv = Inte nu
@@ -11004,12 +11005,12 @@
     hu = Létrehozás
     id = Buat
     it = Crea
-    pt-BR = Agora não
     ja = 作成する
     ko = 만들기
     nb = Opprett
     pl = Wyznacz
     pt = Traçar
+    pt-BR = Traçar
     ro = Creare
     es = Crear
     sv = Skapa
@@ -11036,12 +11037,12 @@
     hu = Szeretné letölteni a térképet és létrehozni egy optimálisabb útvonalat, amely több, mint egy térképen terül el?
     id = Apakah Anda ingin mengunduh peta dan membuat rute yang lebih optimal yang meliputi lebih dari satu peta?
     it = Vuoi scaricare la mappa e creare un percorso migliore che si estende su più mappe?
-    pt-BR = Traçar
     ja = マップをダウンロードし、複数マップを利用してより最適なルートを作成しますか？
     ko = 지도를 다운로드하여, 두 개 이상의 지도를 통과하는 더 최적화된 경로를 설정하시겠습니까?
     nb = Vil du laste ned kartet og lage en mer optimal rute som går over flere kart?
     pl = Chcesz pobrać mapę i wyznaczyć lepszą trasę, obejmującą więcej map?
     pt = Deseja baixar o mapa e traçar uma rota melhor, mas que se estenda por mais de um mapa?
+    pt-BR = Deseja baixar o mapa e traçar uma rota melhor, mas que se estenda por mais de um mapa?
     ro = Doriţi să descărcaţi harta şi să creaţi un traseu mai direct care include mai mult decât o hartă?
     es = ¿Desea descargar el mapa y crear una ruta mejor que abarca más de un mapa?
     sv = Vill du ladda ned kartan och skapa en optimalare väg som sträcker sig över fler än en karta?
@@ -11068,12 +11069,12 @@
     hu = Töltse le a térképet, hogy létrehozzon egy optimálisabb útvonalat, amely áthalad a jelenlegi térkép szélén.
     id = Unduh peta untuk membuat rute yang lebih optimal yang melewati ujung peta ini.
     it = Per creare un percorso migliore che oltrepassa il limite di questa mappa, scarica la mappa.
-    pt-BR = Deseja baixar o mapa e traçar uma rota melhor, mas que se estenda por mais de um mapa?
     ja = このマップの境界を越えて複数マップを利用し、より最適なルートを作成するには、マップをダウンロードしてください。
     ko = 이 지도의 경계를 통과하는 더 최적화된 경로를 설정하려면 지도를 다운로드하세요.
     nb = Last ned kartet for å opprette en mer optimal rute som går utenfor dette kartet.
     pl = Pobierz mapę i wyznacz lepszą trasę, wykraczającą poza granice bieżącej mapy.
     pt = Baixe o mapa para traçar uma rota melhor que vai além dos limites desse mapa.
+    pt-BR = Baixe o mapa para traçar uma rota melhor que vai além dos limites desse mapa.
     ro = Pentru a crea un traseu mai adecvat care trece de limita acestei hărţi, descărcaţi harta.
     es = Descargar el mapa para crear una ruta mejor que cruza los límites de este mapa.
     sv = Ladda ned kartan för att skapa en optimalare väg som sträcker sig utanför den här kartan.
@@ -11100,12 +11101,12 @@
     hu = Mindig haladjon át ezen a határon
     id = Selalu lewati batas ini
     it = Oltrepassa sempre questo limite
-    pt-BR = Baixe o mapa para traçar uma rota melhor que vai além dos limites desse mapa.
     ja = 常にこの境界を越える
     ko = 항상 이 경계 통과
     nb = Kryss alltid denne grensen
     pl = Zawsze przekraczaj tę granicę
     pt = Sempre cruzar esse limite
+    pt-BR = Sempre cruzar esse limite
     ro = Întotdeauna să se treacă această limită
     es = Cruzar siempre este límite
     sv = Korsa alltid den här gränsen
@@ -11132,7 +11133,6 @@
     fr = Pour commencer à rechercher et à créer des itinéraires, veuillez télécharger la carte, et vous n'aurez plus besoin de connexion Internet.
     de = Um mit der Suche und dem Erstellen von Routen zu beginnen, laden Sie bitte die Karte herunter. Sie benötigen danach keine Internetverbindung mehr.
     hu = Útvonalak kereséséhez és létrehozásához, kérjük, töltsd le a térképet és többé nem lesz szükséged internetkapcsolatra.
-    pt-BR = Sempre cruzar esse limite
     id = Untuk mulai mencari dan membuat rute, silakan unduh peta, dan Anda tidak akan membutuhkan koneksi internet lagi.
     it = Per iniziare a cercare e a creare i percorsi, scarica la mappa e non avrai più bisogno di una connessione a internet.
     ja = 検索とルート作成を開始するには、地図をダウンロードしてください。地図をダウンロードすると、インターネット接続は必要なくなります。
@@ -11140,6 +11140,7 @@
     nb = Last vennligst ned kartet for å begynne å søke og opprette ruter - så slipper du i fremtiden å være avhengig av å ha internettforbindelse.
     pl = Aby rozpocząć wyszukiwanie i tworzenie tras, pobierz mapę, a nie będzie ci już potrzebne połączenie z Internetem.
     pt = Para começar a pesquisar e criar rotas, por favor, baixe o mapa e você não precisará mais de conexão com a internet.
+    pt-BR = Para começar a pesquisar e criar rotas, por favor, baixe o mapa e você não precisará mais de conexão com a internet.
     ro = Pentru a putea începe căutarea și crearea unor rute, vă rugăm să descărcați harta, iar apoi nu veți mai avea nevoie de conexiune la internet.
     es = Para empezar a buscar y crear rutas, por favor, descarga el mapa y no necesitarás conexión a Internet nunca más para usarlo.
     sv = För att börja söka och skapa rutter, ladda ner kartan, och du behöver inte Internet-anslutning längre.
@@ -11166,12 +11167,12 @@
     hu = Jelöld ki a térképet
     id = Pilih Peta
     it = Seleziona mappa
-    pt-BR = Para começar a pesquisar e criar rotas, por favor, baixe o mapa e você não precisará mais de conexão com a internet.
     ja = 地図を選択
     ko = 지도 선택
     nb = Velg kartet
     pl = Wybierz mapę
     pt = Selecionar o Mapa
+    pt-BR = Selecionar o Mapa
     ro = Selectați harta
     es = Seleccionar el mapa
     sv = Välj kartan
@@ -11198,12 +11199,12 @@
     hu = Jelölj ki másik térképet
     id = Pilih Peta Lain
     it = Seleziona un'altra mappa
-    pt-BR = Selecionar o Mapa
     ja = 別の地図を選択
     ko = 다른 지도 선택
     nb = Velg et annet kart
     pl = Wybierz inną mapę
     pt = Selecionar Outro Mapa
+    pt-BR = Selecionar Outro Mapa
     ro = Selectați altă hartă
     es = Seleccionar otro mapa
     sv = Välj en annan karta
@@ -11230,13 +11231,13 @@
     de = Anzeigen
     hu = Mutat
     id = Tampilkan
-    pt-BR = Selecionar Outro Mapa
     it = Mostra
     ja = 表示する
     ko = 표시
     nb = Vis
     pl = Pokaż
     pt = Mostrar
+    pt-BR = Mostrar
     ro = Afișare
     es = Mostrar
     sv = Visa
@@ -11262,13 +11263,13 @@
     de = Ausblenden
     hu = Elrejt
     id = Sembunyikan
-    pt-BR = Mostrar
     it = Nascondi
     ja = 隠す
     ko = 숨기기
     nb = Skjul
     pl = Ukryj
     pt = Ocultar
+    pt-BR = Ocultar
     ro = Ascundere
     es = Ocultar
     sv = Göm
@@ -11294,13 +11295,13 @@
     de = Umbenennen
     hu = Átnevez
     id = Ubah nama
-    pt-BR = Ocultar
     it = Rinomina
     ja = 名前を変更する
     ko = 다른 이름으로 변경
     nb = Nytt navn
     pl = Zmień nazwę
     pt = Renomear
+    pt-BR = Renomear
     ro = Redenumire
     es = Renombrar
     sv = Byt namn
@@ -11326,13 +11327,13 @@
     de = Mehr…
     hu = Továbbiak…
     id = Lainnya…
-    pt-BR = Renomear
     it = Altro…
     ja = さらに…
     ko = 기타…
     nb = Mer…
     pl = Więcej…
     pt = Mais…
+    pt-BR = Mais…
     ro = Mai multe…
     es = Más…
     sv = Mer…
@@ -11358,13 +11359,13 @@
     de = Routenplanung fehlgeschlagen
     hu = Sikertelen útvonaltervezés
     id = Sudah sampai di tujuan
-    pt-BR = Mais…
     it = Pianificazione del percorso fallito
     ja = ルート検索に失敗
     ko = 경로 계획 실패
     nb = Mislykket ruteplanlegging
     pl = Planowanie trasy nieudane
     pt = Falhou o Planeamento da Rota
+    pt-BR = Falha no planejamento da rota
     ro = Planificarea rutei a eșuat
     es = Error al planificar la ruta
     sv = Ruttplanering misslyckades
@@ -11390,13 +11391,13 @@
     de = Ankunft: %s
     hu = Megérkezik: %s
     id = Kedatangan: %s
-    pt-BR = Falha no planejamento da rota
     it = Arrivo: %s
     ja = 到着予定: %s
     ko = 도착: %s
     nb = Ankomme: %s
     pl = Przybycie: %s
     pt = Chegada: %s
+    pt-BR = Chegada: %s
     ro = Sosire: %s
     es = Llegada: %s
     sv = Ankomst: %s
@@ -11422,13 +11423,13 @@
     de = Zum Erstellen einer Route müssen Sie alle Karten herunterladen und aktualisieren, auf der die Route liegt.
     hu = Útvonal létrehozásához kérjük, töltse le és frissítse az összes térképet az útvonal mentén.
     id = Untuk membuat rute, silakan unduh dan perbarui semua peta sepanjang rute.
-    pt-BR = Chegada: %s
     it = Per creare un percorso, scaricare e aggiornare tutte le mappe interessate dal percorso.
     ja = ルートを作成するには、ルートの通過する地図を全てダウンロード・アップデートしてください。
     ko = 경로를 만들려면, 경로를 따라 모든 지도를 다운로드하고 업데이트하십시오.
     nb = Hvis du vil oppprette en rute, last ned og oppdater alle kartene langs ruten.
     pl = Aby utworzyć trasę, pobierz i zaktualizuj wszystkie właściwe dla niej mapy.
     pt = Para criar uma rota, por favor, baixe e atualize todos os mapas ao longo da rota.
+    pt-BR = Para criar uma rota, por favor, baixe e atualize todos os mapas ao longo da rota.
     ro = Pentru a crea o rută, vă rugăm să descărcați și să actualizați toate hărțile de pe parcursul rutei.
     es = Para crear una ruta, por favor, descarga y actualiza todos los mapas a lo largo de la ruta.
     sv = För att skapa en rutt, ladda ner och uppdatera alla kartor längs rutten.
@@ -11454,12 +11455,12 @@
     hu = Tetszik az app?
     id = Suka aplikasi ini?
     it = Ti piace l’app?
-    pt-BR = Para criar uma rota, por favor, baixe e atualize todos os mapas ao longo da rota.
     ja = このアプリが好きですか?
     ko = 앱을 좋아하나요?
     nb = Liker du appen?
     pl = Lubisz tę aplikację?
     pt = Gosta do aplicativo?
+    pt-BR = Gosta do aplicativo?
     ro = Vă place aplicația?
     es = ¿Te gusta la aplicación?
     sv = Gillar du appen?
@@ -11485,12 +11486,12 @@
     hu = Köszönjük, hogy a MAPS.ME-t használta. Kérjük, értékelje az appot. A visszajelzéseik segítenek bennünket abban, hogy jobbá váljunk.
     id = Terima kasih karena menggunakan MAPS.ME. Mohon beri peringkat untuk aplikasi ini. Masukan dari Anda membantu kami untuk menjadi lebih baik.
     it = Grazie per aver utilizzato MAPS.ME. Valuta l’app. Il tuo feedback ci permette di migliorare.
-    pt-BR = Gosta do aplicativo?
     ja = MAPS.MEをご使用いただきありがとうございます。アプリの評価をお願いいたします。皆様からのフィードバックはアプリの改善に役立つものです。
     ko = MAPS.ME를 사용해 주셔서 감사합니다. 이 앱을 평가해 주십시오. 당신의 피드백은 이 앱을 더 낫게 만드는데 도움을 줍니다.
     nb = Takk for at du bruker MAPS.ME. Vi setter stor pris på om du rangerer appen. Tilbakemeldinger hjelper oss med å bli bedre.
     pl = Dziękujemy za korzystanie z MAPS.ME. Prosimy wystawić aplikacji ocenę. Twoja opinia pozwoli nam udoskonalać nasze produkty.
     pt = Obrigado por usar MAPS.ME. Por favor, classifique o aplicativo. Seu feedback nos ajuda a melhorar.
+    pt-BR = Obrigado por usar MAPS.ME. Por favor, classifique o aplicativo. Seu feedback nos ajuda a melhorar.
     ro = Vă mulțumim că folosiți MAPS.ME. Vă rugăm să dați o notă aplicației. Comentariile dvs. ne ajută să devenim mai buni.
     es = Gracias por usar MAPS.ME. Por favor, puntúa la aplicación. Tus comentarios nos ayudan a mejorar.
     sv = Tack för att du använder MAPS.ME. Betygsätt gärna appen. Din feedback hjälper oss att bli bättre.
@@ -11516,12 +11517,12 @@
     hu = Hurrá! Mi is szeretjük magát!
     id = Hore! Kami juga sangat menyukai Anda!
     it = Hooray! Anche noi amiamo i nostri utenti!
-    pt-BR = Obrigado por usar MAPS.ME. Por favor, classifique o aplicativo. Seu feedback nos ajuda a melhorar.
     ja = やったー! 相思相愛!
     ko = 야호! 저희는 당신도 사랑합니다!
     nb = Hurra! Vi elsker deg også!
     pl = Hurra! My też Cię uwielbiamy!
     pt = Viva! Também amamos você!
+    pt-BR = Viva! Também amamos você!
     ro = Ura! Și noi vă iubim!
     es = ¡Genial! ¡Nosotros también te queremos!
     sv = Hurra! Vi älskar dig också!
@@ -11547,12 +11548,12 @@
     hu = Köszönjük, igyekszünk a legjobbunkat nyújtani!
     id = Terima kasih, kami akan melakukan yang terbaik!
     it = Grazie, faremo del nostro meglio!
-    pt-BR = Viva! Também amamos você!
     ja = ありがとうございます。頑張ります!
     ko = 감사합니다. 최선을 다할 것입니다!
     nb = Tusen takk, vi skal gjøre vårt beste!
     pl = Dziękujemy, zrobimy co w naszej mocy!
     pt = Obrigado, faremos o melhor possível!
+    pt-BR = Obrigado, faremos o melhor possível!
     ro = Vă mulțumim, vom face tot ce ne stă în putință!
     es = ¡Gracias, haremos todo lo posible!
     sv = Tack, vi ska göra vårt bästa!
@@ -11578,12 +11579,12 @@
     hu = Van valami ötlete, amivel jobbá tehetnénk?
     id = Anda punya ide agar kami bisa membuatnya menjadi lebih baik?
     it = Hai qualche idea su come migliorarla?
-    pt-BR = Obrigado, faremos o melhor possível!
     ja = 改善のためのアイデアはございますか?
     ko = 더 낫게 만드는 아이디어가 있습니까?
     nb = Noen tanker om hvordan vi kan forbedre den?
     pl = Czy masz pomysł, w jaki sposób możemy dokonać ulepszeń?
     pt = Alguma ideia sobre como podemos melhorar?
+    pt-BR = Alguma ideia sobre como podemos melhorar?
     ro = Aveți vreo idee prin care putem să îmbunătățim aplicația?
     es = ¿Alguna idea de cómo podemos mejorarla?
     sv = Har du någon idé om hur vi ska bli bättre?
@@ -11609,12 +11610,12 @@
     hu = Kategóriák
     id = Kategori
     it = Categorie
-    pt-BR = Alguma ideia sobre como podemos melhorar?
     ja = カテゴリー
     ko = 범주
     nb = Kategorier
     pl = Kategorie
     pt = Categorias
+    pt-BR = Categorias
     ro = Categorii
     es = Categorías
     sv = Kategorier
@@ -11640,12 +11641,12 @@
     hu = Előzmények
     id = Riwayat
     it = Cronologia
-    pt-BR = Categorias
     ja = 履歴
     ko = 내역
     nb = Historikk
     pl = Historia
     pt = Histórico
+    pt-BR = Histórico
     ro = Istoric
     es = Historial
     sv = Historik
@@ -11671,12 +11672,12 @@
     hu = Aztán
     id = Lalu
     it = Poi
-    pt-BR = Histórico
     ja = その後
     ko = 그런 다음
     nb = Deretter
     pl = Potem
     pt = Em seguida
+    pt-BR = Em seguida
     ro = Apoi
     es = Luego
     sv = Sedan
@@ -11702,12 +11703,12 @@
     hu = Zárva
     id = Tutup
     it = Chiuso
-    pt-BR = Em seguida
     ja = 閉鎖
     ko = 닫음
     nb = Stengt
     pl = Zamknięte
     pt = Fechado
+    pt-BR = Fechado
     ro = Închis
     es = Cerrado
     sv = Stängt
@@ -11733,12 +11734,12 @@
     hu = Vissza ide %@
     id = Kembali ke %@
     it = Torna a %@
-    pt-BR = Fechado
     ja = %@に戻る
     ko = %@(으)로 복귀
     nb = Tilbake til %@
     pl = Powróć do %@
     pt = Voltar para %@
+    pt-BR = Voltar para %@
     ro = Înapoi la %@
     es = Volver a %@
     sv = Tillbaka till %@
@@ -11764,12 +11765,12 @@
     hu = Sajnos, semmit nem találtam.
     id = Maaf, saya tidak menemukan apa pun.
     it = Spiacente, non ho trovato nulla.
-    pt-BR = Voltar para %@
     ja = 申し訳ありませんが該当するものは見つかりませんでした。
     ko = 죄송합니다. 아무것도 찾지 못했습니다.
     nb = Beklager, jeg fant ingenting.
     pl = Przepraszamy, nic nie znaleziono.
     pt = Lamento, mas não encontrei nada.
+    pt-BR = Lamento, nenhum resultado encontrado.
     ro = Ne pare rău, nu s-au găsit rezultate.
     es = Lo siento, no he encontrado nada.
     sv = Ledsen, jag hittade ingenting.
@@ -11795,12 +11796,12 @@
     hu = Próbáljon másik lekérdezést.
     id = Silakan coba kueri lainnya.
     it = Prova con un'altra ricerca.
-    pt-BR = Lamento, mas não encontrei nada.
     ja = 別のクエリをお試しください。
     ko = 다른 쿼리를 시도하십시오.
     nb = Vennligst prøv et annet søk.
     pl = Wpisz inne zapytanie.
     pt = Por favor, tente outro termo de busca.
+    pt-BR = Por favor, tente outro termo de busca.
     ro = Vă rugăm să încercați altă căutare.
     es = Por favor, prueba con otra consulta.
     sv = Försök med en annan sökförfrågan.
@@ -11826,12 +11827,12 @@
     hu = Töltse le azt a térképet, amelyen keres.
     id = Silakan unduh peta yang Anda gunakan dalam pencarian Anda.
     it = Scarica la mappa nella quale stai cercando.
-    pt-BR = Por favor, tente outro termo de busca.
     ja = 検索する地図をダウンロードしてください。
     ko = 검색할 지도를 다운로드하십시오.
     nb = Vennligst last ned kartet du søker i.
     pl = Pobierz mapę interesującego cię obszaru.
     pt = Por favor, baixe o mapa em que está pesquisando.
+    pt-BR = Por favor, baixe o mapa em que está pesquisando.
     ro = Vă rugăm să descărcați harta pe care doriți să căutați.
     es = Por favor, descarga el mapa en el que estás buscando.
     sv = Ladda ner kartan du söker på.
@@ -11857,12 +11858,12 @@
     hu = Töltse le a jelenlegi tartózkodási helye térképét.
     id = Unduh peta dari lokasi Anda saat ini.
     it = Scarica la mappa del luogo in cui ti trovi.
-    pt-BR = Por favor, baixe o mapa em que está pesquisando.
     ja = 現在地の地図をダウンロードしてください。
     ko = 현재 위치의 지도를 다운로드하십시오.
     nb = Last ned kartet til din nåværende beliggenhet.
     pl = Pobierz mapę swojej bieżącej lokalizacji.
     pt = Baixe o mapa da sua localização atual.
+    pt-BR = Baixe o mapa da sua localização atual.
     ro = Descărcați harta locului în care vă aflați acum.
     es = Descarga el mapa de tu ubicación actual.
     sv = Ladda ner kartan över din nuvarande position.
@@ -11888,12 +11889,12 @@
     hu = Előző keresések
     id = Riwayat Pencarian
     it = Cerca nella cronologia
-    pt-BR = Baixe o mapa da sua localização atual.
     ja = 検索履歴
     ko = 검색 기록
     nb = Søkehistorikk
     pl = Historia wyszukiwania
     pt = Histórico de Busca
+    pt-BR = Histórico de Busca
     ro = Istoricul căutărilor
     es = Historial de búsquedas
     sv = Sökhistorik
@@ -11919,12 +11920,12 @@
     hu = Aktuális keresés gyors elérése.
     id = Akses kueri pencarian terbaru dengan cepat.
     it = Accedi velocemente alle stringhe di ricerca recenti.
-    pt-BR = Histórico de Busca
     ja = 最近の検索クエリに素早くアクセス。
     ko = 최근 검색 쿼리에 신속하게 액세스할 수 있습니다.
     nb = Vis de siste søkene raskt.
     pl = Uzyskaj szybki dostęp do ostatniego hasła wyszukiwania.
     pt = Acesse os termos de busca recentes rapidamente.
+    pt-BR = Visualizar os termos de busca recentes.
     ro = Accesare rapidă a căutărilor recente.
     es = Acceder rápidamente a las consultas de búsquedas recientes.
     sv = Få snabbare åtkomst till senaste sökförfrågan.
@@ -11950,12 +11951,12 @@
     hu = A keresési előzmények törlése
     id = Bersihkan riwayat pencarian
     it = Cancella сronologia ricerche
-    pt-BR = Acesse os termos de busca recentes.
     ja = 検索履歴を消去
     ko = 이력 검색 지우기
     nb = Tøm søkehistorikk
     pl = Wyczyść historię wyszukiwania
     pt = Limpar histórico de pesquisa
+    pt-BR = Limpar histórico de pesquisa
     ro = Ștergere istoric de căutare
     es = Eliminar el historial de búsqueda
     sv = Rensa sökhistorik
@@ -11981,13 +11982,13 @@
     de = Angebote anzeigen
     hu = Ajánlatok mutatása
     id = Tampilkan penawaran
-    pt-BR = Limpar histórico de pesquisa
     it = Mostra offerte
     ja = オファーを表示
     ko = 추천 보기
     nb = Vis tilbud
     pl = Oferty
     pt = Mostrar ofertas
+    pt-BR = Mostrar ofertas
     ro = Afișare oferte
     es = Mostrar ofertas
     sv = Visa erbjudanden
@@ -12014,7 +12015,6 @@
     ru = Другие приложения My.com
     ar = المزيد من تطبيقات My.com
     cs = Více aplikací My.com
-    pt-BR = Mostrar ofertas
     da = Flere My.com apps
     nl = Meer My.com apps
     fi = Lisää My.com sovelluksia
@@ -12028,6 +12028,7 @@
     nb = Flere apper fra My.com
     pl = Więcej aplikacji My.com
     pt = Mais aplicativos do My.com
+    pt-BR = Mais aplicativos do My.com
     ro = Mai multe aplicații My.com
     es = Más apps de My.com
     sv = Mai multe aplicații My.com
@@ -12044,7 +12045,7 @@
     tags = ios, android
     en = Wikipedia
     zh-Hant = 維基百科
-    pt-BR = Wikipedia	
+    pt-BR = Wikipedia
 
   [p2p_route_planning]
     tags = ios, android
@@ -12053,7 +12054,6 @@
     ar = تخطيط الطريق
     cs = Plánování trasy
     da = Ruteplanlægning
-    pt-BR = Mais aplicativos do My.com
     nl = Routeberekening
     fi = Reittisuunnittelu
     fr = Planification d’itinéraire
@@ -12066,6 +12066,7 @@
     nb = Ruteplanlegging
     pl = Planowanie trasy
     pt = Planejar rota
+    pt-BR = Planejar rota
     ro = Planificare rută
     es = Planificación de ruta
     sv = Ruttplanering
@@ -12090,13 +12091,13 @@
     de = Ihr Standort
     hu = Az Ön helyzete
     id = Lokasi Anda
-    pt-BR = Planejar rota
     it = La tua posizione
     ja = 現在位置
     ko = 위치
     nb = Din beliggenhet
     pl = Twoja lokalizacja
     pt = Localização atual
+    pt-BR = Localização atual
     ro = Locația dvs.
     es = Tu ubicación
     sv = Din plats
@@ -12121,13 +12122,13 @@
     de = Startpunkt
     hu = Az indulás helye
     id = Titik keberangkatan
-    pt-BR = Localização atual
     it = Il punto di partenza
     ja = 出発地
     ko = 출발 지점
     nb = Avreisested
     pl = Miejsce wyjazdu
     pt = O ponto de partida
+    pt-BR = O ponto de partida
     ro = Punctul de plecare
     es = El punto de origen
     sv = Startplats
@@ -12152,13 +12153,13 @@
     de = Zielort
     hu = Az érkezés helye
     id = Titik tujuan
-    pt-BR = O ponto de partida
     it = Il punto di destinazione
     ja = 目的地
     ko = 도착 지점
     nb = Destinasjonssted
     pl = Miejsce docelowe
     pt = O ponto de destino
+    pt-BR = O ponto de destino
     ro = Punctul de sosire
     es = El punto de destino
     sv = Målplats
@@ -12183,13 +12184,13 @@
     de = Start
     hu = Indítás
     id = Mulai
-    pt-BR = O ponto de destino
     it = Inizia
     ja = 開始
     ko = 시작
     nb = Start
     pl = Start
     pt = Iniciar
+    pt-BR = Iniciar
     ro = Start
     es = Empezar
     sv = Start
@@ -12214,13 +12215,13 @@
     de = Route wird geplant…
     hu = Tervezés…
     id = Merencanakan…
-    pt-BR = Iniciar
     it = Pianificazione…
     ja = 作成中…
     ko = 계획 중…
     nb = Planlegger…
     pl = Planowanie…
     pt = Planejando…
+    pt-BR = Planejando…
     ro = Se planifică…
     es = Planeando…
     sv = Planerar…
@@ -12245,13 +12246,13 @@
     de = Von
     hu = Innen
     id = Dari
-    pt-BR = Planejando…
     it = Da
     ja = 出発地
     ko = 출발지
     nb = Fra
     pl = Z
     pt = De
+    pt-BR = De
     ro = Din
     es = Desde
     sv = Från
@@ -12276,13 +12277,13 @@
     de = Nach
     hu = Ide
     id = Rute ke
-    pt-BR = De
     it = Percorso per
     ja = へのルート
     ko = 목적지
     nb = Rute til
     pl = Droga do
     pt = Itinerário para
+    pt-BR = Para
     ro = Ruta la
     es = Ruta hasta
     sv = Rutt till
@@ -12307,13 +12308,13 @@
     de = Die Navigation ist nur von Ihrem aktuellen Standort verfügbar.
     hu = A navigáció csak a jelenlegi helyzetéből érhető el.
     id = Navigasi tersedia hanya dari lokasi Anda saat ini.
-    pt-BR = Para
     it = La navigazione è disponibile solo dalla tua posizione attuale.
     ja = ナビゲーションは現在位置からのみ利用できます。
     ko = 현재 위치에서만 네비게이션을 사용할 수 있습니다.
     nb = Navigering er kun tilgjengelig fra din nåværende beliggenhet.
     pl = Nawigacja jest dostępna tylko od twojej bieżącej lokalizacji.
     pt = Só é possível navegar a partir da sua localização atual.
+    pt-BR = Só é possível navegar a partir da sua localização atual.
     ro = Navigația este disponibilă doar având ca punct de pornire locațiacctuală.
     es = La navegación solo está disponible desde tu ubicación actual.
     sv = Navigering är endast tillgänglig från din aktuella plats.
@@ -12338,13 +12339,13 @@
     de = Soll eine Route von Ihrem aktuellen Standort aus berechnet werden?
     hu = Szeretne útvonaltervet készíttetni a jelenlegi pozíciójától?
     id = Apakah Anda ingin kami merencanakan sebuah rute dari lokasi Anda saat ini?
-    pt-BR = Só é possível navegar a partir da sua localização atual.
     it = Vuoi che impostiamo il percorso dalla tua posizione corrente?
     ja = 現在位置からのルートを作成しますか？
     ko = 현재 위치에서 경로를 계획하시겠습니까?
     nb = Vil du vi skal planlegge en rute fra din nåværende posisjon?
     pl = Czy chcesz, byśmy zaplanowali trasę z Twojej bieżącej lokalizacji?
     pt = Deseja planejar uma rota a partir da sua localização atual?
+    pt-BR = Deseja planejar uma rota a partir da sua localização atual?
     ro = Doriți să vă planificăm o rută având ca punct de pornire locația actuală?
     es = ¿Quieres que planeemos un ruta desde tu ubicación actual?
     sv = Vill du att vi planerar en färdväg från din nuvarande plats?
@@ -12369,13 +12370,13 @@
     de = Weiter
     hu = Következő
     id = Berikut
-    pt-BR = Deseja planejar uma rota a partir da sua localização atual?
     it = Avanti
     ja = 次へ
     ko = 다음
     nb = Neste
     pl = Dalej
     pt = Próxima
+    pt-BR = Próxima
     ro = Următoarea
     es = Siguiente
     sv = Nästa
@@ -12400,13 +12401,13 @@
     de = Zeitplan hinzufügen
     hu = Időrend felvitele
     id = Tambah Jadwal
-    pt-BR = Próxima
     it = Aggiungi orari
     ja = スケジュール追加
     ko = 스케줄 추가
     nb = Legg til tidsrom
     pl = Dodaj harmonogram
     pt = Adicionar Horário
+    pt-BR = Adicionar horário
     ro = Adăugare planificare
     es = Añadir horario
     sv = Lägg till schema
@@ -12431,13 +12432,13 @@
     de = Zeitplan löschen
     hu = Időrend törlése
     id = Hapus Jadwal
-    pt-BR = Adicionar horário
     it = Elimina orari
     ja = スケジュール削除
     ko = 스케줄 삭제
     nb = Slett tidsrom
     pl = Usuń harmonogram
     pt = Eliminar Horário
+    pt-BR = Eliminar Horário
     ro = Eliminare planificare
     es = Eliminar horario
     sv = Ta bort schema
@@ -12462,7 +12463,6 @@
     fr = Toute la journée (24 heures)
     de = Ganztägig (24 Stunden)
     hu = Egész nap (24 óra)
-    pt-BR = Eliminar Horário
     id = Setiap Hari (24 jam)
     it = Tutto il giorno (24 ore)
     ja = 終日 (24時間)
@@ -12470,6 +12470,7 @@
     nb = Hele dagen (24 timer)
     pl = Całą dobę (24 godziny)
     pt = Todo o Dia (24 horas)
+    pt-BR = Todo o Dia (24 horas)
     ro = Toată ziua (non-stop)
     es = Todo el día (24 horas)
     sv = Alla dagar (24 timmar)
@@ -12494,13 +12495,13 @@
     de = Geöffnet
     hu = Nyitva
     id = Buka
-    pt-BR = Todo o Dia (24 horas)
     it = Aperto
     ja = 営業中
     ko = 개점
     nb = Åpen
     pl = Otwarte
     pt = Aberto
+    pt-BR = Aberto
     ro = Deschidere
     es = Abierto
     sv = Öppet
@@ -12525,13 +12526,13 @@
     de = Geschlossen
     hu = Zárva
     id = Tutup
-    pt-BR = Aberto
     it = Chiuso
     ja = 閉店
     ko = 폐점
     nb = Stengt
     pl = Zamknięte
     pt = Fechado
+    pt-BR = Fechado
     ro = Închidere
     es = Cerrado
     sv = Stängt
@@ -12556,13 +12557,13 @@
     de = Schließzeiten hinzufügen
     hu = Zárvatartási idők felvitele
     id = Tambah Jam Tutup
-    pt-BR = Fechado
     it = Aggiungi orari di chiusura
     ja = 閉店時間追加
     ko = 폐점 시간 추가
     nb = Legg til stengt tid
     pl = Dodaj godziny zamknięcia
     pt = Adicionar Horas Fechado
+    pt-BR = Adicionar Horas Sem Funcionamento
     ro = Adăugare oră de închidere
     es = Añadir horas de cierre
     sv = Lägg till stängda timmar
@@ -12587,13 +12588,13 @@
     de = Öffnungszeiten
     hu = Nyitvatartási idő
     id = Jam buka
-    pt-BR = Adicionar Horas Fechado
     it = Orari di apertura
     ja = 営業時間
     ko = 영업 시간
     nb = Åpningstider
     pl = Godziny pracy
     pt = Horário de Funcionamento
+    pt-BR = Horário de Funcionamento
     ro = Program
     es = Horario de apertura
     sv = Öppettider
@@ -12618,13 +12619,13 @@
     de = Erweiterter Modus
     hu = Haladó mód
     id = Mode Lanjutan
-    pt-BR = Horário de Funcionamento
     it = Modalità avanzata
     ja = 詳細モード
     ko = 고급 모드
     nb = Avansert modus
     pl = Tryb zaawansowany
     pt = Modo Avançado
+    pt-BR = Modo Avançado
     ro = Mod Avansat
     es = Modo avanzado
     sv = Avancerat läge
@@ -12649,13 +12650,13 @@
     de = Einfachmodus
     hu = Egyszerű mód
     id = Mode Sederhana
-    pt-BR = Modo Avançado
     it = Modalità semplice
     ja = シンプルモード
     ko = 기본 모드
     nb = Enkel modus
     pl = Tryb prosty
     pt = Modo Simples
+    pt-BR = Modo Simples
     ro = Mod Simplu
     es = Modo sencillo
     sv = Enkelt läge
@@ -12680,13 +12681,13 @@
     de = Schließzeiten
     hu = Zárvatartási órák
     id = Jam Tutup
-    pt-BR = Modo Simples
     it = Orari di chiusura
     ja = 閉店時間
     ko = 폐점 시간
     nb = Stengt
     pl = Godziny zamknięcia
     pt = Horas Fechado
+    pt-BR = Horas Sem Funcionamento
     ro = Ora închiderii
     es = Horas de cierre
     sv = Stängda timmar
@@ -12711,13 +12712,13 @@
     de = Beispiele
     hu = Példa értékek
     id = Contoh Nilai
-    pt-BR = Horas Fechado
     it = Valori esemplificativi
     ja = 値の例
     ko = 예제
     nb = Eksempelverdier
     pl = Przykładowe wartości
     pt = Valores do Exemplo
+    pt-BR = Valores de exemplo
     ro = Exemple de valori
     es = Valores de ejemplo
     sv = Exempelvärden
@@ -12742,13 +12743,13 @@
     de = Fehler korrigieren
     hu = Hiba javítása
     id = Koreksi kesalahan
-    pt-BR = Valores do exemplo
     it = Correggi errore
     ja = 間違いの訂正
     ko = 입력 수정
     nb = Rett feil
     pl = Popraw błąd
     pt = Corrigir erro
+    pt-BR = Corrigir erro
     ro = Corectare greșeală
     es = Corregir error
     sv = Korrigera fel
@@ -12773,13 +12774,13 @@
     de = Es ist ein Bearbeitungsfehler aufgetreten. Bitte korrigieren oder zum Einfachmodus wechseln.
     hu = Szerkesztési hibát vétett. Javítsa ki vagy váltson egyszerű módba.
     id = Pengeditan salah. Koreksi atau ubah ke mode sederhana.
-    pt-BR = Corrigir erro
     it = Hai commesso un errore nella modifica. Correggerlo o passare alla modalità semplice.
     ja = 編集の間違いがあります。訂正するか、シンプルモードに切り替えてください。
     ko = 잘못 입력했습니다. 수정하거나 기본 모드로 전환하세요.
     nb = Du har gjort en redigeringsfeil. Rett den eller bytt til enkel modus.
     pl = Popełniono błąd podczas edycji. Popraw go lub przełącz się na tryb prosty.
     pt = Fez um erro de edição. Corrija-o ou mude para o modo simples.
+    pt-BR = Há um erro de edição. Corrija-o ou mude para o modo simples.
     ro = Ați efectuat o eroare de editare. Corectați eroarea sau treceți în modul Simplu.
     es = Ha cometido un error de edición. Por favor, corríjalo o cambie a modo sencillo.
     sv = Du har gjort ett fel i redigeringen. Var vänlig korrigera det eller byt till enkelt läge.
@@ -12804,12 +12805,12 @@
     hu = Elhelyezkedés
     id = Lokasi
     it = Posizione
-    pt-BR = Fez um erro de edição. Corrija-o ou mude para o modo simples.
     ja = 現在位置
     ko = 위치
     nb = Plassering
     pl = Lokalizacja
     pt = Local
+    pt-BR = Local
     ro = Locație
     es = Ubicación
     sv = Plats
@@ -12826,7 +12827,6 @@
     ru = Вы изменили карту мира. Не скрывайте это, расскажите друзьям и редактируйте вместе.
     ar = لقد غيرت خريطة العالم. لا تخفي ذلك! اخبر أصدقاءك، وغيروها معا.
     cs = Změnili jste světovou mapu. Neskrývejte to! Řekněte o tom svým kamarádům a upravujte ji společně.
-    pt-BR = Local
     da = Du har ændret verdenskortet. Lad andre det vide! Fortæl dine venner og redigér det sammen.
     nl = Je hebt de wereldkaart gewijzigd. Verberg dit niet! Vertel het je vrienden en bewerk het samen.
     fi = Olet muuttanut maailmankarttaa. Älä piilota tätä! Kerro ystävillesi ja muokatkaa sitä yhdessä.
@@ -12840,6 +12840,7 @@
     nb = Du har endret verdenskartet. Ikke skjul denne! Fortell vennene dine, og rediger det sammen.
     pl = Dokonałeś zmian na mapie świata. Nie kryj się z tym! Powiadom znajomych i edytujcie mapę razem.
     pt = Alterou o mapa-múndi. Não esconda isto! Diga aos seus amigos e editem-no juntos.
+    pt-BR = Alterou o mapa-múndi. Não esconda isto! Diga aos seus amigos e editem-no juntos.
     ro = Ați modificat harta lumii. Nu ascundeți acest lucru! Spuneți-le prietenilor dvs. și modificați-o împreună.
     es = Has cambiado el mapa del mundo. ¡No ocultarlo! Cuéntaselo a tus amigos y editadlo juntos.
     sv = Du har ändrat världskartan. Dölj inte detta! Berätta för dina vänner och redigera den tillsammans.
@@ -12856,7 +12857,6 @@
     ru = Вы улучшили карту уже два раза. Вы теперь %d в рейтинге редакторов карты. Расскажите друзьям.
     ar = هذا هو تعديلك الثاني بالخريطة. أنت الآن في الترتيب رقم %d في قائمة محرري الخريطة. اخبر أصدقاءك عن ذلك.
     cs = Toto je vaše druhé vylepšení mapy. Nyní jste na %d. místě na seznamu editorů map. Řekněte o tom svým kamarádům.
-    pt-BR = Alterou o mapa-múndi. Não esconda isto! Diga aos seus amigos e editem-no juntos.
     da = Dette er din anden kortforbedring. Nu er du på en %d. plads på listen over kortredaktører. Fortæl dine venner om det.
     nl = Dit is je tweede kaartverbetering. Nu sta je op de %de plaats in de lijst van de kaartbewerkers. Vertel je vrienden erover.
     fi = Tämä on toinen kerta, kun paransit karttaa. Nyt olet %d. sijalla kartan muokkaajien listalla. Kerro siitä ystävillesi.
@@ -12870,6 +12870,7 @@
     nb = Dette er din andre forbedring av kartet. Nå er du på %d. plass i listen av kart-forbedrere. Fortell vennene dine om dette.
     pl = Po raz drugi dokonałeś poprawek na mapie. Aktualnie znajdujesz się na %d miejscu na liście osób edytujących mapy. Opowiedz o tym znajomym.
     pt = Esta é a sua segunda melhoria ao mapa. Agora, está no %dº lugar na lista de editores de mapas. Fale disto aos seus amigos.
+    pt-BR = Esta é a sua segunda melhoria ao mapa. Agora está no %dº lugar na lista de editores de mapas. Fale disto aos seus amigos.
     ro = Aceasta este a doua modificare a hărții. Acum sunteți pe locul %d în lista editorilor de hărți. Spuneți prietenilor dvs. despre aceasta.
     es = Esta es tu segunda mejora del mapa. Ahora estás en el puesto %dº de la lista de editores de mapa. Cuéntaselo a tus amigos.
     sv = Detta är din andra kartförbättring. Du är nu på plats %d i listan över kartredigerare. Berätta för dina vänner om det.
@@ -12886,7 +12887,6 @@
     ru = Вы улучшили карту, расскажите об этом друзьям и редактируйте карту вместе.
     ar = لقد عدلت الخريطة، اخبر أصدقائك عن ذلك، وعدلوا الخريطة معا.
     cs = Vylepšili jste mapu. Řekněte o tom svým kamarádům a upravujte mapu společně.
-    pt-BR = Esta é a sua segunda melhoria ao mapa. Agora, está no %dº lugar na lista de editores de mapas. Fale disto aos seus amigos.
     da = Du har forbedret kortet, fortæl dine venner om det og redigér kortet sammen.
     nl = Je hebt de kaart verbeterd, vertel je vrienden erover en bewerk samen de kaart.
     fi = Olet parantanut karttaa, kerro siitä ystävillesi ja muokatkaa karttaa yhdessä.
@@ -12900,6 +12900,7 @@
     nb = Du har forbedret kartet, fortell vennene dine om det, og rediger kartet sammen.
     pl = Dokonałeś poprawek na mapie. Opowiedz o tym znajomym i razem ją edytujcie.
     pt = Melhorou o mapa, fale disto aos seus amigos e editem o mapa juntos.
+    pt-BR = Melhorou o mapa, fale disto aos seus amigos e editem o mapa juntos.
     ro = Ați modificat harta, spuneți prietenilor dvs. despre aceasta și modificați-o împreună.
     es = Has mejorado el mapa: cuéntaselo a tus amigos y editadlo juntos.
     sv = Du har förbättrat kartan, berätta för dina vänner om det och redigera kartan tillsammans.
@@ -12916,7 +12917,6 @@
     ru = Поделиться с друзьями
     ar = شارك مع الأصدقاء
     cs = Sdílejte s kamarády
-    pt-BR = Melhorou o mapa, fale disto aos seus amigos e editem o mapa juntos.
     da = Del med venner
     nl = Deel met je vrienden
     fi = Jaa kavereille
@@ -12930,6 +12930,7 @@
     nb = Del med venner
     pl = Udostępnij znajomym
     pt = Compartilhar com amigos
+    pt-BR = Compartilhar com amigos
     ro = Partajează cu prietenii
     es = Compartir con amigos
     sv = Dela med vänner
@@ -12946,7 +12947,6 @@
     ru = Пожалуйста, напишите подробно о проблеме, чтобы сообщество OpenStreetMap исправило ошибку.
     ar = يرجى وصف المشكلة بالتفاصيل حتى يتسنى لفريق OpenStreeMap إصلاح الخطأ.
     cs = Popište prosím detailně problém, aby vám komunita OpenStreeMap mohla pomoct opravit chybu.
-    pt-BR = Compartilhar com amigos
     da = Beskriv problemet i detaljer, så OpenStreetMap-fællesskabet kan løse fejlen.
     nl = Beschrijf het probleem gedetailleerd, zodat de OpenStreetMap-community de fout kan oplossen.
     fi = Kuvaile ongelmaa yksityiskohtaisesti, jotta OpenStreetMap-yhteisö voi korjata vian.
@@ -12960,6 +12960,7 @@
     nb = Beskriv problemet detaljert slik at OpenStreetMap-samfunnet kan fikse feilen.
     pl = Prosimy o szczegółowe opisanie problemu, aby użytkownicy OpenStreetMap mogli naprawić błąd.
     pt = Por favor, descreva o problema ao pormenor para que a comunidade OpenStreeMap possa corrigir o erro.
+    pt-BR = Por favor, descreva o problema em detalhes para que a comunidade OpenStreeMap possa corrigir o erro.
     ro = Vă rugăm să descrieți problema în detaliu, astfel încât comunitatea OpenStreeMap să poată remedia eroarea.
     es = Por favor, describe el problema en detalle para que la comunidad de OpenStreeMap pueda corregir el error.
     sv = Beskriv problemet i detalj så att OpenStreeMaps community kan lösa felet.
@@ -12976,7 +12977,6 @@
     ru = Или сделайте это самостоятельно на сайте http://www.openstreetmap.org/
     ar = أو افعل ذلك بنفسك من خلال الموقع http://www.openstreetmap.org/
     cs = Nebo to udělejte sami na http://www.openstreetmap.org/
-    pt-BR = Por favor, descreva o problema em detalhes para que a comunidade OpenStreeMap possa corrigir o erro.
     da = Eller gør det selv på http://www.openstreetmap.org/
     nl = Of doe het zelf op http://www.openstreetmap.org/
     fi = Tai tee se itse osoitteessa http://www.openstreetmap.org/
@@ -12990,6 +12990,7 @@
     nb = Eller gjør det selv på http://www.openstreetmap.org/
     pl = Albo zrób to sam na http://www.openstreetmap.org/
     pt = Ou faça-o sozinho em http://www.openstreetmap.org/
+    pt-BR = Ou faça-o você mesmo em http://www.openstreetmap.org/
     ro = Sau faceți-o pe http://www.openstreetmap.org/
     es = O hazlo tú mismo en http://www.openstreetmap.org/
     sv = Eller gör det själv på http://www.openstreetmap.org/
@@ -13006,7 +13007,6 @@
     ru = Отправить
     ar = إرسال
     cs = Odeslat
-    pt-BR = Ou faça-o você mesmo em http://www.openstreetmap.org/
     da = Send
     nl = Verzenden
     fi = Lähetä
@@ -13020,6 +13020,7 @@
     nb = Send
     pl = Wyślij
     pt = Enviar
+    pt-BR = Enviar
     ro = Trimiteți
     es = Enviar
     sv = Skicka
@@ -13036,7 +13037,6 @@
     ru = Проблема
     ar = مشكلة
     cs = Problém
-    pt-BR = Enviar
     da = Problem
     nl = Probleem
     fi = Ongelma
@@ -13050,6 +13050,7 @@
     nb = Problem
     pl = Problem
     pt = Problema
+    pt-BR = Problema
     ro = Problemă
     es = Problema
     sv = Problem
@@ -13066,7 +13067,6 @@
     ru = Места не существует
     ar = المكان غير موجودٍ
     cs = Místo neexistuje
-    pt-BR = Problema
     da = Stedet findes ikke
     nl = De plaats bestaat niet
     fi = Paikkaa ei ole olemassa
@@ -13080,6 +13080,7 @@
     nb = Stedet finnes ikke
     pl = To miejsce nie istnieje
     pt = O lugar não existe
+    pt-BR = O lugar não existe
     ro = Această locație nu există
     es = El lugar no existe
     sv = Platsen existerar inte
@@ -13096,7 +13097,6 @@
     ru = Закрыто на ремонт
     ar = مغلق للصيانة
     cs = Zavřeno kvůli údržbě
-    pt-BR = O lugar não existe
     da = Lukket for vedligeholdelse
     nl = Gesloten voor onderhoud
     fi = Suljettu huoltoa varten
@@ -13110,6 +13110,7 @@
     nb = Stengt pga. vedlikehold
     pl = Zamknięte z powodu prac konserwacyjnych
     pt = Encerrado para manutenção
+    pt-BR = Fechado para manutenção
     ro = Închis pentru întreținere
     es = Сerrado por mantenimiento
     sv = Stängd för underhåll
@@ -13126,7 +13127,6 @@
     ru = Повторяющееся место
     ar = مكان متكرر
     cs = Duplicitní místo
-    pt-BR = Encerrado para manutenção
     da = Duplikeret sted
     nl = Dubbele plaats
     fi = Paikan kaksoiskappale
@@ -13140,6 +13140,7 @@
     nb = Duplisert sted
     pl = Powielone miejsce
     pt = Lugar em duplicado
+    pt-BR = Lugar duplicado
     ro = Locație dublată
     es = Lugar duplicado
     sv = Duplicerad plats
@@ -13156,7 +13157,6 @@
     ru = MAPS.ME готов к работе
     ar = MAPS.ME جاهز للاستخدام
     cs = MAPS.ME jsou připraveny k použití
-    pt-BR = Lugar duplicado
     da = MAPS.ME er klart til brug
     nl = MAPS.ME is klaar voor gebruik
     fi = MAPS.ME on valmiina käyttöön
@@ -13170,6 +13170,7 @@
     nb = MAPS.ME er klar til bruk
     pl = Aplikacja MAPS.ME jest gotowa
     pt = MAPS.ME está pronto para utilização
+    pt-BR = MAPS.ME está pronto para utilização
     ro = MAPS.ME este gata pentru utilizare
     es = MAPS.ME está listo para usar
     sv = Du kan nu använda MAPS.ME
@@ -13186,7 +13187,6 @@
     ru = Пользуйтесь поиском и навигацией по всему миру без интернета и бесплатно.
     ar = ابحث وتصفح كل مكان في العالم بدون اتصال, مجانا.
     cs = Prohledávejte a navigujte offline zdarma kdekoliv na světě.
-    pt-BR = MAPS.ME está pronto para utilização
     da = Søg og navigér i kort over alle verdens lande gratis.
     nl = Zoek en navigeer overal ter wereld offline, gratis.
     fi = Etsi ja navigoi ympäri maailman ilman verkkoyhteyttä, ilmaiseksi.
@@ -13200,6 +13200,7 @@
     nb = Søk og naviger i frakoblet status, hvor som helst i verden, helt gratis.
     pl = Wyszukuj i nawiguj w każdym zakątku świata — offline i bezpłatnie.
     pt = Busque qualquer lugar do mundo e navegue offline, gratuitamente.
+    pt-BR = Busque qualquer lugar do mundo e navegue offline, gratuitamente.
     ro = Căutați și navigați în regim offline oriunde în lume, în mod gratuit.
     es = Busca y navega sin conexión por cualquier parte del mundo, sin cargos.
     sv = Sök och navigera offline var som helst i världen, helt gratis.
@@ -13216,7 +13217,6 @@
     en = Important!
     ru = Важно!
     ar = هام!
-    pt-BR = Busque qualquer lugar do mundo e navegue offline, gratuitamente.
     cs = Důležité!
     da = Vigtigt!
     nl = Belangrijk!
@@ -13231,6 +13231,7 @@
     nb = Viktig!
     pl = Ważne!
     pt = Importante!
+    pt-BR = Importante!
     ro = Important!
     es = ¡Importante!
     sv = Viktigt!
@@ -13255,7 +13256,6 @@
     fr = Tout télécharger
     de = Alle herunterladen
     hu = Összes letöltése
-    pt-BR = Importante!
     id = Unduh semua
     it = Scarica tutto
     ja = 全てをダウンロード
@@ -13263,6 +13263,7 @@
     nb = Last ned alle
     pl = Pobierz wszystko
     pt = Baixar tudo
+    pt-BR = Baixar tudo
     ro = Descarcă toate
     es = Descargar todos
     sv = Ladda ner alla
@@ -13287,13 +13288,13 @@
     de = Alle löschen
     hu = Összes térkép törlése
     id = Hapus semua
-    pt-BR = Baixar tudo
     it = Elimina tutti
     ja = すべて削除
     ko = 모두 삭제
     nb = Slett alle
     pl = Usuń wszystkie
     pt = Excluir todos
+    pt-BR = Excluir todos
     ro = Ștergere toate
     es = Eliminar todos
     sv = Radera alla
@@ -13318,13 +13319,13 @@
     de = Automatisch herunterladen
     hu = Automatikus letöltés
     id = Unduhan otomatis
-    pt-BR = Excluir todos
     it = Scaricamento automatico
     ja = 自動ダウンロード
     ko = 자동 다운로드
     nb = Automatisk nedlasting
     pl = Automatyczne pobieranie
     pt = Download automático
+    pt-BR = Download automático
     ro = Descărcare automată
     es = Descarga automática
     sv = Automatisk nedladdning
@@ -13349,13 +13350,13 @@
     de = Automatischen Download deaktivieren
     hu = Automatikus letöltés tiltása
     id = Nonaktifkan unduh otomatis
-    pt-BR = Download automático
     it = Disattiva download automatico
     ja = 自動ダウンロードを無効にする
     ko = 자동 다운로드 해제
     nb = Deaktiver automatisk nedlasting
     pl = Wyłącz automatyczne pobieranie
     pt = Desativar o download automático
+    pt-BR = Desativar o download automático
     ro = Dezactivare descărcare automată
     es = Inhabilitar descarga automática
     sv = Avaktivera automatisk nedladdning
@@ -13381,13 +13382,13 @@
     de = Jetzt geschlossen
     hu = Most zárva
     id = Sekarang Tutup
-    pt-BR = Fechado agora
     it = Ora chiuso
     ja = 現在閉店
     ko = 지금 닫힘
     nb = Lukket nå
     pl = Nieczynne
     pt = Fechado agora
+    pt-BR = Fechado agora
     ro = Închis acum
     es = Cerrado ahora
     sv = Stängt just nu
@@ -13413,13 +13414,13 @@
     de = Täglich
     hu = Naponta
     id = Setiap Hari
-    pt-BR = Diariamente
     it = Tutti i giorni
     ja = 毎日
     ko = 일별
     nb = Daglig
     pl = Codziennie
     pt = Diariamente
+    pt-BR = Diariamente
     ro = Zilnic
     es = Diario
     sv = Dagligen
@@ -13444,13 +13445,13 @@
     de = Tag und Nacht
     hu = Nappal és éjszaka
     id = siang dan malam
-    pt-BR = Dia e noite
     it = Giorno e notte
     ja = 昼と夜
     ko = 24 시간
     nb = Dag og natt
     pl = Dzień i noc
     pt = Dia e noite
+    pt-BR = 24 horas por dia
     ro = Zi și noapte
     es = Día y noche
     sv = dag och natt
@@ -13477,13 +13478,13 @@
     de = Heute geschlossen
     hu = Ma zárva
     id = Tutup hari ini
-    pt-BR = Dia de folga hoje
     it = Oggi chiuso
     ja = 本日終業
     ko = 오늘 영업 종료됨
     nb = Fridag i dag
     pl = Dziś nieczynne
     pt = Dia de folga hoje
+    pt-BR = Fechado hoje
     ro = Astăzi închis
     es = Día libre hoy
     sv = Stängt idag
@@ -13508,13 +13509,13 @@
     de = Geschlossen
     hu = Zárva
     id = Tutup
-    pt-BR = Dia de folga
     it = Chiuso
     ja = 終業
     ko = 종료됨
     nb = Fridag
     pl = Nieczynne
     pt = Dia de folga
+    pt-BR = Fechado
     ro = Închis
     es = Día libre
     sv = Stängt
@@ -13539,13 +13540,13 @@
     de = Heute
     hu = Ma
     id = Hari ini
-    pt-BR = Hoje
     it = Oggi
     ja = 今日は
     ko = 오늘
     nb = I dag
     pl = Dzisiaj
     pt = Hoje
+    pt-BR = Hoje
     ro = Azi
     es = Hoy
     sv = Idag
@@ -13570,13 +13571,13 @@
     de = Von Sonnenauf- bis Sonnenuntergang
     hu = Napkeltétől napnyugtáig
     id = Dari matahari terbit sampai matahari terbenam
-    pt-BR = Do amanhecer ao pôr do sol
     it = Dall'alba al tramonto
     ja = 日の出から日没まで
     ko = 일출에서 일몰로
     nb = Fra morgen til kveld
     pl = Od wschodu do zachodu słońca
     pt = Do amanhecer ao anoitecer
+    pt-BR = Do amanhecer ao pôr do sol
     ro = De la răsărit până la apus
     es = Del amanecer al atardecer
     sv = Från gryning till skymning
@@ -13601,13 +13602,13 @@
     de = Von Sonnenuntergang bis Sonnenaufgang
     hu = Napkeltétől napnyugtáig
     id = Dari matahari terbenam sampai matahari terbit
-    pt-BR = Do pôr do sol ao amanhecer
     it = Dal tramonto all'alba
     ja = 日の出から日没まで
     ko = 일출에서 일몰까지
     nb = Fra solnedgang til soloppgang
     pl = Od zachodu do wschodu słońca
     pt = Do pôr do sol ao amanhecer
+    pt-BR = Do pôr do sol ao amanhecer
     ro = De la apus până la răsărit
     es = Del amanecer al anochecer
     sv = Från soluppgång till solnedgång
@@ -13632,13 +13633,13 @@
     de = Geschäftszeiten hinzufügen
     hu = Nyitvatartás hozzáadása
     id = Tambah jam kerja
-    pt-BR = Adicionar horário de funcionamento
     it = Aggiungi orari di apertura
     ja = 営業時間を追加
     ko = 영업일 추가
     nb = Legg til åpningstider
     pl = Dodaj godziny otwarcia
     pt = Adicionar horário de funcionamento
+    pt-BR = Adicionar horário de funcionamento
     ro = Adăugare ore de funcționare
     es = Añadir horas comerciales
     sv = Lägg till öppettider
@@ -13663,13 +13664,13 @@
     de = Geschäftszeiten bearbeiten
     hu = Nyitvatartás szerkesztése
     id = Sunting jam kerja
-    pt-BR = Editar horário de funcionamento
     it = Modifica orari di apertura
     ja = 営業時間を編集
     ko = 영업일 편집
     nb = Rediger åpningstider
     pl = Edytuj godziny otwarcia
     pt = Editar horário de funcionamento
+    pt-BR = Editar horário de funcionamento
     ro = Editare ore de funcționare
     es = Editar las horas comerciales
     sv = Redigera öppettider
@@ -13694,13 +13695,13 @@
     de = Profil
     hu = Profil
     id = Profil
-    pt-BR = Perfil
     it = Profilo
     ja = プロフィール
     ko = 프로필
     nb = Profil
     pl = Profil
     pt = Perfil
+    pt-BR = Perfil
     ro = Profil
     es = Perfil
     sv = Profil
@@ -13725,13 +13726,13 @@
     de = Kein Konto bei OpenStreetMap?
     hu = Nem rendelkezel még OpenStreetMap-felhasználói fiókkal?
     id = Tidak ada akun di OpenStreetMap?
-    pt-BR = Sem conta no OpenStreetMap?
     it = Non hai un account su OpenStreetMap?
     ja = OpenStreetMapのアカウントがありませんか？
     ko = OpenStreetMap에서 계정이 없습니까?
     nb = Har du ingen konto hos OpenStreetMap?
     pl = Nie masz konta w OpenStreetMap?
     pt = Sem conta no OpenStreetMap?
+    pt-BR = Sem conta no OpenStreetMap?
     ro = Nu aveți un cont în OpenStreetMap?
     es = ¿No tienes cuenta en OpenStreetMap?
     sv = Inget konto hos OpenStreetMap?
@@ -13756,13 +13757,13 @@
     de = Registrieren
     hu = Regisztráció
     id = Mendaftar
-    pt-BR = Cadastrar-se
     it = Registrati
     ja = 登録
     ko = 등록
     nb = Registrer deg
     pl = Zarejestruj się
     pt = Cadastrar-se
+    pt-BR = Cadastrar-se
     ro = Înregistrați-vă
     es = Registrarse
     sv = Registrera
@@ -13787,13 +13788,13 @@
     de = Passwort (mindestens 8 Zeichen)
     hu = Jelszó (legalább 8 karakter)
     id = Kata Sandi (minimal 8 karakter)
-    pt-BR = Senha (mínimo de 8 caracteres)
     it = Password (minimo 8 caratteri)
     ja = パスワード(最低8文字)
     ko = 암호(최소 8자)
     nb = Passord (minimum 8 tegn)
     pl = Hasło (minimum 8 znaków)
     pt = Senha (mínimo de 8 caracteres)
+    pt-BR = Senha (mínimo de 8 caracteres)
     ro = Parolă (minim 8 caractere)
     es = Contraseña (mínimo 8 caracteres)
     sv = Lösenord (minst 8 tecken)
@@ -13818,13 +13819,13 @@
     de = Ungültiger Benutzername oder Passwort.
     hu = Érvénytelen felhasználónév vagy jelszó.
     id = Nama pengguna dan Kata sandi tidak valid.
-    pt-BR = Nome de usuário ou senha inválida.
     it = Username o password non corretti.
     ja = ユーザー名またはパスワードが無効です。
     ko = 잘못된 사용자 이름 또는 암호.
     nb = Ugyldig brukernavn eller passord.
     pl = Nieprawidłowa nazwa użytkownika lub hasło.
     pt = Nome de usuário ou senha inválida.
+    pt-BR = Nome de usuário ou senha inválida.
     ro = Nume de utilizator sau parolă incorecte.
     es = Usuario o contraseña incorrectos.
     sv = Fel användarnamn eller lösenord.
@@ -13849,13 +13850,13 @@
     de = Anmelden
     hu = Bejelentkezés
     id = Masuk
-    pt-BR = Acessar
     it = Accedi
     ja = ログイン
     ko = 로그인
     nb = Logg inn
     pl = Zaloguj się
     pt = Acessar
+    pt-BR = Acessar
     ro = Autentificare
     es = Iniciar sesión
     sv = Logga in
@@ -13880,13 +13881,13 @@
     de = Passwort
     hu = Jelszó
     id = Kata sandi
-    pt-BR = Senha
     it = Password
     ja = パスワード
     ko = 암호
     nb = Passord
     pl = Hasło
     pt = Senha
+    pt-BR = Senha
     ro = Parolă
     es = Contraseña
     sv = Lösenord
@@ -13911,13 +13912,13 @@
     de = Passwort vergessen?
     hu = Elfelejtett jelszó?
     id = Lupa kata sandi?
-    pt-BR = Esqueceu sua senha?
     it = Hai dimenticato la password?
     ja = パスワードをお忘れですか？
     ko = 암호를 잊으 셨나요?
     nb = Glemt passordet?
     pl = Nie pamiętasz hasła?
     pt = Esqueceu sua senha?
+    pt-BR = Esqueceu sua senha?
     ro = Ați uitat parola?
     es = ¿Has olvidado tu contraseña?
     sv = Glömt lösenord?
@@ -13943,13 +13944,13 @@
     de = Passwort wiederherstellen
     hu = Jelszó visszaállítása
     id = Pulihkan kata sandi
-    pt-BR = Recuperar senha
     it = Ripristina password
     ja = パスワードを復元
     ko = 암호 복원
     nb = Gjenopprett passordet
     pl = Przypomnij hasło
     pt = Recuperar senha
+    pt-BR = Recuperar senha
     ro = Recuperare parolă
     es = Restaurar contraseña
     sv = Återställ lösenord?
@@ -13974,13 +13975,13 @@
     de = Geben Sie bitte die E-Mail-Adresse ein, die Sie zur Registrierung verwendet haben. Wir senden Ihnen dann den Link zur Erneuerung Ihres Passworts.
     hu = Add meg a regisztrációkor használt e-mail-címedet és elküldjük neked a jelszavad megújításához szükséges linket.
     id = Masukkan alamat surek yang Anda gunakan pada saat pendaftaran dan kami akan mengirim tautan untuk memperbarui kata sandi Anda.
-    pt-BR = Digite o endereço de e-mail que você usou ao cadastrar-se, e nós lhe enviaremos o link para renovar a sua senha.
     it = Inserisci l'indirizzo email utilizzato durante la registrazione e ti invieremo un link per recuperare la password.
     ja = 登録の際に使用したメールアドレスを入力してください。パスワードを更新するリンクをお送りします。
     ko = 등록시 사용한 이메일 주소를 입력하면 암호를 갱신하도록 링크를 전송할 것입니다.
     nb = Skriv inn e-postadressen du brukte ved registreringen, så vil vi sende deg en kobling for å fornye passordet ditt.
     pl = Wpisz adres e-mail, którego użyto podczas rejestracji, a prześlemy Ci link do ponownego utworzenia hasła.
     pt = Digite o endereço de e-mail que você usou ao cadastrar-se, e nós lhe enviaremos o link para renovar a sua senha.
+    pt-BR = Digite o endereço de e-mail que você usou ao cadastrar-se, e nós lhe enviaremos o link para renovar a sua senha.
     ro = Introduceți adresa de e-mail pe care ați utilizat-o în momentul înregistrării, iar noi vă vom trimite link-ul pentru a vă reînnoi parola.
     es = Introduce la dirección de correo electrónico que utilizaste durante el registro y te enviaremos el enlace para restaurar tu contraseña.
     sv = Mata in e-postadressen som du använde vid registrering så skickar vi en återställningslänk till dig.
@@ -14005,13 +14006,13 @@
     de = Passwort zurücksetzen
     hu = Jelszó visszaállítása
     id = Atur ulang kata sandi
-    pt-BR = Redefinir senha
     it = Reimpostare password
     ja = パスワードをリセット
     ko = 비밀번호 재 설정
     nb = Tilbakestill passord
     pl = Resetuj hasło
     pt = Redefinir senha
+    pt-BR = Redefinir senha
     ro = Resetare parolă
     es = Restablecer contraseña
     sv = återställ lösenord
@@ -14036,13 +14037,13 @@
     de = Benutzername
     hu = Felhasználónév
     id = Nama pengguna
-    pt-BR = Nome de usuário
     it = Nome utente
     ja = ユーザー名
     ko = 사용자 이름
     nb = Brukernavn
     pl = Nazwa użytkownika
     pt = Nome de usuário
+    pt-BR = Nome de usuário
     ro = Nume de utilizator
     es = Usuario
     sv = Användarnamn
@@ -14067,13 +14068,13 @@
     de = OSM Konto
     hu = OSM-felhasználói fiók
     id = Akun OSM
-    pt-BR = Conta OSM
     it = Account OSM
     ja = OSMアカウント
     ko = OSM 계정
     nb = OSM-konto
     pl = Konto OSM
     pt = Conta OSM
+    pt-BR = Conta OSM
     ro = Cont OSM
     es = Cuenta OSM
     sv = OSM-konto
@@ -14098,13 +14099,13 @@
     de = Abmelden
     hu = Kijelentkezés
     id = Keluar
-    pt-BR = Encerrar sessão
     it = Esci
     ja = ログアウト
     ko = 로그 아웃
     nb = Logg ut
     pl = Wyloguj
     pt = Encerrar sessão
+    pt-BR = Encerrar sessão
     ro = Ieșire
     es = Cerrar sesión
     sv = Logga ut
@@ -14129,13 +14130,13 @@
     de = Anmelden und Informationen zu den Objekten auf der Karte bearbeiten. Wir werden sie für Millionen von anderen Nutzern verfügbar machen. Lassen Sie uns zusammen die Welt verbessern.
     hu = Jelentkezz be és szerkeszd az egyes objektumokhoz tartozó információkat a térképen, valamint tedd őket elérhetővé több millió felhasználó számára.
     id = Masuk dan sunting informasi objek pada peta dan kami akan membuatnya tersedia bagi jutaan pengguna lain. Mari kita menjadikan dunia lebih baik bersama-sama.
-    pt-BR = Acesse e edite informações dos objetos no mapa e eles serão disponibilizados para milhões de outros usuários. Vamos melhorar o mundo juntos.
     it = Accedi e modifica le informazioni degli oggetti sulla mappa e noi provvederemo a renderli disponibili a milioni di altri utenti. Creiamo un mondo migliore assieme.
     ja = ログインしてマップ上のオブジェクトの詳細を編集すると、何百万人もの他のユーザーがその情報を利用できるようになります。一緒により良い世界を作りましょう。
     ko = 로그인하고 지도 상의 개체 정보를 편집하면 다른 수백만 명의 사용자가 사용할 수 있도록 하겠습니다. 함께 더 나은 세상으로 만들어 봅시다.
     nb = Logg deg inn og rediger informasjonen til objektene på kartet, så vil vi gjøre den tilgjengelig for millioner av andre brukere. La oss gjøre verden bedre sammen.
     pl = Zaloguj się i edytuj dane obiektów na mapie, a my udostępnimy je milionom innych użytkowników. Razem możemy poprawić świat.
     pt = Acesse e edite informações dos objetos no mapa e eles serão disponibilizados para milhões de outros usuários. Vamos melhorar o mundo juntos.
+    pt-BR = Acesse e edite informações dos objetos no mapa e eles serão disponibilizados para milhões de outros usuários. Vamos melhorar o mundo juntos.
     ro = Autentificați-vă și editați informația despre obiectele de pe hartă, iar noi le vom face disponibile pentru milioane de alți utilizatori. Să facem împreună lumea mai bună.
     es = Inicia sesión y edita la información de los objetos en el mapa y los pondremos a disposición de millones de otros usuarios. Hagamos de este mundo un lugar mejor.
     sv = Logga in och redigera informationen om objekten på kartan så kommer vi att göra ändringarna tillgängliga för miljontals andra användare. Låt oss göra världen bättre tillsammans.
@@ -14161,13 +14162,13 @@
     de = Zuletzt hochgeladen
     hu = Utolsó frissítés
     id = Pengunggahan terakhir
-    pt-BR = Último upload
     it = Ultimo caricamento
     ja = 最終更新
     ko = 마지막 업로드
     nb = Siste opplasting
     pl = Ostatnio przesłane
     pt = Último upload
+    pt-BR = Último envio
     ro = Ultima încărcare
     es = Última carga
     sv = Senast uppladdad
@@ -14193,13 +14194,13 @@
     de = Sie haben Ihr erstes Objekt bearbeitet!
     hu = Szerkesztetted az első objektumod!
     id = Anda menyunting objek pertama Anda!
-    pt-BR = Você editou o seu primeiro objeto!
     it = Hai modificato il tuo primo oggetto!
     ja = 初めてオブジェクトを編集しました！
     ko = 로그인하고 전 세계 수백만 사람들을 위해 변화를 더하십시오!
     nb = Du har redigert ditt første objekt!
     pl = Edycja Twojego pierwszego obiektu zakończona!
     pt = Você editou o seu primeiro objeto!
+    pt-BR = Você editou o seu primeiro objeto!
     ro = Ați editat primul dvs. obiect!
     es = ¡Has editado tu primer objeto!
     sv = Du har redigerat ditt första objekt!
@@ -14224,13 +14225,13 @@
     de = Danke
     hu = Köszönjük
     id = Terima kasih
-    pt-BR = Obrigado
     it = Grazie
     ja = ありがとうございます
     ko = 고맙습니다.
     nb = Takk skal du ha
     pl = Dziękujemy
     pt = Obrigado
+    pt-BR = Obrigado
     ro = Vă mulțumim
     es = Gracias
     sv = Tack
@@ -14255,13 +14256,13 @@
     de = Mit Google anmelden
     hu = Bejelentkezés Google- vel
     id = Masuk menggunakan Google
-    pt-BR = Entrar com Google
     it = Accedi con Google
     ja = Googleでログイン
     ko = Google로 로그인
     nb = Logg inn med Google
     pl = Zaloguj się przez Google
     pt = Entrar com Google
+    pt-BR = Entrar com Google
     ro = Logați-vă cu contul de Google
     es = Iniciar sesión con Google
     sv = Logga in med Google
@@ -14286,13 +14287,13 @@
     de = Mit Facebook anmelden
     hu = Bejelentkezés Facebookkal
     id = Masuk menggunakan Facebook
-    pt-BR = Entrar com Facebook
     it = Accedi con Facebook
     ja = Facebookでログイン
     ko = Facebook으로 로그인
     nb = Logg inn med Facebook
     pl = Zaloguj się przez Facebooka
     pt = Entrar com Facebook
+    pt-BR = Entrar com Facebook
     ro = Logați-vă cu contul de Facebook
     es = Iniciar sesión con Facebook
     sv = Logga in med Facebook
@@ -14317,13 +14318,13 @@
     de = Mit www.openstreetmap.org anmelden
     hu = Jelentkezz be a www.openstreetmap.org oldalon
     id = Masuk menggunakan www.openstreetmap.org
-    pt-BR = Entrar com www.openstreetmap.org
     it = Accedi con www.openstreetmap.org
     ja = www.openstreetmap.orgでログインしてください
     ko = www.openstreetmap.org에 로그인
     nb = Logg inn med www.openstreetmap.org
     pl = Zaloguj się przez www.openstreetmap.org
     pt = Entrar com www.openstreetmap.org
+    pt-BR = Entrar com www.openstreetmap.org
     ro = Logați-vă cu contul de www.openstreetmap.org
     es = Iniciar sesión con www.openstreetmap.org
     sv = Logga in med www.openstreetmap.org
@@ -14348,13 +14349,13 @@
     de = Platz bearbeiten
     hu = Hely szerkesztése
     id = Sunting tempat
-    pt-BR = Editar o local
     it = Modifica il luogo
     ja = 場所を編集
     ko = 장소 편집
     nb = Rediger stedet
     pl = Edytuj miejsce
     pt = Editar o local
+    pt-BR = Editar o local
     ro = Editați loc
     es = Editar el lugar
     sv = Ändra platsen
@@ -14379,13 +14380,13 @@
     de = Name des Platzes
     hu = Hely neve
     id = Nama tempat
-    pt-BR = Nome do local
     it = Nome del luogo
     ja = 場所の名前
     ko = 지명
     nb = Stedsnavn
     pl = Nazwa miejsca
     pt = Nome do local
+    pt-BR = Nome do local
     ro = Denumire loc
     es = Nombre del lugar
     sv = Platsens namn
@@ -14410,13 +14411,13 @@
     de = Geben Sie den Namen wie auf dem Schild oder dem Namensschild angegeben ein
     hu = Adja meg a táblán vagy az utcatáblán megjelenő nevet
     id = Masukkan nama seperti pada tanda atau pelat nama
-    pt-BR = Informe o nome como está indicado na sinalização ou na placa
     it = Inserisci il nome riportato nel segnale o nella targhetta
     ja = 標識や表札の地名を入力
     ko = 기호 또는 이름판으로 이름 입력
     nb = Oppgi navnet som på skiltet eller navneskiltet
     pl = Wpisz nazwę zgodną z szyldem lub tabliczką
     pt = Informe o nome como está indicado na sinalização ou na placa
+    pt-BR = Informe o nome como está indicado na sinalização ou na placa
     ro = Introduceți denumirea așa cum apare ea pe indicator sau plăcuță
     es = Introduce el nombre indicado en el letrero o la placa
     sv = Ange namnet som på skylten eller på namnbrickan
@@ -14442,14 +14443,13 @@
     de = Andere Sprachen
     hu = Más nyelv
     id = Bahasa lainnya
-    pt-BR = Outros idiomas
     it = Altre lingue
     ja = その他の言語
     ko = 다른 언어
     nb = Andre språk
     pl = Inne języki
     pt = Outros idiomas
-    pt-BR = Mostrar
+    pt-BR = Outros idiomas
     ro = Alte limbi
     es = Otros idiomas
     sv = Övriga språk
@@ -14458,7 +14458,6 @@
     uk = Інші мови
     vi = Ngôn ngữ khác
     zh-Hans = 其他语言
-    pt-BR = Mostrar menos
     zh-Hant = 其他語言
     sk = Iné jazyky
 
@@ -14469,6 +14468,7 @@
     ru = Показать больше
     de = Mehr anzeigen
     zh-Hant = 顯示更多
+    pt-BR = Mostrar Mais
 
   [show_less]
     comment = small button to close list with names in different languages
@@ -14477,6 +14477,7 @@
     ru = Показать меньше
     de = Weniger anzeigen
     zh-Hant = 顯示較少
+    pt-BR = Mostrar menos
 
   [add_language]
     tags = ios, android
@@ -14491,13 +14492,13 @@
     de = Eine Sprache hinzufügen
     hu = Nyelv hozzáadása
     id = Tambahkan bahasa
-    pt-BR = Adicionar um idioma
     it = Aggiungi una lingua
     ja = 言語を追加
     ko = 언어 추가
     nb = Legg til et språk
     pl = Dodaj język
     pt = Adicionar um idioma
+    pt-BR = Adicionar um idioma
     ro = Adăugare limbă
     es = Añadir un idioma
     sv = Lägg till ett språk
@@ -14522,13 +14523,13 @@
     de = Straße
     hu = Utca
     id = Jalan
-    pt-BR = Rua
     it = Via
     ja = 通り
     ko = 거리
     nb = Gate
     pl = Ulica
     pt = Rua
+    pt-BR = Rua
     ro = Stradă
     es = Calle
     sv = Gata
@@ -14554,13 +14555,13 @@
     de = Hausnummer
     hu = Házszám
     id = Nomor rumah
-    pt-BR = N.º de porta
     it = Numero civico
     ja = 番地
     ko = 집 번호
     nb = Et husnummer
     pl = Numer domu
     pt = N.º de porta
+    pt-BR = N.º de porta
     ro = Număr casă
     es = Un número de domicilio
     sv = Ett husnummer
@@ -14585,13 +14586,13 @@
     de = Einzelheiten
     hu = Részletek
     id = Detail
-    pt-BR = Detalhes
     it = Dettagli
     ja = 詳細
     ko = 세부 정보
     nb = Detaljer
     pl = Szczegóły
     pt = Detalhes
+    pt-BR = Detalhes
     ro = Detalii
     es = Detalles
     sv = Detaljer
@@ -14617,13 +14618,13 @@
     de = Eine Straße hinzufügen
     hu = Utca hozzáadása
     id = Tambahkan jalan
-    pt-BR = Adicionar uma rua
     it = Aggiungi una strada
     ja = 通りを追加
     ko = 거리 추가
     nb = Legg til en gate
     pl = Dodaj ulicę
     pt = Adicionar uma rua
+    pt-BR = Adicionar uma rua
     ro = Adăugare stradă
     es = Añadir una calle
     sv = Lägg till en gata
@@ -14648,13 +14649,13 @@
     de = Eine Sprache wählen
     hu = Nyelv kiválasztása
     id = Pilih bahasa
-    pt-BR = Escolher um idioma
     it = Scegli una lingua
     ja = 言語を選択
     ko = 언어 선택
     nb = Velg et språk
     pl = Wybierz język
     pt = Escolher um idioma
+    pt-BR = Escolher um idioma
     ro = Alegeți o limbă
     es = Elegir un idioma
     sv = Välj ett språk
@@ -14679,13 +14680,13 @@
     de = Eine Straße wählen
     hu = Utca kiválasztása
     id = Pilih jalan
-    pt-BR = Escolher uma rua
     it = Scegli una strada
     ja = 通りを選択
     ko = 거리 선택
     nb = Velg en gate
     pl = Wybierz ulicę
     pt = Escolher uma rua
+    pt-BR = Escolher uma rua
     ro = Alegeți o stradă
     es = Elegir una calle
     sv = Välj en gata
@@ -14710,13 +14711,13 @@
     de = Postleitzahl
     hu = Irányítószám
     id = Kode Pos
-    pt-BR = Código postal
     it = Codice postale
     ja = 郵便番号
     ko = 우편 번호
     nb = Postnummer
     pl = Kod pocztowy
     pt = Código postal
+    pt-BR = Código postal
     ro = Cod postal
     es = Código postal
     sv = Postkod
@@ -14741,13 +14742,13 @@
     de = Küche
     hu = Konyha
     id = Masakan
-    pt-BR = Culinária
     it = Cucina
     ja = 料理
     ko = 요리
     nb = Matrett
     pl = Kuchnia
     pt = Culinária
+    pt-BR = Culinária
     ro = Bucătărie
     es = Cocina
     sv = Kök
@@ -14772,13 +14773,13 @@
     de = Küche auswählen
     hu = Válassz Konyhát
     id = Pilih Masakan
-    pt-BR = Selecione a Culinária
     it = Seleziona la cucina
     ja = 料理を選択
     ko = 요리 선택
     nb = Velg matrett
     pl = Wybierz kuchnię
     pt = Selecione a Culinária
+    pt-BR = Selecione a Culinária
     ro = Selectați tipul de bucătărie
     es = Seleccionar Cocina
     sv = Välj kök
@@ -14804,13 +14805,13 @@
     de = E-Mail oder Benutzername
     hu = E-mail vagy felhasználónév
     id = Surel atau nama pengguna
-    pt-BR = E-mail ou nome de usuário
     it = E-mail o nome utente
     ja = メールアドレスまたはユーザー名
     ko = 이메일 또는 사용자 이름
     nb = E-postadresse eller brukernavn
     pl = E-mail lub nazwa użytkownika
     pt = E-mail ou nome de usuário
+    pt-BR = E-mail ou nome de usuário
     ro = Adresa de e-mail sau numele de utilizator
     es = Correo electrónico o usuario
     sv = E-postadress eller användarnamn
@@ -14835,13 +14836,13 @@
     de = Telefon
     hu = Telefonszám
     id = Telepon
-    pt-BR = Telefone
     it = Telefono
     ja = 電話
     ko = 전화
     nb = Telefon
     pl = Telefon
     pt = Telefone
+    pt-BR = Telefone
     ro = Telefon
     es = Teléfono
     sv = Telefon
@@ -14858,7 +14859,6 @@
     en = Please note
     ru = Обратите внимание
     ar = يرجى العلم أنه،
-    pt-BR = Por favor note
     cs = Vezměte prosím na vědomí
     da = Bemærk venligst
     nl = Opgelet
@@ -14873,6 +14873,7 @@
     nb = Vær oppmerksom på at
     pl = Uwaga!
     pt = Por favor note
+    pt-BR = Por favor note
     ro = Actualizați hărțile
     es = Aviso
     sv = Observera
@@ -14889,7 +14890,6 @@
     en = No WiFi connection. Do you want to continue with mobile data?
     ru = Нет WiFi соединения. Вы хотите продолжить работу через мобильный интернет?
     ar = لا يوجد اتصال واي فاي. هل ترغب في استخدام بيانات الهاتف للاتصال؟
-    pt-BR = Nenhuma conexão Wi-Fi. Deseja continuar com os dados móveis?
     cs = Žádné Wi-Fi připojení. Chcete pokračovat s mobilními daty?
     da = Ingen WiFi-forbindelse. Vil du fortsætte med mobildata?
     nl = Geen WiFi-verbinding. Wil je doorgaan via mobiele data?
@@ -14904,6 +14904,7 @@
     nb = Ingen trådløs forbindelse. Vil du fortsette med mobildata?
     pl = Brak połączenia Wi-Fi. Czy chcesz kontynuować z użyciem danych pakietowych?
     pt = Nenhuma ligação Wi-Fi. Deseja continuar com os dados móveis?
+    pt-BR = Nenhuma conexão Wi-Fi. Deseja continuar com os dados móveis?
     ro = Nu există conexiune WiFi. Doriți să continuați cu conexiunea de pe mobil?
     es = No hay conexión Wi-Fi. ¿Quieres continuar con los datos móviles?
     sv = Ingen wifi-anslutning. Vill du fortsätta med mobildata?
@@ -14920,7 +14921,6 @@
     en = All map edits will be deleted together with the map.
     ru = Вместе с картой удалятся и внесенные вами правки на этой карте.
     ar = سيتم حذف جميع التغييرات بالخريطة بالإضافة إلى حذف الخريطة نفسها.
-    pt-BR = Todas as alterações ao mapa serão eliminadas juntamente com o mapa.
     cs = Zároveň s touto mapou budou odstraněny také všechny změny na této mapě.
     da = Alle kortændringer vil blive slettet sammen med kortet.
     nl = Alle wijzigingen aan de kaart zullen samen met de kaart worden verwijderd.
@@ -14935,6 +14935,7 @@
     nb = Alle endringer i kartet vil slettes sammen med kartet.
     pl = Wszystkie zmiany dotyczące mapy zostaną usunięte wraz z nią.
     pt = Todas as alterações ao mapa serão eliminadas juntamente com o mapa.
+    pt-BR = Todas as alterações ao mapa serão eliminadas juntamente com o mapa.
     ro = Pentru a crea un traseu, trebuie să actualizați toate hărțile, iar apoi să planificați traseul încă o dată.
     es = Todos los cambios en los mapas se borrarán junto con el mapa.
     sv = Alla kartändringar kommer att raderas tillsammans med kartan.
@@ -14951,7 +14952,6 @@
     en = Update Maps
     ru = Обновите карты
     ar = تحديث الخرائط
-    pt-BR = Atualizar mapas
     cs = Aktualizujte mapy
     da = Opdatér kort
     nl = Kaarten updaten
@@ -14966,6 +14966,7 @@
     nb = Oppdater kart
     pl = Aktualizuj mapy
     pt = Atualizar mapas
+    pt-BR = Atualizar mapas
     ro = Actualizați hărțile
     es = Autodescarga de mapas
     sv = Uppdatera kartor
@@ -14982,7 +14983,6 @@
     en = To create a route, you need to update all maps and then plan the route again.
     ru = Для построения маршрутов необходимо обновить все карты и построить маршрут заново.
     ar = لإنشاء مسار، فأنت تحتاج إلى تحديث كافة الخرائط ثم إعادة تخطيط المسار مرة أخرى.
-    pt-BR = Para criar um itinerário é necessário atualizar todos os mapas e, em seguida, voltar a planejar o itinerário.
     cs = Chcete-li vytvořit trasu, pak musíte aktualizovat všechny mapy a poté trasu naplánovat znovu.
     da = For at oprette en rute skal du opdatere alle kort og så planlægge ruten igen.
     nl = Om een route te creëren, moet je alle kaarten updaten en dan de route opnieuw plannen.
@@ -14997,6 +14997,7 @@
     nb = For å opprette en reiserute må du oppdatere alle kartene og deretter planlegge reiseruten på nytt.
     pl = Aby utworzyć trasę, należy zaktualizować wszystkie mapy, a następnie ponownie zaplanować trasę.
     pt = Para criar um itinerário, é necessário atualizar todos os mapas e, em seguida, voltar a planear o itinerário.
+    pt-BR = Para criar um itinerário é necessário atualizar todos os mapas e, em seguida, voltar a planejar o itinerário.
     ro = Pentru a crea un traseu, trebuie să actualizați toate hărțile, iar apoi să planificați traseul încă o dată.
     es = Los mapas empiezan a descargarse automáticamente cuando te aproximas al mapa.
     sv = För att skapa en rutt måste du uppdatera alla kartor och sedan planera rutten igen.
@@ -15013,7 +15014,6 @@
     en = Find the map
     ru = Найти карту
     ar = اعثر على الخريطة
-    pt-BR = Encontrar o mapa
     cs = Najít mapu
     da = Find kortet
     nl = Vind de kaart
@@ -15028,6 +15028,7 @@
     nb = Finn kartet
     pl = Znajdź mapę
     pt = Encontrar o mapa
+    pt-BR = Encontrar o mapa
     ro = Găsiți harta
     es = Encontrar el mapa
     sv = Hitta kartan
@@ -15044,7 +15045,6 @@
     en = Update All Maps
     ru = Обновить все карты
     ar = تحديث جميع الخرائط
-    pt-BR = Atualizar todos os mapas
     cs = Aktualizovat všechny mapy
     da = Opdatér alle kort
     nl = Update alle kaarten
@@ -15059,6 +15059,7 @@
     nb = Oppdater alle kart
     pl = Aktualizuj wszystkie mapy
     pt = Atualizar todos os mapas
+    pt-BR = Atualizar todos os mapas
     ro = Actualizați toate hărțile
     es = Actualizar todos los mapas
     sv = Uppdatera alla kartor
@@ -15075,7 +15076,6 @@
     en = Download current map and delete the old ones
     ru = Скачать текущую и удалить все старые карты
     ar = تنزيل الخريطة الحالية وحذف الخرائط القديمة
-    pt-BR = Descarregue o mapa atual e elimine os antigos
     cs = Stáhněte si aktuální mapu a odstraňte staré
     da = Download aktuelt kort og slet de gamle
     nl = Download de huidige kaart en verwijder de oude
@@ -15090,6 +15090,7 @@
     nb = Last ned det oppdaterte kartet og slett de gamle
     pl = Pobierz bieżącą mapę i usuń stare
     pt = Descarregue o mapa atual e elimine os antigos
+    pt-BR = Baixe o mapa atual e elimine os antigos
     ro = Descărcați harta actuală și ștergeți toate hărțile vechi
     es = Descargar el mapa actual y eliminar los mapas antiguos
     sv = Ladda ned senaste kartan och radera de gamla
@@ -15106,7 +15107,6 @@
     en = Download error
     ru = Ошибка загрузки
     ar = خطأ بالتنزيل
-    pt-BR = Erro de download
     cs = Chyba při stahování
     da = Fejl ved download
     nl = Downloadfout
@@ -15121,6 +15121,7 @@
     nb = Nedlastningsfeil
     pl = Błąd pobierania
     pt = Erro de download
+    pt-BR = Erro no download
     ro = Eroare de descărcare
     es = Error de descarga
     sv = Nedladdningsfel
@@ -15137,7 +15138,6 @@
     en = Please check your settings and make sure your device is connected to the internet.
     ru = Проверьте настройки и убедитесь, что устройство подключено к интернету.
     ar = يرجى التحقق من الإعدادات والتأكد من اتصال جهازك بالإنترنت.
-    pt-BR = Por favor, verifique as suas opções e certifique-se de que o dispositivo está ligado à Internet.
     cs = Zkontrolujte prosím své nastavení a ujistěte se, že je vaše zařízení připojeno k internetu.
     da = Tjek dine indstillinger og sørg for, din enhed er forbundet til internettet.
     nl = Controleer je instellingen en zorg ervoor dat het apparaat is verbonden met het internet.
@@ -15152,6 +15152,7 @@
     nb = Kontroller innstillingene dine og sørg for at enheten din er koblet til internett.
     pl = Sprawdź swoje ustawienia i upewnij się, że urządzenie ma połączenie z Internetem.
     pt = Por favor, verifique as suas opções e certifique-se de que o dispositivo está ligado à Internet.
+    pt-BR = Por favor, verifique as suas opções e certifique-se de que o dispositivo está ligado à Internet.
     ro = Vă rugăm să vă verificați setările și să vă asigurați că dispozitivul dvs. este conectat la Internet.
     es = Por favor, verifica la configuración y asegúrate de que tu dispositivo está conectado a Internet.
     sv = Kontrollera dina inställningar och se till att din enhet är ansluten till internet.
@@ -15168,7 +15169,6 @@
     en = Not enough space
     ru = Недостаточно места
     ar = مساحة غير كافية
-    pt-BR = Não há espaço suficiente
     cs = Nedostatek místa
     da = Ikke nok plads
     nl = Niet genoeg ruimte
@@ -15183,6 +15183,7 @@
     nb = Ikke nok plass
     pl = Brak wolnego miejsca
     pt = Não há espaço suficiente
+    pt-BR = Não há espaço suficiente
     ro = Spațiu insuficient
     es = Sin espacio suficiente
     sv = Ej tillräckligt utrymme
@@ -15199,7 +15200,6 @@
     en = Please, remove unnecessary data
     ru = Удалите ненужные данные
     ar = من فضلك، قم بإزالة البيانات غير الضرورية
-    pt-BR = Por favor, remova os dados desnecessários
     cs = Odstraňte prosím nepotřebná data
     da = Fjern unødvendig data
     nl = Verwijder overbodige gegevens
@@ -15214,6 +15214,7 @@
     nb = Fjern unødvendig data
     pl = Usuń niepotrzebne dane
     pt = Por favor, remova os dados desnecessários
+    pt-BR = Por favor, remova os dados desnecessários
     ro = Vă rugăm să ștergeți datele care nu sunt necesare
     es = Por favor, elimina los datos innecesarios
     sv = Ta bort onödig data
@@ -15230,7 +15231,6 @@
     en = General login error.
     ru = Общая ошибка авторизации.
     ar = خطأ بتسجيل الدخول العام.
-    pt-BR = Erro geral de início de sessão.
     cs = Obecná chyba při přihlašování.
     da = Generel fejl ved login.
     nl = Algemene inlogfout.
@@ -15245,6 +15245,7 @@
     nb = Generell innloggingsfeil.
     pl = Ogólny błąd logowania.
     pt = Erro geral de início de sessão.
+    pt-BR = Erro geral de início de sessão.
     ro = Eroare generală de conectare.
     es = Error general de inicio de sesión.
     sv = Allmänt fel vid inloggning.
@@ -15261,7 +15262,6 @@
     en = Login error.
     ru = Произошла ошибка при авторизации.
     ar = خطأ في تسجيل الدخول.
-    pt-BR = Erro de início de sessão.
     cs = Chyba při přihlašování.
     da = Login-fejl.
     nl = Inlogfout.
@@ -15276,6 +15276,7 @@
     nb = Innloggingsfeil.
     pl = Błąd logowania.
     pt = Erro de início de sessão.
+    pt-BR = Erro de início de sessão.
     ro = Eroare de conectare.
     es = Error de inicio de sesión.
     sv = Inloggningsfel.
@@ -15292,7 +15293,6 @@
     en = Login failed
     ru = Войти не удалось
     ar = فشل تسجيل الدخول
-    pt-BR = O início de sessão falhou
     cs = Přihlašování selhalo
     da = Login mislykkedes
     nl = Inloggen mislukt
@@ -15307,6 +15307,7 @@
     nb = Innloggingen mislyktes
     pl = Nieudane logowanie
     pt = O início de sessão falhou
+    pt-BR = O início de sessão falhou
     ro = Conectare eșuată
     es = Error al iniciar sesión
     sv = Inloggningen misslyckades
@@ -15323,7 +15324,6 @@
     en = Username is invalid
     ru = Неверное имя пользователя
     ar = اسم المستخدم غير صحيح
-    pt-BR = O nome de usuário é inválido
     cs = Uživatelské jméno není platné
     da = Ugyldigt brugernavn
     nl = Gebruikersnaam is ongeldig
@@ -15338,6 +15338,7 @@
     nb = Brukernavnet er ugyldig
     pl = Nieprawidłowa nazwa użytkownika
     pt = O nome de utilizador é inválido
+    pt-BR = O nome de usuário é inválido
     ro = Nume de utilizator nevalid
     es = Usuario no válido
     sv = Användarnamnet är ogiltigt
@@ -15354,7 +15355,6 @@
     en = You’ve edited an object!
     ru = Вы отредактировали объект!
     ar = لقد قمت بتعديل هدف!
-    pt-BR = Editou um objeto!
     cs = Upravili jste objekt!
     da = Du har redigeret et objekt!
     nl = Je hebt een object bewerkt!
@@ -15369,6 +15369,7 @@
     nb = Du har redigert et objekt!
     pl = Obiekt był edytowany!
     pt = Editou um objeto!
+    pt-BR = Editou um objeto!
     ro = Ați editat un obiect!
     es = ¡Has editado un objeto!
     sv = Du har redigerat ett objekt!
@@ -15385,7 +15386,6 @@
     en = Login with OpenStreetMap
     ru = Войти через OpenStreetMap
     ar = تسجيل الدخول عبر OpenStreetMap
-    pt-BR = Iniciar sessão no OpenStreetMap
     cs = Přihlásit se pomocí OpenStreetMap
     da = Login med OpenStreetMap
     nl = Log in met OpenStreetMap
@@ -15400,6 +15400,7 @@
     nb = Logg inn med OpenStreetMat
     pl = Zaloguj się z OpenStreetMap
     pt = Iniciar sessão com a OpenStreetMap
+    pt-BR = Iniciar sessão no OpenStreetMap
     ro = Conectați-vă cu OpenStreetMap
     es = Iniciar sesión con OpenStreetMap
     sv = Logga in med OpenStreetMap
@@ -15416,7 +15417,6 @@
     en = Verified Changes
     ru = Учтённые правки
     ar = التغييرات التي تم التحقق منها
-    pt-BR = Alterações:
     cs = Oveřené změny
     da = Bekræftede ændringer
     nl = Gecontroleerde wijzigingen
@@ -15431,6 +15431,7 @@
     nb = Bekreftede endringer
     pl = Zmiany zweryfikowane
     pt = Alterações verificadas
+    pt-BR = Alterações verificadas
     ro = Modificări confirmate
     es = Cambios verificados
     sv = Verifierade ändringar
@@ -15447,7 +15448,6 @@
     en = Not sent:
     ru = Не отправлено:
     ar = لم ترسل:
-    pt-BR = Não enviado:
     cs = Neodesláno:
     da = Ikke sendt:
     nl = Niet verzonden:
@@ -15462,6 +15462,7 @@
     nb = Ikke sendt:
     pl = Nie wysłano:
     pt = Não enviado:
+    pt-BR = Não enviado:
     ro = Netrimis:
     es = No enviado:
     sv = Inte skickade:
@@ -15478,7 +15479,6 @@
     en = Pull the map to select the correct location of the object.
     ru = Потяните карту, чтобы выбрать правильное местоположение объекта.
     ar = اسحب الخريطة لتحدد الموقع الصحيح للهدف.
-    pt-BR = Puxe o mapa para selecionar o lugar correto do objeto.
     cs = Táhněte mapu, abyste vybrali správné umístění objektu.
     da = Træk kortet for at vælge objektets korrekte placering.
     nl = Trek aan de kaart om de juiste locatie van het object te selecteren.
@@ -15493,6 +15493,7 @@
     nb = Dra kartet for å velge riktig beliggenhet for objektet.
     pl = Przeciągnij mapę, aby wybrać poprawną lokalizację obiektu.
     pt = Puxe o mapa para selecionar o lugar correto do objeto.
+    pt-BR = Puxe o mapa para selecionar o lugar correto do objeto.
     ro = Trageți de hartă pentru a selecta locația corectă a obiectului.
     es = Arrastra el mapa para seleccionar la ubicación correcta del objeto.
     sv = Dra på kartan för att välja objektets rätta plats.
@@ -15509,7 +15510,6 @@
     en = Select category
     ru = Выбрать категорию
     ar = اختر الفئة
-    pt-BR = Selecionar a categoria
     cs = Vyberte kategorii
     da = Vælg kategori
     nl = Selecteer categorie
@@ -15524,6 +15524,7 @@
     nb = Velg kategori
     pl = Wybierz kategorię
     pt = Selecionar a categoria
+    pt-BR = Selecionar a categoria
     ro = Selectați categoria
     es = Seleccionar categoría
     sv = Välj kategori
@@ -15540,7 +15541,6 @@
     en = Popular
     ru = Популярные
     ar = شائع
-    pt-BR = Popular
     cs = Populární
     da = Populær
     nl = Populair
@@ -15555,6 +15555,7 @@
     nb = Populære
     pl = Popularne
     pt = Popular
+    pt-BR = Popular
     ro = Popular
     es = Popular
     sv = Populära
@@ -15571,7 +15572,6 @@
     en = All Categories
     ru = Все категории
     ar = جميع الفئات
-    pt-BR = Todas as categorias
     cs = Všechny kategorie
     da = Alle kategorier
     nl = Alle categorieën
@@ -15586,6 +15586,7 @@
     nb = Alle kategorier
     pl = Wszystkie kategorie
     pt = Todas as categorias
+    pt-BR = Todas as categorias
     ro = Toate categoriile
     es = Todas las categorías
     sv = Alla kategorier
@@ -15602,7 +15603,6 @@
     en = Editing
     ru = Редактирование
     ar = تعديل
-    pt-BR = Edição
     cs = Probíhají úpravy
     da = Redigerer
     nl = Aan het aanpassen
@@ -15617,6 +15617,7 @@
     nb = Redigerer
     pl = Edycja
     pt = Edição
+    pt-BR = Edição
     ro = Editare
     es = Editar
     sv = Redigerar
@@ -15633,7 +15634,6 @@
     en = Adding
     ru = Добавление
     ar = إٍضافة
-    pt-BR = A adicionar
     cs = Probíhá přidávání
     da = Tilføjer
     nl = Aan het toevoegen
@@ -15648,6 +15648,7 @@
     nb = Legger til
     pl = Dodawanie
     pt = A adicionar
+    pt-BR = Adicionando
     ro = Adăugare
     es = Añadir
     sv = Lägger till
@@ -15664,7 +15665,6 @@
     en = Name of the place
     ru = Название места
     ar = اسم المكان
-    pt-BR = Nome do lugar
     cs = Název místa
     da = Stedets navn
     nl = Naam van de plaats
@@ -15679,6 +15679,7 @@
     nb = Navn på stedet
     pl = Nazwa miejsca
     pt = Nome do lugar
+    pt-BR = Nome do lugar
     ro = Denumirea locației
     es = Nombre del lugar
     sv = Namn på platsen
@@ -15695,7 +15696,6 @@
     en = Category
     ru = Категория
     ar = الفئة
-    pt-BR = Categoria
     cs = Kategorie
     da = Kategori
     nl = Categorie
@@ -15710,6 +15710,7 @@
     nb = Kategori
     pl = Kategoria
     pt = Categoria
+    pt-BR = Categoria
     ro = Categorie
     es = Categoría
     sv = Kategori
@@ -15725,7 +15726,6 @@
     en = Detailed description of a problem
     ru = Подробное описание проблемы
     ar = وصف مفصل للمشكلة
-    pt-BR = Descrição detalhada do problema
     cs = Detailní popis problému
     da = Detaljeret beskrivelse af problemet
     nl = Gedetailleerde probleemomschrijving
@@ -15740,6 +15740,7 @@
     nb = Detaljert beskrivelse av problemet
     pl = Szczegółowy opis problemu
     pt = Descrição detalhada do problema
+    pt-BR = Descrição detalhada do problema
     ro = Descrierea detaliată a problemei
     es = Descripción al detalle del problema
     sv = Detaljerad beskrivning av ett problem
@@ -15755,7 +15756,6 @@
     en = A different problem
     ru = Другая проблема
     ar = مشكلة مختلفة
-    pt-BR = Um problema diferente
     cs = Jiný problém
     da = Et anderledes problem
     nl = Een ander probleem
@@ -15770,6 +15770,7 @@
     nb = Et annet problem
     pl = Inny problem
     pt = Um problema diferente
+    pt-BR = Um problema diferente
     ro = O problemă diferită
     es = Un problema diferente
     sv = Ett annat problem
@@ -15817,7 +15818,6 @@
     en = Report a problem
     ru = Сообщить о проблеме
     ar = الإبلاغ عن مشكلة
-    pt-BR = Comunicar um problema
     cs = Nahlásit problém
     da = Anmeld et problem
     nl = Meld een probleem
@@ -15832,6 +15832,7 @@
     nb = Rapporter et problem
     pl = Zgłoś problem
     pt = Comunicar um problema
+    pt-BR = Comunicar um problema
     ro = Raportați o problemă
     es = Informar de un problema
     sv = Rapportera ett problem
@@ -15856,13 +15857,13 @@
     de = Organisation hinzufügen
     hu = Szervezet hozzáadása
     id = Tambahkan organisasi
-    pt-BR = Adicionar uma organização
     it = Aggiungi organizzazione
     ja = 団体を追加
     ko = 조직 추가
     nb = Legg til organisasjon
     pl = Dodaj organizację
     pt = Adicionar uma organização
+    pt-BR = Adicionar uma empresa
     ro = Adăugare organizație
     es = Añadir organización
     sv = Lägg till organisation
@@ -15887,13 +15888,13 @@
     de = Sie haben darum gebeten, und wir haben es geschafft
     hu = Te kérted, mi elkészítettük
     id = Anda memintanya dan kami telah malakukannya
-    pt-BR = Vocês têm pedido por isso e nós atendemos
     it = Ce lo avete chiesto e noi lo abbiamo fatto
     ja = 皆様のご要望にお応えして、実現を果たしました
     ko = 여러분이 요청한 것을 저희가 해냈습니다
     nb = Dere har bedt om det og vi har fått det til
     pl = Prosiliście o to, więc to zrobiliśmy
     pt = Vocês têm pedido por isso e nós atendemos
+    pt-BR = Vocês têm pedido por isso e nós atendemos
     ro = Ne-ați cerut, iar noi am făcut
     es = Llevas tiempo pidiéndolo y lo hemos hecho
     sv = Du har bett om det och vi har gjort det
@@ -15918,13 +15919,13 @@
     de = Wir haben die Karten aufgeteilt. Jetzt können Sie einzelne Regionen herunterladen, ohne das ganze Land herunterzuladen.
     hu = Felosztottuk részekre a térképeket. Mostantól az egyes régiókat is letöltheted, nem csak az egész országot.
     id = Kami telah membagi peta menjadi beberapa bagian. Sekarang Anda dapat mengunduh wilayah-wilayah yang terpisah, bukan seluruh negara.
-    pt-BR = Dividimos os mapas em partes. Agora vocês podem baixar regiões separadas em vez do país inteiro.
     it = Abbiamo diviso le mappe in parti. Ora puoi scaricare le regioni separate, non l'intero paese.
     ja = マップを分割し、国全体でなく個別の地域をダウンロードできるようにしました。
     ko = 지도를 여러 부분으로 나눴습니다. 이제는 전체 국가가 아닌 개별 지역을 다운로드할 수 있습니다.
     nb = Vi har delt opp kartene i separate deler. Nå kan du laste ned separate regioner istedenfor hele land.
     pl = Podzieliliśmy mapy na części. Teraz możesz pobierać oddzielne regiony, zamiast całego kraju
     pt = Dividimos os mapas em partes. Agora vocês podem baixar regiões separadas em vez do país inteiro.
+    pt-BR = Dividimos os mapas em partes. Agora vocês podem baixar regiões separadas em vez do país inteiro.
     ro = Am împărțit hărțile în mai multe secțiuni. Acum, puteți descărca și regiuni separate, nu doar țara întreagă.
     es = Hemos dividido el mapa por partes. Ahora, puedes descargar regiones individuales, en vez de el país entero.
     sv = Vi har delat in kartor i delar. Nu kan du ladda ner separata regioner, inte hela landet.
@@ -15941,7 +15942,6 @@
     en = New search
     ru = Новый поиск
     ar = بحث جديد
-    pt-BR = Nova busca
     cs = Nové hledání
     da = Ny søgning
     nl = Nieuwe zoekopdracht
@@ -15956,6 +15956,7 @@
     nb = Nytt søk
     pl = Nowe wyszukiwanie
     pt = Nova busca
+    pt-BR = Nova busca
     ro = Căutare nouă
     es = Nueva búsqueda
     sv = Ny sökning
@@ -15980,13 +15981,13 @@
     de = Wir haben die Adresssuche dramatisch verbessert. Sehen Sie selbst.
     hu = Jelentősen javítottunk a címen alapuló keresésünkön. Nézd meg magadnak.
     id = Kami secara signifikan telah meningkatkan pencarian menurut alamat. Lihat sendiri.
-    pt-BR = Melhoramos consideravelmente a busca por endereço. Veja você mesmo.
     it = Abbiamo migliorato significativamente la ricerca per indirizzo. Guarda tu stesso.
     ja = 住所での検索機能を大幅に改善しました。ご自身の目でご覧ください。
     ko = 저희는 주소에 의한 검색을 놀랍게 개선 했습니다. 직접 경험해 보세요.
     nb = Nå er det mye enklere å søke etter adresse. Se selv.
     pl = Znacząco usprawniliśmy wyszukiwanie po adresie. Przekonaj się sam.
     pt = Melhoramos consideravelmente a busca por endereço. Veja você mesmo.
+    pt-BR = Melhoramos consideravelmente a busca por endereço. Veja você mesmo.
     ro = Am îmbunătățit semnificativ căutarea după adresă. Convinge-te singur.
     es = Hemos mejorado notablemente la búsqueda por dirección. Compruébalo.
     sv = Vi har avsevärt förbättrat sökningen på adress. Se själv.
@@ -16003,7 +16004,6 @@
     en = Edit the map*
     ru = Редактируйте карту*
     ar = تعديل الخريطة *
-    pt-BR = Editar o mapa*
     cs = Upravit mapu*
     da = Redigér kortet*
     nl = Bewerk de kaart*
@@ -16018,6 +16018,7 @@
     nb = Rediger kartet*
     pl = Edytuj mapę*
     pt = Editar o mapa*
+    pt-BR = Editar o mapa*
     ro = Editați harta*
     es = Editar el mapa*
     sv = Redigera kartan*
@@ -16034,7 +16035,6 @@
     en = Add new places to the map, and edit existing ones directly from the app.
     ru = Добавляйте новые объекты и редактируйте старые прямо из приложения.
     ar = قم بإضافة أماكن جديدة للخريطة، وعدل أماكن حالية مباشرة من التطبيق.
-    pt-BR = Adicione novos lugares ao mapa e edite os já existentes diretamente a partir da app.
     cs = Přidejte na mapu nová místa a upravte existující místa přímo z aplikace.
     da = Tilføj nye steder til kortet og redigér eksisterende direkte fra app'en.
     nl = Voeg nieuwe plaatsen toe aan de kaart en bewerk de bestaande rechtstreeks vanuit de app.
@@ -16049,6 +16049,7 @@
     nb = Legg til nye steder i kartet og rediger eksisterende steder direkte fra appen.
     pl = Dodawaj nowe miejsca do mapy i edytuj już istniejące bezpośrednio z poziomu aplikacji.
     pt = Adicione novos lugares ao mapa e edite os já existentes diretamente a partir da app.
+    pt-BR = Adicione novos lugares ao mapa e edite os já existentes diretamente a partir da app.
     ro = Adăugați locuri noi pe hartă și modificați-le pe cele existente direct din aplicație.
     es = Añadir lugares nuevos al mapa y editar los lugares actuales directamente desde la aplicación.
     sv = Lägg till nya platser till kartan och redigera de befintliga direkt från appen.
@@ -16065,7 +16066,6 @@
     en = * MAPS.ME uses OpenStreetMap community data.
     ru = * MAPS.ME использует данные открытых карт сообщества OpenStreetMap.
     ar = *تستخدم MAPS.ME البيانات الخاصة بخريطة OpenStreetMap.
-    pt-BR = * A MAPS.ME utiliza dados da comunidade OpenStreetMap.
     cs = * MAPS.ME používá komunitní data OpenStreetMap.
     da = * MAPS.ME bruger fællesskabsdata fra OpenStreetMap.
     nl = * MAPS.ME gebruikt OpenStreetMap-communitiedata.
@@ -16080,6 +16080,7 @@
     nb = * MAPS.ME bruker data fra OpenStreetMap-samfunnet.
     pl = * MAPS.ME korzysta z danych społeczności OpenStreetMap.
     pt = * A MAPS.ME utiliza dados da comunidade OpenStreetMap.
+    pt-BR = * MAPS.ME utiliza dados da comunidade OpenStreetMap.
     ro = * MAPS.ME folosește datele comunității OpenStreetMap community.
     es = * MAPS.ME utiliza datos de la comunidad de OpenStreetMap.
     sv = * MAPS.ME använder data från OpenStreetMaps community.
@@ -16096,7 +16097,6 @@
     en = You will never get lost again
     ru = Вы никогда больше не заблудитесь
     ar = لن تضل الطريق أبدا بعد الآن
-    pt-BR = Você nunca mais ficará perdido outra vez
     cs = Již nikdy nezabloudíte
     da = Du vil aldrig fare vild igen
     nl = Je zult nooit meer verdwalen
@@ -16111,6 +16111,7 @@
     nb = Du vil aldri havne på villspor igjen
     pl = Nigdy się już nie zgubisz
     pt = Nunca mais voltará a perder-se
+    pt-BR = Você nunca mais ficará perdido outra vez
     ro = Niciodată nu vă veți rătăci din nou
     es = Nunca volverás a perderte
     sv = Du kommer aldrig att gå vilse igen
@@ -16127,7 +16128,6 @@
     en = Plan optimal car and pedestrian routes, even if there is no internet connection!
     ru = Прокладывайте самые оптимальные автомобильные и пешеходные маршруты даже там, где нет связи!
     ar = قم بتخطيط أفضل طرق السيارات والمشاة، حتى مع عدم وجود اتصال بالإنترنت!
-    pt-BR = Planeje itinerários ideais de automóvel e a pé, mesmo se não houver ligação à Internet!
     cs = Naplánujte si optimální trasy pro auto nebo pěší chůzi, i když tam nebude připojení k internetu!
     da = Planlæg de optimale ruter i bil og til fods selv uden internetforbindelse!
     nl = Plan optimale auto- en wandelroutes, zelfs als er geen internetverbinding is!
@@ -16142,6 +16142,7 @@
     nb = Planlegg optimale reiseruter med bil og til fots, selv uten internettforbindelse!
     pl = Planuj optymalne trasy samochodowe i piesze, nawet gdy nie masz połączenia z Internetem!
     pt = Planeie itinerários ideais de automóvel e a pé, mesmo se não houver ligação à Internet!
+    pt-BR = Planeje itinerários ideais de automóvel e a pé, mesmo se não houver acesso à Internet!
     ro = Planificați traseele optime cu mașina și cele pietonale, chiar dacă nu există conexiune la Internet!
     es = Planifica rutas óptimas en coche y a pie, ¡incluso si no hay conexión a Internet!
     sv = Planera dina optimala bil- eller promenadrutter även när du saknar internetanslutning!
@@ -16158,7 +16159,6 @@
     en = Offline navigation
     ru = Оффлайн навигация
     ar = الملاحة في وضع غير متصل
-    pt-BR = Navegação sem conexão
     cs = Offline navigace
     da = Offline navigering
     nl = Offline navigatie
@@ -16173,6 +16173,7 @@
     nb = Offline-navigering
     pl = Nawigacja offline
     pt = Navegação offline
+    pt-BR = Navegação offline
     ro = Navigare offline
     es = Navegación fuera de línea
     sv = Navigering offline
@@ -16189,7 +16190,6 @@
     en = Plan optimal car and pedestrian routes.
     ru = Прокладывайте оптимальные автомобильные и пешеходные маршруты.
     ar = خطط أفضل طرق السيارات والمشاة.
-    pt-BR = Planeje itinerários ideais de automóvel e a pé.
     cs = Naplánujte si optimální trasy pro auto nebo pěší chůzi.
     da = Planlæg de optimale ruter i bil og til fods.
     nl = Plan optimale auto- en wandelroutes.
@@ -16204,6 +16204,7 @@
     nb = Planlegg optimale reiseruter med bil og til fots.
     pl = Planuj optymalne trasy samochodowe i piesze.
     pt = Planeie itinerários ideais de automóvel e a pé.
+    pt-BR = Planeje itinerários ideais de automóvel e a pé.
     ro = Planificați traseele optime cu mașina și cele pietonale.
     es = Planifica rutas óptimas en coche y a pie.
     sv = Planera optimala bil- och promenadrutter.
@@ -16220,7 +16221,6 @@
     en = MAPS.ME — use the maps of the entire world without an internet connection
     ru = MAPS.ME — используй карты всего мира без интернета
     ar = MAPS.ME — وصول إلى الخرائط على مستوى العالم دون إنترنت
-    pt-BR = MAPS.ME — acesse os mapas do mundo inteiro sem internet
     cs = MAPS.ME — přistupte k celosvětovým mapám bez internetu
     da = MAPS.ME — adgang til verdensomspændende kort uden internet
     nl = MAPS.ME — toegang tot kaarten van de hele wereld, zonder verbinding met het internet
@@ -16235,6 +16235,7 @@
     nb = MAPS.ME — se verdensvide kart uten Internett
     pl = MAPS.ME — uzyskaj dostęp do map świata bez łączenia się z Internetem
     pt = MAPS.ME — acesse os mapas do mundo inteiro sem internet
+    pt-BR = MAPS.ME — acesse os mapas do mundo inteiro sem internet
     ro = MAPS.ME — accesați hărți din întreaga lume fără conexiune Internet
     es = MAPS.ME — accede al mapa del mundo sin Internet
     sv = MAPS.ME — se världsomspännande kartor utan internet
@@ -16251,7 +16252,6 @@
     en = Download the maps for the desired area once, and use the navigation and search functions without an internet connection.
     ru = Загрузите карты необходимого региона один раз и пользуйтесь навигацией и поиском без подключения к интернету.
     ar = قم بتنزيل خرائط للمنطقة المطلوب مرة واحدة، واستخدم وظائف الملاحة والبحث دون الحاجة للاتصال بالإنترنت.
-    pt-BR = Descarregue uma vez os mapas para a área desejada e utilize as funções de navegação e de pesquisa sem uma ligação à Internet.
     cs = Stáhněte si jednou mapy požadované oblasti a poté používejte navigaci a vyhledávací funkce bez připojení k internetu.
     da = Download kortene til det ønskede område en gang, og brug navigerings- og søgefunktionerne uden internetforbindelse.
     nl = Download eenmaal de kaarten voor het gewenste gebied en gebruik de navigatie- en zoekfuncties zonder een internetverbinding.
@@ -16266,6 +16266,7 @@
     nb = Last ned kartene for et ønsket område én gang, og bruk navigeringen og andre søkefunksjoner uten internettforbindelse.
     pl = Pobierz jednorazowo mapy dla wybranego obszaru, aby korzystać z nawigacji i wyszukiwania bez połączenia sieciowego.
     pt = Descarregue uma vez os mapas para a área desejada e utilize as funções de navegação e de pesquisa sem uma ligação à Internet.
+    pt-BR = Descarregue uma vez os mapas para a área desejada e utilize as funções de navegação e de pesquisa sem uma conexão à Internet.
     ro = Descărcați o dată hărțile pentru zona dorită, pentru a naviga și folosi funcțiile de căutare fără conexiune la Internet.
     es = Descarga una vez los mapas para el área deseada, y utiliza las funciones de navegación y búsqueda sin conexión a Internet.
     sv = Ladda ned kartorna för önskat område en gång och använd funktionerna för navigering och sökning utan en internetanslutning.
@@ -16282,7 +16283,6 @@
     en = To receive the latest maps, get updates notifications
     ru = Получайте уведомления об обновлениях, чтобы всегда иметь актуальные карты
     ar = تابع إخطارات التحديث للحصول على أحدث الخرائط
-    pt-BR = Para receber os mapas mais recentes, receba notificações de atualizações
     cs = Chcete-li získat nejnovější mapy, pak zapněte upozornění na aktualizace
     da = For at modtage de nyeste kort kan du få opdateringsnotifikationer
     nl = Ontvang update-meldingen om de nieuwste kaarten te ontvangen
@@ -16297,6 +16297,7 @@
     nb = Få oppdateringsvarsler for å motta de nyeste kartene
     pl = Aby pobierać najnowsze mapy, włącz powiadomienia o aktualizacjach
     pt = Para receber os mapas mais recentes, receba notificações de atualizações
+    pt-BR = Para receber os mapas mais recentes, receba notificações de atualizações
     ro = Pentru a obține cele mai recente hărți, obțineți notificările de actualizări
     es = Para recibir los mapas más recientes, obtén las notificaciones de actualización
     sv = Få avisering om uppdateringar för de senaste kartorna
@@ -16313,7 +16314,6 @@
     en = Enable updates notifications
     ru = Разрешите отправку уведомлений
     ar = تفعيل إخطارات التحديث
-    pt-BR = Ativar as notificações de atualizações
     cs = Povolit upozornění na aktualizace
     da = Aktivér opdateringsnotifikationer
     nl = Schakel update-meldingen in
@@ -16328,6 +16328,7 @@
     nb = Aktiver oppdateringsvarsler
     pl = Włącz powiadomienia o aktualizacjach
     pt = Ativar as notificações de atualizações
+    pt-BR = Ativar as notificações de atualizações
     ro = Activați notificările de actualizări
     es = Permitir notificaciones de actualización
     sv = Aktivera avisering om uppdateringar
@@ -16344,7 +16345,6 @@
     en = Help us find you
     ru = Помогите найти вас
     ar = ساعدنا في العثور عليك
-    pt-BR = Ajude-nos a encontrá-lo
     cs = Pomozte nám vás najít
     da = Hjælp os med at finde dig
     nl = Help ons om je te vinden
@@ -16359,6 +16359,7 @@
     nb = Hjelp oss med å finne deg
     pl = Pomaga nam znaleźć Ciebie
     pt = Ajude-nos a encontrá-lo
+    pt-BR = Ajude-nos a encontrá-lo
     ro = Ajutați-ne să vă găsim
     es = Ayúdanos a encontrarte
     sv = Hjälp oss att hitta dig
@@ -16375,7 +16376,6 @@
     en = In order for you to use navigation and the other app functions, MAPS.ME needs access to your geoposition.
     ru = Чтобы пользоваться навигацией и другими функциями приложения, нам необходим доступ к вашей геопозиции.
     ar = لاستخدام الملاحة والميزات الأخرى، فنحن بحاجة إلى تحديد موقعك الجغرافي.
-    pt-BR = Para utilizar a navegação e outros recursos, precisamos de acesso à sua localização geográfica.
     cs = Chcete-li používat navigaci a další funkce, pak potřebujeme přístup k vaší zeměpisné poloze.
     da = For at bruge navigering og andre funktioner skal vi have adgang til din geolokation.
     nl = Om de navigatie en andere functies te kunnen gebruiken, hebben we toegang tot je geolocatie nodig.
@@ -16390,6 +16390,7 @@
     nb = For å bruke navigering og andre funksjoner må vi ha tilgang til posisjonen din.
     pl = Abyś mógł korzystać z nawigacji i innych funkcji, musimy uzyskać dostęp do twojej geolokalizacji.
     pt = Para utilizar a navegação e outros recursos, precisamos de aceder à sua localização geográfica.
+    pt-BR = Para utilizar a navegação e outros recursos, precisamos de acesso à sua localização geográfica.
     ro = Ca să puteți naviga și folosi alte funcții, trebuie să accesăm poziționarea dvs. geografică.
     es = Para utilizar la navegación y otras funciones, necesitamos acceso a tu geolocalización.
     sv = För att använda navigering och andra funktioner behöver vi tillgång till din geografiska plats.
@@ -16405,7 +16406,6 @@
     en = Change location
     ru = Измените местоположение
     ar = تغيير الموقع
-    pt-BR = Mudar o local
     cs = Změnit umístění
     da = Skift lokation
     nl = Locatie wijzigen
@@ -16420,6 +16420,7 @@
     nb = Endre plassering
     pl = Zmień lokalizację
     pt = Mudar o local
+    pt-BR = Mudar o local
     ro = Schimbare locație
     es = Cambiar ubicación
     sv = Ändra placering
@@ -16435,7 +16436,6 @@
     en = An object can't be located here
     ru = Объект не может находиться в этом месте
     ar = لا يمكن تحديد موقع الكائن هنا
-    pt-BR = Um objeto não pode ser localizado aqui
     cs = Objekt zde nemůže být umístěn
     da = Et objekt kan ikke placeres her
     nl = Hier kan geen object worden geplaatst
@@ -16450,6 +16450,7 @@
     nb = Et objekt kan ikke plasseres her
     pl = Obiekt nie może znajdować się tutaj
     pt = Um objeto não pode ser localizado aqui
+    pt-BR = Um objeto não pode ser localizado aqui
     ro = În acest loc nu poate fi localizat un obiect
     es = No se puede ubicar ningún objeto aquí
     sv = Ett objekt kan inte placeras här
@@ -16465,7 +16466,6 @@
     en = Log in so other users can see the changes you have made
     ru = Войдите, чтобы ваши изменения увидели другие пользователи.
     ar = قم بتسجيل الدخول حتى يتمكن باقي المستخدمين من رؤية التغييرات التي قمت بها.
-    pt-BR = Fazer Login para que outros usuários vejam as mudanças que você fez.
     cs = Přihlaste se, aby ostatní uživatelé mohli vidět změny, které jste provedli.
     da = Log på så andre brugere kan se ændringerne som du har foretaget.
     nl = Log in zodat andere gebruikers kunnen zien wat u hebt gewijzigd.
@@ -16480,6 +16480,7 @@
     nb = Logg inn slik at andre brukere kan se endringene du har utført.
     pl = Zaloguj się, by inni użytkownicy mogli zobaczyć Twoje zmiany.
     pt = Fazer Login para que outros usuários vejam as mudanças que você fez.
+    pt-BR = Fazer Login para que outros usuários vejam as mudanças que você fez.
     ro = Autentificați-vă pentru ca modificările pe care le-ați efectuat să poată fi văzute și de alți utilizatori.
     es = Inicia sesión para que otros usuarios puedan ver los cambios que has efectuado.
     sv = Logga in så att andra användare kan se de ändringar du gjort.
@@ -16495,7 +16496,6 @@
     en = Updating is not allowed during navigation.
     ru = Во время навигации обновление запрещено.
     ar = التحديث ممنوع أثناء الملاحة.
-    pt-BR = Atualização não é permitida durante a navegação.
     cs = Aktualizace jsou během navigování zakázány.
     da = Opdatering er ikke tilladt under navigering.
     nl = Updaten tijdens navigatie is niet toegestaan.
@@ -16510,6 +16510,7 @@
     nb = Det er ikke mulig å oppdatere under navigering.
     pl = Podczas nawigacji aktualizacja jest niemożliwa.
     pt = Atualização não é permitida durante a navegação.
+    pt-BR = Atualização não é permitida durante a navegação.
     ro = În timpul navigării, actualizarea este interzisă.
     es = No se permite la actualización durante la navegación.
     sv = Att uppdatera är förbjudet under navigering.
@@ -16534,13 +16535,13 @@
     de = Zum Herunterladen benötigen Sie mehr Platz. Bitte löschen Sie unnötige Daten.
     hu = A letöltéshez több szabad tárhelyre van szükség. Kérjük, töröld a szükségtelen adatokat.
     id = Untuk mengunduh, Anda perlu ruang lebih banyak. Harap menghapus data yang tidak diperlukan.
-    pt-BR = Para descarregar, é necessário mais espaço. Por favor, elimine os dados desnecessários.
     it = Per scaricare, hai bisogno di più spazio. Sei pregato di eliminare i dati non necessari.
     ja = ダウンロードするには空き容量がさらに必要です。不必要なデータを削除してください。
     ko = 다운로드하려면, 더 많은 여유 공간이 필요합니다. 불필요한 데이터를 삭제하십시오.
     nb = Du må frigjøre mer lagringsplass for å laste ned. Slett unødvendig data.
     pl = Aby pobrać, potrzebujesz więcej miejsca. Usuń niepotrzebne dane.
     pt = Para descarregar, é necessário mais espaço. Por favor, elimine os dados desnecessários.
+    pt-BR = É necessário mais espaço para baixar. Por favor, elimine dados desnecessários.
     ro = Aveți nevoie de mai mult spațiu ca să descărcați. Vă rugăm să ștergeți toate informațiile inutile.
     es = Necesitas más espacio para descargar. Por favor, elimina los datos innecesarios.
     sv = Du behöver mer utrymme för att ladda ned. Radera onödig data.
@@ -16556,7 +16557,6 @@
     en = I improved the MAPS.ME maps
     ru = Я улучшил карты MAPS.ME
     ar = لقد قمت بتحديث خرائط تطبيق MAPS.ME
-    pt-BR = Melhorei os mapas do MAPS.ME
     cs = Vylepšil jsem mapy MAPS.ME
     da = Jeg forbedrede MAPS.ME kortene
     nl = Ik heb de MAPS.ME-kaarten verbeterd
@@ -16571,6 +16571,7 @@
     nb = Jeg har forbedret MAPS.ME kartene
     pl = Dokonałem poprawek map na MAPS.ME
     pt = Melhorei os mapas do MAPS.ME
+    pt-BR = Eu melhorei os mapas do MAPS.ME
     ro = Am îmbunătățit hărțile MAPS.ME
     es = He mejorado los mapas de MAPS.ME
     sv = Jag förbättrade kartorna hos MAPS.ME
@@ -16586,7 +16587,6 @@
     en = We will make sure to send your comments to the map editors.
     ru = Мы обязательно отправим ваш комментарий картографам.
     ar = سوف نرسل تعليقك إلى فريق رسم الخرائط.
-    pt-BR = Encaminharemos o seu comentário aos editores do mapa.
     cs = Váš komentář pošleme kartografům.
     da = Vi vil sende dine kommentarer til kartograferne.
     nl = We zullen uw opmerking doorsturen naar de kaartmakers.
@@ -16601,6 +16601,7 @@
     nb = Vi vil sende kommentaren din til kartografene.
     pl = Prześlemy Twoje komentarze kartografom.
     pt = Encaminharemos o seu comentário aos cartógrafos.
+    pt-BR = Encaminharemos o seu comentário aos editores do mapa.
     ro = Vom trimite comentariul dumneavoastră cartografilor.
     es = Enviaremos tus comentarios a los cartógrafos.
     sv = Vi vidarebefordrar din kommentar till kartritarna.
@@ -16616,7 +16617,6 @@
     en = You have added an object whose category we do not support yet. It will appear on the map in the future.
     ru = Вы добавили объект, категорию которого мы пока не поддерживаем. В будущем он появится на карте.
     ar = لقد قمت بإضافة مكان ينتمي لفئة غير متوفرة لدينا بعد. سوف تظهر على الخريطة لاحقا.
-    pt-BR = Você adicionou um local de uma categoria para a qual ainda não temos suporte. Ele aparecerá no mapa no futuro.
     cs = Přidali jste místo kategorie, kterou zatím nepodporujeme. Na mapě se objeví za nějaký čas.
     da = Du har tilføjet en placering i en kategori som vi ikke understøtter på nuværende tidspunkt. Den vil vises på kortet på et senere tidspunkt.
     nl = U hebt een plaats of categorie toegevoegd die we nog niet ondersteunen. Het zal enige tijd duren voordat deze op de kaart verschijnt.
@@ -16631,6 +16631,7 @@
     nb = Du har lagt til et sted i en kategori som enda ikke har støtte. Den vil vises på kartet senere.
     pl = Dodałeś miejsce w kategorii, której jeszcze nie obsługujemy. Pojawi się ono na mapie za jakiś czas.
     pt = Você adicionou um local de uma categoria para a qual ainda não temos suporte. Ele aparecerá no mapa no futuro.
+    pt-BR = Você adicionou um local de uma categoria para a qual ainda não temos suporte. Ele aparecerá no mapa no futuro.
     ro = Ați adăugat o locație pentru care nu avem încă o categorie creată. Aceasta va apărea pe hartă în viitorul apropiat.
     es = Has añadido un lugar de una categoría que no hemos incluido aún. Aparecerá en el mapa en unos momentos.
     sv = Du har lagt till en plats i en kategori vi ännu inte stödjer. Den kommer att finnas på kartan vid ett senare tillfälle.
@@ -16647,7 +16648,6 @@
     en = %1$d of %2$d
     ru = %1$d из %2$d
     ar = %1$d من%2$d
-    pt-BR = %1$d de %2$d
     cs = %1$d z %2$d
     da = %1$d af %2$d
     nl = %1$d van %2$d
@@ -16662,6 +16662,7 @@
     nb = %1$d av %2$d
     pl = %1$d z %2$d
     pt = %1$d de %2$d
+    pt-BR = %1$d de %2$d
     ro = %1$d din %2$d
     es = %1$d de %2$d
     sv = %1$d av %2$d
@@ -16683,7 +16684,6 @@
     fi = Lataa käyttämällä puhelinverkkoyhteyttä?
     fr = Téléchargement avec une connexion réseau cellulaire ?
     de = Über eine Mobilfunknetzverbindung herunterladen?
-    pt-BR = Baixar usando uma conexão de rede celular?
     hu = Letöltés mobilhálózati kapcsolat segítségével?
     id = Unduh dengan menggunakan koneksi jaringan seluler?
     it = Vuoi scaricare utilizzando una connessione di rete cellulare?
@@ -16691,6 +16691,7 @@
     ko = 셀룰러 네트워크 접속을 사용하여 다운로드하시겠습니까?
     pl = Czy pobrać, używając połączenia z siecią komórkową?
     pt = Baixar usando uma conexão de rede celular?
+    pt-BR = Baixar usando uma conexão de rede celular?
     ro = Descărcați utilizând o conexiune prin rețeaua de telefonie mobilă?
     es = ¿Descargar con conexión de red móvil?
     sv = Ladda ned med mobildata?
@@ -16711,7 +16712,6 @@
     nl = Met sommige abonnementen of bij roaming kan dit behoorlijk duur zijn.
     fi = Tämä vaihtoehto saattaa olla huomattavasti kalliimpi tietyillä sopimuksilla tai roaming-yhteydellä.
     fr = Cela pourrait être très cher avec certains abonnements ou si vous êtes en déplacement.
-    pt-BR = Isto pode ser significativamente caro com alguns planos ou se estiver em roaming.
     de = Das könnte mit einigen Tarifen oder beim Roaming sehr teuer werden.
     hu = Ez jelentősen drága lehet némely előfizetés vagy roaming keretein belül.
     id = Ini bisa menjadi jauh mahal pada beberapa paket atau jika roaming.
@@ -16720,6 +16720,7 @@
     ko = 이는 일부 플랜이나 로밍할 경우에 비싸다고 간주될 수 있습니다.
     pl = Może to być kosztowne przy niektórych planach taryfowych lub w roamingu.
     pt = Isto pode ser significativamente caro, com alguns planos ou se roaming.
+    pt-BR = Isto pode ser significativamente caro com alguns planos ou se estiver em roaming.
     ro = Aceasta poate fi destul de costisitoare în cazul unor abonamente sau dacă sunteți pe roaming.
     es = Podría ser muy caro con ciertos planes o con itinerancia de datos.
     sv = Detta kan vara mycket dyrt med vissa abonnemang och vid roaming.
@@ -16741,7 +16742,6 @@
     fi = Syötä oikea talon numero
     fr = Saisir un numéro de maison correct
     de = Richtige Hausnummer eingeben
-    pt-BR = Informe o número correto da casa
     hu = Helyes házszámot adjon meg
     id = Masukkan nomor rumah yang benar
     it = Inserisci numero civico corretto
@@ -16750,6 +16750,7 @@
     nb = Skriv riktig husnummer
     pl = Wprowadź poprawny numer domu
     pt = Introduzir um número de casa correto
+    pt-BR = Informe o número correto da casa
     ro = Introduceți numărul corect al casei
     es = Introducir el número de domicilio correcto
     sv = Ange korrekt husnummer
@@ -16769,7 +16770,6 @@
     cs = Počet poschodí (max. %d)
     da = Antal etager (maks %d)
     nl = Aantal verdiepingen (max. %d)
-    pt-BR = Número de andares (máx. %d)
     fi = Kerrosten määrä (maks. %d)
     fr = Nombre d'étages (max %d)
     de = Anzahl der Etagen (%d maximal)
@@ -16781,6 +16781,7 @@
     nb = Antall etasjer (maks. %d)
     pl = Liczba pięter (maks. %d)
     pt = Número de pisos (máx. %d)
+    pt-BR = Número de andares (máx. %d)
     ro = Număr de etaje (max %d)
     es = Número de plantas (máx. %d)
     sv = Antal våningar (max %d)
@@ -16798,7 +16799,6 @@
     ru = Редактируйте здания высотой максимум 25 этажей
     ar = تحرير المبنى بحد أقصى 25 طابقًا
     cs = Opravte počet poschodí, max. 25
-    pt-BR = Somente edifícios até 25 andares podem ser editados
     da = Rediger bygningen med maksimum 25 etager
     nl = Bewerk het gebouw met maximaal 25 verdiepingen
     fi = Muokkaa kerroksia, enintään 25 kerrosta
@@ -16812,6 +16812,7 @@
     nb = Rediger bygningen med maks. 25 etasjer
     pl = Edytuj budynek z maksymalną liczbą 25 pięter
     pt = Editar o edifício com um máximo de 25 pisos
+    pt-BR = Somente edifícios de até 25 andares podem ser editados
     ro = Editare clădire cu maximum 25 de etaje
     es = Edite el edificio con un máximo de 25 plantas
     sv = Redigera byggnaden med max 25 våningar
@@ -16827,7 +16828,6 @@
     tags = ios, android
     en = ZIP Code
     ru = Почтовый индекс
-    pt-BR = CEP
     ar = الرمز البريدي
     cs = PSČ
     da = Postnummer
@@ -16843,6 +16843,7 @@
     nb = Postnummer
     pl = Kod pocztowy
     pt = Código Postal
+    pt-BR = CEP
     ro = Cod poștal
     es = Código postal
     sv = Postnr
@@ -16856,7 +16857,6 @@
 
   [error_enter_correct_zip_code]
     tags = ios, android
-    pt-BR = Informe o CEP correto
     en = Enter the correct ZIP Code
     ru = Введите корректный почтовый индекс
     ar = أدخل الرمز البريدي الصحيح
@@ -16874,6 +16874,7 @@
     nb = Angi riktig postnummer
     pl = Podaj prawidłowy kod pocztowy
     pt = Introduza o código postal correto
+    pt-BR = Informe o CEP correto
     ro = Introduceți codul poștal corect
     es = Introduzca el código postal correcto
     sv = Ange korrekt postnr
@@ -16886,7 +16887,6 @@
     sk = Zadajte správne PSČ
 
   [placepage_unknown_place]
-    pt-BR = Local desconhecido
     comment = Place Page title for long tap
     tags = ios, android
     en = Unknown Place
@@ -16906,6 +16906,7 @@
     nb = Ukjent sted
     pl = Nieznane miejsce
     pt = Local desconhecido
+    pt-BR = Local desconhecido
     ro = Loc necunoscut
     es = Lugar desconocido
     sv = Okänd plats
@@ -16915,7 +16916,6 @@
     vi = Địa Điểm Chưa Biết
     zh-Hans = 未知位置
     zh-Hant = 未知的位置
-    pt-BR = Informação adicional
     sk = Neznáme miesto
 
   [editor_other_info]
@@ -16937,6 +16937,7 @@
     nb = Tilleggsinfo
     pl = Dodatkowe informacje
     pt = Informações adicionais
+    pt-BR = Informação adicional
     ro = Informații suplimentare
     es = Información adicional
     sv = Mer info
@@ -16944,7 +16945,6 @@
     tr = Ek bilgi
     uk = Додаткові дані
     vi = Thông Tin Bổ Sung
-    pt-BR = Comentário detalhado
     zh-Hans = 附加信息
     zh-Hant = 額外資訊
     sk = Dodatočné informácie
@@ -16968,12 +16968,12 @@
     nb = Detaljert kommentar
     pl = Szczegółowy komentarz
     pt = Comentário detalhado
+    pt-BR = Comentário detalhado
     ro = Comentariu detaliat
     es = Comentario detallado
     sv = Detaljerad kommentar
     th = ข้อคิดเห็นอย่างละเอียด
     tr = Ayrıntılı yorum
-    pt-BR = Suas sugestões de mudança serão enviadas para a comunidade OpenStreetMap. Descreva em detalhes o que não pode ser editado com o MAPS.ME.
     uk = Докладний коментар
     vi = Nhận xét chi tiết
     zh-Hans = 详细备注
@@ -16999,6 +16999,7 @@
     nb = De foreslåtte endringene vil sendes til OpenStreetMap-gruppen. Beskriv detaljene som ikke kan redigeres i MAPS.ME.
     pl = Twoje sugestie zmian zostaną wysłane do społeczności OpenStreetMap. Opisz szczegóły, których nie można edytować w MAPS.ME.
     pt = As suas alterações sugeridas irão ser enviadas para a comunidade OpenStreetMap. Descreva os dados que não podem ser editados no MAPS.ME
+    pt-BR = Suas sugestões de mudança serão enviadas para a comunidade OpenStreetMap. Descreva em detalhes o que não pode ser editado com o MAPS.ME.
     ro = Modificările sugerate vor trimise către comunitatea OpenStreetMap. Descrieți detalii ce nu pot fi adăugate în be the details which cannot be edited in MAPS.ME.
     es = Los cambios que ha sugerido se enviarán a la comunidad de OpenStreetMap. Describa los detalles que no pueden editarse en MAPS.ME.
     sv = Dina föreslagna ändringar kommer att skcikas till OpenStreetMap-communityt. Beskriv detaljerna som inte kan redigeras i MAPS.ME.
@@ -17029,6 +17030,7 @@
     nb = Mer om OpenStreetMap
     pl = Więcej o OpenStreetMap
     pt = Mais sobre o OpenStreetMap
+    pt-BR = Mais sobre OpenStreetMap
     ro = Mai multe despre OpenStreetMap
     es = Más acerca de OpenStreetMap
     sv = Mer om OpenStreetMap
@@ -17038,7 +17040,6 @@
     vi = Thông tin bổ sung về OpenStreetMap
     zh-Hans = 关于 OpenStreetMap 的更多信息
     zh-Hant = 關於 OpenStreetMap 的更多資訊
-    pt-BR = Mais sobre OpenStreetMap
     sk = Viac o OpenStreetMap
 
   [editor_operator]
@@ -17059,6 +17060,7 @@
     nb = Eier
     pl = Operator
     pt = Operador
+    pt-BR = Operador
     ro = Operator
     es = Operador
     sv = Användare
@@ -17066,7 +17068,6 @@
     tr = İşletmeci
     uk = Володар
     vi = Đơn vị điều hành
-    pt-BR = Operador
     zh-Hans = 运营者
     zh-Hant = 營運者
     sk = Prevádzkovateľ
@@ -17089,12 +17090,12 @@
     nb = Angi firma, organisasjon eller enkeltperson som er ansvarlig for anlegget.
     pl = Wprowadź nazwę firmy, organizacji lub osoby odpowiedzialnej za obiekty.
     pt = Introduza a empresa, organização ou indivíduo responsável pelas instalações.
+    pt-BR = Informe a companhia, a organização ou o indivíduo responsável pelas instalações.
     ro = Introduceți compania, organizația sau persoana responsabilă de facilități.
     es = Introduzca la empresa, organización o individuo responsable de las instalaciones.
     sv = Ange företag, organisation eller person som är ansvarig för lokalerna.
     th = ใส่ชื่อบริษัท, องค์กร หรือ บุคคลที่เป็นผู้รับผิดชอบสถานที่นี้
     tr = Tesislerden sorumlu şirketi, kurumu veya bireyi girin.
-    pt-BR = Informe a companhia, a orgainização ou o indivíduo responsável pelas instalações.
     uk = Вкажіть компанію, організацію або особу, що відповідає за працездатність об'єкта
     vi = Nhập công ty, tổ chức hoặc cá nhân phụ trách cơ sở.
     zh-Hans = 输入公司、组织或设施负责人。
@@ -17119,10 +17120,10 @@
     nb = Du har ikke lokale redigeringer
     pl = Nie masz lokalnych edycji
     pt = Não tem edições locais
+    pt-BR = Você não tem edições locais
     ro = Nu aveți modificări locale
     es = No tiene ediciones locales
     sv = Du har inga lokala redigeraingar
-    pt-BR = Você não tem edições locais
     th = คุณไม่มีการแก้ไขท้องถิ่น
     tr = Yerel düzenlemeniz yok
     uk = Поки що ви не маєте локальних виправлень
@@ -17149,8 +17150,8 @@
     nb = Dette viser antallet foreslåtte endringer på kartet som i øyeblikket bare er tilgjengelige på enheten din.
     pl = Jest to liczba sugerowanych przez ciebie zmian na mapie, które aktualnie dostępne są tylko na twoim urządzeniu.
     pt = Isto demonstra o número das suas alterações sugeridas no mapa que atualmente só são acessíveis no seu dispositivo.
+    pt-BR = Isto mostra o número de mudanças no mapa sugeridas por você que atualmente estão disponíveis apenas no seu dispositivo.
     ro = Acesta arată numărul de modificări sugerate pe hartă care sunt momentan accesibile doar pe dispozitivul dvs.
-    pt-BR = Isto mostra o número de mudanças no mapa sugeridas por você que atualmente estão disponíveis apenas no seu dispositivo. 
     es = Esto muestra el número de sus cambios sugeridos en el mapa que actualmente solo son accesibles desde su dispositivo.
     sv = Detta visar antalet föreslagna förändringar på kartan som som endast är tillgängliga på din enhet.
     th = หมายเลขที่แสดงอยู่ คือ หมายเลขที่คุณได้ทำการแนะนำการเปลี่ยนแปลงบนแผนที่ที่สามารถเข้าถึงได้โดยอุปกรณ์ของคุณท่านั้น
@@ -17178,8 +17179,8 @@
     ko = 다른 언어로된 이름
     nb = Navn på andre språk
     pl = Nazwa w innych językach
-    pt-BR = Nome em outros idiomas
     pt = Nome noutras línguas
+    pt-BR = Nome em outros idiomas
     ro = Nume în alte limbi
     es = Nombre en otros idiomas
     sv = Namn på andra språk
@@ -17206,10 +17207,10 @@
     it = Invia a OSM
     ja = OSMに送信
     ko = OSM에 전송
-    pt-BR = Enviar para o OSM
     nb = Send til OSM
     pl = Wyślij do OSM
     pt = Enviar para OSM
+    pt-BR = Enviar para o OSM
     ro = Trimitere la OSM
     es = Enviar a OSM
     sv = Skicka till OSM
@@ -17234,12 +17235,12 @@
     hu = Eltávolítás
     id = Hapus
     it = Rimuovi
-    pt-BR = Remover
     ja = 削除
     ko = 삭제
     nb = Fjern
     pl = Usuń
     pt = Remover
+    pt-BR = Remover
     ro = Eliminare
     es = Eliminar
     sv = Ta bord
@@ -17262,7 +17263,6 @@
     fr = Mes cartes
     de = Meine Karten
     hu = Térképeim
-    pt-BR = Meus mapas
     id = Peta saya
     it = Le mie mappe
     ja = マイマップ
@@ -17270,6 +17270,7 @@
     nb = Mine kart
     pl = Moje mapy
     pt = Os meus mapas
+    pt-BR = Meus mapas
     ro = Hărțile mele
     es = Mis mapas
     sv = Mina kartor
@@ -17290,7 +17291,6 @@
     nl = U hebt geen kaarten gedownload
     fi = Et ole ladannut yhtään karttaa
     fr = Vous n'avez téléchargé aucune carte
-    pt-BR = Você não fez o download de qualquer mapa
     de = Keine Karten geladen
     hu = Még nem töltött le térképet
     id = Tidak ada peta apa pun yang diunduh
@@ -17300,6 +17300,7 @@
     nb = Du har ikke lastet ned noen kart
     pl = Nie pobrano żadnych map
     pt = Não descarregou quaisquer mapas
+    pt-BR = Você não fez o download de qualquer mapa
     ro = Nu ați descărcat nicio hartă
     es = No ha descargado ningún mapa
     sv = Du har inte laddat ner några kartor
@@ -17318,7 +17319,6 @@
     cs = Stáhněte si mapy a hledejte cestu a její cíl, i když jste offline.
     da = Download kort for at finde position og navigere offline.
     nl = Download kaarten om de locatie te zoeken en offline te navigeren.
-    pt-BR = Baixe mapas para pesquisar locais e usar a navegação sem conexão.
     fi = Lataa kartat löytääksesi paikan ja navigoidaksesi offline.
     fr = Téléchargez des cartes pour rechercher l'emplacement et naviguer hors ligne
     de = Laden Sie die für die Suche nach Orten erforderlichen Karten und verwenden Sie die Navigation offline.
@@ -17330,6 +17330,7 @@
     nb = Last ned kart for å finne plasseringen og navigere frakoblet.
     pl = Aby znajdować miejsca i nawigować bez połączenia z internetem, musisz pobrać mapy.
     pt = Descarregar mapas para encontrar a localização e navegar offline.
+    pt-BR = Baixe mapas para pesquisar locais e usar navegação offline.
     ro = Descărcați hărți pt. a găsi locația și navigați offline.
     es = Descargue mapas para encontrar la ubicación y navegar sin conexión.
     sv = Ladda ner kartor för att hitta platsen och navigera offline.
@@ -17346,7 +17347,6 @@
     ru = Найти город или страну
     ar = البحث في المدينة أو البلد
     cs = Prohledat město nebo zemi
-    pt-BR = Pesquisar cidade ou país
     da = Søg by eller land
     nl = Stad of land zoeken
     fi = Etsi kaupunki tai maa
@@ -17360,6 +17360,7 @@
     nb = Søk etter by eller land
     pl = Szukaj miasta lub kraju
     pt = Pesquisar cidade ou país
+    pt-BR = Pesquisar cidade ou país
     ro = Căutare oraș sau țară
     es = Buscar ciudad o país
     sv = Sök stad eller land
@@ -17375,7 +17376,6 @@
     comment = Error title that appears after certain time without location.
     en = Continue detecting your current location?
     ru = Продолжить поиск местоположения?
-    pt-BR = Continuar procurando sua localização atual?
     ar = هل تريد متابعة اكتشاف موقعك الحالي؟
     cs = Pokračovat se zjišťováním současné polohy?
     da = Fortsæt med at registrere din aktuelle position?
@@ -17391,6 +17391,7 @@
     nb = Fortsette å oppdage din gjeldende plassering?
     pl = Kontynuować wykrywanie bieżącej lokalizacji?
     pt = Continuar a detetar a sua localização atual?
+    pt-BR = Continuar procurando sua localização atual?
     ro = Continuați cu detectarea locației dvs. curente?
     es = ¿Continuar detectando su ubicación actual?
     sv = Fortsätt detektera din nuvarande plats?
@@ -17404,7 +17405,6 @@
 
   [current_location_unknown_message]
     comment = Error that appears after certain time without location.
-    pt-BR = A localização atual é desconhecida. Talvez você esteja em um edifício ou túnel.
     en = Current location is unknown. Maybe you are in a building or in a tunnel.
     ru = Местоположение не найдено. Возможно, вы находитесь в помещении или в туннеле.
     ar = الموقع الحالي غير معروف. ربما تتواجد داخل مبنى أو نفق.
@@ -17422,6 +17422,7 @@
     nb = Gjeldende plassering er ukjent. Du kan være i en bygning eller en tunnel.
     pl = Aktualna lokalizacja jest nieznana. Może znajdujesz się w budynku lub tunelu.
     pt = A localização atual é desconhecida. Talvez esteja num edifício ou num túnel.
+    pt-BR = A localização atual é desconhecida. Talvez você esteja em um edifício ou túnel.
     ro = Locația curentă este necunoscută. Poate vă aflați într-o clădire sau un tunel.
     es = La ubicación actual es desconocida. Quizá esté en un edificio o en un túnel.
     sv = Nuvarande plats okänd. Du kanske är i en byggnad eller tunnel.
@@ -17432,7 +17433,6 @@
     zh-Hans = 当前位置未知，可能您在建筑内或隧道内。
     zh-Hant = 目前位置未知，可能您在建築物內或隧道內。
     sk = Súčasná pozícia je neznáma. Možno sa nachádzate v budove alebo v tuneli.
-    pt-BR = Continue
 
   [current_location_unknown_continue_button]
     en = Continue
@@ -17452,6 +17452,7 @@
     nb = Fortsett
     pl = Kontynuuj
     pt = Continuar
+    pt-BR = Continuar
     ro = Continuare
     es = Continuar
     sv = Fortsätt
@@ -17460,7 +17461,6 @@
     uk = Продовжити
     vi = Tiếp tục
     zh-Hans = 继续
-    pt-BR = Pare
     zh-Hant = 繼續
     sk = Pokračovať
 
@@ -17482,12 +17482,12 @@
     nb = Stopp
     pl = Stop
     pt = Parar
+    pt-BR = Parar
     ro = Oprire
     es = Detener
     sv = Stopp
     th = หยุด
     tr = Dur
-    pt-BR = A localização atual é desconhecida.
     uk = Зупинити
     vi = Dừng
     zh-Hans = 停止
@@ -17511,11 +17511,11 @@
     nb = Gjeldende plassering er ukjent.
     pl = Aktualna lokalizacja jest nieznana.
     pt = A localização atual é desconhecida.
+    pt-BR = A localização atual é desconhecida.
     ro = Locația curentă este necunoscută.
     es = La ubicación actual es desconocida.
     sv = Den nuvarande platsen är okänd.
     th = ไม่ทราบชื่อของที่ตั้งปัจจุบัน
-    pt-BR = Ocorreu um erro enquanto procurava por sua localização. Verifique se o seu dispositivo está funcionando adequadamento e tente novamente depois.
     tr = Geçerli konum bilinmiyor.
     uk = Місцезнаходження не знайдено.
     vi = Chưa biết địa điểm hiện tại.
@@ -17541,9 +17541,9 @@
     nb = Det oppstod en feil under søking etter plasseringen din. Kontroller at plasseringen din virker som den skal, og prøv på nytt senere.
     pl = Podczas szukania twojej lokalizacji wystąpił błąd. Sprawdź czy twoje urządzenie działa poprawnie i spróbuj ponownie później.
     pt = Ocorreu um erro ao pesquisar a sua localização. Verifique se o seu dispositivo está a funcionar devidamente e volte a tentar mais tarde.
+    pt-BR = Ocorreu um erro enquanto procurava por sua localização. Verifique se o seu dispositivo está funcionando adequadamento e tente novamente depois.
     ro = S-a produs o eroare la căutarea locației. Verificați dacă dispozitivul funcționează corect și încercați din nou.
     es = Se ha producido un error al buscar su ubicación. Compruebe que su dispositivo funciona correctamente e inténtelo más tarde.
-    pt-BR = Nós atualizamos o editor de mapas
     sv = Ett fel inträffade vid sökning efter din plats. Kontrollera att din enhet fungerar och försök igen senare.
     th = มีข้อผิดพลาดเกิดขึ้นในขณะที่กำลังหาที่ตั้งที่คุณอยู่ โปรดตรวจสอบอุปกรณ์ของคุณว่าทำงานถูกต้อง และลองใหม่อีกครั้ง
     tr = Konumunuz aranırken bir hata oluştu. Cihazının düzgün çalışıp çalışmadığını kontrol edip daha sonra tekrar deneyin.
@@ -17566,13 +17566,12 @@
     hu = Frissítettük a szerkesztőt
     id = Kami telah memperbarui editor peta
     it = Abbiamo aggiornato l'editor mappe
-    pt-BR = Atualize todos os mapas para utilizar o Editor de Mapa.
     ja = マップエディタを更新しました
     ko = 지도 편집기를 업데이트했습니다
     nb = Vi har oppdatert kartredigeringsprogrammet
     pl = Zaktualizowaliśmy edytor map
-    pt-BR = Usuários do MAPS.ME realizaram 50 000 alterações no mapa. Juntos nós estamos fazendo o mapa mais detalhado no Mundo. Junte-se a nós!
     pt = Atualizámos o editor do mapa
+    pt-BR = Atualizamos o editor de mapas
     ro = Am actualizat editorul de hărți
     es = Hemos actualizado el editor de mapas
     sv = Vi har uppdaterat kartredigeraren
@@ -17597,12 +17596,12 @@
     hu = A MAPS.ME felhasználói 200 ezer változtatást vittek fel a térképre. Együtt a világ legrészletesebb térképét készítjük. Csatlakozzon hozzánk!
     id = Pengguna MAPS.ME telah membuat 200 000 perubahan peta. Bersama-sama kami membuat peta paling detail di Dunia. Bergabunglah bersama kami!
     it = Gli utenti di MAPS.ME hanno apportato 200.000 modifiche alle mappe. Stiamo costruendo insieme le mappe più dettagliate al mondo. Unisciti a noi!
-    pt-BR = A identificação do local está desativada
     ja = MAPS.MEユーザーは200000マップの変更を行いました。我々は協力して、世界で最も詳細な地図を作っています。参加しませんか！
     ko = MAPS.ME 사용자는 200000개의 지도를 변경했습니다. 전 세계에서 가장 정확한 지도를 만들고 있습니다. 사용해 보세요!
     nb = MAPS.ME-brukere har foretatt 200 000 kartendringer. I fellesskap lager vi de mest detaljerte kartene i verden. Bli med du også!
     pl = Użytkownicy MAPS.ME dokonali 200 000 zmian w mapach. Wspólnie tworzymy najbardziej szczegółowe mapy na świecie. Przyłącz się do nas!
     pt = Os utilizadores do MAPS.ME fizeram 200 000 alterações no mapa. Juntos, estamos a fazer os mapas mais detalhados do mundo. Junte-se a nós!
+    pt-BR = Usuários do MAPS.ME realizaram 200.000 alterações no mapa. Juntos nós estamos fazendo o mapa mais detalhado no Mundo. Junte-se a nós!
     ro = Utilizatorii MAPS.ME au făcut 200.000 de modificări de hărți. Împreună alcătuim cele mai detaliate hărți din lume. Alăturați-vă comunității!
     es = Los usuarios de MAPS.ME han realizado 200 000 cambios de mapas. Juntos estamos creando los mapas más detallados del mundo. ¡Únase a nosotros!
     sv = MAPS.ME-användare har gjort 200 000 kartändringar. Tillsammans skapar vi de mest detaljerade kartonera i världen. Var med!
@@ -17628,12 +17627,12 @@
     hu = A térképszerkesztő használatához, kérjük, frissítsd az összes térképet.
     id = Untuk menggunakan editor peta, silakan perbarui semua peta.
     it = Per utilizzare l'editor delle mappe, aggiorna tutte le mappe.
-    pt-BR = Permitir o acesso à geolocalização nas configurações do dispositivo
     ja = マップエディタを利用するには、全てのアップをアップデートしてください。
     ko = 지도 편집기를 사용하려면, 모든 지도를 업데이트하십시오.
     nb = For å bruke kartredigerings-funksjonen, vennligst oppdater alle kartene.
     pl = Aby korzystać z edytora map, zaktualizuj wszystkie mapy.
     pt = Atualize todos os mapas para utilizar o Editor de Mapa.
+    pt-BR = Atualize todos os mapas para utilizar o Editor de Mapa.
     ro = Pentru a utiliza funcția editor hartă, vă rugăm să actualizați toate hărțile.
     es = Para usar el editor de mapas, actualiza todos los mapas.
     sv = Uppdatera alla kartor för att använda kartredigeraren.
@@ -17660,10 +17659,10 @@
     it = La geolocalizzazione è disabilitata
     ja = 位置情報認識機能が無効になっています
     ko = 위치 식별 사용할 수 없음
-    pt-BR = 1. Abrir configurações
     nb = Lokalisering er deaktivert
     pl = Identyfikacja lokalizacji jest wyłączona
     pt = A identificação do local está desativada
+    pt-BR = Serviços de localização estão desativados
     ro = Geolocalizarea este dezactivată
     es = La identificación de la ubicación está desactivada
     sv = Platsidentifiering avaktiverad
@@ -17692,9 +17691,9 @@
     ja = デバイスの設定で位置情報へのアクセスを有効にしてください
     ko = 장치 설정에서 위치 정보에 액세스할 수 있음
     nb = Tillat bruk av av geografisk lokalisering i enhetens innstillinger
-    pt-BR = 2. Tocar em localização
     pl = Włącz dostęp do geolokalizacji w ustawieniach urządzenia
     pt = Permitir o acesso à geolocalização nas configurações do dispositivo
+    pt-BR = Permitir o acesso à geolocalização nas configurações do dispositivo
     ro = Activaţi accesul la geolocalizare din setările dispozitivului
     es = Activa el acceso a la geolocalización en los ajustes del dispositivo
     sv = Aktivera tillgång till geografisk plats i enhetens inställningar
@@ -17724,9 +17723,9 @@
     ja = 1. 設定を開きます
     ko = 1. 설정 열기
     nb = 1. Åpne Innstillinger
-    pt-BR = 3. Selecionar sempre
     pl = 1. Uruchom ustawienia
     pt = 1. Abrir configurações
+    pt-BR = 1. Abrir configurações
     ro = 1. Deschideți setările
     es = 1. Abre los ajustes
     sv = 1. Öppna inställningar
@@ -17758,6 +17757,7 @@
     nb = 2. Trykk Lokalisering
     pl = 2. Dotknij „Lokalizacja”
     pt = 2. Tocar em localização
+    pt-BR = 2. Tocar em Localização
     ro = 2. Apăsați pe Localizare
     es = 2. Pulsa "Ubicación"
     sv = 2. Tryck på Plats
@@ -17788,8 +17788,8 @@
     ko = 3. 항상 선택
     nb = 3. Velg Alltid
     pl = 3. Wybierz „Zawsze”
-    pt-BR = Descoberto
     pt = 3. Selecionar sempre
+    pt-BR = 3. Selecionar sempre
     ro = 3. Selectați Întotdeauna
     es = 3. Selecciona "Siempre"
     sv = 3. Välj Alltid
@@ -17815,12 +17815,12 @@
     hu = Szabadtéri parkoló
     id = Parkir Luar
     it = Superficie
-    pt-BR = Vários andares
     ja = 表面
     ko = 주차공간
     nb = Åpen plass
     pl = Powierzchnia
     pt = Superfície
+    pt-BR = Superfície
     ro = Suprafață
     es = Superficie
     sv = Yta
@@ -17844,13 +17844,13 @@
     de = Tiefgarage mit mehreren Etagen
     hu = Parkolóház
     id = Bertingkat
-    pt-BR = Subsolo
     it = Su più piani
     ja = 複数階
     ko = 주차장 건물
     nb = Fleretasjers
     pl = Wielopoziomowy
     pt = Vários andares
+    pt-BR = Vários andares
     ro = Multi-etajat
     es = Varias plantas
     sv = Flera våningar
@@ -17872,7 +17872,6 @@
     fi = Maan alla
     fr = Souterrain
     de = Tiefgarage
-    pt-BR = Terraço
     hu = Föld alatti parkoló
     id = Bawah Tanah
     it = Sotterraneo
@@ -17881,6 +17880,7 @@
     nb = Undergrunns
     pl = Podziemny
     pt = Local desconhecido
+    pt-BR = Subsolo
     ro = Subteran
     es = Subterráneo
     sv = Under mark
@@ -17900,7 +17900,6 @@
     da = Tagterrasse
     nl = Dak
     fi = Katolla
-    pt-BR = Coberto
     fr = Toit
     de = Parkdeck
     hu = Tetőparkoló
@@ -17911,6 +17910,7 @@
     nb = På taket
     pl = Na dachu
     pt = Terraço
+    pt-BR = Terraço
     ro = Pe acoperiș
     es = Azotea
     sv = Hustak
@@ -17928,7 +17928,6 @@
     ar = حظائر
     cs = Samostatné
     da = Skure
-    pt-BR = Estacionamento coberto
     nl = Afdak
     fi = Suojat
     fr = Hangars
@@ -17941,6 +17940,7 @@
     nb = Skur
     pl = Wiaty
     pt = Abrigos
+    pt-BR = Garagens cobertas
     ro = Garaj
     es = Cobertizos
     sv = Skjul
@@ -17955,7 +17955,6 @@
   [placepage_parking_carports]
     en = Carports
     ru = Капитальный навес
-    pt-BR = Vaga de estacionamento
     ar = مظلات سيارات
     cs = Přístřešek
     da = Carporte
@@ -17971,6 +17970,7 @@
     nb = Carport
     pl = Zadaszenia dla samochodów
     pt = Garagens
+    pt-BR = Garagem coberta
     ro = Garaje
     es = Cochera
     sv = Garage
@@ -17983,7 +17983,6 @@
     sk = Otvorené garáže
 
   [placepage_parking_boxes]
-    pt-BR = Pago
     en = Garage boxes
     ru = Гаражный бокс
     ar = صناديق جراج
@@ -18001,6 +18000,7 @@
     nb = Garasjebokser
     pl = Miejsca parkingowe w garażu
     pt = Garagens
+    pt-BR = Vaga de estacionamento
     es = Garaje
     sv = Garageboxar
     th = โรงรถแบบกล่อง
@@ -18011,7 +18011,6 @@
     zh-Hant = 停車房
     sk = Hromadné garáže
 
-    pt-BR = Gratuito
   [placepage_parking_pay]
     en = Pay
     ru = Платная
@@ -18030,6 +18029,7 @@
     nb = Betaling
     pl = Płatny
     pt = Pagamento
+    pt-BR = Pagamento
     ro = Cu plată
     es = De pago
     sv = Kostnadsbelagd
@@ -18039,7 +18039,6 @@
     vi = Trả phí
     zh-Hans = 付款
     zh-Hant = 付款
-    pt-BR = Pago por tempo
     sk = Platené
 
   [placepage_parking_free]
@@ -18060,6 +18059,7 @@
     nb = Gratis
     pl = Darmowy
     pt = Gratuito
+    pt-BR = Gratuito
     ro = Gratuit
     es = Gratuito
     sv = Gratis
@@ -18067,7 +18067,6 @@
     tr = Ücretsiz
     uk = Безкоштовне
     vi = Miễn phí
-    pt-BR = N°
     zh-Hans = 免费
     zh-Hant = 免費
     sk = Zdarma
@@ -18090,12 +18089,12 @@
     nb = Intervallbetaling
     pl = Płatny na godziny
     pt = Pagamento intervalado
+    pt-BR = Pago por tempo
     ro = Interval de plată
     es = Pago por intervalos
     sv = Delvis kostnadsbelagd
     th = จ่ายตามช่วงเวลา
     tr = Süre Ücretli
-    pt-BR = Entrada
     uk = Змінно платне
     vi = Trả Phí Cách Quãng
     zh-Hans = 间隔付款
@@ -18120,10 +18119,10 @@
     nb = Nr.
     pl = Nr
     pt = N.º
+    pt-BR = N.º
     ro = Nr.
     es = N.º
     sv = Nr
-    pt-BR = app
     th = หมายเลข
     tr = No.
     uk = №
@@ -18149,8 +18148,8 @@
     ko = 입구
     nb = Vindfang
     pl = Wejście
-    pt-BR = 24 / 7
     pt = Entrada
+    pt-BR = Entrada
     ro = Intrare
     es = Entrada
     sv = Entré
@@ -18177,10 +18176,10 @@
     it = app.
     ja = アプリ
     ko = 앱
-    pt-BR = Classificação
     nb = leil.
     pl = Mieszkanie
     pt = apto.
+    pt-BR = apto.
     ro = ap.
     es = aplicación
     sv = lgh
@@ -18205,12 +18204,12 @@
     hu = 24 órás
     id = 24 jam sehari, 7 hari seminggu
     it = 24 / 7
-    pt-BR = a partir de %d
     ja = 24時間体制
     ko = 연중무휴
     nb = Døgnåpen
     pl = 24 / 7
     pt = 24 / 7
+    pt-BR = 24 / 7
     ro = 24 / 7
     es = 24 / 7
     sv = Døgnet rundt
@@ -18232,7 +18231,6 @@
     fi = Luokitus: %s
     fr = Notation: %s
     de = Rating: %s
-    pt-BR = m
     hu = Kategória: %s
     id = Nilai: %s
     it = Valutazione: %s
@@ -18241,6 +18239,7 @@
     nb = Rangering: %s
     pl = Ocena: %s
     pt = Classificação: %s
+    pt-BR = Classificação: %s
     ro = Evaluare: %s
     es = Valoración: %s
     sv = Betyg: %s
@@ -18260,7 +18259,6 @@
     da = fra %s
     nl = van %s
     fi = %s:stä
-    pt-BR = km
     fr = à partir de %s
     de = ab %s
     hu = kezdőár %s
@@ -18271,6 +18269,7 @@
     nb = fra %s
     pl = od %s
     pt = a partir de %s
+    pt-BR = a partir de %d
     ro = din %s
     es = desde %s
     sv = från %s
@@ -18288,7 +18287,6 @@
     ar = متر
     cs = m
     da = m
-    pt-BR = Descrição
     nl = m
     fi = m
     fr = m
@@ -18301,6 +18299,7 @@
     nb = m
     pl = m
     pt = m
+    pt-BR = m
     ro = m
     es = m
     sv = m
@@ -18316,7 +18315,6 @@
     en = km
     ru = км
     ar = كم
-    pt-BR = Mais
     cs = km
     da = km
     nl = km
@@ -18331,6 +18329,7 @@
     nb = km
     pl = km
     pt = km
+    pt-BR = km
     ro = km
     es = km
     sv = km
@@ -18344,7 +18343,6 @@
 
   [placepage_place_description]
     en = Description
-    pt-BR = Reservar
     ru = Описание
     ar = الوصف
     cs = Popis
@@ -18361,6 +18359,7 @@
     nb = Beskrivelse
     pl = Opis
     pt = Descrição
+    pt-BR = Descrição
     ro = Descriere
     es = Descripción
     sv = Beskrivning
@@ -18372,7 +18371,6 @@
     zh-Hant = 說明
     sk = Popis
 
-    pt-BR = Chamar
   [placepage_more_button]
     en = More
     ru = Ещё
@@ -18391,6 +18389,7 @@
     nb = Mer
     pl = Więcej
     pt = Mais
+    pt-BR = Mais
     ro = Mai multe
     es = Más
     sv = Mer
@@ -18400,8 +18399,6 @@
     vi = Bổ sung
     zh-Hans = 更多
     zh-Hant = 更多
-    pt-BR = Editar marcador
-    
     sk = Viac
 
   [bookingcom_book_button]
@@ -18422,6 +18419,7 @@
     nb = Bestill
     pl = Zarezerwuj
     pt = Livro
+    pt-BR = Reservar
     ro = Rezervare
     es = Reservar
     sv = Boka
@@ -18429,7 +18427,6 @@
     tr = Rezervasyon
     uk = Забронювати
     vi = Đặt trước
-    pt-BR = Nome do marcador
     zh-Hans = 图书
     zh-Hant = 圖書
     sk = Rezervovať
@@ -18452,12 +18449,12 @@
     nb = Ring
     pl = Zadzwoń
     pt = Chamada
+    pt-BR = Chamar
     ro = Apel
     es = Llamar
     sv = Ring
     th = โทร
     tr = Çağrı
-    pt-BR = Anotações pessoais
     uk = Подзвонити
     vi = Gọi
     zh-Hans = 呼叫
@@ -18482,10 +18479,10 @@
     nb = Rediger bokmerke
     pl = Edytuj zakładkę
     pt = Editar marcador
+    pt-BR = Editar marcador
     ro = Editare marcaj
     es = Editar marcador
     sv = Redigera bokmärke
-    pt-BR = Apagar marcador
     th = แก้ไข Bookmark
     tr = Yer İmini Düzenle
     uk = Редагувати мiтку
@@ -18512,8 +18509,8 @@
     nb = Bokmerkenavn
     pl = Nazwa zakładki
     pt = Nome do marcador
+    pt-BR = Nome do marcador
     ro = Nume marcaj
-    pt-BR = Suas sugestões de mudança foram enviadas
     es = Nombre del marcador
     sv = Namn bokmärke
     th = ชื่อของ Bookmark
@@ -18540,9 +18537,9 @@
     ja = パーソナルメモ
     ko = 개인 메모
     nb = Personlige notater
-    pt-BR = Comentar...
     pl = Notatki osobiste
     pt = Notas pessoais
+    pt-BR = Anotações pessoais
     ro = Note personale
     es = Notas personales
     sv = Personlig anteckning
@@ -18568,11 +18565,11 @@
     id = Hapus Bookmark
     it = Elimina segnalibro
     ja = ブックマークを削除
-    pt-BR = Reinicializar todas as modificações locais?
     ko = 즐겨찾기 삭제
     nb = Slett bokmerke
     pl = Usuń zakładkę
     pt = Eliminar marcador
+    pt-BR = Apagar marcador
     ro = Ștergere marcaj
     es = Eliminar marcador
     sv = Radera bokmärke
@@ -18596,13 +18593,13 @@
     de = Ihre Änderungsvorschläge wurden gesendet
     hu = Javasolt változtatásainak elküldése sikerült
     id = Saran perubahan Anda telah dikirim
-    pt-BR = Reinicializar
     it = Le modifiche suggerite sono state inviate
     ja = あなたの提案の変更が送信されました
     ko = 귀하의 제안 변경사항이 전송되었습니다
     nb = De foreslåtte endringene er sendt
     pl = Twoje sugestie zostały wysłane
     pt = As suas alterações sugeridas foram enviadas
+    pt-BR = Suas sugestões de mudança foram enviadas
     ro = Modificările sugerate au fost trimise
     es = Se han enviado sus cambios sugeridos
     sv = Dina föreslagna ändringar har skickats
@@ -18624,7 +18621,6 @@
     fi = Kommentti…
     fr = Commentaire…
     de = Kommentar…
-    pt-BR = Remover um local adicionado?
     hu = Megjegyzés…
     id = Komentar…
     it = Commenta…
@@ -18633,6 +18629,7 @@
     nb = Kommentar…
     pl = Komentarz…
     pt = Comentário…
+    pt-BR = Comentar…
     ro = Comentariu…
     es = Comentario…
     sv = kommentar…
@@ -18652,7 +18649,6 @@
     da = Nulstil alle lokale ændringer?
     nl = Alle lokale wijzigingen herstellen?
     fi = Nollataanko kaikki paikalliset muutokset?
-    pt-BR = Remover
     fr = Réinitialiser toutes les modifications locales ?
     de = Alle lokalen Korrekturen verwerfen
     hu = Elveti az összes helyi módosítást?
@@ -18663,6 +18659,7 @@
     nb = Nullstille alle lokale endringer?
     pl = Usunąć wszystkie lokalne zmiany?
     pt = Repor todas as alterações locais?
+    pt-BR = Reinicializar todas as modificações locais?
     ro = Resetați toate modificările locale?
     es = ¿Restablecer todos los cambios locales?
     sv = Återställ alla lokala ändringar?
@@ -18680,7 +18677,6 @@
     ar = مسح
     cs = Vymazat
     da = Nulstil
-    pt-BR= Enviando...
     nl = Herstellen
     fi = Nollaa
     fr = Réinitialiser
@@ -18693,6 +18689,7 @@
     nb = Nullstill
     pl = Usuń
     pt = Repor
+    pt-BR = Reinicializar
     ro = Resetare
     es = Restablecer
     sv = Återställ
@@ -18708,7 +18705,6 @@
     en = Remove an added place?
     ru = Удалить добавленный вами объект?
     ar = إزالة مكان تمت إضافته؟
-    pt-BR = O lugar não existe
     cs = Odstranit přidané místo?
     da = Fjern en ekstra plads?
     nl = Een toegevoegde locatie verwijderen?
@@ -18723,6 +18719,7 @@
     nb = Fjerne et tilføyd sted?
     pl = Usunąć dodane miejsce?
     pt = Remover um local adicionado?
+    pt-BR = Remover um local adicionado?
     ro = Eliminați locul adăugat?
     es = ¿Eliminar el lugar añadido?
     sv = Ta bort en tillagd plats?
@@ -18752,6 +18749,7 @@
     nb = Fjern
     pl = Usuń
     pt = Remover
+    pt-BR = Remover
     ro = Eliminare
     es = Eliminar
     sv = Ta bort
@@ -18781,6 +18779,7 @@
     nb = Sender…
     pl = Wysyłanie…
     pt = A enviar…
+    pt-BR= Enviando…
     ro = Se trimite…
     es = Enviando…
     sv = Skickar…
@@ -18810,6 +18809,7 @@
     nb = Sted finnes ikke
     pl = Takie miejsce nie istnieje
     pt = O local não existe
+    pt-BR = O lugar não existe
     ro = Locul nu există
     es = El lugar no existe
     sv = Platsen finns inte
@@ -18839,6 +18839,7 @@
     nb = …mer
     pl = …więcej
     pt = …mais
+    pt-BR = …mais
     ro = …mai multe
     es = …más
     sv = …mer
@@ -19216,6 +19217,7 @@
     nb = Oppdatere
     pl = Uaktualnić
     pt = Atualizar
+    pt-BR = Atualizar
     ro = Actualizați
     es = Actualizar
     sv = Uppdatera
@@ -19245,6 +19247,7 @@
     nb = Sist oppdatert: %s
     pl = Ostatnia aktualizacja: %s
     pt = Última atualização: %s
+    pt-BR = Última atualização: %s
     ro = Ultima actualizare: %s
     es = Última actualización: %s
     sv = Senast uppdaterad: %s
