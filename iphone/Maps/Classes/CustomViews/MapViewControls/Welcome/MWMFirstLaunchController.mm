@@ -30,20 +30,7 @@ namespace
 {
 void requestNotifications()
 {
-  UIApplication * app = [UIApplication sharedApplication];
-  UIUserNotificationType userNotificationTypes =
-      (UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound);
-  if ([app respondsToSelector:@selector(registerUserNotificationSettings:)])
-  {
-    UIUserNotificationSettings * settings =
-        [UIUserNotificationSettings settingsForTypes:userNotificationTypes categories:nil];
-    [app registerUserNotificationSettings:settings];
-    [app registerForRemoteNotifications];
-  }
-  else
-  {
-    [app registerForRemoteNotificationTypes:userNotificationTypes];
-  }
+  [MapsAppDelegate initPushNotificationsWithLaunchOptions:nil];
 }
 
 void zoomToCurrentPosition()

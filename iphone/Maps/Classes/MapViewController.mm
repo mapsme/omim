@@ -397,7 +397,8 @@ BOOL gIsFirstMyPositionMode = YES;
     return;
   self.view.clipsToBounds = YES;
   [MTRGManager setMyCom:YES];
-  [self processMyPositionStateModeEvent:location::PendingPosition];
+  if (![Alohalytics isFirstSession])
+    [self processMyPositionStateModeEvent:location::PendingPosition];
 }
 
 - (void)mwm_refreshUI

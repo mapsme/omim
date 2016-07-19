@@ -34,6 +34,8 @@ typedef NS_ENUM(NSUInteger, MWMRoutingPlaneMode)
 
 + (MapsAppDelegate *)theApp;
 
++ (void)initPushNotificationsWithLaunchOptions:(NSDictionary *)launchOptions;
+
 - (void)enableStandby;
 - (void)disableStandby;
 

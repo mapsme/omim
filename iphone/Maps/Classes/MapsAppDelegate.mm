@@ -161,7 +161,7 @@ using namespace osm_auth_ios;
 
 #pragma mark - Notifications
 
-- (void)initPushNotificationsWithLaunchOptions:(NSDictionary *)launchOptions
++ (void)initPushNotificationsWithLaunchOptions:(NSDictionary *)launchOptions
 {
   // Do not initialize Pushwoosh for open-source version.
   if (string(PUSHWOOSH_APPLICATION_ID).empty())
@@ -169,8 +169,8 @@ using namespace osm_auth_ios;
   [PushNotificationManager initializeWithAppCode:@(PUSHWOOSH_APPLICATION_ID) appName:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]];
   PushNotificationManager * pushManager = [PushNotificationManager pushManager];
 
-  // handling push on app start
-  [pushManager handlePushReceived:launchOptions];
+  if (launchOptions)
+    [pushManager handlePushReceived:launchOptions];
 
   // make sure we count app open in Pushwoosh stats
   [pushManager sendAppOpen];
@@ -409,7 +409,8 @@ using namespace osm_auth_ios;
   [self.mapViewController onEnterForeground];
   self.isDaemonMode = NO;
 
-  [self initPushNotificationsWithLaunchOptions:launchOptions];
+  if (![Alohalytics isFirstSession])
+    [MapsAppDelegate initPushNotificationsWithLaunchOptions:launchOptions];
   [self commonInit];
 
   LocalNotificationManager * notificationManager = [LocalNotificationManager sharedManager];
