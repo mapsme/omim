@@ -513,7 +513,8 @@ bool GenerateFeaturesImpl(feature::GenerateInfo & info)
     TagAdmixer tagAdmixer(info.GetIntermediateFileName("ways", ".csv"),
                           info.GetIntermediateFileName("towns", ".csv"));
     TagReplacer tagReplacer(GetPlatform().ResourcesDir() + REPLACED_TAGS_FILE);
-    
+    OsmTagMixer osmTagMixer(GetPlatform().ResourcesDir() + MIXED_TAGS_FILE);
+
     // If info.m_bookingDatafileName is empty then no data will be loaded.
     generator::BookingDataset bookingDataset(info.m_bookingDatafileName);
 
@@ -524,6 +525,7 @@ bool GenerateFeaturesImpl(feature::GenerateInfo & info)
     {
       tagReplacer(e);
       tagAdmixer(e);
+      osmTagMixer(e);
 
       if (bookingDataset.BookingFilter(*e))
       {

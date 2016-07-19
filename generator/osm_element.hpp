@@ -155,4 +155,5 @@ struct OsmElement
 };
 
 string DebugPrint(OsmElement const & e);
-
+string DebugPrint(OsmElement::EntityType e);
+string DebugPrint(OsmElement::Tag const & tag);
