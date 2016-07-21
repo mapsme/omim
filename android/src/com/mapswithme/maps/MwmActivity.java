@@ -663,7 +663,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
     if (!mPlacePage.isHidden())
     {
       outState.putBoolean(STATE_PP_OPENED, true);
-      mPlacePage.saveBookmarkTitle();
       outState.putParcelable(STATE_MAP_OBJECT, mPlacePage.getMapObject());
     }
 
@@ -967,7 +966,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
     setFullscreen(false);
 
-    mPlacePage.saveBookmarkTitle();
     mPlacePage.setMapObject(object, true);
     mPlacePage.setState(State.PREVIEW);
 
@@ -1069,7 +1067,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
     else
     {
       Framework.nativeDeactivatePopup();
-      mPlacePage.saveBookmarkTitle();
       mPlacePage.setMapObject(null, false);
     }
   }
