@@ -31,6 +31,7 @@ SOURCES += \
     osm_element.cpp \
     osm_id.cpp \
     osm_source.cpp \
+    public_transport_processor.cpp \
     region_meta.cpp \
     routing_generator.cpp \
     search_index_builder.cpp \
@@ -65,6 +66,7 @@ HEADERS += \
     osm_translator.hpp \
     osm_xml_source.hpp \
     polygonizer.hpp \
+    public_transport_processor.hpp \
     region_meta.hpp \
     routing_generator.hpp \
     search_index_builder.hpp \

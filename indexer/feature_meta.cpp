@@ -94,6 +94,12 @@ bool Metadata::TypeFromString(string const & k, Metadata::EType & outType)
     outType = Metadata::FMD_PRICE_RATE;
   else if (k == "rating:sponsored")
     outType = Metadata::FMD_RATING;
+  else if (k == "bus_routes")
+    outType = Metadata::FMD_BUS_ROUTES;
+  else if (k == "tram_routes")
+    outType = Metadata::FMD_TRAM_ROUTES;
+  else if (k == "trolleybus_routes")
+    outType = Metadata::FMD_TROLLEYBUS_ROUTES;
   else
     return false;
 
@@ -176,6 +182,9 @@ string DebugPrint(feature::Metadata::EType type)
   case Metadata::FMD_SPONSORED_ID: return "ref:sponsored";
   case Metadata::FMD_PRICE_RATE: return "price_rate";
   case Metadata::FMD_RATING: return "rating:sponsored";
+  case Metadata::FMD_BUS_ROUTES: return "bus_routes";
+  case Metadata::FMD_TRAM_ROUTES: return "tram_routes";
+  case Metadata::FMD_TROLLEYBUS_ROUTES: return "trolleybus_routes";
   case Metadata::FMD_TEST_ID: return "test_id";
   case Metadata::FMD_COUNT: CHECK(false, ("FMD_COUNT can not be used as a type."));
   };

@@ -12,6 +12,8 @@
 #include "base/logging.hpp"
 #include "base/string_utils.hpp"
 
+#include "defines.hpp"
+
 namespace osm
 {
 namespace
@@ -55,6 +57,17 @@ string DebugPrint(Props props)
   case osm::Props::BuildingLevels: k = "building:levels"; break;
   }
   return k;
+}
+
+string DebugPrint(RouteType routeType)
+{
+  switch (routeType)
+  {
+  case RouteType::BusRoute: return "BusRoute";
+  case RouteType::TramRoute: return "TramRoute";
+  case RouteType::TrolleybusRoute: return "TrolleybusRoute";
+  }
+  return string();
 }
 
 void MapObject::SetFromFeatureType(FeatureType const & ft)
@@ -186,6 +199,27 @@ string MapObject::GetFlats() const { return m_metadata.Get(feature::Metadata::FM
 string MapObject::GetBuildingLevels() const
 {
   return m_metadata.Get(feature::Metadata::FMD_BUILDING_LEVELS);
+}
+
+vector<string> MapObject::GetRoutes(RouteType routeType) const
+{
+  string routes;
+  switch (routeType)
+  {
+  case RouteType::BusRoute:
+    routes = m_metadata.Get(feature::Metadata::FMD_BUS_ROUTES);
+    break;
+  case RouteType::TramRoute:
+    routes = m_metadata.Get(feature::Metadata::FMD_TRAM_ROUTES);
+    break;
+  case RouteType::TrolleybusRoute:
+    routes = m_metadata.Get(feature::Metadata::FMD_TROLLEYBUS_ROUTES);
+    break;
+  }
+
+  vector<string> res;
+  strings::Tokenize(routes, ROUTES_DELIMITER, MakeBackInsertFunctor(res));
+  return res;
 }
 
 feature::Metadata const & MapObject::GetMetadata() const { return m_metadata; }

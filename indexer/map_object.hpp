@@ -49,6 +49,14 @@ enum class Props
 };
 string DebugPrint(Props props);
 
+enum class RouteType
+{
+  BusRoute,
+  TramRoute,
+  TrolleybusRoute
+};
+string DebugPrint(RouteType routeType);
+
 class MapObject
 {
 public:
@@ -88,6 +96,7 @@ public:
   string GetWikipediaLink() const;
   string GetFlats() const;
   string GetBuildingLevels() const;
+  vector<string> GetRoutes(RouteType routeType) const;
 
   // TODO(Vlad, yunikkk): Use Props enum + getters instead of direct metadata access.
   // TODO: Remove this method.
@@ -146,6 +155,9 @@ vector<Props> MetadataToProps(vector<T> const & metadata)
     case Metadata::FMD_SPONSORED_ID:
     case Metadata::FMD_PRICE_RATE:
     case Metadata::FMD_RATING:
+    case Metadata::FMD_BUS_ROUTES:
+    case Metadata::FMD_TRAM_ROUTES:
+    case Metadata::FMD_TROLLEYBUS_ROUTES:
     case Metadata::FMD_TEST_ID:
     case Metadata::FMD_COUNT:
       break;
