@@ -18,7 +18,7 @@ namespace routing
 
 namespace
 {
-uint32_t constexpr kPowOfTwoForFeatureCacheSize = 10; // cache contains 2 ^ kPowOfTwoForFeatureCacheSize elements
+uint32_t constexpr kPowOfTwoForFeatureCacheSize = 14; // cache contains 2 ^ kPowOfTwoForFeatureCacheSize elements
 
 double constexpr kMwmRoadCrossingRadiusMeters = 2.0;
 

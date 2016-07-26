@@ -32,6 +32,8 @@ namespace osm
 class EditableMapObject;
 }
 
+using TPointsBuf = buffer_vector<m2::PointD, 8>;
+
 /// Base feature class for storing common data (without geometry).
 class FeatureBase
 {
@@ -344,7 +346,7 @@ public:
 
   void SwapGeometry(FeatureType & r);
 
-  inline void SwapPoints(buffer_vector<m2::PointD, 32> & points) const
+  inline void SwapPoints(TPointsBuf & points) const
   {
     ASSERT(m_pointsParsed, ());
     return m_points.swap(points);
@@ -353,12 +355,8 @@ public:
 private:
   void ParseGeometryAndTriangles(int scale) const;
 
-  // For better result this value should be greater than 17
-  // (number of points in inner triangle-strips).
-  static const size_t static_buffer = 32;
-
-  typedef buffer_vector<m2::PointD, static_buffer> points_t;
-  mutable points_t m_points, m_triangles;
+  mutable TPointsBuf m_points;
+  mutable TPointsBuf m_triangles;
   mutable feature::Metadata m_metadata;
 
   mutable bool m_header2Parsed = false;
