@@ -1,11 +1,11 @@
 #include "generator/public_transport_processor.hpp"
 
+#include "indexer/public_transport_metadata.hpp"
+
 #include "geometry/mercator.hpp"
 
 #include "base/assert.hpp"
 #include "base/logging.hpp"
-
-#include "defines.hpp"
 
 // Stops are nodes with tags:
 //  highway = bus_stop
@@ -140,7 +140,6 @@ bool PublicTransportProcessor::SetRoutesMetadata(StopInfo & si, feature::Metadat
 {
   if (routes.empty())
     return false;
-  string value = strings::JoinStrings(routes, ROUTES_DELIMITER);
-  si.m_params.GetMetadata().Set(key, value);
+  si.m_params.GetMetadata().Set(key, PublicTransportMetadata::Serialize(routes));
   return true;
 }

@@ -52,6 +52,7 @@ SOURCES += \
     osm_editor.cpp \
     point_to_int64.cpp \
     postcodes_matcher.cpp \  # it's in indexer due to editor wich is in indexer and depends on postcodes_marcher
+    public_transport_metadata.cpp \
     rank_table.cpp \
     scales.cpp \
     search_delimiters.cpp \    # it's in indexer because of CategoriesHolder dependency.
@@ -109,6 +110,7 @@ HEADERS += \
     osm_editor.hpp \
     point_to_int64.hpp \
     postcodes_matcher.hpp \   # it's in indexer due to editor wich is in indexer and depends on postcodes_marcher
+    public_transport_metadata.hpp \
     rank_table.hpp \
     scale_index.hpp \
     scale_index_builder.hpp \

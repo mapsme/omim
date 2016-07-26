@@ -75,5 +75,3 @@
 #define MIXED_TAGS_FILE "mixed_tags.txt"
 
 #define LOCALIZATION_DESCRIPTION_SUFFIX " Description"
-
-#define ROUTES_DELIMITER ";"

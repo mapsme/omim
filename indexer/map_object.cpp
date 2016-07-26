@@ -5,14 +5,13 @@
 #include "indexer/feature.hpp"
 #include "indexer/feature_algo.hpp"
 #include "indexer/ftypes_matcher.hpp"
+#include "indexer/public_transport_metadata.hpp"
 
 #include "platform/measurement_utils.hpp"
 #include "platform/preferred_languages.hpp"
 
 #include "base/logging.hpp"
 #include "base/string_utils.hpp"
-
-#include "defines.hpp"
 
 namespace osm
 {
@@ -217,9 +216,7 @@ vector<string> MapObject::GetRoutes(RouteType routeType) const
     break;
   }
 
-  vector<string> res;
-  strings::Tokenize(routes, ROUTES_DELIMITER, MakeBackInsertFunctor(res));
-  return res;
+  return PublicTransportMetadata::Deserialize(routes);
 }
 
 feature::Metadata const & MapObject::GetMetadata() const { return m_metadata; }
