@@ -1751,7 +1751,7 @@ bool Framework::ShowMapForURL(string const & url)
       result = NEED_CLICK;
     }
   }
-  else if (StartsWith(url, "mapswithme://") || StartsWith(url, "mwm://"))
+  else if (m_ParsedMapApi.IsValid())
   {
     // clear every current API-mark.
     {
@@ -1761,21 +1761,8 @@ bool Framework::ShowMapForURL(string const & url)
       guard.m_controller.SetIsDrawable(true);
     }
 
-    if (m_ParsedMapApi.SetUriAndParse(url))
-    {
-      if (!m_ParsedMapApi.GetViewportRect(rect))
-        rect = df::GetWorldRect();
-
-      if ((apiMark = m_ParsedMapApi.GetSinglePoint()))
-        result = NEED_CLICK;
-      else
-        result = NO_NEED_CLICK;
-    }
-    else
-    {
-      UserMarkControllerGuard guard(m_bmManager, UserMarkType::API_MARK);
-      guard.m_controller.SetIsVisible(false);
-    }
+    apiMark = m_ParsedMapApi.GetSinglePoint();
+    result = apiMark ? NEED_CLICK : NO_NEED_CLICK;
   }
   else  // Actually, we can parse any geo url scheme with correct coordinates.
   {
@@ -1819,6 +1806,27 @@ bool Framework::ShowMapForURL(string const & url)
   }
 
   return false;
+}
+
+url_scheme::ParsedMapApi::ParsingResult Framework::ParseAndSetApiURL(string const & url)
+{
+  using namespace url_scheme;
+
+  // Clear every current API-mark.
+  {
+    UserMarkControllerGuard guard(m_bmManager, UserMarkType::API_MARK);
+    guard.m_controller.Clear();
+    guard.m_controller.SetIsVisible(true);
+    guard.m_controller.SetIsDrawable(true);
+  }
+
+  return m_ParsedMapApi.SetUriAndParse(url);
+}
+
+Framework::ParsedRoutingData Framework::GetParsedRoutingData() const
+{
+  return Framework::ParsedRoutingData(m_ParsedMapApi.GetRoutePoints(),
+                                      routing::FromString(m_ParsedMapApi.GetRoutingType()));
 }
 
 void Framework::ForEachFeatureAtPoint(TFeatureTypeFn && fn, m2::PointD const & mercator,
@@ -2312,6 +2320,8 @@ void Framework::SetRouter(RouterType type)
 
   if (m_currentRouterType == type)
     return;
+
+  SetLastUsedRouter(type);
   SetRouterImpl(type);
 }
 
