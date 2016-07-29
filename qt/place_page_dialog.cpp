@@ -84,6 +84,25 @@ PlacePageDialog::PlacePageDialog(QWidget * parent, place_page::Info const & info
     label->setTextInteractionFlags(Qt::TextSelectableByMouse);
     grid->addWidget(label, row++, 1);
   }
+  {
+    osm::RouteType routesTypes[] = { osm::RouteType::BusRoute,
+                                     osm::RouteType::TramRoute,
+                                     osm::RouteType::TrolleybusRoute };
+    QString routesNames[] = { "Bus Routes", "Tram Routes", "Trolleybus Routes" };
+    static_assert(ARRAY_SIZE(routesTypes) == ARRAY_SIZE(routesNames), "routesTypes == routesNames");
+    for (size_t i = 0; i < ARRAY_SIZE(routesTypes); ++i)
+    {
+      auto routes = info.GetRoutes(routesTypes[i]);
+      if (!routes.empty())
+      {
+        grid->addWidget(new QLabel(routesNames[i]), row, 0);
+        QLabel * label = new QLabel(QString::fromStdString(strings::JoinStrings(routes, ", ")));
+        label->setTextInteractionFlags(Qt::TextSelectableByMouse);
+        grid->addWidget(label, row++, 1);
+      }
+    }
+  }
+
   for (auto const prop : info.AvailableProperties())
   {
     QString k;

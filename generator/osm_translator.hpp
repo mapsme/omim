@@ -3,6 +3,7 @@
 #include "generator/feature_builder.hpp"
 #include "generator/osm2type.hpp"
 #include "generator/osm_element.hpp"
+#include "generator/public_transport_processor.hpp"
 #include "generator/ways_merger.hpp"
 
 #include "indexer/classificator.hpp"
@@ -258,6 +259,7 @@ class OsmToFeatureTranslator
   m4::Tree<Place> m_places;
   RelationTagsNode m_nodeRelations;
   RelationTagsWay m_wayRelations;
+  PublicTransportProcessor m_publicTransportProcessor;
 
   class HolesAccumulator
   {
@@ -433,8 +435,11 @@ public:
           break;
         }
 
-        m2::PointD const pt = MercatorBounds::FromLatLon(p->lat, p->lon);
-        EmitPoint(pt, params, osm::Id::Node(p->id));
+        if (!m_publicTransportProcessor.ProcessStop(*p, params))
+        {
+          m2::PointD const pt = MercatorBounds::FromLatLon(p->lat, p->lon);
+          EmitPoint(pt, params, osm::Id::Node(p->id));
+        }
         state = FeatureState::Ok;
         break;
       }
@@ -488,6 +493,8 @@ public:
 
       case OsmElement::EntityType::Relation:
       {
+        m_publicTransportProcessor.ProcessRoute(*p);
+
         {
           // 1. Check, if this is our processable relation. Here we process only polygon relations.
           size_t i = 0;
@@ -574,6 +581,14 @@ public:
 
   void Finish()
   {
+    m_publicTransportProcessor.ForEachStop([this](osm::Id const & id,
+                                                  m2::PointD const & pt,
+                                                  FeatureParams const & params)
+    {
+      EmitPoint(pt, params, id);
+    });
+    m_publicTransportProcessor.Clear();
+
     m_places.ForEach([this] (Place const & p)
     {
       m_emitter(p.GetFeature());

@@ -5,6 +5,7 @@
 #include "indexer/feature.hpp"
 #include "indexer/feature_algo.hpp"
 #include "indexer/ftypes_matcher.hpp"
+#include "indexer/public_transport_metadata.hpp"
 
 #include "platform/measurement_utils.hpp"
 #include "platform/preferred_languages.hpp"
@@ -55,6 +56,17 @@ string DebugPrint(Props props)
   case osm::Props::BuildingLevels: k = "building:levels"; break;
   }
   return k;
+}
+
+string DebugPrint(RouteType routeType)
+{
+  switch (routeType)
+  {
+  case RouteType::BusRoute: return "BusRoute";
+  case RouteType::TramRoute: return "TramRoute";
+  case RouteType::TrolleybusRoute: return "TrolleybusRoute";
+  }
+  return string();
 }
 
 void MapObject::SetFromFeatureType(FeatureType const & ft)
@@ -186,6 +198,25 @@ string MapObject::GetFlats() const { return m_metadata.Get(feature::Metadata::FM
 string MapObject::GetBuildingLevels() const
 {
   return m_metadata.Get(feature::Metadata::FMD_BUILDING_LEVELS);
+}
+
+vector<string> MapObject::GetRoutes(RouteType routeType) const
+{
+  string routes;
+  switch (routeType)
+  {
+  case RouteType::BusRoute:
+    routes = m_metadata.Get(feature::Metadata::FMD_BUS_ROUTES);
+    break;
+  case RouteType::TramRoute:
+    routes = m_metadata.Get(feature::Metadata::FMD_TRAM_ROUTES);
+    break;
+  case RouteType::TrolleybusRoute:
+    routes = m_metadata.Get(feature::Metadata::FMD_TROLLEYBUS_ROUTES);
+    break;
+  }
+
+  return PublicTransportMetadata::Deserialize(routes);
 }
 
 feature::Metadata const & MapObject::GetMetadata() const { return m_metadata; }
