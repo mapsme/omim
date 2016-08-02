@@ -59,8 +59,9 @@ bool AltitudeLoader::HasAltitudes() const
   return m_reader != nullptr && m_header.m_minAltitude != kInvalidAltitude;
 }
 
-TAltitudes const & AltitudeLoader::GetAltitudes(uint32_t featureId, size_t pointCount)
+TAltitudes const & AltitudeLoader::GetAltitudes(uint32_t featureId, vector<double> const & distFromBeginningM)
 {
+  size_t const pointCount = distFromBeginningM.size();
   if (!HasAltitudes())
   {
     // The version of mwm is less than version::Format::v8 or there's no altitude section in mwm.
@@ -90,7 +91,7 @@ TAltitudes const & AltitudeLoader::GetAltitudes(uint32_t featureId, size_t point
     Altitudes altitudes;
     ReaderSource<FilesContainerR::TReader> src(*m_reader);
     src.Skip(altitudeInfoOffsetInSection);
-    bool const isDeserialized = altitudes.Deserialize(m_header.m_minAltitude, pointCount, src);
+    bool const isDeserialized = altitudes.Deserialize(distFromBeginningM, m_header.m_minAltitude, pointCount, src);
 
     bool const allValid = isDeserialized
         && none_of(altitudes.m_altitudes.begin(), altitudes.m_altitudes.end(),
@@ -107,6 +108,24 @@ TAltitudes const & AltitudeLoader::GetAltitudes(uint32_t featureId, size_t point
   {
     LOG(LERROR, ("Error while getting altitude data", e.Msg()));
     return m_cache.insert(make_pair(featureId, TAltitudes(pointCount, m_header.m_minAltitude))).first->second;
+  }
+}
+
+void FillDistFormBeginning(FeatureType const & f, vector<double> & distFromBeginning)
+{
+  size_t const pointCount = f.GetPointsCount();
+  if (pointCount == 0)
+  {
+    ASSERT(false, ());
+    return;
+  }
+
+  distFromBeginning.resize(pointCount);
+  distFromBeginning[0] = 0.0;  /* Distance from start to start in meters. */
+  for (size_t i = 1; i < pointCount; ++i)
+  {
+    distFromBeginning[i] = distFromBeginning[i - 1] +
+        MercatorBounds::DistanceOnEarth(f.GetPoint(i - 1), f.GetPoint(i));
   }
 }
 }  // namespace feature

@@ -18,7 +18,7 @@ public:
 
   /// \returns altitude of feature with |featureId|. All items of the returned vector are valid
   /// or the returned vector is empty.
-  TAltitudes const & GetAltitudes(uint32_t featureId, size_t pointCount);
+  TAltitudes const & GetAltitudes(uint32_t featureId, vector<double> const & distFromBeginningM);
 
   bool HasAltitudes() const;
 
@@ -33,4 +33,6 @@ private:
   map<uint32_t, TAltitudes> m_cache;
   AltitudeHeader m_header;
 };
+
+void FillDistFormBeginning(FeatureType const & f, vector<double> & distFromBeginning);
 }  // namespace feature
