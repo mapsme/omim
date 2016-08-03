@@ -62,14 +62,13 @@ class Processor
 public:
   struct FeatureAltitude
   {
-    FeatureAltitude() : m_featureId(0) {}
-    FeatureAltitude(uint32_t featureId, Altitudes const & altitudes)
-      : m_featureId(featureId), m_altitudes(altitudes)
+    explicit FeatureAltitude(uint32_t featureId) : m_featureId(featureId)
     {
     }
 
-    uint32_t m_featureId;
+    uint32_t const m_featureId;
     Altitudes m_altitudes;
+    vector<double> m_distFromBeginningM;
   };
 
   using TFeatureAltitudes = vector<FeatureAltitude>;
@@ -105,11 +104,15 @@ public:
 
     f.ParseGeometry(FeatureType::BEST_GEOMETRY);
     size_t const pointsCount = f.GetPointsCount();
-    if (pointsCount == 0)
+    if (pointsCount < 2)
+    {
+      // If a linear feature has 0 or 1 point it's a rare error in data.
+      // In case of this data error the altitude willn't be saved for such feature.
       return;
+    }
 
-    TAltitudes altitudes;
     TAltitude minFeatureAltitude = kInvalidAltitude;
+    FeatureAltitude featureAltitude(id);
     for (size_t i = 0; i < pointsCount; ++i)
     {
       TAltitude const a = m_altitudeGetter.GetAltitude(f.GetPoint(i));
@@ -124,11 +127,12 @@ public:
       else
         minFeatureAltitude = min(minFeatureAltitude, a);
 
-      altitudes.push_back(a);
+      featureAltitude.m_altitudes.m_altitudes.push_back(a);
     }
+    FillDistFormBeginning(f, featureAltitude.m_distFromBeginningM);
 
     hasAltitude = true;
-    m_featureAltitudes.emplace_back(id, Altitudes(move(altitudes)));
+    m_featureAltitudes.push_back(move(featureAltitude));
 
     if (m_minAltitude == kInvalidAltitude)
       m_minAltitude = minFeatureAltitude;
@@ -195,9 +199,10 @@ void BuildRoadAltitudes(string const & mwmPath, AltitudeGetter & altitudeGetter)
       for (auto const & a : featureAltitudes)
       {
         offsets.push_back(writer.Pos());
-        a.m_altitudes.Serialize(header.m_minAltitude, writer);
+        a.m_altitudes.Serialize(a.m_distFromBeginningM, header.m_minAltitude, writer);
       }
     }
+
     {
       // Altitude offsets serialization.
       CHECK(is_sorted(offsets.begin(), offsets.end()), ());
@@ -210,18 +215,22 @@ void BuildRoadAltitudes(string const & mwmPath, AltitudeGetter & altitudeGetter)
       coding::FreezeVisitor<Writer> visitor(w);
       succinct::elias_fano(&builder).map(visitor);
     }
+
     // Writing altitude info.
     header.m_altitudesOffset = w.Pos() - startOffset;
     w.Write(deltas.data(), deltas.size());
     header.m_endOffset = w.Pos() - startOffset;
+
+    LOG(LINFO, ("header.GetAltitudeAvailabilitySize() =", header.GetAltitudeAvailabilitySize()));
+    LOG(LINFO, ("header.GetFeatureTableSize() =", header.GetFeatureTableSize()));
+    LOG(LINFO, ("header.GetAltitudeInfoSize() =", header.GetAltitudeInfoSize()));
 
     // Rewriting header info.
     int64_t const endOffset = w.Pos();
     w.Seek(startOffset);
     header.Serialize(w);
     w.Seek(endOffset);
-    LOG(LINFO, (ALTITUDES_FILE_TAG, "section is ready. The size is", endOffset - startOffset,
-                "min altitude is", processor.GetMinAltitude()));
+    LOG(LINFO, (ALTITUDES_FILE_TAG, "section is ready. The size is", endOffset - startOffset));
     if (processor.HasAltitudeInfo())
       LOG(LINFO, ("Min altitude is", processor.GetMinAltitude()));
     else

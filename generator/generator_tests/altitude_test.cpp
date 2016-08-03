@@ -137,8 +137,9 @@ void TestAltitudes(MwmValue const & mwmValue, string const & mwmPath,
   auto processor = [&expectedAltitudes, &loader](FeatureType const & f, uint32_t const & id)
   {
     f.ParseGeometry(FeatureType::BEST_GEOMETRY);
-    size_t const pointsCount = f.GetPointsCount();
-    TAltitudes const altitudes = loader.GetAltitudes(id, pointsCount);
+    vector<double> distFromBeginning;
+    feature::FillDistFormBeginning(f, distFromBeginning);
+    TAltitudes const altitudes = loader.GetAltitudes(id, distFromBeginning);
 
     if (!routing::IsRoad(feature::TypesHolder(f)))
     {
@@ -146,6 +147,7 @@ void TestAltitudes(MwmValue const & mwmValue, string const & mwmPath,
       return;
     }
 
+    size_t const pointsCount = f.GetPointsCount();
     TEST_EQUAL(altitudes.size(), pointsCount, ());
 
     for (size_t i = 0; i < pointsCount; ++i)

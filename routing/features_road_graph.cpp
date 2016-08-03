@@ -277,7 +277,9 @@ void FeaturesRoadGraph::ExtractRoadInfo(FeatureID const & featureId, FeatureType
   feature::TAltitudes altitudes;
   if (value.m_altitudeLoader)
   {
-    altitudes = value.m_altitudeLoader->GetAltitudes(featureId.m_index, ft.GetPointsCount());
+    vector<double> distFromBeginning;
+    feature::FillDistFormBeginning(ft, distFromBeginning);
+    altitudes = value.m_altitudeLoader->GetAltitudes(featureId.m_index, distFromBeginning);
   }
   else
   {
