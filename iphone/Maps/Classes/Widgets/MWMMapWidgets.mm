@@ -61,6 +61,7 @@
           CGFloat const compassBottomBound =
               self.bottomBound + [MWMNavigationDashboardManager manager].extraCompassBottomOffset;
           pivot += m2::PointF(self.leftBound, -compassBottomBound) * self.visualScale;
+          LOG(LINFO, ("Compass pivot (x, y)", pivot.x, pivot.y));
           break;
         }
         case gui::WIDGET_SCALE_LABEL:

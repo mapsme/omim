@@ -138,6 +138,7 @@ double getExactDPI(double contentScaleFactor)
     return;
   }
 
+  LOG(LINFO, ("Screen size (w, h)", w, h));
   [self applyOnSize:w withHeight:h];
 }
 
