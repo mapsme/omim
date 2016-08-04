@@ -1391,4 +1391,155 @@
 
 "editor_detailed_description" = "Suggested changes will be send to OpenStreetMap...";
 
-"editor_more_about_osm" = "More about OpenStreetMap";
+"editor_more_about_osm" = "Mer om OpenStreetMap";
+
+"editor_operator" = "Eier";
+
+"editor_tag_description" = "Angi firma, organisasjon eller enkeltperson som er ansvarlig for anlegget.";
+
+"editor_no_local_edits_title" = "Du har ikke lokale redigeringer";
+
+"editor_no_local_edits_description" = "Dette viser antallet foreslåtte endringer på kartet som i øyeblikket bare er tilgjengelige på enheten din.";
+
+"editor_international_names_subtitle" = "Navn på andre språk";
+
+"editor_send_to_osm" = "Send til OSM";
+
+"editor_remove" = "Fjern";
+
+"downloader_my_maps_title" = "Mine kart";
+
+"downloader_no_downloaded_maps_title" = "Du har ikke lastet ned noen kart";
+
+"downloader_no_downloaded_maps_message" = "Last ned kart for å finne plasseringen og navigere frakoblet.";
+
+"downloader_find_place_hint" = "Søk etter by eller land";
+
+/* Error title that appears after certain time without location. */
+"current_location_unknown_title" = "Fortsette å oppdage din gjeldende plassering?";
+
+/* Error that appears after certain time without location. */
+"current_location_unknown_message" = "Gjeldende plassering er ukjent. Du kan være i en bygning eller en tunnel.";
+
+"current_location_unknown_continue_button" = "Fortsett";
+
+"current_location_unknown_stop_button" = "Stopp";
+
+"current_location_unknown_error_title" = "Gjeldende plassering er ukjent.";
+
+"current_location_unknown_error_message" = "Det oppstod en feil under søking etter plasseringen din. Kontroller at plasseringen din virker som den skal, og prøv på nytt senere.";
+
+"whatsnew_update_editor_title" = "Vi har oppdatert kartredigeringsprogrammet";
+
+"whatsnew_update_editor_message" = "MAPS.ME-brukere har foretatt 200 000 kartendringer. I fellesskap lager vi de mest detaljerte kartene i verden. Bli med du også!";
+
+/* Additional text in whats new */
+"whatsnew_update_editor_message_update" = "For å bruke kartredigerings-funksjonen, vennligst oppdater alle kartene.";
+
+"location_services_disabled_header" = "Lokalisering er deaktivert";
+
+"location_services_disabled_message" = "Tillat bruk av av geografisk lokalisering i enhetens innstillinger";
+
+"location_services_disabled_1" = "1. Åpne Innstillinger";
+
+"location_services_disabled_2" = "2. Trykk Lokalisering";
+
+"location_services_disabled_3" = "3. Velg Alltid";
+
+"placepage_parking_surface" = "Åpen plass";
+
+"placepage_parking_multistorey" = "Fleretasjers";
+
+"placepage_parking_underground" = "Undergrunns";
+
+"placepage_parking_rooftop" = "På taket";
+
+"placepage_parking_sheds" = "Skur";
+
+"placepage_parking_carports" = "Carport";
+
+"placepage_parking_boxes" = "Garasjebokser";
+
+"placepage_parking_pay" = "Betaling";
+
+"placepage_parking_free" = "Gratis";
+
+"placepage_parking_interval" = "Intervallbetaling";
+
+"placepage_entrance_number" = "Nr.";
+
+"placepage_entrance_type" = "Vindfang";
+
+"placepage_flat" = "leil.";
+
+"placepage_open_24_7" = "Døgnåpen";
+
+"place_page_booking_rating" = "Rangering: %s";
+
+"place_page_starting_from" = "fra %s";
+
+"meter" = "m";
+
+"kilometer" = "km";
+
+"placepage_place_description" = "Beskrivelse";
+
+"placepage_more_button" = "Mer";
+
+"bookingcom_book_button" = "Bestill";
+
+"placepage_call_button" = "Ring";
+
+"placepage_edit_bookmark_button" = "Rediger bokmerke";
+
+"placepage_bookmark_name_hint" = "Bokmerkenavn";
+
+"placepage_personal_notes_hint" = "Personlige notater";
+
+"placepage_delete_bookmark_button" = "Slett bokmerke";
+
+"editor_edits_sent_message" = "De foreslåtte endringene er sendt";
+
+"editor_comment_hint" = "Kommentar…";
+
+"editor_reset_edits_message" = "Nullstille alle lokale endringer?";
+
+"editor_reset_edits_button" = "Nullstill";
+
+"editor_remove_place_message" = "Fjerne et tilføyd sted?";
+
+"editor_remove_place_button" = "Fjern";
+
+"editor_status_sending" = "Sender…";
+
+"editor_place_doesnt_exist" = "Sted finnes ikke";
+
+"text_more_button" = "…mer";
+
+"error_enter_correct_phone" = "Oppgi telefonnummer uten bokstaver";
+
+"error_enter_correct_web" = "Oppgi en gyldig nettadresse";
+
+"error_enter_correct_email" = "Oppgi en gyldig epostadresse";
+
+"error_enter_correct" = "Oppgi en gyldig verdi";
+
+"editor_profile_changes_for_next_place" = "Endringer på neste sted: %d";
+
+"editor_profile_rating_place" = "Rangeringsplassering";
+
+"booking_dialog_not_connect_header" = "Aktiver Internett-tilkoblingen din for å bestille hotellet";
+
+"whatsnew_booking_header" = "Reserver hotellrom fra appen";
+
+"whatsnew_booking_message" = "Når du leter etter hotell, vil kartet fortelle deg hotellenes priskategori og rangering.";
+
+"button_try" = "Prøv det";
+
+"whatsnew_cycle_navigation_header" = "Sykkelnavigering (betaversjon)";
+
+"whatsnew_cycle_navigation_message" = "Vi tester sykkelnavigering for den nye sesongen. Prøv din favorittrute med MAPS.ME, og del din vurdering med oss.";
+
+"refresh" = "Oppdatere";
+
+"last_update" = "Sist oppdatert: %s";

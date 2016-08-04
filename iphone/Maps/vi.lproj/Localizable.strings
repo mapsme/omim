@@ -1391,4 +1391,155 @@
 
 "editor_detailed_description" = "Suggested changes will be send to OpenStreetMap...";
 
-"editor_more_about_osm" = "More about OpenStreetMap";
+"editor_more_about_osm" = "Thông tin bổ sung về OpenStreetMap";
+
+"editor_operator" = "Đơn vị điều hành";
+
+"editor_tag_description" = "Nhập công ty, tổ chức hoặc cá nhân phụ trách cơ sở.";
+
+"editor_no_local_edits_title" = "Bạn không có những chỗ sửa cục bộ";
+
+"editor_no_local_edits_description" = "Thông tin này cho biết số thay đổi đề nghị của bạn trên bản đồ hiện chỉ có thể truy cập trên thiết bị của bạn.";
+
+"editor_international_names_subtitle" = "Tên bằng các ngôn ngữ khác";
+
+"editor_send_to_osm" = "Gửi đến OSM";
+
+"editor_remove" = "Xóa";
+
+"downloader_my_maps_title" = "Bản đồ của tôi";
+
+"downloader_no_downloaded_maps_title" = "Bạn chưa tải về bất kỳ bản đồ nào";
+
+"downloader_no_downloaded_maps_message" = "Tải về bản đồ để tìm địa điểm và định hướng ngoại tuyến.";
+
+"downloader_find_place_hint" = "Tìm kiếm thành phố hoặc quốc gia";
+
+/* Error title that appears after certain time without location. */
+"current_location_unknown_title" = "Tiếp tục phát hiện địa điểm hiện tại của bạn?";
+
+/* Error that appears after certain time without location. */
+"current_location_unknown_message" = "Chưa biết địa điểm hiện tại. Có thể bạn đang ở trong một tòa nhà hoặc đường hầm.";
+
+"current_location_unknown_continue_button" = "Tiếp tục";
+
+"current_location_unknown_stop_button" = "Dừng";
+
+"current_location_unknown_error_title" = "Chưa biết địa điểm hiện tại.";
+
+"current_location_unknown_error_message" = "Có lỗi khi tìm kiếm địa điểm của bạn. Đảm bảo rằng thiết bị của bạn hoạt động tốt và thử lại sau.";
+
+"whatsnew_update_editor_title" = "Chúng tôi đã cập nhật trình biên tập bản đồ";
+
+"whatsnew_update_editor_message" = "Người dùng MAPS.ME đã thực hiện 200 000 thay đổi cho bản đồ. Cùng nhau chúng ta đang tạo ra những bản đồ chi tiết nhất trên thế giới. Hãy tham gia cùng chúng tôi!";
+
+/* Additional text in whats new */
+"whatsnew_update_editor_message_update" = "Để sử dụng Ứng dụng Điều chỉnh Bản đồ, xin vui lòng cập nhật tất cả các bản đồ.";
+
+"location_services_disabled_header" = "Chức năng nhận biết địa điểm bị tắt";
+
+"location_services_disabled_message" = "Bật truy cập định vị địa lý trong thiết lập thiết bị";
+
+"location_services_disabled_1" = "1. Mở Thiết lập";
+
+"location_services_disabled_2" = "2. Chạm mục Địa điểm";
+
+"location_services_disabled_3" = "3. Chọn Luôn luôn";
+
+"placepage_parking_surface" = "Trên mặt đất";
+
+"placepage_parking_multistorey" = "Nhiều tầng";
+
+"placepage_parking_underground" = "Dưới mặt đất";
+
+"placepage_parking_rooftop" = "Trên mái";
+
+"placepage_parking_sheds" = "Chỗ để xe";
+
+"placepage_parking_carports" = "Nhà để xe";
+
+"placepage_parking_boxes" = "Thùng gara";
+
+"placepage_parking_pay" = "Trả phí";
+
+"placepage_parking_free" = "Miễn phí";
+
+"placepage_parking_interval" = "Trả Phí Cách Quãng";
+
+"placepage_entrance_number" = "Số";
+
+"placepage_entrance_type" = "Lối vào";
+
+"placepage_flat" = "áp dụng";
+
+"placepage_open_24_7" = "24 / 7";
+
+"place_page_booking_rating" = "Xếp hạng: %s";
+
+"place_page_starting_from" = "từ %s";
+
+"meter" = "m";
+
+"kilometer" = "km";
+
+"placepage_place_description" = "Mô tả";
+
+"placepage_more_button" = "Bổ sung";
+
+"bookingcom_book_button" = "Đặt trước";
+
+"placepage_call_button" = "Gọi";
+
+"placepage_edit_bookmark_button" = "Sửa Dấu Trang";
+
+"placepage_bookmark_name_hint" = "Tên Dấu Trang";
+
+"placepage_personal_notes_hint" = "Ghi chú cá nhân";
+
+"placepage_delete_bookmark_button" = "Xóa Dấu Trang";
+
+"editor_edits_sent_message" = "Những thay đổi đề nghị của bạn đã được gửi";
+
+"editor_comment_hint" = "Nhận xét…";
+
+"editor_reset_edits_message" = "Cài đặt lại tất cả thay đổi cục bộ?";
+
+"editor_reset_edits_button" = "Cài đặt lại";
+
+"editor_remove_place_message" = "Xóa một địa điểm đã thêm?";
+
+"editor_remove_place_button" = "Xóa";
+
+"editor_status_sending" = "Đang gửi …";
+
+"editor_place_doesnt_exist" = "Địa điểm không tồn tại";
+
+"text_more_button" = "…thêm";
+
+"error_enter_correct_phone" = "Nhập số điện thoại không có chữ cái";
+
+"error_enter_correct_web" = "Nhập địa chỉ trang web hợp lệ";
+
+"error_enter_correct_email" = "Nhập email hợp lệ";
+
+"error_enter_correct" = "Nhập giá trị hợp lệ";
+
+"editor_profile_changes_for_next_place" = "Các thay đổi tới địa điểm tiếp theo: %d";
+
+"editor_profile_rating_place" = "Vị trí thứ hạng";
+
+"booking_dialog_not_connect_header" = "Để đặt khách sạn, vui lòng bật kết nối Internet";
+
+"whatsnew_booking_header" = "Đặt khách sạn từ ứng dụng";
+
+"whatsnew_booking_message" = "Khi tìm khách sạn, bản đồ sẽ hiển thị đánh giá và giá của các khách sạn.";
+
+"button_try" = "Hãy thử xem";
+
+"whatsnew_cycle_navigation_header" = "Định vị xe đạp (phiên bản beta)";
+
+"whatsnew_cycle_navigation_message" = "Chúng tôi đang thử nghiệm định vị xe đạp cho mùa mới. Hãy thử tuyến đường xe đạp ưa thích của bạn với MAPS.ME, và chia sẻ ý kiến của bạn với chúng tôi.";
+
+"refresh" = "Cập nhật";
+
+"last_update" = "Cập nhật cuối cùng: %s";

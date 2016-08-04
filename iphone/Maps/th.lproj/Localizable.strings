@@ -1391,4 +1391,155 @@
 
 "editor_detailed_description" = "Suggested changes will be send to OpenStreetMap...";
 
-"editor_more_about_osm" = "More about OpenStreetMap";
+"editor_more_about_osm" = "ข้อมูลเพิ่มเติมเกี่ยวกับ OpenStreetMap";
+
+"editor_operator" = "เจ้าของ";
+
+"editor_tag_description" = "ใส่ชื่อบริษัท, องค์กร หรือ บุคคลที่เป็นผู้รับผิดชอบสถานที่นี้";
+
+"editor_no_local_edits_title" = "คุณไม่มีการแก้ไขท้องถิ่น";
+
+"editor_no_local_edits_description" = "หมายเลขที่แสดงอยู่ คือ หมายเลขที่คุณได้ทำการแนะนำการเปลี่ยนแปลงบนแผนที่ที่สามารถเข้าถึงได้โดยอุปกรณ์ของคุณท่านั้น";
+
+"editor_international_names_subtitle" = "ชื่อในภาษาอื่น";
+
+"editor_send_to_osm" = "ส่งไปที่ OSM";
+
+"editor_remove" = "ลบออก";
+
+"downloader_my_maps_title" = "แผนที่ของฉัน";
+
+"downloader_no_downloaded_maps_title" = "คุณยังไม่ได้ดาวน์โหลดแผนที่";
+
+"downloader_no_downloaded_maps_message" = "ดาวน์โหลดแผนที่เพื่อค้นหาสถานที่ และนำทางแบบออฟไลน์";
+
+"downloader_find_place_hint" = "ค้นหาชื่อเมือง หรือ ประเทศ";
+
+/* Error title that appears after certain time without location. */
+"current_location_unknown_title" = "ค้นหาที่ตั้งปัจจุบันต่อไปหรือไม่?";
+
+/* Error that appears after certain time without location. */
+"current_location_unknown_message" = "ไม่ทราบชื่อสถานที่ปัจจุบัน คุณอาจจะอยู่ในอาคาร หรือ ในอุโมงค์";
+
+"current_location_unknown_continue_button" = "ดำเนินการต่อ";
+
+"current_location_unknown_stop_button" = "หยุด";
+
+"current_location_unknown_error_title" = "ไม่ทราบชื่อของที่ตั้งปัจจุบัน";
+
+"current_location_unknown_error_message" = "มีข้อผิดพลาดเกิดขึ้นในขณะที่กำลังหาที่ตั้งที่คุณอยู่ โปรดตรวจสอบอุปกรณ์ของคุณว่าทำงานถูกต้อง และลองใหม่อีกครั้ง";
+
+"whatsnew_update_editor_title" = "เราได้ทำการอัพเดตตัวแก้ไขแผนที่แล้ว";
+
+"whatsnew_update_editor_message" = "ผู้ใช้ MAPS.ME ได้ทำการเปลี่ยนแปลงแผนที่เป็นจำนวนมากกว่า 200 000 ครั้งแล้ว เรากำลังทำให้แผนที่นี้มีรายละเอียดมากที่สุดในโลก มาร่วมมือกัน!";
+
+/* Additional text in whats new */
+"whatsnew_update_editor_message_update" = "ในการใช้เครื่องมือการแก้ไขแผนที่ โปรดอัปเดตแผนที่ทั้งหมด";
+
+"location_services_disabled_header" = "ปิดการใช้งานการระบุตำแหน่งที่ตั้งแล้ว";
+
+"location_services_disabled_message" = "เปิดใช้งานการเข้าถึงตำแหน่งภูมิศาสตร์ในการตั้งค่าอุปกรณ์";
+
+"location_services_disabled_1" = "1. เปิดการตั้งค่า";
+
+"location_services_disabled_2" = "2. แตะตำแหน่งที่ตั้ง";
+
+"location_services_disabled_3" = "3. เลือก เสมอ";
+
+"placepage_parking_surface" = "กลางแจ้ง";
+
+"placepage_parking_multistorey" = "หลายชั้น";
+
+"placepage_parking_underground" = "ชั้นใต้ดิน";
+
+"placepage_parking_rooftop" = "ดาดฟ้า";
+
+"placepage_parking_sheds" = "ในร่ม";
+
+"placepage_parking_carports" = "โรงรถ";
+
+"placepage_parking_boxes" = "โรงรถแบบกล่อง";
+
+"placepage_parking_pay" = "เสียเงิน";
+
+"placepage_parking_free" = "ฟรี";
+
+"placepage_parking_interval" = "จ่ายตามช่วงเวลา";
+
+"placepage_entrance_number" = "หมายเลข";
+
+"placepage_entrance_type" = "ทางเข้า";
+
+"placepage_flat" = "ห้อง";
+
+"placepage_open_24_7" = "24 ชั่วโมง";
+
+"place_page_booking_rating" = "เรทติ้ง: %s";
+
+"place_page_starting_from" = "จาก %s";
+
+"meter" = "ม.";
+
+"kilometer" = "กม.";
+
+"placepage_place_description" = "คำอธิบาย";
+
+"placepage_more_button" = "เพิ่มเติม";
+
+"bookingcom_book_button" = "จอง";
+
+"placepage_call_button" = "โทร";
+
+"placepage_edit_bookmark_button" = "แก้ไข Bookmark";
+
+"placepage_bookmark_name_hint" = "ชื่อของ Bookmark";
+
+"placepage_personal_notes_hint" = "ข้อความส่วนตัว";
+
+"placepage_delete_bookmark_button" = "ลบ Bookmark";
+
+"editor_edits_sent_message" = "คำแนะนำการเปลี่ยนแปลงของคุณถูกส่งไปแล้ว";
+
+"editor_comment_hint" = "ข้อคิดเห็น";
+
+"editor_reset_edits_message" = "ตั้งค่าการเปลี่ยนแปลงท้องถิ่นทั้งหมด";
+
+"editor_reset_edits_button" = "ตั้งค่าใหม่";
+
+"editor_remove_place_message" = "ลบที่ที่เพิ่มออก";
+
+"editor_remove_place_button" = "ลบออก";
+
+"editor_status_sending" = "กำลังส่ง…";
+
+"editor_place_doesnt_exist" = "ไม่พบสถานที่นี้";
+
+"text_more_button" = "…เพิ่มเติม";
+
+"error_enter_correct_phone" = "กรอกหมายเลขโทรศัพท์โดยไม่ใช้ตัวอักษร";
+
+"error_enter_correct_web" = "กรอกที่อยู่เว็บที่ถูกต้อง";
+
+"error_enter_correct_email" = "กรอกอีเมลที่ถูกต้อง";
+
+"error_enter_correct" = "กรอกค่าที่ถูกต้อง";
+
+"editor_profile_changes_for_next_place" = "เปลี่ยนไปยังสถานที่ถัดไป: %d";
+
+"editor_profile_rating_place" = "ลำดับของตำแหน่ง";
+
+"booking_dialog_not_connect_header" = "โปรดเชื่อมต่อกับอินเตอร์เน็ตเพื่อจองโรงแรมนี้";
+
+"whatsnew_booking_header" = "จองโรงแรมจากแอพ";
+
+"whatsnew_booking_message" = "หากคุณกำลังมองหาโรงแรมอยู่ แผนที่จะแสดงหมวดหมู่ราคา และเรตติ้งของโรงแรม";
+
+"button_try" = "ลองดู";
+
+"whatsnew_cycle_navigation_header" = "การนำทางจักรยาน (beta-version)";
+
+"whatsnew_cycle_navigation_message" = "เรากำลังทดสอบการนำทางจักรยานในฤดูกาลใหม่ ลองเส้นทางการขี่จักรยานด้วย MAPS.ME และแชร์ความคิดเห็นของคุณมาให้เรา";
+
+"refresh" = "อัปเดต";
+
+"last_update" = "การอัปเดตล่าสุด: %s";

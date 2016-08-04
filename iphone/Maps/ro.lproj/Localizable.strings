@@ -1391,4 +1391,155 @@
 
 "editor_detailed_description" = "Suggested changes will be send to OpenStreetMap...";
 
-"editor_more_about_osm" = "More about OpenStreetMap";
+"editor_more_about_osm" = "Mai multe despre OpenStreetMap";
+
+"editor_operator" = "Operator";
+
+"editor_tag_description" = "Introduceți compania, organizația sau persoana responsabilă de facilități.";
+
+"editor_no_local_edits_title" = "Nu aveți modificări locale";
+
+"editor_no_local_edits_description" = "Acesta arată numărul de modificări sugerate pe hartă care sunt momentan accesibile doar pe dispozitivul dvs.";
+
+"editor_international_names_subtitle" = "Nume în alte limbi";
+
+"editor_send_to_osm" = "Trimitere la OSM";
+
+"editor_remove" = "Eliminare";
+
+"downloader_my_maps_title" = "Hărțile mele";
+
+"downloader_no_downloaded_maps_title" = "Nu ați descărcat nicio hartă";
+
+"downloader_no_downloaded_maps_message" = "Descărcați hărți pt. a găsi locația și navigați offline.";
+
+"downloader_find_place_hint" = "Căutare oraș sau țară";
+
+/* Error title that appears after certain time without location. */
+"current_location_unknown_title" = "Continuați cu detectarea locației dvs. curente?";
+
+/* Error that appears after certain time without location. */
+"current_location_unknown_message" = "Locația curentă este necunoscută. Poate vă aflați într-o clădire sau un tunel.";
+
+"current_location_unknown_continue_button" = "Continuare";
+
+"current_location_unknown_stop_button" = "Oprire";
+
+"current_location_unknown_error_title" = "Locația curentă este necunoscută.";
+
+"current_location_unknown_error_message" = "S-a produs o eroare la căutarea locației. Verificați dacă dispozitivul funcționează corect și încercați din nou.";
+
+"whatsnew_update_editor_title" = "Am actualizat editorul de hărți";
+
+"whatsnew_update_editor_message" = "Utilizatorii MAPS.ME au făcut 200.000 de modificări de hărți. Împreună alcătuim cele mai detaliate hărți din lume. Alăturați-vă comunității!";
+
+/* Additional text in whats new */
+"whatsnew_update_editor_message_update" = "Pentru a utiliza funcția editor hartă, vă rugăm să actualizați toate hărțile.";
+
+"location_services_disabled_header" = "Geolocalizarea este dezactivată";
+
+"location_services_disabled_message" = "Activaţi accesul la geolocalizare din setările dispozitivului";
+
+"location_services_disabled_1" = "1. Deschideți setările";
+
+"location_services_disabled_2" = "2. Apăsați pe Localizare";
+
+"location_services_disabled_3" = "3. Selectați Întotdeauna";
+
+"placepage_parking_surface" = "Suprafață";
+
+"placepage_parking_multistorey" = "Multi-etajat";
+
+"placepage_parking_underground" = "Subteran";
+
+"placepage_parking_rooftop" = "Pe acoperiș";
+
+"placepage_parking_sheds" = "Garaj";
+
+"placepage_parking_carports" = "Garaje";
+
+"placepage_parking_boxes" = "Garage boxes";
+
+"placepage_parking_pay" = "Cu plată";
+
+"placepage_parking_free" = "Gratuit";
+
+"placepage_parking_interval" = "Interval de plată";
+
+"placepage_entrance_number" = "Nr.";
+
+"placepage_entrance_type" = "Intrare";
+
+"placepage_flat" = "ap.";
+
+"placepage_open_24_7" = "24 / 7";
+
+"place_page_booking_rating" = "Evaluare: %s";
+
+"place_page_starting_from" = "din %s";
+
+"meter" = "m";
+
+"kilometer" = "km";
+
+"placepage_place_description" = "Descriere";
+
+"placepage_more_button" = "Mai multe";
+
+"bookingcom_book_button" = "Rezervare";
+
+"placepage_call_button" = "Apel";
+
+"placepage_edit_bookmark_button" = "Editare marcaj";
+
+"placepage_bookmark_name_hint" = "Nume marcaj";
+
+"placepage_personal_notes_hint" = "Note personale";
+
+"placepage_delete_bookmark_button" = "Ștergere marcaj";
+
+"editor_edits_sent_message" = "Modificările sugerate au fost trimise";
+
+"editor_comment_hint" = "Comentariu…";
+
+"editor_reset_edits_message" = "Resetați toate modificările locale?";
+
+"editor_reset_edits_button" = "Resetare";
+
+"editor_remove_place_message" = "Eliminați locul adăugat?";
+
+"editor_remove_place_button" = "Eliminare";
+
+"editor_status_sending" = "Se trimite…";
+
+"editor_place_doesnt_exist" = "Locul nu există";
+
+"text_more_button" = "…mai multe";
+
+"error_enter_correct_phone" = "Introduceți numărul de telefon fără litere";
+
+"error_enter_correct_web" = "Introduceți o adresă web validă";
+
+"error_enter_correct_email" = "Introduceți o adresă de e-mail validă";
+
+"error_enter_correct" = "Introduceți o valoare validă";
+
+"editor_profile_changes_for_next_place" = "Modificări necesare pentru următoarea poziţie: %d";
+
+"editor_profile_rating_place" = "Poziţie în clasament";
+
+"booking_dialog_not_connect_header" = "Pentru a face o rezervare la un hotel, activaţi conexiunea la Internet";
+
+"whatsnew_booking_header" = "Rezervare hotel din aplicaţie";
+
+"whatsnew_booking_message" = "Dacă sunteţi în căutarea unui hotel, harta vă va arăta categoriile de preţuri practicate de hoteluri şi evaluarea lor.";
+
+"button_try" = "Încercaţi-o";
+
+"whatsnew_cycle_navigation_header" = "Navigaţie pentru biciclete (versiune beta)";
+
+"whatsnew_cycle_navigation_message" = "În prezent testăm navigaţia pentru biciclete pentru noul sezon. Încercaţi traseul dvs. favorit cu MAPS.ME şi împărtăşiţi-ne opinia dvs.";
+
+"refresh" = "Actualizați";
+
+"last_update" = "Ultima actualizare: %s";

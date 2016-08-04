@@ -1391,4 +1391,155 @@
 
 "editor_detailed_description" = "Suggested changes will be send to OpenStreetMap...";
 
-"editor_more_about_osm" = "More about OpenStreetMap";
+"editor_more_about_osm" = "Більше про OpenStreetMap";
+
+"editor_operator" = "Володар";
+
+"editor_tag_description" = "Вкажіть компанію, організацію або особу, що відповідає за працездатність об'єкта";
+
+"editor_no_local_edits_title" = "Поки що ви не маєте локальних виправлень";
+
+"editor_no_local_edits_description" = "Тут відображається кількість запропонованих вами змін на карті, які доступні тільки на вашому пристрою";
+
+"editor_international_names_subtitle" = "Назва на інших мовах";
+
+"editor_send_to_osm" = "Відправити до OSM";
+
+"editor_remove" = "Видалити";
+
+"downloader_my_maps_title" = "Мої мапи";
+
+"downloader_no_downloaded_maps_title" = "Ви не маєте завантажених мап";
+
+"downloader_no_downloaded_maps_message" = "Завантажте необхідні мапи, щоб знаходити місця та користуватися навігацією без iнтернету.";
+
+"downloader_find_place_hint" = "Знайти місто або країну";
+
+/* Error title that appears after certain time without location. */
+"current_location_unknown_title" = "Продовжити пошук місцезнаходження?";
+
+/* Error that appears after certain time without location. */
+"current_location_unknown_message" = "Місцезнаходження не знайдено. Можливо, ви знаходитесь у приміщенні або тунелі.";
+
+"current_location_unknown_continue_button" = "Продовжити";
+
+"current_location_unknown_stop_button" = "Зупинити";
+
+"current_location_unknown_error_title" = "Місцезнаходження не знайдено.";
+
+"current_location_unknown_error_message" = "Під час пошуку місцезнаходження сталася невідома помилка. Перевірте працездатність пристрою та спробуйте відшукати місцеположення пізніше.";
+
+"whatsnew_update_editor_title" = "Ми обновили редактор";
+
+"whatsnew_update_editor_message" = "Користувачі MAPS.ME вже внесли 200 000 виправлень на мапі. Разом ми зробимо мапи найбільш докладними у світі. Приєднуйся!";
+
+/* Additional text in whats new */
+"whatsnew_update_editor_message_update" = "Для використання редактору карт, будь ласка, оновіть всі карти.";
+
+"location_services_disabled_header" = "Ідентифікацію місцезнаходження відключено";
+
+"location_services_disabled_message" = "Увімкніть доступ до геолокації в налаштуваннях цього пристрою";
+
+"location_services_disabled_1" = "1. Відкрийте «Налаштування»";
+
+"location_services_disabled_2" = "2. Клацніть «Місцезнаходження»";
+
+"location_services_disabled_3" = "3. Виберіть «Завжди»";
+
+"placepage_parking_surface" = "Відкрите паркування";
+
+"placepage_parking_multistorey" = "Багатоповерхове наземне паркування";
+
+"placepage_parking_underground" = "Підземне паркування";
+
+"placepage_parking_rooftop" = "Паркування на даху будівлі";
+
+"placepage_parking_sheds" = "Приватне легке укриття для автомобілів";
+
+"placepage_parking_carports" = "Капітальний навіс";
+
+"placepage_parking_boxes" = "Гаражний бокс";
+
+"placepage_parking_pay" = "Платне";
+
+"placepage_parking_free" = "Безкоштовне";
+
+"placepage_parking_interval" = "Змінно платне";
+
+"placepage_entrance_number" = "№";
+
+"placepage_entrance_type" = "Під'їзд";
+
+"placepage_flat" = "кв.";
+
+"placepage_open_24_7" = "Цілодобово";
+
+"place_page_booking_rating" = "Рейтинг: %s";
+
+"place_page_starting_from" = "від %s";
+
+"meter" = "м";
+
+"kilometer" = "км";
+
+"placepage_place_description" = "Опис";
+
+"placepage_more_button" = "Ще";
+
+"bookingcom_book_button" = "Забронювати";
+
+"placepage_call_button" = "Подзвонити";
+
+"placepage_edit_bookmark_button" = "Редагувати мiтку";
+
+"placepage_bookmark_name_hint" = "Назва мiтки";
+
+"placepage_personal_notes_hint" = "Примітка";
+
+"placepage_delete_bookmark_button" = "Видалити мiтку";
+
+"editor_edits_sent_message" = "Зміни, що ви запропонували, відправлено";
+
+"editor_comment_hint" = "Коментар…";
+
+"editor_reset_edits_message" = "Скинути усі локальні виправлення?";
+
+"editor_reset_edits_button" = "Скинути";
+
+"editor_remove_place_message" = "Видалити об'єкт, що ви додали?";
+
+"editor_remove_place_button" = "Видалити";
+
+"editor_status_sending" = "Відправка…";
+
+"editor_place_doesnt_exist" = "Місце не існує";
+
+"text_more_button" = "…більше";
+
+"error_enter_correct_phone" = "Введіть номер телефону без літер";
+
+"error_enter_correct_web" = "Введіть вірну адресу веб-сайту";
+
+"error_enter_correct_email" = "Введіть вірниу адресу електронної пошти";
+
+"error_enter_correct" = "Введіть вірне значення";
+
+"editor_profile_changes_for_next_place" = "Виправлень до наступного місця: %d";
+
+"editor_profile_rating_place" = "Місце у рейтингу";
+
+"booking_dialog_not_connect_header" = "Для бронювання готелів потрібен доступ до інтернету";
+
+"whatsnew_booking_header" = "Бронюй готель з додатку";
+
+"whatsnew_booking_message" = "Під час вибору готелів на карті буде відображено цінову категорію та рейтинг закладу.";
+
+"button_try" = "Спробувати";
+
+"whatsnew_cycle_navigation_header" = "Велонавігація (бета-версія)";
+
+"whatsnew_cycle_navigation_message" = "До відкриття сезону ми тестуємо велонавігацію. Проїдьтесь за своїм улюбленим маршрутом з MAPS.ME та поділіться враженнями з нами.";
+
+"refresh" = "Обновити";
+
+"last_update" = "Останнє оновлення: %s";

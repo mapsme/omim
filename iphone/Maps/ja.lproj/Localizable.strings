@@ -1391,4 +1391,155 @@
 
 "editor_detailed_description" = "Suggested changes will be send to OpenStreetMap...";
 
-"editor_more_about_osm" = "More about OpenStreetMap";
+"editor_more_about_osm" = "OpenStreetMapについての詳細";
+
+"editor_operator" = "オペレーター";
+
+"editor_tag_description" = "施設を管理する企業、組織または個人を入力してください。";
+
+"editor_no_local_edits_title" = "ローカル編集はできません";
+
+"editor_no_local_edits_description" = "これは、現在お使いのデバイスでのみアクセス可能な、マップ上に提案された変更の数を示しています。";
+
+"editor_international_names_subtitle" = "他の言語での名前";
+
+"editor_send_to_osm" = "OSMに送信";
+
+"editor_remove" = "削除";
+
+"downloader_my_maps_title" = "マイマップ";
+
+"downloader_no_downloaded_maps_title" = "マップをダウンロードしていません";
+
+"downloader_no_downloaded_maps_message" = "ロケーションの検索とオフラインナビゲートのためにマップをダウンロードしてください。";
+
+"downloader_find_place_hint" = "都市や国を検索";
+
+/* Error title that appears after certain time without location. */
+"current_location_unknown_title" = "あなたの現在地を検出し続けますか？";
+
+/* Error that appears after certain time without location. */
+"current_location_unknown_message" = "現在地が不明です。建物の中やトンネル内の可能性があります。";
+
+"current_location_unknown_continue_button" = "続ける";
+
+"current_location_unknown_stop_button" = "止める";
+
+"current_location_unknown_error_title" = "現在地は不明です。";
+
+"current_location_unknown_error_message" = "お住まいの地域の検索中にエラーが発生しました。お使いのデバイスが正常に動作していることを確認してから再度試してください。";
+
+"whatsnew_update_editor_title" = "マップエディタを更新しました";
+
+"whatsnew_update_editor_message" = "MAPS.MEユーザーは200000マップの変更を行いました。我々は協力して、世界で最も詳細な地図を作っています。参加しませんか！";
+
+/* Additional text in whats new */
+"whatsnew_update_editor_message_update" = "マップエディタを利用するには、全てのアップをアップデートしてください。";
+
+"location_services_disabled_header" = "位置情報認識機能が無効になっています";
+
+"location_services_disabled_message" = "デバイスの設定で位置情報へのアクセスを有効にしてください";
+
+"location_services_disabled_1" = "1. 設定を開きます";
+
+"location_services_disabled_2" = "2. 位置情報をタップします";
+
+"location_services_disabled_3" = "3. 「常時」を選択します";
+
+"placepage_parking_surface" = "表面";
+
+"placepage_parking_multistorey" = "複数階";
+
+"placepage_parking_underground" = "地下";
+
+"placepage_parking_rooftop" = "屋上";
+
+"placepage_parking_sheds" = "小屋";
+
+"placepage_parking_carports" = "カーポート";
+
+"placepage_parking_boxes" = "ガレージボックス";
+
+"placepage_parking_pay" = "支払い";
+
+"placepage_parking_free" = "無料";
+
+"placepage_parking_interval" = "支払間隔";
+
+"placepage_entrance_number" = "番号";
+
+"placepage_entrance_type" = "エントランス";
+
+"placepage_flat" = "アプリ";
+
+"placepage_open_24_7" = "24時間体制";
+
+"place_page_booking_rating" = "評価：%s";
+
+"place_page_starting_from" = "%sから";
+
+"meter" = "m";
+
+"kilometer" = "km";
+
+"placepage_place_description" = "説明";
+
+"placepage_more_button" = "さらに詳しく";
+
+"bookingcom_book_button" = "書籍";
+
+"placepage_call_button" = "コール";
+
+"placepage_edit_bookmark_button" = "ブックマークを編集";
+
+"placepage_bookmark_name_hint" = "ブックマーク名";
+
+"placepage_personal_notes_hint" = "パーソナルメモ";
+
+"placepage_delete_bookmark_button" = "ブックマークを削除";
+
+"editor_edits_sent_message" = "あなたの提案の変更が送信されました";
+
+"editor_comment_hint" = "コメント…";
+
+"editor_reset_edits_message" = "すべてのローカルの変更をリセットしますか？";
+
+"editor_reset_edits_button" = "リセット";
+
+"editor_remove_place_message" = "追加された場所を削除しますか？";
+
+"editor_remove_place_button" = "削除";
+
+"editor_status_sending" = "送信中…";
+
+"editor_place_doesnt_exist" = "存在しない場所";
+
+"text_more_button" = "…続き";
+
+"error_enter_correct_phone" = "文字なしで電話番号を入力してください";
+
+"error_enter_correct_web" = "有効なウェブアドレスを入力してください";
+
+"error_enter_correct_email" = "有効なメールアドレスを入力してください";
+
+"error_enter_correct" = "有効な値を入力してください";
+
+"editor_profile_changes_for_next_place" = "次の場所への変更：%d";
+
+"editor_profile_rating_place" = "ランキングポジション";
+
+"booking_dialog_not_connect_header" = "ホテルを予約するには、インターネット接続を有効にしてください";
+
+"whatsnew_booking_header" = "アプリからホテルを予約する";
+
+"whatsnew_booking_message" = "ホテルを探すと、地図にホテルの価格帯と評価が表示されます。";
+
+"button_try" = "試してみる";
+
+"whatsnew_cycle_navigation_header" = "バイクナビゲーション（ベータ版）";
+
+"whatsnew_cycle_navigation_message" = "新シーズンに向けてバイクナビゲーションをテスト中です。MAPS.MEで、お気に入りのサイクリングルートを試してみませんか。ご感想をお待ちしています。";
+
+"refresh" = "更新";
+
+"last_update" = "最終更新日: %s";
