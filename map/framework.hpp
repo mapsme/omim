@@ -395,8 +395,6 @@ private:
 
   bool m_connectToGpsTrack; // need to connect to tracker when Drape is being constructed
 
-  void FillSearchResultsMarks(search::Results const & results);
-
   void OnUpdateCurrentCountry(m2::PointF const & pt, int zoomLevel);
 
   storage::TCountryId m_lastReportedCountry;
@@ -436,6 +434,7 @@ public:
 
   void ShowSearchResult(search::Result const & res);
   size_t ShowSearchResults(search::Results const & results);
+  void FillSearchResultsMarks(search::Results const & results);
 
   void StartInteractiveSearch(search::SearchParams const & params);
   bool IsInteractiveSearchActive() const { return !m_lastInteractiveSearchParams.m_query.empty(); }
