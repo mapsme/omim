@@ -14,7 +14,7 @@ MACRO_RE =  re.compile('L\(.*?@\"(.*?)\"\)')
 XML_RE = re.compile("value=\"(.*?)\"")
 ANDROID_JAVA_RE = re.compile("R\.string\.([\w_]*)")
 ANDROID_XML_RE = re.compile("@string/(.*?)\W")
-IOS_CANDIDATES_RE = re.compile("[^L\(]@\"([a-z0-9_]*?)\"")
+IOS_CANDIDATES_RE = re.compile("(.*?):[^L\(]@\"([a-z0-9_]*?)\"")
 
 
 HARDCODED_CATEGORIES = [
@@ -62,9 +62,12 @@ def grep_android():
 
 def grep_ios_candidates():
     logging.info("Grepping ios candidates")
-    grep = "grep -r '@\"' ../../iphone/*"
+    grep = "grep -nr '@\"' ../../iphone/*"
     ret = exec_shell(grep, "")
-    return parenthesize(strings_from_grepped(ret, IOS_CANDIDATES_RE))
+
+    strs = strings_from_grepped(ret, IOS_CANDIDATES_RE)
+    return strs
+    # return parenthesize(strings_from_grepped(ret, IOS_CANDIDATES_RE))
 
 
 def android_grep_wrapper(grep, regex):
@@ -225,15 +228,23 @@ def do_missing(args):
 
 
 def do_candidates(args):
-    all_candidates = set(grep_ios_candidates())
-    strings_txt_keys = set(StringsTxt().translations.keys())
-    candidates_in_txt = all_candidates & strings_txt_keys
-    properly_used = grep_ios()
+    all_candidates = defaultdict(list)
+    for source, candidate in grep_ios_candidates():
+        all_candidates[candidate].append(source)
 
-    improperly_used_candidates = candidates_in_txt - properly_used
+    for candidate, sources in all_candidates.iteritems():
+        print(candidate, sources)
 
-    for s in improperly_used_candidates:
-        print(s)
+
+    # all_candidates = set(grep_ios_candidates())
+    # strings_txt_keys = set(StringsTxt().translations.keys())
+    # candidates_in_txt = all_candidates & strings_txt_keys
+    # properly_used = grep_ios()
+    #
+    # improperly_used_candidates = candidates_in_txt - properly_used
+    #
+    # for s in improperly_used_candidates:
+    #     print(s)
 
 
     # for a in all_candidates:
