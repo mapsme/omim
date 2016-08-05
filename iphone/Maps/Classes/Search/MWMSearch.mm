@@ -19,6 +19,7 @@ using TObservers = NSHashTable<__kindof TObserver>;
 @property(nonatomic) NSUInteger suggestionsCount;
 @property(nonatomic) NSUInteger resultsCount;
 @property(nonatomic) BOOL searchOnMap;
+@property(nonatomic) BOOL searchInNavigation;
 
 @property(nonatomic) BOOL textChanged;
 @property(nonatomic) BOOL isSearching;
@@ -159,6 +160,7 @@ using TObservers = NSHashTable<__kindof TObserver>;
   manager->m_results.Clear();
   manager.suggestionsCount = manager->m_results.GetSuggestsCount();
   manager.resultsCount = manager->m_results.GetCount();
+  manager.searchInNavigation = NO;
 }
 
 + (BOOL)isSearchOnMap { return IPAD || [MWMSearch manager].searchOnMap; }
@@ -167,6 +169,12 @@ using TObservers = NSHashTable<__kindof TObserver>;
   MWMSearch * manager = [MWMSearch manager];
   manager.searchOnMap = searchOnMap;
   [manager update];
+}
+
++ (void)setSearchInNavigation:(BOOL)searchInNavigation
+{
+  MWMSearch * manager = [MWMSearch manager];
+  manager.searchInNavigation = searchInNavigation;
 }
 
 + (NSUInteger)suggestionsCount { return [MWMSearch manager].suggestionsCount; }
@@ -196,7 +204,12 @@ using TObservers = NSHashTable<__kindof TObserver>;
   }
   // TODO(igrechuhin): Remove this workaround on search interface refactoring.
   if (IPAD)
-    GetFramework().ShowSearchResults(m_results);
+  {
+    if ([MWMSearch manager].searchInNavigation)
+      GetFramework().FillSearchResultsMarks(m_results);
+    else
+      GetFramework().ShowSearchResults(m_results);
+  }
 }
 
 - (void)onSearchResultsUpdated
