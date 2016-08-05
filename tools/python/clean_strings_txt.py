@@ -14,6 +14,8 @@ MACRO_RE =  re.compile('L\(.*?@\"(.*?)\"\)')
 XML_RE = re.compile("value=\"(.*?)\"")
 ANDROID_JAVA_RE = re.compile("R\.string\.([\w_]*)")
 ANDROID_XML_RE = re.compile("@string/(.*?)\W")
+IOS_CANDIDATES_RE = re.compile("[^L\(]@\"([a-z0-9_]*?)\"")
+
 
 HARDCODED_CATEGORIES = [
     "food", "hotel", "tourism", "wifi", "transport", "fuel", "parking", "shop",
@@ -56,6 +58,13 @@ def grep_android():
     ret.update(android_grep_wrapper(grep, ANDROID_XML_RE))
 
     return parenthesize(ret)
+
+
+def grep_ios_candidates():
+    logging.info("Grepping ios candidates")
+    grep = "grep -r '@\"' ../../iphone/*"
+    ret = exec_shell(grep, "")
+    return parenthesize(strings_from_grepped(ret, IOS_CANDIDATES_RE))
 
 
 def android_grep_wrapper(grep, regex):
@@ -138,6 +147,14 @@ def get_args():
         help="Find the keys that are used in iOS, but are not translated in strings.txt and exit."
     )
 
+    parser.add_argument(
+        "-c", "--candidates",
+        dest="candidates", default=False,
+        action="store_true",
+        help="Find the strings in iOS that are not in the L() macros, but that look like they might be keys."
+    )
+
+
 
     return parser.parse_args()
 
@@ -207,15 +224,55 @@ def do_missing(args):
         exit(0)
 
 
+def do_candidates(args):
+    all_candidates = set(grep_ios_candidates())
+    strings_txt_keys = set(StringsTxt().translations.keys())
+    candidates_in_txt = all_candidates & strings_txt_keys
+    properly_used = grep_ios()
+
+    improperly_used_candidates = candidates_in_txt - properly_used
+
+    for s in improperly_used_candidates:
+        print(s)
+
+
+    # for a in all_candidates:
+    #     print(a)
+    #
+    # pass
+
+
+def do_ios_suspects(args):
+    grep = "grep -re 'L(' ../../iphone/*"
+    suspects = exec_shell(grep, "")
+    SUSPECT_RE = re.compile(r"(.*?):.*?\WL\(([^@].*?)\)")
+    strings = strings_from_grepped(suspects, SUSPECT_RE)
+    for s in strings:
+        print(s)
+
+
 
 
 if __name__ == "__main__":
+
+
+
     logging.basicConfig(level=logging.DEBUG)
     args = get_args()
     args.langs = set(args.langs) if args.langs is not None else None
 
+    # do_ios_suspects(args)
+    do_candidates(args)
+    exit(4)
+
+
+
     if args.missing:
         do_missing(args)
+
+    if args.candidates:
+        do_candidates(args)
+        exit(2)
 
     if not args.single:
         do_multiple(args)
