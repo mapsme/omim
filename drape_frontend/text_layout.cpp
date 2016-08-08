@@ -560,7 +560,7 @@ void PathTextLayout::CalculatePositions(vector<float> & offsets, float splineLen
   }
   else
   {
-    double const textCount = max(floor(pathLength / minPeriodSize), 1.0);
+    double const textCount = max(floor(pathLength / minPeriodSize), 1.0f);
     double const glbTextLen = splineLength / textCount;
     for (double offset = 0.5 * glbTextLen; offset < splineLength; offset += glbTextLen)
       offsets.push_back(offset);
