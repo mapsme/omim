@@ -144,6 +144,7 @@ BOOL defaultOrientation(CGSize const & size)
 {
   auto const body = ^(NavigationSearchState state) {
     [MWMSearch setSearchOnMap:YES];
+    [MWMSearch setSearchInNavigation:YES];
     NSString * query = [kSearchButtonRequest.at(state) stringByAppendingString:@" "];
     NSString * locale = [[AppInfo sharedInfo] languageId];
     [MWMSearch searchQuery:query forInputLocale:locale];

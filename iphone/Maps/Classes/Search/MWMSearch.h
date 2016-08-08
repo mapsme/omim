@@ -17,6 +17,7 @@
 
 + (BOOL)isSearchOnMap;
 + (void)setSearchOnMap:(BOOL)searchOnMap;
++ (void)setSearchInNavigation:(BOOL)searchInNavigation;
 
 + (NSUInteger)suggestionsCount;
 + (NSUInteger)resultsCount;
