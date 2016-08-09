@@ -32,6 +32,7 @@ namespace qt
     QAction * m_clearSelection;
     QAction * m_pSearchAction;
     QAction * m_pBuildStyleAction;
+    QAction * m_pRecalculateGeomIndex;
     QAction * m_pDrawDebugRectAction;
     QAction * m_pGetStatisticsAction;
     QAction * m_pRunTestsAction;
@@ -99,6 +100,7 @@ namespace qt
 
 #ifdef BUILD_DESIGNER
     void OnBuildStyle();
+    void OnRecalculateGeomIndex();
     void OnDebugStyle();
     void OnGetStatistics();
     void OnRunTests();
