@@ -1322,7 +1322,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   }
 
   @Override
-  public void onLocationUpdated(Location location)
+  public void onLocationUpdated(@NonNull Location location)
   {
     if (!mPlacePage.isHidden())
       mPlacePage.refreshLocation(location);
@@ -1337,7 +1337,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   }
 
   @Override
-  public void onCompassUpdated(CompassData compass)
+  public void onCompassUpdated(@NonNull CompassData compass)
   {
     MapFragment.nativeCompassUpdated(compass.getMagneticNorth(), compass.getTrueNorth(), false);
     mPlacePage.refreshAzimuth(compass.getNorth());
