@@ -606,7 +606,7 @@ shop-convenience
 en:4Convenience Store|shop|U+1F3EC|U+1F3EA
 ar:متجر|متجر صغير|المتجر
 cs:Smíšené zboží|koloniál|obchod
-da:døgnbutik|døgnkiosk|kiosk|butik
+da:Døgnkiosk|døgnbutik|kiosk|butik|minimarked|nærbutik
 de:Gemischtwarenladen|Geschäft
 es:Chino|tienda
 fi:Lähikauppa|kauppa
@@ -5677,7 +5677,7 @@ en:Emergency Phone
 ru:Телефон для экстренных вызовов
 ar:هاتف الطوارئ
 cs:Tísňového volání
-da:nødtelefon
+da:Nødtelefon
 de:Nottelefon
 el:τηλεφώνου έκτακτης ανάγκης
 es:Teléfono de emergencia
@@ -6611,7 +6611,7 @@ en:Entrance
 ru:Проход
 ar:مدخل الحاجز
 cs:Vstup
-da:gennemgang
+da:Gennemgang
 de:Durchgang
 es:Entrada
 fi:Sisäänkäynti
