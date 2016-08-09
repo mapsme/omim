@@ -7,7 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.base.BaseMwmRecyclerFragment;
@@ -41,6 +43,7 @@ public class DownloaderFragment extends BaseMwmRecyclerFragment
   private final NativeMapSearchListener mSearchListener = new NativeMapSearchListener()
   {
     private final List<CountryItem> mResults = new ArrayList<>();
+    private final Set<CountryItem> mUniqueResults = new HashSet<>();
 
     @Override
     public void onMapSearchResults(Result[] results, long timestamp, boolean isLast)
@@ -52,13 +55,18 @@ public class DownloaderFragment extends BaseMwmRecyclerFragment
       {
         CountryItem item = CountryItem.fill(result.countryId);
         item.searchResultName = result.matchedString;
-        mResults.add(item);
+        if (!mUniqueResults.contains(item))
+        {
+          mResults.add(item);
+          mUniqueResults.add(item);
+        }
       }
 
       if (isLast)
       {
         mAdapter.setSearchResultsMode(mResults, mToolbarController.getQuery());
         mResults.clear();
+        mUniqueResults.clear();
 
         onSearchEnd();
       }
