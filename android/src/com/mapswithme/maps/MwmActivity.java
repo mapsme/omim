@@ -50,7 +50,6 @@ import com.mapswithme.maps.news.FirstStartFragment;
 import com.mapswithme.maps.news.NewsFragment;
 import com.mapswithme.maps.routing.NavigationController;
 import com.mapswithme.maps.routing.RoutingController;
-import com.mapswithme.maps.routing.RoutingInfo;
 import com.mapswithme.maps.routing.RoutingPlanFragment;
 import com.mapswithme.maps.routing.RoutingPlanInplaceController;
 import com.mapswithme.maps.search.FloatingSearchToolbarController;
@@ -1330,8 +1329,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     if (!RoutingController.get().isNavigating())
       return;
 
-    RoutingInfo info = Framework.nativeGetRouteFollowingInfo();
-    mNavigationController.update(info);
+    mNavigationController.update(Framework.nativeGetRouteFollowingInfo());
 
     TtsPlayer.INSTANCE.playTurnNotifications();
   }
