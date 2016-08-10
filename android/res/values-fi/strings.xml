@@ -903,7 +903,6 @@
 	<string name="bookmarks_empty_title">Tallenna Kirjanmerkit</string>
 	<string name="bookmarks_empty_message_1">Napsauta ★ tallentaaksesi suosikkipaikkoja.</string>
 	<string name="bookmarks_empty_message_2">Tuo kirjanmerkit sähköpostista ja webistä.</string>
-	<string name="bookmarks_empty_message_3">kirjaudu ulos: %s</string>
 	<!-- Name of the group for booked hotels -->
 	<string name="bookmarks_group_name">Varatut hotellit</string>
 	<string name="place_page_button_read_descriprion">Lue</string>
@@ -916,4 +915,10 @@
 	<string name="sharing_call_action_look">Tarkastele</string>
 	<string name="continue_recent_track_background_button">Jatka</string>
 	<string name="recent_track_background_dialog_message">MAPS.SE käyttää taustalla geosijaintia sinun viimeisen matkareitin tallentamiseksi.</string>
+	<string name="whatsnew_car_navigation_header">Käyttäjäystävällinen kulkuneuvon navigointi</string>
+	<string name="whatsnew_car_navigation_message">- Navigointielementit vievät vähemmän tilaa.\n- Näytämme nopeutesi ja lisäsimme automaattisen zoomauksen.</string>
+	<string name="whatsnew_cycle_navigation_2_header">Pyörän navigointi</string>
+	<string name="whatsnew_cycle_navigation_2_message">- Pyörän navigointi ottaa maaperän huomioon.\n- Loimme helpompia reittejä huomioiden mäet.</string>
+	<string name="whatsnew_booking_2_header">Helppo hotellihaku</string>
+	<string name="whatsnew_booking_2_message">- Hakutulokset näyttävät hotellin arvostelut ja hintaluokan.</string>
 </resources>

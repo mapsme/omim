@@ -910,7 +910,6 @@
 	<string name="bookmarks_empty_title">Uložit oblíbené</string>
 	<string name="bookmarks_empty_message_1">Klikněte na ★ pro uložení oblíbených míst pro rychlý přístup.</string>
 	<string name="bookmarks_empty_message_2">Importovat oblíbené z emailu a webu.</string>
-	<string name="bookmarks_empty_message_3">odjezd: %s</string>
 	<!-- Name of the group for booked hotels -->
 	<string name="bookmarks_group_name">Zarezervované hotely</string>
 	<string name="place_page_button_read_descriprion">Číst</string>
@@ -923,4 +922,10 @@
 	<string name="sharing_call_action_look">Odjezd</string>
 	<string name="continue_recent_track_background_button">Pokračovat</string>
 	<string name="recent_track_background_dialog_message">MAPS.ME používají geopozici na pozadí, aby se zaznamenala vaše nedávno ujetá trasa.</string>
+	<string name="whatsnew_car_navigation_header">Uživatelsky přívětivá navigace pro vozidla</string>
+	<string name="whatsnew_car_navigation_message">– Navigační prvky zabírají méně místa.\n– Zobrazujeme rychlost a přidali jsme automatické zvětšení.</string>
+	<string name="whatsnew_cycle_navigation_2_header">Navigace pro kola</string>
+	<string name="whatsnew_cycle_navigation_2_message">– Navigace pro kola bere v potaz data o terénu.\n– Bereme v úvahu sklon cesty a vytváříme snazší trasy.</string>
+	<string name="whatsnew_booking_2_header">Snadné hledání hotelu</string>
+	<string name="whatsnew_booking_2_message">– Výsledky hledání zobrazují hodnocení a cenovou kategorii hotelu.</string>
 </resources>
