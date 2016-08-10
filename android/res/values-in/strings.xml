@@ -902,7 +902,6 @@
 	<string name="bookmarks_empty_title">Simpan Penanda</string>
 	<string name="bookmarks_empty_message_1">Ketuk pada ★ untuk menyimpan tempat-tempat favorit untuk akses cepat.</string>
 	<string name="bookmarks_empty_message_2">Impor penanda dari email dan web.</string>
-	<string name="bookmarks_empty_message_3">check-out: %s</string>
 	<!-- Name of the group for booked hotels -->
 	<string name="bookmarks_group_name">Hotel yang dipesan</string>
 	<string name="place_page_button_read_descriprion">Baca</string>
@@ -915,4 +914,10 @@
 	<string name="sharing_call_action_look">Lihat</string>
 	<string name="continue_recent_track_background_button">Teruskan</string>
 	<string name="recent_track_background_dialog_message">MAPS.ME menggunakan geoposisi di latar belakang untuk merekam rute yang baru Anda lalui.</string>
+	<string name="whatsnew_car_navigation_header">Navigasi kendaraan yang mudah digunakan</string>
+	<string name="whatsnew_car_navigation_message">- Elemen-elemen navigasi membutuhkan ruang lebih sedikit\n- Kami menampilkan kecepatan dan telah menambahkan zoom otomatis</string>
+	<string name="whatsnew_cycle_navigation_2_header">Navigasi sepeda</string>
+	<string name="whatsnew_cycle_navigation_2_message">- Navigasi sepeda menghitung data medan\n- Kami membuat rute lebih mudah dengan menghitung kemiringan jalan</string>
+	<string name="whatsnew_booking_2_header">Pencarian hotel mudah</string>
+	<string name="whatsnew_booking_2_message">- Hasil pencarian menampilkan kategori peringkat dan harga hotel</string>
 </resources>

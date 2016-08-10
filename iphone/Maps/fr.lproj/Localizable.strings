@@ -1580,8 +1580,6 @@
 
 "bookmarks_empty_message_2" = "Importez des signets à partir d'un email et du Web.";
 
-"bookmarks_empty_message_3" = "départ : %s";
-
 /* Name of the group for booked hotels */
 "bookmarks_group_name" = "Hôtels réservés";
 
@@ -1601,3 +1599,15 @@
 "continue_recent_track_background_button" = "Continuer";
 
 "recent_track_background_dialog_message" = "MAPS.ME utilise votre géolocalisation en arrière-plan pour enregistrer vos itinéraires récents.";
+
+"whatsnew_car_navigation_header" = "Navigation conviviale pour véhicule";
+
+"whatsnew_car_navigation_message" = "- Éléments de navigation au design compact.\n- Vitesse affichée et fonction de zoom automatique.";
+
+"whatsnew_cycle_navigation_2_header" = "Navigation à vélo";
+
+"whatsnew_cycle_navigation_2_message" = "- Prise en compte des données de terrain dans les paramètres de navigation.\n- Prise en compte des pentes facilitant la création d'itinéraires.";
+
+"whatsnew_booking_2_header" = "Recherche d'hôtel simplifiée";
+
+"whatsnew_booking_2_message" = "- Affichage des évaluations et catégorie de prix des hôtels dans les résultats de recherche.";
