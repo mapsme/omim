@@ -15,4 +15,17 @@ string ToString(RouterType type)
   return "Error";
 }
 
+RouterType FromString(string const & str)
+{
+  if (str == "vehicle")
+    return RouterType::Vehicle;
+  if (str == "pedestrian")
+    return RouterType::Pedestrian;
+  if (str == "bicycle")
+    return RouterType::Bicycle;
+
+  ASSERT(false, ("Incorrect routing string:", str));
+  return RouterType::Vehicle;
+}
+  
 } //  namespace routing
