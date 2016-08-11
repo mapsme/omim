@@ -1594,12 +1594,12 @@
 
 "whatsnew_car_navigation_header" = "Brugervenlig navigation i køretøjer";
 
-"whatsnew_car_navigation_message" = "– Navigationselementerne fylder mindre.\n– Vi viser hastigheden og har tilføjet auto-zoom.";
+"whatsnew_car_navigation_message" = "• Navigationselementerne fylder mindre.\n• Vi viser hastigheden og har tilføjet auto-zoom.";
 
 "whatsnew_cycle_navigation_2_header" = "Cykelnavigation";
 
-"whatsnew_cycle_navigation_2_message" = "– Cykelnavigation tager forbehold for terrænet.\n– Vi opretter lettere ruter baseret på vejens hældning.";
+"whatsnew_cycle_navigation_2_message" = "• Cykelnavigation tager forbehold for terrænet.\n• Vi opretter lettere ruter baseret på vejens hældning.";
 
 "whatsnew_booking_2_header" = "Enkel hotelsøgning";
 
-"whatsnew_booking_2_message" = "– Søgeresultaterne viser hotelbedømmelser og priskategori.";
+"whatsnew_booking_2_message" = "Søgeresultaterne viser hotelbedømmelser og priskategori.";
