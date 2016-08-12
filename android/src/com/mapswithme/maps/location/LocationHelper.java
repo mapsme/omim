@@ -242,7 +242,6 @@ public enum LocationHelper
     mSavedLocation = location;
     mMyPosition = null;
     mSavedLocationTime = System.currentTimeMillis();
-    notifyLocationUpdated();
   }
 
   /**

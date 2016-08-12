@@ -42,6 +42,7 @@ abstract class BaseLocationProvider implements LocationListener
     {
       LocationHelper.INSTANCE.resetMagneticField(location);
       LocationHelper.INSTANCE.onLocationUpdated(location);
+      LocationHelper.INSTANCE.notifyLocationUpdated();
     }
   }
 
