@@ -500,6 +500,14 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
       break;
     }
 
+  case Message::FlushRouteArrows:
+    {
+      ref_ptr<FlushRouteArrowsMessage> msg = message;
+      drape_ptr<RouteArrowsData> routeArrowsData = msg->AcceptRouteArrowsData();
+      m_routeRenderer->SetRouteArrows(move(routeArrowsData), make_ref(m_gpuProgramManager));
+      break;
+    }
+
   case Message::RemoveRoute:
     {
       ref_ptr<RemoveRouteMessage> msg = message;
@@ -1046,7 +1054,7 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
   if (m_selectionShape != nullptr && m_selectionShape->GetSelectedObject() == SelectionShape::OBJECT_USER_MARK)
     m_selectionShape->Render(modelView, make_ref(m_gpuProgramManager), m_generalUniforms);
 
-  m_routeRenderer->RenderRoute(modelView, make_ref(m_gpuProgramManager), m_generalUniforms);
+  m_routeRenderer->RenderRoute(modelView, m_commutator, make_ref(m_gpuProgramManager), m_generalUniforms);
 
   for (drape_ptr<UserMarkRenderGroup> const & group : m_userMarkRenderGroups)
   {
