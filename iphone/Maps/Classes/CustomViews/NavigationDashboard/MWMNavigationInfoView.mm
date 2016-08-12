@@ -18,6 +18,8 @@ namespace
 {
 CGFloat constexpr kTurnsiPhoneWidth = 96;
 CGFloat constexpr kTurnsiPadWidth = 140;
+CGFloat constexpr kTurnImageiPhoneWidth = 72;
+CGFloat constexpr kTurnImageiPadWidth = 116;
 
 CGFloat constexpr kSearchButtonsViewHeightPortrait = 200;
 CGFloat constexpr kSearchButtonsViewWidthPortrait = 200;
@@ -63,6 +65,8 @@ BOOL defaultOrientation(CGSize const & size)
 @property(weak, nonatomic) IBOutlet UIView * secondTurnView;
 @property(weak, nonatomic) IBOutlet UIImageView * secondTurnImageView;
 @property(weak, nonatomic) IBOutlet NSLayoutConstraint * turnsWidth;
+@property(weak, nonatomic) IBOutlet NSLayoutConstraint * turnImageWidth;
+@property(weak, nonatomic) IBOutlet NSLayoutConstraint * turnImageHeight;
 
 @property(weak, nonatomic) IBOutlet UIView * searchButtonsView;
 @property(weak, nonatomic) IBOutlet MWMButton * searchMainButton;
@@ -91,6 +95,7 @@ BOOL defaultOrientation(CGSize const & size)
   self.isVisible = YES;
   [self setSearchState:NavigationSearchState::MinimizedNormal animated:NO];
   self.turnsWidth.constant = IPAD ? kTurnsiPadWidth : kTurnsiPhoneWidth;
+  self.turnImageWidth.constant = self.turnImageHeight.constant = IPAD ? kTurnImageiPadWidth : kTurnImageiPhoneWidth;
   NSAssert(superview != nil, @"Superview can't be nil");
   if ([superview.subviews containsObject:self])
     return;
