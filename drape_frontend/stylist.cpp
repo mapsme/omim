@@ -75,6 +75,12 @@ void FilterRulesByRuntimeSelector(FeatureType const & f, int zoomLevel, drule::K
   {
     drule::BaseRule const * const rule = drule::rules().Find(key);
     ASSERT(rule != nullptr, ());
+    if (rule == nullptr)
+    {
+      LOG(LWARNING, ("Rule isn't found. Feature =", f.GetID(),
+                     " key type =", key.m_type, " key index =", key.m_index,
+                     " key scale =", key.m_scale, " key priority =", key.m_priority));
+    }
     return !rule->TestFeature(f, zoomLevel);
   });
 }

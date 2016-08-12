@@ -1697,6 +1697,8 @@ void Framework::MarkMapStyle(MapStyle mapStyle)
 
 void Framework::SetMapStyle(MapStyle mapStyle)
 {
+  LOG(LINFO, ("Map style:", mapStyle));
+
   MarkMapStyle(mapStyle);
   CallDrapeFunction(bind(&df::DrapeEngine::UpdateMapStyle, _1));
   InvalidateUserMarks();
