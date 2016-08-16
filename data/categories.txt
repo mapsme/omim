@@ -59,6 +59,7 @@ ro:Transport
 nb:Transport
 fi:Liikenne
 
+
 @fuel
 en:Gas
 cs:Čerpací stanice
@@ -2786,7 +2787,7 @@ sv:Klinik|sjukhus
 th:คลินิก|โรงพยาบาล
 tr:Klinik|hastane
 uk:Поліклініка|клініка|лікарня
-vi:Phòng khám|bịnh viện|dưỡng đường|Bệnh viện|BV
+vi:Phòng khám|bịnh viện|dưỡng đường|Bệnh viện|BV
 zh-Hans:诊所|医院
 zh-Hant:診所|醫院
 
@@ -2815,7 +2816,7 @@ sv:Läkarmottagning|klinik|sjukhus
 th:ห้องแพทย์|โรงพยาบาล|คลินิก
 tr:Doktor muayenehanesi|Klinik|hastane
 uk:Лікар|Поліклініка|клініка|лікарня
-vi:Bác sĩ|Phòng khám|bịnh viện|dưỡng đường|BVbệnh viện
+vi:Bác sĩ|Phòng khám|bịnh viện|dưỡng đường|BVbệnh viện
 zh-Hans:医师办公室|诊所|医院
 zh-Hant:醫師診間|診所|醫院
 
@@ -3169,7 +3170,7 @@ ar:مأوى
 da:Shelter|læskur|hytte
 tr:Barınak
 sv:Logi
-vi:Chổ nương thân
+vi:Chổ nương thân
 id:Tempat penampungan
 ro:Adăpost
 nb:Tilfluktsrom
