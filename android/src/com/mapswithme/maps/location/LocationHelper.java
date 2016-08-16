@@ -209,6 +209,11 @@ public enum LocationHelper
   {
     mLogger.d("ctor()");
 
+    // TODO consider refactoring.
+    // Actually we shouldn't initialize Framework here,
+    // to allow app components to retrieve location updates without all heavy framework's stuff initialized.
+    // For now this is necessary to connect mModeChangeListener below.
+    MwmApplication.get().initNativeCore();
     LocationState.nativeSetListener(mModeChangeListener);
     calcParams();
     initProvider(false);
