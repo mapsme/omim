@@ -70,15 +70,27 @@ public enum LocationHelper
     @Override
     public void onTransit(boolean foreground)
     {
-      if (foreground)
+      // Note. onTransit(true) callback should be called when the application goes to foreground and
+      // onTransit(false) should be called when it goes to backgroud. According to Fabric in some cases
+      // this method could be called onTransit(false) without previous call onTransit(true).
+      // As a result we have an attempt to unregister |mReceiver| which was not registered before.
+      // That leads to IllegalArgumentException.
+      try
       {
-        final IntentFilter filter = new IntentFilter();
-        filter.addAction(LocationManager.PROVIDERS_CHANGED_ACTION);
-        filter.addCategory(Intent.CATEGORY_DEFAULT);
-        MwmApplication.get().registerReceiver(mReceiver, filter);
-        return;
+        if (foreground)
+        {
+          final IntentFilter filter = new IntentFilter();
+          filter.addAction(LocationManager.PROVIDERS_CHANGED_ACTION);
+          filter.addCategory(Intent.CATEGORY_DEFAULT);
+          MwmApplication.get().registerReceiver(mReceiver, filter);
+          return;
+        }
+        MwmApplication.get().unregisterReceiver(mReceiver);
       }
-      MwmApplication.get().unregisterReceiver(mReceiver);
+      catch (IllegalArgumentException e)
+      {
+        mLogger.d("Trying to unregister receiver which was not registered previously.");
+      }
     }
   };
 
