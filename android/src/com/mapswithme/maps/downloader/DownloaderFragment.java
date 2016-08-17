@@ -96,7 +96,7 @@ public class DownloaderFragment extends BaseMwmRecyclerFragment
     if (!mAdapter.isSearchResultsMode())
       return;
 
-    mAdapter.cancelSearch();
+    mAdapter.resetSearchResultsMode();
     onSearchEnd();
   }
 
