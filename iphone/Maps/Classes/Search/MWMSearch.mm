@@ -97,7 +97,7 @@ using TObservers = NSHashTable<__kindof TObserver>;
   CLLocation * lastLocation = [MWMLocationManager lastLocation];
   if (lastLocation)
     m_params.SetPosition(lastLocation.coordinate.latitude, lastLocation.coordinate.longitude);
-  if (self.searchOnMap)
+  if ([MWMSearch isSearchOnMap])
     GetFramework().StartInteractiveSearch(m_params);
   else
     GetFramework().Search(m_params);
