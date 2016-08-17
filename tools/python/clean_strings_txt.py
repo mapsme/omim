@@ -67,7 +67,6 @@ def grep_ios_candidates():
 
     strs = strings_from_grepped(ret, IOS_CANDIDATES_RE)
     return strs
-    # return parenthesize(strings_from_grepped(ret, IOS_CANDIDATES_RE))
 
 
 def android_grep_wrapper(grep, regex):
@@ -236,23 +235,6 @@ def do_candidates(args):
         print(candidate, sources)
 
 
-    # all_candidates = set(grep_ios_candidates())
-    # strings_txt_keys = set(StringsTxt().translations.keys())
-    # candidates_in_txt = all_candidates & strings_txt_keys
-    # properly_used = grep_ios()
-    #
-    # improperly_used_candidates = candidates_in_txt - properly_used
-    #
-    # for s in improperly_used_candidates:
-    #     print(s)
-
-
-    # for a in all_candidates:
-    #     print(a)
-    #
-    # pass
-
-
 def do_ios_suspects(args):
     grep = "grep -re 'L(' ../../iphone/*"
     suspects = exec_shell(grep, "")
@@ -262,21 +244,10 @@ def do_ios_suspects(args):
         print(s)
 
 
-
-
 if __name__ == "__main__":
-
-
-
     logging.basicConfig(level=logging.DEBUG)
     args = get_args()
     args.langs = set(args.langs) if args.langs is not None else None
-
-    # do_ios_suspects(args)
-    do_candidates(args)
-    exit(4)
-
-
 
     if args.missing:
         do_missing(args)
