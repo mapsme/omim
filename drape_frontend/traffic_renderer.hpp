@@ -1,5 +1,7 @@
 #pragma once
 
+#include "drape_frontend/traffic_generator.hpp"
+
 #include "drape/gpu_program_manager.hpp"
 #include "drape/pointers.hpp"
 #include "drape/uniform_values_storage.hpp"
@@ -9,6 +11,7 @@
 
 #include "std/map.hpp"
 #include "std/vector.hpp"
+#include "std/unordered_map.hpp"
 
 namespace df
 {
@@ -18,8 +21,12 @@ class TrafficRenderer final
 public:
   TrafficRenderer();
 
-  //void AddRenderData(ref_ptr<dp::GpuProgramManager> mng,
-  //                   drape_ptr<GpsTrackRenderData> && renderData);
+  void AddRenderData(ref_ptr<dp::GpuProgramManager> mng,
+                     vector<TrafficRenderData> && renderData);
+
+  void SetTexCoords(unordered_map<int, glsl::vec2> && texCoords);
+
+  void UpdateTraffic(vector<TrafficSegmentData> const & trafficData);
 
   void RenderTraffic(ScreenBase const & screen, int zoomLevel,
                      ref_ptr<dp::GpuProgramManager> mng,
@@ -28,6 +35,10 @@ public:
   void Clear();
 
 private:
+  TrafficHandle * FindHandle(string const & segmentId) const;
+
+  vector<TrafficRenderData> m_renderData;
+  unordered_map<int, glsl::vec2> m_texCoords;
 };
 
 } // namespace df

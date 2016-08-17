@@ -24,6 +24,7 @@
 #include "drape_frontend/color_constants.hpp"
 #include "drape_frontend/gps_track_point.hpp"
 #include "drape_frontend/visual_params.hpp"
+#include "drape_frontend/traffic_generator.hpp"
 #include "drape_frontend/watch/cpu_drawer.hpp"
 #include "drape_frontend/watch/feature_processor.hpp"
 
@@ -1618,6 +1619,23 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
     place_page::Info info;
     ActivateMapSelection(false, OnTapEventImpl(*m_lastTapEvent, info), info);
   }
+
+  //TEMP
+  vector<pair<string, m2::PolylineD>> segments =
+  {
+    make_pair("seg 1", m2::PolylineD({m2::PointD(37.561234807850247819, 67.519036003454431238), m2::PointD(37.561774682713860329, 67.518538590658749854)})),
+    make_pair("seg 3", m2::PolylineD({m2::PointD(37.561774682713860329, 67.518538590658749854), m2::PointD(37.562571298797223562, 67.517900224908430573)})),
+    make_pair("seg 4", m2::PolylineD({m2::PointD(37.562571298797223562, 67.517900224908430573), m2::PointD(37.563182842457166544, 67.517409380655067253)})),
+  };
+  m_drapeEngine->AddTrafficSegments(segments);
+
+  vector<df::TrafficSegmentData> data = { df::TrafficSegmentData("seg 1", df::TrafficSpeedBucket::Normal),
+                                          df::TrafficSegmentData("seg 3", df::TrafficSpeedBucket::Slow),
+                                          df::TrafficSegmentData("seg 4", df::TrafficSpeedBucket::VerySlow) };
+  m_drapeEngine->UpdateTraffic(data);
+
+  //vector<df::TrafficSegmentData> data2 = { df::TrafficSegmentData("seg 1", df::TrafficSpeedBucket::VerySlow) };
+  //m_drapeEngine->UpdateTraffic(data2);
 }
 
 ref_ptr<df::DrapeEngine> Framework::GetDrapeEngine()
@@ -2410,6 +2428,11 @@ void Framework::InsertRoute(Route const & route)
   {
     routeColor = df::RouteBicycle;
     pattern = df::RoutePattern(8.0, 2.0);
+  }
+
+  for (int i = 1; i < route.GetPoly().GetPoints().size(); i++)
+  {
+    LOG(LINFO, ("seg", i, route.GetPoly().GetPoints()[i - 1], route.GetPoly().GetPoints()[i]));
   }
 
   m_drapeEngine->AddRoute(route.GetPoly(), turns, routeColor, pattern);

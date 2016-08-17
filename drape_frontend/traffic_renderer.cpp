@@ -27,45 +27,82 @@ TrafficRenderer::TrafficRenderer()
 {
 }
 
-/*void GpsTrackRenderer::AddRenderData(ref_ptr<dp::GpuProgramManager> mng,
-                                     drape_ptr<GpsTrackRenderData> && renderData)
+void TrafficRenderer::AddRenderData(ref_ptr<dp::GpuProgramManager> mng,
+                                    vector<TrafficRenderData> && renderData)
 {
-  drape_ptr<GpsTrackRenderData> data = move(renderData);
-  ref_ptr<dp::GpuProgram> program = mng->GetProgram(gpu::TRACK_POINT_PROGRAM);
-  program->Bind();
-  data->m_bucket->GetBuffer()->Build(program);
-  m_renderData.push_back(move(data));
-  m_waitForRenderData = false;
-}*/
+  if (renderData.empty())
+    return;
+
+  size_t const startIndex = m_renderData.size();
+  m_renderData.reserve(m_renderData.size() + renderData.size());
+  move(renderData.begin(), renderData.end(), std::back_inserter(m_renderData));
+  for (size_t i = startIndex; i < m_renderData.size(); i++)
+  {
+    ref_ptr<dp::GpuProgram> program = mng->GetProgram(m_renderData[i].m_state.GetProgramIndex());
+    program->Bind();
+    m_renderData[i].m_bucket->GetBuffer()->Build(program);
+  }
+}
+
+void TrafficRenderer::UpdateTraffic(vector<TrafficSegmentData> const & trafficData)
+{
+  for (TrafficSegmentData const & segment : trafficData)
+  {
+    auto it = m_texCoords.find(segment.m_speedBucket);
+    if (it == m_texCoords.end())
+      continue;
+    TrafficHandle * handle = FindHandle(segment.m_id);
+    if (handle != nullptr)
+      handle->SetTexCoord(it->second);
+  }
+}
+
+TrafficHandle * TrafficRenderer::FindHandle(string const & segmentId) const
+{
+  for (TrafficRenderData const & renderData : m_renderData)
+  {
+    for (size_t i = 0; i < renderData.m_bucket->GetOverlayHandlesCount(); i++)
+    {
+      TrafficHandle * handle = static_cast<TrafficHandle *>(renderData.m_bucket->GetOverlayHandle(i).get());
+      if (handle->GetSegmentId() == segmentId)
+        return handle;
+    }
+  }
+  return nullptr;
+}
 
 void TrafficRenderer::RenderTraffic(ScreenBase const & screen, int zoomLevel,
                                     ref_ptr<dp::GpuProgramManager> mng,
                                     dp::UniformValuesStorage const & commonUniforms)
 {
-  if (zoomLevel < kMinVisibleZoomLevel)
+  if (m_renderData.empty() /*|| zoomLevel < kMinVisibleZoomLevel*/)
     return;
 
-  /*GLFunctions::glClearDepth();
+  GLFunctions::glClearDepth();
+  for (TrafficRenderData & renderData : m_renderData)
+  {
+    ref_ptr<dp::GpuProgram> program = mng->GetProgram(renderData.m_state.GetProgramIndex());
+    program->Bind();
+    dp::ApplyState(renderData.m_state, program);
 
-  ASSERT_LESS_OR_EQUAL(m_renderData.size(), m_handlesCache.size(), ());
+    dp::UniformValuesStorage uniforms = commonUniforms;
+    uniforms.SetFloatValue("u_opacity", 1.0f);
+    uniforms.SetFloatValue("u_trafficParams", 10.0f, renderData.m_texRect.minX(),
+                           renderData.m_texRect.SizeX(), renderData.m_texRect.Center().y);
+    dp::ApplyUniforms(uniforms, program);
 
-  // Render points.
-  dp::UniformValuesStorage uniforms = commonUniforms;
-  uniforms.SetFloatValue("u_opacity", 1.0f);
-  ref_ptr<dp::GpuProgram> program = mng->GetProgram(gpu::TRACK_POINT_PROGRAM);
-  program->Bind();
+    renderData.m_bucket->Render();
+  }
+}
 
-  ASSERT_GREATER(m_renderData.size(), 0, ());
-  dp::ApplyState(m_renderData.front()->m_state, program);
-  dp::ApplyUniforms(uniforms, program);
-
-  for (size_t i = 0; i < m_renderData.size(); i++)
-    if (m_handlesCache[i].second != 0)
-      m_renderData[i]->m_bucket->Render();*/
+void TrafficRenderer::SetTexCoords(unordered_map<int, glsl::vec2> && texCoords)
+{
+  m_texCoords = move(texCoords);
 }
 
 void TrafficRenderer::Clear()
 {
+  m_renderData.clear();
 }
 
 } // namespace df

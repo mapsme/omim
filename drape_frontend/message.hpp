@@ -59,7 +59,11 @@ public:
     SetTimeInBackground,
     SetAddNewPlaceMode,
     SetDisplacementMode,
-    AllowAutoZoom
+    AllowAutoZoom,
+    AddTrafficSegments,
+    SetTrafficTexCoords,
+    UpdateTraffic,
+    FlushTrafficData
   };
 
   virtual ~Message() {}

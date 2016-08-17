@@ -114,6 +114,7 @@ FrontendRenderer::FrontendRenderer(Params const & params)
   : BaseRenderer(ThreadsCommutator::RenderThread, params)
   , m_gpuProgramManager(new dp::GpuProgramManager())
   , m_routeRenderer(new RouteRenderer())
+  , m_trafficRenderer(new TrafficRenderer())
   , m_framebuffer(new Framebuffer())
   , m_transparentLayer(new TransparentLayer())
   , m_gpsTrackRenderer(new GpsTrackRenderer(bind(&FrontendRenderer::PrepareGpsTrackPoints, this, _1)))
@@ -742,6 +743,27 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
       break;
     }
 
+  case Message::UpdateTraffic:
+    {
+      ref_ptr<UpdateTrafficMessage> msg = message;
+      m_trafficRenderer->UpdateTraffic(msg->GetSegmentsData());
+      break;
+    }
+
+  case Message::SetTrafficTexCoords:
+    {
+      ref_ptr<SetTrafficTexCoordsMessage> msg = message;
+      m_trafficRenderer->SetTexCoords(move(msg->AcceptTexCoords()));
+      break;
+    }
+
+  case Message::FlushTrafficData:
+    {
+      ref_ptr<FlushTrafficDataMessage> msg = message;
+      m_trafficRenderer->AddRenderData(make_ref(m_gpuProgramManager), msg->AcceptTrafficData());
+      break;
+    }
+
   default:
     ASSERT(false, ());
   }
@@ -754,7 +776,6 @@ unique_ptr<threads::IRoutine> FrontendRenderer::CreateRoutine()
 
 void FrontendRenderer::FollowRoute(int preferredZoomLevel, int preferredZoomLevelIn3d, bool enableAutoZoom)
 {
-
   m_myPositionController->ActivateRouting(!m_enablePerspectiveInNavigation ? preferredZoomLevel : preferredZoomLevelIn3d,
                                           enableAutoZoom);
 
@@ -1053,6 +1074,8 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
   GLFunctions::glDisable(gl_const::GLDepthTest);
   if (m_selectionShape != nullptr && m_selectionShape->GetSelectedObject() == SelectionShape::OBJECT_USER_MARK)
     m_selectionShape->Render(modelView, make_ref(m_gpuProgramManager), m_generalUniforms);
+
+  m_trafficRenderer->RenderTraffic(modelView, m_commutator, make_ref(m_gpuProgramManager), m_generalUniforms);
 
   m_routeRenderer->RenderRoute(modelView, m_commutator, make_ref(m_gpuProgramManager), m_generalUniforms);
 

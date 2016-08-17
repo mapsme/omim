@@ -474,4 +474,18 @@ void DrapeEngine::SetDisplacementMode(int mode)
                                   MessagePriority::Normal);
 }
 
+void DrapeEngine::AddTrafficSegments(vector<pair<string, m2::PolylineD>> const & segments)
+{
+  m_threadCommutator->PostMessage(ThreadsCommutator::ResourceUploadThread,
+                                  make_unique_dp<AddTrafficSegmentsMessage>(segments),
+                                  MessagePriority::Normal);
+}
+
+void DrapeEngine::UpdateTraffic(vector<TrafficSegmentData> const & segmentsData)
+{
+  m_threadCommutator->PostMessage(ThreadsCommutator::ResourceUploadThread,
+                                  make_unique_dp<UpdateTrafficMessage>(segmentsData),
+                                  MessagePriority::Normal);
+}
+
 } // namespace df
