@@ -1,5 +1,6 @@
 #include "drape_frontend/traffic_generator.hpp"
 
+#include "drape_frontend/color_constants.hpp"
 #include "drape_frontend/line_shape_helper.hpp"
 
 #include "drape/attribute_provider.hpp"
@@ -7,6 +8,8 @@
 #include "drape/glsl_func.hpp"
 #include "drape/shader_def.hpp"
 #include "drape/texture_manager.hpp"
+
+#include "indexer/map_style_reader.hpp"
 
 #include "base/logging.hpp"
 
@@ -19,7 +22,6 @@ namespace
 {
 
 uint32_t const kDynamicStreamID = 0x7F;
-uint32_t const kSymbolPixelLength = 20;
 
 dp::BindingInfo const & GetTrafficStaticBindingInfo()
 {
@@ -46,17 +48,37 @@ dp::BindingInfo const & GetTrafficDynamicBindingInfo()
   return *s_info;
 }
 
-void SubmitStaticVertex(glsl::vec3 const & pivot, glsl::vec2 const & normal, bool isLeft, float offsetFromStart,
+void SubmitStaticVertex(glsl::vec3 const & pivot, glsl::vec2 const & normal, float side, float offsetFromStart,
                         vector<TrafficStaticVertex> & staticGeom)
 {
-  float const side = isLeft ? 1.0 : -1.0;
-  float const offset = offsetFromStart / kSymbolPixelLength;
-  staticGeom.emplace_back(TrafficStaticVertex(pivot, TrafficStaticVertex::TNormal(normal, side, offset)));
+  staticGeom.emplace_back(TrafficStaticVertex(pivot, TrafficStaticVertex::TNormal(normal, side, offsetFromStart)));
 }
 
 void SubmitDynamicVertex(glsl::vec2 const & texCoord, vector<TrafficDynamicVertex> & dynamicGeom)
 {
   dynamicGeom.emplace_back(TrafficDynamicVertex(texCoord));
+}
+
+void GenerateCapTriangles(glsl::vec3 const & pivot, vector<glsl::vec2> const & normals,
+                          dp::TextureManager::ColorRegion const & colorRegion,
+                          vector<TrafficStaticVertex> & staticGeometry,
+                          vector<TrafficDynamicVertex> & dynamicGeometry)
+{
+  float const kEps = 1e-5;
+  glsl::vec2 const uv = glsl::ToVec2(colorRegion.GetTexRect().Center());
+  size_t const trianglesCount = normals.size() / 3;
+  for (int j = 0; j < trianglesCount; j++)
+  {
+    SubmitStaticVertex(pivot, normals[3 * j],
+                       glsl::length(normals[3 * j]) < kEps ? 0.0f : 1.0f, 0.0f, staticGeometry);
+    SubmitStaticVertex(pivot, normals[3 * j + 1],
+                       glsl::length(normals[3 * j + 1]) < kEps ? 0.0f : 1.0f, 0.0f, staticGeometry);
+    SubmitStaticVertex(pivot, normals[3 * j + 2],
+                       glsl::length(normals[3 * j + 2]) < kEps ? 0.0f : 1.0f, 0.0f, staticGeometry);
+
+    for (int k = 0; k < 3; k++)
+      SubmitDynamicVertex(uv, dynamicGeometry);
+  }
 }
 
 } // namespace
@@ -156,21 +178,16 @@ void TrafficGenerator::GetTrafficGeom(ref_ptr<dp::TextureManager> textures,
 {
   FillColorsCache(textures);
 
-  dp::TextureManager::SymbolRegion symbolRegion;
-  textures->GetSymbolRegion("route-arrow", symbolRegion); //TODO: correct arrow
-  m2::RectF const texRect = symbolRegion.GetTexRect();
-
   dp::GLState state(gpu::TRAFFIC_PROGRAM, dp::GLState::GeometryLayer);
   state.SetColorTexture(m_colorsCache[TrafficSpeedBucket::Normal].GetTexture());
-  state.SetMaskTexture(symbolRegion.GetTexture());
+  state.SetMaskTexture(textures->GetTrafficArrowTexture());
 
   uint32_t const kBatchSize = 15000;
   dp::Batcher batcher(kBatchSize, kBatchSize);
-  dp::SessionGuard guard(batcher, [&data, &texRect](dp::GLState const & state, drape_ptr<dp::RenderBucket> && b)
+  dp::SessionGuard guard(batcher, [&data](dp::GLState const & state, drape_ptr<dp::RenderBucket> && b)
   {
     TrafficRenderData bucket(state);
     bucket.m_bucket = move(b);
-    bucket.m_texRect = texRect;
     data.emplace_back(move(bucket));
   });
 
@@ -193,6 +210,7 @@ void TrafficGenerator::GetTrafficGeom(ref_ptr<dp::TextureManager> textures,
     vector<TrafficStaticVertex> staticGeometry;
     vector<TrafficDynamicVertex> dynamicGeometry;
     GenerateSegment(colorRegion, polyline, staticGeometry, dynamicGeometry);
+    ASSERT_EQUAL(staticGeometry.size(), dynamicGeometry.size(), ());
 
     glsl::vec2 const uv = glsl::ToVec2(colorRegion.GetTexRect().Center());
     drape_ptr<dp::OverlayHandle> handle = make_unique_dp<TrafficHandle>(segment.m_id, uv, staticGeometry.size());
@@ -200,7 +218,7 @@ void TrafficGenerator::GetTrafficGeom(ref_ptr<dp::TextureManager> textures,
     dp::AttributeProvider provider(2 /* stream count */, staticGeometry.size());
     provider.InitStream(0 /* stream index */, GetTrafficStaticBindingInfo(), make_ref(staticGeometry.data()));
     provider.InitStream(1 /* stream index */, GetTrafficDynamicBindingInfo(), make_ref(dynamicGeometry.data()));
-    batcher.InsertListOfStrip(state, make_ref(&provider), move(handle), 4);
+    batcher.InsertTriangleList(state, make_ref(&provider), move(handle));
   }
 
   GLFunctions::glFlush();
@@ -215,10 +233,18 @@ void TrafficGenerator::GenerateSegment(dp::TextureManager::ColorRegion const & c
   ASSERT_GREATER(path.size(), 1, ());
 
   size_t const kAverageSize = path.size() * 4;
-  staticGeometry.reserve(kAverageSize);
-  dynamicGeometry.reserve(kAverageSize);
+  size_t const kAverageCapSize = 24;
+  staticGeometry.reserve(staticGeometry.size() + kAverageSize + kAverageCapSize * 2);
+  dynamicGeometry.reserve(dynamicGeometry.size() + kAverageSize + kAverageCapSize * 2);
+
+  float const kDepth = 0.0f;
 
   // Build geometry.
+  glsl::vec2 firstPoint, firstTangent, firstLeftNormal, firstRightNormal;
+  glsl::vec2 lastPoint, lastTangent, lastLeftNormal, lastRightNormal;
+  bool firstFilled = false;
+
+  glsl::vec2 const uv = glsl::ToVec2(colorRegion.GetTexRect().Center());
   for (size_t i = 1; i < path.size(); ++i)
   {
     if (path[i].EqualDxDy(path[i - 1], 1.0E-5))
@@ -229,7 +255,20 @@ void TrafficGenerator::GenerateSegment(dp::TextureManager::ColorRegion const & c
     glsl::vec2 tangent, leftNormal, rightNormal;
     CalculateTangentAndNormals(p1, p2, tangent, leftNormal, rightNormal);
 
-    float const kDepth = 0.0f;
+    // Fill first and last point, tangent and normals.
+    if (!firstFilled)
+    {
+      firstPoint = p1;
+      firstTangent = tangent;
+      firstLeftNormal = leftNormal;
+      firstRightNormal = rightNormal;
+      firstFilled = true;
+    }
+    lastTangent = tangent;
+    lastLeftNormal = leftNormal;
+    lastRightNormal = rightNormal;
+    lastPoint = p2;
+
     int const kSteps = 1;
     float const maskSize = glsl::length(p2 - p1);
     float currentSize = 0.0f;
@@ -239,32 +278,51 @@ void TrafficGenerator::GenerateSegment(dp::TextureManager::ColorRegion const & c
       currentSize += maskSize;
       glsl::vec3 const newPivot = glsl::vec3(p1 + tangent * currentSize, kDepth);
 
-      SubmitStaticVertex(currentStartPivot, rightNormal, false /* isLeft */, 0.0f, staticGeometry);
-      SubmitStaticVertex(currentStartPivot, leftNormal, true /* isLeft */, 0.0f, staticGeometry);
-      SubmitStaticVertex(newPivot, rightNormal, false /* isLeft */, maskSize, staticGeometry);
-      SubmitStaticVertex(newPivot, leftNormal, true /* isLeft */, maskSize, staticGeometry);
+      SubmitStaticVertex(currentStartPivot, rightNormal, -1.0f, 0.0f, staticGeometry);
+      SubmitStaticVertex(currentStartPivot, leftNormal, 1.0f, 0.0f, staticGeometry);
+      SubmitStaticVertex(newPivot, rightNormal, -1.0f, maskSize, staticGeometry);
+      SubmitStaticVertex(newPivot, rightNormal, -1.0f, maskSize, staticGeometry);
+      SubmitStaticVertex(currentStartPivot, leftNormal, 1.0f, 0.0f, staticGeometry);
+      SubmitStaticVertex(newPivot, leftNormal, 1.0f, maskSize, staticGeometry);
 
-      for (int j = 0; j < 4; j++)
-        SubmitDynamicVertex(glsl::ToVec2(colorRegion.GetTexRect().Center()), dynamicGeometry);
+      for (int j = 0; j < 6; j++)
+        SubmitDynamicVertex(uv, dynamicGeometry);
 
       currentStartPivot = newPivot;
     }
+  }
+
+  // Generate caps.
+  if (firstFilled)
+  {
+    vector<glsl::vec2> normals;
+    normals.reserve(kAverageCapSize);
+    GenerateCapNormals(dp::RoundCap, firstLeftNormal, firstRightNormal, -firstTangent,
+                       1.0f, true /* isStart */, normals);
+    GenerateCapTriangles(glsl::vec3(firstPoint, kDepth), normals, colorRegion,
+                         staticGeometry, dynamicGeometry);
+
+    normals.clear();
+    GenerateCapNormals(dp::RoundCap, lastLeftNormal, lastRightNormal, lastTangent,
+                       1.0f, false /* isStart */, normals);
+    GenerateCapTriangles(glsl::vec3(lastPoint, kDepth), normals, colorRegion,
+                         staticGeometry, dynamicGeometry);
   }
 }
 
 void TrafficGenerator::FillColorsCache(ref_ptr<dp::TextureManager> textures)
 {
-  //TODO: get colors from colors constants.
   if (m_colorsCache.empty())
   {
+    auto const & style = GetStyleReader().GetCurrentStyle();
     dp::TextureManager::ColorRegion colorRegion;
-    textures->GetColorRegion(dp::Color::Red(), colorRegion);
+    textures->GetColorRegion(df::GetColorConstant(style, df::TrafficVerySlow), colorRegion);
     m_colorsCache[TrafficSpeedBucket::VerySlow] = colorRegion;
 
-    textures->GetColorRegion(dp::Color(255, 255, 0, 255), colorRegion);
+    textures->GetColorRegion(df::GetColorConstant(style, df::TrafficSlow), colorRegion);
     m_colorsCache[TrafficSpeedBucket::Slow] = colorRegion;
 
-    textures->GetColorRegion(dp::Color::Green(), colorRegion);
+    textures->GetColorRegion(df::GetColorConstant(style, df::TrafficNormal), colorRegion);
     m_colorsCache[TrafficSpeedBucket::Normal] = colorRegion;
 
     m_colorsCacheRefreshed = true;

@@ -6,11 +6,11 @@ uniform mat4 modelView;
 uniform mat4 projection;
 uniform mat4 pivotTransform;
 
-uniform vec4 u_trafficParams;
+uniform vec3 u_trafficParams;
 
 varying vec2 v_colorTexCoord;
 varying vec2 v_maskTexCoord;
-varying vec2 v_halfLength;
+varying float v_halfLength;
 
 void main(void)
 {
@@ -27,10 +27,10 @@ void main(void)
     transformedAxisPos = transformedAxisPos + normalize(shiftPos - transformedAxisPos) * halfWidth;
   }
 
-  float uOffset = min(length(vec4(1, 0, 0, 0) * modelView) * a_normal.w, 1.0);
+  float uOffset = length(vec4(1, 0, 0, 0) * modelView) * a_normal.w;
   v_colorTexCoord = a_colorTexCoord;
-  v_maskTexCoord = vec2(u_trafficParams.y + uOffset * u_trafficParams.z, u_trafficParams.w);
-  v_halfLength = vec2(sign(a_normal.z), abs(a_normal.z)) * halfWidth;
+  v_maskTexCoord = vec2(uOffset * u_trafficParams.y, 0.5 * a_normal.z + 0.5) * u_trafficParams.z;
+  v_halfLength = a_normal.z;
   vec4 pos = vec4(transformedAxisPos, a_position.z, 1.0) * projection;
   float w = pos.w;
   pos.xyw = (pivotTransform * vec4(pos.xy, 0.0, w)).xyw;

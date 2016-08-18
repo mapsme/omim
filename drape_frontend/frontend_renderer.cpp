@@ -1075,7 +1075,7 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
   if (m_selectionShape != nullptr && m_selectionShape->GetSelectedObject() == SelectionShape::OBJECT_USER_MARK)
     m_selectionShape->Render(modelView, make_ref(m_gpuProgramManager), m_generalUniforms);
 
-  m_trafficRenderer->RenderTraffic(modelView, m_commutator, make_ref(m_gpuProgramManager), m_generalUniforms);
+  m_trafficRenderer->RenderTraffic(modelView, m_currentZoomLevel, make_ref(m_gpuProgramManager), m_generalUniforms);
 
   m_routeRenderer->RenderRoute(modelView, m_commutator, make_ref(m_gpuProgramManager), m_generalUniforms);
 
