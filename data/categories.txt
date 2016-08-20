@@ -366,7 +366,7 @@ amenity-pub
 en:2Pub|bar|beer|food|U+1F37A|U+1F37B
 ar:بار|الحانة|خمارة์|بيرة ์|شراب|الطعام
 cs:Hospoda|Bar|pivo|pití|jídlo|voda|pitná voda|tekutiny
-da:Værtshus|kro|bar|pub|øl|drink|mad
+da:Pub|værtshus|kro|bar|øl|drink|mad
 de:Kneipe|Bar|Kneipe|Bier|Essen
 es:Pub|Bar|comer
 fi:Pubi|Baari|ruoka
@@ -606,7 +606,7 @@ shop-convenience
 en:4Convenience Store|shop|U+1F3EC|U+1F3EA
 ar:متجر|متجر صغير|المتجر
 cs:Smíšené zboží|koloniál|obchod
-da:Døgnbutik|døgnkiosk|kiosk|butik
+da:Døgnkiosk|kiosk|butik
 de:Gemischtwarenladen|Geschäft
 es:Chino|tienda
 fi:Lähikauppa|kauppa
@@ -634,7 +634,7 @@ shop-garden_centre
 en:Garden Store|U+1F3EC|U+1F3EA|U+1F3E1|shop
 ar:حضانة|روضة|المتجر
 cs:Školka|zahradní centrum|obchod
-da:Planteskole|havecenter|plantecenter|havebutik|butik
+da:Havecenter|plantecenter|planteskole|havebutik|butik
 de:Gärtnerei|Garten-Center|Geschäft
 es:Vivero|tienda de jardinería|tienda
 fi:Taimitarha|kauppa
@@ -692,7 +692,7 @@ shop-florist
 en:Florist’s|U+1F337|U+1F338|U+1F339|U+1F33A|U+1F33B|U+1F33C|U+1F490|U+1F33E|2shop
 ru:Цветочный магазин|цветы|2магазин
 fr:Fleuriste|2magasin
-da:Blomsterbutik|blomsterforretning|blomsterhandel|blomsterhandler|2butik
+da:Blomsterhandler|blomsterforretning|blomsterhandel|blomsterbutik|2butik
 id:Tukang bunga|toko bunga|2toko
 ko:플로리스트의꽃가게|1쇼핑|가게
 sv:Blomsteraffär|2butik
@@ -750,7 +750,7 @@ shop-furniture
 en:Furniture Store|2shop
 ru:Магазин мебели|2магазин
 fr:Magasin de meubles|2magasin
-da:Møbelbutik|møbelforretning|møbelhandler|2butik
+da:Møbelhandler|møbelforretning|møbelbutik|2butik
 id:Toko mebel|2toko
 ko:가구 상점|1쇼핑|가게
 sv:Möbelaffär|2butik
@@ -837,7 +837,7 @@ shop-shoes
 en:Shoe Store|U+1F461|U+1F460|U+1F462|U+1F45E|U+1F45F|2shop
 ru:Магазин обуви|2обувь|2обувной|2магазин
 fr:Magasin de chaussures|2magasin
-da:Skobutik|2butik
+da:Skobutik|skotøj|2butik
 id:Toko sepatu|2toko
 ko:신발 가게|1쇼핑|가게
 sv:Skobutik|2butik
@@ -895,7 +895,7 @@ shop-hardware|shop-doityourself
 en:Hardware Store|DIY|do it yourself|U+1F3EC|U+1F3EA|U+1F50B|U+1F50C|U+1F4A1|U+1F526|U+1F529|U+1F528|U+2614|shop
 ar:متجر حواسيب|متجر|متجر مستلزمات تشطيب|متجر ديكور|المتجر
 cs:Železářství|obchod
-da:Isenkræmmer|Byggemarked|butik
+da:Byggemarked|butik
 de:Eisenwarengeschäft|Baumarkt|Heimwerkermarkt|Eisenwarenhandlung|Geschäft|Laden
 es:Ferretería|bricolaje|tienda
 fi:Työkalukauppa|Rautakauppa|kauppa
@@ -924,7 +924,7 @@ shop-jewelry
 en:Jewelry|U+1F48D|2shop
 ru:Ювелирный магазин|2магазин
 fr:Bijouterie|2magasin
-da:Smykkebutik|smykker|juveler|2butik
+da:Juveler|smykkebutik|smykker|2butik
 id:Perhiasan|2toko
 ko:보석류|1쇼핑|가게
 sv:Smycken|2butik
@@ -1072,7 +1072,7 @@ shop-sports
 en:Sports Goods|U+1F3BF|U+1F3A3|U+1F3C2|U+1F6B4|U+26BD|U+1F3C0|U+1F3C8|U+26BE|U+1F3BE|U+1F3C9|U+26F3|2shop
 ru:Магазин спорттоваров|Спорттовары|товары для спорта|2магазин
 fr:Articles de sport|2magasin
-da:Sportsudstyr|sport|2butik
+da:Sportsforretning|sport|sportsudstyr|2butik
 id:Barang olahraga|2toko
 ko:스포츠 용품|1쇼핑|가게
 sv:Sportaffär|2butik
@@ -1380,7 +1380,7 @@ hu:Ruhabolt|4ruhák|bolt
 th:ร้านขายเสื้อผ้า|ร้าน|ร้านค้า
 zh-Hans:服装店|商店
 ar:متجر ألبسة|المتجر
-da:Tøjbutik|tøjforretning|tøj|butik
+da:Tøjhandler|tøjforretning|tøj|butik
 tr:Giyim mağazası|mağaza
 sv:Kläder butik|4kläder|butik
 vi:Cửa hàng quần áo|cửa hàng
@@ -1440,7 +1440,7 @@ hu:4Kerékpár üzlet|kerékpár|kocsi|bolt
 th:4จักรยาน|ร้าน|ร้านค้า
 zh-Hans:自行车店|商店
 ar:متجر دراجات
-da:3Cykelforretning|cykelhandler|cykler|butik
+da:3Cykelhandler|cykelforretning|cykler|butik
 tr:Bisiklet|mağaza
 sv:4Cykelaffär|cykel|cykel|butik
 vi:3Cửa hàng xe đạp|cửa hàng
@@ -1500,7 +1500,7 @@ hu:2Buszmegálló|2busz|megálló|4közlekedés
 th:ป้ายรถเมล์|รถเมล์|ขนส่ง|การขนส่ง
 zh-Hans:1公交车站|公交车|运输|交通
 ar:محطة الحافلة์|حافلة|نقل|النقل
-da:3Busstoppested|bus|transport
+da:3Busstoppested|holdeplads|bus|transport
 tr:Otobüs durağı|3otobüs|ulaşım
 sv:Busshållplats|3buss|hållplats|4transport
 vi:3Bến xe buýt|giao thông
@@ -1530,7 +1530,7 @@ hu:4Villamosmegálló|3villamos|megálló|4közlekedés
 th:ป้ายรถราง|ขนส่ง|การขนส่ง
 zh-Hans:1电车站|运输|交通
 ar:محطة الترام|نقل|النقل
-da:3Sporvogn|station|transport
+da:3Sporvognsstoppested|holdeplads|station|transport
 tr:3Tramvay durağı|ulaşım
 sv:Spårvagnshållplats|3spårvagn|hållplats|4transport
 vi:Bến tàu điện|giao thông
@@ -1649,7 +1649,7 @@ hu:2Komp|közlekedés
 th:2เฟอร์รี่|สถานี|การขนส่ง
 zh-Hans:1渡轮|终点站|交通
 ar:مركب|محطة|نقل|النقل
-da:2Færge|færgehavn|terminal|transport
+da:2Færgehavn|terminal|transport
 tr:3Feribot|terminal|ulaşım
 sv:3Färja|terminal|transport
 vi:Phà|bến tàu xe|giao thông
@@ -1739,7 +1739,7 @@ hu:3Látnivaló|3kirándulás|3látványosság
 th:3การท่องเที่ยว|แหล่งท่องเที่ยว|สถานที่ท่องเที่ยว
 zh-Hans:1景点|旅游|景点
 ar:أماكن الجذب|سياحة|مناظر
-da:3Attraktioner|3turisme|3sightseeing|3seværdigheder
+da:3Attraktion|3seværdighed|3turisme|3sightseeing
 tr:3Cazibe merkezleri|3turizm|3görülecek yerler
 sv:3Attraktion|3turism|3sevärdheter
 vi:3Hấp dẫn|diểm tham quan
@@ -1769,7 +1769,7 @@ hu:3Szobor|3látnivaló|Műalkotás
 th:งานศิลปะ|3การท่องเที่ยว|สถานที่ท่องเที่ยว
 zh-Hans:1旅游|景点
 ar:سياحة|مناظر
-da:3Kunstværk|3turisme|3sightseeing|3seværdigheder
+da:3Kunstværk|3turisme|3sightseeing|3seværdighed
 tr:3Turizm|3görülecek yerler
 sv:3Konstverk|3turism|3sevärdheter
 vi:3Du lịch|diểm tham quan
@@ -1799,7 +1799,7 @@ hu:4Kilátó|kirándulás|látványosság|látnivaló|túrizmus
 th:3จุดชมวิว|การท่องเที่ยว|สถานที่ท่องเที่ยว
 zh-Hans:1观点|旅游|景点
 ar:أماكن مراقبة|سياحة|مناظر
-da:Udsigtspunkt|turisme|sightseeing|seværdigheder
+da:Udsigtspunkt|turisme|sightseeing|seværdighed
 tr:3Bakış|3turizm|3görülecek yerler
 sv:4Utsiktsplats|turism|sevärdheter
 vi:Điểm nhìn|diểm tham quan
@@ -1829,7 +1829,7 @@ hu:4Túrista információ|4információ|látványosság|látnivaló
 th:4ข้อมูลการท่องเที่ยว|ข้อมูล|สถานที่ท่องเที่ยว
 zh-Hans:1旅游信息|信息|景点
 ar:معلومات سياحية|معلومات|مناظر|سياحة
-da:4Turistinformation|turistinformation|4information|seværdigheder
+da:4Turistinformation|4information|seværdighed
 tr:4Turist bilgileri|görülecek yerler
 sv:4Turistinformation|4information|sevärdheter
 vi:Thông tin du lịch|diểm tham quan
@@ -1859,7 +1859,7 @@ hu:3Piknikező hely|látványosság
 th:3เว็บไซต์ปิกนิก
 zh-Hans:1野餐地点
 ar:أماكن للرحلات|مناظر
-da:3Picnic
+da:3Picnicplads
 tr:3Piknik alanı
 sv:3Picknickplatser
 vi:Điểm cắm trại
@@ -1904,7 +1904,7 @@ en:Church|place of worship|temple|sights|U+1F64F|U+26EA|U+271D|U+2626
 ru:Храм|костел|церковь|собор|достопримечательность
 de:Kirche|Dom|3Kathedrale|4Münster|Anbetungsstätte|Tempel|Sehenswürdigkeit
 fr:Église|lieu de culte|temple|site touristique
-da:Kirke|tempel|kultsted|seværdigheder
+da:Kirke|tempel|kultsted|seværdighed
 id:Gereja|tempat ibadah|pemandangan
 ko:교회|예배 장소|사찰|관광
 sv:Kyrka|plats för tillbedjan|tempel|sevärdheter
@@ -1933,7 +1933,7 @@ en:Mosque|tekke|place of worship|temple|sights|U+1F64F|U+262A|U+1F54B|U+1F54C|U+
 ru:Мечеть|храм|достопримечательность
 de:Moschee|Tekke|Anbetungsstätte|Tempel|Sehenswürdigkeit
 fr:Mosquée|lieu de culte|temple|site touristique
-da:Moske|tempel|kultsted|seværdigheder
+da:Moske|tempel|kultsted|seværdighed
 id:Masjid|tempat ibadah|pemandangan
 ko:모스크|예배 장소|사찰|관광
 sv:Moské|plats för tillbedjan|tempel|sevärdheter
@@ -1962,7 +1962,7 @@ en:Temple|place of worship|sights|U+1F64F|U+26EA|U+2638
 ru:Храм|достопримечательность
 de:Tempel|Anbetungsstätte|Sehenswürdigkeit
 fr:Temple|lieu de culte|site touristique
-da:Tempel|kultsted|seværdigheder
+da:Tempel|kultsted|seværdighed
 id:Kuil|tempat ibadah|pemandangan
 ko:절|예배 장소|사찰|관광
 sv:Tempel|plats för tillbedjan|sevärdheter
@@ -1991,7 +1991,7 @@ en:Temple|place of worship|sights|U+1F64F|U+1F549
 ru:Храм|достопримечательность
 de:Tempel|Anbetungsstätte|Sehenswürdigkeit
 fr:Temple|lieu de culte|site touristique
-da:Tempel|kultsted|seværdigheder
+da:Tempel|kultsted|seværdighed
 id:Kuil|tempat ibadah|pemandangan
 ko:절|예배 장소|사찰|관광
 sv:Tempel|plats för tillbedjan|sevärdheter
@@ -2020,7 +2020,7 @@ en:Shrine|place of worship|temple|sights|U+1F64F|U+26E9
 ru:Святилище|храм|достопримечательность
 de:Schrein|Anbetungsstätte|Tempel|Sehenswürdigkeit
 fr:Sanctuaire|lieu de culte|temple|site touristique
-da:Helligdom|tempel|kultsted|seværdigheder
+da:Helligdom|tempel|kultsted|seværdighed
 id:Kuil|tempat ibadah|pemandangan
 ko:성지|예배 장소|사찰|관광
 sv:Altare|plats för tillbedjan|tempel|sevärdheter
@@ -2049,7 +2049,7 @@ en:Synagogue|place of worship|temple|sights|U+1F64F|U+1F54D|U+2721
 ru:Синагога|храм|достопримечательность
 de:Synagoge|Anbetungsstätte|Tempel|Sehenswürdigkeit
 fr:Synagogue|lieu de culte|temple|site touristique
-da:Synagoge|tempel|kultsted|seværdigheder
+da:Synagoge|tempel|kultsted|seværdighed
 id:Sinagoge|tempat ibadah|pemandangan
 ko:유태교 회당|예배 장소|사찰|관광
 sv:Synagoga|plats för tillbedjan|tempel|sevärdheter
@@ -2078,7 +2078,7 @@ en:Temple|place of worship|sights|U+1F64F|U+262F
 ru:Храм|достопримечательность
 de:Tempel|Anbetungsstätte|Sehenswürdigkeit
 fr:Temple|lieu de culte|site touristique
-da:Tempel|kultsted|seværdigheder
+da:Tempel|kultsted|seværdighed
 id:Kuil|tempat ibadah|pemandangan
 ko:절|예배 장소|사찰|관광
 sv:Tempel|plats för tillbedjan|sevärdheter
@@ -2122,7 +2122,7 @@ hu:2Múzeum|látnivaló|túrizmus|látványosság
 th:2พิพิธภัณฑ์|แหล่งท่องเที่ยว|การท่องเที่ยว|สถานที่ท่องเที่ยว
 zh-Hans:博物馆|景点
 ar:متحف|أماكن الجذب|سياحة|مناظر
-da:2Museum|attraktioner|turisme|seværdigheder
+da:2Museum|attraktion|turisme|seværdighed
 tr:2Müze|cazibe merkezleri|turizm|görülecek yerler
 sv:2Museum|attraktion|tursim|sevärdheter
 vi:3Bảo tàng|diểm tham quan
@@ -2152,7 +2152,7 @@ hu:2Vízesés|látnivaló
 th:2น้ำตก|สถานที่ท่องเที่ยว
 zh-Hans:2瀑布|景点
 ar:شلال|مناظر|سياحة
-da:2Vandfald|seværdigheder
+da:2Vandfald|seværdighed
 tr:2Şelale|görülecek yerler
 sv:2Vattenfall|sevärdheter
 vi:2Thác nước|điểm tham quan
@@ -2182,7 +2182,7 @@ hu:3Emlékmű|látnivaló|túrizmus|látványosság
 th:ที่ระลึก|สถานที่ท่องเที่ยว
 zh-Hans:纪念馆|景点
 ar:مبنى او نصب تزكارى
-da:Mindesmærke|mindesten|seværdigheder
+da:Mindesmærke|mindesten|seværdighed
 tr:Anıt|abide|cazibe merkezleri|turizm|görülecek yerler
 sv:3Minnesmärke|monument|attraktion|turism|sevärdheter
 vi:3Đài tưởng niệm|diểm tham quan
@@ -2212,7 +2212,7 @@ hu:Műemlék|Szobor|túrizmus|látványosság|látnivaló
 th:3อนุสาวรีย์|การท่องเที่ยว|สถานที่ท่องเที่ยว
 zh-Hans:纪念碑|景点
 ar:نصب تزكارى
-da:Monument|seværdigheder
+da:Monument|seværdighed
 tr:Abide|cazibe merkezleri|turizm|görülecek yerler
 sv:Monument|attraktion|tursim|sevärdheter
 vi:Tượng đài|diểm tham quan
@@ -2242,7 +2242,7 @@ hu:Romok|látnivaló|túrizmus|látványosság
 th:ซากปรักหักพัง|สถานที่ท่องเที่ยว|การท่องเที่ยว
 zh-Hans:废墟|景点
 ar:آثار|أماكن الجذب|سياحة|مناظر
-da:Ruiner|bunker|seværdigheder|turisme
+da:Ruiner|bunker|seværdighed|turisme
 tr:Harabeler|cazibe merkezleri|turizm|görülecek yerler
 sv:Ruiner|attraktion|turism|sevärdheter
 vi:Phế tích|diểm tham quan
@@ -2272,7 +2272,7 @@ hu:Kastély|látnivaló|túrizmus|látványosság
 th:ปราสาท|การท่องเที่ยว|สถานที่ท่องเที่ยว
 zh-Hans:城堡|景点|旅游
 ar:قلعةأماكن الجذب|سياحة|مناظر
-da:Slot|borg|seværdigheder|turisme
+da:Slot|borg|seværdighed|turisme
 tr:Kale|cazibe merkezleri|turizm|görülecek yerler
 sv:Slott|attraktion|turism|sevärdheter
 vi:Pháo đài|diểm tham quan
@@ -2302,7 +2302,7 @@ hu:Ásatás|látnivaló|túrizmus|látványosság
 th:โบราณสถาน|แหล่งท่องเที่ยว|สถานที่ท่องเที่ยว|การท่องเที่ยว
 zh-Hans:考古遗址|旅游|景点
 ar:موقع أثري|أماكن الجذب|سياحة|مناظر
-da:Arkæologisk sted|seværdigheder|turisme
+da:Arkæologisk sted|seværdighed|turisme
 tr:Arkeolojik alan|cazibe merkezleri|turizm|görülecek yerler
 sv:Arkeologisk plats|attraktion|turism|sevärdheter
 vi:Điểm khảo cổ|diểm tham quan
@@ -2332,7 +2332,7 @@ hu:2Kert|látnivaló
 th:2สวน|สถานที่ท่องเที่ยว
 zh-Hans:2花园|景点
 ar:بستان|مناظر|سياحة
-da:2Have|seværdigheder
+da:2Have|seværdighed
 tr:2Bahçe|görülecek yerler
 sv:2Trädgård|sevärdheter
 vi:Điểm khảo cổ|diểm tham quan
@@ -2452,7 +2452,7 @@ hu:3Mozi|szórakozás
 th:3โรงภาพยนตร์|แหล่งบันเทิง
 zh-Hans:1电影院|娱乐
 ar:سينيما|التسلية
-da:3Biograf
+da:3Biograf|kino
 tr:3Sinema|eğlence
 sv:3Bio|underhållning
 vi:Rạp chiếu phim|giải trí
@@ -2602,7 +2602,7 @@ hu:Kollégium
 th:วิทยาลัย
 zh-Hans:学院
 ar:كلية
-da:Universitet|college|gymnasium
+da:College|gymnasium|universitet
 tr:Kolej
 sv:Högskola
 vi:Trường đại học
@@ -2632,7 +2632,7 @@ hu:4Ivóvíz
 th:4น้ำดื่ม
 zh-Hans:1饮用水
 ar:مياه الشرب
-da:3Vand|4drikkevand
+da:3Drikkevand|Vand
 tr:4Içme suyu
 sv:4Dricksvatten
 vi:Nước uống
@@ -2794,7 +2794,7 @@ amenity-doctors
 en:Doctor|clinic|U+1F489|U+1F3E5|U+1F691|hospital
 ar:مكتب طبيب|عيادة|المستشفى
 cs:Lékařská ordinace|Klinika|nemocnice
-da:Lægekontor|lægehus|klinik|hospital
+da:Lægehus|lægekontor|klinik|hospital
 de:Arztpraxis|Klinik|Krankenhaus
 es:Consulta del médico|Clínica|hospital
 fi:Lääkärin vastaanotto|Klinikka|sairaala
@@ -3016,7 +3016,7 @@ hu:3Levelesláda|posta
 th:3ตู้จดหมาย|ไปรษณีย์
 zh-Hans:1邮箱|邮政
 ar:صندوق بريد|البريد
-da:3Postboks|3postboks|postkasse|p/o|post
+da:3Postkasse|postboks|p/o|post
 tr:3Posta kutusu|posta
 sv:3Postlåda|post
 vi:Hòm thư|Bưu điện
@@ -3060,7 +3060,7 @@ amenity-waste_disposal
 en:Dumpster|Trash|bin|garbage|waste disposal|U+1F6AE
 ar:القمامة|ﺔﻣﺎﻤﻗ
 cs:Odpadky|koš|popelnice|uložiště odpadu
-da:Bortskaffelse af affald|skraldespand|skrald
+da:Affaldscontainer|skraldespand|skrald
 de:Müllcontainer|Mülltonne|Abfälle|Müll
 el:Σκουπίδια
 es:Basura
@@ -3346,7 +3346,7 @@ hu:Város
 th:เมือง
 zh-Hans:城市
 ar:مدينة
-da:By|stad
+da:Storby|by|stad|city
 tr:Şehir|kasaba
 sv:Stad|stad
 vi:Đất nước
@@ -3376,7 +3376,7 @@ hu:Város
 th:เมือง
 zh-Hans:镇
 ar:بلدة
-da:By|stad
+da:Købstad|by|stad
 tr:Kasaba
 sv:Stad|stad
 vi:Thành phố
@@ -3406,7 +3406,7 @@ hu:Főváros
 th:เมือง|เมืองหลวง
 zh-Hans:资本
 ar:مدينة
-da:Kapital
+da:Hovedstad|by|stad|city|storby
 tr:Sermaye
 sv:Huvudstad|stad
 vi:Thủ đô
@@ -3525,7 +3525,7 @@ hu:Sziget
 th:เกาะ
 zh-Hans:岛
 ar:جزيرة
-da:Ø
+da:Ø|holm
 tr:Ada
 sv:Ö
 vi:Tỉnh
@@ -3585,7 +3585,7 @@ hu:Tanya
 th:หมู่บ้านเล็ก ๆ|หมู่บ้าน
 zh-Hans:村庄
 ar:قرية صغيرة|قرية
-da:Landsby|landsby
+da:Landsby|by
 tr:Küçük|köy
 sv:By|by
 vi:Quận
@@ -3614,7 +3614,7 @@ hu:Falu
 th:หมู่บ้าน|หมู่บ้านเล็ก ๆ
 zh-Hans:村
 ar:قرية|قرية صغيرة
-da:Landsby|landsby
+da:By|Landsby
 tr:Köy|küçük köy
 sv:By|by
 vi:Xóm
@@ -3704,7 +3704,7 @@ hu:Folyó
 th:แม่น้ำ
 zh-Hans:河
 ar:نهر
-da:Flod
+da:Vandløb|flod|å|bæk|strøm
 tr:Nehir
 sv:Flod
 vi:Sông
@@ -3880,7 +3880,7 @@ hu:Csúcs|hegy
 th:จุดสูงสุด|ภูเขา
 zh-Hans:1峰|山
 ar:قمة|جبل
-da:2Bjerg|bjergtop|tinde|bakketop
+da:2Bjergtop|tinde|bakketop
 tr:2Zirve|dağ
 sv:Bergstopp|berg
 vi:Đỉnh
@@ -3910,7 +3910,7 @@ hu:Víz
 th:น้ำ
 zh-Hans:水
 ar:مياه
-da:Vand
+da:Vand|basin|reservoir|sø
 tr:Su
 sv:Vatten
 vi:Nước
@@ -3970,7 +3970,7 @@ hu:Tó|víz
 th:2ทะเลสาบ|น้ำ
 zh-Hans:湖|水
 ar:بحيرة|مياه
-da:1Sø
+da:1Sø|vand
 tr:Göl|su
 sv:Sjö|vatten
 vi:Hồ
@@ -4120,7 +4120,7 @@ hu:Vendégház|hotel|szálloda
 th:3เกสท์เฮ้าส์|โรงแรม์|์โรงแรม
 zh-Hans:1招待所์|์旅馆์|์旅社|旅店
 ar:دار الضيافة|فندق|نزُل|الفندق
-da:Gæstehus|gæstehjem|hotel|hostel
+da:Gæstehus|Bed&breakfast|B&B|gæstehjem|hotel|hostel
 tr:Misafir evi|pansiyon|otel
 sv:Gästhus|hotell|vandrarhem
 vi:Nhà khách|khách sạn
@@ -4179,7 +4179,7 @@ hu:Hegyi menedék|kabin|hotel|szálloda
 th:2ที่พักบนภูเขาโรงแรม
 zh-Hans:山上住宿|旅馆|旅店
 ar:مساكن جبلية|فندق|الفندق
-da:Bjerg logi|hotel
+da:Bjerghytte|alpehytte|fjeldstue|hotel
 tr:3Dağda konaklama|otel
 sv:Bergsboende|hotell|vandrarhem|fjällstuga
 vi:Nhà ở trên núi|khách sạn
@@ -4268,7 +4268,7 @@ hu:Stadion|4sport
 th:สนามกีฬา
 zh-Hans:体育场
 ar:استاد|رياضة
-da:Stadium|sport
+da:Stadion|sport
 tr:2Stadyum
 sv:Stadion|4sport
 vi:Sân vận động
@@ -4358,7 +4358,7 @@ hu:Golfpálya|sport
 th:สนามกอล์ฟ
 zh-Hans:高尔夫球场
 ar:ملعب جولف|
-da:Golf|golfbane
+da:Golfbane
 tr:Golf sahası|spor
 sv:Golfbana|sport
 vi:Sân gôn
@@ -4388,7 +4388,7 @@ hu:Sportpálya|oszlop|sport
 th:พื้นสนามกีฬา|ขว้าง|กีฬา
 zh-Hans:2球场|运动
 ar:ميدان اللعب|رياضة |ملاعب رياضية
-da:Sportsplads|fodboldbane|tennisbane|bane
+da:Bane|fodboldbane|tennisbane|sportsplads|idrætsplads
 tr:Spor sahası|alan|spor
 sv:Idrottsplats|bana|sport
 vi:Sân vận động|đường pích
@@ -4478,7 +4478,7 @@ hu:4Rendőrség
 th:4ตำรวจ
 zh-Hans:2警察
 ar:الشرطة
-da:4Politi
+da:4Politistation
 tr:3Polis
 sv:4Polis
 vi:Cảnh sát
@@ -4598,7 +4598,7 @@ hu:3Gépkocsi szervíz|4javítóműhely|kocsi
 th:3ร้านซ่อมรถยนต์|สถานีบริการ
 zh-Hans:3汽车修理店|服务站|
 ar:محل صيانة السيارات|محطة خدمات
-da:3Garage|3bilværksted|service station
+da:3Bilværksted|garage|service station
 tr:3Oto tamir dükkanı|servis istasyonu|araba
 sv:3Bilreparatör|4servicestation|bil
 vi:Cửa hàng sửa chữa ô tô
@@ -4628,7 +4628,7 @@ hu:4Kemping|sátrazóhely
 th:4การตั้งแคมป์|สถานที่ตั้งแคมป์|ที่ตั้งแคม
 zh-Hans:露营|营地|营地
 ar:تخييم|مكان التخييم|أرض التخييم
-da:Camping|campingplads|teltplads|lejrplads
+da:Campingplads|teltplads|lejrplads
 tr:2Kamp alanı|kamp|kamp yeri
 sv:4Camping|campingplats|campingområde
 vi:Cắm trại
@@ -4701,7 +4701,7 @@ office-company
 en:Company Office
 ar:مكتب شركة
 cs:Kancelář společnosti
-da:Selskabskontor
+da:Firmakontor|hovedsæde|kontor
 de:Niederlassung
 es:Oficina de empresa
 fi:Yhtiön toimisto
@@ -5168,7 +5168,7 @@ hu:Tenger
 th:เห็น
 zh-Hans:是
 ar:يكون
-da:Er
+da:Hav|ocean
 tr:Deniz
 sv:Hav
 vi:Biển
@@ -5198,7 +5198,7 @@ hu:Óceán
 th:มหาสมุทร
 zh-Hans:海洋
 ar:المحيط
-da:Ocean
+da:Ocean|hav
 tr:Okyanus
 sv:Ocean
 vi:Đại dương
@@ -5648,7 +5648,7 @@ en:Trash Bin|Litter Bin|Waste Basket
 ru:Урна|Мусорная корзина
 ar:صندوق قمامة
 cs:Odpadkový koš
-da:Skraldespand
+da:Skraldespand|affaldskurv
 de:Abfalleimer
 es:Papelera
 fi:Roska-astia
@@ -5709,7 +5709,7 @@ en:Fitness Centre|Gym|U+1F4AA
 ru:Фитнес-клуб|качалка|джим
 ar:مركز للياقة البدنية، نادي رياضي
 cs:Fitness|tělocvična
-da:Trænings- og motionscenter|fitnesscenter
+da:Trænings- & motionscenter|fitnesscenter
 de:Fitnessstudio
 es:Centro de fitness|gimnasio
 fi:Kuntosali
@@ -5854,7 +5854,7 @@ en:Petshop
 ru:Зоотовары
 ar:متجر للحيوانات الأليفة
 cs:Zverimex
-da:Dyrehandel
+da:Dyrehandler
 de:Tierhandlung
 es:Tienda de mascotas
 fi:Eläinkauppa
@@ -5883,7 +5883,7 @@ en:2Zoo
 ru:2Зоопарк
 ar:حديقة حيوان
 cs:zoologická zahrada
-da:Zoo
+da:Zoo|dyrehave|turisme|seværdighed
 de:Zoo
 el:Ζωολογικός κήπος
 es:Zoo
@@ -6585,7 +6585,7 @@ en:Pillar
 ru:Столбик
 ar:عمود حاجز قصير
 cs:Pilíř
-da:Søjle|pæl
+da:Pæl|søjle|stolpe
 de:Säule
 es:Pilar
 fi:Tolppa
@@ -6643,7 +6643,7 @@ en:Entrance
 ru:Проход
 ar:مدخل الحاجز
 cs:Vstup
-da:Gennemgang
+da:Gennemgang|indgang
 de:Durchgang
 es:Entrada
 fi:Sisäänkäynti
@@ -6875,7 +6875,7 @@ en:Windmill
 ru:Ветряная мельница
 ar:طاحونة هواء
 cs:Větrný mlýn
-da:Vindmølle
+da:Vindmølle (gammeldags)|vindmølle|vejrmølle|mølle
 de:Windmühle
 es:Molino
 fi:Tuulimylly
@@ -7049,7 +7049,7 @@ en:Power Tower
 ru:Опора ЛЭП
 ar:عمود كهرباء
 cs:Sloup elektrického vedení
-da:El-pol
+da:Elmast
 de:Freileitungsmast|Strommast
 es:Poste eléctrico
 fi:Sähköpylväs
@@ -7078,7 +7078,7 @@ en:Lock Gate
 ru:Шлюз
 ar:بوابة هويس
 cs:Stavidlo
-da:Låseport
+da:Sluse
 de:Schleuse
 es:Compuerta
 fi:Kanavasulku
@@ -7128,7 +7128,7 @@ sk:Knižnica|možnosť výmeny kníh
 es:Intercambio de libros|librería
 pl:Biblioteka|wymiana książek
 nl:Boekenkast|Boekuitwisseling
-da:Bog udveksling
+da:Bogbyttested|bogkasse|bogskab
 pt:Biblioteca livre|troca de livros
 
 leisure-sports_centre-climbing
@@ -7222,7 +7222,7 @@ leisure-sports_centre-yoga
 en:Yoga Studio
 ru:Йога-центр|Студия йоги
 fr:Yoga
-da: Yoga center
+da:Yogacenter
 id:Studio Yoga
 ko:요가 스튜디오
 sv:Yogastudio
