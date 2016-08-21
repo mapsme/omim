@@ -14,9 +14,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.Calendar;
-import java.util.concurrent.TimeUnit;
-
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.R;
@@ -33,6 +30,9 @@ import com.mapswithme.util.log.DebugLogger;
 import com.mapswithme.util.log.Logger;
 import com.mapswithme.util.statistics.AlohaHelper;
 import com.mapswithme.util.statistics.Statistics;
+
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 @android.support.annotation.UiThread
 public class RoutingController
@@ -317,6 +317,29 @@ public class RoutingController
       });
   }
 
+  private boolean showBicycleAlert()
+  {
+    if (mLastRouterType != Framework.ROUTER_TYPE_BICYCLE || Config.isBicycleAlertSeen())
+      return false;
+
+    Config.setBicycleAlertSeen();
+
+    new AlertDialog.Builder(mContainer.getActivity())
+        .setTitle(R.string.bicycle_alert_header)
+        .setMessage(R.string.bicycle_alert_message)
+        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
+        {
+          @Override
+          public void onClick(DialogInterface dlg, int which)
+          {
+            start();
+          }
+        }).show();
+
+
+    return true;
+  }
+
   public void start()
   {
     mLogger.d("start");
@@ -328,6 +351,9 @@ public class RoutingController
       suggestRebuildRoute();
       return;
     }
+
+    if (showBicycleAlert())
+      return;
 
     MapObject my = LocationHelper.INSTANCE.getMyPosition();
     if (my == null)
