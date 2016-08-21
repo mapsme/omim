@@ -931,4 +931,6 @@
 	<string name="whatsnew_booking_2_message">Affichage des évaluations et catégorie de prix des hôtels dans les résultats de recherche.</string>
 	<string name="whatsnew_cycle_navigation_header">Navigation à vélo (version bêta)</string>
 	<string name="whatsnew_cycle_navigation_message">Nous testons la navigation à vélo pour la nouvelle saison. Essayez votre parcours préféré à vélo avec MAPS.ME, et n\&#39;hésitez pas à nous partager vos impressions.</string>
+	<string name="bicycle_alert_header">Navigation à vélo (version bêta)</string>
+	<string name="bicycle_alert_message">Nous testons la navigation à vélo pour la nouvelle saison. Essayez votre parcours préféré à vélo avec MAPS.ME, et n\&#39;hésitez pas à nous partager vos impressions.</string>
 </resources>

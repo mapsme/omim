@@ -1609,3 +1609,7 @@
 "whatsnew_cycle_navigation_header" = "Navigation à vélo (version bêta)";
 
 "whatsnew_cycle_navigation_message" = "Nous testons la navigation à vélo pour la nouvelle saison. Essayez votre parcours préféré à vélo avec MAPS.ME, et n'hésitez pas à nous partager vos impressions.";
+
+"bicycle_alert_header" = "Navigation à vélo (version bêta)";
+
+"bicycle_alert_message" = "Nous testons la navigation à vélo pour la nouvelle saison. Essayez votre parcours préféré à vélo avec MAPS.ME, et n'hésitez pas à nous partager vos impressions.";

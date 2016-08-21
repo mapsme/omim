@@ -1609,3 +1609,7 @@
 "whatsnew_cycle_navigation_header" = "Polkupyöränavigointi (betaversio)";
 
 "whatsnew_cycle_navigation_message" = "Testaamme polkupyöränavigointia uudelle kaudelle. Kokeile suosikkipyöräilyreittiäsi MAPS.ME-sovelluksella ja jaa mielipiteesi kanssamme.";
+
+"bicycle_alert_header" = "Polkupyöränavigointi (betaversio)";
+
+"bicycle_alert_message" = "Testaamme polkupyöränavigointia uudelle kaudelle. Kokeile suosikkipyöräilyreittiäsi MAPS.ME-sovelluksella ja jaa mielipiteesi kanssamme.";
