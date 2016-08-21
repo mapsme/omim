@@ -924,4 +924,6 @@
 	<string name="whatsnew_booking_2_message">Sökresultaten visar hotellbetyget och priskategorin.</string>
 	<string name="whatsnew_cycle_navigation_header">Cykelnavigering (betaversion)</string>
 	<string name="whatsnew_cycle_navigation_message">Vi testar cykelnavigeringen för den nya säsongen. Testa din favoritcykelrutt med MAPS.ME och berätta för oss vad du tycker.</string>
+	<string name="bicycle_alert_header">Cykelnavigering (betaversion)</string>
+	<string name="bicycle_alert_message">Vi testar cykelnavigeringen för den nya säsongen. Testa din favoritcykelrutt med MAPS.ME och berätta för oss vad du tycker.</string>
 </resources>

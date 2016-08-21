@@ -919,4 +919,6 @@
 	<string name="whatsnew_booking_2_message">Hasil pencarian menampilkan kategori peringkat dan harga hotel</string>
 	<string name="whatsnew_cycle_navigation_header">Navigasi bersepeda (versi beta)</string>
 	<string name="whatsnew_cycle_navigation_message">Kami sedang menguji navigasi bersepeda untuk musim baru. Coba rute bersepeda favorit Anda dengan MAPS.ME dan sampaikan pendapat Anda.</string>
+	<string name="bicycle_alert_header">Navigasi bersepeda (versi beta)</string>
+	<string name="bicycle_alert_message">Kami sedang menguji navigasi bersepeda untuk musim baru. Coba rute bersepeda favorit Anda dengan MAPS.ME dan sampaikan pendapat Anda.</string>
 </resources>

@@ -937,4 +937,6 @@
 	<string name="whatsnew_booking_2_message">Wyniki wyszukiwania pokazują kategorie oceny hoteli i ceny.</string>
 	<string name="whatsnew_cycle_navigation_header">Nawigacja rowerowa (wersja beta)</string>
 	<string name="whatsnew_cycle_navigation_message">Testujemy nawigację rowerową na nowy sezon. Wypróbuj swoją ulubioną trasę z MAPS.ME i napisz nam, co myślisz o naszej nawigacji.</string>
+	<string name="bicycle_alert_header">Nawigacja rowerowa (wersja beta)</string>
+	<string name="bicycle_alert_message">Testujemy nawigację rowerową na nowy sezon. Wypróbuj swoją ulubioną trasę z MAPS.ME i napisz nam, co myślisz o naszej nawigacji.</string>
 </resources>

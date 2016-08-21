@@ -954,4 +954,6 @@
 	<string name="whatsnew_booking_2_message">При поиске отображается рейтинг и ценовая категория отеля.</string>
 	<string name="whatsnew_cycle_navigation_header">Велонавигация (бета-версия)</string>
 	<string name="whatsnew_cycle_navigation_message">К открытию сезона мы тестируем велонавигацию. Прокатитесь по своему любимому веломаршруту с MAPS.ME и поделитесь с нами впечатлениями.</string>
+	<string name="bicycle_alert_header">Велонавигация (бета-версия)</string>
+	<string name="bicycle_alert_message">К открытию сезона мы тестируем велонавигацию. Прокатитесь по своему любимому веломаршруту с MAPS.ME и поделитесь с нами впечатлениями.</string>
 </resources>

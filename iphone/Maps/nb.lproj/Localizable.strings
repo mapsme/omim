@@ -1609,3 +1609,7 @@
 "whatsnew_cycle_navigation_header" = "Sykkelnavigering (betaversjon)";
 
 "whatsnew_cycle_navigation_message" = "Vi tester sykkelnavigering for den nye sesongen. Prøv din favorittrute med MAPS.ME, og del din vurdering med oss.";
+
+"bicycle_alert_header" = "Sykkelnavigering (betaversjon)";
+
+"bicycle_alert_message" = "Vi tester sykkelnavigering for den nye sesongen. Prøv din favorittrute med MAPS.ME, og del din vurdering med oss.";

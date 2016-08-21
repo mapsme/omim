@@ -918,4 +918,6 @@
 	<string name="whatsnew_booking_2_message">Søkeresultatene rangerer hotellene etter omdømme og priskategorier.</string>
 	<string name="whatsnew_cycle_navigation_header">Sykkelnavigering (betaversjon)</string>
 	<string name="whatsnew_cycle_navigation_message">Vi tester sykkelnavigering for den nye sesongen. Prøv din favorittrute med MAPS.ME, og del din vurdering med oss.</string>
+	<string name="bicycle_alert_header">Sykkelnavigering (betaversjon)</string>
+	<string name="bicycle_alert_message">Vi tester sykkelnavigering for den nye sesongen. Prøv din favorittrute med MAPS.ME, og del din vurdering med oss.</string>
 </resources>
