@@ -29,7 +29,7 @@ float const kHalfWidthInPixel[] =
   // 1   2     3     4     5     6     7     8     9     10
   1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f,
   //11   12    13    14    15    16    17    18    19     20
-  2.0f, 2.0f, 2.0f, 3.0f, 3.0f, 3.0f, 4.0f, 5.0f, 7.0f, 12.0f
+  2.0f, 2.0f, 2.0f, 3.0f, 3.0f, 3.0f, 3.0f, 4.0f, 5.0f, 8.0f
 };
 
 float CalculateHalfWidth(ScreenBase const & screen)
@@ -109,9 +109,21 @@ void TrafficRenderer::RenderTraffic(ScreenBase const & screen, int zoomLevel,
   float const pixelHalfWidth = CalculateHalfWidth(screen);
   float const invPixelLength = 1.0f / (2.0f * pixelHalfWidth * kTrafficArrowAspect);
 
+  //double const kExtendCoef = 1.1;
+  //m2::RectD screenRect = screen.ClipRect();
+  //screenRect.Scale(kExtendCoef);
+
   GLFunctions::glClearDepth();
+  //LOG(LINFO, ("---------"));
   for (TrafficRenderData & renderData : m_renderData)
   {
+    //for (size_t i = 0; i < renderData.m_bucket->GetOverlayHandlesCount(); i++)
+    //{
+    //  TrafficHandle * handle = static_cast<TrafficHandle *>(renderData.m_bucket->GetOverlayHandle(i).get());
+    //  if (handle->GetBoundingBox().IsIntersect(screenRect))
+    //    LOG(LINFO, ("Segment =", handle->GetSegmentId()));
+    //}
+
     ref_ptr<dp::GpuProgram> program = mng->GetProgram(renderData.m_state.GetProgramIndex());
     program->Bind();
     dp::ApplyState(renderData.m_state, program);
@@ -124,6 +136,7 @@ void TrafficRenderer::RenderTraffic(ScreenBase const & screen, int zoomLevel,
 
     renderData.m_bucket->Render();
   }
+  //LOG(LINFO, ("---------"));
 }
 
 void TrafficRenderer::SetTexCoords(unordered_map<int, glsl::vec2> && texCoords)

@@ -83,9 +83,11 @@ void GenerateCapTriangles(glsl::vec3 const & pivot, vector<glsl::vec2> const & n
 
 } // namespace
 
-TrafficHandle::TrafficHandle(string const & segmentId, glsl::vec2 const & texCoord, size_t verticesCount)
+TrafficHandle::TrafficHandle(string const & segmentId,  m2::RectD const & bbox,
+                             glsl::vec2 const & texCoord, size_t verticesCount)
   : OverlayHandle(FeatureID(), dp::Anchor::Center, 0, false)
   , m_segmentId(segmentId)
+  , m_bbox(bbox)
   , m_needUpdate(false)
 {
   m_buffer.resize(verticesCount);
@@ -150,6 +152,11 @@ string const & TrafficHandle::GetSegmentId() const
   return m_segmentId;
 }
 
+m2::RectD const & TrafficHandle::GetBoundingBox() const
+{
+  return m_bbox;
+}
+
 void TrafficGenerator::AddSegment(string const & segmentId, m2::PolylineD const & polyline)
 {
   m_segments.insert(make_pair(segmentId, polyline));
@@ -212,8 +219,12 @@ void TrafficGenerator::GetTrafficGeom(ref_ptr<dp::TextureManager> textures,
     GenerateSegment(colorRegion, polyline, staticGeometry, dynamicGeometry);
     ASSERT_EQUAL(staticGeometry.size(), dynamicGeometry.size(), ());
 
+    if ((staticGeometry.size() + dynamicGeometry.size()) == 0)
+      continue;
+
     glsl::vec2 const uv = glsl::ToVec2(colorRegion.GetTexRect().Center());
-    drape_ptr<dp::OverlayHandle> handle = make_unique_dp<TrafficHandle>(segment.m_id, uv, staticGeometry.size());
+    drape_ptr<dp::OverlayHandle> handle = make_unique_dp<TrafficHandle>(segment.m_id, polyline.GetLimitRect(),
+                                                                        uv, staticGeometry.size());
 
     dp::AttributeProvider provider(2 /* stream count */, staticGeometry.size());
     provider.InitStream(0 /* stream index */, GetTrafficStaticBindingInfo(), make_ref(staticGeometry.data()));
@@ -295,16 +306,17 @@ void TrafficGenerator::GenerateSegment(dp::TextureManager::ColorRegion const & c
   // Generate caps.
   if (firstFilled)
   {
+    int const kSegmentsCount = 4;
     vector<glsl::vec2> normals;
     normals.reserve(kAverageCapSize);
     GenerateCapNormals(dp::RoundCap, firstLeftNormal, firstRightNormal, -firstTangent,
-                       1.0f, true /* isStart */, normals);
+                       1.0f, true /* isStart */, normals, kSegmentsCount);
     GenerateCapTriangles(glsl::vec3(firstPoint, kDepth), normals, colorRegion,
                          staticGeometry, dynamicGeometry);
 
     normals.clear();
     GenerateCapNormals(dp::RoundCap, lastLeftNormal, lastRightNormal, lastTangent,
-                       1.0f, false /* isStart */, normals);
+                       1.0f, false /* isStart */, normals, kSegmentsCount);
     GenerateCapTriangles(glsl::vec3(lastPoint, kDepth), normals, colorRegion,
                          staticGeometry, dynamicGeometry);
   }
