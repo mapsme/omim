@@ -9,6 +9,7 @@
 #include "std/regex.hpp"
 #include "std/sstream.hpp"
 #include "std/string.hpp"
+#include "std/type_traits.hpp"
 
 #include "3party/utfcpp/source/utf8/unchecked.h"
 
