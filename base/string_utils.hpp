@@ -3,6 +3,7 @@
 #include "base/buffer_vector.hpp"
 
 #include "std/algorithm.hpp"
+#include "std/chrono.hpp"
 #include "std/cstdint.hpp"
 #include "std/iterator.hpp"
 #include "std/limits.hpp"
@@ -505,4 +506,7 @@ size_t EditDistance(TIter const & b1, TIter const & e1, TIter const & b2, TIter 
   }
   return prev[m];
 }
+
+system_clock::time_point ToTimePoint(string const & str, string const & format);
+
 }  // namespace strings

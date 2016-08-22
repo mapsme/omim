@@ -344,4 +344,11 @@ void ParseCSVRow(string const & s, char const delimiter, vector<string> & target
     target.clear();
 }
 
+system_clock::time_point ToTimePoint(string const & str, string const & format)
+{
+  tm outTm = {};
+  strptime(str.c_str(), format.c_str(), &outTm);
+  return system_clock::from_time_t(mktime(&outTm));
+}
+
 }  // namespace strings

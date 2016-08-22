@@ -16,6 +16,7 @@ HEADERS += \
     bookmark.hpp \
     bookmark_manager.hpp \
     displacement_mode_manager.hpp \
+    inrix_api.hpp \
     feature_vec_model.hpp \
     framework.hpp \
     ge0_parser.hpp \
@@ -39,6 +40,7 @@ SOURCES += \
     bookmark.cpp \
     bookmark_manager.cpp \
     displacement_mode_manager.cpp \
+    inrix_api.cpp \
     feature_vec_model.cpp \
     framework.cpp \
     ge0_parser.cpp \
