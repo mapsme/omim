@@ -4,9 +4,12 @@
 #include "base/logging.hpp"
 
 #include "std/iomanip.hpp"
-#include "std/fstream.hpp"
 #include "std/bind.hpp"
+#include "std/fstream.hpp"
+#include "std/iomanip.hpp"
+#include "std/map.hpp"
 #include "std/unordered_map.hpp"
+#include "std/vector.hpp"
 
 
 /// internal function in base
