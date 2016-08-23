@@ -135,6 +135,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   private View mZoomFrame;
   private View mNavZoomIn;
   private View mNavZoomOut;
+  private View mUpdateTraffic;
   private MyPositionButton mNavMyPosition;
 
   private View mPositionChooser;
@@ -432,6 +433,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
     mNavZoomIn.setOnClickListener(this);
     mNavZoomOut = mZoomFrame.findViewById(R.id.nav_zoom_out);
     mNavZoomOut.setOnClickListener(this);
+    mUpdateTraffic = mZoomFrame.findViewById(R.id.update_traffic);
+    mUpdateTraffic.setOnClickListener(this);
     mNavMyPosition = new MyPositionButton(mZoomFrame.findViewById(R.id.my_position));
   }
 
@@ -1092,6 +1095,9 @@ public class MwmActivity extends BaseMwmFragmentActivity
       Statistics.INSTANCE.trackEvent(Statistics.EventName.ZOOM_OUT);
       AlohaHelper.logClick(AlohaHelper.ZOOM_OUT);
       MapFragment.nativeScaleMinus();
+      break;
+    case R.id.update_traffic:
+      MapFragment.nativeUpdateTraffic();
       break;
     }
   }

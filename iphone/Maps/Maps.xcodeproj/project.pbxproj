@@ -331,6 +331,7 @@
 		34FED5511D21121000183B1B /* CLLocation+Mercator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 34FED54F1D21121000183B1B /* CLLocation+Mercator.mm */; };
 		4519503A1B7A3E070085DA05 /* patterns.txt in Resources */ = {isa = PBXBuildFile; fileRef = 451950391B7A3E070085DA05 /* patterns.txt */; };
 		452FCA3B1B6A3DF7007019AB /* colors.txt in Resources */ = {isa = PBXBuildFile; fileRef = 452FCA3A1B6A3DF7007019AB /* colors.txt */; };
+		4582337F1D6C471E00BB6320 /* inrix_segments.dat in Resources */ = {isa = PBXBuildFile; fileRef = 4582337E1D6C471E00BB6320 /* inrix_segments.dat */; };
 		46F26C7310F61FD600ECCA39 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46F26C7210F61FD600ECCA39 /* OpenGLES.framework */; };
 		46F26CD810F623BA00ECCA39 /* EAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 46F26CD710F623BA00ECCA39 /* EAGLView.mm */; };
 		46F26D1F10F626CB00ECCA39 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46F26D1E10F626CB00ECCA39 /* QuartzCore.framework */; };
@@ -1227,6 +1228,7 @@
 		452FCA3A1B6A3DF7007019AB /* colors.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = colors.txt; path = ../../data/colors.txt; sourceTree = "<group>"; };
 		454040681AD2D8D2007A9B12 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		4540406E1AD2D9C5007A9B12 /* WatchKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchKit.framework; path = System/Library/Frameworks/WatchKit.framework; sourceTree = SDKROOT; };
+		4582337E1D6C471E00BB6320 /* inrix_segments.dat */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = inrix_segments.dat; path = ../../data/inrix_segments.dat; sourceTree = "<group>"; };
 		458287C21AD3BE2000BA8940 /* DownloadIndicatorProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadIndicatorProtocol.h; sourceTree = "<group>"; };
 		46F26C7210F61FD600ECCA39 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		46F26CD610F623BA00ECCA39 /* EAGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = EAGLView.h; sourceTree = "<group>"; };
@@ -3030,6 +3032,7 @@
 		FA065FC61286143F00FEA989 /* External Resources */ = {
 			isa = PBXGroup;
 			children = (
+				4582337E1D6C471E00BB6320 /* inrix_segments.dat */,
 				F623DA6A1C9C2731006A3436 /* opening_hours_how_to_edit.html */,
 				6B9978341C89A316003B8AA0 /* editor.config */,
 				671182DE1C7F0DD400CB8177 /* countries_obsolete.txt */,
@@ -3273,6 +3276,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4582337F1D6C471E00BB6320 /* inrix_segments.dat in Resources */,
 				4519503A1B7A3E070085DA05 /* patterns.txt in Resources */,
 				F6FE3C3B1CC5106500A73196 /* MWMPlaceDoesntExistAlert.xib in Resources */,
 				5605022F1B6211E100169CAD /* sound-strings in Resources */,

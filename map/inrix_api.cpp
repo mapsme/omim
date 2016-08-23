@@ -25,6 +25,9 @@
 namespace
 {
 
+//#define INRIX_PACK_SEGMENTS
+//#ifdef INRIX_PARSE_ORIGINAL
+
 string const kGetSecurityToken = "http://api.inrix.com/Traffic/Inrix.ashx?" \
                                  "Action=GetSecurityToken&VendorID=" \
                                  INRIX_VENDOR_ID \
@@ -32,6 +35,8 @@ string const kGetSecurityToken = "http://api.inrix.com/Traffic/Inrix.ashx?" \
                                  INRIX_CONSUMER_ID;
 
 vector<string> const kRegionIds = { "EU", "NA" };
+
+#ifdef INRIX_PARSE_ORIGINAL
 
 double ConvertFirstCoordinate(long long val)
 {
@@ -43,6 +48,8 @@ double ConvertLastCoordinate(double degVal, long long val)
 {
   return degVal + (double)val / 100000.0;
 }
+
+#endif
 
 df::TrafficSpeedBucket GetSpeedBucket(int speed, int referenceSpeed)
 {
@@ -74,11 +81,15 @@ void InrixApi::Authenticate()
       LOG(LWARNING, ("Cannot parse server response:", responseStr));
       return;
     }
+
     auto authTokenNode = document.select_node("Inrix/AuthResponse/AuthToken").node();
     m_authToken = authTokenNode.text().as_string("");
 
+    string const kTimestampFormat = "%FT%TZ";
+    string const ts = document.select_node("Inrix").node().attribute("createdDate").as_string("");
+    system_clock::time_point const serverTime = strings::ToTimePoint(ts, kTimestampFormat);
     string const expiry = authTokenNode.attribute("expiry").as_string("");
-    m_expirationTimestamp = strings::ToTimePoint(expiry, "%FT%TZ");
+    m_expirationTimestamp = system_clock::now() + (strings::ToTimePoint(expiry, kTimestampFormat) - serverTime);
 
     auto serverPathsNode = document.select_node("Inrix/AuthResponse/ServerPaths").node();
     for (auto const & serverPathNode : serverPathsNode.children())
@@ -111,7 +122,8 @@ void InrixApi::GetTraffic(TTrafficCallback const & trafficCallback)
   // Check authentication.
   {
     lock_guard<mutex> lock(m_mutex);
-    if (m_authToken.empty() /* || deprecated */)
+    bool const isTokenExpired = ((system_clock::now() - m_expirationTimestamp) < minutes(5));
+    if (m_authToken.empty()  || isTokenExpired)
     {
       m_deferredCallback = trafficCallback;
       Authenticate();
@@ -154,19 +166,40 @@ void InrixApi::GetTrafficInternal(TTrafficCallback const & trafficCallback)
 
 vector<InrixApi::SegmentData> InrixApi::GetSegments()
 {
+#ifdef INRIX_PARSE_ORIGINAL
   int const kMaxRoadClass = 7;
   int const kMaxFormOfWay = 9;
+#endif
 
   vector<InrixApi::SegmentData> segments;
 
   pugi::xml_document document;
-  pugi::xml_parse_result result = document.load_file((GetPlatform().ResourcesDir() + "/inrix_segments.xml").c_str());
-  if (!result)
+
+  string content;
+  try
   {
-    LOG(LWARNING, ("Could not read inrix_segments.xml.", result.description()));
+    auto reader = GetPlatform().GetReader("inrix_segments.dat");
+    reader->ReadAsString(content);
+  }
+  catch (RootException const & e)
+  {
+    LOG(LWARNING, ("Could not read: ", e.what()));
     return segments;
   }
 
+  pugi::xml_parse_result result = document.load_buffer(content.data(), content.size());
+  if (!result)
+  {
+    LOG(LWARNING, ("Could not parse: ", result.description()));
+    return segments;
+  }
+
+#ifdef INRIX_PACK_SEGMENTS
+  pugi::xml_document outDocument;
+  auto outSegmentsNode = outDocument.append_child("Segments");
+#endif
+
+#ifdef INRIX_PARSE_ORIGINAL
   auto reportNode = document.select_node("Inrix/Dictionary/Report").node();
   for (auto const & seg : reportNode.children())
   {
@@ -274,8 +307,31 @@ vector<InrixApi::SegmentData> InrixApi::GetSegments()
         points[points.size() - 1] = newEnd;
     }
 
+#ifdef INRIX_PACK_SEGMENTS
+    auto segNode = outSegmentsNode.append_child("Segment");
+    segNode.append_attribute("id").set_value(segmentId.c_str());
+    for (auto const & pt : points)
+    {
+      auto ptNode = segNode.append_child("Point");
+      ptNode.append_attribute("x").set_value(pt.x);
+      ptNode.append_attribute("y").set_value(pt.y);
+    }
+#endif
     segments.push_back({ segmentId, points });
   }
+#else
+  auto reportNode = document.select_node("Segments").node();
+  for (auto const & seg : reportNode.children())
+  {
+    vector<m2::PointD> points;
+    points.reserve(2);
+    string const segmentId = seg.attribute("id").as_string("");
+    for (auto const & ptNode : seg.children("Point"))
+      points.push_back(m2::PointD(ptNode.attribute("x").as_double(), ptNode.attribute("y").as_double()));
+    segments.push_back({ segmentId, points });
+  }
+#endif
+
   return segments;
 }
 

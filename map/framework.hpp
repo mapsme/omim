@@ -178,6 +178,8 @@ public:
   InrixApi & GetInrixApi() { return m_inrixApi; }
   InrixApi const & GetInrixApi() const { return m_inrixApi; }
 
+  void UpdateTraffic();
+
   /// Migrate to new version of very different data.
   bool IsEnoughSpaceForMigrate() const;
   storage::TCountryId PreMigrate(ms::LatLon const & position, storage::Storage::TChangeCountryFunction const & change,

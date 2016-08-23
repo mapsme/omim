@@ -494,6 +494,10 @@ void Framework::EnableDownloadOn3g()
   m_work.DownloadingPolicy().EnableCellularDownload(true);
 }
 
+void Framework::UpdateTraffic()
+{
+  m_work.UpdateTraffic();
+}
 
 }  // namespace android
 

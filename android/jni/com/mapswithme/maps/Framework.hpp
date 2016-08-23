@@ -71,6 +71,8 @@ namespace android
     void DeleteDrapeEngine();
     bool IsDrapeEngineCreated();
 
+    void UpdateTraffic();
+
     void DetachSurface();
     void AttachSurface(JNIEnv * env, jobject jSurface);
 

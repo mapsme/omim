@@ -57,6 +57,12 @@ Java_com_mapswithme_maps_MapFragment_nativeScaleMinus(JNIEnv * env, jclass clazz
   g_framework->Scale(::Framework::SCALE_MIN);
 }
 
+JNIEXPORT void JNICALL
+Java_com_mapswithme_maps_MapFragment_nativeUpdateTraffic(JNIEnv * env, jclass clazz)
+{
+  g_framework->UpdateTraffic();
+}
+
 JNIEXPORT jboolean JNICALL
 Java_com_mapswithme_maps_MapFragment_nativeShowMapForUrl(JNIEnv * env, jclass clazz, jstring url)
 {

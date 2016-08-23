@@ -1628,10 +1628,7 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
     segments.push_back(make_pair(segs[i].m_id, m2::PolylineD(segs[i].m_points)));
   m_drapeEngine->AddTrafficSegments(segments);
 
-  m_inrixApi.GetTraffic([this](vector<df::TrafficSegmentData> const & data)
-  {
-    m_drapeEngine->UpdateTraffic(data);
-  });
+  UpdateTraffic();
 }
 
 ref_ptr<df::DrapeEngine> Framework::GetDrapeEngine()
@@ -2636,6 +2633,16 @@ vector<m2::TriangleD> Framework::GetSelectedFeatureTriangles() const
 void Framework::BlockTapEvents(bool block)
 {
   CallDrapeFunction(bind(&df::DrapeEngine::BlockTapEvents, _1, block));
+}
+
+void Framework::UpdateTraffic()
+{
+  LOG(LINFO, ("Inrix traffic is updating..."));
+  m_inrixApi.GetTraffic([this](vector<df::TrafficSegmentData> const & data)
+  {
+    LOG(LINFO, ("Inrix traffic has been updated"));
+    m_drapeEngine->UpdateTraffic(data);
+  });
 }
 
 namespace feature

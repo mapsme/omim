@@ -195,6 +195,11 @@ NSArray<UIImage *> * animationImages(NSString * animationTemplate, NSUInteger im
   GetFramework().SwitchMyPositionNextMode();
 }
 
+- (IBAction)updateTrafficTouchUpInside:(id)sender
+{
+  GetFramework().UpdateTraffic();
+}
+
 #pragma mark - Properties
 
 - (BOOL)isZoomEnabled

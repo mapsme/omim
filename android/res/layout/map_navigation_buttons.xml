@@ -36,4 +36,13 @@
     android:background="?nav_background"
     android:contentDescription="@string/my_position"
     android:tint="@null"/>
+
+  <ImageButton
+    android:id="@+id/update_traffic"
+    style="@style/MwmWidget.MapButton"
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentRight="true"
+    android:layout_marginBottom="@dimen/margin_base"
+    android:background="?nav_background"
+    android:src="@drawable/ic_update"/>
 </RelativeLayout>
