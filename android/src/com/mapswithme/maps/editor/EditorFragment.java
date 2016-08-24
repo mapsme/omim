@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputLayout;
@@ -106,7 +105,6 @@ public class EditorFragment extends BaseMwmFragment implements View.OnClickListe
   private View mEmptyOpeningHours;
   private TextView mOpeningHours;
   private View mEditOpeningHours;
-  private EditText mDescription;
   private final SparseArray<View> mMetaBlocks = new SparseArray<>(7);
   private TextView mReset;
 
@@ -223,12 +221,6 @@ public class EditorFragment extends BaseMwmFragment implements View.OnClickListe
     Editor.nativeSetNames(mParent.getNamesAsArray());
 
     return true;
-  }
-
-  @NonNull
-  protected String getDescription()
-  {
-    return mDescription.getText().toString().trim();
   }
 
   private boolean validateFields()
@@ -427,9 +419,7 @@ public class EditorFragment extends BaseMwmFragment implements View.OnClickListe
     mEmptyOpeningHours.setOnClickListener(this);
     mOpeningHours = (TextView) blockOpeningHours.findViewById(R.id.opening_hours);
     mOpeningHours.setOnClickListener(this);
-    final View cardMore = view.findViewById(R.id.cv__more);
-    mDescription = findInput(cardMore);
-    cardMore.findViewById(R.id.about_osm).setOnClickListener(this);
+    view.findViewById(R.id.about_osm).setOnClickListener(this);
     mReset = (TextView) view.findViewById(R.id.reset);
     mReset.setOnClickListener(this);
 
@@ -597,21 +587,21 @@ public class EditorFragment extends BaseMwmFragment implements View.OnClickListe
 
   private void rollback(@Editor.FeatureStatus int status)
   {
-    int title;
+    int buttonTitle;
     int message;
     if (status == Editor.CREATED)
     {
-      title = R.string.editor_remove_place_button;
+      buttonTitle = R.string.editor_remove_place_button;
       message = R.string.editor_remove_place_message;
     }
     else
     {
-      title = R.string.editor_reset_edits_button;
+      buttonTitle = R.string.editor_reset_edits_button;
       message = R.string.editor_reset_edits_message;
     }
 
     new AlertDialog.Builder(getActivity()).setTitle(message)
-                                          .setPositiveButton(getString(title).toUpperCase(), new DialogInterface.OnClickListener()
+                                          .setPositiveButton(getString(buttonTitle).toUpperCase(), new DialogInterface.OnClickListener()
                                           {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which)
@@ -626,7 +616,7 @@ public class EditorFragment extends BaseMwmFragment implements View.OnClickListe
 
   private void placeDoesntExist()
   {
-    EditTextDialogFragment.show(getString(R.string.editor_place_doesnt_exist), "", getString(R.string.editor_comment_hint),
+    EditTextDialogFragment.show(getString(R.string.editor_place_doesnt_exist), "", getString(R.string.editor_detailed_description),
                                 getString(R.string.editor_report_problem_send_button), getString(R.string.cancel), this);
   }
 
