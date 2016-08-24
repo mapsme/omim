@@ -1796,16 +1796,10 @@ bool Framework::ShowMapForURL(string const & url)
   }
   else if (m_ParsedMapApi.IsValid())
   {
-    // clear every current API-mark.
-    {
-      UserMarkControllerGuard guard(m_bmManager, UserMarkType::API_MARK);
-      guard.m_controller.Clear();
-      guard.m_controller.SetIsVisible(true);
-      guard.m_controller.SetIsDrawable(true);
-    }
-
     apiMark = m_ParsedMapApi.GetSinglePoint();
     result = apiMark ? NEED_CLICK : NO_NEED_CLICK;
+    if (!m_ParsedMapApi.GetViewportRect(rect))
+      rect = df::GetWorldRect();
   }
   else  // Actually, we can parse any geo url scheme with correct coordinates.
   {
