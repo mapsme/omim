@@ -80,9 +80,9 @@
     <!--meta-data
         android:name="PW_LOG_LEVEL"
         android:value="ERROR" /-->
-
     <activity
-        android:name="com.mapswithme.maps.DownloadResourcesActivity"
+        android:name="com.mapswithme.maps.SplashActivity"
+        android:theme="@style/MwmWidget.SplashTheme"
         android:configChanges="orientation|screenLayout|screenSize"
         android:label="@string/app_name">
 
