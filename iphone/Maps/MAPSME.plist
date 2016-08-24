@@ -248,6 +248,6 @@
 	<key>PW_USE_GPS</key>
 	<false/>
 	<key>Pushwoosh_LOG_LEVEL</key>
-	<string>WARNING</string>
+	<string>DEBUG</string>
 </dict>
 </plist>
