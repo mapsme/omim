@@ -5,6 +5,8 @@
 #include "generator/osm_element.hpp"
 #include "generator/ways_merger.hpp"
 
+#include "routing/routing_helpers.hpp"
+
 #include "indexer/classificator.hpp"
 #include "indexer/feature_visibility.hpp"
 #include "indexer/ftypes_matcher.hpp"
@@ -280,6 +282,8 @@ class OsmToFeatureTranslator
   //@{
   void EmitPoint(m2::PointD const & pt, FeatureParams params, osm::Id id) const
   {
+    return;
+
     if (feature::RemoveNoDrawableTypes(params.m_Types, feature::GEOM_POINT))
     {
       FeatureBuilder1 ft;
@@ -291,6 +295,9 @@ class OsmToFeatureTranslator
 
   void EmitLine(FeatureBuilder1 & ft, FeatureParams params, bool isCoastLine) const
   {
+    if (!routing::IsRoad(params.m_Types))
+      return;
+
     if (isCoastLine || feature::RemoveNoDrawableTypes(params.m_Types, feature::GEOM_LINE))
     {
       ft.SetLinear(params.m_reverseGeometry);
@@ -301,6 +308,8 @@ class OsmToFeatureTranslator
   template <class MakeFnT>
   void EmitArea(FeatureBuilder1 & ft, FeatureParams params, MakeFnT makeFn) const
   {
+    return;
+
     using namespace feature;
 
     // Ensure that we have closed area geometry.

@@ -31,15 +31,29 @@ public:
   static bool IsEqual(string const & name1, string const & name2);
 };
 
+// Model reader store file id as string.
+class ModelReader : public Reader
+{
+  string m_name;
+
+public:
+  ModelReader(string const & name) : m_name(name) {}
+
+  virtual unique_ptr<Reader> CreateSubReader(uint64_t pos, uint64_t size) const override = 0;
+
+  inline string const & GetName() const { return m_name; }
+//  inline void SetName(string const & name) { m_name = name; }
+};
+
 // Reader from memory.
-class MemReader : public Reader
+class MemReader : public ModelReader
 {
   bool AssertPosAndSize(uint64_t pos, uint64_t size) const;
 
 public:
   // Construct from block of memory.
-  MemReader(void const * pData, size_t size)
-    : m_pData(static_cast<char const *>(pData)), m_size(size)
+  MemReader(void const * pData, size_t size, string const & name = string())
+    : ModelReader(name), m_pData(static_cast<char const *>(pData)), m_size(size)
   {
   }
 
@@ -100,19 +114,6 @@ public:
   }
 
   TReader * GetPtr() const { return m_p.get(); }
-};
-
-// Model reader store file id as string.
-class ModelReader : public Reader
-{
-  string m_name;
-
-public:
-  ModelReader(string const & name) : m_name(name) {}
-
-  virtual unique_ptr<Reader> CreateSubReader(uint64_t pos, uint64_t size) const override = 0;
-
-  inline string const & GetName() const { return m_name; }
 };
 
 // Reader pointer class for data files.

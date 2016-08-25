@@ -17,6 +17,12 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#include "base/logging.hpp"
+
+#include "std/map.hpp""
+#include "std/utility.hpp"
+#include "std/vector.hpp"
+
 #if !defined(IFT_ETHER)
 #define IFT_ETHER 0x6 /* Ethernet CSMACD */
 #endif
@@ -34,6 +40,42 @@
 
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <netinet/in.h>
+
+
+struct Value
+{
+  Value(ModelReader const & modelReader, string const & p)
+  : data(modelReader.Size()), path(p)
+  {
+    modelReader.Read(0, &data[0], modelReader.Size());
+    LOG(LINFO, ("GetReader() Value::Value() modelReader.Size() =", modelReader.Size()));
+  }
+  
+  Value(Value const &) = default;
+  
+  vector<int8_t> data;
+  string path;
+};
+
+map<string, Value> & GetCache()
+{
+  static map<string, Value> cache;
+  return cache;
+}
+
+unique_ptr<ModelReader> ToMemory(string const & path, ModelReader const & modelReader)
+{
+  LOG(LINFO, ("GetReader() ToMemory() file =", path, ", GetCache().size()", GetCache().size()));
+  Value v(modelReader, path);
+  auto const inserted = GetCache().insert(make_pair(path, v));
+  if (inserted.second == false)
+  {
+    LOG(LERROR, ("GetReader() ToMemory()"));
+  }
+  LOG(LINFO, ("GetReader() ToMemory() 2", " GetCache().size() =", GetCache().size()));
+  return make_unique<MemReader>(inserted.first->second.data.data(), inserted.first->second.data.size(),
+                                path);
+}
 
 Platform::Platform()
 {
@@ -91,8 +133,20 @@ bool Platform::GetFileSizeByName(string const & fileName, uint64_t & size) const
 
 unique_ptr<ModelReader> Platform::GetReader(string const & file, string const & searchScope) const
 {
-  return make_unique<FileReader>(ReadPathForFile(file, searchScope), READER_CHUNK_LOG_SIZE,
-                                 READER_CHUNK_LOG_COUNT);
+  string const path = ReadPathForFile(file, searchScope);
+  
+  auto const it = GetCache().find(path);
+  if (it != GetCache().cend())
+  {
+    LOG(LINFO, ("GetReader(", file, ", ", searchScope, ") found in cache."));
+
+    return make_unique<MemReader>(it->second.data.data(), it->second.data.size(), path);
+  }
+
+  LOG(LINFO, ("GetReader(", file, ", ", searchScope, ") no such file in cache. GetCache().size() =", GetCache().size()));
+  FileReader fr(path, READER_CHUNK_LOG_SIZE, READER_CHUNK_LOG_COUNT);
+  
+  return ToMemory(path, fr);
 }
 
 int Platform::VideoMemoryLimit() const { return 8 * 1024 * 1024; }

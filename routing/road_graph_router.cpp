@@ -172,6 +172,7 @@ IRouter::ResultCode RoadGraphRouter::CalculateRoute(m2::PointD const & startPoin
                                                     m2::PointD const & finalPoint,
                                                     RouterDelegate const & delegate, Route & route)
 {
+  LOG(LINFO, ("RoadGraphRouter::CalculateRoute"));
   if (!CheckMapExistence(startPoint, route) || !CheckMapExistence(finalPoint, route))
     return IRouter::RouteFileNotExist;
 
@@ -180,6 +181,7 @@ IRouter::ResultCode RoadGraphRouter::CalculateRoute(m2::PointD const & startPoin
 
   if (finalVicinity.empty())
     return IRouter::EndPointNotFound;
+  LOG(LINFO, ("RoadGraphRouter::CalculateRoute 2"));
 
   // TODO (ldragunov) Remove this check after several releases. (Estimated in november)
   vector<string> mwmNames;
@@ -205,6 +207,7 @@ IRouter::ResultCode RoadGraphRouter::CalculateRoute(m2::PointD const & startPoin
   if (!route.GetAbsentCountries().empty())
     return IRouter::FileTooOld;
 
+  LOG(LINFO, ("RoadGraphRouter::CalculateRoute 3"));
   // Let us assume that the closest to startPoint/finalPoint feature point has the same altitude
   // with startPoint/finalPoint.
   Junction const startPos(startPoint, startVicinity.front().second.GetAltitude());
@@ -234,6 +237,7 @@ IRouter::ResultCode RoadGraphRouter::CalculateRoute(m2::PointD const & startPoin
 
   if (!route.IsValid())
     return IRouter::RouteNotFound;
+  LOG(LINFO, ("RoadGraphRouter::CalculateRoute 4"));
 
   switch (resultCode)
   {
