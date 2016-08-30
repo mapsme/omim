@@ -26,7 +26,8 @@ public class BookmarkCategoriesFragment extends BaseMwmRecyclerFragment
   private int mSelectedPosition;
 
   @Override
-  protected @LayoutRes int getLayoutRes()
+  @LayoutRes
+  protected int getLayoutRes()
   {
     return R.layout.recycler_default;
   }
@@ -40,7 +41,7 @@ public class BookmarkCategoriesFragment extends BaseMwmRecyclerFragment
   @Override
   protected BookmarkCategoriesAdapter getAdapter()
   {
-    return (BookmarkCategoriesAdapter)super.getAdapter();
+    return (BookmarkCategoriesAdapter) super.getAdapter();
   }
 
   @Override
@@ -94,9 +95,13 @@ public class BookmarkCategoriesFragment extends BaseMwmRecyclerFragment
       break;
 
     case R.id.set_edit:
-      EditTextDialogFragment.show(getString(R.string.bookmark_set_name),
-                                  BookmarkManager.INSTANCE.getCategory(mSelectedPosition).getName(),
-                                  getString(R.string.rename), getString(R.string.cancel), this);
+      new EditTextDialogFragment.Builder(this)
+          .title(R.string.bookmark_set_name)
+          .hint(R.string.name)
+          .initialText(BookmarkManager.INSTANCE.getCategory(mSelectedPosition).getName())
+          .positiveButton(R.string.rename)
+          .negativeButton(R.string.cancel)
+          .show();
       break;
     }
 

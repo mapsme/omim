@@ -64,9 +64,12 @@ public class StreetAdapter extends RecyclerView.Adapter<StreetAdapter.BaseViewHo
   private void addStreet()
   {
     final Resources resources = MwmApplication.get().getResources();
-    EditTextDialogFragment.show(resources.getString(R.string.street), null,
-                                resources.getString(R.string.ok),
-                                resources.getString(R.string.cancel), mFragment);
+    new EditTextDialogFragment.Builder(mFragment)
+        .title(R.string.street)
+        .hint(R.string.name)
+        .negativeButton(R.string.cancel)
+        .positiveButton(R.string.ok)
+        .show();
   }
 
   protected abstract class BaseViewHolder extends RecyclerView.ViewHolder

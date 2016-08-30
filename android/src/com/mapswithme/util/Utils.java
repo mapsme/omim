@@ -26,12 +26,6 @@ import android.util.Log;
 import android.view.Window;
 import android.widget.Toast;
 
-import com.mapswithme.maps.BuildConfig;
-import com.mapswithme.maps.MwmApplication;
-import com.mapswithme.maps.R;
-import com.mapswithme.maps.activity.CustomNavigateUpListener;
-import com.mapswithme.util.statistics.AlohaHelper;
-
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileWriter;
@@ -40,6 +34,12 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import com.mapswithme.maps.BuildConfig;
+import com.mapswithme.maps.MwmApplication;
+import com.mapswithme.maps.R;
+import com.mapswithme.maps.activity.CustomNavigateUpListener;
+import com.mapswithme.util.statistics.AlohaHelper;
 
 public class Utils
 {
