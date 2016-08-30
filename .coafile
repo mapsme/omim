@@ -1,0 +1,11 @@
+[Default]
+ignore = 3party/**
+
+[cpplint]
+files = **/*.cpp
+bears = ClangComplexityBear
+
+[python-pep8]
+files = **/*.py
+bears = PEP8Bear
+tab_width = 2
