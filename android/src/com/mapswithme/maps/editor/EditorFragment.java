@@ -619,8 +619,13 @@ public class EditorFragment extends BaseMwmFragment implements View.OnClickListe
 
   private void placeDoesntExist()
   {
-    EditTextDialogFragment.show(getString(R.string.editor_place_doesnt_exist), "", getString(R.string.editor_detailed_description),
-                                getString(R.string.editor_report_problem_send_button), getString(R.string.cancel), this);
+    new EditTextDialogFragment.Builder(this)
+        .title(R.string.editor_place_doesnt_exist)
+        .message(R.string.editor_detailed_description)
+        .hint(R.string.editor_comment_hint)
+        .negativeButton(R.string.cancel)
+        .positiveButton(R.string.editor_report_problem_send_button)
+        .show();
   }
 
   @Override
