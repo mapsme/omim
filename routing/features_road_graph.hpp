@@ -3,6 +3,7 @@
 #include "routing/vehicle_model.hpp"
 
 #include "indexer/altitude_loader.hpp"
+#include "indexer/edge_index_loader.hpp"
 #include "indexer/feature_data.hpp"
 #include "indexer/mwm_set.hpp"
 
@@ -88,6 +89,7 @@ private:
 
     MwmSet::MwmHandle m_mwmHandle;
     unique_ptr<feature::AltitudeLoader> m_altitudeLoader;
+    unique_ptr<feature::EdgeIndexLoader> m_edgeIndexLoader;
   };
 
   bool IsRoad(FeatureType const & ft) const;
