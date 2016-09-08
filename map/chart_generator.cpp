@@ -175,7 +175,7 @@ bool GenerateYAxisChartData(uint32_t height, double minMetersPerPxl,
 void GenerateChartByPoints(uint32_t width, uint32_t height, vector<m2::PointD> const & geometry,
                            MapStyle mapStyle, vector<uint8_t> & frameBuffer)
 {
-  LOG(LINFO, ("RCHART GenerateChartByPoints(", width, height, geometry.size(), lightTheme, "...)"));
+  LOG(LINFO, ("RCHART GenerateChartByPoints(", width, height, geometry.size(), mapStyle, "...)"));
 
   frameBuffer.clear();
   if (width == 0 || height == 0)

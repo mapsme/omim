@@ -898,8 +898,6 @@ Java_com_mapswithme_maps_Framework_nativeGenerateRouteAltitudeChart(JNIEnv * env
 {
   LOG(LINFO, ("RCHART nativeGenerateRouteAltitudeChart(..., ", width, height, day));
   ::Framework * fr = frm();
-  if (!fr->HasRouteAltitude())
-    return nullptr;
 
   LOG(LINFO, ("RCHART nativeGenerateRouteAltitudeChart2"));
   vector<uint8_t> imageRGBAData;
@@ -911,21 +909,28 @@ Java_com_mapswithme_maps_Framework_nativeGenerateRouteAltitudeChart(JNIEnv * env
   LOG(LINFO, ("RCHART nativeGenerateRouteAltitudeChart3 imageRGBAData.size() =", imageRGBAData.size()));
 
   jclass javaBitmapClass = (jclass)(env->FindClass("android/graphics/Bitmap"));
+  ASSERT(javaBitmapClass, ());
   jmethodID createBitmapFunction = env->GetStaticMethodID(javaBitmapClass, "createBitmap", "(IILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;");
+  ASSERT(createBitmapFunction, ());
   LOG(LINFO, ("RCHART nativeGenerateRouteAltitudeChart4 javaBitmapClass =", javaBitmapClass));
 
   char const configName[] = "ARGB_8888";
-  jstring jConfigName = env->NewStringUTF(configName);
+  jstring jConfigName = jni::ToJavaString(env, configName);
+  ASSERT(jConfigName, ());
   jclass javaBitmapConfigClass = env->FindClass("android/graphics/Bitmap$Config");
+  ASSERT(javaBitmapConfigClass, ());
   LOG(LINFO, ("RCHART nativeGenerateRouteAltitudeChart5 jConfigName =", jConfigName, " javaBitmapConfigClass =", javaBitmapConfigClass));
 
   jmethodID valueOfFunction = env->GetStaticMethodID(javaBitmapConfigClass, "valueOf", "(Ljava/lang/String;)Landroid/graphics/Bitmap$Config;");
+  ASSERT(valueOfFunction, ());
   LOG(LINFO, ("RCHART nativeGenerateRouteAltitudeChart6 valueOfFunction =", valueOfFunction));
 
   jobject javaBitmapConfig = env->CallStaticObjectMethod(javaBitmapConfigClass, valueOfFunction, jConfigName);
+  ASSERT(javaBitmapConfig, ());
   LOG(LINFO, ("RCHART nativeGenerateRouteAltitudeChart7 javaBitmapConfig =", javaBitmapConfig));
 
   jobject javaBitmap = env->CallStaticObjectMethod(javaBitmapClass, createBitmapFunction, width, height, javaBitmapConfig);
+  ASSERT(javaBitmap, ());
   LOG(LINFO, ("RCHART nativeGenerateRouteAltitudeChart8 javaBitmap =", javaBitmap));
 
   size_t const pxlCount = width * height;
