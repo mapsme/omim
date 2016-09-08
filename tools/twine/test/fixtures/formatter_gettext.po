@@ -1,0 +1,26 @@
+msgid ""
+msgstr ""
+"Language: en\n"
+"X-Generator: Twine <%= Twine::VERSION %>\n"
+
+
+# SECTION: Section 1
+#. "comment key1"
+msgctxt "key1"
+msgid "value1-english"
+msgstr "value1-english"
+
+msgctxt "key2"
+msgid "value2-english"
+msgstr "value2-english"
+
+
+# SECTION: Section 2
+msgctxt "key3"
+msgid "value3-english"
+msgstr "value3-english"
+
+#. "comment key4"
+msgctxt "key4"
+msgid "value4-english"
+msgstr "value4-english"
