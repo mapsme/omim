@@ -909,6 +909,7 @@ Java_com_mapswithme_maps_Framework_nativeGenerateRouteAltitudeChart(JNIEnv * env
   LOG(LINFO, ("RCHART nativeGenerateRouteAltitudeChart3 imageRGBAData.size() =", imageRGBAData.size()));
 
   jclass javaBitmapClass = (jclass)(env->FindClass("android/graphics/Bitmap"));
+
   ASSERT(javaBitmapClass, ());
   jmethodID createBitmapFunction = env->GetStaticMethodID(javaBitmapClass, "createBitmap", "(IILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;");
   ASSERT(createBitmapFunction, ());
@@ -931,6 +932,7 @@ Java_com_mapswithme_maps_Framework_nativeGenerateRouteAltitudeChart(JNIEnv * env
 
   jobject javaBitmap = env->CallStaticObjectMethod(javaBitmapClass, createBitmapFunction, width, height, javaBitmapConfig);
   ASSERT(javaBitmap, ());
+
   LOG(LINFO, ("RCHART nativeGenerateRouteAltitudeChart8 javaBitmap =", javaBitmap));
 
   size_t const pxlCount = width * height;
