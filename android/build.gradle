@@ -7,7 +7,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.android.tools.build:gradle:2.1.2'
+    classpath 'com.android.tools.build:gradle:2.1.3'
     classpath 'io.fabric.tools:gradle:1.+'
   }
 }
@@ -313,6 +313,7 @@ android {
     exclude 'lib/x86_64/libcrashlytics-envelope.so'
     exclude 'lib/x86_64/libcrashlytics.so'
   }
+  buildToolsVersion '24.0.2'
 }
 
 // Tasks needed to compile NDK part

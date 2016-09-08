@@ -1,10 +1,13 @@
 package com.mapswithme.maps.routing;
 
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
+import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.MwmActivity;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.bookmarks.data.MapObject;
@@ -86,5 +89,15 @@ public class RoutingPlanInplaceController extends RoutingPlanController
   {
     if (state.containsKey(STATE_OPEN))
       mSlotsRestoredState = state.getBoolean(STATE_OPEN);
+  }
+
+  public void showRouteAltitudeChart()
+  {
+    ImageView altitudeChart = (ImageView) mActivity.findViewById(R.id.altitude_chart);
+    Bitmap bm = Framework.nativeGenerateRouteAltitudeChart(altitudeChart.getWidth(), altitudeChart.getHeight(), true);
+    if (bm != null)
+    {
+      altitudeChart.setImageBitmap(bm);
+    }
   }
 }
