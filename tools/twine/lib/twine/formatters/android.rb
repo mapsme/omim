@@ -10,7 +10,8 @@ module Twine
       LANG_MAPPINGS = Hash[
         'zh-rCN' => 'zh-Hans',
         'zh-rHK' => 'zh-Hant',
-        'en-rGB' => 'en-UK',
+#        'en-rGB' => 'en-UK',
+        'en-rGB' => 'en-GB',
         'zh' => 'zh-Hans',
         'in' => 'id',
         'nb' => 'no'
