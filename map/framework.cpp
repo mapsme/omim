@@ -2988,6 +2988,9 @@ bool Framework::HasRouteAltitude() const { return m_routingSession.HasRouteAltit
 bool Framework::GenerateRouteAltitudeChart(uint32_t width, uint32_t height,
                                            vector<uint8_t> & imageRGBAData) const
 {
+  LOG(LINFO, ("RCHART Framework::GenerateRouteAltitudeChart(",
+              width, height, "...)"));
+
   feature::TAltitudes altitudes;
   if (!m_routingSession.GetRouteAltitudes(altitudes))
     return false;

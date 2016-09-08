@@ -3,6 +3,7 @@ package com.mapswithme.maps;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,10 +15,12 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.mapswithme.maps.Framework.MapObjectListener;
 import com.mapswithme.maps.activity.CustomNavigateUpListener;
@@ -310,6 +313,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
     return super.getThemeResourceId(theme);
   }
+
+  private ImageView altitudeChart;
 
   @SuppressLint("InlinedApi")
   @Override
@@ -822,6 +827,15 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
     if (MapFragment.nativeIsEngineCreated())
       LocationHelper.INSTANCE.attach(this);
+
+    Log.i("RCHART", "MwmActivity.onStart()");
+    altitudeChart = (ImageView) findViewById(R.id.altitude_chart);
+    Bitmap bm = Framework.nativeGenerateRouteAltitudeChart(800, 200, true);
+    if (bm != null)
+    {
+      Log.i("RCHART", "altitudeChart.setImageBitmap(bm); bm: " + bm.getWidth() + " " + bm.getHeight());
+      altitudeChart.setImageBitmap(bm);
+    }
   }
 
   private void initShowcase()

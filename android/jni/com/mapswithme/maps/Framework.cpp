@@ -34,6 +34,8 @@
 #include "base/logging.hpp"
 #include "base/sunrise_sunset.hpp"
 
+#include <android/bitmap.h>
+
 android::Framework * g_framework = 0;
 
 using namespace storage;
@@ -890,6 +892,152 @@ Java_com_mapswithme_maps_Framework_nativeGetRouteFollowingInfo(JNIEnv * env, jcl
   ASSERT(result, (jni::DescribeException()));
   return result;
 }
+
+JNIEXPORT jobject JNICALL
+Java_com_mapswithme_maps_Framework_nativeGenerateRouteAltitudeChart(JNIEnv * env, jclass, jint width, jint height, jboolean day)
+{
+  LOG(LINFO, ("RCHART nativeGenerateRouteAltitudeChart(..., ", width, height, day));
+  ::Framework * fr = frm();
+  if (!fr->HasRouteAltitude())
+    return nullptr;
+
+  LOG(LINFO, ("RCHART nativeGenerateRouteAltitudeChart2"));
+  vector<uint8_t> imageRGBAData;
+  if (!fr->GenerateRouteAltitudeChart(width, height, imageRGBAData))
+  {
+    LOG(LWARNING, ("RCHART nativeGenerateRouteAltitudeChart3 cannot generate imageRGBAData."));
+    return nullptr;
+  }
+  LOG(LINFO, ("RCHART nativeGenerateRouteAltitudeChart3 imageRGBAData.size() =", imageRGBAData.size()));
+
+  jclass javaBitmapClass = (jclass)(env->FindClass("android/graphics/Bitmap"));
+  jmethodID createBitmapFunction = env->GetStaticMethodID(javaBitmapClass, "createBitmap", "(IILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;");
+  LOG(LINFO, ("RCHART nativeGenerateRouteAltitudeChart4 javaBitmapClass =", javaBitmapClass));
+
+  char const configName[] = "ARGB_8888";
+  jstring jConfigName = env->NewStringUTF(configName);
+  jclass javaBitmapConfigClass = env->FindClass("android/graphics/Bitmap$Config");
+  LOG(LINFO, ("RCHART nativeGenerateRouteAltitudeChart5 jConfigName =", jConfigName, " javaBitmapConfigClass =", javaBitmapConfigClass));
+
+  jmethodID valueOfFunction = env->GetStaticMethodID(javaBitmapConfigClass, "valueOf", "(Ljava/lang/String;)Landroid/graphics/Bitmap$Config;");
+  LOG(LINFO, ("RCHART nativeGenerateRouteAltitudeChart6 valueOfFunction =", valueOfFunction));
+
+  jobject javaBitmapConfig = env->CallStaticObjectMethod(javaBitmapConfigClass, valueOfFunction, jConfigName);
+  LOG(LINFO, ("RCHART nativeGenerateRouteAltitudeChart7 javaBitmapConfig =", javaBitmapConfig));
+
+  jobject javaBitmap = env->CallStaticObjectMethod(javaBitmapClass, createBitmapFunction, width, height, javaBitmapConfig);
+  LOG(LINFO, ("RCHART nativeGenerateRouteAltitudeChart8 javaBitmap =", javaBitmap));
+
+  size_t const pxlCount = width * height;
+  if (4 * pxlCount != imageRGBAData.size())
+  {
+    LOG(LWARNING, ("RCHART nativeGenerateRouteAltitudeChart9 4 * pxlCount != imageRGBAData.size()", pxlCount, imageRGBAData.size()));
+    return nullptr;
+  }
+
+  jintArray pixels = env->NewIntArray(pxlCount);
+  for (size_t i = 0; i < pxlCount; ++i)
+  {
+    uint32_t red = imageRGBAData[i*4];
+    uint32_t green = imageRGBAData[i*4 + 1];
+    uint32_t blue = imageRGBAData[i*4 + 2];
+    uint32_t alpha = imageRGBAData[i*4 + 3];
+    int currentPixel = (alpha << 24) | (red << 16) | (green << 8) | (blue);
+    env->SetIntArrayRegion(pixels, i, 1, &currentPixel);
+  }
+
+  jmethodID setPixelsFunction = env->GetMethodID(javaBitmapClass, "setPixels", "([IIIIIII)V");
+  env->CallVoidMethod(javaBitmap, setPixelsFunction, pixels, 0, width, 0, 0, width, height);
+  return javaBitmap;
+}
+
+
+
+
+// JNIEXPORT jobject JNICALL Java_com_example_jnitest_MainActivity_rotateBitmapCcw90(JNIEnv * env, jobject obj, jobject bitmap)
+//   {
+//   //
+//   //getting bitmap info:
+//   //
+//   LOGD("reading bitmap info...");
+//   AndroidBitmapInfo info;
+//   int ret;
+//   if ((ret = AndroidBitmap_getInfo(env, bitmap, &info)) < 0)
+//     {
+//     LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
+//     return NULL;
+//     }
+//   LOGD("width:%d height:%d stride:%d", info.width, info.height, info.stride);
+//   if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888)
+//     {
+//     LOGE("Bitmap format is not RGBA_8888!");
+//     return NULL;
+//     }
+//   //
+//   //read pixels of bitmap into native memory :
+//   //
+//   LOGD("reading bitmap pixels...");
+//   void* bitmapPixels;
+//   if ((ret = AndroidBitmap_lockPixels(env, bitmap, &bitmapPixels)) < 0)
+//     {
+//     LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
+//     return NULL;
+//     }
+//   uint32_t* src = (uint32_t*) bitmapPixels;
+//   uint32_t* tempPixels = new uint32_t[info.height * info.width];
+//   int stride = info.stride;
+//   int pixelsCount = info.height * info.width;
+//   memcpy(tempPixels, src, sizeof(uint32_t) * pixelsCount);
+//   AndroidBitmap_unlockPixels(env, bitmap);
+//   //
+//   //recycle bitmap - using bitmap.recycle()
+//   //
+//   LOGD("recycling bitmap...");
+//   jclass bitmapCls = env->GetObjectClass(bitmap);
+//   jmethodID recycleFunction = env->GetMethodID(bitmapCls, "recycle", "()V");
+//   if (recycleFunction == 0)
+//     {
+//     LOGE("error recycling!");
+//     return NULL;
+//     }
+//   env->CallVoidMethod(bitmap, recycleFunction);
+//   //
+//   //creating a new bitmap to put the pixels into it - using Bitmap Bitmap.createBitmap (int width, int height, Bitmap.Config config) :
+//   //
+//   LOGD("creating new bitmap...");
+//   jmethodID createBitmapFunction = env->GetStaticMethodID(bitmapCls, "createBitmap", "(IILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;");
+//   jstring configName = env->NewStringUTF("ARGB_8888");
+//   jclass bitmapConfigClass = env->FindClass("android/graphics/Bitmap$Config");
+//   jmethodID valueOfBitmapConfigFunction = env->GetStaticMethodID(bitmapConfigClass, "valueOf", "(Ljava/lang/String;)Landroid/graphics/Bitmap$Config;");
+//   jobject bitmapConfig = env->CallStaticObjectMethod(bitmapConfigClass, valueOfBitmapConfigFunction, configName);
+//   jobject newBitmap = env->CallStaticObjectMethod(bitmapCls, createBitmapFunction, info.height, info.width, bitmapConfig);
+//   //
+//   // putting the pixels into the new bitmap:
+//   //
+//   if ((ret = AndroidBitmap_lockPixels(env, newBitmap, &bitmapPixels)) < 0)
+//     {
+//     LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
+//     return NULL;
+//     }
+//   uint32_t* newBitmapPixels = (uint32_t*) bitmapPixels;
+//   int whereToPut = 0;    
+//   for (int x = info.width - 1; x >= 0; --x)
+//     for (int y = 0; y < info.height; ++y)
+//       {
+//       uint32_t pixel = tempPixels[info.width * y + x];
+//       newBitmapPixels[whereToPut++] = pixel;
+//       }
+//   AndroidBitmap_unlockPixels(env, newBitmap);
+//   //
+//   // freeing the native memory used to store the pixels
+//   //
+//   delete[] tempPixels;
+//   return newBitmap;
+//   }
+
+
+
+
 
 JNIEXPORT void JNICALL
 Java_com_mapswithme_maps_Framework_nativeShowCountry(JNIEnv * env, jclass, jstring countryId, jboolean zoomToDownloadButton)

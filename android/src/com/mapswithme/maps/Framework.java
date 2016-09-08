@@ -1,5 +1,6 @@
 package com.mapswithme.maps;
 
+import android.graphics.Bitmap;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -143,6 +144,9 @@ public class Framework
 
   @Nullable
   public static native RoutingInfo nativeGetRouteFollowingInfo();
+
+  @Nullable
+  public static native Bitmap nativeGenerateRouteAltitudeChart(int width, int height, boolean day);
 
   // When an end user is going to a turn he gets sound turn instructions.
   // If C++ part wants the client to pronounce an instruction nativeGenerateTurnNotifications returns
