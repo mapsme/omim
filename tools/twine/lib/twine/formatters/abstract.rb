@@ -1,80 +1,46 @@
+require 'fileutils'
+
 module Twine
   module Formatters
     class Abstract
       attr_accessor :strings
       attr_accessor :options
 
-      def self.can_handle_directory?(path)
-        return false
+      def initialize
+        @strings = StringsFile.new
+        @options = {}
       end
 
-      def initialize(strings, options)
-        @strings = strings
-        @options = options
+      def format_name
+        raise NotImplementedError.new("You must implement format_name in your formatter class.")
       end
 
-      def iosify_substitutions(str)
-        # use "@" instead of "s" for substituting strings
-        str.gsub!(/%([0-9\$]*)s/, '%\1@')
-        return str
+      def extension
+        raise NotImplementedError.new("You must implement extension in your formatter class.")
       end
 
-      def androidify_substitutions(str)
-        # 1) use "s" instead of "@" for substituting strings
-        str.gsub!(/%([0-9\$]*)@/, '%\1s')
-
-        # 1a) escape strings that begin with a lone "@"
-        str.sub!(/^@ /, '\\@ ')
-
-        # 2) if there is more than one substitution in a string, make sure they are numbered
-        substituteCount = 0
-        startFound = false
-        str.each_char do |c|
-          if startFound
-            if c == "%"
-              # ignore as this is a literal %
-            elsif c.match(/\d/)
-              # leave the string alone if it already has numbered substitutions
-              return str
-            else
-              substituteCount += 1
-            end
-            startFound = false
-          elsif c == "%"
-            startFound = true
-          end
-        end
-
-        if substituteCount > 1
-          currentSub = 1
-          startFound = false
-          newstr = ""
-          str.each_char do |c|
-            if startFound
-              if !(c == "%")
-                newstr = newstr + "#{currentSub}$"
-                currentSub += 1
-              end
-              startFound = false
-            elsif c == "%"
-              startFound = true
-            end
-            newstr = newstr + c
-          end
-          return newstr
-        else
-          return str
-        end
+      def can_handle_directory?(path)
+        raise NotImplementedError.new("You must implement can_handle_directory? in your formatter class.")
       end
-      
+
+      def default_file_name
+        raise NotImplementedError.new("You must implement default_file_name in your formatter class.")
+      end
+
       def set_translation_for_key(key, lang, value)
+        value = value.gsub("\n", "\\n")
+
         if @strings.strings_map.include?(key)
-          @strings.strings_map[key].translations[lang] = value
+          row = @strings.strings_map[key]
+          reference = @strings.strings_map[row.reference_key] if row.reference_key
+
+          if !reference or value != reference.translations[lang]
+            row.translations[lang] = value
+          end
         elsif @options[:consume_all]
-          STDERR.puts "Adding new string '#{key}' to strings data file."
-          arr = @strings.sections.select { |s| s.name == 'Uncategorized' }
-          current_section = arr ? arr[0] : nil
-          if !current_section
+          Twine::stderr.puts "Adding new string '#{key}' to strings data file."
+          current_section = @strings.sections.find { |s| s.name == 'Uncategorized' }
+          unless current_section
             current_section = StringsSection.new('Uncategorized')
             @strings.sections.insert(0, current_section)
           end
@@ -82,13 +48,13 @@ module Twine
           current_section.rows << current_row
           
           if @options[:tags] && @options[:tags].length > 0
-              current_row.tags = @options[:tags]            
+            current_row.tags = @options[:tags]            
           end
           
           @strings.strings_map[key] = current_row
           @strings.strings_map[key].translations[lang] = value
         else
-          STDERR.puts "Warning: '#{key}' not found in strings data file."
+          Twine::stderr.puts "Warning: '#{key}' not found in strings data file."
         end
         if !@strings.language_codes.include?(lang)
           @strings.add_language_code(lang)
@@ -96,50 +62,101 @@ module Twine
       end
 
       def set_comment_for_key(key, comment)
+        return unless @options[:consume_comments]
+        
         if @strings.strings_map.include?(key)
-          @strings.strings_map[key].comment = comment
-        end
-      end
+          row = @strings.strings_map[key]
+          
+          reference = @strings.strings_map[row.reference_key] if row.reference_key
 
-      def default_file_name
-        raise NotImplementedError.new("You must implement default_file_name in your formatter class.")
+          if !reference or comment != reference.raw_comment
+            row.comment = comment
+          end
+        end
       end
 
       def determine_language_given_path(path)
         raise NotImplementedError.new("You must implement determine_language_given_path in your formatter class.")
       end
 
-      def read_file(path, lang)
-        raise NotImplementedError.new("You must implement read_file in your formatter class.")
+      def output_path_for_language(lang)
+        lang
       end
 
-      def write_file(path, lang)
-        raise NotImplementedError.new("You must implement write_file in your formatter class.")
+      def read(io, lang)
+        raise NotImplementedError.new("You must implement read in your formatter class.")
       end
 
-      def write_all_files(path)
-        if !File.directory?(path)
-          raise Twine::Error.new("Directory does not exist: #{path}")
+      def format_file(lang)
+        output_processor = Processors::OutputProcessor.new(@strings, @options)
+        processed_strings = output_processor.process(lang)
+
+        return nil if processed_strings.strings_map.empty?
+
+        header = format_header(lang)
+        result = ""
+        result += header + "\n" if header
+        result += format_sections(processed_strings, lang)
+      end
+
+      def format_header(lang)
+      end
+
+      def format_sections(strings, lang)
+        sections = strings.sections.map { |section| format_section(section, lang) }
+        sections.compact.join("\n")
+      end
+
+      def format_section_header(section)
+      end
+
+      def should_include_row(row, lang)
+        row.translated_string_for_lang(lang)
+      end
+
+      def format_section(section, lang)
+        rows = section.rows.select { |row| should_include_row(row, lang) }
+        return if rows.empty?
+
+        result = ""
+
+        if section.name && section.name.length > 0
+          section_header = format_section_header(section)
+          result += "\n#{section_header}" if section_header
         end
 
-        file_name = @options[:file_name] || default_file_name
-        langs_written = []
-        Dir.foreach(path) do |item|
-          if item == "." or item == ".."
-            next
-          end
-          item = File.join(path, item)
-          if File.directory?(item)
-            lang = determine_language_given_path(item)
-            if lang
-              write_file(File.join(item, file_name), lang)
-              langs_written << lang
-            end
-          end
-        end
-        if langs_written.empty?
-          raise Twine::Error.new("Failed to generate any files: No languages found at #{path}")
-        end
+        rows.map! { |row| format_row(row, lang) }
+        rows.compact! # remove nil entries
+        rows.map! { |row| "\n#{row}" }  # prepend newline
+        result += rows.join
+      end
+
+      def format_row(row, lang)
+        [format_comment(row, lang), format_key_value(row, lang)].compact.join
+      end
+
+      def format_comment(row, lang)
+      end
+
+      def format_key_value(row, lang)
+        value = row.translated_string_for_lang(lang)
+        key_value_pattern % { key: format_key(row.key.dup), value: format_value(value.dup) }
+      end
+
+      def key_value_pattern
+        raise NotImplementedError.new("You must implement key_value_pattern in your formatter class.")
+      end
+
+      def format_key(key)
+        key
+      end
+
+      def format_value(value)
+        value
+      end
+
+      def escape_quotes(text)
+        text.gsub('"', '\\\\"')
       end
     end
   end

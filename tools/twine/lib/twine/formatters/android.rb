@@ -5,27 +5,33 @@ require 'rexml/document'
 module Twine
   module Formatters
     class Android < Abstract
-      FORMAT_NAME = 'android'
-      EXTENSION = '.xml'
-      DEFAULT_FILE_NAME = 'strings.xml'
-      LANG_CODES = Hash[
-        'zh' => 'zh-Hans',
+      include Twine::Placeholders
+
+      LANG_MAPPINGS = Hash[
         'zh-rCN' => 'zh-Hans',
         'zh-rHK' => 'zh-Hant',
-        'en-rGB' => 'en-UK',
-        'in' => 'id'
+#        'en-rGB' => 'en-UK',
+        'en-rGB' => 'en-GB',
+        'zh' => 'zh-Hans',
+        'in' => 'id',
+        'nb' => 'no'
         # TODO: spanish
       ]
-      DEFAULT_LANG_CODES = Hash[
-        'zh-TW' => 'zh-Hant' # if we don't have a zh-TW translation, try zh-Hant before en
-      ]
 
-      def self.can_handle_directory?(path)
+      def format_name
+        'android'
+      end
+
+      def extension
+        '.xml'
+      end
+
+      def can_handle_directory?(path)
         Dir.entries(path).any? { |item| /^values.*$/.match(item) }
       end
 
       def default_file_name
-        return DEFAULT_FILE_NAME
+        return 'strings.xml'
       end
 
       def determine_language_given_path(path)
@@ -34,10 +40,12 @@ module Twine
           if segment == 'values'
             return @strings.language_codes[0]
           else
-            match = /^values-(.*)$/.match(segment)
+            # The language is defined by a two-letter ISO 639-1 language code, optionally followed by a two letter ISO 3166-1-alpha-2 region code (preceded by lowercase "r").
+            # see http://developer.android.com/guide/topics/resources/providing-resources.html#AlternativeResources
+            match = /^values-([a-z]{2}(-r[a-z]{2})?)$/i.match(segment)
             if match
               lang = match[1]
-              lang = LANG_CODES.fetch(lang, lang)
+              lang = LANG_MAPPINGS.fetch(lang, lang)
               lang.sub!('-r', '-')
               return lang
             end
@@ -47,7 +55,21 @@ module Twine
         return
       end
 
-      def read_file(path, lang)
+      def output_path_for_language(lang)
+        "values-" + (LANG_MAPPINGS.key(lang) || lang)
+      end
+
+      def set_translation_for_key(key, lang, value)
+        value = CGI.unescapeHTML(value)
+        value.gsub!('\\\'', '\'')
+        value.gsub!('\\"', '"')
+        value = convert_placeholders_from_android_to_twine(value)
+        value.gsub!('\@', '@')
+        value.gsub!(/(\\u0020)*|(\\u0020)*\z/) { |spaces| ' ' * (spaces.length / 6) }
+        super(key, lang, value)
+      end
+
+      def read(io, lang)
         resources_regex = /<resources(?:[^>]*)>(.*)<\/resources>/m
         key_regex = /<string name="(\w+)">/
         comment_regex = /<!-- (.*) -->/
@@ -56,99 +78,72 @@ module Twine
         value = nil
         comment = nil
 
-        File.open(path, 'r:UTF-8') do |f|
-          content_match = resources_regex.match(f.read)
-          if content_match
-            for line in content_match[1].split(/\r?\n/)
-              key_match = key_regex.match(line)
-              if key_match
-                key = key_match[1]
-                value_match = value_regex.match(line)
-                if value_match
-                  value = value_match[1]
-                  value = CGI.unescapeHTML(value)
-                  value.gsub!('\\\'', '\'')
-                  value.gsub!('\\"', '"')
-                  value = iosify_substitutions(value)
-                  value.gsub!(/(\\u0020)*|(\\u0020)*\z/) { |spaces| ' ' * (spaces.length / 6) }
-                else
-                  value = ""
-                end
-                set_translation_for_key(key, lang, value)
-                if comment and comment.length > 0 and !comment.start_with?("SECTION:")
-                  set_comment_for_key(key, comment)
-                end
-                comment = nil
+        content_match = resources_regex.match(io.read)
+        if content_match
+          for line in content_match[1].split(/\r?\n/)
+            key_match = key_regex.match(line)
+            if key_match
+              key = key_match[1]
+              value_match = value_regex.match(line)
+              value = value_match ? value_match[1] : ""
+              
+              set_translation_for_key(key, lang, value)
+              if comment and comment.length > 0 and !comment.start_with?("SECTION:")
+                set_comment_for_key(key, comment)
               end
-
-              comment_match = comment_regex.match(line)
-              if comment_match
-                comment = comment_match[1]
-              end
+              comment = nil
+            end
+            
+            comment_match = comment_regex.match(line)
+            if comment_match
+              comment = comment_match[1]
             end
           end
         end
       end
 
-      def write_file(path, lang)
-        default_lang = nil
-        if DEFAULT_LANG_CODES.has_key?(lang)
-          default_lang = DEFAULT_LANG_CODES[lang]
-        end
-        File.open(path, 'w:UTF-8') do |f|
-          f.puts "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!-- Android Strings File -->\n<!-- Generated by Twine #{Twine::VERSION} -->\n<!-- Language: #{lang} -->"
-          f.write '<resources>'
-          @strings.sections.each do |section|
-            printed_section = false
-            section.rows.each do |row|
-              if row.matches_tags?(@options[:tags], @options[:untagged])
-                if !printed_section
-                  f.puts ''
-                  if section.name && section.name.length > 0
-                    section_name = section.name.gsub('--', '—')
-                    f.puts "\t<!-- SECTION: #{section_name} -->"
-                  end
-                  printed_section = true
-                end
-
-                key = row.key
-
-                value = row.translated_string_for_lang(lang, default_lang)
-                if !value && @options[:include_untranslated]
-                  value = row.translated_string_for_lang(@strings.language_codes[0])
-                end
-
-                if value # if values is nil, there was no appropriate translation, so let Android handle the defaulting
-                  value = String.new(value) # use a copy to prevent modifying the original
-
-                  # Android enforces the following rules on the values
-                  #  1) apostrophes and quotes must be escaped with a backslash
-                  value.gsub!('\'', '\\\\\'')
-                  value.gsub!('"', '\\\\"')
-                  #  2) HTML escape the string
-                  value = CGI.escapeHTML(value)
-                  #  3) fix substitutions (e.g. %s/%@)
-                  value = androidify_substitutions(value)
-                  #  4) replace beginning and end spaces with \0020. Otherwise Android strips them.
-                  value.gsub!(/\A *| *\z/) { |spaces| '\u0020' * spaces.length }
-
-                  comment = row.comment
-                  if comment
-                    comment = comment.gsub('--', '—')
-                  end
-
-                  if comment && comment.length > 0
-                    f.puts "\t<!-- #{comment} -->\n"
-                  end
-                  f.puts "\t<string name=\"#{key}\">#{value}</string>"
-                end
-              end
-            end
-          end
-
-          f.puts '</resources>'
-        end
+      def format_header(lang)
+        "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!-- Android Strings File -->\n<!-- Generated by Twine #{Twine::VERSION} -->\n<!-- Language: #{lang} -->"
       end
+
+      def format_sections(strings, lang)
+        result = '<resources>'
+        
+        result += super + "\n"
+
+        result += "</resources>\n"
+      end
+
+      def format_section_header(section)
+        "\t<!-- SECTION: #{section.name} -->"
+      end
+
+      def format_comment(row, lang)
+        "\t<!-- #{row.comment.gsub('--', '—')} -->\n" if row.comment
+      end
+
+      def key_value_pattern
+        "\t<string name=\"%{key}\">%{value}</string>"
+      end
+
+      def format_value(value)
+        # Android enforces the following rules on the values
+        #  1) apostrophes and quotes must be escaped with a backslash
+        value = escape_quotes(value)
+        value.gsub!("'", "\\\\'")
+        #  2) HTML escape the string
+        value = CGI.escapeHTML(value)
+        #  3) convert placeholders (e.g. %@ -> %s)
+        value = convert_placeholders_from_twine_to_android(value)
+        #  4) escape non resource identifier @ signs (http://developer.android.com/guide/topics/resources/accessing-resources.html#ResourcesFromXml)
+        resource_identifier_regex = /@(?!([a-z\.]+:)?[a-z+]+\/[a-zA-Z_]+)/   # @[<package_name>:]<resource_type>/<resource_name>
+        value.gsub!(resource_identifier_regex, '\@')
+        #  5) replace beginning and end spaces with \0020. Otherwise Android strips them.
+        value.gsub(/\A *| *\z/) { |spaces| '\u0020' * spaces.length }
+      end
+
     end
   end
 end
+
+Twine::Formatters.formatters << Twine::Formatters::Android.new

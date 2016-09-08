@@ -1,0 +1,13 @@
+[[Section]]
+	[value_with_leading_accent]
+		en = `value
+	[value_with_trailing_accent]
+		en = value`
+	[value_with_leading_space]
+		en = ` value`
+	[value_with_trailing_space]
+		en = `value `
+	[value_wrapped_by_spaces]
+		en = ` value `
+	[value_wrapped_by_accents]
+		en = ``value``
