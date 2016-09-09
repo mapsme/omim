@@ -19,6 +19,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 
+import java.io.Serializable;
+import java.util.Stack;
+
 import com.mapswithme.maps.Framework.MapObjectListener;
 import com.mapswithme.maps.activity.CustomNavigateUpListener;
 import com.mapswithme.maps.ads.LikesManager;
