@@ -31,18 +31,17 @@
     android:visibility="gone"/>
 
   <LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_alignWithParentIfMissing="true"
     android:layout_toRightOf="@+id/fragment_container"
     android:clipToPadding="false"
-    android:orientation="vertical"
-    android:padding="@dimen/margin_base">
+    android:orientation="vertical">
 
     <include
       android:id="@+id/toolbar"
       layout="@layout/toolbar_with_search"
-      android:layout_width="@dimen/panel_width"
+      android:layout_width="match_parent"
       android:layout_height="?attr/actionBarSize"
       android:layout_marginBottom="@dimen/margin_base"
       android:visibility="gone"
@@ -50,7 +49,7 @@
 
     <include
       layout="@layout/layout_nav"
-      android:layout_width="@dimen/panel_width"
+      android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:visibility="invisible"
       tools:visibility="visible"/>
@@ -58,7 +57,7 @@
     <com.mapswithme.maps.widget.placepage.PlacePageView
       android:id="@+id/info_box"
       style="@style/MwmWidget.Floating"
-      android:layout_width="@dimen/place_page_width"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginBottom="@dimen/menu_line_height"
       android:background="?windowBackgroundForced"
