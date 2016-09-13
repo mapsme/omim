@@ -2,6 +2,7 @@
 
 #include "map/api_mark_point.hpp"
 #include "map/booking_api.hpp"
+#include "map/booking_collector.hpp"
 #include "map/bookmark.hpp"
 #include "map/bookmark_manager.hpp"
 #include "map/displacement_mode_manager.hpp"
@@ -154,6 +155,7 @@ protected:
   BookmarkManager m_bmManager;
 
   BookingApi m_bookingApi;
+  BookingCollector m_bookingCollector;
 
   bool m_isRenderingEnabled;
 
@@ -183,6 +185,9 @@ public:
   /// Get access to booking api helpers
   BookingApi & GetBookingApi() { return m_bookingApi; }
   BookingApi const & GetBookingApi() const { return m_bookingApi; }
+
+  BookingCollector & GetBookingCollector() { return m_bookingCollector; }
+  BookingCollector const & GetBookingCollector() const { return m_bookingCollector; }
 
   /// Migrate to new version of very different data.
   bool IsEnoughSpaceForMigrate() const;
@@ -286,6 +291,9 @@ public:
   BookmarkAndCategory FindBookmark(UserMark const * mark) const;
   BookmarkManager & GetBookmarkManager() { return m_bmManager; }
 
+  /// Create/update bookmarks for booked hotels.
+  void UpdateBookings();
+
   m2::PointD GetSearchMarkSize(SearchMarkType searchMarkType);
 
 protected:
@@ -314,6 +322,12 @@ private:
                             df::SelectionShape::ESelectedObject selectionType,
                             place_page::Info const & info);
   void InvalidateUserMarks();
+
+  void UpdateBookingsOnUiThread(vector<BookingApi::Details> const & details,
+                                BookingCollector::Data const & data, bool success);
+  void UpdateBookingBookmarks(vector<BookingApi::Details> const & details);
+  string GetBookingBookmarkTitle(m2::PointD const & pt);
+
 public:
   void DeactivateMapSelection(bool notifyUI);
   /// Used to "refresh" UI in some cases (e.g. feature editing).

@@ -226,6 +226,8 @@ extern NSString * const kBookmarksChangedNotification;
         withParameters:stat
             atLocation:[MWMLocationManager lastLocation]];
 
+  GetFramework().GetBookingCollector().TryToBookHotel(string(en.hotelId.UTF8String));
+
   UIViewController * vc = static_cast<UIViewController *>([MapViewController controller]);
   NSURL * url = isDescription ? self.entity.bookingDescriptionUrl : self.entity.bookingUrl;
   NSAssert(url, @"Booking url can't be nil!");

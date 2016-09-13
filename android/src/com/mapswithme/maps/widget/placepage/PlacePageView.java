@@ -450,6 +450,8 @@ public class PlacePageView extends RelativeLayout
         final Location location = LocationHelper.INSTANCE.getLastKnownLocation();
         Statistics.INSTANCE.trackEvent(event, location, params);
 
+        Framework.nativeTryToBookHotel(info.getId());
+
         try
         {
           followUrl(book ? info.urlBook : info.urlDescription);
