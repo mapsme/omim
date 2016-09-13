@@ -30,9 +30,17 @@ final class SponsoredHotel
     void onPriceReceived(String id, String price, String currency);
   }
 
+  interface OnDescriptionReceivedListener
+  {
+    void onDescriptionReceived(String id, String description);
+  }
+
   // Hotel ID -> Price
   private static final Map<String, Price> sPriceCache = new HashMap<>();
-  private static WeakReference<OnPriceReceivedListener> sListener;
+  // Hotel ID -> Description
+  private static final Map<String, String> sDescriptionCache = new HashMap<>();
+  private static WeakReference<OnPriceReceivedListener> sPriceListener;
+  private static WeakReference<OnDescriptionReceivedListener> sDescriptionListener;
 
   private String mId;
 
@@ -59,9 +67,14 @@ final class SponsoredHotel
     return mId;
   }
 
-  public static void setListener(OnPriceReceivedListener listener)
+  public static void setPriceListener(OnPriceReceivedListener listener)
   {
-    sListener = new WeakReference<>(listener);
+    sPriceListener = new WeakReference<>(listener);
+  }
+
+  public static void setDescriptionListener(OnDescriptionReceivedListener listener)
+  {
+    sDescriptionListener = new WeakReference<>(listener);
   }
 
   static void requestPrice(String id, String currencyCode)
@@ -73,6 +86,15 @@ final class SponsoredHotel
     nativeRequestPrice(id, currencyCode);
   }
 
+  static void requestDescription(String id, String locale)
+  {
+    String description = sDescriptionCache.get(id);
+    if (description != null)
+      onDescriptionReceived(id, description);
+
+    nativeRequestDescription(id, locale);
+  }
+
   @SuppressWarnings("unused")
   private static void onPriceReceived(String id, String price, String currency)
   {
@@ -81,13 +103,29 @@ final class SponsoredHotel
 
     sPriceCache.put(id, new Price(price, currency));
 
-    OnPriceReceivedListener listener = sListener.get();
+    OnPriceReceivedListener listener = sPriceListener.get();
     if (listener == null)
-      sListener = null;
+      sPriceListener = null;
     else
       listener.onPriceReceived(id, price, currency);
   }
 
+  @SuppressWarnings("unused")
+  private static void onDescriptionReceived(String id, String description)
+  {
+    if (TextUtils.isEmpty(description))
+      return;
+
+    sDescriptionCache.put(id, description);
+
+    OnDescriptionReceivedListener listener = sDescriptionListener.get();
+    if (listener == null)
+      sDescriptionListener = null;
+    else
+      listener.onDescriptionReceived(id, description);
+  }
+
   public static native SponsoredHotel nativeGetCurrent();
   private static native void nativeRequestPrice(String id, String currencyCode);
+  private static native void nativeRequestDescription(String id, String locale);
 }
