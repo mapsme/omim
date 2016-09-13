@@ -1,12 +1,16 @@
 package com.mapswithme.maps.widget.placepage;
 
+import android.support.annotation.DrawableRes;
 import android.support.annotation.UiThread;
 import android.text.TextUtils;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.mapswithme.maps.R;
 import com.mapswithme.maps.bookmarks.data.MapObject;
 import com.mapswithme.maps.bookmarks.data.Metadata;
 
@@ -25,6 +29,26 @@ final class SponsoredHotel
     }
   }
 
+  public static class FacilityType {
+    @DrawableRes
+    private final int icon;
+    private final String name;
+
+    public FacilityType(@DrawableRes int icon, String name) {
+      this.icon = icon;
+      this.name = name;
+    }
+
+    @DrawableRes
+    public int getIcon() {
+      return icon;
+    }
+
+    public String getName() {
+      return name;
+    }
+  }
+
   interface OnPriceReceivedListener
   {
     void onPriceReceived(String id, String price, String currency);
@@ -35,12 +59,20 @@ final class SponsoredHotel
     void onDescriptionReceived(String id, String description);
   }
 
+  interface OnFacilitiesReceivedListener
+  {
+    void onFacilitiesReceived(String id, List<FacilityType> facilities);
+  }
+
   // Hotel ID -> Price
   private static final Map<String, Price> sPriceCache = new HashMap<>();
   // Hotel ID -> Description
   private static final Map<String, String> sDescriptionCache = new HashMap<>();
+  // Hotel ID -> Facilities
+  private static final Map<String, List<FacilityType>> sFacilitiesCache = new HashMap<>();
   private static WeakReference<OnPriceReceivedListener> sPriceListener;
   private static WeakReference<OnDescriptionReceivedListener> sDescriptionListener;
+  private static WeakReference<OnFacilitiesReceivedListener> sFacilityListener;
 
   private String mId;
 
@@ -77,6 +109,17 @@ final class SponsoredHotel
     sDescriptionListener = new WeakReference<>(listener);
   }
 
+  public static void setFacilitiesListener(OnFacilitiesReceivedListener listener)
+  {
+    sFacilityListener = new WeakReference<>(listener);
+  }
+
+  @DrawableRes
+  public static int mapFacilityId(int facilityId) {
+//  TODO map facility id to drawable resource
+    return R.drawable.ic_entrance;
+  }
+
   static void requestPrice(String id, String currencyCode)
   {
     Price p = sPriceCache.get(id);
@@ -93,6 +136,20 @@ final class SponsoredHotel
       onDescriptionReceived(id, description);
 
     nativeRequestDescription(id, locale);
+  }
+
+  static void requestFacilities(String id, String locale)
+  {
+    List<FacilityType> facilities = sFacilitiesCache.get(id);
+    if (facilities != null) {
+      OnFacilitiesReceivedListener listener = sFacilityListener.get();
+      if (listener == null)
+        sDescriptionListener = null;
+      else
+        listener.onFacilitiesReceived(id, facilities);
+    }
+
+    nativeRequestFacilities(id, locale);
   }
 
   @SuppressWarnings("unused")
@@ -125,7 +182,28 @@ final class SponsoredHotel
       listener.onDescriptionReceived(id, description);
   }
 
+  @SuppressWarnings("unused")
+  private static void onFacilitiesReceived(String id, int[] ids, String[] names)
+  {
+    if (ids.length == 0)
+      return;
+
+    List<FacilityType> result = new ArrayList<>();
+    for (int i = 0; i < ids.length; i++) {
+      result.add(new FacilityType(mapFacilityId(ids[i]), names[i]));
+    }
+
+    sFacilitiesCache.put(id, result);
+
+    OnFacilitiesReceivedListener listener = sFacilityListener.get();
+    if (listener == null)
+      sDescriptionListener = null;
+    else
+      listener.onFacilitiesReceived(id, result);
+  }
+
   public static native SponsoredHotel nativeGetCurrent();
   private static native void nativeRequestPrice(String id, String currencyCode);
   private static native void nativeRequestDescription(String id, String locale);
+  private static native void nativeRequestFacilities(String id, String locale);
 }
