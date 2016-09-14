@@ -130,4 +130,9 @@
   <dimen name="editor_margin_left_plus">72dp</dimen>
   <dimen name="editor_auth_btn_height">36dp</dimen>
   <dimen name="editor_margin_timetable_left">50dp</dimen>
+
+  <!-- Gallery-->
+  <dimen name="placepage_hotel_gallery_height">100dp</dimen>
+  <dimen name="placepage_hotel_gallery_width">150dp</dimen>
+
 </resources>

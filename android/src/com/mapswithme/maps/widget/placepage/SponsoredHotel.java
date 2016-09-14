@@ -49,6 +49,18 @@ final class SponsoredHotel
     }
   }
 
+  public static class Image {
+    private final String url;
+
+    public Image(String url) {
+      this.url = url;
+    }
+
+    public String getUrl() {
+      return url;
+    }
+  }
+
   interface OnPriceReceivedListener
   {
     void onPriceReceived(String id, String price, String currency);
@@ -64,15 +76,23 @@ final class SponsoredHotel
     void onFacilitiesReceived(String id, List<FacilityType> facilities);
   }
 
+  interface OnImagesReceivedListener
+  {
+    void onImagesReceived(String id, List<Image> images);
+  }
+
   // Hotel ID -> Price
   private static final Map<String, Price> sPriceCache = new HashMap<>();
   // Hotel ID -> Description
   private static final Map<String, String> sDescriptionCache = new HashMap<>();
   // Hotel ID -> Facilities
   private static final Map<String, List<FacilityType>> sFacilitiesCache = new HashMap<>();
+  // Hotel ID -> Images
+  private static final Map<String, List<Image>> sImagesCache = new HashMap<>();
   private static WeakReference<OnPriceReceivedListener> sPriceListener;
   private static WeakReference<OnDescriptionReceivedListener> sDescriptionListener;
   private static WeakReference<OnFacilitiesReceivedListener> sFacilityListener;
+  private static WeakReference<OnImagesReceivedListener> sImagesListener;
 
   private String mId;
 
@@ -114,6 +134,11 @@ final class SponsoredHotel
     sFacilityListener = new WeakReference<>(listener);
   }
 
+  public static void setImagesListener(OnImagesReceivedListener listener)
+  {
+    sImagesListener = new WeakReference<>(listener);
+  }
+
   @DrawableRes
   public static int mapFacilityId(int facilityId) {
 //  TODO map facility id to drawable resource
@@ -144,12 +169,26 @@ final class SponsoredHotel
     if (facilities != null) {
       OnFacilitiesReceivedListener listener = sFacilityListener.get();
       if (listener == null)
-        sDescriptionListener = null;
+        sFacilityListener = null;
       else
         listener.onFacilitiesReceived(id, facilities);
     }
 
     nativeRequestFacilities(id, locale);
+  }
+
+  static void requestImages(String id, String locale)
+  {
+    List<Image> images = sImagesCache.get(id);
+    if (images != null) {
+      OnImagesReceivedListener listener = sImagesListener.get();
+      if (listener == null)
+        sImagesListener = null;
+      else
+        listener.onImagesReceived(id, images);
+    }
+
+    nativeRequestImages(id, locale);
   }
 
   @SuppressWarnings("unused")
@@ -197,13 +236,34 @@ final class SponsoredHotel
 
     OnFacilitiesReceivedListener listener = sFacilityListener.get();
     if (listener == null)
-      sDescriptionListener = null;
+      sFacilityListener = null;
     else
       listener.onFacilitiesReceived(id, result);
+  }
+
+  @SuppressWarnings("unused")
+  private static void onImagesReceived(String id, String[] urls)
+  {
+    if (urls.length == 0)
+      return;
+
+    List<Image> result = new ArrayList<>();
+    for (int i = 0; i < urls.length; i++) {
+      result.add(new Image(urls[i]));
+    }
+
+    sImagesCache.put(id, result);
+
+    OnImagesReceivedListener listener = sImagesListener.get();
+    if (listener == null)
+      sImagesListener = null;
+    else
+      listener.onImagesReceived(id, result);
   }
 
   public static native SponsoredHotel nativeGetCurrent();
   private static native void nativeRequestPrice(String id, String currencyCode);
   private static native void nativeRequestDescription(String id, String locale);
   private static native void nativeRequestFacilities(String id, String locale);
+  private static native void nativeRequestImages(String id, String locale);
 }
