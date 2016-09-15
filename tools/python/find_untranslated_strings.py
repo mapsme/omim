@@ -23,7 +23,7 @@ class StringsTxt:
 
     def __init__(self):
         self.strings_path = join(dirname(argv[0]), "..", "..", "strings.txt")
-        self.translations = defaultdict(dict) # dict<key, dict<lang, translation>>
+        self.translations = defaultdict(lambda: defaultdict(str)) # dict<key, dict<lang, translation>>
         self.translations_by_language = defaultdict(dict) # dict<lang, dict<key, translation>>
         self.comments_and_tags = defaultdict(dict)
         self.with_english = []
@@ -49,12 +49,13 @@ class StringsTxt:
                     self.keys_in_order.append(line)
                     continue
                 if line.startswith("["):
-                    if line in self.translations:
-                        print("Duplicate key {}".format(line))
-                        continue
-                    self.translations[line] = {}
+                    # if line in self.translations:
+                    #     print("Duplicate key {}".format(line))
+                    #     continue
+                    # self.translations[line] = {}
                     current_key = line
-                    self.keys_in_order.append(current_key)
+                    if current_key not in self.keys_in_order:
+                        self.keys_in_order.append(current_key)
 
                 if TRANSLATION.match(line):
                     lang, tran = self._parse_lang_and_translation(line)
