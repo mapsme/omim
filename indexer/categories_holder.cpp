@@ -1,5 +1,6 @@
 #include "indexer/categories_holder.hpp"
 #include "indexer/classificator.hpp"
+#include "indexer/ftypes_matcher.hpp"
 #include "indexer/search_delimiters.hpp"
 #include "indexer/search_string_utils.hpp"
 
@@ -191,8 +192,28 @@ void CategoriesHolder::LoadFromStream(istream & s)
             auto it = m_groupTranslations.find(group);
             if (it == m_groupTranslations.end())
               continue;
-            for (auto const & synonym : it->second)
-              cat.m_synonyms.push_back(synonym);
+            
+            // Release only categories.txt fix for ATMs, banks, and fuel stations.
+            if (ftypes::IsATMChecker::Instance()(types) || ftypes::IsBankChecker::Instance()(types))
+            {
+              cat.m_synonyms.insert(cat.m_synonyms.begin(), it->second.begin(), it->second.end());
+            }
+            else if (ftypes::IsFuelStationChecker::Instance()(types))
+            {
+              for (auto const & synonym : it->second)
+              {
+                auto const locale = MapIntegerToLocale(synonym.m_locale);
+                
+                if (locale == "ru" || locale == "cs" || locale == "uk")
+                  cat.m_synonyms.insert(cat.m_synonyms.begin(), synonym);
+                else
+                  cat.m_synonyms.push_back(synonym);
+              }
+            }
+            else
+            {
+              cat.m_synonyms.insert(cat.m_synonyms.end(), it->second.begin(), it->second.end());
+            }
           }
         }
 
