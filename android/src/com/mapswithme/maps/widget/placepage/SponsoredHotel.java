@@ -1,5 +1,7 @@
 package com.mapswithme.maps.widget.placepage;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import android.support.annotation.DrawableRes;
 import android.support.annotation.UiThread;
 import android.text.TextUtils;
@@ -50,6 +52,36 @@ final class SponsoredHotel
     }
   }
 
+  public static class NearbyObject {
+    private final String category;
+    private final String title;
+    private final String distance;
+    private final LatLng location;
+
+    public NearbyObject(String category, String title, String distance, LatLng location) {
+      this.category = category;
+      this.title = title;
+      this.distance = distance;
+      this.location = location;
+    }
+
+    public String getCategory() {
+      return category;
+    }
+
+    public String getTitle() {
+      return title;
+    }
+
+    public String getDistance() {
+      return distance;
+    }
+
+    public LatLng getLocation() {
+      return location;
+    }
+  }
+
   interface OnPriceReceivedListener
   {
     void onPriceReceived(String id, String price, String currency);
@@ -70,6 +102,11 @@ final class SponsoredHotel
     void onImagesReceived(String id, ArrayList<Image> images);
   }
 
+  interface OnNearbyReceivedListener
+  {
+    void onNearbyReceived(String id, ArrayList<NearbyObject> images);
+  }
+
   // Hotel ID -> Price
   private static final Map<String, Price> sPriceCache = new HashMap<>();
   // Hotel ID -> Description
@@ -78,10 +115,13 @@ final class SponsoredHotel
   private static final Map<String, List<FacilityType>> sFacilitiesCache = new HashMap<>();
   // Hotel ID -> Images
   private static final Map<String, ArrayList<Image>> sImagesCache = new HashMap<>();
+  // Hotel ID -> Nearby
+  private static final Map<String, ArrayList<NearbyObject>> sNearbyCache = new HashMap<>();
   private static WeakReference<OnPriceReceivedListener> sPriceListener;
   private static WeakReference<OnDescriptionReceivedListener> sDescriptionListener;
   private static WeakReference<OnFacilitiesReceivedListener> sFacilityListener;
   private static WeakReference<OnImagesReceivedListener> sImagesListener;
+  private static WeakReference<OnNearbyReceivedListener> sNearbyListener;
 
   private String mId;
 
@@ -126,6 +166,11 @@ final class SponsoredHotel
   public static void setImagesListener(OnImagesReceivedListener listener)
   {
     sImagesListener = new WeakReference<>(listener);
+  }
+
+  public static void setNearbyListener(OnNearbyReceivedListener listener)
+  {
+    sNearbyListener = new WeakReference<>(listener);
   }
 
   @DrawableRes
@@ -178,6 +223,20 @@ final class SponsoredHotel
     }
 
     nativeRequestImages(id, locale);
+  }
+
+  static void requestNearby(String id, LatLng position)
+  {
+    ArrayList<NearbyObject> objects = sNearbyCache.get(id);
+    if (objects != null) {
+      OnNearbyReceivedListener listener = sNearbyListener.get();
+      if (listener == null)
+        sNearbyListener = null;
+      else
+        listener.onNearbyReceived(id, objects);
+    }
+
+    nativeRequestNearby(id, position.latitude, position.longitude);
   }
 
   @SuppressWarnings("unused")
@@ -256,9 +315,27 @@ final class SponsoredHotel
       listener.onImagesReceived(id, result);
   }
 
+  @SuppressWarnings("unused")
+  private static void onNearbyReceived(String id)
+  {
+    ArrayList<NearbyObject> result = new ArrayList<>();
+    result.add(new NearbyObject("transport", "Bowery", "800 ft", new LatLng(0, 0)));
+    result.add(new NearbyObject("food", "Egg Shop", "300 ft", new LatLng(0, 0)));
+    result.add(new NearbyObject("shop", "Fay Yee Inc", "200 ft", new LatLng(0, 0)));
+
+    sNearbyCache.put(id, result);
+
+    OnNearbyReceivedListener listener = sNearbyListener.get();
+    if (listener == null)
+      sNearbyListener = null;
+    else
+      listener.onNearbyReceived(id, result);
+  }
+
   public static native SponsoredHotel nativeGetCurrent();
   private static native void nativeRequestPrice(String id, String currencyCode);
   private static native void nativeRequestDescription(String id, String locale);
   private static native void nativeRequestFacilities(String id, String locale);
   private static native void nativeRequestImages(String id, String locale);
+  private static native void nativeRequestNearby(String id, double lat, double lon);
 }
