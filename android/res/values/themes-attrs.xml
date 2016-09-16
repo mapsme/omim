@@ -56,6 +56,9 @@
     <attr name="navigationTheme" format="reference"/>
 
     <attr name="fabAdd" format="reference"/>
+
+    <attr name="routingButtonHint" format="color"/>
+    <attr name="routingButtonPressedHint" format="color"/>
   </declare-styleable>
 
   <declare-styleable name="ThemeAttrs.NavButtons">
@@ -73,5 +76,6 @@
 
   <declare-styleable name="ThemeAttrs.Navigation">
     <attr name="newsMarker" format="reference"/>
+    <attr name="searchLayoutBackground" format="reference"/>
   </declare-styleable>
 </resources>

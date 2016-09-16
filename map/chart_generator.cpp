@@ -83,6 +83,24 @@ agg::rgba8 GetCurveColor(MapStyle mapStyle)
 
 namespace maps
 {
+void ScaleChartData(vector<double> & chartData, double scale)
+{
+  for (size_t i = 0; i < chartData.size(); ++i)
+    chartData[i] *= scale;
+}
+
+void ShiftChartData(vector<double> & chartData, double shift)
+{
+  for (size_t i = 0; i < chartData.size(); ++i)
+    chartData[i] += shift;
+}
+
+void ReflectChartData(vector<double> & chartData)
+{
+  for (size_t i = 0; i < chartData.size(); ++i)
+    chartData[i] = -chartData[i];
+}
+
 bool NormalizeChartData(vector<double> const & distanceDataM,
                         feature::TAltitudes const & altitudeDataM, size_t resultPointCount,
                         vector<double> & uniformAltitudeDataM)
@@ -166,26 +184,35 @@ bool GenerateYAxisChartData(uint32_t height, double minMetersPerPxl,
     return false;
   }
 
-  size_t const altitudeDataSize = altitudeDataM.size();
-  yAxisDataPxl.resize(altitudeDataSize);
-  for (size_t i = 0; i < altitudeDataSize; ++i)
-    yAxisDataPxl[i] = height - heightIndentPxl - (altitudeDataM[i] - minAltM) / metersPerPxl;
+  double const deltaAltPxl = deltaAltM / metersPerPxl;
+  double const freeHeightSpacePxl = drawHeightPxl - deltaAltPxl;
+  if (freeHeightSpacePxl < 0 || freeHeightSpacePxl > drawHeightPxl)
+  {
+    LOG(LERROR, ("Number of pixels free of chart points (", freeHeightSpacePxl,
+                 ") is below zero or greater than the number of pixels for the chart (", drawHeightPxl, ")."));
+    return false;
+  }
+
+  double const maxAltPxl = maxAltM / metersPerPxl;
+  yAxisDataPxl.assign(altitudeDataM.cbegin(), altitudeDataM.cend());
+  ScaleChartData(yAxisDataPxl, 1.0 / metersPerPxl);
+  ReflectChartData(yAxisDataPxl);
+  ShiftChartData(yAxisDataPxl, maxAltPxl + heightIndentPxl + freeHeightSpacePxl / 2.0);
 
   return true;
 }
 
-void GenerateChartByPoints(uint32_t width, uint32_t height, vector<m2::PointD> const & geometry,
+bool GenerateChartByPoints(uint32_t width, uint32_t height, vector<m2::PointD> const & geometry,
                            MapStyle mapStyle, vector<uint8_t> & frameBuffer)
 {
   frameBuffer.clear();
   if (width == 0 || height == 0)
-    return;
+    return false;
 
   agg::rgba8 const kBackgroundColor = agg::rgba8(255, 255, 255, 0);
   agg::rgba8 const kLineColor = GetLineColor(mapStyle);
   agg::rgba8 const kCurveColor = GetCurveColor(mapStyle);
   double constexpr kLineWidthPxl = 2.0;
-  uint32_t constexpr kBPP = 4;
 
   using TBlender = BlendAdaptor<agg::rgba8, agg::order_rgba>;
   using TPixelFormat = agg::pixfmt_custom_blend_rgba<TBlender, agg::rendering_buffer>;
@@ -199,9 +226,9 @@ void GenerateChartByPoints(uint32_t width, uint32_t height, vector<m2::PointD> c
   TPixelFormat pixelFormat(renderBuffer, agg::comp_op_src_over);
   TBaseRenderer baseRenderer(pixelFormat);
 
-  frameBuffer.assign(width * kBPP * height, 0);
+  frameBuffer.assign(width * kAltitudeChartBPP * height, 0);
   renderBuffer.attach(&frameBuffer[0], static_cast<unsigned>(width),
-                      static_cast<unsigned>(height), static_cast<int>(width * kBPP));
+                      static_cast<unsigned>(height), static_cast<int>(width * kAltitudeChartBPP));
 
   // Background.
   baseRenderer.reset_clipping(true);
@@ -214,7 +241,7 @@ void GenerateChartByPoints(uint32_t width, uint32_t height, vector<m2::PointD> c
   rasterizer.clip_box(0, 0, width, height);
 
   if (geometry.empty())
-    return; /* No chart line to draw. */
+    return true; /* No chart line to draw. */
 
   // Polygon under chart line.
   agg::path_storage underChartGeometryPath;
@@ -238,6 +265,7 @@ void GenerateChartByPoints(uint32_t width, uint32_t height, vector<m2::PointD> c
 
   rasterizer.add_path(stroke);
   agg::render_scanlines_aa_solid(rasterizer, scanline, baseRenderer, kLineColor);
+  return true;
 }
 
 bool GenerateChart(uint32_t width, uint32_t height, vector<double> const & distanceDataM,
@@ -270,7 +298,6 @@ bool GenerateChart(uint32_t width, uint32_t height, vector<double> const & dista
       geometry[i] = m2::PointD(i * oneSegLenPix, yAxisDataPxl[i]);
   }
 
-  GenerateChartByPoints(width, height, geometry, mapStyle, frameBuffer);
-  return true;
+  return GenerateChartByPoints(width, height, geometry, mapStyle, frameBuffer);
 }
 }  // namespace maps

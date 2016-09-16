@@ -1,8 +1,11 @@
 #import "MWMSearchTabbedCollectionViewCell.h"
+#import "MWMKeyboard.h"
 
-@interface MWMSearchTabbedCollectionViewCell ()
+@interface MWMSearchTabbedCollectionViewCell ()<MWMKeyboardObserver>
 
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint * titleTopOffset;
+@property(weak, nonatomic) IBOutlet NSLayoutConstraint * noResultsBottomOffset;
+@property(weak, nonatomic) IBOutlet UIView * noResultsContainer;
+@property(weak, nonatomic) IBOutlet UIView * noResultsWrapper;
 
 @end
 
@@ -10,18 +13,37 @@
 
 - (void)awakeFromNib
 {
+  [super awakeFromNib];
   CALayer * sl = self.layer;
   sl.shouldRasterize = YES;
   sl.rasterizationScale = UIScreen.mainScreen.scale;
+  [MWMKeyboard addObserver:self];
 }
 
-- (void)layoutSubviews
+- (void)addNoResultsView:(MWMSearchNoResults *)view
 {
-  CGFloat const textBottom = self.noResultsImage.height + self.noResultsTitle.height + self.noResultsText.height + 68.0;
-  BOOL const compact = textBottom > self.height;
-  self.titleTopOffset.constant = compact ? 20. : 196.;
-  self.noResultsImage.hidden = compact;
-  [super layoutSubviews];
+  [self removeNoResultsView];
+  self.noResultsContainer.hidden = NO;
+  [self.noResultsWrapper addSubview:view];
 }
 
+- (void)removeNoResultsView
+{
+  self.noResultsContainer.hidden = YES;
+  [self.noResultsWrapper.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+}
+
+#pragma mark - MWMKeyboard
+
+- (void)onKeyboardAnimation
+{
+  CGFloat const keyboardHeight = [MWMKeyboard keyboardHeight];
+  if (keyboardHeight >= self.height)
+    return;
+
+  self.noResultsBottomOffset.constant = keyboardHeight;
+  [self layoutIfNeeded];
+}
+
+- (void)onKeyboardWillAnimate { [self layoutIfNeeded]; }
 @end

@@ -75,6 +75,8 @@ import com.mapswithme.util.ThemeUtils;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.Utils;
 import com.mapswithme.util.concurrency.UiThread;
+import com.mapswithme.util.log.DebugLogger;
+import com.mapswithme.util.log.Logger;
 import com.mapswithme.util.sharing.ShareOption;
 import com.mapswithme.util.sharing.SharingHelper;
 import com.mapswithme.util.statistics.AlohaHelper;
@@ -147,6 +149,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   // The first launch of application ever - onboarding screen will be shown.
   private boolean mFirstStart;
+  private final Logger mLogger = new DebugLogger(MwmActivity.class.getSimpleName());
 
   public interface LeftAnimationTrackListener
   {
@@ -745,7 +748,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
       }
     });
     mOnmapDownloader.onResume();
-    mNavigationController.getNavMenu().onResume(null);
+    mNavigationController.onResume();
   }
 
   @Override
@@ -1246,9 +1249,12 @@ public class MwmActivity extends BaseMwmFragmentActivity
   @Override
   public void updateMenu()
   {
+    adjustMenuLineFrameVisibility();
+
     if (RoutingController.get().isNavigating())
     {
       mNavigationController.show(true);
+      mSearchController.hide();
       mMainMenu.setState(MainMenu.State.NAVIGATION, false);
       return;
     }
@@ -1265,6 +1271,21 @@ public class MwmActivity extends BaseMwmFragmentActivity
     }
 
     mMainMenu.setState(MainMenu.State.MENU, false);
+  }
+
+  private void adjustMenuLineFrameVisibility()
+  {
+    if (RoutingController.get().isBuilt())
+    {
+      mMainMenu.showLineFrame(true);
+      return;
+    }
+
+    if (RoutingController.get().isPlanning() || RoutingController.get().isBuilding()
+        || RoutingController.get().isErrorEncountered())
+    {
+      mMainMenu.showLineFrame(false);
+    }
   }
 
   @Override
@@ -1320,6 +1341,21 @@ public class MwmActivity extends BaseMwmFragmentActivity
     else
     {
       mRoutingPlanInplaceController.updatePoints();
+    }
+  }
+
+  @Override
+  public void onRouteBuilt(@Framework.RouterType int router)
+  {
+    if (mIsFragmentContainer)
+    {
+      RoutingPlanFragment fragment = (RoutingPlanFragment) getFragment(RoutingPlanFragment.class);
+      if (fragment != null)
+        fragment.showRouteAltitudeChart(router != Framework.ROUTER_TYPE_VEHICLE);
+    }
+    else
+    {
+      mRoutingPlanInplaceController.showRouteAltitudeChart(router != Framework.ROUTER_TYPE_VEHICLE);
     }
   }
 

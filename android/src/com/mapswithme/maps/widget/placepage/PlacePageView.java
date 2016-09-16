@@ -5,7 +5,6 @@ import com.google.android.gms.maps.model.LatLng;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -450,7 +449,7 @@ public class PlacePageView extends RelativeLayout
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
       setElevation(UiUtils.dimen(R.dimen.placepage_elevation));
 
-    if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+    if (UiUtils.isLandscape(getContext()))
       mDetails.setBackgroundResource(0);
 
     SponsoredHotel.setPriceListener(this);
@@ -809,7 +808,9 @@ public class PlacePageView extends RelativeLayout
     refreshMetadataOrHide(mMapObject.getMetadata(Metadata.MetadataType.FMD_FLATS), mEntrance, mTvEntrance);
     refreshOpeningHours();
 
-    if (RoutingController.get().isNavigating() || MapManager.nativeIsLegacyMode())
+    if (RoutingController.get().isNavigating() ||
+        RoutingController.get().isPlanning() ||
+        MapManager.nativeIsLegacyMode())
     {
       UiUtils.hide(mEditPlace, mAddOrganisation, mAddPlace);
     }
