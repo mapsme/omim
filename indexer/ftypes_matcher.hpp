@@ -183,6 +183,14 @@ public:
   static IsWifiChecker const & Instance();
 };
 
+class IsBankChecker : public BaseChecker
+{
+  IsBankChecker();
+
+public:
+  static IsBankChecker const & Instance();
+};
+
 /// Type of locality (do not change values and order - they have detalization order)
 /// COUNTRY < STATE < CITY < ...
 enum Type { NONE = -1, COUNTRY = 0, STATE, CITY, TOWN, VILLAGE, LOCALITY_COUNT };

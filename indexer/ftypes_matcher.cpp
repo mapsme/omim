@@ -456,6 +456,17 @@ IsWifiChecker const & IsWifiChecker::Instance()
   return instance;
 }
 
+IsBankChecker::IsBankChecker()
+{
+  m_types.push_back(classif().GetTypeByPath({"amenity", "bank"}));
+}
+
+IsBankChecker const & IsBankChecker::Instance()
+{
+  static IsBankChecker const instance;
+  return instance;
+}
+
 uint32_t GetPopulation(FeatureType const & ft)
 {
   uint32_t population = ft.GetPopulation();
