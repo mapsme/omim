@@ -921,4 +921,6 @@
 	<string name="whatsnew_booking_2_message">De zoekresultaten voor hotels tonen de hotelbeoordeling en prijscategorie.</string>
 	<string name="whatsnew_cycle_navigation_header">Fietsnavigatie (bèta-versie)</string>
 	<string name="whatsnew_cycle_navigation_message">We testen de fietsnavigatie voor het nieuwe seizoen. Probeer uw favoriete fietsroute met MAPS.ME en deel uw ervaringen met ons.</string>
+	<string name="bicycle_alert_header">Fietsnavigatie (bèta-versie)</string>
+	<string name="bicycle_alert_message">We testen de fietsnavigatie voor het nieuwe seizoen. Probeer uw favoriete fietsroute met MAPS.ME en deel uw ervaringen met ons.</string>
 </resources>

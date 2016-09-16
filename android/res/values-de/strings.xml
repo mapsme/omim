@@ -951,4 +951,6 @@
 	<string name="whatsnew_booking_2_message">Die Suchergebnisse zeigen die Bewertung und die Preiskategorie des Hotels.</string>
 	<string name="whatsnew_cycle_navigation_header">Fahrradnavigation (Betaversion)</string>
 	<string name="whatsnew_cycle_navigation_message">Wir testen die Fahrradnavigation für die neue Saison. Testen Sie Ihre Lieblings-Fahrradroute mit MAPS.ME und teilen Sie Ihre Meinung mit uns.</string>
+	<string name="bicycle_alert_header">Fahrradnavigation (Betaversion)</string>
+	<string name="bicycle_alert_message">Wir testen die Fahrradnavigation für die neue Saison. Testen Sie Ihre Lieblings-Fahrradroute mit MAPS.ME und teilen Sie Ihre Meinung mit uns.</string>
 </resources>

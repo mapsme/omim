@@ -33,6 +33,7 @@ public final class Config
   private static final String KEY_MISC_FIRST_START_DIALOG_SEEN = "FirstStartDialogSeen";
   private static final String KEY_MISC_UI_THEME = "UiTheme";
   private static final String KEY_MISC_UI_THEME_SETTINGS = "UiThemeSettings";
+  private static final String KEY_MISC_BICYCLE_ALERT_SEEN = "BicycleAlertSeen";
 
   private Config() {}
 
@@ -276,6 +277,16 @@ public final class Config
   public static void acceptRoutingDisclaimer()
   {
     setBool(KEY_MISC_DISCLAIMER_ACCEPTED);
+  }
+
+  public static boolean isBicycleAlertSeen()
+  {
+    return getBool(KEY_MISC_BICYCLE_ALERT_SEEN);
+  }
+
+  public static void setBicycleAlertSeen()
+  {
+    setBool(KEY_MISC_BICYCLE_ALERT_SEEN);
   }
 
   public static boolean isKitKatMigrationComplete()

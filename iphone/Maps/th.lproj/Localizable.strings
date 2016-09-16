@@ -1610,3 +1610,7 @@
 "whatsnew_cycle_navigation_header" = "การนำทางจักรยาน (beta-version)";
 
 "whatsnew_cycle_navigation_message" = "เรากำลังทดสอบการนำทางจักรยานในฤดูกาลใหม่ ลองเส้นทางการขี่จักรยานด้วย MAPS.ME และแชร์ความคิดเห็นของคุณมาให้เรา";
+
+"bicycle_alert_header" = "การนำทางจักรยาน (beta-version)";
+
+"bicycle_alert_message" = "เรากำลังทดสอบการนำทางจักรยานในฤดูกาลใหม่ ลองเส้นทางการขี่จักรยานด้วย MAPS.ME และแชร์ความคิดเห็นของคุณมาให้เรา";

@@ -322,6 +322,29 @@ public class RoutingController
       });
   }
 
+  private boolean showBicycleAlert()
+  {
+    if (mLastRouterType != Framework.ROUTER_TYPE_BICYCLE || Config.isBicycleAlertSeen())
+      return false;
+
+    Config.setBicycleAlertSeen();
+
+    new AlertDialog.Builder(mContainer.getActivity())
+        .setTitle(R.string.bicycle_alert_header)
+        .setMessage(R.string.bicycle_alert_message)
+        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
+        {
+          @Override
+          public void onClick(DialogInterface dlg, int which)
+          {
+            start();
+          }
+        }).show();
+
+
+    return true;
+  }
+
   public void start()
   {
     mLogger.d("start");
@@ -333,6 +356,9 @@ public class RoutingController
       suggestRebuildRoute();
       return;
     }
+
+    if (showBicycleAlert())
+      return;
 
     MapObject my = LocationHelper.INSTANCE.getMyPosition();
     if (my == null)

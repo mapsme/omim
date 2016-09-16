@@ -920,4 +920,6 @@
 	<string name="whatsnew_booking_2_message">検索結果にホテルの評価と宿泊料カテゴリーが表示されます。</string>
 	<string name="whatsnew_cycle_navigation_header">バイクナビゲーション（ベータ版）</string>
 	<string name="whatsnew_cycle_navigation_message">新シーズンに向けてバイクナビゲーションをテスト中です。MAPS.MEで、お気に入りのサイクリングルートを試してみませんか。ご感想をお待ちしています。</string>
+	<string name="bicycle_alert_header">バイクナビゲーション（ベータ版）</string>
+	<string name="bicycle_alert_message">新シーズンに向けてバイクナビゲーションをテスト中です。MAPS.MEで、お気に入りのサイクリングルートを試してみませんか。ご感想をお待ちしています。</string>
 </resources>
