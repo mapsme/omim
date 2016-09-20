@@ -376,6 +376,7 @@ void Processor::ForEachCategoryType(StringSliceBase const & slice, ToDo && todo)
 
 void Processor::Search(SearchParams const & params, m2::RectD const & viewport)
 {
+  SetMode(params.GetMode());
   bool const viewportSearch = m_mode == Mode::Viewport;
 
   bool rankPivotIsSet = false;
@@ -400,6 +401,7 @@ void Processor::Search(SearchParams const & params, m2::RectD const & viewport)
 
   SetMode(params.GetMode());
   SetSuggestsEnabled(params.GetSuggestsEnabled());
+  
   SetInputLocale(params.m_inputLocale);
 
   ASSERT(!params.m_query.empty(), ());
