@@ -6,11 +6,17 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.os.Environment;
 import android.os.SystemClock;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.mapswithme.maps.BuildConfig;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.background.AppBackgroundTracker;
+import com.mapswithme.util.Constants;
+import com.mapswithme.util.StorageUtils;
 import com.mapswithme.util.concurrency.UiThread;
 import com.mapswithme.util.log.FileLogger;
 import com.mapswithme.util.log.Logger;
@@ -36,6 +42,7 @@ public final class TrackRecorder
   };
 
   private static Boolean sEnableLogging;
+  @Nullable
   private static Logger sLogger;
 
   private static final LocationListener sLocationListener = new LocationListener.Simple()
@@ -203,7 +210,6 @@ public final class TrackRecorder
     });
   }
 
-  @SuppressLint("SdCardPath")
   static void log(String message)
   {
     if (sEnableLogging == null)
@@ -215,10 +221,15 @@ public final class TrackRecorder
     synchronized (TrackRecorder.class)
     {
       if (sLogger == null)
-        sLogger = new FileLogger("/sdcard/MapsWithMe/gps-tracker.log");
-
-      sLogger.d(message);
+      {
+        String externalDir = StorageUtils.getExternalFilesDir();
+        if (!TextUtils.isEmpty(externalDir))
+          sLogger = new FileLogger(externalDir + "/gps-tracker.log");
+      }
     }
+
+    if (sLogger != null)
+      sLogger.d(message);
   }
 
   private static native void nativeSetEnabled(boolean enable);
