@@ -105,14 +105,7 @@ public class MwmApplication extends Application
     super.onCreate();
     mMainLoopHandler = new Handler(getMainLooper());
 
-    // Alohalytics generates installation id,
-    // it should be initialized before Crashlytics.
-    Statistics s = Statistics.INSTANCE;
-
-    initHockeyApp();
-    initCrashlytics();
-    initPushWoosh();
-
+    // First we need initialize paths and platform to have access to settings and other components.
     String settingsPath = getSettingsPath();
     new File(settingsPath).mkdirs();
     new File(getTempPath()).mkdirs();
@@ -120,6 +113,14 @@ public class MwmApplication extends Application
     nativePreparePlatform(settingsPath);
     nativeInitPlatform(getApkPath(), getStoragePath(settingsPath), getTempPath(), getObbGooglePath(),
                        BuildConfig.FLAVOR, BuildConfig.BUILD_TYPE, UiUtils.isTablet());
+
+    // Alohalytics generates installation id,
+    // it should be initialized before Crashlytics.
+    Statistics s = Statistics.INSTANCE;
+
+    initHockeyApp();
+    initCrashlytics();
+    initPushWoosh();
 
     mPrefs = getSharedPreferences(getString(R.string.pref_file_name), MODE_PRIVATE);
     mBackgroundTracker = new AppBackgroundTracker();
