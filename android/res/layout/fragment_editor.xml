@@ -284,25 +284,6 @@
 
         <TextView
           android:layout_width="match_parent"
-          android:layout_height="32dp"
-          android:text="@string/editor_other_info"
-          android:textAppearance="@style/MwmTextAppearance.Body2"/>
-
-        <com.mapswithme.maps.widget.CustomTextInputLayout
-          android:id="@+id/custom_input"
-          style="@style/MwmWidget.Editor.CustomTextInput"
-          android:gravity="center_vertical"
-          android:minHeight="74dp">
-
-          <EditText
-            android:id="@+id/input"
-            style="@style/MwmWidget.Editor.FieldLayout.EditText"
-            android:hint="@string/editor_detailed_description_hint"/>
-
-        </com.mapswithme.maps.widget.CustomTextInputLayout>
-
-        <TextView
-          android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/margin_half"
           android:text="@string/editor_detailed_description"
@@ -325,7 +306,7 @@
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
-      android:id="@+id/cv__more"
+      android:id="@+id/cv__reset"
       style="@style/MwmWidget.Editor.CardView"
       android:layout_marginTop="@dimen/margin_double"
       android:layout_marginBottom="@dimen/margin_base">

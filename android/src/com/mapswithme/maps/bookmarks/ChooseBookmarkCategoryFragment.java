@@ -31,6 +31,7 @@ public class ChooseBookmarkCategoryFragment extends BaseMwmDialogFragment
   {
     void onCategoryChanged(int bookmarkId, int newCategoryId);
   }
+
   private Listener mListener;
 
   @Override
@@ -109,7 +110,10 @@ public class ChooseBookmarkCategoryFragment extends BaseMwmDialogFragment
   @Override
   public void onCategoryCreate()
   {
-    EditTextDialogFragment.show(getString(R.string.bookmark_set_name), null,
-                                getString(R.string.ok), null, this);
+    new EditTextDialogFragment.Builder(this)
+        .title(R.string.bookmark_set_name)
+        .hint(R.string.name)
+        .positiveButton(R.string.ok)
+        .show();
   }
 }
