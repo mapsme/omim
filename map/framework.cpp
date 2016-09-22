@@ -812,7 +812,7 @@ void Framework::ShowBookmark(BookmarkAndCategory const & bnc)
   place_page::Info info;
   FillBookmarkInfo(*mark, bnc, info);
   ActivateMapSelection(true, df::SelectionShape::OBJECT_USER_MARK, info);
-  m_lastTapEvent.reset(new df::TapInfo { m_currentModelView.GtoP(info.GetMercator()), false, false, info.GetID() });
+  m_lastTapEvent = MakeTapEvent(info.GetMercator(), info.GetID(), TapEvent::Source::Other);
 }
 
 void Framework::ShowTrack(Track const & track)
@@ -1368,7 +1368,7 @@ void Framework::ShowSearchResult(search::Result const & res)
 
   UserMarkContainer::UserMarkForPoi()->SetPtOrg(center);
   ActivateMapSelection(false, df::SelectionShape::OBJECT_POI, info);
-  m_lastTapEvent.reset(new df::TapInfo { m_currentModelView.GtoP(center), false, false, info.GetID() });
+  m_lastTapEvent = MakeTapEvent(center, info.GetID(), TapEvent::Source::Search);
 }
 
 size_t Framework::ShowSearchResults(search::Results const & results)
@@ -1539,9 +1539,10 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
   {
     GetPlatform().RunOnGuiThread([this, screen](){ OnViewportChanged(screen); });
   });
-  m_drapeEngine->SetTapEventInfoListener([this](df::TapInfo const & tapInfo)
-  {
-    GetPlatform().RunOnGuiThread([this, tapInfo](){ OnTapEvent(tapInfo); });
+  m_drapeEngine->SetTapEventInfoListener([this](df::TapInfo const & tapInfo) {
+    GetPlatform().RunOnGuiThread([this, tapInfo]() {
+      OnTapEvent({tapInfo, TapEvent::Source::User});
+    });
   });
   m_drapeEngine->SetUserPositionListener([this](m2::PointD const & position)
   {
@@ -1782,7 +1783,7 @@ bool Framework::ShowMapForURL(string const & url)
         FillPointInfo(point, name, info);
         ActivateMapSelection(false, df::SelectionShape::OBJECT_POI, info);
       }
-      m_lastTapEvent.reset(new df::TapInfo{ m_currentModelView.GtoP(info.GetMercator()), false, false, info.GetID() });
+      m_lastTapEvent = MakeTapEvent(info.GetMercator(), info.GetID(), TapEvent::Source::Other);
     }
 
     return true;
@@ -1948,16 +1949,18 @@ void Framework::InvalidateUserMarks()
   }
 }
 
-void Framework::OnTapEvent(df::TapInfo const & tapInfo)
+void Framework::OnTapEvent(TapEvent const & tapEvent)
 {
+  auto const & tapInfo = tapEvent.m_info;
+
   bool const somethingWasAlreadySelected = (m_lastTapEvent != nullptr);
 
   place_page::Info info;
-  df::SelectionShape::ESelectedObject const selection = OnTapEventImpl(tapInfo, info);
+  df::SelectionShape::ESelectedObject const selection = OnTapEventImpl(tapEvent, info);
   if (selection != df::SelectionShape::OBJECT_EMPTY)
   {
     // Back up last tap event to recover selection in case of Drape reinitialization.
-    m_lastTapEvent.reset(new df::TapInfo(tapInfo));
+    m_lastTapEvent = make_unique<TapEvent>(tapEvent);
 
     { // Log statistics event.
       ms::LatLon const ll = info.GetLatLon();
@@ -2028,12 +2031,13 @@ FeatureID Framework::FindBuildingAtPoint(m2::PointD const & mercator) const
   return featureId;
 }
 
-df::SelectionShape::ESelectedObject Framework::OnTapEventImpl(df::TapInfo const & tapInfo,
+df::SelectionShape::ESelectedObject Framework::OnTapEventImpl(TapEvent const & tapEvent,
                                                               place_page::Info & outInfo) const
 {
   if (m_drapeEngine == nullptr)
     return df::SelectionShape::OBJECT_EMPTY;
 
+  auto const & tapInfo = tapEvent.m_info;
   m2::PointD const pxPoint2d = m_currentModelView.P3dtoP(tapInfo.m_pixelPoint);
 
   if (tapInfo.m_isMyPositionTapped)
@@ -2090,7 +2094,7 @@ df::SelectionShape::ESelectedObject Framework::OnTapEventImpl(df::TapInfo const 
     FillFeatureInfo(featureTapped, outInfo);
     showMapSelection = true;
   }
-  else if (tapInfo.m_isLong)
+  else if (tapInfo.m_isLong || tapEvent.m_source == TapEvent::Source::Search)
   {
     FillPointInfo(m_currentModelView.PtoG(pxPoint2d), "", outInfo);
     showMapSelection = true;
@@ -2103,6 +2107,14 @@ df::SelectionShape::ESelectedObject Framework::OnTapEventImpl(df::TapInfo const 
   }
 
   return df::SelectionShape::OBJECT_EMPTY;
+}
+
+unique_ptr<Framework::TapEvent> Framework::MakeTapEvent(m2::PointD const & center,
+                                                        FeatureID const & fid,
+                                                        TapEvent::Source source) const
+{
+  return make_unique<TapEvent>(df::TapInfo{m_currentModelView.GtoP(center), false, false, fid},
+                               source);
 }
 
 void Framework::PredictLocation(double & lat, double & lon, double accuracy,
@@ -2821,7 +2833,7 @@ osm::Editor::SaveResult Framework::SaveEditedMapObject(osm::EditableMapObject em
   if (!m_lastTapEvent)
   {
     // Automatically select newly created objects.
-    m_lastTapEvent.reset(new df::TapInfo { m_currentModelView.GtoP(emo.GetMercator()), false, false, emo.GetID() });
+    m_lastTapEvent = MakeTapEvent(emo.GetMercator(), emo.GetID(), TapEvent::Source::Other);
   }
 
   auto & editor = osm::Editor::Instance();
