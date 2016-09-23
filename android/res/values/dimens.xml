@@ -133,6 +133,18 @@
   <dimen name="editor_auth_btn_height">36dp</dimen>
   <dimen name="editor_margin_timetable_left">50dp</dimen>
 
+  <!-- Gallery-->
+  <dimen name="placepage_hotel_gallery_height">100dp</dimen>
+  <dimen name="placepage_hotel_gallery_width">150dp</dimen>
+  <dimen name="gallery_image_height">84dp</dimen>
+
+  <!-- Nearby-->
+  <dimen name="placepage_hotel_nearby_height">64dp</dimen>
+  <dimen name="placepage_hotel_nearby_icon_size">24dp</dimen>
+
+  <!-- Rating-->
+  <dimen name="margin_placepage_rating">20dp</dimen>
+
   <!-- Altitude chart -->
   <dimen name="altitude_chart_container_padding_left">16dp</dimen>
   <dimen name="altitude_chart_margin_bottom">4dp</dimen>
@@ -142,7 +154,5 @@
   <dimen name="altitude_chart_time_distance_margin_bottom">10dp</dimen>
   <dimen name="altitude_chart_image_height">40dp</dimen>
   <dimen name="altitude_chart_image_width">232dp</dimen>
-
-
 
 </resources>

@@ -3,12 +3,14 @@ package com.mapswithme.maps.widget.placepage;
 import android.support.annotation.UiThread;
 import android.text.TextUtils;
 
+import com.mapswithme.maps.bookmarks.data.MapObject;
+import com.mapswithme.maps.bookmarks.data.Metadata;
+import com.mapswithme.maps.gallery.Image;
+import com.mapswithme.maps.review.Review;
+
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.mapswithme.maps.bookmarks.data.MapObject;
-import com.mapswithme.maps.bookmarks.data.Metadata;
 
 @UiThread
 final class SponsoredHotel
@@ -25,14 +27,107 @@ final class SponsoredHotel
     }
   }
 
+  static class FacilityType
+  {
+    private final String key;
+    private final String name;
+
+    public FacilityType(String key, String name)
+    {
+      this.key = key;
+      this.name = name;
+    }
+
+    public String getKey()
+    {
+      return key;
+    }
+
+    public String getName()
+    {
+      return name;
+    }
+  }
+
+  static class NearbyObject
+  {
+    private final String category;
+    private final String title;
+    private final String distance;
+    private final double latitude;
+    private final double longitude;
+
+    public NearbyObject(String category, String title, String distance, double lat, double lon)
+    {
+      this.category = category;
+      this.title = title;
+      this.distance = distance;
+      this.latitude = lat;
+      this.longitude = lon;
+    }
+
+    public String getCategory()
+    {
+      return category;
+    }
+
+    public String getTitle()
+    {
+      return title;
+    }
+
+    public String getDistance()
+    {
+      return distance;
+    }
+
+    public double getLatitude()
+    {
+      return latitude;
+    }
+
+    public double getLongitude()
+    {
+      return longitude;
+    }
+  }
+
+  static class HotelInfo
+  {
+    final String description;
+    final Image[] photos;
+    final FacilityType[] facilities;
+    final Review[] reviews;
+    final NearbyObject[] nearby;
+
+    public HotelInfo(String description, Image[] photos,
+                     FacilityType[] facilities, Review[] reviews,
+                     NearbyObject[] nearby)
+    {
+      this.description = description;
+      this.photos = photos;
+      this.facilities = facilities;
+      this.reviews = reviews;
+      this.nearby = nearby;
+    }
+  }
+
   interface OnPriceReceivedListener
   {
     void onPriceReceived(String id, String price, String currency);
   }
 
+  interface OnInfoReceivedListener
+  {
+    void onInfoReceived(String id, HotelInfo info);
+  }
+
   // Hotel ID -> Price
   private static final Map<String, Price> sPriceCache = new HashMap<>();
-  private static WeakReference<OnPriceReceivedListener> sListener;
+  // Hotel ID -> Description
+  private static final Map<String, HotelInfo> sInfoCache = new HashMap<>();
+  private static WeakReference<OnPriceReceivedListener> sPriceListener;
+  private static WeakReference<OnInfoReceivedListener> sInfoListener;
 
   private String mId;
 
@@ -59,9 +154,14 @@ final class SponsoredHotel
     return mId;
   }
 
-  public static void setListener(OnPriceReceivedListener listener)
+  static void setPriceListener(OnPriceReceivedListener listener)
   {
-    sListener = new WeakReference<>(listener);
+    sPriceListener = new WeakReference<>(listener);
+  }
+
+  static void setInfoListener(OnInfoReceivedListener listener)
+  {
+    sInfoListener = new WeakReference<>(listener);
   }
 
   static void requestPrice(String id, String currencyCode)
@@ -73,6 +173,15 @@ final class SponsoredHotel
     nativeRequestPrice(id, currencyCode);
   }
 
+  static void requestInfo(String id, String locale)
+  {
+    HotelInfo info = sInfoCache.get(id);
+    if (info != null)
+      onInfoReceived(id, info);
+
+    nativeRequestInfo(id, locale);
+  }
+
   @SuppressWarnings("unused")
   private static void onPriceReceived(String id, String price, String currency)
   {
@@ -81,13 +190,31 @@ final class SponsoredHotel
 
     sPriceCache.put(id, new Price(price, currency));
 
-    OnPriceReceivedListener listener = sListener.get();
+    OnPriceReceivedListener listener = sPriceListener.get();
     if (listener == null)
-      sListener = null;
+      sPriceListener = null;
     else
       listener.onPriceReceived(id, price, currency);
   }
 
+  @SuppressWarnings("unused")
+  private static void onInfoReceived(String id, HotelInfo info)
+  {
+    if (info == null)
+      return;
+
+    sInfoCache.put(id, info);
+
+    OnInfoReceivedListener listener = sInfoListener.get();
+    if (listener == null)
+      sInfoListener = null;
+    else
+      listener.onInfoReceived(id, info);
+  }
+
   public static native SponsoredHotel nativeGetCurrent();
+
   private static native void nativeRequestPrice(String id, String currencyCode);
+
+  private static native void nativeRequestInfo(String id, String locale);
 }

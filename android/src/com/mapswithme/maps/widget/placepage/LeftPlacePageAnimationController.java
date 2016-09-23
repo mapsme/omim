@@ -27,18 +27,23 @@ class LeftPlacePageAnimationController extends BasePlacePageAnimationController
   @Override
   protected boolean onInterceptTouchEvent(MotionEvent event)
   {
+    if (mPlacePage.isTouchGallery(event))
+    {
+      return false;
+    }
+
     switch (event.getAction())
     {
-    case MotionEvent.ACTION_DOWN:
-      mIsDragging = false;
-      mDownCoord = event.getX();
-      break;
-    case MotionEvent.ACTION_MOVE:
-      if (mDownCoord > mPlacePage.getRight())
-        return false;
-      if (Math.abs(mDownCoord - event.getX()) > mTouchSlop)
-        return true;
-      break;
+      case MotionEvent.ACTION_DOWN:
+        mIsDragging = false;
+        mDownCoord = event.getX();
+        break;
+      case MotionEvent.ACTION_MOVE:
+        if (mDownCoord > mPlacePage.getRight())
+          return false;
+        if (Math.abs(mDownCoord - event.getX()) > mTouchSlop)
+          return true;
+        break;
     }
 
     return false;
@@ -70,7 +75,8 @@ class LeftPlacePageAnimationController extends BasePlacePageAnimationController
         final boolean isInRange = Math.abs(distanceX) > X_MIN && Math.abs(distanceX) < X_MAX;
 
         if (!isHorizontal || !isInRange)
-          return false;;
+          return false;
+        ;
 
         if (!mIsDragging)
         {
@@ -90,13 +96,13 @@ class LeftPlacePageAnimationController extends BasePlacePageAnimationController
   {
     switch (newState)
     {
-    case HIDDEN:
-      hidePlacePage();
-      break;
-    case DETAILS:
-    case PREVIEW:
-      showPlacePage(currentState, newState);
-      break;
+      case HIDDEN:
+        hidePlacePage();
+        break;
+      case DETAILS:
+      case PREVIEW:
+        showPlacePage(currentState, newState);
+        break;
     }
   }
 
