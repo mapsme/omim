@@ -1,13 +1,5 @@
 package com.mapswithme.maps.widget.placepage;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.mapswithme.maps.R;
-import com.mapswithme.maps.gallery.Image;
-import com.mapswithme.maps.widget.recycler.RecyclerClickListener;
-import com.mapswithme.util.UiUtils;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
@@ -16,10 +8,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.mapswithme.maps.R;
+import com.mapswithme.maps.gallery.Image;
+import com.mapswithme.maps.widget.recycler.RecyclerClickListener;
+import com.mapswithme.util.UiUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
-class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
+class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder>
+{
   static final int MAX_COUNT = 5;
 
   private final Context mContext;
@@ -31,42 +32,52 @@ class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
   private final Object mMutex = new Object();
   private final List<DownloadState> mDownloadStates = new ArrayList<>();
 
-  GalleryAdapter(Context context) {
+  GalleryAdapter(Context context)
+  {
     mContext = context;
 
-    mImageWidth = (int)context.getResources().getDimension(R.dimen.placepage_hotel_gallery_width);
-    mImageHeight = (int)context.getResources().getDimension(R.dimen.placepage_hotel_gallery_height);
+    mImageWidth = (int) context.getResources().getDimension(R.dimen.placepage_hotel_gallery_width);
+    mImageHeight = (int) context.getResources()
+                                .getDimension(R.dimen.placepage_hotel_gallery_height);
   }
 
   @Override
-  public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+  public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+  {
     return new ViewHolder(LayoutInflater.from(mContext)
-            .inflate(R.layout.item_gallery, parent, false), mListener);
+                                        .inflate(R.layout.item_gallery, parent, false), mListener);
   }
 
   @Override
-  public void onBindViewHolder(ViewHolder holder, int position) {
+  public void onBindViewHolder(ViewHolder holder, int position)
+  {
     Item item = mLoadedItems.get(position);
     item.setShowMore(position == MAX_COUNT - 1);
     holder.bind(item, position);
   }
 
   @Override
-  public int getItemCount() {
-    synchronized (mMutex) {
+  public int getItemCount()
+  {
+    synchronized (mMutex)
+    {
       return mLoadedItems.size();
     }
   }
 
-  public ArrayList<Image> getItems() {
+  public ArrayList<Image> getItems()
+  {
     return mItems;
   }
 
-  public void setItems(ArrayList<Image> items) {
+  public void setItems(ArrayList<Image> items)
+  {
     mItems = items;
-    synchronized (mMutex) {
+    synchronized (mMutex)
+    {
       mLoadedItems.clear();
-      for (DownloadState state: mDownloadStates) {
+      for (DownloadState state : mDownloadStates)
+      {
         state.isCanceled = true;
       }
       mDownloadStates.clear();
@@ -75,51 +86,62 @@ class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
     notifyDataSetChanged();
   }
 
-  public void setListener(RecyclerClickListener listener) {
+  public void setListener(RecyclerClickListener listener)
+  {
     mListener = listener;
   }
 
-  private void loadImages() {
+  private void loadImages()
+  {
     int size = mItems.size();
-    if (size > MAX_COUNT) {
+    if (size > MAX_COUNT)
+    {
       size = MAX_COUNT;
     }
 
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < size; i++)
+    {
       final DownloadState state;
-      synchronized (mMutex) {
+      synchronized (mMutex)
+      {
         state = new DownloadState();
         mDownloadStates.add(state);
       }
       Image image = mItems.get(i);
       Glide.with(mContext)
-              .load(image.getSmallUrl())
-              .asBitmap()
-              .centerCrop()
-              .into(new SimpleTarget<Bitmap>(mImageWidth, mImageHeight) {
-                @Override
-                public void onResourceReady(Bitmap resource,
-                        GlideAnimation<? super Bitmap> glideAnimation) {
-                  synchronized (mMutex) {
-                    if (state.isCanceled) {
-                      return;
-                    }
-                    int size = mLoadedItems.size();
-                    mLoadedItems.add(new Item(resource));
-                    notifyItemInserted(size);
-                  }
-                }
-              });
+           .load(image.getSmallUrl())
+           .asBitmap()
+           .centerCrop()
+           .into(new SimpleTarget<Bitmap>(mImageWidth, mImageHeight)
+           {
+             @Override
+             public void onResourceReady(Bitmap resource,
+                                         GlideAnimation<? super Bitmap> glideAnimation)
+             {
+               synchronized (mMutex)
+               {
+                 if (state.isCanceled)
+                 {
+                   return;
+                 }
+                 int size = mLoadedItems.size();
+                 mLoadedItems.add(new Item(resource));
+                 notifyItemInserted(size);
+               }
+             }
+           });
     }
   }
 
-  static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+  static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
+  {
     private ImageView mImage;
     private View mMore;
     private final RecyclerClickListener mListener;
     private int mPosition;
 
-    public ViewHolder(View itemView, RecyclerClickListener listener) {
+    public ViewHolder(View itemView, RecyclerClickListener listener)
+    {
       super(itemView);
       mListener = listener;
       mImage = (ImageView) itemView.findViewById(R.id.iv__image);
@@ -128,47 +150,58 @@ class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
     }
 
     @Override
-    public void onClick(View v) {
-      if (mListener == null) {
+    public void onClick(View v)
+    {
+      if (mListener == null)
+      {
         return;
       }
 
       mListener.onItemClick(v, mPosition);
     }
 
-    public void bind(Item item, int position) {
+    public void bind(Item item, int position)
+    {
       mPosition = position;
       mImage.setImageBitmap(item.getBitmap());
-      if (item.isShowMore()) {
+      if (item.isShowMore())
+      {
         UiUtils.show(mMore);
-      } else {
+      } else
+      {
         UiUtils.hide(mMore);
       }
     }
   }
 
-  static class Item {
+  static class Item
+  {
     private final Bitmap mBitmap;
     private boolean isShowMore;
 
-    Item(Bitmap bitmap) {
+    Item(Bitmap bitmap)
+    {
       this.mBitmap = bitmap;
     }
 
-    Bitmap getBitmap() {
+    Bitmap getBitmap()
+    {
       return mBitmap;
     }
 
-    void setShowMore(boolean showMore) {
+    void setShowMore(boolean showMore)
+    {
       isShowMore = showMore;
     }
 
-    boolean isShowMore() {
+    boolean isShowMore()
+    {
       return isShowMore;
     }
   }
 
-  private static class DownloadState {
+  private static class DownloadState
+  {
     boolean isCanceled = false;
   }
 }

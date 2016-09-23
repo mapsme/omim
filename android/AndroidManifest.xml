@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
-    package="com.mapswithme.maps"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:installLocation="auto"
-    android:sharedUserId="com.mapswithme"
-    android:sharedUserLabel="@string/shared_user_label">
+  package="com.mapswithme.maps"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:installLocation="auto"
+  android:sharedUserId="com.mapswithme"
+  android:sharedUserLabel="@string/shared_user_label">
 
   <uses-feature
-      android:glEsVersion="0x00020000"
-      android:required="true"/>
+    android:glEsVersion="0x00020000"
+    android:required="true"/>
   <uses-feature
-      android:name="android.hardware.touchscreen"
-      android:required="true"/>
+    android:name="android.hardware.touchscreen"
+    android:required="true"/>
   <uses-feature
-      android:name="android.hardware.wifi"
-      android:required="false"/>
+    android:name="android.hardware.wifi"
+    android:required="false"/>
   <uses-feature
-      android:name="android.hardware.location"
-      android:required="false"/>
+    android:name="android.hardware.location"
+    android:required="false"/>
   <uses-feature
-      android:name="android.hardware.location.network"
-      android:required="false"/>
+    android:name="android.hardware.location.network"
+    android:required="false"/>
   <uses-feature
-      android:name="android.hardware.location.gps"
-      android:required="false"/>
+    android:name="android.hardware.location.gps"
+    android:required="false"/>
 
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
@@ -39,52 +39,52 @@
   <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
 
   <permission
-      android:name="${applicationId}.permission.C2D_MESSAGE"
-      android:protectionLevel="signature"/>
+    android:name="${applicationId}.permission.C2D_MESSAGE"
+    android:protectionLevel="signature"/>
 
   <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE"/>
 
   <!-- -->
   <supports-screens
-      android:largeScreens="true"
-      android:xlargeScreens="true"/>
+    android:largeScreens="true"
+    android:xlargeScreens="true"/>
 
   <application
-      android:name=".MwmApplication"
-      android:allowBackup="true"
-      android:icon="@drawable/ic_launcher"
-      android:label="@string/app_name"
-      android:theme="@style/MwmTheme"
-      tools:ignore="UnusedAttribute">
+    android:name=".MwmApplication"
+    android:allowBackup="true"
+    android:icon="@drawable/ic_launcher"
+    android:label="@string/app_name"
+    android:theme="@style/MwmTheme"
+    tools:ignore="UnusedAttribute">
 
     <meta-data
-        android:name="com.google.android.gms.version"
-        android:value="@integer/google_play_services_version"/>
+      android:name="com.google.android.gms.version"
+      android:value="@integer/google_play_services_version"/>
 
     <meta-data
-        android:name="com.facebook.sdk.ApplicationId"
-        android:value="@string/fb_app_id"/>
+      android:name="com.facebook.sdk.ApplicationId"
+      android:value="@string/fb_app_id"/>
 
     <meta-data
-        android:name="io.fabric.ApiKey"
-        android:value="${FABRIC_API_KEY}"/>
+      android:name="io.fabric.ApiKey"
+      android:value="${FABRIC_API_KEY}"/>
 
     <meta-data
-        android:name="PW_APPID"
-        android:value="${PW_APPID}" />
+      android:name="PW_APPID"
+      android:value="${PW_APPID}"/>
 
     <meta-data
-        android:name="PW_PROJECT_ID"
-        android:value="${PW_PROJECT_ID}" />
+      android:name="PW_PROJECT_ID"
+      android:value="${PW_PROJECT_ID}"/>
 
     <!--meta-data
         android:name="PW_LOG_LEVEL"
         android:value="ERROR" /-->
 
     <activity
-        android:name="com.mapswithme.maps.DownloadResourcesActivity"
-        android:configChanges="orientation|screenLayout|screenSize"
-        android:label="@string/app_name">
+      android:name="com.mapswithme.maps.DownloadResourcesActivity"
+      android:configChanges="orientation|screenLayout|screenSize"
+      android:label="@string/app_name">
 
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
@@ -117,8 +117,8 @@
         <category android:name="android.intent.category.BROWSABLE"/>
 
         <data
-            android:host="ge0.me"
-            android:scheme="http"/>
+          android:host="ge0.me"
+          android:scheme="http"/>
       </intent-filter>
 
       <intent-filter>
@@ -128,11 +128,11 @@
         <category android:name="android.intent.category.BROWSABLE"/>
 
         <data
-            android:host="maps.google.com"
-            android:scheme="https"/>
+          android:host="maps.google.com"
+          android:scheme="https"/>
         <data
-            android:host="maps.google.com"
-            android:scheme="http"/>
+          android:host="maps.google.com"
+          android:scheme="http"/>
       </intent-filter>
 
       <!-- API CALL -->
@@ -145,99 +145,99 @@
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <data
-            android:host="*"
-            android:mimeType="application/vnd.google-earth.kmz"/>
+          android:host="*"
+          android:mimeType="application/vnd.google-earth.kmz"/>
       </intent-filter>
 
       <intent-filter>
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <data
-            android:host="*"
-            android:mimeType="application/vnd.google-earth.kml+xml"/>
+          android:host="*"
+          android:mimeType="application/vnd.google-earth.kml+xml"/>
       </intent-filter>
 
       <intent-filter>
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <data
-            android:host="*"
-            android:mimeType="*/*"
-            android:pathPattern=".*\\.kmz"
-            android:scheme="file"/>
+          android:host="*"
+          android:mimeType="*/*"
+          android:pathPattern=".*\\.kmz"
+          android:scheme="file"/>
       </intent-filter>
 
       <intent-filter>
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <data
-            android:host="*"
-            android:mimeType="*/*"
-            android:pathPattern=".*\\.kml"
-            android:scheme="file"/>
+          android:host="*"
+          android:mimeType="*/*"
+          android:pathPattern=".*\\.kml"
+          android:scheme="file"/>
       </intent-filter>
 
     </activity>
 
     <activity
-        android:name="com.mapswithme.maps.MwmActivity"
-        android:launchMode="singleTask"
-        android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
+      android:name="com.mapswithme.maps.MwmActivity"
+      android:launchMode="singleTask"
+      android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
 
     <activity
-        android:name="com.mapswithme.maps.downloader.DownloaderActivity"
-        android:configChanges="orientation|screenLayout|screenSize"
-        android:label="@string/download_maps"
-        android:parentActivityName="com.mapswithme.maps.MwmActivity">
+      android:name="com.mapswithme.maps.downloader.DownloaderActivity"
+      android:configChanges="orientation|screenLayout|screenSize"
+      android:label="@string/download_maps"
+      android:parentActivityName="com.mapswithme.maps.MwmActivity">
       <!-- The meta-data element is needed for versions lower than 4.1 -->
       <meta-data
-          android:name="android.support.PARENT_ACTIVITY"
-          android:value="com.mapswithme.maps.MwmActivity"/>
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value="com.mapswithme.maps.MwmActivity"/>
     </activity>
 
     <activity
-        android:name="com.mapswithme.maps.search.SearchActivity"
-        android:configChanges="orientation|screenLayout|screenSize"
-        android:label="@string/search_map"
-        android:parentActivityName="com.mapswithme.maps.MwmActivity"
-        android:windowSoftInputMode="stateVisible|adjustNothing">
+      android:name="com.mapswithme.maps.search.SearchActivity"
+      android:configChanges="orientation|screenLayout|screenSize"
+      android:label="@string/search_map"
+      android:parentActivityName="com.mapswithme.maps.MwmActivity"
+      android:windowSoftInputMode="stateVisible|adjustNothing">
       <!-- The meta-data element is needed for versions lower than 4.1 -->
       <meta-data
-          android:name="android.support.PARENT_ACTIVITY"
-          android:value="com.mapswithme.maps.MwmActivity"/>
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value="com.mapswithme.maps.MwmActivity"/>
     </activity>
 
     <activity
-        android:name="com.mapswithme.maps.settings.SettingsActivity"
-        android:configChanges="orientation|screenLayout|screenSize"
-        android:label="@string/settings"
-        android:parentActivityName="com.mapswithme.maps.MwmActivity">
+      android:name="com.mapswithme.maps.settings.SettingsActivity"
+      android:configChanges="orientation|screenLayout|screenSize"
+      android:label="@string/settings"
+      android:parentActivityName="com.mapswithme.maps.MwmActivity">
       <!-- The meta-data element is needed for versions lower than 4.1 -->
       <meta-data
-          android:name="android.support.PARENT_ACTIVITY"
-          android:value="com.mapswithme.maps.MwmActivity"/>
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value="com.mapswithme.maps.MwmActivity"/>
     </activity>
 
     <activity
-        android:name="com.mapswithme.maps.bookmarks.BookmarkCategoriesActivity"
-        android:configChanges="orientation|screenLayout|screenSize"
-        android:label="@string/bookmark_sets"
-        android:parentActivityName="com.mapswithme.maps.MwmActivity">
+      android:name="com.mapswithme.maps.bookmarks.BookmarkCategoriesActivity"
+      android:configChanges="orientation|screenLayout|screenSize"
+      android:label="@string/bookmark_sets"
+      android:parentActivityName="com.mapswithme.maps.MwmActivity">
       <!-- The meta-data element is needed for versions lower than 4.1 -->
       <meta-data
-          android:name="android.support.PARENT_ACTIVITY"
-          android:value="com.mapswithme.maps.MwmActivity"/>
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value="com.mapswithme.maps.MwmActivity"/>
     </activity>
 
     <activity
-        android:name="com.mapswithme.maps.bookmarks.BookmarkListActivity"
-        android:configChanges="orientation|screenLayout|screenSize"
-        android:label="@string/bookmarks"
-        android:parentActivityName="com.mapswithme.maps.bookmarks.BookmarkCategoriesActivity">
+      android:name="com.mapswithme.maps.bookmarks.BookmarkListActivity"
+      android:configChanges="orientation|screenLayout|screenSize"
+      android:label="@string/bookmarks"
+      android:parentActivityName="com.mapswithme.maps.bookmarks.BookmarkCategoriesActivity">
       <!-- The meta-data element is needed for versions lower than 4.1 -->
       <meta-data
-          android:name="android.support.PARENT_ACTIVITY"
-          android:value="com.mapswithme.maps.bookmarks.BookmarkCategoriesActivity"/>
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value="com.mapswithme.maps.bookmarks.BookmarkCategoriesActivity"/>
     </activity>
 
     <activity
@@ -290,54 +290,54 @@
     </activity>
 
     <activity
-            android:name="com.mapswithme.maps.gallery.GalleryActivity"
-            android:parentActivityName="com.mapswithme.maps.MwmActivity">
+      android:name="com.mapswithme.maps.gallery.GalleryActivity"
+      android:parentActivityName="com.mapswithme.maps.MwmActivity">
       <!-- The meta-data element is needed for versions lower than 4.1 -->
       <meta-data
-              android:name="android.support.PARENT_ACTIVITY"
-              android:value="com.mapswithme.maps.MwmActivity"/>
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value="com.mapswithme.maps.MwmActivity"/>
     </activity>
 
     <activity
-            android:name="com.mapswithme.maps.gallery.FullScreenGalleryActivity"
-            android:parentActivityName="com.mapswithme.maps.MwmActivity">
+      android:name="com.mapswithme.maps.gallery.FullScreenGalleryActivity"
+      android:parentActivityName="com.mapswithme.maps.MwmActivity">
       <!-- The meta-data element is needed for versions lower than 4.1 -->
       <meta-data
-              android:name="android.support.PARENT_ACTIVITY"
-              android:value="com.mapswithme.maps.MwmActivity"/>
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value="com.mapswithme.maps.MwmActivity"/>
     </activity>
 
     <activity
-            android:name="com.mapswithme.maps.review.ReviewActivity"
-            android:parentActivityName="com.mapswithme.maps.MwmActivity">
+      android:name="com.mapswithme.maps.review.ReviewActivity"
+      android:parentActivityName="com.mapswithme.maps.MwmActivity">
       <!-- The meta-data element is needed for versions lower than 4.1 -->
       <meta-data
-              android:name="android.support.PARENT_ACTIVITY"
-              android:value="com.mapswithme.maps.MwmActivity"/>
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value="com.mapswithme.maps.MwmActivity"/>
     </activity>
 
     <!-- facebook -->
     <activity
-        android:name="com.facebook.FacebookActivity"
-        android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize"
-        android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+      android:name="com.facebook.FacebookActivity"
+      android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize"
+      android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
     <activity
-        android:name="ru.mail.android.mytarget.ads.MyTargetActivity"
-        android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"/>
+      android:name="ru.mail.android.mytarget.ads.MyTargetActivity"
+      android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"/>
 
     <receiver
-        android:name="com.mapswithme.maps.background.ConnectivityChangedReceiver"
-        android:enabled="true"
-        android:exported="true">
+      android:name="com.mapswithme.maps.background.ConnectivityChangedReceiver"
+      android:enabled="true"
+      android:exported="true">
       <intent-filter>
         <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
       </intent-filter>
     </receiver>
 
     <service
-        android:name="com.mapswithme.maps.background.WorkerService"
-        android:exported="false"/>
+      android:name="com.mapswithme.maps.background.WorkerService"
+      android:exported="false"/>
 
     <receiver android:name="com.mapswithme.maps.location.TrackRecorderWakeReceiver">
       <intent-filter>
@@ -350,8 +350,8 @@
 
     <!-- our custom receiver, that will call Aloha & other handlers -->
     <receiver
-        android:name="com.mapswithme.util.MultipleTrackerReferrerReceiver"
-        android:exported="true">
+      android:name="com.mapswithme.util.MultipleTrackerReferrerReceiver"
+      android:exported="true">
       <intent-filter>
         <action android:name="com.android.vending.INSTALL_REFERRER"/>
       </intent-filter>
@@ -364,51 +364,51 @@
 
     <!-- Alohalytics -->
     <receiver
-        android:name="org.alohalytics.ConnectivityChangedReceiver"
-        android:enabled="true"
-        android:exported="true">
+      android:name="org.alohalytics.ConnectivityChangedReceiver"
+      android:enabled="true"
+      android:exported="true">
       <intent-filter>
         <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
       </intent-filter>
     </receiver>
 
     <!-- PushWoosh -->
-    <activity android:name="com.pushwoosh.richpages.RichPageActivity" />
-    <activity android:name="com.pushwoosh.MessageActivity" />
-    <activity android:name="com.pushwoosh.PushHandlerActivity" />
+    <activity android:name="com.pushwoosh.richpages.RichPageActivity"/>
+    <activity android:name="com.pushwoosh.MessageActivity"/>
+    <activity android:name="com.pushwoosh.PushHandlerActivity"/>
 
     <receiver
-        android:name="com.google.android.gms.gcm.GcmReceiver"
-        android:exported="true"
-        android:permission="com.google.android.c2dm.permission.SEND" >
+      android:name="com.google.android.gms.gcm.GcmReceiver"
+      android:exported="true"
+      android:permission="com.google.android.c2dm.permission.SEND">
       <intent-filter>
-        <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-        <category android:name="${applicationId}" />
+        <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+        <category android:name="${applicationId}"/>
       </intent-filter>
     </receiver>
 
     <service
-        android:name="com.pushwoosh.GCMListenerService"
-        android:exported="false">
+      android:name="com.pushwoosh.GCMListenerService"
+      android:exported="false">
       <intent-filter>
         <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
       </intent-filter>
     </service>
 
     <service
-        android:name="com.pushwoosh.GCMInstanceIDListenerService"
-        android:exported="false">
+      android:name="com.pushwoosh.GCMInstanceIDListenerService"
+      android:exported="false">
       <intent-filter>
         <action android:name="com.google.android.gms.iid.InstanceID"/>
       </intent-filter>
     </service>
 
     <service
-        android:name="com.pushwoosh.GCMRegistrationService"
-        android:exported="false" />
+      android:name="com.pushwoosh.GCMRegistrationService"
+      android:exported="false"/>
 
     <service
-        android:name="com.pushwoosh.location.GeoLocationService" />
+      android:name="com.pushwoosh.location.GeoLocationService"/>
 
     <!-- Catches app upgraded intent -->
     <receiver android:name=".background.UpgradeReceiver">

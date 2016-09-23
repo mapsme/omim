@@ -1,8 +1,5 @@
 package com.mapswithme.maps.widget.placepage;
 
-import com.mapswithme.maps.R;
-import com.mapswithme.util.ThemeUtils;
-
 import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,16 +8,22 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.mapswithme.maps.R;
+import com.mapswithme.util.ThemeUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
-class NearbyAdapter extends BaseAdapter {
+class NearbyAdapter extends BaseAdapter
+{
 
-  NearbyAdapter(OnItemClickListener listener) {
+  NearbyAdapter(OnItemClickListener listener)
+  {
     mListener = listener;
   }
 
-  interface OnItemClickListener {
+  interface OnItemClickListener
+  {
     void onItemClick(SponsoredHotel.NearbyObject item);
   }
 
@@ -28,29 +31,35 @@ class NearbyAdapter extends BaseAdapter {
   private final OnItemClickListener mListener;
 
   @Override
-  public int getCount() {
+  public int getCount()
+  {
     return items.size();
   }
 
   @Override
-  public Object getItem(int position) {
+  public Object getItem(int position)
+  {
     return items.get(position);
   }
 
   @Override
-  public long getItemId(int position) {
+  public long getItemId(int position)
+  {
     return position;
   }
 
   @Override
-  public View getView(int position, View convertView, ViewGroup parent) {
+  public View getView(int position, View convertView, ViewGroup parent)
+  {
     ViewHolder holder;
-    if (convertView == null) {
+    if (convertView == null)
+    {
       convertView = LayoutInflater.from(parent.getContext())
-              .inflate(R.layout.item_nearby, parent, false);
+                                  .inflate(R.layout.item_nearby, parent, false);
       holder = new ViewHolder(convertView, mListener);
       convertView.setTag(holder);
-    } else {
+    } else
+    {
       holder = (ViewHolder) convertView.getTag();
     }
 
@@ -60,12 +69,14 @@ class NearbyAdapter extends BaseAdapter {
   }
 
   public void setItems(
-          List<SponsoredHotel.NearbyObject> items) {
+      List<SponsoredHotel.NearbyObject> items)
+  {
     this.items = items;
     notifyDataSetChanged();
   }
 
-  private static class ViewHolder implements View.OnClickListener {
+  private static class ViewHolder implements View.OnClickListener
+  {
     final OnItemClickListener mListener;
     ImageView mIcon;
     TextView mTitle;
@@ -73,7 +84,8 @@ class NearbyAdapter extends BaseAdapter {
     TextView mDistance;
     SponsoredHotel.NearbyObject mItem;
 
-    public ViewHolder(View view, OnItemClickListener listener) {
+    public ViewHolder(View view, OnItemClickListener listener)
+    {
       mListener = listener;
       mIcon = (ImageView) view.findViewById(R.id.iv__icon);
       mTitle = (TextView) view.findViewById(R.id.tv__title);
@@ -83,13 +95,16 @@ class NearbyAdapter extends BaseAdapter {
     }
 
     @Override
-    public void onClick(View v) {
-      if (mListener != null) {
+    public void onClick(View v)
+    {
+      if (mListener != null)
+      {
         mListener.onItemClick(mItem);
       }
     }
 
-    public void bind(SponsoredHotel.NearbyObject item) {
+    public void bind(SponsoredHotel.NearbyObject item)
+    {
       mItem = item;
       String packageName = mType.getContext().getPackageName();
       final boolean isNightTheme = ThemeUtils.isNightTheme();

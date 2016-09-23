@@ -3,7 +3,8 @@ package com.mapswithme.maps.gallery;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Image implements Parcelable {
+public class Image implements Parcelable
+{
   private final String url;
   private final String smallUrl;
   private String description;
@@ -13,12 +14,14 @@ public class Image implements Parcelable {
   private Long date;
 
   @SuppressWarnings("unused")
-  public Image(String url, String smallUrl) {
+  public Image(String url, String smallUrl)
+  {
     this.url = url;
     this.smallUrl = smallUrl;
   }
 
-  protected Image(Parcel in) {
+  protected Image(Parcel in)
+  {
     url = in.readString();
     smallUrl = in.readString();
     description = in.readString();
@@ -29,7 +32,8 @@ public class Image implements Parcelable {
   }
 
   @Override
-  public void writeToParcel(Parcel dest, int flags) {
+  public void writeToParcel(Parcel dest, int flags)
+  {
     dest.writeString(url);
     dest.writeString(smallUrl);
     dest.writeString(description);
@@ -40,69 +44,85 @@ public class Image implements Parcelable {
   }
 
   @Override
-  public int describeContents() {
+  public int describeContents()
+  {
     return 0;
   }
 
-  public static final Creator<Image> CREATOR = new Creator<Image>() {
+  public static final Creator<Image> CREATOR = new Creator<Image>()
+  {
     @Override
-    public Image createFromParcel(Parcel in) {
+    public Image createFromParcel(Parcel in)
+    {
       return new Image(in);
     }
 
     @Override
-    public Image[] newArray(int size) {
+    public Image[] newArray(int size)
+    {
       return new Image[size];
     }
   };
 
-  public String getUrl() {
+  public String getUrl()
+  {
     return url;
   }
 
-  public String getSmallUrl() {
+  public String getSmallUrl()
+  {
     return smallUrl;
   }
 
-  public String getDescription() {
+  public String getDescription()
+  {
     return description;
   }
 
-  public void setDescription(String description) {
+  public void setDescription(String description)
+  {
     this.description = description;
   }
 
-  String getUserName() {
+  String getUserName()
+  {
     return userName;
   }
 
   @SuppressWarnings("unused")
-  public void setUserName(String userName) {
+  public void setUserName(String userName)
+  {
     this.userName = userName;
   }
 
-  String getUserAvatar() {
+  String getUserAvatar()
+  {
     return userAvatar;
   }
 
   @SuppressWarnings("unused")
-  public void setUserAvatar(String userAvatar) {
+  public void setUserAvatar(String userAvatar)
+  {
     this.userAvatar = userAvatar;
   }
 
-  public String getSource() {
+  public String getSource()
+  {
     return source;
   }
 
-  public void setSource(String source) {
+  public void setSource(String source)
+  {
     this.source = source;
   }
 
-  public Long getDate() {
+  public Long getDate()
+  {
     return date;
   }
 
-  public void setDate(Long date) {
+  public void setDate(Long date)
+  {
     this.date = date;
   }
 }

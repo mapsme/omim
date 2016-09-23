@@ -1,9 +1,5 @@
 package com.mapswithme.maps.review;
 
-import com.mapswithme.maps.R;
-import com.mapswithme.maps.base.BaseMwmFragment;
-import com.mapswithme.maps.widget.recycler.RecyclerClickListener;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,9 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.mapswithme.maps.R;
+import com.mapswithme.maps.base.BaseMwmFragment;
+import com.mapswithme.maps.widget.recycler.RecyclerClickListener;
+
 import java.util.ArrayList;
 
-public class ReviewFragment extends BaseMwmFragment implements RecyclerClickListener {
+public class ReviewFragment extends BaseMwmFragment implements RecyclerClickListener
+{
   private ArrayList<Review> mItems;
   private String mRating;
   private int mRatingBase;
@@ -25,12 +26,14 @@ public class ReviewFragment extends BaseMwmFragment implements RecyclerClickList
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-          @Nullable Bundle savedInstanceState) {
+                           @Nullable Bundle savedInstanceState)
+  {
     return inflater.inflate(R.layout.fragment_review, container, false);
   }
 
   @Override
-  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+  public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+  {
     super.onViewCreated(view, savedInstanceState);
     readArguments();
 
@@ -52,7 +55,8 @@ public class ReviewFragment extends BaseMwmFragment implements RecyclerClickList
   }
 
   @Override
-  public void onItemClick(View v, int position) {
+  public void onItemClick(View v, int position)
+  {
     final Intent intent = new Intent(Intent.ACTION_VIEW);
     String url = mUrl;
     if (!url.startsWith("http://") && !url.startsWith("https://"))

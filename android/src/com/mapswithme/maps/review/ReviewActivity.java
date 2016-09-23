@@ -1,18 +1,19 @@
 package com.mapswithme.maps.review;
 
-import com.mapswithme.maps.R;
-import com.mapswithme.maps.base.BaseMwmFragmentActivity;
-import com.mapswithme.util.UiUtils;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 
+import com.mapswithme.maps.R;
+import com.mapswithme.maps.base.BaseMwmFragmentActivity;
+import com.mapswithme.util.UiUtils;
+
 import java.util.ArrayList;
 
-public class ReviewActivity extends BaseMwmFragmentActivity {
+public class ReviewActivity extends BaseMwmFragmentActivity
+{
   static final String EXTRA_REVIEWS = "review_items";
   static final String EXTRA_TITLE = "review_title";
   static final String EXTRA_RATING = "review_rating";
@@ -20,7 +21,7 @@ public class ReviewActivity extends BaseMwmFragmentActivity {
   static final String EXTRA_RATING_URL = "review_rating_url";
 
   public static void start(Context context, ArrayList<Review> items, String title,
-          String rating, int ratingBase, String url)
+                           String rating, int ratingBase, String url)
   {
     final Intent i = new Intent(context, ReviewActivity.class);
     i.putParcelableArrayListExtra(EXTRA_REVIEWS, items);
@@ -32,12 +33,14 @@ public class ReviewActivity extends BaseMwmFragmentActivity {
   }
 
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
+  protected void onCreate(Bundle savedInstanceState)
+  {
     super.onCreate(savedInstanceState);
 
     String title = "";
     Bundle bundle = getIntent().getExtras();
-    if (bundle != null) {
+    if (bundle != null)
+    {
       title = bundle.getString(EXTRA_TITLE);
     }
     Toolbar toolbar = getToolbar();
@@ -47,17 +50,20 @@ public class ReviewActivity extends BaseMwmFragmentActivity {
   }
 
   @Override
-  protected Class<? extends Fragment> getFragmentClass() {
+  protected Class<? extends Fragment> getFragmentClass()
+  {
     return ReviewFragment.class;
   }
 
   @Override
-  protected int getContentLayoutResId() {
+  protected int getContentLayoutResId()
+  {
     return R.layout.activity_fragment_and_toolbar;
   }
 
   @Override
-  protected int getFragmentContentResId() {
+  protected int getFragmentContentResId()
+  {
     return R.id.fragment_container;
   }
 }

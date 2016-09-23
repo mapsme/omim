@@ -1,10 +1,5 @@
 package com.mapswithme.maps.gallery;
 
-import com.mapswithme.maps.R;
-import com.mapswithme.maps.base.BaseMwmFragment;
-import com.mapswithme.maps.widget.recycler.GridDividerItemDecoration;
-import com.mapswithme.maps.widget.recycler.RecyclerClickListener;
-
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,21 +10,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.mapswithme.maps.R;
+import com.mapswithme.maps.base.BaseMwmFragment;
+import com.mapswithme.maps.widget.recycler.GridDividerItemDecoration;
+import com.mapswithme.maps.widget.recycler.RecyclerClickListener;
+
 import java.util.ArrayList;
 
-public class GalleryFragment extends BaseMwmFragment implements RecyclerClickListener {
+public class GalleryFragment extends BaseMwmFragment implements RecyclerClickListener
+{
 
   private ArrayList<Image> mImages;
 
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-          @Nullable Bundle savedInstanceState) {
+                           @Nullable Bundle savedInstanceState)
+  {
     return inflater.inflate(R.layout.fragment_gallery, container, false);
   }
 
   @Override
-  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+  public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+  {
     super.onViewCreated(view, savedInstanceState);
     readArguments();
 
@@ -50,7 +53,8 @@ public class GalleryFragment extends BaseMwmFragment implements RecyclerClickLis
   }
 
   @Override
-  public void onItemClick(View v, int position) {
+  public void onItemClick(View v, int position)
+  {
     FullScreenGalleryActivity.start(getContext(), mImages, position);
   }
 }

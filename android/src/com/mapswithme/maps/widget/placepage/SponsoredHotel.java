@@ -3,14 +3,14 @@ package com.mapswithme.maps.widget.placepage;
 import android.support.annotation.UiThread;
 import android.text.TextUtils;
 
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.mapswithme.maps.bookmarks.data.MapObject;
 import com.mapswithme.maps.bookmarks.data.Metadata;
 import com.mapswithme.maps.gallery.Image;
 import com.mapswithme.maps.review.Review;
+
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 
 @UiThread
 final class SponsoredHotel
@@ -27,32 +27,38 @@ final class SponsoredHotel
     }
   }
 
-  static class FacilityType {
+  static class FacilityType
+  {
     private final String key;
     private final String name;
 
-    public FacilityType(String key, String name) {
+    public FacilityType(String key, String name)
+    {
       this.key = key;
       this.name = name;
     }
 
-    public String getKey() {
+    public String getKey()
+    {
       return key;
     }
 
-    public String getName() {
+    public String getName()
+    {
       return name;
     }
   }
 
-  static class NearbyObject {
+  static class NearbyObject
+  {
     private final String category;
     private final String title;
     private final String distance;
     private final double latitude;
     private final double longitude;
 
-    public NearbyObject(String category, String title, String distance, double lat, double lon) {
+    public NearbyObject(String category, String title, String distance, double lat, double lon)
+    {
       this.category = category;
       this.title = title;
       this.distance = distance;
@@ -60,28 +66,34 @@ final class SponsoredHotel
       this.longitude = lon;
     }
 
-    public String getCategory() {
+    public String getCategory()
+    {
       return category;
     }
 
-    public String getTitle() {
+    public String getTitle()
+    {
       return title;
     }
 
-    public String getDistance() {
+    public String getDistance()
+    {
       return distance;
     }
 
-    public double getLatitude() {
+    public double getLatitude()
+    {
       return latitude;
     }
 
-    public double getLongitude() {
+    public double getLongitude()
+    {
       return longitude;
     }
   }
 
-  static class HotelInfo {
+  static class HotelInfo
+  {
     final String description;
     final Image[] photos;
     final FacilityType[] facilities;
@@ -89,8 +101,9 @@ final class SponsoredHotel
     final NearbyObject[] nearby;
 
     public HotelInfo(String description, Image[] photos,
-            FacilityType[] facilities, Review[] reviews,
-            NearbyObject[] nearby) {
+                     FacilityType[] facilities, Review[] reviews,
+                     NearbyObject[] nearby)
+    {
       this.description = description;
       this.photos = photos;
       this.facilities = facilities;
@@ -200,6 +213,8 @@ final class SponsoredHotel
   }
 
   public static native SponsoredHotel nativeGetCurrent();
+
   private static native void nativeRequestPrice(String id, String currencyCode);
+
   private static native void nativeRequestInfo(String id, String locale);
 }

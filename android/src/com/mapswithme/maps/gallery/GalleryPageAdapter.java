@@ -7,17 +7,20 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.List;
 
-class GalleryPageAdapter extends FragmentStatePagerAdapter {
+class GalleryPageAdapter extends FragmentStatePagerAdapter
+{
 
   private final List<Image> mImages;
 
-  GalleryPageAdapter(FragmentManager fm, List<Image> images) {
+  GalleryPageAdapter(FragmentManager fm, List<Image> images)
+  {
     super(fm);
     mImages = images;
   }
 
   @Override
-  public Fragment getItem(int position) {
+  public Fragment getItem(int position)
+  {
     Bundle args = new Bundle();
     args.putParcelable(FullScreenGalleryFragment.ARGUMENT_IMAGE, mImages.get(position));
     FullScreenGalleryFragment fragment = new FullScreenGalleryFragment();
@@ -26,11 +29,13 @@ class GalleryPageAdapter extends FragmentStatePagerAdapter {
   }
 
   @Override
-  public int getCount() {
+  public int getCount()
+  {
     return mImages.size();
   }
 
-  Image getImage(int position) {
+  Image getImage(int position)
+  {
     return mImages.get(position);
   }
 }
