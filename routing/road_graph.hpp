@@ -7,6 +7,8 @@
 #include "indexer/feature_altitude.hpp"
 #include "indexer/feature_data.hpp"
 
+#include "geometry/mercator.hpp"
+
 #include "std/initializer_list.hpp"
 #include "std/map.hpp"
 #include "std/vector.hpp"
@@ -295,5 +297,16 @@ inline void JunctionsToAltitudes(vector<Junction> const & junctions, feature::TA
   altitudes.resize(junctions.size());
   for (size_t i = 0; i < junctions.size(); ++i)
     altitudes[i] = junctions[i].GetAltitude();
+}
+
+inline double PathLengthM(vector<routing::Junction> const & path)
+{
+  if (path.size() < 2)
+    return 0.0;
+
+  double length = 0.0;
+  for (size_t i = 1; i < path.size(); ++i)
+    length += MercatorBounds::DistanceOnEarth(path[i - 1].GetPoint(), path[i].GetPoint());
+  return length;
 }
 }  // namespace routing
