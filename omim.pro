@@ -46,6 +46,11 @@ SUBDIRS = 3party base coding geometry editor indexer routing search
     booking_quality_check.depends = $$SUBDIRS
     SUBDIRS *= booking_quality_check
 
+    # restaraunts_info
+    restaurants_info.subdir = generator/restaurants_info
+    restaurants_info.depends = $$SUBDIRS
+    SUBDIRS *= restaurants_info
+
     routing_integration_tests.subdir = routing/routing_integration_tests
     routing_integration_tests.depends = $$SUBDIRS
     routing_consistency_tests.subdir = routing/routing_consistency_tests
@@ -222,6 +227,10 @@ SUBDIRS = 3party base coding geometry editor indexer routing search
     editor_tests.subdir = editor/editor_tests
     editor_tests.depends = 3party base coding geometry platform editor
     SUBDIRS *= editor_tests
+
+    osm_auth_tests.subdir = editor/osm_auth_tests
+    osm_auth_tests.depends = 3party base coding geometry platform editor
+    SUBDIRS *= osm_auth_tests
 
     SUBDIRS *= qt_tstfrm
 
