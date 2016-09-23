@@ -69,13 +69,12 @@ double Point2PhantomNode::CalculateDistance(FeatureType const & ft,
 
 void Point2PhantomNode::CalculateWeight(OsrmMappingTypes::FtSeg const & seg,
                                         m2::PointD const & segPt, NodeID const & nodeId,
-                                        int & weight, int & offset) const
+                                        int & offset) const
 {
   // nodeId can be INVALID_NODE_ID when reverse node is absent. This node has no weight.
   if (nodeId == INVALID_NODE_ID)
   {
     offset = 0;
-    weight = 0;
     return;
   }
 
@@ -85,8 +84,6 @@ void Point2PhantomNode::CalculateWeight(OsrmMappingTypes::FtSeg const & seg,
   // So we find it by a whole edge weight.
   // Distance from the node border to the projection point is in meters.
   double distanceM = 0.;
-  // Whole node distance in meters.
-  double fullDistanceM = 0.;
   // Minimal OSRM edge weight in milliseconds.
   EdgeWeight minWeight = 0;
 
@@ -109,9 +106,6 @@ void Point2PhantomNode::CalculateWeight(OsrmMappingTypes::FtSeg const & seg,
     if (segmentIndex == range.second - 1)
       minWeight = GetMinNodeWeight(nodeId, ft.GetPoint(segment.m_pointEnd));
 
-    // Calculate distances.
-    double distance = CalculateDistance(ft, segment.m_pointStart, segment.m_pointEnd);
-    fullDistanceM += distance;
     if (foundSeg)
       continue;
 
@@ -126,20 +120,16 @@ void Point2PhantomNode::CalculateWeight(OsrmMappingTypes::FtSeg const & seg,
     }
     else
     {
-      distanceM += distance;
+      distanceM += CalculateDistance(ft, segment.m_pointStart, segment.m_pointEnd);
     }
   }
 
   ASSERT(foundSeg, ("Intersection not found!"));
-  ASSERT_GREATER(fullDistanceM, 0, ("No valid segments on the edge."));
-  double const ratio = (fullDistanceM == 0) ? 0 : distanceM / fullDistanceM;
-  ASSERT_LESS_OR_EQUAL(ratio, 1., ());
 
   // OSRM calculates edge weight form start to user point how offset + weight.
   // But it doesn't place info about start and end edge result weight into result structure.
   // So we store whole edge weight into offset and calculates this weights at a postprocessing step.
   offset = minWeight;
-  weight = max(static_cast<int>(minWeight * ratio), 0) - minWeight;
 }
 
 EdgeWeight Point2PhantomNode::GetMinNodeWeight(NodeID node, m2::PointD const & point) const
@@ -273,9 +263,9 @@ void Point2PhantomNode::CalculateWeights(FeatureGraphNode & node) const
     // Need to initialize weights for correct work of PhantomNode::GetForwardWeightPlusOffset
     // and PhantomNode::GetReverseWeightPlusOffset.
   CalculateWeight(node.segment, node.segmentPoint, node.node.forward_node_id,
-                  node.node.forward_weight, node.node.forward_offset);
+                  node.node.forward_offset);
   CalculateWeight(node.segment, node.segmentPoint, node.node.reverse_node_id,
-                  node.node.reverse_weight, node.node.reverse_offset);
+                  node.node.reverse_offset);
 }
 
 void Point2Node::operator()(FeatureType const & ft)
