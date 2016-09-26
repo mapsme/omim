@@ -111,7 +111,7 @@ uint32_t Route::GetTotalTimeSec() const
   double const time = m_times.back().second;
   if (time < 0.0)
   {
-    ASSERT(false, ());
+    LOG(LERROR, ("The estimated time for the route is less than zero."));
     return 0;
   }
   return static_cast<uint32_t>(time);

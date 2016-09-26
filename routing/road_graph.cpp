@@ -255,4 +255,30 @@ IRoadGraph::RoadInfo MakeRoadInfoForTesting(bool bidirectional, double speedKMPH
 
   return ri;
 }
+
+void JunctionsToPoints(vector<Junction> const & junctions, vector<m2::PointD> & points)
+{
+  points.resize(junctions.size());
+  for (size_t i = 0; i < junctions.size(); ++i)
+    points[i] = junctions[i].GetPoint();
+}
+
+void JunctionsToAltitudes(vector<Junction> const & junctions, feature::TAltitudes & altitudes)
+{
+  altitudes.resize(junctions.size());
+  for (size_t i = 0; i < junctions.size(); ++i)
+    altitudes[i] = junctions[i].GetAltitude();
+}
+
+double PathLengthM(vector<routing::Junction> const & path)
+{
+  if (path.size() < 2)
+    return 0.0;
+
+  double length = 0.0;
+  for (size_t i = 1; i < path.size(); ++i)
+    length += MercatorBounds::DistanceOnEarth(path[i - 1].GetPoint(), path[i].GetPoint());
+  return length;
+}
+
 }  // namespace routing

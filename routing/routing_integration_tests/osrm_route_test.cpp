@@ -305,7 +305,7 @@ namespace
     TEST_LESS(60, route.GetTotalTimeSec(), ());
   }
 
-  // This test shows a route through very strange NodeID. Its lengthe is about two km
+  // This test shows a route through very strange NodeID. Its length is about two km
   // but it takes about 48 minutes to go through it.
   UNIT_TEST(USALosAnglesAriaPalmsHighway3SegmentShortTimeTest)
   {
