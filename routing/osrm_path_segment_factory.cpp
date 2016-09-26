@@ -170,7 +170,8 @@ void OsrmPathSegmentFactory(RoutingMapping & mapping, Index const & index, RawPa
     // In that case it's ok to follow this branch of if because in that case
     // startGraphNode.node.forward_node_id == endGraphNode.node.forward_node_id.
     ASSERT(isStartNode != isEndNode
-           || startGraphNode.node.forward_node_id == endGraphNode.node.forward_node_id, ());
+           || startGraphNode.node.forward_node_id == endGraphNode.node.forward_node_id
+           || startGraphNode.node.forward_node_id == endGraphNode.node.reverse_node_id, ());
     fullWeight = (osrmPathSegment.node == startGraphNode.node.forward_node_id)
         ? startGraphNode.node.forward_offset
         : startGraphNode.node.reverse_offset;

@@ -272,16 +272,16 @@ namespace
   }
 
 // Test case: start and end of the route belongs to the same NodeID.
-//  UNIT_TEST(USALosAnglesAriaTwentyninePalmsHighwayTimeTest)
-//  {
-//    TRouteResult const routeResult = integration::CalculateRoute(
-//      integration::GetOsrmComponents(), MercatorBounds::FromLatLon(34.0739, -115.3212), {0.0, 0.0},
-//      MercatorBounds::FromLatLon(34.0928, -115.5930));
-//    Route const & route = *routeResult.first;
-//    IRouter::ResultCode const result = routeResult.second;
-//    TEST_EQUAL(result, IRouter::NoError, ());
-//    integration::TestRouteTime(route, 1704.0);
-//  }
+  UNIT_TEST(USALosAnglesAriaTwentyninePalmsHighwayTimeTest)
+  {
+    TRouteResult const routeResult = integration::CalculateRoute(
+      integration::GetOsrmComponents(), MercatorBounds::FromLatLon(34.0739, -115.3212), {0.0, 0.0},
+      MercatorBounds::FromLatLon(34.0928, -115.5930));
+    Route const & route = *routeResult.first;
+    IRouter::ResultCode const result = routeResult.second;
+    TEST_EQUAL(result, IRouter::NoError, ());
+    integration::TestRouteTime(route, 1688.0);
+  }
 
   UNIT_TEST(USALosAnglesAriaPalmsHighway2SegmentShortTimeTest)
   {
