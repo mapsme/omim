@@ -4,7 +4,14 @@
 #include "generator/generator_tests_support/test_feature.hpp"
 #include "generator/generator_tests_support/test_mwm_builder.hpp"
 
+#include "routing/features_road_graph.hpp"
+#include "routing/pedestrian_model.hpp"
+
+#include "indexer/edge_index_loader.hpp"
+#include "indexer/feature_altitude.hpp"
 #include "indexer/feature_edge_index.hpp"
+#include "indexer/feature_processor.hpp"
+#include "indexer/index.hpp"
 
 #include "geometry/point2d.hpp"
 
@@ -19,6 +26,7 @@
 #include "std/string.hpp"
 #include "std/vector.hpp"
 
+using namespace feature;
 using namespace generator;
 using namespace platform;
 using namespace routing;
@@ -32,6 +40,7 @@ namespace
 string const kTestDir = "edge_index_generation_test";
 // Temporary mwm name for testing.
 string const kTestMwm = "test";
+double constexpr kEpsilon = 1e-5;
 
 using TPoint2DList = vector<m2::PointD>;
 
@@ -46,6 +55,57 @@ void BuildMwmWithoutEdgeIndex(vector<TPoint2DList> const & roads, LocalCountryFi
 
   for (TPoint2DList const & geom : roads)
     builder.Add(generator::tests_support::TestStreet(geom, string(), string()));
+}
+
+void TestEdgeIndex(MwmValue const & mwmValue, MwmSet::MwmId const & mwmId,
+                   string const & dir, string const & country)
+{
+  feature::EdgeIndexLoader loader(mwmValue, mwmId);
+  TEST(loader.HasEdgeIndex(), ());
+
+  string const mwmPath = my::JoinFoldersToPath(dir, country + DATA_FILE_EXTENSION);
+  Index index;
+  LocalCountryFile localCountryFile(dir, CountryFile(country), 1 /* version */);
+  index.RegisterMap(localCountryFile);
+  FeaturesRoadGraph featureRoadGraph(index, IRoadGraph::Mode::IgnoreOnewayTag,
+                                     make_unique<PedestrianModelFactory>());
+
+  auto processor = [&loader, &featureRoadGraph](FeatureType const & f, uint32_t const & id)
+  {
+    f.ParseGeometry(FeatureType::BEST_GEOMETRY);
+    size_t const pointsCount = f.GetPointsCount();
+    for (size_t i = 0; i < pointsCount; ++i)
+    {
+      // Outgoing edges.
+      // Edges from edge index section.
+      Junction const junction(f.GetPoint(i), kDefaultAltitudeMeters);
+      IRoadGraph::TEdgeVector edgesFormIndex;
+      loader.GetOutgoingEdges(junction, edgesFormIndex);
+      // Edges from geometry.
+      IRoadGraph::TEdgeVector edgesFormGeometry;
+      featureRoadGraph.GetOutgoingEdges(junction, edgesFormGeometry);
+      TEST_EQUAL(edgesFormIndex.size(), edgesFormGeometry.size(), ());
+      // Comparing outgoing edges for edge index section and from geometry.
+      for(size_t j = 0; j < edgesFormIndex.size(); ++j)
+      {
+        Edge const & fromIndex = edgesFormIndex[j];
+        Edge const & fromGeom = edgesFormGeometry[j];
+        TEST(m2::AlmostEqualAbs(fromIndex.GetStartJunction().GetPoint(),
+                                fromGeom.GetStartJunction().GetPoint(), kEpsilon),
+             (fromIndex.GetStartJunction().GetPoint(), fromGeom.GetStartJunction().GetPoint()));
+        TEST(m2::AlmostEqualAbs(fromIndex.GetEndJunction().GetPoint(),
+                                fromGeom.GetEndJunction().GetPoint(), kEpsilon),
+             (fromIndex.GetEndJunction().GetPoint(), fromGeom.GetEndJunction().GetPoint()));
+        TEST_EQUAL(fromIndex.IsForward(), fromGeom.IsForward(), ());
+//        TEST_EQUAL(fromIndex.GetFeatureId(), fromGeom.GetFeatureId(), ());
+        TEST_EQUAL(fromIndex.GetSegId(), fromGeom.GetSegId(), ());
+      }
+
+      // Ingoing edges.
+      ;;
+    }
+  };
+  feature::ForEachFromDat(mwmPath, processor);
 }
 
 void TestEdgeIndexBuilding(vector<TPoint2DList> const & roads)
@@ -64,5 +124,20 @@ void TestEdgeIndexBuilding(vector<TPoint2DList> const & roads)
   BuildOutgoingEdgeIndex(testDirFullPath, kTestMwm);
 
   // Reading from mwm and testing index section information.
+  Index index;
+  auto const regResult = index.RegisterMap(country);
+  TEST_EQUAL(regResult.second, MwmSet::RegResult::Success, ());
+
+  MwmSet::MwmHandle mwmHandle = index.GetMwmHandleById(regResult.first);
+  TEST(mwmHandle.IsAlive(), ());
+
+  TestEdgeIndex(*mwmHandle.GetValue<MwmValue>(), mwmHandle.GetId(), testDirFullPath,
+                kTestMwm);
+}
+
+UNIT_TEST(EdgeIndexGenerationTest_ThreeRoads)
+{
+  vector<TPoint2DList> const roads = {kRoad1, kRoad2, kRoad3};
+  TestEdgeIndexBuilding(roads);
 }
 }  // namespace

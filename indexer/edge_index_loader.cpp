@@ -17,7 +17,8 @@
 
 namespace feature
 {
-EdgeIndexLoader::EdgeIndexLoader(MwmValue const & mwmValue)
+EdgeIndexLoader::EdgeIndexLoader(MwmValue const & mwmValue, MwmSet::MwmId const & mwmId)
+  : m_mwmId(mwmId)
 {
   m_countryFileName = mwmValue.GetCountryFileName();
 
@@ -55,6 +56,9 @@ EdgeIndexLoader::EdgeIndexLoader(MwmValue const & mwmValue)
 
     // Calculating ingoing edges.
 
+    // Calculating edge feature id for outgoing edges.
+
+    // Calculating edge feature id for ingoing edges.
   }
   catch (Reader::OpenException const & e)
   {
@@ -63,4 +67,29 @@ EdgeIndexLoader::EdgeIndexLoader(MwmValue const & mwmValue)
     LOG(LERROR, ("File", m_countryFileName, "Error while reading", EDGE_INDEX_FILE_TAG, "section.", e.Msg()));
   }
 }
+
+bool EdgeIndexLoader::GetOutgoingEdges(routing::Junction const & junction,
+                                       routing::IRoadGraph::TEdgeVector & edges) const
+{
+  m2::PointI const junctionFix(junction.GetPoint() * kFixPointFactor);
+  auto const it = lower_bound(m_outgoingEdges.cbegin(), m_outgoingEdges.cend(),
+                              PointOutgoingEdges(junctionFix), OutgoingEdgeSortFunc);
+  if (it == m_outgoingEdges.cend() || it->m_pointFrom != junctionFix)
+  {
+    LOG(LERROR, ("m_outgoingEdges doesn't contain junction"));
+    return false;
+  }
+
+  PointOutgoingEdges const & junctionOutgoingEdges = *it;
+  routing::Junction const junctionFrom = routing::PointIToJunction(junctionOutgoingEdges.m_pointFrom);
+  edges.clear();
+  for (uint32_t i = 0; i < junctionOutgoingEdges.m_edges.size(); ++i)
+  {
+    OutgoingEdge const & pointTo = junctionOutgoingEdges.m_edges[i];
+    edges.emplace_back(FeatureID(m_mwmId, pointTo.m_featureId), pointTo.m_forward, pointTo.m_segId,
+                       junctionFrom, routing::PointIToJunction(pointTo.m_pointTo));
+  }
+  return true;
+}
+
 }  // namespace feature

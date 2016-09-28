@@ -17,8 +17,8 @@
 
 namespace feature
 {
-uint32_t constexpr kFixPointFactor = 1000000;
-int32_t constexpr kInvalidLatLog = numeric_limits<int32_t>::min();
+uint32_t constexpr kFixPointFactor = 100000;
+uint32_t constexpr kInvalidFeatureId = numeric_limits<uint32_t>::max();
 
 struct EdgeIndexHeader
 {
@@ -52,14 +52,26 @@ static_assert(sizeof(EdgeIndexHeader) == 8, "Wrong header size of edge index sec
 
 struct OutgoingEdge
 {
+  OutgoingEdge() = default;
+  OutgoingEdge(m2::PointI const & pointTo, uint32_t segId, bool forward)
+    : m_pointTo(pointTo), m_segId(segId), m_forward(forward)
+  {
+  }
+
   m2::PointI m_pointTo;
-  bool m_forward;
+  uint32_t m_segId = 0;
+  uint32_t m_featureId = kInvalidFeatureId; /* Feature contains the edge. */
+  bool m_forward = true;
 };
 
 struct PointOutgoingEdges
 {
+  explicit PointOutgoingEdges(m2::PointI const & pointFrom) : m_pointFrom(pointFrom) {}
+  PointOutgoingEdges() = default;
+
   m2::PointI m_pointFrom;
   vector<OutgoingEdge> m_edges;
+  uint32_t m_featureId = kInvalidFeatureId; /* Feature contains the point. */
 };
 
 bool OutgoingEdgeSortFunc(PointOutgoingEdges const & i, PointOutgoingEdges const & j)
@@ -70,8 +82,8 @@ bool OutgoingEdgeSortFunc(PointOutgoingEdges const & i, PointOutgoingEdges const
 template <class TSink>
 void EncodePointI(m2::PointI const & point, BitWriter<TSink> & bits)
 {
-  uint32_t const deltaX = bits::ZigZagEncode(point.x);
-  uint32_t const deltaY = bits::ZigZagEncode(point.y);
+  auto const deltaX = bits::ZigZagEncode(point.x);
+  auto const deltaY = bits::ZigZagEncode(point.y);
   coding::DeltaCoder::Encode(bits, deltaX + 1 /* making it greater than zero */);
   coding::DeltaCoder::Encode(bits, deltaY + 1 /* making it greater than zero */);
 }
@@ -89,7 +101,7 @@ m2::PointI DecodePointI(BitReader<TSource> & bits)
   deltaX -= 1;
   deltaY -= 1;
 
-  return m2::PointI(deltaX = bits::ZigZagDecode(deltaX), bits::ZigZagDecode(deltaY));
+  return m2::PointI(bits::ZigZagDecode(deltaX), bits::ZigZagDecode(deltaY));
 }
 
 template <class TSink>
@@ -105,6 +117,24 @@ bool DecodeBool(BitReader<TSource> & bits)
   return flag == 1 ? false : true;
 }
 
+template <class TSink>
+void EncodeUint(uint32_t i, BitWriter<TSink> & bits)
+{
+  coding::DeltaCoder::Encode(bits, i + 1 /* making it greater than zero */);
+}
+
+template <class TSource>
+uint32_t DecodeUint(BitReader<TSource> & bits)
+{
+  auto i = coding::DeltaCoder::Decode(bits);
+  if (i == 0)
+  {
+    ASSERT(false, ());
+    return 0;
+  }
+  return i - 1;
+}
+
 struct FeatureOutgoingEdges
 {
   explicit FeatureOutgoingEdges(uint32_t const featureId = 0) : m_featureId(featureId)
@@ -115,25 +145,26 @@ struct FeatureOutgoingEdges
   void Serialize(m2::PointI const & mwmCenter, uint32_t prevFeatureId, TSink & sink) const
   {
     CHECK(!m_featureOutgoingEdges.empty(), ());
-    CHECK_LESS(prevFeatureId, m_featureId, ());
+    CHECK_LESS_OR_EQUAL(prevFeatureId, m_featureId, ());
     CHECK(IsSorted(), ());
 
     BitWriter<TSink> bits(sink);
-    coding::DeltaCoder::Encode(bits, m_featureId - prevFeatureId);
+    coding::DeltaCoder::Encode(bits, m_featureId - prevFeatureId + 1 /* making it greater than zero */);
     coding::DeltaCoder::Encode(bits, m_featureOutgoingEdges.size());
 
     m2::PointI prevPointFrom = mwmCenter;
     for(auto const & pointOutgoingEdges : m_featureOutgoingEdges)
     {
       // Start point outgoing edges.
-      EncodePointI(prevPointFrom - pointOutgoingEdges.m_pointFrom, bits);
+      EncodePointI(pointOutgoingEdges.m_pointFrom - prevPointFrom, bits);
       // Number of outgoing edges.
       coding::DeltaCoder::Encode(bits,
                                  pointOutgoingEdges.m_edges.size() + 1 /* making it greater than zero */);
       for(auto const & edge : pointOutgoingEdges.m_edges)
       {
         // End point of an outgoing edge.
-        EncodePointI(pointOutgoingEdges.m_pointFrom - edge.m_pointTo, bits);
+        EncodePointI(edge.m_pointTo - pointOutgoingEdges.m_pointFrom, bits);
+        EncodeUint(edge.m_segId, bits);
         EncodeBool(edge.m_forward, bits);
       }
       prevPointFrom = pointOutgoingEdges.m_pointFrom;
@@ -146,24 +177,30 @@ struct FeatureOutgoingEdges
                    TSource & src)
   {
     BitReader<TSource> bits(src);
-    m_featureId = prevFeatureId + coding::DeltaCoder::Decode(bits);
+    uint64_t const decodedFeatrueIdPlus1 = prevFeatureId + coding::DeltaCoder::Decode(bits);
+    CHECK_LESS(0, decodedFeatrueIdPlus1, ());
+    m_featureId = decodedFeatrueIdPlus1 - 1;
     size_t const featurePointCount = coding::DeltaCoder::Decode(bits);
     m2::PointI prevPointFrom = mwmCenter;
     for (size_t i = 0; i < featurePointCount; ++i)
     {
       PointOutgoingEdges edges;
       edges.m_pointFrom = DecodePointI(bits) + prevPointFrom;
+      edges.m_featureId = m_featureId;
       uint32_t outgoingEdgeCount = coding::DeltaCoder::Decode(bits);
       if (outgoingEdgeCount == 0)
       {
         ASSERT(false, ());
+        prevPointFrom = edges.m_pointFrom;
         continue;
       }
+      CHECK_LESS(0, outgoingEdgeCount, ());
       outgoingEdgeCount -= 1;
       for (uint32_t j = 0; j < outgoingEdgeCount; ++j)
       {
         OutgoingEdge edge;
         edge.m_pointTo = edges.m_pointFrom + DecodePointI(bits);
+        edge.m_segId = DecodeUint(bits);
         edge.m_forward = DecodeBool(bits);
         edges.m_edges.push_back(move(edge));
       }

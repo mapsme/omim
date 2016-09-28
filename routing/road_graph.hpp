@@ -6,6 +6,7 @@
 
 #include "indexer/feature_altitude.hpp"
 #include "indexer/feature_data.hpp"
+#include "indexer/feature_edge_index.hpp"
 
 #include "std/initializer_list.hpp"
 #include "std/map.hpp"
@@ -295,5 +296,11 @@ inline void JunctionsToAltitudes(vector<Junction> const & junctions, feature::TA
   altitudes.resize(junctions.size());
   for (size_t i = 0; i < junctions.size(); ++i)
     altitudes[i] = junctions[i].GetAltitude();
+}
+
+inline Junction PointIToJunction(m2::PointI const & p)
+{
+  return Junction(m2::PointD(p) / static_cast<double>(feature::kFixPointFactor),
+                  feature::kDefaultAltitudeMeters);
 }
 }  // namespace routing

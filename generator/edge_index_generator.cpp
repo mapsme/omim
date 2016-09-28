@@ -60,20 +60,16 @@ public:
     edges.m_featureOutgoingEdges.resize(pointsCount);
     for (size_t i = 0; i < pointsCount; ++i)
     {
-      m2::PointD pointFrom = f.GetPoint(i);
-      routing::Junction juctionFrom(pointFrom, kInvalidAltitude);
-      edges.m_featureOutgoingEdges[i].m_pointFrom = static_cast<m2::PointI>(pointFrom * kFixPointFactor);
+      m2::PointD const pointFrom = f.GetPoint(i);
+      routing::Junction const juctionFrom(pointFrom, kInvalidAltitude);
+      edges.m_featureOutgoingEdges[i].m_pointFrom = m2::PointI(pointFrom * kFixPointFactor);
       routing::IRoadGraph::TEdgeVector outgoingEdges;
       m_roadGraph.GetOutgoingEdges(juctionFrom, outgoingEdges);
       for (auto const & edge : outgoingEdges)
       {
-        OutgoingEdge processedEdge;
-        processedEdge.m_forward = edge.IsForward();
-        // @TODO Check if it's a correct way to find an end point.
-        processedEdge.m_pointTo = static_cast<m2::PointI>(
-            (processedEdge.m_forward ? edge.GetEndJunction().GetPoint()
-                                     : edge.GetStartJunction().GetPoint()) * kFixPointFactor);
-        edges.m_featureOutgoingEdges[i].m_edges.push_back(move(processedEdge));
+        edges.m_featureOutgoingEdges[i].m_edges.emplace_back(
+            m2::PointI(edge.GetEndJunction().GetPoint() * kFixPointFactor),
+            edge.GetSegId(), edge.IsForward());
       }
     }
 
