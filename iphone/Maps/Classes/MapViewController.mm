@@ -548,7 +548,7 @@ BOOL gIsFirstMyPositionMode = YES;
   }
   if (self.isAppWallAdActive)
     return;
-  self.appWallAd = [[MTRGNativeAppwallAd alloc] initWithSlotId:@(MY_TARGET_KEY)];
+  self.appWallAd = [[MTRGNativeAppwallAd alloc] initWithSlotId:@(MY_TARGET_KEY).stringValue];
   self.appWallAd.handleLinksInApp = YES;
   self.appWallAd.closeButtonTitle = L(@"close");
   self.appWallAd.delegate = self;
