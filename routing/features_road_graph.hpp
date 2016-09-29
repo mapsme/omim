@@ -80,6 +80,9 @@ public:
 private:
   friend class CrossFeaturesLoader;
 
+  void GetRegularOutgoingEdges(Junction const & junction, TEdgeVector & edges) const;
+  void GetRegularIngoingEdges(Junction const & junction, TEdgeVector & edges) const;
+
   struct Value
   {
     Value() = default;

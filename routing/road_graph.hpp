@@ -251,9 +251,9 @@ public:
 
 private:
   /// \brief Finds all outgoing regular (non-fake) edges for junction.
-  void GetRegularOutgoingEdges(Junction const & junction, TEdgeVector & edges) const;
+  virtual void GetRegularOutgoingEdges(Junction const & junction, TEdgeVector & edges) const;
   /// \brief Finds all ingoing regular (non-fake) edges for junction.
-  void GetRegularIngoingEdges(Junction const & junction, TEdgeVector & edges) const;
+  virtual void GetRegularIngoingEdges(Junction const & junction, TEdgeVector & edges) const;
   /// \brief Finds all outgoing fake edges for junction.
   void GetFakeOutgoingEdges(Junction const & junction, TEdgeVector & edges) const;
   /// \brief Finds all ingoing fake edges for junction.

@@ -6,7 +6,20 @@
 // @TODO Move away routing from indexer.
 #include "routing/road_graph.hpp"
 
+#include "std/functional.hpp"
+#include "std/unordered_map.hpp"
 #include "std/vector.hpp"
+
+namespace std
+{
+  template <> struct hash<m2::PointI>
+  {
+    size_t operator()(m2::PointI const & p) const
+    {
+      return hash<int32_t>()(p.x) ^ hash<int32_t>()(p.y);
+    }
+  };
+}
 
 namespace feature
 {
@@ -42,10 +55,11 @@ public:
                         routing::IRoadGraph::TEdgeVector & edges) const;
   bool GetIngoingEdges(routing::Junction const & junction,
                        routing::IRoadGraph::TEdgeVector & edges) const;
-  bool HasEdgeIndex() const { return !m_outgoingEdges.empty() /* && m_ingoingEdges.empty() */; }
+  bool HasEdgeIndex() const { return !m_outgoingEdges.empty(); }
 
 private:
   vector<FixEdge> m_outgoingEdges; /* sorted by FixEdge::m_startPoint */
+  unordered_map<m2::PointI, vector<size_t>> m_ingoingEdgeIndices;
 
   EdgeIndexHeader m_header;
   string m_countryFileName;

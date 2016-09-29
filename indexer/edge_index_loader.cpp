@@ -7,7 +7,6 @@
 #include "base/stl_helpers.hpp"
 
 #include "std/algorithm.hpp"
-#include "std/functional.hpp"
 
 namespace
 {
@@ -56,11 +55,20 @@ EdgeIndexLoader::EdgeIndexLoader(MwmValue const & mwmValue, MwmSet::MwmId const 
     sort(m_outgoingEdges.begin(), m_outgoingEdges.end(), outgoingEdgesComparator);
 
     // Calculating ingoing edges.
+    for (size_t i = 0; i < m_outgoingEdges.size(); ++i)
+    {
+      auto const & key = m_outgoingEdges[i].m_endPoint;
+      auto const it = m_ingoingEdgeIndices.find(key);
+      if (it == m_ingoingEdgeIndices.cend())
+        m_ingoingEdgeIndices.insert(make_pair(key, vector<size_t>({i})));
+      else
+        it->second.push_back(i);
+    }
   }
   catch (Reader::OpenException const & e)
   {
     m_outgoingEdges.clear();
-//    m_ingoingEdges.clear();
+    m_ingoingEdgeIndices.clear();
     LOG(LERROR, ("File", m_countryFileName, "Error while reading", EDGE_INDEX_FILE_TAG, "section.", e.Msg()));
   }
 }
@@ -89,4 +97,27 @@ bool EdgeIndexLoader::GetOutgoingEdges(routing::Junction const & junction,
   return true;
 }
 
+bool EdgeIndexLoader::GetIngoingEdges(routing::Junction const & junction,
+                                      routing::IRoadGraph::TEdgeVector & edges) const
+{
+  m2::PointI const junctionFix(junction.GetPoint() * kFixPointFactor);
+  auto const it = m_ingoingEdgeIndices.find(junctionFix);
+  if (it == m_ingoingEdgeIndices.cend())
+  {
+    LOG(LERROR, ("m_ingoingEdgeIndices doesn't contain junction"));
+    return false;
+  }
+
+  // @TODO It's necessary add a correct altitude to |junctionTo| here and below for an start junction.
+  routing::Junction const junctionTo = routing::PointIToJunction(junctionFix);
+  vector<size_t> const & edgeIndices = it->second;
+  for (size_t idx : edgeIndices)
+  {
+    FixEdge const & e = m_outgoingEdges[idx];
+    edges.emplace_back(FeatureID(m_mwmId, e.m_featureId), e.m_forward, e.m_segId,
+                       routing::PointIToJunction(e.m_startPoint), junctionTo);
+  }
+
+  return true;
+}
 }  // namespace feature

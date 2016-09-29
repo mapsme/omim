@@ -57,6 +57,35 @@ void BuildMwmWithoutEdgeIndex(vector<TPoint2DList> const & roads, LocalCountryFi
     builder.Add(generator::tests_support::TestStreet(geom, string(), string()));
 }
 
+void SortEdges(IRoadGraph::TEdgeVector & edges1, IRoadGraph::TEdgeVector & edges2)
+{
+  sort(edges1.begin(), edges1.end());
+  sort(edges2.begin(), edges2.end());
+}
+
+void TestEqualEdges(IRoadGraph::TEdgeVector const & edgesFormIndex,
+                    IRoadGraph::TEdgeVector const & edgesFormGeometry)
+{
+  TEST_EQUAL(edgesFormIndex.size(), edgesFormGeometry.size(), ());
+  for (size_t j = 0; j < edgesFormIndex.size(); ++j)
+  {
+    Edge const & fromIndex = edgesFormIndex[j];
+    Edge const & fromGeom = edgesFormGeometry[j];
+    TEST(m2::AlmostEqualAbs(fromIndex.GetStartJunction().GetPoint(),
+                            fromGeom.GetStartJunction().GetPoint(), kEpsilon),
+         (fromIndex.GetStartJunction().GetPoint(), fromGeom.GetStartJunction().GetPoint()));
+    TEST(m2::AlmostEqualAbs(fromIndex.GetEndJunction().GetPoint(),
+                            fromGeom.GetEndJunction().GetPoint(), kEpsilon),
+         (fromIndex.GetEndJunction().GetPoint(), fromGeom.GetEndJunction().GetPoint()));
+    TEST_EQUAL(fromIndex.IsForward(), fromGeom.IsForward(), ());
+    TEST_EQUAL(fromIndex.GetFeatureId().m_index, fromGeom.GetFeatureId().m_index, ());
+    TEST_EQUAL(fromIndex.GetSegId(), fromGeom.GetSegId(), ());
+  }
+}
+
+/// \note This method could be used to check correctness of edge index section
+/// of any mwm which has one.
+// @TODO It's worth writing an integration test on a real mwm based on this method.
 void TestEdgeIndex(MwmValue const & mwmValue, MwmSet::MwmId const & mwmId,
                    string const & dir, string const & country)
 {
@@ -77,35 +106,36 @@ void TestEdgeIndex(MwmValue const & mwmValue, MwmSet::MwmId const & mwmId,
     for (size_t i = 0; i < pointsCount; ++i)
     {
       // Outgoing edges.
-      // Edges from edge index section.
-      Junction const junction(f.GetPoint(i), kDefaultAltitudeMeters);
-      IRoadGraph::TEdgeVector edgesFormIndex;
-      loader.GetOutgoingEdges(junction, edgesFormIndex);
-
-      // Edges from geometry.
-      IRoadGraph::TEdgeVector edgesFormGeometry;
-      featureRoadGraph.GetOutgoingEdges(junction, edgesFormGeometry);
-
-      // Comparing outgoing edges for edge index section and from geometry.
-      TEST_EQUAL(edgesFormIndex.size(), edgesFormGeometry.size(), ());
-      sort(edgesFormIndex.begin(), edgesFormIndex.end());
-      sort(edgesFormGeometry.begin(), edgesFormGeometry.end());
-      for (size_t j = 0; j < edgesFormIndex.size(); ++j)
       {
-        Edge const & fromIndex = edgesFormIndex[j];
-        Edge const & fromGeom = edgesFormGeometry[j];
-        TEST(m2::AlmostEqualAbs(fromIndex.GetStartJunction().GetPoint(),
-                                fromGeom.GetStartJunction().GetPoint(), kEpsilon),
-             (fromIndex.GetStartJunction().GetPoint(), fromGeom.GetStartJunction().GetPoint()));
-        TEST(m2::AlmostEqualAbs(fromIndex.GetEndJunction().GetPoint(),
-                                fromGeom.GetEndJunction().GetPoint(), kEpsilon),
-             (fromIndex.GetEndJunction().GetPoint(), fromGeom.GetEndJunction().GetPoint()));
-        TEST_EQUAL(fromIndex.IsForward(), fromGeom.IsForward(), ());
-        TEST_EQUAL(fromIndex.GetFeatureId().m_index, fromGeom.GetFeatureId().m_index, ());
-        TEST_EQUAL(fromIndex.GetSegId(), fromGeom.GetSegId(), ());
+        // Edges from edge index section.
+        Junction const junction(f.GetPoint(i), kDefaultAltitudeMeters);
+        IRoadGraph::TEdgeVector edgesFormIndex;
+        loader.GetOutgoingEdges(junction, edgesFormIndex);
+
+        // Edges from geometry.
+        IRoadGraph::TEdgeVector edgesFormGeometry;
+        featureRoadGraph.GetOutgoingEdges(junction, edgesFormGeometry);
+
+        // Comparing outgoing edges for edge index section and from geometry.
+        SortEdges(edgesFormIndex, edgesFormGeometry);
+        TestEqualEdges(edgesFormIndex, edgesFormGeometry);
       }
 
       // Ingoing edges.
+      {
+        // Edges from edge index section.
+        Junction const junction(f.GetPoint(i), kDefaultAltitudeMeters);
+        IRoadGraph::TEdgeVector edgesFormIndex;
+        loader.GetIngoingEdges(junction, edgesFormIndex);
+
+        // Edges from geometry.
+        IRoadGraph::TEdgeVector edgesFormGeometry;
+        featureRoadGraph.GetIngoingEdges(junction, edgesFormGeometry);
+
+        // Comparing ingoing edges for edge index section and from geometry.
+        SortEdges(edgesFormIndex, edgesFormGeometry);
+        TestEqualEdges(edgesFormIndex, edgesFormGeometry);
+      }
     }
   };
   feature::ForEachFromDat(mwmPath, processor);
@@ -141,6 +171,30 @@ void TestEdgeIndexBuilding(vector<TPoint2DList> const & roads)
 UNIT_TEST(EdgeIndexGenerationTest_ThreeRoads)
 {
   vector<TPoint2DList> const roads = {kRoad1, kRoad2, kRoad3};
+  TestEdgeIndexBuilding(roads);
+}
+
+UNIT_TEST(EdgeIndexGenerationTest_ThreeUnorderedRoads)
+{
+  vector<TPoint2DList> const roads = {kRoad2, kRoad1, kRoad3};
+  TestEdgeIndexBuilding(roads);
+}
+
+UNIT_TEST(EdgeIndexGenerationTest_TwoRoads)
+{
+  vector<TPoint2DList> const roads = {kRoad1, kRoad3};
+  TestEdgeIndexBuilding(roads);
+}
+
+UNIT_TEST(EdgeIndexGenerationTest_FourRoads)
+{
+  vector<TPoint2DList> const roads = {kRoad1, kRoad2, kRoad3, kRoad4};
+  TestEdgeIndexBuilding(roads);
+}
+
+UNIT_TEST(EdgeIndexGenerationTest_FiveTheSameRoads)
+{
+  vector<TPoint2DList> const roads = {kRoad1, kRoad1, kRoad1, kRoad1, kRoad1};
   TestEdgeIndexBuilding(roads);
 }
 }  // namespace
