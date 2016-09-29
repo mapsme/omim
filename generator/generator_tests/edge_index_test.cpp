@@ -81,12 +81,16 @@ void TestEdgeIndex(MwmValue const & mwmValue, MwmSet::MwmId const & mwmId,
       Junction const junction(f.GetPoint(i), kDefaultAltitudeMeters);
       IRoadGraph::TEdgeVector edgesFormIndex;
       loader.GetOutgoingEdges(junction, edgesFormIndex);
+
       // Edges from geometry.
       IRoadGraph::TEdgeVector edgesFormGeometry;
       featureRoadGraph.GetOutgoingEdges(junction, edgesFormGeometry);
-      TEST_EQUAL(edgesFormIndex.size(), edgesFormGeometry.size(), ());
+
       // Comparing outgoing edges for edge index section and from geometry.
-      for(size_t j = 0; j < edgesFormIndex.size(); ++j)
+      TEST_EQUAL(edgesFormIndex.size(), edgesFormGeometry.size(), ());
+      sort(edgesFormIndex.begin(), edgesFormIndex.end());
+      sort(edgesFormGeometry.begin(), edgesFormGeometry.end());
+      for (size_t j = 0; j < edgesFormIndex.size(); ++j)
       {
         Edge const & fromIndex = edgesFormIndex[j];
         Edge const & fromGeom = edgesFormGeometry[j];
@@ -97,12 +101,11 @@ void TestEdgeIndex(MwmValue const & mwmValue, MwmSet::MwmId const & mwmId,
                                 fromGeom.GetEndJunction().GetPoint(), kEpsilon),
              (fromIndex.GetEndJunction().GetPoint(), fromGeom.GetEndJunction().GetPoint()));
         TEST_EQUAL(fromIndex.IsForward(), fromGeom.IsForward(), ());
-//        TEST_EQUAL(fromIndex.GetFeatureId(), fromGeom.GetFeatureId(), ());
+        TEST_EQUAL(fromIndex.GetFeatureId().m_index, fromGeom.GetFeatureId().m_index, ());
         TEST_EQUAL(fromIndex.GetSegId(), fromGeom.GetSegId(), ());
       }
 
       // Ingoing edges.
-      ;;
     }
   };
   feature::ForEachFromDat(mwmPath, processor);

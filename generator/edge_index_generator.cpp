@@ -67,6 +67,9 @@ public:
       m_roadGraph.GetOutgoingEdges(juctionFrom, outgoingEdges);
       for (auto const & edge : outgoingEdges)
       {
+        if (edge.GetFeatureId().m_index != id)
+          continue;
+        // |edge| belongs to |f|.
         edges.m_featureOutgoingEdges[i].m_edges.emplace_back(
             m2::PointI(edge.GetEndJunction().GetPoint() * kFixPointFactor),
             edge.GetSegId(), edge.IsForward());
