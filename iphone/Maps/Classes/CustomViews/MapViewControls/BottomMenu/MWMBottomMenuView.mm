@@ -129,6 +129,16 @@ CGFloat constexpr kTimeWidthRegular = 128;
   [self.goButton setBackgroundColor:[UIColor linkBlueHighlighted]
                            forState:UIControlStateHighlighted];
   self.elevationImage.mwm_coloring = MWMImageColoringBlue;
+
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(updateHeightProfileIfNeeded)
+                                               name:UIApplicationWillEnterForegroundNotification
+                                             object:nil];
+}
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)layoutSubviews
@@ -264,6 +274,12 @@ CGFloat constexpr kTimeWidthRegular = 128;
                                          self.elevationHeight.text = altitudeElevation;
                                        }];
   });
+}
+
+- (void)updateHeightProfileIfNeeded
+{
+  if ([MWMRouter hasRouteAltitude] && !self.heightProfileImage.image)
+    [self updateHeightProfile];
 }
 
 - (void)updateVisibility

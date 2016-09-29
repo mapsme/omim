@@ -63,6 +63,16 @@ static CGFloat constexpr kAdditionalHeight = 20.;
   [self.backButton matchInterfaceOrientation];
 
   self.elevationImage.mwm_coloring = MWMImageColoringBlue;
+
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(updateHeightProfileIfNeeded)
+                                               name:UIApplicationWillEnterForegroundNotification
+                                             object:nil];
+}
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)setupProgresses
@@ -199,6 +209,12 @@ static CGFloat constexpr kAdditionalHeight = 20.;
                                          self.elevationHeight.text = altitudeElevation;
                                        }];
   });
+}
+
+- (void)updateHeightProfileIfNeeded
+{
+  if ([MWMRouter hasRouteAltitude] && !self.heightProfileImage.image)
+    [self updateHeightProfile];
 }
 
 - (void)iPadNotReady
