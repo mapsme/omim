@@ -28,7 +28,6 @@
 
 #include <sys/resource.h>
 
-
 using namespace routing;
 
 using TRouterFactory =
@@ -366,4 +365,9 @@ namespace integration
     }
     TEST_EQUAL(expected.size(), foundMwms.size(), ());
   }
-}
+
+//  MwmSet::MwmHandle GetMwmHandle(string const & name)
+//  {
+
+//  }
+}  // namespace

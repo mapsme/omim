@@ -27,6 +27,7 @@ SOURCES += \
   bicycle_route_test.cpp \
   bicycle_turn_test.cpp \
   cross_section_tests.cpp \
+  edge_index_consistency_tests.cpp \
   get_altitude_test.cpp \
   online_cross_tests.cpp \
   osrm_route_test.cpp \

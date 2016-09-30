@@ -1,5 +1,7 @@
 #pragma once
 
+#include "indexer/mwm_set.hpp"
+
 #include "routing/osrm_router.hpp"
 
 #include "storage/country_info_getter.hpp"
@@ -46,9 +48,9 @@ typedef pair<shared_ptr<Route>, IRouter::ResultCode> TRouteResult;
 
 namespace integration
 {
-shared_ptr<model::FeaturesFetcher> CreateFeaturesFetcher(vector<LocalCountryFile> const & localFiles);
+  shared_ptr<model::FeaturesFetcher> CreateFeaturesFetcher(vector<LocalCountryFile> const & localFiles);
 
-unique_ptr<storage::CountryInfoGetter> CreateCountryInfoGetter();
+  unique_ptr<storage::CountryInfoGetter> CreateCountryInfoGetter();
 
   class IRouterComponents
   {
@@ -153,4 +155,7 @@ unique_ptr<storage::CountryInfoGetter> CreateCountryInfoGetter();
   void TestCurrentStreetName(routing::Route const & route, string const & expectedStreetName);
 
   void TestNextStreetName(routing::Route const & route, string const & expectedStreetName);
-}
+
+  /// \returns mwm hadle by file name without extention.
+//  MwmSet::MwmHandle GetMwmHandle(string const & name);
+}  // namespace
