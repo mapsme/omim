@@ -74,7 +74,7 @@ struct PointOutgoingEdges
   uint32_t m_featureId = kInvalidFeatureId; /* Feature contains the point. */
 };
 
-bool OutgoingEdgeSortFunc(PointOutgoingEdges const & i, PointOutgoingEdges const & j)
+inline bool OutgoingEdgeSortFunc(PointOutgoingEdges const & i, PointOutgoingEdges const & j)
 {
   return i.m_pointFrom < j.m_pointFrom;
 }
@@ -113,7 +113,7 @@ void EncodeBool(bool flag, BitWriter<TSink> & bits)
 template <class TSource>
 bool DecodeBool(BitReader<TSource> & bits)
 {
-  auto flag =  coding::DeltaCoder::Decode(bits);
+  auto const flag = coding::DeltaCoder::Decode(bits);
   return flag == 1 ? false : true;
 }
 
@@ -126,7 +126,7 @@ void EncodeUint(uint32_t i, BitWriter<TSink> & bits)
 template <class TSource>
 uint32_t DecodeUint(BitReader<TSource> & bits)
 {
-  auto i = coding::DeltaCoder::Decode(bits);
+  auto const i = coding::DeltaCoder::Decode(bits);
   if (i == 0)
   {
     ASSERT(false, ());
@@ -225,5 +225,4 @@ struct FeatureOutgoingEdges
   uint32_t m_featureId;
   vector<PointOutgoingEdges> m_featureOutgoingEdges;
 };
-
 }  // namespace feature

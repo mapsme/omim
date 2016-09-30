@@ -11,10 +11,7 @@
 #include "base/thread.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/map.hpp"
 #include "std/regex.hpp"
-#include "std/utility.hpp"
-#include "std/vector.hpp"
 
 #include <unistd.h>     // for sysconf
 #include <sys/stat.h>
@@ -95,68 +92,8 @@ public:
 
 }
 
-//struct Index
-//{
-//  string file;
-//  string searchScope;
-
-//  bool operator<(Index const & rhv) const
-//  {
-//    if (file < rhv.file)
-//      return true;
-//    return searchScope < rhv.searchScope;
-//  }
-//};
-
-struct Value
-{
-  Value(ModelReader const & modelReader, string const & p)
-    : data(modelReader.Size()), path(p)
-  {
-    modelReader.Read(0, &data[0], modelReader.Size());
-    LOG(LINFO, ("GetReader() Value::Value() modelReader.Size() =", modelReader.Size()));
-  }
-
-  Value(Value const &) = default;
-
-  vector<int8_t> data;
-  string path;
-};
-
-map<string, Value> & GetCache()
-{
-  static map<string, Value> cache;
-  return cache;
-}
-
-unique_ptr<ModelReader> ToMemory(string const & path, string const & file, ModelReader const & modelReader)
-{
-  LOG(LINFO, ("GetReader() ToMemory() file =", file, ", GetCache().size()", GetCache().size()));
-  Value v(modelReader, path);
-  auto const inserted = GetCache().insert(make_pair(file, v));
-  if (inserted.second == false)
-  {
-    LOG(LERROR, ("GetReader() ToMemory()"));
-  }
-  LOG(LINFO, ("GetReader() ToMemory() 2", " GetCache().size() =", GetCache().size()));
-  return make_unique<MemReader>(inserted.first->second.data.data(), inserted.first->second.data.size(),
-                                path);
-}
-
 unique_ptr<ModelReader> Platform::GetReader(string const & file, string const & searchScope) const
 {
-  LOG(LINFO, ("GetReader(", file, ", ", searchScope, ")"));
-  auto const it = GetCache().find(file);
-  if (it != GetCache().cend())
-  {
-    LOG(LINFO, ("GetReader() found in cache"));
-
-    return make_unique<MemReader>(it->second.data.data(), it->second.data.size(),
-                                  it->second.path);
-  }
-
-  LOG(LINFO, ("GetReader() no such file in cache. GetCache().size() =", GetCache().size()));
-
   string const ext = my::GetFileExtension(file);
   ASSERT(!ext.empty(), ());
 
@@ -202,8 +139,7 @@ unique_ptr<ModelReader> Platform::GetReader(string const & file, string const & 
       {
         try
         {
-          ZipFileReader f(m_extResFiles[j], file, logPageSize, logPageCount);
-          return ToMemory(file, file, f);
+          return make_unique<ZipFileReader>(m_extResFiles[j], file, logPageSize, logPageCount);
         }
         catch (Reader::OpenException const &)
         {
@@ -215,10 +151,7 @@ unique_ptr<ModelReader> Platform::GetReader(string const & file, string const & 
     {
       string const path = m_writableDir + file;
       if (IsFileExistsByFullPath(path))
-      {
-        FileReader f(path, logPageSize, logPageCount);
-        return ToMemory(path, file, f);
-      }
+        return make_unique<FileReader>(path, logPageSize, logPageCount);
       break;
     }
 
@@ -226,27 +159,20 @@ unique_ptr<ModelReader> Platform::GetReader(string const & file, string const & 
     {
       string const path = m_settingsDir + file;
       if (IsFileExistsByFullPath(path))
-      {
-        FileReader f(path, logPageSize, logPageCount);
-        return ToMemory(path, file, f);
-      }
+        return make_unique<FileReader>(path, logPageSize, logPageCount);
       break;
     }
 
     case FULL_PATH:
       if (IsFileExistsByFullPath(file))
-      {
-        FileReader f(file, logPageSize, logPageCount);
-        return ToMemory(file, file, f);
-      }
+        return make_unique<FileReader>(file, logPageSize, logPageCount);
       break;
 
     case RESOURCE:
       ASSERT_EQUAL(file.find("assets/"), string::npos, ());
       try
       {
-        ZipFileReader f(m_resourcesDir, "assets/" + file, logPageSize, logPageCount);
-        return ToMemory("assets/" + file, file, f);
+        return make_unique<ZipFileReader>(m_resourcesDir, "assets/" + file, logPageSize, logPageCount);
       }
       catch (Reader::OpenException const &)
       {
