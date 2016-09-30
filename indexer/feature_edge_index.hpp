@@ -60,7 +60,6 @@ struct OutgoingEdge
 
   m2::PointI m_pointTo;
   uint32_t m_segId = 0;
-  uint32_t m_featureId = kInvalidFeatureId; /* Feature contains the edge. */
   bool m_forward = true;
 };
 
@@ -71,7 +70,6 @@ struct PointOutgoingEdges
 
   m2::PointI m_pointFrom;
   vector<OutgoingEdge> m_edges;
-  uint32_t m_featureId = kInvalidFeatureId; /* Feature contains the point. */
 };
 
 inline bool OutgoingEdgeSortFunc(PointOutgoingEdges const & i, PointOutgoingEdges const & j)
@@ -186,7 +184,6 @@ struct FeatureOutgoingEdges
     {
       PointOutgoingEdges edges;
       edges.m_pointFrom = DecodePointI(bits) + prevPointFrom;
-      edges.m_featureId = m_featureId;
       uint32_t outgoingEdgeCount = coding::DeltaCoder::Decode(bits);
       if (outgoingEdgeCount == 0)
       {

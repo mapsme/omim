@@ -85,7 +85,6 @@ DEFINE_string(srtm_path, "",
               "about roads.");
 DEFINE_bool(generate_outgoing_edge_index, false, "Generates section with outgoing edges");
 
-
 int main(int argc, char ** argv)
 {
   google::SetUsageMessage(

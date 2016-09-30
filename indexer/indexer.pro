@@ -90,6 +90,7 @@ HEADERS += \
     feature_covering.hpp \
     feature_data.hpp \
     feature_decl.hpp \
+    feature_edge_index.hpp \
     feature_impl.hpp \
     feature_loader.hpp \
     feature_loader_base.hpp \
@@ -135,7 +136,6 @@ HEADERS += \
     trie_reader.hpp \
     types_mapping.hpp \
     unique_index.hpp \
-    feature_edge_index.hpp \
 
 
 OTHER_FILES += drules_struct.proto
