@@ -41,7 +41,6 @@ bool GetJsonBuffer(platform::TextSource textSource, string const & localeName, s
   {
     jsonBuffer.clear();
     GetPlatform().GetReader(pathToJson)->ReadAsString(jsonBuffer);
-    LOG(LINFO, ("GetReader() jsonBuffer.size() =", jsonBuffer.size()));
   }
   catch (RootException const & ex)
   {

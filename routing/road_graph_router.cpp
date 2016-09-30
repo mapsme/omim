@@ -234,7 +234,6 @@ IRouter::ResultCode RoadGraphRouter::CalculateRoute(m2::PointD const & startPoin
 
   if (!route.IsValid())
     return IRouter::RouteNotFound;
-  LOG(LINFO, ("RoadGraphRouter::CalculateRoute 4"));
 
   switch (resultCode)
   {
