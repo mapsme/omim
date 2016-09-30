@@ -8,6 +8,7 @@
 
 #include "std/functional.hpp"
 #include "std/unordered_map.hpp"
+#include "std/string.hpp"
 #include "std/vector.hpp"
 
 namespace std
@@ -47,7 +48,7 @@ struct FixEdge
 class EdgeIndexLoader
 {
 public:
-  explicit EdgeIndexLoader(MwmValue const & mwmValue, MwmSet::MwmId const & mwmId);
+  EdgeIndexLoader(MwmValue const & mwmValue, MwmSet::MwmId const & mwmId);
 
   // @TODO Now the algorithm uses double point Junction for route calculation.
   // It's worth rewriting it to use fixed point Junction in it.

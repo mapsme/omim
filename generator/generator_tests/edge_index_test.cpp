@@ -33,7 +33,7 @@ using namespace routing;
 
 namespace
 {
-// These tests generate mwms with edge index sections and then check if edge index
+// These tests generate mwms with edge index sections and then check if edge index sections
 // in the mwms are correct.
 
 // Directory name for creating test mwm and temporary files.
