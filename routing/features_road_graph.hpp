@@ -80,8 +80,9 @@ public:
 private:
   friend class CrossFeaturesLoader;
 
-  void GetRegularOutgoingEdges(Junction const & junction, TEdgeVector & edges) const;
-  void GetRegularIngoingEdges(Junction const & junction, TEdgeVector & edges) const;
+// These overrides are used for taking ingoing and outgoing graph edges from the edge index section.
+//  void GetRegularOutgoingEdges(Junction const & junction, TEdgeVector & edges) const override;
+//  void GetRegularIngoingEdges(Junction const & junction, TEdgeVector & edges) const override;
 
   struct Value
   {
@@ -116,6 +117,8 @@ private:
   mutable RoadInfoCache m_cache;
   mutable CrossCountryVehicleModel m_vehicleModel;
   mutable map<MwmSet::MwmId, Value> m_mwmLocks;
+
+//  MwmSet::MwmId const m_testMwmId;
 };
 
 }  // namespace routing

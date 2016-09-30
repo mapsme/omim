@@ -81,13 +81,12 @@ bool EdgeIndexLoader::GetOutgoingEdges(routing::Junction const & junction,
                                  FixEdge(junctionFix), outgoingEdgesComparator);
   if (range.first == range.second || range.first == m_outgoingEdges.cend())
   {
-    LOG(LERROR, ("m_outgoingEdges doesn't contain junction"));
+    LOG(LERROR, ("m_outgoingEdges doesn't contain junction:", junction));
     return false;
   }
 
   // @TODO It's necessary add a correct altitude to |junctionFrom| here and below for an end junction.
   routing::Junction const junctionFrom = routing::PointIToJunction(junctionFix);
-  edges.clear();
   for (auto it = range.first; it != range.second; ++it)
   {
     edges.emplace_back(FeatureID(m_mwmId, it->m_featureId), it->m_forward, it->m_segId, junctionFrom,
