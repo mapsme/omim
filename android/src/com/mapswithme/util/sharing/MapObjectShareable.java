@@ -18,7 +18,12 @@ class MapObjectShareable extends BaseShareable
     super(context);
 
     final Activity activity = getActivity();
-    final String ge0Url = Framework.nativeGetGe0Url(mapObject.getLat(), mapObject.getLon(), mapObject.getScale(), mapObject.getTitle());
+    final double lat = mapObject.getLat();
+    final double lon = mapObject.getLon();
+    final double scale = mapObject.getScale();
+    final String title = mapObject.getTitle();
+    final String httpUrl = Framework.getHttpGe0Url(lat, lon, scale, title);
+    final String ge0Url = Framework.nativeGetGe0Url(lat, lon, scale, title);
 
     final String subject;
     String text;
@@ -26,18 +31,18 @@ class MapObjectShareable extends BaseShareable
     {
       subject = activity.getString(R.string.my_position_share_email_subject);
       text = activity.getString(R.string.my_position_share_email,
-                                Framework.nativeGetNameAndAddress(mapObject.getLat(), mapObject.getLon()),
-                                ge0Url,
-                                Framework.getHttpGe0Url(mapObject.getLat(), mapObject.getLon(), mapObject.getScale(), mapObject.getTitle()));
+                                Framework.nativeGetNameAndAddress(lat, lon), ge0Url, httpUrl);
     }
     else
     {
       subject = activity.getString(R.string.bookmark_share_email_subject);
 
+      //TODO: sharing message will be redesigned according this task - https://jira.mail.ru/browse/MAPSME-1350
       text = lineWithBreak(activity.getString(R.string.sharing_call_action_look)) +
-                 lineWithBreak(mapObject.getTitle()) +
+                 lineWithBreak(title) +
                  lineWithBreak(mapObject.getSubtitle()) +
                  lineWithBreak(mapObject.getAddress()) +
+                 lineWithBreak(httpUrl) +
                  lineWithBreak(ge0Url);
 
       if (sponsoredHotel != null)
