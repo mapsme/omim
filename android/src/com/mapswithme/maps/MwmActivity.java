@@ -51,8 +51,10 @@ import com.mapswithme.maps.location.CompassData;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.news.FirstStartFragment;
 import com.mapswithme.maps.news.NewsFragment;
+import com.mapswithme.maps.routing.NavigationBroadcastController;
 import com.mapswithme.maps.routing.NavigationController;
 import com.mapswithme.maps.routing.RoutingController;
+import com.mapswithme.maps.routing.RoutingInfo;
 import com.mapswithme.maps.routing.RoutingPlanFragment;
 import com.mapswithme.maps.routing.RoutingPlanInplaceController;
 import com.mapswithme.maps.search.FloatingSearchToolbarController;
@@ -1443,6 +1445,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     adjustZoomButtons();
     mPlacePage.refreshViews();
     mNavigationController.show(show);
+    NavigationBroadcastController.sendIsNavigating(this, show);
     mOnmapDownloader.updateState(false);
   }
 
@@ -1513,7 +1516,9 @@ public class MwmActivity extends BaseMwmFragmentActivity
     if (!RoutingController.get().isNavigating())
       return;
 
-    mNavigationController.update(Framework.nativeGetRouteFollowingInfo());
+    final RoutingInfo info = Framework.nativeGetRouteFollowingInfo();
+    mNavigationController.update(info);
+    NavigationBroadcastController.sendUpdate(this, info);
 
     TtsPlayer.INSTANCE.playTurnNotifications();
   }
@@ -1524,6 +1529,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
     MapFragment.nativeCompassUpdated(compass.getMagneticNorth(), compass.getTrueNorth(), false);
     mPlacePage.refreshAzimuth(compass.getNorth());
     mNavigationController.updateNorth(compass.getNorth());
+    NavigationBroadcastController.setNorth(compass.getNorth());
+    NavigationBroadcastController.sendUpdate(this, Framework.nativeGetRouteFollowingInfo());
   }
 
   @Override
