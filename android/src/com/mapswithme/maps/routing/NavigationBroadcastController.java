@@ -12,7 +12,6 @@ import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.util.StringUtils;
 
 public class NavigationBroadcastController {
-
   private static final String START_ACTION = "com.mapswithme.maps.routing.START";
   private static final String STOP_ACTION = "com.mapswithme.maps.routing.STOP";
   private static final String UPDATE_ACTION = "com.mapswithme.maps.routing.UPDATE";
@@ -70,7 +69,8 @@ public class NavigationBroadcastController {
 
     final Location last = LocationHelper.INSTANCE.getLastKnownLocation();
     if (last != null) {
-      Pair<String, String> speedAndUnits = StringUtils.nativeFormatSpeedAndUnits(last.getSpeed());
+      final Pair<String, String> speedAndUnits =
+          StringUtils.nativeFormatSpeedAndUnits(last.getSpeed());
       intent.putExtra(EXTRA_SPEED, speedAndUnits.first);
       intent.putExtra(EXTRA_SPEED_UNITS, speedAndUnits.second);
     }
@@ -89,10 +89,9 @@ public class NavigationBroadcastController {
     final Location location = LocationHelper.INSTANCE.getSavedLocation();
     // Zero is intentionally passed to the north parameter to obtain true azimuth.
     // North is passed as the separate extra.
-    final DistanceAndAzimut distanceAndAzimuth = Framework.nativeGetDistanceAndAzimuthFromLatLon(
-            next.getLatitude(), next.getLongitude(),
-            location.getLatitude(), location.getLongitude(),
-            0.0);
+    final DistanceAndAzimut distanceAndAzimuth =
+        Framework.nativeGetDistanceAndAzimuthFromLatLon(next.getLatitude(), next.getLongitude(),
+            location.getLatitude(), location.getLongitude(), 0.0);
     intent.putExtra(EXTRA_DISTANCE, distanceAndAzimuth.getDistance());
     intent.putExtra(EXTRA_AZIMUTH, distanceAndAzimuth.getAzimuth());
   }
