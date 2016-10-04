@@ -31,6 +31,8 @@ class StringsTxt:
         self.duplicates = {} # dict<lang, TransAndKey>
         self.keys_in_order = []
         self._read_file()
+
+    def process_file(self):
         self._populate_translations_by_langs()
         self._find_duplicates()
         self.most_duplicated = []
@@ -163,29 +165,40 @@ class StringsTxt:
             print("{0}:\n{1}\n".format(lang, "\n".join(missing_keys)))
 
 
-    def write_formatted(self):
+    def write_formatted(self, target_file=None, languages=None):
+        before_block = ""
+        if target_file is None:
+            target_file = self.strings_path
         non_itunes_langs = sorted(list(self.all_langs - set(ITUNES_LANGS)))
-        with open(self.strings_path, "w") as outfile:
+        with open(target_file, "w") as outfile:
             for key in self.keys_in_order:
+                if not key:
+                    continue
                 if key in self.translations:
                     tran = self.translations[key]
                 else:
-                    outfile.write("{0}\n\n".format(key))
+                    if key.startswith("[["):
+                        outfile.write("{0}{1}\n".format(before_block, key))
+                        before_block = "\n"
                     continue
 
-                outfile.write("  {0}\n".format(key))
+                outfile.write("{0}  {1}\n".format(before_block, key))
+                before_block = "\n"
+
                 if key in self.comments_and_tags:
                     for k, v in self.comments_and_tags[key].items():
                         outfile.write("    {0} = {1}\n".format(k, v))
-
-                self._write_translations_for_langs(ITUNES_LANGS, tran, outfile)
-                self._write_translations_for_langs(non_itunes_langs, tran, outfile)
-
-                outfile.write("\n")
+                self._write_translations_for_langs(ITUNES_LANGS, tran, outfile, only_langs=languages)
+                self._write_translations_for_langs(non_itunes_langs, tran, outfile, only_langs=languages)
 
 
-    def _write_translations_for_langs(self, langs, tran, outfile):
-        for lang in langs:
+    def _write_translations_for_langs(self, langs, tran, outfile, only_langs=None):
+        langs_to_write = set(langs)
+
+        if only_langs is not None:
+            langs_to_write = langs_to_write.intersection(set(only_langs))
+
+        for lang in langs_to_write:
             if lang in tran:
                 outfile.write("    {0} = {1}\n".format(lang, tran[lang]))
 
@@ -284,6 +297,7 @@ class StringsTxt:
 
 if __name__ == "__main__":
     strings = StringsTxt()
+    strings.process_file()
     strings.print_statistics()
     strings.print_duplicates()
     strings.print_most_duplicated()
