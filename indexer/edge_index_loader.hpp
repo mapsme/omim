@@ -14,11 +14,11 @@
 
 namespace std
 {
-  template <> struct hash<m2::PointI>
+  template <> struct hash<m2::PointD>
   {
-    size_t operator()(m2::PointI const & p) const
+    size_t operator()(m2::PointD const & p) const
     {
-      return hash<int32_t>()(p.x) ^ hash<int32_t>()(p.y);
+      return hash<double>()(p.x) ^ hash<double>()(p.y);
     }
   };
 }
@@ -27,13 +27,13 @@ namespace feature
 {
 struct FixEdge
 {
-  FixEdge(m2::PointI const & startPoint)
+  FixEdge(m2::PointD const & startPoint)
     : m_featureId(kInvalidFeatureId), m_segId(0), m_startPoint(startPoint), m_forward(true)
   {
   }
 
-  FixEdge(uint32_t featureId, bool forward, uint32_t segId, m2::PointI const & startPoint,
-          m2::PointI const & endPoint)
+  FixEdge(uint32_t featureId, bool forward, uint32_t segId, m2::PointD const & startPoint,
+          m2::PointD const & endPoint)
     : m_featureId(featureId), m_segId(segId), m_startPoint(startPoint), m_endPoint(endPoint),
       m_forward(forward)
   {
@@ -41,8 +41,8 @@ struct FixEdge
 
   uint32_t m_featureId;
   uint32_t m_segId;
-  m2::PointI m_startPoint;
-  m2::PointI m_endPoint;
+  m2::PointD m_startPoint;
+  m2::PointD m_endPoint;
   bool m_forward;
 };
 
@@ -59,9 +59,18 @@ public:
                        routing::IRoadGraph::TEdgeVector & edges) const;
   bool HasEdgeIndex() const { return !m_outgoingEdges.empty(); }
 
+  /// \brief Fills |startJunction| with a junction form start nodes of |m_outgoingEdges|
+  /// which is not very far form |startJunction|.
+  /// \note This method can work in wrong way sometimes.
+  // @TODO For production a better should be implemented.
+  bool GetNeighboringStartJunction(routing::Junction const & startJunction,
+                                   routing::Junction & neighboringJunction) const;
+
 private:
+  // @TODO |m_outgoingEdges| and |m_ingoingEdgeIndices| could contain more then
+  // 10^6 items. Using m2::PointD here it's a waste of memory. m2::PointI should be used.
   vector<FixEdge> m_outgoingEdges; /* sorted by FixEdge::m_startPoint */
-  unordered_map<m2::PointI, vector<size_t>> m_ingoingEdgeIndices;
+  unordered_map<m2::PointD, vector<size_t>> m_ingoingEdgeIndices;
 
   EdgeIndexHeader m_header;
   string m_countryFileName;

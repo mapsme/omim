@@ -219,9 +219,9 @@ IRouter::ResultCode RoadGraphRouter::CalculateRoute(m2::PointD const & startPoin
 //  Junction const startPos(startPoint, startVicinity.front().second.GetAltitude());
 //  Junction const finalPos(finalPoint, finalVicinity.front().second.GetAltitude());
   Junction startPos = startVicinity[0].first.GetStartJunction();
-  Junction finalPos = finalVicinity[0].first.GetEndJunction();
-  bool const startPosExchanged = m_roadGraph->GetJunctionLike(startPos, startPos);
-  bool const finalPosExchanged = m_roadGraph->GetJunctionLike(finalPos, finalPos);
+  Junction finalPos = finalVicinity[0].first.GetStartJunction();
+  bool const startPosExchanged = m_roadGraph->GetNeighboringStartJunction(startPos, startPos);
+  bool const finalPosExchanged = m_roadGraph->GetNeighboringStartJunction(finalPos, finalPos);
 
   m_roadGraph->ResetFakes();
 //  m_roadGraph->AddFakeEdges(startPos, startVicinity);

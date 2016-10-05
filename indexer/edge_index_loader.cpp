@@ -3,6 +3,8 @@
 #include "geometry/mercator.hpp"
 #include "geometry/rect2d.hpp"
 
+#include "indexer/feature_altitude.hpp"
+
 #include "coding/file_container.hpp"
 
 #include "base/stl_helpers.hpp"
@@ -48,7 +50,8 @@ EdgeIndexLoader::EdgeIndexLoader(MwmValue const & mwmValue, MwmSet::MwmId const 
         for (OutgoingEdge const & edge : pointEdges.m_edges)
         {
           m_outgoingEdges.emplace_back(featureEdges.m_featureId, edge.m_forward, edge.m_segId,
-                                       pointEdges.m_pointFrom, edge.m_pointTo);
+                                       routing::PointIToPointD(pointEdges.m_pointFrom),
+                                       routing::PointIToPointD(edge.m_pointTo));
         }
       }
       prevFeatureId = featureEdges.m_featureId;
@@ -74,12 +77,48 @@ EdgeIndexLoader::EdgeIndexLoader(MwmValue const & mwmValue, MwmSet::MwmId const 
   }
 }
 
+bool EdgeIndexLoader::GetNeighboringStartJunction(routing::Junction const & startJunction,
+                                                  routing::Junction & neighboringJunction) const
+{
+  // Note. This method is implimented for prototype only and should be rewrite for production.
+  auto const it = lower_bound(m_outgoingEdges.cbegin(), m_outgoingEdges.cend(),
+                              FixEdge(startJunction.GetPoint()), outgoingEdgesComparator);
+  if (it == m_outgoingEdges.cend())
+  {
+    LOG(LERROR, ("Wrong junction", startJunction));
+    return false;
+  }
+
+  size_t constexpr kMaxPointsToInvestigate = 1000;
+  double constexpr kMinEquivalentDistM = 100.0;
+
+  size_t i = 0;
+  while (i < kMaxPointsToInvestigate && it - i != m_outgoingEdges.cbegin()
+         && it + i != m_outgoingEdges.cend())
+  {
+    if (MercatorBounds::DistanceOnEarth(startJunction.GetPoint(), (it - i)->m_startPoint) <= kMinEquivalentDistM)
+    {
+      neighboringJunction = routing::Junction((it - i)->m_startPoint, kDefaultAltitudeMeters);
+      return true;
+    }
+    i += 1;
+
+    if (MercatorBounds::DistanceOnEarth(startJunction.GetPoint(), (it + i)->m_startPoint) <= kMinEquivalentDistM)
+    {
+      neighboringJunction = routing::Junction((it + i)->m_startPoint, kDefaultAltitudeMeters);
+      return true;
+    }
+    i += 1;
+  }
+
+  return false;
+}
+
 bool EdgeIndexLoader::GetOutgoingEdges(routing::Junction const & junction,
                                        routing::IRoadGraph::TEdgeVector & edges) const
 {
-  m2::PointI const junctionFix(junction.GetPoint() * kFixPointFactor);
   auto const range = equal_range(m_outgoingEdges.cbegin(), m_outgoingEdges.cend(),
-                                 FixEdge(junctionFix), outgoingEdgesComparator);
+                                 FixEdge(junction.GetPoint()), outgoingEdgesComparator);
   if (range.first == range.second || range.first == m_outgoingEdges.cend())
   {
     LOG(LWARNING, ("m_outgoingEdges doesn't contain junction:",
@@ -91,7 +130,7 @@ bool EdgeIndexLoader::GetOutgoingEdges(routing::Junction const & junction,
   for (auto it = range.first; it != range.second; ++it)
   {
     edges.emplace_back(FeatureID(MwmSet::MwmId(m_mwmInfo), it->m_featureId), it->m_forward, it->m_segId, junction,
-                       routing::PointIToJunction(it->m_endPoint));
+                       routing::Junction(it->m_endPoint, kDefaultAltitudeMeters));
   }
 
   return true;
@@ -100,8 +139,7 @@ bool EdgeIndexLoader::GetOutgoingEdges(routing::Junction const & junction,
 bool EdgeIndexLoader::GetIngoingEdges(routing::Junction const & junction,
                                       routing::IRoadGraph::TEdgeVector & edges) const
 {
-  m2::PointI const junctionFix(junction.GetPoint() * kFixPointFactor);
-  auto const it = m_ingoingEdgeIndices.find(junctionFix);
+  auto const it = m_ingoingEdgeIndices.find(junction.GetPoint());
   if (it == m_ingoingEdgeIndices.cend())
   {
     LOG(LWARNING, ("m_ingoingEdgeIndices doesn't contain junction",
@@ -115,7 +153,7 @@ bool EdgeIndexLoader::GetIngoingEdges(routing::Junction const & junction,
   {
     FixEdge const & e = m_outgoingEdges[idx];
     edges.emplace_back(FeatureID(MwmSet::MwmId(m_mwmInfo), e.m_featureId), e.m_forward, e.m_segId,
-                       routing::PointIToJunction(e.m_startPoint), junction);
+                       routing::Junction(e.m_startPoint, kDefaultAltitudeMeters), junction);
   }
 
   return true;

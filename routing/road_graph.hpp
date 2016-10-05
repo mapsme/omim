@@ -249,7 +249,7 @@ public:
   /// Clear all temporary buffers.
   virtual void ClearState() {}
 
-  virtual bool GetJunctionLike(Junction const & /*j unction */, Junction & /* junctionLike */) const { return false; }
+  virtual bool GetNeighboringStartJunction(Junction const & /*startJunction */, Junction & /* neighboringJunction */) const { return false; }
 
 private:
   /// \brief Finds all outgoing regular (non-fake) edges for junction.
@@ -300,9 +300,13 @@ inline void JunctionsToAltitudes(vector<Junction> const & junctions, feature::TA
     altitudes[i] = junctions[i].GetAltitude();
 }
 
+inline m2::PointD PointIToPointD(m2::PointI const & p)
+{
+  return m2::PointD(p) / static_cast<double>(feature::kFixPointFactor);
+}
+
 inline Junction PointIToJunction(m2::PointI const & p)
 {
-  return Junction(m2::PointD(p) / static_cast<double>(feature::kFixPointFactor),
-                  feature::kDefaultAltitudeMeters);
+  return Junction(PointIToPointD(p), feature::kDefaultAltitudeMeters);
 }
 }  // namespace routing

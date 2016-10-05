@@ -77,7 +77,7 @@ public:
   IRoadGraph::Mode GetMode() const override;
   void ClearState() override;
 
-  bool GetJunctionLike(Junction const & junction, Junction & junctionLike) const override;
+  bool GetNeighboringStartJunction(Junction const & startJunction, Junction & neighboringJunction) const override;
 
 private:
   friend class CrossFeaturesLoader;

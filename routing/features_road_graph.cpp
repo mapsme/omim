@@ -350,28 +350,16 @@ void FeaturesRoadGraph::GetRegularOutgoingEdges(Junction const & junction, TEdge
   value.m_edgeIndexLoader->GetOutgoingEdges(junction, edges);
 }
 
-void FeaturesRoadGraph::GetRegularIngoingEdges(Junction const & junction, TEdgeVector & edges) const
+void FeaturesRoadGraph::GetRegularIngoingEdges(Junction const & startJunction, TEdgeVector & edges) const
 {
   Value const & value = LockMwm(m_testMwmId);
-  value.m_edgeIndexLoader->GetIngoingEdges(junction, edges);
+  value.m_edgeIndexLoader->GetIngoingEdges(startJunction, edges);
 }
 
-bool FeaturesRoadGraph::GetJunctionLike(Junction const & junction, Junction & junctionLike) const
+bool FeaturesRoadGraph::GetNeighboringStartJunction(routing::Junction const & startJunction,
+                                                    routing::Junction & neighboringJunction) const
 {
   Value const & value = LockMwm(m_testMwmId);
-  IRoadGraph::TEdgeVector edges;
-  if (value.m_edgeIndexLoader->GetOutgoingEdges(junction, edges))
-  {
-    junctionLike = edges[0].GetStartJunction();
-    return true;
-  }
-
-  if (value.m_edgeIndexLoader->GetIngoingEdges(junction, edges))
-  {
-    junctionLike = edges[0].GetEndJunction();
-    return true;
-  }
-  return false;
+  return value.m_edgeIndexLoader->GetNeighboringStartJunction(startJunction, neighboringJunction);
 }
-
 }  // namespace routing
