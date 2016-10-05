@@ -77,12 +77,14 @@ public:
   IRoadGraph::Mode GetMode() const override;
   void ClearState() override;
 
+  bool GetJunctionLike(Junction const & junction, Junction & junctionLike) const override;
+
 private:
   friend class CrossFeaturesLoader;
 
 // These overrides are used for taking ingoing and outgoing graph edges from the edge index section.
-//  void GetRegularOutgoingEdges(Junction const & junction, TEdgeVector & edges) const override;
-//  void GetRegularIngoingEdges(Junction const & junction, TEdgeVector & edges) const override;
+  void GetRegularOutgoingEdges(Junction const & junction, TEdgeVector & edges) const override;
+  void GetRegularIngoingEdges(Junction const & junction, TEdgeVector & edges) const override;
 
   struct Value
   {
@@ -118,7 +120,7 @@ private:
   mutable CrossCountryVehicleModel m_vehicleModel;
   mutable map<MwmSet::MwmId, Value> m_mwmLocks;
 
-//  MwmSet::MwmId const m_testMwmId;
+  MwmSet::MwmId const m_testMwmId;
 };
 
 }  // namespace routing

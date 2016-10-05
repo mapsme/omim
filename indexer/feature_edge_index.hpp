@@ -17,7 +17,7 @@
 
 namespace feature
 {
-uint32_t constexpr kFixPointFactor = 100000;
+uint32_t constexpr kFixPointFactor = 30000;
 uint32_t constexpr kInvalidFeatureId = numeric_limits<uint32_t>::max();
 
 struct EdgeIndexHeader

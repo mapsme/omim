@@ -74,6 +74,9 @@ bool CheckGraphConnectivity(IRoadGraph const & graph, Junction const & junction,
   vector<Edge> edges;
   while (!q.empty() && visited.size() < limit)
   {
+    size_t const qSize = q.size();
+    size_t const visitedSize = visited.size();
+
     Junction const u = q.front();
     q.pop();
 
@@ -90,6 +93,11 @@ bool CheckGraphConnectivity(IRoadGraph const & graph, Junction const & junction,
     }
   }
 
+  if (visited.size() < limit)
+  {
+    LOG(LWARNING, ("Junction is not connected to the graph:",
+                   MercatorBounds::ToLatLon(junction.GetPoint()), junction));
+  }
   return visited.size() >= limit;
 }
 
@@ -103,35 +111,36 @@ void FindClosestEdges(IRoadGraph const & graph, m2::PointD const & point,
   // feature that you cannot in fact reach because of an obstacle.
   // Using only the closest feature minimizes (but not eliminates)
   // this risk.
-  vector<pair<Edge, Junction>> candidates;
-  graph.FindClosestEdges(point, kMaxRoadCandidates, candidates);
+//  vector<pair<Edge, Junction>> candidates;
+//  graph.FindClosestEdges(point, kMaxRoadCandidates, candidates);
+  graph.FindClosestEdges(point, kMaxRoadCandidates, vicinity);
 
-  vicinity.clear();
-  for (auto const & candidate : candidates)
-  {
-    auto const & edge = candidate.first;
-    if (CheckGraphConnectivity(graph, edge.GetEndJunction(), kTestConnectivityVisitJunctionsLimit))
-    {
-      vicinity.emplace_back(candidate);
+//  vicinity.clear();
+//  for (auto const & candidate : candidates)
+//  {
+//    auto const & edge = candidate.first;
+//    if (CheckGraphConnectivity(graph, edge.GetEndJunction(), kTestConnectivityVisitJunctionsLimit))
+//    {
+//      vicinity.emplace_back(candidate);
 
-      // Need to add a reverse edge, if exists, because fake edges
-      // must be added for reverse edge too.
-      IRoadGraph::TEdgeVector revEdges;
-      graph.GetOutgoingEdges(edge.GetEndJunction(), revEdges);
-      for (auto const & revEdge : revEdges)
-      {
-        if (revEdge.GetFeatureId() == edge.GetFeatureId() &&
-            revEdge.GetEndJunction() == edge.GetStartJunction() &&
-            revEdge.GetSegId() == edge.GetSegId())
-        {
-          vicinity.emplace_back(revEdge, candidate.second);
-          break;
-        }
-      }
+//      // Need to add a reverse edge, if exists, because fake edges
+//      // must be added for reverse edge too.
+//      IRoadGraph::TEdgeVector revEdges;
+//      graph.GetOutgoingEdges(edge.GetEndJunction(), revEdges);
+//      for (auto const & revEdge : revEdges)
+//      {
+//        if (revEdge.GetFeatureId() == edge.GetFeatureId() &&
+//            revEdge.GetEndJunction() == edge.GetStartJunction() &&
+//            revEdge.GetSegId() == edge.GetSegId())
+//        {
+//          vicinity.emplace_back(revEdge, candidate.second);
+//          break;
+//        }
+//      }
 
-      break;
-    }
-  }
+//      break;
+//    }
+//  }
 }
 }  // namespace
 
@@ -207,12 +216,16 @@ IRouter::ResultCode RoadGraphRouter::CalculateRoute(m2::PointD const & startPoin
 
   // Let us assume that the closest to startPoint/finalPoint feature point has the same altitude
   // with startPoint/finalPoint.
-  Junction const startPos(startPoint, startVicinity.front().second.GetAltitude());
-  Junction const finalPos(finalPoint, finalVicinity.front().second.GetAltitude());
+//  Junction const startPos(startPoint, startVicinity.front().second.GetAltitude());
+//  Junction const finalPos(finalPoint, finalVicinity.front().second.GetAltitude());
+  Junction startPos = startVicinity[0].first.GetStartJunction();
+  Junction finalPos = finalVicinity[0].first.GetEndJunction();
+  bool const startPosExchanged = m_roadGraph->GetJunctionLike(startPos, startPos);
+  bool const finalPosExchanged = m_roadGraph->GetJunctionLike(finalPos, finalPos);
 
   m_roadGraph->ResetFakes();
-  m_roadGraph->AddFakeEdges(startPos, startVicinity);
-  m_roadGraph->AddFakeEdges(finalPos, finalVicinity);
+//  m_roadGraph->AddFakeEdges(startPos, startVicinity);
+//  m_roadGraph->AddFakeEdges(finalPos, finalVicinity);
 
   RoutingResult<Junction> result;
   IRoutingAlgorithm::Result const resultCode =

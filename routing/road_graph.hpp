@@ -249,6 +249,8 @@ public:
   /// Clear all temporary buffers.
   virtual void ClearState() {}
 
+  virtual bool GetJunctionLike(Junction const & /*j unction */, Junction & /* junctionLike */) const { return false; }
+
 private:
   /// \brief Finds all outgoing regular (non-fake) edges for junction.
   virtual void GetRegularOutgoingEdges(Junction const & junction, TEdgeVector & edges) const;

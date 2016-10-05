@@ -112,7 +112,7 @@ FeaturesRoadGraph::FeaturesRoadGraph(Index const & index, IRoadGraph::Mode mode,
   : m_index(index)
   , m_mode(mode)
   , m_vehicleModel(move(vehicleModelFactory))
-//  , m_testMwmId(m_index.GetMwmIdByCountryFile(platform::CountryFile("Russia_Moscow")))
+  , m_testMwmId(m_index.GetMwmIdByCountryFile(platform::CountryFile("Russia_Moscow")))
 {
 }
 
@@ -344,15 +344,34 @@ FeaturesRoadGraph::Value const & FeaturesRoadGraph::LockMwm(MwmSet::MwmId const 
       .first->second;
 }
 
-//void FeaturesRoadGraph::GetRegularOutgoingEdges(Junction const & junction, TEdgeVector & edges) const
-//{
-//  Value const & value = LockMwm(m_testMwmId);
-//  value.m_edgeIndexLoader->GetOutgoingEdges(junction, edges);
-//}
+void FeaturesRoadGraph::GetRegularOutgoingEdges(Junction const & junction, TEdgeVector & edges) const
+{
+  Value const & value = LockMwm(m_testMwmId);
+  value.m_edgeIndexLoader->GetOutgoingEdges(junction, edges);
+}
 
-//void FeaturesRoadGraph::GetRegularIngoingEdges(Junction const & junction, TEdgeVector & edges) const
-//{
-//  Value const & value = LockMwm(m_testMwmId);
-//  value.m_edgeIndexLoader->GetIngoingEdges(junction, edges);
-//}
+void FeaturesRoadGraph::GetRegularIngoingEdges(Junction const & junction, TEdgeVector & edges) const
+{
+  Value const & value = LockMwm(m_testMwmId);
+  value.m_edgeIndexLoader->GetIngoingEdges(junction, edges);
+}
+
+bool FeaturesRoadGraph::GetJunctionLike(Junction const & junction, Junction & junctionLike) const
+{
+  Value const & value = LockMwm(m_testMwmId);
+  IRoadGraph::TEdgeVector edges;
+  if (value.m_edgeIndexLoader->GetOutgoingEdges(junction, edges))
+  {
+    junctionLike = edges[0].GetStartJunction();
+    return true;
+  }
+
+  if (value.m_edgeIndexLoader->GetIngoingEdges(junction, edges))
+  {
+    junctionLike = edges[0].GetEndJunction();
+    return true;
+  }
+  return false;
+}
+
 }  // namespace routing

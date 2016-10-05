@@ -8,6 +8,7 @@
 
 #include "std/functional.hpp"
 #include "std/unordered_map.hpp"
+#include "std/shared_ptr.hpp"
 #include "std/string.hpp"
 #include "std/vector.hpp"
 
@@ -64,6 +65,6 @@ private:
 
   EdgeIndexHeader m_header;
   string m_countryFileName;
-  MwmSet::MwmId const & m_mwmId;
+  shared_ptr<MwmInfo> const m_mwmInfo;
 };
 }  // namespace feature
