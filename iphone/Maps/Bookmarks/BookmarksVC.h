@@ -2,9 +2,9 @@
 
 @interface BookmarksVC : MWMTableViewController <UITextFieldDelegate>
 {
-  int m_categoryIndex;
+  NSInteger m_categoryIndex;
 }
 
-- (instancetype)initWithCategory:(int)index;
+- (instancetype)initWithCategory:(NSInteger)index;
 
 @end

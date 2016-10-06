@@ -1,8 +1,8 @@
+#import "MWMEditBookmarkController.h"
 #import "Common.h"
+#import "MWMBookmarkColorViewController.h"
 #import "MWMBookmarkTitleCell.h"
 #import "MWMButtonCell.h"
-#import "MWMBookmarkColorViewController.h"
-#import "MWMEditBookmarkController.h"
 #import "MWMNoteCell.h"
 #import "MWMPlacePageData.h"
 #import "MWMPlacePageEntity.h"
@@ -53,7 +53,7 @@ enum RowInMetaInfo
 {
   [super viewDidLoad];
   NSAssert(self.manager || self.data, @"Entity and data can't be nil both!");
-  if (isIOS7 || IPAD)
+  if (IPAD)
   {
     MWMPlacePageEntity * en = self.manager.entity;
     self.cachedDescription = en.bookmarkDescription;
@@ -107,7 +107,7 @@ enum RowInMetaInfo
 - (void)onSave
 {
   [self.view endEditing:YES];
-  if (isIOS7 || IPAD)
+  if (IPAD)
   {
     MWMPlacePageEntity * en = self.manager.entity;
     en.bookmarkDescription = self.cachedDescription;
@@ -129,7 +129,7 @@ enum RowInMetaInfo
     {
       BookmarkCategory::Guard guard(*category);
       Bookmark * bookmark =
-      static_cast<Bookmark *>(guard.m_controller.GetUserMarkForEdit(bac.m_bookmarkIndex));
+          static_cast<Bookmark *>(guard.m_controller.GetUserMarkForEdit(bac.m_bookmarkIndex));
       if (!bookmark)
         return;
 
@@ -137,7 +137,7 @@ enum RowInMetaInfo
       bookmark->SetDescription(self.cachedDescription.UTF8String);
       bookmark->SetName(self.cachedTitle.UTF8String);
     }
-    
+
     category->SaveToKMLFile();
     f.UpdatePlacePageInfoForCurrentSelection();
   }

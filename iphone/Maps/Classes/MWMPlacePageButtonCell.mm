@@ -1,9 +1,9 @@
-#import "Common.h"
 #import "MWMPlacePageButtonCell.h"
+#import "Common.h"
 #import "MWMFrameworkListener.h"
+#import "MWMPlacePageProtocol.h"
 #import "MWMPlacePageViewManager.h"
 #import "UIColor+MapsMeColor.h"
-#import "MWMPlacePageProtocol.h"
 
 @interface MWMPlacePageButtonCell ()<MWMFrameworkStorageObserver>
 
@@ -26,21 +26,14 @@
   [self refreshButtonEnabledState];
 }
 
-- (void)setEnabled:(BOOL)enabled
-{
-  self.titleButton.enabled = enabled;
-}
-
-- (BOOL)isEnabled
-{
-  return self.titleButton.isEnabled;
-}
-
-- (void)configForRow:(place_page::ButtonsRows)row withDelegate:(id<MWMPlacePageButtonsProtocol>)delegate
+- (void)setEnabled:(BOOL)enabled { self.titleButton.enabled = enabled; }
+- (BOOL)isEnabled { return self.titleButton.isEnabled; }
+- (void)configForRow:(place_page::ButtonsRows)row
+        withDelegate:(id<MWMPlacePageButtonsProtocol>)delegate
 {
   self.delegate = delegate;
   self.rowType = row;
-  switch(row)
+  switch (row)
   {
   case place_page::ButtonsRows::AddPlace:
     [self.titleButton setTitle:L(@"placepage_add_place_button") forState:UIControlStateNormal];

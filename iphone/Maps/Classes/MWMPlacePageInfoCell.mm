@@ -78,9 +78,7 @@
     self.toggleImage.hidden = NO;
     name = @"coordinate";
     break;
-  case place_page::MetainfoRows::OpeningHours:
-    NSAssert(false, @"Incorrect cell type!");
-    break;
+  case place_page::MetainfoRows::OpeningHours: NSAssert(false, @"Incorrect cell type!"); break;
   }
   [self configWithIconName:name data:[self.data stringForRow:row]];
 }
@@ -176,7 +174,7 @@
 
 - (IBAction)cellTap
 {
-  if (isIOS7)
+  if (IPAD)
   {
     switch (self.type)
     {
@@ -221,10 +219,8 @@
   case place_page::MetainfoRows::Operator:
   case place_page::MetainfoRows::OpeningHours:
   case place_page::MetainfoRows::Address:
-  case place_page::MetainfoRows::Internet:
-    break;
+  case place_page::MetainfoRows::Internet: break;
   }
-
 }
 
 - (void)longTap:(UILongPressGestureRecognizer *)sender

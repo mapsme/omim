@@ -6,7 +6,7 @@ namespace
 void * kContext = &kContext;
 NSString * const kTableViewContentSizeKeyPath = @"contentSize";
 
-} // namespace
+}  // namespace
 
 #pragma mark - MWMPPScrollView
 
@@ -22,9 +22,7 @@ NSString * const kTableViewContentSizeKeyPath = @"contentSize";
 
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
 {
-  if (point.y > [self convertRect:self.inactiveView.bounds fromView:self.inactiveView].origin.y)
-    return YES;
-  return NO;
+  return point.y > [self convertRect:self.inactiveView.bounds fromView:self.inactiveView].origin.y;
 }
 
 @end
@@ -74,7 +72,10 @@ NSString * const kTableViewContentSizeKeyPath = @"contentSize";
 - (void)awakeFromNib
 {
   [super awakeFromNib];
-  [self.tableView addObserver:self forKeyPath:kTableViewContentSizeKeyPath options:NSKeyValueObservingOptionNew context:kContext];
+  [self.tableView addObserver:self
+                   forKeyPath:kTableViewContentSizeKeyPath
+                      options:NSKeyValueObservingOptionNew
+                      context:kContext];
 
   self.tableView.estimatedRowHeight = 44.;
   self.tableView.rowHeight = UITableViewAutomaticDimension;
@@ -85,7 +86,8 @@ NSString * const kTableViewContentSizeKeyPath = @"contentSize";
   NSMutableArray * animationImages = [NSMutableArray arrayWithCapacity:animationImagesCount];
   NSString * postfix = [UIColor isNightMode] ? @"dark" : @"light";
   for (NSUInteger i = 0; i < animationImagesCount; ++i)
-    animationImages[i] = [UIImage imageNamed:[NSString stringWithFormat:@"Spinner_%@_%@", @(i+1), postfix]];
+    animationImages[i] =
+        [UIImage imageNamed:[NSString stringWithFormat:@"Spinner_%@_%@", @(i + 1), postfix]];
 
   self.spinner.animationDuration = 0.8;
   self.spinner.animationImages = animationImages;
@@ -98,4 +100,3 @@ NSString * const kTableViewContentSizeKeyPath = @"contentSize";
 }
 
 @end
-

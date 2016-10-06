@@ -1,5 +1,5 @@
-#import "MWMPlacePageCellUpdateProtocol.h"
 #import "MWMBookmarkCell.h"
+#import "MWMPlacePageCellUpdateProtocol.h"
 
 #import "MWMPlacePageProtocol.h"
 #import "UIColor+MapsMeColor.h"
@@ -9,7 +9,6 @@ namespace
 {
 void * kContext = &kContext;
 NSString * const kTextViewContentSizeKeyPath = @"contentSize";
-
 }  // namespace
 
 @interface MWMBookmarkCell ()
@@ -29,7 +28,7 @@ NSString * const kTextViewContentSizeKeyPath = @"contentSize";
 
 @property(copy, nonatomic) NSAttributedString * attributedHTML;
 
-@property (nonatomic) BOOL isOpen;
+@property(nonatomic) BOOL isOpen;
 
 @end
 
@@ -41,11 +40,7 @@ NSString * const kTextViewContentSizeKeyPath = @"contentSize";
   [self registerObserver];
 }
 
-- (void)dealloc
-{
-  [self unregisterObserver];
-}
-
+- (void)dealloc { [self unregisterObserver]; }
 - (void)unregisterObserver
 {
   [self.textView removeObserver:self forKeyPath:kTextViewContentSizeKeyPath context:kContext];
@@ -53,7 +48,10 @@ NSString * const kTextViewContentSizeKeyPath = @"contentSize";
 
 - (void)registerObserver
 {
-  [self.textView addObserver:self forKeyPath:kTextViewContentSizeKeyPath options:NSKeyValueObservingOptionNew context:kContext];
+  [self.textView addObserver:self
+                  forKeyPath:kTextViewContentSizeKeyPath
+                     options:NSKeyValueObservingOptionNew
+                     context:kContext];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath
@@ -64,7 +62,7 @@ NSString * const kTextViewContentSizeKeyPath = @"contentSize";
   if (context == kContext)
   {
     NSValue * s = change[@"new"];
-    CGFloat const height = s.CGSizeValue.height;
+    auto const height = s.CGSizeValue.height;
     auto const boundedHeight = self.textViewHeight.constant;
 
     if (height < boundedHeight || self.isOpen)
@@ -83,7 +81,7 @@ NSString * const kTextViewContentSizeKeyPath = @"contentSize";
 - (void)configureWithText:(NSString *)text
        updateCellDelegate:(id<MWMPlacePageCellUpdateProtocol>)updateCellDelegate
      editBookmarkDelegate:(id<MWMPlacePageButtonsProtocol>)editBookmarkDelegate
-                  isHTML:(BOOL)isHTML
+                   isHTML:(BOOL)isHTML
 {
   self.attributedHTML = nil;
   self.isOpen = NO;
@@ -93,17 +91,11 @@ NSString * const kTextViewContentSizeKeyPath = @"contentSize";
   self.editBookmarkDelegate = editBookmarkDelegate;
 
   if (!text.length)
-  {
     [self configWithEmptyDescription];
-  }
   else if (isHTML)
-  {
     [self configHTML:text];
-  }
   else
-  {
     [self configPlain:text];
-  }
 }
 
 - (void)configWithEmptyDescription
@@ -121,7 +113,10 @@ NSString * const kTextViewContentSizeKeyPath = @"contentSize";
     [self stopSpinner];
     self.textViewZeroHeight.active = NO;
     self.textView.attributedText = self.attributedHTML;
-    if (fabs(self.textView.contentSize.height - 0.5) < 1)
+    // In case when after setting attributed text into textView its content height is about 0 but
+    // not 0 (e.g. 0.33).
+    // When it happens we need to call sizeToFit to display bookmark description.
+    if (self.textView.contentSize.height < 1)
       [self.textView sizeToFit];
   }
   else
@@ -132,17 +127,17 @@ NSString * const kTextViewContentSizeKeyPath = @"contentSize";
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
       NSDictionary<NSString *, id> * attr = @{
-                                              NSForegroundColorAttributeName : [UIColor blackPrimaryText],
-                                              NSFontAttributeName : [UIFont regular16]
-                                              };
+        NSForegroundColorAttributeName : [UIColor blackPrimaryText],
+        NSFontAttributeName : [UIFont regular16]
+      };
       NSError * error = nil;
       NSMutableAttributedString * str = [[NSMutableAttributedString alloc]
-                                         initWithData:[text dataUsingEncoding:NSUnicodeStringEncoding]
-                                         options:@{
-                                                   NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType
-                                                   }
-                                         documentAttributes:nil
-                                         error:&error];
+                initWithData:[text dataUsingEncoding:NSUnicodeStringEncoding]
+                     options:@{
+                       NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType
+                     }
+          documentAttributes:nil
+                       error:&error];
       if (error)
       {
         // If we failed while attempting to render html than just show plain text in bookmark.
@@ -178,14 +173,13 @@ NSString * const kTextViewContentSizeKeyPath = @"contentSize";
 
 - (void)startSpinner
 {
-//  self.textViewZeroHeight.active = YES;
   self.editButton.hidden = YES;
   NSUInteger const animationImagesCount = 12;
   NSMutableArray * animationImages = [NSMutableArray arrayWithCapacity:animationImagesCount];
   NSString * postfix = [UIColor isNightMode] ? @"dark" : @"light";
   for (NSUInteger i = 0; i < animationImagesCount; ++i)
     animationImages[i] =
-    [UIImage imageNamed:[NSString stringWithFormat:@"Spinner_%@_%@", @(i + 1), postfix]];
+        [UIImage imageNamed:[NSString stringWithFormat:@"Spinner_%@_%@", @(i + 1), postfix]];
 
   self.spinner.animationDuration = 0.8;
   self.spinner.animationImages = animationImages;
@@ -205,12 +199,7 @@ NSString * const kTextViewContentSizeKeyPath = @"contentSize";
   self.isOpen = YES;
   [self stateOpen:YES];
   [self setNeedsLayout];
-//  [self.delegate updateCellWithForceReposition:NO];
 }
 
-- (IBAction)editTap
-{
-  [self.editBookmarkDelegate editBookmark];
-}
-
+- (IBAction)editTap { [self.editBookmarkDelegate editBookmark]; }
 @end
