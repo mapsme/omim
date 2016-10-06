@@ -100,8 +100,8 @@ UNIT_TEST(Uber_SmokeTest)
   ms::LatLon to(38.862416, -76.883316);
 
   uber::Api uberApi;
-  auto reqId = 0;
-  auto returnedId = 0;
+  size_t reqId = 0;
+  size_t returnedId = 0;
   vector<uber::Product> returnedProducts;
   reqId = uberApi.GetAvailableProducts(
         from, to, [&returnedId, &returnedProducts](vector<uber::Product> const & products, size_t const requestId)
