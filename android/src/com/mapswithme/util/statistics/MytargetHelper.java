@@ -123,7 +123,7 @@ public final class MytargetHelper
 
   private void loadShowcase(NativeAppwallAd.AppwallAdListener listener, Activity activity)
   {
-    mShowcase = new NativeAppwallAd(Integer.parseInt(PrivateVariables.myTargetSlot()), activity);
+    mShowcase = new NativeAppwallAd(PrivateVariables.myTargetSlot(), activity);
     mShowcase.setListener(listener);
     mShowcase.load();
   }
