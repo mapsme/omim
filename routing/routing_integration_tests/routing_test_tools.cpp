@@ -13,8 +13,6 @@
 #include "routing/route.hpp"
 #include "routing/router_delegate.hpp"
 
-#include "indexer/index.hpp"
-
 #include "platform/local_country_file.hpp"
 #include "platform/local_country_file_utils.hpp"
 #include "platform/platform.hpp"
@@ -147,19 +145,11 @@ namespace integration
   template <typename TRouterComponents>
   shared_ptr<TRouterComponents> CreateAllMapsComponents()
   {
-    // Setting stored paths from testingmain.cpp
-    Platform & pl = GetPlatform();
-    CommandLineOptions const & options = GetTestingOptions();
-    if (options.m_dataPath)
-      pl.SetWritableDirForTests(options.m_dataPath);
-    if (options.m_resourcePath)
-      pl.SetResourceDir(options.m_resourcePath);
-
-    platform::migrate::SetMigrationFlag();
-
     vector<LocalCountryFile> localFiles;
+    SetEnvironment();
     platform::FindAllLocalMapsAndCleanup(numeric_limits<int64_t>::max() /* latestVersion */,
                                          localFiles);
+
     for (auto & file : localFiles)
       file.SyncWithDisk();
     ASSERT(!localFiles.empty(), ());
@@ -366,8 +356,16 @@ namespace integration
     TEST_EQUAL(expected.size(), foundMwms.size(), ());
   }
 
-//  MwmSet::MwmHandle GetMwmHandle(string const & name)
-//  {
+  void SetEnvironment()
+  {
+    // Setting stored paths from testingmain.cpp
+    Platform & pl = GetPlatform();
+    CommandLineOptions const & options = GetTestingOptions();
+    if (options.m_dataPath)
+      pl.SetWritableDirForTests(options.m_dataPath);
+    if (options.m_resourcePath)
+      pl.SetResourceDir(options.m_resourcePath);
 
-//  }
+    platform::migrate::SetMigrationFlag();
+  }
 }  // namespace

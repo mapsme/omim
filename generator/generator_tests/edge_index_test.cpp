@@ -13,7 +13,6 @@
 #include "indexer/feature_altitude.hpp"
 #include "indexer/feature_edge_index.hpp"
 #include "indexer/feature_processor.hpp"
-#include "indexer/index.hpp"
 
 #include "geometry/point2d.hpp"
 
@@ -75,15 +74,7 @@ void TestEdgeIndexBuilding(vector<TPoint2DList> const & roads)
   BuildOutgoingEdgeIndex(testDirFullPath, kTestMwm);
 
   // Reading from mwm and testing index section information.
-  Index index;
-  auto const regResult = index.RegisterMap(country);
-  TEST_EQUAL(regResult.second, MwmSet::RegResult::Success, ());
-
-  MwmSet::MwmHandle mwmHandle = index.GetMwmHandleById(regResult.first);
-  TEST(mwmHandle.IsAlive(), ());
-
-  TestEdgeIndex(*mwmHandle.GetValue<MwmValue>(), mwmHandle.GetId(), testDirFullPath,
-                kTestMwm);
+  TestEdgeIndex(testDirFullPath, kTestMwm);
 }
 
 UNIT_TEST(EdgeIndexGenerationTest_ThreeRoads)

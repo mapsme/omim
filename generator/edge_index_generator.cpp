@@ -17,7 +17,9 @@
 #include "platform/local_country_file.hpp"
 
 #include "base/logging.hpp"
+#include "base/stl_helpers.hpp"
 
+#include "std/algorithm.hpp"
 #include "std/unique_ptr.hpp"
 #include "std/vector.hpp"
 
@@ -30,7 +32,7 @@ class Processor
 {
 public:
   Processor(string const & dir, string const & country)
-    : m_roadGraph(m_index, routing::IRoadGraph::Mode::ObeyOnewayTag,
+    : m_roadGraph(m_index, routing::IRoadGraph::Mode::IgnoreOnewayTag,
                   make_unique<routing::PedestrianModelFactory>())
   {
     LocalCountryFile localCountryFile(dir, CountryFile(country), 1 /* version */);
@@ -43,12 +45,13 @@ public:
     LOG(LINFO, ("m_limitRect =", m_limitRect));
   }
 
-  void operator()(FeatureType const & f, uint32_t const & id)
+  void operator()(FeatureType const & f)
   {
-    if (id % 1000 == 0)
+    uint32_t const id = f.GetID().m_index;
+    if (m_outgoingEdges.size() != 0 && m_outgoingEdges.size() % 1000 == 0)
       LOG(LINFO, ("id =", id, "road features ", m_outgoingEdges.size()));
 
-    if (!routing::IsRoad(feature::TypesHolder(f)))
+    if (!m_roadGraph.IsRoad(f))
       return;
 
     f.ParseGeometry(FeatureType::BEST_GEOMETRY);
@@ -58,11 +61,28 @@ public:
 
     FeatureOutgoingEdges edges(id);
     edges.m_featureOutgoingEdges.resize(pointsCount);
+    // Node 1. In the code below all outgoing edges for all feature points are extracted
+    // with method FeaturesRoadGraph::GetOutgoingEdges(...). Then only edges belongs to the
+    // feature are saved in |m_outgoingEdges|. The idea behind it is
+    // to get rid of saving duplicate edges. The thing is every edge belongs to a feature.
+    // Saving only edges belong to a considered feature no egde would be lost and
+    // no edge would be saved twice. On the other hand there's a problem in that case.
+    // After edges are saved only judging by rounded to PointI coordinates it's possible
+    // to find all outgoing edges from a junction. Consequently it's possible that
+    // result of FeaturesRoadGraph::GetOutgoingEdges(...) and EdgeIndexLoader::GetOutgoingEdges(...)
+    // are different.
+    // @TODO It looks like that the result of FeaturesRoadGraph::GetOutgoingEdges(...) and
+    // EdgeIndexLoader::GetOutgoingEdges(...) are different in very rare case.
+    // It's necessaret to check it.
+
+    // Node 2. Another disadvantage of such way of saving graph is that a wrong result would be
+    // saved in case of features go in different levels but with close points. Probably
+    // another representation of graph would be better.
     for (size_t i = 0; i < pointsCount; ++i)
     {
       m2::PointD const pointFrom = f.GetPoint(i);
       routing::Junction const juctionFrom(pointFrom, kInvalidAltitude);
-      edges.m_featureOutgoingEdges[i].m_pointFrom = m2::PointI(pointFrom * kFixPointFactor);
+      edges.m_featureOutgoingEdges[i].m_pointFrom = routing::PointDToPointI(pointFrom);
       routing::IRoadGraph::TEdgeVector outgoingEdges;
       m_roadGraph.GetOutgoingEdges(juctionFrom, outgoingEdges);
       for (auto const & edge : outgoingEdges)
@@ -71,12 +91,15 @@ public:
           continue;
         // |edge| belongs to |f|.
         edges.m_featureOutgoingEdges[i].m_edges.emplace_back(
-            m2::PointI(edge.GetEndJunction().GetPoint() * kFixPointFactor),
+            routing::PointDToPointI(edge.GetEndJunction().GetPoint()),
             edge.GetSegId(), edge.IsForward());
       }
     }
 
-    edges.Sort();
+    // Note. It's necessary to use SortUnique because some features form loops. That means
+    // the same feature contains a point more than once. In that case edges outgoing
+    // from the point are included more than once. So it's necessary to remove such duplicates.
+    edges.SortUnique();
     m_outgoingEdges.push_back(move(edges));
   }
 
@@ -88,6 +111,16 @@ public:
   m2::RectD const & GetLimitRect()
   {
     return m_limitRect;
+  }
+
+  void ForEachFeature()
+  {
+    m_index.ForEachInScale(*this, m_roadGraph.GetStreetReadScale());
+  }
+
+  void Sort()
+  {
+    sort(m_outgoingEdges.begin(), m_outgoingEdges.end(), my::LessBy(&FeatureOutgoingEdges::m_featureId));
   }
 
 private:
@@ -108,7 +141,8 @@ void BuildOutgoingEdgeIndex(string const & dir, string const & country)
     Processor processor(dir, country);
     string const datFile = my::JoinFoldersToPath(dir, country + DATA_FILE_EXTENSION);
     LOG(LINFO, ("datFile =", datFile));
-    feature::ForEachFromDat(datFile, processor);
+    processor.ForEachFeature();
+    processor.Sort();
 
     FilesContainerW cont(datFile, FileWriter::OP_WRITE_EXISTING);
     FileWriter w = cont.GetWriter(EDGE_INDEX_FILE_TAG);
@@ -118,7 +152,7 @@ void BuildOutgoingEdgeIndex(string const & dir, string const & country)
     EdgeIndexHeader header(outgoingEdges.size());
     header.Serialize(w);
 
-    m2::PointI const center = m2::PointI(processor.GetLimitRect().Center() * kFixPointFactor);
+    m2::PointI const center = routing::PointDToPointI(processor.GetLimitRect().Center());
     LOG(LINFO, ("Outgoing edges size =", outgoingEdges.size()));
     uint32_t prevFeatureId = 0;
     for (auto const & featureOutgoingEdges : outgoingEdges)

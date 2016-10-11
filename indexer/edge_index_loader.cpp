@@ -7,8 +7,6 @@
 
 #include "coding/file_container.hpp"
 
-#include "base/stl_helpers.hpp"
-
 #include "std/algorithm.hpp"
 
 namespace
@@ -37,7 +35,7 @@ EdgeIndexLoader::EdgeIndexLoader(MwmValue const & mwmValue, MwmSet::MwmId const 
     // @TODO Checks if mwmValue.GetHeader().GetBounds() == MwmInfo.m_limitRect
     m2::RectD const limitRect = mwmValue.GetHeader().GetBounds();
     LOG(LINFO, ("limitRect =", limitRect));
-    m2::PointI const center = m2::PointI(limitRect.Center() * kFixPointFactor);
+    m2::PointI const center = routing::PointDToPointI(limitRect.Center());
     uint32_t prevFeatureId = 0;
 
     // Reading outgoing edges.
@@ -77,43 +75,13 @@ EdgeIndexLoader::EdgeIndexLoader(MwmValue const & mwmValue, MwmSet::MwmId const 
   }
 }
 
-bool EdgeIndexLoader::GetNeighboringStartJunction(routing::Junction const & startJunction,
-                                                  routing::Junction & neighboringJunction) const
-{
-  // Note. This method is implimented for prototype only and should be rewrite for production.
-  auto const it = lower_bound(m_outgoingEdges.cbegin(), m_outgoingEdges.cend(),
-                              FixEdge(startJunction.GetPoint()), outgoingEdgesComparator);
-  if (it == m_outgoingEdges.cend())
-  {
-    LOG(LERROR, ("Wrong junction", startJunction));
-    return false;
-  }
-
-  size_t constexpr kMaxPointsToInvestigate = 1000;
-  double constexpr kMinEquivalentDistM = 100.0;
-
-  size_t i = 0;
-  while (i < kMaxPointsToInvestigate && it - i != m_outgoingEdges.cbegin()
-         && it + i != m_outgoingEdges.cend())
-  {
-    if (MercatorBounds::DistanceOnEarth(startJunction.GetPoint(), (it - i)->m_startPoint) <= kMinEquivalentDistM)
-    {
-      neighboringJunction = routing::Junction((it - i)->m_startPoint, kDefaultAltitudeMeters);
-      return true;
-    }
-    i += 1;
-
-    if (MercatorBounds::DistanceOnEarth(startJunction.GetPoint(), (it + i)->m_startPoint) <= kMinEquivalentDistM)
-    {
-      neighboringJunction = routing::Junction((it + i)->m_startPoint, kDefaultAltitudeMeters);
-      return true;
-    }
-    i += 1;
-  }
-
-  return false;
-}
-
+// @TODO EdgeIndexLoader::GetOutgoingEdges() and EdgeIndexLoader::GetIngoingEdges()
+// methods fill theirs param |edges| with |kDefaultAltitudeMeters| altitude.
+// It's not correct. AltitudeLoader should be used for getting correct altitude.
+// But method AltitudeLoader::GetAltitudes(uint32_t featureId, size_t pointCount)
+// cannot be used here. It should be used in EdgeIndexLoader::EdgeIndexLoader()
+// and type of FixEdge::m_startPoint and FixEdge::m_endPoint should be changed to
+// Junction.
 bool EdgeIndexLoader::GetOutgoingEdges(routing::Junction const & junction,
                                        routing::IRoadGraph::TEdgeVector & edges) const
 {
@@ -121,12 +89,11 @@ bool EdgeIndexLoader::GetOutgoingEdges(routing::Junction const & junction,
                                  FixEdge(junction.GetPoint()), outgoingEdgesComparator);
   if (range.first == range.second || range.first == m_outgoingEdges.cend())
   {
-    LOG(LWARNING, ("m_outgoingEdges doesn't contain junction:",
-                   MercatorBounds::ToLatLon(junction.GetPoint()), junction));
+    LOG(LERROR, ("m_outgoingEdges doesn't contain junction:",
+                 MercatorBounds::ToLatLon(junction.GetPoint()), junction));
     return false;
   }
 
-  // @TODO It's necessary add a correct altitude to |junctionFrom| here and below for an end junction.
   for (auto it = range.first; it != range.second; ++it)
   {
     edges.emplace_back(FeatureID(MwmSet::MwmId(m_mwmInfo), it->m_featureId), it->m_forward, it->m_segId, junction,
@@ -142,12 +109,11 @@ bool EdgeIndexLoader::GetIngoingEdges(routing::Junction const & junction,
   auto const it = m_ingoingEdgeIndices.find(junction.GetPoint());
   if (it == m_ingoingEdgeIndices.cend())
   {
-    LOG(LWARNING, ("m_ingoingEdgeIndices doesn't contain junction",
-                   MercatorBounds::ToLatLon(junction.GetPoint()), junction));
+    LOG(LERROR, ("m_ingoingEdgeIndices doesn't contain junction",
+                 MercatorBounds::ToLatLon(junction.GetPoint()), junction));
     return false;
   }
 
-  // @TODO It's necessary add a correct altitude to |junctionTo| here and below for an start junction.
   vector<size_t> const & edgeIndices = it->second;
   for (size_t idx : edgeIndices)
   {

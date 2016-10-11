@@ -10,14 +10,17 @@
 
 #include "defines.hpp"
 
+#include "base/stl_helpers.hpp"
+
 #include "std/algorithm.hpp"
 #include "std/cstdint.hpp"
+#include "std/functional.hpp"
 #include "std/limits.hpp"
 #include "std/vector.hpp"
 
 namespace feature
 {
-uint32_t constexpr kFixPointFactor = 30000;
+uint32_t constexpr kFixPointFactor = 100000;
 uint32_t constexpr kInvalidFeatureId = numeric_limits<uint32_t>::max();
 
 struct EdgeIndexHeader
@@ -63,6 +66,11 @@ struct OutgoingEdge
   bool m_forward = true;
 };
 
+inline bool operator==(OutgoingEdge const & lhv, OutgoingEdge const & rhv)
+{
+  return lhv.m_pointTo == rhv.m_pointTo && lhv.m_segId == rhv.m_segId && lhv.m_forward == rhv.m_forward;
+}
+
 struct PointOutgoingEdges
 {
   explicit PointOutgoingEdges(m2::PointI const & pointFrom) : m_pointFrom(pointFrom) {}
@@ -72,10 +80,12 @@ struct PointOutgoingEdges
   vector<OutgoingEdge> m_edges;
 };
 
-inline bool OutgoingEdgeSortFunc(PointOutgoingEdges const & i, PointOutgoingEdges const & j)
+inline bool operator==(PointOutgoingEdges const & lhv, PointOutgoingEdges const & rhv)
 {
-  return i.m_pointFrom < j.m_pointFrom;
+  return lhv.m_pointFrom == rhv.m_pointFrom && lhv.m_edges == rhv.m_edges;
 }
+
+auto const outgoingEdgeSortFunc = my::LessBy(&PointOutgoingEdges::m_pointFrom);
 
 template <class TSink>
 void EncodePointI(m2::PointI const & point, BitWriter<TSink> & bits)
@@ -185,12 +195,6 @@ struct FeatureOutgoingEdges
       PointOutgoingEdges edges;
       edges.m_pointFrom = DecodePointI(bits) + prevPointFrom;
       uint32_t outgoingEdgeCount = coding::DeltaCoder::Decode(bits);
-      if (outgoingEdgeCount == 0)
-      {
-        ASSERT(false, ());
-        prevPointFrom = edges.m_pointFrom;
-        continue;
-      }
       CHECK_LESS(0, outgoingEdgeCount, ());
       outgoingEdgeCount -= 1;
       for (uint32_t j = 0; j < outgoingEdgeCount; ++j)
@@ -209,14 +213,14 @@ struct FeatureOutgoingEdges
                        "are saved in wrong format."));
   }
 
-  void Sort()
+  void SortUnique()
   {
-    sort(m_featureOutgoingEdges.begin(), m_featureOutgoingEdges.end(), OutgoingEdgeSortFunc);
+    my::SortUnique(m_featureOutgoingEdges, outgoingEdgeSortFunc, equal_to<PointOutgoingEdges>());
   }
 
   bool IsSorted() const
   {
-    return is_sorted(m_featureOutgoingEdges.begin(), m_featureOutgoingEdges.end(), OutgoingEdgeSortFunc);
+    return is_sorted(m_featureOutgoingEdges.begin(), m_featureOutgoingEdges.end(), outgoingEdgeSortFunc);
   }
 
   uint32_t m_featureId;

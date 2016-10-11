@@ -59,13 +59,6 @@ public:
                        routing::IRoadGraph::TEdgeVector & edges) const;
   bool HasEdgeIndex() const { return !m_outgoingEdges.empty(); }
 
-  /// \brief Fills |startJunction| with a junction form start nodes of |m_outgoingEdges|
-  /// which is not very far form |startJunction|.
-  /// \note This method can work in wrong way sometimes.
-  // @TODO For production a better should be implemented.
-  bool GetNeighboringStartJunction(routing::Junction const & startJunction,
-                                   routing::Junction & neighboringJunction) const;
-
 private:
   // @TODO |m_outgoingEdges| and |m_ingoingEdgeIndices| could contain more then
   // 10^6 items. Using m2::PointD here it's a waste of memory. m2::PointI should be used.

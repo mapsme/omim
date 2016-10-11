@@ -249,8 +249,6 @@ public:
   /// Clear all temporary buffers.
   virtual void ClearState() {}
 
-  virtual bool GetNeighboringStartJunction(Junction const & /*startJunction */, Junction & /* neighboringJunction */) const { return false; }
-
 private:
   /// \brief Finds all outgoing regular (non-fake) edges for junction.
   virtual void GetRegularOutgoingEdges(Junction const & junction, TEdgeVector & edges) const;
@@ -305,8 +303,13 @@ inline m2::PointD PointIToPointD(m2::PointI const & p)
   return m2::PointD(p) / static_cast<double>(feature::kFixPointFactor);
 }
 
-inline Junction PointIToJunction(m2::PointI const & p)
+inline m2::PointI PointDToPointI(m2::PointD const & p)
 {
-  return Junction(PointIToPointD(p), feature::kDefaultAltitudeMeters);
+  return m2::PointI(p * feature::kFixPointFactor);
+}
+
+inline Junction RoundJunction(Junction const & j)
+{
+  return Junction(PointIToPointD(PointDToPointI(j.GetPoint())), j.GetAltitude());
 }
 }  // namespace routing

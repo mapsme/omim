@@ -8,11 +8,15 @@
 
 #include "map/feature_vec_model.hpp"
 
+#include "indexer/index.hpp"
+#include "indexer/mwm_set.hpp"
+
 #include "platform/local_country_file.hpp"
 
 #include "std/set.hpp"
 #include "std/shared_ptr.hpp"
 #include "std/string.hpp"
+#include "std/unique_ptr.hpp"
 #include "std/utility.hpp"
 #include "std/vector.hpp"
 
@@ -156,6 +160,7 @@ namespace integration
 
   void TestNextStreetName(routing::Route const & route, string const & expectedStreetName);
 
-  /// \returns mwm hadle by file name without extention.
-//  MwmSet::MwmHandle GetMwmHandle(string const & name);
-}  // namespace
+  /// \brief sets writable director, resource directory and other settings according to
+  /// command line options set for routing integraion tests.
+  void SetEnvironment();
+}  // namespace integration

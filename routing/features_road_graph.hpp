@@ -77,14 +77,17 @@ public:
   IRoadGraph::Mode GetMode() const override;
   void ClearState() override;
 
-  bool GetNeighboringStartJunction(Junction const & startJunction, Junction & neighboringJunction) const override;
+  bool IsRoad(FeatureType const & ft) const;
 
 private:
   friend class CrossFeaturesLoader;
 
 // These overrides are used for taking ingoing and outgoing graph edges from the edge index section.
-  void GetRegularOutgoingEdges(Junction const & junction, TEdgeVector & edges) const override;
-  void GetRegularIngoingEdges(Junction const & junction, TEdgeVector & edges) const override;
+  // @TODO Now it's necessary to uncomment virtual GetRegularOutgoingEdges() and GetRegularIngoingEdges()
+  // methods and |m_edgeIndexLoader| to use edge index for getting ingoing and outgoing edges and comment them back
+  // if it's necessary to use geometry index. A better solution should be implemented.
+//  void GetRegularOutgoingEdges(Junction const & junction, TEdgeVector & edges) const override;
+//  void GetRegularIngoingEdges(Junction const & junction, TEdgeVector & edges) const override;
 
   struct Value
   {
@@ -95,10 +98,9 @@ private:
 
     MwmSet::MwmHandle m_mwmHandle;
     unique_ptr<feature::AltitudeLoader> m_altitudeLoader;
-    unique_ptr<feature::EdgeIndexLoader> m_edgeIndexLoader;
+//    unique_ptr<feature::EdgeIndexLoader> m_edgeIndexLoader;
   };
 
-  bool IsRoad(FeatureType const & ft) const;
   bool IsOneWay(FeatureType const & ft) const;
   double GetSpeedKMPHFromFt(FeatureType const & ft) const;
 
@@ -120,6 +122,8 @@ private:
   mutable CrossCountryVehicleModel m_vehicleModel;
   mutable map<MwmSet::MwmId, Value> m_mwmLocks;
 
+  // @TODO |m_testMwmId| is added for writing prototype. It should be removed. MwmId from |m_mwmLocks|
+  // should be used instead.
   MwmSet::MwmId const m_testMwmId;
 };
 
