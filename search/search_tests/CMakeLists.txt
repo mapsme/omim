@@ -26,9 +26,9 @@ omim_link_libraries(
   search_tests
   search
   indexer
-  platform
-  oauthcpp
   editor
+  oauthcpp
+  platform
   opening_hours
   geometry
   coding
