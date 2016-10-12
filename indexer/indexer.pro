@@ -25,6 +25,7 @@ SOURCES += \
     drawing_rules.cpp \
     drules_selector.cpp \
     drules_selector_parser.cpp \
+    edge_index_loader.cpp \
     editable_map_object.cpp \
     edits_migration.cpp \
     feature.cpp \
@@ -80,6 +81,7 @@ HEADERS += \
     drules_include.hpp \
     drules_selector.hpp \
     drules_selector_parser.hpp \
+    edge_index_loader.hpp \
     editable_map_object.hpp \
     edits_migration.hpp \
     feature.hpp \
@@ -88,6 +90,7 @@ HEADERS += \
     feature_covering.hpp \
     feature_data.hpp \
     feature_decl.hpp \
+    feature_edge_index.hpp \
     feature_impl.hpp \
     feature_loader.hpp \
     feature_loader_base.hpp \

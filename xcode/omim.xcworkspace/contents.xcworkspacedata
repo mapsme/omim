@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:../../../tracks/Astrahan/Astrahan.gpx">
+   </FileRef>
+   <FileRef
       location = "group:defaults.xcconfig">
    </FileRef>
    <Group

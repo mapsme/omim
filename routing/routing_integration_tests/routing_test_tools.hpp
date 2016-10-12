@@ -1,16 +1,22 @@
 #pragma once
 
+#include "indexer/mwm_set.hpp"
+
 #include "routing/osrm_router.hpp"
 
 #include "storage/country_info_getter.hpp"
 
 #include "map/feature_vec_model.hpp"
 
+#include "indexer/index.hpp"
+#include "indexer/mwm_set.hpp"
+
 #include "platform/local_country_file.hpp"
 
 #include "std/set.hpp"
 #include "std/shared_ptr.hpp"
 #include "std/string.hpp"
+#include "std/unique_ptr.hpp"
 #include "std/utility.hpp"
 #include "std/vector.hpp"
 
@@ -46,9 +52,9 @@ typedef pair<shared_ptr<Route>, IRouter::ResultCode> TRouteResult;
 
 namespace integration
 {
-shared_ptr<model::FeaturesFetcher> CreateFeaturesFetcher(vector<LocalCountryFile> const & localFiles);
+  shared_ptr<model::FeaturesFetcher> CreateFeaturesFetcher(vector<LocalCountryFile> const & localFiles);
 
-unique_ptr<storage::CountryInfoGetter> CreateCountryInfoGetter();
+  unique_ptr<storage::CountryInfoGetter> CreateCountryInfoGetter();
 
   class IRouterComponents
   {
@@ -153,4 +159,8 @@ unique_ptr<storage::CountryInfoGetter> CreateCountryInfoGetter();
   void TestCurrentStreetName(routing::Route const & route, string const & expectedStreetName);
 
   void TestNextStreetName(routing::Route const & route, string const & expectedStreetName);
-}
+
+  /// \brief sets writable director, resource directory and other settings according to
+  /// command line options set for routing integraion tests.
+  void SetEnvironment();
+}  // namespace integration

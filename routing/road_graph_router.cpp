@@ -90,6 +90,11 @@ bool CheckGraphConnectivity(IRoadGraph const & graph, Junction const & junction,
     }
   }
 
+  if (visited.size() < limit)
+  {
+    LOG(LWARNING, ("Junction is not connected to the graph:",
+                   MercatorBounds::ToLatLon(junction.GetPoint()), junction));
+  }
   return visited.size() >= limit;
 }
 
@@ -97,41 +102,48 @@ bool CheckGraphConnectivity(IRoadGraph const & graph, Junction const & junction,
 void FindClosestEdges(IRoadGraph const & graph, m2::PointD const & point,
                       vector<pair<Edge, Junction>> & vicinity)
 {
+  graph.FindClosestEdges(point, kMaxRoadCandidates, vicinity);
+
+  // @TODO It's necessary to implement code below correctly to check connectivity
+  // candidates and the graph.
+
   // WARNING: Take only one vicinity, with, maybe, its inverse.  It is
   // an oversimplification that is not as easily solved as tuning up
   // this constant because if you set it too high you risk to find a
   // feature that you cannot in fact reach because of an obstacle.
   // Using only the closest feature minimizes (but not eliminates)
   // this risk.
-  vector<pair<Edge, Junction>> candidates;
-  graph.FindClosestEdges(point, kMaxRoadCandidates, candidates);
 
-  vicinity.clear();
-  for (auto const & candidate : candidates)
-  {
-    auto const & edge = candidate.first;
-    if (CheckGraphConnectivity(graph, edge.GetEndJunction(), kTestConnectivityVisitJunctionsLimit))
-    {
-      vicinity.emplace_back(candidate);
+  // @TODO It's necessary to implement finding closest edges process with check connectivity corrently.
+//  vector<pair<Edge, Junction>> candidates;
+//  graph.FindClosestEdges(point, kMaxRoadCandidates, candidates);
 
-      // Need to add a reverse edge, if exists, because fake edges
-      // must be added for reverse edge too.
-      IRoadGraph::TEdgeVector revEdges;
-      graph.GetOutgoingEdges(edge.GetEndJunction(), revEdges);
-      for (auto const & revEdge : revEdges)
-      {
-        if (revEdge.GetFeatureId() == edge.GetFeatureId() &&
-            revEdge.GetEndJunction() == edge.GetStartJunction() &&
-            revEdge.GetSegId() == edge.GetSegId())
-        {
-          vicinity.emplace_back(revEdge, candidate.second);
-          break;
-        }
-      }
+//  vicinity.clear();
+//  for (auto const & candidate : candidates)
+//  {
+//    auto const & edge = candidate.first;
+//    if (CheckGraphConnectivity(graph, edge.GetEndJunction(), kTestConnectivityVisitJunctionsLimit))
+//    {
+//      vicinity.emplace_back(candidate);
 
-      break;
-    }
-  }
+//      // Need to add a reverse edge, if exists, because fake edges
+//      // must be added for reverse edge too.
+//      IRoadGraph::TEdgeVector revEdges;
+//      graph.GetOutgoingEdges(edge.GetEndJunction(), revEdges);
+//      for (auto const & revEdge : revEdges)
+//      {
+//        if (revEdge.GetFeatureId() == edge.GetFeatureId() &&
+//            revEdge.GetEndJunction() == edge.GetStartJunction() &&
+//            revEdge.GetSegId() == edge.GetSegId())
+//        {
+//          vicinity.emplace_back(revEdge, candidate.second);
+//          break;
+//        }
+//      }
+
+//      break;
+//    }
+//  }
 }
 }  // namespace
 
@@ -207,12 +219,16 @@ IRouter::ResultCode RoadGraphRouter::CalculateRoute(m2::PointD const & startPoin
 
   // Let us assume that the closest to startPoint/finalPoint feature point has the same altitude
   // with startPoint/finalPoint.
-  Junction const startPos(startPoint, startVicinity.front().second.GetAltitude());
-  Junction const finalPos(finalPoint, finalVicinity.front().second.GetAltitude());
+//  Junction const startPos(startPoint, startVicinity.front().second.GetAltitude());
+//  Junction const finalPos(finalPoint, finalVicinity.front().second.GetAltitude());
+
+  Junction const startPos = RoundJunction(startVicinity[0].first.GetStartJunction());
+  Junction const finalPos = RoundJunction(finalVicinity[0].first.GetStartJunction());
 
   m_roadGraph->ResetFakes();
-  m_roadGraph->AddFakeEdges(startPos, startVicinity);
-  m_roadGraph->AddFakeEdges(finalPos, finalVicinity);
+  // @TODO It's necessary to recover adding fake edges.
+//  m_roadGraph->AddFakeEdges(startPos, startVicinity);
+//  m_roadGraph->AddFakeEdges(finalPos, finalVicinity);
 
   RoutingResult<Junction> result;
   IRoutingAlgorithm::Result const resultCode =

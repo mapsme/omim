@@ -24,6 +24,7 @@ SOURCES += \
     check_model.cpp \
     coastlines_generator.cpp \
     dumper.cpp \
+    edge_index_generator.cpp \
     feature_builder.cpp \
     feature_generator.cpp \
     feature_merger.cpp \
@@ -54,6 +55,7 @@ HEADERS += \
     check_model.hpp \
     coastlines_generator.hpp \
     dumper.hpp \
+    edge_index_generator.hpp \
     feature_builder.hpp \
     feature_emitter_iface.hpp \
     feature_generator.hpp \

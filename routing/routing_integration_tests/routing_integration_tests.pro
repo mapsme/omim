@@ -11,8 +11,9 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 ROOT_DIR = ../..
-DEPENDENCIES = map routing search storage indexer platform editor geometry coding base \
-               osrm jansson protobuf tomcrypt succinct stats_client pugixml
+DEPENDENCIES = generator_tests_support map routing search storage indexer platform \
+               editor geometry coding base osrm jansson protobuf tomcrypt succinct \
+               stats_client pugixml
 
 DEPENDENCIES += opening_hours
 
@@ -27,6 +28,7 @@ SOURCES += \
   bicycle_route_test.cpp \
   bicycle_turn_test.cpp \
   cross_section_tests.cpp \
+  edge_index_consistency_tests.cpp \
   get_altitude_test.cpp \
   online_cross_tests.cpp \
   osrm_route_test.cpp \

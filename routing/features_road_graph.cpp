@@ -44,6 +44,7 @@ FeaturesRoadGraph::Value::Value(MwmSet::MwmHandle handle) : m_mwmHandle(move(han
     return;
 
   m_altitudeLoader = make_unique<feature::AltitudeLoader>(*m_mwmHandle.GetValue<MwmValue>());
+//  m_edgeIndexLoader = make_unique<feature::EdgeIndexLoader>(*m_mwmHandle.GetValue<MwmValue>(), m_mwmHandle.GetId());
 }
 
 FeaturesRoadGraph::CrossCountryVehicleModel::CrossCountryVehicleModel(unique_ptr<IVehicleModelFactory> && vehicleModelFactory)
@@ -93,7 +94,6 @@ void FeaturesRoadGraph::CrossCountryVehicleModel::Clear()
   m_cache.clear();
 }
 
-
 IRoadGraph::RoadInfo & FeaturesRoadGraph::RoadInfoCache::Find(FeatureID const & featureId, bool & found)
 {
   auto res = m_cache.insert(make_pair(featureId.m_mwmId, TMwmFeatureCache()));
@@ -112,6 +112,7 @@ FeaturesRoadGraph::FeaturesRoadGraph(Index const & index, IRoadGraph::Mode mode,
   : m_index(index)
   , m_mode(mode)
   , m_vehicleModel(move(vehicleModelFactory))
+  , m_testMwmId(m_index.GetMwmIdByCountryFile(platform::CountryFile("Russia_Moscow")))
 {
 }
 
@@ -342,4 +343,16 @@ FeaturesRoadGraph::Value const & FeaturesRoadGraph::LockMwm(MwmSet::MwmId const 
   return m_mwmLocks.insert(make_pair(move(mwmId), Value(m_index.GetMwmHandleById(mwmId))))
       .first->second;
 }
+
+//void FeaturesRoadGraph::GetRegularOutgoingEdges(Junction const & junction, TEdgeVector & edges) const
+//{
+//  Value const & value = LockMwm(m_testMwmId);
+//  value.m_edgeIndexLoader->GetOutgoingEdges(junction, edges);
+//}
+
+//void FeaturesRoadGraph::GetRegularIngoingEdges(Junction const & startJunction, TEdgeVector & edges) const
+//{
+//  Value const & value = LockMwm(m_testMwmId);
+//  value.m_edgeIndexLoader->GetIngoingEdges(startJunction, edges);
+//}
 }  // namespace routing

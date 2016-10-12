@@ -9,7 +9,9 @@ include($$ROOT_DIR/common.pri)
 SOURCES += \
     test_feature.cpp \
     test_mwm_builder.cpp \
+    test_mwm_consistency.cpp \
 
 HEADERS += \
     test_feature.hpp \
     test_mwm_builder.hpp \
+    test_mwm_consistency.hpp \

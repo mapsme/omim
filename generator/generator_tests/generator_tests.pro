@@ -23,6 +23,7 @@ SOURCES += \
     altitude_test.cpp \
     check_mwms.cpp \
     coasts_test.cpp \
+    edge_index_test.cpp \
     feature_builder_test.cpp \
     feature_merger_test.cpp \
     metadata_parser_test.cpp \

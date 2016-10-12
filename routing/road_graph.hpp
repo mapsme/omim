@@ -6,6 +6,7 @@
 
 #include "indexer/feature_altitude.hpp"
 #include "indexer/feature_data.hpp"
+#include "indexer/feature_edge_index.hpp"
 
 #include "std/initializer_list.hpp"
 #include "std/map.hpp"
@@ -250,9 +251,9 @@ public:
 
 private:
   /// \brief Finds all outgoing regular (non-fake) edges for junction.
-  void GetRegularOutgoingEdges(Junction const & junction, TEdgeVector & edges) const;
+  virtual void GetRegularOutgoingEdges(Junction const & junction, TEdgeVector & edges) const;
   /// \brief Finds all ingoing regular (non-fake) edges for junction.
-  void GetRegularIngoingEdges(Junction const & junction, TEdgeVector & edges) const;
+  virtual void GetRegularIngoingEdges(Junction const & junction, TEdgeVector & edges) const;
   /// \brief Finds all outgoing fake edges for junction.
   void GetFakeOutgoingEdges(Junction const & junction, TEdgeVector & edges) const;
   /// \brief Finds all ingoing fake edges for junction.
@@ -295,5 +296,20 @@ inline void JunctionsToAltitudes(vector<Junction> const & junctions, feature::TA
   altitudes.resize(junctions.size());
   for (size_t i = 0; i < junctions.size(); ++i)
     altitudes[i] = junctions[i].GetAltitude();
+}
+
+inline m2::PointD PointIToPointD(m2::PointI const & p)
+{
+  return m2::PointD(p) / static_cast<double>(feature::kFixPointFactor);
+}
+
+inline m2::PointI PointDToPointI(m2::PointD const & p)
+{
+  return m2::PointI(p * feature::kFixPointFactor);
+}
+
+inline Junction RoundJunction(Junction const & j)
+{
+  return Junction(PointIToPointD(PointDToPointI(j.GetPoint())), j.GetAltitude());
 }
 }  // namespace routing
