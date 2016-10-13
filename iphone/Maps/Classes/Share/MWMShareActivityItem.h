@@ -1,7 +1,6 @@
 namespace ms
 {
 class LatLon;
-
 }  // namespace ms
 
 @protocol MWMPlacePageObject<NSObject>

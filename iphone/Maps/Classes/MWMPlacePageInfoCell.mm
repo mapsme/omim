@@ -19,7 +19,7 @@
 @property(weak, nonatomic) IBOutlet UIButton * upperButton;
 @property(weak, nonatomic) IBOutlet UIImageView * toggleImage;
 
-@property(nonatomic) MWMPlacePageCellType type NS_DEPRECATED_IOS(7_0, 8_0);
+@property(nonatomic) MWMPlacePageCellType type NS_DEPRECATED_IOS(7_0, 8_0, "Use rowType instead");
 @property(nonatomic) place_page::MetainfoRows rowType NS_AVAILABLE_IOS(8_0);
 @property(weak, nonatomic) MWMPlacePageData * data NS_AVAILABLE_IOS(8_0);
 
@@ -80,7 +80,7 @@
     break;
   case place_page::MetainfoRows::OpeningHours: NSAssert(false, @"Incorrect cell type!"); break;
   }
-  [self configWithIconName:name data:[self.data stringForRow:row]];
+  [self configWithIconName:name data:[data stringForRow:row]];
 }
 
 - (void)configureWithType:(MWMPlacePageCellType)type info:(NSString *)info;

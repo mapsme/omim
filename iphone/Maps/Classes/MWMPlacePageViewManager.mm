@@ -212,7 +212,7 @@ extern NSString * const kBookmarksChangedNotification;
 {
   NSMutableDictionary * stat = [@{ kStatProvider : kStatBooking } mutableCopy];
   MWMPlacePageEntity * en = self.entity;
-  auto const latLon = en.latLon;
+  auto const & latLon = en.latLon;
   stat[kStatHotel] = en.hotelId;
   stat[kStatHotelLat] = @(latLon.lat);
   stat[kStatHotelLon] = @(latLon.lon);
@@ -268,9 +268,8 @@ extern NSString * const kBookmarksChangedNotification;
         withParameters:@{kStatValue : kStatAdd}];
   Framework & f = GetFramework();
   BookmarkData bmData = {self.entity.titleForNewBookmark, f.LastEditedBMType()};
-  auto const categoryIndex = static_cast<int>(f.LastEditedBMCategory());
-  auto const bookmarkIndex = static_cast<int>(
-      f.GetBookmarkManager().AddBookmark(categoryIndex, self.entity.mercator, bmData));
+  auto const categoryIndex = f.LastEditedBMCategory();
+  auto const bookmarkIndex = f.GetBookmarkManager().AddBookmark(categoryIndex, self.entity.mercator, bmData);
   self.entity.bac = {bookmarkIndex, categoryIndex};
   self.entity.bookmarkTitle = @(bmData.GetName().c_str());
   self.entity.bookmarkCategory = @(f.GetBmCategory(categoryIndex)->GetName().c_str());
@@ -328,7 +327,7 @@ extern NSString * const kBookmarksChangedNotification;
     return @"";
   string distance;
   CLLocationCoordinate2D const coord = lastLocation.coordinate;
-  ms::LatLon const target = self.entity.latLon;
+  ms::LatLon const & target = self.entity.latLon;
   measurement_utils::FormatDistance(
       ms::DistanceOnEarth(coord.latitude, coord.longitude, target.lat, target.lon), distance);
   return @(distance.c_str());

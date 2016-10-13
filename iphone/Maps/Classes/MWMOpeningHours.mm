@@ -76,10 +76,8 @@ void addDay(ui::TimeTable const & tt, vector<Day> & allDays)
 
 void addUnhandledDays(ui::TOpeningDays const & days, vector<Day> & allDays)
 {
-  if (days.empty())
-    return;
-
-  allDays.emplace_back(stringFromOpeningDays(days));
+  if (!days.empty())
+    allDays.emplace_back(stringFromOpeningDays(days));
 }
 
 }  // namespace

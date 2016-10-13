@@ -15,8 +15,7 @@
 @end
 
 @class MWMPlacePageData, MWMPPView;
-@protocol MWMPlacePageButtonsProtocol
-, MWMActionBarProtocol;
+@protocol MWMPlacePageButtonsProtocol, MWMActionBarProtocol;
 
 /// Helps with place page view layout and representation
 @interface MWMPlacePageLayout : NSObject

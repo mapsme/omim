@@ -4,7 +4,6 @@
 #import "MWMPlacePageActionBar.h"
 #import "MWMPlacePageCellUpdateProtocol.h"
 #import "MWMPlacePageData.h"
-
 #import "MWMBookmarkCell.h"
 #import "MWMOpeningHoursCell.h"
 #import "MWMPlacePageBookmarkCell.h"
@@ -118,16 +117,9 @@ void animate(TMWMVoidBlock animate, TMWMVoidBlock completion = nil)
     _scrollView = [[MWMPPScrollView alloc] initWithFrame:view.frame inactiveView:_placePageView];
     _portraitOpenContentOffset = MAX(size.width, size.height) * kOpenPlacePageStopValue;
     _landscapeOpenContentOffset = MIN(size.width, size.height) * kOpenPlacePageStopValue;
-    [_ownerView addSubview:_scrollView];
+    [view addSubview:_scrollView];
     [_scrollView addSubview:_placePageView];
-
-    auto tv = _placePageView.tableView;
-    [tv registerNib:[UINib nibWithNibName:kPreviewCells[0] bundle:nil]
-        forCellReuseIdentifier:kPreviewCells[0]];
-    [tv registerNib:[UINib nibWithNibName:kButtonsCells[0] bundle:nil]
-        forCellReuseIdentifier:kButtonsCells[0]];
-    [tv registerNib:[UINib nibWithNibName:kBookmarkCells[0] bundle:nil]
-        forCellReuseIdentifier:kBookmarkCells[0]];
+    [self registerCells];
   }
   return self;
 }
@@ -135,12 +127,18 @@ void animate(TMWMVoidBlock animate, TMWMVoidBlock completion = nil)
 - (void)registerCells
 {
   auto tv = self.placePageView.tableView;
+
+  [tv registerNib:[UINib nibWithNibName:kPreviewCells[0] bundle:nil]
+                  forCellReuseIdentifier:kPreviewCells[0]];
+  [tv registerNib:[UINib nibWithNibName:kButtonsCells[0] bundle:nil]
+                  forCellReuseIdentifier:kButtonsCells[0]];
+  [tv registerNib:[UINib nibWithNibName:kBookmarkCells[0] bundle:nil]
+                  forCellReuseIdentifier:kBookmarkCells[0]];
+
   // Register all meta info cells.
-  for (auto const i : self.data.metainfoRows)
-  {
-    auto name = kMetaInfoCells[static_cast<size_t>(i)];
+  for (auto const name : kMetaInfoCells)
     [tv registerNib:[UINib nibWithNibName:name bundle:nil] forCellReuseIdentifier:name];
-  }
+
 }
 
 - (void)layoutWithSize:(CGSize const &)size
@@ -166,8 +164,7 @@ void animate(TMWMVoidBlock animate, TMWMVoidBlock completion = nil)
   [self collapse];
 
   self.data = data;
-  [self.actionBar configureWithData:static_cast<id<MWMActionBarSharedData>>(self.data)];
-  [self registerCells];
+  [self.actionBar configureWithData:static_cast<id<MWMActionBarSharedData>>(data)];
   [self.placePageView.tableView reloadData];
 }
 
@@ -196,15 +193,15 @@ void animate(TMWMVoidBlock animate, TMWMVoidBlock completion = nil)
 - (void)close
 {
   animate(
-      ^{
-        self.actionBar.origin = {0., self.ownerView.height};
-        [self.scrollView setContentOffset:{} animated:YES];
-      },
-      ^{
-        [self.actionBar removeFromSuperview];
-        self.actionBar = nil;
-        [self.delegate shouldDestroyLayout];
-      });
+  ^{
+     self.actionBar.origin = {0., self.ownerView.height};
+     [self.scrollView setContentOffset:{} animated:YES];
+   },
+   ^{
+     [self.actionBar removeFromSuperview];
+     self.actionBar = nil;
+     [self.delegate shouldDestroyLayout];
+   });
 }
 
 - (void)mwm_refreshUI
@@ -236,9 +233,8 @@ void animate(TMWMVoidBlock animate, TMWMVoidBlock completion = nil)
 - (void)collapse
 {
   self.actionBar.hidden = YES;
-
-  [self.placePageView hideTableView:YES];
   self.scrollView.scrollEnabled = NO;
+  [self.placePageView hideTableView:YES];
 
   animate(^{
     self.actionBar.origin = {0., self.ownerView.height};
@@ -284,12 +280,12 @@ void animate(TMWMVoidBlock animate, TMWMVoidBlock completion = nil)
 {
   using namespace storage;
 
+  auto const & sections = self.data.sections;
   switch (status)
   {
   case NodeStatus::Undefined:
   {
     self.isPlacePageButtonsEnabled = YES;
-    auto const & sections = self.data.sections;
     auto const it = find(sections.begin(), sections.end(), place_page::Sections::Buttons);
     if (it != sections.end())
     {
@@ -305,24 +301,26 @@ void animate(TMWMVoidBlock animate, TMWMVoidBlock completion = nil)
 
     break;
   }
-
-  case NodeStatus::Downloading: self.ppPreviewCell.mapDownloadProgress.progress = progress; break;
-
+  case NodeStatus::Downloading:
+  {
+    self.ppPreviewCell.mapDownloadProgress.progress = progress;
+    break;
+  }
   case NodeStatus::InQueue:
+  {
     self.ppPreviewCell.mapDownloadProgress.state = MWMCircularProgressStateSpinner;
     break;
-
+  }
   case NodeStatus::Error:
+  {
     self.ppPreviewCell.mapDownloadProgress.state = MWMCircularProgressStateFailed;
     break;
-
+  }
   case NodeStatus::Partly: break;
-
   case NodeStatus::OnDiskOutOfDate:
   case NodeStatus::OnDisk:
   {
     self.isPlacePageButtonsEnabled = YES;
-    auto const & sections = self.data.sections;
     auto const it = find(sections.begin(), sections.end(), place_page::Sections::Buttons);
     if (it != sections.end())
     {
@@ -333,8 +331,8 @@ void animate(TMWMVoidBlock animate, TMWMVoidBlock completion = nil)
     [self.ppPreviewCell setDownloaderViewHidden:YES animated:NO];
     break;
   }
-
   case NodeStatus::NotDownloaded:
+  {
     self.isPlacePageButtonsEnabled = NO;
     if (self.ppPreviewCell)
       [self.ppPreviewCell setDownloaderViewHidden:NO animated:NO];
@@ -342,6 +340,7 @@ void animate(TMWMVoidBlock animate, TMWMVoidBlock completion = nil)
       self.isDownloaderViewShown = YES;
 
     break;
+  }
   }
 }
 
@@ -352,12 +351,13 @@ void animate(TMWMVoidBlock animate, TMWMVoidBlock completion = nil)
   if ([scrollView isEqual:self.placePageView.tableView])
     return;
 
-  auto const offset = scrollView.contentOffset;
+  auto const & offset = scrollView.contentOffset;
+  auto d = self.delegate;
   if (offset.y <= 0)
   {
     [self.scrollView removeFromSuperview];
     [self.actionBar removeFromSuperview];
-    [self.delegate shouldDestroyLayout];
+    [d shouldDestroyLayout];
     return;
   }
 
@@ -365,11 +365,11 @@ void animate(TMWMVoidBlock animate, TMWMVoidBlock completion = nil)
   {
     auto const bounded = self.placePageView.height + kLuftDraggingOffset;
     [scrollView setContentOffset:{0, bounded}];
-    [self.delegate onTopBoundChanged:bounded];
+    [d onTopBoundChanged:bounded];
   }
   else
   {
-    [self.delegate onTopBoundChanged:offset.y];
+    [d onTopBoundChanged:offset.y];
   }
 
   self.direction = self.lastContentOffset < offset.y ? ScrollDirection::Up : ScrollDirection::Down;
@@ -387,9 +387,10 @@ void animate(TMWMVoidBlock animate, TMWMVoidBlock completion = nil)
 
   if (actualOffset > self.expandedContentOffset && actualOffset < openOffset)
   {
-    self.state = self.direction == ScrollDirection::Up ? State::Top : State::Bottom;
+    auto const isDirectionUp = self.direction == ScrollDirection::Up;
+    self.state = isDirectionUp ? State::Top : State::Bottom;
     (*targetContentOffset).y =
-        self.direction == ScrollDirection::Up ? openOffset : self.expandedContentOffset;
+        isDirectionUp ? openOffset : self.expandedContentOffset;
   }
   else if (actualOffset > openOffset && targetOffset < openOffset)
   {
@@ -417,6 +418,7 @@ void animate(TMWMVoidBlock animate, TMWMVoidBlock completion = nil)
   auto const actualOffset = scrollView.contentOffset.y;
   auto const openOffset =
       self.isPortrait ? self.portraitOpenContentOffset : self.landscapeOpenContentOffset;
+
   if (actualOffset < self.expandedContentOffset + kLuftDraggingOffset)
   {
     self.state = State::Bottom;
@@ -426,11 +428,10 @@ void animate(TMWMVoidBlock animate, TMWMVoidBlock completion = nil)
   }
   else if (actualOffset < openOffset)
   {
-    self.state = self.direction == ScrollDirection::Up ? State::Top : State::Bottom;
+    auto const isDirectionUp = self.direction == ScrollDirection::Up;
+    self.state = isDirectionUp ? State::Top : State::Bottom;
     animate(^{
-      [scrollView setContentOffset:{
-        0, self.direction == ScrollDirection::Up ? openOffset : self.expandedContentOffset
-      }
+      [scrollView setContentOffset:{0, isDirectionUp ? openOffset : self.expandedContentOffset}
                           animated:YES];
     });
   }
@@ -444,21 +445,23 @@ void animate(TMWMVoidBlock animate, TMWMVoidBlock completion = nil)
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-  if (!self.data)
+  auto d = self.data;
+  if (!d)
     return 0;
-  return self.data.sections.size();
+  return d.sections.size();
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
   using namespace place_page;
 
-  switch (self.data.sections[section])
+  auto d = self.data;
+  switch (d.sections[section])
   {
   case Sections::Preview:
   case Sections::Bookmark: return 1;
-  case Sections::Metainfo: return self.data.metainfoRows.size();
-  case Sections::Buttons: return self.data.buttonsRows.size();
+  case Sections::Metainfo: return d.metainfoRows.size();
+  case Sections::Buttons: return d.buttonsRows.size();
   }
 }
 
@@ -467,7 +470,9 @@ void animate(TMWMVoidBlock animate, TMWMVoidBlock completion = nil)
 {
   using namespace place_page;
 
-  switch (self.data.sections[indexPath.section])
+  auto data = self.data;
+  auto delegate = self.delegate;
+  switch (data.sections[indexPath.section])
   {
   case Sections::Preview:
   {
@@ -475,7 +480,7 @@ void animate(TMWMVoidBlock animate, TMWMVoidBlock completion = nil)
       self.ppPreviewCell =
           [tableView dequeueReusableCellWithIdentifier:[MWMPlacePagePreviewCell className]];
 
-    [self.ppPreviewCell configure:self.data updateLayoutDelegate:self dataSource:self.dataSource];
+    [self.ppPreviewCell configure:data updateLayoutDelegate:self dataSource:self.dataSource];
     [self.ppPreviewCell setDownloaderViewHidden:!self.isDownloaderViewShown animated:NO];
 
     return self.ppPreviewCell;
@@ -483,26 +488,28 @@ void animate(TMWMVoidBlock animate, TMWMVoidBlock completion = nil)
   case Sections::Bookmark:
   {
     MWMBookmarkCell * c = [tableView dequeueReusableCellWithIdentifier:kBookmarkCells[0]];
-    [c configureWithText:self.data.bookmarkDescription
+    [c configureWithText:data.bookmarkDescription
           updateCellDelegate:self
-        editBookmarkDelegate:self.delegate
-                      isHTML:self.data.isHTMLDescription];
+        editBookmarkDelegate:delegate
+                      isHTML:data.isHTMLDescription];
     return c;
   }
   case Sections::Metainfo:
   {
-    auto const row = self.data.metainfoRows[indexPath.row];
+    auto const row = data.metainfoRows[indexPath.row];
     auto cellName = kMetaInfoCells[static_cast<size_t>(row)];
     UITableViewCell * c = [tableView dequeueReusableCellWithIdentifier:cellName];
 
     switch (row)
     {
     case MetainfoRows::OpeningHours:
+    {
       [static_cast<MWMOpeningHoursCell *>(c)
-          configureWithOpeningHours:[self.data stringForRow:row]
+          configureWithOpeningHours:[data stringForRow:row]
                updateLayoutDelegate:self
-                        isClosedNow:self.data.schedule == OpeningHours::Closed];
+                        isClosedNow:data.schedule == OpeningHours::Closed];
       break;
+    }
     case MetainfoRows::Phone:
     case MetainfoRows::Address:
     case MetainfoRows::Website:
@@ -511,16 +518,18 @@ void animate(TMWMVoidBlock animate, TMWMVoidBlock completion = nil)
     case MetainfoRows::Operator:
     case MetainfoRows::Internet:
     case MetainfoRows::Coordinate:
-      [static_cast<MWMPlacePageInfoCell *>(c) configWithRow:row data:self.data];
+    {
+      [static_cast<MWMPlacePageInfoCell *>(c) configWithRow:row data:data];
       break;
+    }
     }
     return c;
   }
   case Sections::Buttons:
   {
     MWMPlacePageButtonCell * c = [tableView dequeueReusableCellWithIdentifier:kButtonsCells[0]];
-    auto const row = self.data.buttonsRows[indexPath.row];
-    [c configForRow:row withDelegate:self.delegate];
+    auto const row = data.buttonsRows[indexPath.row];
+    [c configForRow:row withDelegate:delegate];
     if (row != ButtonsRows::HotelDescription)
       [c setEnabled:self.isPlacePageButtonsEnabled];
 

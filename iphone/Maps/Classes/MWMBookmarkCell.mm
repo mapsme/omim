@@ -8,6 +8,7 @@
 namespace
 {
 void * kContext = &kContext;
+// https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/KeyValueObserving/Articles/KVOBasics.html
 NSString * const kTextViewContentSizeKeyPath = @"contentSize";
 }  // namespace
 
@@ -65,9 +66,9 @@ NSString * const kTextViewContentSizeKeyPath = @"contentSize";
     auto const height = s.CGSizeValue.height;
     auto const boundedHeight = self.textViewHeight.constant;
 
-    if (height < boundedHeight || self.isOpen)
+    if (height <= boundedHeight || self.isOpen)
       [self stateOpen:YES];
-    else if (height > boundedHeight && !self.isOpen)
+    else
       [self stateOpen:NO];
 
     [self setNeedsLayout];
@@ -141,7 +142,7 @@ NSString * const kTextViewContentSizeKeyPath = @"contentSize";
       if (error)
       {
         // If we failed while attempting to render html than just show plain text in bookmark.
-        // Ussualy there is a problem only in iOS7.
+        // Usually there is a problem only in iOS7.
         self.attributedHTML = [[NSAttributedString alloc] initWithString:text attributes:attr];
       }
       else
@@ -151,7 +152,6 @@ NSString * const kTextViewContentSizeKeyPath = @"contentSize";
       }
 
       dispatch_async(dispatch_get_main_queue(), ^{
-
         [self configHTML:nil];
       });
     });

@@ -77,9 +77,7 @@
   switch (nodeAttrs.m_status)
   {
   case NodeStatus::NotDownloaded:
-  case NodeStatus::Partly:
-    [MWMStorage downloadNode:countryId alertController:avc onSuccess:nil];
-    break;
+  case NodeStatus::Partly: [MWMStorage downloadNode:countryId alertController:avc onSuccess:nil]; break;
   case NodeStatus::Undefined:
   case NodeStatus::Error: [MWMStorage retryDownloadNode:countryId]; break;
   case NodeStatus::OnDiskOutOfDate: [MWMStorage updateNode:countryId alertController:avc]; break;
@@ -95,8 +93,8 @@
   if (!lastLocation)
     return @"";
   string distance;
-  CLLocationCoordinate2D const coord = lastLocation.coordinate;
-  ms::LatLon const target = self.data.latLon;
+  CLLocationCoordinate2D const & coord = lastLocation.coordinate;
+  ms::LatLon const & target = self.data.latLon;
   measurement_utils::FormatDistance(
       ms::DistanceOnEarth(coord.latitude, coord.longitude, target.lat, target.lon), distance);
   return @(distance.c_str());
@@ -190,14 +188,15 @@
 - (MWMRoutePoint)target
 {
   NSString * name = nil;
-  if (self.data.title.length > 0)
-    name = self.data.title;
-  else if (self.data.address.length > 0)
-    name = self.data.address;
-  else if (self.data.subtitle.length > 0)
-    name = self.data.subtitle;
-  else if (self.data.isBookmark)
-    name = self.data.externalTitle;
+  auto d = self.data;
+  if (d.title.length > 0)
+    name = d.title;
+  else if (d.address.length > 0)
+    name = d.address;
+  else if (d.subtitle.length > 0)
+    name = d.subtitle;
+  else if (d.isBookmark)
+    name = d.externalTitle;
   else
     name = L(@"placepage_unknown_place");
 

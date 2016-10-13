@@ -52,7 +52,8 @@ enum RowInMetaInfo
 - (void)viewDidLoad
 {
   [super viewDidLoad];
-  NSAssert(self.manager || self.data, @"Entity and data can't be nil both!");
+  auto data = self.data;
+  NSAssert(self.manager || data, @"Entity and data can't be nil both!");
   if (IPAD)
   {
     MWMPlacePageEntity * en = self.manager.entity;
@@ -64,10 +65,10 @@ enum RowInMetaInfo
   }
   else
   {
-    self.cachedDescription = self.data.bookmarkDescription;
-    self.cachedTitle = self.data.externalTitle ? self.data.externalTitle : self.data.title;
-    self.cachedCategory = self.data.bookmarkCategory;
-    self.cachedColor = self.data.bookmarkColor;
+    self.cachedDescription = data.bookmarkDescription;
+    self.cachedTitle = data.externalTitle ? data.externalTitle : data.title;
+    self.cachedCategory = data.bookmarkCategory;
+    self.cachedColor = data.bookmarkColor;
   }
 
   [self configNavBar];
@@ -121,7 +122,7 @@ enum RowInMetaInfo
   else
   {
     Framework & f = GetFramework();
-    auto const bac = self.data.bac;
+    auto const & bac = self.data.bac;
     BookmarkCategory * category = f.GetBmCategory(bac.m_categoryIndex);
     if (!category)
       return;

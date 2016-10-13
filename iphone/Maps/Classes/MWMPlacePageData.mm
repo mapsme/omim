@@ -119,10 +119,9 @@ using namespace place_page;
   auto & bmManager = f.GetBookmarkManager();
   if (isBookmark)
   {
-    auto const categoryIndex = static_cast<int>(f.LastEditedBMCategory());
+    auto const categoryIndex = f.LastEditedBMCategory();
     BookmarkData bmData{m_info.FormatNewBookmarkName(), f.LastEditedBMType()};
-    auto const bookmarkIndex =
-        static_cast<int>(bmManager.AddBookmark(categoryIndex, self.mercator, bmData));
+    auto const bookmarkIndex = bmManager.AddBookmark(categoryIndex, self.mercator, bmData);
 
     auto category = f.GetBmCategory(categoryIndex);
     NSAssert(category, @"Category can't be nullptr!");
@@ -135,7 +134,7 @@ using namespace place_page;
   }
   else
   {
-    auto const bac = m_info.GetBookmarkAndCategory();
+    auto const & bac = m_info.GetBookmarkAndCategory();
     auto category = bmManager.GetBmCategory(bac.m_categoryIndex);
     NSAssert(category, @"Category can't be nullptr!");
     {
@@ -157,37 +156,33 @@ using namespace place_page;
 - (NSString *)subtitle { return @(m_info.GetSubtitle().c_str()); }
 - (place_page::OpeningHours)schedule;
 {
+  using type = place_page::OpeningHours;
   auto const raw = m_info.GetOpeningHours();
   if (raw.empty())
-    return place_page::OpeningHours::Unknown;
+    return type::Unknown;
 
   auto const t = time(nullptr);
   osmoh::OpeningHours oh(raw);
-  if (oh.IsValid())
-  {
-    if (oh.IsTwentyFourHours())
-      return place_page::OpeningHours::AllDay;
-    else if (oh.IsOpen(t))
-      return place_page::OpeningHours::Open;
-    else if (oh.IsClosed(t))
-      return place_page::OpeningHours::Closed;
-    else
-      return place_page::OpeningHours::Unknown;
-  }
-  else
-  {
-    return place_page::OpeningHours::Unknown;
-  }
+  if (!oh.IsValid())
+    return type::Unknown;
+  if (oh.IsTwentyFourHours())
+    return type::AllDay;
+  if (oh.IsOpen(t))
+    return type::Open;
+  if (oh.IsClosed(t))
+    return type::Closed;
+
+  return type::Unknown;
 }
 
 - (NSString *)bookingRating
 {
-  return m_info.IsHotel() ? @(m_info.GetRatingFormatted().c_str()) : nil;
+  return m_info.IsSponsoredHotel() ? @(m_info.GetRatingFormatted().c_str()) : nil;
 }
 
 - (NSString *)bookingApproximatePricing
 {
-  return m_info.IsHotel() ? @(m_info.GetApproximatePricing().c_str()) : nil;
+  return m_info.IsSponsoredHotel() ? @(m_info.GetApproximatePricing().c_str()) : nil;
 }
 
 - (NSURL *)bookingURL
@@ -314,9 +309,10 @@ using namespace place_page;
 - (NSString *)phoneNumber { return @(m_info.GetPhone().c_str()); }
 - (BOOL)isBookmark { return m_info.IsBookmark(); }
 - (BOOL)isApi { return m_info.HasApiUrl(); }
-- (BOOL)isBooking { return m_info.IsHotel(); }
+- (BOOL)isBooking { return m_info.IsSponsoredHotel(); }
 - (BOOL)isMyPosition { return m_info.IsMyPosition(); }
 - (BOOL)isHTMLDescription { return strings::IsHTML(m_info.m_bookmarkDescription); }
+
 #pragma mark - Coordinates
 
 - (m2::PointD const &)mercator { return m_info.GetMercator(); }

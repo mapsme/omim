@@ -177,7 +177,7 @@ CGFloat const kCompressedTableViewLeading = 56;
   {
     NSValue * s = change[@"new"];
     CGFloat const height = s.CGSizeValue.height;
-    if (abs(height - self.currentContentHeight) > 0.5)
+    if (!equalScreenDimensions(height, self.currentContentHeight))
     {
       self.currentContentHeight = height;
       self.tableViewHeight.constant = height;

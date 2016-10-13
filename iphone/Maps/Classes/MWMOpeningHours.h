@@ -1,3 +1,6 @@
+#include "std/string.hpp"
+#include "std/vector.hpp"
+
 namespace osmoh
 {
 struct Day
@@ -21,9 +24,6 @@ struct Day
 };
 
 }  // namespace osmoh
-
-#include "std/string.hpp"
-#include "std/vector.hpp"
 
 @interface MWMOpeningHours : NSObject
 
