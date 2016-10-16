@@ -95,7 +95,7 @@
     pl = Wjedź na rondo.
     sv = Kör in i rondellen.
     tr = Kavşağa girin.
-    fr = Prenez le rond-point.
+    fr = Prenez le giratoire.
     nl = Rij de rotonde op.
     de = Fahren Sie in den Kreisverkehr.
     ar = اتجه إلى الطريق الدوار.
@@ -125,7 +125,7 @@
     pl = Zjazd z ronda.
     sv = Lämna rondellen.
     tr = Kavşaktan çık.
-    fr = Sortir du rond-point.
+    fr = Sortir du giratoire.
     nl = Verlaat de rotonde.
     de = Aus dem Kreisverkehr ausfahren.
     ar = اخرج من الدوار.
