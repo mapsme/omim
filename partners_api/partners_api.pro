@@ -11,7 +11,9 @@ include($$ROOT_DIR/common.pri)
 SOURCES += \
     booking_api.cpp \
     uber_api.cpp \
+    geochats_api.cpp \
 
 HEADERS += \
     booking_api.hpp \
     uber_api.hpp \
+    geochats_api.hpp \

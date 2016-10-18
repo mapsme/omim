@@ -70,6 +70,7 @@
 #include "geometry/angles.hpp"
 #include "geometry/any_rect2d.hpp"
 #include "geometry/distance_on_sphere.hpp"
+#include "geometry/nearby_points_sweeper.hpp"
 #include "geometry/rect2d.hpp"
 #include "geometry/triangle2d.hpp"
 
@@ -120,11 +121,7 @@ char const kAllowAutoZoom[] = "AutoZoom";
 double const kDistEqualQueryMeters = 100.0;
 
 // Must correspond SearchMarkType.
-vector<string> kSearchMarks =
-{
-  "search-result",
-  "search-booking"
-};
+vector<string> kSearchMarks = {"search-result", "search-booking", "search-geochats"};
 
 // TODO!
 // To adjust GpsTrackFilter was added secret command "?gpstrackaccuracy:xxx;"
@@ -754,17 +751,16 @@ void Framework::FillInfoFromFeatureType(FeatureType const & ft, place_page::Info
   if (ftypes::IsAddressObjectChecker::Instance()(ft))
     info.m_address = GetAddressInfoAtPoint(feature::GetCenter(ft)).FormatHouseAndStreet();
 
-  info.m_isHotel = ftypes::IsHotelChecker::Instance()(ft);
   if (ftypes::IsBookingChecker::Instance()(ft))
   {
-    info.m_isSponsoredHotel = true;
+    info.m_sponsoredType = SponsoredType::Booking;
     string const & baseUrl = info.GetMetadata().Get(feature::Metadata::FMD_WEBSITE);
-    info.m_sponsoredBookingUrl = GetBookingApi().GetBookingUrl(baseUrl);
+    info.m_sponsoredUrl = GetBookingApi().GetBookingUrl(baseUrl);
     info.m_sponsoredDescriptionUrl = GetBookingApi().GetDescriptionUrl(baseUrl);
   }
 
-  info.m_canEditOrAdd = featureStatus != osm::Editor::FeatureStatus::Obsolete && CanEditMap() &&
-                        !info.IsSponsoredHotel();
+  info.m_canEditOrAdd =
+      featureStatus != osm::Editor::FeatureStatus::Obsolete && CanEditMap() && !info.IsSponsored();
 
   info.m_localizedWifiString = m_stringsBundle.GetString("wifi");
   info.m_localizedRatingString = m_stringsBundle.GetString("place_page_booking_rating");
@@ -786,6 +782,17 @@ void Framework::FillSearchResultInfo(SearchMarkPoint const & smp, place_page::In
     FillFeatureInfo(smp.GetFoundFeature(), info);
   else
     FillPointInfo(smp.GetPivot(), smp.GetMatchedName(), info);
+}
+
+void Framework::FillGeochatResultInfo(GeochatMarkPoint const & gmp, place_page::Info & info) const
+{
+  info.m_sponsoredType = SponsoredType::Geochat;
+  info.m_sponsoredUrl = m_geochatsApi.GetChatLink(gmp.GetGeochatId());
+  info.m_customName = gmp.GetGeochatName();
+  info.m_localizedGeochatString = m_stringsBundle.GetString("chat");
+  info.m_membersCount = gmp.GetMmbersCount();
+  info.m_canEditOrAdd = false;
+  info.SetMercator(gmp.GetMercator());
 }
 
 void Framework::FillMyPositionInfo(place_page::Info & info) const
@@ -1108,6 +1115,9 @@ void Framework::SetCurrentCountryChangedListener(TCurrentCountryChanged const & 
 
 void Framework::UpdateUserViewportChanged()
 {
+  if (m_geochatsSearchIsActive)
+    SearchGeochatsInViewport();
+
   if (!IsViewportSearchActive())
     return;
 
@@ -1137,6 +1147,12 @@ bool Framework::SearchEverywhere(search::EverywhereSearchParams const & params)
 
 bool Framework::SearchInViewport(search::ViewportSearchParams const & params)
 {
+  if (string::npos != params.m_query.find("geochats"))
+  {
+    SearchGeochatsInViewport();
+    return true;
+  }
+
   search::SearchParams p;
   p.m_query = params.m_query;
   p.m_inputLocale = params.m_inputLocale;
@@ -1175,6 +1191,12 @@ bool Framework::SearchInDownloader(DownloaderSearchParams const & params)
   return Search(p);
 }
 
+void Framework::SearchGeochatsInViewport()
+{
+  m_geochatsSearchIsActive = true;
+  SearchGeochats();
+}
+
 void Framework::CancelSearch(search::Mode mode)
 {
   ASSERT_NOT_EQUAL(mode, search::Mode::Count, ());
@@ -1188,6 +1210,9 @@ void Framework::CancelSearch(search::Mode mode)
   auto & intent = m_searchIntents[static_cast<size_t>(mode)];
   intent.m_params.Clear();
   CancelQuery(intent.m_handle);
+
+  m_geochatsSearchIsActive = false;
+  UserMarkControllerGuard(m_bmManager, UserMarkType::GEOCHAT_MARK).m_controller.Clear();
 }
 
 void Framework::CancelAllSearches()
@@ -1315,8 +1340,8 @@ bool Framework::Search(search::SearchParams const & params)
   CancelQuery(intent.m_handle);
 
   {
-    m2::PointD const defaultMarkSize = GetSearchMarkSize(SearchMarkType::DefaultSearchMark);
-    m2::PointD const bookingMarkSize = GetSearchMarkSize(SearchMarkType::BookingSearchMark);
+    m2::PointD const defaultMarkSize = GetSearchMarkSize(CustomMarkType::DefaultMark);
+    m2::PointD const bookingMarkSize = GetSearchMarkSize(CustomMarkType::BookingMark);
     double const eps =
         max(max(defaultMarkSize.x, defaultMarkSize.y), max(bookingMarkSize.x, bookingMarkSize.y));
     intent.m_params.m_minDistanceOnMapBetweenResults = eps;
@@ -1944,7 +1969,8 @@ void Framework::ActivateMapSelection(bool needAnimation, df::SelectionShape::ESe
   CallDrapeFunction(bind(&df::DrapeEngine::SelectObject, _1, selectionType, info.GetMercator(), info.GetID(),
                          needAnimation));
 
-  SetDisplacementMode(DisplacementModeManager::SLOT_MAP_SELECTION, info.IsHotel() /* show */);
+  SetDisplacementMode(DisplacementModeManager::SLOT_MAP_SELECTION,
+                      ftypes::IsHotelChecker::Instance()(info.GetTypes()) /* show */);
 
   if (m_activateMapSelectionFn)
     m_activateMapSelectionFn(info);
@@ -1981,7 +2007,8 @@ void Framework::InvalidateUserMarks()
 {
   m_bmManager.InitBookmarks();
 
-  vector<UserMarkType> const types = { UserMarkType::SEARCH_MARK, UserMarkType::API_MARK, UserMarkType::DEBUG_MARK };
+  vector<UserMarkType> const types = {UserMarkType::SEARCH_MARK, UserMarkType::API_MARK,
+                                      UserMarkType::GEOCHAT_MARK, UserMarkType::DEBUG_MARK};
   for (size_t typeIndex = 0; typeIndex < types.size(); typeIndex++)
   {
     UserMarkControllerGuard guard(m_bmManager, types[typeIndex]);
@@ -2020,7 +2047,7 @@ void Framework::OnTapEvent(TapEvent const & tapEvent)
       // Older version of statistics used "$GetUserMark" event.
       alohalytics::Stats::Instance().LogEvent("$SelectMapObject", kv, alohalytics::Location::FromLatLon(ll.lat, ll.lon));
 
-      if (info.IsHotel())
+      if (info.m_sponsoredType == SponsoredType::Booking)
         GetPlatform().SendMarketingEvent("Placepage_Hotel_book", {{"provider", "booking.com"}});
     }
 
@@ -2116,6 +2143,9 @@ df::SelectionShape::ESelectedObject Framework::OnTapEventImpl(TapEvent const & t
       break;
     case UserMark::Type::SEARCH:
       FillSearchResultInfo(*static_cast<SearchMarkPoint const *>(mark), outInfo);
+      break;
+    case UserMark::Type::GEOCHAT:
+      FillGeochatResultInfo(*static_cast<GeochatMarkPoint const *>(mark), outInfo);
       break;
     default:
       ASSERT(false, ("FindNearestUserMark returned invalid mark."));
@@ -2623,7 +2653,7 @@ void Framework::BlockTapEvents(bool block)
   CallDrapeFunction(bind(&df::DrapeEngine::BlockTapEvents, _1, block));
 }
 
-m2::PointD Framework::GetSearchMarkSize(SearchMarkType searchMarkType)
+m2::PointD Framework::GetSearchMarkSize(CustomMarkType searchMarkType)
 {
   if (m_searchMarksSizes.empty())
     return m2::PointD();
@@ -3054,6 +3084,58 @@ void Framework::CreateNote(ms::LatLon const & latLon, FeatureID const & fid,
 bool Framework::OriginalFeatureHasDefaultName(FeatureID const & fid) const
 {
   return osm::Editor::Instance().OriginalFeatureHasDefaultName(fid);
+}
+
+void Framework::SearchGeochats()
+{
+  auto const pos = MercatorBounds::ToLatLon(GetViewportCenter());
+  auto const radius =
+      ms::DistanceOnEarth(pos, MercatorBounds::ToLatLon(GetCurrentViewport().LeftTop()));
+
+  m_geochatLastRequestId = m_geochatsApi.GetChats(
+      pos, radius, [this](vector<geochats::ChatInfo> const & chats, uint64_t const requestId) {
+        FillGeochatsRequestResult(chats, requestId);
+      });
+}
+
+void Framework::FillGeochatsRequestResult(vector<geochats::ChatInfo> const & chats,
+                                          uint64_t const requestId)
+{
+  m2::PointD const geochatMarkSize = GetSearchMarkSize(CustomMarkType::GeochatMark);
+  double const eps = max(geochatMarkSize.x, geochatMarkSize.y);
+
+  NearbyPointsSweeper sweeper(eps);
+  for (size_t i = 0; i < chats.size(); ++i)
+  {
+    sweeper.Add(chats[i].m_pos, i);
+  }
+
+  vector<geochats::ChatInfo> sweepedChats;
+  sweeper.Sweep(
+      [&chats, &sweepedChats](size_t const i) { sweepedChats.push_back(move(chats[i])); });
+
+  RunUITask([this, sweepedChats, requestId]() mutable {
+    if (!m_geochatsSearchIsActive || m_geochatLastRequestId != requestId)
+      return;
+
+    UserMarkControllerGuard(m_bmManager, UserMarkType::GEOCHAT_MARK).m_controller.Clear();
+
+    UserMarkControllerGuard guard(m_bmManager, UserMarkType::GEOCHAT_MARK);
+    guard.m_controller.SetIsVisible(true);
+    guard.m_controller.SetIsDrawable(true);
+
+    for (auto const & chat : sweepedChats)
+    {
+      auto const mercatorPos = MercatorBounds::FromLatLon(chat.m_pos);
+      GeochatMarkPoint * mark =
+          static_cast<GeochatMarkPoint *>(guard.m_controller.CreateUserMark(mercatorPos));
+      ASSERT_EQUAL(mark->GetMarkType(), UserMark::Type::GEOCHAT, ());
+      mark->SetGeochatId(chat.m_id);
+      mark->SetGeochatName(chat.m_name);
+      mark->SetMercator(mercatorPos);
+      mark->SetMembersCount(chat.m_membersCount);
+    }
+  });
 }
 
 bool Framework::HasRouteAltitude() const { return m_routingSession.HasRouteAltitude(); }

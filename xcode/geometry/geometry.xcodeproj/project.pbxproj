@@ -11,6 +11,8 @@
 		345C55F61C93140A00B6783F /* clipping.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 345C55F41C93140A00B6783F /* clipping.hpp */; };
 		347F33701C454205009758CC /* triangle2d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 347F336E1C454205009758CC /* triangle2d.cpp */; };
 		347F33711C454205009758CC /* triangle2d.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 347F336F1C454205009758CC /* triangle2d.hpp */; };
+		3DDB4BCB1DAEB99900F4D021 /* nearby_points_sweeper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3DDB4BC91DAEB99900F4D021 /* nearby_points_sweeper.cpp */; };
+		3DDB4BCC1DAEB99900F4D021 /* nearby_points_sweeper.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 3DDB4BCA1DAEB99900F4D021 /* nearby_points_sweeper.hpp */; };
 		56D5456A1C74A46D00E3719C /* algorithm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56D545681C74A46D00E3719C /* algorithm.cpp */; };
 		56D5456B1C74A46D00E3719C /* algorithm.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 56D545691C74A46D00E3719C /* algorithm.hpp */; };
 		56EB1ED01C6B6DF30022D831 /* segment2d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56EB1ECE1C6B6DF30022D831 /* segment2d.cpp */; };
@@ -101,6 +103,8 @@
 		345C55F41C93140A00B6783F /* clipping.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = clipping.hpp; sourceTree = "<group>"; };
 		347F336E1C454205009758CC /* triangle2d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = triangle2d.cpp; sourceTree = "<group>"; };
 		347F336F1C454205009758CC /* triangle2d.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = triangle2d.hpp; sourceTree = "<group>"; };
+		3DDB4BC91DAEB99900F4D021 /* nearby_points_sweeper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = nearby_points_sweeper.cpp; sourceTree = "<group>"; };
+		3DDB4BCA1DAEB99900F4D021 /* nearby_points_sweeper.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = nearby_points_sweeper.hpp; sourceTree = "<group>"; };
 		56D545681C74A46D00E3719C /* algorithm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = algorithm.cpp; sourceTree = "<group>"; };
 		56D545691C74A46D00E3719C /* algorithm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = algorithm.hpp; sourceTree = "<group>"; };
 		56EB1ECE1C6B6DF30022D831 /* segment2d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = segment2d.cpp; sourceTree = "<group>"; };
@@ -266,6 +270,8 @@
 		675344931A3F684600A0A8C3 /* geometry */ = {
 			isa = PBXGroup;
 			children = (
+				3DDB4BC91DAEB99900F4D021 /* nearby_points_sweeper.cpp */,
+				3DDB4BCA1DAEB99900F4D021 /* nearby_points_sweeper.hpp */,
 				345C55F31C93140A00B6783F /* clipping.cpp */,
 				345C55F41C93140A00B6783F /* clipping.hpp */,
 				56D545681C74A46D00E3719C /* algorithm.cpp */,
@@ -331,6 +337,7 @@
 			files = (
 				675344BD1A3F687400A0A8C3 /* angles.hpp in Headers */,
 				675344E01A3F68F900A0A8C3 /* boost_concept.hpp in Headers */,
+				3DDB4BCC1DAEB99900F4D021 /* nearby_points_sweeper.hpp in Headers */,
 				675344C01A3F687400A0A8C3 /* cellid.hpp in Headers */,
 				675344CB1A3F687400A0A8C3 /* polyline2d.hpp in Headers */,
 				56EB1ED11C6B6DF30022D831 /* segment2d.hpp in Headers */,
@@ -479,6 +486,7 @@
 				56D5456A1C74A46D00E3719C /* algorithm.cpp in Sources */,
 				675344D41A3F687400A0A8C3 /* spline.cpp in Sources */,
 				675344D11A3F687400A0A8C3 /* screenbase.cpp in Sources */,
+				3DDB4BCB1DAEB99900F4D021 /* nearby_points_sweeper.cpp in Sources */,
 				347F33701C454205009758CC /* triangle2d.cpp in Sources */,
 				675344BC1A3F687400A0A8C3 /* angles.cpp in Sources */,
 				6741AAA01BF35476002C974C /* latlon.cpp in Sources */,

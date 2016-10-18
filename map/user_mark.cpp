@@ -105,6 +105,7 @@ string DebugPrint(UserMark::Type type)
   case UserMark::Type::POI: return "POI";
   case UserMark::Type::BOOKMARK: return "BOOKMARK";
   case UserMark::Type::MY_POSITION: return "MY_POSITION";
+  case UserMark::Type::GEOCHAT: return "GEOCHAT";
   case UserMark::Type::DEBUG_MARK: return "DEBUG_MARK";
   }
 }

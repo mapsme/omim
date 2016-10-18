@@ -288,3 +288,12 @@ UserMark * ApiUserMarkContainer::AllocateUserMark(const m2::PointD & ptOrg)
   return new ApiMarkPoint(ptOrg, this);
 }
 
+GeochatUserMarkContainer::GeochatUserMarkContainer(double layerDepth, Framework & framework)
+  : UserMarkContainer(layerDepth, UserMarkType::GEOCHAT_MARK, framework)
+{
+}
+
+UserMark * GeochatUserMarkContainer::AllocateUserMark(const m2::PointD & ptOrg)
+{
+  return new GeochatMarkPoint(ptOrg, this);
+}

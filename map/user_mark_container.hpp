@@ -21,7 +21,8 @@ enum class UserMarkType
   SEARCH_MARK,
   API_MARK,
   DEBUG_MARK,
-  BOOKMARK_MARK
+  BOOKMARK_MARK,
+  GEOCHAT_MARK
 };
 
 class UserMarksController
@@ -121,6 +122,15 @@ class ApiUserMarkContainer : public UserMarkContainer
 {
 public:
   ApiUserMarkContainer(double layerDepth, Framework & framework);
+
+protected:
+  UserMark * AllocateUserMark(m2::PointD const & ptOrg) override;
+};
+
+class GeochatUserMarkContainer : public UserMarkContainer
+{
+public:
+  GeochatUserMarkContainer(double layerDepth, Framework & framework);
 
 protected:
   UserMark * AllocateUserMark(m2::PointD const & ptOrg) override;

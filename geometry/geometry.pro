@@ -15,6 +15,7 @@ SOURCES += \
   distance_on_sphere.cpp \
   latlon.cpp \
   mercator.cpp \
+  nearby_points_sweeper.cpp \
   packer.cpp \
   region2d/binary_operators.cpp \
   robust_orientation.cpp \
@@ -36,6 +37,7 @@ HEADERS += \
   distance_on_sphere.hpp \
   latlon.hpp \
   mercator.hpp \
+  nearby_points_sweeper.hpp \
   packer.hpp \
   point2d.hpp \
   pointu_to_uint64.hpp \

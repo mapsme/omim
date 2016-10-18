@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3DDB4BCF1DAEBA6600F4D021 /* geochats_api.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3DDB4BCD1DAEBA6600F4D021 /* geochats_api.cpp */; };
+		3DDB4BD01DAEBA6600F4D021 /* geochats_api.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 3DDB4BCE1DAEBA6600F4D021 /* geochats_api.hpp */; };
+		3DE499C01DB69E8D00885B64 /* geochats_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3DE499BF1DB69E8D00885B64 /* geochats_tests.cpp */; };
 		F6B536401DA520E40067EEA5 /* booking_api.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F6B5363C1DA520E40067EEA5 /* booking_api.cpp */; };
 		F6B536411DA520E40067EEA5 /* booking_api.hpp in Headers */ = {isa = PBXBuildFile; fileRef = F6B5363D1DA520E40067EEA5 /* booking_api.hpp */; };
 		F6B536421DA520E40067EEA5 /* uber_api.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F6B5363E1DA520E40067EEA5 /* uber_api.cpp */; };
@@ -30,6 +33,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3DDB4BCD1DAEBA6600F4D021 /* geochats_api.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geochats_api.cpp; sourceTree = "<group>"; };
+		3DDB4BCE1DAEBA6600F4D021 /* geochats_api.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = geochats_api.hpp; sourceTree = "<group>"; };
+		3DE499BF1DB69E8D00885B64 /* geochats_tests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geochats_tests.cpp; sourceTree = "<group>"; };
 		F6B536341DA5209F0067EEA5 /* libpartners_api.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libpartners_api.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6B5363C1DA520E40067EEA5 /* booking_api.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = booking_api.cpp; sourceTree = "<group>"; };
 		F6B5363D1DA520E40067EEA5 /* booking_api.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = booking_api.hpp; sourceTree = "<group>"; };
@@ -102,6 +108,8 @@
 		F6B5363B1DA520B20067EEA5 /* partners_api */ = {
 			isa = PBXGroup;
 			children = (
+				3DDB4BCD1DAEBA6600F4D021 /* geochats_api.cpp */,
+				3DDB4BCE1DAEBA6600F4D021 /* geochats_api.hpp */,
 				F6B5363C1DA520E40067EEA5 /* booking_api.cpp */,
 				F6B5363D1DA520E40067EEA5 /* booking_api.hpp */,
 				F6B5363E1DA520E40067EEA5 /* uber_api.cpp */,
@@ -114,6 +122,7 @@
 		F6B536441DA521060067EEA5 /* partners_api_tests */ = {
 			isa = PBXGroup;
 			children = (
+				3DE499BF1DB69E8D00885B64 /* geochats_tests.cpp */,
 				F6B536691DA523060067EEA5 /* testingmain.cpp */,
 				F6B536451DA5213D0067EEA5 /* booking_tests.cpp */,
 				F6B536461DA5213D0067EEA5 /* uber_tests.cpp */,
@@ -155,6 +164,7 @@
 			files = (
 				F6B536411DA520E40067EEA5 /* booking_api.hpp in Headers */,
 				F6B536431DA520E40067EEA5 /* uber_api.hpp in Headers */,
+				3DDB4BD01DAEBA6600F4D021 /* geochats_api.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -248,10 +258,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3DE499C01DB69E8D00885B64 /* geochats_tests.cpp in Sources */,
 				F6B536421DA520E40067EEA5 /* uber_api.cpp in Sources */,
 				F6B536471DA5213D0067EEA5 /* booking_tests.cpp in Sources */,
 				F6B5366A1DA523060067EEA5 /* testingmain.cpp in Sources */,
 				F6B536401DA520E40067EEA5 /* booking_api.cpp in Sources */,
+				3DDB4BCF1DAEBA6600F4D021 /* geochats_api.cpp in Sources */,
 				F6B536481DA5213D0067EEA5 /* uber_tests.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

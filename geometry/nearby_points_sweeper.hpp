@@ -9,8 +9,11 @@
 #include "std/utility.hpp"
 #include "std/vector.hpp"
 
-namespace search
+namespace ms
 {
+class LatLon;
+}
+
 // This class can be used to greedily sweep points on a plane that are
 // too close to each other.  Two points are considered to be "too
 // close" when Manhattan distance between them is less than or equal
@@ -28,6 +31,7 @@ public:
   // identify individual points, and will be reported for survived
   // points during the Sweep phase.
   void Add(double x, double y, size_t index);
+  void Add(ms::LatLon const & latlon, size_t index);
 
   // Emits indexes of all survived points. Complexity: O(n * log(n)),
   // where n is the number of already added points.
@@ -126,4 +130,3 @@ private:
   double const m_eps;
   double const m_heps;
 };
-}  // namespace search
