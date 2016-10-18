@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableStringBuilder;
@@ -132,6 +133,7 @@ public class PlacePageView extends RelativeLayout
   private BasePlacePageAnimationController mAnimationController;
   private MwmActivity.LeftAnimationTrackListener mLeftAnimationTrackListener;
   // Data
+  @Nullable
   private MapObject mMapObject;
   private SponsoredHotel mSponsoredHotel;
   private String mSponsoredHotelPrice;
@@ -530,6 +532,7 @@ public class PlacePageView extends RelativeLayout
     }
   }
 
+  @Nullable
   public MapObject getMapObject()
   {
     return mMapObject;
@@ -539,7 +542,7 @@ public class PlacePageView extends RelativeLayout
    * @param mapObject new MapObject
    * @param force if true, new object'll be set without comparison with the old one
    */
-  public void setMapObject(MapObject mapObject, boolean force)
+  public void setMapObject(@Nullable MapObject mapObject, boolean force)
   {
     if (!force && MapObject.same(mMapObject, mapObject))
       return;
@@ -957,6 +960,9 @@ public class PlacePageView extends RelativeLayout
 
   private void toggleIsBookmark()
   {
+    if (mMapObject == null)
+      return;
+
     if (MapObject.isOfType(MapObject.BOOKMARK, mMapObject))
       setMapObject(Framework.nativeDeleteBookmarkFromMapObject(), true);
     else
