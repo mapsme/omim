@@ -244,7 +244,7 @@ void initFieldsMap()
 {
   BOOL const useDMSFormat =
       [[NSUserDefaults standardUserDefaults] boolForKey:kUserDefaultsLatLonAsDMSKey];
-  ms::LatLon const latlon = self.latLon;
+  ms::LatLon const & latlon = self.latLon;
   return @((useDMSFormat ? measurement_utils::FormatLatLon(latlon.lat, latlon.lon)
                          : measurement_utils::FormatLatLonAsDMS(latlon.lat, latlon.lon, 2))
                .c_str());

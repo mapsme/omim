@@ -20,11 +20,11 @@ NSString * breaksFromClosedTime(TTimespans const & closedTimes)
 {
   NSMutableString * breaks = [@"" mutableCopy];
   auto const size = closedTimes.size();
-  for (auto i = 0; i < size; i++)
+  for (size_t i = 0; i < size; i++)
   {
-    [breaks appendString:stringFromTimeSpan(closedTimes[i])];
-    if (i != size - 1)
+    if (i)
       [breaks appendString:@"\n"];
+    [breaks appendString:stringFromTimeSpan(closedTimes[i])];
   }
   return breaks.copy;
 }

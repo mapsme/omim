@@ -85,7 +85,7 @@
 - (void)moveBookmarkToSetWithIndex:(int)setIndex
 {
   BookmarkAndCategory bac;
-  bac.m_bookmarkIndex = static_cast<int>(
+  bac.m_bookmarkIndex = static_cast<size_t>(
       GetFramework().MoveBookmark(m_bac.m_bookmarkIndex, m_bac.m_categoryIndex, setIndex));
   bac.m_categoryIndex = setIndex;
   m_bac = bac;

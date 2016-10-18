@@ -207,6 +207,7 @@ using namespace place_page;
 
 - (void)assignOnlinePriceToLabel:(UILabel *)label
 {
+  // TODO(Vlad): Remove similar code from MWMPlacePageEntity.mm when new iPAD place page will be finished.
   NSAssert(m_info.IsSponsoredHotel(), @"Online price must be assigned to booking object!");
   if (Platform::ConnectionStatus() == Platform::EConnectionType::CONNECTION_NONE)
     return;
@@ -319,6 +320,7 @@ using namespace place_page;
 - (ms::LatLon)latLon { return m_info.GetLatLon(); }
 + (void)toggleCoordinateSystem
 {
+  // TODO: Move changing latlon's mode to the settings.
   NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
   [ud setBool:![ud boolForKey:kUserDefaultsLatLonAsDMSKey] forKey:kUserDefaultsLatLonAsDMSKey];
   [ud synchronize];

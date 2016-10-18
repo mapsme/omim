@@ -352,12 +352,12 @@ void animate(TMWMVoidBlock animate, TMWMVoidBlock completion = nil)
     return;
 
   auto const & offset = scrollView.contentOffset;
-  auto d = self.delegate;
+  id<MWMPlacePageLayoutDelegate> delegate = self.delegate;
   if (offset.y <= 0)
   {
     [self.scrollView removeFromSuperview];
     [self.actionBar removeFromSuperview];
-    [d shouldDestroyLayout];
+    [delegate shouldDestroyLayout];
     return;
   }
 
@@ -365,11 +365,11 @@ void animate(TMWMVoidBlock animate, TMWMVoidBlock completion = nil)
   {
     auto const bounded = self.placePageView.height + kLuftDraggingOffset;
     [scrollView setContentOffset:{0, bounded}];
-    [d onTopBoundChanged:bounded];
+    [delegate onTopBoundChanged:bounded];
   }
   else
   {
-    [d onTopBoundChanged:offset.y];
+    [delegate onTopBoundChanged:offset.y];
   }
 
   self.direction = self.lastContentOffset < offset.y ? ScrollDirection::Up : ScrollDirection::Down;
@@ -445,23 +445,23 @@ void animate(TMWMVoidBlock animate, TMWMVoidBlock completion = nil)
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-  auto d = self.data;
-  if (!d)
+  auto data = self.data;
+  if (!data)
     return 0;
-  return d.sections.size();
+  return data.sections.size();
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
   using namespace place_page;
 
-  auto d = self.data;
-  switch (d.sections[section])
+  auto data = self.data;
+  switch (data.sections[section])
   {
   case Sections::Preview:
   case Sections::Bookmark: return 1;
-  case Sections::Metainfo: return d.metainfoRows.size();
-  case Sections::Buttons: return d.buttonsRows.size();
+  case Sections::Metainfo: return data.metainfoRows.size();
+  case Sections::Buttons: return data.buttonsRows.size();
   }
 }
 
@@ -471,7 +471,7 @@ void animate(TMWMVoidBlock animate, TMWMVoidBlock completion = nil)
   using namespace place_page;
 
   auto data = self.data;
-  auto delegate = self.delegate;
+  id<MWMPlacePageButtonsProtocol> delegate = self.delegate;
   switch (data.sections[indexPath.section])
   {
   case Sections::Preview:

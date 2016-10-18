@@ -52,9 +52,6 @@
   // Call for the first time to produce changes
   [self processCountryEvent:self.data.countryId];
 
-  if (![MWMLocationManager lastHeading])
-    return;
-
   [MWMLocationManager addObserver:self];
   [self.layout setDistanceToObject:self.distanceToObject];
 }
@@ -252,7 +249,7 @@
 {
   NSMutableDictionary * stat = [@{ kStatProvider : kStatBooking } mutableCopy];
   MWMPlacePageData * data = self.data;
-  auto const latLon = data.latLon;
+  auto const & latLon = data.latLon;
   stat[kStatHotel] = data.hotelId;
   stat[kStatHotelLat] = @(latLon.lat);
   stat[kStatHotelLon] = @(latLon.lon);

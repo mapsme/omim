@@ -25,7 +25,7 @@ CGFloat const kTableViewTopInset = -36;
 
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
 {
-  auto v = self.inactiveView;
+  UIView * v = self.inactiveView;
   return point.y > [self convertRect:v.bounds fromView:v].origin.y;
 }
 
