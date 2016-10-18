@@ -109,7 +109,7 @@ UNIT_TEST(GetTextByIdFrenchTest)
 
   auto getFrench = platform::ForTestingGetTextByIdFactory(shortJson, "fr");
   TEST_EQUAL((*getFrench)("in_1_5_kilometers"), "Dans un virgule cinq kilomètre.", ());
-  TEST_EQUAL((*getFrench)("enter_the_roundabout"), "Prenez le rond-point.", ());
+  TEST_EQUAL((*getFrench)("enter_the_roundabout"), "Prenez le giratoire.", ());
   TEST_EQUAL((*getFrench)("take_the_2_exit"), "Prenez la deuxième sortie.", ());
   TEST_EQUAL((*getFrench)("in_3500_feet"), "Dans trois mille cinq cents pieds.", ());
 
