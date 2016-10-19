@@ -766,26 +766,17 @@ void Framework::FillInfoFromFeatureType(FeatureType const & ft, place_page::Info
   if (ftypes::IsBookingChecker::Instance()(ft))
   {
     info.m_sponsoredType = SponsoredType::Booking;
-<<<<<<< HEAD
-    string const & baseUrl = info.GetMetadata().Get(feature::Metadata::FMD_WEBSITE);
-    info.m_sponsoredUrl = GetBookingApi().GetBookingUrl(baseUrl);
-=======
     auto const & baseUrl = info.GetMetadata().Get(feature::Metadata::FMD_WEBSITE);
     info.m_sponsoredUrl = GetBookingApi().GetBookHotelUrl(baseUrl);
->>>>>>> 40eaf9aac8e45fb76d30c0c737f0e76f023e9b05
     info.m_sponsoredDescriptionUrl = GetBookingApi().GetDescriptionUrl(baseUrl);
   }
   else if (ftypes::IsOpentableChecker::Instance()(ft))
   {
     info.m_sponsoredType = SponsoredType::Opentable;
-<<<<<<< HEAD
-    info.m_sponsoredUrl = info.GetMetadata().Get(feature::Metadata::FMD_WEBSITE);
-=======
     auto const & sponsoredId = info.GetMetadata().Get(feature::Metadata::FMD_SPONSORED_ID);
     auto const & url = opentable::Api::GetBookTableUrl(sponsoredId);
     info.m_sponsoredUrl = url;
     info.m_sponsoredDescriptionUrl = url;
->>>>>>> 40eaf9aac8e45fb76d30c0c737f0e76f023e9b05
   }
 
 
