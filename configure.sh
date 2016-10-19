@@ -56,6 +56,8 @@ else
 #define TRACKING_REALTIME_PORT 0
 #define TRACKING_HISTORICAL_HOST ""
 #define TRACKING_HISTORICAL_PORT 0
+#define OPENTABLE_AFFILATE_ID ""
+
 ' > "$PRIVATE_HEADER"
     echo 'ext {
   spropStoreFile = "../tools/android/debug.keystore"
