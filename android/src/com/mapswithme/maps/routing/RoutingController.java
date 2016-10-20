@@ -759,7 +759,7 @@ public class RoutingController
   @NonNull
   UberLinks getUberLink(@NonNull String productId)
   {
-    return Uber.nativeGetUberLinks(productId, mStartPoint.getLat(), mStartPoint.getLon(), mStartPoint.getLat(), mEndPoint.getLon());
+    return Uber.nativeGetUberLinks(productId, mStartPoint.getLat(), mStartPoint.getLon(), mEndPoint.getLat(), mEndPoint.getLon());
   }
 
   /**
@@ -770,7 +770,7 @@ public class RoutingController
   private void onUberInfoReceived(@NonNull UberInfo info)
   {
     mLogger.d("onUberInfoReceived uberInfo = " + info);
-    if (mContainer != null)
+    if (mLastRouterType == Framework.ROUTER_TYPE_TAXI && mContainer != null)
       mContainer.onUberInfoReceived(info);
   }
 }
