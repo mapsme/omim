@@ -1,7 +1,6 @@
 #include "testing/testing.hpp"
 
-#include "search/nearby_points_sweeper.hpp"
-
+#include "geometry/nearby_points_sweeper.hpp"
 #include "geometry/point2d.hpp"
 
 #include "base/stl_add.hpp"
@@ -9,8 +8,6 @@
 #include "std/set.hpp"
 #include "std/vector.hpp"
 
-namespace search
-{
 namespace
 {
 // Multiset is used here to catch situations when some index is reported more than once.
@@ -117,4 +114,3 @@ UNIT_TEST(NearbyPointsSweeper_CornerCases)
   }
 }
 }  // namespace
-}  // namespace search

@@ -1,7 +1,7 @@
-#include "search/nearby_points_sweeper.hpp"
+#include "geometry/nearby_points_sweeper.hpp"
+#include "geometry/latlon.hpp"
+#include "geometry/mercator.hpp"
 
-namespace search
-{
 // NearbyPointsSweeper::Event ----------------------------------------------------------------------
 NearbyPointsSweeper::Event::Event(Type type, double y, double x, size_t index)
   : m_type(type), m_y(y), m_x(x), m_index(index)
@@ -30,4 +30,8 @@ void NearbyPointsSweeper::Add(double x, double y, size_t index)
   m_events.emplace_back(Event::TYPE_SEGMENT_START, y - m_heps, x, index);
   m_events.emplace_back(Event::TYPE_SEGMENT_END, y + m_heps, x, index);
 }
-}  // namespace search
+
+void NearbyPointsSweeper::Add(ms::LatLon const & latlon, size_t index)
+{
+  Add(MercatorBounds::LonToX(latlon.lon), MercatorBounds::LatToY(latlon.lat), index);
+}

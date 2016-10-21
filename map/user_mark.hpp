@@ -28,6 +28,7 @@ public:
     POI,
     BOOKMARK,
     MY_POSITION,
+    GEOCHAT,
     DEBUG_MARK
   };
 
@@ -50,12 +51,13 @@ protected:
   mutable UserMarkContainer * m_container;
 };
 
-enum SearchMarkType
+enum CustomMarkType
 {
-  DefaultSearchMark = 0,
-  BookingSearchMark,
+  DefaultMark = 0,
+  BookingMark,
+  GeochatMark,
 
-  SearchMarkTypesCount
+  CustomMarkTypesCount
 };
 
 class SearchMarkPoint : public UserMark
@@ -107,6 +109,34 @@ public:
 
 private:
   bool m_hasPosition = false;
+};
+
+class GeochatMarkPoint : public UserMark
+{
+public:
+  GeochatMarkPoint(m2::PointD const & ptOrg, UserMarkContainer * container)
+    : UserMark(ptOrg, container)
+  {
+  }
+
+  // df::UserPointMark overrides.
+  string GetSymbolName() const override { return "search-geochats"; }
+  UserMark::Type GetMarkType() const override { return UserMark::Type::GEOCHAT; }
+
+  void SetGeochatId(string const & geochatId) { m_geochatId = geochatId; }
+  string const & GetGeochatId() const { return m_geochatId; }
+  void SetGeochatName(string const & geochatName) { m_geochatName = geochatName; }
+  string const & GetGeochatName() const { return m_geochatName; }
+  void SetMercator(m2::PointD const & pos) { m_pos = pos; }
+  m2::PointD const & GetMercator() const { return m_pos; }
+  void SetMembersCount(uint32_t const count) { m_membersCount = count; }
+  uint32_t GetMmbersCount() const { return m_membersCount; }
+
+private:
+  string m_geochatId;
+  string m_geochatName;
+  m2::PointD m_pos = {0.0, 0.0};
+  uint32_t m_membersCount = 0;
 };
 
 class DebugMarkPoint : public UserMark

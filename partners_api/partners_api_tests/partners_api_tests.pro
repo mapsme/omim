@@ -7,7 +7,7 @@ ROOT_DIR = ../..
 
 INCLUDEPATH *= $$ROOT_DIR/3party/jansson/src
 
-DEPENDENCIES = partners_api platform coding base tomcrypt jansson stats_client
+DEPENDENCIES = partners_api platform geometry coding base tomcrypt jansson stats_client
 
 include($$ROOT_DIR/common.pri)
 
@@ -28,3 +28,4 @@ SOURCES += \
     $$ROOT_DIR/testing/testingmain.cpp \
     booking_tests.cpp \
     uber_tests.cpp \
+    geochats_tests.cpp \

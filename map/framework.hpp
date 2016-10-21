@@ -36,6 +36,7 @@
 #include "tracking/reporter.hpp"
 
 #include "partners_api/booking_api.hpp"
+#include "partners_api/geochats_api.hpp"
 #include "partners_api/uber_api.hpp"
 
 #include "platform/country_defines.hpp"
@@ -159,8 +160,8 @@ protected:
   BookmarkManager m_bmManager;
 
   BookingApi m_bookingApi;
-
   uber::Api m_uberApi;
+  geochats::Api m_geochatsApi;
 
   bool m_isRenderingEnabled;
   tracking::Reporter m_trackingReporter;
@@ -296,7 +297,7 @@ public:
   BookmarkAndCategory FindBookmark(UserMark const * mark) const;
   BookmarkManager & GetBookmarkManager() { return m_bmManager; }
 
-  m2::PointD GetSearchMarkSize(SearchMarkType searchMarkType);
+  m2::PointD GetSearchMarkSize(CustomMarkType searchMarkType);
 
 protected:
   // search::ViewportSearchCallback::Delegate overrides:
@@ -512,6 +513,9 @@ public:
   /// Search for maps by countries or cities.
   bool SearchInDownloader(storage::DownloaderSearchParams const & params);
 
+  /// Search geochats.
+  void SearchGeochatsInViewport();
+
   void CancelSearch(search::Mode mode);
   void CancelAllSearches();
 
@@ -610,6 +614,7 @@ private:
   void FillInfoFromFeatureType(FeatureType const & ft, place_page::Info & info) const;
   void FillApiMarkInfo(ApiMarkPoint const & api, place_page::Info & info) const;
   void FillSearchResultInfo(SearchMarkPoint const & smp, place_page::Info & info) const;
+  void FillGeochatResultInfo(GeochatMarkPoint const & gmp, place_page::Info & info) const;
   void FillMyPositionInfo(place_page::Info & info) const;
 
 public:
@@ -841,5 +846,11 @@ public:
   bool OriginalFeatureHasDefaultName(FeatureID const & fid) const;
 
 private:
+  void SearchGeochats();
+  void FillGeochatsRequestResult(vector<geochats::ChatInfo> const & chats,
+                                 uint64_t const requestId);
+  bool m_geochatsSearchIsActive = false;
+  uint64_t m_geochatLastRequestId = 0;
+
   DECLARE_THREAD_CHECKER(m_threadChecker);
 };

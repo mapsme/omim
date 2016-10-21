@@ -18,9 +18,10 @@
 BookmarkManager::BookmarkManager(Framework & f)
   : m_framework(f)
 {
-  m_userMarkLayers.reserve(3);
+  m_userMarkLayers.reserve(4);
   m_userMarkLayers.push_back(new SearchUserMarkContainer(0.0 /* activePinDepth */, m_framework));
   m_userMarkLayers.push_back(new ApiUserMarkContainer(0.0 /* activePinDepth */, m_framework));
+  m_userMarkLayers.push_back(new GeochatUserMarkContainer(0.0 /* layerDepth */, m_framework));
   m_userMarkLayers.push_back(new DebugUserMarkContainer(0.0 /* debugDepth */, m_framework));
   UserMarkContainer::InitStaticMarks(FindUserMarksContainer(UserMarkType::SEARCH_MARK));
 }
@@ -228,6 +229,7 @@ UserMark const * BookmarkManager::FindNearestUserMark(TTouchRectHolder const & h
   for_each(m_categories.begin(), m_categories.end(), ref(finder));
   finder(FindUserMarksContainer(UserMarkType::API_MARK));
   finder(FindUserMarksContainer(UserMarkType::SEARCH_MARK));
+  finder(FindUserMarksContainer(UserMarkType::GEOCHAT_MARK));
 
   return finder.GetFindedMark();
 }
