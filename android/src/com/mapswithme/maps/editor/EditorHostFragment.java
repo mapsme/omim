@@ -13,6 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mapswithme.maps.MwmActivity;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.R;
@@ -21,16 +24,13 @@ import com.mapswithme.maps.base.OnBackPressListener;
 import com.mapswithme.maps.editor.data.Language;
 import com.mapswithme.maps.editor.data.LocalizedName;
 import com.mapswithme.maps.editor.data.LocalizedStreet;
+import com.mapswithme.maps.editor.data.NamesDataSource;
 import com.mapswithme.maps.widget.SearchToolbarController;
 import com.mapswithme.maps.widget.ToolbarController;
 import com.mapswithme.util.ConnectionState;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.Utils;
 import com.mapswithme.util.statistics.Statistics;
-import com.mapswithme.maps.editor.data.NamesDataSource;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class EditorHostFragment extends BaseMwmToolbarFragment
                              implements OnBackPressListener, View.OnClickListener, LanguagesFragment.Listener
@@ -279,10 +279,6 @@ public class EditorHostFragment extends BaseMwmToolbarFragment
         if (!setEdits())
           return;
 
-        // Save note
-        final String note = ((EditorFragment) getChildFragmentManager().findFragmentByTag(EditorFragment.class.getName())).getDescription();
-        if (note.length() != 0)
-          Editor.nativeCreateNote(note);
         // Save object edits
         if (!MwmApplication.prefs().contains(NOOB_ALERT_SHOWN))
         {
