@@ -220,7 +220,7 @@ android {
   splits.abi {
     enable true
     reset()
-    include 'x86', 'armeabi-v7a'
+    include 'armeabi-v7a'
     universalApk true
   }
 
@@ -325,7 +325,7 @@ project.ext.NDK_BUILD = android.getNdkDirectory().toString() + '/ndk-build'
 if (System.properties['os.name'].toLowerCase().contains('windows'))
   project.ext.NDK_BUILD += ".cmd"
 
-def archs = ['x86', 'armeabi-v7a-hard']
+def archs = ['armeabi-v7a']
 def buildTypes = [[ndkType: 'release', cppType: "production", flags: propReleaseNdkFlags], [ndkType: 'debug', cppType: "debug", flags: propDebugNdkFlags]]
 
 buildTypes.each { type ->
