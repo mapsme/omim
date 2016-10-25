@@ -135,7 +135,8 @@ public class Bookmark extends MapObject
 
     if (!title.equals(getTitle()) || icon != mIcon || !description.equals(getBookmarkDescription()))
     {
-      nativeSetBookmarkParams(mCategoryId, mBookmarkId, title, icon.getType(), description);
+      nativeSetBookmarkParams(mCategoryId, mBookmarkId, title, icon != null ? icon.getType() : "",
+                              description);
       mTitle = title;
     }
   }
