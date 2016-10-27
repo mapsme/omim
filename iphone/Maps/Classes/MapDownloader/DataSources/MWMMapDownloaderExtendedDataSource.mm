@@ -56,17 +56,18 @@ auto constexpr extraSection = MWMMapDownloaderDataSourceExtraSection::NearMe;
 
 - (void)addExtraSection:(MWMMapDownloaderDataSourceExtraSection)extraSection
 {
-  auto const it = find(m_extraSections.begin(), m_extraSections.end(), extraSection);
-  if (it == m_extraSections.end())
-    m_extraSections.push_back(extraSection);
-  sort(m_extraSections.begin(), m_extraSections.end());
+  auto const endIt = m_extraSections.end();
+  auto const findIt = find(m_extraSections.begin(), endIt, extraSection);
+  if (findIt == endIt)
+  {
+    m_extraSections.emplace_back(extraSection);
+    sort(m_extraSections.begin(), m_extraSections.end());
+  }
 }
 
 - (void)removeExtraSection:(MWMMapDownloaderDataSourceExtraSection)extraSection
 {
-  auto const it = find(m_extraSections.begin(), m_extraSections.end(), extraSection);
-  if (it != m_extraSections.end())
-    m_extraSections.erase(it);
+  m_extraSections.erase(remove(m_extraSections.begin(), m_extraSections.end(), extraSection), m_extraSections.end());
 }
 
 - (BOOL)isExtraSection:(MWMMapDownloaderDataSourceExtraSection)extraSection
