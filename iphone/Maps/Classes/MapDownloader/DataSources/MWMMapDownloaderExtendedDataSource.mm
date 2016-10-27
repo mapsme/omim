@@ -39,6 +39,7 @@ auto constexpr extraSection = MWMMapDownloaderDataSourceExtraSection::NearMe;
 
 - (void)configNearMeSection
 {
+  [self removeExtraSection:extraSection];
   CLLocation * lastLocation = [MWMLocationManager lastLocation];
   if (!lastLocation)
     return;
@@ -55,7 +56,17 @@ auto constexpr extraSection = MWMMapDownloaderDataSourceExtraSection::NearMe;
 
 - (void)addExtraSection:(MWMMapDownloaderDataSourceExtraSection)extraSection
 {
-  m_extraSections.push_back(extraSection);
+  auto const it = find(m_extraSections.begin(), m_extraSections.end(), extraSection);
+  if (it == m_extraSections.end())
+    m_extraSections.push_back(extraSection);
+  sort(m_extraSections.begin(), m_extraSections.end());
+}
+
+- (void)removeExtraSection:(MWMMapDownloaderDataSourceExtraSection)extraSection
+{
+  auto const it = find(m_extraSections.begin(), m_extraSections.end(), extraSection);
+  if (it != m_extraSections.end())
+    m_extraSections.erase(it);
 }
 
 - (BOOL)isExtraSection:(MWMMapDownloaderDataSourceExtraSection)extraSection
