@@ -368,6 +368,7 @@ bool isMarkerPoint(MWMRoutePoint const & point) { return point.IsValid() && !poi
                        countries:(storage::TCountriesVec const &)absentCountries
 {
   MWMRouterSavedState * state = [MWMRouterSavedState state];
+  MWMMapViewControlsManager * mapViewControlsManager = [MWMMapViewControlsManager manager];
   switch (code)
   {
   case routing::IRouter::ResultCode::NoError:
@@ -377,12 +378,12 @@ bool isMarkerPoint(MWMRoutePoint const & point) { return point.IsValid() && !poi
     if (state.forceStateChange == MWMRouterForceStateChange::Start)
       [self start];
     else
-      [[MWMMapViewControlsManager manager] onRouteReady];
+      [mapViewControlsManager onRouteReady];
     [self updateFollowingInfo];
     if (![MWMRouter isTaxi])
       [[MWMNavigationDashboardManager manager] setRouteBuilderProgress:100];
 
-    [MWMMapViewControlsManager manager].searchHidden = YES;
+    mapViewControlsManager.searchHidden = YES;
     break;
   }
   case routing::IRouter::RouteFileNotExist:
@@ -391,7 +392,7 @@ bool isMarkerPoint(MWMRoutePoint const & point) { return point.IsValid() && !poi
   case routing::IRouter::FileTooOld:
   case routing::IRouter::RouteNotFound:
     [self presentDownloaderAlert:code countries:absentCountries];
-    [[MWMMapViewControlsManager manager] onRouteError];
+    [mapViewControlsManager onRouteError];
     break;
   case routing::IRouter::Cancelled: break;
   case routing::IRouter::StartPointNotFound:
@@ -400,7 +401,7 @@ bool isMarkerPoint(MWMRoutePoint const & point) { return point.IsValid() && !poi
   case routing::IRouter::PointsInDifferentMWM:
   case routing::IRouter::InternalError:
     [[MWMAlertViewController activeAlertController] presentAlert:code];
-    [[MWMMapViewControlsManager manager] onRouteError];
+    [mapViewControlsManager onRouteError];
     break;
   }
   state.forceStateChange = MWMRouterForceStateChange::None;
