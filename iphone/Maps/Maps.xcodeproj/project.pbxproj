@@ -4602,6 +4602,7 @@
 					"-loauthcpp",
 					"-leditor",
 				);
+				PROVISIONING_PROFILE = "";
 			};
 			name = Simulator;
 		};
@@ -4686,6 +4687,7 @@
 					"-loauthcpp",
 					"-leditor",
 				);
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -4772,6 +4774,7 @@
 					"-loauthcpp",
 					"-leditor",
 				);
+				PROVISIONING_PROFILE = "";
 			};
 			name = AdHoc;
 		};
@@ -4859,6 +4862,7 @@
 					"-loauthcpp",
 					"-leditor",
 				);
+				PROVISIONING_PROFILE = "";
 			};
 			name = "Production Full";
 		};
@@ -4946,6 +4950,7 @@
 					"-loauthcpp",
 					"-leditor",
 				);
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -5034,6 +5039,7 @@
 					"-loauthcpp",
 					"-leditor",
 				);
+				PROVISIONING_PROFILE = "";
 			};
 			name = "Simulator Release";
 		};
