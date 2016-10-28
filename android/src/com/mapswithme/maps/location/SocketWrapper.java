@@ -1,8 +1,11 @@
 package com.mapswithme.maps.location;
 
+import android.annotation.SuppressLint;
+import android.net.SSLCertificateSocketFactory;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.mapswithme.maps.BuildConfig;
 import com.mapswithme.util.log.DebugLogger;
 import com.mapswithme.util.log.Logger;
 
@@ -74,9 +77,9 @@ class SocketWrapper implements PlatformSocket
   {
     if (ssl)
     {
-      SocketFactory sf = SSLSocketFactory.getDefault();
       try
       {
+        SocketFactory sf = getSocketFactory();
         return sf.createSocket(host, port);
       } catch (IOException e)
       {
@@ -94,6 +97,20 @@ class SocketWrapper implements PlatformSocket
     }
 
     return null;
+  }
+
+
+  @SuppressLint("SSLCertificateSocketFactoryGetInsecure")
+  @NonNull
+  private static SocketFactory getSocketFactory()
+  {
+    // Trusting to any ssl certificate factory that will be used in
+    // debug mode, for testing purposes only.
+    if (BuildConfig.DEBUG)
+      //TODO: implement the custom KeyStore to make the self-signed certificates work
+      return SSLCertificateSocketFactory.getInsecure(0, null);
+
+    return SSLSocketFactory.getDefault();
   }
 
   @Override
