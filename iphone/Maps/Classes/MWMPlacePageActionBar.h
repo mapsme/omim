@@ -1,6 +1,25 @@
 @class MWMPlacePageViewManager;
+@class MWMPlacePageData;
+
+@protocol MWMActionBarSharedData<NSObject>
+
+- (BOOL)isBookmark;
+- (BOOL)isOpentable;
+- (BOOL)isBooking;
+- (BOOL)isApi;
+- (BOOL)isMyPosition;
+- (NSString *)title;
+- (NSString *)subtitle;
+- (NSString *)phoneNumber;
+
+@end
+
+@protocol MWMActionBarProtocol;
 
 @interface MWMPlacePageActionBar : SolidTouchView
+
++ (MWMPlacePageActionBar *)actionBarWithDelegate:(id<MWMActionBarProtocol>)delegate;
+- (void)configureWithData:(id<MWMActionBarSharedData>)data;
 
 @property (nonatomic) BOOL isBookmark;
 

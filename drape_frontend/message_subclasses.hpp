@@ -4,6 +4,8 @@
 #include "drape_frontend/gui/skin.hpp"
 
 #include "drape_frontend/color_constants.hpp"
+#include "drape_frontend/drape_api.hpp"
+#include "drape_frontend/drape_api_builder.hpp"
 #include "drape_frontend/gps_track_point.hpp"
 #include "drape_frontend/gps_track_shape.hpp"
 #include "drape_frontend/message.hpp"
@@ -12,6 +14,7 @@
 #include "drape_frontend/route_builder.hpp"
 #include "drape_frontend/selection_shape.hpp"
 #include "drape_frontend/tile_utils.hpp"
+#include "drape_frontend/traffic_generator.hpp"
 #include "drape_frontend/user_marks_provider.hpp"
 #include "drape_frontend/user_mark_shapes.hpp"
 #include "drape_frontend/viewport.hpp"
@@ -972,6 +975,112 @@ public:
 private:
   vector<string> m_symbols;
   TRequestSymbolsSizeCallback m_callback;
+};
+
+class AddTrafficSegmentsMessage : public Message
+{
+public:
+  explicit AddTrafficSegmentsMessage(vector<pair<uint64_t, m2::PolylineD>> const & segments)
+    : m_segments(segments)
+  {}
+
+  Type GetType() const override { return Message::AddTrafficSegments; }
+  vector<pair<uint64_t, m2::PolylineD>> const & GetSegments() const { return m_segments; }
+
+private:
+  vector<pair<uint64_t, m2::PolylineD>> m_segments;
+};
+
+class SetTrafficTexCoordsMessage : public Message
+{
+public:
+  explicit SetTrafficTexCoordsMessage(unordered_map<int, glsl::vec2> && texCoords)
+    : m_texCoords(move(texCoords))
+  {}
+
+  Type GetType() const override { return Message::SetTrafficTexCoords; }
+  unordered_map<int, glsl::vec2> && AcceptTexCoords() { return move(m_texCoords); }
+
+private:
+  unordered_map<int, glsl::vec2> m_texCoords;
+};
+
+class UpdateTrafficMessage : public Message
+{
+public:
+  explicit UpdateTrafficMessage(vector<TrafficSegmentData> const & segmentsData)
+    : m_segmentsData(segmentsData)
+  {}
+
+  Type GetType() const override { return Message::UpdateTraffic; }
+  vector<TrafficSegmentData> const & GetSegmentsData() const { return m_segmentsData; }
+
+private:
+  vector<TrafficSegmentData> m_segmentsData;
+};
+
+class FlushTrafficDataMessage : public Message
+{
+public:
+  explicit FlushTrafficDataMessage(vector<TrafficRenderData> && trafficData)
+    : m_trafficData(move(trafficData))
+  {}
+
+  Type GetType() const override { return Message::FlushTrafficData; }
+  vector<TrafficRenderData> && AcceptTrafficData() { return move(m_trafficData); }
+
+private:
+  vector<TrafficRenderData> m_trafficData;
+};
+
+class DrapeApiAddLinesMessage : public Message
+{
+public:
+  explicit DrapeApiAddLinesMessage(DrapeApi::TLines const & lines)
+    : m_lines(lines)
+  {}
+
+  Type GetType() const override { return Message::DrapeApiAddLines; }
+
+  DrapeApi::TLines const & GetLines() const { return m_lines; }
+
+private:
+  DrapeApi::TLines m_lines;
+};
+
+class DrapeApiRemoveMessage : public Message
+{
+public:
+  explicit DrapeApiRemoveMessage(string const & id, bool removeAll = false)
+    : m_id(id)
+    , m_removeAll(removeAll)
+  {}
+
+  Type GetType() const override { return Message::DrapeApiRemove; }
+
+  string const & GetId() const { return m_id; }
+  bool NeedRemoveAll() const { return m_removeAll; }
+
+private:
+  string m_id;
+  bool m_removeAll;
+};
+
+class DrapeApiFlushMessage : public Message
+{
+public:
+  using TProperties = vector<drape_ptr<DrapeApiRenderProperty>>;
+
+  explicit DrapeApiFlushMessage(TProperties && properties)
+    : m_properties(move(properties))
+  {}
+
+  Type GetType() const override { return Message::DrapeApiFlush; }
+
+  TProperties && AcceptProperties() { return move(m_properties); }
+
+private:
+  TProperties m_properties;
 };
 
 } // namespace df

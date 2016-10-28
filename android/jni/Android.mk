@@ -25,7 +25,7 @@ define add_prebuild_static_lib
   include $(PREBUILT_STATIC_LIBRARY)
 endef
 
-prebuild_static_libs := map drape_frontend routing search storage indexer drape platform editor geometry coding base opening_hours
+prebuild_static_libs := map tracking drape_frontend routing search storage indexer drape platform editor partners_api geometry coding base opening_hours
 prebuild_static_libs += pugixml oauthcpp expat freetype fribidi minizip jansson tomcrypt protobuf osrm stats_client succinct
 
 $(foreach item,$(prebuild_static_libs),$(eval $(call add_prebuild_static_lib,$(item))))
@@ -92,13 +92,15 @@ LOCAL_SRC_FILES := \
 	com/mapswithme/maps/SearchRecents.cpp \
 	com/mapswithme/maps/settings/UnitLocale.cpp \
 	com/mapswithme/maps/sound/tts.cpp \
-	com/mapswithme/maps/SponsoredHotel.cpp \
+	com/mapswithme/maps/Sponsored.cpp \
+	com/mapswithme/maps/uber/Uber.cpp \
 	com/mapswithme/maps/TrackRecorder.cpp \
 	com/mapswithme/maps/UserMarkHelper.cpp \
 	com/mapswithme/opengl/android_gl_utils.cpp \
 	com/mapswithme/opengl/androidoglcontext.cpp \
 	com/mapswithme/opengl/androidoglcontextfactory.cpp \
 	com/mapswithme/platform/HttpThread.cpp \
+	com/mapswithme/platform/SocketImpl.cpp \
 	com/mapswithme/platform/Language.cpp \
 	com/mapswithme/platform/Platform.cpp \
 	com/mapswithme/platform/PThreadImpl.cpp \

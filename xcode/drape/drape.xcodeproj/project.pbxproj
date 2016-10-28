@@ -10,6 +10,8 @@
 		347F32F91C45383E009758CC /* debug_rect_renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 347F32F71C45383E009758CC /* debug_rect_renderer.cpp */; };
 		347F32FA1C45383E009758CC /* debug_rect_renderer.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 347F32F81C45383E009758CC /* debug_rect_renderer.hpp */; };
 		3492DA0B1CA2D91C00C1F3B3 /* visual_scale.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 3492DA0A1CA2D91C00C1F3B3 /* visual_scale.hpp */; };
+		34C624C91DABDB2000510300 /* static_texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 34C624C71DABDB2000510300 /* static_texture.cpp */; };
+		34C624CA1DABDB2000510300 /* static_texture.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 34C624C81DABDB2000510300 /* static_texture.hpp */; };
 		45201E951CE605B1008A4842 /* constants.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 45201E941CE605B1008A4842 /* constants.hpp */; };
 		670947231BDF9A4F005014C0 /* data_buffer_impl.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 670947151BDF9A4F005014C0 /* data_buffer_impl.hpp */; };
 		670947251BDF9A4F005014C0 /* fribidi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 670947171BDF9A4F005014C0 /* fribidi.cpp */; };
@@ -124,6 +126,10 @@
 		347F32F71C45383E009758CC /* debug_rect_renderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = debug_rect_renderer.cpp; sourceTree = "<group>"; };
 		347F32F81C45383E009758CC /* debug_rect_renderer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = debug_rect_renderer.hpp; sourceTree = "<group>"; };
 		3492DA0A1CA2D91C00C1F3B3 /* visual_scale.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = visual_scale.hpp; sourceTree = "<group>"; };
+		34AF87C91DBE4F4900E5E7DC /* common-debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "common-debug.xcconfig"; path = "../common-debug.xcconfig"; sourceTree = "<group>"; };
+		34AF87CA1DBE4F4900E5E7DC /* common-release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "common-release.xcconfig"; path = "../common-release.xcconfig"; sourceTree = "<group>"; };
+		34C624C71DABDB2000510300 /* static_texture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = static_texture.cpp; sourceTree = "<group>"; };
+		34C624C81DABDB2000510300 /* static_texture.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = static_texture.hpp; sourceTree = "<group>"; };
 		45201E941CE605B1008A4842 /* constants.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = constants.hpp; sourceTree = "<group>"; };
 		670947151BDF9A4F005014C0 /* data_buffer_impl.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = data_buffer_impl.hpp; sourceTree = "<group>"; };
 		670947171BDF9A4F005014C0 /* fribidi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fribidi.cpp; sourceTree = "<group>"; };
@@ -138,7 +144,6 @@
 		670947201BDF9A4F005014C0 /* index_storage.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = index_storage.hpp; sourceTree = "<group>"; };
 		670947211BDF9A4F005014C0 /* shader_def.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = shader_def.cpp; sourceTree = "<group>"; };
 		670947221BDF9A4F005014C0 /* shader_def.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = shader_def.hpp; sourceTree = "<group>"; };
-		670D059E1B0CFE940013A7AC /* defaults.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = defaults.xcconfig; path = ../defaults.xcconfig; sourceTree = "<group>"; };
 		6729A4F11A691F6A007D5872 /* libdrape.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libdrape.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		6729A4FF1A69213A007D5872 /* attribute_buffer_mutator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = attribute_buffer_mutator.cpp; sourceTree = "<group>"; };
 		6729A5001A69213A007D5872 /* attribute_buffer_mutator.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = attribute_buffer_mutator.hpp; sourceTree = "<group>"; };
@@ -249,7 +254,8 @@
 		6729A4E81A691F6A007D5872 = {
 			isa = PBXGroup;
 			children = (
-				670D059E1B0CFE940013A7AC /* defaults.xcconfig */,
+				34AF87C91DBE4F4900E5E7DC /* common-debug.xcconfig */,
+				34AF87CA1DBE4F4900E5E7DC /* common-release.xcconfig */,
 				6729A4F31A691F6A007D5872 /* drape */,
 				6729A4F21A691F6A007D5872 /* Products */,
 			);
@@ -266,6 +272,8 @@
 		6729A4F31A691F6A007D5872 /* drape */ = {
 			isa = PBXGroup;
 			children = (
+				34C624C71DABDB2000510300 /* static_texture.cpp */,
+				34C624C81DABDB2000510300 /* static_texture.hpp */,
 				3492DA0A1CA2D91C00C1F3B3 /* visual_scale.hpp */,
 				6743D3421C3533AE0095054B /* support_manager.cpp */,
 				6743D3431C3533AE0095054B /* support_manager.hpp */,
@@ -450,6 +458,7 @@
 				6709472E1BDF9A4F005014C0 /* index_storage.hpp in Headers */,
 				6729A5B51A69213A007D5872 /* vertex_array_buffer.hpp in Headers */,
 				6729A5A71A69213A007D5872 /* texture_manager.hpp in Headers */,
+				34C624CA1DABDB2000510300 /* static_texture.hpp in Headers */,
 				6729A5901A69213A007D5872 /* object_pool.hpp in Headers */,
 				670947261BDF9A4F005014C0 /* fribidi.hpp in Headers */,
 				6729A5A11A69213A007D5872 /* shader.hpp in Headers */,
@@ -538,6 +547,7 @@
 				6729A58A1A69213A007D5872 /* gpu_program.cpp in Sources */,
 				6709472A1BDF9A4F005014C0 /* hw_texture_ios.mm in Sources */,
 				6729A57B1A69213A007D5872 /* glextensions_list.cpp in Sources */,
+				34C624C91DABDB2000510300 /* static_texture.cpp in Sources */,
 				6729A5981A69213A007D5872 /* pointers.cpp in Sources */,
 				6729A5881A69213A007D5872 /* gpu_program_manager.cpp in Sources */,
 				6729A5A41A69213A007D5872 /* symbols_texture.cpp in Sources */,
@@ -577,123 +587,47 @@
 /* Begin XCBuildConfiguration section */
 		6729A4FA1A691F6A007D5872 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 670D059E1B0CFE940013A7AC /* defaults.xcconfig */;
+			baseConfigurationReference = 34AF87C91DBE4F4900E5E7DC /* common-debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(OMIM_ROOT)/3party/glm/",
 					"$(OMIM_ROOT)/3party/freetype/include",
 					"$(OMIM_ROOT)/3party/expat/lib",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
 		6729A4FB1A691F6A007D5872 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 670D059E1B0CFE940013A7AC /* defaults.xcconfig */;
+			baseConfigurationReference = 34AF87CA1DBE4F4900E5E7DC /* common-release.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(OMIM_ROOT)/3party/glm/",
 					"$(OMIM_ROOT)/3party/freetype/include",
 					"$(OMIM_ROOT)/3party/expat/lib",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				SDKROOT = macosx;
 			};
 			name = Release;
 		};
 		6729A4FD1A691F6A007D5872 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
 				EXCLUDED_SOURCE_FILE_NAMES = "";
 				"EXCLUDED_SOURCE_FILE_NAMES[sdk=macosx*]" = hw_texture_ios.mm;
 				EXECUTABLE_PREFIX = lib;
-				GCC_ENABLE_CPP_EXCEPTIONS = YES;
-				GCC_ENABLE_CPP_RTTI = YES;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				HEADER_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
 			};
 			name = Debug;
 		};
 		6729A4FE1A691F6A007D5872 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
 				EXCLUDED_SOURCE_FILE_NAMES = "";
 				"EXCLUDED_SOURCE_FILE_NAMES[sdk=macosx*]" = hw_texture_ios.mm;
 				EXECUTABLE_PREFIX = lib;
-				GCC_ENABLE_CPP_EXCEPTIONS = YES;
-				GCC_ENABLE_CPP_RTTI = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = "RELEASE=1";
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				HEADER_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
 			};
 			name = Release;
 		};

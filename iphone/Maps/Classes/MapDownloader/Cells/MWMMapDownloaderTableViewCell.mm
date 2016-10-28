@@ -36,17 +36,6 @@
   m_countryId = kInvalidCountryId;
 }
 
-- (void)layoutSubviews
-{
-  [super layoutSubviews];
-  if (isIOS7)
-  {
-    self.title.preferredMaxLayoutWidth = floor(self.title.width);
-    self.downloadSize.preferredMaxLayoutWidth = floor(self.downloadSize.width);
-    [super layoutSubviews];
-  }
-}
-
 #pragma mark - Search matching
 
 - (NSAttributedString *)matchedString:(NSString *)str
@@ -92,10 +81,9 @@
   {
     MWMCircularProgressStateVec const affectedStates = {MWMCircularProgressStateNormal,
                                                         MWMCircularProgressStateSelected};
-    UIImage * image = [self isKindOfClass:[MWMMapDownloaderLargeCountryTableViewCell class]]
-                          ? [UIImage imageNamed:@"ic_folder"]
-                          : [UIImage imageNamed:@"ic_download"];
-    [progress setImage:image forStates:affectedStates];
+    NSString * imageName = [self isKindOfClass:[MWMMapDownloaderLargeCountryTableViewCell class]]
+                          ? @"ic_folder" : @"ic_download";
+    [progress setImageName:imageName forStates:affectedStates];
     [progress setColoring:coloring forStates:affectedStates];
     progress.state = MWMCircularProgressStateNormal;
     break;
@@ -114,7 +102,7 @@
   {
     MWMCircularProgressStateVec const affectedStates = {MWMCircularProgressStateNormal,
                                                         MWMCircularProgressStateSelected};
-    [progress setImage:[UIImage imageNamed:@"ic_update"] forStates:affectedStates];
+    [progress setImageName:@"ic_update" forStates:affectedStates];
     [progress setColoring:MWMButtonColoringOther forStates:affectedStates];
     progress.state = MWMCircularProgressStateNormal;
     break;
@@ -147,20 +135,21 @@
 {
   storage::NodeAttrs nodeAttrs;
   GetFramework().GetStorage().GetNodeAttrs(m_countryId, nodeAttrs);
+  id<MWMMapDownloaderProtocol> delegate = self.delegate;
   switch (nodeAttrs.m_status)
   {
   case NodeStatus::NotDownloaded:
   case NodeStatus::Partly:
     if ([self isKindOfClass:[MWMMapDownloaderLargeCountryTableViewCell class]])
-      [self.delegate openNodeSubtree:m_countryId];
+      [delegate openNodeSubtree:m_countryId];
     else
-      [self.delegate downloadNode:m_countryId];
+      [delegate downloadNode:m_countryId];
     break;
   case NodeStatus::Undefined:
-  case NodeStatus::Error: [self.delegate retryDownloadNode:m_countryId]; break;
-  case NodeStatus::OnDiskOutOfDate: [self.delegate updateNode:m_countryId]; break;
+  case NodeStatus::Error: [delegate retryDownloadNode:m_countryId]; break;
+  case NodeStatus::OnDiskOutOfDate: [delegate updateNode:m_countryId]; break;
   case NodeStatus::Downloading:
-  case NodeStatus::InQueue: [self.delegate cancelNode:m_countryId]; break;
+  case NodeStatus::InQueue: [delegate cancelNode:m_countryId]; break;
   case NodeStatus::OnDisk: break;
   }
 }

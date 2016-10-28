@@ -1,0 +1,343 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		346B76CE1DC1ECC900C7C87E /* libtomcrypt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 346B76CD1DC1ECC900C7C87E /* libtomcrypt.a */; };
+		3496ABB21DC2026E00C5DDBA /* libalohalitics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3496ABB11DC2026E00C5DDBA /* libalohalitics.a */; };
+		3496ABB41DC2028F00C5DDBA /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3496ABB31DC2028F00C5DDBA /* libz.tbd */; };
+		349756271DC1EBEE0058742A /* libcoding.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 349756261DC1EBEE0058742A /* libcoding.a */; };
+		349756291DC1EC060058742A /* libgeometry.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 349756281DC1EC060058742A /* libgeometry.a */; };
+		3497562B1DC1EC220058742A /* libplatform.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3497562A1DC1EC220058742A /* libplatform.a */; };
+		3497562D1DC1EC3F0058742A /* libbase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3497562C1DC1EC3F0058742A /* libbase.a */; };
+		675E88641DB7AC9000F8EBDA /* connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 675E88601DB7AC9000F8EBDA /* connection.cpp */; };
+		675E88651DB7AC9000F8EBDA /* connection.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 675E88611DB7AC9000F8EBDA /* connection.hpp */; };
+		675E88661DB7AC9000F8EBDA /* reporter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 675E88621DB7AC9000F8EBDA /* reporter.cpp */; };
+		675E88671DB7AC9000F8EBDA /* reporter.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 675E88631DB7AC9000F8EBDA /* reporter.hpp */; };
+		675E88891DB7AD3100F8EBDA /* reporter_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 675E88841DB7AD1000F8EBDA /* reporter_test.cpp */; };
+		675E88A21DB7B10300F8EBDA /* libtracking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 675E88501DB7AC0300F8EBDA /* libtracking.a */; };
+		6772590D1DB90F8F00BF54EE /* testingmain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67B6E7B71DB8BBA900745F8A /* testingmain.cpp */; };
+		6772592D1DBA26FD00BF54EE /* protocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6772592B1DBA26FD00BF54EE /* protocol.cpp */; };
+		6772592E1DBA26FD00BF54EE /* protocol.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 6772592C1DBA26FD00BF54EE /* protocol.hpp */; };
+		67EC0CB71DBE4A320021F484 /* protocol_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67EC0CB61DBE4A320021F484 /* protocol_test.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		346B76CD1DC1ECC900C7C87E /* libtomcrypt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtomcrypt.a; path = "../../../omim-build/xcode/Debug/libtomcrypt.a"; sourceTree = "<group>"; };
+		3496ABB11DC2026E00C5DDBA /* libalohalitics.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libalohalitics.a; path = "../../../omim-build/xcode/Debug-iphonesimulator/libalohalitics.a"; sourceTree = "<group>"; };
+		3496ABB31DC2028F00C5DDBA /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		349756261DC1EBEE0058742A /* libcoding.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcoding.a; path = "../../../omim-build/xcode/Debug/libcoding.a"; sourceTree = "<group>"; };
+		349756281DC1EC060058742A /* libgeometry.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgeometry.a; path = "../../../omim-build/xcode/Debug/libgeometry.a"; sourceTree = "<group>"; };
+		3497562A1DC1EC220058742A /* libplatform.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libplatform.a; path = "../../../omim-build/xcode/Debug/libplatform.a"; sourceTree = "<group>"; };
+		3497562C1DC1EC3F0058742A /* libbase.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbase.a; path = "../../../omim-build/xcode/Debug/libbase.a"; sourceTree = "<group>"; };
+		34F558511DBF38A000A4FC11 /* common-debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "common-debug.xcconfig"; path = "../common-debug.xcconfig"; sourceTree = "<group>"; };
+		34F558521DBF38A000A4FC11 /* common-release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "common-release.xcconfig"; path = "../common-release.xcconfig"; sourceTree = "<group>"; };
+		675E88501DB7AC0300F8EBDA /* libtracking.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libtracking.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		675E88601DB7AC9000F8EBDA /* connection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = connection.cpp; sourceTree = "<group>"; };
+		675E88611DB7AC9000F8EBDA /* connection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = connection.hpp; sourceTree = "<group>"; };
+		675E88621DB7AC9000F8EBDA /* reporter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = reporter.cpp; sourceTree = "<group>"; };
+		675E88631DB7AC9000F8EBDA /* reporter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = reporter.hpp; sourceTree = "<group>"; };
+		675E886C1DB7ACD900F8EBDA /* tracking_tests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tracking_tests.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		675E88841DB7AD1000F8EBDA /* reporter_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = reporter_test.cpp; sourceTree = "<group>"; };
+		6772592B1DBA26FD00BF54EE /* protocol.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = protocol.cpp; sourceTree = "<group>"; };
+		6772592C1DBA26FD00BF54EE /* protocol.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = protocol.hpp; sourceTree = "<group>"; };
+		67B6E7B71DB8BBA900745F8A /* testingmain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = testingmain.cpp; path = ../../testing/testingmain.cpp; sourceTree = "<group>"; };
+		67EC0CB61DBE4A320021F484 /* protocol_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = protocol_test.cpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		675E884D1DB7AC0300F8EBDA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		675E88691DB7ACD900F8EBDA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3496ABB41DC2028F00C5DDBA /* libz.tbd in Frameworks */,
+				3496ABB21DC2026E00C5DDBA /* libalohalitics.a in Frameworks */,
+				346B76CE1DC1ECC900C7C87E /* libtomcrypt.a in Frameworks */,
+				3497562D1DC1EC3F0058742A /* libbase.a in Frameworks */,
+				3497562B1DC1EC220058742A /* libplatform.a in Frameworks */,
+				349756291DC1EC060058742A /* libgeometry.a in Frameworks */,
+				349756271DC1EBEE0058742A /* libcoding.a in Frameworks */,
+				675E88A21DB7B10300F8EBDA /* libtracking.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		675E88471DB7AC0300F8EBDA = {
+			isa = PBXGroup;
+			children = (
+				34F558511DBF38A000A4FC11 /* common-debug.xcconfig */,
+				34F558521DBF38A000A4FC11 /* common-release.xcconfig */,
+				675E885F1DB7AC4A00F8EBDA /* tracking */,
+				675E88831DB7ACEA00F8EBDA /* tracking_tests */,
+				675E88511DB7AC0300F8EBDA /* Products */,
+				675E888D1DB7B03400F8EBDA /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		675E88511DB7AC0300F8EBDA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				675E88501DB7AC0300F8EBDA /* libtracking.a */,
+				675E886C1DB7ACD900F8EBDA /* tracking_tests.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		675E885F1DB7AC4A00F8EBDA /* tracking */ = {
+			isa = PBXGroup;
+			children = (
+				675E88601DB7AC9000F8EBDA /* connection.cpp */,
+				675E88611DB7AC9000F8EBDA /* connection.hpp */,
+				675E88621DB7AC9000F8EBDA /* reporter.cpp */,
+				675E88631DB7AC9000F8EBDA /* reporter.hpp */,
+				6772592B1DBA26FD00BF54EE /* protocol.cpp */,
+				6772592C1DBA26FD00BF54EE /* protocol.hpp */,
+			);
+			name = tracking;
+			path = ../../tracking;
+			sourceTree = "<group>";
+		};
+		675E88831DB7ACEA00F8EBDA /* tracking_tests */ = {
+			isa = PBXGroup;
+			children = (
+				67B6E7B71DB8BBA900745F8A /* testingmain.cpp */,
+				675E88841DB7AD1000F8EBDA /* reporter_test.cpp */,
+				67EC0CB61DBE4A320021F484 /* protocol_test.cpp */,
+			);
+			name = tracking_tests;
+			path = ../../tracking/tracking_tests;
+			sourceTree = "<group>";
+		};
+		675E888D1DB7B03400F8EBDA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3496ABB31DC2028F00C5DDBA /* libz.tbd */,
+				3496ABB11DC2026E00C5DDBA /* libalohalitics.a */,
+				346B76CD1DC1ECC900C7C87E /* libtomcrypt.a */,
+				3497562C1DC1EC3F0058742A /* libbase.a */,
+				3497562A1DC1EC220058742A /* libplatform.a */,
+				349756281DC1EC060058742A /* libgeometry.a */,
+				349756261DC1EBEE0058742A /* libcoding.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		675E884E1DB7AC0300F8EBDA /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6772592E1DBA26FD00BF54EE /* protocol.hpp in Headers */,
+				675E88651DB7AC9000F8EBDA /* connection.hpp in Headers */,
+				675E88671DB7AC9000F8EBDA /* reporter.hpp in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		675E884F1DB7AC0300F8EBDA /* tracking */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 675E885B1DB7AC0300F8EBDA /* Build configuration list for PBXNativeTarget "tracking" */;
+			buildPhases = (
+				675E884C1DB7AC0300F8EBDA /* Sources */,
+				675E884D1DB7AC0300F8EBDA /* Frameworks */,
+				675E884E1DB7AC0300F8EBDA /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = tracking;
+			productName = tracking;
+			productReference = 675E88501DB7AC0300F8EBDA /* libtracking.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		675E886B1DB7ACD900F8EBDA /* tracking_tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 675E88801DB7ACD900F8EBDA /* Build configuration list for PBXNativeTarget "tracking_tests" */;
+			buildPhases = (
+				675E88681DB7ACD900F8EBDA /* Sources */,
+				675E88691DB7ACD900F8EBDA /* Frameworks */,
+				675E886A1DB7ACD900F8EBDA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = tracking_tests;
+			productName = tracking_tests;
+			productReference = 675E886C1DB7ACD900F8EBDA /* tracking_tests.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		675E88481DB7AC0300F8EBDA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0800;
+				ORGANIZATIONNAME = maps.me;
+				TargetAttributes = {
+					675E884F1DB7AC0300F8EBDA = {
+						CreatedOnToolsVersion = 8.0;
+						ProvisioningStyle = Automatic;
+					};
+					675E886B1DB7ACD900F8EBDA = {
+						CreatedOnToolsVersion = 8.0;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 675E884B1DB7AC0300F8EBDA /* Build configuration list for PBXProject "tracking" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 675E88471DB7AC0300F8EBDA;
+			productRefGroup = 675E88511DB7AC0300F8EBDA /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				675E884F1DB7AC0300F8EBDA /* tracking */,
+				675E886B1DB7ACD900F8EBDA /* tracking_tests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		675E886A1DB7ACD900F8EBDA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		675E884C1DB7AC0300F8EBDA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				675E88661DB7AC9000F8EBDA /* reporter.cpp in Sources */,
+				675E88641DB7AC9000F8EBDA /* connection.cpp in Sources */,
+				6772592D1DBA26FD00BF54EE /* protocol.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		675E88681DB7ACD900F8EBDA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				67EC0CB71DBE4A320021F484 /* protocol_test.cpp in Sources */,
+				675E88891DB7AD3100F8EBDA /* reporter_test.cpp in Sources */,
+				6772590D1DB90F8F00BF54EE /* testingmain.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		675E88591DB7AC0300F8EBDA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 34F558511DBF38A000A4FC11 /* common-debug.xcconfig */;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		675E885A1DB7AC0300F8EBDA /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 34F558521DBF38A000A4FC11 /* common-release.xcconfig */;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		675E885C1DB7AC0300F8EBDA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		675E885D1DB7AC0300F8EBDA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		675E88811DB7ACD900F8EBDA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = "$(SRCROOT)/../../iphone/Maps/MAPSME.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = tracking_tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		675E88821DB7ACD900F8EBDA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = "$(SRCROOT)/../../iphone/Maps/MAPSME.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = tracking_tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		675E884B1DB7AC0300F8EBDA /* Build configuration list for PBXProject "tracking" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				675E88591DB7AC0300F8EBDA /* Debug */,
+				675E885A1DB7AC0300F8EBDA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		675E885B1DB7AC0300F8EBDA /* Build configuration list for PBXNativeTarget "tracking" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				675E885C1DB7AC0300F8EBDA /* Debug */,
+				675E885D1DB7AC0300F8EBDA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		675E88801DB7ACD900F8EBDA /* Build configuration list for PBXNativeTarget "tracking_tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				675E88811DB7ACD900F8EBDA /* Debug */,
+				675E88821DB7ACD900F8EBDA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 675E88481DB7AC0300F8EBDA /* Project object */;
+}

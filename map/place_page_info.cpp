@@ -3,6 +3,8 @@
 #include "indexer/feature_utils.hpp"
 #include "indexer/osm_editor.hpp"
 
+#include "platform/measurement_utils.hpp"
+
 namespace place_page
 {
 char const * const Info::kSubtitleSeparator = " • ";
@@ -12,10 +14,9 @@ char const * const Info::kEmptyRatingSymbol = "-";
 char const * const Info::kPricingSymbol = "$";
 
 bool Info::IsFeature() const { return m_featureID.IsValid(); }
-bool Info::IsBookmark() const { return m_bac != MakeEmptyBookmarkAndCategory(); }
+bool Info::IsBookmark() const { return m_bac.IsValid(); }
 bool Info::IsMyPosition() const { return m_isMyPosition; }
-bool Info::IsSponsoredHotel() const { return m_isSponsoredHotel; }
-bool Info::IsHotel() const { return m_isHotel; }
+bool Info::IsSponsored() const { return m_sponsoredType != SponsoredType::None; }
 bool Info::ShouldShowAddPlace() const
 {
   auto const isPointOrBuilding = IsPointType() || IsBuilding();
@@ -71,6 +72,11 @@ string Info::GetSubtitle() const
   // Type.
   values.push_back(GetLocalizedType());
 
+  // Flats.
+  string const flats = GetFlats();
+  if (!flats.empty())
+    values.push_back(flats);
+
   // Cuisines.
   for (string const & cuisine : GetLocalizedCuisines())
     values.push_back(cuisine);
@@ -103,17 +109,23 @@ string Info::FormatStars() const
   return stars;
 }
 
+string Info::GetFormattedCoordinate(bool isDMS) const
+{
+  auto const & ll = GetLatLon();
+  return isDMS ? measurement_utils::FormatLatLon(ll.lat, ll.lon) : measurement_utils::FormatLatLonAsDMS(ll.lat, ll.lon, 2);
+}
+
 string Info::GetCustomName() const { return m_customName; }
 BookmarkAndCategory Info::GetBookmarkAndCategory() const { return m_bac; }
 string Info::GetBookmarkCategoryName() const { return m_bookmarkCategoryName; }
 string const & Info::GetApiUrl() const { return m_apiUrl; }
 
-string const & Info::GetSponsoredBookingUrl() const { return m_sponsoredBookingUrl; }
+string const & Info::GetSponsoredUrl() const { return m_sponsoredUrl; }
 string const & Info::GetSponsoredDescriptionUrl() const {return m_sponsoredDescriptionUrl; }
 
 string Info::GetRatingFormatted() const
 {
-  if (!IsSponsoredHotel())
+  if (!IsSponsored())
     return string();
 
   auto const r = GetMetadata().Get(feature::Metadata::FMD_RATING);
@@ -132,7 +144,7 @@ string Info::GetRatingFormatted() const
 
 string Info::GetApproximatePricing() const
 {
-  if (!IsSponsoredHotel())
+  if (!IsSponsored())
     return string();
 
   int pricing;

@@ -629,7 +629,6 @@
 	<string name="clear_search">Poista hakuhistoria</string>
 	<!-- Title for settings to enable/disable showcase menu button -->
 	<string name="showcase_settings_title">Näytä tarjoukset</string>
-	<string name="showcase_more_apps">Lisää My.com sovelluksia</string>
 	<string name="p2p_route_planning">Reittisuunnittelu</string>
 	<string name="p2p_your_location">Sijaintisi</string>
 	<string name="p2p_from">Lähtöpiste</string>
@@ -798,6 +797,7 @@
 	<string name="download_over_mobile_message">Tämä vaihtoehto saattaa olla huomattavasti kalliimpi tietyillä sopimuksilla tai roaming-yhteydellä.</string>
 	<string name="error_enter_correct_house_number">Syötä oikea talon numero</string>
 	<string name="editor_storey_number">Kerrosten määrä (maks. %d)</string>
+	<!-- Error message in Editor when a user tries to set the number of floors for a building higher than 25 -->
 	<string name="error_enter_correct_storey_number">Muokkaa kerroksia, enintään 25 kerrosta</string>
 	<string name="editor_zip_code">Postinumero</string>
 	<string name="error_enter_correct_zip_code">Anna kelvollinen postinumero</string>
@@ -862,7 +862,7 @@
 	<string name="minute">min</string>
 	<string name="placepage_place_description">Kuvaus</string>
 	<string name="placepage_more_button">Lisää</string>
-	<string name="bookingcom_book_button">Varaa</string>
+	<string name="book_button">Varaa</string>
 	<string name="placepage_call_button">Soita</string>
 	<string name="placepage_edit_bookmark_button">Muokkaa kirjanmerkkiä</string>
 	<string name="placepage_bookmark_name_hint">Kirjanmerkin nimi</string>

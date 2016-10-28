@@ -3,9 +3,11 @@
 #include "drape_frontend/gui/layer_render.hpp"
 
 #include "drape_frontend/base_renderer.hpp"
+#include "drape_frontend/drape_api_builder.hpp"
 #include "drape_frontend/map_data_provider.hpp"
 #include "drape_frontend/overlay_batcher.hpp"
 #include "drape_frontend/requested_tiles.hpp"
+#include "drape_frontend/traffic_generator.hpp"
 #include "drape_frontend/viewport.hpp"
 
 #include "drape/pointers.hpp"
@@ -94,6 +96,8 @@ private:
   drape_ptr<BatchersPool> m_batchersPool;
   drape_ptr<ReadManager> m_readManager;
   drape_ptr<RouteBuilder> m_routeBuilder;
+  drape_ptr<TrafficGenerator> m_trafficGenerator;
+  drape_ptr<DrapeApiBuilder> m_drapeApiBuilder;
   gui::LayerCacher m_guiCacher;
 
   ref_ptr<RequestedTiles> m_requestedTiles;

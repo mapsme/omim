@@ -625,7 +625,6 @@
 	<string name="clear_search">이력 검색 지우기</string>
 	<!-- Title for settings to enable/disable showcase menu button -->
 	<string name="showcase_settings_title">추천 보기</string>
-	<string name="showcase_more_apps">기타 My.com 앱</string>
 	<string name="p2p_route_planning">경로 계획 중</string>
 	<string name="p2p_your_location">위치</string>
 	<string name="p2p_from">출발 지점</string>
@@ -794,6 +793,7 @@
 	<string name="download_over_mobile_message">이는 일부 플랜이나 로밍할 경우에 비싸다고 간주될 수 있습니다.</string>
 	<string name="error_enter_correct_house_number">올바른 집 번호 입력</string>
 	<string name="editor_storey_number">층 수(최대 %d)</string>
+	<!-- Error message in Editor when a user tries to set the number of floors for a building higher than 25 -->
 	<string name="error_enter_correct_storey_number">최대 25층까지 입력하세요</string>
 	<string name="editor_zip_code">우편번호</string>
 	<string name="error_enter_correct_zip_code">올바른 우편번호를 입력하세요</string>
@@ -858,7 +858,7 @@
 	<string name="minute">min</string>
 	<string name="placepage_place_description">설명</string>
 	<string name="placepage_more_button">자세히</string>
-	<string name="bookingcom_book_button">예약</string>
+	<string name="book_button">예약</string>
 	<string name="placepage_call_button">전화</string>
 	<string name="placepage_edit_bookmark_button">즐겨찾기 편집</string>
 	<string name="placepage_bookmark_name_hint">즐겨찾기 이름</string>

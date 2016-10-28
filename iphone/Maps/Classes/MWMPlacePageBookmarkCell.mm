@@ -1,5 +1,6 @@
 #import "MWMPlacePageBookmarkCell.h"
 #import "Common.h"
+#import "MWMPlacePageBookmarkDelegate.h"
 #import "MapViewController.h"
 #import "Statistics.h"
 #import "UIColor+MapsMeColor.h"
@@ -14,13 +15,7 @@ CGFloat const kTextViewLeft = 16.;
 
 void performRenderingInConcurrentQueue(TMWMVoidBlock block)
 {
-  if (!block)
-    return;
-
-  // We can't render html in the background queue in iOS7.
-  if (isIOS7)
-    block();
-  else
+  if (block)
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), block);
 }
 
@@ -189,9 +184,7 @@ void performRenderingInConcurrentQueue(TMWMVoidBlock block)
 
 - (void)textViewScrollEnabled:(BOOL)isEnabled
 {
-  // Here is hook for iOS7 because if we disable scrol in iOS7 content size will be incorrect.
-  if (!isIOS7)
-    self.textView.scrollEnabled = isEnabled;
+  self.textView.scrollEnabled = isEnabled;
 }
 
 - (IBAction)moreTap { [self.delegate moreTap]; }

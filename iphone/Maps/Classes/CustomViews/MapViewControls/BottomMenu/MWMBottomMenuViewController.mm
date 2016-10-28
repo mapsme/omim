@@ -71,6 +71,8 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell) {
 
 @property(weak, nonatomic) MWMNavigationDashboardEntity * navigationInfo;
 
+@property(copy, nonatomic) NSString * routingErrorMessage;
+
 @property(weak, nonatomic) IBOutlet UILabel * speedLabel;
 @property(weak, nonatomic) IBOutlet UILabel * timeLabel;
 @property(weak, nonatomic) IBOutlet UILabel * distanceLabel;
@@ -140,6 +142,9 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell) {
 
 - (void)updateNavigationInfo:(MWMNavigationDashboardEntity *)info
 {
+  if ([MWMRouter isTaxi])
+    return;
+
   NSDictionary * routingNumberAttributes = @{
     NSForegroundColorAttributeName : [UIColor blackPrimaryText],
     NSFontAttributeName : [UIFont bold24]
@@ -201,7 +206,7 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell) {
   [self refreshRoutingDiminishTimer];
 }
 
-- (IBAction)routingStartTouchUpInside { [[MWMRouter router] start]; }
+- (IBAction)routingStartTouchUpInside { [MWMRouter startRouting]; }
 - (IBAction)routingStopTouchUpInside { [[MWMRouter router] stop]; }
 - (IBAction)soundTouchUpInside:(MWMButton *)sender
 {
@@ -426,6 +431,7 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell) {
   case MWMBottomMenuStateInactive:
   case MWMBottomMenuStatePlanning:
   case MWMBottomMenuStateGo:
+  case MWMBottomMenuStateRoutingError:
     [Statistics logEvent:kStatMenu withParameters:@{kStatButton : kStatExpand}];
     self.state = MWMBottomMenuStateActive;
     break;
@@ -499,6 +505,11 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell) {
   return _dimBackground;
 }
 
+- (MWMTaxiCollectionView *)taxiCollectionView
+{
+  return static_cast<MWMBottomMenuView *>(self.view).taxiCollectionView;
+}
+
 - (void)setState:(MWMBottomMenuState)state
 {
   [self refreshRoutingDiminishTimer];
@@ -526,6 +537,9 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell) {
     self.restoreState = state;
   else
     view.state = state;
+
+  if (state == MWMBottomMenuStateRoutingError)
+    self.estimateLabel.text = self.routingErrorMessage;
 }
 
 - (MWMBottomMenuState)state { return ((MWMBottomMenuView *)self.view).state; }
@@ -552,10 +566,10 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell) {
 - (void)setTtsSoundButton:(MWMButton *)ttsSoundButton
 {
   _ttsSoundButton = ttsSoundButton;
-  [_ttsSoundButton setImage:[UIImage imageNamed:@"ic_voice_on"] forState:UIControlStateNormal];
-  [_ttsSoundButton setImage:[UIImage imageNamed:@"ic_voice_off"] forState:UIControlStateSelected];
-  [_ttsSoundButton setImage:[UIImage imageNamed:@"ic_voice_off"]
-                   forState:UIControlStateSelected | UIControlStateHighlighted];
+  [ttsSoundButton setImage:[UIImage imageNamed:@"ic_voice_on"] forState:UIControlStateNormal];
+  [ttsSoundButton setImage:[UIImage imageNamed:@"ic_voice_off"] forState:UIControlStateSelected];
+  [ttsSoundButton setImage:[UIImage imageNamed:@"ic_voice_off"]
+                  forState:UIControlStateSelected | UIControlStateHighlighted];
   [self ttsButtonStatusChanged:nil];
 }
 

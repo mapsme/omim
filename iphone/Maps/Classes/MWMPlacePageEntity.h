@@ -61,12 +61,14 @@ using MWMPlacePageCellTypeValueMap = map<MWMPlacePageCellType, string>;
 - (BOOL)isBookmark;
 - (BOOL)isApi;
 - (BOOL)isBooking;
-- (ms::LatLon)latlon;
+- (BOOL)isOpentable;
+- (ms::LatLon)latLon;
 - (m2::PointD const &)mercator;
 - (NSString *)apiURL;
-- (NSURL *)bookingUrl;
-- (NSURL *)bookingDescriptionUrl;
-- (NSString * )hotelId;
+- (NSURL *)sponsoredURL;
+- (NSURL *)sponsoredDescriptionURL;
+- (NSString *)sponsoredId;
+- (NSString *)phoneNumber;
 - (string)titleForNewBookmark;
 
 - (instancetype)initWithInfo:(place_page::Info const &)info;

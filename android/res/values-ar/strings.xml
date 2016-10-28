@@ -635,7 +635,6 @@
 	<string name="clear_search">مسح تاريخ البحث</string>
 	<!-- Title for settings to enable/disable showcase menu button -->
 	<string name="showcase_settings_title">رؤية العروض</string>
-	<string name="showcase_more_apps">المزيد من تطبيقات My.com</string>
 	<string name="p2p_route_planning">تخطيط الطريق</string>
 	<string name="p2p_your_location">موقعك</string>
 	<string name="p2p_from">نقطة المغادرة</string>
@@ -804,6 +803,7 @@
 	<string name="download_over_mobile_message">قد يكون هذا مكلفا جدا لبعض الخطط أو عند التجوال.</string>
 	<string name="error_enter_correct_house_number">أدخل رقم منزل صحيح</string>
 	<string name="editor_storey_number">عدد الطوابق (بحد أقصى %d)</string>
+	<!-- Error message in Editor when a user tries to set the number of floors for a building higher than 25 -->
 	<string name="error_enter_correct_storey_number">تحرير المبنى بحد أقصى 25 طابقًا</string>
 	<string name="editor_zip_code">الرمز البريدي</string>
 	<string name="error_enter_correct_zip_code">أدخل الرمز البريدي الصحيح</string>
@@ -868,7 +868,7 @@
 	<string name="minute">د</string>
 	<string name="placepage_place_description">الوصف</string>
 	<string name="placepage_more_button">المزيد</string>
-	<string name="bookingcom_book_button">حجز</string>
+	<string name="book_button">حجز</string>
 	<string name="placepage_call_button">اتصال</string>
 	<string name="placepage_edit_bookmark_button">تحرير العلامة المرجعية</string>
 	<string name="placepage_bookmark_name_hint">اسم العلامة المرجعية</string>

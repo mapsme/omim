@@ -57,6 +57,16 @@ uint32_t VisualParams::GetGlyphBaseSize() const
   return 22;
 }
 
+double VisualParams::GetFontScale() const
+{
+  return m_fontScale;
+}
+
+void VisualParams::SetFontScale(double fontScale)
+{
+  m_fontScale = fontScale;
+}
+
 VisualParams & VisualParams::Instance()
 {
   ASSERT_INITED;
@@ -133,6 +143,7 @@ VisualParams::GlyphVisualParams const & VisualParams::GetGlyphVisualParams() con
 VisualParams::VisualParams()
   : m_tileSize(0)
   , m_visualScale(0.0)
+  , m_fontScale(1.0)
 {
 }
 
@@ -274,7 +285,14 @@ int GetDrawTileScale(m2::RectD const & r)
 
 double GetZoomLevel(double scale)
 {
-  return my::clamp(fabs(log(scale) / log(2.0)), 1, scales::GetUpperStyleScale());
+  static double const kLog2 = log(2.0);
+  return my::clamp(fabs(log(scale) / kLog2), 1, scales::GetUpperStyleScale() + 1.0);
+}
+
+double GetNormalizedZoomLevel(double scale, int minZoom)
+{
+  double const kMaxZoom = scales::GetUpperStyleScale() + 1.0;
+  return my::clamp((GetZoomLevel(scale) - minZoom) / (kMaxZoom - minZoom), 0.0, 1.0);
 }
 
 double GetScale(double zoomLevel)

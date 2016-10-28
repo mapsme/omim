@@ -3814,7 +3814,7 @@
     da = Hej, vedhæftet er mine bogmærker fra MAPS.ME offline kort. Åbn venligst vedhæftet hvis du har MAPS.ME installeret. Hvis ikke, så download app'en til din iOS eller Android enhed fra dette link: http://maps.me/get?kmz.\n\ Nyd at rejse med MAPS.ME!
     nl = Hallo,\n\nHier zijn mijn bladwijzers uit de MAPS.ME offline kaarten, in het bijgevoegde "%@.kmz"-bestand. Open het bestand als u MAPS.ME al heeft geïnstalleerd. Zo niet, download dan eerst de app voor uw iOS- of Android-toestel via de link http://maps.me/get?kmz\n\nVeel plezier met MAPS.ME!
     fi = Hei,\n\nLiitteenä ovat kirjanmerkkini MAPS.ME:n offline-kartoista. Voit avata liitteen mikäli olet jo asentanut MAPS.ME -sovelluksen. Mikäli et ole vielä asentanut sitä, voit ladata sen iOS- tai Android-laitteellesi oheisen linkin kautta: http://maps.me/get?kmz\n\nNauti reissailusta MAPS.ME:n kanssa!
-    fr = Bonjour,\n\nVous trouverez ci-joints mes signets de MAPS.ME - cartes hors ligne. Veuillez ouvrir le ficher si vous avez MAPS.ME d'installé. Sinon, téléchargez l'appli pour votre appareil iOS ou Android en suivant ce lien http://maps.me/get?kmz\n\nAppréciez vos voyages avec MAPS.ME !
+    fr = Bonjour,\n\nVous trouverez ci-joints mes signets de MAPS.ME - cartes hors ligne. Veuillez ouvrir le fichier si vous avez MAPS.ME d'installé. Sinon, téléchargez l'appli pour votre appareil iOS ou Android en suivant ce lien http://maps.me/get?kmz\n\nAppréciez vos voyages avec MAPS.ME !
     de = Hallo,\n\nIn der angefügten „%@.KMZ“-Datei befinden sich die Lesezeichen meiner Offline-Karten von MAPS.ME. Falls Sie MAPS.ME bereits installiert haben, müssen Sie die App nur noch öffnen. Sollte dies nicht der Fall sein, müssen Sie zuerst die App für Ihr iOS- oder Androidgerät unter der Adresse http://maps.me/get?kmz herunterladen.\n\nViel Spaß unterwegs mit MAPS.ME!
     hu = Üdvözlöm!\n\nA mellékelt "%@.kmz" fájl tartalmazza a MAPS.ME könyvjelzőimet. Kérem nyissa meg, ha a MAPS.ME már telepítve van. Ha még nincs, akkor innen töltheti le: http://maps.me/get?kmz\n\nSok sikert a program használatához!
     id = Salam,\n\nTerlampir penanda lokasi saya dari peta offline MAPS.ME. Mohon dibuka jika Anda memasang MAPS.ME. Jika tidak, unduhlah aplikasinya untuk perangkat iOS atau Android Anda melalui tautan ini: http://maps.me/get?kmz\n\nNikmatilah bepergian menggunakan MAPS.ME!
@@ -11556,45 +11556,6 @@
     zh-Hant = 顯示優惠
     sk = Zobraziť akcie
 
-  [showcase_plan_your_trip]
-    comment = Showcase menu item.
-    tags = ios
-    en = Plan your trip
-    ru = Подготовься к путешествию
-    fr = Planifiez votre voyage
-    pl = Zaplanuj podróż
-    es = Planifica tu viaje
-
-  [showcase_more_apps]
-    tags = ios, android
-    en = More My.com Apps
-    ru = Другие приложения My.com
-    ar = المزيد من تطبيقات My.com
-    cs = Více aplikací My.com
-    da = Flere My.com apps
-    nl = Meer My.com apps
-    fi = Lisää My.com sovelluksia
-    fr = Plus d'applications My.com
-    de = Weitere Apps von My.com
-    hu = Több My.com alkalmazás
-    id = Lebih Banyak Aplikasi My.com
-    it = Altre app su My.com
-    ja = 他のMy.comアプリ
-    ko = 기타 My.com 앱
-    nb = Flere apper fra My.com
-    pl = Więcej aplikacji My.com
-    pt = Mais aplicativos do My.com
-    ro = Mai multe aplicații My.com
-    es = Más apps de My.com
-    sv = Mai multe aplicații My.com
-    th = แอป My.com เพิ่มเติม
-    tr = Daha fazla My.com uygulamaları
-    uk = Інші додатки My.com
-    vi = Thêm Ứng dụng My.com
-    zh-Hans = 更多My.com应用
-    zh-Hant = 更多 My.com 應用程式
-    sk = Ďalšie My.com aplikácie
-
   [read_in_wikipedia]
     comment = Place Page link to Wikipedia article (if map object has it).
     tags = ios, android
@@ -17910,7 +17871,11 @@
     zh-Hant = 更多
     sk = Viac
 
-  [bookingcom_book_button]
+  [placepage_more_reviews_button]
+    en = More Reviews
+    ru = Ещё отзывы
+
+  [book_button]
     en = Book
     ru = Забронировать
     ar = حجز
@@ -19920,3 +19885,113 @@
     zh-Hant = 飯店搜尋結果現在還包含價格類別。\n我們還加入了超過 110,000 間飯店。
     el = Τα αποτελέσματα αναζήτησης για ξενοδοχεία περιέχουν πλέον κατηγορία τιμής. \nΠροσθέσαμε επίσης περισσότερα από 110.000 ξενοδοχεία.
     sk = Výsledky vyhľadávania hotelov odteraz obsahujú aj cenové kategórie. \nTiež sme pridali viac ako 110 000 hotelov.
+
+  [placepage_hotel_facilities]
+    comment = For place page hotel facilities block
+    en = Facilities
+    ru = Удобства
+
+  [placepage_hotel_nearby]
+    comment = For place page hotel nearby block
+    en = Nearby
+    ru = Рядом
+
+  [taxi_order]
+    comment = For ordering a taxi (as opposed to hotels or other things)
+    en = Order
+    ru = Заказать
+
+  [taxi_wait]
+    comment = How long it is until the taxi arrives
+    en = Expected in %s
+    ru = Ожидание %s
+
+  [taxi_not_found]
+    comment = When there are no available taxis nearby
+    en = Couldn't find a taxi nearby
+    ru = Не удалось найти такси поблизости
+
+  [install_app]
+    en = Install
+    ru = Установить
+
+  [booking_filters]
+    comment = `Filter` is a noun here
+    en = Filter
+    ru = Фильтр
+
+  [booking_filters_reset]
+    en = Reset
+    ru = Сбросить
+
+  [booking_filters_rating]
+    en = Rating
+    ru = Рейтинг
+
+  [booking_filters_rating_any]
+    en = Any
+    ru = Любой
+
+  [booking_filters_ragting_good]
+    en = Good
+    ru = Хорошо
+
+  [booking_filters_rating_very_good]
+    en = Very Good
+    ru = Очень хорошо
+
+  [booking_filters_rating_excellent]
+    en = Excellent
+    ru = Отлично
+
+  [booking_filters_price_category]
+    en = Price Category
+    ru = Ценовая категория
+
+  [booking_filters_no_results]
+    en = No Results Found
+    ru = Поиск не дал результатов
+
+  [booking_filters_nores_message]
+    en = Try a more general search term, zoom out or reset the filter.
+    ru = Попробуйте задать более общий запрос, уменьшить масштаб карты или сбросить фильтр.
+
+  [booking_filters_expand_area_button]
+    en = Zoom out
+    ru = Уменьшить масштаб карты
+
+  [booking_filters_reset_button]
+    en = Reset Filter
+    ru = Сбросить фильтр
+
+  [booking_list]
+    en = List
+    ru = Список
+
+  [booking_based_on_reviews]
+    en = Based on %d hotel reviews
+    ru = По %d отзывам об отеле
+
+  [booking_show_more]
+    en = Show more
+    ru = Показать еще
+
+  [booking_reviews]
+    en = Reviews
+    ru = Отзывы
+
+  [booking_hotel]
+    en = Hotel
+    ru = Отель
+
+  [booking_hotel_room]
+    en = Room 
+    ru = Номер
+
+  [chat]
+    en = Geochat
+    ru = Геочат
+
+  [chat_open]
+    en = Open
+    ru = Открыть

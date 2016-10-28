@@ -4,7 +4,7 @@
 
 #include "platform/location.hpp"
 
-@class MapViewController, MWMButton;
+@class MapViewController, MWMButton, MWMTaxiCollectionView;
 
 @protocol MWMBottomMenuControllerProtocol<NSObject>
 
@@ -27,5 +27,7 @@
 
 - (void)mwm_refreshUI;
 - (void)refreshLayout;
+- (MWMTaxiCollectionView *)taxiCollectionView;
+- (void)setRoutingErrorMessage:(NSString *)routingErrorMessage;
 
 @end

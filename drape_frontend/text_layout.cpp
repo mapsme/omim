@@ -343,7 +343,7 @@ void TextLayout::Init(strings::UniString const & text, float fontSize,
                       ref_ptr<dp::TextureManager> textures)
 {
   m_text = text;
-  m_textSizeRatio = fontSize / VisualParams::Instance().GetGlyphBaseSize();
+  m_textSizeRatio = fontSize * VisualParams::Instance().GetFontScale() / VisualParams::Instance().GetGlyphBaseSize();
   textures->GetGlyphRegions(text, m_metrics);
 }
 
@@ -561,7 +561,7 @@ void PathTextLayout::CalculatePositions(vector<float> & offsets, float splineLen
   }
   else
   {
-    double const textCount = max(floor(pathLength / minPeriodSize), 1.0);
+    double const textCount = max(floor(static_cast<double>(pathLength / minPeriodSize)), 1.0);
     double const glbTextLen = splineLength / textCount;
     for (double offset = 0.5 * glbTextLen; offset < splineLength; offset += glbTextLen)
       offsets.push_back(offset);

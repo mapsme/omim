@@ -628,7 +628,6 @@
 	<string name="clear_search">Bersihkan riwayat pencarian</string>
 	<!-- Title for settings to enable/disable showcase menu button -->
 	<string name="showcase_settings_title">Tampilkan penawaran</string>
-	<string name="showcase_more_apps">Lebih Banyak Aplikasi My.com</string>
 	<string name="p2p_route_planning">Perencana Rute</string>
 	<string name="p2p_your_location">Lokasi Anda</string>
 	<string name="p2p_from">Titik keberangkatan</string>
@@ -797,6 +796,7 @@
 	<string name="download_over_mobile_message">Ini bisa menjadi jauh mahal pada beberapa paket atau jika roaming.</string>
 	<string name="error_enter_correct_house_number">Masukkan nomor rumah yang benar</string>
 	<string name="editor_storey_number">Jumlah lantai (maksimum %d)</string>
+	<!-- Error message in Editor when a user tries to set the number of floors for a building higher than 25 -->
 	<string name="error_enter_correct_storey_number">Edit bangunan dengan maksimum 25 lantai</string>
 	<string name="editor_zip_code">Kode Pos</string>
 	<string name="error_enter_correct_zip_code">Masukkan Kode Pos yang benar</string>
@@ -861,7 +861,7 @@
 	<string name="minute">mnt</string>
 	<string name="placepage_place_description">Deskripsi</string>
 	<string name="placepage_more_button">Lainnya</string>
-	<string name="bookingcom_book_button">Pesan</string>
+	<string name="book_button">Pesan</string>
 	<string name="placepage_call_button">Hubungi</string>
 	<string name="placepage_edit_bookmark_button">Edit Bookmark</string>
 	<string name="placepage_bookmark_name_hint">Nama Bookmark</string>

@@ -636,9 +636,6 @@
 	<string name="clear_search">Wyczyść historię wyszukiwania</string>
 	<!-- Title for settings to enable/disable showcase menu button -->
 	<string name="showcase_settings_title">Oferty</string>
-	<!-- Showcase menu item. -->
-	<string name="showcase_plan_your_trip">Zaplanuj podróż</string>
-	<string name="showcase_more_apps">Więcej aplikacji My.com</string>
 	<string name="p2p_route_planning">Planowanie trasy</string>
 	<string name="p2p_your_location">Twoja lokalizacja</string>
 	<string name="p2p_from">Miejsce wyjazdu</string>
@@ -807,6 +804,7 @@
 	<string name="download_over_mobile_message">Może to być kosztowne przy niektórych planach taryfowych lub w roamingu.</string>
 	<string name="error_enter_correct_house_number">Wprowadź poprawny numer domu</string>
 	<string name="editor_storey_number">Liczba pięter (maks. %d)</string>
+	<!-- Error message in Editor when a user tries to set the number of floors for a building higher than 25 -->
 	<string name="error_enter_correct_storey_number">Edytuj budynek z maksymalną liczbą 25 pięter</string>
 	<string name="editor_zip_code">Kod pocztowy</string>
 	<string name="error_enter_correct_zip_code">Podaj prawidłowy kod pocztowy</string>
@@ -871,7 +869,7 @@
 	<string name="minute">min</string>
 	<string name="placepage_place_description">Opis</string>
 	<string name="placepage_more_button">Więcej</string>
-	<string name="bookingcom_book_button">Zarezerwuj</string>
+	<string name="book_button">Zarezerwuj</string>
 	<string name="placepage_call_button">Zadzwoń</string>
 	<string name="placepage_edit_bookmark_button">Edytuj zakładkę</string>
 	<string name="placepage_bookmark_name_hint">Nazwa zakładki</string>

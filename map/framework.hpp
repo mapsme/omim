@@ -1,7 +1,6 @@
 #pragma once
 
 #include "map/api_mark_point.hpp"
-#include "map/booking_api.hpp"
 #include "map/bookmark.hpp"
 #include "map/bookmark_manager.hpp"
 #include "map/displacement_mode_manager.hpp"
@@ -11,6 +10,7 @@
 #include "map/track.hpp"
 
 #include "drape_frontend/gui/skin.hpp"
+#include "drape_frontend/drape_api.hpp"
 #include "drape_frontend/drape_engine.hpp"
 #include "drape_frontend/user_event_stream.hpp"
 #include "drape_frontend/watch/frame_image.hpp"
@@ -33,6 +33,11 @@
 
 #include "storage/downloading_policy.hpp"
 #include "storage/storage.hpp"
+
+#include "tracking/reporter.hpp"
+
+#include "partners_api/booking_api.hpp"
+#include "partners_api/uber_api.hpp"
 
 #include "platform/country_defines.hpp"
 #include "platform/location.hpp"
@@ -156,7 +161,12 @@ protected:
 
   BookingApi m_bookingApi;
 
+  uber::Api m_uberApi;
+
+  df::DrapeApi m_drapeApi;
+
   bool m_isRenderingEnabled;
+  tracking::Reporter m_trackingReporter;
 
   /// This function will be called by m_storage when latest local files
   /// is downloaded.
@@ -184,6 +194,10 @@ public:
   /// Get access to booking api helpers
   BookingApi & GetBookingApi() { return m_bookingApi; }
   BookingApi const & GetBookingApi() const { return m_bookingApi; }
+
+  df::DrapeApi & GetDrapeApi() { return m_drapeApi; }
+
+  uber::Api & GetUberApi() { return m_uberApi;}
 
   /// Migrate to new version of very different data.
   bool IsEnoughSpaceForMigrate() const;
@@ -289,6 +303,9 @@ public:
 
   m2::PointD GetSearchMarkSize(SearchMarkType searchMarkType);
 
+  // Utilities
+  void VizualizeRoadsInRect(m2::RectD const & rect);
+
 protected:
   // search::ViewportSearchCallback::Delegate overrides:
   void RunUITask(function<void()> fn) override { GetPlatform().RunOnGuiThread(move(fn)); }
@@ -392,6 +409,7 @@ public:
   void SetMyPositionModeListener(location::TMyPositionModeChanged && fn);
 
 private:
+  bool IsTrackingReporterEnabled() const;
   void OnUserPositionChanged(m2::PointD const & position);
   //@}
 
@@ -420,6 +438,8 @@ public:
   void SetRenderingDisabled(bool destroyContext);
 
   void UpdateDrapeEngine(int width, int height);
+
+  void SetFontScaleFactor(double scaleFactor);
 
 private:
   /// Depends on initialized Drape engine.
@@ -731,6 +751,9 @@ public:
   /// GenerateTurnNotifications shall be called by the client when a new position is available.
   inline void GenerateTurnNotifications(vector<string> & turnNotifications)
   {
+    if (m_currentRouterType == routing::RouterType::Taxi)
+      return;
+
     return m_routingSession.GenerateTurnNotifications(turnNotifications);
   }
 

@@ -1027,11 +1027,6 @@
 /* Title for settings to enable/disable showcase menu button */
 "showcase_settings_title" = "顯示優惠";
 
-/* Showcase menu item. */
-"showcase_plan_your_trip" = "Plan your trip";
-
-"showcase_more_apps" = "更多 My.com 應用程式";
-
 /* Place Page link to Wikipedia article (if map object has it). */
 "read_in_wikipedia" = "維基百科";
 
@@ -1356,6 +1351,7 @@
 
 "editor_storey_number" = "樓號（最大 %d）";
 
+/* Error message in Editor when a user tries to set the number of floors for a building higher than 25 */
 "error_enter_correct_storey_number" = "編輯最多 25 層的建築";
 
 "editor_zip_code" = "郵遞區號";
@@ -1478,6 +1474,8 @@
 "placepage_place_description" = "說明";
 
 "placepage_more_button" = "更多";
+
+"placepage_more_reviews_button" = "More Reviews";
 
 "bookingcom_book_button" = "預約";
 
@@ -1631,3 +1629,61 @@
 "whats_new_booking_improve_title" = "優惠預訂飯店";
 
 "whats_new_booking_improve_message" = "飯店搜尋結果現在還包含價格類別。\n我們還加入了超過 110,000 間飯店。";
+
+/* For place page hotel facilities block */
+"placepage_hotel_facilities" = "Facilities";
+
+/* For place page hotel nearby block */
+"placepage_hotel_nearby" = "Nearby";
+
+/* For ordering a taxi (as opposed to hotels or other things) */
+"taxi_order" = "Order";
+
+/* How long it is until the taxi arrives */
+"taxi_wait" = "Expected in %s";
+
+/* When there are no available taxis nearby */
+"taxi_not_found" = "Couldn't find a taxi nearby";
+
+"install_app" = "Install";
+
+/* `Filter` is a noun here */
+"booking_filters" = "Filter";
+
+"booking_filters_reset" = "Reset";
+
+"booking_filters_rating" = "Rating";
+
+"booking_filters_rating_any" = "Any";
+
+"booking_filters_ragting_good" = "Good";
+
+"booking_filters_rating_very_good" = "Very Good";
+
+"booking_filters_rating_excellent" = "Excellent";
+
+"booking_filters_price_category" = "Price Category";
+
+"booking_filters_no_results" = "No Results Found";
+
+"booking_filters_nores_message" = "Try a more general search term, zoom out or reset the filter.";
+
+"booking_filters_expand_area_button" = "Zoom out";
+
+"booking_filters_reset_button" = "Reset Filter";
+
+"booking_list" = "List";
+
+"booking_based_on_reviews" = "Based on %d hotel reviews";
+
+"booking_show_more" = "Show more";
+
+"booking_reviews" = "Reviews";
+
+"booking_hotel" = "Hotel";
+
+"booking_hotel_room" = "Room";
+
+"chat" = "Geochat";
+
+"chat_open" = "Open";

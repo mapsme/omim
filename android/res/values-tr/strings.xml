@@ -635,7 +635,6 @@
 	<string name="clear_search">Arama geçmişini temizle</string>
 	<!-- Title for settings to enable/disable showcase menu button -->
 	<string name="showcase_settings_title">Teklifleri göster</string>
-	<string name="showcase_more_apps">Daha fazla My.com uygulamaları</string>
 	<string name="p2p_route_planning">Rota planlama</string>
 	<string name="p2p_your_location">Konumunuz</string>
 	<string name="p2p_from">Kalkış noktası</string>
@@ -804,6 +803,7 @@
 	<string name="download_over_mobile_message">Bu işlem bazı planlarla ya da dolaşım ise büyük ölçüde pahalı olabilir.</string>
 	<string name="error_enter_correct_house_number">Doğru ev numarası girin</string>
 	<string name="editor_storey_number">Kat sayısı (en fazla %d)</string>
+	<!-- Error message in Editor when a user tries to set the number of floors for a building higher than 25 -->
 	<string name="error_enter_correct_storey_number">Binayı en fazla 25 katlı düzenle</string>
 	<string name="editor_zip_code">Posta Kodu</string>
 	<string name="error_enter_correct_zip_code">Doğru Posta Kodunu girin</string>
@@ -868,7 +868,7 @@
 	<string name="minute">dk</string>
 	<string name="placepage_place_description">Açıklama</string>
 	<string name="placepage_more_button">Diğer</string>
-	<string name="bookingcom_book_button">Rezervasyon</string>
+	<string name="book_button">Rezervasyon</string>
 	<string name="placepage_call_button">Çağrı</string>
 	<string name="placepage_edit_bookmark_button">Yer İmini Düzenle</string>
 	<string name="placepage_bookmark_name_hint">Yer İmi Adı</string>

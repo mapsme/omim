@@ -97,6 +97,7 @@
 		<string>fb-messenger-api</string>
 		<string>fbauth2</string>
 		<string>fbshareextension</string>
+		<string>uber</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

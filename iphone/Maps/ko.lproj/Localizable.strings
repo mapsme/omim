@@ -621,7 +621,7 @@
 "feedback" = "Feedback";
 
 /* Settings: "Send general feedback" button */
-"feedback_general" = "General feedback";
+"feedback_general" = "General Feedback";
 
 /* Text in menu */
 "subscribe_to_news" = "우리 뉴스 구독";
@@ -1027,11 +1027,6 @@
 /* Title for settings to enable/disable showcase menu button */
 "showcase_settings_title" = "추천 보기";
 
-/* Showcase menu item. */
-"showcase_plan_your_trip" = "Plan your trip";
-
-"showcase_more_apps" = "기타 My.com 앱";
-
 /* Place Page link to Wikipedia article (if map object has it). */
 "read_in_wikipedia" = "Wikipedia";
 
@@ -1356,6 +1351,7 @@
 
 "editor_storey_number" = "층 수(최대 %d)";
 
+/* Error message in Editor when a user tries to set the number of floors for a building higher than 25 */
 "error_enter_correct_storey_number" = "최대 25층까지 입력하세요";
 
 "editor_zip_code" = "우편번호";
@@ -1478,6 +1474,8 @@
 "placepage_place_description" = "설명";
 
 "placepage_more_button" = "자세히";
+
+"placepage_more_reviews_button" = "More Reviews";
 
 "bookingcom_book_button" = "예약";
 
@@ -1631,3 +1629,61 @@
 "whats_new_booking_improve_title" = "호텔 예약 시 절약";
 
 "whats_new_booking_improve_message" = "이제 가격 범주를 포함하는 호텔에 대한 결과를 검색하세요.\n또한 110,000곳 이상의 호텔이 추가되었습니다.";
+
+/* For place page hotel facilities block */
+"placepage_hotel_facilities" = "Facilities";
+
+/* For place page hotel nearby block */
+"placepage_hotel_nearby" = "Nearby";
+
+/* For ordering a taxi (as opposed to hotels or other things) */
+"taxi_order" = "Order";
+
+/* How long it is until the taxi arrives */
+"taxi_wait" = "Expected in %s";
+
+/* When there are no available taxis nearby */
+"taxi_not_found" = "Couldn't find a taxi nearby";
+
+"install_app" = "Install";
+
+/* `Filter` is a noun here */
+"booking_filters" = "Filter";
+
+"booking_filters_reset" = "Reset";
+
+"booking_filters_rating" = "Rating";
+
+"booking_filters_rating_any" = "Any";
+
+"booking_filters_ragting_good" = "Good";
+
+"booking_filters_rating_very_good" = "Very Good";
+
+"booking_filters_rating_excellent" = "Excellent";
+
+"booking_filters_price_category" = "Price Category";
+
+"booking_filters_no_results" = "No Results Found";
+
+"booking_filters_nores_message" = "Try a more general search term, zoom out or reset the filter.";
+
+"booking_filters_expand_area_button" = "Zoom out";
+
+"booking_filters_reset_button" = "Reset Filter";
+
+"booking_list" = "List";
+
+"booking_based_on_reviews" = "Based on %d hotel reviews";
+
+"booking_show_more" = "Show more";
+
+"booking_reviews" = "Reviews";
+
+"booking_hotel" = "Hotel";
+
+"booking_hotel_room" = "Room";
+
+"chat" = "Geochat";
+
+"chat_open" = "Open";

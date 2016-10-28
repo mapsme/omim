@@ -621,7 +621,7 @@
 "feedback" = "Feedback";
 
 /* Settings: "Send general feedback" button */
-"feedback_general" = "General feedback";
+"feedback_general" = "General Feedback";
 
 /* Text in menu */
 "subscribe_to_news" = "订阅我们的新闻";
@@ -1027,11 +1027,6 @@
 /* Title for settings to enable/disable showcase menu button */
 "showcase_settings_title" = "显示优惠";
 
-/* Showcase menu item. */
-"showcase_plan_your_trip" = "Plan your trip";
-
-"showcase_more_apps" = "更多My.com应用";
-
 /* Place Page link to Wikipedia article (if map object has it). */
 "read_in_wikipedia" = "Wikipedia";
 
@@ -1356,6 +1351,7 @@
 
 "editor_storey_number" = "楼号 (最大 %d)";
 
+/* Error message in Editor when a user tries to set the number of floors for a building higher than 25 */
 "error_enter_correct_storey_number" = "编辑最多 25 层的建筑";
 
 "editor_zip_code" = "邮编";
@@ -1478,6 +1474,8 @@
 "placepage_place_description" = "说明";
 
 "placepage_more_button" = "更多";
+
+"placepage_more_reviews_button" = "More Reviews";
 
 "bookingcom_book_button" = "预約";
 
@@ -1631,3 +1629,61 @@
 "whats_new_booking_improve_title" = "优惠预订酒店";
 
 "whats_new_booking_improve_message" = "酒店的搜索结果现在包含价格类别。\n我们还添加了超过 110,000 家酒店。";
+
+/* For place page hotel facilities block */
+"placepage_hotel_facilities" = "Facilities";
+
+/* For place page hotel nearby block */
+"placepage_hotel_nearby" = "Nearby";
+
+/* For ordering a taxi (as opposed to hotels or other things) */
+"taxi_order" = "Order";
+
+/* How long it is until the taxi arrives */
+"taxi_wait" = "Expected in %s";
+
+/* When there are no available taxis nearby */
+"taxi_not_found" = "Couldn't find a taxi nearby";
+
+"install_app" = "Install";
+
+/* `Filter` is a noun here */
+"booking_filters" = "Filter";
+
+"booking_filters_reset" = "Reset";
+
+"booking_filters_rating" = "Rating";
+
+"booking_filters_rating_any" = "Any";
+
+"booking_filters_ragting_good" = "Good";
+
+"booking_filters_rating_very_good" = "Very Good";
+
+"booking_filters_rating_excellent" = "Excellent";
+
+"booking_filters_price_category" = "Price Category";
+
+"booking_filters_no_results" = "No Results Found";
+
+"booking_filters_nores_message" = "Try a more general search term, zoom out or reset the filter.";
+
+"booking_filters_expand_area_button" = "Zoom out";
+
+"booking_filters_reset_button" = "Reset Filter";
+
+"booking_list" = "List";
+
+"booking_based_on_reviews" = "Based on %d hotel reviews";
+
+"booking_show_more" = "Show more";
+
+"booking_reviews" = "Reviews";
+
+"booking_hotel" = "Hotel";
+
+"booking_hotel_room" = "Room";
+
+"chat" = "Geochat";
+
+"chat_open" = "Open";

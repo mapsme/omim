@@ -155,6 +155,8 @@ namespace android
     void SetPlacePageInfo(place_page::Info const & info);
     place_page::Info & GetPlacePageInfo();
     void RequestBookingMinPrice(string const & hotelId, string const & currency, function<void(string const &, string const &)> const & callback);
+    void RequestBookingInfo(string const & hotelId, string const & lang,
+                            function<void(BookingApi::HotelInfo const &)> const & callback);
 
     bool HasSpaceForMigration();
     storage::TCountryId PreMigrate(ms::LatLon const & position, storage::Storage::TChangeCountryFunction const & statusChangeListener,
@@ -164,6 +166,9 @@ namespace android
     bool IsAutoRetryDownloadFailed();
     bool IsDownloadOn3gEnabled();
     void EnableDownloadOn3g();
+
+    uint64_t RequestUberProducts(ms::LatLon const & from, ms::LatLon const & to, uber::ProductsCallback const & callback);
+    static uber::RideRequestLinks GetUberLinks(string const & productId, ms::LatLon const & from, ms::LatLon const & to);
   };
 }
 

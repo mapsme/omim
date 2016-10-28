@@ -1,4 +1,5 @@
 #import "MWMActionBarButton.h"
+#import "Common.h"
 #import "MWMButton.h"
 #import "UIColor+MapsMeColor.h"
 
@@ -9,6 +10,7 @@ NSString * titleForButton(EButton type, BOOL isSelected)
   case EButton::Api:
     return L(@"back");
   case EButton::Booking:
+  case EButton::Opentable:
     return L(@"bookingcom_book_button");
   case EButton::Call:
     return L(@"placepage_call_button");
@@ -59,6 +61,11 @@ NSString * titleForButton(EButton type, BOOL isSelected)
     self.label.textColor = [UIColor whiteColor];
     self.backgroundColor = [UIColor bookingBackground];
     break;
+  case EButton::Opentable:
+    [self.button setImage:[UIImage imageNamed:@"ic_opentable"] forState:UIControlStateNormal];
+    self.label.textColor = [UIColor whiteColor];
+    self.backgroundColor = [UIColor opentableBackground];
+    break;
   case EButton::Call:
     [self.button setImage:[UIImage imageNamed:@"ic_placepage_phone_number"] forState:UIControlStateNormal];
     break;
@@ -95,7 +102,6 @@ NSString * titleForButton(EButton type, BOOL isSelected)
   button.delegate = delegate;
   button.type = type;
   [view addSubview:button];
-  button.autoresizingMask = UIViewAutoresizingNone;
   [button configButton:isSelected];
 }
 

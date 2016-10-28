@@ -635,7 +635,6 @@
 	<string name="clear_search">清除历史搜索</string>
 	<!-- Title for settings to enable/disable showcase menu button -->
 	<string name="showcase_settings_title">显示优惠</string>
-	<string name="showcase_more_apps">更多My.com应用</string>
 	<string name="p2p_route_planning">路线计划</string>
 	<string name="p2p_your_location">您的位置</string>
 	<string name="p2p_from">出发地点</string>
@@ -804,6 +803,7 @@
 	<string name="download_over_mobile_message">用一些方案或漫游的话这可能相当昂贵。</string>
 	<string name="error_enter_correct_house_number">输入正确的房屋号</string>
 	<string name="editor_storey_number">楼号 (最大 %d)</string>
+	<!-- Error message in Editor when a user tries to set the number of floors for a building higher than 25 -->
 	<string name="error_enter_correct_storey_number">编辑最多 25 层的建筑</string>
 	<string name="editor_zip_code">邮编</string>
 	<string name="error_enter_correct_zip_code">输入正确的邮编</string>
@@ -868,7 +868,7 @@
 	<string name="minute">分鐘</string>
 	<string name="placepage_place_description">说明</string>
 	<string name="placepage_more_button">更多</string>
-	<string name="bookingcom_book_button">预約</string>
+	<string name="book_button">预約</string>
 	<string name="placepage_call_button">呼叫</string>
 	<string name="placepage_edit_bookmark_button">编辑书签</string>
 	<string name="placepage_bookmark_name_hint">书签名称</string>

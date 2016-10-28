@@ -59,6 +59,8 @@
     <item name="redButtonTextColor">@color/button_red_text</item>
     <item name="redButtonTextColorDisabled">@color/button_red_text_disabled</item>
 
+    <item name="startButtonBackground">@drawable/button_start</item>
+
     <item name="circleAccent">@drawable/circle_accent</item>
 
     <item name="menuBackground">@color/bg_menu</item>
@@ -75,6 +77,11 @@
 
     <item name="routingButtonHint">@color/routing_button_tint</item>
     <item name="routingButtonPressedHint">@color/routing_button_pressed_tint</item>
+
+    <item name="ppRatingBackground">@color/bg_placepage_rating</item>
+    <item name="ppRatingText">@color/text_placepage_rating</item>
+    <item name="ppPositive">@drawable/ic_positive_review</item>
+    <item name="ppNegative">@drawable/ic_negative_review</item>
   </style>
 
   <!-- Night theme -->
@@ -136,6 +143,8 @@
     <item name="redButtonTextColor">@color/button_red_text</item>
     <item name="redButtonTextColorDisabled">@color/button_red_text_disabled</item>
 
+    <item name="startButtonBackground">@drawable/button_start_night</item>
+
     <item name="circleAccent">@drawable/circle_accent_night</item>
 
     <item name="menuBackground">@color/bg_menu_night</item>
@@ -152,5 +161,10 @@
 
     <item name="routingButtonHint">@color/routing_button_tint</item>
     <item name="routingButtonPressedHint">@color/routing_button_pressed_tint</item>
+
+    <item name="ppRatingBackground">@color/bg_placepage_rating_night</item>
+    <item name="ppRatingText">@color/text_placepage_rating_night</item>
+    <item name="ppPositive">@drawable/ic_positive_review_night</item>
+    <item name="ppNegative">@drawable/ic_negative_review_night</item>
   </style>
 </resources>

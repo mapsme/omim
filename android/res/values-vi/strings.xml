@@ -629,7 +629,6 @@
 	<string name="clear_search">Xóa Lịch sử Tìm kiếm</string>
 	<!-- Title for settings to enable/disable showcase menu button -->
 	<string name="showcase_settings_title">Hiển thị lời mời</string>
-	<string name="showcase_more_apps">Thêm Ứng dụng My.com</string>
 	<string name="p2p_route_planning">Hoạch định đường đi</string>
 	<string name="p2p_your_location">Vị trí của bạn</string>
 	<string name="p2p_from">Điểm khởi hành</string>
@@ -798,6 +797,7 @@
 	<string name="download_over_mobile_message">Như vậy sẽ rất đắt tiền với một số gói dữ liệu hoặc khi chuyển vùng.</string>
 	<string name="error_enter_correct_house_number">Nhập số nhà chính xác</string>
 	<string name="editor_storey_number">Số tầng (tối đa %d)</string>
+	<!-- Error message in Editor when a user tries to set the number of floors for a building higher than 25 -->
 	<string name="error_enter_correct_storey_number">Sửa tòa nhà có tối đa 25 tầng</string>
 	<string name="editor_zip_code">Mã ZIP</string>
 	<string name="error_enter_correct_zip_code">Nhập Mã ZIP chính xác</string>
@@ -862,7 +862,7 @@
 	<string name="minute">phút</string>
 	<string name="placepage_place_description">Mô tả</string>
 	<string name="placepage_more_button">Bổ sung</string>
-	<string name="bookingcom_book_button">Đặt trước</string>
+	<string name="book_button">Đặt trước</string>
 	<string name="placepage_call_button">Gọi</string>
 	<string name="placepage_edit_bookmark_button">Sửa Dấu Trang</string>
 	<string name="placepage_bookmark_name_hint">Tên Dấu Trang</string>

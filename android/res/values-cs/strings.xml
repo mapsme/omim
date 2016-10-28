@@ -636,7 +636,6 @@
 	<string name="clear_search">Vymazat historii vyhledávání</string>
 	<!-- Title for settings to enable/disable showcase menu button -->
 	<string name="showcase_settings_title">Zobrazit nabídky</string>
-	<string name="showcase_more_apps">Více aplikací My.com</string>
 	<string name="p2p_route_planning">Plánování trasy</string>
 	<string name="p2p_your_location">Vaše umístění</string>
 	<string name="p2p_from">Počátek cesty</string>
@@ -805,6 +804,7 @@
 	<string name="download_over_mobile_message">Toto by mohli být s některými tarify nebo roamingem výrazně dražší.</string>
 	<string name="error_enter_correct_house_number">Zadejte správné číslo domu</string>
 	<string name="editor_storey_number">Počet poschodí (max. %d)</string>
+	<!-- Error message in Editor when a user tries to set the number of floors for a building higher than 25 -->
 	<string name="error_enter_correct_storey_number">Opravte počet poschodí, max. 25</string>
 	<string name="editor_zip_code">PSČ</string>
 	<string name="error_enter_correct_zip_code">Zadejte správné PSČ</string>
@@ -869,7 +869,7 @@
 	<string name="minute">min</string>
 	<string name="placepage_place_description">Popis</string>
 	<string name="placepage_more_button">Více</string>
-	<string name="bookingcom_book_button">Rezervace</string>
+	<string name="book_button">Rezervace</string>
 	<string name="placepage_call_button">Volat</string>
 	<string name="placepage_edit_bookmark_button">Upravit záložku</string>
 	<string name="placepage_bookmark_name_hint">Název záložky</string>

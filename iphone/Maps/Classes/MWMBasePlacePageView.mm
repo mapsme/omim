@@ -6,6 +6,7 @@
 #import "MWMPlacePage.h"
 #import "MWMPlacePageActionBar.h"
 #import "MWMPlacePageBookmarkCell.h"
+#import "MWMPlacePageBookmarkDelegate.h"
 #import "MWMPlacePageButtonCell.h"
 #import "MWMPlacePageEntity.h"
 #import "MWMPlacePageInfoCell.h"
@@ -295,7 +296,7 @@ using namespace storage;
     {
       MWMCircularProgressStateVec const affectedStates = {MWMCircularProgressStateNormal,
                                                           MWMCircularProgressStateSelected};
-      [progress setImage:[UIImage imageNamed:@"ic_download"] forStates:affectedStates];
+      [progress setImageName:@"ic_download" forStates:affectedStates];
       [progress setColoring:MWMButtonColoringBlue forStates:affectedStates];
       progress.state = MWMCircularProgressStateNormal;
       break;
@@ -674,7 +675,7 @@ using namespace storage;
   default:
   {
     MWMPlacePageInfoCell * tCell = (MWMPlacePageInfoCell *)cell;
-    tCell.currentEntity = self.entity;
+    tCell.currentEntity = entity;
     [tCell configureWithType:cellType info:[entity getCellValue:cellType]];
     break;
   }

@@ -208,22 +208,18 @@ static NSString * const kAlertControllerNibIdentifier = @"MWMAlertViewController
   [self.ownerViewController addChildViewController:self];
   self.view.alpha = 0.;
   alert.alpha = 0.;
-  if (!isIOS7)
-  {
-    CGFloat const scale = 1.1;
-    alert.transform = CGAffineTransformMakeScale(scale, scale);
-  }
+  CGFloat const scale = 1.1;
+  alert.transform = CGAffineTransformMakeScale(scale, scale);
   [UIView animateWithDuration:kDefaultAnimationDuration
                    animations:^{
                      self.view.alpha = 1.;
                      alert.alpha = 1.;
-                     if (!isIOS7)
-                       alert.transform = CGAffineTransformIdentity;
+                     alert.transform = CGAffineTransformIdentity;
                    }];
   [MapsAppDelegate.theApp.window endEditing:YES];
 }
 
-- (void)closeAlert
+- (void)closeAlert:(nullable TMWMVoidBlock)completion
 {
   NSArray * subviews = self.view.subviews;
   MWMAlert * closeAlert = subviews.lastObject;
@@ -245,6 +241,8 @@ static NSString * const kAlertControllerNibIdentifier = @"MWMAlertViewController
           [self.view removeFromSuperview];
           [self removeFromParentViewController];
         }
+        if (completion)
+          completion();
       }];
 }
 

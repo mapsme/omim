@@ -10,12 +10,14 @@
 #import "MWMFrameworkListener.h"
 #import "MWMObjectsCategorySelectorController.h"
 #import "MWMPlacePageEntity.h"
+#import "MWMPlacePageManager.h"
 #import "MWMPlacePageViewManager.h"
 #import "MWMRoutePreview.h"
 #import "MWMRouter.h"
 #import "MWMSearchManager.h"
 #import "MWMSearchView.h"
 #import "MWMSideButtons.h"
+#import "MWMTaxiPreviewDataSource.h"
 #import "MapViewController.h"
 #import "MapsAppDelegate.h"
 #import "Statistics.h"
@@ -41,7 +43,7 @@ extern NSString * const kAlohalyticsTapEventKey;
 
 @property(nonatomic) MWMSideButtons * sideButtons;
 @property(nonatomic) MWMBottomMenuViewController * menuController;
-@property(nonatomic) MWMPlacePageViewManager * placePageManager;
+@property(nonatomic) id<MWMPlacePageProtocol> placePageManager;
 @property(nonatomic) MWMNavigationDashboardManager * navigationManager;
 @property(nonatomic) MWMSearchManager * searchManager;
 
@@ -67,6 +69,7 @@ extern NSString * const kAlohalyticsTapEventKey;
   self.ownerController = controller;
   self.hidden = NO;
   self.sideButtonsHidden = NO;
+  self.isDirectionViewHidden = YES;
   self.menuState = MWMBottomMenuStateInactive;
   self.menuRestoreState = MWMBottomMenuStateInactive;
   return self;
@@ -83,7 +86,7 @@ extern NSString * const kAlohalyticsTapEventKey;
                         searchManagerState != MWMSearchManagerStateHidden) ||
                        self.navigationState == MWMNavigationDashboardStatePlanning ||
                        self.navigationState == MWMNavigationDashboardStateReady ||
-                       self.menuState == MWMBottomMenuStateActive || self.isDirectionViewShown ||
+                       self.menuState == MWMBottomMenuStateActive || !self.isDirectionViewHidden ||
                        (isNightMode && self.navigationState != MWMNavigationDashboardStateHidden) ||
                        MapsAppDelegate.theApp.routingPlaneMode != MWMRoutingPlaneModeNone;
   return (isLight || (!isLight && isNightMode)) ? UIStatusBarStyleLightContent
@@ -213,6 +216,7 @@ extern NSString * const kAlohalyticsTapEventKey;
 
 - (void)actionDownloadMaps:(mwm::DownloaderMode)mode
 {
+  MapViewController * ownerController = self.ownerController;
   if (platform::migrate::NeedMigrate())
   {
     if (GetFramework().IsRoutingActive())
@@ -225,12 +229,12 @@ extern NSString * const kAlohalyticsTapEventKey;
     {
       [Statistics logEvent:kStatDownloaderMigrationDialogue
             withParameters:@{kStatFrom : kStatDownloader}];
-      [self.ownerController openMigration];
+      [ownerController openMigration];
     }
   }
   else
   {
-    [self.ownerController openMapsDownloader:mode];
+    [ownerController openMapsDownloader:mode];
   }
 }
 
@@ -259,11 +263,12 @@ extern NSString * const kAlohalyticsTapEventKey;
 - (void)addPlace:(BOOL)isBusiness hasPoint:(BOOL)hasPoint point:(m2::PointD const &)point
 {
   self.menuState = MWMBottomMenuStateHidden;
-  static_cast<EAGLView *>(self.ownerController.view).widgetsManager.fullScreen = YES;
+  MapViewController * ownerController = self.ownerController;
+  static_cast<EAGLView *>(ownerController.view).widgetsManager.fullScreen = YES;
   [self.placePageManager dismissPlacePage];
   self.searchManager.state = MWMSearchManagerStateHidden;
 
-  [MWMAddPlaceNavigationBar showInSuperview:self.ownerController.view
+  [MWMAddPlaceNavigationBar showInSuperview:ownerController.view
       isBusiness:isBusiness
       applyPosition:hasPoint
       position:point
@@ -272,9 +277,9 @@ extern NSString * const kAlohalyticsTapEventKey;
 
         if (IsPointCoveredByDownloadedMaps(f.GetViewportCenter(), f.GetStorage(),
                                            f.GetCountryInfoGetter()))
-          [self.ownerController performSegueWithIdentifier:kMapToCategorySelectorSegue sender:nil];
+          [ownerController performSegueWithIdentifier:kMapToCategorySelectorSegue sender:nil];
         else
-          [self.ownerController.alertController presentIncorrectFeauturePositionAlert];
+          [ownerController.alertController presentIncorrectFeauturePositionAlert];
 
         [self didFinishAddingPlace];
       }
@@ -283,21 +288,13 @@ extern NSString * const kAlohalyticsTapEventKey;
       }];
 }
 
+#pragma mark - MWMPlacePageManager
+
 - (void)dragPlacePage:(CGRect)frame
 {
   if (IPAD)
     return;
-  CGSize const ownerViewSize = self.ownerController.view.size;
-  if (ownerViewSize.width > ownerViewSize.height)
-  {
-    CGFloat const leftBound = frame.origin.x + frame.size.width;
-    self.menuController.leftBound = leftBound;
-    [MWMNavigationDashboardManager manager].leftBound = leftBound;
-  }
-  else
-  {
-    [self.sideButtons setBottomBound:frame.origin.y];
-  }
+  [self.sideButtons setBottomBound:frame.origin.y];
 }
 
 - (void)addPlacePageViews:(NSArray *)views
@@ -378,6 +375,11 @@ extern NSString * const kAlohalyticsTapEventKey;
     [[MapsAppDelegate theApp] enableStandby];
 }
 
+- (MWMTaxiCollectionView *)taxiCollectionView
+{
+  return self.menuController.taxiCollectionView;
+}
+
 #pragma mark - Routing
 
 - (void)onRoutePrepare
@@ -449,11 +451,12 @@ extern NSString * const kAlohalyticsTapEventKey;
   return _menuController;
 }
 
-- (MWMPlacePageViewManager *)placePageManager
+- (id<MWMPlacePageProtocol>)placePageManager
 {
+  auto const PlacePageClass = IPAD ? [MWMPlacePageViewManager class] : [MWMPlacePageManager class];
+
   if (!_placePageManager)
-    _placePageManager =
-        [[MWMPlacePageViewManager alloc] initWithViewController:self.ownerController];
+    _placePageManager = [[PlacePageClass alloc] init];
   return _placePageManager;
 }
 
@@ -507,6 +510,11 @@ extern NSString * const kAlohalyticsTapEventKey;
   self.menuController.state = self.hidden ? MWMBottomMenuStateHidden : menuState;
 }
 
+- (void)setRoutingErrorMessage:(NSString *)message
+{
+  [self.menuController setRoutingErrorMessage:message];
+}
+
 - (MWMBottomMenuState)menuState
 {
   MWMBottomMenuState const state = self.menuController.state;
@@ -516,12 +524,6 @@ extern NSString * const kAlohalyticsTapEventKey;
 }
 
 - (MWMNavigationDashboardState)navigationState { return self.navigationManager.state; }
-- (MWMPlacePageEntity *)placePageEntity { return self.placePageManager.entity; }
-- (BOOL)isDirectionViewShown
-{
-  return _placePageManager ? _placePageManager.isDirectionViewShown : NO;
-}
-
 - (void)setTopBound:(CGFloat)topBound
 {
   if (IPAD)
@@ -548,4 +550,7 @@ extern NSString * const kAlohalyticsTapEventKey;
       searchHidden ? MWMSearchManagerStateHidden : MWMSearchManagerStateDefault;
 }
 
+#pragma mark - MWMFeatureHolder
+
+- (id<MWMFeatureHolder>)featureHolder { return self.placePageManager; }
 @end

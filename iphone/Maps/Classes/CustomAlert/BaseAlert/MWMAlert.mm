@@ -159,7 +159,7 @@
   // Should override this method if you want custom relayout after rotation.
 }
 
-- (void)close { [self.alertController closeAlert]; }
+- (void)close:(TMWMVoidBlock)completion { [self.alertController closeAlert:completion]; }
 - (void)setNeedsCloseAlertAfterEnterBackground
 {
   [[NSNotificationCenter defaultCenter] addObserver:self
@@ -172,18 +172,11 @@
 - (void)applicationDidEnterBackground
 {
   // Should close alert when application entered background.
-  [self close];
+  [self close:nil];
 }
 
 - (void)rotate:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
-  if (isIOS7 && [self respondsToSelector:@selector(setTransform:)])
-  {
-    [UIView animateWithDuration:duration
-                     animations:^{
-                       self.transform = rotation(toInterfaceOrientation);
-                     }];
-  }
   if ([self respondsToSelector:@selector(willRotateToInterfaceOrientation:)])
     [self willRotateToInterfaceOrientation:toInterfaceOrientation];
 }
@@ -212,11 +205,11 @@ CGAffineTransform rotation(UIInterfaceOrientation orientation)
 {
   _alertController = alertController;
   UIView * view = alertController.view;
-  UIView * ownerView = alertController.ownerViewController.view;
-  view.frame = ownerView.bounds;
-  [alertController.ownerViewController.view addSubview:view];
+  UIViewController * ownerViewController = alertController.ownerViewController;
+  view.frame = ownerViewController.view.bounds;
+  [ownerViewController.view addSubview:view];
   [self addControllerViewToWindow];
-  [self rotate:alertController.ownerViewController.interfaceOrientation duration:0.0];
+  [self rotate:ownerViewController.interfaceOrientation duration:0.0];
   [view addSubview:self];
   self.frame = view.bounds;
 }

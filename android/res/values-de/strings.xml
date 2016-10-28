@@ -647,7 +647,6 @@
 	<string name="clear_search">Suchverlauf löschen</string>
 	<!-- Title for settings to enable/disable showcase menu button -->
 	<string name="showcase_settings_title">Angebote anzeigen</string>
-	<string name="showcase_more_apps">Weitere Apps von My.com</string>
 	<string name="p2p_route_planning">Routenplanung</string>
 	<string name="p2p_your_location">Ihr Standort</string>
 	<string name="p2p_from">Startpunkt</string>
@@ -816,6 +815,7 @@
 	<string name="download_over_mobile_message">Das könnte mit einigen Tarifen oder beim Roaming sehr teuer werden.</string>
 	<string name="error_enter_correct_house_number">Richtige Hausnummer eingeben</string>
 	<string name="editor_storey_number">Anzahl der Etagen (%d maximal)</string>
+	<!-- Error message in Editor when a user tries to set the number of floors for a building higher than 25 -->
 	<string name="error_enter_correct_storey_number">Bearbeiten Sie die Gebäude mit maximal 25 Etagen</string>
 	<string name="editor_zip_code">Postleitzahl</string>
 	<string name="error_enter_correct_zip_code">Geben Sie die korrekte Postleitzahl ein</string>
@@ -880,7 +880,7 @@
 	<string name="minute">min</string>
 	<string name="placepage_place_description">Beschreibung</string>
 	<string name="placepage_more_button">Mehr</string>
-	<string name="bookingcom_book_button">Buchen</string>
+	<string name="book_button">Buchen</string>
 	<string name="placepage_call_button">Anruf</string>
 	<string name="placepage_edit_bookmark_button">Lesezeichen bearbeiten</string>
 	<string name="placepage_bookmark_name_hint">Name des Lesezeichens</string>

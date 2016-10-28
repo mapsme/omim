@@ -107,7 +107,7 @@ static NSString * const kStatisticsEvent = @"Rate Alert";
 {
   [Statistics logEvent:kStatisticsEvent withParameters:@{kStatAction : kStatClose}];
   [Alohalytics logEvent:kRateAlertEventName withValue:@"notNowTap"];
-  [self close];
+  [self close:nil];
 }
 
 - (IBAction)rateTap
@@ -121,8 +121,11 @@ static NSString * const kStatisticsEvent = @"Rate Alert";
   {
     [[UIApplication sharedApplication] rateVersionFrom:@"ios_pro_popup"];
     [Alohalytics logEvent:kRateAlertEventName withValue:@"fiveStar"];
-    [self close];
-    [self setupAlreadyRatedInUserDefaults];
+    [self close:^{
+      auto ud = [NSUserDefaults standardUserDefaults];
+      [ud setBool:YES forKey:kUDAlreadyRatedKey];
+      [ud synchronize];
+    }];
   }
   else
   {
@@ -130,19 +133,13 @@ static NSString * const kStatisticsEvent = @"Rate Alert";
   }
 }
 
-- (void)setupAlreadyRatedInUserDefaults
-{
-  auto ud = [NSUserDefaults standardUserDefaults];
-  [ud setBool:YES forKey:kUDAlreadyRatedKey];
-  [ud synchronize];
-}
-
 - (void)sendFeedback
 {
   [Statistics logEvent:kStatEventName(kStatisticsEvent, kStatSendEmail)];
   [Alohalytics logEvent:kRateAlertEventName withValue:@"sendFeedback"];
   self.alpha = 0.;
-  self.alertController.view.alpha = 0.;
+  MWMAlertViewController * alertController = self.alertController;
+  alertController.view.alpha = 0.;
   if ([MFMailComposeViewController canSendMail])
   {
     struct utsname systemInfo;
@@ -170,9 +167,9 @@ static NSString * const kStatisticsEvent = @"Rate Alert";
     [mailController setToRecipients:@[ kRateEmail ]];
     [mailController setMessageBody:text isHTML:NO];
     mailController.navigationBar.tintColor = [UIColor blackColor];
-    [self.alertController.ownerViewController presentViewController:mailController
-                                                           animated:YES
-                                                         completion:nil];
+    [alertController.ownerViewController presentViewController:mailController
+                                                      animated:YES
+                                                    completion:nil];
   }
   else
   {
@@ -195,7 +192,7 @@ static NSString * const kStatisticsEvent = @"Rate Alert";
       dismissViewControllerAnimated:YES
                          completion:^{
                            [Statistics logEvent:kStatEventName(kStatisticsEvent, kStatClose)];
-                           [self close];
+                           [self close:nil];
                          }];
 }
 

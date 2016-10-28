@@ -6,11 +6,14 @@
 #import "MWMNavigationInfoView.h"
 #import "MWMRoutePreview.h"
 #import "MWMRouter.h"
+#import "MWMTaxiPreviewDataSource.h"
 #import "MWMTextToSpeech.h"
 #import "Macros.h"
 #import "MapViewController.h"
 #import "MapsAppDelegate.h"
 #import "Statistics.h"
+
+#include "platform/platform.hpp"
 
 namespace
 {
@@ -38,6 +41,8 @@ using TInfoDisplays = NSHashTable<__kindof TInfoDisplay>;
 @property(weak, nonatomic) UIView * ownerView;
 
 @property(nonatomic) MWMNavigationDashboardEntity * entity;
+
+@property(nonatomic) MWMTaxiPreviewDataSource * taxiDataSource;
 
 @end
 
@@ -76,6 +81,9 @@ using TInfoDisplays = NSHashTable<__kindof TInfoDisplay>;
 
 - (void)handleError
 {
+  if ([MWMRouter isTaxi])
+    return;
+
   [self.routePreview stateError];
   [self.routePreview router:[MWMRouter router].type setState:MWMCircularProgressStateFailed];
 }
@@ -104,9 +112,22 @@ using TInfoDisplays = NSHashTable<__kindof TInfoDisplay>;
   [[MWMRouter router] stop];
 }
 
+#pragma mark - MWMTaxiDataSource
+
+- (MWMTaxiPreviewDataSource *)taxiDataSource
+{
+  if (!_taxiDataSource)
+  {
+    _taxiDataSource = [[MWMTaxiPreviewDataSource alloc] initWithCollectionView:IPAD ?
+                       self.routePreview.taxiCollectionView : self.delegate.taxiCollectionView];
+  }
+  return _taxiDataSource;
+}
+
 #pragma mark - MWMNavigationGo
 
-- (IBAction)routingStartTouchUpInside { [[MWMRouter router] start]; }
+- (IBAction)routingStartTouchUpInside { [MWMRouter startRouting]; }
+
 #pragma mark - State changes
 
 - (void)hideState
@@ -133,10 +154,45 @@ using TInfoDisplays = NSHashTable<__kindof TInfoDisplay>;
   [self setMenuState:MWMBottomMenuStatePlanning];
   [self.routePreview router:[MWMRouter router].type setState:MWMCircularProgressStateSpinner];
   [self setRouteBuilderProgress:0.];
+  if (![MWMRouter isTaxi])
+    return;
+
+  auto showError = ^(NSString * errorMessage)
+  {
+    [self.routePreview stateError];
+    [self.routePreview router:routing::RouterType::Taxi setState:MWMCircularProgressStateFailed];
+    [self setMenuErrorStateWithErrorMessage:errorMessage];
+  };
+
+  auto r = [MWMRouter router];
+  auto const & start = r.startPoint;
+  auto const & finish = r.finishPoint;
+  if (start.IsValid() && finish.IsValid())
+  {
+    if (!Platform::IsConnected())
+    {
+      [[MapViewController controller].alertController presentNoConnectionAlert];
+      showError(L(@"dialog_taxi_offline"));
+      return;
+    }
+    [self.taxiDataSource requestTaxiFrom:start to:finish completion:^
+    {
+      [self setMenuState:MWMBottomMenuStateGo];
+      [self.routePreview stateReady];
+      [self setRouteBuilderProgress:100.];
+    }
+    failure:^(NSString * errorMessage)
+    {
+      showError(errorMessage);
+    }];
+  }
 }
 
 - (void)showStateReady
 {
+  if ([MWMRouter isTaxi])
+    return;
+
   [self setMenuState:MWMBottomMenuStateGo];
   [self.routePreview stateReady];
 }
@@ -150,10 +206,24 @@ using TInfoDisplays = NSHashTable<__kindof TInfoDisplay>;
   [MWMMapViewControlsManager manager].searchHidden = YES;
 }
 
+- (void)updateStartButtonTitle:(UIButton *)startButton
+{
+  auto t = self.startButtonTitle;
+  [startButton setTitle:t forState:UIControlStateNormal];
+  [startButton setTitle:t forState:UIControlStateDisabled];
+}
+
+- (void)setMenuErrorStateWithErrorMessage:(NSString *)message
+{
+  [self.delegate setRoutingErrorMessage:message];
+  [self setMenuState:MWMBottomMenuStateRoutingError];
+}
+
 - (void)setMenuState:(MWMBottomMenuState)menuState
 {
-  [self.delegate setMenuState:menuState];
-  [self.delegate setMenuRestoreState:menuState];
+  id<MWMNavigationDashboardManagerProtocol> delegate = self.delegate;
+  [delegate setMenuState:menuState];
+  [delegate setMenuRestoreState:menuState];
 }
 
 - (void)mwm_refreshUI
@@ -234,6 +304,10 @@ using TInfoDisplays = NSHashTable<__kindof TInfoDisplay>;
 }
 
 - (void)addInfoDisplay:(TInfoDisplay)infoDisplay { [self.infoDisplays addObject:infoDisplay]; }
+- (NSString *)startButtonTitle
+{
+  return [MWMRouter isTaxi] ? L(@"taxi_order") : L(@"p2p_start");
+}
 #pragma mark - Properties
 
 - (MWMRoutePreview *)routePreview

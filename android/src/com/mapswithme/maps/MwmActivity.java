@@ -16,7 +16,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,6 +28,7 @@ import com.mapswithme.maps.api.ParsedMwmRequest;
 import com.mapswithme.maps.api.ParsedRoutingData;
 import com.mapswithme.maps.api.ParsedUrlMwmRequest;
 import com.mapswithme.maps.api.RoutePoint;
+import com.mapswithme.maps.uber.UberInfo;
 import com.mapswithme.maps.base.BaseMwmFragmentActivity;
 import com.mapswithme.maps.base.OnBackPressListener;
 import com.mapswithme.maps.bookmarks.BookmarkCategoriesActivity;
@@ -81,10 +81,7 @@ import com.mapswithme.util.concurrency.UiThread;
 import com.mapswithme.util.sharing.ShareOption;
 import com.mapswithme.util.sharing.SharingHelper;
 import com.mapswithme.util.statistics.AlohaHelper;
-import com.mapswithme.util.statistics.MytargetHelper;
 import com.mapswithme.util.statistics.Statistics;
-import ru.mail.android.mytarget.nativeads.NativeAppwallAd;
-import ru.mail.android.mytarget.nativeads.banners.NativeAppwallBanner;
 
 import java.io.Serializable;
 import java.util.Stack;
@@ -111,14 +108,12 @@ public class MwmActivity extends BaseMwmFragmentActivity
                                                      EditorHostFragment.class.getName(),
                                                      ReportFragment.class.getName() };
   // Instance state
-  private static final String STATE_PP_OPENED = "PpOpened";
+  private static final String STATE_PP = "PpState";
   private static final String STATE_MAP_OBJECT = "MapObject";
 
   // Map tasks that we run AFTER rendering initialized
   private final Stack<MapTask> mTasks = new Stack<>();
   private final StoragePathManager mPathManager = new StoragePathManager();
-
-  private View mMapFrame;
 
   private MapFragment mMapFragment;
   private PlacePageView mPlacePage;
@@ -131,12 +126,9 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   private PanelAnimator mPanelAnimator;
   private OnmapDownloader mOnmapDownloader;
-  private MytargetHelper mMytargetHelper;
 
   private FadeView mFadeView;
 
-  // TODO create outer controller
-  private View mZoomFrame;
   private View mNavZoomIn;
   private View mNavZoomOut;
   private MyPositionButton mNavMyPosition;
@@ -151,6 +143,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   // The first launch of application ever - onboarding screen will be shown.
   private boolean mFirstStart;
+  private boolean mPlacePageRestored;
 
   public interface LeftAnimationTrackListener
   {
@@ -178,7 +171,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
       m_listener = listener;
     }
 
-    public void setPlacePageVisible(boolean visible)
+    void setPlacePageVisible(boolean visible)
     {
       int orientation = MwmActivity.this.getResources().getConfiguration().orientation;
       if(orientation == Configuration.ORIENTATION_LANDSCAPE)
@@ -188,7 +181,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
       }
     }
 
-    public void setPreviewVisible(boolean visible)
+    void setPreviewVisible(boolean visible)
     {
       int orientation = MwmActivity.this.getResources().getConfiguration().orientation;
       if(orientation == Configuration.ORIENTATION_PORTRAIT)
@@ -291,7 +284,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   }
 
   @Nullable
-  public Fragment getFragment(Class<? extends Fragment> clazz)
+  Fragment getFragment(Class<? extends Fragment> clazz)
   {
     if (!mIsFragmentContainer)
       throw new IllegalStateException("Must be called for tablets only!");
@@ -497,8 +490,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   private void initMap()
   {
-    mMapFrame = findViewById(R.id.map_fragment_container);
-
     mFadeView = (FadeView) findViewById(R.id.fade_view);
     mFadeView.setListener(new FadeView.Listener()
     {
@@ -518,20 +509,21 @@ public class MwmActivity extends BaseMwmFragmentActivity
           .replace(R.id.map_fragment_container, mMapFragment, MapFragment.class.getName())
           .commit();
     }
-    mMapFrame.setOnTouchListener(this);
+
+    findViewById(R.id.map_fragment_container).setOnTouchListener(this);
   }
 
   private void initNavigationButtons()
   {
-    mZoomFrame = findViewById(R.id.navigation_buttons);
-    mNavZoomIn = mZoomFrame.findViewById(R.id.nav_zoom_in);
+    View frame = findViewById(R.id.navigation_buttons);
+    mNavZoomIn = frame.findViewById(R.id.nav_zoom_in);
     mNavZoomIn.setOnClickListener(this);
-    mNavZoomOut = mZoomFrame.findViewById(R.id.nav_zoom_out);
+    mNavZoomOut = frame.findViewById(R.id.nav_zoom_out);
     mNavZoomOut.setOnClickListener(this);
-    mNavMyPosition = new MyPositionButton(mZoomFrame.findViewById(R.id.my_position));
+    mNavMyPosition = new MyPositionButton(frame.findViewById(R.id.my_position));
   }
 
-  private boolean closePlacePage()
+  public boolean closePlacePage()
   {
     if (mPlacePage.isHidden())
       return false;
@@ -708,17 +700,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
             }
           });
           break;
-
-        case SHOWCASE:
-          closeMenu(Statistics.EventName.MENU_SHOWCASE, AlohaHelper.MENU_SHOWCASE, new Runnable()
-          {
-            @Override
-            public void run()
-            {
-              mMytargetHelper.displayShowcase();
-            }
-          });
-          break;
         }
       }
     });
@@ -755,7 +736,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   {
     if (!mPlacePage.isHidden())
     {
-      outState.putBoolean(STATE_PP_OPENED, true);
+      outState.putInt(STATE_PP, mPlacePage.getState().ordinal());
       outState.putParcelable(STATE_MAP_OBJECT, mPlacePage.getMapObject());
     }
 
@@ -766,7 +747,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     {
       RoutingPlanFragment fragment = (RoutingPlanFragment) getFragment(RoutingPlanFragment.class);
       if (fragment != null)
-        fragment.saveAltitudeChartState(outState);
+        fragment.saveRoutingPanelState(outState);
     }
 
     if (mNavigationController != null)
@@ -781,8 +762,13 @@ public class MwmActivity extends BaseMwmFragmentActivity
   {
     super.onRestoreInstanceState(savedInstanceState);
 
-    if (savedInstanceState.getBoolean(STATE_PP_OPENED))
-      mPlacePage.setState(State.PREVIEW);
+    State state = State.values()[savedInstanceState.getInt(STATE_PP, 0)];
+    if (state != State.HIDDEN)
+    {
+      mPlacePageRestored = true;
+      mPlacePage.setMapObject((MapObject) savedInstanceState.getParcelable(STATE_MAP_OBJECT), true);
+      mPlacePage.setState(state);
+    }
 
     if (!mIsFragmentContainer && RoutingController.get().isPlanning())
       mRoutingPlanInplaceController.restoreState(savedInstanceState);
@@ -840,6 +826,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   {
     super.onResume();
 
+    mPlacePageRestored = mPlacePage.getState() != State.HIDDEN;
     mSearchController.refreshToolbar();
     mMainMenu.onResume(new Runnable()
     {
@@ -924,46 +911,10 @@ public class MwmActivity extends BaseMwmFragmentActivity
   protected void onStart()
   {
     super.onStart();
-    initShowcase();
     RoutingController.get().attach(this);
-    if (!mIsFragmentContainer)
-      mRoutingPlanInplaceController.setStartButton();
 
     if (MapFragment.nativeIsEngineCreated())
       LocationHelper.INSTANCE.attach(this);
-  }
-
-  private void initShowcase()
-  {
-    NativeAppwallAd.AppwallAdListener listener = new NativeAppwallAd.AppwallAdListener()
-    {
-      @Override
-      public void onLoad(NativeAppwallAd nativeAppwallAd)
-      {
-        if (nativeAppwallAd.getBanners().isEmpty())
-        {
-          mMainMenu.setVisible(MainMenu.Item.SHOWCASE, false);
-          return;
-        }
-
-        final NativeAppwallBanner menuBanner = nativeAppwallAd.getBanners().get(0);
-        mMainMenu.setShowcaseText(menuBanner.getTitle());
-        mMainMenu.setVisible(MainMenu.Item.SHOWCASE, true);
-      }
-
-      @Override
-      public void onNoAd(String reason, NativeAppwallAd nativeAppwallAd)
-      {
-        mMainMenu.setVisible(MainMenu.Item.SHOWCASE, false);
-      }
-
-      @Override
-      public void onClick(NativeAppwallBanner nativeAppwallBanner, NativeAppwallAd nativeAppwallAd) {}
-
-      @Override
-      public void onDismissDialog(NativeAppwallAd nativeAppwallAd) {}
-    };
-    mMytargetHelper = new MytargetHelper(listener, this);
   }
 
   @Override
@@ -971,7 +922,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
   {
     super.onStop();
     LocationHelper.INSTANCE.detach(!isFinishing());
-    mMytargetHelper.cancel();
     RoutingController.get().detach();
   }
 
@@ -1082,7 +1032,9 @@ public class MwmActivity extends BaseMwmFragmentActivity
     setFullscreen(false);
 
     mPlacePage.setMapObject(object, true);
-    mPlacePage.setState(State.PREVIEW);
+    if (!mPlacePageRestored)
+      mPlacePage.setState(State.PREVIEW);
+    mPlacePageRestored = false;
 
     if (UiUtils.isVisible(mFadeView))
       mFadeView.fadeOut();
@@ -1246,7 +1198,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     private static final long serialVersionUID = 1L;
     private final String mUrl;
 
-    public OpenUrlTask(String url)
+    OpenUrlTask(String url)
     {
       Utils.checkNotNull(url);
       mUrl = url;
@@ -1389,14 +1341,15 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   private void adjustMenuLineFrameVisibility()
   {
-    if (RoutingController.get().isBuilt())
+    final RoutingController controller = RoutingController.get();
+
+    if (controller.isBuilt() || controller.isUberInfoObtained())
     {
       mMainMenu.showLineFrame(true);
       return;
     }
 
-    if (RoutingController.get().isPlanning() || RoutingController.get().isBuilding()
-        || RoutingController.get().isErrorEncountered())
+    if (controller.isPlanning() || controller.isBuilding() || controller.isErrorEncountered())
     {
       mMainMenu.showLineFrame(false);
       return;
@@ -1462,21 +1415,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
   }
 
   @Override
-  public void onRouteBuilt(@Framework.RouterType int router)
-  {
-    if (mIsFragmentContainer)
-    {
-      RoutingPlanFragment fragment = (RoutingPlanFragment) getFragment(RoutingPlanFragment.class);
-      if (fragment != null)
-        fragment.showRouteAltitudeChart(router != Framework.ROUTER_TYPE_VEHICLE);
-    }
-    else
-    {
-      mRoutingPlanInplaceController.showRouteAltitudeChart(router != Framework.ROUTER_TYPE_VEHICLE);
-    }
-  }
-
-  @Override
   public void updateBuildProgress(int progress, @Framework.RouterType int router)
   {
     if (mIsFragmentContainer)
@@ -1488,6 +1426,21 @@ public class MwmActivity extends BaseMwmFragmentActivity
     else
     {
       mRoutingPlanInplaceController.updateBuildProgress(progress, router);
+    }
+  }
+
+  @Override
+  public void onUberInfoReceived(@NonNull UberInfo info)
+  {
+    if (mIsFragmentContainer)
+    {
+      RoutingPlanFragment fragment = (RoutingPlanFragment) getFragment(RoutingPlanFragment.class);
+      if (fragment != null)
+        fragment.showUberInfo(info);
+    }
+    else
+    {
+      mRoutingPlanInplaceController.showUberInfo(info);
     }
   }
 

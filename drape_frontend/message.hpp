@@ -64,7 +64,14 @@ public:
     AllowAutoZoom,
     RequestSymbolsSize,
     RecoverGLResources,
-    SetVisibleViewport
+    SetVisibleViewport,
+    AddTrafficSegments,
+    SetTrafficTexCoords,
+    UpdateTraffic,
+    FlushTrafficData,
+    DrapeApiAddLines,
+    DrapeApiRemove,
+    DrapeApiFlush,
   };
 
   virtual ~Message() {}

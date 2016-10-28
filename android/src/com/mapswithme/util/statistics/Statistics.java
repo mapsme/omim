@@ -9,11 +9,6 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.facebook.appevents.AppEventsLogger;
 import com.flurry.android.FlurryAgent;
 import com.mapswithme.maps.BuildConfig;
@@ -26,6 +21,11 @@ import com.mapswithme.maps.editor.Editor;
 import com.mapswithme.maps.editor.OsmOAuth;
 import com.mapswithme.util.Config;
 import com.mapswithme.util.ConnectionState;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public enum Statistics
 {
@@ -70,6 +70,8 @@ public enum Statistics
     public static final String PP_ROUTE = "PP. Route";
     public static final String PP_SPONSORED_DETAILS = "Placepage_Hotel_details";
     public static final String PP_SPONSORED_BOOK = "Placepage_Hotel_book";
+    public static final String PP_SPONSORED_OPENTABLE = "Placepage_Restaurant_book";
+    public static final String PP_SPONSORED_NONE = "Placepage_Sponsored_none";
     public static final String PP_DIRECTION_ARROW = "PP. DirectionArrow";
     public static final String PP_DIRECTION_ARROW_CLOSE = "PP. DirectionArrowClose";
     public static final String PP_METADATA_COPY = "PP. CopyMetadata";
@@ -82,7 +84,6 @@ public enum Statistics
     public static final String MENU_DOWNLOADER = "Menu. Downloader";
     public static final String MENU_SETTINGS = "Menu. SettingsAndMore";
     public static final String MENU_SHARE = "Menu. Share";
-    public static final String MENU_SHOWCASE = "Menu. Showcase";
     public static final String MENU_P2P = "Menu. Point to point.";
     public static final String MENU_ADD_PLACE = "Menu. Add place.";
     // dialogs
@@ -111,6 +112,7 @@ public enum Statistics
     public static final String ROUTING_VEHICLE_SET = "Routing. Set vehicle";
     public static final String ROUTING_PEDESTRIAN_SET = "Routing. Set pedestrian";
     public static final String ROUTING_BICYCLE_SET = "Routing. Set bicycle";
+    public static final String ROUTING_TAXI_SET = "Routing. Set taxi";
     public static final String ROUTING_SWAP_POINTS = "Routing. Swap points";
     public static final String ROUTING_TOGGLE = "Routing. Toggle";
     public static final String ROUTING_SEARCH_POINT = "Routing. Search point";

@@ -635,7 +635,6 @@
 	<string name="clear_search">ล้างการค้นหาประวัติ</string>
 	<!-- Title for settings to enable/disable showcase menu button -->
 	<string name="showcase_settings_title">แสดงข้อเสนอ</string>
-	<string name="showcase_more_apps">แอป My.com เพิ่มเติม</string>
 	<string name="p2p_route_planning">การวางแผนเส้นทาง</string>
 	<string name="p2p_your_location">ตำแหน่งที่ตั้งของคุณ</string>
 	<string name="p2p_from">จุดที่ออกเดินทาง</string>
@@ -804,6 +803,7 @@
 	<string name="download_over_mobile_message">มันอาจมีราคาสูงมากหากใช้แผนโทรศัพท์บางประเภทหรือหากทำการโรมมิ่ง</string>
 	<string name="error_enter_correct_house_number">กรอกบ้านเลขที่ให้ถูกต้อง</string>
 	<string name="editor_storey_number">จำนวนชั้น (มากสุด %d)</string>
+	<!-- Error message in Editor when a user tries to set the number of floors for a building higher than 25 -->
 	<string name="error_enter_correct_storey_number">แก้ไขอาคารที่มีจำนวนชั้นมากกว่า 25</string>
 	<string name="editor_zip_code">รหัสไปรษณีย์</string>
 	<string name="error_enter_correct_zip_code">กรุณาใส่รหัสไปรษณีย์ที่ถูกต้อง</string>
@@ -868,7 +868,7 @@
 	<string name="minute">น.</string>
 	<string name="placepage_place_description">คำอธิบาย</string>
 	<string name="placepage_more_button">เพิ่มเติม</string>
-	<string name="bookingcom_book_button">จอง</string>
+	<string name="book_button">จอง</string>
 	<string name="placepage_call_button">โทร</string>
 	<string name="placepage_edit_bookmark_button">แก้ไข Bookmark</string>
 	<string name="placepage_bookmark_name_hint">ชื่อของ Bookmark</string>

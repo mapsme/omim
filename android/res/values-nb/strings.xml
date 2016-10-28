@@ -629,7 +629,6 @@
 	<string name="clear_search">Tøm søkehistorikk</string>
 	<!-- Title for settings to enable/disable showcase menu button -->
 	<string name="showcase_settings_title">Vis tilbud</string>
-	<string name="showcase_more_apps">Flere apper fra My.com</string>
 	<string name="p2p_route_planning">Ruteplanlegging</string>
 	<string name="p2p_your_location">Din beliggenhet</string>
 	<string name="p2p_from">Avreisested</string>
@@ -796,6 +795,7 @@
 	<string name="downloader_of">%1$d av %2$d</string>
 	<string name="error_enter_correct_house_number">Skriv riktig husnummer</string>
 	<string name="editor_storey_number">Antall etasjer (maks. %d)</string>
+	<!-- Error message in Editor when a user tries to set the number of floors for a building higher than 25 -->
 	<string name="error_enter_correct_storey_number">Rediger bygningen med maks. 25 etasjer</string>
 	<string name="editor_zip_code">Postnummer</string>
 	<string name="error_enter_correct_zip_code">Angi riktig postnummer</string>
@@ -860,7 +860,7 @@
 	<string name="minute">min</string>
 	<string name="placepage_place_description">Beskrivelse</string>
 	<string name="placepage_more_button">Mer</string>
-	<string name="bookingcom_book_button">Bestill</string>
+	<string name="book_button">Bestill</string>
 	<string name="placepage_call_button">Ring</string>
 	<string name="placepage_edit_bookmark_button">Rediger bokmerke</string>
 	<string name="placepage_bookmark_name_hint">Bokmerkenavn</string>

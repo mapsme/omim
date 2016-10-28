@@ -356,7 +356,7 @@
 "share_bookmarks_email_subject" = "Signets MAPS.ME partagés";
 
 /* Email text when sharing bookmarks category */
-"share_bookmarks_email_body" = "Bonjour,\n\nVous trouverez ci-joints mes signets de MAPS.ME - cartes hors ligne. Veuillez ouvrir le ficher si vous avez MAPS.ME d'installé. Sinon, téléchargez l'appli pour votre appareil iOS ou Android en suivant ce lien http://maps.me/get?kmz\n\nAppréciez vos voyages avec MAPS.ME !";
+"share_bookmarks_email_body" = "Bonjour,\n\nVous trouverez ci-joints mes signets de MAPS.ME - cartes hors ligne. Veuillez ouvrir le fichier si vous avez MAPS.ME d'installé. Sinon, téléchargez l'appli pour votre appareil iOS ou Android en suivant ce lien http://maps.me/get?kmz\n\nAppréciez vos voyages avec MAPS.ME !";
 
 /* message title of loading file */
 "load_kmz_title" = "Chargement des signets";
@@ -1027,11 +1027,6 @@
 /* Title for settings to enable/disable showcase menu button */
 "showcase_settings_title" = "Afficher les offres";
 
-/* Showcase menu item. */
-"showcase_plan_your_trip" = "Planifiez votre voyage";
-
-"showcase_more_apps" = "Plus d'applications My.com";
-
 /* Place Page link to Wikipedia article (if map object has it). */
 "read_in_wikipedia" = "Wikipédia";
 
@@ -1356,6 +1351,7 @@
 
 "editor_storey_number" = "Nombre d'étages (max %d)";
 
+/* Error message in Editor when a user tries to set the number of floors for a building higher than 25 */
 "error_enter_correct_storey_number" = "Modifier l'immeuble avec un maximum de 25 étages";
 
 "editor_zip_code" = "Code postal";
@@ -1478,6 +1474,8 @@
 "placepage_place_description" = "Description";
 
 "placepage_more_button" = "Plus";
+
+"placepage_more_reviews_button" = "More Reviews";
 
 "bookingcom_book_button" = "Réserver";
 
@@ -1631,3 +1629,61 @@
 "whats_new_booking_improve_title" = "Économisez de l'argent en réservant des hôtels";
 
 "whats_new_booking_improve_message" = "Les résultats des recherches d'hôtels comprennent maintenant la catégorie de prix.\nNous avons aussi ajouté plus de 110.000 hôtels.";
+
+/* For place page hotel facilities block */
+"placepage_hotel_facilities" = "Facilities";
+
+/* For place page hotel nearby block */
+"placepage_hotel_nearby" = "Nearby";
+
+/* For ordering a taxi (as opposed to hotels or other things) */
+"taxi_order" = "Order";
+
+/* How long it is until the taxi arrives */
+"taxi_wait" = "Expected in %s";
+
+/* When there are no available taxis nearby */
+"taxi_not_found" = "Couldn't find a taxi nearby";
+
+"install_app" = "Install";
+
+/* `Filter` is a noun here */
+"booking_filters" = "Filter";
+
+"booking_filters_reset" = "Reset";
+
+"booking_filters_rating" = "Rating";
+
+"booking_filters_rating_any" = "Any";
+
+"booking_filters_ragting_good" = "Good";
+
+"booking_filters_rating_very_good" = "Very Good";
+
+"booking_filters_rating_excellent" = "Excellent";
+
+"booking_filters_price_category" = "Price Category";
+
+"booking_filters_no_results" = "No Results Found";
+
+"booking_filters_nores_message" = "Try a more general search term, zoom out or reset the filter.";
+
+"booking_filters_expand_area_button" = "Zoom out";
+
+"booking_filters_reset_button" = "Reset Filter";
+
+"booking_list" = "List";
+
+"booking_based_on_reviews" = "Based on %d hotel reviews";
+
+"booking_show_more" = "Show more";
+
+"booking_reviews" = "Reviews";
+
+"booking_hotel" = "Hotel";
+
+"booking_hotel_room" = "Room";
+
+"chat" = "Geochat";
+
+"chat_open" = "Open";

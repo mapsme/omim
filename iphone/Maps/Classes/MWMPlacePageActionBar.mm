@@ -3,6 +3,7 @@
 #import "MWMActionBarButton.h"
 #import "MWMBasePlacePageView.h"
 #import "MWMPlacePageEntity.h"
+#import "MWMPlacePageProtocol.h"
 #import "MWMPlacePageViewManager.h"
 #import "MapViewController.h"
 #import "MapsAppDelegate.h"
@@ -13,13 +14,7 @@
 
 extern NSString * const kAlohalyticsTapEventKey;
 
-namespace
-{
-NSString * const kPlacePageActionBarNibName = @"PlacePageActionBar";
-
-}  // namespace
-
-@interface MWMPlacePageActionBar ()<MWMActionBarButtonDelegate, UIActionSheetDelegate>
+@interface MWMPlacePageActionBar ()<MWMActionBarButtonDelegate>
 {
   vector<EButton> m_visibleButtons;
   vector<EButton> m_additionalButtons;
@@ -30,15 +25,34 @@ NSString * const kPlacePageActionBarNibName = @"PlacePageActionBar";
 @property(weak, nonatomic) IBOutlet UIImageView * separator;
 @property(nonatomic) BOOL isPrepareRouteMode;
 
+@property(weak, nonatomic) id<MWMActionBarSharedData> data;
+@property(weak, nonatomic) id<MWMActionBarProtocol> delegate;
+
 @end
 
 @implementation MWMPlacePageActionBar
 
++ (MWMPlacePageActionBar *)actionBarWithDelegate:(id<MWMActionBarProtocol>)delegate
+{
+  MWMPlacePageActionBar * bar =
+      [[NSBundle.mainBundle loadNibNamed:[self className] owner:nil options:nil] firstObject];
+  bar.delegate = delegate;
+  return bar;
+}
+
+- (void)configureWithData:(id<MWMActionBarSharedData>)data
+{
+  self.data = data;
+  self.isPrepareRouteMode = MapsAppDelegate.theApp.routingPlaneMode != MWMRoutingPlaneModeNone;
+  self.isBookmark = data.isBookmark;
+  [self configureButtons];
+  self.autoresizingMask = UIViewAutoresizingNone;
+}
+
 + (MWMPlacePageActionBar *)actionBarForPlacePageManager:(MWMPlacePageViewManager *)placePageManager
 {
   MWMPlacePageActionBar * bar =
-      [[NSBundle.mainBundle loadNibNamed:kPlacePageActionBarNibName owner:nil options:nil]
-          firstObject];
+      [[NSBundle.mainBundle loadNibNamed:[self className] owner:nil options:nil] firstObject];
   [bar configureWithPlacePageManager:placePageManager];
   return bar;
 }
@@ -56,16 +70,21 @@ NSString * const kPlacePageActionBarNibName = @"PlacePageActionBar";
 {
   m_visibleButtons.clear();
   m_additionalButtons.clear();
-  MWMPlacePageEntity * entity = self.placePageManager.entity;
-  NSString * phone = [entity getCellValue:MWMPlacePageCellTypePhoneNumber];
+  auto data =
+      static_cast<id<MWMActionBarSharedData>>(IPAD ? self.placePageManager.entity : self.data);
+  NSString * phone = data.phoneNumber;
 
   BOOL const isIphone = [[UIDevice currentDevice].model isEqualToString:@"iPhone"];
   BOOL const isPhoneNotEmpty = phone.length > 0;
-  BOOL const isBooking = entity.isBooking;
+  BOOL const isBooking = data.isBooking;
+  BOOL const isOpentable = data.isOpentable;
+  BOOL const isSponsored = isBooking || isOpentable;
   BOOL const itHasPhoneNumber = isIphone && isPhoneNotEmpty;
-  BOOL const isApi = entity.isApi;
+  BOOL const isApi = data.isApi;
   BOOL const isP2P = self.isPrepareRouteMode;
-  BOOL const isMyPosition = entity.isMyPosition;
+  BOOL const isMyPosition = data.isMyPosition;
+
+  EButton const sponsoredButton = isBooking ? EButton::Booking : EButton::Opentable;
 
   if (isMyPosition)
   {
@@ -74,10 +93,10 @@ NSString * const kPlacePageActionBarNibName = @"PlacePageActionBar";
     m_visibleButtons.push_back(EButton::Share);
     m_visibleButtons.push_back(EButton::Spacer);
   }
-  else if (isApi && isBooking)
+  else if (isApi && isSponsored)
   {
     m_visibleButtons.push_back(EButton::Api);
-    m_visibleButtons.push_back(EButton::Booking);
+    m_visibleButtons.push_back(sponsoredButton);
     m_additionalButtons.push_back(EButton::Bookmark);
     m_additionalButtons.push_back(EButton::RouteFrom);
     m_additionalButtons.push_back(EButton::Share);
@@ -104,11 +123,11 @@ NSString * const kPlacePageActionBarNibName = @"PlacePageActionBar";
     m_additionalButtons.push_back(EButton::RouteFrom);
     m_additionalButtons.push_back(EButton::Share);
   }
-  else if (isBooking && isP2P)
+  else if (isSponsored && isP2P)
   {
     m_visibleButtons.push_back(EButton::Bookmark);
     m_visibleButtons.push_back(EButton::RouteFrom);
-    m_additionalButtons.push_back(EButton::Booking);
+    m_additionalButtons.push_back(sponsoredButton);
     m_additionalButtons.push_back(EButton::Share);
   }
   else if (itHasPhoneNumber && isP2P)
@@ -118,9 +137,9 @@ NSString * const kPlacePageActionBarNibName = @"PlacePageActionBar";
     m_additionalButtons.push_back(EButton::Call);
     m_additionalButtons.push_back(EButton::Share);
   }
-  else if (isBooking)
+  else if (isSponsored)
   {
-    m_visibleButtons.push_back(EButton::Booking);
+    m_visibleButtons.push_back(sponsoredButton);
     m_visibleButtons.push_back(EButton::Bookmark);
     m_additionalButtons.push_back(EButton::RouteFrom);
     m_additionalButtons.push_back(EButton::Share);
@@ -171,20 +190,25 @@ NSString * const kPlacePageActionBarNibName = @"PlacePageActionBar";
 
 - (void)tapOnButtonWithType:(EButton)type
 {
+  id<MWMActionBarProtocol> delegate = IPAD ? self.placePageManager : self.delegate;
+
   switch (type)
   {
-  case EButton::Api: [self.placePageManager apiBack]; break;
-  case EButton::Booking: [self.placePageManager book:NO]; break;
-  case EButton::Call: [self.placePageManager call]; break;
+  case EButton::Api: [delegate apiBack]; break;
+  case EButton::Opentable:
+  case EButton::Booking: [delegate book:NO]; break;
+  case EButton::Call: [delegate call]; break;
   case EButton::Bookmark:
     if (self.isBookmark)
-      [self.placePageManager removeBookmark];
+      [delegate removeBookmark];
     else
-      [self.placePageManager addBookmark];
+      [delegate addBookmark];
+
+    self.isBookmark = !self.isBookmark;
     break;
-  case EButton::RouteFrom: [self.placePageManager routeFrom]; break;
-  case EButton::RouteTo: [self.placePageManager routeTo]; break;
-  case EButton::Share: [self.placePageManager share]; break;
+  case EButton::RouteFrom: [delegate routeFrom]; break;
+  case EButton::RouteTo: [delegate routeTo]; break;
+  case EButton::Share: [delegate share]; break;
   case EButton::More: [self showActionSheet]; break;
   case EButton::Spacer: break;
   }
@@ -195,77 +219,50 @@ NSString * const kPlacePageActionBarNibName = @"PlacePageActionBar";
 - (void)showActionSheet
 {
   NSString * cancel = L(@"cancel");
-  MWMPlacePageEntity * entity = self.placePageManager.entity;
-  BOOL const isTitleNotEmpty = entity.title.length > 0;
-  NSString * title = isTitleNotEmpty ? entity.title : entity.subtitle;
-  NSString * subtitle = isTitleNotEmpty ? entity.subtitle : nil;
+  auto data =
+      static_cast<id<MWMActionBarSharedData>>(IPAD ? self.placePageManager.entity : self.data);
+  BOOL const isTitleNotEmpty = data.title.length > 0;
+  NSString * title = isTitleNotEmpty ? data.title : data.subtitle;
+  NSString * subtitle = isTitleNotEmpty ? data.subtitle : nil;
 
   UIViewController * vc = static_cast<UIViewController *>([MapViewController controller]);
   NSMutableArray<NSString *> * titles = [@[] mutableCopy];
   for (auto const buttonType : m_additionalButtons)
   {
-    BOOL const isSelected = buttonType == EButton::Bookmark ? self.isBookmark : NO;
+    BOOL const isSelected = buttonType == EButton::Bookmark ? data.isBookmark : NO;
     if (NSString * title = titleForButton(buttonType, isSelected))
       [titles addObject:title];
     else
       NSAssert(false, @"Title can't be nil!");
   }
 
-  if (isIOS7)
+  UIAlertController * alertController =
+      [UIAlertController alertControllerWithTitle:title
+                                          message:subtitle
+                                   preferredStyle:UIAlertControllerStyleActionSheet];
+  UIAlertAction * cancelAction =
+      [UIAlertAction actionWithTitle:cancel style:UIAlertActionStyleCancel handler:nil];
+
+  for (auto i = 0; i < titles.count; i++)
   {
-    UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:title
-                                                              delegate:self
-                                                     cancelButtonTitle:cancel
-                                                destructiveButtonTitle:nil
-                                                     otherButtonTitles:nil];
-
-    for (NSString * title in titles)
-      [actionSheet addButtonWithTitle:title];
-
-    [actionSheet showInView:vc.view];
+    UIAlertAction * commonAction =
+        [UIAlertAction actionWithTitle:titles[i]
+                                 style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction * action) {
+                                 [self tapOnButtonWithType:self->m_additionalButtons[i]];
+                               }];
+    [alertController addAction:commonAction];
   }
-  else
+  [alertController addAction:cancelAction];
+
+  if (IPAD)
   {
-    UIAlertController * alertController =
-        [UIAlertController alertControllerWithTitle:title
-                                            message:subtitle
-                                     preferredStyle:UIAlertControllerStyleActionSheet];
-    UIAlertAction * cancelAction =
-        [UIAlertAction actionWithTitle:cancel style:UIAlertActionStyleCancel handler:nil];
-
-    for (auto i = 0; i < titles.count; i++)
-    {
-      UIAlertAction * commonAction =
-          [UIAlertAction actionWithTitle:titles[i]
-                                   style:UIAlertActionStyleDefault
-                                 handler:^(UIAlertAction * action) {
-                                   [self tapOnButtonWithType:self->m_additionalButtons[i]];
-                                 }];
-      [alertController addAction:commonAction];
-    }
-    [alertController addAction:cancelAction];
-
-    if (IPAD)
-    {
-      UIPopoverPresentationController * popPresenter =
-          [alertController popoverPresentationController];
-      popPresenter.sourceView = self.shareAnchor;
-      popPresenter.sourceRect = self.shareAnchor.bounds;
-    }
-    [vc presentViewController:alertController animated:YES completion:nil];
+    UIPopoverPresentationController * popPresenter =
+        [alertController popoverPresentationController];
+    popPresenter.sourceView = self.shareAnchor;
+    popPresenter.sourceRect = self.shareAnchor.bounds;
   }
-}
-
-#pragma mark - UIActionSheetDelegate
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-  [actionSheet dismissWithClickedButtonIndex:buttonIndex animated:YES];
-
-  // Using buttonIndex - 1 because there is cancel button at index 0
-  // Only iOS7
-  if (buttonIndex > 0)
-    [self tapOnButtonWithType:m_additionalButtons[buttonIndex - 1]];
+  [vc presentViewController:alertController animated:YES completion:nil];
 }
 
 #pragma mark - Layout
@@ -273,6 +270,10 @@ NSString * const kPlacePageActionBarNibName = @"PlacePageActionBar";
 - (void)layoutSubviews
 {
   [super layoutSubviews];
+  self.width = self.superview.width;
+  if (IPAD)
+    self.origin = {0, self.superview.height - self.height};
+
   self.separator.width = self.width;
   CGFloat const buttonWidth = self.width / self.buttons.count;
   for (UIView * button in self.buttons)
