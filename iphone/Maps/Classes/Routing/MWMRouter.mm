@@ -117,8 +117,6 @@ bool isMarkerPoint(MWMRoutePoint const & point) { return point.IsValid() && !poi
 {
   self.startPoint = startPoint;
   [self rebuildWithBestRouter:bestRouter];
-  if (!self.finishPoint.IsValid())
-    [[MWMMapViewControlsManager manager] onRoutePrepare];
 }
 
 - (void)buildToPoint:(MWMRoutePoint const &)finishPoint bestRouter:(BOOL)bestRouter
@@ -185,6 +183,8 @@ bool isMarkerPoint(MWMRoutePoint const & point) { return point.IsValid() && !poi
     setTags(self.type, YES);
   }
 
+  MWMMapViewControlsManager * mapViewControlsManager = [MWMMapViewControlsManager manager];
+  [mapViewControlsManager onRoutePrepare];
   if (![self arePointsValidForRouting])
     return;
   auto & f = GetFramework();
@@ -195,7 +195,7 @@ bool isMarkerPoint(MWMRoutePoint const & point) { return point.IsValid() && !poi
   f.BuildRoute(startPoint, finishPoint, 0 /* timeoutSec */);
   f.SetRouteStartPoint(startPoint, isMarkerPoint(self.startPoint));
   f.SetRouteFinishPoint(finishPoint, isMarkerPoint(self.finishPoint));
-  [[MWMMapViewControlsManager manager] onRouteRebuild];
+  [mapViewControlsManager onRouteRebuild];
   setTags(self.type, NO);
 }
 
