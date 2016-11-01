@@ -1,0 +1,894 @@
+world  +
+    aerialway  +
+        cable_car  -
+        chair_lift  -
+        drag_lift  -
+        gondola  -
+        mixed_lift  -
+        station  -
+        {}
+    aeroway  +
+        aerodrome  +
+            international  -
+            {}
+        apron  -
+        gate  -
+        helipad  -
+        runway  -
+        taxiway  -
+        terminal  -
+        {}
+    amenity  +
+        atm  -
+        bank  -
+        bar  -
+        bbq  -
+        bench  -
+        bicycle_parking  -
+        bicycle_rental  -
+        brothel  -
+        bureau_de_change  -
+        bus_station  -
+        cafe  -
+        car_rental  -
+        car_sharing  -
+        car_wash  -
+        casino  -
+        charging_station  -
+        childcare  -
+        cinema  -
+        clinic  -
+        college  -
+        community_centre  -
+        courthouse  -
+        dentist  -
+        doctors  -
+        drinking_water  -
+        embassy  -
+        fast_food  -
+        ferry_terminal  -
+        fire_station  -
+        fountain  -
+        fuel  -
+        grave_yard  +
+            christian  -
+            {}
+        hospital  -
+        hunting_stand  -
+        kindergarten  -
+        library  -
+        marketplace  -
+        nightclub  -
+        parking  +
+            fee  -
+            multi-storey  +
+                fee  -
+                {}
+            no-access  -
+            park_and_ride  -
+            permissive  +
+                fee  -
+                {}
+            private  -
+            underground  +
+                fee  -
+                {}
+            {}
+        pharmacy  -
+        place_of_worship  +
+            buddhist  -
+            christian  -
+            hindu  -
+            jewish  -
+            muslim  -
+            shinto  -
+            taoist  -
+            {}
+        police  -
+        post_box  -
+        post_office  -
+        pub  -
+        public_bookcase  -
+        recycling  -
+        restaurant  -
+        school  -
+        shelter  -
+        speed_trap  -
+        taxi  -
+        telephone  -
+        theatre  -
+        toilets  -
+        townhall  -
+        university  -
+        vending_machine  +
+            cigarettes  -
+            drinks  -
+            parking_tickets  -
+            public_transport_tickets  -
+            {}
+        veterinary  -
+        waste_basket  -
+        waste_disposal  -
+        {}
+    area:highway  +
+        cycleway  -
+        footway  -
+        living_street  -
+        motorway  -
+        path  -
+        pedestrian  -
+        primary  -
+        residential  -
+        secondary  -
+        service  -
+        steps  -
+        tertiary  -
+        track  -
+        trunk  -
+        unclassified  -
+        {}
+    barrier  +
+        block  -
+        bollard  -
+        border_control  -
+        city_wall  -
+        cycle_barrier  -
+        entrance  -
+        fence  -
+        gate  -
+        hedge  -
+        lift_gate  -
+        retaining_wall  -
+        stile  -
+        toll_booth  -
+        wall  -
+        {}
+    boundary  +
+        administrative  +
+            10  -
+            11  -
+            2  -
+            3  -
+            4  +
+                state  -
+                {}
+            5  -
+            6  -
+            7  -
+            8  -
+            9  -
+            city  -
+            country  -
+            county  -
+            municipality  -
+            nation  -
+            region  -
+            state  -
+            suburb  -
+            {}
+        national_park  -
+        {}
+    building  +
+        address  -
+        garage  -
+        has_parts  -
+        train_station  -
+        {}
+    building:part  -
+    communication  +
+        line  +
+            underground  -
+            {}
+        {}
+    craft  +
+        brewery  -
+        carpenter  -
+        electrician  -
+        gardener  -
+        hvac  -
+        metal_construction  -
+        painter  -
+        photographer  -
+        plumber  -
+        shoemaker  -
+        tailor  -
+        {}
+    earthquake:damage  +
+        spontaneous_camp  -
+        {}
+    emergency  +
+        phone  -
+        {}
+    entrance  -
+    highway  +
+        bridleway  +
+            bridge  -
+            permissive  -
+            tunnel  -
+            {}
+        bus_stop  -
+        construction  -
+        cycleway  +
+            bridge  -
+            permissive  -
+            tunnel  -
+            {}
+        footway  +
+            alpine_hiking  -
+            area  -
+            bridge  -
+            demanding_alpine_hiking  -
+            demanding_mountain_hiking  -
+            difficult_alpine_hiking  -
+            hiking  -
+            mountain_hiking  -
+            permissive  -
+            tunnel  -
+            {}
+        ford  -
+        living_street  +
+            bridge  -
+            tunnel  -
+            {}
+        motorway  +
+            bridge  -
+            tunnel  -
+            {}
+        motorway_junction  -
+        motorway_link  +
+            bridge  -
+            tunnel  -
+            {}
+        path  +
+            alpine_hiking  -
+            bicycle  -
+            bridge  -
+            demanding_alpine_hiking  -
+            demanding_mountain_hiking  -
+            difficult_alpine_hiking  -
+            hiking  -
+            horse  -
+            mountain_hiking  -
+            permissive  -
+            tunnel  -
+            {}
+        pedestrian  +
+            area  -
+            bridge  -
+            tunnel  -
+            {}
+        platform  -
+        primary  +
+            bridge  -
+            tunnel  -
+            {}
+        primary_link  +
+            bridge  -
+            tunnel  -
+            {}
+        proposed  -
+        raceway  -
+        residential  +
+            area  -
+            bridge  -
+            tunnel  -
+            {}
+        rest_area  -
+        road  +
+            bridge  -
+            tunnel  -
+            {}
+        secondary  +
+            bridge  -
+            tunnel  -
+            {}
+        secondary_link  +
+            bridge  -
+            tunnel  -
+            {}
+        service  +
+            area  -
+            bridge  -
+            driveway  +
+                area  -
+                bridge  -
+                tunnel  -
+                {}
+            parking_aisle  -
+            tunnel  -
+            {}
+        speed_camera  -
+        steps  +
+            bridge  -
+            tunnel  -
+            {}
+        tertiary  +
+            bridge  -
+            tunnel  -
+            {}
+        tertiary_link  +
+            bridge  -
+            tunnel  -
+            {}
+        track  +
+            area  -
+            bridge  -
+            grade1  -
+            grade2  -
+            grade3  +
+                no-access  -
+                permissive  -
+                {}
+            grade4  +
+                no-access  -
+                permissive  -
+                {}
+            grade5  +
+                no-access  -
+                permissive  -
+                {}
+            no-access  -
+            permissive  -
+            tunnel  -
+            {}
+        traffic_signals  -
+        trunk  +
+            bridge  -
+            tunnel  -
+            {}
+        trunk_link  +
+            bridge  -
+            tunnel  -
+            {}
+        unclassified  +
+            area  -
+            bridge  -
+            tunnel  -
+            {}
+        world_level  -
+        world_towns_level  -
+        {}
+    historic  +
+        archaeological_site  -
+        battlefield  -
+        boundary_stone  -
+        castle  -
+        citywalls  -
+        memorial  -
+        monument  -
+        museum  -
+        ruins  -
+        ship  -
+        tomb  -
+        wayside_cross  -
+        wayside_shrine  -
+        {}
+    hwtag  +
+        bidir_bicycle  -
+        lit  -
+        nobicycle  -
+        nofoot  -
+        oneway  -
+        private  -
+        yesbicycle  -
+        yesfoot  -
+        {}
+    internet_access  +
+        wlan  -
+        {}
+    junction  +
+        roundabout  -
+        {}
+    landuse  +
+        allotments  -
+        basin  -
+        brownfield  -
+        cemetery  +
+            christian  -
+            {}
+        commercial  -
+        construction  -
+        farm  -
+        farmland  -
+        farmyard  -
+        field  -
+        forest  +
+            coniferous  -
+            deciduous  -
+            mixed  -
+            {}
+        garages  -
+        grass  -
+        greenfield  -
+        greenhouse_horticulture  -
+        industrial  -
+        landfill  -
+        meadow  -
+        military  -
+        orchard  -
+        quarry  -
+        railway  -
+        recreation_ground  -
+        reservoir  -
+        residential  +
+            rural  -
+            urban  -
+            {}
+        retail  -
+        salt_pond  -
+        village_green  -
+        vineyard  -
+        {}
+    leisure  +
+        common  -
+        dog_park  +
+            tennis  -
+            {}
+        fitness_centre  -
+        garden  -
+        golf_course  -
+        landscape_reserve  -
+        nature_reserve  -
+        park  +
+            no-access  -
+            permissive  -
+            private  -
+            {}
+        pitch  +
+            tennis  -
+            {}
+        playground  +
+            tennis  -
+            {}
+        playing_fields  +
+            tennis  -
+            {}
+        recreation_ground  -
+        sauna  -
+        slipway  -
+        sports_centre  +
+            climbing  -
+            shooting  -
+            swimming  -
+            yoga  -
+            {}
+        stadium  -
+        swimming_pool  -
+        track  -
+        water_park  -
+        {}
+    man_made  +
+        breakwater  -
+        cairn  -
+        chimney  -
+        cutline  -
+        lighthouse  -
+        pier  -
+        pipeline  +
+            overground  -
+            {}
+        tower  -
+        wastewater_plant  -
+        water_tower  -
+        water_well  -
+        windmill  -
+        {}
+    mapswithme  +
+        grid  -
+        {}
+    marking  +
+        sport  +
+            black  -
+            blue  -
+            red  -
+            white  -
+            {}
+        {}
+    military  +
+        bunker  -
+        {}
+    natural  +
+        bare_rock  -
+        bay  -
+        beach  -
+        cape  -
+        cave_entrance  -
+        cliff  -
+        coastline  -
+        glacier  -
+        grassland  -
+        heath  -
+        lake  -
+        land  -
+        meadow  -
+        orchard  -
+        peak  -
+        pond  -
+        rock  -
+        salt_pond  -
+        scrub  -
+        spring  -
+        tree  -
+        tree_row  -
+        vineyard  -
+        volcano  -
+        water  -
+        wetland  +
+            bog  -
+            marsh  -
+            {}
+        wood  +
+            coniferous  -
+            deciduous  -
+            mixed  -
+            {}
+        {}
+    noexit  +
+        motor_vehicle  -
+        {}
+    office  +
+        company  -
+        estate_agent  -
+        government  -
+        lawyer  -
+        telecommunication  -
+        {}
+    olympics  +
+        attraction  -
+        bike_sport  -
+        live_site  -
+        official_building  -
+        stadium  -
+        stadium_main  -
+        transport_airport  -
+        transport_boat  -
+        transport_bus  -
+        transport_cable  -
+        transport_railway  -
+        transport_subway  -
+        transport_tram  -
+        water_sport  -
+        {}
+    piste:lift  +
+        j-bar  -
+        magic_carpet  -
+        platter  -
+        rope_tow  -
+        t-bar  -
+        {}
+    piste:type  +
+        downhill  +
+            advanced  -
+            easy  -
+            expert  -
+            freeride  -
+            intermediate  -
+            novice  -
+            {}
+        nordic  -
+        sled  -
+        {}
+    place  +
+        city  +
+            capital  +
+                10  -
+                11  -
+                2  -
+                3  -
+                4  -
+                5  -
+                6  -
+                7  -
+                8  -
+                9  -
+                {}
+            {}
+        continent  -
+        country  -
+        county  -
+        farm  -
+        hamlet  -
+        island  -
+        islet  -
+        isolated_dwelling  -
+        locality  -
+        neighbourhood  -
+        ocean  -
+        region  -
+        sea  -
+        state  +
+            USA  -
+            {}
+        suburb  -
+        town  -
+        village  -
+        {}
+    power  +
+        generator  +
+            hydro  -
+            photovoltaic  -
+            wind  -
+            {}
+        line  +
+            underground  -
+            {}
+        minor_line  -
+        pole  -
+        station  -
+        substation  -
+        tower  -
+        {}
+    psurface  +
+        paved_bad  -
+        paved_good  -
+        unpaved_bad  -
+        unpaved_good  -
+        {}
+    public_transport  +
+        platform  -
+        {}
+    railway  +
+        abandoned  +
+            bridge  -
+            tunnel  -
+            {}
+        construction  -
+        crossing  -
+        disused  -
+        funicular  +
+            bridge  -
+            tunnel  -
+            {}
+        halt  -
+        incline  +
+            bridge  -
+            tunnel  -
+            {}
+        level_crossing  -
+        light_rail  +
+            bridge  -
+            tunnel  -
+            {}
+        monorail  +
+            bridge  -
+            tunnel  -
+            {}
+        narrow_gauge  +
+            bridge  -
+            tunnel  -
+            {}
+        platform  -
+        preserved  +
+            bridge  -
+            tunnel  -
+            {}
+        proposed  -
+        rail  +
+            bridge  -
+            motor_vehicle  -
+            tunnel  -
+            {}
+        razed  -
+        siding  +
+            bridge  -
+            tunnel  -
+            {}
+        spur  +
+            bridge  -
+            tunnel  -
+            {}
+        station  +
+            light_rail  -
+            monorail  -
+            subway  +
+                barcelona  -
+                berlin  -
+                blue  -
+                brown  -
+                darkgreen  -
+                gray  -
+                green  -
+                grey  -
+                kiev  -
+                lightblue  -
+                lightgreen  -
+                london  -
+                madrid  -
+                minsk  -
+                moscow  -
+                newyork  -
+                orange  -
+                paris  -
+                purple  -
+                red  -
+                roma  -
+                spb  -
+                violet  -
+                yellow  -
+                {}
+            {}
+        subway  +
+            blue  -
+            bridge  -
+            brown  -
+            darkgreen  -
+            gray  -
+            green  -
+            grey  -
+            lightblue  -
+            lightgreen  -
+            orange  -
+            purple  -
+            red  -
+            tunnel  -
+            violet  -
+            yellow  -
+            {}
+        subway_entrance  +
+            barcelona  -
+            berlin  -
+            kiev  -
+            london  -
+            madrid  -
+            minsk  -
+            moscow  -
+            newyork  -
+            paris  -
+            roma  -
+            spb  -
+            {}
+        tram  +
+            bridge  -
+            tunnel  -
+            {}
+        tram_stop  -
+        yard  +
+            bridge  -
+            tunnel  -
+            {}
+        {}
+    route  +
+        ferry  +
+            motor_vehicle  -
+            motorcar  -
+            {}
+        shuttle_train  -
+        {}
+    shop  +
+        alcohol  -
+        bakery  -
+        beauty  -
+        beverages  -
+        bicycle  -
+        bookmaker  -
+        books  -
+        butcher  -
+        car  -
+        car_parts  -
+        car_repair  +
+            tyres  -
+            {}
+        chemist  -
+        clothes  -
+        computer  -
+        confectionery  -
+        convenience  -
+        copyshop  -
+        cosmetics  -
+        department_store  -
+        doityourself  -
+        dry_cleaning  -
+        electronics  -
+        florist  -
+        furniture  -
+        garden_centre  -
+        gift  -
+        greengrocer  -
+        hairdresser  -
+        hardware  -
+        jewelry  -
+        kiosk  -
+        laundry  -
+        mall  -
+        mobile_phone  -
+        optician  -
+        outdoor  -
+        pet  -
+        photo  -
+        seafood  -
+        shoes  -
+        sports  -
+        supermarket  -
+        ticket  -
+        toys  -
+        travel_agency  -
+        tyres  -
+        wine  -
+        {}
+    sponsored  +
+        booking  -
+        {}
+    sport  +
+        american_football  -
+        archery  -
+        athletics  -
+        australian_football  -
+        baseball  -
+        basketball  -
+        bowls  -
+        cricket  -
+        curling  -
+        diving  -
+        equestrian  -
+        football  -
+        golf  -
+        gymnastics  -
+        handball  -
+        multi  -
+        scuba_diving  -
+        shooting  -
+        skiing  -
+        soccer  -
+        swimming  -
+        tennis  -
+        {}
+    tourism  +
+        alpine_hut  -
+        apartment  -
+        artwork  -
+        attraction  -
+        camp_site  -
+        caravan_site  -
+        chalet  -
+        guest_house  -
+        hostel  -
+        hotel  -
+        information  +
+            board  -
+            guidepost  -
+            map  -
+            office  -
+            {}
+        motel  -
+        museum  -
+        picnic_site  -
+        resort  -
+        viewpoint  -
+        zoo  -
+        {}
+    traffic_calming  +
+        bump  -
+        hump  -
+        {}
+    waterway  +
+        canal  +
+            tunnel  -
+            {}
+        dam  -
+        ditch  +
+            tunnel  -
+            {}
+        dock  -
+        drain  +
+            tunnel  -
+            {}
+        lock  -
+        lock_gate  -
+        river  +
+            tunnel  -
+            {}
+        riverbank  -
+        stream  +
+            ephemeral  -
+            intermittent  -
+            tunnel  -
+            {}
+        waterfall  -
+        weir  -
+        {}
+    wheelchair  +
+        limited  -
+        no  -
+        yes  -
+        {}
+    {}
