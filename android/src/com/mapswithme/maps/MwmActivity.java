@@ -139,6 +139,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   private boolean mIsFragmentContainer;
   private boolean mIsFullscreen;
   private boolean mIsFullscreenAnimating;
+  private boolean mIsAppearMenuLater;
 
   private FloatingSearchToolbarController mSearchController;
 
@@ -942,7 +943,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     }
 
     if (!closePlacePage() && !closeSidePanel() &&
-        !RoutingController.get().cancel() && !closePositionChooser())
+        (mNavigationController != null && !mNavigationController.cancel()) && !closePositionChooser())
     {
       try
       {
@@ -1024,11 +1025,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
       request.setPointData(object.getLat(), object.getLon(), object.getTitle(), object.getApiId());
       object.setSubtitle(request.getCallerName(MwmApplication.get()).toString());
     }
-    else if (MapObject.isOfType(MapObject.MY_POSITION, object) &&
-             RoutingController.get().isNavigating())
-    {
-      return;
-    }
 
     setFullscreen(false);
 
@@ -1089,6 +1085,11 @@ public class MwmActivity extends BaseMwmFragmentActivity
           adjustRuler(0, menuHeight);
 
           mIsFullscreenAnimating = false;
+          if (mIsAppearMenuLater)
+          {
+            appearMenu(menu);
+            mIsAppearMenuLater = false;
+          }
         }
       });
       if (showZoomButtons())
@@ -1099,20 +1100,28 @@ public class MwmActivity extends BaseMwmFragmentActivity
     }
     else
     {
-      Animations.appearSliding(menu.getFrame(), Animations.BOTTOM, new Runnable()
+      if (!mIsFullscreenAnimating)
+        appearMenu(menu);
+      else
+        mIsAppearMenuLater = true;
+    }
+  }
+
+  private void appearMenu(BaseMenu menu)
+  {
+    Animations.appearSliding(menu.getFrame(), Animations.BOTTOM, new Runnable()
+    {
+      @Override
+      public void run()
       {
-        @Override
-        public void run()
-        {
-          adjustCompass(0, 0);
-          adjustRuler(0, 0);
-        }
-      });
-      if (showZoomButtons())
-      {
-        Animations.appearSliding(mNavZoomOut, Animations.RIGHT, null);
-        Animations.appearSliding(mNavZoomIn, Animations.RIGHT, null);
+        adjustCompass(0, 0);
+        adjustRuler(0, 0);
       }
+    });
+    if (showZoomButtons())
+    {
+      Animations.appearSliding(mNavZoomOut, Animations.RIGHT, null);
+      Animations.appearSliding(mNavZoomIn, Animations.RIGHT, null);
     }
   }
 
