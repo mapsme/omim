@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.R;
 import com.mapswithme.util.ThemeUtils;
+import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.Utils;
 
 public class BaseMwmFragmentActivity extends AppCompatActivity
@@ -50,8 +51,7 @@ public class BaseMwmFragmentActivity extends AppCompatActivity
     mBaseDelegate.onCreate();
 
     super.onCreate(savedInstanceState);
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-      getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+    UiUtils.setupStatusBar(this);
     setVolumeControlStream(AudioManager.STREAM_MUSIC);
     final int layoutId = getContentLayoutResId();
     if (layoutId != 0)
