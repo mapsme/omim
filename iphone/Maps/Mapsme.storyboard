@@ -1920,7 +1920,7 @@
                                             <action selector="loginOSM" destination="iZ6-Zi-bkZ" eventType="touchUpInside" id="U8A-dL-xzX"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Don't have OpenStreetMap account?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nhm-W1-U8A">
+                                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Don't have OpenStreetMap account?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nhm-W1-U8A">
                                         <rect key="frame" x="0.0" y="199.5" width="280" height="17"/>
                                         <constraints>
                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="16" id="ntS-Lm-ZFB"/>
@@ -1934,7 +1934,7 @@
                                             <userDefinedRuntimeAttribute type="string" keyPath="localizedText" value="no_osm_account"/>
                                         </userDefinedRuntimeAttributes>
                                     </label>
-                                    <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="s0p-dL-PG8">
+                                    <button hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="s0p-dL-PG8">
                                         <rect key="frame" x="0.0" y="224.5" width="280" height="44"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="44" id="4EG-ux-LH6"/>
@@ -3572,11 +3572,11 @@
         <image name="separator_image" width="1" height="1"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="4Cc-99-mlN"/>
-        <segue reference="7YC-t5-0WN"/>
-        <segue reference="sMq-pa-AId"/>
         <segue reference="OEF-kR-jKi"/>
+        <segue reference="4Cc-99-mlN"/>
         <segue reference="Tkr-Ad-FQL"/>
         <segue reference="4ye-8o-cjF"/>
+        <segue reference="Pet-Wq-d4a"/>
+        <segue reference="nJf-7z-2TX"/>
     </inferredMetricsTieBreakers>
 </document>
