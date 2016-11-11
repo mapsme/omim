@@ -1,8 +1,9 @@
-#import "MapsAppDelegate.h"
-#import "MapViewController.h"
-#import "MWMAlertViewController.h"
 #import "MWMDefaultAlert.h"
+#import "MWMAlertViewController.h"
+#import "MWMLocationManager.h"
 #import "MWMPlacePageViewManager.h"
+#import "MapViewController.h"
+#import "MapsAppDelegate.h"
 #import "Statistics.h"
 #import "UIButton+RuntimeAttributes.h"
 #import "UILabel+RuntimeAttributes.h"
@@ -12,7 +13,7 @@
 static CGFloat const kDividerTopConstant = -8.;
 static NSString * kStatisticsEvent = @"Default Alert";
 
-@interface MWMDefaultAlert ()
+@interface MWMDefaultAlert ()<MWMLocationObserver>
 
 @property (weak, nonatomic) IBOutlet UILabel * messageLabel;
 @property (weak, nonatomic) IBOutlet UIButton * rightButton;
@@ -69,6 +70,7 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
                                         leftButtonTitle:L(@"current_location_unknown_stop_button")
                                       rightButtonAction:okBlock];
   [alert setNeedsCloseAlertAfterEnterBackground];
+  [MWMLocationManager addObserver:self];
   return alert;
 }
 
@@ -419,6 +421,9 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
   return alert;
 }
 
+#pragma mark - MWMLocationObserver
+
+- (void)onLocationUpdate:(location::GpsInfo const &)gpsInfo { [self close:self.rightButtonAction]; }
 #pragma mark - Actions
 
 - (IBAction)rightButtonTap
