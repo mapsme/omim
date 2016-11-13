@@ -109,18 +109,17 @@ void StipplePenRasterizator::Rasterize(void * buffer)
     offset += length;
   }
 
-  uint8_t period = offset - 1;
+  size_t count = (m_pixelLength - offset) / m_patternLength;
+  size_t remainder = (m_pixelLength - offset) % m_patternLength;
 
-  while (offset < m_pixelLength + 1)
-  {
-    memcpy(pixels + offset, pixels + 1, period);
-    offset += period;
-  }
+  for (size_t i = 0; i < count; ++i)
+    memcpy(pixels + offset + (i * m_patternLength), pixels + 1, m_patternLength);
+  memcpy(pixels + offset + (count * m_patternLength), pixels + 1, remainder);
 
   ASSERT_LESS(offset, kMaxStipplePenLength, ());
 
   pixels[0] = pixels[1];
-  pixels[offset] = pixels[offset - 1];
+  pixels[m_pixelLength-1] = pixels[m_pixelLength-2];
 }
 
 ref_ptr<Texture::ResourceInfo> StipplePenIndex::ReserveResource(bool predefined, StipplePenKey const & key, bool & newResource)
