@@ -17,7 +17,7 @@
     it = Informazioni
     ja = 情報
     ko = 소개
-    lt = Apies
+    lt = Apie
     nb = Om
     pl = O programie
     pt = Sobre
@@ -582,6 +582,7 @@
     it = Lascia una recensione
     ja = 評価する
     ko = 평 남기기
+    lt = Palikite atsiliepimą
     nb = Legg inn en vurdering
     pl = Napisz recenzję
     pt = Deixe uma revisão
@@ -613,6 +614,7 @@
     it = Mappe
     ja = マップ
     ko = 지도
+    lt = Žemėlapiai
     nb = Kart
     pl = Mapy
     pt = Mapas
@@ -644,6 +646,7 @@
     it = Mappe:
     ja = マップ：
     ko = 지도:
+    lt = Žemėlapiai:
     nb = Kart:
     pl = Mapy:
     pt = Mapas:
@@ -675,6 +678,7 @@
     it = Contrassegnato per il download, tocca per cancellare
     ja = ダウンロードを開始します。キャンセルするには画面をタッチしてください。
     ko = 다운로드로 표시하였습니다. 두드려 취소하십시요.
+    lt = Pažymėtas atsisiųsti, palieskite norėdami atšaukti
     nb = Merket for nedlasting – trykk for å avbryte
     pl = Oznaczono do pobrania. Proszę nacisnąć, aby anulować
     pt = Marcado para descarga, toque para cancelar
@@ -731,6 +735,7 @@
     it = Miglia
     ja = マイル
     ko = 마일
+    lt = Mylios
     nb = Miles
     pl = Mile
     pt = Milhas
@@ -762,6 +767,7 @@
     it = La mia posizione
     ja = 現在地
     ko = 나의 위치
+    lt = Mano pozicija
     nb = Min posisjon
     pl = Moje położenie
     pt = A minha posição
@@ -785,6 +791,7 @@
     de = OK
     id = OK
     ko = 승인
+    lt = Gerai
     nb = OK
     ro = OK
     sv = OK
@@ -811,6 +818,7 @@
     it = Cortesemente libera spazio sul tuo dispositivo prima per poter scaricare %@
     ja = %@をダウンロードするため、デバイスの空き容量を確認してください
     ko = 먼저 귀하의 장치에 어느 정도의 공간을 확보하여 %@를 다운로드하여 주십시요.
+    lt = Pirmiausia atlaisvinkite laisvos vietos savo prietaise, norint atsisiųsti %@
     nb = Frigjør plass på enheten først for å laste ned %@
     pl = Aby pobrać %@, musisz najpierw zwolnić nieco miejsca na swoim urządzeniu.
     pt = Por favor liberte primeiro algum espaço no seu dispositivo para descarregar %@
@@ -843,6 +851,7 @@
     it = Ricordamelo in seguito
     ja = 後で通知
     ko = 이후에 기억시키기
+    lt = Priminkite man vėliau
     nb = Minn meg på det senere
     pl = Przypomnij później
     pt = Lembrar-me mais tarde
@@ -873,6 +882,7 @@
     it = Più tardi
     ja = 次の機会に
     ko = 후
+    lt = Vėliau
     nb = Senere
     pl = Później
     pt = Mais tarde
@@ -904,6 +914,7 @@
     it = Mai
     ja = 今後表示しない
     ko = 거절
+    lt = Niekada
     nb = Aldri
     pl = Nigdy
     pt = Nunca
@@ -934,6 +945,7 @@
     it = Segnala un problema
     ja = 問題を報告
     ko = 문제 보고하기
+    lt = Pranešti apie problemą
     nb = Rapporter et problem
     pl = Zgłoś błąd
     pt = Reelatar um problema
@@ -965,6 +977,7 @@
     it = Cerca
     ja = 検索
     ko = 검색하기
+    lt = Ieškoti
     nb = Søk
     pl = Wyszukaj
     pt = Procura
@@ -995,6 +1008,7 @@
     it = Ricerca Mappa
     ja = マップを検索
     ko = 지도 검색하기
+    lt = Ieškoti žemėlapyje
     nb = Søk kart
     pl = Wyszukaj mapy
     pt = Procurar mapa
@@ -1026,6 +1040,7 @@
     it = Tocca per scaricare
     ja = タッチしてダウンロード
     ko = 두드려 다운로드하세요
+    lt = Palieskite atsisiuntimui
     nb = Trykk for å laste ned
     pl = Proszę nacisnąć, aby pobrać.
     pt = Toque para descarregar
@@ -1057,6 +1072,7 @@
     it = Sì
     ja = はい
     ko = 네
+    lt = Taip
     nb = Ja
     pl = Tak
     pt = Sim
@@ -1089,6 +1105,7 @@
     it = Ti consigliamo di utilizzare il WiFi per scaricare mappe di grandi dimensioni
     ja = 大きなマップをダウンロードする際はWiFiの使用をおすすめします。
     ko = WiFi를 이용하여 큰 지도를 다운로드하는 것을 권하여 드립니다.
+    lt = Rekomenduojame naudoti Wi-Fi atsisiųsti dideliems žemėlapiams
     nb = Vi anbefaler å bruke WiFi når du skal laste ned store kart
     pl = Zaleca się korzystanie z WiFi przy pobieraniu dużych map
     pt = Recomendamos a utilização de WiFi para descarregar grandes mapas
@@ -1120,6 +1137,7 @@
     it = Quale sistema di misura preferisci?
     ja = どちらの距離単位を使いますか？
     ko = 어느 측정 시스템을 선호하십니까?
+    lt = Kuri matavimo sistema jums labiau patinka?
     nb = Hvilket målesystem foretrekker du?
     pl = Który system miar jest najbardziej dogodny?
     pt = Que sistema de medidas prefere?
@@ -1151,6 +1169,7 @@
     it = Attualmente hai disattivati tutti i servizi di locazione per questo dispositivo o applicazione. Cortesemente abilitali nelle Impostazioni.
     ja = 端末の位置情報サービスが無効になっているか、このアプリケーションからの位置情報利用が制限されています。端末の設定を有効化してください。
     ko = 현재 이 장치나 애플리케이션을 위한 전 위치 서비스를 불능시키셨습니다. 설정에서 이를 작동시켜 주시기 바랍니다.
+    lt = Šiuo metu visos Vietos nustatymo paslaugos šiame prietaise arba programos išjungtos. Įjunkite jas Parametruose.
     nb = Du har for øyeblikket deaktivert alle posisjonstjenester for denne enheten eller applikasjonen. Slå dem på i «Innstillinger».
     pl = Usługi lokalizacji są aktualnie wyłączone dla tego urządzenia lub aplikacji. Proszę włączyć je w ustawieniach.
     pt = Atualmente tem todos os Serviços de Localização para este dispositivo ou aplicação desativados. Por favor ative-os nas Definições.
@@ -1182,6 +1201,7 @@
     it = Il tuo dispositivo non supporta i servizi di localizzazione
     ja = ご使用中の端末は位置情報サービスをサポートしていません。
     ko = 귀하의장치가 위치 서비스를 지원하지 않습니다.
+    lt = Jūsų įrenginys nepalaiko Vietos paslaugos
     nb = Enheten din støtter ikke posisjonstjenester
     pl = Urządzenie nie obsługuje usług lokalizacji
     pt = O seu dispositivo não suporta os Serviços de Localização
@@ -1213,6 +1233,7 @@
     it = Mostra sulla mappa
     ja = 地図に表示
     ko = 지도에 표시
+    lt = Rodyti žemėlapyje
     nb = Vis på kartet
     pl = Wyświetl na mapie
     pt = Mostrar no mapa
@@ -1243,6 +1264,7 @@
     it = ^\naggiunto alla coda di download
     ja = ^\nをダウンロードキューに追加しました
     ko = ^\n는 다운로드 대기열에추가됩니다
+    lt = ^\n įtraukta į atsiuntimo eilę.
     nb = ^\ner lagt til i nedlastingskøen.
     pl = ^\ndodano do kolejki pobierania
     pt = ^\né adicionado à fila de descargas
@@ -1274,6 +1296,7 @@
     it = Sto scaricando\n^\n^
     ja = ^\n^\nをダウンロード中
     ko = 다운로드 중\n^\n^
+    lt = Siunčiama\n^\n^
     nb = Laster ned\n^\n^
     pl = Pobieranie\n^\n^
     pt = A descarregar\n^\n^
@@ -1305,6 +1328,7 @@
     it = Scarica Map\n(^ ^)
     ja = 地図をダウンロード\n(^ ^)
     ko = 지도 다운로드\n(^ ^)
+    lt = Atsisiųsti žemėlapį\n(^ ^)
     nb = Last ned kart\n(^ ^)
     pl = Pobierz mapę\n(^ ^)
     pt = Descarregar Mapa\n(^ ^)
@@ -1336,6 +1360,7 @@
     it = Scarica Map
     ja = 地図をダウンロード
     ko = 지도 다운로드
+    lt = Atsisiųsti žemėlapį
     nb = Last ned kart
     pl = Pobierz mapę
     pt = Descarregar Mapa
@@ -1367,6 +1392,7 @@
     it = Scarica mappa\nsenza percorsi (^ ^)
     ja = ルートなしで地図をダウンロード\n(^ ^)
     ko = 라우팅없이 지도 다운로드\n(^ ^)
+    lt = Atsisiųsti žemėlapį\nbe maršruto (^ ^)
     nb = Last ned kart\nuten veiviserfunksjon (^ ^)
     pl = Pobierz mapę bez\noznaczania tras (^ ^)
     pt = Baixar mapa\nsem roteamento (^ ^)
@@ -1398,6 +1424,7 @@
     it = Lo scaricamento è fallito
     ja = のダウンロードに失敗しました
     ko = 다운로드에 실패하였습니다
+    lt = Atsisiųsti nepavyko
     nb = Laster ned mislyktes
     pl = Nie udało się pobrać
     pt = A descarga falhou
@@ -1429,6 +1456,7 @@
     it = Riprova
     ja = 再実行
     ko = 다시 시도
+    lt = Bandyti dar kartą
     nb = Prøv på nytt
     pl = Spróbuj ponownie
     pt = Tente de novo
@@ -1462,6 +1490,7 @@
     it = Informazioni su MAPS.ME
     ja = MAPS.MEについて
     ko = 소개
+    lt = Apie MAPS.ME
     nb = Om MAPS.ME
     pl = O aplikacji MAPS.ME
     pt = Sobre o MAPS.ME
@@ -1492,6 +1521,7 @@
     it = Download di %d%%, tocca per cancellare
     ja = %d%%をダウンロード中です。キャンセルするには画面をタッチしてください。
     ko = %d%%를 다운로드 중, 두드려 취소하십시요
+    lt = Atsiunčiama %d%%, palieskite atšaukimui
     nb = Laster ned %d%% – trykk for å avbryte
     pl = Pobieranie %d%%. Proszę nacisnąć, aby anulować.
     pt = A descarregar %d%%, toque para cancelar
@@ -1522,6 +1552,7 @@
     it = Scaricato (%@), tocca per cancellare
     ja = (%@)をダウンロードしました。削除するには画面をタッチしてください。
     ko = (%@)가 다운로드 되었습니다, 두드려 삭제하십시요.
+    lt = Atsiųsta (%@), palieskite ištrinimui
     nb = Lastet ned (%@) – trykk for å slette
     pl = Pobrano (%@). Proszę nacisnąć, aby usunąć.
     pt = Descarregado (%@), toque para eliminar
@@ -1552,6 +1583,7 @@
     it = Impostazioni di connessione
     ja = 接続設定
     ko = 연결 설정
+    lt = Ryšio parametrai
     nb = Tilkoblingsinnstillinger
     pl = Ustawienia połączenia
     pt = Definições de Ligação
@@ -1582,6 +1614,7 @@
     it = Scarica %@
     ja = %@をダウンロード
     ko = %@ 다운로드하기
+    lt = Atsiųsti %@
     nb = Last ned %@
     pl = Pobierz %@
     pt = Descarga %@
@@ -1612,6 +1645,7 @@
     it = Chiudi
     ja = 閉じる
     ko = 닫기
+    lt = Užverti
     nb = Lukk
     pl = Zamknij
     pt = Fechar
@@ -1642,6 +1676,7 @@
     it = È necessaria una accelerazione hardware OpenGL. Purtroppo, il tuo dispositivo non è supportato.
     ja = ハードウェアアクセラレーションされたOpenGLが必要です。残念ながらご利用中のデバイスではサポートされていません。
     ko = 하드웨어 촉진 OpenGL이 요구됩니다. 애석하게도 귀하의 장치는 지원되지 않습니다.
+    lt = Programa reikalauja aparatūros spartinimo OpenGL. Deja, jūsų prietaisas nepalaiko.
     nb = En maskinvareakselerert OpenGL kreves. Dessverre støttes ikke enheten din.
     pl = Wymagana jest sprzętowa akceleracja OpenGL. Aktualne urządzenie nie jest obsługiwane.
     pt = É necessário um OpenGL acelerado por hardware. Infelizmente o seu dispositivo não é suportado.
@@ -1672,6 +1707,7 @@
     it = Carica
     ja = ダウンロード
     ko = 다운로드
+    lt = Atsiųsti
     nb = Last ned
     pl = Pobierz
     pt = Descarga
@@ -1702,6 +1738,7 @@
     it = La scheda/USB/di memoria SD con le mappe scaricate non è disponibile
     ja = マップをダウンロードしたSDカード/USBストレージへ接続できません
     ko = 다운로드된지도와 SD 카드 / USB 저장 장치를 사용할 수 없습니다
+    lt = SD kortelėje/USB atmintyje atsiųstų žemėlapių nėra.
     nb = SD-kort/USB-enhet med nedlastede kart er ikke tilgjengelig
     pl = Karta SD/Pamięć USB z pobranymi mapami nie jest dostępna
     pt = Não está disponível um cartão SD/armazenamento USB com os mapas descarregados
@@ -1732,6 +1769,7 @@
     it = Coortesemente scollega il cavo USB oppure inserisci la scheda di memoria per l'usco dell'app
     ja = MAPS.MEを利用するにはUSBケーブルを抜くかメモリーカードを挿入してください
     ko = MAPS.ME를 사용하려면 USB 케이블이나 삽입 메모리 카드를 분리하십시오
+    lt = Prašome atjunkti USB kabelį arba įdėti atminties kortelę norint naudoti MAPS.ME
     nb = Koble fra USB-kabelen eller sett inn minnekortet for å bruke MAPS.ME
     pl = Proszę odłączyć kabel USB albo włożyć kartę pamięci, aby korzystać z MAPS.ME
     pt = Por favor desligue o cabo USB ou introduza um cartão de memória para utilizar MAPS.ME
@@ -1762,6 +1800,7 @@
     it = Libera prima dello spazio sulla scheda Sd/ memoria USB per usare l'app
     ja = アプリを起動するにはSDカード/USBストレージの空き容量を確保する必要があります
     ko = 응용 프로그램을 사용하기 위해서는 첫째 SD 카드 / USB 저장 장치에 여유 공간을 확보하십시오
+    lt = Pirmiausia atlaisvinkite vietos SD kortelėje/USB atmintyje siekiant naudoti programą
     nb = Frigjør plass på SD-kortet/USB-enheten først for å bruke appen
     pl = Proszę zwolnić trochę pamięci na karcie SD/pamięci USB, aby korzystać z aplikacji
     pt = Por favor liberte primeiro algum espaço no cartão SD/armazenamento USB para utilizar a app
@@ -1792,6 +1831,7 @@
     it = Memoria insufficiente per lanciare l'app
     ja = メモリ不足のためアプリを起動できません
     ko = 응용 프로그램을 실행하기위한 메모리가 충분하지 않다
+    lt = Nepakanka atminties norint paleisti programą
     nb = Ikke nok minne til å starte appen
     pl = Za mało pamięci, aby uruchomić aplikację
     pt = Não há memória suficiente para executar a app
@@ -1822,6 +1862,7 @@
     it = Libera %1$@ sul dispositivo prima per poter scaricare %2$@
     ja = %2$@をダウンロードするにはデバイスに%1$@の空き容量が必要です
     ko = %2$@를 다운로드하기 위해서는 먼저 장치에서 무료로 %1$@를주세요
+    lt = Pirmiausia atlaisvinkite %1$@ savo prietaise norėdami atsisiųsti %2$@
     nb = Frigjør %1$@ på enheten først for å laste ned %2$@
     pl = Proszę zwolnić %1$@ na urządzeniu, aby pobrać %2$@
     pt = Por favor liberte primeiro %1$@ no seu dispositivo para descarregar %2$@
@@ -1852,6 +1893,7 @@
     it = Prima di iniziare è necessario scaricare la mappa generale del mondo sul tuo dispositivo.\nLa dimensione del download è di %@.
     ja = 利用を開始する前におおまかな世界地図をダウンロードします。これには%@の空き容量が必要です。
     ko = 시작하시기 전에 일반 세계 지도를 귀하의 장치로 다운로드하겠습니다.\n%@ 데이터가 필요합니다.
+    lt = 
     nb = Før du begynner, la oss laste ned det generelle verdenskartet til enheten. Det trengs %@ med data.
     pl = Przed rozpoczęciem prosimy o pobranie ogólnej mapy świata na urządzenie.\nWymaga to %@ danych.
     pt = Antes de começar permita-nos que descarreguemos um mapa mundial geral para o seu dispositivo.\nÉ necessário %@ de dados.
