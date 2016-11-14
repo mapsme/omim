@@ -17,6 +17,7 @@
     it = Informazioni
     ja = 情報
     ko = 소개
+    lt = Apie
     nb = Om
     pl = O programie
     pt = Sobre
@@ -48,6 +49,7 @@
     it = Indietro
     ja = 戻る
     ko = 뒤로
+    lt = Atgal
     nb = Tilbake
     pl = Wróć
     pt = Voltar
@@ -80,6 +82,7 @@
     it = Annulla
     ja = キャンセル
     ko = 취소하기
+    lt = Atšaukti
     nb = Avbryt
     pl = Anuluj
     pt = Cancelar
@@ -112,6 +115,7 @@
     it = Annulla il download
     ja = ダウンロードをキャンセル
     ko = 다운로드 취소하기
+    lt = Atšaukti siuntimą
     nb = Avbryt nedlasting
     pl = Anuluj pobieranie
     pt = Cancelar Descarga
@@ -144,6 +148,7 @@
     it = Cancella
     ja = 削除
     ko = 삭제하기
+    lt = Ištrinti
     nb = Slett
     pl = Usuń
     pt = Eliminar
@@ -175,6 +180,7 @@
     it = Non me lo chiedere di nuovo
     ja = 以後、このメッセージを表示しない
     ko = 또 묻지 마세요.
+    lt = Daugiau nebeklausti
     nb = Ikke spør meg igjen
     pl = Nie pytaj ponownie
     pt = Não volte a perguntar-me
@@ -206,6 +212,7 @@
     it = Continua
     ja = 何もしない
     ko = 아무것도 하지 마세요
+    lt = Tęsti
     nb = Ikke spør meg igjen
     pl = Kontynuuj
     pt = Continuar
@@ -237,6 +244,7 @@
     it = Scarica le mappe
     ja = マップをダウンロード
     ko = 지도 다운로드받기
+    lt = Atsisiųsti žemėlapius
     nb = Last ned kart
     pl = Pobierz mapy
     pt = Descarregar mapas
@@ -268,6 +276,7 @@
     it = Scarica %qu kB
     ja = %quをダウンロード
     ko = %qu 다운로드하기
+    lt = Atsisiųsti %qu kB
     nb = Last ned %qu kB
     pl = Pobierz %qu kB
     pt = Descarregar %qu kB
@@ -299,6 +308,7 @@
     it = Scarica %qu MB
     ja = %quをダウンロード
     ko = %qu 다운로드하기
+    lt = Atsisiųsti %qu MB
     nb = Last ned %qu MB
     pl = Pobierz %qu MB
     pt = Descarregar %qu MB
@@ -330,6 +340,7 @@
     it = Download fallito, tocca di nuovo per un altro tentativo
     ja = ダウンロードが失敗しました。もう一度試すには画面をタッチしてください。
     ko = 다운로드에 실패하였습니다. 다시 두드려 시도하여 주십시요.
+    lt = Atsisiųsti nepavyko. Palieskite ir bandykite dar kartą.
     nb = Nedlastingen mislyktes – trykk på nytt for å prøve en gang til
     pl = Nie udało się pobrać. Proszę nacisnąć, aby spróbować ponownie.
     pt = A descarga falhou, toque novamente para tentar uma vez mais.
@@ -361,6 +372,7 @@
     it = Scaricato (%1$qu %2$@), tocca per annullare
     ja = (%1$qu %2$@)をダウンロードしました。削除するには画面をタッチしてください。
     ko = (%1$qu %2$@)가 다운로드 되었습니다, 두드려 삭제하십시요.
+    lt = Atsisiųsta (%1$qu %2$@), palieskite ištrinimui
     nb = Lastet ned (%1$qu %2$@) – trykk for å slette
     pl = Pobrano (%1$qu %2$@). Proszę nacisnąć, aby usunąć.
     pt = Descarregado (%1$qu %2$@), toque para eliminar.
@@ -392,6 +404,7 @@
     it = Download di %qu%%, tocca per annullare
     ja = %qu%%をダウンロード中です。キャンセルするには画面をタッチしてください。
     ko = %qu%%를 다운로드 중, 두드려 취소하십시요
+    lt = Atsisiunčiama %qu%%, palieskite atšaukimui
     nb = Laster ned %qu%% – trykk for å avbryte
     pl = Pobieranie %qu%%. Proszę nacisnąć, aby anulować.
     pt = A descarregar %qu%%, toque para cancelar.
@@ -423,6 +436,7 @@
     it = In fase di download…
     ja = ダウンロード中…
     ko = 다운로드 중…
+    lt = Siunčiama…
     nb = Laster ned …
     pl = Pobieranie…
     pt = A descarregar…
@@ -453,6 +467,7 @@
     it = Prendila ora
     ja = 今すぐ入手
     ko = 지금 가져오기
+    lt = Gaukite dabar
     nb = Hent nå
     pl = Pobierz
     pt = Obtenha agora
@@ -484,6 +499,7 @@
     it = Grazie per aver utilizzato MAPS.ME! Ti piace l’app? Dillo ai tuoi amici! Questo è il miglior segno di gratitudine.
     ja = MAPS.MEをご利用いただきありがとうございます! このアプリが好きですか? お友達にも教えてあげてください! アプリを広めていただければ大変嬉しく思います。
     ko = MAPS.ME를 사용해 주셔서 감사합니다! 앱을 좋아하십니까? 이 앱에 대해 친구들에게 널리 알려 주십시오! 그러면 저희는 매우 감사할 것입니다.
+    lt = Dėkojame, kad naudojate MAPS.ME! Ar jums patiko programa? Praneškite savo draugams apie tai! Tai yra didžiausia padėka, kurią jūs mums galite duoti.
     nb = Tusen takk for at du bruker MAPS.ME! Liker du appen? Fortell vennene dine om den! Det er den beste takken vi kan få.
     pl = Dziękujemy za korzystanie z MAPS.ME! Czy podoba Ci się nasza aplikacja? Opowiedz o niej swoim znajomym! W taki sposób najlepiej nam podziękujesz.
     pt = Obrigado por usar MAPS.ME! Gosta do aplicativo? Conte para seus amigos! Será a melhor forma de nos agradecer.
@@ -534,6 +550,7 @@
     it = Chilometri
     ja = キロメートル
     ko = 킬로미터
+    lt = Kilometrai
     nb = Kilometer
     pl = Kilometry
     pt = Quilómetros
