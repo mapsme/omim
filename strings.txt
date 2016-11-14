@@ -2864,7 +2864,7 @@
     it = Non hai ancora nessun segnalibro.\nTocca qualsiasi luogo sulla cartina per aggiungere un segnalibro.\nPossono essere anche importati Preferiti da altre fonti e visualizzate nell'app MAPS.ME. Apri il file KML/KMZ con i pin salvati da una casella di posta, Dropbox o un link web.
     ja = 未だブックマークがありません。\nマップ上をタップすればブックマークを追加できます。\nMAPS.ME以外のアプリで作成したブックマークの表示も可能です。KML/KMZ形式のピン情報をメールやDropbox、URLから取得してください。
     ko = 즐겨찾기가 없습니다.\n즐겨찾기를 추가하도록 지도에 어떤 장소를 누릅니다.\n다른 소스에서 북마크는 MAPS.ME 앱에서 가져와서 표시할 수 있습니다. 메일, 드롭박스 또는 웹링크에서 저장한 핀으로 KML/KMZ 파일을 열 수 있습니다.
-    lt = 
+    lt = Jūs dar neturite adresyno.\nBakstelėkite bet kurioje vietoje ant žemėlapio norėdami pridėti žymę į adresyną.\nAdresynai iš kitų šaltinių taip pat gali būti importuojami ir rodomi programoje MAPS.ME. Atverkite KML/KMZ faila su išsaugotu adresynu iš el. pašto, Dropbox ar interneto nuorodos.
     nb = Du har ingen bokmerker enda.\nTrykk på et hvilket som helst sted på kartet for å legge til et bokmerke.\nBokmerker fra andre kilder kan også importeres og vises i MAPS.ME. Åpne KML-/KMZ-filer med lagrede bokmerker fra e-post, Dropbox eller internettkobling.
     pl = Nie oznaczono jeszcze żadnych zakładek.\nProszę dotknąć dowolnego miejsca na mapie, aby dodać zakładkę.\nMożna importować i wyświetlać zakładki z innych zasobów. Program otwiera pliki KML/KMZ z zapisanymi zakładkami, pochodzące z wiadomości email, Dropboxa lub odnośników internetowych.
     pt = Ainda não tem marcadores.\nToque em qualquer lugar no mapa para adicionar um marcador.\nOs marcadores de outras fontes também podem ser importados e exibidos na aplicação MAPS.ME. Abrir ficheiro KML/KMZ com pinos guardados a partir do mail, Dropbox ou ligação web.
@@ -2897,6 +2897,7 @@
     it = Possono essere anche importati Preferiti da altre fonti e visualizzate nell'app MAPS.ME. Apri il file KML/KMZ con i pin salvati da una casella di posta, Dropbox o un link web.
     ja = MAPS.ME以外のアプリで作成したブックマークの表示も可能です。KML/KMZ形式のピン情報をメールやDropbox、URLから取得してください。
     ko = 다른 소스에서 북마크는 MAPS.ME 앱에서 가져와서 표시할 수 있습니다. 메일, 드롭박스 또는 웹링크에서 저장한 핀으로 KML/KMZ 파일을 열 수 있습니다.
+    lt = Adresynai iš kitų šaltinių taip pat gali būti importuojami ir rodomi programoje MAPS.ME. Atverkite KML/KMZ faila su išsaugotu adresynu iš el. pašto, Dropbox ar interneto nuorodos.
     nb = Bokmerker fra andre kilder kan også importeres og vises i MAPS.ME. Åpne KML-/KMZ-filer med lagrede bokmerker fra e-post, Dropbox eller internettkobling.
     pl = Można importować i wyświetlać zakładki z innych zasobów. Program otwiera pliki KML/KMZ z zapisanymi zakładkami, pochodzące z wiadomości email, Dropboxa lub odnośników internetowych.
     pt = Os marcadores de outras fontes podem ser importados e exibidos na aplicação MAPS.ME. Abrir ficheiro KML/KMZ com pinos guardados a partir do mail, Dropbox ou ligação web.
@@ -2929,6 +2930,7 @@
     it = Impostazioni
     ja = 設定
     ko = 설정
+    lt = Parametrai
     nb = Innstillinger
     pl = Ustawienia
     pt = Configurações
@@ -2961,6 +2963,7 @@
     it = Cartella mappe
     ja = マップ保存先
     ko = 지도 저장소
+    lt = Žemėlapių saugojimas
     nb = Kartlagring
     pl = Pamięć map
     pt = Armazenamento dos mapas
@@ -2993,6 +2996,7 @@
     it = Seleziona il luogo in cui le mappe devono essere scaricate
     ja = マップのダウンロード先を選択してください
     ko = 지도가 다운로드될 곳을 선택합니다
+    lt = Pasirinkite vietą, kurioje turi būti atsisiųsti žemėlapiai
     nb = Velg hvor du vil at kartene skal lastes ned til
     pl = Określa położenie przechowywania pobranych map
     pt = Selecione o local para onde os mapas devem ser descarregados
@@ -3025,6 +3029,7 @@
     it = Vuoi spostare le mappe?
     ja = マップを移動させますか？
     ko = 지도를 이동합니까?
+    lt = Perkelti žemėlapius?
     nb = Flytt kart?
     pl = Przenieść mapy?
     pt = Mover mapas?
@@ -3057,6 +3062,7 @@
     it = Questo può richiedere diversi minuti.\ncortesemente attendi…
     ja = 数分かかる場合があります。\nしばらくお待ち下さい…
     ko = 이 작업은 수 분 소요될 수 있습니다.\n잠시 기다리세요…
+    lt = Tai gali užtrukti keletą minučių.\nPrašome palaukti…
     nb = Dette kan ta flere minutter. Vent et øyeblikk …
     pl = To może zająć kilka minut.\nProszę czekać…
     pt = Isto pode demorar alguns minutos.\nPor favor aguarde…
@@ -3089,6 +3095,7 @@
     it = Visibile
     ja = マップに表示
     ko = 눈에 보이는
+    lt = Matomi
     nb = Synlig
     pl = Widoczne
     pt = Visível
@@ -3120,6 +3127,7 @@
     it = Il GPS è disabilitato. Cortesemente abilitalo nelle Impostazioni.
     ja = GPS機能が無効です。端末の設定画面から有効にしてください。
     ko = GPS가 사용 중지되었습니다. 설정에서 이를 작동시켜 주시기 바랍니다.
+    lt = GPS yra išjungtas. Prašome įjungti jį parametruose.
     nb = GPS er deaktivert. Dette kan aktiveres i «Innstillinger».
     pl = GPS jest wyłączony. Proszę włączyć go w ustawieniach.
     pt = O GPS está desativado. Por favor ative-o nas Definições.
@@ -3152,6 +3160,7 @@
     it = Unità di misura
     ja = 距離計測単位
     ko = 측정 단위
+    lt = Matavimo vienetai
     nb = Måleenheter
     pl = Jednostki miary
     pt = Unidades de medida
@@ -3185,6 +3194,7 @@
     it = Scegli tra miglia e chilometri
     ja = マイルまたはキロメートルを選択
     ko = 마일과 킬로미터 중에서 선택하십시오
+    lt = Pasirinkite tarp mylių ir kilometrų
     nb = Velg mellom miles og kilometer
     pl = Wybiera pomiędzy milami, a kilometrami
     pt = Escolha entre milhas e quilómetros
@@ -3215,6 +3225,7 @@
     it = Ovunque
     ja = 全マップから検索
     ko = 모든 곳
+    lt = Visur
     pl = Wszędzie
     pt = Em toda a parte
     es = Todos
@@ -3242,6 +3253,7 @@
     it = Vicino a me
     ja = 現在地周辺
     ko = 근처 검색
+    lt = Šalia manęs
     pl = W pobliżu mnie
     pt = Perto de mim
     es = Cerca de mí
@@ -3269,6 +3281,7 @@
     it = Nella schermata
     ja = マップ表示範囲
     ko = 화면에
+    lt = Ekrane
     pl = Na ekranie
     pt = No ecrã
     es = En la pantalla
@@ -3298,6 +3311,7 @@
     it = Cibo
     ja = 飲食
     ko = 음식
+    lt = Maistas
     nb = Mat
     pl = Jedzenie
     pt = Alimentação
@@ -3330,6 +3344,7 @@
     it = Transporto
     ja = 交通機関
     ko = 수송
+    lt = Transportas
     nb = Transport
     pl = Transport
     pt = Transporte
@@ -3363,6 +3378,7 @@
     it = Stazione di rifornimento
     ja = ガソリンスタンド
     ko = 연료
+    lt = Degalai
     nb = Drivstoff
     pl = Stacja benzynowa
     pt = Combustível
@@ -3395,6 +3411,7 @@
     it = Parcheggio
     ja = 駐車場
     ko = 주차
+    lt = Stovėjimo aikštelė
     nb = Parkering
     pl = Parking
     pt = Estacionamento
@@ -3427,6 +3444,7 @@
     it = Negozio
     ja = 買い物
     ko = 쇼핑
+    lt = Parduotuvė
     nb = Butikk
     pl = Sklep
     pt = Compras
@@ -3461,6 +3479,7 @@
     it = Hôtel
     ja = ホテル
     ko = 호텔
+    lt = Viešbutis
     nb = Hotell
     pl = Hotel
     pt = Hotel
@@ -3493,6 +3512,7 @@
     it = Turistico
     ja = 観光
     ko = 관광
+    lt = Žymios vietos
     nb = Severdigheter
     pl = Atrakcje turystyczne
     pt = Vistas
@@ -3525,6 +3545,7 @@
     it = Divertimento
     ja = エンターテイメント
     ko = 엔터테인먼트
+    lt = Pramogos
     nb = Underholdning
     pl = Rozrywka
     pt = Entretenimento
@@ -3557,6 +3578,7 @@
     it = Bancomat
     ja = ATM
     ko = ATM
+    lt = Bankomatas
     nb = Minibank
     pl = Bankomat
     pt = Multibanco
@@ -3589,6 +3611,7 @@
     it = Banca
     ja = 銀行
     ko = 은행
+    lt = Bankas
     nb = Bank
     pl = Bank
     pt = Banco
@@ -3621,6 +3644,7 @@
     it = Farmacia
     ja = 薬局
     ko = 약국
+    lt = Vaistinė
     nb = Apotek
     pl = Apteka
     pt = Farmácia
@@ -3653,6 +3677,7 @@
     it = Ospedale
     ja = 病院
     ko = 병원
+    lt = Ligoninė
     nb = Sykehus
     pl = Szpital
     pt = Hospital
@@ -3687,6 +3712,7 @@
     it = Toilette
     ja = トイレ
     ko = 화장실
+    lt = Tualetas
     nb = Toalett
     pl = Toaleta
     pt = WC
@@ -3719,6 +3745,7 @@
     it = Posta
     ja = 郵便局
     ko = 우편
+    lt = Paštas
     nb = Post
     pl = Poczta
     pt = Correios
@@ -3751,6 +3778,7 @@
     it = Polizia
     ja = 警察
     ko = 치안대
+    lt = Policija
     nb = Politi
     pl = Policja
     pt = Polícia
@@ -3783,6 +3811,7 @@
     it = Nessun risultato trovato
     ja = 検索結果が見つかりませんでした
     ko = 결과 없음
+    lt = Rezultatų nerasta
     nb = Ingen resultater funnet
     pl = Nie odnaleziono
     pt = Não foram encontrados resultados
@@ -3815,6 +3844,7 @@
     it = Note
     ja = メモ
     ko = 메모
+    lt = Pastabos
     nb = Merknader
     pl = Notatki
     pt = Notas
@@ -3847,6 +3877,7 @@
     it = Condividi via email
     ja = Eメールで共有
     ko = 이메일로 공유
+    lt = Dalintis el. paštu
     nb = Del på e-post
     pl = Udostępnij przez email
     pt = Partilhar por email
@@ -3878,6 +3909,7 @@
     it = Il segnalibri MAPS.ME è stato condiviso con te
     ja = MAPS.MEの位置情報シェア
     ko = 귀하와 공유된 MAPS.ME 즐겨찾기
+    lt = MAPS.ME adresynu pasidalinta su jumis
     nb = Delte MAPS.ME-bokmerker
     pl = Udostępnione zakładki z MAPS.ME
     pt = Os favoritos do MAPS.ME foram partilhados consigo
@@ -3910,6 +3942,7 @@
     it = Ciao,\n\nQuesti sono i miei "preferiti" fra le mappe offline di MAPS.ME, che si trovano nel file allegato "%@.kmz". Il file può essere aperto se l'app MAPS.ME è già stata installata. In caso contrario, occorre scaricare l'app per il tuo iOS o dispositivo Android dal link http://maps.me/get?kmz\n\nBuon divertimento con MAPS.ME!
     ja = MAPS.MEで作成したブックマークを添付ファイル"%@.kmz"で送付します。MAPS.ME がインストールされている端末でファイルを開いてみてください。インストールはこちらから http://maps.me/get?kmz iOSまたはAndroidデバイスで利用可能です。\n\nMAPS.MEで楽しい時間をお過ごしください！
     ko = 안녕하세요.\n\n첨부된 "%@.kmz" 파일에 MAPS.ME 이미 설치되어 있다면 열어 보시기 바랍니다. MAPS.ME 프로 버전이 이미 설치되어 있다면 열어 보시기 바랍니다. 그렇지 않은 경우 우선 iOS나 Android 장치용 앱을 http://maps.me/get?kmz 링크에서 다운로드하시기 바랍니다.\n\nMAPS.ME와 함께 즐거운 시간 되시기 바랍니다!
+    lt = Sveiki!\n\nPrikabinau savo adresyną iš MAPS.ME žemėlapių programos. Prašau juos atidaryti jei jūs turite įdiegtą MAPS.ME. Arba, jei neturite, atsisiųskite programą savo iOS arba Android įrenginyje iš šios nuorodos: http://maps.me/get?kmz\n\nMėgaukitės kelionėmis su MAPS.ME!
     nb = Hallo,\n\nVedlagt er bokmerkene mine fra MAPS.ME offline-kart. De kan åpnes hvis du har installert MAPS.ME. Hvis ikke kan du laste ned appen til en iOS- eller Android-enhet ved å følge denne koblingen: http://maps.me/get?kmz\n\nKos deg på reisen med MAPS.ME!
     pl = Cześć,\n\nOto moje zakładki pochodzące z aplikacji MAPS.ME wraz z załączonymi mapami offline w pliku „%@.kmz”. Proszę otwórz je jeśli posiadasz zainstalowaną aplikację MAPS.ME. Jeśli nie, najpierw pobierz ją na swoje urządzenie z systemem iOS lub Android pod tym odnośnikiem: http://maps.me/get?kmz\n\nBaw się dobrze z MAPS.ME!
     pt = Olá,\n\nAqui estão os meus favoritos dos mapas offline do MAPS.ME, anexados no ficheiro "%@.kmz". Por favor abra-os se já tiver instalado o MAPS.ME. Caso contrário, descarregue primeiro a app para o seu dispositivo iOS ou Android a partir desta hiperligação: http://maps.me/get?kmz\n\nDisfrute do MAPS.ME!
