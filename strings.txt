@@ -17,6 +17,7 @@
     it = Informazioni
     ja = 情報
     ko = 소개
+    lt = Apie
     nb = Om
     pl = O programie
     pt = Sobre
@@ -48,6 +49,7 @@
     it = Indietro
     ja = 戻る
     ko = 뒤로
+    lt = Atgal
     nb = Tilbake
     pl = Wróć
     pt = Voltar
@@ -80,6 +82,7 @@
     it = Annulla
     ja = キャンセル
     ko = 취소하기
+    lt = Atšaukti
     nb = Avbryt
     pl = Anuluj
     pt = Cancelar
@@ -112,6 +115,7 @@
     it = Annulla il download
     ja = ダウンロードをキャンセル
     ko = 다운로드 취소하기
+    lt = Atšaukti siuntimą
     nb = Avbryt nedlasting
     pl = Anuluj pobieranie
     pt = Cancelar Descarga
