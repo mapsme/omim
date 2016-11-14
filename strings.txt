@@ -17,7 +17,7 @@
     it = Informazioni
     ja = 情報
     ko = 소개
-    lt = Apie
+    lt = Apies
     nb = Om
     pl = O programie
     pt = Sobre
