@@ -1137,3 +1137,4 @@ olympics|stadium
 olympics|water_sport
 olympics|bike_sport
 sponsored|opentable
+sponsored|banner

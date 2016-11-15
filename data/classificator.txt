@@ -806,6 +806,7 @@ world  +
         wine  -
         {}
     sponsored  +
+        banner  -
         booking  -
         opentable  -
         {}
