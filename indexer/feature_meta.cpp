@@ -94,6 +94,14 @@ bool Metadata::TypeFromString(string const & k, Metadata::EType & outType)
     outType = Metadata::FMD_PRICE_RATE;
   else if (k == "rating:sponsored")
     outType = Metadata::FMD_RATING;
+  else if (k == "website:sponsored")
+    outType = Metadata::FMD_SPONSORED_URL;
+  else if (k == "sponsored_vendor")
+    outType = Metadata::FMD_SPONSORED_VENDOR;
+  else if (k == "sponsored_after")
+    outType = Metadata::FMD_SPONSORED_AFTER;
+  else if (k == "sponsored_before")
+    outType = Metadata::FMD_SPONSORED_BEFORE;
   else
     return false;
 

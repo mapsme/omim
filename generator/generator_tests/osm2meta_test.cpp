@@ -55,3 +55,29 @@ UNIT_TEST(ValidateAndFormat_building_levels)
   TEST_EQUAL(tp.ValidateAndFormat_building_levels("2.51"), "2.5", ());
   TEST_EQUAL(tp.ValidateAndFormat_building_levels("250"), "", ("Too many levels."));
 }
+
+UNIT_TEST(ValidateAndFormat_sponsored_vendor)
+{
+  FeatureParams params;
+  MetadataTagProcessorImpl tp(params);
+  TEST_EQUAL(tp.ValidateAndFormat_sponsored_vendor(""), "", ());
+  TEST_EQUAL(tp.ValidateAndFormat_sponsored_vendor("test"), "test", ());
+  TEST_EQUAL(tp.ValidateAndFormat_sponsored_vendor("12eq_5"), "12eq_5", ());
+  TEST_EQUAL(tp.ValidateAndFormat_sponsored_vendor("a.b"), "", ());
+  TEST_EQUAL(tp.ValidateAndFormat_sponsored_vendor("b_"), "b_", ());
+}
+
+UNIT_TEST(ValidateAndFormat_sponsored_date)
+{
+  FeatureParams params;
+  MetadataTagProcessorImpl tp(params);
+  string const date2016_11_05 = "1478293";  // 1478293200
+  string const date2016_11_06 = "1478379";  // 1478379600
+  string const date2016_11_07 = "1478466";  // 1478466000
+  TEST_EQUAL(tp.ValidateAndFormat_sponsored_date(""), "", ());
+  TEST_EQUAL(tp.ValidateAndFormat_sponsored_date("asd-w-3"), "", ());
+  TEST_EQUAL(tp.ValidateAndFormat_sponsored_date("2016-11-05"), date2016_11_05, ());
+  TEST_EQUAL(tp.ValidateAndFormat_sponsored_date("2016-11-05", true), date2016_11_06, ());
+  TEST_EQUAL(tp.ValidateAndFormat_sponsored_date("2016-11"), "", ());
+  TEST_EQUAL(tp.ValidateAndFormat_sponsored_date("2015-12-31"), "", ());
+}

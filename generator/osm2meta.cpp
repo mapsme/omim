@@ -11,6 +11,7 @@
 #include "std/cctype.hpp"
 #include "std/cmath.hpp"
 #include "std/cstdlib.hpp"
+#include "std/ctime.hpp"
 #include "std/unordered_set.hpp"
 
 namespace
@@ -208,6 +209,47 @@ string MetadataTagProcessorImpl::ValidateAndFormat_rating(string const & v) cons
 string MetadataTagProcessorImpl::ValidateAndFormat_denomination(string const & v) const
 {
   return v;
+}
+
+string MetadataTagProcessorImpl::ValidateAndFormat_sponsored_vendor(string const & v) const
+{
+  // Vendor ID can contain only [0-9a-z_] characters.
+  for (char const c : v)
+    if (c < '0' || (c > '9' && c != '_' && c < 'a') || c > 'z')
+        return {};
+  return v;
+}
+
+string MetadataTagProcessorImpl::ValidateAndFormat_sponsored_date(string const & v, bool endDate) const
+{
+  // Convert ISO date to unix time.
+  vector<string> dateParts;
+  strings::ParseCSVRow(v, '-', dateParts);
+  if (dateParts.size() != 3)
+    return {};
+
+  // Initialising structure with a midnight date to zero hours and minutes.
+  time_t const date_2016_11_07 = 1478476800;
+  tm *time = gmtime(&date_2016_11_07);
+  uint64_t id;
+  if (!strings::to_int(dateParts[0], time->tm_year))
+    return {};
+  time->tm_year -= 1900;
+  if (!strings::to_int(dateParts[1], time->tm_mon))
+    return {};
+  time->tm_mon -= 1;
+  if (!strings::to_int(dateParts[2], time->tm_mday))
+    return {};
+  if (time->tm_year < 116)  // Fail dates with year 2015 and older.
+    return {};
+  time_t timestamp = mktime(time);
+  if (timestamp < 0)
+    return {};
+  // For the end of an interval add a day.
+  if (endDate)
+    timestamp += 24*60*60;
+  // Reduce precision to 20 minutes to save bytes.
+  return strings::to_string(timestamp / 1000);
 }
 
 string MetadataTagProcessorImpl::ValidateAndFormat_cuisine(string v) const
