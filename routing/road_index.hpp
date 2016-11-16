@@ -1,6 +1,7 @@
 #pragma once
 
 #include "routing/joint.hpp"
+#include "routing/routing_serialization.hpp"
 
 #include "std/algorithm.hpp"
 #include "std/cstdint.hpp"
@@ -95,6 +96,33 @@ public:
     return result;
   }
 
+  Joint::Id Front() const { return m_jointIds.front(); }
+
+  Joint::Id Back() const { return m_jointIds.back(); }
+
+  size_t GetSize() const { return m_jointIds.size(); }
+
+  template <class TSink>
+  void Serialize(TSink & sink) const
+  {
+    WriteToSink(sink, static_cast<Joint::Id>(m_jointIds.size()));
+    for (Joint::Id jointId : m_jointIds)
+      WriteToSink(sink, jointId);
+  }
+
+  template <class Source>
+  void Deserialize(Source & src)
+  {
+    m_jointIds.clear();
+    Joint::Id const jointsSize = ReadPrimitiveFromSource<Joint::Id>(src);
+    m_jointIds.reserve(jointsSize);
+    for (Joint::Id i = 0; i < jointsSize; ++i)
+    {
+      Joint::Id const jointId = ReadPrimitiveFromSource<Joint::Id>(src);
+      m_jointIds.emplace_back(jointId);
+    }
+  }
+
 private:
   // Joint ids indexed by point id.
   // If some point id doesn't match any joint id, this vector contains Joint::kInvalidId.
@@ -105,6 +133,12 @@ class RoadIndex final
 {
 public:
   void Import(vector<Joint> const & joints);
+
+  /// \brief if |featureIdFrom| and |featureIdTo| are adjacent and if they are connected by
+  /// its ends fills |from| and |to| with corresponding |from| and |to| and return true.
+  /// If not returns false.
+  bool GetAdjacentFtPoints(uint32_t featureIdFrom, uint32_t featureIdTo,
+                           RoadPoint & from, RoadPoint & to, Joint::Id & jointId) const;
 
   void AddJoint(RoadPoint const & rp, Joint::Id jointId)
   {
@@ -146,6 +180,16 @@ public:
   {
     for (auto const & it : m_roads)
       f(it.first, it.second);
+  }
+
+  template <typename F>
+  void ForEachJoint(uint32_t featureId, F && f) const
+  {
+    auto const it = m_roads.find(featureId);
+    if (it == m_roads.cend())
+      return;
+
+    it->second.ForEachJoint(f);
   }
 
 private:

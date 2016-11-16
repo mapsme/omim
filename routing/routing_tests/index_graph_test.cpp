@@ -1,5 +1,7 @@
 #include "testing/testing.hpp"
 
+#include "routing/routing_tests/index_graph_tools.hpp"
+
 #include "routing/base/astar_algorithm.hpp"
 #include "routing/car_model.hpp"
 #include "routing/edge_estimator.hpp"
@@ -30,18 +32,15 @@ using namespace routing_test;
 void TestRoute(IndexGraph & graph, RoadPoint const & start, RoadPoint const & finish,
                size_t expectedLength, vector<RoadPoint> const * expectedRoute = nullptr)
 {
-  LOG(LINFO, ("Test route", start.GetFeatureId(), ",", start.GetPointId(), "=>",
-              finish.GetFeatureId(), ",", finish.GetPointId()));
-
+  vector<RoadPoint> route;
   IndexGraphStarter starter(graph, start, finish);
-  vector<RoadPoint> roadPoints;
-  auto const resultCode = CalculateRoute(starter, roadPoints);
-  TEST_EQUAL(resultCode, AStarAlgorithm<IndexGraphStarter>::Result::OK, ());
+  AStarAlgorithm<IndexGraphStarter>::Result const resultCode = CalculateRoute(starter, route);
 
-  TEST_EQUAL(roadPoints.size(), expectedLength, ());
+  TEST_EQUAL(resultCode, AStarAlgorithm<IndexGraphStarter>::Result::OK, ());
+  TEST_EQUAL(route.size(), expectedLength, ());
 
   if (expectedRoute)
-    TEST_EQUAL(roadPoints, *expectedRoute, ());
+    TEST_EQUAL(route, *expectedRoute, ());
 }
 
 void TestEdges(IndexGraph & graph, Joint::Id jointId, vector<Joint::Id> const & expectedTargets,
@@ -203,6 +202,7 @@ UNIT_TEST(FindPathManhattan)
       street.emplace_back(static_cast<double>(i), static_cast<double>(j));
       avenue.emplace_back(static_cast<double>(j), static_cast<double>(i));
     }
+
     loader->AddRoad(i, false, 1.0 /* speed */, street);
     loader->AddRoad(i + kCitySize, false, 1.0 /* speed */, avenue);
   }
@@ -216,6 +216,7 @@ UNIT_TEST(FindPathManhattan)
     for (uint32_t j = 0; j < kCitySize; ++j)
       joints.emplace_back(MakeJoint({{i, j}, {j + kCitySize, i}}));
   }
+
   graph.Import(joints);
 
   for (uint32_t startY = 0; startY < kCitySize; ++startY)

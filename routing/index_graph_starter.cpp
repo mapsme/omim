@@ -21,10 +21,10 @@ IndexGraphStarter::IndexGraphStarter(IndexGraph & graph, RoadPoint const & start
 m2::PointD const & IndexGraphStarter::GetPoint(Joint::Id jointId)
 {
   if (jointId == m_start.m_fakeId)
-    return m_graph.GetGeometry().GetPoint(m_start.m_point);
+    return m_graph.GetPoint(m_start.m_point);
 
   if (jointId == m_finish.m_fakeId)
-    return m_graph.GetGeometry().GetPoint(m_finish.m_point);
+    return m_graph.GetPoint(m_finish.m_point);
 
   return m_graph.GetPoint(jointId);
 }
@@ -140,7 +140,7 @@ void IndexGraphStarter::FindPointsWithCommonFeature(Joint::Id jointId0, Joint::I
       if (rp0.GetFeatureId() != rp1.GetFeatureId())
         return;
 
-      RoadGeometry const & road = m_graph.GetGeometry().GetRoad(rp0.GetFeatureId());
+      RoadGeometry const & road = m_graph.GetRoad(rp0.GetFeatureId());
       if (road.IsOneWay() && rp0.GetPointId() > rp1.GetPointId())
         return;
 
@@ -150,7 +150,7 @@ void IndexGraphStarter::FindPointsWithCommonFeature(Joint::Id jointId0, Joint::I
         {
           // CalcEdgesWeight is very expensive.
           // So calculate it only if second common feature found.
-          RoadGeometry const & prevRoad = m_graph.GetGeometry().GetRoad(result0.GetFeatureId());
+          RoadGeometry const & prevRoad = m_graph.GetRoad(result0.GetFeatureId());
           minWeight = m_graph.GetEstimator().CalcEdgesWeight(
               rp0.GetFeatureId(), prevRoad, result0.GetPointId(), result1.GetPointId());
         }

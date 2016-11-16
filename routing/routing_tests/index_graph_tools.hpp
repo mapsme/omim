@@ -39,13 +39,11 @@ shared_ptr<routing::EdgeEstimator> CreateEstimator(traffic::TrafficCache const &
 routing::AStarAlgorithm<routing::IndexGraphStarter>::Result CalculateRoute(
     routing::IndexGraphStarter & graph, vector<routing::RoadPoint> & roadPoints);
 
-void TestRouteSegments(
-    routing::IndexGraphStarter & starter,
-    routing::AStarAlgorithm<routing::IndexGraphStarter>::Result expectedRouteResult,
-    vector<routing::RoadPoint> const & expectedRoute);
+void TestRouteSegments(routing::IndexGraphStarter & starter,
+                       routing::AStarAlgorithm<routing::IndexGraphStarter>::Result expectedRouteResult,
+                       vector<routing::RoadPoint> const & expectedRoute);
 
-void TestRouteGeometry(
-    routing::IndexGraphStarter & starter,
-    routing::AStarAlgorithm<routing::IndexGraphStarter>::Result expectedRouteResult,
-    vector<m2::PointD> const & expectedRouteGeom);
+void TestRouteGeometry(routing::IndexGraphStarter & starter,
+                       routing::AStarAlgorithm<routing::IndexGraphStarter>::Result expectedRouteResult,
+                       vector<m2::PointD> const & expectedRouteGeom);
 }  // namespace routing_test

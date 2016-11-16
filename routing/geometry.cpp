@@ -6,6 +6,7 @@
 
 #include "base/assert.hpp"
 
+#include "std/iostream.hpp"
 #include "std/string.hpp"
 
 using namespace routing;
@@ -94,5 +95,15 @@ unique_ptr<GeometryLoader> GeometryLoader::Create(Index const & index, MwmSet::M
   CHECK(mwmId.IsAlive(), ());
   return make_unique<GeometryLoaderImpl>(index, mwmId, mwmId.GetInfo()->GetCountryName(),
                                          vehicleModel);
+}
+
+string DebugPrint(RoadGeometry const & roadGeometry)
+{
+  stringstream str;
+  str << ", m_isOneWay: " << roadGeometry.m_isOneWay
+      << ", m_speed: " << roadGeometry.m_speed
+      << ", m_points: " << DebugPrint(roadGeometry.m_points)
+      << " ]";
+  return str.str();
 }
 }  // namespace routing
