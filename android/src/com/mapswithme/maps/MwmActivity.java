@@ -44,7 +44,6 @@ import com.mapswithme.maps.downloader.MapManager;
 import com.mapswithme.maps.downloader.MigrationFragment;
 import com.mapswithme.maps.downloader.OnmapDownloader;
 import com.mapswithme.maps.editor.AuthDialogFragment;
-import com.mapswithme.maps.editor.Editor;
 import com.mapswithme.maps.editor.EditorActivity;
 import com.mapswithme.maps.editor.EditorHostFragment;
 import com.mapswithme.maps.editor.FeatureCategoryActivity;
@@ -377,13 +376,11 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   public void showEditor()
   {
-    // TODO(yunikkk) think about refactoring. It probably should be called in editor.
-    Editor.nativeStartEdit();
     Statistics.INSTANCE.trackEditorLaunch(false);
     if (mIsFragmentContainer)
       replaceFragment(EditorHostFragment.class, null, null);
     else
-      EditorActivity.start(this);
+      EditorActivity.start(this, mPlacePage.getMapObject(), Framework.nativeGetDrawScale());
   }
 
   private void shareMyLocation()
@@ -872,8 +869,13 @@ public class MwmActivity extends BaseMwmFragmentActivity
     if (state != State.HIDDEN)
     {
       mPlacePageRestored = true;
-      mPlacePage.setMapObject((MapObject) savedInstanceState.getParcelable(STATE_MAP_OBJECT), true);
-      mPlacePage.setState(state);
+      MapObject mapObject = savedInstanceState.getParcelable(STATE_MAP_OBJECT);
+      if (mapObject != null)
+      {
+        Framework.nativeRestoreMapObject(mapObject);
+        mPlacePage.setMapObject(mapObject, true);
+        mPlacePage.setState(state);
+      }
     }
 
     if (!mIsFragmentContainer && RoutingController.get().isPlanning())
