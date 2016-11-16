@@ -5,7 +5,7 @@
 #include "routing/road_point.hpp"
 
 #include "base/assert.hpp"
-
+#include "std/utility.hpp"
 #include "std/vector.hpp"
 
 namespace routing
@@ -43,6 +43,10 @@ public:
   }
 
   void Build(RoadIndex const & roadIndex, uint32_t numJoints);
+
+  /// \brief fills result with paths from |jointId0| to |jointId1|.
+  void FindPointsWithCommonFeature(Joint::Id jointId0, Joint::Id jointId1,
+                                   vector<pair<RoadPoint, RoadPoint>> & result) const;
   Joint::Id InsertJoint(RoadPoint const & rp);
   void AppendToJoint(Joint::Id jointId, RoadPoint const & rp);
 
