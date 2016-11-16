@@ -42,6 +42,7 @@ SOURCES += \
   turns_sound_test.cpp \
   turns_tts_text_tests.cpp \
   vehicle_model_test.cpp \
+  restriction_test.cpp \
 
 HEADERS += \
   index_graph_tools.hpp \

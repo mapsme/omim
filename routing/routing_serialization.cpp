@@ -44,8 +44,8 @@ string DebugPrint(Restriction::Type const & type) { return ToString(type); }
 string DebugPrint(Restriction const & restriction)
 {
   ostringstream out;
-  out << "m_featureIds:[" << ::DebugPrint(restriction.m_featureIds)
-      << "] m_type:" << DebugPrint(restriction.m_type) << " ";
+  out << "Restriction [ m_featureIds: " << ::DebugPrint(restriction.m_featureIds)
+      << " m_type: " << DebugPrint(restriction.m_type) << " ]" << endl;
   return out.str();
 }
 }  // namespace routing
