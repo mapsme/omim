@@ -1,4 +1,4 @@
-#include "routing/routing_serialization.hpp"
+#include "routing/restrictions_serialization.hpp"
 
 namespace
 {
@@ -13,8 +13,8 @@ uint32_t const Restriction::kInvalidFeatureId = numeric_limits<uint32_t>::max();
 
 bool Restriction::IsValid() const
 {
-  return !m_featureIds.empty() && find(begin(m_featureIds), end(m_featureIds), kInvalidFeatureId)
-      == end(m_featureIds);
+  return !m_featureIds.empty() &&
+         find(begin(m_featureIds), end(m_featureIds), kInvalidFeatureId) == end(m_featureIds);
 }
 
 bool Restriction::operator==(Restriction const & restriction) const
@@ -44,8 +44,8 @@ string DebugPrint(Restriction::Type const & type) { return ToString(type); }
 string DebugPrint(Restriction const & restriction)
 {
   ostringstream out;
-  out << "m_featureIds:[" << ::DebugPrint(restriction.m_featureIds)
-      << "] m_type:" << DebugPrint(restriction.m_type) << " ";
+  out << "Restriction [ m_featureIds: " << ::DebugPrint(restriction.m_featureIds)
+      << " m_type: " << DebugPrint(restriction.m_type) << " ]";
   return out.str();
 }
 }  // namespace routing
