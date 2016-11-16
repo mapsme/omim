@@ -35,6 +35,8 @@ struct MetadataTagProcessorImpl
   string ValidateAndFormat_price_rate(string const & v) const;
   string ValidateAndFormat_sponsored_id(string const & v) const;
   string ValidateAndFormat_rating(string const & v) const;
+  string ValidateAndFormat_sponsored_vendor(string const & v) const;
+  string ValidateAndFormat_sponsored_date(string const & v, bool endDate = false) const;
 
 protected:
   FeatureParams & m_params;
@@ -97,6 +99,10 @@ public:
     case Metadata::FMD_SPONSORED_ID: valid = ValidateAndFormat_sponsored_id(v); break;
     case Metadata::FMD_PRICE_RATE: valid = ValidateAndFormat_price_rate(v); break;
     case Metadata::FMD_RATING: valid = ValidateAndFormat_rating(v); break;
+    case Metadata::FMD_SPONSORED_VENDOR: valid = ValidateAndFormat_sponsored_vendor(v); break;
+    case Metadata::FMD_SPONSORED_URL: valid = ValidateAndFormat_url(v); break;
+    case Metadata::FMD_SPONSORED_BEFORE: valid = ValidateAndFormat_sponsored_date(v, true); break;
+    case Metadata::FMD_SPONSORED_AFTER: valid = ValidateAndFormat_sponsored_date(v, false); break;
 
     case Metadata::FMD_TEST_ID:
     case Metadata::FMD_COUNT: CHECK(false, ("FMD_COUNT can not be used as a type."));
