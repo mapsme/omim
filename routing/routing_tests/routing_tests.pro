@@ -28,6 +28,7 @@ SOURCES += \
   cross_routing_tests.cpp \
   followed_polyline_test.cpp \
   index_graph_test.cpp \
+  index_graph_tools.cpp \
   nearest_edge_finder_tests.cpp \
   online_cross_fetcher_test.cpp \
   osrm_router_test.cpp \
@@ -40,6 +41,8 @@ SOURCES += \
   turns_sound_test.cpp \
   turns_tts_text_tests.cpp \
   vehicle_model_test.cpp \
+  restriction_test.cpp \
 
 HEADERS += \
+  index_graph_tools.hpp \
   road_graph_builder.hpp \

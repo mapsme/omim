@@ -11,12 +11,15 @@
 
 #include "std/cstdint.hpp"
 #include "std/shared_ptr.hpp"
+#include "std/string.hpp"
 #include "std/unique_ptr.hpp"
 
 namespace routing
 {
 class RoadGeometry final
 {
+  friend string DebugPrint(RoadGeometry const & roadGeometry);
+
 public:
   using Points = buffer_vector<m2::PointD, 32>;
 
@@ -40,12 +43,22 @@ public:
 
   uint32_t GetPointsCount() const { return m_points.size(); }
 
+  bool operator==(RoadGeometry const & roadGeometry)
+  {
+    return m_isRoad == roadGeometry.m_isRoad
+        && m_isOneWay == roadGeometry.m_isOneWay
+        && m_speed == roadGeometry.m_speed
+        && m_points == roadGeometry.m_points;
+  }
+
 private:
   bool m_isRoad = false;
   bool m_isOneWay = false;
   double m_speed = 0.0;
   Points m_points;
 };
+
+string DebugPrint(RoadGeometry const & roadGeometry);
 
 class GeometryLoader
 {
@@ -62,11 +75,6 @@ public:
   explicit Geometry(unique_ptr<GeometryLoader> loader);
 
   RoadGeometry const & GetRoad(uint32_t featureId) const;
-
-  m2::PointD const & GetPoint(RoadPoint const & rp) const
-  {
-    return GetRoad(rp.GetFeatureId()).GetPoint(rp.GetPointId());
-  }
 
 private:
   // Feature id to RoadGeometry map.
