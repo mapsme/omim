@@ -60,6 +60,7 @@ public final class HttpClient
       Log.d(TAG, "Connecting to " + p.url);
     try
     {
+      NetworkUtils.setNetworkTag();
       connection = (HttpURLConnection) new URL(p.url).openConnection(); // NullPointerException, MalformedUrlException, IOException
       // Redirects from http to https or vice versa are not supported by Android implementation.
       // There is also a nasty bug on Androids before 4.4:
@@ -187,6 +188,7 @@ public final class HttpClient
     {
       if (connection != null)
         connection.disconnect();
+      NetworkUtils.clearNetworkTag();
     }
     return p;
   }

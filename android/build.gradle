@@ -288,6 +288,14 @@ android {
       signingConfig signingConfigs.mapswithme
       android.sourceSets.beta.setRoot('flavors/beta')
     }
+
+    networkdebug {
+      initWith release
+      debuggable true
+      applicationIdSuffix '.network'
+      versionNameSuffix '-network'
+      android.sourceSets.networkdebug.setRoot('flavors/networkdebug')
+    }
   }
 
   // We don't compress these extensions in assets/ because our random FileReader can't read zip-compressed files from apk.

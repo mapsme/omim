@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.mapswithme.maps.BuildConfig;
+import com.mapswithme.util.NetworkUtils;
 import com.mapswithme.util.log.DebugLogger;
 import com.mapswithme.util.log.Logger;
 
@@ -49,7 +50,7 @@ class PlatformSocket
 
     if (!isPortAllowed(port))
     {
-      sLogger.e("A wrong port number, it must be within (0-65535) range", port);
+      sLogger.e("A wrong port number = ", port, ", it must be within (0-65535) range");
       return false;
     }
 
@@ -130,6 +131,7 @@ class PlatformSocket
     } finally
     {
       mSocket = null;
+      NetworkUtils.clearNetworkTag();
     }
   }
 
@@ -145,6 +147,8 @@ class PlatformSocket
     {
       if (mSocket == null)
         throw new AssertionError("mSocket cannot be null");
+
+      NetworkUtils.setNetworkTag(NetworkUtils.Tag.GPS_TRACKING);
 
       InputStream in = mSocket.getInputStream();
       while (readBytes != count && (System.nanoTime() - startTime) < mTimeout)
@@ -168,7 +172,8 @@ class PlatformSocket
 
           sLogger.d("Read bytes count = ", read);
           readBytes += read;
-        } catch (SocketTimeoutException e)
+        }
+        catch (SocketTimeoutException e)
         {
           long readingTime = System.nanoTime() - startTime;
           sLogger.e(e, "Socked timeout has occurred after ", readingTime, " (ms) ");
@@ -180,9 +185,14 @@ class PlatformSocket
           }
         }
       }
-    } catch (IOException e)
+    }
+    catch (IOException e)
     {
       sLogger.e(e, "Failed to read data from socket: ", this);
+    }
+    finally
+    {
+      NetworkUtils.clearNetworkTag();
     }
 
     return count == readBytes;
@@ -200,17 +210,24 @@ class PlatformSocket
       if (mSocket == null)
         throw new AssertionError("mSocket cannot be null");
 
+      NetworkUtils.setNetworkTag(NetworkUtils.Tag.GPS_TRACKING);
       OutputStream out = mSocket.getOutputStream();
       out.write(data, 0, count);
       sLogger.d(count + " bytes have been written");
       return true;
-    } catch (SocketTimeoutException e)
+    }
+    catch (SocketTimeoutException e)
     {
       long writingTime = System.nanoTime() - startTime;
       sLogger.e(e, "Socked timeout has occurred after ", writingTime, " (ms) ");
-    } catch (IOException e)
+    }
+    catch (IOException e)
     {
       sLogger.e(e, "Failed to write data to socket: ", this);
+    }
+    finally
+    {
+      NetworkUtils.clearNetworkTag();
     }
 
     return false;

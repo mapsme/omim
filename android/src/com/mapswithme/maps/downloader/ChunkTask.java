@@ -16,6 +16,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import com.mapswithme.util.Constants;
+import com.mapswithme.util.NetworkUtils;
 import com.mapswithme.util.StringUtils;
 import com.mapswithme.util.Utils;
 
@@ -133,6 +134,7 @@ class ChunkTask extends AsyncTask<Void, byte[], Boolean>
 
     try
     {
+      NetworkUtils.setNetworkTag(NetworkUtils.Tag.DOWNLOADER);
       final URL url = new URL(mUrl);
       urlConnection = (HttpURLConnection) url.openConnection();
 
@@ -235,6 +237,7 @@ class ChunkTask extends AsyncTask<Void, byte[], Boolean>
         urlConnection.disconnect();
       else
         mHttpErrorCode = IO_ERROR;
+      NetworkUtils.clearNetworkTag();
     }
   }
 
