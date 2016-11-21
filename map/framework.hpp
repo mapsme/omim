@@ -815,7 +815,8 @@ public:
   /// @returns false in case when coordinate is in the ocean or mwm is not downloaded.
   bool CanEditMap() const;
 
-  bool CreateMapObject(m2::PointD const & mercator, uint32_t const featureType, osm::EditableMapObject & emo) const;
+  bool CreateMapObject(m2::PointD const & mercator, uint32_t const featureType,
+                       osm::EditableMapObject & emo, int drawScale = -1) const;
   /// @returns false if feature is invalid or can't be edited.
   bool GetEditableMapObject(FeatureID const & fid, osm:: EditableMapObject & emo, int drawScale = -1) const;
   osm::Editor::SaveResult SaveEditedMapObject(osm::EditableMapObject emo);

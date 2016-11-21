@@ -434,6 +434,15 @@ Java_com_mapswithme_maps_editor_Editor_nativeCreateMapObject(JNIEnv *, jclass, j
         ("Couldn't create mapobject, wrong coordinates of missing mwm"));
 }
 
+JNIEXPORT void JNICALL
+Java_com_mapswithme_maps_editor_Editor_nativeCreateMapObjectAtPosition(
+    JNIEnv *, jclass, jint featureCategory, jdouble lat, jdouble lon, jint drawScale)
+{
+  ::Framework * frm = g_framework->NativeFramework();
+  CHECK(frm->CreateMapObject(m2::PointD(lon, lat), featureCategory, g_editableMapObject, drawScale),
+        ("Couldn't create mapobject, wrong coordinates of missing mwm"));
+}
+
 // static void nativeCreateNote(String text);
 JNIEXPORT void JNICALL
 Java_com_mapswithme_maps_editor_Editor_nativeCreateNote(JNIEnv * env, jclass clazz, jstring text)

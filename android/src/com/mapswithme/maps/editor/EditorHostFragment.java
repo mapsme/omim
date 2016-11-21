@@ -115,10 +115,16 @@ public class EditorHostFragment extends BaseMwmToolbarFragment
   {
     super.onViewCreated(view, savedInstanceState);
 
-    if (!(getActivity() instanceof EditorActivity))
-      Editor.nativeStartEdit(-1);
-    else
-      Editor.nativeStartEdit(((EditorActivity) getActivity()).getDrawScale());
+    if (getArguments() != null)
+      mIsNewObject = getArguments().getBoolean(EditorActivity.EXTRA_NEW_OBJECT, false);
+
+    if (!mIsNewObject)
+    {
+      if (!(getActivity() instanceof EditorActivity))
+        Editor.nativeStartEdit(-1);
+      else
+        Editor.nativeStartEdit(((EditorActivity) getActivity()).getDrawScale());
+    }
     mToolbarController.findViewById(R.id.save).setOnClickListener(this);
     mToolbarController.getToolbar().setNavigationOnClickListener(new View.OnClickListener()
     {
@@ -129,8 +135,6 @@ public class EditorHostFragment extends BaseMwmToolbarFragment
       }
     });
 
-    if (getArguments() != null)
-      mIsNewObject = getArguments().getBoolean(EditorActivity.EXTRA_NEW_OBJECT, false);
     mToolbarController.setTitle(getTitle());
 
     NamesDataSource namesDataSource = Editor.nativeGetNamesDataSource();

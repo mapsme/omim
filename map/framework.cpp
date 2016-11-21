@@ -2184,9 +2184,8 @@ void Framework::UpdateMinBuildingsTapZoom()
 FeatureID Framework::FindBuildingAtPoint(m2::PointD const & mercator, int drawScale /*= -1*/) const
 {
   FeatureID featureId;
-  bool matchZoom = drawScale < 0
-      ? GetDrawScale() >= m_minBuildingsTapZoom
-      : drawScale >= m_minBuildingsTapZoom;
+  bool matchZoom =
+      drawScale < 0 ? GetDrawScale() >= m_minBuildingsTapZoom : drawScale >= m_minBuildingsTapZoom;
   if (matchZoom)
   {
     constexpr int kScale = scales::GetUpperScale();
@@ -3030,7 +3029,7 @@ void SetHostingBuildingAddress(FeatureID const & hostingBuildingFid, Index const
 bool Framework::CanEditMap() const { return version::IsSingleMwm(GetCurrentDataVersion()); }
 
 bool Framework::CreateMapObject(m2::PointD const & mercator, uint32_t const featureType,
-                                osm::EditableMapObject & emo) const
+                                osm::EditableMapObject & emo, int drawScale /*= -1*/) const
 {
   emo = {};
   auto const & index = m_model.GetIndex();
@@ -3048,7 +3047,7 @@ bool Framework::CreateMapObject(m2::PointD const & mercator, uint32_t const feat
   emo.SetNearbyStreets(TakeSomeStreetsAndLocalize(streets, m_model.GetIndex()));
 
   // TODO(mgsergio): Check emo is a poi. For now it is the only option.
-  SetHostingBuildingAddress(FindBuildingAtPoint(mercator), index, coder, emo);
+  SetHostingBuildingAddress(FindBuildingAtPoint(mercator, drawScale), index, coder, emo);
 
   return osm::Editor::Instance().CreatePoint(featureType, mercator, mwmId, emo);
 }
@@ -3078,8 +3077,8 @@ bool Framework::GetEditableMapObject(FeatureID const & fid, osm::EditableMapObje
   if (!ftypes::IsBuildingChecker::Instance()(ft) &&
       (emo.GetHouseNumber().empty() || emo.GetStreet().m_defaultName.empty()))
   {
-    SetHostingBuildingAddress(FindBuildingAtPoint(feature::GetCenter(ft), drawScale),
-                              index, coder, emo);
+    SetHostingBuildingAddress(FindBuildingAtPoint(feature::GetCenter(ft), drawScale), index, coder,
+                              emo);
   }
 
   return true;

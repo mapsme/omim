@@ -160,7 +160,14 @@ public final class Editor
   {
     nativeCreateMapObject(category.category);
   }
+  public static void createMapObject(FeatureCategory category, double lat, double lon,
+                                     int drawScale)
+  {
+    nativeCreateMapObjectAtPosition(category.category, lat, lon, drawScale);
+  }
   public static native void nativeCreateMapObject(int categoryId);
+  public static native void nativeCreateMapObjectAtPosition(int categoryId, double lat, double lon,
+                                                            int drawScale);
   public static native void nativeCreateNote(String text);
   public static native void nativePlaceDoesNotExist(String comment);
   public static native void nativeRollbackMapObject();

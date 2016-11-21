@@ -10,6 +10,10 @@ import android.support.v4.app.Fragment;
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.base.BaseMwmFragmentActivity;
 import com.mapswithme.maps.bookmarks.data.MapObject;
+import com.mapswithme.maps.editor.data.FeatureCategory;
+
+import static com.mapswithme.maps.editor.FeatureCategoryActivity.EXTRA_FEATURE_CATEGORY;
+import static com.mapswithme.maps.editor.FeatureCategoryActivity.EXTRA_FEATURE_POSITION;
 
 public class EditorActivity extends BaseMwmFragmentActivity
 {
@@ -42,8 +46,18 @@ public class EditorActivity extends BaseMwmFragmentActivity
     if (extras != null)
     {
       mDrawScale = extras.getInt(EXTRA_DRAW_SCALE);
+
+      boolean newObject = extras.getBoolean(EditorActivity.EXTRA_NEW_OBJECT, false);
+      if (newObject)
+      {
+        FeatureCategory category = extras.getParcelable(EXTRA_FEATURE_CATEGORY);
+        double[] position = extras.getDoubleArray(EXTRA_FEATURE_POSITION);
+        if (category != null && position != null)
+          Editor.createMapObject(category, position[0], position[1], mDrawScale);
+      }
+
       MapObject mapObject = extras.getParcelable(EXTRA_MAP_OBJECT);
-      if (mapObject != null)
+      if (mapObject != null && !newObject)
         Framework.nativeRestoreMapObject(mapObject);
     }
   }
