@@ -7,6 +7,8 @@
 #include "indexer/feature_altitude.hpp"
 #include "indexer/feature_data.hpp"
 
+#include "geometry/mercator.hpp"
+
 #include "std/initializer_list.hpp"
 #include "std/map.hpp"
 #include "std/vector.hpp"
@@ -283,17 +285,9 @@ string DebugPrint(IRoadGraph::Mode mode);
 IRoadGraph::RoadInfo MakeRoadInfoForTesting(bool bidirectional, double speedKMPH,
                                             initializer_list<m2::PointD> const & points);
 
-inline void JunctionsToPoints(vector<Junction> const & junctions, vector<m2::PointD> & points)
-{
-  points.resize(junctions.size());
-  for (size_t i = 0; i < junctions.size(); ++i)
-    points[i] = junctions[i].GetPoint();
-}
+void JunctionsToPoints(vector<Junction> const & junctions, vector<m2::PointD> & points);
 
-inline void JunctionsToAltitudes(vector<Junction> const & junctions, feature::TAltitudes & altitudes)
-{
-  altitudes.resize(junctions.size());
-  for (size_t i = 0; i < junctions.size(); ++i)
-    altitudes[i] = junctions[i].GetAltitude();
-}
+void JunctionsToAltitudes(vector<Junction> const & junctions, feature::TAltitudes & altitudes);
+
+double PathLengthM(vector<routing::Junction> const & path);
 }  // namespace routing

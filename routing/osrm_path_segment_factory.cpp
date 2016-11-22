@@ -3,6 +3,7 @@
 #include "routing/routing_mapping.hpp"
 
 #include "indexer/feature.hpp"
+#include "indexer/feature_altitude.hpp"
 #include "indexer/ftypes_matcher.hpp"
 
 #include "3party/Alohalytics/src/alohalytics.h"
@@ -143,40 +144,77 @@ void OsrmPathSegmentFactory(RoutingMapping & mapping, Index const & index, RawPa
     return distance(buffer.begin(), it);
   };
 
-  // Calculate estimated time for a start and a end node cases.
-  if (isStartNode && isEndNode)
+  size_t const startIndex = isStartNode ? findIntersectingSeg(startGraphNode.segment) : 0;
+  size_t const endIndex = isEndNode ? findIntersectingSeg(endGraphNode.segment) + 1 : buffer.size();
+  // @TODO(bykoianko) When start and end points belong to the same NodeID it's possible
+  // to get endIndex <= startIndex. Production version returns route building error.
+  // Debug version crashes with an assert. The test to show it USALosAnglesAriaTwentyninePalmsHighwayTimeTest.
+  LoadPathGeometry(buffer, startIndex, endIndex, index, mapping, startGraphNode, endGraphNode, isStartNode,
+                   isEndNode, loadedPathSegment);
+
+  LoadedPathSegment fullPathSegment;
+  LoadPathGeometry(buffer, 0, buffer.size(), index, mapping, FeatureGraphNode(), FeatureGraphNode(),
+                   false /* isStartNode */, false /* isEndNode */, fullPathSegment);
+  double const fullPathLengthM = PathLengthM(fullPathSegment.m_path);
+  if (fullPathLengthM == 0.0 || loadedPathSegment.m_path.empty())
   {
-    double const forwardWeight = (osrmPathSegment.node == startGraphNode.node.forward_node_id)
-                                     ? startGraphNode.node.forward_weight
-                                     : startGraphNode.node.reverse_weight;
-    double const backwardWeight = (osrmPathSegment.node == endGraphNode.node.forward_node_id)
-                                      ? endGraphNode.node.forward_weight
-                                      : endGraphNode.node.reverse_weight;
-    double const wholeWeight = (osrmPathSegment.node == startGraphNode.node.forward_node_id)
-                                   ? startGraphNode.node.forward_offset
-                                   : startGraphNode.node.reverse_offset;
-    // Sum because weights in forward/backward_weight fields are negative. Look osrm_helpers for
-    // more info.
-    loadedPathSegment.m_weight = wholeWeight + forwardWeight + backwardWeight;
+    loadedPathSegment.m_weight = 0.0;
+    return;
+  }
+
+  // Full weight (time needed to path NodeID).
+  double fullWeight = 0; /* |fullWeight * kOSRMWeightToSecondsMultiplier| is time in seconds. */
+  if (isStartNode)
+  {
+    // Note. It's possible that isStartNode == true and isEndNode == true.
+    // In that case it's ok to follow this branch of if because in that case
+    // startGraphNode.node.forward_node_id == endGraphNode.node.forward_node_id.
+    ASSERT(isStartNode != isEndNode
+           || startGraphNode.node.forward_node_id == endGraphNode.node.forward_node_id
+           || startGraphNode.node.forward_node_id == endGraphNode.node.reverse_node_id, ());
+    fullWeight = (osrmPathSegment.node == startGraphNode.node.forward_node_id)
+        ? startGraphNode.node.forward_offset
+        : startGraphNode.node.reverse_offset;
+  }
+  else /* isEndNode */
+  {
+    fullWeight = (osrmPathSegment.node == endGraphNode.node.forward_node_id)
+        ? endGraphNode.node.forward_offset
+        : endGraphNode.node.reverse_offset;
+  }
+
+  // A part of NodeID which is covered by the route.
+  vector<Junction> partPath;
+  if (isStartNode == true && isEndNode == true)
+  {
+    partPath.emplace_back(startGraphNode.segmentPoint, feature::kDefaultAltitudeMeters);
+    if (loadedPathSegment.m_path.size() > 2)
+    {
+      partPath.insert(partPath.end(), loadedPathSegment.m_path.cbegin() + 1,
+                      loadedPathSegment.m_path.cend() - 1);
+    }
+    partPath.emplace_back(endGraphNode.segmentPoint, feature::kDefaultAltitudeMeters);
   }
   else
   {
-    PhantomNode const * node = nullptr;
     if (isStartNode)
-      node = &startGraphNode.node;
-    if (isEndNode)
-      node = &endGraphNode.node;
-    if (node)
     {
-      loadedPathSegment.m_weight = (osrmPathSegment.node == node->forward_weight)
-          ? node->GetForwardWeightPlusOffset() : node->GetReverseWeightPlusOffset();
+      partPath.emplace_back(startGraphNode.segmentPoint, feature::kDefaultAltitudeMeters);
+      partPath.insert(partPath.end(), loadedPathSegment.m_path.cbegin() + 1,
+                      loadedPathSegment.m_path.cend());
+    }
+    else /* isEndNode */
+    {
+      partPath.assign(loadedPathSegment.m_path.cbegin(), loadedPathSegment.m_path.cend() - 1);
+      partPath.emplace_back(endGraphNode.segmentPoint, feature::kDefaultAltitudeMeters);
     }
   }
 
-  size_t startIndex = isStartNode ? findIntersectingSeg(startGraphNode.segment) : 0;
-  size_t endIndex = isEndNode ? findIntersectingSeg(endGraphNode.segment) + 1 : buffer.size();
-  LoadPathGeometry(buffer, startIndex, endIndex, index, mapping, startGraphNode, endGraphNode, isStartNode,
-                   isEndNode, loadedPathSegment);
-  loadedPathSegment.m_weight *= kOSRMWeightToSecondsMultiplier;
+  double const partPathLengthM = PathLengthM(partPath);
+  ASSERT_LESS_OR_EQUAL(partPathLengthM, fullPathLengthM, ());
+
+  loadedPathSegment.m_weight =
+      kOSRMWeightToSecondsMultiplier * fullWeight * partPathLengthM / fullPathLengthM;
+  ASSERT_LESS_OR_EQUAL(0, loadedPathSegment.m_weight, ());
 }
 }  // namespace routing

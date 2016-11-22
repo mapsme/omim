@@ -105,7 +105,16 @@ double Route::GetMercatorDistanceFromBegin() const
 
 uint32_t Route::GetTotalTimeSec() const
 {
-  return m_times.empty() ? 0 : m_times.back().second;
+  if (m_times.empty())
+    return 0;
+
+  double const time = m_times.back().second;
+  if (time < 0.0)
+  {
+    LOG(LERROR, ("The estimated time for the route is less than zero."));
+    return 0;
+  }
+  return static_cast<uint32_t>(time);
 }
 
 uint32_t Route::GetCurrentTimeToEndSec() const

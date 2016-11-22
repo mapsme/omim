@@ -271,6 +271,7 @@ namespace
     integration::TestRouteTime(route, 900.);
   }
 
+// Test case: start and end of the route belongs to the same NodeID.
   UNIT_TEST(USALosAnglesAriaTwentyninePalmsHighwayTimeTest)
   {
     TRouteResult const routeResult = integration::CalculateRoute(
@@ -279,7 +280,42 @@ namespace
     Route const & route = *routeResult.first;
     IRouter::ResultCode const result = routeResult.second;
     TEST_EQUAL(result, IRouter::NoError, ());
-    TEST_LESS(route.GetTotalTimeSec(), numeric_limits<uint32_t>::max() / 2, ());
+    integration::TestRouteTime(route, 1688.0);
+  }
+
+  UNIT_TEST(USALosAnglesAriaPalmsHighway2SegmentShortTimeTest)
+  {
+    TRouteResult const routeResult = integration::CalculateRoute(
+      integration::GetOsrmComponents(), MercatorBounds::FromLatLon(34.11321, -115.70722), {0.0, 0.0},
+      MercatorBounds::FromLatLon(34.11392, -115.71209));
+    Route const & route = *routeResult.first;
+    IRouter::ResultCode const result = routeResult.second;
+    TEST_EQUAL(result, IRouter::NoError, ());
+    TEST_LESS(route.GetTotalTimeSec(), 300, ());
+  }
+
+  UNIT_TEST(USALosAnglesAriaPalmsHighway2SegmentShortTimeTest2)
+  {
+    TRouteResult const routeResult = integration::CalculateRoute(
+      integration::GetOsrmComponents(), MercatorBounds::FromLatLon(34.1138, -115.71145), {0.0, 0.0},
+      MercatorBounds::FromLatLon(34.11671, -115.73288));
+    Route const & route = *routeResult.first;
+    IRouter::ResultCode const result = routeResult.second;
+    TEST_EQUAL(result, IRouter::NoError, ());
+    TEST_LESS(60, route.GetTotalTimeSec(), ());
+  }
+
+  // This test shows a route through very strange NodeID. Its length is about two km
+  // but it takes about 48 minutes to go through it.
+  UNIT_TEST(USALosAnglesAriaPalmsHighway3SegmentShortTimeTest)
+  {
+    TRouteResult const routeResult = integration::CalculateRoute(
+      integration::GetOsrmComponents(), MercatorBounds::FromLatLon(34.11344, -115.70857), {0.0, 0.0},
+      MercatorBounds::FromLatLon(34.11692, -115.73406));
+    Route const & route = *routeResult.first;
+    IRouter::ResultCode const result = routeResult.second;
+    TEST_EQUAL(result, IRouter::NoError, ());
+    TEST_LESS(route.GetTotalTimeSec(), 300, ());
   }
 
   // There are road ids in osrm which don't have appropriate features ids in mwm.
