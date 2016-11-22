@@ -34,6 +34,7 @@ public final class MytargetHelper
 
   private static final int TIMEOUT = 1000;
 
+  @Nullable
   private NativeAppwallAd mShowcase;
   private boolean mCancelled;
 
@@ -133,6 +134,12 @@ public final class MytargetHelper
       mShowcase = loadAds(listener, activity);
   }
 
+  public void handleBannersShow(@NonNull List<NativeAppwallBanner> banners)
+  {
+    if (mShowcase != null)
+      mShowcase.handleBannersShow(banners);
+  }
+
   private NativeAppwallAd loadAds(final @NonNull Listener<List<NativeAppwallBanner>> listener, Activity activity)
   {
     NativeAppwallAd res = new NativeAppwallAd(PrivateVariables.myTargetSlot(), activity);
@@ -167,9 +174,10 @@ public final class MytargetHelper
     return res;
   }
 
-  public void onBannerClick(NativeAppwallBanner banner)
+  public void onBannerClick(@NonNull NativeAppwallBanner banner)
   {
-    mShowcase.handleBannerClick(banner);
+    if (mShowcase != null)
+      mShowcase.handleBannerClick(banner);
   }
 
   private static boolean isShowcaseSwitchedOnLocal()
