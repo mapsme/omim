@@ -200,8 +200,9 @@ void ProductMaker::MakeProducts(uint64_t const requestId, ProductsCallback const
     successFn(products, requestId);
 }
 
-uint64_t Api::GetAvailableProducts(ms::LatLon const & from, ms::LatLon const & to,
-                                   ProductsCallback const & successFn, ErrorCallback const & errorFn)
+uint64_t ApiImpl::GetAvailableProducts(ms::LatLon const & from, ms::LatLon const & to,
+                                       ProductsCallback const & successFn,
+                                       ErrorCallback const & errorFn)
 {
   auto const reqId = ++m_requestId;
   auto const maker = m_maker;
@@ -238,8 +239,8 @@ uint64_t Api::GetAvailableProducts(ms::LatLon const & from, ms::LatLon const & t
 }
 
 // static
-RideRequestLinks Api::GetRideRequestLinks(string const & productId, ms::LatLon const & from,
-                                          ms::LatLon const & to)
+RideRequestLinks ApiImpl::GetRideRequestLinks(string const & productId, ms::LatLon const & from,
+                                              ms::LatLon const & to)
 {
   stringstream url;
   url << fixed << setprecision(6)
@@ -248,6 +249,25 @@ RideRequestLinks Api::GetRideRequestLinks(string const & productId, ms::LatLon c
       << "&dropoff[latitude]=" << to.lat << "&dropoff[longitude]=" << to.lon;
 
   return {"uber://" + url.str(), "https://m.uber.com/ul" + url.str()};
+}
+
+uint64_t Api::GetAvailableProducts(ms::LatLon const & from, ms::LatLon const & to,
+                                   ProductsCallback const & successFn,
+                                   ErrorCallback const & errorFn, bool ask)
+{
+  uint64_t result = 0;
+  if (ask)
+  {
+    RemoteCallGuard::Instance().Call([this, &result, &from, &to, &successFn, &errorFn]()
+    {
+      result = ApiImpl::GetAvailableProducts(from, to, successFn, errorFn);
+    });
+  }
+  else
+  {
+    result = ApiImpl::GetAvailableProducts(from, to, successFn, errorFn);
+  }
+  return result;
 }
 
 string DebugPrint(ErrorCode error)

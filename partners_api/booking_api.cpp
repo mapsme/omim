@@ -11,27 +11,27 @@
 
 #include "private.h"
 
-char const BookingApi::kDefaultCurrency[1];
+char const BookingApiImpl::kDefaultCurrency[1];
 
-BookingApi::BookingApi() : m_affiliateId(BOOKING_AFFILIATE_ID), m_testingMode(false)
+BookingApiImpl::BookingApiImpl() : m_affiliateId(BOOKING_AFFILIATE_ID), m_testingMode(false)
 {
   stringstream ss;
   ss << BOOKING_KEY << ":" << BOOKING_SECRET;
   m_apiUrl = "https://" + ss.str() + "@distribution-xml.booking.com/json/bookings.";
 }
 
-string BookingApi::GetBookHotelUrl(string const & baseUrl, string const & /* lang */) const
+string BookingApiImpl::GetBookHotelUrl(string const & baseUrl, string const & /* lang */) const
 {
   return GetDescriptionUrl(baseUrl) + "#availability";
 }
 
-string BookingApi::GetDescriptionUrl(string const & baseUrl, string const & /* lang */) const
+string BookingApiImpl::GetDescriptionUrl(string const & baseUrl, string const & /* lang */) const
 {
   return baseUrl + "?aid=" + m_affiliateId;
 }
 
-void BookingApi::GetMinPrice(string const & hotelId, string const & currency,
-                             function<void(string const &, string const &)> const & fn)
+void BookingApiImpl::GetMinPrice(string const & hotelId, string const & currency,
+                                 function<void(string const &, string const &)> const & fn)
 {
   char dateArrival[12]{};
   char dateDeparture[12]{};
@@ -102,8 +102,8 @@ void BookingApi::GetMinPrice(string const & hotelId, string const & currency,
 }
 
 // TODO(mgsergio): This is just a mockup, make it a real function.
-void BookingApi::GetHotelInfo(string const & hotelId, string const & /* lang */,
-                              function<void(HotelInfo const & hotelInfo)> const & fn)
+void BookingApiImpl::GetHotelInfo(string const & hotelId, string const & /* lang */,
+                                  function<void(HotelInfo const & hotelInfo)> const & fn)
 {
   HotelInfo info;
 
@@ -258,8 +258,8 @@ void BookingApi::GetHotelInfo(string const & hotelId, string const & /* lang */,
   fn(info);
 }
 
-string BookingApi::MakeApiUrl(string const & func,
-                              initializer_list<pair<string, string>> const & params)
+string BookingApiImpl::MakeApiUrl(string const & func,
+                                  initializer_list<pair<string, string>> const & params)
 {
   stringstream ss;
   ss << m_apiUrl << func << "?";
@@ -270,4 +270,22 @@ string BookingApi::MakeApiUrl(string const & func,
     ss << "&show_test=1";
 
   return ss.str();
+}
+
+void BookingApi::GetMinPrice(string const & hotelId, string const & currency,
+                             function<void(string const &, string const &)> const & fn)
+{
+  RemoteCallGuard::Instance().Call([this, hotelId, currency, fn]()
+  {
+    BookingApiImpl::GetMinPrice(hotelId, currency, fn);
+  });
+}
+
+void BookingApi::GetHotelInfo(string const & hotelId, string const & lang,
+                              function<void(HotelInfo const & hotelInfo)> const & fn)
+{
+  RemoteCallGuard::Instance().Call([this, hotelId, lang, fn]()
+  {
+    BookingApiImpl::GetHotelInfo(hotelId, lang, fn);
+  });
 }

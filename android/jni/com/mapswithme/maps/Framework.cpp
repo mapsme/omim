@@ -517,7 +517,7 @@ uint64_t Framework::RequestUberProducts(ms::LatLon const & from, ms::LatLon cons
                                         uber::ProductsCallback const & callback,
                                         uber::ErrorCallback const & errorCallback)
 {
-  return m_work.GetUberApi().GetAvailableProducts(from, to, callback, errorCallback);
+  return m_work.GetUberApi().GetAvailableProducts(from, to, callback, errorCallback, false);
 }
 
 uber::RideRequestLinks Framework::GetUberLinks(string const & productId, ms::LatLon const & from, ms::LatLon const & to)

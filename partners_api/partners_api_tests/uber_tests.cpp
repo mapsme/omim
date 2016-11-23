@@ -222,7 +222,7 @@ UNIT_TEST(Uber_Smoke)
   productsContainer.clear();
 
   {
-    uber::Api uberApi;
+    uber::ApiImpl uberApi;
 
     {
       lock_guard<mutex> lock(resultsMutex);

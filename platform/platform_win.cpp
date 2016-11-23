@@ -141,6 +141,12 @@ Platform::EConnectionType Platform::ConnectionStatus()
   return EConnectionType::CONNECTION_NONE;
 }
 
+bool Platform::InRoaming()
+{
+  // @TODO Add implementation.
+  return false;
+}
+
 Platform::TStorageStatus Platform::GetWritableStorageStatus(uint64_t neededSize) const
 {
   ULARGE_INTEGER freeSpace;

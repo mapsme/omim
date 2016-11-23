@@ -103,6 +103,7 @@ LOCAL_SRC_FILES := \
 	com/mapswithme/platform/SocketImpl.cpp \
 	com/mapswithme/platform/Language.cpp \
 	com/mapswithme/platform/MarketingService.cpp \
+	com/mapswithme/platform/MobileDataAsk.cpp \
 	com/mapswithme/platform/Platform.cpp \
 	com/mapswithme/platform/PThreadImpl.cpp \
 	com/mapswithme/util/Config.cpp \

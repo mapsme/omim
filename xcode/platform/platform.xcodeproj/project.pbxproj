@@ -16,6 +16,8 @@
 		3D30587D1D8320E4004AC712 /* http_client.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 3D30587B1D8320E4004AC712 /* http_client.hpp */; };
 		3D30587F1D880910004AC712 /* http_client_apple.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3D30587E1D880910004AC712 /* http_client_apple.mm */; };
 		3D97F64B1D9C05E800380945 /* http_client.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D97F64A1D9C05E800380945 /* http_client.cpp */; };
+		3DE8B9861DE5EE34000E6083 /* mobile_data_ask_apple.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3DE8B9841DE5EE34000E6083 /* mobile_data_ask_apple.mm */; };
+		3DE8B9871DE5EE34000E6083 /* mobile_data_ask.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 3DE8B9851DE5EE34000E6083 /* mobile_data_ask.hpp */; };
 		56EB1EDC1C6B6E6C0022D831 /* file_logging.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56EB1ED81C6B6E6C0022D831 /* file_logging.cpp */; };
 		56EB1EDD1C6B6E6C0022D831 /* file_logging.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 56EB1ED91C6B6E6C0022D831 /* file_logging.hpp */; };
 		56EB1EDE1C6B6E6C0022D831 /* mwm_traits.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56EB1EDA1C6B6E6C0022D831 /* mwm_traits.cpp */; };
@@ -111,6 +113,8 @@
 		3D30587B1D8320E4004AC712 /* http_client.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = http_client.hpp; sourceTree = "<group>"; };
 		3D30587E1D880910004AC712 /* http_client_apple.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = http_client_apple.mm; sourceTree = "<group>"; };
 		3D97F64A1D9C05E800380945 /* http_client.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = http_client.cpp; sourceTree = "<group>"; };
+		3DE8B9841DE5EE34000E6083 /* mobile_data_ask_apple.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = mobile_data_ask_apple.mm; sourceTree = "<group>"; };
+		3DE8B9851DE5EE34000E6083 /* mobile_data_ask.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = mobile_data_ask.hpp; sourceTree = "<group>"; };
 		56EB1ED81C6B6E6C0022D831 /* file_logging.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = file_logging.cpp; sourceTree = "<group>"; };
 		56EB1ED91C6B6E6C0022D831 /* file_logging.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = file_logging.hpp; sourceTree = "<group>"; };
 		56EB1EDA1C6B6E6C0022D831 /* mwm_traits.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mwm_traits.cpp; sourceTree = "<group>"; };
@@ -316,6 +320,8 @@
 		6753437A1A3F5CF500A0A8C3 /* platform */ = {
 			isa = PBXGroup;
 			children = (
+				3DE8B9841DE5EE34000E6083 /* mobile_data_ask_apple.mm */,
+				3DE8B9851DE5EE34000E6083 /* mobile_data_ask.hpp */,
 				34513AF71DCB37C100471BDA /* marketing_service_ios.mm */,
 				34513AF81DCB37C100471BDA /* marketing_service.cpp */,
 				34513AF91DCB37C100471BDA /* marketing_service.hpp */,
@@ -414,6 +420,7 @@
 				56EB1EDF1C6B6E6C0022D831 /* mwm_traits.hpp in Headers */,
 				675343C21A3F5D5A00A0A8C3 /* location.hpp in Headers */,
 				67AB92EB1B7B3E9100AB5194 /* get_text_by_id.hpp in Headers */,
+				3DE8B9871DE5EE34000E6083 /* mobile_data_ask.hpp in Headers */,
 				675343D41A3F5D5A00A0A8C3 /* settings.hpp in Headers */,
 				675343B51A3F5D5A00A0A8C3 /* constants.hpp in Headers */,
 				34C624BE1DABCCD100510300 /* socket.hpp in Headers */,
@@ -564,6 +571,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3DE8B9861DE5EE34000E6083 /* mobile_data_ask_apple.mm in Sources */,
 				675343D11A3F5D5A00A0A8C3 /* servers_list.cpp in Sources */,
 				675343C91A3F5D5A00A0A8C3 /* platform_unix_impl.cpp in Sources */,
 				67AB92DC1B7B3D7300AB5194 /* mwm_version.cpp in Sources */,
