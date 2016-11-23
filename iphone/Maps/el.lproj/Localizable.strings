@@ -1640,7 +1640,7 @@
 "taxi_order" = "Παραγγελία";
 
 /* How long it is until the taxi arrives */
-"taxi_wait" = "Χρόνος αναμονής %d λεπτά";
+"taxi_wait" = "Χρόνος αναμονής %s";
 
 /* When there are no available taxis nearby */
 "taxi_not_found" = "Δε βρέθηκε ταξί σε κοντινή απόσταση";
@@ -1654,7 +1654,7 @@
 
 "booking_filters_rating" = "Βαθμολογία";
 
-"booking_filters_rating_any" = "Όλα";
+"booking_filters_rating_any" = "Οποιοδήποτε";
 
 "booking_filters_ragting_good" = "Καλή";
 
@@ -1672,6 +1672,7 @@
 
 "booking_filters_reset_button" = "Μηδενισμός φίλτρου";
 
+/* noun */
 "booking_list" = "Λίστα";
 
 "booking_based_on_reviews" = "Σύμφωνα με %d κριτικές ξενοδοχείων";
@@ -1682,10 +1683,13 @@
 
 "booking_hotel" = "Ξενοδοχείο";
 
+/* hotel room */
 "booking_hotel_room" = "Δωμάτιο";
 
+/* A neologism for a chat based on geographical proximity */
 "chat" = "Geochat";
 
+/* Verb. Text on a button that opens the chat. */
 "chat_open" = "Άνοιγμα";
 
 "whatsnew_uber_header" = "MAPS.ME & Uber";
