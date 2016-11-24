@@ -1,4 +1,6 @@
-#include "geometry.hpp"
+#include "routing/geometry.hpp"
+
+#include "routing/routing_exception.hpp"
 
 #include "geometry/mercator.hpp"
 
@@ -36,10 +38,7 @@ void GeometryLoaderImpl::Load(uint32_t featureId, RoadGeometry & road) const
   FeatureType feature;
   bool const isFound = m_guard.GetFeatureByIndex(featureId, feature);
   if (!isFound)
-  {
-    LOG(LERROR, ("Feature", featureId, "not found"));
-    return;
-  }
+    MYTHROW(RoutingException, ("Feature", featureId, "not found"));
 
   feature.ParseGeometry(FeatureType::BEST_GEOMETRY);
   road.Load(*m_vehicleModel, feature);
@@ -48,6 +47,8 @@ void GeometryLoaderImpl::Load(uint32_t featureId, RoadGeometry & road) const
 
 namespace routing
 {
+// RoadGeometry ------------------------------------------------------------------------------------
+
 RoadGeometry::RoadGeometry(bool oneWay, double speed, Points const & points)
   : m_isRoad(true), m_isOneWay(oneWay), m_speed(speed), m_points(points)
 {
@@ -64,9 +65,22 @@ void RoadGeometry::Load(IVehicleModel const & vehicleModel, FeatureType const & 
     m_points.emplace_back(feature.GetPoint(i));
 }
 
+// Geometry ----------------------------------------------------------------------------------------
+
 Geometry::Geometry(unique_ptr<GeometryLoader> loader) : m_loader(move(loader))
 {
   ASSERT(m_loader, ());
+}
+
+RoadGeometry const & Geometry::GetRoad(uint32_t featureId) const
+{
+  auto const & it = m_roads.find(featureId);
+  if (it != m_roads.cend())
+    return it->second;
+
+  RoadGeometry & road = m_roads[featureId];
+  m_loader->Load(featureId, road);
+  return road;
 }
 
 unique_ptr<GeometryLoader> CreateGeometryLoader(Index const & index, MwmSet::MwmId const & mwmId,

@@ -64,7 +64,7 @@ Joint MakeJoint(vector<RoadPoint> const & points)
 
 shared_ptr<EdgeEstimator> CreateEstimator()
 {
-  return CreateCarEdgeEstimator(make_shared<CarModelFactory>()->GetVehicleModel());
+  return EdgeEstimator::CreateForCar(*make_shared<CarModelFactory>()->GetVehicleModel());
 }
 
 void TestRoute(IndexGraph const & graph, RoadPoint const & start, RoadPoint const & finish,

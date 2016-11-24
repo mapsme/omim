@@ -29,7 +29,8 @@ public:
 
   bool IsOneWay() const { return m_isOneWay; }
 
-  bool GetSpeed() const { return m_speed; }
+  // Kilometers per hour.
+  double GetSpeed() const { return m_speed; }
 
   m2::PointD const & GetPoint(uint32_t pointId) const
   {
@@ -60,16 +61,7 @@ public:
   Geometry() = default;
   explicit Geometry(unique_ptr<GeometryLoader> loader);
 
-  RoadGeometry const & GetRoad(uint32_t featureId) const
-  {
-    auto const & it = m_roads.find(featureId);
-    if (it != m_roads.cend())
-      return it->second;
-
-    RoadGeometry & road = m_roads[featureId];
-    m_loader->Load(featureId, road);
-    return road;
-  }
+  RoadGeometry const & GetRoad(uint32_t featureId) const;
 
   m2::PointD const & GetPoint(RoadPoint const & rp) const
   {

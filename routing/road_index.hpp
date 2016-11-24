@@ -27,7 +27,11 @@ public:
   void AddJoint(uint32_t pointId, Joint::Id jointId)
   {
     if (pointId >= m_jointIds.size())
-      m_jointIds.insert(m_jointIds.end(), pointId + 1 - m_jointIds.size(), Joint::kInvalidId);
+    {
+      size_t const insertCount = pointId + 1 - m_jointIds.size();
+      CHECK_GREATER(insertCount, 0, ());
+      m_jointIds.insert(m_jointIds.end(), insertCount, Joint::kInvalidId);
+    }
 
     ASSERT_EQUAL(m_jointIds[pointId], Joint::kInvalidId, ());
     m_jointIds[pointId] = jointId;

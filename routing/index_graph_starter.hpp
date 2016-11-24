@@ -3,13 +3,15 @@
 #include "routing/index_graph.hpp"
 #include "routing/joint.hpp"
 
+#include "std/utility.hpp"
+
 namespace routing
 {
 // The problem:
 // IndexGraph contains only road points connected in joints.
 // So it is possible IndexGraph doesn't contain start and finish.
 //
-// IndexGraphStarter implants start and finish for AStarAlgorithm.
+// IndexGraphStarter adds fake start and finish joint ids for AStarAlgorithm.
 //
 class IndexGraphStarter final
 {
@@ -21,19 +23,10 @@ public:
   IndexGraphStarter(IndexGraph const & graph, RoadPoint startPoint, RoadPoint finishPoint);
 
   IndexGraph const & GetGraph() const { return m_graph; }
-  Joint::Id GetStartJoint() const { return m_startJoint; }
-  Joint::Id GetFinishJoint() const { return m_finishJoint; }
+  Joint::Id GetStartJoint() const { return m_start.m_jointId; }
+  Joint::Id GetFinishJoint() const { return m_finish.m_jointId; }
 
-  m2::PointD const & GetPoint(Joint::Id jointId) const
-  {
-    if (jointId == m_startImplant)
-      return m_graph.GetGeometry().GetPoint(m_startPoint);
-
-    if (jointId == m_finishImplant)
-      return m_graph.GetGeometry().GetPoint(m_finishPoint);
-
-    return m_graph.GetPoint(jointId);
-  }
+  m2::PointD const & GetPoint(Joint::Id jointId) const;
 
   void GetOutgoingEdgesList(Joint::Id jointId, vector<JointEdge> & edges) const
   {
@@ -44,8 +37,6 @@ public:
   {
     GetEdgesList(jointId, false, edges);
   }
-
-  void GetEdgesList(Joint::Id jointId, bool isOutgoing, vector<JointEdge> & edges) const;
 
   double HeuristicCostEstimate(Joint::Id from, Joint::Id to) const
   {
@@ -58,39 +49,47 @@ public:
   void RedressRoute(vector<Joint::Id> const & route, vector<RoadPoint> & roadPoints) const;
 
 private:
-  Joint::Id CalcStartJoint() const;
-  Joint::Id CalcFinishJoint() const;
+  struct FakeJoint final
+  {
+    FakeJoint(IndexGraph const & graph, RoadPoint point, Joint::Id fakeId, Joint::Id suggestedId);
 
-  bool StartIsImplant() const { return m_startJoint == m_startImplant; }
-  bool FinishIsImplant() const { return m_finishJoint == m_finishImplant; }
+    Joint::Id CalcJointId(IndexGraph const & graph, Joint::Id suggestedId) const;
+    bool IsFake() const { return m_jointId == m_fakeId; }
+
+    RoadPoint const m_point;
+    Joint::Id const m_fakeId;
+    Joint::Id const m_jointId;
+  };
 
   template <typename F>
   void ForEachPoint(Joint::Id jointId, F && f) const
   {
-    if (jointId == m_startImplant)
+    if (jointId == m_start.m_fakeId)
     {
-      f(m_startPoint);
+      f(m_start.m_point);
       return;
     }
 
-    if (jointId == m_finishImplant)
+    if (jointId == m_finish.m_fakeId)
     {
-      f(m_finishPoint);
+      f(m_finish.m_point);
       return;
     }
 
-    m_graph.ForEachPoint(jointId, f);
+    m_graph.ForEachPoint(jointId, forward<F>(f));
   }
+
+  void GetEdgesList(Joint::Id jointId, bool isOutgoing, vector<JointEdge> & edges) const;
+  void GetFakeEdges(FakeJoint const & from, FakeJoint const & to, bool isOutgoing,
+                    vector<JointEdge> & edges) const;
+  void GetArrivalFakeEdges(Joint::Id jointId, FakeJoint const & fakeJoint, bool isOutgoing,
+                           vector<JointEdge> & edges) const;
 
   void FindPointsWithCommonFeature(Joint::Id jointId0, Joint::Id jointId1, RoadPoint & result0,
                                    RoadPoint & result1) const;
 
   IndexGraph const & m_graph;
-  RoadPoint const m_startPoint;
-  RoadPoint const m_finishPoint;
-  Joint::Id const m_startImplant;
-  Joint::Id const m_finishImplant;
-  Joint::Id const m_startJoint;
-  Joint::Id const m_finishJoint;
+  FakeJoint const m_start;
+  FakeJoint const m_finish;
 };
 }  // namespace routing
