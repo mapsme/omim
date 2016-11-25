@@ -625,4 +625,34 @@ UNIT_TEST(TwoWay_GetShortestConnectionPath)
   };
   TEST_EQUAL(shortestPath, expectedShortestPath, ());
 }
+
+UNIT_TEST(TwoWay_GetFeatureConnectionPath)
+{
+  unique_ptr<IndexGraph> graph = BuildTwoWayGraph();
+  vector<RoadPoint> featurePath;
+
+  // Full feature 0.
+  graph->GetFeatureConnectionPath(graph->GetJointIdForTesting({1 /* feature id */, 0 /* point id */}),
+    graph->GetJointIdForTesting({1, 3}), 0 /* feature id */, featurePath);
+  vector<RoadPoint> const expectedF0Path = {
+    {0, 0}, {0, 1}, {0, 2}
+  };
+  TEST_EQUAL(featurePath, expectedF0Path, ());
+
+  // Full feature 1.
+  graph->GetFeatureConnectionPath(graph->GetJointIdForTesting({1 /* feature id */, 0 /* point id */}),
+    graph->GetJointIdForTesting({1, 3}), 1 /* feature id */, featurePath);
+  vector<RoadPoint> const expectedF1Path = {
+    {1, 0}, {1, 1}, {1, 2}, {1, 3}
+  };
+  TEST_EQUAL(featurePath, expectedF1Path, ());
+
+  // Reversed full feature 0.
+  graph->GetFeatureConnectionPath(graph->GetJointIdForTesting({1 /* feature id */, 3 /* point id */}),
+    graph->GetJointIdForTesting({1, 0}), 0 /* feature id */, featurePath);
+  vector<RoadPoint> const expectedReversedF0Path = {
+    {0, 2}, {0, 1}, {0, 0}
+  };
+  TEST_EQUAL(featurePath, expectedReversedF0Path, ());
+}
 }  // namespace

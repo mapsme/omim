@@ -81,7 +81,7 @@ void IndexGraph::GetConnectionPaths(Joint::Id from, Joint::Id to,
   for (pair<RoadPoint, RoadPoint> const & c : connections)
   {
     vector<RoadPoint> roadPoints;
-    GetSingleFeaturePaths(c.first, c.second, roadPoints);
+    GetSingleFeaturePaths(c.first /* from */, c.second /* to */, roadPoints);
     connectionPaths.push_back(move(roadPoints));
   }
 }
@@ -129,14 +129,35 @@ void IndexGraph::GetShortestConnectionPath(Joint::Id from, Joint::Id to,
       shortestConnectionPath);
 }
 
+void IndexGraph::GetFeatureConnectionPath(Joint::Id from, Joint::Id to, uint32_t featureId,
+                                          vector<RoadPoint> & featureConnectionPath)
+{
+  vector<pair<RoadPoint, RoadPoint>> connections;
+  m_jointIndex.FindPointsWithCommonFeature(from, to, connections);
+  CHECK_LESS(0, connections.size(), ());
+
+  for (auto & c : connections)
+  {
+    CHECK_EQUAL(c.first.GetFeatureId(), c.second.GetFeatureId(), ());
+    if (c.first.GetFeatureId() == featureId)
+    {
+      GetSingleFeaturePaths(c.first /* from */, c.second /* to */, featureConnectionPath);
+      return;
+    }
+  }
+  MYTHROW(RootException,
+          ("Joint from:", from, "and joint to:", to, "are not connected feature:", featureId));
+}
+
 void IndexGraph::GetOutgoingGeomEdges(vector<JointEdge> const & outgoingEdges, Joint::Id center,
                                       vector<JointEdgeGeom> & outgoingGeomEdges)
 {
   for (JointEdge const & e : outgoingEdges)
   {
-    vector<RoadPoint> shortestConnectionPath;
-    GetShortestConnectionPath(center, e.GetTarget(), shortestConnectionPath);
-    outgoingGeomEdges.emplace_back(e.GetTarget(), shortestConnectionPath);
+    vector<vector<RoadPoint>> connectionPaths;
+    GetConnectionPaths(center, e.GetTarget(), connectionPaths);
+    for (auto const & path : connectionPaths)
+      outgoingGeomEdges.emplace_back(e.GetTarget(), path);
   }
 }
 
@@ -271,18 +292,16 @@ void IndexGraph::ApplyRestrictionNo(RoadPoint const & from, RoadPoint const & to
         || e.GetTarget() == centerId;
   }), outgoingEdges.end());
 
-  // Getting outgoing shortest edges geometry.
-  // Node. |centerId| could be connected with any outgoing joint with
-  // mote than one edge but only the shortest one should be takenn into
-  // account.
   my::SortUnique(outgoingEdges, my::LessBy(&JointEdge::GetTarget),
                  my::EqualsBy(&JointEdge::GetTarget));
+  // Node. |centerId| could be connected with any outgoing joint with more than one edge (feature).
+  // In GetOutgoingGeomEdges() below is taken into account the case.
   vector<JointEdgeGeom> outgoingShortestEdges;
   GetOutgoingGeomEdges(outgoingEdges, centerId, outgoingShortestEdges);
 
-  vector<RoadPoint> shortestIngoingPath;
-  GetShortestConnectionPath(fromFirstOneStepAside, centerId, shortestIngoingPath);
-  JointEdgeGeom ingoingShortestEdge(fromFirstOneStepAside, shortestIngoingPath);
+  vector<RoadPoint> ingoingPath;
+  GetFeatureConnectionPath(fromFirstOneStepAside, centerId, from.GetFeatureId(), ingoingPath);
+  JointEdgeGeom ingoingShortestEdge(fromFirstOneStepAside, ingoingPath);
 
   Joint::Id newJoint = Joint::kInvalidId;
   for (auto it = outgoingShortestEdges.cbegin();
@@ -375,13 +394,13 @@ void IndexGraph::ApplyRestrictionOnly(RoadPoint const & from, RoadPoint const & 
   // *       *       *                     *       *       *
   // 4       5       7                     4       5       7
 
-  vector<RoadPoint> ingoingShortestPath;
-  GetShortestConnectionPath(fromFirstOneStepAside, centerId, ingoingShortestPath);
-  vector<RoadPoint> outgoingShortestPath;
-  GetShortestConnectionPath(centerId, toFirstOneStepAside, outgoingShortestPath);
-  CHECK_LESS(0, ingoingShortestPath.size(), ());
-  vector<RoadPoint> geometrySource(ingoingShortestPath.cbegin(), ingoingShortestPath.cend() - 1);
-  geometrySource.insert(geometrySource.end(), outgoingShortestPath.cbegin(), outgoingShortestPath.cend());
+  vector<RoadPoint> ingoingPath;
+  GetFeatureConnectionPath(fromFirstOneStepAside, centerId, from.GetFeatureId(), ingoingPath);
+  vector<RoadPoint> outgoingPath;
+  GetFeatureConnectionPath(centerId, toFirstOneStepAside, to.GetFeatureId(), outgoingPath);
+  CHECK_LESS(0, ingoingPath.size(), ());
+  vector<RoadPoint> geometrySource(ingoingPath.cbegin(), ingoingPath.cend() - 1);
+  geometrySource.insert(geometrySource.end(), outgoingPath.cbegin(), outgoingPath.cend());
 
   AddFakeFeature(fromFirstOneStepAside, toFirstOneStepAside, geometrySource);
   DisableEdge(fromFirstOneStepAside, centerId);

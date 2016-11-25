@@ -36,7 +36,7 @@ class JointEdgeGeom final
 {
 public:
   JointEdgeGeom() = default;
-  JointEdgeGeom(Joint::Id target, vector<RoadPoint> & shortestPath)
+  JointEdgeGeom(Joint::Id target, vector<RoadPoint> const & shortestPath)
     : m_target(target), m_shortestPath(shortestPath)
   {
   }
@@ -157,6 +157,10 @@ public:
   /// but a car route is looked for.
   void GetShortestConnectionPath(Joint::Id from, Joint::Id to,
                                  vector<RoadPoint> & shortestConnectionPath);
+
+  /// \brief Fills |featureConnectionPath| with a path from |from| to |to| of points of |featureId|.
+  void GetFeatureConnectionPath(Joint::Id from, Joint::Id to, uint32_t featureId,
+                                vector<RoadPoint> & featureConnectionPath);
 
   void GetOutgoingGeomEdges(vector<JointEdge> const & outgoingEdges, Joint::Id center,
                             vector<JointEdgeGeom> & outgoingGeomEdges);
