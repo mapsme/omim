@@ -188,7 +188,7 @@ public:
   static uint32_t const kStartFakeFeatureIds = 1024 * 1024 * 1024;
 
 private:
-  void GetNeighboringEdge(RoadGeometry const & road, RoadPoint rp, bool forward, bool outgoing,
+  void GetNeighboringEdge(RoadGeometry const & road, RoadPoint const & rp, bool forward, bool outgoing,
                           vector<JointEdge> & edges) const;
   void Build(uint32_t jointNumber);
 

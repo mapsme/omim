@@ -221,7 +221,7 @@ void IndexGraph::FindOneStepAsideRoadPoint(RoadPoint const & center, Joint::Id c
                                            vector<Joint::Id> & oneStepAside) const
 {
   oneStepAside.clear();
-  m_roadIndex.ForEachJoint(center.GetFeatureId(), [&](uint32_t /*pointId*/, Joint::Id jointId) {
+  m_roadIndex.ForEachJoint(center.GetFeatureId(), [&](uint32_t /* pointId */, Joint::Id jointId) {
     for (JointEdge const & e : edges)
     {
       if (e.GetTarget() == jointId)
@@ -338,7 +338,7 @@ void IndexGraph::ApplyRestrictionNo(CrossingPoint restrictionPoint)
                          // cycles |fromFirstOneStepAside|->|centerId|->|fromFirstOneStepAside|.
                          // @TODO(bykoianko) e.GetTarget() == fromFirstOneStepAside should be
                          // process correctly.
-                         // It's a popular case of U-turn prohibition.
+                         // It's a common case of U-turn prohibition.
                          || e.GetTarget() == fromFirstOneStepAside
                          // Removing edges |centerId|->|centerId|.
                          || e.GetTarget() == centerId;
@@ -568,7 +568,7 @@ void IndexGraph::GetNeighboringEdges(RoadPoint const & rp, bool isOutgoing,
     GetNeighboringEdge(road, rp, true /* forward */, isOutgoing, edges);
 }
 
-void IndexGraph::GetNeighboringEdge(RoadGeometry const & road, RoadPoint rp, bool forward,
+void IndexGraph::GetNeighboringEdge(RoadGeometry const & road, RoadPoint const & rp, bool forward,
                                     bool outgoing, vector<JointEdge> & edges) const
 {
   pair<Joint::Id, uint32_t> const & neighbor = m_roadIndex.FindNeighbor(rp, forward);

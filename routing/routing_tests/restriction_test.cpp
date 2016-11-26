@@ -3,9 +3,9 @@
 #include "routing/routing_tests/index_graph_tools.hpp"
 
 #include "routing/car_model.hpp"
+#include "routing/geometry.hpp"
 
 #include "geometry/point2d.hpp"
-#include "routing/geometry.hpp"
 
 #include "std/unique_ptr.hpp"
 #include "std/vector.hpp"
