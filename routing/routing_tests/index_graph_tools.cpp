@@ -44,7 +44,7 @@ AStarAlgorithm<IndexGraphStarter>::Result CalculateRoute(IndexGraphStarter & sta
 {
   AStarAlgorithm<IndexGraphStarter> algorithm;
   RoutingResult<Joint::Id> routingResult;
-  AStarAlgorithm<IndexGraphStarter>::Result const resultCode =  algorithm.FindPath(
+  AStarAlgorithm<IndexGraphStarter>::Result const resultCode = algorithm.FindPath(
       starter, starter.GetStartJoint(), starter.GetFinishJoint(), routingResult, {}, {});
 
   starter.RedressRoute(routingResult.path, roadPoints);

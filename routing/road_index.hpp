@@ -19,7 +19,9 @@ class CrossingPoint final
 public:
   CrossingPoint() = default;
   CrossingPoint(RoadPoint const & from, RoadPoint const & to, Joint::Id centerId)
-    : m_from(from), m_to(to), m_centerId(centerId) {}
+    : m_from(from), m_to(to), m_centerId(centerId)
+  {
+  }
 
   RoadPoint m_from;
   RoadPoint m_to;
@@ -36,15 +38,9 @@ public:
     return m_centerId < rhs.m_centerId;
   }
 
-  bool operator!=(CrossingPoint const & rhs) const
-  {
-    return *this < rhs || rhs < *this;
-  }
+  bool operator!=(CrossingPoint const & rhs) const { return *this < rhs || rhs < *this; }
 
-  bool operator==(CrossingPoint const & rhs) const
-  {
-    return !(*this != rhs);
-  }
+  bool operator==(CrossingPoint const & rhs) const { return !(*this != rhs); }
 };
 
 class RoadJointIds final

@@ -23,7 +23,8 @@ void FSegIndex::Import(vector<Joint> const & joints)
 }
 
 bool FSegIndex::GetAdjacentSegments(uint32_t featureIdFrom, uint32_t featureIdTo,
-                                    routing::FSegId & from, routing::FSegId & to, JointId & jointId) const
+                                    routing::FSegId & from, routing::FSegId & to,
+                                    JointId & jointId) const
 {
   auto const fromIt = m_roads.find(featureIdFrom);
   if (fromIt == m_roads.cend())
@@ -36,7 +37,7 @@ bool FSegIndex::GetAdjacentSegments(uint32_t featureIdFrom, uint32_t featureIdTo
   routing::RoadJointIds const & roadJointIdsFrom = fromIt->second;
   routing::RoadJointIds const & roadJointIdsTo = toIt->second;
   if (roadJointIdsFrom.GetSize() == 0 || roadJointIdsTo.GetSize() == 0)
-    return false; // No sence in restrictions on features without joints.
+    return false;  // No sence in restrictions on features without joints.
 
   // Note. It's important to check other variant besides a restriction from last segment
   // of featureIdFrom to first segment of featureIdTo since two way features can have
@@ -72,14 +73,16 @@ bool FSegIndex::GetAdjacentSegments(uint32_t featureIdFrom, uint32_t featureIdTo
     jointId = roadJointIdsFrom.Front();
     return true;
   }
-  return false; // |featureIdFrom| and |featureIdTo| are not adjacent.
+  return false;  // |featureIdFrom| and |featureIdTo| are not adjacent.
 }
 
-void FSegIndex::ApplyRestrictionNo(routing::FSegId const & from, routing::FSegId const & to, JointId jointId)
+void FSegIndex::ApplyRestrictionNo(routing::FSegId const & from, routing::FSegId const & to,
+                                   JointId jointId)
 {
 }
 
-void FSegIndex::ApplyRestrictionOnly(routing::FSegId const & from, routing::FSegId const & to, JointId jointId)
+void FSegIndex::ApplyRestrictionOnly(routing::FSegId const & from, routing::FSegId const & to,
+                                     JointId jointId)
 {
 }
 

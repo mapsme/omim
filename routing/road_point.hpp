@@ -23,10 +23,7 @@ public:
     return m_featureId == roadPoint.m_featureId && m_pointId == roadPoint.m_pointId;
   }
 
-  bool operator!=(RoadPoint const & roadPoint) const
-  {
-    return !(*this == roadPoint);
-  }
+  bool operator!=(RoadPoint const & roadPoint) const { return !(*this == roadPoint); }
 
   bool operator<(RoadPoint const & roadPoint) const
   {
