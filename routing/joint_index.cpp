@@ -21,10 +21,8 @@ void JointIndex::FindPointsWithCommonFeature(Joint::Id jointId0, Joint::Id joint
                                              vector<pair<RoadPoint, RoadPoint>> & result) const
 {
   result.clear();
-  ForEachPoint(jointId0, [&](RoadPoint const & rp0)
-  {
-    ForEachPoint(jointId1, [&](RoadPoint const & rp1)
-    {
+  ForEachPoint(jointId0, [&](RoadPoint const & rp0) {
+    ForEachPoint(jointId1, [&](RoadPoint const & rp1) {
       if (rp0.GetFeatureId() == rp1.GetFeatureId())
         result.emplace_back(rp0, rp1);
     });

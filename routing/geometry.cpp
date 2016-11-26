@@ -99,10 +99,8 @@ string DebugPrint(RoadGeometry const & roadGeometry)
 {
   stringstream str;
   str << "RoadGeometry [ m_isRoad: " << roadGeometry.m_isRoad
-      << ", m_isOneWay: " << roadGeometry.m_isOneWay
-      << ", m_speed: " << roadGeometry.m_speed
-      << ", m_points: " << DebugPrint(roadGeometry.m_points)
-      << " ]";
+      << ", m_isOneWay: " << roadGeometry.m_isOneWay << ", m_speed: " << roadGeometry.m_speed
+      << ", m_points: " << DebugPrint(roadGeometry.m_points) << " ]";
   return str.str();
 }
 }  // namespace routing

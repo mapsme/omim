@@ -39,13 +39,11 @@ class JointEdgeGeom final
 {
 public:
   JointEdgeGeom() = default;
-  JointEdgeGeom(Joint::Id target, vector<RoadPoint> const & path)
-    : m_target(target), m_path(path)
+  JointEdgeGeom(Joint::Id target, vector<RoadPoint> const & path) : m_target(target), m_path(path)
   {
   }
   Joint::Id GetTarget() const { return m_target; }
   vector<RoadPoint> const & GetPath() const { return m_path; }
-
 private:
   // Target is vertex going to for outgoing edges, vertex going from for ingoing edges.
   Joint::Id m_target = Joint::kInvalidId;
@@ -99,7 +97,10 @@ public:
     Build(jointsSize);
   }
 
-  Joint::Id GetJointIdForTesting(RoadPoint const & ftp) const {return m_roadIndex.GetJointId(ftp); }
+  Joint::Id GetJointIdForTesting(RoadPoint const & ftp) const
+  {
+    return m_roadIndex.GetJointId(ftp);
+  }
 
   /// \brief Disable all edges between |from| and |to| if they are different and adjacent.
   /// \note Despit the fact that |from| and |to| could be connected with several edges
@@ -108,7 +109,6 @@ public:
   /// \note The method doesn't affect routing if |from| and |to| are not adjacent or
   /// if one of them is equal to Joint::kInvalidId.
   void DisableEdge(Joint::Id from, Joint::Id to) { m_blockedEdges.insert(make_pair(from, to)); }
-
   /// \brief Adding a fake oneway feature with a loose end starting from joint |from|.
   /// Geometry for the feature points is taken from |geometrySource|.
   /// If |geometrySource| contains more than two points the feature is created
@@ -124,9 +124,11 @@ public:
 
   /// \brief Adds restriction to navigation graph which says that it's prohibited to go from
   /// |restrictionPoint.m_from| to |restrictionPoint.m_to|.
-  /// \note |from| and |to| could be only begining or ending feature points and they has to belong to
+  /// \note |from| and |to| could be only begining or ending feature points and they has to belong
+  /// to
   /// the same junction with |jointId|. That means features |from| and |to| has to be adjacent.
-  /// \note This method could be called only after |m_roadIndex| have been loaded with the help of Deserialize()
+  /// \note This method could be called only after |m_roadIndex| have been loaded with the help of
+  /// Deserialize()
   /// or Import().
   void ApplyRestrictionNo(CrossingPoint restrictionPoint);
 
@@ -153,7 +155,8 @@ public:
   /// If |from| and |to| could be connected by several feature |connectionPaths|
   /// will have several items.
   /// \note The order on points in items of |connectionPaths| is from |from| to |to|.
-  void GetConnectionPaths(Joint::Id from, Joint::Id to, vector<vector<RoadPoint>> & connectionPaths);
+  void GetConnectionPaths(Joint::Id from, Joint::Id to,
+                          vector<vector<RoadPoint>> & connectionPaths);
 
   /// \brief Fills |shortestConnectionPath| with shortest path from joint |from| to joint |to|.
   /// \note The order on points in |shortestConnectionPath| is from |from| to |to|.
@@ -185,8 +188,8 @@ public:
   static uint32_t const kStartFakeFeatureIds = 1024 * 1024 * 1024;
 
 private:
-  void GetNeighboringEdge(RoadGeometry const & road, RoadPoint rp, bool forward,
-                          bool outgoing, vector<JointEdge> & edges) const;
+  void GetNeighboringEdge(RoadGeometry const & road, RoadPoint rp, bool forward, bool outgoing,
+                          vector<JointEdge> & edges) const;
   void Build(uint32_t jointNumber);
 
   double GetSpeed(RoadPoint ftp);
@@ -198,11 +201,14 @@ private:
   /// will contain one or zero items. Besides the it it's posible to draw map
   /// the (wrong) way |oneStepAside| will contain any number of items.
   void FindOneStepAsideRoadPoint(RoadPoint const & center, Joint::Id centerId,
-                                 vector<JointEdge> const & edges, vector<Joint::Id> & oneStepAside) const;
+                                 vector<JointEdge> const & edges,
+                                 vector<Joint::Id> & oneStepAside) const;
 
   bool ApplyRestrictionPrepareData(CrossingPoint const & restrictionPoint,
-                                   vector<JointEdge> & ingoingEdges, vector<JointEdge> & outgoingEdges,
-                                   Joint::Id & fromFirstOneStepAside, Joint::Id & toFirstOneStepAside);
+                                   vector<JointEdge> & ingoingEdges,
+                                   vector<JointEdge> & outgoingEdges,
+                                   Joint::Id & fromFirstOneStepAside,
+                                   Joint::Id & toFirstOneStepAside);
 
   Geometry m_geometry;
   shared_ptr<EdgeEstimator> m_estimator;
