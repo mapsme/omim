@@ -110,8 +110,8 @@ UNIT_TEST(TriangularGraph_DisableF2)
 UNIT_TEST(TriangularGraph_RestrictionNoF2F1)
 {
   unique_ptr<IndexGraph> graph = BuildTriangularGraph();
-  graph->ApplyRestrictionNo({2 /* feature id */, 1 /* seg id */}, {1, 0},
-                            graph->GetJointIdForTesting({1, 0}));
+  graph->ApplyRestrictionNo(CrossingPoint({2 /* feature id */, 1 /* seg id */}, {1, 0},
+                            graph->GetJointIdForTesting({1, 0})));
 
   IndexGraphStarter starter(*graph, RoadPoint(2, 0) /* start */, RoadPoint(1, 1) /* finish */);
   vector<RoadPoint> const expectedRouteRestrictionF2F1No = {{3 /* feature id */, 0 /* seg id */},
@@ -412,8 +412,8 @@ UNIT_TEST(FlagGraph_RestrictionF0F3No)
 
   // Testing outgoing and ingoing edge number near restriction joint.
   EdgeTest(restictionCenterId, 3 /* expectedIntgoingNum */, 3 /* expectedOutgoingNum */, *graph);
-  graph->ApplyRestrictionNo({0 /* feature id */, 1 /* point id */}, {3 /* feature id */, 0 /* point id */},
-                            restictionCenterId);
+  graph->ApplyRestrictionNo(CrossingPoint({0 /* feature id */, 1 /* point id */},
+                            {3 /* feature id */, 0 /* point id */}, restictionCenterId));
   EdgeTest(restictionCenterId, 2 /* expectedIntgoingNum */, 3 /* expectedOutgoingNum */, *graph);
 
   // Testing route building after adding the restriction.
@@ -428,8 +428,8 @@ UNIT_TEST(FlagGraph_RestrictionF0F1Only)
 {
   unique_ptr<IndexGraph> graph = BuildFlagGraph();
   Joint::Id const restictionCenterId = graph->GetJointIdForTesting({0, 1});
-  graph->ApplyRestrictionOnly({0 /* feature id */, 1 /* point id */}, {1 /* feature id */, 0 /* point id */},
-                              restictionCenterId);
+  graph->ApplyRestrictionOnly(CrossingPoint({0 /* feature id */, 1 /* point id */},
+                              {1 /* feature id */, 0 /* point id */}, restictionCenterId));
 
   IndexGraphStarter starter(*graph, RoadPoint(0, 0) /* start */, RoadPoint(5, 0) /* finish */);
   vector<RoadPoint> const expectedRoute = {{IndexGraph::kStartFakeFeatureIds, 0 /* point id */},
@@ -506,8 +506,8 @@ UNIT_TEST(PosterGraph_RestrictionF0F3No)
  unique_ptr<IndexGraph> graph = BuildPosterGraph();
  Joint::Id const restictionCenterId = graph->GetJointIdForTesting({0, 1});
 
- graph->ApplyRestrictionNo({0 /* feature id */, 1 /* point id */}, {3 /* feature id */, 0 /* point id */},
-                           restictionCenterId);
+ graph->ApplyRestrictionNo(CrossingPoint({0 /* feature id */, 1 /* point id */},
+                                         {3, 0}, restictionCenterId));
 
  IndexGraphStarter starter(*graph, RoadPoint(0, 0) /* start */, RoadPoint(6, 1) /* finish */);
  vector<m2::PointD> const expectedGeom = {{2 /* x */, 0 /* y */},
@@ -521,8 +521,8 @@ UNIT_TEST(PosterGraph_RestrictionF0F1Only)
  unique_ptr<IndexGraph> graph = BuildPosterGraph();
  Joint::Id const restictionCenterId = graph->GetJointIdForTesting({0, 1});
 
- graph->ApplyRestrictionOnly({0 /* feature id */, 1 /* point id */}, {1 /* feature id */, 0 /* point id */},
-                             restictionCenterId);
+ graph->ApplyRestrictionOnly(CrossingPoint({0 /* feature id */, 1 /* point id */},
+                                           {1, 0}, restictionCenterId));
 
  IndexGraphStarter starter(*graph, RoadPoint(0, 0) /* start */, RoadPoint(6, 1) /* finish */);
  vector<m2::PointD> const expectedGeom = {{2 /* x */, 0 /* y */},
