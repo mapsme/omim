@@ -20,7 +20,7 @@ void RoadIndex::Import(vector<Joint> const & joints)
 }
 
 bool RoadIndex::GetAdjacentFtPoints(uint32_t featureIdFrom, uint32_t featureIdTo,
-                                    CrossingPoint & restrictionPoint) const
+                                    CrossingPoint & crossingPoint) const
 {
   auto const fromIt = m_roads.find(featureIdFrom);
   if (fromIt == m_roads.cend())
@@ -40,33 +40,33 @@ bool RoadIndex::GetAdjacentFtPoints(uint32_t featureIdFrom, uint32_t featureIdTo
   // reverse point order.
   if (roadJointIdsFrom.Back() == roadJointIdsTo.Front())
   {
-    restrictionPoint.m_from = RoadPoint(featureIdFrom, roadJointIdsFrom.GetSize() - 1 /* pointId */);
-    restrictionPoint.m_to = RoadPoint(featureIdTo, 0 /* pointId */);
-    restrictionPoint.m_centerId = roadJointIdsFrom.Back();
+    crossingPoint.m_from = RoadPoint(featureIdFrom, roadJointIdsFrom.GetSize() - 1 /* pointId */);
+    crossingPoint.m_to = RoadPoint(featureIdTo, 0 /* pointId */);
+    crossingPoint.m_centerId = roadJointIdsFrom.Back();
     return true;
   }
 
   if (roadJointIdsFrom.Front() == roadJointIdsTo.Back())
   {
-    restrictionPoint.m_from = RoadPoint(featureIdFrom, 0 /* pointId */);
-    restrictionPoint.m_to = RoadPoint(featureIdTo, roadJointIdsTo.GetSize() - 1 /* pointId */);
-    restrictionPoint.m_centerId = roadJointIdsFrom.Front();
+    crossingPoint.m_from = RoadPoint(featureIdFrom, 0 /* pointId */);
+    crossingPoint.m_to = RoadPoint(featureIdTo, roadJointIdsTo.GetSize() - 1 /* pointId */);
+    crossingPoint.m_centerId = roadJointIdsFrom.Front();
     return true;
   }
 
   if (roadJointIdsFrom.Back() == roadJointIdsTo.Back())
   {
-    restrictionPoint.m_from = RoadPoint(featureIdFrom, roadJointIdsFrom.GetSize() - 1 /* pointId */);
-    restrictionPoint.m_to = RoadPoint(featureIdTo, roadJointIdsTo.GetSize() - 1 /* pointId */);
-    restrictionPoint.m_centerId = roadJointIdsFrom.Back();
+    crossingPoint.m_from = RoadPoint(featureIdFrom, roadJointIdsFrom.GetSize() - 1 /* pointId */);
+    crossingPoint.m_to = RoadPoint(featureIdTo, roadJointIdsTo.GetSize() - 1 /* pointId */);
+    crossingPoint.m_centerId = roadJointIdsFrom.Back();
     return true;
   }
 
   if (roadJointIdsFrom.Front() == roadJointIdsTo.Front())
   {
-    restrictionPoint.m_from = RoadPoint(featureIdFrom, 0 /* pointId */);
-    restrictionPoint.m_to = RoadPoint(featureIdTo, 0 /* pointId */);
-    restrictionPoint.m_centerId = roadJointIdsFrom.Front();
+    crossingPoint.m_from = RoadPoint(featureIdFrom, 0 /* pointId */);
+    crossingPoint.m_to = RoadPoint(featureIdTo, 0 /* pointId */);
+    crossingPoint.m_centerId = roadJointIdsFrom.Front();
     return true;
   }
   return false;  // |featureIdFrom| and |featureIdTo| are not adjacent.

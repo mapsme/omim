@@ -167,7 +167,7 @@ public:
   /// its ends fills |restrictionPoint| and return true.
   /// If not returns false.
   bool GetAdjacentFtPoints(uint32_t featureIdFrom, uint32_t featureIdTo,
-                           CrossingPoint & restrictionPoint) const;
+                           CrossingPoint & crossingPoint) const;
 
   void AddJoint(RoadPoint const & rp, Joint::Id jointId)
   {

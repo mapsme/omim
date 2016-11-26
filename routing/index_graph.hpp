@@ -41,10 +41,33 @@ public:
   }
   Joint::Id GetTarget() const { return m_target; }
   vector<RoadPoint> const & GetPath() const { return m_path; }
+
 private:
   // Target is vertex going to for outgoing edges, vertex going from for ingoing edges.
   Joint::Id m_target = Joint::kInvalidId;
   vector<RoadPoint> m_path;
+};
+
+class DirectedEdge final
+{
+public:
+  DirectedEdge() = default;
+  DirectedEdge(Joint::Id from, Joint::Id to) : m_from(from), m_to(to) {}
+
+  bool operator<(DirectedEdge const & rh) const
+  {
+    if (m_from == rh.m_from)
+      return m_to < rh.m_to;
+    return m_from < rh.m_from;
+  }
+
+  bool operator==(DirectedEdge const & rh) const
+  {
+    return m_from == rh.m_from && m_to == rh.m_to;
+  }
+
+  Joint::Id m_from = Joint::kInvalidId;
+  Joint::Id m_to = Joint::kInvalidId;
 };
 
 class IndexGraph final
@@ -106,7 +129,10 @@ public:
   /// if they are adjacent.
   /// \note The method doesn't affect routing if |from| and |to| are not adjacent or
   /// if one of them is equal to Joint::kInvalidId.
-  void DisableEdge(Joint::Id from, Joint::Id to) { m_blockedEdges.insert(make_pair(from, to)); }
+  void DisableEdge(Joint::Id from, Joint::Id to)
+  {
+    m_blockedEdges.insert(DirectedEdge(from, to));
+  }
   /// \brief Adding a fake oneway feature with a loose end starting from joint |from|.
   /// Geometry for the feature points is taken from |geometrySource|.
   /// If |geometrySource| contains more than two points the feature is created
@@ -212,7 +238,7 @@ private:
   RoadIndex m_roadIndex;
   JointIndex m_jointIndex;
 
-  set<pair<Joint::Id, Joint::Id>> m_blockedEdges;
+  set<DirectedEdge> m_blockedEdges;
   uint32_t m_nextFakeFeatureId = kStartFakeFeatureIds;
   // Mapping from fake feature id to fake feature geometry.
   map<uint32_t, RoadGeometry> m_fakeFeatureGeometry;
