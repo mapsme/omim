@@ -33,7 +33,7 @@ bool RoadIndex::GetAdjacentFtPoints(uint32_t featureIdFrom, uint32_t featureIdTo
   RoadJointIds const & roadJointIdsFrom = fromIt->second;
   RoadJointIds const & roadJointIdsTo = toIt->second;
   if (roadJointIdsFrom.GetSize() == 0 || roadJointIdsTo.GetSize() == 0)
-    return false; // No sence in restrictions on features without joints.
+    return false;  // No sence in restrictions on features without joints.
 
   // Note. It's important to check other variant besides a restriction from last segment
   // of featureIdFrom to first segment of featureIdTo since two way features can have
@@ -69,7 +69,7 @@ bool RoadIndex::GetAdjacentFtPoints(uint32_t featureIdFrom, uint32_t featureIdTo
     restrictionPoint.m_centerId = roadJointIdsFrom.Front();
     return true;
   }
-  return false; // |featureIdFrom| and |featureIdTo| are not adjacent.
+  return false;  // |featureIdFrom| and |featureIdTo| are not adjacent.
 }
 
 pair<Joint::Id, uint32_t> RoadIndex::FindNeighbor(RoadPoint const & rp, bool forward) const
@@ -85,8 +85,8 @@ string DebugPrint(CrossingPoint const & crossingPoint)
 {
   ostringstream out;
   out << "CrossingPoint [ m_from: " << DebugPrint(crossingPoint.m_from)
-      << " m_to: " << DebugPrint(crossingPoint.m_to)
-      << " m_centerId: " << crossingPoint.m_centerId << " ]" << endl;
+      << " m_to: " << DebugPrint(crossingPoint.m_to) << " m_centerId: " << crossingPoint.m_centerId
+      << " ]" << endl;
   return out.str();
 }
 }  // namespace routing

@@ -40,7 +40,6 @@ public:
   }
 
   uint32_t GetPointsCount() const { return m_points.size(); }
-
   bool operator==(RoadGeometry const & roadGeometry)
   {
     return m_isOneWay == roadGeometry.m_isOneWay

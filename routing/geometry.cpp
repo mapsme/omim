@@ -100,10 +100,10 @@ unique_ptr<GeometryLoader> GeometryLoader::Create(Index const & index, MwmSet::M
 string DebugPrint(RoadGeometry const & roadGeometry)
 {
   stringstream str;
-  str << ", m_isOneWay: " << roadGeometry.m_isOneWay
+  str << "RoadGeometry [ m_isOneWay: " << roadGeometry.m_isOneWay
       << ", m_speed: " << roadGeometry.m_speed
-      << ", m_points: " << DebugPrint(roadGeometry.m_points)
-      << " ]";
+      << ", m_points: " << DebugPrint(roadGeometry.m_points) << " ]";
+
   return str.str();
 }
 }  // namespace routing

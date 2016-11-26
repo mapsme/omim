@@ -43,16 +43,8 @@ m2::PointD const & IndexGraph::GetPoint(Joint::Id jointId)
   return GetPoint(m_jointIndex.GetPoint(jointId));
 }
 
-double IndexGraph::GetSpeed(RoadPoint ftp)
-{
-  return GetRoad(ftp.GetFeatureId()).GetSpeed();
-}
-
-void IndexGraph::Build(uint32_t jointNumber)
-{
-  m_jointIndex.Build(m_roadIndex, jointNumber);
-}
-
+double IndexGraph::GetSpeed(RoadPoint ftp) { return GetRoad(ftp.GetFeatureId()).GetSpeed(); }
+void IndexGraph::Build(uint32_t jointNumber) { m_jointIndex.Build(m_roadIndex, jointNumber); }
 void IndexGraph::Import(vector<Joint> const & joints)
 {
   CHECK_LESS_OR_EQUAL(joints.size(), numeric_limits<uint32_t>::max(), ());
@@ -108,7 +100,7 @@ void IndexGraph::GetShortestConnectionPath(Joint::Id from, Joint::Id to,
   if (connections.size() == 1)
   {
     GetSingleFeaturePaths(connections[0].first /* from */, connections[0].second /* to */,
-        shortestConnectionPath);
+                          shortestConnectionPath);
     return;
   }
 
@@ -131,12 +123,12 @@ void IndexGraph::GetShortestConnectionPath(Joint::Id from, Joint::Id to,
 
   if (minWeight == numeric_limits<double>::max())
   {
-    MYTHROW(RootException,
-            ("Joint from:", from, "and joint to:", to, "are not connected a feature necessary type."));
+    MYTHROW(RootException, ("Joint from:", from, "and joint to:", to,
+                            "are not connected a feature necessary type."));
   }
 
   GetSingleFeaturePaths(minWeightConnection.first /* from */, minWeightConnection.second /* to */,
-      shortestConnectionPath);
+                        shortestConnectionPath);
 }
 
 void IndexGraph::GetFeatureConnectionPath(Joint::Id from, Joint::Id to, uint32_t featureId,
@@ -189,7 +181,8 @@ void IndexGraph::CreateFakeFeatureGeometry(vector<RoadPoint> const & geometrySou
   geometry = RoadGeometry(true /* oneWay */, averageSpeed, points);
 }
 
-uint32_t IndexGraph::AddFakeLooseEndFeature(Joint::Id from, vector<RoadPoint> const & geometrySource)
+uint32_t IndexGraph::AddFakeLooseEndFeature(Joint::Id from,
+                                            vector<RoadPoint> const & geometrySource)
 {
   CHECK_LESS(from, m_jointIndex.GetNumJoints(), ());
   CHECK_LESS(1, geometrySource.size(), ());
@@ -206,7 +199,8 @@ uint32_t IndexGraph::AddFakeLooseEndFeature(Joint::Id from, vector<RoadPoint> co
   return m_nextFakeFeatureId++;
 }
 
-uint32_t IndexGraph::AddFakeFeature(Joint::Id from, Joint::Id to, vector<RoadPoint> const & geometrySource)
+uint32_t IndexGraph::AddFakeFeature(Joint::Id from, Joint::Id to,
+                                    vector<RoadPoint> const & geometrySource)
 {
   CHECK_LESS(from, m_jointIndex.GetNumJoints(), ());
   CHECK_LESS(to, m_jointIndex.GetNumJoints(), ());
@@ -225,8 +219,7 @@ void IndexGraph::FindOneStepAsideRoadPoint(RoadPoint const & center, Joint::Id c
                                            vector<Joint::Id> & oneStepAside) const
 {
   oneStepAside.clear();
-  m_roadIndex.ForEachJoint(center.GetFeatureId(),
-                           [&](uint32_t /*pointId*/, Joint::Id jointId){
+  m_roadIndex.ForEachJoint(center.GetFeatureId(), [&](uint32_t /*pointId*/, Joint::Id jointId) {
     for (JointEdge const & e : edges)
     {
       if (e.GetTarget() == jointId)
@@ -236,8 +229,10 @@ void IndexGraph::FindOneStepAsideRoadPoint(RoadPoint const & center, Joint::Id c
 }
 
 bool IndexGraph::ApplyRestrictionPrepareData(CrossingPoint const & restrictionPoint,
-                                             vector<JointEdge> & ingoingEdges, vector<JointEdge> & outgoingEdges,
-                                             Joint::Id & fromFirstOneStepAside, Joint::Id & toFirstOneStepAside)
+                                             vector<JointEdge> & ingoingEdges,
+                                             vector<JointEdge> & outgoingEdges,
+                                             Joint::Id & fromFirstOneStepAside,
+                                             Joint::Id & toFirstOneStepAside)
 {
   GetEdgeList(restrictionPoint.m_centerId, false /* isOutgoing */, ingoingEdges);
   vector<Joint::Id> fromOneStepAside;
@@ -313,10 +308,12 @@ void IndexGraph::ApplyRestrictionNo(CrossingPoint restrictionPoint)
     return;
   }
 
-  // Prohibition of moving from one segment to another in case of any number of ingoing and outgoing edges.
+  // Prohibition of moving from one segment to another in case of any number of ingoing and outgoing
+  // edges.
   // The idea is to tranform the navigation graph for every non-degenerate case as it's shown below.
   // At the picture below a restriction for prohibition moving from 4 to O to 3 is shown.
-  // So to implement it it's necessary to remove (disable) an edge 4-O and add features (edges) 4-N-1 and N-2.
+  // So to implement it it's necessary to remove (disable) an edge 4-O and add features (edges)
+  // 4-N-1 and N-2.
   //
   // 1       2       3                     1       2       3
   // *       *       *                     *       *       *
@@ -330,19 +327,21 @@ void IndexGraph::ApplyRestrictionNo(CrossingPoint restrictionPoint)
   // *       *       *                     *       *       *
   // 4       5       7                     4       5       7
 
-  outgoingEdges.erase(remove_if(outgoingEdges.begin(), outgoingEdges.end(),
-                                [&](JointEdge const & e)
-  {
-    // Removing edge N->3 in example above.
-    return e.GetTarget() == toFirstOneStepAside
-    // Preveting form adding in loop below
-    // cycles |fromFirstOneStepAside|->|centerId|->|fromFirstOneStepAside|.
-    // @TODO(bykoianko) e.GetTarget() == fromFirstOneStepAside should be process correctly.
-    // It's a popular case of U-turn prohibition.
-        || e.GetTarget() == fromFirstOneStepAside
-    // Removing edges |centerId|->|centerId|.
-        || e.GetTarget() == centerId;
-  }), outgoingEdges.end());
+  outgoingEdges.erase(
+      remove_if(outgoingEdges.begin(), outgoingEdges.end(),
+                [&](JointEdge const & e) {
+                  // Removing edge N->3 in example above.
+                  return e.GetTarget() == toFirstOneStepAside
+                         // Preveting form adding in loop below
+                         // cycles |fromFirstOneStepAside|->|centerId|->|fromFirstOneStepAside|.
+                         // @TODO(bykoianko) e.GetTarget() == fromFirstOneStepAside should be
+                         // process correctly.
+                         // It's a popular case of U-turn prohibition.
+                         || e.GetTarget() == fromFirstOneStepAside
+                         // Removing edges |centerId|->|centerId|.
+                         || e.GetTarget() == centerId;
+                }),
+      outgoingEdges.end());
 
   my::SortUnique(outgoingEdges, my::LessBy(&JointEdge::GetTarget),
                  my::EqualsBy(&JointEdge::GetTarget));
@@ -352,16 +351,15 @@ void IndexGraph::ApplyRestrictionNo(CrossingPoint restrictionPoint)
   GetOutgoingGeomEdges(outgoingEdges, centerId, outgoingGeomEdges);
 
   vector<RoadPoint> ingoingPath;
-  GetFeatureConnectionPath(fromFirstOneStepAside, centerId,
-                           restrictionPoint.m_from.GetFeatureId(), ingoingPath);
+  GetFeatureConnectionPath(fromFirstOneStepAside, centerId, restrictionPoint.m_from.GetFeatureId(),
+                           ingoingPath);
   JointEdgeGeom ingoingEdge(fromFirstOneStepAside, ingoingPath);
   CHECK(!ingoingEdge.GetPath().empty(), ());
 
   Joint::Id newJoint = Joint::kInvalidId;
   uint32_t ingoingFeatureId = 0;
   uint32_t outgoingFeatureId = 0;
-  for (auto it = outgoingGeomEdges.cbegin();
-       it != outgoingGeomEdges.cend(); ++it)
+  for (auto it = outgoingGeomEdges.cbegin(); it != outgoingGeomEdges.cend(); ++it)
   {
     // Adding features 4->N and N->1 in example above.
     if (it == outgoingGeomEdges.cbegin())
@@ -379,7 +377,8 @@ void IndexGraph::ApplyRestrictionNo(CrossingPoint restrictionPoint)
 
       // Ingoing edge.
       ingoingFeatureId = AddFakeLooseEndFeature(fromFirstOneStepAside, ingoingEdge.GetPath());
-      newJoint = InsertJoint({ingoingFeatureId, static_cast<uint32_t>(ingoingEdge.GetPath().size() - 1)});
+      newJoint =
+          InsertJoint({ingoingFeatureId, static_cast<uint32_t>(ingoingEdge.GetPath().size() - 1)});
       // Outgoing edge.
       outgoingFeatureId = AddFakeFeature(newJoint, it->GetTarget(), it->GetPath());
     }
@@ -448,7 +447,8 @@ void IndexGraph::ApplyRestrictionOnly(CrossingPoint restrictionPoint)
     return;
   }
 
-  // It's possible to move only from one segment to another in case of any number of ingoing and outgoing edges.
+  // It's possible to move only from one segment to another in case of any number of ingoing and
+  // outgoing edges.
   // The idea is to tranform the navigation graph for every non-degenerate case as it's shown below.
   // At the picture below a restriction for permission moving only from 7 to O to 3 is shown.
   // So to implement it it's necessary to remove (disable) an edge 7-O and add feature (edge) 4-N-3.
@@ -467,11 +467,11 @@ void IndexGraph::ApplyRestrictionOnly(CrossingPoint restrictionPoint)
   // 4       5       7                     4       5       7
 
   vector<RoadPoint> ingoingPath;
-  GetFeatureConnectionPath(fromFirstOneStepAside, centerId,
-                           restrictionPoint.m_from.GetFeatureId(), ingoingPath);
+  GetFeatureConnectionPath(fromFirstOneStepAside, centerId, restrictionPoint.m_from.GetFeatureId(),
+                           ingoingPath);
   vector<RoadPoint> outgoingPath;
-  GetFeatureConnectionPath(centerId, toFirstOneStepAside,
-                           restrictionPoint.m_to.GetFeatureId(), outgoingPath);
+  GetFeatureConnectionPath(centerId, toFirstOneStepAside, restrictionPoint.m_to.GetFeatureId(),
+                           outgoingPath);
   CHECK_LESS(0, ingoingPath.size(), ());
   vector<RoadPoint> geometrySource(ingoingPath.cbegin(), ingoingPath.cend() - 1);
   geometrySource.insert(geometrySource.end(), outgoingPath.cbegin(), outgoingPath.cend());
@@ -502,9 +502,9 @@ void IndexGraph::ApplyRestrictions(RestrictionVec const & restrictions)
 
     CrossingPoint restrictionPoint;
     if (!m_roadIndex.GetAdjacentFtPoints(restriction.m_featureIds[0], restriction.m_featureIds[1],
-        restrictionPoint))
+                                         restrictionPoint))
     {
-      continue; // Restriction is not contain adjacent features.
+      continue;  // Restriction is not contain adjacent features.
     }
 
     try
@@ -515,17 +515,16 @@ void IndexGraph::ApplyRestrictions(RestrictionVec const & restrictions)
       case Restriction::Type::Only: ApplyRestrictionOnly(restrictionPoint); continue;
       }
     }
-    catch(RootException const & e)
+    catch (RootException const & e)
     {
       LOG(LERROR, ("Exception while applying restrictions. Message:", e.Msg()));
     }
   }
 
-  LOG(LINFO, ("restrictionNoCounter:", restrictionNoCounter,
-              "appliedRestrictionNoCounter:", appliedRestrictionNoCounter,
-              "restrictionNoDataNotPreparedCounter", restrictionNoDataNotPreparedCounter,
-              "foundRemovedRestrictionNoCounter", foundRemovedRestrictionNoCounter,
-              "restrictionOnlyCounter", restrictionOnlyCounter,
+  LOG(LINFO, ("restrictionNoCounter:", restrictionNoCounter, "appliedRestrictionNoCounter:",
+              appliedRestrictionNoCounter, "restrictionNoDataNotPreparedCounter",
+              restrictionNoDataNotPreparedCounter, "foundRemovedRestrictionNoCounter",
+              foundRemovedRestrictionNoCounter, "restrictionOnlyCounter", restrictionOnlyCounter,
               "appliedRestrictionOnlyCounter", appliedRestrictionOnlyCounter,
               "restrictionOnlyDataNotPreparedCounter", restrictionOnlyDataNotPreparedCounter,
               "foundRemovedRestrictionOnlyCounter", foundRemovedRestrictionOnlyCounter));
@@ -574,8 +573,8 @@ void IndexGraph::GetNeighboringEdge(RoadGeometry const & road, RoadPoint const &
     return;
 
   Joint::Id const rbJointId = m_roadIndex.GetJointId(rp);
-  auto const edge = outgoing ? make_pair(rbJointId, neighbor.first)
-                             : make_pair(neighbor.first, rbJointId);
+  auto const edge =
+      outgoing ? make_pair(rbJointId, neighbor.first) : make_pair(neighbor.first, rbJointId);
   if (m_blockedEdges.find(edge) != m_blockedEdges.end())
     return;
 
