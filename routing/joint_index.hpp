@@ -5,6 +5,7 @@
 #include "routing/road_point.hpp"
 
 #include "base/assert.hpp"
+
 #include "std/utility.hpp"
 #include "std/vector.hpp"
 
