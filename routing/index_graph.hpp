@@ -79,10 +79,12 @@ public:
   // Creates edge for points in same feature.
   void GetDirectedEdge(uint32_t featureId, uint32_t pointFrom, uint32_t pointTo, Joint::Id target,
                        bool forward, vector<JointEdge> & edges);
-  void GetNeighboringEdges(RoadPoint const & rp, bool isOutgoing, vector<JointEdge> & edges);
+  void GetNeighboringEdges(RoadPoint const & rp, bool isOutgoing, bool graphWithoutRestrictions,
+                           vector<JointEdge> & edges);
 
   // Put outgoing (or ingoing) egdes for jointId to the 'edges' vector.
-  void GetEdgeList(Joint::Id jointId, bool isOutgoing, vector<JointEdge> & edges);
+  void GetEdgeList(Joint::Id jointId, bool isOutgoing, bool graphWithoutRestrictions,
+                   vector<JointEdge> & edges);
   Joint::Id GetJointId(RoadPoint const & rp) const { return m_roadIndex.GetJointId(rp); }
   m2::PointD const & GetPoint(Joint::Id jointId);
 
@@ -152,16 +154,18 @@ public:
   /// to
   /// the same junction with |jointId|. That means features |from| and |to| has to be adjacent.
   /// \note This method could be called only after |m_roadIndex| have been loaded with the help of
-  /// Deserialize()
-  /// or Import().
-  void ApplyRestrictionNo(CrossingPoint restrictionPoint);
+  /// Deserialize() or Import().
+  void ApplyRestrictionNo(RestrictionPoint const & restrictionPoint);
 
   /// \brief Adds restriction to navigation graph which says that from feature
   /// |restrictionPoint.m_from| it's permitted only
   /// to go to feature |restrictionPoint.m_to|. All other ways starting form
   /// |restrictionPoint.m_form| is prohibited.
   /// \note All notes which are valid for ApplyRestrictionNo() is valid for ApplyRestrictionOnly().
-  void ApplyRestrictionOnly(CrossingPoint restrictionPoint);
+  void ApplyRestrictionOnly(RestrictionPoint const & restrictionPoint);
+
+  void ApplyRestrictionOnlyRealFeatures(RestrictionPoint const & restrictionPoint);
+  void ApplyRestrictionNoRealFeatures(RestrictionPoint const & restrictionPoint);
 
   /// \brief Add restrictions in |restrictions| to |m_ftPointIndex|.
   void ApplyRestrictions(RestrictionVec const & restrictions);
@@ -207,13 +211,11 @@ public:
 
   bool IsFakeFeature(uint32_t featureId) const { return featureId >= kStartFakeFeatureIds; }
 
-  CrossingPoint LookUpMovedCrossing(CrossingPoint const & crossing);
-
   static uint32_t const kStartFakeFeatureIds = 1024 * 1024 * 1024;
 
 private:
-  void GetNeighboringEdge(RoadGeometry const & road, RoadPoint const & rp, bool forward,
-                          bool outgoing, vector<JointEdge> & edges) const;
+  void GetNeighboringEdge(RoadGeometry const & road, RoadPoint const & rp, bool forward, bool outgoing,
+                          bool graphWithoutRestrictions, vector<JointEdge> & edges) const;
 
   double GetSpeed(RoadPoint ftp);
 
@@ -227,7 +229,7 @@ private:
                                  vector<JointEdge> const & edges,
                                  vector<Joint::Id> & oneStepAside) const;
 
-  bool ApplyRestrictionPrepareData(CrossingPoint const & restrictionPoint,
+  bool ApplyRestrictionPrepareData(RestrictionPoint const & restrictionPoint,
                                    vector<JointEdge> & ingoingEdges,
                                    vector<JointEdge> & outgoingEdges,
                                    Joint::Id & fromFirstOneStepAside,
@@ -242,12 +244,26 @@ private:
   uint32_t m_nextFakeFeatureId = kStartFakeFeatureIds;
   // Mapping from fake feature id to fake feature geometry.
   map<uint32_t, RoadGeometry> m_fakeFeatureGeometry;
-  // Adding restrictions leads to disabling some nodes and edges and adding others.
+  // Adding restrictions leads to disabling some edges and adding others.
   // According to graph trasformation implemented in ApplyRestrictionNo() and
-  // ApplyRestrictionOnly() a sequence (edge, node, edge) could:
-  // * disappears at all
-  // * be transformed to other sequence (edge1, node1, edge1). If so the mapping
+  // ApplyRestrictionOnly() every |DirectedEdge| could (a pair of joints):
+  // * disappears at all (it's added in |m_blockedEdges| in that case)
+  // * be transformed to another DirectedEdge. If so the mapping
   //   is kept in |m_movedCrossings|.
-  map<CrossingPoint, CrossingPoint> m_movedCrossings;
+  // * be copied to another DirectedEdge. If so the mapping
+  //   form a directedEdge1 to (directedEdge1, directedEdge2) is kept in |m_edgeMapping|.
+  // See ApplyRestriction* method for a detailed comments.
+  //
+  // If it's necessary to apply a restriction with some RestrictionPoint with a real features id
+  // it's needed to perform the followig steps:
+  // * Any restriction(RestrictionPoint) composed of two edge(DirectedEdge). So it's necessary
+  //   to check if there's one of the edge in |m_edgeMapping|.
+  // * Neither of them there's in |m_edgeMapping| the restriction should be applied to the graph
+  //   as is.
+  // * If the first of them there's in |m_edgeMapping| all leaves of the first edge
+  //   in the forest |m_edgeMapping| should be found for it. And all restriction
+  //   starting from the leaves edge and finishing the second edge of the RestrictionPoint
+  //   should be applied.
+  map<DirectedEdge, vector<DirectedEdge>> m_edgeMapping;
 };
 }  // namespace routing

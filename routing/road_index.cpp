@@ -20,7 +20,7 @@ void RoadIndex::Import(vector<Joint> const & joints)
 }
 
 bool RoadIndex::GetAdjacentFtPoints(uint32_t featureIdFrom, uint32_t featureIdTo,
-                                    CrossingPoint & crossingPoint) const
+                                    RestrictionPoint & crossingPoint) const
 {
   auto const fromIt = m_roads.find(featureIdFrom);
   if (fromIt == m_roads.cend())
@@ -81,7 +81,7 @@ pair<Joint::Id, uint32_t> RoadIndex::FindNeighbor(RoadPoint const & rp, bool for
   return it->second.FindNeighbor(rp.GetPointId(), forward);
 }
 
-string DebugPrint(CrossingPoint const & crossingPoint)
+string DebugPrint(RestrictionPoint const & crossingPoint)
 {
   ostringstream out;
   out << "CrossingPoint [ m_from: " << DebugPrint(crossingPoint.m_from)

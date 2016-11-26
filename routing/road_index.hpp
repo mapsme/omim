@@ -11,11 +11,11 @@
 
 namespace routing
 {
-class CrossingPoint final
+class RestrictionPoint final
 {
 public:
-  CrossingPoint() = default;
-  CrossingPoint(RoadPoint const & from, RoadPoint const & to, Joint::Id centerId)
+  RestrictionPoint() = default;
+  RestrictionPoint(RoadPoint const & from, RoadPoint const & to, Joint::Id centerId)
     : m_from(from), m_to(to), m_centerId(centerId)
   {
   }
@@ -24,7 +24,7 @@ public:
   RoadPoint m_to;
   Joint::Id m_centerId = Joint::kInvalidId;
 
-  bool operator<(CrossingPoint const & rhs) const
+  bool operator<(RestrictionPoint const & rhs) const
   {
     if (m_from != rhs.m_from)
       return m_from < rhs.m_from;
@@ -35,9 +35,9 @@ public:
     return m_centerId < rhs.m_centerId;
   }
 
-  bool operator!=(CrossingPoint const & rhs) const { return *this < rhs || rhs < *this; }
+  bool operator!=(RestrictionPoint const & rhs) const { return *this < rhs || rhs < *this; }
 
-  bool operator==(CrossingPoint const & rhs) const { return !(*this != rhs); }
+  bool operator==(RestrictionPoint const & rhs) const { return !(*this != rhs); }
 };
 
 class RoadJointIds final
@@ -167,7 +167,7 @@ public:
   /// its ends fills |restrictionPoint| and return true.
   /// If not returns false.
   bool GetAdjacentFtPoints(uint32_t featureIdFrom, uint32_t featureIdTo,
-                           CrossingPoint & crossingPoint) const;
+                           RestrictionPoint & restrictionPoint) const;
 
   void AddJoint(RoadPoint const & rp, Joint::Id jointId)
   {
@@ -226,5 +226,5 @@ private:
   unordered_map<uint32_t, RoadJointIds> m_roads;
 };
 
-string DebugPrint(CrossingPoint const & crossingPoint);
+string DebugPrint(RestrictionPoint const & restrictionPoint);
 }  // namespace routing

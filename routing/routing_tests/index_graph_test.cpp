@@ -47,7 +47,7 @@ void TestEdges(IndexGraph & graph, Joint::Id jointId, vector<Joint::Id> const & 
                bool forward)
 {
   vector<JointEdge> edges;
-  graph.GetEdgeList(jointId, forward, edges);
+  graph.GetEdgeList(jointId, forward, false /* graphWithoutRestrictions */, edges);
 
   vector<Joint::Id> targets;
   for (JointEdge const & edge : edges)
