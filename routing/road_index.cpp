@@ -40,32 +40,32 @@ bool RoadIndex::GetAdjacentFtPoints(uint32_t featureIdFrom, uint32_t featureIdTo
   // reverse point order.
   if (roadJointIdsFrom.Back() == roadJointIdsTo.Front())
   {
-    restrictionPoint.m_from = RoadPoint(featureIdFrom, roadJointIdsFrom.GetSize() - 1);
-    restrictionPoint.m_to = RoadPoint(featureIdTo, 0);
+    restrictionPoint.m_from = RoadPoint(featureIdFrom, roadJointIdsFrom.GetSize() - 1 /* pointId */);
+    restrictionPoint.m_to = RoadPoint(featureIdTo, 0 /* pointId */);
     restrictionPoint.m_centerId = roadJointIdsFrom.Back();
     return true;
   }
 
   if (roadJointIdsFrom.Front() == roadJointIdsTo.Back())
   {
-    restrictionPoint.m_from = RoadPoint(featureIdFrom, 0);
-    restrictionPoint.m_to = RoadPoint(featureIdTo, roadJointIdsTo.GetSize() - 1);
+    restrictionPoint.m_from = RoadPoint(featureIdFrom, 0 /* pointId */);
+    restrictionPoint.m_to = RoadPoint(featureIdTo, roadJointIdsTo.GetSize() - 1 /* pointId */);
     restrictionPoint.m_centerId = roadJointIdsFrom.Front();
     return true;
   }
 
   if (roadJointIdsFrom.Back() == roadJointIdsTo.Back())
   {
-    restrictionPoint.m_from = RoadPoint(featureIdFrom, roadJointIdsFrom.GetSize() - 1);
-    restrictionPoint.m_to = RoadPoint(featureIdTo, roadJointIdsTo.GetSize() - 1);
+    restrictionPoint.m_from = RoadPoint(featureIdFrom, roadJointIdsFrom.GetSize() - 1 /* pointId */);
+    restrictionPoint.m_to = RoadPoint(featureIdTo, roadJointIdsTo.GetSize() - 1 /* pointId */);
     restrictionPoint.m_centerId = roadJointIdsFrom.Back();
     return true;
   }
 
   if (roadJointIdsFrom.Front() == roadJointIdsTo.Front())
   {
-    restrictionPoint.m_from = RoadPoint(featureIdFrom, 0);
-    restrictionPoint.m_to = RoadPoint(featureIdTo, 0);
+    restrictionPoint.m_from = RoadPoint(featureIdFrom, 0 /* pointId */);
+    restrictionPoint.m_to = RoadPoint(featureIdTo, 0 /* pointId */);
     restrictionPoint.m_centerId = roadJointIdsFrom.Front();
     return true;
   }

@@ -219,7 +219,7 @@ void IndexGraph::FindOneStepAsideRoadPoint(RoadPoint const & center, Joint::Id c
                                            vector<Joint::Id> & oneStepAside) const
 {
   oneStepAside.clear();
-  m_roadIndex.ForEachJoint(center.GetFeatureId(), [&](uint32_t /*pointId*/, Joint::Id jointId) {
+  m_roadIndex.ForEachJoint(center.GetFeatureId(), [&](uint32_t /* pointId */, Joint::Id jointId) {
     for (JointEdge const & e : edges)
     {
       if (e.GetTarget() == jointId)
@@ -336,7 +336,7 @@ void IndexGraph::ApplyRestrictionNo(CrossingPoint restrictionPoint)
                          // cycles |fromFirstOneStepAside|->|centerId|->|fromFirstOneStepAside|.
                          // @TODO(bykoianko) e.GetTarget() == fromFirstOneStepAside should be
                          // process correctly.
-                         // It's a popular case of U-turn prohibition.
+                         // It's a common case of U-turn prohibition.
                          || e.GetTarget() == fromFirstOneStepAside
                          // Removing edges |centerId|->|centerId|.
                          || e.GetTarget() == centerId;

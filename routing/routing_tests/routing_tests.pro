@@ -33,6 +33,7 @@ SOURCES += \
   nearest_edge_finder_tests.cpp \
   online_cross_fetcher_test.cpp \
   osrm_router_test.cpp \
+  restriction_test.cpp \
   road_graph_builder.cpp \
   road_graph_nearest_edges_test.cpp \
   route_tests.cpp \
@@ -42,7 +43,6 @@ SOURCES += \
   turns_sound_test.cpp \
   turns_tts_text_tests.cpp \
   vehicle_model_test.cpp \
-  restriction_test.cpp \
 
 HEADERS += \
   index_graph_tools.hpp \
