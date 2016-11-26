@@ -36,19 +36,17 @@ class JointEdgeGeom final
 {
 public:
   JointEdgeGeom() = default;
-  JointEdgeGeom(Joint::Id target, vector<RoadPoint> const & shortestPath)
-    : m_target(target), m_shortestPath(shortestPath)
+  JointEdgeGeom(Joint::Id target, vector<RoadPoint> const & path)
+    : m_target(target), m_path(path)
   {
   }
   Joint::Id GetTarget() const { return m_target; }
-  vector<RoadPoint> const & GetShortestPath() const { return m_shortestPath; }
+  vector<RoadPoint> const & GetPath() const { return m_path; }
 
 private:
   // Target is vertex going to for outgoing edges, vertex going from for ingoing edges.
   Joint::Id m_target = Joint::kInvalidId;
-  // Two joints can be connected with several path. But in case of find shortest routes
-  // only the shortest one should be considered.
-  vector<RoadPoint> m_shortestPath;
+  vector<RoadPoint> m_path;
 };
 
 class IndexGraph final
@@ -109,6 +107,13 @@ public:
   /// if one of them is equal to Joint::kInvalidId.
   void DisableEdge(Joint::Id from, Joint::Id to) { m_blockedEdges.insert(make_pair(from, to)); }
 
+  /// \brief Adding a fake oneway feature with a loose end starting from joint |from|.
+  /// Geometry for the feature points is taken from |geometrySource|.
+  /// If |geometrySource| contains more than two points the feature is created
+  /// with intermediate (not joint) point(s).
+  /// \returns feature id which was added.
+  uint32_t AddFakeLooseEndFeature(Joint::Id from, vector<RoadPoint> const & geometrySource);
+
   /// \brief Connects joint |from| and |to| with a fake oneway feature. Geometry for the feature
   /// points is taken from |geometrySource|. If |geometrySource| contains more than
   /// two points the feature is created with intermediate (not joint) point(s).
@@ -116,18 +121,19 @@ public:
   uint32_t AddFakeFeature(Joint::Id from, Joint::Id to, vector<RoadPoint> const & geometrySource);
 
   /// \brief Adds restriction to navigation graph which says that it's prohibited to go from
-  /// |from| to |to|.
+  /// |restrictionPoint.m_from| to |restrictionPoint.m_to|.
   /// \note |from| and |to| could be only begining or ending feature points and they has to belong to
   /// the same junction with |jointId|. That means features |from| and |to| has to be adjacent.
-  /// \note This method could be called only after |m_roads| have been loaded with the help of Deserialize()
+  /// \note This method could be called only after |m_roadIndex| have been loaded with the help of Deserialize()
   /// or Import().
-  /// \note This method adds fake features with ids which follows immediately after real feature ids.
-  void ApplyRestrictionNo(RoadPoint const & from, RoadPoint const & to, Joint::Id jointId);
+  void ApplyRestrictionNo(CrossingPoint restrictionPoint);
 
-  /// \brief Adds restriction to navigation graph which says that from feature |from| it's permitted only
-  /// to go to feature |to| all other ways starting form |form| is prohibited.
+  /// \brief Adds restriction to navigation graph which says that from feature
+  /// |restrictionPoint.m_from| it's permitted only
+  /// to go to feature |restrictionPoint.m_to|. All other ways starting form
+  /// |restrictionPoint.m_form| is prohibited.
   /// \note All notes which are valid for ApplyRestrictionNo() is valid for ApplyRestrictionOnly().
-  void ApplyRestrictionOnly(RoadPoint const & from, RoadPoint const & to, Joint::Id jointId);
+  void ApplyRestrictionOnly(CrossingPoint restrictionPoint);
 
   /// \brief Add restrictions in |restrictions| to |m_ftPointIndex|.
   void ApplyRestrictions(RestrictionVec const & restrictions);
@@ -172,6 +178,8 @@ public:
 
   bool IsFakeFeature(uint32_t featureId) const { return featureId >= kStartFakeFeatureIds; }
 
+  CrossingPoint LookUpMovedCrossing(CrossingPoint const & crossing);
+
   static uint32_t const kStartFakeFeatureIds = 1024 * 1024 * 1024;
 
 private:
@@ -189,7 +197,7 @@ private:
   void FindOneStepAsideRoadPoint(RoadPoint const & center, Joint::Id centerId,
                                  vector<JointEdge> const & edges, vector<Joint::Id> & oneStepAside) const;
 
-  bool ApplyRestrictionPrepareData(RoadPoint const & from, RoadPoint const & to, Joint::Id centerId,
+  bool ApplyRestrictionPrepareData(CrossingPoint const & restrictionPoint,
                                    vector<JointEdge> & ingoingEdges, vector<JointEdge> & outgoingEdges,
                                    Joint::Id & fromFirstOneStepAside, Joint::Id & toFirstOneStepAside);
 
@@ -202,5 +210,12 @@ private:
   uint32_t m_nextFakeFeatureId = kStartFakeFeatureIds;
   // Mapping from fake feature id to fake feature geometry.
   map<uint32_t, RoadGeometry> m_fakeFeatureGeometry;
+  // Adding restrictions leads to disabling some nodes and edges and adding others.
+  // According to graph trasformation implemented in ApplyRestrictionNo() and
+  // ApplyRestrictionOnly() a sequence (edge, node, edge) could:
+  // * disappears at all
+  // * be transformed to other sequence (edge1, node1, edge1). If so the mapping
+  //   is kept in |m_movedCrossings|.
+  map<CrossingPoint, CrossingPoint> m_movedCrossings;
 };
 }  // namespace routing

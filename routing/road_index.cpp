@@ -1,6 +1,7 @@
 #include "routing/road_index.hpp"
 
 #include "routing/routing_exceptions.hpp"
+#include "routing/road_point.hpp"
 
 namespace routing
 {
@@ -18,8 +19,8 @@ void RoadIndex::Import(vector<Joint> const & joints)
   }
 }
 
-bool RoadIndex::GetAdjacentFtPoints(uint32_t featureIdFrom, uint32_t featureIdTo, RoadPoint & from,
-                                    RoadPoint & to, Joint::Id & jointId) const
+bool RoadIndex::GetAdjacentFtPoints(uint32_t featureIdFrom, uint32_t featureIdTo,
+                                    CrossingPoint & restrictionPoint) const
 {
   auto const fromIt = m_roads.find(featureIdFrom);
   if (fromIt == m_roads.cend())
@@ -39,33 +40,33 @@ bool RoadIndex::GetAdjacentFtPoints(uint32_t featureIdFrom, uint32_t featureIdTo
   // reverse point order.
   if (roadJointIdsFrom.Back() == roadJointIdsTo.Front())
   {
-    from = RoadPoint(featureIdFrom, roadJointIdsFrom.GetSize() - 1);
-    to = RoadPoint(featureIdTo, 0);
-    jointId = roadJointIdsFrom.Back();
+    restrictionPoint.m_from = RoadPoint(featureIdFrom, roadJointIdsFrom.GetSize() - 1);
+    restrictionPoint.m_to = RoadPoint(featureIdTo, 0);
+    restrictionPoint.m_centerId = roadJointIdsFrom.Back();
     return true;
   }
 
   if (roadJointIdsFrom.Front() == roadJointIdsTo.Back())
   {
-    from = RoadPoint(featureIdFrom, 0);
-    to = RoadPoint(featureIdTo, roadJointIdsTo.GetSize() - 1);
-    jointId = roadJointIdsFrom.Front();
+    restrictionPoint.m_from = RoadPoint(featureIdFrom, 0);
+    restrictionPoint.m_to = RoadPoint(featureIdTo, roadJointIdsTo.GetSize() - 1);
+    restrictionPoint.m_centerId = roadJointIdsFrom.Front();
     return true;
   }
 
   if (roadJointIdsFrom.Back() == roadJointIdsTo.Back())
   {
-    from = RoadPoint(featureIdFrom, roadJointIdsFrom.GetSize() - 1);
-    to = RoadPoint(featureIdTo, roadJointIdsTo.GetSize() - 1);
-    jointId = roadJointIdsFrom.Back();
+    restrictionPoint.m_from = RoadPoint(featureIdFrom, roadJointIdsFrom.GetSize() - 1);
+    restrictionPoint.m_to = RoadPoint(featureIdTo, roadJointIdsTo.GetSize() - 1);
+    restrictionPoint.m_centerId = roadJointIdsFrom.Back();
     return true;
   }
 
   if (roadJointIdsFrom.Front() == roadJointIdsTo.Front())
   {
-    from = RoadPoint(featureIdFrom, 0);
-    to = RoadPoint(featureIdTo, 0);
-    jointId = roadJointIdsFrom.Front();
+    restrictionPoint.m_from = RoadPoint(featureIdFrom, 0);
+    restrictionPoint.m_to = RoadPoint(featureIdTo, 0);
+    restrictionPoint.m_centerId = roadJointIdsFrom.Front();
     return true;
   }
   return false; // |featureIdFrom| and |featureIdTo| are not adjacent.
@@ -78,5 +79,14 @@ pair<Joint::Id, uint32_t> RoadIndex::FindNeighbor(RoadPoint const & rp, bool for
     MYTHROW(RoutingException, ("RoadIndex doesn't contains feature", rp.GetFeatureId()));
 
   return it->second.FindNeighbor(rp.GetPointId(), forward);
+}
+
+string DebugPrint(CrossingPoint const & crossingPoint)
+{
+  ostringstream out;
+  out << "CrossingPoint [ m_from: " << DebugPrint(crossingPoint.m_from)
+      << " m_to: " << DebugPrint(crossingPoint.m_to)
+      << " m_centerId: " << crossingPoint.m_centerId << " ]" << endl;
+  return out.str();
 }
 }  // namespace routing
