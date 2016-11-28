@@ -91,9 +91,7 @@ get_filename_component(OMIM_ROOT . ABSOLUTE)
 
 include_directories(
   ${CMAKE_HOME_DIRECTORY}
-  ${Qt5Core_LIBRARIES}
   ${Qt5Core_INCLUDE_DIRS}
-  ${Qt5Network_LIBRARIES}
   ${Qt5Network_INCLUDE_DIRS}
   ${CMAKE_HOME_DIRECTORY}/3party/boost
 )
