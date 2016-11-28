@@ -11,10 +11,16 @@
 
 namespace routing
 {
+/// \brief this class describe a two link restriction which is staring on one feature
+/// and ending on another one.
 class RestrictionPoint final
 {
 public:
   RestrictionPoint() = default;
+
+  /// \param from feature id and point id of starting restriction segment.
+  /// \param to feature id and point id of ending restriction segment.
+  /// \param centerId joint id of the restriction point.
   RestrictionPoint(RoadPoint const & from, RoadPoint const & to, Joint::Id centerId)
     : m_from(from), m_to(to), m_centerId(centerId)
   {
@@ -35,9 +41,9 @@ public:
     return m_centerId < rhs.m_centerId;
   }
 
-  bool operator!=(RestrictionPoint const & rhs) const { return *this < rhs || rhs < *this; }
+  bool operator==(RestrictionPoint const & rhs) const { return !(*this < rhs || rhs < *this); }
 
-  bool operator==(RestrictionPoint const & rhs) const { return !(*this != rhs); }
+  bool operator!=(RestrictionPoint const & rhs) const { return !(*this == rhs); }
 };
 
 class RoadJointIds final
@@ -131,8 +137,8 @@ public:
 
   size_t GetSize() const { return m_jointIds.size(); }
 
-  template <class TSink>
-  void Serialize(TSink & sink) const
+  template <class Sink>
+  void Serialize(Sink & sink) const
   {
     WriteToSink(sink, static_cast<Joint::Id>(m_jointIds.size()));
     for (Joint::Id jointId : m_jointIds)
@@ -164,10 +170,10 @@ public:
   void Import(vector<Joint> const & joints);
 
   /// \brief if |featureIdFrom| and |featureIdTo| are adjacent and if they are connected by
-  /// its ends fills |restrictionPoint| and return true.
-  /// If not returns false.
-  bool GetAdjacentFtPoints(uint32_t featureIdFrom, uint32_t featureIdTo,
-                           RestrictionPoint & restrictionPoint) const;
+  /// ends fills |restrictionPoint| and return true.
+  /// Otherwise returns false.
+  bool GetAdjacentFtPoint(uint32_t featureIdFrom, uint32_t featureIdTo,
+                          RestrictionPoint & restrictionPoint) const;
 
   void AddJoint(RoadPoint const & rp, Joint::Id jointId)
   {
@@ -215,10 +221,8 @@ public:
   void ForEachJoint(uint32_t featureId, F && f) const
   {
     auto const it = m_roads.find(featureId);
-    if (it == m_roads.cend())
-      return;
-
-    it->second.ForEachJoint(f);
+    if (it != m_roads.cend())
+      it->second.ForEachJoint(forward<F>(f));
   }
 
 private:

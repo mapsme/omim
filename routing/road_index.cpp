@@ -19,8 +19,8 @@ void RoadIndex::Import(vector<Joint> const & joints)
   }
 }
 
-bool RoadIndex::GetAdjacentFtPoints(uint32_t featureIdFrom, uint32_t featureIdTo,
-                                    RestrictionPoint & crossingPoint) const
+bool RoadIndex::GetAdjacentFtPoint(uint32_t featureIdFrom, uint32_t featureIdTo,
+                                   RestrictionPoint & crossingPoint) const
 {
   auto const fromIt = m_roads.find(featureIdFrom);
   if (fromIt == m_roads.cend())

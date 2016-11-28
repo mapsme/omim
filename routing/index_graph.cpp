@@ -1,4 +1,6 @@
-#include "index_graph.hpp"
+#include "routing/index_graph.hpp"
+
+#include "routing/routing_exceptions.hpp"
 
 #include "base/assert.hpp"
 #include "base/exception.hpp"
@@ -22,11 +24,11 @@ void IndexGraph::GetEdgeList(Joint::Id jointId, bool isOutgoing, bool graphWitho
   });
 }
 
-m2::PointD const & IndexGraph::GetPoint(RoadPoint const & ftp)
+m2::PointD const & IndexGraph::GetPoint(RoadPoint const & rp)
 {
-  RoadGeometry const & road = GetRoad(ftp.GetFeatureId());
-  CHECK_LESS(ftp.GetPointId(), road.GetPointsCount(), ());
-  return road.GetPoint(ftp.GetPointId());
+  RoadGeometry const & road = GetRoad(rp.GetFeatureId());
+  CHECK_LESS(rp.GetPointId(), road.GetPointsCount(), ());
+  return road.GetPoint(rp.GetPointId());
 }
 
 m2::PointD const & IndexGraph::GetPoint(Joint::Id jointId)
@@ -34,9 +36,9 @@ m2::PointD const & IndexGraph::GetPoint(Joint::Id jointId)
   return GetPoint(m_jointIndex.GetPoint(jointId));
 }
 
-double IndexGraph::GetSpeed(RoadPoint ftp) { return GetRoad(ftp.GetFeatureId()).GetSpeed(); }
+double IndexGraph::GetSpeed(RoadPoint const & rp) { return GetRoad(rp.GetFeatureId()).GetSpeed(); }
 
-void IndexGraph::Build(uint32_t jointNumber) { m_jointIndex.Build(m_roadIndex, jointNumber); }
+void IndexGraph::Build(uint32_t numJoints) { m_jointIndex.Build(m_roadIndex, numJoints); }
 
 void IndexGraph::Import(vector<Joint> const & joints)
 {
@@ -45,21 +47,16 @@ void IndexGraph::Import(vector<Joint> const & joints)
   Build(static_cast<uint32_t>(joints.size()));
 }
 
-void IndexGraph::GetSingleFeaturePaths(RoadPoint from, RoadPoint to,
-                                       vector<RoadPoint> & singleFeaturePath)
+void IndexGraph::GetSingleFeaturePath(RoadPoint from, RoadPoint to,
+                                      vector<RoadPoint> & singleFeaturePath)
 {
   CHECK_EQUAL(from.GetFeatureId(), to.GetFeatureId(), ());
-  singleFeaturePath.clear();
-  if (from == to)
-  {
-    singleFeaturePath.push_back(from);
-    return;
-  }
 
-  int shift = to.GetPointId() > from.GetPointId() ? 1 : -1;
-  for (int i = from.GetPointId(); i != to.GetPointId(); i += shift)
+  singleFeaturePath.clear();
+  int const shift = to.GetPointId() > from.GetPointId() ? 1 : -1;
+  for (uint32_t i = from.GetPointId(); i != to.GetPointId(); i += shift)
     singleFeaturePath.emplace_back(from.GetFeatureId(), i);
-  singleFeaturePath.emplace_back(from.GetFeatureId(), to.GetPointId());
+  singleFeaturePath.push_back(to);
 }
 
 void IndexGraph::GetConnectionPaths(Joint::Id from, Joint::Id to,
@@ -68,38 +65,41 @@ void IndexGraph::GetConnectionPaths(Joint::Id from, Joint::Id to,
   CHECK_NOT_EQUAL(from, Joint::kInvalidId, ());
   CHECK_NOT_EQUAL(to, Joint::kInvalidId, ());
 
+  connectionPaths.clear();
   vector<pair<RoadPoint, RoadPoint>> connections;
   m_jointIndex.FindPointsWithCommonFeature(from, to, connections);
-  CHECK_LESS(0, connections.size(), ());
+  if (connections.empty())
+    return;
 
-  connectionPaths.clear();
-  for (pair<RoadPoint, RoadPoint> const & c : connections)
+  connectionPaths.reserve(connections.size());
+  for (auto const & c : connections)
   {
-    vector<RoadPoint> roadPoints;
-    GetSingleFeaturePaths(c.first /* from */, c.second /* to */, roadPoints);
-    connectionPaths.push_back(move(roadPoints));
+    connectionPaths.emplace_back();
+    GetSingleFeaturePath(c.first /* from */, c.second /* to */, connectionPaths.back());
   }
 }
 
-void IndexGraph::GetShortestConnectionPath(Joint::Id from, Joint::Id to,
-                                           vector<RoadPoint> & shortestConnectionPath)
+void IndexGraph::GetShortestConnectionPath(Joint::Id from, Joint::Id to, vector<RoadPoint> & path)
 {
+  double constexpr kInfinity = numeric_limits<double>::max();
   vector<pair<RoadPoint, RoadPoint>> connections;
   m_jointIndex.FindPointsWithCommonFeature(from, to, connections);
-  CHECK_LESS(0, connections.size(), ());
+  path.clear();
+  if (connections.empty())
+    return;
 
   // Note. The case when size of connections is zero is the most common case. If not,
-  // it's necessary to perform a costy calls below.
+  // it's necessary to perform a expensive calls below.
   if (connections.size() == 1)
   {
-    GetSingleFeaturePaths(connections[0].first /* from */, connections[0].second /* to */,
-                          shortestConnectionPath);
+    GetSingleFeaturePath(connections[0].first /* from */, connections[0].second /* to */,
+                         path);
     return;
   }
 
-  double minWeight = numeric_limits<double>::max();
+  double minWeight = kInfinity;
   pair<RoadPoint, RoadPoint> minWeightConnection;
-  for (pair<RoadPoint, RoadPoint> const & c : connections)
+  for (auto const & c : connections)
   {
     CHECK_EQUAL(c.first.GetFeatureId(), c.second.GetFeatureId(), ());
     RoadGeometry const & geom = GetRoad(c.first.GetFeatureId());
@@ -114,34 +114,34 @@ void IndexGraph::GetShortestConnectionPath(Joint::Id from, Joint::Id to,
     }
   }
 
-  if (minWeight == numeric_limits<double>::max())
+  if (minWeight == kInfinity)
   {
-    MYTHROW(RootException, ("Joint from:", from, "and joint to:", to,
-                            "are not connected a feature necessary type."));
+    MYTHROW(RoutingException, ("Joint from:", from, "and joint to:", to,
+                               "are not connected a feature necessary type."));
   }
 
-  GetSingleFeaturePaths(minWeightConnection.first /* from */, minWeightConnection.second /* to */,
-                        shortestConnectionPath);
+  GetSingleFeaturePath(minWeightConnection.first /* from */, minWeightConnection.second /* to */,
+                       path);
 }
 
 void IndexGraph::GetFeatureConnectionPath(Joint::Id from, Joint::Id to, uint32_t featureId,
-                                          vector<RoadPoint> & featureConnectionPath)
+                                          vector<RoadPoint> & path)
 {
+  path.clear();
   vector<pair<RoadPoint, RoadPoint>> connections;
   m_jointIndex.FindPointsWithCommonFeature(from, to, connections);
-  CHECK_LESS(0, connections.size(), ());
+  if (connections.empty())
+    return;
 
   for (auto & c : connections)
   {
     CHECK_EQUAL(c.first.GetFeatureId(), c.second.GetFeatureId(), ());
     if (c.first.GetFeatureId() == featureId)
     {
-      GetSingleFeaturePaths(c.first /* from */, c.second /* to */, featureConnectionPath);
+      GetSingleFeaturePath(c.first /* from */, c.second /* to */, path);
       return;
     }
   }
-  MYTHROW(RootException,
-          ("Joint from:", from, "and joint to:", to, "are not connected feature:", featureId));
 }
 
 void IndexGraph::GetOutgoingGeomEdges(vector<JointEdge> const & outgoingEdges, Joint::Id center,
@@ -151,6 +151,9 @@ void IndexGraph::GetOutgoingGeomEdges(vector<JointEdge> const & outgoingEdges, J
   {
     vector<vector<RoadPoint>> connectionPaths;
     GetConnectionPaths(center, e.GetTarget(), connectionPaths);
+    if (connectionPaths.empty())
+      MYTHROW(RoutingException, ("Can't find common feature for joints", center, e.GetTarget()));
+
     for (auto const & path : connectionPaths)
     {
       CHECK(!path.empty(), ());
@@ -163,12 +166,12 @@ void IndexGraph::CreateFakeFeatureGeometry(vector<RoadPoint> const & geometrySou
                                            RoadGeometry & geometry)
 {
   double averageSpeed = 0.0;
-  buffer_vector<m2::PointD, 32> points(geometrySource.size());
+  RoadGeometry::Points points(geometrySource.size());
   for (size_t i = 0; i < geometrySource.size(); ++i)
   {
-    RoadPoint const ftp = geometrySource[i];
-    averageSpeed += GetSpeed(ftp) / geometrySource.size();
-    points[i] = GetPoint(ftp);
+    RoadPoint const rp = geometrySource[i];
+    averageSpeed += GetSpeed(rp) / geometrySource.size();
+    points[i] = GetPoint(rp);
   }
 
   geometry = RoadGeometry(true /* oneWay */, averageSpeed, points);
@@ -178,7 +181,7 @@ uint32_t IndexGraph::AddFakeLooseEndFeature(Joint::Id from,
                                             vector<RoadPoint> const & geometrySource)
 {
   CHECK_LESS(from, m_jointIndex.GetNumJoints(), ());
-  CHECK_LESS(1, geometrySource.size(), ());
+  CHECK_GREATER(geometrySource.size(), 1, ());
 
   // Getting fake feature geometry.
   RoadGeometry geom;
@@ -197,7 +200,7 @@ uint32_t IndexGraph::AddFakeFeature(Joint::Id from, Joint::Id to,
 {
   CHECK_LESS(from, m_jointIndex.GetNumJoints(), ());
   CHECK_LESS(to, m_jointIndex.GetNumJoints(), ());
-  CHECK_LESS(1, geometrySource.size(), ());
+  CHECK_GREATER(geometrySource.size(), 1, ());
 
   uint32_t fakeFeatureId = AddFakeLooseEndFeature(from, geometrySource);
   RoadPoint const toFakeFtPoint(fakeFeatureId, geometrySource.size() - 1 /* point id */);
@@ -295,7 +298,7 @@ void IndexGraph::ApplyRestrictionNo(RestrictionPoint const & restrictionPoint)
 
   // Prohibition of moving from one segment to another in case of any number of ingoing and outgoing
   // edges.
-  // The idea is to tranform the navigation graph for every non-degenerate case as it's shown below.
+  // The idea is to transform the navigation graph for every non-degenerate case as it's shown below.
   // At the picture below a restriction for prohibition moving from 4 to O to 3 is shown.
   // So to implement it it's necessary to remove (disable) an edge 4-O and add features (edges)
   // 4-N-1 and N-2.
@@ -312,7 +315,7 @@ void IndexGraph::ApplyRestrictionNo(RestrictionPoint const & restrictionPoint)
   // *       *       *                     *       *       *
   // 4       5       6                     4       5       6
   //
-  // In case of this trasformation the following edge mapping happends:
+  // In case of this transformation the following edge mapping happens:
   // 4-O -> 4-N
   // O-1 -> O-1; N-1
   // O-2 -> 0-2; N-2
@@ -345,6 +348,9 @@ void IndexGraph::ApplyRestrictionNo(RestrictionPoint const & restrictionPoint)
   vector<RoadPoint> ingoingPath;
   GetFeatureConnectionPath(fromFirstOneStepAside, centerId, restrictionPoint.m_from.GetFeatureId(),
                            ingoingPath);
+  if (ingoingPath.empty())
+    return;
+
   JointEdgeGeom ingoingEdge(fromFirstOneStepAside, ingoingPath);
   CHECK(!ingoingEdge.GetPath().empty(), ());
 
@@ -456,7 +462,7 @@ void IndexGraph::ApplyRestrictionOnly(RestrictionPoint const & restrictionPoint)
   // *       *       *                     *       *       *
   // 4       5       6                     4       5       6
   //
-  // In case of this trasformation the following edge mapping happends:
+  // In case of this transformation the following edge mapping happens:
   // 6-O -> 6-N
   // O-3 -> O-3; N-3
   //
@@ -466,10 +472,16 @@ void IndexGraph::ApplyRestrictionOnly(RestrictionPoint const & restrictionPoint)
   vector<RoadPoint> ingoingPath;
   GetFeatureConnectionPath(fromFirstOneStepAside, centerId, restrictionPoint.m_from.GetFeatureId(),
                            ingoingPath);
+  if (ingoingPath.empty())
+    return;
+
   vector<RoadPoint> outgoingPath;
   GetFeatureConnectionPath(centerId, toFirstOneStepAside, restrictionPoint.m_to.GetFeatureId(),
                            outgoingPath);
-  CHECK_LESS(0, ingoingPath.size(), ());
+  if (outgoingPath.empty())
+    return;
+
+  CHECK_GREATER(ingoingPath.size(), 0, ());
   vector<RoadPoint> geometrySource(ingoingPath.cbegin(), ingoingPath.cend() - 1);
   geometrySource.insert(geometrySource.end(), outgoingPath.cbegin(), outgoingPath.cend());
 
@@ -483,13 +495,14 @@ void IndexGraph::ApplyRestrictions(RestrictionVec const & restrictions)
   {
     if (restriction.m_featureIds.size() != 2)
     {
-      LOG(LERROR, ("Only to link restriction are supported."));
+      LOG(LERROR, ("Only two link restriction are supported. It's a",
+                   restriction.m_featureIds.size(), "-link restriction."));
       continue;
     }
 
     RestrictionPoint restrictionPoint;
-    if (!m_roadIndex.GetAdjacentFtPoints(restriction.m_featureIds[0], restriction.m_featureIds[1],
-                                         restrictionPoint))
+    if (!m_roadIndex.GetAdjacentFtPoint(restriction.m_featureIds[0], restriction.m_featureIds[1],
+                                        restrictionPoint))
     {
       continue;  // Restriction is not contain adjacent features.
     }

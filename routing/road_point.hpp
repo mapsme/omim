@@ -18,18 +18,18 @@ public:
 
   RoadPoint(uint32_t featureId, uint32_t pointId) : m_featureId(featureId), m_pointId(pointId) {}
 
-  bool operator==(RoadPoint const & roadPoint) const
+  bool operator==(RoadPoint const & rhs) const
   {
-    return m_featureId == roadPoint.m_featureId && m_pointId == roadPoint.m_pointId;
+    return m_featureId == rhs.m_featureId && m_pointId == rhs.m_pointId;
   }
 
-  bool operator!=(RoadPoint const & roadPoint) const { return !(*this == roadPoint); }
+  bool operator!=(RoadPoint const & rhs) const { return !(*this == rhs); }
 
-  bool operator<(RoadPoint const & roadPoint) const
+  bool operator<(RoadPoint const & rhs) const
   {
-    if (m_featureId == roadPoint.m_featureId)
-      return m_pointId < roadPoint.m_pointId;
-    return m_featureId < roadPoint.m_featureId;
+    if (m_featureId != rhs.m_featureId)
+      return m_featureId < rhs.m_featureId;
+    return m_pointId < rhs.m_pointId;
   }
 
   uint32_t GetFeatureId() const { return m_featureId; }

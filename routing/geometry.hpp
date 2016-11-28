@@ -18,8 +18,6 @@ namespace routing
 {
 class RoadGeometry final
 {
-  friend string DebugPrint(RoadGeometry const & roadGeometry);
-
 public:
   using Points = buffer_vector<m2::PointD, 32>;
 
@@ -48,6 +46,8 @@ public:
   }
 
 private:
+  friend string DebugPrint(RoadGeometry const & roadGeometry);
+
   Points m_points;
   double m_speed = 0.0;
   bool m_isOneWay = false;

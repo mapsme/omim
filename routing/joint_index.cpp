@@ -27,9 +27,6 @@ void JointIndex::FindPointsWithCommonFeature(Joint::Id jointId0, Joint::Id joint
         result.emplace_back(rp0, rp1);
     });
   });
-
-  if (result.empty())
-    MYTHROW(RootException, ("Can't find common feature for joints", jointId0, jointId1));
 }
 
 void JointIndex::Build(RoadIndex const & roadIndex, uint32_t numJoints)

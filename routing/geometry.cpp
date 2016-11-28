@@ -7,6 +7,7 @@
 #include "base/assert.hpp"
 
 #include "std/iostream.hpp"
+#include "std/sstream.hpp"
 #include "std/string.hpp"
 
 using namespace routing;
