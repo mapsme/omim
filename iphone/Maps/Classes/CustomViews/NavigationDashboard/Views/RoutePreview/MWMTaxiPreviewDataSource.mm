@@ -143,7 +143,8 @@ using namespace uber;
         break;
       }
     });
-  });
+  },
+  false);
 }
 
 - (BOOL)isTaxiInstalled

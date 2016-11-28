@@ -1,5 +1,7 @@
 #pragma once
 
+#include "partners_api/remote_call_guard.hpp"
+
 #include "platform/http_request.hpp"
 
 #include "std/chrono.hpp"
@@ -10,7 +12,7 @@
 #include "std/unique_ptr.hpp"
 #include "std/utility.hpp"
 
-class BookingApi
+class BookingApiImpl
 {
   string m_affiliateId;
   string m_apiUrl;
@@ -116,7 +118,7 @@ public:
 
   static constexpr const char kDefaultCurrency[1] = {0};
 
-  BookingApi();
+  BookingApiImpl();
   string GetBookHotelUrl(string const & baseUrl, string const & lang = string()) const;
   string GetDescriptionUrl(string const & baseUrl, string const & lang = string()) const;
   inline void SetTestingMode(bool testing) { m_testingMode = testing; }
@@ -135,4 +137,14 @@ public:
 protected:
   unique_ptr<downloader::HttpRequest> m_request;
   string MakeApiUrl(string const & func, initializer_list<pair<string, string>> const & params);
+};
+
+class BookingApi : public BookingApiImpl
+{
+public:
+  void GetMinPrice(string const & hotelId, string const & currency,
+                   function<void(string const &, string const &)> const & fn);
+
+  void GetHotelInfo(string const & hotelId, string const & lang,
+                    function<void(HotelInfo const & hotelInfo)> const & fn);
 };

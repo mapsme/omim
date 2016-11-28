@@ -128,3 +128,9 @@ Platform::EConnectionType Platform::ConnectionStatus()
     return EConnectionType::CONNECTION_NONE;
   return EConnectionType::CONNECTION_WIFI;
 }
+
+bool Platform::InRoaming()
+{
+  // @TODO Add implementation.
+  return false;
+}

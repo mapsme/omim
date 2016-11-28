@@ -105,6 +105,12 @@ Platform::EConnectionType Platform::ConnectionStatus()
   return EConnectionType::CONNECTION_NONE;
 }
 
+bool Platform::InRoaming()
+{
+  // @TODO Add implementation.
+  return false;
+}
+
 void Platform::GetSystemFontNames(FilesList & res) const
 {
 }

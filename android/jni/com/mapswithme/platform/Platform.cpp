@@ -54,6 +54,12 @@ Platform::EConnectionType Platform::ConnectionStatus()
   return static_cast<Platform::EConnectionType>(env->CallStaticByteMethod(static_cast<jclass>(*clazzConnectionState), getConnectionMethodId));
 }
 
+bool Platform::InRoaming()
+{
+  // @TODO Add implementation.
+  return false;
+}
+
 namespace android
 {
   void Platform::Initialize(JNIEnv * env,

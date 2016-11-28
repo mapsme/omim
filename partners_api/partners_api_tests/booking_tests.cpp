@@ -4,7 +4,7 @@
 
 UNIT_TEST(Booking_SmokeTest)
 {
-  BookingApi api;
+  BookingApiImpl api;
 
   string url = api.GetBookHotelUrl("http://someurl.com");
   TEST(!url.empty(), ());
@@ -12,14 +12,14 @@ UNIT_TEST(Booking_SmokeTest)
 
 UNIT_TEST(Booking_GetMinPrice)
 {
-  BookingApi api;
+  BookingApiImpl api;
   api.SetTestingMode(true);
   string const kHotelId = "98251"; // Special hotel id for testing.
 
   {
     string price;
     string currency;
-    api.GetMinPrice(kHotelId, BookingApi::kDefaultCurrency,
+    api.GetMinPrice(kHotelId, BookingApiImpl::kDefaultCurrency,
                     [&price, &currency](string const & val, string const & curr)
                     {
                       price = val;
@@ -68,10 +68,10 @@ UNIT_TEST(Booking_GetMinPrice)
 
 UNIT_TEST(GetHotelInfo)  // GetHotelInfo is a mockup now.
 {
-  BookingApi api;
-  BookingApi::HotelInfo info;
+  BookingApiImpl api;
+  BookingApiImpl::HotelInfo info;
 
-  api.GetHotelInfo("000", "en", [&info](BookingApi::HotelInfo const & i)
+  api.GetHotelInfo("000", "en", [&info](BookingApiImpl::HotelInfo const & i)
   {
     info = i;
   });

@@ -223,6 +223,7 @@ public:
 
   static EConnectionType ConnectionStatus();
   static bool IsConnected() { return ConnectionStatus() != EConnectionType::CONNECTION_NONE; }
+  static bool InRoaming();
 
   void SetupMeasurementSystem() const;
 

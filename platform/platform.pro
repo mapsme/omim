@@ -54,13 +54,17 @@ macx-*|iphone* {
   OBJECTIVE_SOURCES += \
     http_thread_apple.mm \
     http_client_apple.mm \
+    mobile_data_ask_apple.mm \
     socket_apple.mm \
 
   QMAKE_OBJECTIVE_CFLAGS += -fobjc-arc
 }
 
 linux*|win* {
-  SOURCES += http_client_curl.cpp
+  SOURCES += \
+      http_client_curl.cpp \
+      mobile_data_ask_linux.cpp \
+
 }
 
 !win32* {
@@ -85,6 +89,7 @@ HEADERS += \
     location.hpp \
     marketing_service.hpp \
     measurement_utils.hpp \
+    mobile_data_ask.hpp \
     mwm_traits.hpp \
     mwm_version.hpp \
     platform.hpp \

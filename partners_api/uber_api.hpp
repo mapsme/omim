@@ -1,5 +1,7 @@
 #pragma once
 
+#include "partners_api/remote_call_guard.hpp"
+
 #include "std/function.hpp"
 #include "std/mutex.hpp"
 #include "std/shared_ptr.hpp"
@@ -86,7 +88,7 @@ struct RideRequestLinks
   string m_universalLink;
 };
 
-class Api
+class ApiImpl
 {
 public:
   /// Requests list of available products from Uber. Returns request identificator immediately.
@@ -100,6 +102,14 @@ public:
 private:
   shared_ptr<ProductMaker> m_maker = make_shared<ProductMaker>();
   uint64_t m_requestId = 0;
+};
+
+class Api : public ApiImpl
+{
+public:
+  uint64_t GetAvailableProducts(ms::LatLon const & from, ms::LatLon const & to,
+                                ProductsCallback const & successFn, ErrorCallback const & errorFn,
+                                bool ask);
 };
 
 string DebugPrint(ErrorCode error);

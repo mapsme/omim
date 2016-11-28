@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3DE8B98A1DE6074A000E6083 /* remote_call_guard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3DE8B9881DE6074A000E6083 /* remote_call_guard.cpp */; };
+		3DE8B98B1DE6074A000E6083 /* remote_call_guard.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 3DE8B9891DE6074A000E6083 /* remote_call_guard.hpp */; };
 		F67E75251DB8F06F00D6741F /* opentable_api.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F67E75231DB8F06F00D6741F /* opentable_api.cpp */; };
 		F67E75261DB8F06F00D6741F /* opentable_api.hpp in Headers */ = {isa = PBXBuildFile; fileRef = F67E75241DB8F06F00D6741F /* opentable_api.hpp */; };
 		F6B536401DA520E40067EEA5 /* booking_api.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F6B5363C1DA520E40067EEA5 /* booking_api.cpp */; };
@@ -33,6 +35,8 @@
 /* Begin PBXFileReference section */
 		3475E0E11DBF581B004C7E69 /* common-debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "common-debug.xcconfig"; path = "../common-debug.xcconfig"; sourceTree = "<group>"; };
 		3475E0E21DBF581B004C7E69 /* common-release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "common-release.xcconfig"; path = "../common-release.xcconfig"; sourceTree = "<group>"; };
+		3DE8B9881DE6074A000E6083 /* remote_call_guard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = remote_call_guard.cpp; sourceTree = "<group>"; };
+		3DE8B9891DE6074A000E6083 /* remote_call_guard.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = remote_call_guard.hpp; sourceTree = "<group>"; };
 		F67E75231DB8F06F00D6741F /* opentable_api.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = opentable_api.cpp; sourceTree = "<group>"; };
 		F67E75241DB8F06F00D6741F /* opentable_api.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = opentable_api.hpp; sourceTree = "<group>"; };
 		F6B536341DA5209F0067EEA5 /* libpartners_api.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libpartners_api.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -105,6 +109,8 @@
 		F6B5363B1DA520B20067EEA5 /* partners_api */ = {
 			isa = PBXGroup;
 			children = (
+				3DE8B9881DE6074A000E6083 /* remote_call_guard.cpp */,
+				3DE8B9891DE6074A000E6083 /* remote_call_guard.hpp */,
 				F67E75231DB8F06F00D6741F /* opentable_api.cpp */,
 				F67E75241DB8F06F00D6741F /* opentable_api.hpp */,
 				F6B5363C1DA520E40067EEA5 /* booking_api.cpp */,
@@ -160,6 +166,7 @@
 				F67E75261DB8F06F00D6741F /* opentable_api.hpp in Headers */,
 				F6B536411DA520E40067EEA5 /* booking_api.hpp in Headers */,
 				F6B536431DA520E40067EEA5 /* uber_api.hpp in Headers */,
+				3DE8B98B1DE6074A000E6083 /* remote_call_guard.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,6 +267,7 @@
 				F67E75251DB8F06F00D6741F /* opentable_api.cpp in Sources */,
 				F6B536401DA520E40067EEA5 /* booking_api.cpp in Sources */,
 				F6B536481DA5213D0067EEA5 /* uber_tests.cpp in Sources */,
+				3DE8B98A1DE6074A000E6083 /* remote_call_guard.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
