@@ -57,16 +57,16 @@ public:
   DirectedEdge() = default;
   DirectedEdge(Joint::Id from, Joint::Id to) : m_from(from), m_to(to) {}
 
-  bool operator<(DirectedEdge const & rh) const
+  bool operator<(DirectedEdge const & rhs) const
   {
-    if (m_from == rh.m_from)
-      return m_to < rh.m_to;
-    return m_from < rh.m_from;
+    if (m_from != rhs.m_from)
+      return m_from < rhs.m_from;
+    return m_to < rhs.m_to;
   }
 
-  bool operator==(DirectedEdge const & rh) const
+  bool operator==(DirectedEdge const & rhs) const
   {
-    return m_from == rh.m_from && m_to == rh.m_to;
+    return m_from == rhs.m_from && m_to == rhs.m_to;
   }
 
   Joint::Id m_from = Joint::kInvalidId;
@@ -76,6 +76,8 @@ public:
 class IndexGraph final
 {
 public:
+  static uint32_t const kStartFakeFeatureIds = 1024 * 1024 * 1024;
+
   IndexGraph() = default;
   explicit IndexGraph(unique_ptr<GeometryLoader> loader, shared_ptr<EdgeEstimator> estimator);
 
@@ -96,7 +98,7 @@ public:
   uint32_t GetNumRoads() const { return m_roadIndex.GetSize(); }
   uint32_t GetNumJoints() const { return m_jointIndex.GetNumJoints(); }
   uint32_t GetNumPoints() const { return m_jointIndex.GetNumPoints(); }
-  m2::PointD const & GetPoint(RoadPoint const & ftp);
+  m2::PointD const & GetPoint(RoadPoint const & rp);
   void Import(vector<Joint> const & joints);
   Joint::Id InsertJoint(RoadPoint const & rp);
   bool JointLiesOnRoad(Joint::Id jointId, uint32_t featureId) const;
@@ -122,13 +124,13 @@ public:
     Build(jointsSize);
   }
 
-  Joint::Id GetJointIdForTesting(RoadPoint const & ftp) const
+  Joint::Id GetJointIdForTesting(RoadPoint const & rp) const
   {
-    return m_roadIndex.GetJointId(ftp);
+    return m_roadIndex.GetJointId(rp);
   }
 
-  /// \brief Disable all edges between |from| and |to| if they are different and adjacent.
-  /// \note Despit the fact that |from| and |to| could be connected with several edges
+  /// \brief Disable all edges (one or more) between |from| and |to|.
+  /// \note Despite the fact that |from| and |to| could be connected with several edges
   /// it's a rare case. In most cases |from| and |to| are connected with only one edge
   /// if they are adjacent.
   /// \note The method doesn't affect routing if |from| and |to| are not adjacent or
@@ -173,13 +175,13 @@ public:
   void ApplyRestrictions(RestrictionVec const & restrictions);
 
   /// \brief Fills |singleFeaturePath| with points from point |from| to point |to|
-  /// \note |from| and |to| has to belong the same feature.
+  /// \note |from| and |to| should belong to the same feature.
   /// \note The order on points in items of |connectionPaths| is from |from| to |to|.
-  void GetSingleFeaturePaths(RoadPoint from, RoadPoint to, vector<RoadPoint> & singleFeaturePath);
+  void GetSingleFeaturePath(RoadPoint from, RoadPoint to, vector<RoadPoint> & singleFeaturePath);
 
   /// \brief  Fills |connectionPaths| with all path from joint |from| to joint |to|.
   /// If |from| and |to| don't belong to the same feature |connectionPaths| an exception
-  /// |RootException| with be raised.
+  /// |RoutingException| with be raised.
   /// If |from| and |to| belong to only one feature |connectionPaths| will have one item.
   /// It's most common case.
   /// If |from| and |to| could be connected by several feature |connectionPaths|
@@ -188,20 +190,19 @@ public:
   void GetConnectionPaths(Joint::Id from, Joint::Id to,
                           vector<vector<RoadPoint>> & connectionPaths);
 
-  /// \brief Fills |shortestConnectionPath| with shortest path from joint |from| to joint |to|.
-  /// \note The order on points in |shortestConnectionPath| is from |from| to |to|.
+  /// \brief Fills |path| with shortest path from joint |from| to joint |to|.
+  /// \note |from| and |to| should be joints of one feature.
+  /// \note The order on points in |path| is from |from| to |to|.
   /// \note In most cases the method doesn't load geometry to find the shortest path
   /// because there's only one path between |from| and |to|.
-  /// \note if |shortestConnectionPath| could be filled after call of the method
-  /// an exception of type |RootException| is raised. It could happend,
+  /// \note if |path| couldn't be filled |path| will be cleared. It could happend,
   /// for example, if |from| and |to| are connected with a pedestrian road
   /// but a car route is looked for.
-  void GetShortestConnectionPath(Joint::Id from, Joint::Id to,
-                                 vector<RoadPoint> & shortestConnectionPath);
+  void GetShortestConnectionPath(Joint::Id from, Joint::Id to, vector<RoadPoint> & path);
 
-  /// \brief Fills |featureConnectionPath| with a path from |from| to |to| of points of |featureId|.
+  /// \brief Fills |path| with a path from |from| to |to| of points of |featureId|.
   void GetFeatureConnectionPath(Joint::Id from, Joint::Id to, uint32_t featureId,
-                                vector<RoadPoint> & featureConnectionPath);
+                                vector<RoadPoint> & path);
 
   void GetOutgoingGeomEdges(vector<JointEdge> const & outgoingEdges, Joint::Id center,
                             vector<JointEdgeGeom> & outgoingGeomEdges);
@@ -213,20 +214,22 @@ public:
 
   bool IsFakeFeature(uint32_t featureId) const { return featureId >= kStartFakeFeatureIds; }
 
-  static uint32_t const kStartFakeFeatureIds = 1024 * 1024 * 1024;
-
 private:
   void GetNeighboringEdge(RoadGeometry const & road, RoadPoint const & rp, bool forward, bool outgoing,
                           bool graphWithoutRestrictions, vector<JointEdge> & edges) const;
-  void Build(uint32_t jointNumber);
 
-  double GetSpeed(RoadPoint ftp);
+  /// \brief Builds |m_jointIndex|.
+  /// \param numJoints number of joints.
+  /// \note This method should be called when |m_roadIndex| is ready.
+  void Build(uint32_t numJoints);
+
+  double GetSpeed(RoadPoint const & rp);
 
   /// \brief Finds neghboring of |centerId| joint on feature id of |center|
   /// which is contained in |edges| and fills |oneStepAside| with it.
   /// \note If oneStepAside is empty no neghboring nodes were found.
   /// \note Taking into account the way of setting restrictions almost always |oneStepAside|
-  /// will contain one or zero items. Besides the it it's posible to draw map
+  /// will contain one or zero items. Meanwhile the it it's posible to draw map
   /// the (wrong) way |oneStepAside| will contain any number of items.
   void FindOneStepAsideRoadPoint(RoadPoint const & center, Joint::Id centerId,
                                  vector<JointEdge> const & edges,

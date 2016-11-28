@@ -18,8 +18,6 @@ namespace routing
 {
 class RoadGeometry final
 {
-  friend string DebugPrint(RoadGeometry const & roadGeometry);
-
 public:
   using Points = buffer_vector<m2::PointD, 32>;
 
@@ -44,11 +42,13 @@ public:
   uint32_t GetPointsCount() const { return m_points.size(); }
   bool operator==(RoadGeometry const & roadGeometry)
   {
-    return m_isRoad == roadGeometry.m_isRoad && m_isOneWay == roadGeometry.m_isOneWay &&
-           m_speed == roadGeometry.m_speed && m_points == roadGeometry.m_points;
+    return m_points == roadGeometry.m_points && m_speed == roadGeometry.m_speed &&
+        m_isRoad == roadGeometry.m_isRoad && m_isOneWay == roadGeometry.m_isOneWay;
   }
 
 private:
+  friend string DebugPrint(RoadGeometry const & roadGeometry);
+
   Points m_points;
   double m_speed = 0.0;
   bool m_isRoad = false;
