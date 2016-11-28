@@ -662,6 +662,8 @@
 		845C89311C89837900940D7F /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 845C89301C89837900940D7F /* AssetsLibrary.framework */; };
 		845C89361C8983F300940D7F /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 845C89331C8983F300940D7F /* libc++.tbd */; };
 		845C89371C8983F300940D7F /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 845C89341C8983F300940D7F /* QuickLook.framework */; };
+		845E4B1C1DEC839800D6BED8 /* MWMTrafficButtonViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3463BA641DE81DB90082417F /* MWMTrafficButtonViewController.mm */; };
+		845E4B1D1DEC83AE00D6BED8 /* MWMMobileInternetAlert.mm in Sources */ = {isa = PBXBuildFile; fileRef = 349A13801DEC138C00C7DB60 /* MWMMobileInternetAlert.mm */; };
 		849CF5E51DE842290024A8A5 /* HockeySDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3456E0251DC0C4500055DF50 /* HockeySDKResources.bundle */; };
 		849CF5E61DE842290024A8A5 /* patterns.txt in Resources */ = {isa = PBXBuildFile; fileRef = 451950391B7A3E070085DA05 /* patterns.txt */; };
 		849CF5E71DE842290024A8A5 /* MWMSearchNoResultsAlert.xib in Resources */ = {isa = PBXBuildFile; fileRef = 346225901DDC5FBA001E8752 /* MWMSearchNoResultsAlert.xib */; };
@@ -5127,6 +5129,7 @@
 				849CF6881DE842290024A8A5 /* UIViewController+Navigation.mm in Sources */,
 				849CF6891DE842290024A8A5 /* MWMFacebookAlert.mm in Sources */,
 				849CF68A1DE842290024A8A5 /* MWMDefaultAlert.mm in Sources */,
+				845E4B1C1DEC839800D6BED8 /* MWMTrafficButtonViewController.mm in Sources */,
 				849CF68B1DE842290024A8A5 /* MWMWhatsNewDownloaderEditorController.mm in Sources */,
 				849CF68C1DE842290024A8A5 /* MWMBookmarkTitleCell.m in Sources */,
 				849CF68D1DE842290024A8A5 /* MWMLocationManager.mm in Sources */,
@@ -5267,6 +5270,7 @@
 				849CF7141DE842290024A8A5 /* AddSetVC.mm in Sources */,
 				849CF7151DE842290024A8A5 /* MWMInputEmailValidator.mm in Sources */,
 				849CF7161DE842290024A8A5 /* MWMSearchTabbedViewLayout.mm in Sources */,
+				845E4B1D1DEC83AE00D6BED8 /* MWMMobileInternetAlert.mm in Sources */,
 				849CF7171DE842290024A8A5 /* BookmarksRootVC.mm in Sources */,
 				849CF7181DE842290024A8A5 /* MWMEditorTextTableViewCell.mm in Sources */,
 				849CF7191DE842290024A8A5 /* MWMActivityViewController.mm in Sources */,
