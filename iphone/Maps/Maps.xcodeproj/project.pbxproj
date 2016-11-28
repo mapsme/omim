@@ -4008,6 +4008,7 @@
 					};
 					849CF5E21DE842290024A8A5 = {
 						DevelopmentTeam = 3T6FSDE8C7;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -5528,6 +5529,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUILD_DIR = "$(BUILD_ROOT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 3T6FSDE8C7;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Frameworks/HockeySDK.embeddedframework",
@@ -5574,6 +5577,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUILD_DIR = "$(BUILD_ROOT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 3T6FSDE8C7;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Frameworks/HockeySDK.embeddedframework",
@@ -5620,6 +5625,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUILD_DIR = "$(BUILD_ROOT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 3T6FSDE8C7;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Frameworks/HockeySDK.embeddedframework",
@@ -5666,6 +5673,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUILD_DIR = "$(BUILD_ROOT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 3T6FSDE8C7;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Frameworks/HockeySDK.embeddedframework",
@@ -5712,6 +5721,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUILD_DIR = "$(BUILD_ROOT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 3T6FSDE8C7;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Frameworks/HockeySDK.embeddedframework",
@@ -5758,6 +5769,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUILD_DIR = "$(BUILD_ROOT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 3T6FSDE8C7;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Frameworks/HockeySDK.embeddedframework",
