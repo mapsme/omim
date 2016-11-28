@@ -42,6 +42,9 @@ SHADOW_DIR="$MY_PATH/../../../omim-iphone-cmake"
 if [[ $CONFIGURATION == *release* ||  $CONFIGURATION == *production*  ]]; then
   BUILD_TYPE="Release"
   FINAL_PATH_COMPONENT="release"
+  if [[ $CONFIGURATION == *production* ]]; then
+    FINAL_PATH_COMPONENT="production"
+  fi
 elif [[ $CONFIGURATION == *debug* || $CONFIGURATION == "simulator" ]]; then
   BUILD_TYPE="Debug"
   FINAL_PATH_COMPONENT="debug"

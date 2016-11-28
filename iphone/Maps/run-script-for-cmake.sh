@@ -4,8 +4,10 @@
 
 LOWERED_CONFIG=`echo $CONFIGURATION | tr [A-Z] [a-z]`
 CONF="debug"
-if [[ "$LOWERED_CONFIG" == *release* || "$LOWERED_CONFIG" == *production* || "$LOWERED_CONFIG" == *adhoc* ]]; then
+if [[ "$LOWERED_CONFIG" == *release* ]]; then
   CONF="release"
+elif [[ "$LOWERED_CONFIG" == *production* || "$LOWERED_CONFIG" == *adhoc* ]]; then
+  CONF="production"
 fi
 
 # Respect "Build for active arch only" project setting.
