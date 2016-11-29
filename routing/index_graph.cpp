@@ -79,51 +79,6 @@ void IndexGraph::GetConnectionPaths(Joint::Id from, Joint::Id to,
   }
 }
 
-void IndexGraph::GetShortestConnectionPath(Joint::Id from, Joint::Id to, vector<RoadPoint> & path)
-{
-  double constexpr kInfinity = numeric_limits<double>::max();
-  vector<pair<RoadPoint, RoadPoint>> connections;
-  m_jointIndex.FindPointsWithCommonFeature(from, to, connections);
-  path.clear();
-  if (connections.empty())
-    return;
-
-  // Note. The case when size of connections is zero is the most common case. If not,
-  // it's necessary to perform a expensive calls below.
-  if (connections.size() == 1)
-  {
-    GetSingleFeaturePath(connections[0].first /* from */, connections[0].second /* to */,
-                         path);
-    return;
-  }
-
-  double minWeight = kInfinity;
-  pair<RoadPoint, RoadPoint> minWeightConnection;
-  for (auto const & c : connections)
-  {
-    CHECK_EQUAL(c.first.GetFeatureId(), c.second.GetFeatureId(), ());
-    RoadGeometry const & geom = GetRoad(c.first.GetFeatureId());
-
-    double weight = m_estimator->CalcEdgesWeight(c.first.GetFeatureId(),
-                                                 geom, c.first.GetPointId() /* from */,
-                                                 c.second.GetPointId() /* to */);
-    if (weight < minWeight)
-    {
-      minWeight = weight;
-      minWeightConnection = c;
-    }
-  }
-
-  if (minWeight == kInfinity)
-  {
-    MYTHROW(RoutingException, ("Joint from:", from, "and joint to:", to,
-                               "are not connected a feature necessary type."));
-  }
-
-  GetSingleFeaturePath(minWeightConnection.first /* from */, minWeightConnection.second /* to */,
-                       path);
-}
-
 void IndexGraph::GetFeatureConnectionPath(Joint::Id from, Joint::Id to, uint32_t featureId,
                                           vector<RoadPoint> & path)
 {

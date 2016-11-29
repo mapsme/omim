@@ -270,16 +270,6 @@ public:
   void GetConnectionPaths(Joint::Id from, Joint::Id to,
                           vector<vector<RoadPoint>> & connectionPaths);
 
-  /// \brief Fills |path| with shortest path from joint |from| to joint |to|.
-  /// \note |from| and |to| should be joints of one feature.
-  /// \note The order on points in |path| is from |from| to |to|.
-  /// \note In most cases the method doesn't load geometry to find the shortest path
-  /// because there's only one path between |from| and |to|.
-  /// \note if |path| couldn't be filled |path| will be cleared. It could happend,
-  /// for example, if |from| and |to| are connected with a pedestrian road
-  /// but a car route is looked for.
-  void GetShortestConnectionPath(Joint::Id from, Joint::Id to, vector<RoadPoint> & path);
-
   /// \brief Fills |path| with a path from |from| to |to| of points of |featureId|.
   void GetFeatureConnectionPath(Joint::Id from, Joint::Id to, uint32_t featureId,
                                 vector<RoadPoint> & path);

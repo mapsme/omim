@@ -606,20 +606,6 @@ UNIT_TEST(TwoWay_GetConnectionPaths)
   TEST_EQUAL(connectionPaths, expectedConnectionPaths, ());
 }
 
-UNIT_TEST(TwoWay_GetShortestConnectionPath)
-{
-  unique_ptr<IndexGraph> graph = BuildTwoWayGraph();
-  vector<RoadPoint> shortestPath;
-
-  graph->GetShortestConnectionPath(
-      graph->GetJointIdForTesting({0 /* feature id */, 0 /* point id */}),
-      graph->GetJointIdForTesting({1, 3}), shortestPath);
-  vector<RoadPoint> const expectedShortestPath = {
-      {0, 0}, {0, 1}, {0, 2},  // feature 0
-  };
-  TEST_EQUAL(shortestPath, expectedShortestPath, ());
-}
-
 UNIT_TEST(TwoWay_GetFeatureConnectionPath)
 {
   unique_ptr<IndexGraph> graph = BuildTwoWayGraph();
