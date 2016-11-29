@@ -29,14 +29,14 @@ void TestRoutes(vector<RoadPoint> const & starts, vector<RoadPoint> const & fini
 }
 
 void EdgeTest(Joint::Id vertex, size_t expectedIntgoingNum, size_t expectedOutgoingNum,
-              IndexGraph & graph)
+              bool graphWithoutRestrictions, IndexGraph & graph)
 {
   vector<IndexGraphStarter::TEdgeType> ingoing;
-  graph.GetEdgeList(vertex, false /* is outgoing */, false /* graphWithoutRestrictions */, ingoing);
+  graph.GetEdgeList(vertex, false /* is outgoing */, graphWithoutRestrictions, ingoing);
   TEST_EQUAL(ingoing.size(), expectedIntgoingNum, ());
 
   vector<IndexGraphStarter::TEdgeType> outgoing;
-  graph.GetEdgeList(vertex, true /* is outgoing */, false /* graphWithoutRestrictions */, outgoing);
+  graph.GetEdgeList(vertex, true /* is outgoing */, graphWithoutRestrictions, outgoing);
   TEST_EQUAL(outgoing.size(), expectedOutgoingNum, ());
 }
 
@@ -90,8 +90,8 @@ UNIT_TEST(TriangularGraph)
 UNIT_TEST(TriangularGraph_DisableF2)
 {
   unique_ptr<IndexGraph> graph = BuildTriangularGraph();
-  graph->DisableEdge(graph->GetJointIdForTesting({2 /* feature id */, 0 /* point id */}),
-                     graph->GetJointIdForTesting({2, 1}));
+  graph->DisableEdge(DirectedEdge(graph->GetJointIdForTesting({2 /* feature id */, 0 /* point id */}),
+                     graph->GetJointIdForTesting({2, 1}), 2 /* feature id */));
 
   IndexGraphStarter starter(*graph, RoadPoint(2, 0) /* start */, RoadPoint(1, 1) /* finish */);
   vector<RoadPoint> const expectedRouteOneEdgeRemoved = {
@@ -104,8 +104,8 @@ UNIT_TEST(TriangularGraph_DisableF2)
 UNIT_TEST(TriangularGraph_RestrictionNoF2F1)
 {
   unique_ptr<IndexGraph> graph = BuildTriangularGraph();
-  graph->ApplyRestrictionNo(RestrictionPoint({2 /* feature id */, 1 /* seg id */}, {1, 0},
-                                          graph->GetJointIdForTesting({1, 0})));
+  graph->ApplyRestrictionNoRealFeatures(RestrictionPoint({2 /* feature id */, 1 /* seg id */}, {1, 0},
+                                        graph->GetJointIdForTesting({1, 0})));
 
   IndexGraphStarter starter(*graph, RoadPoint(2, 0) /* start */, RoadPoint(1, 1) /* finish */);
   vector<RoadPoint> const expectedRouteRestrictionF2F1No = {
@@ -324,9 +324,10 @@ UNIT_TEST(TwoSquaresGraph_AddFakeFeatureZeroOneTwo)
   TestRoutes(starts, finishes, {expectedRoute0, expectedRoute1, expectedRoute2}, *graph);
 
   // Disabling Fake-2 feature.
-  graph->DisableEdge(
+  graph->DisableEdge(DirectedEdge(
       graph->GetJointIdForTesting({IndexGraph::kStartFakeFeatureIds + 2 /* Fake 2 */, 0}),
-      graph->GetJointIdForTesting({IndexGraph::kStartFakeFeatureIds + 2 /* Fake 2 */, 1}));
+      graph->GetJointIdForTesting({IndexGraph::kStartFakeFeatureIds + 2 /* Fake 2 */, 1}),
+      IndexGraph::kStartFakeFeatureIds + 2 /* Fake feature id */));
   vector<RoadPoint> const expectedRoute2Disable2 = {{2 /* feature id */, 0 /* point id */},
                                                     {2, 1},
                                                     {IndexGraph::kStartFakeFeatureIds, 1},
@@ -396,11 +397,15 @@ UNIT_TEST(FlagGraph_RestrictionF0F3No)
   Joint::Id const restictionCenterId = graph->GetJointIdForTesting({0, 1});
 
   // Testing outgoing and ingoing edge number near restriction joint.
-  EdgeTest(restictionCenterId, 3 /* expectedIntgoingNum */, 3 /* expectedOutgoingNum */, *graph);
-  graph->ApplyRestrictionNo(RestrictionPoint({0 /* feature id */, 1 /* point id */},
-                                          {3 /* feature id */, 0 /* point id */},
-                                          restictionCenterId));
-  EdgeTest(restictionCenterId, 2 /* expectedIntgoingNum */, 3 /* expectedOutgoingNum */, *graph);
+  EdgeTest(restictionCenterId, 3 /* expectedIntgoingNum */, 3 /* expectedOutgoingNum */,
+           false /* graphWithoutRestrictions */, *graph);
+  graph->ApplyRestrictionNoRealFeatures(RestrictionPoint({0 /* feature id */, 1 /* point id */},
+                                        {3 /* feature id */, 0 /* point id */},
+                                        restictionCenterId));
+  EdgeTest(restictionCenterId, 2 /* expectedIntgoingNum */, 3 /* expectedOutgoingNum */,
+           false /* graphWithoutRestrictions */, *graph);
+  EdgeTest(restictionCenterId, 3 /* expectedIntgoingNum */, 3 /* expectedOutgoingNum */,
+           true /* graphWithoutRestrictions */, *graph);
 
   // Testing route building after adding the restriction.
   IndexGraphStarter starter(*graph, RoadPoint(0, 0) /* start */, RoadPoint(5, 0) /* finish */);
@@ -414,14 +419,14 @@ UNIT_TEST(FlagGraph_RestrictionF0F1Only)
 {
   unique_ptr<IndexGraph> graph = BuildFlagGraph();
   Joint::Id const restictionCenterId = graph->GetJointIdForTesting({0, 1});
-  graph->ApplyRestrictionOnly(RestrictionPoint({0 /* feature id */, 1 /* point id */},
-                                            {1 /* feature id */, 0 /* point id */},
-                                            restictionCenterId));
+  graph->ApplyRestrictionOnlyRealFeatures(RestrictionPoint({0 /* feature id */, 1 /* point id */},
+                                          {1 /* feature id */, 0 /* point id */},
+                                          restictionCenterId));
 
   IndexGraphStarter starter(*graph, RoadPoint(0, 0) /* start */, RoadPoint(5, 0) /* finish */);
   vector<RoadPoint> const expectedRoute = {{IndexGraph::kStartFakeFeatureIds, 0 /* point id */},
                                            {IndexGraph::kStartFakeFeatureIds, 1},
-                                           {IndexGraph::kStartFakeFeatureIds, 2},
+                                           {IndexGraph::kStartFakeFeatureIds + 1, 1},
                                            {2 /* feature id */, 1 /* point id */},
                                            {4, 1}};
   TestRouteSegments(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedRoute);
@@ -488,7 +493,7 @@ UNIT_TEST(PosterGraph_RestrictionF0F3No)
   unique_ptr<IndexGraph> graph = BuildPosterGraph();
   Joint::Id const restictionCenterId = graph->GetJointIdForTesting({0, 1});
 
-  graph->ApplyRestrictionNo(
+  graph->ApplyRestrictionNoRealFeatures(
       RestrictionPoint({0 /* feature id */, 1 /* point id */}, {3, 0}, restictionCenterId));
 
   IndexGraphStarter starter(*graph, RoadPoint(0, 0) /* start */, RoadPoint(6, 1) /* finish */);
@@ -503,8 +508,17 @@ UNIT_TEST(PosterGraph_RestrictionF0F1Only)
   unique_ptr<IndexGraph> graph = BuildPosterGraph();
   Joint::Id const restictionCenterId = graph->GetJointIdForTesting({0, 1});
 
-  graph->ApplyRestrictionOnly(
+  graph->ApplyRestrictionOnlyRealFeatures(
       RestrictionPoint({0 /* feature id */, 1 /* point id */}, {1, 0}, restictionCenterId));
+
+  graph->ForEachNonBlockedEdgeMappingNode(
+        DirectedEdge(graph->GetJointIdForTesting({0 /* feature id */, 0 /* point id */}),
+        graph->GetJointIdForTesting({0, 1}), 0 /* feature id */),
+                                [](DirectedEdge const & leaf){
+    TEST_EQUAL(leaf, DirectedEdge(5 /* form joint id */, 7 /* to joint id */,
+               IndexGraph::kStartFakeFeatureIds), ());
+    return;
+  });
 
   IndexGraphStarter starter(*graph, RoadPoint(0, 0) /* start */, RoadPoint(6, 1) /* finish */);
   vector<m2::PointD> const expectedGeom = {

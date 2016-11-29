@@ -26,6 +26,7 @@ public:
   }
 
   uint32_t GetNumPoints() const { return m_points.size(); }
+
   RoadPoint GetPoint(Joint::Id jointId) const { return m_points[Begin(jointId)]; }
 
   template <typename F>
