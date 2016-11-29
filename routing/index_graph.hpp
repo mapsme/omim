@@ -11,6 +11,7 @@
 #include "geometry/point2d.hpp"
 
 #include "std/cstdint.hpp"
+#include "std/functional.hpp"
 #include "std/set.hpp"
 #include "std/shared_ptr.hpp"
 #include "std/unique_ptr.hpp"
@@ -52,22 +53,87 @@ class DirectedEdge final
 {
 public:
   DirectedEdge() = default;
-  DirectedEdge(Joint::Id from, Joint::Id to) : m_from(from), m_to(to) {}
+  DirectedEdge(Joint::Id from, Joint::Id to, uint32_t featureId)
+    : m_from(from), m_to(to), m_featureId(featureId)
+  {
+  }
 
   bool operator<(DirectedEdge const & rhs) const
   {
     if (m_from != rhs.m_from)
       return m_from < rhs.m_from;
-    return m_to < rhs.m_to;
+
+    if (m_to != rhs.m_to)
+      return m_to < rhs.m_to;
+
+    return m_featureId < rhs.m_featureId;
   }
 
   bool operator==(DirectedEdge const & rhs) const
   {
-    return m_from == rhs.m_from && m_to == rhs.m_to;
+    return m_from == rhs.m_from && m_to == rhs.m_to && m_featureId == rhs.m_featureId;
   }
 
   Joint::Id m_from = Joint::kInvalidId;
   Joint::Id m_to = Joint::kInvalidId;
+  uint32_t m_featureId = 0;
+};
+
+bool IsCompatable(DirectedEdge const & ingoing, DirectedEdge const & outgoing)
+{
+  return ingoing.m_to == outgoing.m_from;
+}
+
+class RestrictionInfo final
+{
+public:
+  RestrictionInfo() = default;
+  RestrictionInfo(Joint::Id from, Joint::Id to, Joint::Id center,
+                  uint32_t fromFeatureId, uint32_t toFeatureId)
+    : m_from(from), m_to(to), m_center(center),
+      m_fromFeatureId(fromFeatureId), m_toFeatureId(toFeatureId)
+  {
+  }
+
+  RestrictionInfo(DirectedEdge const & ingoing, DirectedEdge const & outgoing)
+    : m_from(ingoing.m_from), m_to(outgoing.m_to), m_center(ingoing.m_to),
+      m_fromFeatureId(ingoing.m_featureId), m_toFeatureId(outgoing.m_featureId)
+  {
+    CHECK_EQUAL(ingoing.m_to, outgoing.m_from, ());
+  }
+
+  bool operator<(RestrictionInfo const & rhs) const
+  {
+    if (m_from != rhs.m_from)
+      return m_from < rhs.m_from;
+
+    if (m_to != rhs.m_to)
+      return m_to < rhs.m_to;
+
+    if (m_center != rhs.m_center)
+      return m_center < rhs.m_center;
+
+    if (m_fromFeatureId != rhs.m_fromFeatureId)
+      return m_fromFeatureId < rhs.m_fromFeatureId;
+
+    return m_toFeatureId < rhs.m_toFeatureId;
+  }
+
+  bool operator==(RestrictionInfo const & rhs) const { return !(*this < rhs || rhs < *this); }
+
+  bool operator!=(RestrictionInfo const & rhs) const { return !(*this == rhs); }
+
+  pair<DirectedEdge, DirectedEdge> ToEdges()
+  {
+    return make_pair(DirectedEdge(m_from, m_center, m_fromFeatureId),
+                     DirectedEdge(m_center, m_to, m_toFeatureId));
+  }
+
+  Joint::Id m_from = Joint::kInvalidId;
+  Joint::Id m_to = Joint::kInvalidId;
+  Joint::Id m_center = Joint::kInvalidId;
+  uint32_t m_fromFeatureId = 0;
+  uint32_t m_toFeatureId = 0;
 };
 
 class IndexGraph final
@@ -130,16 +196,25 @@ public:
     return m_roadIndex.GetJointId(rp);
   }
 
-  /// \brief Disable all edges (one or more) between |from| and |to|.
+  /// \brief Disable an edges between |from| and |to| along |featureId|.
   /// \note Despite the fact that |from| and |to| could be connected with several edges
   /// it's a rare case. In most cases |from| and |to| are connected with only one edge
   /// if they are adjacent.
   /// \note The method doesn't affect routing if |from| and |to| are not adjacent or
   /// if one of them is equal to Joint::kInvalidId.
-  void DisableEdge(Joint::Id from, Joint::Id to)
+  void DisableEdge(DirectedEdge const & edge)
   {
-    m_blockedEdges.insert(DirectedEdge(from, to));
+    m_blockedEdges.insert(edge);
   }
+
+  void DisableAllEdges(Joint::Id from, Joint::Id to)
+  {
+    vector<pair<RoadPoint, RoadPoint>> result;
+    m_jointIndex.FindPointsWithCommonFeature(from, to, result);
+    for (auto const & p : result)
+      DisableEdge(DirectedEdge(from, to, p.first.GetFeatureId()));
+  }
+
   /// \brief Adding a fake oneway feature with a loose end starting from joint |from|.
   /// Geometry for the feature points is taken from |geometrySource|.
   /// If |geometrySource| contains more than two points the feature is created
@@ -153,24 +228,28 @@ public:
   /// \returns feature id which was added.
   uint32_t AddFakeFeature(Joint::Id from, Joint::Id to, vector<RoadPoint> const & geometrySource);
 
+  void ApplyRestrictionNo(RestrictionInfo const & restrictionInfo);
+
+  void ApplyRestrictionOnly(RestrictionInfo const & restrictionInfo);
+
   /// \brief Adds restriction to navigation graph which says that it's prohibited to go from
   /// |restrictionPoint.m_from| to |restrictionPoint.m_to|.
   /// \note |from| and |to| could be only begining or ending feature points and they has to belong
-  /// to
-  /// the same junction with |jointId|. That means features |from| and |to| has to be adjacent.
+  /// to the same junction with |jointId|. That means features |from| and |to| has to be adjacent.
   /// \note This method could be called only after |m_roadIndex| have been loaded with the help of
   /// Deserialize() or Import().
-  void ApplyRestrictionNo(RestrictionPoint const & restrictionPoint);
+  void ApplyRestrictionNoRealFeatures(RestrictionPoint const & restrictionPoint);
 
   /// \brief Adds restriction to navigation graph which says that from feature
   /// |restrictionPoint.m_from| it's permitted only
   /// to go to feature |restrictionPoint.m_to|. All other ways starting form
   /// |restrictionPoint.m_form| is prohibited.
-  /// \note All notes which are valid for ApplyRestrictionNo() is valid for ApplyRestrictionOnly().
-  void ApplyRestrictionOnly(RestrictionPoint const & restrictionPoint);
-
+  /// \note All notes which are valid for ApplyRestrictionNoRealFeatures()
+  /// is valid for ApplyRestrictionOnlyRealFeatures().
   void ApplyRestrictionOnlyRealFeatures(RestrictionPoint const & restrictionPoint);
-  void ApplyRestrictionNoRealFeatures(RestrictionPoint const & restrictionPoint);
+
+  void ApplyRestrictionRealFeatures(RestrictionPoint const & restrictionPoint,
+                                    function<void(RestrictionInfo const &)> && f);
 
   /// \brief Add restrictions in |restrictions| to |m_ftPointIndex|.
   void ApplyRestrictions(RestrictionVec const & restrictions);
@@ -215,6 +294,21 @@ public:
 
   bool IsFakeFeature(uint32_t featureId) const { return featureId >= kStartFakeFeatureIds; }
 
+  /// \brief Calls |f| for |directedEdge| if it's not blocked and recursively for every
+  /// non blocke edge in |m_edgeMapping|.
+  template<class F>
+  void ForEachNonBlockedEdgeMappingNode(DirectedEdge const & directedEdge, F && f) const
+  {
+    auto const it = m_edgeMapping.find(directedEdge);
+    if (it != m_edgeMapping.end())
+      ForEachNonBlockedEdgeMappingNode(it->second, forward<F>(f));
+
+    if (m_blockedEdges.count(directedEdge) != 0)
+      return;
+
+    f(directedEdge);
+  }
+
 private:
   void GetNeighboringEdge(RoadGeometry const & road, RoadPoint const & rp, bool forward, bool outgoing,
                           bool graphWithoutRestrictions, vector<JointEdge> & edges) const;
@@ -231,11 +325,12 @@ private:
                                  vector<JointEdge> const & edges,
                                  vector<Joint::Id> & oneStepAside) const;
 
+  bool GetIngoingAndOutgoingEdges(Joint::Id centerId, bool graphWithoutRestrictions,
+                                  vector<JointEdge> & ingoingEdges,
+                                  vector<JointEdge> & outgoingEdges);
+
   bool ApplyRestrictionPrepareData(RestrictionPoint const & restrictionPoint,
-                                   vector<JointEdge> & ingoingEdges,
-                                   vector<JointEdge> & outgoingEdges,
-                                   Joint::Id & fromFirstOneStepAside,
-                                   Joint::Id & toFirstOneStepAside);
+                                   RestrictionInfo & restrictionInfo);
 
   Geometry m_geometry;
   shared_ptr<EdgeEstimator> m_estimator;
@@ -248,24 +343,15 @@ private:
   map<uint32_t, RoadGeometry> m_fakeFeatureGeometry;
   // Adding restrictions leads to disabling some edges and adding others.
   // According to graph trasformation implemented in ApplyRestrictionNo() and
-  // ApplyRestrictionOnly() every |DirectedEdge| could (a pair of joints):
-  // * disappears at all (it's added in |m_blockedEdges| in that case)
+  // ApplyRestrictionOnly() every |DirectedEdge| (a pair of joints) could:
+  // * disappears at all (in that case it's added to |m_blockedEdges|)
   // * be transformed to another DirectedEdge. If so the mapping
-  //   is kept in |m_movedCrossings|.
-  // * be copied to another DirectedEdge. If so the mapping
-  //   form a directedEdge1 to (directedEdge1, directedEdge2) is kept in |m_edgeMapping|.
-  // See ApplyRestriction* method for a detailed comments.
-  //
-  // If it's necessary to apply a restriction with some RestrictionPoint with a real features id
-  // it's needed to perform the followig steps:
-  // * Any restriction(RestrictionPoint) composed of two edge(DirectedEdge). So it's necessary
-  //   to check if there's one of the edge in |m_edgeMapping|.
-  // * Neither of them there's in |m_edgeMapping| the restriction should be applied to the graph
-  //   as is.
-  // * If the first of them there's in |m_edgeMapping| all leaves of the first edge
-  //   in the forest |m_edgeMapping| should be found for it. And all restriction
-  //   starting from the leaves edge and finishing the second edge of the RestrictionPoint
-  //   should be applied.
-  map<DirectedEdge, vector<DirectedEdge>> m_edgeMapping;
+  //   is kept in |m_movedCrossings| and source edge is blocked (added to |m_blockedEdges|).
+  // * be transformed two DirectedEdge. If so the mapping is kept in |m_movedCrossings|
+  //   and the source edge is not blocked.
+  // See ApplyRestriction* method for a detailed comments about trasformation rules.
+  map<DirectedEdge, DirectedEdge> m_edgeMapping;
 };
+
+string DebugPrint(DirectedEdge const & directedEdge);
 }  // namespace routing

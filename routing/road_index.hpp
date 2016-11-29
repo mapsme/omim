@@ -26,10 +26,6 @@ public:
   {
   }
 
-  RoadPoint m_from;
-  RoadPoint m_to;
-  Joint::Id m_centerId = Joint::kInvalidId;
-
   bool operator<(RestrictionPoint const & rhs) const
   {
     if (m_from != rhs.m_from)
@@ -44,6 +40,10 @@ public:
   bool operator==(RestrictionPoint const & rhs) const { return !(*this < rhs || rhs < *this); }
 
   bool operator!=(RestrictionPoint const & rhs) const { return !(*this == rhs); }
+
+  RoadPoint m_from;
+  RoadPoint m_to;
+  Joint::Id m_centerId = Joint::kInvalidId;
 };
 
 class RoadJointIds final
