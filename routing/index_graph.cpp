@@ -47,16 +47,16 @@ void IndexGraph::Import(vector<Joint> const & joints)
   Build(static_cast<uint32_t>(joints.size()));
 }
 
-void IndexGraph::GetSingleFeaturePath(RoadPoint from, RoadPoint to,
-                                      vector<RoadPoint> & singleFeaturePath)
+void IndexGraph::GetSingleFeaturePath(RoadPoint const & from, RoadPoint const & to,
+                                      vector<RoadPoint> & path)
 {
   CHECK_EQUAL(from.GetFeatureId(), to.GetFeatureId(), ());
 
-  singleFeaturePath.clear();
+  path.clear();
   int const shift = to.GetPointId() > from.GetPointId() ? 1 : -1;
   for (uint32_t i = from.GetPointId(); i != to.GetPointId(); i += shift)
-    singleFeaturePath.emplace_back(from.GetFeatureId(), i);
-  singleFeaturePath.push_back(to);
+    path.emplace_back(from.GetFeatureId(), i);
+  path.push_back(to);
 }
 
 void IndexGraph::GetConnectionPaths(Joint::Id from, Joint::Id to,
@@ -118,29 +118,24 @@ void IndexGraph::GetOutgoingGeomEdges(vector<JointEdge> const & outgoingEdges, J
 }
 
 void IndexGraph::CreateFakeFeatureGeometry(vector<RoadPoint> const & geometrySource,
-                                           RoadGeometry & geometry)
+                                           double speed, RoadGeometry & geometry)
 {
-  double averageSpeed = 0.0;
   RoadGeometry::Points points(geometrySource.size());
   for (size_t i = 0; i < geometrySource.size(); ++i)
-  {
-    RoadPoint const rp = geometrySource[i];
-    averageSpeed += GetSpeed(rp) / geometrySource.size();
-    points[i] = GetPoint(rp);
-  }
+    points[i] = GetPoint(geometrySource[i]);
 
-  geometry = RoadGeometry(true /* oneWay */, averageSpeed, points);
+  geometry = RoadGeometry(true /* oneWay */, speed, points);
 }
 
-uint32_t IndexGraph::AddFakeLooseEndFeature(Joint::Id from,
-                                            vector<RoadPoint> const & geometrySource)
+uint32_t IndexGraph::AddFakeLooseEndFeature(Joint::Id from, vector<RoadPoint> const & geometrySource,
+                                            double speed)
 {
   CHECK_LESS(from, m_jointIndex.GetNumJoints(), ());
   CHECK_GREATER(geometrySource.size(), 1, ());
 
   // Getting fake feature geometry.
   RoadGeometry geom;
-  CreateFakeFeatureGeometry(geometrySource, geom);
+  CreateFakeFeatureGeometry(geometrySource, speed, geom);
   m_fakeFeatureGeometry.insert(make_pair(m_nextFakeFeatureId, geom));
 
   RoadPoint const fromFakeFtPoint(m_nextFakeFeatureId, 0 /* point id */);
@@ -151,13 +146,13 @@ uint32_t IndexGraph::AddFakeLooseEndFeature(Joint::Id from,
 }
 
 uint32_t IndexGraph::AddFakeFeature(Joint::Id from, Joint::Id to,
-                                    vector<RoadPoint> const & geometrySource)
+                                    vector<RoadPoint> const & geometrySource, double speed)
 {
   CHECK_LESS(from, m_jointIndex.GetNumJoints(), ());
   CHECK_LESS(to, m_jointIndex.GetNumJoints(), ());
   CHECK_GREATER(geometrySource.size(), 1, ());
 
-  uint32_t fakeFeatureId = AddFakeLooseEndFeature(from, geometrySource);
+  uint32_t fakeFeatureId = AddFakeLooseEndFeature(from, geometrySource, speed);
   RoadPoint const toFakeFtPoint(fakeFeatureId, geometrySource.size() - 1 /* point id */);
   m_roadIndex.AddJoint(toFakeFtPoint, to);
   m_jointIndex.AppendToJoint(to, toFakeFtPoint);
@@ -363,7 +358,8 @@ void IndexGraph::ApplyRestrictionNo(RestrictionInfo const & restrictionInfo)
       }
 
       // Ingoing edge.
-      ingoingFeatureId = AddFakeLooseEndFeature(restrictionInfo.m_from, ingoingEdge.GetPath());
+      ingoingFeatureId = AddFakeLooseEndFeature(restrictionInfo.m_from, ingoingEdge.GetPath(),
+                                                GetRoad(restrictionInfo.m_fromFeatureId).GetSpeed());
       newJoint =
           InsertJoint({ingoingFeatureId, static_cast<uint32_t>(ingoingEdge.GetPath().size() - 1)});
 
@@ -371,7 +367,8 @@ void IndexGraph::ApplyRestrictionNo(RestrictionInfo const & restrictionInfo)
       m_edgeMapping.insert(make_pair(from, DirectedEdge(restrictionInfo.m_from, newJoint, ingoingFeatureId)));
     }
 
-    outgoingFeatureId = AddFakeFeature(newJoint, it->GetTarget(), it->GetPath());
+    outgoingFeatureId = AddFakeFeature(newJoint, it->GetTarget(), it->GetPath(),
+                                       GetSpeed(it->GetPath().front()));
     // Edge mapping.
     DirectedEdge const toItEdge(centerId, it->GetTarget(), it->GetPath().front().GetFeatureId());
     m_edgeMapping.insert(make_pair(toItEdge, DirectedEdge(newJoint, it->GetTarget(), outgoingFeatureId)));
@@ -449,9 +446,11 @@ void IndexGraph::ApplyRestrictionOnly(RestrictionInfo const & restrictionInfo)
   if (ingoingPath.size() < 2 /* at least two points in path */)
     return;
 
-  uint32_t ingoingFeatureId = AddFakeLooseEndFeature(restrictionInfo.m_from, ingoingPath);
+  uint32_t ingoingFeatureId = AddFakeLooseEndFeature(restrictionInfo.m_from, ingoingPath,
+                                                     GetRoad(restrictionInfo.m_fromFeatureId).GetSpeed());
   Joint::Id newJoint = InsertJoint({ingoingFeatureId, static_cast<uint32_t>(ingoingPath.size() - 1)});
-  uint32_t outgoingFeatureId = AddFakeFeature(newJoint, restrictionInfo.m_to, outgoingPath);
+  uint32_t outgoingFeatureId = AddFakeFeature(newJoint, restrictionInfo.m_to, outgoingPath,
+                                              GetRoad(restrictionInfo.m_toFeatureId).GetSpeed());
 
   // Edge mapping.
   DirectedEdge const from(restrictionInfo.m_from, centerId, restrictionInfo.m_fromFeatureId);
@@ -477,7 +476,7 @@ void IndexGraph::ApplyRestrictions(RestrictionVec const & restrictions)
     if (!m_roadIndex.GetAdjacentFtPoint(restriction.m_featureIds[0], restriction.m_featureIds[1],
                                         restrictionPoint))
     {
-      continue;  // Restriction is not contain adjacent features.
+      continue;  // Restriction doesn't contain adjacent features.
     }
 
     try
@@ -551,7 +550,7 @@ void IndexGraph::GetNeighboringEdge(RoadGeometry const & road, RoadPoint const &
 
   double const distance = m_estimator->CalcEdgesWeight(rp.GetFeatureId(), road,
                                                        rp.GetPointId(), neighbor.second);
-  edges.push_back({neighbor.first, distance});
+  edges.emplace_back(neighbor.first, distance);
 }
 
 RoadGeometry const & IndexGraph::GetRoad(uint32_t featureId)

@@ -56,13 +56,13 @@ unique_ptr<IndexGraph> BuildTriangularGraph()
 {
   unique_ptr<TestGeometryLoader> loader = make_unique<TestGeometryLoader>();
   loader->AddRoad(0 /* featureId */, true /* oneWay */, 1.0 /* speed */,
-                  buffer_vector<m2::PointD, 32>({{0.0, 0.0}, {0.0, 2.0}}));
+                  RoadGeometry::Points({{0.0, 0.0}, {0.0, 2.0}}));
   loader->AddRoad(1 /* featureId */, true /* oneWay */, 1.0 /* speed */,
-                  buffer_vector<m2::PointD, 32>({{1.0, 1.0}, {0.0, 2.0}}));
+                  RoadGeometry::Points({{1.0, 1.0}, {0.0, 2.0}}));
   loader->AddRoad(2 /* featureId */, true /* oneWay */, 1.0 /* speed */,
-                  buffer_vector<m2::PointD, 32>({{0.0, 2.0}, {1.0, 1.0}}));
+                  RoadGeometry::Points({{0.0, 2.0}, {1.0, 1.0}}));
   loader->AddRoad(3 /* featureId */, true /* oneWay */, 1.0 /* speed */,
-                  buffer_vector<m2::PointD, 32>({{2.0, 0.0}, {1.0, 0.0}, {0.0, 0.0}}));
+                  RoadGeometry::Points({{2.0, 0.0}, {1.0, 0.0}, {0.0, 0.0}}));
 
   vector<Joint> const joints = {
       MakeJoint({{2, 0}, {3, 0}}), /* joint at point (2, 0) */
@@ -130,9 +130,9 @@ unique_ptr<IndexGraph> BuildCornerGraph()
 {
   unique_ptr<TestGeometryLoader> loader = make_unique<TestGeometryLoader>();
   loader->AddRoad(0 /* feature id */, true /* oneWay */, 1.0 /* speed */,
-                  buffer_vector<m2::PointD, 32>({{0.0, 0.0}, {0.0, 2.0}}));
+                  RoadGeometry::Points({{0.0, 0.0}, {0.0, 2.0}}));
   loader->AddRoad(1 /* feature id */, true /* oneWay */, 1.0 /* speed */,
-                  buffer_vector<m2::PointD, 32>({{2.0, 0.0}, {1.0, 0.0}, {0.0, 0.0}}));
+                  RoadGeometry::Points({{2.0, 0.0}, {1.0, 0.0}, {0.0, 0.0}}));
 
   vector<Joint> const joints = {MakeJoint({{1 /* feature id */, 2 /* point id */}, {0, 0}}),
                                 /* joint at point (0, 0) */};
@@ -170,10 +170,10 @@ UNIT_TEST(CornerGraph_CreateFakeFeature1Geometry)
   vector<RoadPoint> const expectedDirectOrder = {{1, 0}, {1, 1}, {1, 2}};
   TEST_EQUAL(oneEdgeConnectionPaths[0], expectedDirectOrder, ());
   RoadGeometry geometryDirect;
-  graph->CreateFakeFeatureGeometry(oneEdgeConnectionPaths[0], geometryDirect);
+  graph->CreateFakeFeatureGeometry(oneEdgeConnectionPaths[0], 1.0 /* speed */, geometryDirect);
   RoadGeometry expectedGeomentryDirect(
       true /* one way */, 1.0 /* speed */,
-      buffer_vector<m2::PointD, 32>({{2.0, 0.0}, {1.0, 0.0}, {0.0, 0.0}}));
+      RoadGeometry::Points({{2.0, 0.0}, {1.0, 0.0}, {0.0, 0.0}}));
   TEST_EQUAL(geometryDirect, expectedGeomentryDirect, ());
 }
 
@@ -190,10 +190,10 @@ UNIT_TEST(CornerGraph_CreateFakeReversedFeature1Geometry)
   vector<RoadPoint> const expectedBackOrder = {{1, 2}, {1, 1}, {1, 0}};
   TEST_EQUAL(oneEdgeConnectionPaths[0], expectedBackOrder, ());
   RoadGeometry geometryBack;
-  graph->CreateFakeFeatureGeometry(oneEdgeConnectionPaths[0], geometryBack);
+  graph->CreateFakeFeatureGeometry(oneEdgeConnectionPaths[0], 1.0 /* speed */, geometryBack);
   RoadGeometry expectedGeomentryBack(
       true /* one way */, 1.0 /* speed */,
-      buffer_vector<m2::PointD, 32>({{0.0, 0.0}, {1.0, 0.0}, {2.0, 0.0}}));
+      RoadGeometry::Points({{0.0, 0.0}, {1.0, 0.0}, {2.0, 0.0}}));
   TEST_EQUAL(geometryBack, expectedGeomentryBack, ());
 }
 
@@ -205,7 +205,7 @@ UNIT_TEST(CornerGraph_AddFakeFeature)
   unique_ptr<IndexGraph> graph = BuildCornerGraph();
 
   graph->AddFakeFeature(graph->GetJointIdForTesting(kStart), graph->GetJointIdForTesting(kFinish),
-                        {kStart, kFinish} /* geometrySource */);
+                        {kStart, kFinish} /* geometrySource */, 1.0 /* speed */);
 
   IndexGraphStarter starter(*graph, kStart, kFinish);
   vector<RoadPoint> const expectedRouteByFakeFeature = {
@@ -232,19 +232,19 @@ unique_ptr<IndexGraph> BuildTwoSquaresGraph()
 {
   unique_ptr<TestGeometryLoader> loader = make_unique<TestGeometryLoader>();
   loader->AddRoad(0 /* feature id */, true /* oneWay */, 1.0 /* speed */,
-                  buffer_vector<m2::PointD, 32>({{0.0, 0.0}, {0.0, 2.0}}));
+                  RoadGeometry::Points({{0.0, 0.0}, {0.0, 2.0}}));
   loader->AddRoad(1 /* feature id */, true /* oneWay */, 1.0 /* speed */,
-                  buffer_vector<m2::PointD, 32>({{1.0, 0.0}, {1.0, 1.0}, {1.0, 2.0}}));
+                  RoadGeometry::Points({{1.0, 0.0}, {1.0, 1.0}, {1.0, 2.0}}));
   loader->AddRoad(2 /* feature id */, true /* oneWay */, 1.0 /* speed */,
-                  buffer_vector<m2::PointD, 32>({{2.0, 0.0}, {2.0, 1.0}, {2.0, 2.0}}));
+                  RoadGeometry::Points({{2.0, 0.0}, {2.0, 1.0}, {2.0, 2.0}}));
   loader->AddRoad(3 /* feature id */, true /* oneWay */, 1.0 /* speed */,
-                  buffer_vector<m2::PointD, 32>({{2.0, 0.0}, {1.0, 0.0}}));
+                  RoadGeometry::Points({{2.0, 0.0}, {1.0, 0.0}}));
   loader->AddRoad(4 /* feature id */, true /* oneWay */, 1.0 /* speed */,
-                  buffer_vector<m2::PointD, 32>({{1.0, 0.0}, {0.0, 0.0}}));
+                  RoadGeometry::Points({{1.0, 0.0}, {0.0, 0.0}}));
   loader->AddRoad(5 /* feature id */, true /* oneWay */, 1.0 /* speed */,
-                  buffer_vector<m2::PointD, 32>({{1.0, 2.0}, {0.0, 2.0}}));
+                  RoadGeometry::Points({{1.0, 2.0}, {0.0, 2.0}}));
   loader->AddRoad(6 /* feature id */, true /* oneWay */, 1.0 /* speed */,
-                  buffer_vector<m2::PointD, 32>({{2.0, 2.0}, {1.0, 2.0}}));
+                  RoadGeometry::Points({{2.0, 2.0}, {1.0, 2.0}}));
 
   vector<Joint> const joints = {
       MakeJoint({{4 /* featureId */, 1 /* pointId */}, {0, 0}}), /* joint at point (0, 0) */
@@ -283,7 +283,7 @@ UNIT_TEST(TwoSquaresGraph_AddFakeFeatureZero)
   unique_ptr<IndexGraph> graph = BuildTwoSquaresGraph();
   graph->AddFakeFeature(graph->InsertJoint({2 /* feature id */, 1 /* point id */}),
                         graph->GetJointIdForTesting({6 /* feature id */, 1 /* point id */}),
-                        {{2, 1}, {6, 1}} /* geometrySource */);
+                        {{2, 1}, {6, 1}} /* geometrySource */, 1.0 /* speed */);
 
   vector<RoadPoint> const starts = {{2 /* feature id */, 0 /* point id */}, {2, 0}, {2, 0}};
   vector<RoadPoint> const finishes = {{6 /* feature id */, 0 /* point id */}, {6, 1}, {5, 1}};
@@ -305,13 +305,13 @@ UNIT_TEST(TwoSquaresGraph_AddFakeFeatureZeroOneTwo)
   // Adding features: Fake 0, Fake 1 and Fake 2.
   graph->AddFakeFeature(graph->InsertJoint({2 /* feature id */, 1 /* point id */}),
                         graph->GetJointIdForTesting({6 /* feature id */, 1 /* point id */}),
-                        {{2, 1}, {6, 1}} /* geometrySource */);
+                        {{2, 1}, {6, 1}} /* geometrySource */, 1.0 /* speed */);
   graph->AddFakeFeature(graph->InsertJoint({1 /* feature id */, 1 /* point id */}),
                         graph->GetJointIdForTesting({5 /* feature id */, 1 /* point id */}),
-                        {{1, 1}, {5, 1}} /* geometrySource */);
+                        {{1, 1}, {5, 1}} /* geometrySource */, 1.0 /* speed */);
   graph->AddFakeFeature(graph->GetJointIdForTesting({2 /* feature id */, 0 /* point id */}),
                         graph->GetJointIdForTesting({1 /* feature id */, 1 /* point id */}),
-                        {{2, 0}, {1, 1}} /* geometrySource */);
+                        {{2, 0}, {1, 1}} /* geometrySource */, 1.0 /* speed */);
 
   vector<RoadPoint> const starts = {{2 /* feature id */, 0 /* point id */}, {2, 0}, {2, 0}};
   vector<RoadPoint> const finishes = {{6 /* feature id */, 0 /* point id */}, {6, 1}, {5, 1}};
@@ -348,17 +348,17 @@ unique_ptr<IndexGraph> BuildFlagGraph()
 {
   unique_ptr<TestGeometryLoader> loader = make_unique<TestGeometryLoader>();
   loader->AddRoad(0 /* feature id */, false /* one way */, 1.0 /* speed */,
-                  buffer_vector<m2::PointD, 32>({{2.0, 0.0}, {1.0, 0.0}}));
+                  RoadGeometry::Points({{2.0, 0.0}, {1.0, 0.0}}));
   loader->AddRoad(1 /* feature id */, false /* one way */, 1.0 /* speed */,
-                  buffer_vector<m2::PointD, 32>({{1.0, 0.0}, {0.0, 0.0}}));
+                  RoadGeometry::Points({{1.0, 0.0}, {0.0, 0.0}}));
   loader->AddRoad(2 /* feature id */, false /* one way */, 1.0 /* speed */,
-                  buffer_vector<m2::PointD, 32>({{0.0, 0.0}, {0.0, 1.0}}));
+                  RoadGeometry::Points({{0.0, 0.0}, {0.0, 1.0}}));
   loader->AddRoad(3 /* feature id */, false /* one way */, 1.0 /* speed */,
-                  buffer_vector<m2::PointD, 32>({{1.0, 0.0}, {1.0, 1.0}}));
+                  RoadGeometry::Points({{1.0, 0.0}, {1.0, 1.0}}));
   loader->AddRoad(4 /* feature id */, false /* one way */, 1.0 /* speed */,
-                  buffer_vector<m2::PointD, 32>({{0.0, 1.0}, {0.5, 1.0}}));
+                  RoadGeometry::Points({{0.0, 1.0}, {0.5, 1.0}}));
   loader->AddRoad(5 /* feature id */, false /* one way */, 1.0 /* speed */,
-                  buffer_vector<m2::PointD, 32>({{0.5, 1.0}, {1.0, 1.0}}));
+                  RoadGeometry::Points({{0.5, 1.0}, {1.0, 1.0}}));
 
   vector<Joint> const joints = {
       MakeJoint({{1 /* feature id */, 1 /* point id */}, {2, 0}}), /* joint at point (0, 0) */
@@ -444,19 +444,19 @@ unique_ptr<IndexGraph> BuildPosterGraph()
 {
     unique_ptr<TestGeometryLoader> loader = make_unique<TestGeometryLoader>();
     loader->AddRoad(0 /* feature id */, false /* one way */, 1.0 /* speed */,
-                    buffer_vector<m2::PointD, 32>({{2.0, 0.0}, {1.0, 0.0}}));
+                    RoadGeometry::Points({{2.0, 0.0}, {1.0, 0.0}}));
     loader->AddRoad(1 /* feature id */, false /* one way */, 1.0 /* speed */,
-                    buffer_vector<m2::PointD, 32>({{1.0, 0.0}, {0.0, 0.0}}));
+                    RoadGeometry::Points({{1.0, 0.0}, {0.0, 0.0}}));
     loader->AddRoad(2 /* feature id */, false /* one way */, 1.0 /* speed */,
-                    buffer_vector<m2::PointD, 32>({{0.0, 0.0}, {0.0, 1.0}}));
+                    RoadGeometry::Points({{0.0, 0.0}, {0.0, 1.0}}));
     loader->AddRoad(3 /* feature id */, false /* one way */, 1.0 /* speed */,
-                    buffer_vector<m2::PointD, 32>({{1.0, 0.0}, {1.0, 1.0}}));
+                    RoadGeometry::Points({{1.0, 0.0}, {1.0, 1.0}}));
     loader->AddRoad(4 /* feature id */, false /* one way */, 1.0 /* speed */,
-                    buffer_vector<m2::PointD, 32>({{0.0, 1.0}, {0.5, 1.0}}));
+                    RoadGeometry::Points({{0.0, 1.0}, {0.5, 1.0}}));
     loader->AddRoad(5 /* feature id */, false /* one way */, 1.0 /* speed */,
-                    buffer_vector<m2::PointD, 32>({{0.5, 1.0}, {1.0, 1.0}}));
+                    RoadGeometry::Points({{0.5, 1.0}, {1.0, 1.0}}));
     loader->AddRoad(6 /* feature id */, false /* one way */, 1.0 /* speed */,
-                    buffer_vector<m2::PointD, 32>({{1.0, 1.0}, {2.0, 1.0}}));
+                    RoadGeometry::Points({{1.0, 1.0}, {2.0, 1.0}}));
 
   vector<Joint> const joints = {
       MakeJoint({{1 /* feature id */, 1 /* point id */}, {2, 0}}), /* joint at point (0, 0) */
@@ -538,10 +538,10 @@ unique_ptr<IndexGraph> BuildTwoWayGraph()
 {
   unique_ptr<TestGeometryLoader> loader = make_unique<TestGeometryLoader>();
   loader->AddRoad(0 /* feature id */, true /* oneWay */, 1.0 /* speed */,
-                  buffer_vector<m2::PointD, 32>({{0.0, 0.0}, {1.0, 0.0}, {3.0, 0}}));
+                  RoadGeometry::Points({{0.0, 0.0}, {1.0, 0.0}, {3.0, 0}}));
   loader->AddRoad(
       1 /* feature id */, true /* oneWay */, 1.0 /* speed */,
-      buffer_vector<m2::PointD, 32>({{0.0, 0.0}, {1.0, 1.0}, {2.0, 1.0}, {3.0, 0.0}}));
+      RoadGeometry::Points({{0.0, 0.0}, {1.0, 1.0}, {2.0, 1.0}, {3.0, 0.0}}));
 
   vector<Joint> const joints = {
       MakeJoint({{0 /* feature id */, 0 /* point id */}, {1, 0}}), /* joint at point (0, 0) */

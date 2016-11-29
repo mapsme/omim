@@ -34,7 +34,7 @@ void TestRoute(IndexGraph & graph, RoadPoint const & start, RoadPoint const & fi
 {
   vector<RoadPoint> route;
   IndexGraphStarter starter(graph, start, finish);
-  AStarAlgorithm<IndexGraphStarter>::Result const resultCode = CalculateRoute(starter, route);
+  auto const resultCode = CalculateRoute(starter, route);
 
   TEST_EQUAL(resultCode, AStarAlgorithm<IndexGraphStarter>::Result::OK, ());
   TEST_EQUAL(route.size(), expectedLength, ());

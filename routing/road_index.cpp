@@ -24,16 +24,22 @@ bool RoadIndex::GetAdjacentFtPoint(uint32_t featureIdFrom, uint32_t featureIdTo,
 {
   auto const fromIt = m_roads.find(featureIdFrom);
   if (fromIt == m_roads.cend())
+  {
+    LOG(LERROR, ("Cannot find in |m_roads| featureIdFrom =", featureIdFrom));
     return false;
+  }
 
   auto const toIt = m_roads.find(featureIdTo);
   if (toIt == m_roads.cend())
+  {
+    LOG(LERROR, ("Cannot find in |m_roads| toIt =", featureIdTo));
     return false;
+  }
 
   RoadJointIds const & roadJointIdsFrom = fromIt->second;
   RoadJointIds const & roadJointIdsTo = toIt->second;
-  if (roadJointIdsFrom.GetSize() == 0 || roadJointIdsTo.GetSize() == 0)
-    return false;  // No sence in restrictions on features without joints.
+  if (roadJointIdsFrom.GetSize() == 0 || roadJointIdsTo.IsEmpty())
+    return false;  // No sense in restrictions on features without joints.
 
   // Note. It's important to check other variant besides a restriction from last segment
   // of featureIdFrom to first segment of featureIdTo since two way features can have
@@ -86,7 +92,7 @@ string DebugPrint(RestrictionPoint const & crossingPoint)
   ostringstream out;
   out << "CrossingPoint [ m_from: " << DebugPrint(crossingPoint.m_from)
       << " m_to: " << DebugPrint(crossingPoint.m_to) << " m_centerId: " << crossingPoint.m_centerId
-      << " ]" << endl;
+      << " ]";
   return out.str();
 }
 }  // namespace routing

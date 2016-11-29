@@ -57,7 +57,7 @@ void TestRouteSegments(IndexGraphStarter & starter,
                        vector<RoadPoint> const & expectedRoute)
 {
   vector<RoadPoint> route;
-  AStarAlgorithm<IndexGraphStarter>::Result const resultCode = CalculateRoute(starter, route);
+  auto const resultCode = CalculateRoute(starter, route);
   TEST_EQUAL(resultCode, expectedRouteResult, ());
   TEST_EQUAL(route, expectedRoute, ());
 }

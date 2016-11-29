@@ -79,7 +79,7 @@ public:
   uint32_t m_featureId = 0;
 };
 
-bool IsCompatable(DirectedEdge const & ingoing, DirectedEdge const & outgoing)
+inline bool IsCompatable(DirectedEdge const & ingoing, DirectedEdge const & outgoing)
 {
   return ingoing.m_to == outgoing.m_from;
 }
@@ -220,13 +220,15 @@ public:
   /// If |geometrySource| contains more than two points the feature is created
   /// with intermediate (not joint) point(s).
   /// \returns feature id which was added.
-  uint32_t AddFakeLooseEndFeature(Joint::Id from, vector<RoadPoint> const & geometrySource);
+  uint32_t AddFakeLooseEndFeature(Joint::Id from, vector<RoadPoint> const & geometrySource,
+                                  double speed);
 
   /// \brief Connects joint |from| and |to| with a fake oneway feature. Geometry for the feature
   /// points is taken from |geometrySource|. If |geometrySource| contains more than
   /// two points the feature is created with intermediate (not joint) point(s).
   /// \returns feature id which was added.
-  uint32_t AddFakeFeature(Joint::Id from, Joint::Id to, vector<RoadPoint> const & geometrySource);
+  uint32_t AddFakeFeature(Joint::Id from, Joint::Id to, vector<RoadPoint> const & geometrySource,
+                          double speed);
 
   void ApplyRestrictionNo(RestrictionInfo const & restrictionInfo);
 
@@ -254,10 +256,11 @@ public:
   /// \brief Add restrictions in |restrictions| to |m_ftPointIndex|.
   void ApplyRestrictions(RestrictionVec const & restrictions);
 
-  /// \brief Fills |singleFeaturePath| with points from point |from| to point |to|
+  /// \brief Fills |path| with points from point |from| to point |to|
   /// \note |from| and |to| should belong to the same feature.
   /// \note The order on points in items of |connectionPaths| is from |from| to |to|.
-  void GetSingleFeaturePath(RoadPoint from, RoadPoint to, vector<RoadPoint> & singleFeaturePath);
+  void GetSingleFeaturePath(RoadPoint const & from, RoadPoint const & to,
+                            vector<RoadPoint> & path);
 
   /// \brief  Fills |connectionPaths| with all path from joint |from| to joint |to|.
   /// If |from| and |to| don't belong to the same feature |connectionPaths| an exception
@@ -277,7 +280,8 @@ public:
   void GetOutgoingGeomEdges(vector<JointEdge> const & outgoingEdges, Joint::Id center,
                             vector<JointEdgeGeom> & outgoingGeomEdges);
 
-  void CreateFakeFeatureGeometry(vector<RoadPoint> const & geometrySource, RoadGeometry & geometry);
+  void CreateFakeFeatureGeometry(vector<RoadPoint> const & geometrySource, double speed,
+                                 RoadGeometry & geometry);
 
   /// \returns RoadGeometry by a real or fake featureId.
   RoadGeometry const & GetRoad(uint32_t featureId);
