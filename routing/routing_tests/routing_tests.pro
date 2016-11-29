@@ -27,6 +27,7 @@ SOURCES += \
   astar_router_test.cpp \
   async_router_test.cpp \
   cross_routing_tests.cpp \
+  cumulative_restriction_test.cpp \
   followed_polyline_test.cpp \
   index_graph_test.cpp \
   index_graph_tools.cpp \
