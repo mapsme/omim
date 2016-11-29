@@ -45,7 +45,7 @@ string DebugPrint(Restriction const & restriction)
 {
   ostringstream out;
   out << "Restriction [ m_featureIds: " << ::DebugPrint(restriction.m_featureIds)
-      << " m_type: " << DebugPrint(restriction.m_type) << " ]" << endl;
+      << " m_type: " << DebugPrint(restriction.m_type) << " ]";
   return out.str();
 }
 }  // namespace routing

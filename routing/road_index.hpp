@@ -119,6 +119,8 @@ public:
 
   size_t GetSize() const { return m_jointIds.size(); }
 
+  size_t IsEmpty() const { return m_jointIds.empty(); }
+
   template <class Sink>
   void Serialize(Sink & sink) const
   {
