@@ -123,3 +123,18 @@ UNIT_TEST(Feature_Metadata_RegionData_Languages)
     TEST(!rd.IsSingleLanguage(StringUtf8Multilang::GetLangIndex("en")), ());
   }
 }
+
+UNIT_TEST(Feature_Metadata_Fuel)
+{
+  Metadata m;
+  Metadata::EType const fuelType = Metadata::FMD_FUEL;
+  m.Add(fuelType, "lpg");
+  TEST_EQUAL(m.Get(fuelType), "lpg", ());
+  m.Add(fuelType, "95");
+  m.Add(fuelType, "diesel");
+  TEST_EQUAL(m.Get(fuelType), "lpg\00195\001diesel", ());
+  vector<string> types;
+  m.GetVector(fuelType, types);
+  vector<string> expectedTypes({"lpg", "95", "diesel"});
+  TEST_EQUAL(types, expectedTypes, ());
+}

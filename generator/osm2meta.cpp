@@ -279,3 +279,27 @@ string MetadataTagProcessorImpl::ValidateAndFormat_wikipedia(string v) const
   replace(normalized.begin() + colonIndex, normalized.end(), '_', ' ');
   return normalized;
 }
+
+string MetadataTagProcessorImpl::ValidateAndFormat_fuel(string const & k, string const & v) const
+{
+  if (v != "yes")
+    return string();
+  string const fuel = k.substr(5);  // Cut "fuel:" prefix.
+
+  static StringIL fuelValues = {"diesel", "GTL_diesel", "HGV_diesel", "biodiesel",
+                                "e10", "e20", "e85", "1_25", "1_50", "biogas",
+                                "lpg", "cng", "electricity", "adblue"};
+  uint64_t octane;
+  if (fuel.substr(0, 7) == "octane_" && strings::to_uint64(fuel.substr(7), octane))
+  {
+    if (octane >= 80 && octane <= 100)
+      return fuel.substr(7);
+  }
+  for (auto const & value : fuelValues)
+    if (value == fuel)
+      return fuel;
+  if (fuel == "diesel_B")
+    return "biodiesel";
+  LOG(LDEBUG, ("Welp, fuel undetected:", k));
+  return string();
+}
