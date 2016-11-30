@@ -1010,4 +1010,28 @@
 	<string name="whatsnew_uber_message">Order a taxi directly from the app!</string>
 	<string name="dialog_taxi_offline">Taxi ordering is unavailable in offline mode.</string>
 	<string name="dialog_taxi_error">Taxi ordering is temporarily unavailable.</string>
+	<!-- december -->
+	<string name="whatsnew_traffic">Traffic Data in 36 Countries</string>
+	<!-- december -->
+	<string name="whatsnew_traffic_text">Up-to-date traffic info and fastest driving routes based on it!</string>
+	<!-- december -->
+	<string name="whatsnew_traffic_roaming">Traffic Info in Roaming</string>
+	<!-- december -->
+	<string name="whatsnew_traffic_roaming_text">Requires less than 1 MB of mobile bandwidth per trip.</string>
+	<!-- december -->
+	<string name="whatsnew_order_taxi">Order a Taxi</string>
+	<!-- december -->
+	<string name="whatsnew_order_taxi_text">Most of the location pages now contain a button for ordering a taxi.</string>
+	<!-- january -->
+	<string name="whatsnew_improved_search">Improved Search</string>
+	<!-- january -->
+	<string name="whatsnew_improved_search_text">Even misspelled queries bring accurate search results.</string>
+	<!-- january -->
+	<string name="whatsnew_filters_in_search">Search Filters</string>
+	<!-- january -->
+	<string name="whatsnew_filters_in_search_text">Search hotels based on price and rating.</string>
+	<!-- january -->
+	<string name="whatsnew_font_size">Font Size</string>
+	<!-- january -->
+	<string name="whatsnew_font_size_text">Labels on the map can be made bigger.</string>
 </resources>
