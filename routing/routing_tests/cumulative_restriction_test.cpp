@@ -317,7 +317,7 @@ UNIT_TEST(XXGraph_RestrictionF1F3NoF7F8OnlyF8F4OnlyF4F6Only)
   Joint::Id const restictionF4F6Id = graph->GetJointIdForTesting(
       {4 /* feature id */, 1 /* point id */});
   graph->ApplyRestrictionOnlyRealFeatures(RestrictionPoint({4 /* feature id */, 1 /* point id */},
-                                          {6, 0}, restictionF8F4Id));
+                                          {6, 0}, restictionF4F6Id));
 
   IndexGraphStarter starter(*graph, RoadPoint(1, 0) /* start */, RoadPoint(6, 1) /* finish */);
   vector<m2::PointD> const expectedGeom = {{2 /* x */, 0 /* y */}, {3, 0}, {3, 1}, {2, 2}, {3, 3}};

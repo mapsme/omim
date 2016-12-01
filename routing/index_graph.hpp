@@ -295,7 +295,10 @@ public:
   {
     auto const it = m_edgeMapping.find(directedEdge);
     if (it != m_edgeMapping.end())
-      ForEachNonBlockedEdgeMappingNode(it->second, forward<F>(f));
+    {
+      for (DirectedEdge const & e : it->second)
+        ForEachNonBlockedEdgeMappingNode(e, forward<F>(f));
+    }
 
     if (m_blockedEdges.count(directedEdge) != 0)
       return;
@@ -344,7 +347,7 @@ private:
   // * be transformed two DirectedEdge. If so the mapping is kept in |m_movedCrossings|
   //   and the source edge is not blocked.
   // See ApplyRestriction* method for a detailed comments about trasformation rules.
-  map<DirectedEdge, DirectedEdge> m_edgeMapping;
+  map<DirectedEdge, vector<DirectedEdge>> m_edgeMapping;
 };
 
 string DebugPrint(DirectedEdge const & directedEdge);

@@ -364,14 +364,14 @@ void IndexGraph::ApplyRestrictionNo(RestrictionInfo const & restrictionInfo)
           InsertJoint({ingoingFeatureId, static_cast<uint32_t>(ingoingEdge.GetPath().size() - 1)});
 
       // Edge mapping.
-      m_edgeMapping.insert(make_pair(from, DirectedEdge(restrictionInfo.m_from, newJoint, ingoingFeatureId)));
+      m_edgeMapping[from].emplace_back(restrictionInfo.m_from, newJoint, ingoingFeatureId);
     }
 
     outgoingFeatureId = AddFakeFeature(newJoint, it->GetTarget(), it->GetPath(),
                                        GetSpeed(it->GetPath().front()));
     // Edge mapping.
     DirectedEdge const toItEdge(centerId, it->GetTarget(), it->GetPath().front().GetFeatureId());
-    m_edgeMapping.insert(make_pair(toItEdge, DirectedEdge(newJoint, it->GetTarget(), outgoingFeatureId)));
+    m_edgeMapping[toItEdge].emplace_back(newJoint, it->GetTarget(), outgoingFeatureId);
   }
 
   DisableEdge(from);
@@ -398,7 +398,9 @@ void IndexGraph::ApplyRestrictionOnly(RestrictionInfo const & restrictionInfo)
 
   // One outgoing edge case.
   if (outgoingEdges.size() == 1)
+  {
     return;
+  }
 
   // One ingoing edge case.
   if (ingoingEdges.size() == 1)
@@ -455,8 +457,8 @@ void IndexGraph::ApplyRestrictionOnly(RestrictionInfo const & restrictionInfo)
   // Edge mapping.
   DirectedEdge const from(restrictionInfo.m_from, centerId, restrictionInfo.m_fromFeatureId);
   DirectedEdge const to(centerId, restrictionInfo.m_to, restrictionInfo.m_toFeatureId);
-  m_edgeMapping.insert(make_pair(from, DirectedEdge(restrictionInfo.m_from, newJoint, ingoingFeatureId)));
-  m_edgeMapping.insert(make_pair(to, DirectedEdge(newJoint, restrictionInfo.m_to, outgoingFeatureId)));
+  m_edgeMapping[from].emplace_back(restrictionInfo.m_from, newJoint, ingoingFeatureId);
+  m_edgeMapping[to].emplace_back(newJoint, restrictionInfo.m_to, outgoingFeatureId);
 
   DisableEdge(from);
 }
