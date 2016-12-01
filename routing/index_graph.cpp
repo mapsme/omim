@@ -364,14 +364,14 @@ void IndexGraph::ApplyRestrictionNo(RestrictionInfo const & restrictionInfo)
           InsertJoint({ingoingFeatureId, static_cast<uint32_t>(ingoingEdge.GetPath().size() - 1)});
 
       // Edge mapping.
-      m_edgeMapping[from].emplace_back(restrictionInfo.m_from, newJoint, ingoingFeatureId);
+      InsertToEdgeMapping(from, DirectedEdge(restrictionInfo.m_from, newJoint, ingoingFeatureId));
     }
 
     outgoingFeatureId = AddFakeFeature(newJoint, it->GetTarget(), it->GetPath(),
                                        GetSpeed(it->GetPath().front()));
     // Edge mapping.
     DirectedEdge const toItEdge(centerId, it->GetTarget(), it->GetPath().front().GetFeatureId());
-    m_edgeMapping[toItEdge].emplace_back(newJoint, it->GetTarget(), outgoingFeatureId);
+    InsertToEdgeMapping(toItEdge, DirectedEdge(newJoint, it->GetTarget(), outgoingFeatureId));
   }
 
   DisableEdge(from);
@@ -457,8 +457,8 @@ void IndexGraph::ApplyRestrictionOnly(RestrictionInfo const & restrictionInfo)
   // Edge mapping.
   DirectedEdge const from(restrictionInfo.m_from, centerId, restrictionInfo.m_fromFeatureId);
   DirectedEdge const to(centerId, restrictionInfo.m_to, restrictionInfo.m_toFeatureId);
-  m_edgeMapping[from].emplace_back(restrictionInfo.m_from, newJoint, ingoingFeatureId);
-  m_edgeMapping[to].emplace_back(newJoint, restrictionInfo.m_to, outgoingFeatureId);
+  InsertToEdgeMapping(from, DirectedEdge(restrictionInfo.m_from, newJoint, ingoingFeatureId));
+  InsertToEdgeMapping(to, DirectedEdge(newJoint, restrictionInfo.m_to, outgoingFeatureId));
 
   DisableEdge(from);
 }
@@ -574,6 +574,23 @@ void IndexGraph::GetDirectedEdge(uint32_t featureId, uint32_t pointFrom, uint32_
 
   double const distance = m_estimator->CalcEdgesWeight(featureId, road, pointFrom, pointTo);
   edges.emplace_back(target, distance);
+}
+
+void IndexGraph::InsertToEdgeMapping(DirectedEdge const & key, DirectedEdge const & value)
+{
+  // Note. While applying restrictions on the graph every restriction (except for degenerated cases)
+  // adds one node to the graph if it's the first restriction starting form the edge.
+  // The second restriction starting form the edge adds 2 more nodes to the graph.
+  // The third adds 4 more and so no. To be on the safe side it's worth checking
+  // the number of duplicated edges and if it's to big stop duplicating.
+  size_t constexpr kMaxEdgeNumber = 1024;
+  vector<DirectedEdge> & edges = m_edgeMapping[key];
+  if (edges.size() > kMaxEdgeNumber)
+  {
+    LOG(LERROR, ("A very big set of restrictions around edge:", key, "in source dats."));
+    return;
+  }
+  edges.push_back(value);
 }
 
 string DebugPrint(DirectedEdge const & directedEdge)
