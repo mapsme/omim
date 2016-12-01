@@ -333,6 +333,8 @@ private:
   bool ApplyRestrictionPrepareData(RestrictionPoint const & restrictionPoint,
                                    RestrictionInfo & restrictionInfo);
 
+  void InsertToEdgeMapping(DirectedEdge const & key, DirectedEdge const & value);
+
   Geometry m_geometry;
   shared_ptr<EdgeEstimator> m_estimator;
   RoadIndex m_roadIndex;
