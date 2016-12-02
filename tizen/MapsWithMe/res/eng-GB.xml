@@ -31,7 +31,7 @@
 	<!-- Add New Bookmark Set dialog title -->
 	<text id="IDS_ADD_NEW_SET">Add new Set</text>
 	<!-- Bookmark Color dialog title -->
-	<text id="IDS_BOOKMARK_COLOR">Bookmark Color</text>
+	<text id="IDS_BOOKMARK_COLOR">Bookmark Colour</text>
 	<!-- Bookmarks - dialog title -->
 	<text id="IDS_BOOKMARKS">Bookmarks</text>
 	<!-- Settings button in system menu -->
