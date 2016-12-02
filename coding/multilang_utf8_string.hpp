@@ -4,6 +4,8 @@
 
 #include "base/assert.hpp"
 
+#include "std/algorithm.hpp"
+#include "std/map.hpp"
 #include "std/string.hpp"
 
 
@@ -30,9 +32,9 @@ template <class TSource> void ReadString(TSource & src, string & s)
 
 class StringUtf8Multilang
 {
-  string m_s;
+  map<int8_t, string> m_strings;
 
-  size_t GetNextIndex(size_t i) const;
+  size_t GetNextIndex(string const & str, size_t i);
 
 public:
   static int8_t constexpr kUnsupportedLanguageCode = -1;
@@ -63,17 +65,17 @@ public:
 
   inline bool operator== (StringUtf8Multilang const & rhs) const
   {
-    return (m_s == rhs.m_s);
+    return m_strings == rhs.m_strings;
   }
 
   inline bool operator!= (StringUtf8Multilang const & rhs) const
   {
     return !(*this == rhs);
   }
-
-  inline void Clear() { m_s.clear(); }
-  inline bool IsEmpty() const { return m_s.empty(); }
-
+  
+  inline void Clear() { m_strings.clear(); }
+  inline bool IsEmpty() const { return m_strings.empty(); }
+  
   void AddString(int8_t lang, string const & utf8s);
   void AddString(string const & lang, string const & utf8s)
   {
@@ -85,14 +87,10 @@ public:
   template <class T>
   void ForEach(T && fn) const
   {
-    size_t i = 0;
-    size_t const sz = m_s.size();
-    while (i < sz)
+    for (auto const & item : m_strings)
     {
-      size_t const next = GetNextIndex(i);
-      if (!fn((m_s[i] & 0x3F), m_s.substr(i + 1, next - i - 1)))
+      if (!fn(item.first, item.second))
         return;
-      i = next;
     }
   }
 
@@ -112,12 +110,32 @@ public:
 
   template <class TSink> void Write(TSink & sink) const
   {
-    utils::WriteString(sink, m_s);
+    string str;
+    for (auto const & item : m_strings)
+    {
+      str.push_back(item.first | 0x80);
+      str.append(item.second);
+    }
+
+    utils::WriteString(sink, str);
   }
 
   template <class TSource> void Read(TSource & src)
   {
-    utils::ReadString(src, m_s);
+    m_strings.clear();
+
+    string str;
+    utils::ReadString(src, str);
+
+    size_t i = 0;
+    size_t const sz = str.size();
+
+    while (i < sz)
+    {
+      size_t const next = GetNextIndex(str, i);
+      m_strings.emplace((str[i] & 0x3F), str.substr(i + 1, next - i - 1));
+      i = next;
+    }
   }
 };
 
