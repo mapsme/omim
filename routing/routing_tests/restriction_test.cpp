@@ -10,10 +10,9 @@
 #include "std/unique_ptr.hpp"
 #include "std/vector.hpp"
 
-namespace
+namespace routing_test
 {
 using namespace routing;
-using namespace routing_test;
 
 void TestRoutes(vector<RoadPoint> const & starts, vector<RoadPoint> const & finishes,
                 vector<vector<RoadPoint>> const & expectedRoutes, IndexGraph & graph)
@@ -632,4 +631,4 @@ UNIT_TEST(TwoWay_GetFeatureConnectionPath)
   vector<RoadPoint> const expectedReversedF0Path = {{0, 2}, {0, 1}, {0, 0}};
   TEST_EQUAL(featurePath, expectedReversedF0Path, ());
 }
-}  // namespace
+}  // namespace routing_test

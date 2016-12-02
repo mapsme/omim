@@ -127,6 +127,14 @@ void IndexGraph::CreateFakeFeatureGeometry(vector<RoadPoint> const & geometrySou
   geometry = RoadGeometry(true /* oneWay */, speed, points);
 }
 
+void IndexGraph::DisableAllEdges(Joint::Id from, Joint::Id to)
+{
+  vector<pair<RoadPoint, RoadPoint>> result;
+  m_jointIndex.FindPointsWithCommonFeature(from, to, result);
+  for (auto const & p : result)
+    DisableEdge(DirectedEdge(from, to, p.first.GetFeatureId()));
+}
+
 uint32_t IndexGraph::AddFakeLooseEndFeature(Joint::Id from, vector<RoadPoint> const & geometrySource,
                                             double speed)
 {
@@ -247,7 +255,7 @@ void IndexGraph::ApplyRestrictionRealFeatures(RestrictionPoint const & restricti
   {
     for (DirectedEdge const & outgoing : outgoingRestEdges)
     {
-      if (IsCompatable(ingoing, outgoing))
+      if (IsAdjacent(ingoing, outgoing))
         f(RestrictionInfo(ingoing, outgoing));
     }
   }
@@ -596,8 +604,8 @@ void IndexGraph::InsertToEdgeMapping(DirectedEdge const & key, DirectedEdge cons
 string DebugPrint(DirectedEdge const & directedEdge)
 {
   ostringstream out;
-  out << "DirectedEdge[" << directedEdge.m_from << ", " << directedEdge.m_to << ", "
-      << directedEdge.m_featureId << "]";
+  out << "DirectedEdge[" << directedEdge.GetFrom() << ", " << directedEdge.GetTo() << ", "
+      << directedEdge.GetFeatureId() << "]";
   return out.str();
 }
 }  // namespace routing

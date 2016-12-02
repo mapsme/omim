@@ -3,6 +3,18 @@
 #include "routing/routing_exceptions.hpp"
 #include "routing/road_point.hpp"
 
+namespace
+{
+void SetCrossingPoint(uint32_t featureIdFrom, uint32_t pointIdFrom,
+                      uint32_t featureIdTo, uint32_t pointIdTo, routing::Joint::Id centerId,
+                      routing::RestrictionPoint & crossingPoint)
+{
+  crossingPoint.m_from = routing::RoadPoint(featureIdFrom, pointIdFrom);
+  crossingPoint.m_to = routing::RoadPoint(featureIdTo, pointIdTo);
+  crossingPoint.m_centerId = centerId;
+}
+}  // namespace
+
 namespace routing
 {
 void RoadIndex::Import(vector<Joint> const & joints)
@@ -38,7 +50,7 @@ bool RoadIndex::GetAdjacentFtPoint(uint32_t featureIdFrom, uint32_t featureIdTo,
 
   RoadJointIds const & roadJointIdsFrom = fromIt->second;
   RoadJointIds const & roadJointIdsTo = toIt->second;
-  if (roadJointIdsFrom.GetSize() == 0 || roadJointIdsTo.IsEmpty())
+  if (roadJointIdsFrom.IsEmpty() || roadJointIdsTo.IsEmpty())
     return false;  // No sense in restrictions on features without joints.
 
   // Note. It's important to check other variant besides a restriction from last segment
@@ -46,33 +58,29 @@ bool RoadIndex::GetAdjacentFtPoint(uint32_t featureIdFrom, uint32_t featureIdTo,
   // reverse point order.
   if (roadJointIdsFrom.Back() == roadJointIdsTo.Front())
   {
-    crossingPoint.m_from = RoadPoint(featureIdFrom, roadJointIdsFrom.GetSize() - 1 /* pointId */);
-    crossingPoint.m_to = RoadPoint(featureIdTo, 0 /* pointId */);
-    crossingPoint.m_centerId = roadJointIdsFrom.Back();
+    SetCrossingPoint(featureIdFrom, roadJointIdsFrom.GetSize() - 1, featureIdTo, 0 /* pointId */,
+                     roadJointIdsFrom.Back(), crossingPoint);
     return true;
   }
 
   if (roadJointIdsFrom.Front() == roadJointIdsTo.Back())
   {
-    crossingPoint.m_from = RoadPoint(featureIdFrom, 0 /* pointId */);
-    crossingPoint.m_to = RoadPoint(featureIdTo, roadJointIdsTo.GetSize() - 1 /* pointId */);
-    crossingPoint.m_centerId = roadJointIdsFrom.Front();
+    SetCrossingPoint(featureIdFrom, 0 /* pointId */, featureIdTo, roadJointIdsTo.GetSize() - 1,
+                     roadJointIdsFrom.Front(), crossingPoint);
     return true;
   }
 
   if (roadJointIdsFrom.Back() == roadJointIdsTo.Back())
   {
-    crossingPoint.m_from = RoadPoint(featureIdFrom, roadJointIdsFrom.GetSize() - 1 /* pointId */);
-    crossingPoint.m_to = RoadPoint(featureIdTo, roadJointIdsTo.GetSize() - 1 /* pointId */);
-    crossingPoint.m_centerId = roadJointIdsFrom.Back();
+    SetCrossingPoint(featureIdFrom, roadJointIdsFrom.GetSize() - 1, featureIdTo, roadJointIdsTo.GetSize() - 1,
+                     roadJointIdsFrom.Back(), crossingPoint);
     return true;
   }
 
   if (roadJointIdsFrom.Front() == roadJointIdsTo.Front())
   {
-    crossingPoint.m_from = RoadPoint(featureIdFrom, 0 /* pointId */);
-    crossingPoint.m_to = RoadPoint(featureIdTo, 0 /* pointId */);
-    crossingPoint.m_centerId = roadJointIdsFrom.Front();
+    SetCrossingPoint(featureIdFrom, 0 /* pointId */, featureIdTo, 0 /* pointId */,
+                     roadJointIdsFrom.Front(), crossingPoint);
     return true;
   }
   return false;  // |featureIdFrom| and |featureIdTo| are not adjacent.

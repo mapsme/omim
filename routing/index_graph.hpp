@@ -74,32 +74,31 @@ public:
     return m_from == rhs.m_from && m_to == rhs.m_to && m_featureId == rhs.m_featureId;
   }
 
+  Joint::Id GetFrom() const { return m_from; }
+  Joint::Id GetTo() const { return m_to; }
+  uint32_t GetFeatureId() const { return m_featureId; }
+
+private:
   Joint::Id m_from = Joint::kInvalidId;
   Joint::Id m_to = Joint::kInvalidId;
   uint32_t m_featureId = 0;
 };
 
-inline bool IsCompatable(DirectedEdge const & ingoing, DirectedEdge const & outgoing)
+inline bool IsAdjacent(DirectedEdge const & ingoing, DirectedEdge const & outgoing)
 {
-  return ingoing.m_to == outgoing.m_from;
+  return ingoing.GetTo() == outgoing.GetFrom();
 }
 
 class RestrictionInfo final
 {
 public:
   RestrictionInfo() = default;
-  RestrictionInfo(Joint::Id from, Joint::Id to, Joint::Id center,
-                  uint32_t fromFeatureId, uint32_t toFeatureId)
-    : m_from(from), m_to(to), m_center(center),
-      m_fromFeatureId(fromFeatureId), m_toFeatureId(toFeatureId)
-  {
-  }
 
   RestrictionInfo(DirectedEdge const & ingoing, DirectedEdge const & outgoing)
-    : m_from(ingoing.m_from), m_to(outgoing.m_to), m_center(ingoing.m_to),
-      m_fromFeatureId(ingoing.m_featureId), m_toFeatureId(outgoing.m_featureId)
+    : m_from(ingoing.GetFrom()), m_center(ingoing.GetTo()), m_to(outgoing.GetTo()),
+      m_fromFeatureId(ingoing.GetFeatureId()), m_toFeatureId(outgoing.GetFeatureId())
   {
-    CHECK_EQUAL(ingoing.m_to, outgoing.m_from, ());
+    CHECK(IsAdjacent(ingoing, outgoing), ());
   }
 
   bool operator<(RestrictionInfo const & rhs) const
@@ -107,11 +106,11 @@ public:
     if (m_from != rhs.m_from)
       return m_from < rhs.m_from;
 
-    if (m_to != rhs.m_to)
-      return m_to < rhs.m_to;
-
     if (m_center != rhs.m_center)
       return m_center < rhs.m_center;
+
+    if (m_to != rhs.m_to)
+      return m_to < rhs.m_to;
 
     if (m_fromFeatureId != rhs.m_fromFeatureId)
       return m_fromFeatureId < rhs.m_fromFeatureId;
@@ -130,8 +129,8 @@ public:
   }
 
   Joint::Id m_from = Joint::kInvalidId;
-  Joint::Id m_to = Joint::kInvalidId;
   Joint::Id m_center = Joint::kInvalidId;
+  Joint::Id m_to = Joint::kInvalidId;
   uint32_t m_fromFeatureId = 0;
   uint32_t m_toFeatureId = 0;
 };
@@ -207,13 +206,10 @@ public:
     m_blockedEdges.insert(edge);
   }
 
-  void DisableAllEdges(Joint::Id from, Joint::Id to)
-  {
-    vector<pair<RoadPoint, RoadPoint>> result;
-    m_jointIndex.FindPointsWithCommonFeature(from, to, result);
-    for (auto const & p : result)
-      DisableEdge(DirectedEdge(from, to, p.first.GetFeatureId()));
-  }
+  void DisableAllEdges(Joint::Id from, Joint::Id to);
+
+  void CreateFakeFeatureGeometry(vector<RoadPoint> const & geometrySource, double speed,
+                                 RoadGeometry & geometry);
 
   /// \brief Adding a fake oneway feature with a loose end starting from joint |from|.
   /// Geometry for the feature points is taken from |geometrySource|.
@@ -262,12 +258,12 @@ public:
   void GetSingleFeaturePath(RoadPoint const & from, RoadPoint const & to,
                             vector<RoadPoint> & path);
 
-  /// \brief  Fills |connectionPaths| with all path from joint |from| to joint |to|.
-  /// If |from| and |to| don't belong to the same feature |connectionPaths| an exception
-  /// |RoutingException| with be raised.
+  /// \brief Fills |connectionPaths| with all path from joint |from| to joint |to|.
+  /// If |from| and |to| don't belong to the same feature |connectionPaths| will
+  /// be empty.
   /// If |from| and |to| belong to only one feature |connectionPaths| will have one item.
   /// It's most common case.
-  /// If |from| and |to| could be connected by several feature |connectionPaths|
+  /// If |from| and |to| could be connected by several features |connectionPaths|
   /// will have several items.
   /// \note The order on points in items of |connectionPaths| is from |from| to |to|.
   void GetConnectionPaths(Joint::Id from, Joint::Id to,
@@ -280,9 +276,6 @@ public:
   void GetOutgoingGeomEdges(vector<JointEdge> const & outgoingEdges, Joint::Id center,
                             vector<JointEdgeGeom> & outgoingGeomEdges);
 
-  void CreateFakeFeatureGeometry(vector<RoadPoint> const & geometrySource, double speed,
-                                 RoadGeometry & geometry);
-
   /// \returns RoadGeometry by a real or fake featureId.
   RoadGeometry const & GetRoad(uint32_t featureId);
 
@@ -291,13 +284,13 @@ public:
   /// \brief Calls |f| for |directedEdge| if it's not blocked and recursively for every
   /// non blocke edge in |m_edgeMapping|.
   template<class F>
-  void ForEachNonBlockedEdgeMappingNode(DirectedEdge const & directedEdge, F && f) const
+  void ForEachNonBlockedEdgeMappingNode(DirectedEdge const & directedEdge, F const & f) const
   {
     auto const it = m_edgeMapping.find(directedEdge);
     if (it != m_edgeMapping.end())
     {
       for (DirectedEdge const & e : it->second)
-        ForEachNonBlockedEdgeMappingNode(e, forward<F>(f));
+        ForEachNonBlockedEdgeMappingNode(e, f);
     }
 
     if (m_blockedEdges.count(directedEdge) != 0)
@@ -307,6 +300,7 @@ public:
   }
 
 private:
+
   void GetNeighboringEdge(RoadGeometry const & road, RoadPoint const & rp, bool forward, bool outgoing,
                           bool graphWithoutRestrictions, vector<JointEdge> & edges) const;
 
