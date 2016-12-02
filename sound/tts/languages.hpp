@@ -24,6 +24,7 @@ array<pair<string, string>, 28> const kLanguageList =
   {"zh-Hans", "中文简体"},
   {"pt", "Português"},
   {"th", "ภาษาไทย"},
+  {"ta", "தமிழ்"},
   {"tr", "Türkçe"},
   {"ar", "العربية"},
   {"cs", "Čeština"},
