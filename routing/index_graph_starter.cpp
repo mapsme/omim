@@ -101,7 +101,8 @@ void IndexGraphStarter::GetFakeEdges(IndexGraphStarter::FakeJoint const & from,
                                      IndexGraphStarter::FakeJoint const & to, bool isOutgoing,
                                      vector<JointEdge> & edges)
 {
-  m_graph.GetNeighboringEdges(from.m_point, isOutgoing, false /* bool graphWithoutRestrictions */, edges);
+  ASSERT(!from.BelongsToGraph(), ());
+  m_graph.GetNeighboringEdges(from.m_point, isOutgoing, false /* graphWithoutRestrictions */, edges);
 
   if (!to.BelongsToGraph() && from.m_point.GetFeatureId() == to.m_point.GetFeatureId())
   {
@@ -122,7 +123,7 @@ void IndexGraphStarter::GetArrivalFakeEdges(Joint::Id jointId,
 
   vector<JointEdge> startEdges;
   m_graph.GetNeighboringEdges(fakeJoint.m_point, !isOutgoing,
-                              false /* bool graphWithoutRestrictions */, startEdges);
+                              false /* graphWithoutRestrictions */, startEdges);
   for (JointEdge const & edge : startEdges)
   {
     if (edge.GetTarget() == jointId)
