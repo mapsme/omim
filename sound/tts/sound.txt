@@ -26,6 +26,7 @@
     sk = Mierne doprava.
     sw = Enda kulia kidogo.
     th = ขวาเล็กน้อย
+    ta = சிறிய வலத்திருப்பத்தை  எடுக்கவும்.
     zh-Hant = 稍向右轉。
     zh-Hans = 向右微转。
 
@@ -56,6 +57,7 @@
     sk = Odbočte doprava.
     sw = Zunguka upande wa kulia.
     th = เลี้ยวขวา
+    ta = வலத்திருப்பத்தை  எடுக்கவும்.
     zh-Hant = 右轉。
     zh-Hans = 右转。
 
@@ -86,6 +88,7 @@
     sk = Ostro doprava.
     sw = Fanya kulia mkali.
     th = หักมุมขวา
+    ta = கூர்ந்த வலத்திருப்பத்தை  எடுக்கவும.
     zh-Hant = 向右急轉。
     zh-Hans = 向右急转。
 
@@ -116,6 +119,7 @@
     sk = Vojdite na kruhový objazd.
     sw = Ingia kwenye mzunguko.
     th = เข้าสู่วงเวียน
+    ta = சுற்றுப்பாதையை நுழையவும்.
     zh-Hant = 進入環島。
     zh-Hans = 进入环岛。
 
@@ -146,6 +150,7 @@
     sk = Výjazd z kruhového objazdu.
     sw = Toka kwenye mzunguko wa barabara.
     th = ออกจากวงเวียน
+    ta = சுற்றுப்பாதையை விட்டு வெளிவழியேறவும்.
     zh-Hant = 退出環島。
     zh-Hans = 退出环岛。
 
@@ -176,6 +181,7 @@
     sk = Mierne doľava.
     sw = Enda kushoto kidogo.
     th = ซ้ายเล็กน้อย
+    ta = சிறிய இடத்திருப்பத்தை  எடுக்கவும்.
     zh-Hant = 稍向左轉。
     zh-Hans = 向左微转。
 
@@ -206,6 +212,7 @@
     sk = Odbočte doľava.
     sw = Zunguka upande wa kushoto.
     th = เลี้ยวซ้าย
+    ta = இடத்திருப்பத்தை  எடுக்கவும்.
     zh-Hant = 左轉。
     zh-Hans = 左转。
 
@@ -236,6 +243,7 @@
     sk = Ostro doľava.
     sw = Fanya kushoto mkali.
     th = หักมุมซ้าย
+    ta = கூர்ந்த இடத்திருப்பத்தை  எடுக்கவும்.
     zh-Hant = 向左急轉。
     zh-Hans = 向左急转。
 
@@ -266,6 +274,7 @@
     sk = Otočte sa o stoosemdesiat stupňov.
     sw = Geuka urudi ulikotoka.
     th = กลับรถ
+    ta = எதிர்த்திசைத்திருப்பத்தை  எடுக்கவும்.
     zh-Hant = 掉頭。
     zh-Hans = 掉头。
 
@@ -296,6 +305,7 @@
     sk = Choďte rovno.
     sw = Pita kabisa.
     th = ตรงไป
+    ta = நேர்வழி செல்லவும்.
     zh-Hant = 直行。
     zh-Hans = 直行。
 
@@ -326,6 +336,7 @@
     sk = Dorazíte.
     sw = Utawasili.
     th = คุณจะถึง
+    ta = சேருமிடம் வர உள்ளது.
     zh-Hant = 您將到達。
     zh-Hans = 您将到达。
 
@@ -356,6 +367,7 @@
     sk = Dorazili ste do cieľa.
     sw = Umewasili mwisho wa safari.
     th = คุณมาถึงแล้ว
+    ta = சேருமிடம் வந்துவிட்டது.
     zh-Hant = 您已抵達
     zh-Hans = 您已抵达。
 
@@ -386,6 +398,7 @@
     sk = Po päťdesiatich metroch
     sw = Kabla ya mita hamsini
     th = อีกห้าสิบเมตร
+    ta = ஐம்பது மீட்டரில்
     zh-Hant = 前方五十米
     zh-Hans = 前方五十米
 
@@ -416,6 +429,7 @@
     sk = Po sto metroch
     sw = Kabla ya mita mia moja
     th = อีกหนึ่งร้อยเมตร
+    ta = நூறு மீட்டரில்
     zh-Hant = 前方一百米
     zh-Hans = 前方一百米
 
@@ -446,6 +460,7 @@
     sk = Po dvesto metroch
     sw = Kabla ya mita mia mbili
     th = อีกสองร้อยเมตร
+    ta = இருநூறு மீட்டரில்
     zh-Hant = 前方二百米
     zh-Hans = 前方两百米
 
@@ -476,6 +491,7 @@
     sk = Po dvestopäťdesiatich metroch
     sw = Kabla ya mita mia mbili hamsini
     th = อีกสองร้อยห้าสิบเมตร
+    ta = இருநூற்றைம்பது மீட்டரில்
     zh-Hant = 前方二百五十米
     zh-Hans = 前方两百五十米
 
@@ -506,6 +522,7 @@
     sk = Po tristo metroch
     sw = Kabla ya mita mia tatu
     th = อีกสามร้อยเมตร
+    ta = முன்னூறு மீட்டரில்
     zh-Hant = 前方三百米
     zh-Hans = 前方三百米
 
@@ -536,6 +553,7 @@
     sk = Po štyristo metroch
     sw = Kabla ya mita mia nne
     th = อีกสี่ร้อยเมตร
+    ta = நாநூறு மீட்டரில்
     zh-Hant = 前方四百米
     zh-Hans = 前方四百米
 
@@ -566,6 +584,7 @@
     sk = Po päťsto metroch
     sw = Kabla ya mita mia tano
     th = อีกห้าร้อยเมตร
+    ta = ஐநூறு மீட்டரில்
     zh-Hant = 前方五百米
     zh-Hans = 前方五百米
 
@@ -596,6 +615,7 @@
     sk = Po šesťsto metroch
     sw = Kabla ya mita mia sita
     th = อีกหกร้อยเมตร
+    ta = அறுநூறு மீட்டரில்
     zh-Hant = 前方六百米
     zh-Hans = 前方六百米
 
@@ -626,6 +646,7 @@
     sk = Po sedemsto metroch
     sw = Kabla ya mita mia saba
     th = อีกเจ็ดร้อยเมตร
+    ta = எழுநூறு மீட்டரில்
     zh-Hant = 前方七百米
     zh-Hans = 前方七百米
 
@@ -656,6 +677,7 @@
     sk = Po sedemstopäťdesiatich metroch
     sw = Kabla ya mita mia saba hamsini
     th = อีกเจ็ดร้อยห้าสิบเมตร
+    ta = எழுநூற்றைம்பது மீட்டரில்
     zh-Hant = 前方七百五十米
     zh-Hans = 前方七百五十米
 
@@ -686,6 +708,7 @@
     sk = Po osemsto metroch
     sw = Kabla ya mita mia nane
     th = อีกแปดร้อยเมตร
+    ta = எண்ணூறு மீட்டரில்
     zh-Hant = 前方八百米
     zh-Hans = 前方八百米
 
@@ -716,6 +739,7 @@
     sk = Po deväťsto metroch
     sw = Kabla ya mita mia tisa
     th = อีกเก้าร้อยเมตร
+    ta = தொல்லாயிரம் மீட்டரில்
     zh-Hant = 前方九百米
     zh-Hans = 前方九百米
 
@@ -746,6 +770,7 @@
     sk = Po jednom kilometri
     sw = Kabla ya kilomita moja
     th = อีกหนึ่งกิโลเมตร
+    ta = ஒரு கிலோமீட்டரில்
     zh-Hant = 前方一千米
     zh-Hans = 前方一千米
 
@@ -776,6 +801,7 @@
     sk = Po jeden a pol kilometri
     sw = Kabla ya kilomita moja na nusu
     th = อีกหนึ่งกิโลเมตรครึ่ง
+    ta = ஒன்றரை கிலோமீட்டரில்
     zh-Hant = 前方一千五百米
     zh-Hans = 前方一点五千米
 
@@ -806,6 +832,7 @@
     sk = Po dvoch kilometroch
     sw = Kabla ya kilomita mbili
     th = อีกสองกิโลเมตร
+    ta = இரண்டு கிலோமீட்டரில்
     zh-Hant = 前方二千米
     zh-Hans = 前方两千米
 
@@ -836,6 +863,7 @@
     sk = Po dva a pol kilometri
     sw = Kabla ya kilomita mbili na nusu
     th = อีกสองกิโลเมตรครึ่ง
+    ta = இரண்டரை கிலோமீட்டரில்
     zh-Hant = 前方二千五百米
     zh-Hans = 前方两点五千米
 
@@ -866,6 +894,7 @@
     sk = Po troch kilometroch
     sw = Kabla ya kilomita tatu
     th = อีกสามกิโลเมตร
+    ta = மூன்று கிலோமீட்டரில்
     zh-Hant = 前方三千米
     zh-Hans = 前方三千米
 
@@ -896,6 +925,7 @@
     sk = Potom
     sw = Kisha
     th = จากนั้น
+    ta = பிறகு
     zh-Hant = 然後
     zh-Hans = 然后
 
@@ -926,6 +956,7 @@
     sk = Opustite kruhový objazd na prvom výjazde.
     sw = Ingia barabara ya kwanza ya kutoka.
     th = ออกทางออกที่หนึ่ง
+    ta = முதல் வெளிவழியை எடுக்கவும்.
     zh-Hant = 取道第一個出口。
     zh-Hans = 取道第一个出口。
 
@@ -956,6 +987,7 @@
     sk = Opustite kruhový objazd na druhom výjazde.
     sw = Ingia barabara ya pili ya kutoka.
     th = ออกทางออกที่สอง
+    ta = இரண்டாவது வெளிவழியை எடுக்கவும்.
     zh-Hant = 取道第二個出口。
     zh-Hans = 取道第二个出口。
 
@@ -986,6 +1018,7 @@
     sk = Opustite kruhový objazd na treťom výjazde.
     sw = Ingia barabara ya tatu ya kutoka.
     th = ออกทางออกที่สาม
+    ta = மூன்றாவது வெளிவழியை எடுக்கவும்.
     zh-Hant = 取道第三個出口。
     zh-Hans = 取道第三个出口。
 
@@ -1016,6 +1049,7 @@
     sk = Opustite kruhový objazd na štvrtom výjazde.
     sw = Ingia barabara ya nne ya kutoka.
     th = ออกทางออกที่สี่
+    ta = நான்காவது வெளிவழியை எடுக்கவும்.
     zh-Hant = 取道第四個出口。
     zh-Hans = 取道第四个出口。
 
@@ -1046,6 +1080,7 @@
     sk = Opustite kruhový objazd na piatom výjazde.
     sw = Ingia barabara ya tano ya kutoka.
     th = ออกทางออกที่ห้า
+    ta = ஐன்தாவது வெளிவழியை எடுக்கவும். 
     zh-Hant = 取道第五個出口。
     zh-Hans = 取道第五个出口。
 
@@ -1076,6 +1111,7 @@
     sk = Opustite kruhový objazd na šiestom výjazde.
     sw = Ingia barabara ya sita ya kutoka.
     th = ออกทางออกที่หก
+    ta = ஆறாவது வெளிவழியை எடுக்கவும்.
     zh-Hant = 取道第六個出口。
     zh-Hans = 取道第六个出口。
 
@@ -1106,6 +1142,7 @@
     sk = Opustite kruhový objazd na siedmom výjazde.
     sw = Ingia barabara ya saba ya kutoka.
     th = ออกทางออกที่เจ็ด
+    ta = ஏழாவது வெளிவழியை எடுக்கவும்.
     zh-Hant = 取道第七個出口。
     zh-Hans = 取道第七个出口。
 
@@ -1136,6 +1173,7 @@
     sk = Opustite kruhový objazd na ôsmom výjazde.
     sw = Ingia barabara ya nane ya kutoka.
     th = ออกทางออกที่แปด
+    ta = எட்டாவது  வெளிவழியை எடுக்கவும்.
     zh-Hant = 取道第八個出口。
     zh-Hans = 取道第八个出口。
 
@@ -1166,6 +1204,7 @@
     sk = Opustite kruhový objazd na deviatom výjazde.
     sw = Ingia barabara ya tisa ya kutoka.
     th = ออกทางออกที่เก้า
+    ta = ஒன்பதாவது வெளிவழியை எடுக்கவும்.
     zh-Hant = 取道第九個出口。
     zh-Hans = 取道第九个出口。
 
@@ -1196,6 +1235,7 @@
     sk = Opustite kruhový objazd na desiatom výjazde.
     sw = Ingia barabara ya kumi ya kutoka.
     th = ออกทางออกที่สิบ
+    ta = பத்தாவது வெளிவழியை எடுக்கவும்.
     zh-Hant = 取道第十個出口。
     zh-Hans = 取道第十个出口。
 
@@ -1226,6 +1266,7 @@
     sk = Opustite kruhový objazd na jedenástom výjazde.
     sw = Ingia barabara ya kumi na moja ya kutoka.
     th = ออกทางออกที่สิบเอ็ด
+    ta = பதினொன்றாவது வெளிவழியை எடுக்கவும்.
     zh-Hant = 取道第十一個出口。
     zh-Hans = 取道第十一个出口。
 
@@ -1256,6 +1297,7 @@
     sk = Po päťdesiatich stopách
     sw = Kabla ya futi hamsini
     th = อีกห้าสิบฟุต
+    ta = ஐம்பது அடியில்
     zh-Hant = 前方五十英尺
     zh-Hans = 前方五十英尺
 
@@ -1286,6 +1328,7 @@
     sk = Po sto stopách
     sw = Kabla ya futi mia moja
     th = อีกหนึ่งร้อยฟุต
+    ta = நூறு அடியில்
     zh-Hant = 前方一百英尺
     zh-Hans = 前方一百英尺
 
@@ -1316,6 +1359,7 @@
     sk = Po dvesto stopách
     sw = Kabla ya futi mia mbili
     th = อีกสองร้อยฟุต
+    ta = இருநூறு அடியில்
     zh-Hant = 前方二百英尺
     zh-Hans = 前方两百英尺
 
@@ -1346,6 +1390,7 @@
     sk = Po tristo stopách
     sw = Kabla ya futi mia tatu
     th = อีกสามร้อยฟุต
+    ta = முன்னூறு அடியில்
     zh-Hant = 前方三百英尺
     zh-Hans = 前方三百英尺
 
@@ -1376,6 +1421,7 @@
     sk = Po štyristo stopách
     sw = Kabla ya futi mia nne
     th = อีกสี่ร้อยฟุต
+    ta = நாநூறு அடியில்
     zh-Hant = 前方四百英尺
     zh-Hans = 前方四百英尺
 
@@ -1406,6 +1452,7 @@
     sk = Po päťsto stopách
     sw = Kabla ya futi mia tano
     th = อีกห้าร้อยฟุต
+    ta = ஐநூறு அடியில்
     zh-Hant = 前方五百英尺
     zh-Hans = 前方五百英尺
 
@@ -1436,6 +1483,7 @@
     sk = Po šesťsto stopách
     sw = Kabla ya futi mia sita
     th = อีกหกร้อยฟุต
+    ta = ஐநூறு அடியில்
     zh-Hant = 前方六百英尺
     zh-Hans = 前方六百英尺
 
@@ -1466,6 +1514,7 @@
     sk = Po sedemsto stopách
     sw = Kabla ya futi mia saba
     th = อีกเจ็ดร้อยฟุต
+    ta = எழுநூறு அடியில்
     zh-Hant = 前方七百英尺
     zh-Hans = 前方七百英尺
 
@@ -1496,6 +1545,7 @@
     sk = Po osemsto stopách
     sw = Kabla ya futi mia nane
     th = อีกแปดร้อยฟุต
+    ta = எண்ணூறு அடியில்
     zh-Hant = 前方八百英尺
     zh-Hans = 前方八百英尺
 
@@ -1526,6 +1576,7 @@
     sk = Po deväťsto stopách
     sw = Kabla ya futi mia tisa
     th = อีกเก้าร้อยฟุต
+    ta = தொல்லாயிரம் அடியில்
     zh-Hant = 前方九百英尺
     zh-Hans = 前方九百英尺
 
@@ -1556,6 +1607,7 @@
     sk = Po tisíc stopách
     sw = Kabla ya futi elfu moja
     th = อีกหนึ่งพันฟุต
+    ta = ஆயிரம் அடியில்
     zh-Hant = 前方一千英尺
     zh-Hans = 前方一千英尺
 
@@ -1586,6 +1638,7 @@
     sk = Po tisícpäťsto stopách
     sw = Kabla ya futi elfu moja na mia tano
     th = อีกหนึ่งพันห้าร้อยฟุต
+    ta = ஆயிரத்தைநூறு அடியில்
     zh-Hant = 前方一千五百英尺
     zh-Hans = 前方一千五百英尺
 
@@ -1616,6 +1669,7 @@
     sk = Po dvetisíc stopách
     sw = Kabla ya futi elfu mbili
     th = อีกสองพันฟุต
+    ta = இரண்டாயிரம் அடியில்
     zh-Hant = 前方二千英尺
     zh-Hans = 前方两千英尺
 
@@ -1646,6 +1700,7 @@
     sk = Po dvetisícpäťsto stopách
     sw = Kabla ya futi elfu mbili na mia tano
     th = อีกสองพันห้าร้อยฟุต
+    ta = இரண்டாயிரத்தைநூறு அடியில்
     zh-Hant = 前方二千五百英尺
     zh-Hans = 前方两千五百英尺
 
@@ -1676,6 +1731,7 @@
     sk = Po tritisíc stopách
     sw = Kabla ya futi elfu tatu
     th = อีกสามพันฟุต
+    ta = மூவாயிரம் அடியில்
     zh-Hant = 前方三千英尺
     zh-Hans = 前方三千英尺
 
@@ -1706,6 +1762,7 @@
     sk = Po tritisícpäťsto stopách
     sw = Kabla ya futi elfu tatu na mia tano
     th = อีกสามพันห้าร้อยฟุต
+    ta = மூவாயிரத்தைநூறு அடியில்
     zh-Hant = 前方三千五百英尺
     zh-Hans = 前方三千五百英尺
 
@@ -1736,6 +1793,7 @@
     sk = Po štyritisíc stopách
     sw = Kabla ya futi elfu nne
     th = อีกสี่พันฟุต
+    ta = நாலாயிரம் அடியில்
     zh-Hant = 前方四千英尺
     zh-Hans = 前方四千英尺
 
@@ -1766,6 +1824,7 @@
     sk = Po štyritisícpäťsto stopách
     sw = Kabla ya futi elfu nne na mia tano
     th = อีกสี่พันห้าร้อยฟุต
+    ta = நாலாயிரத்தைநூறு அடியில்
     zh-Hant = 前方四千五百英尺
     zh-Hans = 前方四千五百英尺
 
@@ -1796,6 +1855,7 @@
     sk = Po päťtisíc stopách
     sw = Kabla ya futi elfu tano
     th = อีกห้าพันฟุต
+    ta = ஐயாயிரம் அடியில்
     zh-Hant = 前方五千英尺
     zh-Hans = 前方五千英尺
 
@@ -1826,6 +1886,7 @@
     sk = Po jednej míli
     sw = Kabla ya maili moja
     th = อีกหนึ่งไมล์
+    ta = ஒரு மைலில்
     zh-Hant = 前方一英里
     zh-Hans = 前方一英里
 
@@ -1856,6 +1917,7 @@
     sk = Po jeden a pol míli
     sw = Kabla ya maili moja na nusu
     th = อีกหนึ่งไมล์ครึ่ง
+    ta = ஒன்றரை மைலில்
     zh-Hant = 前方一點五英里
     zh-Hans = 前方一点五英里
 
@@ -1886,6 +1948,7 @@
     sk = Po dvoch míľach
     sw = Kabla ya maili mbili
     th = อีกสองไมล์
+    ta = இரண்டு மைலில்
     zh-Hant = 前方兩英里
     zh-Hans = 前方两英里
 
