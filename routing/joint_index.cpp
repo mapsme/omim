@@ -4,11 +4,21 @@
 
 namespace routing
 {
+RoadPoint JointIndex::GetPoint(Joint::Id jointId) const
+{
+  if (IsStatic(jointId))
+    return m_points[Begin(jointId)];
+
+  CHECK_LESS(jointId, GetNumJoints(), ());
+  auto const jointIt = m_dynamicJoints.find(jointId);
+  CHECK(jointIt != m_dynamicJoints.cend(), ());
+  return jointIt->second.GetEntry(0 /* first point in joint */);
+}
+
 Joint::Id JointIndex::InsertJoint(RoadPoint const & rp)
 {
   Joint::Id const jointId = GetNumJoints();
-  m_points.emplace_back(rp);
-  m_offsets.emplace_back(m_points.size());
+  AppendToJoint(jointId, rp);
   return jointId;
 }
 

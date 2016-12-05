@@ -18,23 +18,26 @@ namespace routing
 class JointIndex final
 {
 public:
-  // Read comments in Build method about -1.
   uint32_t GetNumJoints() const
   {
     CHECK_GREATER(m_offsets.size(), 0, ());
-    return m_offsets.size() - 1;
+    return GetNumStaticJoints() + m_dynamicJoints.size();
   }
 
   uint32_t GetNumPoints() const { return m_points.size(); }
 
-  RoadPoint GetPoint(Joint::Id jointId) const { return m_points[Begin(jointId)]; }
+  RoadPoint GetPoint(Joint::Id jointId) const;
 
   template <typename F>
   void ForEachPoint(Joint::Id jointId, F && f) const
   {
-    for (uint32_t i = Begin(jointId); i < End(jointId); ++i)
-      f(m_points[i]);
+    if (IsStatic(jointId))
+    {
+      for (uint32_t i = Begin(jointId); i < End(jointId); ++i)
+        f(m_points[i]);
+    }
 
+    // Note. A static joint may hame some extra road points in |m_dynamicJoints|
     auto const & it = m_dynamicJoints.find(jointId);
     if (it != m_dynamicJoints.end())
     {
@@ -53,6 +56,15 @@ public:
   void AppendToJoint(Joint::Id jointId, RoadPoint const & rp);
 
 private:
+  // Read comments in Build method about -1.
+  uint32_t GetNumStaticJoints() const
+  {
+    CHECK_GREATER(m_offsets.size(), 0, ());
+    return m_offsets.size() - 1;
+  }
+
+  bool IsStatic(Joint::Id jointId) const { return jointId < GetNumStaticJoints(); }
+
   // Begin index for jointId entries.
   uint32_t Begin(Joint::Id jointId) const
   {
