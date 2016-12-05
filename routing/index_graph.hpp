@@ -33,7 +33,7 @@ public:
   double GetWeight() const { return m_weight; }
 
 private:
-  // Target is vertex going to for outgoing edges, vertex going from for ingoing edges.
+  // Target is a vertex going to for outgoing edges, vertex going from for ingoing edges.
   Joint::Id m_target;
   double m_weight;
 };
@@ -42,14 +42,17 @@ class JointEdgeGeom final
 {
 public:
   JointEdgeGeom() = default;
+
   JointEdgeGeom(Joint::Id target, vector<RoadPoint> const & path) : m_target(target), m_path(path)
   {
   }
+
   Joint::Id GetTarget() const { return m_target; }
+
   vector<RoadPoint> const & GetPath() const { return m_path; }
 
 private:
-  // Target is vertex going to for outgoing edges, vertex going from for ingoing edges.
+  // Target is a vertex going to for outgoing edges, vertex going from for ingoing edges.
   Joint::Id m_target = Joint::kInvalidId;
   vector<RoadPoint> m_path;
 };
@@ -84,9 +87,11 @@ public:
   uint32_t GetFeatureId() const { return m_featureId; }
 
 private:
-  Joint::Id m_from = Joint::kInvalidId;
-  Joint::Id m_to = Joint::kInvalidId;
-  uint32_t m_featureId = 0;
+  Joint::Id const m_from = Joint::kInvalidId;
+  Joint::Id const m_to = Joint::kInvalidId;
+  // Note. It's important to store feature id because two |m_from| and |m_to| may be
+  // connected with several features.
+  uint32_t const m_featureId = 0;
 };
 
 inline bool IsAdjacent(DirectedEdge const & ingoing, DirectedEdge const & outgoing)
