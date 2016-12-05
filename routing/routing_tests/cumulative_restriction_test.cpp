@@ -73,73 +73,67 @@ UNIT_TEST(XYGraph)
 }
 
 // Route through XY graph with one restriciton (type only) from F1 to F3.
-UNIT_TEST(XYGraph_RestrictionF1F3Only)
+UNIT_CLASS_TEST(RestrictionTest, XYGraph_RestrictionF1F3Only)
 {
-  unique_ptr<IndexGraph> graph = BuildXYGraph();
+  Init(BuildXYGraph());
 
-  Joint::Id const restictionF1F3Id = graph->GetJointIdForTesting(
-      {1 /* feature id */, 1 /* point id */});
-  graph->ApplyRestrictionOnlyRealFeatures(RestrictionPoint({1 /* feature id */, 1 /* point id */},
-                                          {3, 0}, restictionF1F3Id));
+  Joint::Id const restictionF1F3Id = GetJointIdForTesting({1 /* feature id */, 1 /* point id */});
+  ApplyRestrictionOnlyRealFeatures(RestrictionPoint({1 /* feature id */, 1 /* point id */},
+                                   {3, 0}, restictionF1F3Id));
 
-  IndexGraphStarter starter(*graph, RoadPoint(1, 0) /* start */, RoadPoint(5, 1) /* finish */);
+  IndexGraphStarter starter(*m_graph, RoadPoint(1, 0) /* start */, RoadPoint(5, 1) /* finish */);
   vector<m2::PointD> const expectedGeom = {{2 /* x */, 0 /* y */}, {1, 1}, {2, 2}, {2, 3}};
   TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
 }
 
 // Route through XY graph with one restriciton (type only) from F3 to F5.
-UNIT_TEST(XYGraph_RestrictionF3F5Only)
+UNIT_CLASS_TEST(RestrictionTest, XYGraph_RestrictionF3F5Only)
 {
-  unique_ptr<IndexGraph> graph = BuildXYGraph();
+  Init(BuildXYGraph());
 
-  Joint::Id const restictionF3F5Id = graph->GetJointIdForTesting(
-      {3 /* feature id */, 1 /* point id */});
-  graph->ApplyRestrictionOnlyRealFeatures(RestrictionPoint({3 /* feature id */, 1 /* point id */},
-                                          {5, 0}, restictionF3F5Id));
+  Joint::Id const restictionF3F5Id = GetJointIdForTesting({3 /* feature id */, 1 /* point id */});
+  ApplyRestrictionOnlyRealFeatures(RestrictionPoint({3 /* feature id */, 1 /* point id */},
+                                   {5, 0}, restictionF3F5Id));
 
-  IndexGraphStarter starter(*graph, RoadPoint(1, 0) /* start */, RoadPoint(5, 1) /* finish */);
+  IndexGraphStarter starter(*m_graph, RoadPoint(1, 0) /* start */, RoadPoint(5, 1) /* finish */);
   vector<m2::PointD> const expectedGeom = {{2 /* x */, 0 /* y */}, {1, 1}, {2, 2}, {2, 3}};
   TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
 }
 
 // Cumulative case. Route through XY graph with two restricitons (type only) applying
 // according to the order. First from F1 to F3 and then and from F3 to F5.
-UNIT_TEST(XYGraph_RestrictionF1F3AndF3F5Only)
+UNIT_CLASS_TEST(RestrictionTest, XYGraph_RestrictionF1F3AndF3F5Only)
 {
-  unique_ptr<IndexGraph> graph = BuildXYGraph();
+  Init(BuildXYGraph());
 
-  Joint::Id const restictionF1F3Id = graph->GetJointIdForTesting(
-      {1 /* feature id */, 1 /* point id */});
-  graph->ApplyRestrictionOnlyRealFeatures(RestrictionPoint({1 /* feature id */, 1 /* point id */},
-                                          {3, 0}, restictionF1F3Id));
+  Joint::Id const restictionF1F3Id = GetJointIdForTesting({1 /* feature id */, 1 /* point id */});
+  ApplyRestrictionOnlyRealFeatures(RestrictionPoint({1 /* feature id */, 1 /* point id */},
+                                   {3, 0}, restictionF1F3Id));
 
-  Joint::Id const restictionF3F5Id = graph->GetJointIdForTesting(
-      {3 /* feature id */, 1 /* point id */});
-  graph->ApplyRestrictionOnlyRealFeatures(RestrictionPoint({3 /* feature id */, 1 /* point id */},
-                                          {5, 0}, restictionF3F5Id));
+  Joint::Id const restictionF3F5Id = GetJointIdForTesting({3 /* feature id */, 1 /* point id */});
+  ApplyRestrictionOnlyRealFeatures(RestrictionPoint({3 /* feature id */, 1 /* point id */},
+                                   {5, 0}, restictionF3F5Id));
 
-  IndexGraphStarter starter(*graph, RoadPoint(1, 0) /* start */, RoadPoint(5, 1) /* finish */);
+  IndexGraphStarter starter(*m_graph, RoadPoint(1, 0) /* start */, RoadPoint(5, 1) /* finish */);
   vector<m2::PointD> const expectedGeom = {{2 /* x */, 0 /* y */}, {1, 1}, {2, 2}, {2, 3}};
   TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
 }
 
 // Cumulative case. Route through XY graph with two restricitons (type only) applying
 // according to the order. First from F3 to F5 and then and from F1 to F3.
-UNIT_TEST(XYGraph_RestrictionF3F5AndF1F3Only)
+UNIT_CLASS_TEST(RestrictionTest, XYGraph_RestrictionF3F5AndF1F3Only)
 {
-  unique_ptr<IndexGraph> graph = BuildXYGraph();
+  Init(BuildXYGraph());
 
-  Joint::Id const restictionF3F5Id = graph->GetJointIdForTesting(
-      {3 /* feature id */, 1 /* point id */});
-  graph->ApplyRestrictionOnlyRealFeatures(RestrictionPoint({3 /* feature id */, 1 /* point id */},
-                                          {5, 0}, restictionF3F5Id));
+  Joint::Id const restictionF3F5Id = GetJointIdForTesting({3 /* feature id */, 1 /* point id */});
+  ApplyRestrictionOnlyRealFeatures(RestrictionPoint({3 /* feature id */, 1 /* point id */},
+                                   {5, 0}, restictionF3F5Id));
 
-  Joint::Id const restictionF1F3Id = graph->GetJointIdForTesting(
-      {1 /* feature id */, 1 /* point id */});
-  graph->ApplyRestrictionOnlyRealFeatures(RestrictionPoint({1 /* feature id */, 1 /* point id */},
-                                          {3, 0}, restictionF1F3Id));
+  Joint::Id const restictionF1F3Id = GetJointIdForTesting({1 /* feature id */, 1 /* point id */});
+  ApplyRestrictionOnlyRealFeatures(RestrictionPoint({1 /* feature id */, 1 /* point id */},
+                                   {3, 0}, restictionF1F3Id));
 
-  IndexGraphStarter starter(*graph, RoadPoint(1, 0) /* start */, RoadPoint(5, 1) /* finish */);
+  IndexGraphStarter starter(*m_graph, RoadPoint(1, 0) /* start */, RoadPoint(5, 1) /* finish */);
   vector<m2::PointD> const expectedGeom = {{2 /* x */, 0 /* y */}, {1, 1}, {2, 2}, {2, 3}};
   TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
 }
@@ -147,21 +141,19 @@ UNIT_TEST(XYGraph_RestrictionF3F5AndF1F3Only)
 // Cumulative case. Route through XY graph with two restricitons applying
 // according to the order. First from F3 to F5 (type only)
 // and then and from F0 to F2 (type no).
-UNIT_TEST(XYGraph_RestrictionF3F5OnlyAndF0F2No)
+UNIT_CLASS_TEST(RestrictionTest, XYGraph_RestrictionF3F5OnlyAndF0F2No)
 {
-  unique_ptr<IndexGraph> graph = BuildXYGraph();
+  Init(BuildXYGraph());
 
-  Joint::Id const restictionF3F5Id = graph->GetJointIdForTesting(
-      {3 /* feature id */, 1 /* point id */});
-  graph->ApplyRestrictionOnlyRealFeatures(RestrictionPoint({3 /* feature id */, 1 /* point id */},
-                                          {5, 0}, restictionF3F5Id));
+  Joint::Id const restictionF3F5Id = GetJointIdForTesting({3 /* feature id */, 1 /* point id */});
+  ApplyRestrictionOnlyRealFeatures(RestrictionPoint({3 /* feature id */, 1 /* point id */},
+                                   {5, 0}, restictionF3F5Id));
 
-  Joint::Id const restictionF1F3Id = graph->GetJointIdForTesting(
-      {1 /* feature id */, 1 /* point id */});
-  graph->ApplyRestrictionNoRealFeatures(RestrictionPoint({0 /* feature id */, 1 /* point id */},
-                                        {2, 0}, restictionF1F3Id));
+  Joint::Id const restictionF1F3Id = GetJointIdForTesting({1 /* feature id */, 1 /* point id */});
+  ApplyRestrictionNoRealFeatures(RestrictionPoint({0 /* feature id */, 1 /* point id */},
+                                 {2, 0}, restictionF1F3Id));
 
-  IndexGraphStarter starter(*graph, RoadPoint(1, 0) /* start */, RoadPoint(5, 1) /* finish */);
+  IndexGraphStarter starter(*m_graph, RoadPoint(1, 0) /* start */, RoadPoint(5, 1) /* finish */);
   vector<m2::PointD> const expectedGeom = {{2 /* x */, 0 /* y */}, {1, 1}, {2, 2}, {2, 3}};
   TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
 }
@@ -169,21 +161,19 @@ UNIT_TEST(XYGraph_RestrictionF3F5OnlyAndF0F2No)
 // Cumulative case. Trying to build route through XY graph with two restricitons applying
 // according to the order. First from F3 to F5 (type only)
 // and then and from F1 to F3 (type no).
-UNIT_TEST(XYGraph_RestrictionF3F5OnlyAndF1F3No)
+UNIT_CLASS_TEST(RestrictionTest, XYGraph_RestrictionF3F5OnlyAndF1F3No)
 {
-  unique_ptr<IndexGraph> graph = BuildXYGraph();
+  Init(BuildXYGraph());
 
-  Joint::Id const restictionF3F5Id = graph->GetJointIdForTesting(
-      {3 /* feature id */, 1 /* point id */});
-  graph->ApplyRestrictionOnlyRealFeatures(RestrictionPoint({3 /* feature id */, 1 /* point id */},
-                                          {5, 0}, restictionF3F5Id));
+  Joint::Id const restictionF3F5Id = GetJointIdForTesting({3 /* feature id */, 1 /* point id */});
+  ApplyRestrictionOnlyRealFeatures(RestrictionPoint({3 /* feature id */, 1 /* point id */},
+                                   {5, 0}, restictionF3F5Id));
 
-  Joint::Id const restictionF1F3Id = graph->GetJointIdForTesting(
-      {1 /* feature id */, 1 /* point id */});
-  graph->ApplyRestrictionNoRealFeatures(RestrictionPoint({1 /* feature id */, 1 /* point id */},
-                                        {3, 0}, restictionF1F3Id));
+  Joint::Id const restictionF1F3Id = GetJointIdForTesting({1 /* feature id */, 1 /* point id */});
+  ApplyRestrictionNoRealFeatures(RestrictionPoint({1 /* feature id */, 1 /* point id */},
+                                 {3, 0}, restictionF1F3Id));
 
-  IndexGraphStarter starter(*graph, RoadPoint(1, 0) /* start */, RoadPoint(5, 1) /* finish */);
+  IndexGraphStarter starter(*m_graph, RoadPoint(1, 0) /* start */, RoadPoint(5, 1) /* finish */);
   vector<m2::PointD> const expectedGeom = {};
   TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::NoPath, expectedGeom);
 }
@@ -255,36 +245,33 @@ UNIT_TEST(XXGraph)
 
 // Cumulative case. Route through XX graph with two restricitons (type only) applying
 // according to the order. First from F1 to F3 and then and from F3 to F6.
-UNIT_TEST(XXGraph_RestrictionF1F3AndF3F6Only)
+UNIT_CLASS_TEST(RestrictionTest, XXGraph_RestrictionF1F3AndF3F6Only)
 {
-  unique_ptr<IndexGraph> graph = BuildXXGraph();
+  Init(BuildXXGraph());
 
-  Joint::Id const restictionF1F3Id = graph->GetJointIdForTesting(
-      {1 /* feature id */, 1 /* point id */});
-  graph->ApplyRestrictionOnlyRealFeatures(RestrictionPoint({1 /* feature id */, 1 /* point id */},
-                                          {3, 0}, restictionF1F3Id));
+  Joint::Id const restictionF1F3Id = GetJointIdForTesting({1 /* feature id */, 1 /* point id */});
+  ApplyRestrictionOnlyRealFeatures(RestrictionPoint({1 /* feature id */, 1 /* point id */},
+                                   {3, 0}, restictionF1F3Id));
 
-  Joint::Id const restictionF3F6Id = graph->GetJointIdForTesting(
-      {3 /* feature id */, 1 /* point id */});
-  graph->ApplyRestrictionOnlyRealFeatures(RestrictionPoint({3 /* feature id */, 1 /* point id */},
-                                          {6, 0}, restictionF3F6Id));
+  Joint::Id const restictionF3F6Id = GetJointIdForTesting({3 /* feature id */, 1 /* point id */});
+  ApplyRestrictionOnlyRealFeatures(RestrictionPoint({3 /* feature id */, 1 /* point id */},
+                                   {6, 0}, restictionF3F6Id));
 
-  IndexGraphStarter starter(*graph, RoadPoint(1, 0) /* start */, RoadPoint(6, 1) /* finish */);
+  IndexGraphStarter starter(*m_graph, RoadPoint(1, 0) /* start */, RoadPoint(6, 1) /* finish */);
   vector<m2::PointD> const expectedGeom = {{2 /* x */, 0 /* y */}, {1, 1}, {2, 2}, {3, 3}};
   TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
 }
 
 // Route through XX graph with one restriciton (type no) from F1 to F3.
-UNIT_TEST(XXGraph_RestrictionF1F3No)
+UNIT_CLASS_TEST(RestrictionTest, XXGraph_RestrictionF1F3No)
 {
-  unique_ptr<IndexGraph> graph = BuildXXGraph();
+  Init(BuildXXGraph());
 
-  Joint::Id const restictionF1F3Id = graph->GetJointIdForTesting(
-      {1 /* feature id */, 1 /* point id */});
-  graph->ApplyRestrictionNoRealFeatures(RestrictionPoint({1 /* feature id */, 1 /* point id */},
-                                        {3, 0}, restictionF1F3Id));
+  Joint::Id const restictionF1F3Id = GetJointIdForTesting({1 /* feature id */, 1 /* point id */});
+  ApplyRestrictionNoRealFeatures(RestrictionPoint({1 /* feature id */, 1 /* point id */},
+                                 {3, 0}, restictionF1F3Id));
 
-  IndexGraphStarter starter(*graph, RoadPoint(1, 0) /* start */, RoadPoint(6, 1) /* finish */);
+  IndexGraphStarter starter(*m_graph, RoadPoint(1, 0) /* start */, RoadPoint(6, 1) /* finish */);
   vector<m2::PointD> const expectedGeom = {{2 /* x */, 0 /* y */}, {3, 0}, {3, 1}, {2, 2}, {3, 3}};
   TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
 }
@@ -295,31 +282,27 @@ UNIT_TEST(XXGraph_RestrictionF1F3No)
 // * from F7 to F8 type only
 // * from F8 to F4 type only
 // * from F4 to F6 type only
-UNIT_TEST(XXGraph_RestrictionF1F3NoF7F8OnlyF8F4OnlyF4F6Only)
+UNIT_CLASS_TEST(RestrictionTest, XXGraph_RestrictionF1F3NoF7F8OnlyF8F4OnlyF4F6Only)
 {
-  unique_ptr<IndexGraph> graph = BuildXXGraph();
+  Init(BuildXXGraph());
 
-  Joint::Id const restictionF1F3Id = graph->GetJointIdForTesting(
-      {1 /* feature id */, 1 /* point id */});
-  graph->ApplyRestrictionNoRealFeatures(RestrictionPoint({1 /* feature id */, 1 /* point id */},
-                                        {3, 0}, restictionF1F3Id));
+  Joint::Id const restictionF1F3Id = GetJointIdForTesting({1 /* feature id */, 1 /* point id */});
+  ApplyRestrictionNoRealFeatures(RestrictionPoint({1 /* feature id */, 1 /* point id */},
+                                 {3, 0}, restictionF1F3Id));
 
-  Joint::Id const restictionF7F8Id = graph->GetJointIdForTesting(
-      {7 /* feature id */, 1 /* point id */});
-  graph->ApplyRestrictionOnlyRealFeatures(RestrictionPoint({7 /* feature id */, 1 /* point id */},
-                                          {8, 0}, restictionF7F8Id));
+  Joint::Id const restictionF7F8Id = GetJointIdForTesting({7 /* feature id */, 1 /* point id */});
+  ApplyRestrictionOnlyRealFeatures(RestrictionPoint({7 /* feature id */, 1 /* point id */},
+                                   {8, 0}, restictionF7F8Id));
 
-  Joint::Id const restictionF8F4Id = graph->GetJointIdForTesting(
-      {8 /* feature id */, 1 /* point id */});
-  graph->ApplyRestrictionOnlyRealFeatures(RestrictionPoint({8 /* feature id */, 1 /* point id */},
-                                          {4, 0}, restictionF8F4Id));
+  Joint::Id const restictionF8F4Id = GetJointIdForTesting({8 /* feature id */, 1 /* point id */});
+  ApplyRestrictionOnlyRealFeatures(RestrictionPoint({8 /* feature id */, 1 /* point id */},
+                                   {4, 0}, restictionF8F4Id));
 
-  Joint::Id const restictionF4F6Id = graph->GetJointIdForTesting(
-      {4 /* feature id */, 1 /* point id */});
-  graph->ApplyRestrictionOnlyRealFeatures(RestrictionPoint({4 /* feature id */, 1 /* point id */},
-                                          {6, 0}, restictionF4F6Id));
+  Joint::Id const restictionF4F6Id = GetJointIdForTesting({4 /* feature id */, 1 /* point id */});
+  ApplyRestrictionOnlyRealFeatures(RestrictionPoint({4 /* feature id */, 1 /* point id */},
+                                   {6, 0}, restictionF4F6Id));
 
-  IndexGraphStarter starter(*graph, RoadPoint(1, 0) /* start */, RoadPoint(6, 1) /* finish */);
+  IndexGraphStarter starter(*m_graph, RoadPoint(1, 0) /* start */, RoadPoint(6, 1) /* finish */);
   vector<m2::PointD> const expectedGeom = {{2 /* x */, 0 /* y */}, {3, 0}, {3, 1}, {2, 2}, {3, 3}};
   TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
 }

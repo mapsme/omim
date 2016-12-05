@@ -240,6 +240,10 @@ void IndexGraph::ApplyRestrictionRealFeatures(RestrictionPoint const & restricti
   if (!ApplyRestrictionPrepareData(restrictionPoint, restrictionInfo))
     return;
 
+  // Note. It's necessary to collect edges ingoing to the restriction and
+  // outgoing from the restriontion at first and then to apply |f|
+  // because |f| edits the graph and excecuting |f| affect the behavior of
+  // ForEachNonBlockedEdgeMappingNode().
   auto const edges = restrictionInfo.ToEdges();
   vector<DirectedEdge> ingoingRestEdges;
   ForEachNonBlockedEdgeMappingNode(edges.first, [&](DirectedEdge const & ingoing){

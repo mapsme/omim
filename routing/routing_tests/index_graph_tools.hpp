@@ -19,6 +19,78 @@
 
 namespace routing_test
 {
+using namespace routing;
+
+struct RestrictionTest
+{
+  void Init(unique_ptr<IndexGraph> graph)
+  {
+    m_graph = move(graph);
+  }
+
+  void DisableEdge(RoadPoint const & from, RoadPoint const & to, uint32_t featureId)
+  {
+    m_graph->DisableEdge(DirectedEdge(GetJointIdForTesting(from), GetJointIdForTesting(to),
+                                      featureId));
+  }
+
+  uint32_t AddFakeFeature(RoadPoint const & from, RoadPoint const & to,
+                          vector<RoadPoint> const & geometrySource, double speed)
+  {
+    return m_graph->AddFakeFeature(GetJointIdForTesting(from), GetJointIdForTesting(to),
+                                   geometrySource, speed);
+  }
+
+  uint32_t AddFakeFeature(Joint::Id from, Joint::Id to,
+                          vector<RoadPoint> const & geometrySource, double speed)
+  {
+    return m_graph->AddFakeFeature(from, to, geometrySource, speed);
+  }
+
+  Joint::Id GetJointIdForTesting(RoadPoint const & rp) const
+  {
+    return m_graph->GetJointIdForTesting(rp);
+  }
+
+  void ApplyRestrictionNoRealFeatures(RestrictionPoint const & restrictionPoint)
+  {
+    m_graph->ApplyRestrictionNoRealFeatures(restrictionPoint);
+  }
+
+  void ApplyRestrictionOnlyRealFeatures(RestrictionPoint const & restrictionPoint)
+  {
+    m_graph->ApplyRestrictionOnlyRealFeatures(restrictionPoint);
+  }
+
+  void GetSingleFeaturePath(RoadPoint const & from, RoadPoint const & to,
+                            vector<RoadPoint> & path)
+  {
+    m_graph->GetSingleFeaturePath(from, to, path);
+  }
+
+  void GetFeatureConnectionPath(RoadPoint const & from, RoadPoint const & to,
+                                uint32_t featureId, vector<RoadPoint> & path)
+  {
+    m_graph->GetFeatureConnectionPath(GetJointIdForTesting(from),
+                                      GetJointIdForTesting(to), featureId, path);
+  }
+
+  void GetConnectionPaths(RoadPoint const & from, RoadPoint const & to,
+                          vector<vector<RoadPoint>> & path)
+  {
+    m_graph->GetConnectionPaths(GetJointIdForTesting(from),
+                                GetJointIdForTesting(to), path);
+  }
+
+  void CreateFakeFeatureGeometry(vector<RoadPoint> const & geometrySource, double speed,
+                                 RoadGeometry & geometry)
+  {
+    m_graph->CreateFakeFeatureGeometry(geometrySource, speed, geometry);
+  }
+
+  unique_ptr<IndexGraph> m_graph;
+};
+
 class TestGeometryLoader final : public routing::GeometryLoader
 {
 public:
