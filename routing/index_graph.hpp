@@ -18,6 +18,11 @@
 #include "std/utility.hpp"
 #include "std/vector.hpp"
 
+namespace routing_test
+{
+struct RestrictionTest;
+}  // namespace routing_test
+
 namespace routing
 {
 class JointEdge final
@@ -91,7 +96,7 @@ inline bool IsAdjacent(DirectedEdge const & ingoing, DirectedEdge const & outgoi
 
 class RestrictionInfo final
 {
-public:
+public:  
   RestrictionInfo() = default;
 
   RestrictionInfo(DirectedEdge const & ingoing, DirectedEdge const & outgoing)
@@ -138,6 +143,8 @@ public:
 class IndexGraph final
 {
 public:
+  friend struct routing_test::RestrictionTest;
+
   static uint32_t const kStartFakeFeatureIds = 1024 * 1024 * 1024;
 
   IndexGraph() = default;
@@ -155,7 +162,6 @@ public:
   Joint::Id GetJointId(RoadPoint const & rp) const { return m_roadIndex.GetJointId(rp); }
   m2::PointD const & GetPoint(Joint::Id jointId);
 
-  Geometry & GetGeometry() { return m_geometry; }
   EdgeEstimator const & GetEstimator() const { return *m_estimator; }
   RoadJointIds const & GetRoad(uint32_t featureId) const { return m_roadIndex.GetRoad(featureId); }
 
@@ -190,6 +196,31 @@ public:
     m_jointIndex.ForEachPoint(jointId, forward<F>(f));
   }
 
+  /// \brief Add restrictions in |restrictions| to |m_ftPointIndex|.
+  void ApplyRestrictions(RestrictionVec const & restrictions);
+
+  /// \returns RoadGeometry by a real or fake featureId.
+  RoadGeometry const & GetRoad(uint32_t featureId);
+
+  /// \brief Calls |f| for |directedEdge| if it's not blocked and recursively for every
+  /// non blocke edge in |m_edgeMapping|.
+  template<class F>
+  void ForEachNonBlockedEdgeMappingNode(DirectedEdge const & directedEdge, F const & f) const
+  {
+    auto const it = m_edgeMapping.find(directedEdge);
+    if (it != m_edgeMapping.end())
+    {
+      for (DirectedEdge const & e : it->second)
+        ForEachNonBlockedEdgeMappingNode(e, f);
+    }
+
+    if (m_blockedEdges.count(directedEdge) != 0)
+      return;
+
+    f(directedEdge);
+  }
+
+private:
   Joint::Id GetJointIdForTesting(RoadPoint const & rp) const
   {
     return m_roadIndex.GetJointId(rp);
@@ -207,9 +238,6 @@ public:
   }
 
   void DisableAllEdges(Joint::Id from, Joint::Id to);
-
-  void CreateFakeFeatureGeometry(vector<RoadPoint> const & geometrySource, double speed,
-                                 RoadGeometry & geometry);
 
   /// \brief Adding a fake oneway feature with a loose end starting from joint |from|.
   /// Geometry for the feature points is taken from |geometrySource|.
@@ -246,17 +274,26 @@ public:
   /// is valid for ApplyRestrictionOnlyRealFeatures().
   void ApplyRestrictionOnlyRealFeatures(RestrictionPoint const & restrictionPoint);
 
+  /// \brief Calls |f| for |restrictionPoint| and for all restriction points formed by
+  /// all ingoing and outgoing edges which were generated from the ingoing edge
+  /// and the outgoing edge of |restrictionPoint|.
   void ApplyRestrictionRealFeatures(RestrictionPoint const & restrictionPoint,
                                     function<void(RestrictionInfo const &)> && f);
-
-  /// \brief Add restrictions in |restrictions| to |m_ftPointIndex|.
-  void ApplyRestrictions(RestrictionVec const & restrictions);
 
   /// \brief Fills |path| with points from point |from| to point |to|
   /// \note |from| and |to| should belong to the same feature.
   /// \note The order on points in items of |connectionPaths| is from |from| to |to|.
   void GetSingleFeaturePath(RoadPoint const & from, RoadPoint const & to,
                             vector<RoadPoint> & path);
+
+  /// \brief Fills |path| with a path from |from| to |to| of points of |featureId|.
+  void GetFeatureConnectionPath(Joint::Id from, Joint::Id to, uint32_t featureId,
+                                vector<RoadPoint> & path);
+
+  void GetOutgoingGeomEdges(vector<JointEdge> const & outgoingEdges, Joint::Id center,
+                            vector<JointEdgeGeom> & outgoingGeomEdges);
+
+  bool IsFakeFeature(uint32_t featureId) const { return featureId >= kStartFakeFeatureIds; }
 
   /// \brief Fills |connectionPaths| with all path from joint |from| to joint |to|.
   /// If |from| and |to| don't belong to the same feature |connectionPaths| will
@@ -269,37 +306,8 @@ public:
   void GetConnectionPaths(Joint::Id from, Joint::Id to,
                           vector<vector<RoadPoint>> & connectionPaths);
 
-  /// \brief Fills |path| with a path from |from| to |to| of points of |featureId|.
-  void GetFeatureConnectionPath(Joint::Id from, Joint::Id to, uint32_t featureId,
-                                vector<RoadPoint> & path);
-
-  void GetOutgoingGeomEdges(vector<JointEdge> const & outgoingEdges, Joint::Id center,
-                            vector<JointEdgeGeom> & outgoingGeomEdges);
-
-  /// \returns RoadGeometry by a real or fake featureId.
-  RoadGeometry const & GetRoad(uint32_t featureId);
-
-  bool IsFakeFeature(uint32_t featureId) const { return featureId >= kStartFakeFeatureIds; }
-
-  /// \brief Calls |f| for |directedEdge| if it's not blocked and recursively for every
-  /// non blocke edge in |m_edgeMapping|.
-  template<class F>
-  void ForEachNonBlockedEdgeMappingNode(DirectedEdge const & directedEdge, F const & f) const
-  {
-    auto const it = m_edgeMapping.find(directedEdge);
-    if (it != m_edgeMapping.end())
-    {
-      for (DirectedEdge const & e : it->second)
-        ForEachNonBlockedEdgeMappingNode(e, f);
-    }
-
-    if (m_blockedEdges.count(directedEdge) != 0)
-      return;
-
-    f(directedEdge);
-  }
-
-private:
+  void CreateFakeFeatureGeometry(vector<RoadPoint> const & geometrySource, double speed,
+                                 RoadGeometry & geometry);
 
   void GetNeighboringEdge(RoadGeometry const & road, RoadPoint const & rp, bool forward, bool outgoing,
                           bool graphWithoutRestrictions, vector<JointEdge> & edges) const;
