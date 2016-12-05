@@ -44,6 +44,7 @@ set(
   range_iterator.hpp
   ref_counted.hpp
   rolling_hash.hpp
+  rw_mutex.hpp
   scope_guard.hpp
   set_operations.hpp
   shared_buffer_manager.cpp
