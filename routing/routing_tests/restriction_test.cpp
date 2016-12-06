@@ -89,9 +89,9 @@ UNIT_TEST(TriangularGraph)
 UNIT_CLASS_TEST(RestrictionTest, TriangularGraph_DisableF2)
 {
   Init(BuildTriangularGraph());
-  SetStarter(RoadPoint(2, 0) /* start */, RoadPoint(1, 1) /* finish */);
 
   DisableEdge({2 /* feature id */, 0 /* point id */},{2, 1}, 2 /* feature id */);
+  SetStarter(RoadPoint(2, 0) /* start */, RoadPoint(1, 1) /* finish */);
   vector<RoadPoint> const expectedRouteOneEdgeRemoved = {
       {3 /* feature id */, 0 /* seg id */}, {3, 1}, {3, 2}, {0, 1}};
   TestRouteSegments(*m_starter, AStarAlgorithm<IndexGraphStarter>::Result::OK,
@@ -102,10 +102,10 @@ UNIT_CLASS_TEST(RestrictionTest, TriangularGraph_DisableF2)
 UNIT_CLASS_TEST(RestrictionTest, TriangularGraph_RestrictionNoF2F1)
 {
   Init(BuildTriangularGraph());
-  SetStarter(RoadPoint(2, 0) /* start */, RoadPoint(1, 1) /* finish */);
 
   ApplyRestrictionNoRealFeatures(RestrictionPoint({2 /* feature id */, 1 /* seg id */}, {1, 0},
                                  GetJointIdForTesting({1, 0})));
+  SetStarter(RoadPoint(2, 0) /* start */, RoadPoint(1, 1) /* finish */);
   vector<RoadPoint> const expectedRouteRestrictionF2F1No = {
       {3 /* feature id */, 0 /* seg id */}, {3, 1}, {3, 2}, {0, 1}};
   TestRouteSegments(*m_starter, AStarAlgorithm<IndexGraphStarter>::Result::OK,
@@ -199,10 +199,10 @@ UNIT_CLASS_TEST(RestrictionTest, CornerGraph_AddFakeFeature)
   RoadPoint const kStart(1, 0);
   RoadPoint const kFinish(0, 1);
   Init(BuildCornerGraph());
-  SetStarter(kStart, kFinish);
 
   AddFakeFeature(kStart, kFinish, {kStart, kFinish} /* geometrySource */, 1.0 /* speed */);
 
+  SetStarter(kStart, kFinish);
   vector<RoadPoint> const expectedRouteByFakeFeature = {
       {IndexGraph::kStartFakeFeatureIds, 0 /* seg id */},
       {IndexGraph::kStartFakeFeatureIds, 1 /* seg id */}};
