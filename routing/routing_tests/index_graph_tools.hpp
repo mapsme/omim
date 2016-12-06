@@ -28,6 +28,11 @@ struct RestrictionTest
     m_graph = move(graph);
   }
 
+  void SetStarter(RoadPoint const & start, RoadPoint const & finish)
+  {
+    m_starter = make_unique<IndexGraphStarter>(*m_graph, start, finish);
+  }
+
   void DisableEdge(RoadPoint const & from, RoadPoint const & to, uint32_t featureId)
   {
     m_graph->DisableEdge(DirectedEdge(GetJointIdForTesting(from), GetJointIdForTesting(to),
@@ -89,6 +94,7 @@ struct RestrictionTest
   }
 
   unique_ptr<IndexGraph> m_graph;
+  unique_ptr<IndexGraphStarter> m_starter;
 };
 
 class TestGeometryLoader final : public routing::GeometryLoader
