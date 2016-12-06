@@ -5,6 +5,8 @@
 #include "routing/car_model.hpp"
 #include "routing/geometry.hpp"
 
+#include "traffic/traffic_cache.hpp"
+
 #include "geometry/point2d.hpp"
 
 #include "std/unique_ptr.hpp"
@@ -58,7 +60,8 @@ unique_ptr<IndexGraph> BuildXYGraph()
     MakeJoint({{5, 1}}), /* joint at point (2, 3) */
   };
 
-  unique_ptr<IndexGraph> graph = make_unique<IndexGraph>(move(loader), CreateEstimator());
+  traffic::TrafficCache const trafficCache;
+  unique_ptr<IndexGraph> graph = make_unique<IndexGraph>(move(loader), CreateEstimator(trafficCache));
   graph->Import(joints);
   return graph;
 }
@@ -81,9 +84,9 @@ UNIT_CLASS_TEST(RestrictionTest, XYGraph_RestrictionF1F3Only)
   ApplyRestrictionOnlyRealFeatures(RestrictionPoint({1 /* feature id */, 1 /* point id */},
                                    {3, 0}, restictionF1F3Id));
 
-  IndexGraphStarter starter(*m_graph, RoadPoint(1, 0) /* start */, RoadPoint(5, 1) /* finish */);
+  SetStarter(RoadPoint(1, 0) /* start */, RoadPoint(5, 1) /* finish */);
   vector<m2::PointD> const expectedGeom = {{2 /* x */, 0 /* y */}, {1, 1}, {2, 2}, {2, 3}};
-  TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
+  TestRouteGeometry(*m_starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
 }
 
 // Route through XY graph with one restriciton (type only) from F3 to F5.
@@ -95,9 +98,9 @@ UNIT_CLASS_TEST(RestrictionTest, XYGraph_RestrictionF3F5Only)
   ApplyRestrictionOnlyRealFeatures(RestrictionPoint({3 /* feature id */, 1 /* point id */},
                                    {5, 0}, restictionF3F5Id));
 
-  IndexGraphStarter starter(*m_graph, RoadPoint(1, 0) /* start */, RoadPoint(5, 1) /* finish */);
+  SetStarter(RoadPoint(1, 0) /* start */, RoadPoint(5, 1) /* finish */);
   vector<m2::PointD> const expectedGeom = {{2 /* x */, 0 /* y */}, {1, 1}, {2, 2}, {2, 3}};
-  TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
+  TestRouteGeometry(*m_starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
 }
 
 // Cumulative case. Route through XY graph with two restricitons (type only) applying
@@ -114,9 +117,9 @@ UNIT_CLASS_TEST(RestrictionTest, XYGraph_RestrictionF1F3AndF3F5Only)
   ApplyRestrictionOnlyRealFeatures(RestrictionPoint({3 /* feature id */, 1 /* point id */},
                                    {5, 0}, restictionF3F5Id));
 
-  IndexGraphStarter starter(*m_graph, RoadPoint(1, 0) /* start */, RoadPoint(5, 1) /* finish */);
+  SetStarter(RoadPoint(1, 0) /* start */, RoadPoint(5, 1) /* finish */);
   vector<m2::PointD> const expectedGeom = {{2 /* x */, 0 /* y */}, {1, 1}, {2, 2}, {2, 3}};
-  TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
+  TestRouteGeometry(*m_starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
 }
 
 // Cumulative case. Route through XY graph with two restricitons (type only) applying
@@ -133,9 +136,9 @@ UNIT_CLASS_TEST(RestrictionTest, XYGraph_RestrictionF3F5AndF1F3Only)
   ApplyRestrictionOnlyRealFeatures(RestrictionPoint({1 /* feature id */, 1 /* point id */},
                                    {3, 0}, restictionF1F3Id));
 
-  IndexGraphStarter starter(*m_graph, RoadPoint(1, 0) /* start */, RoadPoint(5, 1) /* finish */);
+  SetStarter(RoadPoint(1, 0) /* start */, RoadPoint(5, 1) /* finish */);
   vector<m2::PointD> const expectedGeom = {{2 /* x */, 0 /* y */}, {1, 1}, {2, 2}, {2, 3}};
-  TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
+  TestRouteGeometry(*m_starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
 }
 
 // Cumulative case. Route through XY graph with two restricitons applying
@@ -153,9 +156,9 @@ UNIT_CLASS_TEST(RestrictionTest, XYGraph_RestrictionF3F5OnlyAndF0F2No)
   ApplyRestrictionNoRealFeatures(RestrictionPoint({0 /* feature id */, 1 /* point id */},
                                  {2, 0}, restictionF1F3Id));
 
-  IndexGraphStarter starter(*m_graph, RoadPoint(1, 0) /* start */, RoadPoint(5, 1) /* finish */);
+  SetStarter(RoadPoint(1, 0) /* start */, RoadPoint(5, 1) /* finish */);
   vector<m2::PointD> const expectedGeom = {{2 /* x */, 0 /* y */}, {1, 1}, {2, 2}, {2, 3}};
-  TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
+  TestRouteGeometry(*m_starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
 }
 
 // Cumulative case. Trying to build route through XY graph with two restricitons applying
@@ -173,9 +176,9 @@ UNIT_CLASS_TEST(RestrictionTest, XYGraph_RestrictionF3F5OnlyAndF1F3No)
   ApplyRestrictionNoRealFeatures(RestrictionPoint({1 /* feature id */, 1 /* point id */},
                                  {3, 0}, restictionF1F3Id));
 
-  IndexGraphStarter starter(*m_graph, RoadPoint(1, 0) /* start */, RoadPoint(5, 1) /* finish */);
+  SetStarter(RoadPoint(1, 0) /* start */, RoadPoint(5, 1) /* finish */);
   vector<m2::PointD> const expectedGeom = {};
-  TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::NoPath, expectedGeom);
+  TestRouteGeometry(*m_starter, AStarAlgorithm<IndexGraphStarter>::Result::NoPath, expectedGeom);
 }
 
 //                        Finish
@@ -229,7 +232,8 @@ unique_ptr<IndexGraph> BuildXXGraph()
     MakeJoint({{7, 1}, {8, 0}}), /* joint at point (3, 0) */
   };
 
-  unique_ptr<IndexGraph> graph = make_unique<IndexGraph>(move(loader), CreateEstimator());
+  traffic::TrafficCache const trafficCache;
+  unique_ptr<IndexGraph> graph = make_unique<IndexGraph>(move(loader), CreateEstimator(trafficCache));
   graph->Import(joints);
   return graph;
 }
@@ -257,9 +261,9 @@ UNIT_CLASS_TEST(RestrictionTest, XXGraph_RestrictionF1F3AndF3F6Only)
   ApplyRestrictionOnlyRealFeatures(RestrictionPoint({3 /* feature id */, 1 /* point id */},
                                    {6, 0}, restictionF3F6Id));
 
-  IndexGraphStarter starter(*m_graph, RoadPoint(1, 0) /* start */, RoadPoint(6, 1) /* finish */);
+  SetStarter(RoadPoint(1, 0) /* start */, RoadPoint(6, 1) /* finish */);
   vector<m2::PointD> const expectedGeom = {{2 /* x */, 0 /* y */}, {1, 1}, {2, 2}, {3, 3}};
-  TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
+  TestRouteGeometry(*m_starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
 }
 
 // Route through XX graph with one restriciton (type no) from F1 to F3.
@@ -271,9 +275,9 @@ UNIT_CLASS_TEST(RestrictionTest, XXGraph_RestrictionF1F3No)
   ApplyRestrictionNoRealFeatures(RestrictionPoint({1 /* feature id */, 1 /* point id */},
                                  {3, 0}, restictionF1F3Id));
 
-  IndexGraphStarter starter(*m_graph, RoadPoint(1, 0) /* start */, RoadPoint(6, 1) /* finish */);
+  SetStarter(RoadPoint(1, 0) /* start */, RoadPoint(6, 1) /* finish */);
   vector<m2::PointD> const expectedGeom = {{2 /* x */, 0 /* y */}, {3, 0}, {3, 1}, {2, 2}, {3, 3}};
-  TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
+  TestRouteGeometry(*m_starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
 }
 
 // Cumulative case. Route through XX graph with four restricitons applying
@@ -302,8 +306,8 @@ UNIT_CLASS_TEST(RestrictionTest, XXGraph_RestrictionF1F3NoF7F8OnlyF8F4OnlyF4F6On
   ApplyRestrictionOnlyRealFeatures(RestrictionPoint({4 /* feature id */, 1 /* point id */},
                                    {6, 0}, restictionF4F6Id));
 
-  IndexGraphStarter starter(*m_graph, RoadPoint(1, 0) /* start */, RoadPoint(6, 1) /* finish */);
+  SetStarter(RoadPoint(1, 0) /* start */, RoadPoint(6, 1) /* finish */);
   vector<m2::PointD> const expectedGeom = {{2 /* x */, 0 /* y */}, {3, 0}, {3, 1}, {2, 2}, {3, 3}};
-  TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
+  TestRouteGeometry(*m_starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
 }
 }  // namespace

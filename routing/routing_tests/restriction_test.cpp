@@ -89,12 +89,12 @@ UNIT_TEST(TriangularGraph)
 UNIT_CLASS_TEST(RestrictionTest, TriangularGraph_DisableF2)
 {
   Init(BuildTriangularGraph());
-  DisableEdge({2 /* feature id */, 0 /* point id */},{2, 1}, 2 /* feature id */);
+  SetStarter(RoadPoint(2, 0) /* start */, RoadPoint(1, 1) /* finish */);
 
-  IndexGraphStarter starter(*m_graph, RoadPoint(2, 0) /* start */, RoadPoint(1, 1) /* finish */);
+  DisableEdge({2 /* feature id */, 0 /* point id */},{2, 1}, 2 /* feature id */);
   vector<RoadPoint> const expectedRouteOneEdgeRemoved = {
       {3 /* feature id */, 0 /* seg id */}, {3, 1}, {3, 2}, {0, 1}};
-  TestRouteSegments(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK,
+  TestRouteSegments(*m_starter, AStarAlgorithm<IndexGraphStarter>::Result::OK,
                     expectedRouteOneEdgeRemoved);
 }
 
@@ -102,13 +102,13 @@ UNIT_CLASS_TEST(RestrictionTest, TriangularGraph_DisableF2)
 UNIT_CLASS_TEST(RestrictionTest, TriangularGraph_RestrictionNoF2F1)
 {
   Init(BuildTriangularGraph());
+  SetStarter(RoadPoint(2, 0) /* start */, RoadPoint(1, 1) /* finish */);
+
   ApplyRestrictionNoRealFeatures(RestrictionPoint({2 /* feature id */, 1 /* seg id */}, {1, 0},
                                  GetJointIdForTesting({1, 0})));
-
-  IndexGraphStarter starter(*m_graph, RoadPoint(2, 0) /* start */, RoadPoint(1, 1) /* finish */);
   vector<RoadPoint> const expectedRouteRestrictionF2F1No = {
       {3 /* feature id */, 0 /* seg id */}, {3, 1}, {3, 2}, {0, 1}};
-  TestRouteSegments(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK,
+  TestRouteSegments(*m_starter, AStarAlgorithm<IndexGraphStarter>::Result::OK,
                     expectedRouteRestrictionF2F1No);
 }
 
@@ -199,14 +199,14 @@ UNIT_CLASS_TEST(RestrictionTest, CornerGraph_AddFakeFeature)
   RoadPoint const kStart(1, 0);
   RoadPoint const kFinish(0, 1);
   Init(BuildCornerGraph());
+  SetStarter(kStart, kFinish);
 
   AddFakeFeature(kStart, kFinish, {kStart, kFinish} /* geometrySource */, 1.0 /* speed */);
 
-  IndexGraphStarter starter(*m_graph, kStart, kFinish);
   vector<RoadPoint> const expectedRouteByFakeFeature = {
       {IndexGraph::kStartFakeFeatureIds, 0 /* seg id */},
       {IndexGraph::kStartFakeFeatureIds, 1 /* seg id */}};
-  TestRouteSegments(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK,
+  TestRouteSegments(*m_starter, AStarAlgorithm<IndexGraphStarter>::Result::OK,
                     expectedRouteByFakeFeature);
 }
 
@@ -400,10 +400,10 @@ UNIT_CLASS_TEST(RestrictionTest, FlagGraph_RestrictionF0F3No)
            true /* graphWithoutRestrictions */, *m_graph);
 
   // Testing route building after adding the restriction.
-  IndexGraphStarter starter(*m_graph, RoadPoint(0, 0) /* start */, RoadPoint(5, 0) /* finish */);
+  SetStarter(RoadPoint(0, 0) /* start */, RoadPoint(5, 0) /* finish */);
   vector<m2::PointD> const expectedGeom = {
       {2 /* x */, 0 /* y */}, {1, 0}, {0, 0}, {0, 1}, {0.5, 1}};
-  TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
+  TestRouteGeometry(*m_starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
 }
 
 // Route through flag graph with one restriciton (type only) from F0 to F1.
@@ -414,13 +414,13 @@ UNIT_CLASS_TEST(RestrictionTest, FlagGraph_RestrictionF0F1Only)
   ApplyRestrictionOnlyRealFeatures(RestrictionPoint({0 /* feature id */, 1 /* point id */},
                                    {1 /* feature id */, 0 /* point id */}, restictionCenterId));
 
-  IndexGraphStarter starter(*m_graph, RoadPoint(0, 0) /* start */, RoadPoint(5, 0) /* finish */);
+  SetStarter(RoadPoint(0, 0) /* start */, RoadPoint(5, 0) /* finish */);
   vector<RoadPoint> const expectedRoute = {{IndexGraph::kStartFakeFeatureIds, 0 /* point id */},
                                            {IndexGraph::kStartFakeFeatureIds, 1},
                                            {IndexGraph::kStartFakeFeatureIds + 1, 1},
                                            {2 /* feature id */, 1 /* point id */},
                                            {4, 1}};
-  TestRouteSegments(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedRoute);
+  TestRouteSegments(*m_starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedRoute);
 }
 
 // 1 *-F4-*-F5-*---F6---* Finish
@@ -487,10 +487,10 @@ UNIT_CLASS_TEST(RestrictionTest, PosterGraph_RestrictionF0F3No)
   ApplyRestrictionNoRealFeatures(RestrictionPoint({0 /* feature id */, 1 /* point id */},
                                  {3, 0}, restictionCenterId));
 
-  IndexGraphStarter starter(*m_graph, RoadPoint(0, 0) /* start */, RoadPoint(6, 1) /* finish */);
+  SetStarter(RoadPoint(0, 0) /* start */, RoadPoint(6, 1) /* finish */);
   vector<m2::PointD> const expectedGeom = {
       {2 /* x */, 0 /* y */}, {1, 0}, {0, 0}, {0, 1}, {0.5, 1}, {1, 1}, {2, 1}};
-  TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
+  TestRouteGeometry(*m_starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
 }
 
 // Route through poster graph with restrictions F0-F1 (type only).
@@ -511,10 +511,10 @@ UNIT_CLASS_TEST(RestrictionTest, PosterGraph_RestrictionF0F1Only)
     return;
   });
 
-  IndexGraphStarter starter(*m_graph, RoadPoint(0, 0) /* start */, RoadPoint(6, 1) /* finish */);
+  SetStarter(RoadPoint(0, 0) /* start */, RoadPoint(6, 1) /* finish */);
   vector<m2::PointD> const expectedGeom = {
       {2 /* x */, 0 /* y */}, {1, 0}, {0, 0}, {0, 1}, {0.5, 1}, {1, 1}, {2, 1}};
-  TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
+  TestRouteGeometry(*m_starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
 }
 
 // 1               *--F1-->*
