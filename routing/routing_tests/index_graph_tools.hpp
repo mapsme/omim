@@ -33,6 +33,12 @@ struct RestrictionTest
     m_starter = make_unique<IndexGraphStarter>(*m_graph, start, finish);
   }
 
+  bool GetAdjacentFtPoint(uint32_t featureIdFrom, uint32_t featureIdTo,
+                          RestrictionPoint & crossingPoint) const
+  {
+    return m_graph->m_roadIndex.GetAdjacentFtPoint(featureIdFrom, featureIdTo, crossingPoint);
+  }
+
   void DisableEdge(RoadPoint const & from, RoadPoint const & to, uint32_t featureId)
   {
     m_graph->DisableEdge(DirectedEdge(GetJointIdForTesting(from), GetJointIdForTesting(to),
@@ -126,4 +132,11 @@ void TestRouteGeometry(
     routing::IndexGraphStarter & starter,
     routing::AStarAlgorithm<routing::IndexGraphStarter>::Result expectedRouteResult,
     vector<m2::PointD> const & expectedRouteGeom);
+
+/// \brief Applies all possible permulations of |restrictions| to graph in |restrictionTest| and
+/// tests resulting routes.
+/// \note restrictionTest should have valid |restrictionTest.m_graph|.
+void TestRestrictionPermutations(RestrictionVec restrictions, vector<m2::PointD> const & expectedRouteGeom,
+                                 RoadPoint const & start, RoadPoint const & finish,
+                                 RestrictionTest & restrictionTest);
 }  // namespace routing_test

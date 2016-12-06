@@ -78,4 +78,35 @@ void TestRouteGeometry(IndexGraphStarter & starter,
     TEST_EQUAL(expectedRouteGeom[i], roadGeom.GetPoint(route[i].GetPointId()), ());
   }
 }
+
+void TestRestrictionPermutations(RestrictionVec restrictions, vector<m2::PointD> const & expectedRouteGeom,
+                                 RoadPoint const & start, RoadPoint const & finish,
+                                 RestrictionTest & restrictionTest)
+{
+  sort(restrictions.begin(), restrictions.end());
+  do
+  {
+    for (Restriction const & restriction : restrictions)
+    {
+      CHECK_EQUAL(restriction.m_featureIds.size(), 2, ());
+      RestrictionPoint restrictionPoint;
+      CHECK(restrictionTest. GetAdjacentFtPoint(restriction.m_featureIds[0], restriction.m_featureIds[1],
+                                                restrictionPoint), ());
+
+      switch (restriction.m_type)
+      {
+      case Restriction::Type::No:
+        restrictionTest.ApplyRestrictionNoRealFeatures(restrictionPoint);
+        continue;
+      case Restriction::Type::Only:
+        restrictionTest.ApplyRestrictionOnlyRealFeatures(restrictionPoint);
+        continue;
+      }
+    }
+    restrictionTest.SetStarter(start, finish);
+    TestRouteGeometry(*restrictionTest.m_starter, AStarAlgorithm<IndexGraphStarter>::Result::OK,
+                      expectedRouteGeom);
+  }
+  while(next_permutation(restrictions.begin(), restrictions.end()));
+}
 }  // namespace routing_test
