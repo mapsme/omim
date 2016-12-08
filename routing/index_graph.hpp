@@ -132,7 +132,7 @@ public:
 
   bool operator!=(RestrictionInfo const & rhs) const { return !(*this == rhs); }
 
-  pair<DirectedEdge, DirectedEdge> ToEdges()
+  pair<DirectedEdge, DirectedEdge> Edges()
   {
     return make_pair(DirectedEdge(m_from, m_center, m_fromFeatureId),
                      DirectedEdge(m_center, m_to, m_toFeatureId));
@@ -218,7 +218,7 @@ public:
   /// \brief Calls |f| for |directedEdge| if it's not blocked and recursively for every
   /// non blocke edge in |m_edgeMapping|.
   template<class F>
-  void ForEachNonBlockedEdgeMappingNode(DirectedEdge const & directedEdge, F const & f) const
+  void ForEachNonBlockedEdgeMappingNode(DirectedEdge const & directedEdge, F && f) const
   {
     auto const it = m_edgeMapping.find(directedEdge);
     if (it != m_edgeMapping.end())
@@ -234,7 +234,7 @@ public:
   }
 
   template<class F>
-  void ForEachEdgeMappingNode(DirectedEdge const & directedEdge, F const & f) const
+  void ForEachEdgeMappingNode(DirectedEdge const & directedEdge, F && f) const
   {
     auto const it = m_edgeMapping.find(directedEdge);
     if (it != m_edgeMapping.end())

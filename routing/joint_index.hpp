@@ -20,7 +20,6 @@ class JointIndex final
 public:
   uint32_t GetNumJoints() const
   {
-    CHECK_GREATER(m_offsets.size(), 0, ());
     return GetNumStaticJoints() + m_dynamicJoints.size();
   }
 

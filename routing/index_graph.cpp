@@ -266,7 +266,7 @@ void IndexGraph::ApplyRestrictionRealFeatures(RestrictionPoint const & restricti
   // outgoing from the restriontion at first and then to apply |f|
   // because |f| edits the graph and excecuting |f| affect the behavior of
   // ForEachNonBlockedEdgeMappingNode().
-  auto const edges = restrictionInfo.ToEdges();
+  auto const edges = restrictionInfo.Edges();
   vector<DirectedEdge> ingoingRestEdges;
   ForEachNonBlockedEdgeMappingNode(edges.first, [&](DirectedEdge const & ingoing){
     ingoingRestEdges.push_back(ingoing);
