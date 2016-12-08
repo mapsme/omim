@@ -66,6 +66,7 @@ HEADERS += \
     ref_counted.hpp \
     regexp.hpp \
     rolling_hash.hpp \
+    rw_mutex.hpp \
     scope_guard.hpp \
     set_operations.hpp \
     shared_buffer_manager.hpp \

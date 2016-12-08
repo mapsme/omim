@@ -23,6 +23,7 @@ set(
   ref_counted_tests.cpp
   regexp_test.cpp
   rolling_hash_test.cpp
+  rw_mutex_test.cpp
   scope_guard_test.cpp
   stl_add_test.cpp
   stl_helpers_test.cpp
