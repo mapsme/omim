@@ -210,6 +210,78 @@ UNIT_CLASS_TEST(RestrictionTest, CornerGraph_AddFakeFeature)
                     expectedRouteByFakeFeature);
 }
 
+// Finish
+// 2 *
+//   | \
+//   F0  F2
+//   |     \
+// 1 *       *
+//   |         \
+//   F0         F2
+//   |             \
+// 0 *---F1--*--F1--*
+//   0       1       2
+//         Start
+// Note. All features are two setments and two-way.
+unique_ptr<IndexGraph> BuildTwowayCornerGraph()
+{
+  unique_ptr<TestGeometryLoader> loader = make_unique<TestGeometryLoader>();
+  loader->AddRoad(0 /* feature id */, false /* oneWay */, 1.0 /* speed */,
+                  RoadGeometry::Points({{0.0, 0.0}, {0.0, 1.0}, {0.0, 2.0}}));
+  loader->AddRoad(1 /* feature id */, false /* oneWay */, 1.0 /* speed */,
+                  RoadGeometry::Points({{2.0, 0.0}, {1.0, 0.0}, {0.0, 0.0}}));
+  loader->AddRoad(2 /* feature id */, false /* oneWay */, 1.0 /* speed */,
+                  RoadGeometry::Points({{2.0, 0.0}, {1.0, 1.0}, {0.0, 2.0}}));
+
+  vector<Joint> const joints = {MakeJoint({{1 /* feature id */, 2 /* point id */}, {0, 0}})
+                                            /* joint at point (0, 0) */,
+                                MakeJoint({{1, 0}, {2, 0}}), /* joint at point (2, 0) */
+                                MakeJoint({{2, 2}, {0, 2}}), /* joint at point (0, 2) */};
+
+  traffic::TrafficCache const trafficCache;
+  unique_ptr<IndexGraph> graph = make_unique<IndexGraph>(move(loader), CreateEstimator(trafficCache));
+  graph->Import(joints);
+  return graph;
+}
+
+UNIT_CLASS_TEST(RestrictionTest, TwowayCornerGraph_AdditionalZeroEdges)
+{
+  Init(BuildTwowayCornerGraph());
+
+  RestrictionVec const restrictions =
+      {{Restriction::Type::Only, {1 /* feature from */, 0 /* feature to */}}};
+  m_graph->ApplyRestrictions(restrictions);
+  SetStarter(RoadPoint(1, 1) /* start */, RoadPoint(2, 2) /* finish */);
+
+  vector<DirectedEdge> expected =
+      {{0 /* from joint id */, 4 /* to joint id */, IndexGraph::kStartFakeFeatureIds + 2}};
+  TEST_EQUAL(GetAdditionalZeroEdges(), expected, ());
+}
+
+UNIT_CLASS_TEST(RestrictionTest, TwowayCornerGraph_GetEdgeList)
+{
+  Init(BuildTwowayCornerGraph());
+
+  vector<DirectedEdge> outgoing;
+  m_graph->GetEdgeList(GetJointIdForTesting({1 /* feature id */, 0 /* point id */}),
+                       true /* isOutgoing */,  false /* graphWithoutRestrictions */, outgoing);
+
+  vector<DirectedEdge> expectedOutgoing = {{1 /* from joint */, 0 /* to joint */,
+                                            1 /* feature id */},
+                                           {1 /* from joint */, 2 /* to joint */,
+                                            2 /* feature id */}};
+  TEST_EQUAL(outgoing, expectedOutgoing, ());
+
+  vector<DirectedEdge> ingoing;
+  m_graph->GetEdgeList(GetJointIdForTesting({1 /* feature id */, 0 /* point id */}),
+                      false /* isOutgoing */,  false /* graphWithoutRestrictions */, ingoing);
+  vector<DirectedEdge> expectedIngoing = {{0 /* from joint */, 1 /* to joint */,
+                                           1 /* feature id */},
+                                          {2 /* from joint */, 1 /* to joint */,
+                                           2 /* feature id */}};
+  TEST_EQUAL(ingoing, expectedIngoing, ());
+}
+
 // Finish 2   Finish 1  Finish 0
 // 2 *<---F5----*<---F6---*
 //   ^ ↖       ^ ↖       ^
@@ -370,10 +442,6 @@ unique_ptr<IndexGraph> BuildFlagGraph()
   return graph;
 }
 
-// @TODO(bykoianko) It's necessary to implement put several no restriction on the same junction
-// ingoing edges of the same jucntion. For example test with flag graph with two restriction
-// type no from F0 to F3 and form F0 to F1.
-
 // Route through flag graph without any restrictions.
 UNIT_TEST(FlagGraph)
 {
@@ -421,6 +489,18 @@ UNIT_CLASS_TEST(RestrictionTest, FlagGraph_RestrictionF0F1Only)
                                            {2 /* feature id */, 1 /* point id */},
                                            {4, 1}};
   TestRouteSegments(*m_starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedRoute);
+}
+
+UNIT_CLASS_TEST(RestrictionTest, FlagGraph_PermutationsF1F3NoF7F8OnlyF8F4OnlyF4F6Only)
+{
+  Init(BuildFlagGraph());
+  RestrictionVec const restrictions = {{Restriction::Type::No, {0 /* feature from */, 3 /* feature to */}},
+                                       {Restriction::Type::Only, {0 /* feature from */, 1 /* feature to */}},
+                                       {Restriction::Type::Only, {1 /* feature from */, 2 /* feature to */}}};
+
+  vector<m2::PointD> const expectedGeom = {{2 /* x */, 0 /* y */}, {1, 0}, {0, 0}, {0, 1}, {0.5, 1}};
+  TestRestrictionPermutations(restrictions, expectedGeom, RoadPoint(0, 0) /* start */,
+                              RoadPoint(5, 0) /* finish */, *this);
 }
 
 // 1 *-F4-*-F5-*---F6---* Finish
@@ -618,5 +698,71 @@ UNIT_CLASS_TEST(RestrictionTest, TwoWay_GetFeatureConnectionPath)
                            0 /* feature id */, featurePath);
   vector<RoadPoint> const expectedReversedF0Path = {{0, 2}, {0, 1}, {0, 0}};
   TEST_EQUAL(featurePath, expectedReversedF0Path, ());
+}
+
+// 1          *---F4----*
+//            |         |
+//           F2        F3
+//            |         |
+// 0 *<--F5---*<--F1----*<--F0---* Start
+// Finish
+//   0        1        2         3
+// Note 1. F0, F1 and F5 are one-way features. F3, F2 and F4 are two-way features.
+// Note 2. Any feature contains of one segment.
+unique_ptr<IndexGraph> BuildSquaresGraph()
+{
+  unique_ptr<TestGeometryLoader> loader = make_unique<TestGeometryLoader>();
+  loader->AddRoad(0 /* feature id */, true /* one way */, 1.0 /* speed */,
+                  RoadGeometry::Points({{3.0, 0.0}, {2.0, 0.0}}));
+  loader->AddRoad(1 /* feature id */, true /* one way */, 1.0 /* speed */,
+                  RoadGeometry::Points({{2.0, 0.0}, {1.0, 0.0}}));
+  loader->AddRoad(2 /* feature id */, false /* one way */, 1.0 /* speed */,
+                  RoadGeometry::Points({{1.0, 0.0}, {1.0, 1.0}}));
+  loader->AddRoad(3 /* feature id */, false /* one way */, 1.0 /* speed */,
+                  RoadGeometry::Points({{2.0, 0.0}, {2.0, 1.0}}));
+  loader->AddRoad(4 /* feature id */, false /* one way */, 1.0 /* speed */,
+                  RoadGeometry::Points({{2.0, 1.0}, {1.0, 1.0}}));
+  loader->AddRoad(5 /* feature id */, true /* one way */, 1.0 /* speed */,
+                  RoadGeometry::Points({{1.0, 0.0}, {0.0, 0.0}}));
+
+  vector<Joint> const joints = {
+    MakeJoint({{0 /* feature id */, 0 /* point id */}}),/* joint at point (3, 0) */
+    MakeJoint({{0, 1}, {3, 0}, {1, 0}}),                /* joint at point (2, 0) */
+    MakeJoint({{3, 1}, {4, 0}}),                        /* joint at point (2, 1) */
+    MakeJoint({{2, 1}, {4, 1}}),                        /* joint at point (1, 1) */
+    MakeJoint({{1 , 1}, {2, 0}, {5, 0}}),               /* joint at point (1, 0) */
+    MakeJoint({{5, 1}})                                 /* joint at point (0, 0) */
+  };
+
+  traffic::TrafficCache const trafficCache;
+  unique_ptr<IndexGraph> graph = make_unique<IndexGraph>(move(loader), CreateEstimator(trafficCache));
+  graph->Import(joints);
+  return graph;
+}
+
+UNIT_TEST(SquaresGraph)
+{
+  unique_ptr<IndexGraph> graph = BuildSquaresGraph();
+  IndexGraphStarter starter(*graph, RoadPoint(0, 0) /* start */, RoadPoint(5, 0) /* finish */);
+  vector<m2::PointD> const expectedGeom = {{3 /* x */, 0 /* y */}, {2, 0}, {1, 0}};
+  TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
+}
+
+// It's a test on correct working in case when because of adding restrictions
+// start and finish could be match on blocked, moved or copied edges.
+// See IndexGraphStarter constructor for a detailed description.
+UNIT_CLASS_TEST(RestrictionTest, SquaresGraph_RestrictionF0F1OnlyF1F5Only)
+{
+  Init(BuildSquaresGraph());
+
+  RestrictionVec const restrictions =
+      {{Restriction::Type::Only, {0 /* feature from */, 1 /* feature to */}},
+       {Restriction::Type::Only, {1 /* feature from */, 5 /* feature to */}}};
+  m_graph->ApplyRestrictions(restrictions);
+
+  SetStarter(RoadPoint(0, 0) /* start */, RoadPoint(5, 0) /* finish */);
+
+  vector<m2::PointD> const expectedGeom = {{3 /* x */, 0 /* y */}, {2, 0}, {1, 0}};
+  TestRouteGeometry(*m_starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
 }
 }  // namespace routing_test

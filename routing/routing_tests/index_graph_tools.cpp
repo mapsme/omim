@@ -70,13 +70,14 @@ void TestRouteGeometry(IndexGraphStarter & starter,
   auto const resultCode = CalculateRoute(starter, route);
 
   TEST_EQUAL(resultCode, expectedRouteResult, ());
-  TEST_EQUAL(route.size(), expectedRouteGeom.size(), ());
+  vector<m2::PointD> geom;
   for (size_t i = 0; i < route.size(); ++i)
   {
-    RoadGeometry roadGeom = starter.GetGraph().GetRoad(route[i].GetFeatureId());
-    CHECK_LESS(route[i].GetPointId(), roadGeom.GetPointsCount(), ());
-    TEST_EQUAL(expectedRouteGeom[i], roadGeom.GetPoint(route[i].GetPointId()), ());
+    m2::PointD const & pnt = starter.GetPoint(route[i]);
+    if (geom.empty() || geom.back() != pnt)
+      geom.push_back(pnt);
   }
+  TEST_EQUAL(geom, expectedRouteGeom, ());
 }
 
 void TestRestrictionPermutations(RestrictionVec restrictions, vector<m2::PointD> const & expectedRouteGeom,

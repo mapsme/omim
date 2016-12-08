@@ -99,6 +99,11 @@ struct RestrictionTest
     m_graph->CreateFakeFeatureGeometry(geometrySource, speed, geometry);
   }
 
+  vector<DirectedEdge> const & GetAdditionalZeroEdges() const
+  {
+    return m_starter->m_additionalZeroEdges;
+  }
+
   unique_ptr<IndexGraph> m_graph;
   unique_ptr<IndexGraphStarter> m_starter;
 };
