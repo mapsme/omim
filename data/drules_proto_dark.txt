@@ -39552,60 +39552,21 @@ cont {
     scale: 17
     area {
       color: 8738
-      priority: -15314
-    }
-    symbol {
-      name: "swimming-l"
-      priority: 16686
-      min_distance: 10
-    }
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-        offset_y: 10
-      }
-      priority: 15686
+      priority: -15834
     }
   }
   element {
     scale: 18
     area {
       color: 8738
-      priority: -15314
-    }
-    symbol {
-      name: "swimming-l"
-      priority: 16686
-      min_distance: 10
-    }
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-        offset_y: 10
-      }
-      priority: 15686
+      priority: -15834
     }
   }
   element {
     scale: 19
     area {
       color: 8738
-      priority: -15314
-    }
-    symbol {
-      name: "swimming-l"
-      priority: 16686
-      min_distance: 10
-    }
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-        offset_y: 10
-      }
-      priority: 15686
+      priority: -15834
     }
   }
 }
