@@ -651,13 +651,13 @@
 "email_error_body" = "Το πρόγραμμα-client ηλεκτρονικού ταχυδρομείου έχει δεν έχει ρυθμιστεί. Ρυθμίστε το ή χρησιμοποιήστε άλλο τρόπο να επικοινωνήσετε μαζί μας στη διεύθυνση %@";
 
 /* Alert title */
-"email_error_title" = "Αποστολή σφάλματος αλληλογραφίας ";
+"email_error_title" = "Αποστολή σφάλματος αλληλογραφίας";
 
 /* Settings item title */
 "pref_calibration_title" = "Βαθμονόμηση πυξίδας";
 
 /* Search Suggestion */
-"wifi" = "Wi-Fi";
+"wifi" = "WiFi";
 
 /* Update map suggestion */
 "routing_map_outdated" = "Please update the map to create a route";
@@ -1221,7 +1221,7 @@
 "select_cuisine" = "Επιλέξτε κουζίνα";
 
 /* login text field */
-"email_or_username" = "E-mail ή όνομα χρήστη";
+"email_or_username" = "Email ή όνομα χρήστη";
 
 "phone" = "Τηλέφωνο";
 
@@ -1297,7 +1297,7 @@
 
 "whatsnew_search_message" = "Έχουμε βελτιώσει σημαντικά την αναζήτηση μέσω διεύθυνσης. Δοκιμάστε το.";
 
-"whatsnew_editor_title" = "Επεξεργαστείτε το χάρτη *";
+"whatsnew_editor_title" = "Επεξεργαστείτε το χάρτη*";
 
 "whatsnew_editor_message_1" = "Προσθέστε νέες τοποθεσίες στο χάρτη, και επεξεργαστείτε τις υπάρχουσες απευθείας από την εφαρμογή.";
 
@@ -1640,7 +1640,7 @@
 "taxi_order" = "Παραγγελία";
 
 /* How long it is until the taxi arrives */
-"taxi_wait" = "Χρόνος αναμονής %d λεπτά";
+"taxi_wait" = "Χρόνος αναμονής %s";
 
 /* When there are no available taxis nearby */
 "taxi_not_found" = "Δε βρέθηκε ταξί σε κοντινή απόσταση";
@@ -1654,7 +1654,7 @@
 
 "booking_filters_rating" = "Βαθμολογία";
 
-"booking_filters_rating_any" = "Όλα";
+"booking_filters_rating_any" = "Οποιοδήποτε";
 
 "booking_filters_ragting_good" = "Καλή";
 
@@ -1672,6 +1672,7 @@
 
 "booking_filters_reset_button" = "Μηδενισμός φίλτρου";
 
+/* noun */
 "booking_list" = "Λίστα";
 
 "booking_based_on_reviews" = "Σύμφωνα με %d κριτικές ξενοδοχείων";
@@ -1682,10 +1683,13 @@
 
 "booking_hotel" = "Ξενοδοχείο";
 
+/* hotel room */
 "booking_hotel_room" = "Δωμάτιο";
 
+/* A neologism for a chat based on geographical proximity */
 "chat" = "Geochat";
 
+/* Verb. Text on a button that opens the chat. */
 "chat_open" = "Άνοιγμα";
 
 "whatsnew_uber_header" = "MAPS.ME & Uber";
@@ -1695,3 +1699,39 @@
 "dialog_taxi_offline" = "Η παραγγελία ταξί δεν είναι διαθέσιμη σε offline ρύθμιση.";
 
 "dialog_taxi_error" = "Η παραγγελία ταξί είναι προσωρινά μη διαθέσιμη.";
+
+/* december */
+"whatsnew_traffic" = "Traffic Data in 36 Countries";
+
+/* december */
+"whatsnew_traffic_text" = "Up-to-date traffic info and fastest driving routes based on it!";
+
+/* december */
+"whatsnew_traffic_roaming" = "Traffic Info in Roaming";
+
+/* december */
+"whatsnew_traffic_roaming_text" = "Requires less than 1 MB of mobile bandwidth per trip.";
+
+/* december */
+"whatsnew_order_taxi" = "Order a Taxi";
+
+/* december */
+"whatsnew_order_taxi_text" = "Most of the location pages now contain a button for ordering a taxi.";
+
+/* january */
+"whatsnew_improved_search" = "Improved Search";
+
+/* january */
+"whatsnew_improved_search_text" = "Even misspelled queries bring accurate search results.";
+
+/* january */
+"whatsnew_filters_in_search" = "Search Filters";
+
+/* january */
+"whatsnew_filters_in_search_text" = "Search hotels based on price and rating.";
+
+/* january */
+"whatsnew_font_size" = "Font Size";
+
+/* january */
+"whatsnew_font_size_text" = "Labels on the map can be made bigger.";

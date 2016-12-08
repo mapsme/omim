@@ -305,11 +305,11 @@
 	<!-- Alert text -->
 	<string name="email_error_body">Το πρόγραμμα-client ηλεκτρονικού ταχυδρομείου έχει δεν έχει ρυθμιστεί. Ρυθμίστε το ή χρησιμοποιήστε άλλο τρόπο να επικοινωνήσετε μαζί μας στη διεύθυνση %s</string>
 	<!-- Alert title -->
-	<string name="email_error_title">Αποστολή σφάλματος αλληλογραφίας\u0020</string>
+	<string name="email_error_title">Αποστολή σφάλματος αλληλογραφίας</string>
 	<!-- Settings item title -->
 	<string name="pref_calibration_title">Βαθμονόμηση πυξίδας</string>
 	<!-- Search Suggestion -->
-	<string name="wifi">Wi-Fi</string>
+	<string name="wifi">WiFi</string>
 	<!-- Update all button text -->
 	<string name="downloader_update_all_button">Ενημέρωση όλων</string>
 	<!-- Cancel all button text -->
@@ -556,7 +556,7 @@
 	<string name="cuisine">Κουζίνα</string>
 	<string name="select_cuisine">Επιλέξτε κουζίνα</string>
 	<!-- login text field -->
-	<string name="email_or_username">E-mail ή όνομα χρήστη</string>
+	<string name="email_or_username">Email ή όνομα χρήστη</string>
 	<string name="phone">Τηλέφωνο</string>
 	<string name="please_note">Λάβετε υπόψη</string>
 	<string name="downloader_delete_map_dialog">Όλες οι αλλαγές που έχετε κάνει στο χάρτη θα διαγραφούν μαζί με το χάρτη.</string>
@@ -586,7 +586,7 @@
 	<string name="whatsnew_smallmwm_message">Χωρίσαμε μεγάλους χάρτες σε τμήματα. Μπορείτε πλέον να κατεβάσετε μόνο τις περιοχές που χρειάζεστε σε αντίθεση με τους χάρτες για ολόκληρες χώρες.</string>
 	<string name="whatsnew_search_header">Νέα αναζήτηση</string>
 	<string name="whatsnew_search_message">Έχουμε βελτιώσει σημαντικά την αναζήτηση μέσω διεύθυνσης. Δοκιμάστε το.</string>
-	<string name="whatsnew_editor_title">Επεξεργαστείτε το χάρτη *</string>
+	<string name="whatsnew_editor_title">Επεξεργαστείτε το χάρτη*</string>
 	<string name="whatsnew_editor_message_1">Προσθέστε νέες τοποθεσίες στο χάρτη, και επεξεργαστείτε τις υπάρχουσες απευθείας από την εφαρμογή.</string>
 	<string name="whatsnew_editor_message_2">* Το MAPS.ME χρησιμοποιεί δεδομένα της κοινότητας OpenStreetMap.</string>
 	<string name="onboarding_offline_navigation_title">Δεν θα χαθείτε ποτέ ξανά</string>
@@ -720,7 +720,7 @@
 	<!-- For ordering a taxi (as opposed to hotels or other things) -->
 	<string name="taxi_order">Παραγγελία</string>
 	<!-- How long it is until the taxi arrives -->
-	<string name="taxi_wait">Χρόνος αναμονής %d λεπτά</string>
+	<string name="taxi_wait">Χρόνος αναμονής %s</string>
 	<!-- When there are no available taxis nearby -->
 	<string name="taxi_not_found">Δε βρέθηκε ταξί σε κοντινή απόσταση</string>
 	<string name="install_app">Εγκατάσταση</string>
@@ -728,7 +728,7 @@
 	<string name="booking_filters">Φίλτρο</string>
 	<string name="booking_filters_reset">Μηδενισμός</string>
 	<string name="booking_filters_rating">Βαθμολογία</string>
-	<string name="booking_filters_rating_any">Όλα</string>
+	<string name="booking_filters_rating_any">Οποιοδήποτε</string>
 	<string name="booking_filters_ragting_good">Καλή</string>
 	<string name="booking_filters_rating_very_good">Πολύ καλή</string>
 	<string name="booking_filters_rating_excellent">Τέλεια</string>
@@ -737,13 +737,17 @@
 	<string name="booking_filters_nores_message">Δοκιμάστε ένα γενικότερο όρο αναζήτησης, κάντε σμίκρυνση ή μηδενίστε το φίλτρο.</string>
 	<string name="booking_filters_expand_area_button">Σμίκρυνση</string>
 	<string name="booking_filters_reset_button">Μηδενισμός φίλτρου</string>
+	<!-- noun -->
 	<string name="booking_list">Λίστα</string>
 	<string name="booking_based_on_reviews">Σύμφωνα με %d κριτικές ξενοδοχείων</string>
 	<string name="booking_show_more">Εμφάνιση περισσοτέρων</string>
 	<string name="booking_reviews">Κριτικές</string>
 	<string name="booking_hotel">Ξενοδοχείο</string>
+	<!-- hotel room -->
 	<string name="booking_hotel_room">Δωμάτιο</string>
+	<!-- A neologism for a chat based on geographical proximity -->
 	<string name="chat">Geochat</string>
+	<!-- Verb. Text on a button that opens the chat. -->
 	<string name="chat_open">Άνοιγμα</string>
 	<string name="whatsnew_uber_header">MAPS.ME &amp; Uber</string>
 	<string name="whatsnew_uber_message">Καλέστε ταξί Uber απευθείας μέσα από την εφαρμογή!</string>
