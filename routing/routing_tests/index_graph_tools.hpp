@@ -60,7 +60,7 @@ struct RestrictionTest
 
   Joint::Id GetJointIdForTesting(RoadPoint const & rp) const
   {
-    return m_graph->GetJointIdForTesting(rp);
+    return m_graph->m_roadIndex.GetJointId(rp);
   }
 
   void ApplyRestrictionNoRealFeatures(RestrictionPoint const & restrictionPoint)

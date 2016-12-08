@@ -6,16 +6,27 @@ namespace routing
 {
 IndexGraphStarter::IndexGraphStarter(IndexGraph & graph, RoadPoint const & startPoint,
                                      RoadPoint const & finishPoint)
-  : m_graph(graph)
-  , m_start(graph, startPoint, graph.GetNumJoints())
-  , m_finish(graph, finishPoint, graph.GetNumJoints() + 1)
+  : m_additionalNextFeatureId(graph.GetNextFakeFeatureId())
+  , m_graph(graph)
+  , m_start(startPoint, graph.GetNumJoints())
+  , m_finish(finishPoint, graph.GetNumJoints() + 1)
 {
+  CHECK(!graph.IsFakeFeature(startPoint.GetFeatureId()), ());
+  CHECK(!graph.IsFakeFeature(finishPoint.GetFeatureId()), ());
+
   m_start.SetupJointId(graph);
 
   if (startPoint == finishPoint)
     m_finish.m_jointId = m_start.m_jointId;
   else
     m_finish.SetupJointId(graph);
+
+  // After adding restrictions on IndexGraph some edges could be blocked some other could
+  // be copied. It's possible that start or finish could be matched on a new fake (or blocked)
+  // edge that may spoil route geometry or even worth prevent from building some routes.
+  // To overcome it some edge from start and to finish should be added below.
+  AddAdditionalZeroEdges(m_start, EndPointType::Start);
+  AddAdditionalZeroEdges(m_finish, EndPointType::Finish);
 }
 
 m2::PointD const & IndexGraphStarter::GetPoint(Joint::Id jointId)
@@ -27,6 +38,19 @@ m2::PointD const & IndexGraphStarter::GetPoint(Joint::Id jointId)
     return m_graph.GetPoint(m_finish.m_point);
 
   return m_graph.GetPoint(jointId);
+}
+
+m2::PointD const & IndexGraphStarter::GetPoint(RoadPoint const & rp)
+{
+  if (IsAdditionalFeature(rp.GetFeatureId()))
+  {
+    for (DirectedEdge const & e : m_additionalZeroEdges)
+    {
+      if (e.GetFeatureId() == rp.GetFeatureId())
+        return GetPoint(e.GetFrom());
+    }
+  }
+  return m_graph.GetPoint(rp);
 }
 
 void IndexGraphStarter::RedressRoute(vector<Joint::Id> const & route,
@@ -76,9 +100,45 @@ void IndexGraphStarter::RedressRoute(vector<Joint::Id> const & route,
   }
 }
 
+void IndexGraphStarter::AddZeroLengthOnewayFeature(Joint::Id from, Joint::Id to)
+{
+  if (from == to)
+    return;
+
+  m_jointsOfAdditionalEdges.insert(from);
+  m_jointsOfAdditionalEdges.insert(to);
+  m_additionalZeroEdges.emplace_back(from, to, m_additionalNextFeatureId++);
+}
+
+void IndexGraphStarter::GetAdditionalEdgesList(Joint::Id jointId, bool isOutgoing,
+                                               vector<JointEdge> & edges)
+{
+  if (m_jointsOfAdditionalEdges.count(jointId) == 0)
+    return;
+
+  for (DirectedEdge const e : m_additionalZeroEdges)
+  {
+    if (isOutgoing)
+    {
+      if (e.GetFrom() == jointId)
+        edges.emplace_back(e.GetTo(), 0 /* weight */);
+    }
+    else
+    {
+      if (e.GetTo() == jointId)
+        edges.emplace_back(e.GetFrom(), 0 /* weight */);
+    }
+  }
+}
+
 void IndexGraphStarter::GetEdgesList(Joint::Id jointId, bool isOutgoing, vector<JointEdge> & edges)
 {
   edges.clear();
+
+  // Note. Additional edges adding here may be ingoing or outgoing edges for start or finish.
+  // Or it may be "arrival edges". That mean |jointId| is not start of finish but
+  // a node which is connected with start of finish by an edge.
+  GetAdditionalEdgesList(jointId, isOutgoing, edges);
 
   if (jointId == m_start.m_fakeId)
   {
@@ -137,6 +197,23 @@ void IndexGraphStarter::FindPointsWithCommonFeature(Joint::Id jointId0, Joint::I
   bool found = false;
   double minWeight = -1.0;
 
+  // Additional edges.
+  if (m_jointsOfAdditionalEdges.count(jointId0) != 0 && m_jointsOfAdditionalEdges.count(jointId1) != 0)
+  {
+    for (DirectedEdge const & e : m_additionalZeroEdges)
+    {
+      if (jointId0 == e.GetFrom() && jointId1 == e.GetTo())
+      {
+        result0 = {e.GetFeatureId(), 0 /* point id */};
+        result1 = {e.GetFeatureId(), 1 /* point id */};
+        return;
+      }
+    }
+    CHECK(false, ("There're", jointId0, "and", jointId1,
+                  "in |m_jointsOfAdditionalEdges| but threre's not the edge in |m_additionalZeroEdges|"));
+  }
+
+  // |m_graph| edges.
   ForEachPoint(jointId0, [&](RoadPoint const & rp0) {
     ForEachPoint(jointId1, [&](RoadPoint const & rp1) {
       if (rp0.GetFeatureId() != rp1.GetFeatureId())
@@ -178,9 +255,45 @@ void IndexGraphStarter::FindPointsWithCommonFeature(Joint::Id jointId0, Joint::I
   CHECK(found, ("Can't find common feature for joints", jointId0, jointId1));
 }
 
+void IndexGraphStarter::AddAdditionalZeroEdges(FakeJoint const & fp, EndPointType endPointType)
+{
+  CHECK(!m_graph.IsFakeFeature(fp.m_point.GetFeatureId()), ());
+
+  bool const isJoint = fp.BelongsToGraph();
+
+  vector<DirectedEdge> edges;
+  if (isJoint)
+  {
+    m_graph.GetEdgeList(fp.m_jointId, endPointType == EndPointType::Start /* is outgoing */,
+                        true /* graphWithoutRestrictions */, edges);
+  }
+  else
+  {
+    m_graph.GetIntermediatePointEdges(fp.m_point, true /* graphWithoutRestrictions */, edges);
+  }
+
+  for (DirectedEdge const & edge : edges)
+  {
+    m_graph.ForEachEdgeMappingNode(edge, [&](DirectedEdge const & e){
+      if (edge == e)
+        return;
+
+      switch (endPointType) {
+      case EndPointType::Start:
+        AddZeroLengthOnewayFeature(isJoint ? edge.GetFrom() : edge.GetTo(),
+                                   isJoint ? e.GetFrom() : e.GetTo());
+        return;
+      case EndPointType::Finish:
+        AddZeroLengthOnewayFeature(isJoint ? e.GetTo() : e.GetFrom(),
+                                   isJoint ? edge.GetTo() : edge.GetFrom());
+        return;
+      }
+    });
+  }
+}
+
 // IndexGraphStarter::FakeJoint --------------------------------------------------------------------
-IndexGraphStarter::FakeJoint::FakeJoint(IndexGraph const & graph, RoadPoint const & point,
-                                        Joint::Id fakeId)
+IndexGraphStarter::FakeJoint::FakeJoint(RoadPoint const & point, Joint::Id fakeId)
   : m_point(point), m_fakeId(fakeId), m_jointId(Joint::kInvalidId)
 {
 }

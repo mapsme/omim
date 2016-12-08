@@ -36,17 +36,11 @@ bool RoadIndex::GetAdjacentFtPoint(uint32_t featureIdFrom, uint32_t featureIdTo,
 {
   auto const fromIt = m_roads.find(featureIdFrom);
   if (fromIt == m_roads.cend())
-  {
-    LOG(LERROR, ("Cannot find in |m_roads| featureIdFrom =", featureIdFrom));
-    return false;
-  }
+    return false; // No sense in restrictions to feature which is not road type.
 
   auto const toIt = m_roads.find(featureIdTo);
   if (toIt == m_roads.cend())
-  {
-    LOG(LERROR, ("Cannot find in |m_roads| toIt =", featureIdTo));
-    return false;
-  }
+    return false; // No sense in restrictions to feature which is not road type.
 
   RoadJointIds const & roadJointIdsFrom = fromIt->second;
   RoadJointIds const & roadJointIdsTo = toIt->second;

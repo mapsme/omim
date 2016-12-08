@@ -24,6 +24,28 @@ void IndexGraph::GetEdgeList(Joint::Id jointId, bool isOutgoing, bool graphWitho
   });
 }
 
+void IndexGraph::GetEdgeList(Joint::Id jointId, bool isOutgoing, bool graphWithoutRestrictions,
+                             vector<DirectedEdge> & edges)
+{
+  vector<JointEdge> jointEdges;
+  GetEdgeList(jointId, isOutgoing, graphWithoutRestrictions, jointEdges);
+
+  auto const fillEdges = [&] (Joint::Id from, Joint::Id to) {
+    vector<pair<RoadPoint, RoadPoint>> result;
+    m_jointIndex.FindPointsWithCommonFeature(from, to, result);
+    for (auto const & p : result)
+      edges.emplace_back(from, to,  p.first.GetFeatureId());
+  };
+
+  for (JointEdge const e : jointEdges)
+  {
+    if (isOutgoing)
+      fillEdges(jointId, e.GetTarget());
+    else
+      fillEdges(e.GetTarget(), jointId);
+  }
+}
+
 m2::PointD const & IndexGraph::GetPoint(RoadPoint const & rp)
 {
   RoadGeometry const & road = GetRoad(rp.GetFeatureId());
@@ -541,6 +563,37 @@ void IndexGraph::GetNeighboringEdges(RoadPoint const & rp, bool isOutgoing,
 
   if (isOutgoing || bidirectional)
     GetNeighboringEdge(road, rp, true /* forward */, isOutgoing, graphWithoutRestrictions, edges);
+}
+
+void IndexGraph::GetIntermediatePointEdges(RoadPoint const & rp, bool graphWithoutRestrictions,
+                                           vector<DirectedEdge> & edges)
+{
+  CHECK_EQUAL(m_roadIndex.GetJointId(rp), Joint::kInvalidId, ());
+
+  edges.clear();
+  vector<JointEdge> forwardEdges;
+  GetNeighboringEdges(rp, true /* isOutgoing */, graphWithoutRestrictions, forwardEdges);
+
+  CHECK_LESS(forwardEdges.size(), 3, (rp, "is not a joint but it has 3 or more neighboring edges."));
+  if (forwardEdges.empty())
+    return; // |rp| at a dead end.
+
+  // |fp| is an intermediate point of a one-way feature.
+  if (forwardEdges.size() == 1)
+  {
+    // It's a oneway feature. Looks for a former joint for |fp| on it.
+    vector<JointEdge> backwardEdges;
+    GetNeighboringEdges(rp, false /* isOutgoing */, graphWithoutRestrictions, backwardEdges);
+    if (backwardEdges.empty())
+      return; // |rp| at the beginning of one way edge.
+    CHECK_EQUAL(backwardEdges.size(), 1, ());
+    edges.emplace_back(backwardEdges[0].GetTarget(), forwardEdges[0].GetTarget(), rp.GetFeatureId());
+    return;
+  }
+
+  // jointEdges.size() == 2. |fp| is an intermediate point of a two-way feature.
+  edges.emplace_back(forwardEdges[0].GetTarget(), forwardEdges[1].GetTarget(), rp.GetFeatureId());
+  edges.emplace_back(forwardEdges[1].GetTarget(), forwardEdges[0].GetTarget(), rp.GetFeatureId());
 }
 
 void IndexGraph::GetNeighboringEdge(RoadGeometry const & road, RoadPoint const & rp, bool forward,

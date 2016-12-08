@@ -160,10 +160,15 @@ public:
                        bool forward, vector<JointEdge> & edges);
   void GetNeighboringEdges(RoadPoint const & rp, bool isOutgoing, bool graphWithoutRestrictions,
                            vector<JointEdge> & edges);
+  /// \brief Fills |edges| with edges go through |rp|. |rp| should not be an joint.
+  void GetIntermediatePointEdges(RoadPoint const & rp, bool graphWithoutRestrictions,
+                                 vector<DirectedEdge> & edges);
 
   // Put outgoing (or ingoing) egdes for jointId to the 'edges' vector.
   void GetEdgeList(Joint::Id jointId, bool isOutgoing, bool graphWithoutRestrictions,
                    vector<JointEdge> & edges);
+  void GetEdgeList(Joint::Id jointId, bool isOutgoing, bool graphWithoutRestrictions,
+                   vector<DirectedEdge> & edges);
   Joint::Id GetJointId(RoadPoint const & rp) const { return m_roadIndex.GetJointId(rp); }
   m2::PointD const & GetPoint(Joint::Id jointId);
 
@@ -179,6 +184,7 @@ public:
   /// \note This method should be called when |m_roadIndex| is ready.
   void Build(uint32_t numJoints);
 
+  uint32_t GetNextFakeFeatureId() const { return m_nextFakeFeatureId; }
   m2::PointD const & GetPoint(RoadPoint const & rp);
   void Import(vector<Joint> const & joints);
   Joint::Id InsertJoint(RoadPoint const & rp);
@@ -207,6 +213,8 @@ public:
   /// \returns RoadGeometry by a real or fake featureId.
   RoadGeometry const & GetRoad(uint32_t featureId);
 
+  bool IsFakeFeature(uint32_t featureId) const { return featureId >= kStartFakeFeatureIds; }
+
   /// \brief Calls |f| for |directedEdge| if it's not blocked and recursively for every
   /// non blocke edge in |m_edgeMapping|.
   template<class F>
@@ -225,12 +233,20 @@ public:
     f(directedEdge);
   }
 
-private:
-  Joint::Id GetJointIdForTesting(RoadPoint const & rp) const
+  template<class F>
+  void ForEachEdgeMappingNode(DirectedEdge const & directedEdge, F const & f) const
   {
-    return m_roadIndex.GetJointId(rp);
+    auto const it = m_edgeMapping.find(directedEdge);
+    if (it != m_edgeMapping.end())
+    {
+      for (DirectedEdge const & e : it->second)
+        ForEachEdgeMappingNode(e, f);
+    }
+
+    f(directedEdge);
   }
 
+private:
   /// \brief Disable an edges between |from| and |to| along |featureId|.
   /// \note Despite the fact that |from| and |to| could be connected with several edges
   /// it's a rare case. In most cases |from| and |to| are connected with only one edge
@@ -297,8 +313,6 @@ private:
 
   void GetOutgoingGeomEdges(vector<JointEdge> const & outgoingEdges, Joint::Id center,
                             vector<JointEdgeGeom> & outgoingGeomEdges);
-
-  bool IsFakeFeature(uint32_t featureId) const { return featureId >= kStartFakeFeatureIds; }
 
   /// \brief Fills |connectionPaths| with all path from joint |from| to joint |to|.
   /// If |from| and |to| don't belong to the same feature |connectionPaths| will

@@ -41,7 +41,7 @@ vector<Junction> ConvertToJunctions(IndexGraphStarter & starter, vector<Joint::I
 
   // TODO: Use real altitudes for pedestrian and bicycle routing.
   for (RoadPoint const & point : roadPoints)
-    junctions.emplace_back(starter.GetGraph().GetPoint(point), feature::kDefaultAltitudeMeters);
+    junctions.emplace_back(starter.GetPoint(point), feature::kDefaultAltitudeMeters);
 
   return junctions;
 }
@@ -119,7 +119,7 @@ IRouter::ResultCode SingleMwmRouter::DoCalculateRoute(MwmSet::MwmId const & mwmI
   IndexGraphStarter starter(graph, start, finish);
 
   AStarProgress progress(0, 100);
-  progress.Initialize(graph.GetPoint(start), graph.GetPoint(finish));
+  progress.Initialize(starter.GetPoint(start), starter.GetPoint(finish));
 
   uint32_t drawPointsStep = 0;
   auto onVisitJunction = [&](Joint::Id const & from, Joint::Id const & to) {
