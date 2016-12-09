@@ -951,6 +951,8 @@
 	<string name="placepage_hotel_nearby">I nærheten</string>
 	<!-- For ordering a taxi (as opposed to hotels or other things) -->
 	<string name="taxi_order">Bestille</string>
+	<!-- How long it is until the taxi arrives -->
+	<string name="taxi_wait">Forventet om %s</string>
 	<!-- When there are no available taxis nearby -->
 	<string name="taxi_not_found">Kunne ikke finne drosje i nærheten</string>
 	<string name="install_app">Installer</string>
@@ -983,4 +985,28 @@
 	<string name="whatsnew_uber_message">Bestill en Uber-drosje direkte fra appen!</string>
 	<string name="dialog_taxi_offline">Bestilling av taxi er ikke mulig i offlinemodus.</string>
 	<string name="dialog_taxi_error">Bestilling av taxi er ikke tilgjengelig for øyeblikket.</string>
+	<!-- december -->
+	<string name="whatsnew_traffic">Trafikkdata i 36 land</string>
+	<!-- december -->
+	<string name="whatsnew_traffic_text">Oppdatert trafikkinformasjon og raskeste kjøreruter basert på det!</string>
+	<!-- december -->
+	<string name="whatsnew_traffic_roaming">Trafikkinformasjon ved roaming</string>
+	<!-- december -->
+	<string name="whatsnew_traffic_roaming_text">Bruker mindre enn 1MB mobildata per tur.</string>
+	<!-- december -->
+	<string name="whatsnew_order_taxi">Bestill drosje</string>
+	<!-- december -->
+	<string name="whatsnew_order_taxi_text">De fleste sidene har nå en knapp til å bestille taxi.</string>
+	<!-- january -->
+	<string name="whatsnew_improved_search">Forbedret søkefunksjon</string>
+	<!-- january -->
+	<string name="whatsnew_improved_search_text">Selv feilstavede forespørsler gir nøyaktige søkeresultater.</string>
+	<!-- january -->
+	<string name="whatsnew_filters_in_search">Søkefiltre</string>
+	<!-- january -->
+	<string name="whatsnew_filters_in_search_text">Søk etter hoteller basert på pris og vurdering.</string>
+	<!-- january -->
+	<string name="whatsnew_font_size">Skriftstørrelse</string>
+	<!-- january -->
+	<string name="whatsnew_font_size_text">Etiketter på kartet kan gjøres større.</string>
 </resources>

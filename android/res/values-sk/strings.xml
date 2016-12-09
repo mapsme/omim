@@ -990,4 +990,28 @@
 	<string name="whatsnew_uber_message">Objednajte si Uber priamo z aplikácie!</string>
 	<string name="dialog_taxi_offline">Objednanie taxíka nie je k dispozícii v režime offline.</string>
 	<string name="dialog_taxi_error">Objednanie taxíka je dočasne nedostupné.</string>
+	<!-- december -->
+	<string name="whatsnew_traffic">Dopravné informácie v 36 krajinách</string>
+	<!-- december -->
+	<string name="whatsnew_traffic_text">Aktuálne dopravné informácie a na základe nich najrýchlejšie trasy!</string>
+	<!-- december -->
+	<string name="whatsnew_traffic_roaming">Dopravné informácie v roamingu</string>
+	<!-- december -->
+	<string name="whatsnew_traffic_roaming_text">Vyžaduje menej ako 1 MB mobilných dát na jazdu.</string>
+	<!-- december -->
+	<string name="whatsnew_order_taxi">Objednajte si taxík</string>
+	<!-- december -->
+	<string name="whatsnew_order_taxi_text">Väčšina stránok o lokalite odteraz obsahuje aj tlačidlo na objednávanie taxíka.</string>
+	<!-- january -->
+	<string name="whatsnew_improved_search">Vylepšené vyhľadávanie</string>
+	<!-- january -->
+	<string name="whatsnew_improved_search_text">Presné výsledky vyhľadávania aj s nesprávne zadanými dotazmi.</string>
+	<!-- january -->
+	<string name="whatsnew_filters_in_search">Vyhľadávacie filtre</string>
+	<!-- january -->
+	<string name="whatsnew_filters_in_search_text">Hľadať hotely podľa ceny a hodnotenia.</string>
+	<!-- january -->
+	<string name="whatsnew_font_size">Veľkosť písma</string>
+	<!-- january -->
+	<string name="whatsnew_font_size_text">Nápisy na mape je možné zväčšiť.</string>
 </resources>

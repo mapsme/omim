@@ -994,4 +994,28 @@
 	<string name="whatsnew_uber_message">Objednejte si taxi Uber přímo z aplikace!</string>
 	<string name="dialog_taxi_offline">Objednání taxi není v režimu offline k dispozici.</string>
 	<string name="dialog_taxi_error">Objednání taxi není dočasně k dispozici.</string>
+	<!-- december -->
+	<string name="whatsnew_traffic">Údaje o provozu ve 36 zemích</string>
+	<!-- december -->
+	<string name="whatsnew_traffic_text">Na nich jsou založeny aktuální dopravní informace a nejrychlejší jízdní trasy!</string>
+	<!-- december -->
+	<string name="whatsnew_traffic_roaming">Dopravní informace při roamingu</string>
+	<!-- december -->
+	<string name="whatsnew_traffic_roaming_text">Vyžaduje necelý 1 MB mobilních dat na jednu cestu.</string>
+	<!-- december -->
+	<string name="whatsnew_order_taxi">Objednat taxi</string>
+	<!-- december -->
+	<string name="whatsnew_order_taxi_text">Většina stránek umístění nyní obsahuje tlačítko k objednání taxi.</string>
+	<!-- january -->
+	<string name="whatsnew_improved_search">Vylepšené vyhledávání</string>
+	<!-- january -->
+	<string name="whatsnew_improved_search_text">I nesprávně napsané dotazy přinesou přesné výsledky vyhledávání.</string>
+	<!-- january -->
+	<string name="whatsnew_filters_in_search">Vyhledávací filtry</string>
+	<!-- january -->
+	<string name="whatsnew_filters_in_search_text">Hledat hotely na základě ceny a hodnocení.</string>
+	<!-- january -->
+	<string name="whatsnew_font_size">Velikost písma</string>
+	<!-- january -->
+	<string name="whatsnew_font_size_text">Popisky na mapě lze zvětšit.</string>
 </resources>
