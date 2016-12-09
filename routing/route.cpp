@@ -42,6 +42,7 @@ void Route::Swap(Route & rhs)
   swap(m_streets, rhs.m_streets);
   m_absentCountries.swap(rhs.m_absentCountries);
   m_altitudes.swap(rhs.m_altitudes);
+  m_traffic.swap(rhs.m_traffic);
 }
 
 void Route::AddAbsentCountry(string const & name)
@@ -376,6 +377,7 @@ void Route::AppendRoute(Route const & route)
     m_turns.pop_back();
     CHECK(!m_times.empty(), ());
     m_times.pop_back();
+    CHECK(!m_traffic.empty(), ());
   }
 
   size_t const indexOffset = m_poly.GetPolyline().GetSize();
@@ -409,6 +411,7 @@ void Route::AppendRoute(Route const & route)
   }
 
   m_poly.Append(route.m_poly);
+  m_traffic.insert(m_traffic.end(), route.m_traffic.cbegin(), route.m_traffic.cend());
   Update();
 }
 
