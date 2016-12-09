@@ -1701,37 +1701,37 @@
 "dialog_taxi_error" = "Du kan inte beställa en taxi just nu.";
 
 /* december */
-"whatsnew_traffic" = "Traffic Data in 36 Countries";
+"whatsnew_traffic" = "Trafikdata i 36 länder";
 
 /* december */
-"whatsnew_traffic_text" = "Up-to-date traffic info and fastest driving routes based on it!";
+"whatsnew_traffic_text" = "Aktuell trafikinformation och de snabbaste körrutterna som baseras på informationen!";
 
 /* december */
-"whatsnew_traffic_roaming" = "Traffic Info in Roaming";
+"whatsnew_traffic_roaming" = "Trafikinformation i roaming";
 
 /* december */
-"whatsnew_traffic_roaming_text" = "Requires less than 1 MB of mobile bandwidth per trip.";
+"whatsnew_traffic_roaming_text" = "Kräver mindre än 1 MB av mobil bandbredd per resa.";
 
 /* december */
-"whatsnew_order_taxi" = "Order a Taxi";
+"whatsnew_order_taxi" = "Beställ en taxi";
 
 /* december */
-"whatsnew_order_taxi_text" = "Most of the location pages now contain a button for ordering a taxi.";
+"whatsnew_order_taxi_text" = "De flesta platssidorna har nu en knapp för att beställa en taxi.";
 
 /* january */
-"whatsnew_improved_search" = "Improved Search";
+"whatsnew_improved_search" = "Förbättrad sökning";
 
 /* january */
-"whatsnew_improved_search_text" = "Even misspelled queries bring accurate search results.";
+"whatsnew_improved_search_text" = "Till och med felstavade frågor skapar resultat med hög kvalitet.";
 
 /* january */
-"whatsnew_filters_in_search" = "Search Filters";
+"whatsnew_filters_in_search" = "Sökfilter";
 
 /* january */
-"whatsnew_filters_in_search_text" = "Search hotels based on price and rating.";
+"whatsnew_filters_in_search_text" = "Sök hotell efter pris och omdöme.";
 
 /* january */
-"whatsnew_font_size" = "Font Size";
+"whatsnew_font_size" = "Teckenstorlek";
 
 /* january */
-"whatsnew_font_size_text" = "Labels on the map can be made bigger.";
+"whatsnew_font_size_text" = "Etiketter på kartan kan göras större.";

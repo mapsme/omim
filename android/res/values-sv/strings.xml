@@ -991,4 +991,28 @@
 	<string name="whatsnew_uber_message">Beställ en Uber direkt från appen!</string>
 	<string name="dialog_taxi_offline">Du kan inte beställa en taxi i offlineläge.</string>
 	<string name="dialog_taxi_error">Du kan inte beställa en taxi just nu.</string>
+	<!-- december -->
+	<string name="whatsnew_traffic">Trafikdata i 36 länder</string>
+	<!-- december -->
+	<string name="whatsnew_traffic_text">Aktuell trafikinformation och de snabbaste körrutterna som baseras på informationen!</string>
+	<!-- december -->
+	<string name="whatsnew_traffic_roaming">Trafikinformation i roaming</string>
+	<!-- december -->
+	<string name="whatsnew_traffic_roaming_text">Kräver mindre än 1 MB av mobil bandbredd per resa.</string>
+	<!-- december -->
+	<string name="whatsnew_order_taxi">Beställ en taxi</string>
+	<!-- december -->
+	<string name="whatsnew_order_taxi_text">De flesta platssidorna har nu en knapp för att beställa en taxi.</string>
+	<!-- january -->
+	<string name="whatsnew_improved_search">Förbättrad sökning</string>
+	<!-- january -->
+	<string name="whatsnew_improved_search_text">Till och med felstavade frågor skapar resultat med hög kvalitet.</string>
+	<!-- january -->
+	<string name="whatsnew_filters_in_search">Sökfilter</string>
+	<!-- january -->
+	<string name="whatsnew_filters_in_search_text">Sök hotell efter pris och omdöme.</string>
+	<!-- january -->
+	<string name="whatsnew_font_size">Teckenstorlek</string>
+	<!-- january -->
+	<string name="whatsnew_font_size_text">Etiketter på kartan kan göras större.</string>
 </resources>
