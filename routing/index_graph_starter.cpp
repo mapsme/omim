@@ -42,6 +42,7 @@ m2::PointD const & IndexGraphStarter::GetPoint(Joint::Id jointId)
 
 DirectedEdge const & IndexGraphStarter::FindFakeEdge(uint32_t fakeFeatureId)
 {
+  ASSERT(IsFakeFeature(fakeFeatureId), ("Feature", fakeFeatureId, "is not a fake one"));
   for (DirectedEdge const & e : m_fakeZeroLengthEdges)
   {
     ASSERT_EQUAL(GetPoint(e.GetFrom()), GetPoint(e.GetTo()), ());
