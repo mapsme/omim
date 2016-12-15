@@ -40,20 +40,35 @@ m2::PointD const & IndexGraphStarter::GetPoint(Joint::Id jointId)
   return m_graph.GetPoint(jointId);
 }
 
+DirectedEdge const & IndexGraphStarter::FindFakeEdge(uint32_t fakeFeatureId)
+{
+  ASSERT(IsFakeFeature(fakeFeatureId), ("Feature", fakeFeatureId, "is not a fake one"));
+  for (DirectedEdge const & e : m_fakeZeroLengthEdges)
+  {
+    ASSERT_EQUAL(GetPoint(e.GetFrom()), GetPoint(e.GetTo()), ());
+    if (e.GetFeatureId() == fakeFeatureId)
+      return e;
+  }
+  CHECK(false, ("Fake feature:", fakeFeatureId, "has to be contained in |m_fakeZeroLengthEdges|"));
+  return m_fakeZeroLengthEdges.front();
+}
+
 m2::PointD const & IndexGraphStarter::GetPoint(RoadPoint const & rp)
 {
   if (!IsFakeFeature(rp.GetFeatureId()))
     return m_graph.GetPoint(rp);
 
-  for (DirectedEdge const & e : m_fakeZeroLengthEdges)
-  {
-    ASSERT_EQUAL(GetPoint(e.GetFrom()), GetPoint(e.GetTo()), ());
-    if (e.GetFeatureId() == rp.GetFeatureId())
-      return GetPoint(e.GetFrom());
-  }
-  CHECK(false,
-        (rp, "is a point of a fake feature but it's not contained in |m_fakeZeroLengthEdges|"));
-  return m_graph.GetPoint(rp);
+  // Fake edges have zero length so coords of "point from" and "point to" are equal.
+  return GetPoint(FindFakeEdge(rp.GetFeatureId()).GetFrom());
+}
+
+RoadGeometry IndexGraphStarter::GetFakeRoadGeometry(uint32_t fakeFeatureId)
+{
+  DirectedEdge const & e = FindFakeEdge(fakeFeatureId);
+  ASSERT_EQUAL(GetPoint(e.GetFrom()), GetPoint(e.GetTo()), ());
+  // Note. |e| is a zero length edge so speed could be any number which is not equal to zero.
+  return RoadGeometry(true /* one way */, 1.0 /* speed */,
+      RoadGeometry::Points({GetPoint(e.GetFrom()), GetPoint(e.GetTo())}));
 }
 
 void IndexGraphStarter::RedressRoute(vector<Joint::Id> const & route,
@@ -86,7 +101,8 @@ void IndexGraphStarter::RedressRoute(vector<Joint::Id> const & route,
     uint32_t const pointFrom = rp0.GetPointId();
     uint32_t const pointTo = rp1.GetPointId();
 
-    RoadGeometry const roadGeometry = m_graph.GetRoad(featureId);
+    RoadGeometry const roadGeometry = IsFakeFeature(featureId) ? GetFakeRoadGeometry(featureId)
+                                                               : m_graph.GetRoad(featureId);
 
     CHECK_NOT_EQUAL(pointFrom, pointTo, ("featureId =", featureId));
     uint32_t const step = pointFrom < pointTo ? 1 : -1;

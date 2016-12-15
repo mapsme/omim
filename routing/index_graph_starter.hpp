@@ -115,6 +115,9 @@ private:
     return featureId >= m_graph.GetNextFakeFeatureId();
   }
 
+  DirectedEdge const & FindFakeEdge(uint32_t fakeFeatureId);
+  RoadGeometry GetFakeRoadGeometry(uint32_t fakeFeatureId);
+
   void AddZeroLengthOnewayFeature(Joint::Id from, Joint::Id to);
   void GetFakeEdgesList(Joint::Id jointId, bool isOutgoing, vector<JointEdge> & edges);
 
