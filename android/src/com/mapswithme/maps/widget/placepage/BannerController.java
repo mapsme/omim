@@ -17,6 +17,7 @@ import com.mapswithme.maps.R;
 import com.mapswithme.maps.bookmarks.data.Banner;
 import com.mapswithme.util.ConnectionState;
 import com.mapswithme.util.UiUtils;
+import com.mapswithme.util.statistics.Statistics;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static com.mapswithme.util.SharedPropertiesUtils.isShowcaseSwitchedOnLocal;
@@ -48,11 +49,12 @@ final class BannerController implements View.OnClickListener
   @NonNull
   private final Resources mResources;
 
-  private boolean mIsOpened = false;
+  private boolean mOpened = false;
 
   BannerController(@NonNull View bannerView, @Nullable OnBannerClickListener listener)
   {
     mFrame = bannerView;
+    mFrame.setOnClickListener(this);
     mListener = listener;
     mResources = mFrame.getResources();
     mCloseFrameHeight = mResources.getDimension(R.dimen.placepage_banner_height);
@@ -91,6 +93,12 @@ final class BannerController implements View.OnClickListener
 
     if (UiUtils.isLandscape(mFrame.getContext()))
       open();
+    else
+      Statistics.INSTANCE.trackEvent(Statistics.EventName.PP_BANNER_SHOW,
+                                     Statistics.params()
+                                               .add("tags:", mBanner.getTypes())
+                                               .add("banner:", mBanner.getId())
+                                               .add("state:", "0"));
   }
 
   boolean isShowing()
@@ -100,32 +108,36 @@ final class BannerController implements View.OnClickListener
 
   void open()
   {
-    if (!isShowing() || mBanner == null || mIsOpened)
+    if (!isShowing() || mBanner == null || mOpened)
       return;
 
-    mIsOpened = true;
+    mOpened = true;
     setFrameHeight(WRAP_CONTENT);
     setIconParams(mOpenIconSize, 0, mMarginBase);
     UiUtils.show(mMessage, mAdMarker);
     loadIcon(mBanner);
     if (mTitle != null)
       mTitle.setMaxLines(2);
-    mFrame.setOnClickListener(this);
+
+    Statistics.INSTANCE.trackEvent(Statistics.EventName.PP_BANNER_SHOW,
+                                   Statistics.params()
+                                             .add("tags:", mBanner.getTypes())
+                                             .add("banner:", mBanner.getId())
+                                             .add("state:", "1"));
   }
 
   void close()
   {
-    if (!isShowing() || mBanner == null || !mIsOpened)
+    if (!isShowing() || mBanner == null || !mOpened)
       return;
 
-    mIsOpened = false;
+    mOpened = false;
     setFrameHeight((int) mCloseFrameHeight);
     setIconParams(mCloseIconSize, mMarginBase, mMarginHalfPlus);
     UiUtils.hide(mMessage, mAdMarker);
     loadIcon(mBanner);
     if (mTitle != null)
       mTitle.setMaxLines(1);
-    mFrame.setOnClickListener(null);
   }
 
   private void setFrameHeight(int height)
@@ -181,8 +193,17 @@ final class BannerController implements View.OnClickListener
   @Override
   public void onClick(View v)
   {
-    if (mListener != null && mBanner != null)
+    if (mListener == null || mBanner == null)
+      return;
+
+    if (mOpened)
       mListener.onBannerClick(mBanner);
+
+    Statistics.INSTANCE.trackEvent(Statistics.EventName.PP_BANNER_CLICK,
+                                   Statistics.params()
+                                             .add("tags:", mBanner.getTypes())
+                                             .add("banner:", mBanner.getId())
+                                             .add("state:", mOpened ? "1" : "0"));
   }
 
   interface OnBannerClickListener
