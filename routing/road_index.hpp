@@ -1,6 +1,7 @@
 #pragma once
 
 #include "routing/joint.hpp"
+#include "routing/restrictions_serialization.hpp"
 
 #include "std/algorithm.hpp"
 #include "std/cstdint.hpp"
@@ -10,6 +11,29 @@
 
 namespace routing
 {
+/// \brief this class describe a two link restriction which is staring on one feature
+/// and ending on another one.
+class RestrictionPoint final
+{
+public:
+  RestrictionPoint() = default;
+
+  /// \param from feature id and point id of starting restriction segment.
+  /// \param to feature id and point id of ending restriction segment.
+  /// \param centerId joint id of the restriction point.
+  RestrictionPoint(RoadPoint const & from, RoadPoint const & to, Joint::Id centerId)
+    : m_from(from), m_to(to), m_centerId(centerId)
+  {
+  }
+
+  bool operator<(RestrictionPoint const & rhs) const;
+  bool operator==(RestrictionPoint const & rhs) const { return !(*this < rhs || rhs < *this); }
+  bool operator!=(RestrictionPoint const & rhs) const { return !(*this == rhs); }
+  RoadPoint m_from;
+  RoadPoint m_to;
+  Joint::Id m_centerId = Joint::kInvalidId;
+};
+
 class RoadJointIds final
 {
 public:
@@ -95,6 +119,10 @@ public:
     return result;
   }
 
+  Joint::Id Front() const { return m_jointIds.front(); }
+  Joint::Id Back() const { return m_jointIds.back(); }
+  size_t GetSize() const { return m_jointIds.size(); }
+  bool IsEmpty() const { return m_jointIds.empty(); }
 private:
   // Joint ids indexed by point id.
   // If some point id doesn't match any joint id, this vector contains Joint::kInvalidId.
@@ -105,6 +133,12 @@ class RoadIndex final
 {
 public:
   void Import(vector<Joint> const & joints);
+
+  /// \brief if |featureIdFrom| and |featureIdTo| are adjacent and if they are connected by
+  /// ends fills |restrictionPoint| and returns true.
+  /// Otherwise returns false.
+  bool GetRestrictionPoint(uint32_t featureIdFrom, uint32_t featureIdTo,
+                           RestrictionPoint & restrictionPoint) const;
 
   void AddJoint(RoadPoint const & rp, Joint::Id jointId)
   {
@@ -148,8 +182,18 @@ public:
       f(it.first, it.second);
   }
 
+  template <typename F>
+  void ForEachJoint(uint32_t featureId, F && f) const
+  {
+    auto const it = m_roads.find(featureId);
+    if (it != m_roads.cend())
+      it->second.ForEachJoint(forward<F>(f));
+  }
+
 private:
   // Map from feature id to RoadJointIds.
   unordered_map<uint32_t, RoadJointIds> m_roads;
 };
+
+string DebugPrint(RestrictionPoint const & restrictionPoint);
 }  // namespace routing

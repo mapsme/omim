@@ -118,7 +118,7 @@ bool BuildRoutingIndex(string const & filename, string const & country)
     auto const sectionSize = writer.Pos() - startPos;
 
     LOG(LINFO, ("Routing section created:", sectionSize, "bytes,", graph.GetNumRoads(), "roads,",
-                graph.GetNumJoints(), "joints,", graph.GetNumPoints(), "points"));
+                graph.GetNumJoints(), "joints,", graph.GetNumStaticPoints(), "points"));
     return true;
   }
   catch (RootException const & e)

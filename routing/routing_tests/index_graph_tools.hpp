@@ -19,6 +19,88 @@
 
 namespace routing_test
 {
+using namespace routing;
+
+struct RestrictionTest
+{
+  void Init(unique_ptr<IndexGraph> graph) { m_graph = move(graph); }
+  void SetStarter(RoadPoint const & start, RoadPoint const & finish)
+  {
+    m_starter = make_unique<IndexGraphStarter>(*m_graph, start, finish);
+  }
+
+  bool GetRestrictionPoint(uint32_t featureIdFrom, uint32_t featureIdTo,
+                           RestrictionPoint & crossingPoint) const
+  {
+    return m_graph->m_roadIndex.GetRestrictionPoint(featureIdFrom, featureIdTo, crossingPoint);
+  }
+
+  void DisableEdge(RoadPoint const & from, RoadPoint const & to, uint32_t featureId)
+  {
+    m_graph->DisableEdge(DirectedEdge(GetJointId(from), GetJointId(to), featureId));
+  }
+
+  uint32_t AddFakeFeature(RoadPoint const & from, RoadPoint const & to,
+                          vector<RoadPoint> const & geometrySource, double speed)
+  {
+    return m_graph->AddFakeFeature(GetJointId(from), GetJointId(to), geometrySource, speed);
+  }
+
+  uint32_t AddFakeFeature(Joint::Id from, Joint::Id to, vector<RoadPoint> const & geometrySource,
+                          double speed)
+  {
+    return m_graph->AddFakeFeature(from, to, geometrySource, speed);
+  }
+
+  Joint::Id GetJointId(RoadPoint const & rp) const { return m_graph->m_roadIndex.GetJointId(rp); }
+  void ApplyRestrictionNoRealFeatures(RestrictionPoint const & restrictionPoint)
+  {
+    m_graph->ApplyRestrictionNoRealFeatures(restrictionPoint);
+  }
+
+  void ApplyRestrictionOnlyRealFeatures(RestrictionPoint const & restrictionPoint)
+  {
+    m_graph->ApplyRestrictionOnlyRealFeatures(restrictionPoint);
+  }
+
+  void GetSingleFeaturePath(RoadPoint const & from, RoadPoint const & to, vector<RoadPoint> & path)
+  {
+    m_graph->GetSingleFeaturePath(from, to, path);
+  }
+
+  void GetFeatureConnectionPath(RoadPoint const & from, RoadPoint const & to, uint32_t featureId,
+                                vector<RoadPoint> & path)
+  {
+    m_graph->GetFeatureConnectionPath(GetJointId(from), GetJointId(to), featureId, path);
+  }
+
+  void GetConnectionPaths(RoadPoint const & from, RoadPoint const & to,
+                          vector<vector<RoadPoint>> & path)
+  {
+    m_graph->GetConnectionPaths(GetJointId(from), GetJointId(to), path);
+  }
+
+  void CreateFakeFeatureGeometry(vector<RoadPoint> const & geometrySource, double speed,
+                                 RoadGeometry & geometry)
+  {
+    m_graph->CreateFakeFeatureGeometry(geometrySource, speed, geometry);
+  }
+
+  vector<DirectedEdge> const & GetFakeZeroLengthEdges() const
+  {
+    return m_starter->m_fakeZeroLengthEdges;
+  }
+
+  void FindPointsWithCommonFeature(Joint::Id jointId0, Joint::Id jointId1, RoadPoint & result0,
+                                   RoadPoint & result1)
+  {
+    return m_starter->FindPointsWithCommonFeature(jointId0, jointId1, result0, result1);
+  }
+
+  unique_ptr<IndexGraph> m_graph;
+  unique_ptr<IndexGraphStarter> m_starter;
+};
+
 class TestGeometryLoader final : public routing::GeometryLoader
 {
 public:
@@ -48,4 +130,12 @@ void TestRouteGeometry(
     routing::IndexGraphStarter & starter,
     routing::AStarAlgorithm<routing::IndexGraphStarter>::Result expectedRouteResult,
     vector<m2::PointD> const & expectedRouteGeom);
+
+/// \brief Applies all possible permulations of |restrictions| to graph in |restrictionTest| and
+/// tests resulting routes.
+/// \note restrictionTest should have valid |restrictionTest.m_graph|.
+void TestRestrictionPermutations(RestrictionVec restrictions,
+                                 vector<m2::PointD> const & expectedRouteGeom,
+                                 RoadPoint const & start, RoadPoint const & finish,
+                                 RestrictionTest & restrictionTest);
 }  // namespace routing_test
