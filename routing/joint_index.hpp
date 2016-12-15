@@ -6,6 +6,7 @@
 
 #include "base/assert.hpp"
 
+#include "std/utility.hpp"
 #include "std/vector.hpp"
 
 namespace routing
@@ -17,22 +18,20 @@ namespace routing
 class JointIndex final
 {
 public:
-  // Read comments in Build method about -1.
-  uint32_t GetNumJoints() const
-  {
-    CHECK_GREATER(m_offsets.size(), 0, ());
-    return m_offsets.size() - 1;
-  }
-
-  uint32_t GetNumPoints() const { return m_points.size(); }
-  RoadPoint GetPoint(Joint::Id jointId) const { return m_points[Begin(jointId)]; }
+  uint32_t GetNumJoints() const { return nextDynamicJointId; }
+  uint32_t GetNumStaticPoints() const { return m_points.size(); }
+  RoadPoint GetPoint(Joint::Id jointId) const;
 
   template <typename F>
   void ForEachPoint(Joint::Id jointId, F && f) const
   {
-    for (uint32_t i = Begin(jointId); i < End(jointId); ++i)
-      f(m_points[i]);
+    if (IsStatic(jointId))
+    {
+      for (uint32_t i = Begin(jointId); i < End(jointId); ++i)
+        f(m_points[i]);
+    }
 
+    // Note. A static joint may hame some extra road points in |m_dynamicJoints|
     auto const & it = m_dynamicJoints.find(jointId);
     if (it != m_dynamicJoints.end())
     {
@@ -43,10 +42,22 @@ public:
   }
 
   void Build(RoadIndex const & roadIndex, uint32_t numJoints);
+
+  /// \brief fills result with paths from |jointId0| to |jointId1|.
+  void FindPointsWithCommonFeature(Joint::Id jointId0, Joint::Id jointId1,
+                                   vector<pair<RoadPoint, RoadPoint>> & result) const;
   Joint::Id InsertJoint(RoadPoint const & rp);
   void AppendToJoint(Joint::Id jointId, RoadPoint const & rp);
 
 private:
+  // Read comments in Build method about -1.
+  uint32_t GetNumStaticJoints() const
+  {
+    CHECK_GREATER(m_offsets.size(), 0, ());
+    return m_offsets.size() - 1;
+  }
+
+  bool IsStatic(Joint::Id jointId) const { return jointId < GetNumStaticJoints(); }
   // Begin index for jointId entries.
   uint32_t Begin(Joint::Id jointId) const
   {
@@ -65,5 +76,6 @@ private:
   vector<uint32_t> m_offsets;
   vector<RoadPoint> m_points;
   unordered_map<Joint::Id, Joint> m_dynamicJoints;
+  Joint::Id nextDynamicJointId = 0;
 };
 }  // namespace routing

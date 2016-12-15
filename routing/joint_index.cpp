@@ -4,17 +4,38 @@
 
 namespace routing
 {
+RoadPoint JointIndex::GetPoint(Joint::Id jointId) const
+{
+  if (IsStatic(jointId))
+    return m_points[Begin(jointId)];
+
+  CHECK_LESS(jointId, GetNumJoints(), ());
+  auto const jointIt = m_dynamicJoints.find(jointId);
+  CHECK(jointIt != m_dynamicJoints.cend(), ());
+  return jointIt->second.GetEntry(0 /* first point in joint */);
+}
+
 Joint::Id JointIndex::InsertJoint(RoadPoint const & rp)
 {
-  Joint::Id const jointId = GetNumJoints();
-  m_points.emplace_back(rp);
-  m_offsets.emplace_back(m_points.size());
-  return jointId;
+  AppendToJoint(nextDynamicJointId, rp);
+  return nextDynamicJointId++;
 }
 
 void JointIndex::AppendToJoint(Joint::Id jointId, RoadPoint const & rp)
 {
   m_dynamicJoints[jointId].AddPoint(rp);
+}
+
+void JointIndex::FindPointsWithCommonFeature(Joint::Id jointId0, Joint::Id jointId1,
+                                             vector<pair<RoadPoint, RoadPoint>> & result) const
+{
+  result.clear();
+  ForEachPoint(jointId0, [&](RoadPoint const & rp0) {
+    ForEachPoint(jointId1, [&](RoadPoint const & rp1) {
+      if (rp0.GetFeatureId() == rp1.GetFeatureId())
+        result.emplace_back(rp0, rp1);
+    });
+  });
 }
 
 void JointIndex::Build(RoadIndex const & roadIndex, uint32_t numJoints)
@@ -55,6 +76,7 @@ void JointIndex::Build(RoadIndex const & roadIndex, uint32_t numJoints)
     });
   });
 
+  nextDynamicJointId = GetNumStaticJoints();
   CHECK_EQUAL(m_offsets[0], 0, ());
   CHECK_EQUAL(m_offsets.back(), m_points.size(), ());
 }
