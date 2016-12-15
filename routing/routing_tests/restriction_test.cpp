@@ -30,11 +30,11 @@ void TestRoutes(vector<RoadPoint> const & starts, vector<RoadPoint> const & fini
 void EdgeTest(Joint::Id vertex, size_t expectedIntgoingNum, size_t expectedOutgoingNum,
               bool graphWithoutRestrictions, IndexGraph & graph)
 {
-  vector<IndexGraphStarter::TEdgeType> ingoing;
+  vector<routing::JointEdge> ingoing;
   graph.GetEdgeList(vertex, false /* is outgoing */, graphWithoutRestrictions, ingoing);
   TEST_EQUAL(ingoing.size(), expectedIntgoingNum, ());
 
-  vector<IndexGraphStarter::TEdgeType> outgoing;
+  vector<routing::JointEdge> outgoing;
   graph.GetEdgeList(vertex, true /* is outgoing */, graphWithoutRestrictions, outgoing);
   TEST_EQUAL(outgoing.size(), expectedOutgoingNum, ());
 }

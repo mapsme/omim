@@ -24,9 +24,47 @@ namespace routing
 class IndexGraphStarter final
 {
 public:
-  // AStarAlgorithm types aliases:
-  using TVertexType = Joint::Id;
-  using TEdgeType = JointEdge;
+  // IndexGraph is a G = (V, E), where V is a Joint, and E is a pair
+  // of joints. But this space is too restrictive, as it's not
+  // possible to add penalties for left turns, U-turns, restrictions
+  // and so on. Therefore, we run A* algorithm on a different graph G'
+  // = (V', E'), where each vertex from V' is a pair of vertices
+  // (previous vertex, current vertex) from V. Following laws hold:
+  //
+  // 1. (s, s) in V', where s is a start joint.
+  //
+  // 2. (t, t) in V', where t is a finish joint.
+  //
+  // 3. If there is an edge (u, v) in E and edge (v, w) in E, then
+  // there is an edge from (u, v) to (v, w) in E', and the weight of
+  // this edge is the same as the weight of (v, w) from E.
+  //
+  // 4. If there is an edge (s, u) in E then there is an edge from (s,
+  // s) to (s, u) in E' and the weight of this edge is the same as the
+  // weigth of (s, u) from E.
+  //
+  // 5. If there is an edge (u, t) in E then there is an edge from (u,
+  // t) to (t, t) in E' of zero length.
+  //
+  // 6. (s, s) from V' and (t, t) from V' are start and finish
+  // vertices correspondingly.
+  //
+  // As one can see, vertices in the new space are actually edges from
+  // the original space.
+  using TVertexType = pair<Joint::Id, Joint::Id>;
+
+  struct TEdgeType
+  {
+  public:
+    TEdgeType(TVertexType const & target, double weight) : m_target(target), m_weight(weight) {}
+
+    TVertexType GetTarget() const { return m_target; }
+    double GetWeight() const { return m_weight; }
+
+  private:
+    TVertexType m_target;
+    double m_weight;
+  };
 
   enum class EndPointType
   {
@@ -42,22 +80,30 @@ public:
   Joint::Id GetStartJoint() const { return m_start.m_jointId; }
   Joint::Id GetFinishJoint() const { return m_finish.m_jointId; }
 
+  TVertexType GetStartVertex() const
+  {
+    auto const s = GetStartJoint();
+    return make_pair(s, s);
+  }
+
+  TVertexType GetFinishVertex() const
+  {
+    auto const t = GetFinishJoint();
+    return make_pair(t, t);
+  }
+
   m2::PointD const & GetPoint(Joint::Id jointId);
   m2::PointD const & GetPoint(RoadPoint const & rp);
 
-  void GetOutgoingEdgesList(Joint::Id jointId, vector<JointEdge> & edges)
-  {
-    GetEdgesList(jointId, true /* isOutgoing */, edges);
-  }
+  // Clears |edges| and fills with all outgoing edges from |u|.
+  void GetOutgoingEdgesList(TVertexType const & u, vector<TEdgeType> & edges);
 
-  void GetIngoingEdgesList(Joint::Id jointId, vector<JointEdge> & edges)
-  {
-    GetEdgesList(jointId, false /* isOutgoing */, edges);
-  }
+  // Clears |edges| and fills with all ingoing edges to |u|.
+  void GetIngoingEdgesList(TVertexType const & u, vector<TEdgeType> & edges);
 
-  double HeuristicCostEstimate(Joint::Id from, Joint::Id to)
+  double HeuristicCostEstimate(TVertexType const & from, TVertexType const & to)
   {
-    return m_graph.GetEstimator().CalcHeuristic(GetPoint(from), GetPoint(to));
+    return m_graph.GetEstimator().CalcHeuristic(GetPoint(from.second), GetPoint(to.second));
   }
 
   // Add intermediate points to route (those don't correspond to any joint).
@@ -133,6 +179,14 @@ private:
                                    RoadPoint & result1);
 
   void AddFakeZeroLengthEdges(FakeJoint const & fp, EndPointType endPointType);
+
+  // Applies all possible penalties to the |weight| and returns
+  // it. Return value is always not less that the |weight|.
+  double ApplyPenalties(TVertexType const & u, TVertexType const & v, double weight);
+
+  // Returns a pair of original (before restrictions) road points for
+  // a pair of joints lying on the same feature.
+  pair<RoadPoint, RoadPoint> GetOriginal(Joint::Id u, Joint::Id v);
 
   // Edges which added to IndexGraph in IndexGraphStarter. Size of |m_fakeZeroLengthEdges| should be
   // relevantly small because some methods working with it have linear complexity.

@@ -76,11 +76,11 @@ public:
   }
 
 private:
-  Joint::Id const m_from = Joint::kInvalidId;
-  Joint::Id const m_to = Joint::kInvalidId;
+  Joint::Id m_from = Joint::kInvalidId;
+  Joint::Id m_to = Joint::kInvalidId;
   // Note. It's important to store feature id because two |m_from| and |m_to| may be
   // connected with several features.
-  uint32_t const m_featureId = 0;
+  uint32_t m_featureId = 0;
 };
 
 string DebugPrint(DirectedEdge const & directedEdge);
@@ -209,6 +209,16 @@ public:
     }
 
     f(directedEdge);
+  }
+
+  DirectedEdge GetParent(DirectedEdge const & e) const
+  {
+    // TODO (@bykoianko): get rid of static restrictions and use them
+    // dynamically in IndexGraphStarter::ApplyPenalties().
+    auto const it = m_parentMapping.find(e);
+    if (it == m_parentMapping.end())
+      return e;
+    return GetParent(it->second);
   }
 
 private:
@@ -356,5 +366,6 @@ private:
   // * be copied. If so the mapping is kept in |m_edgeMapping| and the source edge is not blocked.
   // See ApplyRestriction* method for a detailed comments about trasformation rules.
   map<DirectedEdge, vector<DirectedEdge>> m_edgeMapping;
+  map<DirectedEdge, DirectedEdge> m_parentMapping;
 };
 }  // namespace routing

@@ -111,9 +111,11 @@ IRouter::ResultCode SingleMwmRouter::DoCalculateRoute(MwmSet::MwmId const & mwmI
   progress.Initialize(starter.GetPoint(start), starter.GetPoint(finish));
 
   uint32_t drawPointsStep = 0;
-  auto onVisitJunction = [&](Joint::Id const & from, Joint::Id const & to) {
-    m2::PointD const & pointFrom = starter.GetPoint(from);
-    m2::PointD const & pointTo = starter.GetPoint(to);
+  auto onVisitVertex = [&](IndexGraphStarter::TVertexType const & from,
+                           IndexGraphStarter::TVertexType const & to) {
+    m2::PointD const & pointFrom = starter.GetPoint(from.second);
+    m2::PointD const & pointTo = starter.GetPoint(to.second);
+
     auto const lastValue = progress.GetLastValue();
     auto const newValue = progress.GetProgressForBidirectedAlgo(pointFrom, pointTo);
     if (newValue - lastValue > kProgressInterval)
@@ -125,17 +127,32 @@ IRouter::ResultCode SingleMwmRouter::DoCalculateRoute(MwmSet::MwmId const & mwmI
 
   AStarAlgorithm<IndexGraphStarter> algorithm;
 
-  RoutingResult<Joint::Id> routingResult;
+  RoutingResult<IndexGraphStarter::TVertexType> routingResult;
   auto const resultCode =
-      algorithm.FindPathBidirectional(starter, starter.GetStartJoint(), starter.GetFinishJoint(),
-                                      routingResult, delegate, onVisitJunction);
+      algorithm.FindPathBidirectional(starter, starter.GetStartVertex(), starter.GetFinishVertex(),
+                                      routingResult, delegate, onVisitVertex);
 
   switch (resultCode)
   {
   case AStarAlgorithm<IndexGraphStarter>::Result::NoPath: return IRouter::RouteNotFound;
   case AStarAlgorithm<IndexGraphStarter>::Result::Cancelled: return IRouter::Cancelled;
   case AStarAlgorithm<IndexGraphStarter>::Result::OK:
-    if (!BuildRoute(mwmId, routingResult.path, delegate, starter, route))
+    vector<Joint::Id> joints;
+
+    // Because A* works in different space, where each vertex is
+    // actually a pair (previous vertex, current vertex), and start
+    // and finish vertices are (start joint, start joint), (finish
+    // joint, finish joint) correspondingly, we need to get back to
+    // original space.
+    for (size_t i = 0; i < routingResult.path.size(); ++i)
+      joints.emplace_back(routingResult.path[i].second);
+
+    if (joints.size() >= 2 && joints[joints.size() - 1] == joints[joints.size() - 2])
+      joints.pop_back();
+    if (joints.size() >= 2 && joints[0] == joints[1])
+      joints.erase(joints.begin());
+
+    if (!BuildRoute(mwmId, joints, delegate, starter, route))
       return IRouter::InternalError;
     if (delegate.IsCancelled())
       return IRouter::Cancelled;

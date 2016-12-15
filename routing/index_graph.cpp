@@ -670,6 +670,7 @@ void IndexGraph::InsertToEdgeMapping(DirectedEdge const & key, DirectedEdge cons
     return;
   }
   edges.push_back(value);
+  m_parentMapping[value] = key;
 }
 
 string DebugPrint(DirectedEdge const & directedEdge)

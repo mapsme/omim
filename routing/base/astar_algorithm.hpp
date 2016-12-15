@@ -351,7 +351,8 @@ typename AStarAlgorithm<TGraph>::Result AStarAlgorithm<TGraph>::FindPathBidirect
       double const pW = cur->ConsistentHeuristic(stateW.vertex);
       double const reducedLen = len + pW - pV;
 
-      CHECK(reducedLen >= -kEpsilon, ("Invariant violated:", reducedLen, "<", -kEpsilon));
+      CHECK(reducedLen >= -kEpsilon, ("Invariant violated:", reducedLen, "<", -kEpsilon,
+                                      stateV.vertex, stateW.vertex, len, pV, pW));
       double const newReducedDist = stateV.distance + max(reducedLen, 0.0);
 
       auto const itCur = cur->bestDistance.find(stateW.vertex);

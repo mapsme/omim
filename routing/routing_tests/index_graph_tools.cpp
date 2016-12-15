@@ -46,13 +46,21 @@ AStarAlgorithm<IndexGraphStarter>::Result CalculateRoute(IndexGraphStarter & sta
                                                          vector<RoadPoint> & roadPoints)
 {
   AStarAlgorithm<IndexGraphStarter> algorithm;
-  RoutingResult<Joint::Id> routingResult;
+  RoutingResult<IndexGraphStarter::TVertexType> routingResult;
 
-  auto const resultCode = algorithm.FindPath(
-      starter, starter.GetStartJoint(), starter.GetFinishJoint(), routingResult, {}, {});
+  auto const resultCode = algorithm.FindPath(starter, starter.GetStartVertex(),
+                                             starter.GetFinishVertex(), routingResult, {}, {});
+
+  vector<Joint::Id> path;
+  for (size_t i = 0; i < routingResult.path.size(); ++i)
+    path.emplace_back(routingResult.path[i].second);
+  if (path.size() >= 2 && path[path.size() - 1] == path[path.size() - 2])
+    path.pop_back();
+  if (path.size() >= 2 && path[0] == path[1])
+    path.erase(path.begin());
 
   vector<RoutePoint> routePoints;
-  starter.RedressRoute(routingResult.path, routePoints);
+  starter.RedressRoute(path, routePoints);
 
   roadPoints.clear();
   roadPoints.reserve(routePoints.size());
