@@ -113,8 +113,8 @@ IRouter::ResultCode SingleMwmRouter::DoCalculateRoute(MwmSet::MwmId const & mwmI
   uint32_t drawPointsStep = 0;
   auto onVisitVertex = [&](IndexGraphStarter::TVertexType const & from,
                            IndexGraphStarter::TVertexType const & to) {
-    m2::PointD const & pointFrom = starter.GetPoint(from.second);
-    m2::PointD const & pointTo = starter.GetPoint(to.second);
+    m2::PointD const & pointFrom = starter.GetPoint(from.GetCurr());
+    m2::PointD const & pointTo = starter.GetPoint(to.GetCurr());
 
     auto const lastValue = progress.GetLastValue();
     auto const newValue = progress.GetProgressForBidirectedAlgo(pointFrom, pointTo);
@@ -137,20 +137,32 @@ IRouter::ResultCode SingleMwmRouter::DoCalculateRoute(MwmSet::MwmId const & mwmI
   case AStarAlgorithm<IndexGraphStarter>::Result::NoPath: return IRouter::RouteNotFound;
   case AStarAlgorithm<IndexGraphStarter>::Result::Cancelled: return IRouter::Cancelled;
   case AStarAlgorithm<IndexGraphStarter>::Result::OK:
-    vector<Joint::Id> joints;
-
-    // Because A* works in different space, where each vertex is
+    // Because A* works in another space, where each vertex is
     // actually a pair (previous vertex, current vertex), and start
     // and finish vertices are (start joint, start joint), (finish
     // joint, finish joint) correspondingly, we need to get back to
-    // original space.
-    for (size_t i = 0; i < routingResult.path.size(); ++i)
-      joints.emplace_back(routingResult.path[i].second);
+    // the original space.
 
-    if (joints.size() >= 2 && joints[joints.size() - 1] == joints[joints.size() - 2])
+    vector<Joint::Id> joints;
+    for (auto const & u : routingResult.path)
+      joints.emplace_back(u.GetCurr());
+
+    // If there are at least two points on the shortest path, then the
+    // last point is duplicated.  Imagine that the shortest path in
+    // the original space is: [s, u, v, t].  Then, in the another
+    // space, the shortest path will be: [(s, s), (s, u), (u, v), (v,
+    // t), (t, t)]. After taking second part of the vertices, the
+    // sequence is: [s, u, v, t, t], therefore, the last vertex is
+    // duplicated. On the other hand, if the shortest path in the
+    // original space is a single vertex [s] - a case when start and
+    // finish vertices are the same, in the extended space the
+    // shortest path is [(s, s)], and after taking the second part the
+    // sequence is [s] - exactly what do we need.
+    if (joints.size() >= 2)
+    {
+      CHECK_EQUAL(joints[joints.size() - 1], joints[joints.size() - 2], ());
       joints.pop_back();
-    if (joints.size() >= 2 && joints[0] == joints[1])
-      joints.erase(joints.begin());
+    }
 
     if (!BuildRoute(mwmId, joints, delegate, starter, route))
       return IRouter::InternalError;

@@ -24,7 +24,7 @@ public:
   virtual double CalcEdgesWeight(uint32_t featureId, RoadGeometry const & road, uint32_t pointFrom,
                                  uint32_t pointTo) const = 0;
   virtual double CalcHeuristic(m2::PointD const & from, m2::PointD const & to) const = 0;
-  virtual double GetUTurnWeight() const = 0;
+  virtual double GetUTurnPenalty() const = 0;
 
   static shared_ptr<EdgeEstimator> CreateForCar(IVehicleModel const & vehicleModel,
                                                 traffic::TrafficCache const & trafficCache);

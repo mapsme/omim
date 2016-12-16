@@ -5,6 +5,8 @@
 #include "routing/car_model.hpp"
 #include "routing/geometry.hpp"
 
+#include "indexer/classificator_loader.hpp"
+
 #include "geometry/point2d.hpp"
 
 #include "std/unique_ptr.hpp"
@@ -84,6 +86,79 @@ UNIT_TEST(TriangularGraph)
   IndexGraphStarter starter(*graph, RoadPoint(2, 0) /* start */, RoadPoint(1, 1) /* finish */);
   vector<RoadPoint> const expectedRoute = {{2 /* feature id */, 0 /* seg id */}, {2, 1}, {1, 1}};
   TestRouteSegments(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedRoute);
+}
+
+//                             Finish
+//                               *
+//                               ^
+//                               |
+//                               F7
+//                               |
+//                               *
+//                               ^
+//                               |
+//                               F6
+//                               |
+// Start * -- F0 --> * -- F1 --> * <-- F2 --> * -- F3 --> *
+//                              | ^
+//                              | |
+//                             F4 F5
+//                              | |
+//                              ⌄ |
+//                               *
+unique_ptr<IndexGraph> BuildCrossGraph()
+{
+  unique_ptr<TestGeometryLoader> loader = make_unique<TestGeometryLoader>();
+  loader->AddRoad(0 /* featureId */, true /* oneWay */, 1.0 /* speed */,
+                  RoadGeometry::Points({{-1.0, 0.0}, {0.0, 0.0}}));
+  loader->AddRoad(1 /* featureId */, true /* oneWay */, 1.0 /* speed */,
+                  RoadGeometry::Points({{0.0, 0.0}, {1.0, 0.0}}));
+  loader->AddRoad(2 /* featureId */, false /* oneWay */, 1.0 /* speed */,
+                  RoadGeometry::Points({{1.0, 0.0}, {1.9999, 0.0}}));
+  loader->AddRoad(3 /* featureId */, true /* oneWay */, 1.0 /* speed */,
+                  RoadGeometry::Points({{1.9999, 0.0}, {3.0, 0.0}}));
+  loader->AddRoad(4 /* featureId */, true /* oneWay */, 1.0 /* speed */,
+                  RoadGeometry::Points({{1.0, 0.0}, {1.0, -1.0}}));
+  loader->AddRoad(5 /* featureId */, true /* oneWay */, 1.0 /* speed */,
+                  RoadGeometry::Points({{1.0, -1.0}, {1.0, 0.0}}));
+  loader->AddRoad(6 /* featureId */, true /* oneWay */, 1.0 /* speed */,
+                  RoadGeometry::Points({{1.0, 0.0}, {1.0, 1.0}}));
+  loader->AddRoad(7 /* featureId */, true /* oneWay */, 1.0 /* speed */,
+                  RoadGeometry::Points({{1.0, 1.0}, {1.0, 2.0}}));
+
+  vector<Joint> const joints = {
+      MakeJoint({{0, 1}, {1, 0}}), MakeJoint({{1, 1}, {2, 0}, {4, 0}, {5, 1}, {6, 0}}),
+      MakeJoint({{2, 1}, {3, 0}}), MakeJoint({{4, 1}, {5, 0}}), MakeJoint({{6, 1}, {7, 0}})};
+
+  traffic::TrafficCache const trafficCache;
+  unique_ptr<IndexGraph> graph =
+      make_unique<IndexGraph>(move(loader), CreateEstimator(trafficCache));
+  graph->Import(joints);
+  return graph;
+}
+
+UNIT_TEST(CrossGraph_UTurn)
+{
+  classificator::Load();
+  unique_ptr<IndexGraph> graph = BuildCrossGraph();
+
+  {
+    IndexGraphStarter starter(*graph, RoadPoint(0, 0) /* start */, RoadPoint(7, 1) /* finish */);
+    vector<m2::PointD> const expectedGeom = {
+        {-1.0 /* x */, 0.0 /* y */}, {0.0, 0.0}, {1.0, 0.0}, {1.0, 1.0}, {1.0, 2.0}};
+    TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
+  }
+
+  RestrictionVec const restrictions = {
+      {Restriction::Type::No, {1 /* feature from */, 6 /* feature to */}}};
+  graph->ApplyRestrictions(restrictions);
+
+  {
+    IndexGraphStarter starter(*graph, RoadPoint(0, 0) /* start */, RoadPoint(7, 1) /* finish */);
+    vector<m2::PointD> const expectedGeom = {{-1.0, 0.0}, {0.0, 0.0}, {1.0, 0.0}, {1.0, -1.0},
+                                             {1.0, 0.0},  {1.0, 1.0}, {1.0, 2.0}};
+    TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
+  }
 }
 
 // Route through triangular graph with feature 2 disabled.

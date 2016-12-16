@@ -52,12 +52,13 @@ AStarAlgorithm<IndexGraphStarter>::Result CalculateRoute(IndexGraphStarter & sta
                                              starter.GetFinishVertex(), routingResult, {}, {});
 
   vector<Joint::Id> path;
-  for (size_t i = 0; i < routingResult.path.size(); ++i)
-    path.emplace_back(routingResult.path[i].second);
-  if (path.size() >= 2 && path[path.size() - 1] == path[path.size() - 2])
+  for (auto const & u : routingResult.path)
+    path.emplace_back(u.GetCurr());
+  if (resultCode == AStarAlgorithm<IndexGraphStarter>::Result::OK && path.size() >= 2)
+  {
+    CHECK_EQUAL(path[path.size() - 1], path[path.size() - 2], ());
     path.pop_back();
-  if (path.size() >= 2 && path[0] == path[1])
-    path.erase(path.begin());
+  }
 
   vector<RoutePoint> routePoints;
   starter.RedressRoute(path, routePoints);

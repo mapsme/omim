@@ -2,20 +2,51 @@
 
 #include "routing/routing_exceptions.hpp"
 
+#include "std/sstream.hpp"
+
 namespace routing
 {
 namespace
 {
-int Sign(uint32_t a, uint32_t b)
+int Compare(uint32_t a, uint32_t b) noexcept
 {
   if (a < b)
-    return 1;
-  if (a > b)
     return -1;
+  if (a > b)
+    return 1;
   return 0;
 }
 }  // namespace
 
+// IndexGraphStarter::TVertexType ------------------------------------------------------------------
+IndexGraphStarter::TVertexType::TVertexType(Joint::Id prev, Joint::Id curr, double weight) noexcept
+  : m_prev(prev), m_curr(curr), m_weight(weight)
+{
+}
+
+bool IndexGraphStarter::TVertexType::operator==(TVertexType const & rhs) const noexcept
+{
+  return m_prev == rhs.m_prev && m_curr == rhs.m_curr && m_weight == rhs.m_weight;
+}
+
+bool IndexGraphStarter::TVertexType::operator<(TVertexType const & rhs) const noexcept
+{
+  if (m_curr != rhs.m_curr)
+    return m_curr < rhs.m_curr;
+  if (m_prev != rhs.m_prev)
+    return m_prev < rhs.m_prev;
+  return m_weight < rhs.m_weight;
+}
+
+string DebugPrint(IndexGraphStarter::TVertexType const & u)
+{
+  ostringstream os;
+  os << "Vertex [ prev:" << u.GetPrev() << ", curr:" << u.GetCurr() << " , weight:" << u.GetWeight()
+     << " ]";
+  return os.str();
+}
+
+// IndexGraphStarter -------------------------------------------------------------------------------
 IndexGraphStarter::IndexGraphStarter(IndexGraph & graph, RoadPoint const & startPoint,
                                      RoadPoint const & finishPoint)
   : m_fakeNextFeatureId(graph.GetNextFakeFeatureId())
@@ -77,74 +108,51 @@ m2::PointD const & IndexGraphStarter::GetPoint(RoadPoint const & rp)
 void IndexGraphStarter::GetOutgoingEdgesList(TVertexType const & u, vector<TEdgeType> & edges)
 {
   vector<JointEdge> jes;
-  GetEdgesList(u.second, true /* isOutgoing */, jes);
+  GetEdgesList(u.GetCurr(), true /* isOutgoing */, jes);
 
   edges.clear();
+  edges.reserve(jes.size());
   for (auto const & je : jes)
   {
-    TVertexType const v = make_pair(u.second, je.GetTarget());
-    double const weight = ApplyPenalties(u, v, je.GetWeight());
+    TVertexType const v(u.GetCurr(), je.GetTarget(), je.GetWeight());
+    double const weight = v.GetWeight() + GetPenalties(u, v);
     edges.emplace_back(v, weight);
   }
 
-  if (u.second == GetFinishJoint())
+  if (u.GetCurr() == GetFinishJoint())
     edges.emplace_back(GetFinishVertex(), 0 /* weight */);
 }
 
 void IndexGraphStarter::GetIngoingEdgesList(TVertexType const & u, vector<TEdgeType> & edges)
 {
-  edges.clear();
-
-  double ingoingWeight;
-  bool ingoingWeightFound = false;
-  {
-    if (u == GetFinishVertex())
-    {
-      ingoingWeight = 0;
-      ingoingWeightFound = true;
-    }
-    else
-    {
-      vector<JointEdge> jes;
-      GetEdgesList(u.second, false /* isOutgoing */, jes);
-      for (auto const & je : jes)
-      {
-        if (je.GetTarget() == u.first)
-        {
-          ingoingWeight = je.GetWeight();
-          ingoingWeightFound = true;
-          break;
-        }
-      }
-    }
-  }
-  if (!ingoingWeightFound)
-    return;
-
   vector<JointEdge> jes;
-  GetEdgesList(u.first, false /* isOutgoing */, jes);
+  GetEdgesList(u.GetPrev(), false /* isOutgoing */, jes);
+
+  edges.clear();
+  edges.reserve(jes.size());
   for (auto const & je : jes)
   {
-    TVertexType const v = make_pair(je.GetTarget(), u.first);
-    double const weight = ApplyPenalties(v, u, ingoingWeight);
+    TVertexType const v(je.GetTarget(), u.GetPrev(), je.GetWeight());
+    double const weight = u.GetWeight() + GetPenalties(v, u);
     edges.emplace_back(v, weight);
   }
-  if (u.first == GetStartJoint())
-    edges.emplace_back(GetStartVertex(), ingoingWeight);
+
+  if (u.GetPrev() == GetStartJoint())
+    edges.emplace_back(GetStartVertex(), u.GetWeight());
 }
 
-pair<RoadPoint, RoadPoint> IndexGraphStarter::GetOriginal(Joint::Id u, Joint::Id v)
+uint32_t IndexGraphStarter::GetOriginalFeature(TVertexType const & vertex)
 {
-  uint32_t featureId = 0;
-  {
-    RoadPoint rp0;
-    RoadPoint rp1;
-    FindPointsWithCommonFeature(u, v, rp0, rp1);
-    featureId = rp0.GetFeatureId();
-  }
+  RoadPoint rp0;
+  RoadPoint rp1;
+  FindPointsWithCommonFeature(vertex.GetPrev(), vertex.GetCurr(), rp0, rp1);
+  return rp0.GetFeatureId();
+}
 
-  DirectedEdge e(u, v, featureId);
-  DirectedEdge p = m_graph.GetParent(e);
+pair<RoadPoint, RoadPoint> IndexGraphStarter::GetOriginalEndPoints(TVertexType const & vertex)
+{
+  DirectedEdge const e(vertex.GetPrev(), vertex.GetCurr(), GetOriginalFeature(vertex));
+  DirectedEdge const p = m_graph.GetParent(e);
 
   RoadPoint rp0;
   RoadPoint rp1;
@@ -400,24 +408,32 @@ void IndexGraphStarter::AddFakeZeroLengthEdges(FakeJoint const & fj, EndPointTyp
   }
 }
 
-double IndexGraphStarter::ApplyPenalties(TVertexType const & u, TVertexType const & v,
-                                         double weight)
+bool IndexGraphStarter::IsUTurn(TVertexType const & u, TVertexType const & v)
+{
+  if (u.GetCurr() != v.GetPrev())
+    return false;
+
+  auto const pu = GetOriginalEndPoints(u);
+  auto const pv = GetOriginalEndPoints(v);
+  if (pu.first.GetFeatureId() != pv.first.GetFeatureId())
+    return false;
+
+  auto const su = Compare(pu.first.GetPointId(), pu.second.GetPointId());
+  auto const sv = Compare(pv.first.GetPointId(), pv.second.GetPointId());
+  return su != 0 && sv != 0 && su != sv;
+}
+
+double IndexGraphStarter::GetPenalties(TVertexType const & u, TVertexType const & v)
 {
   if (u == GetStartVertex() || u == GetFinishVertex())
-    return weight;
+    return 0;
   if (v == GetStartVertex() || v == GetFinishVertex())
-    return weight;
+    return 0;
 
-  auto const p0 = GetOriginal(u.first, u.second);
-  auto const p1 = GetOriginal(v.first, v.second);
-  if (p0.first.GetFeatureId() == p1.first.GetFeatureId())
-  {
-    auto const s0 = Sign(p0.first.GetPointId(), p0.second.GetPointId());
-    auto const s1 = Sign(p1.first.GetPointId(), p1.second.GetPointId());
-    if (s0 != s1)
-      weight += m_graph.GetEstimator().GetUTurnWeight();
-  }
-  return weight;
+  double penalty = 0;
+  if (IsUTurn(u, v))
+    penalty += m_graph.GetEstimator().GetUTurnPenalty();
+  return penalty;
 }
 
 // IndexGraphStarter::FakeJoint --------------------------------------------------------------------

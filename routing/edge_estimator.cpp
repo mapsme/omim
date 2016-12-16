@@ -32,12 +32,6 @@ inline double TimeBetweenSec(m2::PointD const & from, m2::PointD const & to, dou
 class CarEdgeEstimator : public EdgeEstimator
 {
 public:
-  // Current time estimation are too optimistic.
-  // Need more accurate tuning: traffic lights, traffic jams, road models and so on.
-  // Add some penalty to make estimation of a more realistic.
-  // TODO: make accurate tuning, remove penalty.
-  static double constexpr kTimePenalty = 1.8;
-
   CarEdgeEstimator(IVehicleModel const & vehicleModel, traffic::TrafficCache const & trafficCache);
 
   // EdgeEstimator overrides:
@@ -46,7 +40,7 @@ public:
   double CalcEdgesWeight(uint32_t featureId, RoadGeometry const & road, uint32_t pointFrom,
                          uint32_t pointTo) const override;
   double CalcHeuristic(m2::PointD const & from, m2::PointD const & to) const override;
-  double GetUTurnWeight() const override;
+  double GetUTurnPenalty() const override;
 
 private:
   TrafficCache const & m_trafficCache;
@@ -73,6 +67,13 @@ void CarEdgeEstimator::Finish()
 double CarEdgeEstimator::CalcEdgesWeight(uint32_t featureId, RoadGeometry const & road,
                                          uint32_t pointFrom, uint32_t pointTo) const
 {
+  // Current time estimation is too optimistic.  Need more accurate
+  // tuning: traffic lights, traffic jams, road models and so on.  Add
+  // some penalty to make estimation more realistic.
+  //
+  // TODO: make accurate tuning, remove penalty.
+  double constexpr kTimePenalty = 1.8;
+
   uint32_t const start = min(pointFrom, pointTo);
   uint32_t const finish = max(pointFrom, pointTo);
   ASSERT_LESS(finish, road.GetPointsCount(), ());
@@ -104,9 +105,12 @@ double CarEdgeEstimator::CalcHeuristic(m2::PointD const & from, m2::PointD const
   return TimeBetweenSec(from, to, m_maxSpeedMPS);
 }
 
-double CarEdgeEstimator::GetUTurnWeight() const
+double CarEdgeEstimator::GetUTurnPenalty() const
 {
-  return kTimePenalty * 2 * 60;
+  // Adds 2 minutes penalty for U-turn. The value is quite arbitrary
+  // and needs to be properly selected after a number of real-world
+  // experiments.
+  return 2 * 60;  // seconds
 }
 }  // namespace
 
