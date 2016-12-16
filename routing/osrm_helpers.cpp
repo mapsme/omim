@@ -120,7 +120,7 @@ void Point2PhantomNode::CalculateWeight(OsrmMappingTypes::FtSeg const & seg,
       auto const splittedSegment = OsrmMappingTypes::SplitSegment(segment, seg);
       distanceM += CalculateDistance(ft, splittedSegment.m_pointStart, splittedSegment.m_pointEnd);
       // node.m_seg always forward ordered (m_pointStart < m_pointEnd)
-      distanceM -= MercatorBounds::DistanceOnEarth(ft.GetPoint(seg.m_pointEnd), segPt);
+      distanceM -= MercatorBounds::DistanceOnEarth(ft.GetPoint(splittedSegment.m_pointEnd), segPt);
 
       foundSeg = true;
     }
