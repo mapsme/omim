@@ -238,7 +238,10 @@ typename AStarAlgorithm<TGraph>::Result AStarAlgorithm<TGraph>::FindPath(
       double const piW = graph.HeuristicCostEstimate(stateW.vertex, finalVertex);
       double const reducedLen = len + piW - piV;
 
-      CHECK(reducedLen >= -kEpsilon, ("Invariant violated:", reducedLen, "<", -kEpsilon));
+      CHECK_GREATER_OR_EQUAL(
+          reducedLen, -kEpsilon,
+          ("Invariant violation, vertex V:", stateV.vertex, "vertex W:", stateW.vertex,
+           "edge weight:", len, "heuristic V:", piV, "heuristic W:", piW));
       double const newReducedDist = stateV.distance + max(reducedLen, 0.0);
 
       auto const t = bestDistance.find(stateW.vertex);
@@ -351,7 +354,10 @@ typename AStarAlgorithm<TGraph>::Result AStarAlgorithm<TGraph>::FindPathBidirect
       double const pW = cur->ConsistentHeuristic(stateW.vertex);
       double const reducedLen = len + pW - pV;
 
-      CHECK(reducedLen >= -kEpsilon, ("Invariant violated:", reducedLen, "<", -kEpsilon));
+      CHECK_GREATER_OR_EQUAL(
+          reducedLen, -kEpsilon,
+          ("Invariant violation, vertex V:", stateV.vertex, "vertex W:", stateW.vertex,
+           "edge weight:", len, "heuristic V:", pV, "heuristic W:", pW));
       double const newReducedDist = stateV.distance + max(reducedLen, 0.0);
 
       auto const itCur = cur->bestDistance.find(stateW.vertex);
