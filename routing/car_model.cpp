@@ -19,7 +19,9 @@ double constexpr kSpeedSecondaryLinkKMpH = 50.0;
 double constexpr kSpeedTertiaryKMpH = 40.0;
 double constexpr kSpeedTertiaryLinkKMpH = 30.0;
 double constexpr kSpeedResidentialKMpH = 25.0;
-double constexpr kSpeedPedestrianKMpH = 25.0;
+// @TODO(@bykoianko) It's necessary to remove {"highway", "pedestrian"} from car model
+// before map data is rebuilt.
+double constexpr kSpeedPedestrianKMpH = 0.1;
 double constexpr kSpeedUnclassifiedKMpH = 25.0;
 double constexpr kSpeedServiceKMpH = 15.0;
 double constexpr kSpeedLivingStreetKMpH = 10.0;
