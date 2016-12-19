@@ -27,5 +27,6 @@ bool IsRoad(TTypes const & types)
 
 void ReconstructRoute(IDirectionsEngine * engine, IRoadGraph const & graph,
                       shared_ptr<traffic::TrafficInfo::Coloring> const & trafficColoring,
-                      my::Cancellable const & cancellable, vector<Junction> & path, Route & route);
+                      my::Cancellable const & cancellable, m2::PointD const & start,
+                      m2::PointD const & finish, vector<Junction> & path, Route & route);
 }  // namespace rouing

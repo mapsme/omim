@@ -164,7 +164,7 @@ IRouter::ResultCode SingleMwmRouter::DoCalculateRoute(MwmSet::MwmId const & mwmI
       joints.pop_back();
     }
 
-    if (!BuildRoute(mwmId, joints, delegate, starter, route))
+    if (!BuildRoute(mwmId, joints, delegate, startPoint, finalPoint, starter, route))
       return IRouter::InternalError;
     if (delegate.IsCancelled())
       return IRouter::Cancelled;
@@ -235,7 +235,8 @@ bool SingleMwmRouter::LoadIndex(MwmSet::MwmId const & mwmId, string const & coun
 }
 
 bool SingleMwmRouter::BuildRoute(MwmSet::MwmId const & mwmId, vector<Joint::Id> const & joints,
-                                 RouterDelegate const & delegate, IndexGraphStarter & starter,
+                                 RouterDelegate const & delegate, m2::PointD const & start,
+                                 m2::PointD const & finish, IndexGraphStarter & starter,
                                  Route & route) const
 {
   vector<RoutePoint> routePoints;
@@ -262,14 +263,14 @@ bool SingleMwmRouter::BuildRoute(MwmSet::MwmId const & mwmId, vector<Joint::Id> 
 
   shared_ptr<traffic::TrafficInfo::Coloring> trafficColoring = m_trafficCache.GetTrafficInfo(mwmId);
 
-  vector<Junction> const oldJunctions(junctions);
-  ReconstructRoute(m_directionsEngine.get(), m_roadGraph, trafficColoring, delegate, junctions,
-                   route);
+  auto const numJunctions = junctions.size();
+  ReconstructRoute(m_directionsEngine.get(), m_roadGraph, trafficColoring, delegate, start, finish,
+                   junctions, route);
 
-  if (junctions != oldJunctions)
+  if (junctions.size() != numJunctions)
   {
-    LOG(LERROR, ("ReconstructRoute changed junctions: size before", oldJunctions.size(),
-                 ", size after", junctions.size()));
+    LOG(LERROR, ("ReconstructRoute changed junctions: size before", numJunctions, ", size after",
+                 junctions.size()));
     return false;
   }
 
@@ -305,7 +306,8 @@ unique_ptr<SingleMwmRouter> SingleMwmRouter::CreateCarRouter(
   // @TODO Bicycle turn generation engine is used now. It's ok for the time being.
   // But later a special car turn generation engine should be implemented.
   auto directionsEngine = make_unique<BicycleDirectionsEngine>(index);
-  auto estimator = EdgeEstimator::CreateForCar(*vehicleModelFactory->GetVehicleModel(), trafficCache);
+  auto estimator =
+      EdgeEstimator::CreateForCar(*vehicleModelFactory->GetVehicleModel(), trafficCache);
   auto router =
       make_unique<SingleMwmRouter>("astar-bidirectional-car", index, trafficCache,
                                    move(vehicleModelFactory), estimator, move(directionsEngine));
