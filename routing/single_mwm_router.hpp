@@ -47,8 +47,8 @@ private:
                        Edge & closestEdge) const;
   bool LoadIndex(MwmSet::MwmId const & mwmId, string const & country, IndexGraph & graph);
   bool BuildRoute(MwmSet::MwmId const & mwmId, vector<Joint::Id> const & joints,
-                  RouterDelegate const & delegate, IndexGraphStarter & starter,
-                  Route & route) const;
+                  RouterDelegate const & delegate, m2::PointD const & start,
+                  m2::PointD const & finish, IndexGraphStarter & starter, Route & route) const;
 
   string const m_name;
   Index const & m_index;

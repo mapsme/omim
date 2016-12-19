@@ -9,7 +9,8 @@ using namespace traffic;
 
 void ReconstructRoute(IDirectionsEngine * engine, IRoadGraph const & graph,
                       shared_ptr<TrafficInfo::Coloring> const & trafficColoring,
-                      my::Cancellable const & cancellable, vector<Junction> & path, Route & route)
+                      my::Cancellable const & cancellable, m2::PointD const & start,
+                      m2::PointD const & finish, vector<Junction> & path, Route & route)
 {
   if (path.empty())
   {
@@ -38,6 +39,9 @@ void ReconstructRoute(IDirectionsEngine * engine, IRoadGraph const & graph,
 
   vector<m2::PointD> routeGeometry;
   JunctionsToPoints(junctions, routeGeometry);
+  CHECK(!routeGeometry.empty(), ());
+  routeGeometry.front() = start;
+  routeGeometry.back() = finish;
   feature::TAltitudes altitudes;
   JunctionsToAltitudes(junctions, altitudes);
 
@@ -76,4 +80,4 @@ void ReconstructRoute(IDirectionsEngine * engine, IRoadGraph const & graph,
 
   route.SetTraffic(move(traffic));
 }
-}  // namespace rouing
+}  // namespace routing
