@@ -7,7 +7,7 @@ namespace routing
 {
 using namespace traffic;
 
-void ReconstructRoute(IDirectionsEngine * engine, IRoadGraph const & graph,
+void ReconstructRoute(IDirectionsEngine & engine, IRoadGraph const & graph,
                       shared_ptr<TrafficInfo::Coloring> const & trafficColoring,
                       my::Cancellable const & cancellable, m2::PointD const & start,
                       m2::PointD const & finish, vector<Junction> & path, Route & route)
@@ -30,8 +30,17 @@ void ReconstructRoute(IDirectionsEngine * engine, IRoadGraph const & graph,
   // @TODO(bykoianko) streetNames is not filled in Generate(). It should be done.
   Route::TStreets streetNames;
   vector<TrafficInfo::RoadSegmentId> trafficSegs;
-  if (engine)
-    engine->Generate(graph, path, times, turnsDir, junctions, trafficSegs, cancellable);
+  engine.Generate(graph, path, times, turnsDir, junctions, trafficSegs, cancellable);
+
+  if (cancellable.IsCancelled())
+    return;
+
+  // In case of any errors in IDirectionsEngine::Generate() |junctions| is empty.
+  if (junctions.empty())
+  {
+    LOG(LERROR, ("Internal error happened while turn generation."));
+    return;
+  }
 
   // @TODO(bykoianko) If the start and the finish of a route lies on the same road segment
   // engine->Generate() fills with empty vectors |times|, |turnsDir|, |junctions| and |trafficSegs|.

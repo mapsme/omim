@@ -264,7 +264,8 @@ bool SingleMwmRouter::BuildRoute(MwmSet::MwmId const & mwmId, vector<Joint::Id> 
   shared_ptr<traffic::TrafficInfo::Coloring> trafficColoring = m_trafficCache.GetTrafficInfo(mwmId);
 
   auto const numJunctions = junctions.size();
-  ReconstructRoute(m_directionsEngine.get(), m_roadGraph, trafficColoring, delegate, start, finish,
+  CHECK(m_directionsEngine, ());
+  ReconstructRoute(*m_directionsEngine, m_roadGraph, trafficColoring, delegate, start, finish,
                    junctions, route);
 
   if (junctions.size() != numJunctions)
