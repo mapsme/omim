@@ -508,7 +508,6 @@ void setPermissionRequested()
     setPermissionRequested();
     if ([CLLocationManager headingAvailable])
       [locationManager startUpdatingHeading];
-    [[PushNotificationManager pushManager] startLocationTracking];
   };
   if ([CLLocationManager locationServicesEnabled])
   {
