@@ -419,7 +419,7 @@ bool IndexGraphStarter::IsUTurn(TVertexType const & u, TVertexType const & v)
 
   auto const su = Compare(pu.first.GetPointId(), pu.second.GetPointId());
   auto const sv = Compare(pv.first.GetPointId(), pv.second.GetPointId());
-  return su != 0 && sv != 0 && su != sv;
+  return pu.second == pv.first && su != 0 && sv != 0 && su != sv;
 }
 
 double IndexGraphStarter::GetPenalties(TVertexType const & u, TVertexType const & v)
