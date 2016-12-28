@@ -33,8 +33,9 @@ void TestRoute(IndexGraph & graph, RoadPoint const & start, RoadPoint const & fi
                size_t expectedLength, vector<RoadPoint> const * expectedRoute = nullptr)
 {
   vector<RoadPoint> route;
+  double timeSec = 0.0;
   IndexGraphStarter starter(graph, start, finish);
-  auto const resultCode = CalculateRoute(starter, route);
+  auto const resultCode = CalculateRoute(starter, route, timeSec);
 
   TEST_EQUAL(resultCode, AStarAlgorithm<IndexGraphStarter>::Result::OK, ());
   TEST_EQUAL(route.size(), expectedLength, ());
@@ -360,5 +361,61 @@ UNIT_TEST(SerializeSimpleGraph)
     TEST_EQUAL(graph.GetJointId({2, 0}), 0, ());
     TEST_EQUAL(graph.GetJointId({2, 1}), Joint::kInvalidId, ());
   }
+}
+
+//      Finish
+// 0.0003    *---------*
+//           |         |
+//           |         |
+//           |         |
+//           |         |
+//           |         |
+// 0.0002    *         *
+//           |         |
+//           |         |
+// 0.00015   *    F0   *
+//            \       /
+//              \   /
+// 0.0001         *---F0-*----*
+//                            ^
+//                            |
+//                            F1
+//                            |
+//                            |
+// 0                          * Start
+//   0         0.0001       0.0002
+// F0 is a two-way feature with a loop and F1 is an one-way one-segment feature.
+unique_ptr<IndexGraph> BuildLoopGraph()
+{
+  unique_ptr<TestGeometryLoader> loader = make_unique<TestGeometryLoader>();
+  loader->AddRoad(0 /* feature id */, false /* one way */, 100.0 /* speed */,
+                  RoadGeometry::Points({{0.0002, 0.0001}, {0.00015, 0.0001}, {0.0001, 0.0001},
+                                        {0.00015, 0.00015}, {0.00015, 0.0002}, {0.00015, 0.0003},
+                                        {0.0003, 0.00005}, {0.0002, 0.00005}, {0.00015, 0.00005},
+                                        {0.0001, 0.0001}}));
+  loader->AddRoad(1 /* feature id */, true /* one way */, 100.0 /* speed */,
+                  RoadGeometry::Points({{0.0002, 0.0}, {0.0002, 0.0001}/*, {0.0002, 0.0002}*/}));
+
+  vector<Joint> const joints = {
+    MakeJoint({{0 /* feature id */, 2 /* point id */}, {0, 9}}),         /* joint at point (1, 1) */
+    MakeJoint({{1, 1}, {0, 0}}),                                         /* joint at point (2, 1) */
+  };
+
+  traffic::TrafficCache const trafficCache;
+  unique_ptr<IndexGraph> graph =
+      make_unique<IndexGraph>(move(loader), CreateEstimator(trafficCache));
+  graph->Import(joints);
+  return graph;
+}
+
+// This test checks that the route from Start to Finish doesn't make an extra loop in F0.
+// If it was so the route time had been much more.
+UNIT_CLASS_TEST(RestrictionTest, LoopGraph)
+{
+  Init(BuildLoopGraph());
+  SetStarter(RoadPoint(1, 0) /* start */, RoadPoint(0, 7) /* finish */);
+
+  double constexpr kExpectedRouteTimeSec = 2.313397748;
+  TestRouteTime(*m_starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, kExpectedRouteTimeSec);
 }
 }  // namespace routing_test

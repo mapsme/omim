@@ -9,6 +9,8 @@
 
 #include "traffic/traffic_info.hpp"
 
+#include "indexer/classificator_loader.hpp"
+
 #include "geometry/point2d.hpp"
 
 #include "std/algorithm.hpp"
@@ -23,6 +25,8 @@ using namespace routing;
 
 struct RestrictionTest
 {
+  RestrictionTest() { classificator::Load(); }
+
   void Init(unique_ptr<IndexGraph> graph) { m_graph = move(graph); }
   void SetStarter(RoadPoint const & start, RoadPoint const & finish)
   {
@@ -119,7 +123,8 @@ routing::Joint MakeJoint(vector<routing::RoadPoint> const & points);
 shared_ptr<routing::EdgeEstimator> CreateEstimator(traffic::TrafficCache const & trafficCache);
 
 routing::AStarAlgorithm<routing::IndexGraphStarter>::Result CalculateRoute(
-    routing::IndexGraphStarter & graph, vector<routing::RoadPoint> & roadPoints);
+    routing::IndexGraphStarter & graph, vector<routing::RoadPoint> & roadPoints,
+    double & timeSec);
 
 void TestRouteSegments(
     routing::IndexGraphStarter & starter,
@@ -130,6 +135,10 @@ void TestRouteGeometry(
     routing::IndexGraphStarter & starter,
     routing::AStarAlgorithm<routing::IndexGraphStarter>::Result expectedRouteResult,
     vector<m2::PointD> const & expectedRouteGeom);
+
+void TestRouteTime(IndexGraphStarter & starter,
+                   AStarAlgorithm<IndexGraphStarter>::Result expectedRouteResult,
+                   double expectedTime);
 
 /// \brief Applies all possible permulations of |restrictions| to graph in |restrictionTest| and
 /// tests resulting routes.

@@ -43,13 +43,15 @@ shared_ptr<EdgeEstimator> CreateEstimator(traffic::TrafficCache const & trafficC
 }
 
 AStarAlgorithm<IndexGraphStarter>::Result CalculateRoute(IndexGraphStarter & starter,
-                                                         vector<RoadPoint> & roadPoints)
+                                                         vector<RoadPoint> & roadPoints,
+                                                         double & timeSec)
 {
   AStarAlgorithm<IndexGraphStarter> algorithm;
   RoutingResult<IndexGraphStarter::TVertexType> routingResult;
 
   auto const resultCode = algorithm.FindPath(starter, starter.GetStartVertex(),
                                              starter.GetFinishVertex(), routingResult, {}, {});
+  timeSec = routingResult.distance;
 
   vector<Joint::Id> path;
   for (auto const & u : routingResult.path)
@@ -76,7 +78,8 @@ void TestRouteSegments(IndexGraphStarter & starter,
                        vector<RoadPoint> const & expectedRoute)
 {
   vector<RoadPoint> route;
-  auto const resultCode = CalculateRoute(starter, route);
+  double timeSec = 0.0;
+  auto const resultCode = CalculateRoute(starter, route, timeSec);
   TEST_EQUAL(resultCode, expectedRouteResult, ());
   TEST_EQUAL(route, expectedRoute, ());
 }
@@ -86,7 +89,8 @@ void TestRouteGeometry(IndexGraphStarter & starter,
                        vector<m2::PointD> const & expectedRouteGeom)
 {
   vector<RoadPoint> route;
-  auto const resultCode = CalculateRoute(starter, route);
+  double timeSec = 0.0;
+  auto const resultCode = CalculateRoute(starter, route, timeSec);
 
   TEST_EQUAL(resultCode, expectedRouteResult, ());
   vector<m2::PointD> geom;
@@ -99,6 +103,19 @@ void TestRouteGeometry(IndexGraphStarter & starter,
       geom.push_back(pnt);
   }
   TEST_EQUAL(geom, expectedRouteGeom, ());
+}
+
+void TestRouteTime(IndexGraphStarter & starter,
+                   AStarAlgorithm<IndexGraphStarter>::Result expectedRouteResult,
+                   double expectedTime)
+{
+  vector<RoadPoint> route;
+  double timeSec = 0.0;
+  auto const resultCode = CalculateRoute(starter, route, timeSec);
+
+  TEST_EQUAL(resultCode, expectedRouteResult, ());
+  double const kEpsilon = 1e-6;
+  TEST(my::AlmostEqualAbs(timeSec, expectedTime, kEpsilon), ());
 }
 
 void TestRestrictionPermutations(RestrictionVec restrictions,
