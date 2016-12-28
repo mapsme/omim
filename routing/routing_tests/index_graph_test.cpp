@@ -384,7 +384,7 @@ UNIT_TEST(SerializeSimpleGraph)
 //                            |
 // 0                          * Start
 //   0         0.0001       0.0002
-// Note 1. F0 are F2 are one-way one-segment features. F1 is one-way four segment feature
+// F0 is a two-way feature with a loop and F1 is an one-way one-segment feature.
 unique_ptr<IndexGraph> BuildLoopGraph()
 {
   unique_ptr<TestGeometryLoader> loader = make_unique<TestGeometryLoader>();
@@ -397,8 +397,8 @@ unique_ptr<IndexGraph> BuildLoopGraph()
                   RoadGeometry::Points({{0.0002, 0.0}, {0.0002, 0.0001}/*, {0.0002, 0.0002}*/}));
 
   vector<Joint> const joints = {
-    MakeJoint({{0, 2}, {0, 9}}),         /* joint at point (1, 1) */
-    MakeJoint({{1, 1}, {0, 0}}),         /* joint at point (2, 1) */
+    MakeJoint({{0 /* feature id */, 2 /* point id */}, {0, 9}}),         /* joint at point (1, 1) */
+    MakeJoint({{1, 1}, {0, 0}}),                                         /* joint at point (2, 1) */
   };
 
   traffic::TrafficCache const trafficCache;
@@ -408,6 +408,8 @@ unique_ptr<IndexGraph> BuildLoopGraph()
   return graph;
 }
 
+// This test checks that the route from Start to Finish doesn't make an extra loop in F0.
+// If it was so the route time had been much more.
 UNIT_CLASS_TEST(RestrictionTest, LoopGraph)
 {
   Init(BuildLoopGraph());
