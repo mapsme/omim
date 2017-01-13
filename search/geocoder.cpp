@@ -641,48 +641,9 @@ void Geocoder::FillLocalityCandidates(BaseContext const & ctx, CBV const & filte
                                       size_t const maxNumLocalities,
                                       vector<Locality> & preLocalities)
 {
-  preLocalities.clear();
-
-  for (size_t startToken = 0; startToken < ctx.m_numTokens; ++startToken)
-  {
-    CBV intersection = filter.Intersect(ctx.m_features[startToken]);
-    if (intersection.IsEmpty())
-      continue;
-
-    CBV unfilteredIntersection = ctx.m_features[startToken];
-
-    for (size_t endToken = startToken + 1; endToken <= ctx.m_numTokens; ++endToken)
-    {
-      // Skip locality candidates that match only numbers.
-      if (!m_params.IsNumberTokens(startToken, endToken))
-      {
-        intersection.ForEach([&](uint32_t featureId)
-                             {
-                               Locality l;
-                               l.m_countryId = m_context->GetId();
-                               l.m_featureId = featureId;
-                               l.m_startToken = startToken;
-                               l.m_endToken = endToken;
-                               l.m_prob = static_cast<double>(intersection.PopCount()) /
-                                          static_cast<double>(unfilteredIntersection.PopCount());
-                               preLocalities.push_back(l);
-                             });
-      }
-
-      if (endToken < ctx.m_numTokens)
-      {
-        intersection = intersection.Intersect(ctx.m_features[endToken]);
-        if (intersection.IsEmpty())
-          break;
-
-        unfilteredIntersection = unfilteredIntersection.Intersect(ctx.m_features[endToken]);
-      }
-    }
-  }
-
   LocalityScorerDelegate delegate(*m_context, m_params);
   LocalityScorer scorer(m_params, delegate);
-  scorer.GetTopLocalities(maxNumLocalities, preLocalities);
+  scorer.GetTopLocalities(m_context->GetId(), ctx, filter, maxNumLocalities, preLocalities);
 }
 
 void Geocoder::FillLocalitiesTable(BaseContext const & ctx)
@@ -745,7 +706,7 @@ void Geocoder::FillLocalitiesTable(BaseContext const & ctx)
 
 #if defined(DEBUG)
         ft.GetName(StringUtf8Multilang::kDefaultCode, city.m_defaultName);
-        LOG(LDEBUG, ("City =", city.m_defaultName, radius));
+        LOG(LINFO, ("City =", city.m_defaultName, "radius =", radius, "tfidf =", l.m_tfidf));
 #endif
 
         m_cities[{l.m_startToken, l.m_endToken}].push_back(city);
@@ -794,7 +755,8 @@ void Geocoder::FillVillageLocalities(BaseContext const & ctx)
 
 #if defined(DEBUG)
     ft.GetName(StringUtf8Multilang::kDefaultCode, village.m_defaultName);
-    LOG(LDEBUG, ("Village =", village.m_defaultName, radius, "prob =", village.m_prob));
+    LOG(LDEBUG,
+        ("Village =", village.m_defaultName, "radius =", radius, "tfidf =", village.m_tfidf));
 #endif
 
     m_cities[{l.m_startToken, l.m_endToken}].push_back(village);
@@ -1421,8 +1383,14 @@ bool Geocoder::GetSearchTypeInGeocoding(BaseContext const & ctx, uint32_t featur
 string DebugPrint(Geocoder::Locality const & locality)
 {
   ostringstream os;
-  os << "Locality [" << DebugPrint(locality.m_countryId) << ", featureId=" << locality.m_featureId
-     << ", startToken=" << locality.m_startToken << ", endToken=" << locality.m_endToken << "]";
+  os << "Locality [ ";
+  os << "m_countryId=" << DebugPrint(locality.m_countryId) << ", ";
+  os << "m_featureId=" << locality.m_featureId << ", ";
+  os << "m_startToken=" << locality.m_startToken << ", ";
+  os << "m_endToken=" << locality.m_endToken << ", ";
+  os << "m_tfidf=" << locality.m_tfidf << ", ";
+  os << "m_name=" << locality.m_name;
+  os << " ]";
   return os.str();
 }
 }  // namespace search
