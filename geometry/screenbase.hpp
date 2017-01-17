@@ -190,7 +190,14 @@ public:
 
   bool operator == (ScreenBase const & src) const
   {
+#if defined(__GNUC__) || defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wfloat-equal"
+#endif
     return (m_GtoP == src.m_GtoP) && (m_PtoG == src.m_PtoG);
+#if defined(__GNUC__) || defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
   }
 };
 
