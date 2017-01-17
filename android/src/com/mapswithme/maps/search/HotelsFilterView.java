@@ -3,6 +3,8 @@ package com.mapswithme.maps.search;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -15,6 +17,8 @@ import com.mapswithme.util.Animations;
 
 public class HotelsFilterView extends FrameLayout
 {
+  private static final String STATE_OPENED = "state_opened";
+
   public interface HotelsFilterListener
   {
     void onCancel();
@@ -202,5 +206,16 @@ public class HotelsFilterView extends FrameLayout
   public void setListener(@Nullable HotelsFilterListener listener)
   {
     mListener = listener;
+  }
+
+  public void onSaveState(@NonNull Bundle outState)
+  {
+    outState.putBoolean(STATE_OPENED, mOpened);
+  }
+
+  public void onRestoreState(@NonNull Bundle state, @Nullable HotelsFilter filter)
+  {
+    if (state.getBoolean(STATE_OPENED, false))
+      open(filter);
   }
 }
