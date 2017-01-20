@@ -21,6 +21,7 @@ static CGFloat const kDividerTopConstant = -8.;
 @property(copy, nonatomic) TMWMVoidBlock leftButtonAction;
 @property(copy, nonatomic, readwrite) TMWMVoidBlock rightButtonAction;
 @property(weak, nonatomic) IBOutlet NSLayoutConstraint * dividerTop;
+@property(weak, nonatomic) IBOutlet UIView * vDivider;
 
 @property(copy, nonatomic) NSString * statisticsEvent;
 
@@ -407,6 +408,7 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
   }
   else
   {
+    alert.vDivider.hidden = YES;
     alert.leftButton.hidden = YES;
     alert.rightButtonWidth.constant = [alert.subviews.firstObject width];
   }
