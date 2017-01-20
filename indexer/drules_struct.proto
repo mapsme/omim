@@ -36,6 +36,8 @@ message LineRuleProto
   optional PathSymProto pathsym = 5;
   optional LineJoin join = 6;
   optional LineCap cap = 7;
+  optional uint32 color_x = 8;
+  optional uint32 color_y = 9;
 }
 
 message LineDefProto
@@ -46,6 +48,8 @@ message LineDefProto
   optional PathSymProto pathsym = 4;
   optional LineJoin join = 6;
   optional LineCap cap = 7;
+  optional uint32 color_x = 8;
+  optional uint32 color_y = 9;
 }
 
 message AreaRuleProto
@@ -53,6 +57,8 @@ message AreaRuleProto
   required uint32 color = 1;
   optional LineDefProto border = 2;
   required int32 priority = 3;
+  optional uint32 color_x = 4;
+  optional uint32 color_y = 5;
 }
 
 message SymbolRuleProto
@@ -72,6 +78,10 @@ message CaptionDefProto
   optional int32 offset_y = 5;
   optional string text = 6;
   optional bool is_optional = 7;
+  optional uint32 color_x = 8;
+  optional uint32 color_y = 9;
+  optional uint32 stroke_color_x = 10;
+  optional uint32 stroke_color_y = 11;
 }
 
 message CaptionRuleProto
@@ -79,14 +89,6 @@ message CaptionRuleProto
   required CaptionDefProto primary = 1;
   optional CaptionDefProto secondary = 2;
   required int32 priority = 3;
-}
-
-message CircleRuleProto
-{
-  required double radius = 1;
-  required uint32 color = 2;
-  optional LineDefProto border = 3;
-  required int32 priority = 4;
 }
 
 message PathTextRuleProto
@@ -105,6 +107,14 @@ message ShieldRuleProto
   optional int32 min_distance = 5;
   required uint32 text_color = 6;
   optional uint32 text_stroke_color = 7;
+  optional uint32 color_x = 8;
+  optional uint32 color_y = 9;
+  optional uint32 stroke_color_x = 10;
+  optional uint32 stroke_color_y = 11;
+  optional uint32 text_color_x = 12;
+  optional uint32 text_color_y = 13;
+  optional uint32 text_stroke_color_x = 14;
+  optional uint32 text_stroke_color_y = 15;
 }
 
 message DrawElementProto
@@ -114,7 +124,6 @@ message DrawElementProto
   optional AreaRuleProto area = 3;
   optional SymbolRuleProto symbol = 4;
   optional CaptionRuleProto caption = 5;
-  optional CircleRuleProto circle = 6;
   optional PathTextRuleProto path_text = 7;
   optional ShieldRuleProto shield = 8;
   repeated string apply_if = 9;
