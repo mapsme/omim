@@ -153,15 +153,23 @@ using TObservers = NSHashTable<__kindof TObserver>;
   auto & f = GetFramework();
   if (IPAD)
   {
+    m_everywhereResults.Clear();
     f.SearchEverywhere(m_everywhereParams);
     f.SearchInViewport(m_viewportParams);
   }
   else
   {
     if (self.searchOnMap)
+    {
       f.SearchInViewport(m_viewportParams);
+      f.ShowSearchResults(m_everywhereResults);
+      m_everywhereResults.Clear();
+    }
     else
+    {
+      m_everywhereResults.Clear();
       f.SearchEverywhere(m_everywhereParams);
+    }
   }
   [self onSearchStarted];
 }
@@ -224,7 +232,7 @@ using TObservers = NSHashTable<__kindof TObserver>;
 {
   GetFramework().CancelAllSearches();
   MWMSearch * manager = [MWMSearch manager];
-  manager->m_everywhereResults.Clear();
+  
   manager.everywhereSearchCompleted = NO;
   manager.viewportSearchCompleted = NO;
   if (manager->m_filterQuery != manager->m_everywhereParams.m_query)
