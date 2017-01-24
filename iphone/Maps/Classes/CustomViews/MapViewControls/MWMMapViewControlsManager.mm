@@ -91,11 +91,11 @@ extern NSString * const kAlohalyticsTapEventKey;
   BOOL const isNightMode = [UIColor isNightMode];
   BOOL const isSomethingUnderStatusBar = isSearchUnderStatusBar || isNavigationUnderStatusBar ||
                                          isDirectionViewUnderStatusBar || isMenuViewUnderStatusBar;
-
-  setStatusBarBackgroundColor(isSomethingUnderStatusBar ? [UIColor clearColor]
-                                                        : [UIColor statusBarBackground]);
-  return isSomethingUnderStatusBar || isNightMode ? UIStatusBarStyleLightContent
-                                                  : UIStatusBarStyleDefault;
+  BOOL const hasBackground = IPAD || !isSomethingUnderStatusBar;
+  setStatusBarBackgroundColor(hasBackground ? [UIColor statusBarBackground] : [UIColor clearColor]);
+  if (isNightMode)
+    return UIStatusBarStyleLightContent;
+  return hasBackground ? UIStatusBarStyleDefault : UIStatusBarStyleLightContent;
 }
 
 #pragma mark - My Position
