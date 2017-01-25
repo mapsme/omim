@@ -122,7 +122,8 @@ public class RoutingController
           mLastMissingMaps = missingMaps;
           mContainsCachedResult = true;
 
-          if (mLastResultCode == ResultCodesHelper.NO_ERROR)
+          if (mLastResultCode == ResultCodesHelper.NO_ERROR
+              || ResultCodesHelper.isMoreMapsNeeded(mLastResultCode))
           {
             mCachedRoutingInfo = Framework.nativeGetRouteFollowingInfo();
             setBuildState(BuildState.BUILT);
@@ -173,9 +174,12 @@ public class RoutingController
       return;
     }
 
-    setBuildState(BuildState.ERROR);
-    mLastBuildProgress = 0;
-    updateProgress();
+    if (!ResultCodesHelper.isMoreMapsNeeded(mLastResultCode))
+    {
+      setBuildState(BuildState.ERROR);
+      mLastBuildProgress = 0;
+      updateProgress();
+    }
 
     RoutingErrorDialogFragment fragment = RoutingErrorDialogFragment.create(mLastResultCode, mLastMissingMaps);
     fragment.show(mContainer.getActivity().getSupportFragmentManager(), RoutingErrorDialogFragment.class.getSimpleName());
