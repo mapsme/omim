@@ -12,6 +12,7 @@ import com.mapswithme.util.LocationUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 class AndroidNativeProvider extends BaseLocationProvider
 {
@@ -70,15 +71,23 @@ class AndroidNativeProvider extends BaseLocationProvider
 
   private void onLocationChanged(@NonNull Location location)
   {
-    for (LocationListener listener : mListeners)
-      listener.onLocationChanged(location);
+    ListIterator<LocationListener> iterator = mListeners.listIterator();
+    // All listeners have to be notified only through safe list iterator interface,
+    // otherwise ConcurrentModificationException will be obtained, because each listener can
+    // cause 'stop' method calling and modifying the collection during this iteration.
+    // noinspection WhileLoopReplaceableByForEach
+    while (iterator.hasNext())
+      iterator.next().onLocationChanged(location);
   }
 
   @Override
   protected void stop()
   {
-    for (LocationListener listener : mListeners)
-      mLocationManager.removeUpdates(listener);
+    ListIterator<LocationListener> iterator = mListeners.listIterator();
+    // noinspection WhileLoopReplaceableByForEach
+    while (iterator.hasNext())
+      mLocationManager.removeUpdates(iterator.next());
+
     mListeners.clear();
     mIsActive = false;
   }
