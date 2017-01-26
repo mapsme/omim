@@ -357,7 +357,7 @@ line|z13-[waterway=stream],
 line|z13-[waterway=stream][intermittent=yes],
 line|z13-[waterway=canal],
 line|z16-[waterway=lock],
-{opacity: 1;color: @river_1;-x-me-line-priority: -15600;}
+{opacity: 1;fill-color: @river;-x-me-line-priority: -15600;}
 
 /* 6.1 Area water(lake,pond etc.) */
 
@@ -373,7 +373,7 @@ area|z12-[landuse=basin],
 area|z12-[landuse=reservoir],
 area|z13-[leisure=swimming_pool],
 area|z16-[amenity=fountain],
-{fill-color: @water_1;}
+{fill-color: @water;}
 
 area|z11-[natural=wetland],
 {fill-color: @wetland;fill-opacity: 1;}
