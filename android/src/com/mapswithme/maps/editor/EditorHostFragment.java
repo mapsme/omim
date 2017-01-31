@@ -122,6 +122,17 @@ public class EditorHostFragment extends BaseMwmToolbarFragment
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
   {
     super.onViewCreated(view, savedInstanceState);
+
+    if (getArguments() != null)
+      mIsNewObject = getArguments().getBoolean(EditorActivity.EXTRA_NEW_OBJECT, false);
+
+    if (!mIsNewObject)
+    {
+      if (!(getActivity() instanceof EditorActivity))
+        Editor.nativeStartEdit(-1);
+      else
+        Editor.nativeStartEdit(((EditorActivity) getActivity()).getDrawScale());
+    }
     mToolbarController.findViewById(R.id.save).setOnClickListener(this);
     mToolbarController.getToolbar().setNavigationOnClickListener(new View.OnClickListener()
     {
@@ -132,8 +143,6 @@ public class EditorHostFragment extends BaseMwmToolbarFragment
       }
     });
 
-    if (getArguments() != null)
-      mIsNewObject = getArguments().getBoolean(EditorActivity.EXTRA_NEW_OBJECT, false);
     mToolbarController.setTitle(getTitle());
 
     fillNames(true /* addFakes */);

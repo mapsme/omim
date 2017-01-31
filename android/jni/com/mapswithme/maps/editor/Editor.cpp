@@ -418,11 +418,12 @@ Java_com_mapswithme_maps_editor_Editor_nativeClearLocalEdits(JNIEnv * env, jclas
 }
 
 JNIEXPORT void JNICALL
-Java_com_mapswithme_maps_editor_Editor_nativeStartEdit(JNIEnv *, jclass)
+Java_com_mapswithme_maps_editor_Editor_nativeStartEdit(JNIEnv *, jclass, jint drawScale = -1)
 {
   ::Framework * frm = g_framework->NativeFramework();
   place_page::Info const & info = g_framework->GetPlacePageInfo();
-  CHECK(frm->GetEditableMapObject(info.GetID(), g_editableMapObject), ("Invalid feature in the place page."));
+  CHECK(frm->GetEditableMapObject(info.GetID(), g_editableMapObject, drawScale),
+        ("Invalid feature in the place page."));
 }
 
 JNIEXPORT void JNICALL
@@ -430,6 +431,15 @@ Java_com_mapswithme_maps_editor_Editor_nativeCreateMapObject(JNIEnv *, jclass, j
 {
   ::Framework * frm = g_framework->NativeFramework();
   CHECK(frm->CreateMapObject(frm->GetViewportCenter(), featureCategory, g_editableMapObject),
+        ("Couldn't create mapobject, wrong coordinates of missing mwm"));
+}
+
+JNIEXPORT void JNICALL
+Java_com_mapswithme_maps_editor_Editor_nativeCreateMapObjectAtPosition(
+    JNIEnv *, jclass, jint featureCategory, jdouble lat, jdouble lon, jint drawScale)
+{
+  ::Framework * frm = g_framework->NativeFramework();
+  CHECK(frm->CreateMapObject(m2::PointD(lon, lat), featureCategory, g_editableMapObject, drawScale),
         ("Couldn't create mapobject, wrong coordinates of missing mwm"));
 }
 

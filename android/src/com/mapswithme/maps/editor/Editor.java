@@ -140,7 +140,7 @@ public final class Editor
    * That method should be called, when user opens editor from place page, so that information in editor
    * could refresh.
    */
-  public static native void nativeStartEdit();
+  public static native void nativeStartEdit(int drawScale);
   /**
    * @return true if feature was saved. False if some error occurred (eg. no space)
    */
@@ -160,7 +160,14 @@ public final class Editor
   {
     nativeCreateMapObject(category.category);
   }
+  public static void createMapObject(FeatureCategory category, double lat, double lon,
+                                     int drawScale)
+  {
+    nativeCreateMapObjectAtPosition(category.category, lat, lon, drawScale);
+  }
   public static native void nativeCreateMapObject(int categoryId);
+  public static native void nativeCreateMapObjectAtPosition(int categoryId, double lat, double lon,
+                                                            int drawScale);
   public static native void nativeCreateNote(String text);
   public static native void nativePlaceDoesNotExist(String comment);
   public static native void nativeRollbackMapObject();

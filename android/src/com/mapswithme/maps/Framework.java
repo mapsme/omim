@@ -107,6 +107,9 @@ public class Framework
   @Size(2)
   public static native double[] nativeGetScreenRectCenter();
 
+  @Size(2)
+  public static native double[] nativeGetScreenRectCenterMercator();
+
   public static native DistanceAndAzimut nativeGetDistanceAndAzimuth(double dstMerX, double dstMerY, double srcLat, double srcLon, double north);
 
   public static native DistanceAndAzimut nativeGetDistanceAndAzimuthFromLatLon(double dstLat, double dstLon, double srcLat, double srcLon, double north);
@@ -127,6 +130,8 @@ public class Framework
   public static native void nativeSetMapObjectListener(MapObjectListener listener);
 
   public static native void nativeRemoveMapObjectListener();
+
+  public static native void nativeRestoreMapObject(@NonNull MapObject mapObject);
 
   @UiThread
   public static native String nativeGetOutdatedCountriesString();
