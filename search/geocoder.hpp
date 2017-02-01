@@ -94,22 +94,20 @@ public:
 
   struct Locality
   {
-    Locality() : m_featureId(0), m_startToken(0), m_endToken(0), m_prob(0.0) {}
+    Locality() = default;
 
     Locality(uint32_t featureId, size_t startToken, size_t endToken)
-      : m_featureId(featureId), m_startToken(startToken), m_endToken(endToken), m_prob(0.0)
+      : m_featureId(featureId)
+      , m_startToken(startToken)
+      , m_endToken(endToken)
     {
     }
 
     MwmSet::MwmId m_countryId;
-    uint32_t m_featureId;
-    size_t m_startToken;
-    size_t m_endToken;
-
-    // Measures our belief in the fact that tokens in the range [m_startToken, m_endToken)
-    // indeed specify a locality. Currently it is set only for villages.
-    double m_prob;
-
+    uint32_t m_featureId = 0;
+    size_t m_startToken = 0;
+    size_t m_endToken = 0;
+    double m_tfidf = 0.0;
     string m_name;
   };
 
@@ -193,8 +191,9 @@ private:
   void InitLayer(SearchModel::SearchType type, size_t startToken, size_t endToken,
                  FeaturesLayer & layer);
 
-  void FillLocalityCandidates(BaseContext const & ctx, CBV const & filter,
-                              size_t const maxNumLocalities, vector<Locality> & preLocalities);
+  void FillLocalityCandidates(BaseContext const & ctx,
+                              CBV const & filter, size_t const maxNumLocalities,
+                              vector<Locality> & preLocalities);
 
   void FillLocalitiesTable(BaseContext const & ctx);
 
