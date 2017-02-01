@@ -22,7 +22,6 @@ void protobuf_ShutdownFile_drules_5fstruct_2eproto() {
   delete SymbolRuleProto::default_instance_;
   delete CaptionDefProto::default_instance_;
   delete CaptionRuleProto::default_instance_;
-  delete CircleRuleProto::default_instance_;
   delete PathTextRuleProto::default_instance_;
   delete ShieldRuleProto::default_instance_;
   delete DrawElementProto::default_instance_;
@@ -50,7 +49,6 @@ void protobuf_AddDesc_drules_5fstruct_2eproto() {
   SymbolRuleProto::default_instance_ = new SymbolRuleProto();
   CaptionDefProto::default_instance_ = new CaptionDefProto();
   CaptionRuleProto::default_instance_ = new CaptionRuleProto();
-  CircleRuleProto::default_instance_ = new CircleRuleProto();
   PathTextRuleProto::default_instance_ = new PathTextRuleProto();
   ShieldRuleProto::default_instance_ = new ShieldRuleProto();
   DrawElementProto::default_instance_ = new DrawElementProto();
@@ -64,7 +62,6 @@ void protobuf_AddDesc_drules_5fstruct_2eproto() {
   SymbolRuleProto::default_instance_->InitAsDefaultInstance();
   CaptionDefProto::default_instance_->InitAsDefaultInstance();
   CaptionRuleProto::default_instance_->InitAsDefaultInstance();
-  CircleRuleProto::default_instance_->InitAsDefaultInstance();
   PathTextRuleProto::default_instance_->InitAsDefaultInstance();
   ShieldRuleProto::default_instance_->InitAsDefaultInstance();
   DrawElementProto::default_instance_->InitAsDefaultInstance();
@@ -624,6 +621,8 @@ const int LineRuleProto::kPriorityFieldNumber;
 const int LineRuleProto::kPathsymFieldNumber;
 const int LineRuleProto::kJoinFieldNumber;
 const int LineRuleProto::kCapFieldNumber;
+const int LineRuleProto::kColorXFieldNumber;
+const int LineRuleProto::kColorYFieldNumber;
 #endif  // !_MSC_VER
 
 LineRuleProto::LineRuleProto()
@@ -663,6 +662,8 @@ void LineRuleProto::SharedCtor() {
   pathsym_ = NULL;
   join_ = 0;
   cap_ = 0;
+  color_x_ = 0u;
+  color_y_ = 0u;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -713,9 +714,9 @@ void LineRuleProto::Clear() {
     ::memset(&first, 0, n);                                \
   } while (0)
 
-  if (_has_bits_[0 / 32] & 127) {
+  if (_has_bits_[0 / 32] & 255) {
     ZR_(color_, priority_);
-    ZR_(join_, cap_);
+    ZR_(join_, color_x_);
     width_ = 0;
     if (has_dashdot()) {
       if (dashdot_ != NULL) dashdot_->::DashDotProto::Clear();
@@ -724,6 +725,7 @@ void LineRuleProto::Clear() {
       if (pathsym_ != NULL) pathsym_->::PathSymProto::Clear();
     }
   }
+  color_y_ = 0u;
 
 #undef OFFSET_OF_FIELD_
 #undef ZR_
@@ -854,6 +856,36 @@ bool LineRuleProto::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(64)) goto parse_color_x;
+        break;
+      }
+
+      // optional uint32 color_x = 8;
+      case 8: {
+        if (tag == 64) {
+         parse_color_x:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &color_x_)));
+          set_has_color_x();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(72)) goto parse_color_y;
+        break;
+      }
+
+      // optional uint32 color_y = 9;
+      case 9: {
+        if (tag == 72) {
+         parse_color_y:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &color_y_)));
+          set_has_color_y();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -922,6 +954,16 @@ void LineRuleProto::SerializeWithCachedSizes(
       7, this->cap(), output);
   }
 
+  // optional uint32 color_x = 8;
+  if (has_color_x()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(8, this->color_x(), output);
+  }
+
+  // optional uint32 color_y = 9;
+  if (has_color_y()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(9, this->color_y(), output);
+  }
+
   output->WriteRaw(unknown_fields().data(),
                    unknown_fields().size());
   // @@protoc_insertion_point(serialize_end:LineRuleProto)
@@ -976,6 +1018,22 @@ int LineRuleProto::ByteSize() const {
         ::google::protobuf::internal::WireFormatLite::EnumSize(this->cap());
     }
 
+    // optional uint32 color_x = 8;
+    if (has_color_x()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->color_x());
+    }
+
+  }
+  if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+    // optional uint32 color_y = 9;
+    if (has_color_y()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->color_y());
+    }
+
   }
   total_size += unknown_fields().size();
 
@@ -1014,6 +1072,14 @@ void LineRuleProto::MergeFrom(const LineRuleProto& from) {
     if (from.has_cap()) {
       set_cap(from.cap());
     }
+    if (from.has_color_x()) {
+      set_color_x(from.color_x());
+    }
+  }
+  if (from._has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+    if (from.has_color_y()) {
+      set_color_y(from.color_y());
+    }
   }
   mutable_unknown_fields()->append(from.unknown_fields());
 }
@@ -1042,6 +1108,8 @@ void LineRuleProto::Swap(LineRuleProto* other) {
     std::swap(pathsym_, other->pathsym_);
     std::swap(join_, other->join_);
     std::swap(cap_, other->cap_);
+    std::swap(color_x_, other->color_x_);
+    std::swap(color_y_, other->color_y_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.swap(other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -1062,6 +1130,8 @@ const int LineDefProto::kDashdotFieldNumber;
 const int LineDefProto::kPathsymFieldNumber;
 const int LineDefProto::kJoinFieldNumber;
 const int LineDefProto::kCapFieldNumber;
+const int LineDefProto::kColorXFieldNumber;
+const int LineDefProto::kColorYFieldNumber;
 #endif  // !_MSC_VER
 
 LineDefProto::LineDefProto()
@@ -1100,6 +1170,8 @@ void LineDefProto::SharedCtor() {
   pathsym_ = NULL;
   join_ = 0;
   cap_ = 0;
+  color_x_ = 0u;
+  color_y_ = 0u;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -1150,8 +1222,9 @@ void LineDefProto::Clear() {
     ::memset(&first, 0, n);                                \
   } while (0)
 
-  if (_has_bits_[0 / 32] & 63) {
+  if (_has_bits_[0 / 32] & 255) {
     ZR_(color_, join_);
+    ZR_(cap_, color_y_);
     width_ = 0;
     if (has_dashdot()) {
       if (dashdot_ != NULL) dashdot_->::DashDotProto::Clear();
@@ -1159,7 +1232,6 @@ void LineDefProto::Clear() {
     if (has_pathsym()) {
       if (pathsym_ != NULL) pathsym_->::PathSymProto::Clear();
     }
-    cap_ = 0;
   }
 
 #undef OFFSET_OF_FIELD_
@@ -1276,6 +1348,36 @@ bool LineDefProto::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(64)) goto parse_color_x;
+        break;
+      }
+
+      // optional uint32 color_x = 8;
+      case 8: {
+        if (tag == 64) {
+         parse_color_x:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &color_x_)));
+          set_has_color_x();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(72)) goto parse_color_y;
+        break;
+      }
+
+      // optional uint32 color_y = 9;
+      case 9: {
+        if (tag == 72) {
+         parse_color_y:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &color_y_)));
+          set_has_color_y();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -1339,6 +1441,16 @@ void LineDefProto::SerializeWithCachedSizes(
       7, this->cap(), output);
   }
 
+  // optional uint32 color_x = 8;
+  if (has_color_x()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(8, this->color_x(), output);
+  }
+
+  // optional uint32 color_y = 9;
+  if (has_color_y()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(9, this->color_y(), output);
+  }
+
   output->WriteRaw(unknown_fields().data(),
                    unknown_fields().size());
   // @@protoc_insertion_point(serialize_end:LineDefProto)
@@ -1386,6 +1498,20 @@ int LineDefProto::ByteSize() const {
         ::google::protobuf::internal::WireFormatLite::EnumSize(this->cap());
     }
 
+    // optional uint32 color_x = 8;
+    if (has_color_x()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->color_x());
+    }
+
+    // optional uint32 color_y = 9;
+    if (has_color_y()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->color_y());
+    }
+
   }
   total_size += unknown_fields().size();
 
@@ -1421,6 +1547,12 @@ void LineDefProto::MergeFrom(const LineDefProto& from) {
     if (from.has_cap()) {
       set_cap(from.cap());
     }
+    if (from.has_color_x()) {
+      set_color_x(from.color_x());
+    }
+    if (from.has_color_y()) {
+      set_color_y(from.color_y());
+    }
   }
   mutable_unknown_fields()->append(from.unknown_fields());
 }
@@ -1448,6 +1580,8 @@ void LineDefProto::Swap(LineDefProto* other) {
     std::swap(pathsym_, other->pathsym_);
     std::swap(join_, other->join_);
     std::swap(cap_, other->cap_);
+    std::swap(color_x_, other->color_x_);
+    std::swap(color_y_, other->color_y_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.swap(other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -1465,6 +1599,8 @@ void LineDefProto::Swap(LineDefProto* other) {
 const int AreaRuleProto::kColorFieldNumber;
 const int AreaRuleProto::kBorderFieldNumber;
 const int AreaRuleProto::kPriorityFieldNumber;
+const int AreaRuleProto::kColorXFieldNumber;
+const int AreaRuleProto::kColorYFieldNumber;
 #endif  // !_MSC_VER
 
 AreaRuleProto::AreaRuleProto()
@@ -1494,6 +1630,8 @@ void AreaRuleProto::SharedCtor() {
   color_ = 0u;
   border_ = NULL;
   priority_ = 0;
+  color_x_ = 0u;
+  color_y_ = 0u;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -1543,8 +1681,8 @@ void AreaRuleProto::Clear() {
     ::memset(&first, 0, n);                                \
   } while (0)
 
-  if (_has_bits_[0 / 32] & 7) {
-    ZR_(color_, priority_);
+  if (_has_bits_[0 / 32] & 31) {
+    ZR_(color_, color_y_);
     if (has_border()) {
       if (border_ != NULL) border_->::LineDefProto::Clear();
     }
@@ -1609,6 +1747,36 @@ bool AreaRuleProto::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(32)) goto parse_color_x;
+        break;
+      }
+
+      // optional uint32 color_x = 4;
+      case 4: {
+        if (tag == 32) {
+         parse_color_x:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &color_x_)));
+          set_has_color_x();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(40)) goto parse_color_y;
+        break;
+      }
+
+      // optional uint32 color_y = 5;
+      case 5: {
+        if (tag == 40) {
+         parse_color_y:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &color_y_)));
+          set_has_color_y();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -1654,6 +1822,16 @@ void AreaRuleProto::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(3, this->priority(), output);
   }
 
+  // optional uint32 color_x = 4;
+  if (has_color_x()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(4, this->color_x(), output);
+  }
+
+  // optional uint32 color_y = 5;
+  if (has_color_y()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(5, this->color_y(), output);
+  }
+
   output->WriteRaw(unknown_fields().data(),
                    unknown_fields().size());
   // @@protoc_insertion_point(serialize_end:AreaRuleProto)
@@ -1684,6 +1862,20 @@ int AreaRuleProto::ByteSize() const {
           this->priority());
     }
 
+    // optional uint32 color_x = 4;
+    if (has_color_x()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->color_x());
+    }
+
+    // optional uint32 color_y = 5;
+    if (has_color_y()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->color_y());
+    }
+
   }
   total_size += unknown_fields().size();
 
@@ -1710,6 +1902,12 @@ void AreaRuleProto::MergeFrom(const AreaRuleProto& from) {
     if (from.has_priority()) {
       set_priority(from.priority());
     }
+    if (from.has_color_x()) {
+      set_color_x(from.color_x());
+    }
+    if (from.has_color_y()) {
+      set_color_y(from.color_y());
+    }
   }
   mutable_unknown_fields()->append(from.unknown_fields());
 }
@@ -1734,6 +1932,8 @@ void AreaRuleProto::Swap(AreaRuleProto* other) {
     std::swap(color_, other->color_);
     std::swap(border_, other->border_);
     std::swap(priority_, other->priority_);
+    std::swap(color_x_, other->color_x_);
+    std::swap(color_y_, other->color_y_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.swap(other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -2070,6 +2270,10 @@ const int CaptionDefProto::kOffsetXFieldNumber;
 const int CaptionDefProto::kOffsetYFieldNumber;
 const int CaptionDefProto::kTextFieldNumber;
 const int CaptionDefProto::kIsOptionalFieldNumber;
+const int CaptionDefProto::kColorXFieldNumber;
+const int CaptionDefProto::kColorYFieldNumber;
+const int CaptionDefProto::kStrokeColorXFieldNumber;
+const int CaptionDefProto::kStrokeColorYFieldNumber;
 #endif  // !_MSC_VER
 
 CaptionDefProto::CaptionDefProto()
@@ -2098,6 +2302,10 @@ void CaptionDefProto::SharedCtor() {
   offset_y_ = 0;
   text_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   is_optional_ = false;
+  color_x_ = 0u;
+  color_y_ = 0u;
+  stroke_color_x_ = 0u;
+  stroke_color_y_ = 0u;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -2149,15 +2357,16 @@ void CaptionDefProto::Clear() {
     ::memset(&first, 0, n);                                \
   } while (0)
 
-  if (_has_bits_[0 / 32] & 127) {
+  if (_has_bits_[0 / 32] & 255) {
     ZR_(height_, offset_x_);
-    ZR_(offset_y_, is_optional_);
+    ZR_(offset_y_, color_x_);
     if (has_text()) {
       if (text_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
         text_->clear();
       }
     }
   }
+  ZR_(color_y_, stroke_color_y_);
 
 #undef OFFSET_OF_FIELD_
 #undef ZR_
@@ -2278,6 +2487,66 @@ bool CaptionDefProto::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(64)) goto parse_color_x;
+        break;
+      }
+
+      // optional uint32 color_x = 8;
+      case 8: {
+        if (tag == 64) {
+         parse_color_x:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &color_x_)));
+          set_has_color_x();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(72)) goto parse_color_y;
+        break;
+      }
+
+      // optional uint32 color_y = 9;
+      case 9: {
+        if (tag == 72) {
+         parse_color_y:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &color_y_)));
+          set_has_color_y();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(80)) goto parse_stroke_color_x;
+        break;
+      }
+
+      // optional uint32 stroke_color_x = 10;
+      case 10: {
+        if (tag == 80) {
+         parse_stroke_color_x:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &stroke_color_x_)));
+          set_has_stroke_color_x();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(88)) goto parse_stroke_color_y;
+        break;
+      }
+
+      // optional uint32 stroke_color_y = 11;
+      case 11: {
+        if (tag == 88) {
+         parse_stroke_color_y:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &stroke_color_y_)));
+          set_has_stroke_color_y();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -2343,6 +2612,26 @@ void CaptionDefProto::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteBool(7, this->is_optional(), output);
   }
 
+  // optional uint32 color_x = 8;
+  if (has_color_x()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(8, this->color_x(), output);
+  }
+
+  // optional uint32 color_y = 9;
+  if (has_color_y()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(9, this->color_y(), output);
+  }
+
+  // optional uint32 stroke_color_x = 10;
+  if (has_stroke_color_x()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(10, this->stroke_color_x(), output);
+  }
+
+  // optional uint32 stroke_color_y = 11;
+  if (has_stroke_color_y()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(11, this->stroke_color_y(), output);
+  }
+
   output->WriteRaw(unknown_fields().data(),
                    unknown_fields().size());
   // @@protoc_insertion_point(serialize_end:CaptionDefProto)
@@ -2399,6 +2688,36 @@ int CaptionDefProto::ByteSize() const {
       total_size += 1 + 1;
     }
 
+    // optional uint32 color_x = 8;
+    if (has_color_x()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->color_x());
+    }
+
+  }
+  if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+    // optional uint32 color_y = 9;
+    if (has_color_y()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->color_y());
+    }
+
+    // optional uint32 stroke_color_x = 10;
+    if (has_stroke_color_x()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->stroke_color_x());
+    }
+
+    // optional uint32 stroke_color_y = 11;
+    if (has_stroke_color_y()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->stroke_color_y());
+    }
+
   }
   total_size += unknown_fields().size();
 
@@ -2437,6 +2756,20 @@ void CaptionDefProto::MergeFrom(const CaptionDefProto& from) {
     if (from.has_is_optional()) {
       set_is_optional(from.is_optional());
     }
+    if (from.has_color_x()) {
+      set_color_x(from.color_x());
+    }
+  }
+  if (from._has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+    if (from.has_color_y()) {
+      set_color_y(from.color_y());
+    }
+    if (from.has_stroke_color_x()) {
+      set_stroke_color_x(from.stroke_color_x());
+    }
+    if (from.has_stroke_color_y()) {
+      set_stroke_color_y(from.stroke_color_y());
+    }
   }
   mutable_unknown_fields()->append(from.unknown_fields());
 }
@@ -2462,6 +2795,10 @@ void CaptionDefProto::Swap(CaptionDefProto* other) {
     std::swap(offset_y_, other->offset_y_);
     std::swap(text_, other->text_);
     std::swap(is_optional_, other->is_optional_);
+    std::swap(color_x_, other->color_x_);
+    std::swap(color_y_, other->color_y_);
+    std::swap(stroke_color_x_, other->stroke_color_x_);
+    std::swap(stroke_color_y_, other->stroke_color_y_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.swap(other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -2760,324 +3097,6 @@ void CaptionRuleProto::Swap(CaptionRuleProto* other) {
 // ===================================================================
 
 #ifndef _MSC_VER
-const int CircleRuleProto::kRadiusFieldNumber;
-const int CircleRuleProto::kColorFieldNumber;
-const int CircleRuleProto::kBorderFieldNumber;
-const int CircleRuleProto::kPriorityFieldNumber;
-#endif  // !_MSC_VER
-
-CircleRuleProto::CircleRuleProto()
-  : ::google::protobuf::MessageLite() {
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:CircleRuleProto)
-}
-
-void CircleRuleProto::InitAsDefaultInstance() {
-#ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
-  border_ = const_cast< ::LineDefProto*>(
-      ::LineDefProto::internal_default_instance());
-#else
-  border_ = const_cast< ::LineDefProto*>(&::LineDefProto::default_instance());
-#endif
-}
-
-CircleRuleProto::CircleRuleProto(const CircleRuleProto& from)
-  : ::google::protobuf::MessageLite() {
-  SharedCtor();
-  MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:CircleRuleProto)
-}
-
-void CircleRuleProto::SharedCtor() {
-  _cached_size_ = 0;
-  radius_ = 0;
-  color_ = 0u;
-  border_ = NULL;
-  priority_ = 0;
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-}
-
-CircleRuleProto::~CircleRuleProto() {
-  // @@protoc_insertion_point(destructor:CircleRuleProto)
-  SharedDtor();
-}
-
-void CircleRuleProto::SharedDtor() {
-  #ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
-  if (this != &default_instance()) {
-  #else
-  if (this != default_instance_) {
-  #endif
-    delete border_;
-  }
-}
-
-void CircleRuleProto::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const CircleRuleProto& CircleRuleProto::default_instance() {
-#ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
-  protobuf_AddDesc_drules_5fstruct_2eproto();
-#else
-  if (default_instance_ == NULL) protobuf_AddDesc_drules_5fstruct_2eproto();
-#endif
-  return *default_instance_;
-}
-
-CircleRuleProto* CircleRuleProto::default_instance_ = NULL;
-
-CircleRuleProto* CircleRuleProto::New() const {
-  return new CircleRuleProto;
-}
-
-void CircleRuleProto::Clear() {
-#define OFFSET_OF_FIELD_(f) (reinterpret_cast<char*>(      \
-  &reinterpret_cast<CircleRuleProto*>(16)->f) - \
-   reinterpret_cast<char*>(16))
-
-#define ZR_(first, last) do {                              \
-    size_t f = OFFSET_OF_FIELD_(first);                    \
-    size_t n = OFFSET_OF_FIELD_(last) - f + sizeof(last);  \
-    ::memset(&first, 0, n);                                \
-  } while (0)
-
-  if (_has_bits_[0 / 32] & 15) {
-    ZR_(color_, priority_);
-    radius_ = 0;
-    if (has_border()) {
-      if (border_ != NULL) border_->::LineDefProto::Clear();
-    }
-  }
-
-#undef OFFSET_OF_FIELD_
-#undef ZR_
-
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  mutable_unknown_fields()->clear();
-}
-
-bool CircleRuleProto::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  ::google::protobuf::io::StringOutputStream unknown_fields_string(
-      mutable_unknown_fields());
-  ::google::protobuf::io::CodedOutputStream unknown_fields_stream(
-      &unknown_fields_string);
-  // @@protoc_insertion_point(parse_start:CircleRuleProto)
-  for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required double radius = 1;
-      case 1: {
-        if (tag == 9) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
-                 input, &radius_)));
-          set_has_radius();
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(16)) goto parse_color;
-        break;
-      }
-
-      // required uint32 color = 2;
-      case 2: {
-        if (tag == 16) {
-         parse_color:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &color_)));
-          set_has_color();
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(26)) goto parse_border;
-        break;
-      }
-
-      // optional .LineDefProto border = 3;
-      case 3: {
-        if (tag == 26) {
-         parse_border:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
-               input, mutable_border()));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(32)) goto parse_priority;
-        break;
-      }
-
-      // required int32 priority = 4;
-      case 4: {
-        if (tag == 32) {
-         parse_priority:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &priority_)));
-          set_has_priority();
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectAtEnd()) goto success;
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0 ||
-            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          goto success;
-        }
-        DO_(::google::protobuf::internal::WireFormatLite::SkipField(
-            input, tag, &unknown_fields_stream));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:CircleRuleProto)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:CircleRuleProto)
-  return false;
-#undef DO_
-}
-
-void CircleRuleProto::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:CircleRuleProto)
-  // required double radius = 1;
-  if (has_radius()) {
-    ::google::protobuf::internal::WireFormatLite::WriteDouble(1, this->radius(), output);
-  }
-
-  // required uint32 color = 2;
-  if (has_color()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->color(), output);
-  }
-
-  // optional .LineDefProto border = 3;
-  if (has_border()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessage(
-      3, this->border(), output);
-  }
-
-  // required int32 priority = 4;
-  if (has_priority()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(4, this->priority(), output);
-  }
-
-  output->WriteRaw(unknown_fields().data(),
-                   unknown_fields().size());
-  // @@protoc_insertion_point(serialize_end:CircleRuleProto)
-}
-
-int CircleRuleProto::ByteSize() const {
-  int total_size = 0;
-
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // required double radius = 1;
-    if (has_radius()) {
-      total_size += 1 + 8;
-    }
-
-    // required uint32 color = 2;
-    if (has_color()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::UInt32Size(
-          this->color());
-    }
-
-    // optional .LineDefProto border = 3;
-    if (has_border()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-          this->border());
-    }
-
-    // required int32 priority = 4;
-    if (has_priority()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::Int32Size(
-          this->priority());
-    }
-
-  }
-  total_size += unknown_fields().size();
-
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void CircleRuleProto::CheckTypeAndMergeFrom(
-    const ::google::protobuf::MessageLite& from) {
-  MergeFrom(*::google::protobuf::down_cast<const CircleRuleProto*>(&from));
-}
-
-void CircleRuleProto::MergeFrom(const CircleRuleProto& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from.has_radius()) {
-      set_radius(from.radius());
-    }
-    if (from.has_color()) {
-      set_color(from.color());
-    }
-    if (from.has_border()) {
-      mutable_border()->::LineDefProto::MergeFrom(from.border());
-    }
-    if (from.has_priority()) {
-      set_priority(from.priority());
-    }
-  }
-  mutable_unknown_fields()->append(from.unknown_fields());
-}
-
-void CircleRuleProto::CopyFrom(const CircleRuleProto& from) {
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool CircleRuleProto::IsInitialized() const {
-  if ((_has_bits_[0] & 0x0000000b) != 0x0000000b) return false;
-
-  if (has_border()) {
-    if (!this->border().IsInitialized()) return false;
-  }
-  return true;
-}
-
-void CircleRuleProto::Swap(CircleRuleProto* other) {
-  if (other != this) {
-    std::swap(radius_, other->radius_);
-    std::swap(color_, other->color_);
-    std::swap(border_, other->border_);
-    std::swap(priority_, other->priority_);
-    std::swap(_has_bits_[0], other->_has_bits_[0]);
-    _unknown_fields_.swap(other->_unknown_fields_);
-    std::swap(_cached_size_, other->_cached_size_);
-  }
-}
-
-::std::string CircleRuleProto::GetTypeName() const {
-  return "CircleRuleProto";
-}
-
-
-// ===================================================================
-
-#ifndef _MSC_VER
 const int PathTextRuleProto::kPrimaryFieldNumber;
 const int PathTextRuleProto::kSecondaryFieldNumber;
 const int PathTextRuleProto::kPriorityFieldNumber;
@@ -3369,6 +3388,14 @@ const int ShieldRuleProto::kPriorityFieldNumber;
 const int ShieldRuleProto::kMinDistanceFieldNumber;
 const int ShieldRuleProto::kTextColorFieldNumber;
 const int ShieldRuleProto::kTextStrokeColorFieldNumber;
+const int ShieldRuleProto::kColorXFieldNumber;
+const int ShieldRuleProto::kColorYFieldNumber;
+const int ShieldRuleProto::kStrokeColorXFieldNumber;
+const int ShieldRuleProto::kStrokeColorYFieldNumber;
+const int ShieldRuleProto::kTextColorXFieldNumber;
+const int ShieldRuleProto::kTextColorYFieldNumber;
+const int ShieldRuleProto::kTextStrokeColorXFieldNumber;
+const int ShieldRuleProto::kTextStrokeColorYFieldNumber;
 #endif  // !_MSC_VER
 
 ShieldRuleProto::ShieldRuleProto()
@@ -3396,6 +3423,14 @@ void ShieldRuleProto::SharedCtor() {
   min_distance_ = 0;
   text_color_ = 0u;
   text_stroke_color_ = 0u;
+  color_x_ = 0u;
+  color_y_ = 0u;
+  stroke_color_x_ = 0u;
+  stroke_color_y_ = 0u;
+  text_color_x_ = 0u;
+  text_color_y_ = 0u;
+  text_stroke_color_x_ = 0u;
+  text_stroke_color_y_ = 0u;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -3444,8 +3479,11 @@ void ShieldRuleProto::Clear() {
     ::memset(&first, 0, n);                                \
   } while (0)
 
-  if (_has_bits_[0 / 32] & 127) {
-    ZR_(height_, text_stroke_color_);
+  if (_has_bits_[0 / 32] & 255) {
+    ZR_(height_, color_x_);
+  }
+  if (_has_bits_[8 / 32] & 32512) {
+    ZR_(color_y_, text_stroke_color_y_);
   }
 
 #undef OFFSET_OF_FIELD_
@@ -3569,6 +3607,126 @@ bool ShieldRuleProto::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(64)) goto parse_color_x;
+        break;
+      }
+
+      // optional uint32 color_x = 8;
+      case 8: {
+        if (tag == 64) {
+         parse_color_x:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &color_x_)));
+          set_has_color_x();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(72)) goto parse_color_y;
+        break;
+      }
+
+      // optional uint32 color_y = 9;
+      case 9: {
+        if (tag == 72) {
+         parse_color_y:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &color_y_)));
+          set_has_color_y();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(80)) goto parse_stroke_color_x;
+        break;
+      }
+
+      // optional uint32 stroke_color_x = 10;
+      case 10: {
+        if (tag == 80) {
+         parse_stroke_color_x:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &stroke_color_x_)));
+          set_has_stroke_color_x();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(88)) goto parse_stroke_color_y;
+        break;
+      }
+
+      // optional uint32 stroke_color_y = 11;
+      case 11: {
+        if (tag == 88) {
+         parse_stroke_color_y:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &stroke_color_y_)));
+          set_has_stroke_color_y();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(96)) goto parse_text_color_x;
+        break;
+      }
+
+      // optional uint32 text_color_x = 12;
+      case 12: {
+        if (tag == 96) {
+         parse_text_color_x:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &text_color_x_)));
+          set_has_text_color_x();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(104)) goto parse_text_color_y;
+        break;
+      }
+
+      // optional uint32 text_color_y = 13;
+      case 13: {
+        if (tag == 104) {
+         parse_text_color_y:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &text_color_y_)));
+          set_has_text_color_y();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(112)) goto parse_text_stroke_color_x;
+        break;
+      }
+
+      // optional uint32 text_stroke_color_x = 14;
+      case 14: {
+        if (tag == 112) {
+         parse_text_stroke_color_x:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &text_stroke_color_x_)));
+          set_has_text_stroke_color_x();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(120)) goto parse_text_stroke_color_y;
+        break;
+      }
+
+      // optional uint32 text_stroke_color_y = 15;
+      case 15: {
+        if (tag == 120) {
+         parse_text_stroke_color_y:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &text_stroke_color_y_)));
+          set_has_text_stroke_color_y();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -3633,6 +3791,46 @@ void ShieldRuleProto::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(7, this->text_stroke_color(), output);
   }
 
+  // optional uint32 color_x = 8;
+  if (has_color_x()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(8, this->color_x(), output);
+  }
+
+  // optional uint32 color_y = 9;
+  if (has_color_y()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(9, this->color_y(), output);
+  }
+
+  // optional uint32 stroke_color_x = 10;
+  if (has_stroke_color_x()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(10, this->stroke_color_x(), output);
+  }
+
+  // optional uint32 stroke_color_y = 11;
+  if (has_stroke_color_y()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(11, this->stroke_color_y(), output);
+  }
+
+  // optional uint32 text_color_x = 12;
+  if (has_text_color_x()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(12, this->text_color_x(), output);
+  }
+
+  // optional uint32 text_color_y = 13;
+  if (has_text_color_y()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(13, this->text_color_y(), output);
+  }
+
+  // optional uint32 text_stroke_color_x = 14;
+  if (has_text_stroke_color_x()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(14, this->text_stroke_color_x(), output);
+  }
+
+  // optional uint32 text_stroke_color_y = 15;
+  if (has_text_stroke_color_y()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(15, this->text_stroke_color_y(), output);
+  }
+
   output->WriteRaw(unknown_fields().data(),
                    unknown_fields().size());
   // @@protoc_insertion_point(serialize_end:ShieldRuleProto)
@@ -3691,6 +3889,64 @@ int ShieldRuleProto::ByteSize() const {
           this->text_stroke_color());
     }
 
+    // optional uint32 color_x = 8;
+    if (has_color_x()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->color_x());
+    }
+
+  }
+  if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+    // optional uint32 color_y = 9;
+    if (has_color_y()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->color_y());
+    }
+
+    // optional uint32 stroke_color_x = 10;
+    if (has_stroke_color_x()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->stroke_color_x());
+    }
+
+    // optional uint32 stroke_color_y = 11;
+    if (has_stroke_color_y()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->stroke_color_y());
+    }
+
+    // optional uint32 text_color_x = 12;
+    if (has_text_color_x()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->text_color_x());
+    }
+
+    // optional uint32 text_color_y = 13;
+    if (has_text_color_y()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->text_color_y());
+    }
+
+    // optional uint32 text_stroke_color_x = 14;
+    if (has_text_stroke_color_x()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->text_stroke_color_x());
+    }
+
+    // optional uint32 text_stroke_color_y = 15;
+    if (has_text_stroke_color_y()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->text_stroke_color_y());
+    }
+
   }
   total_size += unknown_fields().size();
 
@@ -3729,6 +3985,32 @@ void ShieldRuleProto::MergeFrom(const ShieldRuleProto& from) {
     if (from.has_text_stroke_color()) {
       set_text_stroke_color(from.text_stroke_color());
     }
+    if (from.has_color_x()) {
+      set_color_x(from.color_x());
+    }
+  }
+  if (from._has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+    if (from.has_color_y()) {
+      set_color_y(from.color_y());
+    }
+    if (from.has_stroke_color_x()) {
+      set_stroke_color_x(from.stroke_color_x());
+    }
+    if (from.has_stroke_color_y()) {
+      set_stroke_color_y(from.stroke_color_y());
+    }
+    if (from.has_text_color_x()) {
+      set_text_color_x(from.text_color_x());
+    }
+    if (from.has_text_color_y()) {
+      set_text_color_y(from.text_color_y());
+    }
+    if (from.has_text_stroke_color_x()) {
+      set_text_stroke_color_x(from.text_stroke_color_x());
+    }
+    if (from.has_text_stroke_color_y()) {
+      set_text_stroke_color_y(from.text_stroke_color_y());
+    }
   }
   mutable_unknown_fields()->append(from.unknown_fields());
 }
@@ -3754,6 +4036,14 @@ void ShieldRuleProto::Swap(ShieldRuleProto* other) {
     std::swap(min_distance_, other->min_distance_);
     std::swap(text_color_, other->text_color_);
     std::swap(text_stroke_color_, other->text_stroke_color_);
+    std::swap(color_x_, other->color_x_);
+    std::swap(color_y_, other->color_y_);
+    std::swap(stroke_color_x_, other->stroke_color_x_);
+    std::swap(stroke_color_y_, other->stroke_color_y_);
+    std::swap(text_color_x_, other->text_color_x_);
+    std::swap(text_color_y_, other->text_color_y_);
+    std::swap(text_stroke_color_x_, other->text_stroke_color_x_);
+    std::swap(text_stroke_color_y_, other->text_stroke_color_y_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.swap(other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -3773,7 +4063,6 @@ const int DrawElementProto::kLinesFieldNumber;
 const int DrawElementProto::kAreaFieldNumber;
 const int DrawElementProto::kSymbolFieldNumber;
 const int DrawElementProto::kCaptionFieldNumber;
-const int DrawElementProto::kCircleFieldNumber;
 const int DrawElementProto::kPathTextFieldNumber;
 const int DrawElementProto::kShieldFieldNumber;
 const int DrawElementProto::kApplyIfFieldNumber;
@@ -3805,12 +4094,6 @@ void DrawElementProto::InitAsDefaultInstance() {
   caption_ = const_cast< ::CaptionRuleProto*>(&::CaptionRuleProto::default_instance());
 #endif
 #ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
-  circle_ = const_cast< ::CircleRuleProto*>(
-      ::CircleRuleProto::internal_default_instance());
-#else
-  circle_ = const_cast< ::CircleRuleProto*>(&::CircleRuleProto::default_instance());
-#endif
-#ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
   path_text_ = const_cast< ::PathTextRuleProto*>(
       ::PathTextRuleProto::internal_default_instance());
 #else
@@ -3838,7 +4121,6 @@ void DrawElementProto::SharedCtor() {
   area_ = NULL;
   symbol_ = NULL;
   caption_ = NULL;
-  circle_ = NULL;
   path_text_ = NULL;
   shield_ = NULL;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -3858,7 +4140,6 @@ void DrawElementProto::SharedDtor() {
     delete area_;
     delete symbol_;
     delete caption_;
-    delete circle_;
     delete path_text_;
     delete shield_;
   }
@@ -3885,7 +4166,7 @@ DrawElementProto* DrawElementProto::New() const {
 }
 
 void DrawElementProto::Clear() {
-  if (_has_bits_[0 / 32] & 253) {
+  if (_has_bits_[0 / 32] & 125) {
     scale_ = 0;
     if (has_area()) {
       if (area_ != NULL) area_->::AreaRuleProto::Clear();
@@ -3895,9 +4176,6 @@ void DrawElementProto::Clear() {
     }
     if (has_caption()) {
       if (caption_ != NULL) caption_->::CaptionRuleProto::Clear();
-    }
-    if (has_circle()) {
-      if (circle_ != NULL) circle_->::CircleRuleProto::Clear();
     }
     if (has_path_text()) {
       if (path_text_ != NULL) path_text_->::PathTextRuleProto::Clear();
@@ -3986,19 +4264,6 @@ bool DrawElementProto::MergePartialFromCodedStream(
          parse_caption:
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_caption()));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(50)) goto parse_circle;
-        break;
-      }
-
-      // optional .CircleRuleProto circle = 6;
-      case 6: {
-        if (tag == 50) {
-         parse_circle:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
-               input, mutable_circle()));
         } else {
           goto handle_unusual;
         }
@@ -4100,12 +4365,6 @@ void DrawElementProto::SerializeWithCachedSizes(
       5, this->caption(), output);
   }
 
-  // optional .CircleRuleProto circle = 6;
-  if (has_circle()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessage(
-      6, this->circle(), output);
-  }
-
   // optional .PathTextRuleProto path_text = 7;
   if (has_path_text()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
@@ -4159,13 +4418,6 @@ int DrawElementProto::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           this->caption());
-    }
-
-    // optional .CircleRuleProto circle = 6;
-    if (has_circle()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-          this->circle());
     }
 
     // optional .PathTextRuleProto path_text = 7;
@@ -4228,9 +4480,6 @@ void DrawElementProto::MergeFrom(const DrawElementProto& from) {
     if (from.has_caption()) {
       mutable_caption()->::CaptionRuleProto::MergeFrom(from.caption());
     }
-    if (from.has_circle()) {
-      mutable_circle()->::CircleRuleProto::MergeFrom(from.circle());
-    }
     if (from.has_path_text()) {
       mutable_path_text()->::PathTextRuleProto::MergeFrom(from.path_text());
     }
@@ -4260,9 +4509,6 @@ bool DrawElementProto::IsInitialized() const {
   if (has_caption()) {
     if (!this->caption().IsInitialized()) return false;
   }
-  if (has_circle()) {
-    if (!this->circle().IsInitialized()) return false;
-  }
   if (has_path_text()) {
     if (!this->path_text().IsInitialized()) return false;
   }
@@ -4279,7 +4525,6 @@ void DrawElementProto::Swap(DrawElementProto* other) {
     std::swap(area_, other->area_);
     std::swap(symbol_, other->symbol_);
     std::swap(caption_, other->caption_);
-    std::swap(circle_, other->circle_);
     std::swap(path_text_, other->path_text_);
     std::swap(shield_, other->shield_);
     apply_if_.Swap(&other->apply_if_);
