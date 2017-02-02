@@ -3,7 +3,7 @@
 from __future__ import print_function
 
 import drules_struct_pb2 as proto
-from image_maker import color_to_tuple, ImageMaker
+from image_maker import argb_to_tuple, ImageMaker
 
 import re
 import sys
@@ -223,7 +223,7 @@ class MatrixBuilder:
 
     def get_color_coords(self, path_index, key):
         color = self.all_elements[path_index][key]
-        tup_color = color_to_tuple(color)  # todo use it to check that the colour is the same as in the bin file
+        tup_color = argb_to_tuple(color)  # todo use it to check that the colour is the same as in the bin file
         x, y = self.imgs[path_index].linear_index_to_coords(self.inverted_transformation_table[key])
         tup_color_from_img = self.imgs[path_index].img.getpixel((x, y))
         if (tup_color != tup_color_from_img):

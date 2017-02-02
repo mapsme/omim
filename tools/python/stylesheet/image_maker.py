@@ -2,7 +2,7 @@ from PIL import Image
 from math import sqrt
 
 
-def color_to_tuple(int_color):
+def argb_to_tuple(int_color):
     str_color = "{0:0{1}x}".format(int_color, 8)
     alpha = str_color[:2]
     color = str_color[2:]
@@ -22,16 +22,25 @@ class ImageMaker:
         self.img = None
 
 
-    def calculate_side_length(self, num):
-        min_len = sqrt(num) + 1
+    def calculate_min_length(self, num):
+        min_len = sqrt(num)
+        if min_len != int(min_len):
+            min_len += 1
+        min_len = int(min_len)
+
         if min_len > 4096:
             raise RuntimeError("Side for the matrix is too big")
 
+        return min_len
+
+
+    def calculate_side_length(self, num):
+        min_len = self.calculate_min_length(num)
         i = 8
         while i < min_len:
             i *= 2
 
-        return i * 2
+        return i * 2 # because we store squares 2x2 for each color
 
 
     def make(self):
@@ -44,7 +53,7 @@ class ImageMaker:
                     self.img = img
                     return
 
-                color = color_to_tuple(self.colors[index])
+                color = argb_to_tuple(self.colors[index])
                 img.putpixel((y * 2, x * 2), color)
                 img.putpixel((y * 2+1, x * 2), color)
                 img.putpixel((y * 2, x * 2+1), color)
