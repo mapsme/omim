@@ -8,7 +8,8 @@ import subprocess
 from argparse import ArgumentParser
 from collections import defaultdict
 from itertools import chain
-from os.path import abspath, isabs
+from os.path import isabs
+from Util import find_omim
 
 from find_untranslated_strings import StringsTxt
 
@@ -280,13 +281,6 @@ def do_ios_suspects(args):
     strings = strings_from_grepped(suspects, SUSPECT_RE)
     for s in strings:
         print(s)
-
-
-def find_omim():
-    my_path = abspath(__file__)
-    tools_index = my_path.rfind("/tools/python")
-    omim_path = my_path[:tools_index]
-    return omim_path
 
 
 def read_hardcoded_categories(a_path):
