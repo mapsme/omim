@@ -5,7 +5,6 @@ import logging
 from os import makedirs
 from os.path import join, exists
 from argparse import ArgumentParser
-from sys import argv
 from Util import find_omim
 
 from shutil import rmtree
@@ -17,26 +16,11 @@ LAST_DOWNLOADED_URL_FILE = "last_downloaded.url"
 
 
 class MwmDownloader:
-    def __init__(self):
-        self.omim_root = find_omim()
+    def __init__(self, omim_root, url):
+        self.omim_root = omim_root
         self.datapath = join(self.omim_root, "..", "data")
         self.url_path = join(self.datapath, LAST_DOWNLOADED_URL_FILE)
-        #"http://eu1.mapswithme.com/direct/160128/"
-        self.link = None
-        self.process_cli()
-        if not self.link:
-            self.link = self.link_from_countries_txt()
-
-        self.var_should_download = self.should_download(self.link)
-        logging.debug("should_download = {val}".format(val=self.var_should_download))
-
-
-    def link_from_countries_txt(self):
-        with open(join(self.omim_root, "data", "countries.txt")) as countries:
-            data = json.load(countries)
-
-        version = data["v"]
-        return "http://direct.mapswithme.com/direct/{}/".format(version)
+        self.link = url
 
 
     def read_url_from_file(self, url_file):
@@ -44,27 +28,17 @@ class MwmDownloader:
             return the_file.readline()
 
 
-    def should_download(self, link):
+    def should_download(self):
         if not exists(self.datapath):
             return True
 
         if not exists(self.url_path):
             return True
 
-        if self.read_url_from_file(self.url_path) != link:
+        if self.read_url_from_file(self.url_path) != self.link:
             return True
 
         return False
-
-
-    def process_cli(self):
-        parser = ArgumentParser()
-        parser.add_argument("-u", "--url", dest="link", help="The url from which the MWMs should be downloaded")
-
-        args = parser.parse_args()
-
-        self.link = args.link
-        logging.info("The link is: {}".format(self.link))
 
 
     def _delete_all_data(self):
@@ -72,6 +46,7 @@ class MwmDownloader:
             rmtree(self.datapath)
         if not exists(self.datapath):
             makedirs(self.datapath)
+
 
     def _download_new_data(self):
         process = subprocess.Popen(
@@ -95,12 +70,33 @@ class MwmDownloader:
 
 
     def download(self):
-        logging.info("Do we need to download? -- {}".format("Yes" if self.var_should_download else "No"))
-        if self.var_should_download:
+        if self.should_download():
             self._delete_all_data()
             self._download_new_data()
 
 
+def process_cli():
+    parser = ArgumentParser()
+    parser.add_argument("-u", "--url", dest="link", help="The url from which the MWMs should be downloaded")
+
+    args = parser.parse_args()
+    return args
+
+
+def link_from_countries_txt(omim_root):
+    with open(join(omim_root, "data", "countries.txt")) as countries:
+        data = json.load(countries)
+
+    version = data["v"]
+    return "http://direct.mapswithme.com/direct/{}/".format(version)
+
+
 if __name__ == "__main__":
-    d = MwmDownloader()
+    omim_root = find_omim()
+    args = process_cli()
+    link = args.link
+    if not link:
+        link = link_from_countries_txt(omim_root)
+
+    d = MwmDownloader(omim_root, link)
     d.download()
