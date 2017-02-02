@@ -20,6 +20,7 @@ class GoogleFusedLocationProvider extends BaseLocationProvider
                                implements GoogleApiClient.ConnectionCallbacks,
                                           GoogleApiClient.OnConnectionFailedListener
 {
+  private final static String TAG = GoogleFusedLocationProvider.class.getSimpleName();
   private final GoogleApiClient mGoogleApiClient;
   private LocationRequest mLocationRequest;
   private PendingResult<LocationSettingsResult> mLocationSettingsResult;
@@ -40,6 +41,7 @@ class GoogleFusedLocationProvider extends BaseLocationProvider
   @Override
   protected boolean start()
   {
+    sLogger.d(TAG, "Google fused provider is started");
     if (mGoogleApiClient.isConnected() || mGoogleApiClient.isConnecting())
       return true;
 
@@ -63,6 +65,7 @@ class GoogleFusedLocationProvider extends BaseLocationProvider
   @Override
   protected void stop()
   {
+    sLogger.d(TAG, "Google fused provider is stopped");
     if (mGoogleApiClient.isConnected())
       LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, mListener);
 
@@ -75,13 +78,13 @@ class GoogleFusedLocationProvider extends BaseLocationProvider
   @Override
   public void onConnected(Bundle bundle)
   {
-    sLogger.d("Fused onConnected. Bundle " + bundle);
+    sLogger.d(TAG, "Fused onConnected. Bundle " + bundle);
     checkSettingsAndRequestUpdates();
   }
 
   private void checkSettingsAndRequestUpdates()
   {
-    sLogger.d("checkSettingsAndRequestUpdates()");
+    sLogger.d(TAG, "checkSettingsAndRequestUpdates()");
     LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(mLocationRequest);
     builder.setAlwaysShow(true); // hides 'never' button in resolve dialog afterwards.
     mLocationSettingsResult = LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
@@ -91,7 +94,7 @@ class GoogleFusedLocationProvider extends BaseLocationProvider
       public void onResult(@NonNull LocationSettingsResult locationSettingsResult)
       {
         final Status status = locationSettingsResult.getStatus();
-        sLogger.d("onResult status: " + status);
+        sLogger.d(TAG, "onResult status: " + status);
         switch (status.getStatusCode())
         {
         case LocationSettingsStatusCodes.SUCCESS:
@@ -114,7 +117,7 @@ class GoogleFusedLocationProvider extends BaseLocationProvider
 
   private static void resolveError(Status status)
   {
-    sLogger.d("resolveError()");
+    sLogger.d(TAG, "resolveError()");
     if (LocationHelper.INSTANCE.isLocationStopped())
       return;
 
@@ -136,13 +139,13 @@ class GoogleFusedLocationProvider extends BaseLocationProvider
   @Override
   public void onConnectionSuspended(int i)
   {
-    sLogger.d("Fused onConnectionSuspended. Code " + i);
+    sLogger.d(TAG, "Fused onConnectionSuspended. Code " + i);
   }
 
   @Override
   public void onConnectionFailed(@NonNull ConnectionResult connectionResult)
   {
-    sLogger.d("Fused onConnectionFailed. Fall back to native provider. ConnResult " + connectionResult);
+    sLogger.d(TAG, "Fused onConnectionFailed. Fall back to native provider. ConnResult " + connectionResult);
     // TODO handle error in a smarter way
     LocationHelper.INSTANCE.initProvider(true);
   }

@@ -4,15 +4,17 @@ import android.content.Context;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.mapswithme.maps.MwmApplication;
-import com.mapswithme.util.log.Logger;
-import com.mapswithme.util.log.SimpleLogger;
 
 import java.io.File;
 
 public class StorageUtils
 {
+  private final static String LOGS_FOLDER = "logs";
+
   /**
    * Checks if external storage is available for read and write
    *
@@ -32,7 +34,7 @@ public class StorageUtils
    * @see Context#getExternalFilesDir(String)
    */
   @Nullable
-  public static String getExternalFilesDir()
+  private static String getExternalFilesDir()
   {
     if (!isExternalStorageWritable())
       return null;
@@ -41,7 +43,44 @@ public class StorageUtils
     if (dir != null)
       return dir.getAbsolutePath();
 
-    SimpleLogger.get().e("Cannot get the external files directory for some reasons", new Throwable());
+    Log.e(StorageUtils.class.getSimpleName(),
+          "Cannot get the external files directory for some reasons", new Throwable());
     return null;
+  }
+
+  /**
+   * Check existence of the folder for writing the logs. If that folder is absent this method will
+   * try to create it and all missed parent folders.
+   * @return true - if folder exists, otherwise - false
+   */
+  public static boolean ensureLogsFolderExistence()
+  {
+    String externalDir = StorageUtils.getExternalFilesDir();
+    if (TextUtils.isEmpty(externalDir))
+      return false;
+
+    File folder = new File(externalDir + File.separator + LOGS_FOLDER);
+    boolean success = true;
+    if (!folder.exists())
+      success = folder.mkdirs();
+    return success;
+  }
+
+  @Nullable
+  public static String getLogsFolder()
+  {
+    if (!ensureLogsFolderExistence())
+      return null;
+
+    String externalDir = StorageUtils.getExternalFilesDir();
+    return externalDir + File.separator + LOGS_FOLDER;
+  }
+
+  @Nullable
+  static String getLogsZipPath()
+  {
+    String zipFile = getExternalFilesDir() + File.separator + LOGS_FOLDER + ".zip";
+    File file = new File(zipFile);
+    return file.isFile() && file.exists() ? zipFile : null;
   }
 }

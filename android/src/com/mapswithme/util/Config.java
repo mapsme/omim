@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.text.format.DateUtils;
 
 import com.mapswithme.maps.BuildConfig;
+import com.mapswithme.util.log.LoggerFactory;
 
 public final class Config
 {
