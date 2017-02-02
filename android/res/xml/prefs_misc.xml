@@ -19,7 +19,7 @@
     android:defaultValue="true"/>
 
   <CheckBoxPreference
-    android:key="@string/pref_play_services"
+    android:key="@string/pref_enable_logging"
     android:title="Enable logging"
     android:defaultValue="false"/>
 </PreferenceScreen>
