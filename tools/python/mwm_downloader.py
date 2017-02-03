@@ -10,9 +10,18 @@ from Util import find_omim
 from shutil import rmtree
 import subprocess
 
+"""
+Downloads MWM files from the mwm servers. This script is used by Integraion
+Test Jobs on CI to download the latest MWMs, specified in the data/countries.txt
+file. Or you can specify your own url by providing the relevant parameter (see
+description to ArgParse).
+"""
+
+
 logging.basicConfig(format='%(asctime)s %(message)s', level=logging.DEBUG)
 
 LAST_DOWNLOADED_URL_FILE = "last_downloaded.url"
+URL = "http://direct.mapswithme.com/direct"
 
 
 class MwmDownloader:
@@ -24,7 +33,7 @@ class MwmDownloader:
 
 
     def read_url_from_file(self, url_file):
-        with open(url_file, "r") as the_file:
+        with open(url_file) as the_file:
             return the_file.readline()
 
 
@@ -42,8 +51,7 @@ class MwmDownloader:
 
 
     def _delete_all_data(self):
-        if exists(self.datapath):
-            rmtree(self.datapath)
+        rmtree(self.datapath, ignore_errors=True)
         makedirs(self.datapath)
 
 
@@ -52,17 +60,10 @@ class MwmDownloader:
             "wget -nv --recursive --no-parent --no-directories --directory-prefix={prefix} {link}".format(
                 prefix=self.datapath, link=self.link
             ),
-            shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            shell=True, stdout=logging.getLogger().handlers[0].stream,
+            stderr=logging.getLogger().handlers[0].stream
         )
-
-        downloaded = 0
-
-        while True:
-            line = process.stderr.readline()
-            if not line:
-                break
-            downloaded += 1
-            logging.debug("{downloaded} >> {line}".format(downloaded=downloaded, line=line))
+        process.wait()
 
         with open(self.url_path, "w") as url_file:
             url_file.write(self.link)
@@ -76,7 +77,10 @@ class MwmDownloader:
 
 def process_cli():
     parser = ArgumentParser()
-    parser.add_argument("-u", "--url", dest="link", help="The url from which the MWMs should be downloaded")
+    parser.add_argument(
+        "-u", "--url", dest="link",
+        help="The url from which the MWMs should be downloaded"
+    )
 
     args = parser.parse_args()
     return args
@@ -87,7 +91,7 @@ def link_from_countries_txt(omim_root):
         data = json.load(countries)
 
     version = data["v"]
-    return "http://direct.mapswithme.com/direct/{}/".format(version)
+    return "{}/{}/".format(URL, version)
 
 
 if __name__ == "__main__":

@@ -285,7 +285,7 @@ def do_ios_suspects(args):
 
 def read_hardcoded_categories(a_path):
     with open(a_path) as infile:
-        return filter(None, [s.strip() for s in infile])
+        return filter(None, map(str.strip, infile))
 
 
 if __name__ == "__main__":
