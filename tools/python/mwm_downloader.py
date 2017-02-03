@@ -44,8 +44,7 @@ class MwmDownloader:
     def _delete_all_data(self):
         if exists(self.datapath):
             rmtree(self.datapath)
-        if not exists(self.datapath):
-            makedirs(self.datapath)
+        makedirs(self.datapath)
 
 
     def _download_new_data(self):
@@ -94,9 +93,7 @@ def link_from_countries_txt(omim_root):
 if __name__ == "__main__":
     omim_root = find_omim()
     args = process_cli()
-    link = args.link
-    if not link:
-        link = link_from_countries_txt(omim_root)
+    link = args.link or link_from_countries_txt(omim_root)
 
     d = MwmDownloader(omim_root, link)
     d.download()
