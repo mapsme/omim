@@ -22,8 +22,10 @@ class BaseLocationListener implements LocationListener, com.google.android.gms.l
   @Override
   public void onLocationChanged(Location location)
   {
-    // Completely ignore locations without lat and lon
-    if (location.getAccuracy() <= 0.0)
+    if (location == null)
+      return;
+
+    if (!mLocationFixChecker.isAccuracySatisfied(location))
       return;
 
     if (mLocationFixChecker.isLocationBetterThanLast(location))
