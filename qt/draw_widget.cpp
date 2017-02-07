@@ -407,7 +407,7 @@ void DrawWidget::SetSelectionMode(bool mode) { m_selectionMode = mode; }
 
 void DrawWidget::RefreshDrawingRules()
 {
-  SetMapStyle(MapStyleLight);
+  SetMapStyle(MapStyleClear);
 }
 
 }

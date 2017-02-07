@@ -77,9 +77,9 @@ OTHER_RES.files = ../data/copyright.html ../data/eula.html ../data/welcome.html 
 CLASSIFICATOR_RES.path = $$DATADIR
 CLASSIFICATOR_RES.files = ../data/classificator.txt \
                           ../data/types.txt \
-                          ../data/drules_proto_clear.bin
+                          ../data/drules_proto_clear.bin \
                           ../data/mapcss-dynamic.txt \
-                          ../data/mapcss-mapping.csv \
+                          ../data/mapcss-mapping.csv
 DEFAULT_SKIN_RES.path = $$DATADIR/resources-default
 DEFAULT_SKIN_RES.files = ../resources-default/default.ui
 MDPI_SKIN_RES.path = $$DATADIR/resources-mdpi_clear

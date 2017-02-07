@@ -130,7 +130,7 @@ int main(int argc, char * argv[])
     {
       build_style::RunRecalculationGeometryScript(mapcssFilePath);
     }
-    catch (exception & e)
+    catch (std::exception & e)
     {
       QMessageBox msgBox;
       msgBox.setWindowTitle("Error");
@@ -140,8 +140,6 @@ int main(int argc, char * argv[])
       msgBox.exec();
     }
   }
-
-  dbg::ObjectTracker::PrintLeaks();
 
   LOG_SHORT(LINFO, ("MapsWithMe finished with code", returnCode));
   return returnCode;
