@@ -1,5 +1,5 @@
-NDK_TOOLCHAIN_VERSION := clang3.5
-APP_ABI := armeabi-v7a-hard
+NDK_TOOLCHAIN_VERSION := clang
+APP_ABI := armeabi-v7a
 # APP_ABI := armeabi-v7a
 
 APP_PLATFORM := android-9
@@ -11,7 +11,7 @@ APP_CPPFLAGS += -Wno-deprecated-register
 
 #@todo(vbykoianko) Build tests for android x86 platform
 #ifeq (x$(NDK_ABI_TO_BUILD), x)
-#  APP_ABI := armeabi-v7a-hard x86
+#  APP_ABI := armeabi-v7a x86
 #else
 #  APP_ABI := $(NDK_ABI_TO_BUILD)
 #endif

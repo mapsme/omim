@@ -1,4 +1,4 @@
-NDK_TOOLCHAIN_VERSION := clang3.6
+NDK_TOOLCHAIN_VERSION := clang
 APP_PLATFORM := android-15
 APP_STL := c++_static
 
@@ -8,7 +8,7 @@ APP_STL := c++_static
 APP_CPPFLAGS += -Wno-deprecated-register
 
 ifeq (x$(NDK_ABI_TO_BUILD), x)
-  APP_ABI := armeabi-v7a-hard x86
+  APP_ABI := armeabi-v7a
 else
   APP_ABI := $(NDK_ABI_TO_BUILD)
 endif
