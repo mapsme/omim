@@ -1,5 +1,7 @@
 from google.protobuf.descriptor import FieldDescriptor
 from operator import attrgetter
+import drules_struct_pb2 as proto
+
 
 def make_key(element, field_name=None):
     key = ""
@@ -16,7 +18,15 @@ def make_key(element, field_name=None):
     for key_part, fmt in keys_and_formats:
         key += make_key_part(element, key_part, fmt)
 
-    return key
+    key += relevant_class(element)
+    return key + "/"
+
+
+def relevant_class(element):
+    class_name = type(element).__name__
+    if class_name.endswith("RuleProto"):
+        return "/{{{}}}".format(class_name)
+    return ""
 
 
 def make_key_part(element, field, formatr):
@@ -57,6 +67,16 @@ def has_color_fields(sub_drules):
     return bool(color_fields(sub_drules))
 
 
+def non_color_fields(sub_drules):
+    return map(
+        attrgetter("name"),
+            filter(
+            lambda s: not s.name.endswith("color") and s.name != "priority",
+            list_leaves_fields(sub_drules)
+        )
+    )
+
+
 def color_fields(sub_drules):
     field_names = map(attrgetter("name"), list_leaves_fields(sub_drules))
     # We rely on the convention that all the color field names end in "color".
@@ -64,3 +84,10 @@ def color_fields(sub_drules):
     # Here we filter on HasField because an element can have optional fields,
     # and when we try to access their fields, they will return their default values.
     return filter(lambda x: sub_drules.HasField(x), color_field_names)
+
+
+def read_bin(filepath):
+    drules = proto.ContainerProto()
+    with open(filepath) as infile:
+        drules.ParseFromString(infile.read())
+    return drules
