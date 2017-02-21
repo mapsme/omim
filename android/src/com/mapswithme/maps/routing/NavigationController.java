@@ -187,6 +187,8 @@ public class NavigationController
 
     mNorth = north;
     update(Framework.nativeGetRouteFollowingInfo());
+
+    TtsPlayer.INSTANCE.playTurnNotifications();
   }
 
   public void update(RoutingInfo info)
