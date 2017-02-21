@@ -1667,6 +1667,15 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
     });
   };
 
+  auto onGetSupportedFeatures = [this](dp::SupportedFeatures const & features)
+  {
+    GetPlatform().RunOnGuiThread([this, features]()
+    {
+      m_supportedDrapeFeatures = make_unique<dp::SupportedFeatures>();
+      *m_supportedDrapeFeatures = features;
+    });
+  };
+
   auto isCountryLoadedByNameFn = bind(&Framework::IsCountryLoadedByName, this, _1);
   auto updateCurrentCountryFn = bind(&Framework::OnUpdateCurrentCountry, this, _1, _2);
 
@@ -1686,7 +1695,8 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
                             make_ref(&m_stringsBundle),
                             df::Viewport(0, 0, params.m_surfaceWidth, params.m_surfaceHeight),
                             df::MapDataProvider(idReadFn, featureReadFn, isCountryLoadedByNameFn, updateCurrentCountryFn),
-                            params.m_visualScale, fontsScaleFactor, move(params.m_widgetsInitInfo),
+                            move(onGetSupportedFeatures), params.m_visualScale, fontsScaleFactor,
+                            move(params.m_widgetsInitInfo),
                             make_pair(params.m_initialMyPositionState, params.m_hasMyPositionState),
                             move(myPositionModeChangedFn), allow3dBuildings, trafficEnabled, params.m_isChoosePositionMode,
                             params.m_isChoosePositionMode, GetSelectedFeatureTriangles(), params.m_isFirstLaunch,
@@ -1788,6 +1798,11 @@ void Framework::SetRenderingDisabled(bool destroyContext)
   m_isRenderingEnabled = false;
   if (m_drapeEngine)
     m_drapeEngine->SetRenderingDisabled(destroyContext);
+}
+
+std::unique_ptr<dp::SupportedFeatures> const & Framework::GetSupportedDrapeFeatures() const
+{
+  return m_supportedDrapeFeatures;
 }
 
 void Framework::ConnectToGpsTracker()

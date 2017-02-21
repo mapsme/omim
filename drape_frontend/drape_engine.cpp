@@ -51,7 +51,8 @@ DrapeEngine::DrapeEngine(Params && params)
     timeInBackground = my::Timer::LocalTime() - lastEnterBackground;
 
   FrontendRenderer::Params frParams(make_ref(m_threadCommutator), params.m_factory,
-                                    make_ref(m_textureManager), m_viewport,
+                                    make_ref(m_textureManager),
+                                    move(params.m_onGetSupportedFeatures), m_viewport,
                                     bind(&DrapeEngine::ModelViewChanged, this, _1),
                                     bind(&DrapeEngine::TapEvent, this, _1),
                                     bind(&DrapeEngine::UserPositionChanged, this, _1),

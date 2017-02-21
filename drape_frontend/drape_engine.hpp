@@ -9,6 +9,7 @@
 #include "drape_frontend/threads_commutator.hpp"
 
 #include "drape/pointers.hpp"
+#include "drape/support_manager.hpp"
 #include "drape/texture_manager.hpp"
 
 #include "traffic/traffic_info.hpp"
@@ -42,6 +43,7 @@ public:
            ref_ptr<StringsBundle> stringBundle,
            Viewport const & viewport,
            MapDataProvider const & model,
+           dp::OnGetSupportedFeatures && onGetSupportedFeatures,
            double vs,
            double fontsScaleFactor,
            gui::TWidgetsInitInfo && info,
@@ -60,6 +62,7 @@ public:
       , m_stringsBundle(stringBundle)
       , m_viewport(viewport)
       , m_model(model)
+      , m_onGetSupportedFeatures(move(onGetSupportedFeatures))
       , m_vs(vs)
       , m_fontsScaleFactor(fontsScaleFactor)
       , m_info(move(info))
@@ -80,6 +83,7 @@ public:
     ref_ptr<StringsBundle> m_stringsBundle;
     Viewport m_viewport;
     MapDataProvider m_model;
+    dp::OnGetSupportedFeatures m_onGetSupportedFeatures;
     double m_vs;
     double m_fontsScaleFactor;
     gui::TWidgetsInitInfo m_info;

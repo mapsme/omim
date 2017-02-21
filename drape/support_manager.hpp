@@ -2,8 +2,18 @@
 
 #include "std/noncopyable.hpp"
 
+#include <functional>
+
 namespace dp
 {
+
+struct SupportedFeatures
+{
+  unsigned int m_buildings3D : 1;
+  unsigned int m_perspectiveMode : 1;
+};
+
+using OnGetSupportedFeatures = std::function<void(SupportedFeatures const & features)>;
 
 class SupportManager : public noncopyable
 {
@@ -20,6 +30,8 @@ public:
 
   int GetMaxLineWidth() const;
 
+  SupportedFeatures const & GetFeatures() const;
+
 private:
   SupportManager() = default;
   ~SupportManager() = default;
@@ -29,6 +41,8 @@ private:
   bool m_isTegra = false;
 
   int m_maxLineWidth = 1;
+
+  SupportedFeatures m_features;
 };
 
 } // namespace dp

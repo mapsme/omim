@@ -23,6 +23,7 @@
 #include "drape/vertex_array_buffer.hpp"
 #include "drape/gpu_program_manager.hpp"
 #include "drape/overlay_tree.hpp"
+#include "drape/support_manager.hpp"
 #include "drape/uniform_values_storage.hpp"
 
 #include "platform/location.hpp"
@@ -72,6 +73,7 @@ public:
     Params(ref_ptr<ThreadsCommutator> commutator,
            ref_ptr<dp::OGLContextFactory> factory,
            ref_ptr<dp::TextureManager> texMng,
+           dp::OnGetSupportedFeatures onGetSupportedFeatures,
            Viewport viewport,
            TModelViewChanged const & modelViewChangedFn,
            TTapEventInfoFn const & tapEventFn,
@@ -87,6 +89,7 @@ public:
            bool isRoutingActive,
            bool isAutozoomEnabled)
       : BaseRenderer::Params(commutator, factory, texMng)
+      , m_onGetSupportedFeatures(move(onGetSupportedFeatures))
       , m_viewport(viewport)
       , m_modelViewChangedFn(modelViewChangedFn)
       , m_tapEventFn(tapEventFn)
@@ -103,6 +106,7 @@ public:
       , m_isAutozoomEnabled(isAutozoomEnabled)
     {}
 
+    dp::OnGetSupportedFeatures m_onGetSupportedFeatures;
     Viewport m_viewport;
     TModelViewChanged m_modelViewChangedFn;
     TTapEventInfoFn m_tapEventFn;
@@ -329,6 +333,8 @@ private:
 
   bool m_needRegenerateTraffic;
   bool m_trafficEnabled;
+
+  dp::OnGetSupportedFeatures m_onGetSupportedFeatures;
 
   drape_ptr<ScenarioManager> m_scenarioManager;
 

@@ -49,6 +49,10 @@ void SupportManager::Init()
 
   m_maxLineWidth = max(1, GLFunctions::glGetMaxLineWidth());
   LOG(LINFO, ("Max line width =", m_maxLineWidth));
+
+  // Fill supported features.
+  m_features.m_buildings3D = 1;
+  m_features.m_perspectiveMode = 1;
 }
 
 bool SupportManager::IsSamsungGoogleNexus() const
@@ -69,6 +73,11 @@ bool SupportManager::IsTegraDevice() const
 int SupportManager::GetMaxLineWidth() const
 {
   return m_maxLineWidth;
+}
+
+SupportedFeatures const & SupportManager::GetFeatures() const
+{
+  return m_features;
 }
 
 SupportManager & SupportManager::Instance()

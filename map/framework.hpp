@@ -450,11 +450,15 @@ public:
   void OnRecoverGLContext(int width, int height);
   void OnDestroyGLContext();
 
+  std::unique_ptr<dp::SupportedFeatures> const & GetSupportedDrapeFeatures() const;
+
 private:
   /// Depends on initialized Drape engine.
   void SaveViewport();
   /// Depends on initialized Drape engine.
   void LoadViewport();
+
+  std::unique_ptr<dp::SupportedFeatures> m_supportedDrapeFeatures;
 
 public:
   void ConnectToGpsTracker();

@@ -138,6 +138,7 @@ FrontendRenderer::FrontendRenderer(Params const & params)
   , m_needRestoreSize(false)
   , m_needRegenerateTraffic(false)
   , m_trafficEnabled(params.m_trafficEnabled)
+  , m_onGetSupportedFeatures(move(params.m_onGetSupportedFeatures))
 #ifdef SCENARIO_ENABLE
   , m_scenarioManager(new ScenarioManager(this))
 #endif
@@ -601,7 +602,8 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
 
   case Message::EnablePerspective:
     {
-      AddUserEvent(make_unique_dp<SetAutoPerspectiveEvent>(true /* isAutoPerspective */));
+      if (dp::SupportManager::Instance().GetFeatures().m_perspectiveMode)
+        AddUserEvent(make_unique_dp<SetAutoPerspectiveEvent>(true /* isAutoPerspective */));
       break;
     }
 
@@ -611,21 +613,24 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
       ScreenBase const & screen = m_userEventStream.GetCurrentScreen();
 
 #ifdef OMIM_OS_DESKTOP
-      if (m_enablePerspectiveInNavigation == msg->AllowPerspective() &&
+      if (dp::SupportManager::Instance().GetFeatures().m_perspectiveMode &&
+          m_enablePerspectiveInNavigation == msg->AllowPerspective() &&
           m_enablePerspectiveInNavigation != screen.isPerspective())
       {
         AddUserEvent(make_unique_dp<SetAutoPerspectiveEvent>(m_enablePerspectiveInNavigation));
       }
 #endif
 
-      if (m_enable3dBuildings != msg->Allow3dBuildings())
+      if (dp::SupportManager::Instance().GetFeatures().m_buildings3D &&
+          m_enable3dBuildings != msg->Allow3dBuildings())
       {
         m_enable3dBuildings = msg->Allow3dBuildings();
         CheckIsometryMinScale(screen);
         InvalidateRect(screen.ClipRect());
       }
 
-      if (m_enablePerspectiveInNavigation != msg->AllowPerspective())
+      if (dp::SupportManager::Instance().GetFeatures().m_perspectiveMode &&
+          m_enablePerspectiveInNavigation != msg->AllowPerspective())
       {
         m_enablePerspectiveInNavigation = msg->AllowPerspective();
         m_myPositionController->EnablePerspectiveInRouting(m_enablePerspectiveInNavigation);
@@ -1664,6 +1669,13 @@ void FrontendRenderer::OnContextCreate()
   GLFunctions::glEnable(gl_const::GLScissorTest);
 
   dp::SupportManager::Instance().Init();
+  dp::SupportedFeatures const & features = dp::SupportManager::Instance().GetFeatures();
+  if (m_onGetSupportedFeatures != nullptr)
+    m_onGetSupportedFeatures(features);
+  if (!features.m_buildings3D)
+    m_enable3dBuildings = false;
+  if (!features.m_perspectiveMode)
+    m_enablePerspectiveInNavigation = false;
 
   m_gpuProgramManager = make_unique_dp<dp::GpuProgramManager>();
   m_gpuProgramManager->Init();
