@@ -1,8 +1,9 @@
 #pragma once
 
-#include "car_router.hpp"
-#include "osrm_engine.hpp"
-#include "router.hpp"
+#include "routing/car_router.hpp"
+#include "routing/cross_mwm_router.hpp"
+#include "routing/osrm_engine.hpp"
+#include "routing/router.hpp"
 
 #include "indexer/index.hpp"
 
@@ -92,6 +93,16 @@ public:
 
   inline BorderCross const & GetTarget() const { return target; }
   inline double GetWeight() const { return weight; }
+
+  inline bool operator==(CrossWeightedEdge const & a) const
+  {
+    return target == a.target && weight == a.weight;
+  }
+
+  inline bool operator<(CrossWeightedEdge const & a) const
+  {
+    return target < a.target && weight < a.weight;
+  }
 
 private:
   BorderCross target;
