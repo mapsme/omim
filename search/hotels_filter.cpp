@@ -12,6 +12,35 @@ namespace search
 {
 namespace hotels_filter
 {
+namespace
+{
+void CompileLogicOp(shared_ptr<Rule> const & lhs, shared_ptr<Rule> const & rhs, bool whenTrue,
+                    Program & program)
+
+{
+  if (!lhs && !rhs)
+  {
+    program.emplace_back(Instruction::Const{!whenTrue});
+    return;
+  }
+
+  if (!lhs)
+  {
+    rhs->Compile(program);
+    return;
+  }
+
+  lhs->Compile(program);
+  if (!rhs)
+    return;
+
+  program.emplace_back(Instruction::Jump{0 /* offset */, whenTrue});
+  size_t const i = program.size();
+  rhs->Compile(program);
+  program[i - 1].m_jump.m_offset = program.size() - i;
+}
+}  // namespace
+
 // static
 typename Rating::Value const Rating::kDefault = 0;
 
@@ -62,12 +91,23 @@ bool Rule::IsIdentical(shared_ptr<Rule> const & lhs, shared_ptr<Rule> const & rh
 
 string DebugPrint(Rule const & rule) { return rule.ToString(); }
 
+// HotelsFilter::AndRule ---------------------------------------------------------------------------
+void AndRule::Compile(Program & program) const
+{
+  CompileLogicOp(m_lhs, m_rhs, false /* whenTrue */, program);
+}
+
+// HotelsFilter::OrRule ----------------------------------------------------------------------------
+void OrRule::Compile(Program & program) const
+{
+  CompileLogicOp(m_lhs, m_rhs, true /* whenTrue */, program);
+}
+
 // HotelsFilter::ScopedFilter ----------------------------------------------------------------------
 HotelsFilter::ScopedFilter::ScopedFilter(MwmSet::MwmId const & mwmId,
-                                         Descriptions const & descriptions, shared_ptr<Rule> rule)
-  : m_mwmId(mwmId), m_descriptions(descriptions), m_rule(rule)
+                                         Descriptions const & descriptions, Rule const & rule)
+  : m_mwmId(mwmId), m_descriptions(descriptions), m_vm(rule)
 {
-  CHECK(m_rule.get(), ());
 }
 
 bool HotelsFilter::ScopedFilter::Matches(FeatureID const & fid) const
@@ -83,7 +123,76 @@ bool HotelsFilter::ScopedFilter::Matches(FeatureID const & fid) const
   if (it == m_descriptions.end() || it->first != fid.m_index)
     return false;
 
-  return m_rule->Matches(it->second);
+  return m_vm.Run(it->second);
+}
+
+// VM ----------------------------------------------------------------------------------------------
+VM::VM(Rule const & rule) { rule.Compile(m_program); }
+
+bool VM::Run(Description const & description) const
+{
+  Context ctx;
+
+  while (ctx.m_rip < m_program.size())
+  {
+    auto const & instruction = m_program[ctx.m_rip++];
+    Eval(description, instruction, ctx);
+  }
+
+  ASSERT_EQUAL(ctx.m_rip, m_program.size(), ());
+  return ctx.m_rax;
+}
+
+template <typename Field>
+bool VM::EvalBinaryOp(Instruction::Comparision op, Description const & description,
+                      typename Field::Value rhs) const
+{
+  auto const lhs = Field::Select(description);
+  switch (op)
+  {
+  case Instruction::Comparision::Lt: return Field::Lt(lhs, rhs);
+  case Instruction::Comparision::Le: return Field::Lt(lhs, rhs) || Field::Eq(lhs, rhs);
+  case Instruction::Comparision::Eq: return Field::Eq(lhs, rhs);
+  case Instruction::Comparision::Ge: return Field::Gt(lhs, rhs) || Field::Eq(lhs, rhs);
+  case Instruction::Comparision::Gt: return Field::Gt(lhs, rhs);
+  }
+}
+
+void VM::Eval(Description const & description, Instruction const & instruction, Context & ctx) const
+{
+  switch (instruction.m_type)
+  {
+  case Instruction::Type::CompareRating:
+  {
+    auto const & args = instruction.m_compareRating;
+    ctx.m_rax = EvalBinaryOp<Rating>(args.m_type, description, args.m_rating);
+    return;
+  }
+  case Instruction::Type::ComparePrice:
+  {
+    auto const & args = instruction.m_comparePrice;
+    ctx.m_rax = EvalBinaryOp<PriceRate>(args.m_type, description, args.m_price);
+    return;
+  }
+  case Instruction::Type::CheckType:
+  {
+    auto const & args = instruction.m_checkType;
+    ctx.m_rax = (description.m_types & args.m_types) != 0;
+    return;
+  }
+  case Instruction::Type::Jump:
+  {
+    auto const & args = instruction.m_jump;
+    if (ctx.m_rax == args.m_whenTrue)
+      ctx.m_rip += args.m_offset;
+    return;
+  }
+  case Instruction::Type::Const:
+  {
+    ctx.m_rax = instruction.m_const.m_value;
+    return;
+  }
+  }
 }
 
 // HotelsFilter ------------------------------------------------------------------------------------
@@ -94,7 +203,7 @@ unique_ptr<HotelsFilter::ScopedFilter> HotelsFilter::MakeScopedFilter(MwmContext
 {
   if (!rule)
     return {};
-  return make_unique<ScopedFilter>(context.GetId(), GetDescriptions(context), rule);
+  return make_unique<ScopedFilter>(context.GetId(), GetDescriptions(context), *rule);
 }
 
 void HotelsFilter::ClearCaches()

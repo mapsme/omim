@@ -173,6 +173,11 @@ struct IdFunctor
   }
 };
 
+template <typename T>
+struct Void
+{
+};
+
 template <class T> struct EqualFunctor
 {
   T const & m_t;
