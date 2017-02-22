@@ -7,3 +7,6 @@
 [submodule "3party/Alohalytics"]
 	path = 3party/Alohalytics
 	url = git://github.com/mapsme/Alohalytics.git
+[submodule "iphone/Maps/3party/AlamofireImage"]
+	path = iphone/Maps/3party/AlamofireImage
+	url = https://github.com/Alamofire/AlamofireImage.git
