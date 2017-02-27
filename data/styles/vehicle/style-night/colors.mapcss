@@ -80,8 +80,8 @@
 
 @building: #191919;
 @building_dark: #191919;
-@building_border: #303030;
-@building_dark_border: #474747;
+@building_border: #1C1C1C;
+@building_dark_border: #191919;
 
 /* 5.ROADS */
 /* 5.1 All roads */
@@ -173,7 +173,7 @@
 /* 6.4 Road labels */
 
 @road_label_halo: #000000;
-@shield_text: #b2b2b2;
+@shield_text: #303030;
 @shield_text_halo: #000000;
-@shield: #000000;
-@shield_outline: #b2b2b2;
+@shield: #999999;
+@shield_outline: #303030;

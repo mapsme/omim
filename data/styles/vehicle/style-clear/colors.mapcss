@@ -28,7 +28,7 @@
 @trunk: #FF8800;
 @trunk_orange: #FF5919;
 @trunk_orange_medium: #FF7F33;
-@trunk_orange_light: #FF7A26;
+@trunk_orange_light: #FF8742;
 @primary_orange:  #FF8726;
 @primary_orange_medium: #FF9440;
 @primary_orange_light: #FFA14C;
@@ -110,8 +110,8 @@
 @building_label: #61615A;
 @building: #D4D3CA;/*#C9C8BB;*/
 @building_dark: #C7C6BF;/*#C2C0B3;*/
-@building_border: #A1A096;
-@building_dark_border: #9B9A8F;
+@building_border: #D4D3CA;
+@building_dark_border: #D4D3CA;
 
 /* LANDUSE */
 
