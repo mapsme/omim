@@ -151,7 +151,7 @@
 	<key>PW_USE_GPS</key>
 	<false/>
 	<key>Pushwoosh_LOG_LEVEL</key>
-	<string>WARNING</string>
+	<string>VERBOSE</string>
 	<key>UIApplicationShortcutItems</key>
 	<array>
 		<dict>
