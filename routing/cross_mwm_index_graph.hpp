@@ -84,6 +84,12 @@ private:
     std::map<Segment, std::vector<ms::LatLon>> m_outgoing;
   };
 
+  struct TwinSegments
+  {
+    std::map<Segment, std::vector<Segment>> m_ingoing;
+    std::map<Segment, std::vector<Segment>> m_outgoing;
+  };
+
   void InitCrossMwmGraph();
 
   /// \brief Inserts all ingoing and outgoing transition segments of mwm with |numMwmId|
@@ -92,7 +98,8 @@ private:
 
   bool GetBorderCross(Segment const & s, bool isOutgoing, vector<BorderCross> & borderCrosses);
 
-  TransitionSegments const & GetSegmentMaps(NumMwmId numMwmId);
+  TransitionSegments const & GetTransitionSegments(NumMwmId numMwmId);
+  TwinSegments const & GetTwinSegments(NumMwmId numMwmId);
 
   vector<ms::LatLon> const & GetIngoingTransitionPnt(Segment const & s);
   vector<ms::LatLon> const & GetOutgoingTransitionPnt(Segment const & s);
@@ -121,5 +128,6 @@ private:
   std::unique_ptr<CrossMwmGraph> m_crossMwmGraph;
 
   std::map<NumMwmId, TransitionSegments> m_transitionCache;
+  std::map<NumMwmId, TwinSegments> m_twinCache;
 };
 }  // routing
