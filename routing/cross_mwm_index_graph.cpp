@@ -317,7 +317,7 @@ bool CrossMwmIndexGraph::GetBorderCross(Segment const & s, bool isOutgoing,
           {
             bc.fromNode = CrossNode(directReverseFrom.first, directReverseFrom.second,
                                     outMapping->GetMwmId(), ll);
-            borderCrosses.push_back(move(bc));
+            borderCrosses.push_back(bc);
           }
         }
       };
