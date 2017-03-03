@@ -365,27 +365,27 @@ node|z13-[place=hamlet]
 /* 4.4 Districts & Small localities */
 
 node|z8-9[place=region],
-node|z10-14[place=suburb],
+node|z13-14[place=suburb],
 node|z13-[place=locality],
 node|z13-16[place=neighbourhood],
 node|z14-[place=farm],
 node|z14-[place=isolated_dwelling],
 {text: name;text-color: @district_label;}
-node|z12-14[place=suburb]::int_name,
+node|z13-14[place=suburb]::int_name,
 node|z13-[place=locality]::int_name,
 node|z13-16[place=neighbourhood]::int_name,
 node|z14-[place=farm]::int_name,
 node|z14-[place=isolated_dwelling]::int_name,
 {text: int_name;text-color: @district_label;}
 
-node|z10[place=suburb]
+/*node|z10[place=suburb]
 {font-size: 8;}
 node|z11[place=suburb]
 {font-size: 8.5;}
 node|z12[place=suburb]
 {font-size: 9;}
 node|z12[place=suburb]::int_name
-{font-size: 8;}
+{font-size: 8;}*/
 node|z13-14[place=suburb]
 {font-size: 10;}
 node|z13-14[place=suburb]::int_name
