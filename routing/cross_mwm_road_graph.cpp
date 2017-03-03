@@ -53,9 +53,8 @@ double GetAdjacencyCost(CrossRoutingContextReader const & currentContext,
 }
 
 template <class SourceNode, class TargetNode>
-class EdgesFiller
+struct EdgesFiller
 {
-public:
   EdgesFiller(TRoutingMappingPtr const & currentMapping,
               CrossRoutingContextReader const & currentContext, SourceNode const & startingNode,
               CrossMwmGraph const & crossMwmGraph, vector<CrossWeightedEdge> & adj)
@@ -179,6 +178,7 @@ IRouter::ResultCode CrossMwmGraph::SetStartNode(CrossNode const & startNode)
     {
       vector<BorderCross> const & nextCrosses =
           ConstructBorderCross(startMapping, outgoingNodes[i]);
+
       for (auto const & nextCross : nextCrosses)
       {
         if (nextCross.toNode.IsValid())
