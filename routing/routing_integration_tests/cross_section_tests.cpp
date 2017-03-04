@@ -220,8 +220,9 @@ UNIT_TEST(CrossMwmGraphTest)
     });
 
     size_t outgoingCounter = 0;
-    currentContext.ForEachOutgoingNode(
-        [&](OutgoingCrossNode const & /* node */) { ++outgoingCounter; });
+    currentContext.ForEachOutgoingNode([&](OutgoingCrossNode const & /* node */) {
+      ++outgoingCounter;
+    });
 
     LOG(LINFO, ("Processed:", countryName, "Exits:", outgoingCounter, "Enters:", ingoingCounter));
   }
