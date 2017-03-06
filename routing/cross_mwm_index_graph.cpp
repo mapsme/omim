@@ -116,6 +116,13 @@ void AddSegmentEdge(NumMwmIds const & numMwmIds, OsrmFtSegMapping const & segMap
     return;
 
   edges.emplace_back(segment, osrmEdge.GetWeight() * kOSRMWeightToSecondsMultiplier);
+  // OSRM and AStar have different car models, therefore AStar heuristic doen't work for OSRM edges.
+  // This factor makes AStar heuristic much smaller then OSRM egdes.
+  //
+  // As a result large cross mwm routes mith leap works as Dijkstra, but short and medium routes without leaps works as AStar.
+  // Most of routes doen't use leaps, therefore it is important to keep AStar performance.
+  double constexpr kAstarHeuristicFactor = 10;
+  edges.emplace_back(segment, osrmEdge.GetWeight() * kOSRMWeightToSecondsMultiplier * kAstarHeuristicFactor);
 }
 }  // namespace
 
