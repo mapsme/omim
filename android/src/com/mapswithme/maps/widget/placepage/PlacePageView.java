@@ -76,6 +76,8 @@ import com.mapswithme.util.ThemeUtils;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.Utils;
 import com.mapswithme.util.concurrency.UiThread;
+import com.mapswithme.util.log.Logger;
+import com.mapswithme.util.log.LoggerFactory;
 import com.mapswithme.util.sharing.ShareOption;
 import com.mapswithme.util.statistics.AlohaHelper;
 import com.mapswithme.util.statistics.Statistics;
@@ -102,6 +104,8 @@ public class PlacePageView extends RelativeLayout
                EditBookmarkFragment.EditBookmarkListener,
                BannerController.BannerListener
 {
+  private static final Logger LOGGER = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.MISC);
+  private static final String TAG = PlacePageView.class.getSimpleName();
   private static final String PREF_USE_DMS = "use_dms";
 
   private boolean mIsDocked;
@@ -176,6 +180,7 @@ public class PlacePageView extends RelativeLayout
   private BasePlacePageAnimationController mAnimationController;
   private MwmActivity.LeftAnimationTrackListener mLeftAnimationTrackListener;
   // Data
+  @Nullable
   private MapObject mMapObject;
   private Sponsored mSponsored;
   private String mSponsoredPrice;
@@ -396,18 +401,36 @@ public class PlacePageView extends RelativeLayout
         switch (item)
         {
         case BOOKMARK:
+          if (mMapObject == null)
+          {
+            LOGGER.e(TAG, "Bookmark cannot be managed, mMapObject is null!");
+            return;
+          }
+
           Statistics.INSTANCE.trackEvent(Statistics.EventName.PP_BOOKMARK);
           AlohaHelper.logClick(AlohaHelper.PP_BOOKMARK);
-          toggleIsBookmark();
+          toggleIsBookmark(mMapObject);
           break;
 
         case SHARE:
+          if (mMapObject == null)
+          {
+            LOGGER.e(TAG, "A map object cannot be shared, it's null!");
+            return;
+          }
           Statistics.INSTANCE.trackEvent(Statistics.EventName.PP_SHARE);
           AlohaHelper.logClick(AlohaHelper.PP_SHARE);
           ShareOption.ANY.shareMapObject(getActivity(), mMapObject, mSponsored);
           break;
 
         case BACK:
+          if (mMapObject == null)
+          {
+            LOGGER.e(TAG, "A mwm request cannot be handled, mMapObject is null!");
+            getActivity().finish();
+            return;
+          }
+
           if (ParsedMwmRequest.hasRequest())
           {
             ParsedMwmRequest request = ParsedMwmRequest.getCurrentRequest();
@@ -583,7 +606,12 @@ public class PlacePageView extends RelativeLayout
     }
 
     mSponsoredPrice = getContext().getString(R.string.place_page_starting_from, text);
-    refreshPreview(NetworkPolicy.newInstance(true));
+    if (mMapObject == null)
+    {
+      LOGGER.e(TAG, "A sponsored info cannot be updated, mMapObject is null!", new Throwable());
+      return;
+    }
+    refreshPreview(mMapObject, NetworkPolicy.newInstance(true));
   }
 
   @Override
@@ -674,6 +702,11 @@ public class PlacePageView extends RelativeLayout
   @Override
   public void onItemClick(View v, int position)
   {
+    if (mMapObject == null)
+    {
+      LOGGER.e(TAG, "A photo gallery cannot be started, mMapObject is null!");
+      return;
+    }
     if (position == GalleryAdapter.MAX_COUNT - 1
         && mGalleryAdapter.getItems().size() > GalleryAdapter.MAX_COUNT)
     {
@@ -793,8 +826,11 @@ public class PlacePageView extends RelativeLayout
   public void restore()
   {
     if (mMapObject == null)
+    {
       // FIXME query map object again
+      LOGGER.e(TAG, "A place page cannot be restored, mMapObject is null!", new Throwable());
       return;
+    }
 
     setMapObject(mMapObject, true, null);
   }
@@ -953,50 +989,56 @@ public class PlacePageView extends RelativeLayout
   private void refreshViews(@NonNull NetworkPolicy policy)
   {
     if (mMapObject == null)
+    {
+      LOGGER.e(TAG, "A place page views cannot be refreshed, mMapObject is null", new Throwable());
       return;
+    }
 
-    refreshPreview(policy);
-    refreshViewsInternal();
+    refreshPreview(mMapObject, policy);
+    refreshViewsInternal(mMapObject);
   }
 
   public void refreshViews()
   {
     if (mMapObject == null)
+    {
+      LOGGER.e(TAG, "A place page views cannot be refreshed, mMapObject is null", new Throwable());
       return;
+    }
 
-    refreshPreview();
-    refreshViewsInternal();
+    refreshPreview(mMapObject);
+    refreshViewsInternal(mMapObject);
   }
 
-  private void refreshViewsInternal()
+  private void refreshViewsInternal(@NonNull MapObject mapObject)
   {
-    refreshDetails();
+    refreshDetails(mapObject);
 
     final Location loc = LocationHelper.INSTANCE.getSavedLocation();
 
-    switch (mMapObject.getMapObjectType())
+    switch (mapObject.getMapObjectType())
     {
       case MapObject.BOOKMARK:
-        refreshDistanceToObject(loc);
-        showBookmarkDetails();
+        refreshDistanceToObject(mapObject, loc);
+        showBookmarkDetails(mapObject);
         updateBookmarkButton();
-        setButtons(false, true);
+        setButtons(mapObject, false, true);
         break;
       case MapObject.POI:
       case MapObject.SEARCH:
-        refreshDistanceToObject(loc);
+        refreshDistanceToObject(mapObject, loc);
         hideBookmarkDetails();
-        setButtons(false, true);
+        setButtons(mapObject, false, true);
         break;
       case MapObject.API_POINT:
-        refreshDistanceToObject(loc);
+        refreshDistanceToObject(mapObject, loc);
         hideBookmarkDetails();
-        setButtons(true, true);
+        setButtons(mapObject, true, true);
         break;
       case MapObject.MY_POSITION:
-        refreshMyPosition(loc);
+        refreshMyPosition(mapObject, loc);
         hideBookmarkDetails();
-        setButtons(false, false);
+        setButtons(mapObject, false, false);
         break;
     }
 
@@ -1028,27 +1070,27 @@ public class PlacePageView extends RelativeLayout
     }
   }
 
-  private void refreshPreview(@NonNull NetworkPolicy policy)
+  private void refreshPreview(@NonNull MapObject mapObject, @NonNull NetworkPolicy policy)
   {
     if (mBannerController != null)
     {
-      boolean canShow = mMapObject.getMapObjectType() != MapObject.MY_POSITION
+      boolean canShow = mapObject.getMapObjectType() != MapObject.MY_POSITION
                         && policy.сanUseNetwork();
-      mBannerController.updateData(canShow ? mMapObject.getBanner() : null);
+      mBannerController.updateData(canShow ? mapObject.getBanner() : null);
     }
 
-    refreshPreview();
+    refreshPreview(mapObject);
   }
 
-  private void refreshPreview()
+  private void refreshPreview(@NonNull MapObject mapObject)
   {
-    UiUtils.setTextAndHideIfEmpty(mTvTitle, mMapObject.getTitle());
+    UiUtils.setTextAndHideIfEmpty(mTvTitle, mapObject.getTitle());
     if (mToolbar != null)
-      mToolbar.setTitle(mMapObject.getTitle());
-    UiUtils.setTextAndHideIfEmpty(mTvSubtitle, mMapObject.getSubtitle());
+      mToolbar.setTitle(mapObject.getTitle());
+    UiUtils.setTextAndHideIfEmpty(mTvSubtitle, mapObject.getSubtitle());
     colorizeSubtitle();
     UiUtils.hide(mAvDirection);
-    UiUtils.setTextAndHideIfEmpty(mTvAddress, mMapObject.getAddress());
+    UiUtils.setTextAndHideIfEmpty(mTvAddress, mapObject.getAddress());
 
     boolean sponsored = isSponsored();
     UiUtils.showIf(sponsored, mSponsoredInfo);
@@ -1068,15 +1110,16 @@ public class PlacePageView extends RelativeLayout
     return mSponsored != null && mSponsored.getType() != Sponsored.TYPE_NONE;
   }
 
-  private void refreshDetails()
+  private void refreshDetails(@NonNull MapObject mapObject)
   {
-    refreshLatLon();
+    refreshLatLon(mapObject);
 
     mGalleryAdapter.setItems(new ArrayList<Image>());
     if (mSponsored == null)
     {
-      final String website = mMapObject.getMetadata(Metadata.MetadataType.FMD_WEBSITE);
-      refreshMetadataOrHide(TextUtils.isEmpty(website) ? mMapObject.getMetadata(Metadata.MetadataType.FMD_URL) : website, mWebsite, mTvWebsite);
+      final String website = mapObject.getMetadata(Metadata.MetadataType.FMD_WEBSITE);
+      refreshMetadataOrHide(TextUtils.isEmpty(website) ? mapObject.getMetadata(Metadata.MetadataType.FMD_URL)
+                                                       : website, mWebsite, mTvWebsite);
       UiUtils.hide(mHotelDescription);
       UiUtils.hide(mHotelFacilities);
       UiUtils.hide(mHotelGallery);
@@ -1094,16 +1137,16 @@ public class PlacePageView extends RelativeLayout
         UiUtils.hide(mHotelMore);
     }
 
-    refreshMetadataOrHide(mMapObject.getMetadata(Metadata.MetadataType.FMD_PHONE_NUMBER), mPhone, mTvPhone);
-    refreshMetadataOrHide(mMapObject.getMetadata(Metadata.MetadataType.FMD_EMAIL), mEmail, mTvEmail);
-    refreshMetadataOrHide(mMapObject.getMetadata(Metadata.MetadataType.FMD_OPERATOR), mOperator, mTvOperator);
+    refreshMetadataOrHide(mapObject.getMetadata(Metadata.MetadataType.FMD_PHONE_NUMBER), mPhone, mTvPhone);
+    refreshMetadataOrHide(mapObject.getMetadata(Metadata.MetadataType.FMD_EMAIL), mEmail, mTvEmail);
+    refreshMetadataOrHide(mapObject.getMetadata(Metadata.MetadataType.FMD_OPERATOR), mOperator, mTvOperator);
     refreshMetadataOrHide(Framework.nativeGetActiveObjectFormattedCuisine(), mCuisine, mTvCuisine);
-    refreshMetadataOrHide(mMapObject.getMetadata(Metadata.MetadataType.FMD_WIKIPEDIA), mWiki, null);
-    refreshMetadataOrHide(mMapObject.getMetadata(Metadata.MetadataType.FMD_INTERNET), mWifi, null);
-    refreshMetadataOrHide(mMapObject.getMetadata(Metadata.MetadataType.FMD_FLATS), mEntrance, mTvEntrance);
-    refreshOpeningHours();
+    refreshMetadataOrHide(mapObject.getMetadata(Metadata.MetadataType.FMD_WIKIPEDIA), mWiki, null);
+    refreshMetadataOrHide(mapObject.getMetadata(Metadata.MetadataType.FMD_INTERNET), mWifi, null);
+    refreshMetadataOrHide(mapObject.getMetadata(Metadata.MetadataType.FMD_FLATS), mEntrance, mTvEntrance);
+    refreshOpeningHours(mapObject);
 
-    boolean showTaxiOffer = mMapObject.isReachableByTaxi() &&
+    boolean showTaxiOffer = mapObject.isReachableByTaxi() &&
                             LocationHelper.INSTANCE.getMyPosition() != null &&
                             ConnectionState.isConnected();
 
@@ -1124,9 +1167,9 @@ public class PlacePageView extends RelativeLayout
     }
   }
 
-  private void refreshOpeningHours()
+  private void refreshOpeningHours(@NonNull MapObject mapObject)
   {
-    final Timetable[] timetables = OpeningHours.nativeTimetablesFromString(mMapObject.getMetadata(Metadata.MetadataType.FMD_OPEN_HOURS));
+    final Timetable[] timetables = OpeningHours.nativeTimetablesFromString(mapObject.getMetadata(Metadata.MetadataType.FMD_OPEN_HOURS));
     if (timetables == null || timetables.length == 0)
     {
       UiUtils.hide(mOpeningHours);
@@ -1187,12 +1230,12 @@ public class PlacePageView extends RelativeLayout
     updateBookmarkButton();
   }
 
-  private void showBookmarkDetails()
+  private void showBookmarkDetails(@NonNull MapObject mapObject)
   {
     mBookmarkSet = true;
     UiUtils.show(mBookmarkFrame);
 
-    final String notes = ((Bookmark) mMapObject).getBookmarkDescription();
+    final String notes = ((Bookmark) mapObject).getBookmarkDescription();
 
     if (TextUtils.isEmpty(notes))
     {
@@ -1215,7 +1258,7 @@ public class PlacePageView extends RelativeLayout
     }
   }
 
-  private void setButtons(boolean showBackButton, boolean showRoutingButton)
+  private void setButtons(@NonNull MapObject mapObject, boolean showBackButton, boolean showRoutingButton)
   {
     List<PlacePageButtons.Item> buttons = new ArrayList<>();
 
@@ -1239,7 +1282,7 @@ public class PlacePageView extends RelativeLayout
       }
     }
 
-    if (mMapObject.hasPhoneNumber())
+    if (mapObject.hasPhoneNumber())
       buttons.add(PlacePageButtons.Item.CALL);
 
     buttons.add(PlacePageButtons.Item.BOOKMARK);
@@ -1258,15 +1301,18 @@ public class PlacePageView extends RelativeLayout
   public void refreshLocation(Location l)
   {
     if (mMapObject == null)
+    {
+      LOGGER.e(TAG, "A location cannot be refreshed, mMapObject is null!", new Throwable());
       return;
+    }
 
     if (MapObject.isOfType(MapObject.MY_POSITION, mMapObject))
-      refreshMyPosition(l);
+      refreshMyPosition(mMapObject, l);
     else
-      refreshDistanceToObject(l);
+      refreshDistanceToObject(mMapObject, l);
   }
 
-  private void refreshMyPosition(Location l)
+  private void refreshMyPosition(@NonNull MapObject mapObject, Location l)
   {
     UiUtils.hide(mTvDistance);
 
@@ -1285,30 +1331,29 @@ public class PlacePageView extends RelativeLayout
              .append(Framework.nativeFormatSpeed(l.getSpeed()));
     UiUtils.setTextAndHideIfEmpty(mTvSubtitle, builder.toString());
 
-    mMapObject.setLat(l.getLatitude());
-    mMapObject.setLon(l.getLongitude());
-    refreshLatLon();
+    mapObject.setLat(l.getLatitude());
+    mapObject.setLon(l.getLongitude());
+    refreshLatLon(mapObject);
   }
 
-  private void refreshDistanceToObject(Location l)
+  private void refreshDistanceToObject(@NonNull MapObject mapObject, Location l)
   {
     UiUtils.showIf(l != null, mTvDistance);
     if (l == null)
       return;
 
     mTvDistance.setVisibility(View.VISIBLE);
-    DistanceAndAzimut distanceAndAzimuth = Framework.nativeGetDistanceAndAzimuthFromLatLon(mMapObject
-                                                                                               .getLat(), mMapObject
-                                                                                               .getLon(),
-                                                                                           l.getLatitude(), l
-                                                                                               .getLongitude(), 0.0);
+    double lat = mapObject.getLat();
+    double lon = mapObject.getLon();
+    DistanceAndAzimut distanceAndAzimuth =
+        Framework.nativeGetDistanceAndAzimuthFromLatLon(lat, lon, l.getLatitude(), l.getLongitude(), 0.0);
     mTvDistance.setText(distanceAndAzimuth.getDistance());
   }
 
-  private void refreshLatLon()
+  private void refreshLatLon(@NonNull MapObject mapObject)
   {
-    final double lat = mMapObject.getLat();
-    final double lon = mMapObject.getLon();
+    final double lat = mapObject.getLat();
+    final double lon = mapObject.getLon();
     final String[] latLon = Framework.nativeFormatLatLonToArr(lat, lon, mIsLatLonDms);
     if (latLon.length == 2)
       mTvLatlon.setText(String.format(Locale.US, "%1$s, %2$s", latLon[0], latLon[1]));
@@ -1394,8 +1439,13 @@ public class PlacePageView extends RelativeLayout
         break;
       case R.id.ll__place_latlon:
         mIsLatLonDms = !mIsLatLonDms;
-        MwmApplication.prefs().edit().putBoolean(PREF_USE_DMS, mIsLatLonDms).commit();
-        refreshLatLon();
+        MwmApplication.prefs().edit().putBoolean(PREF_USE_DMS, mIsLatLonDms).apply();
+        if (mMapObject == null)
+        {
+          LOGGER.e(TAG, "A LatLon cannot be refreshed, mMapObject is null");
+          break;
+        }
+        refreshLatLon(mMapObject);
         break;
       case R.id.ll__place_phone:
         Utils.callPhone(getContext(), mTvPhone.getText().toString());
@@ -1405,6 +1455,11 @@ public class PlacePageView extends RelativeLayout
         break;
       case R.id.ll__place_wiki:
         // TODO: Refactor and use separate getters for Wiki and all other PP meta info too.
+        if (mMapObject == null)
+        {
+          LOGGER.e(TAG, "Cannot follow url, mMapObject is null!", new Throwable());
+          break;
+        }
         followUrl(mMapObject.getMetadata(Metadata.MetadataType.FMD_WIKIPEDIA));
         break;
       case R.id.direction_frame:
@@ -1416,6 +1471,11 @@ public class PlacePageView extends RelativeLayout
         Utils.sendTo(getContext(), mTvEmail.getText().toString());
         break;
       case R.id.tv__bookmark_edit:
+        if (mMapObject == null)
+        {
+          LOGGER.e(TAG, "A bookmark cannot be edited, mMapObject is null!", new Throwable());
+          return;
+        }
         Bookmark bookmark = (Bookmark) mMapObject;
         EditBookmarkFragment.editBookmark(bookmark.getCategoryId(), bookmark.getBookmarkId(),
                                           getActivity(), getActivity().getSupportFragmentManager(),
@@ -1451,13 +1511,13 @@ public class PlacePageView extends RelativeLayout
     getContext().startActivity(intent);
   }
 
-  private void toggleIsBookmark()
+  private void toggleIsBookmark(@NonNull MapObject mapObject)
   {
-    if (MapObject.isOfType(MapObject.BOOKMARK, mMapObject))
+    if (MapObject.isOfType(MapObject.BOOKMARK, mapObject))
       setMapObject(Framework.nativeDeleteBookmarkFromMapObject(), true, null);
     else
       setMapObject(BookmarkManager.INSTANCE.addNewBookmark(BookmarkManager.nativeFormatNewBookmarkName(),
-                                                           mMapObject.getLat(), mMapObject.getLon()), true, null);
+                                                           mapObject.getLat(), mapObject.getLon()), true, null);
     post(new Runnable()
     {
       @Override
@@ -1489,6 +1549,11 @@ public class PlacePageView extends RelativeLayout
     switch (v.getId())
     {
       case R.id.ll__place_latlon:
+        if (mMapObject == null)
+        {
+          LOGGER.e(TAG, "A long click tap on LatLon cannot be handled, mMapObject is null!");
+          break;
+        }
         final double lat = mMapObject.getLat();
         final double lon = mMapObject.getLon();
         items.add(Framework.nativeFormatLatLon(lat, lon, false));
@@ -1510,6 +1575,11 @@ public class PlacePageView extends RelativeLayout
         items.add(mTvOperator.getText().toString());
         break;
       case R.id.ll__place_wiki:
+        if (mMapObject == null)
+        {
+          LOGGER.e(TAG, "A long click tap on wiki cannot be handled, mMapObject is null!");
+          break;
+        }
         items.add(mMapObject.getMetadata(Metadata.MetadataType.FMD_WIKIPEDIA));
         break;
     }
