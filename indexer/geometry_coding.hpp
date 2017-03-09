@@ -26,22 +26,22 @@ inline m2::PointU DecodeDelta(uint64_t delta, m2::PointU const & prediction)
 
 
 /// Predict next point for polyline with given previous points (p1, p2).
-m2::PointU PredictPointInPolyline(m2::PointU const & maxPoint,
-                                  m2::PointU const & p1,
-                                  m2::PointU const & p2);
+m2::PointU PredictPointInPolyline(m2::PointD const & maxPoint,
+                                  m2::PointD const & p1,
+                                  m2::PointD const & p2);
 
 /// Predict next point for polyline with given previous points (p1, p2, p3).
-m2::PointU PredictPointInPolyline(m2::PointU const & maxPoint,
-                                  m2::PointU const & p1,
-                                  m2::PointU const & p2,
-                                  m2::PointU const & p3);
+m2::PointU PredictPointInPolyline(m2::PointD const & maxPoint,
+                                  m2::PointD const & p1,
+                                  m2::PointD const & p2,
+                                  m2::PointD const & p3);
 
 /// Predict point for neighbour triangle with given
 /// previous triangle (p1, p2, p3) and common edge (p1, p2).
-m2::PointU PredictPointInTriangle(m2::PointU const & maxPoint,
-                                  m2::PointU const & p1,
-                                  m2::PointU const & p2,
-                                  m2::PointU const & p3);
+m2::PointU PredictPointInTriangle(m2::PointD const & maxPoint,
+                                  m2::PointD const & p1,
+                                  m2::PointD const & p2,
+                                  m2::PointD const & p3);
 
 /// Geometry Coding-Decoding functions.
 namespace geo_coding

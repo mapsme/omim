@@ -9,30 +9,30 @@
 
 namespace
 {
-  inline m2::PointU ClampPoint(m2::PointU const & maxPoint, m2::Point<double> const & point)
+  inline m2::PointU ClampPoint(m2::PointD const & maxPoint, m2::PointD const & point)
   {
     typedef m2::PointU::value_type uvalue_t;
     //return m2::PointU(my::clamp(static_cast<uvalue_t>(point.x), static_cast<uvalue_t>(0), maxPoint.x),
     //                  my::clamp(static_cast<uvalue_t>(point.y), static_cast<uvalue_t>(0), maxPoint.y));
 
-    return m2::PointU(static_cast<uvalue_t>(my::clamp(point.x, 0.0, static_cast<double>(maxPoint.x))),
-                      static_cast<uvalue_t>(my::clamp(point.y, 0.0, static_cast<double>(maxPoint.y))));
+    return m2::PointU(static_cast<uvalue_t>(my::clamp(point.x, 0.0, maxPoint.x)),
+                      static_cast<uvalue_t>(my::clamp(point.y, 0.0, maxPoint.y)));
   }
 }
 
-m2::PointU PredictPointInPolyline(m2::PointU const & maxPoint,
-                                  m2::PointU const & p1,
-                                  m2::PointU const & p2)
+m2::PointU PredictPointInPolyline(m2::PointD const & maxPoint,
+                                  m2::PointD const & p1,
+                                  m2::PointD const & p2)
 {
   // return ClampPoint(maxPoint, m2::PointI64(p1) + m2::PointI64(p1) - m2::PointI64(p2));
   // return ClampPoint(maxPoint, m2::PointI64(p1) + (m2::PointI64(p1) - m2::PointI64(p2)) / 2);
-  return ClampPoint(maxPoint, m2::PointD(p1) + (m2::PointD(p1) - m2::PointD(p2)) / 2.0);
+  return ClampPoint(maxPoint, p1 + (p1 - p2) / 2.0);
 }
 
-m2::PointU PredictPointInPolyline(m2::PointU const & maxPoint,
-                                  m2::PointU const & p1,
-                                  m2::PointU const & p2,
-                                  m2::PointU const & p3)
+m2::PointU PredictPointInPolyline(m2::PointD const & maxPoint,
+                                  m2::PointD const & p1,
+                                  m2::PointD const & p2,
+                                  m2::PointD const & p3)
 {
   CHECK_NOT_EQUAL(p2, p3, ());
 
@@ -52,13 +52,13 @@ m2::PointU PredictPointInPolyline(m2::PointU const & maxPoint,
   complex<double> const c0 = (c01 + c02) * complex<double>(0.5, 0.0);
   */
 
-  return ClampPoint(maxPoint, m2::PointD(c0.real(), c0.imag()));
+  return ClampPoint(maxPoint, {c0.real(), c0.imag()});
 }
 
-m2::PointU PredictPointInTriangle(m2::PointU const & maxPoint,
-                                  m2::PointU const & p1,
-                                  m2::PointU const & p2,
-                                  m2::PointU const & p3)
+m2::PointU PredictPointInTriangle(m2::PointD const & maxPoint,
+                                  m2::PointD const & p1,
+                                  m2::PointD const & p2,
+                                  m2::PointD const & p3)
 {
   // parallelogram prediction
   return ClampPoint(maxPoint, p1 + p2 - p3);
