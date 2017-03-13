@@ -699,10 +699,13 @@ public class PlacePageView extends RelativeLayout
     else
     {
       UiUtils.show(mHotelFacilities);
+      boolean oldValue = mFacilitiesAdapter.isShowAll();
       mFacilitiesAdapter.setShowAll(false);
       mFacilitiesAdapter.setItems(Arrays.asList(info.mFacilities));
       mHotelMoreFacilities.setVisibility(info.mFacilities.length > FacilitiesAdapter.MAX_COUNT
                                          ? VISIBLE : GONE);
+      if (oldValue != mFacilitiesAdapter.isShowAll())
+        mAnimationController.onContentSizeChanged();
     }
   }
 
@@ -1514,12 +1517,14 @@ public class PlacePageView extends RelativeLayout
       case R.id.tv__place_hotel_more:
         UiUtils.hide(mHotelMoreDescription);
         mTvHotelDescription.setMaxLines(Integer.MAX_VALUE);
+        mAnimationController.onContentSizeChanged();
         break;
       case R.id.tv__place_hotel_facilities_more:
         if (mSponsored != null && mMapObject != null)
           Statistics.INSTANCE.trackHotelEvent(PP_HOTEL_FACILITIES, mSponsored, mMapObject);
         UiUtils.hide(mHotelMoreFacilities);
         mFacilitiesAdapter.setShowAll(true);
+        mAnimationController.onContentSizeChanged();
         break;
       case R.id.tv__place_hotel_reviews_more:
         if (isSponsored())
