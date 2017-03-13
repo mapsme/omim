@@ -120,8 +120,6 @@ using TObservers = NSHashTable<__kindof TObserver>;
       __strong auto self = weakSelf;
       if (!self)
         return;
-      if (IPAD)
-        GetFramework().SearchEverywhere(self->m_everywhereParams);
       [self onSearchStarted];
     };
   }
