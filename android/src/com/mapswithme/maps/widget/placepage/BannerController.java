@@ -112,7 +112,7 @@ final class BannerController implements AdListener
     mError = value;
   }
 
-  private boolean hasErrorOccurred()
+  boolean hasErrorOccurred()
   {
     return mError;
   }
