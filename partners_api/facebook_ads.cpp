@@ -5,6 +5,32 @@
 
 namespace
 {
+#if defined(OMIM_OS_IPHONE)
+  auto const kFoodPlacementId = "185237551520383_1425355070841952";
+  auto const kShopsPlacementId = "185237551520383_1425355647508561";
+  auto const kCityTransportPlacementId = "185237551520383_1425356124175180";
+  auto const kGlobalTransportPlacementId = "185237551520383_1425356400841819";
+  auto const kHotelsPlacementId = "185237551520383_1425356560841803";
+  auto const kSightsPlacementId = "185237551520383_1425356720841787";
+  auto const kLargeToponymsPlacementId = "185237551520383_1425356987508427";
+  auto const kHealthPlacementId = "185237551520383_1425357194175073";
+  auto const kFinancialPlacementId = "185237551520383_1425358064174986";
+  auto const kEntertainmentPlacementId = "185237551520383_1425358274174965";
+  auto const kBuildingPlacementId = "185237551520383_1425358410841618";
+#else
+  auto const kFoodPlacementId = "185237551520383_1384650164912443";
+  auto const kShopsPlacementId = "185237551520383_1384650804912379";
+  auto const kCityTransportPlacementId = "185237551520383_1384651074912352";
+  auto const kGlobalTransportPlacementId = "185237551520383_1387632484614211";
+  auto const kHotelsPlacementId = "185237551520383_1384651324912327";
+  auto const kSightsPlacementId = "185237551520383_1384651734912286";
+  auto const kLargeToponymsPlacementId = "185237551520383_1384652164912243";
+  auto const kHealthPlacementId = "185237551520383_1384652351578891";
+  auto const kFinancialPlacementId = "185237551520383_1384652658245527";
+  auto const kEntertainmentPlacementId = "185237551520383_1384653001578826";
+  auto const kBuildingPlacementId = "185237551520383_1419317661445693";
+#endif
+
 using namespace facebook;
 
 template <typename It>
@@ -34,29 +60,29 @@ Ads::Ads()
                {"amenity", "restaurant"},
                {"amenity", "bar"},
                {"amenity", "pub"}},
-              "185237551520383_1384650164912443");
+              kFoodPlacementId);
   // Shops.
   AppendEntry({{"shop"},
                {"amenity", "marketplace"}},
-              "185237551520383_1384650804912379");
+              kShopsPlacementId);
   // City Transport.
   AppendEntry({{"aerialway"},
                {"highway", "bus_stop"},
                {"highway", "speed_camera"},
                {"public_transport"}},
-              "185237551520383_1384651074912352");
+              kCityTransportPlacementId);
   // Global transport.
   AppendEntry({{"aeroway"},
                {"railway"},
                {"man_made", "pier"}},
-              "185237551520383_1387632484614211");
+              kGlobalTransportPlacementId);
   // Hotels.
   AppendEntry({{"tourism", "hotel"},
                {"tourism", "hostel"},
                {"tourism", "motel"},
                {"tourism", "apartment"},
                {"tourism", "resort"}},
-              "185237551520383_1384651324912327");
+              kHotelsPlacementId);
   // Sights.
   AppendEntry({{"tourism", "chalet"},
                {"tourism", "zoo"},
@@ -69,9 +95,9 @@ Ads::Ads()
                {"amenity", "theatre"},
                {"amenity", "townhall"},
                {"historic"}},
-              "185237551520383_1384651734912286");
+              kSightsPlacementId);
   // Large toponyms.
-  AppendEntry({{"place"}}, "185237551520383_1384652164912243");
+  AppendEntry({{"place"}}, kLargeToponymsPlacementId);
   // Health.
   AppendEntry({{"amenity", "dentist"},
                {"amenity", "doctors"},
@@ -79,9 +105,9 @@ Ads::Ads()
                {"amenity", "hospital"},
                {"amenity", "pharmacy"},
                {"amenity", "veterinary"}},
-              "185237551520383_1384652351578891");
+              kHealthPlacementId);
   // Financial.
-  AppendEntry({{"amenity", "bank"}, {"amenity", "atm"}}, "185237551520383_1384652658245527");
+  AppendEntry({{"amenity", "bank"}, {"amenity", "atm"}}, kFinancialPlacementId);
   // Entertainment.
   AppendEntry({{"amenity", "cinema"},
                {"amenity", "brothel"},
@@ -90,9 +116,9 @@ Ads::Ads()
                {"amenity", "theatre"},
                {"boundary", "national_park"},
                {"leisure"}},
-              "185237551520383_1384653001578826");
+              kEntertainmentPlacementId);
   // Building.
-  AppendEntry({{"building"}}, "185237551520383_1419317661445693");
+  AppendEntry({{"building"}}, kBuildingPlacementId);
 
   SetExcludeTypes({{"sponsored", "booking"}});
 }
