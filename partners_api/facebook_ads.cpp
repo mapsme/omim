@@ -54,36 +54,35 @@ namespace facebook
 {
 Ads::Ads()
 {
-  // Food.
   AppendEntry({{"amenity", "cafe"},
                {"amenity", "fast_food"},
                {"amenity", "restaurant"},
                {"amenity", "bar"},
                {"amenity", "pub"}},
               kFoodPlacementId);
-  // Shops.
+
   AppendEntry({{"shop"},
                {"amenity", "marketplace"}},
               kShopsPlacementId);
-  // City Transport.
+
   AppendEntry({{"aerialway"},
                {"highway", "bus_stop"},
                {"highway", "speed_camera"},
                {"public_transport"}},
               kCityTransportPlacementId);
-  // Global transport.
+
   AppendEntry({{"aeroway"},
                {"railway"},
                {"man_made", "pier"}},
               kGlobalTransportPlacementId);
-  // Hotels.
+
   AppendEntry({{"tourism", "hotel"},
                {"tourism", "hostel"},
                {"tourism", "motel"},
                {"tourism", "apartment"},
                {"tourism", "resort"}},
               kHotelsPlacementId);
-  // Sights.
+
   AppendEntry({{"tourism", "chalet"},
                {"tourism", "zoo"},
                {"tourism", "artwork"},
@@ -96,9 +95,9 @@ Ads::Ads()
                {"amenity", "townhall"},
                {"historic"}},
               kSightsPlacementId);
-  // Large toponyms.
+
   AppendEntry({{"place"}}, kLargeToponymsPlacementId);
-  // Health.
+
   AppendEntry({{"amenity", "dentist"},
                {"amenity", "doctors"},
                {"amenity", "clinic"},
@@ -106,9 +105,9 @@ Ads::Ads()
                {"amenity", "pharmacy"},
                {"amenity", "veterinary"}},
               kHealthPlacementId);
-  // Financial.
+
   AppendEntry({{"amenity", "bank"}, {"amenity", "atm"}}, kFinancialPlacementId);
-  // Entertainment.
+
   AppendEntry({{"amenity", "cinema"},
                {"amenity", "brothel"},
                {"amenity", "casino"},
@@ -117,7 +116,7 @@ Ads::Ads()
                {"boundary", "national_park"},
                {"leisure"}},
               kEntertainmentPlacementId);
-  // Building.
+
   AppendEntry({{"building"}}, kBuildingPlacementId);
 
   SetExcludeTypes({{"sponsored", "booking"}});
