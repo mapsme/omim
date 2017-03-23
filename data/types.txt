@@ -1151,3 +1151,6 @@ hwtag|yescar
 hwtag|nocar
 tourism|gallery
 historic|fort
+shop|coffee
+shop|tea
+sponsored|tinkoff
