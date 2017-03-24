@@ -763,7 +763,7 @@ void MainWindow::OnBuildPhonePackage()
 
     QString const stylesDir = m_mapcssFilePath.left(index);
     QString text = build_style::RunBuildingPhonePack(stylesDir + kStylesFolder, targetDir);
-    text.append("\nMobile device style package is in a directory: ");
+    text.append("\nMobile device style package is in the directory: ");
     text.append(targetDir + kStylesFolder);
     text.append(". Copy it to your mobile device.\n");
     InfoDialog dlg(QString("Building phone pack"), text, NULL);

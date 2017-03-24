@@ -2,12 +2,12 @@
 
 #include "build_common.h"
 
-#include "std/exception.hpp"
-
 #include "platform/platform.hpp"
 
 #include <QDir>
 #include <QStringList>
+
+#include <exception>
 
 namespace
 {
@@ -20,14 +20,13 @@ QString GetScriptPath()
 
 namespace build_style
 {
-
 QString RunBuildingPhonePack(QString const & stylesFolder, QString const & targetFolder)
 {
   if (!QDir(stylesFolder).exists())
-    throw runtime_error("styles folder does not exist");
+    throw std::runtime_error("styles folder does not exist");
 
   if (!QDir(targetFolder).exists())
-    throw runtime_error("target folder does not exist");
+    throw std::runtime_error("target folder does not exist");
 
   QStringList params;
   params << "python" <<
@@ -38,5 +37,4 @@ QString RunBuildingPhonePack(QString const & stylesFolder, QString const & targe
   auto const res = ExecProcess(cmd);
   return res.second;
 }
-
 }  // namespace build_style
