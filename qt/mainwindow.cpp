@@ -132,12 +132,15 @@ extern char const * kTokenSecretSetting;
 
 MainWindow::MainWindow(Framework & framework, QString const & mapcssFilePath /*= QString()*/)
   : m_Docks{}
+  , m_locationService(CreateDesktopLocationService(*this))
+#ifdef BUILD_DESIGNER
+  , m_mapcssFilePath(mapcssFilePath)
   , m_pBuildStyleAction(nullptr)
+  , m_pRecalculateGeomIndex(nullptr)
   , m_pDrawDebugRectAction(nullptr)
   , m_pGetStatisticsAction(nullptr)
   , m_pRunTestsAction(nullptr)
-  , m_locationService(CreateDesktopLocationService(*this))
-  , m_mapcssFilePath(mapcssFilePath)
+#endif
 {
   // Always runs on the first desktop
   QDesktopWidget const * desktop(QApplication::desktop());

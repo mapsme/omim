@@ -31,6 +31,8 @@ if (NOT SKIP_TESTS)
   set(SKIP_TESTS FALSE)
 endif()
 
+add_definitions(-DBUILD_DESIGNER)
+
 # End of setting environment variables
 
 # Set target platform:

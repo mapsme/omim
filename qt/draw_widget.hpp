@@ -59,6 +59,7 @@ public:
   void PrepareShutdown();
 
   Framework & GetFramework() { return m_framework; }
+
   void SetMapStyle(MapStyle mapStyle);
 
   void SetRouter(routing::RouterType routerType);
@@ -73,8 +74,6 @@ public:
   void SetSelectionMode(bool mode);
 
   void RefreshDrawingRules();
-
-  Framework & GetFramework() { return *m_framework.get(); }
 
 protected:
   /// @name Overriden from MapWidget.
@@ -100,8 +99,6 @@ private:
   QPoint m_rubberBandOrigin;
 
   bool m_emulatingLocation;
-
-  void InitRenderPolicy();
 
   TCurrentCountryChanged m_currentCountryChanged;
   storage::TCountryId m_countryId;
