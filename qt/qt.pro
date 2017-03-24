@@ -118,6 +118,7 @@ map_designer {
 SOURCES += \
     build_style/build_common.cpp \
     build_style/build_drules.cpp \
+    build_style/build_phone_pack.cpp \
     build_style/build_skins.cpp \
     build_style/build_style.cpp \
     build_style/build_statistics.cpp \
@@ -126,6 +127,7 @@ SOURCES += \
 HEADERS += \
     build_style/build_common.h \
     build_style/build_drules.h \
+    build_style/build_phone_pack.h \
     build_style/build_skins.h \
     build_style/build_style.h \
     build_style/build_statistics.h \

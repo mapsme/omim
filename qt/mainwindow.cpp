@@ -21,9 +21,12 @@
 
 #include "std/target_os.hpp"
 
+#ifdef BUILD_DESIGNER
+#include "build_style/build_phone_pack.h"
 #include "build_style/build_style.h"
 #include "build_style/build_statistics.h"
 #include "build_style/run_tests.h"
+#endif // BUILD_DESIGNER
 
 #include <QtGui/QCloseEvent>
 #include <QtWidgets/QFileDialog>
@@ -140,6 +143,7 @@ MainWindow::MainWindow(Framework & framework, QString const & mapcssFilePath /*=
   , m_pDrawDebugRectAction(nullptr)
   , m_pGetStatisticsAction(nullptr)
   , m_pRunTestsAction(nullptr)
+  , m_pBuildPhonePackAction(nullptr)
 #endif
 {
   // Always runs on the first desktop
@@ -439,15 +443,14 @@ void MainWindow::CreateNavigationBar()
     m_pRunTestsAction->setCheckable(false);
     m_pRunTestsAction->setToolTip(tr("Run tests"));
 
+    // Add "Build phone package" button
+    m_pBuildPhonePackAction = pToolBar->addAction(QIcon(":/navig64/phonepack.png"),
+                                                  tr("Build phone package"),
+                                                  this,
+                                                  SLOT(OnBuildPhonePackage()));
+    m_pBuildPhonePackAction->setCheckable(false);
+    m_pBuildPhonePackAction->setToolTip(tr("Build phone package"));
 #endif // BUILD_DESIGNER
-
-    // add view actions 1
-    button_t arr[] = {
-      { QString(), 0, 0 },
-      //{ tr("Show all"), ":/navig64/world.png", SLOT(ShowAll()) },
-      { tr("Scale +"), ":/navig64/plus.png", SLOT(ScalePlus()) }
-    };
-    add_buttons(pToolBar, arr, ARRAY_SIZE(arr), m_pDrawWidget);
   }
 
   qt::common::ScaleSlider::Embed(Qt::Vertical, *pToolBar, *m_pDrawWidget);
@@ -729,6 +732,41 @@ void MainWindow::OnRunTests()
   {
     pair<bool, QString> res = build_style::RunCurrentStyleTests();
     InfoDialog dlg(QString("Style tests: ") + (res.first ? "OK" : "FAILED"), res.second, NULL);
+    dlg.exec();
+  }
+  catch (std::exception & e)
+  {
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("Error");
+    msgBox.setText(e.what());
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    msgBox.exec();
+  }
+}
+
+void MainWindow::OnBuildPhonePackage()
+{
+  try
+  {
+    char const * const kStylesFolder = "/styles/";
+
+    QString const targetDir = QFileDialog::getExistingDirectory(nullptr, "Choose output directory");
+    if (targetDir.isEmpty())
+      return;
+    if (QDir(targetDir + kStylesFolder).exists())
+      throw std::runtime_error(std::string("Target directory exists: ") + targetDir.toStdString() + kStylesFolder);
+
+    int const index = m_mapcssFilePath.indexOf(kStylesFolder);
+    if (index < 0)
+      throw std::runtime_error("Styles folder's name must be 'styles'");
+
+    QString const stylesDir = m_mapcssFilePath.left(index);
+    QString text = build_style::RunBuildingPhonePack(stylesDir + kStylesFolder, targetDir);
+    text.append("\nMobile device style package is in a directory: ");
+    text.append(targetDir + kStylesFolder);
+    text.append(". Copy it to your mobile device.\n");
+    InfoDialog dlg(QString("Building phone pack"), text, NULL);
     dlg.exec();
   }
   catch (std::exception & e)
