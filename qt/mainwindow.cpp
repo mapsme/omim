@@ -22,6 +22,7 @@
 #include "std/target_os.hpp"
 
 #ifdef BUILD_DESIGNER
+#include "build_style/build_common.h"
 #include "build_style/build_phone_pack.h"
 #include "build_style/build_style.h"
 #include "build_style/build_statistics.h"
@@ -749,12 +750,12 @@ void MainWindow::OnBuildPhonePackage()
 {
   try
   {
-    char const * const kStylesFolder = "/styles/";
+    char const * const kStylesFolder = "styles";
 
     QString const targetDir = QFileDialog::getExistingDirectory(nullptr, "Choose output directory");
     if (targetDir.isEmpty())
       return;
-    if (QDir(targetDir + kStylesFolder).exists())
+    if (QDir(JoinFoldersToPath({targetDir, kStylesFolder})).exists())
       throw std::runtime_error(std::string("Target directory exists: ") + targetDir.toStdString() + kStylesFolder);
 
     int const index = m_mapcssFilePath.indexOf(kStylesFolder);
@@ -762,11 +763,11 @@ void MainWindow::OnBuildPhonePackage()
       throw std::runtime_error("Styles folder's name must be 'styles'");
 
     QString const stylesDir = m_mapcssFilePath.left(index);
-    QString text = build_style::RunBuildingPhonePack(stylesDir + kStylesFolder, targetDir);
+    QString text = build_style::RunBuildingPhonePack(JoinFoldersToPath({stylesDir, kStylesFolder}), targetDir);
     text.append("\nMobile device style package is in the directory: ");
-    text.append(targetDir + kStylesFolder);
+    text.append(JoinFoldersToPath({targetDir, kStylesFolder}));
     text.append(". Copy it to your mobile device.\n");
-    InfoDialog dlg(QString("Building phone pack"), text, NULL);
+    InfoDialog dlg(QString("Building phone pack"), text, nullptr);
     dlg.exec();
   }
   catch (std::exception & e)

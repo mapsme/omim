@@ -13,8 +13,11 @@ namespace
 {
 QString GetScriptPath()
 {
+  QString const kScriptName = "generate_styles_override.py";
   QString const resourceDir = GetPlatform().ResourcesDir().c_str();
-  return resourceDir + "generate_styles_override.py";
+  if (resourceDir.isEmpty())
+    return kScriptName;
+  return JoinFoldersToPath({resourceDir, kScriptName});
 }
 }  // namespace
 
@@ -35,6 +38,13 @@ QString RunBuildingPhonePack(QString const & stylesFolder, QString const & targe
          '"' + targetFolder + '"';
   QString const cmd = params.join(' ');
   auto const res = ExecProcess(cmd);
+  if (res.first != 0)
+  {
+    QString msg = QString("System error ") + to_string(res.first).c_str();
+    if (!res.second.isEmpty())
+      msg = msg + "\n" + res.second;
+    throw std::runtime_error(to_string(msg));
+  }
   return res.second;
 }
 }  // namespace build_style
