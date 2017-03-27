@@ -263,6 +263,7 @@ void logSponsoredEvent(MWMPlacePageData * data, NSString * eventName)
 
 - (void)addBookmark
 {
+  [Statistics logEvent:kStatBookmarkCreated]
   [self.data updateBookmarkStatus:YES];
   [self.layout reloadBookmarkSection:YES];
 }
