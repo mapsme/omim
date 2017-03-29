@@ -37,6 +37,10 @@ if (NOT SKIP_TESTS)
   set(SKIP_TESTS FALSE)
 endif()
 
+if (NOT PYTHON_VERSION)
+  set(PYTHON_VERSION 2.7)
+endif()
+
 # End of setting environment variables
 
 # Set target platform:
@@ -93,13 +97,13 @@ if (PLATFORM_MAC)
 endif()
 
 if (PYBINDINGS)
-  find_package(Boost 1.54 REQUIRED COMPONENTS python)
+  find_package(Boost 1.54 REQUIRED COMPONENTS python3)
 else()
   find_package(Boost 1.54)
 endif()
 
 if (PYBINDINGS)
-  find_package(PythonLibs 2.7 REQUIRED)
+  find_package(PythonLibs ${PYTHON_VERSION} REQUIRED)
   include_directories(${PYTHON_INCLUDE_DIRS})
 endif()
 
@@ -290,6 +294,7 @@ add_subdirectory(search)
 add_subdirectory(tracking)
 add_subdirectory(traffic)
 add_subdirectory(partners_api)
+add_subdirectory(localads)
 
 if (PLATFORM_DESKTOP)
   add_subdirectory(openlr)

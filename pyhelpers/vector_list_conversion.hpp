@@ -14,6 +14,9 @@ vector<T> python_list_to_std_vector(boost::python::object const & iterable)
                    boost::python::stl_input_iterator<T>());
 }
 
+// For this to work one should define
+// class_<std::vector<YourClass>>("YourClassList")
+//   .def(vector_indexing_suite<std::vector<YourClass>>());
 template <typename T>
 boost::python::list std_vector_to_python_list(vector<T> const & v)
 {
