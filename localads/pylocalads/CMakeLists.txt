@@ -11,6 +11,7 @@ omim_link_libraries(
   ${PROJECT_NAME}
   ${PYTHON_LIBRARIES}
   ${Boost_LIBRARIES}
+  base
   localads
 )
 
