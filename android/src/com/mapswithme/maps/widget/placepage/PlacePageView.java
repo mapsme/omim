@@ -43,6 +43,9 @@ import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.MwmActivity;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.R;
+import com.mapswithme.maps.ads.DefaultAdTracker;
+import com.mapswithme.maps.ads.Factory;
+import com.mapswithme.maps.ads.NativeAdLoader;
 import com.mapswithme.maps.api.ParsedMwmRequest;
 import com.mapswithme.maps.bookmarks.data.Bookmark;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
@@ -281,6 +284,18 @@ public class PlacePageView extends RelativeLayout
     return UiUtils.isViewTouched(event, mHotelGallery);
   }
 
+  public void onActivityResume()
+  {
+    if (mBannerController != null)
+      mBannerController.onChangedVisibility(true);
+  }
+
+  public void onActivityPause()
+  {
+    if (mBannerController != null)
+      mBannerController.onChangedVisibility(false);
+  }
+
   private void initViews()
   {
     LayoutInflater.from(getContext()).inflate(R.layout.place_page, this);
@@ -367,7 +382,11 @@ public class PlacePageView extends RelativeLayout
 
     View bannerView = findViewById(R.id.banner);
     if (bannerView != null)
-      mBannerController = new BannerController(bannerView, this);
+    {
+      DefaultAdTracker tracker = new DefaultAdTracker();
+      NativeAdLoader loader = Factory.createFacebookAdLoader(tracker, tracker);
+      mBannerController = new BannerController(bannerView, this, loader, tracker);
+    }
 
     mButtons = new PlacePageButtons(this, ppButtons, new PlacePageButtons.ItemListener()
     {
@@ -1431,7 +1450,7 @@ public class PlacePageView extends RelativeLayout
 
   public void setOnVisibilityChangedListener(BasePlacePageAnimationController.OnVisibilityChangedListener listener)
   {
-    mAnimationController.setOnVisibilityChangedListener(listener);
+    mAnimationController.setOnVisibilityChangedListener(new PlacePageVisibilityProxy(listener, mBannerController));
   }
 
   public void setOnAnimationListener(@Nullable BasePlacePageAnimationController.OnAnimationListener listener)

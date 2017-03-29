@@ -10,11 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.ads.Ad;
-import com.facebook.ads.AdError;
-import com.facebook.ads.AdListener;
-import com.facebook.ads.NativeAd;
 import com.mapswithme.maps.R;
+import com.mapswithme.maps.ads.AdTracker;
+import com.mapswithme.maps.ads.MwmNativeAd;
+import com.mapswithme.maps.ads.NativeAdError;
+import com.mapswithme.maps.ads.NativeAdListener;
+import com.mapswithme.maps.ads.NativeAdLoader;
 import com.mapswithme.maps.bookmarks.data.Banner;
 import com.mapswithme.util.Config;
 import com.mapswithme.util.UiUtils;
@@ -22,20 +23,17 @@ import com.mapswithme.util.log.Logger;
 import com.mapswithme.util.log.LoggerFactory;
 import com.mapswithme.util.statistics.Statistics;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static com.mapswithme.util.SharedPropertiesUtils.isShowcaseSwitchedOnLocal;
 import static com.mapswithme.util.statistics.Statistics.EventName.PP_BANNER_CLICK;
 import static com.mapswithme.util.statistics.Statistics.EventName.PP_BANNER_SHOW;
 
-final class BannerController implements AdListener
+final class BannerController
 {
   private static final Logger LOGGER = LoggerFactory.INSTANCE
       .getLogger(LoggerFactory.Type.MISC);
   private static final String TAG = BannerController.class.getName();
+
   private static final int MAX_MESSAGE_LINES = 100;
   private static final int MIN_MESSAGE_LINES = 3;
   private static final int MAX_TITLE_LINES = 2;
@@ -69,15 +67,19 @@ final class BannerController implements AdListener
   @Nullable
   private final BannerListener mListener;
 
-  @Nullable
-  private NativeAd mNativeAd;
-
   private boolean mOpened = false;
-  private boolean mProgress = false;
   private boolean mError = false;
+  @Nullable
+  private MwmNativeAd mCurrentAd;
+  @NonNull
+  private NativeAdLoader mAdsLoader;
+  @Nullable
+  private AdTracker mAdTracker;
 
-  BannerController(@NonNull View bannerView, @Nullable BannerListener listener)
+  BannerController(@NonNull View bannerView, @Nullable BannerListener listener,
+                   @NonNull NativeAdLoader loader, @Nullable AdTracker tracker)
   {
+    LOGGER.d(TAG, "Constructor()");
     mFrame = bannerView;
     mListener = listener;
     Resources resources = mFrame.getResources();
@@ -88,26 +90,12 @@ final class BannerController implements AdListener
     mActionSmall = (TextView) bannerView.findViewById(R.id.tv__action_small);
     mActionLarge = (TextView) bannerView.findViewById(R.id.tv__action_large);
     mAds = bannerView.findViewById(R.id.tv__ads);
+    loader.setAdListener(new MyNativeAdsListener());
+    mAdsLoader = loader;
+    mAdTracker = tracker;
   }
 
-  private void showProgress()
-  {
-    mProgress = true;
-    updateVisibility();
-  }
-
-  private void hideProgress()
-  {
-    mProgress = false;
-    updateVisibility();
-  }
-
-  private boolean isDownloading()
-  {
-    return mProgress;
-  }
-
-  private void showError(boolean value)
+  private void setErrorStatus(boolean value)
   {
     mError = value;
   }
@@ -119,10 +107,15 @@ final class BannerController implements AdListener
 
   private void updateVisibility()
   {
+    if (mBanner == null || TextUtils.isEmpty(mBanner.getId()))
+      return;
+
     UiUtils.showIf(!hasErrorOccurred(), mFrame);
-    if (isDownloading() || hasErrorOccurred())
+    if ((mAdsLoader.isAdLoading(mBanner.getId()) || hasErrorOccurred())
+        && mCurrentAd == null)
     {
       UiUtils.hide(mIcon, mTitle, mMessage, mActionSmall, mActionLarge, mAds);
+      onChangedVisibility(mBanner, false);
     }
     else
     {
@@ -136,21 +129,24 @@ final class BannerController implements AdListener
 
   void updateData(@Nullable Banner banner)
   {
+    mCurrentAd = null;
+    if (mBanner != null && !mBanner.equals(banner))
+      onChangedVisibility(mBanner, false);
+
     UiUtils.hide(mFrame);
-    showError(false);
+    setErrorStatus(false);
 
     mBanner = banner;
     if (mBanner == null || TextUtils.isEmpty(mBanner.getId()) || !isShowcaseSwitchedOnLocal()
         || Config.getAdForbidden())
+    {
       return;
+    }
 
-    mNativeAd = new NativeAd(mFrame.getContext(), mBanner.getId());
-    mNativeAd.setAdListener(BannerController.this);
-    mNativeAd.loadAd(EnumSet.of(NativeAd.MediaCacheFlag.ICON));
     UiUtils.show(mFrame);
-    showProgress();
-    if (mOpened && mListener != null)
-      mListener.onSizeChanged();
+
+    mAdsLoader.loadAd(mFrame.getContext(), mBanner.getId());
+    updateVisibility();
   }
 
   boolean isBannerVisible()
@@ -160,22 +156,22 @@ final class BannerController implements AdListener
 
   void open()
   {
-    if (!isBannerVisible() || mNativeAd == null || mBanner == null || mOpened)
+    if (!isBannerVisible() || mBanner == null || TextUtils.isEmpty(mBanner.getId()) || mOpened)
       return;
 
     mOpened = true;
     setFrameHeight(WRAP_CONTENT);
-    loadIcon(mNativeAd);
+    if (mCurrentAd != null)
+      loadIcon(mCurrentAd);
     mMessage.setMaxLines(MAX_MESSAGE_LINES);
     mTitle.setMaxLines(MAX_TITLE_LINES);
     updateVisibility();
-
     Statistics.INSTANCE.trackFacebookBanner(PP_BANNER_SHOW, mBanner, 1);
   }
 
   boolean close()
   {
-    if (!isBannerVisible() || mNativeAd == null || mBanner == null || !mOpened)
+    if (!isBannerVisible() || mBanner == null || !mOpened)
       return false;
 
     mOpened = false;
@@ -200,72 +196,61 @@ final class BannerController implements AdListener
     mFrame.setLayoutParams(lp);
   }
 
-  private void loadIcon(@NonNull NativeAd nativeAd)
+  private void loadIcon(@NonNull MwmNativeAd ad)
   {
     UiUtils.show(mIcon);
-    NativeAd.Image icon = nativeAd.getAdIcon();
-    NativeAd.downloadAndDisplayImage(icon, mIcon);
+    ad.loadIcon(mIcon);
   }
 
-  @Override
-  public void onError(Ad ad, AdError adError)
+  private void onChangedVisibility(@NonNull Banner banner, boolean isVisible)
   {
-    showError(true);
-    updateVisibility();
-    if (mListener != null)
-      mListener.onSizeChanged();
-    LOGGER.e(TAG, adError.getErrorMessage());
-    Statistics.INSTANCE.trackFacebookBannerError(mBanner, adError, mOpened ? 1 : 0);
-  }
+    if (TextUtils.isEmpty(banner.getId()))
+    {
+      LOGGER.e(TAG, "Banner must have a non-null id!", new Throwable());
+      return;
+    }
 
-  @Override
-  public void onAdLoaded(Ad ad)
-  {
-    if (mNativeAd == null || mBanner == null)
+    if (mAdTracker == null)
       return;
 
-    hideProgress();
-    updateVisibility();
+    if (isVisible)
+      mAdTracker.onViewShown(banner.getId());
+    else
+      mAdTracker.onViewHidden(banner.getId());
+  }
 
-    mTitle.setText(mNativeAd.getAdTitle());
-    mMessage.setText(mNativeAd.getAdBody());
-    mActionSmall.setText(mNativeAd.getAdCallToAction());
-    mActionLarge.setText(mNativeAd.getAdCallToAction());
+  void onChangedVisibility(boolean isVisible)
+  {
+    if (mBanner != null)
+      onChangedVisibility(mBanner, isVisible);
+  }
 
-    List<View> clickableViews = new ArrayList<>();
-    clickableViews.add(mTitle);
-    clickableViews.add(mActionSmall);
-    clickableViews.add(mActionLarge);
-    mNativeAd.registerViewForInteraction(mFrame, clickableViews);
+  private void fillViews(@NonNull MwmNativeAd data)
+  {
+    mTitle.setText(data.getTitle());
+    mMessage.setText(data.getDescription());
+    mActionSmall.setText(data.getAction());
+    mActionLarge.setText(data.getAction());
+  }
 
+  private void loadIconAndOpenIfNeeded(@NonNull MwmNativeAd data, @NonNull Banner banner)
+  {
     if (UiUtils.isLandscape(mFrame.getContext()))
     {
       if (!mOpened)
         open();
       else
-        loadIcon(mNativeAd);
+        loadIcon(data);
     }
     else if (!mOpened)
     {
       close();
-      Statistics.INSTANCE.trackFacebookBanner(PP_BANNER_SHOW, mBanner, 0);
+      Statistics.INSTANCE.trackFacebookBanner(PP_BANNER_SHOW, banner, 0);
     }
     else
     {
-      loadIcon(mNativeAd);
+      loadIcon(data);
     }
-
-    if (mListener != null && mOpened)
-      mListener.onSizeChanged();
-  }
-
-  @Override
-  public void onAdClicked(Ad ad)
-  {
-    if (mBanner == null)
-      return;
-
-    Statistics.INSTANCE.trackFacebookBanner(PP_BANNER_CLICK, mBanner, mOpened ? 1 : 0);
   }
 
   boolean isActionButtonTouched(@NonNull MotionEvent event)
@@ -277,5 +262,56 @@ final class BannerController implements AdListener
   interface BannerListener
   {
     void onSizeChanged();
+  }
+
+  private class MyNativeAdsListener implements NativeAdListener
+  {
+    @Override
+    public void onAdLoaded(@NonNull MwmNativeAd ad)
+    {
+      if (mBanner == null || TextUtils.isEmpty(mBanner.getId()))
+        return;
+
+      mCurrentAd = ad;
+
+      updateVisibility();
+
+      fillViews(ad);
+
+      ad.registerView(mFrame);
+
+      loadIconAndOpenIfNeeded(ad, mBanner);
+
+      if (mAdTracker != null)
+        mAdTracker.onContentObtained(mBanner.getId());
+
+      if (mListener != null && mOpened)
+        mListener.onSizeChanged();
+    }
+
+    @Override
+    public void onError(@NonNull MwmNativeAd ad, @NonNull NativeAdError error)
+    {
+      if (mBanner == null || TextUtils.isEmpty(mBanner.getId()))
+        return;
+
+      boolean isNotCached = mCurrentAd == null;
+      setErrorStatus(isNotCached);
+      updateVisibility();
+
+      if (mListener != null && isNotCached)
+        mListener.onSizeChanged();
+
+      Statistics.INSTANCE.trackNativeAdError(mBanner.getId(), ad, error, mOpened ? 1 : 0);
+    }
+
+    @Override
+    public void onClick(@NonNull MwmNativeAd ad)
+    {
+      if (mBanner == null)
+        return;
+
+      Statistics.INSTANCE.trackFacebookBanner(PP_BANNER_CLICK, mBanner, mOpened ? 1 : 0);
+    }
   }
 }
