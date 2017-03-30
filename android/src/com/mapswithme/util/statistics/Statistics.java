@@ -29,6 +29,7 @@ import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.widget.placepage.Sponsored;
 import com.mapswithme.util.Config;
 import com.mapswithme.util.ConnectionState;
+import com.mapswithme.util.Counters;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -372,7 +373,7 @@ public enum Statistics
     Config.setStatisticsEnabled(isEnabled);
 
     // We track if user turned on/off statistics to understand data better.
-    trackEvent(EventName.STATISTICS_STATUS_CHANGED + " " + Config.getInstallFlavor(),
+    trackEvent(EventName.STATISTICS_STATUS_CHANGED + " " + Counters.getInstallFlavor(),
                params().add(EventParam.ENABLED, String.valueOf(isEnabled)));
   }
 

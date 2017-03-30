@@ -404,8 +404,7 @@ public class Utils
     }
   }
 
-  public static boolean checkPermissions(@NonNull Activity activity, @NonNull String[] permissions,
-                                        int requestCode)
+  public static boolean checkPermissions(@NonNull Activity activity, @NonNull String[] permissions)
   {
     if (Build.VERSION.SDK_INT >= 23)
     {
@@ -416,15 +415,7 @@ public class Utils
         if (!isGranted)
           break;
       }
-      if (isGranted)
-      {
-        return true;
-      }
-      else
-      {
-        ActivityCompat.requestPermissions(activity, permissions, requestCode);
-        return false;
-      }
+      return isGranted;
     }
 
     //permission is automatically granted on sdk<23 upon installation
