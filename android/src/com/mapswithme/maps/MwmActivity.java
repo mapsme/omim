@@ -53,11 +53,8 @@ import com.mapswithme.maps.editor.EditorActivity;
 import com.mapswithme.maps.editor.EditorHostFragment;
 import com.mapswithme.maps.editor.FeatureCategoryActivity;
 import com.mapswithme.maps.editor.ReportFragment;
-import com.mapswithme.maps.editor.ViralFragment;
 import com.mapswithme.maps.location.CompassData;
 import com.mapswithme.maps.location.LocationHelper;
-import com.mapswithme.maps.news.FirstStartFragment;
-import com.mapswithme.maps.news.NewsFragment;
 import com.mapswithme.maps.routing.NavigationController;
 import com.mapswithme.maps.routing.RoutingController;
 import com.mapswithme.maps.routing.RoutingPlanController;
@@ -153,6 +150,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   private FadeView mFadeView;
 
+  @Nullable
   private MyPositionButton mNavMyPosition;
   private TrafficButton mTraffic;
   @Nullable
@@ -174,8 +172,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   private FloatingSearchToolbarController mSearchController;
 
-  // The first launch of application ever - onboarding screen will be shown.
-  private boolean mFirstStart;
   private boolean mPlacePageRestored;
 
   private boolean mLocationErrorDialogAnnoying = false;
@@ -247,7 +243,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
                                int oldLeft, int oldTop, int oldRight, int oldBottom)
     {
       mScreenFullRect = new Rect(left, top, right, bottom);
-      if (mPlacePageVisible && (mPlacePage == null || mPlacePage.GetPreview().getVisibility() != View.VISIBLE))
+      if (mPlacePageVisible && (mPlacePage == null || UiUtils.isHidden(mPlacePage.GetPreview())))
         mPlacePageVisible = false;
       recalculateVisibleRect(mScreenFullRect);
     }
@@ -452,7 +448,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
   @Override
   protected void safeOnCreate(@Nullable Bundle savedInstanceState)
   {
-    super.safeOnCreate(savedInstanceState);
     if (savedInstanceState != null)
       mLocationErrorDialogAnnoying = savedInstanceState.getBoolean(EXTRA_LOCATION_DIALOG_IS_ANNOYING);
     mIsFragmentContainer = getResources().getBoolean(R.bool.tabletLayout);
@@ -862,6 +857,12 @@ public class MwmActivity extends BaseMwmFragmentActivity
   @Override
   public void onDestroy()
   {
+    if (!isInitializationComplete())
+    {
+      super.onDestroy();
+      return;
+    }
+
     // TODO move listeners attach-deattach to onStart-onStop since onDestroy isn't guaranteed.
     Framework.nativeRemoveMapObjectListener();
     BottomSheetHelper.free();
@@ -894,7 +895,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
     RoutingController.get().onSaveState();
     outState.putBoolean(EXTRA_LOCATION_DIALOG_IS_ANNOYING, mLocationErrorDialogAnnoying);
 
-    mNavMyPosition.onSaveState(outState);
+    if (mNavMyPosition != null)
+      mNavMyPosition.onSaveState(outState);
     if(mNavAnimationController != null)
       mNavAnimationController.onSaveState(outState);
 
@@ -905,9 +907,9 @@ public class MwmActivity extends BaseMwmFragmentActivity
   }
 
   @Override
-  protected void safeOnRestoreInstanceState(@NonNull Bundle savedInstanceState)
+  protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState)
   {
-    super.safeOnRestoreInstanceState(savedInstanceState);
+    super.onRestoreInstanceState(savedInstanceState);
 
     final State state = State.values()[savedInstanceState.getInt(STATE_PP, 0)];
     if (mPlacePage != null && state != State.HIDDEN)
@@ -930,7 +932,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
     if (mNavigationController != null)
       mNavigationController.onRestoreState(savedInstanceState);
 
-    mNavMyPosition.onRestoreState(savedInstanceState);
+    if (mNavMyPosition != null)
+      mNavMyPosition.onRestoreState(savedInstanceState);
     if(mNavAnimationController != null)
       mNavAnimationController.onRestoreState(savedInstanceState);
 
@@ -989,9 +992,11 @@ public class MwmActivity extends BaseMwmFragmentActivity
       runTasks();
   }
 
+  @CallSuper
   @Override
-  protected void safeOnResume()
+  protected void onResume()
   {
+    super.onResume();
     mPlacePageRestored = mPlacePage != null && mPlacePage.getState() != State.HIDDEN;
     mSearchController.refreshToolbar();
     mMainMenu.onResume(new Runnable()
@@ -1024,23 +1029,9 @@ public class MwmActivity extends BaseMwmFragmentActivity
   }
 
   @Override
-  protected void safeOnResumeFragments()
+  protected void onResumeFragments()
   {
-    if (!RoutingController.get().isNavigating())
-    {
-      mFirstStart = FirstStartFragment.showOn(this);
-      if (mFirstStart)
-        return;
-
-      if (!NewsFragment.showOn(this))
-      {
-        if (ViralFragment.shouldDisplay())
-          new ViralFragment().show(getSupportFragmentManager(), "");
-        else
-          LikesManager.INSTANCE.showDialogs(this);
-      }
-    }
-
+    super.onResumeFragments();
     RoutingController.get().restore();
     if (mPlacePage != null)
       mPlacePage.restore();
@@ -1065,11 +1056,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
   {
     super.onStart();
     RoutingController.get().attach(this);
-  }
-
-  @Override
-  protected void safeOnStart()
-  {
     if (MapFragment.nativeIsEngineCreated())
       LocationHelper.INSTANCE.attach(this);
     if (mTrafficButtonController != null)
@@ -1269,12 +1255,13 @@ public class MwmActivity extends BaseMwmFragmentActivity
       });
       if (mNavAnimationController != null)
         mNavAnimationController.disappearZoomButtons();
-      mNavMyPosition.hide();
+      if (mNavMyPosition != null)
+        mNavMyPosition.hide();
       mTraffic.hide();
     }
     else
     {
-      if (mPlacePage.isHidden() && mNavAnimationController != null)
+      if (mPlacePage != null && mPlacePage.isHidden() && mNavAnimationController != null)
         mNavAnimationController.appearZoomButtons();
       if (!mIsFullscreenAnimating)
         appearMenu(menu);
@@ -1293,7 +1280,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
         adjustRuler(0, 0);
       }
     });
-    mNavMyPosition.show();
+    if (mNavMyPosition != null)
+      mNavMyPosition.show();
     mTraffic.show();
   }
 
@@ -1774,17 +1762,11 @@ public class MwmActivity extends BaseMwmFragmentActivity
       mSearchController.refreshToolbar();
   }
 
-  boolean isFirstStart()
-  {
-    boolean res = mFirstStart;
-    mFirstStart = false;
-    return res;
-  }
-
   @Override
   public void onMyPositionModeChanged(int newMode)
   {
-    mNavMyPosition.update(newMode);
+    if (mNavMyPosition != null)
+      mNavMyPosition.update(newMode);
   }
 
   @Override
