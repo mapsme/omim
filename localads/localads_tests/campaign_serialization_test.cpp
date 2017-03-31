@@ -5,7 +5,6 @@
 #include <random>
 #include <vector>
 
-
 using namespace localads;
 
 namespace
@@ -13,8 +12,6 @@ namespace
 bool TestSerialization(std::vector<Campaign> const & cs)
 {
   auto const bytes = Serialize(cs);
-  LOG(LINFO, ("Src msg size:", (8+2+1) * cs.size(),
-              "Comporessed size:", bytes.size()));
   return cs == Deserialize(bytes);
 }
 
@@ -28,7 +25,12 @@ std::vector<Campaign> GenerateRandomCampaigns(size_t number)
 
   std::vector<Campaign> cs;
   while (number--)
-    cs.emplace_back(featureIds(gen), icons(gen), expirationDays(gen), 0);
+  {
+    auto const fid = featureIds(gen);
+    auto const iconid = icons(gen);
+    auto const days = expirationDays(gen);
+    cs.emplace_back(fid, iconid, days, 0);
+  }
   return cs;
 }
 }  // namspace

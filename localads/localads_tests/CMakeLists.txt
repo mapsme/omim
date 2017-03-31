@@ -11,8 +11,8 @@ omim_link_libraries(
   ${PROJECT_NAME}
   localads
   coding
-  base
   platform
+  base
   stats_client
   ${LIBZ}
 )

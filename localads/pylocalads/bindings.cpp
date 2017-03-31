@@ -1,13 +1,17 @@
 #include "localads/campaign.hpp"
 #include "localads/campaign_serialization.hpp"
 
-// #include "pyhelpers/pair.hpp"
+// This header shold be included due to a python compilation error.
+// pyport.h overwrites defined macros and replaces it with its own.
+// However, in the OS X c++ libraries, these are not macros but functions,
+// hence the error. See https://bugs.python.org/issue10910
+#include <locale>
+
 #include "pyhelpers/vector_uint8.hpp"
 #include "pyhelpers/vector_list_conversion.hpp"
 
 #include <boost/python.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
-
 
 using namespace localads;
 
@@ -26,13 +30,12 @@ boost::python::list PyDeserialize(std::vector<uint8_t> const & blob)
 }
 }  // namespace
 
-
 BOOST_PYTHON_MODULE(pylocalads)
 {
   using namespace boost::python;
 
   // Register the to-python converters.
-  to_python_converter<vector<uint8_t>, vector_uint8t_to_str>();
+  to_python_converter<std::vector<uint8_t>, vector_uint8t_to_str>();
   vector_uint8t_from_python_str();
 
   class_<Campaign>("Campaign", init<uint32_t, uint16_t, uint8_t, bool>())

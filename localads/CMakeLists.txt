@@ -11,4 +11,3 @@ add_library(${PROJECT_NAME} ${SRC})
 
 omim_add_pybindings_subdirectory(pylocalads)
 omim_add_test_subdirectory(localads_tests)
-
