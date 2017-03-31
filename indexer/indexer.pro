@@ -65,7 +65,6 @@ SOURCES += \
 
 HEADERS += \
     altitude_loader.hpp \
-    banners.hpp \
     categories_holder.hpp \
     categories_index.hpp \
     cell_coverer.hpp \
