@@ -24,6 +24,7 @@ public interface NativeAdLoader
 
   /**
    * Indicated whether the ad for the specified banner is loading right now or not.
+   *
    * @param bannerId A specified banner id.
    * @return <code>true</code> if loading is in a progress, otherwise - <code>false</code>.
    */

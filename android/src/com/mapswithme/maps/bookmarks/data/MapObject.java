@@ -7,8 +7,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.mapswithme.maps.ads.Banner;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Arrays;
+import java.util.List;
 
 // TODO(yunikkk): Refactor. Displayed information is different from edited information, and it's better to
 // separate them. Simple getters from jni place_page::Info and osm::EditableFeature should be enough.
@@ -34,19 +38,19 @@ public class MapObject implements Parcelable
   private Metadata mMetadata;
   private String mApiId;
   @Nullable
-  private Banner mBanner;
+  private Banner[] mBanners;
   private boolean mReachableByTaxi;
 
   public MapObject(@MapObjectType int mapObjectType, String title, String subtitle, String address,
-                   double lat, double lon, String apiId, @Nullable Banner banner,
+                   double lat, double lon, String apiId, @Nullable Banner[] banners,
                    boolean reachableByTaxi)
   {
-    this(mapObjectType, title, subtitle, address, lat, lon, new Metadata(), apiId, banner,
+    this(mapObjectType, title, subtitle, address, lat, lon, new Metadata(), apiId, banners,
          reachableByTaxi);
   }
 
   public MapObject(@MapObjectType int mapObjectType, String title, String subtitle, String address,
-                   double lat, double lon, Metadata metadata, String apiId, @Nullable Banner banner,
+                   double lat, double lon, Metadata metadata, String apiId, @Nullable Banner[] banners,
                    boolean reachableByTaxi)
   {
     mMapObjectType = mapObjectType;
@@ -57,7 +61,7 @@ public class MapObject implements Parcelable
     mLon = lon;
     mMetadata = metadata;
     mApiId = apiId;
-    mBanner = banner;
+    mBanners = banners;
     mReachableByTaxi = reachableByTaxi;
   }
 
@@ -72,8 +76,17 @@ public class MapObject implements Parcelable
          source.readDouble(), // Lon
          (Metadata) source.readParcelable(Metadata.class.getClassLoader()),
          source.readString(), // ApiId;
-         (Banner) source.readParcelable(Banner.class.getClassLoader()),
+         null, // mBanners
          source.readByte() != 0); // ReachableByTaxi
+    mBanners = readBanners(source);
+  }
+
+  private Banner[] readBanners(Parcel source)
+  {
+    Parcelable[] parcelables = source.readParcelableArray(Banner.class.getClassLoader());
+    if (parcelables != null)
+      return Arrays.copyOf(parcelables, parcelables.length, Banner[].class);
+    return null;
   }
 
   /**
@@ -139,9 +152,9 @@ public class MapObject implements Parcelable
   }
 
   @Nullable
-  public Banner getBanner()
+  public List<Banner> getBanners()
   {
-    return mBanner;
+    return mBanners != null ? Arrays.asList(mBanners) : null;
   }
 
   public boolean isReachableByTaxi()
@@ -217,7 +230,7 @@ public class MapObject implements Parcelable
     dest.writeDouble(mLon);
     dest.writeParcelable(mMetadata, 0);
     dest.writeString(mApiId);
-    dest.writeParcelable(mBanner, 0);
+    dest.writeTypedArray(mBanners, 0);
     dest.writeByte((byte) (mReachableByTaxi ? 1 : 0));
   }
 

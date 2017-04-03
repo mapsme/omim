@@ -37,7 +37,7 @@ import com.mapswithme.maps.api.RoutePoint;
 import com.mapswithme.maps.base.BaseMwmFragmentActivity;
 import com.mapswithme.maps.base.OnBackPressListener;
 import com.mapswithme.maps.bookmarks.BookmarkCategoriesActivity;
-import com.mapswithme.maps.bookmarks.data.Banner;
+import com.mapswithme.maps.ads.Banner;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 import com.mapswithme.maps.bookmarks.data.MapObject;
 import com.mapswithme.maps.downloader.DownloaderActivity;
@@ -1389,9 +1389,9 @@ public class MwmActivity extends BaseMwmFragmentActivity
         final RoutePoint from = data.mPoints[0];
         final RoutePoint to = data.mPoints[1];
         RoutingController.get().prepare(new MapObject(MapObject.API_POINT, from.mName, "", "",
-                                                      from.mLat, from.mLon, "", Banner.EMPTY, false),
+                                                      from.mLat, from.mLon, "", null, false),
                                         new MapObject(MapObject.API_POINT, to.mName, "", "",
-                                                      to.mLat, to.mLon, "", Banner.EMPTY, false));
+                                                      to.mLat, to.mLon, "", null, false));
         return true;
       }
 

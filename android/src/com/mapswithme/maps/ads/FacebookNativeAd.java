@@ -5,32 +5,29 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.facebook.ads.NativeAd;
-import com.mapswithme.maps.R;
 
-import java.util.ArrayList;
-import java.util.List;
-
-class FacebookNativeAd implements MwmNativeAd
+class FacebookNativeAd extends CachedMwmNativeAd
 {
   @NonNull
   private final NativeAd mAd;
-  private final long mLoadedTime;
 
   FacebookNativeAd(@NonNull NativeAd ad, long timestamp)
   {
-    mLoadedTime = timestamp;
+    super(timestamp);
     mAd = ad;
   }
 
   FacebookNativeAd(@NonNull NativeAd ad)
   {
-    mLoadedTime = 0;
+    super(0);
     mAd = ad;
   }
 
-  long getLoadedTime()
+  @NonNull
+  @Override
+  public String getBannerId()
   {
-    return mLoadedTime;
+    return mAd.getPlacementId();
   }
 
   @NonNull
@@ -61,19 +58,15 @@ class FacebookNativeAd implements MwmNativeAd
   }
 
   @Override
-  public void registerView(@NonNull View bannerView)
+  void registerViewForInteraction(@NonNull View view)
   {
-    List<View> clickableViews = new ArrayList<>();
-    clickableViews.add(bannerView.findViewById(R.id.tv__banner_title));
-    clickableViews.add(bannerView.findViewById(R.id.tv__action_small));
-    clickableViews.add(bannerView.findViewById(R.id.tv__action_large));
-    mAd.registerViewForInteraction(bannerView, clickableViews);
+    mAd.registerViewForInteraction(view);
   }
 
   @NonNull
   @Override
   public String getProvider()
   {
-    return "FB";
+    return Providers.FACEBOOK;
   }
 }
