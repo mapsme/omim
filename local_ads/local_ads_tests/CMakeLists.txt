@@ -1,4 +1,4 @@
-project(localads_tests)
+project(local_ads_tests)
 
 set(
   SRC
@@ -9,7 +9,7 @@ omim_add_test(${PROJECT_NAME} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
-  localads
+  local_ads
   coding
   platform
   base

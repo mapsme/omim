@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <string>
 
-namespace localads
+namespace local_ads
 {
 struct Campaign
 {
@@ -35,4 +35,4 @@ inline bool operator==(Campaign const & a, Campaign const & b)
        a.m_daysBeforeExpired == b.m_daysBeforeExpired &&
        a.m_priorityBit == b.m_priorityBit;
 }
-}  // namespace localads
+}  // namespace local_ads

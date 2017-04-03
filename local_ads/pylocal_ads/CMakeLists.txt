@@ -1,4 +1,4 @@
-project(pylocalads)
+project(pylocal_ads)
 
 set(
   SRC
@@ -12,7 +12,7 @@ omim_link_libraries(
   ${PYTHON_LIBRARIES}
   ${Boost_LIBRARIES}
   base
-  localads
+  local_ads
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")

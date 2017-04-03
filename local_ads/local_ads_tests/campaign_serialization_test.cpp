@@ -1,11 +1,11 @@
 #include "testing/testing.hpp"
 
-#include "localads/campaign_serialization.hpp"
+#include "local_ads/campaign_serialization.hpp"
 
 #include <random>
 #include <vector>
 
-using namespace localads;
+using namespace local_ads;
 
 namespace
 {
@@ -29,7 +29,7 @@ std::vector<Campaign> GenerateRandomCampaigns(size_t number)
     auto const fid = featureIds(gen);
     auto const iconid = icons(gen);
     auto const days = expirationDays(gen);
-    cs.emplace_back(fid, iconid, days, 0);
+    cs.emplace_back(fid, iconid, days, false /* priorityBit */);
   }
   return cs;
 }

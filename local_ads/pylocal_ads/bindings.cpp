@@ -1,7 +1,7 @@
-#include "localads/campaign.hpp"
-#include "localads/campaign_serialization.hpp"
+#include "local_ads/campaign.hpp"
+#include "local_ads/campaign_serialization.hpp"
 
-// This header shold be included due to a python compilation error.
+// This header should be included due to a python compilation error.
 // pyport.h overwrites defined macros and replaces it with its own.
 // However, in the OS X c++ libraries, these are not macros but functions,
 // hence the error. See https://bugs.python.org/issue10910
@@ -13,7 +13,7 @@
 #include <boost/python.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 
-using namespace localads;
+using namespace local_ads;
 
 namespace
 {
@@ -30,7 +30,7 @@ boost::python::list PyDeserialize(std::vector<uint8_t> const & blob)
 }
 }  // namespace
 
-BOOST_PYTHON_MODULE(pylocalads)
+BOOST_PYTHON_MODULE(pylocal_ads)
 {
   using namespace boost::python;
 

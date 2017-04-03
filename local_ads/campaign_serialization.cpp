@@ -1,4 +1,4 @@
-#include "localads/campaign_serialization.hpp"
+#include "local_ads/campaign_serialization.hpp"
 
 #include "coding/varint.hpp"
 #include "coding/byte_stream.hpp"
@@ -62,7 +62,7 @@ std::vector<Integral> ReadData(ByteStream & s, size_t chunksNumber)
 }
 }  // namespace
 
-namespace localads
+namespace local_ads
 {
 std::vector<uint8_t> Serialize(std::vector<Campaign> const & campaigns)
 {
@@ -98,7 +98,14 @@ std::vector<Campaign> Deserialize(std::vector<uint8_t> const & bytes)
   std::vector<Campaign> campaigns;
   campaigns.reserve(chunksNumber);
   for (size_t i = 0; i < chunksNumber; ++i)
-    campaigns.emplace_back(featureIds[i], icons[i], expirations[i], 0);
+  {
+    campaigns.emplace_back(
+        featureIds[i],
+        icons[i],
+        expirations[i],
+        false /* priorityBit */
+    );
+  }
   return campaigns;
 }
-}  // namespace localads
+}  // namespace local_ads
