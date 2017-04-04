@@ -23145,3 +23145,6 @@
     zh-Hant = 無法載入資訊。
     el = Η φόρτωση πληροφοριών απέτυχε.
     sk = Nepodarilo sa načítať informácie.
+
+  [booking_search]
+    en = Booking.com
