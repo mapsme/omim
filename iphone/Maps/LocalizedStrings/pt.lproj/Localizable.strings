@@ -1846,3 +1846,11 @@
 "failed_load_information" = "Falha ao carregar informações.";
 
 "booking_search" = "Booking.com";
+
+"whatsnew_new_objects_title" = "We’ve added 110,000 objects to the map, including:";
+
+"whatsnew_new_objects_message" = "• 16,000 restaurants,\n• 14,000 stores,\n• 4,000 points of interest.";
+
+"whatsnew_transliteration_title" = "Transliteration into Latin";
+
+"whatsnew_transliteration_message" = "If a street or an object doesn't have a name in your language, it will be spelt using the Latin alphabet.";

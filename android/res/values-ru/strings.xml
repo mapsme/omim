@@ -1083,4 +1083,8 @@
 	<string name="reviews_on_bookingcom">Больше отзывов на Booking.com</string>
 	<string name="offline_place_page_more_information">Подключитесь к интернету, чтобы получить больше информации о месте.</string>
 	<string name="failed_load_information">Не удалось загрузить информацию.</string>
+	<string name="whatsnew_new_objects_title">Добавили на карты 110 000 объектов, среди них:</string>
+	<string name="whatsnew_new_objects_message">• 16 000 ресторанов,\n• 14 000 магазинов,\n• 4 000 достопримечательностей.</string>
+	<string name="whatsnew_transliteration_title">Латинская транслитерация</string>
+	<string name="whatsnew_transliteration_message">Если у улицы или объекта нет названия на вашем языке, то мы покажем его латиницей.</string>
 </resources>

@@ -1846,3 +1846,11 @@
 "failed_load_information" = "Не удалось загрузить информацию.";
 
 "booking_search" = "Booking.com";
+
+"whatsnew_new_objects_title" = "Добавили на карты 110 000 объектов, среди них:";
+
+"whatsnew_new_objects_message" = "• 16 000 ресторанов,\n• 14 000 магазинов,\n• 4 000 достопримечательностей.";
+
+"whatsnew_transliteration_title" = "Латинская транслитерация";
+
+"whatsnew_transliteration_message" = "Если у улицы или объекта нет названия на вашем языке, то мы покажем его латиницей.";
