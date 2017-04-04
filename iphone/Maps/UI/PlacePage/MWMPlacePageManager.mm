@@ -1,4 +1,5 @@
 #import "MWMPlacePageManager.h"
+#import <Crashlytics/Crashlytics.h>
 #import <Pushwoosh/PushNotificationManager.h>
 #import "CLLocation+Mercator.h"
 #import "MWMAPIBar.h"
@@ -21,6 +22,7 @@
 #import "SwiftBridge.h"
 
 #include "geometry/distance_on_sphere.hpp"
+#include "geometry/point2d.hpp"
 
 #include "platform/measurement_utils.hpp"
 
@@ -176,10 +178,19 @@ void logSponsoredEvent(MWMPlacePageData * data, NSString * eventName)
 - (void)onHeadingUpdate:(location::CompassInfo const &)info
 {
   CLLocation * lastLocation = [MWMLocationManager lastLocation];
-  if (!lastLocation)
+  if (!lastLocation || !self.data)
     return;
 
-  CGFloat const angle = ang::AngleTo(lastLocation.mercator, self.data.mercator) + info.m_bearing;
+  auto const locationMercator = lastLocation.mercator;
+  auto const dataMercator = self.data.mercator;
+
+  if (my::AlmostEqualAbs(locationMercator, dataMercator, 1e-10))
+    return;
+
+  CLS_LOG(@"Heading from [%@,%@] to [%@,%@]", @(locationMercator.x), @(locationMercator.y),
+          @(dataMercator.x), @(dataMercator.y));
+
+  CGFloat const angle = ang::AngleTo(locationMercator, dataMercator) + info.m_bearing;
   [self.layout rotateDirectionArrowToAngle:angle];
 }
 
