@@ -459,6 +459,9 @@
 		34ED298A1E3BB9B40054D003 /* RoutePoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34ED29891E3BB9B40054D003 /* RoutePoint.swift */; };
 		34ED298B1E3BB9B40054D003 /* RoutePoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34ED29891E3BB9B40054D003 /* RoutePoint.swift */; };
 		34ED298C1E3BB9B40054D003 /* RoutePoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34ED29891E3BB9B40054D003 /* RoutePoint.swift */; };
+		34EE70281E9537E0000E8BCA /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34EE70271E9537E0000E8BCA /* UserNotifications.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		34EE70291E9537E9000E8BCA /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34EE70271E9537E0000E8BCA /* UserNotifications.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		34EE702A1E9537EA000E8BCA /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34EE70271E9537E0000E8BCA /* UserNotifications.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		34EF94291C05A6F30050B714 /* MWMSegue.mm in Sources */ = {isa = PBXBuildFile; fileRef = F607C18D1C047FDC00B53A87 /* MWMSegue.mm */; };
 		34F5E0D31E3F254800B1C415 /* UIView+Hierarchy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F5E0D21E3F254800B1C415 /* UIView+Hierarchy.swift */; };
 		34F5E0D41E3F254800B1C415 /* UIView+Hierarchy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F5E0D21E3F254800B1C415 /* UIView+Hierarchy.swift */; };
@@ -1753,6 +1756,7 @@
 		34D8087C1E79360D002F0584 /* AlamofireImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AlamofireImage.framework; path = Carthage/Build/iOS/AlamofireImage.framework; sourceTree = "<group>"; };
 		34D808851E793F91002F0584 /* Pushwoosh.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Pushwoosh.framework; path = Carthage/Build/iOS/Pushwoosh.framework; sourceTree = "<group>"; };
 		34ED29891E3BB9B40054D003 /* RoutePoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoutePoint.swift; sourceTree = "<group>"; };
+		34EE70271E9537E0000E8BCA /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		34F5E0D21E3F254800B1C415 /* UIView+Hierarchy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Hierarchy.swift"; sourceTree = "<group>"; };
 		34F5E0D61E3F334700B1C415 /* Types.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Types.swift; sourceTree = "<group>"; };
 		34F5E0DA1E3F3ED300B1C415 /* MWMRoutePoint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWMRoutePoint.h; sourceTree = "<group>"; };
@@ -2300,6 +2304,7 @@
 				34D808871E793FA3002F0584 /* Pushwoosh.framework in Frameworks */,
 				3404750B1E08199E00C92850 /* MyTargetSDK.framework in Frameworks */,
 				340474F61E08199D00C92850 /* FBSDKCoreKit.framework in Frameworks */,
+				34EE70291E9537E9000E8BCA /* UserNotifications.framework in Frameworks */,
 				340474F01E08199D00C92850 /* Crashlytics.framework in Frameworks */,
 				34570A3B1B13222600E6D4FD /* libz.dylib in Frameworks */,
 				34D8087E1E79361A002F0584 /* AlamofireImage.framework in Frameworks */,
@@ -2318,6 +2323,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				34EE70281E9537E0000E8BCA /* UserNotifications.framework in Frameworks */,
 				34D808861E793F91002F0584 /* Pushwoosh.framework in Frameworks */,
 				34D8087B1E793606002F0584 /* Alamofire.framework in Frameworks */,
 				34D8087D1E79360D002F0584 /* AlamofireImage.framework in Frameworks */,
@@ -2389,6 +2395,7 @@
 				34D808881E793FA4002F0584 /* Pushwoosh.framework in Frameworks */,
 				3404750D1E08199E00C92850 /* MyTargetSDK.framework in Frameworks */,
 				340474F81E08199D00C92850 /* FBSDKCoreKit.framework in Frameworks */,
+				34EE702A1E9537EA000E8BCA /* UserNotifications.framework in Frameworks */,
 				340474F21E08199D00C92850 /* Crashlytics.framework in Frameworks */,
 				849CF7861DE842290024A8A5 /* libz.dylib in Frameworks */,
 				34D8087F1E79361B002F0584 /* AlamofireImage.framework in Frameworks */,
@@ -2493,6 +2500,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				34EE70271E9537E0000E8BCA /* UserNotifications.framework */,
 				340474DB1E08199D00C92850 /* 3party */,
 				3462FD8A1DC1DF3A00906FD7 /* SDK */,
 				3446C6761DDCA9A200146687 /* libtraffic.a */,
