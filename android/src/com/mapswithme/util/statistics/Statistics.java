@@ -543,7 +543,7 @@ public enum Statistics
     trackEvent(eventName, builder.get());
   }
 
-  public void trackSearchBookingEvent(@NonNull MapObject mapObject)
+  public void trackBookingSearchEvent(@NonNull MapObject mapObject)
   {
     trackEvent(PP_SPONSORED_BOOK, LocationHelper.INSTANCE.getLastKnownLocation(),
                Statistics.params()
