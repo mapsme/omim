@@ -23148,3 +23148,19 @@
 
   [booking_search]
     en = Booking.com
+
+  [whatsnew_new_objects_title]
+    en = We’ve added 110,000 objects to the map, including:
+    ru = Добавили на карты 110 000 объектов, среди них:
+
+  [whatsnew_new_objects_message]
+    en = • 16,000 restaurants,\n• 14,000 stores,\n• 4,000 points of interest.
+    ru = • 16 000 ресторанов,\n• 14 000 магазинов,\n• 4 000 достопримечательностей.
+
+  [whatsnew_transliteration_title]
+    en = Transliteration into Latin
+    ru = Латинская транслитерация
+
+  [whatsnew_transliteration_message]
+    en = If a street or an object doesn't have a name in your language, it will be spelt using the Latin alphabet.
+    ru = Если у улицы или объекта нет названия на вашем языке, то мы покажем его латиницей.
