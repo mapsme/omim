@@ -10316,9 +10316,17 @@ cont {
 cont {
   name: "craft-photographer"
   element {
+    scale: 17
+    symbol {
+      name: "photo-shop-l"
+      priority: 16000
+      min_distance: 24
+    }
+  }
+  element {
     scale: 18
     symbol {
-      name: "hand-l"
+      name: "photo-shop-l"
       priority: 16625
     }
     caption {
@@ -10333,7 +10341,7 @@ cont {
   element {
     scale: 19
     symbol {
-      name: "hand-l"
+      name: "photo-shop-l"
       priority: 16625
     }
     caption {
@@ -30234,7 +30242,7 @@ cont {
     scale: 15
     symbol {
       name: "monument-m"
-      priority: 16750
+      priority: 16854
       min_distance: 24
     }
     caption {
@@ -30243,14 +30251,14 @@ cont {
         color: 5592405
         offset_y: 10
       }
-      priority: 15750
+      priority: 15854
     }
   }
   element {
     scale: 16
     symbol {
       name: "monument-m"
-      priority: 16750
+      priority: 16854
       min_distance: 12
     }
     caption {
@@ -30259,14 +30267,14 @@ cont {
         color: 5592405
         offset_y: 10
       }
-      priority: 15750
+      priority: 15854
     }
   }
   element {
     scale: 17
     symbol {
       name: "monument-l"
-      priority: 16750
+      priority: 16854
     }
     caption {
       primary {
@@ -30274,14 +30282,14 @@ cont {
         color: 5592405
         offset_y: 10
       }
-      priority: 15750
+      priority: 15854
     }
   }
   element {
     scale: 18
     symbol {
       name: "monument-l"
-      priority: 16750
+      priority: 16854
     }
     caption {
       primary {
@@ -30289,14 +30297,14 @@ cont {
         color: 5592405
         offset_y: 10
       }
-      priority: 15750
+      priority: 15854
     }
   }
   element {
     scale: 19
     symbol {
       name: "monument-l"
-      priority: 16750
+      priority: 16854
     }
     caption {
       primary {
@@ -30304,7 +30312,7 @@ cont {
         color: 5592405
         offset_y: 10
       }
-      priority: 15750
+      priority: 15854
     }
   }
 }
@@ -30314,7 +30322,7 @@ cont {
     scale: 13
     symbol {
       name: "monument-s"
-      priority: 16750
+      priority: 16854
       min_distance: 12
     }
     caption {
@@ -30323,14 +30331,14 @@ cont {
         color: 5592405
         offset_y: 6
       }
-      priority: 15750
+      priority: 15854
     }
   }
   element {
     scale: 14
     symbol {
       name: "monument-s"
-      priority: 16750
+      priority: 16854
       min_distance: 12
     }
     caption {
@@ -30339,14 +30347,14 @@ cont {
         color: 5592405
         offset_y: 6
       }
-      priority: 15750
+      priority: 15854
     }
   }
   element {
     scale: 15
     symbol {
       name: "monument-m"
-      priority: 16750
+      priority: 16854
       min_distance: 24
     }
     caption {
@@ -30355,14 +30363,14 @@ cont {
         color: 5592405
         offset_y: 10
       }
-      priority: 15750
+      priority: 15854
     }
   }
   element {
     scale: 16
     symbol {
       name: "monument-m"
-      priority: 16750
+      priority: 16854
       min_distance: 12
     }
     caption {
@@ -30371,14 +30379,14 @@ cont {
         color: 5592405
         offset_y: 10
       }
-      priority: 15750
+      priority: 15854
     }
   }
   element {
     scale: 17
     symbol {
       name: "monument-l"
-      priority: 16750
+      priority: 16854
     }
     caption {
       primary {
@@ -30386,14 +30394,14 @@ cont {
         color: 5592405
         offset_y: 10
       }
-      priority: 15750
+      priority: 15854
     }
   }
   element {
     scale: 18
     symbol {
       name: "monument-l"
-      priority: 16750
+      priority: 16854
     }
     caption {
       primary {
@@ -30401,14 +30409,14 @@ cont {
         color: 5592405
         offset_y: 10
       }
-      priority: 15750
+      priority: 15854
     }
   }
   element {
     scale: 19
     symbol {
       name: "monument-l"
-      priority: 16750
+      priority: 16854
     }
     caption {
       primary {
@@ -30416,7 +30424,7 @@ cont {
         color: 5592405
         offset_y: 10
       }
-      priority: 15750
+      priority: 15854
     }
   }
 }
@@ -40981,7 +40989,7 @@ cont {
     scale: 14
     lines {
       width: 1.0
-      color: 2236962
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: BUTTCAP
@@ -40991,7 +40999,7 @@ cont {
     scale: 15
     lines {
       width: 1.1
-      color: 2236962
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: BUTTCAP
@@ -41001,7 +41009,7 @@ cont {
     scale: 16
     lines {
       width: 1.1
-      color: 2236962
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: ROUNDCAP
@@ -41011,7 +41019,7 @@ cont {
     scale: 17
     lines {
       width: 1.5
-      color: 2236962
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: ROUNDCAP
@@ -41021,7 +41029,7 @@ cont {
     scale: 18
     lines {
       width: 1.5
-      color: 2236962
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: ROUNDCAP
@@ -41031,7 +41039,7 @@ cont {
     scale: 19
     lines {
       width: 1.5
-      color: 2236962
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: ROUNDCAP
@@ -41044,7 +41052,7 @@ cont {
     scale: 14
     lines {
       width: 1.0
-      color: 731131
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: BUTTCAP
@@ -41054,7 +41062,7 @@ cont {
     scale: 15
     lines {
       width: 1.1
-      color: 731131
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: BUTTCAP
@@ -41064,7 +41072,7 @@ cont {
     scale: 16
     lines {
       width: 1.1
-      color: 731131
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: ROUNDCAP
@@ -41074,7 +41082,7 @@ cont {
     scale: 17
     lines {
       width: 1.5
-      color: 731131
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: ROUNDCAP
@@ -41084,7 +41092,7 @@ cont {
     scale: 18
     lines {
       width: 1.5
-      color: 731131
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: ROUNDCAP
@@ -41094,7 +41102,7 @@ cont {
     scale: 19
     lines {
       width: 1.5
-      color: 731131
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: ROUNDCAP
@@ -41107,7 +41115,7 @@ cont {
     scale: 14
     lines {
       width: 1.0
-      color: 3355443
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: BUTTCAP
@@ -41117,7 +41125,7 @@ cont {
     scale: 15
     lines {
       width: 1.1
-      color: 3355443
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: BUTTCAP
@@ -41127,7 +41135,7 @@ cont {
     scale: 16
     lines {
       width: 1.1
-      color: 3355443
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: ROUNDCAP
@@ -41137,7 +41145,7 @@ cont {
     scale: 17
     lines {
       width: 1.5
-      color: 3355443
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: ROUNDCAP
@@ -41147,7 +41155,7 @@ cont {
     scale: 18
     lines {
       width: 1.5
-      color: 3355443
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: ROUNDCAP
@@ -41157,7 +41165,7 @@ cont {
     scale: 19
     lines {
       width: 1.5
-      color: 3355443
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: ROUNDCAP
@@ -41170,7 +41178,7 @@ cont {
     scale: 14
     lines {
       width: 1.0
-      color: 3355443
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: BUTTCAP
@@ -41180,7 +41188,7 @@ cont {
     scale: 15
     lines {
       width: 1.1
-      color: 3355443
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: BUTTCAP
@@ -41190,7 +41198,7 @@ cont {
     scale: 16
     lines {
       width: 1.1
-      color: 3355443
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: ROUNDCAP
@@ -41200,7 +41208,7 @@ cont {
     scale: 17
     lines {
       width: 1.5
-      color: 3355443
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: ROUNDCAP
@@ -41210,7 +41218,7 @@ cont {
     scale: 18
     lines {
       width: 1.5
-      color: 3355443
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: ROUNDCAP
@@ -41220,7 +41228,7 @@ cont {
     scale: 19
     lines {
       width: 1.5
-      color: 3355443
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: ROUNDCAP
@@ -41233,7 +41241,7 @@ cont {
     scale: 14
     lines {
       width: 1.0
-      color: 16518683
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: BUTTCAP
@@ -41243,7 +41251,7 @@ cont {
     scale: 15
     lines {
       width: 1.1
-      color: 16518683
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: BUTTCAP
@@ -41253,7 +41261,7 @@ cont {
     scale: 16
     lines {
       width: 1.1
-      color: 16518683
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: ROUNDCAP
@@ -41263,7 +41271,7 @@ cont {
     scale: 17
     lines {
       width: 1.5
-      color: 16518683
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: ROUNDCAP
@@ -41273,7 +41281,7 @@ cont {
     scale: 18
     lines {
       width: 1.5
-      color: 16518683
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: ROUNDCAP
@@ -41283,7 +41291,7 @@ cont {
     scale: 19
     lines {
       width: 1.5
-      color: 16518683
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: ROUNDCAP
@@ -41296,7 +41304,7 @@ cont {
     scale: 14
     lines {
       width: 1.0
-      color: 6286126
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: BUTTCAP
@@ -41306,7 +41314,7 @@ cont {
     scale: 15
     lines {
       width: 1.1
-      color: 6286126
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: BUTTCAP
@@ -41316,7 +41324,7 @@ cont {
     scale: 16
     lines {
       width: 1.1
-      color: 6286126
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: ROUNDCAP
@@ -41326,7 +41334,7 @@ cont {
     scale: 17
     lines {
       width: 1.5
-      color: 6286126
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: ROUNDCAP
@@ -41336,7 +41344,7 @@ cont {
     scale: 18
     lines {
       width: 1.5
-      color: 6286126
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: ROUNDCAP
@@ -41346,7 +41354,7 @@ cont {
     scale: 19
     lines {
       width: 1.5
-      color: 6286126
+      color: 6438271
       priority: 1250
       join: ROUNDJOIN
       cap: ROUNDCAP
@@ -46776,6 +46784,12 @@ cont {
       primary {
         height: 10
         color: 5592405
+      }
+      secondary {
+        height: 9
+        color: 5592405
+        offset_y: 20
+        text: "int_name"
       }
       priority: 15000
     }
@@ -64938,7 +64952,7 @@ cont {
 colors {
   value {
     name: "RoadShieldWhiteText"
-    color: 12039862
+    color: 16777215
     x: 0
     y: 0
   }
@@ -64974,13 +64988,13 @@ colors {
   }
   value {
     name: "RoadShieldUKYellowText"
-    color: 11836942
+    color: 16764006
     x: 0
     y: 0
   }
   value {
     name: "RoadShieldBlueBackground"
-    color: 2706568
+    color: 3043273
     x: 0
     y: 0
   }
@@ -64992,7 +65006,7 @@ colors {
   }
   value {
     name: "TrafficArrowDark"
-    color: 1644825
+    color: 1973790
     x: 0
     y: 0
   }
@@ -65004,7 +65018,7 @@ colors {
   }
   value {
     name: "RoadShieldOrangeBackground"
-    color: 1272880
+    color: 16760320
     x: 0
     y: 0
   }
@@ -65016,7 +65030,7 @@ colors {
   }
   value {
     name: "RoadShieldRedBackground"
-    color: 10426903
+    color: 13445160
     x: 0
     y: 0
   }
@@ -65028,7 +65042,7 @@ colors {
   }
   value {
     name: "RoadShieldBlackText"
-    color: 2171169
+    color: 0
     x: 0
     y: 0
   }
@@ -65064,25 +65078,25 @@ colors {
   }
   value {
     name: "TrafficG3"
-    color: 9203730
+    color: 9198080
     x: 0
     y: 0
   }
   value {
     name: "TrafficG2"
-    color: 7542806
+    color: 7870745
     x: 0
     y: 0
   }
   value {
     name: "TrafficG1"
-    color: 7542806
+    color: 7870745
     x: 0
     y: 0
   }
   value {
     name: "TrafficG0"
-    color: 4985359
+    color: 4263680
     x: 0
     y: 0
   }
@@ -65094,7 +65108,7 @@ colors {
   }
   value {
     name: "TrafficG5"
-    color: 3629602
+    color: 2641970
     x: 0
     y: 0
   }
@@ -65118,43 +65132,43 @@ colors {
   }
   value {
     name: "TrafficG4"
-    color: 3629602
+    color: 5592345
     x: 0
     y: 0
   }
   value {
     name: "RoadShieldGreenBackground"
-    color: 1272880
+    color: 2257467
     x: 0
     y: 0
   }
   value {
     name: "TrafficArrowLight"
-    color: 12895428
+    color: 11184810
     x: 0
     y: 0
   }
   value {
     name: "RouteTrafficG1"
-    color: 8327953
+    color: 15744010
     x: 0
     y: 0
   }
   value {
     name: "RouteTrafficG0"
-    color: 6164237
+    color: 10167040
     x: 0
     y: 0
   }
   value {
     name: "RouteTrafficG3"
-    color: 10387990
+    color: 16111400
     x: 0
     y: 0
   }
   value {
     name: "RouteTrafficG2"
-    color: 8327953
+    color: 15744010
     x: 0
     y: 0
   }
@@ -65166,7 +65180,7 @@ colors {
   }
   value {
     name: "TrafficOutline"
-    color: 3684408
+    color: 0
     x: 0
     y: 0
   }
