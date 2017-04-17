@@ -20346,6 +20346,23 @@
     el = Τα αποτελέσματα αναζήτησης για ξενοδοχεία περιέχουν πλέον κατηγορία τιμής. \nΠροσθέσαμε επίσης περισσότερα από 110.000 ξενοδοχεία.
     sk = Výsledky vyhľadávania hotelov odteraz obsahujú aj cenové kategórie. \nTiež sme pridali viac ako 110 000 hotelov.
 
+  [whats_new_auto_update_title]
+    en = Update your downloaded maps
+    ru = Обновите ваши скачанные карты
+
+  [whats_new_auto_update_message]
+    en = Update outdate maps to access new places on the map and the new app features.
+    ru = Обновите устаревшие карты, чтобы получить доступ к новым местам на карте и новым функциям приложения.
+
+  [whats_new_auto_update_button_size]
+    en = Update (%s)
+    ru = Обновить (%s)
+
+  [whats_new_auto_update_button_later]
+    en = Manualy update later 
+    ru = Обновить вручную позже
+
+
   [placepage_hotel_facilities]
     comment = For place page hotel facilities block
     en = Facilities
