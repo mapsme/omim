@@ -136,6 +136,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   private final Stack<MapTask> mTasks = new Stack<>();
   private final StoragePathManager mPathManager = new StoragePathManager();
 
+  @Nullable
   private MapFragment mMapFragment;
   private PlacePageView mPlacePage;
 
@@ -617,10 +618,9 @@ public class MwmActivity extends BaseMwmFragmentActivity
     mRootView = (ViewGroup) container.getParent();
   }
 
-  public void detachMap(FragmentTransaction transaction)
+  public void detachMap(@NonNull FragmentTransaction transaction)
   {
-    if (mMapFragment == null)
-      return;
+    if (mMapFragment == null) return;
 
     transaction
         .remove(mMapFragment);
@@ -630,8 +630,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   public void attachMap()
   {
-    if (mMapFragment != null)
-      return;
+    if (mMapFragment != null) return;
 
     mMapFragment = (MapFragment) MapFragment.instantiate(this, MapFragment.class.getName(), null);
     getSupportFragmentManager()
@@ -983,8 +982,11 @@ public class MwmActivity extends BaseMwmFragmentActivity
       mTasks.add(mapTask);
       intent.removeExtra(EXTRA_TASK);
 
-      if (MapFragment.nativeIsEngineCreated() && mMapFragment.isContextCreated())
+      if (MapFragment.nativeIsEngineCreated() && mMapFragment != null
+          && mMapFragment.isContextCreated())
+      {
         runTasks();
+      }
 
       // mark intent as consumed
       intent.putExtra(EXTRA_CONSUMED, true);
@@ -994,8 +996,11 @@ public class MwmActivity extends BaseMwmFragmentActivity
   private void addTask(MapTask task)
   {
     mTasks.add(task);
-    if (MapFragment.nativeIsEngineCreated() && mMapFragment.isContextCreated())
+    if (MapFragment.nativeIsEngineCreated() && mMapFragment != null
+        && mMapFragment.isContextCreated())
+    {
       runTasks();
+    }
   }
 
   @Override
@@ -1029,7 +1034,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
   public void recreate()
   {
     // Explicitly destroy context before activity recreation.
-    mMapFragment.destroyContext();
+    if (mMapFragment != null)
+      mMapFragment.destroyContext();
     super.recreate();
   }
 
@@ -1365,7 +1371,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   public boolean onTouch(View view, MotionEvent event)
   {
     return mPlacePage.hideOnTouch() ||
-           mMapFragment.onTouch(view, event);
+           (mMapFragment != null && mMapFragment.onTouch(view, event));
   }
 
   @Override
