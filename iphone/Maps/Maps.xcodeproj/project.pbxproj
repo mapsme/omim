@@ -651,7 +651,6 @@
 		6741AAC21BF356BA002C974C /* libcoding.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6741AAA71BF356B9002C974C /* libcoding.a */; };
 		6741AAC31BF356BA002C974C /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6741AAA81BF356B9002C974C /* libexpat.a */; };
 		6741AAC41BF356BA002C974C /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6741AAA91BF356B9002C974C /* libfreetype.a */; };
-		6741AAC51BF356BA002C974C /* libfribidi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6741AAAA1BF356B9002C974C /* libfribidi.a */; };
 		6741AAC61BF356BA002C974C /* libgeometry.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6741AAAB1BF356B9002C974C /* libgeometry.a */; };
 		6741AAC91BF356BA002C974C /* libindexer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6741AAAE1BF356B9002C974C /* libindexer.a */; };
 		6741AACA1BF356BA002C974C /* libjansson.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6741AAAF1BF356B9002C974C /* libjansson.a */; };
@@ -1967,7 +1966,6 @@
 		6741AAA71BF356B9002C974C /* libcoding.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcoding.a; path = "../../../omim-xcode-build/Debug/libcoding.a"; sourceTree = "<group>"; };
 		6741AAA81BF356B9002C974C /* libexpat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libexpat.a; path = "../../../omim-xcode-build/Debug/libexpat.a"; sourceTree = "<group>"; };
 		6741AAA91BF356B9002C974C /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = "../../../omim-xcode-build/Debug/libfreetype.a"; sourceTree = "<group>"; };
-		6741AAAA1BF356B9002C974C /* libfribidi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfribidi.a; path = "../../../omim-xcode-build/Debug/libfribidi.a"; sourceTree = "<group>"; };
 		6741AAAB1BF356B9002C974C /* libgeometry.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgeometry.a; path = "../../../omim-xcode-build/Debug/libgeometry.a"; sourceTree = "<group>"; };
 		6741AAAE1BF356B9002C974C /* libindexer.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libindexer.a; path = "../../../omim-xcode-build/Debug/libindexer.a"; sourceTree = "<group>"; };
 		6741AAAF1BF356B9002C974C /* libjansson.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjansson.a; path = "../../../omim-xcode-build/Debug/libjansson.a"; sourceTree = "<group>"; };
@@ -2466,7 +2464,6 @@
 				6741AAC21BF356BA002C974C /* libcoding.a in Frameworks */,
 				6741AAC31BF356BA002C974C /* libexpat.a in Frameworks */,
 				6741AAC41BF356BA002C974C /* libfreetype.a in Frameworks */,
-				6741AAC51BF356BA002C974C /* libfribidi.a in Frameworks */,
 				340474F41E08199D00C92850 /* Fabric.framework in Frameworks */,
 				6741AAC61BF356BA002C974C /* libgeometry.a in Frameworks */,
 				674A7E291C0DA576003D48E1 /* libsdf_image.a in Frameworks */,
@@ -2629,7 +2626,6 @@
 				3411387C1C15AE73002E3B3E /* libeditor.a */,
 				6741AAA81BF356B9002C974C /* libexpat.a */,
 				6741AAA91BF356B9002C974C /* libfreetype.a */,
-				6741AAAA1BF356B9002C974C /* libfribidi.a */,
 				6741AAAB1BF356B9002C974C /* libgeometry.a */,
 				34D1B6F01E95096B0057E9C7 /* libicu.a */,
 				6741AAAE1BF356B9002C974C /* libindexer.a */,
@@ -4357,7 +4353,7 @@
 				ORGANIZATIONNAME = MapsWithMe;
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
-						DevelopmentTeam = L2QFT5NA2Q;
+						DevelopmentTeam = 3T6FSDE8C7;
 						LastSwiftMigration = 0820;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
@@ -6185,7 +6181,6 @@
 					"-lcoding",
 					"-lbase",
 					"-lfreetype",
-					"-lfribidi",
 					"-lminizip",
 					"-ljansson",
 					"-lexpat",
@@ -6234,7 +6229,6 @@
 					"-lcoding",
 					"-lbase",
 					"-lfreetype",
-					"-lfribidi",
 					"-lminizip",
 					"-ljansson",
 					"-lexpat",
@@ -6283,7 +6277,6 @@
 					"-lcoding",
 					"-lbase",
 					"-lfreetype",
-					"-lfribidi",
 					"-lminizip",
 					"-ljansson",
 					"-lexpat",
@@ -6332,7 +6325,6 @@
 					"-lcoding",
 					"-lbase",
 					"-lfreetype",
-					"-lfribidi",
 					"-lminizip",
 					"-ljansson",
 					"-lexpat",
@@ -6381,7 +6373,6 @@
 					"-lcoding",
 					"-lbase",
 					"-lfreetype",
-					"-lfribidi",
 					"-lminizip",
 					"-ljansson",
 					"-lexpat",
@@ -6430,7 +6421,6 @@
 					"-lcoding",
 					"-lbase",
 					"-lfreetype",
-					"-lfribidi",
 					"-lminizip",
 					"-ljansson",
 					"-lexpat",
@@ -6535,7 +6525,6 @@
 					"-lcoding",
 					"-lbase",
 					"-lfreetype",
-					"-lfribidi",
 					"-lminizip",
 					"-ljansson",
 					"-lexpat",
@@ -6638,7 +6627,6 @@
 					"-lcoding",
 					"-lbase",
 					"-lfreetype",
-					"-lfribidi",
 					"-lminizip",
 					"-ljansson",
 					"-lexpat",
@@ -6744,7 +6732,6 @@
 					"-lcoding",
 					"-lbase",
 					"-lfreetype",
-					"-lfribidi",
 					"-lminizip",
 					"-ljansson",
 					"-lexpat",
@@ -6850,7 +6837,6 @@
 					"-lcoding",
 					"-lbase",
 					"-lfreetype",
-					"-lfribidi",
 					"-lminizip",
 					"-ljansson",
 					"-lexpat",
@@ -6956,7 +6942,6 @@
 					"-lcoding",
 					"-lbase",
 					"-lfreetype",
-					"-lfribidi",
 					"-lminizip",
 					"-ljansson",
 					"-lexpat",
@@ -7063,7 +7048,6 @@
 					"-lcoding",
 					"-lbase",
 					"-lfreetype",
-					"-lfribidi",
 					"-lminizip",
 					"-ljansson",
 					"-lexpat",
