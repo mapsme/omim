@@ -410,10 +410,10 @@
 "my_position_share_email" = "Chào,\n\nTôi hiện đang ở đây: %1$@. Hãy nhấn vào liên kết này %2$@ hoặc liên kết này %3$@ để xem địa điểm trên bản đồ.\n\nCám ơn.";
 
 /* Android share by Message/SMS button text (including SMS) */
-"share_by_message" = "Chia sẻ bằng tin nhắn";
+"share_by_message" = "Partajare ca mesaj";
 
 /* Share button text which opens menu with more buttons, like Message, EMail, Facebook etc. */
-"share" = "Chia sẻ";
+"share" = "Partajare";
 
 /* iOS share by Message button text (including SMS) */
 "message" = "Tin nhắn";
@@ -478,6 +478,8 @@
 
 /* Settings languages off information in voice instructions screen */
 "prefs_languages_information_off" = "For some languages, you will need to install a other speech synthesizer or an additional language pack from the app store (Google Play Market, Samsung Apps).\n\nOpen your device's settings –> Language and input –> Speech –> Text to speech output.*\n\nHere you can manage settings for speech synthesis (for example, download language pack for offline use) and select another text-to-speech engine.";
+
+"prefs_languages_information_off_link" = "For more information please check the guide.";
 
 /* Settings screen: "Map" category title */
 "prefs_group_map" = "Hartă";
