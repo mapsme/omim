@@ -20351,7 +20351,7 @@
     ru = Обновите ваши скачанные карты
 
   [whats_new_auto_update_message]
-    en = Update outdate maps to access new places and the new app features.
+    en = Update outdated maps to access new places and the new app features.
     ru = Обновите устаревшие карты, чтобы получить доступ к новым объектам и новым функциям приложения.
 
   [whats_new_auto_update_button_size]
