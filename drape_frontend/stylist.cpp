@@ -127,8 +127,7 @@ private:
         IsTypeOf(key, Line | Area | Waymarker))
     {
       double const layerPart = m_depthLayer * drule::layer_base_priority;
-      double const depthPart = fmod(depth, drule::layer_base_priority);
-      depth = layerPart + depthPart;
+      depth = layerPart + depth;
     }
 
     if (IsTypeOf(key, Caption | Symbol | Circle | PathText))
