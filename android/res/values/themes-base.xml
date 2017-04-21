@@ -100,6 +100,8 @@
     <item name="warmGray">@color/warm_gray</item>
 
     <item name="localAdSearchResBackground">@color/search_local_ads_customer_result</item>
+
+    <item name="tagBackground">@drawable/bg_tag</item>
   </style>
 
   <!-- Night theme -->
@@ -203,5 +205,7 @@
     <item name="warmGray">@color/warm_gray_night</item>
 
     <item name="localAdSearchResBackground">@color/search_local_ads_customer_result_night</item>
+
+    <item name="tagBackground">@drawable/bg_tag_night</item>
   </style>
 </resources>

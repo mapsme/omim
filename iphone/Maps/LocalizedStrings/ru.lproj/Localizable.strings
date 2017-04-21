@@ -1870,3 +1870,5 @@
 "search_hotel_filter_resort" = "Дом отдыха";
 
 "search_hotel_filter_motel" = "Мотель";
+
+"booking_filters_type" = "Тип";

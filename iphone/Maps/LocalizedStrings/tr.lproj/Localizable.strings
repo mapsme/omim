@@ -1870,3 +1870,5 @@
 "search_hotel_filter_resort" = "Tatil köyü";
 
 "search_hotel_filter_motel" = "Motel";
+
+"booking_filters_type" = "Type";

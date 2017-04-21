@@ -1870,3 +1870,5 @@
 "search_hotel_filter_resort" = "리조트";
 
 "search_hotel_filter_motel" = "Motel";
+
+"booking_filters_type" = "Type";
