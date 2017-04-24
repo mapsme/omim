@@ -547,7 +547,15 @@ public class RoutingPlanController extends ToolbarController implements SlotFram
     TextView error = (TextView) getViewById(R.id.error);
     error.setText(message);
     error.setVisibility(View.VISIBLE);
-    getViewById(R.id.start).setVisibility(View.GONE);
+    showStartButton(false);
+  }
+
+  void showStartButton(boolean show)
+  {
+    if (show)
+      UiUtils.show(getViewById(R.id.start));
+    else
+      UiUtils.hide(getViewById(R.id.start));
   }
 
   @NonNull
@@ -617,7 +625,7 @@ public class RoutingPlanController extends ToolbarController implements SlotFram
     }
 
     UiUtils.updateAccentButton(start);
-    UiUtils.show(start);
+    showStartButton(true);
   }
 
   private static void trackUberStatistics(boolean isUberInstalled)

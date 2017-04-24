@@ -1532,7 +1532,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
     if (controller.isBuilt() || controller.isUberRequestHandled())
     {
-      mMainMenu.showLineFrame(true, new Runnable()
+      showLineFrame(true, new Runnable()
       {
         @Override
         public void run()
@@ -1548,7 +1548,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
     if (controller.isPlanning() || controller.isBuilding() || controller.isErrorEncountered())
     {
-      mMainMenu.showLineFrame(false, new Runnable()
+      showLineFrame(false, new Runnable()
       {
         @Override
         public void run()
@@ -1559,10 +1559,11 @@ public class MwmActivity extends BaseMwmFragmentActivity
             completion.run();
         }
       });
+
       return;
     }
 
-    mMainMenu.showLineFrame(true, new Runnable()
+    showLineFrame(true, new Runnable()
     {
       @Override
       public void run()
@@ -1573,6 +1574,17 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
     if (completion != null)
       completion.run();
+  }
+
+  private void showLineFrame(boolean show, @Nullable Runnable completion)
+  {
+    mMainMenu.showLineFrame(show, completion);
+    if (mIsFragmentContainer)
+    {
+      RoutingPlanFragment fragment = (RoutingPlanFragment) getFragment(RoutingPlanFragment.class);
+      if (fragment != null)
+        fragment.showStartButton(show);
+    }
   }
 
   private void setNavButtonsTopLimit(int limit)
