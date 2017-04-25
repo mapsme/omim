@@ -20593,8 +20593,8 @@
     sk = Obnoviť
 
   [booking_filters_rating]
-    en = Rating
-    ru = Рейтинг
+    en = Rating from
+    ru = Рейтинг с
     ar = تصنيف
     cs = Hodnocení
     da = Vurdering
