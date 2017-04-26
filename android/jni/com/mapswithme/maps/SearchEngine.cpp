@@ -171,7 +171,7 @@ private:
 
   Rule BuildOneOf(JNIEnv * env, jobject filter, unsigned value)
   {
-    if (filter == NULL)
+    if (filter == nullptr)
       return search::hotels_filter::OneOf(value);
 
     auto const hotelType = env->GetObjectField(filter, m_hotelType);
@@ -503,7 +503,7 @@ extern "C"
   {
     using Type = ftypes::IsHotelChecker::Type;
     static jclass const hotelTypeClass =
-        env->FindClass("com/mapswithme/maps/search/HotelsFilter$HotelType");
+        jni::GetGlobalClassRef(env, "com/mapswithme/maps/search/HotelsFilter$HotelType");
     static jmethodID const hotelTypeCtorId =
         jni::GetConstructorID(env, hotelTypeClass, "(ILjava/lang/String;)V");
 
