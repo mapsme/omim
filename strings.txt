@@ -20593,8 +20593,8 @@
     sk = Obnoviť
 
   [booking_filters_rating]
-    en = Rating
-    ru = Рейтинг
+    en = Rating from
+    ru = Рейтинг с
     ar = تصنيف
     cs = Hodnocení
     da = Vurdering
@@ -23361,3 +23361,7 @@
 
   [view_campaign_button]
     en = View ad campagain
+
+  [search_hotel_filters_type]
+    en = Type
+    ru = Тип

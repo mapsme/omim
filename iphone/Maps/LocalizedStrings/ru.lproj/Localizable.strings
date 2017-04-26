@@ -1652,7 +1652,7 @@
 
 "booking_filters_reset" = "Сбросить";
 
-"booking_filters_rating" = "Рейтинг";
+"booking_filters_rating" = "Рейтинг с";
 
 "booking_filters_rating_any" = "Любой";
 
@@ -1870,3 +1870,9 @@
 "search_hotel_filter_resort" = "Дом отдыха";
 
 "search_hotel_filter_motel" = "Мотель";
+
+"create_campaign_button" = "Create ad campaign";
+
+"view_campaign_button" = "View ad campagain";
+
+"search_hotel_filters_type" = "Тип";
