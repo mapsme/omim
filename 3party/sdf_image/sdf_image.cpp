@@ -22,9 +22,9 @@ THE SOFTWARE.
 #include "base/math.hpp"
 #include "base/scope_guard.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/limits.hpp"
-#include "std/bind.hpp"
+#include <algorithm>
+#include <limits>
+#include <functional>
 
 namespace sdf_image
 {
@@ -44,7 +44,7 @@ namespace
   }
 
 }
-#define BIND_GRADIENT(f) bind(&f, _1, _2, _3, _4, _5, _6, _7, _8)
+#define BIND_GRADIENT(f) std::bind(&f, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4, std::placeholders::_5, std::placeholders::_6, std::placeholders::_7, std::placeholders::_8)
 #define TRANSFORM(offset, dx, dy) \
   if (Transform(i, offset, dx, dy, xDist, yDist, oldDist)) \
   { \
@@ -97,7 +97,7 @@ uint32_t SdfImage::GetHeight() const
 void SdfImage::GetData(vector<uint8_t> & dst)
 {
   ASSERT(m_data.size() <= dst.size(), ());
-  transform(m_data.begin(), m_data.end(), dst.begin(), [](float const & node)
+  std::transform(m_data.begin(), m_data.end(), dst.begin(), [](float const & node)
   {
     return static_cast<uint8_t>(node * 255.0f);
   });
@@ -105,17 +105,17 @@ void SdfImage::GetData(vector<uint8_t> & dst)
 
 void SdfImage::Scale()
 {
-  float maxi = numeric_limits<float>::min();
-  float mini = numeric_limits<float>::max();
+  float maxi = std::numeric_limits<float>::min();
+  float mini = std::numeric_limits<float>::max();
 
-  for_each(m_data.begin(), m_data.end(), [&maxi, &mini](float const & node)
+  std::for_each(m_data.begin(), m_data.end(), [&maxi, &mini](float const & node)
   {
-    maxi = max(maxi, node);
-    mini = min(mini, node);
+    maxi = std::max(maxi, node);
+    mini = std::min(mini, node);
   });
 
   maxi -= mini;
-  for_each(m_data.begin(), m_data.end(), [&maxi, &mini](float & node)
+  std::for_each(m_data.begin(), m_data.end(), [&maxi, &mini](float & node)
   {
     node = (node - mini) / maxi;
   });
@@ -123,7 +123,7 @@ void SdfImage::Scale()
 
 void SdfImage::Invert()
 {
-  for_each(m_data.begin(), m_data.end(), [](float & node)
+  std::for_each(m_data.begin(), m_data.end(), [](float & node)
   {
     node = 1.0f - node;
   });
@@ -132,7 +132,7 @@ void SdfImage::Invert()
 void SdfImage::Minus(SdfImage & im)
 {
   ASSERT(m_data.size() == im.m_data.size(), ());
-  transform(m_data.begin(), m_data.end(), im.m_data.begin(), m_data.begin(), [](float const & n1, float const & n2)
+  std::transform(m_data.begin(), m_data.end(), im.m_data.begin(), m_data.begin(), [](float const & n1, float const & n2)
   {
     return n1 - n2;
   });
@@ -140,7 +140,7 @@ void SdfImage::Minus(SdfImage & im)
 
 void SdfImage::Distquant()
 {
-  for_each(m_data.begin(), m_data.end(), [](float & node)
+  std::for_each(m_data.begin(), m_data.end(), [](float & node)
   {
     node = my::clamp(0.5f + node * 0.0325f, 0.0f, 1.0f);
   });
@@ -161,8 +161,8 @@ void SdfImage::GenerateSDF(float sc)
 
   MexFunction(*this, xDist, yDist, outside);
 
-  fill(xDist.begin(), xDist.end(), 0);
-  fill(yDist.begin(), yDist.end(), 0);
+  std::fill(xDist.begin(), xDist.end(), 0);
+  std::fill(yDist.begin(), yDist.end(), 0);
 
   Invert();
   MexFunction(*this, xDist, yDist, inside);
@@ -252,9 +252,9 @@ void SdfImage::MexFunction(SdfImage const & img, vector<short> & xDist, vector<s
   img.EdtaA3(xDist, yDist, out);
   // Pixels with grayscale>0.5 will have a negative distance.
   // This is correct, but we don't want values <0 returned here.
-  for_each(out.m_data.begin(), out.m_data.end(), [](float & n)
+  std::for_each(out.m_data.begin(), out.m_data.end(), [](float & n)
   {
-    n = max(0.0f, n);
+    n = std::max(0.0f, n);
   });
 }
 
@@ -318,7 +318,7 @@ double SdfImage::EdgeDf(double gx, double gy, double a) const
     gx = fabs(gx);
     gy = fabs(gy);
     if (gx < gy)
-      swap(gx, gy);
+      std::swap(gx, gy);
 
     double a1 = 0.5 * gy / gx;
     if (a < a1)
@@ -434,7 +434,7 @@ void SdfImage::EdtaA3(vector<short> & xDist, vector<short> & yDist, SdfImage & d
 
       /* Rightmost pixel is special, has no right neighbors */
       float oldDist = dist.m_data[i];
-      if(oldDist > 0) // If not already zero distance
+      if(oldDist > 0) // If not already zero std::distance
       {
         TRANSFORM(offsetD, 0, -1);
         TRANSFORM(offsetLd, 1, -1);
