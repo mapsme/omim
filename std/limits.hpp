@@ -4,7 +4,6 @@
 #undef new
 #endif
 
-#include <climits>
 #include <limits>
 using std::numeric_limits;
 
