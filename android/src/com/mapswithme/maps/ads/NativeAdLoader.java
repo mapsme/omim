@@ -29,4 +29,10 @@ public interface NativeAdLoader
    * @return <code>true</code> if loading is in a progress, otherwise - <code>false</code>.
    */
   boolean isAdLoading(@NonNull String bannerId);
+
+  /**
+   * Cancels the loading process.
+   *
+   */
+  void cancel();
 }
