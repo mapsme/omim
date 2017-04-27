@@ -100,7 +100,8 @@ public class MiscPrefsFragment extends BaseXmlSettingsFragment
     int curValue = Config.getUseMobileDataSettings();
     final ListPreference mobilePref = (ListPreference)findPreference(
         getString(R.string.pref_use_mobile_data));
-    if (curValue != NetworkPolicy.NOT_TODAY && curValue != NetworkPolicy.TODAY)
+    if (curValue != NetworkPolicy.NOT_TODAY && curValue != NetworkPolicy.TODAY
+        && curValue != NetworkPolicy.NONE)
     {
       mobilePref.setValue(String.valueOf(curValue));
       mobilePref.setSummary(mobilePref.getEntry());
