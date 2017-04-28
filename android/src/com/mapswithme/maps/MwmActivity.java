@@ -1088,6 +1088,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
       TrafficManager.INSTANCE.attach(mTrafficButtonController);
     if (mNavigationController != null)
       TrafficManager.INSTANCE.attach(mNavigationController);
+    mPlacePage.onActivityStarted();
   }
 
   @Override
@@ -1099,6 +1100,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     TrafficManager.INSTANCE.detachAll();
     if (mTrafficButtonController != null)
       mTrafficButtonController.destroy();
+    mPlacePage.onActivityStopped();
   }
 
   @Override
