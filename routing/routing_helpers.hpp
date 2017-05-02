@@ -29,5 +29,6 @@ bool IsRoad(TTypes const & types)
 
 void ReconstructRoute(IDirectionsEngine & engine, RoadGraphBase const & graph,
                       shared_ptr<TrafficStash> const & trafficStash,
-                      my::Cancellable const & cancellable, vector<Junction> & path, Route & route);
+                      my::Cancellable const & cancellable, bool hasAltitude,
+                      vector<Junction> & path, Route & route);
 }  // namespace rouing
