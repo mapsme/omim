@@ -86,6 +86,7 @@ public:
     bool ForwardIsEnter() const { return m_forwardIsEnter; }
     VehicleMask GetRoadMask() const { return m_roadMask; }
     VehicleMask GetOneWayMask() const { return m_oneWayMask; }
+    void ReplaceFeatureId(uint32_t newFeatureId) { m_featureId = newFeatureId; }
 
   private:
     uint64_t m_osmId = 0;
@@ -254,6 +255,7 @@ private:
   static Weight constexpr kGranularity = 4;
   static_assert(kGranularity > 0, "kGranularity should be > 0");
 
+public:
   class Section final
   {
   public:
@@ -369,6 +371,7 @@ private:
     std::vector<Section> m_sections;
   };
 
+private:
   static uint32_t CalcBitsPerOsmId(std::vector<Transition> const & transitions);
 
   template <typename T>

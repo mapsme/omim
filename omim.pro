@@ -61,7 +61,9 @@ SUBDIRS = 3party base coding geometry editor indexer routing routing_common sear
     srtm_coverage_checker.depends = $$SUBDIRS routing
     feature_segments_checker.subdir = generator/feature_segments_checker
     feature_segments_checker.depends = $$SUBDIRS
-    SUBDIRS *= routing_integration_tests routing_consistency_tests srtm_coverage_checker feature_segments_checker
+    move_cross_mwm.subdir = generator/move_cross_mwm
+    move_cross_mwm.depends = $$SUBDIRS
+    SUBDIRS *= routing_integration_tests routing_consistency_tests srtm_coverage_checker feature_segments_checker move_cross_mwm
   }
 }
 
