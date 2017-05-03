@@ -177,7 +177,7 @@ pl:^Sklep
 pt:^Compras
 ro:^Magazin
 es:^Tienda
-sv:^Butik
+sv:^Butik|Affär
 th:^ร้านค้า
 tr:^Mağaza
 uk:^Крамниця
@@ -283,7 +283,7 @@ he:בידור
 sk:Zábava
 
 @atm
-en:^ATM
+en:^ATM|Cash machine
 ru:3^Банкомат
 ar:^ماكينةالصرافالآلي
 cs:3^Bankomat
@@ -741,7 +741,7 @@ pl:^Sklep ogrodniczy
 pt:^Creche|infantário
 ro:^Pepinieră|magazin cu articole de grădinărit
 es:^Vivero|tienda de jardinería
-sv:^Daghem|trädgårdsbutik
+sv:^Plantskola|trädgårdsbutik
 th:^สถานรับเลี้ยงเด็ก|เนอร์สเซอรี่
 tr:^Çocuk yuvası|kreş
 uk:^Товари для саду|крамниця
@@ -981,7 +981,7 @@ pl:^Sklep ze sprzętem elektronicznym|towary
 pt:^Loja de eletrônicos|2loja
 ro:^Electronice
 es:^Electrónica
-sv:^Elektronik
+sv:^Elektronik|elektronikaffär
 th:^ร้านขายอุปกรณ์อิเล็กทรอนิกส์
 tr:^Elektronik mağazası
 uk:^Електротехнічний магазин|2магазин|крамниця
@@ -1041,7 +1041,7 @@ pl:^Jubiler|towary
 pt:^Joias|2loja
 ro:^Bijutier
 es:^Joyería
-sv:^Smycken
+sv:^Smycken|juvelerare|guldsmed
 th:^ร้านขายเครื่องประดับ
 tr:^Kuyumcu
 uk:^Ювелірний магазин|2магазин|крамниця
@@ -1071,7 +1071,7 @@ pl:^Sklep optyczny|towary
 pt:^Oculista|2loja
 ro:^Optică
 es:^Óptica
-sv:^Optiker|brillebutik|briller
+sv:^Optiker|glasögonaffär
 th:^ร้านแว่น
 tr:^Gözlükçü
 uk:^Оптика|2магазин|крамниця
@@ -1223,7 +1223,7 @@ pl:4^Supermarket|zakupy
 pt:3^Supermercado
 ro:3^Supermarket
 es:3^Supermercado
-sv:3^Stormarknad
+sv:3^Stormarknad|dagligvaruhandel
 th:3^ซูเปอร์มาร์เก็ต
 tr:3^Süpermarket
 uk:3^Супермаркет|3універсам|2магазин|крамниця
@@ -1254,7 +1254,7 @@ pl:^Centrum handlowe
 pt:^O Shopping
 ro:^Mall-ul
 es:^El centro comercial
-sv:^Gallerian
+sv:^Galleria|köpcentrum
 th:^เดอะมอลล์
 tr:^Alışveriş merkezi
 uk:^Торговий центр|крамниця
@@ -1491,7 +1491,7 @@ pl:^Sklep z ubraniami|ciuchowy
 pt:^Loja de roupas
 ro:^Magazin de haine
 es:^Tienda de ropa|3ropa
-sv:^Kläder butik|4kläder
+sv:^Klädbutik|klädaffär|4kläder
 th:^ร้านขายเสื้อผ้า|ร้าน
 tr:^Giyim mağazası
 uk:^Магазин одягу|речі|4одяг|2крамниця
@@ -1553,7 +1553,7 @@ pl:^Sklep rowerowy|4rower
 pt:^Loja de bicicletas|4bicicleta
 ro:3^Bicicletă|Magazin biciclete
 es:^Bicicletería|bicicleta
-sv:4^Cykelaffär|cykel|cykel
+sv:4^Cykelaffär|cykel
 th:4^จักรยาน|ร้าน
 tr:^Bisiklet
 uk:4^Веломагазін|велосипед|магазин|крамниця
@@ -1763,7 +1763,7 @@ pl:2^Prom
 pt:2^Balsa
 ro:3^Feribot|terminal
 es:3^Transbordador
-sv:3^Färja|terminal
+sv:3^Färja|färjeläge|terminal
 th:2^เฟอร์รี่|สถานี
 tr:3^Feribot|terminal
 uk:3^Пором|транспорт
@@ -2011,7 +2011,7 @@ pl:3^Świątynia
 pt:^Local de culto|3templo
 ro:3^Loc de cult|3templu
 es:4^Lugar de culto|templo
-sv:4^Plats för tillbedjan|3tempel
+sv:4^Plats för tillbedjan|gudstjänstplats|helgedom|3tempel
 th:2^สถานที่ประกอบพิธีกรรม
 tr:4^Ibadet yerleri|3tapınak
 uk:3^Храм|пам’ятка|алтарь|мавзолей|пам’ятні місця
@@ -2438,7 +2438,7 @@ pl:5^Odkrywka archeologiczna|wykopaliska
 pt:^Sítio arqueológico|turismo
 ro:^Sit arheologic
 es:^Sitio arqueológico
-sv:^Arkeologisk plats|attraktion|turism
+sv:^Arkeologisk plats|fornminne|attraktion|turism
 th:^โบราณสถาน|แหล่งท่องเที่ยว|การท่องเที่ยว
 tr:^Arkeolojik alan|cazibe merkezleri|turizm
 uk:^Розкопки|історична пам'ятка|туризм|пам’ятні місця
@@ -2562,7 +2562,7 @@ pl:^Wynajem samochodów|samochód|auto|Wynajem
 pt:^Aluguel de automóveis|carro|aluguel
 ro:^Închiriere mașini
 es:3^Coche compartido|alquiler
-sv:3^Biluthyrning|bil|uthyrning|delning
+sv:3^Biluthyrning|bilpool|bil|uthyrning|delning
 th:3^รถยนต์|บริการรถเช่า
 tr:3^Araç kiralama|araba
 uk:4^Прокат авто|3авто|3машина|прокат
@@ -2593,7 +2593,7 @@ pl:3^Kino|filmy
 pt:3^Cinema
 ro:^Cinema
 es:3^Cine
-sv:3^Bio
+sv:3^Bio|biograf
 th:3^โรงภาพยนตร์
 tr:3^Sinema
 uk:3^Кіно|кінотеатр|розваги
@@ -2865,7 +2865,7 @@ pl:3^Cmentarz|pochówek
 pt:^Cemitério
 ro:^Cimitir
 es:^Cementerio
-sv:^Kyrkogård
+sv:^Begravningsplats|kyrkogård|gravplats
 th:^สุสาน
 tr:3^Mezarlık
 uk:^Цвинтар
@@ -3071,7 +3071,7 @@ pl:4^Przedszkole|dzieci|zerówka
 pt:^Jardim de infância
 ro:^Grădiniță
 es:^Guardería|Kindergarden|preescolar
-sv:^Förskola
+sv:^Förskola|dagis
 th:4^โรงเรียนอนุบาล
 tr:4^Anaokulu
 uk:^Дитячий садок|ясла
@@ -3122,6 +3122,7 @@ de:Parking
 ja:パーキング|コインパーキング
 pt:3Parking
 es:3aparcamiento
+sv:Parkering
 uk:автостоянка|паркінг
 vi:Đỗ xe
 zh-Hans:1停车
@@ -3198,7 +3199,7 @@ pl:5^Skrzynka pocztowa|listy|poczta
 pt:3^Caixa de correio|correios
 ro:^Cutie poștală
 es:3^Buzón
-sv:3^Postlåda|post
+sv:3^Postlåda|brevlåda|post
 th:3^ตู้จดหมาย|ไปรษณีย์
 tr:3^Posta kutusu|posta
 uk:3^Поштова скринька|пошта
@@ -3252,6 +3253,7 @@ id:Kantor pos
 pl:listy
 ro:Oficiul postal
 es:4Oficina de correos|3post
+sv:Postkontor
 tr:3Postane
 vi:Bưu điện
 zh-Hant:郵筒
@@ -3369,7 +3371,7 @@ pl:3^Szopa|schronienie
 pt:^Abrigo
 ro:^Adăpost
 es:^Refugio|Abrigo|Marquesina
-sv:^Logi
+sv:^Skyddsrum
 th:^ที่อยู่อาศัย
 tr:^Barınak
 uk:^Укриття
@@ -3455,6 +3457,7 @@ it:WC
 ja:お手洗い|便所|厠
 pl:wc|ubikacja|wychodek
 es:3Baños|servicios sanitarios|3lavabo|inodoro|baño|wc
+sv:WC|toalett
 vi:Nhà vệ sinh
 zh-Hant:2洗手間|wc
 el:μπάνιο|χώρος ανάγκης|αποχωρητήριο|wc
@@ -3666,7 +3669,7 @@ pl:^Wieś|ląd
 pt:^Município
 ro:^Județ
 es:^Condado
-sv:^Land
+sv:^Län
 th:^เขต
 tr:^Kırsal kesim
 uk:^Округ|графство
@@ -3912,7 +3915,7 @@ pl:^Farma|gospodarstwo
 pt:^Quinta
 ro:^Fermă
 es:^Granja|hacienda
-sv:^Gård
+sv:^Bondgård|gård
 th:^ฟาร์ม
 tr:^Çiftlik
 uk:^Ферма
@@ -4035,7 +4038,7 @@ pl:3^Ścieżka|dróżka|droga
 pt:^Caminho
 ro:^Cale
 es:^Sendero
-sv:^Väg
+sv:^Gångväg|gångstig|stig|väg
 th:^เส้นทาง
 tr:^Yol
 uk:^Пішохідна доріжка|пішохідний прохід
@@ -4759,6 +4762,7 @@ it:Posto di polizia
 ja:1屯所|ポリス|交番|お巡りさん|おまわりさん|通報
 ko:보안대|경찰
 pl:komisariat
+sv:Polisstation
 uk:4Поліція
 vi:Cảnh sát
 zh-Hant:警察|警員
@@ -4876,7 +4880,7 @@ pl:3^Naprawa samochodu|warsztat samochodowy|warsztat|samochód|auto
 pt:^Oficina de reparação de automóveis|estação de serviço
 ro:^Atelier de reparații auto
 es:^Taller|3reparaciones auto|coche|automóvil|3auto|carro
-sv:3^Bilreparatör|4servicestation|bil
+sv:3^Bilreparatör|bilverkstad|4servicestation|bil
 th:3^ร้านซ่อมรถยนต์|สถานีบริการ
 tr:3^Oto tamir dükkanı|servis istasyonu|araba
 uk:3^СТО|3автомайстерня|автосервіс|ремонт авто
@@ -5202,7 +5206,7 @@ nb:^Anleggsgartner
 pt:^Paisagista
 ro:^Peisagist
 es:^Paisajista
-sv:^Landskapsarkitekt
+sv:^Trädgårdsmästare|landskapsarkitekt
 th:^คนจัดสวน
 tr:^Bahçe düzenleyici|peyzaj
 uk:^Садівник
@@ -5591,7 +5595,7 @@ pl:^Plaża
 pt:^Praia
 ro:^Plajă
 es:^Playa
-sv:^Stranden
+sv:^Strand
 th:^ชายหาด
 tr:^Plaj
 uk:^Пляж
@@ -5621,7 +5625,7 @@ pl:^Fotoradar
 pt:^Radar de velocidade
 ro:^Detector de viteză
 es:^Radar de velocidad
-sv:^Hastighetskamera
+sv:^Hastighetskamera|fartkamera
 th:^กล้องตรวจจับความเร็ว
 tr:^Hız Kamerası
 uk:^Камера безпеки дорожнього руху
@@ -6010,7 +6014,7 @@ pl:^Kosz na śmieci
 pt:^Caixote do lixo
 ro:^Pubelă
 es:^Papelera
-sv:^Pepperskorg
+sv:^Papperskorg|soptunna
 th:^ถังขยะ
 tr:^Poubelle
 uk:^Бак для сміття
@@ -6374,7 +6378,7 @@ pl:^Automat z papierosami
 pt:^Máquina de venda de tabaco
 ro:^Automat de țigări
 es:^Máquina de tabaco
-sv:^Cigarettmaskin
+sv:^Cigarettmaskin|cigarettautomat
 th:^เครื่องขายบุหรี่
 tr:^Distributeur de cigarettes
 uk:^Автомат з продажу сигарет
@@ -6584,7 +6588,7 @@ pl:^Podstacja
 pt:^Subestação
 ro:^Stație subterană
 es:^Subestación
-sv:^Understation
+sv:^Ställverk
 th:^สถานีไฟฟ้า
 tr:^Sous-station
 uk:^Підстанція
@@ -6614,7 +6618,7 @@ pl:^Bukmacher
 pt:^Livreiro
 ro:^Casă de pariuri
 es:^Casa de apuestas
-sv:^Bokbindare
+sv:^Bookmaker|vadhållningsagent
 th:^ร้านรับแทงพนัน
 tr:^Bookmaker
 uk:^Букмекерська контора
@@ -6704,7 +6708,7 @@ pl:^Sklep monopolowy
 pt:^Vinho|Loja de Vinhos
 ro:^Magazin de băuturi alcolice
 es:^Establecimiento de bebidas alcohólicas
-sv:^Spritförsäljning
+sv:^Vinhandel
 th:^ร้านขายไวน์
 tr:^Caviste
 uk:^Винна крамниця
@@ -6796,7 +6800,7 @@ pl:^Tablica informacyjna
 pt:^Painel de informações
 ro:^Panou de informații
 es:^Tablón de información
-sv:^Anslagstavla
+sv:^Informationstavla
 th:^บอร์ดประชาสัมพันธ์
 tr:^Panneau d'informations
 uk:^Інформаційний щит
@@ -6946,7 +6950,7 @@ pl:^Blok
 pt:^Bloqueio
 ro:^Bloc
 es:^Bloqueo
-sv:^Byggnad
+sv:^Blockering
 th:^บล็อก
 tr:^Bloc
 uk:^Блок
@@ -7186,7 +7190,7 @@ pl:^Wejście
 pt:^Entrada
 ro:^Intrare
 es:^Entrada
-sv:^Entré
+sv:^Entré|ingång
 th:^ทางเข้า
 tr:^Entrée
 uk:^Вхід
@@ -7696,7 +7700,7 @@ pl:^Dom wczasowy
 pt:^Resort
 ro:^Stațiuni
 es:^Resort
-sv:^Resorter
+sv:^Semesterort|resort
 th:^รีสอร์ต
 tr:^Tatil köyü
 uk:^Будинок відпочинку
