@@ -128,9 +128,12 @@ double ScoreGeometry(pugi::xml_document const & osmResponse,
     }
   }
 
-  auto const wayScore = static_cast<double>(matched) / theirGeometry.size() - 0.5;
-  auto const geomScore = static_cast<double>(matched) / ourGeometry.size() - 0.5;
-  auto const result = wayScore <= 0 || geomScore <= 0
+  auto const wayScore = static_cast<double>(matched) / theirGeometry.size();
+  auto const geomScore = static_cast<double>(matched) / ourGeometry.size();
+  // Our geometry is simplified and we expect the pair to be found for more than a half points.
+  // OSM geometry is not simplified and we expect the pair to be found for at least a quarter of
+  // the points.
+  auto const result = wayScore < 0.25 || geomScore <= 0.5
       ? -1
       : 2 / (1 / wayScore + 1 / geomScore);
 
