@@ -52761,7 +52761,7 @@ cont {
   element {
     scale: 16
     symbol {
-      name: "zero-icon"
+      name: "subway-minsk-m"
       apply_for_type: 1
       priority: 16918
     }
