@@ -10011,7 +10011,7 @@ cont {
       primary {
         height: 9
         color: 6381914
-        offset_y: 8
+        offset_y: 18
       }
       secondary {
         height: 8
@@ -10040,7 +10040,7 @@ cont {
       primary {
         height: 11
         color: 6381914
-        offset_y: 8
+        offset_y: 18
       }
       secondary {
         height: 10
@@ -10069,7 +10069,7 @@ cont {
       primary {
         height: 11
         color: 6381914
-        offset_y: 8
+        offset_y: 18
       }
       secondary {
         height: 10
@@ -48452,7 +48452,7 @@ cont {
         height: 13
         color: 2236962
         stroke_color: 452984831
-        offset_y: 8
+        offset_y: 18
       }
       secondary {
         height: 12
@@ -48476,7 +48476,7 @@ cont {
         height: 13
         color: 2236962
         stroke_color: 452984831
-        offset_y: 8
+        offset_y: 18
       }
       secondary {
         height: 12
@@ -48500,7 +48500,7 @@ cont {
         height: 13
         color: 2236962
         stroke_color: 452984831
-        offset_y: 8
+        offset_y: 18
       }
       secondary {
         height: 12
@@ -51997,7 +51997,7 @@ cont {
   element {
     scale: 17
     symbol {
-      name: "none"
+      name: "zero-icon"
       apply_for_type: 1
       priority: 16918
     }
@@ -52019,7 +52019,7 @@ cont {
   element {
     scale: 18
     symbol {
-      name: "none"
+      name: "zero-icon"
       apply_for_type: 1
       priority: 16918
     }
@@ -52041,7 +52041,7 @@ cont {
   element {
     scale: 19
     symbol {
-      name: "none"
+      name: "zero-icon"
       apply_for_type: 1
       priority: 16918
     }
@@ -52761,7 +52761,7 @@ cont {
   element {
     scale: 16
     symbol {
-      name: "none"
+      name: "zero-icon"
       apply_for_type: 1
       priority: 16918
     }
@@ -52783,7 +52783,7 @@ cont {
   element {
     scale: 17
     symbol {
-      name: "none"
+      name: "zero-icon"
       apply_for_type: 1
       priority: 16918
     }
@@ -52805,7 +52805,7 @@ cont {
   element {
     scale: 18
     symbol {
-      name: "none"
+      name: "zero-icon"
       apply_for_type: 1
       priority: 16918
     }
@@ -52827,7 +52827,7 @@ cont {
   element {
     scale: 19
     symbol {
-      name: "none"
+      name: "zero-icon"
       apply_for_type: 1
       priority: 16918
     }
@@ -52960,22 +52960,22 @@ cont {
   element {
     scale: 16
     symbol {
-      name: "subway-m"
+      name: "subway-moscow-m"
       apply_for_type: 1
       priority: 16918
     }
     caption {
       primary {
-        height: 13
+        height: 12
         color: 2236962
         stroke_color: 872415231
-        offset_y: 7
+        offset_y: 9
       }
       secondary {
-        height: 11
+        height: 10
         color: 2236962
         stroke_color: 872415231
-        offset_y: 7
+        offset_y: 24
         text: "int_name"
       }
       priority: 15918
@@ -52984,73 +52984,25 @@ cont {
   element {
     scale: 17
     symbol {
-      name: "subway-l"
+      name: "zero-icon"
       apply_for_type: 1
       priority: 16918
-    }
-    caption {
-      primary {
-        height: 13
-        color: 2236962
-        stroke_color: 452984831
-        offset_y: 7
-      }
-      secondary {
-        height: 11
-        color: 2236962
-        stroke_color: 452984831
-        offset_y: 7
-        text: "int_name"
-      }
-      priority: 15918
     }
   }
   element {
     scale: 18
     symbol {
-      name: "subway-l"
+      name: "zero-icon"
       apply_for_type: 1
       priority: 16918
-    }
-    caption {
-      primary {
-        height: 13
-        color: 2236962
-        stroke_color: 452984831
-        offset_y: 7
-      }
-      secondary {
-        height: 11
-        color: 2236962
-        stroke_color: 452984831
-        offset_y: 7
-        text: "int_name"
-      }
-      priority: 15918
     }
   }
   element {
     scale: 19
     symbol {
-      name: "subway-l"
+      name: "zero-icon"
       apply_for_type: 1
       priority: 16918
-    }
-    caption {
-      primary {
-        height: 13
-        color: 2236962
-        stroke_color: 452984831
-        offset_y: 7
-      }
-      secondary {
-        height: 11
-        color: 2236962
-        stroke_color: 452984831
-        offset_y: 7
-        text: "int_name"
-      }
-      priority: 15918
     }
   }
 }
@@ -53926,7 +53878,7 @@ cont {
   element {
     scale: 17
     symbol {
-      name: "none"
+      name: "zero-icon"
       apply_for_type: 1
       priority: 16918
     }
@@ -53948,7 +53900,7 @@ cont {
   element {
     scale: 18
     symbol {
-      name: "none"
+      name: "zero-icon"
       apply_for_type: 1
       priority: 16918
     }
@@ -53970,7 +53922,7 @@ cont {
   element {
     scale: 19
     symbol {
-      name: "none"
+      name: "zero-icon"
       apply_for_type: 1
       priority: 16918
     }
