@@ -65240,7 +65240,7 @@ colors {
   }
   value {
     name: "RouteOutline"
-    color: 8853524
+    color: 352205
     x: 0
     y: 0
   }
