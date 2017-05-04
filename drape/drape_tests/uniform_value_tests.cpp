@@ -11,6 +11,7 @@
 #include <string>
 
 #include <gmock/gmock.h>
+#include <drape/drape_global.hpp>
 
 using ::testing::_;
 using ::testing::Return;
@@ -177,7 +178,7 @@ UNIT_TEST(UniformValueTest)
   }
 
   drape_ptr<GpuProgramManager> manager = make_unique_dp<GpuProgramManager>();
-  manager->Init(make_unique_dp<TestShaderMapper>());
+  manager->Init(make_unique_dp<TestShaderMapper>(dp::ApiVersion::OpenGLES2));
   ref_ptr<GpuProgram> program = manager->GetProgram(0);
 
   program->Bind();
