@@ -259,15 +259,6 @@ bool ForEachCountryInfo(Index & index, ToDo && toDo)
 }
 }  //  namespace
 
-// static
-bool CarRouter::CheckRoutingAbility(m2::PointD const & startPoint, m2::PointD const & finalPoint,
-                                    TCountryFileFn const & countryFileFn, Index & index)
-{
-  RoutingIndexManager manager(countryFileFn, index);
-  return manager.GetMappingByPoint(startPoint)->IsValid() &&
-         manager.GetMappingByPoint(finalPoint)->IsValid();
-}
-
 CarRouter::CarRouter(Index & index, TCountryFileFn const & countryFileFn,
                      unique_ptr<IndexRouter> localRouter)
   : m_index(index), m_indexManager(countryFileFn, index), m_router(move(localRouter))

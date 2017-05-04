@@ -2860,26 +2860,14 @@ RouterType Framework::GetBestRouter(m2::PointD const & startPoint, m2::PointD co
     auto const lastUsedRouter = GetLastUsedRouter();
     switch (lastUsedRouter)
     {
+      case RouterType::Vehicle:
       case RouterType::Pedestrian:
       case RouterType::Bicycle:
         return lastUsedRouter;
       case RouterType::Taxi:
         ASSERT(false, ("GetLastUsedRouter should not return RouterType::Taxi"));
-      case RouterType::Vehicle:
-        break;
       case RouterType::Count:
         CHECK(false, ("Bad router type", lastUsedRouter));
-    }
-
-    // Return on a short distance the vehicle router flag only if we are already have routing files.
-    auto countryFileGetter = [this](m2::PointD const & pt)
-    {
-      return m_infoGetter->GetRegionCountryId(pt);
-    };
-    if (!CarRouter::CheckRoutingAbility(startPoint, finalPoint, countryFileGetter,
-                                        m_model.GetIndex()))
-    {
-      return RouterType::Pedestrian;
     }
   }
   return RouterType::Vehicle;

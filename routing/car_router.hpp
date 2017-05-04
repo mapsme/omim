@@ -47,16 +47,6 @@ public:
 
   virtual void ClearState() override;
 
-  /*! Fast checking ability of route construction
-   *  @param startPoint starting road point
-   *  @param finalPoint final road point
-   *  @param countryFileFn function for getting filename from point
-   *  @param index mwmSet index
-   *  @returns true if we can start routing process with a given data.
-   */
-  static bool CheckRoutingAbility(m2::PointD const & startPoint, m2::PointD const & finalPoint,
-                                  TCountryFileFn const & countryFileFn, Index & index);
-
 protected:
   /*!
    * \brief FindPhantomNodes finds OSRM graph nodes by point and graph name.
