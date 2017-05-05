@@ -12,6 +12,8 @@ namespace coding
 class GammaCoder
 {
 public:
+  // If |value| is zero, returns false. Otherwise, encodes |value| to
+  // |writer| and returns true.
   template <typename TWriter>
   static bool Encode(BitWriter<TWriter> & writer, uint64_t value)
   {
@@ -44,6 +46,8 @@ public:
 class DeltaCoder
 {
 public:
+  // If |value| is zero, returns false. Otherwise, encodes |value| to
+  // |writer| and returns true.
   template <typename TWriter>
   static bool Encode(BitWriter<TWriter> & writer, uint64_t value)
   {
