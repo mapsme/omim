@@ -89,11 +89,10 @@ vector<m2::PointD> GetWaysOrRelationsGeometry(pugi::xml_document const & osmResp
   return GetRelationsGeometry(osmResponse, wayOrRelation);
 }
 
-/// @returns value form [-0.5, 0.5]. Negative values are used as penalty,
-/// positive as score.
-/// @param osmResponse - nodes, ways and relations from osm
-/// @param wayOrRelation - either way or relation to be compared agains ourGeometry
-/// @param outGeometry - geometry of a FeatureType (ourGeometry must be sort-uniqued)
+/// @returns value form [-1, 1]. Negative values are used as penalty, positive as score.
+/// @param osmResponse - nodes, ways and relations from osm;
+/// @param wayOrRelation - either way or relation to be compared agains ourGeometry;
+/// @param outGeometry - geometry of a FeatureType (ourGeometry must be sort-uniqued);
 double ScoreGeometry(pugi::xml_document const & osmResponse,
                      pugi::xml_node const & wayOrRelation, vector<m2::PointD> ourGeometry)
 {
@@ -130,8 +129,8 @@ double ScoreGeometry(pugi::xml_document const & osmResponse,
 
   auto const wayScore = static_cast<double>(matched) / theirGeometry.size();
   auto const geomScore = static_cast<double>(matched) / ourGeometry.size();
-  // Our geometry is simplified and we expect the pair to be found for more than a half points.
-  // OSM geometry is not simplified and we expect the pair to be found for at least a quarter of
+  // Our geometry is less detailed and we expect the pair to be found for more than half of points.
+  // OSM geometry is more detailed and we expect the pair to be found for at least a quarter of
   // the points.
   auto const result = wayScore < 0.25 || geomScore <= 0.5
       ? -1
