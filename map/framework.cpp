@@ -716,8 +716,9 @@ void Framework::RegisterAllMaps()
   // Fast migrate in case there are no downloaded MWM.
   if (platform::migrate::NeedMigrate())
   {
-    bool disableFastMigrate = false;
-    settings::Get("DisableFastMigrate", disableFastMigrate);
+    bool disableFastMigrate;
+    if (!settings::Get("DisableFastMigrate", disableFastMigrate))
+      disableFastMigrate = false;
     if (!disableFastMigrate && !m_storage.HaveDownloadedCountries())
     {
       GetStorage().PrefetchMigrateData();
@@ -2862,9 +2863,10 @@ RouterType Framework::GetBestRouter(m2::PointD const & startPoint, m2::PointD co
 RouterType Framework::GetLastUsedRouter() const
 {
   string routerTypeStr;
-  settings::Get(kRouterTypeKey, routerTypeStr);
+  if (!settings::Get(kRouterTypeKey, routerTypeStr))
+    return RouterType::Vehicle;
 
-  auto routerType = routing::FromString(routerTypeStr);
+  auto const routerType = routing::FromString(routerTypeStr);
 
   switch (routerType)
   {
@@ -2920,8 +2922,9 @@ void Framework::SaveLargeFontsSize(bool isLargeSize)
 
 bool Framework::LoadLargeFontsSize()
 {
-  bool isLargeSize = false;
-  settings::Get(kLargeFontsSize, isLargeSize);
+  bool isLargeSize;
+  if (!settings::Get(kLargeFontsSize, isLargeSize))
+    isLargeSize = false;
   return isLargeSize;
 }
 
@@ -2937,8 +2940,9 @@ void Framework::SetLargeFontsSize(bool isLargeSize)
 
 bool Framework::LoadTrafficEnabled()
 {
-  bool enabled = false;
-  settings::Get(kTrafficEnabledKey, enabled);
+  bool enabled;
+  if (!settings::Get(kTrafficEnabledKey, enabled))
+    enabled = false;
   return enabled;
 }
 
@@ -2949,8 +2953,9 @@ void Framework::SaveTrafficEnabled(bool trafficEnabled)
 
 bool Framework::LoadTrafficSimplifiedColors()
 {
-  bool simplified = true;
-  settings::Get(kTrafficSimplifiedColorsKey, simplified);
+  bool simplified;
+  if (!settings::Get(kTrafficSimplifiedColorsKey, simplified))
+    simplified = true;
   return simplified;
 }
 
@@ -2961,8 +2966,9 @@ void Framework::SaveTrafficSimplifiedColors(bool simplified)
 
 bool Framework::LoadAutoZoom()
 {
-  bool allowAutoZoom = true;
-  settings::Get(kAllowAutoZoom, allowAutoZoom);
+  bool allowAutoZoom;
+  if (!settings::Get(kAllowAutoZoom, allowAutoZoom))
+    allowAutoZoom = true;
   return allowAutoZoom;
 }
 
