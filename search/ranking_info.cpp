@@ -1,9 +1,9 @@
 #include "search/ranking_info.hpp"
 
-#include "std/cmath.hpp"
-#include "std/iomanip.hpp"
-#include "std/limits.hpp"
-#include "std/sstream.hpp"
+#include <cmath>
+#include <iomanip>
+#include <limits>
+#include <sstream>
 
 namespace search
 {
@@ -28,7 +28,7 @@ double const kSearchType[SearchModel::SEARCH_TYPE_COUNT] = {
 
 double TransformDistance(double distance)
 {
-  return min(distance, RankingInfo::kMaxDistMeters) / RankingInfo::kMaxDistMeters;
+  return std::min(distance, RankingInfo::kMaxDistMeters) / RankingInfo::kMaxDistMeters;
 }
 }  // namespace
 
@@ -36,7 +36,7 @@ double TransformDistance(double distance)
 double const RankingInfo::kMaxDistMeters = 2e6;
 
 // static
-void RankingInfo::PrintCSVHeader(ostream & os)
+void RankingInfo::PrintCSVHeader(std::ostream & os)
 {
   os << "DistanceToPivot"
      << ",Rank"
@@ -46,9 +46,9 @@ void RankingInfo::PrintCSVHeader(ostream & os)
      << ",FalseCats";
 }
 
-string DebugPrint(RankingInfo const & info)
+std::string DebugPrint(RankingInfo const & info)
 {
-  ostringstream os;
+  std::ostringstream os;
   os << "RankingInfo [";
   os << "m_distanceToPivot:" << info.m_distanceToPivot << ",";
   os << "m_rank:" << static_cast<int>(info.m_rank) << ",";
@@ -60,9 +60,9 @@ string DebugPrint(RankingInfo const & info)
   return os.str();
 }
 
-void RankingInfo::ToCSV(ostream & os) const
+void RankingInfo::ToCSV(std::ostream & os) const
 {
-  os << fixed;
+  os << std::fixed;
   os << m_distanceToPivot << "," << static_cast<int>(m_rank) << "," << DebugPrint(m_nameScore)
      << "," << DebugPrint(m_searchType) << "," << m_pureCats << "," << m_falseCats;
 }
@@ -74,7 +74,7 @@ double RankingInfo::GetLinearModelRank() const
   // code. We're working on automatic rank calculation code generator
   // integrated in the build system.
   double const distanceToPivot = TransformDistance(m_distanceToPivot);
-  double const rank = static_cast<double>(m_rank) / numeric_limits<uint8_t>::max();
+  double const rank = static_cast<double>(m_rank) / std::numeric_limits<uint8_t>::max();
 
   auto nameScore = m_nameScore;
   if (m_pureCats || m_falseCats)

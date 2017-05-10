@@ -1,8 +1,8 @@
 #include "platform/location_service.hpp"
 
 #include "std/target_os.hpp"
-#include "std/vector.hpp"
-#include "std/ctime.hpp"
+#include <vector>
+#include <ctime>
 
 namespace
 {
@@ -25,7 +25,7 @@ public:
   /// @return true if location should be sent to observers
   bool Passes(location::GpsInfo const & newLocation)
   {
-    if (time(NULL) - newLocation.m_timestamp > 300.0)
+    if (std::time(NULL) - newLocation.m_timestamp > 300.0)
       return false;
 
     bool passes = true;
@@ -57,7 +57,7 @@ namespace location
 {
   class DesktopLocationService : public LocationService, public LocationObserver
   {
-    vector<LocationService *> m_services;
+    std::vector<LocationService *> m_services;
     PositionFilter m_filter;
     bool m_reportFirstEvent;
 

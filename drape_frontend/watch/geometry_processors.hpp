@@ -10,8 +10,8 @@
 #include "geometry/rect_intersect.hpp"
 #include "geometry/screenbase.hpp"
 
-#include "std/list.hpp"
-#include "std/limits.hpp"
+#include <list>
+#include <limits>
 
 #include "base/buffer_vector.hpp"
 
@@ -149,7 +149,7 @@ template <class TInfo, class TBase>
 struct geometry_base : public TBase
 {
 public:
-  list<TInfo> m_points;
+  std::list<TInfo> m_points;
 
   typedef typename TBase::params params;
 
@@ -312,7 +312,7 @@ public:
 
   filter_screenpts_adapter(params const & p)
     : TBase(p),
-    m_prev(numeric_limits<double>::min(), numeric_limits<double>::min()), m_center(0, 0)
+    m_prev(std::numeric_limits<double>::min(), std::numeric_limits<double>::min()), m_center(0, 0)
   {
   }
 

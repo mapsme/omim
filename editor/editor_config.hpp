@@ -2,10 +2,10 @@
 
 #include "indexer/feature_meta.hpp"
 
-#include "std/mutex.hpp"
-#include "std/shared_ptr.hpp"
-#include "std/string.hpp"
-#include "std/vector.hpp"
+#include <mutex>
+#include <memory>
+#include <string>
+#include <vector>
 
 #include "3party/pugixml/src/pugixml.hpp"
 
@@ -16,7 +16,7 @@ namespace editor
 struct TypeAggregatedDescription
 {
   using EType = feature::Metadata::EType;
-  using TFeatureFields = vector<EType>;
+  using TFeatureFields = std::vector<EType>;
 
   bool IsEmpty() const
   {
@@ -40,9 +40,9 @@ public:
   EditorConfig() = default;
 
   // TODO(mgsergio): Reduce overhead by matching uint32_t types instead of strings.
-  bool GetTypeDescription(vector<string> classificatorTypes,
+  bool GetTypeDescription(std::vector<std::string> classificatorTypes,
                           TypeAggregatedDescription & outDesc) const;
-  vector<string> GetTypesThatCanBeAdded() const;
+  std::vector<std::string> GetTypesThatCanBeAdded() const;
 
   void SetConfig(pugi::xml_document const & doc);
 
@@ -60,15 +60,15 @@ class EditorConfigWrapper
 public:
   EditorConfigWrapper() = default;
 
-  void Set(shared_ptr<EditorConfig> config)
+  void Set(std::shared_ptr<EditorConfig> config)
   {
-    lock_guard<mutex> lock(m_mu);
+    std::lock_guard<std::mutex> lock(m_mu);
     m_config = config;
   }
 
-  shared_ptr<EditorConfig const> Get() const
+  std::shared_ptr<EditorConfig const> Get() const
   {
-    lock_guard<mutex> lock(m_mu);
+    std::lock_guard<std::mutex> lock(m_mu);
     return m_config;
   }
 
@@ -77,8 +77,8 @@ private:
   // but seems that libstdc++4.9 doesn't support it. Need to rewrite
   // this code as soon as libstdc++5 will be ready for lastest Debian
   // release, or as soon as atomic_shared_ptr will be ready.
-  mutable mutex m_mu;
-  shared_ptr<EditorConfig> m_config = make_shared<EditorConfig>();
+  mutable std::mutex m_mu;
+  std::shared_ptr<EditorConfig> m_config = std::make_shared<EditorConfig>();
 
   // Just in case someone tryes to pass EditorConfigWrapper by value instead of referense.
   DISALLOW_COPY_AND_MOVE(EditorConfigWrapper);

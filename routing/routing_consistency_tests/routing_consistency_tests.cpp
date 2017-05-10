@@ -11,8 +11,8 @@
 
 #include "base/logging.hpp"
 
-#include "std/string.hpp"
-#include "std/fstream.hpp"
+#include <string>
+#include <fstream>
 
 #include "3party/gflags/src/gflags/gflags.h"
 
@@ -41,28 +41,28 @@ struct UserRoutingRecord
 };
 
 // Parsing value from statistics.
-double GetDouble(string const & incomingString, string const & key)
+double GetDouble(std::string const & incomingString, std::string const & key)
 {
   auto it = incomingString.find(key);
-  if (it == string::npos)
+  if (it == std::string::npos)
     return 0;
   // Skip "key="
   it += key.size() + 1;
   auto end = incomingString.find(" ", it);
-  string number = incomingString.substr(it, end - it);
-  return stod(number);
+  std::string number = incomingString.substr(it, end - it);
+  return std::stod(number);
 }
 
 // Decoding statistics line. Returns true if the incomeString is the valid record about
 // OSRM routing attempt.
-bool ParseUserString(string const & incomeString, UserRoutingRecord & result)
+bool ParseUserString(std::string const & incomeString, UserRoutingRecord & result)
 {
   // Check if it is a proper routing record.
-  if (incomeString.find("Routing_CalculatingRoute") == string::npos)
+  if (incomeString.find("Routing_CalculatingRoute") == std::string::npos)
     return false;
-  if (incomeString.find("result=NoError") == string::npos)
+  if (incomeString.find("result=NoError") == std::string::npos)
     return false;
-  if (incomeString.find("name=vehicle") == string::npos)
+  if (incomeString.find("name=vehicle") == std::string::npos)
     return false;
   if (GetDouble(incomeString, "startDirectionX") != 0 && GetDouble(incomeString, "startDirectionY") != 0)
     return false;
@@ -146,16 +146,16 @@ public:
 private:
   integration::IRouterComponents & m_components;
 
-  map<string, size_t> m_checkedCountries;
-  map<string, size_t> m_errors;
+  map<std::string, size_t> m_checkedCountries;
+  map<std::string, size_t> m_errors;
 };
 
-void ReadInput(istream & stream, RouteTester & tester)
+void ReadInput(std::istream & stream, RouteTester & tester)
 {
-  string line;
+  std::string line;
   while (stream.good())
   {
-    getline(stream, line);
+    std::getline(stream, line);
     strings::Trim(line);
     if (line.empty())
       continue;
@@ -184,7 +184,7 @@ int main(int argc, char ** argv)
     return 1;
 
   RouteTester tester;
-  ifstream stream(FLAGS_input_file);
+  std::ifstream stream(FLAGS_input_file);
   ReadInput(stream, tester);
 
   return 0;

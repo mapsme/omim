@@ -4,7 +4,7 @@
 
 UNIT_TEST(CountryNameGetterTest)
 {
-  string const shortJson =
+  std::string const shortJson =
       "\
       {\
       \"Russia_Moscow\":\"Москва\",\
@@ -13,15 +13,15 @@ UNIT_TEST(CountryNameGetterTest)
 
   storage::CountryNameGetter getter;
 
-  TEST_EQUAL(string(), getter.GetLocale(), ());
-  TEST_EQUAL(string("Russia_Moscow"), getter("Russia_Moscow"), ());
-  TEST_EQUAL(string("Russia_Rostov-on-Don"), getter("Russia_Rostov-on-Don"), ());
-  TEST_EQUAL(string("Russia_Murmansk"), getter("Russia_Murmansk"), ());
+  TEST_EQUAL(std::string(), getter.GetLocale(), ());
+  TEST_EQUAL(std::string("Russia_Moscow"), getter("Russia_Moscow"), ());
+  TEST_EQUAL(std::string("Russia_Rostov-on-Don"), getter("Russia_Rostov-on-Don"), ());
+  TEST_EQUAL(std::string("Russia_Murmansk"), getter("Russia_Murmansk"), ());
 
   getter.SetLocaleForTesting(shortJson, "ru");
 
-  TEST_EQUAL(string("ru"), getter.GetLocale(), ());
-  TEST_EQUAL(string("Москва"), getter("Russia_Moscow"), ());
-  TEST_EQUAL(string("Ростов-на-Дону"), getter("Russia_Rostov-on-Don"), ());
-  TEST_EQUAL(string("Russia_Murmansk"), getter("Russia_Murmansk"), ());
+  TEST_EQUAL(std::string("ru"), getter.GetLocale(), ());
+  TEST_EQUAL(std::string("Москва"), getter("Russia_Moscow"), ());
+  TEST_EQUAL(std::string("Ростов-на-Дону"), getter("Russia_Rostov-on-Don"), ());
+  TEST_EQUAL(std::string("Russia_Murmansk"), getter("Russia_Murmansk"), ());
 }

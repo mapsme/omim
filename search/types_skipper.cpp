@@ -4,8 +4,10 @@
 #include "indexer/feature_data.hpp"
 #include "indexer/ftypes_matcher.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/initializer_list.hpp"
+#include "base/stl_add.hpp"
+
+#include <algorithm>
+#include <initializer_list>
 
 namespace search
 {
@@ -13,18 +15,18 @@ TypesSkipper::TypesSkipper()
 {
   Classificator const & c = classif();
 
-  for (auto const & e : (StringIL[]){{"entrance"}})
+  for (auto const & e : (my::StringIL[]){{"entrance"}})
     m_skipAlways[0].push_back(c.GetTypeByPath(e));
-  for (auto const & e : (StringIL[]){{"building", "address"}})
+  for (auto const & e : (my::StringIL[]){{"building", "address"}})
     m_skipAlways[1].push_back(c.GetTypeByPath(e));
 
-  for (auto const & e : (StringIL[]){{"building"}, {"highway"}, {"natural"},
+  for (auto const & e : (my::StringIL[]){{"building"}, {"highway"}, {"natural"},
                                      {"waterway"}, {"landuse"}})
   {
     m_skipIfEmptyName[0].push_back(c.GetTypeByPath(e));
   }
 
-  for (auto const & e : (StringIL[]){{"place", "country"},
+  for (auto const & e : (my::StringIL[]){{"place", "country"},
                                      {"place", "state"},
                                      {"place", "county"},
                                      {"place", "region"},
@@ -92,6 +94,6 @@ bool TypesSkipper::IsCountryOrState(feature::TypesHolder const & types) const
 // static
 bool TypesSkipper::HasType(TCont const & v, uint32_t t)
 {
-  return find(v.begin(), v.end(), t) != v.end();
+  return std::find(v.begin(), v.end(), t) != v.end();
 }
 }  // namespace search

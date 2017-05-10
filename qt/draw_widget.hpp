@@ -13,9 +13,9 @@
 
 #include "drape_frontend/drape_engine.hpp"
 
-#include "std/condition_variable.hpp"
-#include "std/mutex.hpp"
-#include "std/unique_ptr.hpp"
+#include <condition_variable>
+#include <mutex>
+#include <memory>
 
 #include <QtWidgets/QRubberBand>
 
@@ -47,7 +47,7 @@ public:
   ~DrawWidget();
 
   bool Search(search::EverywhereSearchParams const & params);
-  string GetDistance(search::Result const & res) const;
+  std::string GetDistance(search::Result const & res) const;
   void ShowSearchResult(search::Result const & res);
 
   void CreateFeature();
@@ -63,7 +63,7 @@ public:
 
   void SetRouter(routing::RouterType routerType);
 
-  using TCurrentCountryChanged = function<void(storage::TCountryId const &, string const &,
+  using TCurrentCountryChanged = function<void(storage::TCountryId const &, std::string const &,
                                                storage::Status, uint64_t, uint8_t)>;
   void SetCurrentCountryChangedListener(TCurrentCountryChanged const & listener);
 

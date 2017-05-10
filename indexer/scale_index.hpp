@@ -7,8 +7,8 @@
 
 #include "base/stl_add.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/bind.hpp"
+#include <algorithm>
+#include <functional>
 
 
 /// Index bucket <--> Draw scale range.
@@ -43,7 +43,7 @@ public:
 
   void Clear()
   {
-    for_each(m_IndexForScale.begin(), m_IndexForScale.end(), DeleteFunctor());
+    std::for_each(m_IndexForScale.begin(), m_IndexForScale.end(), DeleteFunctor());
     m_IndexForScale.clear();
   }
 
@@ -63,7 +63,7 @@ public:
     auto const scaleBucket = BucketByScale(scale);
     if (scaleBucket < m_IndexForScale.size())
     {
-      IntervalIndexIFace::FunctionT f1(cref(f));
+      IntervalIndexIFace::FunctionT f1(std::cref(f));
       for (size_t i = 0; i <= scaleBucket; ++i)
         m_IndexForScale[i]->DoForEach(f1, beg, end);
     }

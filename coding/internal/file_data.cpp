@@ -8,12 +8,12 @@
 #include "base/logging.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/cerrno.hpp"
-#include "std/cstring.hpp"
-#include "std/exception.hpp"
-#include "std/fstream.hpp"
+#include <cerrno>
+#include <cstring>
+#include <exception>
+#include <fstream>
 #include "std/target_os.hpp"
-#include "std/thread.hpp"
+#include <thread>
 
 #ifdef OMIM_OS_WINDOWS
   #include <io.h>
@@ -27,7 +27,7 @@
 namespace my
 {
 
-FileData::FileData(string const & fileName, Op op)
+FileData::FileData(std::string const & fileName, Op op)
     : m_FileName(fileName), m_Op(op)
 {
   char const * const modes [] = {"rb", "wb", "r+b", "ab"};
@@ -72,7 +72,7 @@ FileData::~FileData()
 #endif
 }
 
-string FileData::GetErrorProlog() const
+std::string FileData::GetErrorProlog() const
 {
   char const * s;
   switch (m_Op)
@@ -206,7 +206,7 @@ void FileData::Truncate(uint64_t sz)
     MYTHROW(Writer::WriteException, (GetErrorProlog(), sz));
 }
 
-bool GetFileSize(string const & fName, uint64_t & sz)
+bool GetFileSize(std::string const & fName, uint64_t & sz)
 {
   try
   {
@@ -224,7 +224,7 @@ bool GetFileSize(string const & fName, uint64_t & sz)
 
 namespace
 {
-bool CheckFileOperationResult(int res, string const & fName)
+bool CheckFileOperationResult(int res, std::string const & fName)
 {
   if (!res)
     return true;
@@ -243,7 +243,7 @@ bool CheckFileOperationResult(int res, string const & fName)
 }
 }  // namespace
 
-bool DeleteFileX(string const & fName)
+bool DeleteFileX(std::string const & fName)
 {
   int res;
 
@@ -256,7 +256,7 @@ bool DeleteFileX(string const & fName)
   return CheckFileOperationResult(res, fName);
 }
 
-bool RenameFileX(string const & fOld, string const & fNew)
+bool RenameFileX(std::string const & fOld, std::string const & fNew)
 {
   int res;
 
@@ -269,11 +269,11 @@ bool RenameFileX(string const & fOld, string const & fNew)
   return CheckFileOperationResult(res, fOld);
 }
 
-bool WriteToTempAndRenameToFile(string const & dest, function<bool(string const &)> const & write,
-                                string const & tmp)
+bool WriteToTempAndRenameToFile(std::string const & dest, std::function<bool(std::string const &)> const & write,
+                                std::string const & tmp)
 {
-  string const tmpFileName =
-      tmp.empty() ? dest + ".tmp" + strings::to_string(this_thread::get_id()) : tmp;
+  std::string const tmpFileName =
+      tmp.empty() ? dest + ".tmp" + strings::to_string(std::this_thread::get_id()) : tmp;
   if (!write(tmpFileName))
   {
     LOG(LERROR, ("Can't write to", tmpFileName));
@@ -288,12 +288,12 @@ bool WriteToTempAndRenameToFile(string const & dest, function<bool(string const 
   return true;
 }
 
-bool CopyFileX(string const & fOld, string const & fNew)
+bool CopyFileX(std::string const & fOld, std::string const & fNew)
 {
   try
   {
-    ifstream ifs(fOld.c_str());
-    ofstream ofs(fNew.c_str());
+    std::ifstream ifs(fOld.c_str());
+    std::ofstream ofs(fNew.c_str());
 
     if (ifs.is_open() && ofs.is_open())
     {
@@ -311,7 +311,7 @@ bool CopyFileX(string const & fOld, string const & fNew)
     else
       LOG(LERROR, ("Can't open files:", fOld, fNew));
   }
-  catch (exception const & ex)
+  catch (std::exception const & ex)
   {
     LOG(LERROR, ("Copy file error:", ex.what()));
   }
@@ -319,7 +319,7 @@ bool CopyFileX(string const & fOld, string const & fNew)
   return false;
 }
 
-bool IsEqualFiles(string const & firstFile, string const & secondFile)
+bool IsEqualFiles(std::string const & firstFile, std::string const & secondFile)
 {
   my::FileData first(firstFile, my::FileData::OP_READ);
   my::FileData second(secondFile, my::FileData::OP_READ);
@@ -327,7 +327,7 @@ bool IsEqualFiles(string const & firstFile, string const & secondFile)
     return false;
 
   size_t const bufSize = READ_FILE_BUFFER_SIZE;
-  vector<char> buf1, buf2;
+  std::vector<char> buf1, buf2;
   buf1.resize(bufSize);
   buf2.resize(bufSize);
   size_t const fileSize = first.Size();
@@ -335,7 +335,7 @@ bool IsEqualFiles(string const & firstFile, string const & secondFile)
 
   while (currSize < fileSize)
   {
-    size_t const toRead = min(bufSize, fileSize - currSize);
+    size_t const toRead = std::min(bufSize, fileSize - currSize);
 
     first.Read(currSize, &buf1[0], toRead);
     second.Read(currSize, &buf2[0], toRead);

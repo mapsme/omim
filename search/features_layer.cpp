@@ -2,7 +2,7 @@
 
 #include "base/internal/message.hpp"
 
-#include "std/sstream.hpp"
+#include <sstream>
 
 namespace search
 {
@@ -18,9 +18,9 @@ void FeaturesLayer::Clear()
   m_lastTokenIsPrefix = false;
 }
 
-string DebugPrint(FeaturesLayer const & layer)
+std::string DebugPrint(FeaturesLayer const & layer)
 {
-  ostringstream os;
+  std::ostringstream os;
   os << "FeaturesLayer [ size of m_sortedFeatures: "
      << (layer.m_sortedFeatures ? layer.m_sortedFeatures->size() : 0)
      << ", m_subQuery: " << DebugPrint(layer.m_subQuery)

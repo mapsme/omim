@@ -16,12 +16,12 @@
 
 #include "geometry/polyline2d.hpp"
 
-#include "std/array.hpp"
-#include "std/map.hpp"
-#include "std/set.hpp"
-#include "std/string.hpp"
-#include "std/vector.hpp"
-#include "std/unordered_map.hpp"
+#include <array>
+#include <map>
+#include <set>
+#include <string>
+#include <vector>
+#include <unordered_map>
 
 namespace df
 {
@@ -74,9 +74,9 @@ struct TrafficSegmentGeometry
   {}
 };
 
-using TrafficSegmentsGeometry = map<MwmSet::MwmId, vector<pair<traffic::TrafficInfo::RoadSegmentId,
+using TrafficSegmentsGeometry = std::map<MwmSet::MwmId, std::vector<pair<traffic::TrafficInfo::RoadSegmentId,
                                                                TrafficSegmentGeometry>>>;
-using TrafficSegmentsColoring = map<MwmSet::MwmId, traffic::TrafficInfo::Coloring>;
+using TrafficSegmentsColoring = std::map<MwmSet::MwmId, traffic::TrafficInfo::Coloring>;
 
 struct TrafficRenderData
 {
@@ -123,7 +123,7 @@ struct TrafficLineStaticVertex
   TTexCoord m_colorTexCoord;
 };
 
-using TrafficTexCoords = unordered_map<size_t, glsl::vec2>;
+using TrafficTexCoords = std::unordered_map<size_t, glsl::vec2>;
 
 class TrafficGenerator final
 {
@@ -182,10 +182,10 @@ private:
   void GenerateSegment(dp::TextureManager::ColorRegion const & colorRegion,
                        m2::PolylineD const & polyline, m2::PointD const & tileCenter,
                        bool generateCaps, float depth, float vOffset, float minU,
-                       vector<TrafficStaticVertex> & staticGeometry);
+                       std::vector<TrafficStaticVertex> & staticGeometry);
   void GenerateLineSegment(dp::TextureManager::ColorRegion const & colorRegion,
                            m2::PolylineD const & polyline, m2::PointD const & tileCenter, float depth,
-                           vector<TrafficLineStaticVertex> & staticGeometry);
+                           std::vector<TrafficLineStaticVertex> & staticGeometry);
   void FillColorsCache(ref_ptr<dp::TextureManager> textures);
 
   void FlushGeometry(TrafficBatcherKey const & key, dp::GLState const & state,
@@ -193,7 +193,7 @@ private:
 
   TrafficSegmentsColoring m_coloring;
 
-  array<dp::TextureManager::ColorRegion, static_cast<size_t>(traffic::SpeedGroup::Count)> m_colorsCache;
+  std::array<dp::TextureManager::ColorRegion, static_cast<size_t>(traffic::SpeedGroup::Count)> m_colorsCache;
   bool m_colorsCacheValid = false;
 
   drape_ptr<BatchersPool<TrafficBatcherKey, TrafficBatcherKeyComparator>> m_batchersPool;

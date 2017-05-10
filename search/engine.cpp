@@ -20,10 +20,10 @@
 #include "base/scope_guard.hpp"
 #include "base/stl_add.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/bind.hpp"
-#include "std/map.hpp"
-#include "std/vector.hpp"
+#include <algorithm>
+#include <functional>
+#include <map>
+#include <vector>
 
 namespace search
 {
@@ -31,7 +31,7 @@ namespace
 {
 class InitSuggestions
 {
-  using TSuggestMap = map<pair<strings::UniString, int8_t>, uint8_t>;
+  using TSuggestMap = std::map<pair<strings::UniString, int8_t>, uint8_t>;
   TSuggestMap m_suggests;
 
 public:
@@ -47,7 +47,7 @@ public:
     }
   }
 
-  void GetSuggests(vector<Suggest> & suggests) const
+  void GetSuggests(std::vector<Suggest> & suggests) const
   {
     suggests.reserve(suggests.size() + m_suggests.size());
     for (auto const & s : m_suggests)
@@ -61,7 +61,7 @@ ProcessorHandle::ProcessorHandle() : m_processor(nullptr), m_cancelled(false) {}
 
 void ProcessorHandle::Cancel()
 {
-  lock_guard<mutex> lock(m_mu);
+  std::lock_guard<std::mutex> lock(m_mu);
   m_cancelled = true;
   if (m_processor)
     m_processor->Cancel();
@@ -69,7 +69,7 @@ void ProcessorHandle::Cancel()
 
 void ProcessorHandle::Attach(Processor & processor)
 {
-  lock_guard<mutex> lock(m_mu);
+  std::lock_guard<std::mutex> lock(m_mu);
   m_processor = &processor;
   if (m_cancelled)
     m_processor->Cancel();
@@ -77,26 +77,26 @@ void ProcessorHandle::Attach(Processor & processor)
 
 void ProcessorHandle::Detach()
 {
-  lock_guard<mutex> lock(m_mu);
+  std::lock_guard<std::mutex> lock(m_mu);
   m_processor = nullptr;
 }
 
 // Engine::Params ----------------------------------------------------------------------------------
 Engine::Params::Params() : m_locale("en"), m_numThreads(1) {}
 
-Engine::Params::Params(string const & locale, size_t numThreads)
+Engine::Params::Params(std::string const & locale, size_t numThreads)
   : m_locale(locale), m_numThreads(numThreads)
 {
 }
 
 // Engine ------------------------------------------------------------------------------------------
 Engine::Engine(Index & index, CategoriesHolder const & categories,
-               storage::CountryInfoGetter const & infoGetter, unique_ptr<ProcessorFactory> factory,
+               storage::CountryInfoGetter const & infoGetter, std::unique_ptr<ProcessorFactory> factory,
                Params const & params)
   : m_shutdown(false)
 {
   InitSuggestions doInit;
-  categories.ForEachName(bind<void>(ref(doInit), _1));
+  categories.ForEachName(std::bind<void>(std::ref(doInit), std::placeholders::_1));
   doInit.GetSuggests(m_suggests);
 
   m_contexts.resize(params.m_numThreads);
@@ -109,13 +109,13 @@ Engine::Engine(Index & index, CategoriesHolder const & categories,
 
   m_threads.reserve(params.m_numThreads);
   for (size_t i = 0; i < params.m_numThreads; ++i)
-    m_threads.emplace_back(&Engine::MainLoop, this, ref(m_contexts[i]));
+    m_threads.emplace_back(&Engine::MainLoop, this, std::ref(m_contexts[i]));
 }
 
 Engine::~Engine()
 {
   {
-    lock_guard<mutex> lock(m_mu);
+    std::lock_guard<std::mutex> lock(m_mu);
     m_shutdown = true;
     m_cv.notify_all();
   }
@@ -142,7 +142,7 @@ void Engine::SetSupportOldFormat(bool support)
               });
 }
 
-void Engine::SetLocale(string const & locale)
+void Engine::SetLocale(std::string const & locale)
 {
   PostMessage(Message::TYPE_BROADCAST, [this, locale](Processor & processor)
               {
@@ -163,10 +163,10 @@ void Engine::MainLoop(Context & context)
   while (true)
   {
     bool hasBroadcast = false;
-    queue<Message> messages;
+    std::queue<Message> messages;
 
     {
-      unique_lock<mutex> lock(m_mu);
+      std::unique_lock<std::mutex> lock(m_mu);
       m_cv.wait(lock, [&]()
                 {
                   return m_shutdown || !m_messages.empty() || !context.m_messages.empty();
@@ -219,7 +219,7 @@ void Engine::MainLoop(Context & context)
 template <typename... TArgs>
 void Engine::PostMessage(TArgs &&... args)
 {
-  lock_guard<mutex> lock(m_mu);
+  std::lock_guard<std::mutex> lock(m_mu);
   m_messages.emplace(forward<TArgs>(args)...);
   m_cv.notify_one();
 }

@@ -5,10 +5,11 @@
 #include "indexer/feature.hpp"
 
 #include "base/logging.hpp"
+#include "base/stl_add.hpp"
 #include "base/stl_iterator.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/unique_ptr.hpp"
+#include <algorithm>
+#include <memory>
 
 namespace editor
 {
@@ -17,7 +18,7 @@ FeatureID MigrateNodeFeatureIndex(osm::Editor::TForEachFeaturesNearByFn & forEac
                                   osm::Editor::FeatureStatus const featureStatus,
                                   TGenerateIDFn const & generateID)
 {
-  unique_ptr<FeatureType> feature;
+  std::unique_ptr<FeatureType> feature;
   auto count = 0;
   forEach(
       [&feature, &xml, &count](FeatureType const & ft)
@@ -25,7 +26,7 @@ FeatureID MigrateNodeFeatureIndex(osm::Editor::TForEachFeaturesNearByFn & forEac
         if (ft.GetFeatureType() != feature::GEOM_POINT)
           return;
         // TODO(mgsergio): Check that ft and xml correspond to the same feature.
-        feature = make_unique<FeatureType>(ft);
+        feature = my::make_unique<FeatureType>(ft);
         ++count;
       },
       MercatorBounds::FromLatLon(xml.GetCenter()));
@@ -48,7 +49,7 @@ FeatureID MigrateWayFeatureIndex(
     osm::Editor::FeatureStatus const /* Unused for now (we don't create/delete area features)*/,
     TGenerateIDFn const & /*Unused for the same reason*/)
 {
-  unique_ptr<FeatureType> feature;
+  std::unique_ptr<FeatureType> feature;
   auto bestScore = 0.6;  // initial score is used as a threshold.
   auto geometry = xml.GetGeometry();
 
@@ -58,7 +59,7 @@ FeatureID MigrateWayFeatureIndex(
   // This can be any point on a feature.
   auto const someFeaturePoint = geometry[0];
 
-  sort(begin(geometry), end(geometry));  // Sort to use in set_intersection.
+  std::sort(begin(geometry), end(geometry));  // Sort to use in set_intersection.
   auto count = 0;
   LOG(LDEBUG, ("SomePoint", someFeaturePoint));
   forEach(
@@ -68,7 +69,7 @@ FeatureID MigrateWayFeatureIndex(
           return;
         ++count;
         auto ftGeometry = ft.GetTriangesAsPoints(FeatureType::BEST_GEOMETRY);
-        sort(begin(ftGeometry), end(ftGeometry));
+        std::sort(begin(ftGeometry), end(ftGeometry));
 
         // The default comparison operator used in sort above (cmp1) and one that is
         // used in set_itersection (cmp2) are compatible in that sence that
@@ -80,7 +81,7 @@ FeatureID MigrateWayFeatureIndex(
         // |a, b| < eps, |b, c| < eps.
         // This could lead to unexpected results in set_itersection (with greedy implementation),
         // but we assume such situation is very unlikely.
-        auto const matched = set_intersection(begin(geometry), end(geometry),
+        auto const matched = std::set_intersection(begin(geometry), end(geometry),
                                               begin(ftGeometry), end(ftGeometry),
                                               CounterIterator(),
                                               [](m2::PointD const & p1, m2::PointD const & p2)
@@ -94,7 +95,7 @@ FeatureID MigrateWayFeatureIndex(
         if (score > bestScore)
         {
           bestScore = score;
-          feature = make_unique<FeatureType>(ft);
+          feature = my::make_unique<FeatureType>(ft);
         }
       },
       someFeaturePoint);

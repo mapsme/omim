@@ -4,7 +4,7 @@
 #include "coding/reader.hpp"
 #include "coding/write_to_sink.hpp"
 
-#include "std/type_traits.hpp"
+#include <type_traits>
 
 
 namespace stream
@@ -17,7 +17,7 @@ namespace stream
     SinkReaderStream(TReader & reader) : m_reader(reader) {}
 
     template <typename T>
-    typename enable_if<is_integral<T>::value, SinkReaderStream &>::type
+    typename std::enable_if<std::is_integral<T>::value, SinkReaderStream &>::type
     operator >> (T & t)
     {
       t = ReadPrimitiveFromSource<T>(m_reader);
@@ -30,7 +30,7 @@ namespace stream
       return *this;
     }
 
-    SinkReaderStream & operator >> (string & t)
+    SinkReaderStream & operator >> (std::string & t)
     {
       detail::ReadString(*this, t);
       return *this;
@@ -53,7 +53,7 @@ namespace stream
     SinkWriterStream(TWriter & writer) : m_writer(writer) {}
 
     template <typename T>
-    typename enable_if<is_integral<T>::value, SinkWriterStream &>::type
+    typename std::enable_if<std::is_integral<T>::value, SinkWriterStream &>::type
     operator << (T const & t)
     {
       WriteToSink(m_writer, t);
@@ -66,7 +66,7 @@ namespace stream
       return (*this);
     }
 
-    SinkWriterStream & operator << (string const & t)
+    SinkWriterStream & operator << (std::string const & t)
     {
       detail::WriteString(*this, m_writer, t);
       return *this;

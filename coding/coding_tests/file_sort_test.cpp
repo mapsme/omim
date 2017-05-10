@@ -4,7 +4,9 @@
 #include "coding/write_to_sink.hpp"
 #include "coding/reader.hpp"
 
-#include "std/random.hpp"
+#include <random>
+
+using namespace std;
 
 namespace
 {
@@ -42,7 +44,7 @@ UNIT_TEST(FileSorter_Smoke)
 
 UNIT_TEST(FileSorter_Random)
 {
-  mt19937 rng(0);
+  std::mt19937 rng(0);
   vector<uint32_t> data(1000);
   for (size_t i = 0; i < data.size(); ++i)
     data[i] = ((i + 1 % 100) ? rng() : data[i - 20]);

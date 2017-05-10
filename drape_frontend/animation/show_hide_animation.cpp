@@ -99,7 +99,7 @@ bool ShowHideAnimation::IsFinished() const
   return m_interpolator == nullptr || m_interpolator->IsFinished();
 }
 
-void ShowHideAnimation::RefreshInterpolator(array<EState, 2> validStates, double endValue)
+void ShowHideAnimation::RefreshInterpolator(std::array<EState, 2> validStates, double endValue)
 {
   EState state = GetState();
   if (state == validStates[0] || state == validStates[1])

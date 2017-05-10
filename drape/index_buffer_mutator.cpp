@@ -1,8 +1,8 @@
 #include "drape/index_buffer_mutator.hpp"
 #include "drape/vertex_array_buffer.hpp"
 
-#include "std/cstring.hpp"    // for memcpy
-#include "std/algorithm.hpp" // for max
+#include <cstring>
+#include <algorithm>
 
 namespace dp
 {
@@ -17,7 +17,7 @@ void IndexBufferMutator::AppendIndexes(void const * indexes, uint32_t count)
 {
   uint32_t dstActiveSize = m_activeSize + count;
   if (dstActiveSize  > m_buffer.Size())
-    m_buffer.Resize(max(m_buffer.Size() * 2, dstActiveSize));
+    m_buffer.Resize(std::max(m_buffer.Size() * 2, dstActiveSize));
 
   memcpy(m_buffer.GetRaw(m_activeSize), indexes, count * IndexStorage::SizeOfIndex());
   m_activeSize = dstActiveSize;

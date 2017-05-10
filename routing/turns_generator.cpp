@@ -11,9 +11,9 @@
 
 #include "base/macros.hpp"
 
-#include "std/cmath.hpp"
-#include "std/numeric.hpp"
-#include "std/string.hpp"
+#include <cmath>
+#include <numeric>
+#include <string>
 
 #include "3party/osrm/osrm-backend/data_structures/internal_route_result.hpp"
 
@@ -118,8 +118,8 @@ bool KeepTurnByIngoingEdges(m2::PointD const & junctionPoint,
   return hasMultiTurns || (!isGoStraightOrSlightTurn && turnEdgesCount > 1);
 }
 
-bool FixupLaneSet(TurnDirection turn, vector<SingleLaneInfo> & lanes,
-                  function<bool(LaneWay l, TurnDirection t)> checker)
+bool FixupLaneSet(TurnDirection turn, std::vector<SingleLaneInfo> & lanes,
+                  std::function<bool(LaneWay l, TurnDirection t)> checker)
 {
   bool isLaneConformed = false;
   // There are two nested loops below. (There is a for-loop in checker.)
@@ -147,14 +147,14 @@ bool FixupLaneSet(TurnDirection turn, vector<SingleLaneInfo> & lanes,
  * These angles should be measured in degrees and should belong to the range [-180; 180].
  * The second paramer (angle) shall belong to the range [-180; 180] and is measured in degrees.
  */
-TurnDirection FindDirectionByAngle(vector<pair<double, TurnDirection>> const & lowerBounds,
+TurnDirection FindDirectionByAngle(std::vector<std::pair<double, TurnDirection>> const & lowerBounds,
                                    double angle)
 {
   ASSERT_GREATER_OR_EQUAL(angle, -180., (angle));
   ASSERT_LESS_OR_EQUAL(angle, 180., (angle));
   ASSERT(!lowerBounds.empty(), ());
   ASSERT(is_sorted(lowerBounds.cbegin(), lowerBounds.cend(),
-             [](pair<double, TurnDirection> const & p1, pair<double, TurnDirection> const & p2)
+             [](std::pair<double, TurnDirection> const & p1, std::pair<double, TurnDirection> const & p2)
          {
            return p1.first > p2.first;
          }), ());
@@ -172,7 +172,7 @@ TurnDirection FindDirectionByAngle(vector<pair<double, TurnDirection>> const & l
 /*!
  * \brief GetPointForTurn returns ingoingPoint or outgoingPoint for turns.
  * These points belongs to the route but they often are not neighbor of junctionPoint.
- * To calculate the resulting point the function implements the following steps:
+ * To calculate the resulting point the std::function implements the following steps:
  * - going from junctionPoint along segment path according to the direction which is set in GetPointIndex().
  * - until one of following conditions is fulfilled:
  *   - the end of ft is reached; (returns the last feature point)
@@ -182,7 +182,7 @@ TurnDirection FindDirectionByAngle(vector<pair<double, TurnDirection>> const & l
  * \param junctionPoint is a junction point.
  * \param maxPointsCount returned poit could't be more than maxPointsCount poins away from junctionPoint
  * \param minDistMeters returned point should be minDistMeters away from junctionPoint if ft is long and consists of short segments
- * \param GetPointIndex is a function for getting points by index.
+ * \param GetPointIndex is a std::function for getting points by index.
  * It defines a direction of following along a feature. So it differs for ingoing and outgoing
  * cases.
  * It has following parameters:
@@ -191,12 +191,12 @@ TurnDirection FindDirectionByAngle(vector<pair<double, TurnDirection>> const & l
  * - shift is a number of points which shall be added to end or start index. After that
  *   the sum reflects an index of a feature segment point which will be used for a turn calculation.
  * The sum shall belongs to a range [min(start, end), max(start, end)].
- * shift belongs to a  range [0, abs(end - start)].
+ * shift belongs to a  range [0, std::abs(end - start)].
  * \return an ingoing or outgoing point for a turn calculation.
  */
-m2::PointD GetPointForTurn(vector<Junction> const & path, m2::PointD const & junctionPoint,
+m2::PointD GetPointForTurn(std::vector<Junction> const & path, m2::PointD const & junctionPoint,
                            size_t const maxPointsCount, double const minDistMeters,
-                           function<size_t(const size_t start, const size_t end, const size_t shift)> GetPointIndex)
+                           std::function<size_t(const size_t start, const size_t end, const size_t shift)> GetPointIndex)
 {
   ASSERT(!path.empty(), ());
 
@@ -256,10 +256,10 @@ bool TurnInfo::IsSegmentsValid() const
 
 IRouter::ResultCode MakeTurnAnnotation(turns::IRoutingResult const & result,
                                        RouterDelegate const & delegate,
-                                       vector<Junction> & junctions,
+                                       std::vector<Junction> & junctions,
                                        Route::TTurns & turnsDir, Route::TTimes & times,
                                        Route::TStreets & streets,
-                                       vector<Segment> & trafficSegs)
+                                       std::vector<Segment> & trafficSegs)
 {
   double estimatedTime = 0;
 
@@ -314,7 +314,7 @@ IRouter::ResultCode MakeTurnAnnotation(turns::IRoutingResult const & result,
       if (turnItem.m_turn != turns::TurnDirection::NoTurn)
       {
         turnItem.m_lanes = turnInfo.m_ingoing.m_lanes;
-        turnsDir.push_back(move(turnItem));
+        turnsDir.push_back(std::move(turnItem));
       }
     }
 
@@ -370,7 +370,7 @@ IRouter::ResultCode MakeTurnAnnotation(turns::IRoutingResult const & result,
 }
 
 double CalculateMercatorDistanceAlongPath(uint32_t startPointIndex, uint32_t endPointIndex,
-                                          vector<m2::PointD> const & points)
+                                          std::vector<m2::PointD> const & points)
 {
   ASSERT_LESS(endPointIndex, points.size(), ());
   ASSERT_LESS_OR_EQUAL(startPointIndex, endPointIndex, ());
@@ -382,7 +382,7 @@ double CalculateMercatorDistanceAlongPath(uint32_t startPointIndex, uint32_t end
   return mercatorDistanceBetweenTurns;
 }
 
-void FixupTurns(vector<Junction> const & junctions, Route::TTurns & turnsDir)
+void FixupTurns(std::vector<Junction> const & junctions, Route::TTurns & turnsDir)
 {
   double const kMergeDistMeters = 30.0;
   // For turns that are not EnterRoundAbout exitNum is always equal to zero.
@@ -469,7 +469,7 @@ void SelectRecommendedLanes(Route::TTurns & turnsDir)
 {
   for (auto & t : turnsDir)
   {
-    vector<SingleLaneInfo> & lanes = t.m_lanes;
+    std::vector<SingleLaneInfo> & lanes = t.m_lanes;
     if (lanes.empty())
       continue;
     TurnDirection const turn = t.m_turn;
@@ -536,7 +536,7 @@ TurnDirection InvertDirection(TurnDirection dir)
 
 TurnDirection RightmostDirection(const double angle)
 {
-  static vector<pair<double, TurnDirection>> const kLowerBounds = {
+  static std::vector<std::pair<double, TurnDirection>> const kLowerBounds = {
       {157., TurnDirection::TurnSharpRight},
       {40., TurnDirection::TurnRight},
       {-10., TurnDirection::TurnSlightRight},
@@ -555,7 +555,7 @@ TurnDirection LeftmostDirection(const double angle)
 
 TurnDirection IntermediateDirection(const double angle)
 {
-  static vector<pair<double, TurnDirection>> const kLowerBounds = {
+  static std::vector<std::pair<double, TurnDirection>> const kLowerBounds = {
       {157., TurnDirection::TurnSharpRight},
       {50., TurnDirection::TurnRight},
       {10., TurnDirection::TurnSlightRight},

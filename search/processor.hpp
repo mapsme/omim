@@ -25,13 +25,13 @@
 #include "base/limited_priority_queue.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/function.hpp"
-#include "std/map.hpp"
-#include "std/shared_ptr.hpp"
-#include "std/string.hpp"
-#include "std/unique_ptr.hpp"
-#include "std/unordered_set.hpp"
-#include "std/vector.hpp"
+#include <functional>
+#include <map>
+#include <memory>
+#include <string>
+#include <memory>
+#include <unordered_set>
+#include <vector>
 
 class FeatureType;
 class CategoriesHolder;
@@ -70,7 +70,7 @@ public:
   static double const kMaxViewportRadiusM;
 
   Processor(Index const & index, CategoriesHolder const & categories,
-            vector<Suggest> const & suggests, storage::CountryInfoGetter const & infoGetter);
+            std::vector<Suggest> const & suggests, storage::CountryInfoGetter const & infoGetter);
 
   inline void SupportOldFormat(bool b) { m_supportOldFormat = b; }
 
@@ -79,9 +79,9 @@ public:
   /// @param[in]  forceUpdate Pass true (default) to recache feature's ids even
   /// if viewport is a part of the old cached rect.
   void SetViewport(m2::RectD const & viewport, bool forceUpdate);
-  void SetPreferredLocale(string const & locale);
-  void SetInputLocale(string const & locale);
-  void SetQuery(string const & query);
+  void SetPreferredLocale(std::string const & locale);
+  void SetInputLocale(std::string const & locale);
+  void SetQuery(std::string const & query);
   // TODO (@y): this function must be removed.
   void SetRankPivot(m2::PointD const & pivot);
   inline void SetMode(Mode mode) { m_mode = mode; }
@@ -92,7 +92,7 @@ public:
     m_minDistanceOnMapBetweenResults = distance;
   }
   inline void SetOnResults(SearchParams::TOnResults const & onResults) { m_onResults = onResults; }
-  inline string const & GetPivotRegion() const { return m_region; }
+  inline std::string const & GetPivotRegion() const { return m_region; }
   inline m2::PointD const & GetPosition() const { return m_position; }
 
   /// Suggestions language code, not the same as we use in mwm data
@@ -122,7 +122,7 @@ protected:
     COUNT_V = 2  // Should always be the last
   };
 
-  friend string DebugPrint(ViewportID viewportId);
+  friend std::string DebugPrint(ViewportID viewportId);
 
   friend class BestNameFinder;
   friend class DoFindLocality;
@@ -131,8 +131,8 @@ protected:
   friend class PreResult2Maker;
   friend class Ranker;
 
-  using TMWMVector = vector<shared_ptr<MwmInfo>>;
-  using TOffsetsVector = map<MwmSet::MwmId, vector<uint32_t>>;
+  using TMWMVector = std::vector<std::shared_ptr<MwmInfo>>;
+  using TOffsetsVector = std::map<MwmSet::MwmId, std::vector<uint32_t>>;
   using TFHeader = feature::DataHeader;
   using TLocales = buffer_vector<int8_t, 3>;
 
@@ -153,8 +153,8 @@ protected:
   CategoriesHolder const & m_categories;
   storage::CountryInfoGetter const & m_infoGetter;
 
-  string m_region;
-  string m_query;
+  std::string m_region;
+  std::string m_query;
   buffer_vector<strings::UniString, 32> m_tokens;
   strings::UniString m_prefix;
   set<uint32_t> m_preferredTypes;
@@ -165,7 +165,7 @@ protected:
   double m_minDistanceOnMapBetweenResults;
   Mode m_mode;
   bool m_suggestsEnabled;
-  shared_ptr<hotels_filter::Rule> m_hotelsFilter;
+  std::shared_ptr<hotels_filter::Rule> m_hotelsFilter;
   SearchParams::TOnResults m_onResults;
 
   /// @name Get ranking params.

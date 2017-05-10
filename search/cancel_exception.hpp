@@ -3,7 +3,7 @@
 #include "base/cancellable.hpp"
 #include "base/exception.hpp"
 
-#include "std/string.hpp"
+#include <string>
 
 namespace search
 {

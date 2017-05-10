@@ -12,8 +12,8 @@
 
 #include "base/macros.hpp"
 
-#include "std/functional.hpp"
-#include "std/unordered_map.hpp"
+#include <functional>
+#include <unordered_map>
 
 namespace routing
 {
@@ -63,7 +63,7 @@ struct CrossNode final
   }
 };
 
-inline string DebugPrint(CrossNode const & t)
+inline std::string DebugPrint(CrossNode const & t)
 {
   ostringstream out;
   out << "CrossNode [ node: " << t.node << ", map: " << t.mwmId.GetInfo()->GetCountryName()<< " ]";
@@ -85,7 +85,7 @@ struct BorderCross final
   inline bool operator<(BorderCross const & a) const { return toNode < a.toNode; }
 };
 
-inline string DebugPrint(BorderCross const & t)
+inline std::string DebugPrint(BorderCross const & t)
 {
   ostringstream out;
   out << "Border cross from: " << DebugPrint(t.fromNode) << " to: " << DebugPrint(t.toNode) << "\n";
@@ -132,7 +132,7 @@ public:
   {
     size_t operator()(TCachingKey const & p) const
     {
-      return hash<TWrittenNodeId>()(p.first) ^ hash<string>()(p.second.GetInfo()->GetCountryName());
+      return std::hash<TWrittenNodeId>()(p.first) ^ std::hash<std::string>()(p.second.GetInfo()->GetCountryName());
     }
   };
 
@@ -181,8 +181,8 @@ private:
   mutable RoutingIndexManager m_indexManager;
 
   // @TODO(bykoianko) Consider removing key work mutable.
-  mutable unordered_map<TCachingKey, vector<BorderCross>, Hash> m_cachedNextNodesByIngoing;
-  mutable unordered_map<TCachingKey, vector<BorderCross>, Hash> m_cachedNextNodesByOutgoing;
+  mutable std::unordered_map<TCachingKey, vector<BorderCross>, Hash> m_cachedNextNodesByIngoing;
+  mutable std::unordered_map<TCachingKey, vector<BorderCross>, Hash> m_cachedNextNodesByOutgoing;
 };
 
 //--------------------------------------------------------------------------------------------------

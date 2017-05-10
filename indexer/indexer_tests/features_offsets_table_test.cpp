@@ -13,8 +13,8 @@
 
 #include "defines.hpp"
 
-#include "std/bind.hpp"
-#include "std/string.hpp"
+#include <functional>
+#include <string>
 
 
 using namespace platform;
@@ -66,14 +66,14 @@ namespace feature
 
   UNIT_TEST(FeaturesOffsetsTable_CreateIfNotExistsAndLoad)
   {
-    string const testFileName = "minsk-pass";
+    std::string const testFileName = "minsk-pass";
 
     LocalCountryFile localFile = LocalCountryFile::MakeForTesting(testFileName);
-    string const indexFile = CountryIndexes::GetPath(localFile, CountryIndexes::Index::Offsets);
+    std::string const indexFile = CountryIndexes::GetPath(localFile, CountryIndexes::Index::Offsets);
     FileWriter::DeleteFileX(indexFile);
 
     unique_ptr<FeaturesOffsetsTable> table = FeaturesOffsetsTable::CreateIfNotExistsAndLoad(localFile);
-    MY_SCOPE_GUARD(deleteTestFileIndexGuard, bind(&FileWriter::DeleteFileX, cref(indexFile)));
+    MY_SCOPE_GUARD(deleteTestFileIndexGuard, std::bind(&FileWriter::DeleteFileX, std::cref(indexFile)));
     TEST(table.get(), ());
 
     uint64_t builderSize = 0;
@@ -91,7 +91,7 @@ namespace feature
 
   UNIT_TEST(FeaturesOffsetsTable_ReadWrite)
   {
-    string const testFileName = "test_file";
+    std::string const testFileName = "test_file";
     Platform & pl = GetPlatform();
 
     FilesContainerR baseContainer(pl.GetReader("minsk-pass" DATA_FILE_EXTENSION));
@@ -99,7 +99,7 @@ namespace feature
     LocalCountryFile localFile = LocalCountryFile::MakeForTesting(testFileName);
     CountryIndexes::PreparePlaceOnDisk(localFile);
 
-    string const indexFile = CountryIndexes::GetPath(localFile, CountryIndexes::Index::Offsets);
+    std::string const indexFile = CountryIndexes::GetPath(localFile, CountryIndexes::Index::Offsets);
     FileWriter::DeleteFileX(indexFile);
 
     FeaturesOffsetsTable::Builder builder;
@@ -112,9 +112,9 @@ namespace feature
     TEST(table.get(), ());
     TEST_EQUAL(builder.size(), table->size(), ());
 
-    string const testFile = pl.WritablePathForFile(testFileName + DATA_FILE_EXTENSION);
-    MY_SCOPE_GUARD(deleteTestFileGuard, bind(&FileWriter::DeleteFileX, cref(testFile)));
-    MY_SCOPE_GUARD(deleteTestFileIndexGuard, bind(&FileWriter::DeleteFileX, cref(indexFile)));
+    std::string const testFile = pl.WritablePathForFile(testFileName + DATA_FILE_EXTENSION);
+    MY_SCOPE_GUARD(deleteTestFileGuard, std::bind(&FileWriter::DeleteFileX, std::cref(testFile)));
+    MY_SCOPE_GUARD(deleteTestFileIndexGuard, std::bind(&FileWriter::DeleteFileX, std::cref(indexFile)));
 
     // Store table in a temporary data file.
     {
@@ -122,7 +122,7 @@ namespace feature
 
       // Just copy all sections except a possibly existing offsets
       // table section.
-      baseContainer.ForEachTag([&baseContainer, &testContainer](string const & tag)
+      baseContainer.ForEachTag([&baseContainer, &testContainer](std::string const & tag)
       {
         testContainer.Write(baseContainer.GetReader(tag), tag);
       });

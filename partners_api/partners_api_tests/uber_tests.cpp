@@ -6,9 +6,9 @@
 
 #include "base/scope_guard.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/atomic.hpp"
-#include "std/mutex.hpp"
+#include <algorithm>
+#include <atomic>
+#include <mutex>
 
 #include "3party/jansson/myjansson.hpp"
 
@@ -24,7 +24,7 @@ bool IsComplete(uber::Product const & product)
 UNIT_TEST(Uber_GetProducts)
 {
   ms::LatLon const pos(38.897724, -77.036531);
-  string result;
+  std::string result;
   TEST(uber::RawApi::GetProducts(pos, result), ());
   TEST(!result.empty(), ());
 }
@@ -32,7 +32,7 @@ UNIT_TEST(Uber_GetProducts)
 UNIT_TEST(Uber_GetTimes)
 {
   ms::LatLon const pos(38.897724, -77.036531);
-  string result;
+  std::string result;
 
   TEST(uber::RawApi::GetEstimatedTime(pos, result), ());
   TEST(!result.empty(), ());
@@ -46,7 +46,7 @@ UNIT_TEST(Uber_GetTimes)
   auto const timeSize = json_array_size(timesArray);
   for (size_t i = 0; i < timeSize; ++i)
   {
-    string name;
+    std::string name;
     int64_t estimatedTime = 0;
     auto const item = json_array_get(timesArray, i);
 
@@ -60,7 +60,7 @@ UNIT_TEST(Uber_GetTimes)
       TEST(false, (e.Msg()));
     }
 
-    string const estimated = strings::to_string(estimatedTime);
+    std::string const estimated = strings::to_string(estimatedTime);
 
     TEST(!name.empty(), ());
     TEST(!estimated.empty(), ());
@@ -71,7 +71,7 @@ UNIT_TEST(Uber_GetPrices)
 {
   ms::LatLon const from(38.897724, -77.036531);
   ms::LatLon const to(38.862416, -76.883316);
-  string result;
+  std::string result;
 
   TEST(uber::RawApi::GetEstimatedPrice(from, to, result), ());
   TEST(!result.empty(), ());
@@ -85,9 +85,9 @@ UNIT_TEST(Uber_GetPrices)
   auto const pricesSize = json_array_size(pricesArray);
   for (size_t i = 0; i < pricesSize; ++i)
   {
-    string productId;
-    string price;
-    string currency;
+    std::string productId;
+    std::string price;
+    std::string currency;
 
     auto const item = json_array_get(pricesArray, i);
 
@@ -123,12 +123,12 @@ UNIT_TEST(Uber_ProductMaker)
   ms::LatLon const to(38.862416, -76.883316);
 
   size_t returnedId = 0;
-  vector<uber::Product> returnedProducts;
+  std::vector<uber::Product> returnedProducts;
 
   uber::ProductMaker maker;
 
-  string times;
-  string prices;
+  std::string times;
+  std::string prices;
 
   auto const errorCallback = [](uber::ErrorCode const code, uint64_t const requestId)
   {
@@ -142,7 +142,7 @@ UNIT_TEST(Uber_ProductMaker)
   maker.SetTimes(reqId, times);
   maker.SetPrices(reqId, prices);
   maker.MakeProducts(reqId,
-                     [&returnedId, &returnedProducts](vector<uber::Product> const & products,
+                     [&returnedId, &returnedProducts](std::vector<uber::Product> const & products,
                                                       size_t const requestId) {
                        returnedId = requestId;
                        returnedProducts = products;
@@ -164,7 +164,7 @@ UNIT_TEST(Uber_ProductMaker)
   maker.SetTimes(reqId, times);
   maker.SetPrices(reqId, prices);
 
-  maker.MakeProducts(reqId + 1, [](vector<uber::Product> const & products, size_t const requestId)
+  maker.MakeProducts(reqId + 1, [](std::vector<uber::Product> const & products, size_t const requestId)
   {
     TEST(false, ());
   }, errorCallback);
@@ -173,9 +173,9 @@ UNIT_TEST(Uber_ProductMaker)
 UNIT_TEST(Uber_Smoke)
 {
   // Used to synchronize access into GetAvailableProducts callback method.
-  mutex resultsMutex;
+  std::mutex resultsMutex;
   size_t reqId = 1;
-  vector<uber::Product> productsContainer;
+  std::vector<uber::Product> productsContainer;
   ms::LatLon const from(38.897724, -77.036531);
   ms::LatLon const to(38.862416, -76.883316);
 
@@ -193,23 +193,23 @@ UNIT_TEST(Uber_Smoke)
   };
 
   auto const standardCallback =
-      [&reqId, &productsContainer, &resultsMutex](vector<uber::Product> const & products, size_t const requestId)
+      [&reqId, &productsContainer, &resultsMutex](std::vector<uber::Product> const & products, size_t const requestId)
   {
-    lock_guard<mutex> lock(resultsMutex);
+    std::lock_guard<std::mutex> lock(resultsMutex);
 
     if (reqId == requestId)
       productsContainer = products;
   };
 
   auto const lastCallback =
-      [&standardCallback](vector<uber::Product> const & products, size_t const requestId)
+      [&standardCallback](std::vector<uber::Product> const & products, size_t const requestId)
   {
     standardCallback(products, requestId);
     testing::StopEventLoop();
   };
 
-  string times;
-  string prices;
+  std::string times;
+  std::string prices;
 
   TEST(uber::RawApi::GetEstimatedTime(from, times), ());
   TEST(uber::RawApi::GetEstimatedPrice(from, to, prices), ());
@@ -230,25 +230,25 @@ UNIT_TEST(Uber_Smoke)
     uber::Api uberApi;
 
     {
-      lock_guard<mutex> lock(resultsMutex);
+      std::lock_guard<std::mutex> lock(resultsMutex);
       reqId = uberApi.GetAvailableProducts(ms::LatLon(55.753960, 37.624513),
                                            ms::LatLon(55.765866, 37.661270), standardCallback,
                                            errorPossibleCallback);
     }
     {
-      lock_guard<mutex> lock(resultsMutex);
+      std::lock_guard<std::mutex> lock(resultsMutex);
       reqId = uberApi.GetAvailableProducts(ms::LatLon(59.922445, 30.367201),
                                            ms::LatLon(59.943675, 30.361123), standardCallback,
                                            errorPossibleCallback);
     }
     {
-      lock_guard<mutex> lock(resultsMutex);
+      std::lock_guard<std::mutex> lock(resultsMutex);
       reqId = uberApi.GetAvailableProducts(ms::LatLon(52.509621, 13.450067),
                                            ms::LatLon(52.510811, 13.409490), standardCallback,
                                            errorPossibleCallback);
     }
     {
-      lock_guard<mutex> lock(resultsMutex);
+      std::lock_guard<std::mutex> lock(resultsMutex);
       reqId = uberApi.GetAvailableProducts(from, to, lastCallback, errorCallback);
     }
   }
@@ -258,7 +258,7 @@ UNIT_TEST(Uber_Smoke)
   TEST_EQUAL(synchronousProducts.size(), productsContainer.size(), ());
 
   auto const isEqual =
-      equal(synchronousProducts.begin(), synchronousProducts.end(), productsContainer.begin(),
+      std::equal(synchronousProducts.begin(), synchronousProducts.end(), productsContainer.begin(),
             [](uber::Product const & lhs, uber::Product const & rhs) {
               return lhs.m_productId == rhs.m_productId && lhs.m_name == rhs.m_name &&
                      lhs.m_price == rhs.m_price;

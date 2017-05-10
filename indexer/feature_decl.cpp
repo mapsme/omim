@@ -1,15 +1,15 @@
 #include "indexer/feature_decl.hpp"
 
-#include "std/sstream.hpp"
+#include <sstream>
 
-string DebugPrint(FeatureID const & id)
+std::string DebugPrint(FeatureID const & id)
 {
-  ostringstream ss;
+  std::ostringstream ss;
   ss << "{ " << DebugPrint(id.m_mwmId) << ", " << id.m_index << " }";
   return ss.str();
 }
 
-string DebugPrint(feature::EGeomType type)
+std::string DebugPrint(feature::EGeomType type)
 {
   using feature::EGeomType;
   switch (type)
@@ -27,7 +27,7 @@ char const * const FeatureID::kInvalidFileName = "INVALID";
 int64_t const FeatureID::kInvalidMwmVersion = -1;
 
 
-string FeatureID::GetMwmName() const
+std::string FeatureID::GetMwmName() const
 {
   return IsValid() ? m_mwmId.GetInfo()->GetCountryName() : kInvalidFileName;
 }

@@ -280,7 +280,7 @@ UNIT_TEST(GetBestOsmNode_Test)
     TEST(osmResponse.load_buffer(osmRawResponseNode, ::strlen(osmRawResponseNode)), ());
 
     auto const bestNode = osm::GetBestOsmNode(osmResponse, ms::LatLon(53.8977254, 27.5578377));
-    TEST_EQUAL(bestNode.attribute("id").value(), string("277172019"), ());
+    TEST_EQUAL(bestNode.attribute("id").value(), std::string("277172019"), ());
   }
 }
 
@@ -289,7 +289,7 @@ UNIT_TEST(GetBestOsmWay_Test)
   {
     pugi::xml_document osmResponse;
     TEST(osmResponse.load_buffer(osmRawResponseWay, ::strlen(osmRawResponseWay)), ());
-    vector<m2::PointD> const geometry = {
+    std::vector<m2::PointD> const geometry = {
         MercatorBounds::FromLatLon(53.8977484, 27.557359),
         MercatorBounds::FromLatLon(53.8978710, 27.557681),
         MercatorBounds::FromLatLon(53.8978034, 27.557764),
@@ -305,7 +305,7 @@ UNIT_TEST(GetBestOsmWay_Test)
   {
     pugi::xml_document osmResponse;
     TEST(osmResponse.load_buffer(osmRawResponseWay, ::strlen(osmRawResponseWay)), ());
-    vector<m2::PointD> const geometry = {
+    std::vector<m2::PointD> const geometry = {
         MercatorBounds::FromLatLon(53.8975484, 27.557359),  // diff
         MercatorBounds::FromLatLon(53.8978710, 27.557681),
         MercatorBounds::FromLatLon(53.8975034, 27.557764),  // diff
@@ -324,7 +324,7 @@ UNIT_TEST(GetBestOsmRealtion_Test)
 {
   pugi::xml_document osmResponse;
   TEST(osmResponse.load_buffer(osmRawResponseRelation, ::strlen(osmRawResponseRelation)), ());
-  vector<m2::PointD> const geometry = {
+  std::vector<m2::PointD> const geometry = {
     {37.6400469, 67.4549381},
     {37.6401059, 67.4546779},
     {37.6401113, 67.4551473},
@@ -352,7 +352,7 @@ UNIT_TEST(GetBestOsmRealtion_Test)
   };
 
   auto const bestWay = osm::GetBestOsmWayOrRelation(osmResponse, geometry);
-  TEST_EQUAL(bestWay.attribute("id").value(), string("365808"), ());
+  TEST_EQUAL(bestWay.attribute("id").value(), std::string("365808"), ());
 }
 
 namespace
@@ -405,7 +405,7 @@ UNIT_TEST(HouseBuildingMiss_test)
 {
   pugi::xml_document osmResponse;
   TEST(osmResponse.load_buffer(osmResponseBuildingMiss, ::strlen(osmResponseBuildingMiss)), ());
-  vector<m2::PointD> const geometry = {
+  std::vector<m2::PointD> const geometry = {
     {-0.2048121407986514, 60.333984198674443},
     {-0.20478800091734684,  60.333909096821458},
     {-0.20465925488366565,  60.334029796228037},
@@ -413,5 +413,5 @@ UNIT_TEST(HouseBuildingMiss_test)
   };
 
   auto const bestWay = osm::GetBestOsmWayOrRelation(osmResponse, geometry);
-  TEST_EQUAL(bestWay.attribute("id").value(), string("345630019"), ());
+  TEST_EQUAL(bestWay.attribute("id").value(), std::string("345630019"), ());
 }

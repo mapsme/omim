@@ -88,13 +88,13 @@ int8_t constexpr StringUtf8Multilang::kInternationalCode;
 StringUtf8Multilang::Languages const & StringUtf8Multilang::GetSupportedLanguages()
 {
   // Asserts for generic class constants.
-  ASSERT_EQUAL(g_languages[kDefaultCode].m_code, string("default"), ());
-  ASSERT_EQUAL(g_languages[kInternationalCode].m_code, string("int_name"), ());
+  ASSERT_EQUAL(g_languages[kDefaultCode].m_code, std::string("default"), ());
+  ASSERT_EQUAL(g_languages[kInternationalCode].m_code, std::string("int_name"), ());
   return g_languages;
 }
 
 // static
-int8_t StringUtf8Multilang::GetLangIndex(string const & lang)
+int8_t StringUtf8Multilang::GetLangIndex(std::string const & lang)
 {
   for (size_t i = 0; i < g_languages.size(); ++i)
     if (lang == g_languages[i].m_code)
@@ -153,7 +153,7 @@ size_t StringUtf8Multilang::GetNextIndex(size_t i) const
   return i;
 }
 
-void StringUtf8Multilang::AddString(int8_t lang, string const & utf8s)
+void StringUtf8Multilang::AddString(int8_t lang, std::string const & utf8s)
 {
   size_t i = 0;
   size_t const sz = m_s.size();
@@ -176,7 +176,7 @@ void StringUtf8Multilang::AddString(int8_t lang, string const & utf8s)
   m_s.insert(m_s.end(), utf8s.begin(), utf8s.end());
 }
 
-bool StringUtf8Multilang::GetString(int8_t lang, string & utf8s) const
+bool StringUtf8Multilang::GetString(int8_t lang, std::string & utf8s) const
 {
   size_t i = 0;
   size_t const sz = m_s.size();
@@ -214,21 +214,21 @@ namespace
 
 struct Printer
 {
-  string & m_out;
-  Printer(string & out) : m_out(out) {}
-  bool operator()(int8_t code, string const & name) const
+  std::string & m_out;
+  Printer(std::string & out) : m_out(out) {}
+  bool operator()(int8_t code, std::string const & name) const
   {
-    m_out += string(StringUtf8Multilang::GetLangByCode(code)) + string(":") + name + " ";
+    m_out += std::string(StringUtf8Multilang::GetLangByCode(code)) + std::string(":") + name + " ";
     return true;
   }
 };
 
 struct Finder
 {
-  string const & m_s;
+  std::string const & m_s;
   int8_t m_res;
-  Finder(string const & s) : m_s(s), m_res(-1) {}
-  bool operator()(int8_t code, string const & name)
+  Finder(std::string const & s) : m_s(s), m_res(-1) {}
+  bool operator()(int8_t code, std::string const & name)
   {
     if (name == m_s)
     {
@@ -241,16 +241,16 @@ struct Finder
 
 } // namespace
 
-int8_t StringUtf8Multilang::FindString(string const & utf8s) const
+int8_t StringUtf8Multilang::FindString(std::string const & utf8s) const
 {
   Finder finder(utf8s);
   ForEach(finder);
   return finder.m_res;
 }
 
-string DebugPrint(StringUtf8Multilang const & s)
+std::string DebugPrint(StringUtf8Multilang const & s)
 {
-  string out;
+  std::string out;
   s.ForEach(Printer(out));
   return out;
 }

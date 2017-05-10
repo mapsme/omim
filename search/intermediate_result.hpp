@@ -7,7 +7,7 @@
 
 #include "indexer/feature_data.hpp"
 
-#include "std/set.hpp"
+#include <set>
 
 class FeatureType;
 class CategoriesHolder;
@@ -61,7 +61,7 @@ public:
 
   /// For RESULT_FEATURE and RESULT_BUILDING.
   PreResult2(FeatureType const & f, m2::PointD const & center, m2::PointD const & pivot,
-             string const & displayName, string const & fileName);
+             std::string const & displayName, std::string const & fileName);
 
   /// For RESULT_LATLON.
   PreResult2(double lat, double lon);
@@ -80,7 +80,7 @@ public:
   /// @param[in]  lang    Current system language.
   /// @param[in]  coder   May be nullptr - no need to calculate address.
   Result GenerateFinalResult(storage::CountryInfoGetter const & infoGetter,
-                             CategoriesHolder const * pCat, set<uint32_t> const * pTypes,
+                             CategoriesHolder const * pCat, std::set<uint32_t> const * pTypes,
                              int8_t locale, ReverseGeocoder const * coder) const;
 
   /// Filter equal features for different mwm's.
@@ -109,12 +109,12 @@ public:
   };
   //@}
 
-  string DebugPrint() const;
+  std::string DebugPrint() const;
 
   bool IsStreet() const;
 
   inline FeatureID const & GetID() const { return m_id; }
-  inline string const & GetName() const { return m_str; }
+  inline std::string const & GetName() const { return m_str; }
   inline feature::TypesHolder const & GetTypes() const { return m_types; }
   inline m2::PointD GetCenter() const { return m_region.m_point; }
 
@@ -124,16 +124,16 @@ private:
   FeatureID m_id;
   feature::TypesHolder m_types;
 
-  uint32_t GetBestType(set<uint32_t> const * pPrefferedTypes = 0) const;
+  uint32_t GetBestType(std::set<uint32_t> const * pPrefferedTypes = 0) const;
 
-  string m_str;
+  std::string m_str;
 
   struct RegionInfo
   {
-    string m_file;
+    std::string m_file;
     m2::PointD m_point;
 
-    inline void SetParams(string const & file, m2::PointD const & pt)
+    inline void SetParams(std::string const & file, m2::PointD const & pt)
     {
       m_file = file;
       m_point = pt;
@@ -143,7 +143,7 @@ private:
                    storage::CountryInfo & info) const;
   } m_region;
 
-  string GetRegionName(storage::CountryInfoGetter const & infoGetter, uint32_t fType) const;
+  std::string GetRegionName(storage::CountryInfoGetter const & infoGetter, uint32_t fType) const;
 
   double m_distance;
   ResultType m_resultType;
@@ -153,7 +153,7 @@ private:
   Result::Metadata m_metadata;
 };
 
-inline string DebugPrint(PreResult2 const & t)
+inline std::string DebugPrint(PreResult2 const & t)
 {
   return t.DebugPrint();
 }
@@ -169,7 +169,7 @@ class IndexedValue
   double m_rank;
   double m_distanceToPivot;
 
-  friend string DebugPrint(IndexedValue const & value)
+  friend std::string DebugPrint(IndexedValue const & value)
   {
     ostringstream os;
     os << "IndexedValue [";

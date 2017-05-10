@@ -7,11 +7,11 @@
 #include "coding/writer.hpp"
 
 #include "base/assert.hpp"
-#include "std/cstdint.hpp"
-#include "std/vector.hpp"
+#include <cstdint>
+#include <vector>
 
 // Encode Varint by appending to vector of bytes.
-inline void VarintEncode(vector<uint8_t> & dst, uint64_t n)
+inline void VarintEncode(std::vector<uint8_t> & dst, uint64_t n)
 {
   if (n == 0)
   {

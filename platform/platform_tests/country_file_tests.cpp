@@ -11,10 +11,10 @@ UNIT_TEST(CountryFile_SmokeTwoComponentMwm)
 {
   CountryFile countryFile("TestCountry");
   TEST_EQUAL("TestCountry", countryFile.GetName(), ());
-  string const mapFileName = GetFileName(countryFile.GetName(), MapOptions::Map,
+  std::string const mapFileName = GetFileName(countryFile.GetName(), MapOptions::Map,
                                          version::FOR_TESTING_TWO_COMPONENT_MWM1);
   TEST_EQUAL("TestCountry" DATA_FILE_EXTENSION, mapFileName, ());
-  string const routingFileName = GetFileName(countryFile.GetName(), MapOptions::CarRouting,
+  std::string const routingFileName = GetFileName(countryFile.GetName(), MapOptions::CarRouting,
                                              version::FOR_TESTING_TWO_COMPONENT_MWM1);
   TEST_EQUAL("TestCountry" DATA_FILE_EXTENSION ROUTING_FILE_EXTENSION, routingFileName, ());
 
@@ -35,7 +35,7 @@ UNIT_TEST(CountryFile_SmokeOneComponentMwm)
 {
   CountryFile countryFile("TestCountryOneComponent");
   TEST_EQUAL("TestCountryOneComponent", countryFile.GetName(), ());
-  string const mapFileName = GetFileName(countryFile.GetName(), MapOptions::MapWithCarRouting,
+  std::string const mapFileName = GetFileName(countryFile.GetName(), MapOptions::MapWithCarRouting,
                                          version::FOR_TESTING_SINGLE_MWM1);
 
   TEST_EQUAL("TestCountryOneComponent" DATA_FILE_EXTENSION, mapFileName, ());

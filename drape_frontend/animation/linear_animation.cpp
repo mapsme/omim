@@ -160,9 +160,9 @@ double MapLinearAnimation::GetDuration() const
   if (m_angleInterpolator.IsActive())
     duration = m_angleInterpolator.GetDuration();
   if (m_scaleInterpolator.IsActive())
-    duration = max(duration, m_scaleInterpolator.GetDuration());
+    duration = std::max(duration, m_scaleInterpolator.GetDuration());
   if (m_positionInterpolator.IsActive())
-    duration = max(duration, m_positionInterpolator.GetDuration());
+    duration = std::max(duration, m_positionInterpolator.GetDuration());
   return duration;
 }
 

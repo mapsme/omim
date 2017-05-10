@@ -13,6 +13,8 @@
 #include "std/utility.hpp"
 
 
+using namespace std;
+
 class WaysParserHelper
 {
 public:

@@ -6,18 +6,18 @@
 
 #include "base/logging.hpp"
 
-#include "std/cstdarg.hpp"
+#include <cstdarg>
 
 
 namespace
 {
-typedef pair<uint16_t, uint16_t> TestResult;
-typedef vector<strings::UniString> TokensVector;
-typedef vector<TestResult> TestResultVector;
+typedef std::pair<uint16_t, uint16_t> TestResult;
+typedef std::vector<strings::UniString> TokensVector;
+typedef std::vector<TestResult> TestResultVector;
 
 struct TestData
 {
-  string m_input;
+  std::string m_input;
   TokensVector m_lowTokens;
   TestResultVector m_results;
 
@@ -44,7 +44,7 @@ struct TestData
   }
 
 };
-typedef vector<TestData> TestVector;
+typedef std::vector<TestData> TestVector;
 
 class CheckRange
 {
@@ -62,7 +62,7 @@ public:
     TEST_EQUAL(m_idx, m_results.size(), ());
   }
 
-  void operator() (pair<uint16_t, uint16_t> const & range)
+  void operator() (std::pair<uint16_t, uint16_t> const & range)
   {
     ASSERT(m_idx < m_results.size(), ());
     TEST_EQUAL(range, m_results[m_idx], ());

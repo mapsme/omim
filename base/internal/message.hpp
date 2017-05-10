@@ -46,7 +46,7 @@ inline std::string DebugPrint(char const * t)
   if (t)
     return DebugPrint(std::string(t));
   else
-    return std::string("NULL string pointer");
+    return std::string("NULL std::string pointer");
 }
 
 inline std::string DebugPrint(char t)

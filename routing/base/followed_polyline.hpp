@@ -35,7 +35,7 @@ public:
   bool IsValid() const { return (m_current.IsValid() && m_poly.GetSize() > 1); }
 
   m2::PolylineD const & GetPolyline() const { return m_poly; }
-  vector<double> const & GetSegDistanceM() const { return m_segDistance; }
+  std::vector<double> const & GetSegDistanceM() const { return m_segDistance; }
   double GetTotalDistanceM() const;
   double GetDistanceFromBeginM() const;
   double GetDistanceToEndM() const;
@@ -81,9 +81,9 @@ private:
   /// Iterator with the current position. Position sets with UpdateProjection methods.
   mutable Iter m_current;
   /// Precalculated info for fast projection finding.
-  vector<m2::ProjectionToSection<m2::PointD>> m_segProj;
+  std::vector<m2::ProjectionToSection<m2::PointD>> m_segProj;
   /// Accumulated cache of segments length in meters.
-  vector<double> m_segDistance;
+  std::vector<double> m_segDistance;
 };
 
 }  // namespace routing

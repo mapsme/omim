@@ -16,9 +16,9 @@
 
 #include "geometry/tree4d.hpp"
 
-#include "std/shared_ptr.hpp"
-#include "std/unique_ptr.hpp"
-#include "std/vector.hpp"
+#include <memory>
+#include <memory>
+#include <vector>
 
 namespace routing
 {
@@ -28,42 +28,42 @@ class IndexGraphStarter;
 class IndexRouter : public IRouter
 {
 public:
-  IndexRouter(string const & name, TCountryFileFn const & countryFileFn,
-              CourntryRectFn const & countryRectFn, shared_ptr<NumMwmIds> numMwmIds,
-              unique_ptr<m4::Tree<NumMwmId>> numMwmTree, shared_ptr<TrafficStash> trafficStash,
-              shared_ptr<VehicleModelFactory> vehicleModelFactory,
-              shared_ptr<EdgeEstimator> estimator, unique_ptr<IDirectionsEngine> directionsEngine,
+  IndexRouter(std::string const & name, TCountryFileFn const & countryFileFn,
+              CourntryRectFn const & countryRectFn, std::shared_ptr<NumMwmIds> numMwmIds,
+              std::unique_ptr<m4::Tree<NumMwmId>> numMwmTree, std::shared_ptr<TrafficStash> trafficStash,
+              std::shared_ptr<VehicleModelFactory> vehicleModelFactory,
+              std::shared_ptr<EdgeEstimator> estimator, std::unique_ptr<IDirectionsEngine> directionsEngine,
               Index & index);
 
   // IRouter overrides:
-  virtual string GetName() const override { return m_name; }
+  virtual std::string GetName() const override { return m_name; }
   virtual IRouter::ResultCode CalculateRoute(m2::PointD const & startPoint,
                                              m2::PointD const & startDirection,
                                              m2::PointD const & finalPoint,
                                              RouterDelegate const & delegate,
                                              Route & route) override;
 
-  IRouter::ResultCode CalculateRouteForSingleMwm(string const & country,
+  IRouter::ResultCode CalculateRouteForSingleMwm(std::string const & country,
                                                  m2::PointD const & startPoint,
                                                  m2::PointD const & startDirection,
                                                  m2::PointD const & finalPoint,
                                                  RouterDelegate const & delegate, Route & route);
 
   /// \note |numMwmIds| should not be null.
-  static unique_ptr<IndexRouter> CreateCarRouter(TCountryFileFn const & countryFileFn,
+  static std::unique_ptr<IndexRouter> CreateCarRouter(TCountryFileFn const & countryFileFn,
                                                  CourntryRectFn const & coutryRectFn,
-                                                 shared_ptr<NumMwmIds> numMwmIds,
-                                                 unique_ptr<m4::Tree<NumMwmId>> numMwmTree,
+                                                 std::shared_ptr<NumMwmIds> numMwmIds,
+                                                 std::unique_ptr<m4::Tree<NumMwmId>> numMwmTree,
                                                  traffic::TrafficCache const & trafficCache,
                                                  Index & index);
 
 private:
-  IRouter::ResultCode CalculateRoute(string const & startCountry, string const & finishCountry,
+  IRouter::ResultCode CalculateRoute(std::string const & startCountry, std::string const & finishCountry,
                                      bool forSingleMwm, m2::PointD const & startPoint,
                                      m2::PointD const & startDirection,
                                      m2::PointD const & finalPoint, RouterDelegate const & delegate,
                                      Route & route);
-  IRouter::ResultCode DoCalculateRoute(string const & startCountry, string const & finishCountry,
+  IRouter::ResultCode DoCalculateRoute(std::string const & startCountry, std::string const & finishCountry,
                                        bool forSingleMwm, m2::PointD const & startPoint,
                                        m2::PointD const & startDirection,
                                        m2::PointD const & finalPoint,
@@ -72,24 +72,24 @@ private:
                        Edge & closestEdge) const;
   // Input route may contains 'leaps': shortcut edges from mwm border enter to exit.
   // ProcessLeaps replaces each leap with calculated route through mwm.
-  IRouter::ResultCode ProcessLeaps(vector<Segment> const & input, RouterDelegate const & delegate,
-                                   IndexGraphStarter & starter, vector<Segment> & output);
-  bool RedressRoute(vector<Segment> const & segments, RouterDelegate const & delegate,
+  IRouter::ResultCode ProcessLeaps(std::vector<Segment> const & input, RouterDelegate const & delegate,
+                                   IndexGraphStarter & starter, std::vector<Segment> & output);
+  bool RedressRoute(std::vector<Segment> const & segments, RouterDelegate const & delegate,
                     bool forSingleMwm, IndexGraphStarter & starter, Route & route) const;
 
   bool AreMwmsNear(NumMwmId startId, NumMwmId finishId) const;
 
-  string const m_name;
+  std::string const m_name;
   Index & m_index;
   TCountryFileFn const m_countryFileFn;
   CourntryRectFn const m_countryRectFn;
-  shared_ptr<NumMwmIds> m_numMwmIds;
-  shared_ptr<m4::Tree<NumMwmId>> m_numMwmTree;
-  shared_ptr<TrafficStash> m_trafficStash;
+  std::shared_ptr<NumMwmIds> m_numMwmIds;
+  std::shared_ptr<m4::Tree<NumMwmId>> m_numMwmTree;
+  std::shared_ptr<TrafficStash> m_trafficStash;
   RoutingIndexManager m_indexManager;
   FeaturesRoadGraph m_roadGraph;
-  shared_ptr<VehicleModelFactory> m_vehicleModelFactory;
-  shared_ptr<EdgeEstimator> m_estimator;
-  unique_ptr<IDirectionsEngine> m_directionsEngine;
+  std::shared_ptr<VehicleModelFactory> m_vehicleModelFactory;
+  std::shared_ptr<EdgeEstimator> m_estimator;
+  std::unique_ptr<IDirectionsEngine> m_directionsEngine;
 };
 }  // namespace routing

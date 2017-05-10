@@ -2,8 +2,8 @@
 
 #include "indexer/ftypes_matcher.hpp"
 
-#include "std/string.hpp"
-#include "std/vector.hpp"
+#include <string>
+#include <vector>
 
 #include "base/macros.hpp"
 
@@ -57,6 +57,6 @@ private:
   DISALLOW_COPY_AND_MOVE(SearchModel);
 };
 
-string DebugPrint(SearchModel::SearchType type);
+std::string DebugPrint(SearchModel::SearchType type);
 
 }  // namespace search

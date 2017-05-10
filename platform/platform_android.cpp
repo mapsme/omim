@@ -9,9 +9,10 @@
 
 #include "base/logging.hpp"
 #include "base/thread.hpp"
+#include "base/stl_add.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/regex.hpp"
+#include <regex>
 
 #include <unistd.h>     // for sysconf
 #include <sys/stat.h>
@@ -33,7 +34,7 @@ enum SourceT
   SOURCE_COUNT
 };
 
-bool IsResource(string const & file, string const & ext)
+bool IsResource(std::string const & file, std::string const & ext)
 {
   if (ext == DATA_FILE_EXTENSION)
   {
@@ -51,7 +52,7 @@ bool IsResource(string const & file, string const & ext)
   return true;
 }
 
-size_t GetSearchSources(string const & file, string const & searchScope,
+size_t GetSearchSources(std::string const & file, std::string const & searchScope,
                         SourceT (&arr)[SOURCE_COUNT])
 {
   size_t ret = 0;
@@ -78,10 +79,10 @@ size_t GetSearchSources(string const & file, string const & searchScope,
 #ifdef DEBUG
 class DbgLogger
 {
-  string const & m_file;
+  std::string const & m_file;
   SourceT m_src;
 public:
-  DbgLogger(string const & file) : m_file(file) {}
+  DbgLogger(std::string const & file) : m_file(file) {}
   void SetSource(SourceT src) { m_src = src; }
   ~DbgLogger()
   {
@@ -92,9 +93,9 @@ public:
 
 }
 
-unique_ptr<ModelReader> Platform::GetReader(string const & file, string const & searchScope) const
+unique_ptr<ModelReader> Platform::GetReader(std::string const & file, std::string const & searchScope) const
 {
-  string const ext = my::GetFileExtension(file);
+  std::string const ext = my::GetFileExtension(file);
   ASSERT(!ext.empty(), ());
 
   uint32_t const logPageSize = (ext == DATA_FILE_EXTENSION) ? READER_CHUNK_LOG_SIZE : 10;
@@ -139,7 +140,7 @@ unique_ptr<ModelReader> Platform::GetReader(string const & file, string const & 
       {
         try
         {
-          return make_unique<ZipFileReader>(m_extResFiles[j], file, logPageSize, logPageCount);
+          return my::make_unique<ZipFileReader>(m_extResFiles[j], file, logPageSize, logPageCount);
         }
         catch (Reader::OpenException const &)
         {
@@ -149,30 +150,30 @@ unique_ptr<ModelReader> Platform::GetReader(string const & file, string const & 
 
     case WRITABLE_PATH:
     {
-      string const path = m_writableDir + file;
+      std::string const path = m_writableDir + file;
       if (IsFileExistsByFullPath(path))
-        return make_unique<FileReader>(path, logPageSize, logPageCount);
+        return my::make_unique<FileReader>(path, logPageSize, logPageCount);
       break;
     }
 
     case SETTINGS_PATH:
     {
-      string const path = m_settingsDir + file;
+      std::string const path = m_settingsDir + file;
       if (IsFileExistsByFullPath(path))
-        return make_unique<FileReader>(path, logPageSize, logPageCount);
+        return my::make_unique<FileReader>(path, logPageSize, logPageCount);
       break;
     }
 
     case FULL_PATH:
       if (IsFileExistsByFullPath(file))
-        return make_unique<FileReader>(file, logPageSize, logPageCount);
+        return my::make_unique<FileReader>(file, logPageSize, logPageCount);
       break;
 
     case RESOURCE:
-      ASSERT_EQUAL(file.find("assets/"), string::npos, ());
+      ASSERT_EQUAL(file.find("assets/"), std::string::npos, ());
       try
       {
-        return make_unique<ZipFileReader>(m_resourcesDir, "assets/" + file, logPageSize, logPageCount);
+        return my::make_unique<ZipFileReader>(m_resourcesDir, "assets/" + file, logPageSize, logPageCount);
       }
       catch (Reader::OpenException const &)
       {
@@ -190,7 +191,7 @@ unique_ptr<ModelReader> Platform::GetReader(string const & file, string const & 
   return nullptr;
 }
 
-void Platform::GetFilesByRegExp(string const & directory, string const & regexp, FilesList & res)
+void Platform::GetFilesByRegExp(std::string const & directory, std::string const & regexp, FilesList & res)
 {
   if (ZipFileReader::IsZip(directory))
   {
@@ -199,12 +200,12 @@ void Platform::GetFilesByRegExp(string const & directory, string const & regexp,
     FilesT fList;
     ZipFileReader::FilesList(directory, fList);
 
-    regex exp(regexp);
+    std::regex exp(regexp);
 
     for (FilesT::iterator it = fList.begin(); it != fList.end(); ++it)
     {
-      string & name = it->first;
-      if (regex_search(name.begin(), name.end(), exp))
+      std::string & name = it->first;
+      if (std::regex_search(name.begin(), name.end(), exp))
       {
         // Remove assets/ prefix - clean files are needed for fonts white/blacklisting logic
         size_t const ASSETS_LENGTH = 7;
@@ -229,7 +230,7 @@ int Platform::PreCachingDepth() const
   return 3;
 }
 
-bool Platform::GetFileSizeByName(string const & fileName, uint64_t & size) const
+bool Platform::GetFileSizeByName(std::string const & fileName, uint64_t & size) const
 {
   try
   {
@@ -243,7 +244,7 @@ bool Platform::GetFileSizeByName(string const & fileName, uint64_t & size) const
   }
 }
 
-Platform::EError Platform::MkDir(string const & dirName) const
+Platform::EError Platform::MkDir(std::string const & dirName) const
 {
   if (0 != mkdir(dirName.c_str(), 0755))
     return ErrnoToError();
@@ -283,5 +284,5 @@ void Platform::RunAsync(TFunctor const & fn, Priority p)
   // We don't need to store thread handler in POSIX, just create and
   // run.  Unfortunately we can't use std::async() here since it
   // doesn't attach to JVM threads.
-  threads::Thread().Create(make_unique<FunctorWrapper>(fn));
+  threads::Thread().Create(my::make_unique<FunctorWrapper>(fn));
 }

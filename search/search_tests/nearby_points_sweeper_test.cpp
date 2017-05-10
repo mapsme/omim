@@ -6,15 +6,15 @@
 
 #include "base/stl_add.hpp"
 
-#include "std/set.hpp"
-#include "std/vector.hpp"
+#include <set>
+#include <vector>
 
 namespace search
 {
 namespace
 {
 // Multiset is used here to catch situations when some index is reported more than once.
-using TIndexSet = multiset<size_t>;
+using TIndexSet = std::multiset<size_t>;
 
 UNIT_TEST(NearbyPointsSweeper_Smoke)
 {
@@ -32,7 +32,7 @@ UNIT_TEST(NearbyPointsSweeper_Smoke)
   }
 
   {
-    vector<double> const coords = {0.0, 0.5, 1.0, 1.5, 1.4, 1.6};
+    std::vector<double> const coords = {0.0, 0.5, 1.0, 1.5, 1.4, 1.6};
 
     {
       NearbyPointsSweeper sweeper(0.5);
@@ -64,7 +64,7 @@ UNIT_TEST(NearbyPointsSweeper_Smoke)
   }
 
   {
-    vector<m2::PointD> const points = {m2::PointD(0.0, 0.0), m2::PointD(1.0, 1.0),
+    std::vector<m2::PointD> const points = {m2::PointD(0.0, 0.0), m2::PointD(1.0, 1.0),
                                        m2::PointD(1.5, 0.0), m2::PointD(1.5 + 1.01, 1.5 + 1.0)};
     NearbyPointsSweeper sweeper(1.0);
 
@@ -82,7 +82,7 @@ UNIT_TEST(NearbyPointsSweeper_Smoke)
 
 UNIT_TEST(NearbyPointsSweeper_CornerCases)
 {
-  vector<m2::PointD> const points = {m2::PointD(0, 0),     m2::PointD(0, 0), m2::PointD(1, 0),
+  std::vector<m2::PointD> const points = {m2::PointD(0, 0),     m2::PointD(0, 0), m2::PointD(1, 0),
                                      m2::PointD(0, 1),     m2::PointD(1, 1), m2::PointD(1, 0),
                                      m2::PointD(0.5, 0.5), m2::PointD(0, 1)};
 

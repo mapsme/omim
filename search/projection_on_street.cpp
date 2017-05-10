@@ -15,7 +15,7 @@ ProjectionOnStreet::ProjectionOnStreet()
 }
 
 // ProjectionOnStreetCalculator --------------------------------------------------------------------
-ProjectionOnStreetCalculator::ProjectionOnStreetCalculator(vector<m2::PointD> const & points)
+ProjectionOnStreetCalculator::ProjectionOnStreetCalculator(std::vector<m2::PointD> const & points)
 {
   size_t const count = points.size();
   if (count < 2)
@@ -31,7 +31,7 @@ bool ProjectionOnStreetCalculator::GetProjection(m2::PointD const & point,
 {
   size_t const kInvalidIndex = m_segProjs.size();
   proj.m_segIndex = kInvalidIndex;
-  proj.m_distMeters = numeric_limits<double>::max();
+  proj.m_distMeters = std::numeric_limits<double>::max();
 
   for (size_t index = 0; index < m_segProjs.size(); ++index)
   {

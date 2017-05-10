@@ -8,8 +8,8 @@
 #include "base/logging.hpp"
 #include "base/macros.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/shared_ptr.hpp"
+#include <algorithm>
+#include <memory>
 
 
 using namespace routing;
@@ -27,7 +27,7 @@ public:
   {
     UNUSED_VALUE(Register(platform::LocalCountryFile::MakeForTesting("0")));
 
-    vector<shared_ptr<MwmInfo>> mwmsInfoList;
+    vector<std::shared_ptr<MwmInfo>> mwmsInfoList;
     GetMwmsInfo(mwmsInfoList);
 
     m_mwmInfo = mwmsInfoList[0];
@@ -55,7 +55,7 @@ private:
   }
   //@}
 
-  shared_ptr<MwmInfo> m_mwmInfo;
+  std::shared_ptr<MwmInfo> m_mwmInfo;
 };
 
 }  // namespace

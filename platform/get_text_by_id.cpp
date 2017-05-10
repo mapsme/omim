@@ -7,34 +7,34 @@
 
 #include "3party/jansson/myjansson.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 #include "std/target_os.hpp"
 
 namespace
 {
 static constexpr char const * kDefaultLanguage = "en";
 
-string GetTextSourceString(platform::TextSource textSource)
+std::string GetTextSourceString(platform::TextSource textSource)
 {
   switch (textSource)
   {
   case platform::TextSource::TtsSound:
-    return string("sound-strings");
+    return std::string("sound-strings");
   case platform::TextSource::Countries:
-    return string("countries-strings");
+    return std::string("countries-strings");
   case platform::TextSource::Cuisines:
-    return string("cuisine-strings");
+    return std::string("cuisine-strings");
   }
   ASSERT(false, ());
-  return string();
+  return std::string();
 }
 }  // namespace
 
 namespace platform
 {
-bool GetJsonBuffer(platform::TextSource textSource, string const & localeName, string & jsonBuffer)
+bool GetJsonBuffer(platform::TextSource textSource, std::string const & localeName, std::string & jsonBuffer)
 {
-  string const pathToJson = my::JoinFoldersToPath(
+  std::string const pathToJson = my::JoinFoldersToPath(
       {GetTextSourceString(textSource), localeName + ".json"}, "localize.json");
 
   try
@@ -51,7 +51,7 @@ bool GetJsonBuffer(platform::TextSource textSource, string const & localeName, s
   return true;
 }
 
-TGetTextByIdPtr MakeGetTextById(string const & jsonBuffer, string const & localeName)
+TGetTextByIdPtr MakeGetTextById(std::string const & jsonBuffer, std::string const & localeName)
 {
   TGetTextByIdPtr result(new GetTextById(jsonBuffer, localeName));
   if (!result->IsValid())
@@ -62,31 +62,31 @@ TGetTextByIdPtr MakeGetTextById(string const & jsonBuffer, string const & locale
   return result;
 }
 
-TGetTextByIdPtr GetTextByIdFactory(TextSource textSource, string const & localeName)
+TGetTextByIdPtr GetTextByIdFactory(TextSource textSource, std::string const & localeName)
 {
-  string jsonBuffer;
+  std::string jsonBuffer;
   if (GetJsonBuffer(textSource, localeName, jsonBuffer))
     return MakeGetTextById(jsonBuffer, localeName);
 
   if (GetJsonBuffer(textSource, kDefaultLanguage, jsonBuffer))
     return MakeGetTextById(jsonBuffer, kDefaultLanguage);
 
-  ASSERT(false, ("Can't find translate for default language. (Lang:", localeName, ")"));
+  ASSERT(false, ("Can't std::find translate for default language. (Lang:", localeName, ")"));
   return nullptr;
 }
 
-TGetTextByIdPtr ForTestingGetTextByIdFactory(string const & jsonBuffer, string const & localeName)
+TGetTextByIdPtr ForTestingGetTextByIdFactory(std::string const & jsonBuffer, std::string const & localeName)
 {
   return MakeGetTextById(jsonBuffer, localeName);
 }
 
-GetTextById::GetTextById(string const & jsonBuffer, string const & localeName)
+GetTextById::GetTextById(std::string const & jsonBuffer, std::string const & localeName)
   : m_locale(localeName)
 {
   InitFromJson(jsonBuffer);
 }
 
-void GetTextById::InitFromJson(string const & jsonBuffer)
+void GetTextById::InitFromJson(std::string const & jsonBuffer)
 {
   if (jsonBuffer.empty())
   {
@@ -114,11 +114,11 @@ void GetTextById::InitFromJson(string const & jsonBuffer)
   ASSERT_EQUAL(m_localeTexts.size(), json_object_size(root.get()), ());
 }
 
-string GetTextById::operator()(string const & textId) const
+std::string GetTextById::operator()(std::string const & textId) const
 {
   auto const textIt = m_localeTexts.find(textId);
   if (textIt == m_localeTexts.end())
-    return string();
+    return std::string();
   return textIt->second;
 }
 
@@ -129,7 +129,7 @@ TTranslations GetTextById::GetAllSortedTranslations() const
   for (auto const & tr : m_localeTexts)
     all.emplace_back(tr.first, tr.second);
   using TValue = TTranslations::value_type;
-  sort(all.begin(), all.end(), [](TValue const & v1, TValue const & v2) { return v1.second < v2.second; });
+  std::sort(all.begin(), all.end(), [](TValue const & v1, TValue const & v2) { return v1.second < v2.second; });
   return all;
 }
 }  // namespace platform

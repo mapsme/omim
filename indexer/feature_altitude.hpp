@@ -9,16 +9,16 @@
 #include "base/assert.hpp"
 #include "base/bits.hpp"
 
-#include "std/cstdint.hpp"
-#include "std/limits.hpp"
-#include "std/vector.hpp"
+#include <cstdint>
+#include <limits>
+#include <vector>
 
 namespace feature
 {
 using TAltitude = int16_t;
-using TAltitudes = vector<feature::TAltitude>;
+using TAltitudes = std::vector<feature::TAltitude>;
 
-TAltitude constexpr kInvalidAltitude = numeric_limits<TAltitude>::min();
+TAltitude constexpr kInvalidAltitude = std::numeric_limits<TAltitude>::min();
 feature::TAltitude constexpr kDefaultAltitudeMeters = 0;
 
 struct AltitudeHeader
@@ -100,7 +100,7 @@ public:
   }
 
   template <class TSource>
-  bool Deserialize(TAltitude minAltitude, size_t pointCount, string const & countryFileName,
+  bool Deserialize(TAltitude minAltitude, size_t pointCount, std::string const & countryFileName,
                    uint32_t featureId, TSource & src)
   {
     ASSERT_NOT_EQUAL(pointCount, 0, ());

@@ -12,7 +12,7 @@
 
 #include "base/logging.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 namespace df
 {
@@ -108,7 +108,7 @@ void TrafficRenderer::AddRenderData(ref_ptr<dp::GpuProgramManager> mng, TrafficR
 {
   // Remove obsolete render data.
   TileKey const tileKey(renderData.m_tileKey);
-  m_renderData.erase(remove_if(m_renderData.begin(), m_renderData.end(), [&tileKey](TrafficRenderData const & rd)
+  m_renderData.erase(std::remove_if(m_renderData.begin(), m_renderData.end(), [&tileKey](TrafficRenderData const & rd)
   {
     return tileKey == rd.m_tileKey && rd.m_tileKey.m_generation < tileKey.m_generation;
   }), m_renderData.end());
@@ -125,19 +125,19 @@ void TrafficRenderer::AddRenderData(ref_ptr<dp::GpuProgramManager> mng, TrafficR
 void TrafficRenderer::OnUpdateViewport(CoverageResult const & coverage, int currentZoomLevel,
                                        buffer_vector<TileKey, 8> const & tilesToDelete)
 {
-  m_renderData.erase(remove_if(m_renderData.begin(), m_renderData.end(),
+  m_renderData.erase(std::remove_if(m_renderData.begin(), m_renderData.end(),
                                [&coverage, &currentZoomLevel, &tilesToDelete](TrafficRenderData const & rd)
   {
     return rd.m_tileKey.m_zoomLevel == currentZoomLevel &&
            (rd.m_tileKey.m_x < coverage.m_minTileX || rd.m_tileKey.m_x >= coverage.m_maxTileX ||
            rd.m_tileKey.m_y < coverage.m_minTileY || rd.m_tileKey.m_y >= coverage.m_maxTileY ||
-           find(tilesToDelete.begin(), tilesToDelete.end(), rd.m_tileKey) != tilesToDelete.end());
+           std::find(tilesToDelete.begin(), tilesToDelete.end(), rd.m_tileKey) != tilesToDelete.end());
   }), m_renderData.end());
 }
 
 void TrafficRenderer::OnGeometryReady(int currentZoomLevel)
 {
-  m_renderData.erase(remove_if(m_renderData.begin(), m_renderData.end(),
+  m_renderData.erase(std::remove_if(m_renderData.begin(), m_renderData.end(),
                                [&currentZoomLevel](TrafficRenderData const & rd)
   {
     return rd.m_tileKey.m_zoomLevel != currentZoomLevel;
@@ -238,7 +238,7 @@ void TrafficRenderer::Clear(MwmSet::MwmId const & mwmId)
 {
   auto removePredicate = [&mwmId](TrafficRenderData const & data) { return data.m_mwmId == mwmId; };
 
-  m_renderData.erase(remove_if(m_renderData.begin(), m_renderData.end(), removePredicate),
+  m_renderData.erase(std::remove_if(m_renderData.begin(), m_renderData.end(), removePredicate),
                      m_renderData.end());
 }
 
@@ -293,18 +293,18 @@ bool TrafficRenderer::CanBeRendereredAsLine(RoadClass const & roadClass, int zoo
   if (roadClass == RoadClass::Class0)
     return false;
 
-  vector<int> const * lineDrawer = nullptr;
+  std::vector<int> const * lineDrawer = nullptr;
   if (roadClass == RoadClass::Class1)
     lineDrawer = &kLineDrawerRoadClass1;
   else if (roadClass == RoadClass::Class2)
     lineDrawer = &kLineDrawerRoadClass2;
 
   ASSERT(lineDrawer != nullptr, ());
-  auto it = find(lineDrawer->begin(), lineDrawer->end(), zoomLevel);
+  auto it = std::find(lineDrawer->begin(), lineDrawer->end(), zoomLevel);
   if (it == lineDrawer->end())
     return false;
 
-  width = max(1, my::rounds(TrafficRenderer::GetPixelWidthInternal(roadClass, zoomLevel)));
+  width = std::max(1, my::rounds(TrafficRenderer::GetPixelWidthInternal(roadClass, zoomLevel)));
   return width <= dp::SupportManager::Instance().GetMaxLineWidth();
 }
 } // namespace df

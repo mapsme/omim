@@ -5,7 +5,7 @@
 
 #include "base/string_utils.hpp"
 
-#include "std/vector.hpp"
+#include <vector>
 
 namespace search
 {
@@ -19,7 +19,7 @@ struct FeaturesLayer
   void Clear();
 
   // Non-owning ptr to a sorted vector of features.
-  vector<uint32_t> const * m_sortedFeatures;
+  std::vector<uint32_t> const * m_sortedFeatures;
 
   strings::UniString m_subQuery;
 
@@ -38,6 +38,6 @@ struct FeaturesLayer
   bool m_lastTokenIsPrefix;
 };
 
-string DebugPrint(FeaturesLayer const & layer);
+std::string DebugPrint(FeaturesLayer const & layer);
 
 }  // namespace search

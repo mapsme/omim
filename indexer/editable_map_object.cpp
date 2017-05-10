@@ -7,17 +7,17 @@
 #include "base/macros.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/cctype.hpp"
-#include "std/cmath.hpp"
-#include "std/regex.hpp"
-#include "std/sstream.hpp"
+#include <cctype>
+#include <cmath>
+#include <regex>
+#include <sstream>
 
 namespace
 {
 size_t const kFakeNamesCount = 2;
 
 bool ExtractName(StringUtf8Multilang const & names, int8_t const langCode,
-                 vector<osm::LocalizedName> & result)
+                 std::vector<osm::LocalizedName> & result)
 {
   if (StringUtf8Multilang::kUnsupportedLanguageCode == langCode ||
       StringUtf8Multilang::kDefaultCode == langCode)
@@ -34,15 +34,15 @@ bool ExtractName(StringUtf8Multilang const & names, int8_t const langCode,
   if (result.end() != it)
     return false;
 
-  string name;
+  std::string name;
   names.GetString(langCode, name);
   result.emplace_back(langCode, name);
 
   return true;
 }
 
-size_t PushMwmLanguages(StringUtf8Multilang const & names, vector<int8_t> const & mwmLanguages,
-                        vector<osm::LocalizedName> & result)
+size_t PushMwmLanguages(StringUtf8Multilang const & names, std::vector<int8_t> const & mwmLanguages,
+                        std::vector<osm::LocalizedName> & result)
 {
   size_t count = 0;
   static size_t const kMaxCountMwmLanguages = 2;
@@ -59,7 +59,7 @@ size_t PushMwmLanguages(StringUtf8Multilang const & names, vector<int8_t> const 
 char const * const kWebsiteProtocols[] = {"http://", "https://"};
 size_t const kWebsiteProtocolDefaultIndex = 0;
 
-size_t GetProtocolNameLength(string const & website)
+size_t GetProtocolNameLength(std::string const & website)
 {
   for (auto const & protocol : kWebsiteProtocols)
   {
@@ -69,14 +69,14 @@ size_t GetProtocolNameLength(string const & website)
   return 0;
 }
 
-bool IsProtocolSpecified(string const & website)
+bool IsProtocolSpecified(std::string const & website)
 {
   return GetProtocolNameLength(website) > 0;
 }
 osm::FakeNames MakeFakeSource(StringUtf8Multilang const & source,
-                              vector<int8_t> const & mwmLanguages, StringUtf8Multilang & fakeSource)
+                              std::vector<int8_t> const & mwmLanguages, StringUtf8Multilang & fakeSource)
 {
-  string defaultName;
+  std::string defaultName;
   // Fake names works for mono language (official) speaking countries-only.
   if (mwmLanguages.size() != 1 || !source.GetString(StringUtf8Multilang::kDefaultCode, defaultName))
   {
@@ -88,7 +88,7 @@ osm::FakeNames MakeFakeSource(StringUtf8Multilang const & source,
   array<int8_t, kFakeNamesCount> fillCandidates = {{mwmLanguages.front(), StringUtf8Multilang::kEnglishCode}};
   fakeSource = source;
 
-  string tempName;
+  std::string tempName;
   for (auto const code : fillCandidates)
   {
     if (!source.GetString(code, tempName))
@@ -108,7 +108,7 @@ osm::FakeNames MakeFakeSource(StringUtf8Multilang const & source,
 // Tries to set default name from the localized name. Returns false when there's no such localized name.
 bool TryToFillDefaultNameFromCode(int8_t const code, StringUtf8Multilang & names)
 {
-  string newDefaultName;
+  std::string newDefaultName;
   if (code != StringUtf8Multilang::kUnsupportedLanguageCode)
     names.GetString(code, newDefaultName);
 
@@ -126,7 +126,7 @@ bool TryToFillDefaultNameFromCode(int8_t const code, StringUtf8Multilang & names
 // This is the case when fake names were cleared.
 void TryToFillDefaultNameFromAnyLanguage(StringUtf8Multilang & names)
 {
-  names.ForEach([&names](int8_t langCode, string const & name)
+  names.ForEach([&names](int8_t langCode, std::string const & name)
   {
     if (name.empty() || langCode == StringUtf8Multilang::kDefaultCode)
       return true;
@@ -138,13 +138,13 @@ void TryToFillDefaultNameFromAnyLanguage(StringUtf8Multilang & names)
 
 void RemoveFakesFromName(osm::FakeNames const & fakeNames, StringUtf8Multilang & name)
 {
-  vector<int8_t> codesToExclude;
-  string defaultName;
+  std::vector<int8_t> codesToExclude;
+  std::string defaultName;
   name.GetString(StringUtf8Multilang::kDefaultCode, defaultName);
 
   for (auto const & item : fakeNames.m_names)
   {
-    string tempName;
+    std::string tempName;
     if (!name.GetString(item.m_code, tempName))
       continue;
     // No need to save in case when name is empty, duplicate of default name or was not changed.
@@ -159,7 +159,7 @@ void RemoveFakesFromName(osm::FakeNames const & fakeNames, StringUtf8Multilang &
     return;
 
   StringUtf8Multilang nameWithoutFakes;
-  name.ForEach([&codesToExclude, &nameWithoutFakes](int8_t langCode, string const & value)
+  name.ForEach([&codesToExclude, &nameWithoutFakes](int8_t langCode, std::string const & value)
   {
     auto const it = find(codesToExclude.begin(), codesToExclude.end(), langCode);
     if (it == codesToExclude.end())
@@ -176,7 +176,7 @@ namespace osm
 {
 // LocalizedName -----------------------------------------------------------------------------------
 
-LocalizedName::LocalizedName(int8_t const code, string const & name)
+LocalizedName::LocalizedName(int8_t const code, std::string const & name)
   : m_code(code)
   , m_lang(StringUtf8Multilang::GetLangByCode(code))
   , m_langName(StringUtf8Multilang::GetLangNameByCode(code))
@@ -184,7 +184,7 @@ LocalizedName::LocalizedName(int8_t const code, string const & name)
 {
 }
 
-LocalizedName::LocalizedName(string const & langCode, string const & name)
+LocalizedName::LocalizedName(std::string const & langCode, std::string const & name)
   : m_code(StringUtf8Multilang::GetLangIndex(langCode))
   , m_lang(StringUtf8Multilang::GetLangByCode(m_code))
   , m_langName(StringUtf8Multilang::GetLangNameByCode(m_code))
@@ -219,7 +219,7 @@ NamesDataSource EditableMapObject::GetNamesDataSource(bool needFakes /* = true *
   if (!mwmInfo)
     return NamesDataSource();
 
-  vector<int8_t> mwmLanguages;
+  std::vector<int8_t> mwmLanguages;
   mwmInfo->GetRegionData().GetLanguages(mwmLanguages);
 
   auto const userLangCode = StringUtf8Multilang::GetLangIndex(languages::GetCurrentNorm());
@@ -242,7 +242,7 @@ NamesDataSource EditableMapObject::GetNamesDataSource(bool needFakes /* = true *
 
 // static
 NamesDataSource EditableMapObject::GetNamesDataSource(StringUtf8Multilang const & source,
-                                                      vector<int8_t> const & mwmLanguages,
+                                                      std::vector<int8_t> const & mwmLanguages,
                                                       int8_t const userLangCode)
 {
   NamesDataSource result;
@@ -260,7 +260,7 @@ NamesDataSource EditableMapObject::GetNamesDataSource(StringUtf8Multilang const 
     ++mandatoryCount;
 
   // Push other languages.
-  source.ForEach([&names, mandatoryCount](int8_t const code, string const & name) -> bool {
+  source.ForEach([&names, mandatoryCount](int8_t const code, std::string const & name) -> bool {
     // Exclude default name.
     if (StringUtf8Multilang::kDefaultCode == code)
       return true;
@@ -281,21 +281,21 @@ NamesDataSource EditableMapObject::GetNamesDataSource(StringUtf8Multilang const 
 }
 
 vector<LocalizedStreet> const & EditableMapObject::GetNearbyStreets() const { return m_nearbyStreets; }
-string const & EditableMapObject::GetHouseNumber() const { return m_houseNumber; }
+std::string const & EditableMapObject::GetHouseNumber() const { return m_houseNumber; }
 
-string EditableMapObject::GetPostcode() const
+std::string EditableMapObject::GetPostcode() const
 {
   return m_metadata.Get(feature::Metadata::FMD_POSTCODE);
 }
 
-string EditableMapObject::GetWikipedia() const
+std::string EditableMapObject::GetWikipedia() const
 {
   return m_metadata.Get(feature::Metadata::FMD_WIKIPEDIA);
 }
 
 uint64_t EditableMapObject::GetTestId() const
 {
-  istringstream iss(m_metadata.Get(feature::Metadata::FMD_TEST_ID));
+  std::istringstream iss(m_metadata.Get(feature::Metadata::FMD_TEST_ID));
   uint64_t id;
   iss >> id;
   return id;
@@ -303,7 +303,7 @@ uint64_t EditableMapObject::GetTestId() const
 
 void EditableMapObject::SetTestId(uint64_t id)
 {
-  ostringstream oss;
+  std::ostringstream oss;
   oss << id;
   m_metadata.Set(feature::Metadata::FMD_TEST_ID, oss.str());
 }
@@ -315,7 +315,7 @@ void EditableMapObject::SetEditableProperties(osm::EditableProperties const & pr
 
 void EditableMapObject::SetName(StringUtf8Multilang const & name) { m_name = name; }
 
-void EditableMapObject::SetName(string name, int8_t langCode)
+void EditableMapObject::SetName(std::string name, int8_t langCode)
 {
   strings::Trim(name);
 
@@ -331,7 +331,7 @@ void EditableMapObject::SetName(string name, int8_t langCode)
 
     if (mwmInfo)
     {
-      vector<int8_t> mwmLanguages;
+      std::vector<int8_t> mwmLanguages;
       mwmInfo->GetRegionData().GetLanguages(mwmLanguages);
 
       if (CanUseAsDefaultName(langCode, mwmLanguages))
@@ -343,7 +343,7 @@ void EditableMapObject::SetName(string name, int8_t langCode)
 }
 
 // static
-bool EditableMapObject::CanUseAsDefaultName(int8_t const lang, vector<int8_t> const & mwmLanguages)
+bool EditableMapObject::CanUseAsDefaultName(int8_t const lang, std::vector<int8_t> const & mwmLanguages)
 {
   for (auto const & mwmLang : mwmLanguages)
   {
@@ -365,13 +365,13 @@ void EditableMapObject::RemoveFakeNames(FakeNames const & fakeNames, StringUtf8M
 
   int8_t newDefaultNameCode = StringUtf8Multilang::kUnsupportedLanguageCode;
   size_t changedCount = 0;
-  string defaultName;
+  std::string defaultName;
   name.GetString(StringUtf8Multilang::kDefaultCode, defaultName);
 
   // New default name calculation priority: 1. name on mwm language, 2. english name.
   for (auto it = fakeNames.m_names.rbegin(); it != fakeNames.m_names.rend(); ++it)
   {
-    string tempName;
+    std::string tempName;
     if (!name.GetString(it->m_code, tempName))
       continue;
 
@@ -419,37 +419,37 @@ void EditableMapObject::SetType(uint32_t featureType)
 void EditableMapObject::SetID(FeatureID const & fid) { m_featureID = fid; }
 void EditableMapObject::SetStreet(LocalizedStreet const & st) { m_street = st; }
 
-void EditableMapObject::SetNearbyStreets(vector<LocalizedStreet> && streets)
+void EditableMapObject::SetNearbyStreets(std::vector<LocalizedStreet> && streets)
 {
   m_nearbyStreets = move(streets);
 }
 
-void EditableMapObject::SetHouseNumber(string const & houseNumber)
+void EditableMapObject::SetHouseNumber(std::string const & houseNumber)
 {
   m_houseNumber = houseNumber;
 }
 
-void EditableMapObject::SetPostcode(string const & postcode)
+void EditableMapObject::SetPostcode(std::string const & postcode)
 {
   m_metadata.Set(feature::Metadata::FMD_POSTCODE, postcode);
 }
 
-void EditableMapObject::SetPhone(string const & phone)
+void EditableMapObject::SetPhone(std::string const & phone)
 {
   m_metadata.Set(feature::Metadata::FMD_PHONE_NUMBER, phone);
 }
 
-void EditableMapObject::SetFax(string const & fax)
+void EditableMapObject::SetFax(std::string const & fax)
 {
   m_metadata.Set(feature::Metadata::FMD_FAX_NUMBER, fax);
 }
 
-void EditableMapObject::SetEmail(string const & email)
+void EditableMapObject::SetEmail(std::string const & email)
 {
   m_metadata.Set(feature::Metadata::FMD_EMAIL, email);
 }
 
-void EditableMapObject::SetWebsite(string website)
+void EditableMapObject::SetWebsite(std::string website)
 {
   if (!website.empty() && !IsProtocolSpecified(website))
     website = kWebsiteProtocols[kWebsiteProtocolDefaultIndex] + website;
@@ -478,7 +478,7 @@ void EditableMapObject::SetStars(int stars)
     LOG(LWARNING, ("Ignored invalid value to Stars:", stars));
 }
 
-void EditableMapObject::SetOperator(string const & op)
+void EditableMapObject::SetOperator(std::string const & op)
 {
   m_metadata.Set(feature::Metadata::FMD_OPERATOR, op);
 }
@@ -494,29 +494,29 @@ void EditableMapObject::SetElevation(double ele)
     LOG(LWARNING, ("Ignored invalid value to Elevation:", ele));
 }
 
-void EditableMapObject::SetWikipedia(string const & wikipedia)
+void EditableMapObject::SetWikipedia(std::string const & wikipedia)
 {
   m_metadata.Set(feature::Metadata::FMD_WIKIPEDIA, wikipedia);
 }
 
-void EditableMapObject::SetFlats(string const & flats)
+void EditableMapObject::SetFlats(std::string const & flats)
 {
   m_metadata.Set(feature::Metadata::FMD_FLATS, flats);
 }
 
-void EditableMapObject::SetBuildingLevels(string const & buildingLevels)
+void EditableMapObject::SetBuildingLevels(std::string const & buildingLevels)
 {
   m_metadata.Set(feature::Metadata::FMD_BUILDING_LEVELS, buildingLevels);
 }
 
 LocalizedStreet const & EditableMapObject::GetStreet() const { return m_street; }
 
-void EditableMapObject::SetCuisines(vector<string> const & cuisine)
+void EditableMapObject::SetCuisines(std::vector<std::string> const & cuisine)
 {
   m_metadata.Set(feature::Metadata::FMD_CUISINE, strings::JoinStrings(cuisine, ';'));
 }
 
-void EditableMapObject::SetOpeningHours(string const & openingHours)
+void EditableMapObject::SetOpeningHours(std::string const & openingHours)
 {
   m_metadata.Set(feature::Metadata::FMD_OPEN_HOURS, openingHours);
 }
@@ -527,7 +527,7 @@ void EditableMapObject::SetPointType() { m_geomType = feature::EGeomType::GEOM_P
 void EditableMapObject::RemoveBlankNames()
 {
   StringUtf8Multilang nameWithoutBlanks;
-  m_name.ForEach([&nameWithoutBlanks](int8_t langCode, string const & name)
+  m_name.ForEach([&nameWithoutBlanks](int8_t langCode, std::string const & name)
   {
     if (!name.empty())
       nameWithoutBlanks.AddString(langCode, name);
@@ -547,7 +547,7 @@ void EditableMapObject::RemoveNeedlessNames()
 }
 
 // static
-bool EditableMapObject::ValidateBuildingLevels(string const & buildingLevels)
+bool EditableMapObject::ValidateBuildingLevels(std::string const & buildingLevels)
 {
   if (buildingLevels.empty())
     return true;
@@ -563,7 +563,7 @@ bool EditableMapObject::ValidateBuildingLevels(string const & buildingLevels)
 }
 
 // static
-bool EditableMapObject::ValidateHouseNumber(string const & houseNumber)
+bool EditableMapObject::ValidateHouseNumber(std::string const & houseNumber)
 {
   // TODO(mgsergio): Use LooksLikeHouseNumber!
 
@@ -588,14 +588,14 @@ bool EditableMapObject::ValidateHouseNumber(string const & houseNumber)
 }
 
 // static
-bool EditableMapObject::ValidateFlats(string const & flats)
+bool EditableMapObject::ValidateFlats(std::string const & flats)
 {
   for (auto it = strings::SimpleTokenizer(flats, ";"); it; ++it)
   {
     auto token = *it;
     strings::Trim(token);
 
-    vector<string> range;
+    std::vector<std::string> range;
     for (auto i = strings::SimpleTokenizer(token, "-"); i; ++i)
       range.push_back(*i);
     if (range.empty() || range.size() > 2)
@@ -603,7 +603,7 @@ bool EditableMapObject::ValidateFlats(string const & flats)
 
     for (auto const & rangeBorder : range)
     {
-      if (!all_of(begin(rangeBorder), end(rangeBorder), isalnum))
+      if (!std::all_of(std::begin(rangeBorder), std::end(rangeBorder), ::isalnum))
         return false;
     }
   }
@@ -611,7 +611,7 @@ bool EditableMapObject::ValidateFlats(string const & flats)
 }
 
 // static
-bool EditableMapObject::ValidatePostCode(string const & postCode)
+bool EditableMapObject::ValidatePostCode(std::string const & postCode)
 {
   if (postCode.empty())
     return true;
@@ -619,7 +619,7 @@ bool EditableMapObject::ValidatePostCode(string const & postCode)
 }
 
 // static
-bool EditableMapObject::ValidatePhone(string const & phone)
+bool EditableMapObject::ValidatePhone(std::string const & phone)
 {
   if (phone.empty())
     return true;
@@ -636,12 +636,12 @@ bool EditableMapObject::ValidatePhone(string const & phone)
   auto digitsCount = 0;
   for (; curr != last; ++curr)
   {
-    auto const isCharValid = isdigit(*curr) || *curr == '(' ||
+    auto const isCharValid = std::isdigit(*curr) || *curr == '(' ||
                              *curr == ')' || *curr == ' ' || *curr == '-';
     if (!isCharValid)
       return false;
 
-    if (isdigit(*curr))
+    if (std::isdigit(*curr))
       ++digitsCount;
   }
 
@@ -649,7 +649,7 @@ bool EditableMapObject::ValidatePhone(string const & phone)
 }
 
 // static
-bool EditableMapObject::ValidateWebsite(string const & site)
+bool EditableMapObject::ValidateWebsite(std::string const & site)
 {
   if (site.empty())
     return true;
@@ -663,23 +663,23 @@ bool EditableMapObject::ValidateWebsite(string const & site)
   if ('.' == site[startPos] || '.' == site.back())
     return false;
 
-  if (string::npos == site.find("."))
+  if (std::string::npos == site.find("."))
     return false;
 
-  if (string::npos != site.find(".."))
+  if (std::string::npos != site.find(".."))
     return false;
 
   return true;
 }
 
 // static
-bool EditableMapObject::ValidateEmail(string const & email)
+bool EditableMapObject::ValidateEmail(std::string const & email)
 {
   if (email.empty())
     return true;
 
   if (strings::IsASCIIString(email))
-    return regex_match(email, regex(R"([^@\s]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+$)"));
+    return std::regex_match(email, std::regex(R"([^@\s]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+$)"));
 
   if ('@' == email.front() || '@' == email.back())
     return false;

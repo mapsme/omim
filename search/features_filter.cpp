@@ -2,8 +2,8 @@
 
 #include "search/cbv.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/vector.hpp"
+#include <algorithm>
+#include <vector>
 
 namespace search
 {

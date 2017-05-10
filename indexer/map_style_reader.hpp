@@ -14,7 +14,7 @@ public:
 
   ReaderPtr<Reader> GetDrawingRulesReader();
 
-  ReaderPtr<Reader> GetResourceReader(string const & file, string const & density);
+  ReaderPtr<Reader> GetResourceReader(std::string const & file, std::string const & density);
 
 private:
   MapStyle m_mapStyle;

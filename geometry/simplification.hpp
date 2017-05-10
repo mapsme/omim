@@ -3,10 +3,10 @@
 #include "base/stl_add.hpp"
 #include "base/logging.hpp"
 
-#include "std/iterator.hpp"
-#include "std/algorithm.hpp"
-#include "std/utility.hpp"
-#include "std/vector.hpp"
+#include <iterator>
+#include <algorithm>
+#include <utility>
+#include <vector>
 
 // Polyline simplification algorithms.
 //
@@ -19,10 +19,10 @@ namespace impl
 ///@name This functions take input range NOT like STL does: [first, last].
 //@{
 template <typename DistanceF, typename IterT>
-pair<double, IterT> MaxDistance(IterT first, IterT last, DistanceF & dist)
+std::pair<double, IterT> MaxDistance(IterT first, IterT last, DistanceF & dist)
 {
-  pair<double, IterT> res(0.0, last);
-  if (distance(first, last) <= 1)
+  std::pair<double, IterT> res(0.0, last);
+  if (std::distance(first, last) <= 1)
     return res;
 
   dist.SetBounds(*first, *last);
@@ -42,7 +42,7 @@ pair<double, IterT> MaxDistance(IterT first, IterT last, DistanceF & dist)
 template <typename DistanceF, typename IterT, typename OutT>
 void SimplifyDP(IterT first, IterT last, double epsilon, DistanceF & dist, OutT & out)
 {
-  pair<double, IterT> maxDist = impl::MaxDistance(first, last, dist);
+  std::pair<double, IterT> maxDist = impl::MaxDistance(first, last, dist);
   if (maxDist.second == last || maxDist.first < epsilon)
   {
     out(*last);
@@ -98,7 +98,7 @@ void SimplifyNearOptimal(int kMaxFalseLookAhead, IterT beg, IterT end,
     return;
   }
 
-  vector<impl::SimplifyOptimalRes> F(n);
+  std::vector<impl::SimplifyOptimalRes> F(n);
   F[n - 1] = impl::SimplifyOptimalRes(n, 1);
   for (int32_t i = n - 2; i >= 0; --i)
   {
@@ -131,11 +131,11 @@ template <class DistanceF, class PointT>
 class AccumulateSkipSmallTrg
 {
   DistanceF & m_dist;
-  vector<PointT> & m_vec;
+  std::vector<PointT> & m_vec;
   double m_eps;
 
 public:
-  AccumulateSkipSmallTrg(DistanceF & dist, vector<PointT> & vec, double eps)
+  AccumulateSkipSmallTrg(DistanceF & dist, std::vector<PointT> & vec, double eps)
     : m_dist(dist), m_vec(vec), m_eps(eps)
   {
   }

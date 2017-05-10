@@ -2,11 +2,13 @@
 
 #include "base/assert.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/array.hpp"
-#include "std/string.hpp"
+#include <algorithm>
+#include <array>
+#include <string>
 
 #include "3party/opening_hours/opening_hours.hpp"
+
+using namespace std;
 
 namespace
 {
@@ -46,7 +48,7 @@ void SetUpTimeTable(osmoh::TTimespans spans, editor::ui::TimeTable & tt)
   for (auto & span : spans)
     span.ExpandPlus();
 
-  sort(begin(spans), end(spans), [](Timespan const & a, Timespan const & b)
+  std::sort(begin(spans), end(spans), [](Timespan const & a, Timespan const & b)
        {
          auto const start1 = a.GetStart().GetHourMinutes().GetDuration();
          auto const start2 = b.GetStart().GetHourMinutes().GetDuration();
@@ -178,7 +180,7 @@ editor::ui::TOpeningDays GetCommonDays(editor::ui::TOpeningDays const & a,
                                        editor::ui::TOpeningDays const & b)
 {
   editor::ui::TOpeningDays result;
-  set_intersection(begin(a), end(a), begin(b), end(b), inserter(result, begin(result)));
+  std::set_intersection(begin(a), end(a), begin(b), end(b), inserter(result, begin(result)));
   return result;
 }
 

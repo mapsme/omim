@@ -67,7 +67,7 @@ namespace m2
     }
 
     /// can pack
-    m_yStep = max(height, m_yStep);
+    m_yStep = std::max(height, m_yStep);
     handle_t curHandle = m_currentHandle++;
     m_rects[curHandle] = m2::RectU(m_currentX, m_currentY, m_currentX + width, m_currentY + height);
     m_currentX += width;
@@ -108,7 +108,7 @@ namespace m2
       {
         if (height <= m_height - currentY)
         {
-          yStep = max(height, yStep);
+          yStep = std::max(height, yStep);
           currentX += width;
         }
         else
@@ -124,7 +124,7 @@ namespace m2
         {
           if (height <= m_height - currentY)
           {
-            yStep = max(height, yStep);
+            yStep = std::max(height, yStep);
             currentX += width;
           }
           else

@@ -21,6 +21,8 @@
 #include "std/string.hpp"
 #include "std/transform_iterator.hpp"
 
+using namespace std;
+
 #ifdef DEBUG
 #include "platform/platform.hpp"
 

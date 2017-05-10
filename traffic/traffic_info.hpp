@@ -4,10 +4,10 @@
 
 #include "indexer/mwm_set.hpp"
 
-#include "std/cstdint.hpp"
-#include "std/map.hpp"
-#include "std/shared_ptr.hpp"
-#include "std/vector.hpp"
+#include <cstdint>
+#include <map>
+#include <memory>
+#include <vector>
 
 namespace platform
 {
@@ -74,14 +74,14 @@ public:
   };
 
   // todo(@m) unordered_map?
-  using Coloring = map<RoadSegmentId, SpeedGroup>;
+  using Coloring = std::map<RoadSegmentId, SpeedGroup>;
 
   TrafficInfo() = default;
 
   TrafficInfo(MwmSet::MwmId const & mwmId, int64_t currentDataVersion);
 
   static TrafficInfo BuildForTesting(Coloring && coloring);
-  void SetTrafficKeysForTesting(vector<RoadSegmentId> const & keys);
+  void SetTrafficKeysForTesting(std::vector<RoadSegmentId> const & keys);
 
   // Fetches the latest traffic data from the server and updates the coloring and ETag.
   // Construct the url by passing an MwmId.
@@ -89,7 +89,7 @@ public:
   // It is one of several mechanisms that HTTP provides for web cache validation,
   // which allows a client to make conditional requests.
   // *NOTE* This method must not be called on the UI thread.
-  bool ReceiveTrafficData(string & etag);
+  bool ReceiveTrafficData(std::string & etag);
 
   // Returns the latest known speed group by a feature segment's id
   // or SpeedGroup::Unknown if there is no information about the segment.
@@ -100,11 +100,11 @@ public:
   Availability GetAvailability() const { return m_availability; }
 
   // Extracts RoadSegmentIds from mwm and stores them in a sorted order.
-  static void ExtractTrafficKeys(string const & mwmPath, vector<RoadSegmentId> & result);
+  static void ExtractTrafficKeys(std::string const & mwmPath, std::vector<RoadSegmentId> & result);
 
   // Adds the unknown values to the partially known coloring map |knownColors|
   // so that the keys of the resulting map are exactly |keys|.
-  static void CombineColorings(vector<TrafficInfo::RoadSegmentId> const & keys,
+  static void CombineColorings(std::vector<TrafficInfo::RoadSegmentId> const & keys,
                                TrafficInfo::Coloring const & knownColors,
                                TrafficInfo::Coloring & result);
 
@@ -112,13 +112,13 @@ public:
   // The keys are road segments ids which do not change during
   // an mwm's lifetime so there's no point in downloading them every time.
   // todo(@m) Document the format.
-  static void SerializeTrafficKeys(vector<RoadSegmentId> const & keys, vector<uint8_t> & result);
+  static void SerializeTrafficKeys(std::vector<RoadSegmentId> const & keys, std::vector<uint8_t> & result);
 
-  static void DeserializeTrafficKeys(vector<uint8_t> const & data, vector<RoadSegmentId> & result);
+  static void DeserializeTrafficKeys(std::vector<uint8_t> const & data, std::vector<RoadSegmentId> & result);
 
-  static void SerializeTrafficValues(vector<SpeedGroup> const & values, vector<uint8_t> & result);
+  static void SerializeTrafficValues(std::vector<SpeedGroup> const & values, std::vector<uint8_t> & result);
 
-  static void DeserializeTrafficValues(vector<uint8_t> const & data, vector<SpeedGroup> & result);
+  static void DeserializeTrafficValues(std::vector<uint8_t> const & data, std::vector<SpeedGroup> & result);
 
 private:
   enum class ServerDataStatus
@@ -138,10 +138,10 @@ private:
   // Tries to read the values of the Coloring map from server into |values|.
   // Returns result of communicating with server as ServerDataStatus.
   // Otherwise, returns false and does not change m_coloring.
-  ServerDataStatus ReceiveTrafficValues(string & etag, vector<SpeedGroup> & values);
+  ServerDataStatus ReceiveTrafficValues(std::string & etag, std::vector<SpeedGroup> & values);
 
   // Updates the coloring and changes the availability status if needed.
-  bool UpdateTrafficData(vector<SpeedGroup> const & values);
+  bool UpdateTrafficData(std::vector<SpeedGroup> const & values);
 
   ServerDataStatus ProcessFailure(platform::HttpClient const & request, int64_t const mwmVersion);
 
@@ -152,7 +152,7 @@ private:
   // and combined with the keys to form m_coloring.
   // *NOTE* The values must be received in the exact same order that the
   // keys are saved in.
-  vector<RoadSegmentId> m_keys;
+  std::vector<RoadSegmentId> m_keys;
 
   MwmSet::MwmId m_mwmId;
   Availability m_availability = Availability::Unknown;
@@ -169,5 +169,5 @@ public:
   virtual void OnTrafficInfoRemoved(MwmSet::MwmId const & mwmId) = 0;
 };
 
-string DebugPrint(TrafficInfo::RoadSegmentId const & id);
+std::string DebugPrint(TrafficInfo::RoadSegmentId const & id);
 }  // namespace traffic

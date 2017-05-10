@@ -9,7 +9,7 @@
 #include "drape/overlay_handle.hpp"
 #include "drape/pointers.hpp"
 
-#include "std/vector.hpp"
+#include <vector>
 
 namespace dp
 {
@@ -60,7 +60,7 @@ public:
   size_t GetPointsCount() const;
 
 private:
-  vector<GpsTrackDynamicVertex> m_buffer;
+  std::vector<GpsTrackDynamicVertex> m_buffer;
   mutable bool m_needUpdate;
 };
 

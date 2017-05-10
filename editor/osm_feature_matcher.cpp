@@ -3,8 +3,8 @@
 #include "base/logging.hpp"
 #include "base/stl_helpers.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/utility.hpp"
+#include <algorithm>
+#include <utility>
 
 using editor::XMLFeature;
 
@@ -34,7 +34,7 @@ void ForEachWaysNode(pugi::xml_document const & osmResponse, pugi::xml_node cons
 {
   for (auto const xNodeRef : way.select_nodes("nd/@ref"))
   {
-    string const nodeRef = xNodeRef.attribute().value();
+    std::string const nodeRef = xNodeRef.attribute().value();
     auto const node = osmResponse.select_node(("osm/node[@id='" + nodeRef + "']").data()).node();
     ASSERT(node, ("OSM response have ref", nodeRef, "but have no node with such id.", osmResponse));
     XMLFeature xmlFt(node);
@@ -48,20 +48,20 @@ void ForEachRelationsNode(pugi::xml_document const & osmResponse, pugi::xml_node
 {
   for (auto const xNodeRef : relation.select_nodes("member[@type='way']/@ref"))
   {
-    string const wayRef = xNodeRef.attribute().value();
+    std::string const wayRef = xNodeRef.attribute().value();
     auto const xpath = "osm/way[@id='" + wayRef + "']";
     auto const way = osmResponse.select_node(xpath.data()).node();
     // Some ways can be missed from relation.
     if (!way)
       continue;
-    ForEachWaysNode(osmResponse, way, forward<TFunc>(func));
+    ForEachWaysNode(osmResponse, way, std::forward<TFunc>(func));
   }
 }
 
-vector<m2::PointD> GetWaysGeometry(pugi::xml_document const & osmResponse,
+std::vector<m2::PointD> GetWaysGeometry(pugi::xml_document const & osmResponse,
                                    pugi::xml_node const & way)
 {
-  vector<m2::PointD> result;
+  std::vector<m2::PointD> result;
   ForEachWaysNode(osmResponse, way, [&result](XMLFeature const & xmlFt)
                   {
                     result.push_back(xmlFt.GetMercatorCenter());
@@ -69,10 +69,10 @@ vector<m2::PointD> GetWaysGeometry(pugi::xml_document const & osmResponse,
   return result;
 }
 
-vector<m2::PointD> GetRelationsGeometry(pugi::xml_document const & osmResponse,
+std::vector<m2::PointD> GetRelationsGeometry(pugi::xml_document const & osmResponse,
                                         pugi::xml_node const & relation)
 {
-  vector<m2::PointD> result;
+  std::vector<m2::PointD> result;
   ForEachRelationsNode(osmResponse, relation, [&result](XMLFeature const & xmlFt)
                        {
                          result.push_back(xmlFt.GetMercatorCenter());
@@ -81,7 +81,7 @@ vector<m2::PointD> GetRelationsGeometry(pugi::xml_document const & osmResponse,
 }
 
 // TODO(mgsergio): XMLFeature should have GetGeometry method.
-vector<m2::PointD> GetWaysOrRelationsGeometry(pugi::xml_document const & osmResponse,
+std::vector<m2::PointD> GetWaysOrRelationsGeometry(pugi::xml_document const & osmResponse,
                                               pugi::xml_node const & wayOrRelation)
 {
   if (strcmp(wayOrRelation.name(), "way") == 0)
@@ -95,7 +95,7 @@ vector<m2::PointD> GetWaysOrRelationsGeometry(pugi::xml_document const & osmResp
 /// @param wayOrRelation - either way or relation to be compared agains ourGeometry
 /// @param outGeometry - geometry of a FeatureType (ourGeometry must be sort-uniqued)
 double ScoreGeometry(pugi::xml_document const & osmResponse,
-                     pugi::xml_node const & wayOrRelation, vector<m2::PointD> ourGeometry)
+                     pugi::xml_node const & wayOrRelation, std::vector<m2::PointD> ourGeometry)
 {
   ASSERT(!ourGeometry.empty(), ("Our geometry cannot be empty"));
   int matched = 0;
@@ -176,7 +176,7 @@ pugi::xml_node GetBestOsmNode(pugi::xml_document const & osmResponse, ms::LatLon
 }
 
 pugi::xml_node GetBestOsmWayOrRelation(pugi::xml_document const & osmResponse,
-                                       vector<m2::PointD> const & geometry)
+                                       std::vector<m2::PointD> const & geometry)
 {
   double bestScore = -1;
   pugi::xml_node bestMatchWay;

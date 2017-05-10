@@ -3,7 +3,7 @@
 #include "data_buffer.hpp"
 #include "cpu_buffer.hpp"
 #include "gpu_buffer.hpp"
-#include "std/utility.hpp"
+#include <utility>
 
 namespace dp
 {
@@ -14,7 +14,7 @@ class DataBufferImpl : public DataBufferBase
 {
 public:
   template<typename... Args> DataBufferImpl(Args&&... params)
-    : m_buffer(make_unique_dp<TBuffer>(forward<Args>(params)...))
+    : m_buffer(make_unique_dp<TBuffer>(std::forward<Args>(params)...))
   {
   }
 
@@ -52,7 +52,7 @@ class CpuBufferImpl : public DataBufferImpl<CPUBuffer>
 {
 public:
   template<typename... Args> CpuBufferImpl(Args&&... params)
-    : DataBufferImpl(forward<Args>(params)...)
+    : DataBufferImpl(std::forward<Args>(params)...)
   {}
 
   void const * Data() const override
@@ -94,7 +94,7 @@ class GpuBufferImpl : public DataBufferImpl<GPUBuffer>
 {
 public:
   template<typename... Args> GpuBufferImpl(Args&&... params)
-    : DataBufferImpl(forward<Args>(params)...)
+    : DataBufferImpl(std::forward<Args>(params)...)
   {}
 
   void const * Data() const override

@@ -10,15 +10,16 @@
 
 #include "coding/file_name_utils.hpp"
 
+#include "base/stl_add.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/cstdlib.hpp"
-#include "std/cstring.hpp"
-#include "std/fstream.hpp"
-#include "std/iostream.hpp"
-#include "std/numeric.hpp"
-#include "std/random.hpp"
-#include "std/unique_ptr.hpp"
+#include <cstdlib>
+#include <cstring>
+#include <fstream>
+#include <iostream>
+#include <memory>
+#include <numeric>
+#include <random>
 
 #include "3party/gflags/src/gflags/gflags.h"
 
@@ -32,7 +33,7 @@ DEFINE_string(opentable, "", "Path to opentable data in .tsv format");
 DEFINE_string(factors, "", "Factors output path");
 DEFINE_string(sample, "", "Path so sample file");
 
-DEFINE_uint64(seed, minstd_rand::default_seed, "Seed for random shuffle");
+DEFINE_uint64(seed, std::minstd_rand::default_seed, "Seed for random shuffle");
 DEFINE_uint64(selection_size, 1000, "Selection size");
 DEFINE_bool(generate, false, "Generate unmarked sample");
 
@@ -40,7 +41,7 @@ using namespace generator;
 
 namespace
 {
-string PrintBuilder(FeatureBuilder1 const & fb)
+std::string PrintBuilder(FeatureBuilder1 const & fb)
 {
   ostringstream s;
 
@@ -51,7 +52,7 @@ string PrintBuilder(FeatureBuilder1 const & fb)
   auto const street = params.GetStreet();
   auto const house = params.house.Get();
 
-  string address = street;
+  std::string address = street;
   if (!house.empty())
   {
     if (!street.empty())
@@ -77,10 +78,10 @@ string PrintBuilder(FeatureBuilder1 const & fb)
 
 DECLARE_EXCEPTION(ParseError, RootException);
 
-osm::Id ReadDebuggedPrintedOsmId(string const & str)
+osm::Id ReadDebuggedPrintedOsmId(std::string const & str)
 {
   istringstream sstr(str);
-  string type;
+  std::string type;
   uint64_t id;
   sstr >> type >> id;
 
@@ -114,7 +115,7 @@ public:
       m_features.emplace(fb.GetMostGenericOsmId(), fb);
   }
 
-  void GetNames(vector<string> & names) const override
+  void GetNames(vector<std::string> & names) const override
   {
     names.clear();
   }
@@ -168,7 +169,7 @@ struct SampleItem
 };
 
 template <typename Object>
-typename SampleItem<Object>::MatchStatus ReadMatchStatus(string const & str)
+typename SampleItem<Object>::MatchStatus ReadMatchStatus(std::string const & str)
 {
   if (str == "Yes")
     return SampleItem<Object>::Yes;
@@ -183,7 +184,7 @@ typename SampleItem<Object>::MatchStatus ReadMatchStatus(string const & str)
 }
 
 template <typename Object>
-SampleItem<Object> ReadSampleItem(string const & str)
+SampleItem<Object> ReadSampleItem(std::string const & str)
 {
   SampleItem<Object> item;
 
@@ -200,14 +201,14 @@ SampleItem<Object> ReadSampleItem(string const & str)
 }
 
 template <typename Object>
-vector<SampleItem<Object>> ReadSample(istream & ist)
+vector<SampleItem<Object>> ReadSample(std::istream & ist)
 {
   vector<SampleItem<Object>> result;
 
   size_t lineNumber = 1;
   try
   {
-    for (string line; getline(ist, line); ++lineNumber)
+    for (std::string line; std::getline(ist, line); ++lineNumber)
     {
       result.emplace_back(ReadSampleItem<Object>(line));
     }
@@ -222,9 +223,9 @@ vector<SampleItem<Object>> ReadSample(istream & ist)
 }
 
 template <typename Object>
-vector<SampleItem<Object>> ReadSampleFromFile(string const & name)
+vector<SampleItem<Object>> ReadSampleFromFile(std::string const & name)
 {
-  ifstream ist(name);
+  std::ifstream ist(name);
   CHECK(ist.is_open(), ("Can't open file:", name, strerror(errno)));
   return ReadSample<Object>(ist);
 }
@@ -232,7 +233,7 @@ vector<SampleItem<Object>> ReadSampleFromFile(string const & name)
 template <typename Dataset, typename Object = typename Dataset::Object>
 void GenerateFactors(Dataset const & dataset,
                      map<osm::Id, FeatureBuilder1> const & features,
-                     vector<SampleItem<Object>> const & sampleItems, ostream & ost)
+                     vector<SampleItem<Object>> const & sampleItems, std::ostream & ost)
 {
   for (auto const & item : sampleItems)
   {
@@ -271,14 +272,14 @@ enum class DatasetType
 template <typename Dataset, typename Object = typename Dataset::Object>
 void GenerateSample(Dataset const & dataset,
                     map<osm::Id, FeatureBuilder1> const & features,
-                    ostream & ost)
+                    std::ostream & ost)
 {
   LOG_SHORT(LINFO, ("Num of elements:", features.size()));
   vector<osm::Id> elementIndexes(features.size());
   boost::copy(features | boost::adaptors::map_keys, begin(elementIndexes));
 
   // TODO(mgsergio): Try RandomSample (from search:: at the moment of writing).
-  shuffle(elementIndexes.begin(), elementIndexes.end(), minstd_rand(static_cast<uint32_t>(FLAGS_seed)));
+  shuffle(elementIndexes.begin(), elementIndexes.end(), std::minstd_rand(static_cast<uint32_t>(FLAGS_seed)));
   if (FLAGS_selection_size < elementIndexes.size())
     elementIndexes.resize(FLAGS_selection_size);
 
@@ -316,16 +317,16 @@ void GenerateSample(Dataset const & dataset,
                 << "#map=18/" << object.m_latLon.lat << "/" << object.m_latLon.lon << endl;
     }
     if (!sponsoredIndexes.empty())
-      outStream << endl << endl;
+      outStream << std::endl << endl;
   }
 
   if (FLAGS_sample.empty())
   {
-    cout << outStream.str();
+    std::cout << outStream.str();
   }
   else
   {
-    ofstream file(FLAGS_sample);
+    std::ofstream file(FLAGS_sample);
     if (file.is_open())
       file << outStream.str();
     else
@@ -334,16 +335,16 @@ void GenerateSample(Dataset const & dataset,
 }
 
 template <typename Dataset>
-string GetDatasetFilePath(feature::GenerateInfo const & info);
+std::string GetDatasetFilePath(feature::GenerateInfo const & info);
 
 template <>
-string GetDatasetFilePath<BookingDataset>(feature::GenerateInfo const & info)
+std::string GetDatasetFilePath<BookingDataset>(feature::GenerateInfo const & info)
 {
   return info.m_bookingDatafileName;
 }
 
 template <>
-string GetDatasetFilePath<OpentableDataset>(feature::GenerateInfo const & info)
+std::string GetDatasetFilePath<OpentableDataset>(feature::GenerateInfo const & info)
 {
   return info.m_opentableDatafileName;
 }
@@ -358,19 +359,19 @@ void RunImpl(feature::GenerateInfo & info)
   map<osm::Id, FeatureBuilder1> features;
   GenerateFeatures(info, [&dataset, &features](feature::GenerateInfo const & /* info */)
   {
-    return make_unique<Emitter<Dataset>>(dataset, features);
+    return my::make_unique<Emitter<Dataset>>(dataset, features);
   });
 
   if (FLAGS_generate)
   {
-    ofstream ost(FLAGS_sample);
+    std::ofstream ost(FLAGS_sample);
     GenerateSample(dataset, features, ost);
   }
   else
   {
     auto const sample = ReadSampleFromFile<Object>(FLAGS_sample);
     LOG_SHORT(LINFO, ("Sample size is", sample.size()));
-    ofstream ost(FLAGS_factors);
+    std::ofstream ost(FLAGS_factors);
     CHECK(ost.is_open(), ("Can't open file", FLAGS_factors, strerror(errno)));
     GenerateFactors<Dataset>(dataset, features, sample, ost);
   }

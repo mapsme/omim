@@ -4,7 +4,7 @@
 #include "base/logging.hpp"
 #include "base/math.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 namespace feature
 {
@@ -51,7 +51,7 @@ bool IsHouseNumberDeepCheck(strings::UniString const & s)
   return (count < 8);
 }
 
-bool IsHouseNumber(string const & s)
+bool IsHouseNumber(std::string const & s)
 {
   return (!s.empty() && IsDigit(s[0]));
 }
@@ -63,7 +63,7 @@ bool IsHouseNumber(strings::UniString const & s)
 
 uint8_t PopulationToRank(uint64_t p)
 {
-  return static_cast<uint8_t>(min(0xFF, my::rounds(log(double(p)) / log(1.1))));
+  return static_cast<uint8_t>(std::min(0xFF, my::rounds(log(double(p)) / log(1.1))));
 }
 
 uint64_t RankToPopulation(uint8_t r)

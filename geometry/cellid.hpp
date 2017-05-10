@@ -1,9 +1,9 @@
 #pragma once
 #include "base/assert.hpp"
 #include "base/base.hpp"
-#include "std/sstream.hpp"
-#include "std/string.hpp"
-#include "std/utility.hpp"
+#include <sstream>
+#include <string>
+#include <utility>
 
 namespace m2
 {
@@ -21,7 +21,7 @@ public:
   static uint32_t const MAX_COORD = 1U << DEPTH_LEVELS;
 
   CellId() : m_Bits(0), m_Level(0) { ASSERT(IsValid(), ()); }
-  explicit CellId(string const & s) { *this = FromString(s); }
+  explicit CellId(std::string const & s) { *this = FromString(s); }
 
   static CellId Root() { return CellId(0, 0); }
   static CellId FromBitsAndLevel(uint64_t bits, int level) { return CellId(bits, level); }
@@ -86,10 +86,10 @@ public:
   //////////////////////////////////////////////////////////////////////////////////////////////////
   // Conversion to/from string
 
-  string ToString() const
+  std::string ToString() const
   {
     ASSERT(IsValid(), (m_Bits, m_Level));
-    string result(m_Level, '0');
+    std::string result(m_Level, '0');
     uint64_t bits = m_Bits;
     for (int i = 0; i < m_Level; ++i, bits >>= 2)
       result[m_Level - 1 - i] += (bits & 3);
@@ -99,7 +99,7 @@ public:
 
   // Is string @s a valid CellId representation?
   // Note that empty string is a valid CellId.
-  static bool IsCellId(string const & s)
+  static bool IsCellId(std::string const & s)
   {
     size_t const length = s.size();
     if (length >= DEPTH_LEVELS)
@@ -112,7 +112,7 @@ public:
     return true;
   }
 
-  static CellId FromString(string const & s)
+  static CellId FromString(std::string const & s)
   {
     ASSERT(IsCellId(s), (s));
     uint64_t bits = 0;
@@ -137,11 +137,11 @@ public:
     return 1 << (DEPTH_LEVELS - 1 - m_Level);
   }
 
-  pair<uint32_t, uint32_t> XY() const
+  std::pair<uint32_t, uint32_t> XY() const
   {
     ASSERT(IsValid(), (m_Bits, m_Level));
     uint32_t offset = 1 << (DEPTH_LEVELS - 1 - m_Level);
-    pair<uint32_t, uint32_t> xy(offset, offset);
+    std::pair<uint32_t, uint32_t> xy(offset, offset);
     uint64_t bits = m_Bits;
     while (bits > 0)
     {
@@ -298,9 +298,9 @@ private:
 };
 
 template <int DEPTH_LEVELS>
-string DebugPrint(CellId<DEPTH_LEVELS> const & id)
+std::string DebugPrint(CellId<DEPTH_LEVELS> const & id)
 {
-  ostringstream out;
+  std::ostringstream out;
   out << "CellId<" << DEPTH_LEVELS << ">(\"" << id.ToString().c_str() << "\")";
   return out.str();
 }

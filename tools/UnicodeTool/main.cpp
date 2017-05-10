@@ -13,14 +13,14 @@
 using namespace std;
 
 // get substrings from s divided by delim and pass them to toDo including empty strings
-template <class ToDo> void TokenizeString(string const & s, char const * delim, ToDo & toDo)
+template <class ToDo> void TokenizeString(std::string const & s, char const * delim, ToDo & toDo)
 {
   size_t const count = s.size();
   size_t i = 0;
   while (i <= count)
   {
     size_t e = s.find_first_of(delim, i);
-    if (e == string::npos)
+    if (e == std::string::npos)
       e = count;
 
     toDo(s.substr(i, e-i));
@@ -31,8 +31,8 @@ template <class ToDo> void TokenizeString(string const & s, char const * delim, 
 
 struct Collector
 {
-  vector<string> m_strings;
-  void operator()(string const & s)
+  vector<std::string> m_strings;
+  void operator()(std::string const & s)
   {
     m_strings.push_back(s);
   }
@@ -43,11 +43,11 @@ typedef vector<uint32_t> DecompositionT;
 struct Symbol
 {
   uint32_t m_code;
-  string m_name;
-  string m_category;
+  std::string m_name;
+  std::string m_category;
   DecompositionT m_decomposed;
 
-  bool ParseLine(string const & line)
+  bool ParseLine(std::string const & line)
   {
     Collector c;
     TokenizeString(line, ";", c);
@@ -100,12 +100,12 @@ struct Symbol
 
 typedef map<uint32_t, Symbol> SymbolsMapT;
 
-bool IsCombiningMarkCategory(string const & cat)
+bool IsCombiningMarkCategory(std::string const & cat)
 {
   return cat == "Mn" || cat == "Mc" || cat == "Me";
 }
 
-bool IsUpperOrTitleCase(string const & cat)
+bool IsUpperOrTitleCase(std::string const & cat)
 {
   return cat == "Lu" || cat == "Lt";
 }
@@ -135,9 +135,9 @@ vector<Symbol> GetDecomposedSymbols(Symbol const & s, SymbolsMapT const & allCha
   return results;
 }
 
-string SymbolToString(uint32_t s)
+std::string SymbolToString(uint32_t s)
 {
-  string res;
+  std::string res;
   utf8::unchecked::append(s, back_inserter(res));
   return res;
 }
@@ -370,12 +370,12 @@ int main(int argc, char * argv[])
     return 0;
   }
   ifstream file(argv[1]);
-  string line;
+  std::string line;
 
   SymbolsMapT allChars;
   while (file.good())
   {
-    getline(file, line);
+    std::getline(file, line);
     Symbol s;
     if (s.ParseLine(line))
       allChars[s.m_code] = s;

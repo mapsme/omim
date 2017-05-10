@@ -18,11 +18,11 @@
 
 #include "base/mutex.hpp"
 
-#include "std/atomic.hpp"
-#include "std/limits.hpp"
-#include "std/map.hpp"
-#include "std/shared_ptr.hpp"
-#include "std/unique_ptr.hpp"
+#include <atomic>
+#include <limits>
+#include <map>
+#include <memory>
+#include <memory>
 
 namespace location
 {
@@ -37,7 +37,7 @@ struct SpeedCameraRestriction
   uint8_t m_maxSpeedKmH;  // Maximum speed allowed by the camera.
 
   SpeedCameraRestriction(size_t index, uint8_t maxSpeed) : m_index(index), m_maxSpeedKmH(maxSpeed) {}
-  SpeedCameraRestriction() : m_index(0), m_maxSpeedKmH(numeric_limits<uint8_t>::max()) {}
+  SpeedCameraRestriction() : m_index(0), m_maxSpeedKmH(std::numeric_limits<uint8_t>::max()) {}
 };
 
 class RoutingSession : public traffic::TrafficObserver, public traffic::TrafficCache
@@ -73,7 +73,7 @@ public:
    * RouteFinished -> RouteNotReady       // start new route
    */
 
-  typedef function<void(map<string, string> const &)> TRoutingStatisticsCallback;
+  typedef function<void(std::map<std::string, std::string> const &)> TRoutingStatisticsCallback;
 
   typedef function<void(Route const &, IRouter::ResultCode)> TReadyCallback;
   typedef function<void(float)> TProgressCallback;
@@ -83,7 +83,7 @@ public:
   void Init(TRoutingStatisticsCallback const & routingStatisticsFn,
             RouterDelegate::TPointCheckCallback const & pointCheckCallback);
 
-  void SetRouter(unique_ptr<IRouter> && router, unique_ptr<OnlineAbsentCountriesFetcher> && fetcher);
+  void SetRouter(std::unique_ptr<IRouter> && router, std::unique_ptr<OnlineAbsentCountriesFetcher> && fetcher);
 
   /// @param[in] startPoint and endPoint in mercator
   /// @param[in] timeoutSec timeout in seconds, if zero then there is no timeout
@@ -110,7 +110,7 @@ public:
 
   inline void SetState(State state) { m_state = state; }
 
-  shared_ptr<Route> const GetRoute() const;
+  std::shared_ptr<Route> const GetRoute() const;
   /// \returns true if altitude information along |m_route| is available and
   /// false otherwise.
   bool HasRouteAltitude() const;
@@ -153,9 +153,9 @@ public:
   void EnableTurnNotifications(bool enable);
   bool AreTurnNotificationsEnabled() const;
   void SetTurnNotificationsUnits(measurement_utils::Units const units);
-  void SetTurnNotificationsLocale(string const & locale);
-  string GetTurnNotificationsLocale() const;
-  void GenerateTurnNotifications(vector<string> & turnNotifications);
+  void SetTurnNotificationsLocale(std::string const & locale);
+  std::string GetTurnNotificationsLocale() const;
+  void GenerateTurnNotifications(vector<std::string> & turnNotifications);
 
   void EmitCloseRoutingEvent() const;
 
@@ -165,7 +165,7 @@ public:
   void OnTrafficInfoRemoved(MwmSet::MwmId const & mwmId) override;
 
   // TrafficCache overrides:
-  shared_ptr<traffic::TrafficInfo::Coloring> GetTrafficInfo(MwmSet::MwmId const & mwmId) const override;
+  std::shared_ptr<traffic::TrafficInfo::Coloring> GetTrafficInfo(MwmSet::MwmId const & mwmId) const override;
   void CopyTraffic(std::map<MwmSet::MwmId, std::shared_ptr<traffic::TrafficInfo::Coloring>> & trafficColoring) const override;
 
 private:
@@ -199,10 +199,10 @@ private:
   double GetCompletionPercent() const;
 
 private:
-  unique_ptr<AsyncRouter> m_router;
-  shared_ptr<Route> m_route;
-  atomic<State> m_state;
-  atomic<bool> m_isFollowing;
+  std::unique_ptr<AsyncRouter> m_router;
+  std::shared_ptr<Route> m_route;
+  std::atomic<State> m_state;
+  std::atomic<bool> m_isFollowing;
   m2::PointD m_endPoint;
   size_t m_lastWarnedSpeedCameraIndex;
   SpeedCameraRestriction m_lastFoundCamera;
@@ -239,5 +239,5 @@ private:
   mutable double m_lastCompletionPercent;
 };
 
-string DebugPrint(RoutingSession::State state);
+std::string DebugPrint(RoutingSession::State state);
 }  // namespace routing

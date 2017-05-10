@@ -69,7 +69,7 @@ CustomItem * CreateFeatureItem(Result const & val, double itemWidth)
   double lat, lon;
   GetFramework()->GetCurrentPosition(lat, lon);
   double north = 0;
-  string distance;
+  std::string distance;
   double azimut;
   GetFramework()->GetDistanceAndAzimut(val.GetFeatureCenter(), lat, lon, north, distance, azimut);
   String dist(distance.c_str());

@@ -12,7 +12,7 @@ namespace downloader
 {
 
 // Returns false if can't parse urls. Note that it also clears outUrls.
-bool ParseServerList(string const & jsonStr, vector<string> & outUrls)
+bool ParseServerList(std::string const & jsonStr, std::vector<std::string> & outUrls)
 {
   outUrls.clear();
   try
@@ -32,7 +32,7 @@ bool ParseServerList(string const & jsonStr, vector<string> & outUrls)
   return !outUrls.empty();
 }
 
-void GetServerListFromRequest(HttpRequest const & request, vector<string> & urls)
+void GetServerListFromRequest(HttpRequest const & request, std::vector<std::string> & urls)
 {
   if (request.Status() == HttpRequest::ECompleted && ParseServerList(request.Data(), urls))
     return;

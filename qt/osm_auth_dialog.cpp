@@ -23,7 +23,7 @@ char const * kLogoutDialogTitle = "Logout Dialog";
 
 OsmAuthDialog::OsmAuthDialog(QWidget * parent)
 {
-  string key, secret;
+  std::string key, secret;
   settings::Get(kTokenKeySetting, key);
   settings::Get(kTokenSecretSetting, secret);
 
@@ -87,8 +87,8 @@ void OsmAuthDialog::OnAction()
   bool const isLoginDialog = findChild<QPushButton *>("button")->text() == tr("Login");
   if (isLoginDialog)
   {
-    string const login = findChild<QLineEdit *>("login")->text().toStdString();
-    string const password = findChild<QLineEdit *>("password")->text().toStdString();
+    std::string const login = findChild<QLineEdit *>("login")->text().toStdString();
+    std::string const password = findChild<QLineEdit *>("password")->text().toStdString();
 
     if (login.empty())
     {
@@ -121,14 +121,14 @@ void OsmAuthDialog::OnAction()
     }
     catch (std::exception const & ex)
     {
-      setWindowTitle((string("Auth failed: ") + ex.what()).c_str());
+      setWindowTitle((std::string("Auth failed: ") + ex.what()).c_str());
       return;
     }
   }
   else
   {
-    settings::Set(kTokenKeySetting, string());
-    settings::Set(kTokenSecretSetting, string());
+    settings::Set(kTokenKeySetting, std::string());
+    settings::Set(kTokenSecretSetting, std::string());
 
     SwitchToLogin(this);
   }

@@ -2,8 +2,8 @@
 
 #include "drape/glfunctions.hpp"
 
-#include "std/string.hpp"
-#include "std/cstdint.hpp"
+#include <string>
+#include <cstdint>
 
 namespace dp
 {
@@ -17,7 +17,7 @@ public:
     FragmentShader
   };
 
-  Shader(string const & shaderSource, string const & defines, Type type);
+  Shader(std::string const & shaderSource, std::string const & defines, Type type);
   ~Shader();
 
   int GetID() const;
@@ -26,6 +26,6 @@ private:
   uint32_t m_glID;
 };
 
-void PreprocessShaderSource(string & src);
+void PreprocessShaderSource(std::string & src);
 
 } // namespace dp

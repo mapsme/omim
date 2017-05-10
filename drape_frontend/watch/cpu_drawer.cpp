@@ -14,8 +14,8 @@
 #include "base/macros.hpp"
 #include "base/logging.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/bind.hpp"
+#include <algorithm>
+#include <functional>
 
 namespace
 {
@@ -25,7 +25,7 @@ void CorrectFont(dp::FontDecl & font)
   font.m_size = font.m_size * 0.75;
 }
 
-strings::UniString PreProcessText(string const & text)
+strings::UniString PreProcessText(std::string const & text)
 {
   // Warning! This code processes text as left-to-right text
   // and doesn't reorder right-to-left text. To support right-to-left text
@@ -45,24 +45,24 @@ strings::UniString PreProcessText(string const & text)
     size_t const delimsSize = strlen(delims);
 
     // find next delimeter after middle [m, e)
-    TIter iNext = find_first_of(iMiddle, iEnd,
+    TIter iNext = std::find_first_of(iMiddle, iEnd,
                                 delims, delims + delimsSize);
 
     // find last delimeter before middle [b, m)
-    TIter iPrev = find_first_of(reverse_iterator<TIter>(iMiddle),
+    TIter iPrev = std::find_first_of(reverse_iterator<TIter>(iMiddle),
                                 reverse_iterator<TIter>(iBegin),
                                 delims, delims + delimsSize).base();
     // don't do split like this:
     //     xxxx
     // xxxxxxxxxxxx
-    if (4 * distance(iBegin, iPrev) <= count)
+    if (4 * std::distance(iBegin, iPrev) <= count)
       iPrev = visText.end();
     else
       --iPrev;
 
     // get closest delimiter to the middle
     if (iNext == iEnd ||
-        (iPrev != iEnd && distance(iPrev, iMiddle) < distance(iMiddle, iNext)))
+        (iPrev != iEnd && std::distance(iPrev, iMiddle) < std::distance(iMiddle, iNext)))
     {
       iNext = iPrev;
     }
@@ -106,7 +106,7 @@ class CPUDrawer::CPUOverlayTree
     static m2::RectD const LimitRect(CPUDrawer::OverlayWrapper const * elem)
     {
       m2::RectD result;
-      for_each(elem->m_rects.begin(), elem->m_rects.end(), [&result](m2::RectD const & r)
+      std::for_each(elem->m_rects.begin(), elem->m_rects.end(), [&result](m2::RectD const & r)
       {
         result.Add(r);
       });
@@ -156,7 +156,7 @@ public:
   void replaceOverlayElement(CPUDrawer::OverlayWrapper const * oe)
   {
     DoPreciseIntersect fn(oe);
-    m_tree.ForEachInRect(OverlayWrapperTraits::LimitRect(oe), ref(fn));
+    m_tree.ForEachInRect(OverlayWrapperTraits::LimitRect(oe), std::ref(fn));
 
     if (fn.IsIntersect())
     {
@@ -182,7 +182,7 @@ CPUDrawer::CPUDrawer(Params const & params)
                                         "fonts_whitelist.txt",
                                         "fonts_blacklist.txt",
                                         2 * 1024 * 1024, m_visualScale, false);
-  m_renderer = make_unique<SoftwareRenderer>(glyphParams, params.m_resourcesPrefix);
+  m_renderer = my::make_unique<SoftwareRenderer>(glyphParams, params.m_resourcesPrefix);
 }
 
 CPUDrawer::~CPUDrawer()
@@ -396,7 +396,7 @@ void CPUDrawer::DrawPathNumber(PathInfo const & path, FeatureStyler const & fs, 
   ConvertStyle(rule.m_rule->GetShield(), m_visualScale, font);
 
   FeatureID const & id = Insert(fs.m_refText);
-  GenerateRoadNumbers(path, font, fs, [this, &id](m2::PointD const & pt, dp::FontDecl const & font, string const & /*text*/)
+  GenerateRoadNumbers(path, font, fs, [this, &id](m2::PointD const & pt, dp::FontDecl const & font, std::string const & /*text*/)
   {
     m_roadNumberFont = font;
     m_textShapes.emplace_back(pt, dp::Center, id, DrawRule(), GetGeneration(), TYPE_ROAD_NUMBER);
@@ -465,7 +465,7 @@ FeatureID const & CPUDrawer::Insert(FeatureStyler const & styler)
   return InsertImpl(GetCurrentFeatureID(), m_stylers, styler);
 }
 
-FeatureID const & CPUDrawer::Insert(string const & text)
+FeatureID const & CPUDrawer::Insert(std::string const & text)
 {
   return InsertImpl(GetCurrentFeatureID(), m_roadNames, text);
 }
@@ -509,9 +509,9 @@ void CPUDrawer::Render()
     }
   };
 
-  for_each(m_areaPathShapes.begin(), m_areaPathShapes.end(), renderFn);
+  std::for_each(m_areaPathShapes.begin(), m_areaPathShapes.end(), renderFn);
   CPUOverlayTree tree;
-  for_each(m_overlayList.begin(), m_overlayList.end(), [&tree](OverlayWrapper const & oe)
+  std::for_each(m_overlayList.begin(), m_overlayList.end(), [&tree](OverlayWrapper const & oe)
   {
     tree.replaceOverlayElement(&oe);
   });
@@ -634,7 +634,7 @@ void CPUDrawer::CallTextRendererFn(TextShape const * shape, TTextRendererCall co
 
 void CPUDrawer::CallTextRendererFn(TextShape const * shape, TRoadNumberRendererCall const & fn)
 {
-  string const & text = GetInfo(shape->m_geomID, m_roadNames);
+  std::string const & text = GetInfo(shape->m_geomID, m_roadNames);
 
   // Warning! This code processes text as left-to-right text
   // and doesn't reorder right-to-left text. To support right-to-left text

@@ -8,17 +8,17 @@
 
 UNIT_TEST(MemWriterEmpty)
 {
-  vector<char> data;
+  std::vector<char> data;
   {
-    MemWriter< vector<char> > writer(data);
+    MemWriter< std::vector<char> > writer(data);
   }
   TEST(data.empty(), (data));
 }
 
 UNIT_TEST(MemWriterSimple)
 {
-  vector<char> data;
-  MemWriter< vector<char> > writer(data);
+  std::vector<char> data;
+  MemWriter< std::vector<char> > writer(data);
   writer.Write("Hello", 5);
   writer.Write(",", 1);
   writer.Write("world!", 6);

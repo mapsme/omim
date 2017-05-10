@@ -23,8 +23,8 @@
 #include "storage/index.hpp"
 #include "storage/storage.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/iostream.hpp"
+#include <algorithm>
+#include <iostream>
 
 class ClosestPoint
 {
@@ -65,45 +65,45 @@ m2::PointD FindCenter(FeatureType const & f)
 
 size_t const kLangCount = StringUtf8Multilang::GetSupportedLanguages().size();
 
-set<string> const kPoiTypes = {"amenity",  "shop",    "tourism",  "leisure",   "sport",
+set<std::string> const kPoiTypes = {"amenity",  "shop",    "tourism",  "leisure",   "sport",
                                "craft",    "place",   "man_made", "emergency", "office",
                                "historic", "railway", "highway",  "aeroway"};
 
-string GetReadableType(FeatureType const & f)
+std::string GetReadableType(FeatureType const & f)
 {
   uint32_t result = 0;
   f.ForEachType([&result](uint32_t type)
   {
-    string fullName = classif().GetFullObjectName(type);
+    std::string fullName = classif().GetFullObjectName(type);
     auto pos = fullName.find("|");
-    if (pos != string::npos)
+    if (pos != std::string::npos)
       fullName = fullName.substr(0, pos);
     if (kPoiTypes.find(fullName) != kPoiTypes.end())
       result = type;
   });
-  return result == 0 ? string() : classif().GetReadableObjectName(result);
+  return result == 0 ? std::string() : classif().GetReadableObjectName(result);
 }
 
-string GetWheelchairType(FeatureType const & f)
+std::string GetWheelchairType(FeatureType const & f)
 {
   static const uint32_t wheelchair = classif().GetTypeByPath({"wheelchair"});
-  string result;
+  std::string result;
   f.ForEachType([&result](uint32_t type)
   {
     uint32_t truncated = type;
     ftype::TruncValue(truncated, 1);
     if (truncated == wheelchair)
     {
-      string fullName = classif().GetReadableObjectName(type);
+      std::string fullName = classif().GetReadableObjectName(type);
       auto pos = fullName.find("-");
-      if (pos != string::npos)
+      if (pos != std::string::npos)
         result = fullName.substr(pos + 1);
     }
   });
   return result;
 }
 
-string BuildUniqueId(ms::LatLon const & coords, string const & name)
+std::string BuildUniqueId(ms::LatLon const & coords, std::string const & name)
 {
   ostringstream ss;
   ss << strings::to_string_with_digits_after_comma(coords.lat, 6) << ','
@@ -115,32 +115,32 @@ string BuildUniqueId(ms::LatLon const & coords, string const & name)
   return strings::to_string(hash);
 }
 
-void AppendNames(FeatureType const & f, vector<string> & columns)
+void AppendNames(FeatureType const & f, vector<std::string> & columns)
 {
-  vector<string> names(kLangCount);
-  f.GetNames().ForEach([&names](int8_t code, string const & name) -> bool
+  vector<std::string> names(kLangCount);
+  f.GetNames().ForEach([&names](int8_t code, std::string const & name) -> bool
   {
-    names[code] = string(name);
+    names[code] = std::string(name);
     return true;
   });
   columns.insert(columns.end(), next(names.begin()), names.end());
 }
 
-void PrintAsCSV(vector<string> const & columns, char const delimiter, ostream & out)
+void PrintAsCSV(vector<std::string> const & columns, char const delimiter, std::ostream & out)
 {
   bool first = true;
-  for (string value : columns)
+  for (std::string value : columns)
   {
     // Newlines are hard to process, replace them with spaces. And trim the string.
-    replace(value.begin(), value.end(), '\r', ' ');
-    replace(value.begin(), value.end(), '\n', ' ');
+    std::replace(value.begin(), value.end(), '\r', ' ');
+    std::replace(value.begin(), value.end(), '\n', ' ');
     strings::Trim(value);
 
     if (first)
       first = false;
     else
       out << delimiter;
-    bool needsQuotes = value.find('"') != string::npos || value.find(delimiter) != string::npos;
+    bool needsQuotes = value.find('"') != std::string::npos || value.find(delimiter) != std::string::npos;
     if (!needsQuotes)
     {
       out << value;
@@ -148,7 +148,7 @@ void PrintAsCSV(vector<string> const & columns, char const delimiter, ostream & 
     else
     {
       size_t pos = 0;
-      while ((pos = value.find('"', pos)) != string::npos)
+      while ((pos = value.find('"', pos)) != std::string::npos)
       {
         value.insert(pos, 1, '"');
         pos += 2;
@@ -179,7 +179,7 @@ public:
   void Process(FeatureType const & f)
   {
     f.ParseBeforeStatistic();
-    string const & category = GetReadableType(f);
+    std::string const & category = GetReadableType(f);
     if (!f.HasName() || f.GetFeatureType() == feature::GEOM_LINE || category.empty())
       return;
     m2::PointD const & center = FindCenter(f);
@@ -187,53 +187,53 @@ public:
     osm::MapObject obj;
     obj.SetFromFeatureType(f);
 
-    string city;
+    std::string city;
     m_finder.GetLocality(center, city);
 
-    string const & mwmName = f.GetID().GetMwmName();
-    string name, secondary;
+    std::string const & mwmName = f.GetID().GetMwmName();
+    std::string name, secondary;
     f.GetPreferredNames(name, secondary);
-    string const & uid = BuildUniqueId(ll, name);
-    string const & lat = strings::to_string_with_digits_after_comma(ll.lat, 6);
-    string const & lon = strings::to_string_with_digits_after_comma(ll.lon, 6);
+    std::string const & uid = BuildUniqueId(ll, name);
+    std::string const & lat = strings::to_string_with_digits_after_comma(ll.lat, 6);
+    std::string const & lon = strings::to_string_with_digits_after_comma(ll.lon, 6);
     search::ReverseGeocoder::Address addr;
-    string addrStreet = "";
-    string addrHouse = "";
+    std::string addrStreet = "";
+    std::string addrHouse = "";
     if (m_geocoder.GetExactAddress(f, addr))
     {
       addrStreet = addr.GetStreetName();
       addrHouse = addr.GetHouseNumber();
     }
-    string const & phone = f.GetMetadata().Get(feature::Metadata::FMD_PHONE_NUMBER);
-    string const & website = f.GetMetadata().Get(feature::Metadata::FMD_WEBSITE);
-    string cuisine = f.GetMetadata().Get(feature::Metadata::FMD_CUISINE);
-    replace(cuisine.begin(), cuisine.end(), ';', ',');
-    string const & stars = f.GetMetadata().Get(feature::Metadata::FMD_STARS);
-    string const & operatr = f.GetMetadata().Get(feature::Metadata::FMD_OPERATOR);
-    string const & internet = f.GetMetadata().Get(feature::Metadata::FMD_INTERNET);
-    string const & denomination = f.GetMetadata().Get(feature::Metadata::FMD_DENOMINATION);
-    string const & wheelchair = GetWheelchairType(f);
-    string const & opening_hours = f.GetMetadata().Get(feature::Metadata::FMD_OPEN_HOURS);
+    std::string const & phone = f.GetMetadata().Get(feature::Metadata::FMD_PHONE_NUMBER);
+    std::string const & website = f.GetMetadata().Get(feature::Metadata::FMD_WEBSITE);
+    std::string cuisine = f.GetMetadata().Get(feature::Metadata::FMD_CUISINE);
+    std::replace(cuisine.begin(), cuisine.end(), ';', ',');
+    std::string const & stars = f.GetMetadata().Get(feature::Metadata::FMD_STARS);
+    std::string const & operatr = f.GetMetadata().Get(feature::Metadata::FMD_OPERATOR);
+    std::string const & internet = f.GetMetadata().Get(feature::Metadata::FMD_INTERNET);
+    std::string const & denomination = f.GetMetadata().Get(feature::Metadata::FMD_DENOMINATION);
+    std::string const & wheelchair = GetWheelchairType(f);
+    std::string const & opening_hours = f.GetMetadata().Get(feature::Metadata::FMD_OPEN_HOURS);
 
-    vector<string> columns = {uid,          lat,        lon,          mwmName,   category,
+    vector<std::string> columns = {uid,          lat,        lon,          mwmName,   category,
                               name,         city,       addrStreet,   addrHouse, phone,
                               website,      cuisine,    stars,        operatr,   internet,
                               denomination, wheelchair, opening_hours};
     AppendNames(f, columns);
-    PrintAsCSV(columns, ';', cout);
+    PrintAsCSV(columns, ';', std::cout);
   }
 };
 
 void PrintHeader()
 {
-  vector<string> columns = {"id",           "lat",        "lon",          "mwm",      "category",
+  vector<std::string> columns = {"id",           "lat",        "lon",          "mwm",      "category",
                             "name",         "city",       "street",       "house",    "phone",
                             "website",      "cuisines",   "stars",        "operator", "internet",
                             "denomination", "wheelchair", "opening_hours"};
   // Append all supported name languages in order.
   for (uint8_t idx = 1; idx < kLangCount; idx++)
-    columns.push_back("name_" + string(StringUtf8Multilang::GetLangByCode(idx)));
-  PrintAsCSV(columns, ';', cout);
+    columns.push_back("name_" + std::string(StringUtf8Multilang::GetLangByCode(idx)));
+  PrintAsCSV(columns, ';', std::cout);
 }
 
 void DidDownload(storage::TCountryId const & /* countryId */,
@@ -260,7 +260,7 @@ int main(int argc, char ** argv)
   Platform & pl = GetPlatform();
   pl.SetWritableDirForTests(argv[1]);
 
-  string countriesFile = COUNTRIES_FILE;
+  std::string countriesFile = COUNTRIES_FILE;
   if (argc > 2)
   {
     pl.SetResourceDir(argv[2]);

@@ -6,8 +6,9 @@
 #include "coding/read_write_utils.hpp"
 #include "coding/byte_stream.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
+using namespace std;
 
 namespace
 {

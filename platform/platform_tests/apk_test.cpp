@@ -7,8 +7,9 @@
 
 #include "base/thread.hpp"
 #include "base/logging.hpp"
+#include "base/stl_add.hpp"
 
-#include "std/numeric.hpp"
+#include <numeric>
 
 
 namespace
@@ -37,17 +38,17 @@ namespace
   class ApkTester : public threads::IRoutine
   {
     static const int COUNT = ARRAY_SIZE(arrFiles);
-    string const & m_cont;
+    std::string const & m_cont;
 
   public:
-    ApkTester(string const & cont) : m_cont(cont)
+    ApkTester(std::string const & cont) : m_cont(cont)
     {
       m_hashes.resize(COUNT);
     }
 
     virtual void Do()
     {
-      string const prefix("assets/");
+      std::string const prefix("assets/");
 
       while (true)
       {
@@ -74,7 +75,7 @@ namespace
           vector<char> buffer(size);
           reader.Read(0, &buffer[0], size);
 
-          m_hashes[ind] = accumulate(buffer.begin(), buffer.end(), static_cast<uint64_t>(0));
+          m_hashes[ind] = std::accumulate(buffer.begin(), buffer.end(), static_cast<uint64_t>(0));
         }
         catch (Reader::Exception const & ex)
         {
@@ -90,7 +91,7 @@ namespace
 
 UNIT_TEST(ApkReader_Multithreaded)
 {
-  string const path = GetPlatform().WritableDir() + "../android/MapsWithMePro/bin/MapsWithMePro-production.apk";
+  std::string const path = GetPlatform().WritableDir() + "../android/MapsWithMePro/bin/MapsWithMePro-production.apk";
 
   uint64_t size;
   if (!my::GetFileSize(path, size))
@@ -105,7 +106,7 @@ UNIT_TEST(ApkReader_Multithreaded)
   threads::SimpleThreadPool pool(count);
 
   for (size_t i = 0; i < count; ++i)
-    pool.Add(make_unique<ApkTester>(path));
+    pool.Add(my::make_unique<ApkTester>(path));
 
   pool.Join();
 

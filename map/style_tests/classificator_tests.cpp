@@ -7,7 +7,7 @@
 #include "indexer/feature_data.hpp"
 
 #include "base/logging.hpp"
-
+#include "base/stl_add.hpp"
 
 namespace
 {
@@ -59,7 +59,7 @@ public:
       TypesHolder holder(m_geomType);
       holder.Add(type);
 
-      pair<int, int> const range = GetDrawableScaleRangeForRules(holder, m_rules);
+      std::pair<int, int> const range = GetDrawableScaleRangeForRules(holder, m_rules);
       if (range.first == -1 || range.second == -1)
         LOG(LINFO, ("No styles:", type, m_c.GetFullObjectName(type)));
     }
@@ -68,7 +68,7 @@ public:
   }
 };
 
-void ForEachObject(Classificator const & c, vector<string> const & path,
+void ForEachObject(Classificator const & c, vector<std::string> const & path,
                    EGeomType geomType, int rules)
 {
   uint32_t const type = c.GetTypeByPath(path);
@@ -79,20 +79,20 @@ void ForEachObject(Classificator const & c, vector<string> const & path,
   pObj->ForEachObjectInTree(doCheck, type);
 }
 
-void ForEachObject(Classificator const & c, string const & name,
+void ForEachObject(Classificator const & c, std::string const & name,
                    EGeomType geomType, int rules)
 {
-  vector<string> path;
+  vector<std::string> path;
   strings::Tokenize(name, "-", MakeBackInsertFunctor(path));
   ForEachObject(c, path, geomType, rules);
 }
 
-void CheckPointStyles(Classificator const & c, string const & name)
+void CheckPointStyles(Classificator const & c, std::string const & name)
 {
   ForEachObject(c, name, GEOM_POINT, RULE_CAPTION | RULE_SYMBOL);
 }
 
-void CheckLineStyles(Classificator const & c, string const & name)
+void CheckLineStyles(Classificator const & c, std::string const & name)
 {
   ForEachObject(c, name, GEOM_LINE, RULE_PATH_TEXT);
 }
@@ -130,9 +130,9 @@ UNIT_TEST(Classificator_DrawingRules)
 namespace
 {
 
-pair<int, int> GetMinMax(int level, vector<uint32_t> const & types, drule::rule_type_t ruleType)
+std::pair<int, int> GetMinMax(int level, std::vector<uint32_t> const & types, drule::rule_type_t ruleType)
 {
-  pair<int, int> res(numeric_limits<int>::max(), numeric_limits<int>::min());
+  std::pair<int, int> res(std::numeric_limits<int>::max(), std::numeric_limits<int>::min());
 
   drule::KeysT keys;
   feature::GetDrawRule(types, level, feature::GEOM_AREA, keys);
@@ -151,9 +151,9 @@ pair<int, int> GetMinMax(int level, vector<uint32_t> const & types, drule::rule_
   return res;
 }
 
-string CombineArrT(StringIL const & arrT)
+std::string CombineArrT(my::StringIL const & arrT)
 {
-  string result;
+  std::string result;
   for (auto it = arrT.begin(); it != arrT.end(); ++it)
   {
     if (it != arrT.begin())
@@ -163,11 +163,11 @@ string CombineArrT(StringIL const & arrT)
   return result;
 }
 
-void CheckPriority(vector<StringIL> const & arrT, vector<size_t> const & arrI, drule::rule_type_t ruleType)
+void CheckPriority(std::vector<my::StringIL> const & arrT, vector<size_t> const & arrI, drule::rule_type_t ruleType)
 {
   Classificator const & c = classif();
   vector<vector<uint32_t> > types;
-  vector<vector<string> > typesInfo;
+  vector<vector<std::string> > typesInfo;
 
   styles::RunForEveryMapStyle([&](MapStyle style)
   {
@@ -179,7 +179,7 @@ void CheckPriority(vector<StringIL> const & arrT, vector<size_t> const & arrI, d
     {
       types.push_back(vector<uint32_t>());
       types.back().reserve(arrI[i]);
-      typesInfo.push_back(vector<string>());
+      typesInfo.push_back(vector<std::string>());
       typesInfo.back().reserve(arrI[i]);
 
       for (size_t j = 0; j < arrI[i]; ++j)
@@ -194,11 +194,11 @@ void CheckPriority(vector<StringIL> const & arrT, vector<size_t> const & arrI, d
 
     for (int level = scales::GetUpperWorldScale() + 1; level <= scales::GetUpperStyleScale(); ++level)
     {
-      pair<int, int> minmax(numeric_limits<int>::max(), numeric_limits<int>::min());
-      vector<string> minmaxInfo;
+      std::pair<int, int> minmax(numeric_limits<int>::max(), std::numeric_limits<int>::min());
+      std::vector<std::string> minmaxInfo;
       for (size_t i = 0; i < types.size(); ++i)
       {
-        pair<int, int> const mm = GetMinMax(level, types[i], ruleType);
+        std::pair<int, int> const mm = GetMinMax(level, types[i], ruleType);
         TEST_LESS(minmax.second, mm.first, ("Priority bug on zoom", level, "group", i, ":",
                                             minmaxInfo, minmax.first, minmax.second, "vs",
                                             typesInfo[i], mm.first, mm.second));
@@ -220,7 +220,7 @@ void CheckPriority(vector<StringIL> const & arrT, vector<size_t> const & arrI, d
 
 UNIT_TEST(Classificator_AreaPriority)
 {
-  vector<StringIL> types =
+  vector<my::StringIL> types =
   {
     // 0
     {"natural", "coastline"},
@@ -241,7 +241,7 @@ UNIT_TEST(Classificator_AreaPriority)
 UNIT_TEST(Classificator_PoiPriority)
 {
   {
-    vector<StringIL> types =
+    vector<my::StringIL> types =
     {
       // 1
       {"amenity", "atm"},
@@ -253,7 +253,7 @@ UNIT_TEST(Classificator_PoiPriority)
   }
 
   {
-    vector<StringIL> types =
+    vector<my::StringIL> types =
     {
       // 1
       {"amenity", "bench"}, {"amenity", "shelter"},

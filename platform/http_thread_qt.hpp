@@ -1,7 +1,7 @@
 #pragma once
 
-#include "std/string.hpp"
-#include "std/cstdint.hpp"
+#include <string>
+#include <cstdint>
 
 #include <QObject>
 #include <QNetworkReply>
@@ -13,12 +13,12 @@ class HttpThread : public QObject
   Q_OBJECT
 
 public:
-  HttpThread(string const & url,
+  HttpThread(std::string const & url,
                          downloader::IHttpThreadCallback & cb,
                          int64_t beg,
                          int64_t end,
                          int64_t size,
-                         string const & pb);
+                         std::string const & pb);
   virtual ~HttpThread();
 
 private slots:

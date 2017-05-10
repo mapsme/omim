@@ -2,7 +2,7 @@
 #include "testing/testing.hpp"
 #include "testing/testregister.hpp"
 #include "base/timer.hpp"
-#include "std/iostream.hpp"
+#include <iostream>
 
 namespace my
 {
@@ -19,19 +19,19 @@ namespace my
       double const secondsElapsed = m_Timer.ElapsedSeconds();
       TEST_GREATER(m_RepeatCount, 0, ());
       TEST_LESS_OR_EQUAL(secondsElapsed, m_MaxSecondsToSucceed, (m_RepeatCount));
-      cout << secondsElapsed << "s total";
+      std::cout << secondsElapsed << "s total";
       if (secondsElapsed > 0)
       {
-        cout << ", " << static_cast<int>(m_RepeatCount / secondsElapsed) << "/s, ";
+        std::cout << ", " << static_cast<int>(m_RepeatCount / secondsElapsed) << "/s, ";
         /*
         if (secondsElapsed / m_RepeatCount * 1000 >= 10)
-          cout << static_cast<int>(secondsElapsed / m_RepeatCount * 1000) << "ms each";
+          std::cout << static_cast<int>(secondsElapsed / m_RepeatCount * 1000) << "ms each";
         else */ if (secondsElapsed / m_RepeatCount * 1000000 >= 10)
-          cout << static_cast<int>(secondsElapsed / m_RepeatCount * 1000000) << "us each";
+          std::cout << static_cast<int>(secondsElapsed / m_RepeatCount * 1000000) << "us each";
         else
-          cout << static_cast<int>(secondsElapsed / m_RepeatCount * 1000000000) << "ns each";
+          std::cout << static_cast<int>(secondsElapsed / m_RepeatCount * 1000000000) << "ns each";
       }
-      cout << " ...";
+      std::cout << " ...";
     }
 
     inline int Iteration() const { return m_Iteration; }

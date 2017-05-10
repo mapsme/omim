@@ -6,8 +6,8 @@
 #include "base/stl_add.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/sstream.hpp"
+#include <algorithm>
+#include <sstream>
 
 namespace search
 {
@@ -29,7 +29,7 @@ void KeywordMatcher::SetKeywords(StringT const * keywords, size_t count, StringT
   m_prefix = prefix;
 }
 
-KeywordMatcher::ScoreT KeywordMatcher::Score(string const & name) const
+KeywordMatcher::ScoreT KeywordMatcher::Score(std::string const & name) const
 {
   return Score(NormalizeAndSimplifyString(name));
 }
@@ -45,10 +45,10 @@ KeywordMatcher::ScoreT KeywordMatcher::Score(StringT const & name) const
 
 KeywordMatcher::ScoreT KeywordMatcher::Score(StringT const * tokens, size_t count) const
 {
-  count = min(count, size_t(MAX_TOKENS));
+  count = std::min(count, size_t(MAX_TOKENS));
 
-  vector<bool> isQueryTokenMatched(m_keywords.size());
-  vector<bool> isNameTokenMatched(count);
+  std::vector<bool> isQueryTokenMatched(m_keywords.size());
+  std::vector<bool> isNameTokenMatched(count);
   uint32_t sumTokenMatchDistance = 0;
   int8_t prevTokenMatchDistance = 0;
   bool bPrefixMatched = true;
@@ -131,9 +131,9 @@ bool KeywordMatcher::ScoreT::LessInTokensLength(ScoreT const & s) const
   return false;
 }
 
-string DebugPrint(KeywordMatcher::ScoreT const & score)
+std::string DebugPrint(KeywordMatcher::ScoreT const & score)
 {
-  ostringstream out;
+  std::ostringstream out;
   out << "KeywordMatcher::ScoreT(";
   out << "FQM=" << score.m_bFullQueryMatched;
   out << ",nQTM=" << static_cast<int>(score.m_numQueryTokensAndPrefixMatched);

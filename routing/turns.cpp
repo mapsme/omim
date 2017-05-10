@@ -4,8 +4,8 @@
 
 #include "base/internal/message.hpp"
 
-#include "std/array.hpp"
-#include "std/utility.hpp"
+#include <array>
+#include <utility>
 
 namespace
 {
@@ -13,7 +13,7 @@ using namespace routing::turns;
 
 /// The order is important. Starting with the most frequent tokens according to
 /// taginfo.openstreetmap.org we minimize the number of the comparisons in ParseSingleLane().
-array<pair<LaneWay, char const *>, static_cast<size_t>(LaneWay::Count)> const g_laneWayNames = {
+array<std::pair<LaneWay, char const *>, static_cast<size_t>(LaneWay::Count)> const g_laneWayNames = {
     {{LaneWay::Through, "through"},
      {LaneWay::Left, "left"},
      {LaneWay::Right, "right"},
@@ -28,7 +28,7 @@ array<pair<LaneWay, char const *>, static_cast<size_t>(LaneWay::Count)> const g_
 static_assert(g_laneWayNames.size() == static_cast<size_t>(LaneWay::Count),
               "Check the size of g_laneWayNames");
 
-array<pair<TurnDirection, char const *>, static_cast<size_t>(TurnDirection::Count)> const g_turnNames = {
+array<std::pair<TurnDirection, char const *>, static_cast<size_t>(TurnDirection::Count)> const g_turnNames = {
     {{TurnDirection::NoTurn, "NoTurn"},
      {TurnDirection::GoStraight, "GoStraight"},
      {TurnDirection::TurnRight, "TurnRight"},
@@ -116,7 +116,7 @@ bool UniNodeId::IsForward() const
   return m_forward;
 }
 
-string DebugPrint(UniNodeId::Type type)
+std::string DebugPrint(UniNodeId::Type type)
 {
   switch (type)
   {
@@ -133,7 +133,7 @@ bool SingleLaneInfo::operator==(SingleLaneInfo const & other) const
   return m_lane == other.m_lane && m_isRecommended == other.m_isRecommended;
 }
 
-string DebugPrint(TurnItem const & turnItem)
+std::string DebugPrint(TurnItem const & turnItem)
 {
   stringstream out;
   out << "TurnItem [ m_index = " << turnItem.m_index
@@ -147,7 +147,7 @@ string DebugPrint(TurnItem const & turnItem)
   return out.str();
 }
 
-string DebugPrint(TurnItemDist const & turnItemDist)
+std::string DebugPrint(TurnItemDist const & turnItemDist)
 {
   stringstream out;
   out << "TurnItemDist [ m_turnItem = " << DebugPrint(turnItemDist.m_turnItem)
@@ -156,7 +156,7 @@ string DebugPrint(TurnItemDist const & turnItemDist)
   return out.str();
 }
 
-string const GetTurnString(TurnDirection turn)
+std::string const GetTurnString(TurnDirection turn)
 {
   for (auto const & p : g_turnNames)
   {
@@ -247,26 +247,26 @@ bool IsLaneWayConformedTurnDirectionApproximately(LaneWay l, TurnDirection t)
   }
 }
 
-void SplitLanes(string const & lanesString, char delimiter, vector<string> & lanes)
+void SplitLanes(std::string const & lanesString, char delimiter, std::vector<std::string> & lanes)
 {
   lanes.clear();
   istringstream lanesStream(lanesString);
-  string token;
-  while (getline(lanesStream, token, delimiter))
+  std::string token;
+  while (std::getline(lanesStream, token, delimiter))
   {
     lanes.push_back(token);
   }
 }
 
-bool ParseSingleLane(string const & laneString, char delimiter, TSingleLane & lane)
+bool ParseSingleLane(std::string const & laneString, char delimiter, TSingleLane & lane)
 {
   lane.clear();
   istringstream laneStream(laneString);
-  string token;
-  while (getline(laneStream, token, delimiter))
+  std::string token;
+  while (std::getline(laneStream, token, delimiter))
   {
     auto const it = find_if(g_laneWayNames.begin(), g_laneWayNames.end(),
-                            [&token](pair<LaneWay, string> const & p)
+                            [&token](std::pair<LaneWay, std::string> const & p)
     {
         return p.second == token;
     });
@@ -277,19 +277,19 @@ bool ParseSingleLane(string const & laneString, char delimiter, TSingleLane & la
   return true;
 }
 
-bool ParseLanes(string lanesString, vector<SingleLaneInfo> & lanes)
+bool ParseLanes(std::string lanesString, std::vector<SingleLaneInfo> & lanes)
 {
   if (lanesString.empty())
     return false;
   lanes.clear();
-  transform(lanesString.begin(), lanesString.end(), lanesString.begin(), tolower);
-  lanesString.erase(remove_if(lanesString.begin(), lanesString.end(), isspace),
+  std::transform(lanesString.begin(), lanesString.end(), lanesString.begin(), ::tolower);
+  lanesString.erase(std::remove_if(lanesString.begin(), lanesString.end(), ::isspace),
                          lanesString.end());
 
-  vector<string> SplitLanesStrings;
+  std::vector<std::string> SplitLanesStrings;
   SingleLaneInfo lane;
   SplitLanes(lanesString, '|', SplitLanesStrings);
-  for (string const & s : SplitLanesStrings)
+  for (std::string const & s : SplitLanesStrings)
   {
     if (!ParseSingleLane(s, ';', lane.m_lane))
     {
@@ -301,10 +301,10 @@ bool ParseLanes(string lanesString, vector<SingleLaneInfo> & lanes)
   return true;
 }
 
-string DebugPrint(LaneWay const l)
+std::string DebugPrint(LaneWay const l)
 {
   auto const it = find_if(g_laneWayNames.begin(), g_laneWayNames.end(),
-                          [&l](pair<LaneWay, string> const & p)
+                          [&l](std::pair<LaneWay, std::string> const & p)
   {
     return p.first == l;
   });
@@ -318,14 +318,14 @@ string DebugPrint(LaneWay const l)
   return it->second;
 }
 
-string DebugPrint(TurnDirection const turn)
+std::string DebugPrint(TurnDirection const turn)
 {
   stringstream out;
   out << "[ " << GetTurnString(turn) << " ]";
   return out.str();
 }
 
-string DebugPrint(PedestrianDirection const l)
+std::string DebugPrint(PedestrianDirection const l)
 {
   switch (l)
   {
@@ -346,7 +346,7 @@ string DebugPrint(PedestrianDirection const l)
   return out.str();
 }
 
-string DebugPrint(SingleLaneInfo const & singleLaneInfo)
+std::string DebugPrint(SingleLaneInfo const & singleLaneInfo)
 {
   stringstream out;
   out << "SingleLaneInfo [ m_isRecommended == " << singleLaneInfo.m_isRecommended

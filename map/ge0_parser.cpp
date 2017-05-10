@@ -24,7 +24,7 @@ Ge0Parser::Ge0Parser()
   }
 }
 
-bool Ge0Parser::Parse(string const & url, url_scheme::ApiPoint & outPoint, double & outZoomLevel)
+bool Ge0Parser::Parse(std::string const & url, url_scheme::ApiPoint & outPoint, double & outZoomLevel)
 {
   // URL format:
   //
@@ -54,7 +54,7 @@ bool Ge0Parser::Parse(string const & url, url_scheme::ApiPoint & outPoint, doubl
   ASSERT(MercatorBounds::ValidLat(outPoint.m_lat), (outPoint.m_lat));
 
   if (url.size() >= NAME_POSITON_IN_URL)
-    outPoint.m_name = DecodeName(url.substr(NAME_POSITON_IN_URL, min(url.size() - NAME_POSITON_IN_URL, MAX_NAME_LENGTH)));
+    outPoint.m_name = DecodeName(url.substr(NAME_POSITON_IN_URL, std::min(url.size() - NAME_POSITON_IN_URL, MAX_NAME_LENGTH)));
   return true;
 }
 
@@ -69,7 +69,7 @@ double Ge0Parser::DecodeZoom(uint8_t const zoomByte)
   return static_cast<double>(zoomByte) / 4 + 4;
 }
 
-void Ge0Parser::DecodeLatLon(string const & url, double & lat, double & lon)
+void Ge0Parser::DecodeLatLon(std::string const & url, double & lat, double & lon)
 {
   int latInt = 0, lonInt = 0;
   DecodeLatLonToInt(url, latInt, lonInt, url.size());
@@ -77,7 +77,7 @@ void Ge0Parser::DecodeLatLon(string const & url, double & lat, double & lon)
   lon = DecodeLonFromInt(lonInt, (1 << MAPSWITHME_MAX_COORD_BITS) - 1);
 }
 
-void Ge0Parser::DecodeLatLonToInt(string const & url, int & lat, int & lon, size_t const bytes)
+void Ge0Parser::DecodeLatLonToInt(std::string const & url, int & lat, int & lon, size_t const bytes)
 {
   int shift = MAPSWITHME_MAX_COORD_BITS - 3;
   for(size_t i = 0; i < bytes; ++i, shift -= 3)
@@ -107,7 +107,7 @@ double Ge0Parser::DecodeLonFromInt(int const lon, int const maxValue)
   return static_cast<double>(lon) / (maxValue + 1.0) * 360.0 - 180;
 }
 
-string Ge0Parser::DecodeName(string name)
+std::string Ge0Parser::DecodeName(std::string name)
 {
   ValidateName(name);
   name = UrlDecode(name);
@@ -115,7 +115,7 @@ string Ge0Parser::DecodeName(string name)
   return name;
 }
 
-void Ge0Parser::SpacesToUnderscore(string & name)
+void Ge0Parser::SpacesToUnderscore(std::string & name)
 {
   for (size_t i = 0; i < name.size(); ++i)
     if (name[i] == ' ')
@@ -124,7 +124,7 @@ void Ge0Parser::SpacesToUnderscore(string & name)
       name[i] = ' ';
 }
 
-void Ge0Parser::ValidateName(string & name)
+void Ge0Parser::ValidateName(std::string & name)
 {
   if (name.empty())
     return;

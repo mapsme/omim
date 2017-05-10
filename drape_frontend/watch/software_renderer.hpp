@@ -22,10 +22,10 @@
 #include "3party/agg/agg_renderer_primitives.h"
 #include "3party/agg/agg_path_storage.h"
 
-#include "std/cstdint.hpp"
-#include "std/map.hpp"
-#include "std/unique_ptr.hpp"
-#include "std/vector.hpp"
+#include <cstdint>
+#include <map>
+#include <memory>
+#include <vector>
 
 namespace df
 {
@@ -37,7 +37,7 @@ class PathWrapper;
 class SoftwareRenderer
 {
 public:
-  SoftwareRenderer(GlyphCache::Params const & glyphCacheParams, string const & resourcesPostfix);
+  SoftwareRenderer(GlyphCache::Params const & glyphCacheParams, std::string const & resourcesPostfix);
 
   void BeginFrame(uint32_t width, uint32_t height, dp::Color const & bgColor);
 
@@ -71,7 +71,7 @@ public:
   /// rects - rect for each glyph
   void CalculateTextMetric(PathInfo const & geometry, dp::FontDecl const & font,
                            strings::UniString const & text,
-                           vector<m2::RectD> & rects);
+                           std::vector<m2::RectD> & rects);
 
   void EndFrame(FrameImage & image);
   m2::RectD FrameRect() const;
@@ -116,9 +116,9 @@ public:
   using TSolidRenderer = agg::renderer_scanline_aa_solid<TBaseRenderer>;
 
 private:
-  unique_ptr<GlyphCache> m_glyphCache;
-  map<string, m2::RectU> m_symbolsIndex;
-  vector<uint8_t> m_symbolsSkin;
+  std::unique_ptr<GlyphCache> m_glyphCache;
+  std::map<std::string, m2::RectU> m_symbolsIndex;
+  std::vector<uint8_t> m_symbolsSkin;
   uint32_t m_skinWidth, m_skinHeight;
 
   std::vector<unsigned char> m_frameBuffer;
@@ -171,7 +171,7 @@ public:
 
 private:
   agg::path_storage  m_storage;
-  vector<PathParams> m_params;
+  std::vector<PathParams> m_params;
 };
 
 }

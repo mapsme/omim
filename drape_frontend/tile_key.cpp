@@ -92,7 +92,7 @@ math::Matrix<float, 4, 4> TileKey::GetTileBasedModelView(ScreenBase const & scre
   return screen.GetModelView(GetGlobalRect().Center(), kShapeCoordScalar);
 }
 
-string DebugPrint(TileKey const & key)
+std::string DebugPrint(TileKey const & key)
 {
   ostringstream out;
   out << "[x = " << key.m_x << ", y = " << key.m_y << ", zoomLevel = "

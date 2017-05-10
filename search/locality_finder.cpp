@@ -12,7 +12,7 @@
 #include "base/assert.hpp"
 #include "base/stl_helpers.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 namespace search
 {
@@ -57,7 +57,7 @@ class LocalitiesLoader
 public:
   LocalitiesLoader(MwmContext const & ctx, Filter const & filter, int8_t lang,
                    LocalityFinder::Holder & holder,
-                   map<MwmSet::MwmId, unordered_set<uint32_t>> & loadedIds)
+                   map<MwmSet::MwmId, std::unordered_set<uint32_t>> & loadedIds)
     : m_ctx(ctx)
     , m_filter(filter)
     , m_lang(lang)
@@ -97,7 +97,7 @@ public:
       return;
 
     // read item
-    string name;
+    std::string name;
     if (!ft.GetName(m_lang, name) && !ft.GetName(0, name))
       return;
 
@@ -113,17 +113,17 @@ private:
   int8_t const m_lang;
 
   LocalityFinder::Holder & m_holder;
-  unordered_set<uint32_t> & m_loadedIds;
+  std::unordered_set<uint32_t> & m_loadedIds;
 };
 }  // namespace
 
 // LocalityItem ------------------------------------------------------------------------------------
-LocalityItem::LocalityItem(string const & name, m2::PointD const & center, uint64_t population)
+LocalityItem::LocalityItem(std::string const & name, m2::PointD const & center, uint64_t population)
   : m_name(name), m_center(center), m_population(population)
 {
 }
 
-string DebugPrint(LocalityItem const & item)
+std::string DebugPrint(LocalityItem const & item)
 {
   stringstream ss;
   ss << "Name = " << item.m_name << ", Center = " << DebugPrint(item.m_center)
@@ -132,7 +132,7 @@ string DebugPrint(LocalityItem const & item)
 }
 
 // LocalitySelector --------------------------------------------------------------------------------
-LocalitySelector::LocalitySelector(string & name, m2::PointD const & p)
+LocalitySelector::LocalitySelector(std::string & name, m2::PointD const & p)
   : m_name(name)
   , m_p(p)
   , m_bestScore(numeric_limits<double>::max())
@@ -216,7 +216,7 @@ void LocalityFinder::SetLanguage(int8_t lang)
   m_lang = lang;
 }
 
-void LocalityFinder::GetLocality(m2::PointD const & p, string & name)
+void LocalityFinder::GetLocality(m2::PointD const & p, std::string & name)
 {
   m2::RectD const crect = m_cities.GetRect(p);
   m2::RectD const vrect = m_villages.GetRect(p);
@@ -256,7 +256,7 @@ void LocalityFinder::LoadVicinity(m2::PointD const & p, bool loadCities, bool lo
       if (!m_ranks)
         m_ranks = RankTable::Load(value.m_cont);
       if (!m_ranks)
-        m_ranks = make_unique<DummyRankTable>();
+        m_ranks = my::make_unique<DummyRankTable>();
 
       MwmContext ctx(move(handle));
       ctx.ForEachIndex(crect,

@@ -5,7 +5,7 @@
 #include "base/assert.hpp"
 #include "base/logging.hpp"
 
-#include "std/cmath.hpp"
+#include <cmath>
 
 double constexpr kPerspectiveAngleFOV = math::pi / 3.0;
 double constexpr kMaxPerspectiveAngle1 = math::pi4;
@@ -140,7 +140,7 @@ void ScreenBase::SetFromRects(m2::AnyRectD const & glbRect, m2::RectD const & px
   double hScale = glbRect.GetLocalRect().SizeX() / pxRect.SizeX();
   double vScale = glbRect.GetLocalRect().SizeY() / pxRect.SizeY();
 
-  m_Scale = max(hScale, vScale);
+  m_Scale = std::max(hScale, vScale);
   m_Angle = glbRect.Angle();
   m_Org = glbRect.GlobalCenter();
 
@@ -335,10 +335,10 @@ double ScreenBase::CalculateScale3d(double rotationAngle) const
   double const cameraZ = 1.0 / tan(halfFOV);
 
   // Ratio of the expanded plane's size to the original size.
-  double const y3dScale = cos(rotationAngle) + sin(rotationAngle) * tan(halfFOV + rotationAngle);
-  double const x3dScale = 1.0 + 2 * sin(rotationAngle) * cos(halfFOV) / (cameraZ * cos(halfFOV + rotationAngle));
+  double const y3dScale = std::cos(rotationAngle) + std::sin(rotationAngle) * tan(halfFOV + rotationAngle);
+  double const x3dScale = 1.0 + 2 * std::sin(rotationAngle) * std::cos(halfFOV) / (cameraZ * std::cos(halfFOV + rotationAngle));
 
-  return max(x3dScale, y3dScale);
+  return std::max(x3dScale, y3dScale);
 }
 
 m2::RectD ScreenBase::CalculatePixelRect(double scale) const
@@ -398,25 +398,25 @@ void ScreenBase::SetRotationAngle(double rotationAngle)
   double const halfFOV = m_3dFOV / 2.0;
   double const cameraZ = 1.0 / tan(halfFOV);
 
-  double const offsetZ = cameraZ + sin(m_3dAngleX) * m_3dScale;
-  double const offsetY = cos(m_3dAngleX) * m_3dScale - 1.0;
+  double const offsetZ = cameraZ + std::sin(m_3dAngleX) * m_3dScale;
+  double const offsetY = std::cos(m_3dAngleX) * m_3dScale - 1.0;
 
   Matrix3dT scaleM = math::Identity<double, 4>();
   scaleM(0, 0) = m_3dScale;
   scaleM(1, 1) = m_3dScale;
 
   Matrix3dT rotateM = math::Identity<double, 4>();
-  rotateM(1, 1) = cos(m_3dAngleX);
-  rotateM(1, 2) = sin(m_3dAngleX);
+  rotateM(1, 1) = std::cos(m_3dAngleX);
+  rotateM(1, 2) = std::sin(m_3dAngleX);
   rotateM(2, 1) = -sin(m_3dAngleX);
-  rotateM(2, 2) = cos(m_3dAngleX);
+  rotateM(2, 2) = std::cos(m_3dAngleX);
 
   Matrix3dT translateM = math::Identity<double, 4>();
   translateM(3, 1) = offsetY;
   translateM(3, 2) = offsetZ;
 
   Matrix3dT projectionM = math::Zero<double, 4>();
-  m_3dFarZ = cameraZ + 2.0 * sin(m_3dAngleX) * m_3dScale;
+  m_3dFarZ = cameraZ + 2.0 * std::sin(m_3dAngleX) * m_3dScale;
   projectionM(0, 0) = projectionM(1, 1) = cameraZ;
   projectionM(2, 2) = m_3dAngleX != 0.0 ? (m_3dFarZ + m_3dNearZ) / (m_3dFarZ - m_3dNearZ)
                                         : 0.0;

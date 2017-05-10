@@ -7,7 +7,7 @@ namespace indexer
 {
 template <class TFeaturesVector, typename TWriter>
 void BuildIndex(feature::DataHeader const & header, TFeaturesVector const & features,
-                TWriter & writer, string const & tmpFilePrefix)
+                TWriter & writer, std::string const & tmpFilePrefix)
   {
     LOG(LINFO, ("Building scale index."));
     uint64_t indexSize;
@@ -20,5 +20,5 @@ void BuildIndex(feature::DataHeader const & header, TFeaturesVector const & feat
   }
 
   // doesn't throw exceptions
-  bool BuildIndexFromDataFile(string const & datFile, string const & tmpFile);
+  bool BuildIndexFromDataFile(std::string const & datFile, std::string const & tmpFile);
 }

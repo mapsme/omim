@@ -5,46 +5,46 @@
 
 namespace my
 {
-void GetNameWithoutExt(string & name)
+void GetNameWithoutExt(std::string & name)
 {
-  string::size_type const i = name.rfind('.');
-  if (i != string::npos)
+  std::string::size_type const i = name.rfind('.');
+  if (i != std::string::npos)
     name.erase(i);
 }
 
-string FilenameWithoutExt(string name)
+std::string FilenameWithoutExt(std::string name)
 {
   GetNameWithoutExt(name);
   return name;
 }
 
-string GetFileExtension(string const & name)
+std::string GetFileExtension(std::string const & name)
 {
   size_t const pos = name.find_last_of("./\\");
-  return ((pos != string::npos && name[pos] == '.') ? name.substr(pos) : string());
+  return ((pos != std::string::npos && name[pos] == '.') ? name.substr(pos) : std::string());
 }
 
-void GetNameFromFullPath(string & name)
+void GetNameFromFullPath(std::string & name)
 {
-  string::size_type const i = name.find_last_of("/\\");
-  if (i != string::npos)
+  std::string::size_type const i = name.find_last_of("/\\");
+  if (i != std::string::npos)
     name = name.substr(i+1);
 }
 
-string GetDirectory(string const & name)
+std::string GetDirectory(std::string const & name)
 {
-  string const sep = GetNativeSeparator();
+  std::string const sep = GetNativeSeparator();
   size_t const sepSize = sep.size();
 
-  string::size_type i = name.rfind(sep);
-  if (i == string::npos)
+  std::string::size_type i = name.rfind(sep);
+  if (i == std::string::npos)
     return ".";
   while (i > sepSize && (name.substr(i - sepSize, sepSize) == sep))
     i -= sepSize;
   return i == 0 ? sep : name.substr(0, i);
 }
 
-string GetNativeSeparator()
+std::string GetNativeSeparator()
 {
 #ifdef OMIM_OS_WINDOWS
     return "\\";
@@ -53,26 +53,26 @@ string GetNativeSeparator()
 #endif
 }
 
-string JoinFoldersToPath(const string & folder, const string & file)
+std::string JoinFoldersToPath(const std::string & folder, const std::string & file)
 {
   return my::AddSlashIfNeeded(folder) + file;
 }
 
-string JoinFoldersToPath(initializer_list<string> const & folders, const string & file)
+std::string JoinFoldersToPath(std::initializer_list<std::string> const & folders, const std::string & file)
 {
-  string result;
-  for (string const & s : folders)
+  std::string result;
+  for (std::string const & s : folders)
     result += AddSlashIfNeeded(s);
 
   result += file;
   return result;
 }
 
-string AddSlashIfNeeded(string const & path)
+std::string AddSlashIfNeeded(std::string const & path)
 {
-  string const sep = GetNativeSeparator();
-  string::size_type const pos = path.rfind(sep);
-  if ((pos != string::npos) && (pos + sep.size() == path.size()))
+  std::string const sep = GetNativeSeparator();
+  std::string::size_type const pos = path.rfind(sep);
+  if ((pos != std::string::npos) && (pos + sep.size() == path.size()))
     return path;
   return path + sep;
 }

@@ -4,8 +4,8 @@
 
 #include "base/matrix.hpp"
 
-#include "std/cmath.hpp"
-#include "std/string.hpp"
+#include <cmath>
+#include <string>
 
 
 namespace ang
@@ -19,8 +19,8 @@ namespace ang
 
   public:
     Angle() : m_val(0), m_sin(0), m_cos(1) {}
-    Angle(T const & val) : m_val(val), m_sin(::sin(val)), m_cos(::cos(val)) {}
-    Angle(T const & sin, T const & cos) : m_val(::atan2(sin, cos)), m_sin(sin), m_cos(cos) {}
+    Angle(T const & val) : m_val(val), m_sin(std::sin(val)), m_cos(std::cos(val)) {}
+    Angle(T const & sin, T const & cos) : m_val(std::atan2(sin, cos)), m_sin(sin), m_cos(cos) {}
 
     T const & val() const
     {
@@ -46,13 +46,13 @@ namespace ang
       pt0 *= m;
 
       m_val = atan2(pt1.y - pt0.y, pt1.x - pt0.x);
-      m_sin = ::sin(m_val);
-      m_cos = ::cos(m_val);
+      m_sin = std::sin(m_val);
+      m_cos = std::cos(m_val);
 
       return *this;
     }
 
-    friend string DebugPrint(Angle<T> const & ang)
+    friend std::string DebugPrint(Angle<T> const & ang)
     {
       return DebugPrint(ang.m_val);
     }

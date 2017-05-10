@@ -3,8 +3,8 @@
 
 #include "base/string_utils.hpp"
 
-#include "std/string.hpp"
-#include "std/vector.hpp"
+#include <string>
+#include <vector>
 
 namespace search
 {
@@ -25,7 +25,7 @@ public:
 
   private:
     friend class KeywordMatcher;
-    friend string DebugPrint(ScoreT const & score);
+    friend std::string DebugPrint(ScoreT const & score);
 
     uint32_t m_sumTokenMatchDistance;
     uint32_t m_nameTokensMatched;
@@ -44,13 +44,13 @@ public:
 
   /// @return Score of the name (greater is better).
   //@{
-  ScoreT Score(string const & name) const;
+  ScoreT Score(std::string const & name) const;
   ScoreT Score(StringT const & name) const;
   ScoreT Score(StringT const * tokens, size_t count) const;
   //@}
 
 private:
-  vector<StringT> m_keywords;
+  std::vector<StringT> m_keywords;
   StringT m_prefix;
 };
 

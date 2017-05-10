@@ -8,8 +8,8 @@
 
 #include "3party/osrm/osrm-backend/data_structures/query_edge.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/unordered_map.hpp"
+#include <algorithm>
+#include <unordered_map>
 
 
 namespace routing
@@ -27,7 +27,7 @@ struct RoutingMapping
   /// @postcondition IsValid() == false.
   RoutingMapping() : m_error(IRouter::ResultCode::RouteFileNotExist), m_pIndex(nullptr) {}
   /// @param countryFile Country file name without extension.
-  RoutingMapping(string const & countryFile, MwmSet & index);
+  RoutingMapping(std::string const & countryFile, MwmSet & index);
   ~RoutingMapping();
 
   void Map();
@@ -47,7 +47,7 @@ struct RoutingMapping
    * Returns mentioned country file. Works even the LocalCountryFile does not exist and
    * the lock was not taken.
    */
-  string const & GetCountryName() const { return m_countryFile; }
+  std::string const & GetCountryName() const { return m_countryFile; }
 
   Index::MwmId const & GetMwmId() const { return m_mwmId; }
 
@@ -61,7 +61,7 @@ private:
   size_t m_mapCounter;
   size_t m_facadeCounter;
   bool m_crossContextLoaded;
-  string m_countryFile;
+  std::string m_countryFile;
   FilesMappingContainer m_container;
   IRouter::ResultCode m_error;
   MwmSet::MwmHandle m_handle;
@@ -104,14 +104,14 @@ public:
 
   TRoutingMappingPtr GetMappingByPoint(m2::PointD const & point);
 
-  TRoutingMappingPtr GetMappingByName(string const & mapName);
+  TRoutingMappingPtr GetMappingByName(std::string const & mapName);
 
   TRoutingMappingPtr GetMappingById(Index::MwmId const & id);
 
   template <class TFunctor>
   void ForEachMapping(TFunctor toDo)
   {
-    for_each(m_mapping.begin(), m_mapping.end(), toDo);
+    std::for_each(m_mapping.begin(), m_mapping.end(), toDo);
   }
 
   void Clear() { m_mapping.clear(); }
@@ -119,7 +119,7 @@ public:
 private:
   TCountryFileFn m_countryFileFn;
   // TODO (ldragunov) Rewrite to mwmId.
-  unordered_map<string, TRoutingMappingPtr> m_mapping;
+  std::unordered_map<std::string, TRoutingMappingPtr> m_mapping;
   MwmSet & m_index;
 };
 

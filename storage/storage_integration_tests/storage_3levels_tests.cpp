@@ -9,8 +9,8 @@
 
 #include "coding/file_name_utils.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/unique_ptr.hpp"
+#include <algorithm>
+#include <memory>
 
 #include "defines.hpp"
 
@@ -19,7 +19,7 @@ using namespace storage;
 
 namespace
 {
-string const kCountryId = "Germany"; // Germany has 3-levels hierachy
+std::string const kCountryId = "Germany"; // Germany has 3-levels hierachy
 
 int GetLevelCount(Storage & storage, TCountryId const & countryId)
 {
@@ -27,7 +27,7 @@ int GetLevelCount(Storage & storage, TCountryId const & countryId)
   storage.GetChildren(countryId, children);
   int level = 0;
   for (auto const & child : children)
-    level = max(level, GetLevelCount(storage, child));
+    level = std::max(level, GetLevelCount(storage, child));
   return 1 + level;
 }
 
@@ -41,12 +41,12 @@ UNIT_TEST(SmallMwms_3levels_Test)
 
   Framework f;
   auto & storage = f.GetStorage();
-  string const version = strings::to_string(storage.GetCurrentDataVersion());
+  std::string const version = strings::to_string(storage.GetCurrentDataVersion());
   TEST(version::IsSingleMwm(storage.GetCurrentDataVersion()), ());
 
   TEST_EQUAL(3, GetLevelCount(storage, kCountryId), ());
 
-  string const mapDir = my::JoinFoldersToPath(platform.WritableDir(), version);
+  std::string const mapDir = my::JoinFoldersToPath(platform.WritableDir(), version);
 
   auto onProgressFn = [&](TCountryId const & countryId, TLocalAndRemoteSize const & mapSize)
   {

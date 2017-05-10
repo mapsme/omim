@@ -12,10 +12,12 @@
 #include "base/math.hpp"
 #include "base/thread.hpp"
 
-#include "std/cmath.hpp"
+#include <cmath>
 
 using namespace tracking;
 using namespace platform::tests_support;
+using namespace std;
+using namespace std::chrono;
 
 namespace
 {

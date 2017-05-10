@@ -6,9 +6,9 @@
 
 #include "base/macros.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/initializer_list.hpp"
-#include "std/limits.hpp"
+#include <algorithm>
+#include <initializer_list>
+#include <limits>
 
 namespace routing
 {
@@ -24,18 +24,18 @@ VehicleModel::VehicleModel(Classificator const & c, InitListT const & speedLimit
 {
   for (auto const & v : speedLimits)
   {
-    m_maxSpeedKMpH = max(m_maxSpeedKMpH, v.m_speedKMpH);
-    m_types[c.GetTypeByPath(vector<string>(v.m_types, v.m_types + 2))] = v.m_speedKMpH;
+    m_maxSpeedKMpH = std::max(m_maxSpeedKMpH, v.m_speedKMpH);
+    m_types[c.GetTypeByPath(std::vector<std::string>(v.m_types, v.m_types + 2))] = v.m_speedKMpH;
   }
 }
 
 void VehicleModel::SetAdditionalRoadTypes(Classificator const & c,
-                                          vector<AdditionalRoadTags> const & additionalTags)
+                                          std::vector<AdditionalRoadTags> const & additionalTags)
 {
   for (auto const & tag : additionalTags)
   {
     m_addRoadTypes.emplace_back(c, tag);
-    m_maxSpeedKMpH = max(m_maxSpeedKMpH, tag.m_speedKMpH);
+    m_maxSpeedKMpH = std::max(m_maxSpeedKMpH, tag.m_speedKMpH);
   }
 }
 
@@ -60,11 +60,11 @@ double VehicleModel::GetMinTypeSpeed(feature::TypesHolder const & types) const
     uint32_t const type = ftypes::BaseChecker::PrepareToMatch(t, 2);
     auto it = m_types.find(type);
     if (it != m_types.end())
-      speed = min(speed, it->second);
+      speed = std::min(speed, it->second);
 
     auto const addRoadInfoIter = FindRoadType(t);
     if (addRoadInfoIter != m_addRoadTypes.cend())
-      speed = min(speed, addRoadInfoIter->m_speedKMpH);
+      speed = std::min(speed, addRoadInfoIter->m_speedKMpH);
   }
   if (speed <= m_maxSpeedKMpH)
     return speed;
@@ -118,11 +118,11 @@ IVehicleModel::RoadAvailability VehicleModel::GetRoadAvailability(feature::Types
 vector<VehicleModel::AdditionalRoadType>::const_iterator VehicleModel::FindRoadType(
     uint32_t type) const
 {
-  return find_if(m_addRoadTypes.begin(), m_addRoadTypes.cend(),
+  return std::find_if(m_addRoadTypes.begin(), m_addRoadTypes.cend(),
                  [&type](AdditionalRoadType const & t) { return t.m_type == type; });
 }
 
-string DebugPrint(IVehicleModel::RoadAvailability const l)
+std::string DebugPrint(IVehicleModel::RoadAvailability const l)
 {
   switch (l)
   {

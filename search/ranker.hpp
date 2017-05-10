@@ -19,10 +19,10 @@
 
 #include "base/string_utils.hpp"
 
-#include "std/set.hpp"
-#include "std/string.hpp"
-#include "std/utility.hpp"
-#include "std/vector.hpp"
+#include <set>
+#include <string>
+#include <utility>
+#include <vector>
 
 class CategoriesHolder;
 class Index;
@@ -48,12 +48,12 @@ public:
     int8_t m_currentLocaleCode = CategoriesHolder::kEnglishCode;
     m2::RectD m_viewport;
     m2::PointD m_position;
-    string m_pivotRegion;
-    set<uint32_t> m_preferredTypes;
+    std::string m_pivotRegion;
+    std::set<uint32_t> m_preferredTypes;
     bool m_suggestsEnabled = false;
     bool m_viewportSearch = false;
 
-    string m_query;
+    std::string m_query;
     buffer_vector<strings::UniString, 32> m_tokens;
     // Prefix of the last token in the query.
     // We need it here to make suggestions.
@@ -73,43 +73,43 @@ public:
   static size_t const kBatchSize;
 
   Ranker(Index const & index, storage::CountryInfoGetter const & infoGetter, Emitter & emitter,
-         CategoriesHolder const & categories, vector<Suggest> const & suggests,
+         CategoriesHolder const & categories, std::vector<Suggest> const & suggests,
          VillagesCache & villagesCache, my::Cancellable const & cancellable);
   virtual ~Ranker() = default;
 
   void Init(Params const & params, Geocoder::Params const & geocoderParams);
 
-  bool IsResultExists(PreResult2 const & p, vector<IndexedValue> const & values);
+  bool IsResultExists(PreResult2 const & p, std::vector<IndexedValue> const & values);
 
-  void MakePreResult2(Geocoder::Params const & params, vector<IndexedValue> & cont);
+  void MakePreResult2(Geocoder::Params const & params, std::vector<IndexedValue> & cont);
 
   Result MakeResult(PreResult2 const & r) const;
   void MakeResultHighlight(Result & res) const;
 
-  void GetSuggestion(string const & name, string & suggest) const;
+  void GetSuggestion(std::string const & name, std::string & suggest) const;
   void SuggestStrings();
-  void MatchForSuggestions(strings::UniString const & token, int8_t locale, string const & prolog);
-  void GetBestMatchName(FeatureType const & f, string & name) const;
-  void ProcessSuggestions(vector<IndexedValue> & vec) const;
+  void MatchForSuggestions(strings::UniString const & token, int8_t locale, std::string const & prolog);
+  void GetBestMatchName(FeatureType const & f, std::string & name) const;
+  void ProcessSuggestions(std::vector<IndexedValue> & vec) const;
 
-  virtual void SetPreResults1(vector<PreResult1> && preResults1) { m_preResults1 = move(preResults1); }
+  virtual void SetPreResults1(std::vector<PreResult1> && preResults1) { m_preResults1 = std::move(preResults1); }
   virtual void UpdateResults(bool lastUpdate);
 
   void ClearCaches();
 
   inline void SetLocalityFinderLanguage(int8_t code) { m_localities.SetLanguage(code); }
 
-  inline void SetLanguage(pair<int, int> const & ind, int8_t lang)
+  inline void SetLanguage(std::pair<int, int> const & ind, int8_t lang)
   {
     m_keywordsScorer.SetLanguage(ind, lang);
   }
 
-  inline int8_t GetLanguage(pair<int, int> const & ind) const
+  inline int8_t GetLanguage(std::pair<int, int> const & ind) const
   {
     return m_keywordsScorer.GetLanguage(ind);
   }
 
-  inline void SetLanguages(vector<vector<int8_t>> const & languagePriorities)
+  inline void SetLanguages(std::vector<std::vector<int8_t>> const & languagePriorities)
   {
     m_keywordsScorer.SetLanguages(languagePriorities);
   }
@@ -137,9 +137,9 @@ private:
   storage::CountryInfoGetter const & m_infoGetter;
   Emitter & m_emitter;
   CategoriesHolder const & m_categories;
-  vector<Suggest> const & m_suggests;
+  std::vector<Suggest> const & m_suggests;
 
-  vector<PreResult1> m_preResults1;
-  vector<IndexedValue> m_tentativeResults;
+  std::vector<PreResult1> m_preResults1;
+  std::vector<IndexedValue> m_tentativeResults;
 };
 }  // namespace search

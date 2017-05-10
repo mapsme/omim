@@ -3,7 +3,7 @@
 #include "search/features_layer.hpp"
 #include "search/intersection_result.hpp"
 
-#include "std/vector.hpp"
+#include <vector>
 
 #if defined(DEBUG)
 #include "base/logging.hpp"
@@ -38,7 +38,7 @@ public:
 
   template <typename TFn>
   void ForEachReachableVertex(FeaturesLayerMatcher & matcher,
-                              vector<FeaturesLayer const *> const & layers, TFn && fn)
+                              std::vector<FeaturesLayer const *> const & layers, TFn && fn)
   {
     if (layers.empty())
       return;
@@ -52,32 +52,32 @@ public:
     my::Timer timer;
 #endif  // defined(DEBUG)
 
-    vector<IntersectionResult> results;
+    std::vector<IntersectionResult> results;
     FindReachableVertices(matcher, layers, results);
 
 #if defined(DEBUG)
     LOG(LINFO, ("Found:", results.size(), "elapsed:", timer.ElapsedSeconds(), "seconds"));
 #endif  // defined(DEBUG)
 
-    for_each(results.begin(), results.end(), forward<TFn>(fn));
+    std::for_each(results.begin(), results.end(), std::forward<TFn>(fn));
   }
 
 private:
   void FindReachableVertices(FeaturesLayerMatcher & matcher,
-                             vector<FeaturesLayer const *> const & layers,
-                             vector<IntersectionResult> & results);
+                             std::vector<FeaturesLayer const *> const & layers,
+                             std::vector<IntersectionResult> & results);
 
   // Tries to find all |reachable| features from the lowest layer in a
   // high level -> low level pass.
   void FindReachableVerticesTopDown(FeaturesLayerMatcher & matcher,
-                                    vector<FeaturesLayer const *> const & layers,
-                                    vector<IntersectionResult> & results);
+                                    std::vector<FeaturesLayer const *> const & layers,
+                                    std::vector<IntersectionResult> & results);
 
   // Tries to find all |reachable| features from the lowest layer in a
   // low level -> high level pass.
   void FindReachableVerticesBottomUp(FeaturesLayerMatcher & matcher,
-                                     vector<FeaturesLayer const *> const & layers,
-                                     vector<IntersectionResult> & results);
+                                     std::vector<FeaturesLayer const *> const & layers,
+                                     std::vector<IntersectionResult> & results);
 
   my::Cancellable const & m_cancellable;
 };

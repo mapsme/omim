@@ -3,17 +3,17 @@
 #include "coding/fixed_bits_ddvector.hpp"
 #include "coding/writer.hpp"
 
-#include "std/initializer_list.hpp"
-#include "std/random.hpp"
+#include <initializer_list>
+#include <random>
 
 
 namespace
 {
 
-template <size_t Bits> void TestWithData(vector<uint32_t> const & lst)
+template <size_t Bits> void TestWithData(std::vector<uint32_t> const & lst)
 {
   using TVector = FixedBitsDDVector<Bits, MemReader>;
-  using TBuffer = vector<uint8_t>;
+  using TBuffer = std::vector<uint8_t>;
   using TWriter = MemWriter<TBuffer>;
 
   TBuffer buf;
@@ -32,7 +32,7 @@ template <size_t Bits> void TestWithData(vector<uint32_t> const & lst)
       builder.PushBack(v);
     }
 
-    pair<uint32_t, uint32_t> expected(optCount, lst.size());
+    std::pair<uint32_t, uint32_t> expected(optCount, lst.size());
     TEST_EQUAL(builder.GetCount(), expected, ());
   }
 
@@ -60,10 +60,10 @@ UNIT_TEST(FixedBitsDDVector_Smoke)
 
 UNIT_TEST(FixedBitsDDVector_Rand)
 {
-  vector<uint32_t> v;
+  std::vector<uint32_t> v;
 
-  default_random_engine gen;
-  uniform_int_distribution<uint32_t> distribution(0, 1000);
+  std::default_random_engine gen;
+  std::uniform_int_distribution<uint32_t> distribution(0, 1000);
 
   size_t constexpr kMaxCount = 1000;
   for (size_t i = 0; i < kMaxCount; ++i)

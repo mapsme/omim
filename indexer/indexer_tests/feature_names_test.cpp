@@ -20,7 +20,7 @@ UNIT_TEST(GetPrefferedNames)
   regionData.SetLanguages({"de", "ko"});
 
   int8_t deviceLang = StrUtf8::GetLangIndex("ru");
-  string primary, secondary;
+  std::string primary, secondary;
   bool const allowTranslit = false;
 
   {
@@ -175,7 +175,7 @@ UNIT_TEST(GetPrefferedNamesLocal)
   regionData.SetLanguages({"kk", "ru"});
 
   int8_t deviceLang = StrUtf8::GetLangIndex("ru");
-  string primary, secondary;
+  std::string primary, secondary;
   bool const allowTranslit = true;
 
   {
@@ -197,7 +197,7 @@ UNIT_TEST(GetReadableName)
 
   int8_t deviceLang = StrUtf8::GetLangIndex("ru");
   bool const allowTranslit = false;
-  string name;
+  std::string name;
 
   {
     StrUtf8 src;
@@ -340,7 +340,7 @@ UNIT_TEST(GetNameForSearchOnBooking)
   {
     StrUtf8 src;
     feature::RegionData regionData;
-    string result;
+    std::string result;
     auto lang = feature::GetNameForSearchOnBooking(regionData, src, result);
     TEST_EQUAL(lang, StrUtf8::kUnsupportedLanguageCode, ());
     TEST(result.empty(), ());
@@ -349,7 +349,7 @@ UNIT_TEST(GetNameForSearchOnBooking)
     StrUtf8 src;
     src.AddString("default", "default name");
     feature::RegionData regionData;
-    string result;
+    std::string result;
     auto lang = feature::GetNameForSearchOnBooking(regionData, src, result);
     TEST_EQUAL(lang, StrUtf8::kDefaultCode, ());
     TEST_EQUAL(result, "default name", ());
@@ -361,7 +361,7 @@ UNIT_TEST(GetNameForSearchOnBooking)
     src.AddString("en", "en name");
     feature::RegionData regionData;
     regionData.SetLanguages({"ko", "en"});
-    string result;
+    std::string result;
     auto lang = feature::GetNameForSearchOnBooking(regionData, src, result);
     TEST_EQUAL(lang, StrUtf8::kDefaultCode, ());
     TEST_EQUAL(result, "default name", ());
@@ -372,7 +372,7 @@ UNIT_TEST(GetNameForSearchOnBooking)
     src.AddString("ko", "ko name");
     feature::RegionData regionData;
     regionData.SetLanguages({"ko"});
-    string result;
+    std::string result;
     auto lang = feature::GetNameForSearchOnBooking(regionData, src, result);
     TEST_EQUAL(lang, StrUtf8::GetLangIndex("ko"), ());
     TEST_EQUAL(result, "ko name", ());
@@ -384,7 +384,7 @@ UNIT_TEST(GetNameForSearchOnBooking)
     src.AddString("de", "de name");
     feature::RegionData regionData;
     regionData.SetLanguages({"de", "ko"});
-    string result;
+    std::string result;
     auto lang = feature::GetNameForSearchOnBooking(regionData, src, result);
     TEST_EQUAL(lang, StrUtf8::GetLangIndex("de"), ());
     TEST_EQUAL(result, "de name", ());
@@ -395,7 +395,7 @@ UNIT_TEST(GetNameForSearchOnBooking)
     src.AddString("ko", "ko name");
     feature::RegionData regionData;
     regionData.SetLanguages({"de", "fr"});
-    string result;
+    std::string result;
     auto lang = feature::GetNameForSearchOnBooking(regionData, src, result);
     TEST_EQUAL(lang, StrUtf8::GetLangIndex("en"), ());
     TEST_EQUAL(result, "en name", ());

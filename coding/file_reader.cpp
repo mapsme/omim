@@ -17,7 +17,7 @@ namespace
       typedef my::FileData base_t;
 
   public:
-    explicit FileDataWithCachedSize(string const & fileName)
+    explicit FileDataWithCachedSize(std::string const & fileName)
       : base_t(fileName, FileData::OP_READ), m_Size(FileData::Size()) {}
 
     uint64_t Size() const { return m_Size; }
@@ -30,7 +30,7 @@ namespace
 class FileReader::FileReaderData
 {
 public:
-  FileReaderData(string const & fileName, uint32_t logPageSize, uint32_t logPageCount)
+  FileReaderData(std::string const & fileName, uint32_t logPageSize, uint32_t logPageCount)
     : m_FileData(fileName), m_ReaderCache(logPageSize, logPageCount)
   {
 #if LOG_FILE_READER_STATS
@@ -68,7 +68,7 @@ private:
 #endif
 };
 
-FileReader::FileReader(string const & fileName, bool withExceptions,
+FileReader::FileReader(std::string const & fileName, bool withExceptions,
                        uint32_t logPageSize, uint32_t logPageCount)
   : BaseType(fileName)
   , m_fileData(new FileReaderData(fileName, logPageSize, logPageCount))
@@ -102,11 +102,11 @@ FileReader FileReader::SubReader(uint64_t pos, uint64_t size) const
   return FileReader(*this, m_offset + pos, size);
 }
 
-unique_ptr<Reader> FileReader::CreateSubReader(uint64_t pos, uint64_t size) const
+std::unique_ptr<Reader> FileReader::CreateSubReader(uint64_t pos, uint64_t size) const
 {
   CheckPosAndSize(pos, size);
   // Can't use make_unique with private constructor.
-  return unique_ptr<Reader>(new FileReader(*this, m_offset + pos, size));
+  return std::unique_ptr<Reader>(new FileReader(*this, m_offset + pos, size));
 }
 
 bool FileReader::AssertPosAndSize(uint64_t pos, uint64_t size) const

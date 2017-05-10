@@ -25,7 +25,7 @@ QLabel * CreateLabel(QWidget & parent)
   return label;
 }
 
-void SetText(QLabel & label, string const & text) {
+void SetText(QLabel & label, std::string const & text) {
   if (text.empty())
   {
     label.hide();
@@ -36,13 +36,13 @@ void SetText(QLabel & label, string const & text) {
   label.show();
 }
 
-string GetResultType(search::Sample::Result const & result)
+std::string GetResultType(search::Sample::Result const & result)
 {
   return strings::JoinStrings(result.m_types, ", ");
 }
 }  // namespace
 
-ResultView::ResultView(string const & name, string const & type, string const & address,
+ResultView::ResultView(std::string const & name, std::string const & type, std::string const & address,
                        QWidget & parent)
   : QWidget(&parent)
 {
@@ -58,7 +58,7 @@ ResultView::ResultView(search::Result const & result, QWidget & parent)
 }
 
 ResultView::ResultView(search::Sample::Result const & result, QWidget & parent)
-  : ResultView(strings::ToUtf8(result.m_name), GetResultType(result), string() /* address */,
+  : ResultView(strings::ToUtf8(result.m_name), GetResultType(result), std::string() /* address */,
                parent)
 {
 }
@@ -119,7 +119,7 @@ void ResultView::Init()
   }
 }
 
-void ResultView::SetContents(string const & name, string const & type, string const & address)
+void ResultView::SetContents(std::string const & name, std::string const & type, std::string const & address)
 {
   SetText(*m_name, name);
   SetText(*m_type, type);
@@ -130,7 +130,7 @@ void ResultView::SetContents(string const & name, string const & type, string co
   m_vital->setChecked(false);
 }
 
-QRadioButton * ResultView::CreateRatioButton(string const & text, QLayout & layout)
+QRadioButton * ResultView::CreateRatioButton(std::string const & text, QLayout & layout)
 {
   QRadioButton * radio = new QRadioButton(QString::fromStdString(text), this /* parent */);
   layout.addWidget(radio);

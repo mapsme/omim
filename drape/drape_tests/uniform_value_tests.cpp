@@ -7,7 +7,7 @@
 
 #include "drape/drape_tests/glmock_functions.hpp"
 
-#include "std/cstring.hpp"
+#include <cstring>
 
 #include <gmock/gmock.h>
 
@@ -18,6 +18,7 @@ using ::testing::IgnoreResult;
 using ::testing::Invoke;
 using ::testing::InSequence;
 using namespace dp;
+using namespace std;
 
 namespace
 {

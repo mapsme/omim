@@ -1,12 +1,12 @@
 #include "clipping.hpp"
 #include "rect_intersect.hpp"
 
-#include "std/vector.hpp"
+#include <vector>
 
 namespace m2
 {
 
-using AddPoligonPoint = function<void(m2::PointD const &)>;
+using AddPoligonPoint = std::function<void(m2::PointD const &)>;
 
 int GetRectSideIndex(int code)
 {
@@ -19,7 +19,7 @@ int GetRectSideIndex(int code)
   return 3;
 }
 
-void InsertCorners(vector<m2::PointD> const & corners,
+void InsertCorners(std::vector<m2::PointD> const & corners,
                    m2::PointD const & p1, m2::PointD const & p2, m2::PointD const & p3,
                    AddPoligonPoint const & addPoligonPoint, int code1, int code2)
 {
@@ -30,7 +30,7 @@ void InsertCorners(vector<m2::PointD> const & corners,
   {
     if (!IsPointInsideTriangle(corners[endCornerInd], p1, p2, p3))
       return;
-    swap(cornerInd, endCornerInd);
+    std::swap(cornerInd, endCornerInd);
   }
 
   while (cornerInd != endCornerInd)
@@ -40,7 +40,7 @@ void InsertCorners(vector<m2::PointD> const & corners,
   }
 }
 
-bool IntersectEdge(m2::RectD const & rect, vector<m2::PointD> const & corners,
+bool IntersectEdge(m2::RectD const & rect, std::vector<m2::PointD> const & corners,
                    m2::PointD const & pp1, m2::PointD const & pp2, m2::PointD const & pp3,
                    AddPoligonPoint const & addPoligonPoint,
                    int prevClipCode, int nextClipCode, int & firstClipCode, int & lastClipCode)
@@ -83,14 +83,14 @@ void ClipTriangleByRect(m2::RectD const & rect, m2::PointD const & p1,
   }
 
   const double kEps = 1e-8;
-  vector<m2::PointD> poligon;
+  std::vector<m2::PointD> poligon;
   auto const addPoligonPoint = [&poligon, kEps](m2::PointD const & pt)
   {
     if (poligon.empty() || !poligon.back().EqualDxDy(pt, kEps))
       poligon.push_back(pt);
   };
 
-  vector<m2::PointD> const corners = { rect.LeftTop(), rect.RightTop(), rect.RightBottom(), rect.LeftBottom() };
+  std::vector<m2::PointD> const corners = { rect.LeftTop(), rect.RightTop(), rect.RightBottom(), rect.LeftBottom() };
 
   int firstClipCode[3];
   int lastClipCode[3];
@@ -131,11 +131,11 @@ void ClipTriangleByRect(m2::RectD const & rect, m2::PointD const & p1,
     resultIterator(poligon[0], poligon[i + 1], poligon[i + 2]);
 }
 
-vector<m2::SharedSpline> ClipSplineByRect(m2::RectD const & rect, m2::SharedSpline const & spline)
+std::vector<m2::SharedSpline> ClipSplineByRect(m2::RectD const & rect, m2::SharedSpline const & spline)
 {
-  vector<m2::SharedSpline> result;
+  std::vector<m2::SharedSpline> result;
 
-  vector<m2::PointD> const & path = spline->GetPath();
+  std::vector<m2::PointD> const & path = spline->GetPath();
   if (path.size() < 2)
     return result;
 

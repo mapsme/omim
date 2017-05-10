@@ -8,8 +8,8 @@
 #include "base/logging.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/iostream.hpp"
-#include "std/map.hpp"
+#include <iostream>
+#include <map>
 
 #include "private.h"
 
@@ -28,23 +28,23 @@ constexpr char const * kGoogleOAuthPart = "/auth/google?referer=%2Foauth%2Fautho
 namespace
 {
 
-string FindAuthenticityToken(string const & body)
+std::string FindAuthenticityToken(std::string const & body)
 {
   auto pos = body.find("name=\"authenticity_token\"");
-  if (pos == string::npos)
-    return string();
-  string const kValue = "value=\"";
+  if (pos == std::string::npos)
+    return std::string();
+  std::string const kValue = "value=\"";
   auto start = body.find(kValue, pos);
-  if (start == string::npos)
-    return string();
+  if (start == std::string::npos)
+    return std::string();
   start += kValue.length();
   auto const end = body.find("\"", start);
-  return end == string::npos ? string() : body.substr(start, end - start);
+  return end == std::string::npos ? std::string() : body.substr(start, end - start);
 }
 
-string BuildPostRequest(map<string, string> const & params)
+std::string BuildPostRequest(std::map<std::string, std::string> const & params)
 {
-  string result;
+  std::string result;
   for (auto it = params.begin(); it != params.end(); ++it)
   {
     if (it != params.begin())
@@ -66,8 +66,8 @@ bool OsmOAuth::IsValid(TUrlRequestToken const & urt) noexcept
   return !(urt.first.empty() || urt.second.first.empty() || urt.second.second.empty());
 }
 
-OsmOAuth::OsmOAuth(string const & consumerKey, string const & consumerSecret,
-                   string const & baseUrl, string const & apiUrl) noexcept
+OsmOAuth::OsmOAuth(std::string const & consumerKey, std::string const & consumerSecret,
+                   std::string const & baseUrl, std::string const & apiUrl) noexcept
   : m_consumerKeySecret(consumerKey, consumerSecret), m_baseUrl(baseUrl), m_apiUrl(apiUrl)
 {
 }
@@ -118,9 +118,9 @@ TKeySecret const & OsmOAuth::GetKeySecret() const noexcept { return m_tokenKeySe
 bool OsmOAuth::IsAuthorized() const noexcept{ return IsValid(m_tokenKeySecret); }
 
 // Opens a login page and extract a cookie and a secret token.
-OsmOAuth::SessionID OsmOAuth::FetchSessionId(string const & subUrl) const
+OsmOAuth::SessionID OsmOAuth::FetchSessionId(std::string const & subUrl) const
 {
-  string const url = m_baseUrl + subUrl + "?cookie_test=true";
+  std::string const url = m_baseUrl + subUrl + "?cookie_test=true";
   HttpClient request(url);
   if (!request.RunHttpRequest())
     MYTHROW(NetworkError, ("FetchSessionId Network error while connecting to", url));
@@ -145,9 +145,9 @@ void OsmOAuth::LogoutUser(SessionID const & sid) const
     MYTHROW(LogoutUserError, (DebugPrint(request)));
 }
 
-bool OsmOAuth::LoginUserPassword(string const & login, string const & password, SessionID const & sid) const
+bool OsmOAuth::LoginUserPassword(std::string const & login, std::string const & password, SessionID const & sid) const
 {
-  map<string, string> const params =
+  std::map<std::string, std::string> const params =
   {
     {"username", login},
     {"password", password},
@@ -176,12 +176,12 @@ bool OsmOAuth::LoginUserPassword(string const & login, string const & password, 
     MYTHROW(UnexpectedRedirect, (DebugPrint(request)));
 
   // m_baseUrl + "/login" means login and/or password are invalid.
-  return request.ServerResponse().find("/login") == string::npos;
+  return request.ServerResponse().find("/login") == std::string::npos;
 }
 
-bool OsmOAuth::LoginSocial(string const & callbackPart, string const & socialToken, SessionID const & sid) const
+bool OsmOAuth::LoginSocial(std::string const & callbackPart, std::string const & socialToken, SessionID const & sid) const
 {
-  string const url = m_baseUrl + callbackPart + socialToken;
+  std::string const url = m_baseUrl + callbackPart + socialToken;
   HttpClient request(url);
   request.SetCookies(sid.m_cookies)
          .SetHandleRedirects(false);
@@ -199,13 +199,13 @@ bool OsmOAuth::LoginSocial(string const & callbackPart, string const & socialTok
     MYTHROW(UnexpectedRedirect, (DebugPrint(request)));
 
   // m_baseUrl + "/login" means login and/or password are invalid.
-  return request.ServerResponse().find("/login") == string::npos;
+  return request.ServerResponse().find("/login") == std::string::npos;
 }
 
 // Fakes a buttons press to automatically accept requested permissions.
-string OsmOAuth::SendAuthRequest(string const & requestTokenKey, SessionID const & sid) const
+std::string OsmOAuth::SendAuthRequest(std::string const & requestTokenKey, SessionID const & sid) const
 {
-  map<string, string> const params =
+  std::map<std::string, std::string> const params =
   {
     {"oauth_token", requestTokenKey},
     {"oauth_callback", ""},
@@ -223,22 +223,22 @@ string OsmOAuth::SendAuthRequest(string const & requestTokenKey, SessionID const
   if (!request.RunHttpRequest())
     MYTHROW(NetworkError, ("SendAuthRequest Network error while connecting to", request.UrlRequested()));
 
-  string const callbackURL = request.UrlReceived();
-  string const vKey = "oauth_verifier=";
+  std::string const callbackURL = request.UrlReceived();
+  std::string const vKey = "oauth_verifier=";
   auto const pos = callbackURL.find(vKey);
-  if (pos == string::npos)
+  if (pos == std::string::npos)
     MYTHROW(SendAuthRequestError, ("oauth_verifier is not found", DebugPrint(request)));
 
   auto const end = callbackURL.find("&", pos);
-  return callbackURL.substr(pos + vKey.length(), end == string::npos ? end : end - pos - vKey.length());
+  return callbackURL.substr(pos + vKey.length(), end == std::string::npos ? end : end - pos - vKey.length());
 }
 
 TRequestToken OsmOAuth::FetchRequestToken() const
 {
   OAuth::Consumer const consumer(m_consumerKeySecret.first, m_consumerKeySecret.second);
   OAuth::Client oauth(&consumer);
-  string const requestTokenUrl = m_baseUrl + "/oauth/request_token";
-  string const requestTokenQuery = oauth.getURLQueryString(OAuth::Http::Get, requestTokenUrl + "?oauth_callback=oob");
+  std::string const requestTokenUrl = m_baseUrl + "/oauth/request_token";
+  std::string const requestTokenQuery = oauth.getURLQueryString(OAuth::Http::Get, requestTokenUrl + "?oauth_callback=oob");
   HttpClient request(requestTokenUrl + "?" + requestTokenQuery);
   if (!request.RunHttpRequest())
     MYTHROW(NetworkError, ("FetchRequestToken Network error while connecting to", request.UrlRequested()));
@@ -252,13 +252,13 @@ TRequestToken OsmOAuth::FetchRequestToken() const
   return { reqToken.key(), reqToken.secret() };
 }
 
-TKeySecret OsmOAuth::FinishAuthorization(TRequestToken const & requestToken, string const & verifier) const
+TKeySecret OsmOAuth::FinishAuthorization(TRequestToken const & requestToken, std::string const & verifier) const
 {
   OAuth::Consumer const consumer(m_consumerKeySecret.first, m_consumerKeySecret.second);
   OAuth::Token const reqToken(requestToken.first, requestToken.second, verifier);
   OAuth::Client oauth(&consumer, &reqToken);
-  string const accessTokenUrl = m_baseUrl + "/oauth/access_token";
-  string const queryString = oauth.getURLQueryString(OAuth::Http::Get, accessTokenUrl, "", true);
+  std::string const accessTokenUrl = m_baseUrl + "/oauth/access_token";
+  std::string const queryString = oauth.getURLQueryString(OAuth::Http::Get, accessTokenUrl, "", true);
   HttpClient request(accessTokenUrl + "?" + queryString);
   if (!request.RunHttpRequest())
     MYTHROW(NetworkError, ("FinishAuthorization Network error while connecting to", request.UrlRequested()));
@@ -280,14 +280,14 @@ TKeySecret OsmOAuth::FetchAccessToken(SessionID const & sid) const
   TRequestToken const requestToken = FetchRequestToken();
 
   // Faking a button press for access rights.
-  string const pin = SendAuthRequest(requestToken.first, sid);
+  std::string const pin = SendAuthRequest(requestToken.first, sid);
   LogoutUser(sid);
 
   // Got pin, exchange it for the access token.
   return FinishAuthorization(requestToken, pin);
 }
 
-bool OsmOAuth::AuthorizePassword(string const & login, string const & password)
+bool OsmOAuth::AuthorizePassword(std::string const & login, std::string const & password)
 {
   SessionID const sid = FetchSessionId();
   if (!LoginUserPassword(login, password, sid))
@@ -296,7 +296,7 @@ bool OsmOAuth::AuthorizePassword(string const & login, string const & password)
   return true;
 }
 
-bool OsmOAuth::AuthorizeFacebook(string const & facebookToken)
+bool OsmOAuth::AuthorizeFacebook(std::string const & facebookToken)
 {
   SessionID const sid = FetchSessionId();
   if (!LoginSocial(kFacebookCallbackPart, facebookToken, sid))
@@ -305,7 +305,7 @@ bool OsmOAuth::AuthorizeFacebook(string const & facebookToken)
   return true;
 }
 
-bool OsmOAuth::AuthorizeGoogle(string const & googleToken)
+bool OsmOAuth::AuthorizeGoogle(std::string const & googleToken)
 {
   SessionID const sid = FetchSessionId();
   if (!LoginSocial(kGoogleCallbackPart, googleToken, sid))
@@ -317,23 +317,23 @@ bool OsmOAuth::AuthorizeGoogle(string const & googleToken)
 OsmOAuth::TUrlRequestToken OsmOAuth::GetFacebookOAuthURL() const
 {
   TRequestToken const requestToken = FetchRequestToken();
-  string const url = m_baseUrl + kFacebookOAuthPart + requestToken.first;
+  std::string const url = m_baseUrl + kFacebookOAuthPart + requestToken.first;
   return TUrlRequestToken(url, requestToken);
 }
 
 OsmOAuth::TUrlRequestToken OsmOAuth::GetGoogleOAuthURL() const
 {
   TRequestToken const requestToken = FetchRequestToken();
-  string const url = m_baseUrl + kGoogleOAuthPart + requestToken.first;
+  std::string const url = m_baseUrl + kGoogleOAuthPart + requestToken.first;
   return TUrlRequestToken(url, requestToken);
 }
 
-bool OsmOAuth::ResetPassword(string const & email) const
+bool OsmOAuth::ResetPassword(std::string const & email) const
 {
-  string const kForgotPasswordUrlPart = "/user/forgot-password";
+  std::string const kForgotPasswordUrlPart = "/user/forgot-password";
 
   SessionID const sid = FetchSessionId(kForgotPasswordUrlPart);
-  map<string, string> const params =
+  std::map<std::string, std::string> const params =
   {
     {"user[email]", email},
     {"authenticity_token", sid.m_token},
@@ -348,12 +348,12 @@ bool OsmOAuth::ResetPassword(string const & email) const
   if (request.ErrorCode() != HTTP::OK)
     MYTHROW(ResetPasswordServerError, (DebugPrint(request)));
 
-  if (request.WasRedirected() && request.UrlReceived().find(m_baseUrl) != string::npos)
+  if (request.WasRedirected() && request.UrlReceived().find(m_baseUrl) != std::string::npos)
     return true;
   return false;
 }
 
-OsmOAuth::Response OsmOAuth::Request(string const & method, string const & httpMethod, string const & body) const
+OsmOAuth::Response OsmOAuth::Request(std::string const & method, std::string const & httpMethod, std::string const & body) const
 {
   if (!IsValid(m_tokenKeySecret))
     MYTHROW(InvalidKeySecret, ("User token (key and secret) are empty."));
@@ -374,10 +374,10 @@ OsmOAuth::Response OsmOAuth::Request(string const & method, string const & httpM
   else
     MYTHROW(UnsupportedApiRequestMethod, ("Unsupported OSM API request method", httpMethod));
 
-  string url = m_apiUrl + kApiVersion + method;
-  string const query = oauth.getURLQueryString(reqType, url);
+  std::string url = m_apiUrl + kApiVersion + method;
+  std::string const query = oauth.getURLQueryString(reqType, url);
   auto const qPos = url.find('?');
-  if (qPos != string::npos)
+  if (qPos != std::string::npos)
     url = url.substr(0, qPos);
 
   HttpClient request(url + "?" + query);
@@ -391,9 +391,9 @@ OsmOAuth::Response OsmOAuth::Request(string const & method, string const & httpM
   return Response(request.ErrorCode(), request.ServerResponse());
 }
 
-OsmOAuth::Response OsmOAuth::DirectRequest(string const & method, bool api) const
+OsmOAuth::Response OsmOAuth::DirectRequest(std::string const & method, bool api) const
 {
-  string const url = api ? m_apiUrl + kApiVersion + method : m_baseUrl + method;
+  std::string const url = api ? m_apiUrl + kApiVersion + method : m_baseUrl + method;
   HttpClient request(url);
   if (!request.RunHttpRequest())
     MYTHROW(NetworkError, ("DirectRequest Network error while connecting to", url));
@@ -403,9 +403,9 @@ OsmOAuth::Response OsmOAuth::DirectRequest(string const & method, bool api) cons
   return Response(request.ErrorCode(), request.ServerResponse());
 }
 
-string DebugPrint(OsmOAuth::Response const & code)
+std::string DebugPrint(OsmOAuth::Response const & code)
 {
-  string r;
+  std::string r;
   switch (code.first)
   {
   case OsmOAuth::HTTP::OK: r = "OK"; break;

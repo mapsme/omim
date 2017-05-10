@@ -3,11 +3,11 @@
 #include "base/base.hpp"
 #include "base/checked_cast.hpp"
 #include "base/exception.hpp"
-#include "std/algorithm.hpp"
-#include "std/shared_ptr.hpp"
-#include "std/cstring.hpp"
-#include "std/string.hpp"
-#include "std/vector.hpp"
+#include <algorithm>
+#include <memory>
+#include <cstring>
+#include <string>
+#include <vector>
 
 // Generic Writer. Not thread-safe.
 class Writer
@@ -54,7 +54,7 @@ public:
       freeSize = size;
     }
 
-    memcpy(&m_Data[m_Pos], p, min(size, static_cast<size_t>(freeSize)));
+    memcpy(&m_Data[m_Pos], p, std::min(size, static_cast<size_t>(freeSize)));
 
     if (size > static_cast<size_t>(freeSize))
     {
@@ -97,7 +97,7 @@ public:
     m_writer.Seek(GetOffset() + pos);
 
     m_pos = pos;
-    m_maxPos = max(m_maxPos, m_pos);
+    m_maxPos = std::max(m_maxPos, m_pos);
   }
 
   inline uint64_t Pos() const override
@@ -112,7 +112,7 @@ public:
     m_writer.Write(p, size);
 
     m_pos += size;
-    m_maxPos = max(m_maxPos, m_pos);
+    m_maxPos = std::max(m_maxPos, m_pos);
   }
 
   inline uint64_t Size() const { return m_maxPos; }
@@ -153,7 +153,7 @@ public:
   WriterT * GetPtr() const { return m_p.get(); }
 
 protected:
-  shared_ptr<WriterT> m_p;
+  std::shared_ptr<WriterT> m_p;
 };
 
 template <typename WriterT>

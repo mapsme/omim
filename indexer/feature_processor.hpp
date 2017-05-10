@@ -8,7 +8,7 @@
 #include "coding/file_reader.hpp"
 #include "coding/file_container.hpp"
 
-#include "std/bind.hpp"
+#include <functional>
 
 
 namespace feature
@@ -17,11 +17,11 @@ template <class ToDo>
 void ForEachFromDat(ModelReaderPtr reader, ToDo && toDo)
   {
     FeaturesVectorTest features((FilesContainerR(reader)));
-    features.GetVector().ForEach(ref(toDo));
+    features.GetVector().ForEach(std::ref(toDo));
   }
 
   template <class ToDo>
-  void ForEachFromDat(string const & fPath, ToDo && toDo)
+  void ForEachFromDat(std::string const & fPath, ToDo && toDo)
   {
     ForEachFromDat(make_unique<FileReader>(fPath), toDo);
   }

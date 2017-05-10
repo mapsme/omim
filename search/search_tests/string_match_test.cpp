@@ -8,7 +8,7 @@
 
 #include "base/stl_add.hpp"
 
-#include "std/cstring.hpp"
+#include <cstring>
 
 
 using namespace search;
@@ -80,7 +80,7 @@ UNIT_TEST(StringMatchCost_PrefixMatch)
 namespace
 {
 
-void TestEqual(vector<UniString> const v, char const * arr[])
+void TestEqual(std::vector<UniString> const v, char const * arr[])
 {
   for (size_t i = 0; i < v.size(); ++i)
   {
@@ -93,10 +93,10 @@ void TestEqual(vector<UniString> const v, char const * arr[])
 
 UNIT_TEST(StringSplit_Smoke)
 {
-  vector<UniString> tokens;
+  std::vector<UniString> tokens;
 
   {
-    string const s = "1/2";
+    std::string const s = "1/2";
     UniString const s1 = NormalizeAndSimplifyString(s);
     TEST_EQUAL(ToUtf8(s1), s, ());
 

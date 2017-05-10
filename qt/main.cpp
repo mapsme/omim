@@ -11,8 +11,8 @@
 #include "base/logging.hpp"
 #include "base/macros.hpp"
 
-#include "std/cstdio.hpp"
-#include "std/cstdlib.hpp"
+#include <cstdio>
+#include <cstdlib>
 
 #include "3party/Alohalytics/src/alohalytics.h"
 
@@ -90,7 +90,7 @@ int main(int argc, char * argv[])
     QStringList buttons;
     buttons << "Accept" << "Decline";
 
-    string buffer;
+    std::string buffer;
     {
       ReaderPtr<Reader> reader = GetPlatform().GetReader("eula.html");
       reader.ReadAsString(buffer);

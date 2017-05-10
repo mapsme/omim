@@ -10,8 +10,8 @@
 
 #include "base/macros.hpp"
 
-#include "std/string.hpp"
-#include "std/queue.hpp"
+#include <string>
+#include <queue>
 
 class Index;
 
@@ -19,14 +19,14 @@ namespace search
 {
 struct ParsedNumber
 {
-  string m_fullN;
+  std::string m_fullN;
   int m_startN, m_endN;
 
 public:
   /// @todo Pass correct "American" notation flag.
-  ParsedNumber(string const & number, bool american = false);
+  ParsedNumber(std::string const & number, bool american = false);
 
-  inline string const & GetNumber() const { return m_fullN; }
+  inline std::string const & GetNumber() const { return m_fullN; }
   inline bool IsOdd() const { return (m_startN % 2 == 1); }
   inline int GetIntNumber() const { return m_startN; }
 
@@ -39,12 +39,12 @@ class House
   m2::PointD m_point;
 
 public:
-  House(string const & number, m2::PointD const & point)
+  House(std::string const & number, m2::PointD const & point)
     : m_number(number), m_point(point)
   {
   }
 
-  inline string const & GetNumber() const { return m_number.GetNumber(); }
+  inline std::string const & GetNumber() const { return m_number.GetNumber(); }
   inline int GetIntNumber() const { return m_number.GetIntNumber(); }
   inline m2::PointD const & GetPosition() const { return m_point; }
 
@@ -88,11 +88,11 @@ struct HouseProjection : public ProjectionOnStreet
 // many features combines to street
 class Street
 {
-  string m_name;
-  string m_processedName;
+  std::string m_name;
+  std::string m_processedName;
 
 public:
-  void SetName(string const & name);
+  void SetName(std::string const & name);
 
   vector<m2::PointD> m_points;
   vector<HouseProjection> m_houses;
@@ -117,8 +117,8 @@ public:
     return s1->m_processedName == s2->m_processedName;
   }
 
-  inline string const & GetDbgName() const { return m_processedName; }
-  inline string const & GetName() const { return m_name; }
+  inline std::string const & GetDbgName() const { return m_processedName; }
+  inline std::string const & GetName() const { return m_name; }
 };
 
 class MergedStreet
@@ -129,8 +129,8 @@ public:
 
   MergedStreet() : m_length(0.0) {}
 
-  string const & GetDbgName() const;
-  string const & GetName() const;
+  std::string const & GetDbgName() const;
+  std::string const & GetName() const;
   bool IsHousesRead() const;
   void FinishReadingHouses();
 
@@ -203,7 +203,7 @@ struct HouseResult
   m2::PointD const & GetOrg() const { return m_house->GetPosition(); }
 };
 
-inline string DebugPrint(HouseResult const & r)
+inline std::string DebugPrint(HouseResult const & r)
 {
   return r.m_house->GetNumber() + ", " + r.m_street->GetName();
 }
@@ -247,7 +247,7 @@ public:
   static int const DEFAULT_OFFSET_M = 200;
   void ReadAllHouses(double offsetMeters = DEFAULT_OFFSET_M);
 
-  void GetHouseForName(string const & houseNumber, vector<HouseResult> & res);
+  void GetHouseForName(std::string const & houseNumber, vector<HouseResult> & res);
 
   void ClearCaches();
   void ClearUnusedStreets(vector<FeatureID> const & ids);

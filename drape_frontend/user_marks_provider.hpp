@@ -6,7 +6,7 @@
 
 #include "base/mutex.hpp"
 
-#include "std/atomic.hpp"
+#include <atomic>
 
 namespace df
 {
@@ -17,7 +17,7 @@ public:
   virtual ~UserPointMark() {}
   virtual m2::PointD const & GetPivot() const = 0;
   virtual m2::PointD GetPixelOffset() const = 0;
-  virtual string GetSymbolName() const  = 0;
+  virtual std::string GetSymbolName() const  = 0;
   virtual dp::Anchor GetAnchor() const = 0;
   virtual float GetDepth() const = 0;
   virtual bool RunCreationAnim() const = 0;
@@ -76,8 +76,8 @@ private:
 
   threads::Mutex m_mutex;
   bool m_isDirty = false;
-  atomic<bool> m_pendingOnDelete;
-  atomic<int> m_counter;
+  std::atomic<bool> m_pendingOnDelete;
+  std::atomic<int> m_counter;
 };
 
 } // namespace df

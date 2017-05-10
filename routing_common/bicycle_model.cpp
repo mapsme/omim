@@ -650,38 +650,38 @@ BicycleModel const & BicycleModel::AllLimitsInstance()
 
 BicycleModelFactory::BicycleModelFactory()
 {
-  m_models[string()] = make_shared<BicycleModel>(g_bicycleLimitsDefault);
-  m_models["Australia"] = make_shared<BicycleModel>(g_bicycleLimitsAustralia);
-  m_models["Austria"] = make_shared<BicycleModel>(g_bicycleLimitsAustria);
-  m_models["Belarus"] = make_shared<BicycleModel>(g_bicycleLimitsBelarus);
-  m_models["Belgium"] = make_shared<BicycleModel>(g_bicycleLimitsBelgium);
-  m_models["Brazil"] = make_shared<BicycleModel>(g_bicycleLimitsBrazil);
-  m_models["Denmark"] = make_shared<BicycleModel>(g_bicycleLimitsDenmark);
-  m_models["France"] = make_shared<BicycleModel>(g_bicycleLimitsFrance);
-  m_models["Finland"] = make_shared<BicycleModel>(g_bicycleLimitsFinland);
-  m_models["Germany"] = make_shared<BicycleModel>(g_bicycleLimitsGermany);
-  m_models["Hungary"] = make_shared<BicycleModel>(g_bicycleLimitsHungary);
-  m_models["Netherlands"] = make_shared<BicycleModel>(g_bicycleLimitsNetherlands);
-  m_models["Norway"] = make_shared<BicycleModel>(g_bicycleLimitsNorway);
-  m_models["Poland"] = make_shared<BicycleModel>(g_bicycleLimitsPoland);
-  m_models["Romania"] = make_shared<BicycleModel>(g_bicycleLimitsRomania);
-  m_models["Russia"] = make_shared<BicycleModel>(g_bicycleLimitsRussia);
-  m_models["Slovakia"] = make_shared<BicycleModel>(g_bicycleLimitsSlovakia);
-  m_models["Switzerland"] = make_shared<BicycleModel>(g_bicycleLimitsSwitzerland);
-  m_models["Turkey"] = make_shared<BicycleModel>(g_bicycleLimitsTurkey);
-  m_models["Ukraine"] = make_shared<BicycleModel>(g_bicycleLimitsUkraine);
-  m_models["UK"] = make_shared<BicycleModel>(g_bicycleLimitsUK);
-  m_models["USA"] = make_shared<BicycleModel>(g_bicycleLimitsUSA);
+  m_models[string()] = std::make_shared<BicycleModel>(g_bicycleLimitsDefault);
+  m_models["Australia"] = std::make_shared<BicycleModel>(g_bicycleLimitsAustralia);
+  m_models["Austria"] = std::make_shared<BicycleModel>(g_bicycleLimitsAustria);
+  m_models["Belarus"] = std::make_shared<BicycleModel>(g_bicycleLimitsBelarus);
+  m_models["Belgium"] = std::make_shared<BicycleModel>(g_bicycleLimitsBelgium);
+  m_models["Brazil"] = std::make_shared<BicycleModel>(g_bicycleLimitsBrazil);
+  m_models["Denmark"] = std::make_shared<BicycleModel>(g_bicycleLimitsDenmark);
+  m_models["France"] = std::make_shared<BicycleModel>(g_bicycleLimitsFrance);
+  m_models["Finland"] = std::make_shared<BicycleModel>(g_bicycleLimitsFinland);
+  m_models["Germany"] = std::make_shared<BicycleModel>(g_bicycleLimitsGermany);
+  m_models["Hungary"] = std::make_shared<BicycleModel>(g_bicycleLimitsHungary);
+  m_models["Netherlands"] = std::make_shared<BicycleModel>(g_bicycleLimitsNetherlands);
+  m_models["Norway"] = std::make_shared<BicycleModel>(g_bicycleLimitsNorway);
+  m_models["Poland"] = std::make_shared<BicycleModel>(g_bicycleLimitsPoland);
+  m_models["Romania"] = std::make_shared<BicycleModel>(g_bicycleLimitsRomania);
+  m_models["Russia"] = std::make_shared<BicycleModel>(g_bicycleLimitsRussia);
+  m_models["Slovakia"] = std::make_shared<BicycleModel>(g_bicycleLimitsSlovakia);
+  m_models["Switzerland"] = std::make_shared<BicycleModel>(g_bicycleLimitsSwitzerland);
+  m_models["Turkey"] = std::make_shared<BicycleModel>(g_bicycleLimitsTurkey);
+  m_models["Ukraine"] = std::make_shared<BicycleModel>(g_bicycleLimitsUkraine);
+  m_models["UK"] = std::make_shared<BicycleModel>(g_bicycleLimitsUK);
+  m_models["USA"] = std::make_shared<BicycleModel>(g_bicycleLimitsUSA);
 }
 
 shared_ptr<IVehicleModel> BicycleModelFactory::GetVehicleModel() const
 {
-  auto const itr = m_models.find(string());
+  auto const itr = m_models.find(std::string());
   ASSERT(itr != m_models.end(), ());
   return itr->second;
 }
 
-shared_ptr<IVehicleModel> BicycleModelFactory::GetVehicleModelForCountry(string const & country) const
+shared_ptr<IVehicleModel> BicycleModelFactory::GetVehicleModelForCountry(std::string const & country) const
 {
   auto const itr = m_models.find(country);
   if (itr != m_models.end())

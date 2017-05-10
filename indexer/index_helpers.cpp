@@ -5,7 +5,7 @@
 
 namespace indexer
 {
-void ForEachFeatureAtPoint(Index const & index, function<void(FeatureType &)> && fn, m2::PointD const & mercator, double toleranceInMeters)
+void ForEachFeatureAtPoint(Index const & index, std::function<void(FeatureType &)> && fn, m2::PointD const & mercator, double toleranceInMeters)
 {
   double constexpr kSelectRectWidthInMeters = 1.1;
   double constexpr kMetersToLinearFeature = 3;

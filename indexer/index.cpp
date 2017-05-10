@@ -54,7 +54,7 @@ unique_ptr<MwmInfo> Index::CreateInfo(platform::LocalCountryFile const & localFi
   auto info = make_unique<MwmInfoEx>();
   info->m_limitRect = h.GetBounds();
 
-  pair<int, int> const scaleR = h.GetScaleRange();
+  std::pair<int, int> const scaleR = h.GetScaleRange();
   info->m_minScale = static_cast<uint8_t>(scaleR.first);
   info->m_maxScale = static_cast<uint8_t>(scaleR.second);
   info->m_version = value.GetMwmVersion();
@@ -62,7 +62,7 @@ unique_ptr<MwmInfo> Index::CreateInfo(platform::LocalCountryFile const & localFi
   feature::RegionData regionData(value.GetRegionData());
   info->m_data = regionData;
 
-  return unique_ptr<MwmInfo>(move(info));
+  return unique_ptr<MwmInfo>(std::move(info));
 }
 
 unique_ptr<MwmSet::MwmValueBase> Index::CreateValue(MwmInfo & info) const
@@ -72,7 +72,7 @@ unique_ptr<MwmSet::MwmValueBase> Index::CreateValue(MwmInfo & info) const
   unique_ptr<MwmValue> p(new MwmValue(localFile));
   p->SetTable(dynamic_cast<MwmInfoEx &>(info));
   ASSERT(p->GetHeader().IsMWMSuitable(), ());
-  return unique_ptr<MwmSet::MwmValueBase>(move(p));
+  return unique_ptr<MwmSet::MwmValueBase>(std::move(p));
 }
 
 pair<MwmSet::MwmId, MwmSet::RegResult> Index::RegisterMap(LocalCountryFile const & localFile)
@@ -96,10 +96,10 @@ Index::FeaturesLoaderGuard::FeaturesLoaderGuard(Index const & index, MwmId const
   m_vector = make_unique<FeaturesVector>(value.m_cont, value.GetHeader(), value.m_table.get());
 }
 
-string Index::FeaturesLoaderGuard::GetCountryFileName() const
+std::string Index::FeaturesLoaderGuard::GetCountryFileName() const
 {
   if (!m_handle.IsAlive())
-    return string();
+    return std::string();
 
   return m_handle.GetValue<MwmValue>()->GetCountryFileName();
 }

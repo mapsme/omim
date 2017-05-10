@@ -53,6 +53,8 @@
 #include "indexer/osm_editor.hpp"
 #include "indexer/scales.hpp"
 
+using namespace std;
+
 /// @todo Probably it's better to join this functionality.
 //@{
 #include "indexer/feature_algo.hpp"

@@ -2,7 +2,7 @@
 
 #include "3party/opening_hours/opening_hours.hpp"
 
-#include "std/chrono.hpp"
+#include <chrono>
 
 namespace osm
 {
@@ -14,7 +14,7 @@ enum class EPlaceState
   CloseSoon
 };
 
-inline string DebugPrint(EPlaceState state)
+inline std::string DebugPrint(EPlaceState state)
 {
   switch (state)
   {
@@ -29,12 +29,12 @@ inline string DebugPrint(EPlaceState state)
   }
 }
 
-inline EPlaceState PlaceStateCheck(string const & openingHours, time_t timestamp)
+inline EPlaceState PlaceStateCheck(std::string const & openingHours, time_t timestamp)
 {
   osmoh::OpeningHours oh(openingHours);
 
-  auto future = system_clock::from_time_t(timestamp);
-  future += minutes(15);
+  auto future = std::chrono::system_clock::from_time_t(timestamp);
+  future += std::chrono::minutes(15);
 
   enum {OPEN = 0, CLOSED = 1};
 
@@ -46,7 +46,7 @@ inline EPlaceState PlaceStateCheck(string const & openingHours, time_t timestamp
   if (oh.IsValid())
   {
     nowState = oh.IsOpen(timestamp) ? OPEN : CLOSED;
-    futureState = oh.IsOpen(system_clock::to_time_t(future)) ? OPEN : CLOSED;
+    futureState = oh.IsOpen(std::chrono::system_clock::to_time_t(future)) ? OPEN : CLOSED;
   }
 
   EPlaceState state[2][2] = {{EPlaceState::Open, EPlaceState::CloseSoon},

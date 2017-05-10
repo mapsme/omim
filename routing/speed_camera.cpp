@@ -12,7 +12,7 @@
 #include "base/string_utils.hpp"
 #include "base/math.hpp"
 
-#include "std/limits.hpp"
+#include <limits>
 
 namespace
 {
@@ -22,13 +22,13 @@ double constexpr kCoordinateEqualityDelta = 0.000001;
 
 namespace routing
 {
-uint8_t const kNoSpeedCamera = numeric_limits<uint8_t>::max();
+uint8_t const kNoSpeedCamera = std::numeric_limits<uint8_t>::max();
 
 uint8_t ReadCameraRestriction(FeatureType & ft)
 {
   using feature::Metadata;
   feature::Metadata const & md = ft.GetMetadata();
-  string const & speed = md.Get(Metadata::FMD_MAXSPEED);
+  std::string const & speed = md.Get(Metadata::FMD_MAXSPEED);
   if (speed.empty())
     return 0;
   int result;

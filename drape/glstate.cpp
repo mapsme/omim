@@ -2,7 +2,7 @@
 #include "drape/glfunctions.hpp"
 
 #include "base/buffer_vector.hpp"
-#include "std/bind.hpp"
+#include <functional>
 
 namespace dp
 {

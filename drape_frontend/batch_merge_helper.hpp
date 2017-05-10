@@ -16,8 +16,8 @@ class BatchMergeHelper
 public:
   static bool IsMergeSupported();
 
-  static void MergeBatches(vector<drape_ptr<RenderGroup>> & batches,
-                           vector<drape_ptr<RenderGroup>> & mergedBatches,
+  static void MergeBatches(std::vector<drape_ptr<RenderGroup>> & batches,
+                           std::vector<drape_ptr<RenderGroup>> & mergedBatches,
                            bool isPerspective);
 };
 

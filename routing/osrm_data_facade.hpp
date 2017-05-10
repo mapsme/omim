@@ -7,7 +7,7 @@
 
 #include "base/bits.hpp"
 
-#include "std/string.hpp"
+#include <string>
 
 #include "defines.hpp"
 

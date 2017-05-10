@@ -6,9 +6,9 @@
 #include "routing/route_point.hpp"
 #include "routing/world_graph.hpp"
 
-#include "std/limits.hpp"
-#include "std/utility.hpp"
-#include "std/vector.hpp"
+#include <limits>
+#include <utility>
+#include <vector>
 
 namespace routing
 {
@@ -65,17 +65,17 @@ public:
   FakeVertex const & GetFinishVertex() const { return m_finish; }
   m2::PointD const & GetPoint(Segment const & segment, bool front);
 
-  static size_t GetRouteNumPoints(vector<Segment> const & route);
-  m2::PointD const & GetRoutePoint(vector<Segment> const & route, size_t pointIndex);
+  static size_t GetRouteNumPoints(std::vector<Segment> const & route);
+  m2::PointD const & GetRoutePoint(std::vector<Segment> const & route, size_t pointIndex);
 
-  void GetEdgesList(Segment const & segment, bool isOutgoing, vector<SegmentEdge> & edges);
+  void GetEdgesList(Segment const & segment, bool isOutgoing, std::vector<SegmentEdge> & edges);
 
-  void GetOutgoingEdgesList(TVertexType const & segment, vector<TEdgeType> & edges)
+  void GetOutgoingEdgesList(TVertexType const & segment, std::vector<TEdgeType> & edges)
   {
     GetEdgesList(segment, true /* isOutgoing */, edges);
   }
 
-  void GetIngoingEdgesList(TVertexType const & segment, vector<TEdgeType> & edges)
+  void GetIngoingEdgesList(TVertexType const & segment, std::vector<TEdgeType> & edges)
   {
     GetEdgesList(segment, false /* isOutgoing */, edges);
   }
@@ -105,18 +105,18 @@ public:
 
 private:
   void GetFakeToNormalEdges(FakeVertex const & fakeVertex, bool isOutgoing,
-                            vector<SegmentEdge> & edges);
+                            std::vector<SegmentEdge> & edges);
   void GetFakeToNormalEdge(FakeVertex const & fakeVertex, bool forward,
-                           vector<SegmentEdge> & edges);
+                           std::vector<SegmentEdge> & edges);
   void GetNormalToFakeEdge(Segment const & segment, FakeVertex const & fakeVertex,
                            Segment const & fakeSegment, bool isOutgoing,
-                           vector<SegmentEdge> & edges);
+                           std::vector<SegmentEdge> & edges);
   /// \brief If |isOutgoing| == true fills |edges| with SegmentEdge(s) which connects
   /// |fakeVertex| with all exits of mwm.
   /// \brief If |isOutgoing| == false fills |edges| with SegmentEdge(s) which connects
   /// all enters to mwm with |fakeVertex|.
   void ConnectLeapToTransitions(FakeVertex const & fakeVertex, bool isOutgoing,
-                                vector<SegmentEdge> & edges);
+                                std::vector<SegmentEdge> & edges);
 
   WorldGraph & m_graph;
   FakeVertex const m_start;

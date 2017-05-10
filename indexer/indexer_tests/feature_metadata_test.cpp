@@ -5,14 +5,14 @@
 #include "coding/reader.hpp"
 #include "coding/writer.hpp"
 
-#include "std/map.hpp"
+#include <map>
 #include "std/target_os.hpp"
 
 using feature::Metadata;
 
 namespace
 {
-map<Metadata::EType, string> const kKeyValues =
+std::map<Metadata::EType, std::string> const kKeyValues =
 {
   {Metadata::FMD_ELE, "12345"},
   {Metadata::FMD_CUISINE, "greek;mediterranean"},
@@ -73,7 +73,7 @@ UNIT_TEST(Feature_Serialization)
 
   {
     Metadata serialized;
-    vector<char> buffer;
+    std::vector<char> buffer;
     MemWriter<decltype(buffer)> writer(buffer);
     original.Serialize(writer);
 
@@ -105,7 +105,7 @@ UNIT_TEST(Feature_Metadata_RegionData_Languages)
 {
   {
     feature::RegionData rd;
-    vector<string> const langs = {"ru", "en", "et"};
+    std::vector<std::string> const langs = {"ru", "en", "et"};
     rd.SetLanguages(langs);
     TEST(rd.HasLanguage(StringUtf8Multilang::GetLangIndex("ru")), ());
     TEST(rd.HasLanguage(StringUtf8Multilang::GetLangIndex("en")), ());
@@ -115,7 +115,7 @@ UNIT_TEST(Feature_Metadata_RegionData_Languages)
   }
   {
     feature::RegionData rd;
-    vector<string> const langs = {"et"};
+    std::vector<std::string> const langs = {"et"};
     rd.SetLanguages(langs);
     TEST(rd.HasLanguage(StringUtf8Multilang::GetLangIndex("et")), ());
     TEST(rd.IsSingleLanguage(StringUtf8Multilang::GetLangIndex("et")), ());

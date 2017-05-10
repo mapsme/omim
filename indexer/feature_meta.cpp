@@ -1,6 +1,6 @@
 #include "indexer/feature_meta.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 #include "std/target_os.hpp"
 
 namespace feature
@@ -16,21 +16,21 @@ char constexpr const * kBaseWikiUrl =
 #endif
 } // namespace
 
-string Metadata::GetWikiURL() const
+std::string Metadata::GetWikiURL() const
 {
-  string v = this->Get(FMD_WIKIPEDIA);
+  std::string v = this->Get(FMD_WIKIPEDIA);
   if (v.empty())
     return v;
 
   auto const colon = v.find(':');
-  if (colon == string::npos)
+  if (colon == std::string::npos)
     return v;
 
   // Spaces and % sign should be replaced in urls.
-  replace(v.begin() + colon, v.end(), ' ', '_');
-  string::size_type percent, pos = colon;
-  string const escapedPercent("%25");
-  while ((percent = v.find('%', pos)) != string::npos)
+  std::replace(v.begin() + colon, v.end(), ' ', '_');
+  std::string::size_type percent, pos = colon;
+  std::string const escapedPercent("%25");
+  while ((percent = v.find('%', pos)) != std::string::npos)
   {
     v.replace(percent, 1, escapedPercent);
     pos = percent + escapedPercent.size();
@@ -42,7 +42,7 @@ string Metadata::GetWikiURL() const
 }
 
 // static
-bool Metadata::TypeFromString(string const & k, Metadata::EType & outType)
+bool Metadata::TypeFromString(std::string const & k, Metadata::EType & outType)
 {
   if (k == "cuisine")
     outType = Metadata::FMD_CUISINE;
@@ -117,10 +117,10 @@ bool Metadata::IsSponsoredType(Metadata::EType const & type)
   }
 }
 
-void RegionData::SetLanguages(vector<string> const & codes)
+void RegionData::SetLanguages(std::vector<std::string> const & codes)
 {
-  string value;
-  for (string const & code : codes)
+  std::string value;
+  for (std::string const & code : codes)
   {
     int8_t const lang = StringUtf8Multilang::GetLangIndex(code);
     if (lang != StringUtf8Multilang::kUnsupportedLanguageCode)
@@ -129,7 +129,7 @@ void RegionData::SetLanguages(vector<string> const & codes)
   MetadataBase::Set(RegionData::Type::RD_LANGUAGES, value);
 }
 
-void RegionData::GetLanguages(vector<int8_t> & langs) const
+void RegionData::GetLanguages(std::vector<int8_t> & langs) const
 {
   for (auto const lang : Get(RegionData::Type::RD_LANGUAGES))
     langs.push_back(lang);
@@ -147,7 +147,7 @@ bool RegionData::HasLanguage(int8_t const lang) const
 
 bool RegionData::IsSingleLanguage(int8_t const lang) const
 {
-  string const value = Get(RegionData::Type::RD_LANGUAGES);
+  std::string const value = Get(RegionData::Type::RD_LANGUAGES);
   if (value.size() != 1)
     return false;
   return value.front() == lang;
@@ -155,7 +155,7 @@ bool RegionData::IsSingleLanguage(int8_t const lang) const
 
 void RegionData::AddPublicHoliday(int8_t month, int8_t offset)
 {
-  string value = Get(RegionData::Type::RD_PUBLIC_HOLIDAYS);
+  std::string value = Get(RegionData::Type::RD_PUBLIC_HOLIDAYS);
   value.push_back(month);
   value.push_back(offset);
   Set(RegionData::Type::RD_PUBLIC_HOLIDAYS, value);
@@ -163,7 +163,7 @@ void RegionData::AddPublicHoliday(int8_t month, int8_t offset)
 }  // namespace feature
 
 // Warning: exact osm tag keys should be returned for valid enum values.
-string DebugPrint(feature::Metadata::EType type)
+std::string DebugPrint(feature::Metadata::EType type)
 {
   using feature::Metadata;
   switch (type)
@@ -198,5 +198,5 @@ string DebugPrint(feature::Metadata::EType type)
   case Metadata::FMD_COUNT: CHECK(false, ("FMD_COUNT can not be used as a type."));
   };
 
-  return string();
+  return std::string();
 }

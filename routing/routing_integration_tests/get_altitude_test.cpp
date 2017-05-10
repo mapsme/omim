@@ -15,21 +15,22 @@
 #include "platform/local_country_file.hpp"
 
 #include "base/math.hpp"
+#include "base/stl_add.hpp"
 
-#include "std/string.hpp"
-#include "std/unique_ptr.hpp"
-#include "std/utility.hpp"
+#include <memory>
+#include <string>
+#include <utility>
 
 namespace
 {
 using namespace feature;
 
-void TestAltitudeOfAllMwmFeatures(string const & countryId, TAltitude const altitudeLowerBoundMeters,
+void TestAltitudeOfAllMwmFeatures(std::string const & countryId, TAltitude const altitudeLowerBoundMeters,
                                   TAltitude const altitudeUpperBoundMeters)
 {
   Index index;
   platform::LocalCountryFile const country = platform::LocalCountryFile::MakeForTesting(countryId);
-  pair<MwmSet::MwmId, MwmSet::RegResult> const regResult = index.RegisterMap(country);
+  std::pair<MwmSet::MwmId, MwmSet::RegResult> const regResult = index.RegisterMap(country);
 
   TEST_EQUAL(regResult.second, MwmSet::RegResult::Success, ());
   TEST(regResult.first.IsAlive(), ());
@@ -39,7 +40,7 @@ void TestAltitudeOfAllMwmFeatures(string const & countryId, TAltitude const alti
 
   MwmValue * mwmValue = handle.GetValue<MwmValue>();
   TEST(mwmValue != nullptr, ());
-  unique_ptr<AltitudeLoader> altitudeLoader = make_unique<AltitudeLoader>(*mwmValue);
+  std::unique_ptr<AltitudeLoader> altitudeLoader = my::make_unique<AltitudeLoader>(*mwmValue);
 
   classificator::Load();
   classif().SortClassificator();

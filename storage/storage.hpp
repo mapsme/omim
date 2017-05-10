@@ -23,6 +23,8 @@
 #include "std/utility.hpp"
 #include "std/vector.hpp"
 
+using namespace std;
+
 namespace storage
 {
 struct CountryIdAndName

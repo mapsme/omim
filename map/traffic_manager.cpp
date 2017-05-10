@@ -16,9 +16,9 @@
 
 namespace
 {
-auto constexpr kUpdateInterval = minutes(1);
-auto constexpr kOutdatedDataTimeout = minutes(5) + kUpdateInterval;
-auto constexpr kNetworkErrorTimeout = minutes(20);
+auto constexpr kUpdateInterval = std::chrono::minutes(1);
+auto constexpr kOutdatedDataTimeout = std::chrono::minutes(5) + kUpdateInterval;
+auto constexpr kNetworkErrorTimeout = std::chrono::minutes(20);
 
 auto constexpr kMaxRetriesCount = 5;
 } // namespace
@@ -32,7 +32,7 @@ TrafficManager::CacheEntry::CacheEntry()
   , m_lastAvailability(traffic::TrafficInfo::Availability::Unknown)
 {}
 
-TrafficManager::CacheEntry::CacheEntry(time_point<steady_clock> const & requestTime)
+TrafficManager::CacheEntry::CacheEntry(std::chrono::time_point<std::chrono::steady_clock> const & requestTime)
   : m_isLoaded(false)
   , m_dataSize(0)
   , m_lastActiveTime(requestTime)
@@ -60,7 +60,7 @@ TrafficManager::~TrafficManager()
 {
 #ifdef DEBUG
   {
-    lock_guard<mutex> lock(m_mutex);
+    std::lock_guard<std::mutex> lock(m_mutex);
     ASSERT(!m_isRunning, ());
   }
 #endif
@@ -69,7 +69,7 @@ TrafficManager::~TrafficManager()
 void TrafficManager::Teardown()
 {
   {
-    lock_guard<mutex> lock(m_mutex);
+    std::lock_guard<std::mutex> lock(m_mutex);
     if (!m_isRunning)
       return;
     m_isRunning = false;
@@ -89,7 +89,7 @@ void TrafficManager::SetStateListener(TrafficStateChangedFn const & onStateChang
 void TrafficManager::SetEnabled(bool enabled)
 {
   {
-    lock_guard<mutex> lock(m_mutex);
+    std::lock_guard<std::mutex> lock(m_mutex);
     if (enabled == IsEnabled())
     {
        LOG(LWARNING, ("Invalid attempt to", enabled ? "enable" : "disable",
@@ -147,7 +147,7 @@ void TrafficManager::OnMwmDelete(MwmSet::MwmId const & mwmId)
     return;
 
   {
-    lock_guard<mutex> lock(m_mutex);
+    std::lock_guard<std::mutex> lock(m_mutex);
     ClearCache(mwmId);
   }
   Invalidate();
@@ -178,8 +178,8 @@ void TrafficManager::Invalidate()
 }
 
 void TrafficManager::UpdateActiveMwms(m2::RectD const & rect,
-                                      vector<MwmSet::MwmId> & lastMwmsByRect,
-                                      set<MwmSet::MwmId> & activeMwms)
+                                      std::vector<MwmSet::MwmId> & lastMwmsByRect,
+                                      std::set<MwmSet::MwmId> & activeMwms)
 {
   auto mwms = m_getMwmsByRectFn(rect);
   if (lastMwmsByRect == mwms)
@@ -187,7 +187,7 @@ void TrafficManager::UpdateActiveMwms(m2::RectD const & rect,
   lastMwmsByRect = mwms;
 
   {
-    lock_guard<mutex> lock(m_mutex);
+    std::lock_guard<std::mutex> lock(m_mutex);
     activeMwms.clear();
     for (auto const & mwm : mwms)
     {
@@ -232,7 +232,7 @@ void TrafficManager::UpdateViewport(ScreenBase const & screen)
 
 void TrafficManager::ThreadRoutine()
 {
-  vector<MwmSet::MwmId> mwms;
+  std::vector<MwmSet::MwmId> mwms;
   while (WaitForRequest(mwms))
   {
     for (auto const & mwm : mwms)
@@ -243,9 +243,9 @@ void TrafficManager::ThreadRoutine()
 
       traffic::TrafficInfo info(mwm, m_currentDataVersion);
 
-      string tag;
+      std::string tag;
       {
-        lock_guard<mutex> lock(m_mutex);
+        std::lock_guard<std::mutex> lock(m_mutex);
         tag = m_trafficETags[mwm];
       }
 
@@ -260,7 +260,7 @@ void TrafficManager::ThreadRoutine()
       }
 
       {
-        lock_guard<mutex> lock(m_mutex);
+        std::lock_guard<std::mutex> lock(m_mutex);
         m_trafficETags[mwm] = tag;
       }
     }
@@ -268,9 +268,9 @@ void TrafficManager::ThreadRoutine()
   }
 }
 
-bool TrafficManager::WaitForRequest(vector<MwmSet::MwmId> & mwms)
+bool TrafficManager::WaitForRequest(std::vector<MwmSet::MwmId> & mwms)
 {
-  unique_lock<mutex> lock(m_mutex);
+  std::unique_lock<std::mutex> lock(m_mutex);
 
   bool const timeout = !m_condition.wait_for(lock, kUpdateInterval, [this]
   {
@@ -292,7 +292,7 @@ bool TrafficManager::WaitForRequest(vector<MwmSet::MwmId> & mwms)
 void TrafficManager::RequestTrafficData(MwmSet::MwmId const & mwmId, bool force)
 {
   bool needRequesting = false;
-  auto const currentTime = steady_clock::now();
+  auto const currentTime = std::chrono::steady_clock::now();
   auto const it = m_mwmCache.find(mwmId);
   if (it == m_mwmCache.end())
   {
@@ -336,7 +336,7 @@ void TrafficManager::RequestTrafficData()
 
 void TrafficManager::OnTrafficRequestFailed(traffic::TrafficInfo && info)
 {
-  lock_guard<mutex> lock(m_mutex);
+  std::lock_guard<std::mutex> lock(m_mutex);
 
   auto it = m_mwmCache.find(info.GetMwmId());
   if (it == m_mwmCache.end())
@@ -367,14 +367,14 @@ void TrafficManager::OnTrafficRequestFailed(traffic::TrafficInfo && info)
 void TrafficManager::OnTrafficDataResponse(traffic::TrafficInfo && info)
 {
   {
-    lock_guard<mutex> lock(m_mutex);
+    std::lock_guard<std::mutex> lock(m_mutex);
 
     auto it = m_mwmCache.find(info.GetMwmId());
     if (it == m_mwmCache.end())
       return;
 
     it->second.m_isLoaded = true;
-    it->second.m_lastResponseTime = steady_clock::now();
+    it->second.m_lastResponseTime = std::chrono::steady_clock::now();
     it->second.m_isWaitingForResponse = false;
     it->second.m_lastAvailability = info.GetAvailability();
 
@@ -400,7 +400,7 @@ void TrafficManager::OnTrafficDataResponse(traffic::TrafficInfo && info)
   }
 }
 
-void TrafficManager::UniteActiveMwms(set<MwmSet::MwmId> & activeMwms) const
+void TrafficManager::UniteActiveMwms(std::set<MwmSet::MwmId> & activeMwms) const
 {
   activeMwms.insert(m_activeDrapeMwms.cbegin(), m_activeDrapeMwms.cend());
   activeMwms.insert(m_activeRoutingMwms.cbegin(), m_activeRoutingMwms.cend());
@@ -409,13 +409,13 @@ void TrafficManager::UniteActiveMwms(set<MwmSet::MwmId> & activeMwms) const
 void TrafficManager::ShrinkCacheToAllowableSize()
 {
   // Calculating number of different active mwms.
-  set<MwmSet::MwmId> activeMwms;
+  std::set<MwmSet::MwmId> activeMwms;
   UniteActiveMwms(activeMwms);
   size_t const numActiveMwms = activeMwms.size();
 
   if (m_currentCacheSizeBytes > m_maxCacheSizeBytes && m_mwmCache.size() > numActiveMwms)
   {
-    std::multimap<time_point<steady_clock>, MwmSet::MwmId> seenTimings;
+    std::multimap<std::chrono::time_point<std::chrono::steady_clock>, MwmSet::MwmId> seenTimings;
     for (auto const & mwmInfo : m_mwmCache)
       seenTimings.insert(make_pair(mwmInfo.second.m_lastActiveTime, mwmInfo.first));
 
@@ -464,8 +464,8 @@ void TrafficManager::UpdateState()
   if (!IsEnabled() || IsInvalidState())
     return;
 
-  auto const currentTime = steady_clock::now();
-  auto maxPassedTime = steady_clock::duration::zero();
+  auto const currentTime = std::chrono::steady_clock::now();
+  auto maxPassedTime = std::chrono::steady_clock::duration::zero();
 
   bool waiting = false;
   bool networkError = false;
@@ -564,7 +564,7 @@ void TrafficManager::SetSimplifiedColorScheme(bool simplified)
     m_drapeEngine->SetSimplifiedTrafficColors(simplified);
 }
 
-string DebugPrint(TrafficManager::TrafficState state)
+std::string DebugPrint(TrafficManager::TrafficState state)
 {
   switch (state)
   {

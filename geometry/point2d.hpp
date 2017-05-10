@@ -5,11 +5,11 @@
 #include "base/math.hpp"
 #include "base/matrix.hpp"
 
-#include "std/array.hpp"
-#include "std/cmath.hpp"
-#include "std/functional.hpp"
-#include "std/sstream.hpp"
-#include "std/typeinfo.hpp"
+#include <array>
+#include <cmath>
+#include <functional>
+#include <sstream>
+#include <typeinfo>
 
 
 namespace m2
@@ -51,7 +51,7 @@ namespace m2
 
     Point<T> Move(T len, T ang) const
     {
-      return Point<T>(x + len * cos(ang), y + len * sin(ang));
+      return Point<T>(x + len * std::cos(ang), y + len * std::sin(ang));
     }
 
     Point<T> Move(T len, T angSin, T angCos) const
@@ -166,8 +166,8 @@ namespace m2
 
     void Rotate(double angle)
     {
-      T cosAngle = cos(angle);
-      T sinAngle = sin(angle);
+      T cosAngle = std::cos(angle);
+      T sinAngle = std::sin(angle);
       T oldX = x;
       x = cosAngle * oldX - sinAngle * y;
       y = sinAngle * oldX + cosAngle * y;
@@ -247,7 +247,7 @@ namespace m2
 
   template <typename T> std::string DebugPrint(m2::Point<T> const & p)
   {
-    ostringstream out;
+    std::ostringstream out;
     out.precision(20);
     out << "m2::Point<" << typeid(T).name() << ">(" << p.x << ", " << p.y << ")";
     return out.str();
@@ -270,7 +270,7 @@ namespace m2
   /// starting at point b and having direction b,e.
   /// The height of the equilateral triangle is l and the base of the triangle is 2 * w
   template <typename T, typename TT, typename PointT = Point<T>>
-  void GetArrowPoints(PointT const & b, PointT const & e, T w, T l, array<Point<TT>, 3> & arrPnts)
+  void GetArrowPoints(PointT const & b, PointT const & e, T w, T l, std::array<Point<TT>, 3> & arrPnts)
   {
     ASSERT(!m2::AlmostEqualULPs(b, e), ());
 

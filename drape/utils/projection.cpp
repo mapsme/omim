@@ -3,7 +3,7 @@
 namespace dp
 {
 
-void MakeProjection(array<float, 16> & result, float left, float right, float bottom, float top)
+void MakeProjection(std::array<float, 16> & result, float left, float right, float bottom, float top)
 {
   result.fill(0.0f);
 

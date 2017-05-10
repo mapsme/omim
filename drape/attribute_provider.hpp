@@ -3,7 +3,7 @@
 #include "drape/pointers.hpp"
 #include "drape/binding_info.hpp"
 
-#include "std/vector.hpp"
+#include <vector>
 
 namespace dp
 {
@@ -38,11 +38,11 @@ private:
     BindingInfo m_binding;
     ref_ptr<void> m_data;
   };
-  vector<AttributeStream> m_streams;
+  std::vector<AttributeStream> m_streams;
 #ifdef DEBUG
   void CheckStreams() const;
   void InitCheckStream(uint8_t streamIndex);
-  vector<bool> m_checkInfo;
+  std::vector<bool> m_checkInfo;
 #endif
 };
 

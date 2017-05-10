@@ -15,15 +15,15 @@
 
 #include "base/logging.hpp"
 
-#include "std/unique_ptr.hpp"
-#include "std/vector.hpp"
+#include <memory>
+#include <vector>
 
 
 using namespace storage;
 
 namespace
 {
-bool IsEmptyName(map<string, CountryInfo> const & id2info, string const & id)
+bool IsEmptyName(map<std::string, CountryInfo> const & id2info, std::string const & id)
 {
   auto const it = id2info.find(id);
   TEST(it != id2info.end(), ());
@@ -58,13 +58,13 @@ UNIT_TEST(CountryInfoGetter_GetRegionsCountryIdByRect_Smoke)
   m2::PointD const halfSize = m2::PointD(0.1, 0.1);
   auto const countries =
       getter->GetRegionsCountryIdByRect(m2::RectD(p - halfSize, p + halfSize), false /* rough */);
-  TEST_EQUAL(countries, vector<storage::TCountryId>{"Belarus"}, ());
+  TEST_EQUAL(countries, std::vector<storage::TCountryId>{"Belarus"}, ());
 
   // Several countries.
   m2::PointD const halfSize2 = m2::PointD(5.0, 5.0);
   auto const countries2 = getter->GetRegionsCountryIdByRect(m2::RectD(p - halfSize2, p + halfSize2),
                                                             false /* rough */);
-  auto const expected = vector<storage::TCountryId>{
+  auto const expected = std::vector<storage::TCountryId>{
       "Belarus", "Latvia", "Lithuania", "Poland", "Russia_Central", "Russia_Northwestern",
       "Ukraine"};
   TEST_EQUAL(countries2, expected, ());
@@ -72,17 +72,17 @@ UNIT_TEST(CountryInfoGetter_GetRegionsCountryIdByRect_Smoke)
   // No one found.
   auto const countries3 =
       getter->GetRegionsCountryIdByRect(m2::RectD(-halfSize, halfSize), false /* rough */);
-  TEST_EQUAL(countries3, vector<storage::TCountryId>{}, ());
+  TEST_EQUAL(countries3, std::vector<storage::TCountryId>{}, ());
 
   // Inside mwm (rough).
   auto const countries4 =
       getter->GetRegionsCountryIdByRect(m2::RectD(p - halfSize, p + halfSize), true /* rough */);
-  TEST_EQUAL(countries, vector<storage::TCountryId>{"Belarus"}, ());
+  TEST_EQUAL(countries, std::vector<storage::TCountryId>{"Belarus"}, ());
 
   // Several countries (rough).
   auto const countries5 =
       getter->GetRegionsCountryIdByRect(m2::RectD(p - halfSize2, p + halfSize2), true /* rough */);
-  auto const expected2 = vector<storage::TCountryId>{"Belarus",
+  auto const expected2 = std::vector<storage::TCountryId>{"Belarus",
                                                      "Latvia",
                                                      "Lithuania",
                                                      "Poland",
@@ -97,10 +97,10 @@ UNIT_TEST(CountryInfoGetter_GetRegionsCountryIdByRect_Smoke)
 
 UNIT_TEST(CountryInfoGetter_ValidName_Smoke)
 {
-  string buffer;
+  std::string buffer;
   ReaderPtr<Reader>(GetPlatform().GetReader(COUNTRIES_FILE)).ReadAsString(buffer);
 
-  map<string, CountryInfo> id2info;
+  map<std::string, CountryInfo> id2info;
   bool isSingleMwm;
   storage::LoadCountryFile2CountryInfo(buffer, id2info, isSingleMwm);
 

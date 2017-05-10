@@ -14,7 +14,7 @@
 
 #include "base/logging.hpp"
 
-#include "std/numeric.hpp"
+#include <numeric>
 
 using namespace traffic;
 
@@ -27,7 +27,7 @@ double constexpr kOnEndToleranceM = 10.0;
 double constexpr kSteetNameLinkMeters = 400.;
 }  //  namespace
 
-Route::Route(string const & router, vector<m2::PointD> const & points, string const & name)
+Route::Route(std::string const & router, std::vector<m2::PointD> const & points, std::string const & name)
   : m_router(router), m_routingSettings(GetCarRoutingSettings()),
     m_name(name), m_poly(points.begin(), points.end())
 {
@@ -50,7 +50,7 @@ void Route::Swap(Route & rhs)
   m_traffic.swap(rhs.m_traffic);
 }
 
-void Route::AddAbsentCountry(string const & name)
+void Route::AddAbsentCountry(std::string const & name)
 {
   if (!name.empty()) m_absentCountries.insert(name);
 }
@@ -69,7 +69,7 @@ double Route::GetCurrentDistanceFromBeginMeters() const
   return m_poly.GetDistanceFromBeginM();
 }
 
-void Route::GetTurnsDistances(vector<double> & distances) const
+void Route::GetTurnsDistances(std::vector<double> & distances) const
 {
   distances.clear();
   if (!m_poly.IsValid())
@@ -167,7 +167,7 @@ Route::TTurns::const_iterator Route::GetCurrentTurn() const
          });
 }
 
-void Route::GetCurrentStreetName(string & name) const
+void Route::GetCurrentStreetName(std::string & name) const
 {
   auto it = GetCurrentStreetNameIterAfter(m_poly.GetCurrentIter());
   if (it == m_streets.cend())
@@ -176,7 +176,7 @@ void Route::GetCurrentStreetName(string & name) const
     name = it->second;
 }
 
-void Route::GetStreetNameAfterIdx(uint32_t idx, string & name) const
+void Route::GetStreetNameAfterIdx(uint32_t idx, std::string & name) const
 {
   name.clear();
   auto polyIter = m_poly.GetIterToIndex(idx);
@@ -250,7 +250,7 @@ bool Route::GetNextTurn(double & distanceToTurnMeters, turns::TurnItem & turn) c
   return true;
 }
 
-bool Route::GetNextTurns(vector<turns::TurnItemDist> & turns) const
+bool Route::GetNextTurns(std::vector<turns::TurnItemDist> & turns) const
 {
   turns::TurnItemDist currentTurn;
   if (!GetCurrentTurn(currentTurn.m_distMeters, currentTurn.m_turnItem))
@@ -345,7 +345,7 @@ void Route::Update()
     return;
   if (m_routingSettings.m_keepPedestrianInfo)
   {
-    vector<m2::PointD> points;
+    std::vector<m2::PointD> points;
     auto distFn = m2::DistanceToLineSquare<m2::PointD>();
     // TODO (ldargunov) Rewrite dist f to distance in meters and avoid 0.00000 constants.
     SimplifyNearOptimal(20, m_poly.GetPolyline().Begin(), m_poly.GetPolyline().End(), 0.00000001, distFn,
@@ -460,7 +460,7 @@ void Route::AppendRoute(Route const & route)
   Update();
 }
 
-string DebugPrint(Route const & r)
+std::string DebugPrint(Route const & r)
 {
   return DebugPrint(r.m_poly.GetPolyline());
 }

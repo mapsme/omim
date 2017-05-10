@@ -13,9 +13,9 @@
 
 #include "coding/reader.hpp"
 
-#include "std/string.hpp"
-#include "std/vector.hpp"
-#include "std/shared_ptr.hpp"
+#include <string>
+#include <vector>
+#include <memory>
 
 namespace df
 {
@@ -39,24 +39,24 @@ struct Font
 /// Information about single unicode block.
 struct UnicodeBlock
 {
-  string m_name;
+  std::string m_name;
 
   /// @{ font matching tuning
   /// whitelist has priority over the blacklist in case of duplicates.
   /// this fonts are promoted to the top of the font list for this block.
-  vector<string> m_whitelist;
+  std::vector<std::string> m_whitelist;
   /// this fonts are removed from the font list for this block.
-  vector<string> m_blacklist;
+  std::vector<std::string> m_blacklist;
   /// @}
 
   strings::UniChar m_start;
   strings::UniChar m_end;
   /// sorted indices in m_fonts, from the best to the worst
-  vector<shared_ptr<Font> > m_fonts;
+  std::vector<std::shared_ptr<Font> > m_fonts;
   /// coverage of each font, in symbols
-  vector<int> m_coverage;
+  std::vector<int> m_coverage;
 
-  UnicodeBlock(string const & name, strings::UniChar start, strings::UniChar end);
+  UnicodeBlock(std::string const & name, strings::UniChar start, strings::UniChar end);
   bool hasSymbol(strings::UniChar sym) const;
 };
 
@@ -75,27 +75,27 @@ struct GlyphCacheImpl
 
   FTC_CMapCache m_charMapCache; //< cache of glyphID -> glyphIdx mapping
 
-  typedef vector<UnicodeBlock> unicode_blocks_t;
+  typedef std::vector<UnicodeBlock> unicode_blocks_t;
   unicode_blocks_t m_unicodeBlocks;
   unicode_blocks_t::iterator m_lastUsedBlock;
   bool m_isDebugging;
 
-  typedef vector<shared_ptr<Font> > TFonts;
+  typedef std::vector<std::shared_ptr<Font> > TFonts;
   TFonts m_fonts;
 
   static FT_Error RequestFace(FTC_FaceID faceID, FT_Library library, FT_Pointer requestData, FT_Face * face);
 
-  void initBlocks(string const & fileName);
-  void initFonts(string const & whiteListFile, string const & blackListFile);
+  void initBlocks(std::string const & fileName);
+  void initFonts(std::string const & whiteListFile, std::string const & blackListFile);
 
-  vector<shared_ptr<Font> > & getFonts(strings::UniChar sym);
+  std::vector<std::shared_ptr<Font> > & getFonts(strings::UniChar sym);
   void addFont(char const * fileName);
-  void addFonts(vector<string> const & fontNames);
+  void addFonts(std::vector<std::string> const & fontNames);
 
-  int getCharIDX(shared_ptr<Font> const & font, strings::UniChar symbolCode);
-  pair<Font*, int> const getCharIDX(GlyphKey const & key);
+  int getCharIDX(std::shared_ptr<Font> const & font, strings::UniChar symbolCode);
+  std::pair<Font*, int> const getCharIDX(GlyphKey const & key);
   GlyphMetrics const getGlyphMetrics(GlyphKey const & key);
-  shared_ptr<GlyphBitmap> const getGlyphBitmap(GlyphKey const & key);
+  std::shared_ptr<GlyphBitmap> const getGlyphBitmap(GlyphKey const & key);
 
   GlyphCacheImpl(GlyphCache::Params const & params);
   ~GlyphCacheImpl();

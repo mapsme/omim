@@ -6,7 +6,7 @@
 #include "indexer/feature.hpp"
 #include "geometry/rect2d.hpp"
 
-#include "std/function.hpp"
+#include <functional>
 
 namespace df
 {
@@ -14,12 +14,12 @@ namespace df
 class MapDataProvider
 {
 public:
-  template <typename T> using TReadCallback = function<void (T const &)>;
-  using TReadFeaturesFn = function<void (TReadCallback<FeatureType> const & , vector<FeatureID> const &)>;
-  using TReadIDsFn = function<void (TReadCallback<FeatureID> const & , m2::RectD const &, int)>;
-  using TIsCountryLoadedFn = function<bool (m2::PointD const &)>;
-  using TIsCountryLoadedByNameFn = function<bool (string const &)>;
-  using TUpdateCurrentCountryFn = function<void (m2::PointD const &, int)>;
+  template <typename T> using TReadCallback = std::function<void (T const &)>;
+  using TReadFeaturesFn = std::function<void (TReadCallback<FeatureType> const & , vector<FeatureID> const &)>;
+  using TReadIDsFn = std::function<void (TReadCallback<FeatureID> const & , m2::RectD const &, int)>;
+  using TIsCountryLoadedFn = std::function<bool (m2::PointD const &)>;
+  using TIsCountryLoadedByNameFn = std::function<bool (std::string const &)>;
+  using TUpdateCurrentCountryFn = std::function<void (m2::PointD const &, int)>;
 
   MapDataProvider(TReadIDsFn const & idsReader,
                   TReadFeaturesFn const & featureReader,

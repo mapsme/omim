@@ -4,6 +4,7 @@
 #include "indexer/feature.hpp"
 
 #include "base/macros.hpp"
+#include "base/stl_add.hpp"
 
 using namespace ftypes;
 
@@ -12,7 +13,7 @@ namespace search
 TwoLevelPOIChecker::TwoLevelPOIChecker() : ftypes::BaseChecker(2 /* level */)
 {
   Classificator const & c = classif();
-  StringIL arr[] = {{"highway", "bus_stop"},
+  my::StringIL arr[] = {{"highway", "bus_stop"},
                     {"highway", "speed_camera"},
                     {"waterway", "waterfall"},
                     {"natural", "volcano"},
@@ -117,7 +118,7 @@ SearchModel::SearchType SearchModel::GetSearchType(FeatureType const & feature) 
   return SEARCH_TYPE_UNCLASSIFIED;
 }
 
-string DebugPrint(SearchModel::SearchType type)
+std::string DebugPrint(SearchModel::SearchType type)
 {
   switch (type)
   {
@@ -132,7 +133,7 @@ string DebugPrint(SearchModel::SearchType type)
   case SearchModel::SEARCH_TYPE_COUNT: return "Count";
   }
   ASSERT(false, ("Unknown search type:", static_cast<int>(type)));
-  return string();
+  return std::string();
 }
 
 }  // namespace search

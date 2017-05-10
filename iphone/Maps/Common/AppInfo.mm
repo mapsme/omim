@@ -7,6 +7,8 @@
 
 #include "platform/settings.hpp"
 
+using namespace std;
+
 extern string const kCountryCodeKey = "CountryCode";
 extern string const kUniqueIdKey = "UniqueId";
 extern string const kLanguageKey = "Language";

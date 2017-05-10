@@ -1,12 +1,12 @@
 #pragma once
 
-#include "std/cstdint.hpp"
-#include "std/initializer_list.hpp"
-#include "std/shared_ptr.hpp"
-#include "std/string.hpp"
-#include "std/unordered_map.hpp"
-#include "std/utility.hpp"
-#include "std/vector.hpp"
+#include <cstdint>
+#include <initializer_list>
+#include <memory>
+#include <string>
+#include <unordered_map>
+#include <utility>
+#include <vector>
 
 class Classificator;
 class FeatureType;
@@ -47,10 +47,10 @@ public:
   virtual ~VehicleModelFactory() {}
   /// @return Default vehicle model which corresponds for all countrines,
   /// but it may be non optimal for some countries
-  virtual shared_ptr<IVehicleModel> GetVehicleModel() const = 0;
+  virtual std::shared_ptr<IVehicleModel> GetVehicleModel() const = 0;
 
   /// @return The most optimal vehicle model for specified country
-  virtual shared_ptr<IVehicleModel> GetVehicleModelForCountry(string const & country) const = 0;
+  virtual std::shared_ptr<IVehicleModel> GetVehicleModelForCountry(std::string const & country) const = 0;
 };
 
 class VehicleModel : public IVehicleModel
@@ -62,7 +62,7 @@ public:
     double m_speedKMpH;       /// max allowed speed on this road type
   };
 
-  typedef initializer_list<SpeedForType> InitListT;
+  typedef std::initializer_list<SpeedForType> InitListT;
 
   VehicleModel(Classificator const & c, InitListT const & speedLimits);
 
@@ -91,7 +91,7 @@ public:
 protected:
   struct AdditionalRoadTags
   {
-    initializer_list<char const *> m_hwtag;
+    std::initializer_list<char const *> m_hwtag;
     double m_speedKMpH;
   };
 
@@ -100,7 +100,7 @@ protected:
 
   /// Used in derived class constructors only. Not for public use.
   void SetAdditionalRoadTypes(Classificator const & c,
-                              vector<AdditionalRoadTags> const & additionalTags);
+                              std::vector<AdditionalRoadTags> const & additionalTags);
 
   /// \returns true if |types| is a oneway feature.
   /// \note According to OSM, tag "oneway" could have value "-1". That means it's a oneway feature
@@ -123,13 +123,13 @@ private:
     double const m_speedKMpH;
   };
 
-  vector<AdditionalRoadType>::const_iterator FindRoadType(uint32_t type) const;
+  std::vector<AdditionalRoadType>::const_iterator FindRoadType(uint32_t type) const;
 
-  unordered_map<uint32_t, double> m_types;
+  std::unordered_map<uint32_t, double> m_types;
 
-  vector<AdditionalRoadType> m_addRoadTypes;
+  std::vector<AdditionalRoadType> m_addRoadTypes;
   uint32_t m_onewayType;
 };
 
-string DebugPrint(IVehicleModel::RoadAvailability const l);
+std::string DebugPrint(IVehicleModel::RoadAvailability const l);
 }  // namespace routing

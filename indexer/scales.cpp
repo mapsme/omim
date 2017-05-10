@@ -3,7 +3,7 @@
 
 #include "base/math.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 
 namespace scales
@@ -12,12 +12,12 @@ namespace scales
 
   int GetMinAllowableIn3dScale()
   {
-    return min(16, min(GetNavigation3dScale(), GetPedestrianNavigation3dScale()));
+    return std::min(16, std::min(GetNavigation3dScale(), GetPedestrianNavigation3dScale()));
   }
 
   double GetScaleLevelD(double ratio)
   {
-    double const level = min(static_cast<double>(GetUpperScale()), log(ratio) / log(2.0) + INITIAL_LEVEL);
+    double const level = std::min(static_cast<double>(GetUpperScale()), log(ratio) / log(2.0) + INITIAL_LEVEL);
     return (level < 0.0 ? 0.0 : level);
   }
 
@@ -92,6 +92,6 @@ namespace scales
   bool IsGoodForLevel(int level, m2::RectD const & r)
   {
     // assume that feature is always visible in upper scale
-    return (level == GetUpperScale() || max(r.SizeX(), r.SizeY()) > GetEpsilonForLevel(level));
+    return (level == GetUpperScale() || std::max(r.SizeX(), r.SizeY()) > GetEpsilonForLevel(level));
   }
 }

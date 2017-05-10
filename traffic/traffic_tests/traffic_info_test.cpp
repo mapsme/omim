@@ -8,15 +8,15 @@
 
 #include "indexer/mwm_set.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/cstdint.hpp"
-#include "std/vector.hpp"
+#include <algorithm>
+#include <cstdint>
+#include <vector>
 
 namespace traffic
 {
 namespace
 {
-string const & kMapTestDir = "traffic-test";
+std::string const & kMapTestDir = "traffic-test";
 
 class TestMwmSet : public MwmSet
 {
@@ -44,7 +44,7 @@ UNIT_TEST(TrafficInfo_RemoteFile)
     auto const & r =
         mwmSet.Register(platform::LocalCountryFile::MakeForTesting("traffic_data_test"));
     TrafficInfo trafficInfo(r.first, r.first.GetInfo()->GetVersion());
-    string etag;
+    std::string etag;
     TEST(trafficInfo.ReceiveTrafficData(etag), ());
   }
   {
@@ -52,7 +52,7 @@ UNIT_TEST(TrafficInfo_RemoteFile)
     auto const & r =
         mwmSet.Register(platform::LocalCountryFile::MakeForTesting("traffic_data_test2"));
     TrafficInfo trafficInfo(r.first, r.first.GetInfo()->GetVersion());
-    string etag;
+    std::string etag;
     TEST(!trafficInfo.ReceiveTrafficData(etag), ());
   }
   {
@@ -60,7 +60,7 @@ UNIT_TEST(TrafficInfo_RemoteFile)
     auto const & r =
         mwmSet.Register(platform::LocalCountryFile::MakeForTesting("traffic_data_test", 101010));
     TrafficInfo trafficInfo(r.first, r.first.GetInfo()->GetVersion());
-    string etag;
+    std::string etag;
     TEST(trafficInfo.ReceiveTrafficData(etag), ());
   }
 }
@@ -81,8 +81,8 @@ UNIT_TEST(TrafficInfo_Serialization)
       {TrafficInfo::RoadSegmentId(4294967295, 0, 0), SpeedGroup::TempBlock},
   };
 
-  vector<TrafficInfo::RoadSegmentId> keys;
-  vector<SpeedGroup> values;
+  std::vector<TrafficInfo::RoadSegmentId> keys;
+  std::vector<SpeedGroup> values;
   for (auto const & kv : coloring)
   {
     keys.push_back(kv.first);
@@ -90,22 +90,22 @@ UNIT_TEST(TrafficInfo_Serialization)
   }
 
   {
-    vector<uint8_t> buf;
+    std::vector<uint8_t> buf;
     TrafficInfo::SerializeTrafficKeys(keys, buf);
 
-    vector<TrafficInfo::RoadSegmentId> deserializedKeys;
+    std::vector<TrafficInfo::RoadSegmentId> deserializedKeys;
     TrafficInfo::DeserializeTrafficKeys(buf, deserializedKeys);
 
-    TEST(is_sorted(keys.begin(), keys.end()), ());
-    TEST(is_sorted(deserializedKeys.begin(), deserializedKeys.end()), ());
+    TEST(std::is_sorted(keys.begin(), keys.end()), ());
+    TEST(std::is_sorted(deserializedKeys.begin(), deserializedKeys.end()), ());
     TEST_EQUAL(keys, deserializedKeys, ());
   }
 
   {
-    vector<uint8_t> buf;
+    std::vector<uint8_t> buf;
     TrafficInfo::SerializeTrafficValues(values, buf);
 
-    vector<SpeedGroup> deserializedValues;
+    std::vector<SpeedGroup> deserializedValues;
     TrafficInfo::DeserializeTrafficValues(buf, deserializedValues);
     TEST_EQUAL(values, deserializedValues, ());
   }
@@ -113,17 +113,17 @@ UNIT_TEST(TrafficInfo_Serialization)
 
 UNIT_TEST(TrafficInfo_UpdateTrafficData)
 {
-  vector<TrafficInfo::RoadSegmentId> const keys = {
+  std::vector<TrafficInfo::RoadSegmentId> const keys = {
       TrafficInfo::RoadSegmentId(0, 0, 0),
 
       TrafficInfo::RoadSegmentId(1, 0, 0), TrafficInfo::RoadSegmentId(1, 0, 1),
   };
 
-  vector<SpeedGroup> const values1 = {
+  std::vector<SpeedGroup> const values1 = {
       SpeedGroup::G1, SpeedGroup::G2, SpeedGroup::G3,
   };
 
-  vector<SpeedGroup> const values2 = {
+  std::vector<SpeedGroup> const values2 = {
       SpeedGroup::G4, SpeedGroup::G5, SpeedGroup::Unknown,
   };
 

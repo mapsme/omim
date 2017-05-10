@@ -14,9 +14,10 @@
 #include "coding/file_writer.hpp"
 
 #include "base/logging.hpp"
+#include "base/stl_add.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/initializer_list.hpp"
+#include <initializer_list>
 
 #include "defines.hpp"
 
@@ -35,7 +36,7 @@ char constexpr kAccessPrivate[] = "access=private";
 char constexpr kBarrierGate[] = "barrier=gate";
 char constexpr kDelim[] = " \t\r\n";
 
-bool ParseRoadAccess(string const & roadAccessPath,
+bool ParseRoadAccess(std::string const & roadAccessPath,
                      map<osm::Id, uint32_t> const & osmIdToFeatureId,
                      routing::RoadAccess & roadAccess)
 {
@@ -48,10 +49,10 @@ bool ParseRoadAccess(string const & roadAccessPath,
 
   vector<uint32_t> privateRoads;
 
-  string line;
+  std::string line;
   for (uint32_t lineNo = 1;; ++lineNo)
   {
-    if (!getline(stream, line))
+    if (!std::getline(stream, line))
       break;
 
     strings::SimpleTokenizer iter(line, kDelim);
@@ -62,7 +63,7 @@ bool ParseRoadAccess(string const & roadAccessPath,
       return false;
     }
 
-    string const s = *iter;
+    std::string const s = *iter;
     ++iter;
 
     uint64_t osmId;
@@ -92,7 +93,7 @@ bool ParseRoadAccess(string const & roadAccessPath,
 namespace routing
 {
 // RoadAccessWriter ------------------------------------------------------------
-void RoadAccessWriter::Open(string const & filePath)
+void RoadAccessWriter::Open(std::string const & filePath)
 {
   LOG(LINFO,
       ("Saving information about barriers and road access classes in osm id terms to", filePath));
@@ -112,9 +113,7 @@ void RoadAccessWriter::Process(OsmElement const & elem, FeatureParams const & pa
 
   auto const & c = classif();
 
-  StringIL const forbiddenRoadTypes[] = {
-    {"hwtag", "private"}
-  };
+  my::StringIL const forbiddenRoadTypes[] = {{"hwtag", "private"}};
 
   for (auto const & f : forbiddenRoadTypes)
   {
@@ -131,8 +130,8 @@ void RoadAccessWriter::Process(OsmElement const & elem, FeatureParams const & pa
 bool RoadAccessWriter::IsOpened() const { return m_stream && m_stream.is_open(); }
 
 // RoadAccessCollector ----------------------------------------------------------
-RoadAccessCollector::RoadAccessCollector(string const & roadAccessPath,
-                                         string const & osmIdsToFeatureIdsPath)
+RoadAccessCollector::RoadAccessCollector(std::string const & roadAccessPath,
+                                         std::string const & osmIdsToFeatureIdsPath)
 {
   map<osm::Id, uint32_t> osmIdToFeatureId;
   if (!ParseOsmIdToFeatureIdMapping(osmIdsToFeatureIdsPath, osmIdToFeatureId))
@@ -156,8 +155,8 @@ RoadAccessCollector::RoadAccessCollector(string const & roadAccessPath,
 }
 
 // Functions ------------------------------------------------------------------
-void BuildRoadAccessInfo(string const & dataFilePath, string const & roadAccessPath,
-                         string const & osmIdsToFeatureIdsPath)
+void BuildRoadAccessInfo(std::string const & dataFilePath, std::string const & roadAccessPath,
+                         std::string const & osmIdsToFeatureIdsPath)
 {
   LOG(LINFO, ("Generating road access info for", dataFilePath));
 

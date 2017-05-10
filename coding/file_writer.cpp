@@ -7,7 +7,7 @@ FileWriter::FileWriter(FileWriter && rhs)
 {
 }
 
-FileWriter::FileWriter(string const & fileName, FileWriter::Op op, bool bTruncOnClose)
+FileWriter::FileWriter(std::string const & fileName, FileWriter::Op op, bool bTruncOnClose)
 : m_pFileData(new fdata_t(fileName, static_cast<fdata_t::Op>(op))), m_bTruncOnClose(bTruncOnClose)
 {
 }
@@ -42,7 +42,7 @@ void FileWriter::WritePaddingByEnd(size_t factor) { WritePadding(Size(), factor)
 
 void FileWriter::WritePaddingByPos(size_t factor) { WritePadding(Pos(), factor); }
 
-string const & FileWriter::GetName() const
+std::string const & FileWriter::GetName() const
 {
   return m_pFileData->GetName();
 }
@@ -67,7 +67,7 @@ void FileWriter::Reserve(uint64_t size)
   }
 }
 
-void FileWriter::DeleteFileX(string const & fName)
+void FileWriter::DeleteFileX(std::string const & fName)
 {
   (void)my::DeleteFileX(fName);
 }
@@ -78,6 +78,6 @@ void FileWriter::WritePadding(uint64_t offset, uint64_t factor)
   uint64_t const padding = ((offset + factor - 1) / factor) * factor - offset;
   if (!padding)
     return;
-  vector<uint8_t> buffer(padding);
+  std::vector<uint8_t> buffer(padding);
   Write(buffer.data(), buffer.size());
 }

@@ -3,11 +3,11 @@
 #include "base/logging.hpp"
 #include "base/math.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/iterator.hpp"
-#include "std/fstream.hpp"
-#include "std/iostream.hpp"
-#include "std/bind.hpp"
+#include <algorithm>
+#include <iterator>
+#include <fstream>
+#include <iostream>
+#include <functional>
 
 #include <QtXml/QDomElement>
 #include <QtXml/QDomDocument>
@@ -41,8 +41,8 @@ namespace tools
 
     void operator()(SkinGenerator::SymbolInfo const & info)
     {
-      m_width = max(max(m_width, m_height), static_cast<uint32_t>(info.m_size.width()));
-      m_height = max(max(m_width, m_height), static_cast<uint32_t>(info.m_size.height()));
+      m_width = std::max(std::max(m_width, m_height), static_cast<uint32_t>(info.m_size.width()));
+      m_height = std::max(std::max(m_width, m_height), static_cast<uint32_t>(info.m_size.height()));
     }
   };
 
@@ -58,25 +58,25 @@ namespace tools
     return n + 1;
   }
 
-  void DoPatchSize(QString const & name, string const & skinName, QSize & size)
+  void DoPatchSize(QString const & name, std::string const & skinName, QSize & size)
   {
     if (name.startsWith("placemark-") || name.startsWith("current-position") || name.startsWith("api_pin"))
     {
-      if (skinName.rfind("-mdpi") != string::npos)
+      if (skinName.rfind("-mdpi") != std::string::npos)
         size = QSize(24, 24);
-      else if (skinName.rfind("-hdpi") != string::npos)
+      else if (skinName.rfind("-hdpi") != std::string::npos)
         size = QSize(36, 36);
-      else if (skinName.rfind("-xhdpi") != string::npos)
+      else if (skinName.rfind("-xhdpi") != std::string::npos)
         size = QSize(48, 48);
-      else if (skinName.rfind("-xxhdpi") != string::npos)
+      else if (skinName.rfind("-xxhdpi") != std::string::npos)
         size = QSize(72, 72);
     }
   }
 
-  void SkinGenerator::processSymbols(string const & svgDataDir,
-                                     string const & skinName,
-                                     vector<QSize> const & symbolSizes,
-                                     vector<string> const & suffixes)
+  void SkinGenerator::processSymbols(std::string const & svgDataDir,
+                                     std::string const & skinName,
+                                     std::vector<QSize> const & symbolSizes,
+                                     std::vector<std::string> const & suffixes)
   {
     for (size_t j = 0; j < symbolSizes.size(); ++j)
     {
@@ -164,10 +164,10 @@ namespace tools
     for (TSkinPages::iterator pageIt = m_pages.begin(); pageIt != m_pages.end(); ++pageIt)
     {
       SkinPageInfo & page = *pageIt;
-      sort(page.m_symbols.begin(), page.m_symbols.end(), GreaterHeight());
+      std::sort(page.m_symbols.begin(), page.m_symbols.end(), GreaterHeight());
 
       MaxDimensions dim(page.m_width, page.m_height);
-      for_each(page.m_symbols.begin(), page.m_symbols.end(), dim);
+      std::for_each(page.m_symbols.begin(), page.m_symbols.end(), dim);
 
       page.m_width = NextPowerOf2(page.m_width);
       page.m_height = NextPowerOf2(page.m_height);
@@ -176,7 +176,7 @@ namespace tools
       while (true)
       {
         page.m_packer = m2::Packer(page.m_width, page.m_height);
-        page.m_packer.addOverflowFn(bind(&SkinGenerator::markOverflow, this), 10);
+        page.m_packer.addOverflowFn(std::bind(&SkinGenerator::markOverflow, this), 10);
 
         m_overflowDetected = false;
 
@@ -238,7 +238,7 @@ namespace tools
         }
       }
 
-      string s = page.m_fileName + ".png";
+      std::string s = page.m_fileName + ".png";
       LOG(LINFO, ("saving skin image into: ", s));
       if (m_needColorCorrection)
         correctColors(gilImage);
@@ -253,20 +253,20 @@ namespace tools
     m_overflowDetected = true;
   }
 
-  void SkinGenerator::writeToFileNewStyle(const string & skinName)
+  void SkinGenerator::writeToFileNewStyle(const std::string & skinName)
   {
     QDomDocument doc = QDomDocument("skin");
     QDomElement rootElem = doc.createElement("root");
     doc.appendChild(rootElem);
 
-    for (vector<SkinPageInfo>::const_iterator pageIt = m_pages.begin(); pageIt != m_pages.end(); ++pageIt)
+    for (std::vector<SkinPageInfo>::const_iterator pageIt = m_pages.begin(); pageIt != m_pages.end(); ++pageIt)
     {
       QDomElement fileNode = doc.createElement("file");
       fileNode.setAttribute("width", pageIt->m_width);
       fileNode.setAttribute("height", pageIt->m_height);
       rootElem.appendChild(fileNode);
 
-      for (vector<SymbolInfo>::const_iterator symbolIt = pageIt->m_symbols.begin();
+      for (std::vector<SymbolInfo>::const_iterator symbolIt = pageIt->m_symbols.begin();
            symbolIt != pageIt->m_symbols.end(); ++symbolIt)
       {
         m2::RectU r = pageIt->m_packer.find(symbolIt->m_handle).second;
@@ -279,7 +279,7 @@ namespace tools
         fileNode.appendChild(symbol);
       }
     }
-    string extName = ".sdf";
+    std::string extName = ".sdf";
     QFile file(QString((skinName + extName).c_str()));
     if (!file.open(QIODevice::ReadWrite | QIODevice::Truncate))
       throw std::exception();

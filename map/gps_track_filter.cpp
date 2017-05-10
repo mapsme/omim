@@ -40,8 +40,8 @@ double GetDistance(location::GpsInfo const & from, location::GpsInfo const & to)
 
 } // namespace
 
-void GpsTrackNullFilter::Process(vector<location::GpsInfo> const & inPoints,
-                                 vector<location::GpsTrackInfo> & outPoints)
+void GpsTrackNullFilter::Process(std::vector<location::GpsInfo> const & inPoints,
+                                 std::vector<location::GpsTrackInfo> & outPoints)
 {
   outPoints.insert(outPoints.end(), inPoints.begin(), inPoints.end());
 }
@@ -59,8 +59,8 @@ GpsTrackFilter::GpsTrackFilter()
   settings::Get(kMinHorizontalAccuracyKey, m_minAccuracy);
 }
 
-void GpsTrackFilter::Process(vector<location::GpsInfo> const & inPoints,
-                             vector<location::GpsTrackInfo> & outPoints)
+void GpsTrackFilter::Process(std::vector<location::GpsInfo> const & inPoints,
+                             std::vector<location::GpsTrackInfo> & outPoints)
 {
   outPoints.reserve(inPoints.size());
 

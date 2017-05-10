@@ -4,8 +4,8 @@
 
 #include "base/src_point.hpp"
 
-#include "std/string.hpp"
-#include "std/thread.hpp"
+#include <string>
+#include <thread>
 
 class GLFunctions
 {
@@ -17,9 +17,9 @@ public:
   /// Attaches cache of gl-functions to specified thread. The only cache
   /// is available, so invoking of this method on other thread leads to
   /// disabling of current cache and enabling another
-  static void AttachCache(thread::id const & threadId);
+  static void AttachCache(std::thread::id const & threadId);
 
-  static bool glHasExtension(string const & name);
+  static bool glHasExtension(std::string const & name);
   static void glClearColor(float r, float g, float b, float a);
   static void glClear();
   static void glClearDepth();
@@ -38,7 +38,7 @@ public:
   /// name = { gl_const::GLBufferSize, gl_const::GLBufferUsage }
   static int32_t glGetBufferParameter(glConst target, glConst name);
 
-  static string glGetString(glConst pname);
+  static std::string glGetString(glConst pname);
 
   static int32_t glGetMaxLineWidth();
 
@@ -74,19 +74,19 @@ public:
 
   /// Shaders support
   static uint32_t glCreateShader(glConst type);
-  static void glShaderSource(uint32_t shaderID, string const & src, string const & defines);
-  static bool glCompileShader(uint32_t shaderID, string & errorLog);
+  static void glShaderSource(uint32_t shaderID, std::string const & src, std::string const & defines);
+  static bool glCompileShader(uint32_t shaderID, std::string & errorLog);
   static void glDeleteShader(uint32_t shaderID);
 
   static uint32_t glCreateProgram();
   static void glAttachShader(uint32_t programID, uint32_t shaderID);
   static void glDetachShader(uint32_t programID, uint32_t shaderID);
-  static bool glLinkProgram(uint32_t programID, string & errorLog);
+  static bool glLinkProgram(uint32_t programID, std::string & errorLog);
   static void glDeleteProgram(uint32_t programID);
 
   static void glUseProgram(uint32_t programID);
-  static int8_t glGetAttribLocation(uint32_t programID, string const & name);
-  static void glBindAttribLocation(uint32_t programID, uint8_t index, string const & name);
+  static int8_t glGetAttribLocation(uint32_t programID, std::string const & name);
+  static void glBindAttribLocation(uint32_t programID, uint8_t index, std::string const & name);
 
   /// enable vertex attribute binding. To get attributeLocation need to call glGetAttributeLocation
   static void glEnableVertexAttribute(int32_t attributeLocation);
@@ -106,9 +106,9 @@ public:
                                        uint32_t offset);
 
   static void glGetActiveUniform(uint32_t programID, uint32_t uniformIndex,
-                                 int32_t * uniformSize, glConst * type, string & name);
+                                 int32_t * uniformSize, glConst * type, std::string & name);
 
-  static int8_t glGetUniformLocation(uint32_t programID, string const & name);
+  static int8_t glGetUniformLocation(uint32_t programID, std::string const & name);
   static void glUniformValuei(int8_t location, int32_t v);
   static void glUniformValuei(int8_t location, int32_t v1, int32_t v2);
   static void glUniformValuei(int8_t location, int32_t v1, int32_t v2, int32_t v3);

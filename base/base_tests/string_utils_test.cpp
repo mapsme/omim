@@ -39,7 +39,7 @@ UNIT_TEST(LowerUniChar)
     std::getline(file, line);
     // strip comments
     size_t const sharp = line.find('#');
-    if (sharp != string::npos)
+    if (sharp != std::string::npos)
       line.erase(sharp);
     strings::SimpleTokenizer semicolon(line, ";");
     if (!semicolon)

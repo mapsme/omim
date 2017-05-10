@@ -9,21 +9,22 @@
 #include "geometry/mercator.hpp"
 
 #include "base/assert.hpp"
+#include "base/stl_add.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/bind.hpp"
-#include "std/cstdint.hpp"
-#include "std/function.hpp"
-#include "std/initializer_list.hpp"
-#include "std/set.hpp"
-#include "std/vector.hpp"
+#include <functional>
+#include <cstdint>
+#include <functional>
+#include <initializer_list>
+#include <set>
+#include <vector>
 
 namespace ftype
 {
   namespace
   {
 
-    bool NeedMatchValue(string const & k, string const & v)
+    bool NeedMatchValue(std::string const & k, std::string const & v)
     {
       // Take numbers only for "capital" and "admin_level" now.
       // NOTE! If you add a new type into classificator, which has a number in it
@@ -32,11 +33,11 @@ namespace ftype
       return !strings::is_number(v) || k == "admin_level" || k == "capital";
     }
 
-    bool IgnoreTag(string const & k, string const & v)
+    bool IgnoreTag(std::string const & k, std::string const & v)
     {
-      static string const negativeValues[] = { "no", "false", "-1" };
+      static std::string const negativeValues[] = { "no", "false", "-1" };
       // If second component of these pairs is true we need to process this key else ignore it
-      static pair<string const, bool const> const processedKeys[] = {
+      static pair<std::string const, bool const> const processedKeys[] = {
           {"description", true},
           // [highway=primary][cycleway=lane] parsed as [highway=cycleway]
           {"cycleway", true},
@@ -89,15 +90,15 @@ namespace ftype
     }
 
     template <typename TResult, class ToDo>
-    TResult ForEachTagEx(OsmElement * p, set<int> & skipTags, ToDo && toDo)
+    TResult ForEachTagEx(OsmElement * p, std::set<int> & skipTags, ToDo && toDo)
     {
       int id = 0;
-      return ForEachTag<TResult>(p, [&](string const & k, string const & v)
+      return ForEachTag<TResult>(p, [&](std::string const & k, std::string const & v)
       {
         int currentId = id++;
         if (skipTags.count(currentId) != 0)
           return TResult();
-        if (string::npos != k.find("name"))
+        if (std::string::npos != k.find("name"))
         {
           skipTags.insert(currentId);
           return TResult();
@@ -111,13 +112,13 @@ namespace ftype
 
     class NamesExtractor
     {
-      set<string> m_savedNames;
+      std::set<std::string> m_savedNames;
       FeatureParams & m_params;
 
     public:
       NamesExtractor(FeatureParams & params) : m_params(params) {}
 
-      bool GetLangByKey(string const & k, string & lang)
+      bool GetLangByKey(std::string const & k, std::string & lang)
       {
         strings::SimpleTokenizer token(k, "\t :");
         if (!token)
@@ -144,9 +145,9 @@ namespace ftype
         return m_savedNames.insert(lang).second;
       }
 
-      bool operator() (string & k, string & v)
+      bool operator() (std::string & k, std::string & v)
       {
-        string lang;
+        std::string lang;
         if (v.empty() || !GetLangByKey(k, lang))
           return false;
 
@@ -167,10 +168,10 @@ namespace ftype
         // ! - take only negative values
         // ~ - take only positive values
         char const * value;
-        function<FuncT> func;
+        std::function<FuncT> func;
       };
 
-      static bool IsNegative(string const & value)
+      static bool IsNegative(std::string const & value)
       {
         for (char const * s : { "no", "none", "false" })
           if (value == s)
@@ -184,7 +185,7 @@ namespace ftype
       TagProcessor(OsmElement * elem) : m_element(elem) {}
 
       template <typename FuncT = void()>
-      void ApplyRules(initializer_list<Rule<FuncT>> const & rules) const
+      void ApplyRules(std::initializer_list<Rule<FuncT>> const & rules) const
       {
         for (auto & e : m_element->m_tags)
         {
@@ -207,8 +208,8 @@ namespace ftype
       }
 
     protected:
-      static void call(function<void()> const & f, string &, string &) { f(); }
-      static void call(function<void(string &, string &)> const & f, string & k, string & v) { f(k, v); }
+      static void call(std::function<void()> const & f, std::string &, std::string &) { f(); }
+      static void call(std::function<void(std::string &, std::string &)> const & f, std::string & k, std::string & v) { f(k, v); }
     };
   }
 
@@ -227,7 +228,7 @@ namespace ftype
     {
       Classificator const & c = classif();
 
-      StringIL arr[] =
+      my::StringIL arr[] =
       {
         {"entrance"}, {"highway"},
         {"building", "address"}, {"hwtag", "oneway"}, {"hwtag", "private"},
@@ -266,11 +267,11 @@ namespace ftype
 
   void MatchTypes(OsmElement * p, FeatureParams & params)
   {
-    set<int> skipRows;
-    vector<ClassifObjectPtr> path;
+    std::set<int> skipRows;
+    std::vector<ClassifObjectPtr> path;
     ClassifObject const * current = nullptr;
 
-    auto matchTagToClassificator = [&path, &current](string const & k, string const & v) -> bool
+    auto matchTagToClassificator = [&path, &current](std::string const & k, std::string const & v) -> bool
     {
       // First try to match key.
       ClassifObjectPtr elem = current->BinaryFind(k);
@@ -306,7 +307,7 @@ namespace ftype
 
         // Next objects trying to find by value first.
         ClassifObjectPtr pObj =
-            ForEachTagEx<ClassifObjectPtr>(p, skipRows, [&current](string const & k, string const & v)
+            ForEachTagEx<ClassifObjectPtr>(p, skipRows, [&current](std::string const & k, std::string const & v)
             {
               if (!NeedMatchValue(k, v))
                 return ClassifObjectPtr();
@@ -337,9 +338,9 @@ namespace ftype
     } while (true);
   }
 
-  string MatchCity(OsmElement const * p)
+  std::string MatchCity(OsmElement const * p)
   {
-    static map<string, m2::RectD> const cities = {
+    static map<std::string, m2::RectD> const cities = {
         {"almaty", {76.7223358154, 43.1480920701, 77.123336792, 43.4299852362}},
         {"amsterdam", {4.65682983398, 52.232846171, 5.10040283203, 52.4886341706}},
         {"baires", {-58.9910888672, -35.1221551064, -57.8045654297, -34.2685661867}},
@@ -406,14 +407,14 @@ namespace ftype
       if (city.second.IsPointInside(pt))
         return city.first;
     }
-    return string();
+    return std::string();
   }
 
-  string DetermineSurface(OsmElement * p)
+  std::string DetermineSurface(OsmElement * p)
   {
-    string surface;
-    string smoothness;
-    string surface_grade;
+    std::string surface;
+    std::string smoothness;
+    std::string surface_grade;
     bool isHighway = false;
 
     for (auto const & tag : p->m_tags)
@@ -429,15 +430,15 @@ namespace ftype
     }
 
     if (!isHighway || (surface.empty() && smoothness.empty()))
-      return string();
+      return std::string();
 
-    static StringIL pavedSurfaces = {"paved", "asphalt", "cobblestone", "cobblestone:flattened",
-                                     "sett", "concrete", "concrete:lanes", "concrete:plates",
-                                     "paving_stones", "metal", "wood"};
-    static StringIL badSurfaces = {"cobblestone", "sett", "metal", "wood", "grass", "gravel",
-                                   "mud", "sand", "snow", "woodchips"};
-    static StringIL badSmoothness = {"bad", "very_bad", "horrible", "very_horrible", "impassable",
-                                     "robust_wheels", "high_clearance", "off_road_wheels", "rough"};
+    static my::StringIL pavedSurfaces = {"paved", "asphalt", "cobblestone", "cobblestone:flattened",
+                                         "sett", "concrete", "concrete:lanes", "concrete:plates",
+                                         "paving_stones", "metal", "wood"};
+    static my::StringIL badSurfaces = {"cobblestone", "sett", "metal", "wood", "grass", "gravel",
+                                       "mud", "sand", "snow", "woodchips"};
+    static my::StringIL badSmoothness = {"bad", "very_bad", "horrible", "very_horrible", "impassable",
+                                         "robust_wheels", "high_clearance", "off_road_wheels", "rough"};
 
     bool isPaved = false;
     bool isGood = true;
@@ -469,7 +470,7 @@ namespace ftype
             isGood = false;
     }
 
-    string psurface = isPaved ? "paved_" : "unpaved_";
+    std::string psurface = isPaved ? "paved_" : "unpaved_";
     psurface += isGood ? "good" : "bad";
     return psurface;
   }
@@ -505,7 +506,7 @@ namespace ftype
     // Tag 'city' is needed for correct selection of metro icons.
     if (isSubway && p->type == OsmElement::EntityType::Node)
     {
-      string const city = MatchCity(p);
+      std::string const city = MatchCity(p);
       if (!city.empty())
         p->AddTag("city", city);
     }
@@ -661,13 +662,13 @@ namespace ftype
     ForEachTag<bool>(p, NamesExtractor(params));
 
     // Stage3: Process base feature tags.
-    TagProcessor(p).ApplyRules<void(string &, string &)>
+    TagProcessor(p).ApplyRules<void(std::string &, std::string &)>
     ({
-      { "addr:city", "*", [&params](string & k, string & v) { params.AddPlace(v); k.clear(); v.clear(); }},
-      { "addr:place", "*", [&params](string & k, string & v) { params.AddPlace(v); k.clear(); v.clear(); }},
-      { "addr:housenumber", "*", [&params](string & k, string & v) { params.AddHouseName(v); k.clear(); v.clear(); }},
-      { "addr:housename", "*", [&params](string & k, string & v) { params.AddHouseName(v); k.clear(); v.clear(); }},
-      { "addr:street", "*", [&params](string & k, string & v) { params.AddStreet(v); k.clear(); v.clear(); }},
+      { "addr:city", "*", [&params](std::string & k, std::string & v) { params.AddPlace(v); k.clear(); v.clear(); }},
+      { "addr:place", "*", [&params](std::string & k, std::string & v) { params.AddPlace(v); k.clear(); v.clear(); }},
+      { "addr:housenumber", "*", [&params](std::string & k, std::string & v) { params.AddHouseName(v); k.clear(); v.clear(); }},
+      { "addr:housename", "*", [&params](std::string & k, std::string & v) { params.AddHouseName(v); k.clear(); v.clear(); }},
+      { "addr:street", "*", [&params](std::string & k, std::string & v) { params.AddStreet(v); k.clear(); v.clear(); }},
       //{ "addr:streetnumber", "*", [&params](string & k, string & v) { params.AddStreet(v); k.clear(); v.clear(); }},
       // This line was first introduced by vng and was never used uncommented.
       //{ "addr:full", "*", [&params](string & k, string & v) { params.AddAddress(v); k.clear(); v.clear(); }},
@@ -675,7 +676,7 @@ namespace ftype
       // addr:postcode must be passed to the metadata processor.
       // { "addr:postcode", "*", [&params](string & k, string & v) { params.AddPostcode(v); k.clear(); v.clear(); }},
 
-      { "population", "*", [&params](string & k, string & v)
+      { "population", "*", [&params](std::string & k, std::string & v)
         {
           // Get population rank.
           uint64_t n;
@@ -684,14 +685,14 @@ namespace ftype
           k.clear(); v.clear();
         }
       },
-      { "ref", "*", [&params](string & k, string & v)
+      { "ref", "*", [&params](std::string & k, std::string & v)
         {
           // Get reference (we process road numbers only).
           params.ref = v;
           k.clear(); v.clear();
         }
       },
-      { "layer", "*", [&params](string & /* k */, string & v)
+      { "layer", "*", [&params](std::string & /* k */, std::string & v)
         {
           // Get layer.
           if (params.layer == 0)

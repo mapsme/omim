@@ -10,6 +10,8 @@
 #include "source_data.hpp"
 
 
+using namespace std;
+
 UNIT_TEST(OSM_O5M_Source_Node_read_test)
 {
   string data(begin(node2_o5m_data), end(node2_o5m_data));

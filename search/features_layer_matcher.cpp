@@ -96,7 +96,7 @@ FeaturesLayerMatcher::TStreets const & FeaturesLayerMatcher::GetNearbyStreetsImp
 uint32_t FeaturesLayerMatcher::GetMatchingStreetImpl(uint32_t houseId, FeatureType & houseFeature)
 {
   // Check if this feature is modified - the logic will be different.
-  string streetName;
+  std::string streetName;
   bool const edited =
       osm::Editor::Instance().GetEditedFeatureStreet(houseFeature.GetID(), streetName);
 
@@ -116,7 +116,7 @@ uint32_t FeaturesLayerMatcher::GetMatchingStreetImpl(uint32_t houseId, FeatureTy
 
   if (edited)
   {
-    auto const ret = find_if(streets.begin(), streets.end(), [&streetName](TStreet const & st)
+    auto const ret = std::find_if(streets.begin(), streets.end(), [&streetName](TStreet const & st)
                              {
                                return st.m_name == streetName;
                              });

@@ -15,6 +15,8 @@
 #include "std/utility.hpp"
 #include "std/vector.hpp"
 
+using namespace std;
+
 class FeatureType;
 
 namespace search

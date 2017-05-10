@@ -20,7 +20,7 @@ static char const zipBytes[] = "PK\003\004\n\0\0\0\0\0\222\226\342>\302\032"
 
 UNIT_TEST(ZipReaderSmoke)
 {
-  string const ZIPFILE = "smoke_test.zip";
+  std::string const ZIPFILE = "smoke_test.zip";
   {
     FileWriter f(ZIPFILE);
     f.Write(zipBytes, ARRAY_SIZE(zipBytes) - 1);
@@ -30,7 +30,7 @@ UNIT_TEST(ZipReaderSmoke)
   try
   {
     ZipFileReader r(ZIPFILE, "test.txt");
-    string s;
+    std::string s;
     r.ReadAsString(s);
     TEST_EQUAL(s, "Test\n", ("Invalid zip file contents"));
   }
@@ -89,13 +89,13 @@ static char const invalidZip[] = "1234567890asdqwetwezxvcbdhg322353tgfsd";
 
 UNIT_TEST(ZipFilesList)
 {
-  string const ZIPFILE = "list_test.zip";
+  std::string const ZIPFILE = "list_test.zip";
   {
     FileWriter f(ZIPFILE);
     f.Write(zipBytes2, ARRAY_SIZE(zipBytes2) - 1);
   }
   TEST(ZipFileReader::IsZip(ZIPFILE), ());
-  string const ZIPFILE_INVALID = "invalid_test.zip";
+  std::string const ZIPFILE_INVALID = "invalid_test.zip";
   {
     FileWriter f(ZIPFILE_INVALID);
     f.Write(invalidZip, ARRAY_SIZE(invalidZip) - 1);
@@ -160,7 +160,7 @@ static char const zipBytes3[] = \
 
 UNIT_TEST(ZipExtract)
 {
-  string const ZIPFILE = "test.zip";
+  std::string const ZIPFILE = "test.zip";
   {
     FileWriter f(ZIPFILE);
     f.Write(zipBytes3, ARRAY_SIZE(zipBytes3));
@@ -171,8 +171,8 @@ UNIT_TEST(ZipExtract)
   ZipFileReader::FilesList(ZIPFILE, files);
   TEST_EQUAL(files.size(), 2, ());
 
-  string const OUTFILE = "out.tmp";
-  string s;
+  std::string const OUTFILE = "out.tmp";
+  std::string s;
   ZipFileReader::UnzipFile(ZIPFILE, files[0].first, OUTFILE);
   {
     FileReader(OUTFILE).ReadAsString(s);
@@ -191,7 +191,7 @@ UNIT_TEST(ZipExtract)
 
 UNIT_TEST(ZipFileSizes)
 {
-  string const ZIPFILE = "test.zip";
+  std::string const ZIPFILE = "test.zip";
   {
     FileWriter f(ZIPFILE);
     f.Write(zipBytes3, ARRAY_SIZE(zipBytes3));

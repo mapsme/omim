@@ -1,8 +1,8 @@
 #pragma once
 
-#include "std/string.hpp"
-#include "std/map.hpp"
-#include "std/mutex.hpp"
+#include <string>
+#include <map>
+#include <mutex>
 
 namespace settings
 {
@@ -12,16 +12,16 @@ extern char const * kLocationStateMode;
 extern char const * kMeasurementUnits;
 
 template <class T>
-bool FromString(string const & str, T & outValue);
+bool FromString(std::string const & str, T & outValue);
 template <class T>
-string ToString(T const & value);
+std::string ToString(T const & value);
 
 class StringStorage
 {
-  typedef map<string, string> ContainerT;
+  typedef std::map<std::string, std::string> ContainerT;
   ContainerT m_values;
 
-  mutable mutex m_mutex;
+  mutable std::mutex m_mutex;
 
   StringStorage();
   void Save() const;
@@ -30,27 +30,27 @@ public:
   static StringStorage & Instance();
 
   void Clear();
-  bool GetValue(string const & key, string & outValue) const;
-  void SetValue(string const & key, string && value);
-  void DeleteKeyAndValue(string const & key);
+  bool GetValue(std::string const & key, std::string & outValue) const;
+  void SetValue(std::string const & key, std::string && value);
+  void DeleteKeyAndValue(std::string const & key);
 };
 
 /// Retrieve setting
 /// @return false if setting is absent
 template <class ValueT>
-bool Get(string const & key, ValueT & outValue)
+bool Get(std::string const & key, ValueT & outValue)
 {
-  string strVal;
+  std::string strVal;
   return StringStorage::Instance().GetValue(key, strVal) && FromString(strVal, outValue);
 }
 /// Automatically saves setting to external file
 template <class ValueT>
-void Set(string const & key, ValueT const & value)
+void Set(std::string const & key, ValueT const & value)
 {
   StringStorage::Instance().SetValue(key, ToString(value));
 }
 
-inline void Delete(string const & key) { StringStorage::Instance().DeleteKeyAndValue(key); }
+inline void Delete(std::string const & key) { StringStorage::Instance().DeleteKeyAndValue(key); }
 inline void Clear() { StringStorage::Instance().Clear(); }
 
 /// Use this function for running some stuff once according to date.

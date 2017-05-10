@@ -1,4 +1,4 @@
 
-#include "std/string.hpp"
+#include <string>
 
-bool CreateZipFromPathDeflatedAndDefaultCompression(string const & filePath, string const & zipFilePath);
+bool CreateZipFromPathDeflatedAndDefaultCompression(std::string const & filePath, std::string const & zipFilePath);

@@ -17,8 +17,8 @@
 #include "base/assert.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/atomic.hpp"
-#include "std/sstream.hpp"
+#include <atomic>
+#include <sstream>
 
 namespace generator
 {
@@ -28,25 +28,25 @@ namespace
 {
 uint64_t GenUniqueId()
 {
-  static atomic<uint64_t> id;
+  static std::atomic<uint64_t> id;
   return id.fetch_add(1);
 }
 }  // namespace
 
 // TestFeature -------------------------------------------------------------------------------------
-TestFeature::TestFeature(string const & name, string const & lang)
+TestFeature::TestFeature(std::string const & name, std::string const & lang)
   : m_id(GenUniqueId()), m_center(0, 0), m_hasCenter(false), m_name(name), m_lang(lang)
 {
 }
 
-TestFeature::TestFeature(m2::PointD const & center, string const & name, string const & lang)
+TestFeature::TestFeature(m2::PointD const & center, std::string const & name, std::string const & lang)
   : m_id(GenUniqueId()), m_center(center), m_hasCenter(true), m_name(name), m_lang(lang)
 {
 }
 
 bool TestFeature::Matches(FeatureType const & feature) const
 {
-  istringstream is(feature.GetMetadata().Get(feature::Metadata::FMD_TEST_ID));
+  std::istringstream is(feature.GetMetadata().Get(feature::Metadata::FMD_TEST_ID));
   uint64_t id;
   is >> id;
   return id == m_id;
@@ -70,7 +70,7 @@ void TestFeature::Serialize(FeatureBuilder1 & fb) const
 }
 
 // TestCountry -------------------------------------------------------------------------------------
-TestCountry::TestCountry(m2::PointD const & center, string const & name, string const & lang)
+TestCountry::TestCountry(m2::PointD const & center, std::string const & name, std::string const & lang)
   : TestFeature(center, name, lang)
 {
 }
@@ -85,15 +85,15 @@ void TestCountry::Serialize(FeatureBuilder1 & fb) const
   fb.AddName("default", m_name);
 }
 
-string TestCountry::ToString() const
+std::string TestCountry::ToString() const
 {
-  ostringstream os;
+  std::ostringstream os;
   os << "TestCountry [" << m_name << ", " << m_lang << ", " << DebugPrint(m_center) << "]";
   return os.str();
 }
 
 // TestCity ----------------------------------------------------------------------------------------
-TestCity::TestCity(m2::PointD const & center, string const & name, string const & lang,
+TestCity::TestCity(m2::PointD const & center, std::string const & name, std::string const & lang,
                    uint8_t rank)
   : TestFeature(center, name, lang), m_rank(rank)
 {
@@ -107,16 +107,16 @@ void TestCity::Serialize(FeatureBuilder1 & fb) const
   fb.SetRank(m_rank);
 }
 
-string TestCity::ToString() const
+std::string TestCity::ToString() const
 {
-  ostringstream os;
+  std::ostringstream os;
   os << "TestCity [" << m_name << ", " << m_lang << ", " << DebugPrint(m_center) << "]";
   return os.str();
 }
 
 // TestVillage
 // ----------------------------------------------------------------------------------------
-TestVillage::TestVillage(m2::PointD const & center, string const & name, string const & lang,
+TestVillage::TestVillage(m2::PointD const & center, std::string const & name, std::string const & lang,
                          uint8_t rank)
   : TestFeature(center, name, lang), m_rank(rank)
 {
@@ -130,15 +130,15 @@ void TestVillage::Serialize(FeatureBuilder1 & fb) const
   fb.SetRank(m_rank);
 }
 
-string TestVillage::ToString() const
+std::string TestVillage::ToString() const
 {
-  ostringstream os;
+  std::ostringstream os;
   os << "TestVillage [" << m_name << ", " << m_lang << ", " << DebugPrint(m_center) << "]";
   return os.str();
 }
 
 // TestStreet --------------------------------------------------------------------------------------
-TestStreet::TestStreet(vector<m2::PointD> const & points, string const & name, string const & lang)
+TestStreet::TestStreet(std::vector<m2::PointD> const & points, std::string const & name, std::string const & lang)
   : TestFeature(name, lang), m_points(points)
 {
 }
@@ -155,15 +155,15 @@ void TestStreet::Serialize(FeatureBuilder1 & fb) const
   fb.SetLinear(false /* reverseGeometry */);
 }
 
-string TestStreet::ToString() const
+std::string TestStreet::ToString() const
 {
-  ostringstream os;
+  std::ostringstream os;
   os << "TestStreet [" << m_name << ", " << m_lang << ", " << ::DebugPrint(m_points) << "]";
   return os.str();
 }
 
 // TestPOI -----------------------------------------------------------------------------------------
-TestPOI::TestPOI(m2::PointD const & center, string const & name, string const & lang)
+TestPOI::TestPOI(m2::PointD const & center, std::string const & name, std::string const & lang)
   : TestFeature(center, name, lang)
 {
   m_types = {{"railway", "station"}};
@@ -171,7 +171,7 @@ TestPOI::TestPOI(m2::PointD const & center, string const & name, string const & 
 
 // static
 pair<TestPOI, FeatureID> TestPOI::AddWithEditor(osm::Editor & editor, MwmSet::MwmId const & mwmId,
-                                                string const & enName, m2::PointD const & pt)
+                                                std::string const & enName, m2::PointD const & pt)
 {
   TestPOI poi(pt, enName, "en");
 
@@ -201,9 +201,9 @@ void TestPOI::Serialize(FeatureBuilder1 & fb) const
     fb.AddStreet(m_streetName);
 }
 
-string TestPOI::ToString() const
+std::string TestPOI::ToString() const
 {
-  ostringstream os;
+  std::ostringstream os;
   os << "TestPOI [" << m_name << ", " << m_lang << ", " << DebugPrint(m_center);
   if (!m_houseNumber.empty())
     os << ", " << m_houseNumber;
@@ -214,24 +214,24 @@ string TestPOI::ToString() const
 }
 
 // TestBuilding ------------------------------------------------------------------------------------
-TestBuilding::TestBuilding(m2::PointD const & center, string const & name,
-                           string const & houseNumber, string const & lang)
+TestBuilding::TestBuilding(m2::PointD const & center, std::string const & name,
+                           std::string const & houseNumber, std::string const & lang)
   : TestFeature(center, name, lang), m_houseNumber(houseNumber)
 {
 }
 
-TestBuilding::TestBuilding(m2::PointD const & center, string const & name,
-                           string const & houseNumber, TestStreet const & street,
-                           string const & lang)
+TestBuilding::TestBuilding(m2::PointD const & center, std::string const & name,
+                           std::string const & houseNumber, TestStreet const & street,
+                           std::string const & lang)
   : TestFeature(center, name, lang)
   , m_houseNumber(houseNumber)
   , m_streetName(street.GetName())
 {
 }
 
-TestBuilding::TestBuilding(vector<m2::PointD> const & boundary, string const & name,
-                           string const & houseNumber, TestStreet const & street,
-                           string const & lang)
+TestBuilding::TestBuilding(std::vector<m2::PointD> const & boundary, std::string const & name,
+                           std::string const & houseNumber, TestStreet const & street,
+                           std::string const & lang)
   : TestFeature(name, lang)
   , m_boundary(boundary)
   , m_houseNumber(houseNumber)
@@ -257,16 +257,16 @@ void TestBuilding::Serialize(FeatureBuilder1 & fb) const
   fb.AddType(classificator.GetTypeByPath({"building"}));
 }
 
-string TestBuilding::ToString() const
+std::string TestBuilding::ToString() const
 {
-  ostringstream os;
+  std::ostringstream os;
   os << "TestBuilding [" << m_name << ", " << m_houseNumber << ", " << m_lang << ", "
      << DebugPrint(m_center) << "]";
   return os.str();
 }
 
 // TestPark ----------------------------------------------------------------------------------------
-TestPark::TestPark(vector<m2::PointD> const & boundary, string const & name, string const & lang)
+TestPark::TestPark(std::vector<m2::PointD> const & boundary, std::string const & name, std::string const & lang)
   : TestFeature(name, lang), m_boundary(boundary)
 {
 }
@@ -282,13 +282,13 @@ void TestPark::Serialize(FeatureBuilder1 & fb) const
   fb.AddType(classificator.GetTypeByPath({"leisure", "park"}));
 }
 
-string TestPark::ToString() const
+std::string TestPark::ToString() const
 {
-  ostringstream os;
+  std::ostringstream os;
   os << "TestPark [" << m_name << ", " << m_lang << "]";
   return os.str();
 }
 
-string DebugPrint(TestFeature const & feature) { return feature.ToString(); }
+std::string DebugPrint(TestFeature const & feature) { return feature.ToString(); }
 }  // namespace tests_support
 }  // namespace generator

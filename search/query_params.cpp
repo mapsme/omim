@@ -4,7 +4,7 @@
 
 #include "indexer/feature_impl.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 namespace search
 {
@@ -20,7 +20,7 @@ public:
   {
     if (s.size() > 2)
       return;
-    string const ss = strings::ToUtf8(strings::MakeLowerCase(s));
+    std::string const ss = strings::ToUtf8(strings::MakeLowerCase(s));
 
     // All synonyms should be lowercase!
     if (ss == "n")
@@ -42,7 +42,7 @@ public:
   }
 
 private:
-  void AddSynonym(size_t i, string const & synonym) { m_params.GetToken(i).AddSynonym(synonym); }
+  void AddSynonym(size_t i, std::string const & synonym) { m_params.GetToken(i).AddSynonym(synonym); }
 
   QueryParams & m_params;
 };
@@ -129,9 +129,9 @@ void QueryParams::RemoveToken(size_t i)
   m_typeIndices.erase(m_typeIndices.begin() + i);
 }
 
-string DebugPrint(QueryParams const & params)
+std::string DebugPrint(QueryParams const & params)
 {
-  ostringstream os;
+  std::ostringstream os;
   os << "QueryParams [ m_tokens=" << ::DebugPrint(params.m_tokens)
      << ", m_prefixToken=" << DebugPrint(params.m_prefixToken)
      << ", m_typeIndices=" << ::DebugPrint(params.m_typeIndices)
@@ -139,9 +139,9 @@ string DebugPrint(QueryParams const & params)
   return os.str();
 }
 
-string DebugPrint(QueryParams::Token const & token)
+std::string DebugPrint(QueryParams::Token const & token)
 {
-  ostringstream os;
+  std::ostringstream os;
   os << "Token [ m_original=" << DebugPrint(token.m_original)
      << ", m_synonyms=" << DebugPrint(token.m_synonyms) << " ]";
   return os.str();

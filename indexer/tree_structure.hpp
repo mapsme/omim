@@ -2,15 +2,15 @@
 
 #include "base/assert.hpp"
 
-#include "std/iostream.hpp"
+#include <iostream>
 
 
 namespace tree
 {
   template <class ToDo>
-  bool LoadTreeAsText(istream & s, ToDo & toDo)
+  bool LoadTreeAsText(std::istream & s, ToDo & toDo)
   {
-    string name;
+    std::string name;
     s >> name;
     ASSERT ( !name.empty(), ("Error in classificator file") );
     if (name == "{}") return false;
@@ -19,7 +19,7 @@ namespace tree
     toDo.Name(name);
 
     // load object itself
-    string strkey;
+    std::string strkey;
     s >> strkey;
     while (strkey != "+" && strkey != "-")
     {

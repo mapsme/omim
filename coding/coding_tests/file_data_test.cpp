@@ -8,23 +8,23 @@
 
 namespace
 {
-  string const name1 = "test1.file";
-  string const name2 = "test2.file";
+  std::string const name1 = "test1.file";
+  std::string const name2 = "test2.file";
 
-  void MakeFile(string const & name)
+  void MakeFile(std::string const & name)
   {
     my::FileData f(name, my::FileData::OP_WRITE_TRUNCATE);
     f.Write(name.c_str(), name.size());
   }
 
-  void MakeFile(string const & name, size_t const size, const char c)
+  void MakeFile(std::string const & name, size_t const size, const char c)
   {
     my::FileData f(name, my::FileData::OP_WRITE_TRUNCATE);
-    f.Write(string(size, c).c_str(), size);
+    f.Write(std::string(size, c).c_str(), size);
   }
 
 #ifdef OMIM_OS_WINDOWS
-  void CheckFileOK(string const & name)
+  void CheckFileOK(std::string const & name)
   {
     my::FileData f(name, my::FileData::OP_READ);
 

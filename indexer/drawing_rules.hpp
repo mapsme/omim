@@ -7,11 +7,11 @@
 #include "base/base.hpp"
 #include "base/buffer_vector.hpp"
 
-#include "std/map.hpp"
-#include "std/vector.hpp"
-#include "std/array.hpp"
-#include "std/string.hpp"
-#include "std/iostream.hpp"
+#include <map>
+#include <vector>
+#include <array>
+#include <string>
+#include <iostream>
 #include "std/target_os.hpp"
 
 #include <unordered_map>
@@ -69,15 +69,15 @@ namespace drule
   class RulesHolder
   {
     // container of rules by type
-    typedef vector<BaseRule*> rule_vec_t;
-    array<rule_vec_t, count_of_rules> m_container;
+    typedef std::vector<BaseRule*> rule_vec_t;
+    std::array<rule_vec_t, count_of_rules> m_container;
 
     /// scale -> array of rules by type -> index of rule in m_container
-    typedef map<int32_t, array<vector<uint32_t>, count_of_rules> > rules_map_t;
+    typedef std::map<int32_t, std::array<std::vector<uint32_t>, count_of_rules> > rules_map_t;
     rules_map_t m_rules;
 
     /// background color for scales in range [0...scales::UPPER_STYLE_SCALE]
-    vector<uint32_t> m_bgColors;
+    std::vector<uint32_t> m_bgColors;
 
     std::unordered_map<std::string, uint32_t> m_colors;
 
@@ -98,11 +98,11 @@ namespace drule
     uint32_t GetColor(std::string const & name) const;
 
 #ifdef OMIM_OS_DESKTOP
-    void LoadFromTextProto(string const & buffer);
-    static void SaveToBinaryProto(string const & buffer, ostream & s);
+    void LoadFromTextProto(std::string const & buffer);
+    static void SaveToBinaryProto(std::string const & buffer, std::ostream & s);
 #endif
 
-    void LoadFromBinaryProto(string const & s);
+    void LoadFromBinaryProto(std::string const & s);
 
     template <class ToDo> void ForEachRule(ToDo toDo)
     {
@@ -110,7 +110,7 @@ namespace drule
       {
         for (int j = 0; j < count_of_rules; ++j)
         {
-          vector<uint32_t> const & v = i->second[j];
+          std::vector<uint32_t> const & v = i->second[j];
           for (size_t k = 0; k < v.size(); ++k)
           {
             // scale, type, rule

@@ -9,9 +9,9 @@
 
 #include "coding/file_name_utils.hpp"
 
-#include "std/cstdint.hpp"
-#include "std/cstdio.hpp"
-#include "std/vector.hpp"
+#include <cstdint>
+#include <cstdio>
+#include <vector>
 
 #include "3party/gflags/src/gflags/gflags.h"
 
@@ -30,10 +30,10 @@ namespace
 const int32_t kMinNumThreads = 1;
 const int32_t kMaxNumThreads = 128;
 
-void LoadIndexes(string const & pathToMWMFolder, vector<Index> & indexes)
+void LoadIndexes(std::string const & pathToMWMFolder, std::vector<Index> & indexes)
 {
   Platform::FilesList files;
-  Platform::GetFilesByRegExp(pathToMWMFolder, string(".*\\") + DATA_FILE_EXTENSION, files);
+  Platform::GetFilesByRegExp(pathToMWMFolder, std::string(".*\\") + DATA_FILE_EXTENSION, files);
   for (auto const & fileName : files)
   {
 
@@ -84,7 +84,7 @@ bool ValidateNumThreads(char const * flagname, int32_t value)
   return true;
 }
 
-bool ValidataMwmPath(char const * flagname, string const & value)
+bool ValidataMwmPath(char const * flagname, std::string const & value)
 {
   if (value.empty())
   {
@@ -110,7 +110,7 @@ int main(int argc, char * argv[])
 
   auto const numThreads = static_cast<uint32_t>(FLAGS_num_threads);
 
-  vector<Index> indexes(numThreads);
+  std::vector<Index> indexes(numThreads);
   LoadIndexes(FLAGS_mwms_path, indexes);
 
   OpenLRSimpleDecoder::SegmentsFilter filter(FLAGS_ids_path, FLAGS_multipoints_only);

@@ -4,8 +4,8 @@
 
 #include "base/ref_counted.hpp"
 
-#include "std/function.hpp"
-#include "std/utility.hpp"
+#include <functional>
+#include <utility>
 
 namespace search
 {
@@ -39,7 +39,7 @@ public:
   {
     ASSERT(!m_isFull, ());
     if (!IsEmpty())
-      coding::CompressedBitVectorEnumerator::ForEach(*m_p, forward<TFn>(fn));
+      coding::CompressedBitVectorEnumerator::ForEach(*m_p, std::forward<TFn>(fn));
   }
 
   CBV Union(CBV const & rhs) const;

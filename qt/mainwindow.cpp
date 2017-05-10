@@ -105,7 +105,7 @@ public:
   }
 
 private:
-  string NextLineId() { return strings::to_string(m_lineId++); }
+  std::string NextLineId() { return strings::to_string(m_lineId++); }
 
   uint32_t m_lineId = 0;
 
@@ -198,7 +198,7 @@ MainWindow::MainWindow(Framework & framework)
   {
     bool bShowUpdateDialog = true;
 
-    string text;
+    std::string text;
     try
     {
       ReaderPtr<Reader> reader = GetPlatform().GetReader("welcome.html");
@@ -279,7 +279,7 @@ namespace
     }
   }
 
-  void FormatMapSize(uint64_t sizeInBytes, string & units, size_t & sizeToDownload)
+  void FormatMapSize(uint64_t sizeInBytes, std::string & units, size_t & sizeToDownload)
   {
     int const mbInBytes = 1024 * 1024;
     int const kbInBytes = 1024;
@@ -412,7 +412,7 @@ void MainWindow::CreateCountryStatusControls()
   m_pDrawWidget->setLayout(mainLayout);
 
   m_pDrawWidget->SetCurrentCountryChangedListener([this](storage::TCountryId const & countryId,
-                                                         string const & countryName, storage::Status status,
+                                                         std::string const & countryName, storage::Status status,
                                                          uint64_t sizeInBytes, uint8_t progress)
   {
     m_lastCountry = countryId;
@@ -430,7 +430,7 @@ void MainWindow::CreateCountryStatusControls()
         m_retryButton->setVisible(false);
         m_downloadingStatusLabel->setVisible(false);
 
-        string units;
+        std::string units;
         size_t sizeToDownload = 0;
         FormatMapSize(sizeInBytes, units, sizeToDownload);
         std::stringstream str;
@@ -539,7 +539,7 @@ void MainWindow::OnLoginMenuItem()
 
 void MainWindow::OnUploadEditsMenuItem()
 {
-  string key, secret;
+  std::string key, secret;
   settings::Get(kTokenKeySetting, key);
   settings::Get(kTokenSecretSetting, secret);
   if (key.empty() || secret.empty())
@@ -607,13 +607,13 @@ void MainWindow::CreatePanelImpl(size_t i, Qt::DockWidgetArea area, QString cons
   }
 }
 
-void MainWindow::CreateTrafficPanel(string const & dataFilePath, string const & sampleFilePath)
+void MainWindow::CreateTrafficPanel(std::string const & dataFilePath, std::string const & sampleFilePath)
 {
   CreatePanelImpl(1, Qt::RightDockWidgetArea, tr("Traffic"), QKeySequence(), nullptr);
 
   m_trafficMode = new TrafficMode(dataFilePath, sampleFilePath,
                                   m_pDrawWidget->GetFramework().GetIndex(),
-                                  make_unique<TrafficDrawerDelegate>(*m_pDrawWidget));
+                                  my::make_unique<TrafficDrawerDelegate>(*m_pDrawWidget));
   m_Docks[1]->setWidget(new TrafficPanel(m_trafficMode, m_Docks[1]));
   m_Docks[1]->adjustSize();
 }

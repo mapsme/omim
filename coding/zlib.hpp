@@ -3,8 +3,8 @@
 #include "base/assert.hpp"
 #include "base/macros.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/string.hpp"
+#include <algorithm>
+#include <string>
 
 #include "zlib.h"
 
@@ -37,7 +37,7 @@ public:
   }
 
   template <typename OutIt>
-  static bool Deflate(string const & s, Level level, OutIt out)
+  static bool Deflate(std::string const & s, Level level, OutIt out)
   {
     return Deflate(s.c_str(), s.size(), level, out);
   }
@@ -52,7 +52,7 @@ public:
   }
 
   template <typename OutIt>
-  static bool Inflate(string const & s, OutIt out)
+  static bool Inflate(std::string const & s, OutIt out)
   {
     return Inflate(s.c_str(), s.size(), out);
   }
@@ -74,7 +74,7 @@ private:
     void MoveOut(OutIt out)
     {
       ASSERT(IsInit(), ());
-      copy(m_buffer, m_buffer + kBufferSize - m_stream.avail_out, out);
+      std::copy(m_buffer, m_buffer + kBufferSize - m_stream.avail_out, out);
       m_stream.next_out = m_buffer;
       m_stream.avail_out = kBufferSize;
     }

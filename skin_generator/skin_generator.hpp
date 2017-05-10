@@ -7,10 +7,10 @@
 
 #include "base/base.hpp"
 
-#include "std/vector.hpp"
-#include "std/list.hpp"
-#include "std/string.hpp"
-#include "std/map.hpp"
+#include <vector>
+#include <list>
+#include <string>
+#include <map>
 
 #include <boost/gil/gil_all.hpp>
 
@@ -44,16 +44,16 @@ namespace tools
           : m_size(size), m_fullFileName(fullFileName), m_symbolID(symbolID) {}
       };
 
-      typedef vector<SymbolInfo> TSymbols;
+      typedef std::vector<SymbolInfo> TSymbols;
 
       struct SkinPageInfo
       {
         TSymbols m_symbols;
         uint32_t m_width;
         uint32_t m_height;
-        string m_fileName;
-        string m_dir;
-        string m_suffix;
+        std::string m_fileName;
+        std::string m_dir;
+        std::string m_suffix;
         m2::Packer m_packer;
       };
 
@@ -63,7 +63,7 @@ namespace tools
 
       QSvgRenderer m_svgRenderer;
 
-      typedef vector<SkinPageInfo> TSkinPages;
+      typedef std::vector<SkinPageInfo> TSkinPages;
       TSkinPages m_pages;
 
       bool m_overflowDetected;
@@ -73,12 +73,12 @@ namespace tools
 
       SkinGenerator(bool needColorCorrection);
       //void processFont(string const & fileName, string const & skinName, vector<int8_t> const & fontSizes, int symbolScale);
-      void processSymbols(string const & symbolsDir,
-                          string const & skinName,
-                          vector<QSize> const & symbolSizes,
-                          vector<string> const & suffix);
+      void processSymbols(std::string const & symbolsDir,
+                          std::string const & skinName,
+                          std::vector<QSize> const & symbolSizes,
+                          std::vector<std::string> const & suffix);
       bool renderPages(uint32_t maxSize);
-      bool writeToFile(string const & skinName);
-      void writeToFileNewStyle(string const & skinName);
+      bool writeToFile(std::string const & skinName);
+      void writeToFileNewStyle(std::string const & skinName);
     };
 } // namespace tools

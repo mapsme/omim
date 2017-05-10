@@ -4,7 +4,7 @@
 
 namespace routing
 {
-void RoadIndex::Import(vector<Joint> const & joints)
+void RoadIndex::Import(std::vector<Joint> const & joints)
 {
   for (Joint::Id jointId = 0; jointId < joints.size(); ++jointId)
   {
@@ -18,7 +18,7 @@ void RoadIndex::Import(vector<Joint> const & joints)
   }
 }
 
-pair<Joint::Id, uint32_t> RoadIndex::FindNeighbor(RoadPoint const & rp, bool forward) const
+std::pair<Joint::Id, uint32_t> RoadIndex::FindNeighbor(RoadPoint const & rp, bool forward) const
 {
   auto const it = m_roads.find(rp.GetFeatureId());
   if (it == m_roads.cend())

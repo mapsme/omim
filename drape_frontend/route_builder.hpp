@@ -10,8 +10,8 @@
 
 #include "geometry/polyline2d.hpp"
 
-#include "std/function.hpp"
-#include "std/unordered_map.hpp"
+#include <functional>
+#include <unordered_map>
 
 namespace df
 {
@@ -19,9 +19,9 @@ namespace df
 class RouteBuilder
 {
 public:
-  using TFlushRouteFn = function<void(drape_ptr<RouteData> &&)>;
-  using TFlushRouteSignFn = function<void(drape_ptr<RouteSignData> &&)>;
-  using TFlushRouteArrowsFn = function<void(drape_ptr<RouteArrowsData> &&)>;
+  using TFlushRouteFn = std::function<void(drape_ptr<RouteData> &&)>;
+  using TFlushRouteSignFn = std::function<void(drape_ptr<RouteSignData> &&)>;
+  using TFlushRouteArrowsFn = std::function<void(drape_ptr<RouteArrowsData> &&)>;
 
   RouteBuilder(TFlushRouteFn const & flushRouteFn,
                TFlushRouteSignFn const & flushRouteSignFn,
@@ -46,7 +46,7 @@ private:
   TFlushRouteArrowsFn m_flushRouteArrowsFn;
 
   int m_routeIndex = 0;
-  unordered_map<int, m2::PolylineD> m_routeCache;
+  std::unordered_map<int, m2::PolylineD> m_routeCache;
 };
 
 } // namespace df

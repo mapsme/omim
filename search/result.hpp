@@ -13,6 +13,8 @@
 #include "std/string.hpp"
 
 
+using namespace std;
+
 namespace search
 {
 // Search result. Search returns a list of them, ordered by score.

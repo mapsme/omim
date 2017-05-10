@@ -50,7 +50,7 @@ private:
   }
 
   template <typename TBuildFn>
-  MwmSet::MwmId BuildMwm(string const & name, TBuildFn && fn, int64_t version = 0)
+  MwmSet::MwmId BuildMwm(std::string const & name, TBuildFn && fn, int64_t version = 0)
   {
     m_mwmFiles.emplace_back(GetPlatform().WritableDir(), platform::CountryFile(name), version);
     auto & file = m_mwmFiles.back();

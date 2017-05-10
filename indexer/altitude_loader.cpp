@@ -9,7 +9,7 @@
 
 #include "defines.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 #include "3party/succinct/mapper.hpp"
 
@@ -17,11 +17,11 @@ namespace
 {
 template <class TCont>
 void LoadAndMap(size_t dataSize, ReaderSource<FilesContainerR::TReader> & src, TCont & cont,
-                unique_ptr<CopiedMemoryRegion> & region)
+                std::unique_ptr<CopiedMemoryRegion> & region)
 {
-  vector<uint8_t> data(dataSize);
+  std::vector<uint8_t> data(dataSize);
   src.Read(data.data(), data.size());
-  region = make_unique<CopiedMemoryRegion>(move(data));
+  region = my::make_unique<CopiedMemoryRegion>(move(data));
   coding::MapVisitor visitor(region->ImmutableData());
   cont.map(visitor);
 }
@@ -41,7 +41,7 @@ AltitudeLoader::AltitudeLoader(MwmValue const & mwmValue)
 
   try
   {
-    m_reader = make_unique<FilesContainerR::TReader>(mwmValue.m_cont.GetReader(ALTITUDES_FILE_TAG));
+    m_reader = my::make_unique<FilesContainerR::TReader>(mwmValue.m_cont.GetReader(ALTITUDES_FILE_TAG));
     ReaderSource<FilesContainerR::TReader> src(*m_reader);
     m_header.Deserialize(src);
 
@@ -97,7 +97,7 @@ TAltitudes const & AltitudeLoader::GetAltitudes(uint32_t featureId, size_t point
                                                       m_countryFileName, featureId,  src);
 
     bool const allValid = isDeserialized
-        && none_of(altitudes.m_altitudes.begin(), altitudes.m_altitudes.end(),
+        && std::none_of(altitudes.m_altitudes.begin(), altitudes.m_altitudes.end(),
                    [](TAltitude a) { return a == kInvalidAltitude; });
     if (!allValid)
     {

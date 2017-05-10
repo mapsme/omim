@@ -37,6 +37,8 @@
 #include "std/function.hpp"
 #include "std/utility.hpp"
 
+using namespace std;
+
 namespace df
 {
 

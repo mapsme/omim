@@ -1,15 +1,15 @@
 #include "search/token_slice.hpp"
 
-#include "std/sstream.hpp"
+#include <sstream>
 
 namespace search
 {
 namespace
 {
 template <typename TSlice>
-string SliceToString(string const & name, TSlice const & slice)
+std::string SliceToString(std::string const & name, TSlice const & slice)
 {
-  ostringstream os;
+  std::ostringstream os;
   os << name << " [";
   for (size_t i = 0; i < slice.Size(); ++i)
   {
@@ -47,9 +47,9 @@ TokenSliceNoCategories::TokenSliceNoCategories(QueryParams const & params, Token
   }
 }
 
-string DebugPrint(TokenSlice const & slice) { return SliceToString("TokenSlice", slice); }
+std::string DebugPrint(TokenSlice const & slice) { return SliceToString("TokenSlice", slice); }
 
-string DebugPrint(TokenSliceNoCategories const & slice)
+std::string DebugPrint(TokenSliceNoCategories const & slice)
 {
   return SliceToString("TokenSliceNoCategories", slice);
 }

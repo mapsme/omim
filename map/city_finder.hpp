@@ -17,9 +17,9 @@ public:
   {
   }
 
-  string GetCityName(m2::PointD const & p, int8_t lang)
+  std::string GetCityName(m2::PointD const & p, int8_t lang)
   {
-    string city;
+    std::string city;
     m_finder.SetLanguage(lang);
     m_finder.GetLocality(p, city);
     return city;

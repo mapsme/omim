@@ -11,9 +11,9 @@
 #include "indexer/index.hpp"
 #include "indexer/mwm_set.hpp"
 
-#include "std/unique_ptr.hpp"
-#include "std/utility.hpp"
-#include "std/vector.hpp"
+#include <memory>
+#include <utility>
+#include <vector>
 
 namespace routing
 {
@@ -35,7 +35,7 @@ class NearestEdgeFinder
   };
 
   m2::PointD const m_point;
-  vector<Candidate> m_candidates;
+  std::vector<Candidate> m_candidates;
 
 public:
   NearestEdgeFinder(m2::PointD const & point);
@@ -44,7 +44,7 @@ public:
 
   void AddInformationSource(FeatureID const & featureId, IRoadGraph::RoadInfo const & roadInfo);
 
-  void MakeResult(vector<pair<Edge, Junction>> & res, size_t const maxCountFeatures);
+  void MakeResult(std::vector<std::pair<Edge, Junction>> & res, size_t const maxCountFeatures);
 };
 
 }  // namespace routing

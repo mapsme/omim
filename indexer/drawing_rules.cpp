@@ -10,9 +10,9 @@
 
 #include "base/logging.hpp"
 
-#include "std/bind.hpp"
-#include "std/iterator_facade.hpp"
-#include "std/unordered_map.hpp"
+#include <functional>
+#include <boost/iterator/iterator_facade.hpp>
+#include <unordered_map>
 
 #include <google/protobuf/text_format.h>
 
@@ -20,7 +20,7 @@ namespace
 {
   uint32_t const DEFAULT_BG_COLOR = 0xEEEEDD;
 
-  drule::text_type_t GetTextType(string const & text)
+  drule::text_type_t GetTextType(std::string const & text)
   {
     if (text == "addr:housename")
       return drule::text_type_housename;
@@ -142,7 +142,7 @@ Key RulesHolder::AddRule(int scale, rule_type_t type, BaseRule * p)
 
   m_container[type].push_back(p);
 
-  vector<uint32_t> & v = m_rules[scale][type];
+  std::vector<uint32_t> & v = m_rules[scale][type];
   v.push_back(static_cast<uint32_t>(m_container[type].size()-1));
 
   int const ret = static_cast<int>(v.size() - 1);
@@ -156,7 +156,7 @@ BaseRule const * RulesHolder::Find(Key const & k) const
   rules_map_t::const_iterator i = m_rules.find(k.m_scale);
   if (i == m_rules.end()) return 0;
 
-  vector<uint32_t> const & v = (i->second)[k.m_type];
+  std::vector<uint32_t> const & v = (i->second)[k.m_type];
 
   ASSERT ( k.m_index >= 0, (k.m_index) );
   if (static_cast<size_t>(k.m_index) < v.size())
@@ -185,12 +185,12 @@ uint32_t RulesHolder::GetColor(std::string const & name) const
 
 void RulesHolder::ClearCaches()
 {
-  ForEachRule(bind(static_cast<void (BaseRule::*)()>(&BaseRule::MakeEmptyID), _4));
+  ForEachRule(std::bind(static_cast<void (BaseRule::*)()>(&BaseRule::MakeEmptyID), std::placeholders::_4));
 }
 
 void RulesHolder::ResizeCaches(size_t s)
 {
-  ForEachRule(bind(&BaseRule::CheckCacheSize, _4, s));
+  ForEachRule(std::bind(&BaseRule::CheckCacheSize, std::placeholders::_4, s));
 }
 
 namespace
@@ -318,14 +318,14 @@ namespace
     ContainerProto m_cont;
 
   private:
-    vector<string> m_names;
+    std::vector<std::string> m_names;
 
     typedef ClassifElementProto ElementT;
 
-    class RandI : public iterator_facade<
+    class RandI : public boost::iterator_facade<
         RandI,
         ElementT const,
-        random_access_traversal_tag>
+        boost::random_access_traversal_tag>
     {
       ContainerProto const * m_cont;
     public:
@@ -348,11 +348,11 @@ namespace
       {
         return (e1.name() < e2.name());
       }
-      bool operator() (string const & e1, ElementT const & e2) const
+      bool operator() (std::string const & e1, ElementT const & e2) const
       {
         return (e1 < e2.name());
       }
-      bool operator() (ElementT const & e1, string const & e2) const
+      bool operator() (ElementT const & e1, std::string const & e2) const
       {
         return (e1.name() < e2);
       }
@@ -360,7 +360,7 @@ namespace
 
     int FindIndex() const
     {
-      string name = m_names[0];
+      std::string name = m_names[0];
       for (size_t i = 1; i < m_names.size(); ++i)
         name = name + "-" + m_names[i];
 
@@ -379,7 +379,7 @@ namespace
 
     template <class TRule, class TProtoRule>
     void AddRule(ClassifObject * p, int scale, rule_type_t type, TProtoRule const & rule,
-                 vector<string> const & apply_if)
+                 std::vector<std::string> const & apply_if)
     {
       unique_ptr<ISelector> selector;
       if (!apply_if.empty())
@@ -400,7 +400,7 @@ namespace
       p->AddDrawRule(k);
     }
 
-    static void DrawElementGetApplyIf(DrawElementProto const & de, vector<string> & apply_if)
+    static void DrawElementGetApplyIf(DrawElementProto const & de, std::vector<std::string> & apply_if)
     {
       apply_if.clear();
       apply_if.reserve(de.apply_if_size());
@@ -419,7 +419,7 @@ namespace
       int const i = FindIndex();
       if (i != -1)
       {
-        vector<string> apply_if;
+        std::vector<std::string> apply_if;
 
         ClassifElementProto const & ce = m_cont.cont(i);
         for (int j = 0; j < ce.element_size(); ++j)
@@ -450,7 +450,7 @@ namespace
         }
       }
 
-      p->ForEachObject(ref(*this));
+      p->ForEachObject(std::ref(*this));
 
       m_names.pop_back();
     }
@@ -468,7 +468,7 @@ void RulesHolder::InitBackgroundColors(ContainerProto const & cont)
   uint32_t bgColorDefault = DEFAULT_BG_COLOR;
 
   // Background colors specified for scales
-  unordered_map<int, uint32_t> bgColorForScale;
+  std::unordered_map<int, uint32_t> bgColorForScale;
 
   // Find the "natural-land" classification element
   for (int i = 0; i < cont.cont_size(); ++i)
@@ -521,7 +521,7 @@ void RulesHolder::InitColors(ContainerProto const & cp)
   }
 }
 
-void RulesHolder::LoadFromBinaryProto(string const & s)
+void RulesHolder::LoadFromBinaryProto(std::string const & s)
 {
   Clean();
 
@@ -529,7 +529,7 @@ void RulesHolder::LoadFromBinaryProto(string const & s)
 
   CHECK ( doSet.m_cont.ParseFromString(s), ("Error in proto loading!") );
 
-  classif().GetMutableRoot()->ForEachObject(ref(doSet));
+  classif().GetMutableRoot()->ForEachObject(std::ref(doSet));
 
   InitBackgroundColors(doSet.m_cont);
   InitColors(doSet.m_cont);
@@ -537,7 +537,7 @@ void RulesHolder::LoadFromBinaryProto(string const & s)
 
 void LoadRules()
 {
-  string buffer;
+  std::string buffer;
   GetStyleReader().GetDrawingRulesReader().ReadAsString(buffer);
   rules().LoadFromBinaryProto(buffer);
 }

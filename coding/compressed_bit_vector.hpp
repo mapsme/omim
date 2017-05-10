@@ -12,6 +12,8 @@
 #include "std/utility.hpp"
 #include "std/vector.hpp"
 
+using namespace std;
+
 namespace coding
 {
 class CompressedBitVector : public my::RefCounted

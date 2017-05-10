@@ -6,7 +6,7 @@
 
 #include "base/assert.hpp"
 
-#include "std/string.hpp"
+#include <string>
 
 using namespace routing;
 
@@ -16,7 +16,7 @@ namespace
 class GeometryLoaderImpl final : public GeometryLoader
 {
 public:
-  GeometryLoaderImpl(Index const & index, MwmSet::MwmId const & mwmId, string const & country,
+  GeometryLoaderImpl(Index const & index, MwmSet::MwmId const & mwmId, std::string const & country,
                      shared_ptr<IVehicleModel> vehicleModel);
 
   // GeometryLoader overrides:
@@ -25,11 +25,11 @@ public:
 private:
   shared_ptr<IVehicleModel> m_vehicleModel;
   Index::FeaturesLoaderGuard m_guard;
-  string const m_country;
+  std::string const m_country;
 };
 
 GeometryLoaderImpl::GeometryLoaderImpl(Index const & index, MwmSet::MwmId const & mwmId,
-                                       string const & country,
+                                       std::string const & country,
                                        shared_ptr<IVehicleModel> vehicleModel)
   : m_vehicleModel(vehicleModel), m_guard(index, mwmId), m_country(country)
 {
@@ -51,7 +51,7 @@ void GeometryLoaderImpl::Load(uint32_t featureId, RoadGeometry & road) const
 class FileGeometryLoader final : public GeometryLoader
 {
 public:
-  FileGeometryLoader(string const & fileName, shared_ptr<IVehicleModel> vehicleModel);
+  FileGeometryLoader(std::string const & fileName, shared_ptr<IVehicleModel> vehicleModel);
 
   // GeometryLoader overrides:
   void Load(uint32_t featureId, RoadGeometry & road) const override;
@@ -61,7 +61,7 @@ private:
   shared_ptr<IVehicleModel> m_vehicleModel;
 };
 
-FileGeometryLoader::FileGeometryLoader(string const & fileName,
+FileGeometryLoader::FileGeometryLoader(std::string const & fileName,
                                        shared_ptr<IVehicleModel> vehicleModel)
   : m_featuresVector(FilesContainerR(make_unique<FileReader>(fileName)))
   , m_vehicleModel(vehicleModel)
@@ -137,7 +137,7 @@ unique_ptr<GeometryLoader> GeometryLoader::Create(Index const & index, MwmSet::M
 }
 
 // static
-unique_ptr<GeometryLoader> GeometryLoader::CreateFromFile(string const & fileName,
+unique_ptr<GeometryLoader> GeometryLoader::CreateFromFile(std::string const & fileName,
                                                           shared_ptr<IVehicleModel> vehicleModel)
 {
   return make_unique<FileGeometryLoader>(fileName, vehicleModel);

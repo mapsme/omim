@@ -15,12 +15,14 @@
 
 #include "platform/local_country_file.hpp"
 
+#include "base/stl_add.hpp"
+
 using namespace search;
 using namespace generator::tests_support;
 
 namespace
 {
-void MakeFeature(TestMwmBuilder & builder, pair<string, string> const & tag, m2::PointD const & pt)
+void MakeFeature(TestMwmBuilder & builder, pair<std::string, std::string> const & tag, m2::PointD const & pt)
 {
   OsmElement e;
   e.AddTag(tag.first, tag.second);
@@ -53,7 +55,7 @@ UNIT_CLASS_TEST(TestWithClassificator, GenerateDeprecatedTypes)
   TEST_EQUAL(index.Register(file).second, MwmSet::RegResult::Success, ());
 
   // New types.
-  StringIL arr[] = {{"shop"}, {"office"}};
+  my::StringIL arr[] = {{"shop"}, {"office"}};
 
   Classificator const & cl = classif();
   set<uint32_t> types;

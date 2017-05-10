@@ -4,7 +4,7 @@
 #include "base/base.hpp"
 #include "base/buffer_vector.hpp"
 
-#include "std/unique_ptr.hpp"
+#include <memory>
 
 namespace trie
 {
@@ -33,8 +33,8 @@ public:
 
   virtual ~Iterator() = default;
 
-  virtual unique_ptr<Iterator<TValueList>> Clone() const = 0;
-  virtual unique_ptr<Iterator<TValueList>> GoToEdge(size_t i) const = 0;
+  virtual std::unique_ptr<Iterator<TValueList>> Clone() const = 0;
+  virtual std::unique_ptr<Iterator<TValueList>> GoToEdge(size_t i) const = 0;
 };
 
 template <typename TValueList, typename TF, typename TString>

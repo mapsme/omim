@@ -9,7 +9,7 @@ namespace
 {
 NEWTYPE(int, Int);
 
-string DebugPrint(Int const & i)
+std::string DebugPrint(Int const & i)
 {
   std::stringstream sstr;
   sstr << "Int(" << i.Get() << ')';

@@ -3,14 +3,14 @@
 #include "geometry/rect2d.hpp"
 #include "geometry/screenbase.hpp"
 
-#include "std/atomic.hpp"
-#include "std/cstdint.hpp"
-#include "std/noncopyable.hpp"
+#include <atomic>
+#include <cstdint>
+#include <boost/noncopyable.hpp>
 
 namespace df
 {
 
-class VisualParams : private noncopyable
+class VisualParams : private boost::noncopyable
 {
 public:
   static double const kMdpiScale;
@@ -24,8 +24,8 @@ public:
 
   VisualParams();
 
-  static string const & GetResourcePostfix(double visualScale);
-  string const & GetResourcePostfix() const;
+  static std::string const & GetResourcePostfix(double visualScale);
+  std::string const & GetResourcePostfix() const;
 
   double GetVisualScale() const;
   uint32_t GetTileSize() const;
@@ -56,7 +56,7 @@ private:
   int m_tileSize;
   double m_visualScale;
   GlyphVisualParams m_glyphVisualParams;
-  atomic<double> m_fontScale;
+  std::atomic<double> m_fontScale;
 };
 
 m2::RectD const & GetWorldRect();

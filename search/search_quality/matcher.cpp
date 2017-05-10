@@ -71,7 +71,7 @@ bool Matcher::Matches(Sample::Result const & golden, search::Result const & actu
   }
   else
   {
-    ft.ForEachName([&golden, &nameMatches](int8_t /* lang */, string const & name) {
+    ft.ForEachName([&golden, &nameMatches](int8_t /* lang */, std::string const & name) {
       if (golden.m_name == strings::MakeUniString(name))
       {
         nameMatches = true;

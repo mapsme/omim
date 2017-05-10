@@ -4,7 +4,7 @@
 
 #include "base/string_utils.hpp"
 
-#include "std/vector.hpp"
+#include <vector>
 
 using namespace search;
 using namespace strings;
@@ -14,7 +14,7 @@ namespace
 class Utf8StreetTokensFilter
 {
 public:
-  Utf8StreetTokensFilter(vector<pair<string, size_t>> & cont)
+  Utf8StreetTokensFilter(std::vector<std::pair<std::string, size_t>> & cont)
     : m_cont(cont)
     , m_filter([&](UniString const & token, size_t tag)
                {
@@ -23,13 +23,13 @@ public:
   {
   }
 
-  inline void Put(string const & token, bool isPrefix, size_t tag)
+  inline void Put(std::string const & token, bool isPrefix, size_t tag)
   {
     m_filter.Put(MakeUniString(token), isPrefix, tag);
   }
 
 private:
-  vector<pair<string, size_t>> & m_cont;
+  std::vector<std::pair<std::string, size_t>> & m_cont;
   StreetTokensFilter m_filter;
 };
 
@@ -55,7 +55,7 @@ UNIT_TEST(NormalizeAndSimplifyStringWithOurTambourines)
   // TODO: Fix it when logic with и-й will change.
 
   /*
-  string const arr[] = {"ÜbërÅłłęšß", "uberallesss", // Basic test case.
+  std::string const arr[] = {"ÜbërÅłłęšß", "uberallesss", // Basic test case.
                         "Iiİı", "iiii",              // Famous turkish "I" letter bug.
                         "ЙЁйёШКИЙй", "йейешкийй",    // Better handling of Russian й letter.
                         "ØøÆæŒœ", "ooaeaeoeoe",
@@ -65,7 +65,7 @@ UNIT_TEST(NormalizeAndSimplifyStringWithOurTambourines)
                         "ăâț", "aat"                    // Romanian
                        };
   */
-  string const arr[] = {"ÜbërÅłłęšß", "uberallesss", // Basic test case.
+  std::string const arr[] = {"ÜbërÅłłęšß", "uberallesss", // Basic test case.
                         "Iiİı", "iiii",              // Famous turkish "I" letter bug.
                         "ЙЁйёШКИЙй", "иеиешкиии",    // Better handling of Russian й letter.
                         "ØøÆæŒœ", "ooaeaeoeoe",      // Dansk
@@ -114,7 +114,7 @@ UNIT_TEST(StreetPrefixMatch)
 
 UNIT_TEST(StreetTokensFilter)
 {
-  using TList = vector<pair<string, size_t>>;
+  using TList = std::vector<std::pair<std::string, size_t>>;
 
   {
     TList expected = {};

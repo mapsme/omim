@@ -1,5 +1,5 @@
 #pragma once
-#include "std/string.hpp"
+#include <string>
 #include "std/target_os.hpp"
 #include <FLocales.h>
 
@@ -13,9 +13,9 @@ namespace Tizen
 }
 
 //Convert from Tizen string to std::string
-string FromTizenString(Tizen::Base::String const & str_tizen);
-string CodeFromISO369_2to_1(string const & code);
-string GetLanguageCode(Tizen::Locales::LanguageCode code);
-string GetTizenLocale();
+std::string FromTizenString(Tizen::Base::String const & str_tizen);
+std::string CodeFromISO369_2to_1(std::string const & code);
+std::string GetLanguageCode(Tizen::Locales::LanguageCode code);
+std::string GetTizenLocale();
 
 #endif

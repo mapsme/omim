@@ -17,8 +17,8 @@
 
 #include "base/logging.hpp"
 
-#include "std/iostream.hpp"
-#include "std/fstream.hpp"
+#include <iostream>
+#include <fstream>
 
 
 using platform::LocalCountryFile;
@@ -28,13 +28,13 @@ class StreetIDsByName
   vector<FeatureID> vect;
 
 public:
-  vector<string> streetNames;
+  vector<std::string> streetNames;
 
   void operator() (FeatureType const & f)
   {
     if (f.GetFeatureType() == feature::GEOM_LINE)
     {
-      string name;
+      std::string name;
       if (f.GetName(0, name) &&
           find(streetNames.begin(), streetNames.end(), name) != streetNames.end())
       {
@@ -54,7 +54,7 @@ public:
 
 class CollectStreetIDs
 {
-  static bool GetKey(string const & name, string & key)
+  static bool GetKey(std::string const & name, std::string & key)
   {
     TEST(!name.empty(), ());
     key = strings::ToUtf8(search::GetStreetNameAsKey(name));
@@ -67,7 +67,7 @@ class CollectStreetIDs
     return true;
   }
 
-  typedef map<string, vector<FeatureID> > ContT;
+  typedef map<std::string, vector<FeatureID> > ContT;
   ContT m_ids;
   vector<FeatureID> m_empty;
 
@@ -76,10 +76,10 @@ public:
   {
     if (f.GetFeatureType() == feature::GEOM_LINE)
     {
-      string name;
+      std::string name;
       if (f.GetName(0, name) && ftypes::IsStreetChecker::Instance()(f))
       {
-        string key;
+        std::string key;
         if (GetKey(name, key))
           m_ids[key].push_back(f.GetID());
       }
@@ -92,7 +92,7 @@ public:
       sort(i->second.begin(), i->second.end());
   }
 
-  vector<FeatureID> const & Get(string const & key) const
+  vector<FeatureID> const & Get(std::string const & key) const
   {
     ContT::const_iterator i = m_ids.find(key);
     return (i == m_ids.end() ? m_empty : i->second);
@@ -253,8 +253,8 @@ UNIT_TEST(HS_StreetsMerge)
 namespace
 {
 
-m2::PointD FindHouse(Index & index, vector<string> const & streets,
-                     string const & houseName, double offset)
+m2::PointD FindHouse(Index & index, vector<std::string> const & streets,
+                     std::string const & houseName, double offset)
 {
   search::HouseDetector houser(index);
 
@@ -286,17 +286,17 @@ UNIT_TEST(HS_FindHouseSmoke)
   TEST_EQUAL(MwmSet::RegResult::Success, p.second, ());
 
   {
-    vector<string> streetName(1, "Московская улица");
+    vector<std::string> streetName(1, "Московская улица");
     TEST_ALMOST_EQUAL_ULPS(FindHouse(index, streetName, "7", 100),
                       m2::PointD(27.539850827603416406, 64.222406776416349317), ());
   }
   {
-    vector<string> streetName(1, "проспект Независимости");
+    vector<std::string> streetName(1, "проспект Независимости");
     TEST_ALMOST_EQUAL_ULPS(FindHouse(index, streetName, "10", 40),
                       m2::PointD(27.551428582902474318, 64.234707387050306693), ());
   }
   {
-    vector<string> streetName(1, "улица Ленина");
+    vector<std::string> streetName(1, "улица Ленина");
 
     /// @todo This cases doesn't work, but should in new search algorithms.
     //m2::PointD pt = FindHouse(index, streetName, "28", 50);
@@ -312,7 +312,7 @@ UNIT_TEST(HS_StreetsCompare)
 {
   search::Street A, B;
   TEST(search::Street::IsSameStreets(&A, &B), ());
-  string str[8][2] = { {"Московская", "Московская"},
+  std::string str[8][2] = { {"Московская", "Московская"},
                        {"ул. Московская", "Московская ул."},
                        {"ул. Московская", "Московская улица"},
                        {"ул. Московская", "улица Московская"},
@@ -331,7 +331,7 @@ UNIT_TEST(HS_StreetsCompare)
 
 namespace
 {
-string GetStreetKey(string const & name)
+std::string GetStreetKey(std::string const & name)
 {
   return strings::ToUtf8(search::GetStreetNameAsKey(name));
 }
@@ -351,8 +351,8 @@ namespace
 
 struct Address
 {
-  string m_streetKey;
-  string m_house;
+  std::string m_streetKey;
+  std::string m_house;
   double m_lat, m_lon;
 
   bool operator<(Address const & rhs) const { return (m_streetKey < rhs.m_streetKey); }
@@ -371,10 +371,10 @@ void swap(Address & a1, Address & a2)
 UNIT_TEST(HS_MWMSearch)
 {
   // "Minsk", "Belarus", "Lithuania", "USA_New York", "USA_California"
-  string const country = "minsk-pass";
+  std::string const country = "minsk-pass";
 
-  string const path = GetPlatform().WritableDir() + country + ".addr";
-  ifstream file(path.c_str());
+  std::string const path = GetPlatform().WritableDir() + country + ".addr";
+  std::ifstream file(path.c_str());
   if (!file.good())
   {
     LOG(LWARNING, ("Address file not found", path));
@@ -394,18 +394,18 @@ UNIT_TEST(HS_MWMSearch)
   index.ForEachInScale(streetIDs, scales::GetUpperScale());
   streetIDs.Finish();
 
-  string line;
+  std::string line;
   vector<Address> addresses;
   while (file.good())
   {
-    getline(file, line);
+    std::getline(file, line);
     if (line.empty())
       continue;
 
-    vector<string> v;
+    vector<std::string> v;
     strings::Tokenize(line, "|", MakeBackInsertFunctor(v));
 
-    string key = GetStreetKey(v[0]);
+    std::string key = GetStreetKey(v[0]);
     if (key.empty())
       continue;
 

@@ -12,9 +12,9 @@
 #include "base/thread.hpp"
 #endif
 
-#include "std/algorithm.hpp"
-#include "std/map.hpp"
-#include "std/utility.hpp"
+#include <algorithm>
+#include <map>
+#include <utility>
 
 #if defined(OMIM_OS_WINDOWS)
 #define DP_APIENTRY __stdcall
@@ -25,9 +25,9 @@
 namespace
 {
 #ifdef DEBUG
-  typedef pair<threads::ThreadID, glConst> TKey;
-  typedef pair<TKey, uint32_t> TNode;
-  typedef map<TKey, uint32_t> TBoundMap;
+  typedef std::pair<threads::ThreadID, glConst> TKey;
+  typedef std::pair<TKey, uint32_t> TNode;
+  typedef std::map<TKey, uint32_t> TBoundMap;
   TBoundMap g_boundBuffers;
   threads::Mutex g_mutex;
 #endif
@@ -184,7 +184,7 @@ class GLFunctionsCache
 public:
   GLFunctionsCache() = default;
 
-  void SetThread(thread::id const & threadId)
+  void SetThread(std::thread::id const & threadId)
   {
     m_threadId = threadId;
 
@@ -303,8 +303,8 @@ private:
     }
   };
 
-  template<typename TValue> using UniformCache = map<int8_t, CachedParam<TValue>>;
-  using StateParams = map<glConst, CachedParam<bool>>;
+  template<typename TValue> using UniformCache = std::map<int8_t, CachedParam<TValue>>;
+  using StateParams = std::map<glConst, CachedParam<bool>>;
 
   struct UniformsCache
   {
@@ -329,7 +329,7 @@ private:
 
   bool IsCachedThread() const
   {
-    return this_thread::get_id() == m_threadId;
+    return std::this_thread::get_id() == m_threadId;
   }
 
   CachedParam<uint32_t> m_glBindTextureCache;
@@ -338,9 +338,9 @@ private:
   StateParams m_glStateCache;
   CachedParam<uint32_t> m_glLineWidthCache;
 
-  map<uint32_t, UniformsCache> m_uniformsCache;
+  std::map<uint32_t, UniformsCache> m_uniformsCache;
 
-  thread::id m_threadId;
+  std::thread::id m_threadId;
 };
 
 GLFunctionsCache s_cache;
@@ -350,7 +350,7 @@ GLFunctionsCache s_cache;
 #ifdef OMIM_OS_WINDOWS
 
 template <typename TFunc>
-TFunc LoadExtension(string const & ext)
+TFunc LoadExtension(std::string const & ext)
 {
   TFunc func = reinterpret_cast<TFunc>(wglGetProcAddress(ext.c_str()));
   if (func == nullptr)
@@ -485,12 +485,12 @@ void GLFunctions::Init()
   glCheckFramebufferStatusFn = LOAD_GL_FUNC(TglCheckFramebufferStatusFn, glCheckFramebufferStatus);
 }
 
-void GLFunctions::AttachCache(thread::id const & threadId)
+void GLFunctions::AttachCache(std::thread::id const & threadId)
 {
   s_cache.SetThread(threadId);
 }
 
-bool GLFunctions::glHasExtension(string const & name)
+bool GLFunctions::glHasExtension(std::string const & name)
 {
   char const * extensions = reinterpret_cast<char const * >(::glGetString(GL_EXTENSIONS));
   GLCHECKCALL();
@@ -574,21 +574,21 @@ int32_t GLFunctions::glGetInteger(glConst pname)
   return (int32_t)value;
 }
 
-string GLFunctions::glGetString(glConst pname)
+std::string GLFunctions::glGetString(glConst pname)
 {
   char const * str = reinterpret_cast<char const * >(::glGetString(pname));
   GLCHECKCALL();
   if (str == nullptr)
     return "";
 
-  return string(str);
+  return std::string(str);
 }
 
 int32_t GLFunctions::glGetMaxLineWidth()
 {
   GLint range[2];
   GLCHECK(::glGetIntegerv(GL_ALIASED_LINE_WIDTH_RANGE, range));
-  return max(range[0], range[1]);
+  return std::max(range[0], range[1]);
 }
 
 int32_t GLFunctions::glGetBufferParameter(glConst target, glConst name)
@@ -739,7 +739,7 @@ uint32_t GLFunctions::glCreateShader(glConst type)
   return result;
 }
 
-void GLFunctions::glShaderSource(uint32_t shaderID, string const & src, string const & defines)
+void GLFunctions::glShaderSource(uint32_t shaderID, std::string const & src, std::string const & defines)
 {
   ASSERT(glShaderSourceFn != nullptr, ());
   GLchar const * source[2] =
@@ -756,7 +756,7 @@ void GLFunctions::glShaderSource(uint32_t shaderID, string const & src, string c
   GLCHECK(glShaderSourceFn(shaderID, 2, source, lengths));
 }
 
-bool GLFunctions::glCompileShader(uint32_t shaderID, string &errorLog)
+bool GLFunctions::glCompileShader(uint32_t shaderID, std::string &errorLog)
 {
   ASSERT(glCompileShaderFn != nullptr, ());
   ASSERT(glGetShaderivFn != nullptr, ());
@@ -771,7 +771,7 @@ bool GLFunctions::glCompileShader(uint32_t shaderID, string &errorLog)
   GLchar buf[1024];
   GLint length = 0;
   GLCHECK(glGetShaderInfoLogFn(shaderID, 1024, &length, buf));
-  errorLog = string(buf, length);
+  errorLog = std::string(buf, length);
   return false;
 }
 
@@ -801,7 +801,7 @@ void GLFunctions::glDetachShader(uint32_t programID, uint32_t shaderID)
   GLCHECK(glDetachShaderFn(programID, shaderID));
 }
 
-bool GLFunctions::glLinkProgram(uint32_t programID, string & errorLog)
+bool GLFunctions::glLinkProgram(uint32_t programID, std::string & errorLog)
 {
   ASSERT(glLinkProgramFn != nullptr, ());
   ASSERT(glGetProgramivFn != nullptr, ());
@@ -817,7 +817,7 @@ bool GLFunctions::glLinkProgram(uint32_t programID, string & errorLog)
   GLchar buf[1024];
   GLint length = 0;
   GLCHECK(glGetProgramInfoLogFn(programID, 1024, &length, buf));
-  errorLog = string(buf, length);
+  errorLog = std::string(buf, length);
   return false;
 }
 
@@ -832,7 +832,7 @@ void GLFunctions::glUseProgram(uint32_t programID)
   s_cache.glUseProgram(programID);
 }
 
-int8_t GLFunctions::glGetAttribLocation(uint32_t programID, string const & name)
+int8_t GLFunctions::glGetAttribLocation(uint32_t programID, std::string const & name)
 {
   ASSERT(glGetAttribLocationFn != nullptr, ());
   int result = glGetAttribLocationFn(programID, name.c_str());
@@ -841,7 +841,7 @@ int8_t GLFunctions::glGetAttribLocation(uint32_t programID, string const & name)
   return result;
 }
 
-void GLFunctions::glBindAttribLocation(uint32_t programID, uint8_t index, string const & name)
+void GLFunctions::glBindAttribLocation(uint32_t programID, uint8_t index, std::string const & name)
 {
   ASSERT(glBindAttribLocationFn != nullptr, ());
   GLCHECK(glBindAttribLocationFn(programID, index, name.c_str()));
@@ -870,7 +870,7 @@ void GLFunctions::glVertexAttributePointer(int attrLocation,
 }
 
 void GLFunctions::glGetActiveUniform(uint32_t programID, uint32_t uniformIndex,
-                                     int32_t * uniformSize, glConst * type, string & name)
+                                     int32_t * uniformSize, glConst * type, std::string & name)
 {
   ASSERT(glGetActiveUniformFn != nullptr, ());
   GLchar buff[256];
@@ -878,7 +878,7 @@ void GLFunctions::glGetActiveUniform(uint32_t programID, uint32_t uniformIndex,
   name = buff;
 }
 
-int8_t GLFunctions::glGetUniformLocation(uint32_t programID, string const & name)
+int8_t GLFunctions::glGetUniformLocation(uint32_t programID, std::string const & name)
 {
   ASSERT(glGetUniformLocationFn != nullptr, ());
   int result = glGetUniformLocationFn(programID, name.c_str());
@@ -1063,7 +1063,7 @@ void GLFunctions::glLineWidth(uint32_t value)
 namespace
 {
 
-string GetGLError(GLenum error)
+std::string GetGLError(GLenum error)
 {
   switch (error)
   {

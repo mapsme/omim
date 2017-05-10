@@ -79,17 +79,17 @@ NameScore GetNameScore(std::vector<strings::UniString> const & tokens, TSlice co
     {
       if (m == n)
         return NAME_SCORE_FULL_MATCH;
-      score = max(score, NAME_SCORE_SUBSTRING);
+      score = std::max(score, NAME_SCORE_SUBSTRING);
     }
     if (lastTokenIsPrefix && impl::PrefixMatch(slice.Get(m - 1), tokens[offset + m - 1]))
     {
       if (m == n)
         return NAME_SCORE_FULL_MATCH_PREFIX;
-      score = max(score, NAME_SCORE_SUBSTRING_PREFIX);
+      score = std::max(score, NAME_SCORE_SUBSTRING_PREFIX);
     }
   }
   return score;
 }
 
-string DebugPrint(NameScore score);
+std::string DebugPrint(NameScore score);
 }  // namespace search

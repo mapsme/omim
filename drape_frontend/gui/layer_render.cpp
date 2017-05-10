@@ -17,7 +17,7 @@
 
 #include "base/stl_add.hpp"
 
-#include "std/bind.hpp"
+#include <functional>
 
 namespace gui
 {
@@ -186,12 +186,12 @@ private:
 drape_ptr<LayerRenderer> LayerCacher::RecacheWidgets(TWidgetsInitInfo const & initInfo, ref_ptr<dp::TextureManager> textures)
 {
   using TCacheShape = function<m2::PointF (Position anchor, ref_ptr<LayerRenderer> renderer, ref_ptr<dp::TextureManager> textures)>;
-  static map<EWidget, TCacheShape> cacheFunctions
+  static std::map<EWidget, TCacheShape> cacheFunctions
   {
-    make_pair(WIDGET_COMPASS, bind(&LayerCacher::CacheCompass, this, _1, _2, _3)),
-    make_pair(WIDGET_RULER, bind(&LayerCacher::CacheRuler, this, _1, _2, _3)),
-    make_pair(WIDGET_COPYRIGHT, bind(&LayerCacher::CacheCopyright, this, _1, _2, _3)),
-    make_pair(WIDGET_SCALE_LABEL, bind(&LayerCacher::CacheScaleLabel, this, _1, _2, _3))
+    make_pair(WIDGET_COMPASS, std::bind(&LayerCacher::CacheCompass, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)),
+    make_pair(WIDGET_RULER, std::bind(&LayerCacher::CacheRuler, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)),
+    make_pair(WIDGET_COPYRIGHT, std::bind(&LayerCacher::CacheCopyright, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)),
+    make_pair(WIDGET_SCALE_LABEL, std::bind(&LayerCacher::CacheScaleLabel, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3))
   };
 
   drape_ptr<LayerRenderer> renderer = make_unique_dp<LayerRenderer>();
@@ -231,7 +231,7 @@ drape_ptr<LayerRenderer> LayerCacher::RecacheDebugLabels(ref_ptr<dp::TextureMana
   DebugInfoLabels debugLabels = DebugInfoLabels(Position(m2::PointF(10.0f * vs, 50.0f * vs), dp::Center));
 
   debugLabels.AddLabel(textures, "visible: km2, readed: km2, ratio:",
-                       [](ScreenBase const & screen, string & content) -> bool
+                       [](ScreenBase const & screen, std::string & content) -> bool
   {
     double const sizeX = screen.PixelRectIn3d().SizeX();
     double const sizeY = screen.PixelRectIn3d().SizeY();
@@ -265,7 +265,7 @@ drape_ptr<LayerRenderer> LayerCacher::RecacheDebugLabels(ref_ptr<dp::TextureMana
   });
 
   debugLabels.AddLabel(textures, "scale2d: m/px, scale2d * vs: m/px",
-                       [](ScreenBase const & screen, string & content) -> bool
+                       [](ScreenBase const & screen, std::string & content) -> bool
   {
     double const distanceG = MercatorBounds::DistanceOnEarth(screen.PtoG(screen.PixelRect().LeftBottom()),
                                                             screen.PtoG(screen.PixelRect().RightBottom()));
@@ -282,7 +282,7 @@ drape_ptr<LayerRenderer> LayerCacher::RecacheDebugLabels(ref_ptr<dp::TextureMana
   });
 
   debugLabels.AddLabel(textures, "distance: m",
-                       [](ScreenBase const & screen, string & content) -> bool
+                       [](ScreenBase const & screen, std::string & content) -> bool
   {
     double const sizeX = screen.PixelRectIn3d().SizeX();
     double const sizeY = screen.PixelRectIn3d().SizeY();
@@ -298,7 +298,7 @@ drape_ptr<LayerRenderer> LayerCacher::RecacheDebugLabels(ref_ptr<dp::TextureMana
   });
 
   debugLabels.AddLabel(textures, "angle: ",
-                       [](ScreenBase const & screen, string & content) -> bool
+                       [](ScreenBase const & screen, std::string & content) -> bool
   {
     ostringstream out;
     out << fixed << setprecision(2)
@@ -321,7 +321,7 @@ m2::PointF LayerCacher::CacheCompass(Position const & position, ref_ptr<LayerRen
 {
   m2::PointF compassSize;
   Compass compass = Compass(position);
-  drape_ptr<ShapeRenderer> shape = compass.Draw(compassSize, textures, bind(&DrapeGui::CallOnCompassTappedHandler,
+  drape_ptr<ShapeRenderer> shape = compass.Draw(compassSize, textures, std::bind(&DrapeGui::CallOnCompassTappedHandler,
                                                                             &DrapeGui::Instance()));
 
   renderer->AddShapeRenderer(WIDGET_COMPASS, move(shape));
@@ -362,7 +362,7 @@ m2::PointF LayerCacher::CacheScaleLabel(Position const & position, ref_ptr<Layer
   };
 
   drape_ptr<ShapeRenderer> scaleRenderer = make_unique_dp<ShapeRenderer>();
-  m2::PointF size = MutableLabelDrawer::Draw(params, textures, bind(&ShapeRenderer::AddShape, scaleRenderer.get(), _1, _2));
+  m2::PointF size = MutableLabelDrawer::Draw(params, textures, std::bind(&ShapeRenderer::AddShape, scaleRenderer.get(), std::placeholders::_1, std::placeholders::_2));
 
   renderer->AddShapeRenderer(WIDGET_SCALE_LABEL, move(scaleRenderer));
   return size;

@@ -8,14 +8,14 @@
 #include "drape/glstate.hpp"
 #include "drape/texture_manager.hpp"
 
-#include "std/cstdint.hpp"
-#include "std/unordered_set.hpp"
-#include "std/utility.hpp"
+#include <cstdint>
+#include <unordered_set>
+#include <utility>
 
 namespace gui
 {
 
-using TAlphabet = unordered_set<strings::UniChar>;
+using TAlphabet = std::unordered_set<strings::UniChar>;
 
 class StaticLabel
 {
@@ -53,7 +53,7 @@ public:
     TAlphabet m_alphabet;
   };
 
-  static void CacheStaticText(string const & text, char const * delim,
+  static void CacheStaticText(std::string const & text, char const * delim,
                               dp::Anchor anchor, dp::FontDecl const & font,
                               ref_ptr<dp::TextureManager> mng, LabelResult & result);
 };
@@ -97,7 +97,7 @@ public:
 
   struct PrecacheParams
   {
-    string m_alphabet;
+    std::string m_alphabet;
     size_t m_maxLength;
     dp::FontDecl m_font;
   };
@@ -120,17 +120,17 @@ public:
   void Precache(PrecacheParams const & params, PrecacheResult & result,
                 ref_ptr<dp::TextureManager> mng);
 
-  void SetText(LabelResult & result, string text) const;
+  void SetText(LabelResult & result, std::string text) const;
   m2::PointF GetAvarageSize() const;
 
-  using TAlphabetNode = pair<strings::UniChar, dp::TextureManager::GlyphRegion>;
+  using TAlphabetNode = std::pair<strings::UniChar, dp::TextureManager::GlyphRegion>;
   using TAlphabet = vector<TAlphabetNode>;
 
   TAlphabet const & GetAlphabet() const { return m_alphabet; }
 
 private:
   void SetMaxLength(uint16_t maxLength);
-  ref_ptr<dp::Texture> SetAlphabet(string const & alphabet, ref_ptr<dp::TextureManager> mng);
+  ref_ptr<dp::Texture> SetAlphabet(std::string const & alphabet, ref_ptr<dp::TextureManager> mng);
 
 private:
   dp::Anchor m_anchor;
@@ -158,14 +158,14 @@ public:
   void UpdateSize(m2::PointF const & size);
 
 protected:
-  void SetContent(string && content);
-  void SetContent(string const & content);
+  void SetContent(std::string && content);
+  void SetContent(std::string const & content);
   void SetTextureManager(ref_ptr<dp::TextureManager> textures);
 
 private:
   drape_ptr<MutableLabel> m_textView;
   mutable bool m_isContentDirty;
-  string m_content;
+  std::string m_content;
   ref_ptr<dp::TextureManager> m_textureManager;
   bool m_glyphsReady;
 };
@@ -181,7 +181,7 @@ public:
     dp::Anchor m_anchor;
     dp::FontDecl m_font;
     m2::PointF m_pivot;
-    string m_alphabet;
+    std::string m_alphabet;
     uint32_t m_maxLength;
     THandleCreator m_handleCreator;
   };

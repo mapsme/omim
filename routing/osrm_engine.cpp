@@ -30,7 +30,7 @@ void GenerateRoutingTaskFromNodeId(NodeID const nodeId, bool const isStartNode,
 }
 
 void FindWeightsMatrix(TRoutingNodes const & sources, TRoutingNodes const & targets,
-                       TRawDataFacade & facade, vector<EdgeWeight> & result)
+                       TRawDataFacade & facade, std::vector<EdgeWeight> & result)
 {
   SearchEngineData engineData;
   NMManyToManyRouting<TRawDataFacade> pathFinder(&facade, engineData);
@@ -43,7 +43,7 @@ void FindWeightsMatrix(TRoutingNodes const & sources, TRoutingNodes const & targ
 
   // Calculate time consumption of a NtoM path finding.
   my::HighResTimer timer(true);
-  shared_ptr<vector<EdgeWeight>> resultTable = pathFinder(sourcesTaskVector, targetsTaskVector);
+  shared_ptr<std::vector<EdgeWeight>> resultTable = pathFinder(sourcesTaskVector, targetsTaskVector);
   LOG(LINFO, ("Duration of a single one-to-many routing call", timer.ElapsedNano(), "ns"));
   timer.Reset();
   ASSERT_EQUAL(resultTable->size(), sources.size() * targets.size(), ());
@@ -76,7 +76,7 @@ bool FindSingleRoute(FeatureGraphNode const & source, FeatureGraphNode const & t
     rawRoutingResult.shortestPathLength = result.shortest_path_length;
     for (auto const & path : result.unpacked_path_segments)
     {
-      vector<RawPathData> data;
+      std::vector<RawPathData> data;
       data.reserve(path.size());
       for (auto const & element : path)
       {

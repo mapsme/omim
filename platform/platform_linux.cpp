@@ -7,7 +7,7 @@
 #include "base/logging.hpp"
 #include "base/scope_guard.hpp"
 
-#include "std/bind.hpp"
+#include <functional>
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -25,7 +25,7 @@ namespace
 char constexpr kSomeWorkingWebServer[] = "217.69.139.202";
 
 // Returns directory where binary resides, including slash at the end.
-bool GetBinaryDir(string & outPath)
+bool GetBinaryDir(std::string & outPath)
 {
   char path[4096] = {};
   if (::readlink("/proc/self/exe", path, ARRAY_SIZE(path)) <= 0)
@@ -36,7 +36,7 @@ bool GetBinaryDir(string & outPath)
 }
 
 // Returns true if EULA file exists in directory.
-bool IsEulaExist(string const & directory)
+bool IsEulaExist(std::string const & directory)
 {
   return Platform::IsFileExistsByFullPath(my::JoinFoldersToPath(directory, "eula.html"));
 }
@@ -53,11 +53,11 @@ unique_ptr<Socket> CreateSocket()
 Platform::Platform()
 {
   // Init directories.
-  string path;
+  std::string path;
   CHECK(GetBinaryDir(path), ("Can't retrieve path to executable"));
 
   char const * homePath = ::getenv("HOME");
-  string const home(homePath ? homePath : "");
+  std::string const home(homePath ? homePath : "");
 
   m_settingsDir = my::JoinFoldersToPath({home, ".config"}, "MapsWithMe");
 
@@ -79,13 +79,13 @@ Platform::Platform()
   }
   else
   {
-    string const devBuildWithSymlink = my::JoinFoldersToPath({path, "..", ".."}, "data");
-    string const devBuildWithoutSymlink =
+    std::string const devBuildWithSymlink = my::JoinFoldersToPath({path, "..", ".."}, "data");
+    std::string const devBuildWithoutSymlink =
         my::JoinFoldersToPath({path, "..", "..", "..", "omim"}, "data");
-    string const installedVersionWithPackages = my::JoinFoldersToPath({path, ".."}, "share");
-    string const installedVersionWithoutPackages =
+    std::string const installedVersionWithPackages = my::JoinFoldersToPath({path, ".."}, "share");
+    std::string const installedVersionWithoutPackages =
         my::JoinFoldersToPath({path, ".."}, "MapsWithMe");
-    string const customInstall = path;
+    std::string const customInstall = path;
 
     if (IsEulaExist(devBuildWithSymlink))
     {
@@ -128,15 +128,15 @@ Platform::Platform()
   LOG(LDEBUG, ("Client ID:", UniqueClientId()));
 }
 
-string Platform::UniqueClientId() const
+std::string Platform::UniqueClientId() const
 {
-  string machineFile = "/var/lib/dbus/machine-id";
+  std::string machineFile = "/var/lib/dbus/machine-id";
   if (IsFileExistsByFullPath("/etc/machine-id"))
     machineFile = "/etc/machine-id";
 
   if (IsFileExistsByFullPath(machineFile))
   {
-    string content;
+    std::string content;
     FileReader(machineFile).ReadAsString(content);
     return content.substr(0, 32);
   }
@@ -147,7 +147,7 @@ string Platform::UniqueClientId() const
 Platform::EConnectionType Platform::ConnectionStatus()
 {
   int socketFd = socket(AF_INET, SOCK_STREAM, 0);
-  MY_SCOPE_GUARD(closeSocket, bind(&close, socketFd));
+  MY_SCOPE_GUARD(closeSocket, std::bind(&close, socketFd));
   if (socketFd < 0)
     return EConnectionType::CONNECTION_NONE;
 

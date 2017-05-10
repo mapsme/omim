@@ -15,6 +15,8 @@
 #include "std/iostream.hpp"
 #include "std/shared_ptr.hpp"
 
+using namespace std;
+
 namespace anim
 {
   class Task;

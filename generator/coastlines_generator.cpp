@@ -8,11 +8,11 @@
 #include "base/string_utils.hpp"
 #include "base/logging.hpp"
 
-#include "std/bind.hpp"
-#include "std/condition_variable.hpp"
-#include "std/function.hpp"
-#include "std/thread.hpp"
-#include "std/utility.hpp"
+#include <functional>
+#include <condition_variable>
+#include <functional>
+#include <thread>
+#include <utility>
 
 typedef m2::RegionI RegionT;
 typedef m2::PointI PointT;
@@ -197,7 +197,7 @@ public:
     {
       m_points.clear();
       m_points.reserve(m_res[i].Size() + 1);
-      m_res[i].ForEachPoint(ref(*this));
+      m_res[i].ForEachPoint(std::ref(*this));
       fb.AddPolygon(m_points);
     }
   }
@@ -209,7 +209,7 @@ class RegionInCellSplitter final
 public:
   using TCell = RectId;
   using TIndex = m4::Tree<m2::RegionI>;
-  using TProcessResultFunc = function<void(TCell const &, DoDifference &)>;
+  using TProcessResultFunc = std::function<void(TCell const &, DoDifference &)>;
 
   static int constexpr kStartLevel = 4;
   static int constexpr kHighLevel = 10;
@@ -220,7 +220,7 @@ protected:
   {
     mutex mutexTasks;
     list<TCell> listTasks;
-    condition_variable listCondVar;
+    std::condition_variable listCondVar;
     size_t inWork = 0;
     TProcessResultFunc processResultFunc;
   };
@@ -244,7 +244,7 @@ public:
     ctx.processResultFunc = funcResult;
 
     vector<RegionInCellSplitter> instances;
-    vector<thread> threads;
+    vector<std::thread> threads;
     for (size_t i = 0; i < numThreads; ++i)
     {
       instances.emplace_back(RegionInCellSplitter(ctx, index));
@@ -272,7 +272,7 @@ public:
     // Do 'and' with all regions and accumulate the result, including bound region.
     // In 'odd' parts we will have an ocean.
     DoDifference doDiff(rectR);
-    m_index.ForEachInRect(GetLimitRect(rectR), bind<void>(ref(doDiff), _1));
+    m_index.ForEachInRect(GetLimitRect(rectR), std::bind<void>(std::ref(doDiff), std::placeholders::_1));
 
     // Check if too many points for feature.
     if (cell.Level() < kHighLevel && doDiff.GetPointsCount() >= kMaxPoints)
@@ -314,7 +314,7 @@ public:
 
 void CoastlineFeaturesGenerator::GetFeatures(vector<FeatureBuilder1> & features)
 {
-  size_t const maxThreads = thread::hardware_concurrency();
+  size_t const maxThreads = std::thread::hardware_concurrency();
   CHECK_GREATER(maxThreads, 0, ("Not supported platform"));
 
   mutex featuresMutex;
@@ -335,6 +335,6 @@ void CoastlineFeaturesGenerator::GetFeatures(vector<FeatureBuilder1> & features)
 
         // save result
         lock_guard<mutex> lock(featuresMutex);
-        features.emplace_back(move(fb));
+        features.emplace_back(std::move(fb));
       });
 }

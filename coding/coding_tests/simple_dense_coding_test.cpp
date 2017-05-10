@@ -8,15 +8,15 @@
 #include "base/logging.hpp"
 #include "base/scope_guard.hpp"
 
-#include "std/limits.hpp"
-#include "std/string.hpp"
-#include "std/vector.hpp"
+#include <limits>
+#include <string>
+#include <vector>
 
 using namespace coding;
 
 namespace
 {
-void TestSDC(vector<uint8_t> const & data, SimpleDenseCoding const & coding)
+void TestSDC(std::vector<uint8_t> const & data, SimpleDenseCoding const & coding)
 {
   TEST_EQUAL(data.size(), coding.Size(), ());
   for (size_t i = 0; i < data.size(); ++i)
@@ -26,12 +26,12 @@ void TestSDC(vector<uint8_t> const & data, SimpleDenseCoding const & coding)
 
 UNIT_TEST(SimpleDenseCoding_Smoke)
 {
-  size_t const kSize = numeric_limits<uint8_t>::max();
-  vector<uint8_t> data(kSize);
+  size_t const kSize = std::numeric_limits<uint8_t>::max();
+  std::vector<uint8_t> data(kSize);
   for (size_t i = 0; i < data.size(); ++i)
     data[i] = i;
 
-  string const kTestFile = "test.tmp";
+  std::string const kTestFile = "test.tmp";
   MY_SCOPE_GUARD(cleanup, bind(&FileWriter::DeleteFileX, kTestFile));
 
   {

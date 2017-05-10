@@ -6,7 +6,7 @@
 
 #include "base/macros.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 
 namespace { typedef m2::PointD P; }
@@ -68,11 +68,11 @@ namespace
     size_t const i = FindSingleStrip(n, IsDiagonalVisibleFunctor<P const *>(beg, beg + n));
     TEST_LESS ( i, n, () );
 
-    vector<size_t> test;
+    std::vector<size_t> test;
     MakeSingleStripFromIndex(i, n, MakeBackInsertFunctor(test));
 
-    sort(test.begin(), test.end());
-    unique(test.begin(), test.end());
+    std::sort(test.begin(), test.end());
+    std::unique(test.begin(), test.end());
 
     TEST_EQUAL ( test.size(), n, () );
   }

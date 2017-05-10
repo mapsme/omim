@@ -14,9 +14,9 @@
 #include "base/buffer_vector.hpp"
 #include "base/stl_add.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/bind.hpp"
-#include "std/list.hpp"
+#include <algorithm>
+#include <functional>
+#include <list>
 
 
 namespace serial
@@ -41,7 +41,7 @@ namespace serial
   typedef buffer_vector<uint64_t, 32> DeltasT;
   typedef buffer_vector<m2::PointD, 32> OutPointsT;
 
-  void Encode(EncodeFunT fn, vector<m2::PointD> const & points, CodingParams const & params,
+  void Encode(EncodeFunT fn, std::vector<m2::PointD> const & points, CodingParams const & params,
               DeltasT & deltas);
 
   /// @name Overloads for different out container types.
@@ -49,7 +49,7 @@ namespace serial
   void Decode(DecodeFunT fn, DeltasT const & deltas, CodingParams const & params,
               OutPointsT & points, size_t reserveF = 1);
   void Decode(DecodeFunT fn, DeltasT const & deltas, CodingParams const & params,
-              vector<m2::PointD> & points, size_t reserveF = 1);
+              std::vector<m2::PointD> & points, size_t reserveF = 1);
   //@}
 
   template <class TSink>
@@ -67,7 +67,7 @@ namespace serial
   }
 
   template <class TSink>
-  void SaveInner(EncodeFunT fn, vector<m2::PointD> const & points,
+  void SaveInner(EncodeFunT fn, std::vector<m2::PointD> const & points,
                  CodingParams const & params, TSink & sink)
   {
     DeltasT deltas;
@@ -76,7 +76,7 @@ namespace serial
   }
 
   template <class TSink>
-  void WriteBufferToSink(vector<char> const & buffer, TSink & sink)
+  void WriteBufferToSink(std::vector<char> const & buffer, TSink & sink)
   {
     uint32_t const count = static_cast<uint32_t>(buffer.size());
     WriteVarUint(sink, count);
@@ -84,14 +84,14 @@ namespace serial
   }
 
   template <class TSink>
-  void SaveOuter(EncodeFunT fn, vector<m2::PointD> const & points,
+  void SaveOuter(EncodeFunT fn, std::vector<m2::PointD> const & points,
                  CodingParams const & params, TSink & sink)
   {
     DeltasT deltas;
     Encode(fn, points, params, deltas);
 
-    vector<char> buffer;
-    MemWriter<vector<char> > writer(buffer);
+    std::vector<char> buffer;
+    MemWriter<std::vector<char> > writer(buffer);
     WriteVarUintArray(deltas, writer);
 
     WriteBufferToSink(buffer, sink);
@@ -105,7 +105,7 @@ namespace serial
                  TPoints & points, size_t reserveF = 1)
   {
     uint32_t const count = ReadVarUint<uint32_t>(src);
-    vector<char> buffer(count);
+    std::vector<char> buffer(count);
     char * p = &buffer[0];
     src.Read(p, count);
 
@@ -120,12 +120,12 @@ namespace serial
   /// @name Paths.
   //@{
   template <class TSink>
-  void SaveInnerPath(vector<m2::PointD> const & points, CodingParams const & params, TSink & sink)
+  void SaveInnerPath(std::vector<m2::PointD> const & points, CodingParams const & params, TSink & sink)
   {
     SaveInner(&geo_coding::EncodePolyline, points, params, sink);
   }
   template <class TSink>
-  void SaveOuterPath(vector<m2::PointD> const & points, CodingParams const & params, TSink & sink)
+  void SaveOuterPath(std::vector<m2::PointD> const & points, CodingParams const & params, TSink & sink)
   {
     SaveOuter(&geo_coding::EncodePolyline, points, params, sink);
   }
@@ -146,7 +146,7 @@ namespace serial
   /// @name Triangles.
   //@{
   template <class TSink>
-  void SaveInnerTriangles(vector<m2::PointD> const & points,
+  void SaveInnerTriangles(std::vector<m2::PointD> const & points,
                           CodingParams const & params, TSink & sink)
   {
     SaveInner(&geo_coding::EncodeTriangleStrip, points, params, sink);
@@ -162,12 +162,12 @@ namespace serial
   {
     using TPoint = m2::PointU;
     using TEdge = tesselator::Edge;
-    using TBuffer = vector<char>;
+    using TBuffer = std::vector<char>;
 
     TPoint m_base;
     TPoint m_max;
 
-    list<TBuffer> m_buffers;
+    std::list<TBuffer> m_buffers;
 
   public:
     explicit TrianglesChainSaver(CodingParams const & params);
@@ -175,7 +175,7 @@ namespace serial
     TPoint GetBasePoint() const { return m_base; }
     TPoint GetMaxPoint() const { return m_max; }
 
-    void operator() (TPoint arr[3], vector<TEdge> edges);
+    void operator() (TPoint arr[3], std::vector<TEdge> edges);
 
     size_t GetBufferSize() const
     {
@@ -194,7 +194,7 @@ namespace serial
 
       WriteVarUint(sink, static_cast<uint32_t>(count));
 
-      for_each(m_buffers.begin(), m_buffers.end(), bind(&WriteBufferToSink<TSink>, _1, ref(sink)));
+      std::for_each(m_buffers.begin(), m_buffers.end(), std::bind(&WriteBufferToSink<TSink>, std::placeholders::_1, std::ref(sink)));
     }
   };
 

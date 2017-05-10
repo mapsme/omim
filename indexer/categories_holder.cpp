@@ -18,7 +18,7 @@ enum State
 };
 
 void ProcessSynonym(CategoriesHolder::Category::Name const & name,
-                    deque<CategoriesHolder::Category::Name> & synonyms)
+                    std::deque<CategoriesHolder::Category::Name> & synonyms)
 {
   if (name.m_name[0] != '^')
   {
@@ -31,11 +31,11 @@ void ProcessSynonym(CategoriesHolder::Category::Name const & name,
   synonyms.front().m_name = name.m_name.substr(1);
 }
 
-void GroupTranslationsToSynonyms(vector<string> const & groups,
+void GroupTranslationsToSynonyms(std::vector<std::string> const & groups,
                                  CategoriesHolder::GroupTranslations const & translations,
-                                 deque<CategoriesHolder::Category::Name> & synonyms)
+                                 std::deque<CategoriesHolder::Category::Name> & synonyms)
 {
-  for (string const & group : groups)
+  for (std::string const & group : groups)
   {
     auto it = translations.find(group);
     if (it == translations.end())
@@ -93,9 +93,9 @@ void FillPrefixLengthToSuggest(CategoriesHolder::Category::Name & name)
   }
 }
 
-void ProcessName(CategoriesHolder::Category::Name name, vector<string> const & groups,
-                 vector<uint32_t> const & types, CategoriesHolder::GroupTranslations & translations,
-                 deque<CategoriesHolder::Category::Name> & synonyms)
+void ProcessName(CategoriesHolder::Category::Name name, std::vector<std::string> const & groups,
+                 std::vector<uint32_t> const & types, CategoriesHolder::GroupTranslations & translations,
+                 std::deque<CategoriesHolder::Category::Name> & synonyms)
 {
   if (name.m_name.empty())
   {
@@ -114,7 +114,7 @@ void ProcessName(CategoriesHolder::Category::Name name, vector<string> const & g
     ProcessSynonym(name, synonyms);
 }
 
-void ProcessCategory(string const & line, vector<string> & groups, vector<uint32_t> & types)
+void ProcessCategory(std::string const & line, std::vector<std::string> & groups, std::vector<uint32_t> & types)
 {
   // Check if category is a group reference.
   if (line[0] == '@')
@@ -125,7 +125,7 @@ void ProcessCategory(string const & line, vector<string> & groups, vector<uint32
   }
 
   // Split category to subcategories for classificator.
-  vector<string> v;
+  std::vector<std::string> v;
   strings::Tokenize(line, "-", MakeBackInsertFunctor(v));
 
   // Get classificator type.
@@ -179,24 +179,24 @@ vector<CategoriesHolder::Mapping> const CategoriesHolder::kLocaleMapping = {{"en
                                                                             {"el", 28},
                                                                             {"he", 29},
                                                                             {"sw", 30}};
-vector<string> CategoriesHolder::kDisabledLanguages = {"el", "he", "sw"};
+vector<std::string> CategoriesHolder::kDisabledLanguages = {"el", "he", "sw"};
 
-CategoriesHolder::CategoriesHolder(unique_ptr<Reader> && reader)
+CategoriesHolder::CategoriesHolder(std::unique_ptr<Reader> && reader)
 {
-  ReaderStreamBuf buffer(move(reader));
-  istream s(&buffer);
+  ReaderStreamBuf buffer(std::move(reader));
+  std::istream s(&buffer);
   LoadFromStream(s);
 }
 
-void CategoriesHolder::AddCategory(Category & cat, vector<uint32_t> & types)
+void CategoriesHolder::AddCategory(Category & cat, std::vector<uint32_t> & types)
 {
   if (!cat.m_synonyms.empty() && !types.empty())
   {
-    shared_ptr<Category> p(new Category());
+    std::shared_ptr<Category> p(new Category());
     p->Swap(cat);
 
     for (uint32_t const t : types)
-      m_type2cat.insert(make_pair(t, p));
+      m_type2cat.insert(std::make_pair(t, p));
 
     for (auto const & synonym : p->m_synonyms)
     {
@@ -207,7 +207,7 @@ void CategoriesHolder::AddCategory(Category & cat, vector<uint32_t> & types)
 
       auto const uniName = search::NormalizeAndSimplifyString(synonym.m_name);
 
-      vector<String> tokens;
+      std::vector<String> tokens;
       SplitUniString(uniName, MakeBackInsertFunctor(tokens), search::Delimiters());
 
       for (auto const & token : tokens)
@@ -239,23 +239,23 @@ bool CategoriesHolder::ValidKeyToken(String const & s)
   return true;
 }
 
-void CategoriesHolder::LoadFromStream(istream & s)
+void CategoriesHolder::LoadFromStream(std::istream & s)
 {
   m_type2cat.clear();
   m_name2type.Clear();
   m_groupTranslations.clear();
 
   State state = EParseTypes;
-  string line;
+  std::string line;
   Category cat;
-  vector<uint32_t> types;
-  vector<string> currentGroups;
+  std::vector<uint32_t> types;
+  std::vector<std::string> currentGroups;
 
   int lineNumber = 0;
   while (s.good())
   {
     ++lineNumber;
-    getline(s, line);
+    std::getline(s, line);
     strings::Trim(line);
     // Allow for comments starting with '#' character.
     if (!line.empty() && line[0] == '#')
@@ -309,11 +309,11 @@ void CategoriesHolder::LoadFromStream(istream & s)
   TrimGroupTranslations(m_groupTranslations);
 }
 
-bool CategoriesHolder::GetNameByType(uint32_t type, int8_t locale, string & name) const
+bool CategoriesHolder::GetNameByType(uint32_t type, int8_t locale, std::string & name) const
 {
   auto const range = m_type2cat.equal_range(type);
 
-  string enName;
+  std::string enName;
   for (auto it = range.first; it != range.second; ++it)
   {
     Category const & cat = *it->second;
@@ -340,14 +340,14 @@ bool CategoriesHolder::GetNameByType(uint32_t type, int8_t locale, string & name
   return false;
 }
 
-string CategoriesHolder::GetReadableFeatureType(uint32_t type, int8_t locale) const
+std::string CategoriesHolder::GetReadableFeatureType(uint32_t type, int8_t locale) const
 {
   ASSERT_NOT_EQUAL(type, 0, ());
   uint8_t level = ftype::GetLevel(type);
   ASSERT_GREATER(level, 0, ());
 
   uint32_t originalType = type;
-  string name;
+  std::string name;
   while (true)
   {
     if (GetNameByType(type, locale, name))
@@ -369,13 +369,13 @@ bool CategoriesHolder::IsTypeExist(uint32_t type) const
 }
 
 // static
-int8_t CategoriesHolder::MapLocaleToInteger(string const & locale)
+int8_t CategoriesHolder::MapLocaleToInteger(std::string const & locale)
 {
   ASSERT(!kLocaleMapping.empty(), ());
-  ASSERT_EQUAL(string(kLocaleMapping[0].m_name), "en", ());
+  ASSERT_EQUAL(std::string(kLocaleMapping[0].m_name), "en", ());
   ASSERT_EQUAL(kLocaleMapping[0].m_code, kEnglishCode, ());
   ASSERT(
-      find(kDisabledLanguages.begin(), kDisabledLanguages.end(), "en") == kDisabledLanguages.end(),
+      std::find(kDisabledLanguages.begin(), kDisabledLanguages.end(), "en") == kDisabledLanguages.end(),
       ());
 
   for (auto const & entry : kLocaleMapping)
@@ -387,12 +387,12 @@ int8_t CategoriesHolder::MapLocaleToInteger(string const & locale)
   // Special cases for different Chinese variations
   if (locale.find("zh") == 0)
   {
-    string lower = locale;
+    std::string lower = locale;
     strings::AsciiToLower(lower);
 
     for (char const * s : {"hant", "tw", "hk", "mo"})
     {
-      if (lower.find(s) != string::npos)
+      if (lower.find(s) != std::string::npos)
         return 12;  // Traditional Chinese
     }
 
@@ -403,9 +403,9 @@ int8_t CategoriesHolder::MapLocaleToInteger(string const & locale)
 }
 
 // static
-string CategoriesHolder::MapIntegerToLocale(int8_t code)
+std::string CategoriesHolder::MapIntegerToLocale(int8_t code)
 {
   if (code <= 0 || static_cast<size_t>(code) > kLocaleMapping.size())
-    return string();
+    return std::string();
   return kLocaleMapping[code - 1].m_name;
 }

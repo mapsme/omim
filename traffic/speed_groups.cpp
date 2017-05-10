@@ -2,7 +2,7 @@
 
 #include "base/math.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 namespace traffic
 {
@@ -20,7 +20,7 @@ SpeedGroup GetSpeedGroupByPercentage(double p)
   return res;
 }
 
-string DebugPrint(SpeedGroup const & group)
+std::string DebugPrint(SpeedGroup const & group)
 {
   switch (group)
   {

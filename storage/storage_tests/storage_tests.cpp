@@ -12,6 +12,8 @@
 
 #include "storage/storage_integration_tests/test_defines.hpp"
 
+using namespace std;
+
 #if defined(OMIM_OS_DESKTOP)
 #include "generator/generator_tests_support/test_mwm_builder.hpp"
 #endif  // defined(OMIM_OS_DESKTOP)

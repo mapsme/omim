@@ -4,7 +4,7 @@
 #include "base/shared_buffer_manager.hpp"
 #include "base/assert.hpp"
 
-#include "std/cstring.hpp"
+#include <cstring>
 
 namespace dp
 {

@@ -8,8 +8,8 @@
 
 #include "geometry/mercator.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/vector.hpp"
+#include <algorithm>
+#include <vector>
 
 UNIT_TEST(Framework_ForEachFeatureAtPoint_And_Others)
 {
@@ -17,7 +17,7 @@ UNIT_TEST(Framework_ForEachFeatureAtPoint_And_Others)
   frm.DeregisterAllMaps();
   frm.RegisterMap(platform::LocalCountryFile::MakeForTesting("minsk-pass"));
 
-  vector<char const *> types =
+  std::vector<char const *> types =
   {
     "highway|footway|",
     "hwtag|yesfoot|",
@@ -30,8 +30,8 @@ UNIT_TEST(Framework_ForEachFeatureAtPoint_And_Others)
   {
     ft.ForEachType([&types](uint32_t type)
     {
-      string const strType = classif().GetFullObjectName(type);
-      auto found = find(types.begin(), types.end(), strType);
+      std::string const strType = classif().GetFullObjectName(type);
+      auto found = std::find(types.begin(), types.end(), strType);
       TEST(found != types.end(), ());
       types.erase(found);
     });
@@ -42,7 +42,7 @@ UNIT_TEST(Framework_ForEachFeatureAtPoint_And_Others)
   {
     // Restaurant in the building.
     auto const feature = frm.GetFeatureAtPoint(MercatorBounds::FromLatLon(53.89395, 27.567365));
-    string name;
+    std::string name;
     TEST(feature->GetName(FeatureType::DEFAULT_LANG, name), ());
     TEST_EQUAL("Родны Кут", name, ());
     TEST(!isBuilding(*feature), ());

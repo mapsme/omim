@@ -23,8 +23,8 @@
 
 #include "base/assert.hpp"
 
-#include "std/unique_ptr.hpp"
-#include "std/vector.hpp"
+#include <memory>
+#include <vector>
 
 class Platform;
 
@@ -39,7 +39,7 @@ public:
 class SearchTest : public TestWithClassificator
 {
 public:
-  using TRules = vector<shared_ptr<tests_support::MatchingRule>>;
+  using TRules = std::vector<shared_ptr<tests_support::MatchingRule>>;
 
   SearchTest();
 
@@ -47,7 +47,7 @@ public:
 
   // Registers country in internal records. Note that physical country
   // file may be absent.
-  void RegisterCountry(string const & name, m2::RectD const & rect);
+  void RegisterCountry(std::string const & name, m2::RectD const & rect);
 
   // Creates a physical country file on a disk, which will be removed
   // at the end of the test. |fn| is a delegate that accepts a single
@@ -57,7 +57,7 @@ public:
   // *NOTE* when |type| is feature::DataHeader::country, the country
   // with |name| will be automatically registered.
   template <typename TBuildFn>
-  MwmSet::MwmId BuildMwm(string const & name, feature::DataHeader::MapType type, TBuildFn && fn)
+  MwmSet::MwmId BuildMwm(std::string const & name, feature::DataHeader::MapType type, TBuildFn && fn)
   {
     m_files.emplace_back(m_platform.WritableDir(), platform::CountryFile(name), 0 /* version */);
     auto & file = m_files.back();
@@ -87,7 +87,7 @@ public:
   }
 
   template <typename TBuildFn>
-  MwmSet::MwmId BuildCountry(string const & name, TBuildFn && fn)
+  MwmSet::MwmId BuildCountry(std::string const & name, TBuildFn && fn)
   {
     return BuildMwm(name, feature::DataHeader::country, forward<TBuildFn>(fn));
   }
@@ -103,17 +103,17 @@ public:
 
   inline void SetViewport(m2::RectD const & viewport) { m_viewport = viewport; }
 
-  bool ResultsMatch(string const & query, TRules const & rules);
+  bool ResultsMatch(std::string const & query, TRules const & rules);
 
-  bool ResultsMatch(string const & query, string const & locale, TRules const & rules);
+  bool ResultsMatch(std::string const & query, std::string const & locale, TRules const & rules);
 
-  bool ResultsMatch(string const & query, Mode mode, TRules const & rules);
+  bool ResultsMatch(std::string const & query, Mode mode, TRules const & rules);
 
-  bool ResultsMatch(vector<search::Result> const & results, TRules const & rules);
+  bool ResultsMatch(std::vector<search::Result> const & results, TRules const & rules);
 
   bool ResultsMatch(SearchParams const & params, TRules const & rules);
 
-  unique_ptr<tests_support::TestSearchRequest> MakeRequest(string const & query);
+  std::unique_ptr<tests_support::TestSearchRequest> MakeRequest(std::string const & query);
 
   size_t CountFeatures(m2::RectD const & rect);
 
@@ -122,7 +122,7 @@ protected:
 
   Platform & m_platform;
   my::ScopedLogLevelChanger m_scopedLog;
-  vector<platform::LocalCountryFile> m_files;
+  std::vector<platform::LocalCountryFile> m_files;
   tests_support::TestSearchEngine m_engine;
   m2::RectD m_viewport;
 };

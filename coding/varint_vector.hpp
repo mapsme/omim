@@ -3,7 +3,7 @@
 /*
 #include "base/base.hpp"
 
-#include "std/vector.hpp"
+#include <vector>
 
 
 class Writer;
@@ -37,8 +37,8 @@ protected:
   uint64_t m_numElemPerTableEntry;
   uint64_t m_numsCount;
   uint64_t m_sum;
-  vector<TableEntry> m_selectTable;
-  vector<uint8_t> m_serialNums;
+  std::vector<TableEntry> m_selectTable;
+  std::vector<uint8_t> m_serialNums;
 };
 
 class VectorBuilderDelayedLast : public VectorBuilder

@@ -12,7 +12,7 @@
 #include "base/random.hpp"
 #include "base/stl_helpers.hpp"
 
-#include "std/iterator.hpp"
+#include <iterator>
 
 namespace search
 {
@@ -47,7 +47,7 @@ struct ComparePreResult1
   }
 };
 
-void SweepNearbyResults(double eps, vector<PreResult1> & results)
+void SweepNearbyResults(double eps, std::vector<PreResult1> & results)
 {
   NearbyPointsSweeper sweeper(eps);
   for (size_t i = 0; i < results.size(); ++i)
@@ -56,7 +56,7 @@ void SweepNearbyResults(double eps, vector<PreResult1> & results)
     sweeper.Add(p.x, p.y, i);
   }
 
-  vector<PreResult1> filtered;
+  std::vector<PreResult1> filtered;
   sweeper.Sweep([&filtered, &results](size_t i)
                 {
                   filtered.push_back(results[i]);
@@ -131,17 +131,17 @@ void PreRanker::FillMissingFieldsInPreResults()
 
 void PreRanker::Filter(bool viewportSearch)
 {
-  using TSet = set<PreResult1, LessFeatureID>;
+  using TSet = std::set<PreResult1, LessFeatureID>;
   TSet filtered;
 
-  sort(m_results.begin(), m_results.end(), ComparePreResult1());
-  m_results.erase(unique(m_results.begin(), m_results.end(), my::EqualsBy(&PreResult1::GetId)),
+  std::sort(m_results.begin(), m_results.end(), ComparePreResult1());
+  m_results.erase(std::unique(m_results.begin(), m_results.end(), my::EqualsBy(&PreResult1::GetId)),
                   m_results.end());
 
   if (m_results.size() > BatchSize())
   {
     bool const centersLoaded =
-        all_of(m_results.begin(), m_results.end(),
+        std::all_of(m_results.begin(), m_results.end(),
                [](PreResult1 const & result) { return result.GetInfo().m_centerLoaded; });
     if (viewportSearch && centersLoaded)
     {
@@ -152,7 +152,7 @@ void PreRanker::Filter(bool viewportSearch)
     }
     else
     {
-      sort(m_results.begin(), m_results.end(), &PreResult1::LessDistance);
+      std::sort(m_results.begin(), m_results.end(), &PreResult1::LessDistance);
 
       // Priority is some kind of distance from the viewport or
       // position, therefore if we have a bunch of results with the same
@@ -185,12 +185,12 @@ void PreRanker::Filter(bool viewportSearch)
       shuffle(b, e, m_rng);
     }
   }
-  filtered.insert(m_results.begin(), m_results.begin() + min(m_results.size(), BatchSize()));
+  filtered.insert(m_results.begin(), m_results.begin() + std::min(m_results.size(), BatchSize()));
 
   if (!viewportSearch)
   {
-    size_t n = min(m_results.size(), BatchSize());
-    nth_element(m_results.begin(), m_results.begin() + n, m_results.end(), &PreResult1::LessRank);
+    size_t n = std::min(m_results.size(), BatchSize());
+    std::nth_element(m_results.begin(), m_results.begin() + n, m_results.end(), &PreResult1::LessRank);
     filtered.insert(m_results.begin(), m_results.begin() + n);
   }
 
@@ -202,7 +202,7 @@ void PreRanker::UpdateResults(bool lastUpdate)
   FillMissingFieldsInPreResults();
   Filter(m_viewportSearch);
   m_numSentResults += m_results.size();
-  m_ranker.SetPreResults1(move(m_results));
+  m_ranker.SetPreResults1(std::move(m_results));
   m_results.clear();
   m_ranker.UpdateResults(lastUpdate);
 
@@ -236,7 +236,7 @@ void PreRanker::FilterForViewportSearch()
   size_t const kNumXSlots = 5;
   size_t const kNumYSlots = 5;
   size_t const kNumBuckets = kNumXSlots * kNumYSlots;
-  vector<size_t> buckets[kNumBuckets];
+  std::vector<size_t> buckets[kNumBuckets];
 
   double const sizeX = viewport.SizeX();
   double const sizeY = viewport.SizeY();
@@ -253,7 +253,7 @@ void PreRanker::FilterForViewportSearch()
     buckets[dx * kNumYSlots + dy].push_back(i);
   }
 
-  vector<PreResult1> results;
+  std::vector<PreResult1> results;
   double const density = static_cast<double>(BatchSize()) / static_cast<double>(n);
   for (auto & bucket : buckets)
   {

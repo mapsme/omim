@@ -12,7 +12,7 @@
 #include "base/scope_guard.hpp"
 #include "base/logging.hpp"
 
-#include "std/bind.hpp"
+#include <functional>
 
 namespace df
 {
@@ -67,7 +67,7 @@ void TileInfo::ReadFeatures(MapDataProvider const & model)
   m_context->BeginReadTile();
 
   // Reading can be interrupted by exception throwing
-  MY_SCOPE_GUARD(ReleaseReadTile, bind(&EngineContext::EndReadTile, m_context.get()));
+  MY_SCOPE_GUARD(ReleaseReadTile, std::bind(&EngineContext::EndReadTile, m_context.get()));
 
   ReadFeatureIndex(model);
   CheckCanceled();
@@ -75,12 +75,12 @@ void TileInfo::ReadFeatures(MapDataProvider const & model)
   if (!m_featureInfo.empty())
   {
     auto const deviceLang = StringUtf8Multilang::GetLangIndex(languages::GetCurrentNorm());
-    RuleDrawer drawer(bind(&TileInfo::InitStylist, this, deviceLang, _1, _2),
-                      bind(&TileInfo::IsCancelled, this),
+    RuleDrawer drawer(std::bind(&TileInfo::InitStylist, this, deviceLang, std::placeholders::_1, std::placeholders::_2),
+                      std::bind(&TileInfo::IsCancelled, this),
                       model.m_isCountryLoadedByName,
                       make_ref(m_context), m_customSymbolsContext.lock(),
                       m_is3dBuildings, m_trafficEnabled);
-    model.ReadFeatures(bind<void>(ref(drawer), _1), m_featureInfo);
+    model.ReadFeatures(std::bind<void>(std::ref(drawer), std::placeholders::_1), m_featureInfo);
   }
 #if defined(DRAPE_MEASURER) && defined(TILES_STATISTIC)
   DrapeMeasurer::Instance().EndTileReading();

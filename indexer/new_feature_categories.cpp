@@ -6,7 +6,7 @@
 #include "base/assert.hpp"
 #include "base/stl_helpers.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 #include "3party/Alohalytics/src/alohalytics.h"
 
@@ -32,13 +32,13 @@ NewFeatureCategories::NewFeatureCategories(editor::EditorConfig const & config)
 }
 
 NewFeatureCategories::NewFeatureCategories(NewFeatureCategories && other)
-  : m_index(move(other.m_index))
-  , m_types(move(other.m_types))
-  , m_categoriesByLang(move(other.m_categoriesByLang))
+  : m_index(std::move(other.m_index))
+  , m_types(std::move(other.m_types))
+  , m_categoriesByLang(std::move(other.m_categoriesByLang))
 {
 }
 
-void NewFeatureCategories::AddLanguage(string lang)
+void NewFeatureCategories::AddLanguage(std::string lang)
 {
   auto langCode = CategoriesHolder::MapLocaleToInteger(lang);
   if (langCode == CategoriesHolder::kUnsupportedLocaleCode)
@@ -60,7 +60,7 @@ void NewFeatureCategories::AddLanguage(string lang)
   m_categoriesByLang[lang] = names;
 }
 
-NewFeatureCategories::TNames NewFeatureCategories::Search(string const & query, string lang) const
+NewFeatureCategories::TNames NewFeatureCategories::Search(std::string const & query, std::string lang) const
 {
   auto langCode = CategoriesHolder::MapLocaleToInteger(lang);
   if (langCode == CategoriesHolder::kUnsupportedLocaleCode)
@@ -68,7 +68,7 @@ NewFeatureCategories::TNames NewFeatureCategories::Search(string const & query, 
     lang = "en";
     langCode = CategoriesHolder::kEnglishCode;
   }
-  vector<uint32_t> resultTypes;
+  std::vector<uint32_t> resultTypes;
   m_index.GetAssociatedTypes(query, resultTypes);
 
   NewFeatureCategories::TNames result(resultTypes.size());
@@ -88,7 +88,7 @@ NewFeatureCategories::TNames NewFeatureCategories::Search(string const & query, 
 }
 
 NewFeatureCategories::TNames const & NewFeatureCategories::GetAllCategoryNames(
-    string const & lang) const
+    std::string const & lang) const
 {
   auto it = m_categoriesByLang.find(lang);
   if (it == m_categoriesByLang.end())

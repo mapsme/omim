@@ -11,20 +11,20 @@
 #include "base/stl_add.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/cstdint.hpp"
-#include "std/string.hpp"
+#include <cstdint>
+#include <string>
 
 using namespace search;
 using namespace strings;
 
 namespace
 {
-NameScore GetScore(string const & name, string const & query, TokenRange const & tokenRange)
+NameScore GetScore(std::string const & name, std::string const & query, TokenRange const & tokenRange)
 {
   search::Delimiters delims;
   QueryParams params;
 
-  vector<UniString> tokens;
+  std::vector<UniString> tokens;
   SplitUniString(NormalizeAndSimplifyString(query), MakeBackInsertFunctor(tokens), delims);
 
   if (!query.empty() && !delims(strings::LastUniChar(query)))

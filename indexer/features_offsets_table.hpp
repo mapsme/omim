@@ -5,9 +5,9 @@
 
 #include "defines.hpp"
 
-#include "std/cstdint.hpp"
-#include "std/unique_ptr.hpp"
-#include "std/vector.hpp"
+#include <cstdint>
+#include <memory>
+#include <vector>
 
 #include "3party/succinct/elias_fano.hpp"
 #include "3party/succinct/mapper.hpp"
@@ -44,7 +44,7 @@ namespace feature
     private:
       friend class FeaturesOffsetsTable;
 
-      vector<uint32_t> m_offsets;
+      std::vector<uint32_t> m_offsets;
     };
 
     /// Builds FeaturesOffsetsTable from the strictly increasing
@@ -52,23 +52,23 @@ namespace feature
     ///
     /// \param builder Builder containing sequence of offsets.
     /// \return a pointer to an instance of FeaturesOffsetsTable
-    static unique_ptr<FeaturesOffsetsTable> Build(Builder & builder);
+    static std::unique_ptr<FeaturesOffsetsTable> Build(Builder & builder);
 
     /// Load table by full path to the table file.
-    static unique_ptr<FeaturesOffsetsTable> Load(string const & filePath);
+    static std::unique_ptr<FeaturesOffsetsTable> Load(std::string const & filePath);
 
-    static unique_ptr<FeaturesOffsetsTable> Load(FilesContainerR const & cont);
-    static unique_ptr<FeaturesOffsetsTable> Build(FilesContainerR const & cont,
-                                                  string const & storePath);
+    static std::unique_ptr<FeaturesOffsetsTable> Load(FilesContainerR const & cont);
+    static std::unique_ptr<FeaturesOffsetsTable> Build(FilesContainerR const & cont,
+                                                  std::string const & storePath);
 
     /// Get table for the MWM map, represented by localFile and cont.
-    static unique_ptr<FeaturesOffsetsTable> CreateIfNotExistsAndLoad(
+    static std::unique_ptr<FeaturesOffsetsTable> CreateIfNotExistsAndLoad(
         platform::LocalCountryFile const & localFile, FilesContainerR const & cont);
 
     /// @todo The easiest solution for now. Need to be removed in future.
     //@{
-    static unique_ptr<FeaturesOffsetsTable> CreateIfNotExistsAndLoad(platform::LocalCountryFile const & localFile);
-    static unique_ptr<FeaturesOffsetsTable> CreateIfNotExistsAndLoad(FilesContainerR const & cont);
+    static std::unique_ptr<FeaturesOffsetsTable> CreateIfNotExistsAndLoad(platform::LocalCountryFile const & localFile);
+    static std::unique_ptr<FeaturesOffsetsTable> CreateIfNotExistsAndLoad(FilesContainerR const & cont);
     //@}
 
     FeaturesOffsetsTable(FeaturesOffsetsTable const &) = delete;
@@ -77,7 +77,7 @@ namespace feature
     /// Serializes current instance to a section in container.
     ///
     /// \param filePath a full path of the file to store data
-    void Save(string const & filePath);
+    void Save(std::string const & filePath);
 
     /// \param index index of a feature
     /// \return offset a feature
@@ -97,16 +97,16 @@ namespace feature
 
   private:
     FeaturesOffsetsTable(succinct::elias_fano::elias_fano_builder & builder);
-    FeaturesOffsetsTable(string const & filePath);
+    FeaturesOffsetsTable(std::string const & filePath);
     FeaturesOffsetsTable() = default;
 
-    static unique_ptr<FeaturesOffsetsTable> LoadImpl(string const & filePath);
-    static unique_ptr<FeaturesOffsetsTable> CreateImpl(platform::LocalCountryFile const & localFile,
+    static std::unique_ptr<FeaturesOffsetsTable> LoadImpl(std::string const & filePath);
+    static std::unique_ptr<FeaturesOffsetsTable> CreateImpl(platform::LocalCountryFile const & localFile,
                                                        FilesContainerR const & cont,
-                                                       string const & storePath);
+                                                       std::string const & storePath);
 
     succinct::elias_fano m_table;
-    unique_ptr<MmapReader> m_pReader;
+    std::unique_ptr<MmapReader> m_pReader;
 
     detail::MappedFile m_file;
     detail::MappedFile::Handle m_handle;
@@ -114,5 +114,5 @@ namespace feature
 
   // Builds feature offsets table in an mwm or rebuilds an existing
   // one.
-  bool BuildOffsetsTable(string const & filePath);
+  bool BuildOffsetsTable(std::string const & filePath);
 }  // namespace feature

@@ -24,9 +24,9 @@
 
 #include "geometry/distance.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/queue.hpp"
-#include "std/set.hpp"
+#include <algorithm>
+#include <queue>
+#include <set>
 
 #include "base/assert.hpp"
 
@@ -45,7 +45,7 @@ size_t constexpr kTestConnectivityVisitJunctionsLimit = 25;
 uint64_t constexpr kMinPedestrianMwmVersion = 150713;
 
 // Check if the found edges lays on mwm with pedestrian routing support.
-bool CheckMwmVersion(vector<pair<Edge, Junction>> const & vicinities, vector<string> & mwmNames)
+bool CheckMwmVersion(std::vector<pair<Edge, Junction>> const & vicinities, std::vector<std::string> & mwmNames)
 {
   mwmNames.clear();
   for (auto const & vicinity : vicinities)
@@ -69,13 +69,13 @@ bool CheckMwmVersion(vector<pair<Edge, Junction>> const & vicinities, vector<str
 // before this number is reached then junction is assumed as not connected to the world graph.
 bool CheckGraphConnectivity(IRoadGraph const & graph, Junction const & junction, size_t limit)
 {
-  queue<Junction> q;
+  std::queue<Junction> q;
   q.push(junction);
 
-  set<Junction> visited;
+  std::set<Junction> visited;
   visited.insert(junction);
 
-  vector<Edge> edges;
+  std::vector<Edge> edges;
   while (!q.empty() && visited.size() < limit)
   {
     Junction const u = q.front();
@@ -99,7 +99,7 @@ bool CheckGraphConnectivity(IRoadGraph const & graph, Junction const & junction,
 
 // Find closest candidates in the world graph
 void FindClosestEdges(IRoadGraph const & graph, m2::PointD const & point,
-                      vector<pair<Edge, Junction>> & vicinity)
+                      std::vector<pair<Edge, Junction>> & vicinity)
 {
   // WARNING: Take only one vicinity, with, maybe, its inverse.  It is
   // an oversimplification that is not as easily solved as tuning up
@@ -107,7 +107,7 @@ void FindClosestEdges(IRoadGraph const & graph, m2::PointD const & point,
   // feature that you cannot in fact reach because of an obstacle.
   // Using only the closest feature minimizes (but not eliminates)
   // this risk.
-  vector<pair<Edge, Junction>> candidates;
+  std::vector<pair<Edge, Junction>> candidates;
   graph.FindClosestEdges(point, kMaxRoadCandidates, candidates);
 
   vicinity.clear();
@@ -140,16 +140,16 @@ void FindClosestEdges(IRoadGraph const & graph, m2::PointD const & point,
 }  // namespace
 
 RoadGraphRouter::~RoadGraphRouter() {}
-RoadGraphRouter::RoadGraphRouter(string const & name, Index const & index,
+RoadGraphRouter::RoadGraphRouter(std::string const & name, Index const & index,
                                  TCountryFileFn const & countryFileFn, IRoadGraph::Mode mode,
-                                 unique_ptr<VehicleModelFactory> && vehicleModelFactory,
-                                 unique_ptr<IRoutingAlgorithm> && algorithm,
-                                 unique_ptr<IDirectionsEngine> && directionsEngine)
+                                 std::unique_ptr<VehicleModelFactory> && vehicleModelFactory,
+                                 std::unique_ptr<IRoutingAlgorithm> && algorithm,
+                                 std::unique_ptr<IDirectionsEngine> && directionsEngine)
   : m_name(name)
   , m_countryFileFn(countryFileFn)
   , m_index(index)
   , m_algorithm(move(algorithm))
-  , m_roadGraph(make_unique<FeaturesRoadGraph>(index, mode, move(vehicleModelFactory)))
+  , m_roadGraph(my::make_unique<FeaturesRoadGraph>(index, mode, move(vehicleModelFactory)))
   , m_directionsEngine(move(directionsEngine))
 {
 }
@@ -161,7 +161,7 @@ void RoadGraphRouter::ClearState()
 
 bool RoadGraphRouter::CheckMapExistence(m2::PointD const & point, Route & route) const
 {
-  string const fileName = m_countryFileFn(point);
+  std::string const fileName = m_countryFileFn(point);
   if (!m_index.GetMwmIdByCountryFile(CountryFile(fileName)).IsAlive())
   {
     route.AddAbsentCountry(fileName);
@@ -178,21 +178,21 @@ IRouter::ResultCode RoadGraphRouter::CalculateRoute(m2::PointD const & startPoin
   if (!CheckMapExistence(startPoint, route) || !CheckMapExistence(finalPoint, route))
     return IRouter::RouteFileNotExist;
 
-  vector<pair<Edge, Junction>> finalVicinity;
+  std::vector<pair<Edge, Junction>> finalVicinity;
   FindClosestEdges(*m_roadGraph, finalPoint, finalVicinity);
 
   if (finalVicinity.empty())
     return IRouter::EndPointNotFound;
 
   // TODO (ldragunov) Remove this check after several releases. (Estimated in november)
-  vector<string> mwmNames;
+  std::vector<std::string> mwmNames;
   if (CheckMwmVersion(finalVicinity, mwmNames))
   {
     for (auto const & name : mwmNames)
       route.AddAbsentCountry(name);
   }
 
-  vector<pair<Edge, Junction>> startVicinity;
+  std::vector<pair<Edge, Junction>> startVicinity;
   FindClosestEdges(*m_roadGraph, startPoint, startVicinity);
 
   if (startVicinity.empty())
@@ -253,10 +253,10 @@ IRouter::ResultCode RoadGraphRouter::CalculateRoute(m2::PointD const & startPoin
 
 unique_ptr<IRouter> CreatePedestrianAStarRouter(Index & index, TCountryFileFn const & countryFileFn)
 {
-  unique_ptr<VehicleModelFactory> vehicleModelFactory(new PedestrianModelFactory());
-  unique_ptr<IRoutingAlgorithm> algorithm(new AStarRoutingAlgorithm());
-  unique_ptr<IDirectionsEngine> directionsEngine(new PedestrianDirectionsEngine());
-  unique_ptr<IRouter> router(new RoadGraphRouter(
+  std::unique_ptr<VehicleModelFactory> vehicleModelFactory(new PedestrianModelFactory());
+  std::unique_ptr<IRoutingAlgorithm> algorithm(new AStarRoutingAlgorithm());
+  std::unique_ptr<IDirectionsEngine> directionsEngine(new PedestrianDirectionsEngine());
+  std::unique_ptr<IRouter> router(new RoadGraphRouter(
       "astar-pedestrian", index, countryFileFn, IRoadGraph::Mode::IgnoreOnewayTag,
       move(vehicleModelFactory), move(algorithm), move(directionsEngine)));
   return router;
@@ -264,10 +264,10 @@ unique_ptr<IRouter> CreatePedestrianAStarRouter(Index & index, TCountryFileFn co
 
 unique_ptr<IRouter> CreatePedestrianAStarBidirectionalRouter(Index & index, TCountryFileFn const & countryFileFn)
 {
-  unique_ptr<VehicleModelFactory> vehicleModelFactory(new PedestrianModelFactory());
-  unique_ptr<IRoutingAlgorithm> algorithm(new AStarBidirectionalRoutingAlgorithm());
-  unique_ptr<IDirectionsEngine> directionsEngine(new PedestrianDirectionsEngine());
-  unique_ptr<IRouter> router(new RoadGraphRouter(
+  std::unique_ptr<VehicleModelFactory> vehicleModelFactory(new PedestrianModelFactory());
+  std::unique_ptr<IRoutingAlgorithm> algorithm(new AStarBidirectionalRoutingAlgorithm());
+  std::unique_ptr<IDirectionsEngine> directionsEngine(new PedestrianDirectionsEngine());
+  std::unique_ptr<IRouter> router(new RoadGraphRouter(
       "astar-bidirectional-pedestrian", index, countryFileFn, IRoadGraph::Mode::IgnoreOnewayTag,
       move(vehicleModelFactory), move(algorithm), move(directionsEngine)));
   return router;
@@ -275,10 +275,10 @@ unique_ptr<IRouter> CreatePedestrianAStarBidirectionalRouter(Index & index, TCou
 
 unique_ptr<IRouter> CreateBicycleAStarBidirectionalRouter(Index & index, TCountryFileFn const & countryFileFn)
 {
-  unique_ptr<VehicleModelFactory> vehicleModelFactory(new BicycleModelFactory());
-  unique_ptr<IRoutingAlgorithm> algorithm(new AStarBidirectionalRoutingAlgorithm());
-  unique_ptr<IDirectionsEngine> directionsEngine(new BicycleDirectionsEngine(index, nullptr));
-  unique_ptr<IRouter> router(new RoadGraphRouter(
+  std::unique_ptr<VehicleModelFactory> vehicleModelFactory(new BicycleModelFactory());
+  std::unique_ptr<IRoutingAlgorithm> algorithm(new AStarBidirectionalRoutingAlgorithm());
+  std::unique_ptr<IDirectionsEngine> directionsEngine(new BicycleDirectionsEngine(index, nullptr));
+  std::unique_ptr<IRouter> router(new RoadGraphRouter(
       "astar-bidirectional-bicycle", index, countryFileFn, IRoadGraph::Mode::ObeyOnewayTag,
       move(vehicleModelFactory), move(algorithm), move(directionsEngine)));
   return router;

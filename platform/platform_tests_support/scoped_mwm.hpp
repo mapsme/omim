@@ -4,7 +4,7 @@
 
 #include "base/macros.hpp"
 
-#include "std/string.hpp"
+#include <string>
 
 namespace platform
 {
@@ -15,7 +15,7 @@ class ScopedFile;
 class ScopedMwm
 {
 public:
-  ScopedMwm(string const & relativePath);
+  ScopedMwm(std::string const & relativePath);
 private:
   ScopedFile m_file;
 

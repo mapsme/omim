@@ -86,7 +86,7 @@ std::vector<uint8_t> DownloadCampaign(MwmSet::MwmId const & mwmId)
   if (!request.RunHttpRequest() || request.ErrorCode() != 200)
     return {};
 
-  string const & response = request.ServerResponse();
+  std::string const & response = request.ServerResponse();
   return std::vector<uint8_t>(response.cbegin(), response.cend());
 }
 

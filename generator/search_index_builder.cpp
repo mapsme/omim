@@ -35,12 +35,12 @@
 #include "base/string_utils.hpp"
 #include "base/timer.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/fstream.hpp"
-#include "std/initializer_list.hpp"
-#include "std/limits.hpp"
-#include "std/unordered_map.hpp"
-#include "std/vector.hpp"
+#include <algorithm>
+#include <fstream>
+#include <initializer_list>
+#include <limits>
+#include <unordered_map>
+#include <vector>
 
 #define SYNONYMS_FILE "synonyms.txt"
 
@@ -49,15 +49,15 @@ namespace
 {
 class SynonymsHolder
 {
-  unordered_multimap<string, string> m_map;
+  std::unordered_multimap<std::string, std::string> m_map;
 
 public:
-  SynonymsHolder(string const & fPath)
+  SynonymsHolder(std::string const & fPath)
   {
-    ifstream stream(fPath.c_str());
+    std::ifstream stream(fPath.c_str());
 
-    string line;
-    vector<string> tokens;
+    std::string line;
+    std::vector<std::string> tokens;
 
     while (stream.good())
     {
@@ -75,7 +75,7 @@ public:
         {
           strings::Trim(tokens[i]);
           // synonym should not has any spaces
-          ASSERT ( tokens[i].find_first_of(" \t") == string::npos, () );
+          ASSERT ( tokens[i].find_first_of(" \t") == std::string::npos, () );
           m_map.insert(make_pair(tokens[0], tokens[i]));
         }
       }
@@ -83,9 +83,9 @@ public:
   }
 
   template <class ToDo>
-  void ForEach(string const & key, ToDo toDo) const
+  void ForEach(std::string const & key, ToDo toDo) const
   {
-    using TIter = unordered_multimap<string, string>::const_iterator;
+    using TIter = std::unordered_multimap<std::string, std::string>::const_iterator;
 
     pair<TIter, TIter> range = m_map.equal_range(key);
     while (range.first != range.second)
@@ -97,7 +97,7 @@ public:
 };
 
 void GetCategoryTypes(CategoriesHolder const & categories, pair<int, int> const & scaleRange,
-                      feature::TypesHolder const & types, vector<uint32_t> & result)
+                      feature::TypesHolder const & types, std::vector<uint32_t> & result)
 {
   Classificator const & c = classif();
   auto const & invisibleChecker = ftypes::IsInvisibleIndexedChecker::Instance();
@@ -125,8 +125,8 @@ void GetCategoryTypes(CategoriesHolder const & categories, pair<int, int> const 
     CHECK_LESS_OR_EQUAL(r.first, r.second, (c.GetReadableObjectName(t)));
 
     // Drawable scale must be normalized to indexer scales.
-    r.second = min(r.second, scales::GetUpperScale());
-    r.first = min(r.first, r.second);
+    r.second = std::min(r.second, scales::GetUpperScale());
+    r.first = std::min(r.first, r.second);
     CHECK(r.first != -1, (c.GetReadableObjectName(t)));
 
     if (r.second >= scaleRange.first && r.first <= scaleRange.second)
@@ -138,12 +138,12 @@ template <typename TKey, typename TValue>
 struct FeatureNameInserter
 {
   SynonymsHolder * m_synonyms;
-  vector<pair<TKey, TValue>> & m_keyValuePairs;
+  std::vector<pair<TKey, TValue>> & m_keyValuePairs;
   TValue m_val;
 
   bool m_hasStreetType;
 
-  FeatureNameInserter(SynonymsHolder * synonyms, vector<pair<TKey, TValue>> & keyValuePairs,
+  FeatureNameInserter(SynonymsHolder * synonyms, std::vector<pair<TKey, TValue>> & keyValuePairs,
                       bool hasStreetType)
     : m_synonyms(synonyms), m_keyValuePairs(keyValuePairs), m_hasStreetType(hasStreetType)
   {
@@ -159,7 +159,7 @@ struct FeatureNameInserter
     m_keyValuePairs.emplace_back(key, m_val);
   }
 
-  bool operator()(signed char lang, string const & name) const
+  bool operator()(signed char lang, std::string const & name) const
   {
     strings::UniString const uniName = search::NormalizeAndSimplifyString(name);
 
@@ -170,7 +170,7 @@ struct FeatureNameInserter
     // add synonyms for input native string
     if (m_synonyms)
     {
-      m_synonyms->ForEach(name, [&](string const & utf8str)
+      m_synonyms->ForEach(name, [&](std::string const & utf8str)
                           {
                             tokens.push_back(search::NormalizeAndSimplifyString(utf8str));
                           });
@@ -235,7 +235,7 @@ template <typename TKey, typename TValue>
 class FeatureInserter
 {
   SynonymsHolder * m_synonyms;
-  vector<pair<TKey, TValue>> & m_keyValuePairs;
+  std::vector<pair<TKey, TValue>> & m_keyValuePairs;
 
   CategoriesHolder const & m_categories;
 
@@ -244,7 +244,7 @@ class FeatureInserter
   ValueBuilder<TValue> const & m_valueBuilder;
 
 public:
-  FeatureInserter(SynonymsHolder * synonyms, vector<pair<TKey, TValue>> & keyValuePairs,
+  FeatureInserter(SynonymsHolder * synonyms, std::vector<pair<TKey, TValue>> & keyValuePairs,
                   CategoriesHolder const & catHolder, pair<int, int> const & scales,
                   ValueBuilder<TValue> const & valueBuilder)
     : m_synonyms(synonyms)
@@ -272,7 +272,7 @@ public:
         skipIndex.IsCountryOrState(types) ? m_synonyms : nullptr, m_keyValuePairs, hasStreetType);
     m_valueBuilder.MakeValue(f, index, inserter.m_val);
 
-    string const postcode = f.GetMetadata().Get(feature::Metadata::FMD_POSTCODE);
+    std::string const postcode = f.GetMetadata().Get(feature::Metadata::FMD_POSTCODE);
     if (!postcode.empty())
     {
       // See OSM TagInfo or Wiki about modern postcodes format. The
@@ -296,7 +296,7 @@ public:
 
     Classificator const & c = classif();
 
-    vector<uint32_t> categoryTypes;
+    std::vector<uint32_t> categoryTypes;
     GetCategoryTypes(m_categories, m_scales, types, categoryTypes);
 
     // add names of categories of the feature
@@ -308,7 +308,7 @@ public:
 template <typename TKey, typename TValue>
 void AddFeatureNameIndexPairs(FeaturesVectorTest const & features,
                               CategoriesHolder & categoriesHolder,
-                              vector<pair<TKey, TValue>> & keyValuePairs)
+                              std::vector<pair<TKey, TValue>> & keyValuePairs)
 {
   feature::DataHeader const & header = features.GetHeader();
 
@@ -353,7 +353,7 @@ void BuildAddressTable(FilesContainerR & container, Writer & writer)
         ft.SetID({res.first, index});
 
         using TStreet = search::ReverseGeocoder::Street;
-        vector<TStreet> streets;
+        std::vector<TStreet> streets;
         rgc.GetNearbyStreets(ft, streets);
 
         streetIndex = rgc.GetMatchedStreetIndex(street, streets);
@@ -387,7 +387,7 @@ void BuildAddressTable(FilesContainerR & container, Writer & writer)
 
 namespace indexer
 {
-bool BuildSearchIndexFromDataFile(string const & filename, bool forceRebuild)
+bool BuildSearchIndexFromDataFile(std::string const & filename, bool forceRebuild)
 {
   Platform & platform = GetPlatform();
 
@@ -395,15 +395,15 @@ bool BuildSearchIndexFromDataFile(string const & filename, bool forceRebuild)
   if (readContainer.IsExist(SEARCH_INDEX_FILE_TAG) && !forceRebuild)
     return true;
 
-  string mwmName = filename;
+  std::string mwmName = filename;
   my::GetNameFromFullPath(mwmName);
   my::GetNameWithoutExt(mwmName);
 
-  string const indexFilePath = platform.WritablePathForFile(
+  std::string const indexFilePath = platform.WritablePathForFile(
         mwmName + "." SEARCH_INDEX_FILE_TAG EXTENSION_TMP);
   MY_SCOPE_GUARD(indexFileGuard, bind(&FileWriter::DeleteFileX, indexFilePath));
 
-  string const addrFilePath = platform.WritablePathForFile(
+  std::string const addrFilePath = platform.WritablePathForFile(
         mwmName + "." SEARCH_ADDRESS_FILE_TAG EXTENSION_TMP);
   MY_SCOPE_GUARD(addrFileGuard, bind(&FileWriter::DeleteFileX, addrFilePath));
 
@@ -478,10 +478,10 @@ void BuildSearchIndex(FilesContainerR & container, Writer & indexWriter)
   auto codingParams = trie::GetCodingParams(features.GetHeader().GetDefCodingParams());
   SingleValueSerializer<TValue> serializer(codingParams);
 
-  vector<pair<TKey, TValue>> searchIndexKeyValuePairs;
+  std::vector<pair<TKey, TValue>> searchIndexKeyValuePairs;
   AddFeatureNameIndexPairs(features, categoriesHolder, searchIndexKeyValuePairs);
 
-  sort(searchIndexKeyValuePairs.begin(), searchIndexKeyValuePairs.end());
+  std::sort(searchIndexKeyValuePairs.begin(), searchIndexKeyValuePairs.end());
   LOG(LINFO, ("End sorting strings:", timer.ElapsedSeconds()));
 
   trie::Build<Writer, TKey, ValueList<TValue>, SingleValueSerializer<TValue>>(

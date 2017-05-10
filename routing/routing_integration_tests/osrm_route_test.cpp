@@ -4,7 +4,7 @@
 
 #include "geometry/mercator.hpp"
 
-#include "std/limits.hpp"
+#include <limits>
 
 using namespace routing;
 
@@ -279,7 +279,7 @@ namespace
     Route const & route = *routeResult.first;
     IRouter::ResultCode const result = routeResult.second;
     TEST_EQUAL(result, IRouter::NoError, ());
-    TEST_LESS(route.GetTotalTimeSec(), numeric_limits<uint32_t>::max() / 2, ());
+    TEST_LESS(route.GetTotalTimeSec(), std::numeric_limits<uint32_t>::max() / 2, ());
   }
 
   // There are road ids in osrm which don't have appropriate features ids in mwm.

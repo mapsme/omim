@@ -4,7 +4,7 @@
 
 #include "base/string_utils.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 using namespace measurement_utils;
 
@@ -16,7 +16,7 @@ namespace sound
 {
 void Settings::SetState(uint32_t notificationTimeSeconds, uint32_t minNotificationDistanceUnits,
                         uint32_t maxNotificationDistanceUnits,
-                        vector<uint32_t> const & soundedDistancesUnits,
+                        std::vector<uint32_t> const & soundedDistancesUnits,
                         measurement_utils::Units lengthUnits)
 {
   m_timeSeconds = notificationTimeSeconds;
@@ -30,7 +30,7 @@ bool Settings::IsValid() const
 {
   return m_minDistanceUnits <= m_maxDistanceUnits &&
          !m_soundedDistancesUnits.empty() &&
-         is_sorted(m_soundedDistancesUnits.cbegin(), m_soundedDistancesUnits.cend());
+         std::is_sorted(m_soundedDistancesUnits.cbegin(), m_soundedDistancesUnits.cend());
 }
 
 uint32_t Settings::ComputeTurnDistanceM(double speedMetersPerSecond) const
@@ -52,7 +52,7 @@ uint32_t Settings::RoundByPresetSoundedDistancesUnits(uint32_t turnNotificationU
 {
   ASSERT(IsValid(), ());
 
-  auto it = upper_bound(m_soundedDistancesUnits.cbegin(), m_soundedDistancesUnits.cend(),
+  auto it = std::upper_bound(m_soundedDistancesUnits.cbegin(), m_soundedDistancesUnits.cend(),
                         turnNotificationUnits, less_equal<uint32_t>());
   // Rounding up the result.
   if (it != m_soundedDistancesUnits.cend())
@@ -70,7 +70,7 @@ double Settings::ConvertMetersPerSecondToUnitsPerSecond(double speedInMetersPerS
   case Units::Imperial: return MetersToFeet(speedInMetersPerSecond);
   }
 
-  ASSERT(false, ("m_lengthUnits is equal to unknown value."));
+  ASSERT(false, ("m_lengthUnits is std::equal to unknown value."));
   return 0.;
 }
 
@@ -106,9 +106,9 @@ uint32_t Settings::ComputeDistToPronounceDistM(double speedMetersPerSecond) cons
   return my::clamp(startBeforeMeters, m_minStartBeforeMeters, m_maxStartBeforeMeters);
 }
 
-string DebugPrint(Notification const & notification)
+std::string DebugPrint(Notification const & notification)
 {
-  string units;
+  std::string units;
   stringstream out;
   out << "Notification [ m_distanceUnits == " << notification.m_distanceUnits
       << ", m_exitNum == " << notification.m_exitNum
@@ -174,7 +174,7 @@ vector<uint32_t> const & GetSoundedDistMeters()
   // The vector has to be sorted. Besides that any of its elements has to be contained in
   // the vector which GetAllSoundedDistMeters() returns.
   // It is checked in the unit test GetSoundedDistMeters.
-  static vector<uint32_t> const inst = {200, 300, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000};
+  static std::vector<uint32_t> const inst = {200, 300, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000};
   return inst;
 }
 
@@ -183,7 +183,7 @@ vector<uint32_t> const & GetSoundedDistFeet()
   // The vector has to be sorted. Besides that any of its elements has to be contained in
   // the vector which GetAllSoundedDistFeet() returns.
   // It is checked in the unit test GetSoundedDistFeet.
-  static vector<uint32_t> const inst = {500,  600,  700,  800,  900, 1000,
+  static std::vector<uint32_t> const inst = {500,  600,  700,  800,  900, 1000,
                                         1500, 2000, 3000, 4000, 5000};
   return inst;
 }

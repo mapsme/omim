@@ -16,6 +16,8 @@
 #include "std/utility.hpp"
 #include "std/vector.hpp"
 
+using namespace std;
+
 struct WayElement
 {
   vector<uint64_t> nodes;

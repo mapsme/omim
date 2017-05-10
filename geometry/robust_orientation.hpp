@@ -4,7 +4,7 @@
 
 #include "base/stl_add.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 
 namespace m2 { namespace robust
@@ -26,7 +26,7 @@ namespace m2 { namespace robust
 
   template <typename T> bool Between(T a, T b, T c)
   {
-    return min(a, b) <= c && c <= max(a, b);
+    return std::min(a, b) <= c && c <= std::max(a, b);
   }
 
   template <class PointT> bool IsInSection(PointT const & p1, PointT const & p2, PointT const & p)
@@ -44,7 +44,7 @@ namespace m2 { namespace robust
       for (IterT j = i; j != end; ++j)
       {
         // do not check intersection of neibour segments
-        if (distance(i, j) <= 1 || (i == beg && j == last))
+        if (std::distance(i, j) <= 1 || (i == beg && j == last))
           continue;
 
         IterT ii = NextIterInCycle(i, beg, end);
@@ -52,10 +52,10 @@ namespace m2 { namespace robust
         PointD a = *i, b = *ii, c = *j, d = *jj;
 
         // check for rect intersection
-        if (max(a.x, b.x) < min(c.x, d.x) ||
-            min(a.x, b.x) > max(c.x, d.x) ||
-            max(a.y, b.y) < min(c.y, d.y) ||
-            min(a.y, b.y) > max(c.y, d.y))
+        if (std::max(a.x, b.x) < std::min(c.x, d.x) ||
+            std::min(a.x, b.x) > std::max(c.x, d.x) ||
+            std::max(a.y, b.y) < std::min(c.y, d.y) ||
+            std::min(a.y, b.y) > std::max(c.y, d.y))
         {
           continue;
         }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "drape/oglcontext.hpp"
-#include "std/mutex.hpp"
+#include <mutex>
 
 #include <QtGui/QOffscreenSurface>
 #include <QtGui/QOpenGLFramebufferObject>
@@ -38,7 +38,7 @@ private:
   std::unique_ptr<QOpenGLFramebufferObject> m_backFrame;
   QRectF m_texRect = QRectF(0.0, 0.0, 0.0, 0.0);
 
-  mutex m_lock;
+  std::mutex m_lock;
   bool m_resizeLock = false;
 };
 

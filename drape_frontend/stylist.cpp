@@ -7,7 +7,7 @@
 #include "indexer/drules_include.hpp"
 #include "indexer/scales.hpp"
 
-#include "std/limits.hpp"
+#include <limits>
 
 namespace df
 {
@@ -45,7 +45,7 @@ inline drule::rule_type_t Convert(Type t)
   }
 }
 
-double constexpr kMinPriority = numeric_limits<double>::lowest();
+double constexpr kMinPriority = std::numeric_limits<double>::lowest();
 
 
 inline bool IsTypeOf(drule::Key const & key, int flags)
@@ -241,22 +241,22 @@ void CaptionDescription::Init(FeatureType const & f,
   ProcessMainTextType(mainTextType);
 }
 
-string const & CaptionDescription::GetMainText() const
+std::string const & CaptionDescription::GetMainText() const
 {
   return m_mainText;
 }
 
-string const & CaptionDescription::GetAuxText() const
+std::string const & CaptionDescription::GetAuxText() const
 {
   return m_auxText;
 }
 
-string const & CaptionDescription::GetRoadNumber() const
+std::string const & CaptionDescription::GetRoadNumber() const
 {
   return m_roadNumber;
 }
 
-string CaptionDescription::GetPathName() const
+std::string CaptionDescription::GetPathName() const
 {
   // Always concat names for linear features because we process only one draw rule now.
   if (m_mainText.empty())
@@ -292,7 +292,7 @@ void CaptionDescription::ProcessMainTextType(drule::text_type_t const & mainText
   {
     if (!m_houseNumber.empty())
     {
-      if (m_mainText.empty() || m_houseNumber.find(m_mainText) != string::npos)
+      if (m_mainText.empty() || m_houseNumber.find(m_mainText) != std::string::npos)
         m_houseNumber.swap(m_mainText);
     }
   }

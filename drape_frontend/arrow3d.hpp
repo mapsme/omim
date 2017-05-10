@@ -5,7 +5,7 @@
 
 #include "geometry/rect2d.hpp"
 
-#include "std/vector.hpp"
+#include <vector>
 
 namespace dp
 {
@@ -48,8 +48,8 @@ private:
   uint32_t m_bufferId = 0;
   uint32_t m_bufferNormalsId = 0;
 
-  vector<float> m_vertices;
-  vector<float> m_normals;
+  std::vector<float> m_vertices;
+  std::vector<float> m_normals;
 
   dp::GLState m_state;
 

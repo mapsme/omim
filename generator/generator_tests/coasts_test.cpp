@@ -98,7 +98,7 @@ namespace
 {
   class ProcessCoastsBase
   {
-    vector<string> const & m_vID;
+    vector<std::string> const & m_vID;
 
   protected:
     bool HasID(FeatureBuilder1 const & fb) const
@@ -108,13 +108,13 @@ namespace
     }
 
   public:
-    ProcessCoastsBase(vector<string> const & vID) : m_vID(vID) {}
+    ProcessCoastsBase(vector<std::string> const & vID) : m_vID(vID) {}
   };
 
   class DoPrintCoasts : public ProcessCoastsBase
   {
   public:
-    DoPrintCoasts(vector<string> const & vID) : ProcessCoastsBase(vID) {}
+    DoPrintCoasts(vector<std::string> const & vID) : ProcessCoastsBase(vID) {}
 
     void operator() (FeatureBuilder1 const & fb1, uint64_t)
     {
@@ -163,7 +163,7 @@ namespace
   {
     feature::FeaturesCollector m_collector;
   public:
-    DoCopyCoasts(string const & fName, vector<string> const & vID)
+    DoCopyCoasts(std::string const & fName, vector<std::string> const & vID)
       : ProcessCoastsBase(vID), m_collector(fName)
     {
     }
@@ -179,7 +179,7 @@ namespace
 /*
 UNIT_TEST(WorldCoasts_CheckBounds)
 {
-  vector<string> vID;
+  vector<std::string> vID;
 
   // bounds
   vID.push_back("2222");

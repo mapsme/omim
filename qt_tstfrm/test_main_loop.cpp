@@ -6,7 +6,7 @@
 
 #include "base/scope_guard.hpp"
 
-#include "std/cstring.hpp"
+#include <cstring>
 
 namespace
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "std/vector.hpp"
+#include <vector>
 
 #include "3party/succinct/elias_fano_compressed_list.hpp"
 
@@ -32,7 +32,7 @@ class SimpleDenseCoding
 public:
   SimpleDenseCoding() = default;
 
-  SimpleDenseCoding(vector<uint8_t> const & data);
+  SimpleDenseCoding(std::vector<uint8_t> const & data);
 
   SimpleDenseCoding(SimpleDenseCoding && rhs);
 

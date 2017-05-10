@@ -157,9 +157,9 @@ double MapFollowAnimation::GetMinDuration() const
 
 double MapFollowAnimation::CalculateDuration() const
 {
-  double duration = max(m_angleInterpolator.GetDuration(), m_offsetInterpolator.GetDuration());
+  double duration = std::max(m_angleInterpolator.GetDuration(), m_offsetInterpolator.GetDuration());
   if (!m_isAutoZoom)
-    duration = max(duration, m_scaleInterpolator.GetDuration());
+    duration = std::max(duration, m_scaleInterpolator.GetDuration());
   return duration;
 }
 

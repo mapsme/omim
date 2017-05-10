@@ -37,7 +37,7 @@ public:
   void SetForceUpdateNormals(bool forceUpdate) const;
 
 #ifdef DEBUG_OVERLAYS_OUTPUT
-  virtual string GetOverlayDebugInfo() override;
+  virtual std::string GetOverlayDebugInfo() override;
 #endif
 
 protected:

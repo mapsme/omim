@@ -54,14 +54,14 @@ public:
 class InteractiveSearchRequest : public TestDelegate, public TestSearchRequest
 {
 public:
-  InteractiveSearchRequest(TestSearchEngine & engine, string const & query,
+  InteractiveSearchRequest(TestSearchEngine & engine, std::string const & query,
                            m2::RectD const & viewport, bool & mode)
     : TestDelegate(mode)
     , TestSearchRequest(engine, query, "en" /* locale */, Mode::Viewport, viewport)
   {
     SetCustomOnResults(
         ViewportSearchCallback(static_cast<ViewportSearchCallback::Delegate &>(*this),
-                               bind(&InteractiveSearchRequest::OnResults, this, _1)));
+                               bind(&InteractiveSearchRequest::OnResults, this, std::placeholders::_1)));
   }
 };
 

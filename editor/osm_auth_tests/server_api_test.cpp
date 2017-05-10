@@ -6,7 +6,7 @@
 
 #include "base/scope_guard.hpp"
 
-#include "std/cstring.hpp"
+#include <cstring>
 
 #include "3party/pugixml/src/pugixml.hpp"
 

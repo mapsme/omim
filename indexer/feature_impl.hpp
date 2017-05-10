@@ -3,8 +3,8 @@
 #include "base/macros.hpp"
 #include "base/assert.hpp"
 
-#include "std/string.hpp"
-#include "std/cstring.hpp"
+#include <string>
+#include <cstring>
 
 
 namespace strings { class UniString; }
@@ -14,9 +14,9 @@ namespace feature
   static int const g_arrWorldScales[] = { 3, 5, 7, 9 };    // 9 = scales::GetUpperWorldScale()
   static int const g_arrCountryScales[] = { 10, 12, 14, 17 };  // 17 = scales::GetUpperScale()
 
-  inline string GetTagForIndex(char const * prefix, size_t ind)
+  inline std::string GetTagForIndex(char const * prefix, size_t ind)
   {
-    string str;
+    std::string str;
     str.reserve(strlen(prefix) + 1);
     str = prefix;
 
@@ -32,7 +32,7 @@ namespace feature
   bool IsDigit(int c);
   bool IsNumber(strings::UniString const & s);
 
-  bool IsHouseNumber(string const & s);
+  bool IsHouseNumber(std::string const & s);
   bool IsHouseNumber(strings::UniString const & s);
   bool IsHouseNumberDeepCheck(strings::UniString const & s);
 

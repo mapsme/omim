@@ -15,7 +15,7 @@
 
 #include "base/buffer_vector.hpp"
 
-#include "std/set.hpp"
+#include <set>
 
 namespace dp
 {
@@ -145,7 +145,7 @@ public:
   void SetDisplacementMode(int mode) { m_displacementMode = mode; }
 
 #ifdef DEBUG_OVERLAYS_OUTPUT
-  virtual string GetOverlayDebugInfo() { return ""; }
+  virtual std::string GetOverlayDebugInfo() { return ""; }
 #endif
 
 protected:
@@ -179,7 +179,7 @@ private:
 
   struct OffsetNodeFinder;
 
-  set<TOffsetNode, LessOffsetNode> m_offsets;
+  std::set<TOffsetNode, LessOffsetNode> m_offsets;
 
   bool m_enableCaching;
   mutable Rects m_extendedShapeCache;
@@ -194,7 +194,7 @@ class SquareHandle : public OverlayHandle
 
 public:
   SquareHandle(OverlayID const & id, dp::Anchor anchor, m2::PointD const & gbPivot,
-               m2::PointD const & pxSize, uint64_t priority, bool isBound, string const & debugStr,
+               m2::PointD const & pxSize, uint64_t priority, bool isBound, std::string const & debugStr,
                bool isBillboard = false);
 
   m2::RectD GetPixelRect(ScreenBase const & screen, bool perspective) const override;
@@ -202,7 +202,7 @@ public:
   bool IsBound() const override;
 
 #ifdef DEBUG_OVERLAYS_OUTPUT
-  virtual string GetOverlayDebugInfo() override;
+  virtual std::string GetOverlayDebugInfo() override;
 #endif
 
 private:
@@ -211,7 +211,7 @@ private:
   bool m_isBound;
 
 #ifdef DEBUG_OVERLAYS_OUTPUT
-  string m_debugStr;
+  std::string m_debugStr;
 #endif
 };
 

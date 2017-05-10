@@ -8,10 +8,10 @@
 #include "base/stl_add.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/transform_iterator.hpp"
-#include "std/unique_ptr.hpp"
-#include "std/utility.hpp"
-#include "std/vector.hpp"
+#include <boost/iterator/transform_iterator.hpp>
+#include <memory>
+#include <utility>
+#include <vector>
 
 using namespace strings;
 
@@ -55,8 +55,8 @@ public:
   bool HasString(StringSliceBase const & slice, bool isPrefix) const
   {
     auto const status =
-        m_strings.Has(make_transform_iterator(JoinIterator::Begin(slice), &SimplifyChar),
-                      make_transform_iterator(JoinIterator::End(slice), &SimplifyChar));
+        m_strings.Has(boost::make_transform_iterator(JoinIterator::Begin(slice), &SimplifyChar),
+                      boost::make_transform_iterator(JoinIterator::End(slice), &SimplifyChar));
     switch (status)
     {
     case TStringSet::Status::Absent: return false;
@@ -70,11 +70,11 @@ public:
 private:
   void AddString(UniString const & s, search::Delimiters & delimiters)
   {
-    vector<UniString> tokens;
+    std::vector<UniString> tokens;
     SplitUniString(s, MakeBackInsertFunctor(tokens), delimiters);
     StringSlice slice(tokens);
 
-    m_maxNumTokensInPostcode = max(m_maxNumTokensInPostcode, tokens.size());
+    m_maxNumTokensInPostcode = std::max(m_maxNumTokensInPostcode, tokens.size());
     m_strings.Add(JoinIterator::Begin(slice), JoinIterator::End(slice));
   }
 
@@ -96,9 +96,9 @@ bool LooksLikePostcode(StringSliceBase const & slice, bool isPrefix)
   return GetPostcodesMatcher().HasString(slice, isPrefix);
 }
 
-bool LooksLikePostcode(string const & s, bool isPrefix)
+bool LooksLikePostcode(std::string const & s, bool isPrefix)
 {
-  vector<UniString> tokens;
+  std::vector<UniString> tokens;
   bool const lastTokenIsPrefix =
       TokenizeStringAndCheckIfLastTokenIsPrefix(s, tokens, search::Delimiters());
 

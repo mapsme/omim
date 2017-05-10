@@ -7,7 +7,7 @@
 
 #include "geometry/point2d.hpp"
 
-#include "std/vector.hpp"
+#include <vector>
 
 #include "3party/osrm/osrm-backend/data_structures/query_edge.hpp"
 
@@ -64,13 +64,13 @@ struct RawPathData
 struct RawRoutingResult
 {
   int shortestPathLength;
-  vector<vector<RawPathData>> unpackedPathSegments;
+  std::vector<std::vector<RawPathData>> unpackedPathSegments;
   FeatureGraphNode sourceEdge;
   FeatureGraphNode targetEdge;
 };
 
 //@todo (dragunov) make proper name
-using TRoutingNodes = vector<FeatureGraphNode>;
+using TRoutingNodes = std::vector<FeatureGraphNode>;
 using TRawDataFacade = OsrmRawDataFacade<QueryEdge::EdgeData>;
 
 /*!
@@ -81,12 +81,12 @@ using TRawDataFacade = OsrmRawDataFacade<QueryEdge::EdgeData>;
    * \param targets Targets graph nodes vector. Each target is the representation of a finish OSRM
  * node.
    * \param facade Osrm data facade reference.
-   * \param packed Result vector with weights. Source nodes are rows.
+   * \param packed Result std::vector with weights. Source nodes are rows.
    * cost(source1 -> target1) cost(source1 -> target2) cost(source2 -> target1) cost(source2 ->
  * target2)
    */
 void FindWeightsMatrix(TRoutingNodes const & sources, TRoutingNodes const & targets,
-                       TRawDataFacade & facade, vector<EdgeWeight> & result);
+                       TRawDataFacade & facade, std::vector<EdgeWeight> & result);
 
 /*! Finds single shortest path in a single MWM between 2 OSRM nodes
    * \param source Source OSRM graph node to make path.

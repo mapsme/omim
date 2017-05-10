@@ -6,8 +6,8 @@
 
 #include "base/buffer_vector.hpp"
 
-#include "std/function.hpp"
-#include "std/string.hpp"
+#include <functional>
+#include <string>
 
 class FeatureType;
 
@@ -46,10 +46,10 @@ struct CaptionDescription
             drule::text_type_t const mainTextType,
             bool const auxCaptionExists);
 
-  string const & GetMainText() const;
-  string const & GetAuxText() const;
-  string const & GetRoadNumber() const;
-  string GetPathName() const;
+  std::string const & GetMainText() const;
+  std::string const & GetAuxText() const;
+  std::string const & GetRoadNumber() const;
+  std::string GetPathName() const;
   bool IsNameExists() const;
 
 private:
@@ -58,10 +58,10 @@ private:
   /// Try to use house number as name of the object.
   void ProcessMainTextType(drule::text_type_t const & mainTextType);
 
-  string m_mainText;
-  string m_auxText;
-  string m_roadNumber;
-  string m_houseNumber;
+  std::string m_mainText;
+  std::string m_auxText;
+  std::string m_roadNumber;
+  std::string m_houseNumber;
 };
 
 class Stylist
@@ -77,7 +77,7 @@ public:
   CaptionDescription const & GetCaptionDescription() const;
 
   using TRuleWrapper = pair<drule::BaseRule const *, double>;
-  using TRuleCallback = function<void (TRuleWrapper const &)>;
+  using TRuleCallback = std::function<void (TRuleWrapper const &)>;
   void ForEachRule(TRuleCallback const & fn) const;
 
   bool IsEmpty() const;

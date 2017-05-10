@@ -1,6 +1,6 @@
 #include "search/ranking_utils.hpp"
 
-#include "std/transform_iterator.hpp"
+#include <boost/iterator/transform_iterator.hpp>
 
 #include <algorithm>
 
@@ -44,8 +44,8 @@ bool IsStopWord(UniString const & s)
   static char const * arr[] = {"a", "de", "da", "la"};
 
   static std::set<UniString> const kStopWords(
-      make_transform_iterator(arr, &AsciiToUniString),
-      make_transform_iterator(arr + ARRAY_SIZE(arr), &AsciiToUniString));
+      boost::make_transform_iterator(arr, &AsciiToUniString),
+      boost::make_transform_iterator(arr + ARRAY_SIZE(arr), &AsciiToUniString));
 
   return kStopWords.count(s) > 0;
 }
@@ -60,7 +60,7 @@ void PrepareStringForMatching(std::string const & name, std::vector<strings::Uni
   SplitUniString(NormalizeAndSimplifyString(name), filter, Delimiters());
 }
 
-string DebugPrint(NameScore score)
+std::string DebugPrint(NameScore score)
 {
   switch (score)
   {

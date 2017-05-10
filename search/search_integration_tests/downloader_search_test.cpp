@@ -18,8 +18,8 @@
 #include "base/logging.hpp"
 #include "base/macros.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/string.hpp"
+#include <algorithm>
+#include <string>
 
 using namespace generator::tests_support;
 using namespace search::tests_support;
@@ -28,7 +28,7 @@ namespace search
 {
 namespace
 {
-string const kCountriesTxt = R"({
+std::string const kCountriesTxt = R"({
   "id": "Countries",
   "v": )" + strings::to_string(0 /* version */) +
                              R"(,
@@ -77,12 +77,12 @@ class TestMapFilesDownloader : public storage::MapFilesDownloader
 {
 public:
   // MapFilesDownloader overrides:
-  void GetServersList(int64_t const /* mapVersion */, string const & /* mapFileName */,
+  void GetServersList(int64_t const /* mapVersion */, std::string const & /* mapFileName */,
                       TServersListCallback const & /* callback */) override
   {
   }
 
-  void DownloadMapFile(vector<string> const & /* urls */, string const & /* path */,
+  void DownloadMapFile(vector<std::string> const & /* urls */, std::string const & /* path */,
                        int64_t /* size */, TFileDownloadedCallback const & /* onDownloaded */,
                        TDownloadingProgressCallback const & /* onProgress */) override
   {
@@ -105,14 +105,14 @@ public:
 class DownloaderSearchRequest : public TestSearchRequest, public TestDelegate
 {
 public:
-  DownloaderSearchRequest(TestSearchEngine & engine, string const & query)
+  DownloaderSearchRequest(TestSearchEngine & engine, std::string const & query)
     : TestSearchRequest(engine, MakeSearchParams(query), m2::RectD(0, 0, 1, 1) /* viewport */)
     , m_storage(kCountriesTxt, make_unique<TestMapFilesDownloader>())
     , m_downloaderCallback(static_cast<DownloaderSearchCallback::Delegate &>(*this),
                            m_engine /* index */, m_engine.GetCountryInfoGetter(), m_storage,
                            MakeDownloaderParams(query))
   {
-    SetCustomOnResults(bind(&DownloaderSearchRequest::OnResultsDownloader, this, _1));
+    SetCustomOnResults(bind(&DownloaderSearchRequest::OnResultsDownloader, this, std::placeholders::_1));
   }
 
   void OnResultsDownloader(search::Results const & results)
@@ -124,7 +124,7 @@ public:
   vector<storage::DownloaderSearchResult> const & GetResults() const { return m_downloaderResults; }
 
 private:
-  search::SearchParams MakeSearchParams(string const & query)
+  search::SearchParams MakeSearchParams(std::string const & query)
   {
     search::SearchParams p;
     p.m_query = query;
@@ -135,7 +135,7 @@ private:
     return p;
   }
 
-  storage::DownloaderSearchParams MakeDownloaderParams(string const & query)
+  storage::DownloaderSearchParams MakeDownloaderParams(std::string const & query)
   {
     storage::DownloaderSearchParams p;
     p.m_query = query;
@@ -146,7 +146,7 @@ private:
 
       auto const & results = r.m_results;
       CHECK_GREATER_OR_EQUAL(results.size(), m_downloaderResults.size(), ());
-      CHECK(equal(m_downloaderResults.begin(), m_downloaderResults.end(), results.begin()), ());
+      CHECK(std::equal(m_downloaderResults.begin(), m_downloaderResults.end(), results.begin()), ());
 
       m_downloaderResults = r.m_results;
       if (r.m_endMarker)
@@ -166,7 +166,7 @@ private:
 class DownloaderSearchTest : public SearchTest
 {
 public:
-  void AddRegion(string const & countryName, string const & regionName, m2::PointD const & p1,
+  void AddRegion(std::string const & countryName, std::string const & regionName, m2::PointD const & p1,
                  m2::PointD const & p2)
   {
     TestPOI cornerPost1(p1, regionName + " corner post 1", "en");
@@ -207,8 +207,8 @@ private:
 template <typename T>
 void TestResults(vector<T> received, vector<T> expected)
 {
-  sort(received.begin(), received.end());
-  sort(expected.begin(), expected.end());
+  std::sort(received.begin(), received.end());
+  std::sort(expected.begin(), expected.end());
   TEST_EQUAL(expected, received, ());
 }
 

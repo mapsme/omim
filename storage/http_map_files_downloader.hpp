@@ -3,7 +3,7 @@
 #include "storage/map_files_downloader.hpp"
 #include "platform/http_request.hpp"
 #include "base/thread_checker.hpp"
-#include "std/unique_ptr.hpp"
+#include <memory>
 
 namespace storage
 {
@@ -17,8 +17,8 @@ public:
   virtual ~HttpMapFilesDownloader();
 
   // MapFilesDownloader overrides:
-  void GetServersList(int64_t const mapVersion, string const & mapFileName, TServersListCallback const & callback) override;
-  void DownloadMapFile(vector<string> const & urls, string const & path, int64_t size,
+  void GetServersList(int64_t const mapVersion, std::string const & mapFileName, TServersListCallback const & callback) override;
+  void DownloadMapFile(std::vector<std::string> const & urls, std::string const & path, int64_t size,
                        TFileDownloadedCallback const & onDownloaded,
                        TDownloadingProgressCallback const & onProgress) override;
   TProgress GetDownloadingProgress() override;
@@ -33,7 +33,7 @@ private:
   void OnMapFileDownloadingProgress(TDownloadingProgressCallback const & onProgress,
                                     downloader::HttpRequest & request);
 
-  unique_ptr<downloader::HttpRequest> m_request;
+  std::unique_ptr<downloader::HttpRequest> m_request;
 
   DECLARE_THREAD_CHECKER(m_checker);
 };

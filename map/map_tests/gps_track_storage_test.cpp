@@ -12,7 +12,7 @@
 #include "base/logging.hpp"
 #include "base/scope_guard.hpp"
 
-#include "std/chrono.hpp"
+#include <chrono>
 
 namespace
 {
@@ -28,7 +28,7 @@ location::GpsInfo Make(double timestamp, ms::LatLon const & ll, double speed)
   return info;
 }
 
-inline string GetGpsTrackFilePath()
+inline std::string GetGpsTrackFilePath()
 {
   return my::JoinFoldersToPath(GetPlatform().WritableDir(), "gpstrack_test.bin");
 }
@@ -37,11 +37,11 @@ inline string GetGpsTrackFilePath()
 
 UNIT_TEST(GpsTrackStorage_WriteReadWithoutTrunc)
 {
-  time_t const t = system_clock::to_time_t(system_clock::now());
+  time_t const t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
   double const timestamp = t;
   LOG(LINFO, ("Timestamp", ctime(&t), timestamp));
 
-  string const filePath = GetGpsTrackFilePath();
+  std::string const filePath = GetGpsTrackFilePath();
   MY_SCOPE_GUARD(gpsTestFileDeleter, bind(FileWriter::DeleteFileX, filePath));
   FileWriter::DeleteFileX(filePath);
 
@@ -103,11 +103,11 @@ UNIT_TEST(GpsTrackStorage_WriteReadWithoutTrunc)
 
 UNIT_TEST(GpsTrackStorage_WriteReadWithTrunc)
 {
-  time_t const t = system_clock::to_time_t(system_clock::now());
+  time_t const t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
   double const timestamp = t;
   LOG(LINFO, ("Timestamp", ctime(&t), timestamp));
 
-  string const filePath = GetGpsTrackFilePath();
+  std::string const filePath = GetGpsTrackFilePath();
   MY_SCOPE_GUARD(gpsTestFileDeleter, bind(FileWriter::DeleteFileX, filePath));
   FileWriter::DeleteFileX(filePath);
 

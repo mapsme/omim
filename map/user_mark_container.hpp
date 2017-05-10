@@ -8,11 +8,11 @@
 #include "geometry/rect2d.hpp"
 #include "geometry/any_rect2d.hpp"
 
-#include "std/deque.hpp"
-#include "std/bitset.hpp"
+#include <deque>
+#include <bitset>
 
-#include "std/noncopyable.hpp"
-#include "std/unique_ptr.hpp"
+#include <boost/noncopyable.hpp>
+#include <memory>
 
 class Framework;
 
@@ -42,10 +42,10 @@ public:
 
 class UserMarkContainer : public df::UserMarksProvider
                         , protected UserMarksController
-                        , private noncopyable
+                        , private boost::noncopyable
 {
 public:
-  using TUserMarksList = deque<unique_ptr<UserMark>>;
+  using TUserMarksList = std::deque<std::unique_ptr<UserMark>>;
 
   UserMarkContainer(double layerDepth, UserMarkType type, Framework & fm);
   virtual ~UserMarkContainer();
@@ -93,7 +93,7 @@ protected:
   Framework & m_framework;
 
 private:
-  bitset<4> m_flags;
+  std::bitset<4> m_flags;
   double m_layerDepth;
   TUserMarksList m_userMarks;
   UserMarkType m_type;

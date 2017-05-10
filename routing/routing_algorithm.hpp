@@ -6,9 +6,9 @@
 #include "routing/router.hpp"
 #include "routing/base/astar_algorithm.hpp"
 
-#include "std/functional.hpp"
-#include "std/string.hpp"
-#include "std/vector.hpp"
+#include <functional>
+#include <string>
+#include <vector>
 
 namespace routing
 {
@@ -30,7 +30,7 @@ public:
                                 RoutingResult<Junction> & path) = 0;
 };
 
-string DebugPrint(IRoutingAlgorithm::Result const & result);
+std::string DebugPrint(IRoutingAlgorithm::Result const & result);
 
 // AStar routing algorithm implementation
 class AStarRoutingAlgorithm : public IRoutingAlgorithm

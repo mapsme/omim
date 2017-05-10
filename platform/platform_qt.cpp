@@ -6,10 +6,11 @@
 #include "coding/file_reader.hpp"
 
 #include "base/logging.hpp"
+#include "base/stl_add.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/future.hpp"
-#include "std/regex.hpp"
+#include <algorithm>
+#include <future>
+#include <regex>
 #include "std/target_os.hpp"
 
 #include <QtCore/QCoreApplication>
@@ -17,13 +18,13 @@
 #include <QtCore/QFileInfo>
 #include <QtCore/QLocale>
 
-unique_ptr<ModelReader> Platform::GetReader(string const & file, string const & searchScope) const
+unique_ptr<ModelReader> Platform::GetReader(std::string const & file, std::string const & searchScope) const
 {
-  return make_unique<FileReader>(ReadPathForFile(file, searchScope),
+  return my::make_unique<FileReader>(ReadPathForFile(file, searchScope),
                                  READER_CHUNK_LOG_SIZE, READER_CHUNK_LOG_COUNT);
 }
 
-bool Platform::GetFileSizeByName(string const & fileName, uint64_t & size) const
+bool Platform::GetFileSizeByName(std::string const & fileName, uint64_t & size) const
 {
   try
   {
@@ -35,17 +36,17 @@ bool Platform::GetFileSizeByName(string const & fileName, uint64_t & size) const
   }
 }
 
-void Platform::GetFilesByRegExp(string const & directory, string const & regexp, FilesList & outFiles)
+void Platform::GetFilesByRegExp(std::string const & directory, std::string const & regexp, FilesList & outFiles)
 {
-  regex exp(regexp);
+  std::regex exp(regexp);
 
   QDir dir(QString::fromUtf8(directory.c_str()));
   int const count = dir.count();
 
   for (int i = 0; i < count; ++i)
   {
-    string const name = dir[i].toUtf8().data();
-    if (regex_search(name.begin(), name.end(), exp))
+    std::string const name = dir[i].toUtf8().data();
+    if (std::regex_search(name.begin(), name.end(), exp))
       outFiles.push_back(name);
   }
 }
@@ -60,7 +61,7 @@ int Platform::VideoMemoryLimit() const
   return 20 * 1024 * 1024;
 }
 
-Platform::EError Platform::MkDir(string const & dirName) const
+Platform::EError Platform::MkDir(std::string const & dirName) const
 {
   if (QDir().exists(dirName.c_str()))
     return Platform::ERR_FILE_ALREADY_EXISTS;
@@ -93,7 +94,7 @@ void Platform::RunOnGuiThread(TFunctor const & fn)
 
 void Platform::RunAsync(TFunctor const & fn, Priority p)
 {
-  async(fn);
+  std::async(fn);
 }
 
 #endif  // defined(OMIM_OS_LINUX)

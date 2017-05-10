@@ -6,9 +6,9 @@
 
 #include "platform/local_country_file.hpp"
 
-#include "std/map.hpp"
-#include "std/string.hpp"
-#include "std/vector.hpp"
+#include <map>
+#include <string>
+#include <vector>
 
 using namespace platform;
 
@@ -42,9 +42,9 @@ vector<pair<int, int>> kCodeFreq = {{220000, 1},
 
 UNIT_TEST(FeaturesVectorTest_ParseMetadata)
 {
-  string const kCountryName = "minsk-pass";
+  std::string const kCountryName = "minsk-pass";
 
-  map<string, int> expected;
+  std::map<std::string, int> expected;
   for (auto const & p : kCodeFreq)
     expected[strings::to_string(p.first)] = p.second;
 
@@ -61,10 +61,10 @@ UNIT_TEST(FeaturesVectorTest_ParseMetadata)
   auto const * value = handle.GetValue<MwmValue>();
   FeaturesVector fv(value->m_cont, value->GetHeader(), value->m_table.get());
 
-  map<string, int> actual;
+  std::map<std::string, int> actual;
   fv.ForEach([&](FeatureType & ft, uint32_t index)
              {
-               string postcode = ft.GetMetadata().Get(feature::Metadata::FMD_POSTCODE);
+               std::string postcode = ft.GetMetadata().Get(feature::Metadata::FMD_POSTCODE);
                if (!postcode.empty())
                  ++actual[postcode];
              });

@@ -4,8 +4,8 @@
 
 #include "base/thread.hpp"
 
-#include "std/shared_ptr.hpp"
-#include "std/weak_ptr.hpp"
+#include <memory>
+#include <memory>
 
 namespace df
 {
@@ -17,13 +17,13 @@ public:
 
   void Do() override;
 
-  void Init(shared_ptr<TileInfo> const & tileInfo);
+  void Init(std::shared_ptr<TileInfo> const & tileInfo);
   void Reset() override;
   bool IsCancelled() const override;
   TileKey const & GetTileKey() const { return m_tileKey; }
 
 private:
-  weak_ptr<TileInfo> m_tileInfo;
+  std::weak_ptr<TileInfo> m_tileInfo;
   TileKey m_tileKey;
   MapDataProvider & m_model;
 

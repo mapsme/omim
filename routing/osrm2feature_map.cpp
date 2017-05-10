@@ -14,9 +14,9 @@
 #include "base/math.hpp"
 #include "base/scope_guard.hpp"
 
-#include "std/fstream.hpp"
-#include "std/sstream.hpp"
-#include "std/unordered_map.hpp"
+#include <fstream>
+#include <sstream>
+#include <unordered_map>
 
 #include "defines.hpp"
 
@@ -93,18 +93,18 @@ bool FtSeg::IsIntersect(FtSeg const & other) const
   return my::IsIntersect(s1, e1, s2, e2);
 }
 
-string DebugPrint(FtSeg const & seg)
+std::string DebugPrint(FtSeg const & seg)
 {
-  stringstream ss;
+  std::stringstream ss;
   ss << "{ fID = " << seg.m_fid <<
         ", pStart = " << seg.m_pointStart <<
         ", pEnd = " << seg.m_pointEnd << " }";
   return ss.str();
 }
 
-string DebugPrint(SegOffset const & off)
+std::string DebugPrint(SegOffset const & off)
 {
-  stringstream ss;
+  std::stringstream ss;
   ss << "{ " << off.m_nodeId << ", " << off.m_offset << " }";
   return ss.str();
 }
@@ -286,9 +286,9 @@ pair<size_t, size_t> OsrmFtSegMapping::GetSegmentsRange(TOsrmNodeId nodeId) cons
   size_t const start = (index > 0  ? m_offsets[index - 1].m_offset + nodeId : nodeId);
 
   if (index < m_offsets.size() && m_offsets[index].m_nodeId == nodeId)
-    return make_pair(start, m_offsets[index].m_offset + nodeId + 1);
+    return std::make_pair(start, m_offsets[index].m_offset + nodeId + 1);
   else
-    return make_pair(start, start + 1);
+    return std::make_pair(start, start + 1);
 }
 
 TOsrmNodeId OsrmFtSegMapping::GetNodeId(uint32_t segInd) const
@@ -357,7 +357,7 @@ void OsrmFtSegMappingBuilder::Save(FilesContainerW & cont) const
     writer.WritePaddingByEnd(4);
   }
 
-  string const fName = cont.GetFileName() + "." ROUTING_FTSEG_FILE_TAG;
+  std::string const fName = cont.GetFileName() + "." ROUTING_FTSEG_FILE_TAG;
   MY_SCOPE_GUARD(deleteFileGuard, bind(&FileWriter::DeleteFileX, cref(fName)));
 
   succinct::elias_fano_compressed_list compressed(m_buffer);
@@ -365,11 +365,11 @@ void OsrmFtSegMappingBuilder::Save(FilesContainerW & cont) const
   cont.Write(fName, ROUTING_FTSEG_FILE_TAG);
 }
 
-void OsrmFtSegBackwardIndex::Save(string const & nodesFileName, string const & bitsFileName)
+void OsrmFtSegBackwardIndex::Save(std::string const & nodesFileName, std::string const & bitsFileName)
 {
   {
     LOG(LINFO, ("Saving routing nodes index to ", nodesFileName));
-    string const nodesFileNameTmp = nodesFileName + EXTENSION_TMP;
+    std::string const nodesFileNameTmp = nodesFileName + EXTENSION_TMP;
     FileWriter nodesFile(nodesFileNameTmp);
     WriteVarUint(nodesFile, static_cast<uint32_t>(m_nodeIds.size()));
     for (auto const bucket : m_nodeIds)
@@ -380,13 +380,13 @@ void OsrmFtSegBackwardIndex::Save(string const & nodesFileName, string const & b
   }
   {
     LOG(LINFO, ("Saving features routing bits to ", bitsFileName));
-    string const bitsFileNameTmp = bitsFileName + EXTENSION_TMP;
+    std::string const bitsFileNameTmp = bitsFileName + EXTENSION_TMP;
     succinct::mapper::freeze(m_rankIndex, bitsFileNameTmp.c_str());
     my::RenameFileX(bitsFileNameTmp, bitsFileName);
   }
 }
 
-bool OsrmFtSegBackwardIndex::Load(string const & nodesFileName, string const & bitsFileName)
+bool OsrmFtSegBackwardIndex::Load(std::string const & nodesFileName, std::string const & bitsFileName)
 {
   Platform & pl = GetPlatform();
   if (!pl.IsFileExistsByFullPath(nodesFileName) || !pl.IsFileExistsByFullPath(bitsFileName))
@@ -421,8 +421,8 @@ void OsrmFtSegBackwardIndex::Construct(OsrmFtSegMapping & mapping, uint32_t maxN
     LOG(LINFO, ("Using old format index for", localFile.GetCountryName()));
 
   CountryIndexes::PreparePlaceOnDisk(localFile);
-  string const bitsFileName = CountryIndexes::GetPath(localFile, CountryIndexes::Index::Bits);
-  string const nodesFileName = CountryIndexes::GetPath(localFile, CountryIndexes::Index::Nodes);
+  std::string const bitsFileName = CountryIndexes::GetPath(localFile, CountryIndexes::Index::Bits);
+  std::string const nodesFileName = CountryIndexes::GetPath(localFile, CountryIndexes::Index::Nodes);
 
   m_table = feature::FeaturesOffsetsTable::CreateIfNotExistsAndLoad(localFile);
 
@@ -433,7 +433,7 @@ void OsrmFtSegBackwardIndex::Construct(OsrmFtSegMapping & mapping, uint32_t maxN
   mapping.Map(routingFile);
 
   // Generate temporary index to speedup processing
-  unordered_map<uint32_t, TNodesList> temporaryBackwardIndex;
+  std::unordered_map<uint32_t, TNodesList> temporaryBackwardIndex;
   for (uint32_t i = 0; i < maxNodeId; ++i)
   {
     auto indexes = mapping.GetSegmentsRange(i);
@@ -449,7 +449,7 @@ void OsrmFtSegBackwardIndex::Construct(OsrmFtSegMapping & mapping, uint32_t maxN
   LOG(LINFO, ("Temporary index constructed"));
 
   // Create final index
-  vector<bool> inIndex(m_table->size(), false);
+  std::vector<bool> inIndex(m_table->size(), false);
   m_nodeIds.reserve(temporaryBackwardIndex.size());
 
   size_t removedNodes = 0;
@@ -460,7 +460,7 @@ void OsrmFtSegBackwardIndex::Construct(OsrmFtSegMapping & mapping, uint32_t maxN
     if (it != temporaryBackwardIndex.end())
     {
       inIndex[i] = true;
-      m_nodeIds.emplace_back(move(it->second));
+      m_nodeIds.emplace_back(std::move(it->second));
 
       // Remove duplicates nodes emmited by equal choises on a generation route step.
       TNodesList & nodesList = m_nodeIds.back();

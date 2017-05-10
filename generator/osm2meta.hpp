@@ -6,6 +6,8 @@
 
 #include "std/string.hpp"
 
+using namespace std;
+
 struct MetadataTagProcessorImpl
 {
   MetadataTagProcessorImpl(FeatureParams &params)

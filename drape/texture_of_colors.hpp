@@ -6,7 +6,7 @@
 
 #include "base/buffer_vector.hpp"
 
-#include "std/mutex.hpp"
+#include <mutex>
 
 namespace dp
 {
@@ -39,7 +39,7 @@ public:
   void SetIsDebug(bool isDebug) { m_isDebug = isDebug; }
 
 private:
-  typedef map<Color, ColorResourceInfo> TPalette;
+  typedef std::map<Color, ColorResourceInfo> TPalette;
 
   struct PendingColor
   {
@@ -53,8 +53,8 @@ private:
   m2::PointU m_textureSize;
   m2::PointU m_cursor;
   bool m_isDebug = false;
-  mutex m_lock;
-  mutex m_mappingLock;
+  std::mutex m_lock;
+  std::mutex m_mappingLock;
 };
 
 class ColorTexture : public DynamicTexture<ColorPalette, ColorKey, Texture::Color>

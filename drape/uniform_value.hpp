@@ -3,9 +3,9 @@
 #include "drape/pointers.hpp"
 #include "drape/gpu_program.hpp"
 
-#include "std/string.hpp"
-#include "std/shared_array.hpp"
-#include "std/cstring.hpp"
+#include <string>
+#include <boost/shared_array.hpp>
+#include <cstring>
 
 namespace dp
 {
@@ -20,19 +20,19 @@ public:
     Matrix4x4
   };
 
-  explicit UniformValue(string const & name, int32_t v);
-  explicit UniformValue(string const & name, int32_t v1, int32_t v2);
-  explicit UniformValue(string const & name, int32_t v1, int32_t v2, int32_t v3);
-  explicit UniformValue(string const & name, int32_t v1, int32_t v2, int32_t v3, int32_t v4);
+  explicit UniformValue(std::string const & name, int32_t v);
+  explicit UniformValue(std::string const & name, int32_t v1, int32_t v2);
+  explicit UniformValue(std::string const & name, int32_t v1, int32_t v2, int32_t v3);
+  explicit UniformValue(std::string const & name, int32_t v1, int32_t v2, int32_t v3, int32_t v4);
 
-  explicit UniformValue(string const & name, float v);
-  explicit UniformValue(string const & name, float v1, float v2);
-  explicit UniformValue(string const & name, float v1, float v2, float v3);
-  explicit UniformValue(string const & name, float v1, float v2, float v3, float v4);
+  explicit UniformValue(std::string const & name, float v);
+  explicit UniformValue(std::string const & name, float v1, float v2);
+  explicit UniformValue(std::string const & name, float v1, float v2, float v3);
+  explicit UniformValue(std::string const & name, float v1, float v2, float v3, float v4);
 
-  explicit UniformValue(string const & name, float const * matrixValue);
+  explicit UniformValue(std::string const & name, float const * matrixValue);
 
-  string const & GetName() const;
+  std::string const & GetName() const;
   Type GetType() const;
   size_t GetComponentCount() const;
 
@@ -79,11 +79,11 @@ private:
   }
 
 private:
-  string m_name;
+  std::string m_name;
   Type m_type;
   size_t m_componentCount;
 
-  shared_array<uint8_t> m_values;
+  boost::shared_array<uint8_t> m_values;
 };
 
 } // namespace dp

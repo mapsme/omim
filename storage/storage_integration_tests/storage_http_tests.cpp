@@ -16,18 +16,18 @@
 #include "base/string_utils.hpp"
 #include "base/thread.hpp"
 
-#include "std/string.hpp"
+#include <string>
 
 using namespace platform;
 using namespace storage;
 
 namespace
 {
-string const kCountryId = "Angola";
-string const kDisputedCountryId1 = "Jerusalem";
-string const kDisputedCountryId2 = "Crimea";
-string const kDisputedCountryId3 = "Campo de Hielo Sur";
-string const kUndisputedCountryId = "Argentina_Buenos Aires_North";
+std::string const kCountryId = "Angola";
+std::string const kDisputedCountryId1 = "Jerusalem";
+std::string const kDisputedCountryId2 = "Crimea";
+std::string const kDisputedCountryId3 = "Campo de Hielo Sur";
+std::string const kUndisputedCountryId = "Argentina_Buenos Aires_North";
 
 void Update(TCountryId const &, Storage::TLocalFilePtr const localCountryFile)
 {
@@ -38,19 +38,19 @@ void UpdateWithoutChecks(TCountryId const &, Storage::TLocalFilePtr const /* loc
 {
 }
 
-string const GetMwmFullPath(string const & countryId, string const & version)
+std::string const GetMwmFullPath(std::string const & countryId, std::string const & version)
 {
   return my::JoinFoldersToPath({GetPlatform().WritableDir(), version},
                                countryId + DATA_FILE_EXTENSION);
 }
 
-string const GetDownloadingFullPath(string const & countryId, string const & version)
+std::string const GetDownloadingFullPath(std::string const & countryId, std::string const & version)
 {
   return my::JoinFoldersToPath({GetPlatform().WritableDir(), version},
                                kCountryId + DATA_FILE_EXTENSION READY_FILE_EXTENSION DOWNLOADING_FILE_EXTENSION);
 }
 
-string const GetResumeFullPath(string const & countryId, string const & version)
+std::string const GetResumeFullPath(std::string const & countryId, std::string const & version)
 {
   return my::JoinFoldersToPath({GetPlatform().WritableDir(), version},
                                kCountryId + DATA_FILE_EXTENSION READY_FILE_EXTENSION RESUME_FILE_EXTENSION);
@@ -81,7 +81,7 @@ class StorageHttpTest
 protected:
   WritableDirChanger const m_writableDirChanger;
   Storage m_storage;
-  string const m_version;
+  std::string const m_version;
   tests_support::ScopedDir const m_cleanupVersionDir;
 
 public:
@@ -109,9 +109,9 @@ UNIT_CLASS_TEST(StorageHttpTest, StorageDownloadNodeAndDeleteNode)
 
   InitStorage(m_storage, Update, progressFunction);
 
-  string const mwmFullPath = GetMwmFullPath(kCountryId, m_version);
-  string const downloadingFullPath = GetDownloadingFullPath(kCountryId, m_version);
-  string const resumeFullPath = GetResumeFullPath(kCountryId, m_version);
+  std::string const mwmFullPath = GetMwmFullPath(kCountryId, m_version);
+  std::string const downloadingFullPath = GetDownloadingFullPath(kCountryId, m_version);
+  std::string const resumeFullPath = GetResumeFullPath(kCountryId, m_version);
 
   // Downloading to an empty directory.
   m_storage.DownloadNode(kCountryId);
@@ -148,10 +148,10 @@ UNIT_CLASS_TEST(StorageHttpTest, StorageDownloadAndDeleteDisputedNode)
 
   InitStorage(m_storage, UpdateWithoutChecks, progressFunction);
 
-  string const mwmFullPath1 = GetMwmFullPath(kDisputedCountryId1, m_version);
-  string const mwmFullPath2 = GetMwmFullPath(kDisputedCountryId2, m_version);
-  string const mwmFullPath3 = GetMwmFullPath(kDisputedCountryId3, m_version);
-  string const mwmFullPathUndisputed = GetMwmFullPath(kUndisputedCountryId, m_version);
+  std::string const mwmFullPath1 = GetMwmFullPath(kDisputedCountryId1, m_version);
+  std::string const mwmFullPath2 = GetMwmFullPath(kDisputedCountryId2, m_version);
+  std::string const mwmFullPath3 = GetMwmFullPath(kDisputedCountryId3, m_version);
+  std::string const mwmFullPathUndisputed = GetMwmFullPath(kUndisputedCountryId, m_version);
 
   // Downloading to an empty directory.
   m_storage.DownloadNode(kDisputedCountryId1);

@@ -9,9 +9,9 @@
 #include "base/stl_add.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/bind.hpp"
-#include "std/vector.hpp"
+#include <algorithm>
+#include <functional>
+#include <vector>
 
 using namespace feature;
 
@@ -21,10 +21,10 @@ using namespace feature;
 
 namespace feature
 {
-string DebugPrint(TypesHolder const & holder)
+std::string DebugPrint(TypesHolder const & holder)
 {
   Classificator const & c = classif();
-  string s;
+  std::string s;
   for (uint32_t type : holder)
     s += c.GetReadableObjectName(type) + " ";
   if (!s.empty())
@@ -49,11 +49,11 @@ void TypesHolder::Remove(uint32_t type)
 
 bool TypesHolder::Equals(TypesHolder const & other) const
 {
-  vector<uint32_t> my(this->begin(), this->end());
-  vector<uint32_t> his(other.begin(), other.end());
+  std::vector<uint32_t> my(this->begin(), this->end());
+  std::vector<uint32_t> his(other.begin(), other.end());
 
-  sort(::begin(my), ::end(my));
-  sort(::begin(his), ::end(his));
+  std::sort(::begin(my), ::end(my));
+  std::sort(::begin(his), ::end(his));
 
   return my == his;
 }
@@ -63,7 +63,7 @@ namespace
 
 class UselessTypesChecker
 {
-  vector<uint32_t> m_types;
+  std::vector<uint32_t> m_types;
   size_t m_count1;
 
   template <size_t N, size_t M>
@@ -72,7 +72,7 @@ class UselessTypesChecker
     Classificator const & c = classif();
 
     for (size_t i = 0; i < N; ++i)
-      m_types.push_back(c.GetTypeByPath(vector<string>(arr[i], arr[i] + M)));
+      m_types.push_back(c.GetTypeByPath(std::vector<std::string>(arr[i], arr[i] + M)));
   }
 
 public:
@@ -113,12 +113,12 @@ public:
 
     // check 2-arity types
     ftype::TruncValue(t, 2);
-    if (find(end1, m_types.end(), t) != m_types.end())
+    if (std::find(end1, m_types.end(), t) != m_types.end())
       return true;
 
     // check 1-arity types
     ftype::TruncValue(t, 1);
-    if (find(m_types.begin(), end1, t) != end1)
+    if (std::find(m_types.begin(), end1, t) != end1)
       return true;
 
     return false;
@@ -172,12 +172,12 @@ void TypesHolder::SortBySpec()
 
   // Put "very common" types to the end of possible PP-description types.
   static UselessTypesChecker checker;
-  (void) RemoveIfKeepValid(m_types, m_types + m_size, bind<bool>(cref(checker), _1));
+  (void) RemoveIfKeepValid(m_types, m_types + m_size, std::bind<bool>(std::cref(checker), std::placeholders::_1));
 }
 
-vector<string> TypesHolder::ToObjectNames() const
+vector<std::string> TypesHolder::ToObjectNames() const
 {
-  vector<string> result;
+  std::vector<std::string> result;
   for (auto type : *this)
     result.push_back(classif().GetReadableObjectName(type));
   return result;
@@ -208,9 +208,9 @@ bool FeatureParamsBase::CheckValid() const
    return true;
 }
 
-string FeatureParamsBase::DebugString() const
+std::string FeatureParamsBase::DebugString() const
 {
-  string const utf8name = DebugPrint(name);
+  std::string const utf8name = DebugPrint(name);
   return ((!utf8name.empty() ? "Name:" + utf8name : "") +
           (rank != 0 ? " Rank:" + DebugPrint(rank) : "") +
           (!house.IsEmpty() ? " House:" + house.Get() : "") +
@@ -227,7 +227,7 @@ namespace
 
 // Most used dummy values are taken from
 // http://taginfo.openstreetmap.org/keys/addr%3Ahousename#values
-bool IsDummyName(string const & s)
+bool IsDummyName(std::string const & s)
 {
   return (s.empty() ||
           s == "Bloc" || s == "bloc" ||
@@ -246,7 +246,7 @@ void FeatureParams::ClearName()
   name.Clear();
 }
 
-bool FeatureParams::AddName(string const & lang, string const & s)
+bool FeatureParams::AddName(std::string const & lang, std::string const & s)
 {
   if (IsDummyName(s))
     return false;
@@ -256,7 +256,7 @@ bool FeatureParams::AddName(string const & lang, string const & s)
   return true;
 }
 
-bool FeatureParams::AddHouseName(string const & s)
+bool FeatureParams::AddHouseName(std::string const & s)
 {
   if (IsDummyName(s) || name.FindString(s) != StringUtf8Multilang::kUnsupportedLanguageCode)
     return false;
@@ -269,11 +269,11 @@ bool FeatureParams::AddHouseName(string const & s)
   // Example: housename=16th Street, housenumber=34
   if (strings::is_number(s))
   {
-    string housename(house.Get());
+    std::string housename(house.Get());
     if (AddHouseNumber(s))
     {
       // Duplicating code to avoid changing the method header.
-      string dummy;
+      std::string dummy;
       if (!name.GetString(StringUtf8Multilang::kDefaultCode, dummy))
         name.AddString(StringUtf8Multilang::kDefaultCode, housename);
       return true;
@@ -281,7 +281,7 @@ bool FeatureParams::AddHouseName(string const & s)
   }
 
   // Add as a default name if we don't have it yet.
-  string dummy;
+  std::string dummy;
   if (!name.GetString(StringUtf8Multilang::kDefaultCode, dummy))
   {
     name.AddString(StringUtf8Multilang::kDefaultCode, s);
@@ -291,7 +291,7 @@ bool FeatureParams::AddHouseName(string const & s)
   return false;
 }
 
-bool FeatureParams::AddHouseNumber(string houseNumber)
+bool FeatureParams::AddHouseNumber(std::string houseNumber)
 {
   ASSERT(!houseNumber.empty(), ("This check should be done by the caller."));
   ASSERT_NOT_EQUAL(houseNumber.front(), ' ', ("Trim should be done by the caller."));
@@ -310,7 +310,7 @@ bool FeatureParams::AddHouseNumber(string houseNumber)
     ++i;
   houseNumber.erase(0, i);
 
-  if (any_of(houseNumber.cbegin(), houseNumber.cend(), IsDigit))
+  if (std::any_of(houseNumber.cbegin(), houseNumber.cend(), IsDigit))
   {
     house.Set(houseNumber);
     return true;
@@ -318,20 +318,20 @@ bool FeatureParams::AddHouseNumber(string houseNumber)
   return false;
 }
 
-void FeatureParams::AddStreet(string s)
+void FeatureParams::AddStreet(std::string s)
 {
   // Replace \n with spaces because we write addresses to txt file.
-  replace(s.begin(), s.end(), '\n', ' ');
+  std::replace(s.begin(), s.end(), '\n', ' ');
 
   m_addrTags.Add(AddressData::STREET, s);
 }
 
-void FeatureParams::AddAddress(string const & s)
+void FeatureParams::AddAddress(std::string const & s)
 {
   size_t i = s.find_first_of("\t ");
-  if (i != string::npos)
+  if (i != std::string::npos)
   {
-    string const house = s.substr(0, i);
+    std::string const house = s.substr(0, i);
     if (feature::IsHouseNumber(house))
     {
       AddHouseNumber(house);
@@ -350,19 +350,19 @@ void FeatureParams::AddAddress(string const & s)
   AddStreet(s.substr(i));
 }
 
-void FeatureParams::AddPlace(string const & s)
+void FeatureParams::AddPlace(std::string const & s)
 {
   m_addrTags.Add(AddressData::PLACE, s);
 }
 
-void FeatureParams::AddPostcode(string const & s)
+void FeatureParams::AddPostcode(std::string const & s)
 {
   m_addrTags.Add(AddressData::POSTCODE, s);
 }
 
-bool FeatureParams::FormatFullAddress(m2::PointD const & pt, string & res) const
+bool FeatureParams::FormatFullAddress(m2::PointD const & pt, std::string & res) const
 {
-  string const street = GetStreet();
+  std::string const street = GetStreet();
   if (!street.empty() && !house.IsEmpty())
   {
     res = street + "|" + house.Get() + "|"
@@ -374,7 +374,7 @@ bool FeatureParams::FormatFullAddress(m2::PointD const & pt, string & res) const
   return false;
 }
 
-string FeatureParams::GetStreet() const
+std::string FeatureParams::GetStreet() const
 {
   return m_addrTags.Get(AddressData::STREET);
 }
@@ -456,7 +456,7 @@ bool FeatureParams::FinishAddingTypes()
 {
   static uint32_t const boundary = classif().GetTypeByPath({ "boundary", "administrative" });
 
-  vector<uint32_t> newTypes;
+  std::vector<uint32_t> newTypes;
   newTypes.reserve(m_Types.size());
 
   for (size_t i = 0; i < m_Types.size(); ++i)
@@ -491,8 +491,8 @@ bool FeatureParams::FinishAddingTypes()
   }
 
   // Remove duplicated types.
-  sort(newTypes.begin(), newTypes.end());
-  newTypes.erase(unique(newTypes.begin(), newTypes.end()), newTypes.end());
+  std::sort(newTypes.begin(), newTypes.end());
+  newTypes.erase(std::unique(newTypes.begin(), newTypes.end()), newTypes.end());
 
   m_Types.swap(newTypes);
 
@@ -531,7 +531,7 @@ bool FeatureParams::PopExactType(uint32_t t)
 
 bool FeatureParams::IsTypeExist(uint32_t t) const
 {
-  return (find(m_Types.begin(), m_Types.end(), t) != m_Types.end());
+  return (std::find(m_Types.begin(), m_Types.end(), t) != m_Types.end());
 }
 
 uint32_t FeatureParams::FindType(uint32_t comp, uint8_t level) const
@@ -569,11 +569,11 @@ uint32_t FeatureParams::GetTypeForIndex(uint32_t i)
   return classif().GetTypeForIndex(i);
 }
 
-string DebugPrint(FeatureParams const & p)
+std::string DebugPrint(FeatureParams const & p)
 {
   Classificator const & c = classif();
 
-  string res = "Types: ";
+  std::string res = "Types: ";
   for (size_t i = 0; i < p.m_Types.size(); ++i)
     res = res + c.GetReadableObjectName(p.m_Types[i]) + "; ";
 

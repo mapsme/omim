@@ -13,7 +13,7 @@
 
 #include "geometry/rect2d.hpp"
 
-#include "std/list.hpp"
+#include <list>
 
 class ScreenBase;
 
@@ -27,8 +27,8 @@ struct FeatureData
   FeatureStyler m_styler;
   FeatureID m_id;
 
-  list<PathInfo> m_pathes;
-  list<AreaInfo> m_areas;
+  std::list<PathInfo> m_pathes;
+  std::list<AreaInfo> m_areas;
   m2::PointD m_point;
 };
 

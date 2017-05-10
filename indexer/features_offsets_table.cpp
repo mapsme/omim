@@ -12,7 +12,7 @@
 #include "base/logging.hpp"
 #include "base/scope_guard.hpp"
 
-#include "std/string.hpp"
+#include <string>
 
 
 using namespace platform;
@@ -30,16 +30,16 @@ namespace feature
   {
   }
 
-  FeaturesOffsetsTable::FeaturesOffsetsTable(string const & filePath)
+  FeaturesOffsetsTable::FeaturesOffsetsTable(std::string const & filePath)
   {
     m_pReader.reset(new MmapReader(filePath));
     succinct::mapper::map(m_table, reinterpret_cast<char const *>(m_pReader->Data()));
   }
 
   // static
-  unique_ptr<FeaturesOffsetsTable> FeaturesOffsetsTable::Build(Builder & builder)
+  std::unique_ptr<FeaturesOffsetsTable> FeaturesOffsetsTable::Build(Builder & builder)
   {
-    vector<uint32_t> const & offsets = builder.m_offsets;
+    std::vector<uint32_t> const & offsets = builder.m_offsets;
 
     size_t const numOffsets = offsets.size();
     uint32_t const maxOffset = offsets.empty() ? 0 : offsets.back();
@@ -48,27 +48,27 @@ namespace feature
     for (uint32_t offset : offsets)
       elias_fano_builder.push_back(offset);
 
-    return unique_ptr<FeaturesOffsetsTable>(new FeaturesOffsetsTable(elias_fano_builder));
+    return std::unique_ptr<FeaturesOffsetsTable>(new FeaturesOffsetsTable(elias_fano_builder));
   }
 
   // static
-  unique_ptr<FeaturesOffsetsTable> FeaturesOffsetsTable::LoadImpl(string const & filePath)
+  std::unique_ptr<FeaturesOffsetsTable> FeaturesOffsetsTable::LoadImpl(std::string const & filePath)
   {
-    return unique_ptr<FeaturesOffsetsTable>(new FeaturesOffsetsTable(filePath));
+    return std::unique_ptr<FeaturesOffsetsTable>(new FeaturesOffsetsTable(filePath));
   }
 
   // static
-  unique_ptr<FeaturesOffsetsTable> FeaturesOffsetsTable::Load(string const & filePath)
+  std::unique_ptr<FeaturesOffsetsTable> FeaturesOffsetsTable::Load(std::string const & filePath)
   {
     if (!GetPlatform().IsFileExistsByFullPath(filePath))
-      return unique_ptr<FeaturesOffsetsTable>();
+      return std::unique_ptr<FeaturesOffsetsTable>();
     return LoadImpl(filePath);
   }
 
   // static
-  unique_ptr<FeaturesOffsetsTable> FeaturesOffsetsTable::Load(FilesContainerR const & cont)
+  std::unique_ptr<FeaturesOffsetsTable> FeaturesOffsetsTable::Load(FilesContainerR const & cont)
   {
-    unique_ptr<FeaturesOffsetsTable> table(new FeaturesOffsetsTable());
+    std::unique_ptr<FeaturesOffsetsTable> table(new FeaturesOffsetsTable());
 
     table->m_file.Open(cont.GetFileName());
     auto p = cont.GetAbsoluteOffsetAndSize(FEATURE_OFFSETS_FILE_TAG);
@@ -79,9 +79,9 @@ namespace feature
   }
 
   // static
-  unique_ptr<FeaturesOffsetsTable> FeaturesOffsetsTable::CreateImpl(
+  std::unique_ptr<FeaturesOffsetsTable> FeaturesOffsetsTable::CreateImpl(
       platform::LocalCountryFile const & localFile,
-      FilesContainerR const & cont, string const & storePath)
+      FilesContainerR const & cont, std::string const & storePath)
   {
     LOG(LINFO, ("Creating features offset table file", storePath));
 
@@ -90,8 +90,8 @@ namespace feature
     return Build(cont, storePath);
   }
 
-  unique_ptr<FeaturesOffsetsTable> FeaturesOffsetsTable::Build(FilesContainerR const & cont,
-                                                               string const & storePath)
+  std::unique_ptr<FeaturesOffsetsTable> FeaturesOffsetsTable::Build(FilesContainerR const & cont,
+                                                               std::string const & storePath)
   {
     Builder builder;
     FeaturesVector::ForEachOffset(cont.GetReader(DATA_FILE_TAG), [&builder] (uint32_t offset)
@@ -99,16 +99,16 @@ namespace feature
       builder.PushOffset(offset);
     });
 
-    unique_ptr<FeaturesOffsetsTable> table(Build(builder));
+    std::unique_ptr<FeaturesOffsetsTable> table(Build(builder));
     table->Save(storePath);
     return table;
   }
 
   // static
-  unique_ptr<FeaturesOffsetsTable> FeaturesOffsetsTable::CreateIfNotExistsAndLoad(
+  std::unique_ptr<FeaturesOffsetsTable> FeaturesOffsetsTable::CreateIfNotExistsAndLoad(
       LocalCountryFile const & localFile, FilesContainerR const & cont)
   {
-    string const offsetsFilePath = CountryIndexes::GetPath(localFile, CountryIndexes::Index::Offsets);
+    std::string const offsetsFilePath = CountryIndexes::GetPath(localFile, CountryIndexes::Index::Offsets);
 
     if (Platform::IsFileExistsByFullPath(offsetsFilePath))
       return LoadImpl(offsetsFilePath);
@@ -117,10 +117,10 @@ namespace feature
   }
 
   // static
-  unique_ptr<FeaturesOffsetsTable> FeaturesOffsetsTable::CreateIfNotExistsAndLoad(
+  std::unique_ptr<FeaturesOffsetsTable> FeaturesOffsetsTable::CreateIfNotExistsAndLoad(
       LocalCountryFile const & localFile)
   {
-    string const offsetsFilePath = CountryIndexes::GetPath(localFile, CountryIndexes::Index::Offsets);
+    std::string const offsetsFilePath = CountryIndexes::GetPath(localFile, CountryIndexes::Index::Offsets);
 
     if (Platform::IsFileExistsByFullPath(offsetsFilePath))
       return LoadImpl(offsetsFilePath);
@@ -129,15 +129,15 @@ namespace feature
   }
 
   // static
-  unique_ptr<FeaturesOffsetsTable> FeaturesOffsetsTable::CreateIfNotExistsAndLoad(FilesContainerR const & cont)
+  std::unique_ptr<FeaturesOffsetsTable> FeaturesOffsetsTable::CreateIfNotExistsAndLoad(FilesContainerR const & cont)
   {
     return CreateIfNotExistsAndLoad(LocalCountryFile::MakeTemporary(cont.GetFileName()), cont);
   }
 
-  void FeaturesOffsetsTable::Save(string const & filePath)
+  void FeaturesOffsetsTable::Save(std::string const & filePath)
   {
     LOG(LINFO, ("Saving features offsets table to ", filePath));
-    string const fileNameTmp = filePath + EXTENSION_TMP;
+    std::string const fileNameTmp = filePath + EXTENSION_TMP;
     succinct::mapper::freeze(m_table, fileNameTmp.c_str());
     my::RenameFileX(fileNameTmp, filePath);
   }
@@ -168,11 +168,11 @@ namespace feature
     return leftBound;
   }
 
-  bool BuildOffsetsTable(string const & filePath)
+  bool BuildOffsetsTable(std::string const & filePath)
   {
     try
     {
-      string const destPath = filePath + ".offsets";
+      std::string const destPath = filePath + ".offsets";
       MY_SCOPE_GUARD(fileDeleter, bind(FileWriter::DeleteFileX, destPath));
 
       (void)feature::FeaturesOffsetsTable::Build(FilesContainerR(filePath), destPath);

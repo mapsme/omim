@@ -33,7 +33,7 @@ bool SearchParams::IsEqualCommon(SearchParams const & rhs) const
          m_validPos == rhs.m_validPos && m_mode == rhs.m_mode;
 }
 
-string DebugPrint(SearchParams const & params)
+std::string DebugPrint(SearchParams const & params)
 {
   ostringstream ss;
   ss << "{ SearchParams: Query = " << params.m_query << ", Locale = " << params.m_inputLocale

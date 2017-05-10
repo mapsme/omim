@@ -41,7 +41,7 @@ inline double TimeBetweenSec(m2::PointD const & from, m2::PointD const & to, dou
 class CarEdgeEstimator : public EdgeEstimator
 {
 public:
-  CarEdgeEstimator(shared_ptr<TrafficStash> trafficStash, double maxSpeedKMpH);
+  CarEdgeEstimator(std::shared_ptr<TrafficStash> trafficStash, double maxSpeedKMpH);
 
   // EdgeEstimator overrides:
   double CalcSegmentWeight(Segment const & segment, RoadGeometry const & road) const override;
@@ -51,11 +51,11 @@ public:
   bool LeapIsAllowed(NumMwmId mwmId) const override;
 
 private:
-  shared_ptr<TrafficStash> m_trafficStash;
+  std::shared_ptr<TrafficStash> m_trafficStash;
   double const m_maxSpeedMPS;
 };
 
-CarEdgeEstimator::CarEdgeEstimator(shared_ptr<TrafficStash> trafficStash, double maxSpeedKMpH)
+CarEdgeEstimator::CarEdgeEstimator(std::shared_ptr<TrafficStash> trafficStash, double maxSpeedKMpH)
   : m_trafficStash(trafficStash), m_maxSpeedMPS(maxSpeedKMpH * kKMPH2MPS)
 {
   CHECK_GREATER(m_maxSpeedMPS, 0.0, ());
@@ -124,9 +124,9 @@ bool CarEdgeEstimator::LeapIsAllowed(NumMwmId mwmId) const { return !m_trafficSt
 namespace routing
 {
 // static
-shared_ptr<EdgeEstimator> EdgeEstimator::CreateForCar(shared_ptr<TrafficStash> trafficStash,
+shared_ptr<EdgeEstimator> EdgeEstimator::CreateForCar(std::shared_ptr<TrafficStash> trafficStash,
                                                       double maxSpeedKMpH)
 {
-  return make_shared<CarEdgeEstimator>(trafficStash, maxSpeedKMpH);
+  return std::make_shared<CarEdgeEstimator>(trafficStash, maxSpeedKMpH);
 }
 }  // namespace routing

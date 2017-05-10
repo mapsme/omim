@@ -5,7 +5,7 @@
 #include "base/condition.hpp"
 #include "base/assert.hpp"
 
-#include "std/function.hpp"
+#include <functional>
 
 namespace dp
 {
@@ -39,8 +39,8 @@ public:
   void waitForInitialization() override;
 
 protected:
-  typedef function<OGLContext * ()> TCreateCtxFn;
-  typedef function<bool()> TIsSeparateCreatedFn;
+  typedef std::function<OGLContext * ()> TCreateCtxFn;
+  typedef std::function<bool()> TIsSeparateCreatedFn;
   OGLContext * CreateContext(TCreateCtxFn const & createFn, TIsSeparateCreatedFn const checkFn);
 
 private:

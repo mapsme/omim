@@ -1,9 +1,9 @@
 #pragma once
 
-#include "std/algorithm.hpp"
-#include "std/set.hpp"
-#include "std/utility.hpp"
-#include "std/vector.hpp"
+#include <algorithm>
+#include <set>
+#include <utility>
+#include <vector>
 
 namespace my
 {
@@ -15,7 +15,7 @@ template <typename TElem>
 class IntervalSet
 {
 public:
-  using TInterval = pair<TElem, TElem>;
+  using TInterval = std::pair<TElem, TElem>;
 
   // Adds an |interval| to the set, coalescing adjacent intervals if needed.
   //
@@ -28,21 +28,21 @@ public:
   //
   // Complexity: O(num of intervals intersecting with |interval| +
   // log(total number of intervals)).
-  void SubtractFrom(TInterval const & interval, vector<TInterval> & difference) const;
+  void SubtractFrom(TInterval const & interval, std::vector<TInterval> & difference) const;
 
   // Returns all elements of the set as a set of intervals.
   //
   // Complexity: O(1).
-  inline set<TInterval> const & Elems() const { return m_intervals; }
+  inline std::set<TInterval> const & Elems() const { return m_intervals; }
 
 private:
-  using TIterator = typename set<TInterval>::iterator;
+  using TIterator = typename std::set<TInterval>::iterator;
 
   // Calculates range of intervals that have non-empty intersection with a given |interval|.
   void Cover(TInterval const & interval, TIterator & begin, TIterator & end) const;
 
   // This is a set of disjoint intervals.
-  set<TInterval> m_intervals;
+  std::set<TInterval> m_intervals;
 };
 
 template <typename TElem>
@@ -97,7 +97,7 @@ void IntervalSet<TElem>::Add(TInterval const & interval)
 
 template <typename TElem>
 void IntervalSet<TElem>::SubtractFrom(TInterval const & interval,
-                                      vector<TInterval> & difference) const
+                                      std::vector<TInterval> & difference) const
 {
   TIterator begin;
   TIterator end;
@@ -116,7 +116,7 @@ void IntervalSet<TElem>::SubtractFrom(TInterval const & interval,
     }
     else
     {
-      from = max(from, it->second);
+      from = std::max(from, it->second);
     }
   }
 
@@ -130,7 +130,7 @@ void IntervalSet<TElem>::Cover(TInterval const & interval, TIterator & begin, TI
   TElem const & from = interval.first;
   TElem const & to = interval.second;
 
-  begin = m_intervals.lower_bound(make_pair(from, from));
+  begin = m_intervals.lower_bound(std::make_pair(from, from));
   if (begin != m_intervals.begin())
   {
     auto prev = begin;
@@ -139,6 +139,6 @@ void IntervalSet<TElem>::Cover(TInterval const & interval, TIterator & begin, TI
       begin = prev;
   }
 
-  end = m_intervals.lower_bound(make_pair(to, to));
+  end = m_intervals.lower_bound(std::make_pair(to, to));
 }
 }  // namespace my

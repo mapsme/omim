@@ -9,7 +9,7 @@
 #include "base/dfa_helpers.hpp"
 #include "base/levenshtein_dfa.hpp"
 
-#include "std/unique_ptr.hpp"
+#include <memory>
 
 class MwmValue;
 

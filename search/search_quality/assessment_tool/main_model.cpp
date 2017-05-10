@@ -41,11 +41,11 @@ MainModel::MainModel(Framework & framework)
 {
 }
 
-void MainModel::Open(string const & path)
+void MainModel::Open(std::string const & path)
 {
   CHECK(m_view, ());
 
-  string contents;
+  std::string contents;
 
   {
     ifstream ifs(path);
@@ -87,14 +87,14 @@ void MainModel::Save()
   SaveAs(m_path);
 }
 
-void MainModel::SaveAs(string const & path)
+void MainModel::SaveAs(std::string const & path)
 {
   CHECK(HasChanges(), ());
   CHECK(!path.empty(), ());
 
   search::FeatureLoader loader(m_index);
 
-  string contents;
+  std::string contents;
   search::Sample::SerializeToJSONLines(m_contexts.MakeSamples(loader), contents);
 
   {

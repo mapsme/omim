@@ -2,12 +2,12 @@
 
 #include "base/macros.hpp"
 
-#include "std/array.hpp"
-#include "std/cmath.hpp"
-#include "std/cstdlib.hpp"
-#include "std/cstring.hpp"
-#include "std/algorithm.hpp"
-#include "std/utility.hpp"
+#include <array>
+#include <cmath>
+#include <cstdlib>
+#include <cstring>
+#include <algorithm>
+#include <utility>
 
 
 namespace search
@@ -85,10 +85,10 @@ void SkipNSEW(char const * & s, char const * (&arrPos) [4])
 
 }
 
-bool MatchLatLonDegree(string const & query, double & lat, double & lon)
+bool MatchLatLonDegree(std::string const & query, double & lat, double & lon)
 {
   // should be default initialization (0, false)
-  array<pair<double, bool>, 6> v;
+  std::array<std::pair<double, bool>, 6> v;
 
   int base = 0;
 
@@ -194,8 +194,8 @@ bool MatchLatLonDegree(string const & query, double & lat, double & lon)
   lon = fabs(v[3].first) + v[4].first / 60.0 + v[5].first / 3600.0;
   if (v[3].first < 0.0) lon = -lon;
 
-  if (max(arrPos[0], arrPos[1]) > max(arrPos[2], arrPos[3]))
-    swap(lat, lon);
+  if (std::max(arrPos[0], arrPos[1]) > std::max(arrPos[2], arrPos[3]))
+    std::swap(lat, lon);
 
   if (arrPos[1]) lat = -lat;
   if (arrPos[3]) lon = -lon;

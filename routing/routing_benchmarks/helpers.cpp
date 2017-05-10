@@ -20,7 +20,7 @@
 #include "base/math.hpp"
 #include "base/timer.hpp"
 
-#include "std/limits.hpp"
+#include <limits>
 
 namespace
 {
@@ -56,7 +56,7 @@ m2::PointD GetPointOnEdge(routing::Edge const & e, double posAlong)
 }
 }  // namespace
 
-RoutingTest::RoutingTest(routing::IRoadGraph::Mode mode, set<string> const & neededMaps)
+RoutingTest::RoutingTest(routing::IRoadGraph::Mode mode, std::set<std::string> const & neededMaps)
   : m_mode(mode)
 {
   classificator::Load();
@@ -64,10 +64,10 @@ RoutingTest::RoutingTest(routing::IRoadGraph::Mode mode, set<string> const & nee
   Platform & platform = GetPlatform();
   m_cig = storage::CountryInfoReader::CreateCountryInfoReader(platform);
 
-  vector<platform::LocalCountryFile> localFiles;
-  platform::FindAllLocalMapsAndCleanup(numeric_limits<int64_t>::max(), localFiles);
+  std::vector<platform::LocalCountryFile> localFiles;
+  platform::FindAllLocalMapsAndCleanup(std::numeric_limits<int64_t>::max(), localFiles);
 
-  set<string> registeredMaps;
+  std::set<std::string> registeredMaps;
   for (auto const & localFile : localFiles)
   {
     auto const & name = localFile.GetCountryName();
@@ -120,11 +120,11 @@ void RoutingTest::TestRouters(m2::PointD const & startPos, m2::PointD const & fi
 
 void RoutingTest::TestTwoPointsOnFeature(m2::PointD const & startPos, m2::PointD const & finalPos)
 {
-  vector<pair<routing::Edge, routing::Junction>> startEdges;
+  std::vector<std::pair<routing::Edge, routing::Junction>> startEdges;
   GetNearestEdges(startPos, startEdges);
   TEST(!startEdges.empty(), ());
 
-  vector<pair<routing::Edge, routing::Junction>> finalEdges;
+  std::vector<std::pair<routing::Edge, routing::Junction>> finalEdges;
   GetNearestEdges(finalPos, finalEdges);
   TEST(!finalEdges.empty(), ());
 
@@ -137,7 +137,7 @@ void RoutingTest::TestTwoPointsOnFeature(m2::PointD const & startPos, m2::PointD
 }
 
 void RoutingTest::GetNearestEdges(m2::PointD const & pt,
-                                  vector<pair<routing::Edge, routing::Junction>> & edges)
+                                  std::vector<std::pair<routing::Edge, routing::Junction>> & edges)
 {
   routing::FeaturesRoadGraph graph(m_index, m_mode, CreateModelFactory());
   graph.FindClosestEdges(pt, 1 /* count */, edges);

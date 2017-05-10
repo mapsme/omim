@@ -13,7 +13,7 @@
 
 #include "base/buffer_vector.hpp"
 
-#include "std/vector.hpp"
+#include <vector>
 
 class Index;
 
@@ -30,13 +30,13 @@ struct FeatureGraphNode;
  */
 struct LoadedPathSegment
 {
-  vector<Junction> m_path;
-  vector<turns::SingleLaneInfo> m_lanes;
-  string m_name;
+  std::vector<Junction> m_path;
+  std::vector<turns::SingleLaneInfo> m_lanes;
+  std::string m_name;
   TEdgeWeight m_weight; /*!< Time in seconds to pass the segment. */
   UniNodeId m_nodeId;   /*!< May be either NodeID for OSRM route or
                              mwm id, feature id, segment id and direction for A*. */
-  vector<Segment> m_trafficSegs; /*!< Traffic segments for |m_path|. */
+  std::vector<Segment> m_trafficSegs; /*!< Traffic segments for |m_path|. */
   ftypes::HighwayClass m_highwayClass;
   bool m_onRoundabout;
   bool m_isLink;
@@ -56,5 +56,5 @@ struct LoadedPathSegment
   }
 };
 
-using TUnpackedPathSegments = vector<LoadedPathSegment>;
+using TUnpackedPathSegments = std::vector<LoadedPathSegment>;
 }  // namespace routing

@@ -9,7 +9,7 @@ namespace df
 
 void ThreadsCommutator::RegisterThread(ThreadName name, BaseRenderer * acceptor)
 {
-  VERIFY(m_acceptors.insert(make_pair(name, acceptor)).second, ());
+  VERIFY(m_acceptors.insert(std::make_pair(name, acceptor)).second, ());
 }
 
 void ThreadsCommutator::PostMessage(ThreadName name, drape_ptr<Message> && message, MessagePriority priority)

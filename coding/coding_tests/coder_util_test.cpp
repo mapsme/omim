@@ -19,7 +19,7 @@ UNIT_TEST(FixedDstSizeCodeToStringInfiniteMemoryTest)
   try
   {
     char const src [] = "Test";
-    string dst;
+    std::string dst;
     FixedDstSizeCodeToString(&FixedDstSizeInfiniteMemoryEncode, src, 4, dst);
   }
   catch (DstOutOfMemoryStringCodingException & e)

@@ -2,15 +2,15 @@
 
 #include "indexer/drules_include.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/vector.hpp"
+#include <algorithm>
+#include <vector>
 
 namespace
 {
 
 double ConvertWidth(double w, double scale)
 {
-  return max(w * scale, 1.0);
+  return std::max(w * scale, 1.0);
 }
 
 }
@@ -28,7 +28,7 @@ dp::Color ConvertColor(uint32_t c)
 void ConvertStyle(LineDefProto const * pSrc, double scale, PenInfo & dest)
 {
   double offset = 0.0;
-  vector<double> v;
+  std::vector<double> v;
 
   if (pSrc->has_dashdot())
   {
@@ -108,7 +108,7 @@ void ConvertStyle(SymbolRuleProto const * pSrc, IconInfo & dest)
 void ConvertStyle(CaptionDefProto const * pSrc, double scale, dp::FontDecl & dest, m2::PointD & offset)
 {
   // fonts smaller than 8px look "jumpy" on LDPI devices
-  uint8_t const h = max(8, static_cast<int>(pSrc->height() * scale));
+  uint8_t const h = std::max(8, static_cast<int>(pSrc->height() * scale));
 
   offset = m2::PointD(0, 0);
   if (pSrc->has_offset_x())
@@ -125,7 +125,7 @@ void ConvertStyle(CaptionDefProto const * pSrc, double scale, dp::FontDecl & des
 void ConvertStyle(ShieldRuleProto const * pSrc, double scale, dp::FontDecl & dest)
 {
   // fonts smaller than 8px look "jumpy" on LDPI devices
-  uint8_t const h = max(8, static_cast<int>(pSrc->height() * scale));
+  uint8_t const h = std::max(8, static_cast<int>(pSrc->height() * scale));
 
   dest = dp::FontDecl(ConvertColor(pSrc->color()), h);
 

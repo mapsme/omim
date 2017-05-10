@@ -8,7 +8,7 @@
 #include "base/assert.hpp"
 #include "base/stl_add.hpp"
 
-#include "std/bind.hpp"
+#include <functional>
 
 namespace dp
 {

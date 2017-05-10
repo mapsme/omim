@@ -30,7 +30,7 @@ void SetInetIfNeeded(FeatureType const & ft, feature::Metadata & metadata)
 }
 }  // namespace
 
-string DebugPrint(osm::Internet internet)
+std::string DebugPrint(osm::Internet internet)
 {
   switch (internet)
   {
@@ -43,9 +43,9 @@ string DebugPrint(osm::Internet internet)
   return {};
 }
 
-string DebugPrint(Props props)
+std::string DebugPrint(Props props)
 {
-  string k;
+  std::string k;
   switch (props)
   {
   case osm::Props::Phone: k = "phone"; break;
@@ -83,14 +83,14 @@ ms::LatLon MapObject::GetLatLon() const { return MercatorBounds::ToLatLon(m_merc
 m2::PointD const & MapObject::GetMercator() const { return m_mercator; }
 feature::TypesHolder const & MapObject::GetTypes() const { return m_types; }
 
-string MapObject::GetDefaultName() const
+std::string MapObject::GetDefaultName() const
 {
-  string name;
+  std::string name;
   UNUSED_VALUE(m_name.GetString(StringUtf8Multilang::kDefaultCode, name));
   return name;
 }
 
-string MapObject::GetLocalizedType() const
+std::string MapObject::GetLocalizedType() const
 {
   ASSERT(!m_types.Empty(), ());
   feature::TypesHolder copy(m_types);
@@ -105,13 +105,13 @@ vector<osm::Props> MapObject::AvailableProperties() const
   return MetadataToProps(m_metadata.GetPresentTypes());
 }
 
-string MapObject::GetPhone() const { return m_metadata.Get(feature::Metadata::FMD_PHONE_NUMBER); }
-string MapObject::GetFax() const { return m_metadata.Get(feature::Metadata::FMD_FAX_NUMBER); }
-string MapObject::GetEmail() const { return m_metadata.Get(feature::Metadata::FMD_EMAIL); }
+std::string MapObject::GetPhone() const { return m_metadata.Get(feature::Metadata::FMD_PHONE_NUMBER); }
+std::string MapObject::GetFax() const { return m_metadata.Get(feature::Metadata::FMD_FAX_NUMBER); }
+std::string MapObject::GetEmail() const { return m_metadata.Get(feature::Metadata::FMD_EMAIL); }
 
-string MapObject::GetWebsite() const
+std::string MapObject::GetWebsite() const
 {
-  string website = m_metadata.Get(feature::Metadata::FMD_WEBSITE);
+  std::string website = m_metadata.Get(feature::Metadata::FMD_WEBSITE);
   if (website.empty())
     website = m_metadata.Get(feature::Metadata::FMD_URL);
   return website;
@@ -119,14 +119,14 @@ string MapObject::GetWebsite() const
 
 Internet MapObject::GetInternet() const
 {
-  string inet = m_metadata.Get(feature::Metadata::FMD_INTERNET);
+  std::string inet = m_metadata.Get(feature::Metadata::FMD_INTERNET);
   strings::AsciiToLower(inet);
   // Most popular case.
   if (inet.empty())
     return Internet::Unknown;
-  if (inet.find(kWlan) != string::npos)
+  if (inet.find(kWlan) != std::string::npos)
     return Internet::Wlan;
-  if (inet.find(kWired) != string::npos)
+  if (inet.find(kWired) != std::string::npos)
     return Internet::Wired;
   if (inet == kYes)
     return Internet::Yes;
@@ -135,28 +135,28 @@ Internet MapObject::GetInternet() const
   return Internet::Unknown;
 }
 
-vector<string> MapObject::GetCuisines() const
+vector<std::string> MapObject::GetCuisines() const
 {
-  vector<string> cuisines;
+  std::vector<std::string> cuisines;
   Cuisines::Instance().Parse(m_metadata.Get(feature::Metadata::FMD_CUISINE), cuisines);
   return cuisines;
 }
 
-vector<string> MapObject::GetLocalizedCuisines() const
+vector<std::string> MapObject::GetLocalizedCuisines() const
 {
-  vector<string> localized;
+  std::vector<std::string> localized;
   Cuisines::Instance().ParseAndLocalize(m_metadata.Get(feature::Metadata::FMD_CUISINE), localized);
   return localized;
 }
 
-string MapObject::FormatCuisines() const { return strings::JoinStrings(GetLocalizedCuisines(), " • "); }
+std::string MapObject::FormatCuisines() const { return strings::JoinStrings(GetLocalizedCuisines(), " • "); }
 
-string MapObject::GetOpeningHours() const
+std::string MapObject::GetOpeningHours() const
 {
   return m_metadata.Get(feature::Metadata::FMD_OPEN_HOURS);
 }
 
-string MapObject::GetOperator() const { return m_metadata.Get(feature::Metadata::FMD_OPERATOR); }
+std::string MapObject::GetOperator() const { return m_metadata.Get(feature::Metadata::FMD_OPERATOR); }
 
 int MapObject::GetStars() const
 {
@@ -170,7 +170,7 @@ int MapObject::GetStars() const
   return 0;
 }
 
-string MapObject::GetElevationFormatted() const
+std::string MapObject::GetElevationFormatted() const
 {
   if (m_metadata.Has(feature::Metadata::FMD_ELE))
   {
@@ -189,11 +189,11 @@ bool MapObject::GetElevation(double & outElevationInMeters) const
   return strings::to_double(m_metadata.Get(feature::Metadata::FMD_ELE), outElevationInMeters);
 }
 
-string MapObject::GetWikipediaLink() const { return m_metadata.GetWikiURL(); }
+std::string MapObject::GetWikipediaLink() const { return m_metadata.GetWikiURL(); }
 
-string MapObject::GetFlats() const { return m_metadata.Get(feature::Metadata::FMD_FLATS); }
+std::string MapObject::GetFlats() const { return m_metadata.Get(feature::Metadata::FMD_FLATS); }
 
-string MapObject::GetBuildingLevels() const
+std::string MapObject::GetBuildingLevels() const
 {
   return m_metadata.Get(feature::Metadata::FMD_BUILDING_LEVELS);
 }

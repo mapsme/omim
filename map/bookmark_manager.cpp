@@ -11,9 +11,9 @@
 
 #include "base/stl_add.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 #include "std/target_os.hpp"
-#include "std/vector.hpp"
+#include <vector>
 
 BookmarkManager::BookmarkManager(Framework & f)
   : m_framework(f)
@@ -27,7 +27,7 @@ BookmarkManager::BookmarkManager(Framework & f)
 
 BookmarkManager::~BookmarkManager()
 {
-  for_each(m_userMarkLayers.begin(), m_userMarkLayers.end(), DeleteFunctor());
+  std::for_each(m_userMarkLayers.begin(), m_userMarkLayers.end(), DeleteFunctor());
   m_userMarkLayers.clear();
 
   ClearItems();
@@ -53,7 +53,7 @@ void BookmarkManager::LoadState()
 
 void BookmarkManager::ClearItems()
 {
-  for_each(m_categories.begin(), m_categories.end(), DeleteFunctor());
+  std::for_each(m_categories.begin(), m_categories.end(), DeleteFunctor());
   m_categories.clear();
 }
 
@@ -61,7 +61,7 @@ void BookmarkManager::LoadBookmarks()
 {
   ClearItems();
 
-  string const dir = GetPlatform().SettingsDir();
+  std::string const dir = GetPlatform().SettingsDir();
 
   Platform::FilesList files;
   Platform::GetFilesByExt(dir, BOOKMARKS_FILE_EXTENSION, files);
@@ -71,7 +71,7 @@ void BookmarkManager::LoadBookmarks()
   LoadState();
 }
 
-void BookmarkManager::LoadBookmark(string const & filePath)
+void BookmarkManager::LoadBookmark(std::string const & filePath)
 {
   BookmarkCategory * cat = BookmarkCategory::CreateFromKMLFile(filePath, m_framework);
   if (cat)
@@ -153,7 +153,7 @@ size_t BookmarkManager::LastEditedBMCategory()
   return 0;
 }
 
-string BookmarkManager::LastEditedBMType() const
+std::string BookmarkManager::LastEditedBMType() const
 {
   return (m_lastType.empty() ? BookmarkCategory::GetDefaultType() : m_lastType);
 }
@@ -163,7 +163,7 @@ BookmarkCategory * BookmarkManager::GetBmCategory(size_t index) const
   return (index < m_categories.size() ? m_categories[index] : 0);
 }
 
-size_t BookmarkManager::CreateBmCategory(string const & name)
+size_t BookmarkManager::CreateBmCategory(std::string const & name)
 {
   m_categories.push_back(new BookmarkCategory(name, m_framework));
   return (m_categories.size()-1);
@@ -225,7 +225,7 @@ UserMark const * BookmarkManager::FindNearestUserMark(m2::AnyRectD const & rect)
 UserMark const * BookmarkManager::FindNearestUserMark(TTouchRectHolder const & holder) const
 {
   BestUserMarkFinder finder(holder);
-  for_each(m_categories.begin(), m_categories.end(), ref(finder));
+  std::for_each(m_categories.begin(), m_categories.end(), ref(finder));
   finder(FindUserMarksContainer(UserMarkType::API_MARK));
   finder(FindUserMarksContainer(UserMarkType::SEARCH_MARK));
 
@@ -249,7 +249,7 @@ void BookmarkManager::UserMarksReleaseController(UserMarksController & controlle
 
 UserMarkContainer const * BookmarkManager::FindUserMarksContainer(UserMarkType type) const
 {
-  auto const iter = find_if(m_userMarkLayers.begin(), m_userMarkLayers.end(), [&type](UserMarkContainer const * cont)
+  auto const iter = std::find_if(m_userMarkLayers.begin(), m_userMarkLayers.end(), [&type](UserMarkContainer const * cont)
   {
     return cont->GetType() == type;
   });
@@ -259,7 +259,7 @@ UserMarkContainer const * BookmarkManager::FindUserMarksContainer(UserMarkType t
 
 UserMarkContainer * BookmarkManager::FindUserMarksContainer(UserMarkType type)
 {
-  auto iter = find_if(m_userMarkLayers.begin(), m_userMarkLayers.end(), [&type](UserMarkContainer * cont)
+  auto iter = std::find_if(m_userMarkLayers.begin(), m_userMarkLayers.end(), [&type](UserMarkContainer * cont)
   {
     return cont->GetType() == type;
   });

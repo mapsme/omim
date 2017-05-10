@@ -1,7 +1,7 @@
 #include "search/cbv.hpp"
 
-#include "std/limits.hpp"
-#include "std/vector.hpp"
+#include <limits>
+#include <vector>
 
 using namespace my;
 
@@ -12,13 +12,13 @@ namespace
 uint64_t const kModulo = 18446744073709551557LLU;
 }  // namespace
 
-CBV::CBV(unique_ptr<coding::CompressedBitVector> p) : m_p(move(p)) {}
+CBV::CBV(unique_ptr<coding::CompressedBitVector> p) : m_p(std::move(p)) {}
 
-CBV::CBV(CBV && cbv) : m_p(move(cbv.m_p)), m_isFull(cbv.m_isFull) { cbv.m_isFull = false; }
+CBV::CBV(CBV && cbv) : m_p(std::move(cbv.m_p)), m_isFull(cbv.m_isFull) { cbv.m_isFull = false; }
 
 CBV & CBV::operator=(unique_ptr<coding::CompressedBitVector> p)
 {
-  m_p = move(p);
+  m_p = std::move(p);
   m_isFull = false;
 
   return *this;
@@ -29,7 +29,7 @@ CBV & CBV::operator=(CBV && rhs)
   if (this == &rhs)
     return *this;
 
-  m_p = move(rhs.m_p);
+  m_p = std::move(rhs.m_p);
   m_isFull = rhs.m_isFull;
 
   rhs.m_isFull = false;
@@ -90,14 +90,14 @@ CBV CBV::Take(uint64_t n) const
     return *this;
   if (IsFull())
   {
-    vector<uint64_t> groups((n + 63) / 64, numeric_limits<uint64_t>::max());
+    std::vector<uint64_t> groups((n + 63) / 64, std::numeric_limits<uint64_t>::max());
     uint64_t const r = n % 64;
     if (r != 0)
     {
       ASSERT(!groups.empty(), ());
       groups.back() = (static_cast<uint64_t>(1) << r) - 1;
     }
-    return CBV(coding::DenseCBV::BuildFromBitGroups(move(groups)));
+    return CBV(coding::DenseCBV::BuildFromBitGroups(std::move(groups)));
   }
 
   return CBV(m_p->LeaveFirstSetNBits(n));

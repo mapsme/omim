@@ -31,10 +31,10 @@
 #include "geometry/screenbase.hpp"
 #include "geometry/triangle2d.hpp"
 
-#include "std/function.hpp"
-#include "std/map.hpp"
-#include "std/array.hpp"
-#include "std/unordered_set.hpp"
+#include <functional>
+#include <map>
+#include <array>
+#include <unordered_set>
 
 namespace dp
 {
@@ -64,9 +64,9 @@ class FrontendRenderer : public BaseRenderer
                        , public UserEventStream::Listener
 {
 public:
-  using TModelViewChanged = function<void (ScreenBase const & screen)>;
-  using TTapEventInfoFn = function<void (TapInfo const &)>;
-  using TUserPositionChangedFn = function<void (m2::PointD const & pt)>;
+  using TModelViewChanged = std::function<void (ScreenBase const & screen)>;
+  using TTapEventInfoFn = std::function<void (TapInfo const &)>;
+  using TUserPositionChangedFn = std::function<void (m2::PointD const & pt)>;
 
   struct Params : BaseRenderer::Params
   {
@@ -214,7 +214,7 @@ private:
                         drape_ptr<dp::RenderBucket> && renderBucket,
                         TileKey const & newTile);
 
-  using TRenderGroupRemovePredicate = function<bool(drape_ptr<RenderGroup> const &)>;
+  using TRenderGroupRemovePredicate = std::function<bool(drape_ptr<RenderGroup> const &)>;
   void RemoveRenderGroupsLater(TRenderGroupRemovePredicate const & predicate);
 
   void FollowRoute(int preferredZoomLevel, int preferredZoomLevelIn3d, bool enableAutoZoom);
@@ -259,9 +259,9 @@ private:
     void Sort(ref_ptr<dp::OverlayTree> overlayTree);
   };
 
-  array<RenderLayer, RenderLayer::LayerCountID> m_layers;
+  std::array<RenderLayer, RenderLayer::LayerCountID> m_layers;
   vector<drape_ptr<UserMarkRenderGroup>> m_userMarkRenderGroups;
-  unordered_set<size_t> m_userMarkVisibility;
+  std::unordered_set<size_t> m_userMarkVisibility;
 
   drape_ptr<gui::LayerRenderer> m_guiRenderer;
   drape_ptr<MyPositionController> m_myPositionController;

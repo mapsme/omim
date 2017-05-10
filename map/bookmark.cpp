@@ -20,10 +20,10 @@
 #include "base/stl_add.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/auto_ptr.hpp"
-#include "std/fstream.hpp"
-#include "std/iterator.hpp"
+#include <algorithm>
+#include <memory>
+#include <fstream>
+#include <iterator>
 
 Bookmark::Bookmark(m2::PointD const & ptOrg, UserMarkContainer * container)
   : TBase(ptOrg, container)
@@ -53,7 +53,7 @@ dp::Anchor Bookmark::GetAnchor() const
   return dp::Bottom;
 }
 
-string Bookmark::GetSymbolName() const
+std::string Bookmark::GetSymbolName() const
 {
   return GetType();
 }
@@ -70,22 +70,22 @@ bool Bookmark::RunCreationAnim() const
   return result;
 }
 
-string const & Bookmark::GetName() const
+std::string const & Bookmark::GetName() const
 {
   return m_data.GetName();
 }
 
-void Bookmark::SetName(string const & name)
+void Bookmark::SetName(std::string const & name)
 {
   m_data.SetName(name);
 }
 
-string const & Bookmark::GetType() const
+std::string const & Bookmark::GetType() const
 {
   return m_data.GetType();
 }
 
-void Bookmark::SetType(string const & type)
+void Bookmark::SetType(std::string const & type)
 {
   m_data.SetType(type);
 }
@@ -95,12 +95,12 @@ m2::RectD Bookmark::GetViewport() const
   return m2::RectD(GetPivot(), GetPivot());
 }
 
-string const & Bookmark::GetDescription() const
+std::string const & Bookmark::GetDescription() const
 {
   return m_data.GetDescription();
 }
 
-void Bookmark::SetDescription(string const & description)
+void Bookmark::SetDescription(std::string const & description)
 {
   m_data.SetDescription(description);
 }
@@ -136,7 +136,7 @@ Track const * BookmarkCategory::GetTrack(size_t index) const
   return (index < m_tracks.size() ? m_tracks[index].get() : 0);
 }
 
-BookmarkCategory::BookmarkCategory(string const & name, Framework & framework)
+BookmarkCategory::BookmarkCategory(std::string const & name, Framework & framework)
   : TBase(0.0 /* bookmarkDepth */, UserMarkType::BOOKMARK_MARK, framework)
   , m_name(name)
 {
@@ -168,22 +168,22 @@ void BookmarkCategory::DeleteTrack(size_t index)
   RequestController();
   SetDirty();
   ASSERT_LESS(index, m_tracks.size(), ());
-  m_tracks.erase(next(m_tracks.begin(), index));
+  m_tracks.erase(std::next(m_tracks.begin(), index));
   ReleaseController();
 }
 
 namespace
 {
-  string const kPlacemark = "Placemark";
-  string const kStyle = "Style";
-  string const kDocument = "Document";
-  string const kStyleMap = "StyleMap";
-  string const kStyleUrl = "styleUrl";
-  string const kPair = "Pair";
+  std::string const kPlacemark = "Placemark";
+  std::string const kStyle = "Style";
+  std::string const kDocument = "Document";
+  std::string const kStyleMap = "StyleMap";
+  std::string const kStyleUrl = "styleUrl";
+  std::string const kPair = "Pair";
 
   dp::Color const kDefaultTrackColor = dp::Extract(0xFF33CCFF);
 
-  string PointToString(m2::PointD const & org)
+  std::string PointToString(m2::PointD const & org)
   {
     double const lon = MercatorBounds::XToLon(org.x);
     double const lat = MercatorBounds::YToLat(org.y);
@@ -205,31 +205,31 @@ namespace
   class KMLParser
   {
     // Fixes icons which are not supported by MapsWithMe.
-    string GetSupportedBMType(string const & s) const
+    std::string GetSupportedBMType(std::string const & s) const
     {
       // Remove leading '#' symbol.
       ASSERT(!s.empty(), ());
-      string const result = s.substr(1);
+      std::string const result = s.substr(1);
       return style::GetSupportedStyle(result, m_name, style::GetDefaultStyle());
     }
 
     BookmarkCategory & m_category;
     UserMarksController & m_controller;
 
-    vector<string> m_tags;
+    vector<std::string> m_tags;
     GeometryType m_geometryType;
     m2::PolylineD m_points;
     dp::Color m_trackColor;
 
-    string m_styleId;
-    string m_mapStyleId;
-    string m_styleUrlKey;
-    map<string, dp::Color> m_styleUrl2Color;
-    map<string, string> m_mapStyle2Style;
+    std::string m_styleId;
+    std::string m_mapStyleId;
+    std::string m_styleUrlKey;
+    map<std::string, dp::Color> m_styleUrl2Color;
+    map<std::string, std::string> m_mapStyle2Style;
 
-    string m_name;
-    string m_type;
-    string m_description;
+    std::string m_name;
+    std::string m_type;
+    std::string m_description;
     time_t m_timeStamp;
 
     m2::PointD m_org;
@@ -253,7 +253,7 @@ namespace
       m_geometryType = GEOMETRY_TYPE_UNKNOWN;
     }
 
-    bool ParsePoint(string const & s, char const * delim, m2::PointD & pt)
+    bool ParsePoint(std::string const & s, char const * delim, m2::PointD & pt)
     {
       // order in string is: lon, lat, z
 
@@ -277,7 +277,7 @@ namespace
       return false;
     }
 
-    void SetOrigin(string const & s)
+    void SetOrigin(std::string const & s)
     {
       m_geometryType = GEOMETRY_TYPE_POINT;
 
@@ -286,7 +286,7 @@ namespace
         m_org = pt;
     }
 
-    void ParseLineCoordinates(string const & s, char const * blockSeparator, char const * coordSeparator)
+    void ParseLineCoordinates(std::string const & s, char const * blockSeparator, char const * coordSeparator)
     {
       m_geometryType = GEOMETRY_TYPE_LINE;
 
@@ -329,15 +329,15 @@ namespace
       return false;
     }
 
-    void ParseColor(string const & value)
+    void ParseColor(std::string const & value)
     {
-      string fromHex = FromHex(value);
+      std::string fromHex = FromHex(value);
       ASSERT(fromHex.size() == 4, ("Invalid color passed"));
       // Color positions in HEX – aabbggrr
       m_trackColor = dp::Color(fromHex[3], fromHex[2], fromHex[1], fromHex[0]);
     }
 
-    bool GetColorForStyle(string const & styleUrl, dp::Color & color)
+    bool GetColorForStyle(std::string const & styleUrl, dp::Color & color)
     {
       if (styleUrl.empty())
         return false;
@@ -365,15 +365,15 @@ namespace
       m_category.ReleaseController();
     }
 
-    bool Push(string const & name)
+    bool Push(std::string const & name)
     {
       m_tags.push_back(name);
       return true;
     }
 
-    void AddAttr(string const & attr, string const & value)
+    void AddAttr(std::string const & attr, std::string const & value)
     {
-      string attrInLowerCase = attr;
+      std::string attrInLowerCase = attr;
       strings::AsciiToLower(attrInLowerCase);
 
       if (IsValidAttribute(kStyle, value, attrInLowerCase))
@@ -382,18 +382,18 @@ namespace
         m_mapStyleId = value;
     }
 
-    bool IsValidAttribute(string const & type, string const & value, string const & attrInLowerCase) const
+    bool IsValidAttribute(std::string const & type, std::string const & value, std::string const & attrInLowerCase) const
     {
       return (GetTagFromEnd(0) == type && !value.empty() && attrInLowerCase == "id");
     }
 
-    string const & GetTagFromEnd(size_t n) const
+    std::string const & GetTagFromEnd(size_t n) const
     {
       ASSERT_LESS(n, m_tags.size(), ());
       return m_tags[m_tags.size() - n - 1];
     }
 
-    void Pop(string const & tag)
+    void Pop(std::string const & tag)
     {
       ASSERT_EQUAL(m_tags.back(), tag, ());
 
@@ -434,16 +434,16 @@ namespace
       m_tags.pop_back();
     }
 
-    void CharData(string value)
+    void CharData(std::string value)
     {
       strings::Trim(value);
 
       size_t const count = m_tags.size();
       if (count > 1 && !value.empty())
       {
-        string const & currTag = m_tags[count - 1];
-        string const & prevTag = m_tags[count - 2];
-        string const ppTag = count > 3 ? m_tags[count - 3] : string();
+        std::string const & currTag = m_tags[count - 1];
+        std::string const & prevTag = m_tags[count - 2];
+        std::string const ppTag = count > 3 ? m_tags[count - 3] : std::string();
 
         if (prevTag == kDocument)
         {
@@ -465,7 +465,7 @@ namespace
             if (!GetColorForStyle(value, m_trackColor))
             {
               // Remove leading '#' symbol.
-              string styleId = m_mapStyle2Style[value.substr(1)];
+              std::string styleId = m_mapStyle2Style[value.substr(1)];
               if (!styleId.empty())
                 GetColorForStyle(styleId, m_trackColor);
             }
@@ -557,7 +557,7 @@ namespace
   };
 }
 
-string BookmarkCategory::GetDefaultType()
+std::string BookmarkCategory::GetDefaultType()
 {
   return style::GetDefaultStyle();
 }
@@ -575,9 +575,9 @@ bool BookmarkCategory::LoadFromKML(ReaderPtr<Reader> const & reader)
   }
 }
 
-BookmarkCategory * BookmarkCategory::CreateFromKMLFile(string const & file, Framework & framework)
+BookmarkCategory * BookmarkCategory::CreateFromKMLFile(std::string const & file, Framework & framework)
 {
-  auto_ptr<BookmarkCategory> cat(new BookmarkCategory("", framework));
+  std::auto_ptr<BookmarkCategory> cat(new BookmarkCategory("", framework));
   try
   {
     if (cat->LoadFromKML(make_unique<FileReader>(file)))
@@ -665,17 +665,17 @@ char const * kmlFooter =
 
 namespace
 {
-  inline void SaveStringWithCDATA(ostream & stream, string const & s)
+  inline void SaveStringWithCDATA(std::ostream & stream, std::string const & s)
   {
     // According to kml/xml spec, we need to escape special symbols with CDATA
-    if (s.find_first_of("<&") != string::npos)
+    if (s.find_first_of("<&") != std::string::npos)
       stream << "<![CDATA[" << s << "]]>";
     else
       stream << s;
   }
 }
 
-void BookmarkCategory::SaveToKML(ostream & s)
+void BookmarkCategory::SaveToKML(std::ostream & s)
 {
   s << kmlHeader;
 
@@ -718,8 +718,8 @@ void BookmarkCategory::SaveToKML(ostream & s)
     time_t const timeStamp = bm->GetTimeStamp();
     if (timeStamp != my::INVALID_TIME_STAMP)
     {
-      string const strTimeStamp = my::TimestampToString(timeStamp);
-      ASSERT_EQUAL(strTimeStamp.size(), 20, ("We always generate fixed length UTC-format timestamp"));
+      std::string const strTimeStamp = my::TimestampToString(timeStamp);
+      ASSERT_EQUAL(strTimeStamp.size(), 20, ("We always std::generate fixed length UTC-format timestamp"));
       s << "    <TimeStamp><when>" << strTimeStamp << "</when></TimeStamp>\n";
     }
 
@@ -793,7 +793,7 @@ namespace
   }
 }
 
-string BookmarkCategory::RemoveInvalidSymbols(string const & name)
+std::string BookmarkCategory::RemoveInvalidSymbols(std::string const & name)
 {
   // Remove not allowed symbols
   strings::UniString uniName = strings::MakeUniString(name);
@@ -801,13 +801,13 @@ string BookmarkCategory::RemoveInvalidSymbols(string const & name)
   return (uniName.empty() ? "Bookmarks" : strings::ToUtf8(uniName));
 }
 
-string BookmarkCategory::GenerateUniqueFileName(const string & path, string name)
+std::string BookmarkCategory::GenerateUniqueFileName(const std::string & path, std::string name)
 {
-  string const kmlExt(BOOKMARKS_FILE_EXTENSION);
+  std::string const kmlExt(BOOKMARKS_FILE_EXTENSION);
 
   // check if file name already contains .kml extension
   size_t const extPos = name.rfind(kmlExt);
-  if (extPos != string::npos)
+  if (extPos != std::string::npos)
   {
     // remove extension
     ASSERT_GREATER_OR_EQUAL(name.size(), kmlExt.size(), ());
@@ -817,7 +817,7 @@ string BookmarkCategory::GenerateUniqueFileName(const string & path, string name
   }
 
   size_t counter = 1;
-  string suffix;
+  std::string suffix;
   while (Platform::IsFileExistsByFullPath(path + name + suffix + kmlExt))
     suffix = strings::to_string(counter++);
   return (path + name + suffix + kmlExt);
@@ -830,18 +830,18 @@ UserMark * BookmarkCategory::AllocateUserMark(m2::PointD const & ptOrg)
 
 bool BookmarkCategory::SaveToKMLFile()
 {
-  string oldFile;
+  std::string oldFile;
 
   // Get valid file name from category name
-  string const name = RemoveInvalidSymbols(m_name);
+  std::string const name = RemoveInvalidSymbols(m_name);
 
   if (!m_file.empty())
   {
     size_t i2 = m_file.find_last_of('.');
-    if (i2 == string::npos)
+    if (i2 == std::string::npos)
       i2 = m_file.size();
     size_t i1 = m_file.find_last_of("\\/");
-    if (i1 == string::npos)
+    if (i1 == std::string::npos)
       i1 = 0;
     else
       ++i1;
@@ -856,13 +856,13 @@ bool BookmarkCategory::SaveToKMLFile()
   else
     m_file = GenerateUniqueFileName(GetPlatform().SettingsDir(), name);
 
-  string const fileTmp = m_file + ".tmp";
+  std::string const fileTmp = m_file + ".tmp";
 
   try
   {
     // First, we save to the temporary file
     /// @todo On Windows UTF-8 file names are not supported.
-    ofstream of(fileTmp.c_str(), std::ios_base::out | std::ios_base::trunc);
+    std::ofstream of(fileTmp.c_str(), std::ios_base::out | std::ios_base::trunc);
     SaveToKML(of);
     of.flush();
 

@@ -23,7 +23,7 @@ bool NearbyPointsSweeper::Event::operator<(Event const & rhs) const
 }
 
 // NearbyPointsSweeper -----------------------------------------------------------------------------
-NearbyPointsSweeper::NearbyPointsSweeper(double eps) : m_eps(eps), m_heps(max(eps * 0.5, 0.0)) {}
+NearbyPointsSweeper::NearbyPointsSweeper(double eps) : m_eps(eps), m_heps(std::max(eps * 0.5, 0.0)) {}
 
 void NearbyPointsSweeper::Add(double x, double y, size_t index)
 {

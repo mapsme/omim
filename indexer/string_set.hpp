@@ -2,9 +2,10 @@
 
 #include "base/buffer_vector.hpp"
 #include "base/macros.hpp"
+#include "base/stl_add.hpp"
 
-#include "std/cstdint.hpp"
-#include "std/unique_ptr.hpp"
+#include <cstdint>
+#include <memory>
 
 namespace search
 {
@@ -83,7 +84,7 @@ private:
         if (p.first == c)
           return *p.second;
       }
-      m_moves.emplace_back(c, make_unique<Node>());
+      m_moves.emplace_back(c, my::make_unique<Node>());
       return *m_moves.back().second;
     }
 
@@ -99,7 +100,7 @@ private:
       return *cur;
     }
 
-    buffer_vector<pair<TChar, unique_ptr<Node>>, OutDegree> m_moves;
+    buffer_vector<std::pair<TChar, std::unique_ptr<Node>>, OutDegree> m_moves;
     bool m_isLeaf;
 
     DISALLOW_COPY(Node);

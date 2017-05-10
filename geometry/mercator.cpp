@@ -11,15 +11,15 @@ m2::RectD MercatorBounds::MetresToXY(double lon, double lat,
                                      double lonMetresR, double latMetresR)
 {
   double const latDegreeOffset = latMetresR * degreeInMetres;
-  double const minLat = max(-90.0, lat - latDegreeOffset);
-  double const maxLat = min( 90.0, lat + latDegreeOffset);
+  double const minLat = std::max(-90.0, lat - latDegreeOffset);
+  double const maxLat = std::min( 90.0, lat + latDegreeOffset);
 
-  double const cosL = max(cos(my::DegToRad(max(fabs(minLat), fabs(maxLat)))), 0.00001);
+  double const cosL = std::max(cos(my::DegToRad(std::max(fabs(minLat), fabs(maxLat)))), 0.00001);
   ASSERT_GREATER ( cosL, 0.0, () );
 
   double const lonDegreeOffset = lonMetresR * degreeInMetres / cosL;
-  double const minLon = max(-180.0, lon - lonDegreeOffset);
-  double const maxLon = min( 180.0, lon + lonDegreeOffset);
+  double const minLon = std::max(-180.0, lon - lonDegreeOffset);
+  double const maxLon = std::min( 180.0, lon + lonDegreeOffset);
 
   return m2::RectD(FromLatLon(minLat, minLon), FromLatLon(maxLat, maxLon));
 }
@@ -30,13 +30,13 @@ m2::PointD MercatorBounds::GetSmPoint(m2::PointD const & pt, double lonMetresR, 
   double const lon = XToLon(pt.x);
 
   double const latDegreeOffset = latMetresR * degreeInMetres;
-  double const newLat = min(90.0, max(-90.0, lat + latDegreeOffset));
+  double const newLat = std::min(90.0, std::max(-90.0, lat + latDegreeOffset));
 
-  double const cosL = max(cos(my::DegToRad(newLat)), 0.00001);
+  double const cosL = std::max(cos(my::DegToRad(newLat)), 0.00001);
   ASSERT_GREATER ( cosL, 0.0, () );
 
   double const lonDegreeOffset = lonMetresR * degreeInMetres / cosL;
-  double const newLon = min(180.0, max(-180.0, lon + lonDegreeOffset));
+  double const newLon = std::min(180.0, std::max(-180.0, lon + lonDegreeOffset));
 
   return FromLatLon(newLat, newLon);
 }

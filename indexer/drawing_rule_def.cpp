@@ -1,7 +1,7 @@
 #include "indexer/drawing_rule_def.hpp"
 
-#include "std/iterator.hpp"
-#include "std/algorithm.hpp"
+#include <iterator>
+#include <algorithm>
 
 
 namespace drule
@@ -35,7 +35,7 @@ namespace drule
 
   void MakeUnique(KeysT & keys)
   {
-    sort(keys.begin(), keys.end(), less_key());
-    keys.resize(distance(keys.begin(), unique(keys.begin(), keys.end(), equal_key())));
+    std::sort(keys.begin(), keys.end(), less_key());
+    keys.resize(std::distance(keys.begin(), std::unique(keys.begin(), keys.end(), equal_key())));
   }
 }

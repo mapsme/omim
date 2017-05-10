@@ -375,7 +375,7 @@ private:
   static T GetBitsPerMask()
   {
     static_assert(
-        static_cast<size_t>(VehicleType::Count) <= static_cast<size_t>(numeric_limits<T>::max()),
+        static_cast<size_t>(VehicleType::Count) <= static_cast<size_t>(std::numeric_limits<T>::max()),
         "Can't pack VehicleType::Count into chosen type");
     return static_cast<T>(VehicleType::Count);
   }

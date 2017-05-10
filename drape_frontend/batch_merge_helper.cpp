@@ -60,8 +60,8 @@ bool BatchMergeHelper::IsMergeSupported()
 #endif
 }
 
-void BatchMergeHelper::MergeBatches(vector<drape_ptr<RenderGroup>> & batches,
-                                    vector<drape_ptr<RenderGroup>> & mergedBatches,
+void BatchMergeHelper::MergeBatches(std::vector<drape_ptr<RenderGroup>> & batches,
+                                    std::vector<drape_ptr<RenderGroup>> & mergedBatches,
                                     bool isPerspective)
 {
   ASSERT(!batches.empty(), ());
@@ -106,7 +106,7 @@ void BatchMergeHelper::MergeBatches(vector<drape_ptr<RenderGroup>> & batches,
   };
 
   auto copyVertecesFn = [](TBuffer::TBuffersMap::value_type const & vboNode,
-                           vector<uint8_t> & rawDataBuffer,
+                           std::vector<uint8_t> & rawDataBuffer,
                            ref_ptr<TBuffer> newBuffer)
   {
     dp::BindingInfo const & binding = vboNode.first;
@@ -127,7 +127,7 @@ void BatchMergeHelper::MergeBatches(vector<drape_ptr<RenderGroup>> & batches,
   ref_ptr<TBuffer> newBuffer;
   allocateFn(bucket, newBuffer);
 
-  vector<uint8_t> rawDataBuffer;
+  std::vector<uint8_t> rawDataBuffer;
 
   for (drape_ptr<RenderGroup> const & group : batches)
   {

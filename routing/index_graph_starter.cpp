@@ -26,7 +26,7 @@ m2::PointD const & IndexGraphStarter::GetPoint(Segment const & segment, bool fro
 }
 
 // static
-size_t IndexGraphStarter::GetRouteNumPoints(vector<Segment> const & segments)
+size_t IndexGraphStarter::GetRouteNumPoints(std::vector<Segment> const & segments)
 {
   // Valid route contains at least 3 segments:
   // start fake, finish fake and at least one normal nearest segment.
@@ -37,7 +37,7 @@ size_t IndexGraphStarter::GetRouteNumPoints(vector<Segment> const & segments)
   return segments.size() - 1;
 }
 
-m2::PointD const & IndexGraphStarter::GetRoutePoint(vector<Segment> const & segments,
+m2::PointD const & IndexGraphStarter::GetRoutePoint(std::vector<Segment> const & segments,
                                                     size_t pointIndex)
 {
   if (pointIndex == 0)
@@ -48,7 +48,7 @@ m2::PointD const & IndexGraphStarter::GetRoutePoint(vector<Segment> const & segm
 }
 
 void IndexGraphStarter::GetEdgesList(Segment const & segment, bool isOutgoing,
-                                     vector<SegmentEdge> & edges)
+                                     std::vector<SegmentEdge> & edges)
 {
   edges.clear();
 
@@ -70,7 +70,7 @@ void IndexGraphStarter::GetEdgesList(Segment const & segment, bool isOutgoing,
 }
 
 void IndexGraphStarter::GetFakeToNormalEdges(FakeVertex const & fakeVertex, bool isOutgoing,
-                                             vector<SegmentEdge> & edges)
+                                             std::vector<SegmentEdge> & edges)
 {
   if (m_graph.GetMode() == WorldGraph::Mode::LeapsOnly)
   {
@@ -85,7 +85,7 @@ void IndexGraphStarter::GetFakeToNormalEdges(FakeVertex const & fakeVertex, bool
 }
 
 void IndexGraphStarter::GetFakeToNormalEdge(FakeVertex const & fakeVertex, bool forward,
-                                            vector<SegmentEdge> & edges)
+                                            std::vector<SegmentEdge> & edges)
 {
   Segment const segment(fakeVertex.GetMwmId(), fakeVertex.GetFeatureId(),
                         fakeVertex.GetSegmentIdx(), forward);
@@ -96,7 +96,7 @@ void IndexGraphStarter::GetFakeToNormalEdge(FakeVertex const & fakeVertex, bool 
 
 void IndexGraphStarter::GetNormalToFakeEdge(Segment const & segment, FakeVertex const & fakeVertex,
                                             Segment const & fakeSegment, bool isOutgoing,
-                                            vector<SegmentEdge> & edges)
+                                            std::vector<SegmentEdge> & edges)
 {
   m2::PointD const & pointFrom = GetPoint(segment, isOutgoing);
   if (segment.GetMwmId() == fakeVertex.GetMwmId() &&

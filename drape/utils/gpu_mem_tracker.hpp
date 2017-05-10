@@ -4,15 +4,15 @@
 
 #include "base/mutex.hpp"
 
-#include "std/map.hpp"
-#include "std/noncopyable.hpp"
-#include "std/string.hpp"
-#include "std/utility.hpp"
+#include <map>
+#include <boost/noncopyable.hpp>
+#include <string>
+#include <utility>
 
 namespace dp
 {
 
-class GPUMemTracker : private noncopyable
+class GPUMemTracker : private boost::noncopyable
 {
 public:
   struct TagMemorySnapshot
@@ -24,28 +24,28 @@ public:
 
   struct GPUMemorySnapshot
   {
-    string ToString() const;
+    std::string ToString() const;
 
     uint32_t m_summaryAllocatedInMb = 0;
     uint32_t m_summaryUsedInMb = 0;
-    map<string, TagMemorySnapshot> m_tagStats;
+    std::map<std::string, TagMemorySnapshot> m_tagStats;
   };
 
   static GPUMemTracker & Inst();
 
   GPUMemorySnapshot GetMemorySnapshot();
 
-  void AddAllocated(string const & tag, uint32_t id, uint32_t size);
-  void SetUsed(string const & tag, uint32_t id, uint32_t size);
-  void RemoveDeallocated(string const & tag, uint32_t id);
+  void AddAllocated(std::string const & tag, uint32_t id, uint32_t size);
+  void SetUsed(std::string const & tag, uint32_t id, uint32_t size);
+  void RemoveDeallocated(std::string const & tag, uint32_t id);
 
 private:
   GPUMemTracker() = default;
 
 private:
-  typedef pair<uint32_t, uint32_t> TAlocUsedMem;
-  typedef pair<string, uint32_t> TMemTag;
-  map<TMemTag, TAlocUsedMem> m_memTracker;
+  typedef std::pair<uint32_t, uint32_t> TAlocUsedMem;
+  typedef std::pair<std::string, uint32_t> TMemTag;
+  std::map<TMemTag, TAlocUsedMem> m_memTracker;
 
   threads::Mutex m_mutex;
 };

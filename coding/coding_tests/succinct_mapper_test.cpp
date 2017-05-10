@@ -3,7 +3,7 @@
 #include "coding/succinct_mapper.hpp"
 #include "coding/writer.hpp"
 
-#include "std/vector.hpp"
+#include <vector>
 
 #include "3party/succinct/mapper.hpp"
 
@@ -24,7 +24,7 @@ UNIT_TEST(ReverseMapper_Smoke)
 
 UNIT_TEST(Freeze_Smoke)
 {
-  vector<uint8_t> data;
+  std::vector<uint8_t> data;
   {
     MemWriter<decltype(data)> writer(data);
     uint64_t const data = 0x0123456789abcdef;
@@ -39,7 +39,7 @@ UNIT_TEST(Freeze_Smoke)
 
 UNIT_TEST(ReverseFreeze_Smoke)
 {
-  vector<uint8_t> data;
+  std::vector<uint8_t> data;
   {
     MemWriter<decltype(data)> writer(data);
     uint64_t const data = 0x0123456789abcdef;

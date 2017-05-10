@@ -80,7 +80,7 @@ void TextHandle::SetForceUpdateNormals(bool forceUpdate) const
 }
 
 #ifdef DEBUG_OVERLAYS_OUTPUT
-string TextHandle::GetOverlayDebugInfo()
+std::string TextHandle::GetOverlayDebugInfo()
 {
   ostringstream out;
   out << "Text Priority(" << GetPriority() << ") " << GetOverlayID().m_featureId.m_index

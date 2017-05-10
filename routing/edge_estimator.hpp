@@ -13,7 +13,7 @@
 
 #include "geometry/point2d.hpp"
 
-#include "std/shared_ptr.hpp"
+#include <memory>
 
 namespace routing
 {
@@ -38,7 +38,7 @@ public:
   virtual bool LeapIsAllowed(NumMwmId mwmId) const = 0;
 
   // The estimator used in car routing.
-  static shared_ptr<EdgeEstimator> CreateForCar(shared_ptr<TrafficStash> trafficStash,
+  static std::shared_ptr<EdgeEstimator> CreateForCar(std::shared_ptr<TrafficStash> trafficStash,
                                                 double maxSpeedKMpH);
 };
 }  // namespace routing

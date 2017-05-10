@@ -2,8 +2,8 @@
 
 #include "drape/buffer_base.hpp"
 
-#include "std/vector.hpp"
-#include "std/shared_ptr.hpp"
+#include <vector>
+#include <memory>
 
 namespace dp
 {
@@ -29,7 +29,7 @@ private:
 
 private:
   unsigned char * m_memoryCursor;
-  shared_ptr<vector<unsigned char> > m_memory;
+  std::shared_ptr<std::vector<unsigned char> > m_memory;
 };
 
 } //namespace dp

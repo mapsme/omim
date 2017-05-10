@@ -138,7 +138,7 @@ uint64_t const & OverlayHandle::GetPriority() const
 
 OverlayHandle::TOffsetNode const & OverlayHandle::GetOffsetNode(uint8_t bufferID) const
 {
-  set<TOffsetNode>::const_iterator it = find_if(m_offsets.begin(), m_offsets.end(), OffsetNodeFinder(bufferID));
+  std::set<TOffsetNode>::const_iterator it = find_if(m_offsets.begin(), m_offsets.end(), OffsetNodeFinder(bufferID));
   ASSERT(it != m_offsets.end(), ());
   return *it;
 }
@@ -201,7 +201,7 @@ uint64_t OverlayHandle::GetPriorityInFollowingMode() const
 }
 SquareHandle::SquareHandle(OverlayID const & id, dp::Anchor anchor, m2::PointD const & gbPivot,
                            m2::PointD const & pxSize, uint64_t priority, bool isBound,
-                           string const & debugStr, bool isBillboard)
+                           std::string const & debugStr, bool isBillboard)
   : TBase(id, anchor, priority, isBillboard)
   , m_gbPivot(gbPivot)
   , m_pxHalfSize(pxSize.x / 2.0, pxSize.y / 2.0)
@@ -241,7 +241,7 @@ void SquareHandle::GetPixelShape(ScreenBase const & screen, bool perspective, Re
 
 bool SquareHandle::IsBound() const { return m_isBound; }
 #ifdef DEBUG_OVERLAYS_OUTPUT
-string SquareHandle::GetOverlayDebugInfo()
+std::string SquareHandle::GetOverlayDebugInfo()
 {
   ostringstream out;
   out << "POI Priority(" << GetPriority() << ") "

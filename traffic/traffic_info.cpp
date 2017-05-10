@@ -22,10 +22,10 @@
 #include "base/logging.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/limits.hpp"
-#include "std/sstream.hpp"
-#include "std/string.hpp"
+#include <algorithm>
+#include <limits>
+#include <sstream>
+#include <string>
 
 #include "defines.hpp"
 
@@ -37,7 +37,7 @@ namespace traffic
 {
 namespace
 {
-bool ReadRemoteFile(string const & url, vector<uint8_t> & contents, int & errorCode)
+bool ReadRemoteFile(std::string const & url, std::vector<uint8_t> & contents, int & errorCode)
 {
   platform::HttpClient request(url);
   if (!request.RunHttpRequest())
@@ -49,7 +49,7 @@ bool ReadRemoteFile(string const & url, vector<uint8_t> & contents, int & errorC
 
   errorCode = request.ErrorCode();
 
-  string const & result = request.ServerResponse();
+  std::string const & result = request.ServerResponse();
   contents.resize(result.size());
   memcpy(contents.data(), result.data(), result.size());
 
@@ -62,12 +62,12 @@ bool ReadRemoteFile(string const & url, vector<uint8_t> & contents, int & errorC
   return true;
 }
 
-string MakeRemoteURL(string const & name, uint64_t version)
+std::string MakeRemoteURL(std::string const & name, uint64_t version)
 {
-  if (string(TRAFFIC_DATA_BASE_URL).empty())
+  if (std::string(TRAFFIC_DATA_BASE_URL).empty())
     return {};
 
-  stringstream ss;
+  std::stringstream ss;
   ss << TRAFFIC_DATA_BASE_URL;
   if (version != 0)
     ss << version << "/";
@@ -101,14 +101,14 @@ TrafficInfo::TrafficInfo(MwmSet::MwmId const & mwmId, int64_t currentDataVersion
     LOG(LWARNING, ("Attempt to create a traffic info for dead mwm."));
     return;
   }
-  string const mwmPath = mwmId.GetInfo()->GetLocalFile().GetPath(MapOptions::Map);
+  std::string const mwmPath = mwmId.GetInfo()->GetLocalFile().GetPath(MapOptions::Map);
   try
   {
     FilesContainerR rcont(mwmPath);
     if (rcont.IsExist(TRAFFIC_KEYS_FILE_TAG))
     {
       auto reader = rcont.GetReader(TRAFFIC_KEYS_FILE_TAG);
-      vector<uint8_t> buf(reader.Size());
+      std::vector<uint8_t> buf(reader.Size());
       reader.Read(0, buf.data(), buf.size());
       LOG(LINFO, ("Reading keys for", mwmId, "from section"));
       try
@@ -147,15 +147,15 @@ TrafficInfo TrafficInfo::BuildForTesting(Coloring && coloring)
   return info;
 }
 
-void TrafficInfo::SetTrafficKeysForTesting(vector<RoadSegmentId> const & keys)
+void TrafficInfo::SetTrafficKeysForTesting(std::vector<RoadSegmentId> const & keys)
 {
   m_keys = keys;
   m_availability = Availability::IsAvailable;
 }
 
-bool TrafficInfo::ReceiveTrafficData(string & etag)
+bool TrafficInfo::ReceiveTrafficData(std::string & etag)
 {
-  vector<SpeedGroup> values;
+  std::vector<SpeedGroup> values;
   switch (ReceiveTrafficValues(etag, values))
   {
   case ServerDataStatus::New:
@@ -178,7 +178,7 @@ SpeedGroup TrafficInfo::GetSpeedGroup(RoadSegmentId const & id) const
 }
 
 // static
-void TrafficInfo::ExtractTrafficKeys(string const & mwmPath, vector<RoadSegmentId> & result)
+void TrafficInfo::ExtractTrafficKeys(std::string const & mwmPath, std::vector<RoadSegmentId> & result)
 {
   result.clear();
   feature::ForEachFromDat(mwmPath, [&](FeatureType const & ft, uint32_t const fid) {
@@ -195,11 +195,11 @@ void TrafficInfo::ExtractTrafficKeys(string const & mwmPath, vector<RoadSegmentI
     }
   });
 
-  ASSERT(is_sorted(result.begin(), result.end()), ());
+  ASSERT(std::is_sorted(result.begin(), result.end()), ());
 }
 
 // static
-void TrafficInfo::CombineColorings(vector<TrafficInfo::RoadSegmentId> const & keys,
+void TrafficInfo::CombineColorings(std::vector<TrafficInfo::RoadSegmentId> const & keys,
                                    TrafficInfo::Coloring const & knownColors,
                                    TrafficInfo::Coloring & result)
 {
@@ -229,11 +229,11 @@ void TrafficInfo::CombineColorings(vector<TrafficInfo::RoadSegmentId> const & ke
 }
 
 // static
-void TrafficInfo::SerializeTrafficKeys(vector<RoadSegmentId> const & keys, vector<uint8_t> & result)
+void TrafficInfo::SerializeTrafficKeys(std::vector<RoadSegmentId> const & keys, std::vector<uint8_t> & result)
 {
-  vector<uint32_t> fids;
-  vector<size_t> numSegs;
-  vector<bool> oneWay;
+  std::vector<uint32_t> fids;
+  std::vector<size_t> numSegs;
+  std::vector<bool> oneWay;
   for (size_t i = 0; i < keys.size();)
   {
     size_t j = i;
@@ -263,7 +263,7 @@ void TrafficInfo::SerializeTrafficKeys(vector<RoadSegmentId> const & keys, vecto
     i = j;
   }
 
-  MemWriter<vector<uint8_t>> memWriter(result);
+  MemWriter<std::vector<uint8_t>> memWriter(result);
   WriteToSink(memWriter, kLatestKeysVersion);
   WriteVarUint(memWriter, fids.size());
 
@@ -293,8 +293,8 @@ void TrafficInfo::SerializeTrafficKeys(vector<RoadSegmentId> const & keys, vecto
 }
 
 // static
-void TrafficInfo::DeserializeTrafficKeys(vector<uint8_t> const & data,
-                                         vector<TrafficInfo::RoadSegmentId> & result)
+void TrafficInfo::DeserializeTrafficKeys(std::vector<uint8_t> const & data,
+                                         std::vector<TrafficInfo::RoadSegmentId> & result)
 {
   MemReaderWithExceptions memReader(data.data(), data.size());
   ReaderSource<decltype(memReader)> src(memReader);
@@ -302,9 +302,9 @@ void TrafficInfo::DeserializeTrafficKeys(vector<uint8_t> const & data,
   CHECK_EQUAL(version, kLatestKeysVersion, ("Unsupported version of traffic values."));
   auto const n = static_cast<size_t>(ReadVarUint<uint64_t>(src));
 
-  vector<uint32_t> fids(n);
-  vector<size_t> numSegs(n);
-  vector<bool> oneWay(n);
+  std::vector<uint32_t> fids(n);
+  std::vector<size_t> numSegs(n);
+  std::vector<bool> oneWay(n);
 
   {
     BitReader<decltype(src)> bitReader(src);
@@ -341,11 +341,11 @@ void TrafficInfo::DeserializeTrafficKeys(vector<uint8_t> const & data,
 }
 
 // static
-void TrafficInfo::SerializeTrafficValues(vector<SpeedGroup> const & values,
-                                         vector<uint8_t> & result)
+void TrafficInfo::SerializeTrafficValues(std::vector<SpeedGroup> const & values,
+                                         std::vector<uint8_t> & result)
 {
-  vector<uint8_t> buf;
-  MemWriter<vector<uint8_t>> memWriter(buf);
+  std::vector<uint8_t> buf;
+  MemWriter<std::vector<uint8_t>> memWriter(buf);
   WriteToSink(memWriter, kLatestValuesVersion);
   WriteVarUint(memWriter, values.size());
   {
@@ -365,10 +365,10 @@ void TrafficInfo::SerializeTrafficValues(vector<SpeedGroup> const & values,
 }
 
 // static
-void TrafficInfo::DeserializeTrafficValues(vector<uint8_t> const & data,
-                                           vector<SpeedGroup> & result)
+void TrafficInfo::DeserializeTrafficValues(std::vector<uint8_t> const & data,
+                                           std::vector<SpeedGroup> & result)
 {
-  vector<uint8_t> decompressedData;
+  std::vector<uint8_t> decompressedData;
   coding::ZLib::Inflate(data.data(), data.size(), back_inserter(decompressedData));
 
   MemReaderWithExceptions memReader(decompressedData.data(), decompressedData.size());
@@ -398,12 +398,12 @@ bool TrafficInfo::ReceiveTrafficKeys()
   if (!info)
     return false;
 
-  string const url = MakeRemoteURL(info->GetCountryName(), info->GetVersion());
+  std::string const url = MakeRemoteURL(info->GetCountryName(), info->GetVersion());
 
   if (url.empty())
     return false;
 
-  vector<uint8_t> contents;
+  std::vector<uint8_t> contents;
   int errorCode;
   if (!ReadRemoteFile(url + ".keys", contents, errorCode))
     return false;
@@ -413,7 +413,7 @@ bool TrafficInfo::ReceiveTrafficKeys()
     return false;
   }
 
-  vector<RoadSegmentId> keys;
+  std::vector<RoadSegmentId> keys;
   try
   {
     DeserializeTrafficKeys(contents, keys);
@@ -428,7 +428,7 @@ bool TrafficInfo::ReceiveTrafficKeys()
   return true;
 }
 
-TrafficInfo::ServerDataStatus TrafficInfo::ReceiveTrafficValues(string & etag, vector<SpeedGroup> & values)
+TrafficInfo::ServerDataStatus TrafficInfo::ReceiveTrafficValues(std::string & etag, std::vector<SpeedGroup> & values)
 {
   if (!m_mwmId.IsAlive())
     return ServerDataStatus::Error;
@@ -438,7 +438,7 @@ TrafficInfo::ServerDataStatus TrafficInfo::ReceiveTrafficValues(string & etag, v
     return ServerDataStatus::Error;
 
   auto const version = info->GetVersion();
-  string const url = MakeRemoteURL(info->GetCountryName(), version);
+  std::string const url = MakeRemoteURL(info->GetCountryName(), version);
 
   if (url.empty())
     return ServerDataStatus::Error;
@@ -451,8 +451,8 @@ TrafficInfo::ServerDataStatus TrafficInfo::ReceiveTrafficValues(string & etag, v
     return ProcessFailure(request, version);
   try
   {
-    string const & response = request.ServerResponse();
-    vector<uint8_t> contents(response.cbegin(), response.cend());
+    std::string const & response = request.ServerResponse();
+    std::vector<uint8_t> contents(response.cbegin(), response.cend());
     DeserializeTrafficValues(contents, values);
   }
   catch (Reader::Exception const & e)
@@ -478,7 +478,7 @@ TrafficInfo::ServerDataStatus TrafficInfo::ReceiveTrafficValues(string & etag, v
   return ServerDataStatus::New;
 }
 
-bool TrafficInfo::UpdateTrafficData(vector<SpeedGroup> const & values)
+bool TrafficInfo::UpdateTrafficData(std::vector<SpeedGroup> const & values)
 {
   m_coloring.clear();
 
@@ -536,11 +536,11 @@ TrafficInfo::ServerDataStatus TrafficInfo::ProcessFailure(platform::HttpClient c
   return ServerDataStatus::Error;
 }
 
-string DebugPrint(TrafficInfo::RoadSegmentId const & id)
+std::string DebugPrint(TrafficInfo::RoadSegmentId const & id)
 {
-  string const dir =
+  std::string const dir =
   id.m_dir == TrafficInfo::RoadSegmentId::kForwardDirection ? "Forward" : "Backward";
-  ostringstream oss;
+  std::ostringstream oss;
   oss << "RoadSegmentId ["
   << " fid = " << id.m_fid << " idx = " << id.m_idx << " dir = " << dir << " ]";
   return oss.str();

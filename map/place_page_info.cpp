@@ -46,46 +46,46 @@ bool Info::ShouldShowEditPlace() const
 bool Info::HasApiUrl() const { return !m_apiUrl.empty(); }
 bool Info::HasWifi() const { return GetInternet() == osm::Internet::Wlan; }
 
-string Info::FormatNewBookmarkName() const
+std::string Info::FormatNewBookmarkName() const
 {
-  string const title = GetTitle();
+  std::string const title = GetTitle();
   if (title.empty())
     return GetLocalizedType();
   return title;
 }
 
-string Info::GetTitle() const
+std::string Info::GetTitle() const
 {
   if (!m_customName.empty())
     return m_customName;
 
   auto const mwmInfo = GetID().m_mwmId.GetInfo();
 
-  string primaryName;
+  std::string primaryName;
   if (mwmInfo)
   {
     auto const deviceLang = StringUtf8Multilang::GetLangIndex(languages::GetCurrentNorm());
-    string secondaryName;
+    std::string secondaryName;
     feature::GetPreferredNames(mwmInfo->GetRegionData(), m_name, deviceLang, true /* allowTranslit */, primaryName, secondaryName);
   }
   return primaryName;
 }
 
-string Info::GetSecondaryTitle() const
+std::string Info::GetSecondaryTitle() const
 {
   auto const mwmInfo = GetID().m_mwmId.GetInfo();
 
-  string secondaryName;
+  std::string secondaryName;
   if (mwmInfo)
   {
     auto const deviceLang = StringUtf8Multilang::GetLangIndex(languages::GetCurrentNorm());
-    string primaryName;
+    std::string primaryName;
     feature::GetPreferredNames(mwmInfo->GetRegionData(), m_name, deviceLang, true /* allowTranslit */, primaryName, secondaryName);
   }
   return secondaryName;
 }
 
-string Info::GetSubtitle() const
+std::string Info::GetSubtitle() const
 {
   if (!IsFeature())
   {
@@ -94,7 +94,7 @@ string Info::GetSubtitle() const
     return {};
   }
 
-  vector<string> values;
+  std::vector<std::string> values;
 
   // Bookmark category.
   if (IsBookmark())
@@ -104,26 +104,26 @@ string Info::GetSubtitle() const
   values.push_back(GetLocalizedType());
 
   // Flats.
-  string const flats = GetFlats();
+  std::string const flats = GetFlats();
   if (!flats.empty())
     values.push_back(flats);
 
   // Cuisines.
-  for (string const & cuisine : GetLocalizedCuisines())
+  for (std::string const & cuisine : GetLocalizedCuisines())
     values.push_back(cuisine);
 
   // Stars.
-  string const stars = FormatStars();
+  std::string const stars = FormatStars();
   if (!stars.empty())
     values.push_back(stars);
 
   // Operator.
-  string const op = GetOperator();
+  std::string const op = GetOperator();
   if (!op.empty())
     values.push_back(op);
 
   // Elevation.
-  string const eleStr = GetElevationFormatted();
+  std::string const eleStr = GetElevationFormatted();
   if (!eleStr.empty())
     values.push_back(kMountainSymbol + eleStr);
   if (HasWifi())
@@ -132,33 +132,33 @@ string Info::GetSubtitle() const
   return strings::JoinStrings(values, kSubtitleSeparator);
 }
 
-string Info::FormatStars() const
+std::string Info::FormatStars() const
 {
-  string stars;
+  std::string stars;
   for (int i = 0; i < GetStars(); ++i)
     stars.append(kStarSymbol);
   return stars;
 }
 
-string Info::GetFormattedCoordinate(bool isDMS) const
+std::string Info::GetFormattedCoordinate(bool isDMS) const
 {
   auto const & ll = GetLatLon();
   return isDMS ? measurement_utils::FormatLatLon(ll.lat, ll.lon, true)
                : measurement_utils::FormatLatLonAsDMS(ll.lat, ll.lon, 2);
 }
 
-string Info::GetCustomName() const { return m_customName; }
+std::string Info::GetCustomName() const { return m_customName; }
 BookmarkAndCategory Info::GetBookmarkAndCategory() const { return m_bac; }
-string Info::GetBookmarkCategoryName() const { return m_bookmarkCategoryName; }
-string const & Info::GetApiUrl() const { return m_apiUrl; }
-string const & Info::GetSponsoredUrl() const { return m_sponsoredUrl; }
-string const & Info::GetSponsoredDescriptionUrl() const { return m_sponsoredDescriptionUrl; }
-string const & Info::GetSponsoredReviewUrl() const { return m_sponsoredReviewUrl; }
+std::string Info::GetBookmarkCategoryName() const { return m_bookmarkCategoryName; }
+std::string const & Info::GetApiUrl() const { return m_apiUrl; }
+std::string const & Info::GetSponsoredUrl() const { return m_sponsoredUrl; }
+std::string const & Info::GetSponsoredDescriptionUrl() const { return m_sponsoredDescriptionUrl; }
+std::string const & Info::GetSponsoredReviewUrl() const { return m_sponsoredReviewUrl; }
 
-string Info::GetRatingFormatted() const
+std::string Info::GetRatingFormatted() const
 {
   if (!IsSponsored())
-    return string();
+    return std::string();
 
   auto const r = GetMetadata().Get(feature::Metadata::FMD_RATING);
   char const * rating = r.empty() ? kEmptyRatingSymbol : r.c_str();
@@ -166,22 +166,22 @@ string Info::GetRatingFormatted() const
   if (size < 0)
   {
     LOG(LERROR, ("Incorrect size for string:", m_localizedRatingString, ", rating:", rating));
-    return string();
+    return std::string();
   }
 
-  vector<char> buf(size + 1);
+  std::vector<char> buf(size + 1);
   snprintf(buf.data(), buf.size(), m_localizedRatingString.c_str(), rating);
-  return string(buf.begin(), buf.end());
+  return std::string(buf.begin(), buf.end());
 }
 
-string Info::GetApproximatePricing() const
+std::string Info::GetApproximatePricing() const
 {
   if (!IsSponsored())
-    return string();
+    return std::string();
 
   int pricing;
   strings::to_int(GetMetadata().Get(feature::Metadata::FMD_PRICE_RATE), pricing);
-  string result;
+  std::string result;
   for (auto i = 0; i < pricing; i++)
     result.append(kPricingSymbol);
 
@@ -213,8 +213,8 @@ bool Info::IsReachableByTaxi() const
 }
 
 void Info::SetMercator(m2::PointD const & mercator) { m_mercator = mercator; }
-vector<string> Info::GetRawTypes() const { return m_types.ToObjectNames(); }
-string const & Info::GetBookingSearchUrl() const { return m_bookingSearchUrl; }
+vector<std::string> Info::GetRawTypes() const { return m_types.ToObjectNames(); }
+std::string const & Info::GetBookingSearchUrl() const { return m_bookingSearchUrl; }
 LocalAdsStatus Info::GetLocalAdsStatus() const { return m_localAdsStatus; }
-string const & Info::GetLocalAdsUrl() const { return m_localAdsUrl; }
+std::string const & Info::GetLocalAdsUrl() const { return m_localAdsUrl; }
 }  // namespace place_page

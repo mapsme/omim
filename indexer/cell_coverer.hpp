@@ -4,8 +4,8 @@
 
 #include "base/buffer_vector.hpp"
 
-#include "std/queue.hpp"
-#include "std/vector.hpp"
+#include <queue>
+#include <vector>
 
 // TODO: Move neccessary functions to geometry/covering_utils.hpp and delete this file.
 
@@ -13,7 +13,7 @@ constexpr int SPLIT_RECT_CELLS_COUNT = 512;
 
 template <typename BoundsT, typename CellIdT>
 inline size_t SplitRectCell(CellIdT const & id, m2::RectD const & rect,
-                            array<pair<CellIdT, m2::RectD>, 4> & result)
+                            std::array<std::pair<CellIdT, m2::RectD>, 4> & result)
 {
   size_t index = 0;
   for (int8_t i = 0; i < 4; ++i)
@@ -30,7 +30,7 @@ inline size_t SplitRectCell(CellIdT const & id, m2::RectD const & rect,
 }
 
 template <typename BoundsT, typename CellIdT>
-inline void CoverRect(m2::RectD rect, size_t cellsCount, int maxDepth, vector<CellIdT> & result)
+inline void CoverRect(m2::RectD rect, size_t cellsCount, int maxDepth, std::vector<CellIdT> & result)
 {
   ASSERT(result.empty(), ());
   {
@@ -43,7 +43,7 @@ inline void CoverRect(m2::RectD rect, size_t cellsCount, int maxDepth, vector<Ce
   CellIdT const commonCell = CellIdConverter<BoundsT, CellIdT>::Cover2PointsWithCell(
       rect.minX(), rect.minY(), rect.maxX(), rect.maxY());
 
-  priority_queue<CellIdT, buffer_vector<CellIdT, SPLIT_RECT_CELLS_COUNT>,
+  std::priority_queue<CellIdT, buffer_vector<CellIdT, SPLIT_RECT_CELLS_COUNT>,
                  typename CellIdT::GreaterLevelOrder>
       cellQueue;
   cellQueue.push(commonCell);
@@ -64,7 +64,7 @@ inline void CoverRect(m2::RectD rect, size_t cellsCount, int maxDepth, vector<Ce
       break;
     }
 
-    array<pair<CellIdT, m2::RectD>, 4> arr;
+    std::array<std::pair<CellIdT, m2::RectD>, 4> arr;
     size_t const count = SplitRectCell<BoundsT>(id, rect, arr);
 
     if (cellQueue.size() + result.size() + count <= cellsCount)
@@ -88,7 +88,7 @@ inline void CoverRect(m2::RectD rect, size_t cellsCount, int maxDepth, vector<Ce
     CellIdT id = cellQueue.top();
     while (id.Level() < maxDepth)
     {
-      array<pair<CellIdT, m2::RectD>, 4> arr;
+      std::array<std::pair<CellIdT, m2::RectD>, 4> arr;
       size_t const count = SplitRectCell<BoundsT>(id, rect, arr);
       ASSERT_GREATER(count, 0, ());
       if (count > 1)

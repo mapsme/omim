@@ -4,9 +4,9 @@
 
 #include "base/thread.hpp"
 
-#include "std/bind.hpp"
-#include "std/cstring.hpp"
-#include "std/list.hpp"
+#include <functional>
+#include <cstring>
+#include <list>
 
 #ifdef DEBUG
 
@@ -19,7 +19,7 @@ public:
   UserEventStreamTest(bool filtrateTouches)
     : m_filtrate(filtrateTouches)
   {
-    m_stream.SetTestBridge(bind(&UserEventStreamTest::TestBridge, this, _1));
+    m_stream.SetTestBridge(std::bind(&UserEventStreamTest::TestBridge, this, std::placeholders::_1));
   }
 
   void OnTap(m2::PointD const & pt, bool isLong) override {}
@@ -77,7 +77,7 @@ private:
 
 private:
   df::UserEventStream m_stream;
-  list<char const *> m_expectation;
+  std::list<char const *> m_expectation;
   bool m_filtrate;
 };
 

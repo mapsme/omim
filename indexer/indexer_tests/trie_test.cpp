@@ -10,12 +10,12 @@
 
 #include "base/logging.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/cstring.hpp"
-#include "std/string.hpp"
-#include "std/type_traits.hpp"
-#include "std/utility.hpp"
-#include "std/vector.hpp"
+#include <algorithm>
+#include <cstring>
+#include <string>
+#include <type_traits>
+#include <utility>
+#include <vector>
 
 #include <boost/utility/binary.hpp>
 
@@ -25,7 +25,7 @@ struct ChildNodeInfo
 {
   bool m_isLeaf;
   uint32_t m_size;
-  vector<uint32_t> m_edge;
+  std::vector<uint32_t> m_edge;
 
   ChildNodeInfo(bool isLeaf, uint32_t size, char const * edge) : m_isLeaf(isLeaf), m_size(size)
   {
@@ -69,7 +69,7 @@ public:
 
   ValueList() = default;
 
-  void Init(vector<TValue> const & values) { m_values = values; }
+  void Init(std::vector<TValue> const & values) { m_values = values; }
 
   size_t Size() const { return m_values.size(); }
 
@@ -106,7 +106,7 @@ public:
   }
 
 private:
-  vector<TValue> m_values;
+  std::vector<TValue> m_values;
 };
 }  //  namespace
 
@@ -116,8 +116,8 @@ private:
 
 UNIT_TEST(TrieBuilder_WriteNode_Smoke)
 {
-  vector<uint8_t> buf;
-  PushBackByteSink<vector<uint8_t>> sink(buf);
+  std::vector<uint8_t> buf;
+  PushBackByteSink<std::vector<uint8_t>> sink(buf);
   ChildNodeInfo children[] = {
       ChildNodeInfo(true, 1, "1A"), ChildNodeInfo(false, 2, "B"), ChildNodeInfo(false, 3, "zz"),
       ChildNodeInfo(true, 4,
@@ -153,7 +153,7 @@ UNIT_TEST(TrieBuilder_WriteNode_Smoke)
       MKUC(BOOST_BINARY(11000000) | ZENC(0)),  // Child 5: header: [+leaf] [+supershort]
   };
 
-  TEST_EQUAL(buf, vector<uint8_t>(&expected[0], &expected[0] + ARRAY_SIZE(expected)), ());
+  TEST_EQUAL(buf, std::vector<uint8_t>(&expected[0], &expected[0] + ARRAY_SIZE(expected)), ());
 }
 
 UNIT_TEST(TrieBuilder_Build)
@@ -161,19 +161,19 @@ UNIT_TEST(TrieBuilder_Build)
   int const base = 3;
   int const maxLen = 3;
 
-  vector<string> possibleStrings(1, string());
+  std::vector<std::string> possibleStrings(1, std::string());
   for (int len = 1; len <= maxLen; ++len)
   {
     for (int i = 0, p = static_cast<int>(pow((double)base, len)); i < p; ++i)
     {
-      string s(len, 'A');
+      std::string s(len, 'A');
       int t = i;
       for (int l = len - 1; l >= 0; --l, t /= base)
         s[l] += (t % base);
       possibleStrings.push_back(s);
     }
   }
-  sort(possibleStrings.begin(), possibleStrings.end());
+  std::sort(possibleStrings.begin(), possibleStrings.end());
   // LOG(LINFO, (possibleStrings));
 
   int const count = static_cast<int>(possibleStrings.size());
@@ -185,10 +185,10 @@ UNIT_TEST(TrieBuilder_Build)
       {
         using TKey = buffer_vector<trie::TrieChar, 8>;
         using TValue = uint32_t;
-        using TKeyValuePair = pair<TKey, TValue>;
+        using TKeyValuePair = std::pair<TKey, TValue>;
 
-        vector<TKeyValuePair> v;
-        auto makeKey = [](string const & s)
+        std::vector<TKeyValuePair> v;
+        auto makeKey = [](std::string const & s)
         {
           return TKey(s.begin(), s.end());
         };
@@ -198,26 +198,26 @@ UNIT_TEST(TrieBuilder_Build)
           v.emplace_back(makeKey(possibleStrings[i1]), i1 + 10);
         if (i2 >= 0)
           v.emplace_back(makeKey(possibleStrings[i2]), i2 + 100);
-        vector<string> vs;
+        std::vector<std::string> vs;
         for (size_t i = 0; i < v.size(); ++i)
-          vs.push_back(string(v[i].first.begin(), v[i].first.end()));
+          vs.push_back(std::string(v[i].first.begin(), v[i].first.end()));
 
-        vector<uint8_t> buf;
-        PushBackByteSink<vector<uint8_t>> sink(buf);
+        std::vector<uint8_t> buf;
+        PushBackByteSink<std::vector<uint8_t>> sink(buf);
         SingleValueSerializer<uint32_t> serializer;
-        trie::Build<PushBackByteSink<vector<uint8_t>>, TKey, ValueList<uint32_t>,
+        trie::Build<PushBackByteSink<std::vector<uint8_t>>, TKey, ValueList<uint32_t>,
                     SingleValueSerializer<uint32_t>>(sink, serializer, v);
-        reverse(buf.begin(), buf.end());
+        std::reverse(buf.begin(), buf.end());
 
         MemReader memReader = MemReader(&buf[0], buf.size());
         auto const root = trie::ReadTrie<MemReader, ValueList<uint32_t>>(memReader, serializer);
-        vector<TKeyValuePair> res;
+        std::vector<TKeyValuePair> res;
         auto addKeyValuePair = [&res](TKey const & k, TValue const & v)
         {
           res.emplace_back(k, v);
         };
         trie::ForEachRef(*root, addKeyValuePair, TKey());
-        sort(res.begin(), res.end());
+        std::sort(res.begin(), res.end());
         TEST_EQUAL(v, res, ());
       }
     }

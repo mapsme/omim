@@ -10,10 +10,10 @@
 #include "geometry/rect2d.hpp"
 #include "geometry/screenbase.hpp"
 
-#include "std/array.hpp"
-#include "std/function.hpp"
-#include "std/set.hpp"
-#include "std/string.hpp"
+#include <array>
+#include <functional>
+#include <set>
+#include <string>
 
 class FeatureType;
 
@@ -26,9 +26,9 @@ class Stylist;
 class RuleDrawer
 {
 public:
-  using TDrawerCallback = function<void (FeatureType const &, Stylist &)>;
-  using TCheckCancelledCallback = function<bool ()>;
-  using TIsCountryLoadedByNameFn = function<bool (string const &)>;
+  using TDrawerCallback = std::function<void (FeatureType const &, Stylist &)>;
+  using TCheckCancelledCallback = std::function<bool ()>;
+  using TIsCountryLoadedByNameFn = std::function<bool (std::string const &)>;
 
   RuleDrawer(TDrawerCallback const & drawerFn,
              TCheckCancelledCallback const & checkCancelled,
@@ -58,7 +58,7 @@ private:
   bool const m_trafficEnabled;
   TrafficSegmentsGeometry m_trafficGeometry;
 
-  array<TMapShapes, df::MapShapeTypeCount> m_mapShapes;
+  std::array<TMapShapes, df::MapShapeTypeCount> m_mapShapes;
   bool m_wasCancelled;
 };
 

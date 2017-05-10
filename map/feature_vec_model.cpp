@@ -9,7 +9,7 @@
 #include "base/assert.hpp"
 #include "base/logging.hpp"
 
-#include "std/bind.hpp"
+#include <functional>
 
 using platform::CountryFile;
 using platform::LocalCountryFile;

@@ -9,7 +9,7 @@
 
 #include "drape/utils/vertex_decl.hpp"
 
-#include "std/bind.hpp"
+#include <functional>
 
 namespace gui
 {
@@ -133,7 +133,7 @@ drape_ptr<ShapeRenderer> Compass::Draw(m2::PointF & compassSize, ref_ptr<dp::Tex
 
   drape_ptr<ShapeRenderer> renderer = make_unique_dp<ShapeRenderer>();
   dp::Batcher batcher(dp::Batcher::IndexPerQuad, dp::Batcher::VertexPerQuad);
-  dp::SessionGuard guard(batcher, bind(&ShapeRenderer::AddShape, renderer.get(), _1, _2));
+  dp::SessionGuard guard(batcher, std::bind(&ShapeRenderer::AddShape, renderer.get(), std::placeholders::_1, std::placeholders::_2));
   batcher.InsertTriangleStrip(state, make_ref(&provider), move(handle));
 
   return renderer;

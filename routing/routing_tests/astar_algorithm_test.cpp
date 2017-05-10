@@ -1,9 +1,9 @@
 #include "testing/testing.hpp"
 
 #include "routing/base/astar_algorithm.hpp"
-#include "std/map.hpp"
-#include "std/utility.hpp"
-#include "std/vector.hpp"
+#include <map>
+#include <utility>
+#include <vector>
 
 namespace routing_test
 {
@@ -33,7 +33,7 @@ public:
     m_adjs[v].push_back(Edge(u, w));
   }
 
-  void GetAdjacencyList(unsigned v, vector<Edge> & adj) const
+  void GetAdjacencyList(unsigned v, std::vector<Edge> & adj) const
   {
     adj.clear();
     auto const it = m_adjs.find(v);
@@ -41,12 +41,12 @@ public:
       adj = it->second;
   }
 
-  void GetIngoingEdgesList(unsigned v, vector<Edge> & adj) const
+  void GetIngoingEdgesList(unsigned v, std::vector<Edge> & adj) const
   {
     GetAdjacencyList(v, adj);
   }
 
-  void GetOutgoingEdgesList(unsigned v, vector<Edge> & adj) const
+  void GetOutgoingEdgesList(unsigned v, std::vector<Edge> & adj) const
   {
     GetAdjacencyList(v, adj);
   }
@@ -54,10 +54,10 @@ public:
   double HeuristicCostEstimate(unsigned v, unsigned w) const { return 0; }
 
 private:
-  map<unsigned, vector<Edge>> m_adjs;
+  std::map<unsigned, std::vector<Edge>> m_adjs;
 };
 
-void TestAStar(UndirectedGraph & graph, vector<unsigned> const & expectedRoute, double const & expectedDistance)
+void TestAStar(UndirectedGraph & graph, std::vector<unsigned> const & expectedRoute, double const & expectedDistance)
 {
   using TAlgorithm = AStarAlgorithm<UndirectedGraph>;
 
@@ -85,7 +85,7 @@ UNIT_TEST(AStarAlgorithm_Sample)
   graph.AddEdge(2, 4, 10);
   graph.AddEdge(3, 4, 3);
 
-  vector<unsigned> const expectedRoute = {0, 1, 2, 3, 4};
+  std::vector<unsigned> const expectedRoute = {0, 1, 2, 3, 4};
 
   TestAStar(graph, expectedRoute, 23);
 }

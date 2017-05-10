@@ -16,7 +16,7 @@
 #include "base/range_iterator.hpp"
 #include "base/stl_helpers.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 using namespace feature;
 
@@ -36,12 +36,12 @@ void FeatureBase::Deserialize(feature::LoaderBase * pLoader, TBuffer buffer)
 
 void FeatureType::ApplyPatch(editor::XMLFeature const & xml)
 {
-  xml.ForEachName([this](string const & lang, string const & name)
+  xml.ForEachName([this](std::string const & lang, std::string const & name)
                   {
                     m_params.name.AddString(lang, name);
                   });
 
-  string const house = xml.GetHouse();
+  std::string const house = xml.GetHouse();
   if (!house.empty())
     m_params.house.Set(house);
 
@@ -51,7 +51,7 @@ void FeatureType::ApplyPatch(editor::XMLFeature const & xml)
   // m_params.rank =
   m_commonParsed = true;
 
-  xml.ForEachTag([this](string const & k, string const & v)
+  xml.ForEachTag([this](std::string const & k, std::string const & v)
   {
     Metadata::EType mdType;
     if (Metadata::TypeFromString(k, mdType))
@@ -85,7 +85,7 @@ void FeatureType::ReplaceBy(osm::EditableMapObject const & emo)
   }
 
   m_params.name = emo.GetName();
-  string const & house = emo.GetHouseNumber();
+  std::string const & house = emo.GetHouseNumber();
   if (house.empty())
     m_params.house.Clear();
   else
@@ -118,19 +118,19 @@ editor::XMLFeature FeatureType::ToXML(bool serializeType) const
   else
   {
     ParseTriangles(BEST_GEOMETRY);
-    vector<m2::PointD> geometry(begin(m_triangles), end(m_triangles));
+    vector<m2::PointD> geometry(std::begin(m_triangles), std::end(m_triangles));
     // Remove duplicates.
     my::SortUnique(geometry);
     feature.SetGeometry(geometry);
   }
 
-  ForEachName([&feature](uint8_t const & lang, string const & name)
+  ForEachName([&feature](uint8_t const & lang, std::string const & name)
               {
                 feature.SetName(lang, name);
                 return true;
               });
 
-  string const house = GetHouseNumber();
+  std::string const house = GetHouseNumber();
   if (!house.empty())
     feature.SetHouse(house);
 
@@ -148,9 +148,9 @@ editor::XMLFeature FeatureType::ToXML(bool serializeType) const
     // or save all our types directly, to restore and reuse them in migration of modified features.
     for (uint32_t const type : th)
     {
-      string const strType = classif().GetReadableObjectName(type);
+      std::string const strType = classif().GetReadableObjectName(type);
       strings::SimpleTokenizer iter(strType, "-");
-      string const k = *iter;
+      std::string const k = *iter;
       if (++iter)
       {
         // First (main) type is always stored as "k=amenity v=restaurant".
@@ -189,12 +189,12 @@ bool FeatureType::FromXML(editor::XMLFeature const & xml)
   m_limitRect.Add(m_center);
   m_pointsParsed = m_trianglesParsed = true;
 
-  xml.ForEachName([this](string const & lang, string const & name)
+  xml.ForEachName([this](std::string const & lang, std::string const & name)
   {
     m_params.name.AddString(lang, name);
   });
 
-  string const house = xml.GetHouse();
+  std::string const house = xml.GetHouse();
   if (!house.empty())
     m_params.house.Set(house);
 
@@ -205,7 +205,7 @@ bool FeatureType::FromXML(editor::XMLFeature const & xml)
   m_commonParsed = true;
 
   uint32_t typesCount = 0;
-  xml.ForEachTag([this, &typesCount](string const & k, string const & v)
+  xml.ForEachTag([this, &typesCount](std::string const & k, std::string const & v)
   {
     Metadata::EType mdType;
     if (Metadata::TypeFromString(k, mdType))
@@ -269,13 +269,13 @@ feature::EGeomType FeatureBase::GetFeatureType() const
   }
 }
 
-string FeatureBase::DebugString() const
+std::string FeatureBase::DebugString() const
 {
   ParseCommon();
 
   Classificator const & c = classif();
 
-  string res = "Types";
+  std::string res = "Types";
   for (size_t i = 0; i < GetTypesCount(); ++i)
     res += (" : " + c.GetReadableObjectName(m_types[i]));
   res += "\n";
@@ -376,7 +376,7 @@ void FeatureType::SetNames(StringUtf8Multilang const & newNames)
 {
   m_params.name.Clear();
   // Validate passed string to clean up empty names (if any).
-  newNames.ForEach([this](int8_t langCode, string const & name) -> bool
+  newNames.ForEach([this](int8_t langCode, std::string const & name) -> bool
   {
     if (!name.empty())
       m_params.name.AddString(langCode, name);
@@ -398,18 +398,18 @@ void FeatureType::SetMetadata(feature::Metadata const & newMetadata)
 namespace
 {
   template <class TCont>
-  void Points2String(string & s, TCont const & points)
+  void Points2String(std::string & s, TCont const & points)
   {
     for (size_t i = 0; i < points.size(); ++i)
       s += DebugPrint(points[i]) + " ";
   }
 }
 
-string FeatureType::DebugString(int scale) const
+std::string FeatureType::DebugString(int scale) const
 {
   ParseGeometryAndTriangles(scale);
 
-  string s = base_type::DebugString();
+  std::string s = base_type::DebugString();
 
   switch (GetFeatureType())
   {
@@ -435,7 +435,7 @@ string FeatureType::DebugString(int scale) const
   return s;
 }
 
-string DebugPrint(FeatureType const & ft)
+std::string DebugPrint(FeatureType const & ft)
 {
   return ft.DebugString(FeatureType::BEST_GEOMETRY);
 }
@@ -491,7 +491,7 @@ FeatureType::geom_stat_t FeatureType::GetTrianglesSize(int scale) const
   return geom_stat_t(sz, m_triangles.size());
 }
 
-void FeatureType::GetPreferredNames(string & primary, string & secondary) const
+void FeatureType::GetPreferredNames(std::string & primary, std::string & secondary) const
 {
   if (!HasName())
     return;
@@ -508,7 +508,7 @@ void FeatureType::GetPreferredNames(string & primary, string & secondary) const
                       primary, secondary);
 }
 
-void FeatureType::GetPreferredNames(bool allowTranslit, int8_t deviceLang, string & primary, string & secondary) const
+void FeatureType::GetPreferredNames(bool allowTranslit, int8_t deviceLang, std::string & primary, std::string & secondary) const
 {
   if (!HasName())
     return;
@@ -524,7 +524,7 @@ void FeatureType::GetPreferredNames(bool allowTranslit, int8_t deviceLang, strin
                       primary, secondary);
 }
 
-void FeatureType::GetReadableName(string & name) const
+void FeatureType::GetReadableName(std::string & name) const
 {
   if (!HasName())
     return;
@@ -541,7 +541,7 @@ void FeatureType::GetReadableName(string & name) const
                     name);
 }
 
-void FeatureType::GetReadableName(bool allowTranslit, int8_t deviceLang, string & name) const
+void FeatureType::GetReadableName(bool allowTranslit, int8_t deviceLang, std::string & name) const
 {
   if (!HasName())
     return;
@@ -556,13 +556,13 @@ void FeatureType::GetReadableName(bool allowTranslit, int8_t deviceLang, string 
   ::GetReadableName(mwmInfo->GetRegionData(), GetNames(), deviceLang, allowTranslit, name);
 }
 
-string FeatureType::GetHouseNumber() const
+std::string FeatureType::GetHouseNumber() const
 {
   ParseCommon();
   return m_params.house.Get();
 }
 
-void FeatureType::SetHouseNumber(string const & number)
+void FeatureType::SetHouseNumber(std::string const & number)
 {
   if (number.empty())
     m_params.house.Clear();
@@ -570,7 +570,7 @@ void FeatureType::SetHouseNumber(string const & number)
     m_params.house.Set(number);
 }
 
-bool FeatureType::GetName(int8_t lang, string & name) const
+bool FeatureType::GetName(int8_t lang, std::string & name) const
 {
   if (!HasName())
     return false;
@@ -590,7 +590,7 @@ uint64_t FeatureType::GetPopulation() const
   return feature::RankToPopulation(GetRank());
 }
 
-string FeatureType::GetRoadNumber() const
+std::string FeatureType::GetRoadNumber() const
 {
   ParseCommon();
   return m_params.ref;

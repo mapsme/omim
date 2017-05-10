@@ -8,7 +8,7 @@
 
 #include "geometry/spline.hpp"
 
-#include "std/unique_ptr.hpp"
+#include <memory>
 
 namespace df
 {
@@ -49,7 +49,7 @@ private:
 
   LineViewParams m_params;
   m2::SharedSpline m_spline;
-  mutable unique_ptr<ILineShapeInfo> m_lineShapeInfo;
+  mutable std::unique_ptr<ILineShapeInfo> m_lineShapeInfo;
   mutable bool m_isSimple;
 };
 

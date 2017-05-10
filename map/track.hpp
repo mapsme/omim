@@ -29,12 +29,12 @@ public:
   struct Params
   {
     buffer_vector<TrackOutline, 2> m_colors;
-    string m_name;
+    std::string m_name;
   };
 
   explicit Track(PolylineD const & polyline, Params const & p);
 
-  string const & GetName() const;
+  std::string const & GetName() const;
   PolylineD const & GetPolyline() const { return m_polyline; }
   m2::RectD GetLimitRect() const;
   double GetLengthMeters() const;

@@ -18,7 +18,7 @@ public:
   virtual void ReportFailure(FailureType type,
                              char const * file,
                              int line,
-                             string const & message)
+                             std::string const & message)
   {
     if (!m_throwed)
     {

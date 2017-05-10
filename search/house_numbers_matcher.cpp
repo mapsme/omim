@@ -4,11 +4,11 @@
 
 #include "base/logging.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/iterator.hpp"
-#include "std/limits.hpp"
-#include "std/sstream.hpp"
-#include "std/transform_iterator.hpp"
+#include <algorithm>
+#include <iterator>
+#include <limits>
+#include <sstream>
+#include <boost/iterator/transform_iterator.hpp>
 
 using namespace strings;
 
@@ -181,8 +181,8 @@ public:
   {
     for (auto const * p : g_patterns)
     {
-      m_patterns.Add(make_transform_iterator(p, &CharToType),
-                     make_transform_iterator(p + strlen(p), &CharToType));
+      m_patterns.Add(boost::make_transform_iterator(p, &CharToType),
+                     boost::make_transform_iterator(p + strlen(p), &CharToType));
     }
   }
 
@@ -191,7 +191,7 @@ public:
   // true).
   bool LooksGood(UniString const & s, bool isPrefix) const
   {
-    vector<Token> parse;
+    std::vector<Token> parse;
     Tokenize(s, isPrefix, parse);
 
     size_t i = 0;
@@ -222,14 +222,14 @@ public:
       case Token::TYPE_NUMBER:         // fallthrough
       case Token::TYPE_BUILDING_PART:  // fallthrough
       case Token::TYPE_BUILDING_PART_OR_LETTER:
-        parse[i] = move(parse[j]);
+        parse[i] = std::move(parse[j]);
         ++i;
       }
     }
     parse.resize(i);
 
-    auto const status = m_patterns.Has(make_transform_iterator(parse.begin(), &TokenToType),
-                                       make_transform_iterator(parse.end(), &TokenToType));
+    auto const status = m_patterns.Has(boost::make_transform_iterator(parse.begin(), &TokenToType),
+                                       boost::make_transform_iterator(parse.end(), &TokenToType));
     switch (status)
     {
     case TPatterns::Status::Absent: return false;
@@ -265,9 +265,9 @@ Token::Type GetCharType(UniChar c)
 
   if (IsASCIIDigit(c))
     return Token::TYPE_NUMBER;
-  if (find(kSeps.begin(), kSeps.end(), c) != kSeps.end())
+  if (std::find(kSeps.begin(), kSeps.end(), c) != kSeps.end())
     return Token::TYPE_SEPARATOR;
-  if (find(kGroupSeps.begin(), kGroupSeps.end(), c) != kGroupSeps.end())
+  if (std::find(kGroupSeps.begin(), kGroupSeps.end(), c) != kGroupSeps.end())
     return Token::TYPE_GROUP_SEPARATOR;
   if (c == '-')
     return Token::TYPE_HYPHEN;
@@ -288,7 +288,7 @@ bool IsLiteralType(Token::Type type)
 // * when there is at least one number, drops all tokens until the
 //   number and sorts the rest
 // * when there are no numbers at all, sorts tokens
-void SimplifyParse(vector<Token> & tokens)
+void SimplifyParse(std::vector<Token> & tokens)
 {
   if (!tokens.empty() && tokens.back().m_prefix)
     tokens.pop_back();
@@ -307,11 +307,11 @@ void SimplifyParse(vector<Token> & tokens)
   if (i != 0)
   {
     tokens.resize(i);
-    sort(tokens.begin() + 1, tokens.end());
+    std::sort(tokens.begin() + 1, tokens.end());
   }
   else
   {
-    sort(tokens.begin(), tokens.end());
+    std::sort(tokens.begin(), tokens.end());
   }
 }
 
@@ -348,7 +348,7 @@ bool IsShortBuildingSynonym(UniString const & t)
 }
 
 template <typename TFn>
-void ForEachGroup(vector<Token> const & ts, TFn && fn)
+void ForEachGroup(std::vector<Token> const & ts, TFn && fn)
 {
   size_t i = 0;
   while (i < ts.size())
@@ -376,7 +376,7 @@ void TransformString(UniString && token, TFn && fn)
 
   if (IsBuildingPartSynonym(token))
   {
-    fn(move(token), Token::TYPE_BUILDING_PART);
+    fn(std::move(token), Token::TYPE_BUILDING_PART);
   }
   else if (size == 4 && StartsWith(token, kLiter))
   {
@@ -388,34 +388,34 @@ void TransformString(UniString && token, TFn && fn)
     UniString firstLetter(token.begin(), token.begin() + 1);
     if (IsShortBuildingSynonym(firstLetter))
     {
-      fn(move(firstLetter), Token::TYPE_BUILDING_PART);
+      fn(std::move(firstLetter), Token::TYPE_BUILDING_PART);
       fn(UniString(token.begin() + 1, token.end()), Token::TYPE_LETTER);
     }
     else
     {
-      fn(move(token), Token::TYPE_STRING);
+      fn(std::move(token), Token::TYPE_STRING);
     }
   }
   else if (size == 1)
   {
     if (IsShortBuildingSynonym(token))
-      fn(move(token), Token::TYPE_BUILDING_PART_OR_LETTER);
+      fn(std::move(token), Token::TYPE_BUILDING_PART_OR_LETTER);
     else
-      fn(move(token), Token::TYPE_LETTER);
+      fn(std::move(token), Token::TYPE_LETTER);
   }
   else
   {
-    fn(move(token), Token::TYPE_STRING);
+    fn(std::move(token), Token::TYPE_STRING);
   }
 }
 }  // namespace
 
-void Tokenize(UniString s, bool isPrefix, vector<Token> & ts)
+void Tokenize(UniString s, bool isPrefix, std::vector<Token> & ts)
 {
   MakeLowerCaseInplace(s);
   auto addToken = [&ts](UniString && value, Token::Type type)
   {
-    ts.emplace_back(move(value), type);
+    ts.emplace_back(std::move(value), type);
   };
 
   size_t i = 0;
@@ -434,21 +434,21 @@ void Tokenize(UniString s, bool isPrefix, vector<Token> & ts)
       {
         if (j != s.size() || !isPrefix)
         {
-          TransformString(move(token), addToken);
+          TransformString(std::move(token), addToken);
         }
         else if (i + 1 == j)
         {
-          ts.emplace_back(move(token), Token::TYPE_LETTER);
+          ts.emplace_back(std::move(token), Token::TYPE_LETTER);
         }
         else
         {
-          ts.emplace_back(move(token), Token::TYPE_STRING);
+          ts.emplace_back(std::move(token), Token::TYPE_STRING);
           ts.back().m_prefix = true;
         }
       }
       else
       {
-        addToken(move(token), type);
+        addToken(std::move(token), type);
       }
     }
 
@@ -467,9 +467,9 @@ void Tokenize(UniString s, bool isPrefix, vector<Token> & ts)
   }
 }
 
-void ParseHouseNumber(strings::UniString const & s, vector<vector<Token>> & parses)
+void ParseHouseNumber(strings::UniString const & s, std::vector<std::vector<Token>> & parses)
 {
-  vector<Token> tokens;
+  std::vector<Token> tokens;
   Tokenize(s, false /* isPrefix */, tokens);
 
   bool numbersSequence = true;
@@ -497,19 +497,19 @@ void ParseHouseNumber(strings::UniString const & s, vector<vector<Token>> & pars
                    parses.emplace_back();
                    auto & parse = parses.back();
                    for (size_t k = i; k < j; ++k)
-                     parse.emplace_back(move(tokens[k]));
+                     parse.emplace_back(std::move(tokens[k]));
                  });
   }
   else
   {
-    parses.emplace_back(move(tokens));
+    parses.emplace_back(std::move(tokens));
   }
 
   for (size_t i = oldSize; i < parses.size(); ++i)
     SimplifyParse(parses[i]);
 }
 
-void ParseQuery(strings::UniString const & query, bool queryIsPrefix, vector<Token> & parse)
+void ParseQuery(strings::UniString const & query, bool queryIsPrefix, std::vector<Token> & parse)
 {
   Tokenize(query, queryIsPrefix, parse);
   SimplifyParse(parse);
@@ -521,13 +521,13 @@ bool HouseNumbersMatch(strings::UniString const & houseNumber, strings::UniStrin
   if (houseNumber == query)
     return true;
 
-  vector<Token> queryParse;
+  std::vector<Token> queryParse;
   ParseQuery(query, queryIsPrefix, queryParse);
 
   return HouseNumbersMatch(houseNumber, queryParse);
 }
 
-bool HouseNumbersMatch(strings::UniString const & houseNumber, vector<Token> const & queryParse)
+bool HouseNumbersMatch(strings::UniString const & houseNumber, std::vector<Token> const & queryParse)
 {
   if (houseNumber.empty() || queryParse.empty())
     return false;
@@ -540,7 +540,7 @@ bool HouseNumbersMatch(strings::UniString const & houseNumber, vector<Token> con
     return false;
   }
 
-  vector<vector<Token>> houseNumberParses;
+  std::vector<std::vector<Token>> houseNumberParses;
   ParseHouseNumber(houseNumber, houseNumberParses);
 
   for (auto & parse : houseNumberParses)
@@ -562,7 +562,7 @@ bool LooksLikeHouseNumber(strings::UniString const & s, bool isPrefix)
   return classifier.LooksGood(s, isPrefix);
 }
 
-string DebugPrint(Token::Type type)
+std::string DebugPrint(Token::Type type)
 {
   switch (type)
   {
@@ -579,9 +579,9 @@ string DebugPrint(Token::Type type)
   return "Unknown";
 }
 
-string DebugPrint(Token const & token)
+std::string DebugPrint(Token const & token)
 {
-  ostringstream os;
+  std::ostringstream os;
   os << "Token [" << DebugPrint(token.m_value) << ", " << DebugPrint(token.m_type) << "]";
   return os.str();
 }

@@ -4,11 +4,12 @@
 
 #include "base/logging.hpp"
 
-#include "std/map.hpp"
+#include <map>
+
+using namespace std::chrono;
 
 namespace
 {
-
 location::GpsTrackInfo MakeGpsTrackInfo(double timestamp, ms::LatLon const & ll, double speed)
 {
   location::GpsTrackInfo info;
@@ -29,7 +30,7 @@ UNIT_TEST(GpsTrackCollection_Simple)
 
   GpsTrackCollection collection(100, hours(24));
 
-  map<size_t, location::GpsTrackInfo> data;
+  std::map<size_t, location::GpsTrackInfo> data;
 
   TEST_EQUAL(100, collection.GetMaxSize(), ());
 
@@ -121,7 +122,7 @@ UNIT_TEST(GpsTrackCollection_EvictedByCount)
 
   GpsTrackCollection collection(100, hours(24));
 
-  map<size_t, location::GpsTrackInfo> data;
+  std::map<size_t, location::GpsTrackInfo> data;
 
   TEST_EQUAL(100, collection.GetMaxSize(), ());
 

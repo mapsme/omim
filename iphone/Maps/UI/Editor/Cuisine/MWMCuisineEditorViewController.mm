@@ -8,7 +8,9 @@
 #include "indexer/cuisines.hpp"
 #include "indexer/search_string_utils.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
+
+using namespace std;
 
 namespace
 {

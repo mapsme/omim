@@ -19,7 +19,7 @@ UNIT_TEST(Protocol_CreateAuthPacket)
 
 UNIT_TEST(Protocol_DecodeHeader)
 {
-  string id_str("ABC");
+  std::string id_str("ABC");
   auto packet = Protocol::CreateAuthPacket(id_str);
   TEST_EQUAL(packet.size(), 7, ());
   TEST_EQUAL(Protocol::PacketType(packet[0]), Protocol::PacketType::CurrentAuth, ());
@@ -65,7 +65,7 @@ UNIT_TEST(Protocol_DecodeAuthPacket)
   TEST_EQUAL(packet.size(), 7, ());
   TEST_EQUAL(Protocol::PacketType(packet[0]), Protocol::PacketType::CurrentAuth, ());
 
-  auto payload = vector<uint8_t>(begin(packet) + sizeof(uint32_t /* header */), end(packet));
+  auto payload = std::vector<uint8_t>(std::begin(packet) + sizeof(uint32_t /* header */), std::end(packet));
   auto result = Protocol::DecodeAuthPacket(Protocol::PacketType::CurrentAuth, payload);
   TEST_EQUAL(result, "ABC", ());
 }
@@ -79,7 +79,7 @@ void DecodeDataPacketVersionTest(Container const & points, Protocol::PacketType 
   TEST_GREATER(packet.size(), 0, ());
   TEST_EQUAL(Protocol::PacketType(packet[0]), version, ());
 
-  auto payload = vector<uint8_t>(begin(packet) + sizeof(uint32_t /* header */), end(packet));
+  auto payload = std::vector<uint8_t>(std::begin(packet) + sizeof(uint32_t /* header */), std::end(packet));
   Container result = Protocol::DecodeDataPacket(version, payload);
 
   TEST_EQUAL(points.size(), result.size(), ());

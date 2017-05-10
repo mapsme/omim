@@ -11,7 +11,7 @@
 
 #include "base/math.hpp"
 
-#include "std/vector.hpp"
+#include <vector>
 
 #include "3party/Alohalytics/src/alohalytics.h"
 
@@ -37,7 +37,7 @@ int const kMaxScaleZoomLevel = 16;
 int const kDefaultAutoZoom = 16;
 double const kUnknownAutoZoom = -1.0;
 
-string LocationModeStatisticsName(location::EMyPositionMode mode)
+std::string LocationModeStatisticsName(location::EMyPositionMode mode)
 {
   switch (mode)
   {
@@ -72,7 +72,7 @@ int GetZoomLevel(ScreenBase const & screen, m2::PointD const & position, double 
 double CalculateZoomBySpeed(double speed, bool isPerspectiveAllowed)
 {
   using TSpeedScale = pair<double, double>;
-  static vector<TSpeedScale> const scales3d = {
+  static std::vector<TSpeedScale> const scales3d = {
     make_pair(20.0, 0.25),
     make_pair(40.0, 0.75),
     make_pair(60.0, 1.5),
@@ -81,7 +81,7 @@ double CalculateZoomBySpeed(double speed, bool isPerspectiveAllowed)
     make_pair(95.0, 6.0),
   };
 
-  static vector<TSpeedScale> const scales2d = {
+  static std::vector<TSpeedScale> const scales2d = {
     make_pair(20.0, 0.7),
     make_pair(40.0, 1.25),
     make_pair(60.0, 2.25),
@@ -90,7 +90,7 @@ double CalculateZoomBySpeed(double speed, bool isPerspectiveAllowed)
     make_pair(95.0, 6.0),
   };
 
-  vector<TSpeedScale> const & scales = isPerspectiveAllowed ? scales3d : scales2d;
+  std::vector<TSpeedScale> const & scales = isPerspectiveAllowed ? scales3d : scales2d;
 
   double const kDefaultSpeed = 80.0;
   if (speed < 0.0)
@@ -314,7 +314,7 @@ void MyPositionController::ResetRenderShape()
 
 void MyPositionController::NextMode(ScreenBase const & screen)
 {
-  string const kAlohalyticsClickEvent = "$onClick";
+  std::string const kAlohalyticsClickEvent = "$onClick";
 
   // Skip switching to next mode while we are waiting for position.
   if (IsWaitingForLocation())

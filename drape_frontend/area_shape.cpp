@@ -12,11 +12,11 @@
 #include "base/buffer_vector.hpp"
 #include "base/logging.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 namespace df
 {
-AreaShape::AreaShape(vector<m2::PointD> && triangleList, BuildingOutline && buildingOutline,
+AreaShape::AreaShape(std::vector<m2::PointD> && triangleList, BuildingOutline && buildingOutline,
                      AreaViewParams const & params)
   : m_vertexes(move(triangleList))
   , m_buildingOutline(move(buildingOutline))
@@ -52,7 +52,7 @@ void AreaShape::DrawArea(ref_ptr<dp::Batcher> batcher, m2::PointD const & colorU
 
   buffer_vector<gpu::AreaVertex, 128> vertexes;
   vertexes.resize(m_vertexes.size());
-  transform(m_vertexes.begin(), m_vertexes.end(), vertexes.begin(), [&uv, this](m2::PointF const & vertex)
+  std::transform(m_vertexes.begin(), m_vertexes.end(), vertexes.begin(), [&uv, this](m2::PointF const & vertex)
   {
     return gpu::AreaVertex(glsl::vec3(glsl::ToVec2(ConvertToLocal(vertex, m_params.m_tileCenter, kShapeCoordScalar)),
                                       m_params.m_depth), uv);
@@ -70,7 +70,7 @@ void AreaShape::DrawArea(ref_ptr<dp::Batcher> batcher, m2::PointD const & colorU
   {
     glsl::vec2 const ouv = glsl::ToVec2(outlineUv);
 
-    vector<gpu::AreaVertex> vertices;
+    std::vector<gpu::AreaVertex> vertices;
     vertices.reserve(m_buildingOutline.m_vertices.size());
     for (size_t i = 0; i < m_buildingOutline.m_vertices.size(); i++)
     {
@@ -130,7 +130,7 @@ void AreaShape::DrawArea3D(ref_ptr<dp::Batcher> batcher, m2::PointD const & colo
 
   glsl::vec2 const uv = glsl::ToVec2(colorUv);
 
-  vector<gpu::Area3dVertex> vertexes;
+  std::vector<gpu::Area3dVertex> vertexes;
   vertexes.reserve(m_vertexes.size() + m_buildingOutline.m_normals.size() * 6);
 
   for (size_t i = 0; i < m_buildingOutline.m_normals.size(); i++)
@@ -178,7 +178,7 @@ void AreaShape::DrawArea3D(ref_ptr<dp::Batcher> batcher, m2::PointD const & colo
     outlineState.SetBlending(dp::Blending(false /* isEnabled */));
     outlineState.SetDrawAsLine(true);
 
-    vector<gpu::AreaVertex> vertices;
+    std::vector<gpu::AreaVertex> vertices;
     vertices.reserve(m_buildingOutline.m_vertices.size());
     for (size_t i = 0; i < m_buildingOutline.m_vertices.size(); i++)
     {

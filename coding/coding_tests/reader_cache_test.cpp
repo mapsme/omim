@@ -3,8 +3,8 @@
 #include "coding/reader_cache.hpp"
 #include "coding/reader.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/random.hpp"
+#include <algorithm>
+#include <random>
 
 namespace
 {
@@ -26,17 +26,17 @@ namespace
 
 UNIT_TEST(CacheReaderRandomTest)
 {
-  vector<char> data(100000);
+  std::vector<char> data(100000);
   for (size_t i = 0; i < data.size(); ++i)
     data[i] = static_cast<char>(i % 253);
   MemReader memReader(&data[0], data.size());
   CacheReader<MemReader> cacheReader(MemReader(&data[0], data.size()), 10, 5);
-  mt19937 rng(0);
+  std::mt19937 rng(0);
   for (size_t i = 0; i < 100000; ++i)
   {
     size_t pos = rng() % data.size();
-    size_t len = min(static_cast<size_t>(1 + (rng() % 127)), data.size() - pos);
-    string readMem(len, '0'), readCache(len, '0');
+    size_t len = std::min(static_cast<size_t>(1 + (rng() % 127)), data.size() - pos);
+    std::string readMem(len, '0'), readCache(len, '0');
     memReader.Read(pos, &readMem[0], len);
     cacheReader.Read(pos, &readCache[0], len);
     TEST_EQUAL(readMem, readCache, (pos, len, i));

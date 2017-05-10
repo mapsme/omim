@@ -13,6 +13,8 @@
 #include "std/target_os.hpp"
 #include "std/vector.hpp"
 
+using namespace std;
+
 #ifdef TARGET_OS_IPHONE
 # include <CoreFoundation/CoreFoundation.h>
 #endif

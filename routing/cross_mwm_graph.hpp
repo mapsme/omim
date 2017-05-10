@@ -157,5 +157,5 @@ private:
   CrossMwmOsrmGraph m_crossMwmOsrmGraph;
 };
 
-string DebugPrint(CrossMwmGraph::MwmStatus status);
+std::string DebugPrint(CrossMwmGraph::MwmStatus status);
 }  // routing

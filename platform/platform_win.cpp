@@ -6,7 +6,7 @@
 #include "coding/file_writer.hpp"
 
 #include "std/windows.hpp"
-#include "std/bind.hpp"
+#include <functional>
 
 #include <direct.h>
 #include <shlobj.h>
@@ -14,7 +14,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-static bool GetUserWritableDir(string & outDir)
+static bool GetUserWritableDir(std::string & outDir)
 {
   char pathBuf[MAX_PATH] = {0};
   if (SUCCEEDED(::SHGetFolderPathA(NULL, CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE, NULL, SHGFP_TYPE_CURRENT, pathBuf)))
@@ -29,7 +29,7 @@ static bool GetUserWritableDir(string & outDir)
 }
 
 /// @return Full path to the executable file
-static bool GetPathToBinary(string & outPath)
+static bool GetPathToBinary(std::string & outPath)
 {
   // get path to executable
   char pathBuf[MAX_PATH] = {0};
@@ -43,7 +43,7 @@ static bool GetPathToBinary(string & outPath)
 
 Platform::Platform()
 {
-  string path;
+  std::string path;
   CHECK(GetPathToBinary(path), ("Can't get path to binary"));
 
   // resources path:
@@ -90,13 +90,13 @@ Platform::Platform()
   LOG(LDEBUG, ("Settings Directory:", m_settingsDir));
 }
 
-bool Platform::IsFileExistsByFullPath(string const & filePath)
+bool Platform::IsFileExistsByFullPath(std::string const & filePath)
 {
   return ::GetFileAttributesA(filePath.c_str()) != INVALID_FILE_ATTRIBUTES;
 }
 
 // static
-Platform::EError Platform::RmDir(string const & dirName)
+Platform::EError Platform::RmDir(std::string const & dirName)
 {
   if (_rmdir(dirName.c_str()) != 0)
     return ErrnoToError();
@@ -104,7 +104,7 @@ Platform::EError Platform::RmDir(string const & dirName)
 }
 
 // static
-Platform::EError Platform::GetFileType(string const & path, EFileType & type)
+Platform::EError Platform::GetFileType(std::string const & path, EFileType & type)
 {
   struct _stat32 stats;
   if (_stat32(path.c_str(), &stats) != 0)
@@ -118,7 +118,7 @@ Platform::EError Platform::GetFileType(string const & path, EFileType & type)
   return ERR_OK;
 }
 
-string Platform::UniqueClientId() const
+std::string Platform::UniqueClientId() const
 {
   return "@TODO";
 }
@@ -156,17 +156,17 @@ Platform::TStorageStatus Platform::GetWritableStorageStatus(uint64_t neededSize)
   return STORAGE_OK;
 }
 
-bool Platform::IsDirectoryEmpty(string const & directory)
+bool Platform::IsDirectoryEmpty(std::string const & directory)
 {
   return PathIsDirectoryEmptyA(directory.c_str());
 }
 
-bool Platform::GetFileSizeByFullPath(string const & filePath, uint64_t & size)
+bool Platform::GetFileSizeByFullPath(std::string const & filePath, uint64_t & size)
 {
   HANDLE hFile = CreateFileA(filePath.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
   if (hFile != INVALID_HANDLE_VALUE)
   {
-    MY_SCOPE_GUARD(autoClose, bind(&CloseHandle, hFile));
+    MY_SCOPE_GUARD(autoClose, std::bind(&CloseHandle, hFile));
     LARGE_INTEGER fileSize;
     if (0 != GetFileSizeEx(hFile, &fileSize))
     {

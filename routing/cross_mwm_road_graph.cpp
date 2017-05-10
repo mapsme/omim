@@ -124,7 +124,7 @@ bool FindCrossNode(CrossRoutingContextReader const & currentContext, CrossNode c
 template <class Fn>
 vector<BorderCross> const & ConstructBorderCrossImpl(
     TWrittenNodeId nodeId, TRoutingMappingPtr const & currentMapping,
-    unordered_map<CrossMwmRoadGraph::TCachingKey, vector<BorderCross>,
+    std::unordered_map<CrossMwmRoadGraph::TCachingKey, vector<BorderCross>,
                   CrossMwmRoadGraph::Hash> const & cachedNextNodes,
     Fn && borderCrossConstructor)
 {
@@ -265,7 +265,7 @@ bool CrossMwmRoadGraph::ConstructBorderCrossByOutgoingImpl(
     vector<BorderCross> & crosses) const
 {
   auto const fromCross = CrossNode(startNode.m_nodeId, currentMapping->GetMwmId(), startNode.m_point);
-  string const & nextMwm = currentMapping->m_crossContext.GetOutgoingMwmName(startNode);
+  std::string const & nextMwm = currentMapping->m_crossContext.GetOutgoingMwmName(startNode);
   TRoutingMappingPtr nextMapping = m_indexManager.GetMappingByName(nextMwm);
   // If we haven't this routing file, we skip this path.
   if (!nextMapping->IsValid())
@@ -293,12 +293,12 @@ bool CrossMwmRoadGraph::ConstructBorderCrossByIngoingImpl(IngoingCrossNode const
 {
   ASSERT(crosses.empty(), ());
   auto const toCross = CrossNode(startNode.m_nodeId, currentMapping->GetMwmId(), startNode.m_point);
-  vector<string> const & neighboringMwms = currentMapping->m_crossContext.GetNeighboringMwmList();
-  string const & currentMwm = currentMapping->GetMwmId().GetInfo()->GetCountryName();
+  vector<std::string> const & neighboringMwms = currentMapping->m_crossContext.GetNeighboringMwmList();
+  std::string const & currentMwm = currentMapping->GetMwmId().GetInfo()->GetCountryName();
   // Note. There's no field |m_ingoingIndex| in class IngoingCrossNode. Because this
   // index is not saved in osrm routing section. So we need to write a workaround and
   // to check all neighboring mwms.
-  for (string const & prevMwm : neighboringMwms)
+  for (std::string const & prevMwm : neighboringMwms)
   {
     TRoutingMappingPtr prevMapping = m_indexManager.GetMappingByName(prevMwm);
     if (!prevMapping->IsValid())

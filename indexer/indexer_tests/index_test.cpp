@@ -16,9 +16,9 @@
 #include "base/scope_guard.hpp"
 #include "base/stl_add.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/bind.hpp"
-#include "std/string.hpp"
+#include <algorithm>
+#include <functional>
+#include <string>
 
 using platform::CountryFile;
 using platform::LocalCountryFile;
@@ -103,7 +103,7 @@ UNIT_CLASS_TEST(IndexTest, Parse)
 
 UNIT_CLASS_TEST(IndexTest, StatusNotifications)
 {
-  string const mapsDir = GetPlatform().WritableDir();
+  std::string const mapsDir = GetPlatform().WritableDir();
   CountryFile const country("minsk-pass");
 
   // These two classes point to the same file, but will be considered

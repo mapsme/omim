@@ -2,18 +2,18 @@
 
 #include "base/logging.hpp"
 
-#include "std/numeric.hpp"
+#include <numeric>
 
 namespace m2
 {
 
-Spline::Spline(vector<PointD> const & path)
+Spline::Spline(std::vector<PointD> const & path)
 {
   ASSERT(path.size() > 1, ("Wrong path size!"));
   m_position.assign(path.begin(), path.end());
   size_t cnt = m_position.size() - 1;
-  m_direction = vector<PointD>(cnt);
-  m_length = vector<double>(cnt);
+  m_direction = std::vector<PointD>(cnt);
+  m_length = std::vector<double>(cnt);
 
   for(size_t i = 0; i < cnt; ++i)
   {
@@ -105,7 +105,7 @@ Spline const & Spline::operator = (Spline const & spl)
 
 double Spline::GetLength() const
 {
-  return accumulate(m_length.begin(), m_length.end(), 0.0);
+  return std::accumulate(m_length.begin(), m_length.end(), 0.0);
 }
 
 Spline::iterator::iterator()
@@ -163,7 +163,7 @@ void Spline::iterator::Advance(double step)
 
 double Spline::iterator::GetLength() const
 {
-  return accumulate(m_spl->m_length.begin(), m_spl->m_length.begin() + m_index, m_dist);
+  return std::accumulate(m_spl->m_length.begin(), m_spl->m_length.begin() + m_index, m_dist);
 }
 
 double Spline::iterator::GetFullLength() const
@@ -237,7 +237,7 @@ void Spline::iterator::AdvanceForward(double step)
   m_avrDir += m_pos;
 }
 
-SharedSpline::SharedSpline(vector<PointD> const & path)
+SharedSpline::SharedSpline(std::vector<PointD> const & path)
 {
   m_spline.reset(new Spline(path));
 }
@@ -265,7 +265,7 @@ void SharedSpline::Reset(Spline * spline)
   m_spline.reset(spline);
 }
 
-void SharedSpline::Reset(vector<PointD> const & path)
+void SharedSpline::Reset(std::vector<PointD> const & path)
 {
   m_spline.reset(new Spline(path));
 }

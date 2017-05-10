@@ -6,9 +6,9 @@
 #include "base/macros.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/bind.hpp"
-#include "std/iterator.hpp"
+#include <algorithm>
+#include <functional>
+#include <iterator>
 
 namespace
 {
@@ -24,7 +24,7 @@ namespace
 // ClassifObject implementation
 /////////////////////////////////////////////////////////////////////////////////////////
 
-ClassifObject * ClassifObject::AddImpl(string const & s)
+ClassifObject * ClassifObject::AddImpl(std::string const & s)
 {
   if (m_objs.empty()) m_objs.reserve(30);
 
@@ -32,13 +32,13 @@ ClassifObject * ClassifObject::AddImpl(string const & s)
   return &(m_objs.back());
 }
 
-ClassifObject * ClassifObject::Add(string const & s)
+ClassifObject * ClassifObject::Add(std::string const & s)
 {
   ClassifObject * p = Find(s);
   return (p ? p : AddImpl(s));
 }
 
-ClassifObject * ClassifObject::Find(string const & s)
+ClassifObject * ClassifObject::Find(std::string const & s)
 {
   for (auto & obj : m_objs)
     if (obj.m_name == s)
@@ -49,20 +49,20 @@ ClassifObject * ClassifObject::Find(string const & s)
 
 void ClassifObject::AddDrawRule(drule::Key const & k)
 {
-  auto i = lower_bound(m_drawRule.begin(), m_drawRule.end(), k.m_scale, less_scales());
+  auto i = std::lower_bound(m_drawRule.begin(), m_drawRule.end(), k.m_scale, less_scales());
   for (; i != m_drawRule.end() && i->m_scale == k.m_scale; ++i)
     if (k == *i)
       return; // already exists
   m_drawRule.insert(i, k);
 }
 
-ClassifObjectPtr ClassifObject::BinaryFind(string const & s) const
+ClassifObjectPtr ClassifObject::BinaryFind(std::string const & s) const
 {
-  auto const i = lower_bound(m_objs.begin(), m_objs.end(), s, less_name_t());
+  auto const i = std::lower_bound(m_objs.begin(), m_objs.end(), s, less_name_t());
   if ((i == m_objs.end()) || ((*i).m_name != s))
     return ClassifObjectPtr(0, 0);
   else
-    return ClassifObjectPtr(&(*i), distance(m_objs.begin(), i));
+    return ClassifObjectPtr(&(*i), std::distance(m_objs.begin(), i));
 }
 
 void ClassifObject::LoadPolicy::Start(size_t i)
@@ -82,17 +82,17 @@ void ClassifObject::LoadPolicy::EndChilds()
 
 void ClassifObject::Sort()
 {
-  sort(m_drawRule.begin(), m_drawRule.end(), less_scales());
-  sort(m_objs.begin(), m_objs.end(), less_name_t());
-  for_each(m_objs.begin(), m_objs.end(), bind(&ClassifObject::Sort, _1));
+  std::sort(m_drawRule.begin(), m_drawRule.end(), less_scales());
+  std::sort(m_objs.begin(), m_objs.end(), less_name_t());
+  std::for_each(m_objs.begin(), m_objs.end(), std::bind(&ClassifObject::Sort, std::placeholders::_1));
 }
 
 void ClassifObject::Swap(ClassifObject & r)
 {
-  swap(m_name, r.m_name);
-  swap(m_drawRule, r.m_drawRule);
-  swap(m_objs, r.m_objs);
-  swap(m_visibility, r.m_visibility);
+  std::swap(m_name, r.m_name);
+  std::swap(m_drawRule, r.m_drawRule);
+  std::swap(m_objs, r.m_objs);
+  std::swap(m_visibility, r.m_visibility);
 }
 
 ClassifObject const * ClassifObject::GetObject(size_t i) const
@@ -106,7 +106,7 @@ ClassifObject const * ClassifObject::GetObject(size_t i) const
   }
 }
 
-void ClassifObject::ConcatChildNames(string & s) const
+void ClassifObject::ConcatChildNames(std::string & s) const
 {
   s.clear();
   size_t const count = m_objs.size();
@@ -245,7 +245,7 @@ namespace
 {
   class suitable_getter
   {
-    typedef vector<drule::Key> vec_t;
+    typedef std::vector<drule::Key> vec_t;
     typedef vec_t::const_iterator iter_t;
 
     vec_t const & m_rules;
@@ -276,7 +276,7 @@ namespace
 
     void find(int ft, int scale)
     {
-      iter_t i = lower_bound(m_rules.begin(), m_rules.end(), scale, less_scales());
+      iter_t i = std::lower_bound(m_rules.begin(), m_rules.end(), scale, less_scales());
       while (i != m_rules.end() && i->m_scale == scale)
         add_rule(ft, i++);
     }
@@ -363,7 +363,7 @@ pair<int, int> ClassifObject::GetDrawScaleRange() const
   return make_pair(left, right);
 }
 
-void Classificator::ReadClassificator(istream & s)
+void Classificator::ReadClassificator(std::istream & s)
 {
   ClassifObject::LoadPolicy policy(&m_root);
   tree::LoadTreeAsText(s, policy);
@@ -397,34 +397,34 @@ template <class IterT> uint32_t Classificator::GetTypeByPathImpl(IterT beg, Iter
   return type;
 }
 
-uint32_t Classificator::GetTypeByPathSafe(vector<string> const & path) const
+uint32_t Classificator::GetTypeByPathSafe(std::vector<std::string> const & path) const
 {
   return GetTypeByPathImpl(path.begin(), path.end());
 }
 
-uint32_t Classificator::GetTypeByPath(vector<string> const & path) const
+uint32_t Classificator::GetTypeByPath(std::vector<std::string> const & path) const
 {
   uint32_t const type = GetTypeByPathImpl(path.begin(), path.end());
   ASSERT_NOT_EQUAL(type, 0, (path));
   return type;
 }
 
-uint32_t Classificator::GetTypeByPath(initializer_list<char const *> const & lst) const
+uint32_t Classificator::GetTypeByPath(std::initializer_list<char const *> const & lst) const
 {
   uint32_t const type = GetTypeByPathImpl(lst.begin(), lst.end());
   ASSERT_NOT_EQUAL(type, 0, (lst));
   return type;
 }
 
-uint32_t Classificator::GetTypeByReadableObjectName(string const & name) const
+uint32_t Classificator::GetTypeByReadableObjectName(std::string const & name) const
 {
   ASSERT(!name.empty(), ());
-  vector<string> v;
-  strings::Tokenize(name, "-", [&v] (string const & s) { v.push_back(s); } );
+  std::vector<std::string> v;
+  strings::Tokenize(name, "-", [&v] (std::string const & s) { v.push_back(s); } );
   return GetTypeByPathSafe(v);
 }
 
-void Classificator::ReadTypesMapping(istream & s)
+void Classificator::ReadTypesMapping(std::istream & s)
 {
   m_mapping.Load(s);
 }
@@ -435,13 +435,13 @@ void Classificator::Clear()
   m_mapping.Clear();
 }
 
-string Classificator::GetReadableObjectName(uint32_t type) const
+std::string Classificator::GetReadableObjectName(uint32_t type) const
 {
-  string s = GetFullObjectName(type);
+  std::string s = GetFullObjectName(type);
   // Remove ending dummy symbol.
   ASSERT ( !s.empty(), () );
   s.pop_back();
   // Replace separator.
-  replace(s.begin(), s.end(), '|', '-');
+  std::replace(s.begin(), s.end(), '|', '-');
   return s;
 }

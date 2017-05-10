@@ -8,14 +8,14 @@
 
 #include "base/scope_guard.hpp"
 
-#include "std/string.hpp"
-#include "std/vector.hpp"
-#include "std/iostream.hpp"
+#include <string>
+#include <vector>
+#include <iostream>
 
 
 UNIT_TEST(KMZ_UnzipTest)
 {
-  string const kmzFile = GetPlatform().TestsDataPathForFile("test.kmz");
+  std::string const kmzFile = GetPlatform().TestsDataPathForFile("test.kmz");
   ZipFileReader::FileListT files;
   ZipFileReader::FilesList(kmzFile, files);
 
@@ -31,7 +31,7 @@ UNIT_TEST(KMZ_UnzipTest)
   }
   TEST(isKMLinZip, ("No KML file in KMZ"));
 
-  string const kmlFile = GetPlatform().WritablePathForFile("newKml.kml");
+  std::string const kmlFile = GetPlatform().WritablePathForFile("newKml.kml");
   MY_SCOPE_GUARD(fileGuard, bind(&FileWriter::DeleteFileX, kmlFile));
   ZipFileReader::UnzipFile(kmzFile, "doc.kml", kmlFile);
 

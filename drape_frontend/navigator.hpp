@@ -4,8 +4,8 @@
 
 #include "base/matrix.hpp"
 
-#include "std/shared_ptr.hpp"
-#include "std/function.hpp"
+#include <memory>
+#include <functional>
 
 namespace df
 {

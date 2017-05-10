@@ -13,9 +13,9 @@
 
 #include "base/logging.hpp"
 
-#include "std/cmath.hpp"
-#include "std/iostream.hpp"
-#include "std/sstream.hpp"
+#include <cmath>
+#include <iostream>
+#include <sstream>
 
 namespace
 {
@@ -31,23 +31,23 @@ StringStorage::StringStorage()
 {
   try
   {
-    string settingsPath = GetPlatform().SettingsPathForFile(SETTINGS_FILE_NAME);
+    std::string settingsPath = GetPlatform().SettingsPathForFile(SETTINGS_FILE_NAME);
     LOG(LINFO, ("Settings path:", settingsPath));
     ReaderStreamBuf buffer(make_unique<FileReader>(settingsPath));
-    istream stream(&buffer);
+    std::istream stream(&buffer);
 
-    string line;
-    while (getline(stream, line))
+    std::string line;
+    while (std::getline(stream, line))
     {
       if (line.empty())
         continue;
 
       size_t const delimPos = line.find(kDelimChar);
-      if (delimPos == string::npos)
+      if (delimPos == std::string::npos)
         continue;
 
-      string const key = line.substr(0, delimPos);
-      string const value = line.substr(delimPos + 1);
+      std::string const key = line.substr(0, delimPos);
+      std::string const value = line.substr(delimPos + 1);
       if (!key.empty() && !value.empty())
         m_values[key] = value;
     }
@@ -65,7 +65,7 @@ void StringStorage::Save() const
     FileWriter file(GetPlatform().SettingsPathForFile(SETTINGS_FILE_NAME));
     for (auto const & value : m_values)
     {
-      string line(value.first);
+      std::string line(value.first);
       line += kDelimChar;
       line += value.second;
       line += '\n';
@@ -87,14 +87,14 @@ StringStorage & StringStorage::Instance()
 
 void StringStorage::Clear()
 {
-  lock_guard<mutex> guard(m_mutex);
+  std::lock_guard<std::mutex> guard(m_mutex);
   m_values.clear();
   Save();
 }
 
-bool StringStorage::GetValue(string const & key, string & outValue) const
+bool StringStorage::GetValue(std::string const & key, std::string & outValue) const
 {
-  lock_guard<mutex> guard(m_mutex);
+  std::lock_guard<std::mutex> guard(m_mutex);
 
   auto const found = m_values.find(key);
   if (found == m_values.end())
@@ -104,17 +104,17 @@ bool StringStorage::GetValue(string const & key, string & outValue) const
   return true;
 }
 
-void StringStorage::SetValue(string const & key, string && value)
+void StringStorage::SetValue(std::string const & key, std::string && value)
 {
-  lock_guard<mutex> guard(m_mutex);
+  std::lock_guard<std::mutex> guard(m_mutex);
 
   m_values[key] = move(value);
   Save();
 }
 
-void StringStorage::DeleteKeyAndValue(string const & key)
+void StringStorage::DeleteKeyAndValue(std::string const & key)
 {
-  lock_guard<mutex> guard(m_mutex);
+  std::lock_guard<std::mutex> guard(m_mutex);
 
   auto const found = m_values.find(key);
   if (found != m_values.end())
@@ -127,13 +127,13 @@ void StringStorage::DeleteKeyAndValue(string const & key)
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 template <>
-string ToString<string>(string const & str)
+std::string ToString<std::string>(std::string const & str)
 {
   return str;
 }
 
 template <>
-bool FromString<string>(string const & strIn, string & strOut)
+bool FromString<std::string>(std::string const & strIn, std::string & strOut)
 {
   strOut = strIn;
   return true;
@@ -142,13 +142,13 @@ bool FromString<string>(string const & strIn, string & strOut)
 namespace impl
 {
 template <class T, size_t N>
-bool FromStringArray(string const & s, T(&arr)[N])
+bool FromStringArray(std::string const & s, T(&arr)[N])
 {
-  istringstream in(s);
+  std::istringstream in(s);
   size_t count = 0;
   while (count < N && in >> arr[count])
   {
-    if (!isfinite(arr[count]))
+    if (!std::isfinite(arr[count]))
       return false;
     ++count;
   }
@@ -158,9 +158,9 @@ bool FromStringArray(string const & s, T(&arr)[N])
 }  // namespace impl
 
 template <>
-string ToString<m2::AnyRectD>(m2::AnyRectD const & rect)
+std::string ToString<m2::AnyRectD>(m2::AnyRectD const & rect)
 {
-  ostringstream out;
+  std::ostringstream out;
   out.precision(12);
   m2::PointD glbZero(rect.GlobalZero());
   out << glbZero.x << " " << glbZero.y << " ";
@@ -171,7 +171,7 @@ string ToString<m2::AnyRectD>(m2::AnyRectD const & rect)
 }
 
 template <>
-bool FromString<m2::AnyRectD>(string const & str, m2::AnyRectD & rect)
+bool FromString<m2::AnyRectD>(std::string const & str, m2::AnyRectD & rect)
 {
   double val[7];
   if (!impl::FromStringArray(str, val))
@@ -187,15 +187,15 @@ bool FromString<m2::AnyRectD>(string const & str, m2::AnyRectD & rect)
 }
 
 template <>
-string ToString<m2::RectD>(m2::RectD const & rect)
+std::string ToString<m2::RectD>(m2::RectD const & rect)
 {
-  ostringstream stream;
+  std::ostringstream stream;
   stream.precision(12);
   stream << rect.minX() << " " << rect.minY() << " " << rect.maxX() << " " << rect.maxY();
   return stream.str();
 }
 template <>
-bool FromString<m2::RectD>(string const & str, m2::RectD & rect)
+bool FromString<m2::RectD>(std::string const & str, m2::RectD & rect)
 {
   double val[4];
   if (!impl::FromStringArray(str, val))
@@ -207,13 +207,13 @@ bool FromString<m2::RectD>(string const & str, m2::RectD & rect)
 }
 
 template <>
-string ToString<bool>(bool const & v)
+std::string ToString<bool>(bool const & v)
 {
   return v ? "true" : "false";
 }
 
 template <>
-bool FromString<bool>(string const & str, bool & v)
+bool FromString<bool>(std::string const & str, bool & v)
 {
   if (str == "true")
     v = true;
@@ -227,18 +227,18 @@ bool FromString<bool>(string const & str, bool & v)
 namespace impl
 {
 template <typename T>
-string ToStringScalar(T const & v)
+std::string ToStringScalar(T const & v)
 {
-  ostringstream stream;
+  std::ostringstream stream;
   stream.precision(12);
   stream << v;
   return stream.str();
 }
 
 template <typename T>
-bool FromStringScalar(string const & str, T & v)
+bool FromStringScalar(std::string const & str, T & v)
 {
-  istringstream stream(str);
+  std::istringstream stream(str);
   if (stream)
   {
     stream >> v;
@@ -250,61 +250,61 @@ bool FromStringScalar(string const & str, T & v)
 }  // namespace impl
 
 template <>
-string ToString<double>(double const & v)
+std::string ToString<double>(double const & v)
 {
   return impl::ToStringScalar<double>(v);
 }
 
 template <>
-bool FromString<double>(string const & str, double & v)
+bool FromString<double>(std::string const & str, double & v)
 {
   return impl::FromStringScalar<double>(str, v);
 }
 
 template <>
-string ToString<int32_t>(int32_t const & v)
+std::string ToString<int32_t>(int32_t const & v)
 {
   return impl::ToStringScalar<int32_t>(v);
 }
 
 template <>
-bool FromString<int32_t>(string const & str, int32_t & v)
+bool FromString<int32_t>(std::string const & str, int32_t & v)
 {
   return impl::FromStringScalar<int32_t>(str, v);
 }
 
 template <>
-string ToString<int64_t>(int64_t const & v)
+std::string ToString<int64_t>(int64_t const & v)
 {
   return impl::ToStringScalar<int64_t>(v);
 }
 
 template <>
-bool FromString<int64_t>(string const & str, int64_t & v)
+bool FromString<int64_t>(std::string const & str, int64_t & v)
 {
   return impl::FromStringScalar<int64_t>(str, v);
 }
 
 template <>
-string ToString<uint32_t>(uint32_t const & v)
+std::string ToString<uint32_t>(uint32_t const & v)
 {
   return impl::ToStringScalar<uint32_t>(v);
 }
 
 template <>
-string ToString<uint64_t>(uint64_t const & v)
+std::string ToString<uint64_t>(uint64_t const & v)
 {
   return impl::ToStringScalar<uint64_t>(v);
 }
 
 template <>
-bool FromString<uint32_t>(string const & str, uint32_t & v)
+bool FromString<uint32_t>(std::string const & str, uint32_t & v)
 {
   return impl::FromStringScalar<uint32_t>(str, v);
 }
 
 template <>
-bool FromString<uint64_t>(string const & str, uint64_t & v)
+bool FromString<uint64_t>(std::string const & str, uint64_t & v)
 {
   return impl::FromStringScalar<uint64_t>(str, v);
 }
@@ -312,18 +312,18 @@ bool FromString<uint64_t>(string const & str, uint64_t & v)
 namespace impl
 {
 template <class TPair>
-string ToStringPair(TPair const & value)
+std::string ToStringPair(TPair const & value)
 {
-  ostringstream stream;
+  std::ostringstream stream;
   stream.precision(12);
   stream << value.first << " " << value.second;
   return stream.str();
 }
 
 template <class TPair>
-bool FromStringPair(string const & str, TPair & value)
+bool FromStringPair(std::string const & str, TPair & value)
 {
-  istringstream stream(str);
+  std::istringstream stream(str);
   if (stream)
   {
     stream >> value.first;
@@ -341,31 +341,31 @@ typedef pair<int, int> IPairT;
 typedef pair<double, double> DPairT;
 
 template <>
-string ToString<IPairT>(IPairT const & v)
+std::string ToString<IPairT>(IPairT const & v)
 {
   return impl::ToStringPair(v);
 }
 
 template <>
-bool FromString<IPairT>(string const & s, IPairT & v)
+bool FromString<IPairT>(std::string const & s, IPairT & v)
 {
   return impl::FromStringPair(s, v);
 }
 
 template <>
-string ToString<DPairT>(DPairT const & v)
+std::string ToString<DPairT>(DPairT const & v)
 {
   return impl::ToStringPair(v);
 }
 
 template <>
-bool FromString<DPairT>(string const & s, DPairT & v)
+bool FromString<DPairT>(std::string const & s, DPairT & v)
 {
   return impl::FromStringPair(s, v);
 }
 
 template <>
-string ToString<measurement_utils::Units>(measurement_utils::Units const & v)
+std::string ToString<measurement_utils::Units>(measurement_utils::Units const & v)
 {
   switch (v)
   {
@@ -376,7 +376,7 @@ string ToString<measurement_utils::Units>(measurement_utils::Units const & v)
 }
 
 template <>
-bool FromString<measurement_utils::Units>(string const & s, measurement_utils::Units & v)
+bool FromString<measurement_utils::Units>(std::string const & s, measurement_utils::Units & v)
 {
   if (s == "Metric")
     v = measurement_utils::Units::Metric;
@@ -389,7 +389,7 @@ bool FromString<measurement_utils::Units>(string const & s, measurement_utils::U
 }
 
 template <>
-string ToString<location::EMyPositionMode>(location::EMyPositionMode const & v)
+std::string ToString<location::EMyPositionMode>(location::EMyPositionMode const & v)
 {
   switch (v)
   {
@@ -403,7 +403,7 @@ string ToString<location::EMyPositionMode>(location::EMyPositionMode const & v)
 }
 
 template <>
-bool FromString<location::EMyPositionMode>(string const & s, location::EMyPositionMode & v)
+bool FromString<location::EMyPositionMode>(std::string const & s, location::EMyPositionMode & v)
 {
   if (s == "PendingPosition")
     v = location::PendingPosition;

@@ -4,8 +4,8 @@
 #include "geometry/point2d.hpp"
 #include "coding/reader.hpp"
 
-#include "std/map.hpp"
-#include "std/utility.hpp"
+#include <map>
+#include <utility>
 
 //#define RENRER_DEBUG_INFO_LABELS
 
@@ -62,9 +62,9 @@ struct Position
 };
 
 /// TWidgetsInitInfo - static information about gui widgets (geometry align)
-using TWidgetsInitInfo = map<EWidget, gui::Position>;
+using TWidgetsInitInfo = std::map<EWidget, gui::Position>;
 /// TWidgetsLayoutInfo - dynamic info. Pivot point of each widget in pixel coordinates
-using TWidgetsLayoutInfo = map<EWidget, m2::PointD>;
+using TWidgetsLayoutInfo = std::map<EWidget, m2::PointD>;
 /// TWidgetsSizeInfo - info about widget pixel sizes
 using TWidgetsSizeInfo = TWidgetsLayoutInfo;
 
@@ -104,14 +104,14 @@ public:
 private:
   /// TResolversPair.first - Portrait (when weight < height)
   /// TResolversPair.second - Landscape (when weight >= height)
-  typedef pair<PositionResolver, PositionResolver> TResolversPair;
-  map<EWidget, TResolversPair> m_resolvers;
+  typedef std::pair<PositionResolver, PositionResolver> TResolversPair;
+  std::map<EWidget, TResolversPair> m_resolvers;
 
   int m_displayWidth;
   int m_displayHeight;
   float m_visualScale;
 };
 
-ReaderPtr<Reader> ResolveGuiSkinFile(string const & deviceType);
+ReaderPtr<Reader> ResolveGuiSkinFile(std::string const & deviceType);
 
 }

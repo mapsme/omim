@@ -9,9 +9,9 @@
 
 #include "base/macros.hpp"
 
-#include "std/string.hpp"
-#include "std/unique_ptr.hpp"
-#include "std/utility.hpp"
+#include <string>
+#include <memory>
+#include <utility>
 
 
 class UserMarkContainer;
@@ -63,23 +63,23 @@ class SearchMarkPoint : public UserMark
 public:
   SearchMarkPoint(m2::PointD const & ptOrg, UserMarkContainer * container);
 
-  string GetSymbolName() const override;
+  std::string GetSymbolName() const override;
   UserMark::Type GetMarkType() const override;
 
   FeatureID const & GetFoundFeature() const { return m_foundFeatureID; }
   void SetFoundFeature(FeatureID const & feature) { m_foundFeatureID = feature; }
 
-  string const & GetMatchedName() const { return m_matchedName; }
-  void SetMatchedName(string const & name) { m_matchedName = name; }
+  std::string const & GetMatchedName() const { return m_matchedName; }
+  void SetMatchedName(std::string const & name) { m_matchedName = name; }
 
-  string const & GetCustomSymbol() const { return m_customSymbol; }
-  void SetCustomSymbol(string const & symbol) { m_customSymbol = symbol; }
+  std::string const & GetCustomSymbol() const { return m_customSymbol; }
+  void SetCustomSymbol(std::string const & symbol) { m_customSymbol = symbol; }
 
 protected:
   FeatureID m_foundFeatureID;
   // Used to pass exact search result matched string into a place page.
-  string m_matchedName;
-  string m_customSymbol;
+  std::string m_matchedName;
+  std::string m_customSymbol;
 };
 
 class PoiMarkPoint : public SearchMarkPoint
@@ -114,9 +114,9 @@ class DebugMarkPoint : public UserMark
 public:
   DebugMarkPoint(m2::PointD const & ptOrg, UserMarkContainer * container);
 
-  string GetSymbolName() const override;
+  std::string GetSymbolName() const override;
 
   Type GetMarkType() const override { return UserMark::Type::DEBUG_MARK; }
 };
 
-string DebugPrint(UserMark::Type type);
+std::string DebugPrint(UserMark::Type type);

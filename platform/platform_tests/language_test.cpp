@@ -2,7 +2,7 @@
 
 #include "platform/preferred_languages.hpp"
 
-#include "std/string.hpp"
+#include <string>
 
 
 UNIT_TEST(LangNormalize_Smoke)
@@ -17,15 +17,15 @@ UNIT_TEST(LangNormalize_Smoke)
 
 UNIT_TEST(PrefLanguages_Smoke)
 {
-  string s = languages::GetPreferred();
+  std::string s = languages::GetPreferred();
   TEST(!s.empty(), ());
-  cout << "Preferred langs: " << s << endl;
+  std::cout << "Preferred langs: " << s << std::endl;
 
   s = languages::GetCurrentOrig();
   TEST(!s.empty(), ());
-  cout << "Current original lang: " << s << endl;
+  std::cout << "Current original lang: " << s << std::endl;
 
   s = languages::GetCurrentNorm();
   TEST(!s.empty(), ());
-  cout << "Current normalized lang: " << s << endl;
+  std::cout << "Current normalized lang: " << s << std::endl;
 }

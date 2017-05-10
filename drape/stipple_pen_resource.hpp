@@ -10,8 +10,8 @@
 #include "geometry/point2d.hpp"
 #include "geometry/rect2d.hpp"
 
-#include "std/map.hpp"
-#include "std/mutex.hpp"
+#include <map>
+#include <mutex>
 
 namespace dp
 {
@@ -40,7 +40,7 @@ private:
   void Init(buffer_vector<uint8_t, 8> const & pattern);
 
 private:
-  friend string DebugPrint(StipplePenHandle const & );
+  friend std::string DebugPrint(StipplePenHandle const & );
   uint64_t m_keyValue;
 };
 
@@ -102,8 +102,8 @@ public:
   void UploadResources(ref_ptr<Texture> texture);
 
 private:
-  typedef map<StipplePenHandle, StipplePenResourceInfo> TResourceMapping;
-  typedef pair<m2::RectU, StipplePenRasterizator> TPendingNode;
+  typedef std::map<StipplePenHandle, StipplePenResourceInfo> TResourceMapping;
+  typedef std::pair<m2::RectU, StipplePenRasterizator> TPendingNode;
   typedef buffer_vector<TPendingNode, 32> TPendingNodes;
 
   TResourceMapping m_predefinedResourceMapping;
@@ -111,11 +111,11 @@ private:
   TPendingNodes m_pendingNodes;
   StipplePenPacker m_packer;
 
-  mutex m_lock;
-  mutex m_mappingLock;
+  std::mutex m_lock;
+  std::mutex m_mappingLock;
 };
 
-string DebugPrint(StipplePenHandle const & key);
+std::string DebugPrint(StipplePenHandle const & key);
 
 class StipplePenTexture : public DynamicTexture<StipplePenIndex, StipplePenKey, Texture::StipplePen>
 {

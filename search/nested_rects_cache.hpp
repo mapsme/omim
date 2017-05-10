@@ -4,8 +4,8 @@
 
 #include "geometry/point2d.hpp"
 
-#include "std/map.hpp"
-#include "std/vector.hpp"
+#include <map>
+#include <vector>
 
 class Index;
 
@@ -42,8 +42,8 @@ private:
   m2::PointD m_position;
   bool m_valid;
 
-  using TFeatures = vector<uint32_t>;
-  using TBucket = map<MwmSet::MwmId, TFeatures>;
+  using TFeatures = std::vector<uint32_t>;
+  using TBucket = std::map<MwmSet::MwmId, TFeatures>;
 
   // Sorted lists of features.
   TBucket m_buckets[RECT_SCALE_COUNT];

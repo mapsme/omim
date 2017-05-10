@@ -8,10 +8,10 @@
 
 #include "base/exception.hpp"
 
-#include "std/atomic.hpp"
-#include "std/mutex.hpp"
-#include "std/noncopyable.hpp"
-#include "std/vector.hpp"
+#include <atomic>
+#include <mutex>
+#include <boost/noncopyable.hpp>
+#include <vector>
 
 class FeatureType;
 
@@ -21,7 +21,7 @@ namespace df
 class MapDataProvider;
 class Stylist;
 
-class TileInfo : private noncopyable
+class TileInfo : private boost::noncopyable
 {
 public:
   DECLARE_EXCEPTION(ReadCanceledException, RootException);
@@ -54,11 +54,11 @@ private:
 private:
   drape_ptr<EngineContext> m_context;
   CustomSymbolsContextWeakPtr m_customSymbolsContext;
-  vector<FeatureID> m_featureInfo;
+  std::vector<FeatureID> m_featureInfo;
   bool m_is3dBuildings;
   bool m_trafficEnabled;
 
-  atomic<bool> m_isCanceled;
+  std::atomic<bool> m_isCanceled;
 };
 
 } // namespace df

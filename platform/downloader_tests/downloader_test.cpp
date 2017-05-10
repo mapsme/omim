@@ -20,6 +20,8 @@
 #include <QtCore/QCoreApplication>
 
 
+using namespace std;
+
 #define TEST_URL1 "http://localhost:34568/unit_tests/1.txt"
 #define TEST_URL_404 "http://localhost:34568/unit_tests/notexisting_unittest"
 #define TEST_URL_PERMANENT "http://localhost:34568/unit_tests/permanent"

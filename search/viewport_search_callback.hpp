@@ -3,7 +3,7 @@
 #include "search/hotels_classifier.hpp"
 #include "search/search_params.hpp"
 
-#include "std/function.hpp"
+#include <functional>
 
 namespace search
 {
@@ -20,7 +20,7 @@ public:
   public:
     virtual ~Delegate() = default;
 
-    virtual void RunUITask(function<void()> fn) = 0;
+    virtual void RunUITask(std::function<void()> fn) = 0;
     virtual void SetHotelDisplacementMode() = 0;
     virtual bool IsViewportSearchActive() const = 0;
     virtual void ShowViewportSearchResults(Results const & results) = 0;

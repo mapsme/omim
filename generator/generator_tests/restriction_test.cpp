@@ -21,6 +21,8 @@
 
 #include "std/string.hpp"
 
+using namespace std;
+
 using namespace feature;
 using namespace generator;
 using namespace platform::tests_support;

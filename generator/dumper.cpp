@@ -13,12 +13,12 @@
 
 #include "base/logging.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/bind.hpp"
-#include "std/functional.hpp"
-#include "std/iostream.hpp"
-#include "std/map.hpp"
-#include "std/vector.hpp"
+#include <algorithm>
+#include <functional>
+#include <functional>
+#include <iostream>
+#include <map>
+#include <vector>
 
 namespace
 {
@@ -43,10 +43,10 @@ struct SearchTokensCollector
   {
     if (m_currentCount > 0)
       m_tokens.emplace_back(m_currentCount, m_currentS);
-    sort(m_tokens.begin(), m_tokens.end(), greater<pair<uint32_t, strings::UniString>>());
+    std::sort(m_tokens.begin(), m_tokens.end(), std::greater<pair<uint32_t, strings::UniString>>());
   }
 
-  vector<pair<uint32_t, strings::UniString>> m_tokens;
+  std::vector<pair<uint32_t, strings::UniString>> m_tokens;
   strings::UniString m_currentS;
   uint32_t m_currentCount;
 };
@@ -56,10 +56,10 @@ namespace feature
 {
   class TypesCollector
   {
-    vector<uint32_t> m_currFeatureTypes;
+    std::vector<uint32_t> m_currFeatureTypes;
 
   public:
-    typedef map<vector<uint32_t>, size_t> value_type;
+    typedef std::map<std::vector<uint32_t>, size_t> value_type;
     value_type m_stats;
     size_t m_namesCount;
     size_t m_totalCount;
@@ -69,7 +69,7 @@ namespace feature
     void operator()(FeatureType & f, uint32_t)
     {
       ++m_totalCount;
-      string s1, s2;
+      std::string s1, s2;
       f.GetPreferredNames(s1, s2);
       if (!s1.empty())
         ++m_namesCount;
@@ -93,40 +93,40 @@ namespace feature
     return first.second > second.second;
   }
 
-  void DumpTypes(string const & fPath)
+  void DumpTypes(std::string const & fPath)
   {
     TypesCollector doClass;
     feature::ForEachFromDat(fPath, doClass);
 
-    typedef pair<vector<uint32_t>, size_t> stats_elem_type;
-    typedef vector<stats_elem_type> vec_to_sort;
+    typedef pair<std::vector<uint32_t>, size_t> stats_elem_type;
+    typedef std::vector<stats_elem_type> vec_to_sort;
     vec_to_sort vecToSort(doClass.m_stats.begin(), doClass.m_stats.end());
-    sort(vecToSort.begin(), vecToSort.end(), &SortFunc<stats_elem_type>);
+    std::sort(vecToSort.begin(), vecToSort.end(), &SortFunc<stats_elem_type>);
 
     for (vec_to_sort::iterator it = vecToSort.begin(); it != vecToSort.end(); ++it)
     {
-      cout << it->second << " ";
+      std::cout << it->second << " ";
       for (size_t i = 0; i < it->first.size(); ++i)
-        cout << classif().GetFullObjectName(it->first[i]) << " ";
-      cout << endl;
+        std::cout << classif().GetFullObjectName(it->first[i]) << " ";
+      std::cout << endl;
     }
-    cout << "Total features: " << doClass.m_totalCount << endl;
-    cout << "Features with names: " << doClass.m_namesCount << endl;
+    std::cout << "Total features: " << doClass.m_totalCount << endl;
+    std::cout << "Features with names: " << doClass.m_namesCount << endl;
   }
 
   ///////////////////////////////////////////////////////////////////
 
-  typedef map<int8_t, map<strings::UniString, pair<unsigned int, string> > > TokensContainerT;
+  typedef std::map<int8_t, std::map<strings::UniString, pair<unsigned int, std::string> > > TokensContainerT;
   class PrefixesCollector
   {
   public:
     TokensContainerT m_stats;
 
-    bool operator()(int8_t langCode, string const & name)
+    bool operator()(int8_t langCode, std::string const & name)
     {
       CHECK(!name.empty(), ("Feature name is empty"));
 
-      vector<strings::UniString> tokens;
+      std::vector<strings::UniString> tokens;
       search::SplitUniString(search::NormalizeAndSimplifyString(name),
                              MakeBackInsertFunctor(tokens), search::Delimiters());
 
@@ -159,28 +159,28 @@ namespace feature
 
   void Print(int8_t langCode, TokensContainerT::mapped_type const & container)
   {
-    typedef pair<strings::UniString, pair<unsigned int, string> > NameElemT;
-    typedef vector<NameElemT> VecToSortT;
+    typedef pair<strings::UniString, pair<unsigned int, std::string> > NameElemT;
+    typedef std::vector<NameElemT> VecToSortT;
 
     VecToSortT v(container.begin(), container.end());
-    sort(v.begin(), v.end(), &SortFunc<NameElemT>);
+    std::sort(v.begin(), v.end(), &SortFunc<NameElemT>);
 
     // do not display prefixes with low occurrences
     if (v[0].second.first > MIN_OCCURRENCE)
     {
-      cout << "Language code: " << StringUtf8Multilang::GetLangByCode(langCode) << endl;
+      std::cout << "Language code: " << StringUtf8Multilang::GetLangByCode(langCode) << endl;
 
       for (VecToSortT::iterator it = v.begin(); it != v.end(); ++it)
       {
         if (it->second.first <= MIN_OCCURRENCE)
           break;
-        cout << it->second.first << " " << strings::ToUtf8(it->first);
-        cout << " \"" << it->second.second << "\"" << endl;
+        std::cout << it->second.first << " " << strings::ToUtf8(it->first);
+        std::cout << " \"" << it->second.second << "\"" << endl;
       }
     }
   }
 
-  void DumpPrefixes(string const & fPath)
+  void DumpPrefixes(std::string const & fPath)
   {
     PrefixesCollector doClass;
     feature::ForEachFromDat(fPath, doClass);
@@ -191,7 +191,7 @@ namespace feature
     }
   }
 
-  void DumpSearchTokens(string const & fPath, size_t maxTokensToShow)
+  void DumpSearchTokens(std::string const & fPath, size_t maxTokensToShow)
   {
     using TValue = FeatureIndexValue;
 
@@ -206,23 +206,23 @@ namespace feature
     trie::ForEachRef(*trieRoot, f, strings::UniString());
     f.Finish();
 
-    for (size_t i = 0; i < min(maxTokensToShow, f.m_tokens.size()); ++i)
+    for (size_t i = 0; i < std::min(maxTokensToShow, f.m_tokens.size()); ++i)
     {
       auto const & s = f.m_tokens[i].second;
-      cout << f.m_tokens[i].first << " " << strings::ToUtf8(s) << endl;
+      std::cout << f.m_tokens[i].first << " " << strings::ToUtf8(s) << endl;
     }
   }
 
-  void DumpFeatureNames(string const & fPath, string const & lang)
+  void DumpFeatureNames(std::string const & fPath, std::string const & lang)
   {
     int8_t const langIndex = StringUtf8Multilang::GetLangIndex(lang);
-    auto printName = [&](int8_t langCode, string const & name) -> bool
+    auto printName = [&](int8_t langCode, std::string const & name) -> bool
     {
       CHECK(!name.empty(), ("Feature name is empty"));
       if (langIndex == StringUtf8Multilang::kUnsupportedLanguageCode)
-        cout << StringUtf8Multilang::GetLangByCode(langCode) << ' ' << name << endl;
+        std::cout << StringUtf8Multilang::GetLangByCode(langCode) << ' ' << name << endl;
       else if (langCode == langIndex)
-        cout << name << endl;
+        std::cout << name << endl;
       return true;
     };
 

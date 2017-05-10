@@ -1,7 +1,7 @@
 #include "coding/mmap_reader.hpp"
 
 #include "std/target_os.hpp"
-#include "std/cstring.hpp"
+#include <cstring>
 
 // @TODO we don't support windows at the moment
 #ifndef OMIM_OS_WINDOWS
@@ -23,7 +23,7 @@ public:
   uint8_t * m_memory;
   uint64_t m_size;
 
-  MmapData(string const & fileName)
+  MmapData(std::string const & fileName)
   {
     // @TODO add windows support
 #ifndef OMIM_OS_WINDOWS
@@ -55,10 +55,10 @@ public:
   }
 };
 
-MmapReader::MmapReader(string const & fileName)
+MmapReader::MmapReader(std::string const & fileName)
   : base_type(fileName), m_offset(0)
 {
-  m_data = shared_ptr<MmapData>(new MmapData(fileName));
+  m_data = std::shared_ptr<MmapData>(new MmapData(fileName));
   m_size = m_data->m_size;
 }
 
@@ -79,11 +79,11 @@ void MmapReader::Read(uint64_t pos, void * p, size_t size) const
   memcpy(p, m_data->m_memory + m_offset + pos, size);
 }
 
-unique_ptr<Reader> MmapReader::CreateSubReader(uint64_t pos, uint64_t size) const
+std::unique_ptr<Reader> MmapReader::CreateSubReader(uint64_t pos, uint64_t size) const
 {
   ASSERT_LESS_OR_EQUAL(pos + size, Size(), (pos, size));
   // Can't use make_unique with private constructor.
-  return unique_ptr<Reader>(new MmapReader(*this, m_offset + pos, size));
+  return std::unique_ptr<Reader>(new MmapReader(*this, m_offset + pos, size));
 }
 
 uint8_t * MmapReader::Data() const

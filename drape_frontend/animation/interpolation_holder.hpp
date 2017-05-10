@@ -2,7 +2,7 @@
 
 #include "base/macros.hpp"
 
-#include "std/set.hpp"
+#include <set>
 
 namespace df
 {
@@ -24,7 +24,7 @@ private:
   void RegisterInterpolator(BaseInterpolator * interpolator);
   void DeregisterInterpolator(BaseInterpolator * interpolator);
 
-  using TInterpolatorSet = set<BaseInterpolator *>;
+  using TInterpolatorSet = std::set<BaseInterpolator *>;
   TInterpolatorSet m_interpolations;
 };
 

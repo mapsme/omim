@@ -2,10 +2,10 @@
 #include "coding/coder.hpp"
 #include "base/base.hpp"
 #include "base/exception.hpp"
-#include "std/string.hpp"
+#include <string>
 
 template <typename FixedSizeCoderT, typename SrcCharT>
-void FixedDstSizeCodeToString(FixedSizeCoderT coder, SrcCharT * pSrc, size_t srcSize, string & dst)
+void FixedDstSizeCodeToString(FixedSizeCoderT coder, SrcCharT * pSrc, size_t srcSize, std::string & dst)
 {
   dst.resize(1024);
   while (true)

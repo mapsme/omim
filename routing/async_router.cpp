@@ -2,12 +2,14 @@
 
 #include "platform/platform.hpp"
 
+#include "geometry/mercator.hpp"
+
 #include "base/logging.hpp"
 #include "base/macros.hpp"
 #include "base/string_utils.hpp"
 #include "base/timer.hpp"
 
-#include "geometry/mercator.hpp"
+#include <functional>
 
 namespace routing
 {
@@ -15,7 +17,7 @@ namespace routing
 namespace
 {
 
-string ToString(IRouter::ResultCode code)
+std::string ToString(IRouter::ResultCode code)
 {
   switch (code)
   {
@@ -36,7 +38,7 @@ string ToString(IRouter::ResultCode code)
   return "Routing result code case error.";
 }
 
-map<string, string> PrepareStatisticsData(string const & routerName,
+map<std::string, std::string> PrepareStatisticsData(std::string const & routerName,
                                           m2::PointD const & startPoint, m2::PointD const & startDirection,
                                           m2::PointD const & finalPoint)
 {
@@ -64,8 +66,8 @@ AsyncRouter::RouterDelegateProxy::RouterDelegateProxy(TReadyCallback const & onR
   : m_onReady(onReady), m_onPointCheck(onPointCheck), m_onProgress(onProgress)
 {
   m_delegate.Reset();
-  m_delegate.SetPointCheckCallback(bind(&RouterDelegateProxy::OnPointCheck, this, _1));
-  m_delegate.SetProgressCallback(bind(&RouterDelegateProxy::OnProgress, this, _1));
+  m_delegate.SetPointCheckCallback(std::bind(&RouterDelegateProxy::OnPointCheck, this, std::placeholders::_1));
+  m_delegate.SetProgressCallback(std::bind(&RouterDelegateProxy::OnProgress, this, std::placeholders::_1));
   m_delegate.SetTimeout(timeoutSec);
 }
 
@@ -74,7 +76,7 @@ void AsyncRouter::RouterDelegateProxy::OnReady(Route & route, IRouter::ResultCod
   if (!m_onReady)
     return;
   {
-    lock_guard<mutex> l(m_guard);
+    std::lock_guard<std::mutex> l(m_guard);
     if (m_delegate.IsCancelled())
       return;
   }
@@ -83,7 +85,7 @@ void AsyncRouter::RouterDelegateProxy::OnReady(Route & route, IRouter::ResultCod
 
 void AsyncRouter::RouterDelegateProxy::Cancel()
 {
-  lock_guard<mutex> l(m_guard);
+  std::lock_guard<std::mutex> l(m_guard);
   m_delegate.Cancel();
 }
 
@@ -92,7 +94,7 @@ void AsyncRouter::RouterDelegateProxy::OnProgress(float progress)
   if (!m_onProgress)
     return;
   {
-    lock_guard<mutex> l(m_guard);
+    std::lock_guard<std::mutex> l(m_guard);
     if (m_delegate.IsCancelled())
       return;
   }
@@ -104,7 +106,7 @@ void AsyncRouter::RouterDelegateProxy::OnPointCheck(m2::PointD const & pt)
   if (!m_onPointCheck)
     return;
   {
-    lock_guard<mutex> l(m_guard);
+    std::lock_guard<std::mutex> l(m_guard);
     if (m_delegate.IsCancelled())
       return;
   }
@@ -125,7 +127,7 @@ AsyncRouter::AsyncRouter(TRoutingStatisticsCallback const & routingStatisticsCal
 AsyncRouter::~AsyncRouter()
 {
   {
-    unique_lock<mutex> ul(m_guard);
+    std::unique_lock<std::mutex> ul(m_guard);
 
     ResetDelegate();
 
@@ -136,9 +138,9 @@ AsyncRouter::~AsyncRouter()
   m_thread.join();
 }
 
-void AsyncRouter::SetRouter(unique_ptr<IRouter> && router, unique_ptr<IOnlineFetcher> && fetcher)
+void AsyncRouter::SetRouter(std::unique_ptr<IRouter> && router, std::unique_ptr<IOnlineFetcher> && fetcher)
 {
-  unique_lock<mutex> ul(m_guard);
+  std::unique_lock<std::mutex> ul(m_guard);
 
   ResetDelegate();
 
@@ -151,7 +153,7 @@ void AsyncRouter::CalculateRoute(m2::PointD const & startPoint, m2::PointD const
                                  RouterDelegate::TProgressCallback const & progressCallback,
                                  uint32_t timeoutSec)
 {
-  unique_lock<mutex> ul(m_guard);
+  std::unique_lock<std::mutex> ul(m_guard);
 
   m_startPoint = startPoint;
   m_startDirection = direction;
@@ -159,7 +161,7 @@ void AsyncRouter::CalculateRoute(m2::PointD const & startPoint, m2::PointD const
 
   ResetDelegate();
 
-  m_delegate = make_shared<RouterDelegateProxy>(readyCallback, m_pointCheckCallback, progressCallback, timeoutSec);
+  m_delegate = std::make_shared<RouterDelegateProxy>(readyCallback, m_pointCheckCallback, progressCallback, timeoutSec);
 
   m_hasRequest = true;
   m_threadCondVar.notify_one();
@@ -167,7 +169,7 @@ void AsyncRouter::CalculateRoute(m2::PointD const & startPoint, m2::PointD const
 
 void AsyncRouter::ClearState()
 {
-  unique_lock<mutex> ul(m_guard);
+  std::unique_lock<std::mutex> ul(m_guard);
 
   m_clearState = true;
   m_threadCondVar.notify_one();
@@ -233,7 +235,7 @@ void AsyncRouter::ThreadFunc()
   while (true)
   {
     {
-      unique_lock<mutex> ul(m_guard);
+      std::unique_lock<std::mutex> ul(m_guard);
       m_threadCondVar.wait(ul, [this](){ return m_threadExit || m_hasRequest || m_clearState; });
 
       if (m_clearState && m_router)
@@ -255,13 +257,13 @@ void AsyncRouter::ThreadFunc()
 
 void AsyncRouter::CalculateRoute()
 {
-  shared_ptr<RouterDelegateProxy> delegate;
+  std::shared_ptr<RouterDelegateProxy> delegate;
   m2::PointD startPoint, finalPoint, startDirection;
-  shared_ptr<IOnlineFetcher> absentFetcher;
-  shared_ptr<IRouter> router;
+  std::shared_ptr<IOnlineFetcher> absentFetcher;
+  std::shared_ptr<IRouter> router;
 
   {
-    unique_lock<mutex> ul(m_guard);
+    std::unique_lock<std::mutex> ul(m_guard);
 
     bool hasRequest = m_hasRequest;
     m_hasRequest = false;
@@ -317,11 +319,11 @@ void AsyncRouter::CalculateRoute()
   bool const needFetchAbsent = (code != IRouter::Cancelled);
 
   // Check online response if we have.
-  vector<string> absent;
+  vector<std::string> absent;
   if (absentFetcher && needFetchAbsent)
   {
     absentFetcher->GetAbsentCountries(absent);
-    for (string const & country : absent)
+    for (std::string const & country : absent)
       route.AddAbsentCountry(country);
   }
 
@@ -345,7 +347,7 @@ void AsyncRouter::SendStatistics(m2::PointD const & startPoint, m2::PointD const
   if (nullptr == m_routingStatisticsCallback)
     return;
 
-  map<string, string> statistics = PrepareStatisticsData(m_router->GetName(), startPoint, startDirection, finalPoint);
+  std::map<std::string, std::string> statistics = PrepareStatisticsData(m_router->GetName(), startPoint, startDirection, finalPoint);
   statistics.emplace("result", ToString(resultCode));
   statistics.emplace("elapsed", strings::to_string(elapsedSec));
 
@@ -357,12 +359,12 @@ void AsyncRouter::SendStatistics(m2::PointD const & startPoint, m2::PointD const
 
 void AsyncRouter::SendStatistics(m2::PointD const & startPoint, m2::PointD const & startDirection,
                                  m2::PointD const & finalPoint,
-                                 string const & exceptionMessage)
+                                 std::string const & exceptionMessage)
 {
   if (nullptr == m_routingStatisticsCallback)
     return;
 
-  map<string, string> statistics = PrepareStatisticsData(m_router->GetName(), startPoint, startDirection, finalPoint);
+  std::map<std::string, std::string> statistics = PrepareStatisticsData(m_router->GetName(), startPoint, startDirection, finalPoint);
   statistics.emplace("exception", exceptionMessage);
 
   m_routingStatisticsCallback(statistics);

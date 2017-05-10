@@ -4,7 +4,7 @@
 #include "base/assert.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 namespace dp
 {
@@ -22,18 +22,18 @@ glConst convert(Shader::Type t)
   return gl_const::GLFragmentShader;
 }
 
-void ResolveGetTexel(string & result, string const & sampler, int count)
+void ResolveGetTexel(std::string & result, std::string const & sampler, int count)
 {
-  string const index = "index";
-  string const answer = "answer";
-  string const texIndex = "texIndex";
-  string const texCoord = "texCoord";
+  std::string const index = "index";
+  std::string const answer = "answer";
+  std::string const texIndex = "texIndex";
+  std::string const texCoord = "texCoord";
 
   result.reserve(250 + 130 * count);
 
   for (int i = 0; i < count; ++i)
   {
-    string const number = to_string(i);
+    std::string const number = to_string(i);
     result.append("const int ").append(index).append(number).append(" = ").append(number).append(";\n");
   }
 
@@ -48,7 +48,7 @@ void ResolveGetTexel(string & result, string const & sampler, int count)
 
   for (int i = 0; i < count; ++i)
   {
-    string constIndex = index + to_string(i);
+    std::string constIndex = index + to_string(i);
     if (i != 0)
       result.append("else ");
     result.append("if (").append(texIndex).append("==").append(constIndex).append(")\n");
@@ -61,26 +61,26 @@ void ResolveGetTexel(string & result, string const & sampler, int count)
 
 }
 
-void PreprocessShaderSource(string & src)
+void PreprocessShaderSource(std::string & src)
 {
-  string const replacement("~getTexel~");
+  std::string const replacement("~getTexel~");
   auto const pos = src.find(replacement);
-  if (pos == string::npos)
+  if (pos == std::string::npos)
     return;
-  string injector = "";
-  int const count = min(8, GLFunctions::glGetInteger(gl_const::GLMaxFragmentTextures));
+  std::string injector = "";
+  int const count = std::min(8, GLFunctions::glGetInteger(gl_const::GLMaxFragmentTextures));
   ResolveGetTexel(injector, "u_textures", count);
   src.replace(pos, replacement.length(), injector);
 }
 
-Shader::Shader(string const & shaderSource, string const & defines, Type type)
+Shader::Shader(std::string const & shaderSource, std::string const & defines, Type type)
   : m_glID(0)
 {
   m_glID = GLFunctions::glCreateShader(convert(type));
-  string source = shaderSource;
+  std::string source = shaderSource;
   PreprocessShaderSource(source);
   GLFunctions::glShaderSource(m_glID, source, defines);
-  string errorLog;
+  std::string errorLog;
   bool result = GLFunctions::glCompileShader(m_glID, errorLog);
   CHECK(result, ("Shader compile error : ", errorLog));
 }

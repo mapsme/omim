@@ -6,7 +6,7 @@
 
 #include "geometry/point2d.hpp"
 
-#include "std/unique_ptr.hpp"
+#include <memory>
 
 class MwmValue;
 
@@ -35,6 +35,6 @@ private:
   State m_state;
 
   FilesContainerR::TReader m_reader;
-  unique_ptr<CentersTable> m_table;
+  std::unique_ptr<CentersTable> m_table;
 };
 }  // namespace search

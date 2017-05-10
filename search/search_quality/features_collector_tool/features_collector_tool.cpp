@@ -22,14 +22,15 @@
 #include "geometry/mercator.hpp"
 
 #include "base/macros.hpp"
+#include "base/stl_add.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/fstream.hpp"
-#include "std/iostream.hpp"
-#include "std/limits.hpp"
-#include "std/string.hpp"
-#include "std/unique_ptr.hpp"
-#include "std/vector.hpp"
+#include <fstream>
+#include <iostream>
+#include <limits>
+#include <memory>
+#include <string>
+#include <vector>
 
 #include "defines.hpp"
 
@@ -47,13 +48,13 @@ DEFINE_string(json_in, "", "Path to the json file with samples (default: stdin)"
 struct Stats
 {
   // Indexes of not-found VITAL or RELEVANT results.
-  vector<size_t> m_notFound;
+  std::vector<size_t> m_notFound;
 };
 
-void GetContents(istream & is, string & contents)
+void GetContents(std::istream & is, std::string & contents)
 {
-  string line;
-  while (getline(is, line))
+  std::string line;
+  while (std::getline(is, line))
   {
     contents.append(line);
     contents.push_back('\n');
@@ -71,7 +72,7 @@ bool WillDelete(TCountryId const & /* countryId */,
   return false;
 }
 
-void DisplayStats(ostream & os, vector<Sample> const & samples, vector<Stats> const & stats)
+void DisplayStats(std::ostream & os, std::vector<Sample> const & samples, std::vector<Stats> const & stats)
 {
   auto const n = samples.size();
   ASSERT_EQUAL(stats.size(), n, ());
@@ -109,7 +110,7 @@ int main(int argc, char * argv[])
 
   Platform & platform = GetPlatform();
 
-  string countriesFile = COUNTRIES_FILE;
+  std::string countriesFile = COUNTRIES_FILE;
   if (!FLAGS_data_path.empty())
   {
     platform.SetResourceDir(FLAGS_data_path);
@@ -127,34 +128,34 @@ int main(int argc, char * argv[])
   auto infoGetter = CountryInfoReader::CreateCountryInfoReader(platform);
   infoGetter->InitAffiliationsInfo(&storage.GetAffiliations());
 
-  string lines;
+  std::string lines;
   if (FLAGS_json_in.empty())
   {
-    GetContents(cin, lines);
+    GetContents(std::cin, lines);
   }
   else
   {
-    ifstream ifs(FLAGS_json_in);
+    std::ifstream ifs(FLAGS_json_in);
     if (!ifs.is_open())
     {
-      cerr << "Can't open input json file." << endl;
+      std::cerr << "Can't open input json file." << endl;
       return -1;
     }
     GetContents(ifs, lines);
   }
 
-  vector<Sample> samples;
+  std::vector<Sample> samples;
   if (!Sample::DeserializeFromJSONLines(lines, samples))
   {
-    cerr << "Can't parse input json file." << endl;
+    std::cerr << "Can't parse input json file." << endl;
     return -1;
   }
 
   classificator::Load();
-  TestSearchEngine engine(move(infoGetter), make_unique<ProcessorFactory>(), Engine::Params{});
+  TestSearchEngine engine(move(infoGetter), my::make_unique<ProcessorFactory>(), Engine::Params{});
 
-  vector<platform::LocalCountryFile> mwms;
-  platform::FindAllLocalMapsAndCleanup(numeric_limits<int64_t>::max() /* the latest version */,
+  std::vector<platform::LocalCountryFile> mwms;
+  platform::FindAllLocalMapsAndCleanup(std::numeric_limits<int64_t>::max() /* the latest version */,
                                        mwms);
   for (auto & mwm : mwms)
   {
@@ -162,13 +163,13 @@ int main(int argc, char * argv[])
     engine.RegisterMap(mwm);
   }
 
-  vector<Stats> stats(samples.size());
+  std::vector<Stats> stats(samples.size());
   FeatureLoader loader(engine);
   Matcher matcher(loader);
 
-  cout << "SampleId,";
-  RankingInfo::PrintCSVHeader(cout);
-  cout << ",Relevance" << endl;
+  std::cout << "SampleId,";
+  RankingInfo::PrintCSVHeader(std::cout);
+  std::cout << ",Relevance" << endl;
 
   for (size_t i = 0; i < samples.size(); ++i)
   {
@@ -183,8 +184,8 @@ int main(int argc, char * argv[])
 
     auto const & results = request.Results();
 
-    vector<size_t> goldenMatching;
-    vector<size_t> actualMatching;
+    std::vector<size_t> goldenMatching;
+    std::vector<size_t> actualMatching;
     matcher.Match(sample.m_results, results, goldenMatching, actualMatching);
 
     for (size_t j = 0; j < results.size(); ++j)
@@ -192,13 +193,13 @@ int main(int argc, char * argv[])
       if (results[j].GetResultType() != Result::RESULT_FEATURE)
         continue;
       auto const & info = results[j].GetRankingInfo();
-      cout << i << ",";
-      info.ToCSV(cout);
+      std::cout << i << ",";
+      info.ToCSV(std::cout);
 
       auto relevance = Sample::Result::Relevance::Irrelevant;
       if (actualMatching[j] != Matcher::kInvalidId)
         relevance = sample.m_results[actualMatching[j]].m_relevance;
-      cout << "," << DebugPrint(relevance) << endl;
+      std::cout << "," << DebugPrint(relevance) << endl;
     }
 
     auto & s = stats[i];
@@ -214,14 +215,14 @@ int main(int argc, char * argv[])
 
   if (FLAGS_stats_path.empty())
   {
-    DisplayStats(cerr, samples, stats);
+    DisplayStats(std::cerr, samples, stats);
   }
   else
   {
-    ofstream ofs(FLAGS_stats_path);
+    std::ofstream ofs(FLAGS_stats_path);
     if (!ofs.is_open())
     {
-      cerr << "Can't open output file for stats." << endl;
+      std::cerr << "Can't open output file for stats." << endl;
       return -1;
     }
     DisplayStats(ofs, samples, stats);

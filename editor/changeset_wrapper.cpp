@@ -8,9 +8,9 @@
 #include "base/logging.hpp"
 #include "base/macros.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/random.hpp"
-#include "std/sstream.hpp"
+#include <algorithm>
+#include <random>
+#include <sstream>
 
 #include "private.h"
 
@@ -18,7 +18,7 @@ using editor::XMLFeature;
 
 namespace
 {
-m2::RectD GetBoundingRect(vector<m2::PointD> const & geometry)
+m2::RectD GetBoundingRect(std::vector<m2::PointD> const & geometry)
 {
   m2::RectD rect;
   for (auto const & p : geometry)
@@ -34,19 +34,19 @@ bool OsmFeatureHasTags(pugi::xml_node const & osmFt)
   return osmFt.child("tag");
 }
 
-string const static kVowels = "aeiouy";
+std::string const static kVowels = "aeiouy";
 
-vector<string> const static kMainTags = {"amenity",   "shop",    "tourism", "historic", "craft",
+vector<std::string> const static kMainTags = {"amenity",   "shop",    "tourism", "historic", "craft",
                                          "emergency", "barrier", "highway", "office",   "leisure",
                                          "waterway",  "natural", "place",   "entrance", "building"};
 
-string GetTypeForFeature(XMLFeature const & node)
+std::string GetTypeForFeature(XMLFeature const & node)
 {
-  for (string const & key : kMainTags)
+  for (std::string const & key : kMainTags)
   {
     if (node.HasTag(key))
     {
-      string const value = node.GetTagValue(key);
+      std::string const value = node.GetTagValue(key);
       if (value == "yes")
         return key;
       else if (key == "shop" || key == "office" || key == "building" || key == "entrance")
@@ -63,16 +63,16 @@ string GetTypeForFeature(XMLFeature const & node)
   return node.HasAnyTags() ? "unknown object" : "empty object";
 }
 
-vector<m2::PointD> NaiveSample(vector<m2::PointD> const & source, size_t count)
+vector<m2::PointD> NaiveSample(std::vector<m2::PointD> const & source, size_t count)
 {
-  count = min(count, source.size());
-  vector<m2::PointD> result;
+  count = std::min(count, source.size());
+  std::vector<m2::PointD> result;
   result.reserve(count);
-  vector<size_t> indexes;
+  std::vector<size_t> indexes;
   indexes.reserve(count);
 
-  minstd_rand engine;
-  uniform_int_distribution<size_t> distrib(0, source.size());
+  std::minstd_rand engine;
+  std::uniform_int_distribution<size_t> distrib(0, source.size());
 
   while (count--)
   {
@@ -80,7 +80,7 @@ vector<m2::PointD> NaiveSample(vector<m2::PointD> const & source, size_t count)
     do
     {
       index = distrib(engine);
-    } while (find(begin(indexes), end(indexes), index) != end(indexes));
+    } while (std::find(begin(indexes), end(indexes), index) != end(indexes));
     result.push_back(source[index]);
     indexes.push_back(index);
   }
@@ -91,9 +91,9 @@ vector<m2::PointD> NaiveSample(vector<m2::PointD> const & source, size_t count)
 
 namespace pugi
 {
-string DebugPrint(xml_document const & doc)
+std::string DebugPrint(xml_document const & doc)
 {
-  ostringstream stream;
+  std::ostringstream stream;
   doc.print(stream, "  ");
   return stream.str();
 }
@@ -166,7 +166,7 @@ XMLFeature ChangesetWrapper::GetMatchingNodeFeatureFromOSM(m2::PointD const & ce
 
   if (!OsmFeatureHasTags(bestNode))
   {
-    stringstream sstr;
+    std::stringstream sstr;
     bestNode.print(sstr);
     LOG(LDEBUG, ("Node has no tags", sstr.str()));
     MYTHROW(EmptyFeatureException, ("Node has no tags"));
@@ -175,7 +175,7 @@ XMLFeature ChangesetWrapper::GetMatchingNodeFeatureFromOSM(m2::PointD const & ce
   return XMLFeature(bestNode);
 }
 
-XMLFeature ChangesetWrapper::GetMatchingAreaFeatureFromOSM(vector<m2::PointD> const & geometry)
+XMLFeature ChangesetWrapper::GetMatchingAreaFeatureFromOSM(std::vector<m2::PointD> const & geometry)
 {
   auto const kSamplePointsCount = 3;
   bool hasRelation = false;
@@ -204,7 +204,7 @@ XMLFeature ChangesetWrapper::GetMatchingAreaFeatureFromOSM(vector<m2::PointD> co
 
     if (strcmp(bestWayOrRelation.name(), "relation") == 0)
     {
-      stringstream sstr;
+      std::stringstream sstr;
       bestWayOrRelation.print(sstr);
       LOG(LDEBUG, ("Relation is the best match", sstr.str()));
       MYTHROW(RelationFeatureAreNotSupportedException, ("Got relation as the best matching"));
@@ -212,7 +212,7 @@ XMLFeature ChangesetWrapper::GetMatchingAreaFeatureFromOSM(vector<m2::PointD> co
 
     if (!OsmFeatureHasTags(bestWayOrRelation))
     {
-      stringstream sstr;
+      std::stringstream sstr;
       bestWayOrRelation.print(sstr);
       LOG(LDEBUG, ("Way or relation has no tags", sstr.str()));
       MYTHROW(EmptyFeatureException, ("Way or relation has no tags"));
@@ -264,24 +264,24 @@ void ChangesetWrapper::Delete(XMLFeature node)
   m_deleted_types[GetTypeForFeature(node)]++;
 }
 
-string ChangesetWrapper::TypeCountToString(TTypeCount const & typeCount)
+std::string ChangesetWrapper::TypeCountToString(TTypeCount const & typeCount)
 {
   if (typeCount.empty())
-    return string();
+    return std::string();
 
   // Convert map to vector and sort pairs by count, descending.
-  vector<pair<string, size_t>> items;
+  std::vector<pair<std::string, size_t>> items;
   for (auto const & tc : typeCount)
     items.push_back(tc);
 
-  sort(items.begin(), items.end(),
-       [](pair<string, size_t> const & a, pair<string, size_t> const & b)
+  std::sort(items.begin(), items.end(),
+       [](pair<std::string, size_t> const & a, pair<std::string, size_t> const & b)
        {
          return a.second > b.second;
        });
 
-  ostringstream ss;
-  size_t const limit = min(size_t(3), items.size());
+  std::ostringstream ss;
+  size_t const limit = std::min(size_t(3), items.size());
   for (size_t i = 0; i < limit; ++i)
   {
     if (i > 0)
@@ -308,7 +308,7 @@ string ChangesetWrapper::TypeCountToString(TTypeCount const & typeCount)
     // Format a count: "a shop" for single shop, "4 shops" for multiple.
     if (currentPair.second == 1)
     {
-      if (kVowels.find(currentPair.first.front()) != string::npos)
+      if (kVowels.find(currentPair.first.front()) != std::string::npos)
         ss << "an";
       else
         ss << "a";
@@ -322,14 +322,14 @@ string ChangesetWrapper::TypeCountToString(TTypeCount const & typeCount)
     {
       if (currentPair.first.size() >= 2)
       {
-        string const lastTwo = currentPair.first.substr(currentPair.first.size() - 2);
+        std::string const lastTwo = currentPair.first.substr(currentPair.first.size() - 2);
         // "bench" -> "benches", "marsh" -> "marshes", etc.
         if (lastTwo.back() == 'x' || lastTwo == "sh" || lastTwo == "ch" || lastTwo == "ss")
         {
           ss << 'e';
         }
         // "library" -> "libraries"
-        else if (lastTwo.back() == 'y' && kVowels.find(lastTwo.front()) == string::npos)
+        else if (lastTwo.back() == 'y' && kVowels.find(lastTwo.front()) == std::string::npos)
         {
           long const pos = ss.tellp();
           ss.seekp(pos - 1);
@@ -342,9 +342,9 @@ string ChangesetWrapper::TypeCountToString(TTypeCount const & typeCount)
   return ss.str();
 }
 
-string ChangesetWrapper::GetDescription() const
+std::string ChangesetWrapper::GetDescription() const
 {
-  string result;
+  std::string result;
   if (!m_created_types.empty())
     result = "Created " + TypeCountToString(m_created_types);
   if (!m_modified_types.empty())

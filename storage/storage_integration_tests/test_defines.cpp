@@ -2,6 +2,6 @@
 
 namespace storage
 {
-string const kMapTestDir = string("map-tests");
-string const kTestWebServer = string("http://direct.mapswithme.com/");
+std::string const kMapTestDir = std::string("map-tests");
+std::string const kTestWebServer = std::string("http://direct.mapswithme.com/");
 }  // namespace storage

@@ -16,8 +16,8 @@
 #include "base/stl_add.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/vector.hpp"
-#include "std/bind.hpp"
+#include <vector>
+#include <functional>
 
 namespace dp
 {
@@ -56,9 +56,9 @@ void MultilineTextToUniString(TextureManager::TMultilineText const & text, strin
     outString.append(str.begin(), str.end());
 }
 
-string ReadFileToString(string const & filename)
+std::string ReadFileToString(std::string const & filename)
 {
-  string result;
+  std::string result;
   try
   {
     ReaderPtr<Reader>(GetPlatform().GetReader(filename)).ReadAsString(result);
@@ -72,7 +72,7 @@ string ReadFileToString(string const & filename)
 }
 
 template <typename ToDo>
-void ParseColorsList(string const & colorsFile, ToDo toDo)
+void ParseColorsList(std::string const & colorsFile, ToDo toDo)
 {
   istringstream fin(ReadFileToString(colorsFile));
   while (true)
@@ -87,15 +87,15 @@ void ParseColorsList(string const & colorsFile, ToDo toDo)
 }
 
 template <typename ToDo>
-void ParsePatternsList(string const & patternsFile, ToDo toDo)
+void ParsePatternsList(std::string const & patternsFile, ToDo toDo)
 {
-  strings::Tokenize(ReadFileToString(patternsFile), "\n", [&](string const & patternStr)
+  strings::Tokenize(ReadFileToString(patternsFile), "\n", [&](std::string const & patternStr)
   {
     if (patternStr.empty())
       return;
 
     buffer_vector<double, 8> pattern;
-    strings::Tokenize(patternStr, " ", [&](string const & token)
+    strings::Tokenize(patternStr, " ", [&](std::string const & token)
     {
       double d = 0.0;
       VERIFY(strings::to_double(token, d), ());
@@ -475,7 +475,7 @@ void TextureManager::Init(Params const & params)
   });
 }
 
-void TextureManager::Invalidate(string const & resPostfix)
+void TextureManager::Invalidate(std::string const & resPostfix)
 {
   for (size_t i = 0; i < m_symbolTextures.size(); ++i)
   {
@@ -493,7 +493,7 @@ void TextureManager::Invalidate(string const & resPostfix)
   hatchingTexture->Invalidate(resPostfix, make_ref(m_textureAllocator));
 }
 
-void TextureManager::GetSymbolRegion(string const & symbolName, SymbolRegion & region)
+void TextureManager::GetSymbolRegion(std::string const & symbolName, SymbolRegion & region)
 {
   for (size_t i = 0; i < m_symbolTextures.size(); ++i)
   {

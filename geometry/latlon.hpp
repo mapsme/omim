@@ -2,7 +2,7 @@
 
 #include "base/math.hpp"
 
-#include "std/string.hpp"
+#include <string>
 
 namespace ms
 {
@@ -37,6 +37,6 @@ public:
   };
 };
 
-string DebugPrint(LatLon const & t);
+std::string DebugPrint(LatLon const & t);
 
 }  // namespace ms

@@ -7,9 +7,9 @@
 #include "indexer/feature_altitude.hpp"
 #include "indexer/feature_data.hpp"
 
-#include "std/initializer_list.hpp"
-#include "std/map.hpp"
-#include "std/vector.hpp"
+#include <initializer_list>
+#include <map>
+#include <vector>
 
 namespace routing
 {
@@ -32,7 +32,7 @@ public:
   inline feature::TAltitude GetAltitude() const { return m_altitude; }
 
 private:
-  friend string DebugPrint(Junction const & r);
+  friend std::string DebugPrint(Junction const & r);
 
   // Point of the junction
   m2::PointD m_point;
@@ -78,7 +78,7 @@ public:
   bool operator<(Edge const & r) const;
 
 private:
-  friend string DebugPrint(Edge const & r);
+  friend std::string DebugPrint(Edge const & r);
 
   // Feature for which edge is defined.
   FeatureID m_featureId;
@@ -102,7 +102,7 @@ private:
 class RoadGraphBase
 {
 public:
-  typedef vector<Edge> TEdgeVector;
+  typedef std::vector<Edge> TEdgeVector;
 
   /// Finds all nearest outgoing edges, that route to the junction.
   virtual void GetOutgoingEdges(Junction const & junction, TEdgeVector & edges) const = 0;
@@ -123,7 +123,7 @@ public:
 class IRoadGraph : public RoadGraphBase
 {
 public:
-  typedef vector<Junction> TJunctionVector;
+  typedef std::vector<Junction> TJunctionVector;
 
   enum class Mode
   {
@@ -137,7 +137,7 @@ public:
   {
     RoadInfo();
     RoadInfo(RoadInfo && ri);
-    RoadInfo(bool bidirectional, double speedKMPH, initializer_list<Junction> const & points);
+    RoadInfo(bool bidirectional, double speedKMPH, std::initializer_list<Junction> const & points);
     RoadInfo(RoadInfo const &) = default;
     RoadInfo & operator=(RoadInfo const &) = default;
 
@@ -236,7 +236,7 @@ public:
 
   /// Adds fake edges from fake position rp to real vicinity
   /// positions.
-  void AddFakeEdges(Junction const & junction, vector<pair<Edge, Junction>> const & vicinities);
+  void AddFakeEdges(Junction const & junction, std::vector<pair<Edge, Junction>> const & vicinities);
 
   /// Returns RoadInfo for a road corresponding to featureId.
   virtual RoadInfo GetRoadInfo(FeatureID const & featureId) const = 0;
@@ -255,7 +255,7 @@ public:
   /// @return Array of pairs of Edge and projection point on the Edge. If there is no the closest edges
   /// then returns empty array.
   virtual void FindClosestEdges(m2::PointD const & point, uint32_t count,
-                                vector<pair<Edge, Junction>> & vicinities) const = 0;
+                                std::vector<pair<Edge, Junction>> & vicinities) const = 0;
 
   /// @return Types for the specified feature
   virtual void GetFeatureTypes(FeatureID const & featureId, feature::TypesHolder & types) const = 0;
@@ -294,23 +294,23 @@ private:
     }
   }
 
-  map<Junction, TEdgeVector> m_fakeIngoingEdges;
-  map<Junction, TEdgeVector> m_fakeOutgoingEdges;
+  std::map<Junction, TEdgeVector> m_fakeIngoingEdges;
+  std::map<Junction, TEdgeVector> m_fakeOutgoingEdges;
 };
 
-string DebugPrint(IRoadGraph::Mode mode);
+std::string DebugPrint(IRoadGraph::Mode mode);
 
 IRoadGraph::RoadInfo MakeRoadInfoForTesting(bool bidirectional, double speedKMPH,
-                                            initializer_list<m2::PointD> const & points);
+                                            std::initializer_list<m2::PointD> const & points);
 
-inline void JunctionsToPoints(vector<Junction> const & junctions, vector<m2::PointD> & points)
+inline void JunctionsToPoints(std::vector<Junction> const & junctions, std::vector<m2::PointD> & points)
 {
   points.resize(junctions.size());
   for (size_t i = 0; i < junctions.size(); ++i)
     points[i] = junctions[i].GetPoint();
 }
 
-inline void JunctionsToAltitudes(vector<Junction> const & junctions, feature::TAltitudes & altitudes)
+inline void JunctionsToAltitudes(std::vector<Junction> const & junctions, feature::TAltitudes & altitudes)
 {
   altitudes.resize(junctions.size());
   for (size_t i = 0; i < junctions.size(); ++i)

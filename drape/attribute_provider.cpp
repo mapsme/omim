@@ -2,7 +2,7 @@
 #include "base/assert.hpp"
 
 #ifdef DEBUG
-  #define INIT_CHECK_INFO(x) m_checkInfo = vector<bool>((vector<bool>::size_type)(x), false);
+  #define INIT_CHECK_INFO(x) m_checkInfo = std::vector<bool>((std::vector<bool>::size_type)(x), false);
   #define CHECK_STREAMS CheckStreams()
   #define INIT_STREAM(x) InitCheckStream((x))
 #else

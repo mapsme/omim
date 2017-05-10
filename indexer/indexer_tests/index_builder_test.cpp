@@ -33,14 +33,14 @@ UNIT_TEST(BuildIndexTest)
   }
 
   // Create a new mwm file.
-  string const fileName = "build_index_test" DATA_FILE_EXTENSION;
-  string const filePath = p.WritablePathForFile(fileName);
+  std::string const fileName = "build_index_test" DATA_FILE_EXTENSION;
+  std::string const filePath = p.WritablePathForFile(fileName);
   FileWriter::DeleteFileX(filePath);
 
   // Copy original mwm file and replace index in it.
   {
     FilesContainerW containerWriter(filePath);
-    vector<string> tags;
+    vector<std::string> tags;
     originalContainer.ForEachTag(MakeBackInsertFunctor(tags));
     for (size_t i = 0; i < tags.size(); ++i)
     {

@@ -6,9 +6,9 @@ using namespace search;
 
 namespace
 {
-string GetMatchedCity(m2::PointD const & point, vector<LocalityItem> const & items)
+std::string GetMatchedCity(m2::PointD const & point, vector<LocalityItem> const & items)
 {
-  string name;
+  std::string name;
   LocalitySelector selector(name, point);
   for (auto const & item : items)
     selector(item);

@@ -7,12 +7,12 @@
 
 #include "base/thread.hpp"
 
-#include "std/condition_variable.hpp"
-#include "std/map.hpp"
-#include "std/mutex.hpp"
-#include "std/shared_ptr.hpp"
-#include "std/string.hpp"
-#include "std/unique_ptr.hpp"
+#include <condition_variable>
+#include <map>
+#include <mutex>
+#include <memory>
+#include <string>
+#include <memory>
 
 namespace routing
 {
@@ -25,7 +25,7 @@ public:
   using TReadyCallback = function<void(Route &, IRouter::ResultCode)>;
 
   /// Callback on routing statistics
-  using TRoutingStatisticsCallback = function<void(map<string, string> const &)>;
+  using TRoutingStatisticsCallback = function<void(std::map<std::string, std::string> const &)>;
 
   /// AsyncRouter is a wrapper class to run routing routines in the different thread
   AsyncRouter(TRoutingStatisticsCallback const & routingStatisticsCallback,
@@ -35,7 +35,7 @@ public:
   /// Sets a synchronous router, current route calculation will be cancelled
   /// @param router pointer to a router implementation
   /// @param fetcher pointer to a online fetcher
-  void SetRouter(unique_ptr<IRouter> && router, unique_ptr<IOnlineFetcher> && fetcher);
+  void SetRouter(std::unique_ptr<IRouter> && router, std::unique_ptr<IOnlineFetcher> && fetcher);
 
   /// Main method to calulate new route from startPt to finalPt with start direction
   /// Processed result will be passed to callback. Callback will called at GUI thread.
@@ -71,7 +71,7 @@ private:
                       double elapsedSec);
   void SendStatistics(m2::PointD const & startPoint, m2::PointD const & startDirection,
                       m2::PointD const & finalPoint,
-                      string const & exceptionMessage);
+                      std::string const & exceptionMessage);
 
   void LogCode(IRouter::ResultCode code, double const elapsedSec);
 
@@ -93,7 +93,7 @@ private:
     void OnProgress(float progress);
     void OnPointCheck(m2::PointD const & pt);
 
-    mutex m_guard;
+    std::mutex m_guard;
     TReadyCallback const m_onReady;
     RouterDelegate::TPointCheckCallback const m_onPointCheck;
     RouterDelegate::TProgressCallback const m_onProgress;
@@ -101,11 +101,11 @@ private:
   };
 
 private:
-  mutex m_guard;
+  std::mutex m_guard;
 
   /// Thread which executes routing calculation
   threads::SimpleThread m_thread;
-  condition_variable m_threadCondVar;
+  std::condition_variable m_threadCondVar;
   bool m_threadExit;
   bool m_hasRequest;
 
@@ -114,9 +114,9 @@ private:
   m2::PointD m_startPoint;
   m2::PointD m_finalPoint;
   m2::PointD m_startDirection;
-  shared_ptr<RouterDelegateProxy> m_delegate;
-  shared_ptr<IOnlineFetcher> m_absentFetcher;
-  shared_ptr<IRouter> m_router;
+  std::shared_ptr<RouterDelegateProxy> m_delegate;
+  std::shared_ptr<IOnlineFetcher> m_absentFetcher;
+  std::shared_ptr<IRouter> m_router;
 
   TRoutingStatisticsCallback const m_routingStatisticsCallback;
   RouterDelegate::TPointCheckCallback const m_pointCheckCallback;

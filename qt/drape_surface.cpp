@@ -5,8 +5,8 @@
 #include "base/stl_add.hpp"
 #include "base/logging.hpp"
 
-#include "std/bind.hpp"
-#include "std/cmath.hpp"
+#include <functional>
+#include <cmath>
 
 #include <QtGui/QMouseEvent>
 

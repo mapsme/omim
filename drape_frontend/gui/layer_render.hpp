@@ -8,8 +8,8 @@
 
 #include "geometry/screenbase.hpp"
 
-#include "std/map.hpp"
-#include "std/unique_ptr.hpp"
+#include <map>
+#include <memory>
 
 namespace gui
 {
@@ -45,7 +45,7 @@ private:
   void AddShapeRenderer(EWidget widget, drape_ptr<ShapeRenderer> && shape);
 
 private:
-  typedef map<EWidget, drape_ptr<ShapeRenderer> > TRenderers;
+  typedef std::map<EWidget, drape_ptr<ShapeRenderer> > TRenderers;
   TRenderers m_renderers;
 
   ref_ptr<gui::Handle> m_activeOverlay;

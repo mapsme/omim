@@ -71,9 +71,9 @@ UNIT_TEST(TestContextSerialization)
                                  });
   TEST_EQUAL(outgoingNodes.size(), 2, ());
   TEST_EQUAL(outgoingNodes[0].m_nodeId, 3, ());
-  TEST_EQUAL(newContext.GetOutgoingMwmName(outgoingNodes[0]), string("foo"), ());
+  TEST_EQUAL(newContext.GetOutgoingMwmName(outgoingNodes[0]), std::string("foo"), ());
   TEST_EQUAL(outgoingNodes[1].m_nodeId, 4, ());
-  TEST_EQUAL(newContext.GetOutgoingMwmName(outgoingNodes[1]), string("bar"), ());
+  TEST_EQUAL(newContext.GetOutgoingMwmName(outgoingNodes[1]), std::string("bar"), ());
 }
 
 UNIT_TEST(TestAdjacencyMatrix)

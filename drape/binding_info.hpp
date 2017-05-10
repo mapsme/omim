@@ -3,15 +3,15 @@
 #include "drape/glfunctions.hpp"
 #include "drape/glsl_types.hpp"
 
-#include "std/string.hpp"
-#include "std/shared_array.hpp"
+#include <string>
+#include <boost/shared_array.hpp>
 
 namespace dp
 {
 
 struct BindingDecl
 {
-  string  m_attributeName;
+  std::string  m_attributeName;
   uint8_t m_componentCount;
   glConst m_componentType;
   uint8_t m_stride;
@@ -38,12 +38,12 @@ public:
   bool operator< (BindingInfo const & other) const;
 
 protected:
-  shared_array<BindingDecl> m_bindings;
+  boost::shared_array<BindingDecl> m_bindings;
   uint16_t m_info;
 };
 
 template <typename TFieldType, typename TVertexType>
-uint8_t FillDecl(size_t index, string const & attrName, dp::BindingInfo & info, uint8_t offset)
+uint8_t FillDecl(size_t index, std::string const & attrName, dp::BindingInfo & info, uint8_t offset)
 {
   dp::BindingDecl & decl = info.GetBindingDecl(index);
   decl.m_attributeName = attrName;
@@ -65,7 +65,7 @@ public:
   }
 
   template<typename TFieldType>
-  void FillDecl(string const & attrName)
+  void FillDecl(std::string const & attrName)
   {
     m_offset += dp::FillDecl<TFieldType, TVertex>(m_index, attrName, m_info, m_offset);
     ++m_index;

@@ -1,8 +1,10 @@
 #include "testing/testing.hpp"
 #include "geometry/cellid.hpp"
-#include "std/algorithm.hpp"
-#include "std/string.hpp"
-#include "std/vector.hpp"
+#include <algorithm>
+#include <string>
+#include <vector>
+
+using namespace std;
 
 UNIT_TEST(CellID_Parent)
 {
@@ -148,7 +150,7 @@ UNIT_TEST(CellId_SubTreeSize)
 
 UNIT_TEST(CellID_LessQueueOrder)
 {
-  vector<string> v;
+  std::vector<std::string> v;
   v.push_back("0");
   v.push_back("1");
   v.push_back("00");
@@ -156,23 +158,23 @@ UNIT_TEST(CellID_LessQueueOrder)
   v.push_back("02");
   v.push_back("002");
   v.push_back("101");
-  vector<string> e = v;
+  std::vector<std::string> e = v;
   do
   {
-    vector<m2::CellId<4> > tst, exp;
+    std::vector<m2::CellId<4> > tst, exp;
     for (size_t i = 0; i < v.size(); ++i)
     {
       tst.push_back(m2::CellId<4>(e[i]));
       exp.push_back(m2::CellId<4>(v[i]));
     }
-    sort(tst.begin(), tst.end(), m2::CellId<4>::LessLevelOrder());
+    std::sort(tst.begin(), tst.end(), m2::CellId<4>::LessLevelOrder());
     TEST_EQUAL(tst, exp, ());
-  } while (next_permutation(e.begin(), e.end()));
+  } while (std::next_permutation(e.begin(), e.end()));
 }
 
 UNIT_TEST(CellID_LessStackOrder)
 {
-  vector<string> v;
+  std::vector<std::string> v;
   v.push_back("0");
   v.push_back("00");
   v.push_back("00");
@@ -180,18 +182,18 @@ UNIT_TEST(CellID_LessStackOrder)
   v.push_back("02");
   v.push_back("1");
   v.push_back("101");
-  vector<string> e = v;
+  std::vector<std::string> e = v;
   do
   {
-    vector<m2::CellId<4> > tst, exp;
+    std::vector<m2::CellId<4> > tst, exp;
     for (size_t i = 0; i < v.size(); ++i)
     {
       tst.push_back(m2::CellId<4>(e[i]));
       exp.push_back(m2::CellId<4>(v[i]));
     }
-    sort(tst.begin(), tst.end(), m2::CellId<4>::LessPreOrder());
+    std::sort(tst.begin(), tst.end(), m2::CellId<4>::LessPreOrder());
     TEST_EQUAL(tst, exp, ());
-  } while (next_permutation(e.begin(), e.end()));
+  } while (std::next_permutation(e.begin(), e.end()));
 }
 
 UNIT_TEST(CellID_IsStringValid)

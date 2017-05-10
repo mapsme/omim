@@ -9,7 +9,7 @@
 #include "drape/glsl_types.hpp"
 #include "drape/shader_def.hpp"
 
-#include "std/bind.hpp"
+#include <functional>
 
 namespace gui
 {
@@ -222,7 +222,7 @@ void Ruler::DrawRuler(m2::PointF & size, ShapeControl & control, ref_ptr<dp::Tex
 
   {
     dp::Batcher batcher(dp::Batcher::IndexPerQuad, dp::Batcher::VertexPerQuad);
-    dp::SessionGuard guard(batcher, bind(&ShapeControl::AddShape, &control, _1, _2));
+    dp::SessionGuard guard(batcher, std::bind(&ShapeControl::AddShape, &control, std::placeholders::_1, std::placeholders::_2));
     batcher.InsertTriangleStrip(state, make_ref(&provider),
                                 make_unique_dp<RulerHandle>(EGuiHandle::GuiHandleRuler, m_position.m_anchor,
                                                             m_position.m_pixelPivot, isAppearing));
@@ -231,7 +231,7 @@ void Ruler::DrawRuler(m2::PointF & size, ShapeControl & control, ref_ptr<dp::Tex
 
 void Ruler::DrawText(m2::PointF & size, ShapeControl & control, ref_ptr<dp::TextureManager> tex, bool isAppearing) const
 {
-  string alphabet;
+  std::string alphabet;
   uint32_t maxTextLength;
   RulerHelper & helper = DrapeGui::GetRulerHelper();
   helper.GetTextInitInfo(alphabet, maxTextLength);
@@ -248,7 +248,7 @@ void Ruler::DrawText(m2::PointF & size, ShapeControl & control, ref_ptr<dp::Text
     return make_unique_dp<RulerTextHandle>(EGuiHandle::GuiHandleRulerLabel, anchor, pivot, isAppearing, tex);
   };
 
-  m2::PointF textSize = MutableLabelDrawer::Draw(params, tex, bind(&ShapeControl::AddShape, &control, _1, _2));
+  m2::PointF textSize = MutableLabelDrawer::Draw(params, tex, std::bind(&ShapeControl::AddShape, &control, std::placeholders::_1, std::placeholders::_2));
   size.y += (textSize.y + abs(helper.GetVerticalTextOffset()));
 }
 

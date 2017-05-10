@@ -6,7 +6,7 @@
 
 #include "base/logging.hpp"
 
-#include "std/function.hpp"
+#include <functional>
 
 namespace styles
 {

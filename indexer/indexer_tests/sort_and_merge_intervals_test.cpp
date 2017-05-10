@@ -1,6 +1,8 @@
 #include "testing/testing.hpp"
 #include "indexer/feature_covering.hpp"
 
+using namespace std;
+
 UNIT_TEST(SortAndMergeIntervals_1Interval)
 {
   vector<pair<int64_t, int64_t> > v;

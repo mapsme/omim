@@ -8,10 +8,10 @@
 #include "drape/glstate.hpp"
 #include "drape/render_bucket.hpp"
 
-#include "std/deque.hpp"
-#include "std/vector.hpp"
-#include "std/set.hpp"
-#include "std/unique_ptr.hpp"
+#include <deque>
+#include <vector>
+#include <set>
+#include <memory>
 
 class ScreenBase;
 namespace dp { class OverlayTree; }
@@ -76,12 +76,12 @@ public:
   bool IsLess(RenderGroup const & other) const;
 
 private:
-  vector<drape_ptr<dp::RenderBucket> > m_renderBuckets;
+  std::vector<drape_ptr<dp::RenderBucket> > m_renderBuckets;
   mutable bool m_pendingOnDelete;
   mutable bool m_canBeDeleted;
 
 private:
-  friend string DebugPrint(RenderGroup const & group);
+  friend std::string DebugPrint(RenderGroup const & group);
 };
 
 class RenderGroupComparator
@@ -109,7 +109,7 @@ public:
 
 private:
   drape_ptr<dp::RenderBucket> m_renderBucket;
-  unique_ptr<OpacityAnimation> m_animation;
+  std::unique_ptr<OpacityAnimation> m_animation;
   ValueMapping<float> m_mapping;
   size_t m_layerId;
 };

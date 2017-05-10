@@ -8,8 +8,8 @@
 #include "base/logging.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/bind.hpp"
-#include "std/regex.hpp"
+#include <functional>
+#include <regex>
 
 namespace url_scheme
 {
@@ -58,7 +58,7 @@ namespace url_scheme
   /// -1 - not initialized
   /// 0 - coordinates in path;
   /// x - priority for query type (greater is better)
-  int GetCoordinatesPriority(string const & token)
+  int GetCoordinatesPriority(std::string const & token)
   {
     if (token.empty())
       return 0;
@@ -78,7 +78,7 @@ namespace url_scheme
 
   class LatLonParser
   {
-    regex m_regexp;
+    std::regex m_regexp;
     Info & m_info;
     int m_latPriority, m_lonPriority;
 
@@ -93,16 +93,16 @@ namespace url_scheme
       {
       }
 
-      void operator() (string const & token) const
+      void operator() (std::string const & token) const
       {
         double lat, lon;
 
-        string::size_type n = token.find(',');
-        ASSERT(n != string::npos, ());
+        std::string::size_type n = token.find(',');
+        ASSERT(n != std::string::npos, ());
         VERIFY(strings::to_double(token.substr(0, n), lat), ());
 
         n = token.find_first_not_of(", ", n);
-        ASSERT(n != string::npos, ());
+        ASSERT(n != std::string::npos, ());
         VERIFY(strings::to_double(token.substr(n, token.size() - n), lon), ());
 
         if (m_parser.m_info.SetLat(lat) && m_parser.m_info.SetLon(lon))
@@ -124,7 +124,7 @@ namespace url_scheme
       return (m_latPriority == m_lonPriority && m_latPriority != -1);
     }
 
-    bool operator()(string const & key, string const & value)
+    bool operator()(std::string const & key, std::string const & value)
     {
       if (key == "z" || key == "zoom")
       {
@@ -166,15 +166,15 @@ namespace url_scheme
     }
   };
 
-  void ParseGeoURL(string const & s, Info & info)
+  void ParseGeoURL(std::string const & s, Info & info)
   {
     url_scheme::Uri uri(s);
     if (!uri.IsValid())
       return;
 
     LatLonParser parser(info);
-    parser(string(), uri.GetPath());
-    uri.ForEachKeyValue(ref(parser));
+    parser(std::string(), uri.GetPath());
+    uri.ForEachKeyValue(std::ref(parser));
 
     if (!parser.IsValid())
       info.Reset();

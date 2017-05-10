@@ -5,7 +5,7 @@
 #include "coding/varint_vector.hpp"
 #include "coding/writer.hpp"
 
-#include "std/random.hpp"
+#include <random>
 
 using namespace varint;
 
@@ -22,7 +22,7 @@ UNIT_TEST(VarintVector_Use)
   uint32_t const c_index_tests_count = 50000;
   uint32_t const c_sum_tests_count = 20000;
 
-  mt19937 rng(0);
+  std::mt19937 rng(0);
 
   // Generate vector.
   {

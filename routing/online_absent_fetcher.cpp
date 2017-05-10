@@ -6,7 +6,7 @@
 #include "platform/country_file.hpp"
 #include "platform/local_country_file.hpp"
 
-#include "std/vector.hpp"
+#include <vector>
 
 #include "private.h"
 
@@ -22,15 +22,15 @@ void OnlineAbsentCountriesFetcher::GenerateRequest(const m2::PointD & startPoint
   if (m_countryFileFn(startPoint) == m_countryFileFn(finalPoint) ||
       GetPlatform().ConnectionStatus() == Platform::EConnectionType::CONNECTION_NONE)
     return;
-  unique_ptr<OnlineCrossFetcher> fetcher =
-      make_unique<OnlineCrossFetcher>(OSRM_ONLINE_SERVER_URL, MercatorBounds::ToLatLon(startPoint),
+  std::unique_ptr<OnlineCrossFetcher> fetcher =
+      my::make_unique<OnlineCrossFetcher>(OSRM_ONLINE_SERVER_URL, MercatorBounds::ToLatLon(startPoint),
                                       MercatorBounds::ToLatLon(finalPoint));
   // iOS can't reuse threads. So we need to recreate the thread.
   m_fetcherThread.reset(new threads::Thread());
   m_fetcherThread->Create(move(fetcher));
 }
 
-void OnlineAbsentCountriesFetcher::GetAbsentCountries(vector<string> & countries)
+void OnlineAbsentCountriesFetcher::GetAbsentCountries(std::vector<std::string> & countries)
 {
   // Check whether a request was scheduled to be run on the thread.
   if (!m_fetcherThread)
@@ -38,7 +38,7 @@ void OnlineAbsentCountriesFetcher::GetAbsentCountries(vector<string> & countries
   m_fetcherThread->Join();
   for (auto const & point : m_fetcherThread->GetRoutineAs<OnlineCrossFetcher>()->GetMwmPoints())
   {
-    string const name = m_countryFileFn(point);
+    std::string const name = m_countryFileFn(point);
     ASSERT(!name.empty(), ());
     if (name.empty() || m_countryLocalFileFn(name))
       continue;

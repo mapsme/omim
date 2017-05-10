@@ -2,7 +2,7 @@
 
 #include "indexer/editable_map_object.hpp"
 
-#include "std/string.hpp"
+#include <string>
 
 @protocol MWMObjectsCategorySelectorDelegate <NSObject>
 
@@ -14,6 +14,6 @@
 
 @property (weak, nonatomic) id<MWMObjectsCategorySelectorDelegate> delegate;
 
-- (void)setSelectedCategory:(string const &)category;
+- (void)setSelectedCategory:(std::string const &)category;
 
 @end

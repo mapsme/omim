@@ -182,7 +182,7 @@ void LocalityScorer::SortByNameAndProb(std::vector<ExLocality> & ls) const
   }
 }
 
-string DebugPrint(LocalityScorer::ExLocality const & locality)
+std::string DebugPrint(LocalityScorer::ExLocality const & locality)
 {
   ostringstream os;
   os << "LocalityScorer::ExLocality [ ";

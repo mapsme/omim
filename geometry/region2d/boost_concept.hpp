@@ -14,7 +14,7 @@
 #include "3party/boost/boost/polygon/polygon.hpp"
 #endif
 
-#include "std/vector.hpp"
+#include <vector>
 
 
 namespace boost { namespace polygon {
@@ -128,7 +128,7 @@ namespace boost { namespace polygon {
   ////////////////////////////////////////////////////////////////////////////////
   // Polygon set concept.
   ////////////////////////////////////////////////////////////////////////////////
-  typedef vector<my_region_t> my_region_set_t;
+  typedef std::vector<my_region_t> my_region_set_t;
 
   template <>
   struct geometry_concept<my_region_set_t>

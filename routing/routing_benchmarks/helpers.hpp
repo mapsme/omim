@@ -12,17 +12,17 @@
 
 #include "geometry/point2d.hpp"
 
-#include "std/set.hpp"
-#include "std/shared_ptr.hpp"
-#include "std/string.hpp"
-#include "std/unique_ptr.hpp"
-#include "std/utility.hpp"
-#include "std/vector.hpp"
+#include <set>
+#include <memory>
+#include <string>
+#include <memory>
+#include <utility>
+#include <vector>
 
 class RoutingTest
 {
 public:
-  RoutingTest(routing::IRoadGraph::Mode mode, set<string> const & neededMaps);
+  RoutingTest(routing::IRoadGraph::Mode mode, std::set<std::string> const & neededMaps);
 
   virtual ~RoutingTest() = default;
 
@@ -30,26 +30,26 @@ public:
   void TestTwoPointsOnFeature(m2::PointD const & startPos, m2::PointD const & finalPos);
 
 protected:
-  virtual unique_ptr<routing::IDirectionsEngine> CreateDirectionsEngine() = 0;
-  virtual unique_ptr<routing::VehicleModelFactory> CreateModelFactory() = 0;
+  virtual std::unique_ptr<routing::IDirectionsEngine> CreateDirectionsEngine() = 0;
+  virtual std::unique_ptr<routing::VehicleModelFactory> CreateModelFactory() = 0;
 
   template <typename Algorithm>
-  unique_ptr<routing::IRouter> CreateRouter(string const & name)
+  std::unique_ptr<routing::IRouter> CreateRouter(std::string const & name)
   {
     auto getter = [&](m2::PointD const & pt) { return m_cig->GetRegionCountryId(pt); };
-    unique_ptr<routing::IRoutingAlgorithm> algorithm(new Algorithm());
-    unique_ptr<routing::IRouter> router(
+    std::unique_ptr<routing::IRoutingAlgorithm> algorithm(new Algorithm());
+    std::unique_ptr<routing::IRouter> router(
         new routing::RoadGraphRouter(name, m_index, getter, m_mode, CreateModelFactory(),
-                                     move(algorithm), CreateDirectionsEngine()));
+                                     std::move(algorithm), CreateDirectionsEngine()));
     return router;
   }
 
   void GetNearestEdges(m2::PointD const & pt,
-                       vector<pair<routing::Edge, routing::Junction>> & edges);
+                       std::vector<std::pair<routing::Edge, routing::Junction>> & edges);
 
   routing::IRoadGraph::Mode const m_mode;
   Index m_index;
-  unique_ptr<storage::CountryInfoGetter> m_cig;
+  std::unique_ptr<storage::CountryInfoGetter> m_cig;
 };
 
 template <typename Model>
@@ -78,15 +78,15 @@ public:
     }
   };
 
-  SimplifiedModelFactory() : m_model(make_shared<SimplifiedModel>()) {}
+  SimplifiedModelFactory() : m_model(std::make_shared<SimplifiedModel>()) {}
   // VehicleModelFactory overrides:
-  shared_ptr<routing::IVehicleModel> GetVehicleModel() const override { return m_model; }
-  shared_ptr<routing::IVehicleModel> GetVehicleModelForCountry(
-      string const & /*country*/) const override
+  std::shared_ptr<routing::IVehicleModel> GetVehicleModel() const override { return m_model; }
+  std::shared_ptr<routing::IVehicleModel> GetVehicleModelForCountry(
+      std::string const & /*country*/) const override
   {
     return m_model;
   }
 
 private:
-  shared_ptr<SimplifiedModel> const m_model;
+  std::shared_ptr<SimplifiedModel> const m_model;
 };

@@ -11,9 +11,9 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QVBoxLayout>
 
-string GenerateStars(int count)
+std::string GenerateStars(int count)
 {
-  string stars;
+  std::string stars;
   for (int i = 0; i < count; ++i)
     stars.append("★");
   return stars;
@@ -28,7 +28,7 @@ PlacePageDialog::PlacePageDialog(QWidget * parent, place_page::Info const & info
   {  // Coordinates.
     grid->addWidget(new QLabel("lat lon"), row, 0);
     ms::LatLon const ll = info.GetLatLon();
-    string const llstr =
+    std::string const llstr =
         strings::to_string_dac(ll.lat, 7) + " " + strings::to_string_dac(ll.lon, 7);
     QLabel * label = new QLabel(llstr.c_str());
     label->setTextInteractionFlags(Qt::TextSelectableByMouse);
@@ -87,7 +87,7 @@ PlacePageDialog::PlacePageDialog(QWidget * parent, place_page::Info const & info
   for (auto const prop : info.AvailableProperties())
   {
     QString k;
-    string v;
+    std::string v;
     bool link = false;
     switch (prop)
     {
@@ -174,7 +174,7 @@ PlacePageDialog::PlacePageDialog(QWidget * parent, place_page::Info const & info
   grid->addWidget(dbb);
   setLayout(grid);
 
-  string const title = string("Place Page") + (info.IsBookmark() ? " (bookmarked)" : "");
+  std::string const title = std::string("Place Page") + (info.IsBookmark() ? " (bookmarked)" : "");
   setWindowTitle(title.c_str());
 }
 

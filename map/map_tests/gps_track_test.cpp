@@ -12,8 +12,8 @@
 #include "base/logging.hpp"
 #include "base/scope_guard.hpp"
 
-#include "std/bind.hpp"
-#include "std/chrono.hpp"
+#include <functional>
+#include <chrono>
 
 namespace
 {
@@ -30,7 +30,7 @@ inline location::GpsInfo Make(double timestamp, ms::LatLon const & ll, double sp
   return info;
 }
 
-inline string GetGpsTrackFilePath()
+inline std::string GetGpsTrackFilePath()
 {
   return my::JoinFoldersToPath(GetPlatform().WritableDir(), "gpstrack_test.bin");
 }
@@ -61,7 +61,7 @@ public:
     lock_guard<mutex> lg(m_mutex);
     m_gotCallback = false;
   }
-  bool WaitForCallback(seconds t)
+  bool WaitForCallback(std::chrono::seconds t)
   {
     unique_lock<mutex> ul(m_mutex);
     return m_cv.wait_for(ul, t, [this]()->bool{ return m_gotCallback; });
@@ -76,17 +76,17 @@ private:
   bool m_gotCallback;
 };
 
-seconds const kWaitForCallbackTimeout = seconds(5);
+std::chrono::seconds const kWaitForCallbackTimeout = std::chrono::seconds(5);
 
 } // namespace
 
 UNIT_TEST(GpsTrack_Simple)
 {
-  string const filePath = GetGpsTrackFilePath();
-  MY_SCOPE_GUARD(gpsTestFileDeleter, bind(FileWriter::DeleteFileX, filePath));
+  std::string const filePath = GetGpsTrackFilePath();
+  MY_SCOPE_GUARD(gpsTestFileDeleter, std::bind(FileWriter::DeleteFileX, filePath));
   FileWriter::DeleteFileX(filePath);
 
-  time_t const t = system_clock::to_time_t(system_clock::now());
+  time_t const t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
   double const timestamp = t;
   LOG(LINFO, ("Timestamp", ctime(&t), timestamp));
 
@@ -100,13 +100,13 @@ UNIT_TEST(GpsTrack_Simple)
 
   // Store points
   {
-    GpsTrack track(filePath, maxItemCount, hours(24));
+    GpsTrack track(filePath, maxItemCount, std::chrono::hours(24));
 
     track.AddPoints(points);
 
     GpsTrackCallback callback;
 
-    track.SetCallback(bind(&GpsTrackCallback::OnUpdate, &callback, _1, _2));
+    track.SetCallback(std::bind(&GpsTrackCallback::OnUpdate, &callback, std::placeholders::_1, std::placeholders::_2));
 
     TEST(callback.WaitForCallback(kWaitForCallbackTimeout), ());
 
@@ -125,11 +125,11 @@ UNIT_TEST(GpsTrack_Simple)
 
   // Restore points
   {
-    GpsTrack track(filePath, maxItemCount, hours(24));
+    GpsTrack track(filePath, maxItemCount, std::chrono::hours(24));
 
     GpsTrackCallback callback;
 
-    track.SetCallback(bind(&GpsTrackCallback::OnUpdate, &callback, _1, _2));
+    track.SetCallback(std::bind(&GpsTrackCallback::OnUpdate, &callback, std::placeholders::_1, std::placeholders::_2));
 
     TEST(callback.WaitForCallback(kWaitForCallbackTimeout), ());
 
@@ -149,21 +149,21 @@ UNIT_TEST(GpsTrack_Simple)
 
 UNIT_TEST(GpsTrack_EvictedByAdd)
 {
-  string const filePath = GetGpsTrackFilePath();
-  MY_SCOPE_GUARD(gpsTestFileDeleter, bind(FileWriter::DeleteFileX, filePath));
+  std::string const filePath = GetGpsTrackFilePath();
+  MY_SCOPE_GUARD(gpsTestFileDeleter, std::bind(FileWriter::DeleteFileX, filePath));
   FileWriter::DeleteFileX(filePath);
 
-  time_t const t = system_clock::to_time_t(system_clock::now());
+  time_t const t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
   double const timestamp = t;
   LOG(LINFO, ("Timestamp", ctime(&t), timestamp));
 
   location::GpsInfo pt1 = Make(timestamp - 25 * 60 * 60, ms::LatLon(30.0, 45.0), 60.0);
   location::GpsInfo pt2 = Make(timestamp, ms::LatLon(75.0, 90.0), 110.0);
 
-  GpsTrack track(filePath, 1000, hours(24));
+  GpsTrack track(filePath, 1000, std::chrono::hours(24));
 
   GpsTrackCallback callback;
-  track.SetCallback(bind(&GpsTrackCallback::OnUpdate, &callback, _1, _2));
+  track.SetCallback(std::bind(&GpsTrackCallback::OnUpdate, &callback, std::placeholders::_1, std::placeholders::_2));
 
   track.AddPoint(pt1);
 

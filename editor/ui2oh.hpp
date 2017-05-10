@@ -2,7 +2,7 @@
 
 #include "editor/opening_hours_ui.hpp"
 
-#include "std/string.hpp"
+#include <string>
 
 namespace osmoh
 {

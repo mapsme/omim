@@ -22,6 +22,8 @@
 
 #include "base/observer_list.hpp"
 
+using namespace std;
+
 /// Information about stored mwm.
 class MwmInfo
 {

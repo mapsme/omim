@@ -16,8 +16,8 @@ namespace
       StringNumericOptimal s;
       s.Set(arr[i]);
 
-      vector<char> buffer;
-      MemWriter<vector<char> > w(buffer);
+      std::vector<char> buffer;
+      MemWriter<std::vector<char> > w(buffer);
 
       s.Write(w);
 
@@ -54,7 +54,7 @@ UNIT_TEST(StringNumericOptimal_StringCoding)
 
 UNIT_TEST(StringNumericOptimal_LargeStringCoding)
 {
-  string s;
+  std::string s;
   std::fill_n(back_inserter(s), 10000, 'x');
 
   TestStringCodingT(&s, 1, 10006);

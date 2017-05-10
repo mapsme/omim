@@ -8,9 +8,10 @@
 #include "coding/write_to_sink.hpp"
 
 #include "base/logging.hpp"
+#include "base/stl_add.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/limits.hpp"
+#include <limits>
 
 namespace
 {
@@ -23,7 +24,7 @@ class SecureMemReader : public Reader
 {
   void CheckPosAndSize(uint64_t pos, uint64_t size) const
   {
-    if (pos + size > m_size || size > numeric_limits<size_t>::max())
+    if (pos + size > m_size || size > std::numeric_limits<size_t>::max())
       MYTHROW(SizeException, (pos, size, m_size) );
   }
 
@@ -51,10 +52,10 @@ public:
     return SecureMemReader(m_pData + pos, static_cast<size_t>(size));
   }
 
-  inline unique_ptr<Reader> CreateSubReader(uint64_t pos, uint64_t size) const override
+  inline std::unique_ptr<Reader> CreateSubReader(uint64_t pos, uint64_t size) const override
   {
     CheckPosAndSize(pos, size);
-    return make_unique<SecureMemReader>(m_pData + pos, static_cast<size_t>(size));
+    return my::make_unique<SecureMemReader>(m_pData + pos, static_cast<size_t>(size));
   }
 
 private:
@@ -102,10 +103,10 @@ void QuerySaver::Clear()
   settings::Delete(kSettingsKey);
 }
 
-void QuerySaver::Serialize(string & data) const
+void QuerySaver::Serialize(std::string & data) const
 {
-  vector<uint8_t> rawData;
-  MemWriter<vector<uint8_t>> writer(rawData);
+  std::vector<uint8_t> rawData;
+  MemWriter<std::vector<uint8_t>> writer(rawData);
   TLength size = m_topQueries.size();
   WriteToSink(writer, size);
   for (auto const & query : m_topQueries)
@@ -117,41 +118,41 @@ void QuerySaver::Serialize(string & data) const
     WriteToSink(writer, size);
     writer.Write(query.second.c_str(), size);
   }
-  data = base64::Encode(string(rawData.begin(), rawData.end()));
+  data = base64::Encode(std::string(rawData.begin(), rawData.end()));
 }
 
-void QuerySaver::Deserialize(string const & data)
+void QuerySaver::Deserialize(std::string const & data)
 {
-  string decodedData = base64::Decode(data);
+  std::string decodedData = base64::Decode(data);
   SecureMemReader rawReader(decodedData.c_str(), decodedData.size());
   ReaderSource<SecureMemReader> reader(rawReader);
 
   TLength queriesCount = ReadPrimitiveFromSource<TLength>(reader);
-  queriesCount = min(queriesCount, kMaxSuggestionsCount);
+  queriesCount = std::min(queriesCount, kMaxSuggestionsCount);
 
   for (TLength i = 0; i < queriesCount; ++i)
   {
     TLength localeLength = ReadPrimitiveFromSource<TLength>(reader);
-    vector<char> locale(localeLength);
+    std::vector<char> locale(localeLength);
     reader.Read(&locale[0], localeLength);
     TLength stringLength = ReadPrimitiveFromSource<TLength>(reader);
-    vector<char> str(stringLength);
+    std::vector<char> str(stringLength);
     reader.Read(&str[0], stringLength);
-    m_topQueries.emplace_back(make_pair(string(&locale[0], localeLength),
-                                        string(&str[0], stringLength)));
+    m_topQueries.emplace_back(std::make_pair(std::string(&locale[0], localeLength),
+                                        std::string(&str[0], stringLength)));
   }
 }
 
 void QuerySaver::Save()
 {
-  string data;
+  std::string data;
   Serialize(data);
   settings::Set(kSettingsKey, data);
 }
 
 void QuerySaver::Load()
 {
-  string hexData;
+  std::string hexData;
   settings::Get(kSettingsKey, hexData);
   if (hexData.empty())
     return;

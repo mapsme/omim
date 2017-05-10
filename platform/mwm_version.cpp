@@ -13,7 +13,7 @@
 
 #include "defines.hpp"
 
-#include "std/array.hpp"
+#include <array>
 
 namespace version
 {
@@ -29,7 +29,7 @@ uint64_t VersionToSecondsSinceEpoch(uint64_t version)
 {
   auto constexpr partsCount = 3;
   // From left to right YY MM DD.
-  array<int, partsCount> parts{};  // Initialize with zeros.
+  std::array<int, partsCount> parts{};  // Initialize with zeros.
   for (auto i = partsCount - 1; i >= 0; --i)
   {
     parts[i] = version % 100;
@@ -85,7 +85,7 @@ bool MwmVersion::IsEditableMap() const
   return m_secondsSinceEpoch + kMaxSecondsTillNoEdits > my::SecondsSinceEpoch();
 }
 
-string DebugPrint(Format f)
+std::string DebugPrint(Format f)
 {
   return "v" + strings::to_string(static_cast<uint32_t>(f) + 1);
 }

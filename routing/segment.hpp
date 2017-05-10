@@ -3,9 +3,9 @@
 #include "routing/num_mwm_id.hpp"
 #include "routing/road_point.hpp"
 
-#include "std/cstdint.hpp"
-#include "std/sstream.hpp"
-#include "std/string.hpp"
+#include <cstdint>
+#include <sstream>
+#include <string>
 
 namespace routing
 {
@@ -96,17 +96,17 @@ private:
   double m_weight;
 };
 
-inline string DebugPrint(Segment const & segment)
+inline std::string DebugPrint(Segment const & segment)
 {
-  ostringstream out;
+  std::ostringstream out;
   out << "Segment(" << segment.GetMwmId() << ", " << segment.GetFeatureId() << ", "
       << segment.GetSegmentIdx() << ", " << segment.IsForward() << ")";
   return out.str();
 }
 
-inline string DebugPrint(SegmentEdge const & edge)
+inline std::string DebugPrint(SegmentEdge const & edge)
 {
-  ostringstream out;
+  std::ostringstream out;
   out << "Edge(" << DebugPrint(edge.GetTarget()) << ", " << edge.GetWeight() << ")";
   return out.str();
 }

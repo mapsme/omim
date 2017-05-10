@@ -50,7 +50,7 @@ bool CheckMwmConsistency(LocalCountryFile const & localFile)
 namespace routing
 {
 
-RoutingMapping::RoutingMapping(string const & countryFile, MwmSet & index)
+RoutingMapping::RoutingMapping(std::string const & countryFile, MwmSet & index)
     : m_mapCounter(0),
       m_facadeCounter(0),
       m_crossContextLoaded(0),
@@ -187,14 +187,14 @@ void RoutingMapping::FreeCrossContext()
 
 TRoutingMappingPtr RoutingIndexManager::GetMappingByPoint(m2::PointD const & point)
 {
-  string const name = m_countryFileFn(point);
+  std::string const name = m_countryFileFn(point);
   if (name.empty())
     return TRoutingMappingPtr(new RoutingMapping());
 
   return GetMappingByName(name);
 }
 
-TRoutingMappingPtr RoutingIndexManager::GetMappingByName(string const & mapName)
+TRoutingMappingPtr RoutingIndexManager::GetMappingByName(std::string const & mapName)
 {
   // Check if we have already loaded this file.
   auto mapIter = m_mapping.find(mapName);

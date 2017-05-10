@@ -1,6 +1,6 @@
 #pragma once
 
-#include "std/string.hpp"
+#include <string>
 
 namespace search
 {
@@ -12,5 +12,5 @@ enum class Mode
   Count
 };
 
-string DebugPrint(Mode mode);
+std::string DebugPrint(Mode mode);
 }  // namespace search

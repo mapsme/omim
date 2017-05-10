@@ -9,8 +9,8 @@
 #include "base/buffer_vector.hpp"
 #include "base/stl_add.hpp"
 
-#include "std/sstream.hpp"
-#include "std/vector.hpp"
+#include <sstream>
+#include <vector>
 
 namespace
 {
@@ -42,7 +42,7 @@ struct KeywordMatcherTestCase
 
 void InitMatcher(char const * query, KeywordMatcher & matcher)
 {
-  vector<strings::UniString> keywords;
+  std::vector<strings::UniString> keywords;
   strings::UniString prefix;
   if (search::TokenizeStringAndCheckIfLastTokenIsPrefix(query, keywords, search::Delimiters()))
   {
@@ -71,10 +71,10 @@ public:
 
   bool IsQueryMatched() const { return m_score.IsQueryMatched(); }
 
-  friend string DebugPrint(TestScore const & score);
+  friend std::string DebugPrint(TestScore const & score);
 };
 
-string DebugPrint(TestScore const & s)
+std::string DebugPrint(TestScore const & s)
 {
   return DebugPrint(s.m_score);
 }
@@ -247,9 +247,9 @@ UNIT_TEST(KeywordMatcher_KeywordAndKeyword)
 namespace
 {
 
-string GetManyTokens(string tokenPrefix, int tokenCount, bool countForward = true)
+std::string GetManyTokens(std::string tokenPrefix, int tokenCount, bool countForward = true)
 {
-  ostringstream out;
+  std::ostringstream out;
   for (int i = 0; i < tokenCount; ++i)
     out << tokenPrefix << (countForward ? i : tokenCount - 1 - i) << " ";
   return out.str();
@@ -261,9 +261,9 @@ UNIT_TEST(KeywordMatcher_QueryTooLong)
 {
   for (int queryLength = MAX_TOKENS - 2; queryLength <= MAX_TOKENS + 2; ++queryLength)
   {
-    string const query = GetManyTokens("Q", queryLength);
-    string const queryWithPrefix = query + " Prefix";
-    string const queryWithPrefixAndSomethingElse = query + " PrefixAndSomethingElse";
+    std::string const query = GetManyTokens("Q", queryLength);
+    std::string const queryWithPrefix = query + " Prefix";
+    std::string const queryWithPrefixAndSomethingElse = query + " PrefixAndSomethingElse";
 
     KeywordMatcherTestCase const testCases[] =
     {
@@ -292,7 +292,7 @@ UNIT_TEST(KeywordMatcher_QueryTooLong)
 
 UNIT_TEST(KeywordMatcher_NameTooLong)
 {
-  string const name[] =
+  std::string const name[] =
   {
     "Aa Bb " + GetManyTokens("T", MAX_TOKENS + 1),
     "Aa Bb " + GetManyTokens("T", MAX_TOKENS),
@@ -315,9 +315,9 @@ UNIT_TEST(KeywordMatcher_NameTooLong)
 
 UNIT_TEST(KeywordMatcher_ManyTokensInReverseOrder)
 {
-  string const query = GetManyTokens("Q", MAX_TOKENS);
-  string const name = GetManyTokens("Q", MAX_TOKENS);
-  string const reversedName = GetManyTokens("Q", MAX_TOKENS, false);
+  std::string const query = GetManyTokens("Q", MAX_TOKENS);
+  std::string const name = GetManyTokens("Q", MAX_TOKENS);
+  std::string const reversedName = GetManyTokens("Q", MAX_TOKENS, false);
 
   KeywordMatcherTestCase const testCases[] =
   {

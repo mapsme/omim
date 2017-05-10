@@ -6,20 +6,20 @@
 
 #include "base/thread.hpp"
 
-#include "std/string.hpp"
-#include "std/unique_ptr.hpp"
+#include <string>
+#include <memory>
 
 
 namespace routing
 {
-using TCountryLocalFileFn = function<bool(string const &)>;
+using TCountryLocalFileFn = function<bool(std::string const &)>;
 
 class IOnlineFetcher
 {
 public:
   virtual ~IOnlineFetcher() = default;
   virtual void GenerateRequest(m2::PointD const & startPoint, m2::PointD const & finalPoint) = 0;
-  virtual void GetAbsentCountries(vector<string> & countries) = 0;
+  virtual void GetAbsentCountries(vector<std::string> & countries) = 0;
 };
 
 /*!
@@ -37,11 +37,11 @@ public:
 
   // IOnlineFetcher overrides:
   void GenerateRequest(m2::PointD const & startPoint, m2::PointD const & finalPoint) override;
-  void GetAbsentCountries(vector<string> & countries) override;
+  void GetAbsentCountries(vector<std::string> & countries) override;
 
 private:
   TCountryFileFn const m_countryFileFn;
   TCountryLocalFileFn const m_countryLocalFileFn;
-  unique_ptr<threads::Thread> m_fetcherThread;
+  std::unique_ptr<threads::Thread> m_fetcherThread;
 };
 }  // namespace routing

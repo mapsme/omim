@@ -111,7 +111,7 @@ namespace
 
       for (size_t i = 0; i < count; ++i)
       {
-        vector<string> v;
+        vector<std::string> v;
         v.push_back(arr[i][0]);
         v.push_back(arr[i][1]);
         if (strlen(arr[i][2]) > 0)
@@ -163,7 +163,7 @@ void LoaderImpl::ParseCommon()
 
   if (h & HEADER_HAS_NAME)
   {
-    string name;
+    std::string name;
     name.resize(ReadVarUint<uint32_t>(source) + 1);
     source.Read(&name[0], name.size());
     m_pF->m_params.name.AddString(StringUtf8Multilang::kDefaultCode, name);

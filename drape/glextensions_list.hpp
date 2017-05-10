@@ -1,11 +1,11 @@
 #pragma once
 
-#include "std/noncopyable.hpp"
+#include <boost/noncopyable.hpp>
 
 namespace dp
 {
 
-class GLExtensionsList : private noncopyable
+class GLExtensionsList : private boost::noncopyable
 {
 public:
   enum ExtensionName

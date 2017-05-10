@@ -6,6 +6,7 @@
 #include "base/macros.hpp"
 #include "base/stl_add.hpp"
 
+using namespace std;
 
 namespace
 {

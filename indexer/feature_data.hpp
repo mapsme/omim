@@ -8,10 +8,10 @@
 #include "coding/reader.hpp"
 #include "coding/value_opt_string.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/string.hpp"
-#include "std/vector.hpp"
-#include "std/utility.hpp"
+#include <algorithm>
+#include <string>
+#include <vector>
+#include <utility>
 
 struct FeatureParamsBase;
 class FeatureBase;
@@ -90,7 +90,7 @@ namespace feature
 
     inline bool Has(uint32_t t) const
     {
-      return (find(begin(), end(), t) != end());
+      return (std::find(begin(), end(), t) != end());
     }
     //@}
 
@@ -100,8 +100,8 @@ namespace feature
       {
         size_t const oldSize = m_size;
 
-        uint32_t * e = remove_if(m_types, m_types + m_size, forward<TFn>(fn));
-        m_size = distance(m_types, e);
+        uint32_t * e = std::remove_if(m_types, m_types + m_size, std::forward<TFn>(fn));
+        m_size = std::distance(m_types, e);
 
         return (m_size != oldSize);
       }
@@ -117,10 +117,10 @@ namespace feature
     /// in any order. Works in O(n log n).
     bool Equals(TypesHolder const & other) const;
 
-    vector<string> ToObjectNames() const;
+    std::vector<std::string> ToObjectNames() const;
   };
 
-  string DebugPrint(TypesHolder const & holder);
+  std::string DebugPrint(TypesHolder const & holder);
 
   uint8_t CalculateHeader(size_t const typesCount, uint8_t const headerGeomType,
                           FeatureParamsBase const & params);
@@ -131,7 +131,7 @@ struct FeatureParamsBase
 {
   StringUtf8Multilang name;
   StringNumericOptimal house;
-  string ref;
+  std::string ref;
   int8_t layer;
   uint8_t rank;
 
@@ -142,7 +142,7 @@ struct FeatureParamsBase
   bool operator == (FeatureParamsBase const & rhs) const;
 
   bool CheckValid() const;
-  string DebugString() const;
+  std::string DebugString() const;
 
   /// @return true if feature doesn't have any drawable strings (names, houses, etc).
   bool IsEmptyNames() const;
@@ -216,7 +216,7 @@ class FeatureParams : public FeatureParamsBase
   feature::AddressData m_addrTags;
 
 public:
-  typedef vector<uint32_t> TTypes;
+  typedef std::vector<uint32_t> TTypes;
   TTypes m_Types;
 
   bool m_reverseGeometry;
@@ -225,22 +225,22 @@ public:
 
   void ClearName();
 
-  bool AddName(string const & lang, string const & s);
-  bool AddHouseName(string const & s);
-  bool AddHouseNumber(string houseNumber);
+  bool AddName(std::string const & lang, std::string const & s);
+  bool AddHouseName(std::string const & s);
+  bool AddHouseNumber(std::string houseNumber);
 
   /// @name Used in storing full street address only.
   //@{
-  void AddStreet(string s);
-  void AddPlace(string const & s);
-  void AddPostcode(string const & s);
-  void AddAddress(string const & s);
+  void AddStreet(std::string s);
+  void AddPlace(std::string const & s);
+  void AddPostcode(std::string const & s);
+  void AddAddress(std::string const & s);
 
-  bool FormatFullAddress(m2::PointD const & pt, string & res) const;
+  bool FormatFullAddress(m2::PointD const & pt, std::string & res) const;
   //@}
 
   /// Used for testing purposes now.
-  string GetStreet() const;
+  std::string GetStreet() const;
   feature::AddressData const & GetAddressData() const { return m_addrTags; }
 
   /// Assign parameters except geometry type.
@@ -332,4 +332,4 @@ private:
   static uint32_t GetTypeForIndex(uint32_t i);
 };
 
-string DebugPrint(FeatureParams const & p);
+std::string DebugPrint(FeatureParams const & p);

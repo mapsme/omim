@@ -11,12 +11,12 @@ void IndexAndTypeMapping::Clear()
   m_map.clear();
 }
 
-void IndexAndTypeMapping::Load(istream & s)
+void IndexAndTypeMapping::Load(std::istream & s)
 {
   Classificator const & c = classif();
 
-  string v;
-  vector<string> path;
+  std::string v;
+  std::vector<std::string> path;
 
   uint32_t ind = 0;
   while (s.good())

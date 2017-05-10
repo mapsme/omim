@@ -8,9 +8,9 @@
 #include "base/checked_cast.hpp"
 #include "base/logging.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/vector.hpp"
-#include "std/utility.hpp"
+#include <algorithm>
+#include <vector>
+#include <utility>
 
 // Trie format:
 // [1: header]
@@ -67,7 +67,7 @@ void WriteNode(TSink & sink, TSerializer const & serializer, TrieChar baseChar,
     return;
   }
   uint32_t const childCount = base::asserted_cast<uint32_t>(endChild - begChild);
-  uint8_t const header = static_cast<uint32_t>((min(valueCount, 3U) << 6) + min(childCount, 63U));
+  uint8_t const header = static_cast<uint32_t>((std::min(valueCount, 3U) << 6) + std::min(childCount, 63U));
   sink.Write(&header, 1);
   if (valueCount >= 3)
     WriteVarUint(sink, valueCount);
@@ -119,7 +119,7 @@ struct ChildInfo
 {
   bool m_isLeaf;
   uint32_t m_size;
-  vector<TrieChar> m_edge;
+  std::vector<TrieChar> m_edge;
 
   ChildInfo(bool isLeaf, uint32_t size, TrieChar c) : m_isLeaf(isLeaf), m_size(size), m_edge(1, c)
   {
@@ -136,7 +136,7 @@ struct NodeInfo
 {
   uint64_t m_begPos;
   TrieChar m_char;
-  vector<ChildInfo> m_children;
+  std::vector<ChildInfo> m_children;
 
   // This is ugly but will do until we rename ValueList.
   // Here is the rationale. ValueList<> is the entity that
@@ -151,7 +151,7 @@ struct NodeInfo
   // need to update a node's ValueList until the node is finalized
   // this vector is needed here. It is better to leave it here
   // than to expose it in ValueList.
-  vector<typename TValueList::TValue> m_temporaryValueList;
+  std::vector<typename TValueList::TValue> m_temporaryValueList;
   TValueList m_valueList;
   bool m_mayAppend;
 
@@ -180,7 +180,7 @@ void WriteNodeReverse(TSink & sink, TSerializer const & serializer, TrieChar bas
   node.FinalizeValueList();
   WriteNode(outSink, serializer, baseChar, node.m_valueList, node.m_children.rbegin(),
             node.m_children.rend(), isRoot);
-  reverse(out.begin(), out.end());
+  std::reverse(out.begin(), out.end());
   sink.Write(out.data(), out.size());
 }
 
@@ -233,16 +233,16 @@ void AppendValue(TNodeInfo & node, TValue const & value)
 
 template <typename TSink, typename TKey, typename TValueList, typename TSerializer>
 void Build(TSink & sink, TSerializer const & serializer,
-           vector<pair<TKey, typename TValueList::TValue>> const & data)
+           std::vector<std::pair<TKey, typename TValueList::TValue>> const & data)
 {
   using TValue = typename TValueList::TValue;
   using TNodeInfo = NodeInfo<TValueList>;
 
-  vector<TNodeInfo> nodes;
+  std::vector<TNodeInfo> nodes;
   nodes.emplace_back(sink.Pos(), kDefaultChar);
 
   TKey prevKey;
-  pair<TKey, TValue> prevE;  // e for "element".
+  std::pair<TKey, TValue> prevE;  // e for "element".
 
   for (auto it = data.begin(); it != data.end(); ++it)
   {
@@ -253,7 +253,7 @@ void Build(TSink & sink, TSerializer const & serializer,
     auto const & key = e.first;
     CHECK(!(key < prevKey), (key, prevKey));
     size_t nCommon = 0;
-    while (nCommon < min(key.size(), prevKey.size()) && prevKey[nCommon] == key[nCommon])
+    while (nCommon < std::min(key.size(), prevKey.size()) && prevKey[nCommon] == key[nCommon])
       ++nCommon;
 
     // Root is also a common node.
@@ -264,7 +264,7 @@ void Build(TSink & sink, TSerializer const & serializer,
     AppendValue(nodes.back(), e.second);
 
     prevKey = key;
-    swap(e, prevE);
+    std::swap(e, prevE);
   }
 
   // Pop all the nodes from the stack.

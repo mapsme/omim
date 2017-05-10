@@ -6,33 +6,33 @@
 
 #include "base/logging.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 
 namespace downloader
 {
 
-ChunksDownloadStrategy::ChunksDownloadStrategy(vector<string> const & urls)
+ChunksDownloadStrategy::ChunksDownloadStrategy(std::vector<std::string> const & urls)
 {
   // init servers list
   for (size_t i = 0; i < urls.size(); ++i)
     m_servers.push_back(ServerT(urls[i], SERVER_READY));
 }
 
-pair<ChunksDownloadStrategy::ChunkT *, int>
+std::pair<ChunksDownloadStrategy::ChunkT *, int>
 ChunksDownloadStrategy::GetChunk(RangeT const & range)
 {
-  vector<ChunkT>::iterator i = lower_bound(m_chunks.begin(), m_chunks.end(), range.first, LessChunks());
+  std::vector<ChunkT>::iterator i = std::lower_bound(m_chunks.begin(), m_chunks.end(), range.first, LessChunks());
 
   if (i != m_chunks.end() && i->m_pos == range.first)
   {
     ASSERT_EQUAL ( (i+1)->m_pos, range.second + 1, () );
-    return pair<ChunkT *, int>(&(*i), distance(m_chunks.begin(), i));
+    return std::pair<ChunkT *, int>(&(*i), std::distance(m_chunks.begin(), i));
   }
   else
   {
     LOG(LERROR, ("Downloader error. Invalid chunk range: ", range));
-    return pair<ChunkT *, int>(static_cast<ChunkT *>(0), -1);
+    return std::pair<ChunkT *, int>(static_cast<ChunkT *>(0), -1);
   }
 }
 
@@ -61,7 +61,7 @@ void ChunksDownloadStrategy::AddChunk(RangeT const & range, ChunkStatusT status)
   m_chunks.push_back(ChunkT(range.second + 1, CHUNK_AUX));
 }
 
-void ChunksDownloadStrategy::SaveChunks(int64_t fileSize, string const & fName)
+void ChunksDownloadStrategy::SaveChunks(int64_t fileSize, std::string const & fName)
 {
   if (!m_chunks.empty())
   {
@@ -83,7 +83,7 @@ void ChunksDownloadStrategy::SaveChunks(int64_t fileSize, string const & fName)
   (void)FileWriter::DeleteFileX(fName);
 }
 
-int64_t ChunksDownloadStrategy::LoadOrInitChunks( string const & fName,
+int64_t ChunksDownloadStrategy::LoadOrInitChunks( std::string const & fName,
                                                   int64_t fileSize, int64_t chunkSize)
 {
   ASSERT ( fileSize > 0, () );
@@ -129,10 +129,10 @@ int64_t ChunksDownloadStrategy::LoadOrInitChunks( string const & fName,
   return 0;
 }
 
-string ChunksDownloadStrategy::ChunkFinished(bool success, RangeT const & range)
+std::string ChunksDownloadStrategy::ChunkFinished(bool success, RangeT const & range)
 {
-  pair<ChunkT *, int> res = GetChunk(range);
-  string url;
+  std::pair<ChunkT *, int> res = GetChunk(range);
+  std::string url;
   // find server which was downloading this chunk
   if (res.first)
   {
@@ -163,7 +163,7 @@ string ChunksDownloadStrategy::ChunkFinished(bool success, RangeT const & range)
 }
 
 ChunksDownloadStrategy::ResultT
-ChunksDownloadStrategy::NextChunk(string & outUrl, RangeT & range)
+ChunksDownloadStrategy::NextChunk(std::string & outUrl, RangeT & range)
 {
   // If no servers at all.
   if (m_servers.empty())

@@ -12,10 +12,10 @@
 
 #include "base/stl_add.hpp"
 
-#include "std/bind.hpp"
-#include "std/cstring.hpp"
-#include "std/function.hpp"
-#include "std/bind.hpp"
+#include <functional>
+#include <cstring>
+#include <functional>
+#include <functional>
 
 #include <gmock/gmock.h>
 
@@ -75,7 +75,7 @@ public:
 
     VAOAcceptor vaoAcceptor;
     Batcher batcher(65000, 65000);
-    batcher.StartSession(bind(&VAOAcceptor::FlushFullBucket, &vaoAcceptor, _1, _2));
+    batcher.StartSession(std::bind(&VAOAcceptor::FlushFullBucket, &vaoAcceptor, std::placeholders::_1, std::placeholders::_2));
     fn(&batcher, state, make_ref(&provider));
     batcher.EndSession();
 
@@ -377,7 +377,7 @@ UNIT_TEST(BatchListOfStript_partial)
 
     VAOAcceptor vaoAcceptor;
     Batcher batcher(srcData[i].first, srcData[i].second);
-    batcher.StartSession(bind(&VAOAcceptor::FlushFullBucket, &vaoAcceptor, _1, _2));
+    batcher.StartSession(std::bind(&VAOAcceptor::FlushFullBucket, &vaoAcceptor, std::placeholders::_1, std::placeholders::_2));
     batcher.InsertListOfStrip(state, make_ref(&provider), 4);
     batcher.EndSession();
 

@@ -1,6 +1,6 @@
 #include "storage/index.hpp"
 
-#include "std/sstream.hpp"
+#include <sstream>
 
 namespace storage
 {

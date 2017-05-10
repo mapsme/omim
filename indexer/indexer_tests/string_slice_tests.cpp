@@ -4,8 +4,9 @@
 
 #include "base/string_utils.hpp"
 
-#include "std/iterator.hpp"
+#include <iterator>
 
+using namespace std;
 using namespace search;
 using namespace strings;
 
@@ -15,7 +16,7 @@ UniString ToString(vector<UniString> const & v)
 {
   StringSlice slice(v);
   UniString r;
-  copy(JoinIterator::Begin(slice), JoinIterator::End(slice), back_inserter(r));
+  copy(JoinIterator::Begin(slice), JoinIterator::End(slice), std::back_inserter(r));
   return r;
 }
 

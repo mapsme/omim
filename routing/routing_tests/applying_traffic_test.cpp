@@ -17,9 +17,10 @@
 
 #include "routing/base/astar_algorithm.hpp"
 
-#include "std/shared_ptr.hpp"
-#include "std/unique_ptr.hpp"
-#include "std/vector.hpp"
+#include "base/stl_add.hpp"
+
+#include <memory>
+#include <vector>
 
 namespace
 {
@@ -53,9 +54,9 @@ using namespace traffic;
 //                Start
 //
 // Note. This graph consists of 10 one segment directed features.
-unique_ptr<WorldGraph> BuildXXGraph(shared_ptr<EdgeEstimator> estimator)
+unique_ptr<WorldGraph> BuildXXGraph(std::shared_ptr<EdgeEstimator> estimator)
 {
-  unique_ptr<TestGeometryLoader> loader = make_unique<TestGeometryLoader>();
+  std::unique_ptr<TestGeometryLoader> loader = my::make_unique<TestGeometryLoader>();
   loader->AddRoad(0 /* featureId */, true /* oneWay */, 1.0 /* speed */,
                   RoadGeometry::Points({{0.0, 0.0}, {1.0, 1.0}}));
   loader->AddRoad(1 /* featureId */, true /* oneWay */, 1.0 /* speed */,
@@ -77,7 +78,7 @@ unique_ptr<WorldGraph> BuildXXGraph(shared_ptr<EdgeEstimator> estimator)
   loader->AddRoad(9 /* featureId */, true /* oneWay */, 1.0 /* speed */,
                   RoadGeometry::Points({{2.0, -1.0}, {2.0, 0.0}}));
 
-  vector<Joint> const joints = {
+  std::vector<Joint> const joints = {
       MakeJoint({{0 /* feature id */, 0 /* point id */}}), /* joint at point (0, 0) */
       MakeJoint({{1, 0}, {7, 0}, {9, 1}}),                 /* joint at point (2, 0) */
       MakeJoint({{0, 1}, {1, 1}, {2, 0}, {3, 0}}),         /* joint at point (1, 1) */
@@ -98,24 +99,24 @@ public:
   ApplyingTrafficTest()
   {
     classificator::Load();
-    auto numMwmIds = make_shared<NumMwmIds>();
-    m_trafficStash = make_shared<TrafficStash>(m_trafficCache, numMwmIds);
+    auto numMwmIds = std::make_shared<NumMwmIds>();
+    m_trafficStash = std::make_shared<TrafficStash>(m_trafficCache, numMwmIds);
     m_estimator = CreateEstimatorForCar(m_trafficStash);
   }
 
-  void SetTrafficColoring(shared_ptr<TrafficInfo::Coloring> coloring)
+  void SetTrafficColoring(std::shared_ptr<TrafficInfo::Coloring> coloring)
   {
     m_trafficStash->SetColoring(kTestNumMwmId, coloring);
   }
 
-  shared_ptr<EdgeEstimator> GetEstimator() const { return m_estimator; }
+  std::shared_ptr<EdgeEstimator> GetEstimator() const { return m_estimator; }
 
-  shared_ptr<TrafficStash> GetTrafficStash() const { return m_trafficStash; }
+  std::shared_ptr<TrafficStash> GetTrafficStash() const { return m_trafficStash; }
 
 private:
   TrafficCache m_trafficCache;
-  shared_ptr<EdgeEstimator> m_estimator;
-  shared_ptr<TrafficStash> m_trafficStash;
+  std::shared_ptr<EdgeEstimator> m_estimator;
+  std::shared_ptr<TrafficStash> m_trafficStash;
 };
 
 // Route through XX graph without any traffic info.
@@ -123,11 +124,11 @@ UNIT_CLASS_TEST(ApplyingTrafficTest, XXGraph_EmptyTrafficColoring)
 {
   TEST(!GetTrafficStash()->Has(kTestNumMwmId), ());
 
-  unique_ptr<WorldGraph> graph = BuildXXGraph(GetEstimator());
+  std::unique_ptr<WorldGraph> graph = BuildXXGraph(GetEstimator());
   IndexGraphStarter::FakeVertex const start(kTestNumMwmId, 9, 0, m2::PointD(2.0, -1.0));
   IndexGraphStarter::FakeVertex const finish(kTestNumMwmId, 6, 0, m2::PointD(3.0, 3.0));
   IndexGraphStarter starter(start, finish, *graph);
-  vector<m2::PointD> const expectedGeom = {{2 /* x */, -1 /* y */}, {2, 0}, {1, 1}, {2, 2}, {3, 3}};
+  std::vector<m2::PointD> const expectedGeom = {{2 /* x */, -1 /* y */}, {2, 0}, {1, 1}, {2, 2}, {3, 3}};
   TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
 }
 
@@ -137,13 +138,13 @@ UNIT_CLASS_TEST(ApplyingTrafficTest, XXGraph_G0onF3)
   TrafficInfo::Coloring coloring = {
       {{3 /* feature id */, 0 /* segment id */, TrafficInfo::RoadSegmentId::kForwardDirection},
        SpeedGroup::G0}};
-  SetTrafficColoring(make_shared<TrafficInfo::Coloring>(coloring));
+  SetTrafficColoring(std::make_shared<TrafficInfo::Coloring>(coloring));
 
-  unique_ptr<WorldGraph> graph = BuildXXGraph(GetEstimator());
+  std::unique_ptr<WorldGraph> graph = BuildXXGraph(GetEstimator());
   IndexGraphStarter::FakeVertex const start(kTestNumMwmId, 9, 0, m2::PointD(2.0, -1.0));
   IndexGraphStarter::FakeVertex const finish(kTestNumMwmId, 6, 0, m2::PointD(3.0, 3.0));
   IndexGraphStarter starter(start, finish, *graph);
-  vector<m2::PointD> const expectedGeom = {{2 /* x */, -1 /* y */}, {2, 0}, {3, 0}, {3, 1}, {2, 2}, {3, 3}};  
+  std::vector<m2::PointD> const expectedGeom = {{2 /* x */, -1 /* y */}, {2, 0}, {3, 0}, {3, 1}, {2, 2}, {3, 3}};  
   TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
 }
 
@@ -153,13 +154,13 @@ UNIT_CLASS_TEST(ApplyingTrafficTest, XXGraph_TempBlockonF3)
   TrafficInfo::Coloring coloring = {
       {{3 /* feature id */, 0 /* segment id */, TrafficInfo::RoadSegmentId::kForwardDirection},
        SpeedGroup::TempBlock}};
-  SetTrafficColoring(make_shared<TrafficInfo::Coloring>(coloring));
+  SetTrafficColoring(std::make_shared<TrafficInfo::Coloring>(coloring));
 
-  unique_ptr<WorldGraph> graph = BuildXXGraph(GetEstimator());
+  std::unique_ptr<WorldGraph> graph = BuildXXGraph(GetEstimator());
   IndexGraphStarter::FakeVertex const start(kTestNumMwmId, 9, 0, m2::PointD(2.0, -1.0));
   IndexGraphStarter::FakeVertex const finish(kTestNumMwmId, 6, 0, m2::PointD(3.0, 3.0));
   IndexGraphStarter starter(start, finish, *graph);
-  vector<m2::PointD> const expectedGeom = {{2 /* x */, -1 /* y */}, {2, 0}, {3, 0}, {3, 1}, {2, 2}, {3, 3}};
+  std::vector<m2::PointD> const expectedGeom = {{2 /* x */, -1 /* y */}, {2, 0}, {3, 0}, {3, 1}, {2, 2}, {3, 3}};
   TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
 }
 
@@ -169,13 +170,13 @@ UNIT_CLASS_TEST(ApplyingTrafficTest, XXGraph_G0onF3ReverseDir)
   TrafficInfo::Coloring coloring = {
       {{3 /* feature id */, 0 /* segment id */, TrafficInfo::RoadSegmentId::kReverseDirection},
        SpeedGroup::G0}};
-  SetTrafficColoring(make_shared<TrafficInfo::Coloring>(coloring));
+  SetTrafficColoring(std::make_shared<TrafficInfo::Coloring>(coloring));
 
-  unique_ptr<WorldGraph> graph = BuildXXGraph(GetEstimator());
+  std::unique_ptr<WorldGraph> graph = BuildXXGraph(GetEstimator());
   IndexGraphStarter::FakeVertex const start(kTestNumMwmId, 9, 0, m2::PointD(2.0, -1.0));
   IndexGraphStarter::FakeVertex const finish(kTestNumMwmId, 6, 0, m2::PointD(3.0, 3.0));
   IndexGraphStarter starter(start, finish, *graph);
-  vector<m2::PointD> const expectedGeom = {{2 /* x */, -1 /* y */}, {2, 0}, {1, 1}, {2, 2}, {3, 3}};
+  std::vector<m2::PointD> const expectedGeom = {{2 /* x */, -1 /* y */}, {2, 0}, {1, 1}, {2, 2}, {3, 3}};
   TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
 }
 
@@ -191,13 +192,13 @@ UNIT_CLASS_TEST(ApplyingTrafficTest, XXGraph_G0onF3andF6andG4onF8andF4)
        SpeedGroup::G4},
       {{7 /* feature id */, 0 /* segment id */, TrafficInfo::RoadSegmentId::kForwardDirection},
        SpeedGroup::G4}};
-  SetTrafficColoring(make_shared<TrafficInfo::Coloring>(coloring));
+  SetTrafficColoring(std::make_shared<TrafficInfo::Coloring>(coloring));
 
-  unique_ptr<WorldGraph> graph = BuildXXGraph(GetEstimator());
+  std::unique_ptr<WorldGraph> graph = BuildXXGraph(GetEstimator());
   IndexGraphStarter::FakeVertex const start(kTestNumMwmId, 9, 0, m2::PointD(2.0, -1.0));
   IndexGraphStarter::FakeVertex const finish(kTestNumMwmId, 6, 0, m2::PointD(3.0, 3.0));
   IndexGraphStarter starter(start, finish, *graph);
-  vector<m2::PointD> const expectedGeom = {{2 /* x */, -1 /* y */}, {2, 0}, {3, 0}, {3, 1}, {2, 2}, {3, 3}};
+  std::vector<m2::PointD> const expectedGeom = {{2 /* x */, -1 /* y */}, {2, 0}, {3, 0}, {3, 1}, {2, 2}, {3, 3}};
   TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, expectedGeom);
 }
 
@@ -207,11 +208,11 @@ UNIT_CLASS_TEST(ApplyingTrafficTest, XXGraph_ChangingTraffic)
   // No trafic at all.
   TEST(!GetTrafficStash()->Has(kTestNumMwmId), ());
 
-  unique_ptr<WorldGraph> graph = BuildXXGraph(GetEstimator());
+  std::unique_ptr<WorldGraph> graph = BuildXXGraph(GetEstimator());
   IndexGraphStarter::FakeVertex const start(kTestNumMwmId, 9, 0, m2::PointD(2.0, -1.0));
   IndexGraphStarter::FakeVertex const finish(kTestNumMwmId, 6, 0, m2::PointD(3.0, 3.0));
   IndexGraphStarter starter(start, finish, *graph);
-  vector<m2::PointD> const noTrafficGeom = {{2 /* x */, -1 /* y */}, {2, 0}, {1, 1}, {2, 2}, {3, 3}};
+  std::vector<m2::PointD> const noTrafficGeom = {{2 /* x */, -1 /* y */}, {2, 0}, {1, 1}, {2, 2}, {3, 3}};
   {
     TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, noTrafficGeom);
   }
@@ -220,9 +221,9 @@ UNIT_CLASS_TEST(ApplyingTrafficTest, XXGraph_ChangingTraffic)
   TrafficInfo::Coloring coloringHeavyF3 = {
       {{3 /* feature id */, 0 /* segment id */, TrafficInfo::RoadSegmentId::kForwardDirection},
        SpeedGroup::G0}};
-  SetTrafficColoring(make_shared<TrafficInfo::Coloring>(coloringHeavyF3));
+  SetTrafficColoring(std::make_shared<TrafficInfo::Coloring>(coloringHeavyF3));
   {
-    vector<m2::PointD> const heavyF3Geom = {{2 /* x */, -1 /* y */}, {2, 0}, {3, 0}, {3, 1}, {2, 2}, {3, 3}};
+    std::vector<m2::PointD> const heavyF3Geom = {{2 /* x */, -1 /* y */}, {2, 0}, {3, 0}, {3, 1}, {2, 2}, {3, 3}};
     TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, heavyF3Geom);
   }
 
@@ -238,7 +239,7 @@ UNIT_CLASS_TEST(ApplyingTrafficTest, XXGraph_ChangingTraffic)
        SpeedGroup::G3},
       {{8 /* feature id */, 0 /* segment id */, TrafficInfo::RoadSegmentId::kForwardDirection},
        SpeedGroup::G3}};
-  SetTrafficColoring(make_shared<TrafficInfo::Coloring>(coloringMiddleF1F3F4F7F8));
+  SetTrafficColoring(std::make_shared<TrafficInfo::Coloring>(coloringMiddleF1F3F4F7F8));
   {
     TestRouteGeometry(starter, AStarAlgorithm<IndexGraphStarter>::Result::OK, noTrafficGeom);
   }

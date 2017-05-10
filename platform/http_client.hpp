@@ -29,6 +29,8 @@ SOFTWARE.
 #include "std/unordered_map.hpp"
 #include "std/utility.hpp"
 
+using namespace std;
+
 namespace platform
 {
 class HttpClient

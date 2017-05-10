@@ -7,8 +7,8 @@
 #include "base/logging.hpp"
 #include "base/thread.hpp"
 
-#include "std/iomanip.hpp"
-#include "std/sstream.hpp"
+#include <iomanip>
+#include <sstream>
 
 #include "3party/jansson/myjansson.hpp"
 
@@ -18,10 +18,10 @@ using namespace platform;
 
 namespace
 {
-string const kUberEstimatesUrl = "https://api.uber.com/v1/estimates";
-string g_uberUrlForTesting = "";
+std::string const kUberEstimatesUrl = "https://api.uber.com/v1/estimates";
+std::string g_uberUrlForTesting = "";
 
-bool RunSimpleHttpRequest(string const & url, string & result)
+bool RunSimpleHttpRequest(std::string const & url, std::string & result)
 {
   HttpClient request(url);
   if (request.RunHttpRequest() && !request.WasRedirected() && request.ErrorCode() == 200)
@@ -52,7 +52,7 @@ bool IsIncomplete(uber::Product const & p)
   return p.m_name.empty() || p.m_productId.empty() || p.m_time.empty() || p.m_price.empty();
 }
 
-void FillProducts(json_t const * time, json_t const * price, vector<uber::Product> & products)
+void FillProducts(json_t const * time, json_t const * price, std::vector<uber::Product> & products)
 {
   // Fill data from time.
   auto const timeSize = json_array_size(time);
@@ -71,7 +71,7 @@ void FillProducts(json_t const * time, json_t const * price, vector<uber::Produc
   auto const priceSize = json_array_size(price);
   for (size_t i = 0; i < priceSize; ++i)
   {
-    string name;
+    std::string name;
     auto const item = json_array_get(price, i);
 
     FromJSONObject(item, "display_name", name);
@@ -95,7 +95,7 @@ void FillProducts(json_t const * time, json_t const * price, vector<uber::Produc
   products.erase(remove_if(products.begin(), products.end(), IsIncomplete), products.end());
 }
 
-void MakeFromJson(char const * times, char const * prices, vector<uber::Product> & products)
+void MakeFromJson(char const * times, char const * prices, std::vector<uber::Product> & products)
 {
   products.clear();
   try
@@ -116,7 +116,7 @@ void MakeFromJson(char const * times, char const * prices, vector<uber::Product>
   }
 }
 
-string GetUberURL()
+std::string GetUberURL()
 {
   if (!g_uberUrlForTesting.empty())
     return g_uberUrlForTesting;
@@ -128,10 +128,10 @@ string GetUberURL()
 namespace uber
 {
 // static
-bool RawApi::GetProducts(ms::LatLon const & pos, string & result)
+bool RawApi::GetProducts(ms::LatLon const & pos, std::string & result)
 {
-  stringstream url;
-  url << fixed << setprecision(6)
+  std::stringstream url;
+  url << std::fixed << std::setprecision(6)
       << "https://api.uber.com/v1/products?server_token=" << UBER_SERVER_TOKEN
       << "&latitude=" << pos.lat << "&longitude=" << pos.lon;
 
@@ -139,10 +139,10 @@ bool RawApi::GetProducts(ms::LatLon const & pos, string & result)
 }
 
 // static
-bool RawApi::GetEstimatedTime(ms::LatLon const & pos, string & result)
+bool RawApi::GetEstimatedTime(ms::LatLon const & pos, std::string & result)
 {
-  stringstream url;
-  url << fixed << setprecision(6)
+  std::stringstream url;
+  url << std::fixed << std::setprecision(6)
       << GetUberURL() << "/time?server_token=" << UBER_SERVER_TOKEN
       << "&start_latitude=" << pos.lat << "&start_longitude=" << pos.lon;
 
@@ -150,10 +150,10 @@ bool RawApi::GetEstimatedTime(ms::LatLon const & pos, string & result)
 }
 
 // static
-bool RawApi::GetEstimatedPrice(ms::LatLon const & from, ms::LatLon const & to, string & result)
+bool RawApi::GetEstimatedPrice(ms::LatLon const & from, ms::LatLon const & to, std::string & result)
 {
-  stringstream url;
-  url << fixed << setprecision(6)
+  std::stringstream url;
+  url << std::fixed << std::setprecision(6)
       << GetUberURL() << "/price?server_token=" << UBER_SERVER_TOKEN
       << "&start_latitude=" << from.lat << "&start_longitude=" << from.lon
       << "&end_latitude=" << to.lat << "&end_longitude=" << to.lon;
@@ -163,39 +163,39 @@ bool RawApi::GetEstimatedPrice(ms::LatLon const & from, ms::LatLon const & to, s
 
 void ProductMaker::Reset(uint64_t const requestId)
 {
-  lock_guard<mutex> lock(m_mutex);
+  std::lock_guard<std::mutex> lock(m_mutex);
 
   m_requestId = requestId;
   m_times.reset();
   m_prices.reset();
 }
 
-void ProductMaker::SetTimes(uint64_t const requestId, string const & times)
+void ProductMaker::SetTimes(uint64_t const requestId, std::string const & times)
 {
-  lock_guard<mutex> lock(m_mutex);
+  std::lock_guard<std::mutex> lock(m_mutex);
 
   if (requestId != m_requestId)
     return;
 
-  m_times = make_unique<string>(times);
+  m_times = my::make_unique<std::string>(times);
 }
 
-void ProductMaker::SetPrices(uint64_t const requestId, string const & prices)
+void ProductMaker::SetPrices(uint64_t const requestId, std::string const & prices)
 {
-  lock_guard<mutex> lock(m_mutex);
+  std::lock_guard<std::mutex> lock(m_mutex);
 
   if (requestId != m_requestId)
     return;
 
-  m_prices = make_unique<string>(prices);
+  m_prices = my::make_unique<std::string>(prices);
 }
 
 void ProductMaker::MakeProducts(uint64_t const requestId, ProductsCallback const & successFn,
                                 ErrorCallback const & errorFn)
 {
-  vector<uber::Product> products;
+  std::vector<uber::Product> products;
   {
-    lock_guard<mutex> lock(m_mutex);
+    std::lock_guard<std::mutex> lock(m_mutex);
 
     if (requestId != m_requestId || !m_times || !m_prices)
       return;
@@ -222,7 +222,7 @@ uint64_t Api::GetAvailableProducts(ms::LatLon const & from, ms::LatLon const & t
 
   threads::SimpleThread([maker, from, reqId, successFn, errorFn]()
   {
-    string result;
+    std::string result;
     if (!RawApi::GetEstimatedTime(from, result))
     {
       errorFn(ErrorCode::RemoteError, reqId);
@@ -235,7 +235,7 @@ uint64_t Api::GetAvailableProducts(ms::LatLon const & from, ms::LatLon const & t
 
   threads::SimpleThread([maker, from, to, reqId, successFn, errorFn]()
   {
-    string result;
+    std::string result;
     if (!RawApi::GetEstimatedPrice(from, to, result))
     {
       errorFn(ErrorCode::RemoteError, reqId);
@@ -250,11 +250,11 @@ uint64_t Api::GetAvailableProducts(ms::LatLon const & from, ms::LatLon const & t
 }
 
 // static
-RideRequestLinks Api::GetRideRequestLinks(string const & productId, ms::LatLon const & from,
+RideRequestLinks Api::GetRideRequestLinks(std::string const & productId, ms::LatLon const & from,
                                           ms::LatLon const & to)
 {
-  stringstream url;
-  url << fixed << setprecision(6)
+  std::stringstream url;
+  url << std::fixed << std::setprecision(6)
       << "?client_id=" << UBER_CLIENT_ID << "&action=setPickup&product_id=" << productId
       << "&pickup[latitude]=" << from.lat << "&pickup[longitude]=" << from.lon
       << "&dropoff[latitude]=" << to.lat << "&dropoff[longitude]=" << to.lon;
@@ -262,12 +262,12 @@ RideRequestLinks Api::GetRideRequestLinks(string const & productId, ms::LatLon c
   return {"uber://" + url.str(), "https://m.uber.com/ul" + url.str()};
 }
 
-void SetUberUrlForTesting(string const & url)
+void SetUberUrlForTesting(std::string const & url)
 {
   g_uberUrlForTesting = url;
 }
 
-string DebugPrint(ErrorCode error)
+std::string DebugPrint(ErrorCode error)
 {
   switch (error)
   {

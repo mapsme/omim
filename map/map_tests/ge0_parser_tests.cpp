@@ -46,8 +46,8 @@ void TestSuccess(char const * s, double lat, double lon, double zoom, char const
 
   TEST(result, (s, zoom, lat, lon, name));
 
-  TEST_EQUAL(apiPoint.m_name, string(name), (s));
-  TEST_EQUAL(apiPoint.m_id, string(), (s));
+  TEST_EQUAL(apiPoint.m_name, std::string(name), (s));
+  TEST_EQUAL(apiPoint.m_id, std::string(), (s));
   double const latEps = GetLatEpsilon(9);
   double const lonEps = GetLonEpsilon(9);
   TEST(fabs(apiPoint.m_lat - lat) <= latEps, (s, zoom, lat, lon, name));
@@ -110,7 +110,7 @@ UNIT_TEST(Base64DecodingDoesNotCrashForAllChars)
 
 UNIT_TEST(Base64DecodingCharFrequency)
 {
-  vector<int> charCounts(256, 0);
+  std::vector<int> charCounts(256, 0);
   Ge0ParserForTest parser;
   for (size_t i = 0; i < 256; ++i)
     ++charCounts[parser.DecodeBase64Char(static_cast<char>(i))];
@@ -206,7 +206,7 @@ UNIT_TEST(LatLonFullAndClippedCoordinates)
       MapsWithMe_GenShortShowMapUrl(lat, lon, 4, "", buf, ARRAY_SIZE(buf));
       for (int i = 9; i >= 1; --i)
       {
-        string const str = string(buf).substr(7, i);
+        std::string const str = std::string(buf).substr(7, i);
         int const coordSize = str.size();
         Ge0ParserForTest parser;
         double latTmp, lonTmp;
@@ -217,8 +217,8 @@ UNIT_TEST(LatLonFullAndClippedCoordinates)
         double const difLon = fabs(lon - lonTmp);
         TEST(difLat <= epsLat, (str, lat, latTmp, lon, lonTmp, difLat, epsLat));
         TEST(difLon <= epsLon, (str, lat, latTmp, lon, lonTmp, difLon, epsLon));
-        maxLatDiffForCoordSize[coordSize] = max(maxLatDiffForCoordSize[coordSize], difLat);
-        maxLonDiffForCoordSize[coordSize] = max(maxLonDiffForCoordSize[coordSize], difLon);
+        maxLatDiffForCoordSize[coordSize] = std::max(maxLatDiffForCoordSize[coordSize], difLat);
+        maxLonDiffForCoordSize[coordSize] = std::max(maxLonDiffForCoordSize[coordSize], difLon);
       }
     }
   }

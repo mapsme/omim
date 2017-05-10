@@ -6,8 +6,8 @@
 namespace search
 {
 // Result ------------------------------------------------------------------------------------------
-Result::Result(FeatureID const & id, m2::PointD const & pt, string const & str,
-               string const & address, string const & type, uint32_t featureType,
+Result::Result(FeatureID const & id, m2::PointD const & pt, std::string const & str,
+               std::string const & address, std::string const & type, uint32_t featureType,
                Metadata const & meta)
   : m_id(id)
   , m_center(pt)
@@ -19,17 +19,17 @@ Result::Result(FeatureID const & id, m2::PointD const & pt, string const & str,
 {
 }
 
-Result::Result(m2::PointD const & pt, string const & latlon, string const & address)
+Result::Result(m2::PointD const & pt, std::string const & latlon, std::string const & address)
   : m_center(pt), m_str(latlon), m_address(address)
 {
 }
 
-Result::Result(string const & str, string const & suggest)
+Result::Result(std::string const & str, std::string const & suggest)
   : m_str(str), m_suggestionStr(suggest)
 {
 }
 
-Result::Result(Result const & res, string const & suggest)
+Result::Result(Result const & res, std::string const & suggest)
   : m_id(res.m_id)
   , m_center(res.m_center)
   , m_str(res.m_str)
@@ -122,16 +122,16 @@ pair<uint16_t, uint16_t> const & Result::GetHighlightRange(size_t idx) const
   return m_hightlightRanges[idx];
 }
 
-void Result::AppendCity(string const & name)
+void Result::AppendCity(std::string const & name)
 {
   // Prepend only if city is absent in region (mwm) name.
-  if (m_address.find(name) == string::npos)
+  if (m_address.find(name) == std::string::npos)
     m_address = name + ", " + m_address;
 }
 
-string Result::ToStringForStats() const
+std::string Result::ToStringForStats() const
 {
-  string s;
+  std::string s;
   s.append(GetString());
   s.append("|");
   s.append(GetFeatureType());
@@ -240,7 +240,7 @@ bool AddressInfo::IsEmptyName() const
   return m_name.empty() && m_house.empty();
 }
 
-string AddressInfo::GetPinName() const
+std::string AddressInfo::GetPinName() const
 {
   if (IsEmptyName() && !m_types.empty())
     return m_types[0];
@@ -248,36 +248,36 @@ string AddressInfo::GetPinName() const
     return m_name.empty() ? m_house : m_name;
 }
 
-string AddressInfo::GetPinType() const
+std::string AddressInfo::GetPinType() const
 {
   return GetBestType();
 }
 
-string AddressInfo::FormatPinText() const
+std::string AddressInfo::FormatPinText() const
 {
   // select name or house if name is empty
-  string const & ret = (m_name.empty() ? m_house : m_name);
+  std::string const & ret = (m_name.empty() ? m_house : m_name);
 
-  string const type = GetBestType();
+  std::string const type = GetBestType();
   if (type.empty())
     return ret;
 
   return (ret.empty() ? type : (ret + " (" + type + ')'));
 }
 
-string AddressInfo::FormatHouseAndStreet(AddressType type /* = DEFAULT */) const
+std::string AddressInfo::FormatHouseAndStreet(AddressType type /* = DEFAULT */) const
 {
   // Check whether we can format address according to the query type and actual address distance.
   /// @todo We can add "Near" prefix here in future according to the distance.
   if (m_distanceMeters > 0.0)
   {
     if (type == SEARCH_RESULT && m_distanceMeters > 50.0)
-      return string();
+      return std::string();
     if (m_distanceMeters > 200.0)
-      return string();
+      return std::string();
   }
 
-  string result = m_street;
+  std::string result = m_street;
   if (!m_house.empty())
   {
     if (!result.empty())
@@ -288,9 +288,9 @@ string AddressInfo::FormatHouseAndStreet(AddressType type /* = DEFAULT */) const
   return result;
 }
 
-string AddressInfo::FormatAddress(AddressType type /* = DEFAULT */) const
+std::string AddressInfo::FormatAddress(AddressType type /* = DEFAULT */) const
 {
-  string result = FormatHouseAndStreet(type);
+  std::string result = FormatHouseAndStreet(type);
   if (!m_city.empty())
   {
     if (!result.empty())
@@ -306,15 +306,15 @@ string AddressInfo::FormatAddress(AddressType type /* = DEFAULT */) const
   return result;
 }
 
-string AddressInfo::FormatNameAndAddress(AddressType type /* = DEFAULT */) const
+std::string AddressInfo::FormatNameAndAddress(AddressType type /* = DEFAULT */) const
 {
-  string const addr = FormatAddress(type);
+  std::string const addr = FormatAddress(type);
   return (m_name.empty() ? addr : m_name + ", " + addr);
 }
 
-string AddressInfo::FormatTypes() const
+std::string AddressInfo::FormatTypes() const
 {
-  string result;
+  std::string result;
   for (size_t i = 0; i < m_types.size(); ++i)
   {
     ASSERT ( !m_types.empty(), () );
@@ -325,10 +325,10 @@ string AddressInfo::FormatTypes() const
   return result;
 }
 
-string AddressInfo::GetBestType() const
+std::string AddressInfo::GetBestType() const
 {
   if (m_types.empty())
-    return string();
+    return std::string();
 
   /// @todo Probably, we should skip some "common" types here like in TypesHolder::SortBySpec.
   ASSERT(!m_types[0].empty(), ());
@@ -345,12 +345,12 @@ void AddressInfo::Clear()
   m_types.clear();
 }
 
-string DebugPrint(AddressInfo const & info)
+std::string DebugPrint(AddressInfo const & info)
 {
   return info.FormatNameAndAddress();
 }
 
-string DebugPrint(Result const & result)
+std::string DebugPrint(Result const & result)
 {
   return "Result { Name: " + result.GetString() + "; Type: " + result.GetFeatureType() +
          "; Info: " + DebugPrint(result.GetRankingInfo()) + " }";

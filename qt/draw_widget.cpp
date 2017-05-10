@@ -68,7 +68,7 @@ void DrawWidget::UpdateCountryStatus(storage::TCountryId const & countryId)
 {
   if (m_currentCountryChanged != nullptr)
   {
-    string countryName = countryId;
+    std::string countryName = countryId;
     auto status = m_framework.GetStorage().CountryStatusEx(countryId);
 
     uint8_t progressInPercentage = 0;
@@ -252,9 +252,9 @@ bool DrawWidget::Search(search::EverywhereSearchParams const & params)
   return m_framework.SearchEverywhere(params);
 }
 
-string DrawWidget::GetDistance(search::Result const & res) const
+std::string DrawWidget::GetDistance(search::Result const & res) const
 {
-  string dist;
+  std::string dist;
   double lat, lon;
   if (m_framework.GetCurrentPosition(lat, lon))
   {
@@ -370,7 +370,7 @@ void DrawWidget::ShowInfoPopup(QMouseEvent * e, m2::PointD const & pt)
 {
   // show feature types
   QMenu menu;
-  auto const addStringFn = [&menu](string const & s)
+  auto const addStringFn = [&menu](std::string const & s)
   {
     menu.addAction(QString::fromUtf8(s.c_str()));
   };
@@ -379,7 +379,7 @@ void DrawWidget::ShowInfoPopup(QMouseEvent * e, m2::PointD const & pt)
   {
     search::AddressInfo const info = m_framework.GetFeatureAddressInfo(ft);
 
-    string concat;
+    std::string concat;
     for (auto const & type : info.m_types)
       concat += type + " ";
     addStringFn(concat);
@@ -387,7 +387,7 @@ void DrawWidget::ShowInfoPopup(QMouseEvent * e, m2::PointD const & pt)
     if (!info.m_name.empty())
       addStringFn(info.m_name);
 
-    string const addr = info.FormatAddress();
+    std::string const addr = info.FormatAddress();
     if (!addr.empty())
       addStringFn(addr);
 

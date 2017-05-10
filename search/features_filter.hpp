@@ -1,6 +1,6 @@
 #pragma once
 
-#include "std/unique_ptr.hpp"
+#include <memory>
 
 namespace search
 {

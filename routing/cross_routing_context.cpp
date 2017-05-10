@@ -89,14 +89,14 @@ void CrossRoutingContextReader::Load(Reader const & r)
   {
     r.Read(pos, &size, sizeof(size));
     pos += sizeof(size);
-    vector<char> buffer(size);
+    std::vector<char> buffer(size);
     r.Read(pos, &buffer[0], size);
-    m_neighborMwmList.push_back(string(&buffer[0], size));
+    m_neighborMwmList.push_back(std::string(&buffer[0], size));
     pos += size;
   }
 }
 
-const string & CrossRoutingContextReader::GetOutgoingMwmName(
+const std::string & CrossRoutingContextReader::GetOutgoingMwmName(
     OutgoingCrossNode const & outgoingNode) const
 {
   ASSERT(outgoingNode.m_outgoingIndex < m_neighborMwmList.size(),
@@ -143,7 +143,7 @@ void CrossRoutingContextWriter::Save(Writer & w) const
 
   size = static_cast<uint32_t>(m_neighborMwmList.size());
   w.Write(&size, sizeof(size));
-  for (string const & neighbor : m_neighborMwmList)
+  for (std::string const & neighbor : m_neighborMwmList)
   {
     size = static_cast<uint32_t>(neighbor.size());
     w.Write(&size, sizeof(size));
@@ -157,7 +157,7 @@ void CrossRoutingContextWriter::AddIngoingNode(TWrittenNodeId const nodeId, ms::
   m_ingoingNodes.emplace_back(nodeId, point, adjIndex);
 }
 
-void CrossRoutingContextWriter::AddOutgoingNode(TWrittenNodeId const nodeId, string const & targetMwm,
+void CrossRoutingContextWriter::AddOutgoingNode(TWrittenNodeId const nodeId, std::string const & targetMwm,
                                                 ms::LatLon const & point)
 {
   size_t const adjIndex = m_outgoingNodes.size();
@@ -182,15 +182,15 @@ void CrossRoutingContextWriter::SetAdjacencyCost(IngoingEdgeIteratorT ingoing,
   m_adjacencyMatrix[index] = value;
 }
 
-pair<IngoingEdgeIteratorT, IngoingEdgeIteratorT> CrossRoutingContextWriter::GetIngoingIterators()
+std::pair<IngoingEdgeIteratorT, IngoingEdgeIteratorT> CrossRoutingContextWriter::GetIngoingIterators()
     const
 {
-  return make_pair(m_ingoingNodes.cbegin(), m_ingoingNodes.cend());
+  return std::make_pair(m_ingoingNodes.cbegin(), m_ingoingNodes.cend());
 }
 
-pair<OutgoingEdgeIteratorT, OutgoingEdgeIteratorT> CrossRoutingContextWriter::GetOutgoingIterators()
+std::pair<OutgoingEdgeIteratorT, OutgoingEdgeIteratorT> CrossRoutingContextWriter::GetOutgoingIterators()
     const
 {
-  return make_pair(m_outgoingNodes.cbegin(), m_outgoingNodes.cend());
+  return std::make_pair(m_outgoingNodes.cbegin(), m_outgoingNodes.cend());
 }
 }

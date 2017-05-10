@@ -8,9 +8,9 @@
 
 #include "base/buffer_vector.hpp"
 
-#include "std/array.hpp"
-#include "std/vector.hpp"
-#include "std/unordered_set.hpp"
+#include <array>
+#include <vector>
+#include <unordered_set>
 
 namespace dp
 {
@@ -47,7 +47,7 @@ class OverlayTree : public m4::Tree<ref_ptr<OverlayHandle>, detail::OverlayTrait
   using TBase = m4::Tree<ref_ptr<OverlayHandle>, detail::OverlayTraits>;
 
 public:
-  using HandlesCache = unordered_set<ref_ptr<OverlayHandle>, detail::OverlayHasher>;
+  using HandlesCache = std::unordered_set<ref_ptr<OverlayHandle>, detail::OverlayHasher>;
 
   OverlayTree();
 
@@ -81,7 +81,7 @@ public:
       : m_arrowStart(arrowStart), m_arrowEnd(arrowEnd), m_arrowColor(arrowColor)
     {}
   };
-  using TDisplacementInfo = vector<DisplacementData>;
+  using TDisplacementInfo = std::vector<DisplacementData>;
   TDisplacementInfo const & GetDisplacementInfo() const;
 #endif
 
@@ -97,7 +97,7 @@ private:
   void DeleteHandleWithParents(ref_ptr<OverlayHandle> handle, int currentRank);
 
   int m_frameCounter;
-  array<vector<ref_ptr<OverlayHandle>>, dp::OverlayRanksCount> m_handles;
+  std::array<std::vector<ref_ptr<OverlayHandle>>, dp::OverlayRanksCount> m_handles;
   HandlesCache m_handlesCache;
   bool m_followingMode;
 

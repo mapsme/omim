@@ -35,7 +35,7 @@ void ProcessMetadata(FeatureType const & ft, Result::Metadata & meta)
 
   meta.m_cuisine = src.Get(feature::Metadata::FMD_CUISINE);
 
-  string const openHours = src.Get(feature::Metadata::FMD_OPEN_HOURS);
+  std::string const openHours = src.Get(feature::Metadata::FMD_OPEN_HOURS);
   if (!openHours.empty())
   {
     osmoh::OpeningHours const oh(openHours);
@@ -63,7 +63,7 @@ void ProcessMetadata(FeatureType const & ft, Result::Metadata & meta)
 
     int pricing;
     strings::to_int(src.Get(feature::Metadata::FMD_PRICE_RATE), pricing);
-    string pricingStr;
+    std::string pricingStr;
     CHECK_GREATER_OR_EQUAL(pricing, 0, ("Pricing must be positive!"));
     for (auto i = 0; i < pricing; i++)
       pricingStr.append(kPricingSymbol);
@@ -96,7 +96,7 @@ bool PreResult1::LessDistance(PreResult1 const & r1, PreResult1 const & r2)
 }
 
 PreResult2::PreResult2(FeatureType const & f, m2::PointD const & center, m2::PointD const & pivot,
-                       string const & displayName, string const & fileName)
+                       std::string const & displayName, std::string const & fileName)
   : m_id(f.GetID())
   , m_types(f)
   , m_str(displayName)
@@ -117,7 +117,7 @@ PreResult2::PreResult2(FeatureType const & f, m2::PointD const & center, m2::Poi
 PreResult2::PreResult2(double lat, double lon)
   : m_str("(" + measurement_utils::FormatLatLon(lat, lon) + ")"), m_resultType(RESULT_LATLON)
 {
-  m_region.SetParams(string(), MercatorBounds::FromLatLon(lat, lon));
+  m_region.SetParams(std::string(), MercatorBounds::FromLatLon(lat, lon));
 }
 
 namespace
@@ -138,7 +138,7 @@ namespace
 
       Classificator const & c = classif();
       for (size_t i = 0; i < m_count; ++i)
-        m_types[i] = c.GetTypeByPath(vector<string>(arr[i], arr[i] + 2));
+        m_types[i] = c.GetTypeByPath(vector<std::string>(arr[i], arr[i] + 2));
     }
 
     bool IsSkip(uint32_t type) const
@@ -153,12 +153,12 @@ namespace
   };
 }
 
-string PreResult2::GetRegionName(storage::CountryInfoGetter const & infoGetter,
+std::string PreResult2::GetRegionName(storage::CountryInfoGetter const & infoGetter,
                                  uint32_t fType) const
 {
   static SkipRegionInfo const checker;
   if (checker.IsSkip(fType))
-    return string();
+    return std::string();
 
   storage::CountryInfo info;
   m_region.GetRegion(infoGetter, info);
@@ -168,14 +168,14 @@ string PreResult2::GetRegionName(storage::CountryInfoGetter const & infoGetter,
 namespace
 {
 // TODO: Format street and house number according to local country's rules.
-string FormatStreetAndHouse(ReverseGeocoder::Address const & addr)
+std::string FormatStreetAndHouse(ReverseGeocoder::Address const & addr)
 {
   ASSERT_GREATER_OR_EQUAL(addr.GetDistance(), 0, ());
   return addr.GetStreetName() + ", " + addr.GetHouseNumber();
 }
 
 // TODO: Share common formatting code for search results and place page.
-string FormatFullAddress(ReverseGeocoder::Address const & addr, string const & region)
+std::string FormatFullAddress(ReverseGeocoder::Address const & addr, std::string const & region)
 {
   // TODO: Print "near" for not exact addresses.
   if (addr.GetDistance() != 0)
@@ -187,13 +187,13 @@ string FormatFullAddress(ReverseGeocoder::Address const & addr, string const & r
 
 Result PreResult2::GenerateFinalResult(storage::CountryInfoGetter const & infoGetter,
                                        CategoriesHolder const * pCat,
-                                       set<uint32_t> const * pTypes, int8_t locale,
+                                       std::set<uint32_t> const * pTypes, int8_t locale,
                                        ReverseGeocoder const * coder) const
 {
   ReverseGeocoder::Address addr;
   bool addrComputed = false;
 
-  string name = m_str;
+  std::string name = m_str;
   if (coder && name.empty())
   {
     // Insert exact address (street and house number) instead of empty result name.
@@ -209,7 +209,7 @@ Result PreResult2::GenerateFinalResult(storage::CountryInfoGetter const & infoGe
   uint32_t const type = GetBestType(pTypes);
 
   // Format full address only for suitable results.
-  string address;
+  std::string address;
   if (coder)
   {
     address = GetRegionName(infoGetter, type);
@@ -287,7 +287,7 @@ bool PreResult2::IsStreet() const
   return m_geomType == feature::GEOM_LINE && ftypes::IsStreetChecker::Instance()(m_types);
 }
 
-string PreResult2::DebugPrint() const
+std::string PreResult2::DebugPrint() const
 {
   stringstream ss;
   ss << "{ IntermediateResult: " <<
@@ -298,7 +298,7 @@ string PreResult2::DebugPrint() const
   return ss.str();
 }
 
-uint32_t PreResult2::GetBestType(set<uint32_t> const * pPrefferedTypes) const
+uint32_t PreResult2::GetBestType(std::set<uint32_t> const * pPrefferedTypes) const
 {
   if (pPrefferedTypes)
   {

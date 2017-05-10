@@ -13,13 +13,13 @@ UNIT_TEST(LocalAdsHelpers_Read_Write_Country_Name)
 {
   platform::tests_support::ScopedFile testFile("la_tests.dat");
 
-  string const countryName = "Russia_Moscow";
+  std::string const countryName = "Russia_Moscow";
   {
     FileWriter writer(testFile.GetFullPath());
     WriteCountryName(writer, countryName);
   }
 
-  string result;
+  std::string result;
   {
     FileReader reader(testFile.GetFullPath());
     ReaderSource<FileReader> src(reader);

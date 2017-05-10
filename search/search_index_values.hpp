@@ -10,9 +10,9 @@
 #include "base/assert.hpp"
 #include "base/logging.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/unique_ptr.hpp"
-#include "std/utility.hpp"
+#include <algorithm>
+#include <memory>
+#include <utility>
 
 /// Following classes are supposed to be used with StringsFile. They
 /// allow to write/read them, compare or serialize to an in-memory
@@ -32,7 +32,7 @@ struct FeatureIndexValue
 
   bool operator==(FeatureIndexValue const & o) const { return m_featureId == o.m_featureId; }
 
-  void Swap(FeatureIndexValue & o) { swap(m_featureId, o.m_featureId); }
+  void Swap(FeatureIndexValue & o) { std::swap(m_featureId, o.m_featureId); }
 
   uint64_t m_featureId;
 };
@@ -52,9 +52,9 @@ struct FeatureWithRankAndCenter
 
   void Swap(FeatureWithRankAndCenter & o)
   {
-    swap(m_pt, o.m_pt);
-    swap(m_featureId, o.m_featureId);
-    swap(m_rank, o.m_rank);
+    std::swap(m_pt, o.m_pt);
+    std::swap(m_featureId, o.m_featureId);
+    std::swap(m_rank, o.m_rank);
   }
 
   m2::PointD m_pt;       // Center point of the feature.
@@ -159,7 +159,7 @@ public:
     vector<uint64_t> ids(values.size());
     for (size_t i = 0; i < ids.size(); ++i)
       ids[i] = values[i].m_featureId;
-    m_cbv = coding::CompressedBitVectorBuilder::FromBitPositions(move(ids));
+    m_cbv = coding::CompressedBitVectorBuilder::FromBitPositions(std::move(ids));
   }
 
   // This method returns number of values in the current instance of
@@ -222,7 +222,7 @@ public:
   }
 
 private:
-  unique_ptr<coding::CompressedBitVector> m_cbv;
+  std::unique_ptr<coding::CompressedBitVector> m_cbv;
 };
 
 /// ValueList<FeatureWithRankAndCenter> sequentially serializes

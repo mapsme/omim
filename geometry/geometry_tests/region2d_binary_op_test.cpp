@@ -23,7 +23,7 @@ UNIT_TEST(RegionIntersect_Smoke)
     r1.Assign(arr1, arr1 + ARRAY_SIZE(arr1));
     r2.Assign(arr2, arr2 + ARRAY_SIZE(arr2));
 
-    vector<R> res;
+    std::vector<R> res;
     m2::IntersectRegions(r1, r2, res);
 
     TEST_EQUAL(res.size(), 1, ());
@@ -38,7 +38,7 @@ UNIT_TEST(RegionIntersect_Smoke)
     r1.Assign(arr1, arr1 + ARRAY_SIZE(arr1));
     r2.Assign(arr2, arr2 + ARRAY_SIZE(arr2));
 
-    vector<R> res;
+    std::vector<R> res;
     m2::IntersectRegions(r1, r2, res);
 
     TEST_EQUAL(res.size(), 0, ());
@@ -52,7 +52,7 @@ UNIT_TEST(RegionIntersect_Smoke)
     r1.Assign(arr1, arr1 + ARRAY_SIZE(arr1));
     r2.Assign(arr2, arr2 + ARRAY_SIZE(arr2));
 
-    vector<R> res;
+    std::vector<R> res;
     res.push_back(r1);  // do some smoke
     m2::IntersectRegions(r1, r2, res);
 
@@ -71,7 +71,7 @@ UNIT_TEST(RegionDifference_Smoke)
     r1.Assign(arr1, arr1 + ARRAY_SIZE(arr1));
     r2.Assign(arr2, arr2 + ARRAY_SIZE(arr2));
 
-    vector<R> res;
+    std::vector<R> res;
     m2::DiffRegions(r1, r2, res);
     TEST_EQUAL(res.size(), 0, ());
 
@@ -89,7 +89,7 @@ UNIT_TEST(RegionDifference_Smoke)
     r1.Assign(arr1, arr1 + ARRAY_SIZE(arr1));
     r2.Assign(arr2, arr2 + ARRAY_SIZE(arr2));
 
-    vector<R> res;
+    std::vector<R> res;
     m2::DiffRegions(r1, r2, res);
 
     TEST_EQUAL(res.size(), 1, ());

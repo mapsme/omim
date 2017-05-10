@@ -6,14 +6,14 @@
 
 #include "base/macros.hpp"
 
-#include "std/initializer_list.hpp"
-#include "std/unordered_map.hpp"
+#include <initializer_list>
+#include <unordered_map>
 
 using platform::CountryFile;
 using platform::LocalCountryFile;
 using tests::TestMwmSet;
 
-using TMwmsInfo = unordered_map<string, shared_ptr<MwmInfo>>;
+using TMwmsInfo = std::unordered_map<std::string, shared_ptr<MwmInfo>>;
 
 namespace
 {
@@ -27,10 +27,10 @@ void GetMwmsInfo(MwmSet const & mwmSet, TMwmsInfo & mwmsInfo)
     mwmsInfo[info->GetCountryName()] = info;
 }
 
-void TestFilesPresence(TMwmsInfo const & mwmsInfo, initializer_list<string> const & expectedNames)
+void TestFilesPresence(TMwmsInfo const & mwmsInfo, std::initializer_list<std::string> const & expectedNames)
 {
   TEST_EQUAL(expectedNames.size(), mwmsInfo.size(), ());
-  for (string const & countryFileName : expectedNames)
+  for (std::string const & countryFileName : expectedNames)
     TEST_EQUAL(1, mwmsInfo.count(countryFileName), (countryFileName));
 }
 }  // namespace

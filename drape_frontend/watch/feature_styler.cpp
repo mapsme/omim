@@ -15,7 +15,7 @@
 #include "base/stl_add.hpp"
 #include "base/logging.hpp"
 
-#include "std/iterator_facade.hpp"
+#include <boost/iterator/iterator_facade.hpp>
 
 namespace
 {
@@ -91,7 +91,7 @@ FeatureStyler::FeatureStyler(FeatureType const & f,
   //    m_primaryText.clear();
   //}
 
-  string houseNumber;
+  std::string houseNumber;
   if (ftypes::IsBuildingChecker::Instance()(f))
   {
     houseNumber = f.GetHouseNumber();
@@ -223,7 +223,7 @@ FeatureStyler::FeatureStyler(FeatureType const & f,
   // Get or concat house number if feature has one.
   if (!houseNumber.empty())
   {
-    if (m_primaryText.empty() || houseNumber.find(m_primaryText) != string::npos)
+    if (m_primaryText.empty() || houseNumber.find(m_primaryText) != std::string::npos)
       houseNumber.swap(m_primaryText);
     else
       m_primaryText = m_primaryText + " (" + houseNumber + ")";
@@ -268,7 +268,7 @@ FeatureStyler::FeatureStyler(FeatureType const & f,
 
 typedef pair<double, double> RangeT;
 template <class IterT> class RangeIterT :
-    public iterator_facade<RangeIterT<IterT>, RangeT, forward_traversal_tag, RangeT>
+    public boost::iterator_facade<RangeIterT<IterT>, RangeT, boost::forward_traversal_tag, RangeT>
 {
   IterT m_iter;
 public:
@@ -377,7 +377,7 @@ void FeatureStyler::LayoutTexts(double pathLength)
   }
 }
 
-string const FeatureStyler::GetPathName() const
+std::string const FeatureStyler::GetPathName() const
 {
   // Always concat names for linear features because we process only one draw rule now.
   if (m_secondaryText.empty())

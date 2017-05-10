@@ -6,8 +6,8 @@
 #include "base/stl_add.hpp"
 #include "base/logging.hpp"
 
-#include "std/sstream.hpp"
-#include "std/vector.hpp"
+#include <sstream>
+#include <vector>
 
 #include "3party/kdtree++/kdtree.hpp"
 
@@ -62,9 +62,9 @@ namespace m4
         return (m_val == r.m_val);
       }
 
-      string DebugPrint() const
+      std::string DebugPrint() const
       {
-        ostringstream out;
+        std::ostringstream out;
 
         out << DebugPrint(m_val) << ", ("
             << m_pts[0] << ", "
@@ -159,7 +159,7 @@ namespace m4
     void ReplaceImpl(T const & obj, m2::RectD const & rect, CompareT comp)
     {
       bool skip = false;
-      vector<ValueT const *> isect;
+      std::vector<ValueT const *> isect;
 
       m_tree.for_each(GetFunctor(rect, [&] (ValueT const & v)
       {
@@ -260,9 +260,9 @@ namespace m4
 
     void Clear() { m_tree.clear(); }
 
-    string DebugPrint() const
+    std::string DebugPrint() const
     {
-      ostringstream out;
+      std::ostringstream out;
       for (ValueT const & v : m_tree.begin())
         out << v.DebugPrint() << ", ";
       return out.str();
@@ -270,7 +270,7 @@ namespace m4
   };
 
   template <typename T, typename Traits>
-  string DebugPrint(Tree<T, Traits> const & t)
+  std::string DebugPrint(Tree<T, Traits> const & t)
   {
     return t.DebugPrint();
   }

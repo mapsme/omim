@@ -2,12 +2,12 @@
 
 #include "indexer/search_delimiters.hpp"
 
-#include "std/utility.hpp"
+#include <utility>
 
 namespace search
 {
 template <typename LowTokensIterType, typename F>
-void SearchStringTokensIntersectionRanges(string const & s, LowTokensIterType itLowBeg,
+void SearchStringTokensIntersectionRanges(std::string const & s, LowTokensIterType itLowBeg,
                                           LowTokensIterType itLowEnd, F f)
 {
   // split input query by tokens and prefix
@@ -31,7 +31,7 @@ void SearchStringTokensIntersectionRanges(string const & s, LowTokensIterType it
     strings::UniString subStr;
     subStr.assign(str.begin() + beg, str.begin() + pos);
     size_t maxCount = 0;
-    pair<uint16_t, uint16_t> result(0, 0);
+    std::pair<uint16_t, uint16_t> result(0, 0);
 
     for (LowTokensIterType itLow = itLowBeg; itLow != itLowEnd; ++itLow)
     {

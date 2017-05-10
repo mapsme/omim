@@ -2,9 +2,9 @@
 
 #include "drape/pointers.hpp"
 
-#include "std/function.hpp"
-#include "std/limits.hpp"
-#include "std/vector.hpp"
+#include <functional>
+#include <limits>
+#include <vector>
 
 class ScreenBase;
 
@@ -55,9 +55,9 @@ public:
   int GetMinZoom() const { return m_featuresMinZoom; }
 
 private:
-  int m_featuresMinZoom = numeric_limits<int>::max();
+  int m_featuresMinZoom = std::numeric_limits<int>::max();
 
-  vector<drape_ptr<OverlayHandle> > m_overlay;
+  std::vector<drape_ptr<OverlayHandle> > m_overlay;
   drape_ptr<VertexArrayBuffer> m_buffer;
 };
 

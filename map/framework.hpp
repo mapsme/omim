@@ -56,14 +56,14 @@
 
 #include "base/deferred_task.hpp"
 #include "base/macros.hpp"
+#include "base/stl_add.hpp"
 #include "base/strings_bundle.hpp"
 #include "base/thread_checker.hpp"
 
-#include "std/list.hpp"
+#include <list>
 #include "std/target_os.hpp"
-#include "std/unique_ptr.hpp"
-#include "std/vector.hpp"
-#include "std/weak_ptr.hpp"
+#include <memory>
+#include <vector>
 
 namespace osm
 {
@@ -145,14 +145,14 @@ protected:
 
   // The order matters here: DisplayedCategories may be used only
   // after classificator is loaded by |m_model|.
-  unique_ptr<search::DisplayedCategories> m_displayedCategories;
+  std::unique_ptr<search::DisplayedCategories> m_displayedCategories;
 
   // The order matters here: storage::CountryInfoGetter and
   // m_model::FeaturesFetcher must be initialized before
   // search::Engine and, therefore, destroyed after search::Engine.
-  unique_ptr<storage::CountryInfoGetter> m_infoGetter;
+  std::unique_ptr<storage::CountryInfoGetter> m_infoGetter;
 
-  unique_ptr<search::Engine> m_searchEngine;
+  std::unique_ptr<search::Engine> m_searchEngine;
 
   search::QuerySaver m_searchQuerySaver;
 
@@ -177,8 +177,8 @@ protected:
 
   BookmarkManager m_bmManager;
 
-  unique_ptr<booking::Api> m_bookingApi = make_unique<booking::Api>();
-  unique_ptr<uber::Api> m_uberApi = make_unique<uber::Api>();
+  std::unique_ptr<booking::Api> m_bookingApi = my::make_unique<booking::Api>();
+  std::unique_ptr<uber::Api> m_uberApi = my::make_unique<uber::Api>();
 
   df::DrapeApi m_drapeApi;
 
@@ -268,7 +268,7 @@ public:
   /// Checks, whether the country which contains the specified point is loaded.
   bool IsCountryLoaded(m2::PointD const & pt) const;
   /// Checks, whether the country is loaded.
-  bool IsCountryLoadedByName(string const & name) const;
+  bool IsCountryLoadedByName(std::string const & name) const;
   //@}
 
   void InvalidateRect(m2::RectD const & rect);
@@ -277,7 +277,7 @@ public:
   //@{
   storage::TCountryId GetCountryIndex(m2::PointD const & pt) const;
 
-  string GetCountryName(m2::PointD const & pt) const;
+  std::string GetCountryName(m2::PointD const & pt) const;
   //@}
 
   enum class DoAfterUpdate
@@ -315,14 +315,14 @@ public:
   size_t MoveBookmark(size_t bmIndex, size_t curCatIndex, size_t newCatIndex);
   void ReplaceBookmark(size_t catIndex, size_t bmIndex, BookmarkData const & bm);
   /// @return Created bookmark category index.
-  size_t AddCategory(string const & categoryName);
+  size_t AddCategory(std::string const & categoryName);
 
   inline size_t GetBmCategoriesCount() const { return m_bmManager.GetBmCategoriesCount(); }
   /// @returns 0 if category is not found
   BookmarkCategory * GetBmCategory(size_t index) const;
 
   size_t LastEditedBMCategory() { return m_bmManager.LastEditedBMCategory(); }
-  string LastEditedBMType() const { return m_bmManager.LastEditedBMType(); }
+  std::string LastEditedBMType() const { return m_bmManager.LastEditedBMType(); }
 
   /// Delete bookmarks category with all bookmarks.
   /// @return true if category was deleted
@@ -333,7 +333,7 @@ public:
 
   void ClearBookmarks();
 
-  bool AddBookmarksFile(string const & filePath);
+  bool AddBookmarksFile(std::string const & filePath);
 
   BookmarkAndCategory FindBookmark(UserMark const * mark) const;
   BookmarkManager & GetBookmarkManager() { return m_bmManager; }
@@ -399,7 +399,7 @@ public:
   /// Guarantees that listener is called in the main thread context.
   void SetCurrentCountryChangedListener(TCurrentCountryChanged const & listener);
 
-  vector<MwmSet::MwmId> GetMwmsByRect(m2::RectD const & rect, bool rough) const;
+  std::vector<MwmSet::MwmId> GetMwmsByRect(m2::RectD const & rect, bool rough) const;
   MwmSet::MwmId GetMwmIdByName(std::string const & name) const;
 
 private:
@@ -418,14 +418,14 @@ private:
     Source const m_source;
   };
 
-  unique_ptr<TapEvent> m_lastTapEvent;
+  std::unique_ptr<TapEvent> m_lastTapEvent;
   bool m_isViewportInitialized = false;
 
   void OnTapEvent(TapEvent const & tapEvent);
   /// outInfo is valid only if return value is not df::SelectionShape::OBJECT_EMPTY.
   df::SelectionShape::ESelectedObject OnTapEventImpl(TapEvent const & tapEvent,
                                                      place_page::Info & outInfo) const;
-  unique_ptr<TapEvent> MakeTapEvent(m2::PointD const & center, FeatureID const & fid,
+  std::unique_ptr<TapEvent> MakeTapEvent(m2::PointD const & center, FeatureID const & fid,
                                     TapEvent::Source source) const;
   FeatureID FindBuildingAtPoint(m2::PointD const & mercator) const;
   void UpdateMinBuildingsTapZoom();
@@ -438,10 +438,10 @@ private:
   /// Here we store last selected feature to get its polygons in case of adding organization.
   mutable FeatureID m_selectedFeature;
 
-  vector<m2::PointF> m_searchMarksSizes;
+  std::vector<m2::PointF> m_searchMarksSizes;
 
 private:
-  vector<m2::TriangleD> GetSelectedFeatureTriangles() const;
+  std::vector<m2::TriangleD> GetSelectedFeatureTriangles() const;
 
 public:
 
@@ -511,7 +511,7 @@ private:
   struct SearchIntent
   {
     search::SearchParams m_params;
-    weak_ptr<search::ProcessorHandle> m_handle;
+    std::weak_ptr<search::ProcessorHandle> m_handle;
     m2::RectD m_viewport;
     bool m_isDelayed = false;
   };
@@ -543,7 +543,7 @@ private:
   bool QueryMayBeSkipped(SearchIntent const & intent, search::SearchParams const & params,
                          m2::RectD const & viewport) const;
 
-  void OnUpdateGpsTrackPointsCallback(vector<pair<size_t, location::GpsTrackInfo>> && toAdd,
+  void OnUpdateGpsTrackPointsCallback(std::vector<pair<size_t, location::GpsTrackInfo>> && toAdd,
                                       pair<size_t, size_t> const & toRemove);
 
 public:
@@ -578,7 +578,7 @@ public:
   void FillSearchResultsMarks(search::Results::ConstIter begin, search::Results::ConstIter end);
   void ClearSearchResultsMarks();
 
-  list<TSearchRequest> const & GetLastSearchQueries() const { return m_searchQuerySaver.Get(); }
+  std::list<TSearchRequest> const & GetLastSearchQueries() const { return m_searchQuerySaver.Get(); }
   void SaveSearchQuery(TSearchRequest const & query) { m_searchQuerySaver.Add(query); }
   void ClearSearchHistory() { m_searchQuerySaver.Clear(); }
 
@@ -590,7 +590,7 @@ public:
   /// @return true  If the POI is near the current position (distance < 25 km);
   bool GetDistanceAndAzimut(m2::PointD const & point,
                             double lat, double lon, double north,
-                            string & distance, double & azimut);
+                            std::string & distance, double & azimut);
 
   /// @name Manipulating with model view
   //@{
@@ -641,16 +641,16 @@ public:
   int GetDrawScale() const;
 
   /// Set correct viewport, parse API, show balloon.
-  bool ShowMapForURL(string const & url);
-  url_scheme::ParsedMapApi::ParsingResult ParseAndSetApiURL(string const & url);
+  bool ShowMapForURL(std::string const & url);
+  url_scheme::ParsedMapApi::ParsingResult ParseAndSetApiURL(std::string const & url);
 
   struct ParsedRoutingData
   {
-    ParsedRoutingData(vector<url_scheme::RoutePoint> const & points, routing::RouterType type)
+    ParsedRoutingData(std::vector<url_scheme::RoutePoint> const & points, routing::RouterType type)
       : m_points(points), m_type(type)
     {
     }
-    vector<url_scheme::RoutePoint> m_points;
+    std::vector<url_scheme::RoutePoint> m_points;
     routing::RouterType m_type;
   };
 
@@ -667,7 +667,7 @@ private:
 
   void FillFeatureInfo(FeatureID const & fid, place_page::Info & info) const;
   /// @param customTitle, if not empty, overrides any other calculated name.
-  void FillPointInfo(m2::PointD const & mercator, string const & customTitle, place_page::Info & info) const;
+  void FillPointInfo(m2::PointD const & mercator, std::string const & customTitle, place_page::Info & info) const;
   void FillInfoFromFeatureType(FeatureType const & ft, place_page::Info & info) const;
   void FillApiMarkInfo(ApiMarkPoint const & api, place_page::Info & info) const;
   void FillSearchResultInfo(SearchMarkPoint const & smp, place_page::Info & info) const;
@@ -686,11 +686,11 @@ public:
   search::AddressInfo GetFeatureAddressInfo(FeatureID const & fid) const;
   //@}
 
-  vector<string> GetPrintableFeatureTypes(FeatureType const & ft) const;
+  std::vector<std::string> GetPrintableFeatureTypes(FeatureType const & ft) const;
   /// Get "best for the user" feature at given point even if it's invisible on the screen.
   /// Ignores coastlines and prefers buildings over other area features.
   /// @returns nullptr if no feature was found at the given mercator point.
-  unique_ptr<FeatureType> GetFeatureAtPoint(m2::PointD const & mercator) const;
+  std::unique_ptr<FeatureType> GetFeatureAtPoint(m2::PointD const & mercator) const;
   template <typename TFn>
   void ForEachFeatureAtPoint(TFn && fn, m2::PointD const & mercator) const
   {
@@ -706,7 +706,7 @@ public:
   void EnterForeground();
 
   /// Set the localized strings bundle
-  inline void AddString(string const & name, string const & value)
+  inline void AddString(std::string const & name, std::string const & value)
   {
     m_stringsBundle.SetString(name, value);
   }
@@ -719,12 +719,12 @@ public:
                               double bearing, double speed, double elapsedSeconds);
 
 public:
-  string CodeGe0url(Bookmark const * bmk, bool addName);
-  string CodeGe0url(double lat, double lon, double zoomLevel, string const & name);
+  std::string CodeGe0url(Bookmark const * bmk, bool addName);
+  std::string CodeGe0url(double lat, double lon, double zoomLevel, std::string const & name);
 
   /// @name Api
   //@{
-  string GenerateApiBackUrl(ApiMarkPoint const & point) const;
+  std::string GenerateApiBackUrl(ApiMarkPoint const & point) const;
   url_scheme::ParsedMapApi const & GetApiDataHolder() const { return m_ParsedMapApi; }
 
 private:
@@ -788,12 +788,12 @@ public:
   /// \brief Sets a locale for TTS.
   /// \param locale is a string with locale code. For example "en", "ru", "zh-Hant" and so on.
   /// \note See sound/tts/languages.txt for the full list of available locales.
-  inline void SetTurnNotificationsLocale(string const & locale) { m_routingSession.SetTurnNotificationsLocale(locale); }
+  inline void SetTurnNotificationsLocale(std::string const & locale) { m_routingSession.SetTurnNotificationsLocale(locale); }
   /// @return current TTS locale. For example "en", "ru", "zh-Hant" and so on.
   /// In case of error returns an empty string.
   /// \note The method returns correct locale after SetTurnNotificationsLocale has been called.
   /// If not, it returns an empty string.
-  inline string GetTurnNotificationsLocale() const { return m_routingSession.GetTurnNotificationsLocale(); }
+  inline std::string GetTurnNotificationsLocale() const { return m_routingSession.GetTurnNotificationsLocale(); }
   /// \brief When an end user is going to a turn he gets sound turn instructions.
   /// If C++ part wants the client to pronounce an instruction GenerateTurnNotifications (in
   /// turnNotifications) returns
@@ -802,7 +802,7 @@ public:
   /// For example if C++ part wants the client to pronounce "Make a right turn." this method returns
   /// an array with one string "Make a right turn.". The next call of the method returns nothing.
   /// GenerateTurnNotifications shall be called by the client when a new position is available.
-  inline void GenerateTurnNotifications(vector<string> & turnNotifications)
+  inline void GenerateTurnNotifications(std::vector<std::string> & turnNotifications)
   {
     if (m_currentRouterType == routing::RouterType::Taxi)
       return;
@@ -851,7 +851,7 @@ public:
   /// \note If HasRouteAltitude() method returns true, GenerateRouteAltitudeChart(...)
   /// could return false if route was deleted or rebuilt between the calls.
   bool GenerateRouteAltitudeChart(uint32_t width, uint32_t height,
-                                  vector<uint8_t> & imageRGBAData,
+                                  std::vector<uint8_t> & imageRGBAData,
                                   int32_t & minRouteAltitude, int32_t & maxRouteAltitude,
                                   measurement_utils::Units & altitudeUnits) const;
 
@@ -870,7 +870,7 @@ public:
   osm::NewFeatureCategories GetEditorCategories() const;
   bool RollBackChanges(FeatureID const & fid);
   void CreateNote(ms::LatLon const & latLon, FeatureID const & fid,
-                  osm::Editor::NoteProblemType const type, string const & note);
+                  osm::Editor::NoteProblemType const type, std::string const & note);
 
   //@}
 
@@ -883,7 +883,7 @@ private:
   void CallRouteBuilded(routing::IRouter::ResultCode code,
                         storage::TCountriesVec const & absentCountries);
   void MatchLocationToRoute(location::GpsInfo & info, location::RouteMatchingInfo & routeMatchingInfo) const;
-  string GetRoutingErrorMessage(routing::IRouter::ResultCode code);
+  std::string GetRoutingErrorMessage(routing::IRouter::ResultCode code);
   void OnBuildRouteReady(routing::Route const & route, routing::IRouter::ResultCode code);
   void OnRebuildRouteReady(routing::Route const & route, routing::IRouter::ResultCode code);
 
@@ -895,19 +895,19 @@ public:
   //@{
   // User statistics.
 
-  editor::UserStats GetUserStats(string const & userName) const
+  editor::UserStats GetUserStats(std::string const & userName) const
   {
     return m_userStatsLoader.GetStats(userName);
   }
 
   // Reads user stats from server or gets it from cache calls |fn| on success.
-  void UpdateUserStats(string const & userName, editor::UserStatsLoader::UpdatePolicy policy,
+  void UpdateUserStats(std::string const & userName, editor::UserStatsLoader::UpdatePolicy policy,
                        editor::UserStatsLoader::TOnUpdateCallback fn)
   {
     m_userStatsLoader.Update(userName, policy, fn);
   }
 
-  void DropUserStats(string const & userName) { m_userStatsLoader.DropStats(userName); }
+  void DropUserStats(std::string const & userName) { m_userStatsLoader.DropStats(userName); }
 
 private:
   editor::UserStatsLoader m_userStatsLoader;
@@ -918,7 +918,7 @@ public:
 
 private:
   std::unique_ptr<CityFinder> m_cityFinder;
-  unique_ptr<ads::Engine> m_adsEngine;
+  std::unique_ptr<ads::Engine> m_adsEngine;
 
   DECLARE_THREAD_CHECKER(m_threadChecker);
 };

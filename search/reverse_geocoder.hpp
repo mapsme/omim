@@ -6,9 +6,9 @@
 
 #include "base/string_utils.hpp"
 
-#include "std/string.hpp"
-#include "std/utility.hpp"
-#include "std/vector.hpp"
+#include <string>
+#include <utility>
+#include <vector>
 
 
 class FeatureType;
@@ -25,10 +25,10 @@ class ReverseGeocoder
   {
     FeatureID m_id;
     double m_distanceMeters;
-    string m_name;
+    std::string m_name;
 
     Object() : m_distanceMeters(-1.0) {}
-    Object(FeatureID const & id, double dist, string const & name)
+    Object(FeatureID const & id, double dist, std::string const & name)
       : m_id(id), m_distanceMeters(dist), m_name(name)
     {
     }
@@ -36,7 +36,7 @@ class ReverseGeocoder
     inline bool IsValid() const { return m_id.IsValid(); }
   };
 
-  friend string DebugPrint(Object const & obj);
+  friend std::string DebugPrint(Object const & obj);
 
 public:
   /// All "Nearby" functions work in this lookup radius.
@@ -54,38 +54,38 @@ public:
     // There are no houses in (0, 0) coordinates.
     Building() : m_center(0, 0) {}
 
-    Building(FeatureID const & id, double dist, string const & number, m2::PointD const & center)
+    Building(FeatureID const & id, double dist, std::string const & number, m2::PointD const & center)
       : Object(id, dist, number), m_center(center)
     {
     }
   };
 
   static size_t GetMatchedStreetIndex(strings::UniString const & keyName,
-                                      vector<Street> const & streets);
+                                      std::vector<Street> const & streets);
 
   struct Address
   {
     Building m_building;
     Street m_street;
 
-    string const & GetHouseNumber() const { return m_building.m_name; }
-    string const & GetStreetName() const { return m_street.m_name; }
+    std::string const & GetHouseNumber() const { return m_building.m_name; }
+    std::string const & GetStreetName() const { return m_street.m_name; }
     double GetDistance() const { return m_building.m_distanceMeters; }
   };
 
-  friend string DebugPrint(Address const & addr);
+  friend std::string DebugPrint(Address const & addr);
 
   /// @return Sorted by distance streets vector for the specified MwmId.
   //@{
   void GetNearbyStreets(MwmSet::MwmId const & id, m2::PointD const & center,
-                        vector<Street> & streets) const;
-  void GetNearbyStreets(FeatureType & ft, vector<Street> & streets) const;
+                        std::vector<Street> & streets) const;
+  void GetNearbyStreets(FeatureType & ft, std::vector<Street> & streets) const;
   //@}
 
   /// @returns [a lot of] nearby feature's streets and an index of a feature's street.
   /// Returns a value greater than vector size when there are no Street the feature belongs to.
   /// @note returned vector can contain duplicated street segments.
-  pair<vector<Street>, uint32_t> GetNearbyFeatureStreets(FeatureType & ft) const;
+  std::pair<std::vector<Street>, uint32_t> GetNearbyFeatureStreets(FeatureType & ft) const;
 
   /// @return The nearest exact address where building has house number and valid street match.
   void GetNearbyAddress(m2::PointD const & center, Address & addr) const;
@@ -109,7 +109,7 @@ private:
   bool GetNearbyAddress(HouseTable & table, Building const & bld, Address & addr) const;
 
   /// @return Sorted by distance houses vector with valid house number.
-  void GetNearbyBuildings(m2::PointD const & center, vector<Building> & buildings) const;
+  void GetNearbyBuildings(m2::PointD const & center, std::vector<Building> & buildings) const;
 
   static Building FromFeature(FeatureType const & ft, double distMeters);
   static m2::RectD GetLookupRect(m2::PointD const & center, double radiusM);

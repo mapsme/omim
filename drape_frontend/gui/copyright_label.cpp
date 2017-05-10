@@ -8,7 +8,7 @@
 
 #include "base/timer.hpp"
 
-#include "std/bind.hpp"
+#include <functional>
 
 namespace gui
 {
@@ -90,7 +90,7 @@ drape_ptr<ShapeRenderer> CopyrightLabel::Draw(m2::PointF & size, ref_ptr<dp::Tex
 
   drape_ptr<ShapeRenderer> renderer = make_unique_dp<ShapeRenderer>();
   dp::Batcher batcher(indexCount, vertexCount);
-  dp::SessionGuard guard(batcher, bind(&ShapeRenderer::AddShape, renderer.get(), _1, _2));
+  dp::SessionGuard guard(batcher, std::bind(&ShapeRenderer::AddShape, renderer.get(), std::placeholders::_1, std::placeholders::_2));
   batcher.InsertListOfStrip(result.m_state, make_ref(&provider),
                             move(handle), dp::Batcher::VertexPerQuad);
 

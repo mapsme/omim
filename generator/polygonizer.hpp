@@ -16,7 +16,7 @@
 #include "base/buffer_vector.hpp"
 #include "base/macros.hpp"
 
-#include "std/string.hpp"
+#include <string>
 
 #ifndef PARALLEL_POLYGONIZER
 #define PARALLEL_POLYGONIZER 1
@@ -38,7 +38,7 @@ namespace feature
     feature::GenerateInfo const & m_info;
 
     vector<FeatureOutT*> m_Buckets;
-    vector<string> m_Names;
+    vector<std::string> m_Names;
     borders::CountriesContainerT m_countries;
 
 #if PARALLEL_POLYGONIZER
@@ -133,7 +133,7 @@ namespace feature
       }
     }
 
-    string m_currentNames;
+    std::string m_currentNames;
 
     void Start()
     {
@@ -168,7 +168,7 @@ namespace feature
       bucket(fb);
     }
 
-    vector<string> const & Names() const
+    vector<std::string> const & Names() const
     {
       return m_Names;
     }

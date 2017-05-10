@@ -3,7 +3,7 @@
 #include "indexer/classificator_loader.hpp"
 #include "indexer/data_header.hpp"
 
-#include "std/iostream.hpp"
+#include <iostream>
 
 #include "3party/gflags/src/gflags/gflags.h"
 
@@ -30,10 +30,10 @@ int main(int argc, char ** argv)
   if (FLAGS_print_scales)
   {
     feature::DataHeader h(FLAGS_input);
-    cout << "Scales with geometry: ";
+    std::cout << "Scales with geometry: ";
     for (size_t i = 0; i < h.GetScalesCount(); ++i)
-      cout << h.GetScale(i) << " ";
-    cout << endl;
+      std::cout << h.GetScale(i) << " ";
+    std::cout << std::endl;
     return 0;
   }
 
@@ -42,7 +42,7 @@ int main(int argc, char ** argv)
     using namespace bench;
 
     AllResult res;
-    RunFeaturesLoadingBenchmark(FLAGS_input, make_pair(FLAGS_lowS, FLAGS_highS), res);
+    RunFeaturesLoadingBenchmark(FLAGS_input, std::make_pair(FLAGS_lowS, FLAGS_highS), res);
 
     res.Print();
   }

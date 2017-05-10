@@ -7,8 +7,8 @@
 
 #include "geometry/rect2d.hpp"
 
-#include "std/cstdint.hpp"
-#include "std/function.hpp"
+#include <cstdint>
+#include <functional>
 
 namespace dp
 {

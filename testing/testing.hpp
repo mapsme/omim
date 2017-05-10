@@ -6,8 +6,8 @@
 #include "base/math.hpp"
 #include "base/src_point.hpp"
 
-#include "std/iostream.hpp"
-#include "std/string.hpp"
+#include <iostream>
+#include <string>
 
 
 #define UNIT_TEST(name) \
@@ -32,7 +32,7 @@ DECLARE_EXCEPTION(TestFailureException, RootException);
 
 namespace my
 {
-  inline void OnTestFailed(SrcPoint const & srcPoint, string const & msg)
+  inline void OnTestFailed(SrcPoint const & srcPoint, std::string const & msg)
   {
     LOG(LINFO, ("FAILED"));
     LOG(LINFO, (DebugPrint(srcPoint.FileName()) + ":" + DebugPrint(srcPoint.Line()), msg));

@@ -39,13 +39,13 @@ uint32_t constexpr kDrawPointsPeriod = 10;
 
 namespace routing
 {
-IndexRouter::IndexRouter(string const & name, TCountryFileFn const & countryFileFn,
-                         CourntryRectFn const & countryRectFn, shared_ptr<NumMwmIds> numMwmIds,
-                         unique_ptr<m4::Tree<NumMwmId>> numMwmTree,
-                         shared_ptr<TrafficStash> trafficStash,
-                         shared_ptr<VehicleModelFactory> vehicleModelFactory,
-                         shared_ptr<EdgeEstimator> estimator,
-                         unique_ptr<IDirectionsEngine> directionsEngine, Index & index)
+IndexRouter::IndexRouter(std::string const & name, TCountryFileFn const & countryFileFn,
+                         CourntryRectFn const & countryRectFn, std::shared_ptr<NumMwmIds> numMwmIds,
+                         std::unique_ptr<m4::Tree<NumMwmId>> numMwmTree,
+                         std::shared_ptr<TrafficStash> trafficStash,
+                         std::shared_ptr<VehicleModelFactory> vehicleModelFactory,
+                         std::shared_ptr<EdgeEstimator> estimator,
+                         std::unique_ptr<IDirectionsEngine> directionsEngine, Index & index)
   : m_name(name)
   , m_index(index)
   , m_countryFileFn(countryFileFn)
@@ -72,22 +72,22 @@ IRouter::ResultCode IndexRouter::CalculateRoute(m2::PointD const & startPoint,
                                                 m2::PointD const & finalPoint,
                                                 RouterDelegate const & delegate, Route & route)
 {
-  string const startCountry = m_countryFileFn(startPoint);
-  string const finishCountry = m_countryFileFn(finalPoint);
+  std::string const startCountry = m_countryFileFn(startPoint);
+  std::string const finishCountry = m_countryFileFn(finalPoint);
   return CalculateRoute(startCountry, finishCountry, false /* blockMwmBorders */, startPoint,
                         startDirection, finalPoint, delegate, route);
 }
 
 IRouter::ResultCode IndexRouter::CalculateRouteForSingleMwm(
-    string const & country, m2::PointD const & startPoint, m2::PointD const & startDirection,
+    std::string const & country, m2::PointD const & startPoint, m2::PointD const & startDirection,
     m2::PointD const & finalPoint, RouterDelegate const & delegate, Route & route)
 {
   return CalculateRoute(country, country, true /* blockMwmBorders */, startPoint, startDirection,
                         finalPoint, delegate, route);
 }
 
-IRouter::ResultCode IndexRouter::CalculateRoute(string const & startCountry,
-                                                string const & finishCountry, bool forSingleMwm,
+IRouter::ResultCode IndexRouter::CalculateRoute(std::string const & startCountry,
+                                                std::string const & finishCountry, bool forSingleMwm,
                                                 m2::PointD const & startPoint,
                                                 m2::PointD const & startDirection,
                                                 m2::PointD const & finalPoint,
@@ -106,8 +106,8 @@ IRouter::ResultCode IndexRouter::CalculateRoute(string const & startCountry,
   }
 }
 
-IRouter::ResultCode IndexRouter::DoCalculateRoute(string const & startCountry,
-                                                  string const & finishCountry, bool forSingleMwm,
+IRouter::ResultCode IndexRouter::DoCalculateRoute(std::string const & startCountry,
+                                                  std::string const & finishCountry, bool forSingleMwm,
                                                   m2::PointD const & startPoint,
                                                   m2::PointD const & /* startDirection */,
                                                   m2::PointD const & finalPoint,
@@ -134,8 +134,8 @@ IRouter::ResultCode IndexRouter::DoCalculateRoute(string const & startCountry,
 
   TrafficStash::Guard guard(*m_trafficStash);
   WorldGraph graph(
-    make_unique<CrossMwmGraph>(m_numMwmIds, m_numMwmTree, m_vehicleModelFactory, m_countryRectFn,
-                               m_index, m_indexManager),
+    my::make_unique<CrossMwmGraph>(m_numMwmIds, m_numMwmTree, m_vehicleModelFactory, m_countryRectFn,
+                                   m_index, m_indexManager),
     IndexGraphLoader::Create(m_numMwmIds, m_vehicleModelFactory, m_estimator, m_index),
     m_estimator);
 
@@ -179,7 +179,7 @@ IRouter::ResultCode IndexRouter::DoCalculateRoute(string const & startCountry,
   case AStarAlgorithm<IndexGraphStarter>::Result::NoPath: return IRouter::RouteNotFound;
   case AStarAlgorithm<IndexGraphStarter>::Result::Cancelled: return IRouter::Cancelled;
   case AStarAlgorithm<IndexGraphStarter>::Result::OK:
-    vector<Segment> segments;
+    std::vector<Segment> segments;
     IRouter::ResultCode const leapsResult =
         ProcessLeaps(routingResult.path, delegate, starter, segments);
     if (leapsResult != IRouter::NoError)
@@ -204,7 +204,7 @@ bool IndexRouter::FindClosestEdge(platform::CountryFile const & file, m2::PointD
 
   auto const mwmId = MwmSet::MwmId(handle.GetInfo());
 
-  vector<pair<Edge, Junction>> candidates;
+  std::vector<pair<Edge, Junction>> candidates;
   m_roadGraph.FindClosestEdges(point, kMaxRoadCandidates, candidates);
 
   double minDistance = numeric_limits<double>::max();
@@ -233,9 +233,9 @@ bool IndexRouter::FindClosestEdge(platform::CountryFile const & file, m2::PointD
   return true;
 }
 
-IRouter::ResultCode IndexRouter::ProcessLeaps(vector<Segment> const & input,
+IRouter::ResultCode IndexRouter::ProcessLeaps(std::vector<Segment> const & input,
                                               RouterDelegate const & delegate,
-                                              IndexGraphStarter & starter, vector<Segment> & output)
+                                              IndexGraphStarter & starter, std::vector<Segment> & output)
 {
   output.reserve(input.size());
 
@@ -302,10 +302,10 @@ IRouter::ResultCode IndexRouter::ProcessLeaps(vector<Segment> const & input,
   return IRouter::NoError;
 }
 
-bool IndexRouter::RedressRoute(vector<Segment> const & segments, RouterDelegate const & delegate,
+bool IndexRouter::RedressRoute(std::vector<Segment> const & segments, RouterDelegate const & delegate,
                                bool forSingleMwm, IndexGraphStarter & starter, Route & route) const
 {
-  vector<Junction> junctions;
+  std::vector<Junction> junctions;
   size_t const numPoints = IndexGraphStarter::GetRouteNumPoints(segments);
   junctions.reserve(numPoints);
 
@@ -357,29 +357,29 @@ bool IndexRouter::AreMwmsNear(NumMwmId startId, NumMwmId finishId) const
 // static
 unique_ptr<IndexRouter> IndexRouter::CreateCarRouter(TCountryFileFn const & countryFileFn,
                                                      CourntryRectFn const & coutryRectFn,
-                                                     shared_ptr<NumMwmIds> numMwmIds,
-                                                     unique_ptr<m4::Tree<NumMwmId>> numMwmTree,
+                                                     std::shared_ptr<NumMwmIds> numMwmIds,
+                                                     std::unique_ptr<m4::Tree<NumMwmId>> numMwmTree,
                                                      traffic::TrafficCache const & trafficCache,
                                                      Index & index)
 {
   CHECK(numMwmIds, ());
-  auto vehicleModelFactory = make_shared<CarModelFactory>();
+  auto vehicleModelFactory = std::make_shared<CarModelFactory>();
   // @TODO Bicycle turn generation engine is used now. It's ok for the time being.
   // But later a special car turn generation engine should be implemented.
-  auto directionsEngine = make_unique<BicycleDirectionsEngine>(index, numMwmIds);
+  auto directionsEngine = my::make_unique<BicycleDirectionsEngine>(index, numMwmIds);
 
   double maxSpeed = 0.0;
   numMwmIds->ForEachId([&](NumMwmId id) {
-    string const & country = numMwmIds->GetFile(id).GetName();
+    std::string const & country = numMwmIds->GetFile(id).GetName();
     double const mwmMaxSpeed =
         vehicleModelFactory->GetVehicleModelForCountry(country)->GetMaxSpeed();
     maxSpeed = max(maxSpeed, mwmMaxSpeed);
   });
 
-  auto trafficStash = make_shared<TrafficStash>(trafficCache, numMwmIds);
+  auto trafficStash = std::make_shared<TrafficStash>(trafficCache, numMwmIds);
 
   auto estimator = EdgeEstimator::CreateForCar(trafficStash, maxSpeed);
-  auto router = make_unique<IndexRouter>(
+  auto router = my::make_unique<IndexRouter>(
       "astar-bidirectional-car", countryFileFn, coutryRectFn, numMwmIds, move(numMwmTree),
       trafficStash, vehicleModelFactory, estimator, move(directionsEngine), index);
   return router;

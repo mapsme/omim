@@ -1,7 +1,7 @@
 #include "coding/reader.hpp"
 
-#include "std/shared_ptr.hpp"
-#include "std/cstring.hpp"
+#include <memory>
+#include <cstring>
 
 
 /// Reader from buffer with ownership on it, but cheap copy constructor.
@@ -40,10 +40,10 @@ public:
     return BufferReader(*this, pos, size);
   }
 
-  inline unique_ptr<Reader> CreateSubReader(uint64_t pos, uint64_t size) const
+  inline std::unique_ptr<Reader> CreateSubReader(uint64_t pos, uint64_t size) const
   {
     // Can't use make_unique with private constructor.
-    return unique_ptr<Reader>(new BufferReader(*this, pos, size));
+    return std::unique_ptr<Reader>(new BufferReader(*this, pos, size));
   }
 
 private:
@@ -69,5 +69,5 @@ private:
   {
     void operator() (char * p) { delete [] p; }
   };
-  shared_ptr<char> m_data;
+  std::shared_ptr<char> m_data;
 };

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "platform/country_defines.hpp"
-#include "std/string.hpp"
+#include <string>
 
 namespace platform
 {
@@ -14,10 +14,10 @@ class CountryFile
 {
 public:
   CountryFile();
-  explicit CountryFile(string const & name);
+  explicit CountryFile(std::string const & name);
 
   /// \returns file name without extensions.
-  string const & GetName() const;
+  std::string const & GetName() const;
 
   /// \note Remote size is size of mwm in bytes. This mwm contains routing and map sections.
   void SetRemoteSizes(TMwmSize mapSize, TMwmSize routingSize);
@@ -28,10 +28,10 @@ public:
   inline bool operator!=(const CountryFile & rhs) const { return !(*this == rhs); }
 
 private:
-  friend string DebugPrint(CountryFile const & file);
+  friend std::string DebugPrint(CountryFile const & file);
 
   /// Base name (without any extensions) of the file. Same as id of country/region.
-  string m_name;
+  std::string m_name;
   TMwmSize m_mapSize;
   TMwmSize m_routingSize;
 };
@@ -41,6 +41,6 @@ private:
 /// \param countryFile is a file name without extension. For example Abkhazia.
 /// \param file is type of map data.
 /// \param version is version of mwm. For example 160731.
-string GetFileName(string const & countryFile, MapOptions file, int64_t version);
-string DebugPrint(CountryFile const & file);
+std::string GetFileName(std::string const & countryFile, MapOptions file, int64_t version);
+std::string DebugPrint(CountryFile const & file);
 }  // namespace platform

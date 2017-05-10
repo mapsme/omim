@@ -10,9 +10,9 @@ void DrapeApi::SetEngine(ref_ptr<DrapeEngine> engine)
   m_engine = engine;
 }
 
-void DrapeApi::AddLine(string const & id, DrapeApiLineData const & data)
+void DrapeApi::AddLine(std::string const & id, DrapeApiLineData const & data)
 {
-  lock_guard<mutex> lock(m_mutex);
+  std::lock_guard<std::mutex> lock(m_mutex);
 
   if (m_engine == nullptr)
     return;
@@ -34,9 +34,9 @@ void DrapeApi::AddLine(string const & id, DrapeApiLineData const & data)
                                             MessagePriority::Normal);
 }
 
-void DrapeApi::RemoveLine(string const & id)
+void DrapeApi::RemoveLine(std::string const & id)
 {
-  lock_guard<mutex> lock(m_mutex);
+  std::lock_guard<std::mutex> lock(m_mutex);
 
   if (m_engine == nullptr)
     return;
@@ -49,7 +49,7 @@ void DrapeApi::RemoveLine(string const & id)
 
 void DrapeApi::Clear()
 {
-  lock_guard<mutex> lock(m_mutex);
+  std::lock_guard<std::mutex> lock(m_mutex);
 
   if (m_engine == nullptr)
     return;
@@ -62,7 +62,7 @@ void DrapeApi::Clear()
 
 void DrapeApi::Invalidate()
 {
-  lock_guard<mutex> lock(m_mutex);
+  std::lock_guard<std::mutex> lock(m_mutex);
 
   if (m_engine == nullptr)
     return;

@@ -263,7 +263,7 @@ void CrossMwmGraph::GetTwinCandidates(FeatureType const & ft, bool isOutgoing,
   }
 }
 
-string DebugPrint(CrossMwmGraph::MwmStatus status)
+std::string DebugPrint(CrossMwmGraph::MwmStatus status)
 {
   switch (status)
   {
@@ -272,6 +272,6 @@ string DebugPrint(CrossMwmGraph::MwmStatus status)
     return "CrossMwmGraph::CrossMwmSectionExists";
   case CrossMwmGraph::MwmStatus::NoCrossMwmSection: return "CrossMwmGraph::NoCrossMwmSection";
   }
-  return string("Unknown CrossMwmGraph::MwmStatus.");
+  return std::string("Unknown CrossMwmGraph::MwmStatus.");
 }
 }  // namespace routing

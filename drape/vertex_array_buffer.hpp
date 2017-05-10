@@ -8,7 +8,7 @@
 #include "drape/binding_info.hpp"
 #include "drape/gpu_program.hpp"
 
-#include "std/map.hpp"
+#include <map>
 
 namespace df
 {
@@ -36,7 +36,7 @@ struct IndicesRange
 
 class VertexArrayBuffer
 {
-  typedef map<BindingInfo, drape_ptr<DataBuffer> > TBuffersMap;
+  typedef std::map<BindingInfo, drape_ptr<DataBuffer> > TBuffersMap;
   friend class df::BatchMergeHelper;
 public:
   VertexArrayBuffer(uint32_t indexBufferSize, uint32_t dataBufferSize);

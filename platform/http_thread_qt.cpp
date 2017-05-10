@@ -5,19 +5,19 @@
 
 #include "base/logging.hpp"
 
-#include "std/string.hpp"
+#include <string>
 
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QSslError>
 #include <QUrl>
 
-HttpThread::HttpThread(string const & url,
+HttpThread::HttpThread(std::string const & url,
                        downloader::IHttpThreadCallback & cb,
                        int64_t beg,
                        int64_t end,
                        int64_t size,
-                       string const & pb)
+                       std::string const & pb)
   : m_callback(cb), m_begRange(beg), m_endRange(end), m_downloadedBytes(0), m_expectedSize(size)
 {
   QUrl const qUrl(url.c_str());
@@ -42,9 +42,9 @@ HttpThread::HttpThread(string const & url,
   }
 
   // set user-agent with unique client id only for mapswithme requests
-  if (url.find("mapswithme.com") != string::npos)
+  if (url.find("mapswithme.com") != std::string::npos)
   {
-    static string const uid = GetPlatform().UniqueClientId();
+    static std::string const uid = GetPlatform().UniqueClientId();
     request.setRawHeader("User-Agent", uid.c_str());
   }
 
@@ -150,12 +150,12 @@ void HttpThread::OnDownloadFinished()
 namespace downloader
 {
 
-HttpThread * CreateNativeHttpThread(string const & url,
+HttpThread * CreateNativeHttpThread(std::string const & url,
                                     downloader::IHttpThreadCallback & cb,
                                     int64_t beg,
                                     int64_t end,
                                     int64_t size,
-                                    string const & pb)
+                                    std::string const & pb)
 {
   return new HttpThread(url, cb, beg, end, size, pb);
 }

@@ -6,6 +6,7 @@
 
 #include "base/assert.hpp"
 #include "base/buffer_vector.hpp"
+#include "base/stl_add.hpp"
 
 #include <algorithm>
 #include <map>
@@ -85,7 +86,7 @@ char const * HighwayClassToString(ftypes::HighwayClass const cls)
 
 namespace ftypes
 {
-string DebugPrint(HighwayClass const cls)
+std::string DebugPrint(HighwayClass const cls)
 {
   stringstream out;
   out << "[ " << HighwayClassToString(cls) << " ]";
@@ -116,7 +117,7 @@ uint32_t BaseChecker::PrepareToMatch(uint32_t type, uint8_t level)
 
 bool BaseChecker::IsMatched(uint32_t type) const
 {
-  return (find(m_types.begin(), m_types.end(), PrepareToMatch(type, m_level)) != m_types.end());
+  return (std::find(m_types.begin(), m_types.end(), PrepareToMatch(type, m_level)) != m_types.end());
 }
 
 bool BaseChecker::operator()(feature::TypesHolder const & types) const
@@ -133,7 +134,7 @@ bool BaseChecker::operator()(FeatureType const & ft) const
   return this->operator()(feature::TypesHolder(ft));
 }
 
-bool BaseChecker::operator()(vector<uint32_t> const & types) const
+bool BaseChecker::operator()(std::vector<uint32_t> const & types) const
 {
   for (size_t i = 0; i < types.size(); ++i)
   {
@@ -306,7 +307,7 @@ IsLinkChecker::IsLinkChecker()
                            {"highway", "tertiary_link"}};
 
   for (size_t i = 0; i < ARRAY_SIZE(arr); ++i)
-    m_types.push_back(c.GetTypeByPath(vector<string>(arr[i], arr[i] + 2)));
+    m_types.push_back(c.GetTypeByPath(std::vector<std::string>(arr[i], arr[i] + 2)));
 }
 
 IsLinkChecker const & IsLinkChecker::Instance()
@@ -377,7 +378,7 @@ IsHotelChecker::IsHotelChecker()
     m_sortedTypes[i].second = hotelType;
   }
 
-  sort(m_sortedTypes.begin(), m_sortedTypes.end());
+  std::sort(m_sortedTypes.begin(), m_sortedTypes.end());
 }
 
 IsHotelChecker const & IsHotelChecker::Instance()
@@ -390,7 +391,7 @@ unsigned IsHotelChecker::GetHotelTypesMask(FeatureType const & ft) const
 {
   feature::TypesHolder types(ft);
   buffer_vector<uint32_t, feature::kMaxTypesCount> sortedTypes(types.begin(), types.end());
-  sort(sortedTypes.begin(), sortedTypes.end());
+  std::sort(sortedTypes.begin(), sortedTypes.end());
 
   unsigned mask = 0;
   size_t i = 0;
@@ -503,7 +504,7 @@ IsLocalityChecker::IsLocalityChecker()
   };
 
   for (size_t i = 0; i < ARRAY_SIZE(arr); ++i)
-    m_types.push_back(c.GetTypeByPath(vector<string>(arr[i], arr[i] + 2)));
+    m_types.push_back(c.GetTypeByPath(std::vector<std::string>(arr[i], arr[i] + 2)));
 }
 
 Type IsLocalityChecker::GetType(uint32_t t) const
@@ -578,7 +579,7 @@ uint64_t GetPopulationByRadius(double r)
   return my::rounds(pow(r / 550.0, 3.6));
 }
 
-bool IsTypeConformed(uint32_t type, StringIL const & path)
+bool IsTypeConformed(uint32_t type, my::StringIL const & path)
 {
   ClassifObject const * p = classif().GetRoot();
   ASSERT(p, ());

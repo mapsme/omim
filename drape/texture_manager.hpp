@@ -70,10 +70,10 @@ public:
 
   struct Params
   {
-    string m_resPostfix;
+    std::string m_resPostfix;
     double m_visualScale;
-    string m_colors;
-    string m_patterns;
+    std::string m_colors;
+    std::string m_patterns;
     GlyphManager::Params m_glyphMngParams;
   };
 
@@ -81,9 +81,9 @@ public:
   void Release();
 
   void Init(Params const & params);
-  void Invalidate(string const & resPostfix);
+  void Invalidate(std::string const & resPostfix);
 
-  void GetSymbolRegion(string const & symbolName, SymbolRegion & region);
+  void GetSymbolRegion(std::string const & symbolName, SymbolRegion & region);
 
   typedef buffer_vector<uint8_t, 8> TStipplePattern;
   void GetStippleRegion(TStipplePattern const & pen, StippleRegion & region);
@@ -130,7 +130,7 @@ private:
       : m_texture(nullptr)
     {}
 
-    std::set<pair<strings::UniChar, int> > m_glyphs;
+    std::set<std::pair<strings::UniChar, int> > m_glyphs;
     ref_ptr<Texture> m_texture;
   };
 

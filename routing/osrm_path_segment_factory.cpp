@@ -83,7 +83,7 @@ void LoadPathGeometry(buffer_vector<TSeg, 8> const & buffer, size_t startIndex,
     loadPathGeometry.m_onRoundabout |= ftypes::IsRoundAboutChecker::Instance()(ft);
     loadPathGeometry.m_isLink |= ftypes::IsLinkChecker::Instance()(ft);
     loadPathGeometry.m_highwayClass = ftypes::GetHighwayClass(ft);
-    string name;
+    std::string name;
     ft.GetName(FeatureType::DEFAULT_LANG, name);
     loadPathGeometry.m_name = name;
   }

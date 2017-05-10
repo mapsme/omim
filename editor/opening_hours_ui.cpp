@@ -1,10 +1,10 @@
 #include "opening_hours_ui.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/numeric.hpp"
-#include "std/stack.hpp"
-#include "std/tuple.hpp"
-#include "std/type_traits.hpp"
+#include <algorithm>
+#include <numeric>
+#include <stack>
+#include <tuple>
+#include <type_traits>
 
 #include "base/assert.hpp"
 
@@ -49,7 +49,7 @@ bool FixTimeSpans(osmoh::Timespan openingTime, osmoh::TTimespans & spans)
       span.GetEnd().GetHourMinutes().AddDuration(24_h);
   }
 
-  sort(begin(spans), end(spans), [](osmoh::Timespan const & s1, osmoh::Timespan const s2)
+  std::sort(begin(spans), end(spans), [](osmoh::Timespan const & s1, osmoh::Timespan const s2)
        {
          auto const start1 = s1.GetStart().GetHourMinutes();
          auto const start2 = s2.GetStart().GetHourMinutes();
@@ -329,7 +329,7 @@ TimeTable TimeTableSet::GetComplementTimeTable() const
 bool TimeTableSet::IsTwentyFourPerSeven() const
 {
   return GetUnhandledDays().empty() &&
-         all_of(std::begin(m_table), std::end(m_table), [](TimeTable const & tt)
+         std::all_of(std::begin(m_table), std::end(m_table), [](TimeTable const & tt)
                 {
                   return tt.IsTwentyFourHours();
                 });
@@ -387,7 +387,7 @@ bool TimeTableSet::UpdateByIndex(TimeTableSet & ttSet, size_t const index)
     auto && tt = ttSet.m_table[i];
     // Remove all days of updated timetable from all other timetables.
     TOpeningDays days;
-    set_difference(std::begin(tt.GetOpeningDays()), std::end(tt.GetOpeningDays()),
+    std::set_difference(std::begin(tt.GetOpeningDays()), std::end(tt.GetOpeningDays()),
                    std::begin(updated.GetOpeningDays()), std::end(updated.GetOpeningDays()),
                    inserter(days, std::end(days)));
 

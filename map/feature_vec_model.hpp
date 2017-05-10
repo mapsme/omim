@@ -57,7 +57,7 @@ class FeaturesFetcher : public MwmSet::Observer
 
     void ClearCaches();
 
-    inline bool IsLoaded(string const & countryFileName) const
+    inline bool IsLoaded(std::string const & countryFileName) const
     {
       return m_multiIndex.IsLoaded(platform::CountryFile(countryFileName));
     }

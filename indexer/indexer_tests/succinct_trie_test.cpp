@@ -14,6 +14,8 @@
 #include "std/algorithm.hpp"
 #include "std/vector.hpp"
 
+using namespace std;
+
 namespace
 {
 struct StringsFileEntryMock

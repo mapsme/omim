@@ -9,9 +9,9 @@
 
 #include "base/macros.hpp"
 
-#include "std/shared_ptr.hpp"
-#include "std/string.hpp"
-#include "std/unique_ptr.hpp"
+#include <memory>
+#include <string>
+#include <memory>
 
 class MwmValue;
 
@@ -27,8 +27,8 @@ public:
   explicit MwmContext(MwmSet::MwmHandle handle);
 
   inline MwmSet::MwmId const & GetId() const { return m_handle.GetId(); }
-  inline string const & GetName() const { return GetInfo()->GetCountryName(); }
-  inline shared_ptr<MwmInfo> const & GetInfo() const { return GetId().GetInfo(); }
+  inline std::string const & GetName() const { return GetInfo()->GetCountryName(); }
+  inline std::shared_ptr<MwmInfo> const & GetInfo() const { return GetId().GetInfo(); }
 
   template <typename TFn>
   void ForEachIndex(covering::IntervalsT const & intervals, uint32_t scale, TFn && fn) const
@@ -101,7 +101,7 @@ private:
 
   FeaturesVector m_vector;
   ScaleIndex<ModelReaderPtr> m_index;
-  unique_ptr<HouseToStreetTable> m_houseToStreetTable;
+  std::unique_ptr<HouseToStreetTable> m_houseToStreetTable;
   LazyCentersTable m_centers;
 
   DISALLOW_COPY_AND_MOVE(MwmContext);

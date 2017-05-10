@@ -7,7 +7,7 @@
 #include "base/assert.hpp"
 #include "base/checked_cast.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 namespace search
 {
@@ -29,7 +29,7 @@ void Description::FromFeature(FeatureType & ft)
 
   if (metadata.Has(feature::Metadata::FMD_RATING))
   {
-    string const rating = metadata.Get(feature::Metadata::FMD_RATING);
+    std::string const rating = metadata.Get(feature::Metadata::FMD_RATING);
     float r;
     if (strings::to_float(rating, r))
       m_rating = r;
@@ -37,7 +37,7 @@ void Description::FromFeature(FeatureType & ft)
 
   if (metadata.Has(feature::Metadata::FMD_PRICE_RATE))
   {
-    string const priceRate = metadata.Get(feature::Metadata::FMD_PRICE_RATE);
+    std::string const priceRate = metadata.Get(feature::Metadata::FMD_PRICE_RATE);
     int pr;
     if (strings::to_int(priceRate, pr))
       m_priceRate = pr;
@@ -48,7 +48,7 @@ void Description::FromFeature(FeatureType & ft)
 
 // Rule --------------------------------------------------------------------------------------------
 // static
-bool Rule::IsIdentical(shared_ptr<Rule> const & lhs, shared_ptr<Rule> const & rhs)
+bool Rule::IsIdentical(std::shared_ptr<Rule> const & lhs, std::shared_ptr<Rule> const & rhs)
 {
   if (lhs && !rhs)
     return false;
@@ -61,11 +61,11 @@ bool Rule::IsIdentical(shared_ptr<Rule> const & lhs, shared_ptr<Rule> const & rh
   return true;
 }
 
-string DebugPrint(Rule const & rule) { return rule.ToString(); }
+std::string DebugPrint(Rule const & rule) { return rule.ToString(); }
 
 // HotelsFilter::ScopedFilter ----------------------------------------------------------------------
 HotelsFilter::ScopedFilter::ScopedFilter(MwmSet::MwmId const & mwmId,
-                                         Descriptions const & descriptions, shared_ptr<Rule> rule)
+                                         Descriptions const & descriptions, std::shared_ptr<Rule> rule)
   : m_mwmId(mwmId), m_descriptions(descriptions), m_rule(rule)
 {
   CHECK(m_rule.get(), ());
@@ -77,10 +77,10 @@ bool HotelsFilter::ScopedFilter::Matches(FeatureID const & fid) const
     return false;
 
   auto it =
-      lower_bound(m_descriptions.begin(), m_descriptions.end(),
-                  make_pair(fid.m_index, Description{}),
-                  [](pair<uint32_t, Description> const & lhs,
-                     pair<uint32_t, Description> const & rhs) { return lhs.first < rhs.first; });
+      std::lower_bound(m_descriptions.begin(), m_descriptions.end(),
+                  std::make_pair(fid.m_index, Description{}),
+                  [](std::pair<uint32_t, Description> const & lhs,
+                     std::pair<uint32_t, Description> const & rhs) { return lhs.first < rhs.first; });
   if (it == m_descriptions.end() || it->first != fid.m_index)
     return false;
 
@@ -91,11 +91,11 @@ bool HotelsFilter::ScopedFilter::Matches(FeatureID const & fid) const
 HotelsFilter::HotelsFilter(HotelsCache & hotels): m_hotels(hotels) {}
 
 unique_ptr<HotelsFilter::ScopedFilter> HotelsFilter::MakeScopedFilter(MwmContext const & context,
-                                                                      shared_ptr<Rule> rule)
+                                                                      std::shared_ptr<Rule> rule)
 {
   if (!rule)
     return {};
-  return make_unique<ScopedFilter>(context.GetId(), GetDescriptions(context), rule);
+  return my::make_unique<ScopedFilter>(context.GetId(), GetDescriptions(context), rule);
 }
 
 void HotelsFilter::ClearCaches()

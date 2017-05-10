@@ -8,8 +8,8 @@ namespace routing
 using namespace traffic;
 
 void ReconstructRoute(IDirectionsEngine & engine, RoadGraphBase const & graph,
-                      shared_ptr<TrafficStash> const & trafficStash,
-                      my::Cancellable const & cancellable, vector<Junction> & path, Route & route)
+                      std::shared_ptr<TrafficStash> const & trafficStash,
+                      my::Cancellable const & cancellable, std::vector<Junction> & path, Route & route)
 {
   if (path.empty())
   {
@@ -25,10 +25,10 @@ void ReconstructRoute(IDirectionsEngine & engine, RoadGraphBase const & graph,
 
   Route::TTimes times;
   Route::TTurns turnsDir;
-  vector<Junction> junctions;
+  std::vector<Junction> junctions;
   // @TODO(bykoianko) streetNames is not filled in Generate(). It should be done.
   Route::TStreets streetNames;
-  vector<Segment> trafficSegs;
+  std::vector<Segment> trafficSegs;
   engine.Generate(graph, path, cancellable, times, turnsDir, junctions, trafficSegs);
 
   if (cancellable.IsCancelled())
@@ -45,7 +45,7 @@ void ReconstructRoute(IDirectionsEngine & engine, RoadGraphBase const & graph,
   // engine->Generate() fills with empty vectors |times|, |turnsDir|, |junctions| and |trafficSegs|.
   // It's not correct and should be fixed. It's necessary to work corrrectly with such routes.
 
-  vector<m2::PointD> routeGeometry;
+  std::vector<m2::PointD> routeGeometry;
   JunctionsToPoints(junctions, routeGeometry);
   feature::TAltitudes altitudes;
   JunctionsToAltitudes(junctions, altitudes);
@@ -56,7 +56,7 @@ void ReconstructRoute(IDirectionsEngine & engine, RoadGraphBase const & graph,
   route.SetStreetNames(move(streetNames));
   route.SetAltitudes(move(altitudes));
 
-  vector<traffic::SpeedGroup> traffic;
+  std::vector<traffic::SpeedGroup> traffic;
   if (trafficStash && !trafficSegs.empty())
   {
     traffic.reserve(2 * trafficSegs.size());

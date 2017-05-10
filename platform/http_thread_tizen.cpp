@@ -20,7 +20,7 @@ HttpThread::HttpThread(std::string const & url,
                        int64_t beg,
                        int64_t end,
                        int64_t size,
-                       string const & pb)
+                       std::string const & pb)
   : m_callback(callback),
     m_begRange(beg), m_endRange(end),
     m_downloadedBytes(0), m_expectedSize(size),
@@ -82,9 +82,9 @@ HttpThread::HttpThread(std::string const & url,
   }
 
   // set user-agent with unique client id only for mapswithme requests
-  if (m_url.find("mapswithme.com") != string::npos)
+  if (m_url.find("mapswithme.com") != std::string::npos)
   {
-    static string const uid = GetPlatform().UniqueClientId();
+    static std::string const uid = GetPlatform().UniqueClientId();
     pHeader->AddField("User-Agent", uid.c_str());
   }
 

@@ -9,8 +9,8 @@
 
 #include "base/macros.hpp"
 
-#include "std/unique_ptr.hpp"
-#include "std/unordered_set.hpp"
+#include <memory>
+#include <unordered_set>
 
 class Index;
 
@@ -20,24 +20,24 @@ class VillagesCache;
 
 struct LocalityItem
 {
-  LocalityItem(string const & name, m2::PointD const & center, uint64_t population);
+  LocalityItem(std::string const & name, m2::PointD const & center, uint64_t population);
 
-  string m_name;
+  std::string m_name;
   m2::PointD m_center;
   uint64_t m_population;
 };
 
-string DebugPrint(LocalityItem const & item);
+std::string DebugPrint(LocalityItem const & item);
 
 class LocalitySelector
 {
 public:
-  LocalitySelector(string & name, m2::PointD const & p);
+  LocalitySelector(std::string & name, m2::PointD const & p);
 
   void operator()(LocalityItem const & item);
 
 private:
-  string & m_name;
+  std::string & m_name;
   m2::PointD m_p;
   double m_bestScore;
 };
@@ -73,7 +73,7 @@ public:
   LocalityFinder(Index const & index, VillagesCache & villagesCache);
 
   void SetLanguage(int8_t lang);
-  void GetLocality(m2::PointD const & p, string & name);
+  void GetLocality(m2::PointD const & p, std::string & name);
   void ClearCache();
 
 private:
@@ -91,8 +91,8 @@ private:
   MwmSet::MwmId m_worldId;
   bool m_mapsLoaded;
 
-  unique_ptr<RankTable> m_ranks;
+  std::unique_ptr<RankTable> m_ranks;
 
-  map<MwmSet::MwmId, unordered_set<uint32_t>> m_loadedIds;
+  map<MwmSet::MwmId, std::unordered_set<uint32_t>> m_loadedIds;
 };
 }  // namespace search

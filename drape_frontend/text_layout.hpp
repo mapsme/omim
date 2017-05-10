@@ -14,8 +14,8 @@
 #include "base/string_utils.hpp"
 #include "base/buffer_vector.hpp"
 
-#include "std/vector.hpp"
-#include "std/shared_ptr.hpp"
+#include <vector>
+#include <memory>
 
 namespace dp
 {
@@ -103,7 +103,7 @@ public:
   static bool CalculatePerspectivePosition(float splineLength, float textPixelLength,
                                            float & offset);
 
-  static void CalculatePositions(vector<float> & offsets, float splineLength,
+  static void CalculatePositions(std::vector<float> & offsets, float splineLength,
                                  float splineScaleToPixel, float textPixelLength);
 
 private:
@@ -125,7 +125,7 @@ public:
   PathTextLayout const * operator->() const;
 
 private:
-  shared_ptr<PathTextLayout> m_layout;
+  std::shared_ptr<PathTextLayout> m_layout;
 };
 
 }

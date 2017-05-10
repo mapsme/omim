@@ -11,9 +11,9 @@
 
 #include "base/macros.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/numeric.hpp"
-#include "std/iterator.hpp"
+#include <algorithm>
+#include <numeric>
+#include <iterator>
 
 namespace gui
 {
@@ -184,7 +184,7 @@ bool RulerHelper::IsTextDirty() const
   return m_isTextDirty;
 }
 
-string const & RulerHelper::GetRulerText() const
+std::string const & RulerHelper::GetRulerText() const
 {
   m_dirtyTextRequested = true;
   return m_rulerText;
@@ -196,23 +196,23 @@ void RulerHelper::ResetTextDirtyFlag()
     m_isTextDirty = false;
 }
 
-void RulerHelper::GetTextInitInfo(string & alphabet, uint32_t & size) const
+void RulerHelper::GetTextInitInfo(std::string & alphabet, uint32_t & size) const
 {
   set<char> symbols;
   size_t result = 0;
   auto const functor = [&result, &symbols](UnitValue const & v)
   {
     size_t stringSize = strlen(v.m_s);
-    result = max(result, stringSize);
+    result = std::max(result, stringSize);
     for (size_t i = 0; i < stringSize; ++i)
       symbols.insert(v.m_s[i]);
   };
 
-  for_each(begin(g_arrFeets), end(g_arrFeets), functor);
-  for_each(begin(g_arrMetres), end(g_arrMetres), functor);
-  for_each(begin(g_arrYards), end(g_arrYards), functor);
+  std::for_each(std::begin(g_arrFeets), std::end(g_arrFeets), functor);
+  std::for_each(std::begin(g_arrMetres), std::end(g_arrMetres), functor);
+  std::for_each(std::begin(g_arrYards), std::end(g_arrYards), functor);
 
-  for_each(begin(symbols), end(symbols), [&alphabet](char c)
+  std::for_each(std::begin(symbols), std::end(symbols), [&alphabet](char c)
   {
     alphabet.push_back(c);
   });
@@ -245,13 +245,13 @@ double RulerHelper::CalcMetresDiff(double value)
   if (arrU[0].m_i > v)
   {
     m_rangeIndex = MinUnitValue;
-    m_rulerText = string("< ") + arrU[0].m_s;
+    m_rulerText = std::string("< ") + arrU[0].m_s;
     result = MinMetersWidth - 1.0;
   }
   else if (arrU[count-1].m_i <= v)
   {
     m_rangeIndex = MaxUnitValue;
-    m_rulerText = string("> ") + arrU[count-1].m_s;
+    m_rulerText = std::string("> ") + arrU[count-1].m_s;
     result = MaxMetersWidth + 1.0;
   }
   else

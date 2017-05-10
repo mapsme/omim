@@ -1,7 +1,7 @@
 #pragma once
 
-#include "std/string.hpp"
-#include "std/utility.hpp"
+#include <string>
+#include <utility>
 
 enum class MapOptions : uint8_t
 {
@@ -13,7 +13,7 @@ enum class MapOptions : uint8_t
 
 using TMwmCounter = uint32_t;
 using TMwmSize = uint64_t;
-using TLocalAndRemoteSize = pair<TMwmSize, TMwmSize>;
+using TLocalAndRemoteSize = std::pair<TMwmSize, TMwmSize>;
 
 bool HasOptions(MapOptions mask, MapOptions options);
 
@@ -25,4 +25,4 @@ MapOptions UnsetOptions(MapOptions mask, MapOptions options);
 
 MapOptions LeastSignificantOption(MapOptions mask);
 
-string DebugPrint(MapOptions options);
+std::string DebugPrint(MapOptions options);

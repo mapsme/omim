@@ -19,7 +19,7 @@ namespace
   {
   public:
     FeatureInfoT(double d, feature::TypesHolder & types,
-                 string & name, string & house, m2::PointD const & pt)
+                 std::string & name, std::string & house, m2::PointD const & pt)
       : m_types(types), m_pt(pt), m_dist(d)
     {
       m_name.swap(name);
@@ -40,7 +40,7 @@ namespace
       swap(m_types, rhs.m_types);
     }
 
-    string m_name, m_house;
+    std::string m_name, m_house;
     feature::TypesHolder m_types;
     m2::PointD m_pt;
     double m_dist;
@@ -104,9 +104,9 @@ namespace
 
         if (IsInclude(d, types))
         {
-          string name;
+          std::string name;
           f.GetReadableName(name);
-          string house = f.GetHouseNumber();
+          std::string house = f.GetHouseNumber();
 
           // if geom type is not GEOM_POINT, result center point doesn't matter in future use
           m2::PointD const pt =
@@ -150,7 +150,7 @@ namespace
     {
     }
 
-    void GetFeatureTypes(size_t count, vector<string> & types)
+    void GetFeatureTypes(size_t count, vector<std::string> & types)
     {
       SortResults();
 
@@ -166,7 +166,7 @@ namespace
   };
 }
 
-void Framework::GetFeatureTypes(m2::PointD const & pxPoint, vector<string> & types) const
+void Framework::GetFeatureTypes(m2::PointD const & pxPoint, vector<std::string> & types) const
 {
   m2::AnyRectD rect;
   m_currentModelView.GetTouchRect(pxPoint, df::VisualParams::Instance().GetTouchRectRadius(), rect);
@@ -201,7 +201,7 @@ namespace
         vec.reserve(count);
         for (size_t i = 0; i < count; ++i)
         {
-          vector<string> v(arr[i], arr[i] + ind);
+          vector<std::string> v(arr[i], arr[i] + ind);
           vec.push_back(c.GetTypeByPath(v));
         }
       }
@@ -334,7 +334,7 @@ namespace
       // Try to add types from categories.
       for (uint32_t t : types)
       {
-        string s;
+        std::string s;
         if (eng->GetNameByType(t, locale, s))
           info.m_types.push_back(s);
       }
@@ -501,7 +501,7 @@ search::AddressInfo Framework::GetFeatureAddressInfo(FeatureType & ft) const
   }
 
   // TODO(vng): Why AddressInfo is responsible for types and names? Refactor out.
-  string defaultName, intName;
+  std::string defaultName, intName;
   ft.GetPreferredNames(defaultName, intName);
   info.m_name = defaultName.empty() ? intName : defaultName;
   info.m_types = GetPrintableFeatureTypes(ft);
@@ -509,11 +509,11 @@ search::AddressInfo Framework::GetFeatureAddressInfo(FeatureType & ft) const
   return info;
 }
 
-vector<string> Framework::GetPrintableFeatureTypes(FeatureType const & ft) const
+vector<std::string> Framework::GetPrintableFeatureTypes(FeatureType const & ft) const
 {
   ASSERT(m_searchEngine, ());
 
-  vector<string> results;
+  vector<std::string> results;
   int8_t const locale = CategoriesHolder::MapLocaleToInteger(languages::GetCurrentOrig());
 
   feature::TypesHolder types(ft);

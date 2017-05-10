@@ -5,15 +5,15 @@
 
 #include "base/stl_add.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/limits.hpp"
-#include "std/sstream.hpp"
+#include <algorithm>
+#include <limits>
+#include <sstream>
 
 
 namespace search
 {
 
-KeywordLangMatcher::ScoreT::ScoreT() : m_langScore(numeric_limits<int>::min())
+KeywordLangMatcher::ScoreT::ScoreT() : m_langScore(std::numeric_limits<int>::min())
 {
 }
 
@@ -35,17 +35,17 @@ bool KeywordLangMatcher::ScoreT::operator <(KeywordLangMatcher::ScoreT const & s
   return m_parentScore.LessInTokensLength(score.m_parentScore);
 }
 
-void KeywordLangMatcher::SetLanguages(vector<vector<int8_t> > const & languagePriorities)
+void KeywordLangMatcher::SetLanguages(std::vector<std::vector<int8_t> > const & languagePriorities)
 {
   m_languagePriorities = languagePriorities;
 }
 
-void KeywordLangMatcher::SetLanguage(pair<int, int> const & ind, int8_t lang)
+void KeywordLangMatcher::SetLanguage(std::pair<int, int> const & ind, int8_t lang)
 {
   m_languagePriorities[ind.first][ind.second] = lang;
 }
 
-int8_t KeywordLangMatcher::GetLanguage(pair<int, int> const & ind) const
+int8_t KeywordLangMatcher::GetLanguage(std::pair<int, int> const & ind) const
 {
   return m_languagePriorities[ind.first][ind.second];
 }
@@ -61,7 +61,7 @@ int KeywordLangMatcher::GetLangScore(int8_t lang) const
   return -prioritiesTiersCount;
 }
 
-KeywordLangMatcher::ScoreT KeywordLangMatcher::Score(int8_t lang, string const & name) const
+KeywordLangMatcher::ScoreT KeywordLangMatcher::Score(int8_t lang, std::string const & name) const
 {
   return ScoreT(m_keywordMatcher.Score(name), GetLangScore(lang));
 }
@@ -77,9 +77,9 @@ KeywordLangMatcher::ScoreT KeywordLangMatcher::Score(int8_t lang,
   return ScoreT(m_keywordMatcher.Score(tokens, count), GetLangScore(lang));
 }
 
-string DebugPrint(KeywordLangMatcher::ScoreT const & score)
+std::string DebugPrint(KeywordLangMatcher::ScoreT const & score)
 {
-  ostringstream ss;
+  std::ostringstream ss;
   ss << "KLM::ScoreT(" << DebugPrint(score.m_parentScore) << ", LS=" << score.m_langScore << ")";
   return ss.str();
 }

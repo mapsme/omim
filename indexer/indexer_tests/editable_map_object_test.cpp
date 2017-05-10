@@ -15,11 +15,11 @@ int8_t GetLangCode(char const * ch)
 
 struct ExpectedName
 {
-  string m_lang;
-  string m_value;
+  std::string m_lang;
+  std::string m_value;
 };
 
-string DebugPrint(ExpectedName const & expectedName)
+std::string DebugPrint(ExpectedName const & expectedName)
 {
   return expectedName.m_lang + ", " + expectedName.m_value;
 }
@@ -27,7 +27,7 @@ string DebugPrint(ExpectedName const & expectedName)
 void CheckExpectations(StringUtf8Multilang const & s, vector<ExpectedName> const & expectations)
 {
   size_t counter = 0;
-  s.ForEach([&expectations, &counter](int8_t const code, string const & name) {
+  s.ForEach([&expectations, &counter](int8_t const code, std::string const & name) {
     auto const it = find_if(expectations.begin(), expectations.end(), [&code](ExpectedName const & item)
     {
       return GetLangCode(item.m_lang.c_str()) == code;
@@ -541,7 +541,7 @@ UNIT_TEST(EditableMapObject_RemoveBlankNames)
 {
   auto const getCountOfNames = [](StringUtf8Multilang const & names) {
     size_t counter = 0;
-    names.ForEach([&counter](int8_t const, string const &) {
+    names.ForEach([&counter](int8_t const, std::string const &) {
       ++counter;
       return true;
     });

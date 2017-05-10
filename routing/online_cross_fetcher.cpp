@@ -9,11 +9,11 @@
 
 #include "geometry/mercator.hpp"
 
-#include "std/bind.hpp"
+#include <functional>
 
 namespace
 {
-inline string LatLonToURLArgs(ms::LatLon const & point)
+inline std::string LatLonToURLArgs(ms::LatLon const & point)
 {
   return strings::to_string(point.lat) + ','+ strings::to_string(point.lon);
 }
@@ -21,7 +21,7 @@ inline string LatLonToURLArgs(ms::LatLon const & point)
 
 namespace routing
 {
-bool ParseResponse(const string & serverResponse, vector<m2::PointD> & outPoints)
+bool ParseResponse(const std::string & serverResponse, std::vector<m2::PointD> & outPoints)
 {
   try
   {
@@ -45,14 +45,14 @@ bool ParseResponse(const string & serverResponse, vector<m2::PointD> & outPoints
   return false;
 }
 
-string GenerateOnlineRequest(string const & serverURL, ms::LatLon const & startPoint,
+std::string GenerateOnlineRequest(std::string const & serverURL, ms::LatLon const & startPoint,
                              ms::LatLon const & finalPoint)
 {
   return serverURL + "/mapsme?loc=" + LatLonToURLArgs(startPoint) + "&loc=" +
          LatLonToURLArgs(finalPoint);
 }
 
-OnlineCrossFetcher::OnlineCrossFetcher(string const & serverURL, ms::LatLon const & startPoint,
+OnlineCrossFetcher::OnlineCrossFetcher(std::string const & serverURL, ms::LatLon const & startPoint,
                                        ms::LatLon const & finalPoint)
     : m_request(GenerateOnlineRequest(serverURL, startPoint, finalPoint))
 {

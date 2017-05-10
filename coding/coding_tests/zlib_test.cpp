@@ -2,21 +2,21 @@
 
 #include "coding/zlib.hpp"
 
-#include "std/iterator.hpp"
-#include "std/sstream.hpp"
-#include "std/string.hpp"
+#include <iterator>
+#include <sstream>
+#include <string>
 
 using namespace coding;
 
 namespace
 {
-void TestInflateDeflate(string const & original)
+void TestInflateDeflate(std::string const & original)
 {
-  string compressed;
-  TEST(ZLib::Deflate(original, ZLib::Level::BestCompression, back_inserter(compressed)), ());
+  std::string compressed;
+  TEST(ZLib::Deflate(original, ZLib::Level::BestCompression, std::back_inserter(compressed)), ());
 
-  string decompressed;
-  TEST(ZLib::Inflate(compressed, back_inserter(decompressed)), ());
+  std::string decompressed;
+  TEST(ZLib::Inflate(compressed, std::back_inserter(decompressed)), ());
 
   TEST_EQUAL(original, decompressed, ());
 }
@@ -24,11 +24,11 @@ void TestInflateDeflate(string const & original)
 UNIT_TEST(ZLib_Smoke)
 {
   {
-    string s;
-    TEST(!ZLib::Deflate(nullptr, 0, ZLib::Level::BestCompression, back_inserter(s)), ());
-    TEST(!ZLib::Deflate(nullptr, 4, ZLib::Level::BestCompression, back_inserter(s)), ());
-    TEST(!ZLib::Inflate(nullptr, 0, back_inserter(s)), ());
-    TEST(!ZLib::Inflate(nullptr, 4, back_inserter(s)), ());
+    std::string s;
+    TEST(!ZLib::Deflate(nullptr, 0, ZLib::Level::BestCompression, std::back_inserter(s)), ());
+    TEST(!ZLib::Deflate(nullptr, 4, ZLib::Level::BestCompression, std::back_inserter(s)), ());
+    TEST(!ZLib::Inflate(nullptr, 0, std::back_inserter(s)), ());
+    TEST(!ZLib::Inflate(nullptr, 4, std::back_inserter(s)), ());
   }
 
   TestInflateDeflate("");
@@ -37,9 +37,9 @@ UNIT_TEST(ZLib_Smoke)
 
 UNIT_TEST(ZLib_Large)
 {
-  string original;
+  std::string original;
   {
-    ostringstream os;
+    std::ostringstream os;
     for (size_t i = 0; i < 1000; ++i)
       os << i;
     original = os.str();

@@ -8,8 +8,8 @@ namespace search
 {
 namespace tests_support
 {
-TestSearchEngine::TestSearchEngine(unique_ptr<storage::CountryInfoGetter> infoGetter,
-                                   unique_ptr<::search::ProcessorFactory> factory,
+TestSearchEngine::TestSearchEngine(std::unique_ptr<storage::CountryInfoGetter> infoGetter,
+                                   std::unique_ptr<::search::ProcessorFactory> factory,
                                    Engine::Params const & params)
   : m_platform(GetPlatform())
   , m_infoGetter(move(infoGetter))
@@ -17,7 +17,7 @@ TestSearchEngine::TestSearchEngine(unique_ptr<storage::CountryInfoGetter> infoGe
 {
 }
 
-TestSearchEngine::TestSearchEngine(unique_ptr<::search::ProcessorFactory> factory,
+TestSearchEngine::TestSearchEngine(std::unique_ptr<::search::ProcessorFactory> factory,
                                    Engine::Params const & params)
   : m_platform(GetPlatform())
   , m_infoGetter(storage::CountryInfoReader::CreateCountryInfoReader(m_platform))

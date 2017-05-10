@@ -25,15 +25,15 @@ double constexpr kMwmRoadCrossingRadiusMeters = 2.0;
 
 double constexpr kMwmCrossingNodeEqualityRadiusMeters = 100.0;
 
-string GetFeatureCountryName(FeatureID const featureId)
+std::string GetFeatureCountryName(FeatureID const featureId)
 {
   /// @todo Rework this function when storage will provide information about mwm's country
   // MwmInfo.GetCountryName returns country name as 'Country' or 'Country_Region', but only 'Country' is needed
   ASSERT(featureId.IsValid(), ());
 
-  string const & countryName = featureId.m_mwmId.GetInfo()->GetCountryName();
+  std::string const & countryName = featureId.m_mwmId.GetInfo()->GetCountryName();
   size_t const pos = countryName.find('_');
-  if (string::npos == pos)
+  if (std::string::npos == pos)
     return countryName;
   return countryName.substr(0, pos);
 }
@@ -44,7 +44,7 @@ FeaturesRoadGraph::Value::Value(MwmSet::MwmHandle handle) : m_mwmHandle(move(han
   if (!m_mwmHandle.IsAlive())
     return;
 
-  m_altitudeLoader = make_unique<feature::AltitudeLoader>(*m_mwmHandle.GetValue<MwmValue>());
+  m_altitudeLoader = my::make_unique<feature::AltitudeLoader>(*m_mwmHandle.GetValue<MwmValue>());
 }
 
 FeaturesRoadGraph::CrossCountryVehicleModel::CrossCountryVehicleModel(
@@ -80,7 +80,7 @@ IVehicleModel * FeaturesRoadGraph::CrossCountryVehicleModel::GetVehicleModel(Fea
   if (itr != m_cache.end())
     return itr->second.get();
 
-  string const country = GetFeatureCountryName(featureId);
+  std::string const country = GetFeatureCountryName(featureId);
   auto const vehicleModel = m_vehicleModelFactory->GetVehicleModelForCountry(country);
 
   ASSERT(nullptr != vehicleModel, ());
@@ -172,7 +172,7 @@ void FeaturesRoadGraph::ForEachFeatureClosestToCross(m2::PointD const & cross,
 }
 
 void FeaturesRoadGraph::FindClosestEdges(m2::PointD const & point, uint32_t count,
-                                         vector<pair<Edge, Junction>> & vicinities) const
+                                         std::vector<pair<Edge, Junction>> & vicinities) const
 {
   NearestEdgeFinder finder(point);
 

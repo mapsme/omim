@@ -8,7 +8,7 @@
 #include "platform/platform.hpp"
 #include "qt_tstfrm/test_main_loop.hpp"
 
-#include "std/bind.hpp"
+#include <functional>
 
 #include <QtGui/QPainter>
 #include <QtCore/QPoint>
@@ -124,6 +124,6 @@ UNIT_TEST(UploadingGlyphs)
   EXPECTGL(glTexSubImage2D(_, _, _, _, _, _, _)).WillRepeatedly(Invoke(&r, &UploadedRender::glMemoryToQImage));
   index.UploadResources(make_ref(&tex));
 
-  RunTestLoop("UploadingGlyphs", bind(&UploadedRender::Render, &r, _1));
+  RunTestLoop("UploadingGlyphs", std::bind(&UploadedRender::Render, &r, std::placeholders::_1));
 #endif
 }

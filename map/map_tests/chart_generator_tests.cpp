@@ -6,6 +6,8 @@
 
 #include "std/vector.hpp"
 
+using namespace std;
+
 namespace
 {
 double constexpr kEpsilon = 0.00001;

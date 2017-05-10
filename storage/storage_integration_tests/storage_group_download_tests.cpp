@@ -16,10 +16,10 @@
 
 #include "base/assert.hpp"
 
-#include "std/condition_variable.hpp"
-#include "std/mutex.hpp"
-#include "std/set.hpp"
-#include "std/unique_ptr.hpp"
+#include <condition_variable>
+#include <mutex>
+#include <set>
+#include <memory>
 
 using namespace platform;
 using namespace storage;
@@ -33,19 +33,19 @@ TCountriesSet const kLeafCountriesIds = {"Tokelau",
                                          "New Zealand South_Canterbury",
                                          "New Zealand South_Southland"};
 
-string GetMwmFilePath(string const & version, TCountryId const & countryId)
+std::string GetMwmFilePath(std::string const & version, TCountryId const & countryId)
 {
   return my::JoinFoldersToPath({GetPlatform().WritableDir(), version},
                                countryId + DATA_FILE_EXTENSION);
 }
 
-string GetMwmDownloadingFilePath(string const & version, TCountryId const & countryId)
+std::string GetMwmDownloadingFilePath(std::string const & version, TCountryId const & countryId)
 {
   return my::JoinFoldersToPath({GetPlatform().WritableDir(), version},
                                countryId + DATA_FILE_EXTENSION READY_FILE_EXTENSION DOWNLOADING_FILE_EXTENSION);
 }
 
-string GetMwmResumeFilePath(string const & version, TCountryId const & countryId)
+std::string GetMwmResumeFilePath(std::string const & version, TCountryId const & countryId)
 {
   return my::JoinFoldersToPath({GetPlatform().WritableDir(), version},
                                countryId + DATA_FILE_EXTENSION READY_FILE_EXTENSION RESUME_FILE_EXTENSION);
@@ -55,7 +55,7 @@ void DownloadGroup(Storage & storage, bool oneByOne)
 {
   Platform & platform = GetPlatform();
 
-  string const version = strings::to_string(storage.GetCurrentDataVersion());
+  std::string const version = strings::to_string(storage.GetCurrentDataVersion());
 
   //  Get children nodes for the group node.
   TCountriesVec children;
@@ -123,9 +123,9 @@ void DownloadGroup(Storage & storage, bool oneByOne)
   // Check there is no mwm or any other files for the children nodes.
   for (auto const & countryId : children)
   {
-    string const mwmFullPath = GetMwmFilePath(version, countryId);
-    string const downloadingFullPath = GetMwmDownloadingFilePath(version, countryId);
-    string const resumeFullPath = GetMwmResumeFilePath(version, countryId);
+    std::string const mwmFullPath = GetMwmFilePath(version, countryId);
+    std::string const downloadingFullPath = GetMwmDownloadingFilePath(version, countryId);
+    std::string const resumeFullPath = GetMwmResumeFilePath(version, countryId);
     TEST(!platform.IsFileExistsByFullPath(mwmFullPath), ());
     TEST(!platform.IsFileExistsByFullPath(downloadingFullPath), ());
     TEST(!platform.IsFileExistsByFullPath(resumeFullPath), ());
@@ -164,9 +164,9 @@ void DownloadGroup(Storage & storage, bool oneByOne)
   // Check there is only mwm files are present and no any other for the children nodes.
   for (auto const & countryId : children)
   {
-    string const mwmFullPath = GetMwmFilePath(version, countryId);
-    string const downloadingFullPath = GetMwmDownloadingFilePath(version, countryId);
-    string const resumeFullPath = GetMwmResumeFilePath(version, countryId);
+    std::string const mwmFullPath = GetMwmFilePath(version, countryId);
+    std::string const downloadingFullPath = GetMwmDownloadingFilePath(version, countryId);
+    std::string const resumeFullPath = GetMwmResumeFilePath(version, countryId);
     TEST(platform.IsFileExistsByFullPath(mwmFullPath), ());
     TEST(!platform.IsFileExistsByFullPath(downloadingFullPath), ());
     TEST(!platform.IsFileExistsByFullPath(resumeFullPath), ());
@@ -188,7 +188,7 @@ void DeleteGroup(Storage & storage, bool oneByOne)
 {
   Platform & platform = GetPlatform();
 
-  string const version = strings::to_string(storage.GetCurrentDataVersion());
+  std::string const version = strings::to_string(storage.GetCurrentDataVersion());
 
   //  Get children nodes for the group node.
   TCountriesVec v;
@@ -208,7 +208,7 @@ void DeleteGroup(Storage & storage, bool oneByOne)
   // Check there are mwm files for the children nodes.
   for (auto const & countryId : children)
   {
-    string const mwmFullPath = GetMwmFilePath(version, countryId);
+    std::string const mwmFullPath = GetMwmFilePath(version, countryId);
     TEST(platform.IsFileExistsByFullPath(mwmFullPath), ());
   }
 
@@ -240,7 +240,7 @@ void DeleteGroup(Storage & storage, bool oneByOne)
   // Check there are no mwm files for the children nodes.
   for (auto const & countryId : children)
   {
-    string const mwmFullPath = GetMwmFilePath(version, countryId);
+    std::string const mwmFullPath = GetMwmFilePath(version, countryId);
     TEST(!platform.IsFileExistsByFullPath(mwmFullPath), ());
   }
 
@@ -260,7 +260,7 @@ void TestDownloadDelete(bool downloadOneByOne, bool deleteOneByOne)
   Storage storage(COUNTRIES_FILE);
 
   TEST(version::IsSingleMwm(storage.GetCurrentDataVersion()), ());
-  string const version = strings::to_string(storage.GetCurrentDataVersion());
+  std::string const version = strings::to_string(storage.GetCurrentDataVersion());
 
   auto onUpdatedFn = [&](TCountryId const &, storage::Storage::TLocalFilePtr const localCountryFile)
   {

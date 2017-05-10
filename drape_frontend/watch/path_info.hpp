@@ -3,8 +3,8 @@
 #include "geometry/point2d.hpp"
 #include "geometry/rect2d.hpp"
 
-#include "std/vector.hpp"
-#include "std/algorithm.hpp"
+#include <vector>
+#include <algorithm>
 
 namespace df
 {
@@ -17,7 +17,7 @@ class PathInfo
   double m_offset;
 
 public:
-  vector<m2::PointD> m_path;
+  std::vector<m2::PointD> m_path;
 
   // -1.0 means "not" initialized
   PathInfo(double offset = -1.0) : m_fullL(-1.0), m_offset(offset) {}

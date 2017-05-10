@@ -5,8 +5,8 @@
 
 #include "base/logging.hpp"
 
-#include "std/cstring.hpp"
-#include "std/type_traits.hpp"
+#include <cstring>
+#include <type_traits>
 
 #include "3party/pugixml/src/pugixml.hpp"
 
@@ -17,7 +17,7 @@ bool ParseInteger(pugi::xml_node const & node, Value & value)
 {
   if (!node)
     return false;
-  value = static_cast<Value>(is_signed<Value>::value
+  value = static_cast<Value>(std::is_signed<Value>::value
                              ? node.text().as_int()
                              : node.text().as_uint());
   return true;
@@ -41,7 +41,7 @@ bool ParseTableValue(pugi::xml_node const & node, Value & value)
 {
   if (!node)
     return false;
-  value = static_cast<Value>(is_signed<Value>::value
+  value = static_cast<Value>(std::is_signed<Value>::value
                              ? node.attribute("olr:code").as_int()
                              : node.attribute("olr:code").as_uint());
   return true;
@@ -261,7 +261,7 @@ bool ParseSegment(pugi::xml_node const & segmentNode, openlr::LinearSegment & se
 namespace openlr
 {
 // Functions ---------------------------------------------------------------------------------------
-bool ParseOpenlr(pugi::xml_document const & document, vector<LinearSegment> & segments)
+bool ParseOpenlr(pugi::xml_document const & document, std::vector<LinearSegment> & segments)
 {
   for (auto const segmentXpathNode : document.select_nodes("//reportSegments"))
   {

@@ -5,7 +5,7 @@
 
 #include "base/assert.hpp"
 
-#include "std/unique_ptr.hpp"
+#include <memory>
 
 class Index;
 
@@ -13,7 +13,7 @@ namespace indexer
 {
 namespace tests_support
 {
-void SetUpEditorForTesting(unique_ptr<osm::Editor::Delegate> delegate);
+void SetUpEditorForTesting(std::unique_ptr<osm::Editor::Delegate> delegate);
 
 template <typename TFn>
 void EditFeature(FeatureType const & ft, TFn && fn)

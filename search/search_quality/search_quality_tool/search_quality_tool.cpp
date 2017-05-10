@@ -50,6 +50,9 @@
 
 #include "3party/gflags/src/gflags/gflags.h"
 
+using namespace std;
+using namespace std::chrono;
+
 using namespace search::tests_support;
 using namespace search;
 using namespace storage;

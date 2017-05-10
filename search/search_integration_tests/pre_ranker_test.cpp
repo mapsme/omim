@@ -30,9 +30,9 @@
 #include "base/math.hpp"
 #include "base/stl_add.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/iterator.hpp"
-#include "std/vector.hpp"
+#include <algorithm>
+#include <iterator>
+#include <vector>
 
 using namespace generator::tests_support;
 using namespace search::tests_support;
@@ -44,9 +44,9 @@ namespace
 class TestRanker : public Ranker
 {
 public:
-  TestRanker(TestSearchEngine & engine, Emitter & emitter, vector<Suggest> const & suggests,
+  TestRanker(TestSearchEngine & engine, Emitter & emitter, std::vector<Suggest> const & suggests,
              VillagesCache & villagesCache, my::Cancellable const & cancellable,
-             vector<PreResult1> & results)
+             std::vector<PreResult1> & results)
     : Ranker(static_cast<Index const &>(engine), engine.GetCountryInfoGetter(), emitter,
              GetDefaultCategories(), suggests, villagesCache, cancellable)
     , m_results(results)
@@ -56,10 +56,10 @@ public:
   inline bool Finished() const { return m_finished; }
 
   // Ranker overrides:
-  void SetPreResults1(vector<PreResult1> && preResults1) override
+  void SetPreResults1(std::vector<PreResult1> && preResults1) override
   {
     CHECK(!Finished(), ());
-    move(preResults1.begin(), preResults1.end(), back_inserter(m_results));
+    move(preResults1.begin(), preResults1.end(), std::back_inserter(m_results));
     preResults1.clear();
   }
 
@@ -71,14 +71,14 @@ public:
   }
 
 private:
-  vector<PreResult1> & m_results;
+  std::vector<PreResult1> & m_results;
   bool m_finished = false;
 };
 
 class PreRankerTest : public SearchTest
 {
 public:
-  vector<Suggest> m_suggests;
+  std::vector<Suggest> m_suggests;
   my::Cancellable m_cancellable;
 };
 
@@ -93,7 +93,7 @@ UNIT_CLASS_TEST(PreRankerTest, Smoke)
 
   size_t const kBatchSize = 50;
 
-  vector<TestPOI> pois;
+  std::vector<TestPOI> pois;
 
   for (int x = -5; x <= 5; ++x)
   {
@@ -111,7 +111,7 @@ UNIT_CLASS_TEST(PreRankerTest, Smoke)
       builder.Add(poi);
   });
 
-  vector<PreResult1> results;
+  std::vector<PreResult1> results;
   Emitter emitter;
   VillagesCache villagesCache(m_cancellable);
   TestRanker ranker(m_engine, emitter, m_suggests, villagesCache, m_cancellable, results);
@@ -125,8 +125,8 @@ UNIT_CLASS_TEST(PreRankerTest, Smoke)
   preRanker.Init(params);
   preRanker.SetViewportSearch(true);
 
-  vector<double> distances(pois.size());
-  vector<bool> emit(pois.size());
+  std::vector<double> distances(pois.size());
+  std::vector<bool> emit(pois.size());
 
   FeaturesVectorTest fv(mwmId.GetInfo()->GetLocalFile().GetPath(MapOptions::Map));
   fv.GetVector().ForEach([&](FeatureType & ft, uint32_t index) {
@@ -140,11 +140,11 @@ UNIT_CLASS_TEST(PreRankerTest, Smoke)
 
   preRanker.UpdateResults(true /* lastUpdate */);
 
-  TEST(all_of(emit.begin(), emit.end(), IdFunctor()), (emit));
+  TEST(std::all_of(emit.begin(), emit.end(), IdFunctor()), (emit));
   TEST(ranker.Finished(), ());
   TEST_EQUAL(results.size(), kBatchSize, ());
 
-  vector<bool> checked(pois.size());
+  std::vector<bool> checked(pois.size());
   for (size_t i = 0; i < results.size(); ++i)
   {
     size_t const index = results[i].GetId().m_index;

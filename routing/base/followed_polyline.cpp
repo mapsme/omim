@@ -74,7 +74,7 @@ void FollowedPolyline::Swap(FollowedPolyline & rhs)
   m_poly.Swap(rhs.m_poly);
   m_segDistance.swap(rhs.m_segDistance);
   m_segProj.swap(rhs.m_segProj);
-  swap(m_current, rhs.m_current);
+  std::swap(m_current, rhs.m_current);
 }
 
 void FollowedPolyline::Update()
@@ -106,7 +106,7 @@ Iter FollowedPolyline::GetClosestProjection(m2::RectD const & posRect,
                                             DistanceFn const & distFn) const
 {
   Iter res;
-  double minDist = numeric_limits<double>::max();
+  double minDist = std::numeric_limits<double>::max();
 
   m2::PointD const currPos = posRect.Center();
   size_t const count = m_poly.GetSize() - 1;
@@ -183,7 +183,7 @@ double FollowedPolyline::GetMercatorDistanceFromBegin() const
 void FollowedPolyline::GetCurrentDirectionPoint(m2::PointD & pt, double toleranceM) const
 {
   ASSERT(IsValid(), ());
-  size_t currentIndex = min(m_current.m_ind + 1, m_poly.GetSize() - 1);
+  size_t currentIndex = std::min(m_current.m_ind + 1, m_poly.GetSize() - 1);
   m2::PointD point = m_poly.GetPoint(currentIndex);
   for (; currentIndex < m_poly.GetSize() - 1; point = m_poly.GetPoint(++currentIndex))
   {

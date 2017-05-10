@@ -6,9 +6,9 @@
 #include <FSystem.h>
 #include <FLocales.h>
 
-string FromTizenString(Tizen::Base::String const & str_tizen)
+std::string FromTizenString(Tizen::Base::String const & str_tizen)
 {
-  string utf8Str;
+  std::string utf8Str;
   if (str_tizen.GetLength() == 0)
     return utf8Str;
   Tizen::Base::ByteBuffer * pBuffer = Tizen::Base::Utility::StringUtil::StringToUtf8N(str_tizen);
@@ -26,7 +26,7 @@ string FromTizenString(Tizen::Base::String const & str_tizen)
   return utf8Str;
 }
 
-string GetTizenLocale()
+std::string GetTizenLocale()
 {
   Tizen::Base::String languageCode;
   Tizen::System::SettingInfo::GetValue(L"http://tizen.org/setting/locale.language", languageCode);
@@ -35,7 +35,7 @@ string GetTizenLocale()
   return CodeFromISO369_2to_1(FromTizenString(languageCode_truncated));
 }
 
-string CodeFromISO369_2to_1(string const & code)
+std::string CodeFromISO369_2to_1(std::string const & code)
 {
   static char const * ar [] =
   {
@@ -255,7 +255,7 @@ string CodeFromISO369_2to_1(string const & code)
   return "en";
 }
 
-string GetLanguageCode(Tizen::Locales::LanguageCode code)
+std::string GetLanguageCode(Tizen::Locales::LanguageCode code)
 {
   using namespace Tizen::Locales;
   switch(code)

@@ -5,9 +5,9 @@
 #include "base/assert.hpp"
 #include "base/internal/message.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/limits.hpp"
-#include "std/string.hpp"
+#include <algorithm>
+#include <limits>
+#include <string>
 
 
 namespace m2
@@ -18,12 +18,12 @@ namespace m2
     template <typename T> struct min_max_value<T, true>
     {
       T get_min() { return -get_max(); }
-      T get_max() { return numeric_limits<T>::max(); }
+      T get_max() { return std::numeric_limits<T>::max(); }
     };
     template <typename T> struct min_max_value<T, false>
     {
-      T get_min() { return numeric_limits<T>::min(); }
-      T get_max() { return numeric_limits<T>::max(); }
+      T get_min() { return std::numeric_limits<T>::min(); }
+      T get_max() { return std::numeric_limits<T>::max(); }
     };
   }
 
@@ -36,7 +36,7 @@ namespace m2
     template <class TArchive, class TPoint>
     friend TArchive & operator >> (TArchive & ar, Rect<TPoint> & rect);
 
-    enum { IsSigned = numeric_limits<T>::is_signed };
+    enum { IsSigned = std::numeric_limits<T>::is_signed };
 
     T m_minX, m_minY, m_maxX, m_maxY;
 
@@ -51,8 +51,8 @@ namespace m2
       ASSERT ( minY <= maxY, (minY, maxY) );
     }
     Rect(Point<T> const & p1, Point<T> const & p2)
-      : m_minX(min(p1.x, p2.x)), m_minY(min(p1.y, p2.y)),
-        m_maxX(max(p1.x, p2.x)), m_maxY(max(p1.y, p2.y))
+      : m_minX(std::min(p1.x, p2.x)), m_minY(std::min(p1.y, p2.y)),
+        m_maxX(std::max(p1.x, p2.x)), m_maxY(std::max(p1.y, p2.y))
     {
     }
 
@@ -92,18 +92,18 @@ namespace m2
 
     void Add(m2::Point<T> const & p)
     {
-      m_minX = min(p.x, m_minX);
-      m_minY = min(p.y, m_minY);
-      m_maxX = max(p.x, m_maxX);
-      m_maxY = max(p.y, m_maxY);
+      m_minX = std::min(p.x, m_minX);
+      m_minY = std::min(p.y, m_minY);
+      m_maxX = std::max(p.x, m_maxX);
+      m_maxY = std::max(p.y, m_maxY);
     }
 
     void Add(m2::Rect<T> const & r)
     {
-      m_minX = min(r.m_minX, m_minX);
-      m_minY = min(r.m_minY, m_minY);
-      m_maxX = max(r.m_maxX, m_maxX);
-      m_maxY = max(r.m_maxY, m_maxY);
+      m_minX = std::min(r.m_minX, m_minX);
+      m_minY = std::min(r.m_minY, m_minY);
+      m_maxX = std::max(r.m_maxX, m_maxX);
+      m_maxY = std::max(r.m_maxY, m_maxY);
     }
 
     void Offset(m2::Point<T> const & p)
@@ -227,14 +227,14 @@ namespace m2
 
     bool Intersect(m2::Rect<T> const & r)
     {
-      T newMinX = max(m_minX, r.minX());
-      T newMaxX = min(m_maxX, r.maxX());
+      T newMinX = std::max(m_minX, r.minX());
+      T newMaxX = std::min(m_maxX, r.maxX());
 
       if (newMinX > newMaxX)
         return false;
 
-      T newMinY = max(m_minY, r.minY());
-      T newMaxY = min(m_maxY, r.maxY());
+      T newMinY = std::max(m_minY, r.minY());
+      T newMaxY = std::min(m_maxY, r.maxY());
 
       if (newMinY > newMaxY)
         return false;
@@ -298,10 +298,10 @@ namespace m2
   inline m2::Rect<T> const Add(m2::Rect<T> const & r, m2::Point<T> const & p)
   {
     return m2::Rect<T>(
-      min(p.x, r.minX()),
-      min(p.y, r.minY()),
-      max(p.x, r.maxX()),
-      max(p.y, r.maxY())
+      std::min(p.x, r.minX()),
+      std::min(p.y, r.minY()),
+      std::max(p.x, r.maxX()),
+      std::max(p.y, r.maxY())
     );
   }
 
@@ -309,10 +309,10 @@ namespace m2
   inline m2::Rect<T> const Add(m2::Rect<T> const & r1, m2::Rect<T> const & r2)
   {
     return m2::Rect<T>(
-        min(r2.minX(), r1.minX()),
-        min(r2.minY(), r1.minY()),
-        max(r2.maxX(), r1.maxX()),
-        max(r2.maxY(), r1.maxY())
+        std::min(r2.minX(), r1.minX()),
+        std::min(r2.minY(), r1.minY()),
+        std::max(r2.maxX(), r1.maxX()),
+        std::max(r2.maxY(), r1.maxY())
     );
   }
 
@@ -382,9 +382,9 @@ namespace m2
   typedef Rect<int> RectI;
 
   template <typename T>
-  inline string DebugPrint(m2::Rect<T> const & r)
+  inline std::string DebugPrint(m2::Rect<T> const & r)
   {
-    ostringstream out;
+    std::ostringstream out;
     out.precision(20);
     out << "m2::Rect("
         << r.minX() << ", " << r.minY() << ", " << r.maxX() << ", " << r.maxY() << ")";

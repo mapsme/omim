@@ -76,7 +76,7 @@ Tizen::Base::String GetDistance(UserMark const * pUserMark)
   double lat, lon;
   GetFramework()->GetCurrentPosition(lat, lon);
   double north = 0;
-  string dist;
+  std::string dist;
   double azimut;
   m2::PointD pt = pUserMark->GetOrg();
   GetFramework()->GetDistanceAndAzimut(pt, lat, lon, north, dist, azimut);
@@ -89,7 +89,7 @@ double GetAzimuth(UserMark const * pUserMark, double north)
     return 0;
   double lat, lon;
   GetFramework()->GetCurrentPosition(lat, lon);
-  string dist;
+  std::string dist;
   double azimut;
   m2::PointD const pt = pUserMark->GetOrg();
   GetFramework()->GetDistanceAndAzimut(pt, lat, lon, north, dist, azimut);
@@ -103,7 +103,7 @@ bool IsBookMark(UserMark const * pUserMark)
   return pUserMark->GetMarkType() == UserMark::BOOKMARK;
 }
 
-string fromEColorTostring(EColor color)
+std::string fromEColorTostring(EColor color)
 {
   switch(color)
   {
@@ -119,7 +119,7 @@ string fromEColorTostring(EColor color)
   return BM_COLOR_RED;
 }
 
-EColor fromstringToColor(string const & sColor)
+EColor fromstringToColor(std::string const & sColor)
 {
 
   if (sColor == BM_COLOR_RED)

@@ -13,12 +13,12 @@
 #include "base/string_utils.hpp"
 #include "base/logging.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/cctype.hpp"
-#include "std/regex.hpp"
-#include "std/sstream.hpp"
-#include "std/unique_ptr.hpp"
-#include "std/unordered_set.hpp"
+#include <algorithm>
+#include <cctype>
+#include <regex>
+#include <sstream>
+#include <memory>
+#include <unordered_set>
 
 #include "defines.hpp"
 
@@ -57,7 +57,7 @@ char const kOffsetsExt[] = ".offsets";
 
 size_t const kMaxTimestampLength = 18;
 
-bool GetFileTypeChecked(string const & path, Platform::EFileType & type)
+bool GetFileTypeChecked(std::string const & path, Platform::EFileType & type)
 {
   Platform::EError const ret = Platform::GetFileType(path, type);
   if (ret != Platform::ERR_OK)
@@ -68,7 +68,7 @@ bool GetFileTypeChecked(string const & path, Platform::EFileType & type)
   return true;
 }
 
-bool MkDirChecked(string const & directory)
+bool MkDirChecked(std::string const & directory)
 {
   Platform & platform = GetPlatform();
   Platform::EError const ret = platform.MkDir(directory);
@@ -94,7 +94,7 @@ bool MkDirChecked(string const & directory)
   }
 }
 
-string GetSpecialFilesSearchScope()
+std::string GetSpecialFilesSearchScope()
 {
 #if defined(OMIM_OS_ANDROID)
   return "er";
@@ -103,15 +103,15 @@ string GetSpecialFilesSearchScope()
 #endif  // defined(OMIM_OS_ANDROID)
 }
 
-bool IsSpecialName(string const & name) { return name == "." || name == ".."; }
+bool IsSpecialName(std::string const & name) { return name == "." || name == ".."; }
 
-bool IsDownloaderFile(string const & name)
+bool IsDownloaderFile(std::string const & name)
 {
-  static regex const filter(".*\\.(downloading|resume|ready)[0-9]?$");
-  return regex_match(name.begin(), name.end(), filter);
+  static std::regex const filter(".*\\.(downloading|resume|ready)[0-9]?$");
+  return std::regex_match(name.begin(), name.end(), filter);
 }
 
-bool DirectoryHasIndexesOnly(string const & directory)
+bool DirectoryHasIndexesOnly(std::string const & directory)
 {
   Platform::TFilesWithType fwts;
   Platform::GetFilesByType(directory, Platform::FILE_TYPE_REGULAR | Platform::FILE_TYPE_DIRECTORY,
@@ -132,7 +132,7 @@ bool DirectoryHasIndexesOnly(string const & directory)
   return true;
 }
 
-inline string GetDataDirFullPath(string const & dataDir)
+inline std::string GetDataDirFullPath(std::string const & dataDir)
 {
   Platform & platform = GetPlatform();
   return dataDir.empty() ? platform.WritableDir()
@@ -142,15 +142,15 @@ inline string GetDataDirFullPath(string const & dataDir)
 
 void DeleteDownloaderFilesForCountry(int64_t version, CountryFile const & countryFile)
 {
-  DeleteDownloaderFilesForCountry(version, string(), countryFile);
+  DeleteDownloaderFilesForCountry(version, std::string(), countryFile);
 }
 
-void DeleteDownloaderFilesForCountry(int64_t version, string const & dataDir,
+void DeleteDownloaderFilesForCountry(int64_t version, std::string const & dataDir,
                                      CountryFile const & countryFile)
 {
   for (MapOptions file : {MapOptions::Map, MapOptions::CarRouting})
   {
-    string const path = GetFileDownloadPath(version, dataDir, countryFile, file);
+    std::string const path = GetFileDownloadPath(version, dataDir, countryFile, file);
     ASSERT(strings::EndsWith(path, READY_FILE_EXTENSION), ());
     my::DeleteFileX(path);
     my::DeleteFileX(path + RESUME_FILE_EXTENSION);
@@ -158,24 +158,24 @@ void DeleteDownloaderFilesForCountry(int64_t version, string const & dataDir,
   }
 }
 
-void FindAllLocalMapsInDirectoryAndCleanup(string const & directory, int64_t version,
+void FindAllLocalMapsInDirectoryAndCleanup(std::string const & directory, int64_t version,
                                            int64_t latestVersion,
-                                           vector<LocalCountryFile> & localFiles)
+                                           std::vector<LocalCountryFile> & localFiles)
 {
-  vector<string> files;
+  std::vector<std::string> files;
   Platform & platform = GetPlatform();
 
   Platform::TFilesWithType fwts;
   platform.GetFilesByType(directory, Platform::FILE_TYPE_REGULAR | Platform::FILE_TYPE_DIRECTORY,
                           fwts);
 
-  unordered_set<string> names;
+  std::unordered_set<std::string> names;
   for (auto const & fwt : fwts)
   {
     if (fwt.second != Platform::FILE_TYPE_REGULAR)
       continue;
 
-    string name = fwt.first;
+    std::string name = fwt.first;
 
     // Remove downloader files for old version directories.
     if (IsDownloaderFile(name) && version < latestVersion)
@@ -210,7 +210,7 @@ void FindAllLocalMapsInDirectoryAndCleanup(string const & directory, int64_t ver
     if (fwt.second != Platform::FILE_TYPE_DIRECTORY)
       continue;
 
-    string name = fwt.first;
+    std::string name = fwt.first;
     if (IsSpecialName(name))
       continue;
 
@@ -224,27 +224,27 @@ void FindAllLocalMapsInDirectoryAndCleanup(string const & directory, int64_t ver
   }
 }
 
-void FindAllLocalMapsAndCleanup(int64_t latestVersion, vector<LocalCountryFile> & localFiles)
+void FindAllLocalMapsAndCleanup(int64_t latestVersion, std::vector<LocalCountryFile> & localFiles)
 {
-  FindAllLocalMapsAndCleanup(latestVersion, string(), localFiles);
+  FindAllLocalMapsAndCleanup(latestVersion, std::string(), localFiles);
 }
 
-void FindAllLocalMapsAndCleanup(int64_t latestVersion, string const & dataDir,
-                                vector<LocalCountryFile> & localFiles)
+void FindAllLocalMapsAndCleanup(int64_t latestVersion, std::string const & dataDir,
+                                std::vector<LocalCountryFile> & localFiles)
 {
-  string const dir = GetDataDirFullPath(dataDir);
+  std::string const dir = GetDataDirFullPath(dataDir);
   FindAllLocalMapsInDirectoryAndCleanup(dir, 0 /* version */, latestVersion, localFiles);
 
   Platform::TFilesWithType fwts;
   Platform::GetFilesByType(dir, Platform::FILE_TYPE_DIRECTORY, fwts);
   for (auto const & fwt : fwts)
   {
-    string const & subdir = fwt.first;
+    std::string const & subdir = fwt.first;
     int64_t version;
     if (!ParseVersion(subdir, version) || version > latestVersion)
       continue;
 
-    string const fullPath = my::JoinFoldersToPath(dir, subdir);
+    std::string const fullPath = my::JoinFoldersToPath(dir, subdir);
     FindAllLocalMapsInDirectoryAndCleanup(fullPath, version, latestVersion, localFiles);
     Platform::EError err = Platform::RmDir(fullPath);
     if (err != Platform::ERR_OK && err != Platform::ERR_DIRECTORY_NOT_EMPTY)
@@ -253,7 +253,7 @@ void FindAllLocalMapsAndCleanup(int64_t latestVersion, string const & dataDir,
 
   // World and WorldCoasts can be stored in app bundle or in resources
   // directory, thus it's better to get them via Platform.
-  for (string const & file : { WORLD_FILE_NAME,
+  for (std::string const & file : { WORLD_FILE_NAME,
     (migrate::NeedMigrate() ? WORLD_COASTS_OBSOLETE_FILE_NAME : WORLD_COASTS_FILE_NAME) })
   {
     auto i = localFiles.begin();
@@ -286,7 +286,7 @@ void FindAllLocalMapsAndCleanup(int64_t latestVersion, string const & dataDir,
       if (i == localFiles.end())
       {
         // This warning is possible on android devices without pre-downloaded Worlds/fonts files.
-        LOG(LWARNING, ("Can't find any:", file, "Reason:", ex.Msg()));
+        LOG(LWARNING, ("Can't std::find any:", file, "Reason:", ex.Msg()));
       }
     }
   }
@@ -294,11 +294,11 @@ void FindAllLocalMapsAndCleanup(int64_t latestVersion, string const & dataDir,
 
 void CleanupMapsDirectory(int64_t latestVersion)
 {
-  vector<LocalCountryFile> localFiles;
+  std::vector<LocalCountryFile> localFiles;
   FindAllLocalMapsAndCleanup(latestVersion, localFiles);
 }
 
-bool ParseVersion(string const & s, int64_t & version)
+bool ParseVersion(std::string const & s, int64_t & version)
 {
   if (s.empty() || s.size() > kMaxTimestampLength)
     return false;
@@ -306,7 +306,7 @@ bool ParseVersion(string const & s, int64_t & version)
   int64_t v = 0;
   for (char const c : s)
   {
-    if (!isdigit(c))
+    if (!std::isdigit(c))
       return false;
     v = v * 10 + c - '0';
   }
@@ -316,31 +316,31 @@ bool ParseVersion(string const & s, int64_t & version)
 
 shared_ptr<LocalCountryFile> PreparePlaceForCountryFiles(int64_t version, CountryFile const & countryFile)
 {
-  return PreparePlaceForCountryFiles(version, string(), countryFile);
+  return PreparePlaceForCountryFiles(version, std::string(), countryFile);
 }
 
-shared_ptr<LocalCountryFile> PreparePlaceForCountryFiles(int64_t version, string const & dataDir,
+shared_ptr<LocalCountryFile> PreparePlaceForCountryFiles(int64_t version, std::string const & dataDir,
                                                          CountryFile const & countryFile)
 {
-  string const dir = GetDataDirFullPath(dataDir);
+  std::string const dir = GetDataDirFullPath(dataDir);
   if (version == 0)
-    return make_shared<LocalCountryFile>(dir, countryFile, version);
-  string const directory = my::JoinFoldersToPath(dir, strings::to_string(version));
+    return std::make_shared<LocalCountryFile>(dir, countryFile, version);
+  std::string const directory = my::JoinFoldersToPath(dir, strings::to_string(version));
   if (!MkDirChecked(directory))
-    return shared_ptr<LocalCountryFile>();
-  return make_shared<LocalCountryFile>(directory, countryFile, version);
+    return std::shared_ptr<LocalCountryFile>();
+  return std::make_shared<LocalCountryFile>(directory, countryFile, version);
 }
 
-string GetFileDownloadPath(int64_t version, CountryFile const & countryFile, MapOptions file)
+std::string GetFileDownloadPath(int64_t version, CountryFile const & countryFile, MapOptions file)
 {
-  return GetFileDownloadPath(version, string(), countryFile, file);
+  return GetFileDownloadPath(version, std::string(), countryFile, file);
 }
 
-string GetFileDownloadPath(int64_t version, string const & dataDir,
+std::string GetFileDownloadPath(int64_t version, std::string const & dataDir,
                            CountryFile const & countryFile, MapOptions file)
 {
-  string const readyFile = GetFileName(countryFile.GetName(), file, version) + READY_FILE_EXTENSION;
-  string const dir = GetDataDirFullPath(dataDir);
+  std::string const readyFile = GetFileName(countryFile.GetName(), file, version) + READY_FILE_EXTENSION;
+  std::string const dir = GetDataDirFullPath(dataDir);
   if (version == 0)
     return my::JoinFoldersToPath(dir, readyFile);
   return my::JoinFoldersToPath({dir, strings::to_string(version)}, readyFile);
@@ -361,7 +361,7 @@ unique_ptr<ModelReader> GetCountryReader(platform::LocalCountryFile const & file
 // static
 void CountryIndexes::PreparePlaceOnDisk(LocalCountryFile const & localFile)
 {
-  string const dir = IndexesDir(localFile);
+  std::string const dir = IndexesDir(localFile);
   if (!MkDirChecked(dir))
     MYTHROW(FileSystemException, ("Can't create directory", dir));
 }
@@ -369,12 +369,12 @@ void CountryIndexes::PreparePlaceOnDisk(LocalCountryFile const & localFile)
 // static
 bool CountryIndexes::DeleteFromDisk(LocalCountryFile const & localFile)
 {
-  string const directory = IndexesDir(localFile);
+  std::string const directory = IndexesDir(localFile);
   bool ok = true;
 
   for (auto index : {Index::Bits, Index::Nodes, Index::Offsets})
   {
-    string const path = GetPath(localFile, index);
+    std::string const path = GetPath(localFile, index);
     if (Platform::IsFileExistsByFullPath(path) && !my::DeleteFileX(path))
     {
       LOG(LWARNING, ("Can't remove country index:", path));
@@ -392,7 +392,7 @@ bool CountryIndexes::DeleteFromDisk(LocalCountryFile const & localFile)
 }
 
 // static
-string CountryIndexes::GetPath(LocalCountryFile const & localFile, Index index)
+std::string CountryIndexes::GetPath(LocalCountryFile const & localFile, Index index)
 {
   char const * ext = nullptr;
   switch (index)
@@ -411,7 +411,7 @@ string CountryIndexes::GetPath(LocalCountryFile const & localFile, Index index)
 }
 
 // static
-void CountryIndexes::GetIndexesExts(vector<string> & exts)
+void CountryIndexes::GetIndexesExts(std::vector<std::string> & exts)
 {
   exts.push_back(kBitsExt);
   exts.push_back(kNodesExt);
@@ -419,16 +419,16 @@ void CountryIndexes::GetIndexesExts(vector<string> & exts)
 }
 
 // static
-bool CountryIndexes::IsIndexFile(string const & file)
+bool CountryIndexes::IsIndexFile(std::string const & file)
 {
   return strings::EndsWith(file, kBitsExt) || strings::EndsWith(file, kNodesExt) ||
          strings::EndsWith(file, kOffsetsExt);
 }
 
 // static
-string CountryIndexes::IndexesDir(LocalCountryFile const & localFile)
+std::string CountryIndexes::IndexesDir(LocalCountryFile const & localFile)
 {
-  string dir = localFile.GetDirectory();
+  std::string dir = localFile.GetDirectory();
   CountryFile const & file = localFile.GetCountryFile();
 
   /// @todo It's a temporary code until we will put fIndex->fOffset into mwm container.
@@ -447,7 +447,7 @@ string CountryIndexes::IndexesDir(LocalCountryFile const & localFile)
   return my::JoinFoldersToPath(dir, file.GetName());
 }
 
-string DebugPrint(CountryIndexes::Index index)
+std::string DebugPrint(CountryIndexes::Index index)
 {
   switch (index)
   {

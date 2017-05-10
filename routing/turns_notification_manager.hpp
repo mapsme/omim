@@ -6,7 +6,7 @@
 #include "platform/measurement_utils.hpp"
 #include "platform/settings.hpp"
 
-#include "std/string.hpp"
+#include <string>
 
 namespace location
 {
@@ -28,7 +28,7 @@ enum class PronouncedNotification
   Second /** The second notification just before the turn was pronounced. */
 };
 
-string DebugPrint(PronouncedNotification const notificationProgress);
+std::string DebugPrint(PronouncedNotification const notificationProgress);
 
 /// \brief The TurnsSound class is responsible for all route turn sound notifications functionality.
 /// To be able to generate turn sound notification the class needs to have correct Settings
@@ -100,10 +100,10 @@ class NotificationManager
   /// the turn after the next one.
   uint32_t m_secondTurnNotificationIndex;
 
-  string GenerateTurnText(uint32_t distanceUnits, uint8_t exitNum, bool useThenInsteadOfDistance,
+  std::string GenerateTurnText(uint32_t distanceUnits, uint8_t exitNum, bool useThenInsteadOfDistance,
                           TurnDirection turnDir, measurement_utils::Units lengthUnits) const;
   /// Generates turn sound notification for the nearest to the current position turn.
-  string GenerateFirstTurnSound(TurnItem const & turn, double distanceToTurnMeters);
+  std::string GenerateFirstTurnSound(TurnItem const & turn, double distanceToTurnMeters);
   /// Changes the state of the class to emulate that first turn notification is pronouned
   /// without pronunciation.
   void FastForwardFirstTurnNotification();
@@ -133,8 +133,8 @@ public:
   void Enable(bool enable);
   void SetLengthUnits(measurement_utils::Units units);
   inline measurement_utils::Units GetLengthUnits() const { return m_settings.GetLengthUnits(); }
-  inline void SetLocale(string const & locale) { m_getTtsText.SetLocale(locale); }
-  inline string GetLocale() const { return m_getTtsText.GetLocale(); }
+  inline void SetLocale(std::string const & locale) { m_getTtsText.SetLocale(locale); }
+  inline std::string GetLocale() const { return m_getTtsText.GetLocale(); }
   void SetSpeedMetersPerSecond(double speed);
 
   /// \brief GenerateTurnNotifications updates information about the next turn notification.
@@ -146,7 +146,7 @@ public:
   /// \param turnNotifications is a parameter to fill it if it's necessary.
   /// \note The client implies turnNotifications does not contain empty strings.
   void GenerateTurnNotifications(vector<TurnItemDist> const & turns,
-                                 vector<string> & turnNotifications);
+                                 vector<std::string> & turnNotifications);
   /// Reset states which reflects current route position.
   /// The method shall be called after creating a new route or after rerouting.
   void Reset();

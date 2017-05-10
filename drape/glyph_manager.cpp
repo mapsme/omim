@@ -5,15 +5,16 @@
 
 #include "coding/reader.hpp"
 
+#include "base/stl_add.hpp"
 #include "base/string_utils.hpp"
 #include "base/logging.hpp"
 #include "base/math.hpp"
 #include "base/timer.hpp"
 
-#include "std/limits.hpp"
-#include "std/sstream.hpp"
-#include "std/unique_ptr.hpp"
-#include "std/unordered_set.hpp"
+#include <limits>
+#include <memory>
+#include <sstream>
+#include <unordered_set>
 
 #include <ft2build.h>
 #include FT_TYPES_H
@@ -68,9 +69,9 @@ namespace
 int const kInvalidFont = -1;
 
 template <typename ToDo>
-void ParseUniBlocks(string const & uniBlocksFile, ToDo toDo)
+void ParseUniBlocks(std::string const & uniBlocksFile, ToDo toDo)
 {
-  string uniBlocks;
+  std::string uniBlocks;
   try
   {
     ReaderPtr<Reader>(GetPlatform().GetReader(uniBlocksFile)).ReadAsString(uniBlocks);
@@ -81,10 +82,10 @@ void ParseUniBlocks(string const & uniBlocksFile, ToDo toDo)
     return;
   }
 
-  istringstream fin(uniBlocks);
+  std::istringstream fin(uniBlocks);
   while (true)
   {
-    string name;
+    std::string name;
     strings::UniChar start;
     strings::UniChar end;
     fin >> name >> std::hex >> start >> std::hex >> end;
@@ -96,9 +97,9 @@ void ParseUniBlocks(string const & uniBlocksFile, ToDo toDo)
 }
 
 template <typename ToDo>
-void ParseFontList(string const & fontListFile, ToDo toDo)
+void ParseFontList(std::string const & fontListFile, ToDo toDo)
 {
-  string fontList;
+  std::string fontList;
   try
   {
     ReaderPtr<Reader>(GetPlatform().GetReader(fontListFile)).ReadAsString(fontList);
@@ -109,11 +110,11 @@ void ParseFontList(string const & fontListFile, ToDo toDo)
     return;
   }
 
-  istringstream fin(fontList);
+  std::istringstream fin(fontList);
   while (true)
   {
-    string ubName;
-    string fontName;
+    std::string ubName;
+    std::string fontName;
     fin >> ubName >> fontName;
     if (!fin)
       break;
@@ -300,7 +301,7 @@ public:
     return glyph;
   }
 
-  void GetCharcodes(vector<FT_ULong> & charcodes)
+  void GetCharcodes(std::vector<FT_ULong> & charcodes)
   {
     FT_UInt gindex;
     charcodes.push_back(FT_Get_First_Char(m_fontFace, &gindex));
@@ -348,13 +349,13 @@ private:
 /// Information about single unicode block.
 struct UnicodeBlock
 {
-  string m_name;
+  std::string m_name;
 
   strings::UniChar m_start;
   strings::UniChar m_end;
-  vector<int> m_fontsWeight;
+  std::vector<int> m_fontsWeight;
 
-  UnicodeBlock(string const & name, strings::UniChar start, strings::UniChar end)
+  UnicodeBlock(std::string const & name, strings::UniChar start, strings::UniChar end)
     : m_name(name)
     , m_start(start)
     , m_end(end)
@@ -367,12 +368,12 @@ struct UnicodeBlock
       return kInvalidFont;
 
     int maxWeight = 0;
-    int upperBoundWeight = numeric_limits<int>::max();
+    int upperBoundWeight = std::numeric_limits<int>::max();
     if (idx != kInvalidFont)
       upperBoundWeight = m_fontsWeight[idx];
 
     int index = kInvalidFont;
-    ASSERT_LESS(m_fontsWeight.size(), static_cast<size_t>(numeric_limits<int>::max()), ());
+    ASSERT_LESS(m_fontsWeight.size(), static_cast<size_t>(std::numeric_limits<int>::max()), ());
     for (size_t i = 0; i < m_fontsWeight.size(); ++i)
     {
       int w = m_fontsWeight[i];
@@ -392,7 +393,7 @@ struct UnicodeBlock
   }
 };
 
-typedef vector<UnicodeBlock> TUniBlocks;
+typedef std::vector<UnicodeBlock> TUniBlocks;
 typedef TUniBlocks::const_iterator TUniBlockIter;
 
 const int GlyphManager::kDynamicGlyphSize = -1;
@@ -402,7 +403,7 @@ struct GlyphManager::Impl
   FT_Library m_library;
   TUniBlocks m_blocks;
   TUniBlockIter m_lastUsedBlock;
-  vector<unique_ptr<Font>> m_fonts;
+  std::vector<std::unique_ptr<Font>> m_fonts;
 
   uint32_t m_baseGlyphHeight;
 };
@@ -412,24 +413,24 @@ GlyphManager::GlyphManager(GlyphManager::Params const & params)
 {
   m_impl->m_baseGlyphHeight = params.m_baseGlyphHeight;
 
-  typedef pair<string, string> TFontAndBlockName;
+  typedef pair<std::string, std::string> TFontAndBlockName;
   typedef buffer_vector<TFontAndBlockName, 64> TFontLst;
 
   TFontLst whitelst;
   TFontLst blacklst;
 
   m_impl->m_blocks.reserve(160);
-  ParseUniBlocks(params.m_uniBlocks, [this](string const & name, strings::UniChar start, strings::UniChar end)
+  ParseUniBlocks(params.m_uniBlocks, [this](std::string const & name, strings::UniChar start, strings::UniChar end)
   {
     m_impl->m_blocks.push_back(UnicodeBlock(name, start, end));
   });
 
-  ParseFontList(params.m_whitelist, [&whitelst](string const & ubName, string const & fontName)
+  ParseFontList(params.m_whitelist, [&whitelst](std::string const & ubName, std::string const & fontName)
   {
     whitelst.push_back(TFontAndBlockName(fontName, ubName));
   });
 
-  ParseFontList(params.m_blacklist, [&blacklst](string const & ubName, string const & fontName)
+  ParseFontList(params.m_blacklist, [&blacklst](std::string const & ubName, std::string const & fontName)
   {
     blacklst.push_back(TFontAndBlockName(fontName, ubName));
   });
@@ -438,7 +439,7 @@ GlyphManager::GlyphManager(GlyphManager::Params const & params)
 
   FREETYPE_CHECK(FT_Init_FreeType(&m_impl->m_library));
 
-  for (string const & fontName : params.m_fonts)
+  for (std::string const & fontName : params.m_fonts)
   {
     bool ignoreFont = false;
     for_each(blacklst.begin(), blacklst.end(), [&ignoreFont, &fontName](TFontAndBlockName const & p)
@@ -450,10 +451,10 @@ GlyphManager::GlyphManager(GlyphManager::Params const & params)
     if (ignoreFont)
       continue;
 
-    vector<FT_ULong> charCodes;
+    std::vector<FT_ULong> charCodes;
     try
     {
-      m_impl->m_fonts.emplace_back(make_unique<Font>(params.m_sdfScale, GetPlatform().GetReader(fontName), m_impl->m_library));
+      m_impl->m_fonts.emplace_back(my::make_unique<Font>(params.m_sdfScale, GetPlatform().GetReader(fontName), m_impl->m_library));
       m_impl->m_fonts.back()->GetCharcodes(charCodes);
     }
     catch(RootException const & e)
@@ -465,7 +466,7 @@ GlyphManager::GlyphManager(GlyphManager::Params const & params)
     typedef size_t TBlockIndex;
     typedef int TCharCounter;
     typedef pair<TBlockIndex, TCharCounter> TCoverNode;
-    typedef vector<TCoverNode> TCoverInfo;
+    typedef std::vector<TCoverNode> TCoverInfo;
 
     size_t currentUniBlock = 0;
     TCoverInfo coverInfo;
@@ -487,7 +488,7 @@ GlyphManager::GlyphManager(GlyphManager::Params const & params)
         ++coverInfo.back().second;
     }
 
-    typedef function<void (UnicodeBlock const & uniBlock, TCoverNode & node)> TUpdateCoverInfoFn;
+    typedef std::function<void (UnicodeBlock const & uniBlock, TCoverNode & node)> TUpdateCoverInfoFn;
     auto enumerateFn = [this, &coverInfo, &fontName] (TFontLst const & lst, TUpdateCoverInfoFn const & fn)
     {
       for (TFontAndBlockName const & b : lst)

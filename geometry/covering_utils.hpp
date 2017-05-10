@@ -9,11 +9,12 @@
 #include "base/logging.hpp"
 #include "base/math.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
+
+using namespace std;
 
 namespace covering
 {
-
 // Result of an intersection between object and cell.
 enum CellObjectIntersection
 {
@@ -116,5 +117,4 @@ void CoverObject(IntersectF const & intersect, uint64_t cellPenaltyArea, CellIdC
       out.push_back(subdiv[i]);
   }
 }
-
 } // namespace covering

@@ -2,7 +2,7 @@
 
 #include "routing/road_graph.hpp"
 #include "routing/routing_tests/road_graph_builder.hpp"
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 namespace routing_test
 {
@@ -65,7 +65,7 @@ UNIT_TEST(RoadGraph_NearestEdges)
       Edge(MakeTestFeatureID(1) /* second road */, true /* forward */, 2 /* segId */,
            MakeJunctionForTesting(m2::PointD(0, 0)), MakeJunctionForTesting(m2::PointD(0, 1))),
   };
-  sort(expectedOutgoing.begin(), expectedOutgoing.end());
+  std::sort(expectedOutgoing.begin(), expectedOutgoing.end());
 
   // Expected ingoing edges.
   IRoadGraph::TEdgeVector expectedIngoing = {
@@ -78,18 +78,18 @@ UNIT_TEST(RoadGraph_NearestEdges)
       Edge(MakeTestFeatureID(1) /* second road */, false /* forward */, 2 /* segId */,
            MakeJunctionForTesting(m2::PointD(0, 1)), MakeJunctionForTesting(m2::PointD(0, 0))),
   };
-  sort(expectedIngoing.begin(), expectedIngoing.end());
+  std::sort(expectedIngoing.begin(), expectedIngoing.end());
 
   // Check outgoing edges.
   IRoadGraph::TEdgeVector actualOutgoing;
   graph.GetOutgoingEdges(crossPos, actualOutgoing);
-  sort(actualOutgoing.begin(), actualOutgoing.end());
+  std::sort(actualOutgoing.begin(), actualOutgoing.end());
   TEST_EQUAL(expectedOutgoing, actualOutgoing, ());
 
   // Check ingoing edges.
   IRoadGraph::TEdgeVector actualIngoing;
   graph.GetIngoingEdges(crossPos, actualIngoing);
-  sort(actualIngoing.begin(), actualIngoing.end());
+  std::sort(actualIngoing.begin(), actualIngoing.end());
   TEST_EQUAL(expectedIngoing, actualIngoing, ());
 }
 

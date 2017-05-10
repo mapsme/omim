@@ -5,15 +5,15 @@
 
 #include "geometry/point2d.hpp"
 
-#include "std/string.hpp"
+#include <string>
 
 namespace style
 {
 
 // Fixes icons which are not supported by MapsWithMe.
-string GetSupportedStyle(string const & s, string const & context, string const & fallback);
+std::string GetSupportedStyle(std::string const & s, std::string const & context, std::string const & fallback);
 // Default icon.
-string GetDefaultStyle();
+std::string GetDefaultStyle();
 
 } // style
 
@@ -22,24 +22,24 @@ class ApiMarkPoint : public UserMark
 public:
   ApiMarkPoint(m2::PointD const & ptOrg, UserMarkContainer * container);
 
-  ApiMarkPoint(string const & name, string const & id, string const & style,
+  ApiMarkPoint(std::string const & name, std::string const & id, std::string const & style,
                m2::PointD const & ptOrg, UserMarkContainer * container);
 
-  string GetSymbolName() const override;
+  std::string GetSymbolName() const override;
   UserMark::Type GetMarkType() const override;
   m2::PointD GetPixelOffset() const override;
 
-  string const & GetName() const { return m_name; }
-  void SetName(string const & name) { m_name = name; }
+  std::string const & GetName() const { return m_name; }
+  void SetName(std::string const & name) { m_name = name; }
 
-  string const & GetID() const { return m_id; }
-  void SetID(string const & id) { m_id = id; }
+  std::string const & GetID() const { return m_id; }
+  void SetID(std::string const & id) { m_id = id; }
 
-  void SetStyle(string const & style) { m_style = style; }
-  string const & GetStyle() const { return m_style; }
+  void SetStyle(std::string const & style) { m_style = style; }
+  std::string const & GetStyle() const { return m_style; }
 
 private:
-  string m_name;
-  string m_id;
-  string m_style;
+  std::string m_name;
+  std::string m_id;
+  std::string m_style;
 };

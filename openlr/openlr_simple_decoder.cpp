@@ -20,9 +20,9 @@
 #include "base/logging.hpp"
 #include "base/math.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/fstream.hpp"
-#include "std/thread.hpp"
+#include <algorithm>
+#include <fstream>
+#include <thread>
 
 using namespace routing;
 
@@ -80,14 +80,14 @@ openlr::SamplePool MakeSamplePool(std::vector<LinearSegment> const & segments,
 }  // namespace
 
 // OpenLRSimpleDecoder::SegmentsFilter -------------------------------------------------------------
-OpenLRSimpleDecoder::SegmentsFilter::SegmentsFilter(string const & idsPath,
+OpenLRSimpleDecoder::SegmentsFilter::SegmentsFilter(std::string const & idsPath,
                                                     bool const multipointsOnly)
   : m_idsSet(false), m_multipointsOnly(multipointsOnly)
 {
   if (idsPath.empty())
     return;
 
-  ifstream ifs(idsPath);
+  std::ifstream ifs(idsPath);
   CHECK(ifs, ("Can't find", idsPath));
   m_ids.insert(istream_iterator<uint32_t>(ifs), istream_iterator<uint32_t>());
 
@@ -108,7 +108,7 @@ bool OpenLRSimpleDecoder::SegmentsFilter::Matches(LinearSegment const & segment)
 // static
 int const OpenLRSimpleDecoder::kHandleAllSegments = -1;
 
-OpenLRSimpleDecoder::OpenLRSimpleDecoder(string const & dataFilename, vector<Index> const & indexes)
+OpenLRSimpleDecoder::OpenLRSimpleDecoder(std::string const & dataFilename, vector<Index> const & indexes)
   : m_indexes(indexes)
 {
   auto const load_result = m_document.load_file(dataFilename.data());
@@ -116,7 +116,7 @@ OpenLRSimpleDecoder::OpenLRSimpleDecoder(string const & dataFilename, vector<Ind
     MYTHROW(DecoderError, ("Can't load file", dataFilename, ":", load_result.description()));
 }
 
-void OpenLRSimpleDecoder::Decode(string const & outputFilename, int const segmentsToHandle,
+void OpenLRSimpleDecoder::Decode(std::string const & outputFilename, int const segmentsToHandle,
                                  SegmentsFilter const & filter, uint32_t const numThreads)
 {
   // TODO(mgsergio): Feed segments directly to the decoder. Parsing should not
@@ -132,7 +132,7 @@ void OpenLRSimpleDecoder::Decode(string const & outputFilename, int const segmen
       static_cast<size_t>(segmentsToHandle) < segments.size())
     segments.resize(segmentsToHandle);
 
-  sort(segments.begin(), segments.end(), my::LessBy(&LinearSegment::m_segmentId));
+  std::sort(segments.begin(), segments.end(), my::LessBy(&LinearSegment::m_segmentId));
 
   vector<IRoadGraph::TEdgeVector> paths(segments.size());
 
@@ -207,7 +207,7 @@ void OpenLRSimpleDecoder::Decode(string const & outputFilename, int const segmen
   };
 
   vector<Stats> stats(numThreads);
-  vector<thread> workers;
+  vector<std::thread> workers;
   for (size_t i = 1; i < numThreads; ++i)
     workers.emplace_back(worker, i, ref(m_indexes[i]), ref(stats[i]));
   worker(0 /* threadNum */, m_indexes[0], stats[0]);

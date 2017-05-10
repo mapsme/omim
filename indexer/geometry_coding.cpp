@@ -3,8 +3,8 @@
 #include "base/assert.hpp"
 #include "base/stl_add.hpp"
 
-#include "std/complex.hpp"
-#include "std/vector.hpp"
+#include <complex>
+#include <vector>
 
 
 namespace
@@ -36,20 +36,20 @@ m2::PointU PredictPointInPolyline(m2::PointU const & maxPoint,
 {
   CHECK_NOT_EQUAL(p2, p3, ());
 
-  complex<double> const c1(p1.x, p1.y);
-  complex<double> const c2(p2.x, p2.y);
-  complex<double> const c3(p3.x, p3.y);
-  complex<double> const d = (c1 - c2) / (c2 - c3);
-  complex<double> const c0 = c1 + (c1 - c2) * polar(0.5, 0.5 * arg(d));
+  std::complex<double> const c1(p1.x, p1.y);
+  std::complex<double> const c2(p2.x, p2.y);
+  std::complex<double> const c3(p3.x, p3.y);
+  std::complex<double> const d = (c1 - c2) / (c2 - c3);
+  std::complex<double> const c0 = c1 + (c1 - c2) * std::polar(0.5, 0.5 * arg(d));
 
   /*
-  complex<double> const c1(p1.x, p1.y);
-  complex<double> const c2(p2.x, p2.y);
-  complex<double> const c3(p3.x, p3.y);
-  complex<double> const d = (c1 - c2) / (c2 - c3);
-  complex<double> const c01 = c1 + (c1 - c2) * polar(0.5, arg(d));
-  complex<double> const c02 = c1 + (c1 - c2) * complex<double>(0.5, 0.0);
-  complex<double> const c0 = (c01 + c02) * complex<double>(0.5, 0.0);
+  std::complex<double> const c1(p1.x, p1.y);
+  std::complex<double> const c2(p2.x, p2.y);
+  std::complex<double> const c3(p3.x, p3.y);
+  std::complex<double> const d = (c1 - c2) / (c2 - c3);
+  std::complex<double> const c01 = c1 + (c1 - c2) * std::polar(0.5, arg(d));
+  std::complex<double> const c02 = c1 + (c1 - c2) * std::complex<double>(0.5, 0.0);
+  std::complex<double> const c0 = (c01 + c02) * std::complex<double>(0.5, 0.0);
   */
 
   return ClampPoint(maxPoint, m2::PointD(c0.real(), c0.imag()));
@@ -78,7 +78,7 @@ namespace geo_coding
   {
     size_t const count = points.size();
 
-    vector<m2::PointU> decoded;
+    std::vector<m2::PointU> decoded;
     decoded.resize(count);
 
     OutPointsT decodedA(decoded);

@@ -57,13 +57,13 @@ bool IsRestricted(RestrictionVec const & restrictions, Segment const & u, Segmen
 
 namespace routing
 {
-IndexGraph::IndexGraph(unique_ptr<GeometryLoader> loader, shared_ptr<EdgeEstimator> estimator)
-  : m_geometry(move(loader)), m_estimator(move(estimator))
+IndexGraph::IndexGraph(std::unique_ptr<GeometryLoader> loader, std::shared_ptr<EdgeEstimator> estimator)
+  : m_geometry(std::move(loader)), m_estimator(std::move(estimator))
 {
   ASSERT(m_estimator, ());
 }
 
-void IndexGraph::GetEdgeList(Segment const & segment, bool isOutgoing, vector<SegmentEdge> & edges)
+void IndexGraph::GetEdgeList(Segment const & segment, bool isOutgoing, std::vector<SegmentEdge> & edges)
 {
   RoadPoint const roadPoint = segment.GetRoadPoint(isOutgoing);
   Joint::Id const jointId = m_roadIndex.GetJointId(roadPoint);
@@ -82,7 +82,7 @@ void IndexGraph::GetEdgeList(Segment const & segment, bool isOutgoing, vector<Se
 
 void IndexGraph::Build(uint32_t numJoints) { m_jointIndex.Build(m_roadIndex, numJoints); }
 
-void IndexGraph::Import(vector<Joint> const & joints)
+void IndexGraph::Import(std::vector<Joint> const & joints)
 {
   m_roadIndex.Import(joints);
   CHECK_LESS_OR_EQUAL(joints.size(), numeric_limits<uint32_t>::max(), ());
@@ -92,7 +92,7 @@ void IndexGraph::Import(vector<Joint> const & joints)
 void IndexGraph::SetRestrictions(RestrictionVec && restrictions)
 {
   ASSERT(is_sorted(restrictions.cbegin(), restrictions.cend()), ());
-  m_restrictions = move(restrictions);
+  m_restrictions = std::move(restrictions);
 }
 
 double IndexGraph::CalcSegmentWeight(Segment const & segment)
@@ -101,7 +101,7 @@ double IndexGraph::CalcSegmentWeight(Segment const & segment)
 }
 
 void IndexGraph::GetNeighboringEdges(Segment const & from, RoadPoint const & rp, bool isOutgoing,
-                                     vector<SegmentEdge> & edges)
+                                     std::vector<SegmentEdge> & edges)
 {
   RoadGeometry const & road = m_geometry.GetRoad(rp.GetFeatureId());
 
@@ -126,7 +126,7 @@ void IndexGraph::GetNeighboringEdges(Segment const & from, RoadPoint const & rp,
 }
 
 void IndexGraph::GetNeighboringEdge(Segment const & from, Segment const & to, bool isOutgoing,
-                                    vector<SegmentEdge> & edges)
+                                    std::vector<SegmentEdge> & edges)
 {
   // Blocking U-turns on internal feature points.
   RoadPoint const rp = from.GetRoadPoint(isOutgoing);

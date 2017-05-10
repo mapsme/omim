@@ -19,7 +19,7 @@
 #include "base/logging.hpp"
 #include "base/random.hpp"
 
-#include "std/limits.hpp"
+#include <limits>
 
 #include <chrono>
 
@@ -31,7 +31,7 @@ UNIT_TEST(CheckCrossSections)
 {
   static double constexpr kPointEquality = 0.01;
   vector<platform::LocalCountryFile> localFiles;
-  platform::FindAllLocalMapsAndCleanup(numeric_limits<int64_t>::max() /* latestVersion */,
+  platform::FindAllLocalMapsAndCleanup(std::numeric_limits<int64_t>::max() /* latestVersion */,
                                        localFiles);
 
   size_t ingoingErrors = 0;
@@ -85,7 +85,7 @@ UNIT_TEST(CheckCrossSections)
 UNIT_TEST(CheckOsrmToFeatureMapping)
 {
   vector<platform::LocalCountryFile> localFiles;
-  platform::FindAllLocalMapsAndCleanup(numeric_limits<int64_t>::max() /* latestVersion */,
+  platform::FindAllLocalMapsAndCleanup(std::numeric_limits<int64_t>::max() /* latestVersion */,
                                        localFiles);
 
   size_t errors = 0;
@@ -142,7 +142,7 @@ UNIT_TEST(CrossMwmGraphTest)
 {
   vector<platform::LocalCountryFile> localFiles;
   Index index;
-  platform::FindAllLocalMapsAndCleanup(numeric_limits<int64_t>::max() /* latestVersion */,
+  platform::FindAllLocalMapsAndCleanup(std::numeric_limits<int64_t>::max() /* latestVersion */,
                                        localFiles);
 
   for (platform::LocalCountryFile & file : localFiles)
@@ -153,7 +153,7 @@ UNIT_TEST(CrossMwmGraphTest)
 
   for (auto it = localFiles.begin(); it != localFiles.end();)
   {
-    string const & countryName = it->GetCountryName();
+    std::string const & countryName = it->GetCountryName();
     MwmSet::MwmId const mwmId = index.GetMwmIdByCountryFile(it->GetCountryFile());
     if (countryName == "minsk-pass" || mwmId.GetInfo()->GetType() != MwmInfo::COUNTRY)
       it = localFiles.erase(it);
@@ -181,7 +181,7 @@ UNIT_TEST(CrossMwmGraphTest)
 
   for (platform::LocalCountryFile const & file : subsetCountryFiles)
   {
-    string const & countryName = file.GetCountryName();
+    std::string const & countryName = file.GetCountryName();
     LOG(LINFO, ("Processing", countryName));
     MwmSet::MwmId const mwmId = index.GetMwmIdByCountryFile(file.GetCountryFile());
 

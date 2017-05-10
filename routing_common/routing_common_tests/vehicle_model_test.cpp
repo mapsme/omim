@@ -30,7 +30,7 @@ uint32_t GetType(char const * s0, char const * s1 = 0, char const * s2 = 0)
 {
   char const * const t[] = {s0, s1, s2};
   size_t const size = (s0 != 0) + size_t(s1 != 0) + size_t(s2 != 0);
-  return classif().GetTypeByPath(vector<string>(t, t + size));
+  return classif().GetTypeByPath(vector<std::string>(t, t + size));
 }
 
 uint32_t GetOnewayType()

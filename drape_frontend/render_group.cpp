@@ -9,7 +9,7 @@
 
 #include "base/stl_add.hpp"
 
-#include "std/bind.hpp"
+#include <functional>
 
 namespace df
 {
@@ -257,7 +257,7 @@ bool UserMarkRenderGroup::CanBeClipped() const
   return m_state.GetProgramIndex() != gpu::LINE_PROGRAM;
 }
 
-string DebugPrint(RenderGroup const & group)
+std::string DebugPrint(RenderGroup const & group)
 {
   ostringstream out;
   out << DebugPrint(group.GetTileKey());

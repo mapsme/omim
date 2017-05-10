@@ -6,6 +6,8 @@
 #include "std/string.hpp"
 #include "std/vector.hpp"
 
+using namespace std;
+
 namespace booking
 {
 struct HotelPhotoUrls

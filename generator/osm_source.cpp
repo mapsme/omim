@@ -30,20 +30,20 @@
 #include "defines.hpp"
 
 SourceReader::SourceReader()
-: m_file(unique_ptr<istream, Deleter>(&cin, Deleter(false)))
+: m_file(std::unique_ptr<std::istream, Deleter>(&cin, Deleter(false)))
 {
   LOG_SHORT(LINFO, ("Reading OSM data from stdin"));
 }
 
-SourceReader::SourceReader(string const & filename)
+SourceReader::SourceReader(std::string const & filename)
 {
-  m_file = unique_ptr<istream, Deleter>(new ifstream(filename), Deleter());
+  m_file = std::unique_ptr<std::istream, Deleter>(new ifstream(filename), Deleter());
   CHECK(static_cast<ifstream *>(m_file.get())->is_open() , ("Can't open file:", filename));
   LOG_SHORT(LINFO, ("Reading OSM data from", filename));
 }
 
-SourceReader::SourceReader(istringstream & stream)
-: m_file(unique_ptr<istream, Deleter>(&stream, Deleter(false)))
+SourceReader::SourceReader(std::istringstream & stream)
+: m_file(std::unique_ptr<std::istream, Deleter>(&stream, Deleter(false)))
 {
   LOG_SHORT(LINFO, ("Reading OSM data from memory"));
 }
@@ -135,7 +135,7 @@ public:
 
   void AddRelation(TKey id, RelationElement const & e)
   {
-    string const & relationType = e.GetType();
+    std::string const & relationType = e.GetType();
     if (!(relationType == "multipolygon" || relationType == "route" || relationType == "boundary" ||
           relationType == "associatedStreet" || relationType == "building" ||
           relationType == "restriction"))
@@ -268,16 +268,16 @@ class MainFeaturesEmitter : public EmitterBase
   using TWorldGenerator = WorldMapGenerator<feature::FeaturesCollector>;
   using TCountriesGenerator = CountryMapGenerator<feature::Polygonizer<feature::FeaturesCollector>>;
 
-  unique_ptr<TCountriesGenerator> m_countries;
-  unique_ptr<TWorldGenerator> m_world;
+  std::unique_ptr<TCountriesGenerator> m_countries;
+  std::unique_ptr<TWorldGenerator> m_world;
 
-  unique_ptr<CoastlineFeaturesGenerator> m_coasts;
-  unique_ptr<feature::FeaturesCollector> m_coastsHolder;
+  std::unique_ptr<CoastlineFeaturesGenerator> m_coasts;
+  std::unique_ptr<feature::FeaturesCollector> m_coastsHolder;
 
-  string const m_skippedElementsPath;
-  ostringstream m_skippedElements;
+  std::string const m_skippedElementsPath;
+  std::ostringstream m_skippedElements;
 
-  string m_srcCoastsFile;
+  std::string m_srcCoastsFile;
   bool m_failOnCoasts;
 
   generator::BookingDataset m_bookingDataset;
@@ -336,7 +336,7 @@ public:
           new feature::FeaturesCollector(info.GetTmpFileName(WORLD_COASTS_FILE_NAME)));
 
     if (info.m_splitByPolygons || !info.m_fileName.empty())
-      m_countries = make_unique<TCountriesGenerator>(info);
+      m_countries = my::make_unique<TCountriesGenerator>(info);
 
     if (info.m_createWorld)
       m_world.reset(new TWorldGenerator(info));
@@ -417,7 +417,7 @@ public:
       size_t totalPoints = 0;
       size_t totalPolygons = 0;
 
-      vector<FeatureBuilder1> vecFb;
+      std::vector<FeatureBuilder1> vecFb;
       m_coasts->GetFeatures(vecFb);
 
       for (auto & fb : vecFb)
@@ -453,7 +453,7 @@ public:
     return true;
   }
 
-  void GetNames(vector<string> & names) const override
+  void GetNames(std::vector<std::string> & names) const override
   {
     if (m_countries)
       names = m_countries->Parent().Names();
@@ -510,7 +510,7 @@ private:
       return;
     }
 
-    ofstream file(m_skippedElementsPath, ios_base::app);
+    ofstream file(m_skippedElementsPath, std::ios_base::app);
     if (file.is_open())
     {
       file << m_skippedElements.str();
@@ -527,7 +527,7 @@ private:
 unique_ptr<EmitterBase> MakeMainFeatureEmitter(feature::GenerateInfo const & info)
 {
   LOG(LINFO, ("Processing booking data from", info.m_bookingDatafileName, "done."));
-  return make_unique<MainFeaturesEmitter>(info);
+  return my::make_unique<MainFeaturesEmitter>(info);
 }
 
 template <typename TElement, typename TCache>
@@ -559,14 +559,14 @@ void AddElementToCache(TCache & cache, TElement const & em)
       for (auto const & member : em.Members())
       {
         if (member.type == TElement::EntityType::Node)
-          relation.nodes.emplace_back(make_pair(member.ref, string(member.role)));
+          relation.nodes.emplace_back(make_pair(member.ref, std::string(member.role)));
         else if (member.type == TElement::EntityType::Way)
-          relation.ways.emplace_back(make_pair(member.ref, string(member.role)));
+          relation.ways.emplace_back(make_pair(member.ref, std::string(member.role)));
         // we just ignore type == "relation"
       }
 
       for (auto const & tag : em.Tags())
-        relation.tags.emplace(make_pair(string(tag.key), string(tag.value)));
+        relation.tags.emplace(make_pair(std::string(tag.key), std::string(tag.value)));
 
       if (relation.IsValid())
         cache.AddRelation(em.id, relation);
@@ -589,7 +589,7 @@ void BuildIntermediateDataFromXML(SourceReader & stream, TCache & cache, TownsDu
   ParseXMLSequence(stream, parser);
 }
 
-void ProcessOsmElementsFromXML(SourceReader & stream, function<void(OsmElement *)> processor)
+void ProcessOsmElementsFromXML(SourceReader & stream, std::function<void(OsmElement *)> processor)
 {
   XMLSource parser([&](OsmElement * e) { processor(e); });
   ParseXMLSequence(stream, parser);
@@ -610,7 +610,7 @@ void BuildIntermediateDataFromO5M(SourceReader & stream, TCache & cache, TownsDu
   }
 }
 
-void ProcessOsmElementsFromO5M(SourceReader & stream, function<void(OsmElement *)> processor)
+void ProcessOsmElementsFromO5M(SourceReader & stream, std::function<void(OsmElement *)> processor)
 {
   using TType = osm::O5MSource::EntityType;
 

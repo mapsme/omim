@@ -3,8 +3,8 @@
 
 #include "base/logging.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/vector.hpp"
+#include <algorithm>
+#include <vector>
 
 #include "3party/Alohalytics/src/alohalytics.h"
 
@@ -13,8 +13,8 @@ namespace dp
 
 void SupportManager::Init()
 {
-  string const renderer = GLFunctions::glGetString(gl_const::GLRenderer);
-  string const version = GLFunctions::glGetString(gl_const::GLVersion);
+  std::string const renderer = GLFunctions::glGetString(gl_const::GLRenderer);
+  std::string const version = GLFunctions::glGetString(gl_const::GLVersion);
   LOG(LINFO, ("Renderer =", renderer, "Version =", version));
 
   // On Android the engine may be recreated. Here we guarantee that GPU info is sent once per session.
@@ -25,16 +25,16 @@ void SupportManager::Init()
     gpuInfoSent = true;
   }
 
-  m_isSamsungGoogleNexus = (renderer == "PowerVR SGX 540" && version.find("GOOGLENEXUS.ED945322") != string::npos);
+  m_isSamsungGoogleNexus = (renderer == "PowerVR SGX 540" && version.find("GOOGLENEXUS.ED945322") != std::string::npos);
   if (m_isSamsungGoogleNexus)
     LOG(LINFO, ("Samsung Google Nexus detected."));
 
-  if (renderer.find("Adreno") != string::npos)
+  if (renderer.find("Adreno") != std::string::npos)
   {
-    vector<string> const models = { "200", "203", "205", "220", "225" };
+    std::vector<std::string> const models = { "200", "203", "205", "220", "225" };
     for (auto const & model : models)
     {
-      if (renderer.find(model) != string::npos)
+      if (renderer.find(model) != std::string::npos)
       {
         LOG(LINFO, ("Adreno 200 device detected."));
         m_isAdreno200 = true;
@@ -43,11 +43,11 @@ void SupportManager::Init()
     }
   }
 
-  m_isTegra = (renderer.find("Tegra") != string::npos);
+  m_isTegra = (renderer.find("Tegra") != std::string::npos);
   if (m_isTegra)
     LOG(LINFO, ("NVidia Tegra device detected."));
 
-  m_maxLineWidth = max(1, GLFunctions::glGetMaxLineWidth());
+  m_maxLineWidth = std::max(1, GLFunctions::glGetMaxLineWidth());
   LOG(LINFO, ("Max line width =", m_maxLineWidth));
 }
 

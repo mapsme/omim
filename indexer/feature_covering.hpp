@@ -3,19 +3,19 @@
 
 #include "coding/point_to_integer.hpp"
 
-#include "std/utility.hpp"
-#include "std/vector.hpp"
+#include <utility>
+#include <vector>
 
 
 class FeatureType;
 
 namespace covering
 {
-  typedef pair<int64_t, int64_t> IntervalT;
-  typedef vector<IntervalT> IntervalsT;
+  typedef std::pair<int64_t, int64_t> IntervalT;
+  typedef std::vector<IntervalT> IntervalsT;
 
   // Cover feature with RectIds and return their integer representations.
-  vector<int64_t> CoverFeature(FeatureType const & feature,
+  std::vector<int64_t> CoverFeature(FeatureType const & feature,
                                int cellDepth,
                                uint64_t cellPenaltyArea);
 

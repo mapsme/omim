@@ -2,7 +2,9 @@
 
 #include "geometry/clipping.hpp"
 
-#include "std/utility.hpp"
+#include <utility>
+
+using namespace std;
 
 namespace
 {
@@ -51,7 +53,7 @@ vector<m2::SharedSpline> ConstructSplineList(vector<vector<m2::PointD>> const & 
     s.Reset(new m2::Spline(segments[i].size()));
     for (size_t j = 0; j < segments[i].size(); j++)
       s->AddPoint(segments[i][j]);
-    result.push_back(move(s));
+    result.push_back(std::move(s));
   }
   return result;
 }

@@ -6,7 +6,7 @@
 
 #include "drape_frontend/tile_key.hpp"
 
-#include "std/vector.hpp"
+#include <vector>
 
 namespace dp
 {
@@ -30,7 +30,7 @@ struct OverlayRenderData
   {}
 };
 
-using TOverlaysRenderData = vector<OverlayRenderData>;
+using TOverlaysRenderData = std::vector<OverlayRenderData>;
 
 class OverlayBatcher
 {

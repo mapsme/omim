@@ -15,7 +15,7 @@ void TestPointDDir(PointD const & dst, PointD const & src)
 
 UNIT_TEST(SmoothedDirections)
 {
-  vector<PointD> path;
+  std::vector<PointD> path;
   path.push_back(PointD(0, 0));
   path.push_back(PointD(40, 40));
   path.push_back(PointD(80, 0));
@@ -56,7 +56,7 @@ UNIT_TEST(SmoothedDirections)
 
 UNIT_TEST(UsualDirections)
 {
-  vector<PointD> path;
+  std::vector<PointD> path;
   path.push_back(PointD(0, 0));
   path.push_back(PointD(40, 40));
   path.push_back(PointD(80, 0));
@@ -95,7 +95,7 @@ UNIT_TEST(UsualDirections)
 
 UNIT_TEST(Positions)
 {
-  vector<PointD> path;
+  std::vector<PointD> path;
   path.push_back(PointD(0, 0));
   path.push_back(PointD(40, 40));
   path.push_back(PointD(80, 0));
@@ -144,7 +144,7 @@ UNIT_TEST(Positions)
 
 UNIT_TEST(BeginAgain)
 {
-  vector<PointD> path;
+  std::vector<PointD> path;
   path.push_back(PointD(0, 0));
   path.push_back(PointD(40, 40));
   path.push_back(PointD(80, 0));
@@ -183,7 +183,7 @@ UNIT_TEST(BeginAgain)
 
 UNIT_TEST(Length)
 {
-  vector<PointD> path;
+  std::vector<PointD> path;
   PointD const p1(27.5536633, 64.2492523);
   PointD const p2(27.5547638, 64.2474289);
   PointD const p3(27.5549412, 64.2471237);

@@ -6,11 +6,11 @@
 
 #include "base/assert.hpp"
 
-#include "std/limits.hpp"
+#include <limits>
 
 namespace routing
 {
-NearestEdgeFinder::Candidate::Candidate() : m_dist(numeric_limits<double>::max()), m_segId(0) {}
+NearestEdgeFinder::Candidate::Candidate() : m_dist(std::numeric_limits<double>::max()), m_segId(0) {}
 NearestEdgeFinder::NearestEdgeFinder(m2::PointD const & point)
     : m_point(point)
 {
@@ -68,7 +68,7 @@ void NearestEdgeFinder::AddInformationSource(FeatureID const & featureId, IRoadG
     m_candidates.push_back(res);
 }
 
-void NearestEdgeFinder::MakeResult(vector<pair<Edge, Junction>> & res,
+void NearestEdgeFinder::MakeResult(std::vector<std::pair<Edge, Junction>> & res,
                                    size_t const maxCountFeatures)
 {
   sort(m_candidates.begin(), m_candidates.end(), [](Candidate const & r1, Candidate const & r2)
@@ -82,7 +82,7 @@ void NearestEdgeFinder::MakeResult(vector<pair<Edge, Junction>> & res,
   size_t i = 0;
   for (Candidate const & candidate : m_candidates)
   {
-    res.emplace_back(Edge(candidate.m_fid, true /* forward */, candidate.m_segId,
+    res.emplace_back(Edge(candidate.m_fid, true /* std::forward */, candidate.m_segId,
                           candidate.m_segStart, candidate.m_segEnd),
                      candidate.m_projPoint);
     ++i;

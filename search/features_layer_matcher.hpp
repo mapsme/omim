@@ -26,11 +26,11 @@
 #include "base/stl_helpers.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/bind.hpp"
-#include "std/limits.hpp"
-#include "std/unordered_map.hpp"
-#include "std/vector.hpp"
+#include <algorithm>
+#include <functional>
+#include <limits>
+#include <unordered_map>
+#include <vector>
 
 class Index;
 
@@ -54,7 +54,7 @@ namespace search
 class FeaturesLayerMatcher
 {
 public:
-  static uint32_t const kInvalidId = numeric_limits<uint32_t>::max();
+  static uint32_t const kInvalidId = std::numeric_limits<uint32_t>::max();
   static int constexpr kBuildingRadiusMeters = 50;
   static int constexpr kStreetRadiusMeters = 100;
 
@@ -112,10 +112,10 @@ private:
 
     BailIfCancelled(m_cancellable);
 
-    vector<m2::PointD> poiCenters(pois.size());
+    std::vector<m2::PointD> poiCenters(pois.size());
 
     size_t const numPOIs = pois.size();
-    vector<bool> isPOIProcessed(numPOIs);
+    std::vector<bool> isPOIProcessed(numPOIs);
     size_t processedPOIs = 0;
 
     for (size_t i = 0; i < pois.size(); ++i)
@@ -153,7 +153,7 @@ private:
     // |buildings| doesn't contain buildings matching by house number,
     // so following code reads buildings in POIs vicinities and checks
     // house numbers.
-    vector<house_numbers::Token> queryParse;
+    std::vector<house_numbers::Token> queryParse;
     ParseQuery(parent.m_subQuery, parent.m_lastTokenIsPrefix, queryParse);
     if (queryParse.empty())
       return;
@@ -199,7 +199,7 @@ private:
             break;
 
           uint32_t const streetId = street.m_id.m_index;
-          if (binary_search(streets.begin(), streets.end(), streetId))
+          if (std::binary_search(streets.begin(), streets.end(), streetId))
             fn(poiId, streetId);
         }
       }
@@ -209,7 +209,7 @@ private:
     for (uint32_t streetId : streets)
     {
       BailIfCancelled(m_cancellable);
-      m_loader.ForEachInVicinity(streetId, pois, kStreetRadiusMeters, bind(fn, _1, streetId));
+      m_loader.ForEachInVicinity(streetId, pois, kStreetRadiusMeters, std::bind(fn, std::placeholders::_1, streetId));
     }
   }
 
@@ -232,13 +232,13 @@ private:
       for (uint32_t const houseId : buildings)
       {
         uint32_t const streetId = GetMatchingStreet(houseId);
-        if (binary_search(streets.begin(), streets.end(), streetId))
+        if (std::binary_search(streets.begin(), streets.end(), streetId))
           fn(houseId, streetId);
       }
       return;
     }
 
-    vector<house_numbers::Token> queryParse;
+    std::vector<house_numbers::Token> queryParse;
     ParseQuery(child.m_subQuery, child.m_lastTokenIsPrefix, queryParse);
 
     uint32_t numFilterInvocations = 0;
@@ -248,7 +248,7 @@ private:
       if ((numFilterInvocations & 0xFF) == 0)
         BailIfCancelled(m_cancellable);
 
-      if (binary_search(buildings.begin(), buildings.end(), id))
+      if (std::binary_search(buildings.begin(), buildings.end(), id))
         return true;
 
       if (m_postcodes && !m_postcodes->HasBit(id))
@@ -267,7 +267,7 @@ private:
       return house_numbers::HouseNumbersMatch(houseNumber, queryParse);
     };
 
-    unordered_map<uint32_t, bool> cache;
+    std::unordered_map<uint32_t, bool> cache;
     auto cachingHouseNumberFilter = [&](uint32_t id, FeatureType & feature, bool & loaded) -> bool
     {
       auto const it = cache.find(id);
@@ -323,7 +323,7 @@ private:
   uint32_t GetMatchingStreetImpl(uint32_t houseId, FeatureType & houseFeature);
 
   using TStreet = ReverseGeocoder::Street;
-  using TStreets = vector<TStreet>;
+  using TStreets = std::vector<TStreet>;
 
   TStreets const & GetNearbyStreets(uint32_t featureId);
   TStreets const & GetNearbyStreets(uint32_t featureId, FeatureType & feature);

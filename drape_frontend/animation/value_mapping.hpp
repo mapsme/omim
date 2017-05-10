@@ -11,7 +11,7 @@ class ValueMapping
 {
   /// double = interpolation point [0.0, 1.0]
   /// TValue = output value
-  using TRangePoint = pair<double, TValue>;
+  using TRangePoint = std::pair<double, TValue>;
   using TRangeVector = buffer_vector<TRangePoint, 8>;
   using TRangeIter = typename TRangeVector::const_iterator;
 public:

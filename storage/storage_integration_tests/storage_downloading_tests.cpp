@@ -16,18 +16,18 @@
 #include "base/string_utils.hpp"
 #include "base/thread.hpp"
 
-#include "std/bind.hpp"
-#include "std/exception.hpp"
-#include "std/string.hpp"
+#include <functional>
+#include <exception>
+#include <string>
 
 using namespace platform;
 using namespace storage;
 
 namespace
 {
-string const kCountryId = "Angola";
+std::string const kCountryId = "Angola";
 
-class InterruptException : public exception {};
+class InterruptException : public std::exception {};
 
 void Update(TCountryId const &, storage::Storage::TLocalFilePtr const localCountryFile)
 {
@@ -46,7 +46,7 @@ void InitStorage(Storage & storage, Storage::TProgressFunction const & onProgres
 {
   storage.Init(Update, [](TCountryId const &, storage::Storage::TLocalFilePtr const){return false;});
   storage.RegisterAllLocalMaps();
-  storage.Subscribe(bind(&ChangeCountry, ref(storage), _1), onProgressFn);
+  storage.Subscribe(std::bind(&ChangeCountry, std::ref(storage), std::placeholders::_1), onProgressFn);
   storage.SetDownloadingUrlsForTesting({kTestWebServer});
 }
 

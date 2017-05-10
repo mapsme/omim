@@ -32,8 +32,8 @@ double GetAzimuth(UserMark const * pUserMark, double north);
 const wchar_t * GetColorBM(EColor color);
 const wchar_t * GetColorPPBM(EColor color);
 const wchar_t * GetColorSelecteBM(EColor color);
-string fromEColorTostring(EColor color);
-EColor fromstringToColor(string const & sColor);
+std::string fromEColorTostring(EColor color);
+EColor fromstringToColor(std::string const & sColor);
 
 bool IsBookMark(UserMark const * pUserMark);
 

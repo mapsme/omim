@@ -12,13 +12,13 @@
 
 #include "base/timer.hpp"
 
-#include "std/function.hpp"
+#include <functional>
 
 namespace df
 {
 
 class Animation;
-using TAnimationCreator = function<drape_ptr<Animation>(ref_ptr<Animation>)>;
+using TAnimationCreator = std::function<drape_ptr<Animation>(ref_ptr<Animation>)>;
 
 class MyPositionController
 {

@@ -3,7 +3,7 @@
 
 #include "base/math.hpp"
 
-#include "std/limits.hpp"
+#include <limits>
 
 
 namespace m2
@@ -15,7 +15,7 @@ namespace impl
 template <typename PointT> class CalculatedSection
 {
 private:
-  static_assert(numeric_limits<typename PointT::value_type>::is_signed, "We do not support unsigned points!!!");
+  static_assert(std::numeric_limits<typename PointT::value_type>::is_signed, "We do not support unsigned points!!!");
 
 public:
   void SetBounds(PointT const & p0, PointT const & p1)

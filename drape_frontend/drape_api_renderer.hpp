@@ -6,8 +6,8 @@
 
 #include "geometry/screenbase.hpp"
 
-#include "std/vector.hpp"
-#include "std/string.hpp"
+#include <vector>
+#include <string>
 
 namespace df
 {
@@ -18,16 +18,16 @@ public:
   DrapeApiRenderer() = default;
 
   void AddRenderProperties(ref_ptr<dp::GpuProgramManager> mng,
-                           vector<drape_ptr<DrapeApiRenderProperty>> && properties);
+                           std::vector<drape_ptr<DrapeApiRenderProperty>> && properties);
 
-  void RemoveRenderProperty(string const & id);
+  void RemoveRenderProperty(std::string const & id);
   void Clear();
 
   void Render(ScreenBase const & screen, ref_ptr<dp::GpuProgramManager> mng,
               dp::UniformValuesStorage const & commonUniforms);
 
 private:
-  vector<drape_ptr<DrapeApiRenderProperty>> m_properties;
+  std::vector<drape_ptr<DrapeApiRenderProperty>> m_properties;
 };
 
 } // namespace df

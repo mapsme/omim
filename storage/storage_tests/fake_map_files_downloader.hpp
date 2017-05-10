@@ -3,7 +3,7 @@
 #include "storage/map_files_downloader.hpp"
 #include "coding/file_writer.hpp"
 #include "base/thread_checker.hpp"
-#include "std/unique_ptr.hpp"
+#include <memory>
 
 namespace storage
 {
@@ -26,8 +26,8 @@ public:
   virtual ~FakeMapFilesDownloader();
 
   // MapFilesDownloader overrides:
-  void GetServersList(int64_t const mapVersion, string const & mapFileName, TServersListCallback const & callback) override;
-  void DownloadMapFile(vector<string> const & urls, string const & path, int64_t size,
+  void GetServersList(int64_t const mapVersion, std::string const & mapFileName, TServersListCallback const & callback) override;
+  void DownloadMapFile(std::vector<std::string> const & urls, std::string const & path, int64_t size,
                        TFileDownloadedCallback const & onDownloaded,
                        TDownloadingProgressCallback const & onProgress) override;
   TProgress GetDownloadingProgress() override;
@@ -37,11 +37,11 @@ public:
 private:
   void DownloadNextChunk(uint64_t requestId);
 
-  vector<string> m_servers;
+  std::vector<std::string> m_servers;
   TProgress m_progress;
   bool m_idle;
 
-  unique_ptr<FileWriter> m_writer;
+  std::unique_ptr<FileWriter> m_writer;
   TFileDownloadedCallback m_onDownloaded;
   TDownloadingProgressCallback m_onProgress;
 

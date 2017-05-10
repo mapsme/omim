@@ -6,14 +6,14 @@
 namespace
 {
   template <class ReaderT>
-  void ReadToStringFromPos(ReaderT const & reader, string & str, uint64_t pos, size_t size)
+  void ReadToStringFromPos(ReaderT const & reader, std::string & str, uint64_t pos, size_t size)
   {
     str.resize(size);
     reader.Read(pos, &str[0], str.size());
   }
 
   template <class SourceT>
-  void ReadToStringFromSource(SourceT & source, string & str, size_t size)
+  void ReadToStringFromSource(SourceT & source, std::string & str, size_t size)
   {
     str.resize(size);
     source.Read(&str[0], str.size());
@@ -24,7 +24,7 @@ template <typename ReaderT>
 void TestReader(ReaderT const & reader)
 {
   ReaderSource<ReaderT> source(reader);
-  string d1;
+  std::string d1;
   ReadToStringFromSource(source, d1, 6);
   TEST_EQUAL(d1, "Quick ", ());
 

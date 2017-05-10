@@ -7,7 +7,7 @@
 
 #include "base/logging.hpp"
 
-#include "std/sstream.hpp"
+#include <sstream>
 
 
 namespace platform
@@ -17,7 +17,7 @@ LocalCountryFile::LocalCountryFile()
 {
 }
 
-LocalCountryFile::LocalCountryFile(string const & directory, CountryFile const & countryFile,
+LocalCountryFile::LocalCountryFile(std::string const & directory, CountryFile const & countryFile,
                                    int64_t version)
     : m_directory(directory),
       m_countryFile(countryFile),
@@ -45,16 +45,16 @@ void LocalCountryFile::SyncWithDisk()
     return;
   }
 
-  string const routingPath = GetPath(MapOptions::CarRouting);
+  std::string const routingPath = GetPath(MapOptions::CarRouting);
   if (platform.GetFileSizeByFullPath(routingPath, m_routingSize))
     m_files = SetOptions(m_files, MapOptions::CarRouting);
 }
 
 void LocalCountryFile::DeleteFromDisk(MapOptions files) const
 {
-  vector<MapOptions> const mapOptions =
-      version::IsSingleMwm(GetVersion()) ? vector<MapOptions>({MapOptions::Map})
-                                         : vector<MapOptions>({MapOptions::Map, MapOptions::CarRouting});
+  std::vector<MapOptions> const mapOptions =
+      version::IsSingleMwm(GetVersion()) ? std::vector<MapOptions>({MapOptions::Map})
+                                         : std::vector<MapOptions>({MapOptions::Map, MapOptions::CarRouting});
   for (MapOptions file : mapOptions)
   {
     if (OnDisk(file) && HasOptions(files, file))
@@ -65,7 +65,7 @@ void LocalCountryFile::DeleteFromDisk(MapOptions files) const
   }
 }
 
-string LocalCountryFile::GetPath(MapOptions file) const
+std::string LocalCountryFile::GetPath(MapOptions file) const
 {
   return my::JoinFoldersToPath(m_directory, GetFileName(m_countryFile.GetName(), file, GetVersion()));
 }
@@ -101,7 +101,7 @@ bool LocalCountryFile::operator==(LocalCountryFile const & rhs) const
 }
 
 // static
-LocalCountryFile LocalCountryFile::MakeForTesting(string const & countryFileName, int64_t version)
+LocalCountryFile LocalCountryFile::MakeForTesting(std::string const & countryFileName, int64_t version)
 {
   CountryFile const countryFile(countryFileName);
   LocalCountryFile localFile(GetPlatform().WritableDir(), countryFile, version);
@@ -110,9 +110,9 @@ LocalCountryFile LocalCountryFile::MakeForTesting(string const & countryFileName
 }
 
 // static
-LocalCountryFile LocalCountryFile::MakeTemporary(string const & fullPath)
+LocalCountryFile LocalCountryFile::MakeTemporary(std::string const & fullPath)
 {
-  string name = fullPath;
+  std::string name = fullPath;
   my::GetNameFromFullPath(name);
   my::GetNameWithoutExt(name);
 
@@ -120,9 +120,9 @@ LocalCountryFile LocalCountryFile::MakeTemporary(string const & fullPath)
 }
 
 
-string DebugPrint(LocalCountryFile const & file)
+std::string DebugPrint(LocalCountryFile const & file)
 {
-  ostringstream os;
+  std::ostringstream os;
   os << "LocalCountryFile [" << file.m_directory << ", " << DebugPrint(file.m_countryFile) << ", "
      << file.m_version << ", " << DebugPrint(file.m_files) << "]";
   return os.str();

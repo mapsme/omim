@@ -24,8 +24,8 @@
 #include "base/macros.hpp"
 #include "base/math.hpp"
 
-#include "std/shared_ptr.hpp"
-#include "std/vector.hpp"
+#include <memory>
+#include <vector>
 
 using namespace generator::tests_support;
 using namespace search::tests_support;
@@ -39,7 +39,7 @@ class TestHotel : public TestPOI
 public:
   using Type = ftypes::IsHotelChecker::Type;
 
-  TestHotel(m2::PointD const & center, string const & name, string const & lang, float rating,
+  TestHotel(m2::PointD const & center, std::string const & name, std::string const & lang, float rating,
             int priceRate, Type type)
     : TestPOI(center, name, lang), m_rating(rating), m_priceRate(priceRate)
   {
@@ -73,7 +73,7 @@ class ProcessorTest : public SearchTest
 
 UNIT_CLASS_TEST(ProcessorTest, Smoke)
 {
-  string const countryName = "Wonderland";
+  std::string const countryName = "Wonderland";
   TestCountry wonderlandCountry(m2::PointD(10, 10), countryName, "en");
 
   TestCity losAlamosCity(m2::PointD(10, 10), "Los Alamos", "en", 100 /* rank */);
@@ -82,22 +82,22 @@ UNIT_CLASS_TEST(ProcessorTest, Smoke)
 
   TestVillage longPondVillage(m2::PointD(15, 15), "Long Pond Village", "en", 10 /* rank */);
   TestStreet feynmanStreet(
-      vector<m2::PointD>{m2::PointD(9.999, 9.999), m2::PointD(10, 10), m2::PointD(10.001, 10.001)},
+      std::vector<m2::PointD>{m2::PointD(9.999, 9.999), m2::PointD(10, 10), m2::PointD(10.001, 10.001)},
       "Feynman street", "en");
   TestStreet bohrStreet1(
-      vector<m2::PointD>{m2::PointD(9.999, 10.001), m2::PointD(10, 10), m2::PointD(10.001, 9.999)},
+      std::vector<m2::PointD>{m2::PointD(9.999, 10.001), m2::PointD(10, 10), m2::PointD(10.001, 9.999)},
       "Bohr street", "en");
-  TestStreet bohrStreet2(vector<m2::PointD>{m2::PointD(10.001, 9.999), m2::PointD(10.002, 9.998)},
+  TestStreet bohrStreet2(std::vector<m2::PointD>{m2::PointD(10.001, 9.999), m2::PointD(10.002, 9.998)},
                          "Bohr street", "en");
-  TestStreet bohrStreet3(vector<m2::PointD>{m2::PointD(10.002, 9.998), m2::PointD(10.003, 9.997)},
+  TestStreet bohrStreet3(std::vector<m2::PointD>{m2::PointD(10.002, 9.998), m2::PointD(10.003, 9.997)},
                          "Bohr street", "en");
-  TestStreet firstAprilStreet(vector<m2::PointD>{m2::PointD(14.998, 15), m2::PointD(15.002, 15)},
+  TestStreet firstAprilStreet(std::vector<m2::PointD>{m2::PointD(14.998, 15), m2::PointD(15.002, 15)},
                               "1st April street", "en");
 
   TestBuilding feynmanHouse(m2::PointD(10, 10), "Feynman house", "1 unit 1", feynmanStreet, "en");
   TestBuilding bohrHouse(m2::PointD(10, 10), "Bohr house", "1 unit 1", bohrStreet1, "en");
   TestBuilding hilbertHouse(
-      vector<m2::PointD>{
+      std::vector<m2::PointD>{
           {10.0005, 10.0005}, {10.0006, 10.0005}, {10.0006, 10.0006}, {10.0005, 10.0006}},
       "Hilbert house", "1 unit 2", bohrStreet1, "en");
   TestBuilding descartesHouse(m2::PointD(10, 10), "Descartes house", "2", "en");
@@ -115,7 +115,7 @@ UNIT_CLASS_TEST(ProcessorTest, Smoke)
   TestPOI lantern1(m2::PointD(10.0005, 10.0005), "lantern 1", "en");
   TestPOI lantern2(m2::PointD(10.0006, 10.0005), "lantern 2", "en");
 
-  TestStreet stradaDrive(vector<m2::PointD>{m2::PointD(-10.001, -10.001), m2::PointD(-10, -10),
+  TestStreet stradaDrive(std::vector<m2::PointD>{m2::PointD(-10.001, -10.001), m2::PointD(-10, -10),
                                             m2::PointD(-9.999, -9.999)},
                          "Strada drive", "en");
   TestBuilding terranceHouse(m2::PointD(-10, -10), "", "155", stradaDrive, "en");
@@ -234,7 +234,7 @@ UNIT_CLASS_TEST(ProcessorTest, Smoke)
 
 UNIT_CLASS_TEST(ProcessorTest, SearchInWorld)
 {
-  string const countryName = "Wonderland";
+  std::string const countryName = "Wonderland";
   TestCountry wonderland(m2::PointD(0, 0), countryName, "en");
   TestCity losAlamos(m2::PointD(0, 0), "Los Alamos", "en", 100 /* rank */);
 
@@ -262,9 +262,9 @@ UNIT_CLASS_TEST(ProcessorTest, SearchInWorld)
 
 UNIT_CLASS_TEST(ProcessorTest, SearchByName)
 {
-  string const countryName = "Wonderland";
+  std::string const countryName = "Wonderland";
   TestCity london(m2::PointD(1, 1), "London", "en", 100 /* rank */);
-  TestPark hydePark(vector<m2::PointD>{m2::PointD(0.5, 0.5), m2::PointD(1.5, 0.5),
+  TestPark hydePark(std::vector<m2::PointD>{m2::PointD(0.5, 0.5), m2::PointD(1.5, 0.5),
                                        m2::PointD(1.5, 1.5), m2::PointD(0.5, 1.5)},
                     "Hyde Park", "en");
   TestPOI cafe(m2::PointD(1.0, 1.0), "London Cafe", "en");
@@ -327,7 +327,7 @@ UNIT_CLASS_TEST(ProcessorTest, DisableSuggests)
 
 UNIT_CLASS_TEST(ProcessorTest, TestRankingInfo)
 {
-  string const countryName = "Wonderland";
+  std::string const countryName = "Wonderland";
 
   TestCity sanFrancisco(m2::PointD(1, 1), "San Francisco", "en", 100 /* rank */);
   // Golden Gate Bridge-bridge is located in this test on the Golden
@@ -336,7 +336,7 @@ UNIT_CLASS_TEST(ProcessorTest, TestRankingInfo)
   // both features (street and bridge) as they were matched by full
   // name.
   TestStreet goldenGateStreet(
-      vector<m2::PointD>{m2::PointD(-0.5, -0.5), m2::PointD(0, 0), m2::PointD(0.5, 0.5)},
+      std::vector<m2::PointD>{m2::PointD(-0.5, -0.5), m2::PointD(0, 0), m2::PointD(0.5, 0.5)},
       "Golden Gate Bridge", "en");
 
   TestPOI goldenGateBridge(m2::PointD(0, 0), "Golden Gate Bridge", "en");
@@ -421,12 +421,12 @@ UNIT_CLASS_TEST(ProcessorTest, TestRankingInfo)
 
 UNIT_CLASS_TEST(ProcessorTest, TestHouseNumbers)
 {
-  string const countryName = "HouseNumberLand";
+  std::string const countryName = "HouseNumberLand";
 
   TestCity greenCity(m2::PointD(0, 0), "Зеленоград", "ru", 100 /* rank */);
 
   TestStreet street(
-      vector<m2::PointD>{m2::PointD(0.0, -10.0), m2::PointD(0, 0), m2::PointD(5.0, 5.0)},
+      std::vector<m2::PointD>{m2::PointD(0.0, -10.0), m2::PointD(0, 0), m2::PointD(5.0, 5.0)},
       "Генерала Генералова", "ru");
 
   TestBuilding building0(m2::PointD(2.0, 2.0), "", "100", "en");
@@ -469,13 +469,13 @@ UNIT_CLASS_TEST(ProcessorTest, TestHouseNumbers)
 
 UNIT_CLASS_TEST(ProcessorTest, TestPostcodes)
 {
-  string const countryName = "Russia";
+  std::string const countryName = "Russia";
 
   TestCity dolgoprudny(m2::PointD(0, 0), "Долгопрудный", "ru", 100 /* rank */);
   TestCity london(m2::PointD(10, 10), "London", "en", 100 /* rank */);
 
   TestStreet street(
-      vector<m2::PointD>{m2::PointD(-0.5, 0.0), m2::PointD(0, 0), m2::PointD(0.5, 0.0)},
+      std::vector<m2::PointD>{m2::PointD(-0.5, 0.0), m2::PointD(0, 0), m2::PointD(0.5, 0.0)},
       "Первомайская", "ru");
   street.SetPostcode("141701");
 
@@ -566,7 +566,7 @@ UNIT_CLASS_TEST(ProcessorTest, TestPostcodes)
   }
 
   {
-    string const kQueries[] = {"london WC2H 7BX", "london WC2H 7", "london WC2H ", "london WC"};
+    std::string const kQueries[] = {"london WC2H 7BX", "london WC2H 7", "london WC2H ", "london WC"};
     for (auto const & query : kQueries)
     {
       TRules rules{ExactMatch(countryId, building1)};
@@ -577,7 +577,7 @@ UNIT_CLASS_TEST(ProcessorTest, TestPostcodes)
 
 UNIT_CLASS_TEST(ProcessorTest, TestCategories)
 {
-  string const countryName = "Wonderland";
+  std::string const countryName = "Wonderland";
 
   TestCity sanFrancisco(m2::PointD(0, 0), "San Francisco", "en", 100 /* rank */);
 
@@ -744,11 +744,11 @@ UNIT_CLASS_TEST(ProcessorTest, HotelsFiltering)
 
 UNIT_CLASS_TEST(ProcessorTest, FuzzyMatch)
 {
-  string const countryName = "Wonderland";
+  std::string const countryName = "Wonderland";
   TestCountry country(m2::PointD(10, 10), countryName, "en");
 
   TestCity city(m2::PointD(0, 0), "Москва", "ru", 100 /* rank */);
-  TestStreet street(vector<m2::PointD>{m2::PointD(-0.001, -0.001), m2::PointD(0.001, 0.001)},
+  TestStreet street(std::vector<m2::PointD>{m2::PointD(-0.001, -0.001), m2::PointD(0.001, 0.001)},
                     "Ленинградский", "ru");
   TestPOI bar(m2::PointD(0, 0), "Черчилль", "ru");
   bar.SetTypes({{"amenity", "pub"}});
@@ -797,7 +797,7 @@ UNIT_CLASS_TEST(ProcessorTest, FuzzyMatch)
 
 UNIT_CLASS_TEST(ProcessorTest, SpacesInCategories)
 {
-  string const countryName = "Wonderland";
+  std::string const countryName = "Wonderland";
   TestCountry country(m2::PointD(10, 10), countryName, "en");
 
   TestCity city(m2::PointD(5.0, 5.0), "Москва", "ru", 100 /* rank */);
@@ -825,7 +825,7 @@ UNIT_CLASS_TEST(ProcessorTest, StopWords)
   TestCountry country(m2::PointD(0, 0), "France", "en");
   TestCity city(m2::PointD(0, 0), "Paris", "en", 100 /* rank */);
   TestStreet street(
-      vector<m2::PointD>{m2::PointD(-0.001, -0.001), m2::PointD(0, 0), m2::PointD(0.001, 0.001)},
+      std::vector<m2::PointD>{m2::PointD(-0.001, -0.001), m2::PointD(0, 0), m2::PointD(0.001, 0.001)},
       "Rue de la Paix", "en");
 
   BuildWorld([&](TestMwmBuilder & builder) {

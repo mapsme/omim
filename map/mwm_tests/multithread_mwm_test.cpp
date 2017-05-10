@@ -58,7 +58,7 @@ namespace
     }
   };
 
-  void RunTest(string const & file)
+  void RunTest(std::string const & file)
   {
     SourceT src;
     src.InitClassificator();

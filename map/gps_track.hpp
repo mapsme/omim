@@ -6,9 +6,9 @@
 
 #include "base/thread.hpp"
 
-#include "std/condition_variable.hpp"
-#include "std/mutex.hpp"
-#include "std/unique_ptr.hpp"
+#include <condition_variable>
+#include <mutex>
+#include <memory>
 
 class GpsTrack final
 {
@@ -19,8 +19,8 @@ public:
   /// @param maxItemCount - number of points to store on disk
   /// @param duration - initial value of track duration
   /// @param filter - filter object used for filtering points, GpsTrackNullFilter is created by default
-  GpsTrack(string const & filePath, size_t maxItemCount, hours duration,
-           unique_ptr<IGpsTrackFilter> && filter = unique_ptr<IGpsTrackFilter>());
+  GpsTrack(std::string const & filePath, size_t maxItemCount, std::chrono::hours duration,
+           std::unique_ptr<IGpsTrackFilter> && filter = std::unique_ptr<IGpsTrackFilter>());
   ~GpsTrack();
 
   /// Adds point or collection of points to gps tracking
@@ -36,17 +36,17 @@ public:
   /// Sets tracking duration in hours.
   /// @note Callback is called with 'toRemove' points, if some points were removed.
   /// By default, duration is 24h.
-  void SetDuration(hours duration);
+  void SetDuration(std::chrono::hours duration);
 
   /// Returns track duraion in hours
-  hours GetDuration() const;
+  std::chrono::hours GetDuration() const;
 
   /// Notification callback about a change of the gps track.
   /// @param toAdd - collection of points and ids to add.
   /// @param toRemove - range of point indices to remove, or pair(kInvalidId,kInvalidId) if nothing to remove
   /// @note Calling of a GpsTrack.SetCallback function from the callback causes deadlock.
-  using TGpsTrackDiffCallback = std::function<void(vector<pair<size_t, location::GpsTrackInfo>> && toAdd,
-                                                   pair<size_t, size_t> const & toRemove)>;
+  using TGpsTrackDiffCallback = std::function<void(std::vector<std::pair<size_t, location::GpsTrackInfo>> && toAdd,
+                                                   std::pair<size_t, size_t> const & toRemove)>;
 
   /// Sets callback on change of gps track.
   /// @param callback - callback callable object
@@ -62,34 +62,34 @@ private:
   void ProcessPoints(); // called on the worker thread
   bool HasCallback();
   void InitStorageIfNeed();
-  void InitCollection(hours duration);
-  void UpdateStorage(bool needClear, vector<location::GpsInfo> const & points);
-  void UpdateCollection(hours duration, bool needClear, vector<location::GpsTrackInfo> const & points,
-                        pair<size_t, size_t> & addedIds, pair<size_t, size_t> & evictedIds);
-  void NotifyCallback(pair<size_t, size_t> const & addedIds, pair<size_t, size_t> const & evictedIds);
+  void InitCollection(std::chrono::hours duration);
+  void UpdateStorage(bool needClear, std::vector<location::GpsInfo> const & points);
+  void UpdateCollection(std::chrono::hours duration, bool needClear, std::vector<location::GpsTrackInfo> const & points,
+                        std::pair<size_t, size_t> & addedIds, std::pair<size_t, size_t> & evictedIds);
+  void NotifyCallback(std::pair<size_t, size_t> const & addedIds, std::pair<size_t, size_t> const & evictedIds);
 
   size_t const m_maxItemCount;
-  string const m_filePath;
+  std::string const m_filePath;
 
-  mutable mutex m_dataGuard; // protects data for stealing
+  mutable std::mutex m_dataGuard; // protects data for stealing
   vector<location::GpsInfo> m_points; // accumulated points for adding
-  hours m_duration;
+  std::chrono::hours m_duration;
   bool m_needClear; // need clear file
 
-  mutex m_callbackGuard;
+  std::mutex m_callbackGuard;
   // Callback is protected by m_callbackGuard. It ensures that SetCallback and call callback
   // will not be interleaved and after SetCallback(null) callbakc is never called. The negative side
   // is that GpsTrack.SetCallback must be never called from the callback.
   TGpsTrackDiffCallback m_callback;
   bool m_needSendSnapshop; // need send initial snapshot
 
-  unique_ptr<GpsTrackStorage> m_storage; // used in the worker thread
-  unique_ptr<GpsTrackCollection> m_collection; // used in the worker thread
-  unique_ptr<IGpsTrackFilter> m_filter; // used in the worker thread
+  std::unique_ptr<GpsTrackStorage> m_storage; // used in the worker thread
+  std::unique_ptr<GpsTrackCollection> m_collection; // used in the worker thread
+  std::unique_ptr<IGpsTrackFilter> m_filter; // used in the worker thread
 
-  mutex m_threadGuard;
+  std::mutex m_threadGuard;
   threads::SimpleThread m_thread;
   bool m_threadExit; // need exit thread
   bool m_threadWakeup; // need wakeup thread
-  condition_variable m_cv;
+  std::condition_variable m_cv;
 };

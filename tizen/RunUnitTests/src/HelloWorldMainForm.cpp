@@ -20,14 +20,14 @@ int run_all_tests()
 {
   AppLog("Running all tests");
 
-  vector<string> testNames;
+  vector<std::string> testNames;
   vector<bool> testResults;
   int numFailedTests = 0;
 
   for (TestRegister * pTest = TestRegister::FirstRegister(); pTest; pTest = pTest->m_pNext)
   {
-    string fileName(pTest->m_FileName);
-    string testName(pTest->m_TestName);
+    std::string fileName(pTest->m_FileName);
+    std::string testName(pTest->m_TestName);
     {
       int iFirstSlash = static_cast<int>(fileName.size()) - 1;
       while (iFirstSlash >= 0 && fileName[iFirstSlash] != '\\' && fileName[iFirstSlash] != '/')
@@ -44,7 +44,7 @@ int run_all_tests()
   int nPassedTests = 0;
   for (TestRegister * pTest = TestRegister::FirstRegister(); pTest; ++iTest, pTest = pTest->m_pNext)
   {
-    string s = testNames[iTest];
+    std::string s = testNames[iTest];
     AppLog("////////////////////////////////////////////////////////////////////////");
     s = "Running test " + s;
     AppLog(s.c_str());

@@ -29,7 +29,7 @@ bool LessByHash(StreetsMatcher::Prediction const & lhs, StreetsMatcher::Predicti
 
 // static
 void StreetsMatcher::Go(BaseContext const & ctx, FeaturesFilter const & filter,
-                        QueryParams const & params, vector<Prediction> & predictions)
+                        QueryParams const & params, std::vector<Prediction> & predictions)
 {
   size_t const kMaxNumOfImprobablePredictions = 3;
   double const kTailProbability = 0.05;
@@ -55,7 +55,7 @@ void StreetsMatcher::Go(BaseContext const & ctx, FeaturesFilter const & filter,
 
 // static
 void StreetsMatcher::FindStreets(BaseContext const & ctx, FeaturesFilter const & filter,
-                                 QueryParams const & params, vector<Prediction> & predictions)
+                                 QueryParams const & params, std::vector<Prediction> & predictions)
 {
   for (size_t startToken = 0; startToken < ctx.m_numTokens; ++startToken)
   {

@@ -6,6 +6,8 @@
 
 #include "coding/file_reader.hpp"
 
+#include "base/stl_add.hpp"
+
 #include <ifaddrs.h>
 
 #include <mach/mach.h>
@@ -32,6 +34,8 @@
 
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <netinet/in.h>
+
+using namespace std;
 
 Platform::Platform()
 {
@@ -92,7 +96,7 @@ bool Platform::GetFileSizeByName(string const & fileName, uint64_t & size) const
 
 unique_ptr<ModelReader> Platform::GetReader(string const & file, string const & searchScope) const
 {
-  return make_unique<FileReader>(ReadPathForFile(file, searchScope), READER_CHUNK_LOG_SIZE,
+  return my::make_unique<FileReader>(ReadPathForFile(file, searchScope), READER_CHUNK_LOG_SIZE,
                                  READER_CHUNK_LOG_COUNT);
 }
 

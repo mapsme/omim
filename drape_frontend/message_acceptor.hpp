@@ -4,7 +4,7 @@
 
 #include "drape/pointers.hpp"
 
-#include "std/atomic.hpp"
+#include <atomic>
 
 namespace df
 {
@@ -33,7 +33,7 @@ protected:
   size_t GetQueueSize() const;
 #endif
 
-  using TFilterMessageFn = function<bool (ref_ptr<Message>)>;
+  using TFilterMessageFn = std::function<bool (ref_ptr<Message>)>;
   void EnableMessageFiltering(TFilterMessageFn needFilterMessageFn);
   void DisableMessageFiltering();
 
@@ -43,7 +43,7 @@ private:
   void PostMessage(drape_ptr<Message> && message, MessagePriority priority);
 
   MessageQueue m_messageQueue;
-  atomic<bool> m_infinityWaiting;
+  std::atomic<bool> m_infinityWaiting;
   TFilterMessageFn m_needFilterMessageFn;
 };
 

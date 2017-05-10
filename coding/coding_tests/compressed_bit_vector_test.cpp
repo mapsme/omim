@@ -3,34 +3,34 @@
 #include "coding/compressed_bit_vector.hpp"
 #include "coding/writer.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/iterator.hpp"
-#include "std/set.hpp"
+#include <algorithm>
+#include <iterator>
+#include <set>
 
 namespace
 {
 void Intersect(vector<uint64_t> & setBits1, vector<uint64_t> & setBits2, vector<uint64_t> & result)
 {
-  sort(setBits1.begin(), setBits1.end());
-  sort(setBits2.begin(), setBits2.end());
-  set_intersection(setBits1.begin(), setBits1.end(), setBits2.begin(), setBits2.end(),
-                   back_inserter(result));
+  std::sort(setBits1.begin(), setBits1.end());
+  std::sort(setBits2.begin(), setBits2.end());
+  std::set_intersection(setBits1.begin(), setBits1.end(), setBits2.begin(), setBits2.end(),
+                   std::back_inserter(result));
 }
 
 void Subtract(vector<uint64_t> & setBits1, vector<uint64_t> & setBits2, vector<uint64_t> & result)
 {
-  sort(setBits1.begin(), setBits1.end());
-  sort(setBits2.begin(), setBits2.end());
-  set_difference(setBits1.begin(), setBits1.end(), setBits2.begin(), setBits2.end(),
-                 back_inserter(result));
+  std::sort(setBits1.begin(), setBits1.end());
+  std::sort(setBits2.begin(), setBits2.end());
+  std::set_difference(setBits1.begin(), setBits1.end(), setBits2.begin(), setBits2.end(),
+                 std::back_inserter(result));
 }
 
 void Union(vector<uint64_t> & setBits1, vector<uint64_t> & setBits2, vector<uint64_t> & result)
 {
-  sort(setBits1.begin(), setBits1.end());
-  sort(setBits2.begin(), setBits2.end());
-  set_union(setBits1.begin(), setBits1.end(), setBits2.begin(), setBits2.end(),
-            back_inserter(result));
+  std::sort(setBits1.begin(), setBits1.end());
+  std::sort(setBits2.begin(), setBits2.end());
+  std::set_union(setBits1.begin(), setBits1.end(), setBits2.begin(), setBits2.end(),
+            std::back_inserter(result));
 }
 
 template <typename TBinaryOp>
@@ -361,12 +361,12 @@ UNIT_TEST(CompressedBitVector_ForEach)
   TEST_EQUAL(coding::CompressedBitVector::StorageStrategy::Sparse, sparseCBV->GetStorageStrategy(),
              ());
 
-  set<uint64_t> denseSet;
+  std::set<uint64_t> denseSet;
   uint64_t maxPos = 0;
   coding::CompressedBitVectorEnumerator::ForEach(*denseCBV, [&](uint64_t pos)
                                                  {
                                                    denseSet.insert(pos);
-                                                   maxPos = max(maxPos, pos);
+                                                   maxPos = std::max(maxPos, pos);
                                                  });
   TEST_EQUAL(denseSet.size(), kNumBits, ());
   TEST_EQUAL(maxPos, kNumBits - 1, ());

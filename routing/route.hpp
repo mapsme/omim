@@ -11,9 +11,9 @@
 
 #include "base/followed_polyline.hpp"
 
-#include "std/vector.hpp"
-#include "std/set.hpp"
-#include "std/string.hpp"
+#include <vector>
+#include <set>
+#include <string>
 
 
 namespace location
@@ -28,23 +28,23 @@ namespace routing
 class Route
 {
 public:
-  using TTurns = vector<turns::TurnItem>;
+  using TTurns = std::vector<turns::TurnItem>;
   using TTimeItem = pair<uint32_t, double>;
-  using TTimes = vector<TTimeItem>;
-  using TStreetItem = pair<uint32_t, string>;
-  using TStreets = vector<TStreetItem>;
+  using TTimes = std::vector<TTimeItem>;
+  using TStreetItem = pair<uint32_t, std::string>;
+  using TStreets = std::vector<TStreetItem>;
 
-  explicit Route(string const & router)
+  explicit Route(std::string const & router)
     : m_router(router), m_routingSettings(GetCarRoutingSettings()) {}
 
   template <class TIter>
-  Route(string const & router, TIter beg, TIter end)
+  Route(std::string const & router, TIter beg, TIter end)
     : m_router(router), m_routingSettings(GetCarRoutingSettings()), m_poly(beg, end)
   {
     Update();
   }
 
-  Route(string const & router, vector<m2::PointD> const & points, string const & name = string());
+  Route(std::string const & router, std::vector<m2::PointD> const & points, std::string const & name = std::string());
 
   void Swap(Route & rhs);
 
@@ -61,7 +61,7 @@ public:
   inline void SetSectionTimes(TTimes && v) { m_times = move(v); }
   inline void SetStreetNames(TStreets && v) { m_streets = move(v); }
   inline void SetAltitudes(feature::TAltitudes && v) { m_altitudes = move(v); }
-  inline void SetTraffic(vector<traffic::SpeedGroup> && v) { m_traffic = move(v); }
+  inline void SetTraffic(std::vector<traffic::SpeedGroup> && v) { m_traffic = move(v); }
   /// \brief Glues all |route| attributes to |this| except for |m_altitudes|.
   // @TODO In the future this method should append |m_altitudes| as well.
   // It's not implemented now because it's not easy to do it and it'll not be used in
@@ -77,14 +77,14 @@ public:
 
   FollowedPolyline const & GetFollowedPolyline() const { return m_poly; }
 
-  string const & GetRouterId() const { return m_router; }
+  std::string const & GetRouterId() const { return m_router; }
   m2::PolylineD const & GetPoly() const { return m_poly.GetPolyline(); }
   TTurns const & GetTurns() const { return m_turns; }
   feature::TAltitudes const & GetAltitudes() const { return m_altitudes; }
-  vector<traffic::SpeedGroup> const & GetTraffic() const { return m_traffic; }
-  vector<double> const & GetSegDistanceM() const { return m_poly.GetSegDistanceM(); }
-  void GetTurnsDistances(vector<double> & distances) const;
-  string const & GetName() const { return m_name; }
+  std::vector<traffic::SpeedGroup> const & GetTraffic() const { return m_traffic; }
+  std::vector<double> const & GetSegDistanceM() const { return m_poly.GetSegDistanceM(); }
+  void GetTurnsDistances(std::vector<double> & distances) const;
+  std::string const & GetName() const { return m_name; }
   bool IsValid() const { return (m_poly.GetPolyline().GetSize() > 1); }
 
   double GetTotalDistanceMeters() const;
@@ -98,10 +98,10 @@ public:
   bool GetCurrentTurn(double & distanceToTurnMeters, turns::TurnItem & turn) const;
 
   /// \brief Returns a name of a street where the user rides at this moment.
-  void GetCurrentStreetName(string &) const;
+  void GetCurrentStreetName(std::string &) const;
 
   /// \brief Returns a name of a street next to idx point of the path. Function avoids short unnamed links.
-  void GetStreetNameAfterIdx(uint32_t idx, string &) const;
+  void GetStreetNameAfterIdx(uint32_t idx, std::string &) const;
 
   /// @return true if GetNextTurn() returns a valid result in parameters, false otherwise.
   /// \param distanceToTurnMeters is a distance from current position to the second turn.
@@ -111,7 +111,7 @@ public:
   bool GetNextTurn(double & distanceToTurnMeters, turns::TurnItem & turn) const;
   /// \brief Extract information about zero, one or two nearest turns depending on current position.
   /// @return true if its parameter is filled with correct result. (At least with one element.)
-  bool GetNextTurns(vector<turns::TurnItemDist> & turns) const;
+  bool GetNextTurns(std::vector<turns::TurnItemDist> & turns) const;
 
   void GetCurrentDirectionPoint(m2::PointD & pt) const;
 
@@ -123,10 +123,10 @@ public:
   bool IsCurrentOnEnd() const;
 
   /// Add country name if we have no country filename to make route
-  void AddAbsentCountry(string const & name);
+  void AddAbsentCountry(std::string const & name);
 
   /// Get absent file list of a routing files for shortest path finding
-  set<string> const & GetAbsentCountries() const { return m_absentCountries; }
+  std::set<std::string> const & GetAbsentCountries() const { return m_absentCountries; }
 
   inline void SetRoutingSettings(RoutingSettings const & routingSettings)
   {
@@ -135,7 +135,7 @@ public:
   }
 
 private:
-  friend string DebugPrint(Route const & r);
+  friend std::string DebugPrint(Route const & r);
 
   /// Call this fucnction when geometry have changed.
   void Update();
@@ -144,20 +144,20 @@ private:
   TStreets::const_iterator GetCurrentStreetNameIterAfter(FollowedPolyline::Iter iter) const;
   void AppendTraffic(Route const & route);
 
-  string m_router;
+  std::string m_router;
   RoutingSettings m_routingSettings;
-  string m_name;
+  std::string m_name;
 
   FollowedPolyline m_poly;
   FollowedPolyline m_simplifiedPoly;
 
-  set<string> m_absentCountries;
+  std::set<std::string> m_absentCountries;
 
   TTurns m_turns;
   TTimes m_times;
   TStreets m_streets;
   feature::TAltitudes m_altitudes;
-  vector<traffic::SpeedGroup> m_traffic;
+  std::vector<traffic::SpeedGroup> m_traffic;
 
   mutable double m_currentTime;
 };

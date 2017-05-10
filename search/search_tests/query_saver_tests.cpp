@@ -2,8 +2,10 @@
 
 #include "search/query_saver.hpp"
 
-#include "std/string.hpp"
-#include "std/vector.hpp"
+#include <string>
+#include <vector>
+
+using namespace std;
 
 namespace
 {

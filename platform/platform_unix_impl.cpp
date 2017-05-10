@@ -6,10 +6,10 @@
 #include "base/logging.hpp"
 #include "base/scope_guard.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/cstring.hpp"
-#include "std/regex.hpp"
-#include "std/unique_ptr.hpp"
+#include <algorithm>
+#include <cstring>
+#include <regex>
+#include <memory>
 
 #include <dirent.h>
 #include <sys/types.h>
@@ -104,13 +104,13 @@ void Platform::GetSystemFontNames(FilesList & res) const
   {
     for (size_t j = 0; j < ARRAY_SIZE(systemFontsPath); ++j)
     {
-      string const path = string(systemFontsPath[j]) + fontsWhitelist[i];
+      std::string const path = std::string(systemFontsPath[j]) + fontsWhitelist[i];
       if (IsFileExistsByFullPath(path))
       {
         if (GetFileSizeByName(path, fileSize))
         {
           uint64_t const * end = fontSizeBlacklist + ARRAY_SIZE(fontSizeBlacklist);
-          if (find(fontSizeBlacklist, end, fileSize) == end)
+          if (std::find(fontSizeBlacklist, end, fileSize) == end)
           {
             res.push_back(path);
             LOG(LINFO, ("Found usable system font", path, "with file size", fileSize));
@@ -123,7 +123,7 @@ void Platform::GetSystemFontNames(FilesList & res) const
 }
 
 // static
-Platform::EError Platform::RmDir(string const & dirName)
+Platform::EError Platform::RmDir(std::string const & dirName)
 {
   if (rmdir(dirName.c_str()) != 0)
     return ErrnoToError();
@@ -131,7 +131,7 @@ Platform::EError Platform::RmDir(string const & dirName)
 }
 
 // static
-Platform::EError Platform::GetFileType(string const & path, EFileType & type)
+Platform::EError Platform::GetFileType(std::string const & path, EFileType & type)
 {
   struct stat stats;
   if (stat(path.c_str(), &stats) != 0)
@@ -146,7 +146,7 @@ Platform::EError Platform::GetFileType(string const & path, EFileType & type)
 }
 
 // static
-bool Platform::IsFileExistsByFullPath(string const & filePath)
+bool Platform::IsFileExistsByFullPath(std::string const & filePath)
 {
   struct stat s;
   return stat(filePath.c_str(), &s) == 0;
@@ -155,9 +155,9 @@ bool Platform::IsFileExistsByFullPath(string const & filePath)
 // static
 bool Platform::IsCustomTextureAllocatorSupported() { return true; }
 
-bool Platform::IsDirectoryEmpty(string const & directory)
+bool Platform::IsDirectoryEmpty(std::string const & directory)
 {
-  unique_ptr<DIR, CloseDir> dir(opendir(directory.c_str()));
+  std::unique_ptr<DIR, CloseDir> dir(opendir(directory.c_str()));
   if (!dir)
     return true;
 
@@ -173,7 +173,7 @@ bool Platform::IsDirectoryEmpty(string const & directory)
   return true;
 }
 
-bool Platform::GetFileSizeByFullPath(string const & filePath, uint64_t & size)
+bool Platform::GetFileSizeByFullPath(std::string const & filePath, uint64_t & size)
 {
   struct stat s;
   if (stat(filePath.c_str(), &s) == 0)
@@ -223,20 +223,20 @@ uint64_t Platform::GetWritableStorageSpace() const
 
 namespace pl
 {
-void EnumerateFilesByRegExp(string const & directory, string const & regexp,
-                            vector<string> & res)
+void EnumerateFilesByRegExp(std::string const & directory, std::string const & regexp,
+                            std::vector<std::string> & res)
 {
-  unique_ptr<DIR, CloseDir> dir(opendir(directory.c_str()));
+  std::unique_ptr<DIR, CloseDir> dir(opendir(directory.c_str()));
   if (!dir)
     return;
 
-  regex exp(regexp);
+  std::regex exp(regexp);
 
   struct dirent * entry;
   while ((entry = readdir(dir.get())) != 0)
   {
-    string const name(entry->d_name);
-    if (regex_search(name.begin(), name.end(), exp))
+    std::string const name(entry->d_name);
+    if (std::regex_search(name.begin(), name.end(), exp))
       res.push_back(name);
   }
 }

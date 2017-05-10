@@ -11,10 +11,10 @@
 
 #include "geometry/point2d.hpp"
 
-#include "std/function.hpp"
-#include "std/string.hpp"
-#include "std/unique_ptr.hpp"
-#include "std/vector.hpp"
+#include <functional>
+#include <string>
+#include <memory>
+#include <vector>
 
 class Index;
 
@@ -24,14 +24,14 @@ namespace routing
 class RoadGraphRouter : public IRouter
 {
 public:
-  RoadGraphRouter(string const & name, Index const & index, TCountryFileFn const & countryFileFn,
-                  IRoadGraph::Mode mode, unique_ptr<VehicleModelFactory> && vehicleModelFactory,
-                  unique_ptr<IRoutingAlgorithm> && algorithm,
-                  unique_ptr<IDirectionsEngine> && directionsEngine);
+  RoadGraphRouter(std::string const & name, Index const & index, TCountryFileFn const & countryFileFn,
+                  IRoadGraph::Mode mode, std::unique_ptr<VehicleModelFactory> && vehicleModelFactory,
+                  std::unique_ptr<IRoutingAlgorithm> && algorithm,
+                  std::unique_ptr<IDirectionsEngine> && directionsEngine);
   ~RoadGraphRouter() override;
 
   // IRouter overrides:
-  string GetName() const override { return m_name; }
+  std::string GetName() const override { return m_name; }
   void ClearState() override;
   ResultCode CalculateRoute(m2::PointD const & startPoint, m2::PointD const & startDirection,
                             m2::PointD const & finalPoint, RouterDelegate const & delegate,
@@ -42,12 +42,12 @@ private:
   /// Returns true if map exists
   bool CheckMapExistence(m2::PointD const & point, Route & route) const;
 
-  string const m_name;
+  std::string const m_name;
   TCountryFileFn const m_countryFileFn;
   Index const & m_index;
-  unique_ptr<IRoutingAlgorithm> const m_algorithm;
-  unique_ptr<IRoadGraph> const m_roadGraph;
-  unique_ptr<IDirectionsEngine> const m_directionsEngine;
+  std::unique_ptr<IRoutingAlgorithm> const m_algorithm;
+  std::unique_ptr<IRoadGraph> const m_roadGraph;
+  std::unique_ptr<IDirectionsEngine> const m_directionsEngine;
 };
 
 unique_ptr<IRouter> CreatePedestrianAStarRouter(Index & index, TCountryFileFn const & countryFileFn);

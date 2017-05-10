@@ -30,7 +30,7 @@ bool MwmTraits::HasRoutingIndex() const
   return GetVersion() >= kFirstVersionWithRoutingIndex;
 }
 
-string DebugPrint(MwmTraits::SearchIndexFormat format)
+std::string DebugPrint(MwmTraits::SearchIndexFormat format)
 {
   switch (format)
   {
@@ -41,7 +41,7 @@ string DebugPrint(MwmTraits::SearchIndexFormat format)
   }
 }
 
-string DebugPrint(MwmTraits::HouseToStreetTableFormat format)
+std::string DebugPrint(MwmTraits::HouseToStreetTableFormat format)
 {
   switch (format)
   {

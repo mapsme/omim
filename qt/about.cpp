@@ -39,7 +39,7 @@ AboutDialog::AboutDialog(QWidget * parent)
   hBox->addWidget(labelIcon);
   hBox->addWidget(labelVersion);
 
-  string aboutText;
+  std::string aboutText;
   try
   {
     ReaderPtr<Reader> reader = GetPlatform().GetReader("copyright.html");

@@ -7,7 +7,7 @@
 #include "indexer/feature_decl.hpp"
 #include "geometry/point2d.hpp"
 
-#include "std/string.hpp"
+#include <string>
 
 namespace df
 {
@@ -28,7 +28,7 @@ struct PoiSymbolViewParams : CommonViewParams
   PoiSymbolViewParams(FeatureID const & id) : m_id(id) {}
 
   FeatureID m_id;
-  string m_symbolName;
+  std::string m_symbolName;
   uint32_t m_extendingSize;
   float m_posZ = 0.0f;
   bool m_hasArea = false;
@@ -64,9 +64,9 @@ struct TextViewParams : CommonViewParams
 
   FeatureID m_featureID;
   dp::FontDecl m_primaryTextFont;
-  string m_primaryText;
+  std::string m_primaryText;
   dp::FontDecl m_secondaryTextFont;
-  string m_secondaryText;
+  std::string m_secondaryText;
   dp::Anchor m_anchor;
   m2::PointF m_primaryOffset = m2::PointF(0.0f, 0.0f);
   m2::PointF m_secondaryOffset = m2::PointF(0.0f, 0.0f);
@@ -84,14 +84,14 @@ struct PathTextViewParams : CommonViewParams
 {
   FeatureID m_featureID;
   dp::FontDecl m_textFont;
-  string m_text;
+  std::string m_text;
   float m_baseGtoPScale = 1.0f;
 };
 
 struct PathSymbolViewParams : CommonViewParams
 {
   FeatureID m_featureID;
-  string m_symbolName;
+  std::string m_symbolName;
   float m_offset = 0.0f;
   float m_step = 0.0f;
   float m_baseGtoPScale = 1.0f;

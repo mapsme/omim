@@ -1,9 +1,9 @@
 #pragma once
 
-#include "std/string.hpp"
-#include "std/vector.hpp"
-#include "std/utility.hpp"
-#include "std/cstdint.hpp"
+#include <string>
+#include <vector>
+#include <utility>
+#include <cstdint>
 
 
 namespace downloader
@@ -32,18 +32,18 @@ private:
   };
 #pragma pack(pop)
 
-  vector<ChunkT> m_chunks;
+  std::vector<ChunkT> m_chunks;
 
   static const int SERVER_READY = -1;
   struct ServerT
   {
-    string m_url;
+    std::string m_url;
     int m_chunkIndex;
 
-    ServerT(string const & url, int ind) : m_url(url), m_chunkIndex(ind) {}
+    ServerT(std::string const & url, int ind) : m_url(url), m_chunkIndex(ind) {}
   };
 
-  vector<ServerT> m_servers;
+  std::vector<ServerT> m_servers;
 
   struct LessChunks
   {
@@ -52,13 +52,13 @@ private:
     bool operator() (int64_t const & r1, ChunkT const & r2) const { return r1 < r2.m_pos; }
   };
 
-  typedef pair<int64_t, int64_t> RangeT;
+  typedef std::pair<int64_t, int64_t> RangeT;
 
   /// @return Chunk pointer and it's index for given file offsets range.
-  pair<ChunkT *, int> GetChunk(RangeT const & range);
+  std::pair<ChunkT *, int> GetChunk(RangeT const & range);
 
 public:
-  ChunksDownloadStrategy(vector<string> const & urls);
+  ChunksDownloadStrategy(std::vector<std::string> const & urls);
 
   /// Init chunks vector for fileSize.
   void InitChunks(int64_t fileSize, int64_t chunkSize, ChunkStatusT status = CHUNK_FREE);
@@ -66,13 +66,13 @@ public:
   /// Used in unit tests only!
   void AddChunk(RangeT const & range, ChunkStatusT status);
 
-  void SaveChunks(int64_t fileSize, string const & fName);
+  void SaveChunks(int64_t fileSize, std::string const & fName);
   /// @return Already downloaded size.
-  int64_t LoadOrInitChunks(string const & fName, int64_t fileSize, int64_t chunkSize);
+  int64_t LoadOrInitChunks(std::string const & fName, int64_t fileSize, int64_t chunkSize);
 
   /// Should be called for every completed chunk (no matter successful or not).
   /// @returns url of the chunk
-  string ChunkFinished(bool success, RangeT const & range);
+  std::string ChunkFinished(bool success, RangeT const & range);
 
   size_t ActiveServersCount() const { return m_servers.size(); }
 
@@ -84,7 +84,7 @@ public:
     EDownloadSucceeded
   };
   /// Should be called until returns ENextChunk
-  ResultT NextChunk(string & outUrl, RangeT & range);
+  ResultT NextChunk(std::string & outUrl, RangeT & range);
 };
 
 } // namespace downloader

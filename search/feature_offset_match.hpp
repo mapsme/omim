@@ -15,13 +15,13 @@
 #include "base/string_utils.hpp"
 #include "base/uni_string_dfa.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/queue.hpp"
+#include <algorithm>
+#include <memory>
+#include <queue>
 #include "std/target_os.hpp"
-#include "std/unique_ptr.hpp"
-#include "std/unordered_set.hpp"
-#include "std/utility.hpp"
-#include "std/vector.hpp"
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
 namespace search
 {
@@ -56,9 +56,9 @@ bool MatchInTrie(trie::Iterator<ValueList<Value>> const & trieRoot,
 {
   using TrieDFAIt = shared_ptr<trie::Iterator<ValueList<Value>>>;
   using DFAIt = typename DFA::Iterator;
-  using State = pair<TrieDFAIt, DFAIt>;
+  using State = std::pair<TrieDFAIt, DFAIt>;
 
-  queue<State> q;
+  std::queue<State> q;
 
   {
     auto it = dfa.Begin();
@@ -115,14 +115,14 @@ class OffsetIntersector
     }
   };
 
-  using Set = unordered_set<Value, Hash, Equal>;
+  using Set = std::unordered_set<Value, Hash, Equal>;
 
   Filter const & m_filter;
-  unique_ptr<Set> m_prevSet;
-  unique_ptr<Set> m_set;
+  std::unique_ptr<Set> m_prevSet;
+  std::unique_ptr<Set> m_set;
 
 public:
-  explicit OffsetIntersector(Filter const & filter) : m_filter(filter), m_set(make_unique<Set>()) {}
+  explicit OffsetIntersector(Filter const & filter) : m_filter(filter), m_set(my::make_unique<Set>()) {}
 
   void operator()(Value const & v)
   {
@@ -138,7 +138,7 @@ public:
   void NextStep()
   {
     if (!m_prevSet)
-      m_prevSet = make_unique<Set>();
+      m_prevSet = my::make_unique<Set>();
 
     m_prevSet.swap(m_set);
     m_set->clear();
@@ -200,7 +200,7 @@ public:
   }
 
 private:
-  vector<Value> m_values;
+  std::vector<Value> m_values;
   Filter const & m_filter;
 };
 
@@ -216,8 +216,8 @@ struct SearchTrieRequest
     m_langs.Clear();
   }
 
-  vector<DFA> m_names;
-  vector<strings::UniStringDFA> m_categories;
+  std::vector<DFA> m_names;
+  std::vector<strings::UniStringDFA> m_categories;
   QueryParams::Langs m_langs;
 };
 
@@ -225,7 +225,7 @@ struct SearchTrieRequest
 //
 // *NOTE* |toDo| may be called several times for the same feature.
 template <typename DFA, typename Value, typename ToDo>
-void MatchInTrie(vector<DFA> const & dfas, TrieRootPrefix<Value> const & trieRoot, ToDo && toDo)
+void MatchInTrie(std::vector<DFA> const & dfas, TrieRootPrefix<Value> const & trieRoot, ToDo && toDo)
 {
   for (auto const & dfa : dfas)
     impl::MatchInTrie(trieRoot.m_root, trieRoot.m_prefix, trieRoot.m_prefixSize, dfa, toDo);
@@ -295,7 +295,7 @@ void MatchFeaturesInTrie(SearchTrieRequest<DFA> const & request,
     categoriesHolder.ForEachValue(intersector);
 
   intersector.NextStep();
-  intersector.ForEachResult(forward<ToDo>(toDo));
+  intersector.ForEachResult(std::forward<ToDo>(toDo));
 }
 
 template <typename Value, typename Filter, typename ToDo>
@@ -317,13 +317,13 @@ void MatchPostcodesInTrie(TokenSlice const & slice,
   {
     if (slice.IsPrefix(i))
     {
-      vector<PrefixDFAModifier<UniStringDFA>> dfas;
+      std::vector<PrefixDFAModifier<UniStringDFA>> dfas;
       slice.Get(i).ForEach([&dfas](UniString const & s) { dfas.emplace_back(UniStringDFA(s)); });
       MatchInTrie(dfas, TrieRootPrefix<Value>(*postcodesRoot, edge), intersector);
     }
     else
     {
-      vector<UniStringDFA> dfas;
+      std::vector<UniStringDFA> dfas;
       slice.Get(i).ForEach([&dfas](UniString const & s) { dfas.emplace_back(s); });
       MatchInTrie(dfas, TrieRootPrefix<Value>(*postcodesRoot, edge), intersector);
     }
@@ -331,6 +331,6 @@ void MatchPostcodesInTrie(TokenSlice const & slice,
     intersector.NextStep();
   }
 
-  intersector.ForEachResult(forward<ToDo>(toDo));
+  intersector.ForEachResult(std::forward<ToDo>(toDo));
 }
 }  // namespace search

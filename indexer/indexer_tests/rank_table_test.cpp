@@ -19,12 +19,12 @@
 
 #include "defines.hpp"
 
-#include "std/string.hpp"
-#include "std/vector.hpp"
+#include <string>
+#include <vector>
 
 namespace
 {
-void TestTable(vector<uint8_t> const & ranks, search::RankTable const & table)
+void TestTable(std::vector<uint8_t> const & ranks, search::RankTable const & table)
 {
   TEST_EQUAL(ranks.size(), table.Size(), ());
   TEST_EQUAL(table.GetVersion(), search::RankTable::V0, ());
@@ -32,7 +32,7 @@ void TestTable(vector<uint8_t> const & ranks, search::RankTable const & table)
     TEST_EQUAL(ranks[i], table.Get(i), ());
 }
 
-void TestTable(vector<uint8_t> const & ranks, string const & path)
+void TestTable(std::vector<uint8_t> const & ranks, std::string const & path)
 {
   // Tries to load table via file read.
   {
@@ -60,7 +60,7 @@ UNIT_TEST(RankTableBuilder_Smoke)
   FileWriter::DeleteFileX(kTestCont);
   MY_SCOPE_GUARD(cleanup, bind(&FileWriter::DeleteFileX, kTestCont));
 
-  vector<uint8_t> ranks;
+  std::vector<uint8_t> ranks;
   for (size_t i = 0; i < kNumRanks; ++i)
     ranks.push_back(i);
 
@@ -76,9 +76,9 @@ UNIT_TEST(RankTableBuilder_EndToEnd)
 {
   classificator::Load();
 
-  string const originalMapPath =
+  std::string const originalMapPath =
       my::JoinFoldersToPath(GetPlatform().WritableDir(), "minsk-pass.mwm");
-  string const mapPath = my::JoinFoldersToPath(GetPlatform().WritableDir(), "minsk-pass-copy.mwm");
+  std::string const mapPath = my::JoinFoldersToPath(GetPlatform().WritableDir(), "minsk-pass-copy.mwm");
   my::CopyFileX(originalMapPath, mapPath);
   MY_SCOPE_GUARD(cleanup, bind(&FileWriter::DeleteFileX, mapPath));
 
@@ -86,7 +86,7 @@ UNIT_TEST(RankTableBuilder_EndToEnd)
       platform::LocalCountryFile::MakeForTesting("minsk-pass-copy");
   TEST(localFile.OnDisk(MapOptions::Map), ());
 
-  vector<uint8_t> ranks;
+  std::vector<uint8_t> ranks;
   {
     FilesContainerR rcont(mapPath);
     search::RankTableBuilder::CalcSearchRanks(rcont, ranks);
@@ -109,7 +109,7 @@ UNIT_TEST(RankTableBuilder_WrongEndianness)
   char const kTestFile[] = "test.mwm";
   MY_SCOPE_GUARD(cleanup, bind(&FileWriter::DeleteFileX, kTestFile));
 
-  vector<uint8_t> ranks = {0, 1, 2, 3, 4};
+  std::vector<uint8_t> ranks = {0, 1, 2, 3, 4};
   {
     FilesContainerW wcont(kTestFile);
     search::RankTableBuilder::Create(ranks, wcont);
@@ -126,7 +126,7 @@ UNIT_TEST(RankTableBuilder_WrongEndianness)
 
   // Serialize rank table in opposite endianness.
   {
-    vector<char> data;
+    std::vector<char> data;
     {
       MemWriter<decltype(data)> writer(data);
       table->Serialize(writer, false /* preserveHostEndianness */);

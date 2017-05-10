@@ -15,10 +15,10 @@
 #include "base/stl_helpers.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/set.hpp"
-#include "std/unordered_map.hpp"
-#include "std/vector.hpp"
+#include <algorithm>
+#include <set>
+#include <unordered_map>
+#include <vector>
 
 using namespace search;
 using namespace strings;
@@ -30,11 +30,11 @@ class LocalityScorerTest : public LocalityScorer::Delegate
 public:
   LocalityScorerTest() : m_scorer(m_params, static_cast<LocalityScorer::Delegate &>(*this)) {}
 
-  void InitParams(string const & query, bool lastTokenIsPrefix)
+  void InitParams(std::string const & query, bool lastTokenIsPrefix)
   {
     m_params.Clear();
 
-    vector<UniString> tokens;
+    std::vector<UniString> tokens;
     Delimiters delims;
     SplitUniString(NormalizeAndSimplifyString(query), MakeBackInsertFunctor(tokens), delims);
 
@@ -49,9 +49,9 @@ public:
     }
   }
 
-  void AddLocality(string const & name, uint32_t featureId)
+  void AddLocality(std::string const & name, uint32_t featureId)
   {
-    set<UniString> tokens;
+    std::set<UniString> tokens;
     Delimiters delims;
     SplitUniString(NormalizeAndSimplifyString(name), MakeInsertFunctor(tokens), delims);
 
@@ -72,7 +72,7 @@ public:
       auto const & token = m_params.GetToken(i);
       bool const isPrefixToken = m_params.IsPrefixToken(i);
 
-      vector<uint64_t> ids;
+      std::vector<uint64_t> ids;
       token.ForEach([&](UniString const & name) {
         if (isPrefixToken)
         {
@@ -96,11 +96,11 @@ public:
     filter.SetFull();
 
     m_scorer.GetTopLocalities(MwmSet::MwmId(), ctx, filter, limit, m_localities);
-    sort(m_localities.begin(), m_localities.end(), my::LessBy(&Locality::m_featureId));
+    std::sort(m_localities.begin(), m_localities.end(), my::LessBy(&Locality::m_featureId));
   }
 
   // LocalityScorer::Delegate overrides:
-  void GetNames(uint32_t featureId, vector<string> & names) const override
+  void GetNames(uint32_t featureId, std::vector<std::string> & names) const override
   {
     auto it = m_names.find(featureId);
     if (it != m_names.end())
@@ -111,8 +111,8 @@ public:
 
 protected:
   QueryParams m_params;
-  vector<Locality> m_localities;
-  unordered_map<uint32_t, vector<string>> m_names;
+  std::vector<Locality> m_localities;
+  std::unordered_map<uint32_t, std::vector<std::string>> m_names;
   LocalityScorer m_scorer;
 
   my::MemTrie<UniString, my::VectorValues<uint32_t>> m_searchIndex;

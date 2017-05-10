@@ -13,12 +13,12 @@ namespace
 void ParseMWMSegments(std::string const & line, uint32_t const lineNumber,
                       std::vector<openlr::SampleItem::MWMSegment> & segments, Index const & index)
 {
-  std::vector<string> parts;
+  std::vector<std::string> parts;
   strings::ParseCSVRow(line, '=', parts);
 
   for (auto const & seg : parts)
   {
-    std::vector<string> segParts;
+    std::vector<std::string> segParts;
     strings::ParseCSVRow(seg, '-', segParts);
     CHECK_EQUAL(segParts.size(), 5, ());
 
@@ -44,7 +44,7 @@ void ParseMWMSegments(std::string const & line, uint32_t const lineNumber,
 void ParseSampleItem(std::string const & line, uint32_t const lineNumber, openlr::SampleItem & item,
                      Index const & index)
 {
-  std::vector<string> parts;
+  std::vector<std::string> parts;
   strings::ParseCSVRow(line, '\t', parts);
   CHECK_GREATER_OR_EQUAL(parts.size(), 2, ());
   CHECK_LESS_OR_EQUAL(parts.size(), 3, ());
@@ -117,7 +117,7 @@ SamplePool LoadSamplePool(std::string const & fileName, Index const & index)
     MYTHROW(SamplePoolLoadError, ("Can't read from file", fileName, strerror(errno)));
 
   SamplePool pool;
-  for (struct {uint32_t lineNumber = 0; string line; } st; getline(sample, st.line); ++st.lineNumber)
+  for (struct {uint32_t lineNumber = 0; std::string line; } st; std::getline(sample, st.line); ++st.lineNumber)
   {
     SampleItem item = SampleItem::Uninitialized();
     ParseSampleItem(st.line, st.lineNumber, item, index);

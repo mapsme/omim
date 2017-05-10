@@ -158,13 +158,13 @@ UNIT_TEST(TestDruleParseSelectorValid1)
 
 UNIT_TEST(TestDruleParseSelectorValid2)
 {
-  auto selector = ParseSelector(vector<string>({"population>1000"}));
+  auto selector = ParseSelector(vector<std::string>({"population>1000"}));
   TEST(selector != nullptr, ());
 }
 
 UNIT_TEST(TestDruleParseSelectorValid3)
 {
-  auto selector = ParseSelector(vector<string>({"population>=1000","population<=1000000"}));
+  auto selector = ParseSelector(vector<std::string>({"population>=1000","population<=1000000"}));
   TEST(selector != nullptr, ());
 }
 
@@ -176,12 +176,12 @@ UNIT_TEST(TestDruleParseSelectorInvalid1)
 
 UNIT_TEST(TestDruleParseSelectorInvalid2)
 {
-  auto selector = ParseSelector(vector<string>({""}));
+  auto selector = ParseSelector(vector<std::string>({""}));
   TEST(selector == nullptr, ());
 }
 
 UNIT_TEST(TestDruleParseSelectorInvalid3)
 {
-  auto selector = ParseSelector(vector<string>({"population>=1000","population<=1000000", ""}));
+  auto selector = ParseSelector(vector<std::string>({"population>=1000","population<=1000000", ""}));
   TEST(selector == nullptr, ());
 }

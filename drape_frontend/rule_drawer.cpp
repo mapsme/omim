@@ -18,7 +18,7 @@
 #include "base/assert.hpp"
 #include "base/logging.hpp"
 
-#include "std/bind.hpp"
+#include <functional>
 
 #ifdef DRAW_TILE_NET
 #include "drape_frontend/line_shape.hpp"
@@ -192,7 +192,7 @@ void RuleDrawer::operator()(FeatureType const & f)
       zoomLevel > scales::GetUpperWorldScale() &&
       f.GetID().m_mwmId.GetInfo()->GetType() == MwmInfo::COASTS)
   {
-    string name;
+    std::string name;
     if (f.GetName(StringUtf8Multilang::kDefaultCode, name))
     {
       ASSERT(!name.empty(), ());
@@ -266,7 +266,7 @@ void RuleDrawer::operator()(FeatureType const & f)
       constexpr double kMetersPerLevel = 3.0;
       double heightInMeters = kDefaultHeightInMeters;
 
-      string value = md.Get(feature::Metadata::FMD_HEIGHT);
+      std::string value = md.Get(feature::Metadata::FMD_HEIGHT);
       if (!value.empty())
       {
         strings::to_double(value, heightInMeters);
@@ -324,7 +324,7 @@ void RuleDrawer::operator()(FeatureType const & f)
     if (CheckCancelled())
       return;
 
-    s.ForEachRule(bind(&ApplyAreaFeature::ProcessRule, &apply, _1));
+    s.ForEachRule(std::bind(&ApplyAreaFeature::ProcessRule, &apply, std::placeholders::_1));
     apply.Finish(m_customSymbolsContext);
   }
   else if (s.LineStyleExists())
@@ -338,7 +338,7 @@ void RuleDrawer::operator()(FeatureType const & f)
       return;
 
     if (apply.HasGeometry())
-      s.ForEachRule(bind(&ApplyLineFeature::ProcessRule, &apply, _1));
+      s.ForEachRule(std::bind(&ApplyLineFeature::ProcessRule, &apply, std::placeholders::_1));
 
     apply.Finish(ftypes::GetRoadShields(f));
 
@@ -392,7 +392,7 @@ void RuleDrawer::operator()(FeatureType const & f)
     if (CheckCancelled())
       return;
 
-    s.ForEachRule(bind(&ApplyPointFeature::ProcessRule, &apply, _1));
+    s.ForEachRule(std::bind(&ApplyPointFeature::ProcessRule, &apply, std::placeholders::_1));
     apply.Finish(m_customSymbolsContext);
   }
 

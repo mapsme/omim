@@ -13,9 +13,9 @@
 
 #include "geometry/rect2d.hpp"
 
-#include "std/unordered_map.hpp"
-#include "std/string.hpp"
-#include "std/vector.hpp"
+#include <unordered_map>
+#include <string>
+#include <vector>
 
 namespace update
 {
@@ -24,9 +24,9 @@ class SizeUpdater;
 
 namespace storage
 {
-using TMappingOldMwm = map<TCountryId, TCountriesSet>;
+using TMappingOldMwm = std::map<TCountryId, TCountriesSet>;
 /// Map from key affiliation words into MWM IDs (file names).
-using TMappingAffiliations = unordered_map<string, vector<TCountryId>>;
+using TMappingAffiliations = std::unordered_map<std::string, std::vector<TCountryId>>;
 
 /// This class keeps all the information about a country in country tree (TCountryTree).
 /// It is guaranteed that every node represent a unique region has a unique |m_name| in country
@@ -81,9 +81,9 @@ using TCountryTree = CountryTree<TCountryId, Country>;
 using TCountryTreeNode = TCountryTree::Node;
 
 /// @return version of country file or -1 if error was encountered
-int64_t LoadCountries(string const & jsonBuffer, TCountryTree & countries,
+int64_t LoadCountries(std::string const & jsonBuffer, TCountryTree & countries,
                       TMappingAffiliations & affiliations, TMappingOldMwm * mapping = nullptr);
 
-void LoadCountryFile2CountryInfo(string const & jsonBuffer, map<string, CountryInfo> & id2info,
+void LoadCountryFile2CountryInfo(std::string const & jsonBuffer, std::map<std::string, CountryInfo> & id2info,
                                  bool & isSingleMwm);
 }  // namespace storage

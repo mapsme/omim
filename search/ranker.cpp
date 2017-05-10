@@ -8,18 +8,19 @@
 #include "indexer/feature_algo.hpp"
 
 #include "base/logging.hpp"
+#include "base/stl_add.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/iterator.hpp"
-#include "std/unique_ptr.hpp"
+#include <algorithm>
+#include <iterator>
+#include <memory>
 
 namespace search
 {
 namespace
 {
 template <typename TSlice>
-void UpdateNameScore(string const & name, TSlice const & slice, NameScore & bestScore)
+void UpdateNameScore(std::string const & name, TSlice const & slice, NameScore & bestScore)
 {
   auto const score = GetNameScore(name, slice);
   if (score > bestScore)
@@ -27,7 +28,7 @@ void UpdateNameScore(string const & name, TSlice const & slice, NameScore & best
 }
 
 template <typename TSlice>
-void UpdateNameScore(vector<strings::UniString> const & tokens, TSlice const & slice,
+void UpdateNameScore(std::vector<strings::UniString> const & tokens, TSlice const & slice,
                      NameScore & bestScore)
 {
   auto const score = GetNameScore(tokens, slice);
@@ -44,10 +45,10 @@ NameScore GetNameScore(FeatureType const & ft, Geocoder::Params const & params,
 
   for (auto const & lang : params.GetLangs())
   {
-    string name;
+    std::string name;
     if (!ft.GetName(lang, name))
       continue;
-    vector<strings::UniString> tokens;
+    std::vector<strings::UniString> tokens;
     PrepareStringForMatching(name, tokens);
 
     UpdateNameScore(tokens, slice, bestScore);
@@ -60,17 +61,17 @@ NameScore GetNameScore(FeatureType const & ft, Geocoder::Params const & params,
   return bestScore;
 }
 
-void RemoveDuplicatingLinear(vector<IndexedValue> & values)
+void RemoveDuplicatingLinear(std::vector<IndexedValue> & values)
 {
   PreResult2::LessLinearTypesF lessCmp;
   PreResult2::EqualLinearTypesF equalCmp;
 
-  sort(values.begin(), values.end(), [&lessCmp](IndexedValue const & lhs, IndexedValue const & rhs)
+  std::sort(values.begin(), values.end(), [&lessCmp](IndexedValue const & lhs, IndexedValue const & rhs)
        {
          return lessCmp(*lhs, *rhs);
        });
 
-  values.erase(unique(values.begin(), values.end(),
+  values.erase(std::unique(values.begin(), values.end(),
                       [&equalCmp](IndexedValue const & lhs, IndexedValue const & rhs)
                       {
                         return equalCmp(*lhs, *rhs);
@@ -79,11 +80,11 @@ void RemoveDuplicatingLinear(vector<IndexedValue> & values)
 }
 
 // Chops off the last query token (the "prefix" one) from |str| and stores the result in |res|.
-void GetStringPrefix(string const & str, string & res)
+void GetStringPrefix(std::string const & str, std::string & res)
 {
   search::Delimiters delims;
   // Find start iterator of prefix in input query.
-  using TIter = utf8::unchecked::iterator<string::const_iterator>;
+  using TIter = utf8::unchecked::iterator<std::string::const_iterator>;
   TIter iter(str.end());
   while (iter.base() != str.begin())
   {
@@ -166,12 +167,12 @@ class PreResult2Maker
   Geocoder::Params const & m_params;
   storage::CountryInfoGetter const & m_infoGetter;
 
-  unique_ptr<Index::FeaturesLoaderGuard> m_loader;
+  std::unique_ptr<Index::FeaturesLoaderGuard> m_loader;
 
   bool LoadFeature(FeatureID const & id, FeatureType & ft)
   {
     if (!m_loader || m_loader->GetId() != id.m_mwmId)
-      m_loader = make_unique<Index::FeaturesLoaderGuard>(m_index, id.m_mwmId);
+      m_loader = my::make_unique<Index::FeaturesLoaderGuard>(m_index, id.m_mwmId);
     if (!m_loader->GetFeatureByIndex(id.m_index, ft))
       return false;
 
@@ -180,8 +181,8 @@ class PreResult2Maker
   }
 
   // For the best performance, incoming ids should be sorted by id.first (mwm file id).
-  bool LoadFeature(FeatureID const & id, FeatureType & ft, m2::PointD & center, string & name,
-                   string & country)
+  bool LoadFeature(FeatureID const & id, FeatureType & ft, m2::PointD & center, std::string & name,
+                   std::string & country)
   {
     if (!LoadFeature(id, ft))
       return false;
@@ -222,13 +223,13 @@ class PreResult2Maker
         NameScore const nameScore =
             GetNameScore(street, m_params, preInfo.m_tokenRange[SearchModel::SEARCH_TYPE_STREET],
                          SearchModel::SEARCH_TYPE_STREET);
-        info.m_nameScore = min(info.m_nameScore, nameScore);
+        info.m_nameScore = std::min(info.m_nameScore, nameScore);
       }
     }
 
     TokenSlice slice(m_params, preInfo.InnermostTokenRange());
     feature::TypesHolder holder(ft);
-    vector<pair<size_t, size_t>> matched(slice.Size());
+    std::vector<std::pair<size_t, size_t>> matched(slice.Size());
     ForEachCategoryType(QuerySlice(slice), m_ranker.m_params.m_categoryLocales,
                         m_ranker.m_categories, [&](size_t i, uint32_t t)
                         {
@@ -237,18 +238,18 @@ class PreResult2Maker
                             ++matched[i].first;
                         });
 
-    info.m_pureCats = all_of(matched.begin(), matched.end(), [](pair<size_t, size_t> const & m)
+    info.m_pureCats = std::all_of(matched.begin(), matched.end(), [](std::pair<size_t, size_t> const & m)
                              {
                                return m.first != 0;
                              });
-    info.m_falseCats = all_of(matched.begin(), matched.end(), [](pair<size_t, size_t> const & m)
+    info.m_falseCats = std::all_of(matched.begin(), matched.end(), [](std::pair<size_t, size_t> const & m)
                               {
                                 return m.first == 0 && m.second != 0;
                               });
   }
 
   uint8_t NormalizeRank(uint8_t rank, SearchModel::SearchType type, m2::PointD const & center,
-                        string const & country)
+                        std::string const & country)
   {
     switch (type)
     {
@@ -282,23 +283,23 @@ public:
   {
   }
 
-  unique_ptr<PreResult2> operator()(PreResult1 const & res1)
+  std::unique_ptr<PreResult2> operator()(PreResult1 const & res1)
   {
     FeatureType ft;
     m2::PointD center;
-    string name;
-    string country;
+    std::string name;
+    std::string country;
 
     if (!LoadFeature(res1.GetId(), ft, center, name, country))
-      return unique_ptr<PreResult2>();
+      return std::unique_ptr<PreResult2>();
 
-    auto res2 = make_unique<PreResult2>(ft, center, m_ranker.m_params.m_position /* pivot */, name,
+    auto res2 = my::make_unique<PreResult2>(ft, center, m_ranker.m_params.m_position /* pivot */, name,
                                         country);
 
     search::RankingInfo info;
     InitRankingInfo(ft, center, res1, info);
     info.m_rank = NormalizeRank(info.m_rank, info.m_searchType, center, country);
-    res2->SetRankingInfo(move(info));
+    res2->SetRankingInfo(std::move(info));
 
     return res2;
   }
@@ -309,7 +310,7 @@ size_t const Ranker::kBatchSize = 10;
 
 Ranker::Ranker(Index const & index, storage::CountryInfoGetter const & infoGetter,
                Emitter & emitter, CategoriesHolder const & categories,
-               vector<Suggest> const & suggests, VillagesCache & villagesCache,
+               std::vector<Suggest> const & suggests, VillagesCache & villagesCache,
                my::Cancellable const & cancellable)
   : m_reverseGeocoder(index)
   , m_cancellable(cancellable)
@@ -330,18 +331,18 @@ void Ranker::Init(Params const & params, Geocoder::Params const & geocoderParams
   m_tentativeResults.clear();
 }
 
-bool Ranker::IsResultExists(PreResult2 const & p, vector<IndexedValue> const & values)
+bool Ranker::IsResultExists(PreResult2 const & p, std::vector<IndexedValue> const & values)
 {
   PreResult2::StrictEqualF equalCmp(p, m_params.m_minDistanceOnMapBetweenResults);
 
   // Do not insert duplicating results.
-  return values.end() != find_if(values.begin(), values.end(), [&equalCmp](IndexedValue const & iv)
+  return values.end() != std::find_if(values.begin(), values.end(), [&equalCmp](IndexedValue const & iv)
                                  {
                                    return equalCmp(*iv);
                                  });
 }
 
-void Ranker::MakePreResult2(Geocoder::Params const & geocoderParams, vector<IndexedValue> & cont)
+void Ranker::MakePreResult2(Geocoder::Params const & geocoderParams, std::vector<IndexedValue> & cont)
 {
   PreResult2Maker maker(*this, m_index, m_infoGetter, geocoderParams);
   for (auto const & r : m_preResults1)
@@ -357,7 +358,7 @@ void Ranker::MakePreResult2(Geocoder::Params const & geocoderParams, vector<Inde
     }
 
     if (!IsResultExists(*p, cont))
-      cont.push_back(IndexedValue(move(p)));
+      cont.push_back(IndexedValue(std::move(p)));
   };
 }
 
@@ -368,7 +369,7 @@ Result Ranker::MakeResult(PreResult2 const & r) const
   MakeResultHighlight(res);
   if (ftypes::IsLocalityChecker::Instance().GetType(r.GetTypes()) == ftypes::NONE)
   {
-    string city;
+    std::string city;
     m_localities.GetLocality(res.GetFeatureCenter(), city);
     res.AppendCity(city);
   }
@@ -385,7 +386,7 @@ void Ranker::MakeResultHighlight(Result & res) const
   TCombinedIter beg(m_params.m_tokens.begin(), m_params.m_tokens.end(),
                     m_params.m_prefix.empty() ? 0 : &m_params.m_prefix);
   TCombinedIter end(m_params.m_tokens.end(), m_params.m_tokens.end(), 0);
-  auto assignHighlightRange = [&](pair<uint16_t, uint16_t> const & range)
+  auto assignHighlightRange = [&](std::pair<uint16_t, uint16_t> const & range)
   {
     res.AddHighlightRange(range);
   };
@@ -393,15 +394,15 @@ void Ranker::MakeResultHighlight(Result & res) const
   SearchStringTokensIntersectionRanges(res.GetString(), beg, end, assignHighlightRange);
 }
 
-void Ranker::GetSuggestion(string const & name, string & suggest) const
+void Ranker::GetSuggestion(std::string const & name, std::string & suggest) const
 {
   // Splits result's name.
   search::Delimiters delims;
-  vector<strings::UniString> tokens;
+  std::vector<strings::UniString> tokens;
   SplitUniString(NormalizeAndSimplifyString(name), MakeBackInsertFunctor(tokens), delims);
 
   // Finds tokens that are already present in the input query.
-  vector<bool> tokensMatched(tokens.size());
+  std::vector<bool> tokensMatched(tokens.size());
   bool prefixMatched = false;
   bool fullPrefixMatched = false;
 
@@ -409,7 +410,7 @@ void Ranker::GetSuggestion(string const & name, string & suggest) const
   {
     auto const & token = tokens[i];
 
-    if (find(m_params.m_tokens.begin(), m_params.m_tokens.end(), token) != m_params.m_tokens.end())
+    if (std::find(m_params.m_tokens.begin(), m_params.m_tokens.end(), token) != m_params.m_tokens.end())
     {
       tokensMatched[i] = true;
     }
@@ -443,7 +444,7 @@ void Ranker::SuggestStrings()
   if (m_params.m_prefix.empty() || !m_params.m_suggestsEnabled)
     return;
 
-  string prologue;
+  std::string prologue;
   GetStringPrefix(m_params.m_query, prologue);
 
   for (auto const & locale : m_params.m_categoryLocales)
@@ -451,7 +452,7 @@ void Ranker::SuggestStrings()
 }
 
 void Ranker::MatchForSuggestions(strings::UniString const & token, int8_t locale,
-                                 string const & prologue)
+                                 std::string const & prologue)
 {
   for (auto const & suggest : m_suggests)
   {
@@ -461,18 +462,18 @@ void Ranker::MatchForSuggestions(strings::UniString const & token, int8_t locale
         (suggest.m_locale == locale) &&  // push suggestions only for needed language
         strings::StartsWith(s.begin(), s.end(), token.begin(), token.end()))
     {
-      string const utf8Str = strings::ToUtf8(s);
+      std::string const utf8Str = strings::ToUtf8(s);
       Result r(utf8Str, prologue + utf8Str + " ");
       MakeResultHighlight(r);
-      m_emitter.AddResult(move(r));
+      m_emitter.AddResult(std::move(r));
     }
   }
 }
 
-void Ranker::GetBestMatchName(FeatureType const & f, string & name) const
+void Ranker::GetBestMatchName(FeatureType const & f, std::string & name) const
 {
   KeywordLangMatcher::ScoreT bestScore;
-  auto bestNameFinder = [&](int8_t lang, string const & s) -> bool
+  auto bestNameFinder = [&](int8_t lang, std::string const & s) -> bool
   {
     auto const score = m_keywordsScorer.Score(lang, s);
     if (bestScore < score)
@@ -485,7 +486,7 @@ void Ranker::GetBestMatchName(FeatureType const & f, string & name) const
   UNUSED_VALUE(f.ForEachName(bestNameFinder));
 }
 
-void Ranker::ProcessSuggestions(vector<IndexedValue> & vec) const
+void Ranker::ProcessSuggestions(std::vector<IndexedValue> & vec) const
 {
   if (m_params.m_prefix.empty() || !m_params.m_suggestsEnabled)
     return;
@@ -498,7 +499,7 @@ void Ranker::ProcessSuggestions(vector<IndexedValue> & vec) const
     ftypes::Type const type = GetLocalityIndex(r.GetTypes());
     if ((type == ftypes::COUNTRY || type == ftypes::CITY) || r.IsStreet())
     {
-      string suggest;
+      std::string suggest;
       GetSuggestion(r.GetName(), suggest);
       if (!suggest.empty() && added < MAX_SUGGESTS_COUNT)
       {
@@ -524,12 +525,12 @@ void Ranker::UpdateResults(bool lastUpdate)
 
   if (m_params.m_viewportSearch)
   {
-    sort(m_tentativeResults.begin(), m_tentativeResults.end(),
+    std::sort(m_tentativeResults.begin(), m_tentativeResults.end(),
          my::LessBy(&IndexedValue::GetDistanceToPivot));
   }
   else
   {
-    sort(m_tentativeResults.rbegin(), m_tentativeResults.rend(),
+    std::sort(m_tentativeResults.rbegin(), m_tentativeResults.rend(),
          my::LessBy(&IndexedValue::GetRank));
     ProcessSuggestions(m_tentativeResults);
   }

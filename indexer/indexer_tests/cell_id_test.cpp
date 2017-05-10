@@ -4,15 +4,15 @@
 
 #include "coding/hex.hpp"
 
-#include "std/cmath.hpp"
-#include "std/random.hpp"
-#include "std/string.hpp"
+#include <cmath>
+#include <random>
+#include <string>
 
 typedef m2::CellId<30> CellIdT;
 
 UNIT_TEST(ToCellId)
 {
-  string s("2130000");
+  std::string s("2130000");
   s.append(CellIdT::DEPTH_LEVELS - 1 - s.size(), '0');
   TEST_EQUAL((CellIdConverter<Bounds<0, 0, 4, 4>, CellIdT>::ToCellId(1.5, 2.5).ToString()),
              s, ());
@@ -33,7 +33,7 @@ UNIT_TEST(CommonCell)
 namespace
 {
   template <typename T1, typename T2>
-  bool PairsAlmostEqualULPs(pair<T1, T1> const & p1, pair<T2, T2> const & p2)
+  bool PairsAlmostEqualULPs(std::pair<T1, T1> const & p1, std::pair<T2, T2> const & p2)
   {
     return fabs(p1.first - p2.first) + fabs(p1.second - p2.second) < 0.00001;
   }
@@ -41,7 +41,7 @@ namespace
 
 UNIT_TEST(CellId_RandomRecode)
 {
-  mt19937 rng(0);
+  std::mt19937 rng(0);
   for (size_t i = 0; i < 1000; ++i)
   {
     uint32_t const x = rng() % 2000;

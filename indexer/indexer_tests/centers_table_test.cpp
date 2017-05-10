@@ -15,16 +15,16 @@
 #include "geometry/mercator.hpp"
 #include "geometry/point2d.hpp"
 
-#include "std/cstdint.hpp"
-#include "std/string.hpp"
-#include "std/utility.hpp"
-#include "std/vector.hpp"
+#include <cstdint>
+#include <string>
+#include <utility>
+#include <vector>
 
 using namespace search;
 
 namespace
 {
-using TBuffer = vector<uint8_t>;
+using TBuffer = std::vector<uint8_t>;
 
 struct CentersTableTest
 {
@@ -33,7 +33,7 @@ struct CentersTableTest
 
 UNIT_CLASS_TEST(CentersTableTest, Smoke)
 {
-  string const kMap = my::JoinFoldersToPath(GetPlatform().WritableDir(), "minsk-pass.mwm");
+  std::string const kMap = my::JoinFoldersToPath(GetPlatform().WritableDir(), "minsk-pass.mwm");
 
   feature::DataHeader header(kMap);
   auto const codingParams = header.GetDefCodingParams();
@@ -71,7 +71,7 @@ UNIT_CLASS_TEST(CentersTableTest, Smoke)
 
 UNIT_CLASS_TEST(CentersTableTest, Subset)
 {
-  vector<pair<uint32_t, m2::PointD>> const features = {
+  std::vector<std::pair<uint32_t, m2::PointD>> const features = {
       {1, m2::PointD(0, 0)}, {5, m2::PointD(1, 1)}, {10, m2::PointD(2, 2)}};
 
   serial::CodingParams codingParams;

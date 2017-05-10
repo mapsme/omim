@@ -2,7 +2,7 @@
 
 #include "base/macros.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 extern "C"
 {
@@ -66,10 +66,10 @@ namespace m2 { namespace robust
                          PointD const & c, PointD const & d)
   {
     return
-        max(a.x, b.x) >= min(c.x, d.x) &&
-        min(a.x, b.x) <= max(c.x, d.x) &&
-        max(a.y, b.y) >= min(c.y, d.y) &&
-        min(a.y, b.y) <= max(c.y, d.y) &&
+        std::max(a.x, b.x) >= std::min(c.x, d.x) &&
+        std::min(a.x, b.x) <= std::max(c.x, d.x) &&
+        std::max(a.y, b.y) >= std::min(c.y, d.y) &&
+        std::min(a.y, b.y) <= std::max(c.y, d.y) &&
         OrientedS(a, b, c) * OrientedS(a, b, d) <= 0.0 &&
         OrientedS(c, d, a) * OrientedS(c, d, b) <= 0.0;
   }

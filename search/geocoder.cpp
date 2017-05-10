@@ -48,6 +48,8 @@
 
 #include "defines.hpp"
 
+using namespace std;
+
 #if defined(DEBUG)
 #include "base/timer.hpp"
 #endif

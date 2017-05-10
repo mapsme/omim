@@ -10,7 +10,7 @@
 #include "drape_frontend/viewport.hpp"
 #include "drape_frontend/map_data_provider.hpp"
 
-#include "std/map.hpp"
+#include <map>
 
 namespace df
 {
@@ -38,7 +38,7 @@ private:
   drape_ptr<dp::TextureManager> m_textures;
   df::Viewport m_viewport;
 
-  typedef map<dp::GLState, vector<drape_ptr<dp::RenderBucket> > > TScene;
+  typedef std::map<dp::GLState, vector<drape_ptr<dp::RenderBucket> > > TScene;
   TScene m_scene;
   ScreenBase m_modelView;
   float m_angle = 0.0;

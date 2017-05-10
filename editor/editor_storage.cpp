@@ -6,7 +6,7 @@
 
 #include "base/logging.hpp"
 
-#include "std/string.hpp"
+#include <string>
 
 using namespace pugi;
 
@@ -14,7 +14,7 @@ namespace
 {
 char const * kEditorXMLFileName = "edits.xml";
 
-string GetEditorFilePath() { return GetPlatform().WritablePathForFile(kEditorXMLFileName); }
+std::string GetEditorFilePath() { return GetPlatform().WritablePathForFile(kEditorXMLFileName); }
 }  // namespace
 
 namespace editor
@@ -23,7 +23,7 @@ namespace editor
 bool LocalStorage::Save(xml_document const & doc)
 {
   auto const editorFilePath = GetEditorFilePath();
-  return my::WriteToTempAndRenameToFile(editorFilePath, [&doc](string const & fileName) {
+  return my::WriteToTempAndRenameToFile(editorFilePath, [&doc](std::string const & fileName) {
     return doc.save_file(fileName.data(), "  " /* indent */);
   });
 }

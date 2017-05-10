@@ -1,6 +1,6 @@
 #pragma once
 #include "std/target_os.hpp"
-#include "std/noncopyable.hpp"
+#include <boost/noncopyable.hpp>
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wignored-qualifiers"
@@ -16,7 +16,7 @@ using namespace Tizen::Net::Http;
 class HttpThread
     : public Tizen::Net::Http::IHttpTransactionEventListener
     , public Tizen::Net::Http::IHttpProgressEventListener
-    , noncopyable
+    , boost::noncopyable
 {
 public:
 

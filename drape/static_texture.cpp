@@ -21,9 +21,9 @@ namespace
 {
 
 using TLoadingCompletion = function<void(unsigned char *, uint32_t, uint32_t)>;
-using TLoadingFailure = function<void(string const &)>;
+using TLoadingFailure = function<void(std::string const &)>;
 
-bool LoadData(string const & textureName, string const & skinPathName,
+bool LoadData(std::string const & textureName, std::string const & skinPathName,
               TLoadingCompletion const & completionHandler,
               TLoadingFailure const & failureHandler)
 {
@@ -67,7 +67,7 @@ public:
 
 } // namespace
 
-StaticTexture::StaticTexture(string const & textureName, string const & skinPathName,
+StaticTexture::StaticTexture(std::string const & textureName, std::string const & skinPathName,
                              ref_ptr<HWTextureAllocator> allocator)
   : m_textureName(textureName)
   , m_info(make_unique_dp<StaticResourceInfo>())
@@ -75,7 +75,7 @@ StaticTexture::StaticTexture(string const & textureName, string const & skinPath
   m_isLoadingCorrect = Load(skinPathName, allocator);
 }
 
-bool StaticTexture::Load(string const & skinPathName, ref_ptr<HWTextureAllocator> allocator)
+bool StaticTexture::Load(std::string const & skinPathName, ref_ptr<HWTextureAllocator> allocator)
 {
   auto completionHandler = [this, &allocator](unsigned char * data, uint32_t width, uint32_t height)
   {
@@ -90,7 +90,7 @@ bool StaticTexture::Load(string const & skinPathName, ref_ptr<HWTextureAllocator
     Create(p, make_ref(data));
   };
 
-  auto failureHandler = [this](string const & reason)
+  auto failureHandler = [this](std::string const & reason)
   {
     LOG(LERROR, (reason));
     Fail();
@@ -99,7 +99,7 @@ bool StaticTexture::Load(string const & skinPathName, ref_ptr<HWTextureAllocator
   return LoadData(m_textureName, skinPathName, completionHandler, failureHandler);
 }
 
-void StaticTexture::Invalidate(string const & skinPathName, ref_ptr<HWTextureAllocator> allocator)
+void StaticTexture::Invalidate(std::string const & skinPathName, ref_ptr<HWTextureAllocator> allocator)
 {
   Destroy();
   m_isLoadingCorrect = Load(skinPathName, allocator);

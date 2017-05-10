@@ -11,11 +11,11 @@
 
 #include "geometry/point2d.hpp"
 
-#include "std/cstdint.hpp"
-#include "std/shared_ptr.hpp"
-#include "std/unique_ptr.hpp"
-#include "std/utility.hpp"
-#include "std/vector.hpp"
+#include <cstdint>
+#include <memory>
+#include <memory>
+#include <utility>
+#include <vector>
 
 namespace routing
 {
@@ -23,10 +23,10 @@ class IndexGraph final
 {
 public:
   IndexGraph() = default;
-  explicit IndexGraph(unique_ptr<GeometryLoader> loader, shared_ptr<EdgeEstimator> estimator);
+  explicit IndexGraph(std::unique_ptr<GeometryLoader> loader, std::shared_ptr<EdgeEstimator> estimator);
 
   // Put outgoing (or ingoing) egdes for segment to the 'edges' vector.
-  void GetEdgeList(Segment const & segment, bool isOutgoing, vector<SegmentEdge> & edges);
+  void GetEdgeList(Segment const & segment, bool isOutgoing, std::vector<SegmentEdge> & edges);
 
   Joint::Id GetJointId(RoadPoint const & rp) const { return m_roadIndex.GetJointId(rp); }
 
@@ -39,7 +39,7 @@ public:
   uint32_t GetNumPoints() const { return m_jointIndex.GetNumPoints(); }
 
   void Build(uint32_t numJoints);
-  void Import(vector<Joint> const & joints);
+  void Import(std::vector<Joint> const & joints);
 
   void SetRestrictions(RestrictionVec && restrictions);
 
@@ -51,25 +51,25 @@ public:
   template <typename F>
   void ForEachRoad(F && f) const
   {
-    m_roadIndex.ForEachRoad(forward<F>(f));
+    m_roadIndex.ForEachRoad(std::forward<F>(f));
   }
 
   template <typename F>
   void ForEachPoint(Joint::Id jointId, F && f) const
   {
-    m_jointIndex.ForEachPoint(jointId, forward<F>(f));
+    m_jointIndex.ForEachPoint(jointId, std::forward<F>(f));
   }
 
 private:
   double CalcSegmentWeight(Segment const & segment);
   void GetNeighboringEdges(Segment const & from, RoadPoint const & rp, bool isOutgoing,
-                           vector<SegmentEdge> & edges);
+                           std::vector<SegmentEdge> & edges);
   void GetNeighboringEdge(Segment const & from, Segment const & to, bool isOutgoing,
-                          vector<SegmentEdge> & edges);
+                          std::vector<SegmentEdge> & edges);
   double GetPenalties(Segment const & u, Segment const & v) const;
 
   Geometry m_geometry;
-  shared_ptr<EdgeEstimator> m_estimator;
+  std::shared_ptr<EdgeEstimator> m_estimator;
   RoadIndex m_roadIndex;
   JointIndex m_jointIndex;
   RestrictionVec m_restrictions;

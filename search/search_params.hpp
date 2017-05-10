@@ -7,8 +7,8 @@
 #include "geometry/point2d.hpp"
 #include "geometry/rect2d.hpp"
 
-#include "std/function.hpp"
-#include "std/string.hpp"
+#include <functional>
+#include <string>
 
 namespace search
 {
@@ -17,8 +17,8 @@ class Results;
 class SearchParams
 {
 public:
-  using TOnStarted = function<void()>;
-  using TOnResults = function<void(Results const &)>;
+  using TOnStarted = std::function<void()>;
+  using TOnResults = std::function<void(Results const &)>;
 
   void SetPosition(double lat, double lon);
   m2::PointD GetPositionMercator() const;
@@ -31,8 +31,8 @@ public:
   TOnStarted m_onStarted;
   TOnResults m_onResults;
 
-  string m_query;
-  string m_inputLocale;
+  std::string m_query;
+  std::string m_inputLocale;
 
   // A minimum distance between search results in meters, needed for
   // pre-ranking of viewport search results.
@@ -44,7 +44,7 @@ public:
 
   shared_ptr<hotels_filter::Rule> m_hotelsFilter;
 
-  friend string DebugPrint(SearchParams const & params);
+  friend std::string DebugPrint(SearchParams const & params);
 
 private:
   double m_lat = 0.0;

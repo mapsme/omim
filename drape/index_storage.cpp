@@ -1,7 +1,7 @@
 #include "drape/index_storage.hpp"
 #include "drape/glextensions_list.hpp"
 
-#include "std/utility.hpp"
+#include <utility>
 
 namespace dp
 {
@@ -10,12 +10,12 @@ IndexStorage::IndexStorage()
   : m_size(0)
 {}
 
-IndexStorage::IndexStorage(vector<uint32_t> && initial)
+IndexStorage::IndexStorage(std::vector<uint32_t> && initial)
 {
   m_size = (uint32_t)initial.size();
   if (IsSupported32bit())
   {
-    m_storage = move(initial);
+    m_storage = std::move(initial);
   }
   else
   {

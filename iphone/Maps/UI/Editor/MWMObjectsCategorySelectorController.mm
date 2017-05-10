@@ -23,7 +23,7 @@ namespace
 {
 NSString * const kToEditorSegue = @"CategorySelectorToEditorSegue";
 
-string locale()
+std::string twineLocale()
 {
   return locale_translator::bcp47ToTwineLanguage([NSLocale currentLocale].localeIdentifier);
 }
@@ -52,7 +52,7 @@ string locale()
   if (self)
   {
     m_categories = GetFramework().GetEditorCategories();
-    m_categories.AddLanguage(locale());
+    m_categories.AddLanguage(twineLocale());
   }
   return self;
 }
@@ -75,9 +75,9 @@ string locale()
          forCellReuseIdentifier:[UITableViewCell className]];
 }
 
-- (void)setSelectedCategory:(string const &)category
+- (void)setSelectedCategory:(std::string const &)category
 {
-  auto const & all = m_categories.GetAllCategoryNames(locale());
+  auto const & all = m_categories.GetAllCategoryNames(twineLocale());
   auto const it = find_if(
       all.begin(), all.end(),
       [&category](NewFeatureCategories::TName const & name) { return name.first == category; });
@@ -220,7 +220,7 @@ string locale()
 {
   if (self.isSearch)
     return m_filteredCategories;
-  return m_categories.GetAllCategoryNames(locale());
+  return m_categories.GetAllCategoryNames(twineLocale());
   // TODO(Vlad): Uncoment this line when we will be ready to show recent categories
   //    if (m_categories.m_lastUsed.empty())
   //      return m_categories.m_allSorted;
@@ -242,7 +242,7 @@ string locale()
 
   self.isSearch = YES;
   string const query{[searchText lowercaseStringWithLocale:[NSLocale currentLocale]].UTF8String};
-  m_filteredCategories = m_categories.Search(query, locale());
+  m_filteredCategories = m_categories.Search(query, twineLocale());
   [self.tableView reloadData];
 }
 

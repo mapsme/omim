@@ -5,7 +5,7 @@
 
 #include "base/assert.hpp"
 
-#include "std/cstring.hpp"
+#include <cstring>
 
 //#define CHECK_VBO_BOUNDS
 

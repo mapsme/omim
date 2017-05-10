@@ -4,7 +4,7 @@
 
 #include "coding/file_container.hpp"
 
-#include "std/noncopyable.hpp"
+#include <boost/noncopyable.hpp>
 
 
 class FeatureType;
@@ -15,7 +15,7 @@ namespace feature
   class LoaderBase;
 
   /// This info is created once.
-  class SharedLoadInfo : private noncopyable
+  class SharedLoadInfo : private boost::noncopyable
   {
     FilesContainerR const & m_cont;
     DataHeader const & m_header;

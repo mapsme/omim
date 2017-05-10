@@ -36,7 +36,7 @@ public:
   }
 };
 
-bool RunTest(string const & countryFileName, int lowS, int highS)
+bool RunTest(std::string const & countryFileName, int lowS, int highS)
 {
   model::FeaturesFetcher src;
   auto p = src.RegisterMap(platform::LocalCountryFile::MakeForTesting(countryFileName));

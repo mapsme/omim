@@ -12,7 +12,7 @@ namespace varint
 
 namespace
 {
-  void VarintEncode(vector<uint8_t> & dst, uint64_t n)
+  void VarintEncode(std::vector<uint8_t> & dst, uint64_t n)
   {
     if (n == 0)
     {
@@ -69,7 +69,7 @@ void VectorBuilder::AddNum(uint64_t num)
 
 void VectorBuilder::Finalize(Writer * writer)
 {
-  vector<uint8_t> header;
+  std::vector<uint8_t> header;
   VarintEncode(header, m_numsCount);
   VarintEncode(header, m_numElemPerTableEntry);
   VarintEncode(header, m_selectTable.size());

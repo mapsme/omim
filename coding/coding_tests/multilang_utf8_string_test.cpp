@@ -19,24 +19,24 @@ namespace
 
     for (size_t i = 0; i < count; ++i)
     {
-      string src(arr[i].m_str);
+      std::string src(arr[i].m_str);
       TEST(utf8::is_valid(src.begin(), src.end()), ());
 
       s.AddString(arr[i].m_lang, src);
 
-      string comp;
+      std::string comp;
       TEST(s.GetString(arr[i].m_lang, comp), ());
       TEST_EQUAL(src, comp, ());
     }
 
     for (size_t i = 0; i < count; ++i)
     {
-      string comp;
+      std::string comp;
       TEST(s.GetString(arr[i].m_lang, comp), ());
       TEST_EQUAL(arr[i].m_str, comp, ());
     }
 
-    string test;
+    std::string test;
     TEST(!s.GetString("xxx", test), ());
   }
 }
@@ -59,7 +59,7 @@ class LangChecker
 
 public:
   LangChecker() : m_index(0) {}
-  bool operator() (char lang, string const & utf8s)
+  bool operator() (char lang, std::string const & utf8s)
   {
     TEST_EQUAL(lang, StringUtf8Multilang::GetLangIndex(gArr[m_index].m_lang), ());
     TEST_EQUAL(utf8s, gArr[m_index].m_str, ());
@@ -80,7 +80,7 @@ UNIT_TEST(MultilangString_ForEach)
 UNIT_TEST(MultilangString_Unique)
 {
   StringUtf8Multilang s;
-  string cmp;
+  std::string cmp;
 
   s.AddString(0, "xxx");
   TEST(s.GetString(0, cmp), ());
@@ -106,14 +106,14 @@ UNIT_TEST(MultilangString_Unique)
 UNIT_TEST(MultilangString_LangNames)
 {
   // It is important to compare the contents of the strings, and not just pointers
-  TEST_EQUAL(string("Беларуская"), StringUtf8Multilang::GetLangNameByCode(StringUtf8Multilang::GetLangIndex("be")), ());
+  TEST_EQUAL(std::string("Беларуская"), StringUtf8Multilang::GetLangNameByCode(StringUtf8Multilang::GetLangIndex("be")), ());
 
   auto const & langs = StringUtf8Multilang::GetSupportedLanguages();
   // Using size_t workaround, because our logging/testing macroses do not support passing POD types by value,
   // only by reference. And our constant is a constexpr.
   TEST_EQUAL(langs.size(), size_t(StringUtf8Multilang::kMaxSupportedLanguages), ());
   auto const international = StringUtf8Multilang::GetLangIndex("int_name");
-  TEST_EQUAL(langs[international].m_code, string("int_name"), ());
+  TEST_EQUAL(langs[international].m_code, std::string("int_name"), ());
 }
 
 UNIT_TEST(MultilangString_HasString)

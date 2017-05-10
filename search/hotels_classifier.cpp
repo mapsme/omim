@@ -1,6 +1,6 @@
 #include "search/hotels_classifier.hpp"
 
-#include "std/cstdint.hpp"
+#include <cstdint>
 
 namespace search
 {

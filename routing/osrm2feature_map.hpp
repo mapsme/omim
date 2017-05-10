@@ -9,11 +9,11 @@
 
 #include "base/scope_guard.hpp"
 
-#include "std/limits.hpp"
-#include "std/string.hpp"
-#include "std/unordered_map.hpp"
-#include "std/utility.hpp"
-#include "std/vector.hpp"
+#include <limits>
+#include <string>
+#include <unordered_map>
+#include <utility>
+#include <vector>
 
 #include "defines.hpp"
 
@@ -24,9 +24,9 @@ namespace routing
 {
 
 typedef uint32_t TOsrmNodeId;
-typedef vector<TOsrmNodeId> TNodesList;
-constexpr TOsrmNodeId INVALID_NODE_ID = numeric_limits<TOsrmNodeId>::max();
-constexpr uint32_t kInvalidFid = numeric_limits<uint32_t>::max();
+typedef std::vector<TOsrmNodeId> TNodesList;
+constexpr TOsrmNodeId INVALID_NODE_ID = std::numeric_limits<TOsrmNodeId>::max();
+constexpr uint32_t kInvalidFid = std::numeric_limits<uint32_t>::max();
 
 namespace OsrmMappingTypes
 {
@@ -70,7 +70,7 @@ namespace OsrmMappingTypes
       swap(m_pointEnd, other.m_pointEnd);
     }
 
-    friend string DebugPrint(FtSeg const & seg);
+    friend std::string DebugPrint(FtSeg const & seg);
   };
 
   struct SegOffset
@@ -85,7 +85,7 @@ namespace OsrmMappingTypes
     {
     }
 
-    friend string DebugPrint(SegOffset const & off);
+    friend std::string DebugPrint(SegOffset const & off);
   };
 #pragma pack (pop)
 
@@ -104,15 +104,15 @@ class OsrmFtSegMapping;
 class OsrmFtSegBackwardIndex
 {
   succinct::rs_bit_vector m_rankIndex;
-  vector<TNodesList> m_nodeIds;
+  std::vector<TNodesList> m_nodeIds;
   unique_ptr<feature::FeaturesOffsetsTable> m_table;
 
   unique_ptr<MmapReader> m_mappedBits;
 
   bool m_oldFormat;
 
-  void Save(string const & nodesFileName, string const & bitsFileName);
-  bool Load(string const & nodesFileName, string const & bitsFileName);
+  void Save(std::string const & nodesFileName, std::string const & bitsFileName);
+  bool Load(std::string const & nodesFileName, std::string const & bitsFileName);
 
 public:
   void Construct(OsrmFtSegMapping & mapping, uint32_t maxNodeId,
@@ -127,7 +127,7 @@ public:
 class OsrmFtSegMapping
 {
 public:
-  using TFtSegVec = vector<OsrmMappingTypes::FtSeg>;
+  using TFtSegVec = std::vector<OsrmMappingTypes::FtSeg>;
 
   void Clear();
   void Load(FilesMappingContainer & cont, platform::LocalCountryFile const & localFile);
@@ -138,7 +138,7 @@ public:
 
   template <class ToDo> void ForEachFtSeg(TOsrmNodeId nodeId, ToDo toDo) const
   {
-    pair<size_t, size_t> r = GetSegmentsRange(nodeId);
+    std::pair<size_t, size_t> r = GetSegmentsRange(nodeId);
     while (r.first != r.second)
     {
       OsrmMappingTypes::FtSeg s(m_segments[r.first]);
@@ -148,7 +148,7 @@ public:
     }
   }
 
-  typedef unordered_map<uint64_t, pair<TOsrmNodeId, TOsrmNodeId> > OsrmNodesT;
+  typedef std::unordered_map<uint64_t, std::pair<TOsrmNodeId, TOsrmNodeId> > OsrmNodesT;
   void GetOsrmNodes(TFtSegVec const & segments, OsrmNodesT & res) const;
 
   void GetSegmentByIndex(size_t idx, OsrmMappingTypes::FtSeg & seg) const;
@@ -171,7 +171,7 @@ public:
   /// with GetSegmentsRange() / GetSegmentByIndex().
   /// But having these segments it's impossible to get node id 161179 with the help of
   /// GetOsrmNodes(...).
-  pair<size_t, size_t> GetSegmentsRange(TOsrmNodeId nodeId) const;
+  std::pair<size_t, size_t> GetSegmentsRange(TOsrmNodeId nodeId) const;
   /// @return Node id for segment's index.
   TOsrmNodeId GetNodeId(uint32_t segInd) const;
 
@@ -179,7 +179,7 @@ public:
   //@}
 
 protected:
-  typedef vector<OsrmMappingTypes::SegOffset> SegOffsetsT;
+  typedef std::vector<OsrmMappingTypes::SegOffset> SegOffsetsT;
   SegOffsetsT m_offsets;
 
 private:
@@ -193,13 +193,13 @@ class OsrmFtSegMappingBuilder : public OsrmFtSegMapping
 public:
   OsrmFtSegMappingBuilder();
 
-  typedef vector<OsrmMappingTypes::FtSeg> FtSegVectorT;
+  typedef std::vector<OsrmMappingTypes::FtSeg> FtSegVectorT;
 
   void Append(TOsrmNodeId nodeId, FtSegVectorT const & data);
   void Save(FilesContainerW & cont) const;
 
 private:
-  vector<uint64_t> m_buffer;
+  std::vector<uint64_t> m_buffer;
   uint64_t m_lastOffset;
 };
 

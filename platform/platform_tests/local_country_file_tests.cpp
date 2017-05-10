@@ -18,9 +18,9 @@
 
 #include "defines.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/bind.hpp"
-#include "std/set.hpp"
+#include <algorithm>
+#include <functional>
+#include <set>
 
 using namespace platform::tests_support;
 
@@ -31,7 +31,7 @@ namespace
 template <typename T>
 bool Contains(vector<T> const & v, T const & t)
 {
-  return find(v.begin(), v.end(), t) != v.end();
+  return std::find(v.begin(), v.end(), t) != v.end();
 }
 }  // namespace
 
@@ -110,7 +110,7 @@ UNIT_TEST(LocalCountryFile_DiskFiles)
     TEST(!localFile.OnDisk(MapOptions::CarRouting), ());
     TEST(!localFile.OnDisk(MapOptions::MapWithCarRouting), ());
 
-    string const mapFileName = GetFileName(countryFile.GetName(), MapOptions::Map,
+    std::string const mapFileName = GetFileName(countryFile.GetName(), MapOptions::Map,
                                            version::FOR_TESTING_TWO_COMPONENT_MWM1);
     ScopedFile testMapFile(mapFileName, "map");
 
@@ -120,7 +120,7 @@ UNIT_TEST(LocalCountryFile_DiskFiles)
     TEST(!localFile.OnDisk(MapOptions::MapWithCarRouting), ());
     TEST_EQUAL(3, localFile.GetSize(MapOptions::Map), ());
 
-    string const routingFileName = GetFileName(countryFile.GetName(), MapOptions::CarRouting,
+    std::string const routingFileName = GetFileName(countryFile.GetName(), MapOptions::CarRouting,
                                                version::FOR_TESTING_TWO_COMPONENT_MWM1);
     ScopedFile testRoutingFile(routingFileName, "routing");
 
@@ -144,7 +144,7 @@ UNIT_TEST(LocalCountryFile_DiskFiles)
 UNIT_TEST(LocalCountryFile_CleanupMapFiles)
 {
   Platform & platform = GetPlatform();
-  string const mapsDir = platform.WritableDir();
+  std::string const mapsDir = platform.WritableDir();
 
   // Two fake directories for test country files and indexes.
   ScopedDir dir3("3");
@@ -252,7 +252,7 @@ UNIT_TEST(LocalCountryFile_DirectoryLookup)
   vector<LocalCountryFile> localFiles;
   FindAllLocalMapsInDirectoryAndCleanup(testDir.GetFullPath(), 150309 /* version */,
                                         -1 /* latestVersion */, localFiles);
-  sort(localFiles.begin(), localFiles.end());
+  std::sort(localFiles.begin(), localFiles.end());
   for (LocalCountryFile & localFile : localFiles)
     localFile.SyncWithDisk();
 
@@ -263,7 +263,7 @@ UNIT_TEST(LocalCountryFile_DirectoryLookup)
   expectedNetherlandsFile.m_files = MapOptions::MapWithCarRouting;
 
   vector<LocalCountryFile> expectedLocalFiles = {expectedIrelandFile, expectedNetherlandsFile};
-  sort(expectedLocalFiles.begin(), expectedLocalFiles.end());
+  std::sort(expectedLocalFiles.begin(), expectedLocalFiles.end());
   TEST_EQUAL(expectedLocalFiles, localFiles, ());
 }
 
@@ -283,7 +283,7 @@ UNIT_TEST(LocalCountryFile_AllLocalFilesLookup)
 
   vector<LocalCountryFile> localFiles;
   FindAllLocalMapsAndCleanup(10101 /* latestVersion */, localFiles);
-  multiset<LocalCountryFile> localFilesSet(localFiles.begin(), localFiles.end());
+  std::multiset<LocalCountryFile> localFilesSet(localFiles.begin(), localFiles.end());
 
   bool worldFound = false;
   bool worldCoastsFound = false;
@@ -347,11 +347,11 @@ UNIT_TEST(LocalCountryFile_CountryIndexes)
       CountryIndexes::IndexesDir(germanyLocalFile), ());
   CountryIndexes::PreparePlaceOnDisk(germanyLocalFile);
 
-  string const bitsPath = CountryIndexes::GetPath(germanyLocalFile, CountryIndexes::Index::Bits);
+  std::string const bitsPath = CountryIndexes::GetPath(germanyLocalFile, CountryIndexes::Index::Bits);
   TEST(!Platform::IsFileExistsByFullPath(bitsPath), (bitsPath));
   {
     FileWriter writer(bitsPath);
-    string const contents = "bits index";
+    std::string const contents = "bits index";
     writer.Write(contents.data(), contents.size());
   }
   TEST(Platform::IsFileExistsByFullPath(bitsPath), (bitsPath));
@@ -372,11 +372,11 @@ UNIT_TEST(LocalCountryFile_DoNotDeleteUserFiles)
   LocalCountryFile germanyLocalFile(testDir.GetFullPath(), germanyFile, 101010 /* version */);
   CountryIndexes::PreparePlaceOnDisk(germanyLocalFile);
 
-  string const userFilePath =
+  std::string const userFilePath =
       my::JoinFoldersToPath(CountryIndexes::IndexesDir(germanyLocalFile), "user-data.txt");
   {
     FileWriter writer(userFilePath);
-    string const data = "user data";
+    std::string const data = "user data";
     writer.Write(data.data(), data.size());
   }
   TEST(!CountryIndexes::DeleteFromDisk(germanyLocalFile),
@@ -389,7 +389,7 @@ UNIT_TEST(LocalCountryFile_DoNotDeleteUserFiles)
 
 UNIT_TEST(LocalCountryFile_MakeTemporary)
 {
-  string const path = GetPlatform().WritablePathForFile("minsk-pass" DATA_FILE_EXTENSION);
+  std::string const path = GetPlatform().WritablePathForFile("minsk-pass" DATA_FILE_EXTENSION);
   LocalCountryFile file = LocalCountryFile::MakeTemporary(path);
   TEST_EQUAL(file.GetPath(MapOptions::Map), path, ());
 }

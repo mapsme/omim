@@ -4,10 +4,10 @@
 
 #include "geometry/point2d.hpp"
 
-#include "std/initializer_list.hpp"
-#include "std/limits.hpp"
-#include "std/string.hpp"
-#include "std/vector.hpp"
+#include <initializer_list>
+#include <limits>
+#include <string>
+#include <vector>
 
 #include "3party/osrm/osrm-backend/typedefs.h"
 
@@ -51,7 +51,7 @@ private:
   NodeID m_nodeId = SPECIAL_NODEID;
 };
 
-string DebugPrint(UniNodeId::Type type);
+std::string DebugPrint(UniNodeId::Type type);
 
 namespace turns
 {
@@ -94,7 +94,7 @@ enum class TurnDirection
   Count  /**< This value is used for internals only. */
 };
 
-string DebugPrint(TurnDirection const l);
+std::string DebugPrint(TurnDirection const l);
 
 /*!
  * \warning The values of PedestrianDirectionType shall be synchronized with values in java
@@ -110,7 +110,7 @@ enum class PedestrianDirection
   Count  /**< This value is used for internals only. */
 };
 
-string DebugPrint(PedestrianDirection const l);
+std::string DebugPrint(PedestrianDirection const l);
 
 /*!
  * \warning The values of LaneWay shall be synchronized with values of LaneWay enum in java.
@@ -131,9 +131,9 @@ enum class LaneWay
   Count  /**< This value is used for internals only. */
 };
 
-string DebugPrint(LaneWay const l);
+std::string DebugPrint(LaneWay const l);
 
-typedef vector<LaneWay> TSingleLane;
+typedef std::vector<LaneWay> TSingleLane;
 
 struct SingleLaneInfo
 {
@@ -141,16 +141,16 @@ struct SingleLaneInfo
   bool m_isRecommended = false;
 
   SingleLaneInfo() = default;
-  SingleLaneInfo(initializer_list<LaneWay> const & l) : m_lane(l) {}
+  SingleLaneInfo(std::initializer_list<LaneWay> const & l) : m_lane(l) {}
   bool operator==(SingleLaneInfo const & other) const;
 };
 
-string DebugPrint(SingleLaneInfo const & singleLaneInfo);
+std::string DebugPrint(SingleLaneInfo const & singleLaneInfo);
 
 struct TurnItem
 {
   TurnItem()
-      : m_index(numeric_limits<uint32_t>::max()),
+      : m_index(std::numeric_limits<uint32_t>::max()),
         m_turn(TurnDirection::NoTurn),
         m_exitNum(0),
         m_keepAnyway(false),
@@ -180,10 +180,10 @@ struct TurnItem
 
   uint32_t m_index;               /*!< Index of point on polyline (number of segment + 1). */
   TurnDirection m_turn;           /*!< The turn instruction of the TurnItem */
-  vector<SingleLaneInfo> m_lanes; /*!< Lane information on the edge before the turn. */
+  std::vector<SingleLaneInfo> m_lanes; /*!< Lane information on the edge before the turn. */
   uint32_t m_exitNum;             /*!< Number of exit on roundabout. */
-  string m_sourceName;            /*!< Name of the street which the ingoing edge belongs to */
-  string m_targetName;            /*!< Name of the street which the outgoing edge belongs to */
+  std::string m_sourceName;            /*!< Name of the street which the ingoing edge belongs to */
+  std::string m_targetName;            /*!< Name of the street which the outgoing edge belongs to */
   /*!
    * \brief m_keepAnyway is true if the turn shall not be deleted
    * and shall be demonstrated to an end user.
@@ -196,7 +196,7 @@ struct TurnItem
   PedestrianDirection m_pedestrianTurn;
 };
 
-string DebugPrint(TurnItem const & turnItem);
+std::string DebugPrint(TurnItem const & turnItem);
 
 struct TurnItemDist
 {
@@ -204,9 +204,9 @@ struct TurnItemDist
   double m_distMeters;
 };
 
-string DebugPrint(TurnItemDist const & turnItemDist);
+std::string DebugPrint(TurnItemDist const & turnItemDist);
 
-string const GetTurnString(TurnDirection turn);
+std::string const GetTurnString(TurnDirection turn);
 
 bool IsLeftTurn(TurnDirection t);
 bool IsRightTurn(TurnDirection t);
@@ -240,13 +240,13 @@ bool IsLaneWayConformedTurnDirectionApproximately(LaneWay l, TurnDirection t);
  * Note 1: if @lanesString is empty returns false.
  * Note 2: @laneString is passed by value on purpose. It'll be used(changed) in the method.
  */
-bool ParseLanes(string lanesString, vector<SingleLaneInfo> & lanes);
-void SplitLanes(string const & lanesString, char delimiter, vector<string> & lanes);
-bool ParseSingleLane(string const & laneString, char delimiter, TSingleLane & lane);
+bool ParseLanes(std::string lanesString, std::vector<SingleLaneInfo> & lanes);
+void SplitLanes(std::string const & lanesString, char delimiter, std::vector<std::string> & lanes);
+bool ParseSingleLane(std::string const & laneString, char delimiter, TSingleLane & lane);
 
 /*!
- * \returns pi minus angle from vector [junctionPoint, ingoingPoint]
- * to vector [junctionPoint, outgoingPoint]. A counterclockwise rotation.
+ * \returns pi minus angle from std::vector [junctionPoint, ingoingPoint]
+ * to std::vector [junctionPoint, outgoingPoint]. A counterclockwise rotation.
  * Angle is in range [-pi, pi].
 */
 double PiMinusTwoVectorsAngle(m2::PointD const & junctionPoint, m2::PointD const & ingoingPoint,

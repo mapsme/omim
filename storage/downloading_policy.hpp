@@ -4,13 +4,13 @@
 
 #include "base/deferred_task.hpp"
 
-#include "std/chrono.hpp"
-#include "std/function.hpp"
+#include <chrono>
+#include <functional>
 
 class DownloadingPolicy
 {
 public:
-  using TProcessFunc = function<void(storage::TCountriesSet const &)>;
+  using TProcessFunc = std::function<void(storage::TCountriesSet const &)>;
   virtual bool IsDownloadingAllowed() { return true; }
   virtual void ScheduleRetry(storage::TCountriesSet const &, TProcessFunc const &) {}
 };
@@ -23,10 +23,10 @@ class StorageDownloadingPolicy : public DownloadingPolicy
   size_t m_autoRetryCounter = kAutoRetryCounterMax;
   my::DeferredTask m_autoRetryWorker;
 
-  time_point<steady_clock> m_disableCellularTime;
+  std::chrono::time_point<std::chrono::steady_clock> m_disableCellularTime;
 
 public:
-  StorageDownloadingPolicy() : m_autoRetryWorker(seconds(20)) {}
+  StorageDownloadingPolicy() : m_autoRetryWorker(std::chrono::seconds(20)) {}
   void EnableCellularDownload(bool enabled);
   bool IsCellularDownloadEnabled();
 

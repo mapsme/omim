@@ -7,7 +7,7 @@
 
 #include "geometry/point2d.hpp"
 
-#include "std/vector.hpp"
+#include <vector>
 
 namespace dp
 {
@@ -46,7 +46,7 @@ private:
   int m_minZoom = 0;
 };
 
-using TMapShapes = vector<drape_ptr<MapShape>>;
+using TMapShapes = std::vector<drape_ptr<MapShape>>;
 
 class MapShapeMessage : public Message
 {

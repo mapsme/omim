@@ -9,9 +9,9 @@
 #include "drape/glyph_manager.hpp"
 #include "platform/platform.hpp"
 
-#include "std/cstring.hpp"
-#include "std/function.hpp"
-#include "std/bind.hpp"
+#include <cstring>
+#include <functional>
+#include <functional>
 
 namespace
 {
@@ -80,6 +80,6 @@ UNIT_TEST(GlyphLoadingTest)
   // This unit test creates window so can't be run in GUI-less Linux machine.
 #ifndef OMIM_OS_LINUX
   GlyphRenderer renderer;
-  RunTestLoop("GlyphLoadingTest", bind(&GlyphRenderer::RenderGlyphs, &renderer, _1));
+  RunTestLoop("GlyphLoadingTest", std::bind(&GlyphRenderer::RenderGlyphs, &renderer, std::placeholders::_1));
 #endif
 }

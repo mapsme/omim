@@ -5,6 +5,8 @@
 #include "std/string.hpp"
 #include "std/utility.hpp"
 
+using namespace std;
+
 namespace osm
 {
 

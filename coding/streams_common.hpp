@@ -3,14 +3,14 @@
 #include "base/base.hpp"
 #include "base/assert.hpp"
 
-#include "std/string.hpp"
+#include <string>
 
 namespace stream
 {
   namespace detail
   {
     template <class TStream>
-    void ReadString(TStream & s, string & t)
+    void ReadString(TStream & s, std::string & t)
     {
       uint32_t count;
       s >> count;
@@ -26,7 +26,7 @@ namespace stream
     }
 
     template <class TStream, class TWriter>
-    void WriteString(TStream & s, TWriter & w, string const & t)
+    void WriteString(TStream & s, TWriter & w, std::string const & t)
     {
       uint32_t const count = static_cast<uint32_t>(t.size());
       s << count;

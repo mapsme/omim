@@ -24,7 +24,7 @@ bool MatchInTrie(TrieIt const & trieStartIt, DFA const & dfa, ToDo && toDo)
 {
   using Char = typename TrieIt::Char;
   using DFAIt = typename DFA::Iterator;
-  using State = pair<TrieIt, DFAIt>;
+  using State = std::pair<TrieIt, DFAIt>;
 
   std::queue<State> q;
 
@@ -99,7 +99,7 @@ void ForEachCategoryTypeFuzzy(StringSliceBase const & slice, TLocales const & lo
 
   auto const & trie = categories.GetNameToTypesTrie();
   auto const & trieRootIt = trie.GetRootIterator();
-  vector<int8_t> sortedLocales(locales.begin(), locales.end());
+  std::vector<int8_t> sortedLocales(locales.begin(), locales.end());
   my::SortUnique(sortedLocales);
 
   for (size_t i = 0; i < slice.Size(); ++i)

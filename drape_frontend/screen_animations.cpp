@@ -10,10 +10,10 @@
 namespace df
 {
 
-string const kPrettyMoveAnim = "PrettyMove";
-string const kPrettyFollowAnim = "PrettyFollow";
-string const kParallelFollowAnim = "ParallelFollow";
-string const kParallelLinearAnim = "ParallelLinear";
+std::string const kPrettyMoveAnim = "PrettyMove";
+std::string const kPrettyFollowAnim = "PrettyFollow";
+std::string const kParallelFollowAnim = "ParallelFollow";
+std::string const kParallelLinearAnim = "ParallelLinear";
 
 drape_ptr<SequenceAnimation> GetPrettyMoveAnimation(ScreenBase const & startScreen, ScreenBase const & endScreen)
 {

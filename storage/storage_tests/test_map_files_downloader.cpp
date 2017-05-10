@@ -1,14 +1,14 @@
 #include "storage/storage_tests/test_map_files_downloader.hpp"
 
-#include "std/string.hpp"
-#include "std/vector.hpp"
+#include <string>
+#include <vector>
 
 namespace storage
 {
-void TestMapFilesDownloader::GetServersList(int64_t const mapVersion, string const & mapFileName,
+void TestMapFilesDownloader::GetServersList(int64_t const mapVersion, std::string const & mapFileName,
                                             TServersListCallback const & callback)
 {
-  vector<string> urls = {"http://localhost:34568/unit_tests/"};
+  std::vector<std::string> urls = {"http://localhost:34568/unit_tests/"};
   callback(urls);
 }
 }  // namespace storage

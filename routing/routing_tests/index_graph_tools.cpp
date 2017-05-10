@@ -46,11 +46,11 @@ IndexGraph & TestIndexGraphLoader::GetIndexGraph(NumMwmId mwmId)
 
 void TestIndexGraphLoader::Clear() { m_graphs.clear(); }
 
-void TestIndexGraphLoader::AddGraph(NumMwmId mwmId, unique_ptr<IndexGraph> graph)
+void TestIndexGraphLoader::AddGraph(NumMwmId mwmId, std::unique_ptr<IndexGraph> graph)
 {
   auto it = m_graphs.find(mwmId);
   CHECK(it == m_graphs.end(), ("Already contains mwm", mwmId));
-  m_graphs[mwmId] = move(graph);
+  m_graphs[mwmId] = std::move(graph);
 }
 
 // WeightedEdgeEstimator --------------------------------------------------------------
@@ -87,7 +87,7 @@ void TestIndexGraphTopology::AddDirectedEdge(Vertex from, Vertex to, double weig
 }
 
 bool TestIndexGraphTopology::FindPath(Vertex start, Vertex finish, double & pathWeight,
-                                      vector<Edge> & pathEdges) const
+                                      std::vector<Edge> & pathEdges) const
 {
   CHECK_LESS(start, m_numVertices, ());
   CHECK_LESS(finish, m_numVertices, ());
@@ -119,7 +119,7 @@ bool TestIndexGraphTopology::FindPath(Vertex start, Vertex finish, double & path
 
   IndexGraphStarter starter(fakeStart, fakeFinish, *worldGraph);
 
-  vector<Segment> routeSegs;
+  std::vector<Segment> routeSegs;
   double timeSec;
   auto const resultCode = CalculateRoute(starter, routeSegs, timeSec);
 
@@ -154,7 +154,7 @@ bool TestIndexGraphTopology::FindPath(Vertex start, Vertex finish, double & path
   return true;
 }
 
-void TestIndexGraphTopology::AddDirectedEdge(vector<EdgeRequest> & edgeRequests, Vertex from,
+void TestIndexGraphTopology::AddDirectedEdge(std::vector<EdgeRequest> & edgeRequests, Vertex from,
                                              Vertex to, double weight) const
 {
   uint32_t const id = static_cast<uint32_t>(edgeRequests.size());
@@ -164,12 +164,12 @@ void TestIndexGraphTopology::AddDirectedEdge(vector<EdgeRequest> & edgeRequests,
 // TestIndexGraphTopology::Builder -----------------------------------------------------------------
 unique_ptr<WorldGraph> TestIndexGraphTopology::Builder::PrepareIndexGraph()
 {
-  auto loader = make_unique<ZeroGeometryLoader>();
-  auto estimator = make_shared<WeightedEdgeEstimator>(m_segmentWeights);
+  auto loader = my::make_unique<ZeroGeometryLoader>();
+  auto estimator = std::make_shared<WeightedEdgeEstimator>(m_segmentWeights);
 
   BuildJoints();
 
-  return BuildWorldGraph(move(loader), estimator, m_joints);
+  return BuildWorldGraph(std::move(loader), estimator, m_joints);
 }
 
 void TestIndexGraphTopology::Builder::BuildJoints()
@@ -187,7 +187,7 @@ void TestIndexGraphTopology::Builder::BuildJoints()
   }
 }
 
-void TestIndexGraphTopology::Builder::BuildGraphFromRequests(vector<EdgeRequest> const & requests)
+void TestIndexGraphTopology::Builder::BuildGraphFromRequests(std::vector<EdgeRequest> const & requests)
 {
   for (auto const & request : requests)
     BuildSegmentFromEdge(request);
@@ -195,12 +195,12 @@ void TestIndexGraphTopology::Builder::BuildGraphFromRequests(vector<EdgeRequest>
 
 void TestIndexGraphTopology::Builder::BuildSegmentFromEdge(EdgeRequest const & request)
 {
-  auto const edge = make_pair(request.m_from, request.m_to);
+  auto const edge = std::make_pair(request.m_from, request.m_to);
   auto p = m_edgeWeights.emplace(edge, request.m_weight);
   CHECK(p.second, ("Multi-edges are not allowed"));
 
   uint32_t const featureId = request.m_id;
-  Segment const segment(kTestNumMwmId, featureId, 0 /* segmentIdx */, true /* forward */);
+  Segment const segment(kTestNumMwmId, featureId, 0 /* segmentIdx */, true /* std::forward */);
 
   m_segmentWeights[segment] = request.m_weight;
   m_segmentToEdge[segment] = edge;
@@ -209,29 +209,29 @@ void TestIndexGraphTopology::Builder::BuildSegmentFromEdge(EdgeRequest const & r
 }
 
 // Functions ---------------------------------------------------------------------------------------
-unique_ptr<WorldGraph> BuildWorldGraph(unique_ptr<TestGeometryLoader> geometryLoader,
-                                       shared_ptr<EdgeEstimator> estimator,
-                                       vector<Joint> const & joints)
+unique_ptr<WorldGraph> BuildWorldGraph(std::unique_ptr<TestGeometryLoader> geometryLoader,
+                                       std::shared_ptr<EdgeEstimator> estimator,
+                                       std::vector<Joint> const & joints)
 {
-  auto graph = make_unique<IndexGraph>(move(geometryLoader), estimator);
+  auto graph = my::make_unique<IndexGraph>(std::move(geometryLoader), estimator);
   graph->Import(joints);
-  auto indexLoader = make_unique<TestIndexGraphLoader>();
-  indexLoader->AddGraph(kTestNumMwmId, move(graph));
-  return make_unique<WorldGraph>(nullptr /* crossMwmGraph */, move(indexLoader), estimator);
+  auto indexLoader = my::make_unique<TestIndexGraphLoader>();
+  indexLoader->AddGraph(kTestNumMwmId, std::move(graph));
+  return my::make_unique<WorldGraph>(nullptr /* crossMwmGraph */, std::move(indexLoader), estimator);
 }
 
-unique_ptr<WorldGraph> BuildWorldGraph(unique_ptr<ZeroGeometryLoader> geometryLoader,
-                                       shared_ptr<EdgeEstimator> estimator,
-                                       vector<Joint> const & joints)
+unique_ptr<WorldGraph> BuildWorldGraph(std::unique_ptr<ZeroGeometryLoader> geometryLoader,
+                                       std::shared_ptr<EdgeEstimator> estimator,
+                                       std::vector<Joint> const & joints)
 {
-  auto graph = make_unique<IndexGraph>(move(geometryLoader), estimator);
+  auto graph = my::make_unique<IndexGraph>(std::move(geometryLoader), estimator);
   graph->Import(joints);
-  auto indexLoader = make_unique<TestIndexGraphLoader>();
-  indexLoader->AddGraph(kTestNumMwmId, move(graph));
-  return make_unique<WorldGraph>(nullptr /* crossMwmGraph */, move(indexLoader), estimator);
+  auto indexLoader = my::make_unique<TestIndexGraphLoader>();
+  indexLoader->AddGraph(kTestNumMwmId, std::move(graph));
+  return my::make_unique<WorldGraph>(nullptr /* crossMwmGraph */, std::move(indexLoader), estimator);
 }
 
-Joint MakeJoint(vector<RoadPoint> const & points)
+Joint MakeJoint(std::vector<RoadPoint> const & points)
 {
   Joint joint;
   for (auto const & point : points)
@@ -242,18 +242,18 @@ Joint MakeJoint(vector<RoadPoint> const & points)
 
 shared_ptr<EdgeEstimator> CreateEstimatorForCar(traffic::TrafficCache const & trafficCache)
 {
-  auto numMwmIds = make_shared<NumMwmIds>();
-  auto stash = make_shared<TrafficStash>(trafficCache, numMwmIds);
+  auto numMwmIds = std::make_shared<NumMwmIds>();
+  auto stash = std::make_shared<TrafficStash>(trafficCache, numMwmIds);
   return CreateEstimatorForCar(stash);
 }
 
-shared_ptr<EdgeEstimator> CreateEstimatorForCar(shared_ptr<TrafficStash> trafficStash)
+shared_ptr<EdgeEstimator> CreateEstimatorForCar(std::shared_ptr<TrafficStash> trafficStash)
 {
   return EdgeEstimator::CreateForCar(trafficStash, 90.0 /* maxSpeedKMpH */);
 }
 
 AStarAlgorithm<IndexGraphStarter>::Result CalculateRoute(IndexGraphStarter & starter,
-                                                         vector<Segment> & roadPoints,
+                                                         std::vector<Segment> & roadPoints,
                                                          double & timeSec)
 {
   AStarAlgorithm<IndexGraphStarter> algorithm;
@@ -270,9 +270,9 @@ AStarAlgorithm<IndexGraphStarter>::Result CalculateRoute(IndexGraphStarter & sta
 
 void TestRouteGeometry(IndexGraphStarter & starter,
                        AStarAlgorithm<IndexGraphStarter>::Result expectedRouteResult,
-                       vector<m2::PointD> const & expectedRouteGeom)
+                       std::vector<m2::PointD> const & expectedRouteGeom)
 {
-  vector<Segment> routeSegs;
+  std::vector<Segment> routeSegs;
   double timeSec = 0.0;
   auto const resultCode = CalculateRoute(starter, routeSegs, timeSec);
 
@@ -289,7 +289,7 @@ void TestRouteGeometry(IndexGraphStarter & starter,
     return;
 
   CHECK(!routeSegs.empty(), ());
-  vector<m2::PointD> geom;
+  std::vector<m2::PointD> geom;
 
   auto const pushPoint = [&geom](m2::PointD const & point) {
     if (geom.empty() || geom.back() != point)
@@ -312,7 +312,7 @@ void TestRouteTime(IndexGraphStarter & starter,
                    AStarAlgorithm<IndexGraphStarter>::Result expectedRouteResult,
                    double expectedTime)
 {
-  vector<Segment> routeSegs;
+  std::vector<Segment> routeSegs;
   double timeSec = 0.0;
   auto const resultCode = CalculateRoute(starter, routeSegs, timeSec);
 
@@ -321,13 +321,13 @@ void TestRouteTime(IndexGraphStarter & starter,
   TEST(my::AlmostEqualAbs(timeSec, expectedTime, kEpsilon), ());
 }
 
-void TestRestrictions(vector<m2::PointD> const & expectedRouteGeom,
+void TestRestrictions(std::vector<m2::PointD> const & expectedRouteGeom,
                       AStarAlgorithm<IndexGraphStarter>::Result expectedRouteResult,
                       routing::IndexGraphStarter::FakeVertex const & start,
                       routing::IndexGraphStarter::FakeVertex const & finish,
                       RestrictionVec && restrictions, RestrictionTest & restrictionTest)
 {
-  restrictionTest.SetRestrictions(move(restrictions));
+  restrictionTest.SetRestrictions(std::move(restrictions));
   restrictionTest.SetStarter(start, finish);
   TestRouteGeometry(*restrictionTest.m_starter, expectedRouteResult, expectedRouteGeom);
 }

@@ -7,15 +7,15 @@
 
 #include "geometry/point2d.hpp"
 
-#include "std/string.hpp"
-#include "std/vector.hpp"
+#include <string>
+#include <vector>
 
 using namespace routing;
 
 namespace
 {
-static vector<m2::PointD> const kTestGeometry({{0, 0}, {0,1}, {1,1}, {1,2}, {1,3}});
-static vector<turns::TurnItem> const kTestTurns({turns::TurnItem(1, turns::TurnDirection::TurnLeft),
+static std::vector<m2::PointD> const kTestGeometry({{0, 0}, {0,1}, {1,1}, {1,2}, {1,3}});
+static std::vector<turns::TurnItem> const kTestTurns({turns::TurnItem(1, turns::TurnDirection::TurnLeft),
                                turns::TurnItem(2, turns::TurnDirection::TurnRight),
                                turns::TurnItem(4, turns::TurnDirection::ReachedYourDestination)});
 static Route::TStreets const kTestNames({{0, "Street1"}, {1, "Street2"}, {4, "Street3"}});
@@ -39,7 +39,7 @@ UNIT_TEST(AddAdsentCountryToRouteTest)
   route.AddAbsentCountry("B");
   route.AddAbsentCountry("C");
   route.AddAbsentCountry("B");
-  set<string> const & absent = route.GetAbsentCountries();
+  set<std::string> const & absent = route.GetAbsentCountries();
   TEST(absent.find("A") != absent.end(), ());
   TEST(absent.find("B") != absent.end(), ());
   TEST(absent.find("C") != absent.end(), ());
@@ -49,7 +49,7 @@ UNIT_TEST(DistanceToCurrentTurnTest)
 {
   Route route("TestRouter");
   route.SetGeometry(kTestGeometry.begin(), kTestGeometry.end());
-  vector<turns::TurnItem> turns(kTestTurns);
+  std::vector<turns::TurnItem> turns(kTestTurns);
   route.SetTurnInstructions(move(turns));
 
   double distance;
@@ -84,7 +84,7 @@ UNIT_TEST(NextTurnTest)
 {
   Route route("TestRouter");
   route.SetGeometry(kTestGeometry.begin(), kTestGeometry.end());
-  vector<turns::TurnItem> turns(kTestTurns);
+  std::vector<turns::TurnItem> turns(kTestTurns);
   route.SetTurnInstructions(move(turns));
 
   double distance, nextDistance;
@@ -113,9 +113,9 @@ UNIT_TEST(NextTurnsTest)
 {
   Route route("TestRouter");
   route.SetGeometry(kTestGeometry.begin(), kTestGeometry.end());
-  vector<turns::TurnItem> turns(kTestTurns);
+  std::vector<turns::TurnItem> turns(kTestTurns);
   route.SetTurnInstructions(move(turns));
-  vector<turns::TurnItemDist> turnsDist;
+  std::vector<turns::TurnItemDist> turnsDist;
 
   {
     TEST(route.GetNextTurns(turnsDist), ());
@@ -164,12 +164,12 @@ UNIT_TEST(RouteNameTest)
   Route route("TestRouter");
 
   route.SetGeometry(kTestGeometry.begin(), kTestGeometry.end());
-  vector<turns::TurnItem> turns(kTestTurns);
+  std::vector<turns::TurnItem> turns(kTestTurns);
   route.SetTurnInstructions(move(turns));
   Route::TStreets names(kTestNames);
   route.SetStreetNames(move(names));
 
-  string name;
+  std::string name;
   route.GetCurrentStreetName(name);
   TEST_EQUAL(name, "Street1", ());
 

@@ -16,8 +16,8 @@
 
 #include "base/string_utils.hpp"
 
-#include "std/shared_ptr.hpp"
-#include "std/vector.hpp"
+#include <memory>
+#include <vector>
 
 using namespace generator::tests_support;
 using namespace search::tests_support;
@@ -29,7 +29,7 @@ namespace
 class IncorrectCountry : public TestCountry
 {
 public:
-  IncorrectCountry(m2::PointD const & center, string const & name, string const & lang)
+  IncorrectCountry(m2::PointD const & center, std::string const & name, std::string const & lang)
     : TestCountry(center, name, lang)
   {
   }

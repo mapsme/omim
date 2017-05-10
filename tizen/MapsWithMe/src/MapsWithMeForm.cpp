@@ -236,7 +236,7 @@ void MapsWithMeForm::OnLocationUpdated(const Tizen::Locations::Location& locatio
 
 void MapsWithMeForm::OnLocationUpdateStatusChanged(Tizen::Locations::LocationServiceStatus status)
 {
-  static string const ar[5] = {"LOC_SVC_STATUS_IDLE",
+  static std::string const ar[5] = {"LOC_SVC_STATUS_IDLE",
       "LOC_SVC_STATUS_RUNNING",
       "LOC_SVC_STATUS_PAUSED",
       "LOC_SVC_STATUS_DENIED",
@@ -246,7 +246,7 @@ void MapsWithMeForm::OnLocationUpdateStatusChanged(Tizen::Locations::LocationSer
 
 void MapsWithMeForm::OnAccuracyChanged(Tizen::Locations::LocationAccuracy accuracy)
 {
-  static string const ar[6] = {"LOC_ACCURACY_INVALID",
+  static std::string const ar[6] = {"LOC_ACCURACY_INVALID",
       "LOC_ACCURACY_FINEST",
       "LOC_ACCURACY_TEN_METERS",
       "LOC_ACCURACY_HUNDRED_METERS",

@@ -53,7 +53,7 @@ SearchMarkPoint::SearchMarkPoint(m2::PointD const & ptOrg, UserMarkContainer * c
 {
 }
 
-string SearchMarkPoint::GetSymbolName() const
+std::string SearchMarkPoint::GetSymbolName() const
 {
   return m_customSymbol.empty() ? "search-result" : m_customSymbol;
 }
@@ -91,12 +91,12 @@ DebugMarkPoint::DebugMarkPoint(const m2::PointD & ptOrg, UserMarkContainer * con
 {
 }
 
-string DebugMarkPoint::GetSymbolName() const
+std::string DebugMarkPoint::GetSymbolName() const
 {
   return "api-result";
 }
 
-string DebugPrint(UserMark::Type type)
+std::string DebugPrint(UserMark::Type type)
 {
   switch (type)
   {

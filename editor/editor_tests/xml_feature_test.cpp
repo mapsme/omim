@@ -6,8 +6,8 @@
 
 #include "base/timer.hpp"
 
-#include "std/map.hpp"
-#include "std/sstream.hpp"
+#include <map>
+#include <sstream>
 
 #include "3party/pugixml/src/pugixml.hpp"
 
@@ -37,7 +37,7 @@ UNIT_TEST(XMLFeature_RawGetSet)
 </node>
 )";
 
-  stringstream sstr;
+  std::stringstream sstr;
   feature.Save(sstr);
   TEST_EQUAL(expected, sstr.str(), ());
 }
@@ -59,7 +59,7 @@ UNIT_TEST(XMLFeature_Setters)
   feature.SetTagValue("opening_hours", "Mo-Fr 08:15-17:30");
   feature.SetTagValue("amenity", "atm");
 
-  stringstream sstr;
+  std::stringstream sstr;
   feature.Save(sstr);
 
   auto const expectedString = R"(<?xml version="1.0"?>
@@ -87,7 +87,7 @@ UNIT_TEST(XMLFeature_UintLang)
   feature.SetName(StringUtf8Multilang::kDefaultCode, "Gorki Park");
   feature.SetName(StringUtf8Multilang::GetLangIndex("ru"), "Парк Горького");
   feature.SetName(StringUtf8Multilang::kInternationalCode, "Gorky Park");
-  stringstream sstr;
+  std::stringstream sstr;
   feature.Save(sstr);
 
   auto const expectedString = R"(<?xml version="1.0"?>
@@ -213,7 +213,7 @@ UNIT_TEST(XMLFeature_FromXml)
 {
   XMLFeature feature(kTestNode);
 
-  stringstream sstr;
+  std::stringstream sstr;
   feature.Save(sstr);
   TEST_EQUAL(kTestNode, sstr.str(), ());
 
@@ -239,14 +239,14 @@ UNIT_TEST(XMLFeature_FromXml)
 UNIT_TEST(XMLFeature_ForEachName)
 {
   XMLFeature feature(kTestNode);
-  map<string, string> names;
+  std::map<std::string, std::string> names;
 
-  feature.ForEachName([&names](string const & lang, string const & name)
+  feature.ForEachName([&names](std::string const & lang, std::string const & name)
                       {
                         names.emplace(lang, name);
                       });
 
-  TEST_EQUAL(names, (map<string, string>{
+  TEST_EQUAL(names, (std::map<std::string, std::string>{
                         {"default", "Gorki Park"}, {"en", "Gorki Park"}, {"ru", "Парк Горького"}}),
              ());
 }
@@ -272,7 +272,7 @@ UNIT_TEST(XMLFeature_FromOSM)
   TEST_ANY_THROW(XMLFeature::FromOSM("<?xml version=\"1.0\"?>"), ());
   TEST_NO_THROW(XMLFeature::FromOSM("<?xml version=\"1.0\"?><osm></osm>"), ());
   TEST_ANY_THROW(XMLFeature::FromOSM("<?xml version=\"1.0\"?><osm><node lat=\"11.11\"/></osm>"), ());
-  vector<XMLFeature> features;
+  std::vector<XMLFeature> features;
   TEST_NO_THROW(features = XMLFeature::FromOSM(kTestNodeWay), ());
   TEST_EQUAL(3, features.size(), ());
   XMLFeature const & node = features[0];
@@ -348,7 +348,7 @@ UNIT_TEST(XMLFeature_ApplyPatch)
     hasMainTag.ApplyPatch(XMLFeature(kPatch));
     TEST_EQUAL(hasMainTag.GetTagValue("website"), "maps.me", ());
     size_t tagsCount = 0;
-    hasMainTag.ForEachTag([&tagsCount](string const &, string const &){ ++tagsCount; });
+    hasMainTag.ForEachTag([&tagsCount](std::string const &, std::string const &){ ++tagsCount; });
     TEST_EQUAL(2, tagsCount, ("website should be replaced, not duplicated."));
   }
 

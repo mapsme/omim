@@ -16,8 +16,8 @@
 #include "base/logging.hpp"
 #include "base/macros.hpp"
 
-#include "std/string.hpp"
-#include "std/algorithm.hpp"
+#include <string>
+#include <algorithm>
 
 
 namespace
@@ -112,7 +112,7 @@ public:
 
     // make right-oriented triangle
     if (m2::robust::OrientedS(arrP[0], arrP[1], arrP[2]) < 0.0)
-      swap(arrP[1], arrP[2]);
+      std::swap(arrP[1], arrP[2]);
 
     bool isInside = true;
     m2::PointD const pt = m_rect.LeftTop();
@@ -201,13 +201,13 @@ bool compare_sequence(TCont const & etalon, TCont const & test, TCompare comp, s
   {
     switch (comp.compare(*i1, *i2))
     {
-    case 0:   // equal
+    case 0:   // std::equal
       ++i1;
       ++i2;
       break;
     case -1:  // present in etalon, but missing in test - error
       {
-        errInd = distance(etalon.begin(), i1);
+        errInd = std::distance(etalon.begin(), i1);
         return false;
       }
     case 1:   // present in test, but missing in etalon - actually it may be ok
@@ -218,7 +218,7 @@ bool compare_sequence(TCont const & etalon, TCont const & test, TCompare comp, s
 
   if (i1 != etalon.end())
   {
-    errInd = distance(etalon.begin(), i1);
+    errInd = std::distance(etalon.begin(), i1);
     return false;
   }
 

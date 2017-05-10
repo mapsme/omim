@@ -2,7 +2,7 @@
 
 #include "search/house_numbers_matcher.hpp"
 
-#include "std/vector.hpp"
+#include <vector>
 
 #include "base/string_utils.hpp"
 
@@ -12,19 +12,19 @@ using namespace strings;
 
 namespace
 {
-bool HouseNumbersMatch(string const & houseNumber, string const & query, bool queryIsPrefix = false)
+bool HouseNumbersMatch(std::string const & houseNumber, std::string const & query, bool queryIsPrefix = false)
 {
   return search::house_numbers::HouseNumbersMatch(MakeUniString(houseNumber), MakeUniString(query),
                                                   queryIsPrefix);
 }
 
-bool CheckTokenizer(string const & utf8s, vector<string> const & expected)
+bool CheckTokenizer(std::string const & utf8s, std::vector<std::string> const & expected)
 {
   UniString utf32s = MakeUniString(utf8s);
-  vector<Token> tokens;
+  std::vector<Token> tokens;
   Tokenize(utf32s, false /* isPrefix */, tokens);
 
-  vector<string> actual;
+  std::vector<std::string> actual;
   for (auto const & token : tokens)
     actual.push_back(ToUtf8(token.m_value));
   if (actual != expected)
@@ -35,9 +35,9 @@ bool CheckTokenizer(string const & utf8s, vector<string> const & expected)
   return true;
 }
 
-bool CheckParser(string const & utf8s, string const & expected)
+bool CheckParser(std::string const & utf8s, std::string const & expected)
 {
-  vector<vector<Token>> parses;
+  std::vector<std::vector<Token>> parses;
   ParseHouseNumber(MakeUniString(utf8s), parses);
 
   if (parses.size() != 1)
@@ -47,7 +47,7 @@ bool CheckParser(string const & utf8s, string const & expected)
   }
 
   auto const & parse = parses[0];
-  string actual;
+  std::string actual;
   for (size_t i = 0; i < parse.size(); ++i)
   {
     actual.append(ToUtf8(parse[i].m_value));
@@ -64,7 +64,7 @@ bool CheckParser(string const & utf8s, string const & expected)
   return true;
 }
 
-bool LooksLikeHouseNumber(string const & s, bool isPrefix)
+bool LooksLikeHouseNumber(std::string const & s, bool isPrefix)
 {
   return house_numbers::LooksLikeHouseNumber(MakeUniString(s), isPrefix);
 }

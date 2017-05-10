@@ -3,18 +3,18 @@
 
 #include "base/assert.hpp"
 
-#include "std/string.hpp"
+#include <string>
 
 namespace dp
 {
 
 #ifdef DEBUG
-  #include "std/map.hpp"
+#include <map>
 
   class GLExtensionsList::Impl
   {
   public:
-    void CheckExtension(GLExtensionsList::ExtensionName const & enumName, const string & extName)
+    void CheckExtension(GLExtensionsList::ExtensionName const & enumName, const std::string & extName)
     {
 #ifdef OMIM_OS_ANDROID
       if (enumName == GLExtensionsList::VertexArrayObject)
@@ -31,7 +31,7 @@ namespace dp
 
     bool IsSupported(GLExtensionsList::ExtensionName const & enumName) const
     {
-      map<GLExtensionsList::ExtensionName, bool>::const_iterator it = m_supportedMap.find(enumName);
+      std::map<GLExtensionsList::ExtensionName, bool>::const_iterator it = m_supportedMap.find(enumName);
       if (it != m_supportedMap.end())
         return it->second;
 
@@ -40,15 +40,15 @@ namespace dp
     }
 
   private:
-    map<GLExtensionsList::ExtensionName, bool> m_supportedMap;
+    std::map<GLExtensionsList::ExtensionName, bool> m_supportedMap;
   };
 #else
-  #include "std/set.hpp"
+#include <set>
 
   class GLExtensionsList::Impl
   {
   public:
-    void CheckExtension(GLExtensionsList::ExtensionName const & enumName, const string & extName)
+    void CheckExtension(GLExtensionsList::ExtensionName const & enumName, const std::string & extName)
     {
 #ifdef OMIM_OS_ANDROID
       if (enumName == GLExtensionsList::VertexArrayObject)
@@ -73,7 +73,7 @@ namespace dp
     }
 
   private:
-    set<GLExtensionsList::ExtensionName> m_supported;
+    std::set<GLExtensionsList::ExtensionName> m_supported;
   };
 #endif
 

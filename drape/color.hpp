@@ -2,9 +2,9 @@
 
 #include "base/math.hpp"
 
-#include "std/cstdint.hpp"
-#include "std/sstream.hpp"
-#include "std/string.hpp"
+#include <cstdint>
+#include <sstream>
+#include <string>
 
 namespace dp
 {
@@ -51,9 +51,9 @@ inline uint8_t ExtractAlfa(uint32_t argb);
 Color Extract(uint32_t argb);
 Color Extract(uint32_t xrgb, uint8_t a);
 
-inline string DebugPrint(Color const & c)
+inline std::string DebugPrint(Color const & c)
 {
-  ostringstream out;
+  std::ostringstream out;
   out << "R = " << c.GetRed()
       << "G = " << c.GetGreen()
       << "B = " << c.GetBlue()

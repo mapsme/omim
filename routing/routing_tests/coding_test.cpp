@@ -12,11 +12,11 @@ namespace
 template <typename T, typename ToDo>
 void ForEachNumber(ToDo && toDo)
 {
-  for (T number = numeric_limits<T>::min();; ++number)
+  for (T number = std::numeric_limits<T>::min();; ++number)
   {
     toDo(number);
 
-    if (number == numeric_limits<T>::max())
+    if (number == std::numeric_limits<T>::max())
       break;
   }
 }

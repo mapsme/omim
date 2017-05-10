@@ -12,9 +12,9 @@
 #include "platform/local_country_file_utils.hpp"
 #include "platform/mwm_version.hpp"
 
-#include "std/bind.hpp"
-#include "std/shared_ptr.hpp"
-#include "std/unordered_map.hpp"
+#include <functional>
+#include <memory>
+#include <unordered_map>
 
 namespace
 {
@@ -204,8 +204,8 @@ Java_com_mapswithme_maps_downloader_MapManager_nativeMigrate(JNIEnv * env, jclas
 
   g_migrationListener = env->NewGlobalRef(listener);
 
-  TCountryId id = g_framework->PreMigrate(position, bind(&MigrationStatusChangedCallback, _1, keepOldMaps),
-                                                    bind(&MigrationProgressCallback, _1, _2));
+  TCountryId id = g_framework->PreMigrate(position, std::bind(&MigrationStatusChangedCallback, std::placeholders::_1, keepOldMaps),
+                                                    std::bind(&MigrationProgressCallback, std::placeholders::_1, std::placeholders::_2));
   if (id != kInvalidCountryId)
   {
     NodeAttrs attrs;
@@ -533,7 +533,7 @@ Java_com_mapswithme_maps_downloader_MapManager_nativeDelete(JNIEnv * env, jclass
   EndBatchingCallbacks(env);
 }
 
-static void StatusChangedCallback(shared_ptr<jobject> const & listenerRef, TCountryId const & countryId)
+static void StatusChangedCallback(std::shared_ptr<jobject> const & listenerRef, TCountryId const & countryId)
 {
   NodeStatuses ns;
   GetStorage().GetNodeStatuses(countryId, ns);
@@ -545,7 +545,7 @@ static void StatusChangedCallback(shared_ptr<jobject> const & listenerRef, TCoun
     EndBatchingCallbacks(jni::GetEnv());
 }
 
-static void ProgressChangedCallback(shared_ptr<jobject> const & listenerRef, TCountryId const & countryId, TLocalAndRemoteSize const & sizes)
+static void ProgressChangedCallback(std::shared_ptr<jobject> const & listenerRef, TCountryId const & countryId, TLocalAndRemoteSize const & sizes)
 {
   JNIEnv * env = jni::GetEnv();
 
@@ -558,8 +558,8 @@ JNIEXPORT jint JNICALL
 Java_com_mapswithme_maps_downloader_MapManager_nativeSubscribe(JNIEnv * env, jclass clazz, jobject listener)
 {
   PrepareClassRefs(env);
-  return GetStorage().Subscribe(bind(&StatusChangedCallback, jni::make_global_ref(listener), _1),
-                                bind(&ProgressChangedCallback, jni::make_global_ref(listener), _1, _2));
+  return GetStorage().Subscribe(std::bind(&StatusChangedCallback, jni::make_global_ref(listener), std::placeholders::_1),
+                                std::bind(&ProgressChangedCallback, jni::make_global_ref(listener), std::placeholders::_1, std::placeholders::_2));
 }
 
 // static void nativeUnsubscribe(int slot);

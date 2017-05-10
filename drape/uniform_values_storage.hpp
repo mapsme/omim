@@ -2,9 +2,9 @@
 
 #include "drape/uniform_value.hpp"
 
-#include "std/vector.hpp"
-#include "std/string.hpp"
-#include "std/function.hpp"
+#include <vector>
+#include <string>
+#include <functional>
 
 namespace dp
 {
@@ -12,17 +12,17 @@ namespace dp
 class UniformValuesStorage
 {
 public:
-  void SetIntValue(string const & name, int32_t v);
-  void SetIntValue(string const & name, int32_t v1, int32_t v2);
-  void SetIntValue(string const & name, int32_t v1, int32_t v2, int32_t v3);
-  void SetIntValue(string const & name, int32_t v1, int32_t v2, int32_t v3, int32_t v4);
+  void SetIntValue(std::string const & name, int32_t v);
+  void SetIntValue(std::string const & name, int32_t v1, int32_t v2);
+  void SetIntValue(std::string const & name, int32_t v1, int32_t v2, int32_t v3);
+  void SetIntValue(std::string const & name, int32_t v1, int32_t v2, int32_t v3, int32_t v4);
 
-  void SetFloatValue(string const & name, float v);
-  void SetFloatValue(string const & name, float v1, float v2);
-  void SetFloatValue(string const & name, float v1, float v2, float v3);
-  void SetFloatValue(string const & name, float v1, float v2, float v3, float v4);
+  void SetFloatValue(std::string const & name, float v);
+  void SetFloatValue(std::string const & name, float v1, float v2);
+  void SetFloatValue(std::string const & name, float v1, float v2, float v3);
+  void SetFloatValue(std::string const & name, float v1, float v2, float v3, float v4);
 
-  void SetMatrix4x4Value(string const & name, float const * matrixValue);
+  void SetMatrix4x4Value(std::string const & name, float const * matrixValue);
 
   template<typename TFunctor>
   void ForeachValue(TFunctor & functor) const
@@ -33,10 +33,10 @@ public:
   bool operator< (UniformValuesStorage const & other) const;
 
 private:
-  UniformValue * findByName(string const & name);
+  UniformValue * findByName(std::string const & name);
 
 private:
-  typedef vector<UniformValue> uniforms_t;
+  typedef std::vector<UniformValue> uniforms_t;
   uniforms_t m_uniforms;
 };
 

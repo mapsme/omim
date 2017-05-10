@@ -25,10 +25,10 @@ TestWithClassificator::TestWithClassificator()
 SearchTest::SearchTest()
   : m_platform(GetPlatform())
   , m_scopedLog(LDEBUG)
-  , m_engine(make_unique<storage::CountryInfoGetterForTesting>(), make_unique<ProcessorFactory>(),
+  , m_engine(my::make_unique<storage::CountryInfoGetterForTesting>(), my::make_unique<ProcessorFactory>(),
              Engine::Params())
 {
-  indexer::tests_support::SetUpEditorForTesting(make_unique<EditorDelegate>(m_engine));
+  indexer::tests_support::SetUpEditorForTesting(my::make_unique<EditorDelegate>(m_engine));
 }
 
 SearchTest::~SearchTest()
@@ -37,37 +37,37 @@ SearchTest::~SearchTest()
     Cleanup(file);
 }
 
-void SearchTest::RegisterCountry(string const & name, m2::RectD const & rect)
+void SearchTest::RegisterCountry(std::string const & name, m2::RectD const & rect)
 {
   auto & infoGetter =
       static_cast<storage::CountryInfoGetterForTesting &>(m_engine.GetCountryInfoGetter());
   infoGetter.AddCountry(storage::CountryDef(name, rect));
 }
 
-bool SearchTest::ResultsMatch(string const & query,
-                              vector<shared_ptr<tests_support::MatchingRule>> const & rules)
+bool SearchTest::ResultsMatch(std::string const & query,
+                              std::vector<shared_ptr<tests_support::MatchingRule>> const & rules)
 {
   return ResultsMatch(query, "en" /* locale */, rules);
 }
 
-bool SearchTest::ResultsMatch(string const & query,
-                              string const & locale,
-                              vector<shared_ptr<tests_support::MatchingRule>> const & rules)
+bool SearchTest::ResultsMatch(std::string const & query,
+                              std::string const & locale,
+                              std::vector<shared_ptr<tests_support::MatchingRule>> const & rules)
 {
   tests_support::TestSearchRequest request(m_engine, query, locale, Mode::Everywhere, m_viewport);
   request.Run();
   return MatchResults(m_engine, rules, request.Results());
 }
 
-bool SearchTest::ResultsMatch(string const & query, Mode mode,
-                              vector<shared_ptr<tests_support::MatchingRule>> const & rules)
+bool SearchTest::ResultsMatch(std::string const & query, Mode mode,
+                              std::vector<shared_ptr<tests_support::MatchingRule>> const & rules)
 {
   tests_support::TestSearchRequest request(m_engine, query, "en", mode, m_viewport);
   request.Run();
   return MatchResults(m_engine, rules, request.Results());
 }
 
-bool SearchTest::ResultsMatch(vector<search::Result> const & results, TRules const & rules)
+bool SearchTest::ResultsMatch(std::vector<search::Result> const & results, TRules const & rules)
 {
   return MatchResults(m_engine, rules, results);
 }
@@ -79,7 +79,7 @@ bool SearchTest::ResultsMatch(SearchParams const & params, TRules const & rules)
   return ResultsMatch(request.Results(), rules);
 }
 
-unique_ptr<tests_support::TestSearchRequest> SearchTest::MakeRequest(string const & query)
+unique_ptr<tests_support::TestSearchRequest> SearchTest::MakeRequest(std::string const & query)
 {
   SearchParams params;
   params.m_query = query;
@@ -87,7 +87,7 @@ unique_ptr<tests_support::TestSearchRequest> SearchTest::MakeRequest(string cons
   params.m_mode = Mode::Everywhere;
   params.m_suggestsEnabled = false;
 
-  auto request = make_unique<tests_support::TestSearchRequest>(m_engine, params, m_viewport);
+  auto request = my::make_unique<tests_support::TestSearchRequest>(m_engine, params, m_viewport);
   request->Run();
   return request;
 }

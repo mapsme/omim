@@ -8,10 +8,10 @@
 
 #include "base/logging.hpp"
 
-#include "std/chrono.hpp"
-#include "std/mutex.hpp"
-#include "std/string.hpp"
-#include "std/vector.hpp"
+#include <chrono>
+#include <mutex>
+#include <string>
+#include <vector>
 
 namespace routing
 {
@@ -28,7 +28,7 @@ public:
     : m_route(route), m_code(code), m_buildCount(buildCounter)
   {
   }
-  string GetName() const override { return "dummy"; }
+  std::string GetName() const override { return "dummy"; }
   void ClearState() override {}
   ResultCode CalculateRoute(m2::PointD const & /* startPoint */,
                             m2::PointD const & /* startDirection */,
@@ -41,8 +41,8 @@ public:
   }
 };
 
-static vector<m2::PointD> kTestRoute = {{0., 1.}, {0., 2.}, {0., 3.}, {0., 4.}};
-static auto kRouteBuildingMaxDuration = seconds(30);
+static std::vector<m2::PointD> kTestRoute = {{0., 1.}, {0., 2.}, {0., 3.}, {0., 4.}};
+static auto kRouteBuildingMaxDuration = std::chrono::seconds(30);
 
 class TimedSignal
 {
@@ -50,23 +50,23 @@ public:
   TimedSignal() : m_flag(false) {}
   void Signal()
   {
-    lock_guard<mutex> guard(m_waitingMutex);
+    std::lock_guard<std::mutex> guard(m_waitingMutex);
     m_flag = true;
     m_cv.notify_one();
   }
 
-  bool WaitUntil(steady_clock::time_point const & time)
+  bool WaitUntil(std::chrono::steady_clock::time_point const & time)
   {
-    unique_lock<mutex> lock(m_waitingMutex);
+    std::unique_lock<std::mutex> lock(m_waitingMutex);
     m_cv.wait_until(lock, time, [this, &time]
                     {
-                      return m_flag || steady_clock::now() > time;
+                      return m_flag || std::chrono::steady_clock::now() > time;
                     });
     return m_flag;
   }
 
 private:
-  mutex m_waitingMutex;
+  std::mutex m_waitingMutex;
   condition_variable m_cv;
   bool m_flag;
 };
@@ -75,7 +75,7 @@ UNIT_TEST(TestRouteBuilding)
 {
   RoutingSession session;
   session.Init(nullptr, nullptr);
-  vector<m2::PointD> routePoints = kTestRoute;
+  std::vector<m2::PointD> routePoints = kTestRoute;
   Route masterRoute("dummy", routePoints.begin(), routePoints.end());
   size_t counter = 0;
   TimedSignal timedSignal;
@@ -90,7 +90,7 @@ UNIT_TEST(TestRouteBuilding)
         );
   session.BuildRoute(kTestRoute.front(), kTestRoute.back(), 0);
   // Manual check of the routeBuilded mutex to avoid spurious results.
-  auto const time = steady_clock::now() + kRouteBuildingMaxDuration;
+  auto const time = std::chrono::steady_clock::now() + kRouteBuildingMaxDuration;
   TEST(timedSignal.WaitUntil(time), ("Route was not built."));
   TEST_EQUAL(counter, 1, ());
 }
@@ -100,7 +100,7 @@ UNIT_TEST(TestRouteRebuilding)
   Index index;
   RoutingSession session;
   session.Init(nullptr, nullptr);
-  vector<m2::PointD> routePoints = kTestRoute;
+  std::vector<m2::PointD> routePoints = kTestRoute;
   Route masterRoute("dummy", routePoints.begin(), routePoints.end());
   size_t counter = 0;
   unique_ptr<DummyRouter> router = make_unique<DummyRouter>(masterRoute, DummyRouter::NoError, counter);
@@ -113,7 +113,7 @@ UNIT_TEST(TestRouteRebuilding)
       nullptr);
   session.BuildRoute(kTestRoute.front(), kTestRoute.back(), 0);
   // Manual check of the routeBuilded mutex to avoid spurious results.
-  auto time = steady_clock::now() + kRouteBuildingMaxDuration;
+  auto time = std::chrono::steady_clock::now() + kRouteBuildingMaxDuration;
   TEST(alongTimedSignal.WaitUntil(time), ("Route was not built."));
 
   location::GpsInfo info;
@@ -131,7 +131,7 @@ UNIT_TEST(TestRouteRebuilding)
   TEST_EQUAL(counter, 1, ());
 
   // Rebuild route and go in opposite direction. So initiate a route rebuilding flag.
-  time = steady_clock::now() + kRouteBuildingMaxDuration;
+  time = std::chrono::steady_clock::now() + kRouteBuildingMaxDuration;
   counter = 0;
   TimedSignal oppositeTimedSignal;
   session.SetReadyCallbacks(
@@ -155,7 +155,7 @@ UNIT_TEST(TestFollowRouteFlagPersistence)
   Index index;
   RoutingSession session;
   session.Init(nullptr, nullptr);
-  vector<m2::PointD> routePoints = kTestRoute;
+  std::vector<m2::PointD> routePoints = kTestRoute;
   Route masterRoute("dummy", routePoints.begin(), routePoints.end());
   size_t counter = 0;
   unique_ptr<DummyRouter> router = make_unique<DummyRouter>(masterRoute, DummyRouter::NoError, counter);
@@ -168,7 +168,7 @@ UNIT_TEST(TestFollowRouteFlagPersistence)
       nullptr);
   session.BuildRoute(kTestRoute.front(), kTestRoute.back(), 0);
   // Manual check of the routeBuilded mutex to avoid spurious results.
-  auto time = steady_clock::now() + kRouteBuildingMaxDuration;
+  auto time = std::chrono::steady_clock::now() + kRouteBuildingMaxDuration;
   TEST(alongTimedSignal.WaitUntil(time), ("Route was not built."));
 
   TEST(!session.IsFollowing(), ());
@@ -191,7 +191,7 @@ UNIT_TEST(TestFollowRouteFlagPersistence)
   TEST_EQUAL(counter, 1, ());
 
   // Rebuild route and go in opposite direction. So initiate a route rebuilding flag.
-  time = steady_clock::now() + kRouteBuildingMaxDuration;
+  time = std::chrono::steady_clock::now() + kRouteBuildingMaxDuration;
   counter = 0;
   TimedSignal oppositeTimedSignal;
   session.SetReadyCallbacks(
@@ -228,7 +228,7 @@ UNIT_TEST(TestFollowRoutePercentTest)
   Index index;
   RoutingSession session;
   session.Init(nullptr, nullptr);
-  vector<m2::PointD> routePoints = kTestRoute;
+  std::vector<m2::PointD> routePoints = kTestRoute;
   Route masterRoute("dummy", routePoints.begin(), routePoints.end());
   size_t counter = 0;
   unique_ptr<DummyRouter> router = make_unique<DummyRouter>(masterRoute, DummyRouter::NoError, counter);
@@ -243,7 +243,7 @@ UNIT_TEST(TestFollowRoutePercentTest)
       nullptr);
   session.BuildRoute(kTestRoute.front(), kTestRoute.back(), 0);
   // Manual check of the routeBuilded mutex to avoid spurious results.
-  auto time = steady_clock::now() + kRouteBuildingMaxDuration;
+  auto time = std::chrono::steady_clock::now() + kRouteBuildingMaxDuration;
   TEST(alongTimedSignal.WaitUntil(time), ("Route was not built."));
 
   // Get completion percent of unstarted route.

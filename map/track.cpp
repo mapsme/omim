@@ -13,7 +13,7 @@ Track::Track(Track::PolylineD const & polyline, Track::Params const & p)
   ASSERT_GREATER(m_polyline.GetSize(), 1, ());
 }
 
-string const & Track::GetName() const
+std::string const & Track::GetName() const
 {
   return m_params.m_name;
 }

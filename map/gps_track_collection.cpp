@@ -2,7 +2,7 @@
 
 #include "base/assert.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 namespace
 {
@@ -15,7 +15,7 @@ template <typename T>
 class Rollbacker
 {
 public:
-  Rollbacker(deque<T> & cont)
+  Rollbacker(std::deque<T> & cont)
     : m_cont(&cont)
     , m_size(cont.size())
   {}
@@ -26,27 +26,27 @@ public:
   }
   void Reset() { m_cont = nullptr; }
 private:
-  deque<T> * m_cont;
+  std::deque<T> * m_cont;
   size_t const m_size;
 };
 
 } // namespace
 
-size_t const GpsTrackCollection::kInvalidId = numeric_limits<size_t>::max();
+size_t const GpsTrackCollection::kInvalidId = std::numeric_limits<size_t>::max();
 
-GpsTrackCollection::GpsTrackCollection(size_t maxSize, hours duration)
+GpsTrackCollection::GpsTrackCollection(size_t maxSize, std::chrono::hours duration)
   : m_maxSize(maxSize)
   , m_duration(duration)
   , m_lastId(0)
 {
 }
 
-size_t GpsTrackCollection::Add(TItem const & item, pair<size_t, size_t> & evictedIds)
+size_t GpsTrackCollection::Add(TItem const & item, std::pair<size_t, size_t> & evictedIds)
 {
   if (!m_items.empty() && m_items.back().m_timestamp > item.m_timestamp)
   {
     // Invalid timestamp order
-    evictedIds = make_pair(kInvalidId, kInvalidId); // Nothing was evicted
+    evictedIds = std::make_pair(kInvalidId, kInvalidId); // Nothing was evicted
     return kInvalidId; // Nothing was added
   }
 
@@ -58,7 +58,7 @@ size_t GpsTrackCollection::Add(TItem const & item, pair<size_t, size_t> & evicte
   return m_lastId - 1;
 }
 
-pair<size_t, size_t> GpsTrackCollection::Add(vector<TItem> const & items, pair<size_t, size_t> & evictedIds)
+pair<size_t, size_t> GpsTrackCollection::Add(std::vector<TItem> const & items, std::pair<size_t, size_t> & evictedIds)
 {
   size_t startId = m_lastId;
   size_t added = 0;
@@ -80,28 +80,28 @@ pair<size_t, size_t> GpsTrackCollection::Add(vector<TItem> const & items, pair<s
   if (0 == added)
   {
     // Invalid timestamp order
-    evictedIds = make_pair(kInvalidId, kInvalidId); // Nothing was evicted
-    return make_pair(kInvalidId, kInvalidId); // Nothing was added
+    evictedIds = std::make_pair(kInvalidId, kInvalidId); // Nothing was evicted
+    return std::make_pair(kInvalidId, kInvalidId); // Nothing was added
   }
 
   m_lastId += added;
 
   evictedIds = RemoveExtraItems();
 
-  return make_pair(startId, startId + added - 1);
+  return std::make_pair(startId, startId + added - 1);
 }
 
-hours GpsTrackCollection::GetDuration() const
+std::chrono::hours GpsTrackCollection::GetDuration() const
 {
   return m_duration;
 }
 
-pair<size_t, size_t> GpsTrackCollection::SetDuration(hours duration)
+std::pair<size_t, size_t> GpsTrackCollection::SetDuration(std::chrono::hours duration)
 {
   m_duration = duration;
 
   if (m_items.empty())
-    return make_pair(kInvalidId, kInvalidId);
+    return std::make_pair(kInvalidId, kInvalidId);
 
   return RemoveExtraItems();
 }
@@ -113,13 +113,13 @@ pair<size_t, size_t> GpsTrackCollection::Clear(bool resetIds)
     if (resetIds)
       m_lastId = 0;
 
-    return make_pair(kInvalidId, kInvalidId);
+    return std::make_pair(kInvalidId, kInvalidId);
   }
 
   ASSERT_GREATER_OR_EQUAL(m_lastId, m_items.size(), ());
 
   // Range of evicted items
-  auto const res = make_pair(m_lastId - m_items.size(), m_lastId - 1);
+  auto const res = std::make_pair(m_lastId - m_items.size(), m_lastId - 1);
 
   m_items.clear();
   m_items.shrink_to_fit();
@@ -148,17 +148,17 @@ bool GpsTrackCollection::IsEmpty() const
 pair<double, double> GpsTrackCollection::GetTimestampRange() const
 {
   if (m_items.empty())
-    return make_pair(0, 0);
+    return std::make_pair(0, 0);
 
   ASSERT_LESS_OR_EQUAL(m_items.front().m_timestamp, m_items.back().m_timestamp, ());
 
-  return make_pair(m_items.front().m_timestamp, m_items.back().m_timestamp);
+  return std::make_pair(m_items.front().m_timestamp, m_items.back().m_timestamp);
 }
 
-pair<size_t, size_t> GpsTrackCollection::RemoveUntil(deque<TItem>::iterator i)
+pair<size_t, size_t> GpsTrackCollection::RemoveUntil(std::deque<TItem>::iterator i)
 {
-  auto const res = make_pair(m_lastId - m_items.size(),
-                             m_lastId - m_items.size() + distance(m_items.begin(), i) - 1);
+  auto const res = std::make_pair(m_lastId - m_items.size(),
+                             m_lastId - m_items.size() + std::distance(m_items.begin(), i) - 1);
   m_items.erase(m_items.begin(), i);
   return res;
 }
@@ -166,7 +166,7 @@ pair<size_t, size_t> GpsTrackCollection::RemoveUntil(deque<TItem>::iterator i)
 pair<size_t, size_t> GpsTrackCollection::RemoveExtraItems()
 {
   if (m_items.empty())
-    return make_pair(kInvalidId, kInvalidId); // Nothing to remove
+    return std::make_pair(kInvalidId, kInvalidId); // Nothing to remove
 
   double const lowerBound = m_items.back().m_timestamp - m_duration.count() * kSecondsPerHour;
 
@@ -177,7 +177,7 @@ pair<size_t, size_t> GpsTrackCollection::RemoveExtraItems()
     // All items lie on right side of lower bound,
     // but need to remove items by size.
     if (m_items.size() <= m_maxSize)
-      return make_pair(kInvalidId, kInvalidId); // Nothing to remove, all points survived.
+      return std::make_pair(kInvalidId, kInvalidId); // Nothing to remove, all points survived.
     return RemoveUntil(m_items.begin() + m_items.size() - m_maxSize);
   }
 
@@ -208,13 +208,13 @@ pair<size_t, size_t> GpsTrackCollection::RemoveExtraItems()
   {
     TItem t;
     t.m_timestamp = lowerBound;
-    i = lower_bound(i, m_items.end(), t, [](TItem const & a, TItem const & b)->bool{ return a.m_timestamp < b.m_timestamp; });
+    i = std::lower_bound(i, m_items.end(), t, [](TItem const & a, TItem const & b)->bool{ return a.m_timestamp < b.m_timestamp; });
 
     ASSERT(i != m_items.end(), ());
   }
 
   // If remaining part has size more than max size then cut off to leave max size
-  size_t const remains = distance(i, m_items.end());
+  size_t const remains = std::distance(i, m_items.end());
   if (remains > m_maxSize)
     i += remains - m_maxSize;
 

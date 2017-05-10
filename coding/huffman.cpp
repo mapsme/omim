@@ -9,7 +9,7 @@ HuffmanCoder::~HuffmanCoder()
   DeleteHuffmanTree(m_root);
 }
 
-void HuffmanCoder::Init(vector<strings::UniString> const & data)
+void HuffmanCoder::Init(std::vector<strings::UniString> const & data)
 {
   DeleteHuffmanTree(m_root);
   BuildHuffmanTree(data.begin(), data.end());

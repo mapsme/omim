@@ -10,7 +10,7 @@
 
 #include "coding/internal/file_data.hpp"
 
-#include "std/utility.hpp"
+#include <utility>
 
 #include "3party/Alohalytics/src/alohalytics.h"
 
@@ -51,7 +51,7 @@ namespace routing
 {
 RoutingSession::RoutingSession()
   : m_router(nullptr)
-  , m_route(make_shared<Route>(string()))
+  , m_route(std::make_shared<Route>(std::string()))
   , m_state(RoutingNotActive)
   , m_isFollowing(false)
   , m_endPoint(m2::PointD::Zero())
@@ -113,7 +113,7 @@ void RoutingSession::DoReadyCallback::operator()(Route & route, IRouter::ResultC
   }
   else
   {
-    for (string const & country : route.GetAbsentCountries())
+    for (std::string const & country : route.GetAbsentCountries())
       m_rs.m_route->AddAbsentCountry(country);
   }
 
@@ -127,7 +127,7 @@ void RoutingSession::RemoveRouteImpl()
   m_moveAwayCounter = 0;
   m_turnNotificationsMgr.Reset();
 
-  m_route = make_shared<Route>(string());
+  m_route = std::make_shared<Route>(std::string());
 }
 
 void RoutingSession::RemoveRoute()
@@ -270,13 +270,13 @@ RoutingSession::State RoutingSession::OnLocationPositionChanged(GpsInfo const & 
 
 void RoutingSession::GetRouteFollowingInfo(FollowingInfo & info) const
 {
-  auto formatDistFn = [](double dist, string & value, string & suffix)
+  auto formatDistFn = [](double dist, std::string & value, std::string & suffix)
   {
     /// @todo Make better formatting of distance and units.
     UNUSED_VALUE(measurement_utils::FormatDistance(dist, value));
 
     size_t const delim = value.find(' ');
-    ASSERT(delim != string::npos, ());
+    ASSERT(delim != std::string::npos, ());
     suffix = value.substr(delim + 1);
     value.erase(delim);
   };
@@ -372,7 +372,7 @@ double RoutingSession::GetCompletionPercent() const
   return percent;
 }
 
-void RoutingSession::GenerateTurnNotifications(vector<string> & turnNotifications)
+void RoutingSession::GenerateTurnNotifications(vector<std::string> & turnNotifications)
 {
   turnNotifications.clear();
 
@@ -419,12 +419,12 @@ void RoutingSession::AssignRoute(Route & route, IRouter::ResultCode e)
   m_lastFoundCamera = SpeedCameraRestriction();
 }
 
-void RoutingSession::SetRouter(unique_ptr<IRouter> && router,
-                               unique_ptr<OnlineAbsentCountriesFetcher> && fetcher)
+void RoutingSession::SetRouter(std::unique_ptr<IRouter> && router,
+                               std::unique_ptr<OnlineAbsentCountriesFetcher> && fetcher)
 {
   ASSERT(m_router != nullptr, ());
   Reset();
-  m_router->SetRouter(move(router), move(fetcher));
+  m_router->SetRouter(std::move(router), std::move(fetcher));
 }
 
 void RoutingSession::MatchLocationToRoute(location::GpsInfo & location,
@@ -535,7 +535,7 @@ void RoutingSession::SetTurnNotificationsUnits(measurement_utils::Units const un
   m_turnNotificationsMgr.SetLengthUnits(units);
 }
 
-void RoutingSession::SetTurnNotificationsLocale(string const & locale)
+void RoutingSession::SetTurnNotificationsLocale(std::string const & locale)
 {
   LOG(LINFO, ("The language for turn notifications is", locale));
   threads::MutexGuard guard(m_routingSessionMutex);
@@ -543,7 +543,7 @@ void RoutingSession::SetTurnNotificationsLocale(string const & locale)
   m_turnNotificationsMgr.SetLocale(locale);
 }
 
-string RoutingSession::GetTurnNotificationsLocale() const
+std::string RoutingSession::GetTurnNotificationsLocale() const
 {
   threads::MutexGuard guard(m_routingSessionMutex);
   UNUSED_VALUE(guard);
@@ -656,7 +656,7 @@ void RoutingSession::OnTrafficInfoAdded(TrafficInfo && info)
   {
     threads::MutexGuard guard(m_routingSessionMutex);
     UNUSED_VALUE(guard);
-    Set(info.GetMwmId(), move(coloring));
+    Set(info.GetMwmId(), std::move(coloring));
   }
   RebuildRouteOnTrafficUpdate();
 }
@@ -684,7 +684,7 @@ void RoutingSession::CopyTraffic(std::map<MwmSet::MwmId, std::shared_ptr<traffic
   TrafficCache::CopyTraffic(trafficColoring);
 }
 
-string DebugPrint(RoutingSession::State state)
+std::string DebugPrint(RoutingSession::State state)
 {
   switch (state)
   {

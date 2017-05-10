@@ -2,7 +2,7 @@
 
 #include "drape/texture.hpp"
 
-#include "std/string.hpp"
+#include <string>
 
 namespace dp
 {
@@ -16,20 +16,20 @@ public:
     ResourceType GetType() const override { return ResourceType::Static; }
   };
 
-  StaticTexture(string const & textureName, string const & skinPathName,
+  StaticTexture(std::string const & textureName, std::string const & skinPathName,
                 ref_ptr<HWTextureAllocator> allocator);
 
   ref_ptr<ResourceInfo> FindResource(Key const & key, bool & newResource) override;
 
-  void Invalidate(string const & skinPathName, ref_ptr<HWTextureAllocator> allocator);
+  void Invalidate(std::string const & skinPathName, ref_ptr<HWTextureAllocator> allocator);
 
   bool IsLoadingCorrect() const { return m_isLoadingCorrect; }
 
 private:
   void Fail();
-  bool Load(string const & skinPathName, ref_ptr<HWTextureAllocator> allocator);
+  bool Load(std::string const & skinPathName, ref_ptr<HWTextureAllocator> allocator);
 
-  string m_textureName;
+  std::string m_textureName;
   drape_ptr<Texture::ResourceInfo> m_info;
 
   bool m_isLoadingCorrect;

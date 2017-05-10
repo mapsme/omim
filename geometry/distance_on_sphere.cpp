@@ -1,6 +1,6 @@
 #include "geometry/distance_on_sphere.hpp"
 #include "base/math.hpp"
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 double ms::DistanceOnSphere(double lat1Deg, double lon1Deg, double lat2Deg, double lon2Deg)
 {
@@ -9,7 +9,7 @@ double ms::DistanceOnSphere(double lat1Deg, double lon1Deg, double lat2Deg, doub
   double const dlat = sin((lat2 - lat1) * 0.5);
   double const dlon = sin((my::DegToRad(lon2Deg) - my::DegToRad(lon1Deg)) * 0.5);
   double const y = dlat * dlat + dlon * dlon * cos(lat1) * cos(lat2);
-  return 2.0 * atan2(sqrt(y), sqrt(max(0.0, 1.0 - y)));
+  return 2.0 * atan2(sqrt(y), sqrt(std::max(0.0, 1.0 - y)));
 }
 
 double ms::AreaOnSphere(ms::LatLon const & ll1, ms::LatLon const & ll2, ms::LatLon const & ll3)

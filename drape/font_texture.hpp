@@ -5,13 +5,13 @@
 #include "drape/glyph_manager.hpp"
 #include "drape/dynamic_texture.hpp"
 
-#include "std/atomic.hpp"
-#include "std/condition_variable.hpp"
-#include "std/list.hpp"
-#include "std/map.hpp"
-#include "std/vector.hpp"
-#include "std/string.hpp"
-#include "std/thread.hpp"
+#include <atomic>
+#include <condition_variable>
+#include <list>
+#include <map>
+#include <vector>
+#include <string>
+#include <thread>
 
 namespace dp
 {
@@ -76,7 +76,7 @@ private:
 class GlyphGenerator
 {
 public:
-  using TCompletionHandler = function<void(m2::RectU const &, GlyphManager::Glyph const &)>;
+  using TCompletionHandler = std::function<void(m2::RectU const &, GlyphManager::Glyph const &)>;
 
   struct GlyphGenerationData
   {
@@ -97,18 +97,18 @@ public:
 
 private:
   static void Routine(GlyphGenerator * generator);
-  void WaitForGlyph(list<GlyphGenerationData> & queue);
+  void WaitForGlyph(std::list<GlyphGenerationData> & queue);
 
   ref_ptr<GlyphManager> m_mng;
   TCompletionHandler m_completionHandler;
 
-  list<GlyphGenerationData> m_queue;
-  mutable mutex m_queueLock;
+  std::list<GlyphGenerationData> m_queue;
+  mutable std::mutex m_queueLock;
 
-  atomic<bool> m_isRunning;
-  condition_variable m_condition;
+  std::atomic<bool> m_isRunning;
+  std::condition_variable m_condition;
   bool m_isSuspended;
-  thread m_thread;
+  std::thread m_thread;
 };
 
 class GlyphIndex
@@ -135,11 +135,11 @@ private:
 
   GlyphPacker m_packer;
   ref_ptr<GlyphManager> m_mng;
-  unique_ptr<GlyphGenerator> m_generator;
+  std::unique_ptr<GlyphGenerator> m_generator;
 
-  typedef map<GlyphKey, GlyphInfo> TResourceMapping;
-  typedef pair<m2::RectU, GlyphManager::Glyph> TPendingNode;
-  typedef vector<TPendingNode> TPendingNodes;
+  typedef std::map<GlyphKey, GlyphInfo> TResourceMapping;
+  typedef std::pair<m2::RectU, GlyphManager::Glyph> TPendingNode;
+  typedef std::vector<TPendingNode> TPendingNodes;
 
   TResourceMapping m_index;
   TPendingNodes m_pendingNodes;
@@ -158,7 +158,7 @@ public:
     params.m_format = TextureFormat::ALPHA;
     params.m_filter = gl_const::GLLinear;
 
-    vector<uint8_t> initData(params.m_size.x * params.m_size.y, 0);
+    std::vector<uint8_t> initData(params.m_size.x * params.m_size.y, 0);
     TBase::Init(allocator, make_ref(&m_index), params, make_ref(initData.data()));
   }
 

@@ -4,11 +4,11 @@
 
 #include "base/string_utils.hpp"
 
-#include "std/exception.hpp"
-#include "std/fstream.hpp"
-#include "std/iomanip.hpp"
-#include "std/iostream.hpp"
-#include "std/string.hpp"
+#include <exception>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <string>
 
 #include "3party/gflags/src/gflags/gflags.h"
 
@@ -34,25 +34,25 @@ struct Place
   int height;
 };
 
-Place ParsePlace(string const & src)
+Place ParsePlace(std::string const & src)
 {
   Place p;
   try
   {
     strings::SimpleTokenizer token(src, ";");
-    p.lat = stod(*token);
-    p.lon = stod(*(++token));
-    p.zoom = static_cast<int>(stoi(*(++token)));
+    p.lat = std::stod(*token);
+    p.lon = std::stod(*(++token));
+    p.zoom = static_cast<int>(std::stoi(*(++token)));
   }
-  catch (exception & e)
+  catch (std::exception & e)
   {
-    cerr << "Error in [" << src << "]: " << e.what() << endl;
+    std::cerr << "Error in [" << src << "]: " << e.what() << endl;
     exit(1);
   }
   return p;
 }
 
-void RenderPlace(Framework & framework, Place const & place, string const & filename)
+void RenderPlace(Framework & framework, Place const & place, std::string const & filename)
 {
   df::watch::FrameImage frame;
   df::watch::FrameSymbols sym;
@@ -65,16 +65,16 @@ void RenderPlace(Framework & framework, Place const & place, string const & file
   framework.DrawWatchFrame(MercatorBounds::FromLatLon(place.lat, place.lon), place.zoom - kMagicBaseScale,
                            place.width, place.height, sym, frame);
 
-  ofstream file(filename.c_str());
+  std::ofstream file(filename.c_str());
   file.write(reinterpret_cast<char const *>(frame.m_data.data()), frame.m_data.size());
   file.close();
 }
 
-string FilenameSeq(string const & path)
+std::string FilenameSeq(std::string const & path)
 {
   static size_t counter = 0;
   stringstream filename;
-  filename << path << "mapshot" << setw(6) << setfill('0') << counter++ << ".png";
+  filename << path << "mapshot" << std::setw(6) << std::setfill('0') << counter++ << ".png";
   return filename.str();
 }
 }  // namespace
@@ -87,7 +87,7 @@ int main(int argc, char * argv[])
 
   if (!FLAGS_c && FLAGS_place.empty())
   {
-    cerr << "Either -c or -place must be set" << endl;
+    std::cerr << "Either -c or -place must be set" << endl;
     return 1;
   }
 
@@ -101,14 +101,14 @@ int main(int argc, char * argv[])
   {
     Framework f;
 
-    auto processPlace = [&](string const & place)
+    auto processPlace = [&](std::string const & place)
     {
       Place p = ParsePlace(place);
       p.width = FLAGS_width;
       p.height = FLAGS_height;
-      string const & filename = FilenameSeq(FLAGS_outpath);
+      std::string const & filename = FilenameSeq(FLAGS_outpath);
       RenderPlace(f, p, filename);
-      cout << "Rendering " << place << " into " << filename << " is finished." << endl;
+      std::cout << "Rendering " << place << " into " << filename << " is finished." << endl;
     };
 
     // This magic constant was determined in several attempts.
@@ -121,16 +121,16 @@ int main(int argc, char * argv[])
 
     if (FLAGS_c)
     {
-      for (string line; getline(cin, line);)
+      for (std::string line; std::getline(std::cin, line);)
         processPlace(line);
     }
 
     f.ReleaseWatchFrameRenderer();
     return 0;
   }
-  catch (exception & e)
+  catch (std::exception & e)
   {
-    cerr << e.what() << endl;
+    std::cerr << e.what() << endl;
   }
   return 1;
 }

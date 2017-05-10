@@ -5,14 +5,14 @@
 
 #include "base/assert.hpp"
 
-#include "std/sstream.hpp"
+#include <sstream>
 
 namespace
 {
 /// \returns file name (m_name) with extension dependent on the file param.
 /// The extension could be .mwm.routing or just .mwm.
 /// The method is used for old (two components) mwm support.
-string GetNameWithExt(string const & countryFile, MapOptions file)
+std::string GetNameWithExt(std::string const & countryFile, MapOptions file)
 {
   switch (file)
   {
@@ -22,7 +22,7 @@ string GetNameWithExt(string const & countryFile, MapOptions file)
       return countryFile + DATA_FILE_EXTENSION + ROUTING_FILE_EXTENSION;
     default:
       ASSERT(false, ("Can't get name for:", file));
-      return string();
+      return std::string();
   }
 }
 } //  namespace
@@ -31,9 +31,9 @@ namespace platform
 {
 CountryFile::CountryFile() : m_mapSize(0), m_routingSize(0) {}
 
-CountryFile::CountryFile(string const & name) : m_name(name), m_mapSize(0), m_routingSize(0) {}
+CountryFile::CountryFile(std::string const & name) : m_name(name), m_mapSize(0), m_routingSize(0) {}
 
-string const & CountryFile::GetName() const { return m_name; }
+std::string const & CountryFile::GetName() const { return m_name; }
 
 void CountryFile::SetRemoteSizes(TMwmSize mapSize, TMwmSize routingSize)
 {
@@ -52,15 +52,15 @@ TMwmSize CountryFile::GetRemoteSize(MapOptions filesMask) const
 }
 
 
-string GetFileName(string const & countryFile, MapOptions opt, int64_t version)
+std::string GetFileName(std::string const & countryFile, MapOptions opt, int64_t version)
 {
   return version::IsSingleMwm(version) ? GetNameWithExt(countryFile, MapOptions::Map)
                                        : GetNameWithExt(countryFile, opt);
 }
 
-string DebugPrint(CountryFile const & file)
+std::string DebugPrint(CountryFile const & file)
 {
-  ostringstream os;
+  std::ostringstream os;
   os << "CountryFile [" << file.m_name << "]";
   return os.str();
 }

@@ -6,13 +6,13 @@
 
 #include "base/logging.hpp"
 
-#include "std/sstream.hpp"
+#include <sstream>
 
 namespace platform
 {
 namespace tests_support
 {
-ScopedDir::ScopedDir(string const & relativePath)
+ScopedDir::ScopedDir(std::string const & relativePath)
     : m_fullPath(my::JoinFoldersToPath(GetPlatform().WritableDir(), relativePath)),
       m_relativePath(relativePath),
       m_reset(false)
@@ -34,7 +34,7 @@ ScopedDir::ScopedDir(string const & relativePath)
   }
 }
 
-ScopedDir::ScopedDir(ScopedDir const & parent, string const & name)
+ScopedDir::ScopedDir(ScopedDir const & parent, std::string const & name)
   : ScopedDir(my::JoinFoldersToPath(parent.GetRelativePath(), name))
 {
 }
@@ -44,7 +44,7 @@ ScopedDir::~ScopedDir()
   if (m_reset)
     return;
 
-  string const fullPath = GetFullPath();
+  std::string const fullPath = GetFullPath();
   Platform::EError ret = Platform::RmDir(fullPath);
   switch (ret)
   {
@@ -62,9 +62,9 @@ ScopedDir::~ScopedDir()
   }
 }
 
-string DebugPrint(ScopedDir const & dir)
+std::string DebugPrint(ScopedDir const & dir)
 {
-  ostringstream os;
+  std::ostringstream os;
   os << "ScopedDir [" << dir.GetFullPath() << "]";
   return os.str();
 }

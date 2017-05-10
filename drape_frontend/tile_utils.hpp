@@ -2,13 +2,13 @@
 
 #include "drape_frontend/tile_key.hpp"
 
-#include "std/function.hpp"
-#include "std/set.hpp"
+#include <functional>
+#include <set>
 
 namespace df
 {
 
-using TTilesCollection = set<TileKey>;
+using TTilesCollection = std::set<TileKey>;
 
 struct CoverageResult
 {
@@ -21,7 +21,7 @@ struct CoverageResult
 /// This function determines the tiles coverage in specified zoom level.
 /// Each tile can be processed in processTile callback.
 CoverageResult CalcTilesCoverage(m2::RectD const & rect, int targetZoom,
-                                 function<void(int, int)> const & processTile);
+                                 std::function<void(int, int)> const & processTile);
 
 /// This function checks if tileKey1 and tileKey2 are neighbours
 bool IsNeighbours(TileKey const & tileKey1, TileKey const & tileKey2);

@@ -654,38 +654,38 @@ PedestrianModel const & PedestrianModel::AllLimitsInstance()
 
 PedestrianModelFactory::PedestrianModelFactory()
 {
-  m_models[string()] = make_shared<PedestrianModel>(g_pedestrianLimitsDefault);
-  m_models["Australia"] = make_shared<PedestrianModel>(g_pedestrianLimitsAustralia);
-  m_models["Austria"] = make_shared<PedestrianModel>(g_pedestrianLimitsAustria);
-  m_models["Belarus"] = make_shared<PedestrianModel>(g_pedestrianLimitsBelarus);
-  m_models["Belgium"] = make_shared<PedestrianModel>(g_pedestrianLimitsBelgium);
-  m_models["Brazil"] = make_shared<PedestrianModel>(g_pedestrianLimitsBrazil);
-  m_models["Denmark"] = make_shared<PedestrianModel>(g_pedestrianLimitsDenmark);
-  m_models["France"] = make_shared<PedestrianModel>(g_pedestrianLimitsFrance);
-  m_models["Finland"] = make_shared<PedestrianModel>(g_pedestrianLimitsFinland);
-  m_models["Germany"] = make_shared<PedestrianModel>(g_pedestrianLimitsGermany);
-  m_models["Hungary"] = make_shared<PedestrianModel>(g_pedestrianLimitsHungary);
-  m_models["Netherlands"] = make_shared<PedestrianModel>(g_pedestrianLimitsNetherlands);
-  m_models["Norway"] = make_shared<PedestrianModel>(g_pedestrianLimitsNorway);
-  m_models["Poland"] = make_shared<PedestrianModel>(g_pedestrianLimitsPoland);
-  m_models["Romania"] = make_shared<PedestrianModel>(g_pedestrianLimitsRomania);
-  m_models["Russia"] = make_shared<PedestrianModel>(g_pedestrianLimitsRussia);
-  m_models["Slovakia"] = make_shared<PedestrianModel>(g_pedestrianLimitsSlovakia);
-  m_models["Switzerland"] = make_shared<PedestrianModel>(g_pedestrianLimitsSwitzerland);
-  m_models["Turkey"] = make_shared<PedestrianModel>(g_pedestrianLimitsTurkey);
-  m_models["Ukraine"] = make_shared<PedestrianModel>(g_pedestrianLimitsUkraine);
-  m_models["UK"] = make_shared<PedestrianModel>(g_pedestrianLimitsUK);
-  m_models["US"] = make_shared<PedestrianModel>(g_pedestrianLimitsUS);
+  m_models[string()] = std::make_shared<PedestrianModel>(g_pedestrianLimitsDefault);
+  m_models["Australia"] = std::make_shared<PedestrianModel>(g_pedestrianLimitsAustralia);
+  m_models["Austria"] = std::make_shared<PedestrianModel>(g_pedestrianLimitsAustria);
+  m_models["Belarus"] = std::make_shared<PedestrianModel>(g_pedestrianLimitsBelarus);
+  m_models["Belgium"] = std::make_shared<PedestrianModel>(g_pedestrianLimitsBelgium);
+  m_models["Brazil"] = std::make_shared<PedestrianModel>(g_pedestrianLimitsBrazil);
+  m_models["Denmark"] = std::make_shared<PedestrianModel>(g_pedestrianLimitsDenmark);
+  m_models["France"] = std::make_shared<PedestrianModel>(g_pedestrianLimitsFrance);
+  m_models["Finland"] = std::make_shared<PedestrianModel>(g_pedestrianLimitsFinland);
+  m_models["Germany"] = std::make_shared<PedestrianModel>(g_pedestrianLimitsGermany);
+  m_models["Hungary"] = std::make_shared<PedestrianModel>(g_pedestrianLimitsHungary);
+  m_models["Netherlands"] = std::make_shared<PedestrianModel>(g_pedestrianLimitsNetherlands);
+  m_models["Norway"] = std::make_shared<PedestrianModel>(g_pedestrianLimitsNorway);
+  m_models["Poland"] = std::make_shared<PedestrianModel>(g_pedestrianLimitsPoland);
+  m_models["Romania"] = std::make_shared<PedestrianModel>(g_pedestrianLimitsRomania);
+  m_models["Russia"] = std::make_shared<PedestrianModel>(g_pedestrianLimitsRussia);
+  m_models["Slovakia"] = std::make_shared<PedestrianModel>(g_pedestrianLimitsSlovakia);
+  m_models["Switzerland"] = std::make_shared<PedestrianModel>(g_pedestrianLimitsSwitzerland);
+  m_models["Turkey"] = std::make_shared<PedestrianModel>(g_pedestrianLimitsTurkey);
+  m_models["Ukraine"] = std::make_shared<PedestrianModel>(g_pedestrianLimitsUkraine);
+  m_models["UK"] = std::make_shared<PedestrianModel>(g_pedestrianLimitsUK);
+  m_models["US"] = std::make_shared<PedestrianModel>(g_pedestrianLimitsUS);
 }
 
 shared_ptr<IVehicleModel> PedestrianModelFactory::GetVehicleModel() const
 {
-  auto const itr = m_models.find(string());
+  auto const itr = m_models.find(std::string());
   ASSERT(itr != m_models.end(), ());
   return itr->second;
 }
 
-shared_ptr<IVehicleModel> PedestrianModelFactory::GetVehicleModelForCountry(string const & country) const
+shared_ptr<IVehicleModel> PedestrianModelFactory::GetVehicleModelForCountry(std::string const & country) const
 {
   auto const itr = m_models.find(country);
   if (itr != m_models.end())

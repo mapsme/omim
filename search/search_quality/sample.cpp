@@ -59,7 +59,7 @@ Sample::Result Sample::Result::Build(FeatureType & ft, Relevance relevance)
   Sample::Result r;
   r.m_pos = feature::GetCenter(ft);
   {
-    string name;
+    std::string name;
     ft.GetReadableName(name);
     r.m_name = strings::MakeUniString(name);
   }
@@ -89,7 +89,7 @@ bool Sample::Result::operator==(Sample::Result const & rhs) const
          Equal(m_types, rhs.m_types) && m_relevance == rhs.m_relevance;
 }
 
-bool Sample::DeserializeFromJSON(string const & jsonStr)
+bool Sample::DeserializeFromJSON(std::string const & jsonStr)
 {
   try
   {
@@ -129,13 +129,13 @@ bool Sample::operator<(Sample const & rhs) const
 bool Sample::operator==(Sample const & rhs) const { return !(*this < rhs) && !(rhs < *this); }
 
 // static
-bool Sample::DeserializeFromJSONLines(string const & lines, std::vector<Sample> & samples)
+bool Sample::DeserializeFromJSONLines(std::string const & lines, std::vector<Sample> & samples)
 {
   istringstream is(lines);
-  string line;
+  std::string line;
   vector<Sample> result;
 
-  while (getline(is, line))
+  while (std::getline(is, line))
   {
     if (line.empty())
       continue;
@@ -196,9 +196,9 @@ void Sample::FillSearchParams(search::SearchParams & params) const
   params.m_suggestsEnabled = false;
 }
 
-void FromJSONObject(json_t * root, string const & field, Sample::Result::Relevance & relevance)
+void FromJSONObject(json_t * root, std::string const & field, Sample::Result::Relevance & relevance)
 {
-  string r;
+  std::string r;
   FromJSONObject(root, field, r);
   if (r == "vital")
     relevance = search::Sample::Result::Relevance::Vital;
@@ -210,11 +210,11 @@ void FromJSONObject(json_t * root, string const & field, Sample::Result::Relevan
     CHECK(false, ("Unknown relevance:", r));
 }
 
-void ToJSONObject(json_t & root, string const & field, Sample::Result::Relevance relevance)
+void ToJSONObject(json_t & root, std::string const & field, Sample::Result::Relevance relevance)
 {
   using Relevance = Sample::Result::Relevance;
 
-  string r;
+  std::string r;
   switch (relevance)
   {
   case Relevance::Vital: r = "vital"; break;
@@ -245,7 +245,7 @@ my::JSONPtr ToJSON(Sample::Result const & result)
   return root;
 }
 
-string DebugPrint(Sample::Result::Relevance r)
+std::string DebugPrint(Sample::Result::Relevance r)
 {
   switch (r)
   {
@@ -256,7 +256,7 @@ string DebugPrint(Sample::Result::Relevance r)
   return "Unknown";
 }
 
-string DebugPrint(Sample::Result const & r)
+std::string DebugPrint(Sample::Result const & r)
 {
   ostringstream oss;
   oss << "relevance: " << DebugPrint(r.m_relevance) << " ";
@@ -274,7 +274,7 @@ string DebugPrint(Sample::Result const & r)
   return oss.str();
 }
 
-string DebugPrint(Sample const & s)
+std::string DebugPrint(Sample const & s)
 {
   ostringstream oss;
   oss << "[";

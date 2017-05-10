@@ -14,25 +14,25 @@
 
 #include "storage/storage.hpp"
 
-#include "std/unique_ptr.hpp"
+#include <memory>
 
 using namespace platform;
 using namespace storage;
 
 namespace
 {
-string const kCountriesTxtFile = COUNTRIES_FILE;
+std::string const kCountriesTxtFile = COUNTRIES_FILE;
 
-string const kMwmVersion1 = "160316";
+std::string const kMwmVersion1 = "160316";
 size_t const kCountriesTxtFileSize1 = 353091;
 
-string const kMwmVersion2 = "160317";
+std::string const kMwmVersion2 = "160317";
 size_t const kCountriesTxtFileSize2 = 348972;
 
-string const kGroupCountryId = "Belarus";
+std::string const kGroupCountryId = "Belarus";
 
-bool DownloadFile(string const & url,
-                  string const & filePath,
+bool DownloadFile(std::string const & url,
+                  std::string const & filePath,
                   size_t fileSize)
 {
   using namespace downloader;
@@ -40,7 +40,7 @@ bool DownloadFile(string const & url,
   HttpRequest::StatusT httpStatus;
   bool finished = false;
 
-  unique_ptr<HttpRequest> request(HttpRequest::GetFile({url}, filePath, fileSize,
+  std::unique_ptr<HttpRequest> request(HttpRequest::GetFile({url}, filePath, fileSize,
                                   [&](HttpRequest & request)
   {
     HttpRequest::StatusT const s = request.Status();
@@ -57,17 +57,17 @@ bool DownloadFile(string const & url,
   return httpStatus == HttpRequest::ECompleted;
 }
 
-string GetCountriesTxtWebUrl(string const version)
+std::string GetCountriesTxtWebUrl(std::string const version)
 {
   return kTestWebServer + "/direct/" + version + "/" + kCountriesTxtFile;
 }
 
-string GetCountriesTxtFilePath()
+std::string GetCountriesTxtFilePath()
 {
   return my::JoinFoldersToPath(GetPlatform().WritableDir(), kCountriesTxtFile);
 }
 
-string GetMwmFilePath(string const & version, TCountryId const & countryId)
+std::string GetMwmFilePath(std::string const & version, TCountryId const & countryId)
 {
   return my::JoinFoldersToPath({GetPlatform().WritableDir(), version},
                                countryId + DATA_FILE_EXTENSION);
@@ -89,7 +89,7 @@ UNIT_TEST(SmallMwms_Update_Test)
   {
     Framework f;
     auto & storage = f.GetStorage();
-    string const version = strings::to_string(storage.GetCurrentDataVersion());
+    std::string const version = strings::to_string(storage.GetCurrentDataVersion());
     TEST(version::IsSingleMwm(storage.GetCurrentDataVersion()), ());
     TEST_EQUAL(version, kMwmVersion1, ());
     auto onChangeCountryFn = [&](TCountryId const & countryId)
@@ -115,7 +115,7 @@ UNIT_TEST(SmallMwms_Update_Test)
     // Check mwm files for version 1 are present
     for (auto const & child : children)
     {
-      string const mwmFullPathV1 = GetMwmFilePath(kMwmVersion1, child);
+      std::string const mwmFullPathV1 = GetMwmFilePath(kMwmVersion1, child);
       TEST(platform.IsFileExistsByFullPath(mwmFullPathV1), ());
     }
   }
@@ -127,7 +127,7 @@ UNIT_TEST(SmallMwms_Update_Test)
   {
     Framework f;
     auto & storage = f.GetStorage();
-    string const version = strings::to_string(storage.GetCurrentDataVersion());
+    std::string const version = strings::to_string(storage.GetCurrentDataVersion());
     TEST(version::IsSingleMwm(storage.GetCurrentDataVersion()), ());
     TEST_EQUAL(version, kMwmVersion2, ());
     auto onChangeCountryFn = [&](TCountryId const & countryId)
@@ -157,7 +157,7 @@ UNIT_TEST(SmallMwms_Update_Test)
     // Check mwm files for version 1 are present
     for (auto const & child : children)
     {
-      string const mwmFullPathV1 = GetMwmFilePath(kMwmVersion1, child);
+      std::string const mwmFullPathV1 = GetMwmFilePath(kMwmVersion1, child);
       TEST(platform.IsFileExistsByFullPath(mwmFullPathV1), ());
     }
 
@@ -180,8 +180,8 @@ UNIT_TEST(SmallMwms_Update_Test)
     // Check mwm files for version 2 are present and not present for version 1
     for (auto const & child : children)
     {
-      string const mwmFullPathV1 = GetMwmFilePath(kMwmVersion1, child);
-      string const mwmFullPathV2 = GetMwmFilePath(kMwmVersion2, child);
+      std::string const mwmFullPathV1 = GetMwmFilePath(kMwmVersion1, child);
+      std::string const mwmFullPathV2 = GetMwmFilePath(kMwmVersion2, child);
       TEST(platform.IsFileExistsByFullPath(mwmFullPathV2), ());
       TEST(!platform.IsFileExistsByFullPath(mwmFullPathV1), ());
     }

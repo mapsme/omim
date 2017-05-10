@@ -1,8 +1,8 @@
 #pragma once
 #include "base/base.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/vector.hpp"
+#include <algorithm>
+#include <vector>
 
 
 namespace search
@@ -26,12 +26,12 @@ namespace impl
 }
 
 template <class T, class OutIterT, class CompT>
-void LongestSubsequence(vector<T> const & in, OutIterT out, CompT cmp)
+void LongestSubsequence(std::vector<T> const & in, OutIterT out, CompT cmp)
 {
   if (in.empty())
     return;
 
-  vector<impl::LS> v;
+  std::vector<impl::LS> v;
   v.reserve(in.size());
   for (size_t i = 0; i < in.size(); ++i)
     v.push_back(impl::LS(i));
@@ -54,7 +54,7 @@ void LongestSubsequence(vector<T> const & in, OutIterT out, CompT cmp)
         v[j].prevDecreasePos = i;
       }
 
-      size_t const m = max(v[j].increaseValue, v[j].decreaseValue);
+      size_t const m = std::max(v[j].increaseValue, v[j].decreaseValue);
       if (m > res)
       {
         res = m;

@@ -1,12 +1,12 @@
 #include "testing/testing.hpp"
 
-#include "std/string.hpp"
-#include "std/fstream.hpp"
-#include "std/vector.hpp"
+#include <string>
+#include <fstream>
+#include <vector>
 
-void loadFile(vector<unsigned char> & buffer, string const & filename) //designed for loading files from hard disk in an std::vector
+void loadFile(std::vector<unsigned char> & buffer, std::string const & filename) //designed for loading files from hard disk in an std::vector
 {
-  ifstream file(filename.c_str(), std::ios::in|std::ios::binary|std::ios::ate);
+  std::ifstream file(filename.c_str(), std::ios::in|std::ios::binary|std::ios::ate);
 
   // get filesize
   std::streamsize size = 0;

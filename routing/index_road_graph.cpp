@@ -5,7 +5,7 @@
 namespace routing
 {
 IndexRoadGraph::IndexRoadGraph(shared_ptr<NumMwmIds> numMwmIds, IndexGraphStarter & starter,
-                               vector<Segment> const & segments, vector<Junction> const & junctions,
+                               std::vector<Segment> const & segments, std::vector<Junction> const & junctions,
                                Index & index)
   : m_index(index), m_numMwmIds(numMwmIds), m_starter(starter)
 {
@@ -70,8 +70,8 @@ void IndexRoadGraph::GetEdges(Junction const & junction, bool isOutgoing, TEdgeV
 {
   edges.clear();
 
-  vector<SegmentEdge> segmentEdges;
-  vector<SegmentEdge> tmpEdges;
+  std::vector<SegmentEdge> segmentEdges;
+  std::vector<SegmentEdge> tmpEdges;
   for (Segment const & segment : GetSegments(junction, isOutgoing))
   {
     tmpEdges.clear();

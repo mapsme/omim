@@ -5,9 +5,9 @@
 
 #include "base/assert.hpp"
 
-#include "std/bind.hpp"
-#include "std/function.hpp"
-#include "std/map.hpp"
+#include <functional>
+#include <functional>
+#include <map>
 
 namespace df
 {
@@ -17,7 +17,7 @@ template <typename TKey, typename TKeyComparator>
 class BatchersPool
 {
 public:
-  using TFlushFn = function<void (TKey const & key, dp::GLState const & state, drape_ptr<dp::RenderBucket> && buffer)>;
+  using TFlushFn = std::function<void (TKey const & key, dp::GLState const & state, drape_ptr<dp::RenderBucket> && buffer)>;
 
   BatchersPool(int initBatchersCount, TFlushFn const & flushFn,
                uint32_t indexBufferSize, uint32_t vertexBufferSize)
@@ -47,7 +47,7 @@ public:
     }
     dp::Batcher * batcher = m_pool.Get();
     m_batchers.insert(make_pair(key, make_pair(batcher, 1)));
-    batcher->StartSession(bind(m_flushFn, key, _1, _2));
+    batcher->StartSession(std::bind(m_flushFn, key, std::placeholders::_1, std::placeholders::_2));
   }
 
   ref_ptr<dp::Batcher> GetBatcher(TKey const & key)
@@ -73,7 +73,7 @@ public:
 
 private:
   using TBatcherPair = pair<dp::Batcher *, int>;
-  using TBatcherMap = map<TKey, TBatcherPair, TKeyComparator>;
+  using TBatcherMap = std::map<TKey, TBatcherPair, TKeyComparator>;
   TFlushFn m_flushFn;
 
   ObjectPool<dp::Batcher, dp::BatcherFactory> m_pool;

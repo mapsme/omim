@@ -7,9 +7,9 @@
 
 #include "base/string_utils.hpp"
 
-#include "std/ctime.hpp"
-#include "std/iostream.hpp"
-#include "std/vector.hpp"
+#include <ctime>
+#include <iostream>
+#include <vector>
 
 #include "3party/pugixml/src/pugixml.hpp"
 
@@ -40,11 +40,11 @@ public:
     Way
   };
 
-  using TMercatorGeometry = vector<m2::PointD>;
+  using TMercatorGeometry = std::vector<m2::PointD>;
 
   /// Creates empty node or way.
   XMLFeature(Type const type);
-  XMLFeature(string const & xml);
+  XMLFeature(std::string const & xml);
   XMLFeature(pugi::xml_document const & xml);
   XMLFeature(pugi::xml_node const & xml);
   XMLFeature(XMLFeature const & feature);
@@ -52,16 +52,16 @@ public:
   // Strings comparison does not work if tags order is different but tags are equal.
   bool operator==(XMLFeature const & other) const;
   /// @returns nodes and ways from osmXml. Vector can be empty.
-  static vector<XMLFeature> FromOSM(string const & osmXml);
+  static std::vector<XMLFeature> FromOSM(std::string const & osmXml);
 
-  void Save(ostream & ost) const;
-  string ToOSMString() const;
+  void Save(std::ostream & ost) const;
+  std::string ToOSMString() const;
 
   /// Tags from featureWithChanges are applied to this(osm) feature.
   void ApplyPatch(XMLFeature const & featureWithChanges);
 
   Type GetType() const;
-  string GetTypeString() const;
+  std::string GetTypeString() const;
 
   /// @returns true only if it is a way and it is closed (area).
   bool IsArea() const;
@@ -96,8 +96,8 @@ public:
     SetGeometry(begin(geometry), end(geometry));
   }
 
-  string GetName(string const & lang) const;
-  string GetName(uint8_t const langCode = StringUtf8Multilang::kDefaultCode) const;
+  std::string GetName(std::string const & lang) const;
+  std::string GetName(uint8_t const langCode = StringUtf8Multilang::kDefaultCode) const;
 
   template <typename TFunc>
   void ForEachName(TFunc && func) const
@@ -106,7 +106,7 @@ public:
     auto const tags = GetRootNode().select_nodes("tag");
     for (auto const & tag : tags)
     {
-      string const & key = tag.node().attribute("k").value();
+      std::string const & key = tag.node().attribute("k").value();
 
       if (strings::StartsWith(key, kLocalName))
         func(key.substr(kPrefixLen), tag.node().attribute("v").value());
@@ -115,12 +115,12 @@ public:
     }
   }
 
-  void SetName(string const & name);
-  void SetName(string const & lang, string const & name);
-  void SetName(uint8_t const langCode, string const & name);
+  void SetName(std::string const & name);
+  void SetName(std::string const & lang, std::string const & name);
+  void SetName(uint8_t const langCode, std::string const & name);
 
-  string GetHouse() const;
-  void SetHouse(string const & house);
+  std::string GetHouse() const;
+  void SetHouse(std::string const & house);
 
   /// Our and OSM modification time are equal.
   time_t GetModificationTime() const;
@@ -135,17 +135,17 @@ public:
   time_t GetUploadTime() const;
   void SetUploadTime(time_t const time);
 
-  string GetUploadStatus() const;
-  void SetUploadStatus(string const & status);
+  std::string GetUploadStatus() const;
+  void SetUploadStatus(std::string const & status);
 
-  string GetUploadError() const;
-  void SetUploadError(string const & error);
+  std::string GetUploadError() const;
+  void SetUploadError(std::string const & error);
   //@}
 
   bool HasAnyTags() const;
-  bool HasTag(string const & key) const;
-  bool HasAttribute(string const & key) const;
-  bool HasKey(string const & key) const;
+  bool HasTag(std::string const & key) const;
+  bool HasAttribute(std::string const & key) const;
+  bool HasKey(std::string const & key) const;
 
   template <typename TFunc>
   void ForEachTag(TFunc && func) const
@@ -154,11 +154,11 @@ public:
       func(tag.node().attribute("k").value(), tag.node().attribute("v").value());
   }
 
-  string GetTagValue(string const & key) const;
-  void SetTagValue(string const & key, string value);
+  std::string GetTagValue(std::string const & key) const;
+  void SetTagValue(std::string const & key, std::string value);
 
-  string GetAttribute(string const & key) const;
-  void SetAttribute(string const & key, string const & value);
+  std::string GetAttribute(std::string const & key) const;
+  void SetAttribute(std::string const & key, std::string const & value);
 
   bool AttachToParentNode(pugi::xml_node parent) const;
 
@@ -169,6 +169,6 @@ private:
   pugi::xml_document m_document;
 };
 
-string DebugPrint(XMLFeature const & feature);
-string DebugPrint(XMLFeature::Type const type);
+std::string DebugPrint(XMLFeature const & feature);
+std::string DebugPrint(XMLFeature::Type const type);
 } // namespace editor

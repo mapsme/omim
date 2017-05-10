@@ -5,7 +5,7 @@
 #include "geometry/mercator.hpp"
 #include "geometry/point2d.hpp"
 
-#include "std/cstdint.hpp"
+#include <cstdint>
 
 namespace openlr
 {

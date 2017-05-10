@@ -10,7 +10,7 @@
 #include "base/string_utils.hpp"
 
 #include "std/target_os.hpp"
-#include "std/thread.hpp"
+#include <thread>
 
 #include "private.h"
 
@@ -18,7 +18,7 @@
 
 namespace
 {
-bool IsSpecialDirName(string const & dirName)
+bool IsSpecialDirName(std::string const & dirName)
 {
   return dirName == "." || dirName == "..";
 }
@@ -51,7 +51,7 @@ Platform::EError Platform::ErrnoToError()
 }
 
 // static
-bool Platform::RmDirRecursively(string const & dirName)
+bool Platform::RmDirRecursively(std::string const & dirName)
 {
   if (dirName.empty() || IsSpecialDirName(dirName))
     return false;
@@ -60,9 +60,9 @@ bool Platform::RmDirRecursively(string const & dirName)
 
   FilesList allFiles;
   GetFilesByRegExp(dirName, ".*", allFiles);
-  for (string const & file : allFiles)
+  for (std::string const & file : allFiles)
   {
-    string const path = my::JoinFoldersToPath(dirName, file);
+    std::string const path = my::JoinFoldersToPath(dirName, file);
 
     EFileType type;
     if (GetFileType(path, type) != ERR_OK)
@@ -86,17 +86,17 @@ bool Platform::RmDirRecursively(string const & dirName)
   return res;
 }
 
-void Platform::SetSettingsDirForTests(string const & path)
+void Platform::SetSettingsDirForTests(std::string const & path)
 {
   m_settingsDir = my::AddSlashIfNeeded(path);
 }
 
-string Platform::ReadPathForFile(string const & file, string searchScope) const
+std::string Platform::ReadPathForFile(std::string const & file, std::string searchScope) const
 {
   if (searchScope.empty())
     searchScope = "wrf";
 
-  string fullPath;
+  std::string fullPath;
   for (size_t i = 0; i < searchScope.size(); ++i)
   {
     switch (searchScope[i])
@@ -111,22 +111,22 @@ string Platform::ReadPathForFile(string const & file, string searchScope) const
       return fullPath;
   }
 
-  string const possiblePaths = m_writableDir  + "\n" + m_resourcesDir + "\n" + m_settingsDir;
+  std::string const possiblePaths = m_writableDir  + "\n" + m_resourcesDir + "\n" + m_settingsDir;
   MYTHROW(FileAbsentException, ("File", file, "doesn't exist in the scope", searchScope,
                                 "Have been looking in:\n", possiblePaths));
 }
 
-string Platform::ResourcesMetaServerUrl() const
+std::string Platform::ResourcesMetaServerUrl() const
 {
   return RESOURCES_METASERVER_URL;
 }
 
-string Platform::MetaServerUrl() const
+std::string Platform::MetaServerUrl() const
 {
   return METASERVER_URL;
 }
 
-string Platform::DefaultUrlsJSON() const
+std::string Platform::DefaultUrlsJSON() const
 {
   return DEFAULT_URLS_JSON;
 }
@@ -153,7 +153,7 @@ void Platform::GetFontNames(FilesList & res) const
   LOG(LINFO, ("Available font files:", (res)));
 }
 
-void Platform::GetFilesByExt(string const & directory, string const & ext, FilesList & outFiles)
+void Platform::GetFilesByExt(std::string const & directory, std::string const & ext, FilesList & outFiles)
 {
   // Transform extension mask to regexp (.mwm -> \.mwm$)
   ASSERT ( !ext.empty(), () );
@@ -163,12 +163,12 @@ void Platform::GetFilesByExt(string const & directory, string const & ext, Files
 }
 
 // static
-void Platform::GetFilesByType(string const & directory, unsigned typeMask,
+void Platform::GetFilesByType(std::string const & directory, unsigned typeMask,
                               TFilesWithType & outFiles)
 {
   FilesList allFiles;
   GetFilesByRegExp(directory, ".*", allFiles);
-  for (string const & file : allFiles)
+  for (std::string const & file : allFiles)
   {
     EFileType type;
     if (GetFileType(my::JoinFoldersToPath(directory, file), type) != ERR_OK)
@@ -178,28 +178,28 @@ void Platform::GetFilesByType(string const & directory, unsigned typeMask,
   }
 }
 
-string Platform::DeviceName() const
+std::string Platform::DeviceName() const
 {
   return OMIM_OS_NAME;
 }
 
-void Platform::SetWritableDirForTests(string const & path)
+void Platform::SetWritableDirForTests(std::string const & path)
 {
   m_writableDir = my::AddSlashIfNeeded(path);
 }
 
-void Platform::SetResourceDir(string const & path)
+void Platform::SetResourceDir(std::string const & path)
 {
   m_resourcesDir = my::AddSlashIfNeeded(path);
 }
 
 unsigned Platform::CpuCores() const
 {
-  unsigned const cores = thread::hardware_concurrency();
+  unsigned const cores = std::thread::hardware_concurrency();
   return cores > 0 ? cores : 1;
 }
 
-string DebugPrint(Platform::EError err)
+std::string DebugPrint(Platform::EError err)
 {
   switch (err)
   {

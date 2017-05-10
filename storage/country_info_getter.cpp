@@ -17,15 +17,15 @@
 
 #include "3party/Alohalytics/src/alohalytics.h"
 
-#include "std/bind.hpp"
-#include "std/function.hpp"
-#include "std/limits.hpp"
+#include <functional>
+#include <functional>
+#include <limits>
 
 namespace storage
 {
 namespace
 {
-size_t const kInvalidId = numeric_limits<size_t>::max();
+size_t const kInvalidId = std::numeric_limits<size_t>::max();
 
 struct DoFreeCacheMemory
 {
@@ -120,7 +120,7 @@ void CountryInfoGetter::CalcUSALimitRect(m2::RectD rects[3]) const
   ForEachCountry("USA_", DoCalcUSA(rects));
 }
 
-m2::RectD CountryInfoGetter::CalcLimitRect(string const & prefix) const
+m2::RectD CountryInfoGetter::CalcLimitRect(std::string const & prefix) const
 {
   m2::RectD rect;
   ForEachCountry(prefix, [&rect](CountryDef const & c)
@@ -138,7 +138,7 @@ m2::RectD CountryInfoGetter::GetLimitRectForLeaf(TCountryId const & leafCountryI
   return m_countries[it->second].m_rect;
 }
 
-void CountryInfoGetter::GetMatchedRegions(string const & affiliation, TRegionIdSet & regions) const
+void CountryInfoGetter::GetMatchedRegions(std::string const & affiliation, TRegionIdSet & regions) const
 {
   CHECK(m_affiliations, ());
   auto it = m_affiliations->find(affiliation);
@@ -199,7 +199,7 @@ CountryInfoGetter::TRegionId CountryInfoGetter::FindFirstCountry(m2::PointD cons
 }
 
 template <typename ToDo>
-void CountryInfoGetter::ForEachCountry(string const & prefix, ToDo && toDo) const
+void CountryInfoGetter::ForEachCountry(std::string const & prefix, ToDo && toDo) const
 {
   for (auto const & country : m_countries)
   {
@@ -263,23 +263,23 @@ CountryInfoReader::CountryInfoReader(ModelReaderPtr polyR, ModelReaderPtr countr
   for (size_t i = 0; i < countrySz; ++i)
     m_countryIndex[m_countries[i].m_countryId] = i;
 
-  string buffer;
+  std::string buffer;
   countryR.ReadAsString(buffer);
   LoadCountryFile2CountryInfo(buffer, m_id2info, m_isSingleMwm);
 }
 
 void CountryInfoReader::ClearCachesImpl() const
 {
-  lock_guard<mutex> lock(m_cacheMutex);
+  std::lock_guard<std::mutex> lock(m_cacheMutex);
 
   m_cache.ForEachValue(DoFreeCacheMemory());
   m_cache.Reset();
 }
 
 template <typename TFn>
-typename result_of<TFn(vector<m2::RegionD>)>::type CountryInfoReader::WithRegion(size_t id, TFn && fn) const
+typename std::result_of<TFn(vector<m2::RegionD>)>::type CountryInfoReader::WithRegion(size_t id, TFn && fn) const
 {
-  lock_guard<mutex> lock(m_cacheMutex);
+  std::lock_guard<std::mutex> lock(m_cacheMutex);
 
   bool isFound = false;
   vector<m2::RegionD> & rgns = m_cache.Find(static_cast<uint32_t>(id), isFound);
@@ -374,11 +374,11 @@ CountryInfoGetterForTesting::CountryInfoGetterForTesting(vector<CountryDef> cons
 void CountryInfoGetterForTesting::AddCountry(CountryDef const & country)
 {
   m_countries.push_back(country);
-  string const & name = country.m_countryId;
+  std::string const & name = country.m_countryId;
   m_id2info[name].m_name = name;
 }
 
-void CountryInfoGetterForTesting::GetMatchedRegions(string const & affiliation,
+void CountryInfoGetterForTesting::GetMatchedRegions(std::string const & affiliation,
                                                     TRegionIdSet & regions) const
 {
   for (size_t i = 0; i < m_countries.size(); ++i)

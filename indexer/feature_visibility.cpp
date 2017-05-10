@@ -5,7 +5,7 @@
 
 #include "base/assert.hpp"
 
-#include "std/array.hpp"
+#include <array>
 
 
 template <class ToDo> typename ToDo::ResultType
@@ -39,11 +39,11 @@ ClassifObject const * Classificator::GetObject(uint32_t type) const
   return p;
 }
 
-string Classificator::GetFullObjectName(uint32_t type) const
+std::string Classificator::GetFullObjectName(uint32_t type) const
 {
   ClassifObject const * p = &m_root;
   uint8_t i = 0;
-  string s;
+  std::string s;
 
   // get the final ClassifObject
   uint8_t v;
@@ -98,10 +98,10 @@ pair<int, bool> GetDrawRule(TypesHolder const & types, int level,
   for (uint32_t t : types)
     (void)c.ProcessObjects(t, doRules);
 
-  return make_pair(types.GetGeoType(), types.Has(c.GetCoastType()));
+  return std::make_pair(types.GetGeoType(), types.Has(c.GetCoastType()));
 }
 
-void GetDrawRule(vector<uint32_t> const & types, int level, int geoType,
+void GetDrawRule(std::vector<uint32_t> const & types, int level, int geoType,
                  drule::KeysT & keys)
 
 {
@@ -263,7 +263,7 @@ bool IsDrawableAny(uint32_t type)
   return (TypeAlwaysExists(type) || classif().GetObject(type)->IsDrawableAny());
 }
 
-bool IsDrawableLike(vector<uint32_t> const & types, EGeomType geomType)
+bool IsDrawableLike(std::vector<uint32_t> const & types, EGeomType geomType)
 {
   Classificator const & c = classif();
 
@@ -309,7 +309,7 @@ bool IsDrawableForIndexClassifOnly(FeatureBase const & f, int level)
   return false;
 }
 
-bool RemoveNoDrawableTypes(vector<uint32_t> & types, EGeomType geomType, bool emptyName)
+bool RemoveNoDrawableTypes(std::vector<uint32_t> & types, EGeomType geomType, bool emptyName)
 {
   Classificator const & c = classif();
 
@@ -361,7 +361,7 @@ int GetMinDrawableScaleClassifOnly(FeatureBase const & f)
 
 namespace
 {
-  void AddRange(pair<int, int> & dest, pair<int, int> const & src)
+  void AddRange(std::pair<int, int> & dest, std::pair<int, int> const & src)
   {
     if (src.first != -1)
     {
@@ -378,7 +378,7 @@ namespace
 
   class DoGetScalesRange
   {
-    pair<int, int> m_scales;
+    std::pair<int, int> m_scales;
   public:
     DoGetScalesRange() : m_scales(1000, -1000) {}
     typedef bool ResultType;
@@ -391,9 +391,9 @@ namespace
       return false;
     }
 
-    pair<int, int> GetScale() const
+    std::pair<int, int> GetScale() const
     {
-      return (m_scales.first > m_scales.second ? make_pair(-1, -1) : m_scales);
+      return (m_scales.first > m_scales.second ? std::make_pair(-1, -1) : m_scales);
     }
   };
 }
@@ -407,12 +407,12 @@ pair<int, int> GetDrawableScaleRange(uint32_t type)
 
 pair<int, int> GetDrawableScaleRange(TypesHolder const & types)
 {
-  pair<int, int> res(1000, -1000);
+  std::pair<int, int> res(1000, -1000);
 
   for (uint32_t t : types)
     AddRange(res, GetDrawableScaleRange(t));
 
-  return (res.first > res.second ? make_pair(-1, -1) : res);
+  return (res.first > res.second ? std::make_pair(-1, -1) : res);
 }
 
 namespace
@@ -444,7 +444,7 @@ pair<int, int> GetDrawableScaleRangeForRules(TypesHolder const & types, int rule
   }
 
   if (lowL == -1)
-    return make_pair(-1, -1);
+    return std::make_pair(-1, -1);
 
   int highL = lowL;
   for (int level = upBound; level > lowL; --level)
@@ -456,7 +456,7 @@ pair<int, int> GetDrawableScaleRangeForRules(TypesHolder const & types, int rule
     }
   }
 
-  return make_pair(lowL, highL);
+  return std::make_pair(lowL, highL);
 }
 
 pair<int, int> GetDrawableScaleRangeForRules(FeatureBase const & f, int rules)
@@ -464,7 +464,7 @@ pair<int, int> GetDrawableScaleRangeForRules(FeatureBase const & f, int rules)
   return GetDrawableScaleRangeForRules(TypesHolder(f), rules);
 }
 
-TypeSetChecker::TypeSetChecker(initializer_list<char const *> const & lst)
+TypeSetChecker::TypeSetChecker(std::initializer_list<char const *> const & lst)
 {
   m_type = classif().GetTypeByPath(lst);
   m_level = lst.size();

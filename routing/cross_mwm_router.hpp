@@ -4,8 +4,8 @@
 #include "routing/router.hpp"
 #include "routing/routing_mapping.hpp"
 
-#include "std/string.hpp"
-#include "std/vector.hpp"
+#include <string>
+#include <vector>
 
 namespace routing
 {
@@ -26,12 +26,12 @@ struct RoutePathCross
   }
 };
 
-using TCheckedPath = vector<RoutePathCross>;
+using TCheckedPath = std::vector<RoutePathCross>;
 
 /*!
  * \brief CalculateCrossMwmPath function for calculating path through several maps.
- * \param startGraphNodes The vector of starting routing graph nodes.
- * \param finalGraphNodes The vector of final routing graph nodes.
+ * \param startGraphNodes The std::vector of starting routing graph nodes.
+ * \param finalGraphNodes The std::vector of final routing graph nodes.
  * \param route Storage for the result records about crossing maps.
  * \param indexManager Manager for getting indexes of new countries.
  * \param cost Found path cost.

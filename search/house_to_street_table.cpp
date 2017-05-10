@@ -33,7 +33,7 @@ public:
   }
 
 private:
-  unique_ptr<TVector> m_vector;
+  std::unique_ptr<TVector> m_vector;
 };
 
 class DummyTable : public HouseToStreetTable
@@ -49,7 +49,7 @@ unique_ptr<HouseToStreetTable> HouseToStreetTable::Load(MwmValue & value)
   version::MwmTraits traits(value.GetMwmVersion());
   auto const format = traits.GetHouseToStreetTableFormat();
 
-  unique_ptr<HouseToStreetTable> result;
+  std::unique_ptr<HouseToStreetTable> result;
 
   try
   {

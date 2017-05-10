@@ -26,7 +26,7 @@ struct BenchmarkHandle
   size_t m_regionsToDownloadCounter = 0;
 
 #ifdef DRAPE_MEASURER
-  std::vector<std::pair<string, df::DrapeMeasurer::DrapeStatistic>> m_drapeStatistic;
+  std::vector<std::pair<std::string, df::DrapeMeasurer::DrapeStatistic>> m_drapeStatistic;
 #endif
 };
 
@@ -87,7 +87,7 @@ void RunGraphicsBenchmark(Framework * framework)
 
   // Parse scenarios.
   std::vector<m2::PointD> points;
-  string const & result = request.ServerResponse();
+  std::string const & result = request.ServerResponse();
   try
   {
     my::Json root(result.c_str());
@@ -113,7 +113,7 @@ void RunGraphicsBenchmark(Framework * framework)
           auto stepElem = json_array_get(stepsNode, j);
           if (stepElem == nullptr)
             return;
-          string actionType;
+          std::string actionType;
           FromJSONObject(stepElem, "actionType", actionType);
           if (actionType == "waitForTime")
           {

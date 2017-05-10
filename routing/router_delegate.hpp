@@ -5,8 +5,8 @@
 #include "base/cancellable.hpp"
 #include "base/timer.hpp"
 
-#include "std/function.hpp"
-#include "std/mutex.hpp"
+#include <functional>
+#include <mutex>
 
 namespace routing
 {
@@ -30,8 +30,8 @@ private:
 class RouterDelegate : public TimeoutCancellable
 {
 public:
-  using TProgressCallback = function<void(float)>;
-  using TPointCheckCallback = function<void(m2::PointD const &)>;
+  using TProgressCallback = std::function<void(float)>;
+  using TPointCheckCallback = std::function<void(m2::PointD const &)>;
 
   RouterDelegate();
 
@@ -45,7 +45,7 @@ public:
   void Reset() override;
 
 private:
-  mutable mutex m_guard;
+  mutable std::mutex m_guard;
   TProgressCallback m_progressCallback;
   TPointCheckCallback m_pointCallback;
 };

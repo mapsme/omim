@@ -12,9 +12,9 @@
 
 #include "traffic/traffic_info.hpp"
 
-#include "std/function.hpp"
-#include "std/utility.hpp"
-#include "std/vector.hpp"
+#include <functional>
+#include <utility>
+#include <vector>
 
 struct PathData;
 class Index;
@@ -33,7 +33,7 @@ namespace turns
 /*!
  * \brief Returns a segment index by STL-like range [s, e) of segments indices for the passed node.
  */
-using TGetIndexFunction = function<size_t(pair<size_t, size_t>)>;
+using TGetIndexFunction = std::function<size_t(std::pair<size_t, size_t>)>;
 
 /*!
  * \brief Compute turn and time estimation structs for the abstract route result.
@@ -48,10 +48,10 @@ using TGetIndexFunction = function<size_t(pair<size_t, size_t>)>;
  */
 IRouter::ResultCode MakeTurnAnnotation(turns::IRoutingResult const & result,
                                        RouterDelegate const & delegate,
-                                       vector<Junction> & points,
+                                       std::vector<Junction> & points,
                                        Route::TTurns & turnsDir, Route::TTimes & times,
                                        Route::TStreets & streets,
-                                       vector<Segment> & trafficSegs);
+                                       std::vector<Segment> & trafficSegs);
 
 /*!
  * \brief The TurnInfo struct is a representation of a junction.
@@ -72,14 +72,14 @@ struct TurnInfo
 
 // Returns the distance in meractor units for the path of points for the range [startPointIndex, endPointIndex].
 double CalculateMercatorDistanceAlongPath(uint32_t startPointIndex, uint32_t endPointIndex,
-                                          vector<m2::PointD> const & points);
+                                          std::vector<m2::PointD> const & points);
 
 /*!
  * \brief Selects lanes which are recommended for an end user.
  */
 void SelectRecommendedLanes(Route::TTurns & turnsDir);
-void FixupTurns(vector<Junction> const & points, Route::TTurns & turnsDir);
-inline size_t GetFirstSegmentPointIndex(pair<size_t, size_t> const & p) { return p.first; }
+void FixupTurns(std::vector<Junction> const & points, Route::TTurns & turnsDir);
+inline size_t GetFirstSegmentPointIndex(std::pair<size_t, size_t> const & p) { return p.first; }
 
 TurnDirection InvertDirection(TurnDirection dir);
 
@@ -118,7 +118,7 @@ bool CheckRoundaboutExit(bool isIngoingEdgeRoundabout, bool isOutgoingEdgeRounda
  * - TurnDirection::StayOnRoundAbout if the ingoing edge and the outgoing edge belong to a
  * roundabout
  *   and there is a reasonalbe way to leave the junction besides the outgoing edge.
- *   This function does not return TurnDirection::StayOnRoundAbout for small ways to leave the
+ *   This std::function does not return TurnDirection::StayOnRoundAbout for small ways to leave the
  * roundabout.
  * - TurnDirection::NoTurn if the ingoing edge and the outgoing edge belong to a roundabout
  *   (a) and there is a single way (outgoing edge) to leave the junction.
@@ -139,7 +139,7 @@ void GetTurnDirection(IRoutingResult const & result, turns::TurnInfo & turnInfo,
  * \brief Finds an U-turn that starts from master segment and returns how many segments it lasts.
  * \returns an index in |segments| that has the opposite direction with master segment
  * (|segments[currentSegment - 1]|) and 0 if there is no UTurn.
- * \warning |currentSegment| must be greater than 0.
+ * \warning |currentSegment| must be std::greater than 0.
  */
 size_t CheckUTurnOnRoute(TUnpackedPathSegments const & segments,
                          size_t currentSegment, TurnItem & turn);

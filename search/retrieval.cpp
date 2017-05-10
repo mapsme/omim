@@ -27,7 +27,7 @@
 
 #include "base/checked_cast.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 using namespace strings;
 using osm::Editor;
@@ -75,8 +75,8 @@ public:
 
   bool ModifiedOrDeleted(uint32_t featureIndex) const
   {
-    return binary_search(m_deleted.begin(), m_deleted.end(), featureIndex) ||
-           binary_search(m_modified.begin(), m_modified.end(), featureIndex);
+    return std::binary_search(m_deleted.begin(), m_deleted.end(), featureIndex) ||
+           std::binary_search(m_modified.begin(), m_modified.end(), featureIndex);
   }
 
   template <typename Fn>
@@ -158,7 +158,7 @@ bool MatchFeatureByNameAndType(FeatureType const & ft, SearchTrieRequest<DFA> co
   feature::TypesHolder th(ft);
 
   bool matched = false;
-  ft.ForEachName([&](int8_t lang, string const & name)
+  ft.ForEachName([&](int8_t lang, std::string const & name)
   {
     if (name.empty() || !request.IsLangExist(lang))
       return true /* continue ForEachName */;
@@ -177,7 +177,7 @@ bool MatchFeatureByNameAndType(FeatureType const & ft, SearchTrieRequest<DFA> co
 
 bool MatchFeatureByPostcode(FeatureType const & ft, TokenSlice const & slice)
 {
-  string const postcode = ft.GetMetadata().Get(feature::Metadata::FMD_POSTCODE);
+  std::string const postcode = ft.GetMetadata().Get(feature::Metadata::FMD_POSTCODE);
   vector<UniString> tokens;
   NormalizeAndTokenizeString(postcode, tokens, Delimiters());
   if (slice.Size() > tokens.size())
@@ -292,7 +292,7 @@ template <typename T>
 struct RetrieveAddressFeaturesAdaptor
 {
   template <typename... Args>
-  unique_ptr<coding::CompressedBitVector> operator()(Args &&... args)
+  std::unique_ptr<coding::CompressedBitVector> operator()(Args &&... args)
   {
     return RetrieveAddressFeaturesImpl<T>(forward<Args>(args)...);
   }
@@ -302,7 +302,7 @@ template <typename T>
 struct RetrievePostcodeFeaturesAdaptor
 {
   template <typename... Args>
-  unique_ptr<coding::CompressedBitVector> operator()(Args &&... args)
+  std::unique_ptr<coding::CompressedBitVector> operator()(Args &&... args)
   {
     return RetrievePostcodeFeaturesImpl<T>(forward<Args>(args)...);
   }
@@ -312,7 +312,7 @@ template <template <typename> class T>
 struct Selector
 {
   template <typename... Args>
-  unique_ptr<coding::CompressedBitVector> operator()(MwmContext const & context, Args &&... args)
+  std::unique_ptr<coding::CompressedBitVector> operator()(MwmContext const & context, Args &&... args)
   {
     version::MwmTraits mwmTraits(context.m_value.GetMwmVersion());
 
@@ -328,7 +328,7 @@ struct Selector
       T<FeatureIndexValue> t;
       return t(context, forward<Args>(args)...);
     }
-    return unique_ptr<coding::CompressedBitVector>();
+    return std::unique_ptr<coding::CompressedBitVector>();
   }
 };
 }  // namespace

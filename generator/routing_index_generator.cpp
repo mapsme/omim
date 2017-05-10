@@ -45,7 +45,7 @@ namespace
 class VehicleMaskBuilder final
 {
 public:
-  explicit VehicleMaskBuilder(string const & country)
+  explicit VehicleMaskBuilder(std::string const & country)
     : m_pedestrianModel(PedestrianModelFactory().GetVehicleModelForCountry(country))
     , m_bicycleModel(BicycleModelFactory().GetVehicleModelForCountry(country))
     , m_carModel(CarModelFactory().GetVehicleModelForCountry(country))
@@ -90,9 +90,9 @@ private:
 class Processor final
 {
 public:
-  explicit Processor(string const & country) : m_maskBuilder(country) {}
+  explicit Processor(std::string const & country) : m_maskBuilder(country) {}
 
-  void ProcessAllFeatures(string const & filename)
+  void ProcessAllFeatures(std::string const & filename)
   {
     feature::ForEachFromDat(filename, bind(&Processor::ProcessFeature, this, _1, _2));
   }
@@ -209,13 +209,13 @@ double CalcDistanceAlongTheBorders(vector<m2::RegionD> const & borders,
   return distance;
 }
 
-void CalcCrossMwmTransitions(string const & path, string const & mwmFile, string const & country,
+void CalcCrossMwmTransitions(std::string const & path, std::string const & mwmFile, std::string const & country,
                              map<uint32_t, osm::Id> const & featureIdToOsmId,
                              vector<CrossMwmConnectorSerializer::Transition> & transitions,
                              CrossMwmConnectorPerVehicleType & connectors)
 {
   my::Timer timer;
-  string const polyFile = my::JoinPath(path, BORDERS_DIR, country + BORDERS_EXTENSION);
+  std::string const polyFile = my::JoinPath(path, BORDERS_DIR, country + BORDERS_EXTENSION);
   vector<m2::RegionD> borders;
   osm::LoadBorders(polyFile, borders);
 
@@ -275,7 +275,7 @@ void CalcCrossMwmTransitions(string const & path, string const & mwmFile, string
   }
 }
 
-void FillWeights(string const & path, string const & mwmFile, string const & country,
+void FillWeights(std::string const & path, std::string const & mwmFile, std::string const & country,
                  bool disableCrossMwmProgress, CrossMwmConnector & connector)
 {
   my::Timer timer;
@@ -339,7 +339,7 @@ void FillWeights(string const & path, string const & mwmFile, string const & cou
               foundCount, ", not found:", notFoundCount));
 }
 
-serial::CodingParams LoadCodingParams(string const & mwmFile)
+serial::CodingParams LoadCodingParams(std::string const & mwmFile)
 {
   DataHeader const dataHeader(mwmFile);
   return dataHeader.GetDefCodingParams();
@@ -348,7 +348,7 @@ serial::CodingParams LoadCodingParams(string const & mwmFile)
 
 namespace routing
 {
-bool BuildRoutingIndex(string const & filename, string const & country)
+bool BuildRoutingIndex(std::string const & filename, std::string const & country)
 {
   LOG(LINFO, ("Building routing index for", filename));
   try
@@ -377,8 +377,8 @@ bool BuildRoutingIndex(string const & filename, string const & country)
   }
 }
 
-bool BuildCrossMwmSection(string const & path, string const & mwmFile, string const & country,
-                          string const & osmToFeatureFile, bool disableCrossMwmProgress)
+bool BuildCrossMwmSection(std::string const & path, std::string const & mwmFile, std::string const & country,
+                          std::string const & osmToFeatureFile, bool disableCrossMwmProgress)
 {
   LOG(LINFO, ("Building cross mwm section for", country));
 

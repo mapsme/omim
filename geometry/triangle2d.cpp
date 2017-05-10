@@ -6,8 +6,8 @@
 
 #include "base/math.hpp"
 
-#include "std/chrono.hpp"
-#include "std/random.hpp"
+#include <chrono>
+#include <random>
 
 using namespace m2::robust;
 
@@ -43,7 +43,7 @@ bool IsPointStrictlyInsideTriangle(m2::PointD const & pt, m2::PointD const & p1,
           (s1 < 0.0 && s2 < 0.0 && s3 < 0.0));
 }
 
-bool IsPointInsideTriangles(m2::PointD const & pt, vector<m2::TriangleD> const & v)
+bool IsPointInsideTriangles(m2::PointD const & pt, std::vector<m2::TriangleD> const & v)
 {
   for (auto const & triangle : v)
   {
@@ -57,26 +57,26 @@ m2::PointD GetRandomPointInsideTriangle(m2::TriangleD const & t)
 {
   size_t kDistribMax = 1000;
 
-  auto const seed = static_cast<uint32_t>(system_clock::now().time_since_epoch().count());
-  default_random_engine engine(seed);
-  uniform_int_distribution<size_t> distrib(0, kDistribMax);
+  auto const seed = static_cast<uint32_t>(std::chrono::system_clock::now().time_since_epoch().count());
+  std::default_random_engine engine(seed);
+  std::uniform_int_distribution<size_t> distrib(0, kDistribMax);
   double const r1 = sqrt(static_cast<double>(distrib(engine)) / kDistribMax);
   double const r2 = static_cast<double>(distrib(engine)) / kDistribMax;
   return t.m_points[0] * (1.0 - r1) + t.m_points[1] * r1 * (1.0 - r2) + t.m_points[2] * r2 * r1;
 }
 
-m2::PointD GetRandomPointInsideTriangles(vector<m2::TriangleD> const & v)
+m2::PointD GetRandomPointInsideTriangles(std::vector<m2::TriangleD> const & v)
 {
   if (v.empty())
     return m2::PointD();
 
-  auto const seed = static_cast<uint32_t>(system_clock::now().time_since_epoch().count());
-  default_random_engine engine(seed);
-  uniform_int_distribution<size_t> distrib(0, v.size() - 1);
+  auto const seed = static_cast<uint32_t>(std::chrono::system_clock::now().time_since_epoch().count());
+  std::default_random_engine engine(seed);
+  std::uniform_int_distribution<size_t> distrib(0, v.size() - 1);
   return GetRandomPointInsideTriangle(v[distrib(engine)]);
 }
 
-m2::PointD ProjectPointToTriangles(m2::PointD const & pt, vector<m2::TriangleD> const & v)
+m2::PointD ProjectPointToTriangles(m2::PointD const & pt, std::vector<m2::TriangleD> const & v)
 {
   if (v.empty())
     return pt;
@@ -84,7 +84,7 @@ m2::PointD ProjectPointToTriangles(m2::PointD const & pt, vector<m2::TriangleD> 
   auto distToLine = m2::DistanceToLineSquare<m2::PointD>();
   int minT = -1;
   int minI = -1;
-  double minDist = numeric_limits<double>::max();
+  double minDist = std::numeric_limits<double>::max();
   for (int t = 0; t < static_cast<int>(v.size()); t++)
   {
     for (int i = 0; i < 3; i++)

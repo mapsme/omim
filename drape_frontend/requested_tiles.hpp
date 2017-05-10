@@ -4,7 +4,7 @@
 
 #include "geometry/screenbase.hpp"
 
-#include "std/mutex.hpp"
+#include <mutex>
 
 namespace df
 {
@@ -24,7 +24,7 @@ private:
   ScreenBase m_screen;
   bool m_have3dBuildings = false;
   bool m_forceRequest = false;
-  mutable mutex m_mutex;
+  mutable std::mutex m_mutex;
 };
 
 } // namespace df

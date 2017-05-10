@@ -27,6 +27,8 @@
 
 using namespace std;
 
+using namespace std;
+
 namespace
 {
 using namespace routing;

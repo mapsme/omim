@@ -16,6 +16,8 @@
 #include "std/unique_ptr.hpp"
 #include "std/vector.hpp"
 
+using namespace std;
+
 namespace ads
 {
 struct Banner;

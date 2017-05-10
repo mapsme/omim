@@ -5,7 +5,7 @@
 
 #include "platform/platform.hpp"
 
-#include "std/atomic.hpp"
+#include <atomic>
 
 #include "defines.hpp"
 
@@ -18,7 +18,7 @@ uint32_t constexpr kDefaultDurationHours = 24;
 
 size_t constexpr kMaxItemCount = 100000; // > 24h with 1point/s
 
-inline string GetFilePath()
+inline std::string GetFilePath()
 {
   return my::JoinFoldersToPath(GetPlatform().WritableDir(), GPS_TRACK_FILENAME);
 }

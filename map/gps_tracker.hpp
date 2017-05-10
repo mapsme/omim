@@ -2,7 +2,7 @@
 
 #include "map/gps_track.hpp"
 
-#include "std/atomic.hpp"
+#include <atomic>
 
 class GpsTracker
 {
@@ -12,11 +12,11 @@ public:
   bool IsEnabled() const;
   void SetEnabled(bool enabled);
 
-  hours GetDuration() const;
-  void SetDuration(hours duration);
+  std::chrono::hours GetDuration() const;
+  void SetDuration(std::chrono::hours duration);
 
-  using TGpsTrackDiffCallback = std::function<void(vector<pair<size_t, location::GpsTrackInfo>> && toAdd,
-                                                   pair<size_t, size_t> const & toRemove)>;
+  using TGpsTrackDiffCallback = std::function<void(std::vector<std::pair<size_t, location::GpsTrackInfo>> && toAdd,
+                                                   std::pair<size_t, size_t> const & toRemove)>;
 
   void Connect(TGpsTrackDiffCallback const & fn);
   void Disconnect();
@@ -26,6 +26,6 @@ public:
 private:
   GpsTracker();
 
-  atomic<bool> m_enabled;
+  std::atomic<bool> m_enabled;
   GpsTrack m_track;
 };

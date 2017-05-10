@@ -2,9 +2,10 @@
 
 #include "search/interval_set.hpp"
 
-#include "std/initializer_list.hpp"
+#include <initializer_list>
 
 using namespace my;
+using namespace std;
 
 namespace
 {

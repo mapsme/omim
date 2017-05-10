@@ -2,7 +2,7 @@
 
 #include "base/logging.hpp"
 
-#include "std/string.hpp"
+#include <string>
 
 
 // @todo this functionality is not located in logging.hpp since file_logging uses FileWriter which depends on coding lib.
@@ -19,7 +19,7 @@
 // # define OMIM_ENABLE_LOG_MEMORY_INFO
 // #endif
 
-void LogMessageFile(my::LogLevel level, my::SrcPoint const & srcPoint, string const & msg);
+void LogMessageFile(my::LogLevel level, my::SrcPoint const & srcPoint, std::string const & msg);
 void LogMemoryInfo();
 
 #ifdef OMIM_ENABLE_LOG_MEMORY_INFO

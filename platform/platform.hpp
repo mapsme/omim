@@ -16,6 +16,8 @@
 
 #include "defines.hpp"
 
+using namespace std;
+
 DECLARE_EXCEPTION(FileAbsentException, RootException);
 DECLARE_EXCEPTION(FileSystemException, RootException);
 

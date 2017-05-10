@@ -5,13 +5,13 @@
 #include "base/string_utils.hpp"
 #include "base/assert.hpp"
 
-#include "std/limits.hpp"
-#include "std/string.hpp"
+#include <limits>
+#include <string>
 
 
 class StringNumericOptimal
 {
-  string m_s;
+  std::string m_s;
 
 public:
   inline bool operator== (StringNumericOptimal const & rhs) const
@@ -19,7 +19,7 @@ public:
     return m_s == rhs.m_s;
   }
 
-  inline void Set(string const & s)
+  inline void Set(std::string const & s)
   {
     CHECK ( !s.empty(), () );
     m_s = s;
@@ -37,7 +37,7 @@ public:
 
   inline void Clear() { m_s.clear(); }
   inline bool IsEmpty() const { return m_s.empty(); }
-  inline string const & Get() const { return m_s; }
+  inline std::string const & Get() const { return m_s; }
 
   /// First uint64_t value is:
   /// - a number if low control bit is 1;
@@ -68,14 +68,14 @@ public:
     else
     {
       sz = (sz >> 1) + 1;
-      ASSERT_LESS_OR_EQUAL(sz, numeric_limits<size_t>::max(), ("sz is out of platform's range."));
+      ASSERT_LESS_OR_EQUAL(sz, std::numeric_limits<size_t>::max(), ("sz is out of platform's range."));
       m_s.resize(static_cast<size_t>(sz));
       src.Read(&m_s[0], sz);
     }
   }
 };
 
-inline string DebugPrint(StringNumericOptimal const & s)
+inline std::string DebugPrint(StringNumericOptimal const & s)
 {
   return s.Get();
 }

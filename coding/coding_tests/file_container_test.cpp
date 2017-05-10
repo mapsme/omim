@@ -10,7 +10,7 @@
 
 UNIT_TEST(FilesContainer_Smoke)
 {
-  string const fName = "file_container.tmp";
+  std::string const fName = "file_container.tmp";
   FileWriter::DeleteFileX(fName);
   size_t const count = 10;
 
@@ -71,7 +71,7 @@ UNIT_TEST(FilesContainer_Smoke)
 
 namespace
 {
-  void CheckInvariant(FilesContainerR & reader, string const & tag, int64_t test)
+  void CheckInvariant(FilesContainerR & reader, std::string const & tag, int64_t test)
   {
     FilesContainerR::TReader r = reader.GetReader(tag);
     TEST_EQUAL(test, ReadPrimitiveFromPos<int64_t>(r, 0), ());
@@ -80,7 +80,7 @@ namespace
 
 UNIT_TEST(FilesContainer_Shared)
 {
-  string const fName = "file_container.tmp";
+  std::string const fName = "file_container.tmp";
   FileWriter::DeleteFileX(fName);
 
   uint32_t const count = 10;
@@ -136,7 +136,7 @@ UNIT_TEST(FilesContainer_Shared)
 
 namespace
 {
-  void ReplaceInContainer(string const & fName,
+  void ReplaceInContainer(std::string const & fName,
                           char const * key, char const * value)
   {
     FilesContainerW writer(fName, FileWriter::OP_WRITE_EXISTING);
@@ -144,7 +144,7 @@ namespace
     w.Write(value, strlen(value));
   }
 
-  void CheckContainer(string const & fName,
+  void CheckContainer(std::string const & fName,
                       char const * key[], char const * value[], size_t count)
   {
     FilesContainerR reader(fName);
@@ -168,7 +168,7 @@ namespace
 
 UNIT_TEST(FilesContainer_RewriteExisting)
 {
-  string const fName = "file_container.tmp";
+  std::string const fName = "file_container.tmp";
   FileWriter::DeleteFileX(fName);
 
   char const * key[] = { "3", "2", "1" };
@@ -208,8 +208,8 @@ UNIT_TEST(FilesContainer_RewriteExisting)
 
 UNIT_TEST(FilesMappingContainer_Handle)
 {
-  string const fName = "file_container.tmp";
-  string const tag = "dummy";
+  std::string const fName = "file_container.tmp";
+  std::string const tag = "dummy";
 
   {
     FilesContainerW writer(fName);
@@ -240,7 +240,7 @@ UNIT_TEST(FilesMappingContainer_MoveHandle)
   class HandleWrapper
   {
   public:
-    HandleWrapper(FilesMappingContainer::Handle&& handle) : m_handle(move(handle))
+    HandleWrapper(FilesMappingContainer::Handle&& handle) : m_handle(std::move(handle))
     {
       TEST(m_handle.IsValid(), ());
     }
@@ -249,8 +249,8 @@ UNIT_TEST(FilesMappingContainer_MoveHandle)
     FilesMappingContainer::Handle m_handle;
   };
 
-  string const containerPath = "file_container.tmp";
-  string const tagName = "dummy";
+  std::string const containerPath = "file_container.tmp";
+  std::string const tagName = "dummy";
 
   MY_SCOPE_GUARD(deleteContainerFileGuard, bind(&FileWriter::DeleteFileX, cref(containerPath)));
 
@@ -266,14 +266,14 @@ UNIT_TEST(FilesMappingContainer_MoveHandle)
     FilesMappingContainer::Handle h1 = cont.Map(tagName);
     TEST(h1.IsValid(), ());
 
-    FilesMappingContainer::Handle h2(move(h1));
+    FilesMappingContainer::Handle h2(std::move(h1));
     TEST(h2.IsValid(), ());
     TEST(!h1.IsValid(), ());
 
     for (int i = 0; i < kNumMapTests; ++i)
     {
       FilesMappingContainer::Handle parent_handle = cont.Map(tagName);
-      HandleWrapper tmp(move(parent_handle));
+      HandleWrapper tmp(std::move(parent_handle));
     }
 
   }
@@ -281,7 +281,7 @@ UNIT_TEST(FilesMappingContainer_MoveHandle)
 
 UNIT_TEST(FilesMappingContainer_Smoke)
 {
-  string const fName = "file_container.tmp";
+  std::string const fName = "file_container.tmp";
   char const * key[] = { "3", "2", "1" };
   uint32_t const count = 1000000;
 
@@ -323,7 +323,7 @@ UNIT_TEST(FilesMappingContainer_Smoke)
 
 UNIT_TEST(FilesMappingContainer_PageSize)
 {
-  string const fName = "file_container.tmp";
+  std::string const fName = "file_container.tmp";
 
   size_t const pageSize =
 #ifndef OMIM_OS_WINDOWS

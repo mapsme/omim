@@ -14,7 +14,7 @@
 
 namespace feature
 {
-  DataHeader::DataHeader(string const & fileName)
+  DataHeader::DataHeader(std::string const & fileName)
     : DataHeader((FilesContainerR(GetPlatform().GetReader(fileName))))
   {
   }
@@ -41,7 +41,7 @@ namespace feature
     m_bounds = RectToInt64(r, m_codingParams.GetCoordBits());
   }
 
-  pair<int, int> DataHeader::GetScaleRange() const
+  std::pair<int, int> DataHeader::GetScaleRange() const
   {
     using namespace scales;
 
@@ -52,11 +52,11 @@ namespace feature
 
     switch (type)
     {
-    case world: return make_pair(low, worldH);
-    case worldcoasts: return make_pair(low, high);
+    case world: return std::make_pair(low, worldH);
+    case worldcoasts: return std::make_pair(low, high);
     default:
       ASSERT_EQUAL(type, country, ());
-      return make_pair(worldH + 1, high);
+      return std::make_pair(worldH + 1, high);
 
       // Uncomment this to test countries drawing in all scales.
       //return make_pair(1, high);

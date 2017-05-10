@@ -244,7 +244,7 @@ namespace m2
       m_rect.SetSizesToIncludePoint(ConvertTo(p));
     }
 
-    friend string DebugPrint(m2::AnyRect<T> const & r)
+    friend std::string DebugPrint(m2::AnyRect<T> const & r)
     {
       return "{ Zero = " + DebugPrint(r.m_zero) +
              ", Rect = " + DebugPrint(r.m_rect) +

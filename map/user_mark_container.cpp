@@ -9,7 +9,7 @@
 #include "base/macros.hpp"
 #include "base/stl_add.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 namespace
 {
@@ -179,7 +179,7 @@ UserMark * UserMarkContainer::CreateUserMark(m2::PointD const & ptOrg)
 {
   // Push front an user mark.
   SetDirty();
-  m_userMarks.push_front(unique_ptr<UserMark>(AllocateUserMark(ptOrg)));
+  m_userMarks.push_front(std::unique_ptr<UserMark>(AllocateUserMark(ptOrg)));
   return m_userMarks.front().get();
 }
 

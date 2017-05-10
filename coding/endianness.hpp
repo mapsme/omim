@@ -2,7 +2,7 @@
 
 #include "base/base.hpp"
 
-#include "std/type_traits.hpp"
+#include <type_traits>
 
 #include <cstddef>
 
@@ -19,7 +19,7 @@ inline bool IsBigEndian()
 
 template <typename T> T ReverseByteOrder(T t)
 {
-  static_assert(is_integral<T>::value, "Only integral types are supported.");
+  static_assert(std::is_integral<T>::value, "Only integral types are supported.");
 
   T res;
   char const * a = reinterpret_cast<char const *>(&t);

@@ -28,7 +28,7 @@ namespace feature
   /// In case when primary name is empty it will be propagated from secondary and secondary will be
   /// cleared. In case when primary name contains secondary name then secondary will be cleared.
   void GetPreferredNames(RegionData const & regionData, StringUtf8Multilang const & src,
-                         int8_t const deviceLang, bool allowTranslit, string & primary, string & secondary);
+                         int8_t const deviceLang, bool allowTranslit, std::string & primary, std::string & secondary);
 
   /// When MWM contains user's language, the priority is the following:
   /// - device language name;
@@ -45,7 +45,7 @@ namespace feature
   /// - default name;
   /// - country language name.
   void GetReadableName(RegionData const & regionData, StringUtf8Multilang const & src,
-                       int8_t const deviceLang, bool allowTranslit, string & out);
+                       int8_t const deviceLang, bool allowTranslit, std::string & out);
 
   /// Returns language id as return result and name for search on booking in the @name parameter,
   ///  the priority is the following:
@@ -53,5 +53,5 @@ namespace feature
   /// - country language name;
   /// - english name.
   int8_t GetNameForSearchOnBooking(RegionData const & regionData, StringUtf8Multilang const & src,
-                                   string & name);
+                                   std::string & name);
 }  // namespace feature

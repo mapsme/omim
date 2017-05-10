@@ -4,14 +4,15 @@
 #include "base/assert.hpp"
 #include "base/macros.hpp"
 #include "base/mem_trie.hpp"
+#include "base/stl_add.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 using namespace strings;
 
 namespace search
 {
-UniString NormalizeAndSimplifyString(string const & s)
+UniString NormalizeAndSimplifyString(std::string const & s)
 {
   UniString uniString = MakeUniString(s);
   for (size_t i = 0; i < uniString.size(); ++i)
@@ -70,7 +71,7 @@ UniString NormalizeAndSimplifyString(string const & s)
   result.reserve(uniString.size());
   for (auto i = uniString.begin(), end = uniString.end(); i != end;)
   {
-    auto j = find_if(i, end, isSpecificChar);
+    auto j = std::find_if(i, end, isSpecificChar);
     // We don't check if (j != i) because UniString and Normalize handle it correctly.
     UniString normString(i, j);
     NormalizeInplace(normString);
@@ -86,7 +87,7 @@ UniString NormalizeAndSimplifyString(string const & s)
 
 UniString FeatureTypeToString(uint32_t type)
 {
-  string const s = "!type:" + to_string(type);
+  std::string const s = "!type:" + to_string(type);
   return UniString(s.begin(), s.end());
 }
 
@@ -147,14 +148,14 @@ public:
       }
 
       created = true;
-      m_subtrees.emplace_back(c, make_unique<Subtree>());
+      m_subtrees.emplace_back(c, my::make_unique<Subtree>());
       return *m_subtrees.back().second;
     }
 
     void Clear() { m_subtrees.clear(); }
 
   private:
-    buffer_vector<pair<Char, std::unique_ptr<Subtree>>, 8> m_subtrees;
+    buffer_vector<std::pair<Char, std::unique_ptr<Subtree>>, 8> m_subtrees;
   };
 
   StreetsSynonymsHolder()
@@ -225,7 +226,7 @@ public:
     for (auto const * s : affics)
     {
       UniString const us = NormalizeAndSimplifyString(s);
-      m_strings.Add(us, true /* end of string */);
+      m_strings.Add(us, true /* end of std::string */);
     }
   }
 
@@ -256,7 +257,7 @@ private:
 StreetsSynonymsHolder g_streets;
 }  // namespace
 
-UniString GetStreetNameAsKey(string const & name)
+UniString GetStreetNameAsKey(std::string const & name)
 {
   if (name.empty())
     return UniString();
@@ -284,7 +285,7 @@ bool IsStreetSynonymPrefix(UniString const & s)
   return g_streets.MatchPrefix(s);
 }
 
-bool ContainsNormalized(string const & str, string const & substr)
+bool ContainsNormalized(std::string const & str, std::string const & substr)
 {
   UniString const ustr = NormalizeAndSimplifyString(str);
   UniString const usubstr = NormalizeAndSimplifyString(substr);

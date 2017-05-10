@@ -3,27 +3,27 @@
 
 #include "base/string_utils.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/iterator.hpp"
-#include "std/string.hpp"
-#include "std/utility.hpp"
+#include <algorithm>
+#include <iterator>
+#include <string>
+#include <utility>
 
 namespace
 {
 using namespace routing::turns::sound;
 
-template <class TIter> string DistToTextId(TIter begin, TIter end, uint32_t dist)
+template <class TIter> std::string DistToTextId(TIter begin, TIter end, uint32_t dist)
 {
-  using TValue = typename iterator_traits<TIter>::value_type;
+  using TValue = typename std::iterator_traits<TIter>::value_type;
 
-  TIter distToSound = lower_bound(begin, end, dist, [](TValue const & p1, uint32_t p2)
+  TIter distToSound = std::lower_bound(begin, end, dist, [](TValue const & p1, uint32_t p2)
                       {
                         return p1.first < p2;
                       });
   if (distToSound == end)
   {
     ASSERT(false, ("notification.m_distanceUnits is not correct."));
-    return string();
+    return std::string();
   }
   return distToSound->second;
 }
@@ -35,54 +35,54 @@ namespace turns
 {
 namespace sound
 {
-void GetTtsText::SetLocale(string const & locale)
+void GetTtsText::SetLocale(std::string const & locale)
 {
   m_getCurLang = platform::GetTextByIdFactory(platform::TextSource::TtsSound, locale);
 }
 
-void GetTtsText::ForTestingSetLocaleWithJson(string const & jsonBuffer, string const & locale)
+void GetTtsText::ForTestingSetLocaleWithJson(std::string const & jsonBuffer, std::string const & locale)
 {
   m_getCurLang = platform::ForTestingGetTextByIdFactory(jsonBuffer, locale);
 }
 
-string GetTtsText::operator()(Notification const & notification) const
+std::string GetTtsText::operator()(Notification const & notification) const
 {
   if (notification.m_distanceUnits == 0 && !notification.m_useThenInsteadOfDistance)
     return GetTextById(GetDirectionTextId(notification));
   if (notification.m_useThenInsteadOfDistance && notification.m_turnDir == TurnDirection::NoTurn)
-    return string();
+    return std::string();
 
-  string const dirStr = GetTextById(GetDirectionTextId(notification));
+  std::string const dirStr = GetTextById(GetDirectionTextId(notification));
   if (dirStr.empty())
-    return string();
+    return std::string();
 
-  string const distStr = GetTextById(GetDistanceTextId(notification));
+  std::string const distStr = GetTextById(GetDistanceTextId(notification));
   return distStr + " " + dirStr;
 }
 
-string GetTtsText::GetLocale() const
+std::string GetTtsText::GetLocale() const
 {
   if (m_getCurLang == nullptr)
   {
     ASSERT(false, ());
-    return string();
+    return std::string();
   }
   return m_getCurLang->GetLocale();
 }
 
-string GetTtsText::GetTextById(string const & textId) const
+std::string GetTtsText::GetTextById(std::string const & textId) const
 {
   ASSERT(!textId.empty(), ());
 
   if (m_getCurLang == nullptr)
   {
     ASSERT(false, ());
-    return string();
+    return std::string();
   }
   return (*m_getCurLang)(textId);
 }
 
-string GetDistanceTextId(Notification const & notification)
+std::string GetDistanceTextId(Notification const & notification)
 {
   if (notification.m_useThenInsteadOfDistance)
     return "then";
@@ -97,15 +97,15 @@ string GetDistanceTextId(Notification const & notification)
                         notification.m_distanceUnits);
   }
   ASSERT(false, ());
-  return string();
+  return std::string();
 }
 
-string GetRoundaboutTextId(Notification const & notification)
+std::string GetRoundaboutTextId(Notification const & notification)
 {
   if (notification.m_turnDir != TurnDirection::LeaveRoundAbout)
   {
     ASSERT(false, ());
-    return string();
+    return std::string();
   }
   if (!notification.m_useThenInsteadOfDistance)
     return "leave_the_roundabout"; // Notification just before leaving a roundabout.
@@ -117,12 +117,12 @@ string GetRoundaboutTextId(Notification const & notification)
   return "take_the_" + strings::to_string(static_cast<int>(notification.m_exitNum)) + "_exit";
 }
 
-string GetYouArriveTextId(Notification const & notification)
+std::string GetYouArriveTextId(Notification const & notification)
 {
   if (notification.m_turnDir != TurnDirection::ReachedYourDestination)
   {
     ASSERT(false, ());
-    return string();
+    return std::string();
   }
 
   if (notification.m_distanceUnits != 0 || notification.m_useThenInsteadOfDistance)
@@ -130,7 +130,7 @@ string GetYouArriveTextId(Notification const & notification)
   return "you_have_reached_the_destination";
 }
 
-string GetDirectionTextId(Notification const & notification)
+std::string GetDirectionTextId(Notification const & notification)
 {
   switch (notification.m_turnDir)
   {
@@ -163,10 +163,10 @@ string GetDirectionTextId(Notification const & notification)
     case TurnDirection::NoTurn:
     case TurnDirection::Count:
       ASSERT(false, ());
-      return string();
+      return std::string();
   }
   ASSERT(false, ());
-  return string();
+  return std::string();
 }
 }  // namespace sound
 }  // namespace turns

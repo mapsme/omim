@@ -145,7 +145,7 @@ void GpsTrackShape::Draw(ref_ptr<dp::TextureManager> texMng, GpsTrackRenderData 
 
   size_t const kVerticesInPoint = dp::Batcher::VertexPerQuad;
   size_t const kIndicesInPoint = dp::Batcher::IndexPerQuad;
-  vector<GpsTrackStaticVertex> staticVertexData;
+  std::vector<GpsTrackStaticVertex> staticVertexData;
   staticVertexData.reserve(data.m_pointsCount * kVerticesInPoint);
   for (size_t i = 0; i < data.m_pointsCount; i++)
   {
@@ -155,7 +155,7 @@ void GpsTrackShape::Draw(ref_ptr<dp::TextureManager> texMng, GpsTrackRenderData 
     staticVertexData.push_back(GpsTrackStaticVertex(GpsTrackStaticVertex::TNormal(1.0f, -1.0f, 1.0f)));
   }
 
-  vector<GpsTrackDynamicVertex> dynamicVertexData;
+  std::vector<GpsTrackDynamicVertex> dynamicVertexData;
   dynamicVertexData.resize(data.m_pointsCount * kVerticesInPoint);
 
   dp::Batcher batcher(data.m_pointsCount * kIndicesInPoint, data.m_pointsCount * kVerticesInPoint);

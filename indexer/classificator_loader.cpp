@@ -9,7 +9,7 @@
 
 #include "base/logging.hpp"
 
-#include "std/iostream.hpp"
+#include <iostream>
 
 
 namespace
@@ -24,7 +24,7 @@ void ReadCommon(unique_ptr<Reader> classificator,
     //LOG(LINFO, ("Reading classificator"));
     ReaderStreamBuf buffer(move(classificator));
 
-    istream s(&buffer);
+    std::istream s(&buffer);
     c.ReadClassificator(s);
   }
 
@@ -32,7 +32,7 @@ void ReadCommon(unique_ptr<Reader> classificator,
     //LOG(LINFO, ("Reading types mapping"));
     ReaderStreamBuf buffer(move(types));
 
-    istream s(&buffer);
+    std::istream s(&buffer);
     c.ReadTypesMapping(s);
   }
 }

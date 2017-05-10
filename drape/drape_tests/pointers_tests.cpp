@@ -3,8 +3,8 @@
 
 #include "base/base.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/string.hpp"
+#include <algorithm>
+#include <string>
 
 namespace
 {
@@ -16,7 +16,7 @@ namespace
 
 #if defined(TRACK_POINTERS)
   bool g_assertRaised = false;
-  void OnAssertRaised(my::SrcPoint const & /*srcPoint*/, string const & /*msg*/)
+  void OnAssertRaised(my::SrcPoint const & /*srcPoint*/, std::string const & /*msg*/)
   {
     g_assertRaised = true;
   }
@@ -31,7 +31,7 @@ UNIT_TEST(PointersTrackingTest)
 
   drape_ptr<Tester> ptr = make_unique_dp<Tester>();
   void * ptrAddress = ptr.get();
-  string const ptrTypeName = typeid(Tester*).name();
+  std::string const ptrTypeName = typeid(Tester*).name();
 
   // no references
   TEST(alivePointers.find(ptrAddress) == alivePointers.end(), ());

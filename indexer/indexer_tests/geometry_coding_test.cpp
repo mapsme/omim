@@ -17,6 +17,7 @@
 
 #include "base/logging.hpp"
 
+using namespace std;
 
 typedef m2::PointU PU;
 
@@ -81,7 +82,7 @@ UNIT_TEST(PredictPointsInPolyline3_90deg)
 namespace
 {
 
-void TestPolylineEncode(string testName,
+void TestPolylineEncode(std::string testName,
                         vector<m2::PointU> const & points,
                         m2::PointU const & maxPoint,
                         void (* fnEncode)(geo_coding::InPointsT const & points,
@@ -134,7 +135,7 @@ vector<m2::PointU> SimplifyPoints(vector<m2::PointU> const & points, double eps)
   return simpPoints;
 }
 
-void TestEncodePolyline(string name, m2::PointU maxPoint, vector<m2::PointU> const & points)
+void TestEncodePolyline(std::string name, m2::PointU maxPoint, vector<m2::PointU> const & points)
 {
   using namespace geo_coding;
 

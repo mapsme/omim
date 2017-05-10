@@ -10,9 +10,9 @@
 
 #include "editor/xml_feature.hpp"
 
-#include "std/iterator.hpp"
-#include "std/string.hpp"
-#include "std/utility.hpp"
+#include <iterator>
+#include <string>
+#include <utility>
 
 
 namespace feature
@@ -75,12 +75,12 @@ public:
   class GetNamesFn
   {
   public:
-    string m_names[64];
+    std::string m_names[64];
     char m_langs[64];
     size_t m_size;
 
     GetNamesFn() : m_size(0) {}
-    bool operator() (char lang, string const & name)
+    bool operator() (char lang, std::string const & name)
     {
       m_names[m_size++] = name;
       m_langs[m_size] = lang;
@@ -96,7 +96,7 @@ public:
       return false;
 
     ParseCommon();
-    m_params.name.ForEach(forward<T>(fn));
+    m_params.name.ForEach(std::forward<T>(fn));
     return true;
   }
 
@@ -130,7 +130,7 @@ protected:
   inline void SetHeader(uint8_t h) { m_header = h; }
   //@}
 
-  string DebugString() const;
+  std::string DebugString() const;
 
   inline uint8_t Header() const { return m_header; }
 
@@ -260,44 +260,44 @@ public:
   inline vector<m2::PointD> GetTriangesAsPoints(int scale) const
   {
     ParseTriangles(scale);
-    return {begin(m_triangles), end(m_triangles)};
+    return {begin(m_triangles), std::end(m_triangles)};
   }
 
   template <typename TFunctor>
   void ForEachTriangleEx(TFunctor && f, int scale) const
   {
     f.StartPrimitive(m_triangles.size());
-    ForEachTriangle(forward<TFunctor>(f), scale);
+    ForEachTriangle(std::forward<TFunctor>(f), scale);
     f.EndPrimitive();
   }
   //@}
 
   /// For test cases only.
-  string DebugString(int scale) const;
-  friend string DebugPrint(FeatureType const & ft);
+  std::string DebugString(int scale) const;
+  friend std::string DebugPrint(FeatureType const & ft);
 
-  string GetHouseNumber() const;
+  std::string GetHouseNumber() const;
   /// Needed for Editor, to change house numbers in runtime.
-  void SetHouseNumber(string const & number);
+  void SetHouseNumber(std::string const & number);
 
   /// @name Get names for feature.
   /// @param[out] defaultName corresponds to osm tag "name"
   /// @param[out] intName optionally choosen from tags "name:<lang_code>" by the algorithm
   //@{
   /// Just get feature names.
-  void GetPreferredNames(string & defaultName, string & intName) const;
-  void GetPreferredNames(bool allowTranslit, int8_t deviceLang, string & defaultName, string & intName) const;
+  void GetPreferredNames(std::string & defaultName, std::string & intName) const;
+  void GetPreferredNames(bool allowTranslit, int8_t deviceLang, std::string & defaultName, std::string & intName) const;
   /// Get one most suitable name for user.
-  void GetReadableName(string & name) const;
-  void GetReadableName(bool allowTranslit, int8_t deviceLang, string & name) const;
+  void GetReadableName(std::string & name) const;
+  void GetReadableName(bool allowTranslit, int8_t deviceLang, std::string & name) const;
 
   static int8_t const DEFAULT_LANG = StringUtf8Multilang::kDefaultCode;
-  bool GetName(int8_t lang, string & name) const;
+  bool GetName(int8_t lang, std::string & name) const;
   //@}
 
   uint8_t GetRank() const;
   uint64_t GetPopulation() const;
-  string GetRoadNumber() const;
+  std::string GetRoadNumber() const;
 
   inline feature::Metadata const & GetMetadata() const
   {

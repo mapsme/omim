@@ -4,8 +4,8 @@
 
 #include "base/logging.hpp"
 
-#include "std/bind.hpp"
-#include "std/ctime.hpp"
+#include <functional>
+#include <ctime>
 
 #include "3party/jansson/myjansson.hpp"
 
@@ -46,7 +46,7 @@ namespace location
                 {
                   info.m_horizontalAccuracy = json_real_value(acc);
                   // @TODO introduce flags to mark valid values
-                  info.m_timestamp = static_cast<double>(time(NULL));
+                  info.m_timestamp = static_cast<double>(std::time(NULL));
                   info.m_source = location::EGoogle;
                   m_observer.OnLocationUpdated(info);
                   success = true;
@@ -70,7 +70,7 @@ namespace location
 
     void OnWifiScanCompleted(vector<WiFiInfo::AccessPoint> const & accessPoints)
     {
-      string jsonRequest("{\"version\":\"1.1.0\"");
+      std::string jsonRequest("{\"version\":\"1.1.0\"");
       if (accessPoints.size())
         jsonRequest += ",\"wifi_towers\":[";
 
@@ -91,7 +91,7 @@ namespace location
       // memory will be freed in callback
       downloader::HttpRequest::PostJson(MWM_GEOLOCATION_SERVER,
                                         jsonRequest,
-                                        bind(&WiFiLocationService::OnHttpPostFinished, this, _1));
+                                        std::bind(&WiFiLocationService::OnHttpPostFinished, this, std::placeholders::_1));
     }
 
   public:
@@ -101,7 +101,7 @@ namespace location
 
     virtual void Start()
     {
-      m_wifiInfo.RequestWiFiBSSIDs(bind(&WiFiLocationService::OnWifiScanCompleted, this, _1));
+      m_wifiInfo.RequestWiFiBSSIDs(std::bind(&WiFiLocationService::OnWifiScanCompleted, this, std::placeholders::_1));
     }
 
     virtual void Stop()

@@ -6,7 +6,7 @@ namespace df
 void RequestedTiles::Set(ScreenBase const & screen, bool have3dBuildings, bool forceRequest,
                          TTilesCollection && tiles)
 {
-  lock_guard<mutex> lock(m_mutex);
+  std::lock_guard<std::mutex> lock(m_mutex);
   m_tiles = move(tiles);
   m_screen = screen;
   m_have3dBuildings = have3dBuildings;
@@ -17,7 +17,7 @@ TTilesCollection RequestedTiles::GetTiles()
 {
   TTilesCollection tiles;
   {
-    lock_guard<mutex> lock(m_mutex);
+    std::lock_guard<std::mutex> lock(m_mutex);
     m_tiles.swap(tiles);
   }
   return tiles;
@@ -25,7 +25,7 @@ TTilesCollection RequestedTiles::GetTiles()
 
 void RequestedTiles::GetParams(ScreenBase & screen, bool & have3dBuildings, bool & forceRequest)
 {
-  lock_guard<mutex> lock(m_mutex);
+  std::lock_guard<std::mutex> lock(m_mutex);
   screen = m_screen;
   have3dBuildings = m_have3dBuildings;
   forceRequest = m_forceRequest;
@@ -33,7 +33,7 @@ void RequestedTiles::GetParams(ScreenBase & screen, bool & have3dBuildings, bool
 
 bool RequestedTiles::CheckTileKey(TileKey const & tileKey) const
 {
-  lock_guard<mutex> lock(m_mutex);
+  std::lock_guard<std::mutex> lock(m_mutex);
   if (m_tiles.empty())
     return true;
 

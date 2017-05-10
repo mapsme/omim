@@ -14,10 +14,10 @@
 
 #include "base/thread_pool.hpp"
 
-#include "std/atomic.hpp"
-#include "std/mutex.hpp"
-#include "std/set.hpp"
-#include "std/shared_ptr.hpp"
+#include <atomic>
+#include <mutex>
+#include <set>
+#include <memory>
 #include "std/target_os.hpp"
 
 namespace df
@@ -69,28 +69,28 @@ private:
 
   struct LessByTileInfo
   {
-    bool operator ()(shared_ptr<TileInfo> const & l, shared_ptr<TileInfo> const & r) const
+    bool operator ()(std::shared_ptr<TileInfo> const & l, std::shared_ptr<TileInfo> const & r) const
     {
       return *l < *r;
     }
   };
 
-  using TTileSet = set<shared_ptr<TileInfo>, LessByTileInfo>;
+  using TTileSet = std::set<std::shared_ptr<TileInfo>, LessByTileInfo>;
   TTileSet m_tileInfos;
 
   ObjectPool<ReadMWMTask, ReadMWMTaskFactory> myPool;
 
   int m_counter;
-  mutex m_finishedTilesMutex;
+  std::mutex m_finishedTilesMutex;
   uint64_t m_generationCounter;
 
-  using TTileInfoCollection = buffer_vector<shared_ptr<TileInfo>, 8>;
+  using TTileInfoCollection = buffer_vector<std::shared_ptr<TileInfo>, 8>;
   TTilesCollection m_activeTiles;
 
   CustomSymbolsContextPtr m_customSymbolsContext;
 
-  void CancelTileInfo(shared_ptr<TileInfo> const & tileToCancel);
-  void ClearTileInfo(shared_ptr<TileInfo> const & tileToClear);
+  void CancelTileInfo(std::shared_ptr<TileInfo> const & tileToCancel);
+  void ClearTileInfo(std::shared_ptr<TileInfo> const & tileToClear);
   void IncreaseCounter(int value);
   void CheckFinishedTiles(TTileInfoCollection const & requestedTiles);
 };

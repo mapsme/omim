@@ -7,14 +7,14 @@
 
 #include "routing_common/pedestrian_model.hpp"
 
-#include "std/set.hpp"
-#include "std/string.hpp"
+#include <set>
+#include <string>
 
 namespace
 {
 // Test preconditions: files from the kMapFiles set with '.mwm'
 // extension must be placed in omim/data folder.
-set<string> const kMapFiles =
+set<std::string> const kMapFiles =
 {
   "UK_England_East Midlands",
   "UK_England_East of England_Essex",

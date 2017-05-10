@@ -21,7 +21,7 @@ Platform::Platform()
 {
   Tizen::App::App * pApp = Tizen::App::App::GetInstance();
   // init directories
-  string app_root = FromTizenString(pApp->GetAppRootPath());
+  std::string app_root = FromTizenString(pApp->GetAppRootPath());
 
   m_writableDir = FromTizenString(pApp->GetAppDataPath());
   m_resourcesDir = FromTizenString(pApp->GetAppResourcePath());
@@ -43,12 +43,12 @@ Platform::Platform()
   m_flags[HAS_ROUTING] = true;
 }
 
-void Platform::MkDir(string const & dirName) const
+void Platform::MkDir(std::string const & dirName) const
 {
   Tizen::Io::Directory::Create(dirName.c_str(), true);
 }
 
-string Platform::UniqueClientId() const
+std::string Platform::UniqueClientId() const
 {
   Tizen::App::App * pApp = Tizen::App::App::GetInstance();
   return FromTizenString(pApp->GetAppId());
@@ -66,18 +66,18 @@ void Platform::RunAsync(TFunctor const & fn, Priority p)
   fn();
 }
 
-ModelReader * Platform::GetReader(string const & file, string const & searchScope) const
+ModelReader * Platform::GetReader(std::string const & file, std::string const & searchScope) const
 {
   return new FileReader(ReadPathForFile(file, searchScope),
                         READER_CHUNK_LOG_SIZE, READER_CHUNK_LOG_COUNT);
 }
 
-void Platform::GetFilesByRegExp(string const & directory, string const & regexp, FilesList & res)
+void Platform::GetFilesByRegExp(std::string const & directory, std::string const & regexp, FilesList & res)
 {
   pl::EnumerateFilesByRegExp(directory, regexp, res);
 }
 
-bool Platform::GetFileSizeByName(string const & fileName, uint64_t & size) const
+bool Platform::GetFileSizeByName(std::string const & fileName, uint64_t & size) const
 {
   try
   {
@@ -122,12 +122,12 @@ namespace downloader
 
 class IHttpThreadCallback;
 
-HttpThread * CreateNativeHttpThread(string const & url,
+HttpThread * CreateNativeHttpThread(std::string const & url,
                                     downloader::IHttpThreadCallback & cb,
                                     int64_t beg,
                                     int64_t end,
                                     int64_t size,
-                                    string const & pb)
+                                    std::string const & pb)
 {
   HttpThread * pRes = new HttpThread(url, cb, beg, end, size, pb);
   return pRes;

@@ -8,11 +8,11 @@
 
 namespace indexer
 {
-  bool BuildIndexFromDataFile(string const & datFile, string const & tmpFile)
+  bool BuildIndexFromDataFile(std::string const & datFile, std::string const & tmpFile)
   {
     try
     {
-      string const idxFileName(tmpFile + GEOM_INDEX_TMP_EXT);
+      std::string const idxFileName(tmpFile + GEOM_INDEX_TMP_EXT);
       {
         FeaturesVectorTest features(datFile);
         FileWriter writer(idxFileName);

@@ -3,17 +3,17 @@
 #include "base/assert.hpp"
 #include "base/mutex.hpp"
 
-#include "std/list.hpp"
-#include "std/set.hpp"
+#include <list>
+#include <set>
 
 template <typename T, typename Factory>
 class ObjectPool
 {
 private:
 #ifdef DEBUG
-  set<T *> m_checkerSet;
+  std::set<T *> m_checkerSet;
 #endif
-  list<T *> m_pool;
+  std::list<T *> m_pool;
   Factory m_factory;
   threads::Mutex m_lock;
 public:
@@ -31,11 +31,11 @@ public:
 
   ~ObjectPool()
   {
-    for (typename list<T *>::iterator it = m_pool.begin(); it != m_pool.end(); it++)
+    for (typename std::list<T *>::iterator it = m_pool.begin(); it != m_pool.end(); it++)
     {
       T * cur = *it;
 #ifdef DEBUG
-      typename set<T *>::iterator its = m_checkerSet.find(cur);
+      typename std::set<T *>::iterator its = m_checkerSet.find(cur);
       ASSERT(its != m_checkerSet.end(), ("The same element returned twice or more!"));
       m_checkerSet.erase(its);
 #endif

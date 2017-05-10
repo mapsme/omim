@@ -6,10 +6,10 @@
 #include "base/assert.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/map.hpp"
-#include "std/queue.hpp"
-#include "std/vector.hpp"
+#include <algorithm>
+#include <map>
+#include <queue>
+#include <vector>
 
 namespace coding
 {
@@ -39,7 +39,7 @@ public:
 
   // Internally builds a Huffman tree and makes
   // the EncodeAndWrite and ReadAndDecode methods available.
-  void Init(vector<strings::UniString> const & data);
+  void Init(std::vector<strings::UniString> const & data);
 
   // One way to store the encoding would be
   // -- the succinct representation of the topology of Huffman tree;
@@ -121,7 +121,7 @@ public:
   {
     BitReader<TSource> bitReader(src);
     size_t sz = static_cast<size_t>(ReadVarUint<uint32_t, TSource>(src));
-    vector<strings::UniChar> v(sz);
+    std::vector<strings::UniChar> v(sz);
     for (size_t i = 0; i < sz; ++i)
       v[i] = static_cast<strings::UniChar>(ReadAndDecode(bitReader));
     return strings::UniString(v.begin(), v.end());
@@ -211,7 +211,7 @@ private:
     // try to shrink the trees beyond this threshold.
     uint32_t const kMaxDepth = 32;
 
-    map<uint32_t, uint32_t> freqs;
+    std::map<uint32_t, uint32_t> freqs;
     for (auto it = beg; it != end; ++it)
     {
       auto const & e = *it;
@@ -221,7 +221,7 @@ private:
       }
     }
 
-    priority_queue<Node *, vector<Node *>, NodeComparator> pq;
+    std::priority_queue<Node *, std::vector<Node *>, NodeComparator> pq;
     for (auto const & e : freqs)
       pq.push(new Node(e.first, e.second, true /* isLeaf */));
 
@@ -238,7 +238,7 @@ private:
       auto b = pq.top();
       pq.pop();
       if (a->symbol > b->symbol)
-        swap(a, b);
+        std::swap(a, b);
       // Give it the smaller symbol to make the resulting encoding more predictable.
       auto ab = new Node(a->symbol, a->freq + b->freq, false /* isLeaf */);
       ab->l = a;
@@ -259,8 +259,8 @@ private:
   void SetDepths(Node * root, uint32_t depth);
 
   Node * m_root;  // m_pRoot?
-  map<Code, uint32_t> m_decoderTable;
-  map<uint32_t, Code> m_encoderTable;
+  std::map<Code, uint32_t> m_decoderTable;
+  std::map<uint32_t, Code> m_encoderTable;
 };
 
 }  // namespace coding

@@ -7,14 +7,14 @@
 #include "base/logging.hpp"
 
 #include "std/windows.hpp"
-#include "std/cstdio.hpp"
+#include <cstdio>
 
 #include <winsock2.h>
 #include <iphlpapi.h>
 
 bool GatewaysInfo(vector<WiFiInfo::AccessPoint> & out)
 {
-  vector<string> ips;
+  vector<std::string> ips;
 
   ULONG ulOutBufLen = sizeof (IP_ADAPTER_INFO);
   PIP_ADAPTER_INFO pAdapterInfo = (IP_ADAPTER_INFO *)malloc(ulOutBufLen);

@@ -1,6 +1,6 @@
 #include "routing/restrictions_serialization.hpp"
 
-#include "std/sstream.hpp"
+#include <sstream>
 
 namespace
 {
@@ -11,12 +11,13 @@ char const kOnly[] = "Only";
 namespace routing
 {
 // static
-uint32_t const Restriction::kInvalidFeatureId = numeric_limits<uint32_t>::max();
+uint32_t const Restriction::kInvalidFeatureId = std::numeric_limits<uint32_t>::max();
 
 bool Restriction::IsValid() const
 {
   return !m_featureIds.empty() &&
-         find(begin(m_featureIds), end(m_featureIds), kInvalidFeatureId) == end(m_featureIds);
+         std::find(std::begin(m_featureIds), std::end(m_featureIds),
+                   kInvalidFeatureId) == std::end(m_featureIds);
 }
 
 bool Restriction::operator==(Restriction const & restriction) const
@@ -31,7 +32,7 @@ bool Restriction::operator<(Restriction const & restriction) const
   return m_featureIds < restriction.m_featureIds;
 }
 
-string ToString(Restriction::Type const & type)
+std::string ToString(Restriction::Type const & type)
 {
   switch (type)
   {
@@ -41,11 +42,11 @@ string ToString(Restriction::Type const & type)
   return "Unknown";
 }
 
-string DebugPrint(Restriction::Type const & type) { return ToString(type); }
+std::string DebugPrint(Restriction::Type const & type) { return ToString(type); }
 
-string DebugPrint(Restriction const & restriction)
+std::string DebugPrint(Restriction const & restriction)
 {
-  ostringstream out;
+  std::ostringstream out;
   out << "m_featureIds:[" << ::DebugPrint(restriction.m_featureIds)
       << "] m_type:" << DebugPrint(restriction.m_type) << " ";
   return out.str();

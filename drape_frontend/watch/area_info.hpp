@@ -2,8 +2,8 @@
 
 #include "geometry/point2d.hpp"
 
-#include "std/vector.hpp"
-#include "std/algorithm.hpp"
+#include <vector>
+#include <algorithm>
 
 namespace df
 {
@@ -15,7 +15,7 @@ class AreaInfo
   m2::PointD m_center;
 
 public:
-  vector<m2::PointD> m_path;
+  std::vector<m2::PointD> m_path;
 
   void reserve(size_t ptsCount)
   {

@@ -17,7 +17,9 @@
 
 #include "coding/file_name_utils.hpp"
 
-#include "std/unique_ptr.hpp"
+#include "base/stl_add.hpp"
+
+#include <memory>
 
 using namespace generator::tests_support;
 using namespace indexer::tests_support;
@@ -44,7 +46,7 @@ private:
 class TestCafe : public TestPOI
 {
 public:
-  TestCafe(m2::PointD const & center, string const & name, string const & lang)
+  TestCafe(m2::PointD const & center, std::string const & name, std::string const & lang)
     : TestPOI(center, name, lang)
   {
     SetTypes({{"amenity", "cafe"}});
@@ -146,7 +148,7 @@ EditorTest::EditorTest()
     LOG(LERROR, ("Classificator read error: ", e.what()));
   }
 
-  indexer::tests_support::SetUpEditorForTesting(make_unique<search::EditorDelegate>(m_index));
+  indexer::tests_support::SetUpEditorForTesting(my::make_unique<search::EditorDelegate>(m_index));
 }
 
 EditorTest::~EditorTest()
@@ -302,7 +304,7 @@ void EditorTest::GetEditedFeatureStreetTest()
 
   {
     FeatureID feature;
-    string street;
+    std::string street;
     TEST(!editor.GetEditedFeatureStreet(feature, street), ());
   }
 
@@ -314,7 +316,7 @@ void EditorTest::GetEditedFeatureStreetTest()
 
   ForEachCafeAtPoint(m_index, m2::PointD(1.0, 1.0), [&editor](FeatureType & ft)
   {
-    string street;
+    std::string street;
     TEST(!editor.GetEditedFeatureStreet(ft.GetID(), street), ());
 
     osm::LocalizedStreet ls{"some street", ""};
@@ -601,7 +603,7 @@ void EditorTest::RollBackChangesTest()
     builder.Add(cafe);
   });
 
-  const string houseNumber = "4a";
+  const std::string houseNumber = "4a";
 
   ForEachCafeAtPoint(m_index, m2::PointD(1.0, 1.0), [&editor, &houseNumber](FeatureType & ft)
   {
@@ -833,8 +835,8 @@ void EditorTest::CreateNoteTest()
     auto notes = editor.m_notes->GetNotes();
     TEST_EQUAL(notes.size(), 1, ());
     TEST(notes.front().m_point.EqualDxDy(pos, 1e-10), ());
-    TEST_NOT_EQUAL(notes.front().m_note.find("with comment"), string::npos, ());
-    TEST_NOT_EQUAL(notes.front().m_note.find("OSM data version"), string::npos, ());
+    TEST_NOT_EQUAL(notes.front().m_note.find("with comment"), std::string::npos, ());
+    TEST_NOT_EQUAL(notes.front().m_note.find("OSM data version"), std::string::npos, ());
   };
 
   ForEachCafeAtPoint(m_index, m2::PointD(1.0, 1.0), [&editor, &createAndCheckNote](FeatureType & ft)
@@ -842,7 +844,7 @@ void EditorTest::CreateNoteTest()
     createAndCheckNote(ft.GetID(), {1.0, 1.0}, osm::Editor::NoteProblemType::PlaceDoesNotExist);
 
     auto notes = editor.m_notes->GetNotes();
-    TEST_NOT_EQUAL(notes.front().m_note.find(osm::Editor::kPlaceDoesNotExistMessage), string::npos, ());
+    TEST_NOT_EQUAL(notes.front().m_note.find(osm::Editor::kPlaceDoesNotExistMessage), std::string::npos, ());
     TEST_EQUAL(editor.GetFeatureStatus(ft.GetID()), osm::Editor::FeatureStatus::Obsolete, ());
   });
 
@@ -852,7 +854,7 @@ void EditorTest::CreateNoteTest()
 
     TEST_NOT_EQUAL(editor.GetFeatureStatus(ft.GetID()), osm::Editor::FeatureStatus::Obsolete, ());
     auto notes = editor.m_notes->GetNotes();
-    TEST_EQUAL(notes.front().m_note.find(osm::Editor::kPlaceDoesNotExistMessage), string::npos, ());
+    TEST_EQUAL(notes.front().m_note.find(osm::Editor::kPlaceDoesNotExistMessage), std::string::npos, ());
   });
 }
 

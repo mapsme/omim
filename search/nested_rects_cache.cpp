@@ -10,7 +10,7 @@
 #include "base/assert.hpp"
 #include "base/stl_add.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 namespace search
 {
@@ -47,7 +47,7 @@ double NestedRectsCache::GetDistanceToFeatureMeters(FeatureID const & id) const
     if (it == bucket.end())
       continue;
     auto const & features = it->second;
-    if (binary_search(features.begin(), features.end(), id.m_index))
+    if (std::binary_search(features.begin(), features.end(), id.m_index))
       break;
   }
 
@@ -57,7 +57,7 @@ double NestedRectsCache::GetDistanceToFeatureMeters(FeatureID const & id) const
   if (auto const & info = id.m_mwmId.GetInfo())
   {
     auto const & rect = info->m_limitRect;
-    return max(MercatorBounds::DistanceOnEarth(rect.Center(), m_position),
+    return std::max(MercatorBounds::DistanceOnEarth(rect.Center(), m_position),
                GetRadiusMeters(static_cast<RectScale>(scale)));
   }
 
@@ -109,7 +109,7 @@ void NestedRectsCache::Update()
     };
     m_index.ForEachFeatureIDInRect(addId, rect, m_scale);
     for (auto & kv : bucket)
-      sort(kv.second.begin(), kv.second.end());
+      std::sort(kv.second.begin(), kv.second.end());
   }
 
   m_valid = true;

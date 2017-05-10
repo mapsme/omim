@@ -3,8 +3,8 @@
 #include "map/bookmark.hpp"
 #include "map/user_mark_container.hpp"
 
-#include "std/function.hpp"
-#include "std/unique_ptr.hpp"
+#include <functional>
+#include <memory>
 
 
 class Framework;
@@ -13,8 +13,8 @@ class PaintEvent;
 class BookmarkManager : private noncopyable
 {
   vector<BookmarkCategory *> m_categories;
-  string m_lastCategoryUrl;
-  string m_lastType;
+  std::string m_lastCategoryUrl;
+  std::string m_lastType;
 
   Framework & m_framework;
 
@@ -34,7 +34,7 @@ public:
 
   /// Scans and loads all kml files with bookmarks in WritableDir.
   void LoadBookmarks();
-  void LoadBookmark(string const & filePath);
+  void LoadBookmark(std::string const & filePath);
 
   void InitBookmarks();
 
@@ -45,21 +45,21 @@ public:
   void ReplaceBookmark(size_t catIndex, size_t bmIndex, BookmarkData const & bm);
 
   size_t LastEditedBMCategory();
-  string LastEditedBMType() const;
+  std::string LastEditedBMType() const;
 
   inline size_t GetBmCategoriesCount() const { return m_categories.size(); }
 
   /// @returns 0 if category is not found
   BookmarkCategory * GetBmCategory(size_t index) const;
 
-  size_t CreateBmCategory(string const & name);
+  size_t CreateBmCategory(std::string const & name);
 
   /// @name Delete bookmarks category with all bookmarks.
   /// @return true if category was deleted
   void DeleteBmCategory(CategoryIter i);
   bool DeleteBmCategory(size_t index);
 
-  typedef function<m2::AnyRectD const & (UserMarkType)> TTouchRectHolder;
+  typedef std::function<m2::AnyRectD const & (UserMarkType)> TTouchRectHolder;
 
   UserMark const * FindNearestUserMark(m2::AnyRectD const & rect) const;
   UserMark const * FindNearestUserMark(TTouchRectHolder const & holder) const;

@@ -8,11 +8,11 @@
 #include "base/string_utils.hpp"
 #include "base/stl_add.hpp"
 
-#include "std/chrono.hpp"
-#include "std/string.hpp"
-#include "std/vector.hpp"
-#include "std/map.hpp"
-#include "std/bind.hpp"
+#include <chrono>
+#include <string>
+#include <vector>
+#include <map>
+#include <functional>
 
 namespace dp
 {
@@ -110,7 +110,7 @@ GlyphGenerator::~GlyphGenerator()
   m_queue.clear();
 }
 
-void GlyphGenerator::WaitForGlyph(list<GlyphGenerationData> & queue)
+void GlyphGenerator::WaitForGlyph(std::list<GlyphGenerationData> & queue)
 {
   unique_lock<mutex> lock(m_queueLock);
   m_isSuspended = true;
@@ -130,7 +130,7 @@ void GlyphGenerator::Routine(GlyphGenerator * generator)
   ASSERT(generator != nullptr, ());
   while (generator->m_isRunning)
   {
-    list<GlyphGenerationData> queue;
+    std::list<GlyphGenerationData> queue;
     generator->WaitForGlyph(queue);
 
     // generate glyphs
@@ -153,7 +153,7 @@ void GlyphGenerator::GenerateGlyph(m2::RectU const & rect, GlyphManager::Glyph c
 GlyphIndex::GlyphIndex(m2::PointU size, ref_ptr<GlyphManager> mng)
   : m_packer(size)
   , m_mng(mng)
-  , m_generator(new GlyphGenerator(mng, bind(&GlyphIndex::OnGlyphGenerationCompletion, this, _1, _2)))
+  , m_generator(new GlyphGenerator(mng, std::bind(&GlyphIndex::OnGlyphGenerationCompletion, this, std::placeholders::_1, std::placeholders::_2)))
 {
   // Cache invalid glyph.
   GlyphKey const key = GlyphKey(m_mng->GetInvalidGlyph(GlyphManager::kDynamicGlyphSize).m_code, GlyphManager::kDynamicGlyphSize);

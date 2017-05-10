@@ -1,6 +1,6 @@
 #pragma once
 
-#include "std/cstdint.hpp"
+#include <cstdint>
 
 typedef uint32_t glConst;
 

@@ -8,11 +8,11 @@
 
 #include "platform/local_country_file.hpp"
 
-#include "std/set.hpp"
-#include "std/shared_ptr.hpp"
-#include "std/string.hpp"
-#include "std/utility.hpp"
-#include "std/vector.hpp"
+#include <set>
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
 /*
  * These tests are developed to simplify routing integration tests writing.
@@ -21,7 +21,7 @@
  *    to get a reference to IRouterComponents.
  *    It loads all the maps from directories Platform::WritableDir()
  *    and Platform::ResourcesDir() only once and then reuse it.
- *    Use GetOsrmComponents() or GetPedestrianComponents() with vector of maps parameter
+ *    Use GetOsrmComponents() or GetPedestrianComponents() with std::vector of maps parameter
  *    only if you want to test something on a special map set.
  * 2. Loading maps and calculating routes is a time consumption process.
  *    Do this only if you really need it.
@@ -42,18 +42,18 @@ using namespace routing;
 using namespace turns;
 using platform::LocalCountryFile;
 
-typedef pair<shared_ptr<Route>, IRouter::ResultCode> TRouteResult;
+typedef std::pair<std::shared_ptr<Route>, IRouter::ResultCode> TRouteResult;
 
 namespace integration
 {
-shared_ptr<model::FeaturesFetcher> CreateFeaturesFetcher(vector<LocalCountryFile> const & localFiles);
+shared_ptr<model::FeaturesFetcher> CreateFeaturesFetcher(std::vector<LocalCountryFile> const & localFiles);
 
 unique_ptr<storage::CountryInfoGetter> CreateCountryInfoGetter();
 
 class IRouterComponents
 {
 public:
-  IRouterComponents(vector<LocalCountryFile> const & localFiles)
+  IRouterComponents(std::vector<LocalCountryFile> const & localFiles)
     : m_featuresFetcher(CreateFeaturesFetcher(localFiles)), m_infoGetter(CreateCountryInfoGetter())
   {
   }
@@ -65,26 +65,26 @@ public:
   storage::CountryInfoGetter const & GetCountryInfoGetter() const noexcept { return *m_infoGetter; }
 
 protected:
-  shared_ptr<model::FeaturesFetcher> m_featuresFetcher;
+  std::shared_ptr<model::FeaturesFetcher> m_featuresFetcher;
   unique_ptr<storage::CountryInfoGetter> m_infoGetter;
 };
 
 void TestOnlineCrosses(ms::LatLon const & startPoint, ms::LatLon const & finalPoint,
-                       vector<string> const & expected, IRouterComponents & routerComponents);
+                       std::vector<std::string> const & expected, IRouterComponents & routerComponents);
 void TestOnlineFetcher(ms::LatLon const & startPoint, ms::LatLon const & finalPoint,
-                       vector<string> const & expected, IRouterComponents & routerComponents);
+                       std::vector<std::string> const & expected, IRouterComponents & routerComponents);
 
 /// Gets OSRM router components
 IRouterComponents & GetOsrmComponents();
-shared_ptr<IRouterComponents> GetOsrmComponents(vector<platform::LocalCountryFile> const & localFiles);
+shared_ptr<IRouterComponents> GetOsrmComponents(std::vector<platform::LocalCountryFile> const & localFiles);
 
 /// Gets pedestrian router components
 IRouterComponents & GetPedestrianComponents();
-shared_ptr<IRouterComponents> GetPedestrianComponents(vector<platform::LocalCountryFile> const & localFiles);
+shared_ptr<IRouterComponents> GetPedestrianComponents(std::vector<platform::LocalCountryFile> const & localFiles);
 
 /// Gets bicycle router components.
 IRouterComponents & GetBicycleComponents();
-shared_ptr<IRouterComponents> GetBicycleComponents(vector<platform::LocalCountryFile> const & localFiles);
+shared_ptr<IRouterComponents> GetBicycleComponents(std::vector<platform::LocalCountryFile> const & localFiles);
 
 TRouteResult CalculateRoute(IRouterComponents const & routerComponents,
                             m2::PointD const & startPoint, m2::PointD const & startDirection,
@@ -132,7 +132,7 @@ public:
   const TestTurn & TestNotValid() const;
   const TestTurn & TestPoint(m2::PointD const & expectedPoint, double inaccuracyMeters = 3.) const;
   const TestTurn & TestDirection(TurnDirection expectedDirection) const;
-  const TestTurn & TestOneOfDirections(set<TurnDirection> const & expectedDirections) const;
+  const TestTurn & TestOneOfDirections(std::set<TurnDirection> const & expectedDirections) const;
   const TestTurn & TestRoundAboutExitNum(uint32_t expectedRoundAboutExitNum) const;
 };
 
@@ -140,7 +140,7 @@ public:
 /// inaccuracy is set in meters.
 TestTurn GetNthTurn(Route const & route, uint32_t turnNumber);
 
-void TestCurrentStreetName(routing::Route const & route, string const & expectedStreetName);
+void TestCurrentStreetName(routing::Route const & route, std::string const & expectedStreetName);
 
-void TestNextStreetName(routing::Route const & route, string const & expectedStreetName);
+void TestNextStreetName(routing::Route const & route, std::string const & expectedStreetName);
 }  // namespace integration

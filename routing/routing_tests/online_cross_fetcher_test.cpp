@@ -5,9 +5,9 @@
 
 #include "geometry/point2d.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/string.hpp"
-#include "std/vector.hpp"
+#include <algorithm>
+#include <string>
+#include <vector>
 
 using namespace routing;
 
@@ -23,27 +23,27 @@ UNIT_TEST(UrlGeneratorTest)
 
 UNIT_TEST(GoodResponseParse)
 {
-  vector<m2::PointD> outPoints;
+  std::vector<m2::PointD> outPoints;
   TEST(ParseResponse(R"({"used_mwms":[[39.522671,94.009263], [37.4809, 67.7244]]})", outPoints),
        ("Valid response can't be parsed"));
   TEST_EQUAL(outPoints.size(), 2, ());
   TEST(
-      find(outPoints.begin(), outPoints.end(), m2::PointD(39.522671, 94.009263)) != outPoints.end(),
-      ("Can't find point in server's response."));
-  TEST(find(outPoints.begin(), outPoints.end(), m2::PointD(37.4809, 67.7244)) != outPoints.end(),
-       ("Can't find point in server's response."));
+      std::find(outPoints.begin(), outPoints.end(), m2::PointD(39.522671, 94.009263)) != outPoints.end(),
+      ("Can't std::find point in server's response."));
+  TEST(std::find(outPoints.begin(), outPoints.end(), m2::PointD(37.4809, 67.7244)) != outPoints.end(),
+       ("Can't std::find point in server's response."));
 }
 
 UNIT_TEST(BadResponseParse)
 {
-  vector<m2::PointD> outPoints;
+  std::vector<m2::PointD> outPoints;
   TEST(!ParseResponse("{\"used_mwms\":[]}", outPoints), ("Inval response should not be parsed"));
   TEST_EQUAL(outPoints.size(), 0, ("Found mwm points in invalid request"));
 }
 
 UNIT_TEST(GarbadgeInputToResponseParser)
 {
-  vector<m2::PointD> outPoints;
+  std::vector<m2::PointD> outPoints;
   TEST(!ParseResponse("{\"usedsfblbvlshbvldshbvfvmdfknvksvbksvk", outPoints),
        ("Malformed response should not be processed."));
   TEST_EQUAL(outPoints.size(), 0, ("Found mwm points in invalid request"));
@@ -51,9 +51,9 @@ UNIT_TEST(GarbadgeInputToResponseParser)
 
 UNIT_TEST(OnlineAbsentFetcherSingleMwmTest)
 {
-  OnlineAbsentCountriesFetcher fetcher([](m2::PointD const & p){return "A";}, [](string const &){return false;});
+  OnlineAbsentCountriesFetcher fetcher([](m2::PointD const & p){return "A";}, [](std::string const &){return false;});
   fetcher.GenerateRequest({1, 1}, {2, 2});
-  vector<string> countries;
+  std::vector<std::string> countries;
   fetcher.GetAbsentCountries(countries);
   TEST(countries.empty(), ());
 }

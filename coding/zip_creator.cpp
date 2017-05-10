@@ -10,9 +10,9 @@
 #include "base/logging.hpp"
 #include "base/scope_guard.hpp"
 
-#include "std/vector.hpp"
-#include "std/ctime.hpp"
-#include "std/algorithm.hpp"
+#include <vector>
+#include <ctime>
+#include <algorithm>
 
 #include "3party/minizip/zip.h"
 
@@ -25,7 +25,7 @@ class ZipHandle
   zipFile m_zipFileHandle;
 
 public:
-  ZipHandle(string const & filePath)
+  ZipHandle(std::string const & filePath)
   {
     m_zipFileHandle = zipOpen(filePath.c_str(), 0);
   }
@@ -43,7 +43,7 @@ void CreateTMZip(tm_zip & res)
 {
   time_t rawtime;
   struct tm * timeinfo;
-  time ( &rawtime );
+  std::time ( &rawtime );
   timeinfo = localtime ( &rawtime );
   res.tm_sec = timeinfo->tm_sec;
   res.tm_min = timeinfo->tm_min;
@@ -55,7 +55,7 @@ void CreateTMZip(tm_zip & res)
 
 }
 
-bool CreateZipFromPathDeflatedAndDefaultCompression(string const & filePath, string const & zipFilePath)
+bool CreateZipFromPathDeflatedAndDefaultCompression(std::string const & filePath, std::string const & zipFilePath)
 {
   // 2. Open zip file for writing.
   MY_SCOPE_GUARD(outFileGuard, bind(&my::DeleteFileX, cref(zipFilePath)));
@@ -66,7 +66,7 @@ bool CreateZipFromPathDeflatedAndDefaultCompression(string const & filePath, str
   zip_fileinfo zipInfo = {};
   CreateTMZip(zipInfo.tmz_date);
 
-  string fileName = filePath;
+  std::string fileName = filePath;
   my::GetNameFromFullPath(fileName);
   if (!strings::IsASCIIString(fileName))
     fileName = "MapsMe.kml";
@@ -87,7 +87,7 @@ bool CreateZipFromPathDeflatedAndDefaultCompression(string const & filePath, str
     char buffer[ZIP_FILE_BUFFER_SIZE];
     while (currSize < fileSize)
     {
-      unsigned int const toRead = min(ZIP_FILE_BUFFER_SIZE, static_cast<unsigned int>(fileSize - currSize));
+      unsigned int const toRead = std::min(ZIP_FILE_BUFFER_SIZE, static_cast<unsigned int>(fileSize - currSize));
       file.Read(currSize, buffer, toRead);
 
       if (ZIP_OK != zipWriteInFileInZip(zip.Handle(), buffer, toRead))

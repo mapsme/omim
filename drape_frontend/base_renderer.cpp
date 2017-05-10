@@ -1,7 +1,7 @@
 #include "drape_frontend/base_renderer.hpp"
 #include "drape_frontend/message_subclasses.hpp"
 
-#include "std/utility.hpp"
+#include <utility>
 
 namespace df
 {
@@ -65,12 +65,12 @@ void BaseRenderer::SetRenderingEnabled(bool const isEnabled)
     return;
 
   // here we have to wait for completion of internal SetRenderingEnabled
-  mutex completionMutex;
-  condition_variable completionCondition;
+  std::mutex completionMutex;
+  std::condition_variable completionCondition;
   bool notified = false;
   m_renderingEnablingCompletionHandler = [&]()
   {
-    lock_guard<mutex> lock(completionMutex);
+    std::lock_guard<std::mutex> lock(completionMutex);
     notified = true;
     completionCondition.notify_one();
   };
@@ -89,7 +89,7 @@ void BaseRenderer::SetRenderingEnabled(bool const isEnabled)
     CancelMessageWaiting();
   }
 
-  unique_lock<mutex> lock(completionMutex);
+  std::unique_lock<std::mutex> lock(completionMutex);
   completionCondition.wait(lock, [&notified] { return notified; });
 }
 
@@ -106,7 +106,7 @@ void BaseRenderer::CheckRenderingEnabled()
 
     if (m_wasContextReset)
     {
-      EnableMessageFiltering(bind(&BaseRenderer::FilterGLContextDependentMessage, this, _1));
+      EnableMessageFiltering(std::bind(&BaseRenderer::FilterGLContextDependentMessage, this, std::placeholders::_1));
       OnContextDestroy();
     }
     else
@@ -121,7 +121,7 @@ void BaseRenderer::CheckRenderingEnabled()
     Notify();
 
     // wait for signal
-    unique_lock<mutex> lock(m_renderingEnablingMutex);
+    std::unique_lock<std::mutex> lock(m_renderingEnablingMutex);
     m_renderingEnablingCondition.wait(lock, [this] { return m_wasNotified; });
 
     // here rendering is enabled again
@@ -155,7 +155,7 @@ void BaseRenderer::Notify()
 
 void BaseRenderer::WakeUp()
 {
-  lock_guard<mutex> lock(m_renderingEnablingMutex);
+  std::lock_guard<std::mutex> lock(m_renderingEnablingMutex);
   m_wasNotified = true;
   m_renderingEnablingCondition.notify_one();
 }

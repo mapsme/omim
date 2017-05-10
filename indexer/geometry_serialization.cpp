@@ -6,10 +6,10 @@
 
 #include "geometry/pointu_to_uint64.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/bind.hpp"
-#include "std/iterator.hpp"
-#include "std/stack.hpp"
+#include <algorithm>
+#include <functional>
+#include <iterator>
+#include <stack>
 
 
 namespace serial
@@ -44,7 +44,7 @@ namespace serial
     typedef buffer_vector<m2::PointU, 32> upoints_t;
   }
 
-  void Encode(EncodeFunT fn, vector<m2::PointD> const & points,
+  void Encode(EncodeFunT fn, std::vector<m2::PointD> const & points,
               CodingParams const & params, DeltasT & deltas)
   {
     size_t const count = points.size();
@@ -52,8 +52,8 @@ namespace serial
     pts::upoints_t upoints;
     upoints.reserve(count);
 
-    transform(points.begin(), points.end(), back_inserter(upoints),
-              bind(&pts::D2U, _1, params.GetCoordBits()));
+    std::transform(points.begin(), points.end(), std::back_inserter(upoints),
+              std::bind(&pts::D2U, std::placeholders::_1, params.GetCoordBits()));
 
     ASSERT ( deltas.empty(), () );
     deltas.resize(count);
@@ -80,8 +80,8 @@ namespace serial
       points.reserve(count);
     }
 
-    transform(upoints.begin(), upoints.begin() + adapt.size(), back_inserter(points),
-              bind(&pts::U2D, _1, params.GetCoordBits()));
+    std::transform(upoints.begin(), upoints.begin() + adapt.size(), std::back_inserter(points),
+              std::bind(&pts::U2D, std::placeholders::_1, params.GetCoordBits()));
   }
 
   void Decode(DecodeFunT fn, DeltasT const & deltas, CodingParams const & params,
@@ -91,7 +91,7 @@ namespace serial
   }
 
   void Decode(DecodeFunT fn, DeltasT const & deltas, CodingParams const & params,
-              vector<m2::PointD> & points, size_t reserveF)
+              std::vector<m2::PointD> & points, size_t reserveF)
   {
     DecodeImpl(fn, deltas, params, points, reserveF);
   }
@@ -136,7 +136,7 @@ namespace serial
     };
   }
 
-  void TrianglesChainSaver::operator() (TPoint arr[3], vector<TEdge> edges)
+  void TrianglesChainSaver::operator() (TPoint arr[3], std::vector<TEdge> edges)
   {
     m_buffers.push_back(TBuffer());
     MemWriter<TBuffer> writer(m_buffers.back());
@@ -147,9 +147,9 @@ namespace serial
     TEdge curr = edges.front();
     curr.m_delta = EncodeDelta(arr[2], arr[1]);
 
-    sort(edges.begin(), edges.end(), edge_less_p0());
+    std::sort(edges.begin(), edges.end(), edge_less_p0());
 
-    stack<TEdge> st;
+    std::stack<TEdge> st;
     while (true)
     {
       CHECK_EQUAL ( curr.m_delta >> 62, 0, () );
@@ -157,7 +157,7 @@ namespace serial
 
       // find next edges
       int const nextNode = curr.m_p[1];
-      auto i = lower_bound(edges.begin(), edges.end(), nextNode, edge_less_p0());
+      auto i = std::lower_bound(edges.begin(), edges.end(), nextNode, edge_less_p0());
       bool const found = (i != edges.end() && i->m_p[0] == nextNode);
       if (found)
       {
@@ -169,7 +169,7 @@ namespace serial
         // first child
         delta |= (one << i->m_side);
 
-        vector<TEdge>::iterator j = i+1;
+        std::vector<TEdge>::iterator j = i+1;
         if (j != edges.end() && j->m_p[0] == nextNode)
         {
           // second child
@@ -214,7 +214,7 @@ namespace serial
     points.push_back(DecodeDelta(deltas[1], points.back()));
     points.push_back(DecodeDelta(deltas[2] >> 2, points.back()));
 
-    stack<size_t> st;
+    std::stack<size_t> st;
 
     size_t ind = 2;
     uint8_t treeBits = deltas[2] & 3;

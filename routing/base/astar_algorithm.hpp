@@ -9,6 +9,8 @@
 #include "std/queue.hpp"
 #include "std/vector.hpp"
 
+using namespace std;
+
 namespace routing
 {
 

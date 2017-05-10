@@ -65,7 +65,7 @@ public:
   {
     for (size_t i = 0; i < input.size(); ++i)
     {
-      string result;
+      std::string result;
       m_finder.GetLocality(MercatorBounds::FromLatLon(input[i]), result);
       TEST_EQUAL(result, results[i], ());
     }

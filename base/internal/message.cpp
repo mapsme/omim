@@ -6,9 +6,9 @@
 std::string DebugPrint(std::string const & t)
 {
 #ifdef OMIM_OS_WINDOWS
-  string res;
+  std::string res;
   res.push_back('\'');
-  for (string::const_iterator it = t.begin(); it != t.end(); ++it)
+  for (std::string::const_iterator it = t.begin(); it != t.end(); ++it)
   {
     static char const toHex[] = "0123456789abcdef";
     unsigned char const c = static_cast<unsigned char>(*it);

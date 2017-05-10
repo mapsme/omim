@@ -10,10 +10,10 @@
 #include "base/scope_guard.hpp"
 #include "platform/platform.hpp"
 
-#include "std/sstream.hpp"
+#include <sstream>
 #include "std/target_os.hpp"
-#include "std/vector.hpp"
-#include "std/string.hpp"
+#include <vector>
+#include <string>
 
 #include <QtCore/QProcess>
 #include <QtCore/QDebug>
@@ -41,7 +41,7 @@ using namespace dp;
 #endif
 
 
-string DebugPrint(QString const & s)
+std::string DebugPrint(QString const & s)
 {
   return s.toStdString();
 }
@@ -60,7 +60,7 @@ struct ShaderEnumGuard
   }
 };
 
-void WriteShaderToFile(QTemporaryFile & file, string shader)
+void WriteShaderToFile(QTemporaryFile & file, std::string shader)
 {
   EXPECTGL(glGetInteger(gl_const::GLMaxFragmentTextures)).WillRepeatedly(Return(8));
   PreprocessShaderSource(shader);
@@ -98,19 +98,19 @@ void RunShaderTest(QString const & glslCompiler,
   }
 }
 
-void ForEachShader(string const & defines,
-                   vector<string> const & shaders,
+void ForEachShader(std::string const & defines,
+                   std::vector<std::string> const & shaders,
                    QString const & glslCompiler,
                    TPrepareProcessFn const & procPrepare,
                    TPrepareArgumentsFn const & argsPrepare,
                    TSuccessComparator const & successComparator,
                    QTextStream & errorLog)
 {
-  for (string src : shaders)
+  for (std::string src : shaders)
   {
     QTemporaryFile srcFile;
     TEST(srcFile.open(), ("Temporary File can't be created!"));
-    string fullSrc = defines + src;
+    std::string fullSrc = defines + src;
     WriteShaderToFile(srcFile, fullSrc);
     RunShaderTest(glslCompiler, srcFile.fileName(),
                   procPrepare, argsPrepare, successComparator, errorLog);
@@ -120,7 +120,7 @@ void ForEachShader(string const & defines,
 UNIT_TEST(CompileShaders_Test)
 {
   Platform & platform = GetPlatform();
-  string glslCompilerPath = platform.ResourcesDir() + "shaders_compiler/" SHADERS_COMPILER;
+  std::string glslCompilerPath = platform.ResourcesDir() + "shaders_compiler/" SHADERS_COMPILER;
   if (!platform.IsFileExistsByFullPath(glslCompilerPath))
   {
     glslCompilerPath = platform.WritableDir() + "shaders_compiler/" SHADERS_COMPILER;
@@ -141,7 +141,7 @@ UNIT_TEST(CompileShaders_Test)
                        };
   auto successComparator = [] (QString const & output) { return output.indexOf("Success") != -1; };
 
-  string defines = "";
+  std::string defines = "";
   ForEachShader(defines, gpu::VertexEnum, compilerPath, [] (QProcess const &) {},
                 argsPrepareFn, successComparator, ss);
   shaderType = "-f";
@@ -180,7 +180,7 @@ void TestMaliShaders(QString const & driver,
                      QString const & release)
 {
   Platform & platform = GetPlatform();
-  string glslCompilerPath = platform.ResourcesDir() + "shaders_compiler/" MALI_SHADERS_COMPILER;
+  std::string glslCompilerPath = platform.ResourcesDir() + "shaders_compiler/" MALI_SHADERS_COMPILER;
   TEST(platform.IsFileExistsByFullPath(glslCompilerPath), ("GLSL MALI compiler not found"));
 
   QString errorLog;
@@ -208,7 +208,7 @@ void TestMaliShaders(QString const & driver,
                               return output.indexOf("Compilation succeeded.") != -1;
                             };
 
-  string defines = "";
+  std::string defines = "";
   QString const compilerPath = QString::fromStdString(glslCompilerPath);
   ForEachShader(defines, gpu::VertexEnum, compilerPath, procPrepare, argForming, succesComparator, ss);
   shaderType = "-f";
@@ -221,7 +221,7 @@ void TestMaliShaders(QString const & driver,
 UNIT_TEST(MALI_CompileShaders_Test)
 {
   typedef pair<QString, QString> TReleaseVersion;
-  typedef vector<TReleaseVersion> TReleases;
+  typedef std::vector<TReleaseVersion> TReleases;
 
   struct DriverSet
   {
@@ -229,7 +229,7 @@ UNIT_TEST(MALI_CompileShaders_Test)
     QString m_driverName;
   };
 
-  vector<DriverSet> models(3);
+  std::vector<DriverSet> models(3);
   models[0].m_driverName = "Mali-400_r4p0-00rel1";
   models[1].m_driverName = "Mali-T600_r4p0-00rel0";
   models[2].m_driverName = "Mali-T600_r4p1-00rel0";

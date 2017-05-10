@@ -1,11 +1,11 @@
 #pragma once
 
-#include "std/noncopyable.hpp"
+#include <boost/noncopyable.hpp>
 
 namespace dp
 {
 
-class SupportManager : public noncopyable
+class SupportManager : public boost::noncopyable
 {
 public:
   // This singleton must be available only from rendering threads.

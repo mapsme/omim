@@ -7,6 +7,7 @@
 #include "base/assert.hpp"
 #include "base/bits.hpp"
 #include "base/macros.hpp"
+#include "base/stl_add.hpp"
 
 namespace trie
 {
@@ -26,12 +27,12 @@ public:
   }
 
   // trie::Iterator overrides:
-  unique_ptr<Iterator<TValueList>> Clone() const override
+  std::unique_ptr<Iterator<TValueList>> Clone() const override
   {
-    return make_unique<LeafIterator0<TValueList, TSerializer>>(*this);
+    return my::make_unique<LeafIterator0<TValueList, TSerializer>>(*this);
   }
 
-  unique_ptr<Iterator<TValueList>> GoToEdge(size_t /* i */) const override
+  std::unique_ptr<Iterator<TValueList>> GoToEdge(size_t /* i */) const override
   {
     ASSERT(false, ());
     return nullptr;
@@ -53,12 +54,12 @@ public:
   }
 
   // trie::Iterator overrides:
-  unique_ptr<Iterator<TValueList>> Clone() const override
+  std::unique_ptr<Iterator<TValueList>> Clone() const override
   {
-    return make_unique<Iterator0<TReader, TValueList, TSerializer>>(*this);
+    return my::make_unique<Iterator0<TReader, TValueList, TSerializer>>(*this);
   }
 
-  unique_ptr<Iterator<TValueList>> GoToEdge(size_t i) const override
+  std::unique_ptr<Iterator<TValueList>> GoToEdge(size_t i) const override
   {
     ASSERT_LESS(i, this->m_edge.size(), ());
     uint32_t const offset = m_edgeInfo[i].m_offset;
@@ -66,11 +67,11 @@ public:
 
     if (m_edgeInfo[i].m_isLeaf)
     {
-      return make_unique<LeafIterator0<TValueList, TSerializer>>(m_reader.SubReader(offset, size),
+      return my::make_unique<LeafIterator0<TValueList, TSerializer>>(m_reader.SubReader(offset, size),
                                                                  m_serializer);
     }
 
-    return make_unique<Iterator0<TReader, TValueList, TSerializer>>(
+    return my::make_unique<Iterator0<TReader, TValueList, TSerializer>>(
         m_reader.SubReader(offset, size), this->m_edge[i].m_label.back(), m_serializer);
   }
 
@@ -150,9 +151,9 @@ private:
 
 // Returns iterator to the root of the trie.
 template <class TReader, class TValueList, class TSerializer>
-unique_ptr<Iterator<TValueList>> ReadTrie(TReader const & reader, TSerializer const & serializer)
+std::unique_ptr<Iterator<TValueList>> ReadTrie(TReader const & reader, TSerializer const & serializer)
 {
-  return make_unique<Iterator0<TReader, TValueList, TSerializer>>(reader, kDefaultChar, serializer);
+  return my::make_unique<Iterator0<TReader, TValueList, TSerializer>>(reader, kDefaultChar, serializer);
 }
 
 }  // namespace trie

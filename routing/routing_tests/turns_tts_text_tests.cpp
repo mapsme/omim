@@ -3,8 +3,8 @@
 #include "routing/turns_sound_settings.hpp"
 #include "routing/turns_tts_text.hpp"
 
-#include "std/cstring.hpp"
-#include "std/string.hpp"
+#include <cstring>
+#include <string>
 
 namespace
 {
@@ -108,7 +108,7 @@ UNIT_TEST(GetDirectionTextIdTest)
 
 UNIT_TEST(GetTtsTextTest)
 {
-  string const engShortJson =
+  std::string const engShortJson =
       "\
       {\
       \"in_300_meters\":\"In 300 meters.\",\
@@ -119,7 +119,7 @@ UNIT_TEST(GetTtsTextTest)
       \"you_have_reached_the_destination\":\"You have reached the destination.\"\
       }";
 
-  string const rusShortJson =
+  std::string const rusShortJson =
       "\
       {\
       \"in_300_meters\":\"Через 300 метров.\",\

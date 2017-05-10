@@ -13,8 +13,8 @@
 
 #include "base/logging.hpp"
 
-#include "std/function.hpp"
-#include "std/bind.hpp"
+#include <functional>
+#include <functional>
 
 namespace df
 {

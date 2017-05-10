@@ -4,7 +4,7 @@
 
 #include "drape/pointers.hpp"
 
-#include "std/deque.hpp"
+#include <deque>
 
 namespace df
 {
@@ -23,8 +23,8 @@ public:
   bool HasProperty(Object object, ObjectProperty property) const override;
   bool HasTargetProperty(Object object, ObjectProperty property) const override;
 
-  string GetCustomType() const override;
-  void SetCustomType(string const & type);
+  std::string GetCustomType() const override;
+  void SetCustomType(std::string const & type);
 
   void SetMaxDuration(double maxDuration) override;
   void SetMinDuration(double minDuration) override;
@@ -47,11 +47,11 @@ public:
 private:
   void ObtainObjectProperties();
 
-  deque<drape_ptr<Animation>> m_animations;
+  std::deque<drape_ptr<Animation>> m_animations;
   TAnimObjects m_objects;
-  map<Object, TObjectProperties> m_properties;
+  std::map<Object, TObjectProperties> m_properties;
 
-  string m_customType;
+  std::string m_customType;
 };
 
 } // namespace df

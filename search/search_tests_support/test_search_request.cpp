@@ -11,8 +11,8 @@ namespace search
 {
 namespace tests_support
 {
-TestSearchRequest::TestSearchRequest(TestSearchEngine & engine, string const & query,
-                                     string const & locale, Mode mode, m2::RectD const & viewport)
+TestSearchRequest::TestSearchRequest(TestSearchEngine & engine, std::string const & query,
+                                     std::string const & locale, Mode mode, m2::RectD const & viewport)
   : m_engine(engine), m_viewport(viewport)
 {
   m_params.m_query = query;
@@ -28,8 +28,8 @@ TestSearchRequest::TestSearchRequest(TestSearchEngine & engine, SearchParams par
   SetUpCallbacks();
 }
 
-TestSearchRequest::TestSearchRequest(TestSearchEngine & engine, string const & query,
-                                     string const & locale, Mode mode, m2::RectD const & viewport,
+TestSearchRequest::TestSearchRequest(TestSearchEngine & engine, std::string const & query,
+                                     std::string const & locale, Mode mode, m2::RectD const & viewport,
                                      SearchParams::TOnStarted onStarted,
                                      SearchParams::TOnResults onResults)
   : m_engine(engine), m_viewport(viewport)
@@ -47,16 +47,16 @@ void TestSearchRequest::Run()
   Wait();
 }
 
-steady_clock::duration TestSearchRequest::ResponseTime() const
+std::chrono::steady_clock::duration TestSearchRequest::ResponseTime() const
 {
-  lock_guard<mutex> lock(m_mu);
+  std::lock_guard<std::mutex> lock(m_mu);
   CHECK(m_done, ("This function may be called only when request is processed."));
   return m_endTime - m_startTime;
 }
 
 vector<search::Result> const & TestSearchRequest::Results() const
 {
-  lock_guard<mutex> lock(m_mu);
+  std::lock_guard<std::mutex> lock(m_mu);
   CHECK(m_done, ("This function may be called only when request is processed."));
   return m_results;
 }
@@ -68,25 +68,25 @@ void TestSearchRequest::Start()
 
 void TestSearchRequest::Wait()
 {
-  unique_lock<mutex> lock(m_mu);
+  std::unique_lock<std::mutex> lock(m_mu);
   m_cv.wait(lock, [this]() { return m_done; });
 }
 
 void TestSearchRequest::SetUpCallbacks()
 {
-  m_params.m_onStarted = bind(&TestSearchRequest::OnStarted, this);
-  m_params.m_onResults = bind(&TestSearchRequest::OnResults, this, _1);
+  m_params.m_onStarted = std::bind(&TestSearchRequest::OnStarted, this);
+  m_params.m_onResults = std::bind(&TestSearchRequest::OnResults, this, std::placeholders::_1);
 }
 
 void TestSearchRequest::OnStarted()
 {
-  lock_guard<mutex> lock(m_mu);
+  std::lock_guard<std::mutex> lock(m_mu);
   m_startTime = m_timer.TimeElapsed();
 }
 
 void TestSearchRequest::OnResults(search::Results const & results)
 {
-  lock_guard<mutex> lock(m_mu);
+  std::lock_guard<std::mutex> lock(m_mu);
   if (results.IsEndMarker())
   {
     m_done = true;

@@ -15,15 +15,15 @@
 #include "base/mutex.hpp"
 #include "base/thread.hpp"
 
-#include "std/atomic.hpp"
-#include "std/condition_variable.hpp"
-#include "std/function.hpp"
-#include "std/mutex.hpp"
-#include "std/queue.hpp"
-#include "std/string.hpp"
-#include "std/unique_ptr.hpp"
-#include "std/vector.hpp"
-#include "std/weak_ptr.hpp"
+#include <atomic>
+#include <condition_variable>
+#include <functional>
+#include <mutex>
+#include <queue>
+#include <string>
+#include <memory>
+#include <vector>
+#include <memory>
 
 class Index;
 
@@ -66,7 +66,7 @@ private:
 
   Processor * m_processor;
   bool m_cancelled;
-  mutex m_mu;
+  std::mutex m_mu;
 
   DISALLOW_COPY_AND_MOVE(ProcessorHandle);
 };
@@ -81,9 +81,9 @@ public:
   struct Params
   {
     Params();
-    Params(string const & locale, size_t numThreads);
+    Params(std::string const & locale, size_t numThreads);
 
-    string m_locale;
+    std::string m_locale;
 
     // This field controls number of threads SearchEngine will create
     // to process queries. Use this field wisely as large values may
@@ -93,18 +93,18 @@ public:
 
   // Doesn't take ownership of index and categories.
   Engine(Index & index, CategoriesHolder const & categories,
-         storage::CountryInfoGetter const & infoGetter, unique_ptr<ProcessorFactory> factory,
+         storage::CountryInfoGetter const & infoGetter, std::unique_ptr<ProcessorFactory> factory,
          Params const & params);
   ~Engine();
 
   // Posts search request to the queue and returns its handle.
-  weak_ptr<ProcessorHandle> Search(SearchParams const & params, m2::RectD const & viewport);
+  std::weak_ptr<ProcessorHandle> Search(SearchParams const & params, m2::RectD const & viewport);
 
   // Posts request to support old format to the queue.
   void SetSupportOldFormat(bool support);
 
   // Sets default locale on all query processors.
-  void SetLocale(string const & locale);
+  void SetLocale(std::string const & locale);
 
   // Posts request to clear caches to the queue.
   void ClearCaches();
@@ -112,7 +112,7 @@ public:
 private:
   struct Message
   {
-    using TFn = function<void(Processor & processor)>;
+    using TFn = std::function<void(Processor & processor)>;
 
     enum Type
     {
@@ -136,11 +136,11 @@ private:
     // be taken before access this queue.  Messages are ordered here
     // by a timestamp and all timestamps are less than timestamps in
     // the global |m_messages| queue.
-    queue<Message> m_messages;
+    std::queue<Message> m_messages;
 
     // This field is thread-specific and *CAN NOT* be accessed by
     // other threads.
-    unique_ptr<Processor> m_processor;
+    std::unique_ptr<Processor> m_processor;
   };
 
   // *ALL* following methods are executed on the m_threads threads.
@@ -157,14 +157,14 @@ private:
   void DoSearch(SearchParams const & params, m2::RectD const & viewport,
                 shared_ptr<ProcessorHandle> handle, Processor & processor);
 
-  vector<Suggest> m_suggests;
+  std::vector<Suggest> m_suggests;
 
   bool m_shutdown;
-  mutex m_mu;
-  condition_variable m_cv;
+  std::mutex m_mu;
+  std::condition_variable m_cv;
 
-  queue<Message> m_messages;
-  vector<Context> m_contexts;
-  vector<threads::SimpleThread> m_threads;
+  std::queue<Message> m_messages;
+  std::vector<Context> m_contexts;
+  std::vector<threads::SimpleThread> m_threads;
 };
 }  // namespace search

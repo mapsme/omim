@@ -8,15 +8,15 @@
 #include "base/exception.hpp"
 #include "base/stl_add.hpp"
 
-#include "std/string.hpp"
-#include "std/type_traits.hpp"
+#include <string>
+#include <type_traits>
 
 
 /// This function writes, using optimal bytes count.
 /// Pass any integral type and it will write platform-independent.
 template <typename T, typename TSink> void WriteVarUint(TSink & dst, T value)
 {
-  static_assert(is_unsigned<T>::value, "");
+  static_assert(std::is_unsigned<T>::value, "");
   while (value > 127)
   {
     WriteToSink(dst, static_cast<uint8_t>((value & 127) | 128));
@@ -143,11 +143,11 @@ template <typename TSource> uint64_t ReadVarUint(TSource & src, uint64_t const *
 
 template <typename T, typename TSource> T ReadVarUint(TSource & src)
 {
-  static_assert((is_same<T, uint32_t>::value || is_same<T, uint64_t>::value), "");
+  static_assert((std::is_same<T, uint32_t>::value || std::is_same<T, uint64_t>::value), "");
   return ::impl::ReadVarUint(src, static_cast<T const *>(NULL));
 
   /* Generic code commented out.
-  static_assert(is_unsigned<T>::value, "");
+  static_assert(std::is_unsigned<T>::value, "");
   T res = 0;
   unsigned int bits = 0;
   for (; bits < sizeof(T) * 8 - 7; bits += 7)
@@ -169,14 +169,14 @@ template <typename T, typename TSource> T ReadVarUint(TSource & src)
 
 template <typename T, typename TSink> void WriteVarInt(TSink & dst, T value)
 {
-  static_assert(is_signed<T>::value, "");
+  static_assert(std::is_signed<T>::value, "");
   WriteVarUint(dst, bits::ZigZagEncode(value));
 }
 
 template <typename T, typename TSource> T ReadVarInt(TSource & src)
 {
-  static_assert(is_signed<T>::value, "");
-  return bits::ZigZagDecode(ReadVarUint<typename make_unsigned<T>::type>(src));
+  static_assert(std::is_signed<T>::value, "");
+  return bits::ZigZagDecode(ReadVarUint<typename std::make_unsigned<T>::type>(src));
 }
 
 DECLARE_EXCEPTION(ReadVarIntException, RootException);

@@ -13,7 +13,7 @@
 
 #include "base/logging.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 namespace df
 {
@@ -104,22 +104,22 @@ void GpsTrackRenderer::ClearRenderData()
   m_needUpdate = true;
 }
 
-void GpsTrackRenderer::UpdatePoints(vector<GpsTrackPoint> const & toAdd, vector<uint32_t> const & toRemove)
+void GpsTrackRenderer::UpdatePoints(std::vector<GpsTrackPoint> const & toAdd, std::vector<uint32_t> const & toRemove)
 {
   bool wasChanged = false;
   if (!toRemove.empty())
   {
     auto removePredicate = [&toRemove](GpsTrackPoint const & pt)
     {
-      return find(toRemove.begin(), toRemove.end(), pt.m_id) != toRemove.end();
+      return std::find(toRemove.begin(), toRemove.end(), pt.m_id) != toRemove.end();
     };
-    m_points.erase(remove_if(m_points.begin(), m_points.end(), removePredicate), m_points.end());
+    m_points.erase(std::remove_if(m_points.begin(), m_points.end(), removePredicate), m_points.end());
     wasChanged = true;
   }
 
   if (!toAdd.empty())
   {
-    ASSERT(is_sorted(toAdd.begin(), toAdd.end(), GpsPointsSortPredicate), ());
+    ASSERT(std::is_sorted(toAdd.begin(), toAdd.end(), GpsPointsSortPredicate), ());
     if (!m_points.empty())
       ASSERT(GpsPointsSortPredicate(m_points.back(), toAdd.front()), ());
     m_points.insert(m_points.end(), toAdd.begin(), toAdd.end());
@@ -177,7 +177,7 @@ dp::Color GpsTrackRenderer::CalculatePointColor(size_t pointIndex, m2::PointD co
   double const dist = (curPoint - start.m_point).Length();
   double const td = my::clamp(dist / length, 0.0, 1.0);
 
-  double const speed = max(start.m_speedMPS * (1.0 - td) + end.m_speedMPS * td, 0.0);
+  double const speed = std::max(start.m_speedMPS * (1.0 - td) + end.m_speedMPS * td, 0.0);
   dp::Color const color = GetColorBySpeed(speed);
   return dp::Color(color.GetRed(), color.GetGreen(), color.GetBlue(), alpha);
 }

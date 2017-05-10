@@ -3,7 +3,9 @@
 #include "base/assert.hpp"
 #include "base/logging.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
+
+using namespace std;
 
 namespace
 {
@@ -31,7 +33,7 @@ size_t constexpr kItemBlockSize = 1000;
 
 size_t const GpsTrack::kInvalidId = GpsTrackCollection::kInvalidId;
 
-GpsTrack::GpsTrack(string const & filePath, size_t maxItemCount, hours duration,
+GpsTrack::GpsTrack(string const & filePath, size_t maxItemCount, chrono::hours duration,
                    unique_ptr<IGpsTrackFilter> && filter)
   : m_maxItemCount(maxItemCount)
   , m_filePath(filePath)
@@ -43,7 +45,7 @@ GpsTrack::GpsTrack(string const & filePath, size_t maxItemCount, hours duration,
   , m_threadWakeup(false)
 {
   if (!m_filter)
-    m_filter = make_unique<GpsTrackNullFilter>();
+    m_filter = my::make_unique<GpsTrackNullFilter>();
 
   ASSERT_GREATER(m_maxItemCount, 0, ());
   ASSERT(!m_filePath.empty(), ());
@@ -91,7 +93,7 @@ void GpsTrack::Clear()
   ScheduleTask();
 }
 
-void GpsTrack::SetDuration(hours duration)
+void GpsTrack::SetDuration(chrono::hours duration)
 {
   ASSERT_GREATER(duration.count(), 0, ());
 
@@ -105,7 +107,7 @@ void GpsTrack::SetDuration(hours duration)
     ScheduleTask();
 }
 
-hours GpsTrack::GetDuration() const
+chrono::hours GpsTrack::GetDuration() const
 {
   lock_guard<mutex> lg(m_dataGuard);
   return m_duration;
@@ -125,7 +127,7 @@ void GpsTrack::ScheduleTask()
 {
   lock_guard<mutex> lg(m_threadGuard);
 
-  if (m_thread.get_id() == std::thread::id())
+  if (m_thread.get_id() == thread::id())
   {
     m_thread = threads::SimpleThread([this]()
     {
@@ -154,7 +156,7 @@ void GpsTrack::InitStorageIfNeed()
 
   try
   {
-    m_storage = make_unique<GpsTrackStorage>(m_filePath, m_maxItemCount);
+    m_storage = my::make_unique<GpsTrackStorage>(m_filePath, m_maxItemCount);
   }
   catch (RootException const & e)
   {
@@ -162,11 +164,11 @@ void GpsTrack::InitStorageIfNeed()
   }
 }
 
-void GpsTrack::InitCollection(hours duration)
+void GpsTrack::InitCollection(chrono::hours duration)
 {
   ASSERT(m_collection == nullptr, ());
 
-  m_collection = make_unique<GpsTrackCollection>(m_maxItemCount, duration);
+  m_collection = my::make_unique<GpsTrackCollection>(m_maxItemCount, duration);
 
   InitStorageIfNeed();
   if (!m_storage)
@@ -216,7 +218,7 @@ void GpsTrack::InitCollection(hours duration)
 void GpsTrack::ProcessPoints()
 {
   vector<location::GpsInfo> originPoints;
-  hours duration;
+  chrono::hours duration;
   bool needClear;
   // Steal data for processing
   {
@@ -275,7 +277,7 @@ void GpsTrack::UpdateStorage(bool needClear, vector<location::GpsInfo> const & p
   }
 }
 
-void GpsTrack::UpdateCollection(hours duration, bool needClear, vector<location::GpsTrackInfo> const & points,
+void GpsTrack::UpdateCollection(chrono::hours duration, bool needClear, vector<location::GpsTrackInfo> const & points,
                                 pair<size_t, size_t> & addedIds, pair<size_t, size_t> & evictedIds)
 {
   // Apply Clear, SetDuration and Add points

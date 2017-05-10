@@ -30,13 +30,13 @@
 #include "base/thread_checker.hpp"
 #include "base/timer.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/chrono.hpp"
-#include "std/future.hpp"
+#include <algorithm>
+#include <chrono>
+#include <future>
 #include "std/target_os.hpp"
-#include "std/tuple.hpp"
-#include "std/unordered_map.hpp"
-#include "std/unordered_set.hpp"
+#include <tuple>
+#include <unordered_map>
+#include <unordered_set>
 
 #include "3party/Alohalytics/src/alohalytics.h"
 #include "3party/opening_hours/opening_hours.hpp"
@@ -64,7 +64,7 @@ constexpr char const * kRelationsAreNotSupported = "Relations are not supported 
 constexpr char const * kNeedsRetry = "Needs Retry";
 constexpr char const * kWrongMatch = "Matched feature has no tags";
 
-bool NeedsUpload(string const & uploadStatus)
+bool NeedsUpload(std::string const & uploadStatus)
 {
   return uploadStatus != kUploaded &&
       uploadStatus != kDeletedFromOSMServer &&
@@ -151,7 +151,7 @@ void Editor::LoadMapEdits()
 {
   if (!m_delegate)
   {
-    LOG(LERROR, ("Can't load any map edits, delegate has not been set."));
+    LOG(LERROR, ("Can't load any std::map edits, delegate has not been set."));
     return;
   }
 
@@ -174,7 +174,7 @@ void Editor::LoadMapEdits()
   m_features.clear();
   for (xml_node mwm : doc.child(kXmlRootNode).children(kXmlMwmNode))
   {
-    string const mapName = mwm.attribute("name").as_string("");
+    std::string const mapName = mwm.attribute("name").as_string("");
     int64_t const mapVersion = mwm.attribute("version").as_llong(0);
     MwmSet::MwmId const mwmId = GetMwmIdByMapName(mapName);
     // TODO(mgsergio, AlexZ): Is it normal to have isMwmIdAlive and mapVersion
@@ -279,8 +279,8 @@ void Editor::LoadMapEdits()
 bool Editor::Save() const
 {
   // TODO(AlexZ): Improve synchronization in Editor code.
-  static mutex saveMutex;
-  lock_guard<mutex> lock(saveMutex);
+  static std::mutex saveMutex;
+  std::lock_guard<std::mutex> lock(saveMutex);
 
   if (m_features.empty())
   {
@@ -343,12 +343,12 @@ void Editor::ClearAllLocalEdits()
 void Editor::OnMapDeregistered(platform::LocalCountryFile const & localFile)
 {
   // TODO: to add some synchronization mechanism for whole Editor class
-  lock_guard<mutex> g(m_mapDeregisteredMutex);
+  std::lock_guard<std::mutex> g(m_mapDeregisteredMutex);
 
   using TFeaturePair = decltype(m_features)::value_type;
   // Cannot search by MwmId because country already removed. So, search by country name.
   auto const matchedMwm =
-      find_if(begin(m_features), end(m_features), [&localFile](TFeaturePair const & item) {
+      std::find_if(begin(m_features), end(m_features), [&localFile](TFeaturePair const & item) {
         return item.first.GetInfo()->GetCountryName() == localFile.GetCountryName();
       });
 
@@ -524,7 +524,7 @@ Editor::SaveResult Editor::SaveEditedFeature(EditableMapObject const & emo)
   }
 
   // TODO: What if local client time is absolutely wrong?
-  fti.m_modificationTimestamp = time(nullptr);
+  fti.m_modificationTimestamp = std::time(nullptr);
   fti.m_street = emo.GetStreet().m_defaultName;
 
   // Reset upload status so already uploaded features can be uploaded again after modification.
@@ -601,7 +601,7 @@ bool Editor::GetEditedFeature(FeatureID const & fid, FeatureType & outFeature) c
   return GetEditedFeature(fid.m_mwmId, fid.m_index, outFeature);
 }
 
-bool Editor::GetEditedFeatureStreet(FeatureID const & fid, string & outFeatureStreet) const
+bool Editor::GetEditedFeatureStreet(FeatureID const & fid, std::string & outFeatureStreet) const
 {
   auto const * featureInfo = GetFeatureTypeInfo(fid.m_mwmId, fid.m_index);
   if (featureInfo == nullptr)
@@ -613,7 +613,7 @@ bool Editor::GetEditedFeatureStreet(FeatureID const & fid, string & outFeatureSt
 
 vector<uint32_t> Editor::GetFeaturesByStatus(MwmSet::MwmId const & mwmId, FeatureStatus status) const
 {
-  vector<uint32_t> features;
+  std::vector<uint32_t> features;
   auto const matchedMwm = m_features.find(mwmId);
   if (matchedMwm == m_features.end())
     return features;
@@ -622,7 +622,7 @@ vector<uint32_t> Editor::GetFeaturesByStatus(MwmSet::MwmId const & mwmId, Featur
     if (index.second.m_status == status)
       features.push_back(index.first);
   }
-  sort(features.begin(), features.end());
+  std::sort(features.begin(), features.end());
   return features;
 }
 
@@ -706,7 +706,7 @@ bool Editor::HaveMapEditsToUpload(MwmSet::MwmId const & mwmId) const
   return false;
 }
 
-void Editor::UploadChanges(string const & key, string const & secret, TChangesetTags tags,
+void Editor::UploadChanges(std::string const & key, std::string const & secret, TChangesetTags tags,
                            TFinishUploadCallback callBack)
 {
   if (m_notes->NotUploadedNotesCount())
@@ -721,7 +721,7 @@ void Editor::UploadChanges(string const & key, string const & secret, TChangeset
   alohalytics::LogEvent("Editor_DataSync_started");
 
   // TODO(AlexZ): features access should be synchronized.
-  auto const upload = [this](string key, string secret, TChangesetTags tags, TFinishUploadCallback callBack)
+  auto const upload = [this](std::string key, std::string secret, TChangesetTags tags, TFinishUploadCallback callBack)
   {
     // This lambda was designed to start after app goes into background. But for cases when user is immediately
     // coming back to the app we work with a copy, because 'for' loops below can take a significant amount of time.
@@ -738,7 +738,7 @@ void Editor::UploadChanges(string const & key, string const & secret, TChangeset
         if (!NeedsUpload(fti.m_uploadStatus))
           continue;
 
-        string ourDebugFeatureString;
+        std::string ourDebugFeatureString;
 
         try
         {
@@ -765,7 +765,7 @@ void Editor::UploadChanges(string const & key, string const & secret, TChangeset
                 // Check to avoid uploading duplicates into OSM.
                 if (osmFeature == osmFeatureCopy)
                 {
-                  LOG(LWARNING, ("Local changes are equal to OSM, feature has not been uploaded.", osmFeatureCopy));
+                  LOG(LWARNING, ("Local changes are std::equal to OSM, feature has not been uploaded.", osmFeatureCopy));
                   // Don't delete this local change right now for user to see it in profile.
                   // It will be automatically deleted by migration code on the next maps update.
                 }
@@ -818,7 +818,7 @@ void Editor::UploadChanges(string const & key, string const & secret, TChangeset
               // Check to avoid uploading duplicates into OSM.
               if (osmFeature == osmFeatureCopy)
               {
-                LOG(LWARNING, ("Local changes are equal to OSM, feature has not been uploaded.", osmFeatureCopy));
+                LOG(LWARNING, ("Local changes are std::equal to OSM, feature has not been uploaded.", osmFeatureCopy));
                 // Don't delete this local change right now for user to see it in profile.
                 // It will be automatically deleted by migration code on the next maps update.
               }
@@ -876,7 +876,7 @@ void Editor::UploadChanges(string const & key, string const & secret, TChangeset
           LOG(LWARNING, (ex.what()));
         }
         // TODO(AlexZ): Use timestamp from the server.
-        fti.m_uploadAttemptTimestamp = time(nullptr);
+        fti.m_uploadAttemptTimestamp = std::time(nullptr);
 
         if (fti.m_uploadStatus != kUploaded)
         {
@@ -907,10 +907,10 @@ void Editor::UploadChanges(string const & key, string const & secret, TChangeset
   };
 
   // Do not run more than one upload thread at a time.
-  static auto future = async(launch::async, upload, key, secret, tags, callBack);
-  auto const status = future.wait_for(milliseconds(0));
-  if (status == future_status::ready)
-    future = async(launch::async, upload, key, secret, tags, callBack);
+  static auto future = std::async(std::launch::async, upload, key, secret, tags, callBack);
+  auto const status = future.wait_for(std::chrono::milliseconds(0));
+  if (status == std::future_status::ready)
+    future = std::async(std::launch::async, upload, key, secret, tags, callBack);
 }
 
 void Editor::SaveUploadedInformation(FeatureTypeInfo const & fromUploader)
@@ -919,10 +919,10 @@ void Editor::SaveUploadedInformation(FeatureTypeInfo const & fromUploader)
   FeatureID const & fid = fromUploader.m_feature.GetID();
   auto id = m_features.find(fid.m_mwmId);
   if (id == m_features.end())
-    return;  // Rare case: feature was deleted at the time of changes uploading.
+    return;  // Rare case: feature was deleted at the std::time of changes uploading.
   auto index = id->second.find(fid.m_index);
   if (index == id->second.end())
-    return;  // Rare case: feature was deleted at the time of changes uploading.
+    return;  // Rare case: feature was deleted at the std::time of changes uploading.
   auto & fti = index->second;
   fti.m_uploadAttemptTimestamp = fromUploader.m_uploadAttemptTimestamp;
   fti.m_uploadStatus = fromUploader.m_uploadStatus;
@@ -1073,7 +1073,7 @@ bool Editor::CreatePoint(uint32_t type, m2::PointD const & mercator, MwmSet::Mwm
 }
 
 void Editor::CreateNote(ms::LatLon const & latLon, FeatureID const & fid,
-                        NoteProblemType const type, string const & note)
+                        NoteProblemType const type, std::string const & note)
 {
   auto const version = GetMwmCreationTimeByMwmId(fid.m_mwmId);
   auto const stringVersion = my::TimestampToString(my::SecondsSinceEpochToTimeT(version));
@@ -1110,7 +1110,7 @@ void Editor::CreateNote(ms::LatLon const & latLon, FeatureID const & fid,
     m_notes->CreateNote(latLon, sstr.str());
 }
 
-void Editor::UploadNotes(string const & key, string const & secret)
+void Editor::UploadNotes(std::string const & key, std::string const & secret)
 {
   alohalytics::LogEvent("Editor_UploadNotes", strings::to_string(m_notes->NotUploadedNotesCount()));
   m_notes->Upload(OsmOAuth::ServerAuth({key, secret}));
@@ -1131,14 +1131,14 @@ void Editor::MarkFeatureWithStatus(FeatureID const & fid, FeatureStatus status)
 
   fti.m_feature = *originalFeaturePtr;
   fti.m_status = status;
-  fti.m_modificationTimestamp = time(nullptr);
+  fti.m_modificationTimestamp = std::time(nullptr);
 }
 
-MwmSet::MwmId Editor::GetMwmIdByMapName(string const & name)
+MwmSet::MwmId Editor::GetMwmIdByMapName(std::string const & name)
 {
   if (!m_delegate)
   {
-    LOG(LERROR, ("Can't get mwm id by map name:", name, ", delegate is not set."));
+    LOG(LERROR, ("Can't std::get mwm id by std::map name:", name, ", delegate is not set."));
     return {};
   }
   return m_delegate->GetMwmIdByMapName(name);
@@ -1148,17 +1148,17 @@ unique_ptr<FeatureType> Editor::GetOriginalFeature(FeatureID const & fid) const
 {
   if (!m_delegate)
   {
-    LOG(LERROR, ("Can't get original feature by id:", fid, ", delegate is not set."));
+    LOG(LERROR, ("Can't std::get original feature by id:", fid, ", delegate is not set."));
     return {};
   }
   return m_delegate->GetOriginalFeature(fid);
 }
 
-string Editor::GetOriginalFeatureStreet(FeatureType & ft) const
+std::string Editor::GetOriginalFeatureStreet(FeatureType & ft) const
 {
   if (!m_delegate)
   {
-    LOG(LERROR, ("Can't get feature street, delegate is not set."));
+    LOG(LERROR, ("Can't std::get feature street, delegate is not set."));
     return {};
   }
   return m_delegate->GetOriginalFeatureStreet(ft);
@@ -1174,7 +1174,7 @@ void Editor::ForEachFeatureAtPoint(TFeatureTypeFn && fn, m2::PointD const & poin
   m_delegate->ForEachFeatureAtPoint(move(fn), point);
 }
 
-string DebugPrint(Editor::FeatureStatus fs)
+std::string DebugPrint(Editor::FeatureStatus fs)
 {
   switch (fs)
   {
@@ -1186,5 +1186,5 @@ string DebugPrint(Editor::FeatureStatus fs)
   };
 }
 
-const char * const Editor::kPlaceDoesNotExistMessage = "The place has gone or never existed. This is an auto-generated note from MAPS.ME application: a user reports a POI that is visible on a map (which can be outdated), but cannot be found on the ground.";
+const char * const Editor::kPlaceDoesNotExistMessage = "The place has gone or never existed. This is an auto-generated note from MAPS.ME application: a user reports a POI that is visible on a std::map (which can be outdated), but cannot be found on the ground.";
 }  // namespace osm

@@ -23,7 +23,7 @@ namespace stream
       return *this;
     }
 
-    ReaderStream & operator >> (string & t)
+    ReaderStream & operator >> (std::string & t)
     {
       detail::ReadString(*this, t);
       return *this;
@@ -49,7 +49,7 @@ namespace stream
       return (*this);
     }
 
-    WriterStream & operator << (string const & t)
+    WriterStream & operator << (std::string const & t)
     {
       detail::WriteString(*this, m_writer, t);
       return *this;

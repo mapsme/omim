@@ -47,10 +47,10 @@
 #include "base/stl_helpers.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/function.hpp"
-#include "std/iterator.hpp"
-#include "std/limits.hpp"
+#include <algorithm>
+#include <functional>
+#include <iterator>
+#include <limits>
 
 #include "3party/Alohalytics/src/alohalytics.h"
 
@@ -100,12 +100,12 @@ void SendStatistics(SearchParams const & params, m2::RectD const & viewport, Res
 {
   size_t const kMaxNumResultsToSend = 10;
 
-  size_t const numResultsToSend = min(kMaxNumResultsToSend, res.GetCount());
-  string resultString = strings::to_string(numResultsToSend);
+  size_t const numResultsToSend = std::min(kMaxNumResultsToSend, res.GetCount());
+  std::string resultString = strings::to_string(numResultsToSend);
   for (size_t i = 0; i < numResultsToSend; ++i)
     resultString.append("\t" + res[i].ToStringForStats());
 
-  string posX, posY;
+  std::string posX, posY;
   if (params.IsValidPosition())
   {
     auto const position = params.GetPositionMercator();
@@ -173,7 +173,7 @@ double const Processor::kMinViewportRadiusM = 5.0 * 1000;
 double const Processor::kMaxViewportRadiusM = 50.0 * 1000;
 
 Processor::Processor(Index const & index, CategoriesHolder const & categories,
-                     vector<Suggest> const & suggests,
+                     std::vector<Suggest> const & suggests,
                      storage::CountryInfoGetter const & infoGetter)
   : m_categories(categories)
   , m_infoGetter(infoGetter)
@@ -192,7 +192,7 @@ Processor::Processor(Index const & index, CategoriesHolder const & categories,
 {
   // Initialize keywords scorer.
   // Note! This order should match the indexes arrays above.
-  vector<vector<int8_t>> langPriorities = {
+  std::vector<std::vector<int8_t>> langPriorities = {
       {-1},  // future current lang
       {-1},  // future input lang
       {StringUtf8Multilang::kInternationalCode, StringUtf8Multilang::kEnglishCode},
@@ -215,7 +215,7 @@ void Processor::SetViewport(m2::RectD const & viewport, bool forceUpdate)
   SetViewportByIndex(viewport, CURRENT_V, forceUpdate);
 }
 
-void Processor::SetPreferredLocale(string const & locale)
+void Processor::SetPreferredLocale(std::string const & locale)
 {
   ASSERT(!locale.empty(), ());
 
@@ -232,7 +232,7 @@ void Processor::SetPreferredLocale(string const & locale)
   m_ranker.SetLocalityFinderLanguage(code);
 }
 
-void Processor::SetInputLocale(string const & locale)
+void Processor::SetInputLocale(std::string const & locale)
 {
   if (locale.empty())
     return;
@@ -242,7 +242,7 @@ void Processor::SetInputLocale(string const & locale)
   m_inputLocaleCode = CategoriesHolder::MapLocaleToInteger(locale);
 }
 
-void Processor::SetQuery(string const & query)
+void Processor::SetQuery(std::string const & query)
 {
   m_query = query;
 
@@ -255,9 +255,9 @@ void Processor::SetQuery(string const & query)
   // retrieve all tokens that start with a single hashtag and leave
   // them as is.
 
-  vector<strings::UniString> tokens;
+  std::vector<strings::UniString> tokens;
   {
-    search::DelimitersWithExceptions delims(vector<strings::UniChar>{'#'});
+    search::DelimitersWithExceptions delims(std::vector<strings::UniChar>{'#'});
     SplitUniString(NormalizeAndSimplifyString(query), MakeBackInsertFunctor(tokens), delims);
   }
 
@@ -788,7 +788,7 @@ m2::RectD const & Processor::GetViewport(ViewportID vID /*= DEFAULT_V*/) const
   return m_viewport[CURRENT_V];
 }
 
-string DebugPrint(Processor::ViewportID viewportId)
+std::string DebugPrint(Processor::ViewportID viewportId)
 {
   switch (viewportId)
   {

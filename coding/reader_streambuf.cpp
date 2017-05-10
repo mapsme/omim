@@ -2,10 +2,10 @@
 #include "coding/reader.hpp"
 #include "coding/file_writer.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 
-ReaderStreamBuf::ReaderStreamBuf(unique_ptr<Reader> && p)
+ReaderStreamBuf::ReaderStreamBuf(std::unique_ptr<Reader> && p)
   : m_p(move(p)), m_pos(0), m_size(m_p->Size())
 {
 }
@@ -15,7 +15,7 @@ ReaderStreamBuf::~ReaderStreamBuf() = default;
 
 std::streamsize ReaderStreamBuf::xsgetn(char_type * s, std::streamsize n)
 {
-  std::streamsize const count = min(n, static_cast<std::streamsize>(m_size - m_pos));
+  std::streamsize const count = std::min(n, static_cast<std::streamsize>(m_size - m_pos));
   if (count > 0)
   {
     m_p->Read(m_pos, s, count);

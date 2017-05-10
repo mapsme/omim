@@ -3,13 +3,13 @@
 
 #include "base/assert.hpp"
 #include "base/exception.hpp"
+#include "base/stl_add.hpp"
 
-#include "std/cstring.hpp"
-#include "std/shared_array.hpp"
-#include "std/shared_ptr.hpp"
-#include "std/string.hpp"
-#include "std/unique_ptr.hpp"
-#include "std/vector.hpp"
+#include <cstring>
+#include <boost/shared_array.hpp>
+#include <memory>
+#include <string>
+#include <vector>
 
 // Base class for random-access Reader. Not thread-safe.
 class Reader
@@ -24,11 +24,11 @@ public:
   virtual ~Reader() {}
   virtual uint64_t Size() const = 0;
   virtual void Read(uint64_t pos, void * p, size_t size) const = 0;
-  virtual unique_ptr<Reader> CreateSubReader(uint64_t pos, uint64_t size) const = 0;
+  virtual std::unique_ptr<Reader> CreateSubReader(uint64_t pos, uint64_t size) const = 0;
 
-  void ReadAsString(string & s) const;
+  void ReadAsString(std::string & s) const;
 
-  static bool IsEqual(string const & name1, string const & name2);
+  static bool IsEqual(std::string const & name1, std::string const & name2);
 };
 
 // Reader from memory.
@@ -59,10 +59,10 @@ public:
     return MemReaderTemplate(m_pData + pos, static_cast<size_t>(size));
   }
 
-  inline unique_ptr<Reader> CreateSubReader(uint64_t pos, uint64_t size) const override
+  inline std::unique_ptr<Reader> CreateSubReader(uint64_t pos, uint64_t size) const override
   {
     AssertPosAndSize(pos, size);
-    return make_unique<MemReaderTemplate>(m_pData + pos, static_cast<size_t>(size));
+    return my::make_unique<MemReaderTemplate>(m_pData + pos, static_cast<size_t>(size));
   }
 
 private:
@@ -101,11 +101,11 @@ template <class TReader>
 class ReaderPtr
 {
 protected:
-  shared_ptr<TReader> m_p;
+  std::shared_ptr<TReader> m_p;
 
 public:
   template <typename TReaderDerived>
-  ReaderPtr(unique_ptr<TReaderDerived> p) : m_p(move(p)) {}
+  ReaderPtr(std::unique_ptr<TReaderDerived> p) : m_p(move(p)) {}
 
   uint64_t Size() const
   {
@@ -117,7 +117,7 @@ public:
     m_p->Read(pos, p, size);
   }
 
-  void ReadAsString(string & s) const
+  void ReadAsString(std::string & s) const
   {
     m_p->ReadAsString(s);
   }
@@ -128,14 +128,14 @@ public:
 // Model reader store file id as string.
 class ModelReader : public Reader
 {
-  string m_name;
+  std::string m_name;
 
 public:
-  ModelReader(string const & name) : m_name(name) {}
+  ModelReader(std::string const & name) : m_name(name) {}
 
-  virtual unique_ptr<Reader> CreateSubReader(uint64_t pos, uint64_t size) const override = 0;
+  virtual std::unique_ptr<Reader> CreateSubReader(uint64_t pos, uint64_t size) const override = 0;
 
-  inline string const & GetName() const { return m_name; }
+  inline std::string const & GetName() const { return m_name; }
 };
 
 // Reader pointer class for data files.
@@ -145,14 +145,14 @@ class ModelReaderPtr : public ReaderPtr<ModelReader>
 
 public:
   template <typename TReaderDerived>
-  ModelReaderPtr(unique_ptr<TReaderDerived> p) : TBase(move(p)) {}
+  ModelReaderPtr(std::unique_ptr<TReaderDerived> p) : TBase(move(p)) {}
 
   inline ModelReaderPtr SubReader(uint64_t pos, uint64_t size) const
   {
-    return unique_ptr<ModelReader>(static_cast<ModelReader *>(m_p->CreateSubReader(pos, size).release()));
+    return std::unique_ptr<ModelReader>(static_cast<ModelReader *>(m_p->CreateSubReader(pos, size).release()));
   }
 
-  inline string const & GetName() const { return m_p->GetName(); }
+  inline std::string const & GetName() const { return m_p->GetName(); }
 };
 
 // Source that reads from a reader.

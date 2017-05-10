@@ -2,7 +2,7 @@
 
 #include "geometry/algorithm.hpp"
 
-#include "std/vector.hpp"
+#include <vector>
 
 using m2::PointD;
 using m2::RectD;
@@ -12,17 +12,17 @@ using m2::CalculateBoundingBox;
 
 namespace
 {
-PointD GetPolyLineCenter(vector<PointD> const & points)
+PointD GetPolyLineCenter(std::vector<PointD> const & points)
 {
   return m2::ApplyCalculator(points, m2::CalculatePolyLineCenter());
 }
 
-RectD GetBoundingBox(vector<PointD> const & points)
+RectD GetBoundingBox(std::vector<PointD> const & points)
 {
   return m2::ApplyCalculator(points, m2::CalculateBoundingBox());
 }
 
-PointD GetPointOnSurface(vector<PointD> const & points)
+PointD GetPointOnSurface(std::vector<PointD> const & points)
 {
   ASSERT(!points.empty() && points.size() % 3 == 0, ("points.size() =", points.size()));
   auto const boundingBox = GetBoundingBox(points);
@@ -38,7 +38,7 @@ bool PointsAlmostEqual(PointD const & p1, PointD const & p2)
 UNIT_TEST(CalculatePolyLineCenter)
 {
   {
-    vector<PointD> const points {
+    std::vector<PointD> const points {
       {0, 0},
       {1, 1},
       {2, 2}
@@ -46,7 +46,7 @@ UNIT_TEST(CalculatePolyLineCenter)
     TEST_EQUAL(GetPolyLineCenter(points), PointD(1, 1), ());
   }
   {
-    vector<PointD> const points {
+    std::vector<PointD> const points {
       {0, 2},
       {1, 1},
       {2, 2}
@@ -54,7 +54,7 @@ UNIT_TEST(CalculatePolyLineCenter)
     TEST_EQUAL(GetPolyLineCenter(points), PointD(1, 1), ());
   }
   {
-    vector<PointD> const points {
+    std::vector<PointD> const points {
       {1, 1},
       {2, 2},
       {4, 4},
@@ -62,7 +62,7 @@ UNIT_TEST(CalculatePolyLineCenter)
     TEST_EQUAL(GetPolyLineCenter(points), PointD(2.5, 2.5), ());
   }
   {
-    vector<PointD> const points {
+    std::vector<PointD> const points {
       {0, 0},
       {0, 0},
       {0, 0},
@@ -75,7 +75,7 @@ UNIT_TEST(CalculatePolyLineCenter)
     TEST_EQUAL(GetPolyLineCenter(points), PointD(0, 0), ());
   }
   {
-    vector<PointD> const points {
+    std::vector<PointD> const points {
       {0, 0},
       {0, 0},
       {0, 0},
@@ -92,13 +92,13 @@ UNIT_TEST(CalculatePolyLineCenter)
 UNIT_TEST(CalculateCenter)
 {
   {
-    vector<PointD> const points {
+    std::vector<PointD> const points {
       {2, 2}
     };
     TEST_EQUAL(GetBoundingBox(points), RectD({2, 2},  {2, 2}), ());
   }
   {
-    vector<PointD> const points {
+    std::vector<PointD> const points {
       {0, 0},
       {1, 1},
       {2, 2}
@@ -106,7 +106,7 @@ UNIT_TEST(CalculateCenter)
     TEST_EQUAL(GetBoundingBox(points), RectD({0, 0}, {2, 2}), ());
   }
   {
-    vector<PointD> const points {
+    std::vector<PointD> const points {
       {0, 2},
       {1, 1},
       {2, 2},
@@ -121,7 +121,7 @@ UNIT_TEST(CalculateCenter)
 UNIT_TEST(CalculatePointOnSurface)
 {
   {
-    vector<PointD> const points {
+    std::vector<PointD> const points {
       {0, 0},
       {1, 1},
       {2, 2}
@@ -129,7 +129,7 @@ UNIT_TEST(CalculatePointOnSurface)
     TEST_EQUAL(GetPointOnSurface(points), PointD(1, 1), ());
   }
   {
-    vector<PointD> const points {
+    std::vector<PointD> const points {
       {0, 2},
       {1, 1},
       {2, 2},
@@ -140,7 +140,7 @@ UNIT_TEST(CalculatePointOnSurface)
     TEST_EQUAL(GetPointOnSurface(points), PointD(1, 1), ());
   }
   {
-    vector<PointD> const points {
+    std::vector<PointD> const points {
       {0, 0}, {1, 1}, {2, 0},
       {1, 1}, {2, 0}, {3, 1},  // Center of this triangle is used as a result.
       {2, 0}, {3, 1}, {4, 0},

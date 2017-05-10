@@ -8,9 +8,9 @@
 #include "base/stl_add.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/cstring.hpp"
-#include "std/iomanip.hpp"
-#include "std/sstream.hpp"
+#include <cstring>
+#include <iomanip>
+#include <sstream>
 
 
 using namespace settings;
@@ -19,21 +19,21 @@ using namespace strings;
 namespace measurement_utils
 {
 
-string ToStringPrecision(double d, int pr)
+std::string ToStringPrecision(double d, int pr)
 {
-  stringstream ss;
-  ss << setprecision(pr) << fixed << d;
+  std::stringstream ss;
+  ss << std::setprecision(pr) << std::fixed << d;
   return ss.str();
 }
 
-bool FormatDistanceImpl(double m, string & res,
+bool FormatDistanceImpl(double m, std::string & res,
                         char const * high, char const * low,
                         double highF, double lowF)
 {
   double const lowV = m / lowF;
   if (lowV < 1.0)
   {
-    res = string("0") + low;
+    res = std::string("0") + low;
     return false;
   }
 
@@ -52,7 +52,7 @@ bool FormatDistanceImpl(double m, string & res,
   return true;
 }
 
-bool FormatDistance(double m, string & res)
+bool FormatDistance(double m, std::string & res)
 {
   auto units = Units::Metric;
   UNUSED_VALUE(Get(settings::kMeasurementUnits, units));
@@ -66,21 +66,21 @@ bool FormatDistance(double m, string & res)
 }
 
 
-string FormatLatLonAsDMSImpl(double value, char positive, char negative, int dac)
+std::string FormatLatLonAsDMSImpl(double value, char positive, char negative, int dac)
 {
   using namespace my;
 
-  ostringstream sstream;
-  sstream << setfill('0');
+  std::ostringstream sstream;
+  sstream << std::setfill('0');
 
   // Degrees
   double i;
   double d = modf(fabs(value), &i);
-  sstream << setw(2) << i << "°";
+  sstream << std::setw(2) << i << "°";
 
   // Minutes
   d = modf(d * 60.0, &i);
-  sstream << setw(2) << i << "′";
+  sstream << std::setw(2) << i << "′";
 
   // Seconds
   d = d * 60.0;
@@ -88,7 +88,7 @@ string FormatLatLonAsDMSImpl(double value, char positive, char negative, int dac
     d = rounds(d);
 
   d = modf(d, &i);
-  sstream << setw(2) << i;
+  sstream << std::setw(2) << i;
 
   if (dac > 0)
     sstream << to_string_dac(d, dac).substr(1);
@@ -109,64 +109,64 @@ string FormatLatLonAsDMSImpl(double value, char positive, char negative, int dac
   return sstream.str();
 }
 
-string FormatLatLonAsDMS(double lat, double lon, int dac)
+std::string FormatLatLonAsDMS(double lat, double lon, int dac)
 {
   return (FormatLatLonAsDMSImpl(lat, 'N', 'S', dac) + " "  +
           FormatLatLonAsDMSImpl(lon, 'E', 'W', dac));
 }
 
-void FormatLatLonAsDMS(double lat, double lon, string & latText, string & lonText, int dac)
+void FormatLatLonAsDMS(double lat, double lon, std::string & latText, std::string & lonText, int dac)
 {
   latText = FormatLatLonAsDMSImpl(lat, 'N', 'S', dac);
   lonText = FormatLatLonAsDMSImpl(lon, 'E', 'W', dac);
 }
 
-void FormatMercatorAsDMS(m2::PointD const & mercator, string & lat, string & lon, int dac)
+void FormatMercatorAsDMS(m2::PointD const & mercator, std::string & lat, std::string & lon, int dac)
 {
   lat = FormatLatLonAsDMSImpl(MercatorBounds::YToLat(mercator.y), 'N', 'S', dac);
   lon = FormatLatLonAsDMSImpl(MercatorBounds::XToLon(mercator.x), 'E', 'W', dac);
 }
 
-string FormatMercatorAsDMS(m2::PointD const & mercator, int dac)
+std::string FormatMercatorAsDMS(m2::PointD const & mercator, int dac)
 {
   return FormatLatLonAsDMS(MercatorBounds::YToLat(mercator.y), MercatorBounds::XToLon(mercator.x), dac);
 }
 
 // @TODO take into account decimal points or commas as separators in different locales
-string FormatLatLon(double lat, double lon, int dac)
+std::string FormatLatLon(double lat, double lon, int dac)
 {
   return to_string_dac(lat, dac) + " " + to_string_dac(lon, dac);
 }
 
-string FormatLatLon(double lat, double lon, bool withSemicolon, int dac)
+std::string FormatLatLon(double lat, double lon, bool withSemicolon, int dac)
 {
   return to_string_dac(lat, dac) + (withSemicolon ? ", " : " ") + to_string_dac(lon, dac);
 }
 
-void FormatLatLon(double lat, double lon, string & latText, string & lonText, int dac)
+void FormatLatLon(double lat, double lon, std::string & latText, std::string & lonText, int dac)
 {
   latText = to_string_dac(lat, dac);
   lonText = to_string_dac(lon, dac);
 }
 
-string FormatMercator(m2::PointD const & mercator, int dac)
+std::string FormatMercator(m2::PointD const & mercator, int dac)
 {
   return FormatLatLon(MercatorBounds::YToLat(mercator.y), MercatorBounds::XToLon(mercator.x), dac);
 }
 
-void FormatMercator(m2::PointD const & mercator, string & lat, string & lon, int dac)
+void FormatMercator(m2::PointD const & mercator, std::string & lat, std::string & lon, int dac)
 {
   lat = to_string_dac(MercatorBounds::YToLat(mercator.y), dac);
   lon = to_string_dac(MercatorBounds::XToLon(mercator.x), dac);
 }
 
-string FormatAltitude(double altitudeInMeters)
+std::string FormatAltitude(double altitudeInMeters)
 {
   Units units = Units::Metric;
   UNUSED_VALUE(Get(settings::kMeasurementUnits, units));
 
-  ostringstream ss;
-  ss << fixed << setprecision(0);
+  std::ostringstream ss;
+  ss << std::fixed << std::setprecision(0);
 
   /// @todo Put string units resources.
   switch (units)
@@ -177,19 +177,19 @@ string FormatAltitude(double altitudeInMeters)
   return ss.str();
 }
 
-string FormatSpeedWithDeviceUnits(double metersPerSecond)
+std::string FormatSpeedWithDeviceUnits(double metersPerSecond)
 {
   auto units = Units::Metric;
   UNUSED_VALUE(Get(settings::kMeasurementUnits, units));
   return FormatSpeedWithUnits(metersPerSecond, units);
 }
 
-string FormatSpeedWithUnits(double metersPerSecond, Units units)
+std::string FormatSpeedWithUnits(double metersPerSecond, Units units)
 {
   return FormatSpeed(metersPerSecond, units) + FormatSpeedUnits(units);
 }
 
-string FormatSpeed(double metersPerSecond, Units units)
+std::string FormatSpeed(double metersPerSecond, Units units)
 {
   double constexpr kSecondsPerHour = 3600;
   double constexpr metersPerKilometer = 1000;
@@ -202,7 +202,7 @@ string FormatSpeed(double metersPerSecond, Units units)
   return ToStringPrecision(unitsPerHour, unitsPerHour >= 10.0 ? 0 : 1);
 }
 
-string FormatSpeedUnits(Units units)
+std::string FormatSpeedUnits(Units units)
 {
   switch (units)
   {
@@ -211,7 +211,7 @@ string FormatSpeedUnits(Units units)
   }
 }
 
-bool OSMDistanceToMeters(string const & osmRawValue, double & outMeters)
+bool OSMDistanceToMeters(std::string const & osmRawValue, double & outMeters)
 {
   char * stop;
   char const * s = osmRawValue.c_str();
@@ -221,7 +221,7 @@ bool OSMDistanceToMeters(string const & osmRawValue, double & outMeters)
   if (s == stop)
     return false;
 
-  if (!isfinite(outMeters))
+  if (!std::isfinite(outMeters))
     return false;
 
   switch (*stop)
@@ -235,7 +235,7 @@ bool OSMDistanceToMeters(string const & osmRawValue, double & outMeters)
       outMeters = FeetToMeters(outMeters);
       s = stop + 1;
       double const inches = strtod(s, &stop);
-      if (s != stop && *stop == '"' && isfinite(inches))
+      if (s != stop && *stop == '"' && std::isfinite(inches))
         outMeters += InchesToMeters(inches);
       return true;
     }
@@ -249,7 +249,7 @@ bool OSMDistanceToMeters(string const & osmRawValue, double & outMeters)
     {
       s = stop + 1;
       double const newValue = strtod(s, &stop);
-      if (s != stop && isfinite(newValue))
+      if (s != stop && std::isfinite(newValue))
         outMeters = newValue;
     }
     break;
@@ -280,7 +280,7 @@ bool OSMDistanceToMeters(string const & osmRawValue, double & outMeters)
   return true;
 }
 
-string OSMDistanceToMetersString(string const & osmRawValue,
+std::string OSMDistanceToMetersString(std::string const & osmRawValue,
                                  bool supportZeroAndNegativeValues,
                                  int digitsAfterComma)
 {

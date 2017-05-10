@@ -3,8 +3,8 @@
 
 #include "base/assert.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/bind.hpp"
+#include <algorithm>
+#include <functional>
 
 namespace df
 {

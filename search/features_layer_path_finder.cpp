@@ -34,17 +34,17 @@ uint64_t CalcPassCost(TIt begin, TIt end)
   return cost;
 }
 
-uint64_t CalcTopDownPassCost(vector<FeaturesLayer const *> const & layers)
+uint64_t CalcTopDownPassCost(std::vector<FeaturesLayer const *> const & layers)
 {
   return CalcPassCost(layers.rbegin(), layers.rend());
 }
 
-uint64_t CalcBottomUpPassCost(vector<FeaturesLayer const *> const & layers)
+uint64_t CalcBottomUpPassCost(std::vector<FeaturesLayer const *> const & layers)
 {
   return CalcPassCost(layers.begin(), layers.end());
 }
 
-bool GetPath(uint32_t id, vector<FeaturesLayer const *> const & layers, TParentGraph const & parent,
+bool GetPath(uint32_t id, std::vector<FeaturesLayer const *> const & layers, TParentGraph const & parent,
              IntersectionResult & result)
 {
   result.Clear();
@@ -69,8 +69,8 @@ FeaturesLayerPathFinder::FeaturesLayerPathFinder(my::Cancellable const & cancell
 }
 
 void FeaturesLayerPathFinder::FindReachableVertices(FeaturesLayerMatcher & matcher,
-                                                    vector<FeaturesLayer const *> const & layers,
-                                                    vector<IntersectionResult> & results)
+                                                    std::vector<FeaturesLayer const *> const & layers,
+                                                    std::vector<IntersectionResult> & results)
 {
   if (layers.empty())
     return;
@@ -85,13 +85,13 @@ void FeaturesLayerPathFinder::FindReachableVertices(FeaturesLayerMatcher & match
 }
 
 void FeaturesLayerPathFinder::FindReachableVerticesTopDown(
-    FeaturesLayerMatcher & matcher, vector<FeaturesLayer const *> const & layers,
-    vector<IntersectionResult> & results)
+    FeaturesLayerMatcher & matcher, std::vector<FeaturesLayer const *> const & layers,
+    std::vector<IntersectionResult> & results)
 {
   ASSERT(!layers.empty(), ());
 
-  vector<uint32_t> reachable = *(layers.back()->m_sortedFeatures);
-  vector<uint32_t> buffer;
+  std::vector<uint32_t> reachable = *(layers.back()->m_sortedFeatures);
+  std::vector<uint32_t> buffer;
 
   TParentGraph parent;
 
@@ -133,13 +133,13 @@ void FeaturesLayerPathFinder::FindReachableVerticesTopDown(
 }
 
 void FeaturesLayerPathFinder::FindReachableVerticesBottomUp(
-    FeaturesLayerMatcher & matcher, vector<FeaturesLayer const *> const & layers,
-    vector<IntersectionResult> & results)
+    FeaturesLayerMatcher & matcher, std::vector<FeaturesLayer const *> const & layers,
+    std::vector<IntersectionResult> & results)
 {
   ASSERT(!layers.empty(), ());
 
-  vector<uint32_t> reachable = *(layers.front()->m_sortedFeatures);
-  vector<uint32_t> buffer;
+  std::vector<uint32_t> reachable = *(layers.front()->m_sortedFeatures);
+  std::vector<uint32_t> buffer;
 
   TParentGraph parent;
 

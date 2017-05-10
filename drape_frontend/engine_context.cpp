@@ -3,7 +3,7 @@
 #include "drape_frontend/message_subclasses.hpp"
 #include "drape/texture_manager.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 namespace df
 {

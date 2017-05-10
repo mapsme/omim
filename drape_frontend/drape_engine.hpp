@@ -24,8 +24,8 @@
 
 #include "base/strings_bundle.hpp"
 
-#include "std/map.hpp"
-#include "std/mutex.hpp"
+#include <map>
+#include <mutex>
 
 namespace dp { class OGLContextFactory; }
 
@@ -179,7 +179,7 @@ public:
 
   using TRequestSymbolsSizeCallback = function<void(vector<m2::PointF> const &)>;
 
-  void RequestSymbolsSize(vector<string> const & symbols,
+  void RequestSymbolsSize(vector<std::string> const & symbols,
                           TRequestSymbolsSizeCallback const & callback);
 
   void EnableTraffic(bool trafficEnabled);

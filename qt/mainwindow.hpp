@@ -5,8 +5,8 @@
 #include "platform/location.hpp"
 #include "platform/location_service.hpp"
 
-#include "std/array.hpp"
-#include "std/unique_ptr.hpp"
+#include <array>
+#include <memory>
 
 #include <QtWidgets/QApplication>
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
@@ -40,14 +40,14 @@ namespace qt
     DrawWidget * m_pDrawWidget;
 
     // TODO(mgsergio): Make indexing more informative.
-    array<QDockWidget *, 2> m_Docks;
+    std::array<QDockWidget *, 2> m_Docks;
 
     QPushButton * m_downloadButton;
     QPushButton * m_retryButton;
     QLabel * m_downloadingStatusLabel;
     storage::TCountryId m_lastCountry;
 
-    unique_ptr<location::LocationService> const m_locationService;
+    std::unique_ptr<location::LocationService> const m_locationService;
 
     // This object is managed by Qt memory system.
     TrafficMode * m_trafficMode = nullptr;
@@ -61,7 +61,7 @@ namespace qt
     virtual void OnLocationUpdated(location::GpsInfo const & info);
 
   protected:
-    string GetIniFile();
+    std::string GetIniFile();
 
     void LocationStateModeChanged(location::EMyPositionMode mode);
 
@@ -72,7 +72,7 @@ namespace qt
     void CreateSearchBarAndPanel();
     void CreateCountryStatusControls();
 
-    void CreateTrafficPanel(string const & dataFilePath, string const & sampleFilePath);
+    void CreateTrafficPanel(std::string const & dataFilePath, std::string const & sampleFilePath);
     void DestroyTrafficPanel();
 
 #if defined(Q_WS_WIN)

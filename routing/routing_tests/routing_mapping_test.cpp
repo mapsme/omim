@@ -24,7 +24,7 @@ namespace
 class LocalFileGenerator
 {
 public:
-  LocalFileGenerator(string const & fileName)
+  LocalFileGenerator(std::string const & fileName)
       : m_countryFile(fileName),
         m_testDataFile(platform::GetFileName(m_countryFile.GetName(), MapOptions::MapWithCarRouting,
                                              version::FOR_TESTING_SINGLE_MWM1), "routing"),
@@ -41,7 +41,7 @@ public:
 
   TestMwmSet & GetMwmSet() { return m_testSet; }
 
-  string const & GetCountryName() { return m_countryFile.GetName(); }
+  std::string const & GetCountryName() { return m_countryFile.GetName(); }
 
   size_t GetNumRefs() { return m_result.first.GetInfo()->GetNumRefs(); }
 
@@ -78,7 +78,7 @@ UNIT_TEST(RoutingMappingCountryFileLockTest)
 
 UNIT_TEST(IndexManagerLockManagementTest)
 {
-  string const fileName("1TestCountry");
+  std::string const fileName("1TestCountry");
   LocalFileGenerator generator(fileName);
   RoutingIndexManager manager([&fileName](m2::PointD const & q) { return fileName; },
                               generator.GetMwmSet());

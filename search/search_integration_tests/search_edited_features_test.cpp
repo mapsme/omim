@@ -11,7 +11,7 @@
 
 #include "coding/multilang_utf8_string.hpp"
 
-#include "std/shared_ptr.hpp"
+#include <memory>
 
 using namespace generator::tests_support;
 using namespace search::tests_support;

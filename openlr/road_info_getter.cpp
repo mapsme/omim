@@ -6,7 +6,7 @@
 
 #include "base/assert.hpp"
 
-#include "std/iterator.hpp"
+#include <iterator>
 
 namespace openlr
 {
@@ -15,7 +15,7 @@ RoadInfoGetter::RoadInfoGetter(Index const & index) : m_index(index), m_c(classi
 RoadInfoGetter::RoadInfo RoadInfoGetter::Get(FeatureID const & fid)
 {
   auto it = m_cache.find(fid);
-  if (it != end(m_cache))
+  if (it != std::end(m_cache))
     return it->second;
 
   Index::FeaturesLoaderGuard g(m_index, fid.m_mwmId);

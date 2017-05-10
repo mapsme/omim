@@ -17,7 +17,7 @@
 #include "base/checked_cast.hpp"
 #include "base/logging.hpp"
 
-#include "std/unordered_map.hpp"
+#include <unordered_map>
 
 #include "3party/succinct/elias_fano.hpp"
 #include "3party/succinct/rs_bit_vector.hpp"
@@ -157,7 +157,7 @@ public:
                            ? m_offsets.select(base + 1)
                            : m_header.m_endOffset - m_header.m_deltasOffset;
 
-      vector<uint8_t> data(end - start);
+      std::vector<uint8_t> data(end - start);
 
       m_reader.Read(m_header.m_deltasOffset + start, data.data(), data.size());
 
@@ -193,17 +193,17 @@ private:
 
     {
       uint32_t const idsSize = m_header.m_positionsOffset - sizeof(m_header);
-      vector<uint8_t> data(idsSize);
+      std::vector<uint8_t> data(idsSize);
       m_reader.Read(sizeof(m_header), data.data(), data.size());
-      m_idsRegion = make_unique<CopiedMemoryRegion>(move(data));
+      m_idsRegion = my::make_unique<CopiedMemoryRegion>(move(data));
       EndiannessAwareMap(endiannesMismatch, *m_idsRegion, m_ids);
     }
 
     {
       uint32_t const offsetsSize = m_header.m_deltasOffset - m_header.m_positionsOffset;
-      vector<uint8_t> data(offsetsSize);
+      std::vector<uint8_t> data(offsetsSize);
       m_reader.Read(m_header.m_positionsOffset, data.data(), data.size());
-      m_offsetsRegion = make_unique<CopiedMemoryRegion>(move(data));
+      m_offsetsRegion = my::make_unique<CopiedMemoryRegion>(move(data));
       EndiannessAwareMap(endiannesMismatch, *m_offsetsRegion, m_offsets);
     }
 
@@ -215,13 +215,13 @@ private:
   Reader & m_reader;
   serial::CodingParams const m_codingParams;
 
-  unique_ptr<CopiedMemoryRegion> m_idsRegion;
-  unique_ptr<CopiedMemoryRegion> m_offsetsRegion;
+  std::unique_ptr<CopiedMemoryRegion> m_idsRegion;
+  std::unique_ptr<CopiedMemoryRegion> m_offsetsRegion;
 
   succinct::rs_bit_vector m_ids;
   succinct::elias_fano m_offsets;
 
-  unordered_map<uint32_t, vector<m2::PointU>> m_cache;
+  std::unordered_map<uint32_t, std::vector<m2::PointU>> m_cache;
 };
 }  // namespace
 
@@ -252,14 +252,14 @@ unique_ptr<CentersTable> CentersTable::Load(Reader & reader,
 {
   uint16_t const version = ReadPrimitiveFromPos<uint16_t>(reader, 0 /* pos */);
   if (version != 0)
-    return unique_ptr<CentersTable>();
+    return std::unique_ptr<CentersTable>();
 
   // Only single version of centers table is supported now.  If you
   // need to implement new versions of CentersTable, implement
   // dispatching based on first-four-bytes version.
-  unique_ptr<CentersTable> table = make_unique<CentersTableV0>(reader, codingParams);
+  std::unique_ptr<CentersTable> table = my::make_unique<CentersTableV0>(reader, codingParams);
   if (!table->Init())
-    return unique_ptr<CentersTable>();
+    return std::unique_ptr<CentersTable>();
   return table;
 }
 
@@ -291,11 +291,11 @@ void CentersTableBuilder::Freeze(Writer & writer) const
     succinct::rs_bit_vector(&builder).map(visitor);
   }
 
-  vector<uint32_t> offsets;
-  vector<uint8_t> deltas;
+  std::vector<uint32_t> offsets;
+  std::vector<uint8_t> deltas;
 
   {
-    MemWriter<vector<uint8_t>> writer(deltas);
+    MemWriter<std::vector<uint8_t>> writer(deltas);
     for (size_t i = 0; i < m_centers.size(); i += CentersTableV0::kBlockSize)
     {
       offsets.push_back(static_cast<uint32_t>(deltas.size()));

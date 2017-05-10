@@ -2,7 +2,7 @@
 
 #include "drape/pointers.hpp"
 
-#include "std/array.hpp"
+#include <array>
 
 namespace df
 {
@@ -30,7 +30,7 @@ public:
   bool IsFinished() const;
 
 private:
-  void RefreshInterpolator(array<EState, 2> validStates, double endValue);
+  void RefreshInterpolator(std::array<EState, 2> validStates, double endValue);
   class ShowHideInterpolator;
 
   drape_ptr<ShowHideInterpolator> m_interpolator;

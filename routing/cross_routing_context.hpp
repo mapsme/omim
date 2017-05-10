@@ -8,9 +8,9 @@
 #include "geometry/rect2d.hpp"
 #include "geometry/tree4d.hpp"
 
-#include "std/function.hpp"
-#include "std/string.hpp"
-#include "std/vector.hpp"
+#include <functional>
+#include <string>
+#include <vector>
 
 namespace routing
 {
@@ -19,7 +19,7 @@ using TWrittenEdgeWeight = uint32_t;
 
 TWrittenEdgeWeight constexpr kInvalidContextEdgeNodeId = std::numeric_limits<uint32_t>::max();
 TWrittenEdgeWeight constexpr kInvalidContextEdgeWeight = std::numeric_limits<TWrittenEdgeWeight>::max();
-size_t constexpr kInvalidAdjacencyIndex = numeric_limits<size_t>::max();
+size_t constexpr kInvalidAdjacencyIndex = std::numeric_limits<size_t>::max();
 double constexpr kMwmCrossingNodeEqualityMeters = 80;
 
 struct IngoingCrossNode
@@ -82,27 +82,27 @@ struct OutgoingCrossNode
   m2::RectD const GetLimitRect() const { return m2::RectD(m_point.lat, m_point.lon, m_point.lat, m_point.lon); }
 };
 
-using IngoingEdgeIteratorT = vector<IngoingCrossNode>::const_iterator;
-using OutgoingEdgeIteratorT = vector<OutgoingCrossNode>::const_iterator;
+using IngoingEdgeIteratorT = std::vector<IngoingCrossNode>::const_iterator;
+using OutgoingEdgeIteratorT = std::vector<OutgoingCrossNode>::const_iterator;
 
 /// Reader class from cross context section in mwm.routing file
 class CrossRoutingContextReader
 {
-  vector<OutgoingCrossNode> m_outgoingNodes;
-  vector<string> m_neighborMwmList;
-  vector<TWrittenEdgeWeight> m_adjacencyMatrix;
+  std::vector<OutgoingCrossNode> m_outgoingNodes;
+  std::vector<std::string> m_neighborMwmList;
+  std::vector<TWrittenEdgeWeight> m_adjacencyMatrix;
   m4::Tree<IngoingCrossNode> m_ingoingIndex;
   m4::Tree<OutgoingCrossNode> m_outgoingIndex;
 
 public:
   void Load(Reader const & r);
 
-  const string & GetOutgoingMwmName(OutgoingCrossNode const & outgoingNode) const;
+  const std::string & GetOutgoingMwmName(OutgoingCrossNode const & outgoingNode) const;
 
   TWrittenEdgeWeight GetAdjacencyCost(IngoingCrossNode const & ingoing,
                                      OutgoingCrossNode const & outgoing) const;
 
-  vector<string> const & GetNeighboringMwmList() const { return m_neighborMwmList; }
+  std::vector<std::string> const & GetNeighboringMwmList() const { return m_neighborMwmList; }
 
   m2::RectD GetMwmCrossingNodeEqualityRect(ms::LatLon const & point) const;
 
@@ -146,10 +146,10 @@ public:
 /// Helper class to generate cross context section in mwm.routing file
 class CrossRoutingContextWriter
 {
-  vector<IngoingCrossNode> m_ingoingNodes;
-  vector<OutgoingCrossNode> m_outgoingNodes;
-  vector<TWrittenEdgeWeight> m_adjacencyMatrix;
-  vector<string> m_neighborMwmList;
+  std::vector<IngoingCrossNode> m_ingoingNodes;
+  std::vector<OutgoingCrossNode> m_outgoingNodes;
+  std::vector<TWrittenEdgeWeight> m_adjacencyMatrix;
+  std::vector<std::string> m_neighborMwmList;
 
   size_t GetIndexInAdjMatrix(IngoingEdgeIteratorT ingoing, OutgoingEdgeIteratorT outgoing) const;
 
@@ -158,7 +158,7 @@ public:
 
   void AddIngoingNode(TWrittenNodeId const nodeId, ms::LatLon const & point);
 
-  void AddOutgoingNode(TWrittenNodeId const nodeId, string const & targetMwm,
+  void AddOutgoingNode(TWrittenNodeId const nodeId, std::string const & targetMwm,
                        ms::LatLon const & point);
 
   void ReserveAdjacencyMatrix();
@@ -166,8 +166,8 @@ public:
   void SetAdjacencyCost(IngoingEdgeIteratorT ingoing, OutgoingEdgeIteratorT outgoin,
                         TWrittenEdgeWeight value);
 
-  pair<IngoingEdgeIteratorT, IngoingEdgeIteratorT> GetIngoingIterators() const;
+  std::pair<IngoingEdgeIteratorT, IngoingEdgeIteratorT> GetIngoingIterators() const;
 
-  pair<OutgoingEdgeIteratorT, OutgoingEdgeIteratorT> GetOutgoingIterators() const;
+  std::pair<OutgoingEdgeIteratorT, OutgoingEdgeIteratorT> GetOutgoingIterators() const;
 };
 }

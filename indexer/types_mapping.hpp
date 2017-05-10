@@ -1,23 +1,23 @@
 #pragma once
 #include "base/assert.hpp"
 
-#include "std/vector.hpp"
-#include "std/map.hpp"
-#include "std/iostream.hpp"
+#include <vector>
+#include <map>
+#include <iostream>
 
 
 class IndexAndTypeMapping
 {
-  vector<uint32_t> m_types;
+  std::vector<uint32_t> m_types;
 
-  typedef map<uint32_t, uint32_t> MapT;
+  typedef std::map<uint32_t, uint32_t> MapT;
   MapT m_map;
 
   void Add(uint32_t ind, uint32_t type);
 
 public:
   void Clear();
-  void Load(istream & s);
+  void Load(std::istream & s);
 
   uint32_t GetType(uint32_t ind) const
   {

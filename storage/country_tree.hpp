@@ -1,11 +1,12 @@
 #pragma once
 
 #include "base/assert.hpp"
+#include "base/stl_add.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/map.hpp"
-#include "std/unique_ptr.hpp"
-#include "std/vector.hpp"
+#include <algorithm>
+#include <map>
+#include <memory>
+#include <vector>
 
 /// \brief This class is developed for using in Storage. It's a implementation of a tree with
 /// ability
@@ -30,12 +31,12 @@ public:
     /// \brief m_children contains all first generation descendants of the node.
     /// Note. Once created the order of elements of |m_children| should not be changed.
     /// See implementation of AddAtDepth and Add methods for details.
-    vector<unique_ptr<Node>> m_children;
+    std::vector<std::unique_ptr<Node>> m_children;
     Node * m_parent;
 
     Node * Add(TValue const & value)
     {
-      m_children.emplace_back(make_unique<Node>(value, this));
+      m_children.emplace_back(my::make_unique<Node>(value, this));
       return m_children.back().get();
     }
 
@@ -154,7 +155,7 @@ public:
   };
 
 private:
-  using TCountryTreeHashTable = multimap<TKey, Node *>;
+  using TCountryTreeHashTable = std::multimap<TKey, Node *>;
 
 public:
   bool IsEmpty() const { return m_countryTree == nullptr; }
@@ -177,7 +178,7 @@ public:
     if (level == 0)
     {
       ASSERT(IsEmpty(), ());
-      m_countryTree = make_unique<Node>(value, nullptr);  // Creating the root node.
+      m_countryTree = my::make_unique<Node>(value, nullptr);  // Creating the root node.
       added = m_countryTree.get();
     }
     else
@@ -200,7 +201,7 @@ public:
   /// \brief Checks all nodes in tree to find an equal one. If there're several equal nodes
   /// returns the first found.
   /// \returns a poiter item in the tree if found and nullptr otherwise.
-  void Find(TKey const & key, vector<Node const *> & found) const
+  void Find(TKey const & key, std::vector<Node const *> & found) const
   {
     found.clear();
     if (IsEmpty())
@@ -213,7 +214,7 @@ public:
     if (range.first == range.second)
       return;
 
-    for_each(range.first, range.second,
+    std::for_each(range.first, range.second,
              [&found](typename TCountryTreeHashTable::value_type const & node)
     {
       found.push_back(node.second);
@@ -225,7 +226,7 @@ public:
     if (IsEmpty())
       return nullptr;
 
-    vector<Node const *> found;
+    std::vector<Node const *> found;
     Find(key, found);
     if (found.empty())
       return nullptr;
@@ -242,7 +243,7 @@ public:
     if (IsEmpty())
       return nullptr;
 
-    vector<Node const *> found;
+    std::vector<Node const *> found;
     Find(key, found);
 
     for (auto node : found)
@@ -254,6 +255,6 @@ public:
   }
 
 private:
-  unique_ptr<Node> m_countryTree;
+  std::unique_ptr<Node> m_countryTree;
   TCountryTreeHashTable m_countryTreeHashTable;
 };

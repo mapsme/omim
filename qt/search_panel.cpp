@@ -9,7 +9,7 @@
 
 #include "platform/measurement_utils.hpp"
 
-#include "std/bind.hpp"
+#include <functional>
 
 #include <QtCore/QTimer>
 
@@ -76,7 +76,7 @@ SearchPanel::SearchPanel(DrawWidget * drawWidget, QWidget * parent)
   CHECK(connect(this, SIGNAL(SearchResultSignal(ResultsT *)),
                 this, SLOT(OnSearchResult(ResultsT *)), Qt::QueuedConnection), ());
 
-  m_params.m_onResults = bind(&SearchPanel::SearchResultThreadFunc, this, _1);
+  m_params.m_onResults = std::bind(&SearchPanel::SearchResultThreadFunc, this, std::placeholders::_1);
 }
 
 void SearchPanel::SearchResultThreadFunc(ResultsT const & result)
@@ -304,7 +304,7 @@ void SearchPanel::OnSearchPanelItemClicked(int row, int)
   if (m_results[row].IsSuggest())
   {
     // insert suggestion into the search bar
-    string const suggestion = m_results[row].GetSuggestionString();
+    std::string const suggestion = m_results[row].GetSuggestionString();
     m_pEditor->setText(QString::fromUtf8(suggestion.c_str()));
   }
   else

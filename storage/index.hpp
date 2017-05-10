@@ -1,15 +1,15 @@
 #pragma once
 
-#include "std/set.hpp"
-#include "std/string.hpp"
-#include "std/unordered_set.hpp"
-#include "std/vector.hpp"
+#include <set>
+#include <string>
+#include <unordered_set>
+#include <vector>
 
 namespace storage
 {
-using TCountryId = string;
-using TCountriesSet = set<TCountryId>;
-using TCountriesVec = vector<TCountryId>;
+using TCountryId = std::string;
+using TCountriesSet = std::set<TCountryId>;
+using TCountriesVec = std::vector<TCountryId>;
 
 extern const storage::TCountryId kInvalidCountryId;
 

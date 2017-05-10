@@ -5,31 +5,31 @@
 #include "base/assert.hpp"
 #include "base/scope_guard.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/bind.hpp"
+#include <algorithm>
+#include <functional>
 
 namespace storage
 {
 int64_t const FakeMapFilesDownloader::kBlockSize;
 
 FakeMapFilesDownloader::FakeMapFilesDownloader(TaskRunner & taskRunner)
-    : m_progress(make_pair(0, 0)), m_idle(true), m_timestamp(0), m_taskRunner(taskRunner)
+    : m_progress(std::make_pair(0, 0)), m_idle(true), m_timestamp(0), m_taskRunner(taskRunner)
 {
   m_servers.push_back("http://test-url/");
 }
 
 FakeMapFilesDownloader::~FakeMapFilesDownloader() { CHECK(m_checker.CalledOnOriginalThread(), ()); }
 
-void FakeMapFilesDownloader::GetServersList(int64_t const mapVersion, string const & mapFileName,
+void FakeMapFilesDownloader::GetServersList(int64_t const mapVersion, std::string const & mapFileName,
                                             TServersListCallback const & callback)
 {
   CHECK(m_checker.CalledOnOriginalThread(), ());
   m_idle = false;
-  MY_SCOPE_GUARD(resetIdle, bind(&FakeMapFilesDownloader::Reset, this));
-  m_taskRunner.PostTask(bind(callback, m_servers));
+  MY_SCOPE_GUARD(resetIdle, std::bind(&FakeMapFilesDownloader::Reset, this));
+  m_taskRunner.PostTask(std::bind(callback, m_servers));
 }
 
-void FakeMapFilesDownloader::DownloadMapFile(vector<string> const & urls, string const & path,
+void FakeMapFilesDownloader::DownloadMapFile(std::vector<std::string> const & urls, std::string const & path,
                                              int64_t size,
                                              TFileDownloadedCallback const & onDownloaded,
                                              TDownloadingProgressCallback const & onProgress)
@@ -45,7 +45,7 @@ void FakeMapFilesDownloader::DownloadMapFile(vector<string> const & urls, string
   m_onProgress = onProgress;
 
   ++m_timestamp;
-  m_taskRunner.PostTask(bind(&FakeMapFilesDownloader::DownloadNextChunk, this, m_timestamp));
+  m_taskRunner.PostTask(std::bind(&FakeMapFilesDownloader::DownloadNextChunk, this, m_timestamp));
 }
 
 MapFilesDownloader::TProgress FakeMapFilesDownloader::GetDownloadingProgress()
@@ -72,7 +72,7 @@ void FakeMapFilesDownloader::DownloadNextChunk(uint64_t timestamp)
 {
   CHECK(m_checker.CalledOnOriginalThread(), ());
 
-  static string kZeroes(kBlockSize, '\0');
+  static std::string kZeroes(kBlockSize, '\0');
 
   if (timestamp != m_timestamp)
     return;
@@ -82,18 +82,18 @@ void FakeMapFilesDownloader::DownloadNextChunk(uint64_t timestamp)
 
   if (m_progress.first == m_progress.second)
   {
-    m_taskRunner.PostTask(bind(m_onDownloaded, true /* success */, m_progress));
+    m_taskRunner.PostTask(std::bind(m_onDownloaded, true /* success */, m_progress));
     Reset();
     return;
   }
 
-  int64_t const bs = min(m_progress.second - m_progress.first, kBlockSize);
+  int64_t const bs = std::min(m_progress.second - m_progress.first, kBlockSize);
 
   m_progress.first += bs;
   m_writer->Write(kZeroes.data(), bs);
   m_writer->Flush();
 
-  m_taskRunner.PostTask(bind(m_onProgress, m_progress));
-  m_taskRunner.PostTask(bind(&FakeMapFilesDownloader::DownloadNextChunk, this, timestamp));
+  m_taskRunner.PostTask(std::bind(m_onProgress, m_progress));
+  m_taskRunner.PostTask(std::bind(&FakeMapFilesDownloader::DownloadNextChunk, this, timestamp));
 }
 }  // namespace storage

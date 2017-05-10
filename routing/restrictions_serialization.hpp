@@ -11,9 +11,9 @@
 #include "base/bits.hpp"
 #include "base/checked_cast.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/string.hpp"
-#include "std/vector.hpp"
+#include <algorithm>
+#include <string>
+#include <vector>
 
 namespace routing
 {
@@ -36,21 +36,21 @@ struct Restriction
     Only,  // Only going according such restriction is permitted
   };
 
-  Restriction(Type type, vector<uint32_t> const & links) : m_featureIds(links), m_type(type) {}
+  Restriction(Type type, std::vector<uint32_t> const & links) : m_featureIds(links), m_type(type) {}
   bool IsValid() const;
   bool operator==(Restriction const & restriction) const;
   bool operator<(Restriction const & restriction) const;
 
   // Links of the restriction in feature ids term.
-  vector<uint32_t> m_featureIds;
+  std::vector<uint32_t> m_featureIds;
   Type m_type;
 };
 
-using RestrictionVec = vector<Restriction>;
+using RestrictionVec = std::vector<Restriction>;
 
-string ToString(Restriction::Type const & type);
-string DebugPrint(Restriction::Type const & type);
-string DebugPrint(Restriction const & restriction);
+std::string ToString(Restriction::Type const & type);
+std::string DebugPrint(Restriction::Type const & type);
+std::string DebugPrint(Restriction const & restriction);
 
 struct RestrictionHeader
 {
@@ -128,7 +128,7 @@ private:
     if (begin == end)
       return;
 
-    CHECK(is_sorted(begin, end), ());
+    CHECK(std::is_sorted(begin, end), ());
     routing::Restriction::Type const type = begin->m_type;
 
     uint32_t prevFirstLinkFeatureId = 0;

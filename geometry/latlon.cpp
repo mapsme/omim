@@ -1,6 +1,6 @@
 #include "latlon.hpp"
 
-#include "std/sstream.hpp"
+#include <sstream>
 
 namespace ms
 {
@@ -10,9 +10,9 @@ double const LatLon::kMaxLat = 90;
 double const LatLon::kMinLon = -180;
 double const LatLon::kMaxLon = 180;
 
-string DebugPrint(LatLon const & t)
+std::string DebugPrint(LatLon const & t)
 {
-  ostringstream out;
+  std::ostringstream out;
   out.precision(20);
   out << "ms::LatLon(" << t.lat << ", " << t.lon << ")";
   return out.str();

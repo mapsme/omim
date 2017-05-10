@@ -4,7 +4,7 @@
 #include "pointers.hpp"
 #include "drape_global.hpp"
 
-#include "std/cstdint.hpp"
+#include <cstdint>
 
 namespace dp
 {

@@ -13,6 +13,9 @@
 #include "std/string.hpp"
 #include "std/vector.hpp"
 
+using namespace std;
+using namespace std::placeholders;
+
 using namespace routing;
 
 using ResultCode = routing::IRouter::ResultCode;

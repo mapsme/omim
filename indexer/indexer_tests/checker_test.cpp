@@ -18,7 +18,7 @@ vector<uint32_t> GetTypes(char const * arr[][roadArrColumnCount], size_t const r
   vector<uint32_t> types;
 
   for (size_t i = 0; i < recCount; ++i)
-    types.push_back(c.GetTypeByPath(vector<string>(arr[i], arr[i] + roadArrColumnCount)));
+    types.push_back(c.GetTypeByPath(vector<std::string>(arr[i], arr[i] + roadArrColumnCount)));
   return types;
 }
 

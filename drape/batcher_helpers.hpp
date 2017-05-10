@@ -2,8 +2,8 @@
 
 #include "drape/pointers.hpp"
 
-#include "std/function.hpp"
-#include "std/vector.hpp"
+#include <functional>
+#include <vector>
 
 namespace dp
 {
@@ -78,12 +78,12 @@ class LineRawBatch : public UniversalBatch
   using TBase = UniversalBatch;
 
 public:
-  LineRawBatch(BatchCallbacks & callbacks, vector<int> const & indices);
+  LineRawBatch(BatchCallbacks & callbacks, std::vector<int> const & indices);
 
   void BatchData(ref_ptr<AttributeProvider> streams) override;
 
 private:
-  vector<int> const & m_indices;
+  std::vector<int> const & m_indices;
 };
 
 class FanStripHelper : public UniversalBatch

@@ -2,9 +2,9 @@
 
 #include "drape/texture.hpp"
 
-#include "std/string.hpp"
-#include "std/map.hpp"
-#include "std/vector.hpp"
+#include <string>
+#include <map>
+#include <vector>
 
 namespace dp
 {
@@ -15,12 +15,12 @@ public:
   class SymbolKey : public Key
   {
   public:
-    SymbolKey(string const & symbolName);
+    SymbolKey(std::string const & symbolName);
     virtual ResourceType GetType() const;
-    string const & GetSymbolName() const;
+    std::string const & GetSymbolName() const;
 
   private:
-    string m_symbolName;
+    std::string m_symbolName;
   };
 
   class SymbolInfo : public ResourceInfo
@@ -35,19 +35,19 @@ public:
 
   ref_ptr<ResourceInfo> FindResource(Key const & key, bool & newResource) override;
 
-  void Invalidate(string const & skinPathName, ref_ptr<HWTextureAllocator> allocator);
+  void Invalidate(std::string const & skinPathName, ref_ptr<HWTextureAllocator> allocator);
 
   bool IsSymbolContained(std::string const & symbolName) const;
 
   static bool DecodeToMemory(std::string const & skinPathName, std::string const & textureName,
-                             vector<uint8_t> & symbolsSkin,
-                             std::map<string, m2::RectU> & symbolsIndex,
+                             std::vector<uint8_t> & symbolsSkin,
+                             std::map<std::string, m2::RectU> & symbolsIndex,
                              uint32_t & skinWidth, uint32_t & skinHeight);
 private:
   void Fail();
   void Load(std::string const & skinPathName, ref_ptr<HWTextureAllocator> allocator);
 
-  using TSymDefinition = map<std::string, SymbolInfo>;
+  using TSymDefinition = std::map<std::string, SymbolInfo>;
   std::string m_name;
   mutable TSymDefinition m_definition;
 };

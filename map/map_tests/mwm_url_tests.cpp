@@ -9,7 +9,7 @@
 
 #include "base/string_format.hpp"
 
-#include "std/random.hpp"
+#include <random>
 
 using namespace url_scheme;
 
@@ -26,7 +26,7 @@ namespace
   class ApiTest
   {
   public:
-    ApiTest(string const & uriString)
+    ApiTest(std::string const & uriString)
     {
       m_m = &m_fm.GetBookmarkManager();
       m_api.SetBookmarkManager(m_m);
@@ -42,12 +42,12 @@ namespace
     bool IsValid() const { return m_api.IsValid(); }
     m2::RectD GetViewport() const { return m_viewportRect; }
 
-    string const & GetAppTitle() const { return m_api.GetAppTitle(); }
+    std::string const & GetAppTitle() const { return m_api.GetAppTitle(); }
     bool GoBackOnBalloonClick() const { return m_api.GoBackOnBalloonClick(); }
     int GetPointCount() const { return UserMarkControllerGuard(*m_m, type).m_controller.GetUserMarkCount(); }
     vector<RoutePoint> GetRoutePoints() const { return m_api.GetRoutePoints(); }
     url_scheme::SearchRequest const & GetSearchRequest() const { return m_api.GetSearchRequest(); }
-    string const & GetGlobalBackUrl() const { return m_api.GetGlobalBackUrl(); }
+    std::string const & GetGlobalBackUrl() const { return m_api.GetGlobalBackUrl(); }
     int GetApiVersion() const { return m_api.GetApiVersion(); }
     bool TestLatLon(int index, double lat, double lon) const
     {
@@ -55,23 +55,23 @@ namespace
       return my::AlmostEqualULPs(ll.lat, lat) && my::AlmostEqualULPs(ll.lon, lon);
     }
 
-    bool TestRoutePoint(int index, double lat, double lon, string const & name)
+    bool TestRoutePoint(int index, double lat, double lon, std::string const & name)
     {
       RoutePoint const pt = GetRoutePoints()[index];
       return pt.m_org == MercatorBounds::FromLatLon(lat, lon) && pt.m_name == name;
     }
 
-    bool TestName(int index, string const & name) const
+    bool TestName(int index, std::string const & name) const
     {
       return GetMark(index)->GetName() == name;
     }
 
-    bool TestID(int index, string const & id) const
+    bool TestID(int index, std::string const & id) const
     {
       return GetMark(index)->GetID() == id;
     }
 
-    bool TestRouteType(string const & type) const { return m_api.GetRoutingType() == type; }
+    bool TestRouteType(std::string const & type) const { return m_api.GetRoutingType() == type; }
   private:
     ApiMarkPoint const * GetMark(int index) const
     {
@@ -87,7 +87,7 @@ namespace
     BookmarkManager * m_m;
   };
 
-  bool IsValid(Framework & fm, string const & uriString)
+  bool IsValid(Framework & fm, std::string const & uriString)
   {
     ParsedMapApi api;
     api.SetBookmarkManager(&fm.GetBookmarkManager());
@@ -103,7 +103,7 @@ namespace
 
 UNIT_TEST(MapApiSmoke)
 {
-  string uriString = "mapswithme://map?ll=38.970559,-9.419289&ignoreThisParam=Yes&z=17&n=Point%20Name";
+  std::string uriString = "mapswithme://map?ll=38.970559,-9.419289&ignoreThisParam=Yes&z=17&n=Point%20Name";
   TEST(Uri(uriString).IsValid(), ());
 
   ApiTest test(uriString);
@@ -118,7 +118,7 @@ UNIT_TEST(MapApiSmoke)
 
 UNIT_TEST(RouteApiSmoke)
 {
-  string const uriString =
+  std::string const uriString =
       "mapswithme://route?sll=1,1&saddr=name0&dll=2,2&daddr=name1&type=vehicle";
   TEST(Uri(uriString).IsValid(), ());
 
@@ -131,7 +131,7 @@ UNIT_TEST(RouteApiSmoke)
 
 UNIT_TEST(SearchApiSmoke)
 {
-  string const uriString = "mapsme://search?query=fff&cll=1,1&locale=ru&map";
+  std::string const uriString = "mapsme://search?query=fff&cll=1,1&locale=ru&map";
   TEST(Uri(uriString).IsValid(), ());
 
   ApiTest test(uriString);
@@ -335,7 +335,7 @@ UNIT_TEST(AppNameTest)
 
 namespace
 {
-string generatePartOfUrl(url_scheme::ApiPoint const & point)
+std::string generatePartOfUrl(url_scheme::ApiPoint const & point)
 {
   stringstream stream;
   stream << "&ll=" << strings::ToString(point.m_lat)  << "," << strings::ToString(point.m_lon)
@@ -344,10 +344,10 @@ string generatePartOfUrl(url_scheme::ApiPoint const & point)
   return stream.str();
 }
 
-string randomString(size_t size, size_t seed)
+std::string randomString(size_t size, size_t seed)
 {
-  string result(size, '0');
-  mt19937 rng(seed);
+  std::string result(size, '0');
+  std::mt19937 rng(seed);
   for (size_t i = 0; i < size; ++i)
     result[i] = 'a' + rng() % 26;
   return result;
@@ -359,7 +359,7 @@ void generateRandomTest(size_t numberOfPoints, size_t stringLength)
   for (size_t i = 0; i < numberOfPoints; ++i)
   {
     url_scheme::ApiPoint point;
-    mt19937 rng(i);
+    std::mt19937 rng(i);
     point.m_lat = rng() % 90;
     point.m_lat *= rng() % 2 == 0 ? 1 : -1;
     point.m_lon = rng() % 180;
@@ -368,7 +368,7 @@ void generateRandomTest(size_t numberOfPoints, size_t stringLength)
     point.m_id = randomString(stringLength, i);
     vect[i] = point;
   }
-  string result = "mapswithme://map?v=1";
+  std::string result = "mapswithme://map?v=1";
   for (size_t i = 0; i < vect.size(); ++i)
     result += generatePartOfUrl(vect[i]);
 

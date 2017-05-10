@@ -7,8 +7,8 @@
 
 namespace
 {
-string const kDataFilePath = "LastTrafficDataFilePath";
-string const kSampleFilePath = "LastTrafficSampleFilePath";
+std::string const kDataFilePath = "LastTrafficDataFilePath";
+std::string const kSampleFilePath = "LastTrafficSampleFilePath";
 }  // namespace
 
 TrafficModeInitDlg::TrafficModeInitDlg(QWidget * parent) :
@@ -17,8 +17,8 @@ TrafficModeInitDlg::TrafficModeInitDlg(QWidget * parent) :
 {
   m_ui->setupUi(this);
 
-  string lastDataFilePath;
-  string lastSampleFilePath;
+  std::string lastDataFilePath;
+  std::string lastSampleFilePath;
   if (settings::Get(kDataFilePath, lastDataFilePath))
       m_ui->dataFileName->setText(QString::fromStdString(lastDataFilePath));
   if (settings::Get(kSampleFilePath, lastSampleFilePath))

@@ -14,12 +14,12 @@ namespace
 {
 
 void TestAddress(ReverseGeocoder & coder, ms::LatLon const & ll,
-                 string const & stName, string const & hNumber)
+                 std::string const & stName, std::string const & hNumber)
 {
   ReverseGeocoder::Address addr;
   coder.GetNearbyAddress(MercatorBounds::FromLatLon(ll), addr);
 
-  string const key = strings::ToUtf8(GetStreetNameAsKey(addr.m_street.m_name));
+  std::string const key = strings::ToUtf8(GetStreetNameAsKey(addr.m_street.m_name));
 
   TEST_EQUAL(stName, key, (addr));
   TEST_EQUAL(hNumber, addr.m_building.m_name, (addr));

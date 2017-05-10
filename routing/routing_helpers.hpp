@@ -13,8 +13,8 @@
 
 #include "base/cancellable.hpp"
 
-#include "std/shared_ptr.hpp"
-#include "std/vector.hpp"
+#include <memory>
+#include <vector>
 
 namespace routing
 {
@@ -28,6 +28,6 @@ bool IsRoad(TTypes const & types)
 }
 
 void ReconstructRoute(IDirectionsEngine & engine, RoadGraphBase const & graph,
-                      shared_ptr<TrafficStash> const & trafficStash,
-                      my::Cancellable const & cancellable, vector<Junction> & path, Route & route);
+                      std::shared_ptr<TrafficStash> const & trafficStash,
+                      my::Cancellable const & cancellable, std::vector<Junction> & path, Route & route);
 }  // namespace rouing

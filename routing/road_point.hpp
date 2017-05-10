@@ -1,8 +1,8 @@
 #pragma once
 
-#include "std/cstdint.hpp"
-#include "std/sstream.hpp"
-#include "std/string.hpp"
+#include <cstdint>
+#include <sstream>
+#include <string>
 
 namespace routing
 {
@@ -36,9 +36,9 @@ private:
   uint32_t m_pointId;
 };
 
-inline string DebugPrint(RoadPoint const & rp)
+inline std::string DebugPrint(RoadPoint const & rp)
 {
-  ostringstream out;
+  std::ostringstream out;
   out << "RoadPoint [" << rp.GetFeatureId() << ", " << rp.GetPointId() << "]";
   return out.str();
 }

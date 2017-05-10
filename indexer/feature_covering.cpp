@@ -6,7 +6,7 @@
 
 #include "geometry/covering_utils.hpp"
 
-#include "std/vector.hpp"
+#include <vector>
 
 
 namespace
@@ -23,8 +23,8 @@ public:
       : m_a(a), m_b(b), m_c(c) {}
   };
 
-  vector<m2::PointD> m_polyline;
-  vector<Trg> m_trg;
+  std::vector<m2::PointD> m_polyline;
+  std::vector<Trg> m_trg;
   m2::RectD m_rect;
 
   // Note:
@@ -38,7 +38,7 @@ public:
     m2::RectD cellRect;
     {
       // Check for limit rect intersection.
-      pair<uint32_t, uint32_t> const xy = cell.XY();
+      std::pair<uint32_t, uint32_t> const xy = cell.XY();
       uint32_t const r = cell.Radius();
       ASSERT_GREATER_OR_EQUAL(xy.first, r, ());
       ASSERT_GREATER_OR_EQUAL(xy.second, r, ());
@@ -135,15 +135,15 @@ vector<int64_t> CoverFeature(FeatureType const & f, int cellDepth, uint64_t cell
   if (fIsect.m_trg.empty() && fIsect.m_polyline.size() == 1)
   {
     m2::PointD const pt = fIsect.m_polyline[0];
-    return vector<int64_t>(
+    return std::vector<int64_t>(
           1, RectId::FromXY(static_cast<uint32_t>(pt.x), static_cast<uint32_t>(pt.y),
                             RectId::DEPTH_LEVELS - 1).ToInt64(cellDepth));
   }
 
-  vector<RectId> cells;
+  std::vector<RectId> cells;
   covering::CoverObject(fIsect, cellPenaltyArea, cells, cellDepth, RectId::Root());
 
-  vector<int64_t> res(cells.size());
+  std::vector<int64_t> res(cells.size());
   for (size_t i = 0; i < cells.size(); ++i)
     res[i] = cells[i].ToInt64(cellDepth);
 
@@ -180,18 +180,18 @@ IntervalsT SortAndMergeIntervals(IntervalsT const & v)
 void AppendLowerLevels(RectId id, int cellDepth, IntervalsT & intervals)
 {
   int64_t idInt64 = id.ToInt64(cellDepth);
-  intervals.push_back(make_pair(idInt64, idInt64 + id.SubTreeSize(cellDepth)));
+  intervals.push_back(std::make_pair(idInt64, idInt64 + id.SubTreeSize(cellDepth)));
   while (id.Level() > 0)
   {
     id = id.Parent();
     idInt64 = id.ToInt64(cellDepth);
-    intervals.push_back(make_pair(idInt64, idInt64 + 1));
+    intervals.push_back(std::make_pair(idInt64, idInt64 + 1));
   }
 }
 
 void CoverViewportAndAppendLowerLevels(m2::RectD const & r, int cellDepth, IntervalsT & res)
 {
-  vector<RectId> ids;
+  std::vector<RectId> ids;
   ids.reserve(SPLIT_RECT_CELLS_COUNT);
   CoverRect<MercatorBounds, RectId>(r, SPLIT_RECT_CELLS_COUNT, cellDepth, ids);
 

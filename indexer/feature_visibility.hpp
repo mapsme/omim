@@ -5,10 +5,10 @@
 
 #include "base/base.hpp"
 
-#include "std/vector.hpp"
-#include "std/string.hpp"
-#include "std/utility.hpp"
-#include "std/initializer_list.hpp"
+#include <vector>
+#include <string>
+#include <utility>
+#include <initializer_list>
 
 
 class FeatureBase;
@@ -32,9 +32,9 @@ namespace feature
   bool RequireGeometryInIndex(FeatureBase const & f);
 
   /// For FEATURE_TYPE_AREA need to have at least one area-filling type.
-  bool IsDrawableLike(vector<uint32_t> const & types, EGeomType geomType);
+  bool IsDrawableLike(std::vector<uint32_t> const & types, EGeomType geomType);
   /// For FEATURE_TYPE_AREA removes line-drawing only types.
-  bool RemoveNoDrawableTypes(vector<uint32_t> & types, EGeomType geomType, bool emptyName = false);
+  bool RemoveNoDrawableTypes(std::vector<uint32_t> & types, EGeomType geomType, bool emptyName = false);
   //@}
 
   int GetMinDrawableScale(FeatureBase const & f);
@@ -43,8 +43,8 @@ namespace feature
   /// @return [-1, -1] if range is not drawable
   //@{
   /// @name Get scale range when feature is visible.
-  pair<int, int> GetDrawableScaleRange(uint32_t type);
-  pair<int, int> GetDrawableScaleRange(TypesHolder const & types);
+  std::pair<int, int> GetDrawableScaleRange(uint32_t type);
+  std::pair<int, int> GetDrawableScaleRange(TypesHolder const & types);
 
   /// @name Get scale range when feature's text or symbol is visible.
   enum
@@ -55,14 +55,14 @@ namespace feature
     RULE_SYMBOL = 4
   };
 
-  pair<int, int> GetDrawableScaleRangeForRules(TypesHolder const & types, int rules);
-  pair<int, int> GetDrawableScaleRangeForRules(FeatureBase const & f, int rules);
+  std::pair<int, int> GetDrawableScaleRangeForRules(TypesHolder const & types, int rules);
+  std::pair<int, int> GetDrawableScaleRangeForRules(FeatureBase const & f, int rules);
   //@}
 
   /// @return (geometry type, is coastline)
-  pair<int, bool> GetDrawRule(TypesHolder const & types, int level,
+  std::pair<int, bool> GetDrawRule(TypesHolder const & types, int level,
                               drule::KeysT & keys);
-  void GetDrawRule(vector<uint32_t> const & types, int level, int geoType,
+  void GetDrawRule(std::vector<uint32_t> const & types, int level, int geoType,
                    drule::KeysT & keys);
 
   /// Used to check whether user types belong to particular classificator set.
@@ -72,7 +72,7 @@ namespace feature
     uint8_t m_level;
 
   public:
-    explicit TypeSetChecker(initializer_list<char const *> const & lst);
+    explicit TypeSetChecker(std::initializer_list<char const *> const & lst);
 
     bool IsEqual(uint32_t type) const;
     template <class IterT> bool IsEqualR(IterT beg, IterT end) const
@@ -84,7 +84,7 @@ namespace feature
       }
       return false;
     }
-    bool IsEqualV(vector<uint32_t> const & v) const
+    bool IsEqualV(std::vector<uint32_t> const & v) const
     {
       return IsEqualR(v.begin(), v.end());
     }

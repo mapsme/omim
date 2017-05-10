@@ -7,6 +7,8 @@
 
 #include "platform/settings.hpp"
 
+using namespace std::placeholders;
+
 namespace df
 {
 DrapeEngine::DrapeEngine(Params && params)
@@ -18,7 +20,7 @@ DrapeEngine::DrapeEngine(Params && params)
   df::VisualParams::Instance().SetFontScale(params.m_fontsScaleFactor);
 
   gui::DrapeGui & guiSubsystem = gui::DrapeGui::Instance();
-  guiSubsystem.SetLocalizator(bind(&StringsBundle::GetString, params.m_stringsBundle.get(), _1));
+  guiSubsystem.SetLocalizator(std::bind(&StringsBundle::GetString, params.m_stringsBundle.get(), _1));
   guiSubsystem.SetSurfaceSize(m2::PointF(m_viewport.GetWidth(), m_viewport.GetHeight()));
 
   m_textureManager = make_unique_dp<dp::TextureManager>();
@@ -49,23 +51,23 @@ DrapeEngine::DrapeEngine(Params && params)
                                         params.m_hints,
                                         params.m_isRoutingActive,
                                         params.m_isAutozoomEnabled,
-                                        bind(&DrapeEngine::MyPositionModeChanged, this, _1, _2));
+                                        std::bind(&DrapeEngine::MyPositionModeChanged, this, _1, _2));
 
   FrontendRenderer::Params frParams(make_ref(m_threadCommutator),
                                     params.m_factory,
                                     make_ref(m_textureManager),
                                     move(mpParams),
                                     m_viewport,
-                                    bind(&DrapeEngine::ModelViewChanged, this, _1),
-                                    bind(&DrapeEngine::TapEvent, this, _1),
-                                    bind(&DrapeEngine::UserPositionChanged, this, _1),
+                                    std::bind(&DrapeEngine::ModelViewChanged, this, _1),
+                                    std::bind(&DrapeEngine::TapEvent, this, _1),
+                                    std::bind(&DrapeEngine::UserPositionChanged, this, _1),
                                     make_ref(m_requestedTiles),
-                                    move(params.m_overlaysShowStatsCallback),
+                                    std::move(params.m_overlaysShowStatsCallback),
                                     params.m_allow3dBuildings,
                                     params.m_trafficEnabled,
                                     params.m_blockTapEvents);
 
-  m_frontend = make_unique_dp<FrontendRenderer>(move(frParams));
+  m_frontend = make_unique_dp<FrontendRenderer>(std::move(frParams));
 
   BackendRenderer::Params brParams(frParams.m_commutator,
                                    frParams.m_oglContextFactory,
@@ -77,15 +79,15 @@ DrapeEngine::DrapeEngine(Params && params)
                                    params.m_trafficEnabled,
                                    params.m_simplifiedTrafficColors);
 
-  m_backend = make_unique_dp<BackendRenderer>(move(brParams));
+  m_backend = make_unique_dp<BackendRenderer>(std::move(brParams));
 
-  m_widgetsInfo = move(params.m_info);
+  m_widgetsInfo = std::move(params.m_info);
 
   RecacheGui(false);
   RecacheMapShapes();
 
   if (params.m_showChoosePositionMark)
-    EnableChoosePositionMode(true, move(params.m_boundAreaTriangles), false, m2::PointD());
+    EnableChoosePositionMode(true, std::move(params.m_boundAreaTriangles), false, m2::PointD());
 
   ResizeImpl(m_viewport.GetWidth(), m_viewport.GetHeight());
 }
@@ -529,7 +531,7 @@ void DrapeEngine::SetDisplacementMode(int mode)
                                   MessagePriority::Normal);
 }
 
-void DrapeEngine::RequestSymbolsSize(vector<string> const & symbols,
+void DrapeEngine::RequestSymbolsSize(vector<std::string> const & symbols,
                                      TRequestSymbolsSizeCallback const & callback)
 {
   m_threadCommutator->PostMessage(ThreadsCommutator::ResourceUploadThread,
@@ -558,7 +560,7 @@ void DrapeEngine::UpdateTraffic(traffic::TrafficInfo const & info)
   segmentsColoring.emplace(info.GetMwmId(), info.GetColoring());
 
   m_threadCommutator->PostMessage(ThreadsCommutator::ResourceUploadThread,
-                                  make_unique_dp<UpdateTrafficMessage>(move(segmentsColoring)),
+                                  make_unique_dp<UpdateTrafficMessage>(std::move(segmentsColoring)),
                                   MessagePriority::Normal);
 }
 
@@ -592,7 +594,7 @@ void DrapeEngine::RunScenario(ScenarioManager::ScenarioData && scenarioData,
 {
   auto const & manager = m_frontend->GetScenarioManager();
   if (manager != nullptr)
-    manager->RunScenario(move(scenarioData), onStartFn, onFinishFn);
+    manager->RunScenario(std::move(scenarioData), onStartFn, onFinishFn);
 }
 
 void DrapeEngine::AddCustomSymbols(CustomSymbols && symbols)

@@ -49,11 +49,11 @@ bool WillDelete(storage::TCountryId const & /* countryId */,
 
 unique_ptr<storage::Storage> g_storage;
 
-void Init(string const & resource_path, string const & mwm_path)
+void Init(std::string const & resource_path, std::string const & mwm_path)
 {
   auto & platform = GetPlatform();
 
-  string countriesFile = COUNTRIES_FILE;
+  std::string countriesFile = COUNTRIES_FILE;
 
   if (!resource_path.empty())
   {
@@ -76,7 +76,7 @@ struct Mercator
   Mercator(double x, double y) : m_x(x), m_y(y) {}
   Mercator(m2::PointD const & m): m_x(m.x), m_y(m.y) {}
 
-  string ToString() const
+  std::string ToString() const
   {
     ostringstream os;
     os << "x: " << m_x << ", y: " << m_y;
@@ -92,7 +92,7 @@ struct Viewport
   Viewport() = default;
   Viewport(Mercator const & min, Mercator const & max) : m_min(min), m_max(max) {}
 
-  string ToString() const
+  std::string ToString() const
   {
     ostringstream os;
     os << "[" << m_min.ToString() << ", " << m_max.ToString() << "]";
@@ -105,7 +105,7 @@ struct Viewport
 
 struct Params
 {
-  string ToString() const
+  std::string ToString() const
   {
     ostringstream os;
     os << m_query << ", " << m_locale << ", " << m_position.ToString() << ", "
@@ -113,8 +113,8 @@ struct Params
     return os.str();
   }
 
-  string m_query;
-  string m_locale;
+  std::string m_query;
+  std::string m_locale;
   Mercator m_position;
   Viewport m_viewport;
 };
@@ -132,7 +132,7 @@ struct Result
       m_center = r.GetFeatureCenter();
   }
 
-  string ToString() const
+  std::string ToString() const
   {
     ostringstream os;
     os << m_name << " [ " << m_address;
@@ -142,8 +142,8 @@ struct Result
     return os.str();
   }
 
-  string m_name;
-  string m_address;
+  std::string m_name;
+  std::string m_address;
   bool m_hasCenter = false;
   Mercator m_center;
 };

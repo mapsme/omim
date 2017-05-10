@@ -19,7 +19,7 @@ bool Uri::Parse()
 {
   // get url scheme
   size_t pathStart = m_url.find(':');
-  if (pathStart == string::npos || pathStart == 0)
+  if (pathStart == std::string::npos || pathStart == 0)
     return false;
   m_scheme.assign(m_url, 0, pathStart);
 
@@ -29,7 +29,7 @@ bool Uri::Parse()
   // Find query starting point for (key, value) parsing.
   m_queryStart = m_url.find('?', pathStart);
   size_t pathLength;
-  if (m_queryStart == string::npos)
+  if (m_queryStart == std::string::npos)
   {
     m_queryStart = m_url.size();
     pathLength = m_queryStart - pathStart;
@@ -59,7 +59,7 @@ bool Uri::ForEachKeyValue(TCallback const & callback) const
   for (size_t start = queryStart; start < count; )
   {
     size_t end = m_url.find('&', start);
-    if (end == string::npos)
+    if (end == std::string::npos)
       end = count;
 
     // Skip empty keys.
@@ -67,8 +67,8 @@ bool Uri::ForEachKeyValue(TCallback const & callback) const
     {
       size_t const eq = m_url.find('=', start);
 
-      string key, value;
-      if (eq != string::npos && eq < end)
+      std::string key, value;
+      if (eq != std::string::npos && eq < end)
       {
         key = UrlDecode(m_url.substr(start, eq - start));
         value = UrlDecode(m_url.substr(eq + 1, end - eq - 1));

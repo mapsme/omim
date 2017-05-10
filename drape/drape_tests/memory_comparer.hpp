@@ -4,7 +4,7 @@
 #include "drape/glconstants.hpp"
 #include "base/logging.hpp"
 
-#include "std/cstring.hpp"
+#include <cstring>
 
 namespace dp
 {

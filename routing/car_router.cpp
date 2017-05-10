@@ -34,9 +34,9 @@
 #include "base/scope_guard.hpp"
 #include "base/timer.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/limits.hpp"
-#include "std/string.hpp"
+#include <algorithm>
+#include <limits>
+#include <string>
 
 #include "3party/osrm/osrm-backend/data_structures/internal_route_result.hpp"
 #include "3party/osrm/osrm-backend/data_structures/query_edge.hpp"
@@ -74,7 +74,7 @@ public:
     double const kReadCrossEpsilon = 1.0E-4;
 
     // Geting nodes by geometry.
-    vector<NodeID> geomNodes;
+    std::vector<NodeID> geomNodes;
     helpers::Point2Node p2n(m_routingMapping, geomNodes);
 
     m_index.ForEachInRectForMWM(
@@ -82,11 +82,11 @@ public:
                        junctionPoint.x + kReadCrossEpsilon, junctionPoint.y + kReadCrossEpsilon),
         scales::GetUpperScale(), m_routingMapping.GetMwmId());
 
-    sort(geomNodes.begin(), geomNodes.end());
-    geomNodes.erase(unique(geomNodes.begin(), geomNodes.end()), geomNodes.end());
+    std::sort(geomNodes.begin(), geomNodes.end());
+    geomNodes.erase(std::unique(geomNodes.begin(), geomNodes.end()), geomNodes.end());
 
     // Filtering virtual edges.
-    vector<NodeID> adjacentNodes;
+    std::vector<NodeID> adjacentNodes;
     ingoingCount = 0;
     for (EdgeID const e : m_routingMapping.m_dataFacade.GetAdjacentEdgeRange(node.GetNodeId()))
     {
@@ -150,7 +150,7 @@ public:
       outgoingTurns.candidates.emplace_back(a, UniNodeId(targetNode), ftypes::GetHighwayClass(ft));
     }
 
-    sort(outgoingTurns.candidates.begin(), outgoingTurns.candidates.end(),
+    std::sort(outgoingTurns.candidates.begin(), outgoingTurns.candidates.end(),
          [](turns::TurnCandidate const & t1, turns::TurnCandidate const & t2) {
            return t1.angle < t2.angle;
          });
@@ -205,11 +205,11 @@ IRouter::ResultCode FindSingleOsrmRoute(FeatureGraphNode const & source,
                                         RouterDelegate const & delegate, Index const & index,
                                         TRoutingMappingPtr & mapping, Route & route)
 {
-  vector<Junction> geometry;
+  std::vector<Junction> geometry;
   Route::TTurns turns;
   Route::TTimes times;
   Route::TStreets streets;
-  vector<Segment> trafficSegs;
+  std::vector<Segment> trafficSegs;
 
   LOG(LINFO, ("OSRM route from", MercatorBounds::ToLatLon(source.segmentPoint), "to",
               MercatorBounds::ToLatLon(target.segmentPoint)));
@@ -233,7 +233,7 @@ IRouter::ResultCode FindSingleOsrmRoute(FeatureGraphNode const & source,
   route.SetStreetNames(move(streets));
   route.SetTraffic({} /* No traffic info in case of OSRM */);
 
-  vector<m2::PointD> mwmPoints;
+  std::vector<m2::PointD> mwmPoints;
   JunctionsToPoints(geometry, mwmPoints);
   route.SetGeometry(mwmPoints.cbegin(), mwmPoints.cend());
 
@@ -243,7 +243,7 @@ IRouter::ResultCode FindSingleOsrmRoute(FeatureGraphNode const & source,
 template <typename ToDo>
 bool ForEachCountryInfo(Index & index, ToDo && toDo)
 {
-  vector<shared_ptr<MwmInfo>> infos;
+  std::vector<shared_ptr<MwmInfo>> infos;
   index.GetMwmsInfo(infos);
 
   for (auto const & info : infos)
@@ -269,12 +269,12 @@ bool CarRouter::CheckRoutingAbility(m2::PointD const & startPoint, m2::PointD co
 }
 
 CarRouter::CarRouter(Index & index, TCountryFileFn const & countryFileFn,
-                     unique_ptr<IndexRouter> localRouter)
+                     std::unique_ptr<IndexRouter> localRouter)
   : m_index(index), m_indexManager(countryFileFn, index), m_router(move(localRouter))
 {
 }
 
-string CarRouter::GetName() const { return "mixed-car"; }
+std::string CarRouter::GetName() const { return "mixed-car"; }
 
 void CarRouter::ClearState()
 {
@@ -348,8 +348,8 @@ void FindGraphNodeOffsets(uint32_t const nodeId, m2::PointD const & point, Index
       continue;
 
     helpers::Point2PhantomNode::Candidate mappedSeg;
-    size_t start_idx = min(s.m_pointStart, s.m_pointEnd);
-    size_t stop_idx = max(s.m_pointStart, s.m_pointEnd);
+    size_t start_idx = std::min(s.m_pointStart, s.m_pointEnd);
+    size_t stop_idx = std::max(s.m_pointStart, s.m_pointEnd);
     helpers::Point2PhantomNode::FindNearestSegment(ft, point, mappedSeg, start_idx, stop_idx);
 
     OsrmMappingTypes::FtSeg seg;
@@ -435,7 +435,7 @@ CarRouter::ResultCode CarRouter::CalculateRoute(m2::PointD const & startPoint,
     ResultCode const code = startMapping->GetError();
     if (code != NoError)
     {
-      string const name = startMapping->GetCountryName();
+      std::string const name = startMapping->GetCountryName();
       if (name.empty())
         return IRouter::ResultCode::StartPointNotFound;
       route.AddAbsentCountry(name);
@@ -448,7 +448,7 @@ CarRouter::ResultCode CarRouter::CalculateRoute(m2::PointD const & startPoint,
     ResultCode const code = targetMapping->GetError();
     if (code != NoError)
     {
-      string const name = targetMapping->GetCountryName();
+      std::string const name = targetMapping->GetCountryName();
       if (name.empty())
         return IRouter::EndPointNotFound;
       route.AddAbsentCountry(name);
@@ -510,7 +510,7 @@ CarRouter::ResultCode CarRouter::CalculateRoute(m2::PointD const & startPoint,
       return code;
     }
 
-    m_indexManager.ForEachMapping([](pair<string, TRoutingMappingPtr> const & indexPair) {
+    m_indexManager.ForEachMapping([](pair<std::string, TRoutingMappingPtr> const & indexPair) {
       indexPair.second->FreeCrossContext();
     });
     ResultCode crossCode = CalculateCrossMwmPath(startTask, m_cachedTargets, m_indexManager,
@@ -552,7 +552,7 @@ CarRouter::ResultCode CarRouter::CalculateRoute(m2::PointD const & startPoint,
     {
       auto code = MakeRouteFromCrossesPath(finalPath, delegate, route);
       // Manually free all cross context allocations before geometry unpacking.
-      m_indexManager.ForEachMapping([](pair<string, TRoutingMappingPtr> const & indexPair) {
+      m_indexManager.ForEachMapping([](pair<std::string, TRoutingMappingPtr> const & indexPair) {
         indexPair.second->FreeCrossContext();
       });
       LOG(LINFO, ("Made final route in", timer.ElapsedNano(), "ns."));
@@ -614,7 +614,7 @@ bool CarRouter::ThereIsCrossMwmMix(Route & route) const
 {
   bool osrmMwmExists = false;
   bool crossMwmExists = false;
-  vector<string> oldMwms;
+  std::vector<std::string> oldMwms;
 
   ForEachCountryInfo(m_index, [&](MwmInfo const & info) {
     if (version::MwmTraits(info.m_version).HasCrossMwmSection())

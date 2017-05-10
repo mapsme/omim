@@ -3,7 +3,7 @@
 #include "search/result.hpp"
 #include "search/everywhere_search_params.hpp"
 
-#include "std/vector.hpp"
+#include <vector>
 
 #include <QtGui/QPixmap>
 
@@ -35,7 +35,7 @@ class SearchPanel : public QWidget
   /// Stores current search results
   typedef search::Results ResultsT;
   typedef search::Result ResultT;
-  vector<ResultT> m_results;
+  std::vector<ResultT> m_results;
 
   search::EverywhereSearchParams m_params;
 

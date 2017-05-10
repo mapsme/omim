@@ -11,13 +11,13 @@
 #include "coding/multilang_utf8_string.hpp"
 #include "coding/reader.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/bind.hpp"
-#include "std/map.hpp"
-#include "std/set.hpp"
-#include "std/sstream.hpp"
-#include "std/vector.hpp"
-#include "std/transform_iterator.hpp"
+#include <algorithm>
+#include <functional>
+#include <map>
+#include <set>
+#include <sstream>
+#include <vector>
+#include <boost/iterator/transform_iterator.hpp>
 
 #include "base/stl_helpers.hpp"
 #include "base/string_utils.hpp"
@@ -277,13 +277,13 @@ UNIT_TEST(CategoriesIndex_Smoke)
   uint32_t type1 = classif().GetTypeByPath({"amenity", "bench"});
   uint32_t type2 = classif().GetTypeByPath({"place", "village"});
   if (type1 > type2)
-    swap(type1, type2);
+    std::swap(type1, type2);
   int8_t lang1 = CategoriesHolder::MapLocaleToInteger("en");
   int8_t lang2 = CategoriesHolder::MapLocaleToInteger("de");
 
-  auto testTypes = [&](string const & query, vector<uint32_t> const & expected)
+  auto testTypes = [&](std::string const & query, std::vector<uint32_t> const & expected)
   {
-    vector<uint32_t> result;
+    std::vector<uint32_t> result;
     index.GetAssociatedTypes(query, result);
     TEST_EQUAL(result, expected, (query));
   };
@@ -304,7 +304,7 @@ UNIT_TEST(CategoriesIndex_Smoke)
   CategoriesIndex fullIndex(holder);
   fullIndex.AddCategoryByTypeAllLangs(type1);
   fullIndex.AddCategoryByTypeAllLangs(type2);
-  vector<CategoriesHolder::Category> cats;
+  std::vector<CategoriesHolder::Category> cats;
 
   // The letter 'a' matches "strafbank" and "village".
   // One language is not enough.
@@ -335,9 +335,9 @@ UNIT_TEST(CategoriesIndex_MultipleTokens)
   CategoriesIndex index(holder);
 
   index.AddAllCategoriesInAllLangs();
-  auto testTypes = [&](string const & query, vector<uint32_t> const & expected)
+  auto testTypes = [&](std::string const & query, std::vector<uint32_t> const & expected)
   {
-    vector<uint32_t> result;
+    std::vector<uint32_t> result;
     index.GetAssociatedTypes(query, result);
     TEST_EQUAL(result, expected, (query));
   };
@@ -345,7 +345,7 @@ UNIT_TEST(CategoriesIndex_MultipleTokens)
   uint32_t type1 = classif().GetTypeByPath({"shop", "bakery"});
   uint32_t type2 = classif().GetTypeByPath({"shop", "butcher"});
   if (type1 > type2)
-    swap(type1, type2);
+    std::swap(type1, type2);
 
   testTypes("shop", {type1, type2});
   testTypes("shop buns", {type1});
@@ -374,9 +374,9 @@ UNIT_TEST(CategoriesIndex_Groups)
   CategoriesIndex index(holder);
 
   index.AddAllCategoriesInAllLangs();
-  auto testTypes = [&](string const & query, vector<uint32_t> const & expected)
+  auto testTypes = [&](std::string const & query, std::vector<uint32_t> const & expected)
   {
-    vector<uint32_t> result;
+    std::vector<uint32_t> result;
     index.GetAssociatedTypes(query, result);
     TEST_EQUAL(result, expected, (query));
   };
@@ -384,7 +384,7 @@ UNIT_TEST(CategoriesIndex_Groups)
   uint32_t type1 = classif().GetTypeByPath({"shop", "bakery"});
   uint32_t type2 = classif().GetTypeByPath({"shop", "butcher"});
   if (type1 > type2)
-    swap(type1, type2);
+    std::swap(type1, type2);
 
   testTypes("buns", {type1});
   testTypes("butcher", {type2});
@@ -434,21 +434,21 @@ UNIT_TEST(CategoriesIndex_UniqueNames)
   bool noDuplicates = true;
   for (auto const & locale : CategoriesHolder::kLocaleMapping)
   {
-    string const lang(locale.m_name);
-    if (find(disabled.begin(), disabled.end(), lang) != disabled.end())
+    std::string const lang(locale.m_name);
+    if (std::find(disabled.begin(), disabled.end(), lang) != disabled.end())
       continue;
     categories.AddLanguage(lang);
     auto const & names = categories.GetAllCategoryNames(lang);
 
-    auto firstFn = bind(&pair<string, uint32_t>::first, _1);
-    set<string> uniqueNames(make_transform_iterator(names.begin(), firstFn),
-                            make_transform_iterator(names.end(), firstFn));
+    auto firstFn = std::bind(&pair<std::string, uint32_t>::first, std::placeholders::_1);
+    std::set<std::string> uniqueNames(boost::make_transform_iterator(names.begin(), firstFn),
+                            boost::make_transform_iterator(names.end(), firstFn));
     if (uniqueNames.size() == names.size())
       continue;
 
     LOG(LWARNING, ("Invalid category translations", lang));
 
-    map<string, vector<uint32_t>> typesByName;
+    std::map<std::string, std::vector<uint32_t>> typesByName;
     for (auto const & entry : names)
       typesByName[entry.first].push_back(entry.second);
 
@@ -457,7 +457,7 @@ UNIT_TEST(CategoriesIndex_UniqueNames)
       if (entry.second.size() <= 1)
         continue;
       noDuplicates = false;
-      ostringstream str;
+      std::ostringstream str;
       str << entry.first << ":";
       for (auto const & type : entry.second)
         str << " " << cl.GetReadableObjectName(type);

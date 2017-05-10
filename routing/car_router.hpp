@@ -9,8 +9,8 @@
 
 #include "geometry/tree4d.hpp"
 
-#include "std/unique_ptr.hpp"
-#include "std/vector.hpp"
+#include <memory>
+#include <vector>
 
 namespace feature
 {
@@ -27,19 +27,19 @@ namespace routing
 {
 class RoadGraphRouter;
 struct RoutePathCross;
-using TCheckedPath = vector<RoutePathCross>;
+using TCheckedPath = std::vector<RoutePathCross>;
 
-typedef vector<FeatureGraphNode> TFeatureGraphNodeVec;
+typedef std::vector<FeatureGraphNode> TFeatureGraphNodeVec;
 
 class CarRouter : public IRouter
 {
 public:
-  typedef vector<double> GeomTurnCandidateT;
+  typedef std::vector<double> GeomTurnCandidateT;
 
   CarRouter(Index & index, TCountryFileFn const & countryFileFn,
-            unique_ptr<IndexRouter> localRouter);
+            std::unique_ptr<IndexRouter> localRouter);
 
-  virtual string GetName() const override;
+  virtual std::string GetName() const override;
 
   ResultCode CalculateRoute(m2::PointD const & startPoint, m2::PointD const & startDirection,
                             m2::PointD const & finalPoint, RouterDelegate const & delegate,
@@ -62,7 +62,7 @@ protected:
    * \brief FindPhantomNodes finds OSRM graph nodes by point and graph name.
    * \param mapName Name of the map without data file extension.
    * \param point Point in lon/lat coordinates.
-   * \param direction Movement direction vector in planar coordinates.
+   * \param direction Movement direction std::vector in planar coordinates.
    * \param res Result graph nodes.
    * \param maxCount Maximum count of graph nodes in the result vector.
    * \param mapping Reference to routing indexes.
@@ -77,7 +77,7 @@ private:
    * \brief Makes route (points turns and other annotations) from the map cross structs and submits
    * them to @route class
    * \warning monitors m_requestCancel flag for process interrupting.
-   * \param path vector of pathes through mwms
+   * \param path std::vector of pathes through mwms
    * \param route class to render final route
    * \return NoError or error code
    */
@@ -103,8 +103,8 @@ private:
 
   /*! Finds single shortest path in a single MWM between 2 sets of edges.
      * It's a route from multiple sources to multiple targets (MSMT).
-     * \param source: vector of source edges to make path
-     * \param target: vector of target edges to make path
+     * \param source: std::vector of source edges to make path
+     * \param target: std::vector of target edges to make path
      * \param facade: OSRM routing data facade to recover graph information
      * \param rawRoutingResult: routing result store
      * \return true when path exists, false otherwise.
@@ -119,6 +119,6 @@ private:
 
   RoutingIndexManager m_indexManager;
 
-  unique_ptr<IndexRouter> m_router;
+  std::unique_ptr<IndexRouter> m_router;
 };
 }  // namespace routing

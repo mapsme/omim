@@ -4,7 +4,7 @@
 
 #include "indexer/classificator.hpp"
 
-#include "std/vector.hpp"
+#include <vector>
 
 namespace
 {
@@ -62,7 +62,7 @@ namespace routing
 CarModel::CarModel()
   : VehicleModel(classif(), s_carLimits)
 {
-  vector<AdditionalRoadTags> const additionalTags = {
+  std::vector<AdditionalRoadTags> const additionalTags = {
       {{"route", "ferry", "motorcar"}, kSpeedFerryMotorcarKMpH},
       {{"route", "ferry", "motor_vehicle"}, kSpeedFerryMotorcarVehicleKMpH},
       {{"railway", "rail", "motor_vehicle"}, kSpeedRailMotorcarVehicleKMpH},
@@ -79,10 +79,10 @@ CarModel const & CarModel::AllLimitsInstance()
   return instance;
 }
 
-CarModelFactory::CarModelFactory() { m_model = make_shared<CarModel>(); }
+CarModelFactory::CarModelFactory() { m_model = std::make_shared<CarModel>(); }
 shared_ptr<IVehicleModel> CarModelFactory::GetVehicleModel() const { return m_model; }
 shared_ptr<IVehicleModel> CarModelFactory::GetVehicleModelForCountry(
-    string const & /* country */) const
+    std::string const & /* country */) const
 {
   // @TODO(bykoianko) Different vehicle model for different country should be supported
   // according to http://wiki.openstreetmap.org/wiki/OSM_tags_for_routing/Access-Restrictions.

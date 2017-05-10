@@ -11,7 +11,7 @@ namespace df
 {
 
 CoverageResult CalcTilesCoverage(m2::RectD const & rect, int targetZoom,
-                                 function<void(int, int)> const & processTile)
+                                 std::function<void(int, int)> const & processTile)
 {
   ASSERT_GREATER(targetZoom, 0, ());
   double const range = MercatorBounds::maxX - MercatorBounds::minX;

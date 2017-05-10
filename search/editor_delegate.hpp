@@ -12,9 +12,9 @@ public:
   EditorDelegate(Index const & index);
 
   // osm::Editor::Delegate overrides:
-  MwmSet::MwmId GetMwmIdByMapName(string const & name) const override;
+  MwmSet::MwmId GetMwmIdByMapName(std::string const & name) const override;
   unique_ptr<FeatureType> GetOriginalFeature(FeatureID const & fid) const override;
-  string GetOriginalFeatureStreet(FeatureType & ft) const override;
+  std::string GetOriginalFeatureStreet(FeatureType & ft) const override;
   void ForEachFeatureAtPoint(osm::Editor::TFeatureTypeFn && fn,
                              m2::PointD const & point) const override;
 

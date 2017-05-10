@@ -1,10 +1,10 @@
 #include "storage/country_decl.hpp"
 
 
-void storage::CountryInfo::FileName2FullName(string & fName)
+void storage::CountryInfo::FileName2FullName(std::string & fName)
 {
   size_t const i = fName.find('_');
-  if (i != string::npos)
+  if (i != std::string::npos)
   {
     // replace '_' with ", "
     fName[i] = ',';
@@ -12,10 +12,10 @@ void storage::CountryInfo::FileName2FullName(string & fName)
   }
 }
 
-void storage::CountryInfo::FullName2GroupAndMap(string const & fName, string & group, string & map)
+void storage::CountryInfo::FullName2GroupAndMap(std::string const & fName, std::string & group, std::string & map)
 {
   size_t pos = fName.find(",");
-  if (pos == string::npos)
+  if (pos == std::string::npos)
   {
     map = fName;
     group.clear();

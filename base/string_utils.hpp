@@ -317,7 +317,7 @@ Collection<std::string> Tokenize(std::string const & str, char const * delims)
 }
 
 static_assert(std::is_same<std::vector<std::string>, decltype(strings::Tokenize("", ""))>::value,
-              "Tokenize() should return vector<string> by default.");
+              "Tokenize() should return vector<std::string> by default.");
 
 /// Splits a string by the delimiter, keeps empty parts, on an empty string returns an empty vector.
 /// Does not support quoted columns, newlines in columns and escaped quotes.

@@ -23,6 +23,8 @@
 #include "std/string.hpp"
 #include "std/vector.hpp"
 
+using namespace std;
+
 namespace editor
 {
 namespace testing

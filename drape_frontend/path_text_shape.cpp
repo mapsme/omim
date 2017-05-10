@@ -18,8 +18,8 @@
 
 #include "geometry/transformations.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/vector.hpp"
+#include <algorithm>
+#include <vector>
 
 using m2::Spline;
 
@@ -56,7 +56,7 @@ public:
     if (!df::TextHandle::Update(screen))
       return false;
     
-    vector<m2::PointD> const & globalPoints = m_spline->GetPath();
+    std::vector<m2::PointD> const & globalPoints = m_spline->GetPath();
     m2::Spline pixelSpline(m_spline->GetSize());
     m2::Spline::iterator centerPointIter;
 
@@ -247,7 +247,7 @@ uint64_t PathTextShape::GetOverlayPriority(uint32_t textIndex, bool followingMod
 void PathTextShape::DrawPathTextPlain(ref_ptr<dp::TextureManager> textures,
                                       ref_ptr<dp::Batcher> batcher,
                                       unique_ptr<PathTextLayout> && layout,
-                                      vector<float> const & offsets) const
+                                      std::vector<float> const & offsets) const
 {
   dp::TextureManager::ColorRegion color;
   textures->GetColorRegion(m_params.m_textFont.m_color, color);
@@ -288,7 +288,7 @@ void PathTextShape::DrawPathTextPlain(ref_ptr<dp::TextureManager> textures,
 void PathTextShape::DrawPathTextOutlined(ref_ptr<dp::TextureManager> textures,
                                          ref_ptr<dp::Batcher> batcher,
                                          unique_ptr<PathTextLayout> && layout,
-                                         vector<float> const & offsets) const
+                                         std::vector<float> const & offsets) const
 {
   dp::TextureManager::ColorRegion color;
   dp::TextureManager::ColorRegion outline;
@@ -337,7 +337,7 @@ void PathTextShape::Draw(ref_ptr<dp::Batcher> batcher, ref_ptr<dp::TextureManage
   if (glyphCount == 0)
     return;
 
-  vector<float> offsets;
+  std::vector<float> offsets;
   PathTextLayout::CalculatePositions(offsets, m_spline->GetLength(), m_params.m_baseGtoPScale,
                                      layout->GetPixelLength());
   if (offsets.empty())

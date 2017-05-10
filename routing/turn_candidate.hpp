@@ -2,7 +2,7 @@
 
 #include "routing/turns.hpp"
 
-#include "std/vector.hpp"
+#include <vector>
 
 namespace ftypes
 {
@@ -45,7 +45,7 @@ struct TurnCandidate
 
 struct TurnCandidates
 {
-  vector<TurnCandidate> candidates;
+  std::vector<TurnCandidate> candidates;
   bool isCandidatesAngleValid;
 
   explicit TurnCandidates(bool angleValid = true) : isCandidatesAngleValid(angleValid) {}

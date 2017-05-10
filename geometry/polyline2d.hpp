@@ -6,26 +6,26 @@
 
 #include "base/internal/message.hpp"
 
-#include "std/initializer_list.hpp"
-#include "std/vector.hpp"
+#include <initializer_list>
+#include <vector>
 
 namespace m2
 {
 template <typename T>
 class Polyline
 {
-  vector<Point<T> > m_points;
+  std::vector<Point<T> > m_points;
 
 public:
-  using Container = vector<Point<T>>;
+  using Container = std::vector<Point<T>>;
   using Iter = typename Container::const_iterator;
 
   Polyline() {}
-  Polyline(initializer_list<Point<T>> const & points) : m_points(points)
+  Polyline(std::initializer_list<Point<T>> const & points) : m_points(points)
   {
     ASSERT_GREATER(m_points.size(), 1, ());
   }
-  explicit Polyline(vector<Point<T>> const & points) : m_points(points)
+  explicit Polyline(std::vector<Point<T>> const & points) : m_points(points)
   {
     ASSERT_GREATER(m_points.size(), 1, ());
   }
@@ -46,7 +46,7 @@ public:
 
   double GetShortestSquareDistance(m2::Point<T> const & point) const
   {
-    double res = numeric_limits<double>::max();
+    double res = std::numeric_limits<double>::max();
     m2::DistanceToLineSquare<m2::Point<T> > d;
 
     Iter i = Begin();
@@ -115,17 +115,17 @@ public:
     return m_points.back();
   }
 
-  vector<Point<T>> ExtractSegment(size_t segmentIndex, bool reversed) const
+  std::vector<Point<T>> ExtractSegment(size_t segmentIndex, bool reversed) const
   {
     if (segmentIndex + 1 >= m_points.size())
-      return vector<Point<T>>();
+      return std::vector<Point<T>>();
 
-    return reversed ? vector<Point<T>>{m_points[segmentIndex + 1], m_points[segmentIndex]} :
-                      vector<Point<T>>{m_points[segmentIndex], m_points[segmentIndex + 1]};
+    return reversed ? std::vector<Point<T>>{m_points[segmentIndex + 1], m_points[segmentIndex]} :
+                      std::vector<Point<T>>{m_points[segmentIndex], m_points[segmentIndex + 1]};
   }
 
-  vector<Point<T> > const & GetPoints() const { return m_points; }
-  friend string DebugPrint(Polyline const & p) { return ::DebugPrint(p.m_points); }
+  std::vector<Point<T> > const & GetPoints() const { return m_points; }
+  friend std::string DebugPrint(Polyline const & p) { return ::DebugPrint(p.m_points); }
 };
 
 using PolylineD = Polyline<double>;

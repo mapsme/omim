@@ -3,7 +3,7 @@
 #include "base/assert.hpp"
 #include "base/stl_add.hpp"
 
-#include "std/chrono.hpp"
+#include <chrono>
 
 namespace df
 {
@@ -21,7 +21,7 @@ MessageQueue::~MessageQueue()
 
 drape_ptr<Message> MessageQueue::PopMessage(bool waitForMessage)
 {
-  unique_lock<mutex> lock(m_mutex);
+  std::unique_lock<std::mutex> lock(m_mutex);
   if (waitForMessage && m_messages.empty() && m_lowPriorityMessages.empty())
   {
     m_isWaiting = true;
@@ -46,7 +46,7 @@ drape_ptr<Message> MessageQueue::PopMessage(bool waitForMessage)
 
 void MessageQueue::PushMessage(drape_ptr<Message> && message, MessagePriority priority)
 {
-  lock_guard<mutex> lock(m_mutex);
+  std::lock_guard<std::mutex> lock(m_mutex);
 
   switch (priority)
   {
@@ -96,7 +96,7 @@ void MessageQueue::FilterMessages(TFilterMessageFn needFilterMessageFn)
 {
   ASSERT(needFilterMessageFn != nullptr, ());
 
-  lock_guard<mutex> lock(m_mutex);
+  std::lock_guard<std::mutex> lock(m_mutex);
   for (auto it = m_messages.begin(); it != m_messages.end(); )
   {
     if (needFilterMessageFn(make_ref(it->first)))
@@ -118,13 +118,13 @@ void MessageQueue::FilterMessages(TFilterMessageFn needFilterMessageFn)
 
 bool MessageQueue::IsEmpty() const
 {
-  lock_guard<mutex> lock(m_mutex);
+  std::lock_guard<std::mutex> lock(m_mutex);
   return m_messages.empty() && m_lowPriorityMessages.empty();
 }
 
 size_t MessageQueue::GetSize() const
 {
-  lock_guard<mutex> lock(m_mutex);
+  std::lock_guard<std::mutex> lock(m_mutex);
   return m_messages.size() + m_lowPriorityMessages.size();
 }
 
@@ -132,7 +132,7 @@ size_t MessageQueue::GetSize() const
 
 void MessageQueue::CancelWait()
 {
-  lock_guard<mutex> lock(m_mutex);
+  std::lock_guard<std::mutex> lock(m_mutex);
   CancelWaitImpl();
 }
 

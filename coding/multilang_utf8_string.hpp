@@ -6,13 +6,13 @@
 
 #include "base/assert.hpp"
 
-#include "std/array.hpp"
-#include "std/string.hpp"
+#include <array>
+#include <string>
 
 namespace utils
 {
 template <class TSink, bool EnableExceptions = false>
-void WriteString(TSink & sink, string const & s)
+void WriteString(TSink & sink, std::string const & s)
 {
   if (EnableExceptions && s.empty())
     MYTHROW(Writer::WriteException, ("String is empty"));
@@ -25,7 +25,7 @@ void WriteString(TSink & sink, string const & s)
 }
 
 template <class TSource, bool EnableExceptions = false>
-void ReadString(TSource & src, string & s)
+void ReadString(TSource & src, std::string & s)
 {
   uint32_t const sz = ReadVarUint<uint32_t>(src) + 1;
   s.resize(sz);
@@ -40,7 +40,7 @@ void ReadString(TSource & src, string & s)
 
 class StringUtf8Multilang
 {
-  string m_s;
+  std::string m_s;
 
   size_t GetNextIndex(size_t i) const;
 
@@ -62,12 +62,12 @@ public:
     /// Transliterator to latin id.
     char const * m_transliteratorId;
   };
-  using Languages = array<Lang, kMaxSupportedLanguages>;
+  using Languages = std::array<Lang, kMaxSupportedLanguages>;
 
   static Languages const & GetSupportedLanguages();
 
   /// @returns kUnsupportedLanguageCode if language is not recognized.
-  static int8_t GetLangIndex(string const & lang);
+  static int8_t GetLangIndex(std::string const & lang);
   /// @returns empty string if langCode is invalid.
   static char const * GetLangByCode(int8_t langCode);
   /// @returns empty string if langCode is invalid.
@@ -88,8 +88,8 @@ public:
   inline void Clear() { m_s.clear(); }
   inline bool IsEmpty() const { return m_s.empty(); }
 
-  void AddString(int8_t lang, string const & utf8s);
-  void AddString(string const & lang, string const & utf8s)
+  void AddString(int8_t lang, std::string const & utf8s);
+  void AddString(std::string const & lang, std::string const & utf8s)
   {
     int8_t const l = GetLangIndex(lang);
     if (l >= 0)
@@ -110,8 +110,8 @@ public:
     }
   }
 
-  bool GetString(int8_t lang, string & utf8s) const;
-  bool GetString(string const & lang, string & utf8s) const
+  bool GetString(int8_t lang, std::string & utf8s) const;
+  bool GetString(std::string const & lang, std::string & utf8s) const
   {
     int8_t const l = GetLangIndex(lang);
     if (l >= 0)
@@ -122,7 +122,7 @@ public:
 
   bool HasString(int8_t lang) const;
 
-  int8_t FindString(string const & utf8s) const;
+  int8_t FindString(std::string const & utf8s) const;
 
   template <class TSink> void Write(TSink & sink) const
   {
@@ -135,4 +135,4 @@ public:
   }
 };
 
-string DebugPrint(StringUtf8Multilang const & s);
+std::string DebugPrint(StringUtf8Multilang const & s);

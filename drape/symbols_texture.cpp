@@ -20,9 +20,9 @@ namespace dp
 namespace
 {
 
-using TDefinitionInserter = function<void(string const &, m2::RectF const &)>;
+using TDefinitionInserter = function<void(std::string const &, m2::RectF const &)>;
 using TSymbolsLoadingCompletion = function<void(unsigned char *, uint32_t, uint32_t)>;
-using TSymbolsLoadingFailure = function<void(string const &)>;
+using TSymbolsLoadingFailure = function<void(std::string const &)>;
 
 class DefinitionLoader
 {
@@ -35,9 +35,9 @@ public:
   {
   }
 
-  bool Push(string const & /*element*/) { return true;}
+  bool Push(std::string const & /*element*/) { return true;}
 
-  void Pop(string const & element)
+  void Pop(std::string const & element)
   {
     if (element == "symbol")
     {
@@ -51,7 +51,7 @@ public:
     }
   }
 
-  void AddAttr(string const & attribute, string const & value)
+  void AddAttr(std::string const & attribute, std::string const & value)
   {
     if (attribute == "name")
       m_name = value;
@@ -96,7 +96,7 @@ public:
     }
   }
 
-  void CharData(string const &) {}
+  void CharData(std::string const &) {}
 
   uint32_t GetWidth() const { return m_width; }
   uint32_t GetHeight() const { return m_height; }
@@ -108,7 +108,7 @@ private:
   uint32_t m_width;
   uint32_t m_height;
 
-  string m_name;
+  std::string m_name;
   m2::RectF m_rect;
 };
 
@@ -121,7 +121,7 @@ void LoadSymbols(std::string const & skinPathName, std::string const & textureNa
   ASSERT(completionHandler != nullptr, ());
   ASSERT(failureHandler != nullptr, ());
 
-  vector<unsigned char> rawData;
+  std::vector<unsigned char> rawData;
   uint32_t width, height;
 
   try
@@ -174,7 +174,7 @@ void LoadSymbols(std::string const & skinPathName, std::string const & textureNa
 
 }
 
-SymbolsTexture::SymbolKey::SymbolKey(string const & symbolName)
+SymbolsTexture::SymbolKey::SymbolKey(std::string const & symbolName)
   : m_symbolName(symbolName)
 {
 }
@@ -184,7 +184,7 @@ Texture::ResourceType SymbolsTexture::SymbolKey::GetType() const
   return Texture::Symbol;
 }
 
-string const & SymbolsTexture::SymbolKey::GetSymbolName() const
+std::string const & SymbolsTexture::SymbolKey::GetSymbolName() const
 {
   return m_symbolName;
 }
@@ -208,7 +208,7 @@ SymbolsTexture::SymbolsTexture(std::string const & skinPathName, std::string con
 
 void SymbolsTexture::Load(std::string const & skinPathName, ref_ptr<HWTextureAllocator> allocator)
 {
-  auto definitionInserter = [this](string const & name, m2::RectF const & rect)
+  auto definitionInserter = [this](std::string const & name, m2::RectF const & rect)
   {
     m_definition.insert(std::make_pair(name, SymbolsTexture::SymbolInfo(rect)));
   };
@@ -224,7 +224,7 @@ void SymbolsTexture::Load(std::string const & skinPathName, ref_ptr<HWTextureAll
     Create(p, make_ref(data));
   };
 
-  auto failureHandler = [this](string const & reason)
+  auto failureHandler = [this](std::string const & reason)
   {
     LOG(LERROR, (reason));
     Fail();
@@ -234,7 +234,7 @@ void SymbolsTexture::Load(std::string const & skinPathName, ref_ptr<HWTextureAll
               completionHandler, failureHandler);
 }
 
-void SymbolsTexture::Invalidate(string const & skinPathName, ref_ptr<HWTextureAllocator> allocator)
+void SymbolsTexture::Invalidate(std::string const & skinPathName, ref_ptr<HWTextureAllocator> allocator)
 {
   Destroy();
   m_definition.clear();
@@ -248,7 +248,7 @@ ref_ptr<Texture::ResourceInfo> SymbolsTexture::FindResource(Texture::Key const &
   if (key.GetType() != Texture::Symbol)
     return nullptr;
 
-  string const & symbolName = static_cast<SymbolKey const &>(key).GetSymbolName();
+  std::string const & symbolName = static_cast<SymbolKey const &>(key).GetSymbolName();
 
   TSymDefinition::iterator it = m_definition.find(symbolName);
   ASSERT(it != m_definition.end(), (symbolName));
@@ -274,11 +274,11 @@ bool SymbolsTexture::IsSymbolContained(std::string const & symbolName) const
 }
 
 bool SymbolsTexture::DecodeToMemory(std::string const & skinPathName, std::string const & textureName,
-                                    vector<uint8_t> & symbolsSkin,
-                                    std::map<string, m2::RectU> & symbolsIndex,
+                                    std::vector<uint8_t> & symbolsSkin,
+                                    std::map<std::string, m2::RectU> & symbolsIndex,
                                     uint32_t & skinWidth, uint32_t & skinHeight)
 {
-  auto definitionInserter = [&symbolsIndex](string const & name, m2::RectF const & rect)
+  auto definitionInserter = [&symbolsIndex](std::string const & name, m2::RectF const & rect)
   {
     symbolsIndex.insert(make_pair(name, m2::RectU(rect)));
   };
@@ -295,7 +295,7 @@ bool SymbolsTexture::DecodeToMemory(std::string const & skinPathName, std::strin
     result = true;
   };
 
-  auto failureHandler = [&result](string const & reason)
+  auto failureHandler = [&result](std::string const & reason)
   {
     LOG(LERROR, (reason));
     result = false;

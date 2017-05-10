@@ -9,9 +9,9 @@
 #include "geometry/mercator.hpp"
 #include "geometry/point2d.hpp"
 
-#include "std/cmath.hpp"
-#include "std/string.hpp"
-#include "std/vector.hpp"
+#include <cmath>
+#include <string>
+#include <vector>
 
 using namespace routing;
 using namespace turns;
@@ -20,16 +20,16 @@ namespace
 {
 UNIT_TEST(TestSplitLanes)
 {
-  vector<string> result;
+  std::vector<std::string> result;
   SplitLanes("through|through|through|through;right", '|', result);
-  vector<string> const expected1 = {"through", "through", "through", "through;right"};
+  std::vector<std::string> const expected1 = {"through", "through", "through", "through;right"};
   TEST_EQUAL(result, expected1, ());
 
   SplitLanes("adsjkddfasui8747&sxdsdlad8\"\'", '|', result);
-  TEST_EQUAL(result, vector<string>({"adsjkddfasui8747&sxdsdlad8\"\'"}), ());
+  TEST_EQUAL(result, std::vector<std::string>({"adsjkddfasui8747&sxdsdlad8\"\'"}), ());
 
   SplitLanes("|||||||", '|', result);
-  vector<string> expected2 = {"", "", "", "", "", "", ""};
+  std::vector<std::string> expected2 = {"", "", "", "", "", "", ""};
   TEST_EQUAL(result, expected2, ());
 }
 
@@ -65,36 +65,36 @@ UNIT_TEST(TestParseSingleLane)
 
 UNIT_TEST(TestParseLanes)
 {
-  vector<SingleLaneInfo> result;
+  std::vector<SingleLaneInfo> result;
   TEST(ParseLanes("through|through|through|through;right", result), ());
-  vector<SingleLaneInfo> const expected1 = {{LaneWay::Through},
+  std::vector<SingleLaneInfo> const expected1 = {{LaneWay::Through},
                                             {LaneWay::Through},
                                             {LaneWay::Through},
                                             {LaneWay::Through, LaneWay::Right}};
   TEST_EQUAL(result, expected1, ());
 
   TEST(ParseLanes("left|left;through|through|through", result), ());
-  vector<SingleLaneInfo> const expected2 = {
+  std::vector<SingleLaneInfo> const expected2 = {
       {LaneWay::Left}, {LaneWay::Left, LaneWay::Through}, {LaneWay::Through}, {LaneWay::Through}};
   TEST_EQUAL(result, expected2, ());
 
   TEST(ParseLanes("left|through|through", result), ());
-  vector<SingleLaneInfo> const expected3 = {
+  std::vector<SingleLaneInfo> const expected3 = {
       {LaneWay::Left}, {LaneWay::Through}, {LaneWay::Through}};
   TEST_EQUAL(result, expected3, ());
 
   TEST(ParseLanes("left|le  ft|   through|through   |  right", result), ());
-  vector<SingleLaneInfo> const expected4 = {
+  std::vector<SingleLaneInfo> const expected4 = {
       {LaneWay::Left}, {LaneWay::Left}, {LaneWay::Through}, {LaneWay::Through}, {LaneWay::Right}};
   TEST_EQUAL(result, expected4, ());
 
   TEST(ParseLanes("left|Left|through|througH|right", result), ());
-  vector<SingleLaneInfo> const expected5 = {
+  std::vector<SingleLaneInfo> const expected5 = {
       {LaneWay::Left}, {LaneWay::Left}, {LaneWay::Through}, {LaneWay::Through}, {LaneWay::Right}};
   TEST_EQUAL(result, expected5, ());
 
   TEST(ParseLanes("left|Left|through|througH|through;right;sharp_rIght", result), ());
-  vector<SingleLaneInfo> const expected6 = {
+  std::vector<SingleLaneInfo> const expected6 = {
       {LaneWay::Left},
       {LaneWay::Left},
       {LaneWay::Through},
@@ -112,7 +112,7 @@ UNIT_TEST(TestParseLanes)
   TEST_EQUAL(result.size(), 0, ());
 
   TEST(ParseLanes("left |Left|through|througH|right", result), ());
-  vector<SingleLaneInfo> const expected7 = {
+  std::vector<SingleLaneInfo> const expected7 = {
       {LaneWay::Left}, {LaneWay::Left}, {LaneWay::Through}, {LaneWay::Through}, {LaneWay::Right}};
   TEST_EQUAL(result, expected7, ());
 }
@@ -124,7 +124,7 @@ UNIT_TEST(TestFixupTurns)
   m2::RectD const kSquareNearZero = MercatorBounds::MetresToXY(kSquareCenterLonLat.x,
                                                                kSquareCenterLonLat.y, kHalfSquareSideMeters);
   // Removing a turn in case staying on a roundabout.
-  vector<Junction> const pointsMerc1 = {
+  std::vector<Junction> const pointsMerc1 = {
     {{ kSquareNearZero.minX(), kSquareNearZero.minY() }, feature::kDefaultAltitudeMeters},
     {{ kSquareNearZero.minX(), kSquareNearZero.maxY() }, feature::kDefaultAltitudeMeters},
     {{ kSquareNearZero.maxX(), kSquareNearZero.maxY() }, feature::kDefaultAltitudeMeters},
@@ -144,7 +144,7 @@ UNIT_TEST(TestFixupTurns)
   TEST_EQUAL(turnsDir1, expectedTurnDir1, ());
 
   // Merging turns which are close to each other.
-  vector<Junction> const pointsMerc2 = {
+  std::vector<Junction> const pointsMerc2 = {
     {{ kSquareNearZero.minX(), kSquareNearZero.minY()}, feature::kDefaultAltitudeMeters},
     {{ kSquareCenterLonLat.x, kSquareCenterLonLat.y }, feature::kDefaultAltitudeMeters},
     {{ kSquareNearZero.maxX(), kSquareNearZero.maxY() }, feature::kDefaultAltitudeMeters},
@@ -159,7 +159,7 @@ UNIT_TEST(TestFixupTurns)
   TEST_EQUAL(turnsDir2, expectedTurnDir2, ());
 
   // No turn is removed.
-  vector<Junction> const pointsMerc3 = {
+  std::vector<Junction> const pointsMerc3 = {
     {{ kSquareNearZero.minX(), kSquareNearZero.minY()}, feature::kDefaultAltitudeMeters},
     {{ kSquareNearZero.minX(), kSquareNearZero.maxY() }, feature::kDefaultAltitudeMeters},
     {{ kSquareNearZero.maxX(), kSquareNearZero.maxY() }, feature::kDefaultAltitudeMeters},
@@ -316,7 +316,7 @@ UNIT_TEST(TestIntermediateDirection)
 
 UNIT_TEST(TestCalculateMercatorDistanceAlongRoute)
 {
-  vector<m2::PointD> const points = {{0., 0.}, {0., 1.}, {0., 1.}, {1., 1.}};
+  std::vector<m2::PointD> const points = {{0., 0.}, {0., 1.}, {0., 1.}, {1., 1.}};
 
   uint32_t const lastPointIdx = static_cast<uint32_t>(points.size() - 1);
   TEST_EQUAL(CalculateMercatorDistanceAlongPath(0, lastPointIdx, points), 2., ());

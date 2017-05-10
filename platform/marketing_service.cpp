@@ -36,7 +36,7 @@ void MarketingService::ProcessFirstLaunch()
 {
   // Send initial value for "discovered" tags.
   using namespace marketing;
-  vector<string> tags =
+  std::vector<std::string> tags =
   {
     kMapDownloadDiscovered,
 
@@ -51,5 +51,5 @@ void MarketingService::ProcessFirstLaunch()
   };
 
   for (auto const & tag : tags)
-    SendPushWooshTag(tag, vector<string>{"0"});
+    SendPushWooshTag(tag, std::vector<std::string>{"0"});
 }

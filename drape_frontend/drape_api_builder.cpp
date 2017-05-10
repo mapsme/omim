@@ -13,7 +13,7 @@
 namespace
 {
 
-void BuildText(string const & str, dp::FontDecl const & font, m2::PointD const & position,
+void BuildText(std::string const & str, dp::FontDecl const & font, m2::PointD const & position,
                m2::PointD const & center, ref_ptr<dp::TextureManager> textures, dp::Batcher & batcher)
 {
   gui::StaticLabel::LabelResult result;
@@ -35,7 +35,7 @@ namespace df
 {
 
 void DrapeApiBuilder::BuildLines(DrapeApi::TLines const & lines, ref_ptr<dp::TextureManager> textures,
-                                 vector<drape_ptr<DrapeApiRenderProperty>> & properties)
+                                 std::vector<drape_ptr<DrapeApiRenderProperty>> & properties)
 {
   properties.reserve(lines.size());
 
@@ -45,7 +45,7 @@ void DrapeApiBuilder::BuildLines(DrapeApi::TLines const & lines, ref_ptr<dp::Tex
 
   for (auto const & line : lines)
   {
-    string id = line.first;
+    std::string id = line.first;
     DrapeApiLineData const & data = line.second;
     m2::RectD rect;
     for (m2::PointD p : data.m_points)
@@ -58,7 +58,7 @@ void DrapeApiBuilder::BuildLines(DrapeApi::TLines const & lines, ref_ptr<dp::Tex
       dp::SessionGuard guard(batcher, [&property, id](dp::GLState const & state, drape_ptr<dp::RenderBucket> && b)
       {
         property->m_id = id;
-        property->m_buckets.push_back(make_pair(state, move(b)));
+        property->m_buckets.push_back(std::make_pair(state, std::move(b)));
       });
 
       m2::SharedSpline spline(data.m_points);
@@ -96,7 +96,7 @@ void DrapeApiBuilder::BuildLines(DrapeApi::TLines const & lines, ref_ptr<dp::Tex
         {
           if (index > 0 && !data.m_markPoints) break;
 
-          string s;
+          std::string s;
           if (data.m_markPoints)
             s = strings::to_string(index) + ((data.m_showId && index == 0) ? (" (" + id + ")") : "");
           else
@@ -109,7 +109,7 @@ void DrapeApiBuilder::BuildLines(DrapeApi::TLines const & lines, ref_ptr<dp::Tex
     }
 
     if (!property->m_buckets.empty())
-      properties.push_back(move(property));
+      properties.push_back(std::move(property));
   }
 }
 

@@ -17,21 +17,21 @@ class XMLDispatcher
 {
   bool m_fire;
   bool m_k_ok;
-  string m_v;
+  std::string m_v;
   TDoClass & m_doClass;
 
 public:
   XMLDispatcher(TDoClass & doClass) : m_fire(false), m_k_ok(false), m_doClass(doClass) {}
 
-  void CharData(string const &) {}
+  void CharData(std::string const &) {}
 
-  bool Push(string const & element)
+  bool Push(std::string const & element)
   {
     if (element == "tag")
       m_fire = true;
     return true;
   }
-  void AddAttr(string const & attribute, string const & value)
+  void AddAttr(std::string const & attribute, std::string const & value)
   {
     if (m_fire)
     {
@@ -41,7 +41,7 @@ public:
         m_v = value;
     }
   }
-  void Pop(string const &)
+  void Pop(std::string const &)
   {
     if (m_fire)
     {
@@ -58,7 +58,7 @@ public:
 
 typedef unordered_map<strings::UniChar, uint64_t> CountContT;
 typedef pair<strings::UniChar, uint64_t> ElemT;
-typedef unordered_map<strings::UniChar, string> UniMapT;
+typedef unordered_map<strings::UniChar, std::string> UniMapT;
 
 bool SortFunc(ElemT const & e1, ElemT const & e2)
 {
@@ -72,7 +72,7 @@ struct Counter
 
   Counter(UniMapT & uni) : m_uni(uni) {}
 
-  void operator()(string const & utf8s)
+  void operator()(std::string const & utf8s)
   {
     strings::UniString us;
     utf8::unchecked::utf8to32(utf8s.begin(), utf8s.end(), back_inserter(us));
@@ -96,7 +96,7 @@ struct Counter
     locale loc("en_US.UTF-8");
     cout.imbue(loc);
 
-    string c;
+    std::string c;
     c.resize(10);
     for (size_t i = 0; i < v.size(); ++i)
     {
@@ -137,12 +137,12 @@ int main(int argc, char *argv[])
 
   UniMapT m;
 
-  string line;
+  std::string line;
   while (f.good())
   {
-    getline(f, line);
+    std::getline(f, line);
     size_t const semic = line.find(';');
-    if (semic == string::npos)
+    if (semic == std::string::npos)
       continue;
     istringstream stream(line.substr(0, semic));
     strings::UniChar c;

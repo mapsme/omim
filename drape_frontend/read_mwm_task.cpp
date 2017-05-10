@@ -10,7 +10,7 @@ ReadMWMTask::ReadMWMTask(MapDataProvider & model)
 #endif
 }
 
-void ReadMWMTask::Init(shared_ptr<TileInfo> const & tileInfo)
+void ReadMWMTask::Init(std::shared_ptr<TileInfo> const & tileInfo)
 {
   m_tileInfo = tileInfo;
   m_tileKey = tileInfo->GetTileKey();
@@ -29,7 +29,7 @@ void ReadMWMTask::Reset()
 
 bool ReadMWMTask::IsCancelled() const
 {
-  shared_ptr<TileInfo> tile = m_tileInfo.lock();
+  std::shared_ptr<TileInfo> tile = m_tileInfo.lock();
   if (tile == nullptr)
     return true;
 
@@ -42,7 +42,7 @@ void ReadMWMTask::Do()
   ASSERT(m_checker, ());
 #endif
 
-  shared_ptr<TileInfo> tile = m_tileInfo.lock();
+  std::shared_ptr<TileInfo> tile = m_tileInfo.lock();
   if (tile == nullptr)
     return;
   try

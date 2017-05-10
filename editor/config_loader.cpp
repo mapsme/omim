@@ -7,9 +7,9 @@
 #include "coding/internal/file_data.hpp"
 #include "coding/reader.hpp"
 
-#include "std/exception.hpp"
-#include "std/fstream.hpp"
-#include "std/iterator.hpp"
+#include <exception>
+#include <fstream>
+#include <iterator>
 
 #include "3party/pugixml/src/pugixml.hpp"
 
@@ -20,14 +20,14 @@ using platform::HttpClient;
 auto const kConfigFileName = "editor.config";
 auto const kHashFileName = "editor.config.hash";
 
-auto const kSynchroTimeout = hours(4);
+auto const kSynchroTimeout = std::chrono::hours(4);
 auto const kRemoteHashUrl = "http://osmz.ru/mwm/editor.config.date";
 auto const kRemoteConfigUrl = "http://osmz.ru/mwm/editor.config";
 
-string GetConfigFilePath() { return GetPlatform().WritablePathForFile(kConfigFileName); }
-string GetHashFilePath() { return GetPlatform().WritablePathForFile(kHashFileName); }
+std::string GetConfigFilePath() { return GetPlatform().WritablePathForFile(kConfigFileName); }
+std::string GetHashFilePath() { return GetPlatform().WritablePathForFile(kHashFileName); }
 
-string RunSimpleHttpRequest(string const & url)
+std::string RunSimpleHttpRequest(std::string const & url)
 {
   HttpClient request(url);
   bool result = false;
@@ -35,7 +35,7 @@ string RunSimpleHttpRequest(string const & url)
   {
     result = request.RunHttpRequest();
   }
-  catch (runtime_error const & ex)
+  catch (std::runtime_error const & ex)
   {
      LOG(LWARNING, ("Exception from HttpClient::RunHttpRequest, message: ", ex.what()));
   }
@@ -54,7 +54,7 @@ namespace editor
 void Waiter::Interrupt()
 {
   {
-    lock_guard<mutex> lock(m_mutex);
+    std::lock_guard<std::mutex> lock(m_mutex);
     m_interrupted = true;
   }
 
@@ -108,7 +108,7 @@ bool ConfigLoader::SaveAndReload(pugi::xml_document const & doc)
 
   auto const filePath = GetConfigFilePath();
   auto const result =
-    my::WriteToTempAndRenameToFile(filePath, [&doc](string const & fileName)
+    my::WriteToTempAndRenameToFile(filePath, [&doc](std::string const & fileName)
     {
       return doc.save_file(fileName.c_str(), "  ");
     });
@@ -122,7 +122,7 @@ bool ConfigLoader::SaveAndReload(pugi::xml_document const & doc)
 
 void ConfigLoader::ResetConfig(pugi::xml_document const & doc)
 {
-  auto config = make_shared<EditorConfig>();
+  auto config = std::make_shared<EditorConfig>();
   config->SetConfig(doc);
   m_config.Set(config);
 }
@@ -130,7 +130,7 @@ void ConfigLoader::ResetConfig(pugi::xml_document const & doc)
 // static
 void ConfigLoader::LoadFromLocal(pugi::xml_document & doc)
 {
-  string content;
+  std::string content;
   unique_ptr<ModelReader> reader;
 
   try
@@ -154,7 +154,7 @@ void ConfigLoader::LoadFromLocal(pugi::xml_document & doc)
 }
 
 // static
-string ConfigLoader::GetRemoteHash()
+std::string ConfigLoader::GetRemoteHash()
 {
   return RunSimpleHttpRequest(kRemoteHashUrl);
 }
@@ -171,12 +171,12 @@ void ConfigLoader::GetRemoteConfig(pugi::xml_document & doc)
 }
 
 // static
-bool ConfigLoader::SaveHash(string const & hash, string const & filePath)
+bool ConfigLoader::SaveHash(std::string const & hash, std::string const & filePath)
 {
   auto const result =
-    my::WriteToTempAndRenameToFile(filePath, [&hash](string const & fileName)
+    my::WriteToTempAndRenameToFile(filePath, [&hash](std::string const & fileName)
     {
-      ofstream ofs(fileName, ofstream::out);
+      std::ofstream ofs(fileName, std::ofstream::out);
       if (!ofs.is_open())
         return false;
       
@@ -188,12 +188,12 @@ bool ConfigLoader::SaveHash(string const & hash, string const & filePath)
 }
 
 // static
-string ConfigLoader::LoadHash(string const & filePath)
+std::string ConfigLoader::LoadHash(std::string const & filePath)
 {
-  ifstream ifs(filePath, ifstream::in);
+  std::ifstream ifs(filePath, std::ifstream::in);
   if (!ifs.is_open())
     return {};
 
-  return {istreambuf_iterator<char>(ifs), istreambuf_iterator<char>()};
+  return {istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>()};
 }
 }  // namespace editor

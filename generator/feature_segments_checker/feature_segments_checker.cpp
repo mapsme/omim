@@ -19,13 +19,13 @@
 #include "base/logging.hpp"
 #include "base/math.hpp"
 
-#include "std/cmath.hpp"
-#include "std/fstream.hpp"
-#include "std/iostream.hpp"
-#include "std/map.hpp"
-#include "std/numeric.hpp"
-#include "std/set.hpp"
-#include "std/string.hpp"
+#include <cmath>
+#include <fstream>
+#include <iostream>
+#include <map>
+#include <numeric>
+#include <set>
+#include <string>
 
 #include "3party/gflags/src/gflags/gflags.h"
 
@@ -65,18 +65,18 @@ bool operator< (RoughPoint const & l, RoughPoint const & r)
 }
 
 template <typename Cont>
-void PrintCont(Cont const & cont, string const & title, string const & msgText1,
-               string const & msgText2)
+void PrintCont(Cont const & cont, std::string const & title, std::string const & msgText1,
+               std::string const & msgText2)
 {
-  cout << endl << title << endl;
+  std::cout << std::endl << title << endl;
   for (auto const & a : cont)
-    cout << a.second << msgText1 << a.first << msgText2 << endl;
+    std::cout << a.second << msgText1 << a.first << msgText2 << endl;
 }
 
 template <typename Cont>
-void WriteCSV(Cont const & cont, string const & fileName)
+void WriteCSV(Cont const & cont, std::string const & fileName)
 {
-  ofstream fout(fileName);
+  std::ofstream fout(fileName);
   for (auto const & a : cont)
     fout << a.first << "," << a.second << endl;
 }
@@ -113,34 +113,34 @@ class Processor
 {
 public:
   generator::SrtmTileManager & m_srtmManager;
-  set<RoughPoint> m_uniqueRoadPoints;
+  std::set<RoughPoint> m_uniqueRoadPoints;
   /// Key is an altitude difference for a feature in meters. If a feature goes up the key is greater then 0.
   /// Value is a number of features.
-  map<TAltitude, uint32_t> m_altitudeDiffs;
+  std::map<TAltitude, uint32_t> m_altitudeDiffs;
   /// Key is a length of a feature in meters. Value is a number of features.
-  map<uint32_t, uint32_t> m_featureLength;
+  std::map<uint32_t, uint32_t> m_featureLength;
   /// Key is a length of a feature segment in meters. Value is a segment counter.
-  map<uint32_t, uint32_t> m_segLength;
+  std::map<uint32_t, uint32_t> m_segLength;
   /// Key is difference between two values:
   /// 1. how many meters it's necessary to go up following the feature. If feature wavy
   ///   calculates only raise meters.
   /// 2. the difference in altitude between end and start of features.
   /// Value is a segment counter.
-  map<int32_t, uint32_t> m_featureWave;
+  std::map<int32_t, uint32_t> m_featureWave;
   /// Key is number of meters which is necessary to go up following the feature.
   /// Value is a number of features.
-  map<int32_t, uint32_t> m_featureUp;
+  std::map<int32_t, uint32_t> m_featureUp;
   /// Key is number of meters which is necessary to go down following the feature.
   /// Value is a number of features.
-  map<int32_t, uint32_t> m_featureDown;
+  std::map<int32_t, uint32_t> m_featureDown;
   /// Key is number of meters. It shows altitude deviation of intermediate feature points
   /// from linear model.
   /// Value is a number of features.
-  map<TAltitude, uint32_t> m_diffFromLinear;
+  std::map<TAltitude, uint32_t> m_diffFromLinear;
   /// Key is number of meters. It shows altitude deviation of intermediate feature points
   /// from line calculated base on least squares method for all feature points.
   /// Value is a number of features.
-  map<TAltitude, uint32_t> m_leastSquaresDiff;
+  std::map<TAltitude, uint32_t> m_leastSquaresDiff;
   /// Number of features for GetBicycleModel().IsRoad(feature) == true.
   uint32_t m_roadCount;
   /// Number of features for empty features with GetBicycleModel().IsRoad(feature).
@@ -294,7 +294,7 @@ public:
   }
 };
 
-double CalculateEntropy(map<TAltitude, uint32_t> const & diffFromLinear)
+double CalculateEntropy(std::map<TAltitude, uint32_t> const & diffFromLinear)
 {
   uint32_t innerPointCount = 0;
   for (auto const & f : diffFromLinear)
@@ -353,17 +353,17 @@ int main(int argc, char ** argv)
             "Altitude deviation of feature points from least squares line.",
             " internal feature point(s) deviate from linear model with ", " meter(s)");
 
-  cout << endl << FLAGS_mwm_file_path << endl;
-  cout << "Road feature count = " << processor.m_roadCount << endl;
-  cout << "Empty road feature count = " << processor.m_emptyRoadCount << endl;
-  cout << "Unique road points count = " << processor.m_uniqueRoadPoints.size() << endl;
-  cout << "All road point count = " << processor.m_roadPointCount << endl;
-  cout << "Not road feature count = " << processor.m_notRoadCount << endl;
-  cout << "Entropy for altitude deviation of internal feature points from linear model = "
+  std::cout << std::endl << FLAGS_mwm_file_path << endl;
+  std::cout << "Road feature count = " << processor.m_roadCount << endl;
+  std::cout << "Empty road feature count = " << processor.m_emptyRoadCount << endl;
+  std::cout << "Unique road points count = " << processor.m_uniqueRoadPoints.size() << endl;
+  std::cout << "All road point count = " << processor.m_roadPointCount << endl;
+  std::cout << "Not road feature count = " << processor.m_notRoadCount << endl;
+  std::cout << "Entropy for altitude deviation of internal feature points from linear model = "
        << CalculateEntropy(processor.m_diffFromLinear) << endl;
-  cout << "Entropy for altitude deviation of feature points from least squares line = "
+  std::cout << "Entropy for altitude deviation of feature points from least squares line = "
        << CalculateEntropy(processor.m_leastSquaresDiff) << endl;
-  cout << "Min altitude of the mwm = " << processor.m_minAltitude << endl;
-  cout << "Max altitude of the mwm = " << processor.m_maxAltitude << endl;
+  std::cout << "Min altitude of the mwm = " << processor.m_minAltitude << endl;
+  std::cout << "Max altitude of the mwm = " << processor.m_maxAltitude << endl;
   return 0;
 }

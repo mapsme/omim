@@ -27,9 +27,9 @@
 #include "base/stl_add.hpp"
 #include "base/timer.hpp"
 
-#include "std/bind.hpp"
-#include "std/function.hpp"
-#include "std/vector.hpp"
+#include <functional>
+#include <functional>
+#include <vector>
 
 #include "3party/jansson/myjansson.hpp"
 
@@ -39,7 +39,7 @@ namespace df
 class DummyLabel
 {
 public:
-  DummyLabel(m2::PointF const & base, string const & text, dp::Anchor anchor, dp::FontDecl const & font)
+  DummyLabel(m2::PointF const & base, std::string const & text, dp::Anchor anchor, dp::FontDecl const & font)
     : m_base(base)
     , m_text(text)
     , m_anchor(anchor)
@@ -64,7 +64,7 @@ public:
 
 private:
   m2::PointF m_base;
-  string const & m_text;
+  std::string const & m_text;
   dp::Anchor m_anchor;
   dp::FontDecl m_font;
 };
@@ -72,7 +72,7 @@ private:
 class DummyMutableLabel
 {
 public:
-  DummyMutableLabel(m2::PointF const & base, string const & text)
+  DummyMutableLabel(m2::PointF const & base, std::string const & text)
     : m_base(base)
     , m_text(text)
   {
@@ -108,7 +108,7 @@ public:
 
 private:
   m2::PointF m_base;
-  string m_text;
+  std::string m_text;
 };
 
 class DummyStippleElement : public MapShape
@@ -194,18 +194,18 @@ public:
 
 /*class MapShapeFactory
 {
-  typedef function<MapShape * (json_t *)> TCreateFn;
-  typedef map<string, TCreateFn> TCreatorsMap;
+  typedef std::function<MapShape * (json_t *)> TCreateFn;
+  typedef std::map<std::string, TCreateFn> TCreatorsMap;
 
 public:
   MapShapeFactory()
   {
-    m_creators["line"] = bind(&MapShapeFactory::CreateLine, this, _1);
-    m_creators["area"] = bind(&MapShapeFactory::CreateArea, this, _1);
-    m_creators["circle"] = bind(&MapShapeFactory::CreateCircle, this, _1);
+    m_creators["line"] = std::bind(&MapShapeFactory::CreateLine, this, std::placeholders::_1);
+    m_creators["area"] = std::bind(&MapShapeFactory::CreateArea, this, std::placeholders::_1);
+    m_creators["circle"] = std::bind(&MapShapeFactory::CreateCircle, this, std::placeholders::_1);
   }
 
-  void CreateShapes(vector<MapShape *> & shapes, json_t * object)
+  void CreateShapes(std::vector<MapShape *> & shapes, json_t * object)
   {
     void * iter = json_object_iter(object);
     while(iter)
@@ -213,7 +213,7 @@ public:
       json_t * entry = json_object_iter_value(iter);
       if (entry)
       {
-        string const type(json_object_iter_key(iter));
+        std::string const type(json_object_iter_key(iter));
         if (type != "_comment_")
         {
           TCreatorsMap::const_iterator it = m_creators.find(type);
@@ -247,7 +247,7 @@ private:
     return 0.0f;
   }
 
-  void ParseGeometry(json_t * object, vector<m2::PointD> & points)
+  void ParseGeometry(json_t * object, std::vector<m2::PointD> & points)
   {
     size_t const count = json_array_size(object);
     ASSERT((count & 1) == 0, ());
@@ -260,7 +260,7 @@ private:
     }
   }
 
-  void ParseGeometry(json_t * object, vector<m2::PointF> & points)
+  void ParseGeometry(json_t * object, std::vector<m2::PointF> & points)
   {
     size_t const count = json_array_size(object);
     ASSERT((count & 1) == 0, ());
@@ -293,7 +293,7 @@ private:
     params.m_cap = ParseCap(json_object_get(object, "cap"));
     params.m_baseGtoPScale = 1.0;
 
-    vector<m2::PointD> points;
+    std::vector<m2::PointD> points;
     ParseGeometry(json_object_get(object, "geometry"), points);
     return new LineShape(points, params);
   }
@@ -303,7 +303,7 @@ private:
     AreaViewParams params;
     params.m_depth = json_real_value(json_object_get(object, "depth"));
     params.m_color = ParseColor(json_object_get(object, "color"));
-    vector<m2::PointF> points;
+    std::vector<m2::PointF> points;
     ParseGeometry(json_object_get(object, "geometry"), points);
 
     return new AreaShape(move(points), params);
@@ -315,7 +315,7 @@ private:
     params.m_depth = json_real_value(json_object_get(object, "depth"));
     params.m_color = ParseColor(json_object_get(object, "color"));
     params.m_radius = json_real_value(json_object_get(object, "radius"));
-    vector<m2::PointF> point;
+    std::vector<m2::PointF> point;
     ParseGeometry(json_object_get(object, "geometry"), point);
 
     return new CircleShape(point[0], params);
@@ -361,7 +361,7 @@ void TestingEngine::Draw()
   if (!isInitialized)
   {
     DrawImpl();
-    m_batcher->StartSession(bind(&df::TestingEngine::OnFlushData, this, _1, _2));
+    m_batcher->StartSession(std::bind(&df::TestingEngine::OnFlushData, this, std::placeholders::_1, std::placeholders::_2));
     DrawRects();
     m_batcher->EndSession();
     m_textures->UpdateDynamicTextures();
@@ -391,7 +391,7 @@ void TestingEngine::Draw()
     ApplyState(state, prg);
     ApplyUniforms(m_generalUniforms, prg);
 
-    vector<drape_ptr<dp::RenderBucket> > & buckets = it->second;
+    std::vector<drape_ptr<dp::RenderBucket> > & buckets = it->second;
     dp::OverlayTree tree;
     tree.StartOverlayPlacing(m_modelView);
     for (size_t i = 0; i < buckets.size(); ++i)
@@ -417,7 +417,7 @@ void TestingEngine::DrawImpl()
   m_generalUniforms.SetFloatValue("u_color", 0.0f, 0.0f, 1.0f, 0.7f);
   m_generalUniforms.SetFloatValue("u_routeParams", 15.0f, 15.0f * m_modelView.GetScale(), 8.0f);
 
-  dp::Batcher::TFlushFn flushFn = bind(&df::TestingEngine::OnFlushData, this, _1, _2);
+  dp::Batcher::TFlushFn flushFn = std::bind(&df::TestingEngine::OnFlushData, this, std::placeholders::_1, std::placeholders::_2);
   m_batcher->StartSession(flushFn);
   dp::FontDecl fd;
   fd.m_color = dp::Color::Black();
@@ -444,7 +444,7 @@ void TestingEngine::DrawImpl()
   TextShape sh1(m2::PointF(82.277071f, 46.9271164f), params, TileKey(), false, 0, true);
   sh1.Draw(make_ref(m_batcher), make_ref(m_textures));
 
-  vector<m2::PointD> path;
+  std::vector<m2::PointD> path;
   path.push_back(m2::PointD(92.277071f, 50.9271164f));
   path.push_back(m2::PointD(98.277071f, 50.9271164f));
   path.push_back(m2::PointD(106.277071f, 48.9271164f));
@@ -483,7 +483,7 @@ void TestingEngine::DrawImpl()
   }
 
   {
-    vector<m2::PointD> path1;
+    std::vector<m2::PointD> path1;
     path1.push_back(m2::PointD(92.277071f, 47.9271164f));
     path1.push_back(m2::PointD(92.277071f, 45.9271164f));
     path1.push_back(m2::PointD(98.277071f, 45.9271164f));
@@ -505,7 +505,7 @@ void TestingEngine::DrawImpl()
   }
 
   {
-    vector<m2::PointD> trg{ m2::PointD(110.0, 30.0), m2::PointD(112.0, 30.0), m2::PointD(112.0, 28.0),
+    std::vector<m2::PointD> trg{ m2::PointD(110.0, 30.0), m2::PointD(112.0, 30.0), m2::PointD(112.0, 28.0),
                             m2::PointD(110.0, 30.0), m2::PointD(112.0, 28.0), m2::PointD(110.0, 28.0) };
     df::BuildingOutline outline;
     AreaViewParams p;
@@ -519,7 +519,7 @@ void TestingEngine::DrawImpl()
 
   m_batcher->StartSession(flushFn);
   {
-    vector<m2::PointD> path;
+    std::vector<m2::PointD> path;
     path.push_back(m2::PointD(120.0f, 30.0f));
     path.push_back(m2::PointD(125.0f, 30.0f));
     m2::SharedSpline spl(path);
@@ -538,7 +538,7 @@ void TestingEngine::DrawImpl()
   m_batcher->StartSession(flushFn);
   {
     {
-      vector<m2::PointD> path;
+      std::vector<m2::PointD> path;
       path.push_back(m2::PointD(110.0f, 25.0f));
       path.push_back(m2::PointD(130.0f, 25.0f));
       m2::SharedSpline spl(path);
@@ -579,7 +579,7 @@ void TestingEngine::DrawRects()
     if ((r.LeftBottom() - r.RightTop()).IsAlmostZero())
       return;
 
-    vector<m2::PointD> path
+    std::vector<m2::PointD> path
     {
       m_modelView.PtoG(r.LeftBottom()),
       m_modelView.PtoG(r.LeftTop()),

@@ -20,7 +20,7 @@
 
 #include "base/logging.hpp"
 
-#include "std/bind.hpp"
+#include <functional>
 
 namespace df
 {
@@ -30,7 +30,7 @@ BackendRenderer::BackendRenderer(Params && params)
   , m_model(params.m_model)
   , m_readManager(make_unique_dp<ReadManager>(params.m_commutator, m_model,
                                               params.m_allow3dBuildings, params.m_trafficEnabled))
-  , m_trafficGenerator(make_unique_dp<TrafficGenerator>(bind(&BackendRenderer::FlushTrafficRenderData, this, _1)))
+  , m_trafficGenerator(make_unique_dp<TrafficGenerator>(std::bind(&BackendRenderer::FlushTrafficRenderData, this, std::placeholders::_1)))
   , m_requestedTiles(params.m_requestedTiles)
   , m_updateCurrentCountryFn(params.m_updateCurrentCountryFn)
 {
@@ -519,7 +519,7 @@ void BackendRenderer::InitGLDependentResource()
 {
   uint32_t constexpr kBatchSize = 5000;
   m_batchersPool = make_unique_dp<BatchersPool<TileKey, TileKeyStrictComparator>>(ReadManager::ReadCount(),
-                                               bind(&BackendRenderer::FlushGeometry, this, _1, _2, _3),
+                                               std::bind(&BackendRenderer::FlushGeometry, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3),
                                                kBatchSize, kBatchSize);
   m_trafficGenerator->Init();
 

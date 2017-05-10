@@ -5,7 +5,7 @@
 
 #include "indexer/feature_data.hpp"
 
-#include "std/map.hpp"
+#include <map>
 
 class Classificator;
 class Index;
@@ -46,6 +46,6 @@ public:
   ResidentialChecker const m_residentialChecker;
   LivingStreetChecker const m_livingStreetChecker;
 
-  map<FeatureID, RoadInfo> m_cache;
+  std::map<FeatureID, RoadInfo> m_cache;
 };
 }  // namespace openlr

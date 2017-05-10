@@ -5,7 +5,7 @@
 #include "indexer/feature_decl.hpp"
 #include "indexer/index.hpp"
 
-#include "std/sstream.hpp"
+#include <sstream>
 
 using namespace generator::tests_support;
 
@@ -25,14 +25,14 @@ bool ExactMatchingRule::Matches(FeatureType const & feature) const
   return m_feature.Matches(feature);
 }
 
-string ExactMatchingRule::ToString() const
+std::string ExactMatchingRule::ToString() const
 {
-  ostringstream os;
+  std::ostringstream os;
   os << "ExactMatchingRule [ " << DebugPrint(m_mwmId) << ", " << DebugPrint(m_feature) << " ]";
   return os.str();
 }
 
-AlternativesMatchingRule::AlternativesMatchingRule(initializer_list<shared_ptr<MatchingRule>> rules)
+AlternativesMatchingRule::AlternativesMatchingRule(initializer_list<std::shared_ptr<MatchingRule>> rules)
   : m_rules(move(rules))
 {
 }
@@ -47,9 +47,9 @@ bool AlternativesMatchingRule::Matches(FeatureType const & feature) const
   return false;
 }
 
-string AlternativesMatchingRule::ToString() const
+std::string AlternativesMatchingRule::ToString() const
 {
-  ostringstream os;
+  std::ostringstream os;
   os << "OrRule [ ";
   for (auto it = m_rules.cbegin(); it != m_rules.cend(); ++it)
   {
@@ -61,15 +61,15 @@ string AlternativesMatchingRule::ToString() const
   return os.str();
 }
 
-bool MatchResults(Index const & index, vector<shared_ptr<MatchingRule>> rules,
-                  vector<search::Result> const & actual)
+bool MatchResults(Index const & index, std::vector<std::shared_ptr<MatchingRule>> rules,
+                  std::vector<search::Result> const & actual)
 {
-  vector<FeatureID> resultIds;
+  std::vector<FeatureID> resultIds;
   for (auto const & a : actual)
     resultIds.push_back(a.GetFeatureID());
   sort(resultIds.begin(), resultIds.end());
 
-  vector<string> unexpected;
+  std::vector<std::string> unexpected;
   auto removeMatched = [&rules, &unexpected](FeatureType const & feature)
   {
     for (auto it = rules.begin(); it != rules.end(); ++it)
@@ -87,7 +87,7 @@ bool MatchResults(Index const & index, vector<shared_ptr<MatchingRule>> rules,
   if (rules.empty() && unexpected.empty())
     return true;
 
-  ostringstream os;
+  std::ostringstream os;
   os << "Unsatisfied rules:" << endl;
   for (auto const & e : rules)
     os << "  " << DebugPrint(*e) << endl;
@@ -99,6 +99,6 @@ bool MatchResults(Index const & index, vector<shared_ptr<MatchingRule>> rules,
   return false;
 }
 
-string DebugPrint(MatchingRule const & rule) { return rule.ToString(); }
+std::string DebugPrint(MatchingRule const & rule) { return rule.ToString(); }
 }  // namespace tests_support
 }  // namespace search

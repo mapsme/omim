@@ -11,15 +11,15 @@
 #include "base/macros.hpp"
 #include "base/stl_add.hpp"
 
-#include "std/limits.hpp"
-#include "std/vector.hpp"
+#include <limits>
+#include <vector>
 
 namespace
 {
 
 typedef m2::PointD P;
 typedef m2::DistanceToLineSquare<m2::PointD> DistanceF;
-typedef BackInsertFunctor<vector<m2::PointD> > PointOutput;
+typedef BackInsertFunctor<std::vector<m2::PointD> > PointOutput;
 typedef void (* SimplifyFn)(m2::PointD const *, m2::PointD const *, double,
                             DistanceF, PointOutput);
 
@@ -33,7 +33,7 @@ void TestSimplificationSmoke(SimplifyFn simplifyFn)
 {
   m2::PointD const points[] = { P(0.0, 1.0), P(2.2, 3.6), P(3.2, 3.6)  };
   double const epsilon = 0.1;
-  vector<m2::PointD> result, expectedResult(points, points + 3);
+  std::vector<m2::PointD> result, expectedResult(points, points + 3);
   simplifyFn(points, points + 3, epsilon, DistanceF(), MakeBackInsertFunctor(result));
   TEST_EQUAL(result, expectedResult, (epsilon));
 }
@@ -41,9 +41,9 @@ void TestSimplificationSmoke(SimplifyFn simplifyFn)
 void TestSimplificationOfLine(SimplifyFn simplifyFn)
 {
   m2::PointD const points[] = { P(0.0, 1.0), P(2.2, 3.6) };
-  for (double epsilon = numeric_limits<double>::denorm_min(); epsilon < 1000; epsilon *= 2)
+  for (double epsilon = std::numeric_limits<double>::denorm_min(); epsilon < 1000; epsilon *= 2)
   {
-    vector<m2::PointD> result, expectedResult(points, points + 2);
+    std::vector<m2::PointD> result, expectedResult(points, points + 2);
     simplifyFn(points, points + 2, epsilon, DistanceF(), MakeBackInsertFunctor(result));
     TEST_EQUAL(result, expectedResult, (epsilon));
   }
@@ -53,7 +53,7 @@ void TestSimplificationOfPoly(m2::PointD const * points, size_t count, SimplifyF
 {
   for (double epsilon = 0.00001; epsilon < 0.11; epsilon *= 10)
   {
-    vector<m2::PointD> result;
+    std::vector<m2::PointD> result;
     simplifyFn(points, points + count, epsilon, DistanceF(), MakeBackInsertFunctor(result));
     // LOG(LINFO, ("eps:", epsilon, "size:", result.size()));
 
@@ -130,7 +130,7 @@ namespace
 {
   void CheckDPStrict(P const * arr, size_t n, double eps, size_t expectedCount)
   {
-    vector<P> vec;
+    std::vector<P> vec;
     DistanceF dist;
     SimplifyDP(arr, arr + n, eps, dist,
       AccumulateSkipSmallTrg<DistanceF, P>(dist, vec, eps));

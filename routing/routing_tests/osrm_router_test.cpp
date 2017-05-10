@@ -19,9 +19,9 @@
 #include "base/checked_cast.hpp"
 #include "base/scope_guard.hpp"
 
-#include "std/bind.hpp"
-#include "std/unique_ptr.hpp"
-#include "std/vector.hpp"
+#include <functional>
+#include <memory>
+#include <vector>
 
 using namespace routing;
 using platform::CountryIndexes;
@@ -29,9 +29,9 @@ using platform::CountryIndexes;
 namespace
 {
 
-typedef vector<OsrmFtSegMappingBuilder::FtSegVectorT> InputDataT;
-typedef vector< vector<TOsrmNodeId> > NodeIdDataT;
-typedef vector< pair<size_t, size_t> > RangeDataT;
+typedef std::vector<OsrmFtSegMappingBuilder::FtSegVectorT> InputDataT;
+typedef std::vector< std::vector<TOsrmNodeId> > NodeIdDataT;
+typedef std::vector< pair<size_t, size_t> > RangeDataT;
 typedef OsrmMappingTypes::FtSeg SegT;
 
 void TestNodeId(OsrmFtSegMapping const & mapping, NodeIdDataT const & test)
@@ -63,15 +63,15 @@ void TestMapping(InputDataT const & data,
   platform::tests_support::ScopedMwm mapMwm(
       platform::GetFileName(localFile.GetCountryFile().GetName(), MapOptions::Map,
                             version::FOR_TESTING_TWO_COMPONENT_MWM1));
-  static string const ftSegsPath = GetPlatform().WritablePathForFile("test1.tmp");
+  static std::string const ftSegsPath = GetPlatform().WritablePathForFile("test1.tmp");
 
   platform::CountryIndexes::PreparePlaceOnDisk(localFile);
-  string const & featuresOffsetsTablePath =
+  std::string const & featuresOffsetsTablePath =
     CountryIndexes::GetPath(localFile, CountryIndexes::Index::Offsets);
-  MY_SCOPE_GUARD(ftSegsFileDeleter, bind(FileWriter::DeleteFileX, ftSegsPath));
+  MY_SCOPE_GUARD(ftSegsFileDeleter, std::bind(FileWriter::DeleteFileX, ftSegsPath));
   MY_SCOPE_GUARD(featuresOffsetsTableFileDeleter,
-                 bind(FileWriter::DeleteFileX, featuresOffsetsTablePath));
-  MY_SCOPE_GUARD(indexesDeleter, bind(&CountryIndexes::DeleteFromDisk, localFile));
+                 std::bind(FileWriter::DeleteFileX, featuresOffsetsTablePath));
+  MY_SCOPE_GUARD(indexesDeleter, std::bind(&CountryIndexes::DeleteFromDisk, localFile));
 
   {
     // Prepare fake features offsets table for input data, because
@@ -90,7 +90,7 @@ void TestMapping(InputDataT const & data,
       for (auto const & seg : segVector)
         tableBuilder.PushOffset(seg.m_fid);
     }
-    unique_ptr<feature::FeaturesOffsetsTable> table =
+    std::unique_ptr<feature::FeaturesOffsetsTable> table =
         feature::FeaturesOffsetsTable::Build(tableBuilder);
     table->Save(featuresOffsetsTablePath);
   }

@@ -13,8 +13,8 @@
 #include "base/logging.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/bind.hpp"
+#include <algorithm>
+#include <functional>
 
 #include <array>
 
@@ -22,27 +22,27 @@ namespace url_scheme
 {
 namespace
 {
-string const kLatLon = "ll";
-string const kQuery = "query";
-string const kCenterLatLon = "cll";
-string const kLocale = "locale";
-string const kSearchOnMap = "map";
-string const kSourceLatLon = "sll";
-string const kDestLatLon = "dll";
-string const kZoomLevel = "z";
-string const kName = "n";
-string const kSourceName = "saddr";
-string const kDestName = "daddr";
-string const kId = "id";
-string const kStyle = "s";
-string const kBackUrl = "backurl";
-string const kVersion = "v";
-string const kAppName = "appname";
-string const kBalloonAction = "balloonaction";
-string const kRouteType = "type";
-string const kRouteTypeVehicle = "vehicle";
-string const kRouteTypePedestrian = "pedestrian";
-string const kRouteTypeBicycle = "bicycle";
+std::string const kLatLon = "ll";
+std::string const kQuery = "query";
+std::string const kCenterLatLon = "cll";
+std::string const kLocale = "locale";
+std::string const kSearchOnMap = "map";
+std::string const kSourceLatLon = "sll";
+std::string const kDestLatLon = "dll";
+std::string const kZoomLevel = "z";
+std::string const kName = "n";
+std::string const kSourceName = "saddr";
+std::string const kDestName = "daddr";
+std::string const kId = "id";
+std::string const kStyle = "s";
+std::string const kBackUrl = "backurl";
+std::string const kVersion = "v";
+std::string const kAppName = "appname";
+std::string const kBalloonAction = "balloonaction";
+std::string const kRouteType = "type";
+std::string const kRouteTypeVehicle = "vehicle";
+std::string const kRouteTypePedestrian = "pedestrian";
+std::string const kRouteTypeBicycle = "bicycle";
 
 enum class ApiURLType
 {
@@ -70,10 +70,10 @@ ApiURLType URLType(Uri const & uri)
   return ApiURLType::Incorrect;
 }
 
-bool ParseLatLon(string const & key, string const & value, double & lat, double & lon)
+bool ParseLatLon(std::string const & key, std::string const & value, double & lat, double & lon)
 {
   size_t const firstComma = value.find(',');
-  if (firstComma == string::npos)
+  if (firstComma == std::string::npos)
   {
     LOG(LWARNING, ("Map API: no comma between lat and lon for key:", key, " value:", value));
     return false;
@@ -101,7 +101,7 @@ void ParsedMapApi::SetBookmarkManager(BookmarkManager * manager)
   m_bmManager = manager;
 }
 
-ParsedMapApi::ParsingResult ParsedMapApi::SetUriAndParse(string const & url)
+ParsedMapApi::ParsingResult ParsedMapApi::SetUriAndParse(std::string const & url)
 {
   Reset();
 
@@ -124,8 +124,8 @@ ParsedMapApi::ParsingResult ParsedMapApi::Parse(Uri const & uri)
       return ParsingResult::Incorrect;
     case ApiURLType::Map:
     {
-      vector<ApiPoint> points;
-      if (!uri.ForEachKeyValue(bind(&ParsedMapApi::AddKeyValue, this, _1, _2, ref(points))))
+      std::vector<ApiPoint> points;
+      if (!uri.ForEachKeyValue(std::bind(&ParsedMapApi::AddKeyValue, this, std::placeholders::_1, std::placeholders::_2, std::ref(points))))
         return ParsingResult::Incorrect;
 
       if (points.empty())
@@ -147,8 +147,8 @@ ParsedMapApi::ParsingResult ParsedMapApi::Parse(Uri const & uri)
     case ApiURLType::Route:
     {
       m_routePoints.clear();
-      vector<string> pattern{kSourceLatLon, kSourceName, kDestLatLon, kDestName, kRouteType};
-      if (!uri.ForEachKeyValue(bind(&ParsedMapApi::RouteKeyValue, this, _1, _2, ref(pattern))))
+      std::vector<std::string> pattern{kSourceLatLon, kSourceName, kDestLatLon, kDestName, kRouteType};
+      if (!uri.ForEachKeyValue(std::bind(&ParsedMapApi::RouteKeyValue, this, std::placeholders::_1, std::placeholders::_2, std::ref(pattern))))
         return ParsingResult::Incorrect;
 
       if (pattern.size() != 0)
@@ -164,7 +164,7 @@ ParsedMapApi::ParsingResult ParsedMapApi::Parse(Uri const & uri)
     }
     case ApiURLType::Search:
       SearchRequest request;
-      if (!uri.ForEachKeyValue(bind(&ParsedMapApi::SearchKeyValue, this, _1, _2, ref(request))))
+      if (!uri.ForEachKeyValue(std::bind(&ParsedMapApi::SearchKeyValue, this, std::placeholders::_1, std::placeholders::_2, std::ref(request))))
         return ParsingResult::Incorrect;
       
       m_request = request;
@@ -172,7 +172,7 @@ ParsedMapApi::ParsingResult ParsedMapApi::Parse(Uri const & uri)
   }
 }
 
-bool ParsedMapApi::RouteKeyValue(string const & key, string const & value, vector<string> & pattern)
+bool ParsedMapApi::RouteKeyValue(std::string const & key, std::string const & value, std::vector<std::string> & pattern)
 {
   if (pattern.empty() || key != pattern.front())
     return false;
@@ -194,7 +194,7 @@ bool ParsedMapApi::RouteKeyValue(string const & key, string const & value, vecto
   }
   else if (key == kRouteType)
   {
-    string const lowerValue = strings::MakeLowerCase(value);
+    std::string const lowerValue = strings::MakeLowerCase(value);
     if (lowerValue == kRouteTypePedestrian || lowerValue == kRouteTypeVehicle || lowerValue == kRouteTypeBicycle)
     {
       m_routingType = lowerValue;
@@ -210,7 +210,7 @@ bool ParsedMapApi::RouteKeyValue(string const & key, string const & value, vecto
   return true;
 }
 
-bool ParsedMapApi::AddKeyValue(string const & key, string const & value, vector<ApiPoint> & points)
+bool ParsedMapApi::AddKeyValue(std::string const & key, std::string const & value, std::vector<ApiPoint> & points)
 {
   if (key == kLatLon)
   {
@@ -266,7 +266,7 @@ bool ParsedMapApi::AddKeyValue(string const & key, string const & value, vector<
   else if (key == kBackUrl)
   {
     // Fix missing :// in back url, it's important for iOS
-    if (value.find("://") == string::npos)
+    if (value.find("://") == std::string::npos)
       m_globalBackUrl = value + "://";
     else
       m_globalBackUrl = value;
@@ -287,7 +287,7 @@ bool ParsedMapApi::AddKeyValue(string const & key, string const & value, vector<
   return true;
 }
 
-bool ParsedMapApi::SearchKeyValue(string const & key, string const & value, SearchRequest & request) const
+bool ParsedMapApi::SearchKeyValue(std::string const & key, std::string const & value, SearchRequest & request) const
 {
   if (key == kQuery)
   {
@@ -335,7 +335,7 @@ bool ParsedMapApi::GetViewportRect(m2::RectD & rect) const
   size_t markCount = guard.m_controller.GetUserMarkCount();
   if (markCount == 1 && m_zoomLevel >= 1)
   {
-    double zoom = min(static_cast<double>(scales::GetUpperComfortScale()), m_zoomLevel);
+    double zoom = std::min(static_cast<double>(scales::GetUpperComfortScale()), m_zoomLevel);
     rect = df::GetRectForDrawScale(zoom, guard.m_controller.GetUserMark(0)->GetPivot());
     return true;
   }

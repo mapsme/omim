@@ -12,8 +12,8 @@
 #include "base/assert.hpp"
 #include "base/logging.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/limits.hpp"
+#include <algorithm>
+#include <limits>
 
 #include "defines.hpp"
 
@@ -266,7 +266,7 @@ void LoaderCurrent::ParseMetadata()
     };
     DDVector<TMetadataIndexEntry, FilesContainerR::TReader> idx(m_Info.GetMetadataIndexReader());
 
-    auto it = lower_bound(
+    auto it = std::lower_bound(
         idx.begin(), idx.end(),
         TMetadataIndexEntry{static_cast<uint32_t>(m_pF->m_id.m_index), 0},
         [](TMetadataIndexEntry const & v1, TMetadataIndexEntry const & v2)

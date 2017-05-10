@@ -1,69 +1,69 @@
 #include "storage/storage_defines.hpp"
 
-#include "std/sstream.hpp"
+#include <sstream>
 
 namespace storage
 {
-string DebugPrint(Status status)
+std::string DebugPrint(Status status)
 {
   switch (status)
   {
   case Status::EUndefined:
-    return string("EUndefined");
+    return std::string("EUndefined");
   case Status::EOnDisk:
-    return string("OnDisk");
+    return std::string("OnDisk");
   case Status::ENotDownloaded:
-    return string("NotDownloaded");
+    return std::string("NotDownloaded");
   case Status::EDownloadFailed:
-    return string("DownloadFailed");
+    return std::string("DownloadFailed");
   case Status::EDownloading:
-    return string("Downloading");
+    return std::string("Downloading");
   case Status::EInQueue:
-    return string("InQueue");
+    return std::string("InQueue");
   case Status::EUnknown:
-    return string("Unknown");
+    return std::string("Unknown");
   case Status::EOnDiskOutOfDate:
-    return string("OnDiskOutOfDate");
+    return std::string("OnDiskOutOfDate");
   case Status::EOutOfMemFailed:
-    return string("OutOfMemFailed");
+    return std::string("OutOfMemFailed");
   }
 }
 
-string DebugPrint(NodeStatus status)
+std::string DebugPrint(NodeStatus status)
 {
   switch (status)
   {
   case NodeStatus::Undefined:
-    return string("Undefined");
+    return std::string("Undefined");
   case NodeStatus::Error:
-    return string("Error");
+    return std::string("Error");
   case NodeStatus::OnDisk:
-    return string("OnDisk");
+    return std::string("OnDisk");
   case NodeStatus::NotDownloaded:
-    return string("NotDownloaded");
+    return std::string("NotDownloaded");
   case NodeStatus::Downloading:
-    return string("Downloading");
+    return std::string("Downloading");
   case NodeStatus::InQueue:
-    return string("InQueue");
+    return std::string("InQueue");
   case NodeStatus::OnDiskOutOfDate:
-    return string("OnDiskOutOfDate");
+    return std::string("OnDiskOutOfDate");
   case NodeStatus::Partly:
-    return string("Partly");
+    return std::string("Partly");
   }
 }
 
-string DebugPrint(NodeErrorCode status)
+std::string DebugPrint(NodeErrorCode status)
 {
   switch (status)
   {
   case NodeErrorCode::NoError:
-    return string("NoError");
+    return std::string("NoError");
   case NodeErrorCode::UnknownError:
-    return string("UnknownError");
+    return std::string("UnknownError");
   case NodeErrorCode::OutOfMemFailed:
-    return string("OutOfMemFailed");
+    return std::string("OutOfMemFailed");
   case NodeErrorCode::NoInetConnection:
-    return string("NoInetConnection");
+    return std::string("NoInetConnection");
   }
 }
 
@@ -92,9 +92,9 @@ StatusAndError ParseStatus(Status innerStatus)
   }
 }
 
-string DebugPrint(StatusAndError statusAndError)
+std::string DebugPrint(StatusAndError statusAndError)
 {
-  ostringstream out;
+  std::ostringstream out;
   out << "StatusAndError[" << DebugPrint(statusAndError.status)
       << ", " << DebugPrint(statusAndError.error) << "]";
   return out.str();

@@ -15,12 +15,12 @@ void ParallelAnimation::Init(ScreenBase const & screen, TPropertyCache const & p
     anim->Init(screen, properties);
 }
 
-string ParallelAnimation::GetCustomType() const
+std::string ParallelAnimation::GetCustomType() const
 {
   return m_customType;
 }
 
-void ParallelAnimation::SetCustomType(string const & type)
+void ParallelAnimation::SetCustomType(std::string const & type)
 {
   m_customType = type;
 }
@@ -76,7 +76,7 @@ double ParallelAnimation::GetDuration() const
 {
   double duration = 0.0;
   for (auto const & anim : m_animations)
-    duration = max(duration, anim->GetDuration());
+    duration = std::max(duration, anim->GetDuration());
   return duration;
 }
 
@@ -89,7 +89,7 @@ double ParallelAnimation::GetMaxDuration() const
     duration = anim->GetMaxDuration();
     if (duration < 0.0)
       return Animation::kInvalidAnimationDuration;
-    maxDuration = maxDuration >= 0 ? max(duration, maxDuration) : duration;
+    maxDuration = maxDuration >= 0 ? std::max(duration, maxDuration) : duration;
   }
   return maxDuration;
 }
@@ -103,7 +103,7 @@ double ParallelAnimation::GetMinDuration() const
     duration = anim->GetMinDuration();
     if (duration < 0.0)
       return Animation::kInvalidAnimationDuration;
-    minDuration = minDuration >= 0 ? min(duration, minDuration) : duration;
+    minDuration = minDuration >= 0 ? std::min(duration, minDuration) : duration;
   }
   return minDuration;
 }

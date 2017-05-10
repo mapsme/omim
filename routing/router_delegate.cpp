@@ -26,20 +26,20 @@ void RouterDelegate::SetPointCheckCallback(TPointCheckCallback const & pointCall
 
 void RouterDelegate::OnProgress(float progress) const
 {
-  lock_guard<mutex> l(m_guard);
+  std::lock_guard<std::mutex> l(m_guard);
   if (!IsCancelled())
     m_progressCallback(progress);
 }
 
 void RouterDelegate::Reset()
 {
-  lock_guard<mutex> l(m_guard);
+  std::lock_guard<std::mutex> l(m_guard);
   TimeoutCancellable::Reset();
 }
 
 void RouterDelegate::OnPointCheck(m2::PointD const & point) const
 {
-  lock_guard<mutex> l(m_guard);
+  std::lock_guard<std::mutex> l(m_guard);
   if (!IsCancelled())
     m_pointCallback(point);
 }

@@ -27,7 +27,7 @@ public:
     m_Sum += x;
   }
 
-  string GetStatsStr() const
+  std::string GetStatsStr() const
   {
     std::ostringstream out;
     out << "N: " << m_Count;

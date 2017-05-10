@@ -1,7 +1,7 @@
 #pragma once
 
-#include "std/vector.hpp"
-#include "std/shared_ptr.hpp"
+#include <vector>
+#include <memory>
 
 #include "geometry/point2d.hpp"
 
@@ -47,14 +47,14 @@ public:
 public:
   Spline() {}
   Spline(size_t reservedSize);
-  Spline(vector<PointD> const & path);
+  Spline(std::vector<PointD> const & path);
   Spline const & operator = (Spline const & spl);
 
   void AddPoint(PointD const & pt);
   void ReplacePoint(PointD const & pt);
   bool IsPrelonging(PointD const & pt);
   size_t GetSize() const;
-  vector<PointD> const & GetPath() const { return m_position; }
+  std::vector<PointD> const & GetPath() const { return m_position; }
 
   template <typename TFunctor>
   void ForEachNode(iterator const & begin, iterator const & end, TFunctor & f) const
@@ -76,22 +76,22 @@ public:
   double GetLength() const;
 
 private:
-  vector<PointD> m_position;
-  vector<PointD> m_direction;
-  vector<double> m_length;
+  std::vector<PointD> m_position;
+  std::vector<PointD> m_direction;
+  std::vector<double> m_length;
 };
 
 class SharedSpline
 {
 public:
   SharedSpline() {}
-  SharedSpline(vector<PointD> const & path);
+  SharedSpline(std::vector<PointD> const & path);
   SharedSpline(SharedSpline const & other);
   SharedSpline const & operator= (SharedSpline const & spl);
 
   bool IsNull() const;
   void Reset(Spline * spline);
-  void Reset(vector<PointD> const & path);
+  void Reset(std::vector<PointD> const & path);
 
   Spline::iterator CreateIterator() const;
 
@@ -99,7 +99,7 @@ public:
   Spline const * operator->() const;
 
 private:
-  shared_ptr<Spline> m_spline;
+  std::shared_ptr<Spline> m_spline;
 };
 
 }

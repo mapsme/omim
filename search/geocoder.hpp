@@ -36,12 +36,12 @@
 #include "base/macros.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/limits.hpp"
-#include "std/set.hpp"
-#include "std/string.hpp"
-#include "std/unique_ptr.hpp"
-#include "std/unordered_map.hpp"
-#include "std/vector.hpp"
+#include <limits>
+#include <set>
+#include <string>
+#include <memory>
+#include <unordered_map>
+#include <vector>
 
 class MwmInfo;
 class MwmValue;
@@ -123,10 +123,10 @@ private:
     CBV m_features;
   };
 
-  void GoImpl(vector<shared_ptr<MwmInfo>> & infos, bool inViewport);
+  void GoImpl(std::vector<shared_ptr<MwmInfo>> & infos, bool inViewport);
 
   template <typename Locality>
-  using LocalitiesCache = map<TokenRange, vector<Locality>>;
+  using LocalitiesCache = map<TokenRange, std::vector<Locality>>;
 
   QueryParams::Token const & GetTokens(size_t i) const;
 
@@ -139,14 +139,14 @@ private:
 
   void FillLocalityCandidates(BaseContext const & ctx,
                               CBV const & filter, size_t const maxNumLocalities,
-                              vector<Locality> & preLocalities);
+                              std::vector<Locality> & preLocalities);
 
   void FillLocalitiesTable(BaseContext const & ctx);
 
   void FillVillageLocalities(BaseContext const & ctx);
 
   template <typename TFn>
-  void ForEachCountry(vector<shared_ptr<MwmInfo>> const & infos, TFn && fn);
+  void ForEachCountry(std::vector<shared_ptr<MwmInfo>> const & infos, TFn && fn);
 
   // Throws CancelException if cancelled.
   inline void BailIfCancelled() { ::search::BailIfCancelled(m_cancellable); }
@@ -188,7 +188,7 @@ private:
   // Returns true if current path in the search tree (see comment for
   // MatchPOIsAndBuildings()) looks sane. This method is used as a fast
   // pre-check to cut off unnecessary work.
-  bool IsLayerSequenceSane(vector<FeaturesLayer> const & layers) const;
+  bool IsLayerSequenceSane(std::vector<FeaturesLayer> const & layers) const;
 
   // Finds all paths through layers and emits reachable features from
   // the lowest layer.
@@ -241,7 +241,7 @@ private:
   MwmSet::MwmId m_worldId;
 
   // Context of the currently processed mwm.
-  unique_ptr<MwmContext> m_context;
+  std::unique_ptr<MwmContext> m_context;
 
   // m_cities stores both big cities that are visible at World.mwm
   // and small villages and hamlets that are not.
@@ -261,14 +261,14 @@ private:
   FeaturesFilter const * m_filter;
 
   // Features matcher for layers intersection.
-  map<MwmSet::MwmId, unique_ptr<FeaturesLayerMatcher>> m_matchersCache;
+  map<MwmSet::MwmId, std::unique_ptr<FeaturesLayerMatcher>> m_matchersCache;
   FeaturesLayerMatcher * m_matcher;
 
   // Path finder for interpretations.
   FeaturesLayerPathFinder m_finder;
 
   // Search query params prepared for retrieval.
-  vector<SearchTrieRequest<strings::LevenshteinDFA>> m_tokenRequests;
+  std::vector<SearchTrieRequest<strings::LevenshteinDFA>> m_tokenRequests;
   SearchTrieRequest<strings::PrefixDFAModifier<strings::LevenshteinDFA>> m_prefixTokenRequest;
 
   PreRanker & m_preRanker;

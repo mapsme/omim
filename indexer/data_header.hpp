@@ -8,7 +8,7 @@
 
 #include "base/buffer_vector.hpp"
 
-#include "std/utility.hpp"
+#include <utility>
 
 
 class FilesContainerR;
@@ -26,14 +26,14 @@ namespace feature
   private:
     serial::CodingParams m_codingParams;
 
-    pair<int64_t, int64_t> m_bounds;
+    std::pair<int64_t, int64_t> m_bounds;
 
     buffer_vector<uint8_t, MAX_SCALES_COUNT> m_scales;
     buffer_vector<uint8_t, 2> m_langs;
 
   public:
     DataHeader() = default;
-    explicit DataHeader(string const & fileName);
+    explicit DataHeader(std::string const & fileName);
     explicit DataHeader(FilesContainerR const & cont);
 
     inline void SetCodingParams(serial::CodingParams const & cp)
@@ -65,7 +65,7 @@ namespace feature
     inline int GetScale(size_t i) const { return static_cast<int>(m_scales[i]); }
     inline int GetLastScale() const { return m_scales.back(); }
 
-    pair<int, int> GetScaleRange() const;
+    std::pair<int, int> GetScaleRange() const;
 
     inline version::Format GetFormat() const { return m_format; }
     inline bool IsMWMSuitable() const { return m_format <= version::Format::lastFormat; }

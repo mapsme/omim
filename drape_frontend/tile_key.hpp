@@ -46,6 +46,6 @@ struct TileKeyStrictComparator
   }
 };
 
-string DebugPrint(TileKey const & key);
+std::string DebugPrint(TileKey const & key);
 
 } // namespace df

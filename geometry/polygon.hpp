@@ -7,8 +7,8 @@
 #include "base/math.hpp"
 #include "base/stl_add.hpp"
 
-#include "std/iterator.hpp"
-#include "std/limits.hpp"
+#include <iterator>
+#include <limits>
 
 
 template <typename IsVisibleF>
@@ -49,7 +49,7 @@ size_t FindSingleStrip(size_t n, IsVisibleF isVisible)
 #ifdef DEBUG
 template <typename IterT> bool TestPolygonPreconditions(IterT beg, IterT end)
 {
-  ASSERT_GREATER ( distance(beg, end), 2, () );
+  ASSERT_GREATER ( std::distance(beg, end), 2, () );
   ASSERT ( !AlmostEqualULPs(*beg, *(--end)), () );
   return true;
 }
@@ -61,7 +61,7 @@ template <typename IterT> bool IsPolygonCCW(IterT beg, IterT end)
   ASSERT ( TestPolygonPreconditions(beg, end), () );
 
   // find the most down (left) point
-  double minY = numeric_limits<double>::max();
+  double minY = std::numeric_limits<double>::max();
   IterT iRes;
   for (IterT i = beg; i != end; ++i)
   {
@@ -78,7 +78,7 @@ template <typename IterT> bool IsPolygonCCW(IterT beg, IterT end)
     return (cp > 0.0);
 
   // find the most up (left) point
-  double maxY = numeric_limits<double>::min();
+  double maxY = std::numeric_limits<double>::min();
   for (IterT i = beg; i != end; ++i)
   {
     if ((*i).y > maxY || ((*i).y == maxY && (*i).x < (*iRes).x))

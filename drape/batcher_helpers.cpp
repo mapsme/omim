@@ -7,7 +7,7 @@
 #include "base/assert.hpp"
 #include "base/math.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 namespace dp
 {
@@ -30,12 +30,12 @@ template<typename TGenerator> void GenerateIndices(void * indexStorage, uint32_t
   if (dp::IndexStorage::IsSupported32bit())
   {
     uint32_t * pIndexStorage = static_cast<uint32_t *>(indexStorage);
-    generate(pIndexStorage, pIndexStorage + count, generator);
+    std::generate(pIndexStorage, pIndexStorage + count, generator);
   }
   else
   {
     uint16_t * pIndexStorage = static_cast<uint16_t *>(indexStorage);
-    generate(pIndexStorage, pIndexStorage + count, generator);
+    std::generate(pIndexStorage, pIndexStorage + count, generator);
   }
 }
 
@@ -120,7 +120,7 @@ private:
 class LineRawIndexGenerator : public IndexGenerator
 {
 public:
-  LineRawIndexGenerator(uint32_t startIndex, vector<int> const & indices)
+  LineRawIndexGenerator(uint32_t startIndex, std::vector<int> const & indices)
     : IndexGenerator(startIndex)
     , m_indices(indices)
   {}
@@ -133,7 +133,7 @@ public:
   }
 
 private:
-  vector<int> const & m_indices;
+  std::vector<int> const & m_indices;
 };
 
 class FanIndexGenerator : public IndexGenerator
@@ -272,8 +272,8 @@ void TriangleListBatch::BatchData(ref_ptr<AttributeProvider> streams)
 
     if (CanDevideStreams())
     {
-      vertexCount = min(vertexCount, avVertex);
-      vertexCount = min(vertexCount, avIndex);
+      vertexCount = std::min(vertexCount, avVertex);
+      vertexCount = std::min(vertexCount, avIndex);
       ASSERT(vertexCount >= 3, ());
       vertexCount -= vertexCount % 3;
     }
@@ -333,7 +333,7 @@ void LineStripBatch::BatchData(ref_ptr<AttributeProvider> streams)
 }
 
 
-LineRawBatch::LineRawBatch(BatchCallbacks & callbacks, vector<int> const & indices)
+LineRawBatch::LineRawBatch(BatchCallbacks & callbacks, std::vector<int> const & indices)
   : TBase(callbacks, 2 /* minVerticesCount */, 2 /* minIndicesCount */)
   , m_indices(indices)
 {}
@@ -486,23 +486,23 @@ TriangleFanBatch::TriangleFanBatch(BatchCallbacks & callbacks) : TBase(callbacks
  * What happens here
  *
  * We try to pack TriangleFan on GPU indexed like triangle list.
- * If we have enough memory in VertexArrayBuffer to store all data from params, we just copy it
+ * If we have enough memory in VertexArrayBuffer to store all data from params, we just std::copy it
  *
  * If we have not enough memory we broke data on parts.
  * On first iteration we create CPUBuffer for each separate atribute
- * in params and copy to it first vertex of fan. This vertex will be need
+ * in params and std::copy to it first vertex of fan. This vertex will be need
  * when we will upload second part of data.
  *
- * Than we copy vertex data on GPU as much as we can and move params cursor on
+ * Than we std::copy vertex data on GPU as much as we can and move params cursor on
  * "uploaded vertex count" - 1. This last vertex will be used for uploading next part of data
  *
  * On second iteration we need upload first vertex of fan that stored in cpuBuffers and than upload
- * second part of data. But to avoid 2 separate call of glBufferSubData we at first do a copy of
- * data from params to cpuBuffer and than copy continuous block of memory from cpuBuffer
+ * second part of data. But to avoid 2 separate call of glBufferSubData we at first do a std::copy of
+ * data from params to cpuBuffer and than std::copy continuous block of memory from cpuBuffer
  */
 void TriangleFanBatch::BatchData(ref_ptr<AttributeProvider> streams)
 {
-  vector<CPUBuffer> cpuBuffers;
+  std::vector<CPUBuffer> cpuBuffers;
   while (streams->IsDataExists())
   {
     if (IsBufferFilled(GetAvailableVertexCount(), GetAvailableIndexCount()))

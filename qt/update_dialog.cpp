@@ -7,8 +7,8 @@
 
 #include "base/assert.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/bind.hpp"
+#include <algorithm>
+#include <functional>
 
 #include <QtCore/QDateTime>
 #include <QtWidgets/QHBoxLayout>
@@ -105,8 +105,8 @@ namespace qt
     resize(700, 600);
 
     // We want to receive all download progress and result events.
-    m_observerSlotId = GetStorage().Subscribe(bind(&UpdateDialog::OnCountryChanged, this, _1),
-                                              bind(&UpdateDialog::OnCountryDownloadProgress, this, _1, _2));
+    m_observerSlotId = GetStorage().Subscribe(std::bind(&UpdateDialog::OnCountryChanged, this, std::placeholders::_1),
+                                              std::bind(&UpdateDialog::OnCountryDownloadProgress, this, std::placeholders::_1, std::placeholders::_2));
   }
 
   UpdateDialog::~UpdateDialog()
@@ -208,7 +208,7 @@ namespace qt
     m_tree->clear();
     m_treeItemByCountryId.clear();
 
-    string const filter = text.toUtf8().constData();
+    std::string const filter = text.toUtf8().constData();
     FillTree(filter);
   }
 
@@ -332,9 +332,9 @@ namespace qt
     return item;
   }
 
-  vector<QTreeWidgetItem *> UpdateDialog::GetTreeItemsByCountryId(TCountryId const & countryId)
+  std::vector<QTreeWidgetItem *> UpdateDialog::GetTreeItemsByCountryId(TCountryId const & countryId)
   {
-    vector<QTreeWidgetItem *> res;
+    std::vector<QTreeWidgetItem *> res;
     auto const p = m_treeItemByCountryId.equal_range(countryId);
     for (auto i = p.first; i != p.second; ++i)
       res.emplace_back(i->second);
@@ -346,14 +346,14 @@ namespace qt
     return item->data(KColumnIndexCountry, Qt::UserRole).toString().toUtf8().constData();
   }
 
-  bool Matches(string countryId, string filter)
+  bool Matches(std::string countryId, std::string filter)
   {
-    transform(filter.begin(), filter.end(), filter.begin(), toupper);
-    transform(countryId.begin(), countryId.end(), countryId.begin(), toupper);
-    return countryId.find(filter) != string::npos;
+    std::transform(filter.begin(), filter.end(), filter.begin(), ::toupper);
+    std::transform(countryId.begin(), countryId.end(), countryId.begin(), ::toupper);
+    return countryId.find(filter) != std::string::npos;
   }
 
-  void UpdateDialog::FillTreeImpl(QTreeWidgetItem * parent, TCountryId const & countryId, string const & filter)
+  void UpdateDialog::FillTreeImpl(QTreeWidgetItem * parent, TCountryId const & countryId, std::string const & filter)
   {
     TCountriesVec children;
     GetStorage().GetChildren(countryId, children);
@@ -376,7 +376,7 @@ namespace qt
         UpdateRowWithCountryInfo(item, countryId);
 
         for (auto const & child : children)
-          FillTreeImpl(item, child, string()); // Do no filter children.
+          FillTreeImpl(item, child, std::string()); // Do no filter children.
       }
       else
       {
@@ -397,7 +397,7 @@ namespace qt
     }
   }
 
-  void UpdateDialog::FillTree(string const & filter)
+  void UpdateDialog::FillTree(std::string const & filter)
   {
     m_tree->setSortingEnabled(false);
     m_tree->clear();
@@ -445,7 +445,7 @@ namespace qt
   {
     // If called for first time.
     if (!m_tree->topLevelItemCount())
-      FillTree(string());
+      FillTree(std::string());
 
     exec();
   }

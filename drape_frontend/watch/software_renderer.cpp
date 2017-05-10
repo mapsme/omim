@@ -150,7 +150,7 @@ bool HasOutline(dp::FontDecl const & fontDecl)
   return fontDecl.m_outlineColor.GetAlfa() != 0;
 }
 
-SoftwareRenderer::SoftwareRenderer(GlyphCache::Params const & glyphCacheParams, string const & resourcesPostfix)
+SoftwareRenderer::SoftwareRenderer(GlyphCache::Params const & glyphCacheParams, std::string const & resourcesPostfix)
   : m_glyphCache(new GlyphCache(glyphCacheParams))
   , m_skinWidth(0)
   , m_skinHeight(0)
@@ -274,7 +274,7 @@ void SoftwareRenderer::DrawPath(PathInfo const & geometry, PenInfo const & info)
   //@TODO (yershov) implement it
   agg::rasterizer_scanline_aa<> rasterizer;
   rasterizer.clip_box(0, 0, m_frameWidth, m_frameHeight);
-  typedef agg::poly_container_adaptor<vector<m2::PointD>> path_t;
+  typedef agg::poly_container_adaptor<std::vector<m2::PointD>> path_t;
   path_t path_adaptor(geometry.m_path, false);
   typedef agg::conv_stroke<path_t> stroke_t;
 
@@ -352,7 +352,7 @@ void SoftwareRenderer::DrawText(m2::PointD const & pt, dp::Anchor anchor, dp::Fo
   l.apply_font(face);
 
   ml::rect_d bounds = l.calc_bounds(face);
-  vector<ml::point_d> base;
+  std::vector<ml::point_d> base;
   base.push_back(ml::point_d(pt.x - bounds.width() / 2, pt.y));
   base.push_back(ml::point_d(pt.x + bounds.width() / 2, pt.y));
 
@@ -380,7 +380,7 @@ void SoftwareRenderer::DrawText(m2::PointD const & pt, dp::Anchor anchor,
   prim.apply_font(primFace);
 
   ml::rect_d bounds = prim.calc_bounds(primFace);
-  vector<ml::point_d> base;
+  std::vector<ml::point_d> base;
   base.push_back(ml::point_d(pt.x - bounds.width() / 2, pt.y));
   base.push_back(ml::point_d(pt.x + bounds.width() / 2, pt.y));
 
@@ -454,7 +454,7 @@ void SoftwareRenderer::CalculateTextMetric(m2::PointD const & pt, dp::Anchor anc
   l.apply_font(face);
 
   ml::rect_d bounds = l.calc_bounds(face);
-  vector<ml::point_d> base;
+  std::vector<ml::point_d> base;
   base.push_back(ml::point_d(pt.x - bounds.width() / 2, pt.y));
   base.push_back(ml::point_d(pt.x + bounds.width() / 2, pt.y));
 
@@ -476,7 +476,7 @@ void SoftwareRenderer::CalculateTextMetric(m2::PointD const & pt, dp::Anchor anc
   prim.apply_font(primFace);
 
   ml::rect_d bounds = prim.calc_bounds(primFace);
-  vector<ml::point_d> base;
+  std::vector<ml::point_d> base;
   base.push_back(ml::point_d(pt.x - bounds.width() / 2, pt.y));
   base.push_back(ml::point_d(pt.x + bounds.width() / 2, pt.y));
 
@@ -505,13 +505,13 @@ void SoftwareRenderer::CalculateTextMetric(m2::PointD const & pt, dp::Anchor anc
 }
 
 void SoftwareRenderer::CalculateTextMetric(PathInfo const & geometry, dp::FontDecl const & font,
-                                           strings::UniString const & text, vector<m2::RectD> & rects)
+                                           strings::UniString const & text, std::vector<m2::RectD> & rects)
 {
   ml::text l(text);
   ml::face & face = m_textEngine.get_face(0, "default", font.m_size);
   l.apply_font(face);
 
-  vector<ml::point_d> base(geometry.m_path.size());
+  std::vector<ml::point_d> base(geometry.m_path.size());
   size_t i = 0;
   for (auto const & p : geometry.m_path)
   {
@@ -536,7 +536,7 @@ void SoftwareRenderer::DrawPathText(PathInfo const & geometry, dp::FontDecl cons
   ml::face & face = m_textEngine.get_face(0, "default", font.m_size);
   l.apply_font(face);
 
-  vector<ml::point_d> base(geometry.m_path.size());
+  std::vector<ml::point_d> base(geometry.m_path.size());
   size_t i = 0;
   for (auto const & p : geometry.m_path)
   {

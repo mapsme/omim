@@ -7,7 +7,7 @@
 
 #include "base/stl_add.hpp"
 
-#include "std/vector.hpp"
+#include <vector>
 
 namespace
 {
@@ -23,11 +23,11 @@ enum
   LANG_HIGH_PRIORITY = 10
 };
 
-KeywordLangMatcher CreateMatcher(string const & query)
+KeywordLangMatcher CreateMatcher(std::string const & query)
 {
   KeywordLangMatcher matcher;
 
-  vector<vector<int8_t> > langPriorities(4, vector<int8_t>());
+  std::vector<std::vector<int8_t> > langPriorities(4, std::vector<int8_t>());
   langPriorities[0].push_back(LANG_HIGH_PRIORITY);
   // langPriorities[1] is intentionally left empty.
   langPriorities[2].push_back(LANG_SOME);
@@ -35,7 +35,7 @@ KeywordLangMatcher CreateMatcher(string const & query)
   // langPriorities[3] is intentionally left empty.
   matcher.SetLanguages(langPriorities);
 
-  vector<strings::UniString> keywords;
+  std::vector<strings::UniString> keywords;
   strings::UniString prefix;
   if (search::TokenizeStringAndCheckIfLastTokenIsPrefix(query, keywords, search::Delimiters()))
   {

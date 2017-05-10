@@ -7,7 +7,7 @@
 #include "drape/vertex_array_buffer.hpp"
 
 #include "base/stl_add.hpp"
-#include "std/bind.hpp"
+#include <functional>
 
 namespace dp
 {

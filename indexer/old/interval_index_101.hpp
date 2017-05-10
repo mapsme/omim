@@ -7,7 +7,7 @@
 #include "base/base.hpp"
 #include "base/macros.hpp"
 
-#include "std/cstring.hpp"
+#include <cstring>
 
 
 namespace old_101 {
@@ -101,7 +101,7 @@ private:
           uint32_t const count = index.m_Count[i];
           uint32_t pos = index.GetBaseOffset() + (cumCount * step);
           size_t const readSize = step * count;
-          vector<char> dataCache(readSize, 0);
+          std::vector<char> dataCache(readSize, 0);
           char * pData = &dataCache[0];
           m_Reader.Read(pos, pData, readSize);
           for (uint32_t j = 0; j < count; ++j, pData += step)

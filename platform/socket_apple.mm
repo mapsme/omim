@@ -3,6 +3,7 @@
 #include "platform/socket.hpp"
 
 #include "base/logging.hpp"
+#include "base/stl_add.hpp"
 
 @interface SocketImpl : NSObject
 
@@ -160,7 +161,7 @@ public:
   PlatformSocket();
   // Socket overrides
   ~PlatformSocket();
-  bool Open(string const & host, uint16_t port) override;
+  bool Open(std::string const & host, uint16_t port) override;
   void Close() override;
   bool Read(uint8_t * data, uint32_t count) override;
   bool Write(uint8_t const * data, uint32_t count) override;
@@ -170,9 +171,9 @@ private:
   SocketImpl * m_socketImpl = nullptr;
 };
 
-unique_ptr<Socket> CreateSocket()
+std::unique_ptr<Socket> CreateSocket()
 {
-  return make_unique<PlatformSocket>();
+  return my::make_unique<PlatformSocket>();
 }
 
 PlatformSocket::PlatformSocket() { m_socketImpl = [[SocketImpl alloc] init]; }
@@ -183,7 +184,7 @@ PlatformSocket::~PlatformSocket()
   m_socketImpl = nullptr;
 }
 
-bool PlatformSocket::Open(string const & host, uint16_t port)
+bool PlatformSocket::Open(std::string const & host, uint16_t port)
 {
   return [m_socketImpl open:@(host.c_str()) port:port];
 }

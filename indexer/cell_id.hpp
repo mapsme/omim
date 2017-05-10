@@ -81,14 +81,14 @@ public:
 
   static m2::PointD FromCellId(CellIdT id)
   {
-    pair<uint32_t, uint32_t> const xy = id.XY();
+    std::pair<uint32_t, uint32_t> const xy = id.XY();
     return m2::PointD(CellIdXToX(xy.first), CellIdYToY(xy.second));
   }
 
   static void GetCellBounds(CellIdT id,
                             double & minX, double & minY, double & maxX, double & maxY)
   {
-    pair<uint32_t, uint32_t> const xy = id.XY();
+    std::pair<uint32_t, uint32_t> const xy = id.XY();
     uint32_t const r = id.Radius();
     minX = (xy.first - r) * StepX() + BoundsT::minX;
     maxX = (xy.first + r) * StepX() + BoundsT::minX;

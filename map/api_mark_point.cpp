@@ -9,7 +9,7 @@ char const * kSupportedColors[] = {"placemark-red",    "placemark-blue",    "pla
                                    "placemark-yellow", "placemark-pink",    "placemark-brown",
                                    "placemark-green",  "placemark-orange",  "placemark-hotel"};
 
-string GetSupportedStyle(string const & s, string const & context, string const & fallback)
+std::string GetSupportedStyle(std::string const & s, std::string const & context, std::string const & fallback)
 {
   if (s.empty())
     return fallback;
@@ -25,7 +25,7 @@ string GetSupportedStyle(string const & s, string const & context, string const 
   return fallback;
 }
 
-string GetDefaultStyle() { return kSupportedColors[0]; }
+std::string GetDefaultStyle() { return kSupportedColors[0]; }
 
 } // style
 
@@ -33,7 +33,7 @@ ApiMarkPoint::ApiMarkPoint(m2::PointD const & ptOrg, UserMarkContainer * contain
   : UserMark(ptOrg, container)
 {}
 
-ApiMarkPoint::ApiMarkPoint(string const & name, string const & id, string const & style,
+ApiMarkPoint::ApiMarkPoint(std::string const & name, std::string const & id, std::string const & style,
                            m2::PointD const & ptOrg, UserMarkContainer * container)
   : UserMark(ptOrg, container),
     m_name(name),
@@ -41,7 +41,7 @@ ApiMarkPoint::ApiMarkPoint(string const & name, string const & id, string const 
     m_style(style)
 {}
 
-string ApiMarkPoint::GetSymbolName() const
+std::string ApiMarkPoint::GetSymbolName() const
 {
   return m_style.empty() ? "api-result" : m_style;
 }

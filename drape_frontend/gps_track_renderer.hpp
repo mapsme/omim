@@ -10,8 +10,8 @@
 #include "geometry/screenbase.hpp"
 #include "geometry/spline.hpp"
 
-#include "std/map.hpp"
-#include "std/vector.hpp"
+#include <map>
+#include <vector>
 
 namespace df
 {
@@ -25,8 +25,8 @@ public:
   void AddRenderData(ref_ptr<dp::GpuProgramManager> mng,
                      drape_ptr<GpsTrackRenderData> && renderData);
 
-  void UpdatePoints(vector<GpsTrackPoint> const & toAdd,
-                    vector<uint32_t> const & toRemove);
+  void UpdatePoints(std::vector<GpsTrackPoint> const & toAdd,
+                    std::vector<uint32_t> const & toRemove);
 
   void RenderTrack(ScreenBase const & screen, int zoomLevel,
                    ref_ptr<dp::GpuProgramManager> mng,
@@ -44,12 +44,12 @@ private:
   dp::Color GetColorBySpeed(double speed) const;
 
   TRenderDataRequestFn m_dataRequestFn;
-  vector<drape_ptr<GpsTrackRenderData>> m_renderData;
-  vector<GpsTrackPoint> m_points;
+  std::vector<drape_ptr<GpsTrackRenderData>> m_renderData;
+  std::vector<GpsTrackPoint> m_points;
   m2::Spline m_pointsSpline;
   bool m_needUpdate;
   bool m_waitForRenderData;
-  vector<pair<GpsTrackHandle*, size_t>> m_handlesCache;
+  std::vector<pair<GpsTrackHandle*, size_t>> m_handlesCache;
   float m_radius;
   m2::PointD m_pivot;
 };

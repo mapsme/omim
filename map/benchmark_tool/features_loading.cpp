@@ -96,9 +96,9 @@ namespace
   }
 }
 
-void RunFeaturesLoadingBenchmark(string const & file, pair<int, int> scaleRange, AllResult & res)
+void RunFeaturesLoadingBenchmark(std::string const & file, pair<int, int> scaleRange, AllResult & res)
 {
-  string fileName = file;
+  std::string fileName = file;
   my::GetNameFromFullPath(fileName);
   my::GetNameWithoutExt(fileName);
 

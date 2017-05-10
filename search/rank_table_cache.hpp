@@ -4,8 +4,8 @@
 
 #include "base/macros.hpp"
 
-#include "std/map.hpp"
-#include "std/unique_ptr.hpp"
+#include <map>
+#include <memory>
 
 namespace search
 {
@@ -38,7 +38,7 @@ private:
     bool operator()(TKey const & r1, TKey const & r2) const { return (r1.GetId() < r2.GetId()); }
   };
 
-  map<TKey, unique_ptr<RankTable>, Compare> m_ranks;
+  std::map<TKey, std::unique_ptr<RankTable>, Compare> m_ranks;
 
   DISALLOW_COPY_AND_MOVE(RankTableCache);
 };

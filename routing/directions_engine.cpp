@@ -11,7 +11,7 @@ double constexpr KMPH2MPS = 1000.0 / (60 * 60);
 
 namespace routing
 {
-void IDirectionsEngine::CalculateTimes(RoadGraphBase const & graph, vector<Junction> const & path,
+void IDirectionsEngine::CalculateTimes(RoadGraphBase const & graph, std::vector<Junction> const & path,
                                        Route::TTimes & times) const
 {
   times.clear();
@@ -46,8 +46,8 @@ void IDirectionsEngine::CalculateTimes(RoadGraphBase const & graph, vector<Junct
   }
 }
 
-bool IDirectionsEngine::ReconstructPath(RoadGraphBase const & graph, vector<Junction> const & path,
-                                        vector<Edge> & routeEdges,
+bool IDirectionsEngine::ReconstructPath(RoadGraphBase const & graph, std::vector<Junction> const & path,
+                                        std::vector<Edge> & routeEdges,
                                         my::Cancellable const & cancellable) const
 {
   routeEdges.clear();
@@ -57,7 +57,7 @@ bool IDirectionsEngine::ReconstructPath(RoadGraphBase const & graph, vector<Junc
   routeEdges.reserve(path.size() - 1);
 
   Junction curr = path[0];
-  vector<Edge> currEdges;
+  std::vector<Edge> currEdges;
   for (size_t i = 1; i < path.size(); ++i)
   {
     if (cancellable.IsCancelled())

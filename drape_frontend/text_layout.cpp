@@ -6,10 +6,10 @@
 #include "drape/glsl_func.hpp"
 #include "drape/overlay_handle.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/bind.hpp"
-#include "std/iterator.hpp"
-#include "std/numeric.hpp"
+#include <algorithm>
+#include <functional>
+#include <iterator>
+#include <numeric>
 
 
 namespace df
@@ -137,25 +137,25 @@ void SplitText(strings::UniString & visText,
     size_t const delimsSize = strlen(delims);
 
     // find next delimeter after middle [m, e)
-    TIter iNext = find_first_of(iMiddle,
+    TIter iNext = std::find_first_of(iMiddle,
                                 visText.end(),
                                 delims, delims + delimsSize);
 
     // find last delimeter before middle [b, m)
-    TIter iPrev = find_first_of(reverse_iterator<TIter>(iMiddle),
-                                reverse_iterator<TIter>(visText.begin()),
+    TIter iPrev = std::find_first_of(std::reverse_iterator<TIter>(iMiddle),
+                                std::reverse_iterator<TIter>(visText.begin()),
                                 delims, delims + delimsSize).base();
     // don't do split like this:
     //     xxxx
     // xxxxxxxxxxxx
-    if (4 * distance(visText.begin(), iPrev) <= static_cast<long>(count))
+    if (4 * std::distance(visText.begin(), iPrev) <= static_cast<long>(count))
       iPrev = visText.end();
     else
       --iPrev;
 
     // get closest delimiter to the middle
     if (iNext == visText.end() ||
-        (iPrev != visText.end() && distance(iPrev, iMiddle) < distance(iMiddle, iNext)))
+        (iPrev != visText.end() && std::distance(iPrev, iMiddle) < std::distance(iMiddle, iNext)))
     {
       iNext = iPrev;
     }
@@ -167,7 +167,7 @@ void SplitText(strings::UniString & visText,
       TIter delimSymbol = iNext;
       TIter secondPart = iNext + 1;
 
-      delimIndexes.push_back(distance(visText.begin(), delimSymbol));
+      delimIndexes.push_back(std::distance(visText.begin(), delimSymbol));
 
       if (secondPart != visText.end())
       {
@@ -264,9 +264,9 @@ void CalculateOffsets(dp::Anchor anchor, float textRatio,
       if (glyph.GetOffsetY() < 0)
         yAdvance += glyph.GetOffsetY();
 
-      node.second = max(node.second, (glyph.GetPixelHeight() + yAdvance) * textRatio);
+      node.second = std::max(node.second, (glyph.GetPixelHeight() + yAdvance) * textRatio);
     }
-    maxLength = max(maxLength, node.first);
+    maxLength = std::max(maxLength, node.first);
     summaryHeight += node.second;
     start = end;
   }
@@ -318,7 +318,7 @@ uint32_t TextLayout::GetGlyphCount() const
 
 float TextLayout::GetPixelLength() const
 {
-  return m_textSizeRatio * accumulate(m_metrics.begin(), m_metrics.end(), 0.0, [](double const & v, GlyphRegion const & glyph)
+  return m_textSizeRatio * std::accumulate(m_metrics.begin(), m_metrics.end(), 0.0, [](double const & v, GlyphRegion const & glyph)
   {
     return v + glyph.GetAdvanceX();
   });
@@ -401,14 +401,14 @@ void PathTextLayout::CacheStaticGeometry(dp::TextureManager::ColorRegion const &
                                          gpu::TTextOutlinedStaticVertexBuffer & staticBuffer) const
 {
   TextOutlinedGeometryGenerator gen(colorRegion, outlineRegion, staticBuffer);
-  for_each(m_metrics.begin(), m_metrics.end(), gen);
+  std::for_each(m_metrics.begin(), m_metrics.end(), gen);
 }
 
 void PathTextLayout::CacheStaticGeometry(dp::TextureManager::ColorRegion const & colorRegion,
                                          gpu::TTextStaticVertexBuffer & staticBuffer) const
 {
   TextGeometryGenerator gen(colorRegion, staticBuffer);
-  for_each(m_metrics.begin(), m_metrics.end(), gen);
+  std::for_each(m_metrics.begin(), m_metrics.end(), gen);
 }
 
 bool PathTextLayout::CacheDynamicGeometry(m2::Spline::iterator const & iter, float depth,
@@ -491,7 +491,7 @@ bool PathTextLayout::CalculatePerspectivePosition(float splineLength, float text
   return true;
 }
 
-void PathTextLayout::CalculatePositions(vector<float> & offsets, float splineLength,
+void PathTextLayout::CalculatePositions(std::vector<float> & offsets, float splineLength,
                                        float splineScaleToPixel, float textPixelLength)
 {
   float const textLength = CalculateTextLength(textPixelLength);
@@ -503,7 +503,7 @@ void PathTextLayout::CalculatePositions(vector<float> & offsets, float splineLen
   float const kPathLengthScalar = 0.75;
   float const pathLength = kPathLengthScalar * splineScaleToPixel * splineLength;
 
-  float const etalonEmpty = max(300 * df::VisualParams::Instance().GetVisualScale(), (double)textLength);
+  float const etalonEmpty = std::max(300 * df::VisualParams::Instance().GetVisualScale(), (double)textLength);
   float const minPeriodSize = etalonEmpty + textLength;
   float const twoTextAndEmpty = minPeriodSize + textLength;
 
@@ -515,7 +515,7 @@ void PathTextLayout::CalculatePositions(vector<float> & offsets, float splineLen
   }
   else
   {
-    double const textCount = max(floor(static_cast<double>(pathLength / minPeriodSize)), 1.0);
+    double const textCount = std::max(floor(static_cast<double>(pathLength / minPeriodSize)), 1.0);
     double const glbTextLen = splineLength / textCount;
     for (double offset = 0.5 * glbTextLen; offset < splineLength; offset += glbTextLen)
       offsets.push_back(offset);

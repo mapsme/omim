@@ -27,7 +27,7 @@ UNIT_TEST(Tree4D_Smoke)
   for (size_t i = 0; i < ARRAY_SIZE(arr); ++i)
     theTree.ReplaceAllInRect(arr[i], &RTrue<R>);
 
-  vector<R> test;
+  std::vector<R> test;
   theTree.ForEach(MakeBackInsertFunctor(test));
   TEST_EQUAL(3, test.size(), ());
 
@@ -79,7 +79,7 @@ UNIT_TEST(Tree4D_ReplaceAllInRect)
     TEST_EQUAL ( theTree.GetSize(), count + 1, () );
   }
 
-  vector<R> test;
+  std::vector<R> test;
   theTree.ForEach(MakeBackInsertFunctor(test));
 
   TEST_EQUAL(ARRAY_SIZE(arr), test.size(), ());
@@ -96,7 +96,7 @@ namespace
     for (size_t i = 0; i < count; ++i)
       theTree.Add(arr[i], arr[i]);
 
-    vector<R> test;
+    std::vector<R> test;
     theTree.ForEachInRect(searchR, MakeBackInsertFunctor(test));
 
     TEST_EQUAL(test.size(), expected, ());
@@ -153,14 +153,14 @@ UNIT_TEST(Tree4D_ReplaceEqual)
 
   // 1.
   for (size_t i = 0; i < ARRAY_SIZE(arr); ++i)
-    theTree.ReplaceEqualInRect(arr[i], equal_to<T>(), &RTrue<T>);
+    theTree.ReplaceEqualInRect(arr[i], std::equal_to<T>(), &RTrue<T>);
 
-  vector<T> test;
+  std::vector<T> test;
   theTree.ForEach(MakeBackInsertFunctor(test));
   TEST_EQUAL(3, test.size(), ());
 
   // 2.
-  theTree.ReplaceEqualInRect(T(0, 0, 3, 3, 2), equal_to<T>(), &RFalse<T>);
+  theTree.ReplaceEqualInRect(T(0, 0, 3, 3, 2), std::equal_to<T>(), &RFalse<T>);
 
   test.clear();
   theTree.ForEach(MakeBackInsertFunctor(test));
@@ -170,7 +170,7 @@ UNIT_TEST(Tree4D_ReplaceEqual)
   TEST_EQUAL(R(*i), R(1, 1, 2, 2), ());
 
   // 3.
-  theTree.ReplaceEqualInRect(T(0, 0, 3, 3, 2), equal_to<T>(), &RTrue<T>);
+  theTree.ReplaceEqualInRect(T(0, 0, 3, 3, 2), std::equal_to<T>(), &RTrue<T>);
 
   test.clear();
   theTree.ForEach(MakeBackInsertFunctor(test));

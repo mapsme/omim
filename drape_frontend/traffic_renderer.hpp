@@ -10,7 +10,7 @@
 #include "geometry/screenbase.hpp"
 #include "geometry/spline.hpp"
 
-#include "std/vector.hpp"
+#include <vector>
 
 namespace df
 {
@@ -43,7 +43,7 @@ private:
   static float GetPixelWidth(RoadClass const & roadClass, int zoomLevel);
   static float GetPixelWidthInternal(RoadClass const & roadClass, int zoomLevel);
 
-  vector<TrafficRenderData> m_renderData;
+  std::vector<TrafficRenderData> m_renderData;
 };
 
 } // namespace df

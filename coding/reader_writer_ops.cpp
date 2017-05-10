@@ -7,7 +7,7 @@ namespace rw_ops
     // Read from end, reverse and write directly.
 
     size_t const bufSz = 1024;
-    vector<uint8_t> buffer(bufSz);
+    std::vector<uint8_t> buffer(bufSz);
 
     uint64_t pos = src.Size();
     while (pos > 0)

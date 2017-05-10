@@ -2,12 +2,12 @@
 
 #include "geometry/rect2d.hpp"
 
-#include "std/list.hpp"
-#include "std/map.hpp"
-#include "std/function.hpp"
-#include "std/queue.hpp"
-#include "std/utility.hpp"
-#include "std/vector.hpp"
+#include <list>
+#include <map>
+#include <functional>
+#include <queue>
+#include <utility>
+#include <vector>
 
 
 namespace m2
@@ -28,9 +28,9 @@ namespace m2
   {
   public:
 
-    typedef function<void()> overflowFn;
+    typedef std::function<void()> overflowFn;
 
-    typedef priority_queue<pair<size_t, overflowFn>, vector<pair<size_t, overflowFn> >, first_less<pair<size_t, overflowFn> > > overflowFns;
+    typedef std::priority_queue<std::pair<size_t, overflowFn>, std::vector<std::pair<size_t, overflowFn> >, first_less<std::pair<size_t, overflowFn> > > overflowFns;
 
     typedef uint32_t handle_t;
     typedef std::pair<bool, m2::RectU> find_result_t;
@@ -48,7 +48,7 @@ namespace m2
 
     handle_t m_currentHandle;
 
-    typedef map<handle_t, m2::RectU> rects_t;
+    typedef std::map<handle_t, m2::RectU> rects_t;
 
     rects_t m_rects;
 

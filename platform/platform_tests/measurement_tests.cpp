@@ -3,7 +3,7 @@
 #include "platform/measurement_utils.hpp"
 #include "platform/settings.hpp"
 
-#include "std/utility.hpp"
+#include <utility>
 
 using namespace measurement_utils;
 using namespace settings;
@@ -34,7 +34,7 @@ UNIT_TEST(Measurement_Smoke)
 {
   ScopedSettings guard(Units::Metric);
 
-  typedef pair<double, char const *> PairT;
+  typedef std::pair<double, char const *> PairT;
 
   PairT arr[] = {
     PairT(10.0, "10 m"),
@@ -55,7 +55,7 @@ UNIT_TEST(Measurement_Smoke)
 
   for (size_t i = 0; i < ARRAY_SIZE(arr); ++i)
   {
-    string s;
+    std::string s;
     TEST(FormatDistance(arr[i].first, s), (arr[i]));
     TEST_EQUAL(s, arr[i].second, (arr[i]));
   }

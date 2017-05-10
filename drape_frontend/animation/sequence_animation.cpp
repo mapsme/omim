@@ -18,12 +18,12 @@ void SequenceAnimation::Init(ScreenBase const & screen, TPropertyCache const & p
     m_animations.front()->Init(screen, properties);
 }
 
-string SequenceAnimation::GetCustomType() const
+std::string SequenceAnimation::GetCustomType() const
 {
   return m_customType;
 }
 
-void SequenceAnimation::SetCustomType(string const & type)
+void SequenceAnimation::SetCustomType(std::string const & type)
 {
   m_customType = type;
 }

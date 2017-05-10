@@ -14,6 +14,8 @@
 #include "drape/drape_tests/glmock_functions.hpp"
 
 
+using namespace std;
+
 #ifdef OMIM_UNIT_TEST_WITH_QT_EVENT_LOOP
   #include <Qt>
   #ifdef OMIM_OS_MAC // on Mac OS X native run loop works only for QApplication :(

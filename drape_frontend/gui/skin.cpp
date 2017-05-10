@@ -3,7 +3,7 @@
 #include "platform/platform.hpp"
 #include "coding/parse_xml.hpp"
 #include "base/string_utils.hpp"
-#include "std/function.hpp"
+#include <functional>
 
 namespace gui
 {
@@ -25,7 +25,7 @@ bool IsAnchor(dp::Anchor anchor)
 
 #endif
 
-dp::Anchor ParseValueAnchor(string const & value)
+dp::Anchor ParseValueAnchor(std::string const & value)
 {
   if (value == "center")
     return dp::Center;
@@ -52,7 +52,7 @@ dp::Anchor MergeAnchors(dp::Anchor src, dp::Anchor dst)
   return result;
 }
 
-float ParseFloat(string const & v)
+float ParseFloat(std::string const & v)
 {
   double d = 0.0f;
   VERIFY(strings::to_double(v, d), ());
@@ -73,7 +73,7 @@ public:
   ResolverParser()
     : m_element(Element::Empty) {}
 
-  void Parse(string const & attr, string const & value)
+  void Parse(std::string const & attr, std::string const & value)
   {
     ASSERT(m_element != Element::Empty, ());
 
@@ -121,10 +121,10 @@ private:
 class SkinLoader
 {
 public:
-  explicit SkinLoader(map<EWidget, pair<PositionResolver, PositionResolver> > & skin)
+  explicit SkinLoader(std::map<EWidget, std::pair<PositionResolver, PositionResolver> > & skin)
     : m_skin(skin) {}
 
-  bool Push(string const & element)
+  bool Push(std::string const & element)
   {
     if (m_inElement == false)
     {
@@ -163,7 +163,7 @@ public:
     return true;
   }
 
-  void Pop(string const & element)
+  void Pop(std::string const & element)
   {
     if (element == "anchor" || element == "relative" || element == "offset")
       m_parser.SetElement(ResolverParser::Element::Empty);
@@ -186,12 +186,12 @@ public:
     }
   }
 
-  void AddAttr(string const & attribute, string const & value)
+  void AddAttr(std::string const & attribute, std::string const & value)
   {
     m_parser.Parse(attribute, value);
   }
 
-  void CharData(string const &) {}
+  void CharData(std::string const &) {}
 
 private:
   bool m_inConfiguration = false;
@@ -200,7 +200,7 @@ private:
   EWidget m_currentElement = WIDGET_RULER;
   ResolverParser m_parser;
 
-  map<EWidget, pair<PositionResolver, PositionResolver> > & m_skin;
+  std::map<EWidget, std::pair<PositionResolver, PositionResolver> > & m_skin;
 };
 
 }
@@ -272,7 +272,7 @@ void Skin::Resize(int w, int h)
   m_displayHeight = h;
 }
 
-ReaderPtr<Reader> ResolveGuiSkinFile(string const & deviceType)
+ReaderPtr<Reader> ResolveGuiSkinFile(std::string const & deviceType)
 {
   Platform & pl = GetPlatform();
   unique_ptr<Reader> reader;
@@ -298,6 +298,6 @@ ReaderPtr<Reader> ResolveGuiSkinFile(string const & deviceType)
     }
   }
 
-  return move(reader);
+  return std::move(reader);
 }
 }

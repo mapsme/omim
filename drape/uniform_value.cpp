@@ -1,7 +1,7 @@
 #include "drape/uniform_value.hpp"
 #include "drape/glfunctions.hpp"
 #include "base/assert.hpp"
-#include "std/cstring.hpp"
+#include <cstring>
 
 namespace dp
 {
@@ -65,7 +65,7 @@ void ApplyMatrix(uint8_t location, float const * matrix)
 
 } // namespace
 
-UniformValue::UniformValue(string const & name, int32_t v)
+UniformValue::UniformValue(std::string const & name, int32_t v)
   : m_name(name)
   , m_type(Int)
   , m_componentCount(1)
@@ -74,7 +74,7 @@ UniformValue::UniformValue(string const & name, int32_t v)
   SetIntValue(v);
 }
 
-UniformValue::UniformValue(string const & name, int32_t v1, int32_t v2)
+UniformValue::UniformValue(std::string const & name, int32_t v1, int32_t v2)
   : m_name(name)
   , m_type(Int)
   , m_componentCount(2)
@@ -83,7 +83,7 @@ UniformValue::UniformValue(string const & name, int32_t v1, int32_t v2)
   SetIntValue(v1, v2);
 }
 
-UniformValue::UniformValue(string const & name, int32_t v1, int32_t v2, int32_t v3)
+UniformValue::UniformValue(std::string const & name, int32_t v1, int32_t v2, int32_t v3)
   : m_name(name)
   , m_type(Int)
   , m_componentCount(3)
@@ -92,7 +92,7 @@ UniformValue::UniformValue(string const & name, int32_t v1, int32_t v2, int32_t 
   SetIntValue(v1, v2, v3);
 }
 
-UniformValue::UniformValue(string const & name, int32_t v1, int32_t v2, int32_t v3, int32_t v4)
+UniformValue::UniformValue(std::string const & name, int32_t v1, int32_t v2, int32_t v3, int32_t v4)
   : m_name(name)
   , m_type(Int)
   , m_componentCount(4)
@@ -101,7 +101,7 @@ UniformValue::UniformValue(string const & name, int32_t v1, int32_t v2, int32_t 
   SetIntValue(v1, v2, v3, v4);
 }
 
-UniformValue::UniformValue(string const & name, float v)
+UniformValue::UniformValue(std::string const & name, float v)
   : m_name(name)
   , m_type(Float)
   , m_componentCount(1)
@@ -110,7 +110,7 @@ UniformValue::UniformValue(string const & name, float v)
   SetFloatValue(v);
 }
 
-UniformValue::UniformValue(string const & name, float v1, float v2)
+UniformValue::UniformValue(std::string const & name, float v1, float v2)
   : m_name(name)
   , m_type(Float)
   , m_componentCount(2)
@@ -119,7 +119,7 @@ UniformValue::UniformValue(string const & name, float v1, float v2)
   SetFloatValue(v1, v2);
 }
 
-UniformValue::UniformValue(string const & name, float v1, float v2, float v3)
+UniformValue::UniformValue(std::string const & name, float v1, float v2, float v3)
   : m_name(name)
   , m_type(Float)
   , m_componentCount(3)
@@ -128,7 +128,7 @@ UniformValue::UniformValue(string const & name, float v1, float v2, float v3)
   SetFloatValue(v1, v2, v3);
 }
 
-UniformValue::UniformValue(string const & name, float v1, float v2, float v3, float v4)
+UniformValue::UniformValue(std::string const & name, float v1, float v2, float v3, float v4)
   : m_name(name)
   , m_type(Float)
   , m_componentCount(4)
@@ -137,7 +137,7 @@ UniformValue::UniformValue(string const & name, float v1, float v2, float v3, fl
   SetFloatValue(v1, v2, v3, v4);
 }
 
-UniformValue::UniformValue(string const & name, const float * matrixValue)
+UniformValue::UniformValue(std::string const & name, const float * matrixValue)
   : m_name(name)
   , m_type(Matrix4x4)
   , m_componentCount(16)
@@ -146,7 +146,7 @@ UniformValue::UniformValue(string const & name, const float * matrixValue)
   SetMatrix4x4Value(matrixValue);
 }
 
-string const & UniformValue::GetName() const
+std::string const & UniformValue::GetName() const
 {
   return m_name;
 }

@@ -10,7 +10,7 @@
 
 @implementation MWMSearchCategoriesManager
 {
-  vector<string> m_categories;
+  std::vector<std::string> m_categories;
 }
 
 - (instancetype)init

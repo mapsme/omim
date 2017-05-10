@@ -12,7 +12,7 @@
 #include "base/assert.hpp"
 #include "base/math.hpp"
 
-#include "std/transform_iterator.hpp"
+#include <boost/iterator/transform_iterator.hpp>
 
 #include <algorithm>
 #include <queue>
@@ -174,13 +174,13 @@ Router::Edge Router::Edge::MakeSpecial(Vertex const & u, Vertex const & v)
 pair<m2::PointD, m2::PointD> Router::Edge::ToPair() const
 {
   auto const & e = m_raw;
-  return make_pair(e.GetStartJunction().GetPoint(), e.GetEndJunction().GetPoint());
+  return std::make_pair(e.GetStartJunction().GetPoint(), e.GetEndJunction().GetPoint());
 }
 
 pair<m2::PointD, m2::PointD> Router::Edge::ToPairRev() const
 {
   auto const & e = m_raw;
-  return make_pair(e.GetEndJunction().GetPoint(), e.GetStartJunction().GetPoint());
+  return std::make_pair(e.GetEndJunction().GetPoint(), e.GetStartJunction().GetPoint());
 }
 
 // Router::Router ----------------------------------------------------------------------------------
@@ -258,7 +258,7 @@ bool Router::FindPath(std::vector<routing::Edge> & path)
     if ((scores.count(v) == 0 || scores[v].GetScore() > sv.GetScore() + kEps) && u != v)
     {
       scores[v] = sv;
-      links[v] = make_pair(u, e);
+      links[v] = std::make_pair(u, e);
       queue.emplace(sv, v);
     }
   };
@@ -662,7 +662,7 @@ void Router::ForStagePrefix(It b, It e, size_t stage, Fn && fn)
     fn(b);
 }
 
-bool Router::ReconstructPath(std::vector<Edge> & edges, vector<routing::Edge> & path)
+bool Router::ReconstructPath(std::vector<Edge> & edges, std::vector<routing::Edge> & path)
 {
   CHECK_GREATER_OR_EQUAL(m_points.size(), 2, ());
 
@@ -675,16 +675,16 @@ bool Router::ReconstructPath(std::vector<Edge> & edges, vector<routing::Edge> & 
 
   {
     size_t const n = FindPrefixLengthToConsume(
-        make_transform_iterator(edges.begin(), mem_fn(&Edge::ToPair)),
-        make_transform_iterator(edges.end(), mem_fn(&Edge::ToPair)), m_positiveOffsetM);
+        boost::make_transform_iterator(edges.begin(), mem_fn(&Edge::ToPair)),
+        boost::make_transform_iterator(edges.end(), mem_fn(&Edge::ToPair)), m_positiveOffsetM);
     CHECK_LESS_OR_EQUAL(n, edges.size(), ());
     edges.erase(edges.begin(), edges.begin() + n);
   }
 
   {
     size_t const n = FindPrefixLengthToConsume(
-        make_transform_iterator(edges.rbegin(), mem_fn(&Edge::ToPairRev)),
-        make_transform_iterator(edges.rend(), mem_fn(&Edge::ToPairRev)), m_negativeOffsetM);
+        boost::make_transform_iterator(edges.rbegin(), mem_fn(&Edge::ToPairRev)),
+        boost::make_transform_iterator(edges.rend(), mem_fn(&Edge::ToPairRev)), m_negativeOffsetM);
     CHECK_LESS_OR_EQUAL(n, edges.size(), ());
     edges.erase(edges.begin() + edges.size() - n, edges.end());
   }
@@ -696,8 +696,8 @@ bool Router::ReconstructPath(std::vector<Edge> & edges, vector<routing::Edge> & 
         e->m_u, false /* outgoing */, m_points[0].m_lfrcnp, [&](routing::Edge const & edge) {
           double const score =
               GetMatchingScore(edge.GetEndJunction().GetPoint(), edge.GetStartJunction().GetPoint(),
-                               make_transform_iterator(EdgeItRev(e), mem_fn(&Edge::ToPairRev)),
-                               make_transform_iterator(edges.rend(), mem_fn(&Edge::ToPairRev)));
+                               boost::make_transform_iterator(EdgeItRev(e), mem_fn(&Edge::ToPairRev)),
+                               boost::make_transform_iterator(edges.rend(), mem_fn(&Edge::ToPairRev)));
           if (score > frontEdgeScore)
           {
             frontEdgeScore = score;
@@ -713,8 +713,8 @@ bool Router::ReconstructPath(std::vector<Edge> & edges, vector<routing::Edge> & 
                        [&](routing::Edge const & edge) {
                          double const score = GetMatchingScore(
                              edge.GetStartJunction().GetPoint(), edge.GetEndJunction().GetPoint(),
-                             make_transform_iterator(e.base(), mem_fn(&Edge::ToPair)),
-                             make_transform_iterator(edges.end(), mem_fn(&Edge::ToPair)));
+                             boost::make_transform_iterator(e.base(), mem_fn(&Edge::ToPair)),
+                             boost::make_transform_iterator(edges.end(), mem_fn(&Edge::ToPair)));
                          if (score > backEdgeScore)
                          {
                            backEdgeScore = score;

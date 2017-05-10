@@ -55,7 +55,7 @@ public:
     , m_maxSpeedMPS(roadGraph.GetMaxSpeedKMPH() * KMPH2MPS)
   {}
 
-  void GetOutgoingEdgesList(Junction const & v, vector<WeightedEdge> & adj) const
+  void GetOutgoingEdgesList(Junction const & v, std::vector<WeightedEdge> & adj) const
   {
     IRoadGraph::TEdgeVector edges;
     m_roadGraph.GetOutgoingEdges(v, edges);
@@ -72,7 +72,7 @@ public:
     }
   }
 
-  void GetIngoingEdgesList(Junction const & v, vector<WeightedEdge> & adj) const
+  void GetIngoingEdgesList(Junction const & v, std::vector<WeightedEdge> & adj) const
   {
     IRoadGraph::TEdgeVector edges;
     m_roadGraph.GetIngoingEdges(v, edges);
@@ -114,7 +114,7 @@ IRoutingAlgorithm::Result Convert(TAlgorithmImpl::Result value)
 }
 }  // namespace
 
-string DebugPrint(IRoutingAlgorithm::Result const & value)
+std::string DebugPrint(IRoutingAlgorithm::Result const & value)
 {
   switch (value)
   {
@@ -125,7 +125,7 @@ string DebugPrint(IRoutingAlgorithm::Result const & value)
   case IRoutingAlgorithm::Result::Cancelled:
     return "Cancelled";
   }
-  return string();
+  return std::string();
 }
 
 // *************************** AStar routing algorithm implementation *************************************
@@ -138,7 +138,7 @@ IRoutingAlgorithm::Result AStarRoutingAlgorithm::CalculateRoute(IRoadGraph const
 {
   AStarProgress progress(0, 100);
 
-  function<void(Junction const &, Junction const &)> onVisitJunctionFn =
+  std::function<void(Junction const &, Junction const &)> onVisitJunctionFn =
       [&delegate, &progress](Junction const & junction, Junction const & /* target */)
   {
     delegate.OnPointCheck(junction.GetPoint());
@@ -165,7 +165,7 @@ IRoutingAlgorithm::Result AStarBidirectionalRoutingAlgorithm::CalculateRoute(
 {
   AStarProgress progress(0, 100);
 
-  function<void(Junction const &, Junction const &)> onVisitJunctionFn =
+  std::function<void(Junction const &, Junction const &)> onVisitJunctionFn =
       [&delegate, &progress](Junction const & junction, Junction const & target)
   {
     delegate.OnPointCheck(junction.GetPoint());

@@ -7,7 +7,7 @@
 
 #include "base/cancellable.hpp"
 
-#include "std/map.hpp"
+#include <map>
 
 namespace search
 {
@@ -34,7 +34,7 @@ private:
 
   CategoriesSet m_categories;
   my::Cancellable const & m_cancellable;
-  map<MwmSet::MwmId, CBV> m_cache;
+  std::map<MwmSet::MwmId, CBV> m_cache;
 };
 
 class StreetsCache : public CategoriesCache

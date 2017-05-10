@@ -19,10 +19,10 @@
 #include "base/macros.hpp"
 #include "base/scope_guard.hpp"
 
-#include "std/string.hpp"
-#include "std/type_traits.hpp"
-#include "std/utility.hpp"
-#include "std/vector.hpp"
+#include <string>
+#include <type_traits>
+#include <utility>
+#include <vector>
 
 
 namespace covering
@@ -32,7 +32,7 @@ class FeatureCoverer
 {
 public:
   FeatureCoverer(feature::DataHeader const & header, TDisplacementManager & manager,
-                 vector<uint32_t> & featuresInBucket, vector<uint32_t> & cellsInBucket)
+                 std::vector<uint32_t> & featuresInBucket, std::vector<uint32_t> & cellsInBucket)
     : m_header(header)
     , m_scalesIdx(0)
     , m_bucketsCount(header.GetLastScale() + 1)
@@ -65,7 +65,7 @@ public:
         continue;
       }
 
-      vector<int64_t> const cells = covering::CoverFeature(ft, m_codingDepth, 250);
+      std::vector<int64_t> const cells = covering::CoverFeature(ft, m_codingDepth, 250);
       m_displacement.Add(cells, bucket, ft, index);
 
       m_featuresInBucket[bucket] += 1;
@@ -116,8 +116,8 @@ private:
   uint32_t m_bucketsCount;
   TDisplacementManager & m_displacement;
   int m_codingDepth;
-  vector<uint32_t> & m_featuresInBucket;
-  vector<uint32_t> & m_cellsInBucket;
+  std::vector<uint32_t> & m_featuresInBucket;
+  std::vector<uint32_t> & m_cellsInBucket;
 };
 
 template <class SinkT>
@@ -139,13 +139,13 @@ private:
 
 template <class TFeaturesVector, class TWriter>
 void IndexScales(feature::DataHeader const & header, TFeaturesVector const & features,
-                 TWriter & writer, string const & tmpFilePrefix)
+                 TWriter & writer, std::string const & tmpFilePrefix)
 {
   // TODO: Make scale bucketing dynamic.
 
   uint32_t const bucketsCount = header.GetLastScale() + 1;
 
-  string const cellsToFeatureAllBucketsFile =
+  std::string const cellsToFeatureAllBucketsFile =
       tmpFilePrefix + CELL2FEATURE_SORTED_EXT + ".allbuckets";
   MY_SCOPE_GUARD(cellsToFeatureAllBucketsFileGuard,
                  bind(&FileWriter::DeleteFileX, cellsToFeatureAllBucketsFile));
@@ -160,8 +160,8 @@ void IndexScales(feature::DataHeader const & header, TFeaturesVector const & fea
     // the runtime decision of whether we should draw a feature
     // or sacrifice it for the sake of more important ones.
     TDisplacementManager manager(sorter);
-    vector<uint32_t> featuresInBucket(bucketsCount);
-    vector<uint32_t> cellsInBucket(bucketsCount);
+    std::vector<uint32_t> featuresInBucket(bucketsCount);
+    std::vector<uint32_t> cellsInBucket(bucketsCount);
     features.ForEach(
         FeatureCoverer<TDisplacementManager>(header, manager, featuresInBucket, cellsInBucket));
     manager.Displace();
@@ -186,7 +186,7 @@ void IndexScales(feature::DataHeader const & header, TFeaturesVector const & fea
 
   for (uint32_t bucket = 0; bucket < bucketsCount; ++bucket)
   {
-    string const cellsToFeatureFile = tmpFilePrefix + CELL2FEATURE_SORTED_EXT;
+    std::string const cellsToFeatureFile = tmpFilePrefix + CELL2FEATURE_SORTED_EXT;
     MY_SCOPE_GUARD(cellsToFeatureFileGuard, bind(&FileWriter::DeleteFileX, cellsToFeatureFile));
     {
       FileWriter cellsToFeaturesWriter(cellsToFeatureFile);

@@ -136,7 +136,7 @@ UNIT_CLASS_TEST(SampleTest, BadViewport)
 
 UNIT_CLASS_TEST(SampleTest, Arrays)
 {
-  string lines;
+  std::string lines;
   lines.append(
       R"({"query": "cuba", "locale": "en", "position": {"x": 37.618706, "y": 99.53730574302003}, "viewport": {"minx": 37.1336, "miny": 67.1349, "maxx": 38.0314, "maxy": 67.7348}, "results": [{"name": "Cuba", "relevancy": "relevant", "types": ["place-country"], "position": {"x": -80.832886, "y": 15.521132748163712}, "houseNumber": ""}]})");
   lines.append("\n");

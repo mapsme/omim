@@ -2,7 +2,7 @@
 
 #include "geometry/robust_orientation.hpp"
 
-#include "std/algorithm.hpp"
+#include <algorithm>
 
 namespace m2
 {
@@ -17,12 +17,12 @@ bool IsPointOnSegmentEps(m2::PointD const & pt, m2::PointD const & p1, m2::Point
   double minX = p1.x;
   double maxX = p2.x;
   if (maxX < minX)
-    swap(maxX, minX);
+    std::swap(maxX, minX);
 
   double minY = p1.y;
   double maxY = p2.y;
   if (maxY < minY)
-    swap(maxY, minY);
+    std::swap(maxY, minY);
 
   return pt.x >= minX - eps && pt.x <= maxX + eps && pt.y >= minY - eps && pt.y <= maxY + eps;
 }

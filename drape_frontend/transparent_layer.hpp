@@ -2,7 +2,7 @@
 
 #include "drape/pointers.hpp"
 
-#include "std/vector.hpp"
+#include <vector>
 
 namespace dp
 {
@@ -30,7 +30,7 @@ private:
   int8_t m_attributePosition;
   int8_t m_attributeTexCoord;
 
-  vector<float> m_vertices;
+  std::vector<float> m_vertices;
 };
 
 }  // namespace df

@@ -20,7 +20,7 @@ using namespace my;
 #ifndef OMIM_OS_WINDOWS
 UNIT_TEST(MwmSet_FileSystemErrors)
 {
-  string const dir = GetPlatform().WritableDir();
+  std::string const dir = GetPlatform().WritableDir();
 
   CountryFile file("minsk-pass");
   LocalCountryFile localFile(dir, file, 0);

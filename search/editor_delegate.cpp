@@ -11,7 +11,7 @@ namespace search
 {
 EditorDelegate::EditorDelegate(Index const & index) : m_index(index) {}
 
-MwmSet::MwmId EditorDelegate::GetMwmIdByMapName(string const & name) const
+MwmSet::MwmId EditorDelegate::GetMwmIdByMapName(std::string const & name) const
 {
   return m_index.GetMwmIdByCountryFile(platform::CountryFile(name));
 }
@@ -26,7 +26,7 @@ unique_ptr<FeatureType> EditorDelegate::GetOriginalFeature(FeatureID const & fid
   return feature;
 }
 
-string EditorDelegate::GetOriginalFeatureStreet(FeatureType & ft) const
+std::string EditorDelegate::GetOriginalFeatureStreet(FeatureType & ft) const
 {
   search::ReverseGeocoder const coder(m_index);
   auto const streets = coder.GetNearbyFeatureStreets(ft);

@@ -32,10 +32,10 @@
 #include "base/logging.hpp"
 #include "base/stl_add.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/bind.hpp"
-#include "std/cmath.hpp"
-#include "std/chrono.hpp"
+#include <algorithm>
+#include <functional>
+#include <cmath>
+#include <chrono>
 
 namespace df
 {
@@ -76,7 +76,7 @@ bool RemoveGroups(ToDo & filter, vector<drape_ptr<RenderGroup>> & groups,
     if (filter(group))
     {
       group->RemoveOverlay(tree);
-      swap(group, groups.back());
+      std::swap(group, groups.back());
       groups.pop_back();
       --count;
     }
@@ -92,9 +92,9 @@ bool RemoveGroups(ToDo & filter, vector<drape_ptr<RenderGroup>> & groups,
 struct RemoveTilePredicate
 {
   mutable bool m_deletionMark = false;
-  function<bool(drape_ptr<RenderGroup> const &)> const & m_predicate;
+  std::function<bool(drape_ptr<RenderGroup> const &)> const & m_predicate;
 
-  RemoveTilePredicate(function<bool(drape_ptr<RenderGroup> const &)> const & predicate)
+  RemoveTilePredicate(std::function<bool(drape_ptr<RenderGroup> const &)> const & predicate)
     : m_predicate(predicate)
   {}
 
@@ -120,7 +120,7 @@ FrontendRenderer::FrontendRenderer(Params && params)
   , m_trafficRenderer(new TrafficRenderer())
   , m_framebuffer(new Framebuffer())
   , m_transparentLayer(new TransparentLayer())
-  , m_gpsTrackRenderer(new GpsTrackRenderer(bind(&FrontendRenderer::PrepareGpsTrackPoints, this, _1)))
+  , m_gpsTrackRenderer(new GpsTrackRenderer(std::bind(&FrontendRenderer::PrepareGpsTrackPoints, this, std::placeholders::_1)))
   , m_drapeApiRenderer(new DrapeApiRenderer())
   , m_overlayTree(new dp::OverlayTree())
   , m_enablePerspectiveInNavigation(false)
@@ -302,7 +302,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
         return g->GetLayerId() == layerId;
       };
 
-      auto const iter = remove_if(m_userMarkRenderGroups.begin(),
+      auto const iter = std::remove_if(m_userMarkRenderGroups.begin(),
                                   m_userMarkRenderGroups.end(),
                                   functor);
       m_userMarkRenderGroups.erase(iter, m_userMarkRenderGroups.end());
@@ -411,7 +411,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
         m_routeRenderer->UpdateDistanceFromBegin(info.GetDistanceFromBegin());
         // Here we have to recache route arrows.
         m_routeRenderer->UpdateRoute(m_userEventStream.GetCurrentScreen(),
-                                     bind(&FrontendRenderer::OnCacheRouteArrows, this, _1, _2));
+                                     std::bind(&FrontendRenderer::OnCacheRouteArrows, this, std::placeholders::_1, std::placeholders::_2));
       }
 
       break;
@@ -471,7 +471,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
       m_routeRenderer->SetRouteData(move(routeData), make_ref(m_gpuProgramManager));
       // Here we have to recache route arrows.
       m_routeRenderer->UpdateRoute(m_userEventStream.GetCurrentScreen(),
-                                   bind(&FrontendRenderer::OnCacheRouteArrows, this, _1, _2));
+                                   std::bind(&FrontendRenderer::OnCacheRouteArrows, this, std::placeholders::_1, std::placeholders::_2));
 
       if (!m_routeRenderer->GetFinishPoint())
       {
@@ -1054,7 +1054,7 @@ void FrontendRenderer::ProcessSelection(ref_ptr<SelectObjectMessage> msg)
         BuildOverlayTree(m_userEventStream.GetCurrentScreen());
       m_overlayTree->Select(msg->GetPosition(), selectResult);
       for (ref_ptr<dp::OverlayHandle> handle : selectResult)
-        offsetZ = max(offsetZ, handle->GetPivotZ());
+        offsetZ = std::max(offsetZ, handle->GetPivotZ());
     }
     m_selectionShape->Show(msg->GetSelectedObject(), msg->GetPosition(), offsetZ, msg->IsAnim());
   }
@@ -1280,7 +1280,7 @@ void FrontendRenderer::MergeBuckets()
     if (layer.m_renderGroups.empty())
       return;
 
-    using TGroupMap = map<MergedGroupKey, vector<drape_ptr<RenderGroup>>>;
+    using TGroupMap = std::map<MergedGroupKey, vector<drape_ptr<RenderGroup>>>;
     TGroupMap forMerge;
 
     vector<drape_ptr<RenderGroup>> newGroups;
@@ -1332,7 +1332,7 @@ void FrontendRenderer::RenderSingleGroup(ScreenBase const & modelView, ref_ptr<B
 
 void FrontendRenderer::RefreshProjection(ScreenBase const & screen)
 {
-  array<float, 16> m;
+  std::array<float, 16> m;
 
   dp::MakeProjection(m, 0.0f, screen.GetWidth(), screen.GetHeight(), 0.0f);
   m_generalUniforms.SetMatrix4x4Value("projection", m.data());
@@ -1609,7 +1609,7 @@ TTilesCollection FrontendRenderer::ResolveTileKeys(ScreenBase const & screen)
     return group->GetTileKey().m_zoomLevel == m_currentZoomLevel &&
            (key.m_x < result.m_minTileX || key.m_x >= result.m_maxTileX ||
            key.m_y < result.m_minTileY || key.m_y >= result.m_maxTileY ||
-           find(tilesToDelete.begin(), tilesToDelete.end(), key) != tilesToDelete.end());
+           std::find(tilesToDelete.begin(), tilesToDelete.end(), key) != tilesToDelete.end());
   };
   for (RenderLayer & layer : m_layers)
     layer.m_isDirty |= RemoveGroups(removePredicate, layer.m_renderGroups, make_ref(m_overlayTree));
@@ -1712,7 +1712,7 @@ void FrontendRenderer::Routine::Do()
 {
   LOG(LINFO, ("Start routine."));
 
-  gui::DrapeGui::Instance().ConnectOnCompassTappedHandler(bind(&FrontendRenderer::OnCompassTapped, &m_renderer));
+  gui::DrapeGui::Instance().ConnectOnCompassTappedHandler(std::bind(&FrontendRenderer::OnCompassTapped, &m_renderer));
   m_renderer.m_myPositionController->SetListener(ref_ptr<MyPositionController::Listener>(&m_renderer));
   m_renderer.m_userEventStream.SetListener(ref_ptr<UserEventStream::Listener>(&m_renderer));
 
@@ -1795,7 +1795,7 @@ void FrontendRenderer::Routine::Do()
         m_renderer.m_myPositionController->IsRouteFollowingActive() && frameTime < kFrameTime)
     {
       uint32_t const ms = static_cast<uint32_t>((kFrameTime - frameTime) * 1000);
-      this_thread::sleep_for(milliseconds(ms));
+      this_thread::sleep_for(std::chrono::milliseconds(ms));
     }
 
     if (m_renderer.m_overlaysTracker->IsValid() &&
@@ -1893,7 +1893,7 @@ void FrontendRenderer::PrepareScene(ScreenBase const & modelView)
   RefreshPivotTransform(modelView);
 
   m_myPositionController->OnUpdateScreen(modelView);
-  m_routeRenderer->UpdateRoute(modelView, bind(&FrontendRenderer::OnCacheRouteArrows, this, _1, _2));
+  m_routeRenderer->UpdateRoute(modelView, std::bind(&FrontendRenderer::OnCacheRouteArrows, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 void FrontendRenderer::UpdateScene(ScreenBase const & modelView)
@@ -1965,7 +1965,7 @@ void FrontendRenderer::RenderLayer::Sort(ref_ptr<dp::OverlayTree> overlayTree)
     return;
 
   RenderGroupComparator comparator;
-  sort(m_renderGroups.begin(), m_renderGroups.end(), ref(comparator));
+  std::sort(m_renderGroups.begin(), m_renderGroups.end(), std::ref(comparator));
   m_isDirty = comparator.m_pendingOnDeleteFound;
 
   while (!m_renderGroups.empty() && m_renderGroups.back()->CanBeDeleted())

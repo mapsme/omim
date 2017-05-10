@@ -8,16 +8,16 @@ namespace
 {
 UNIT_TEST(Booking_GetHotelAvailability)
 {
-  string const kHotelId = "98251";  // Booking hotel id for testing.
-  string result;
+  std::string const kHotelId = "98251";  // Booking hotel id for testing.
+  std::string result;
   TEST(booking::RawApi::GetHotelAvailability(kHotelId, "", result), ());
   TEST(!result.empty(), ());
 }
 
 UNIT_TEST(Booking_GetExtendedInfo)
 {
-  string const kHotelId = "0";  // Internal hotel id for testing.
-  string result;
+  std::string const kHotelId = "0";  // Internal hotel id for testing.
+  std::string result;
   TEST(booking::RawApi::GetExtendedInfo(kHotelId, "en", result), ());
   TEST(!result.empty(), ());
 }
@@ -27,14 +27,14 @@ UNIT_TEST(Booking_GetMinPrice)
   booking::SetBookingUrlForTesting("http://localhost:34568/booking/min_price");
   MY_SCOPE_GUARD(cleanup, []() { booking::SetBookingUrlForTesting(""); });
 
-  string const kHotelId = "0";  // Internal hotel id for testing.
+  std::string const kHotelId = "0";  // Internal hotel id for testing.
   booking::Api api;
   {
-    string price;
-    string currency;
-    string hotelId;
+    std::string price;
+    std::string currency;
+    std::string hotelId;
     api.GetMinPrice(kHotelId, "" /* default currency */,
-                    [&hotelId, &price, &currency](string const & id, string const & val, string const & curr) {
+                    [&hotelId, &price, &currency](std::string const & id, std::string const & val, std::string const & curr) {
                       hotelId = id;
                       price = val;
                       currency = curr;
@@ -49,10 +49,10 @@ UNIT_TEST(Booking_GetMinPrice)
   }
 
   {
-    string price;
-    string currency;
-    string hotelId;
-    api.GetMinPrice(kHotelId, "RUB", [&hotelId, &price, &currency](string const & id, string const & val, string const & curr)
+    std::string price;
+    std::string currency;
+    std::string hotelId;
+    api.GetMinPrice(kHotelId, "RUB", [&hotelId, &price, &currency](std::string const & id, std::string const & val, std::string const & curr)
                     {
                       hotelId = id;
                       price = val;
@@ -68,10 +68,10 @@ UNIT_TEST(Booking_GetMinPrice)
   }
 
   {
-    string price;
-    string currency;
-    string hotelId;
-    api.GetMinPrice(kHotelId, "ISK", [&hotelId, &price, &currency](string const & id, string const & val, string const & curr)
+    std::string price;
+    std::string currency;
+    std::string hotelId;
+    api.GetMinPrice(kHotelId, "ISK", [&hotelId, &price, &currency](std::string const & id, std::string const & val, std::string const & curr)
                     {
                       hotelId = id;
                       price = val;

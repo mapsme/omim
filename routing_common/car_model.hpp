@@ -2,7 +2,7 @@
 
 #include "routing_common/vehicle_model.hpp"
 
-#include "std/shared_ptr.hpp"
+#include <memory>
 
 namespace routing
 {
@@ -21,10 +21,10 @@ public:
   CarModelFactory();
 
   // VehicleModelFactory overrides:
-  shared_ptr<IVehicleModel> GetVehicleModel() const override;
-  shared_ptr<IVehicleModel> GetVehicleModelForCountry(string const & country) const override;
+  std::shared_ptr<IVehicleModel> GetVehicleModel() const override;
+  std::shared_ptr<IVehicleModel> GetVehicleModelForCountry(std::string const & country) const override;
 
 private:
-  shared_ptr<IVehicleModel> m_model;
+  std::shared_ptr<IVehicleModel> m_model;
 };
 }  // namespace routing

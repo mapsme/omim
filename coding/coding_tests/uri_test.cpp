@@ -1,9 +1,9 @@
 #include "testing/testing.hpp"
 #include "coding/uri.hpp"
 #include "base/macros.hpp"
-#include "std/bind.hpp"
-#include "std/queue.hpp"
-#include "std/utility.hpp"
+#include <functional>
+#include <queue>
+#include <utility>
 
 using url_scheme::Uri;
 
@@ -13,12 +13,12 @@ namespace
 class TestUri
 {
 public:
-  TestUri(string const & uri) { m_uri = uri; }
-  TestUri & Scheme(string const &scheme) { m_scheme = scheme; return *this; }
-  TestUri & Path(string const & path) { m_path = path; return *this; }
-  TestUri & KV(string const & key, string const & value)
+  TestUri(std::string const & uri) { m_uri = uri; }
+  TestUri & Scheme(std::string const &scheme) { m_scheme = scheme; return *this; }
+  TestUri & Path(std::string const & path) { m_path = path; return *this; }
+  TestUri & KV(std::string const & key, std::string const & value)
   {
-    m_keyValuePairs.push(make_pair(key, value));
+    m_keyValuePairs.push(std::make_pair(key, value));
     return *this;
   }
 
@@ -28,12 +28,12 @@ public:
     TEST_EQUAL(uri.GetScheme(), m_scheme, ());
     TEST_EQUAL(uri.GetPath(), m_path, ());
     TEST(!m_scheme.empty() || !uri.IsValid(), ("Scheme is empty if and only if uri is invalid!"));
-    uri.ForEachKeyValue(bind(&TestUri::AddTestValue, this, _1, _2));
+    uri.ForEachKeyValue(std::bind(&TestUri::AddTestValue, this, std::placeholders::_1, std::placeholders::_2));
   }
 
 private:
 
-  bool AddTestValue(string const & key, string const & value)
+  bool AddTestValue(std::string const & key, std::string const & value)
   {
     TEST(!m_keyValuePairs.empty(), ("Failed for uri = ", m_uri, "Passed KV = ", key, value));
     TEST_EQUAL(m_keyValuePairs.front().first,  key, ());
@@ -42,8 +42,8 @@ private:
     return true;
   }
 
-  string m_uri, m_scheme, m_path;
-  queue<pair<string, string> > m_keyValuePairs;
+  std::string m_uri, m_scheme, m_path;
+  std::queue<std::pair<std::string, std::string> > m_keyValuePairs;
 };
 
 }  // unnamed namespace

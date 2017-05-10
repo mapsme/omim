@@ -7,13 +7,13 @@
 
 #include "base/exception.hpp"
 
-#include "std/functional.hpp"
+#include <functional>
 
 namespace editor
 {
 DECLARE_EXCEPTION(MigrationError, RootException);
 
-using TGenerateIDFn = function<FeatureID()>;
+using TGenerateIDFn = std::function<FeatureID()>;
 
 /// Tries to match xml feature with one on a new mwm and retruns FeatrueID
 /// of a found feature, thows MigrationError if migration fails.

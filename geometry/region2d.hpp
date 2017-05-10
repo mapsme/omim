@@ -6,9 +6,9 @@
 
 #include "base/math.hpp"
 
-#include "std/vector.hpp"
-#include "std/algorithm.hpp"
-#include "std/type_traits.hpp"
+#include <vector>
+#include <algorithm>
+#include <type_traits>
 
 
 namespace m2
@@ -88,8 +88,8 @@ namespace m2
     typedef typename PointT::value_type CoordT;
 
   private:
-    typedef vector<PointT> ContainerT;
-    typedef detail::TraitsType<is_floating_point<CoordT>::value> TraitsT;
+    typedef std::vector<PointT> ContainerT;
+    typedef detail::TraitsType<std::is_floating_point<CoordT>::value> TraitsT;
 
   public:
     /// @name Needed for boost region concept.
@@ -103,7 +103,7 @@ namespace m2
   public:
     Region() = default;
 
-    explicit Region(vector<PointD> && points) : m_points(move(points))
+    explicit Region(std::vector<PointD> && points) : m_points(move(points))
     {
       CalcLimitRect();
     }
@@ -124,7 +124,7 @@ namespace m2
     template <class IterT, class Fn>
     void AssignEx(IterT first, IterT last, Fn fn)
     {
-      m_points.reserve(distance(first, last));
+      m_points.reserve(std::distance(first, last));
 
       while (first != last)
         m_points.push_back(fn(*first++));
@@ -141,7 +141,7 @@ namespace m2
     template <class TFunctor>
     void ForEachPoint(TFunctor toDo) const
     {
-      for_each(m_points.begin(), m_points.end(), toDo);
+      std::for_each(m_points.begin(), m_points.end(), toDo);
     }
 
     inline m2::Rect<CoordT> const & GetRect() const { return m_rect; }
@@ -313,7 +313,7 @@ namespace m2
     ContainerT m_points;
     m2::Rect<CoordT> m_rect;
 
-    template <class T> friend string DebugPrint(Region<T> const &);
+    template <class T> friend std::string DebugPrint(Region<T> const &);
   };
 
   template <class PointT>
@@ -339,7 +339,7 @@ namespace m2
   }
 
   template <class PointT>
-  inline string DebugPrint(Region<PointT> const & r)
+  inline std::string DebugPrint(Region<PointT> const & r)
   {
     return (DebugPrint(r.m_rect) + ::DebugPrint(r.m_points));
   }
