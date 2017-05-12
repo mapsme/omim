@@ -25,7 +25,7 @@ void main(void)
   lowp vec4 fakeColor = texture2D(u_colorTex, vec2(0.0, 0.0)) * kFakeColorScalar;
 #endif
 
-  vec4 color = u_color;
+  vec4 color = u_color + v_color;
   if (v_length.x < v_length.z)
     color.a = 0.0;
   else
