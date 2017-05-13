@@ -16,6 +16,7 @@
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/utsname.h>
 
 #import "iphone/Maps/Common/MWMCommon.h"
 
@@ -179,6 +180,13 @@ void Platform::SetupMeasurementSystem() const
       [[[NSLocale autoupdatingCurrentLocale] objectForKey:NSLocaleUsesMetricSystem] boolValue];
   units = isMetric ? measurement_utils::Units::Metric : measurement_utils::Units::Imperial;
   settings::Set(settings::kMeasurementUnits, units);
+}
+
+string Platform::DeviceName() const
+{
+  struct utsname systemInfo;
+  uname(&systemInfo);
+  return string(systemInfo.machine);
 }
 
 ////////////////////////////////////////////////////////////////////////

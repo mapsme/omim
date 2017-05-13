@@ -178,11 +178,6 @@ void Platform::GetFilesByType(string const & directory, unsigned typeMask,
   }
 }
 
-string Platform::DeviceName() const
-{
-  return OMIM_OS_NAME;
-}
-
 void Platform::SetWritableDirForTests(string const & path)
 {
   m_writableDir = my::AddSlashIfNeeded(path);

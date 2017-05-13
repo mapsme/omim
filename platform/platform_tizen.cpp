@@ -109,6 +109,11 @@ void Platform::GetSystemFontNames(FilesList & res) const
 {
 }
 
+string Platform::DeviceName() const
+{
+  return OMIM_OS_NAME;
+}
+
 extern Platform & GetPlatform()
 {
   static Platform platform;

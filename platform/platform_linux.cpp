@@ -162,3 +162,8 @@ Platform::EConnectionType Platform::ConnectionStatus()
 
   return EConnectionType::CONNECTION_WIFI;
 }
+
+string Platform::DeviceName() const
+{
+  return OMIM_OS_NAME;
+}
