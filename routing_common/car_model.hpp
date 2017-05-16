@@ -13,6 +13,8 @@ public:
   CarModel();
 
   static CarModel const & AllLimitsInstance();
+  static InitListT const & GetLimits();
+  static std::vector<AdditionalRoadTags> const & GetAdditionalTags();
 };
 
 class CarModelFactory : public VehicleModelFactory

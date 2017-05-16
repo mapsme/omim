@@ -62,6 +62,12 @@ public:
     double m_speedKMpH;       /// max allowed speed on this road type
   };
 
+  struct AdditionalRoadTags
+  {
+    std::initializer_list<char const *> m_hwtag;
+    double m_speedKMpH;
+  };
+
   typedef initializer_list<SpeedForType> InitListT;
 
   VehicleModel(Classificator const & c, InitListT const & speedLimits);
@@ -89,12 +95,6 @@ public:
   }
 
 protected:
-  struct AdditionalRoadTags
-  {
-    initializer_list<char const *> m_hwtag;
-    double m_speedKMpH;
-  };
-
   /// @returns a special restriction which is set to the feature.
   virtual RoadAvailability GetRoadAvailability(feature::TypesHolder const & types) const;
 
