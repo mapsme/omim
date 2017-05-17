@@ -144,6 +144,9 @@
         <data
           android:host="lead"
           android:scheme="mapsme"/>
+        <data
+          android:host="lead"
+          android:scheme="mapswithme"/>
       </intent-filter>
 
       <!-- API CALL -->
