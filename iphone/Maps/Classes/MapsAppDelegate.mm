@@ -574,7 +574,7 @@ using namespace osm_auth_ios;
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
   LOG(LINFO, ("applicationDidBecomeActive - begin"));
-  LOG(LINFO, ("Pushwoosh: ", [MWMPushNotifications pushToken].UTF8String));
+  LOG(LWARNING, ("Pushwoosh token: ", [MWMPushNotifications pushToken].UTF8String));
   [self.mapViewController onGetFocus:YES];
   [self handleURLs];
   [[Statistics instance] applicationDidBecomeActive];
