@@ -10,6 +10,8 @@
 // folder.
 #import "private.h"
 
+#include "base/logging.hpp"
+
 #include "std/string.hpp"
 
 namespace
@@ -62,9 +64,14 @@ NSString * const kPushDeviceTokenLogEvent = @"iOSPushDeviceToken";
 + (BOOL)handleURLPush:(NSDictionary *)userInfo
 {
   auto app = UIApplication.sharedApplication;
+  LOG(LWARNING, ("Handle url push"));
+  [userInfo enumerateKeysAndObjectsUsingBlock:^(NSString *  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+    LOG(LWARNING, ("Key in push's user info:", key.UTF8String));
+  }];
   if (app.applicationState != UIApplicationStateInactive)
     return NO;
   NSString * openLink = userInfo[@"openURL"];
+  LOG(LWARNING, ("Push's url:", openLink.UTF8String));
   if (!openLink)
     return NO;
   NSURL * url = [NSURL URLWithString:openLink];

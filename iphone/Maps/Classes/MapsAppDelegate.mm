@@ -214,6 +214,7 @@ using namespace osm_auth_ios;
 
     string const url = m_mwmURL.UTF8String;
     auto const parsingType = f.ParseAndSetApiURL(url);
+    LOG(LWARNING, ("Started by url:", m_mwmURL.UTF8String));
     switch (parsingType)
     {
     case ParsedMapApi::ParsingResult::Incorrect:
