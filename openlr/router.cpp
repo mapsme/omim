@@ -428,11 +428,13 @@ bool Router::MayMoveToNextStage(Vertex const & u, double pi) const
 bool Router::PassesRestriction(routing::Edge const & edge,
                                FunctionalRoadClass const restriction) const
 {
+  int constexpr kTolerance = 3;
+
   if (edge.IsFake())
     return true;
 
   auto const frc = m_roadInfoGetter.Get(edge.GetFeatureId()).m_frc;
-  return frc <= restriction;
+  return static_cast<int>(frc) <= static_cast<int>(restriction) + kTolerance;
 }
 
 uint32_t Router::GetReverseBearing(Vertex const & u, Links const & links) const
