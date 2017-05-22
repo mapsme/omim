@@ -6,6 +6,8 @@
 
 #include "std/vector.hpp"
 
+using namespace std;
+
 namespace
 {
 double constexpr kSpeedMotorwayKMpH = 115.37;
@@ -54,6 +56,12 @@ routing::VehicleModel::InitListT const s_carLimits = {
     //{ {"highway", "construction"},   40 },
 };
 
+vector<routing::VehicleModel::AdditionalRoadTags> const kAdditionalTags = {
+    {{"route", "ferry", "motorcar"}, kSpeedFerryMotorcarKMpH},
+    {{"route", "ferry", "motor_vehicle"}, kSpeedFerryMotorcarVehicleKMpH},
+    {{"railway", "rail", "motor_vehicle"}, kSpeedRailMotorcarVehicleKMpH},
+    {{"route", "shuttle_train"}, kSpeedShuttleTrainKMpH},
+};
 }  // namespace
 
 namespace routing
@@ -62,14 +70,7 @@ namespace routing
 CarModel::CarModel()
   : VehicleModel(classif(), s_carLimits)
 {
-  vector<AdditionalRoadTags> const additionalTags = {
-      {{"route", "ferry", "motorcar"}, kSpeedFerryMotorcarKMpH},
-      {{"route", "ferry", "motor_vehicle"}, kSpeedFerryMotorcarVehicleKMpH},
-      {{"railway", "rail", "motor_vehicle"}, kSpeedRailMotorcarVehicleKMpH},
-      {{"route", "shuttle_train"}, kSpeedShuttleTrainKMpH},
-  };
-
-  SetAdditionalRoadTypes(classif(), additionalTags);
+  SetAdditionalRoadTypes(classif(), kAdditionalTags);
 }
 
 // static
@@ -77,6 +78,18 @@ CarModel const & CarModel::AllLimitsInstance()
 {
   static CarModel const instance;
   return instance;
+}
+
+// static
+routing::VehicleModel::InitListT const & CarModel::GetLimits()
+{
+  return s_carLimits;
+}
+
+// static
+vector<routing::VehicleModel::AdditionalRoadTags> const & CarModel::GetAdditionalTags()
+{
+  return kAdditionalTags;
 }
 
 CarModelFactory::CarModelFactory() { m_model = make_shared<CarModel>(); }

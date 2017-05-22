@@ -315,6 +315,7 @@ add_subdirectory(local_ads)
 if (PLATFORM_DESKTOP)
   add_subdirectory(openlr)
   add_subdirectory(generator)
+  add_subdirectory(track_analyzing)
 endif()
 
 omim_add_test_subdirectory(qt_tstfrm)

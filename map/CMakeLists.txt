@@ -46,14 +46,14 @@ set(
   local_ads_manager.cpp
   local_ads_manager.hpp
   local_ads_supported_types.cpp
-  mwm_tree.cpp
-  mwm_tree.hpp
   mwm_url.cpp
   mwm_url.hpp
   place_page_info.cpp
   place_page_info.hpp
   reachable_by_taxi_checker.cpp
   reachable_by_taxi_checker.hpp
+  routing_helpers.cpp
+  routing_helpers.hpp
   track.cpp
   track.hpp
   traffic_manager.cpp

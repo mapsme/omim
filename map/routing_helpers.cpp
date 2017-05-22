@@ -1,4 +1,4 @@
-#include "map/mwm_tree.hpp"
+#include "map/routing_helpers.hpp"
 
 std::unique_ptr<m4::Tree<routing::NumMwmId>> MakeNumMwmTree(routing::NumMwmIds const & numMwmIds,
                                                             storage::CountryInfoGetter const & countryInfoGetter)
@@ -11,4 +11,12 @@ std::unique_ptr<m4::Tree<routing::NumMwmId>> MakeNumMwmTree(routing::NumMwmIds c
   });
 
   return tree;
+}
+
+std::shared_ptr<routing::NumMwmIds> CreateNumMwmIds(storage::Storage const & storage)
+{
+  auto numMwmIds = std::make_shared<routing::NumMwmIds>();
+  storage.ForEachCountryFile(
+      [&](platform::CountryFile const & file) { numMwmIds->RegisterFile(file); });
+  return numMwmIds;
 }

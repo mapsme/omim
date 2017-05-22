@@ -4,7 +4,7 @@
 #include "map/ge0_parser.hpp"
 #include "map/geourl_process.hpp"
 #include "map/gps_tracker.hpp"
-#include "map/mwm_tree.hpp"
+#include "map/routing_helpers.hpp"
 #include "map/user_mark.hpp"
 
 #include "defines.hpp"
