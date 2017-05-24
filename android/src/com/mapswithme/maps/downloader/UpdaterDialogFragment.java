@@ -16,12 +16,15 @@ import android.widget.TextView;
 
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.MwmActivity;
+import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.base.BaseMwmDialogFragment;
 import com.mapswithme.util.Constants;
 import com.mapswithme.util.StringUtils;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.Utils;
+import com.mapswithme.util.log.Logger;
+import com.mapswithme.util.log.LoggerFactory;
 import com.mapswithme.util.statistics.Statistics;
 
 import java.util.List;
@@ -137,12 +140,12 @@ public class UpdaterDialogFragment extends BaseMwmDialogFragment
     @Override
     public void onClick(View v)
     {
-      Statistics.INSTANCE.trackDownloaderDialogEvent(MapManager.nativeIsDownloading()
+      Statistics.INSTANCE.trackDownloaderDialogEvent(isMapDownloading()
                                                      ? DOWNLOADER_DIALOG_LATER
                                                      : DOWNLOADER_DIALOG_CANCEL,
                                                      mTotalSizeMb);
 
-      if (MapManager.nativeIsDownloading())
+      if (isMapDownloading())
         MapManager.nativeCancel(CountryItem.getRootId());
 
 //    TODO remove attachMap() when dialog migrated to SplashActivity
@@ -266,12 +269,24 @@ public class UpdaterDialogFragment extends BaseMwmDialogFragment
 
     mListenerSlot = MapManager.nativeSubscribe(mStorageCallback);
 
-    if (mAutoUpdate && !MapManager.nativeIsDownloading())
+    if (mAutoUpdate && !isMapDownloading())
     {
       MapManager.nativeUpdate(CountryItem.getRootId());
       Statistics.INSTANCE.trackDownloaderDialogEvent(DOWNLOADER_DIALOG_DOWNLOAD,
                                                      mTotalSizeMb);
     }
+  }
+
+  private static boolean isMapDownloading()
+  {
+    if (!MwmApplication.get().isFrameworkInitialized())
+    {
+      Logger logger = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.MISC);
+      logger.e(UpdaterDialogFragment.class.getSimpleName(), "Framework is not initialized while " +
+                                                            "requesting the downloading map status!");
+      return false;
+    }
+    return MapManager.nativeIsDownloading();
   }
 
   @Override
@@ -288,7 +303,7 @@ public class UpdaterDialogFragment extends BaseMwmDialogFragment
   @Override
   public void onCancel(DialogInterface dialog)
   {
-    if (MapManager.nativeIsDownloading())
+    if (isMapDownloading())
       MapManager.nativeCancel(CountryItem.getRootId());
 
 //  TODO remove attachMap() when dialog migrated to SplashActivity
@@ -321,7 +336,7 @@ public class UpdaterDialogFragment extends BaseMwmDialogFragment
       return;
 
     mAutoUpdate = args.getBoolean(ARG_UPDATE_IMMEDIATELY);
-    if (!mAutoUpdate && MapManager.nativeIsDownloading())
+    if (!mAutoUpdate && isMapDownloading())
       mAutoUpdate = true;
 
     mTotalSize = args.getString(ARG_TOTAL_SIZE);
