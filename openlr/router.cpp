@@ -759,7 +759,6 @@ bool Router::ReconstructPath(std::vector<Edge> & edges, vector<routing::Edge> & 
 void Router::FindSingleEdgeApproximation(std::vector<Edge> const & edges,
                                          std::vector<routing::Edge> & path)
 {
-  double const kThreshold = 0.8;
   double const kCoverageThreshold = 0.5;
 
   CHECK(all_of(edges.begin(), edges.end(), mem_fn(&Edge::IsFake)), ());
@@ -780,7 +779,7 @@ void Router::FindSingleEdgeApproximation(std::vector<Edge> const & edges,
         GetCoverage(edge.GetStartJunction().GetPoint(), edge.GetEndJunction().GetPoint(),
                     edges.begin(), edges.end());
     double const coverage = weight * fraction;
-    if (fraction >= kThreshold && coverage >= bestCoverage)
+    if (coverage >= bestCoverage)
     {
       bestCoverage = coverage;
       bestEdge = edge;
