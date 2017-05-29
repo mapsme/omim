@@ -708,6 +708,7 @@ it:^Minimarket
 ja:^コンビニエンスストア|コンビニ
 ko:^편의점
 nb:^Nærbutikk|nærbutikk
+pl:4^Sklep samoobsługowy
 pt:^Loja de conveniência
 ro:4^Magazin mixt
 es:^Tienda de ultramarinos|chino|bazar
@@ -767,7 +768,7 @@ it:^Negozio di telefonia mobile|negozio di elettronica
 ja:^携帯ショップ
 ko:^휴대폰 대리점
 nb:^Mobiltelefonbutikk|elektronikkbutikk
-pl:^Sklep z elektroniką|sklep elektroniczny
+pl:^Sklep z telefonami komórkowymi|sklep elektroniczny
 pt:^Loja de telemóveis|loja de aparelhos eletrónicos
 ro:^Magazin de telefoane mobile|magazin de electronice
 es:^Celulares|Tienda de telefonía móvil|tienda de electrónica
@@ -827,7 +828,7 @@ it:^Macellaio
 ja:^肉屋|お買い物|ショップ|商店|雑貨
 ko:^정육점의|가게
 nb:^Slakter
-pl:^Rzeźnik|towary
+pl:^Rzeźnik|Masarnia|towary
 pt:^Açougueiro|2loja
 ro:^Măcelărie
 es:^Carnicería
@@ -887,7 +888,7 @@ it:^Enoteca
 ja:^酒屋|お買い物|ショップ|商店|雑貨
 ko:^주류 샵|가게
 nb:^Vinmonopol|brennevin
-pl:^Monopolowy|towary
+pl:^Sklep monopolowy|towary
 pt:^Loja de bebidas|bebidas alcoólicas|2loja
 ro:^Băuturi alcoolice
 es:^Licorería|licor
@@ -1067,7 +1068,7 @@ it:^Ottico
 ja:^眼鏡店|お買い物|ショップ|商店|雑貨
 ko:^안경점 의|가게
 nb:^Optiker
-pl:^Sklep optyczny|towary
+pl:^Sklep optyczny|Optyk|towary
 pt:^Oculista|2loja
 ro:^Optică
 es:^Óptica
@@ -1282,6 +1283,7 @@ it:^Grandi magazzini|centro commerciale
 ja:^デパート
 ko:^백화점
 nb:^Varehus
+pl:^Dom handlowy
 pt:^Armazém retalhista
 ro:^Magazin universal
 es:^Grandes almacenes
@@ -1341,6 +1343,7 @@ it:^Negozio di computer|negozio di articoli informatici
 ja:^コンピュータショップ
 ko:^컴퓨터 판매점
 nb:^Databutikk
+pl:^Sklep z komputerami
 pt:^Loja de informática
 ro:^Magazin de calculatoare
 es:^Tienda de informática|tienda de ordenadores
@@ -1430,6 +1433,7 @@ it:^Negozio di giocattoli
 ja:^おもちゃ屋|玩具店
 ko:^장난감 가게
 nb:^Legebutikk
+pl:^Sklep z zabawkami
 pt:^Loja de brinquedos
 ro:^Magazin de jucării
 es:^Tienda de juguetes|juguetería
@@ -1458,7 +1462,7 @@ it:3^Mercato
 ja:1^市場|お買い物|食料品
 ko:1^시장
 nb:2^Torg
-pl:^Targ|targowisko
+pl:^Targ|targowisko|bazar
 pt:3^Mercado|mercado|loja
 es:3^Mercado
 sv:3^Marknadsplats|marknad
@@ -3008,6 +3012,7 @@ it:^Dentista|studio odontoiatrico
 ja:^歯科医|歯医者
 ko:^치과
 nb:^Tannlege
+pl:^Dentysta
 pt:^Dentista
 ro:^Dentist
 es:^Dentista
@@ -3120,6 +3125,7 @@ nl:parking
 fr:3parking
 de:Parking
 ja:パーキング|コインパーキング
+pl:^Parking
 pt:3Parking
 es:3aparcamiento
 uk:автостоянка|паркінг
@@ -3168,6 +3174,7 @@ fi:3Farmasia
 fr:dispensaire
 ja:ドラッグストア|薬剤師|調剤|薬屋
 ko:약물 매장|약종상
+pl:3Drogeria
 pt:3Farmacêutico
 es:3Farmacia
 sv:apotekare
@@ -3304,6 +3311,7 @@ it:^Centro di riciclaggio
 ja:^リサクルセンター
 ko:^재활용센터
 nb:^Resirkuleringssenter|innsamlingsstasjon
+pl:^Centrum recyklingu|Centrum przetwarzania odpadów
 pt:^Centro de reciclagem
 ro:^Centru de reciclare
 es:^Centro de reciclaje|punto limpio
@@ -3453,7 +3461,7 @@ de:WC
 hu:WC
 it:WC
 ja:お手洗い|便所|厠
-pl:wc|ubikacja|wychodek
+pl:WC|ubikacja|wychodek
 es:3Baños|servicios sanitarios|3lavabo|inodoro|baño|wc
 vi:Nhà vệ sinh
 zh-Hant:2洗手間|wc
@@ -4183,7 +4191,7 @@ it:^Stagno|bacino
 ja:1^池
 ko:1^연못이|연못
 nb:^Dam|vann
-pl:3^Źródło|woda
+pl:3^Źródło|Staw|woda
 pt:^Lagoa|água
 ro:^Heleșteu
 es:^Estanque|aljibe
@@ -4758,7 +4766,7 @@ de:Polizeiwache|Polizei
 it:Posto di polizia
 ja:1屯所|ポリス|交番|お巡りさん|おまわりさん|通報
 ko:보안대|경찰
-pl:komisariat
+pl:Komisariat policji
 uk:4Поліція
 vi:Cảnh sát
 zh-Hant:警察|警員
@@ -4872,7 +4880,7 @@ it:3^Riparazione auto|auto|macchina|3automobile|vettura
 ja:1^自動車修理|車|自動車|カー|リペア|修理|カーリペア
 ko:1^자동차 수리|자동차|차|차량
 nb:^Bilverksted
-pl:3^Naprawa samochodu|warsztat samochodowy|warsztat|samochód|auto
+pl:3^Naprawa samochodu|Warsztat samochodowy|warsztat|samochód|auto
 pt:^Oficina de reparação de automóveis|estação de serviço
 ro:^Atelier de reparații auto
 es:^Taller|3reparaciones auto|coche|automóvil|3auto|carro
@@ -4964,7 +4972,7 @@ it:^Ufficio
 ja:^オフィス|1事務所
 ko:^사무실
 nb:^Kontor
-pl:^Biuro|urząd
+pl:^Biuro|firma
 pt:^Escritório|empresa
 ro:^Birou
 es:^Oficina
@@ -4996,6 +5004,7 @@ it:^Ufficio aziendale
 ja:^会社事務所
 ko:^회사
 nb:^Firmakontor
+pl:^Siedziba firmy
 pt:^Escritório da empresa
 ro:^Sediu companei
 es:^Oficina de empresa
@@ -5025,6 +5034,7 @@ it:^Ufficio governativo|ufficio amministrativo
 ja:^官庁
 ko:^관공서
 nb:^Offentlig kontor
+pl:^Biuro urzędu
 pt:^Gabinete governamental
 ro:^Birou guvernamental
 es:^Oficina gubernamental
@@ -5054,6 +5064,7 @@ it:^Studio legale
 ja:^弁護士事務所
 ko:^법률 사무소
 nb:^Advokatkontor
+pl:^Adwokat|Radca prawny|Notariusz
 pt:^Escritório de advogados
 ro:^Firmă de avocatură
 es:^Despacho de abogados|bufete
@@ -5083,6 +5094,7 @@ it:^Operatore di telefonia mobile
 ja:^携帯電話事業者|キャリア
 ko:^이동통신 사업자
 nb:^Mobiloperatør
+pl:^Biuro operatora sieci telekomunikacyjnej
 pt:^Operadora móvel
 ro:^Operator de telefonie mobilă
 es:^Operadora de telefonía móvil
@@ -5112,6 +5124,7 @@ it:^Birrificio
 ja:^醸造所
 ko:^양조장
 nb:^Bryggeri
+pl:^Browar
 pt:^Cervejeira
 ro:^Berărie
 es:^Fábrica de cerveza|cervecera
@@ -5141,6 +5154,7 @@ it:^Falegname
 ja:^大工
 ko:^목수
 nb:^Snekker
+pl:^Stolarz|Cieśla
 pt:^Carpinteiro
 ro:^Tâmplar
 es:^Carpintero
@@ -5170,6 +5184,7 @@ it:^Elettricista
 ja:^電気技師
 ko:^전기기술자
 nb:^Elektriker
+pl:^Elektryk
 pt:^Eletricista
 ro:^Electrician
 es:^Electricista
@@ -5199,6 +5214,7 @@ it:^Giardiniere|architetto di esterni
 ja:^造園家
 ko:^조경사
 nb:^Anleggsgartner
+pl:^Ogrodnik
 pt:^Paisagista
 ro:^Peisagist
 es:^Paisajista
@@ -5258,6 +5274,7 @@ it:^Fabbro
 ja:^金属工
 ko:^금속공
 nb:^Metallarbeider
+pl:^Blacharz
 pt:^Metalúrgico
 ro:^Metalurgist
 es:^Trabajador del metal
@@ -5287,6 +5304,7 @@ it:^Imbianchino|pittore
 ja:^塗装工
 ko:^페인트공
 nb:^Maler
+pl:^Malarz
 pt:^Pintor
 ro:^Pictor
 es:^Pintor
@@ -5346,6 +5364,7 @@ it:^Idraulico|tubista
 ja:^配管工
 ko:^배관공
 nb:^Rørlegger
+pl:^Hydraulik
 pt:^Canalizador
 ro:^Instalator
 es:^Fontanero
@@ -5375,6 +5394,7 @@ it:^Calzolaio|Riparazione di calzature
 ja:^靴修理
 ko:^구두수선
 nb:^Skoreparasjon
+pl:^Szewc|Naprawa obuwia
 pt:^Sapateiro
 ro:^Reparații încălțăminte
 es:^Zapatero|zapatería
@@ -5404,6 +5424,7 @@ it:^Sarto
 ja:^仕立て屋
 ko:^양복점
 nb:^Skredder
+pl:^Krawiec
 pt:^Alfaiate
 ro:^Croitor
 es:^Sastre|sastrería
@@ -6280,7 +6301,7 @@ it:^Ufficio turistico
 ja:^観光案内所
 ko:^관광정보센터
 nb:^Turistkontor
-pl:^Biuro podróży
+pl:^Biuro informacji turystycznej
 pt:^Gabinete de turismo
 ro:^Birou de informații turistice
 es:^Oficina de turismo
@@ -6430,7 +6451,7 @@ it:^Garage
 ja:^車庫
 ko:^정비소
 nb:^Verksted
-pl:^Warsztat samochodowy
+pl:^Garaż
 pt:^Garagem
 ro:^Garaj
 es:^Taller mecánico
@@ -6700,7 +6721,7 @@ it:^Negozio di alcolici
 ja:^ワイン|酒屋|ワインショップ
 ko:^와인 샵
 nb:^Alkoholutsalg
-pl:^Sklep monopolowy
+pl:^Sklep z winami
 pt:^Vinho|Loja de Vinhos
 ro:^Magazin de băuturi alcolice
 es:^Establecimiento de bebidas alcohólicas
@@ -6762,7 +6783,7 @@ it:^Chalet
 ja:^シャレー|山小屋
 ko:^별장
 nb:^Chalet
-pl:^Domek letniskowy
+pl:^Domek letniskowy|Schronisko
 pt:^Chalé
 ro:^Cabană
 es:^Chalé
@@ -7152,7 +7173,7 @@ it:^Casello di pedaggio
 ja:^料金所
 ko:^톨게이트
 nb:^Bomstasjon
-pl:^Kasa
+pl:^Bramka poboru opłat
 pt:^Cabina de portagem
 ro:^Cabină de taxare
 es:^Cabina de peaje
