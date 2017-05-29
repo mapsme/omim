@@ -17,8 +17,8 @@ class IndexGraphStarter final
 {
 public:
   // AStarAlgorithm types aliases:
-  using TVertexType = WorldGraph::Vertex;
-  using TEdgeType = WorldGraph::Edge;
+  using TVertexType = IndexGraph::TVertexType;
+  using TEdgeType = IndexGraph::TEdgeType;
 
   class FakeVertex final
   {
@@ -46,7 +46,6 @@ public:
 
     bool Fits(Segment const & segment) const
     {
-      // Note. Comparing |segment| and |m_segment| without field |Segment::m_forward|.
       return segment.GetMwmId() == m_segment.GetMwmId() &&
              segment.GetFeatureId() == m_segment.GetFeatureId() &&
              segment.GetSegmentIdx() == m_segment.GetSegmentIdx();
@@ -74,6 +73,8 @@ public:
   FakeVertex const & GetStartVertex() const { return m_start; }
   FakeVertex const & GetFinishVertex() const { return m_finish; }
   m2::PointD const & GetPoint(Segment const & segment, bool front);
+  bool FitsStart(Segment const & s) const { return m_start.Fits(s); }
+  bool FitsFinish(Segment const & s) const { return m_finish.Fits(s); }
 
   static size_t GetRouteNumPoints(vector<Segment> const & route);
   m2::PointD const & GetRoutePoint(vector<Segment> const & route, size_t pointIndex);
@@ -125,7 +126,7 @@ private:
   /// |fakeVertex| with all exits of mwm.
   /// \brief If |isOutgoing| == false fills |edges| with SegmentEdge(s) which connects
   /// all enters to mwm with |fakeVertex|.
-  void ConnectLeapToTransitions(FakeVertex const & fakeVertex, bool isOutgoing,
+  void ConnectLeapToTransitions(Segment const & segment, bool isOutgoing,
                                 vector<SegmentEdge> & edges);
 
   WorldGraph & m_graph;

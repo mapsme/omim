@@ -77,8 +77,11 @@ private:
                        bool isOutgoing, WorldGraph & worldGraph, Edge & closestEdge) const;
   // Input route may contains 'leaps': shortcut edges from mwm border enter to exit.
   // ProcessLeaps replaces each leap with calculated route through mwm.
-  IRouter::ResultCode ProcessLeaps(vector<Segment> const & input, RouterDelegate const & delegate,
-                                   IndexGraphStarter & starter, vector<Segment> & output);
+  IRouter::ResultCode ProcessLeaps(vector<Segment> const & input,
+                                   RouterDelegate const & delegate,
+                                   WorldGraph::Mode prevMode,
+                                   IndexGraphStarter & starter,
+                                   vector<Segment> & output);
   bool RedressRoute(vector<Segment> const & segments, RouterDelegate const & delegate,
                     bool forSingleMwm, IndexGraphStarter & starter, Route & route) const;
 
