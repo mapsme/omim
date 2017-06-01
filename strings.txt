@@ -6082,8 +6082,8 @@
     sk = 1 deň
 
   [recent_track_help_text]
-    en = Please note: activation of this function causes increased battery usage.
-    ru = Внимание: активация этой функции может привести к повышенному расходу батареи.
+    en = It allows you to record traveled path for a certain period and see it on the map. Please note: activation of this function causes increased battery usage. The track will be removed automatically from the map after the time interval will expire.
+    ru = Эта опция позволяет записать пройденный путь и увидеть его на карте. Внимание: активация этой функции может привести к повышенному расходу батареи. Трек автоматически исчезнет с карты по истечению указанного интервала.
     ar = يرجى ملاحظة الآتي: تفعيل هذه الوظيفة يسبب زيادة في استخدام البطارية.
     cs = Vezměte prosím na vědomí: aktivace této funkce způsobí zvýšení využití baterie.
     da = Bemærk: aktivering af denne funktion medfører øget batteriforbrug.
@@ -20636,34 +20636,34 @@
   [allow_statistics_hint]
     comment = Hint near allow statictics checkbox
     tags = ios,android
-    en = Collecting usage statistics helps us improve the app.
-    ru = Сбор статистики помогает нам совершенствовать приложение.
+    en = Collecting anonymous usage statistics helps us improve the app.
+    ru = Сбор анонимной статистики помогает нам совершенствовать приложение.
     ar = تجميح إحصائيات الاستخدام يساعد في تحسين التطبيق.
-    cs = Sběr statistických údajů o používání nám pomáhá aplikaci vylepšovat.
-    da = Indsamling af anvendelsesstatistik hjælper os med at forbedre appen.
-    nl = Verzamelen van gebruiksstatistieken helpt ons de app te verbeteren.
-    fi = Käyttötilastojen kerääminen auttaa meitä parantamaan sovellusta.
-    fr = La collecte des statistiques d’utilisation nous permet d’améliorer l’application.
-    de = Das Erfassen von Nutzungsstatistiken hilft uns beim Verbessern der App.
-    hu = A használati statisztika gyűjtésével segít nekünk az alkalmazás tökéletesítésében.
-    id = Pengumpulan statistik penggunaan akan membantu kami meningkatkan aplikasi.
-    it = L'acquisizione dei dati sulle statistiche di utilizzo ci aiuta a migliorare la app.
+    cs = Sběr anonymous statistických údajů o používání nám pomáhá aplikaci vylepšovat.
+    da = Indsamling af anonym anvendelsesstatistik hjælper os med at forbedre appen.
+    nl = Verzamelen van anonieme gebruiksstatistieken helpt ons de app te verbeteren.
+    fi = Käyttötilastojen anonyymit kerääminen auttaa meitä parantamaan sovellusta.
+    fr = La collecte des statistiques d’utilisation anonymes nous permet d’améliorer l’application.
+    de = Das Erfassen von Anonyme Nutzungsstatistiken hilft uns beim Verbessern der App.
+    hu = A névtelen használati statisztika gyűjtésével segít nekünk az alkalmazás tökéletesítésében.
+    id = Pengumpulan statistik anonim penggunaan akan membantu kami meningkatkan aplikasi.
+    it = L'acquisizione dei dati sulle statistiche anonime di utilizzo ci aiuta a migliorare la app.
     ja = 収集した使用統計データは当社がアプリを改善するために役立ちます。
     ko = 사용량 통계 수집을 통해 앱을 개선할 수 있습니다.
     nb = Innsamling av brukerstatistikk hjelper oss til å forbedre appen.
-    pl = Zbieranie statystyk użytkowania pomaga nam poprawiać aplikację.
-    pt = A recolha de estatísticas de utilização ajuda-nos a melhorar a app.
-    ro = Colectarea statisticilor privind utilizarea ne ajută să îmbunătățim aplicația.
-    es = La recopilación de estadísticas de uso nos ayuda a mejorar la aplicación.
-    sv = Genom att samla användningsstatistik hjälper du oss att förbättra appen.
+    pl = Zbieranie anonimowe statystyk użytkowania pomaga nam poprawiać aplikację.
+    pt = A recolha de estatísticas de utilização anônimo ajuda-nos a melhorar a app.
+    ro = Colectarea statisticilor anonime privind utilizarea ne ajută să îmbunătățim aplicația.
+    es = La recopilación de estadísticas de uso anónimas nos ayuda a mejorar la aplicación.
+    sv = Genom att samla anonym användningsstatistik hjälper du oss att förbättra appen.
     th = การรวบรวมสถิติการใช้งานจะช่วยให้เราปรับปรุงแอปได้ดียิ่งขึ้น
-    tr = Kullanım istatistiklerinin toplanması uygulamayı geliştirmemize yardımcı olur.
-    uk = Збір статистичної інформації про використання допомагає нам вдосконалювати наш додаток.
+    tr = Anonim kullanım istatistiklerinin toplanması uygulamayı geliştirmemize yardımcı olur.
+    uk = Збір анонімної статистичної інформації про використання допомагає нам вдосконалювати наш додаток.
     vi = Việc thu thập số liệu sử dụng giúp chúng tôi cải thiện ứng dụng.
     zh-Hans = 收集使用统计数据有助于我们改进应用。
     zh-Hant = 收集使用量統計資料有助於我們改善應用程式。
     el = Η συλλογή στατιστικών στοιχείων χρήσης μας βοηθάει να βελτιώσουμε την εφαρμογή.
-    sk = Zhromažďovanie štatistických údajov o používaní nám umožňuje vylepšovať aplikáciu.
+    sk = Zhromažďovanie anonymné štatistických údajov o používaní nám umožňuje vylepšovať aplikáciu.
 
   [general_settings]
     en = General settings
@@ -20673,7 +20673,7 @@
     da = Generelle indstillinger
     nl = Algemene instellingen
     fi = Yleiset asetukset
-    fr = Paramètres généraux
+    fr = Paramèsktres généraux
     de = Allgemeine Einstellungen
     hu = Általános beállítások
     id = Setelan umum
