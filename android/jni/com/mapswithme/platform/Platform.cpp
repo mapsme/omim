@@ -8,6 +8,7 @@
 #include "base/stl_add.hpp"
 
 #include "std/algorithm.hpp"
+#include "std/target_os.hpp"
 
 
 string Platform::UniqueClientId() const
@@ -52,6 +53,19 @@ Platform::EConnectionType Platform::ConnectionStatus()
 
   static jmethodID const getConnectionMethodId = jni::GetStaticMethodID(env, static_cast<jclass>(*clazzConnectionState), "getConnectionState", "()B");
   return static_cast<Platform::EConnectionType>(env->CallStaticByteMethod(static_cast<jclass>(*clazzConnectionState), getConnectionMethodId));
+}
+
+string Platform::DeviceName() const
+{
+  JNIEnv * env = jni::GetEnv();
+  if (env == nullptr)
+    return OMIM_OS_NAME;
+
+  static jmethodID const getDeviceModelId = jni::GetStaticMethodID(env, g_utilsClazz, "getDeviceModel",
+                                                                   "()Ljava/lang/String;");
+  static jstring const deviceModelId = (jstring)env->CallStaticObjectMethod(g_utilsClazz, getDeviceModelId);
+  static string const result = jni::ToNativeString(env, deviceModelId);
+  return result;
 }
 
 namespace android

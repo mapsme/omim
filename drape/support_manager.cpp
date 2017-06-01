@@ -1,7 +1,10 @@
 #include "drape/support_manager.hpp"
 #include "drape/glfunctions.hpp"
 
+#include "platform/platform.hpp"
+
 #include "base/logging.hpp"
+#include "base/string_utils.hpp"
 
 #include "std/algorithm.hpp"
 #include "std/vector.hpp"
@@ -15,14 +18,16 @@ void SupportManager::Init()
 {
   string const renderer = GLFunctions::glGetString(gl_const::GLRenderer);
   string const version = GLFunctions::glGetString(gl_const::GLVersion);
-  LOG(LINFO, ("Renderer =", renderer, "Version =", version));
-
-  // On Android the engine may be recreated. Here we guarantee that GPU info is sent once per session.
-  static bool gpuInfoSent = false;
-  if (!gpuInfoSent)
+  LOG(LINFO, ("Device =", GetPlatform().DeviceName(), "Renderer =", renderer, "Version =", version));
+  
+  // On Android support manager may be reinitialized. Here we guarantee that the info is sent once per session.
+  static bool supportManagerInfoSent = false;
+  if (!supportManagerInfoSent)
   {
     alohalytics::Stats::Instance().LogEvent("GPU", renderer);
-    gpuInfoSent = true;
+    alohalytics::Stats::Instance().LogEvent("CpuCores", {{GetPlatform().DeviceName(),
+                                                          strings::to_string(GetPlatform().CpuCores())}});
+    supportManagerInfoSent = true;
   }
 
   m_isSamsungGoogleNexus = (renderer == "PowerVR SGX 540" && version.find("GOOGLENEXUS.ED945322") != string::npos);

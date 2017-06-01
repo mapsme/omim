@@ -176,3 +176,8 @@ bool Platform::GetFileSizeByFullPath(string const & filePath, uint64_t & size)
   }
   return false;
 }
+
+string Platform::DeviceName() const
+{
+  return OMIM_OS_NAME;
+}
