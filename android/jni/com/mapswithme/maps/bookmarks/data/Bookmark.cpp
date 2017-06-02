@@ -3,6 +3,7 @@
 #include "../../../core/jni_helper.hpp"
 
 
+
 namespace
 {
 ::Framework * frm() { return g_framework->NativeFramework(); }
@@ -23,6 +24,13 @@ Java_com_mapswithme_maps_bookmarks_data_Bookmark_nativeGetName(
      JNIEnv * env, jobject thiz, jint cat, jlong bmk)
 {
   return jni::ToJavaString(env, getBookmark(cat, bmk)->GetName());
+}
+
+JNIEXPORT jstring JNICALL
+Java_com_mapswithme_maps_bookmarks_data_Bookmark_nativeGetBookmarkAddress(
+     JNIEnv * env, jobject thiz, jint cat, jlong bmk)
+{
+  return jni::ToJavaString(env, getBookmark(cat, bmk)->GetBookmarkAddress());
 }
 
 JNIEXPORT jstring JNICALL

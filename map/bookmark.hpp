@@ -31,7 +31,7 @@ public:
   {
   }
 
-  BookmarkData(string const & name, string const & type,
+  BookmarkData(string const & name, string const & type, string const & address = "",
                      string const & description = "", double scale = -1.0,
                      time_t timeStamp = my::INVALID_TIME_STAMP)
     : m_name(name)
@@ -39,11 +39,15 @@ public:
     , m_type(type)
     , m_scale(scale)
     , m_timeStamp(timeStamp)
+    , m_address(address)
   {
   }
 
   string const & GetName() const { return m_name; }
   void SetName(const string & name) { m_name = name; }
+
+  string const & GetAddress() const { return m_address;}
+  void SetAddress(const string & address) { m_address = address;}
 
   string const & GetDescription() const { return m_description; }
   void SetDescription(const string & description) { m_description = description; }
@@ -63,6 +67,7 @@ private:
   string m_type;  ///< Now it stores bookmark color (category style).
   double m_scale; ///< Viewport scale. -1.0 - is a default value (no scale set).
   time_t m_timeStamp;
+  string m_address;
 };
 
 class Bookmark : public UserMark
@@ -89,6 +94,9 @@ public:
   string const & GetType() const;
   void SetType(string const & type);
   m2::RectD GetViewport() const;
+
+  string const & GetBookmarkAddress() const;
+  void SetBookmarkAddress(string const & address);
 
   string const & GetDescription() const;
   void SetDescription(string const & description);
