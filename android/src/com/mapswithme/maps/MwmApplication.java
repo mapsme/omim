@@ -2,6 +2,8 @@ package com.mapswithme.maps;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Environment;
@@ -101,6 +103,20 @@ public class MwmApplication extends Application
         }
       };
 
+  @NonNull
+  private final AppBackgroundTracker.OnVisibleAppLaunchListener mVisibleAppLaunchListener =
+      new AppBackgroundTracker.OnVisibleAppLaunchListener()
+      {
+        @Override
+        public void onVisibleAppLaunch()
+        {
+          IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+          Intent batteryStatus = registerReceiver(null, filter);
+          if (batteryStatus != null)
+            Statistics.INSTANCE.trackColdStartupInfo(batteryStatus);
+        }
+      };
+
   public MwmApplication()
   {
     super();
@@ -172,6 +188,7 @@ public class MwmApplication extends Application
 
     mBackgroundTracker = new AppBackgroundTracker();
     mBackgroundTracker.addListener(mBackgroundListener);
+    mBackgroundTracker.addListener(mVisibleAppLaunchListener);
     TrackRecorder.init();
     Editor.init();
   }

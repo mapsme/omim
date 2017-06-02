@@ -1,7 +1,6 @@
 package com.mapswithme.maps.base;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.annotation.ColorRes;
