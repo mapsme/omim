@@ -2,6 +2,7 @@ package com.mapswithme.maps.base;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.annotation.ColorRes;
@@ -15,6 +16,7 @@ import android.view.MenuItem;
 
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.R;
+import com.mapswithme.maps.background.BatteryStatusReceiver;
 import com.mapswithme.util.Config;
 import com.mapswithme.util.ThemeUtils;
 import com.mapswithme.util.UiUtils;
@@ -23,6 +25,8 @@ import com.mapswithme.util.Utils;
 public class BaseMwmFragmentActivity extends AppCompatActivity
                                   implements BaseActivity
 {
+  private static boolean sBatteryReceiverRegistered;
+
   private final BaseActivityDelegate mBaseDelegate = new BaseActivityDelegate(this);
 
   @Nullable
@@ -119,6 +123,13 @@ public class BaseMwmFragmentActivity extends AppCompatActivity
   {
     super.onStart();
     mBaseDelegate.onStart();
+
+    if (!sBatteryReceiverRegistered)
+    {
+      getApplicationContext().registerReceiver(new BatteryStatusReceiver(),
+                                               new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+      sBatteryReceiverRegistered = true;
+    }
   }
 
   @Override
