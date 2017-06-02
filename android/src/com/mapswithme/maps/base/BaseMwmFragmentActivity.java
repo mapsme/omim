@@ -16,11 +16,11 @@ import android.view.MenuItem;
 
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.R;
-import com.mapswithme.maps.background.BatteryStatusReceiver;
 import com.mapswithme.util.Config;
 import com.mapswithme.util.ThemeUtils;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.Utils;
+import com.mapswithme.util.statistics.Statistics;
 
 public class BaseMwmFragmentActivity extends AppCompatActivity
                                   implements BaseActivity
@@ -126,8 +126,10 @@ public class BaseMwmFragmentActivity extends AppCompatActivity
 
     if (!sBatteryReceiverRegistered)
     {
-      getApplicationContext().registerReceiver(new BatteryStatusReceiver(),
-                                               new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+      IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+      Intent batteryStatus = registerReceiver(null, filter);
+      if (batteryStatus != null)
+        Statistics.INSTANCE.trackColdStartupInfo(batteryStatus);
       sBatteryReceiverRegistered = true;
     }
   }
