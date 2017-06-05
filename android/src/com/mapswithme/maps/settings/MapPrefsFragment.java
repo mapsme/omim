@@ -168,6 +168,22 @@ public class MapPrefsFragment extends BaseXmlSettingsFragment
       }
     });
 
+    pref = findPreference(getString(R.string.pref_transliteration));
+    ((TwoStatePreference)pref).setChecked(Config.isTransliteration());
+    pref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+    {
+      @Override
+      public boolean onPreferenceChange(Preference preference, Object newValue)
+      {
+        boolean oldVal = Config.isTransliteration();
+        boolean newVal = (Boolean) newValue;
+        if (oldVal != newVal)
+          Config.setTransliteration(newVal);
+
+        return true;
+      }
+    });
+
     final Framework.Params3dMode _3d = new Framework.Params3dMode();
     Framework.nativeGet3dMode(_3d);
 
