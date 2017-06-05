@@ -20673,7 +20673,7 @@
     da = Generelle indstillinger
     nl = Algemene instellingen
     fi = Yleiset asetukset
-    fr = Paramèsktres généraux
+    fr = Paramètres généraux
     de = Allgemeine Einstellungen
     hu = Általános beállítások
     id = Setelan umum
