@@ -2,11 +2,9 @@ package com.mapswithme.util.statistics;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.BatteryManager;
 import android.os.Build;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
@@ -624,13 +622,11 @@ public enum Statistics
                    .get());
   }
 
-  public void trackColdStartupInfo(@NonNull Intent batteryStatus)
+  public void trackColdStartupInfo()
   {
-    int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
-    @BatteryState.ChargingStatus
-    int chargePlug = BatteryState.getChargingStatus(batteryStatus);
+    BatteryState.State state =  BatteryState.getState();
     final String charging;
-    switch (chargePlug)
+    switch (state.getChargingStatus())
     {
       case CHARGING_STATUS_UNKNOWN:
         charging = "unknown";
@@ -665,7 +661,7 @@ public enum Statistics
 
     trackEvent(APPLICATION_COLD_STARTUP_INFO,
                params()
-                   .add(BATTERY, level)
+                   .add(BATTERY, state.getLevel())
                    .add(CHARGING, charging)
                    .add(NETWORK, network)
                    .get());
