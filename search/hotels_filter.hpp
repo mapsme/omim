@@ -7,6 +7,8 @@
 #include "indexer/ftypes_matcher.hpp"
 #include "indexer/mwm_set.hpp"
 
+#include "base/stl_helpers.hpp"
+
 #include "std/map.hpp"
 #include "std/shared_ptr.hpp"
 #include "std/sstream.hpp"
@@ -68,15 +70,110 @@ struct Description
   unsigned m_types = 0;
 };
 
+struct Instruction
+{
+  enum class Type
+  {
+    CompareRating,
+    ComparePrice,
+    CheckType,
+    Jump,
+    Const
+  };
+
+  enum class Comparision
+  {
+    Lt,
+    Le,
+    Eq,
+    Ge,
+    Gt
+  };
+
+  struct CompareRating
+  {
+    float m_rating;
+    Comparision m_type;
+  };
+
+  struct ComparePrice
+  {
+    int m_price;
+    Comparision m_type;
+  };
+
+  struct CheckType
+  {
+    unsigned m_types;
+  };
+
+  struct Jump
+  {
+    size_t m_offset;
+    bool m_whenTrue;
+  };
+
+  struct Const
+  {
+    bool m_value;
+  };
+
+  Instruction(CompareRating const & compareRating)
+    : m_compareRating(compareRating), m_type(Type::CompareRating)
+  {
+  }
+
+  Instruction(ComparePrice const & comparePrice)
+    : m_comparePrice(comparePrice), m_type(Type::ComparePrice)
+  {
+  }
+
+  Instruction(CheckType const & checkType) : m_checkType(checkType), m_type(Type::CheckType) {}
+
+  Instruction(Jump const & jump) : m_jump(jump), m_type(Type::Jump) {}
+
+  Instruction(Const const & c) : m_const(c), m_type(Type::Const) {}
+
+  template <typename Field>
+  static Instruction MakeCompare(Comparision type, typename Field::Value value)
+  {
+    return MakeCompare(type, value, Void<Field>());
+  }
+
+  static Instruction MakeCompare(Comparision type, Rating::Value value, Void<Rating>)
+  {
+    return Instruction(CompareRating{value, type});
+  }
+
+  static Instruction MakeCompare(Comparision type, PriceRate::Value value, Void<PriceRate>)
+  {
+    return Instruction(ComparePrice{value, type});
+  }
+
+  union
+  {
+    CompareRating m_compareRating;
+    ComparePrice m_comparePrice;
+    CheckType m_checkType;
+    Jump m_jump;
+    Const m_const;
+  };
+
+  Type m_type;
+};
+
+using Program = vector<Instruction>;
+
 struct Rule
 {
   virtual ~Rule() = default;
 
   static bool IsIdentical(shared_ptr<Rule> const & lhs, shared_ptr<Rule> const & rhs);
 
-  virtual bool Matches(Description const & d) const = 0;
   virtual bool IdenticalTo(Rule const & rhs) const = 0;
   virtual string ToString() const = 0;
+
+  virtual void Compile(Program & program) const = 0;
 };
 
 string DebugPrint(Rule const & rule);
@@ -89,9 +186,9 @@ struct EqRule final : public Rule
   explicit EqRule(Value value) : m_value(value) {}
 
   // Rule overrides:
-  bool Matches(Description const & d) const override
+  void Compile(Program & program) const override
   {
-    return Field::Eq(Field::Select(d), m_value);
+    program.push_back(Instruction::MakeCompare<Field>(Instruction::Comparision::Eq, m_value));
   }
 
   bool IdenticalTo(Rule const & rhs) const override
@@ -118,9 +215,9 @@ struct LtRule final : public Rule
   explicit LtRule(Value value) : m_value(value) {}
 
   // Rule overrides:
-  bool Matches(Description const & d) const override
+  void Compile(Program & program) const override
   {
-    return Field::Lt(Field::Select(d), m_value);
+    program.push_back(Instruction::MakeCompare<Field>(Instruction::Comparision::Lt, m_value));
   }
 
   bool IdenticalTo(Rule const & rhs) const override
@@ -147,10 +244,9 @@ struct LeRule final : public Rule
   explicit LeRule(Value value) : m_value(value) {}
 
   // Rule overrides:
-  bool Matches(Description const & d) const override
+  void Compile(Program & program) const override
   {
-    auto const value = Field::Select(d);
-    return Field::Lt(value, m_value) || Field::Eq(value, m_value);
+    program.push_back(Instruction::MakeCompare<Field>(Instruction::Comparision::Le, m_value));
   }
 
   bool IdenticalTo(Rule const & rhs) const override
@@ -177,9 +273,9 @@ struct GtRule final : public Rule
   explicit GtRule(Value value) : m_value(value) {}
 
   // Rule overrides:
-  bool Matches(Description const & d) const override
+  void Compile(Program & program) const override
   {
-    return Field::Gt(Field::Select(d), m_value);
+    program.push_back(Instruction::MakeCompare<Field>(Instruction::Comparision::Gt, m_value));
   }
 
   bool IdenticalTo(Rule const & rhs) const override
@@ -206,10 +302,9 @@ struct GeRule final : public Rule
   explicit GeRule(Value value) : m_value(value) {}
 
   // Rule overrides:
-  bool Matches(Description const & d) const override
+  void Compile(Program & program) const override
   {
-    auto const value = Field::Select(d);
-    return Field::Gt(value, m_value) || Field::Eq(value, m_value);
+    program.push_back(Instruction::MakeCompare<Field>(Instruction::Comparision::Ge, m_value));
   }
 
   bool IdenticalTo(Rule const & rhs) const override
@@ -233,15 +328,7 @@ struct AndRule final : public Rule
   AndRule(shared_ptr<Rule> lhs, shared_ptr<Rule> rhs) : m_lhs(move(lhs)), m_rhs(move(rhs)) {}
 
   // Rule overrides:
-  bool Matches(Description const & d) const override
-  {
-    bool matches = true;
-    if (m_lhs)
-      matches = matches && m_lhs->Matches(d);
-    if (m_rhs)
-      matches = matches && m_rhs->Matches(d);
-    return matches;
-  }
+  void Compile(Program & program) const override;
 
   bool IdenticalTo(Rule const & rhs) const override
   {
@@ -269,15 +356,7 @@ struct OrRule final : public Rule
   OrRule(shared_ptr<Rule> lhs, shared_ptr<Rule> rhs) : m_lhs(move(lhs)), m_rhs(move(rhs)) {}
 
   // Rule overrides:
-  bool Matches(Description const & d) const override
-  {
-    bool matches = false;
-    if (m_lhs)
-      matches = matches || m_lhs->Matches(d);
-    if (m_rhs)
-      matches = matches || m_rhs->Matches(d);
-    return matches;
-  }
+  void Compile(Program & program) const override;
 
   bool IdenticalTo(Rule const & rhs) const override
   {
@@ -305,7 +384,10 @@ struct OneOfRule final : public Rule
   explicit OneOfRule(unsigned types) : m_types(types) {}
 
   // Rule overrides:
-  bool Matches(Description const & d) const override { return (d.m_types & m_types) != 0; }
+  void Compile(Program & program) const override
+  {
+    program.emplace_back(Instruction::CheckType{m_types});
+  }
 
   bool IdenticalTo(Rule const & rhs) const override
   {
@@ -381,6 +463,30 @@ inline shared_ptr<Rule> Is(ftypes::IsHotelChecker::Type type)
 
 inline shared_ptr<Rule> OneOf(unsigned types) { return make_shared<OneOfRule>(types); }
 
+// A virtual machine for faster processing of filter requests.
+class VM
+{
+public:
+  VM(Rule const & rule);
+
+  bool Run(Description const & description) const;
+
+private:
+  struct Context
+  {
+    size_t m_rip = 0;
+    bool m_rax = true;
+  };
+
+  template <typename Field>
+  bool EvalBinaryOp(Instruction::Comparision op, Description const & description,
+                    typename Field::Value rhs) const;
+
+  void Eval(Description const & description, Instruction const & instruction, Context & ctx) const;
+
+  Program m_program;
+};
+
 class HotelsFilter
 {
 public:
@@ -389,15 +495,14 @@ public:
   class ScopedFilter
   {
   public:
-    ScopedFilter(MwmSet::MwmId const & mwmId, Descriptions const & descriptions,
-                 shared_ptr<Rule> rule);
+    ScopedFilter(MwmSet::MwmId const & mwmId, Descriptions const & descriptions, Rule const & rule);
 
     bool Matches(FeatureID const & fid) const;
 
   private:
     MwmSet::MwmId const m_mwmId;
     Descriptions const & m_descriptions;
-    shared_ptr<Rule> const m_rule;
+    VM const m_vm;
   };
 
   HotelsFilter(HotelsCache & hotels);
