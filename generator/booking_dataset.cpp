@@ -87,6 +87,9 @@ void BookingDataset::PreprocessMatchedOsmObject(ObjectId, FeatureBuilder1 & fb,
   fn(fb);
 }
 
+// High enough to not collide with node ids for dozens of years.
+static const uint64_t BOOKING_FAKE_NODE_ID_MASK = 0x100000000000ULL;
+
 template <>
 void BookingDataset::BuildObject(Object const & hotel,
                                  function<void(FeatureBuilder1 &)> const & fn) const
@@ -95,6 +98,7 @@ void BookingDataset::BuildObject(Object const & hotel,
   FeatureParams params;
 
   fb.SetCenter(MercatorBounds::FromLatLon(hotel.m_latLon.lat, hotel.m_latLon.lon));
+  fb.SetOsmId(osm::Id::Node(BOOKING_FAKE_NODE_ID_MASK | static_cast<uint64_t>(hotel.m_id.Get())));
 
   auto & metadata = params.GetMetadata();
   metadata.Set(feature::Metadata::FMD_SPONSORED_ID, strings::to_string(hotel.m_id.Get()));
