@@ -936,9 +936,10 @@ using namespace osm_auth_ios;
 
 - (void)showAlertIfRequired
 {
-  if ([self shouldShowRateAlert])
-    [self performSelector:@selector(showRateAlert) withObject:nil afterDelay:30.0];
-  else if ([self shouldShowFacebookAlert])
+//  if ([self shouldShowRateAlert])
+//    [self performSelector:@selector(showRateAlert) withObject:nil afterDelay:30.0];
+//  else
+  if ([self shouldShowFacebookAlert])
     [self performSelector:@selector(showFacebookAlert) withObject:nil afterDelay:30.0];
 }
 
