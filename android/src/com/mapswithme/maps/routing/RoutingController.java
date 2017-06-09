@@ -92,6 +92,8 @@ public class RoutingController
   private MapObject mStartPoint;
   @Nullable
   private MapObject mEndPoint;
+  @Nullable
+  private MapObject mStopPoint;
 
   private int mLastBuildProgress;
   @Framework.RouterType
@@ -420,6 +422,28 @@ public class RoutingController
     LocationHelper.INSTANCE.restart();
   }
 
+  public void addStop(@NonNull MapObject mapObject)
+  {
+    mStopPoint = mapObject;
+//  TODO call api method
+  }
+
+  public void removeStop()
+  {
+    mStopPoint = null;
+//  TODO call api method
+  }
+
+  public boolean hasStopPoint()
+  {
+    return mStopPoint != null;
+  }
+
+  public boolean isStopPoint(@NonNull MapObject mapObject)
+  {
+    return mStopPoint != null && mStopPoint.equals(mapObject);
+  }
+
   private void suggestRebuildRoute()
   {
     final AlertDialog.Builder builder = new AlertDialog.Builder(mContainer.getActivity())
@@ -471,6 +495,7 @@ public class RoutingController
 
     mStartPoint = null;
     mEndPoint = null;
+    mStopPoint = null;
     setPointsInternal();
     mWaitingPoiPickSlot = NO_SLOT;
     mUberRequestHandled = false;
