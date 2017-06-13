@@ -380,8 +380,8 @@
     ko = (%1$qu %2$@)가 다운로드 되었습니다, 두드려 삭제하십시요.
     nb = Lastet ned (%1$qu %2$@) – trykk for å slette
     pl = Pobrano (%1$qu %2$@). Proszę nacisnąć, aby usunąć.
-    pt = Descarregado (%1$qu %2$@), toque para eliminar.
-    pt-BR = Baixado (%1$qu %2$@), toque para apagar.
+    pt = (%1$qu %2$@) descarregados, toque para eliminar.
+    pt-BR = (%1$qu %2$@) baixados, toque para apagar.
     ro = Descărcat (%1$qu %2$@). Atingeți pentru a șterge.
     es = Descargado (%1$qu %2$@), apreté para eliminar
     sv = Nedladdad (%1$qu %2$@), tryck för att ta bort
@@ -1586,8 +1586,8 @@
     ko = (%@)가 다운로드 되었습니다, 두드려 삭제하십시요.
     nb = Lastet ned (%@) – trykk for å slette
     pl = Pobrano (%@). Proszę nacisnąć, aby usunąć.
-    pt = (%@) descarregado, toque para eliminar
-    pt-BR = (%@) baixado, toque para apagar
+    pt = (%@) descarregados, toque para eliminar
+    pt-BR = (%@) baixados, toque para apagar
     ro = Descărcat (%@). Atingeți pentru a șterge.
     es = Descargado (%@), presionar para eliminar
     sv = Nedladdad (%@), tryck för att ta bort
@@ -7568,7 +7568,7 @@
     nb = Med den nye versjonen av MAPS.ME kan du opprette ruter fra din nåværende posisjon til et ankomststed på kartet. Oppdater kartene for å bruke denne funksjonen.
     pl = Nowa wersja aplikacji MAPS.ME pozwala na tworzenie tras z Twojej bieżącej lokalizacji do punktu docelowego. Proszę zaktualizować mapy, by móc korzystać z tej funkcji.
     pt = A nova versão do MAPS.ME permite criar rotas a partir da sua posição atual até um ponto de destino. Por favor, atualize o maps para utilizar esta funcionalidade.
-    pt-BR = A nova versão do MAPS.ME permite criar rotas da sua posição atual até ponto de destino. Por favor, atualize os mapas para utilizar esta funcionalidade.
+    pt-BR = A nova versão do MAPS.ME permite criar rotas da sua posição atual até um ponto de destino. Por favor, atualize os mapas para utilizar esta funcionalidade.
     ro = Noua versiune a MAPS.ME vă permite să creați rute din poziția dvs. actuală către un punct de destinație. Vă rugăm să actualizați harta pentru a utiliza această funcție.
     es = La nueva versión de MAPS.ME permite crear rutas desde tu ubicación actual hasta un punto de destino. Por favor, actualiza los mapas para utilizar esta característica.
     sv = Den nya versionen av MAPS.ME låter dig skapa rutter från din nuvarande position till en destinationspunkt. Uppdatera kartan för att använda den här funktionen.
@@ -17023,8 +17023,8 @@
     ja = プランによって、またはローミングしている場合、非常に高額になる可能性があります。
     ko = 이는 일부 플랜이나 로밍할 경우에 비싸다고 간주될 수 있습니다.
     pl = Może to być kosztowne przy niektórych planach taryfowych lub w roamingu.
-    pt = Isto pode ser caro com alguns planos ou em roaming.
-    pt-BR = Isto pode ser caro com alguns planos ou se você estiver em roaming.
+    pt = Isto pode ser muito caro com alguns planos ou em roaming.
+    pt-BR = Isto pode ser muito caro com alguns planos ou se você estiver em roaming.
     ro = Aceasta poate fi destul de costisitoare în cazul unor abonamente sau dacă sunteți pe roaming.
     es = Podría ser muy caro con ciertos planes o con itinerancia de datos.
     sv = Detta kan vara mycket dyrt med vissa abonnemang och vid roaming.
