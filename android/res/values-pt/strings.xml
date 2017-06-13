@@ -26,7 +26,7 @@
 	<!-- Settings/Downloader - info for country when download fails -->
 	<string name="download_has_failed">A descarga falhou, toque novamente para tentar uma vez mais.</string>
 	<!-- Settings/Downloader - info for downloaded country -->
-	<string name="downloaded_x_y_touch_to_delete">Descarregado (%1$qu %2$s), toque para eliminar.</string>
+	<string name="downloaded_x_y_touch_to_delete">(%1$qu %2$s) descarregados, toque para eliminar.</string>
 	<!-- Settings/Downloader - country info current download progress -->
 	<string name="downloading_x_touch_to_cancel">A descarregar %qu%%, toque para cancelar.</string>
 	<!-- Settings/Downloader - info for country which started downloading -->
@@ -92,7 +92,7 @@
 	<string name="try_again">Tente de novo</string>
 	<string name="about_menu_title">Sobre o MAPS.ME</string>
 	<string name="downloading_touch_to_cancel">A descarregar %d%%, toque para cancelar</string>
-	<string name="downloaded_touch_to_delete">(%s) descarregado, toque para eliminar</string>
+	<string name="downloaded_touch_to_delete">(%s) descarregados, toque para eliminar</string>
 	<string name="connection_settings">Definições de Ligação</string>
 	<string name="download_mb_or_kb">Descarga %s</string>
 	<string name="close">Fechar</string>
@@ -799,7 +799,7 @@
 	<!-- Downloaded 10 **of** 20 <- it is that "of" -->
 	<string name="downloader_of">%1$d de %2$d</string>
 	<string name="download_over_mobile_header">Descarregar usando uma conexão de rede celular?</string>
-	<string name="download_over_mobile_message">Isto pode ser caro com alguns planos ou em roaming.</string>
+	<string name="download_over_mobile_message">Isto pode ser muito caro com alguns planos ou em roaming.</string>
 	<string name="error_enter_correct_house_number">Introduzir um número de endereço correto</string>
 	<string name="editor_storey_number">Número de pisos (máx. %d)</string>
 	<!-- Error message in Editor when a user tries to set the number of floors for a building higher than 25 -->

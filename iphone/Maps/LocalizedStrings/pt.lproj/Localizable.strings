@@ -39,7 +39,7 @@
 "download_has_failed" = "A descarga falhou, toque novamente para tentar uma vez mais.";
 
 /* Settings/Downloader - info for downloaded country */
-"downloaded_x_y_touch_to_delete" = "Descarregado (%1$qu %2$@), toque para eliminar.";
+"downloaded_x_y_touch_to_delete" = "(%1$qu %2$@) descarregados, toque para eliminar.";
 
 /* Settings/Downloader - country info current download progress */
 "downloading_x_touch_to_cancel" = "A descarregar %qu%%, toque para cancelar.";
@@ -152,7 +152,7 @@
 
 "downloading_touch_to_cancel" = "A descarregar %d%%, toque para cancelar";
 
-"downloaded_touch_to_delete" = "(%@) descarregado, toque para eliminar";
+"downloaded_touch_to_delete" = "(%@) descarregados, toque para eliminar";
 
 "connection_settings" = "Definições de Ligação";
 
@@ -1374,7 +1374,7 @@
 
 "download_over_mobile_header" = "Descarregar usando uma conexão de rede celular?";
 
-"download_over_mobile_message" = "Isto pode ser caro com alguns planos ou em roaming.";
+"download_over_mobile_message" = "Isto pode ser muito caro com alguns planos ou em roaming.";
 
 "error_enter_correct_house_number" = "Introduzir um número de endereço correto";
 
