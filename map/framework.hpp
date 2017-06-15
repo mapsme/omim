@@ -3,7 +3,6 @@
 #include "map/api_mark_point.hpp"
 #include "map/bookmark.hpp"
 #include "map/bookmark_manager.hpp"
-#include "map/city_finder.hpp"
 #include "map/displacement_mode_manager.hpp"
 #include "map/feature_vec_model.hpp"
 #include "map/local_ads_manager.hpp"
@@ -29,6 +28,7 @@
 
 #include "editor/user_stats.hpp"
 
+#include "search/city_finder.hpp"
 #include "search/displayed_categories.hpp"
 #include "search/downloader_search_callback.hpp"
 #include "search/engine.hpp"
@@ -833,6 +833,6 @@ public:
   bool OriginalFeatureHasDefaultName(FeatureID const & fid) const;
 
 private:
-  std::unique_ptr<CityFinder> m_cityFinder;
+  std::unique_ptr<search::CityFinder> m_cityFinder;
   unique_ptr<ads::Engine> m_adsEngine;
 };
