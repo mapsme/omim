@@ -215,6 +215,16 @@ string MetadataTagProcessorImpl::ValidateAndFormat_denomination(string const & v
   return v;
 }
 
+string MetadataTagProcessorImpl::ValidateAndFormat_colour(string const & v) const
+{
+  // For now we do not support web colors, only fixed RGB values.
+  if (v.length() == 7 && v[0] == '#')
+    return v.substr(1);
+  if (v.length() == 4 && v[0] == '#')
+    return "" + v[1] + v[1] + v[2] + v[2] + v[3] + v[3];
+  return {};
+}
+
 string MetadataTagProcessorImpl::ValidateAndFormat_cuisine(string v) const
 {
   strings::MakeLowerCaseInplace(v);
