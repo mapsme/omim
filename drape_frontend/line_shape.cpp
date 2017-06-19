@@ -465,7 +465,7 @@ void LineShape::Construct<SimpleSolidLineBuilder>(SimpleSolidLineBuilder & build
 
 bool LineShape::CanBeSimplified(int & lineWidth) const
 {
-  if (m_params.m_depthLayer == dp::GLState::SubwayLayer)
+  if (m_params.m_depthLayer == RenderState::SubwayLayer)
     return false;
 
   // Disable simplification for world map.

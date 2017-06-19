@@ -1,9 +1,6 @@
 #include "routing/subway_router.hpp"
 
 #include "routing/base/astar_algorithm.hpp"
-#include "routing/geometry.hpp"
-
-#include <unordered_map>
 
 using namespace routing;
 using namespace std;
@@ -52,33 +49,59 @@ IRouter::ResultCode SubwayRouter::CalculateRoute(Checkpoints const & checkpoints
 
 void SubwayRouter::SetGeometry(vector<SubwayVertex> const & vertexes, Route & route) const
 {
+  CHECK(!vertexes.empty(), ());
+
   vector<m2::PointD> points;
   points.reserve(vertexes.size());
 
-  unordered_map<NumMwmId, unique_ptr<Geometry>> geometries;
+  vector<string> colors;
+  colors.reserve(vertexes.size() - 1);
+
+  auto constexpr invalidFeatureId = numeric_limits<uint32_t>::max();
+  uint32_t prevFeatureId = invalidFeatureId;
+  SubwayType prevType = SubwayType::Change;
 
   for (SubwayVertex const & vertex : vertexes)
   {
     auto const numMwmId = vertex.GetMwmId();
 
-    unique_ptr<Geometry> & geometry = geometries[numMwmId];
-    if (!geometry)
-    {
-      platform::CountryFile const & file = m_numMwmIds->GetFile(numMwmId);
-      MwmSet::MwmHandle handle = m_index.GetMwmHandleByCountryFile(file);
-      CHECK(handle.IsAlive(), ("Can't get mwm handle for", file));
+    platform::CountryFile const & file = m_numMwmIds->GetFile(numMwmId);
+    MwmSet::MwmHandle handle = m_index.GetMwmHandleByCountryFile(file);
+    CHECK(handle.IsAlive(), ("Can't get mwm handle for", file));
 
-      geometry = make_unique<Geometry>(GeometryLoader::Create(
-          m_index, handle, m_modelFactory.GetVehicleModelForCountry(
-          m_numMwmIds->GetFile(numMwmId).GetName()), false /* loadAltitudes */));
+    auto const mwmId = MwmSet::MwmId(handle.GetInfo());
+    Index::FeaturesLoaderGuard guard(m_index, mwmId);
+
+    uint32_t const featureId = vertex.GetFeatureId();
+
+    FeatureType feature;
+    bool const isFound = guard.GetFeatureByIndex(featureId, feature);
+    CHECK(isFound, ("Feature", featureId, "not found in ", file.GetName()));
+
+    feature.ParseMetadata();
+    feature.ParseGeometry(FeatureType::BEST_GEOMETRY);
+
+    points.push_back(feature.GetPoint(vertex.GetPointId()));
+
+    if (prevFeatureId != invalidFeatureId)
+    {
+      bool const isColored = prevType == SubwayType::Line && vertex.GetType() == SubwayType::Line &&
+                             prevFeatureId == featureId;
+      string const color =
+          isColored ? feature.GetMetadata().Get(feature::Metadata::EType::FMD_COLOUR) : "";
+      colors.push_back(color);
     }
 
-    CHECK(geometry, ());
-
-    points.push_back(geometry->GetPoint(RoadPoint(vertex.GetFeatureId(), vertex.GetPointId())));
+    prevFeatureId = featureId;
+    prevType = vertex.GetType();
   }
 
+  CHECK_EQUAL(colors.size(), points.size() - 1, ());
+
   route.SetGeometry(points.cbegin(), points.cend());
+
+  //TODO(@bykoianko): Fix me
+  //route.SetColors(move(colors));
 }
 
 void SubwayRouter::SetTimes(size_t routeSize, double time, Route & route) const
