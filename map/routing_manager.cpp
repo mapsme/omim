@@ -15,6 +15,7 @@
 #include "routing/route.hpp"
 #include "routing/routing_algorithm.hpp"
 #include "routing/routing_helpers.hpp"
+#include "routing/subway_router.hpp"
 
 #include "drape_frontend/drape_engine.hpp"
 
@@ -179,6 +180,11 @@ void RoutingManager::SetRouterImpl(routing::RouterType type)
   {
     router = CreateBicycleAStarBidirectionalRouter(indexGetterFn(), countryFileGetter, numMwmIds);
     m_routingSession.SetRoutingSettings(routing::GetBicycleRoutingSettings());
+  }
+  else if (type == RouterType::Subway)
+  {
+    router = new SubwayRouter(numMwmIds, indexGetterFn());
+    m_routingSession.SetRoutingSettings(routing::GetSubwayRoutingSettings());
   }
   else
   {
@@ -615,5 +621,6 @@ void RoutingManager::SetRouter(RouterType type)
 void RoutingManager::BuildSubwayRoute(m2::PointD const & startPoint,
                                       m2::PointD const & finishPoint)
 {
-  //TODO: set router, build route
+  SetRouter(RouterType::Subway);
+  m_routingSession.BuildRoute(startPoint, finishPoint, 0 /* timeoutSec */);
 }
