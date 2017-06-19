@@ -7,6 +7,9 @@
 
 void SubwayManager::SetEnabled(bool isEnabled)
 {
+  if (isEnabled == m_isEnabled)
+    return;
+
   m_isEnabled = isEnabled;
   if (m_drapeEngine != nullptr)
     m_drapeEngine->SetSubwayModeEnabled(isEnabled);

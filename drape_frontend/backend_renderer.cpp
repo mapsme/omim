@@ -549,6 +549,10 @@ void BackendRenderer::InitGLDependentResource()
   m_commutator->PostMessage(ThreadsCommutator::RenderThread,
                             make_unique_dp<SetPostprocessStaticTexturesMessage>(std::move(textures)),
                             MessagePriority::High);
+
+  m_commutator->PostMessage(ThreadsCommutator::RenderThread,
+                            make_unique_dp<FinishTexturesInitializationMessage>(),
+                            MessagePriority::Normal);
 }
 
 void BackendRenderer::RecacheMapShapes()
