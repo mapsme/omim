@@ -828,7 +828,14 @@ void ApplyLineFeatureGeometry::ProcessRule(Stylist::TRuleWrapper const & rule)
     params.m_tileCenter = m_tileRect.Center();
     Extract(pLineRule, params);
     if (m_isSubwayLine)
+    {
       params.m_color = m_subwayColor;
+      params.m_depthLayer = dp::GLState::SubwayLayer;
+    }
+    else
+    {
+      params.m_depthLayer = dp::GLState::GeometryLayer;
+    }
     params.m_depth = depth;
     params.m_minVisibleScale = m_minVisibleScale;
     params.m_rank = m_rank;
