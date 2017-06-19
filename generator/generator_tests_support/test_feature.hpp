@@ -95,6 +95,27 @@ private:
   std::vector<m2::PointD> m_points;
 };
 
+class TestSubway : public TestFeature
+{
+public:
+  enum class Type
+  {
+    Line,
+    Change,
+  };
+
+  TestSubway(std::vector<m2::PointD> const & points, Type type, std::string const & color);
+
+  // TestFeature overrides:
+  void Serialize(FeatureBuilder1 & fb) const override;
+  std::string ToString() const override;
+
+private:
+  std::vector<m2::PointD> m_points;
+  Type m_type;
+  std::string m_color;
+};
+
 class TestPOI : public TestFeature
 {
 public:

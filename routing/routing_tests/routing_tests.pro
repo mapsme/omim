@@ -6,8 +6,9 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 ROOT_DIR = ../..
-DEPENDENCIES = routing routing_common indexer platform_tests_support platform editor geometry coding base \
-               osrm protobuf succinct jansson stats_client map traffic pugixml stats_client icu agg
+DEPENDENCIES = generator_tests_support generator routing search routing_common indexer \
+               platform_tests_support platform editor geometry coding base osrm protobuf succinct \
+               jansson tess2 stats_client map traffic pugixml stats_client icu agg
 
 macx-*: LIBS *= "-framework IOKit" "-framework SystemConfiguration"
 

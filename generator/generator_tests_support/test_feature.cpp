@@ -164,6 +164,42 @@ string TestStreet::ToString() const
   return os.str();
 }
 
+// TestSubway --------------------------------------------------------------------------------------
+TestSubway::TestSubway(std::vector<m2::PointD> const & points, Type type, std::string const & color)
+  : TestFeature("" /* name */, "" /* lang */), m_points(points), m_type(type), m_color(color)
+{
+}
+
+void TestSubway::Serialize(FeatureBuilder1 & fb) const
+{
+  TestFeature::Serialize(fb);
+
+  Classificator const & classificator = classif();
+  switch (m_type)
+  {
+    case Type::Line:
+      fb.SetType(classificator.GetTypeByPath({"subway_meta", "line"}));
+      fb.GetMetadataForTesting().Set(feature::Metadata::EType::FMD_COLOUR, m_color);
+      break;
+    case Type::Change:
+      fb.SetType(classificator.GetTypeByPath({"subway_meta", "change"}));
+      break;
+  }
+
+  for (auto const & point : m_points)
+    fb.AddPoint(point);
+  fb.SetLinear(false /* reverseGeometry */);
+}
+
+string TestSubway::ToString() const
+{
+  ostringstream os;
+  os << "TestSubway ["
+     << "type:" << (m_type == Type::Line ? string("line") : string("change"))
+     << ", " << "color" << m_color << ", " << ::DebugPrint(m_points) << "]";
+  return os.str();
+}
+
 // TestPOI -----------------------------------------------------------------------------------------
 TestPOI::TestPOI(m2::PointD const & center, string const & name, string const & lang)
   : TestFeature(center, name, lang)

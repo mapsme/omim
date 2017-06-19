@@ -74,6 +74,9 @@
 		561FCFF61EF7C89B0003A0B8 /* subway_model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 561FCFF41EF7C89B0003A0B8 /* subway_model.cpp */; };
 		561FCFF71EF7C89B0003A0B8 /* subway_model.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 561FCFF51EF7C89B0003A0B8 /* subway_model.hpp */; };
 		561FCFF91EF7C8BF0003A0B8 /* subway_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 561FCFF81EF7C8BF0003A0B8 /* subway_test.cpp */; };
+		561FCFFB1EF818CE0003A0B8 /* libtess2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 561FCFFA1EF818CE0003A0B8 /* libtess2.a */; };
+		561FCFFD1EF818EA0003A0B8 /* libgenerator_tests_support.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 561FCFFC1EF818EA0003A0B8 /* libgenerator_tests_support.a */; };
+		561FCFFF1EF818F60003A0B8 /* libgenerator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 561FCFFE1EF818F60003A0B8 /* libgenerator.a */; };
 		56555E561D897C90009D786D /* libalohalitics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6742ACE61C68A23B009CB89E /* libalohalitics.a */; };
 		56555E581D897C9D009D786D /* liboauthcpp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6742ACFA1C68A2D7009CB89E /* liboauthcpp.a */; };
 		56555E591D897D28009D786D /* testingmain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6742ACDE1C68A13F009CB89E /* testingmain.cpp */; };
@@ -549,6 +552,9 @@
 			files = (
 				567059621F3AFC5C0062672D /* librouting_common.a in Frameworks */,
 				567059601F3AFBD60062672D /* libicu.a in Frameworks */,
+                561FCFFF1EF818F60003A0B8 /* libgenerator.a in Frameworks */,
+				561FCFFD1EF818EA0003A0B8 /* libgenerator_tests_support.a in Frameworks */,
+				561FCFFB1EF818CE0003A0B8 /* libtess2.a in Frameworks */,
 				56CA09E91E30F19800D05C9A /* libtraffic.a in Frameworks */,
 				3462FDAD1DC1E5BF00906FD7 /* libopening_hours.a in Frameworks */,
 				6742AD4D1C68AA59009CB89E /* librouting.a in Frameworks */,
@@ -621,6 +627,9 @@
 			children = (
 				567059611F3AFC5C0062672D /* librouting_common.a */,
 				5670595F1F3AFBD60062672D /* libicu.a */,
+                561FCFFE1EF818F60003A0B8 /* libgenerator.a */,
+				561FCFFC1EF818EA0003A0B8 /* libgenerator_tests_support.a */,
+				561FCFFA1EF818CE0003A0B8 /* libtess2.a */,
 				56CA09E81E30F19800D05C9A /* libtraffic.a */,
 				3462FDAC1DC1E5BF00906FD7 /* libopening_hours.a */,
 			);

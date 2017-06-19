@@ -210,6 +210,7 @@ VehicleType GetVehicleType(RouterType routerType)
   case RouterType::Bicycle: return VehicleType::Bicycle;
   case RouterType::Vehicle:
   case RouterType::Taxi: return VehicleType::Car;
+  case RouterType::Subway: CHECK(false, ("Not implemented", routerType)); return VehicleType::Count;
   case RouterType::Count: CHECK(false, ("Invalid type", routerType)); return VehicleType::Count;
   }
 }
