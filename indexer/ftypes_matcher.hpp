@@ -145,6 +145,20 @@ public:
   static IsTunnelChecker const & Instance();
 };
 
+class IsSubwayLineChecker : public BaseChecker
+{
+  IsSubwayLineChecker();
+public:
+  static IsSubwayLineChecker const & Instance();
+};
+
+class IsSubwayChangeChecker : public BaseChecker
+{
+  IsSubwayChangeChecker();
+public:
+  static IsSubwayChangeChecker const & Instance();
+};
+
 class IsBookingChecker : public BaseChecker
 {
   IsBookingChecker();
