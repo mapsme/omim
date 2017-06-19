@@ -792,7 +792,7 @@ void RoutingManager::BuildRoute(uint32_t timeoutSec)
       tag = isP2P ? marketing::kRoutingP2PTaxiDiscovered : marketing::kRoutingTaxiDiscovered;
       break;
     case RouterType::Subway:
-      tag = isP2P ? marketing::kRoutingP2PTaxiDiscovered : marketing::kRoutingTaxiDiscovered;
+      tag = isP2P ? marketing::kRoutingP2PSubwayDiscovered : marketing::kRoutingSubwayDiscovered;
       break;
     case RouterType::Count: CHECK(false, ("Bad router type", m_currentRouterType));
     }
