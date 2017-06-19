@@ -9,7 +9,8 @@ typedef NS_ENUM(NSUInteger, MWMRouterType) {
   MWMRouterTypeVehicle,
   MWMRouterTypePedestrian,
   MWMRouterTypeBicycle,
-  MWMRouterTypeTaxi
+  MWMRouterTypeTaxi,
+  MWMRouterTypeSubway
 };
 
 typedef NS_ENUM(NSUInteger, MWMTheme) {

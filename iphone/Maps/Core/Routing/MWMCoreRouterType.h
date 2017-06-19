@@ -8,6 +8,7 @@ static inline routing::RouterType coreRouterType(MWMRouterType type)
   case MWMRouterTypePedestrian: return routing::RouterType::Pedestrian;
   case MWMRouterTypeBicycle: return routing::RouterType::Bicycle;
   case MWMRouterTypeTaxi: return routing::RouterType::Taxi;
+  case MWMRouterTypeSubway: return routing::RouterType::Subway;
   }
 }
 
@@ -19,6 +20,7 @@ static inline MWMRouterType routerType(routing::RouterType type)
   case routing::RouterType::Pedestrian: return MWMRouterTypePedestrian;
   case routing::RouterType::Bicycle: return MWMRouterTypeBicycle;
   case routing::RouterType::Taxi: return MWMRouterTypeTaxi;
+  case routing::RouterType::Subway: return MWMRouterTypeSubway;
   case routing::RouterType::Count:
     ASSERT(false, ("RouterType is Count."));
     return MWMRouterTypeVehicle;
