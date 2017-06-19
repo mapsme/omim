@@ -159,6 +159,13 @@ public:
   static IsSubwayChangeChecker const & Instance();
 };
 
+class IsSubwayStationChecker : public BaseChecker
+{
+  IsSubwayStationChecker();
+public:
+  static IsSubwayStationChecker const & Instance();
+};
+
 class IsBookingChecker : public BaseChecker
 {
   IsBookingChecker();
