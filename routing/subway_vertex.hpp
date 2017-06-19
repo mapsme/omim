@@ -8,16 +8,12 @@
 
 namespace routing
 {
-// WorldRoadPoint is a unique identifier for any road point in the whole world.
-//
-// Contains mwm id, feature id and point idx.
-// Point idx is the ordinal number of the point in the road.
-class WorldRoadPoint final
+class SubwayVertex final
 {
 public:
-  WorldRoadPoint() = default;
+  SubwayVertex() = default;
 
-  WorldRoadPoint(NumMwmId mwmId, uint32_t featureId, uint32_t pointId)
+  SubwayVertex(NumMwmId mwmId, uint32_t featureId, uint32_t pointId)
     : m_mwmId(mwmId), m_featureId(featureId), m_pointId(pointId)
   {
   }
@@ -28,17 +24,17 @@ public:
 
   uint32_t GetPointId() const { return m_pointId; }
 
-  bool operator==(WorldRoadPoint const & rp) const
+  bool operator==(SubwayVertex const & rp) const
   {
     return m_mwmId == rp.m_mwmId && m_featureId == rp.m_featureId && m_pointId == rp.m_pointId;
   }
 
-  bool operator!=(WorldRoadPoint const & rp) const
+  bool operator!=(SubwayVertex const & rp) const
   {
     return !(*this == rp);
   }
 
-  bool operator<(WorldRoadPoint const & rp) const
+  bool operator<(SubwayVertex const & rp) const
   {
     if (m_mwmId != rp.m_mwmId)
       return m_mwmId < rp.m_mwmId;
@@ -55,10 +51,10 @@ private:
   uint32_t m_pointId = 0;
 };
 
-inline std::string DebugPrint(WorldRoadPoint const & rp)
+inline std::string DebugPrint(SubwayVertex const & rp)
 {
   std::ostringstream out;
-  out << "WorldRoadPoint [" << rp.GetMwmId() << rp.GetFeatureId() << ", " << rp.GetPointId() << "]";
+  out << "SubwayVertex [" << rp.GetMwmId() << rp.GetFeatureId() << ", " << rp.GetPointId() << "]";
   return out.str();
 }
 }  // namespace routing

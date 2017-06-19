@@ -115,6 +115,7 @@ set(
   subway_model.hpp
   subway_router.cpp
   subway_router.hpp
+  subway_vertex.hpp
   traffic_stash.hpp
   transition_points.hpp
   turn_candidate.hpp
@@ -132,7 +133,6 @@ set(
   vehicle_mask.hpp
   world_graph.cpp
   world_graph.hpp
-  world_road_point.hpp
 )
 
 add_library(${PROJECT_NAME} ${SRC})
