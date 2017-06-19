@@ -38,7 +38,8 @@ enum class RouteType : uint8_t
   Car,
   Pedestrian,
   Bicycle,
-  Taxi
+  Taxi,
+  Subway
 };
 
 struct RoutePattern
@@ -63,14 +64,17 @@ struct RouteSegment
   df::ColorConstant m_color;
   std::vector<double> m_turns;
   std::vector<traffic::SpeedGroup> m_traffic;
+  std::vector<std::string> m_subwayColoring;
   df::RoutePattern m_pattern;
 
   RouteSegment() = default;
   RouteSegment(m2::PolylineD const & polyline, df::ColorConstant color,
                std::vector<double> const & turns,
                std::vector<traffic::SpeedGroup> const & traffic,
+               std::vector<std::string> const & subwayColoring,
                df::RoutePattern pattern = df::RoutePattern())
-    : m_polyline(polyline), m_color(color), m_turns(turns), m_traffic(traffic), m_pattern(pattern)
+    : m_polyline(polyline), m_color(color), m_turns(turns), m_traffic(traffic)
+    , m_subwayColoring(subwayColoring), m_pattern(pattern)
   {}
 };
 

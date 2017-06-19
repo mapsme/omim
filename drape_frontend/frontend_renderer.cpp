@@ -1175,13 +1175,15 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
 
   if (m_buildingsFramebuffer->IsSupported())
   {
-    RenderTrafficAndRouteLayer(modelView);
+    if (!m_subwayModeEnabled)
+      RenderTrafficAndRouteLayer(modelView);
     Render3dLayer(modelView, true /* useFramebuffer */);
   }
   else
   {
     Render3dLayer(modelView, false /* useFramebuffer */);
-    RenderTrafficAndRouteLayer(modelView);
+    if (!m_subwayModeEnabled)
+      RenderTrafficAndRouteLayer(modelView);
   }
 
   // After this line we do not use (almost) depth buffer.
@@ -1213,7 +1215,7 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
   if (m_subwayModeEnabled && m_finishTexturesInitialization)
   {
     dp::TextureManager::ColorRegion region;
-    m_texMng->GetColorRegion(dp::Color(0, 0, 0, 200), region); // TODO: move color to style.
+    m_texMng->GetColorRegion(df::GetColorConstant(df::kRouteSubwayBackgroundColor), region);
     if (!m_subwayBackground->IsInitialized())
     {
       auto prg = m_gpuProgramManager->GetProgram(gpu::SCREEN_QUAD_PROGRAM);
@@ -1222,6 +1224,10 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
     m_subwayBackground->RenderTexture(make_ref(m_gpuProgramManager),
                                       static_cast<uint32_t>(region.GetTexture()->GetID()), 1.0f);
     RenderSubwayLayer(modelView);
+
+    RenderTrafficAndRouteLayer(modelView);
+    GLFunctions::glClear(gl_const::GLDepthBit);
+    GLFunctions::glDisable(gl_const::GLDepthTest);
   }
 
   m_gpsTrackRenderer->RenderTrack(modelView, m_currentZoomLevel, make_ref(m_gpuProgramManager),
@@ -1326,8 +1332,9 @@ void FrontendRenderer::RenderTrafficAndRouteLayer(ScreenBase const & modelView)
                                      make_ref(m_gpuProgramManager), m_generalUniforms);
   }
   GLFunctions::glClear(gl_const::GLDepthBit);
-  m_routeRenderer->RenderRoute(modelView, m_trafficRenderer->HasRenderData(),
-                               make_ref(m_gpuProgramManager), m_generalUniforms);
+  bool const showColoring = m_trafficRenderer->HasRenderData() || m_subwayModeEnabled;
+  m_routeRenderer->RenderRoute(modelView, showColoring, make_ref(m_gpuProgramManager),
+                               m_generalUniforms);
 }
 
 void FrontendRenderer::RenderUserMarksLayer(ScreenBase const & modelView)
