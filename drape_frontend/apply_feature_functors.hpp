@@ -151,7 +151,7 @@ class ApplyLineFeatureGeometry : public BaseApplyFeature
 public:
   ApplyLineFeatureGeometry(TileKey const & tileKey, TInsertShapeFn const & insertShape,
                            FeatureID const & id, double currentScaleGtoP, int minVisibleScale,
-                           uint8_t rank, size_t pointsCount);
+                           uint8_t rank, size_t pointsCount, bool isSubwayLine, dp::Color subwayColor);
 
   void operator() (m2::PointD const & point);
   bool HasGeometry() const;
@@ -168,7 +168,8 @@ private:
   m2::PointD m_lastAddedPoint;
   bool m_simplify;
   size_t m_initialPointsCount;
-
+  bool m_isSubwayLine;
+  dp::Color m_subwayColor;
 #ifdef CALC_FILTERED_POINTS
   int m_readedCount;
 #endif
@@ -200,5 +201,6 @@ private:
 };
 
 extern dp::Color ToDrapeColor(uint32_t src);
+extern dp::Color ToDrapeColor(std::string const & hexColor);
 
 } // namespace df
