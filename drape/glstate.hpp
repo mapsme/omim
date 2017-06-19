@@ -39,6 +39,7 @@ public:
     /// Do not change order
     GeometryLayer,
     OverlayLayer,
+    SubwayLayer,
     UserMarkLayer,
     Gui
   };

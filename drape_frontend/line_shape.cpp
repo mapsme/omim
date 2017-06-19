@@ -60,6 +60,7 @@ struct BaseBuilderParams
 {
   dp::TextureManager::ColorRegion m_color;
   float m_pxHalfWidth;
+  dp::GLState::DepthLayer m_depthLayer;
   float m_depth;
   dp::LineCap m_cap;
   dp::LineJoin m_join;
@@ -179,7 +180,7 @@ public:
 
   dp::GLState GetState() override
   {
-    dp::GLState state(gpu::LINE_PROGRAM, dp::GLState::GeometryLayer);
+    dp::GLState state(gpu::LINE_PROGRAM, m_params.m_depthLayer);
     state.SetColorTexture(m_params.m_color.GetTexture());
     return state;
   }
@@ -279,7 +280,7 @@ public:
 
   dp::GLState GetState() override
   {
-    dp::GLState state(gpu::AREA_OUTLINE_PROGRAM, dp::GLState::GeometryLayer);
+    dp::GLState state(gpu::AREA_OUTLINE_PROGRAM, m_params.m_depthLayer);
     state.SetColorTexture(m_params.m_color.GetTexture());
     state.SetDrawAsLine(true);
     state.SetLineWidth(m_lineWidth);
@@ -322,7 +323,7 @@ public:
 
   dp::GLState GetState() override
   {
-    dp::GLState state(gpu::DASHED_LINE_PROGRAM, dp::GLState::GeometryLayer);
+    dp::GLState state(gpu::DASHED_LINE_PROGRAM, m_params.m_depthLayer);
     state.SetColorTexture(m_params.m_color.GetTexture());
     state.SetMaskTexture(m_texCoordGen.GetRegion().GetTexture());
     return state;
@@ -491,6 +492,7 @@ void LineShape::Prepare(ref_ptr<dp::TextureManager> textures) const
   {
     p.m_cap = m_params.m_cap;
     p.m_color = colorRegion;
+    p.m_depthLayer = m_params.m_depthLayer;
     p.m_depth = m_params.m_depth;
     p.m_join = m_params.m_join;
     p.m_pxHalfWidth = pxHalfWidth;

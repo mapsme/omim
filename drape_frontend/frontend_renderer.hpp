@@ -151,6 +151,7 @@ private:
   void Render2dLayer(ScreenBase const & modelView);
   void Render3dLayer(ScreenBase const & modelView, bool useFramebuffer);
   void RenderOverlayLayer(ScreenBase const & modelView);
+  void RenderSubwayLayer(ScreenBase const & modelView);
   void RenderUserMarksLayer(ScreenBase const & modelView);
   void RenderTrafficAndRouteLayer(ScreenBase const & modelView);
 
@@ -241,6 +242,7 @@ private:
       Geometry2dID,
       OverlayID,
       Geometry3dID,
+      SubwayID,
       LayerCountID
     };
 
