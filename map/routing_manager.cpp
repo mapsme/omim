@@ -791,6 +791,9 @@ void RoutingManager::BuildRoute(uint32_t timeoutSec)
     case RouterType::Taxi:
       tag = isP2P ? marketing::kRoutingP2PTaxiDiscovered : marketing::kRoutingTaxiDiscovered;
       break;
+    case RouterType::Subway:
+      tag = isP2P ? marketing::kRoutingP2PTaxiDiscovered : marketing::kRoutingTaxiDiscovered;
+      break;
     case RouterType::Count: CHECK(false, ("Bad router type", m_currentRouterType));
     }
     GetPlatform().GetMarketingService().SendPushWooshTag(tag);
