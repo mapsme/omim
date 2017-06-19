@@ -7,6 +7,12 @@
 #include "std/vector.hpp"
 
 @class MWMPlacePageData;
+@class MWMUGCReviewVM;
+
+namespace ugc
+{
+struct Review;
+}
 
 namespace place_page
 {
@@ -20,6 +26,7 @@ enum class Sections
   HotelReviews,
   Metainfo,
   Ad,
+  UGC,
   Buttons
 };
 
@@ -80,6 +87,13 @@ enum class AdRows
   Taxi
 };
 
+enum class UGCRow
+{
+  SelectImpression,
+  Comment,
+  ShowMore
+};
+
 enum class ButtonsRows
 {
   AddBusiness,
@@ -97,7 +111,7 @@ enum class OpeningHours
   Unknown
 };
 
-using NewSectionsAreReady = void (^)(NSRange const & range, MWMPlacePageData * data);
+using NewSectionsAreReady = void (^)(NSRange const & range, MWMPlacePageData * data, BOOL isSection);
 using BannerIsReady = void (^)();
 
 }  // namespace place_page
@@ -140,10 +154,14 @@ using BannerIsReady = void (^)();
 - (void)assignOnlinePriceToLabel:(UILabel *)label;
 - (NSString *)hotelDescription;
 - (vector<booking::HotelFacility> const &)facilities;
-- (vector<booking::HotelReview> const &)reviews;
-- (NSUInteger)numberOfReviews;
+- (vector<booking::HotelReview> const &)hotelReviews;
+- (NSUInteger)numberOfHotelReviews;
 - (NSURL *)URLToAllReviews;
 - (NSArray<MWMGalleryItemModel *> *)photos;
+
+// UGC
+- (MWMUGCReviewVM *)reviewViewModel;
+- (vector<ugc::Review> const &)ugcReviews;
 
 // Route points
 - (RouteMarkType)routeMarkType;
@@ -175,6 +193,7 @@ using BannerIsReady = void (^)();
 - (vector<place_page::HotelReviewsRow> const &)hotelReviewsRows;
 - (vector<place_page::MetainfoRows> const &)metainfoRows;
 - (vector<place_page::AdRows> const &)adRows;
+- (vector<place_page::UGCRow> const &)ugcRows;
 - (vector<place_page::ButtonsRows> const &)buttonsRows;
 
 // Table view metainfo rows
