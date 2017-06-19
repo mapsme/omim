@@ -38,7 +38,10 @@ omim_add_test(${PROJECT_NAME} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
+  generator_tests_support
+  generator
   routing
+  search
   indexer
   platform_tests_support
   editor
@@ -54,6 +57,7 @@ omim_link_libraries(
   succinct
   opening_hours
   jansson
+  tess2
   stats_client
   map
   pugixml
