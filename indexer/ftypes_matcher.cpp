@@ -351,6 +351,32 @@ bool IsTunnelChecker::IsMatched(uint32_t type) const
   return IsTypeConformed(type, {"highway", "*", "tunnel"});
 }
 
+IsSubwayLineChecker::IsSubwayLineChecker()
+  : BaseChecker(2 /* level */)
+{
+  Classificator const & c = classif();
+  m_types.push_back(c.GetTypeByPath({"subway_meta", "line"}));
+}
+
+IsSubwayLineChecker const & IsSubwayLineChecker::Instance()
+{
+  static IsSubwayLineChecker const inst;
+  return inst;
+}
+
+IsSubwayChangeChecker::IsSubwayChangeChecker()
+  : BaseChecker(2 /* level */)
+{
+  Classificator const & c = classif();
+  m_types.push_back(c.GetTypeByPath({"subway_meta", "change"}));
+}
+
+IsSubwayChangeChecker const & IsSubwayChangeChecker::Instance()
+{
+  static IsSubwayChangeChecker const inst;
+  return inst;
+}
+
 IsBookingChecker::IsBookingChecker()
 {
   Classificator const & c = classif();
