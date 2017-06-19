@@ -22,6 +22,8 @@ std::string const kRouteOutlineColor = "RouteOutline";
 std::string const kRoutePedestrian = "RoutePedestrian";
 std::string const kRouteBicycle = "RouteBicycle";
 std::string const kRoutePreview = "RoutePreview";
+std::string const kRouteSubwayBackgroundColor = "RouteSubwayBackground";
+std::string const kRouteSubwayOutlineColor = "RouteSubwayOutline";
 
 namespace
 {
@@ -40,6 +42,8 @@ std::vector<float> const kHalfWidthInPixelOthers =
   //11   12    13    14    15   16    17    18    19     20
   1.5f, 1.5f, 2.0f, 2.5f, 3.0, 4.0f, 5.0f, 5.0f, 9.0f, 13.0f
 };
+
+
 
 std::vector<float> const kPreviewPointRadiusInPixel =
 {
@@ -230,6 +234,8 @@ dp::Color GetOutlineColor(drape_ptr<RouteSegment> const & routeSegment)
 {
   if (routeSegment->m_routeType == RouteType::Car || routeSegment->m_routeType == RouteType::Taxi)
     return df::GetColorConstant(kRouteOutlineColor);
+  else if (routeSegment->m_routeType == RouteType::Subway)
+    return df::GetColorConstant(kRouteSubwayOutlineColor);
 
   return df::GetColorConstant(routeSegment->m_color);
 }
@@ -370,7 +376,7 @@ CirclesPackHandle * RouteRenderer::GetPreviewHandle(size_t & index)
 }
 
 void RouteRenderer::RenderRouteData(drape_ptr<RouteData> const & routeData,
-                                    ScreenBase const & screen, bool trafficShown,
+                                    ScreenBase const & screen, bool needShowColoring,
                                     ref_ptr<dp::GpuProgramManager> mng,
                                     dp::UniformValuesStorage const & commonUniforms)
 {
@@ -397,7 +403,7 @@ void RouteRenderer::RenderRouteData(drape_ptr<RouteData> const & routeData,
   uniforms.SetFloatValue("u_color", color.r, color.g, color.b, color.a);
 
   uniforms.SetFloatValue("u_routeParams", currentHalfWidth, screenHalfWidth, dist,
-                         trafficShown ? 1.0f : 0.0f);
+                         needShowColoring ? 1.0f : 0.0f);
 
   if (segment->m_pattern.m_isDashed)
   {
@@ -478,7 +484,7 @@ void RouteRenderer::RenderPreviewData(ScreenBase const & screen, ref_ptr<dp::Gpu
   }
 }
 
-void RouteRenderer::RenderRoute(ScreenBase const & screen, bool trafficShown,
+void RouteRenderer::RenderRoute(ScreenBase const & screen, bool needShowColoring,
                                 ref_ptr<dp::GpuProgramManager> mng,
                                 dp::UniformValuesStorage const & commonUniforms)
 {
@@ -486,7 +492,7 @@ void RouteRenderer::RenderRoute(ScreenBase const & screen, bool trafficShown,
   {
     // Render route.
     for (auto const & routeData : m_routeData)
-      RenderRouteData(routeData, screen, trafficShown, mng, commonUniforms);
+      RenderRouteData(routeData, screen, needShowColoring, mng, commonUniforms);
 
     // Render arrows.
     for (auto const & p : m_routeAdditional)
