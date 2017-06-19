@@ -65630,6 +65630,12 @@ colors {
     y: 0
   }
   value {
+    name: "RouteSubwayBackground"
+    color: 855638016
+    x: 0
+    y: 0
+  }
+  value {
     name: "RoutePedestrian"
     color: 1308604747
     x: 0
@@ -65638,6 +65644,12 @@ colors {
   value {
     name: "RoadShieldOrangeBackground"
     color: 1272880
+    x: 0
+    y: 0
+  }
+  value {
+    name: "RouteSubwayOutline"
+    color: 1118481
     x: 0
     y: 0
   }
@@ -65684,8 +65696,8 @@ colors {
     y: 0
   }
   value {
-    name: "TrackCarSpeed"
-    color: 16763432
+    name: "TrafficG0"
+    color: 4985359
     x: 0
     y: 0
   }
@@ -65720,8 +65732,8 @@ colors {
     y: 0
   }
   value {
-    name: "TrafficG0"
-    color: 4985359
+    name: "TrackCarSpeed"
+    color: 16763432
     x: 0
     y: 0
   }
