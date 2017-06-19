@@ -58,6 +58,8 @@ set(
   routing_manager.hpp
   routing_mark.cpp
   routing_mark.hpp
+  subway_manager.cpp
+  subway_manager.hpp
   track.cpp
   track.hpp
   traffic_manager.cpp

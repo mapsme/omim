@@ -730,6 +730,13 @@ public class RoutingController
   {
     mLogger.d(TAG, "setStartPoint");
 
+    // TEMPORARY CODE: redefine "from" point
+    if (Framework.nativeIsSubwayModeEnabled())
+    {
+      Framework.nativeSetSubwayStartPoint(point.getLat(), point.getLon());
+      return true;
+    }
+
     if (MapObject.same(mStartPoint, point))
     {
       mLogger.d(TAG, "setStartPoint: skip the same starting point");
@@ -768,6 +775,13 @@ public class RoutingController
   public boolean setEndPoint(MapObject point)
   {
     mLogger.d(TAG, "setEndPoint");
+
+    // TEMPORARY CODE: redefine "to" point
+    if (Framework.nativeIsSubwayModeEnabled())
+    {
+      Framework.nativeSetSubwayFinishPoint(point.getLat(), point.getLon());
+      return true;
+    }
 
     if (MapObject.same(mEndPoint, point))
     {

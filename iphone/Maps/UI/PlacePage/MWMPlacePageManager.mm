@@ -260,17 +260,53 @@ void logSponsoredEvent(MWMPlacePageData * data, NSString * eventName)
 - (void)mwm_refreshUI { [self.layout mwm_refreshUI]; }
 - (void)routeFrom
 {
-  [Statistics logEvent:kStatEventName(kStatPlacePage, kStatBuildRoute)
-        withParameters:@{kStatValue : kStatSource}];
-  [[MWMRouter router] buildFromPoint:self.target bestRouter:YES];
+  if (GetFramework().GetSubwayManager().IsEnabled())
+  {
+    // TEMPORARY CODE: redefine "from" point
+    m2::PointD pt;
+    if (self.target.isMyPosition)
+    {
+      CLLocation * lastLocation = [MWMLocationManager lastLocation];
+      pt = lastLocation.mercator;
+    }
+    else
+    {
+      pt = mercatorMWMRoutePoint(self.target);
+    }
+    GetFramework().GetSubwayManager().SetStartPoint(pt);
+  }
+  else
+  {
+    [Statistics logEvent:kStatEventName(kStatPlacePage, kStatBuildRoute)
+          withParameters:@{kStatValue : kStatSource}];
+    [[MWMRouter router] buildFromPoint:self.target bestRouter:YES];
+  }
   [self close];
 }
 
 - (void)routeTo
 {
-  [Statistics logEvent:kStatEventName(kStatPlacePage, kStatBuildRoute)
-        withParameters:@{kStatValue : kStatDestination}];
-  [[MWMRouter router] buildToPoint:self.target bestRouter:YES];
+  if (GetFramework().GetSubwayManager().IsEnabled())
+  {
+    // TEMPORARY CODE: redefine "to" point
+    m2::PointD pt;
+    if (self.target.isMyPosition)
+    {
+      CLLocation * lastLocation = [MWMLocationManager lastLocation];
+      pt = lastLocation.mercator;
+    }
+    else
+    {
+      pt = mercatorMWMRoutePoint(self.target);
+    }
+    GetFramework().GetSubwayManager().SetFinishPoint(pt);
+  }
+  else
+  {
+    [Statistics logEvent:kStatEventName(kStatPlacePage, kStatBuildRoute)
+          withParameters:@{kStatValue : kStatDestination}];
+    [[MWMRouter router] buildToPoint:self.target bestRouter:YES];
+  }
   [self close];
 }
 
