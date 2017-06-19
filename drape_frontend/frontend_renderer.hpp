@@ -327,6 +327,8 @@ private:
   bool m_firstLaunchAnimationInterrupted = false;
 
   bool m_subwayModeEnabled = false;
+  bool m_finishTexturesInitialization = false;
+  drape_ptr<ScreenQuadRenderer> m_subwayBackground;
 
 #ifdef DEBUG
   bool m_isTeardowned;

@@ -84,6 +84,7 @@ public:
     UpdateMetalines,
     PostUserEvent,
     SetSubwayModeEnabled,
+    FinishTexturesInitialization,
   };
 
   virtual ~Message() {}

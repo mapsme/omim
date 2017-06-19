@@ -1236,4 +1236,10 @@ public:
 private:
   bool m_isEnabled;
 };
+
+class FinishTexturesInitializationMessage : public Message
+{
+public:
+  Type GetType() const override { return Message::FinishTexturesInitialization; }
+};
 }  // namespace df

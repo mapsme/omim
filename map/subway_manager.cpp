@@ -7,6 +7,9 @@
 
 void SubwayManager::SetEnabled(bool isEnabled)
 {
+  if (isEnabled == m_isEnabled)
+    return;
+
   m_isEnabled = isEnabled;
   {
     std::lock_guard<std::mutex> lock(m_drapeEngineMutex);
