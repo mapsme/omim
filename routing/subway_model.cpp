@@ -4,14 +4,12 @@
 
 namespace routing
 {
-
-
-// VehicleModel ------------------------------------------------------------------------------------
 routing::VehicleModel::InitListT const g_subwayLimitsDefault = {
     {{"subway_meta", "line"}, kSpeedSubwayLineKMpH},
     {{"subway_meta", "change"}, kSpeedSubwayChangeKMpH},
 };
 
+// SubwayModel -------------------------------------------------------------------------------------
 SubwayModel::SubwayModel()
   : VehicleModel(classif(), g_subwayLimitsDefault)
 {
