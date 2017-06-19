@@ -42,12 +42,12 @@ IRouter::ResultCode SubwayRouter::CalculateRoute(Checkpoints const & checkpoints
     return status;
 
   CHECK(!result.path.empty(), ());
-  SetGeometry(result.path, route);
+  SetRouteAttrs(result.path, route);
   SetTimes(result.path.size(), result.distance, route);
   return IRouter::NoError;
 }
 
-void SubwayRouter::SetGeometry(vector<SubwayVertex> const & vertexes, Route & route) const
+void SubwayRouter::SetRouteAttrs(vector<SubwayVertex> const &vertexes, Route &route) const
 {
   CHECK(!vertexes.empty(), ());
 
@@ -81,6 +81,7 @@ void SubwayRouter::SetGeometry(vector<SubwayVertex> const & vertexes, Route & ro
     feature.ParseMetadata();
     feature.ParseGeometry(FeatureType::BEST_GEOMETRY);
 
+    CHECK_LESS(vertex.GetPointId(), feature.GetPointsCount(), ());
     points.push_back(feature.GetPoint(vertex.GetPointId()));
 
     if (prevFeatureId != invalidFeatureId)
