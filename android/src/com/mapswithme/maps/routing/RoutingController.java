@@ -449,6 +449,11 @@ public class RoutingController
       throw new AssertionError("A stop point must have the route point info!");
 
     Framework.nativeRemoveRoutePoint(info.mMarkType, info.mIntermediateIndex);
+
+    // TEMPORARY CODE: in subway mode we do not rebuild route on remove point.
+    if (Framework.nativeIsSubwayModeEnabled())
+      return;
+
     if (info.isFinishPoint())
       mEndPoint = null;
     if (info.isStartPoint())

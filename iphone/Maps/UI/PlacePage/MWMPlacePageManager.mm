@@ -319,6 +319,22 @@ void logSponsoredEvent(MWMPlacePageData * data, NSString * eventName)
 
 - (void)removeStop
 {
+  if (GetFramework().GetSubwayManager().IsEnabled())
+  {
+    // TEMPORARY CODE: redefine "remove point"
+    switch (self.data.routeMarkType)
+    {
+      case RouteMarkType::Start:
+        GetFramework().GetSubwayManager().RemoveStartPoint();
+        break;
+      case RouteMarkType::Finish:
+        GetFramework().GetSubwayManager().RemoveFinishPoint();
+        break;
+    }
+    [self shouldClose];
+    return;
+  }
+  
   auto router = [MWMRouter router];
   switch (self.data.routeMarkType)
   {
