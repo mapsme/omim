@@ -42,6 +42,14 @@ dp::Color ToDrapeColor(uint32_t src)
   return dp::Extract(src, static_cast<uint8_t>(255 - (src >> 24)));
 }
 
+dp::Color ToDrapeColor(std::string const & hexColor)
+{
+  uint32_t color = 0;
+  if (!strings::to_uint(hexColor, color, 16))
+    color = 0;
+  return ToDrapeColor(color);
+}
+
 namespace
 {
 double const kMinVisibleFontSize = 8.0;
@@ -815,13 +823,16 @@ ApplyLineFeatureGeometry::ApplyLineFeatureGeometry(TileKey const & tileKey,
                                                    FeatureID const & id,
                                                    double currentScaleGtoP,
                                                    int minVisibleScale, uint8_t rank,
-                                                   size_t pointsCount)
+                                                   size_t pointsCount,
+                                                   bool isSubwayLine, dp::Color subwayColor)
   : TBase(tileKey, insertShape, id, minVisibleScale, rank, CaptionDescription())
   , m_currentScaleGtoP(static_cast<float>(currentScaleGtoP))
   , m_sqrScale(math::sqr(currentScaleGtoP))
   , m_simplify(tileKey.m_zoomLevel >= kLineSimplifyLevelStart &&
                tileKey.m_zoomLevel <= kLineSimplifyLevelEnd)
   , m_initialPointsCount(pointsCount)
+  , m_isSubwayLine(isSubwayLine)
+  , m_subwayColor(subwayColor)
 #ifdef CALC_FILTERED_POINTS
   , m_readedCount(0)
 #endif
@@ -899,6 +910,8 @@ void ApplyLineFeatureGeometry::ProcessLineRule(Stylist::TRuleWrapper const & rul
     LineViewParams params;
     params.m_tileCenter = m_tileRect.Center();
     Extract(pLineRule, params);
+    if (m_isSubwayLine)
+      params.m_color = m_subwayColor;
     params.m_depth = depth;
     params.m_minVisibleScale = m_minVisibleScale;
     params.m_rank = m_rank;
