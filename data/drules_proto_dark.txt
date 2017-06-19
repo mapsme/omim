@@ -62182,8 +62182,8 @@ cont {
       width: 5.0
       color: 0
       priority: 1000
-      join: BEVELJOIN
-      cap: BUTTCAP
+      join: ROUNDJOIN
+      cap: ROUNDCAP
     }
   }
   element {
@@ -62192,8 +62192,8 @@ cont {
       width: 5.0
       color: 0
       priority: 1000
-      join: BEVELJOIN
-      cap: BUTTCAP
+      join: ROUNDJOIN
+      cap: ROUNDCAP
     }
   }
   element {
@@ -62202,8 +62202,8 @@ cont {
       width: 5.0
       color: 0
       priority: 1000
-      join: BEVELJOIN
-      cap: BUTTCAP
+      join: ROUNDJOIN
+      cap: ROUNDCAP
     }
   }
   element {
@@ -62213,7 +62213,7 @@ cont {
       color: 0
       priority: 1000
       join: ROUNDJOIN
-      cap: BUTTCAP
+      cap: ROUNDCAP
     }
   }
   element {
@@ -62223,7 +62223,7 @@ cont {
       color: 0
       priority: 1000
       join: ROUNDJOIN
-      cap: BUTTCAP
+      cap: ROUNDCAP
     }
   }
   element {
@@ -62233,7 +62233,7 @@ cont {
       color: 0
       priority: 1000
       join: ROUNDJOIN
-      cap: BUTTCAP
+      cap: ROUNDCAP
     }
   }
   element {
