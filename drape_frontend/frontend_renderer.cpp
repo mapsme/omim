@@ -1198,6 +1198,9 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
     }
     m_subwayBackground->RenderTexture(make_ref(m_gpuProgramManager),
                                       static_cast<uint32_t>(region.GetTexture()->GetID()), 1.0f);
+
+    GLFunctions::glEnable(gl_const::GLDepthTest);
+    GLFunctions::glClear(gl_const::GLDepthBit);
     RenderSubwayLayer(modelView);
 
     RenderTrafficAndRouteLayer(modelView);
