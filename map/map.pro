@@ -35,6 +35,7 @@ HEADERS += \
     routing_helpers.hpp \
     routing_manager.hpp \
     routing_mark.hpp \
+    subway_manager.hpp \
     taxi_delegate.hpp \
     track.hpp \
     traffic_manager.hpp \
@@ -69,6 +70,7 @@ SOURCES += \
     routing_helpers.cpp \
     routing_manager.cpp \
     routing_mark.cpp \
+    subway_manager.cpp \
     taxi_delegate.cpp \
     track.cpp \
     traffic_manager.cpp \

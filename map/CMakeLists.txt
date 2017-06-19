@@ -62,6 +62,8 @@ set(
   routing_manager.hpp
   routing_mark.cpp
   routing_mark.hpp
+  subway_manager.cpp
+  subway_manager.hpp
   taxi_delegate.cpp
   taxi_delegate.hpp
   track.cpp
