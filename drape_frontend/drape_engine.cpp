@@ -81,6 +81,7 @@ DrapeEngine::DrapeEngine(Params && params)
                                     params.m_allow3dBuildings,
                                     params.m_trafficEnabled,
                                     params.m_blockTapEvents,
+                                    params.m_subwayModeEnabled,
                                     std::move(effects));
 
   m_frontend = make_unique_dp<FrontendRenderer>(std::move(frParams));
@@ -744,6 +745,13 @@ void DrapeEngine::RunFirstLaunchAnimation()
 {
   m_threadCommutator->PostMessage(ThreadsCommutator::RenderThread,
                                   make_unique_dp<RunFirstLaunchAnimationMessage>(),
+                                  MessagePriority::Normal);
+}
+
+void DrapeEngine::SetSubwayModeEnabled(bool isEnabled)
+{
+  m_threadCommutator->PostMessage(ThreadsCommutator::RenderThread,
+                                  make_unique_dp<SetSubwayModeEnabledMessage>(isEnabled),
                                   MessagePriority::Normal);
 }
 }  // namespace df

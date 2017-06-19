@@ -2,6 +2,8 @@
 
 #include "routing/subway_model.hpp"
 
+#include "std/shared_ptr.hpp"
+
 namespace
 {
 using namespace routing;

@@ -1222,4 +1222,18 @@ public:
 private:
   drape_ptr<UserEvent> m_event;
 };
+
+class SetSubwayModeEnabledMessage : public Message
+{
+public:
+  explicit SetSubwayModeEnabledMessage(bool isEnabled)
+    : m_isEnabled(isEnabled)
+  {}
+
+  Type GetType() const override { return Message::SetSubwayModeEnabled; }
+  bool IsEnabled() const { return m_isEnabled; }
+
+private:
+  bool m_isEnabled;
+};
 }  // namespace df

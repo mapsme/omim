@@ -79,8 +79,8 @@ public:
            MyPositionController::Params && myPositionParams, dp::Viewport viewport,
            TModelViewChanged const & modelViewChangedFn, TTapEventInfoFn const & tapEventFn,
            TUserPositionChangedFn const & positionChangedFn, ref_ptr<RequestedTiles> requestedTiles,
-           OverlaysShowStatsCallback && overlaysShowStatsCallback,
-           bool allow3dBuildings, bool trafficEnabled, bool blockTapEvents,
+           OverlaysShowStatsCallback && overlaysShowStatsCallback, bool allow3dBuildings,
+           bool trafficEnabled, bool blockTapEvents, bool subwayModeEnabled,
            std::vector<PostprocessRenderer::Effect> && enabledEffects)
       : BaseRenderer::Params(apiVersion, commutator, factory, texMng)
       , m_myPositionParams(std::move(myPositionParams))
@@ -93,6 +93,7 @@ public:
       , m_allow3dBuildings(allow3dBuildings)
       , m_trafficEnabled(trafficEnabled)
       , m_blockTapEvents(blockTapEvents)
+      , m_subwayModeEnabled(subwayModeEnabled)
       , m_enabledEffects(std::move(enabledEffects))
     {}
 
@@ -106,6 +107,7 @@ public:
     bool m_allow3dBuildings;
     bool m_trafficEnabled;
     bool m_blockTapEvents;
+    bool m_subwayModeEnabled;
     std::vector<PostprocessRenderer::Effect> m_enabledEffects;
   };
 
@@ -323,6 +325,8 @@ private:
   bool m_firstTilesReady = false;
   bool m_firstLaunchAnimationTriggered = false;
   bool m_firstLaunchAnimationInterrupted = false;
+
+  bool m_subwayModeEnabled = false;
 
 #ifdef DEBUG
   bool m_isTeardowned;

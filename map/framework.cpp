@@ -500,6 +500,8 @@ Framework::Framework(FrameworkParams const & params)
 
   m_adsEngine = make_unique<ads::Engine>();
 
+  m_subwayManager.SetRoutingManager(make_ref(&m_routingManager));
+
   InitTransliteration();
   LOG(LDEBUG, ("Transliterators initialized"));
 }
@@ -1934,7 +1936,8 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
       move(myPositionModeChangedFn), allow3dBuildings, trafficEnabled,
       params.m_isChoosePositionMode, params.m_isChoosePositionMode, GetSelectedFeatureTriangles(),
       m_routingManager.IsRoutingActive() && m_routingManager.IsRoutingFollowing(),
-      isAutozoomEnabled, simplifiedTrafficColors, move(overlaysShowStatsFn));
+      isAutozoomEnabled, simplifiedTrafficColors, GetSubwayManager().IsEnabled(),
+      std::move(overlaysShowStatsFn));
 
   m_drapeEngine = make_unique_dp<df::DrapeEngine>(move(p));
   m_drapeEngine->SetModelViewListener([this](ScreenBase const & screen)

@@ -11,22 +11,29 @@ namespace df
 class DrapeEngine;
 }
 
+class RoutingManager;
+
 class SubwayManager
 {
 public:
-  void SetEnabled(bool isEnabled) { m_isEnabled = isEnabled; }
+  void SetEnabled(bool isEnabled);
   bool IsEnabled() const { return m_isEnabled; }
 
   void SetStartPoint(m2::PointD const & pt);
   void SetFinishPoint(m2::PointD const & pt);
+  void RemoveStartPoint();
+  void RemoveFinishPoint();
   void ClearRoute();
 
   void SetDrapeEngine(ref_ptr<df::DrapeEngine> engine);
+  void SetRoutingManager(ref_ptr<RoutingManager> mng);
 
 private:
+  void RemovePoints();
+  void CheckAndBuild();
+
   bool m_isEnabled = false;
   ref_ptr<df::DrapeEngine> m_drapeEngine;
   std::mutex m_drapeEngineMutex;
-  m2::PointD m_startPoint = m2::PointD::Zero();
-  m2::PointD m_finishPoint = m2::PointD::Zero();
+  ref_ptr<RoutingManager> m_routingManager;
 };

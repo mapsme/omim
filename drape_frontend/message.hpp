@@ -83,6 +83,7 @@ public:
     RunFirstLaunchAnimation,
     UpdateMetalines,
     PostUserEvent,
+    SetSubwayModeEnabled,
   };
 
   virtual ~Message() {}

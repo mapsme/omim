@@ -1182,3 +1182,9 @@ void RoutingManager::CancelRecommendation(Recommendation recommendation)
   if (recommendation == Recommendation::RebuildAfterPointsLoading)
     m_loadRoutePointsTimestamp = chrono::steady_clock::time_point();
 }
+
+void RoutingManager::BuildSubwayRoute(m2::PointD const & startPoint,
+                                      m2::PointD const & finishPoint)
+{
+  //TODO: set router, build route
+}
