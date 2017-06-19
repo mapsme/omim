@@ -45,6 +45,7 @@ SOURCES += \
   routing_helpers_tests.cpp \
   routing_mapping_test.cpp \
   routing_session_test.cpp \
+  subway_test.cpp \
   turns_generator_test.cpp \
   turns_sound_test.cpp \
   turns_tts_text_tests.cpp \
