@@ -57,6 +57,7 @@ SOURCES += \
     routing_mapping.cpp \
     routing_session.cpp \
     speed_camera.cpp \
+    subway_model.cpp \
     turns.cpp \
     turns_generator.cpp \
     turns_notification_manager.cpp \
@@ -121,6 +122,7 @@ HEADERS += \
     routing_settings.hpp \
     segment.hpp \
     speed_camera.hpp \
+    subway_model.hpp \
     traffic_stash.hpp \
     transition_points.hpp \
     turn_candidate.hpp \

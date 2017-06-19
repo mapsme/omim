@@ -4,6 +4,8 @@
 
 namespace routing
 {
+using namespace std;
+
 routing::VehicleModel::InitListT const g_subwayLimitsDefault = {
     {{"subway_meta", "line"}, kSpeedSubwayLineKMpH},
     {{"subway_meta", "change"}, kSpeedSubwayChangeKMpH},
