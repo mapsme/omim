@@ -325,9 +325,20 @@ void RuleDrawer::ProcessLineStyle(FeatureType const & f, Stylist const & s,
 {
   int const zoomLevel = m_context->GetTileKey().m_zoomLevel;
 
+  feature::Metadata const & md = f.GetMetadata();
+  bool const isSubwayLine = ftypes::IsSubwayLineChecker::Instance()(f);
+  bool const isSubwayChange = ftypes::IsSubwayChangeChecker::Instance()(f);
+  dp::Color subwayColor = dp::Color::White();
+  if (isSubwayLine)
+  {
+    std::string const colorStr = md.Get(feature::Metadata::FMD_COLOUR);
+    subwayColor = ToDrapeColor(colorStr);
+  }
+
   ApplyLineFeatureGeometry applyGeom(m_context->GetTileKey(), insertShape, f.GetID(),
                                      m_currentScaleGtoP, minVisibleScale, f.GetRank(),
-                                     f.GetPointsCount());
+                                     f.GetPointsCount(),
+                                     isSubwayLine || isSubwayChange, subwayColor);
   f.ForEachPoint(applyGeom, zoomLevel);
 
   if (CheckCancelled())
