@@ -68,11 +68,9 @@ void SubwayRouter::SetGeometry(vector<WorldRoadPoint> const & vertexes, Route & 
       MwmSet::MwmHandle handle = m_index.GetMwmHandleByCountryFile(file);
       CHECK(handle.IsAlive(), ("Can't get mwm handle for", file));
 
-      auto const mwmId = MwmSet::MwmId(handle.GetInfo());
-
       geometry = make_unique<Geometry>(GeometryLoader::Create(
-          m_index, mwmId,
-          m_modelFactory.GetVehicleModelForCountry(m_numMwmIds->GetFile(numMwmId).GetName())));
+          m_index, handle, m_modelFactory.GetVehicleModelForCountry(
+          m_numMwmIds->GetFile(numMwmId).GetName()), false /* loadAltitudes */));
     }
 
     CHECK(geometry, ());
