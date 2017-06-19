@@ -65,6 +65,7 @@ public:
            bool isRoutingActive,
            bool isAutozoomEnabled,
            bool simplifiedTrafficColors,
+           bool subwayModeEnabled,
            OverlaysShowStatsCallback && overlaysShowStatsCallback)
       : m_apiVersion(apiVersion)
       , m_factory(factory)
@@ -85,6 +86,7 @@ public:
       , m_isRoutingActive(isRoutingActive)
       , m_isAutozoomEnabled(isAutozoomEnabled)
       , m_simplifiedTrafficColors(simplifiedTrafficColors)
+      , m_subwayModeEnabled(subwayModeEnabled)
       , m_overlaysShowStatsCallback(std::move(overlaysShowStatsCallback))
     {}
 
@@ -107,6 +109,7 @@ public:
     bool m_isRoutingActive;
     bool m_isAutozoomEnabled;
     bool m_simplifiedTrafficColors;
+    bool m_subwayModeEnabled;
     OverlaysShowStatsCallback m_overlaysShowStatsCallback;
   };
 
@@ -212,6 +215,8 @@ public:
   void SetPosteffectEnabled(PostprocessRenderer::Effect effect, bool enabled);
 
   void RunFirstLaunchAnimation();
+
+  void SetSubwayModeEnabled(bool isEnabled);
 
 private:
   void AddUserEvent(drape_ptr<UserEvent> && e);

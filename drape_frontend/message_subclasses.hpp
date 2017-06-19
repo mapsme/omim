@@ -1266,4 +1266,24 @@ class UpdateMetalinesMessage : public Message
 public:
   Type GetType() const override { return Message::UpdateMetalines; }
 };
+
+class SetSubwayModeEnabledMessage : public Message
+{
+public:
+  explicit SetSubwayModeEnabledMessage(bool isEnabled)
+    : m_isEnabled(isEnabled)
+  {}
+
+  Type GetType() const override { return Message::SetSubwayModeEnabled; }
+  bool IsEnabled() const { return m_isEnabled; }
+
+private:
+  bool m_isEnabled;
+};
+
+class FinishTexturesInitializationMessage : public Message
+{
+public:
+  Type GetType() const override { return Message::FinishTexturesInitialization; }
+};
 }  // namespace df

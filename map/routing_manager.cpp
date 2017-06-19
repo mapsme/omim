@@ -611,3 +611,9 @@ void RoutingManager::SetRouter(RouterType type)
   SetLastUsedRouter(type);
   SetRouterImpl(type);
 }
+
+void RoutingManager::BuildSubwayRoute(m2::PointD const & startPoint,
+                                      m2::PointD const & finishPoint)
+{
+  //TODO: set router, build route
+}
