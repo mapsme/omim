@@ -1,22 +1,23 @@
 #pragma once
 
+#include "routing/world_road_point.hpp"
+
 namespace routing
 {
-template <typename Vertex>
-class Edge final
+class SubwayEdge final
 {
 public:
-  Edge(Vertex const & target, double weight) : m_target(target), m_weight(weight) {}
+  SubwayEdge(WorldRoadPoint const & target, double weight) : m_target(target), m_weight(weight) {}
 
-  Vertex const & GetTarget() const { return m_target; }
+  WorldRoadPoint const & GetTarget() const { return m_target; }
   double GetWeight() const { return m_weight; }
 
-  bool operator==(Edge const & edge) const
+  bool operator==(SubwayEdge const & edge) const
   {
     return m_target == edge.m_target && m_weight == edge.m_weight;
   }
 
-  bool operator<(Edge const & edge) const
+  bool operator<(SubwayEdge const & edge) const
   {
     if (m_target != edge.m_target)
       return m_target < edge.m_target;
@@ -25,7 +26,7 @@ public:
 
 private:
   // Target is vertex going to for outgoing edges, vertex going from for ingoing edges.
-  Vertex m_target;
+  WorldRoadPoint m_target;
   double m_weight;
 };
 }  // namespace routing

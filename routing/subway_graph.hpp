@@ -1,6 +1,6 @@
 #pragma once
 
-#include "routing/edge.hpp"
+#include "routing/subway_edge.hpp"
 #include "routing/world_road_point.hpp"
 
 #include "indexer/feature.hpp"
@@ -13,7 +13,7 @@ class SubwayGraph final
 {
   // AStarAlgorithm types aliases:
   using TVertexType = WorldRoadPoint;
-  using TEdgeType = Edge<TVertexType>;
+  using TEdgeType = SubwayEdge;
 
     // Interface for AStarAlgorithm:
   void GetOutgoingEdgesList(TVertexType const & vertex, vector<TEdgeType> & edges);
