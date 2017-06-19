@@ -19,6 +19,7 @@ public:
     UserMarkLayer,
     NavigationLayer,
     RoutingMarkLayer,
+    SubwayLayer,
     GuiLayer,
     LayersCount
   };

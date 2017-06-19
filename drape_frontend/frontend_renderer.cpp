@@ -1196,6 +1196,7 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
     }
     m_subwayBackground->RenderTexture(make_ref(m_gpuProgramManager),
                                       static_cast<uint32_t>(region.GetTexture()->GetID()), 1.0f);
+    RenderSubwayLayer(modelView);
   }
 
   m_gpsTrackRenderer->RenderTrack(modelView, m_currentZoomLevel, make_ref(m_gpuProgramManager),
@@ -1244,6 +1245,15 @@ void FrontendRenderer::Render2dLayer(ScreenBase const & modelView)
   layer2d.Sort(make_ref(m_overlayTree));
 
   for (drape_ptr<RenderGroup> const & group : layer2d.m_renderGroups)
+    RenderSingleGroup(modelView, make_ref(group));
+}
+
+void FrontendRenderer::RenderSubwayLayer(ScreenBase const & modelView)
+{
+  RenderLayer & layerSubway = m_layers[RenderState::SubwayLayer];
+  layerSubway.Sort(make_ref(m_overlayTree));
+
+  for (drape_ptr<RenderGroup> const & group : layerSubway.m_renderGroups)
     RenderSingleGroup(modelView, make_ref(group));
 }
 
