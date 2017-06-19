@@ -57,6 +57,7 @@ SOURCES += \
     routing_mapping.cpp \
     routing_session.cpp \
     speed_camera.cpp \
+    subway_graph.cpp \
     subway_model.cpp \
     turns.cpp \
     turns_generator.cpp \
@@ -81,6 +82,7 @@ HEADERS += \
     cross_mwm_router.hpp \
     cross_routing_context.hpp \
     directions_engine.hpp \
+    edge.hpp \
     edge_estimator.hpp \
     features_road_graph.hpp \
     geometry.hpp \
@@ -122,6 +124,7 @@ HEADERS += \
     routing_settings.hpp \
     segment.hpp \
     speed_camera.hpp \
+    subway_graph.hpp \
     subway_model.hpp \
     traffic_stash.hpp \
     transition_points.hpp \
@@ -133,3 +136,4 @@ HEADERS += \
     turns_tts_text.hpp \
     vehicle_mask.hpp \
     world_graph.hpp \
+    world_road_point.hpp \
