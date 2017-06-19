@@ -11,11 +11,13 @@ namespace routing
 {
 class SubwayGraph final
 {
+public:
   // AStarAlgorithm types aliases:
   using TVertexType = WorldRoadPoint;
   using TEdgeType = SubwayEdge;
+  using TWeightType = double;
 
-    // Interface for AStarAlgorithm:
+  // Interface for AStarAlgorithm:
   void GetOutgoingEdgesList(TVertexType const & vertex, vector<TEdgeType> & edges);
   void GetIngoingEdgesList(TVertexType const & vertex, vector<TEdgeType> & edges);
   double HeuristicCostEstimate(TVertexType const & from, TVertexType const & to);
