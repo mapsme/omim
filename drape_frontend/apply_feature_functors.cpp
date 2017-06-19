@@ -830,7 +830,9 @@ void ApplyLineFeatureGeometry::ProcessRule(Stylist::TRuleWrapper const & rule)
     Extract(pLineRule, params);
     if (m_isSubwayLine)
     {
-      params.m_color = m_subwayColor;
+      dp::Color const kDefaultColor = dp::Color::Black();
+      if (params.m_color == kDefaultColor)
+        params.m_color = m_subwayColor;
       params.m_depthLayer = dp::GLState::SubwayLayer;
     }
     else
