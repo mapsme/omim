@@ -47,7 +47,7 @@ UNIT_TEST(WorkerThread_SimpleSync)
 
   {
     unique_lock<mutex> lk(mu);
-    cv.wait(lk, [&]() { return done; });
+    cv.wait(lk, [&done]() { return done; });
   }
 
   TEST_EQUAL(value, 8, ());

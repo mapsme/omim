@@ -1,20 +1,22 @@
 #include "base/worker_thread.hpp"
 
-#include "base/assert.hpp"
-
 using namespace std;
 
 namespace base
 {
-WorkerThread::WorkerThread() { m_thread = threads::SimpleThread(&WorkerThread::Worker, this); }
+WorkerThread::WorkerThread()
+{
+  m_thread = threads::SimpleThread(&WorkerThread::ProcessTasks, this);
+}
 
 WorkerThread::~WorkerThread()
 {
+  ASSERT(m_checker.CalledOnOriginalThread(), ());
   Shutdown(Exit::SkipPending);
   m_thread.join();
 }
 
-void WorkerThread::Worker()
+void WorkerThread::ProcessTasks()
 {
   unique_lock<mutex> lk(m_mu, defer_lock);
 
@@ -24,7 +26,7 @@ void WorkerThread::Worker()
 
     {
       lk.lock();
-      m_cv.wait(lk, [&]() { return m_shutdown || !m_queue.empty(); });
+      m_cv.wait(lk, [this]() { return m_shutdown || !m_queue.empty(); });
 
       if (m_shutdown)
       {
@@ -57,6 +59,8 @@ void WorkerThread::Worker()
 
 void WorkerThread::Shutdown(Exit e)
 {
+  ASSERT(m_checker.CalledOnOriginalThread(), ());
+
   if (m_shutdown)
     return;
 
