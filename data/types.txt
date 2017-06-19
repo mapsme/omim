@@ -1154,3 +1154,5 @@ historic|fort
 shop|coffee
 shop|tea
 sponsored|tinkoff
+subway_meta|line
+subway_meta|change
