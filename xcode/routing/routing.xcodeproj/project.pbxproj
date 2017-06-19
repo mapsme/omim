@@ -65,6 +65,10 @@
 		561FCFF61EF7C89B0003A0B8 /* subway_model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 561FCFF41EF7C89B0003A0B8 /* subway_model.cpp */; };
 		561FCFF71EF7C89B0003A0B8 /* subway_model.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 561FCFF51EF7C89B0003A0B8 /* subway_model.hpp */; };
 		561FCFF91EF7C8BF0003A0B8 /* subway_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 561FCFF81EF7C8BF0003A0B8 /* subway_test.cpp */; };
+		561FCFFB1EF818CE0003A0B8 /* libtess2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 561FCFFA1EF818CE0003A0B8 /* libtess2.a */; };
+		561FCFFD1EF818EA0003A0B8 /* libgenerator_tests_support.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 561FCFFC1EF818EA0003A0B8 /* libgenerator_tests_support.a */; };
+		561FCFFF1EF818F60003A0B8 /* libgenerator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 561FCFFE1EF818F60003A0B8 /* libgenerator.a */; };
+		561FD0011EF81BEE0003A0B8 /* libicu.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 561FD0001EF81BEE0003A0B8 /* libicu.a */; };
 		56555E561D897C90009D786D /* libalohalitics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6742ACE61C68A23B009CB89E /* libalohalitics.a */; };
 		56555E581D897C9D009D786D /* liboauthcpp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6742ACFA1C68A2D7009CB89E /* liboauthcpp.a */; };
 		56555E591D897D28009D786D /* testingmain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6742ACDE1C68A13F009CB89E /* testingmain.cpp */; };
@@ -332,6 +336,10 @@
 		561FCFF41EF7C89B0003A0B8 /* subway_model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = subway_model.cpp; sourceTree = "<group>"; };
 		561FCFF51EF7C89B0003A0B8 /* subway_model.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = subway_model.hpp; sourceTree = "<group>"; };
 		561FCFF81EF7C8BF0003A0B8 /* subway_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = subway_test.cpp; sourceTree = "<group>"; };
+		561FCFFA1EF818CE0003A0B8 /* libtess2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtess2.a; path = ../tess2/build/Debug/libtess2.a; sourceTree = "<group>"; };
+		561FCFFC1EF818EA0003A0B8 /* libgenerator_tests_support.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgenerator_tests_support.a; path = ../generator/build/Debug/libgenerator_tests_support.a; sourceTree = "<group>"; };
+		561FCFFE1EF818F60003A0B8 /* libgenerator.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgenerator.a; path = ../generator/build/Debug/libgenerator.a; sourceTree = "<group>"; };
+		561FD0001EF81BEE0003A0B8 /* libicu.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libicu.a; path = ../icu/build/Debug/libicu.a; sourceTree = "<group>"; };
 		5694CEC51EBA25F7004576D3 /* road_access_serialization.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = road_access_serialization.cpp; sourceTree = "<group>"; };
 		5694CEC61EBA25F7004576D3 /* road_access_serialization.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = road_access_serialization.hpp; sourceTree = "<group>"; };
 		5694CEC71EBA25F7004576D3 /* road_access.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = road_access.cpp; sourceTree = "<group>"; };
@@ -516,6 +524,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				561FD0011EF81BEE0003A0B8 /* libicu.a in Frameworks */,
+				561FCFFF1EF818F60003A0B8 /* libgenerator.a in Frameworks */,
+				561FCFFD1EF818EA0003A0B8 /* libgenerator_tests_support.a in Frameworks */,
+				561FCFFB1EF818CE0003A0B8 /* libtess2.a in Frameworks */,
 				56CA09E91E30F19800D05C9A /* libtraffic.a in Frameworks */,
 				3462FDAD1DC1E5BF00906FD7 /* libopening_hours.a in Frameworks */,
 				6742AD4D1C68AA59009CB89E /* librouting.a in Frameworks */,
@@ -586,6 +598,10 @@
 		56F0D7611D896DAF00045886 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				561FD0001EF81BEE0003A0B8 /* libicu.a */,
+				561FCFFE1EF818F60003A0B8 /* libgenerator.a */,
+				561FCFFC1EF818EA0003A0B8 /* libgenerator_tests_support.a */,
+				561FCFFA1EF818CE0003A0B8 /* libtess2.a */,
 				56CA09E81E30F19800D05C9A /* libtraffic.a */,
 				3462FDAC1DC1E5BF00906FD7 /* libopening_hours.a */,
 			);
