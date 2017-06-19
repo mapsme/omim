@@ -37,7 +37,7 @@ IRouter::ResultCode SubwayRouter::CalculateRoute(Checkpoints const & checkpoints
   auto finish = m_graph.GetNearestStation(checkpoints.GetPointTo());
 
   AStarAlgorithm<SubwayGraph> algorithm;
-  RoutingResult<WorldRoadPoint, SubwayGraph::TWeightType> result;
+  RoutingResult<SubwayVertex, SubwayGraph::TWeightType> result;
   auto const status = ConvertResult(algorithm.FindPath(m_graph, start, finish, result, delegate,
                                                        nullptr /* onVisitedVertexCallback */));
 
@@ -50,14 +50,14 @@ IRouter::ResultCode SubwayRouter::CalculateRoute(Checkpoints const & checkpoints
   return IRouter::NoError;
 }
 
-void SubwayRouter::SetGeometry(vector<WorldRoadPoint> const & vertexes, Route & route) const
+void SubwayRouter::SetGeometry(vector<SubwayVertex> const & vertexes, Route & route) const
 {
   vector<m2::PointD> points;
   points.reserve(vertexes.size());
 
   unordered_map<NumMwmId, unique_ptr<Geometry>> geometries;
 
-  for (WorldRoadPoint const & vertex : vertexes)
+  for (SubwayVertex const & vertex : vertexes)
   {
     auto const numMwmId = vertex.GetMwmId();
 

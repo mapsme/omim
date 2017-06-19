@@ -4,7 +4,7 @@
 #include "routing/router.hpp"
 #include "routing/subway_graph.hpp"
 #include "routing/subway_model.hpp"
-#include "routing/world_road_point.hpp"
+#include "routing/subway_vertex.hpp"
 
 #include "routing_common/vehicle_model.hpp"
 
@@ -27,7 +27,7 @@ public:
                                              RouterDelegate const & delegate, Route & route) override;
 
 private:
-  void SetGeometry(std::vector<WorldRoadPoint> const & vertexes, Route & route) const;
+  void SetGeometry(std::vector<SubwayVertex> const & vertexes, Route & route) const;
   void SetTimes(size_t routeSize, double time, Route & route) const;
 
   Index & m_index;

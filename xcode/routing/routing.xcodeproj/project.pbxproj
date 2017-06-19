@@ -53,10 +53,10 @@
 		0C8705051E0182F200BCAF71 /* route_point.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0C8705041E0182F200BCAF71 /* route_point.hpp */; };
 		0CF54E3C1EF7D2A200B1FB45 /* subway_graph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0CF54E3A1EF7D2A200B1FB45 /* subway_graph.cpp */; };
 		0CF54E3D1EF7D2A200B1FB45 /* subway_graph.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0CF54E3B1EF7D2A200B1FB45 /* subway_graph.hpp */; };
-		0CF54E3F1EF7D2D300B1FB45 /* world_road_point.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0CF54E3E1EF7D2D300B1FB45 /* world_road_point.hpp */; };
 		0CF54E411EF7DDDE00B1FB45 /* subway_edge.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0CF54E401EF7DDDE00B1FB45 /* subway_edge.hpp */; };
 		0CF54E441EF8077F00B1FB45 /* subway_router.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0CF54E421EF8077F00B1FB45 /* subway_router.cpp */; };
 		0CF54E451EF8077F00B1FB45 /* subway_router.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0CF54E431EF8077F00B1FB45 /* subway_router.hpp */; };
+		0CF54E471EF81C5700B1FB45 /* subway_vertex.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 0CF54E461EF81C5700B1FB45 /* subway_vertex.hpp */; };
 		0CF5E8AA1E8EA7A1001ED497 /* coding_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0CF5E8A91E8EA7A1001ED497 /* coding_test.cpp */; };
 		0CF709361F05172200D5067E /* checkpoints.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0CF709351F05172200D5067E /* checkpoints.cpp */; };
 		3462FDAD1DC1E5BF00906FD7 /* libopening_hours.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3462FDAC1DC1E5BF00906FD7 /* libopening_hours.a */; };
@@ -337,10 +337,10 @@
 		0C8705041E0182F200BCAF71 /* route_point.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = route_point.hpp; sourceTree = "<group>"; };
 		0CF54E3A1EF7D2A200B1FB45 /* subway_graph.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = subway_graph.cpp; sourceTree = "<group>"; };
 		0CF54E3B1EF7D2A200B1FB45 /* subway_graph.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = subway_graph.hpp; sourceTree = "<group>"; };
-		0CF54E3E1EF7D2D300B1FB45 /* world_road_point.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = world_road_point.hpp; sourceTree = "<group>"; };
 		0CF54E401EF7DDDE00B1FB45 /* subway_edge.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = subway_edge.hpp; sourceTree = "<group>"; };
 		0CF54E421EF8077F00B1FB45 /* subway_router.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = subway_router.cpp; sourceTree = "<group>"; };
 		0CF54E431EF8077F00B1FB45 /* subway_router.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = subway_router.hpp; sourceTree = "<group>"; };
+		0CF54E461EF81C5700B1FB45 /* subway_vertex.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = subway_vertex.hpp; sourceTree = "<group>"; };
 		0CF5E8A91E8EA7A1001ED497 /* coding_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = coding_test.cpp; sourceTree = "<group>"; };
 		0CF709351F05172200D5067E /* checkpoints.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = checkpoints.cpp; sourceTree = "<group>"; };
 		3462FDAC1DC1E5BF00906FD7 /* libopening_hours.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopening_hours.a; path = "../../../omim-build/xcode/Debug/libopening_hours.a"; sourceTree = "<group>"; };
@@ -897,6 +897,7 @@
 				0CF54E3B1EF7D2A200B1FB45 /* subway_graph.hpp */,
 				0CF54E421EF8077F00B1FB45 /* subway_router.cpp */,
 				0CF54E431EF8077F00B1FB45 /* subway_router.hpp */,
+				0CF54E461EF81C5700B1FB45 /* subway_vertex.hpp */,
 				0C090C831E4E275E00D52AFD /* traffic_stash.hpp */,
 				0C81E1511F02589800DC66DF /* traffic_stash.cpp */,
 				0C81E1521F02589800DC66DF /* traffic_stash.hpp */,
@@ -914,7 +915,6 @@
 				0C08AA361DF8324D004195DD /* vehicle_mask.hpp */,
 				0C090C851E4E276700D52AFD /* world_graph.cpp */,
 				0C090C861E4E276700D52AFD /* world_graph.hpp */,
-				0CF54E3E1EF7D2D300B1FB45 /* world_road_point.hpp */,
 			);
 			name = routing;
 			path = ../../routing;
@@ -973,7 +973,6 @@
 				A1616E2C1B6B60AB003F078E /* router_delegate.hpp in Headers */,
 				349D1CE11E3F589900A878FD /* restrictions_serialization.hpp in Headers */,
 				56C4392B1E93BF8C00998E29 /* cross_mwm_osrm_graph.hpp in Headers */,
-				0CF54E3F1EF7D2D300B1FB45 /* world_road_point.hpp in Headers */,
 				56CC5A371E3884960016AC46 /* cross_mwm_index_graph.hpp in Headers */,
 				0CF54E411EF7DDDE00B1FB45 /* subway_edge.hpp in Headers */,
 				67C7D42E1B4EB48F00FE41AA /* turns_sound_settings.hpp in Headers */,
@@ -1011,6 +1010,7 @@
 				A120B34F1B4A7C0A002F3808 /* online_absent_fetcher.hpp in Headers */,
 				0C62BFE61E8ADC3100055A79 /* coding.hpp in Headers */,
 				674F9BD51B0A580E00704FFA /* road_graph.hpp in Headers */,
+				0CF54E471EF81C5700B1FB45 /* subway_vertex.hpp in Headers */,
 				A120B3511B4A7C0A002F3808 /* routing_algorithm.hpp in Headers */,
 				0C5FEC6B1DDE193F0017688C /* road_point.hpp in Headers */,
 				56099E2B1CC7C97D00A7772A /* turn_candidate.hpp in Headers */,

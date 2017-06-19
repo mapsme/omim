@@ -1,7 +1,7 @@
 #pragma once
 
 #include "routing/subway_edge.hpp"
-#include "routing/world_road_point.hpp"
+#include "routing/subway_vertex.hpp"
 
 #include "indexer/feature.hpp"
 
@@ -13,7 +13,7 @@ class SubwayGraph final
 {
 public:
   // AStarAlgorithm types aliases:
-  using TVertexType = WorldRoadPoint;
+  using TVertexType = SubwayVertex;
   using TEdgeType = SubwayEdge;
   using TWeightType = double;
 
@@ -22,6 +22,6 @@ public:
   void GetIngoingEdgesList(TVertexType const & vertex, vector<TEdgeType> & edges);
   double HeuristicCostEstimate(TVertexType const & from, TVertexType const & to);
 
-  WorldRoadPoint GetNearestStation(m2::PointD const & point) const;
+  SubwayVertex GetNearestStation(m2::PointD const & point) const;
 };
 }  // namespace routing

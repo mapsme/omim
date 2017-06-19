@@ -139,6 +139,7 @@ HEADERS += \
     subway_graph.hpp \
     subway_model.hpp \
     subway_router.hpp \
+    subway_vertex.hpp \
     traffic_stash.hpp \
     transition_points.hpp \
     turn_candidate.hpp \
@@ -149,4 +150,3 @@ HEADERS += \
     turns_tts_text.hpp \
     vehicle_mask.hpp \
     world_graph.hpp \
-    world_road_point.hpp \

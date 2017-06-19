@@ -19,9 +19,9 @@ double SubwayGraph::HeuristicCostEstimate(TVertexType const & from, TVertexType 
   return 0.0;
 }
 
-WorldRoadPoint SubwayGraph::GetNearestStation(m2::PointD const & point) const
+SubwayVertex SubwayGraph::GetNearestStation(m2::PointD const & point) const
 {
   NOTIMPLEMENTED();
-  return WorldRoadPoint();
+  return SubwayVertex();
 }
 }  // namespace routing
