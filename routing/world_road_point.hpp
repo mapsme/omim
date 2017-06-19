@@ -2,9 +2,9 @@
 
 #include "routing/num_mwm_id.hpp"
 
-#include "std/cstdint.hpp"
-#include "std/sstream.hpp"
-#include "std/string.hpp"
+#include <cstdint>
+#include <sstream>
+#include <string>
 
 namespace routing
 {
@@ -38,15 +38,26 @@ public:
     return !(*this == rp);
   }
 
+  bool operator<(WorldRoadPoint const & rp) const
+  {
+    if (m_mwmId != rp.m_mwmId)
+      return m_mwmId < rp.m_mwmId;
+
+    if (m_featureId != rp.m_featureId)
+      return m_featureId < rp.m_featureId;
+
+    return m_pointId < rp.m_pointId;
+  }
+
 private:
   NumMwmId m_mwmId = kFakeNumMwmId;
   uint32_t m_featureId = 0;
   uint32_t m_pointId = 0;
 };
 
-inline string DebugPrint(WorldRoadPoint const & rp)
+inline std::string DebugPrint(WorldRoadPoint const & rp)
 {
-  ostringstream out;
+  std::ostringstream out;
   out << "WorldRoadPoint [" << rp.GetMwmId() << rp.GetFeatureId() << ", " << rp.GetPointId() << "]";
   return out.str();
 }

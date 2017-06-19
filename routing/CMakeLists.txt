@@ -40,7 +40,6 @@ set(
   cross_routing_context.hpp
   directions_engine.cpp
   directions_engine.hpp
-  edge.hpp
   edge_estimator.cpp
   edge_estimator.hpp
   features_road_graph.cpp
@@ -119,6 +118,7 @@ set(
   segmented_route.hpp
   speed_camera.cpp
   speed_camera.hpp
+  subway_edge.hpp
   subway_graph.cpp
   subway_graph.hpp
   subway_model.cpp
