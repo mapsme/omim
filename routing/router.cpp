@@ -10,6 +10,7 @@ std::string ToString(RouterType type)
   case RouterType::Pedestrian: return "pedestrian";
   case RouterType::Bicycle: return "bicycle";
   case RouterType::Taxi: return "taxi";
+  case RouterType::Subway: return "subway";
   case RouterType::Count: return "count";
   }
   ASSERT(false, ());
