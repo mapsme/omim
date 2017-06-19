@@ -70,4 +70,7 @@ colors
   PoiHotelTextOutline-opacity: 0.6;
   PoiDeletedMask-color: #FFFFFF;
   PoiDeletedMask-opacity: 0.3;
+  RouteSubwayBackground-color: #000000;
+  RouteSubwayBackground-opacity: 0.8;
+  RouteSubwayOutline-color: #111111;
 }
