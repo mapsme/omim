@@ -183,7 +183,7 @@ void RoutingManager::SetRouterImpl(routing::RouterType type)
   }
   else if (type == RouterType::Subway)
   {
-    router = new SubwayRouter(numMwmIds, indexGetterFn());
+    router = make_unique<SubwayRouter>(numMwmIds, indexGetterFn());
     m_routingSession.SetRoutingSettings(routing::GetSubwayRoutingSettings());
   }
   else
@@ -445,6 +445,9 @@ void RoutingManager::BuildRoute(uint32_t timeoutSec)
       tag = isP2P ? marketing::kRoutingP2PBicycleDiscovered : marketing::kRoutingBicycleDiscovered;
       break;
     case RouterType::Taxi:
+      tag = isP2P ? marketing::kRoutingP2PTaxiDiscovered : marketing::kRoutingTaxiDiscovered;
+      break;
+    case RouterType::Subway:
       tag = isP2P ? marketing::kRoutingP2PTaxiDiscovered : marketing::kRoutingTaxiDiscovered;
       break;
     case RouterType::Count: CHECK(false, ("Bad router type", m_currentRouterType));
