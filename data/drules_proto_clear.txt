@@ -65705,12 +65705,20 @@ colors {
     color: 4666933
   }
   value {
+    name: "RouteSubwayBackground"
+    color: 855638016
+  }
+  value {
     name: "RoutePedestrian"
     color: 857551774
   }
   value {
     name: "RoadShieldOrangeBackground"
     color: 16760320
+  }
+  value {
+    name: "RouteSubwayOutline"
+    color: 1118481
   }
   value {
     name: "Arrow3DOutline"
