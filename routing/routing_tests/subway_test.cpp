@@ -69,9 +69,9 @@ UNIT_TEST(SubwayGraphTest)
   //  |
   //  *-----*-----* Line (3)
   vector<TestSubway> const ways = {
-      {std::vector<m2::PointD>({{0.0, 0.0}, {0.001, 0.0}, {0.002, 0.0}}), TestSubway::Type::Line, "555555"},
-      {std::vector<m2::PointD>({{0.0, 0.0}, {0.0, 0.001}}), TestSubway::Type::Change, ""},
-      {std::vector<m2::PointD>({{0.0, 0.001}, {0.001, 0.001}, {0.002, 0.001}}), TestSubway::Type::Line, "555557"},
+      {std::vector<m2::PointD>({{0.0, 0.0}, {0.001, 0.0}, {0.002, 0.0}}), SubwayType::Line, "555555"},
+      {std::vector<m2::PointD>({{0.0, 0.0}, {0.0, 0.001}}), SubwayType::Change, ""},
+      {std::vector<m2::PointD>({{0.0, 0.001}, {0.001, 0.001}, {0.002, 0.001}}), SubwayType::Line, "555557"},
   };
   BuildMwm(ways, country);
   // @TODO It's necessary to test using SubwayGraph methods hears.
