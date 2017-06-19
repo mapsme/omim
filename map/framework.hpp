@@ -659,12 +659,12 @@ private:
   /// @returns true if command was handled by drape.
   bool ParseDrapeDebugCommand(std::string const & query);
 
-  void FillFeatureInfo(FeatureID const & fid, place_page::Info & info) const;
+  bool FillFeatureInfo(FeatureID const & fid, place_page::Info & info) const;
   /// @param customTitle, if not empty, overrides any other calculated name.
   void FillPointInfo(m2::PointD const & mercator, string const & customTitle, place_page::Info & info) const;
   void FillInfoFromFeatureType(FeatureType const & ft, place_page::Info & info) const;
   void FillApiMarkInfo(ApiMarkPoint const & api, place_page::Info & info) const;
-  void FillSearchResultInfo(SearchMarkPoint const & smp, place_page::Info & info) const;
+  bool FillSearchResultInfo(SearchMarkPoint const & smp, place_page::Info & info) const;
   void FillMyPositionInfo(place_page::Info & info, df::TapInfo const & tapInfo) const;
   void FillRouteMarkInfo(RouteMarkPoint const & rmp, place_page::Info & info) const;
 

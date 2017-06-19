@@ -377,6 +377,19 @@ IsSubwayChangeChecker const & IsSubwayChangeChecker::Instance()
   return inst;
 }
 
+IsSubwayStationChecker::IsSubwayStationChecker()
+  : BaseChecker(3 /* level */)
+{
+  Classificator const & c = classif();
+  m_types.push_back(c.GetTypeByPath({"railway", "station", "subway"}));
+}
+
+IsSubwayStationChecker const & IsSubwayStationChecker::Instance()
+{
+  static IsSubwayStationChecker const inst;
+  return inst;
+}
+
 IsBookingChecker::IsBookingChecker()
 {
   Classificator const & c = classif();

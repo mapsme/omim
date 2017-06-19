@@ -775,12 +775,12 @@ void Framework::FillBookmarkInfo(Bookmark const & bmk, BookmarkAndCategory const
   FillPointInfo(bmk.GetPivot(), {} /* customTitle */, info);
 }
 
-void Framework::FillFeatureInfo(FeatureID const & fid, place_page::Info & info) const
+bool Framework::FillFeatureInfo(FeatureID const & fid, place_page::Info & info) const
 {
   if (!fid.IsValid())
   {
     LOG(LERROR, ("FeatureID is invalid:", fid));
-    return;
+    return false;
   }
 
   Index::FeaturesLoaderGuard const guard(m_model.GetIndex(), fid.m_mwmId);
@@ -788,15 +788,19 @@ void Framework::FillFeatureInfo(FeatureID const & fid, place_page::Info & info) 
   if (!guard.GetFeatureByIndex(fid.m_index, ft))
   {
     LOG(LERROR, ("Feature can't be loaded:", fid));
-    return;
+    return false;
   }
+
+  // We can select only subway stations in subway mode.
+  if (m_subwayManager.IsEnabled() && !ftypes::IsSubwayStationChecker::Instance()(ft))
+    return false;
 
   FillInfoFromFeatureType(ft, info);
 
   // Fill countryId for place page info
   uint32_t const placeContinentType = classif().GetTypeByPath({"place", "continent"});
   if (info.GetTypes().Has(placeContinentType))
-    return;
+    return false;
 
   uint32_t const placeCountryType = classif().GetTypeByPath({"place", "country"});
   uint32_t const placeStateType = classif().GetTypeByPath({"place", "state"});
@@ -815,6 +819,7 @@ void Framework::FillFeatureInfo(FeatureID const & fid, place_page::Info & info) 
     info.SetCountryId(countryId);
     info.SetTopmostCountryIds(move(countries));
   }
+  return true;
 }
 
 void Framework::FillPointInfo(m2::PointD const & mercator, string const & customTitle, place_page::Info & info) const
@@ -932,12 +937,13 @@ void Framework::FillApiMarkInfo(ApiMarkPoint const & api, place_page::Info & inf
   info.SetApiUrl(GenerateApiBackUrl(api));
 }
 
-void Framework::FillSearchResultInfo(SearchMarkPoint const & smp, place_page::Info & info) const
+bool Framework::FillSearchResultInfo(SearchMarkPoint const & smp, place_page::Info & info) const
 {
   if (smp.GetFoundFeature().IsValid())
-    FillFeatureInfo(smp.GetFoundFeature(), info);
-  else
-    FillPointInfo(smp.GetPivot(), smp.GetMatchedName(), info);
+    return FillFeatureInfo(smp.GetFoundFeature(), info);
+
+  FillPointInfo(smp.GetPivot(), smp.GetMatchedName(), info);
+  return true;
 }
 
 void Framework::FillMyPositionInfo(place_page::Info & info, df::TapInfo const & tapInfo) const
@@ -1677,10 +1683,11 @@ void Framework::SelectSearchResult(search::Result const & result, bool animation
   place_page::Info info;
   using namespace search;
   int scale;
+  bool needShow = true;
   switch (result.GetResultType())
   {
   case Result::RESULT_FEATURE:
-    FillFeatureInfo(result.GetFeatureID(), info);
+    needShow = FillFeatureInfo(result.GetFeatureID(), info);
     scale = GetFeatureViewportScale(info.GetTypes());
     break;
 
@@ -1692,6 +1699,9 @@ void Framework::SelectSearchResult(search::Result const & result, bool animation
   case Result::RESULT_SUGGEST_PURE:
   case Result::RESULT_SUGGEST_FROM_FEATURE: ASSERT(false, ("Suggests should not be here.")); return;
   }
+
+  if (!needShow)
+    return;
 
   m2::PointD const center = info.GetMercator();
   if (m_drapeEngine != nullptr)
@@ -2484,6 +2494,7 @@ df::SelectionShape::ESelectedObject Framework::OnTapEventImpl(TapEvent const & t
   UserMark const * mark = FindUserMarkInTapPosition(tapInfo);
   if (mark != nullptr)
   {
+    bool needShow = true;
     switch (mark->GetMarkType())
     {
     case UserMark::Type::API:
@@ -2493,7 +2504,7 @@ df::SelectionShape::ESelectedObject Framework::OnTapEventImpl(TapEvent const & t
       FillBookmarkInfo(*static_cast<Bookmark const *>(mark), FindBookmark(mark), outInfo);
       break;
     case UserMark::Type::SEARCH:
-      FillSearchResultInfo(*static_cast<SearchMarkPoint const *>(mark), outInfo);
+      needShow = FillSearchResultInfo(*static_cast<SearchMarkPoint const *>(mark), outInfo);
       break;
     case UserMark::Type::ROUTING:
       FillRouteMarkInfo(*static_cast<RouteMarkPoint const *>(mark), outInfo);
@@ -2501,7 +2512,8 @@ df::SelectionShape::ESelectedObject Framework::OnTapEventImpl(TapEvent const & t
     default:
       ASSERT(false, ("FindNearestUserMark returned invalid mark."));
     }
-    return df::SelectionShape::OBJECT_USER_MARK;
+    return needShow ? df::SelectionShape::OBJECT_USER_MARK
+                    : df::SelectionShape::OBJECT_EMPTY;
   }
 
   FeatureID featureTapped = tapInfo.m_featureTapped;
@@ -2512,8 +2524,8 @@ df::SelectionShape::ESelectedObject Framework::OnTapEventImpl(TapEvent const & t
   bool showMapSelection = false;
   if (featureTapped.IsValid())
   {
-    FillFeatureInfo(featureTapped, outInfo);
-    showMapSelection = true;
+    if (FillFeatureInfo(featureTapped, outInfo))
+      showMapSelection = true;
   }
   else if (tapInfo.m_isLong || tapEvent.m_source == TapEvent::Source::Search)
   {
