@@ -62,6 +62,7 @@ SOURCES += \
     routing_settings.cpp \
     segmented_route.cpp \
     speed_camera.cpp \
+    subway_model.cpp \
     traffic_stash.cpp \
     turns.cpp \
     turns_generator.cpp \
@@ -132,6 +133,7 @@ HEADERS += \
     segment.hpp \
     segmented_route.hpp \
     speed_camera.hpp \
+    subway_model.hpp \
     traffic_stash.hpp \
     transition_points.hpp \
     turn_candidate.hpp \
