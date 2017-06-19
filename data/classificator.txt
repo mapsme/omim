@@ -891,6 +891,10 @@ world  +
         swimming  -
         tennis  -
         {}
+    subway_meta  +
+        change  -
+        line  -
+        {}
     tourism  +
         alpine_hut  -
         apartment  -

@@ -1198,3 +1198,5 @@ shop|video
 tourism|theme_park
 tourism|wilderness_hut
 sponsored|cian
+subway_meta|line
+subway_meta|change
