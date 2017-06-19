@@ -57,4 +57,11 @@ inline RoutingSettings GetBicycleRoutingSettings()
                            30. /* m_matchingThresholdM */, false /* m_keepPedestrianInfo */,
                            false /* m_showTurnAfterNext */, false /* m_speedCameraWarning*/});
 }
+
+inline RoutingSettings GetSubwayRoutingSettings()
+{
+  return RoutingSettings({ true /* m_matchRoute */, true /* m_soundDirection */,
+                           50. /* m_matchingThresholdM */, false /* m_keepPedestrianInfo */,
+                           true /* m_showTurnAfterNext */, true /* m_speedCameraWarning*/});
+}
 }  // namespace routing
