@@ -117,6 +117,7 @@ public:
   inline void SetStreetNames(TStreets && v) { m_streets = move(v); }
   inline void SetAltitudes(feature::TAltitudes && v) { m_altitudes = move(v); }
   inline void SetTraffic(vector<traffic::SpeedGroup> && v) { m_traffic = move(v); }
+  inline void SetColors(vector<std::string> && colors) { m_colors = move(colors); }
   /// \brief Glues all |route| attributes to |this| except for |m_altitudes|.
   // @TODO In the future this method should append |m_altitudes| as well.
   // It's not implemented now because it's not easy to do it and it'll not be used in
@@ -137,6 +138,7 @@ public:
   TTurns const & GetTurns() const { return m_turns; }
   feature::TAltitudes const & GetAltitudes() const { return m_altitudes; }
   vector<traffic::SpeedGroup> const & GetTraffic() const { return m_traffic; }
+  vector<std::string> const & GetColors() const { return m_colors; }
   vector<double> const & GetSegDistanceMeters() const { return m_poly.GetSegDistanceM(); }
   /// \returns distance to all turns in mercator.
   void GetTurnsDistances(vector<double> & distances) const;
@@ -239,6 +241,7 @@ private:
   TStreets m_streets;
   feature::TAltitudes m_altitudes;
   vector<traffic::SpeedGroup> m_traffic;
+  vector<std::string> m_colors;
 
   mutable double m_currentTime;
 
