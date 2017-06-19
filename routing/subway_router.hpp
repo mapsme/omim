@@ -29,7 +29,7 @@ public:
                                              Route & route) override;
 
 private:
-  void SetGeometry(std::vector<SubwayVertex> const & vertexes, Route & route) const;
+  void SetRouteAttrs(std::vector<SubwayVertex> const &vertexes, Route &route) const;
   void SetTimes(size_t routeSize, double time, Route & route) const;
 
   Index & m_index;

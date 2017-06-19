@@ -117,7 +117,7 @@ public:
   inline void SetStreetNames(TStreets && v) { m_streets = move(v); }
   inline void SetAltitudes(feature::TAltitudes && v) { m_altitudes = move(v); }
   inline void SetTraffic(vector<traffic::SpeedGroup> && v) { m_traffic = move(v); }
-  inline void SetColors(vector<std::string> && colors) { m_colors = move(colors); }
+  inline void SetColors(vector<std::string> && v) { m_colors = move(v); }
   /// \brief Glues all |route| attributes to |this| except for |m_altitudes|.
   // @TODO In the future this method should append |m_altitudes| as well.
   // It's not implemented now because it's not easy to do it and it'll not be used in
