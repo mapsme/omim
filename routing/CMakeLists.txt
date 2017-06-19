@@ -108,6 +108,8 @@ set(
   segment.hpp
   speed_camera.cpp
   speed_camera.hpp
+  subway_model.cpp
+  subway_model.hpp
   traffic_stash.hpp
   transition_points.hpp
   turn_candidate.hpp
