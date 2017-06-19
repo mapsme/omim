@@ -44,7 +44,7 @@ dp::Color ToDrapeColor(uint32_t src)
 
 dp::Color ToDrapeColor(std::string const & hexColor)
 {
-  uint32_t color = 0;
+  uint32_t color;
   if (!strings::to_uint(hexColor, color, 16))
     color = 0;
   return ToDrapeColor(color);

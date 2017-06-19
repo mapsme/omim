@@ -1,4 +1,5 @@
 #include "drape_frontend/route_shape.hpp"
+#include "drape_frontend/apply_feature_functors.hpp"
 #include "drape_frontend/line_shape_helper.hpp"
 #include "drape_frontend/shader_def.hpp"
 #include "drape_frontend/shape_view_params.hpp"
@@ -399,16 +400,31 @@ void RouteShape::CacheRouteArrows(ref_ptr<dp::TextureManager> mng, m2::PolylineD
 void RouteShape::CacheRoute(ref_ptr<dp::TextureManager> textures, RouteData & routeData)
 {
   std::vector<glsl::vec4> segmentsColors;
-  segmentsColors.reserve(routeData.m_subroute->m_traffic.size());
-  for (auto speedGroup : routeData.m_subroute->m_traffic)
+  if (!routeData.m_subroute->m_traffic.empty())
   {
-    speedGroup = TrafficGenerator::CheckColorsSimplification(speedGroup);
-    auto const colorConstant = TrafficGenerator::GetColorBySpeedGroup(speedGroup, true /* route */);
-    dp::Color const color = df::GetColorConstant(colorConstant);
-    float const alpha = (speedGroup == traffic::SpeedGroup::G4 ||
-                         speedGroup == traffic::SpeedGroup::G5 ||
-                         speedGroup == traffic::SpeedGroup::Unknown) ? 0.0f : 1.0f;
-    segmentsColors.emplace_back(color.GetRedF(), color.GetGreenF(), color.GetBlueF(), alpha);
+    segmentsColors.reserve(routeData.m_subroute->m_traffic.size());
+    for (auto speedGroup : routeData.m_subroute->m_traffic)
+    {
+      speedGroup = TrafficGenerator::CheckColorsSimplification(speedGroup);
+      auto const colorConstant = TrafficGenerator::GetColorBySpeedGroup(speedGroup, true /* route */);
+      dp::Color const color = df::GetColorConstant(colorConstant);
+      float const alpha = (speedGroup == traffic::SpeedGroup::G4 ||
+                           speedGroup == traffic::SpeedGroup::G5 ||
+                           speedGroup == traffic::SpeedGroup::Unknown) ? 0.0f : 1.0f;
+      segmentsColors.push_back(glsl::vec4(color.GetRedF(), color.GetGreenF(), color.GetBlueF(), alpha));
+    }
+  }
+  else if (!routeData.m_subroute->m_subwayColoring.empty())
+  {
+    segmentsColors.reserve(routeData.m_subroute->m_subwayColoring.size());
+    for (auto subwayColor : routeData.m_subroute->m_subwayColoring)
+    {
+      static std::string const kDefaultColor = "ffffff";
+      if (subwayColor.empty())
+        subwayColor = kDefaultColor;
+      dp::Color const color = ToDrapeColor(subwayColor);
+      segmentsColors.push_back(glsl::vec4(color.GetRedF(), color.GetGreenF(), color.GetBlueF(), 1.0f));
+    }
   }
 
   TGeometryBuffer geometry;

@@ -88,17 +88,16 @@ void SubwayManager::RemovePoints()
 
 void SubwayManager::CheckAndBuild()
 {
+  ClearRoute();
+
   auto const points = m_routingManager->GetRoutePoints();
   if (points.size() < 2)
-  {
-    ClearRoute();
     return;
-  }
   m_routingManager->BuildSubwayRoute(points.front().m_position,
                                      points.back().m_position);
 }
 
 void SubwayManager::ClearRoute()
 {
-  //TODO: clear built route
+  m_routingManager->CloseRouting(false /* remove route points */);
 }

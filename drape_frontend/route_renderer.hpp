@@ -22,6 +22,8 @@ extern std::string const kRouteColor;
 extern std::string const kRouteOutlineColor;
 extern std::string const kRoutePedestrian;
 extern std::string const kRouteBicycle;
+extern std::string const kRouteSubwayBackgroundColor;
+extern std::string const kRouteSubwayOutlineColor;
 
 class RouteRenderer final
 {
@@ -39,7 +41,8 @@ public:
 
   void UpdateRoute(ScreenBase const & screen, CacheRouteArrowsCallback const & callback);
 
-  void RenderRoute(ScreenBase const & screen, bool trafficShown, ref_ptr<dp::GpuProgramManager> mng,
+  void RenderRoute(ScreenBase const & screen, bool needShowColoring,
+                   ref_ptr<dp::GpuProgramManager> mng,
                    dp::UniformValuesStorage const & commonUniforms);
 
   void AddRouteData(drape_ptr<RouteData> && routeData, ref_ptr<dp::GpuProgramManager> mng);
@@ -80,7 +83,7 @@ private:
   };
 
   void RenderRouteData(drape_ptr<RouteData> const & routeData, ScreenBase const & screen,
-                       bool trafficShown, ref_ptr<dp::GpuProgramManager> mng,
+                       bool needShowColoring, ref_ptr<dp::GpuProgramManager> mng,
                        dp::UniformValuesStorage const & commonUniforms);
   void RenderRouteArrowData(dp::DrapeID subrouteId, RouteAdditional const & routeAdditional,
                             ScreenBase const & screen, ref_ptr<dp::GpuProgramManager> mng,

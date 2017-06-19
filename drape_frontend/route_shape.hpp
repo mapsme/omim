@@ -39,7 +39,8 @@ enum class RouteType : uint8_t
   Car,
   Pedestrian,
   Bicycle,
-  Taxi
+  Taxi,
+  Subway
 };
 
 struct RoutePattern
@@ -64,6 +65,7 @@ struct Subroute
   df::ColorConstant m_color;
   std::vector<double> m_turns;
   std::vector<traffic::SpeedGroup> m_traffic;
+  std::vector<std::string> m_subwayColoring;
   double m_baseDistance = 0.0;
   double m_baseDepthIndex = 0.0;
   df::RoutePattern m_pattern;
