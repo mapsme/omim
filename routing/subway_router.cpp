@@ -23,7 +23,7 @@ IRouter::ResultCode ConvertResult(typename AStarAlgorithm<SubwayGraph>::Result r
 
 namespace routing
 {
-SubwayRouter::SubwayRouter(Index & index, std::shared_ptr<NumMwmIds> numMwmIds)
+SubwayRouter::SubwayRouter(std::shared_ptr<NumMwmIds> numMwmIds, Index & index)
   : m_index(index), m_numMwmIds(std::move(numMwmIds))
 {
   CHECK(m_numMwmIds, ());

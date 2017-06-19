@@ -18,7 +18,7 @@ namespace routing
 class SubwayRouter final : public IRouter
 {
 public:
-  SubwayRouter(Index & index, std::shared_ptr<NumMwmIds> numMwmIds);
+  SubwayRouter(std::shared_ptr<NumMwmIds> numMwmIds, Index & index);
 
   // IRouter overrides:
   virtual string GetName() const override { return "subway"; }
