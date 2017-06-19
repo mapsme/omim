@@ -11,6 +11,7 @@
 #include "map/place_page_info.hpp"
 #include "map/routing_manager.hpp"
 #include "map/routing_mark.hpp"
+#include "map/subway_manager.hpp"
 #include "map/track.hpp"
 #include "map/traffic_manager.hpp"
 
@@ -191,6 +192,8 @@ protected:
   TrafficManager m_trafficManager;
 
   LocalAdsManager m_localAdsManager;
+
+  SubwayManager m_subwayManager;
 
   /// This function will be called by m_storage when latest local files
   /// is downloaded.
@@ -769,6 +772,8 @@ public:
   TrafficManager & GetTrafficManager();
 
   LocalAdsManager & GetLocalAdsManager();
+
+  SubwayManager & GetSubwayManager();
 
   bool LoadTrafficEnabled();
   void SaveTrafficEnabled(bool trafficEnabled);

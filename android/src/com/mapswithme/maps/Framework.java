@@ -339,4 +339,9 @@ public class Framework
                                                    double lat, double lon, int accuracy);
 
   public static native void nativeRunFirstLaunchAnimation();
+
+  public static native boolean nativeIsSubwayModeEnabled();
+  public static native void nativeSetSubwayStartPoint(double lat, double lon);
+  public static native void nativeSetSubwayFinishPoint(double lat, double lon);
+  public static native void nativeClearSubwayRoute();
 }

@@ -270,6 +270,11 @@ LocalAdsManager & Framework::GetLocalAdsManager()
   return m_localAdsManager;
 }
 
+SubwayManager & Framework::GetSubwayManager()
+{
+  return m_subwayManager;
+}
+
 void Framework::OnUserPositionChanged(m2::PointD const & position)
 {
   MyPositionMarkPoint * myPosition = UserMarkContainer::UserMarkForMyPostion();
@@ -1893,6 +1898,7 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
   m_routingManager.SetDrapeEngine(make_ref(m_drapeEngine), allow3d);
   m_trafficManager.SetDrapeEngine(make_ref(m_drapeEngine));
   m_localAdsManager.SetDrapeEngine(make_ref(m_drapeEngine));
+  m_subwayManager.SetDrapeEngine(make_ref(m_drapeEngine));
 
   benchmark::RunGraphicsBenchmark(this);
 }
@@ -2749,6 +2755,17 @@ bool Framework::ParseDrapeDebugCommand(std::string const & query)
   {
     m_drapeEngine->SetPosteffectEnabled(df::PostprocessRenderer::Antialiasing,
                                         false /* enabled */);
+    return true;
+  }
+
+  if (query == "?subway")
+  {
+    m_subwayManager.SetEnabled(true);
+    return true;
+  }
+  else if (query == "?no-subway")
+  {
+    m_subwayManager.SetEnabled(false);
     return true;
   }
 

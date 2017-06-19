@@ -1354,4 +1354,30 @@ Java_com_mapswithme_maps_Framework_nativeRunFirstLaunchAnimation(JNIEnv * env, j
 {
   frm()->RunFirstLaunchAnimation();
 }
+
+JNIEXPORT jboolean JNICALL
+Java_com_mapswithme_maps_Framework_nativeIsSubwayModeEnabled(JNIEnv * env, jclass)
+{
+  return frm()->GetSubwayManager().IsEnabled();
+}
+
+JNIEXPORT void JNICALL
+Java_com_mapswithme_maps_Framework_nativeSetSubwayStartPoint(JNIEnv * env, jclass,
+                                                             jdouble lat, jdouble lon)
+{
+  frm()->GetSubwayManager().SetStartPoint(m2::PointD(MercatorBounds::FromLatLon(lat, lon)));
+}
+
+JNIEXPORT void JNICALL
+Java_com_mapswithme_maps_Framework_nativeSetSubwayFinishPoint(JNIEnv * env, jclass,
+                                                              jdouble lat, jdouble lon)
+{
+  frm()->GetSubwayManager().SetFinishPoint(m2::PointD(MercatorBounds::FromLatLon(lat, lon)));
+}
+
+JNIEXPORT void JNICALL
+Java_com_mapswithme_maps_Framework_nativeClearSubwayRoute(JNIEnv * env, jclass)
+{
+  frm()->GetSubwayManager().ClearRoute();
+}
 }  // extern "C"
