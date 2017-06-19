@@ -175,3 +175,5 @@
 @shield_text_halo: #000000;
 @shield: #000000;
 @shield_outline: #b2b2b2;
+
+@subway_default: #000000;
