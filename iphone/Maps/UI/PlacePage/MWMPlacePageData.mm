@@ -4,6 +4,7 @@
 #import "MWMLocationManager.h"
 #import "MWMNetworkPolicy.h"
 #import "MWMSettings.h"
+#import "MWMUGCReviewVM.h"
 #import "Statistics.h"
 #import "SwiftBridge.h"
 
@@ -12,6 +13,8 @@
 #include "Framework.h"
 
 #include "partners_api/banner.hpp"
+
+#include "ugc/api.hpp"
 
 #include "base/string_utils.hpp"
 
@@ -30,17 +33,20 @@ using namespace place_page;
 @property(copy, nonatomic) NSString * cachedMinPrice;
 @property(nonatomic) id<MWMBanner> nativeAd;
 @property(copy, nonatomic) NSArray<MWMGalleryItemModel *> * photos;
+@property(nonatomic) MWMUGCReviewVM<MWMUGCSpecificReviewDelegate, MWMUGCTextReviewDelegate> * reviewViewModel;
 
 @end
 
 @implementation MWMPlacePageData
 {
   Info m_info;
+  ugc::UGC m_ugc;
 
   vector<Sections> m_sections;
   vector<PreviewRows> m_previewRows;
   vector<MetainfoRows> m_metainfoRows;
   vector<AdRows> m_adRows;
+  vector<UGCRow> m_ugcRows;
   vector<ButtonsRows> m_buttonsRows;
   vector<HotelPhotosRow> m_hotelPhotosRows;
   vector<HotelDescriptionRow> m_hotelDescriptionRows;
@@ -59,12 +65,15 @@ using namespace place_page;
   return self;
 }
 
+#pragma mark - Filling sections
+
 - (void)fillSections
 {
   m_sections.clear();
   m_previewRows.clear();
   m_metainfoRows.clear();
   m_adRows.clear();
+  m_ugcRows.clear();
   m_buttonsRows.clear();
   m_hotelPhotosRows.clear();
   m_hotelDescriptionRows.clear();
@@ -86,6 +95,12 @@ using namespace place_page;
   {
     m_sections.push_back(Sections::Ad);
     m_adRows.push_back(AdRows::Taxi);
+  }
+
+  if (true /* Is possible to leave review */)
+  {
+    m_sections.push_back(Sections::UGC);
+    [self fillUGCSection];
   }
 
   // There is at least one of these buttons.
@@ -279,11 +294,53 @@ using namespace place_page;
           length++;
         }
 
-        self.sectionsAreReadyCallback({position, length}, self);
+        self.sectionsAreReadyCallback({position, length}, self, YES /* It's a section */);
       });
     });
   });
 }
+
+- (void)fillUGCSection
+{
+  m_ugcRows.push_back(UGCRow::SelectImpression);
+
+  auto & f = GetFramework();
+  f.GetUGCApi().GetUGC(self.featureId, [self](ugc::UGC const & ugc) {
+    auto const it = find(self->m_sections.begin(), self->m_sections.end(), Sections::UGC);
+    ASSERT(it != self->m_sections.end(), ());
+
+    auto const position = static_cast<NSUInteger>(distance(self->m_sections.begin(), it));
+    auto length = 0UL;
+
+    self->m_ugc = ugc;
+    auto constexpr maxNumberOfReviews = 3UL;
+    auto const size = ugc.m_reviews.size();
+    if (size > maxNumberOfReviews)
+    {
+      self->m_ugcRows.insert(m_ugcRows.end(), maxNumberOfReviews, UGCRow::Comment);
+      length += maxNumberOfReviews;
+      self->m_ugcRows.emplace_back(UGCRow::ShowMore);
+      length++;
+    }
+    else
+    {
+      self->m_ugcRows.insert(m_ugcRows.end(), size, UGCRow::Comment);
+      length += size;
+    }
+
+    self.sectionsAreReadyCallback({position, length}, self, NO /* It's not a section */);
+  });
+
+  // TODO: Complete static ugc with dynamic one.
+  f.GetUGCApi().GetUGCUpdate(self.featureId, [self](ugc::UGCUpdate const & ugc) {
+    self.reviewViewModel = static_cast<MWMUGCReviewVM<MWMUGCSpecificReviewDelegate, MWMUGCTextReviewDelegate> *>(
+                                                                   [MWMUGCReviewVM fromUGC:ugc
+                                                                                 featureId:self.featureId
+                                                                                      name:self.title]);
+  });
+}
+
+#pragma mark - Update bookmark status
 
 - (void)updateBookmarkStatus:(BOOL)isBookmark
 {
@@ -320,8 +377,12 @@ using namespace place_page;
   }
 }
 
+#pragma mark - Dealloc
+
 - (void)dealloc
 {
+// TODO: Submit ugc.
+//  [self.reviewViewModel submit];
   if (self.nativeAd)
     [[MWMBannersCache cache] bannerIsOutOfScreenWithCoreBanner:self.nativeAd];
 }
@@ -440,8 +501,11 @@ using namespace place_page;
 
 - (NSString *)hotelDescription { return @(m_hotelInfo.m_description.c_str()); }
 - (vector<booking::HotelFacility> const &)facilities { return m_hotelInfo.m_facilities; }
-- (vector<booking::HotelReview> const &)reviews { return m_hotelInfo.m_reviews; }
-- (NSUInteger)numberOfReviews { return m_hotelInfo.m_scoreCount; }
+- (vector<booking::HotelReview> const &)hotelReviews { return m_hotelInfo.m_reviews; }
+- (NSUInteger)numberOfHotelReviews { return m_hotelInfo.m_scoreCount; }
+
+- (vector<ugc::Review> const &)ugcReviews { return m_ugc.m_reviews; }
+
 - (NSURL *)URLToAllReviews { return [NSURL URLWithString:@(m_info.GetSponsoredReviewUrl().c_str())]; }
 - (NSArray<MWMGalleryItemModel *> *)photos
 {
@@ -526,6 +590,7 @@ using namespace place_page;
 - (vector<MetainfoRows> const &)metainfoRows { return m_metainfoRows; }
 - (vector<MetainfoRows> &)mutableMetainfoRows { return m_metainfoRows; }
 - (vector<AdRows> const &)adRows { return m_adRows; }
+- (vector<UGCRow> const &)ugcRows { return m_ugcRows; }
 - (vector<ButtonsRows> const &)buttonsRows { return m_buttonsRows; }
 - (vector<HotelPhotosRow> const &)photosRows { return m_hotelPhotosRows; }
 - (vector<HotelDescriptionRow> const &)descriptionRows { return m_hotelDescriptionRows; }

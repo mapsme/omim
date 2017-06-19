@@ -16,5 +16,6 @@ typedef UIView * (^MWMPlacePageButtonsDismissBlock)(NSInteger);
 - (void)showGalery;
 
 - (void)openLocalAdsURL;
+- (void)reviewOn:(NSInteger)starNumber;
 
 @end
