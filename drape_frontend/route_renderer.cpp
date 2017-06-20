@@ -43,8 +43,6 @@ std::vector<float> const kHalfWidthInPixelOthers =
   1.5f, 1.5f, 2.0f, 2.5f, 3.0, 4.0f, 5.0f, 5.0f, 9.0f, 13.0f
 };
 
-
-
 std::vector<float> const kPreviewPointRadiusInPixel =
 {
   // 1   2     3     4     5     6     7     8     9     10
@@ -68,8 +66,12 @@ void InterpolateByZoom(drape_ptr<RouteSegment> const & routeSegment, ScreenBase 
   ExtractZoomFactors(screen, zoom, index, lerpCoef);
 
   std::vector<float> const * halfWidthInPixel = &kHalfWidthInPixelOthers;
-  if (routeSegment->m_routeType == RouteType::Car || routeSegment->m_routeType == RouteType::Taxi)
+  if (routeSegment->m_routeType == RouteType::Car ||
+      routeSegment->m_routeType == RouteType::Taxi ||
+      routeSegment->m_routeType == RouteType::Subway)
+  {
     halfWidthInPixel = &kHalfWidthInPixelCar;
+  }
 
   halfWidth = InterpolateByZoomLevels(index, lerpCoef, *halfWidthInPixel);
   halfWidth *= static_cast<float>(df::VisualParams::Instance().GetVisualScale());

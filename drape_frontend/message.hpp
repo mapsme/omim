@@ -46,6 +46,7 @@ public:
     SetRouteSegmentVisibility,
     AddRoutePreviewSegment,
     RemoveRoutePreviewSegment,
+    UpdateRouteTime,
     UpdateMapStyle,
     SwitchMapStyle,
     Invalidate,

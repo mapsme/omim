@@ -18,6 +18,7 @@ enum EWidget
   WIDGET_COMPASS = 0x2,
   WIDGET_COPYRIGHT = 0x4,
   WIDGET_SCALE_LABEL = 0x8,
+  WIDGET_SUBWAY_LABEL = 0x10,
   /// Following widgets controlled by rendering kernel. Don't use them in platform code
   WIDGET_CHOOSE_POSITION_MARK = 0x8000,
 #ifdef RENRER_DEBUG_INFO_LABELS
@@ -32,14 +33,7 @@ enum EGuiHandle
   GuiHandleCompass,
   GuiHandleRuler,
   GuiHandleRulerLabel,
-  GuiHandleCountryLabel,
-  GuiHandleCountryProgress,
-  GuiHandleDownloadButton,
-  GuiHandleDownloadButtonLabel,
-  GuiHandleRetryButton,
-  GuiHandleRetryButtonLabel,
-  GuiHandleCancelButton,
-  GuiHandleCancelButtonLabel,
+  GuiHandleSubwayLabel,
   GuiHandleChoosePositionMark,
 #ifdef RENRER_DEBUG_INFO_LABELS
   GuiHandleDebugLabel = 100

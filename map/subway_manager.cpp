@@ -67,6 +67,7 @@ void SubwayManager::RemoveStartPoint()
   if (!m_isEnabled || m_routingManager == nullptr)
     return;
   m_routingManager->RemoveRoutePoint(RouteMarkType::Start);
+  ClearRoute();
 }
 
 void SubwayManager::RemoveFinishPoint()
@@ -74,6 +75,7 @@ void SubwayManager::RemoveFinishPoint()
   if (!m_isEnabled || m_routingManager == nullptr)
     return;
   m_routingManager->RemoveRoutePoint(RouteMarkType::Finish);
+  ClearRoute();
 }
 
 void SubwayManager::RemovePoints()

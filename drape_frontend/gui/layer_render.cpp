@@ -1,12 +1,14 @@
-#include "choose_position_mark.hpp"
-#include "compass.hpp"
-#include "copyright_label.hpp"
-#include "debug_label.hpp"
-#include "drape_gui.hpp"
-#include "gui_text.hpp"
-#include "layer_render.hpp"
-#include "ruler.hpp"
-#include "ruler_helper.hpp"
+#include "drape_frontend/gui/layer_render.hpp"
+
+#include "drape_frontend/gui/choose_position_mark.hpp"
+#include "drape_frontend/gui/compass.hpp"
+#include "drape_frontend/gui/copyright_label.hpp"
+#include "drape_frontend/gui/debug_label.hpp"
+#include "drape_frontend/gui/drape_gui.hpp"
+#include "drape_frontend/gui/gui_text.hpp"
+#include "drape_frontend/gui/ruler.hpp"
+#include "drape_frontend/gui/ruler_helper.hpp"
+#include "drape_frontend/gui/subway_label_helper.hpp"
 
 #include "drape_frontend/visual_params.hpp"
 
@@ -181,7 +183,32 @@ private:
   int m_scale;
 };
 
-} // namespace
+class SubwayLabelHandle : public MutableLabelHandle
+{
+  using TBase = MutableLabelHandle;
+public:
+  SubwayLabelHandle(uint32_t id, ref_ptr<dp::TextureManager> textures)
+    : TBase(id, dp::LeftBottom, m2::PointF::Zero(), textures)
+  {
+    auto & helper = DrapeGui::Instance().GetSubwayLabelHelper();
+    SetIsVisible(helper.IsVisible());
+  }
+
+  bool Update(ScreenBase const & screen) override
+  {
+    auto & helper = DrapeGui::Instance().GetSubwayLabelHelper();
+    SetIsVisible(helper.IsVisible());
+
+    if (helper.IsTextDirty())
+      SetContent(helper.GetText());
+
+    float const vs = static_cast<float>(df::VisualParams::Instance().GetVisualScale());
+    m2::PointF const offset(10.0f * vs, 10.0f * vs);
+    SetPivot(glsl::ToVec2(screen.PtoP3d(screen.GtoP(helper.GetPosition())) + offset));
+    return TBase::Update(screen);
+  }
+};
+}  // namespace
 
 drape_ptr<LayerRenderer> LayerCacher::RecacheWidgets(TWidgetsInitInfo const & initInfo, ref_ptr<dp::TextureManager> textures)
 {
@@ -201,6 +228,8 @@ drape_ptr<LayerRenderer> LayerCacher::RecacheWidgets(TWidgetsInitInfo const & in
     if (cacheFunction != cacheFunctions.end())
       cacheFunction->second(node.second, make_ref(renderer), textures);
   }
+
+  CacheSubwayLabel(gui::Position(dp::Anchor::LeftBottom), make_ref(renderer), textures);
 
   // Flush gui geometry.
   GLFunctions::glFlush();
@@ -368,4 +397,25 @@ m2::PointF LayerCacher::CacheScaleLabel(Position const & position, ref_ptr<Layer
   return size;
 }
 
-} // namespace gui
+m2::PointF LayerCacher::CacheSubwayLabel(Position const & position, ref_ptr<LayerRenderer> renderer,
+                                         ref_ptr<dp::TextureManager> textures)
+{
+  MutableLabelDrawer::Params params;
+  params.m_alphabet = "1234567890 min";
+  params.m_maxLength = 100;
+  params.m_anchor = position.m_anchor;
+  params.m_font = dp::FontDecl(dp::Color::Black(), 18);
+  params.m_pivot = position.m_pixelPivot;
+  params.m_handleCreator = [textures](dp::Anchor, m2::PointF const &)
+  {
+    return make_unique_dp<SubwayLabelHandle>(EGuiHandle::GuiHandleSubwayLabel, textures);
+  };
+
+  drape_ptr<ShapeRenderer> scaleRenderer = make_unique_dp<ShapeRenderer>();
+  m2::PointF size = MutableLabelDrawer::Draw(params, textures,
+                                             bind(&ShapeRenderer::AddShape, scaleRenderer.get(), _1, _2));
+
+  renderer->AddShapeRenderer(WIDGET_SUBWAY_LABEL, move(scaleRenderer));
+  return size;
+}
+}  // namespace gui

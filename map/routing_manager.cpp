@@ -266,6 +266,7 @@ void RoutingManager::InsertRoute(routing::Route const & route)
       segment->m_routeType = df::RouteType::Subway;
       segment->m_color = df::kRouteColor;
       segment->m_subwayColoring = route.GetColors();
+      //m_drapeEngine->UpdateRouteTime(/* time in seconds */, route.GetPoly().Back());
       break;
     default: ASSERT(false, ("Unknown router type"));
   }
