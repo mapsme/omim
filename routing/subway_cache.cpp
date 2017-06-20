@@ -52,6 +52,6 @@ SubwayFeature const & SubwayCache::GetFeature(NumMwmId numMwmId, uint32_t featur
                              ? feature.GetMetadata().Get(feature::Metadata::EType::FMD_COLOUR)
                              : "";
 
-  return mwmFeatures[numMwmId] = SubwayFeature(type, color, move(points));
+  return mwmFeatures[featureId] = SubwayFeature(type, color, move(points));
 }
 }  // namespace routing

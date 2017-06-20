@@ -20,7 +20,7 @@ public:
   SubwayFeature() = default;
 
   SubwayFeature(SubwayType type, std::string const & color, std::vector<m2::PointD> && points)
-    : m_points(points), m_color(color), m_type(type)
+    : m_points(std::move(points)), m_color(color), m_type(type)
   {
   }
 

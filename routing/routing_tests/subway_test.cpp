@@ -85,7 +85,8 @@ UNIT_TEST(SubwayGraphTest)
   shared_ptr<NumMwmIds> numMwmIds = make_shared<NumMwmIds>();
   numMwmIds->RegisterFile(country.GetCountryFile());
 
-  SubwayGraph graph(factory, numMwmIds, index);
+  auto cache = make_shared<SubwayCache>(numMwmIds, index);
+  SubwayGraph graph(factory, numMwmIds, cache, index);
   graph.GetNearestStation({0.0, 0.0});
 
   vector<SubwayEdge> edges;
