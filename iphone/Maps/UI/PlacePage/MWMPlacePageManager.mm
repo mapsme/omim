@@ -312,6 +312,13 @@ void logSponsoredEvent(MWMPlacePageData * data, NSString * eventName)
 
 - (void)addStop
 {
+  // TEMPORARY CODE: ignore "add stop"
+  if (GetFramework().GetSubwayManager().IsEnabled())
+  {
+    [self shouldClose];
+    return;
+  }
+  
   [[MWMRouter router] addIntermediatePointAndRebuild:self.target
                                    intermediateIndex:0];
   [self shouldClose];

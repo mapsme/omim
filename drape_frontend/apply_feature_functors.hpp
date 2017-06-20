@@ -183,7 +183,7 @@ public:
   ApplyLineFeatureAdditional(TileKey const & tileKey, TInsertShapeFn const & insertShape,
                              FeatureID const & id, double currentScaleGtoP, int minVisibleScale,
                              uint8_t rank, CaptionDescription const & captions,
-                             std::vector<m2::SharedSpline> const & clippedSplines);
+                             bool isSubwayLine, std::vector<m2::SharedSpline> const & clippedSplines);
 
   void ProcessRule(Stylist::TRuleWrapper const & rule);
   void Finish(std::set<ftypes::RoadShield> && roadShields);
@@ -194,6 +194,7 @@ private:
                                 ColoredSymbolViewParams & symbolParams,
                                 PoiSymbolViewParams & poiParams);
 
+  bool m_isSubwayLine;
   std::vector<m2::SharedSpline> m_clippedSplines;
   float m_currentScaleGtoP;
   float m_shieldDepth;

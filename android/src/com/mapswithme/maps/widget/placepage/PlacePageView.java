@@ -499,6 +499,15 @@ public class PlacePageView extends RelativeLayout
 
         case ROUTE_FROM:
           RoutingController controller = RoutingController.get();
+
+          // TEMPORARY CODE: redefine "from" point
+          if (Framework.nativeIsSubwayModeEnabled())
+          {
+            if (controller.setStartPoint(mMapObject))
+              hide();
+            break;
+          }
+
           if (!controller.isPlanning())
           {
             controller.prepare(mMapObject, null);
@@ -511,6 +520,14 @@ public class PlacePageView extends RelativeLayout
           break;
 
         case ROUTE_TO:
+          // TEMPORARY CODE: redefine "to" point
+          if (Framework.nativeIsSubwayModeEnabled())
+          {
+            if (RoutingController.get().setEndPoint(mMapObject))
+              hide();
+            break;
+          }
+
           if (RoutingController.get().isPlanning())
           {
             if (RoutingController.get().setEndPoint(mMapObject))
@@ -523,6 +540,10 @@ public class PlacePageView extends RelativeLayout
           break;
 
         case ROUTE_ADD:
+          // TEMPORARY CODE: ignore "add stop"
+          if (Framework.nativeIsSubwayModeEnabled())
+            break;
+
           if (mMapObject != null)
             RoutingController.get().addStop(mMapObject);
           break;

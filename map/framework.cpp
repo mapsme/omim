@@ -2411,6 +2411,10 @@ df::SelectionShape::ESelectedObject Framework::OnTapEventImpl(TapEvent const & t
     return df::SelectionShape::OBJECT_MY_POSITION;
   }
 
+  // Filter long taps in subway mode.
+  if (tapInfo.m_isLong && m_subwayManager.IsEnabled())
+    return df::SelectionShape::OBJECT_EMPTY;
+
   outInfo.m_adsEngine = m_adsEngine.get();
 
   UserMark const * mark = FindUserMarkInTapPosition(pxPoint2d);
@@ -2420,9 +2424,11 @@ df::SelectionShape::ESelectedObject Framework::OnTapEventImpl(TapEvent const & t
     switch (mark->GetMarkType())
     {
     case UserMark::Type::API:
+      needShow = !m_subwayManager.IsEnabled();
       FillApiMarkInfo(*static_cast<ApiMarkPoint const *>(mark), outInfo);
       break;
     case UserMark::Type::BOOKMARK:
+      needShow = !m_subwayManager.IsEnabled();
       FillBookmarkInfo(*static_cast<Bookmark const *>(mark), FindBookmark(mark), outInfo);
       break;
     case UserMark::Type::SEARCH:
