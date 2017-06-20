@@ -16,7 +16,7 @@ using MV = gpu::MaskedTexturingVertex;
 
 template<typename TVertex>
 void Batch(ref_ptr<dp::Batcher> batcher, drape_ptr<dp::OverlayHandle> && handle,
-           glsl::vec4 const & position,
+           glsl::vec4 const & position, dp::GLState::DepthLayer depthLayer,
            dp::TextureManager::SymbolRegion const & symbolRegion,
            dp::TextureManager::ColorRegion const & colorRegion)
 {
@@ -25,7 +25,7 @@ void Batch(ref_ptr<dp::Batcher> batcher, drape_ptr<dp::OverlayHandle> && handle,
 
 template<>
 void Batch<SV>(ref_ptr<dp::Batcher> batcher, drape_ptr<dp::OverlayHandle> && handle,
-               glsl::vec4 const & position,
+               glsl::vec4 const & position, dp::GLState::DepthLayer depthLayer,
                dp::TextureManager::SymbolRegion const & symbolRegion,
                dp::TextureManager::ColorRegion const & colorRegion)
 {
@@ -45,7 +45,7 @@ void Batch<SV>(ref_ptr<dp::Batcher> batcher, drape_ptr<dp::OverlayHandle> && han
         glsl::vec2(texRect.maxX(), texRect.minY()) },
   };
 
-  dp::GLState state(gpu::TEXTURING_PROGRAM, dp::GLState::OverlayLayer);
+  dp::GLState state(gpu::TEXTURING_PROGRAM, depthLayer);
   state.SetProgram3dIndex(gpu::TEXTURING_BILLBOARD_PROGRAM);
   state.SetColorTexture(symbolRegion.GetTexture());
   state.SetTextureFilter(gl_const::GLNearest);
@@ -57,7 +57,7 @@ void Batch<SV>(ref_ptr<dp::Batcher> batcher, drape_ptr<dp::OverlayHandle> && han
 
 template<>
 void Batch<MV>(ref_ptr<dp::Batcher> batcher, drape_ptr<dp::OverlayHandle> && handle,
-               glsl::vec4 const & position,
+               glsl::vec4 const & position, dp::GLState::DepthLayer depthLayer,
                dp::TextureManager::SymbolRegion const & symbolRegion,
                dp::TextureManager::ColorRegion const & colorRegion)
 {
@@ -78,7 +78,7 @@ void Batch<MV>(ref_ptr<dp::Batcher> batcher, drape_ptr<dp::OverlayHandle> && han
         glsl::vec2(texRect.maxX(), texRect.minY()), maskColorCoords },
   };
 
-  dp::GLState state(gpu::MASKED_TEXTURING_PROGRAM, dp::GLState::OverlayLayer);
+  dp::GLState state(gpu::MASKED_TEXTURING_PROGRAM, depthLayer);
   state.SetProgram3dIndex(gpu::MASKED_TEXTURING_BILLBOARD_PROGRAM);
   state.SetColorTexture(symbolRegion.GetTexture());
   state.SetMaskTexture(colorRegion.GetTexture()); // Here mask is a color.
@@ -128,18 +128,18 @@ void PoiSymbolShape::Draw(ref_ptr<dp::Batcher> batcher, ref_ptr<dp::TextureManag
   {
     dp::TextureManager::ColorRegion maskColorRegion;
     textures->GetColorRegion(df::GetColorConstant(kPoiDeletedMaskColor), maskColorRegion);
-    Batch<MV>(batcher, move(handle), position, region, maskColorRegion);
+    Batch<MV>(batcher, move(handle), position, m_params.m_depthLayer, region, maskColorRegion);
   }
   else
   {
-    Batch<SV>(batcher, move(handle), position, region, dp::TextureManager::ColorRegion());
+    Batch<SV>(batcher, move(handle), position, m_params.m_depthLayer, region, dp::TextureManager::ColorRegion());
   }
 }
 
 uint64_t PoiSymbolShape::GetOverlayPriority() const
 {
   // Set up maximum priority for some POI.
-  if (m_params.m_prioritized)
+  if (m_params.m_prioritized || m_params.m_depthLayer == dp::GLState::SubwayLayer)
     return dp::kPriorityMaskAll;
 
   // Special displacement mode.

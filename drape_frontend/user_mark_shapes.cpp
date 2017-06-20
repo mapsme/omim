@@ -200,6 +200,7 @@ void CacheUserLines(UserMarksProvider const * provider, ref_ptr<dp::TextureManag
         params.m_join = dp::RoundJoin;
         params.m_color = line->GetColor(layerIndex);
         params.m_depth = line->GetLayerDepth(layerIndex);
+        params.m_depthLayer = dp::GLState::GeometryLayer;
         params.m_width = line->GetWidth(layerIndex);
         params.m_minVisibleScale = 1;
         params.m_rank = 0;

@@ -325,12 +325,12 @@ void RuleDrawer::ProcessLineStyle(FeatureType const & f, Stylist const & s,
 {
   int const zoomLevel = m_context->GetTileKey().m_zoomLevel;
 
-  feature::Metadata const & md = f.GetMetadata();
   bool const isSubwayLine = ftypes::IsSubwayLineChecker::Instance()(f);
   bool const isSubwayChange = ftypes::IsSubwayChangeChecker::Instance()(f);
   dp::Color subwayColor = dp::Color::White();
   if (isSubwayLine)
   {
+    feature::Metadata const & md = f.GetMetadata();
     std::string const colorStr = md.Get(feature::Metadata::FMD_COLOUR);
     subwayColor = ToDrapeColor(colorStr);
   }
@@ -423,10 +423,12 @@ void RuleDrawer::ProcessPointStyle(FeatureType const & f, Stylist const & s, TIn
                                    int & minVisibleScale)
 {
   int const zoomLevel = m_context->GetTileKey().m_zoomLevel;
+  bool const isSubwayStation = ftypes::IsSubwayStationChecker::Instance()(f);
 
   minVisibleScale = feature::GetMinDrawableScale(f);
   ApplyPointFeature apply(m_context->GetTileKey(), insertShape, f.GetID(), minVisibleScale, f.GetRank(),
-                          s.GetCaptionDescription(), 0.0f /* posZ */, m_context->GetDisplacementMode());
+                          s.GetCaptionDescription(), 0.0f /* posZ */, m_context->GetDisplacementMode(),
+                          isSubwayStation);
   apply.SetHotelData(ExtractHotelData(f));
   f.ForEachPoint([&apply](m2::PointD const & pt) { apply(pt, false /* hasArea */); }, zoomLevel);
 
@@ -530,6 +532,7 @@ void RuleDrawer::DrawTileNet(TInsertShapeFn const & insertShape)
   p.m_cap = dp::ButtCap;
   p.m_color = dp::Color::Red();
   p.m_depth = 20000;
+  p.m_depthLayer = dp::GLState::GeometryLayer;
   p.m_width = 5;
   p.m_join = dp::RoundJoin;
 
@@ -539,6 +542,7 @@ void RuleDrawer::DrawTileNet(TInsertShapeFn const & insertShape)
   tp.m_tileCenter = m_globalRect.Center();
   tp.m_anchor = dp::Center;
   tp.m_depth = 20000;
+  tp.m_depthLayer = dp::GLState::OverlayLayer;
   tp.m_primaryText = strings::to_string(key.m_x) + " " +
                      strings::to_string(key.m_y) + " " +
                      strings::to_string(key.m_zoomLevel);

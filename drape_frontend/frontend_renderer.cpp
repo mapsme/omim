@@ -1226,11 +1226,16 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
 
     GLFunctions::glEnable(gl_const::GLDepthTest);
     GLFunctions::glClear(gl_const::GLDepthBit);
-    RenderSubwayLayer(modelView);
 
+    RenderSubwayLayer(modelView);
     RenderTrafficAndRouteLayer(modelView);
+
     GLFunctions::glClear(gl_const::GLDepthBit);
     GLFunctions::glDisable(gl_const::GLDepthTest);
+    {
+      StencilWriterGuard guard(make_ref(m_postprocessRenderer));
+      RenderSubwayOverlayLayer(modelView);
+    }
   }
 
   m_gpsTrackRenderer->RenderTrack(modelView, m_currentZoomLevel, make_ref(m_gpuProgramManager),
@@ -1287,7 +1292,8 @@ void FrontendRenderer::RenderSubwayLayer(ScreenBase const & modelView)
   layerSubway.Sort(make_ref(m_overlayTree));
 
   for (drape_ptr<RenderGroup> const & group : layerSubway.m_renderGroups)
-    RenderSingleGroup(modelView, make_ref(group));
+    if (!group->HasOverlayHandles())
+      RenderSingleGroup(modelView, make_ref(group));
 }
 
 void FrontendRenderer::Render3dLayer(ScreenBase const & modelView, bool useFramebuffer)
@@ -1325,6 +1331,14 @@ void FrontendRenderer::RenderOverlayLayer(ScreenBase const & modelView)
     RenderSingleGroup(modelView, make_ref(group));
 }
 
+void FrontendRenderer::RenderSubwayOverlayLayer(ScreenBase const & modelView)
+{
+  RenderLayer & subwayOverlay = m_layers[RenderLayer::SubwayID];
+  for (drape_ptr<RenderGroup> & group : subwayOverlay.m_renderGroups)
+    if (group->HasOverlayHandles())
+      RenderSingleGroup(modelView, make_ref(group));
+}
+
 void FrontendRenderer::RenderTrafficAndRouteLayer(ScreenBase const & modelView)
 {
   GLFunctions::glClear(gl_const::GLDepthBit);
@@ -1358,11 +1372,18 @@ void FrontendRenderer::RenderUserMarksLayer(ScreenBase const & modelView)
 
 void FrontendRenderer::BuildOverlayTree(ScreenBase const & modelView)
 {
-  RenderLayer & overlay = m_layers[RenderLayer::OverlayID];
-  overlay.Sort(make_ref(m_overlayTree));
+  std::vector<RenderLayer::RenderLayerID> layers;
+  layers.push_back(RenderLayer::OverlayID);
+  if (m_subwayModeEnabled)
+    layers.push_back(RenderLayer::SubwayID);
   BeginUpdateOverlayTree(modelView);
-  for (drape_ptr<RenderGroup> & group : overlay.m_renderGroups)
-    UpdateOverlayTree(modelView, group);
+  for (auto const & layerId : layers)
+  {
+    RenderLayer & overlay = m_layers[layerId];
+    overlay.Sort(make_ref(m_overlayTree));
+    for (drape_ptr<RenderGroup> & group : overlay.m_renderGroups)
+      UpdateOverlayTree(modelView, group);
+  }
   EndUpdateOverlayTree();
 }
 

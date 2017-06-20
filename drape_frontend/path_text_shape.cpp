@@ -230,6 +230,8 @@ PathTextShape::PathTextShape(m2::SharedSpline const & spline, PathTextViewParams
 
 uint64_t PathTextShape::GetOverlayPriority(uint32_t textIndex, bool followingMode) const
 {
+  if (m_params.m_depthLayer == dp::GLState::SubwayLayer)
+    return dp::kPriorityMaskAll - 1;
   // Overlay priority for path text shapes considers length of the text and index of text.
   // Greater text length has more priority, because smaller texts have more chances to be shown along the road.
   // [6 bytes - standard overlay priority][1 byte - length][1 byte - path text index].
