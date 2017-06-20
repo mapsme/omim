@@ -54,6 +54,7 @@ void Route::Swap(Route & rhs)
   m_absentCountries.swap(rhs.m_absentCountries);
   m_altitudes.swap(rhs.m_altitudes);
   m_traffic.swap(rhs.m_traffic);
+  m_colors.swap(rhs.m_colors);
 }
 
 void Route::AddAbsentCountry(string const & name)
