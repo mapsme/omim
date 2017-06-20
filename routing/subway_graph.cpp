@@ -17,21 +17,29 @@ double constexpr kEquivalenceDistMeters = 3.0;
 
 namespace routing
 {
+SubwayGraph::SubwayGraph(std::shared_ptr<VehicleModelFactory> modelFactory,
+                         std::shared_ptr<NumMwmIds> numMwmIds, std::shared_ptr<SubwayCache> cache,
+                         Index & index)
+  : m_modelFactory(std::move(modelFactory))
+  , m_numMwmIds(std::move(numMwmIds))
+  , m_cache(std::move(cache))
+  , m_index(index)
+{
+  CHECK(m_modelFactory, ());
+  CHECK(m_numMwmIds, ());
+  CHECK(m_cache, ());
+}
+
 void SubwayGraph::GetOutgoingEdgesList(TVertexType const & vertex, vector<TEdgeType> & edges)
 {
+  edges.clear();
+
   // @TODO Implement filling |edges| more carefully.
   // Getting point by |vertex|.
-  MwmSet::MwmHandle handle = m_index.GetMwmHandleByCountryFile(m_numMwmIds->GetFile(vertex.GetMwmId()));
-  Index::FeaturesLoaderGuard const guard(m_index, handle.GetId());
-  FeatureType ft;
-  if (!guard.GetFeatureByIndex(vertex.GetFeatureId(), ft))
-  {
-    LOG(LERROR, ("Feature can't be loaded:", vertex.GetFeatureId()));
-    return;
-  }
-  ft.ParseGeometry(FeatureType::BEST_GEOMETRY);
-  CHECK_LESS(vertex.GetPointId(), ft.GetPointsCount(), ());
-  m2::PointD const & vertexPoint = ft.GetPoint(vertex.GetPointId());
+  auto const & points = m_cache->GetFeature(vertex.GetMwmId(), vertex.GetFeatureId())
+                                         .GetPoints();
+  CHECK_LESS(vertex.GetPointId(), points.size(), ());
+  m2::PointD const & vertexPoint = points[vertex.GetPointId()];
 
   // Getting outgoing edges by |vertexPoint|.
   // Moving along the same feature.
@@ -42,7 +50,7 @@ void SubwayGraph::GetOutgoingEdgesList(TVertexType const & vertex, vector<TEdgeT
                      static_cast<uint32_t>(vertex.GetPointId() - 1), vertex.GetType()),
         1.0 /* weight */);
   }
-  if (vertex.GetPointId() + 1 != ft.GetPointsCount())
+  if (vertex.GetPointId() + 1 != points.size())
   {
     edges.emplace_back(
         SubwayVertex(vertex.GetMwmId(), vertex.GetFeatureId(),
@@ -61,26 +69,22 @@ void SubwayGraph::GetOutgoingEdgesList(TVertexType const & vertex, vector<TEdgeT
     if (ftNumMwmId == vertex.GetMwmId() && ftFeatureId == vertex.GetFeatureId())
       return;
 
-    ft.ParseGeometry(FeatureType::BEST_GEOMETRY);
-    ft.ParseMetadata();
-
-    size_t const pointsCount = ft.GetPointsCount();
-    SubwayType const ftType = ftypes::IsSubwayLineChecker::Instance()(ft) ? SubwayType::Line
-                                                                          : SubwayType::Change;
+    SubwayFeature const & feature = m_cache->GetFeature(ftNumMwmId, ftFeatureId);
 
     double closestDistMeters = numeric_limits<double>::max();
     SubwayEdge closestEdge;
 
-    for (size_t i = 0; i < pointsCount; ++i)
+    auto const & ftPoints = feature.GetPoints();
+    for (size_t i = 0; i < ftPoints.size(); ++i)
     {
-      double const distMeters = MercatorBounds::DistanceOnEarth(vertexPoint, ft.GetPoint(i));
+      double const distMeters = MercatorBounds::DistanceOnEarth(vertexPoint, ftPoints[i]);
       if (distMeters < kEquivalenceDistMeters && distMeters < closestDistMeters)
       {
         closestDistMeters = distMeters;
         // In case of changing feature an edge with zero length added.
-        closestEdge =
-            SubwayEdge(SubwayVertex(ftNumMwmId, ftFeatureId, static_cast<uint32_t>(i), ftType),
-                       0.0 /* weight */);
+        closestEdge = SubwayEdge(
+            SubwayVertex(ftNumMwmId, ftFeatureId, static_cast<uint32_t>(i), feature.GetType()),
+            0.0 /* weight */);
       }
     }
     if (closestDistMeters != numeric_limits<double>::max())

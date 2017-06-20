@@ -21,10 +21,10 @@ IRouter::ResultCode ConvertResult(typename AStarAlgorithm<SubwayGraph>::Result r
 namespace routing
 {
 SubwayRouter::SubwayRouter(std::shared_ptr<NumMwmIds> numMwmIds, Index & index)
-  : m_index(index)
-  , m_numMwmIds(std::move(numMwmIds))
+  : m_numMwmIds(std::move(numMwmIds))
   , m_modelFactory(make_shared<SubwayModelFactory>())
-  , m_graph(m_modelFactory, m_numMwmIds, index)
+  , m_cache(make_shared<SubwayCache>(m_numMwmIds, index))
+  , m_graph(m_modelFactory, m_numMwmIds, m_cache, index)
 {
   CHECK(m_numMwmIds, ());
 }
@@ -66,33 +66,17 @@ void SubwayRouter::SetRouteAttrs(vector<SubwayVertex> const &vertexes, Route &ro
 
   for (SubwayVertex const & vertex : vertexes)
   {
-    auto const numMwmId = vertex.GetMwmId();
+    auto const featureId = vertex.GetFeatureId();
+    SubwayFeature const & feature = m_cache->GetFeature(vertex.GetMwmId(), featureId);
 
-    platform::CountryFile const & file = m_numMwmIds->GetFile(numMwmId);
-    MwmSet::MwmHandle handle = m_index.GetMwmHandleByCountryFile(file);
-    CHECK(handle.IsAlive(), ("Can't get mwm handle for", file));
-
-    auto const mwmId = MwmSet::MwmId(handle.GetInfo());
-    Index::FeaturesLoaderGuard guard(m_index, mwmId);
-
-    uint32_t const featureId = vertex.GetFeatureId();
-
-    FeatureType feature;
-    bool const isFound = guard.GetFeatureByIndex(featureId, feature);
-    CHECK(isFound, ("Feature", featureId, "not found in ", file.GetName()));
-
-    feature.ParseMetadata();
-    feature.ParseGeometry(FeatureType::BEST_GEOMETRY);
-
-    CHECK_LESS(vertex.GetPointId(), feature.GetPointsCount(), ());
-    points.push_back(feature.GetPoint(vertex.GetPointId()));
+    CHECK_LESS(vertex.GetPointId(), feature.GetPoints().size(), ());
+    points.push_back(feature.GetPoints()[vertex.GetPointId()]);
 
     if (prevFeatureId != invalidFeatureId)
     {
       bool const isColored = prevType == SubwayType::Line && vertex.GetType() == SubwayType::Line &&
                              prevFeatureId == featureId;
-      string const color =
-          isColored ? feature.GetMetadata().Get(feature::Metadata::EType::FMD_COLOUR) : "";
+      string const color = isColored ? feature.GetColor() : "";
       colors.push_back(color);
     }
 

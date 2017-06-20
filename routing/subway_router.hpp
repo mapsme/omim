@@ -30,9 +30,9 @@ private:
   void SetRouteAttrs(std::vector<SubwayVertex> const &vertexes, Route &route) const;
   void SetTimes(size_t routeSize, double time, Route & route) const;
 
-  Index & m_index;
   std::shared_ptr<NumMwmIds> m_numMwmIds;
   std::shared_ptr<SubwayModelFactory> m_modelFactory;
+  std::shared_ptr<SubwayCache> m_cache;
   SubwayGraph m_graph;
 };
 }  // namespace routing
