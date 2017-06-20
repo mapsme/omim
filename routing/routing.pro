@@ -62,6 +62,7 @@ SOURCES += \
     routing_settings.cpp \
     segmented_route.cpp \
     speed_camera.cpp \
+    subway_cache.cpp \
     subway_graph.cpp \
     subway_model.cpp \
     subway_router.cpp \
@@ -135,6 +136,7 @@ HEADERS += \
     segment.hpp \
     segmented_route.hpp \
     speed_camera.hpp \
+    subway_cache.hpp \
     subway_edge.hpp \
     subway_graph.hpp \
     subway_model.hpp \
