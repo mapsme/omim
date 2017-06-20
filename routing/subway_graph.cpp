@@ -11,7 +11,7 @@
 
 namespace
 {
-double constexpr kLineSearchRadiusMeters = 100.0;
+double constexpr kLineSearchRadiusMeters = 500.0;
 double constexpr kEquivalenceDistMeters = 3.0;
 }  // namespace
 
@@ -105,7 +105,7 @@ double SubwayGraph::HeuristicCostEstimate(TVertexType const & from, TVertexType 
   return 0.0;
 }
 
-SubwayVertex SubwayGraph::GetNearestStation(m2::PointD const & point) const
+bool SubwayGraph::GetNearestStation(m2::PointD const & point, SubwayVertex & vertex) const
 {
   SubwayVertex closestVertex;
   double closestVertexDistMeters = std::numeric_limits<double>::max();
@@ -138,8 +138,11 @@ SubwayVertex SubwayGraph::GetNearestStation(m2::PointD const & point) const
     f, MercatorBounds::RectByCenterXYAndSizeInMeters(point, kLineSearchRadiusMeters),
     scales::GetUpperScale());
 
-  CHECK_NOT_EQUAL(closestVertexDistMeters, std::numeric_limits<double>::max(), ());
-  return closestVertex;
+  if (closestVertexDistMeters == std::numeric_limits<double>::max())
+    return false;
+
+  vertex = closestVertex;
+  return true;
 }
 
 bool SubwayGraph::IsValidRoad(FeatureType const & ft) const
