@@ -163,7 +163,7 @@ drape_ptr<dp::OverlayHandle> PoiSymbolShape::CreateOverlayHandle(m2::PointF cons
 uint64_t PoiSymbolShape::GetOverlayPriority() const
 {
   // Set up maximum priority for some POI.
-  if (m_params.m_prioritized)
+  if (m_params.m_prioritized || m_params.m_depthLayer == RenderState::SubwayLayer)
     return dp::kPriorityMaskAll;
 
   // Special displacement mode.

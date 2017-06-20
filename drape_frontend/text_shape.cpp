@@ -363,7 +363,8 @@ uint64_t TextShape::GetOverlayPriority() const
 {
   // Set up maximum priority for shapes which created by user in the editor and in case of disabling
   // displacement.
-  if (m_params.m_createdByEditor || m_disableDisplacing)
+  if (m_params.m_createdByEditor || m_disableDisplacing ||
+      m_params.m_depthLayer == RenderState::SubwayLayer)
     return dp::kPriorityMaskAll;
 
   // Special displacement mode.

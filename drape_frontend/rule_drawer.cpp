@@ -333,12 +333,12 @@ void RuleDrawer::ProcessLineStyle(FeatureType const & f, Stylist const & s,
 {
   int const zoomLevel = m_context->GetTileKey().m_zoomLevel;
 
-  feature::Metadata const & md = f.GetMetadata();
   bool const isSubwayLine = ftypes::IsSubwayLineChecker::Instance()(f);
   bool const isSubwayChange = ftypes::IsSubwayChangeChecker::Instance()(f);
   dp::Color subwayColor = dp::Color::White();
   if (isSubwayLine)
   {
+    feature::Metadata const & md = f.GetMetadata();
     std::string const colorStr = md.Get(feature::Metadata::FMD_COLOUR);
     subwayColor = ToDrapeColor(colorStr);
   }
@@ -437,10 +437,13 @@ void RuleDrawer::ProcessPointStyle(FeatureType const & f, Stylist const & s, TIn
   bool const isSpeedCamera = ftypes::IsSpeedCamChecker::Instance()(f);
   if (isSpeedCamera && !GetStyleReader().IsCarNavigationStyle())
     return;
+  bool const isSubwayStation = ftypes::IsSubwayStationChecker::Instance()(f);
 
   RenderState::DepthLayer depthLayer = RenderState::OverlayLayer;
   if (isSpeedCamera)
     depthLayer = RenderState::NavigationLayer;
+  else if (isSubwayStation)
+    depthLayer = RenderState::SubwayLayer;
 
   minVisibleScale = feature::GetMinDrawableScale(f);
   ApplyPointFeature apply(m_context->GetTileKey(), insertShape, f.GetID(), minVisibleScale, f.GetRank(),
