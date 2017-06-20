@@ -314,7 +314,8 @@ void DrawWidget::SubmitFakeLocationPoint(m2::PointD const & pt)
 
   m_framework.OnLocationUpdate(info);
 
-  if (m_framework.GetRoutingManager().IsRoutingActive())
+  if (m_framework.GetRoutingManager().IsRoutingActive() &&
+      !m_framework.GetSubwayManager().IsEnabled())
   {
     location::FollowingInfo loc;
     m_framework.GetRoutingManager().GetRouteFollowingInfo(loc);
