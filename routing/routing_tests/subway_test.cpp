@@ -3,10 +3,12 @@
 #include "generator/generator_tests_support/test_feature.hpp"
 #include "generator/generator_tests_support/test_mwm_builder.hpp"
 
+#include "routing/subway_graph.hpp"
 #include "routing/subway_model.hpp"
 
 #include "indexer/classificator_loader.hpp"
 #include "indexer/data_header.hpp"
+#include "indexer/index.hpp"
 
 #include "geometry/point2d.hpp"
 
@@ -30,6 +32,7 @@ namespace
 using namespace generator::tests_support;
 using namespace platform;
 using namespace routing;
+using namespace std;
 
 // Directory name for creating test mwm and temporary files.
 std::string const kTestDir = "subway_test";
@@ -74,6 +77,16 @@ UNIT_TEST(SubwayGraphTest)
       {std::vector<m2::PointD>({{0.0, 0.001}, {0.001, 0.001}, {0.002, 0.001}}), SubwayType::Line, "555557"},
   };
   BuildMwm(ways, country);
+
+  Index index;
+  index.Register(country);
+
+  SubwayModelFactory factory;
+  shared_ptr<NumMwmIds> numMwmIds = make_shared<NumMwmIds>();
+  numMwmIds->RegisterFile(country.GetCountryFile());
+
+  SubwayGraph graph(factory.GetVehicleModel(), numMwmIds, index);
+  graph.GetNearestStation({0.0, 0.0});
   // @TODO It's necessary to test using SubwayGraph methods hears.
 }
 }  // namespace
