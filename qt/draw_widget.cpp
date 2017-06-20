@@ -333,17 +333,27 @@ void DrawWidget::SubmitRoutingPoint(m2::PointD const & pt)
   }
   else
   {
-    RouteMarkData startPoint;
-    startPoint.m_pointType = RouteMarkType::Start;
-    startPoint.m_isMyPosition = true;
-    routingManager.AddRoutePoint(std::move(startPoint));
+    if (m_framework.GetDrapeEngine() != nullptr &&
+      m_framework.GetSubwayManager().IsEnabled())
+    {
+      m2::PointD myPos;
+      if (m_framework.GetDrapeEngine()->GetMyPosition(myPos))
+        routingManager.BuildSubwayRoute(myPos, m_framework.PtoG(pt));
+    }
+    else
+    {
+      RouteMarkData startPoint;
+      startPoint.m_pointType = RouteMarkType::Start;
+      startPoint.m_isMyPosition = true;
+      routingManager.AddRoutePoint(std::move(startPoint));
 
-    RouteMarkData endPoint;
-    endPoint.m_pointType = RouteMarkType::Finish;
-    endPoint.m_position = m_framework.PtoG(pt);
-    routingManager.AddRoutePoint(std::move(endPoint));
+      RouteMarkData endPoint;
+      endPoint.m_pointType = RouteMarkType::Finish;
+      endPoint.m_position = m_framework.PtoG(pt);
+      routingManager.AddRoutePoint(std::move(endPoint));
 
-    routingManager.BuildRoute(0 /* timeoutSec */);
+      routingManager.BuildRoute(0 /* timeoutSec */);
+    }
   }
 }
 
