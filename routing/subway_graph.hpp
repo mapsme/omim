@@ -1,6 +1,7 @@
 #pragma once
 
 #include "routing/num_mwm_id.hpp"
+#include "routing/subway_cache.hpp"
 #include "routing/subway_edge.hpp"
 
 #include "routing/subway_vertex.hpp"
@@ -24,12 +25,8 @@ public:
   using TEdgeType = SubwayEdge;
 
   SubwayGraph(std::shared_ptr<VehicleModelFactory> modelFactory,
-              std::shared_ptr<NumMwmIds> numMwmIds, Index & index)
-    : m_modelFactory(std::move(modelFactory)), m_numMwmIds(std::move(numMwmIds)), m_index(index)
-  {
-    CHECK(m_modelFactory, ());
-    CHECK(m_numMwmIds, ());
-  }
+              std::shared_ptr<NumMwmIds> numMwmIds, std::shared_ptr<SubwayCache> cache,
+              Index & index);
 
   // Interface for AStarAlgorithm:
   void GetOutgoingEdgesList(TVertexType const & vertex, vector<TEdgeType> & edges);
@@ -43,6 +40,7 @@ private:
 
   std::shared_ptr<VehicleModelFactory> m_modelFactory;
   std::shared_ptr<NumMwmIds> m_numMwmIds;
+  std::shared_ptr<SubwayCache> m_cache;
   Index & m_index;
 };
 }  // namespace routing
