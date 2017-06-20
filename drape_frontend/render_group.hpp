@@ -60,6 +60,7 @@ public:
 
   void Update(ScreenBase const & modelView);
   void CollectOverlay(ref_ptr<dp::OverlayTree> tree);
+  bool HasOverlayHandles() const;
   void RemoveOverlay(ref_ptr<dp::OverlayTree> tree);
   void Render(ScreenBase const & screen) override;
 

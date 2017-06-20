@@ -85,7 +85,7 @@ public:
   ApplyPointFeature(TileKey const & tileKey, TInsertShapeFn const & insertShape,
                     FeatureID const & id, int minVisibleScale, uint8_t rank,
                     CaptionDescription const & captions, float posZ,
-                    int displacementMode);
+                    int displacementMode, bool isSubwayPoint);
 
   void operator()(m2::PointD const & point, bool hasArea);
   void ProcessRule(Stylist::TRuleWrapper const & rule);
@@ -99,6 +99,7 @@ private:
   bool m_hasArea;
   bool m_createdByEditor;
   bool m_obsoleteInEditor;
+  bool m_isSubwayPoint;
   double m_symbolDepth;
   SymbolRuleProto const * m_symbolRule;
   m2::PointF m_centerPoint;

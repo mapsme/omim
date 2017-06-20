@@ -15,6 +15,7 @@ EngineContext::EngineContext(TileKey tileKey,
                              CustomSymbolsContextWeakPtr customSymbolsContext,
                              bool is3dBuildingsEnabled,
                              bool isTrafficEnabled,
+                             bool isSubwayEnabled,
                              int displacementMode)
   : m_tileKey(tileKey)
   , m_commutator(commutator)
@@ -23,6 +24,7 @@ EngineContext::EngineContext(TileKey tileKey,
   , m_customSymbolsContext(customSymbolsContext)
   , m_3dBuildingsEnabled(is3dBuildingsEnabled)
   , m_trafficEnabled(isTrafficEnabled)
+  , m_subwayEnabled(isSubwayEnabled)
   , m_displacementMode(displacementMode)
 {}
 

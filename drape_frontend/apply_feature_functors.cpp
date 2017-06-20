@@ -404,13 +404,14 @@ void BaseApplyFeature::SetHotelData(HotelData && hotelData)
 ApplyPointFeature::ApplyPointFeature(TileKey const & tileKey, TInsertShapeFn const & insertShape,
                                      FeatureID const & id, int minVisibleScale, uint8_t rank,
                                      CaptionDescription const & captions, float posZ,
-                                     int displacementMode)
+                                     int displacementMode, bool isSubwayPoint)
   : TBase(tileKey, insertShape, id, minVisibleScale, rank, captions)
   , m_posZ(posZ)
   , m_hasPoint(false)
   , m_hasArea(false)
   , m_createdByEditor(false)
   , m_obsoleteInEditor(false)
+  , m_isSubwayPoint(isSubwayPoint)
   , m_symbolDepth(dp::minDepth)
   , m_symbolRule(nullptr)
   , m_displacementMode(displacementMode)
@@ -449,6 +450,7 @@ void ApplyPointFeature::ProcessRule(Stylist::TRuleWrapper const & rule)
     TextViewParams params;
     params.m_tileCenter = m_tileRect.Center();
     ExtractCaptionParams(capRule, pRule->GetCaption(1), depth, params);
+    params.m_depthLayer = m_isSubwayPoint ? dp::GLState::SubwayLayer : dp::GLState::OverlayLayer;
     params.m_minVisibleScale = m_minVisibleScale;
     params.m_rank = m_rank;
     params.m_posZ = m_posZ;
@@ -496,6 +498,7 @@ void ApplyPointFeature::Finish(ref_ptr<dp::TextureManager> texMng, CustomSymbols
     PoiSymbolViewParams params(m_id);
     params.m_tileCenter = m_tileRect.Center();
     params.m_depth = static_cast<float>(m_symbolDepth);
+    params.m_depthLayer = m_isSubwayPoint ? dp::GLState::SubwayLayer : dp::GLState::OverlayLayer;
     params.m_minVisibleScale = m_minVisibleScale;
     params.m_rank = m_rank;
 
@@ -540,7 +543,8 @@ ApplyAreaFeature::ApplyAreaFeature(TileKey const & tileKey, TInsertShapeFn const
                                    FeatureID const & id, double currentScaleGtoP, bool isBuilding,
                                    bool skipAreaGeometry, float minPosZ, float posZ, int minVisibleScale,
                                    uint8_t rank, CaptionDescription const & captions, bool hatchingArea)
-  : TBase(tileKey, insertShape, id, minVisibleScale, rank, captions, posZ, dp::displacement::kDefaultMode)
+  : TBase(tileKey, insertShape, id, minVisibleScale, rank, captions, posZ, dp::displacement::kDefaultMode,
+          false /* isSubwayPoint */)
   , m_minPosZ(minPosZ)
   , m_isBuilding(isBuilding)
   , m_skipAreaGeometry(skipAreaGeometry)
@@ -934,6 +938,7 @@ void ApplyLineFeatureAdditional::GetRoadShieldsViewParams(ftypes::RoadShield con
   dp::FontDecl font = GetRoadShieldTextFont(baseFont, shield);
   textParams.m_tileCenter = m_tileRect.Center();
   textParams.m_depth = m_shieldDepth;
+  textParams.m_depthLayer = dp::GLState::OverlayLayer;
   textParams.m_minVisibleScale = m_minVisibleScale;
   textParams.m_rank = m_rank;
   textParams.m_anchor = dp::Center;

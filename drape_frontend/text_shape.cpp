@@ -259,7 +259,7 @@ void TextShape::DrawSubStringPlain(StraightTextLayout const & layout, dp::FontDe
                baseOffset, color, staticBuffer, dynamicBuffer);
 
   bool const isNonSdfText = layout.GetFixedHeight() > 0;
-  dp::GLState state(isNonSdfText ? gpu::TEXT_FIXED_PROGRAM : gpu::TEXT_PROGRAM, dp::GLState::OverlayLayer);
+  dp::GLState state(isNonSdfText ? gpu::TEXT_FIXED_PROGRAM : gpu::TEXT_PROGRAM, m_params.m_depthLayer);
   state.SetProgram3dIndex(isNonSdfText ? gpu::TEXT_FIXED_BILLBOARD_PROGRAM : gpu::TEXT_BILLBOARD_PROGRAM);
 
   ASSERT(color.GetTexture() == outline.GetTexture(), ());
@@ -313,7 +313,7 @@ void TextShape::DrawSubStringOutlined(StraightTextLayout const & layout, dp::Fon
   layout.Cache(glsl::vec4(pt, m_params.m_depth, -m_params.m_posZ),
                baseOffset, color, outline, staticBuffer, dynamicBuffer);
 
-  dp::GLState state(gpu::TEXT_OUTLINED_PROGRAM, dp::GLState::OverlayLayer);
+  dp::GLState state(gpu::TEXT_OUTLINED_PROGRAM, m_params.m_depthLayer);
   state.SetProgram3dIndex(gpu::TEXT_OUTLINED_BILLBOARD_PROGRAM);
   ASSERT(color.GetTexture() == outline.GetTexture(), ());
   state.SetColorTexture(color.GetTexture());
@@ -352,7 +352,8 @@ uint64_t TextShape::GetOverlayPriority() const
 {
   // Set up maximum priority for shapes which created by user in the editor and in case of disabling
   // displacement.
-  if (m_params.m_createdByEditor || m_disableDisplacing)
+  if (m_params.m_createdByEditor || m_disableDisplacing ||
+      m_params.m_depthLayer == dp::GLState::SubwayLayer)
     return dp::kPriorityMaskAll;
 
   // Special displacement mode.

@@ -44,7 +44,7 @@ bool ReadManager::LessByTileInfo::operator()(std::shared_ptr<TileInfo> const & l
 }
 
 ReadManager::ReadManager(ref_ptr<ThreadsCommutator> commutator, MapDataProvider & model,
-                         bool allow3dBuildings, bool trafficEnabled)
+                         bool allow3dBuildings, bool trafficEnabled, bool subwayEnabled)
   : m_commutator(commutator)
   , m_model(model)
   , m_pool(make_unique_dp<threads::ThreadPool>(kReadingThreadsCount,
@@ -52,6 +52,7 @@ ReadManager::ReadManager(ref_ptr<ThreadsCommutator> commutator, MapDataProvider 
   , m_have3dBuildings(false)
   , m_allow3dBuildings(allow3dBuildings)
   , m_trafficEnabled(trafficEnabled)
+  , m_subwayEnabled(subwayEnabled)
   , m_displacementMode(dp::displacement::kDefaultMode)
   , m_modeChanged(false)
   , myPool(64, ReadMWMTaskFactory(m_model))
@@ -210,7 +211,8 @@ void ReadManager::PushTaskBackForTileKey(TileKey const & tileKey,
                                                m_commutator, texMng, metalineMng,
                                                m_customSymbolsContext,
                                                m_have3dBuildings && m_allow3dBuildings,
-                                               m_trafficEnabled, m_displacementMode);
+                                               m_trafficEnabled, m_subwayEnabled,
+                                               m_displacementMode);
   std::shared_ptr<TileInfo> tileInfo = std::make_shared<TileInfo>(std::move(context));
   m_tileInfos.insert(tileInfo);
   ReadMWMTask * task = myPool.Get();
@@ -283,6 +285,15 @@ void ReadManager::SetTrafficEnabled(bool trafficEnabled)
   {
     m_modeChanged = true;
     m_trafficEnabled = trafficEnabled;
+  }
+}
+
+void ReadManager::SetSubwayModeEnabled(bool subwayEnabled)
+{
+  if (m_subwayEnabled != subwayEnabled)
+  {
+    m_modeChanged = true;
+    m_subwayEnabled = subwayEnabled;
   }
 }
 

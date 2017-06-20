@@ -30,7 +30,8 @@ BackendRenderer::BackendRenderer(Params && params)
   : BaseRenderer(ThreadsCommutator::ResourceUploadThread, params)
   , m_model(params.m_model)
   , m_readManager(make_unique_dp<ReadManager>(params.m_commutator, m_model,
-                                              params.m_allow3dBuildings, params.m_trafficEnabled))
+                                              params.m_allow3dBuildings, params.m_trafficEnabled,
+                                              params.m_subwayEnabled))
   , m_trafficGenerator(make_unique_dp<TrafficGenerator>(bind(&BackendRenderer::FlushTrafficRenderData, this, _1)))
   , m_requestedTiles(params.m_requestedTiles)
   , m_updateCurrentCountryFn(params.m_updateCurrentCountryFn)
@@ -459,7 +460,18 @@ void BackendRenderer::AcceptMessage(ref_ptr<Message> message)
       }
       break;
     }
-
+  case Message::SetSubwayModeEnabled:
+    {
+      ref_ptr<SetSubwayModeEnabledMessage> msg = message;
+      m_readManager->SetSubwayModeEnabled(msg->IsEnabled());
+      if (m_readManager->IsModeChanged())
+      {
+        m_commutator->PostMessage(ThreadsCommutator::RenderThread,
+                                  make_unique_dp<SetSubwayModeEnabledMessage>(msg->IsEnabled()),
+                                  MessagePriority::Normal);
+      }
+      break;
+    }
   default:
     ASSERT(false, ());
     break;

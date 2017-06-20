@@ -74,6 +74,16 @@ void RenderGroup::CollectOverlay(ref_ptr<dp::OverlayTree> tree)
     renderBucket->CollectOverlayHandles(tree);
 }
 
+bool RenderGroup::HasOverlayHandles() const
+{
+  for (auto & renderBucket : m_renderBuckets)
+  {
+    if (renderBucket->HasOverlayHandles())
+      return true;
+  }
+  return false;
+}
+
 void RenderGroup::RemoveOverlay(ref_ptr<dp::OverlayTree> tree)
 {
   for (auto & renderBucket : m_renderBuckets)
