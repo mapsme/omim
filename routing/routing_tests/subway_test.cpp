@@ -81,11 +81,11 @@ UNIT_TEST(SubwayGraphTest)
   Index index;
   index.Register(country);
 
-  SubwayModelFactory factory;
+  shared_ptr<SubwayModelFactory> factory = make_shared<SubwayModelFactory>();
   shared_ptr<NumMwmIds> numMwmIds = make_shared<NumMwmIds>();
   numMwmIds->RegisterFile(country.GetCountryFile());
 
-  SubwayGraph graph(factory.GetVehicleModel(), numMwmIds, index);
+  SubwayGraph graph(factory, numMwmIds, index);
   graph.GetNearestStation({0.0, 0.0});
   // @TODO It's necessary to test using SubwayGraph methods hears.
 }

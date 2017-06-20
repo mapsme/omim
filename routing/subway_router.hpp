@@ -32,7 +32,7 @@ private:
 
   Index & m_index;
   std::shared_ptr<NumMwmIds> m_numMwmIds;
-  SubwayModelFactory m_modelFactory;
+  std::shared_ptr<SubwayModelFactory> m_modelFactory;
   SubwayGraph m_graph;
 };
 }  // namespace routing

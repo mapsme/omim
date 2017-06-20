@@ -34,17 +34,17 @@ double SubwayGraph::HeuristicCostEstimate(TVertexType const & from, TVertexType 
 SubwayVertex SubwayGraph::GetNearestStation(m2::PointD const & point) const
 {
   SubwayVertex closestVertex;
-  double closestVertexDist = std::numeric_limits<double>::max();
+  double closestVertexDistMeters = std::numeric_limits<double>::max();
 
-  auto const f = [&](FeatureType & ft)
+  auto const f = [&](FeatureType const & ft)
   {
-    if (!m_model->IsRoad(ft))
+    if (!m_modelFactory->GetVehicleModel()->IsRoad(ft))
       return;
 
     if (!ftypes::IsSubwayLineChecker::Instance()(ft))
       return;
 
-    double const speedKMPH = m_model->GetSpeed(ft);
+    double const speedKMPH = m_modelFactory->GetVehicleModel()->GetSpeed(ft);
     if (speedKMPH <= 0.0)
       return;
 
@@ -53,10 +53,10 @@ SubwayVertex SubwayGraph::GetNearestStation(m2::PointD const & point) const
     size_t const pointsCount = ft.GetPointsCount();
     for (size_t i = 0; i < pointsCount; ++i)
     {
-      double const dist = MercatorBounds::DistanceOnEarth(point, ft.GetPoint(i));
-      if (dist < closestVertexDist)
+      double const distMeters = MercatorBounds::DistanceOnEarth(point, ft.GetPoint(i));
+      if (distMeters < closestVertexDistMeters)
       {
-        closestVertexDist = dist;
+        closestVertexDistMeters = distMeters;
         closestVertex = SubwayVertex(
             m_numMwmIds->GetId(ft.GetID().m_mwmId.GetInfo()->GetLocalFile().GetCountryFile()),
             ft.GetID().m_index, static_cast<uint32_t >(i), SubwayType::Line);
@@ -68,7 +68,7 @@ SubwayVertex SubwayGraph::GetNearestStation(m2::PointD const & point) const
     f, MercatorBounds::RectByCenterXYAndSizeInMeters(point, kLineSearchRadiusMeters),
     scales::GetUpperScale());
 
-  ASSERT_NOT_EQUAL(closestVertexDist, std::numeric_limits<double>::max(), ());
+  CHECK_NOT_EQUAL(closestVertexDistMeters, std::numeric_limits<double>::max(), ());
   return closestVertex;
 }
 }  // namespace routing
