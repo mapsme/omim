@@ -2,6 +2,8 @@
 
 #include "base/string_utils.hpp"
 
+#include <algorithm>
+
 namespace gui
 {
 namespace
@@ -9,7 +11,7 @@ namespace
 std::string TimeToString(double timeInSeconds)
 {
   uint32_t const seconds = static_cast<uint32_t>(timeInSeconds);
-  uint32_t const minutes = seconds / 60;
+  uint32_t const minutes = std::min(seconds / 60, static_cast<uint32_t>(1));
   return strings::to_string(minutes) + " min";
 }
 }  // namespace
