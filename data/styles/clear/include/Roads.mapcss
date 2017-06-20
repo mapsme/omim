@@ -1335,7 +1335,16 @@ line|z10-[route=ferry],
 line|z10-[route=ferry_motorcar]
 {color: @ferry;width: 1;opacity: 1;dashes: 5.4,2.7;}
 
-line|z10-[subway_meta=line]
-{width: 5;color: @subway_default;linejoin: round;linecap: round;}
-line|z10-[subway_meta=change]
-{width: 2;dashes: 5.4,2.7;}
+line|z11-[subway_meta=line]
+{width: 2;color: @subway_default;linejoin: round;linecap: round;}
+line|z12[subway_meta=line]
+{width: 3;}
+line|z13-15[subway_meta=line]
+{width: 4;}
+line|z16[subway_meta=line]
+{width: 5;}
+line|z17-[subway_meta=line]
+{width: 6;}
+
+line|z11-[subway_meta=change]
+{width: 2;color: @subway_change;dashes: 5.4,2.7;}
