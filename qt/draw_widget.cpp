@@ -329,7 +329,8 @@ void DrawWidget::SubmitFakeLocationPoint(m2::PointD const & pt)
   auto const point = m_framework.P3dtoG(pt);
   m_framework.OnLocationUpdate(qt::common::MakeGpsInfo(point));
 
-  if (m_framework.GetRoutingManager().IsRoutingActive())
+  if (m_framework.GetRoutingManager().IsRoutingActive() &&
+      !m_framework.GetSubwayManager().IsEnabled())
   {
     location::FollowingInfo loc;
     m_framework.GetRoutingManager().GetRouteFollowingInfo(loc);
