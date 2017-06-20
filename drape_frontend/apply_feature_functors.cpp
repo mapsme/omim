@@ -945,8 +945,10 @@ ApplyLineFeatureAdditional::ApplyLineFeatureAdditional(TileKey const & tileKey,
                                                        double currentScaleGtoP,
                                                        int minVisibleScale, uint8_t rank,
                                                        CaptionDescription const & captions,
+                                                       bool isSubwayLine,
                                                        std::vector<m2::SharedSpline> const & clippedSplines)
   : TBase(tileKey, insertShape, id, minVisibleScale, rank, captions)
+  , m_isSubwayLine(isSubwayLine)
   , m_clippedSplines(clippedSplines)
   , m_currentScaleGtoP(static_cast<float>(currentScaleGtoP))
   , m_depth(0.0f)
@@ -1139,6 +1141,8 @@ void ApplyLineFeatureAdditional::Finish(ref_ptr<dp::TextureManager> texMng,
     PathTextViewParams params;
     params.m_tileCenter = m_tileRect.Center();
     params.m_featureID = m_id;
+    params.m_depthLayer = m_isSubwayLine ? RenderState::SubwayLayer
+                                         : RenderState::OverlayLayer;
     params.m_depth = m_depth;
     params.m_minVisibleScale = m_minVisibleScale;
     params.m_rank = m_rank;

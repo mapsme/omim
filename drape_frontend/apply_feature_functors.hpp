@@ -180,7 +180,7 @@ public:
   ApplyLineFeatureAdditional(TileKey const & tileKey, TInsertShapeFn const & insertShape,
                              FeatureID const & id, double currentScaleGtoP, int minVisibleScale,
                              uint8_t rank, CaptionDescription const & captions,
-                             std::vector<m2::SharedSpline> const & clippedSplines);
+                             bool isSubwayLine, std::vector<m2::SharedSpline> const & clippedSplines);
 
   void ProcessLineRule(Stylist::TRuleWrapper const & rule);
   void Finish(ref_ptr<dp::TextureManager> texMng, std::set<ftypes::RoadShield> && roadShields,
@@ -199,6 +199,7 @@ private:
                           uint32_t minDistanceInPixels,
                           std::vector<m2::RectD> & shields);
 
+  bool m_isSubwayLine;
   std::vector<m2::SharedSpline> m_clippedSplines;
   float m_currentScaleGtoP;
   float m_depth;
