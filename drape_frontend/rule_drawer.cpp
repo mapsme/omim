@@ -375,7 +375,8 @@ void RuleDrawer::ProcessLineStyle(FeatureType const & f, Stylist const & s,
   {
     ApplyLineFeatureAdditional applyAdditional(m_context->GetTileKey(), insertShape, f.GetID(),
                                                m_currentScaleGtoP, minVisibleScale, f.GetRank(),
-                                               s.GetCaptionDescription(), clippedSplines);
+                                               s.GetCaptionDescription(), isSubwayLine,
+                                               clippedSplines);
     s.ForEachRule(bind(&ApplyLineFeatureAdditional::ProcessRule, &applyAdditional, _1));
     applyAdditional.Finish(ftypes::GetRoadShields(f));
   }

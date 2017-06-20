@@ -252,7 +252,7 @@ void PathTextShape::DrawPathTextPlain(ref_ptr<dp::TextureManager> textures,
   dp::TextureManager::ColorRegion color;
   textures->GetColorRegion(m_params.m_textFont.m_color, color);
 
-  dp::GLState state(layout->GetFixedHeight() > 0 ? gpu::TEXT_FIXED_PROGRAM : gpu::TEXT_PROGRAM, dp::GLState::OverlayLayer);
+  dp::GLState state(layout->GetFixedHeight() > 0 ? gpu::TEXT_FIXED_PROGRAM : gpu::TEXT_PROGRAM, m_params.m_depthLayer);
   state.SetProgram3dIndex(layout->GetFixedHeight() > 0 ? gpu::TEXT_FIXED_BILLBOARD_PROGRAM : gpu::TEXT_BILLBOARD_PROGRAM);
   state.SetColorTexture(color.GetTexture());
   state.SetMaskTexture(layout->GetMaskTexture());
@@ -295,7 +295,7 @@ void PathTextShape::DrawPathTextOutlined(ref_ptr<dp::TextureManager> textures,
   textures->GetColorRegion(m_params.m_textFont.m_color, color);
   textures->GetColorRegion(m_params.m_textFont.m_outlineColor, outline);
 
-  dp::GLState state(gpu::TEXT_OUTLINED_PROGRAM, dp::GLState::OverlayLayer);
+  dp::GLState state(gpu::TEXT_OUTLINED_PROGRAM, m_params.m_depthLayer);
   state.SetProgram3dIndex(gpu::TEXT_OUTLINED_BILLBOARD_PROGRAM);
   state.SetColorTexture(color.GetTexture());
   state.SetMaskTexture(layout->GetMaskTexture());

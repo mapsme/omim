@@ -863,8 +863,10 @@ ApplyLineFeatureAdditional::ApplyLineFeatureAdditional(TileKey const & tileKey,
                                                        double currentScaleGtoP,
                                                        int minVisibleScale, uint8_t rank,
                                                        CaptionDescription const & captions,
+                                                       bool isSubwayLine,
                                                        std::vector<m2::SharedSpline> const & clippedSplines)
   : TBase(tileKey, insertShape, id, minVisibleScale, rank, captions)
+  , m_isSubwayLine(isSubwayLine)
   , m_clippedSplines(clippedSplines)
   , m_currentScaleGtoP(static_cast<float>(currentScaleGtoP))
   , m_shieldDepth(0.0f)
@@ -896,6 +898,8 @@ void ApplyLineFeatureAdditional::ProcessRule(Stylist::TRuleWrapper const & rule)
   dp::FontDecl fontDecl;
   CaptionDefProtoToFontDecl(pCaptionRule, fontDecl);
   PathTextViewParams params;
+  params.m_depthLayer = m_isSubwayLine ? dp::GLState::SubwayLayer
+                                       : dp::GLState::OverlayLayer;
   params.m_tileCenter = m_tileRect.Center();
   params.m_featureID = m_id;
   params.m_depth = depth;
