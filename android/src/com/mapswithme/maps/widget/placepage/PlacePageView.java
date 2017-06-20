@@ -65,7 +65,9 @@ import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.review.Review;
 import com.mapswithme.maps.routing.RoutingController;
 import com.mapswithme.maps.ugc.UGC;
+import com.mapswithme.maps.ugc.UGCEditorActivity;
 import com.mapswithme.maps.ugc.UGCReviewAdapter;
+import com.mapswithme.maps.ugc.UgcAverageRatingController;
 import com.mapswithme.maps.widget.ArrowView;
 import com.mapswithme.maps.widget.BaseShadowController;
 import com.mapswithme.maps.widget.LineCountTextView;
@@ -114,7 +116,7 @@ public class PlacePageView extends RelativeLayout
                BottomPlacePageAnimationController.OnBannerOpenListener,
                EditBookmarkFragment.EditBookmarkListener,
                BannerController.BannerListener,
-               UGC.UGCListener
+               UGC.UGCListener, UgcAverageRatingController.OnUgcRatingChangedListener
 {
   private static final Logger LOGGER = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.MISC);
   private static final String TAG = PlacePageView.class.getSimpleName();
@@ -187,6 +189,9 @@ public class PlacePageView extends RelativeLayout
   private View mUgcView;
   private View mUgcRating;
   private View mUgcMoreReviews;
+
+  @Nullable
+  UgcAverageRatingController mUgcController;
 
   @Nullable
   BannerController mBannerController;
@@ -270,6 +275,15 @@ public class PlacePageView extends RelativeLayout
   public void onUGCRatingsObtained(@NonNull List<UGC.Rating> ratings)
   {
 
+  }
+
+  @Override
+  public void onRatingChanged(@UGC.UGCRating int rating)
+  {
+    if (mMapObject == null)
+      return;
+
+    UGCEditorActivity.start(getActivity(), mMapObject.getFeatureIndex(), rating);
   }
 
   public enum State
@@ -631,6 +645,7 @@ public class PlacePageView extends RelativeLayout
   {
     mUgcView = findViewById(R.id.ll__pp_ugc);
     mUgcRating = findViewById(R.id.ll__pp_ugc_rating);
+    mUgcController = new UgcAverageRatingController(mUgcRating, this);
     mUgcMoreReviews = findViewById(R.id.tv__pp_ugc_reviews_more);
     RecyclerView rvHotelReview = (RecyclerView) findViewById(R.id.rv__pp_ugc_reviews);
     rvHotelReview.setLayoutManager(new LinearLayoutManager(getContext()));
