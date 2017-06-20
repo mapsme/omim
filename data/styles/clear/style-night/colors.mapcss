@@ -177,3 +177,4 @@
 @shield_outline: #b2b2b2;
 
 @subway_default: #000000;
+@subway_change: #777777;

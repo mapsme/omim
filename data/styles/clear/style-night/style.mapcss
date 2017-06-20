@@ -90,6 +90,5 @@ colors
   LocalAdsSecondaryText-color: #FFFFFF;
   LocalAdsSecondaryTextOutline-color: #000000;
   RouteSubwayBackground-color: #000000;
-  RouteSubwayBackground-opacity: 0.8;
   RouteSubwayOutline-color: #111111;
 }
