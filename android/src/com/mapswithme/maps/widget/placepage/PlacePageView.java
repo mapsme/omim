@@ -64,6 +64,8 @@ import com.mapswithme.maps.gallery.Image;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.review.Review;
 import com.mapswithme.maps.routing.RoutingController;
+import com.mapswithme.maps.ugc.UGC;
+import com.mapswithme.maps.ugc.UGCReviewAdapter;
 import com.mapswithme.maps.widget.ArrowView;
 import com.mapswithme.maps.widget.BaseShadowController;
 import com.mapswithme.maps.widget.LineCountTextView;
@@ -111,7 +113,8 @@ public class PlacePageView extends RelativeLayout
                NearbyAdapter.OnItemClickListener,
                BottomPlacePageAnimationController.OnBannerOpenListener,
                EditBookmarkFragment.EditBookmarkListener,
-               BannerController.BannerListener
+               BannerController.BannerListener,
+               UGC.UGCListener
 {
   private static final Logger LOGGER = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.MISC);
   private static final String TAG = PlacePageView.class.getSimpleName();
@@ -181,6 +184,10 @@ public class PlacePageView extends RelativeLayout
   private TextView mHotelRating;
   private TextView mHotelRatingBase;
   private View mHotelMore;
+  private View mUgcView;
+  private View mUgcRating;
+  private View mUgcMoreReviews;
+
   @Nullable
   BannerController mBannerController;
 
@@ -206,6 +213,8 @@ public class PlacePageView extends RelativeLayout
   private final NearbyAdapter mNearbyAdapter = new NearbyAdapter(this);
   @NonNull
   private final ReviewAdapter mReviewAdapter = new ReviewAdapter();
+  @NonNull
+  private final UGCReviewAdapter mUGCReviewAdapter = new UGCReviewAdapter();
 
   // Downloader`s stuff
   private DownloaderStatusIcon mDownloaderIcon;
@@ -247,6 +256,21 @@ public class PlacePageView extends RelativeLayout
       detachCountry();
     }
   };
+
+  @Override
+  public void onUGCReviewsObtained(@NonNull List<UGC.Review> reviews)
+  {
+    hideHotelViews();
+    clearHotelViews();
+    mUGCReviewAdapter.setItems(reviews);
+    UiUtils.show(mUgcView);
+  }
+
+  @Override
+  public void onUGCRatingsObtained(@NonNull List<UGC.Rating> ratings)
+  {
+
+  }
 
   public enum State
   {
@@ -401,6 +425,8 @@ public class PlacePageView extends RelativeLayout
     initHotelGalleryView();
     initHotelNearbyView();
     initHotelRatingView();
+
+    initUgcView();
 
     View bannerView = findViewById(R.id.banner);
     if (bannerView != null)
@@ -600,6 +626,21 @@ public class PlacePageView extends RelativeLayout
     Sponsored.setPriceListener(this);
     Sponsored.setInfoListener(this);
   }
+
+  private void initUgcView()
+  {
+    mUgcView = findViewById(R.id.ll__pp_ugc);
+    mUgcRating = findViewById(R.id.ll__pp_ugc_rating);
+    mUgcMoreReviews = findViewById(R.id.tv__pp_ugc_reviews_more);
+    RecyclerView rvHotelReview = (RecyclerView) findViewById(R.id.rv__pp_ugc_reviews);
+    rvHotelReview.setLayoutManager(new LinearLayoutManager(getContext()));
+    rvHotelReview.getLayoutManager().setAutoMeasureEnabled(true);
+    rvHotelReview.setNestedScrollingEnabled(false);
+    rvHotelReview.setHasFixedSize(false);
+    rvHotelReview.setAdapter(mUGCReviewAdapter);
+    //TODO: fill in with mock content here
+  }
+
 
   private void initHotelRatingView()
   {
@@ -1064,6 +1105,14 @@ public class PlacePageView extends RelativeLayout
     detachCountry();
     if (mMapObject != null)
     {
+      // TODO: mock implementation for test only
+      if (mMapObject.getFeatureIndex() == 162716)
+      {
+        UGC.setListener(this);
+        UGC.requestUGC("162716");
+        refreshViews(policy);
+        return;
+      }
       clearHotelViews();
       if (mSponsored != null)
       {
