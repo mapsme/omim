@@ -93,6 +93,7 @@ DrapeEngine::DrapeEngine(Params && params)
                                    make_ref(m_requestedTiles),
                                    params.m_allow3dBuildings,
                                    params.m_trafficEnabled,
+                                   params.m_subwayModeEnabled,
                                    params.m_simplifiedTrafficColors);
 
   m_backend = make_unique_dp<BackendRenderer>(std::move(brParams));
@@ -695,7 +696,7 @@ void DrapeEngine::RunFirstLaunchAnimation()
 
 void DrapeEngine::SetSubwayModeEnabled(bool isEnabled)
 {
-  m_threadCommutator->PostMessage(ThreadsCommutator::RenderThread,
+  m_threadCommutator->PostMessage(ThreadsCommutator::ResourceUploadThread,
                                   make_unique_dp<SetSubwayModeEnabledMessage>(isEnabled),
                                   MessagePriority::Normal);
 }

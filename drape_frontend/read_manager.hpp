@@ -35,7 +35,7 @@ class ReadManager
 {
 public:
   ReadManager(ref_ptr<ThreadsCommutator> commutator, MapDataProvider & model,
-              bool allow3dBuildings, bool trafficEnabled);
+              bool allow3dBuildings, bool trafficEnabled, bool subwayEnabled);
 
   void UpdateCoverage(ScreenBase const & screen, bool have3dBuildings, bool forceUpdate,
                       TTilesCollection const & tiles, ref_ptr<dp::TextureManager> texMng,
@@ -48,7 +48,7 @@ public:
   void Allow3dBuildings(bool allow3dBuildings);
 
   void SetTrafficEnabled(bool trafficEnabled);
-
+  void SetSubwayModeEnabled(bool subwayEnabled);
   void SetDisplacementMode(int displacementMode);
 
   void UpdateCustomSymbols(CustomSymbols const & symbols);
@@ -74,6 +74,7 @@ private:
   bool m_have3dBuildings;
   bool m_allow3dBuildings;
   bool m_trafficEnabled;
+  bool m_subwayEnabled;
   int m_displacementMode;
   bool m_modeChanged;
 
