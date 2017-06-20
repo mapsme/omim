@@ -87,6 +87,12 @@ UNIT_TEST(SubwayGraphTest)
 
   SubwayGraph graph(factory, numMwmIds, index);
   graph.GetNearestStation({0.0, 0.0});
+
+  vector<SubwayEdge> edges;
+  graph.GetOutgoingEdgesList(
+      SubwayVertex(0 /* num mwm id */, 0 /* feature id */, 0 /* point id */, SubwayType::Line),
+      edges);
+  size_t sz = edges.size();
   // @TODO It's necessary to test using SubwayGraph methods hears.
 }
 }  // namespace
