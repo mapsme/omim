@@ -438,6 +438,10 @@ void RuleDrawer::ProcessPointStyle(FeatureType const & f, Stylist const & s, TIn
     return;
 
   int const zoomLevel = m_context->GetTileKey().m_zoomLevel;
+  bool const isSpeedCamera = ftypes::IsSpeedCamChecker::Instance()(f);
+  if (isSpeedCamera && !GetStyleReader().IsCarNavigationStyle())
+    return;
+
   bool const isSubwayStation = m_context->IsSubwayEnabled() && ftypes::IsSubwayStationChecker::Instance()(f);
 
   RenderState::DepthLayer depthLayer = RenderState::OverlayLayer;

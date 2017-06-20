@@ -342,6 +342,13 @@ void DrawWidget::SubmitFakeLocationPoint(m2::PointD const & pt)
 void DrawWidget::SubmitRoutingPoint(m2::PointD const & pt)
 {
   auto & routingManager = m_framework.GetRoutingManager();
+  if (m_framework.GetSubwayManager().IsEnabled())
+  {
+    routingManager.RemoveIntermediateRoutePoints();
+    if (m_routePointAddMode == RouteMarkType::Intermediate)
+      return;
+  }
+
   auto const pointsCount = routingManager.GetRoutePoints().size();
 
   // Check if limit of intermediate points is reached.
@@ -364,7 +371,17 @@ void DrawWidget::SubmitRoutingPoint(m2::PointD const & pt)
   routingManager.AddRoutePoint(std::move(point));
 
   if (routingManager.GetRoutePoints().size() >= 2)
-    routingManager.BuildRoute(0 /* timeoutSec */);
+  {
+    if (m_framework.GetSubwayManager().IsEnabled())
+    {
+      auto const points = routingManager.GetRoutePoints();
+      routingManager.BuildSubwayRoute(points.front().m_position, points.back().m_position);
+    }
+    else
+    {
+      routingManager.BuildRoute(0 /* timeoutSec */);
+    }
+  }
 }
 
 void DrawWidget::SubmitBookmark(m2::PointD const & pt)
