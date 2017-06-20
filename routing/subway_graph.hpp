@@ -34,7 +34,7 @@ public:
   void GetIngoingEdgesList(TVertexType const & vertex, vector<TEdgeType> & edges);
   double HeuristicCostEstimate(TVertexType const & from, TVertexType const & to);
 
-  SubwayVertex GetNearestStation(m2::PointD const & point) const;
+  bool GetNearestStation(m2::PointD const & point, SubwayVertex & vertex) const;
 
 private:
   bool IsValidRoad(FeatureType const & ft) const;

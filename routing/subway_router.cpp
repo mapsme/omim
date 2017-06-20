@@ -33,8 +33,13 @@ IRouter::ResultCode SubwayRouter::CalculateRoute(Checkpoints const & checkpoints
                                                  m2::PointD const & startDirection, bool adjust,
                                                  RouterDelegate const & delegate, Route & route)
 {
-  auto start = m_graph.GetNearestStation(checkpoints.GetPointFrom());
-  auto finish = m_graph.GetNearestStation(checkpoints.GetPointTo());
+  SubwayVertex start;
+  if (!m_graph.GetNearestStation(checkpoints.GetPointFrom(), start))
+    return IRouter::StartPointNotFound;
+
+  SubwayVertex finish;
+  if (!m_graph.GetNearestStation(checkpoints.GetPointTo(), finish))
+    return IRouter::EndPointNotFound;
 
   AStarAlgorithm<SubwayGraph> algorithm;
   RoutingResult<SubwayVertex, SubwayGraph::TWeightType> result;
