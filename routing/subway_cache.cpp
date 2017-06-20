@@ -36,6 +36,7 @@ SubwayFeature const & SubwayCache::GetFeature(NumMwmId numMwmId, uint32_t featur
   feature.ParseGeometry(FeatureType::BEST_GEOMETRY);
 
   vector<m2::PointD> points;
+  points.reserve(feature.GetPointsCount());
   for (size_t i = 0; i < feature.GetPointsCount(); ++i)
     points.push_back(feature.GetPoint(i));
 
