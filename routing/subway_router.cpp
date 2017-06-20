@@ -34,8 +34,13 @@ IRouter::ResultCode SubwayRouter::CalculateRoute(m2::PointD const & startPoint,
                                                  m2::PointD const & finalPoint,
                                                  RouterDelegate const & delegate, Route & route)
 {
-  auto start = m_graph.GetNearestStation(startPoint);
-  auto finish = m_graph.GetNearestStation(finalPoint);
+  SubwayVertex start;
+  if (!m_graph.GetNearestStation(startPoint, start))
+    return IRouter::StartPointNotFound;
+
+  SubwayVertex finish;
+  if (!m_graph.GetNearestStation(finalPoint, finish))
+    return IRouter::EndPointNotFound;
 
   AStarAlgorithm<SubwayGraph> algorithm;
   RoutingResult<SubwayVertex> result;
