@@ -19,13 +19,13 @@ class SubwayFeature final
 public:
   SubwayFeature() = default;
 
-  SubwayFeature(std::vector<m2::PointD> && points, std::string color, SubwayType type)
+  SubwayFeature(SubwayType type, std::string const & color, std::vector<m2::PointD> && points)
     : m_points(points), m_color(color), m_type(type)
   {
   }
 
   std::vector<m2::PointD> const & GetPoints() const { return m_points; }
-  std::string const & GetColor() { return m_color; }
+  std::string const & GetColor() const { return m_color; }
   SubwayType GetType() const { return m_type; }
 
 private:
