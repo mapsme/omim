@@ -177,3 +177,4 @@
 /* blue - #2E89B0; #687E94; #598DBE; */
 
 @subway_default: #000000;
+@subway_change: #777777;

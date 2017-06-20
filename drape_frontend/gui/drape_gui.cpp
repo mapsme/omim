@@ -1,5 +1,6 @@
-#include "drape_gui.hpp"
-#include "ruler_helper.hpp"
+#include "drape_frontend/gui/drape_gui.hpp"
+#include "drape_frontend/gui/ruler_helper.hpp"
+#include "drape_frontend/gui/subway_label_helper.hpp"
 
 #include "drape_frontend/color_constants.hpp"
 #include "drape_frontend/visual_params.hpp"
@@ -17,6 +18,7 @@ struct DrapeGui::Impl
 {
   DrapeGui::TLocalizeStringFn m_localizeFn;
   RulerHelper m_rulerHelper;
+  SubwayLabelHelper m_subwayLabelHelper;
 };
 
 DrapeGui::DrapeGui()
@@ -35,6 +37,11 @@ DrapeGui & DrapeGui::Instance()
 RulerHelper & DrapeGui::GetRulerHelper()
 {
   return Instance().GetRulerHelperImpl();
+}
+
+SubwayLabelHelper & DrapeGui::GetSubwayLabelHelper()
+{
+  return Instance().GetSubwayLabelHelperImpl();
 }
 
 dp::FontDecl DrapeGui::GetGuiTextFont()
@@ -77,6 +84,12 @@ RulerHelper & DrapeGui::GetRulerHelperImpl()
 {
   ASSERT(m_impl != nullptr, ());
   return m_impl->m_rulerHelper;
+}
+
+SubwayLabelHelper & DrapeGui::GetSubwayLabelHelperImpl()
+{
+  ASSERT(m_impl != nullptr, ());
+  return m_impl->m_subwayLabelHelper;
 }
 
 void DrapeGui::ConnectOnCompassTappedHandler(Shape::TTapHandler const & handler)

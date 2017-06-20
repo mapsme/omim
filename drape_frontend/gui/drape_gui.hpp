@@ -16,8 +16,8 @@ class ScreenBase;
 
 namespace gui
 {
-
 class RulerHelper;
+class SubwayLabelHelper;
 
 class DrapeGui
 {
@@ -26,6 +26,7 @@ public:
 
   static DrapeGui & Instance();
   static RulerHelper & GetRulerHelper();
+  static SubwayLabelHelper & GetSubwayLabelHelper();
 
   static dp::FontDecl GetGuiTextFont();
 
@@ -49,6 +50,7 @@ private:
   DrapeGui();
 
   RulerHelper & GetRulerHelperImpl();
+  SubwayLabelHelper & GetSubwayLabelHelperImpl();
 
 private:
   struct Impl;

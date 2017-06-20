@@ -87,7 +87,8 @@ UNIT_TEST(SubwayGraphTest)
 
   auto cache = make_shared<SubwayCache>(numMwmIds, index);
   SubwayGraph graph(factory, numMwmIds, cache, index);
-  graph.GetNearestStation({0.0, 0.0});
+  SubwayVertex v(0, 0, 0, SubwayType::Line);
+  graph.GetNearestStation({0.0, 0.0}, v);
 
   vector<SubwayEdge> edges;
   graph.GetOutgoingEdgesList(
