@@ -1336,8 +1336,10 @@ void FrontendRenderer::RenderSubwayOverlayLayer(ScreenBase const & modelView)
 {
   RenderLayer & subwayOverlay = m_layers[RenderLayer::SubwayID];
   for (drape_ptr<RenderGroup> & group : subwayOverlay.m_renderGroups)
+  {
     if (group->HasOverlayHandles())
       RenderSingleGroup(modelView, make_ref(group));
+  }
 }
 
 void FrontendRenderer::RenderTrafficAndRouteLayer(ScreenBase const & modelView)

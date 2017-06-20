@@ -77,8 +77,10 @@ void RenderGroup::CollectOverlay(ref_ptr<dp::OverlayTree> tree)
 bool RenderGroup::HasOverlayHandles() const
 {
   for (auto & renderBucket : m_renderBuckets)
+  {
     if (renderBucket->HasOverlayHandles())
       return true;
+  }
   return false;
 }
 

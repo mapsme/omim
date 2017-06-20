@@ -160,7 +160,6 @@ private:
   void PrepareScene(ScreenBase const & modelView);
   void UpdateScene(ScreenBase const & modelView);
   void BuildOverlayTree(ScreenBase const & modelView);
-  void BuildSubwayOverlayTree(ScreenBase const & modelView);
 
   void EmitModelViewChanged(ScreenBase const & modelView) const;
 
@@ -206,10 +205,6 @@ private:
   void BeginUpdateOverlayTree(ScreenBase const & modelView);
   void UpdateOverlayTree(ScreenBase const & modelView, drape_ptr<RenderGroup> & renderGroup);
   void EndUpdateOverlayTree();
-
-  void BeginUpdateSubwayOverlayTree(ScreenBase const & modelView);
-  void UpdateSubwayOverlayTree(ScreenBase const & modelView, drape_ptr<RenderGroup> & renderGroup);
-  void EndUpdateSubwayOverlayTree();
 
   void AddToRenderGroup(dp::GLState const & state, drape_ptr<dp::RenderBucket> && renderBucket,
                         TileKey const & newTile);
