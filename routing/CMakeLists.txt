@@ -108,6 +108,8 @@ set(
   segment.hpp
   speed_camera.cpp
   speed_camera.hpp
+  subway_cache.cpp
+  subway_cache.hpp
   subway_edge.hpp
   subway_graph.cpp
   subway_graph.hpp
