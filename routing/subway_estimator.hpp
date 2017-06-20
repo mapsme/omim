@@ -19,10 +19,7 @@ public:
   }
 
   /// \returns weight in seconds.
-  double CalcWeightTheSameLine(SubwayType type,
-                               m2::PointD const & fromPnt,
-                               m2::PointD const & toPnt,
-                               double speedKmPerH) const;
+  double CalcWeightTheSameLine(m2::PointD const & fromPnt, m2::PointD const & toPnt, double speedKmPerH) const;
   double CalcWeightTheSamePoint(SubwayVertex const & from, SubwayVertex const & to) const;
 
 private:

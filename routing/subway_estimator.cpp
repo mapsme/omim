@@ -4,11 +4,9 @@
 
 namespace routing
 {
-double SubwayEstimator::CalcWeightTheSameLine(SubwayType type,
-                                              m2::PointD const & fromPnt,
-                                              m2::PointD const & toPnt,
-                                              double speedKmPerH) const
+double SubwayEstimator::CalcWeightTheSameLine(m2::PointD const & fromPnt, m2::PointD const & toPnt, double speedKmPerH) const
 {
+  CHECK_GREATER(speedKmPerH, 0, ());
   double const distMeters = MercatorBounds::DistanceOnEarth(fromPnt, toPnt);
   double const speedMPerS = speedKmPerH / 3.6;
 
