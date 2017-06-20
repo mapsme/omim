@@ -11,6 +11,7 @@
 #include "indexer/feature.hpp"
 
 #include <memory>
+#include <utility>
 #include <vector>
 
 namespace routing
@@ -22,10 +23,12 @@ public:
   using TVertexType = SubwayVertex;
   using TEdgeType = SubwayEdge;
 
-  SubwayGraph(std::shared_ptr<IVehicleModel> model, std::shared_ptr<NumMwmIds> numMwmIds,
-              Index const & index)
-    : m_model(model), m_numMwmIds(numMwmIds), m_index(index)
+  SubwayGraph(std::shared_ptr<VehicleModelFactory> modelFactory,
+              std::shared_ptr<NumMwmIds> numMwmIds, Index const & index)
+    : m_modelFactory(std::move(modelFactory)), m_numMwmIds(std::move(numMwmIds)), m_index(index)
   {
+    CHECK(m_modelFactory, ());
+    CHECK(m_numMwmIds, ());
   }
 
   // Interface for AStarAlgorithm:
@@ -36,7 +39,7 @@ public:
   SubwayVertex GetNearestStation(m2::PointD const & point) const;
 
 private:
-  std::shared_ptr<IVehicleModel> m_model;
+  std::shared_ptr<VehicleModelFactory> m_modelFactory;
   std::shared_ptr<NumMwmIds> m_numMwmIds;
   Index const & m_index;
 };
