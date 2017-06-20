@@ -34,8 +34,7 @@ SubwayGraph::SubwayGraph(std::shared_ptr<VehicleModelFactory> modelFactory,
 void SubwayGraph::GetOutgoingEdgesList(TVertexType const & vertex, vector<TEdgeType> & edges)
 {
   edges.clear();
-
-  // @TODO Implement filling |edges| more carefully.
+  
   // Getting point by |vertex|.
   auto const & featureInfo = m_cache->GetFeature(vertex.GetMwmId(), vertex.GetFeatureId());
   auto const & points = featureInfo.GetPoints();
@@ -50,8 +49,7 @@ void SubwayGraph::GetOutgoingEdgesList(TVertexType const & vertex, vector<TEdgeT
                               static_cast<uint32_t>(vertex.GetPointId() - 1), vertex.GetType());
     edges.emplace_back(
         target,
-        m_estimator.CalcWeightTheSameLine(vertex.GetType(),
-                                          points[vertex.GetPointId()],
+        m_estimator.CalcWeightTheSameLine(points[vertex.GetPointId()],
                                           points[vertex.GetPointId() - 1],
                                           featureInfo.GetSpeed()));
   }
@@ -61,8 +59,7 @@ void SubwayGraph::GetOutgoingEdgesList(TVertexType const & vertex, vector<TEdgeT
                               static_cast<uint32_t>(vertex.GetPointId() + 1), vertex.GetType());
     edges.emplace_back(
         target,
-        m_estimator.CalcWeightTheSameLine(vertex.GetType(),
-                                          points[vertex.GetPointId()],
+        m_estimator.CalcWeightTheSameLine(points[vertex.GetPointId()],
                                           points[vertex.GetPointId() + 1],
                                           featureInfo.GetSpeed()));
   }
