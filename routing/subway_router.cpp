@@ -23,7 +23,8 @@ namespace routing
 SubwayRouter::SubwayRouter(std::shared_ptr<NumMwmIds> numMwmIds, Index & index)
   : m_index(index)
   , m_numMwmIds(std::move(numMwmIds))
-  , m_graph(m_modelFactory.GetVehicleModel(), m_numMwmIds, index)
+  , m_modelFactory(make_shared<SubwayModelFactory>())
+  , m_graph(m_modelFactory, m_numMwmIds, index)
 {
   CHECK(m_numMwmIds, ());
 }
