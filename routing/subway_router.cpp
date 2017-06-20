@@ -21,7 +21,9 @@ IRouter::ResultCode ConvertResult(typename AStarAlgorithm<SubwayGraph>::Result r
 namespace routing
 {
 SubwayRouter::SubwayRouter(std::shared_ptr<NumMwmIds> numMwmIds, Index & index)
-  : m_index(index), m_numMwmIds(std::move(numMwmIds))
+  : m_index(index)
+  , m_numMwmIds(std::move(numMwmIds))
+  , m_graph(m_modelFactory.GetVehicleModel(), m_numMwmIds, index)
 {
   CHECK(m_numMwmIds, ());
 }
