@@ -25,7 +25,7 @@ public:
   using TWeightType = double;
 
   SubwayGraph(std::shared_ptr<VehicleModelFactory> modelFactory,
-              std::shared_ptr<NumMwmIds> numMwmIds, Index const & index)
+              std::shared_ptr<NumMwmIds> numMwmIds, Index & index)
     : m_modelFactory(std::move(modelFactory)), m_numMwmIds(std::move(numMwmIds)), m_index(index)
   {
     CHECK(m_modelFactory, ());
@@ -40,8 +40,10 @@ public:
   SubwayVertex GetNearestStation(m2::PointD const & point) const;
 
 private:
+  bool IsValidRoad(FeatureType const & ft) const;
+
   std::shared_ptr<VehicleModelFactory> m_modelFactory;
   std::shared_ptr<NumMwmIds> m_numMwmIds;
-  Index const & m_index;
+  Index & m_index;
 };
 }  // namespace routing

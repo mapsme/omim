@@ -12,16 +12,59 @@
 namespace
 {
 double constexpr kLineSearchRadiusMeters = 100.0;
+double constexpr kEquivalenceDistMeters = 3.0;
 }  // namespace
 
 namespace routing
 {
-void SubwayGraph::GetOutgoingEdgesList(TVertexType const & segment, vector<TEdgeType> & edges)
+void SubwayGraph::GetOutgoingEdgesList(TVertexType const & vertex, vector<TEdgeType> & edges)
 {
-  NOTIMPLEMENTED();
+  // Getting point by |vertex|.
+  MwmSet::MwmHandle handle = m_index.GetMwmHandleByCountryFile(m_numMwmIds->GetFile(vertex.GetMwmId()));
+  Index::FeaturesLoaderGuard const guard(m_index, handle.GetId());
+  FeatureType ft;
+  if (!guard.GetFeatureByIndex(vertex.GetFeatureId(), ft))
+  {
+    LOG(LERROR, ("Feature can't be loaded:", vertex.GetFeatureId()));
+    return;
+  }
+  ft.ParseGeometry(FeatureType::BEST_GEOMETRY);
+  CHECK_LESS(vertex.GetPointId(), ft.GetPointsCount(), ());
+  m2::PointD const vertexPoint = ft.GetPoint(vertex.GetPointId());
+
+  // Getting outgoing edges by |vertexPoint|.
+  auto const f = [&](FeatureType const & ft)
+  {
+    if (!IsValidRoad(ft))
+      return;
+
+    ft.ParseGeometry(FeatureType::BEST_GEOMETRY);
+    ft.ParseMetadata();
+
+    size_t const pointsCount = ft.GetPointsCount();
+    NumMwmId const ftNumMwmId = m_numMwmIds->GetId(ft.GetID().m_mwmId.GetInfo()->GetLocalFile().GetCountryFile());
+    uint32_t const ftFeatureId = ft.GetID().m_index;
+    SubwayType const ftType = ftypes::IsSubwayLineChecker::Instance()(ft) ? SubwayType::Line
+                                                                          : SubwayType::Change;
+
+    for (size_t i = 0; i < pointsCount; ++i)
+    {
+      if (MercatorBounds::DistanceOnEarth(vertexPoint, ft.GetPoint(i)) < kEquivalenceDistMeters)
+      {
+        // @TODO Implement filling |edges| more carefully.
+        if (i != 0)
+          edges.emplace_back(SubwayVertex(ftNumMwmId, ftFeatureId, i - 1, ftType), 1.0 /* weight */);
+        if (i + 1 != pointsCount)
+          edges.emplace_back(SubwayVertex(ftNumMwmId, ftFeatureId, i + 1, ftType), 1.0 /* weight */);
+      }
+    }
+  };
+  m_index.ForEachInRect(
+    f, MercatorBounds::RectByCenterXYAndSizeInMeters(vertexPoint, kEquivalenceDistMeters),
+    scales::GetUpperScale());
 }
 
-void SubwayGraph::GetIngoingEdgesList(TVertexType const & segment, vector<TEdgeType> & edges)
+void SubwayGraph::GetIngoingEdgesList(TVertexType const & vertex, vector<TEdgeType> & edges)
 {
   NOTIMPLEMENTED();
 }
@@ -38,14 +81,10 @@ SubwayVertex SubwayGraph::GetNearestStation(m2::PointD const & point) const
 
   auto const f = [&](FeatureType const & ft)
   {
-    if (!m_modelFactory->GetVehicleModel()->IsRoad(ft))
+    if (!IsValidRoad(ft))
       return;
 
     if (!ftypes::IsSubwayLineChecker::Instance()(ft))
-      return;
-
-    double const speedKMPH = m_modelFactory->GetVehicleModel()->GetSpeed(ft);
-    if (speedKMPH <= 0.0)
       return;
 
     // @TODO It's necessary to cache the parsed geometry.
@@ -70,5 +109,17 @@ SubwayVertex SubwayGraph::GetNearestStation(m2::PointD const & point) const
 
   CHECK_NOT_EQUAL(closestVertexDistMeters, std::numeric_limits<double>::max(), ());
   return closestVertex;
+}
+
+bool SubwayGraph::IsValidRoad(FeatureType const & ft) const
+{
+  if (!m_modelFactory->GetVehicleModel()->IsRoad(ft))
+    return false;
+
+  double const speedKMPH = m_modelFactory->GetVehicleModel()->GetSpeed(ft);
+  if (speedKMPH <= 0.0)
+    return false;
+
+  return true;
 }
 }  // namespace routing
