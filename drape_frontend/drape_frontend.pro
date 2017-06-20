@@ -38,6 +38,7 @@ SOURCES += \
     gui/ruler_helper.cpp \
     gui/shape.cpp \
     gui/skin.cpp \
+    gui/subway_label_helper.cpp \
     animation_system.cpp \
     animation_utils.cpp \
     apply_feature_functors.cpp \
@@ -133,6 +134,7 @@ HEADERS += \
     gui/ruler_helper.hpp \
     gui/shape.hpp \
     gui/skin.hpp \
+    gui/subway_label_helper.hpp \
     animation_constants.hpp \
     animation_system.hpp \
     animation_utils.hpp \

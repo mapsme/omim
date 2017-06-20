@@ -40,6 +40,8 @@
 		452C9EE51CEDCF3200A55E57 /* sequence_animation.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 452C9ED31CEDCF3200A55E57 /* sequence_animation.hpp */; };
 		452FE5C31EB2004F00EE470C /* screen_quad_renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 452FE5C11EB2004F00EE470C /* screen_quad_renderer.cpp */; };
 		452FE5C41EB2004F00EE470C /* screen_quad_renderer.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 452FE5C21EB2004F00EE470C /* screen_quad_renderer.hpp */; };
+		4538150E1EF94AD7000297C5 /* subway_label_helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4538150C1EF94AD7000297C5 /* subway_label_helper.cpp */; };
+		4538150F1EF94AD7000297C5 /* subway_label_helper.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 4538150D1EF94AD7000297C5 /* subway_label_helper.hpp */; };
 		453EEA6D1E3A28F400505E09 /* colored_symbol_shape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 453EEA6B1E3A28F400505E09 /* colored_symbol_shape.cpp */; };
 		453EEA6E1E3A28F400505E09 /* colored_symbol_shape.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 453EEA6C1E3A28F400505E09 /* colored_symbol_shape.hpp */; };
 		453FEDAC1F34C257005C1BB4 /* render_state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 453FEDAA1F34C257005C1BB4 /* render_state.cpp */; };
@@ -239,6 +241,8 @@
 		452C9ED31CEDCF3200A55E57 /* sequence_animation.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = sequence_animation.hpp; sourceTree = "<group>"; };
 		452FE5C11EB2004F00EE470C /* screen_quad_renderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = screen_quad_renderer.cpp; sourceTree = "<group>"; };
 		452FE5C21EB2004F00EE470C /* screen_quad_renderer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = screen_quad_renderer.hpp; sourceTree = "<group>"; };
+		4538150C1EF94AD7000297C5 /* subway_label_helper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = subway_label_helper.cpp; sourceTree = "<group>"; };
+		4538150D1EF94AD7000297C5 /* subway_label_helper.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = subway_label_helper.hpp; sourceTree = "<group>"; };
 		453EEA6B1E3A28F400505E09 /* colored_symbol_shape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = colored_symbol_shape.cpp; sourceTree = "<group>"; };
 		453EEA6C1E3A28F400505E09 /* colored_symbol_shape.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = colored_symbol_shape.hpp; sourceTree = "<group>"; };
 		453FEDAA1F34C257005C1BB4 /* render_state.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render_state.cpp; sourceTree = "<group>"; };
@@ -759,6 +763,8 @@
 		670948061BDF9C15005014C0 /* gui */ = {
 			isa = PBXGroup;
 			children = (
+				4538150C1EF94AD7000297C5 /* subway_label_helper.cpp */,
+				4538150D1EF94AD7000297C5 /* subway_label_helper.hpp */,
 				56BF56D81C7608C0006DD7CB /* choose_position_mark.cpp */,
 				56BF56D91C7608C0006DD7CB /* choose_position_mark.hpp */,
 				670948231BDF9C48005014C0 /* compass.cpp */,
@@ -848,6 +854,7 @@
 				670947DF1BDF9BE1005014C0 /* visual_params.hpp in Headers */,
 				452FE5C41EB2004F00EE470C /* screen_quad_renderer.hpp in Headers */,
 				452C9EDB1CEDCF3200A55E57 /* interpolators.hpp in Headers */,
+				4538150F1EF94AD7000297C5 /* subway_label_helper.hpp in Headers */,
 				670948171BDF9C39005014C0 /* interpolation_holder.hpp in Headers */,
 				45BB025E1EB8BE5200FE5C0C /* shader_def.hpp in Headers */,
 				670947FD1BDF9BF5005014C0 /* base_renderer.hpp in Headers */,
@@ -971,6 +978,7 @@
 				BBD9E2D31F009D9E00DF189A /* user_mark_generator.cpp in Sources */,
 				670E393A1C46C59000E9C0A6 /* batch_merge_helper.cpp in Sources */,
 				452C9EDA1CEDCF3200A55E57 /* interpolators.cpp in Sources */,
+				4538150E1EF94AD7000297C5 /* subway_label_helper.cpp in Sources */,
 				451A2A821EE8464E003E05A4 /* circles_pack_shape.cpp in Sources */,
 				67E91C781BDFC85E005CEE88 /* area_shape.cpp in Sources */,
 				67E91C791BDFC85E005CEE88 /* base_renderer.cpp in Sources */,

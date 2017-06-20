@@ -685,6 +685,23 @@ private:
   bool m_needRemoveAll;
 };
 
+class UpdateRouteTimeMessage : public Message
+{
+public:
+  UpdateRouteTimeMessage(double timeInSeconds, m2::PointD const & timeLabelPivot)
+    : m_timeInSeconds(timeInSeconds)
+    , m_timeLabelPivot(timeLabelPivot)
+  {}
+
+  Type GetType() const override { return Message::UpdateRouteTime; }
+  double GetTimeInSeconds() const { return m_timeInSeconds; }
+  m2::PointD const & GetTimeLabelPivot() const { return m_timeLabelPivot; }
+
+private:
+  double m_timeInSeconds;
+  m2::PointD m_timeLabelPivot;
+};
+
 class SetSubrouteVisibilityMessage : public Message
 {
 public:

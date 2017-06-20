@@ -531,6 +531,14 @@ void DrapeEngine::RemoveAllRoutePreviewSegments()
                                   MessagePriority::Normal);
 }
 
+void DrapeEngine::UpdateRouteTime(double timeInSeconds, m2::PointD const & timeLabelPivot)
+{
+  m_threadCommutator->PostMessage(ThreadsCommutator::RenderThread,
+                                  make_unique_dp<UpdateRouteTimeMessage>(timeInSeconds,
+                                                                         timeLabelPivot),
+                                  MessagePriority::Normal);
+}
+
 void DrapeEngine::SetWidgetLayout(gui::TWidgetsLayoutInfo && info)
 {
   m_widgetsLayout = std::move(info);

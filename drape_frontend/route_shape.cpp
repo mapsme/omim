@@ -419,7 +419,7 @@ void RouteShape::CacheRoute(ref_ptr<dp::TextureManager> textures, RouteData & ro
     segmentsColors.reserve(routeData.m_subroute->m_subwayColoring.size());
     for (auto subwayColor : routeData.m_subroute->m_subwayColoring)
     {
-      static std::string const kDefaultColor = "ffffff";
+      static std::string const kDefaultColor = "777777";
       if (subwayColor.empty())
         subwayColor = kDefaultColor;
       dp::Color const color = ToDrapeColor(subwayColor);

@@ -5,6 +5,7 @@
 #include "drape_frontend/drape_measurer.hpp"
 #include "drape_frontend/gui/drape_gui.hpp"
 #include "drape_frontend/gui/ruler_helper.hpp"
+#include "drape_frontend/gui/subway_label_helper.hpp"
 #include "drape_frontend/message_subclasses.hpp"
 #include "drape_frontend/postprocess_renderer.hpp"
 #include "drape_frontend/scenario_manager.hpp"
@@ -481,6 +482,8 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
         m_myPositionController->DeactivateRouting();
         if (m_enablePerspectiveInNavigation)
           DisablePerspective();
+
+        gui::DrapeGui::Instance().GetSubwayLabelHelper().Clear();
       }
       else
       {
@@ -532,6 +535,15 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
         m_routeRenderer->RemoveAllPreviewSegments();
       else
         m_routeRenderer->RemovePreviewSegment(msg->GetSegmentId());
+      break;
+    }
+
+  case Message::UpdateRouteTime:
+    {
+      ref_ptr<UpdateRouteTimeMessage> const msg = message;
+      auto & helper = gui::DrapeGui::Instance().GetSubwayLabelHelper();
+      helper.UpdateTime(msg->GetTimeInSeconds());
+      helper.UpdatePosition(msg->GetTimeLabelPivot());
       break;
     }
 
@@ -1197,13 +1209,21 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
       auto prg = m_gpuProgramManager->GetProgram(gpu::SCREEN_QUAD_PROGRAM);
       m_subwayBackground->SetTextureRect(region.GetTexRect(), prg);
     }
-    m_subwayBackground->RenderTexture(make_ref(m_gpuProgramManager),
-                                      static_cast<uint32_t>(region.GetTexture()->GetID()), 1.0f);
+    if (m_routeRenderer->GetRouteData().empty())
+    {
+      m_subwayBackground->RenderTexture(make_ref(m_gpuProgramManager),
+                                        static_cast<uint32_t>(region.GetTexture()->GetID()), 0.7f);
+    }
 
     GLFunctions::glEnable(gl_const::GLDepthTest);
     GLFunctions::glClear(gl_const::GLDepthBit);
 
     RenderSubwayLayer(modelView);
+    if (!m_routeRenderer->GetRouteData().empty())
+    {
+      m_subwayBackground->RenderTexture(make_ref(m_gpuProgramManager),
+                                        static_cast<uint32_t>(region.GetTexture()->GetID()), 0.8f);
+    }
     RenderTrafficAndRouteLayer(modelView);
 
     GLFunctions::glClear(gl_const::GLDepthBit);

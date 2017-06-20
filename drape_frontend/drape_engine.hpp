@@ -167,6 +167,7 @@ public:
   dp::DrapeID AddRoutePreviewSegment(m2::PointD const & startPt, m2::PointD const & finishPt);
   void RemoveRoutePreviewSegment(dp::DrapeID segmentId);
   void RemoveAllRoutePreviewSegments();
+  void UpdateRouteTime(double timeInSeconds, m2::PointD const & timeLabelPivot);
 
   void SetWidgetLayout(gui::TWidgetsLayoutInfo && info);
 

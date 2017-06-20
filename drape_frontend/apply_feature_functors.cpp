@@ -915,6 +915,8 @@ void ApplyLineFeatureGeometry::ProcessLineRule(Stylist::TRuleWrapper const & rul
       dp::Color const kDefaultColor = dp::Color::Black();
       if (params.m_color == kDefaultColor)
         params.m_color = m_subwayColor;
+      else
+        params.m_color = m_subwayColor * 0.3f;
       params.m_depthLayer = RenderState::SubwayLayer;
     }
     else

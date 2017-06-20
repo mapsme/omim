@@ -64,10 +64,16 @@ public:
 #endif
 
 private:
-  m2::PointF CacheCompass(Position const & position, ref_ptr<LayerRenderer> renderer, ref_ptr<dp::TextureManager> textures);
-  m2::PointF CacheRuler(Position const & position, ref_ptr<LayerRenderer> renderer, ref_ptr<dp::TextureManager> textures);
-  m2::PointF CacheCopyright(Position const & position, ref_ptr<LayerRenderer> renderer, ref_ptr<dp::TextureManager> textures);
-  m2::PointF CacheScaleLabel(Position const & position, ref_ptr<LayerRenderer> renderer, ref_ptr<dp::TextureManager> textures);
+  m2::PointF CacheCompass(Position const & position, ref_ptr<LayerRenderer> renderer,
+                          ref_ptr<dp::TextureManager> textures);
+  m2::PointF CacheRuler(Position const & position, ref_ptr<LayerRenderer> renderer,
+                        ref_ptr<dp::TextureManager> textures);
+  m2::PointF CacheCopyright(Position const & position, ref_ptr<LayerRenderer> renderer,
+                            ref_ptr<dp::TextureManager> textures);
+  m2::PointF CacheScaleLabel(Position const & position, ref_ptr<LayerRenderer> renderer,
+                             ref_ptr<dp::TextureManager> textures);
+  m2::PointF CacheSubwayLabel(Position const & position, ref_ptr<LayerRenderer> renderer,
+                              ref_ptr<dp::TextureManager> textures);
 };
 
 } // namespace gui

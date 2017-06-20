@@ -110,6 +110,8 @@ set(
   gui/ruler_helper.hpp
   gui/shape.cpp
   gui/shape.hpp
+  gui/subway_label_helper.cpp
+  gui/subway_label_helper.hpp
   gui/skin.cpp
   gui/skin.hpp
   kinetic_scroller.cpp
