@@ -121,6 +121,8 @@ set(
   subway_cache.cpp
   subway_cache.hpp
   subway_edge.hpp
+  subway_estimator.cpp
+  subway_estimator.hpp
   subway_graph.cpp
   subway_graph.hpp
   subway_model.cpp

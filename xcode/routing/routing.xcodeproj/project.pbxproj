@@ -106,6 +106,8 @@
 		56CA09E71E30E73B00D05C9A /* restriction_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56CA09E21E30E73B00D05C9A /* restriction_test.cpp */; };
 		56CA09E91E30F19800D05C9A /* libtraffic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 56CA09E81E30F19800D05C9A /* libtraffic.a */; };
 		56CC5A371E3884960016AC46 /* cross_mwm_index_graph.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 56CC5A361E3884960016AC46 /* cross_mwm_index_graph.hpp */; };
+		56CECC791EF963C300C75C47 /* subway_estimator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56CECC771EF963C300C75C47 /* subway_estimator.cpp */; };
+		56CECC7A1EF963C300C75C47 /* subway_estimator.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 56CECC781EF963C300C75C47 /* subway_estimator.hpp */; };
 		56D637D61E4B12AA00B86D7B /* cross_mwm_index_graph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56D637D51E4B12AA00B86D7B /* cross_mwm_index_graph.cpp */; };
 		56EA2FD51D8FD8590083F01A /* routing_helpers.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 56EA2FD41D8FD8590083F01A /* routing_helpers.hpp */; };
 		56F0D7341D896A5300045886 /* libmap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 67BD35DE1C69F198003AA26F /* libmap.a */; };
@@ -388,6 +390,8 @@
 		56CA09E21E30E73B00D05C9A /* restriction_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = restriction_test.cpp; sourceTree = "<group>"; };
 		56CA09E81E30F19800D05C9A /* libtraffic.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtraffic.a; path = "/Users/vladimirbykoyanko/src_github_master/omim/xcode/traffic/../../../omim-build/xcode/Debug/libtraffic.a"; sourceTree = "<absolute>"; };
 		56CC5A361E3884960016AC46 /* cross_mwm_index_graph.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = cross_mwm_index_graph.hpp; sourceTree = "<group>"; };
+		56CECC771EF963C300C75C47 /* subway_estimator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = subway_estimator.cpp; sourceTree = "<group>"; };
+		56CECC781EF963C300C75C47 /* subway_estimator.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = subway_estimator.hpp; sourceTree = "<group>"; };
 		56D637D51E4B12AA00B86D7B /* cross_mwm_index_graph.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cross_mwm_index_graph.cpp; sourceTree = "<group>"; };
 		56EA2FD41D8FD8590083F01A /* routing_helpers.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = routing_helpers.hpp; sourceTree = "<group>"; };
 		56F0D75F1D896A5300045886 /* routing_benchmarks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = routing_benchmarks.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -788,6 +792,8 @@
 			children = (
 				5670595B1F3AF97F0062672D /* checkpoint_predictor.cpp */,
 				5670595C1F3AF97F0062672D /* checkpoint_predictor.hpp */,
+				56CECC771EF963C300C75C47 /* subway_estimator.cpp */,
+				56CECC781EF963C300C75C47 /* subway_estimator.hpp */,
 				561FCFF41EF7C89B0003A0B8 /* subway_model.cpp */,
 				561FCFF51EF7C89B0003A0B8 /* subway_model.hpp */,
 				40A111CB1F2F6776005E6AD5 /* route_weight.cpp */,
@@ -986,6 +992,7 @@
 				56099E341CC9247E00A7772A /* bicycle_directions.hpp in Headers */,
 				670EE55E1B6001E7001E8064 /* routing_session.hpp in Headers */,
 				56099E291CC7C97D00A7772A /* loaded_path_segment.hpp in Headers */,
+				56CECC7A1EF963C300C75C47 /* subway_estimator.hpp in Headers */,
 				670EE55F1B6001E7001E8064 /* routing_settings.hpp in Headers */,
 				56CA09E61E30E73B00D05C9A /* index_graph_tools.hpp in Headers */,
 				0C81E1581F0258AA00DC66DF /* segmented_route.hpp in Headers */,
@@ -1265,6 +1272,7 @@
 				0CF5E8AA1E8EA7A1001ED497 /* coding_test.cpp in Sources */,
 				675344191A3F644F00A0A8C3 /* osrm2feature_map.cpp in Sources */,
 				40A111CD1F2F6776005E6AD5 /* route_weight.cpp in Sources */,
+				56CECC791EF963C300C75C47 /* subway_estimator.cpp in Sources */,
 				670D049E1B0B4A970013A7AC /* nearest_edge_finder.cpp in Sources */,
 				0C5F5D251E798B3800307B98 /* cross_mwm_connector_test.cpp in Sources */,
 				674F9BD61B0A580E00704FFA /* turns_generator.cpp in Sources */,

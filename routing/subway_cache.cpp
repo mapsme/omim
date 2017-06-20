@@ -8,9 +8,11 @@ using namespace std;
 
 namespace routing
 {
-SubwayCache::SubwayCache(std::shared_ptr<NumMwmIds> numMwmIds, Index & index)
-  : m_numMwmIds(std::move(numMwmIds)), m_index(index)
+SubwayCache::SubwayCache(std::shared_ptr<NumMwmIds> numMwmIds,
+                         std::shared_ptr<VehicleModelFactory> modelFactory, Index & index)
+  : m_numMwmIds(std::move(numMwmIds)), m_modelFactory(modelFactory), m_index(index)
 {
+  CHECK(m_modelFactory, ());
   CHECK(m_numMwmIds, ());
 }
 
@@ -52,6 +54,7 @@ SubwayFeature const & SubwayCache::GetFeature(NumMwmId numMwmId, uint32_t featur
                              ? feature.GetMetadata().Get(feature::Metadata::EType::FMD_COLOUR)
                              : "";
 
-  return mwmFeatures[featureId] = SubwayFeature(type, color, move(points));
+  return mwmFeatures[featureId] = SubwayFeature(type, color, move(points),
+                                                m_modelFactory->GetVehicleModel()->GetSpeed(feature));
 }
 }  // namespace routing

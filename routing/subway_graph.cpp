@@ -23,6 +23,7 @@ SubwayGraph::SubwayGraph(std::shared_ptr<VehicleModelFactory> modelFactory,
   : m_modelFactory(std::move(modelFactory))
   , m_numMwmIds(std::move(numMwmIds))
   , m_cache(std::move(cache))
+  , m_estimator(modelFactory)
   , m_index(index)
 {
   CHECK(m_modelFactory, ());
@@ -36,8 +37,8 @@ void SubwayGraph::GetOutgoingEdgesList(TVertexType const & vertex, vector<TEdgeT
 
   // @TODO Implement filling |edges| more carefully.
   // Getting point by |vertex|.
-  auto const & points = m_cache->GetFeature(vertex.GetMwmId(), vertex.GetFeatureId())
-                                         .GetPoints();
+  auto const & featureInfo = m_cache->GetFeature(vertex.GetMwmId(), vertex.GetFeatureId());
+  auto const & points = featureInfo.GetPoints();
   CHECK_LESS(vertex.GetPointId(), points.size(), ());
   m2::PointD const & vertexPoint = points[vertex.GetPointId()];
 
@@ -45,17 +46,25 @@ void SubwayGraph::GetOutgoingEdgesList(TVertexType const & vertex, vector<TEdgeT
   // Moving along the same feature.
   if (vertex.GetPointId() != 0)
   {
+    SubwayVertex const target(vertex.GetMwmId(), vertex.GetFeatureId(),
+                              static_cast<uint32_t>(vertex.GetPointId() - 1), vertex.GetType());
     edges.emplace_back(
-        SubwayVertex(vertex.GetMwmId(), vertex.GetFeatureId(),
-                     static_cast<uint32_t>(vertex.GetPointId() - 1), vertex.GetType()),
-        1.0 /* weight */);
+        target,
+        m_estimator.CalcWeightTheSameLine(vertex.GetType(),
+                                          points[vertex.GetPointId()],
+                                          points[vertex.GetPointId() - 1],
+                                          featureInfo.GetSpeed()));
   }
   if (vertex.GetPointId() + 1 != points.size())
   {
+    SubwayVertex const target(vertex.GetMwmId(), vertex.GetFeatureId(),
+                              static_cast<uint32_t>(vertex.GetPointId() + 1), vertex.GetType());
     edges.emplace_back(
-        SubwayVertex(vertex.GetMwmId(), vertex.GetFeatureId(),
-                     static_cast<uint32_t>(vertex.GetPointId() + 1), vertex.GetType()),
-        1.0 /* weight */);
+        target,
+        m_estimator.CalcWeightTheSameLine(vertex.GetType(),
+                                          points[vertex.GetPointId()],
+                                          points[vertex.GetPointId() + 1],
+                                          featureInfo.GetSpeed()));
   }
 
   // Changing feature.
@@ -72,7 +81,7 @@ void SubwayGraph::GetOutgoingEdgesList(TVertexType const & vertex, vector<TEdgeT
     SubwayFeature const & feature = m_cache->GetFeature(ftNumMwmId, ftFeatureId);
 
     double closestDistMeters = numeric_limits<double>::max();
-    SubwayEdge closestEdge;
+    SubwayVertex closestVertex;
 
     auto const & ftPoints = feature.GetPoints();
     for (size_t i = 0; i < ftPoints.size(); ++i)
@@ -82,13 +91,12 @@ void SubwayGraph::GetOutgoingEdgesList(TVertexType const & vertex, vector<TEdgeT
       {
         closestDistMeters = distMeters;
         // In case of changing feature an edge with zero length added.
-        closestEdge = SubwayEdge(
-            SubwayVertex(ftNumMwmId, ftFeatureId, static_cast<uint32_t>(i), feature.GetType()),
-            0.0 /* weight */);
+        closestVertex =
+            SubwayVertex(ftNumMwmId, ftFeatureId, static_cast<uint32_t>(i), feature.GetType());
       }
     }
     if (closestDistMeters != numeric_limits<double>::max())
-      edges.push_back(closestEdge);
+      edges.emplace_back(closestVertex, m_estimator.CalcWeightTheSamePoint(vertex, closestVertex));
   };
   m_index.ForEachInRect(
     f, MercatorBounds::RectByCenterXYAndSizeInMeters(vertexPoint, kEquivalenceDistMeters),

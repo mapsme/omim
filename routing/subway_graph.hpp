@@ -3,7 +3,7 @@
 #include "routing/num_mwm_id.hpp"
 #include "routing/subway_cache.hpp"
 #include "routing/subway_edge.hpp"
-
+#include "routing/subway_estimator.hpp"
 #include "routing/subway_vertex.hpp"
 
 #include "routing_common/vehicle_model.hpp"
@@ -42,6 +42,7 @@ private:
   std::shared_ptr<VehicleModelFactory> m_modelFactory;
   std::shared_ptr<NumMwmIds> m_numMwmIds;
   std::shared_ptr<SubwayCache> m_cache;
+  SubwayEstimator m_estimator;
   Index & m_index;
 };
 }  // namespace routing
