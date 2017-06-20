@@ -29,11 +29,13 @@ public:
                 CustomFeaturesContextWeakPtr customFeaturesContext,
                 bool is3dBuildingsEnabled,
                 bool isTrafficEnabled,
+                bool isSubwayEnabled,
                 int displacementMode);
 
   TileKey const & GetTileKey() const { return m_tileKey; }
   bool Is3dBuildingsEnabled() const { return m_3dBuildingsEnabled; }
   bool IsTrafficEnabled() const { return m_trafficEnabled; }
+  bool IsSubwayEnabled() const { return m_subwayEnabled; }
   int GetDisplacementMode() const { return m_displacementMode; }
   CustomFeaturesContextWeakPtr GetCustomFeaturesContext() const { return m_customFeaturesContext; }
   ref_ptr<dp::TextureManager> GetTextureManager() const;
@@ -55,6 +57,7 @@ private:
   CustomFeaturesContextWeakPtr m_customFeaturesContext;
   bool m_3dBuildingsEnabled;
   bool m_trafficEnabled;
+  bool m_subwayEnabled;
   int m_displacementMode;
 };
 }  // namespace df

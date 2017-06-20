@@ -34,7 +34,7 @@ class ReadManager
 {
 public:
   ReadManager(ref_ptr<ThreadsCommutator> commutator, MapDataProvider & model,
-              bool allow3dBuildings, bool trafficEnabled);
+              bool allow3dBuildings, bool trafficEnabled, bool subwayEnabled);
 
   void Start();
   void Stop();
@@ -51,7 +51,7 @@ public:
   void Allow3dBuildings(bool allow3dBuildings);
 
   void SetTrafficEnabled(bool trafficEnabled);
-
+  void SetSubwayModeEnabled(bool subwayEnabled);
   void SetDisplacementMode(int displacementMode);
 
   bool SetCustomFeatures(std::set<FeatureID> && ids);
@@ -78,6 +78,7 @@ private:
   bool m_have3dBuildings;
   bool m_allow3dBuildings;
   bool m_trafficEnabled;
+  bool m_subwayEnabled;
   int m_displacementMode;
   bool m_modeChanged;
 

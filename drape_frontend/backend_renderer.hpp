@@ -38,13 +38,14 @@ public:
            ref_ptr<dp::OGLContextFactory> factory, ref_ptr<dp::TextureManager> texMng,
            MapDataProvider const & model, TUpdateCurrentCountryFn const & updateCurrentCountryFn,
            ref_ptr<RequestedTiles> requestedTiles, bool allow3dBuildings, bool trafficEnabled,
-           bool simplifiedTrafficColors)
+           bool subwayEnabled, bool simplifiedTrafficColors)
       : BaseRenderer::Params(apiVersion, commutator, factory, texMng)
       , m_model(model)
       , m_updateCurrentCountryFn(updateCurrentCountryFn)
       , m_requestedTiles(requestedTiles)
       , m_allow3dBuildings(allow3dBuildings)
       , m_trafficEnabled(trafficEnabled)
+      , m_subwayEnabled(subwayEnabled)
       , m_simplifiedTrafficColors(simplifiedTrafficColors)
     {
     }
@@ -54,6 +55,7 @@ public:
     ref_ptr<RequestedTiles> m_requestedTiles;
     bool m_allow3dBuildings;
     bool m_trafficEnabled;
+    bool m_subwayEnabled;
     bool m_simplifiedTrafficColors;
   };
 

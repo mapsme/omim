@@ -335,6 +335,10 @@ void RuleDrawer::ProcessLineStyle(FeatureType const & f, Stylist const & s,
 
   bool const isSubwayLine = ftypes::IsSubwayLineChecker::Instance()(f);
   bool const isSubwayChange = ftypes::IsSubwayChangeChecker::Instance()(f);
+
+  if ((isSubwayLine || isSubwayChange) && !m_context->IsSubwayEnabled())
+    return;
+
   dp::Color subwayColor = dp::Color::White();
   if (isSubwayLine)
   {
@@ -434,10 +438,7 @@ void RuleDrawer::ProcessPointStyle(FeatureType const & f, Stylist const & s, TIn
     return;
 
   int const zoomLevel = m_context->GetTileKey().m_zoomLevel;
-  bool const isSpeedCamera = ftypes::IsSpeedCamChecker::Instance()(f);
-  if (isSpeedCamera && !GetStyleReader().IsCarNavigationStyle())
-    return;
-  bool const isSubwayStation = ftypes::IsSubwayStationChecker::Instance()(f);
+  bool const isSubwayStation = m_context->IsSubwayEnabled() && ftypes::IsSubwayStationChecker::Instance()(f);
 
   RenderState::DepthLayer depthLayer = RenderState::OverlayLayer;
   if (isSpeedCamera)

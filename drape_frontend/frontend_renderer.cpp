@@ -822,6 +822,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
     {
       ref_ptr<SetSubwayModeEnabledMessage> msg = message;
       m_subwayModeEnabled = msg->IsEnabled();
+      m_forceUpdateScene = true;
       break;
     }
 
