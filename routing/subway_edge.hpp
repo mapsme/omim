@@ -2,12 +2,15 @@
 
 #include "routing/subway_vertex.hpp"
 
+#include <limits>
+
 namespace routing
 {
 class SubwayEdge final
 {
 public:
   SubwayEdge(SubwayVertex const & target, double weight) : m_target(target), m_weight(weight) {}
+  SubwayEdge() = default;
 
   SubwayVertex const & GetTarget() const { return m_target; }
   double GetWeight() const { return m_weight; }
@@ -27,6 +30,6 @@ public:
 private:
   // Target is vertex going to for outgoing edges, vertex going from for ingoing edges.
   SubwayVertex m_target;
-  double m_weight;
+  double m_weight = std::numeric_limits<double>::max();
 };
 }  // namespace routing
