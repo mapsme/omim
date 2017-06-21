@@ -209,6 +209,8 @@ public class PlacePageView extends RelativeLayout
   @Nullable
   private Sponsored mSponsored;
   private String mSponsoredPrice;
+  @Nullable
+  private UGC mUgc;
   private boolean mIsLatLonDms;
   @NonNull
   private final FacilitiesAdapter mFacilitiesAdapter = new FacilitiesAdapter();
@@ -263,28 +265,22 @@ public class PlacePageView extends RelativeLayout
   };
 
   @Override
-  public void onUGCReviewsObtained(@NonNull List<UGC.Review> reviews)
-  {
-    hideHotelViews();
-    clearHotelViews();
-    mUGCReviewAdapter.setItems(reviews);
-    UiUtils.show(mUgcView);
-  }
-
-  @Override
-  public void onUGCRatingsObtained(@NonNull List<UGC.Rating> ratings)
-  {
-
-  }
-
-  @Override
   public void onRatingChanged(@UGC.UGCRating int rating)
   {
-    if (mMapObject == null)
+    if (mMapObject == null || mUgc == null)
       return;
 
     UGCEditorActivity.start(getActivity(), mMapObject.getTitle(), mMapObject.getFeatureIndex(),
-                            rating);
+                            mUgc);
+  }
+
+  @Override
+  public void onUGCReceived(@NonNull UGC ugc)
+  {
+    mUgc = ugc;
+    if (ugc.getReviews() != null)
+      mUGCReviewAdapter.setItems(ugc.getReviews());
+    UiUtils.show(mUgcView);
   }
 
   public enum State
@@ -1122,7 +1118,7 @@ public class PlacePageView extends RelativeLayout
     if (mMapObject != null)
     {
       // TODO: mock implementation for test only
-      if (mMapObject.getFeatureIndex() == 162716)
+      if (mMapObject.getFeatureIndex() == 218028)
       {
         UGC.setListener(this);
         // TODO: need to use full FeatureID here.
