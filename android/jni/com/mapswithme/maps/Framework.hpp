@@ -187,6 +187,8 @@ namespace android
                                  uber::ErrorCallback const & errorCallback);
     static uber::RideRequestLinks GetUberLinks(std::string const & productId, ms::LatLon const & from, ms::LatLon const & to);
 
+    void RequestUGC(JNIEnv * env, ugc::Api::UGCCallback const & ugcCallback);
+
     int ToDoAfterUpdate() const;
 
     void LogLocalAdsEvent(local_ads::EventType event, double lat, double lon, uint16_t accuracy);
