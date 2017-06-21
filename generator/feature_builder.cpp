@@ -8,6 +8,7 @@
 
 #include "indexer/feature_impl.hpp"
 #include "indexer/feature_visibility.hpp"
+#include "indexer/ftypes_matcher.hpp"
 #include "indexer/geometry_serialization.hpp"
 #include "indexer/coding_params.hpp"
 
@@ -253,8 +254,8 @@ bool FeatureBuilder1::PreSerialize()
 
   case GEOM_LINE:
   {
-    // We need refs for road's numbers.
-    if (!IsRoad())
+    // We need refs for road's numbers and subway lines.
+    if (!IsRoad() && !ftypes::IsSubwayLineChecker::Instance()(m_params.m_Types))
       m_params.ref.clear();
 
     m_params.rank = 0;
