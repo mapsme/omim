@@ -432,6 +432,9 @@ Framework::Framework(FrameworkParams const & params)
   InitCountryInfoGetter();
   LOG(LDEBUG, ("Country info getter initialized"));
 
+  InitUGC();
+  LOG(LDEBUG, ("UGC initialized"));
+
   // To avoid possible races - init search engine once in constructor.
   InitSearchEngine();
   LOG(LDEBUG, ("Search engine initialized"));
@@ -1427,7 +1430,6 @@ void Framework::InitCountryInfoGetter()
 void Framework::InitUGC()
 {
   ASSERT(!m_ugcApi.get(), ("InitUGC() must be called only once."));
-
   m_ugcApi = make_unique<ugc::Api>(m_model.GetIndex());
 }
 
