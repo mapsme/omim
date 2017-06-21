@@ -16,8 +16,13 @@ double SubwayEstimator::CalcWeightTheSameLine(m2::PointD const & fromPnt, m2::Po
 double SubwayEstimator::CalcWeightTheSamePoint(SubwayVertex const & from,
                                                SubwayVertex const & to) const
 {
-  if (from.GetType() == SubwayType::Line && to.GetType() == SubwayType::Change)
+  // When going from change to line, add train waiting time.
+  if (from.GetType() == SubwayType::Change && to.GetType() == SubwayType::Line)
     return 120.0;
+
+  // When changing lines at a single point, add theoretical walking time and train waiting time.
+  if (from.GetType() == SubwayType::Line && to.GetType() == SubwayType::Line && from.GetFeatureId() != to.GetFeatureId())
+    return 180.0;
 
   return 0.0;
 }
