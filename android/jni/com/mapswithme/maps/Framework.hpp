@@ -5,6 +5,8 @@
 #include "map/framework.hpp"
 #include "map/place_page_info.hpp"
 
+#include "ugc/api.hpp"
+
 #include "search/result.hpp"
 
 #include "drape_frontend/gui/skin.hpp"
@@ -187,7 +189,7 @@ namespace android
                                  uber::ErrorCallback const & errorCallback);
     static uber::RideRequestLinks GetUberLinks(std::string const & productId, ms::LatLon const & from, ms::LatLon const & to);
 
-    void RequestUGC(JNIEnv * env, ugc::Api::UGCCallback const & ugcCallback);
+    void RequestUGC(ugc::Api::UGCCallback const & ugcCallback);
 
     int ToDoAfterUpdate() const;
 
