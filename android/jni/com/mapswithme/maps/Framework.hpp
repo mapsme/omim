@@ -30,6 +30,9 @@
 #include <memory>
 #include <mutex>
 
+class Index;
+struct FeatureID;
+
 namespace search
 {
 struct EverywhereSearchParams;
@@ -70,6 +73,7 @@ namespace android
     Framework();
 
     storage::Storage & GetStorage();
+    Index const & GetIndex();
 
     void ShowNode(storage::TCountryId const & countryId, bool zoomToDownloadButton);
 
@@ -189,7 +193,7 @@ namespace android
                                  uber::ErrorCallback const & errorCallback);
     static uber::RideRequestLinks GetUberLinks(std::string const & productId, ms::LatLon const & from, ms::LatLon const & to);
 
-    void RequestUGC(ugc::Api::UGCCallback const & ugcCallback);
+    void RequestUGC(FeatureID const & fid, ugc::Api::UGCCallback const & ugcCallback);
 
     int ToDoAfterUpdate() const;
 
