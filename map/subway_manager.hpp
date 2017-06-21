@@ -30,7 +30,7 @@ private:
   void RemovePoints();
   void CheckAndBuild();
 
-  bool m_isEnabled = true; // TODO: set false by default
+  bool m_isEnabled = false;
   ref_ptr<df::DrapeEngine> m_drapeEngine;
   ref_ptr<RoutingManager> m_routingManager;
 };
