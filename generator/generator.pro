@@ -52,6 +52,7 @@ SOURCES += \
     towns_dumper.cpp \
     traffic_generator.cpp \
     ugc_db.cpp \
+    ugc_translator.cpp \
     unpack_mwm.cpp \
 
 HEADERS += \
@@ -101,6 +102,7 @@ HEADERS += \
     towns_dumper.hpp \
     traffic_generator.hpp \
     ugc_db.hpp \
+    ugc_translator.hpp \
     unpack_mwm.hpp \
     ways_merger.hpp \
     world_map_generator.hpp \
