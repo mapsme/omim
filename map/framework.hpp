@@ -830,7 +830,7 @@ private:
 
 public:
   bool OriginalFeatureHasDefaultName(FeatureID const & fid) const;
-  storage::TCountriesVec GetTopmostCountries(m2::PointD point) const;
+  storage::TCountriesVec GetTopmostCountries(ms::LatLon const & latlon) const;
 
 private:
   std::unique_ptr<CityFinder> m_cityFinder;
