@@ -343,6 +343,7 @@ void MyPositionController::NextMode(ScreenBase const & screen)
   // In routing not-follow -> follow-and-rotate, otherwise not-follow -> follow.
   if (m_mode == location::NotFollow)
   {
+    LOG(LINFO, ("TEST: NextMode, m_isInRouting = ", m_isInRouting));
     ChangeMode(m_isInRouting ? location::FollowAndRotate : location::Follow);
     UpdateViewport(preferredZoomLevel);
     return;
@@ -354,6 +355,8 @@ void MyPositionController::NextMode(ScreenBase const & screen)
   {
     if (IsRotationAvailable() || m_isInRouting)
     {
+      LOG(LINFO, ("TEST: NextMode, m_isInRouting = ", m_isInRouting,
+                  "IsRotationAvailable() = ", IsRotationAvailable()));
       ChangeMode(location::FollowAndRotate);
       UpdateViewport(preferredZoomLevel);
     }
@@ -435,6 +438,7 @@ void MyPositionController::OnLocationUpdate(location::GpsInfo const & info, bool
   {
     if (m_isInRouting)
     {
+      LOG(LINFO, ("TEST: OnLocationUpdate, PendingPosition or NotFollowNoPosition"));
       ChangeMode(location::FollowAndRotate);
       UpdateViewport(kMaxScaleZoomLevel);
     }
@@ -531,6 +535,7 @@ void MyPositionController::Render(ScreenBase const & screen, int zoomLevel,
   if (IsInRouting() && m_mode == location::NotFollow &&
       m_routingNotFollowTimer.ElapsedSeconds() >= kMaxNotFollowRoutingTimeSec)
   {
+    LOG(LINFO, ("TEST: Render, from NotFollow by timer"));
     ChangeMode(location::FollowAndRotate);
     UpdateViewport(kDoNotChangeZoom);
   }
@@ -640,6 +645,7 @@ void MyPositionController::SetTimeInBackground(double time)
 {
   if (time >= kMaxTimeInBackgroundSec && m_mode == location::NotFollow)
   {
+    LOG(LINFO, ("TEST: SetTimeInBackground, m_isInRouting = ", m_isInRouting));
     ChangeMode(m_isInRouting ? location::FollowAndRotate : location::Follow);
     UpdateViewport(kDoNotChangeZoom);
   }
@@ -811,6 +817,7 @@ void MyPositionController::ActivateRouting(int zoomLevel, bool enableAutoZoom)
 
     if (IsRotationAvailable())
     {
+      LOG(LINFO, ("TEST: ActivateRouting"));
       ChangeMode(location::FollowAndRotate);
       ChangeModelView(m_position, m_drawDirection, GetRoutingRotationPixelCenter(), zoomLevel);
     }
