@@ -1013,7 +1013,7 @@ void Framework::ShowTrack(Track const & track)
 
 void Framework::ClearBookmarks()
 {
-  m_bmManager.ClearItems();
+  m_bmManager.ClearCategories();
 }
 
 namespace
