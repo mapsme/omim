@@ -61,19 +61,12 @@ public:
   void DeleteLater();
 
 protected:
-  void BeginWrite();
   void SetDirty();
   void ResetDirty();
-  void EndWrite();
 
 private:
-  void Lock();
-  void Unlock();
-
-  threads::Mutex m_mutex;
   bool m_isDirty = false;
-  std::atomic<bool> m_pendingOnDelete;
-  std::atomic<int> m_counter;
+  bool m_pendingOnDelete;
 };
 
 } // namespace df
