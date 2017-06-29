@@ -3,6 +3,7 @@
 #import "MWMBannerHelpers.h"
 #import "MWMLocationManager.h"
 #import "MWMNetworkPolicy.h"
+#import "MWMRouter.h"
 #import "MWMSettings.h"
 #import "Statistics.h"
 #import "SwiftBridge.h"
@@ -189,6 +190,9 @@ using namespace place_page;
     m_buttonsRows.push_back(ButtonsRows::HotelDescription);
     return;
   }
+
+  if ([MWMRouter isOnRoute] && [MWMRouter type] == MWMRouterTypeVehicle)
+    return;
 
   if (m_info.ShouldShowAddPlace())
     m_buttonsRows.push_back(ButtonsRows::AddPlace);
