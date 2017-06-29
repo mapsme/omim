@@ -54,9 +54,6 @@ public:
   /// never store UserLineMark reference
   virtual UserLineMark const * GetUserLineMark(size_t index) const = 0;
 
-  void IncrementCounter();
-  void DecrementCounter();
-  bool CanBeDeleted();
   bool IsPendingOnDelete();
   void DeleteLater();
 

@@ -113,8 +113,7 @@ size_t BookmarkManager::MoveBookmark(size_t bmIndex, size_t curCatIndex, size_t 
 {
   BookmarkData data;
   m2::PointD ptOrg;
-  
-  // guard must be released before AddBookmark to prevent deadlock
+
   {
     BookmarkCategory * cat = m_framework.GetBmCategory(curCatIndex);
     BookmarkCategory::Guard guard(*cat);
