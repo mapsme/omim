@@ -2256,7 +2256,41 @@ cont {
 cont {
   name: "amenity-arts_centre"
   element {
+    scale: 17
+    symbol {
+      name: "gallery-l"
+      priority: 16000
+    }
+    caption {
+      primary {
+        height: 10
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15000
+    }
+  }
+  element {
+    scale: 18
+    symbol {
+      name: "gallery-l"
+      priority: 16000
+    }
+    caption {
+      primary {
+        height: 10
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15000
+    }
+  }
+  element {
     scale: 19
+    symbol {
+      name: "gallery-l"
+      priority: 16000
+    }
     caption {
       primary {
         height: 10
@@ -2606,14 +2640,81 @@ cont {
 cont {
   name: "amenity-biergarten"
   element {
-    scale: 19
+    scale: 15
+    symbol {
+      name: "beer-m"
+      priority: 16673
+      min_distance: 28
+    }
     caption {
       primary {
         height: 10
         color: 4473924
         offset_y: 1
       }
-      priority: 15000
+      priority: 15673
+    }
+  }
+  element {
+    scale: 16
+    symbol {
+      name: "beer-m"
+      priority: 16673
+      min_distance: 12
+    }
+    caption {
+      primary {
+        height: 10
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15673
+    }
+  }
+  element {
+    scale: 17
+    symbol {
+      name: "beer-l"
+      priority: 16673
+      min_distance: 12
+    }
+    caption {
+      primary {
+        height: 10
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15673
+    }
+  }
+  element {
+    scale: 18
+    symbol {
+      name: "beer-l"
+      priority: 16673
+    }
+    caption {
+      primary {
+        height: 10
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15673
+    }
+  }
+  element {
+    scale: 19
+    symbol {
+      name: "beer-l"
+      priority: 16673
+    }
+    caption {
+      primary {
+        height: 10
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15673
     }
   }
 }
@@ -3971,14 +4072,81 @@ cont {
 cont {
   name: "amenity-food_court"
   element {
-    scale: 19
+    scale: 15
+    symbol {
+      name: "fastfood-m"
+      priority: 16693
+      min_distance: 28
+    }
     caption {
       primary {
         height: 10
         color: 4473924
         offset_y: 1
       }
-      priority: 15000
+      priority: 15693
+    }
+  }
+  element {
+    scale: 16
+    symbol {
+      name: "fastfood-m"
+      priority: 16693
+      min_distance: 12
+    }
+    caption {
+      primary {
+        height: 10
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15693
+    }
+  }
+  element {
+    scale: 17
+    symbol {
+      name: "fastfood-l"
+      priority: 16693
+      min_distance: 12
+    }
+    caption {
+      primary {
+        height: 10
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15693
+    }
+  }
+  element {
+    scale: 18
+    symbol {
+      name: "fastfood-l"
+      priority: 16693
+    }
+    caption {
+      primary {
+        height: 10
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15693
+    }
+  }
+  element {
+    scale: 19
+    symbol {
+      name: "fastfood-l"
+      priority: 16693
+    }
+    caption {
+      primary {
+        height: 10
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15693
     }
   }
 }
@@ -4509,7 +4677,33 @@ cont {
 cont {
   name: "amenity-ice_cream"
   element {
+    scale: 16
+    symbol {
+      name: "ice_cream-m"
+      priority: 16000
+    }
+  }
+  element {
+    scale: 17
+    symbol {
+      name: "ice_cream-l"
+      priority: 16000
+      min_distance: 24
+    }
+  }
+  element {
+    scale: 18
+    symbol {
+      name: "ice_cream-l"
+      priority: 16000
+    }
+  }
+  element {
     scale: 19
+    symbol {
+      name: "ice_cream-l"
+      priority: 16000
+    }
     caption {
       primary {
         height: 10
@@ -4685,7 +4879,44 @@ cont {
 cont {
   name: "amenity-motorcycle_parking"
   element {
+    scale: 17
+    symbol {
+      name: "motorcycle-parking-l"
+      priority: 16000
+      min_distance: 20
+    }
+    caption {
+      primary {
+        height: 10
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15000
+    }
+  }
+  element {
+    scale: 18
+    symbol {
+      name: "motorcycle-parking-l"
+      priority: 16000
+      min_distance: 20
+    }
+    caption {
+      primary {
+        height: 10
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15000
+    }
+  }
+  element {
     scale: 19
+    symbol {
+      name: "motorcycle-parking-l"
+      priority: 16000
+      min_distance: 20
+    }
     caption {
       primary {
         height: 10
@@ -4762,7 +4993,41 @@ cont {
 cont {
   name: "amenity-nursing_home"
   element {
+    scale: 17
+    symbol {
+      name: "home-l"
+      priority: 16000
+    }
+    caption {
+      primary {
+        height: 10
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15000
+    }
+  }
+  element {
+    scale: 18
+    symbol {
+      name: "home-l"
+      priority: 16000
+    }
+    caption {
+      primary {
+        height: 10
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15000
+    }
+  }
+  element {
     scale: 19
+    symbol {
+      name: "home-l"
+      priority: 16000
+    }
     caption {
       primary {
         height: 10
@@ -5557,7 +5822,44 @@ cont {
 cont {
   name: "amenity-payment_terminal"
   element {
+    scale: 17
+    symbol {
+      name: "vending-l"
+      priority: 16000
+      min_distance: 20
+    }
+    caption {
+      primary {
+        height: 10
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15000
+    }
+  }
+  element {
+    scale: 18
+    symbol {
+      name: "vending-l"
+      priority: 16000
+      min_distance: 20
+    }
+    caption {
+      primary {
+        height: 10
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15000
+    }
+  }
+  element {
     scale: 19
+    symbol {
+      name: "vending-l"
+      priority: 16000
+      min_distance: 20
+    }
     caption {
       primary {
         height: 10
@@ -6656,14 +6958,48 @@ cont {
 cont {
   name: "amenity-prison"
   element {
-    scale: 19
+    scale: 17
+    symbol {
+      name: "prison-l"
+      priority: 16653
+    }
     caption {
       primary {
         height: 10
         color: 4473924
         offset_y: 1
       }
-      priority: 15000
+      priority: 15653
+    }
+  }
+  element {
+    scale: 18
+    symbol {
+      name: "prison-l"
+      priority: 16653
+    }
+    caption {
+      primary {
+        height: 11
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15653
+    }
+  }
+  element {
+    scale: 19
+    symbol {
+      name: "prison-l"
+      priority: 16653
+    }
+    caption {
+      primary {
+        height: 11
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15653
     }
   }
 }
@@ -6996,14 +7332,51 @@ cont {
 cont {
   name: "amenity-shower"
   element {
-    scale: 19
+    scale: 17
+    symbol {
+      name: "shower-l"
+      priority: 16584
+      min_distance: 20
+    }
     caption {
       primary {
         height: 10
         color: 4473924
         offset_y: 1
       }
-      priority: 15000
+      priority: 15584
+    }
+  }
+  element {
+    scale: 18
+    symbol {
+      name: "shower-l"
+      priority: 16584
+      min_distance: 20
+    }
+    caption {
+      primary {
+        height: 10
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15584
+    }
+  }
+  element {
+    scale: 19
+    symbol {
+      name: "shower-l"
+      priority: 16584
+      min_distance: 20
+    }
+    caption {
+      primary {
+        height: 10
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15584
     }
   }
 }
@@ -10690,6 +11063,72 @@ cont {
         offset_y: 1
       }
       priority: 15594
+    }
+  }
+}
+cont {
+  name: "emergency-defibrillator"
+  element {
+    scale: 18
+    symbol {
+      name: "defibrillator-l"
+      priority: 16000
+    }
+    caption {
+      primary {
+        height: 11
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15000
+    }
+  }
+  element {
+    scale: 19
+    symbol {
+      name: "defibrillator-l"
+      priority: 16000
+    }
+    caption {
+      primary {
+        height: 11
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15000
+    }
+  }
+}
+cont {
+  name: "emergency-fire_hydrant"
+  element {
+    scale: 18
+    symbol {
+      name: "firehydrant-l"
+      priority: 16000
+    }
+    caption {
+      primary {
+        height: 11
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15000
+    }
+  }
+  element {
+    scale: 19
+    symbol {
+      name: "firehydrant-l"
+      priority: 16000
+    }
+    caption {
+      primary {
+        height: 11
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15000
     }
   }
 }
@@ -24121,6 +24560,85 @@ cont {
   }
 }
 cont {
+  name: "highway-services"
+  element {
+    scale: 15
+    symbol {
+      name: "car-repair-s"
+      priority: 16653
+      min_distance: 20
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15500
+    }
+  }
+  element {
+    scale: 16
+    symbol {
+      name: "car-repair-m"
+      priority: 16653
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15500
+    }
+  }
+  element {
+    scale: 17
+    symbol {
+      name: "car-repair-l"
+      priority: 16653
+    }
+    path_text {
+      primary {
+        height: 10
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 16653
+    }
+  }
+  element {
+    scale: 18
+    symbol {
+      name: "car-repair-l"
+      priority: 16653
+    }
+    path_text {
+      primary {
+        height: 11
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 16653
+    }
+  }
+  element {
+    scale: 19
+    symbol {
+      name: "car-repair-l"
+      priority: 16653
+    }
+    path_text {
+      primary {
+        height: 11
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 16653
+    }
+  }
+}
+cont {
   name: "highway-speed_camera"
   element {
     scale: 13
@@ -34582,35 +35100,53 @@ cont {
   name: "leisure-fitness_station"
   element {
     scale: 17
+    symbol {
+      name: "gym-l"
+      apply_for_type: 1
+      priority: 16049
+      min_distance: 10
+    }
     caption {
       primary {
         height: 10
         color: 4473924
         offset_y: 1
       }
-      priority: 15049
+      priority: 16000
     }
   }
   element {
     scale: 18
+    symbol {
+      name: "gym-l"
+      apply_for_type: 1
+      priority: 16049
+      min_distance: 10
+    }
     caption {
       primary {
         height: 10
         color: 4473924
         offset_y: 1
       }
-      priority: 15049
+      priority: 16000
     }
   }
   element {
     scale: 19
+    symbol {
+      name: "gym-l"
+      apply_for_type: 1
+      priority: 16049
+      min_distance: 10
+    }
     caption {
       primary {
         height: 10
         color: 4473924
         offset_y: 1
       }
-      priority: 15049
+      priority: 16000
     }
   }
 }
@@ -34887,35 +35423,53 @@ cont {
   name: "leisure-ice_rink"
   element {
     scale: 17
+    symbol {
+      name: "pitch-l"
+      apply_for_type: 1
+      priority: 16049
+      min_distance: 10
+    }
     caption {
       primary {
         height: 10
         color: 4473924
         offset_y: 1
       }
-      priority: 15049
+      priority: 16000
     }
   }
   element {
     scale: 18
+    symbol {
+      name: "pitch-l"
+      apply_for_type: 1
+      priority: 16049
+      min_distance: 10
+    }
     caption {
       primary {
         height: 10
         color: 4473924
         offset_y: 1
       }
-      priority: 15049
+      priority: 16000
     }
   }
   element {
     scale: 19
+    symbol {
+      name: "pitch-l"
+      apply_for_type: 1
+      priority: 16049
+      min_distance: 10
+    }
     caption {
       primary {
         height: 10
         color: 4473924
         offset_y: 1
       }
-      priority: 15049
+      priority: 16000
     }
   }
 }
@@ -34958,7 +35512,53 @@ cont {
 cont {
   name: "leisure-marina"
   element {
+    scale: 11
+    area {
+      color: 13229526
+      priority: -15892
+    }
+  }
+  element {
+    scale: 12
+    area {
+      color: 13229526
+      priority: -15892
+    }
+  }
+  element {
+    scale: 13
+    area {
+      color: 13229526
+      priority: -15892
+    }
+  }
+  element {
+    scale: 14
+    area {
+      color: 13229526
+      priority: -15892
+    }
+  }
+  element {
+    scale: 15
+    area {
+      color: 13229526
+      priority: -15892
+    }
+  }
+  element {
+    scale: 16
+    area {
+      color: 13229526
+      priority: -15892
+    }
+  }
+  element {
     scale: 17
+    area {
+      color: 13229526
+      priority: -15951
+    }
     caption {
       primary {
         height: 10
@@ -34970,6 +35570,10 @@ cont {
   }
   element {
     scale: 18
+    area {
+      color: 13229526
+      priority: -15951
+    }
     caption {
       primary {
         height: 10
@@ -34981,6 +35585,10 @@ cont {
   }
   element {
     scale: 19
+    area {
+      color: 13229526
+      priority: -15951
+    }
     caption {
       primary {
         height: 10
@@ -37846,6 +38454,25 @@ cont {
   }
 }
 cont {
+  name: "man_made-water_tap"
+  element {
+    scale: 15
+    symbol {
+      name: "drinking-water-m"
+      priority: 16574
+      min_distance: 36
+    }
+  }
+  element {
+    scale: 16
+    symbol {
+      name: "drinking-water-m"
+      priority: 16574
+      min_distance: 36
+    }
+  }
+}
+cont {
   name: "man_made-windmill"
   element {
     scale: 16
@@ -37909,6 +38536,39 @@ cont {
         offset_y: 1
       }
       priority: 15594
+    }
+  }
+}
+cont {
+  name: "man_made-works"
+  element {
+    scale: 18
+    symbol {
+      name: "chimney-l"
+      priority: 16000
+    }
+    caption {
+      primary {
+        height: 11
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15000
+    }
+  }
+  element {
+    scale: 19
+    symbol {
+      name: "chimney-l"
+      priority: 16000
+    }
+    caption {
+      primary {
+        height: 11
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15000
     }
   }
 }
@@ -58677,7 +59337,7 @@ cont {
   element {
     scale: 16
     symbol {
-      name: "shop-m"
+      name: "sweets-m"
       priority: 16594
       min_distance: 10
     }
@@ -58693,9 +59353,9 @@ cont {
   element {
     scale: 17
     symbol {
-      name: "shop-l"
+      name: "sweets-l"
       priority: 16594
-      min_distance: 10
+      min_distance: 24
     }
     caption {
       primary {
@@ -58709,7 +59369,7 @@ cont {
   element {
     scale: 18
     symbol {
-      name: "shop-l"
+      name: "sweets-l"
       priority: 16594
       min_distance: 10
     }
@@ -58725,7 +59385,7 @@ cont {
   element {
     scale: 19
     symbol {
-      name: "shop-l"
+      name: "sweets-l"
       priority: 16594
       min_distance: 10
     }
@@ -59481,7 +60141,7 @@ cont {
   element {
     scale: 16
     symbol {
-      name: "shop-m"
+      name: "erotic-m"
       priority: 16594
       min_distance: 10
     }
@@ -59497,9 +60157,9 @@ cont {
   element {
     scale: 17
     symbol {
-      name: "shop-l"
+      name: "erotic-l"
       priority: 16594
-      min_distance: 10
+      min_distance: 24
     }
     caption {
       primary {
@@ -59513,7 +60173,7 @@ cont {
   element {
     scale: 18
     symbol {
-      name: "shop-l"
+      name: "erotic-l"
       priority: 16594
       min_distance: 10
     }
@@ -59529,7 +60189,7 @@ cont {
   element {
     scale: 19
     symbol {
-      name: "shop-l"
+      name: "erotic-l"
       priority: 16594
       min_distance: 10
     }
@@ -59682,7 +60342,7 @@ cont {
   element {
     scale: 16
     symbol {
-      name: "shop-m"
+      name: "funeral_directors-m"
       priority: 16594
       min_distance: 10
     }
@@ -59698,9 +60358,9 @@ cont {
   element {
     scale: 17
     symbol {
-      name: "shop-l"
+      name: "funeral_directors-l"
       priority: 16594
-      min_distance: 10
+      min_distance: 24
     }
     caption {
       primary {
@@ -59714,7 +60374,7 @@ cont {
   element {
     scale: 18
     symbol {
-      name: "shop-l"
+      name: "funeral_directors-l"
       priority: 16594
       min_distance: 10
     }
@@ -59730,7 +60390,7 @@ cont {
   element {
     scale: 19
     symbol {
-      name: "shop-l"
+      name: "funeral_directors-l"
       priority: 16594
       min_distance: 10
     }
@@ -60652,7 +61312,7 @@ cont {
   element {
     scale: 16
     symbol {
-      name: "shop-m"
+      name: "media-m"
       priority: 16594
       min_distance: 10
     }
@@ -60668,9 +61328,9 @@ cont {
   element {
     scale: 17
     symbol {
-      name: "shop-l"
+      name: "media-l"
       priority: 16594
-      min_distance: 10
+      min_distance: 24
     }
     caption {
       primary {
@@ -60684,7 +61344,7 @@ cont {
   element {
     scale: 18
     symbol {
-      name: "shop-l"
+      name: "media-l"
       priority: 16594
       min_distance: 10
     }
@@ -60700,7 +61360,7 @@ cont {
   element {
     scale: 19
     symbol {
-      name: "shop-l"
+      name: "media-l"
       priority: 16594
       min_distance: 10
     }
@@ -60719,7 +61379,7 @@ cont {
   element {
     scale: 16
     symbol {
-      name: "shop-m"
+      name: "music-m"
       priority: 16594
       min_distance: 10
     }
@@ -60735,9 +61395,9 @@ cont {
   element {
     scale: 17
     symbol {
-      name: "shop-l"
+      name: "music-l"
       priority: 16594
-      min_distance: 10
+      min_distance: 24
     }
     caption {
       primary {
@@ -60751,7 +61411,7 @@ cont {
   element {
     scale: 18
     symbol {
-      name: "shop-l"
+      name: "music-l"
       priority: 16594
       min_distance: 10
     }
@@ -60767,7 +61427,7 @@ cont {
   element {
     scale: 19
     symbol {
-      name: "shop-l"
+      name: "music-l"
       priority: 16594
       min_distance: 10
     }
@@ -60802,9 +61462,9 @@ cont {
   element {
     scale: 17
     symbol {
-      name: "shop-l"
+      name: "newsagent-l"
       priority: 16594
-      min_distance: 10
+      min_distance: 24
     }
     caption {
       primary {
@@ -60818,7 +61478,7 @@ cont {
   element {
     scale: 18
     symbol {
-      name: "shop-l"
+      name: "newsagent-l"
       priority: 16594
       min_distance: 10
     }
@@ -60834,7 +61494,7 @@ cont {
   element {
     scale: 19
     symbol {
-      name: "shop-l"
+      name: "newsagent-l"
       priority: 16594
       min_distance: 10
     }
@@ -60988,7 +61648,7 @@ cont {
     scale: 16
     symbol {
       name: "shop-m"
-      priority: 16594
+      priority: 16623
       min_distance: 10
     }
     caption {
@@ -60997,14 +61657,14 @@ cont {
         color: 4473924
         offset_y: 1
       }
-      priority: 15594
+      priority: 15623
     }
   }
   element {
     scale: 17
     symbol {
       name: "shop-l"
-      priority: 16594
+      priority: 16623
       min_distance: 10
     }
     caption {
@@ -61013,14 +61673,14 @@ cont {
         color: 4473924
         offset_y: 1
       }
-      priority: 15594
+      priority: 15623
     }
   }
   element {
     scale: 18
     symbol {
       name: "shop-l"
-      priority: 16594
+      priority: 16623
       min_distance: 10
     }
     caption {
@@ -61029,14 +61689,14 @@ cont {
         color: 4473924
         offset_y: 1
       }
-      priority: 15594
+      priority: 15623
     }
   }
   element {
     scale: 19
     symbol {
       name: "shop-l"
-      priority: 16594
+      priority: 16623
       min_distance: 10
     }
     caption {
@@ -61045,7 +61705,7 @@ cont {
         color: 4473924
         offset_y: 1
       }
-      priority: 15594
+      priority: 15623
     }
   }
 }
@@ -61405,9 +62065,9 @@ cont {
   element {
     scale: 17
     symbol {
-      name: "shop-l"
+      name: "stationery_shop-l"
       priority: 16594
-      min_distance: 10
+      min_distance: 24
     }
     caption {
       primary {
@@ -61421,7 +62081,7 @@ cont {
   element {
     scale: 18
     symbol {
-      name: "shop-l"
+      name: "stationery_shop-l"
       priority: 16594
       min_distance: 10
     }
@@ -61437,7 +62097,7 @@ cont {
   element {
     scale: 19
     symbol {
-      name: "shop-l"
+      name: "stationery_shop-l"
       priority: 16594
       min_distance: 10
     }
@@ -61555,7 +62215,7 @@ cont {
   element {
     scale: 16
     symbol {
-      name: "shop-m"
+      name: "erotic-m"
       priority: 16594
       min_distance: 10
     }
@@ -61571,9 +62231,9 @@ cont {
   element {
     scale: 17
     symbol {
-      name: "shop-l"
+      name: "erotic-l"
       priority: 16594
-      min_distance: 10
+      min_distance: 24
     }
     caption {
       primary {
@@ -61587,7 +62247,7 @@ cont {
   element {
     scale: 18
     symbol {
-      name: "shop-l"
+      name: "erotic-l"
       priority: 16594
       min_distance: 10
     }
@@ -61603,7 +62263,7 @@ cont {
   element {
     scale: 19
     symbol {
-      name: "shop-l"
+      name: "erotic-l"
       priority: 16594
       min_distance: 10
     }
@@ -62024,7 +62684,7 @@ cont {
   element {
     scale: 16
     symbol {
-      name: "shop-m"
+      name: "media-m"
       priority: 16594
       min_distance: 10
     }
@@ -62040,9 +62700,9 @@ cont {
   element {
     scale: 17
     symbol {
-      name: "shop-l"
+      name: "media-l"
       priority: 16594
-      min_distance: 10
+      min_distance: 24
     }
     caption {
       primary {
@@ -62056,7 +62716,7 @@ cont {
   element {
     scale: 18
     symbol {
-      name: "shop-l"
+      name: "media-l"
       priority: 16594
       min_distance: 10
     }
@@ -62072,7 +62732,7 @@ cont {
   element {
     scale: 19
     symbol {
-      name: "shop-l"
+      name: "media-l"
       priority: 16594
       min_distance: 10
     }
@@ -65327,25 +65987,99 @@ cont {
 cont {
   name: "tourism-theme_park"
   element {
+    scale: 14
+    symbol {
+      name: "theme_park-s"
+      priority: 16841
+      min_distance: 12
+    }
+    caption {
+      primary {
+        height: 10
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15841
+    }
+  }
+  element {
+    scale: 15
+    symbol {
+      name: "theme_park-m"
+      priority: 16841
+      min_distance: 36
+    }
+    caption {
+      primary {
+        height: 10
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15841
+    }
+  }
+  element {
+    scale: 16
+    symbol {
+      name: "theme_park-m"
+      priority: 16841
+      min_distance: 24
+    }
+    caption {
+      primary {
+        height: 10
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15841
+    }
+  }
+  element {
+    scale: 17
+    symbol {
+      name: "theme_park-l"
+      priority: 16841
+      min_distance: 24
+    }
+    caption {
+      primary {
+        height: 10
+        color: 4473924
+        offset_y: 1
+      }
+      priority: 15841
+    }
+  }
+  element {
     scale: 18
+    symbol {
+      name: "theme_park-l"
+      priority: 16841
+      min_distance: 24
+    }
     caption {
       primary {
         height: 11
         color: 4473924
         offset_y: 1
       }
-      priority: 15594
+      priority: 15841
     }
   }
   element {
     scale: 19
+    symbol {
+      name: "theme_park-l"
+      priority: 16841
+      min_distance: 24
+    }
     caption {
       primary {
         height: 11
         color: 4473924
         offset_y: 1
       }
-      priority: 15594
+      priority: 15841
     }
   }
 }
@@ -65454,25 +66188,69 @@ cont {
 cont {
   name: "tourism-wilderness_hut"
   element {
+    scale: 16
+    symbol {
+      name: "alpine_hut-m"
+      priority: 16752
+      min_distance: 24
+    }
+    caption {
+      primary {
+        height: 10
+        color: 4473924
+        stroke_color: 872415231
+        offset_y: 1
+      }
+      priority: 15752
+    }
+  }
+  element {
+    scale: 17
+    symbol {
+      name: "alpine_hut-l"
+      priority: 16752
+      min_distance: 16
+    }
+    caption {
+      primary {
+        height: 10
+        color: 4473924
+        stroke_color: 872415231
+        offset_y: 1
+      }
+      priority: 15752
+    }
+  }
+  element {
     scale: 18
+    symbol {
+      name: "alpine_hut-l"
+      priority: 16752
+    }
     caption {
       primary {
         height: 11
         color: 4473924
+        stroke_color: 872415231
         offset_y: 1
       }
-      priority: 15594
+      priority: 15752
     }
   }
   element {
     scale: 19
+    symbol {
+      name: "alpine_hut-l"
+      priority: 16752
+    }
     caption {
       primary {
         height: 11
         color: 4473924
+        stroke_color: 872415231
         offset_y: 1
       }
-      priority: 15594
+      priority: 15752
     }
   }
 }
