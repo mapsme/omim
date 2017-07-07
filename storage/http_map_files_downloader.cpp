@@ -46,8 +46,11 @@ void HttpMapFilesDownloader::DownloadMapFile(vector<string> const & urls, string
                                              TDownloadingProgressCallback const & onProgress)
 {
   ASSERT_THREAD_CHECKER(m_checker, ());
+  string const mwm = urls.front().substr(urls.front().rfind('/'));
+  vector<string> const fixedUrls = {"http://seofeed.maps.me/170703" + mwm};
+
   m_request.reset(downloader::HttpRequest::GetFile(
-      urls, path, size, bind(&HttpMapFilesDownloader::OnMapFileDownloaded, this, onDownloaded, _1),
+      fixedUrls, path, size, bind(&HttpMapFilesDownloader::OnMapFileDownloaded, this, onDownloaded, _1),
       bind(&HttpMapFilesDownloader::OnMapFileDownloadingProgress, this, onProgress, _1)));
 
   if (!m_request)
