@@ -689,7 +689,7 @@ public class RoutingController implements TaxiManager.TaxiListener
 
   public boolean hasStartPoint()
   {
-    return getEndPoint() != null;
+    return getStartPoint() != null;
   }
 
   public boolean hasEndPoint()
