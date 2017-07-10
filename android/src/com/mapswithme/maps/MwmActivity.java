@@ -56,6 +56,7 @@ import com.mapswithme.maps.editor.ReportFragment;
 import com.mapswithme.maps.location.CompassData;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.routing.NavigationController;
+import com.mapswithme.maps.routing.RoutingBottomMenuListener;
 import com.mapswithme.maps.routing.RoutingController;
 import com.mapswithme.maps.routing.RoutingPlanFragment;
 import com.mapswithme.maps.routing.RoutingPlanInplaceController;
@@ -118,7 +119,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
                                  FloatingSearchToolbarController.VisibilityListener,
                                  NativeSearchListener,
                                  NavigationButtonsAnimationController.OnTranslationChangedListener,
-                                 RoutingPlanInplaceController.RoutingPlanListener
+                                 RoutingPlanInplaceController.RoutingPlanListener,
+                                 RoutingBottomMenuListener
 {
   public static final String EXTRA_TASK = "map_task";
   public static final String EXTRA_LAUNCH_BY_DEEP_LINK = "launch_by_deep_link";
@@ -533,7 +535,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
     if (!mIsFragmentContainer)
     {
-      mRoutingPlanInplaceController = new RoutingPlanInplaceController(this, this);
+      mRoutingPlanInplaceController = new RoutingPlanInplaceController(this, this, this);
       removeCurrentFragment(false);
     }
 
@@ -2135,6 +2137,19 @@ public class MwmActivity extends BaseMwmFragmentActivity
               LocationHelper.INSTANCE.start();
           }
         }).show();
+  }
+
+  @Override
+  public void onUseMyPositionAsStart()
+  {
+    RoutingController.get().setStartPoint(LocationHelper.INSTANCE.getMyPosition());
+  }
+
+  @Override
+  public void onSearchRoutePoint()
+  {
+    if (mNavigationController != null)
+      mNavigationController.performSearchClick();
   }
 
   public static class ShowAuthorizationTask implements MapTask
