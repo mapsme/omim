@@ -221,9 +221,7 @@ node|z4-[place=city][capital=2]::int_name,
 node|z9-[place=city]::int_name
 {text: int_name;text-color: @label_dark;text-halo-radius: 1;text-halo-opacity: 1;text-halo-color: @label_halo_light;}
 
-node|z10-[sponsored=viator],
-node|z10-[sponsored=viator][capital!=2],
-{icon-image: viator-star-l.svg;}
+
 
 
 node|z4[place=city][capital!=2][population>=1000000],
@@ -723,3 +721,6 @@ area|z15[aeroway=terminal]
 { text: name; font-size: 9; fill-opacity: 0.8; text-color: @building_label; text-position: center;}
 area|z16-[aeroway=terminal]
 {text: name; font-size: 9; fill-opacity: 1; text-color: @building_label; text-position: center;}
+
+node|z10-[sponsored=viator],
+{icon-image: viator-star-l.svg;text-offset: 1; z-index: 17000;}
