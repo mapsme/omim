@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.MwmActivity;
 import com.mapswithme.maps.R;
+import com.mapswithme.maps.api.RoutePoint;
 import com.mapswithme.maps.bookmarks.data.MapObject;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.taxi.TaxiAdapter;
@@ -180,6 +181,7 @@ final class RoutingBottomMenuController implements View.OnClickListener
     UiUtils.hide(mTaxiFrame, mError);
     UiUtils.show(mActionFrame);
     mActionMessage.setText(R.string.routing_add_start_point);
+    mActionMessage.setTag(RoutePointInfo.ROUTE_MARK_START);
     if (LocationHelper.INSTANCE.getMyPosition() != null)
     {
       UiUtils.show(mActionButton);
@@ -199,6 +201,7 @@ final class RoutingBottomMenuController implements View.OnClickListener
     UiUtils.hide(mTaxiFrame, mError);
     UiUtils.show(mActionFrame);
     mActionMessage.setText(R.string.routing_add_finish_point);
+    mActionMessage.setTag(RoutePointInfo.ROUTE_MARK_FINISH);
     UiUtils.hide(mActionButton);
   }
 
@@ -377,7 +380,11 @@ final class RoutingBottomMenuController implements View.OnClickListener
         break;
       case R.id.btn__search_point:
         if (mListener != null)
-          mListener.onSearchRoutePoint();
+        {
+          @RoutePointInfo.RouteMarkType
+          int pointType = (Integer) mActionMessage.getTag();
+          mListener.onSearchRoutePoint(pointType);
+        }
         break;
     }
   }

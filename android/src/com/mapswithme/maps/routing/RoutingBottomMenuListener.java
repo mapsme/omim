@@ -3,5 +3,5 @@ package com.mapswithme.maps.routing;
 public interface RoutingBottomMenuListener
 {
   void onUseMyPositionAsStart();
-  void onSearchRoutePoint();
+  void onSearchRoutePoint(@RoutePointInfo.RouteMarkType int type);
 }

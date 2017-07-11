@@ -56,6 +56,7 @@ import com.mapswithme.maps.editor.ReportFragment;
 import com.mapswithme.maps.location.CompassData;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.routing.NavigationController;
+import com.mapswithme.maps.routing.RoutePointInfo;
 import com.mapswithme.maps.routing.RoutingBottomMenuListener;
 import com.mapswithme.maps.routing.RoutingController;
 import com.mapswithme.maps.routing.RoutingPlanFragment;
@@ -2146,10 +2147,13 @@ public class MwmActivity extends BaseMwmFragmentActivity
   }
 
   @Override
-  public void onSearchRoutePoint()
+  public void onSearchRoutePoint(@RoutePointInfo.RouteMarkType int pointType)
   {
     if (mNavigationController != null)
+    {
+      RoutingController.get().waitForPoiPick(pointType);
       mNavigationController.performSearchClick();
+    }
   }
 
   public static class ShowAuthorizationTask implements MapTask
