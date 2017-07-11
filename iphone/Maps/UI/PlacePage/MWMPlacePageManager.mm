@@ -25,6 +25,7 @@
 #include "geometry/point2d.hpp"
 
 #include "platform/measurement_utils.hpp"
+#include "platform/platform.hpp"
 
 extern NSString * const kBookmarkDeletedNotification;
 extern NSString * const kBookmarkCategoryDeletedNotification;
@@ -66,12 +67,15 @@ void logSponsoredEvent(MWMPlacePageData * data, NSString * eventName)
 
 @property(nonatomic) storage::NodeStatus currentDownloaderStatus;
 
+@property(nonatomic) BOOL isSponsoredOpenLogged;
+
 @end
 
 @implementation MWMPlacePageManager
 
 - (void)show:(place_page::Info const &)info
 {
+  self.isSponsoredOpenLogged = NO;
   self.currentDownloaderStatus = storage::NodeStatus::Undefined;
   [MWMFrameworkListener addObserver:self];
 
@@ -231,6 +235,30 @@ void logSponsoredEvent(MWMPlacePageData * data, NSString * eventName)
 - (void)shouldDestroyLayout { self.layout = nil; }
 - (void)shouldClose { GetFramework().DeactivateMapSelection(true); }
 - (BOOL)isExpandedOnShow { return self.data.isViator; }
+- (void)onExpanded
+{
+  if (self.isSponsoredOpenLogged)
+    return;
+  self.isSponsoredOpenLogged = YES;
+  auto data = self.data;
+  if (!data)
+    return;
+  NSMutableDictionary * parameters = [@{} mutableCopy];
+  if (data.isViator)
+    parameters[kStatSponsor] = kStatViator;
+  else if (data.isBooking)
+    parameters[kStatSponsor] = kStatBooking;
+  switch (Platform::ConnectionStatus())
+  {
+  case Platform::EConnectionType::CONNECTION_NONE:
+    parameters[kStatConnection] = kStatOffline;
+    break;
+  case Platform::EConnectionType::CONNECTION_WIFI: parameters[kStatConnection] = kStatWifi; break;
+  case Platform::EConnectionType::CONNECTION_WWAN: parameters[kStatConnection] = kStatMobile; break;
+  }
+  [Statistics logEvent:kStatPlacepageSponsoredOpen withParameters:parameters];
+}
+
 #pragma mark - MWMLocationObserver
 
 - (void)onHeadingUpdate:(location::CompassInfo const &)info
