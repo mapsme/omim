@@ -5,6 +5,9 @@ set(
   api.cpp
   api.hpp
   serdes.hpp
+  serdes_binary.cpp
+  serdes_binary.hpp
+  serdes_json.hpp
   storage.cpp
   storage.hpp
   types.hpp
