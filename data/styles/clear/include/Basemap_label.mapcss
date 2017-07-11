@@ -222,6 +222,7 @@ node|z9-[place=city]::int_name
 {text: int_name;text-color: @label_dark;text-halo-radius: 1;text-halo-opacity: 1;text-halo-color: @label_halo_light;}
 
 node|z10-[sponsored=viator],
+node|z10-[sponsored=viator][capital!=2],
 {icon-image: viator-star-l.svg;}
 
 
