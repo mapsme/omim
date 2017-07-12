@@ -6431,7 +6431,7 @@ nb:^Butikk for husholdningsartikler
 pl:^Drogeria
 pt:^Drogaria
 pt-BR:^Drogaria|farmácia
-ro:^Magazin cu produse de igienă personală
+ro:^Mercerie
 es:^Droguería
 sv:^Butik för hushållskemikalier
 th:^ร้านเคมีภัณฑ์
