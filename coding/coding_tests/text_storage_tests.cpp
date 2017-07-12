@@ -76,7 +76,7 @@ UNIT_TEST(TextStorage_Simple)
 
   {
     MemReader reader(buffer.data(), buffer.size());
-    BlockedTextStorage<MemReader> ts(reader);
+    BlockedTextStorage<decltype(reader)> ts(reader);
     TEST_EQUAL(ts.GetNumStrings(), strings.size(), ());
     for (size_t i = 0; i < ts.GetNumStrings(); ++i)
       TEST_EQUAL(ts.ExtractString(i), strings[i], ());
@@ -98,7 +98,7 @@ UNIT_TEST(TextStorage_Empty)
 
   {
     MemReader reader(buffer.data(), buffer.size());
-    BlockedTextStorage<MemReader> ts(reader);
+    BlockedTextStorage<decltype(reader)> ts(reader);
     TEST_EQUAL(ts.GetNumStrings(), strings.size(), ());
     for (size_t i = 0; i < ts.GetNumStrings(); ++i)
       TEST_EQUAL(ts.ExtractString(i), strings[i], ());
@@ -120,7 +120,7 @@ UNIT_TEST(TextStorage_Random)
   DumpStrings(strings, kBlockSize, buffer);
 
   MemReader reader(buffer.data(), buffer.size());
-  BlockedTextStorage<MemReader> ts(reader);
+  BlockedTextStorage<decltype(reader)> ts(reader);
 
   TEST_EQUAL(ts.GetNumStrings(), strings.size(), ());
   for (size_t i = 0; i < ts.GetNumStrings(); ++i)

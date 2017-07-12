@@ -1,13 +1,15 @@
 #include "testing/testing.hpp"
 
 #include "ugc/api.hpp"
-#include "ugc/serdes_binary.hpp"
+#include "ugc/binary/serdes.hpp"
+#include "ugc/binary/ugc_holder.hpp"
 #include "ugc/types.hpp"
 
 #include <cstdint>
 #include <vector>
 
 using namespace std;
+using namespace ugc::binary;
 using namespace ugc;
 
 namespace

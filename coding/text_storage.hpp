@@ -217,7 +217,11 @@ public:
     m_initialized = true;
   }
 
-  size_t GetNumStrings() const { return m_index.GetNumStrings(); }
+  size_t GetNumStrings() const
+  {
+    CHECK(m_initialized, ());
+    return m_index.GetNumStrings();
+  }
 
   template <typename Reader>
   std::string ExtractString(Reader & reader, size_t stringIx)
@@ -296,7 +300,10 @@ template <typename Reader>
 class BlockedTextStorage
 {
 public:
-  BlockedTextStorage(Reader & reader) : m_reader(reader) { m_storage.InitializeIfNeeded(m_reader); }
+  explicit BlockedTextStorage(Reader & reader) : m_reader(reader)
+  {
+    m_storage.InitializeIfNeeded(m_reader);
+  }
 
   size_t GetNumStrings() const { return m_storage.GetNumStrings(); }
   std::string ExtractString(size_t stringIx) { return m_storage.ExtractString(m_reader, stringIx); }

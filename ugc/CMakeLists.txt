@@ -4,9 +4,13 @@ set(
   SRC
   api.cpp
   api.hpp
+  binary/header_v0.hpp
+  binary/index_ugc.hpp
+  binary/serdes.cpp
+  binary/serdes.hpp
+  binary/ugc_holder.hpp
+  binary/visitors.hpp
   serdes.hpp
-  serdes_binary.cpp
-  serdes_binary.hpp
   serdes_json.hpp
   storage.cpp
   storage.hpp

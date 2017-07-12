@@ -1,4 +1,4 @@
-#include "ugc/serdes_binary.hpp"
+#include "ugc/binary/serdes.hpp"
 
 #include <set>
 
@@ -6,11 +6,15 @@ using namespace std;
 
 namespace ugc
 {
+namespace binary
+{
 namespace
 {
 class BaseCollector
 {
 public:
+  virtual ~BaseCollector() = default;
+
   virtual void VisitRating(float const f, char const * /* name */ = nullptr) {}
   virtual void operator()(string const & /* s */, char const * /* name */ = nullptr) {}
   virtual void operator()(Sentiment const /* sentiment */, char const * /* name */ = nullptr) {}
@@ -43,17 +47,13 @@ public:
 class TranslationKeyCollector : public BaseCollector
 {
 public:
-  TranslationKeyCollector(set<TranslationKey> & keys) : m_keys(keys) {}
+  using BaseCollector::operator();
+
+  explicit TranslationKeyCollector(set<TranslationKey> & keys) : m_keys(keys) {}
 
   void operator()(TranslationKey const & tk, char const * /* name */ = nullptr) override
   {
     m_keys.insert(tk.m_key);
-  }
-
-  template <typename T>
-  void operator()(T const & t, char const * name = nullptr)
-  {
-    BaseCollector::operator()(t, name);
   }
 
 private:
@@ -64,17 +64,13 @@ private:
 class TextCollector : public BaseCollector
 {
 public:
+  using BaseCollector::operator();
+
   TextCollector(vector<Text> & texts) : m_texts(texts) {}
 
   void operator()(Text const & text, char const * /* name */ = nullptr) override
   {
     m_texts.push_back(text);
-  }
-
-  template <typename T>
-  void operator()(T const & t, char const * name = nullptr)
-  {
-    BaseCollector::operator()(t, name);
   }
 
 private:
@@ -103,4 +99,5 @@ void UGCSeriaizer::CollectTexts()
     collector(p.m_ugc);
   }
 }
+}  // namespace binary
 }  // namespace ugc
