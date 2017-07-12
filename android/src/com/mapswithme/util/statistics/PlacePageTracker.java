@@ -10,6 +10,7 @@ import com.mapswithme.maps.R;
 import com.mapswithme.maps.bookmarks.data.MapObject;
 import com.mapswithme.maps.taxi.TaxiManager;
 import com.mapswithme.maps.widget.placepage.PlacePageView;
+import com.mapswithme.maps.widget.placepage.Sponsored;
 import com.mapswithme.util.UiUtils;
 
 import java.util.List;
@@ -49,10 +50,20 @@ public class PlacePageTracker
     trackViatorVisibility();
   }
 
-  public void onHide()
+  public void onHidden()
   {
     mTaxiTracked = false;
     mViatorTracked = false;
+  }
+
+  public void onOpened()
+  {
+    if (mPlacePageView.getState() == PlacePageView.State.DETAILS)
+    {
+      Sponsored sponsored = mPlacePageView.getSponsored();
+      if (sponsored != null)
+        Statistics.INSTANCE.trackSponsoredOpenEvent(sponsored.getType());
+    }
   }
 
   private void trackTaxiVisibility()
@@ -72,8 +83,10 @@ public class PlacePageTracker
 
   private void trackViatorVisibility()
   {
-    if (!mViatorTracked && isViewOnScreen(mViator) && mMapObject != null)
+    if (!mViatorTracked && isViewOnScreen(mViator) && mPlacePageView.getSponsored() != null)
     {
+      Sponsored sponsored = mPlacePageView.getSponsored();
+      Statistics.INSTANCE.trackSponsoredGalleryShown(sponsored.getType());
       mViatorTracked = true;
     }
   }
