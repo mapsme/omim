@@ -20,6 +20,9 @@ import com.mapswithme.maps.search.SearchEngine;
 import com.mapswithme.util.Graphics;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.concurrency.UiThread;
+import com.mapswithme.util.statistics.Statistics;
+
+import static com.mapswithme.util.statistics.Statistics.EventName.ROUTING_SEARCH_CLICK;
 
 class SearchWheel implements View.OnClickListener
 {
@@ -228,9 +231,11 @@ class SearchWheel implements View.OnClickListener
           showSearchInParent();
         else
           reset();
+        Statistics.INSTANCE.trackRoutingEvent(ROUTING_SEARCH_CLICK, true);
         return;
       }
 
+      Statistics.INSTANCE.trackRoutingEvent(ROUTING_SEARCH_CLICK, false);
       if (mCurrentOption != null || !TextUtils.isEmpty(SearchEngine.getQuery()))
       {
         SearchEngine.cancelSearch();

@@ -511,7 +511,7 @@ public class PlacePageView extends RelativeLayout
           RoutingController controller = RoutingController.get();
           if (!controller.isPlanning())
           {
-            controller.prepare(mMapObject, null);
+            controller.prepare(mMapObject, null, false);
             hide();
           }
           else if (controller.setStartPoint(mMapObject))
@@ -1742,7 +1742,7 @@ public class PlacePageView extends RelativeLayout
         break;
       case R.id.tv__place_page_order_taxi:
         RoutingController.get().prepare(LocationHelper.INSTANCE.getMyPosition(), mMapObject,
-                                        Framework.ROUTER_TYPE_TAXI);
+                                        Framework.ROUTER_TYPE_TAXI, false);
         hide();
         Framework.nativeDeactivatePopup();
         if (mMapObject != null)
