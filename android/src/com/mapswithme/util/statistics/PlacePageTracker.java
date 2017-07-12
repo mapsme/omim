@@ -1,6 +1,5 @@
 package com.mapswithme.util.statistics;
 
-import android.app.Activity;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,9 +16,12 @@ import java.util.List;
 
 public class PlacePageTracker
 {
-  private final int mBottomPadding;
+  private static final float VISIBILITY_RATIO_VIATOR = 0.3f;
+  private static final float VISIBILITY_RATIO_TAXI = 1f;
   @NonNull
   private final PlacePageView mPlacePageView;
+  @NonNull
+  private final View mBottomButtons;
   @NonNull
   private final View mTaxi;
   @NonNull
@@ -33,10 +35,9 @@ public class PlacePageTracker
   public PlacePageTracker(@NonNull PlacePageView placePageView)
   {
     mPlacePageView = placePageView;
+    mBottomButtons = mPlacePageView.findViewById(R.id.pp__buttons);
     mTaxi = mPlacePageView.findViewById(R.id.ll__place_page_taxi);
     mViator = mPlacePageView.findViewById(R.id.ll__place_viator);
-    Activity activity = (Activity) placePageView.getContext();
-    mBottomPadding = activity.getResources().getDimensionPixelOffset(R.dimen.place_page_buttons_height);
   }
 
   public void setMapObject(@Nullable MapObject mapObject)
@@ -68,7 +69,7 @@ public class PlacePageTracker
 
   private void trackTaxiVisibility()
   {
-    if (!mTaxiTracked && isViewOnScreen(mTaxi) && mMapObject != null)
+    if (!mTaxiTracked && isViewOnScreen(mTaxi, VISIBILITY_RATIO_TAXI) && mMapObject != null)
     {
       List<Integer> taxiTypes = mMapObject.getReachableByTaxiTypes();
       if (taxiTypes != null && !taxiTypes.isEmpty())
@@ -83,7 +84,8 @@ public class PlacePageTracker
 
   private void trackViatorVisibility()
   {
-    if (!mViatorTracked && isViewOnScreen(mViator) && mPlacePageView.getSponsored() != null)
+    if (!mViatorTracked && isViewOnScreen(mViator, VISIBILITY_RATIO_VIATOR)
+        && mPlacePageView.getSponsored() != null)
     {
       Sponsored sponsored = mPlacePageView.getSponsored();
       Statistics.INSTANCE.trackSponsoredGalleryShown(sponsored.getType());
@@ -91,30 +93,24 @@ public class PlacePageTracker
     }
   }
 
-  private boolean isViewOnScreen(@NonNull View view) {
+  /**
+   *
+   * @param visibilityRatio Describes what the portion of view should be visible before
+   *                        the view is considered visible on the screen. It can be from 0 to 1.
+   */
+  private boolean isViewOnScreen(@NonNull View view, float visibilityRatio) {
 
-    if (UiUtils.isInvisible(mPlacePageView) || UiUtils.isInvisible(view) || !view.isShown())
+    if (UiUtils.isInvisible(mPlacePageView))
       return false;
 
     Rect localRect = new Rect();
-    Rect globalRect = new Rect();
-    view.getLocalVisibleRect(localRect);
-    view.getGlobalVisibleRect(globalRect);
-
-    return UiUtils.isLandscape(view.getContext()) ? isPartiallyVisible(view, localRect, globalRect)
-                              : isCompletelyVisible(view, localRect, globalRect);
-  }
-
-  private boolean isCompletelyVisible(@NonNull View view, @NonNull Rect localRect,
-                                      @NonNull Rect globalRect)
-  {
-    return view.getHeight() > 0 && localRect.bottom >= view.getHeight() && localRect.top == 0
-           && globalRect.bottom <= mPlacePageView.getBottom() - mBottomPadding;
-  }
-
-  private boolean isPartiallyVisible(@NonNull View view, @NonNull Rect localRect,
-                                     @NonNull Rect globalRect)
-  {
-    return view.getHeight() > 0 && localRect.top == 0 || globalRect.bottom < mPlacePageView.getBottom();
+    boolean isVisible = view.getGlobalVisibleRect(localRect);
+    if (isVisible)
+    {
+      int visibleHeight = localRect.height() - (localRect.bottom  - mBottomButtons.getTop());
+      if ((float)visibleHeight / view.getHeight() >= visibilityRatio)
+        return true;
+    }
+    return false;
   }
 }
