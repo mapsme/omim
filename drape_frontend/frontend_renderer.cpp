@@ -1132,7 +1132,7 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
   GLFunctions::glClear(gl_const::GLColorBit | gl_const::GLDepthBit | gl_const::GLStencilBit);
 
   Render2dLayer(modelView);
-  RenderUserLinesLayer(modelView);
+  RenderUserMarksLayer(modelView, RenderLayer::UserLineID);
 
   if (m_buildingsFramebuffer->IsSupported())
   {
@@ -1182,7 +1182,8 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView)
 
   {
     StencilWriterGuard guard(make_ref(m_postprocessRenderer));
-    RenderUserMarksLayer(modelView);
+    RenderUserMarksLayer(modelView, RenderLayer::UserMarkID);
+    RenderUserMarksLayer(modelView, RenderLayer::RoutingMarkID);
   }
 
   m_myPositionController->Render(modelView, m_currentZoomLevel, make_ref(m_gpuProgramManager),
@@ -1280,9 +1281,9 @@ void FrontendRenderer::RenderTrafficAndRouteLayer(ScreenBase const & modelView)
                                make_ref(m_gpuProgramManager), m_generalUniforms);
 }
 
-void FrontendRenderer::RenderUserMarksLayer(ScreenBase const & modelView)
+void FrontendRenderer::RenderUserMarksLayer(ScreenBase const & modelView, RenderLayer::RenderLayerID layerId)
 {
-  auto & renderGroups = m_layers[RenderLayer::UserMarkID].m_renderGroups;
+  auto & renderGroups = m_layers[layerId].m_renderGroups;
   if (renderGroups.empty())
     return;
 
@@ -1308,7 +1309,8 @@ void FrontendRenderer::RenderUserLinesLayer(ScreenBase const & modelView)
 void FrontendRenderer::BuildOverlayTree(ScreenBase const & modelView)
 {
   static std::vector<RenderLayer::RenderLayerID> layers = {RenderLayer::OverlayID,
-                                                           RenderLayer::NavigationID};
+                                                           RenderLayer::NavigationID,
+                                                           RenderLayer::RoutingMarkID};
   BeginUpdateOverlayTree(modelView);
   for (auto const & layerId : layers)
   {
@@ -2042,14 +2044,14 @@ void FrontendRenderer::CheckAndRunFirstLaunchAnimation()
 
 FrontendRenderer::RenderLayer::RenderLayerID FrontendRenderer::RenderLayer::GetLayerID(dp::GLState const & state)
 {
-  if (state.GetDepthLayer() == dp::GLState::OverlayLayer)
-    return OverlayID;
-  if (state.GetDepthLayer() == dp::GLState::UserMarkLayer)
-    return UserMarkID;
-  if (state.GetDepthLayer() == dp::GLState::UserLineLayer)
-    return UserLineID;
-  if (state.GetDepthLayer() == dp::GLState::NavigationLayer)
-    return NavigationID;
+  switch (state.GetDepthLayer())
+  {
+  case dp::GLState::OverlayLayer: return OverlayID;
+  case dp::GLState::UserMarkLayer: return UserMarkID;
+  case dp::GLState::UserLineLayer: return UserLineID;
+  case dp::GLState::RoutingMarkLayer: return RoutingMarkID;
+  case dp::GLState::NavigationLayer: return NavigationID;
+  }
 
   if (state.GetProgram3dIndex() == gpu::AREA_3D_PROGRAM ||
       state.GetProgram3dIndex() == gpu::AREA_3D_OUTLINE_PROGRAM)
