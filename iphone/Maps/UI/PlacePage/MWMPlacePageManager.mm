@@ -599,15 +599,13 @@ void logPointEvent(MWMRoutePoint * pt, NSString * eventType)
     [self.ownerViewController openUrl:u];
 }
 
-- (void)viewWillTransitionToSize:(CGSize)size
-       withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+#pragma mark - AvailableArea / PlacePageArea
+
+- (void)updateAvailableArea:(CGRect)frame
 {
-  [coordinator
-      animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-        [self.layout layoutWithSize:size];
-      }
-                      completion:^(id<UIViewControllerTransitionCoordinatorContext> context){
-                      }];
+  auto data = self.data;
+  if (data)
+    [self.layout updateAvailableArea:frame];
 }
 
 #pragma mark - MWMFeatureHolder
@@ -623,26 +621,4 @@ void logPointEvent(MWMRoutePoint * pt, NSString * eventType)
 
 - (MapViewController *)ownerViewController { return [MapViewController controller]; }
 
-#pragma mark - Deprecated
-
-@synthesize leftBound = _leftBound;
-@synthesize topBound = _topBound;
-
-- (void)setTopBound:(CGFloat)topBound
-{
-  if (_topBound == topBound)
-    return;
-
-  _topBound = topBound;
-  [self.layout updateTopBound];
-}
-
-- (void)setLeftBound:(CGFloat)leftBound
-{
-  if (_leftBound == leftBound)
-    return;
-
-  _leftBound = leftBound;
-  [self.layout updateLeftBound];
-}
 @end
