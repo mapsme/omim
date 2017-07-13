@@ -6427,13 +6427,13 @@ id:^Toko Bahan Kimia
 it:^Negozio di detersivi
 ja:^化学薬品店
 ko:^드럭 스토어
-nb:^Butikk for husholdningsartikler
+nb:^Husholdningsartikler
 pl:^Drogeria
 pt:^Drogaria
 pt-BR:^Drogaria|farmácia
 ro:^Mercerie
 es:^Droguería
-sv:^Butik för hushållskemikalier
+sv:^Hushållskemikalier
 th:^ร้านเคมีภัณฑ์
 tr:^Temizlik Ürünleri Mağazası
 uk:^Магазин побутової хімії
