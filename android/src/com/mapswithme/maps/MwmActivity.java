@@ -755,7 +755,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
       @Override
       public void run()
       {
-        RoutingController.get().prepare(endPoint, false);
+        RoutingController.get().prepare(endPoint);
 
         if (mPlacePage != null && (mPlacePage.isDocked() || !mPlacePage.isFloating()))
           closePlacePage();

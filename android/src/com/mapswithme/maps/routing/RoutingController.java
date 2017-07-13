@@ -39,7 +39,6 @@ import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 import static com.mapswithme.util.statistics.Statistics.EventName.ROUTING_POINT_ADD;
-import static com.mapswithme.util.statistics.Statistics.EventName.ROUTING_POINT_EDIT;
 import static com.mapswithme.util.statistics.Statistics.EventName.ROUTING_POINT_REMOVE;
 
 @android.support.annotation.UiThread
@@ -356,9 +355,19 @@ public class RoutingController implements TaxiManager.TaxiListener
         }).show();
   }
 
+  public void prepare(@Nullable MapObject endPoint)
+  {
+    prepare(endPoint, false);
+  }
+
   public void prepare(@Nullable MapObject endPoint, boolean fromApi)
   {
     prepare(LocationHelper.INSTANCE.getMyPosition(), endPoint, fromApi);
+  }
+
+  public void prepare(@Nullable MapObject startPoint, @Nullable MapObject endPoint)
+  {
+    prepare(startPoint, endPoint, false);
   }
 
   public void prepare(@Nullable MapObject startPoint, @Nullable MapObject endPoint, boolean fromApi)
@@ -375,6 +384,12 @@ public class RoutingController implements TaxiManager.TaxiListener
       mLastRouterType = Framework.nativeGetBestRouter(startPoint.getLat(), startPoint.getLon(),
                                                       endPoint.getLat(), endPoint.getLon());
     prepare(startPoint, endPoint, mLastRouterType, fromApi);
+  }
+
+  public void prepare(final @Nullable MapObject startPoint, final @Nullable MapObject endPoint,
+                      @Framework.RouterType int routerType)
+  {
+    prepare(startPoint, endPoint, routerType, false);
   }
 
   public void prepare(final @Nullable MapObject startPoint, final @Nullable MapObject endPoint,
@@ -408,27 +423,19 @@ public class RoutingController implements TaxiManager.TaxiListener
       trackPointAdd(startPoint, RoutePointInfo.ROUTE_MARK_FINISH, false, false, fromApi);
   }
 
-  private void trackPointAdd(MapObject point, @RoutePointInfo.RouteMarkType int type,
-                          boolean isPlaning, boolean isNavigating, boolean fromApi)
+  private static void trackPointAdd(MapObject point, @RoutePointInfo.RouteMarkType int type,
+                          boolean isPlanning, boolean isNavigating, boolean fromApi)
   {
     boolean isMyPosition = point.getMapObjectType() == MapObject.MY_POSITION;
-    Statistics.INSTANCE.trackRoutingPoint(ROUTING_POINT_ADD, type, isPlaning, isNavigating,
+    Statistics.INSTANCE.trackRoutingPoint(ROUTING_POINT_ADD, type, isPlanning, isNavigating,
                                           isMyPosition, fromApi);
   }
 
-  private void trackPointRemove(MapObject point, @RoutePointInfo.RouteMarkType int type,
-                             boolean isPlaning, boolean isNavigating, boolean fromApi)
+  private static void trackPointRemove(MapObject point, @RoutePointInfo.RouteMarkType int type,
+                             boolean isPlanning, boolean isNavigating, boolean fromApi)
   {
     boolean isMyPosition = point.getMapObjectType() == MapObject.MY_POSITION;
-    Statistics.INSTANCE.trackRoutingPoint(ROUTING_POINT_REMOVE, type, isPlaning, isNavigating,
-                                          isMyPosition, fromApi);
-  }
-
-  private void trackPointEdit(MapObject point, @RoutePointInfo.RouteMarkType int type,
-                                boolean isPlaning, boolean isNavigating, boolean fromApi)
-  {
-    boolean isMyPosition = point.getMapObjectType() == MapObject.MY_POSITION;
-    Statistics.INSTANCE.trackRoutingPoint(ROUTING_POINT_EDIT, type, isPlaning, isNavigating,
+    Statistics.INSTANCE.trackRoutingPoint(ROUTING_POINT_REMOVE, type, isPlanning, isNavigating,
                                           isMyPosition, fromApi);
   }
 
@@ -803,7 +810,6 @@ public class RoutingController implements TaxiManager.TaxiListener
   {
     mLogger.d(TAG, "setStartPoint");
     MapObject startPoint = getStartPoint();
-    boolean editStart = startPoint != null;
     MapObject endPoint = getEndPoint();
     boolean isSamePoint = MapObject.same(startPoint, point);
     if (point != null)
@@ -836,12 +842,8 @@ public class RoutingController implements TaxiManager.TaxiListener
     startPoint = point;
     setPointsInternal(startPoint, endPoint);
     checkAndBuildRoute();
-    if (editStart)
-      trackPointEdit(startPoint, RoutePointInfo.ROUTE_MARK_START, isPlanning(), isNavigating(),
-                     false);
-    else
-      trackPointAdd(startPoint, RoutePointInfo.ROUTE_MARK_START, isPlanning(), isNavigating(),
-                    false);
+    trackPointAdd(startPoint, RoutePointInfo.ROUTE_MARK_START, isPlanning(), isNavigating(),
+                  false);
     return true;
   }
 
@@ -861,7 +863,6 @@ public class RoutingController implements TaxiManager.TaxiListener
     mLogger.d(TAG, "setEndPoint");
     MapObject startPoint = getStartPoint();
     MapObject endPoint = getEndPoint();
-    boolean editEnd = endPoint != null;
     boolean isSamePoint = MapObject.same(endPoint, point);
     if (point != null)
     {
@@ -896,12 +897,8 @@ public class RoutingController implements TaxiManager.TaxiListener
 
     endPoint = point;
 
-    if (editEnd)
-      trackPointEdit(endPoint, RoutePointInfo.ROUTE_MARK_FINISH, isPlanning(), isNavigating(),
-                     false);
-    else
-      trackPointAdd(endPoint, RoutePointInfo.ROUTE_MARK_FINISH, isPlanning(), isNavigating(),
-                    false);
+    trackPointAdd(endPoint, RoutePointInfo.ROUTE_MARK_FINISH, isPlanning(), isNavigating(),
+                  false);
 
     if (startPoint == null)
       return setStartFromMyPosition();

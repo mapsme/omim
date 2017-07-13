@@ -228,10 +228,14 @@ class SearchWheel implements View.OnClickListener
       if (RoutingController.get().isPlanning())
       {
         if (TextUtils.isEmpty(SearchEngine.getQuery()))
+        {
           showSearchInParent();
+          Statistics.INSTANCE.trackRoutingEvent(ROUTING_SEARCH_CLICK, true);
+        }
         else
+        {
           reset();
-        Statistics.INSTANCE.trackRoutingEvent(ROUTING_SEARCH_CLICK, true);
+        }
         return;
       }
 
