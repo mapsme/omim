@@ -4,6 +4,8 @@
 #include "partners_api/uber_api.hpp"
 #include "partners_api/yandex_api.hpp"
 
+#include "platform/platform.hpp"
+
 #include "geometry/latlon.hpp"
 
 #include "base/stl_add.hpp"
@@ -287,7 +289,7 @@ UNIT_TEST(TaxiEngine_Smoke)
   auto const lastCallback = [&standardCallback](taxi::ProvidersContainer const & products,
                                                 uint64_t const requestId) {
     standardCallback(products, requestId);
-    testing::StopEventLoop();
+    GetPlatform().RunOnGuiThread([](){testing::StopEventLoop();});
   };
 
   taxi::Engine engine(
