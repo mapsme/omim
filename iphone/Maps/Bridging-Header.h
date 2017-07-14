@@ -35,6 +35,7 @@
 #import "MWMSettings.h"
 #import "MWMSideButtons.h"
 #import "MWMTableViewCell.h"
+#import "MWMTrafficButtonViewController.h"
 #import "MWMTypes.h"
 #import "MWMViewController.h"
 #import "Statistics.h"
