@@ -180,7 +180,7 @@ UNIT_TEST(Uber_GetAvailableProducts)
                            },
                            [](taxi::ErrorCode const code) {
                              TEST(false, (code));
-                             GetPlatform().RunOnGuiThread([=] { testing::StopEventLoop(); });
+                             GetPlatform().RunOnGuiThread([] { testing::StopEventLoop(); });
                            });
 
   testing::RunEventLoop();
@@ -196,12 +196,12 @@ UNIT_TEST(Uber_GetAvailableProducts)
                            },
                            [&errorCode](taxi::ErrorCode const code) {
                              errorCode = code;
-                             GetPlatform().RunOnGuiThread([=] { testing::StopEventLoop(); });
+                             GetPlatform().RunOnGuiThread([] { testing::StopEventLoop(); });
                            });
 
-  TEST_EQUAL(errorCode, taxi::ErrorCode::NoProducts, ());
-
   testing::RunEventLoop();
+
+  TEST_EQUAL(errorCode, taxi::ErrorCode::NoProducts, ());
 }
 
 UNIT_TEST(Uber_GetRideRequestLinks)

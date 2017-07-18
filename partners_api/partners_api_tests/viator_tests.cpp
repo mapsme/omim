@@ -2,6 +2,8 @@
 
 #include "partners_api/viator_api.hpp"
 
+#include "platform/platform.hpp"
+
 #include <algorithm>
 #include <random>
 #include <sstream>
@@ -37,7 +39,7 @@ UNIT_TEST(Viator_GetTop5Products)
                         resultId = destId;
                         resultProducts = products;
 
-                        testing::StopEventLoop();
+                        GetPlatform().RunOnGuiThread([](){testing::StopEventLoop();});
                       });
 
   testing::RunEventLoop();
@@ -57,7 +59,7 @@ UNIT_TEST(Viator_GetTop5Products)
                         resultId = destId;
                         resultProducts = products;
 
-                        testing::StopEventLoop();
+                        GetPlatform().RunOnGuiThread([](){testing::StopEventLoop();});
                       });
 
   testing::RunEventLoop();
@@ -77,7 +79,7 @@ UNIT_TEST(Viator_GetTop5Products)
                         resultId = destId;
                         resultProducts = products;
 
-                        testing::StopEventLoop();
+                        GetPlatform().RunOnGuiThread([](){testing::StopEventLoop();});
                       });
 
   testing::RunEventLoop();
