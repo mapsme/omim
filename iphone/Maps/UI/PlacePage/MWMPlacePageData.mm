@@ -381,7 +381,18 @@ using namespace place_page;
 
 - (storage::TCountryId const &)countryId { return m_info.m_countryId; }
 - (FeatureID const &)featureId { return m_info.GetID(); }
-- (NSString *)title { return @(m_info.GetTitle().c_str()); }
+- (NSString *)title
+{
+  auto title = @(m_info.GetTitle().c_str());
+  if (m_info.IsBookmark() && [title isEqualToString:L(@"placepage_unknown_place")])
+  {
+    auto bookmarkTitle = @(m_info.m_bookmarkTitle.c_str());
+    auto wCharacters = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+    if ([bookmarkTitle stringByTrimmingCharactersInSet:wCharacters].length != 0)
+      title = bookmarkTitle;
+  }
+  return title;
+}
 - (NSString *)subtitle { return @(m_info.GetSubtitle().c_str()); }
 - (place_page::OpeningHours)schedule;
 {
@@ -556,8 +567,12 @@ using namespace place_page;
 
 - (NSString *)externalTitle
 {
-  if (m_info.IsBookmark() && m_info.m_bookmarkTitle != m_info.GetTitle())
-    return @(m_info.m_bookmarkTitle.c_str());
+  if (m_info.IsBookmark())
+  {
+    auto bookmarkTitle = @(m_info.m_bookmarkTitle.c_str());
+    if (![[self title] isEqualToString:bookmarkTitle])
+      return bookmarkTitle;
+  }
 
   auto const secondaryTitle = m_info.GetSecondaryTitle();
   if (!secondaryTitle.empty())
