@@ -17,6 +17,7 @@
     it = Informazioni
     ja = 情報
     ko = 소개
+    lt = Apie
     nb = Om
     pl = O programie
     pt = Sobre
@@ -49,6 +50,7 @@
     it = Indietro
     ja = 戻る
     ko = 뒤로
+    lt = Atgal
     nb = Tilbake
     pl = Wróć
     pt = Voltar
@@ -83,6 +85,7 @@
     it = Annulla
     ja = キャンセル
     ko = 취소하기
+    lt = Atšaukti
     nb = Avbryt
     pl = Anuluj
     pt = Cancelar
@@ -117,6 +120,7 @@
     it = Annulla il download
     ja = ダウンロードをキャンセル
     ko = 다운로드 취소하기
+    lt = Atšaukti siuntimą
     nb = Avbryt nedlasting
     pl = Anuluj pobieranie
     pt = Cancelar Descarga
@@ -151,6 +155,7 @@
     it = Cancella
     ja = 削除
     ko = 삭제하기
+    lt = Ištrinti
     nb = Slett
     pl = Usuń
     pt = Eliminar
@@ -184,6 +189,7 @@
     it = Non me lo chiedere di nuovo
     ja = 以後、このメッセージを表示しない
     ko = 또 묻지 마세요.
+    lt = Daugiau nebeklausti
     nb = Ikke spør meg igjen
     pl = Nie pytaj ponownie
     pt = Não volte a perguntar-me
@@ -216,6 +222,7 @@
     it = Continua
     ja = 何もしない
     ko = 아무것도 하지 마세요
+    lt = Tęsti
     nb = Ikke spør meg igjen
     pl = Kontynuuj
     pt = Continuar
@@ -248,6 +255,7 @@
     it = Scarica le mappe
     ja = マップをダウンロード
     ko = 지도 다운로드받기
+    lt = Atsisiųsti žemėlapius
     nb = Last ned kart
     pl = Pobierz mapy
     pt = Descarregar mapas
@@ -281,6 +289,7 @@
     it = Scarica %qu kB
     ja = %quをダウンロード
     ko = %qu 다운로드하기
+    lt = Atsisiųsti %qu kB
     nb = Last ned %qu kB
     pl = Pobierz %qu kB
     pt = Descarregar %qu kB
@@ -313,6 +322,7 @@
     it = Scarica %qu MB
     ja = %quをダウンロード
     ko = %qu 다운로드하기
+    lt = Atsisiųsti %qu MB
     nb = Last ned %qu MB
     pl = Pobierz %qu MB
     pt = Descarregar %qu MB
@@ -345,6 +355,7 @@
     it = Download fallito, tocca di nuovo per un altro tentativo
     ja = ダウンロードが失敗しました。もう一度試すには画面をタッチしてください。
     ko = 다운로드에 실패하였습니다. 다시 두드려 시도하여 주십시요.
+    lt = Atsisiųsti nepavyko. Palieskite ir bandykite dar kartą.
     nb = Nedlastingen mislyktes – trykk på nytt for å prøve en gang til
     pl = Nie udało się pobrać. Proszę nacisnąć, aby spróbować ponownie.
     pt = A descarga falhou, toque novamente para tentar uma vez mais.
@@ -378,6 +389,7 @@
     it = Scaricato (%1$qu %2$@), tocca per annullare
     ja = (%1$qu %2$@)をダウンロードしました。削除するには画面をタッチしてください。
     ko = (%1$qu %2$@)가 다운로드 되었습니다, 두드려 삭제하십시요.
+    lt = Atsisiųsta (%1$qu %2$@), palieskite ištrinimui
     nb = Lastet ned (%1$qu %2$@) – trykk for å slette
     pl = Pobrano (%1$qu %2$@). Proszę nacisnąć, aby usunąć.
     pt = (%1$qu %2$@) descarregados, toque para eliminar.
@@ -410,6 +422,7 @@
     it = Download di %qu%%, tocca per annullare
     ja = %qu%%をダウンロード中です。キャンセルするには画面をタッチしてください。
     ko = %qu%%를 다운로드 중, 두드려 취소하십시요
+    lt = Atsisiunčiama %qu%%, palieskite atšaukimui
     nb = Laster ned %qu%% – trykk for å avbryte
     pl = Pobieranie %qu%%. Proszę nacisnąć, aby anulować.
     pt = A descarregar %qu%%, toque para cancelar.
@@ -442,6 +455,7 @@
     it = In fase di download…
     ja = ダウンロード中…
     ko = 다운로드 중…
+    lt = Siunčiama…
     nb = Laster ned …
     pl = Pobieranie…
     pt = A descarregar…
@@ -474,6 +488,7 @@
     it = Prendila ora
     ja = 今すぐ入手
     ko = 지금 가져오기
+    lt = Gaukite dabar
     nb = Hent nå
     pl = Pobierz
     pt = Instale agora
@@ -506,6 +521,7 @@
     it = Grazie per aver utilizzato MAPS.ME! Ti piace l’app? Dillo ai tuoi amici! Questo è il miglior segno di gratitudine.
     ja = MAPS.MEをご利用いただきありがとうございます! このアプリが好きですか? お友達にも教えてあげてください! アプリを広めていただければ大変嬉しく思います。
     ko = MAPS.ME를 사용해 주셔서 감사합니다! 앱을 좋아하십니까? 이 앱에 대해 친구들에게 널리 알려 주십시오! 그러면 저희는 매우 감사할 것입니다.
+    lt = Dėkojame, kad naudojate MAPS.ME! Ar jums patiko programa? Praneškite savo draugams apie tai! Tai yra didžiausia padėka, kurią jūs mums galite duoti.
     nb = Tusen takk for at du bruker MAPS.ME! Liker du appen? Fortell vennene dine om den! Det er den beste takken vi kan få.
     pl = Dziękujemy za korzystanie z MAPS.ME! Czy podoba Ci się nasza aplikacja? Opowiedz o niej swoim znajomym! W taki sposób najlepiej nam podziękujesz.
     pt = Obrigado por usar MAPS.ME! Gosta do aplicativo? Conte para seus amigos! Será a melhor forma de nos agradecer.
@@ -558,6 +574,7 @@
     it = Chilometri
     ja = キロメートル
     ko = 킬로미터
+    lt = Kilometrai
     nb = Kilometer
     pl = Kilometry
     pt = Quilómetros
@@ -591,6 +608,7 @@
     it = Lascia una recensione
     ja = 評価する
     ko = 평 남기기
+    lt = Palikite atsiliepimą
     nb = Legg inn en vurdering
     pl = Napisz recenzję
     pt = Deixe uma revisão
@@ -624,6 +642,7 @@
     it = Mappe
     ja = マップ
     ko = 지도
+    lt = Žemėlapiai
     nb = Kart
     pl = Mapy
     pt = Mapas
@@ -657,6 +676,7 @@
     it = Mappe:
     ja = マップ：
     ko = 지도:
+    lt = Žemėlapiai:
     nb = Kart:
     pl = Mapy:
     pt = Mapas:
@@ -690,6 +710,7 @@
     it = Contrassegnato per il download, tocca per cancellare
     ja = ダウンロードを開始します。キャンセルするには画面をタッチしてください。
     ko = 다운로드로 표시하였습니다. 두드려 취소하십시요.
+    lt = Pažymėtas atsisiųsti, palieskite norėdami atšaukti
     nb = Merket for nedlasting – trykk for å avbryte
     pl = Oznaczono do pobrania. Proszę nacisnąć, aby anulować
     pt = Marcado para descarga, toque para cancelar
@@ -749,6 +770,7 @@
     it = Miglia
     ja = マイル
     ko = 마일
+    lt = Mylios
     nb = Miles
     pl = Mile
     pt = Milhas
@@ -782,6 +804,7 @@
     it = La mia posizione
     ja = 現在地
     ko = 나의 위치
+    lt = Mano padėtis
     nb = Min posisjon
     pl = Moje położenie
     pt = A minha posição
@@ -807,6 +830,7 @@
     de = OK
     id = OK
     ko = 승인
+    lt = Gerai
     nb = OK
     ro = OK
     sv = OK
@@ -834,6 +858,7 @@
     it = Cortesemente libera spazio sul tuo dispositivo prima per poter scaricare %@
     ja = %@をダウンロードするため、デバイスの空き容量を確認してください
     ko = 먼저 귀하의 장치에 어느 정도의 공간을 확보하여 %@를 다운로드하여 주십시요.
+    lt = Pirmiausia atlaisvinkite laisvos vietos savo prietaise, norint atsisiųsti %@
     nb = Frigjør plass på enheten først for å laste ned %@
     pl = Aby pobrać %@, musisz najpierw zwolnić nieco miejsca na swoim urządzeniu.
     pt = Por favor liberte primeiro algum espaço no seu dispositivo para descarregar %@
@@ -867,6 +892,7 @@
     it = Ricordamelo in seguito
     ja = 後で通知
     ko = 이후에 기억시키기
+    lt = Priminkite man vėliau
     nb = Minn meg på det senere
     pl = Przypomnij później
     pt = Lembrar-me mais tarde
@@ -899,6 +925,7 @@
     it = Più tardi
     ja = 次の機会に
     ko = 후
+    lt = Vėliau
     nb = Senere
     pl = Później
     pt = Mais tarde
@@ -932,6 +959,7 @@
     it = Mai
     ja = 今後表示しない
     ko = 거절
+    lt = Niekada
     nb = Aldri
     pl = Nigdy
     pt = Nunca
@@ -963,6 +991,7 @@
     it = Segnala un problema
     ja = 問題を報告
     ko = 문제 보고하기
+    lt = Pranešti apie problemą
     nb = Rapporter et problem
     pl = Zgłoś błąd
     pt = Relatar um problema
@@ -995,6 +1024,7 @@
     it = Cerca
     ja = 検索
     ko = 검색하기
+    lt = Ieškoti
     nb = Søk
     pl = Wyszukaj
     pt = Procura
@@ -1027,6 +1057,7 @@
     it = Ricerca Mappa
     ja = マップを検索
     ko = 지도 검색하기
+    lt = Ieškoti žemėlapyje
     nb = Søk kart
     pl = Wyszukaj mapy
     pt = Procurar mapa
@@ -1060,6 +1091,7 @@
     it = Tocca per scaricare
     ja = タッチしてダウンロード
     ko = 두드려 다운로드하세요
+    lt = Palieskite atsisiuntimui
     nb = Trykk for å laste ned
     pl = Proszę nacisnąć, aby pobrać.
     pt = Toque para descarregar
@@ -1092,6 +1124,7 @@
     it = Sì
     ja = はい
     ko = 네
+    lt = Taip
     nb = Ja
     pl = Tak
     pt = Sim
@@ -1126,6 +1159,7 @@
     it = Ti consigliamo di utilizzare il WiFi per scaricare mappe di grandi dimensioni
     ja = 大きなマップをダウンロードする際はWiFiの使用をおすすめします。
     ko = WiFi를 이용하여 큰 지도를 다운로드하는 것을 권하여 드립니다.
+    lt = Rekomenduojame naudoti Wi-Fi atsisiųsti dideliems žemėlapiams
     nb = Vi anbefaler å bruke WiFi når du skal laste ned store kart
     pl = Zaleca się korzystanie z WiFi przy pobieraniu dużych map
     pt = Recomendamos a utilização de WiFi para descarregar grandes mapas
@@ -1158,6 +1192,7 @@
     it = Quale sistema di misura preferisci?
     ja = どちらの距離単位を使いますか？
     ko = 어느 측정 시스템을 선호하십니까?
+    lt = Kuri matavimo sistema jums labiau patinka?
     nb = Hvilket målesystem foretrekker du?
     pl = Który system miar jest najbardziej dogodny?
     pt = Que sistema de medidas prefere?
@@ -1190,6 +1225,7 @@
     it = Attualmente hai disattivati tutti i servizi di locazione per questo dispositivo o applicazione. Cortesemente abilitali nelle Impostazioni.
     ja = 端末の位置情報サービスが無効になっているか、このアプリケーションからの位置情報利用が制限されています。端末の設定を有効化してください。
     ko = 현재 이 장치나 애플리케이션을 위한 전 위치 서비스를 불능시키셨습니다. 설정에서 이를 작동시켜 주시기 바랍니다.
+    lt = Šiuo metu visos Vietos nustatymo paslaugos šiame prietaise arba programos išjungtos. Įjunkite jas Parametruose.
     nb = Du har for øyeblikket deaktivert alle posisjonstjenester for denne enheten eller applikasjonen. Slå dem på i «Innstillinger».
     pl = Usługi lokalizacji są aktualnie wyłączone dla tego urządzenia lub aplikacji. Proszę włączyć je w ustawieniach.
     pt = Atualmente tem todos os Serviços de Localização para este dispositivo ou aplicação desativados. Por favor ative-os nas Definições.
@@ -1223,6 +1259,7 @@
     it = Il tuo dispositivo non supporta i servizi di localizzazione
     ja = ご使用中の端末は位置情報サービスをサポートしていません。
     ko = 귀하의장치가 위치 서비스를 지원하지 않습니다.
+    lt = Jūsų įrenginys nepalaiko Vietos paslaugos
     nb = Enheten din støtter ikke posisjonstjenester
     pl = Urządzenie nie obsługuje usług lokalizacji
     pt = Os Serviços de Localização não estão disponíveis em seu dispositivo
@@ -1255,6 +1292,7 @@
     it = Mostra sulla mappa
     ja = 地図に表示
     ko = 지도에 표시
+    lt = Rodyti žemėlapyje
     nb = Vis på kartet
     pl = Wyświetl na mapie
     pt = Mostrar no mapa
@@ -1287,6 +1325,7 @@
     it = ^\naggiunto alla coda di download
     ja = ^\nをダウンロードキューに追加しました
     ko = ^\n는 다운로드 대기열에추가됩니다
+    lt = ^\n įtraukta į atsiuntimo eilę.
     nb = ^\ner lagt til i nedlastingskøen.
     pl = ^\ndodano do kolejki pobierania
     pt = ^\né adicionado à fila de descargas
@@ -1320,6 +1359,7 @@
     it = Sto scaricando\n^\n^
     ja = ^\n^\nをダウンロード中
     ko = 다운로드 중\n^\n^
+    lt = Siunčiama\n^\n^
     nb = Laster ned\n^\n^
     pl = Pobieranie\n^\n^
     pt = A descarregar\n^\n^
@@ -1353,6 +1393,7 @@
     it = Scarica Map\n(^ ^)
     ja = 地図をダウンロード\n(^ ^)
     ko = 지도 다운로드\n(^ ^)
+    lt = Atsisiųsti žemėlapį\n(^ ^)
     nb = Last ned kart\n(^ ^)
     pl = Pobierz mapę\n(^ ^)
     pt = Descarregar Mapa\n(^ ^)
@@ -1386,6 +1427,7 @@
     it = Scarica Map
     ja = 地図をダウンロード
     ko = 지도 다운로드
+    lt = Atsisiųsti žemėlapį
     nb = Last ned kart
     pl = Pobierz mapę
     pt = Descarregar Mapa
@@ -1419,6 +1461,7 @@
     it = Scarica mappa\nsenza percorsi (^ ^)
     ja = ルートなしで地図をダウンロード\n(^ ^)
     ko = 라우팅없이 지도 다운로드\n(^ ^)
+    lt = Atsisiųsti žemėlapį\nbe maršruto (^ ^)
     nb = Last ned kart\nuten veiviserfunksjon (^ ^)
     pl = Pobierz mapę bez\noznaczania tras (^ ^)
     pt = Baixar mapa\nsem roteamento (^ ^)
@@ -1452,6 +1495,7 @@
     it = Lo scaricamento è fallito
     ja = のダウンロードに失敗しました
     ko = 다운로드에 실패하였습니다
+    lt = Atsisiųsti nepavyko
     nb = Laster ned mislyktes
     pl = Nie udało się pobrać
     pt = A descarga falhou
@@ -1485,6 +1529,7 @@
     it = Riprova
     ja = 再実行
     ko = 다시 시도
+    lt = Bandyti dar kartą
     nb = Prøv på nytt
     pl = Spróbuj ponownie
     pt = Tente de novo
@@ -1521,6 +1566,7 @@
     it = Informazioni su MAPS.ME
     ja = MAPS.MEについて
     ko = 소개
+    lt = Apie MAPS.ME
     nb = Om MAPS.ME
     pl = O aplikacji MAPS.ME
     pt = Sobre o MAPS.ME
@@ -1553,6 +1599,7 @@
     it = Download di %d%%, tocca per cancellare
     ja = %d%%をダウンロード中です。キャンセルするには画面をタッチしてください。
     ko = %d%%를 다운로드 중, 두드려 취소하십시요
+    lt = Atsiunčiama %d%%, palieskite atšaukimui
     nb = Laster ned %d%% – trykk for å avbryte
     pl = Pobieranie %d%%. Proszę nacisnąć, aby anulować.
     pt = A descarregar %d%%, toque para cancelar
@@ -1584,6 +1631,7 @@
     it = Scaricato (%@), tocca per cancellare
     ja = (%@)をダウンロードしました。削除するには画面をタッチしてください。
     ko = (%@)가 다운로드 되었습니다, 두드려 삭제하십시요.
+    lt = Atsiųsta (%@), palieskite ištrinimui
     nb = Lastet ned (%@) – trykk for å slette
     pl = Pobrano (%@). Proszę nacisnąć, aby usunąć.
     pt = (%@) descarregados, toque para eliminar
@@ -1615,6 +1663,7 @@
     it = Impostazioni di connessione
     ja = 接続設定
     ko = 연결 설정
+    lt = Ryšio parametrai
     nb = Tilkoblingsinnstillinger
     pl = Ustawienia połączenia
     pt = Definições de Ligação
@@ -1647,6 +1696,7 @@
     it = Scarica %@
     ja = %@をダウンロード
     ko = %@ 다운로드하기
+    lt = Atsiųsti %@
     nb = Last ned %@
     pl = Pobierz %@
     pt = Descarga %@
@@ -1678,6 +1728,7 @@
     it = Chiudi
     ja = 閉じる
     ko = 닫기
+    lt = Užverti
     nb = Lukk
     pl = Zamknij
     pt = Fechar
@@ -1710,6 +1761,7 @@
     it = È necessaria una accelerazione hardware OpenGL. Purtroppo, il tuo dispositivo non è supportato.
     ja = ハードウェアアクセラレーションされたOpenGLが必要です。残念ながらご利用中のデバイスではサポートされていません。
     ko = 하드웨어 촉진 OpenGL이 요구됩니다. 애석하게도 귀하의 장치는 지원되지 않습니다.
+    lt = Programa reikalauja aparatūros spartinimo OpenGL. Deja, jūsų prietaisas nepalaiko.
     nb = En maskinvareakselerert OpenGL kreves. Dessverre støttes ikke enheten din.
     pl = Wymagana jest sprzętowa akceleracja OpenGL. Aktualne urządzenie nie jest obsługiwane.
     pt = É necessário OpenGL acelerado por hardware. Infelizmente o seu dispositivo não é compatível.
@@ -1742,6 +1794,7 @@
     it = Carica
     ja = ダウンロード
     ko = 다운로드
+    lt = Atsiųsti
     nb = Last ned
     pl = Pobierz
     pt = Descarga
@@ -1774,6 +1827,7 @@
     it = La scheda/USB/di memoria SD con le mappe scaricate non è disponibile
     ja = マップをダウンロードしたSDカード/USBストレージへ接続できません
     ko = 다운로드된지도와 SD 카드 / USB 저장 장치를 사용할 수 없습니다
+    lt = SD kortelėje/USB atmintyje atsiųstų žemėlapių nėra.
     nb = SD-kort/USB-enhet med nedlastede kart er ikke tilgjengelig
     pl = Karta SD/Pamięć USB z pobranymi mapami nie jest dostępna
     pt = Não está disponível um cartão SD/armazenamento USB com os mapas descarregados
@@ -1805,6 +1859,7 @@
     it = Coortesemente scollega il cavo USB oppure inserisci la scheda di memoria per l'usco dell'app
     ja = MAPS.MEを利用するにはUSBケーブルを抜くかメモリーカードを挿入してください
     ko = MAPS.ME를 사용하려면 USB 케이블이나 삽입 메모리 카드를 분리하십시오
+    lt = Prašome atjunkti USB kabelį arba įdėti atminties kortelę norint naudoti MAPS.ME
     nb = Koble fra USB-kabelen eller sett inn minnekortet for å bruke MAPS.ME
     pl = Proszę odłączyć kabel USB albo włożyć kartę pamięci, aby korzystać z MAPS.ME
     pt = Por favor desligue o cabo USB ou introduza um cartão de memória para utilizar MAPS.ME
@@ -1837,6 +1892,7 @@
     it = Libera prima dello spazio sulla scheda Sd/ memoria USB per usare l'app
     ja = アプリを起動するにはSDカード/USBストレージの空き容量を確保する必要があります
     ko = 응용 프로그램을 사용하기 위해서는 첫째 SD 카드 / USB 저장 장치에 여유 공간을 확보하십시오
+    lt = Pirmiausia atlaisvinkite vietos SD kortelėje/USB atmintyje siekiant naudoti programą
     nb = Frigjør plass på SD-kortet/USB-enheten først for å bruke appen
     pl = Proszę zwolnić trochę pamięci na karcie SD/pamięci USB, aby korzystać z aplikacji
     pt = Por favor liberte primeiro algum espaço no cartão SD/armazenamento USB para utilizar a app
@@ -1869,6 +1925,7 @@
     it = Memoria insufficiente per lanciare l'app
     ja = メモリ不足のためアプリを起動できません
     ko = 응용 프로그램을 실행하기위한 메모리가 충분하지 않다
+    lt = Nepakanka atminties norint paleisti programą
     nb = Ikke nok minne til å starte appen
     pl = Za mało pamięci, aby uruchomić aplikację
     pt = Não há memória suficiente para executar a app
@@ -1901,6 +1958,7 @@
     it = Libera %1$@ sul dispositivo prima per poter scaricare %2$@
     ja = %2$@をダウンロードするにはデバイスに%1$@の空き容量が必要です
     ko = %2$@를 다운로드하기 위해서는 먼저 장치에서 무료로 %1$@를주세요
+    lt = Pirmiausia atlaisvinkite %1$@ savo prietaise norėdami atsisiųsti %2$@
     nb = Frigjør %1$@ på enheten først for å laste ned %2$@
     pl = Proszę zwolnić %1$@ na urządzeniu, aby pobrać %2$@
     pt = Por favor liberte primeiro %1$@ no seu dispositivo para descarregar %2$@
@@ -1932,6 +1990,7 @@
     it = Prima di iniziare è necessario scaricare la mappa generale del mondo sul tuo dispositivo.\nLa dimensione del download è di %@.
     ja = 利用を開始する前におおまかな世界地図をダウンロードします。これには%@の空き容量が必要です。
     ko = 시작하시기 전에 일반 세계 지도를 귀하의 장치로 다운로드하겠습니다.\n%@ 데이터가 필요합니다.
+    lt = Prieš pradėdami naudoti programą, leiskite atsiųsti pasaulio žemėlapį į savo prietaisą.\nTai užims %@ vietos.
     nb = Før du begynner, la oss laste ned det generelle verdenskartet til enheten. Det trengs %@ med data.
     pl = Przed rozpoczęciem prosimy o pobranie ogólnej mapy świata na urządzenie.\nWymaga to %@ danych.
     pt = Antes de começar, permita-nos que descarreguemos um mapa mundial geral para o seu dispositivo.\nÉ necessário %@ de dados.
@@ -1964,6 +2023,7 @@
     it = Ottieni la posizione corrente
     ja = 現在地を取得中
     ko = 현재 위치 얻기
+    lt = Gauti dabartinę padėtį
     nb = Henter nåværende posisjon
     pl = Określanie aktualnego położenia
     pt = A obter a posição atual
@@ -1996,6 +2056,7 @@
     it = Vai alla mappa
     ja = マップを表示
     ko = 지도로 이동
+    lt = Eiti į žemėlapį
     nb = Gå til kart
     pl = Przejdź do mapy
     pt = Ir para o mapa
@@ -2028,6 +2089,7 @@
     it = Sto scaricando %@. Puoi ora\nprocedere con la mappa.
     ja = %@をダウンロードしました\nマップを表示可能です
     ko = %@다운로드. 이제지도를 진행할 수 있습니다.
+    lt = Atsisiųsta %@. Dabar galite\npereiti prie žemėlapio.
     nb = Laster ned %@. Du kan nå\nfortsette til kartet.
     pl = Pobieranie %@. Można teraz\nprzejść do mapy.
     pt = A descarregar %@. Pode agora\ncontinuar para o mapa.
@@ -2060,6 +2122,7 @@
     it = Vuoi scaricare %@?
     ja = %@をダウンロードしますか？
     ko = %@다운로드?
+    lt = Atsisiųsti %@?
     nb = Vil du laste ned %@?
     pl = Pobrać %@?
     pt = Descarregar %@?
@@ -2092,6 +2155,7 @@
     it = Vuoi aggiornare %@?
     ja = %@を更新しますか？
     ko = %@업데이트?
+    lt = Atnaujinti %@?
     nb = Vil du oppdatere %@?
     pl = Uaktualnić %@?
     pt = Atualizar %@?
@@ -2125,6 +2189,7 @@
     it = Puoi scaricare la mappa\ndella tua posizione corrente.
     ja = 現在地のマップを\nダウンロードできます
     ko = 당신의 현재 위치의지도를 다운로드할 수 있습니다.
+    lt = Galite atsisiųsti žemėlapį\nsavo dabartinėje būvimo vietoje.
     nb = Du kan laste ned kartet\nfor din nåværende posisjon.
     pl = Można pobrać mapę terenu\nwokół bieżącego położenia.
     pt = Pode descarregar o mapa\nda sua posição atual.
@@ -2158,6 +2223,7 @@
     it = Puoi aggiornare la mappa\ndella tua posizione corrente.
     ja = 現在地のマップを\n更新できます
     ko = 귀하의 현재 위치의지도를 업데이트할 수 있습니다.
+    lt = Galite atnaujinti žemėlapį\nsavo dabartinėje būvimo vietoje.
     nb = Du kan oppdatere kartet\nfor din nåværende posisjon.
     pl = Można uaktualnić mapę terenu\nwokół bieżącego położenia.
     pt = Pode atualizar o mapa\nda sua posição atual.
@@ -2191,6 +2257,7 @@
     it = La mappa della tua attuale\nposizione (%@) è aggiornata
     ja = 現在地のマップは\n最新です (%@)
     ko = 현재 위치 (%@)\n에서지도는 최신이다
+    lt = Jūsų dabartinės vietos\nžemėlapis (%@) yra naujausias.
     nb = Kartet for din nåværende\nposisjon (%@) er oppdatert
     pl = Mapa wokół bieżącego\npołożenia (%@) jest aktualna
     pt = O mapa da sua localização\natual (%@) está atualizado
@@ -2224,6 +2291,7 @@
     it = Pausa
     ja = 一時停止
     ko = 중지
+    lt = Pristabdyti
     nb = Pause
     pl = Wstrzymaj
     pt = Pausa
@@ -2257,6 +2325,7 @@
     it = Continua
     ja = 続行
     ko = 계속
+    lt = Tęsti
     nb = Fortsett
     pl = Kontynuuj
     pt = Continuar
@@ -2289,6 +2358,7 @@
     it = Scaricato (%@), tocca per aggiornare o cancellare
     ja = (%@)をダウンロードしました。タップして更新、削除できます
     ko = 다운로드 (%@), 터치를 업데이 트하거나 삭제하는 방법
+    lt = Atsiųsta (%@), palieskite atnaujinimui ar ištrinimui
     nb = Lastet ned (%@) – trykk for å oppdatere eller slette
     pl = Pobrano (%@). Proszę nacisnąć, aby uaktualnić lub usunąć.
     pt = (%@) descarregados, toque para atualizar ou eliminar
@@ -2320,6 +2390,7 @@
     it = Aggiorna %@
     ja = %@を更新
     ko = %@업데이트
+    lt = Atnaujinti %@
     nb = Oppdater %@
     pl = Aktualizacja %@
     pt = Atualizar %@
@@ -2353,6 +2424,7 @@
     it = Hai bisogno di mappe aggiornate per la funzione di ricerca:
     ja = 検索機能を利用するにはマップを更新する必要があります
     ko = 당신은 검색 기능에 대한 업데이트된지도 필요
+    lt = Jums reikia atnaujinti paieškos funkcija žemėlapiams:
     nb = Du trenger oppdaterte kart for søkefunksjonen:
     pl = Aby korzystać z funkcji wyszukiwania, należy posiadać aktualne mapy:
     pt = Precisa de mapas atualizados para a função de procura:
@@ -2386,6 +2458,7 @@
     it = Aggiornamento disponibile per queste mappe:
     ja = 以下のマップが更新されています:
     ko = 이지도에 사용할 수있는 업데이트:
+    lt = Atnaujinimas galimas šiems žemėlapiams:
     nb = Oppdatering tilgjengelig for disse kartene:
     pl = Dostępne uaktualnienia dla tych map:
     pt = Atualização disponível para estes mapas:
@@ -2420,6 +2493,7 @@
     it = Non hai più bisogno di MAPS.ME Lite, quindi puoi disinstallarlo.
     ja = MAPS.ME Liteは削除してもかまいません
     ko = 당신은 더 이상 MAPS.ME 라이트는 필요 없어, 당신은 그것을 제거할 수 있습니다.
+    lt = Jums daugiau nereikalingas MAPS.ME Lite, todėl jį galite išdiegti.
     nb = Du trenger ikke MAPS.ME Lite lenger, så du kan gjerne avinstallere det.
     pl = Nie potrzeba już więcej MAPS.ME Lite, więc można je usunąć.
     pt = Não precisa mais do MAPS.ME Lite, podendo portanto desinstalá-la.
@@ -2454,6 +2528,7 @@
     it = Scaricato %@ con successo
     ja = %@のダウンロードが成功しました
     ko = %@이 성공적으로 다운로드
+    lt = %@ atsiųsta sėkmingai
     nb = %@ ble lastet ned
     pl = Pobrano %@
     pt = %@ descarregados com sucesso
@@ -2487,6 +2562,7 @@
     it = Il trasferimento di %@ non è riuscito
     ja = %@のダウンロードが失敗しました
     ko = %@다운로드가 실패했습니다
+    lt = %@ atsisiųsti nepavyko
     nb = Nedlasting av %@ mislyktes
     pl = Nie udało się pobrać %@
     pt = %@ descarga falhou
@@ -2521,6 +2597,7 @@
     it = Aggiungi un nuovo Set
     ja = 新しいセットを作成
     ko = 새로운 세트 추가
+    lt = Įtraukti naują grupę
     nb = Legg til nytt sett
     pl = Dodaj nowy zestaw
     pt = Adicionar novo conjunto
@@ -2555,6 +2632,7 @@
     it = Aggiungi al Segnalibri
     ja = ブックマークに追加
     ko = 즐겨찾기에 추가
+    lt = Įtraukti į adresyną
     nb = Legg til i bokmerker
     pl = Dodaj zakładkę
     pt = Adicionar aos Favoritos
@@ -2589,6 +2667,7 @@
     it = Colore del Segnalibro
     ja = ブックマーク表示色
     ko = 색상 즐겨찾기에 추가
+    lt = Adresyno spalva
     nb = Bokmerk farge
     pl = Kolor zakładki
     pt = Cor de favoritos
@@ -2623,6 +2702,7 @@
     it = Seleziona un nome del segnalibro
     ja = ブックマークセット名称
     ko = 집합 이름을 즐겨찾기에 추가
+    lt = Adresyno grupės pavadinimas
     nb = Bokmerk settnavn
     pl = Nazwa zestawu zakładek
     pt = Nome do conjunto dos favoritos
@@ -2657,6 +2737,7 @@
     it = Seleziona un segnalibro
     ja = ブックマークセット
     ko = 세트를 즐겨찾기에 추가
+    lt = Adresyno grupės
     nb = Bokmerk sett
     pl = Zestawy zakładek
     pt = Conjuntos de favoritos
@@ -2691,6 +2772,7 @@
     it = Segnalibri
     ja = ブックマーク
     ko = 북마크
+    lt = Adresynas
     nb = Bokmerker
     pl = Zakładki
     pt = Favoritos
@@ -2726,6 +2808,7 @@
     it = Colore
     ja = 表示色
     ko = 색깔
+    lt = Spalva
     nb = Farge
     pl = Kolor
     pt = Cor
@@ -2758,6 +2841,7 @@
     it = I miei luoghi
     ja = マイロケーション
     ko = 내 장소
+    lt = Mano vietos
     nb = Mine steder
     pl = Moje miejsca
     pt = Os meus locais
@@ -2791,6 +2875,7 @@
     id = Nama
     ja = 名称
     ko = 이름
+    lt = Pavadinimas
     nb = Navn
     pl = Nazwa
     pt = Nome
@@ -2826,6 +2911,7 @@
     it = Indirizzo
     ja = 住所
     ko = 주소
+    lt = Adresas
     nb = Adresse
     pl = Adres
     pt = Endereço
@@ -2860,6 +2946,7 @@
     it = Rimuovi il Pin
     ja = ピンを削除
     ko = 핀 제거
+    lt = Pašalinti Pin
     nb = Fjern merke
     pl = Usuń znacznik
     pt = Retirar o marcador
@@ -2893,6 +2980,7 @@
     it = Seleziona
     ja = セット
     ko = 집합
+    lt = Grupė
     nb = Sett
     pl = Zestaw
     pt = Conjunto
@@ -2927,6 +3015,7 @@
     it = Non hai ancora nessun segnalibro.\nTocca qualsiasi luogo sulla cartina per aggiungere un segnalibro.\nPossono essere anche importati Preferiti da altre fonti e visualizzate nell'app MAPS.ME. Apri il file KML/KMZ con i pin salvati da una casella di posta, Dropbox o un link web.
     ja = 未だブックマークがありません。\nマップ上をタップすればブックマークを追加できます。\nMAPS.ME以外のアプリで作成したブックマークの表示も可能です。KML/KMZ形式のピン情報をメールやDropbox、URLから取得してください。
     ko = 즐겨찾기가 없습니다.\n즐겨찾기를 추가하도록 지도에 어떤 장소를 누릅니다.\n다른 소스에서 북마크는 MAPS.ME 앱에서 가져와서 표시할 수 있습니다. 메일, 드롭박스 또는 웹링크에서 저장한 핀으로 KML/KMZ 파일을 열 수 있습니다.
+    lt = Jūs dar neturite adresyno.\nBakstelėkite bet kurioje vietoje ant žemėlapio norėdami pridėti žymę į adresyną.\nAdresynai iš kitų šaltinių taip pat gali būti importuojami ir rodomi programoje MAPS.ME. Atverkite KML/KMZ faila su išsaugotu adresynu iš el. pašto, Dropbox ar interneto nuorodos.
     nb = Du har ingen bokmerker enda.\nTrykk på et hvilket som helst sted på kartet for å legge til et bokmerke.\nBokmerker fra andre kilder kan også importeres og vises i MAPS.ME. Åpne KML-/KMZ-filer med lagrede bokmerker fra e-post, Dropbox eller internettkobling.
     pl = Nie oznaczono jeszcze żadnych zakładek.\nProszę dotknąć dowolnego miejsca na mapie, aby dodać zakładkę.\nMożna importować i wyświetlać zakładki z innych zasobów. Program otwiera pliki KML/KMZ z zapisanymi zakładkami, pochodzące z wiadomości email, Dropboxa lub odnośników internetowych.
     pt = Ainda não tem marcadores.\nToque em qualquer lugar no mapa para adicionar um marcador.\nOs marcadores de outras fontes também podem ser importados e exibidos na aplicação MAPS.ME. Abrir ficheiro KML/KMZ com pinos guardados a partir do mail, Dropbox ou ligação web.
@@ -2961,6 +3050,7 @@
     it = Possono essere anche importati Preferiti da altre fonti e visualizzate nell'app MAPS.ME. Apri il file KML/KMZ con i pin salvati da una casella di posta, Dropbox o un link web.
     ja = MAPS.ME以外のアプリで作成したブックマークの表示も可能です。KML/KMZ形式のピン情報をメールやDropbox、URLから取得してください。
     ko = 다른 소스에서 북마크는 MAPS.ME 앱에서 가져와서 표시할 수 있습니다. 메일, 드롭박스 또는 웹링크에서 저장한 핀으로 KML/KMZ 파일을 열 수 있습니다.
+    lt = Adresynai iš kitų šaltinių taip pat gali būti importuojami ir rodomi programoje MAPS.ME. Atverkite KML/KMZ faila su išsaugotu adresynu iš el. pašto, Dropbox ar interneto nuorodos.
     nb = Bokmerker fra andre kilder kan også importeres og vises i MAPS.ME. Åpne KML-/KMZ-filer med lagrede bokmerker fra e-post, Dropbox eller internettkobling.
     pl = Można importować i wyświetlać zakładki z innych zasobów. Program otwiera pliki KML/KMZ z zapisanymi zakładkami, pochodzące z wiadomości email, Dropboxa lub odnośników internetowych.
     pt = Os marcadores de outras fontes podem ser importados e exibidos na aplicação MAPS.ME. Abrir ficheiro KML/KMZ com pinos guardados a partir do mail, Dropbox ou ligação web.
@@ -2995,6 +3085,7 @@
     it = Impostazioni
     ja = 設定
     ko = 설정
+    lt = Parametrai
     nb = Innstillinger
     pl = Ustawienia
     pt = Configurações
@@ -3029,6 +3120,7 @@
     it = Cartella mappe
     ja = マップ保存先
     ko = 지도 저장소
+    lt = Žemėlapių saugojimas
     nb = Kartlagring
     pl = Pamięć map
     pt = Armazenamento dos mapas
@@ -3063,6 +3155,7 @@
     it = Seleziona il luogo in cui le mappe devono essere scaricate
     ja = マップのダウンロード先を選択してください
     ko = 지도가 다운로드될 곳을 선택합니다
+    lt = Pasirinkite vietą, kurioje turi būti atsisiųsti žemėlapiai
     nb = Velg hvor du vil at kartene skal lastes ned til
     pl = Określa położenie przechowywania pobranych map
     pt = Selecione o local para onde os mapas devem ser descarregados
@@ -3097,6 +3190,7 @@
     it = Vuoi spostare le mappe?
     ja = マップを移動させますか？
     ko = 지도를 이동합니까?
+    lt = Perkelti žemėlapius?
     nb = Flytt kart?
     pl = Przenieść mapy?
     pt = Mover mapas?
@@ -3131,6 +3225,7 @@
     it = Questo può richiedere diversi minuti.\ncortesemente attendi…
     ja = 数分かかる場合があります。\nしばらくお待ち下さい…
     ko = 이 작업은 수 분 소요될 수 있습니다.\n잠시 기다리세요…
+    lt = Tai gali užtrukti keletą minučių.\nPrašome palaukti…
     nb = Dette kan ta flere minutter. Vent et øyeblikk …
     pl = To może zająć kilka minut.\nProszę czekać…
     pt = Isto pode demorar alguns minutos.\nPor favor aguarde…
@@ -3165,6 +3260,7 @@
     it = Visibile
     ja = マップに表示
     ko = 눈에 보이는
+    lt = Matomi
     nb = Synlig
     pl = Widoczne
     pt = Visível
@@ -3198,6 +3294,7 @@
     it = Il GPS è disabilitato. Cortesemente abilitalo nelle Impostazioni.
     ja = GPS機能が無効です。端末の設定画面から有効にしてください。
     ko = GPS가 사용 중지되었습니다. 설정에서 이를 작동시켜 주시기 바랍니다.
+    lt = GPS yra išjungtas. Prašome įjungti jį parametruose.
     nb = GPS er deaktivert. Dette kan aktiveres i «Innstillinger».
     pl = GPS jest wyłączony. Proszę włączyć go w ustawieniach.
     pt = O GPS está desativado. Por favor ative-o nas Definições.
@@ -3231,6 +3328,7 @@
     it = Unità di misura
     ja = 距離計測単位
     ko = 측정 단위
+    lt = Matavimo vienetai
     nb = Måleenheter
     pl = Jednostki miary
     pt = Unidades de medida
@@ -3266,6 +3364,7 @@
     it = Scegli tra miglia e chilometri
     ja = マイルまたはキロメートルを選択
     ko = 마일과 킬로미터 중에서 선택하십시오
+    lt = Pasirinkite tarp mylių ir kilometrų
     nb = Velg mellom miles og kilometer
     pl = Wybiera pomiędzy milami, a kilometrami
     pt = Escolha entre milhas e quilómetros
@@ -3298,6 +3397,7 @@
     it = Ovunque
     ja = 全マップから検索
     ko = 모든 곳
+    lt = Visur
     pl = Wszędzie
     pt = Em toda a parte
     pt-BR = Em todos os locais
@@ -3326,6 +3426,7 @@
     it = Vicino a me
     ja = 現在地周辺
     ko = 근처 검색
+    lt = Šalia manęs
     pl = W pobliżu mnie
     pt = Perto de mim
     pt-BR = Perto de mim
@@ -3354,6 +3455,7 @@
     it = Nella schermata
     ja = マップ表示範囲
     ko = 화면에
+    lt = Ekrane
     pl = Na ekranie
     pt = No ecrã
     pt-BR = Na tela
@@ -3384,6 +3486,7 @@
     it = Cibo
     ja = 飲食
     ko = 음식
+    lt = Maistas
     nb = Mat
     pl = Jedzenie
     pt = Alimentação
@@ -3418,6 +3521,7 @@
     it = Transporto
     ja = 交通機関
     ko = 수송
+    lt = Transportas
     nb = Transport
     pl = Transport
     pt = Transporte
@@ -3453,6 +3557,7 @@
     it = Stazione di rifornimento
     ja = ガソリンスタンド
     ko = 연료
+    lt = Degalai
     nb = Drivstoff
     pl = Stacja benzynowa
     pt = Combustível
@@ -3487,6 +3592,7 @@
     it = Parcheggio
     ja = 駐車場
     ko = 주차
+    lt = Stovėjimo aikštelė
     nb = Parkering
     pl = Parking
     pt = Estacionamento
@@ -3521,6 +3627,7 @@
     it = Negozio
     ja = 買い物
     ko = 쇼핑
+    lt = Parduotuvė
     nb = Butikk
     pl = Sklep
     pt = Compras
@@ -3556,6 +3663,7 @@
     it = Hôtel
     ja = ホテル
     ko = 호텔
+    lt = Viešbutis
     nb = Hotell
     pl = Hotel
     pt = Hotel
@@ -3590,6 +3698,7 @@
     it = Turistico
     ja = 観光
     ko = 관광
+    lt = Žymios vietos
     nb = Severdigheter
     pl = Atrakcje turystyczne
     pt = Vistas
@@ -3624,6 +3733,7 @@
     it = Divertimento
     ja = エンターテイメント
     ko = 엔터테인먼트
+    lt = Pramogos
     nb = Underholdning
     pl = Rozrywka
     pt = Entretenimento
@@ -3658,6 +3768,7 @@
     it = Bancomat
     ja = ATM
     ko = ATM
+    lt = Bankomatas
     nb = Minibank
     pl = Bankomat
     pt = Multibanco
@@ -3692,6 +3803,7 @@
     it = Banca
     ja = 銀行
     ko = 은행
+    lt = Bankas
     nb = Bank
     pl = Bank
     pt = Banco
@@ -3726,6 +3838,7 @@
     it = Farmacia
     ja = 薬局
     ko = 약국
+    lt = Vaistinė
     nb = Apotek
     pl = Apteka
     pt = Farmácia
@@ -3760,6 +3873,7 @@
     it = Ospedale
     ja = 病院
     ko = 병원
+    lt = Ligoninė
     nb = Sykehus
     pl = Szpital
     pt = Hospital
@@ -3795,6 +3909,7 @@
     it = Toilette
     ja = トイレ
     ko = 화장실
+    lt = Tualetas
     nb = Toalett
     pl = Toaleta
     pt = WC
@@ -3829,6 +3944,7 @@
     it = Posta
     ja = 郵便局
     ko = 우편
+    lt = Paštas
     nb = Post
     pl = Poczta
     pt = Correios
@@ -3863,6 +3979,7 @@
     it = Polizia
     ja = 警察
     ko = 치안대
+    lt = Policija
     nb = Politi
     pl = Policja
     pt = Polícia
@@ -3897,6 +4014,7 @@
     it = Nessun risultato trovato
     ja = 検索結果が見つかりませんでした
     ko = 결과 없음
+    lt = Rezultatų nerasta
     nb = Ingen resultater funnet
     pl = Nie odnaleziono
     pt = Não foram encontrados resultados
@@ -3930,6 +4048,7 @@
     it = Note
     ja = メモ
     ko = 메모
+    lt = Pastabos
     nb = Merknader
     pl = Notatki
     pt = Notas
@@ -3964,6 +4083,7 @@
     it = Condividi via email
     ja = Eメールで共有
     ko = 이메일로 공유
+    lt = Dalintis el. paštu
     nb = Del på e-post
     pl = Udostępnij przez email
     pt = Partilhar por email
@@ -3997,6 +4117,7 @@
     it = Il segnalibri MAPS.ME è stato condiviso con te
     ja = MAPS.MEの位置情報シェア
     ko = 귀하와 공유된 MAPS.ME 즐겨찾기
+    lt = MAPS.ME adresynu pasidalinta su jumis
     nb = Delte MAPS.ME-bokmerker
     pl = Udostępnione zakładki z MAPS.ME
     pt = Os favoritos do MAPS.ME foram partilhados consigo
@@ -4031,6 +4152,7 @@
     it = Ciao,\n\nQuesti sono i miei "preferiti" fra le mappe offline di MAPS.ME, che si trovano nel file allegato "%@.kmz". Il file può essere aperto se l'app MAPS.ME è già stata installata. In caso contrario, occorre scaricare l'app per il tuo iOS o dispositivo Android dal link http://maps.me/get?kmz\n\nBuon divertimento con MAPS.ME!
     ja = MAPS.MEで作成したブックマークを添付ファイル"%@.kmz"で送付します。MAPS.ME がインストールされている端末でファイルを開いてみてください。インストールはこちらから http://maps.me/get?kmz iOSまたはAndroidデバイスで利用可能です。\n\nMAPS.MEで楽しい時間をお過ごしください！
     ko = 안녕하세요.\n\n첨부된 "%@.kmz" 파일에 MAPS.ME 이미 설치되어 있다면 열어 보시기 바랍니다. MAPS.ME 프로 버전이 이미 설치되어 있다면 열어 보시기 바랍니다. 그렇지 않은 경우 우선 iOS나 Android 장치용 앱을 http://maps.me/get?kmz 링크에서 다운로드하시기 바랍니다.\n\nMAPS.ME와 함께 즐거운 시간 되시기 바랍니다!
+    lt = Sveiki!\n\nPrikabinau savo adresyną iš MAPS.ME žemėlapių programos. Prašau juos atidaryti jei jūs turite įdiegtą MAPS.ME. Arba, jei neturite, atsisiųskite programą savo iOS arba Android įrenginyje iš šios nuorodos: http://maps.me/get?kmz\n\nMėgaukitės kelionėmis su MAPS.ME!
     nb = Hallo,\n\nVedlagt er bokmerkene mine fra MAPS.ME offline-kart. De kan åpnes hvis du har installert MAPS.ME. Hvis ikke kan du laste ned appen til en iOS- eller Android-enhet ved å følge denne koblingen: http://maps.me/get?kmz\n\nKos deg på reisen med MAPS.ME!
     pl = Cześć,\n\nOto moje zakładki pochodzące z aplikacji MAPS.ME wraz z załączonymi mapami offline w pliku „%@.kmz”. Proszę otwórz je jeśli posiadasz zainstalowaną aplikację MAPS.ME. Jeśli nie, najpierw pobierz ją na swoje urządzenie z systemem iOS lub Android pod tym odnośnikiem: http://maps.me/get?kmz\n\nBaw się dobrze z MAPS.ME!
     pt = Olá,\n\nAqui estão os meus favoritos dos mapas offline do MAPS.ME, anexados no ficheiro "%@.kmz". Por favor abra-os se já tiver instalado o MAPS.ME. Caso contrário, descarregue primeiro a app para o seu dispositivo iOS ou Android a partir desta hiperligação: http://maps.me/get?kmz\n\nDisfrute do MAPS.ME!
