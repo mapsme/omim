@@ -88,7 +88,7 @@ SUBDIRS = 3party base coding geometry editor indexer routing routing_common sear
     qt.depends = $$SUBDIRS qt_common
 
     SUBDIRS *= benchmark_tool mapshot qt qt_common
-    }
+  }
 
   CONFIG(desktop) {
     # Desktop-only support library, used in tests and search quality tools.
