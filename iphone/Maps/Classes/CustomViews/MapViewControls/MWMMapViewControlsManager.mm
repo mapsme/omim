@@ -573,7 +573,12 @@ extern NSString * const kAlohalyticsTapEventKey;
       self.menuController.leftBound = self.trafficButton.leftBound = leftBound;
 }
 
-- (BOOL)searchHidden { return self.searchManager.state == MWMSearchManagerStateHidden; }
+- (BOOL)searchHidden
+{
+  if (!_searchManager)
+    return YES;
+  return self.searchManager.state == MWMSearchManagerStateHidden;
+}
 - (void)setSearchHidden:(BOOL)searchHidden
 {
   self.searchManager.state =
