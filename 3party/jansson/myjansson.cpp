@@ -38,24 +38,16 @@ void FromJSON(json_t * root, bool & result)
   result = json_is_true(root);
 }
 
-namespace std
-{
 void FromJSON(json_t * root, string & result)
 {
   if (!json_is_string(root))
     MYTHROW(my::Json::Exception, ("The field must contain a json string."));
   result = json_string_value(root);
 }
-}  // namespace std
 
-namespace strings
-{
-void FromJSON(json_t * root, UniString & result)
+void FromJSON(json_t * root, strings::UniString & result)
 {
   string s;
   FromJSON(root, s);
-  result = MakeUniString(s);
+  result = strings::MakeUniString(s);
 }
-
-my::JSONPtr ToJSON(UniString const & s) { return ToJSON(ToUtf8(s)); }
-}  // namespace strings

@@ -32,25 +32,6 @@ std::unordered_set<std::string> const kSupportedCities
   "Ufa"
 };
 
-template <typename T, typename std::enable_if<std::is_integral<T>::value, void>::type* = nullptr>
-void GetNullable(json_t * src, std::string const & fieldName, T & result)
-{
-  result = 0;
-
-  auto const field = json_object_get(src, fieldName.c_str());
-  if (field != nullptr && !json_is_null(field))
-    result = static_cast<T>(json_integer_value(field));
-}
-
-void GetNullable(json_t * src, std::string const & fieldName, std::string & result)
-{
-  result.clear();
-
-  auto const field = json_object_get(src, fieldName.c_str());
-  if (field != nullptr && !json_is_null(field))
-    result = json_string_value(field);
-}
-
 void MakeResult(std::string const & src, std::vector<cian::RentPlace> & result)
 {
   my::Json root(src.c_str());
@@ -88,13 +69,13 @@ void MakeResult(std::string const & src, std::vector<cian::RentPlace> & result)
 
       cian::RentOffer rentOffer;
 
-      GetNullable(offer, "flatType", rentOffer.m_flatType);
-      GetNullable(offer, "roomsCount", rentOffer.m_roomsCount);
-      GetNullable(offer, "priceRur", rentOffer.m_priceRur);
-      GetNullable(offer, "floorNumber", rentOffer.m_floorNumber);
-      GetNullable(offer, "floorsCount", rentOffer.m_floorsCount);
-      GetNullable(offer, "url", rentOffer.m_url);
-      GetNullable(offer, "address", rentOffer.m_address);
+      FromJSONObjectNullable(offer, "flatType", rentOffer.m_flatType);
+      FromJSONObjectNullable(offer, "roomsCount", rentOffer.m_roomsCount);
+      FromJSONObjectNullable(offer, "priceRur", rentOffer.m_priceRur);
+      FromJSONObjectNullable(offer, "floorNumber", rentOffer.m_floorNumber);
+      FromJSONObjectNullable(offer, "floorsCount", rentOffer.m_floorsCount);
+      FromJSONObjectNullable(offer, "url", rentOffer.m_url);
+      FromJSONObjectNullable(offer, "address", rentOffer.m_address);
 
       if (rentOffer.IsValid())
         place.m_offers.push_back(std::move(rentOffer));

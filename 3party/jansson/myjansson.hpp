@@ -61,6 +61,8 @@ inline void FromJSON(json_t * root, json_t *& value) { value = root; }
 
 void FromJSON(json_t * root, double & result);
 void FromJSON(json_t * root, bool & result);
+void FromJSON(json_t * root, std::string & result);
+void FromJSON(json_t * root, strings::UniString & result);
 
 template <typename T,
           typename std::enable_if<std::is_integral<T>::value, void>::type* = nullptr>
@@ -72,17 +74,41 @@ void FromJSON(json_t * root, T & result)
 }
 
 template <typename T>
-void FromJSONObject(json_t * root, std::string const & field, T & result)
+void FromJSONNullable(json_t * root, T & result)
+{
+  if (json_is_null(root))
+    return;
+
+  FromJSON(root, result);
+}
+
+template <typename T>
+void FromJSONObject(json_t * root, std::string const & field, bool nullable, T & result)
 {
   auto * json = my::GetJSONObligatoryField(root, field);
   try
   {
-    FromJSON(json, result);
+    if (nullable)
+      FromJSONNullable(json, result);
+    else
+      FromJSON(json, result);
   }
   catch (my::Json::Exception const & e)
   {
     MYTHROW(my::Json::Exception, ("An error occured while parsing field", field, e.Msg()));
   }
+}
+
+template <typename T>
+void FromJSONObject(json_t * root, std::string const & field, T & result)
+{
+  FromJSONObject(root, field, false, result);
+}
+
+template <typename T>
+void FromJSONObjectNullable(json_t * root, std::string const & field, T & result)
+{
+  FromJSONObject(root, field, true, result);
 }
 
 template <typename T>
@@ -102,6 +128,8 @@ template <typename T,
 inline my::JSONPtr ToJSON(T value) { return my::NewJSONInt(value); }
 inline my::JSONPtr ToJSON(double value) { return my::NewJSONReal(value); }
 inline my::JSONPtr ToJSON(bool value) { return my::NewJSONBool(value); }
+inline my::JSONPtr ToJSON(std::string const & s) { return my::NewJSONString(s); }
+inline my::JSONPtr ToJSON(strings::UniString const & s) { return ToJSON(strings::ToUtf8(s)); }
 
 template <typename T>
 void ToJSONObject(json_t & root, std::string const & field, T const & value)
@@ -175,15 +203,3 @@ struct JSONFreeDeleter
 {
   void operator()(char * buffer) const { free(buffer); }
 };
-
-namespace std
-{
-void FromJSON(json_t * root, std::string & result);
-inline my::JSONPtr ToJSON(std::string const & s) { return my::NewJSONString(s); }
-}  // namespace std
-
-namespace strings
-{
-void FromJSON(json_t * root, UniString & result);
-my::JSONPtr ToJSON(UniString const & s);
-}  // namespace strings
