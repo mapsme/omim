@@ -81,6 +81,7 @@ import static com.mapswithme.util.statistics.Statistics.EventParam.RESTAURANT_LO
 import static com.mapswithme.util.statistics.Statistics.EventParam.TYPE;
 import static com.mapswithme.util.statistics.Statistics.EventParam.VALUE;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.BOOKING_COM;
+import static com.mapswithme.util.statistics.Statistics.ParamValue.CIAN;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.GEOCHAT;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.OPENTABLE;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.SEARCH_BOOKING_COM;
@@ -340,6 +341,7 @@ public enum Statistics
     public static final String OPENTABLE = "OpenTable";
     public static final String VIATOR = "Viator.Com";
     public static final String GEOCHAT = "Geochat";
+    public static final String CIAN = "Cian";
   }
 
   // Initialized once in constructor and does not change until the process restarts.
@@ -673,9 +675,9 @@ public enum Statistics
   {
     trackEvent(PP_OWNERSHIP_BUTTON_CLICK, LocationHelper.INSTANCE.getLastKnownLocation(),
                params()
-                   .add(MWM_NAME, mapObject.getMwmName())
-                   .add(MWM_VERSION, mapObject.getMwmVersion())
-                   .add(FEATURE_ID, mapObject.getFeatureIndex())
+                   .add(MWM_NAME, mapObject.getFeatureId().getMwmName())
+                   .add(MWM_VERSION, mapObject.getFeatureId().getMwmVersion())
+                   .add(FEATURE_ID, mapObject.getFeatureId().getFeatureIndex())
                    .get());
   }
 
@@ -769,6 +771,8 @@ public enum Statistics
         return GEOCHAT;
       case Sponsored.TYPE_OPENTABLE:
         return OPENTABLE;
+      case Sponsored.TYPE_CIAN:
+        return CIAN;
       case Sponsored.TYPE_NONE:
         return "N/A";
       default:

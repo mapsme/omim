@@ -31,7 +31,7 @@
         android:layout_height="1dp"
         android:layout_marginBottom="@dimen/margin_half"/>
 
-      <include layout="@layout/place_page_viator"/>
+      <include layout="@layout/place_page_sponsored_gallery"/>
 
       <include
         layout="@layout/divider_horizontal"/>
@@ -58,6 +58,8 @@
         <include layout="@layout/place_page_hotel_nearby"/>
 
         <include layout="@layout/place_page_hotel_rating"/>
+
+        <include layout="@layout/place_page_ugc"/>
 
         <include layout="@layout/place_page_placename"/>
 
