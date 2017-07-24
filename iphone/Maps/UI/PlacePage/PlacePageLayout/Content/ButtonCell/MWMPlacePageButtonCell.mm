@@ -29,7 +29,11 @@
   [self.titleButton setTitleColor:[UIColor linkBlue] forState:UIControlStateNormal];
 }
 
-- (void)setEnabled:(BOOL)enabled { self.titleButton.enabled = enabled; }
+- (void)setEnabled:(BOOL)enabled
+{
+  // Hotel description button is always enabled.
+  self.titleButton.enabled = enabled || (self.rowType == place_page::ButtonsRows::HotelDescription);
+}
 - (BOOL)isEnabled { return self.titleButton.isEnabled; }
 
 - (void)configWithTitle:(NSString *)title
