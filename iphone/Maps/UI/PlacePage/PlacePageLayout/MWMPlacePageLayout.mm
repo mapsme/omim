@@ -393,7 +393,8 @@ map<MetainfoRows, Class> const kMetaInfoCells = {
         case ButtonsRows::Other: NSAssert(false, @"Incorrect row");
       }
     }];
-    c.enabled = self.buttonsSectionEnabled;
+    // Hotel description button is always enabled.
+    c.enabled = self.buttonsSectionEnabled || (row == ButtonsRows::HotelDescription);
     return c;
   }
   case Sections::Viator:
