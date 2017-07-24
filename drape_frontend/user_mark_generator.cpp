@@ -1,5 +1,6 @@
 #include "drape_frontend/user_mark_generator.hpp"
 #include "drape_frontend/tile_utils.hpp"
+#include "drape_frontend/visual_params.hpp"
 
 #include "drape/batcher.hpp"
 
@@ -81,18 +82,41 @@ void UserMarkGenerator::UpdateLinesIndex(GroupID groupId)
   for (size_t lineIndex = 0; lineIndex < lines.size(); ++lineIndex)
   {
     UserLineRenderParams const & params = lines[lineIndex];
-    m2::RectD rect;
-    for (m2::PointD const & point : params.m_spline->GetPath())
-      rect.Add(point);
 
+    double const splineFullLength = params.m_spline->GetLength();
     for (int zoomLevel = params.m_minZoom; zoomLevel <= scales::GetUpperScale(); ++zoomLevel)
     {
-      CalcTilesCoverage(rect, zoomLevel, [&](int tileX, int tileY)
+      double length = 0;
+      while (length < splineFullLength)
       {
-        TileKey const tileKey(tileX, tileY, zoomLevel);
-        ref_ptr<IndexesCollection> groupIndexes = GetIndexesCollection(tileKey, groupId);
-        groupIndexes->m_lineIndexes.push_back(static_cast<uint32_t>(lineIndex));
-      });
+        m2::RectD const tileRect = GetRectForDrawScale(zoomLevel, params.m_spline->GetPoint(length).m_pos);
+        double const maxLength = std::min(tileRect.SizeX(), tileRect.SizeY());
+
+        m2::RectD splineRect;
+
+        auto const itBegin = params.m_spline->GetPoint(length);
+        auto itEnd = params.m_spline->GetPoint(length + maxLength);
+        if (itEnd.BeginAgain())
+        {
+          double const lastSegmentLength = params.m_spline->GetLengths().back();
+          itEnd = params.m_spline->GetPoint(splineFullLength - lastSegmentLength / 2.0);
+          splineRect.Add(params.m_spline->GetPath().back());
+        }
+
+        params.m_spline->ForEachNode(itBegin, itEnd, [&splineRect](m2::PointD const & pt)
+        {
+          splineRect.Add(pt);
+        });
+
+        length += maxLength;
+
+        CalcTilesCoverage(splineRect, zoomLevel, [&](int tileX, int tileY)
+        {
+          TileKey const tileKey(tileX, tileY, zoomLevel);
+          ref_ptr<IndexesCollection> groupIndexes = GetIndexesCollection(tileKey, groupId);
+          groupIndexes->m_lineIndexes.push_back(static_cast<uint32_t>(lineIndex));
+        });
+      }
     }
   }
 
