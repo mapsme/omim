@@ -55,6 +55,9 @@ void Route::Swap(Route & rhs)
   m_altitudes.swap(rhs.m_altitudes);
   m_traffic.swap(rhs.m_traffic);
   m_routeSegments.swap(rhs.m_routeSegments);
+
+  swap(m_subrouteUid, rhs.m_subrouteUid);
+  swap(m_currentSubrouteIdx, rhs.m_currentSubrouteIdx);
   m_subrouteAttrs.swap(rhs.m_subrouteAttrs);
 }
 
