@@ -186,6 +186,7 @@ IRouter::ResultCode IndexRouter::CalculateRoute(Checkpoints const & checkpoints,
                                                 bool adjustToPrevRoute,
                                                 RouterDelegate const & delegate, Route & route)
 {
+  CHECK(false, ("Test check"));
   if (!AllMwmsHaveRoutingIndex(m_index, route))
     return IRouter::ResultCode::FileTooOld;
 

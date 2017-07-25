@@ -4,8 +4,6 @@
 
 #include "std/target_os.hpp"
 
-#include <cassert>
-#include <cstdlib>
 #include <iostream>
 
 namespace my
@@ -15,12 +13,6 @@ namespace my
     std::cerr << "ASSERT FAILED" << std::endl
               << srcPoint.FileName() << ":" << srcPoint.Line() << std::endl
               << msg << std::endl;
-
-#ifdef DEBUG
-    assert(false);
-#else
-    std::abort();
-#endif
   }
 
   AssertFailedFn OnAssertFailed = &OnAssertFailedDefault;
