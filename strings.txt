@@ -25868,7 +25868,7 @@
 [rub_month]
     comment = Only ru/en are needed
     en = RUB/month
-    ru = руб./мес
+    ru = руб./мес.
 
 [room]
     comment = Only ru/en are needed
@@ -25888,7 +25888,7 @@
 [preloader_cian_message]
     comment = Only ru/en are needed
     en = Find out rental prices in this area
-    ru = Узна, сколько стоят квартиры в этом районе
+    ru = Узнай, сколько стоят квартиры в этом районе
 
 [preloader_cian_button]
     comment = Only ru/en are needed
