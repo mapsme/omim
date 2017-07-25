@@ -1200,10 +1200,13 @@ void FrontendRenderer::Render3dLayer(ScreenBase const & modelView, bool useFrame
     ASSERT(m_buildingsFramebuffer->IsSupported(), ());
     m_buildingsFramebuffer->Enable();
     GLFunctions::glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    GLFunctions::glClear(gl_const::GLColorBit);
+    GLFunctions::glClear(gl_const::GLColorBit | gl_const::GLDepthBit);
+  }
+  else
+  {
+    GLFunctions::glClear(gl_const::GLDepthBit);
   }
 
-  GLFunctions::glClear(gl_const::GLDepthBit);
   GLFunctions::glEnable(gl_const::GLDepthTest);
   RenderLayer & layer = m_layers[RenderLayer::Geometry3dID];
   layer.Sort(make_ref(m_overlayTree));
