@@ -1162,7 +1162,7 @@
 	<!-- Only ru/en are needed -->
 	<string name="subtitle_rent">Аренда</string>
 	<!-- Only ru/en are needed -->
-	<string name="rub_month">руб./мес</string>
+	<string name="rub_month">руб./мес.</string>
 	<!-- Only ru/en are needed -->
 	<string name="room">%s-комн. кв.</string>
 	<!-- Only ru/en are needed -->
@@ -1170,7 +1170,7 @@
 	<!-- Only ru/en are needed -->
 	<string name="preloader_cian_title">Проверенное жильё</string>
 	<!-- Only ru/en are needed -->
-	<string name="preloader_cian_message">Узна, сколько стоят квартиры в этом районе</string>
+	<string name="preloader_cian_message">Узнай, сколько стоят квартиры в этом районе</string>
 	<!-- Only ru/en are needed -->
 	<string name="preloader_cian_button">Посмотреть цены</string>
 </resources>
