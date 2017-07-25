@@ -1996,3 +1996,24 @@
 "whatsnew_intermediate_point_title" = "Zusätzlicher Stopp";
 
 "whatsnew_intermediate_point_message" = "Planen Sie eine Route mit Zwischenstopp.";
+
+/* Do not translate */
+"subtitle_rent" = "Rent";
+
+/* Do not translate */
+"rub_month" = "₽/month";
+
+/* Do not translate */
+"room" = "%s room(s) apart.";
+
+/* Do not translate */
+"real_estate" = "Real estate";
+
+/* Do not translate */
+"preloader_cian_title" = "Verified real estate";
+
+/* Do not translate */
+"preloader_cian_message" = "Find out rental prices in this area";
+
+/* Do not translate */
+"preloader_cian_button" = "Learn more";

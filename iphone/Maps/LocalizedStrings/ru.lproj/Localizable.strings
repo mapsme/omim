@@ -1996,3 +1996,24 @@
 "whatsnew_intermediate_point_title" = "Промежуточная остановка";
 
 "whatsnew_intermediate_point_message" = "Планируйте маршрут с дополнительной остановкой.";
+
+/* Do not translate */
+"subtitle_rent" = "Аренда";
+
+/* Do not translate */
+"rub_month" = "₽/мес";
+
+/* Do not translate */
+"room" = "%s-комн. кв.";
+
+/* Do not translate */
+"real_estate" = "Недвижимость";
+
+/* Do not translate */
+"preloader_cian_title" = "Проверенное жильё";
+
+/* Do not translate */
+"preloader_cian_message" = "Узнай сколько стоят квартиры в этом месте";
+
+/* Do not translate */
+"preloader_cian_button" = "Посмотреть цены";
