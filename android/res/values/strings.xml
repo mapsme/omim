@@ -1171,18 +1171,18 @@
 	<string name="placepage_add_stop">Add Stop</string>
 	<string name="whatsnew_intermediate_point_title">Additional stop</string>
 	<string name="whatsnew_intermediate_point_message">Plan a route with an intermediate point.</string>
-	<!-- Do not translate -->
+	<!-- Only ru/en are needed -->
 	<string name="subtitle_rent">Rent</string>
-	<!-- Do not translate -->
-	<string name="rub_month">₽/month</string>
-	<!-- Do not translate -->
-	<string name="room">%s room(s) apart.</string>
-	<!-- Do not translate -->
+	<!-- Only ru/en are needed -->
+	<string name="rub_month">RUB/month</string>
+	<!-- Only ru/en are needed -->
+	<string name="room">%s room(s) ap.</string>
+	<!-- Only ru/en are needed -->
 	<string name="real_estate">Real estate</string>
-	<!-- Do not translate -->
+	<!-- Only ru/en are needed -->
 	<string name="preloader_cian_title">Verified real estate</string>
-	<!-- Do not translate -->
+	<!-- Only ru/en are needed -->
 	<string name="preloader_cian_message">Find out rental prices in this area</string>
-	<!-- Do not translate -->
+	<!-- Only ru/en are needed -->
 	<string name="preloader_cian_button">Learn more</string>
 </resources>

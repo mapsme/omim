@@ -1997,23 +1997,23 @@
 
 "whatsnew_intermediate_point_message" = "Планируйте маршрут с дополнительной остановкой.";
 
-/* Do not translate */
+/* Only ru/en are needed */
 "subtitle_rent" = "Аренда";
 
-/* Do not translate */
-"rub_month" = "₽/мес";
+/* Only ru/en are needed */
+"rub_month" = "руб./мес";
 
-/* Do not translate */
+/* Only ru/en are needed */
 "room" = "%s-комн. кв.";
 
-/* Do not translate */
+/* Only ru/en are needed */
 "real_estate" = "Недвижимость";
 
-/* Do not translate */
+/* Only ru/en are needed */
 "preloader_cian_title" = "Проверенное жильё";
 
-/* Do not translate */
-"preloader_cian_message" = "Узнай сколько стоят квартиры в этом месте";
+/* Only ru/en are needed */
+"preloader_cian_message" = "Узна, сколько стоят квартиры в этом районе";
 
-/* Do not translate */
+/* Only ru/en are needed */
 "preloader_cian_button" = "Посмотреть цены";

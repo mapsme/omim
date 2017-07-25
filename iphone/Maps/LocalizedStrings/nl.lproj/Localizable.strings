@@ -1997,23 +1997,23 @@
 
 "whatsnew_intermediate_point_message" = "Plan een route met een tussenstop.";
 
-/* Do not translate */
+/* Only ru/en are needed */
 "subtitle_rent" = "Rent";
 
-/* Do not translate */
-"rub_month" = "₽/month";
+/* Only ru/en are needed */
+"rub_month" = "RUB/month";
 
-/* Do not translate */
-"room" = "%s room(s) apart.";
+/* Only ru/en are needed */
+"room" = "%s room(s) ap.";
 
-/* Do not translate */
+/* Only ru/en are needed */
 "real_estate" = "Real estate";
 
-/* Do not translate */
+/* Only ru/en are needed */
 "preloader_cian_title" = "Verified real estate";
 
-/* Do not translate */
+/* Only ru/en are needed */
 "preloader_cian_message" = "Find out rental prices in this area";
 
-/* Do not translate */
+/* Only ru/en are needed */
 "preloader_cian_button" = "Learn more";
