@@ -25861,36 +25861,36 @@
     sw = Panga njia ya kufuata yenye eneo la kati.
 
 [subtitle_rent]
-    comment = Do not translate
+    comment = Only ru/en are needed
     en = Rent
     ru = Аренда
 
 [rub_month]
-    comment = Do not translate
-    en = ₽/month
-    ru = ₽/мес
+    comment = Only ru/en are needed
+    en = RUB/month
+    ru = руб./мес
 
 [room]
-    comment = Do not translate
-    en = %s room(s) apart.
+    comment = Only ru/en are needed
+    en = %s room(s) ap.
     ru = %s-комн. кв.
 
 [real_estate]
-    comment = Do not translate
+    comment = Only ru/en are needed
     en = Real estate
     ru = Недвижимость
 
 [preloader_cian_title]
-    comment = Do not translate
+    comment = Only ru/en are needed
     en = Verified real estate
     ru = Проверенное жильё
 
 [preloader_cian_message]
-    comment = Do not translate
+    comment = Only ru/en are needed
     en = Find out rental prices in this area
     ru = Узна, сколько стоят квартиры в этом районе
 
 [preloader_cian_button]
-    comment = Do not translate
+    comment = Only ru/en are needed
     en = Learn more
     ru = Посмотреть цены
