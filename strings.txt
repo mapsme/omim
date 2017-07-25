@@ -25888,7 +25888,7 @@
 [preloader_cian_message]
     comment = Do not translate
     en = Find out rental prices in this area
-    ru = Узнай сколько стоят квартиры в этом месте
+    ru = Узна, сколько стоят квартиры в этом районе
 
 [preloader_cian_button]
     comment = Do not translate
