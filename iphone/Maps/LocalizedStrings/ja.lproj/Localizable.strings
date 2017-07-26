@@ -1996,3 +1996,24 @@
 "whatsnew_intermediate_point_title" = "その他の停止地点";
 
 "whatsnew_intermediate_point_message" = "中間地点のあるルートを計画します。";
+
+/* Only ru/en are needed */
+"subtitle_rent" = "Rent";
+
+/* Only ru/en are needed */
+"rub_month" = "RUB/month";
+
+/* Only ru/en are needed */
+"room" = "%s room(s) ap.";
+
+/* Only ru/en are needed */
+"real_estate" = "Real estate";
+
+/* Only ru/en are needed */
+"preloader_cian_title" = "Verified real estate";
+
+/* Only ru/en are needed */
+"preloader_cian_message" = "Find out rental prices in this area";
+
+/* Only ru/en are needed */
+"preloader_cian_button" = "Learn more";
