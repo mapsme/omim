@@ -980,7 +980,7 @@ void Framework::FillApiMarkInfo(ApiMarkPoint const & api, place_page::Info & inf
   string const & name = api.GetName();
   if (!name.empty())
     info.SetCustomName(name);
-  info.SetApiId(api.GetID());
+  info.SetApiId(api.GetApiID());
   info.SetApiUrl(GenerateApiBackUrl(api));
 }
 
@@ -2631,8 +2631,8 @@ string Framework::GenerateApiBackUrl(ApiMarkPoint const & point) const
     res += "pin?ll=" + strings::to_string(ll.lat) + "," + strings::to_string(ll.lon);
     if (!point.GetName().empty())
       res += "&n=" + UrlEncode(point.GetName());
-    if (!point.GetID().empty())
-      res += "&id=" + UrlEncode(point.GetID());
+    if (!point.GetApiID().empty())
+      res += "&id=" + UrlEncode(point.GetApiID());
   }
   return res;
 }
