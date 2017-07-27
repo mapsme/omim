@@ -148,8 +148,17 @@ class BottomPlacePageAnimationController extends BasePlacePageAnimationControlle
   public void onScroll(int left, int top)
   {
     super.onScroll(left, top);
+    resetDetailsScrollIfNeeded();
     refreshToolbarVisibility();
     notifyProgress();
+  }
+
+  private void resetDetailsScrollIfNeeded()
+  {
+    if (mCurrentScrollY > 0 && mDetailsScroll.getTranslationY() > 0)
+    {
+      mDetailsScroll.scrollTo(0, 0);
+    }
   }
 
   /**
