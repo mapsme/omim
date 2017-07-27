@@ -38067,45 +38067,57 @@ cont {
   }
   element {
     scale: 14
+    lines {
+      width: 2.0
+      color: 14934482
+      priority: 1456
+      join: ROUNDJOIN
+      cap: BUTTCAP
+    }
     area {
       color: 14934482
-      border {
-        width: 2.0
-        color: 14934482
-      }
       priority: -15544
     }
   }
   element {
     scale: 15
+    lines {
+      width: 2.0
+      color: 14934482
+      priority: 1456
+      join: ROUNDJOIN
+      cap: BUTTCAP
+    }
     area {
       color: 14934482
-      border {
-        width: 2.0
-        color: 14934482
-      }
       priority: -15544
     }
   }
   element {
     scale: 16
+    lines {
+      width: 2.0
+      color: 14934482
+      priority: 1456
+      join: ROUNDJOIN
+      cap: ROUNDCAP
+    }
     area {
       color: 14934482
-      border {
-        width: 2.0
-        color: 14934482
-      }
       priority: -15544
     }
   }
   element {
     scale: 17
+    lines {
+      width: 2.0
+      color: 14934482
+      priority: 1456
+      join: ROUNDJOIN
+      cap: ROUNDCAP
+    }
     area {
       color: 14934482
-      border {
-        width: 2.0
-        color: 14934482
-      }
       priority: 16000
     }
     caption {
@@ -38118,12 +38130,15 @@ cont {
   }
   element {
     scale: 18
+    lines {
+      width: 2.0
+      color: 14934482
+      priority: 1456
+      join: ROUNDJOIN
+      cap: ROUNDCAP
+    }
     area {
       color: 14934482
-      border {
-        width: 2.0
-        color: 14934482
-      }
       priority: 16000
     }
     caption {
@@ -38136,12 +38151,15 @@ cont {
   }
   element {
     scale: 19
+    lines {
+      width: 2.0
+      color: 14934482
+      priority: 1456
+      join: ROUNDJOIN
+      cap: ROUNDCAP
+    }
     area {
       color: 14934482
-      border {
-        width: 2.0
-        color: 14934482
-      }
       priority: 16000
     }
     caption {
@@ -38190,68 +38208,62 @@ cont {
   name: "man_made-cutline"
   element {
     scale: 14
-    area {
+    lines {
+      width: 2.0
       color: 14934482
-      border {
-        width: 2.0
-        color: 14934482
-      }
-      priority: -15816
+      priority: 1184
+      join: ROUNDJOIN
+      cap: BUTTCAP
     }
   }
   element {
     scale: 15
-    area {
+    lines {
+      width: 2.0
       color: 14934482
-      border {
-        width: 2.0
-        color: 14934482
-      }
-      priority: -15816
+      priority: 1184
+      join: ROUNDJOIN
+      cap: BUTTCAP
     }
   }
   element {
     scale: 16
-    area {
+    lines {
+      width: 2.0
       color: 14934482
-      border {
-        width: 2.0
-        color: 14934482
-      }
-      priority: -15816
+      priority: 1184
+      join: ROUNDJOIN
+      cap: ROUNDCAP
     }
   }
   element {
     scale: 17
-    area {
+    lines {
+      width: 2.0
       color: 14934482
-      border {
-        width: 2.0
-        color: 14934482
-      }
-      priority: -15816
+      priority: 1184
+      join: ROUNDJOIN
+      cap: ROUNDCAP
     }
   }
   element {
     scale: 18
-    area {
+    lines {
+      width: 2.0
       color: 14934482
-      border {
-        width: 2.0
-        color: 14934482
-      }
-      priority: -15816
+      priority: 1184
+      join: ROUNDJOIN
+      cap: ROUNDCAP
     }
   }
   element {
     scale: 19
-    area {
+    lines {
+      width: 2.0
       color: 14934482
-      border {
-        width: 2.0
-        color: 14934482
-      }
-      priority: -15816
+      priority: 1184
+      join: ROUNDJOIN
+      cap: ROUNDCAP
     }
   }
 }
@@ -38367,45 +38379,57 @@ cont {
   }
   element {
     scale: 14
+    lines {
+      width: 2.0
+      color: 14934482
+      priority: 1456
+      join: ROUNDJOIN
+      cap: BUTTCAP
+    }
     area {
       color: 14934482
-      border {
-        width: 2.0
-        color: 14934482
-      }
       priority: -15544
     }
   }
   element {
     scale: 15
+    lines {
+      width: 2.0
+      color: 14934482
+      priority: 1456
+      join: ROUNDJOIN
+      cap: BUTTCAP
+    }
     area {
       color: 14934482
-      border {
-        width: 2.0
-        color: 14934482
-      }
       priority: -15544
     }
   }
   element {
     scale: 16
+    lines {
+      width: 2.0
+      color: 14934482
+      priority: 1456
+      join: ROUNDJOIN
+      cap: ROUNDCAP
+    }
     area {
       color: 14934482
-      border {
-        width: 2.0
-        color: 14934482
-      }
       priority: -15544
     }
   }
   element {
     scale: 17
+    lines {
+      width: 2.0
+      color: 14934482
+      priority: 1456
+      join: ROUNDJOIN
+      cap: ROUNDCAP
+    }
     area {
       color: 14934482
-      border {
-        width: 2.0
-        color: 14934482
-      }
       priority: 16000
     }
     caption {
@@ -38418,12 +38442,15 @@ cont {
   }
   element {
     scale: 18
+    lines {
+      width: 2.0
+      color: 14934482
+      priority: 1456
+      join: ROUNDJOIN
+      cap: ROUNDCAP
+    }
     area {
       color: 14934482
-      border {
-        width: 2.0
-        color: 14934482
-      }
       priority: 16000
     }
     caption {
@@ -38436,12 +38463,15 @@ cont {
   }
   element {
     scale: 19
+    lines {
+      width: 2.0
+      color: 14934482
+      priority: 1456
+      join: ROUNDJOIN
+      cap: ROUNDCAP
+    }
     area {
       color: 14934482
-      border {
-        width: 2.0
-        color: 14934482
-      }
       priority: 16000
     }
     caption {
