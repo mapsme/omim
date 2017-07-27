@@ -148,14 +148,6 @@ class BottomPlacePageAnimationController extends BasePlacePageAnimationControlle
   public void onScroll(int left, int top)
   {
     super.onScroll(left, top);
-
-    if (mCurrentScrollY > 0 && mDetailsScroll.getTranslationY() > 0)
-    {
-      if (mState != State.PREVIEW)
-        mPlacePage.setState(State.HIDDEN);
-      else
-        mDetailsScroll.scrollTo(0, 0);
-    }
     refreshToolbarVisibility();
     notifyProgress();
   }
@@ -465,17 +457,14 @@ class BottomPlacePageAnimationController extends BasePlacePageAnimationControlle
 
   private void showDetails()
   {
+    final float translation;
     if (isDetailContentScrollable())
-    {
-      mCurrentAnimator = ValueAnimator.ofFloat(mDetailsScroll.getTranslationY(),
-                                               mDetailsScroll.getHeight() - mDetailMaxHeight + mButtons
-                                                   .getHeight());
-    }
+      translation = mDetailMaxHeight - mButtons.getHeight();
     else
-    {
-      mCurrentAnimator = ValueAnimator.ofFloat(mDetailsScroll.getTranslationY(),
-                                               mDetailsScroll.getHeight() - mContentHeight);
-    }
+      translation = mContentHeight > mDetailMaxHeight ? mDetailMaxHeight : mContentHeight;
+
+    mCurrentAnimator = ValueAnimator.ofFloat(mDetailsScroll.getTranslationY(),
+                                             mDetailsScroll.getHeight() - translation);
     mCurrentAnimator.addUpdateListener(new UpdateListener());
     mCurrentAnimator.addListener(new AnimationListener());
 
@@ -574,11 +563,6 @@ class BottomPlacePageAnimationController extends BasePlacePageAnimationControlle
     mBannerOpenListener = bannerOpenListener;
   }
 
-  private boolean isOverDetailsState()
-  {
-    return mDetailsScroll.getTranslationY() < mScreenHeight - mDetailMaxHeight;
-  }
-
   private void onContentSizeChanged()
   {
     if (mIsDragging || mCurrentScrollY > 0)
@@ -586,12 +570,7 @@ class BottomPlacePageAnimationController extends BasePlacePageAnimationControlle
 
     MapObject object = mPlacePage.getMapObject();
     if (object != null)
-    {
-      State newState = getState();
-      if (isOverDetailsState())
-        newState = State.FULLSCREEN;
-      onStateChanged(getState(), newState, object.getMapObjectType());
-    }
+      onStateChanged(getState(), getState(), object.getMapObjectType());
   }
 
   @Override

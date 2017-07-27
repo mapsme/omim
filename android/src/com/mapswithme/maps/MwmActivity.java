@@ -1286,7 +1286,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
         {
           if (!mPlacePageRestored)
           {
-            mPlacePage.setState(State.PREVIEW);
+            //TODO: use isExtendedView in pp info
+            mPlacePage.setState(mPlacePage.getSponsored() != null ? State.DETAILS : State.PREVIEW);
             if (object != null)
               Framework.logLocalAdsEvent(Framework.LOCAL_ADS_EVENT_OPEN_INFO, object);
           }
