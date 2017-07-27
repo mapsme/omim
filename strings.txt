@@ -25872,7 +25872,7 @@
 
 [room]
     comment = Only ru/en are needed
-    en = %s room(s) ap.
+    en = %s room(s) apt.
     ru = %s-комн. кв.
 
 [real_estate]
