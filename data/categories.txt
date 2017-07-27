@@ -128,7 +128,6 @@ zh-Hant:加油站
 el:Βενζίνη
 he:גז
 sk:3^Čerpacia stanica
-sw:Sheli
 
 @parking
 en:^Parking
@@ -633,7 +632,7 @@ zh-Hans:1^加油站|燃料
 zh-Hant:2^加氣站|汽油|加油|天然氣
 el:^Βενζινάδικο|καύσιμο|βενζίνη|πρατήριο
 sk:3^Benzínová pumpa
-sw:mafuta
+sw:^Sheli|mafuta
 
 shop-bakery|@shop
 en:3^Bakery|U+1F35E
@@ -745,7 +744,6 @@ zh-Hans:^便利店|商店
 zh-Hant:^便利商店|便利超商|購物
 el:^Ψιλικατζίδικο|κατάστημα
 sk:^Príležitostné potreby
-sw:^Duka
 
 shop-garden_centre|@shop
 en:^Garden Store|U+1F3EC|U+1F3EA|U+1F3E1
@@ -808,7 +806,6 @@ zh-Hans:^手机商店|商店
 zh-Hant:^手機專賣店|購物
 el:^Κινητά τηλέφωνα|Κινητά|κατάστημα ηλεκτρονικών|κατάστημα
 sk:^Mobilné telefóny
-sw:^Duka la simu
 
 shop-florist|@shop
 en:^Florist’s|U+1F337|U+1F338|U+1F339|U+1F33A|U+1F33B|U+1F33C|U+1F490|U+1F33E
@@ -857,7 +854,7 @@ it:^Macellaio
 ja:^肉屋|お買い物|ショップ|商店|雑貨
 ko:^정육점의|가게
 nb:^Slakter
-pl:^Rzeźnik|towary|Sklep mięsny
+pl:^Rzeźnik|towary
 pt:^Açougueiro|2loja
 pt-BR:^Açougue|açougueiro|2loja|compras
 ro:^Măcelărie
@@ -5063,7 +5060,7 @@ sw:^Chemchemi
 shop-car_repair
 en:3^Car Repair Shop|4service station|auto|garage|U+1F527
 ru:3^СТО|3автомастерская|автосервис|авто
-ar:^محل صيانة السيارات|محطة خدمات
+ar:^ورشة صيانة سيارات|محطة خدمة|سيارات|ورشة
 cs:3^Auto opravna|auto|auta|Půjčení
 da:3^Garage|3bilværksted|service station
 nl:3^Auto reparatie|auto|wagen
@@ -5095,7 +5092,7 @@ sw:^Fundi wa gari
 tourism-camp_site
 en:4^Camping|campsite|campground|U+26FA
 ru:4^Кемпинг
-ar:^تخييم|مكان التخييم|أرض التخييم
+ar:^معسكر تخييم|مكان تخييم|أرض تخييم
 cs:4^Kempování|camping|kemp|camp
 da:^Camping|campingplads|teltplads|lejrplads
 nl:4^Camping|kamperen
@@ -5127,7 +5124,7 @@ sw:^Kambi
 tourism-caravan_site
 en:4^Caravan Site|RV site|U+1F69A|U+26FA|U+1F69B
 ru:4^Автокемпинг|кемпинг|стоянка грузовиков
-ar:^موقع البيت المتنقل
+ar:^موقع المنازل المتنقلة
 cs:^Kemp pro obytné přívěsy
 da:^Autocamperplads|husvogn
 nl:^Caravan site|camping
@@ -5252,7 +5249,7 @@ sw:^Ofisi ya serikali
 office-lawyer
 en:^Lawyer|advocate|attorney|barrister|counsel|councellor|solicitor
 ru:^Адвокат|нотариус
-ar:^مكتب محامي|مكتب محاماة
+ar:^محامِ|مكتب محاماة
 cs:^Právní kancelář
 da:^Advokatkontor
 nl:^Advocatenkantoor
@@ -5282,7 +5279,7 @@ sk:^Advokátska kancelária
 office-telecommunication
 en:^Mobile Operator
 ru:^Мобильный оператор
-ar:^شركة اتصالات|شركة محمول
+ar:^مزود خدمة هواتف نقالة|جوال|محمول|نقال|خلوي
 cs:^Mobilní operátor
 da:^Mobiloperatør
 nl:^Mobiele provider
@@ -5402,7 +5399,7 @@ sk:^Elektrikár
 craft-gardener
 en:^Gardener|Landscaper
 ru:^Садовник
-ar:^مهندس مناظر
+ar:^بستاني|منسق حدائق
 cs:^Zahradník
 da:^Gartner
 nl:^Tuinarchitect|landschapsarchitect
@@ -5554,7 +5551,7 @@ sk:^Fotograf|fotoateliér
 craft-plumber
 en:^Plumber
 ru:^Сантехник
-ar:^سمكري
+ar:^سباك
 cs:^Instalatér
 da:^VVS-mand
 nl:^Loodgieter
@@ -5584,7 +5581,7 @@ sk:^Klampiarstvo
 craft-shoemaker
 en:^Shoe Repair
 ru:^Ремонт обуви
-ar:^تصليح الاحذية
+ar:^تصليح احذية
 cs:^Opravna obuvi
 da:^Skomager|skoreparation
 nl:^Schoenmaker|schoenmakerij
@@ -5675,7 +5672,7 @@ sk:^Námestie
 place-sea
 en:^Sea|U+1F30A
 ru:^Море
-ar:^يكون
+ar:^بحر
 cs:^Moře
 da:^Er
 nl:^Zee
@@ -5707,7 +5704,7 @@ sw:^Bahari
 place-ocean
 en:^Ocean|U+1F30A
 ru:^Океан
-ar:^المحيط
+ar:^محيط
 cs:^Oceán
 da:^Ocean
 nl:^Oceaan
@@ -5739,7 +5736,7 @@ sw:^Bahari
 @wifi
 en:WiFi|Wi-Fi
 ru:WiFi|Wi-Fi
-ar:وايفاي
+ar:^واي فاي|وايفاي|واي-فاي
 cs:WiFi|Wi-Fi
 da:WiFi|Wi-Fi
 nl:WiFi|Wi-Fi
@@ -5771,7 +5768,7 @@ sw:WiFi|Wi-Fi
 internet_access|internet_access-wlan|@wifi
 en:3^Internet|U+1F4F6
 ru:3^Интернет|вайфай|Internet
-ar:^واي فاي|الإنترنت|WiFi|3Internet
+ar:^إنترنت|انترنت|نت
 cs:3^Internet
 da:3^Internet
 nl:3^Internet
@@ -5833,7 +5830,7 @@ sw:^Pwani
 highway-speed_camera
 en:3^Speed Camera
 ru:^Камера скорости
-ar:^كاميرا لرصد السرعة
+ar:^كاميرات رصد سرعة|رادار
 cs:^Rychlostní kamera
 da:^Automatisk Trafikkontrol
 nl:^Flitspaal
@@ -5895,7 +5892,7 @@ sk:^Maják
 shop-copyshop
 en:^Copy Shop|Printer
 ru:^Копировальный центр|печать|полиграфия
-ar:^محل نسخ|طباعة
+ar:^محل نسخ|طباعة|تصوير
 cs:^Kopírovací obchod|Tiskárny
 da:^Kopieringsbutik|Trykkeri
 fi:^Painotalo|Tulostaja
@@ -5925,7 +5922,7 @@ sk:^Kopírovacie služby|Tlačiarne
 shop-photo|@shop
 en:^Photo Shop|frames
 ru:^Фототовары|магазин
-ar:^محل صور|إطارات|محل
+ar:^محل صور|إطارات|متجر
 cs:^Fotografický obchod|rámy
 da:^Fotobutik|rammer
 nl:^Fotowinkel|kaders
@@ -5956,7 +5953,7 @@ sk:^Fotografické služby|Rámovanie
 shop-travel_agency
 en:^Travel Agency|tours
 ru:^Турагентство|путешествия
-ar:^وكيل سفريات|جولات
+ar:^وكيل سفريات|رحلات|جولات
 cs:^Cestovní kancelář|cesty
 da:^Rejsebureau|rundrejser
 nl:^Reisagentschap|reizen
@@ -5987,7 +5984,7 @@ sk:^Cestovná kancelária|Zájazdy
 shop-outdoor|@shop
 en:^Outdoor Equipment|trekking|climbing|camping
 ru:^Магазин снаряжения|туристический магазин|магазин
-ar:^معدات خارجية|ترحال|تسلق|تخييم|محل
+ar:^معدات رحلات|ترحال|تسلق|تخييم|متجر
 cs:^Venkovní vybavení|trekking|lezení|kempování
 da:^Fritidsudstyr|vandring|klatring|camping
 nl:^Outdooruitrusting|trekking|klimmen|kamperen
@@ -6018,7 +6015,7 @@ sk:^Outdoorové vybavenie|Treking|Lezenie|Kempy
 shop-dry_cleaning
 en:^Dry Cleaning|cleaning
 ru:^Химчистка
-ar:^غسيل جاف|غسيل
+ar:^غسيل جاف|تنظيف|غسيل
 cs:^Chemické čištění|čistírna
 da:^Renseri|vaskeri
 nl:^Droogkuis|wassen
@@ -6049,7 +6046,7 @@ sk:^Čistiareň|čistenie
 shop-tyres|@shop
 en:^Tyre Shop
 ru:^Магазин шин|магазин
-ar:^محل إطارات|محل
+ar:^ورشة إطارات|عجلات|متجر
 cs:^Obchod s pneumatikami
 da:^Dækforretning
 nl:^Bandenwinkel
@@ -6080,7 +6077,7 @@ sk:^Obchod s pneumatikami
 amenity-car_wash
 en:^Car Wash
 ru:^Автомойка
-ar:^مغسلة سيارات
+ar:^غسيل سيارات|مغسلة
 cs:^Myčka aut
 da:^Bilvask
 nl:^Car wash
@@ -6204,7 +6201,7 @@ sk:^Jasle|Starostlivosť o deti
 amenity-bicycle_parking
 en:^Bicycle Parking
 ru:^Велостоянка
-ar:^أماكن وقوف للدراجات
+ar:^موقف دراجات
 cs:^Parkování kol
 da:^Cykelparkering
 nl:^Fietsenstalling
@@ -6235,7 +6232,7 @@ sk:^Stojan na bicykle
 amenity-waste_basket
 en:^Trash Bin|Litter Bin|Waste Basket
 ru:^Урна|Мусорная корзина
-ar:^صندوق قمامة
+ar:^سلة نفايات|صندوق قمامة|مهملات
 cs:^Odpadkový koš
 da:^Skraldespand
 nl:^Vuilnisbak
@@ -6266,7 +6263,7 @@ sk:^Odpadkový kôš
 emergency-phone
 en:^Emergency Phone
 ru:^Телефон для экстренных вызовов
-ar:^هاتف الطوارئ
+ar:^هاتف طوارئ
 cs:^Tísňového volání
 da:^Nødtelefon
 nl:^Praatpaal
@@ -6299,7 +6296,7 @@ sw:^Simu ya dharura
 leisure-fitness_centre
 en:^Fitness Centre|Gym|U+1F4AA
 ru:^Фитнес-клуб|качалка|джим
-ar:^مركز للياقة البدنية، نادي رياضي
+ar:^مركز لياقة بدنية|نادي رياضي|جيم
 cs:^Fitness|tělocvična
 da:^Trænings- og motionscenter|fitnesscenter
 nl:^Fitnesscentrum|sportschool
@@ -6392,7 +6389,7 @@ sk:^Studňa
 shop-car_repair-tyres
 en:^Tyre Repair|tire repair|tyre|tire
 ru:^Шиномонтаж
-ar:^إصلاح إطارات
+ar:^إصلاح إطارات|عجلات|تصليح
 cs:^Pneuservis
 da:^Dækreparation
 nl:^Bandenreparatie
@@ -6423,7 +6420,7 @@ sk:^Pneuservis
 shop-chemist|@shop
 en:^Chemist Shop
 ru:^Бытовая химия
-ar:^صيدلية
+ar:^متجر مواد كيميائية|كيمياء
 cs:^Drogerie
 da:^Materialist|Drugstore
 nl:^Drogisterij
@@ -6454,7 +6451,7 @@ sk:^Drogéria
 shop-pet|@shop
 en:^Petshop
 ru:^Зоотовары
-ar:^متجر للحيوانات الأليفة
+ar:^متجر حيوانات أليفة
 cs:^Zverimex
 da:^Dyrehandel
 nl:^Dierenwinkel
@@ -6485,7 +6482,7 @@ sk:^Obchod zo zvieratami
 tourism-zoo|@tourism
 en:2^Zoo
 ru:2^Зоопарк
-ar:^حديقة حيوان
+ar:^حديقة حيوان|حيوانات
 cs:^zoologická zahrada
 da:^Zoo
 nl:^Dierentuin
@@ -6610,7 +6607,7 @@ sk:^Súd
 amenity-vending_machine-cigarettes
 en:^Cigarette Dispenser
 ru:^Сигаретный автомат
-ar:^ماكينة بيع سجائر
+ar:^ماكينة بيع سجائر|دخان
 cs:^Automat na cigarety
 da:^Cigaretautomat
 nl:^Sigarettenautomaat
@@ -6703,7 +6700,7 @@ sk:^Garáž
 highway-rest_area
 en:^Highway Rest Area
 ru:^Зона отдыха на трассе
-ar:^استراحة
+ar:^استراحة طريق سريع
 cs:^Odpočívadlo
 da:^Rasteplads
 nl:^Parkeerplaats
@@ -6889,7 +6886,7 @@ sk:^Stávková kancelária
 shop-seafood|@shop
 en:^Seafood Shop
 ru:^Рыбный магазин
-ar:^سماك
+ar:^متجر مأكولات بحرية|أسماك|سمك|بحر|طعام
 cs:^Prodej ryb
 da:^Fiskehandler
 nl:^Visboer
@@ -6920,7 +6917,7 @@ sk:^Obchodník s rybami
 shop-ticket|@shop
 en:^Ticket Shop
 ru:^Билетная касса
-ar:^مكتب تذاكر
+ar:^متجر تذاكر
 cs:^Prodej vstupenek
 da:^Billetkontor
 nl:^Kaartjesverkoop
@@ -6951,7 +6948,7 @@ sk:^Pokladnica
 shop-wine|@shop
 en:^Wine Shop
 ru:^Винный магазин
-ar:^متجر مشروبات روحية
+ar:^متجر خمور
 cs:^Vinařství
 da:^Vinhandel
 nl:^Wijn|Slijterij
@@ -6982,7 +6979,7 @@ sk:^Vinotéka
 shop-car_parts|@shop
 en:^Car Parts
 ru:^Автомобильные запчасти|Автозапчасти
-ar:^ﺓﺭﺎﻴﺴﻟﺍ ءﺍﺰﺟﺃ
+ar:^قطع غيار سيارات|سيارة
 cs:^Autodíly
 da:^Bildele
 nl:^Auto onderdelen
@@ -7139,7 +7136,7 @@ sk:^Lanovka
 aeroway-helipad
 en:^Helipad
 ru:^Вертолётная площадка
-ar:^مهبط مروحيات
+ar:^مهبط مروحيات|طائرة|هليكوبتر
 cs:^Helipad
 da:^Helikopterlandingsplads
 nl:^Heliplatform
@@ -7170,7 +7167,7 @@ sk:^Pristávacia plocha pre vrtuľníky
 amenity-vending_machine-parking_tickets
 en:^Parking Tickets
 ru:^Паркомат
-ar:^ماكينة دفع تذاكر الموقف
+ar:^تذاكر الموقف
 cs:^Parkovací automat
 da:^Parkeringsbilletmaskine
 nl:^Betaalautomaat parkeergarage
@@ -7263,7 +7260,7 @@ sk:^Pilier
 barrier-border_control
 en:^Border Control
 ru:^Погранконтроль
-ar:^أمن الحدود
+ar:^أمن الحدود|حرس الحدود
 cs:^Pohraniční kontrola
 da:^Grænsekontrol
 nl:^Grenscontrole
@@ -7696,7 +7693,7 @@ sk:^Vulkán
 office-estate_agent
 en:^Estate Agent|Realtor
 ru:^Агентство недвижимости|риэлтор
-ar:^وكيل عقاري
+ar:^وكيل عقاري|سمسار عقارات|سمسار
 cs:^Realitní makléř
 da:^Ejendomsmægler
 nl:^Makelaar
@@ -7727,7 +7724,7 @@ sk:^Realitný agent
 power-pole|power-tower
 en:^Power Tower
 ru:^Опора ЛЭП
-ar:^عمود كهرباء
+ar:^برج كهرباء
 cs:^Sloup elektrického vedení
 da:^El-pol
 nl:^Elektriciteitspaal
@@ -8315,7 +8312,7 @@ zh-Hant:^心臟電擊器
 
 emergency-fire_hydrant
 en:^Fire Hydrant
-ru:^Гидрант|Пожарный гидрант
+ru:^Гидрант
 ar:^صنبور الإطفاء
 cs:^Požární hydrant
 da:^Brandhane
