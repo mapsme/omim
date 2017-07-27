@@ -2305,11 +2305,15 @@ void Framework::UpdatePlacePageInfoForCurrentSelection()
 
   place_page::Info info;
 
-  df::SelectionShape::ESelectedObject const obj = OnTapEventImpl(*m_lastTapEvent, info);
-  info.m_countryId = m_infoGetter->GetRegionCountryId(info.GetMercator());
-  GetStorage().GetTopmostNodesFor(info.m_countryId, info.m_topmostCountryIds);
-  if (obj != df::SelectionShape::OBJECT_EMPTY)
-    ActivateMapSelection(false, obj, info);
+  auto const obj = OnTapEventImpl(*m_lastTapEvent, info);
+
+  if (obj == df::SelectionShape::OBJECT_EMPTY)
+    return;
+
+  SetPlacePageLocation(info);
+  InjectViator(info);
+
+  ActivateMapSelection(false, obj, info);
 }
 
 void Framework::InvalidateUserMarks()
@@ -2360,9 +2364,8 @@ void Framework::OnTapEvent(TapEvent const & tapEvent)
         GetPlatform().GetMarketingService().SendMarketingEvent(marketing::kPlacepageHotelBook, {{"provider", "booking.com"}});
     }
 
-    if (info.m_countryId.empty())
-      info.m_countryId = m_infoGetter->GetRegionCountryId(info.GetMercator());
-    GetStorage().GetTopmostNodesFor(info.m_countryId, info.m_topmostCountryIds);
+    SetPlacePageLocation(info);
+    InjectViator(info);
 
     ActivateMapSelection(true, selection, info);
   }
@@ -3337,4 +3340,51 @@ void Framework::InitTaxiEngine()
 
   m_taxiEngine->SetDelegate(
       my::make_unique<TaxiDelegate>(GetStorage(), *m_infoGetter, *m_cityFinder));
+}
+
+void Framework::SetPlacePageLocation(place_page::Info & info)
+{
+  ASSERT(m_infoGetter, ());
+
+  if (info.m_countryId.empty())
+    info.m_countryId = m_infoGetter->GetRegionCountryId(info.GetMercator());
+
+  if (info.m_topmostCountryIds.empty())
+    GetStorage().GetTopmostNodesFor(info.m_countryId, info.m_topmostCountryIds);
+}
+
+void Framework::InjectViator(place_page::Info & info)
+{
+  auto needToInject = GetDrawScale() <= scales::GetUpperWorldScale() && !info.IsSponsored() &&
+                      !info.m_countryId.empty() &&
+                      GetStorage().IsNodeDownloaded(info.m_countryId) &&
+                      ftypes::IsCityChecker::Instance()(info.GetTypes());
+
+  if (!needToInject)
+    return;
+
+  auto const & country = GetStorage().CountryByCountryId(info.m_countryId);
+  auto const mwmId = m_model.GetIndex().GetMwmIdByCountryFile(country.GetFile());
+
+  if (!mwmId.IsAlive() || !mwmId.GetInfo()->IsRegistered())
+    return;
+
+  auto const point = MercatorBounds::FromLatLon(info.GetLatLon());
+  // 3 meters - empirically calculated search radius.
+  static double constexpr kSearchRadiusM = 3.0;
+  m2::RectD const rect = MercatorBounds::RectByCenterXYAndSizeInMeters(point, kSearchRadiusM);
+
+  m_model.GetIndex().ForEachInRectForMWM(
+      [&info](FeatureType & ft) {
+        if (ft.GetFeatureType() != feature::EGeomType::GEOM_POINT || info.IsSponsored() ||
+            !ftypes::IsViatorChecker::Instance()(ft))
+        {
+          return;
+        }
+
+        info.m_sponsoredType = place_page::SponsoredType::Viator;
+        auto const & sponsoredId = ft.GetMetadata().Get(feature::Metadata::FMD_SPONSORED_ID);
+        info.m_sponsoredDescriptionUrl = viator::Api::GetCityUrl(sponsoredId);
+      },
+      rect, scales::GetUpperScale(), mwmId);
 }
