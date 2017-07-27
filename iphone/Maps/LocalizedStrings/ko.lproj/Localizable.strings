@@ -2004,7 +2004,7 @@
 "rub_month" = "RUB/month";
 
 /* Only ru/en are needed */
-"room" = "%s room(s) ap.";
+"room" = "%s room(s) apt.";
 
 /* Only ru/en are needed */
 "real_estate" = "Real estate";

@@ -1176,7 +1176,7 @@
 	<!-- Only ru/en are needed -->
 	<string name="rub_month">RUB/month</string>
 	<!-- Only ru/en are needed -->
-	<string name="room">%s room(s) ap.</string>
+	<string name="room">%s room(s) apt.</string>
 	<!-- Only ru/en are needed -->
 	<string name="real_estate">Real estate</string>
 	<!-- Only ru/en are needed -->
