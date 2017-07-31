@@ -25894,3 +25894,20 @@
     comment = Only ru/en are needed
     en = Learn more
     ru = Посмотреть цены
+
+
+[button_plan]
+    en = Plan
+    ru = Построить
+
+[add_my_position]
+    en = Add My Position
+    ru = Добавить Мое местоположение
+
+[choose_start_point]
+    en = Choose start point
+    ru = Выберите начало маршрута
+
+[choose_destination]
+    en = Choose destincation
+    ru = Выберите место назначения
