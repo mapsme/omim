@@ -475,12 +475,7 @@ public class RoutingController implements TaxiManager.TaxiListener
 
   public void addStop(@NonNull MapObject mapObject)
   {
-    // TODO(@alexzatsepin): set correct title and subtitle.
-    Framework.nativeAddRoutePoint(""/* title */, ""/* subtitle */,
-                                  RoutePointInfo.ROUTE_MARK_INTERMEDIATE,
-                                  0/* intermediateIndex */,
-                                  MapObject.isOfType(MapObject.MY_POSITION, mapObject),
-                                  mapObject.getLat(), mapObject.getLon());
+    addRoutePoint(RoutePointInfo.ROUTE_MARK_INTERMEDIATE, mapObject);
     build();
     if (mContainer != null)
       mContainer.onAddedStop();
@@ -761,11 +756,7 @@ public class RoutingController implements TaxiManager.TaxiListener
     if (startPoint != null)
     {
       applyRemovingIntermediatePointsTransaction();
-      // TODO(@alexzatsepin): set correct title and subtitle.
-      Framework.nativeAddRoutePoint(""/* title */, ""/* subtitle */,
-                                    RoutePointInfo.ROUTE_MARK_START, 0/* intermediateIndex */,
-                                    MapObject.isOfType(MapObject.MY_POSITION, startPoint),
-                                    startPoint.getLat(), startPoint.getLon());
+      addRoutePoint(RoutePointInfo.ROUTE_MARK_START, startPoint);
       if (mContainer != null)
         mContainer.updateMenu();
     }
@@ -773,11 +764,7 @@ public class RoutingController implements TaxiManager.TaxiListener
     if (endPoint != null)
     {
       applyRemovingIntermediatePointsTransaction();
-      // TODO(@alexzatsepin): set correct title and subtitle.
-      Framework.nativeAddRoutePoint(""/* title */, ""/* subtitle */,
-                                    RoutePointInfo.ROUTE_MARK_FINISH, 0/* intermediateIndex */,
-                                    MapObject.isOfType(MapObject.MY_POSITION, endPoint),
-                                    endPoint.getLat(), endPoint.getLon());
+      addRoutePoint(RoutePointInfo.ROUTE_MARK_FINISH, endPoint);
       if (mContainer != null)
         mContainer.updateMenu();
     }
@@ -826,11 +813,7 @@ public class RoutingController implements TaxiManager.TaxiListener
     if (point != null)
     {
       applyRemovingIntermediatePointsTransaction();
-      // TODO(@alexzatsepin): set correct title and subtitle.
-      Framework.nativeAddRoutePoint(""/* title */, ""/* subtitle */,
-                                    RoutePointInfo.ROUTE_MARK_START, 0/* intermediateIndex */,
-                                    MapObject.isOfType(MapObject.MY_POSITION, point),
-                                    point.getLat(), point.getLon());
+      addRoutePoint(RoutePointInfo.ROUTE_MARK_START, point);
       startPoint = getStartPoint();
     }
 
@@ -881,11 +864,8 @@ public class RoutingController implements TaxiManager.TaxiListener
     if (point != null)
     {
       applyRemovingIntermediatePointsTransaction();
-      // TODO(@alexzatsepin): set correct title and subtitle.
-      Framework.nativeAddRoutePoint(""/* title */, ""/* subtitle */,
-                                    RoutePointInfo.ROUTE_MARK_FINISH, 0/* intermediateIndex */,
-                                    MapObject.isOfType(MapObject.MY_POSITION, point),
-                                    point.getLat(), point.getLon());
+
+      addRoutePoint(RoutePointInfo.ROUTE_MARK_FINISH, point);
       endPoint = getEndPoint();
     }
 
@@ -923,6 +903,14 @@ public class RoutingController implements TaxiManager.TaxiListener
     setPointsInternal(startPoint, endPoint);
     checkAndBuildRoute();
     return true;
+  }
+
+  private static void addRoutePoint(@RoutePointInfo.RouteMarkType int type, @NonNull MapObject point)
+  {
+    // TODO(@alexzatsepin): set correct title and subtitle.
+    Framework.nativeAddRoutePoint("", "", type, 0/* intermediateIndex */,
+                                  MapObject.isOfType(MapObject.MY_POSITION, point),
+                                  point.getLat(), point.getLon());
   }
 
   private void swapPoints()
