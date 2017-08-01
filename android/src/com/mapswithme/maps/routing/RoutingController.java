@@ -9,6 +9,7 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AlertDialog;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -37,6 +38,7 @@ import com.mapswithme.util.statistics.AlohaHelper;
 import com.mapswithme.util.statistics.Statistics;
 
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import static com.mapswithme.util.statistics.Statistics.EventName.ROUTING_POINT_ADD;
@@ -907,10 +909,38 @@ public class RoutingController implements TaxiManager.TaxiListener
 
   private static void addRoutePoint(@RoutePointInfo.RouteMarkType int type, @NonNull MapObject point)
   {
-    // TODO(@alexzatsepin): set correct title and subtitle.
-    Framework.nativeAddRoutePoint("", "", type, 0/* intermediateIndex */,
+    Pair<String, String> description = getDescriptionForPoint(point);
+    Framework.nativeAddRoutePoint(description.first /* title */, description.second /* subtitle */,
+                                  type, 0 /* intermediateIndex */,
                                   MapObject.isOfType(MapObject.MY_POSITION, point),
                                   point.getLat(), point.getLon());
+  }
+
+  @NonNull
+  private static Pair<String, String> getDescriptionForPoint(@NonNull MapObject point)
+  {
+    String title, subtitle = "";
+    if (!TextUtils.isEmpty(point.getTitle()))
+    {
+      title = point.getTitle();
+      subtitle = point.getSubtitle();
+    }
+    else
+    {
+      if (!TextUtils.isEmpty(point.getSubtitle()))
+      {
+        title = point.getSubtitle();
+      }
+      else if (!TextUtils.isEmpty(point.getAddress()))
+      {
+        title = point.getAddress();
+      }
+      else
+      {
+        title = String.format(Locale.US, "%1$s, %2$s", point.getLat(), point.getLon());
+      }
+    }
+    return new Pair<>(title, subtitle);
   }
 
   private void swapPoints()
