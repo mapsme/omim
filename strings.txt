@@ -25910,4 +25910,4 @@
 
 [choose_destination]
     en = Choose a destination
-    ru = Выберите место назначения
+    ru = Выберите конец маршрута
