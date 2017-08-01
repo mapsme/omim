@@ -25905,9 +25905,9 @@
     ru = Добавить мое местоположение
 
 [choose_start_point]
-    en = Choose start point
+    en = Choose a starting point
     ru = Выберите начало маршрута
 
 [choose_destination]
-    en = Choose destination
+    en = Choose a destination
     ru = Выберите место назначения
