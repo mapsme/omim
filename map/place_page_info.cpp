@@ -143,6 +143,15 @@ void Info::SetCustomName(std::string const & name)
   m_customName = name;
 }
 
+void Info::SetCustomNameWithCoordinates(m2::PointD const & mercator, std::string const & name)
+{
+  m_uiTitle = name;
+  m_uiSubtitle = measurement_utils::FormatLatLon(MercatorBounds::YToLat(mercator.y),
+                                                 MercatorBounds::XToLon(mercator.x),
+                                                 true /* withSemicolon */);
+  m_customName = name;
+}
+
 void Info::SetBac(BookmarkAndCategory const & bac)
 {
   m_bac = bac;
