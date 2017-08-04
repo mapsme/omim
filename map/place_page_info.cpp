@@ -145,10 +145,18 @@ void Info::SetCustomName(std::string const & name)
 
 void Info::SetCustomNameWithCoordinates(m2::PointD const & mercator, std::string const & name)
 {
-  m_uiTitle = name;
-  m_uiSubtitle = measurement_utils::FormatLatLon(MercatorBounds::YToLat(mercator.y),
-                                                 MercatorBounds::XToLon(mercator.x),
-                                                 true /* withSemicolon */);
+  if (IsBookmark())
+  {
+    m_uiTitle = GetBookmarkData().GetName();
+    m_uiSubtitle = m_bookmarkCategoryName;
+  }
+  else
+  {
+    m_uiTitle = name;
+    m_uiSubtitle = measurement_utils::FormatLatLon(MercatorBounds::YToLat(mercator.y),
+                                                   MercatorBounds::XToLon(mercator.x),
+                                                   true /* withSemicolon */);
+  }
   m_customName = name;
 }
 
