@@ -42,7 +42,7 @@ char const kRouterTypeKey[] = "router";
 double const kRouteScaleMultiplier = 1.5;
 
 void FillTurnsDistancesForRendering(std::vector<routing::RouteSegment> const & segments,
-                                    std::vector<double> & turns)
+                                    double baseDistance, std::vector<double> & turns)
 {
   using namespace routing::turns;
   turns.clear();
@@ -58,7 +58,7 @@ void FillTurnsDistancesForRendering(std::vector<routing::RouteSegment> const & s
     {
       continue;
     }
-    turns.push_back(s.GetDistFromBeginningMerc());
+    turns.push_back(s.GetDistFromBeginningMerc() - baseDistance);
   }
 }
 
@@ -332,7 +332,8 @@ void RoutingManager::InsertRoute(routing::Route const & route)
         subroute->m_routeType = df::RouteType::Car;
         subroute->m_color = df::kRouteColor;
         FillTrafficForRendering(segments, subroute->m_traffic);
-        FillTurnsDistancesForRendering(segments, subroute->m_turns);
+        FillTurnsDistancesForRendering(segments, subroute->m_baseDistance,
+                                       subroute->m_turns);
         break;
       case RouterType::Pedestrian:
         subroute->m_routeType = df::RouteType::Pedestrian;
@@ -343,13 +344,15 @@ void RoutingManager::InsertRoute(routing::Route const & route)
         subroute->m_routeType = df::RouteType::Bicycle;
         subroute->m_color = df::kRouteBicycle;
         subroute->m_pattern = df::RoutePattern(8.0, 2.0);
-        FillTurnsDistancesForRendering(segments, subroute->m_turns);
+        FillTurnsDistancesForRendering(segments, subroute->m_baseDistance,
+                                       subroute->m_turns);
         break;
       case RouterType::Taxi:
         subroute->m_routeType = df::RouteType::Taxi;
         subroute->m_color = df::kRouteColor;
         FillTrafficForRendering(segments, subroute->m_traffic);
-        FillTurnsDistancesForRendering(segments, subroute->m_turns);
+        FillTurnsDistancesForRendering(segments, subroute->m_baseDistance,
+                                       subroute->m_turns);
         break;
       default: ASSERT(false, ("Unknown router type"));
     }
