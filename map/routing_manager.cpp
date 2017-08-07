@@ -387,8 +387,9 @@ void RoutingManager::SetRouterImpl(RouterType type)
   };
 
   auto fetcher = make_unique<OnlineAbsentCountriesFetcher>(countryFileGetter, localFileChecker);
-  auto router = make_unique<IndexRouter>(vehicleType, m_loadAltitudes, countryFileGetter,
-                                         getMwmRectByName, numMwmIds,
+  auto router = make_unique<IndexRouter>(vehicleType, m_loadAltitudes, 
+                                         m_callbacks.m_countryParentNameGetterFn,
+                                         countryFileGetter, getMwmRectByName, numMwmIds,
                                          MakeNumMwmTree(*numMwmIds, m_callbacks.m_countryInfoGetter()),
                                          m_routingSession, index);
 

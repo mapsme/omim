@@ -26,6 +26,7 @@
 
 #include "geometry/distance_on_sphere.hpp"
 
+#include "std/functional.hpp"
 #include "std/limits.hpp"
 
 #include "private.h"
@@ -102,7 +103,8 @@ namespace integration
     }
     
     auto vehicleType = VehicleType::Car;
-    auto indexRouter = make_unique<IndexRouter>(vehicleType, false /* load altitudes*/, countryFileGetter,
+    auto indexRouter = make_unique<IndexRouter>(vehicleType, false /* load altitudes*/, 
+                                                CountryParentNameGetterFn(), countryFileGetter,
                                                 getMwmRectByName, numMwmIds,
                                                 MakeNumMwmTree(*numMwmIds, infoGetter), trafficCache, index);
 

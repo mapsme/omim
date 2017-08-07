@@ -38,7 +38,8 @@ UNIT_TEST(FakeEdgesCombinatorialExplosion)
     TEST_EQUAL(result.second, MwmSet::RegResult::Success, ());
   }
 
-  FeaturesRoadGraph graph(index, IRoadGraph::Mode::ObeyOnewayTag, make_shared<CarModelFactory>());
+  FeaturesRoadGraph graph(index, IRoadGraph::Mode::ObeyOnewayTag,
+                          make_shared<CarModelFactory>(CountryParentNameGetterFn()));
   Junction const j(m2::PointD(MercatorBounds::FromLatLon(50.73208, -1.21279)), feature::kDefaultAltitudeMeters);
   std::vector<std::pair<routing::Edge, routing::Junction>> sourceVicinity;
   graph.FindClosestEdges(j.GetPoint(), 20 /* count */, sourceVicinity);
