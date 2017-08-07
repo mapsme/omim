@@ -64,7 +64,11 @@
 #include "base/strings_bundle.hpp"
 #include "base/thread_checker.hpp"
 
+#include "std/function.hpp"
 #include "std/list.hpp"
+#include "std/set.hpp"
+#include "std/shared_ptr.hpp"
+#include "std/string.hpp"
 #include "std/target_os.hpp"
 #include "std/unique_ptr.hpp"
 #include "std/vector.hpp"
@@ -387,10 +391,10 @@ public:
   void SetCurrentCountryChangedListener(TCurrentCountryChanged const & listener);
 
   vector<MwmSet::MwmId> GetMwmsByRect(m2::RectD const & rect, bool rough) const;
-  MwmSet::MwmId GetMwmIdByName(std::string const & name) const;
+  MwmSet::MwmId GetMwmIdByName(string const & name) const;
 
-  void ReadFeatures(std::function<void(FeatureType const &)> const & reader,
-                    std::set<FeatureID> const & features);
+  void ReadFeatures(function<void(FeatureType const &)> const & reader,
+                    set<FeatureID> const & features);
 
 private:
   struct TapEvent
@@ -436,7 +440,7 @@ private:
   vector<m2::PointF> m_searchMarksSizes;
 
 private:
-  std::vector<m2::TriangleD> GetSelectedFeatureTriangles() const;
+  vector<m2::TriangleD> GetSelectedFeatureTriangles() const;
 
 public:
 
@@ -662,7 +666,7 @@ private:
   /// @returns true if command was handled by editor.
   bool ParseEditorDebugCommand(search::SearchParams const & params);
   /// @returns true if command was handled by drape.
-  bool ParseDrapeDebugCommand(std::string const & query);
+  bool ParseDrapeDebugCommand(string const & query);
 
   void FillFeatureInfo(FeatureID const & fid, place_page::Info & info) const;
   /// @param customTitle, if not empty, overrides any other calculated name.
@@ -776,7 +780,7 @@ public:
 protected:
   /// RoutingManager::Delegate
   void OnRouteFollow(routing::RouterType type) override;
-  void RegisterCountryFilesOnRoute(std::shared_ptr<routing::NumMwmIds> ptr) const override;
+  void RegisterCountryFilesOnRoute(shared_ptr<routing::NumMwmIds> ptr) const override;
 
 public:
   /// @name Editor interface.

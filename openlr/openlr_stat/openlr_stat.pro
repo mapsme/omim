@@ -2,7 +2,7 @@
 
 ROOT_DIR = ../..
 
-DEPENDENCIES = openlr routing routing_common search storage indexer editor \
+DEPENDENCIES = openlr routing routing_common search storage indexer editor mwm_diff \
                platform geometry coding base protobuf osrm stats_client pugixml jansson succinct gflags icu
 
 include($$ROOT_DIR/common.pri)
@@ -15,6 +15,10 @@ TEMPLATE = app
 
 # needed for Platform::WorkingDir() and unicode combining
 QT *= core
+
+!iphone*:!android*:!tizen:!macx-* {
+  QT *= network
+}
 
 macx-* {
   LIBS *= "-framework IOKit" "-framework SystemConfiguration"

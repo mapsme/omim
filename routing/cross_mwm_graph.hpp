@@ -34,8 +34,8 @@ public:
   };
 
   CrossMwmGraph(std::shared_ptr<NumMwmIds> numMwmIds, shared_ptr<m4::Tree<NumMwmId>> numMwmTree,
-                std::shared_ptr<VehicleModelFactory> vehicleModelFactory, VehicleType vehicleType,
-                CourntryRectFn const & countryRectFn, Index & index,
+                std::shared_ptr<VehicleModelFactoryInterface> vehicleModelFactory,
+                VehicleType vehicleType, CourntryRectFn const & countryRectFn, Index & index,
                 RoutingIndexManager & indexManager);
 
   /// \brief Transition segment is a segment which is crossed by mwm border. That means
@@ -152,7 +152,7 @@ private:
   Index & m_index;
   std::shared_ptr<NumMwmIds> m_numMwmIds;
   std::shared_ptr<m4::Tree<NumMwmId>> m_numMwmTree;
-  std::shared_ptr<VehicleModelFactory> m_vehicleModelFactory;
+  std::shared_ptr<VehicleModelFactoryInterface> m_vehicleModelFactory;
   CourntryRectFn const & m_countryRectFn;
   CrossMwmIndexGraph m_crossMwmIndexGraph;
   CrossMwmOsrmGraph m_crossMwmOsrmGraph;
