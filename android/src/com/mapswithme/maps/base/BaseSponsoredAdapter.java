@@ -35,9 +35,6 @@ public abstract class BaseSponsoredAdapter extends RecyclerView.Adapter<BaseSpon
                                                         R.dimen.viator_product_width);
   private static final int MARGING_QUARTER = UiUtils.dimen(MwmApplication.get(),
                                                              R.dimen.margin_quarter);
-  private static final String ERROR_SUBTITLE = MwmApplication
-      .get().getString(R.string.preloader_cian_message);
-
   @Retention(RetentionPolicy.SOURCE)
   @IntDef({ TYPE_PRODUCT, TYPE_MORE, TYPE_LOADING })
   @interface ViewType{}
@@ -55,9 +52,8 @@ public abstract class BaseSponsoredAdapter extends RecyclerView.Adapter<BaseSpon
     mSponsoredType = sponsoredType;
     mItems = new ArrayList<>();
     mListener = listener;
-    String subtitle = hasError ? ERROR_SUBTITLE : getLoadingSubtitle();
-    mItems.add(new Item(TYPE_LOADING, sponsoredType, getLoadingTitle(), url, subtitle, hasError,
-                        false));
+    mItems.add(new Item(TYPE_LOADING, sponsoredType, getLoadingTitle(), url, getLoadingSubtitle(),
+                        hasError, false));
   }
 
   public BaseSponsoredAdapter(@Sponsored.SponsoredType int sponsoredType,
@@ -121,7 +117,7 @@ public abstract class BaseSponsoredAdapter extends RecyclerView.Adapter<BaseSpon
   public void setLoadingError(@Sponsored.SponsoredType int sponsoredType, @NonNull String url)
   {
     mItems.clear();
-    mItems.add(new Item(TYPE_LOADING, sponsoredType, getLoadingTitle(), url, ERROR_SUBTITLE,
+    mItems.add(new Item(TYPE_LOADING, sponsoredType, getLoadingTitle(), url, getLoadingSubtitle(),
                         true, false));
     notifyItemChanged(0/* position */);
   }
