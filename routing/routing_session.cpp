@@ -102,7 +102,6 @@ void RoutingSession::RebuildRoute(m2::PointD const & startPoint,
 void RoutingSession::DoReadyCallback::operator()(Route & route, IRouter::ResultCode e)
 {
   threads::MutexGuard guard(m_routeSessionMutexInner);
-  UNUSED_VALUE(guard);
 
   ASSERT(m_rs.m_route, ());
 
@@ -132,7 +131,6 @@ void RoutingSession::RemoveRouteImpl()
 void RoutingSession::RemoveRoute()
 {
   threads::MutexGuard guard(m_routingSessionMutex);
-  UNUSED_VALUE(guard);
 
   RemoveRouteImpl();
 }
@@ -164,7 +162,6 @@ void RoutingSession::Reset()
   ASSERT(m_router != nullptr, ());
 
   threads::MutexGuard guard(m_routingSessionMutex);
-  UNUSED_VALUE(guard);
 
   RemoveRouteImpl();
   m_router->ClearState();
@@ -189,7 +186,6 @@ RoutingSession::State RoutingSession::OnLocationPositionChanged(GpsInfo const & 
     return m_state;
 
   threads::MutexGuard guard(m_routingSessionMutex);
-  UNUSED_VALUE(guard);
   ASSERT(m_route, ());
   ASSERT(m_route->IsValid(), ());
 
@@ -287,7 +283,6 @@ void RoutingSession::GetRouteFollowingInfo(FollowingInfo & info) const
   };
 
   threads::MutexGuard guard(m_routingSessionMutex);
-  UNUSED_VALUE(guard);
 
   ASSERT(m_route, ());
 
@@ -392,7 +387,6 @@ void RoutingSession::GenerateTurnNotifications(vector<string> & turnNotification
   turnNotifications.clear();
 
   threads::MutexGuard guard(m_routingSessionMutex);
-  UNUSED_VALUE(guard);
 
   ASSERT(m_route, ());
 
@@ -449,7 +443,6 @@ void RoutingSession::MatchLocationToRoute(location::GpsInfo & location,
     return;
 
   threads::MutexGuard guard(m_routingSessionMutex);
-  UNUSED_VALUE(guard);
 
   ASSERT(m_route, ());
 
@@ -494,7 +487,6 @@ bool RoutingSession::EnableFollowMode()
 void RoutingSession::SetRoutingSettings(RoutingSettings const & routingSettings)
 {
   threads::MutexGuard guard(m_routingSessionMutex);
-  UNUSED_VALUE(guard);
   m_routingSettings = routingSettings;
 }
 
@@ -527,21 +519,18 @@ m2::PointD const & RoutingSession::GetUserCurrentPosition() const
 void RoutingSession::EnableTurnNotifications(bool enable)
 {
   threads::MutexGuard guard(m_routingSessionMutex);
-  UNUSED_VALUE(guard);
   m_turnNotificationsMgr.Enable(enable);
 }
 
 bool RoutingSession::AreTurnNotificationsEnabled() const
 {
   threads::MutexGuard guard(m_routingSessionMutex);
-  UNUSED_VALUE(guard);
   return m_turnNotificationsMgr.IsEnabled();
 }
 
 void RoutingSession::SetTurnNotificationsUnits(measurement_utils::Units const units)
 {
   threads::MutexGuard guard(m_routingSessionMutex);
-  UNUSED_VALUE(guard);
   m_turnNotificationsMgr.SetLengthUnits(units);
 }
 
@@ -549,14 +538,12 @@ void RoutingSession::SetTurnNotificationsLocale(string const & locale)
 {
   LOG(LINFO, ("The language for turn notifications is", locale));
   threads::MutexGuard guard(m_routingSessionMutex);
-  UNUSED_VALUE(guard);
   m_turnNotificationsMgr.SetLocale(locale);
 }
 
 string RoutingSession::GetTurnNotificationsLocale() const
 {
   threads::MutexGuard guard(m_routingSessionMutex);
-  UNUSED_VALUE(guard);
   return m_turnNotificationsMgr.GetLocale();
 }
 
@@ -642,7 +629,6 @@ void RoutingSession::OnTrafficInfoClear()
 {
   {
     threads::MutexGuard guard(m_routingSessionMutex);
-    UNUSED_VALUE(guard);
     Clear();
   }
   RebuildRouteOnTrafficUpdate();
@@ -660,7 +646,6 @@ void RoutingSession::OnTrafficInfoAdded(TrafficInfo && info)
 
   {
     threads::MutexGuard guard(m_routingSessionMutex);
-    UNUSED_VALUE(guard);
     Set(info.GetMwmId(), move(coloring));
   }
   RebuildRouteOnTrafficUpdate();
@@ -670,7 +655,6 @@ void RoutingSession::OnTrafficInfoRemoved(MwmSet::MwmId const & mwmId)
 {
   {
     threads::MutexGuard guard(m_routingSessionMutex);
-    UNUSED_VALUE(guard);
     Remove(mwmId);
   }
   RebuildRouteOnTrafficUpdate();
@@ -679,7 +663,6 @@ void RoutingSession::OnTrafficInfoRemoved(MwmSet::MwmId const & mwmId)
 shared_ptr<TrafficInfo::Coloring> RoutingSession::GetTrafficInfo(MwmSet::MwmId const & mwmId) const
 {
   threads::MutexGuard guard(m_routingSessionMutex);
-  UNUSED_VALUE(guard);
   return TrafficCache::GetTrafficInfo(mwmId);
 }
 
