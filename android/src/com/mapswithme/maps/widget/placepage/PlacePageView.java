@@ -1026,6 +1026,8 @@ public class PlacePageView extends RelativeLayout
   public void onMoreItemSelected(@NonNull String url, @Sponsored.SponsoredType int type)
   {
     Utils.openUrl(getContext(), url);
+    Statistics.INSTANCE.trackSponsoredGalleryEvent(Statistics.EventName.PP_SPONSOR_MORE_SELECTED,
+                                                   type);
   }
 
   @Override

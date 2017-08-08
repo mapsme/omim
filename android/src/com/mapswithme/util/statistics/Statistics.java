@@ -746,7 +746,9 @@ public enum Statistics
 
   public void trackSponsoredGalleryShown(@Sponsored.SponsoredType int type)
   {
-    trackEvent(PP_SPONSORED_SHOWN, Statistics.params().add(PROVIDER, convertToSponsor(type)).get());
+    String provider = convertToSponsor(type);
+    trackEvent(PP_SPONSORED_SHOWN, Statistics.params().add(PROVIDER, provider).get());
+    MyTracker.trackEvent(PP_SPONSORED_SHOWN + "_" + provider);
   }
 
   public void trackSponsoredGalleryError(@Sponsored.SponsoredType int type, String errorCode)
@@ -758,7 +760,9 @@ public enum Statistics
   public void trackSponsoredGalleryEvent(@NonNull String eventName,
                                          @Sponsored.SponsoredType int type)
   {
-    trackEvent(eventName, Statistics.params().add(PROVIDER, convertToSponsor(type)).get());
+    String provider = convertToSponsor(type);
+    trackEvent(eventName, Statistics.params().add(PROVIDER, provider).get());
+    MyTracker.trackEvent(eventName + "_" + provider);
   }
 
   @NonNull
