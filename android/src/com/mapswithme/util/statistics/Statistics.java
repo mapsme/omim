@@ -133,6 +133,8 @@ public enum Statistics
     public static final String SEARCH_ON_MAP_CLICKED = "Search. View on map clicked.";
     public static final String SEARCH_CANCEL = "Search. Cancel.";
     public static final String SEARCH_TAB_SELECTED = "Search_Tab_selected";
+    public static final String SEARCH_SPONSOR_CATEGORY_SHOWN = "Search_SponsoredCategory_shown";
+    public static final String SEARCH_SPONSOR_CATEGORY_SELECTED = "Search_SponsoredCategory_selected";
 
     // place page
     public static final String PP_OPEN = "PP. Open";
@@ -757,8 +759,7 @@ public enum Statistics
                                              .add(ERROR, errorCode).get());
   }
 
-  public void trackSponsoredGalleryEvent(@NonNull String eventName,
-                                         @Sponsored.SponsoredType int type)
+  public void trackSponsoredEvent(@NonNull String eventName, @Sponsored.SponsoredType int type)
   {
     String provider = convertToSponsor(type);
     trackEvent(eventName, Statistics.params().add(PROVIDER, provider).get());
