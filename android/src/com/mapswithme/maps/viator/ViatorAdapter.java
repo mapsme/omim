@@ -64,10 +64,15 @@ public final class ViatorAdapter extends BaseSponsoredAdapter
 
   @NonNull
   @Override
-  protected ViewHolder createLoadingViewHolder(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent)
+  protected View inflateLoadingView(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent)
   {
-    return new LoadingViewHolder(inflater.inflate(R.layout.item_viator_loading, parent, false),
-                                 this);
+    return inflater.inflate(R.layout.item_viator_loading, parent, false);
+  }
+
+  @Override
+  protected int getMoreLabelForLoadingView()
+  {
+    return R.string.preloader_viator_button;
   }
 
   @NonNull

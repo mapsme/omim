@@ -5,6 +5,7 @@ import android.support.annotation.IntDef;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -135,8 +136,21 @@ public abstract class BaseSponsoredAdapter extends RecyclerView.Adapter<BaseSpon
                                                  @NonNull ViewGroup parent);
 
   @NonNull
-  protected abstract ViewHolder createLoadingViewHolder(@NonNull LayoutInflater inflater,
-                                                        @NonNull ViewGroup parent);
+  protected ViewHolder createLoadingViewHolder(@NonNull LayoutInflater inflater,
+                                                        @NonNull ViewGroup parent)
+  {
+    View loadingView = inflateLoadingView(inflater, parent);
+    TextView moreView = (TextView) loadingView.findViewById(R.id.tv__more);
+    moreView.setText(getMoreLabelForLoadingView());
+    return new LoadingViewHolder(loadingView, this);
+  }
+
+  @NonNull
+  protected abstract View inflateLoadingView(@NonNull LayoutInflater inflater,
+                                             @NonNull ViewGroup parent);
+
+  @StringRes
+  protected abstract int getMoreLabelForLoadingView();
 
   @NonNull
   protected abstract String getLoadingTitle();
@@ -198,12 +212,15 @@ public abstract class BaseSponsoredAdapter extends RecyclerView.Adapter<BaseSpon
     ProgressBar mProgressBar;
     @NonNull
     TextView mSubtitle;
+    @NonNull
+    TextView mMore;
 
     public LoadingViewHolder(@NonNull View itemView, @NonNull BaseSponsoredAdapter adapter)
     {
       super(itemView, adapter);
       mProgressBar = (ProgressBar) itemView.findViewById(R.id.pb__progress);
       mSubtitle = (TextView) itemView.findViewById(R.id.tv__subtitle);
+      mMore = (TextView) itemView.findViewById(R.id.tv__more);
     }
 
     @CallSuper
