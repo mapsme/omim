@@ -972,7 +972,7 @@ public class PlacePageView extends RelativeLayout
     }
   }
 
-  private void updateSponsoredLogo(@Sponsored.SponsoredType int type)
+  private void updateGallerySponsoredLogo(@Sponsored.SponsoredType int type)
   {
     if (type != Sponsored.TYPE_VIATOR && type != Sponsored.TYPE_CIAN)
       throw new AssertionError("Unsupported type: " + type);
@@ -1003,7 +1003,7 @@ public class PlacePageView extends RelativeLayout
     }
   }
 
-  private void showSponsoredTitle(@Sponsored.SponsoredType int type)
+  private void updateGallerySponsoredTitle(@Sponsored.SponsoredType int type)
   {
     mTvSponsoredTitle.setText(type == Sponsored.TYPE_CIAN ? R.string.subtitle_rent
                                                           : R.string.place_page_viator_title);
@@ -1354,8 +1354,8 @@ public class PlacePageView extends RelativeLayout
     if (!isViator && !isCian)
       return;
 
-    updateSponsoredLogo(mSponsored.getType());
-    showSponsoredTitle(mSponsored.getType());
+    updateGallerySponsoredLogo(mSponsored.getType());
+    updateGallerySponsoredTitle(mSponsored.getType());
     UiUtils.show(mSponsoredGalleryView);
 
     boolean hasInCache = isCian ? Cian.hasCache(mMapObject.getFeatureId())
