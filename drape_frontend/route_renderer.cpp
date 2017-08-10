@@ -88,9 +88,9 @@ float CalculateRadius(ScreenBase const & screen)
 
 void ClipBorders(std::vector<ArrowBorders> & borders)
 {
-  auto invalidBorders = [](ArrowBorders const & borders)
+  auto invalidBorders = [](ArrowBorders const & arrowBorders)
   {
-    return borders.m_groupIndex == kInvalidGroup;
+    return arrowBorders.m_groupIndex == kInvalidGroup;
   };
   borders.erase(std::remove_if(borders.begin(), borders.end(), invalidBorders), borders.end());
 }
@@ -377,9 +377,9 @@ dp::Color RouteRenderer::GetMaskColor(RouteType routeType, double baseDistance,
   {
     if (routeType == RouteType::Car)
       return GetColorConstant(arrows ? kRouteArrowsMaskCar : kRouteMaskCar);
-    else if (routeType == RouteType::Bicycle)
+    if (routeType == RouteType::Bicycle)
       return GetColorConstant(arrows ? kRouteArrowsMaskBicycle : kRouteMaskBicycle);
-    else if (routeType == RouteType::Pedestrian)
+    if (routeType == RouteType::Pedestrian)
       return GetColorConstant(kRouteMaskPedestrian);
   }
   return {0, 0, 0, 0};

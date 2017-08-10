@@ -572,10 +572,6 @@ private:
 class CacheRouteArrowsMessage : public Message
 {
 public:
-  CacheRouteArrowsMessage(dp::DrapeID subrouteId, std::vector<ArrowBorders> const & borders)
-    : CacheRouteArrowsMessage(subrouteId, borders, -1 /* invalid recache id */)
-  {}
-
   CacheRouteArrowsMessage(dp::DrapeID subrouteId, std::vector<ArrowBorders> const & borders,
                           int recacheId)
     : m_subrouteId(subrouteId)
