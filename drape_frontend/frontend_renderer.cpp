@@ -435,6 +435,8 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
       if (!CheckRouteRecaching(make_ref(routeData)))
         break;
 
+      m_routeRenderer->ClearObsoleteRouteData(m_lastRecacheRouteId);
+
       m_routeRenderer->AddRouteData(std::move(routeData), make_ref(m_gpuProgramManager));
 
       // Here we have to recache route arrows.
@@ -821,12 +823,11 @@ void FrontendRenderer::UpdateGLResources()
   for (auto const & routeData : m_routeRenderer->GetRouteData())
   {
     auto msg = make_unique_dp<AddSubrouteMessage>(routeData->m_subrouteId,
-                                                  std::move(routeData->m_subroute),
+                                                  routeData->m_subroute,
                                                   m_lastRecacheRouteId);
     m_commutator->PostMessage(ThreadsCommutator::ResourceUploadThread, std::move(msg),
                               MessagePriority::Normal);
   }
-  m_routeRenderer->ClearRouteData();
 
   m_trafficRenderer->ClearGLDependentResources();
 
