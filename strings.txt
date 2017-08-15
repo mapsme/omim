@@ -17078,7 +17078,7 @@
   [placepage_add_stop]
     tags = ios, android
     en = Add Stop
-    ru = Заехать
+    ru = Через
     ar = إضافة نقطة توقف
     cs = Přidat zastávku
     da = Tilføj stop
