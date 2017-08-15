@@ -146,7 +146,6 @@ vector<string> kSearchMarks =
 {
   "search-result",
   "search-booking",
-  "search-tinkoff",
   "search-adv",
   "search-cian", // TODO: delete me after Cian project is finished.
 };
@@ -1811,8 +1810,6 @@ void Framework::FillSearchResultsMarks(search::Results::ConstIter begin,
 
     if (r.m_metadata.m_isSponsoredHotel)
       mark->SetCustomSymbol("search-booking");
-    else if (r.m_metadata.m_isSponsoredBank)
-      mark->SetCustomSymbol("search-tinkoff");
   }
 }
 
