@@ -20,10 +20,6 @@ namespace
 
 constexpr char const * kOSMMultivalueDelimiter = ";";
 
-// https://en.wikipedia.org/wiki/List_of_tallest_buildings_in_the_world
-auto constexpr kMaxBuildingLevelsInTheWorld = 167;
-auto constexpr kMinBuildingLevel = -6;
-
 template <class T>
 void RemoveDuplicatesAndKeepOrder(vector<T> & vec)
 {
@@ -183,6 +179,8 @@ string MetadataTagProcessorImpl::ValidateAndFormat_height(string const & v) cons
 
 string MetadataTagProcessorImpl::ValidateAndFormat_building_levels(string v) const
 {
+  // https://en.wikipedia.org/wiki/List_of_tallest_buildings_in_the_world
+  auto constexpr kMaxBuildingLevelsInTheWorld = 167;
   // Some mappers use full width unicode digits. We can handle that.
   strings::NormalizeDigits(v);
   char * stop;
@@ -190,22 +188,6 @@ string MetadataTagProcessorImpl::ValidateAndFormat_building_levels(string v) con
   double const levels = strtod(s, &stop);
   if (s != stop && isfinite(levels) && levels >= 0 && levels <= kMaxBuildingLevelsInTheWorld)
     return strings::to_string_dac(levels, 1);
-
-  return {};
-}
-
-string MetadataTagProcessorImpl::ValidateAndFormat_level(string v) const
-{
-  // Some mappers use full width unicode digits. We can handle that.
-  strings::NormalizeDigits(v);
-  char * stop;
-  char const * s = v.c_str();
-  double const levels = strtod(s, &stop);
-  if (s != stop && isfinite(levels) && levels >= kMinBuildingLevel &&
-      levels <= kMaxBuildingLevelsInTheWorld)
-  {
-    return strings::to_string(levels);
-  }
 
   return {};
 }
