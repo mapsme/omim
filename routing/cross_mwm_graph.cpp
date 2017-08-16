@@ -45,7 +45,7 @@ void CrossMwmGraph::ClosestSegment::Update(double distM, Segment const & bestSeg
 
 // CrossMwmGraph ----------------------------------------------------------------------------------
 CrossMwmGraph::CrossMwmGraph(shared_ptr<NumMwmIds> numMwmIds, shared_ptr<m4::Tree<NumMwmId>> numMwmTree,
-                             shared_ptr<VehicleModelFactory> vehicleModelFactory,
+                             shared_ptr<VehicleModelFactory> vehicleModelFactory, VehicleType vehicleType,
                              CourntryRectFn const & countryRectFn, Index & index,
                              RoutingIndexManager & indexManager)
   : m_index(index)
@@ -53,7 +53,7 @@ CrossMwmGraph::CrossMwmGraph(shared_ptr<NumMwmIds> numMwmIds, shared_ptr<m4::Tre
   , m_numMwmTree(numMwmTree)
   , m_vehicleModelFactory(vehicleModelFactory)
   , m_countryRectFn(countryRectFn)
-  , m_crossMwmIndexGraph(index, numMwmIds)
+  , m_crossMwmIndexGraph(index, numMwmIds, vehicleType)
   , m_crossMwmOsrmGraph(numMwmIds, indexManager)
 {
   CHECK(m_numMwmIds, ());
