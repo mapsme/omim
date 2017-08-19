@@ -237,6 +237,9 @@
       <FileRef
          location = "container:oauthcpp/oauthcpp.xcodeproj">
       </FileRef>
+      <FileRef
+         location = "group:bsdiff/bsdiff.xcodeproj">
+      </FileRef>
    </Group>
    <FileRef
       location = "container:api/api.xcodeproj">
@@ -261,6 +264,9 @@
    </FileRef>
    <FileRef
       location = "container:generator/generator.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:mwm_diff/mwm_diff.xcodeproj">
    </FileRef>
    <FileRef
       location = "container:generator_tool/generator_tool.xcodeproj">
