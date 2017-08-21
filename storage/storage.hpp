@@ -504,6 +504,8 @@ public:
   bool IsInnerNode(TCountryId const & countryId) const;
 
   TLocalAndRemoteSize CountrySizeInBytes(TCountryId const & countryId, MapOptions opt) const;
+  TMwmSize GetRemoteSize(platform::CountryFile const & file, MapOptions opt,
+                         int64_t version) const;
   platform::CountryFile const & GetCountryFile(TCountryId const & countryId) const;
   TLocalFilePtr GetLatestLocalFile(platform::CountryFile const & countryFile) const;
   TLocalFilePtr GetLatestLocalFile(TCountryId const & countryId) const;
@@ -656,9 +658,6 @@ private:
   void LoadDiffScheme();
 
   void OnDiffStatusReceived() override;
-
-  TMwmSize GetRemoteSize(platform::CountryFile const & file, MapOptions opt,
-                         int64_t version) const;
 };
 
 void GetQueuedCountries(Storage::TQueue const & queue, TCountriesSet & resultCountries);
