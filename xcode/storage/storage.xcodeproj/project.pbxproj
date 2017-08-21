@@ -17,6 +17,8 @@
 		34B093261C61F9BA0066F4C3 /* app_store.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 34B093211C61F9BA0066F4C3 /* app_store.hpp */; };
 		34C9BCFC1C6CCF85000DC38D /* country_name_getter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 34C9BCFA1C6CCF85000DC38D /* country_name_getter.cpp */; };
 		34C9BCFD1C6CCF85000DC38D /* country_name_getter.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 34C9BCFB1C6CCF85000DC38D /* country_name_getter.hpp */; };
+		4586D0C71F48126A00DF9CE5 /* diff_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4586D0C51F48126A00DF9CE5 /* diff_manager.cpp */; };
+		4586D0C81F48126A00DF9CE5 /* diff_manager.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 4586D0C61F48126A00DF9CE5 /* diff_manager.hpp */; };
 		56D8CB991CAC17A80003F420 /* test_defines.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56D8CB971CAC17A80003F420 /* test_defines.cpp */; };
 		56D8CB9A1CAC17A80003F420 /* test_defines.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 56D8CB981CAC17A80003F420 /* test_defines.hpp */; };
 		671182CE1C7E06B400CB8177 /* storage_3levels_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 671182CC1C7E069C00CB8177 /* storage_3levels_tests.cpp */; };
@@ -186,6 +188,8 @@
 		34C9BCFB1C6CCF85000DC38D /* country_name_getter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = country_name_getter.hpp; sourceTree = "<group>"; };
 		34F5584A1DBF2FC000A4FC11 /* common-debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "common-debug.xcconfig"; path = "../common-debug.xcconfig"; sourceTree = "<group>"; };
 		34F5584B1DBF2FC000A4FC11 /* common-release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "common-release.xcconfig"; path = "../common-release.xcconfig"; sourceTree = "<group>"; };
+		4586D0C51F48126A00DF9CE5 /* diff_manager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = diff_manager.cpp; path = diff_scheme/diff_manager.cpp; sourceTree = "<group>"; };
+		4586D0C61F48126A00DF9CE5 /* diff_manager.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = diff_manager.hpp; path = diff_scheme/diff_manager.hpp; sourceTree = "<group>"; };
 		56D8CB971CAC17A80003F420 /* test_defines.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test_defines.cpp; sourceTree = "<group>"; };
 		56D8CB981CAC17A80003F420 /* test_defines.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = test_defines.hpp; sourceTree = "<group>"; };
 		671182CC1C7E069C00CB8177 /* storage_3levels_tests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = storage_3levels_tests.cpp; sourceTree = "<group>"; };
@@ -510,6 +514,8 @@
 		675342E21A3F59EF00A0A8C3 /* storage */ = {
 			isa = PBXGroup;
 			children = (
+				4586D0C51F48126A00DF9CE5 /* diff_manager.cpp */,
+				4586D0C61F48126A00DF9CE5 /* diff_manager.hpp */,
 				F68CC5BB1F38B967007527C7 /* diff_scheme_checker.cpp */,
 				F68CC5BC1F38B967007527C7 /* diff_scheme_checker.hpp */,
 				F68CC5BD1F38B967007527C7 /* diff_types.hpp */,
@@ -600,6 +606,7 @@
 				674125221B4C05FA00A3E828 /* queued_country.hpp in Headers */,
 				6753431B1A3F5A2600A0A8C3 /* storage.hpp in Headers */,
 				67247FD61C60BA8A00EDE56A /* test_map_files_downloader.hpp in Headers */,
+				4586D0C81F48126A00DF9CE5 /* diff_manager.hpp in Headers */,
 				675343171A3F5A2600A0A8C3 /* index.hpp in Headers */,
 				34B093231C61F9BA0066F4C3 /* storage_helpers.hpp in Headers */,
 			);
@@ -768,6 +775,7 @@
 				6753430E1A3F5A2600A0A8C3 /* country.cpp in Sources */,
 				67AF4A001BC579DD0048B1ED /* country_info_getter.cpp in Sources */,
 				34B093221C61F9BA0066F4C3 /* storage_helpers.cpp in Sources */,
+				4586D0C71F48126A00DF9CE5 /* diff_manager.cpp in Sources */,
 				675343091A3F5A2600A0A8C3 /* country_decl.cpp in Sources */,
 				674125211B4C05FA00A3E828 /* queued_country.cpp in Sources */,
 				F68CC5BE1F38B967007527C7 /* diff_scheme_checker.cpp in Sources */,
