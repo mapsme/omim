@@ -476,7 +476,7 @@ public:
   // of several versions of the same map keeps only the latest one, others
   // are deleted from disk.
   // *NOTE* storage will forget all already known local maps.
-  void RegisterAllLocalMaps();
+  void RegisterAllLocalMaps(bool enableDiffs);
 
   // Returns list of all local maps, including fake countries (World*.mwm).
   void GetLocalMaps(vector<TLocalFilePtr> & maps) const;
