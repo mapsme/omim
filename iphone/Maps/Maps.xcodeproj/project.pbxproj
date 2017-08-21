@@ -2825,22 +2825,22 @@
 		29B97314FDCFA39411CA2CEA /* Maps */ = {
 			isa = PBXGroup;
 			children = (
-				347526FA1DC0B00F00918CF5 /* common-debug.xcconfig */,
-				347526FB1DC0B00F00918CF5 /* common-release.xcconfig */,
 				FA36B8011540388B004560CC /* Bookmarks */,
 				3454D7981E07F045004AF2AD /* Categories */,
-				340475141E081A4600C92850 /* Common */,
-				340475281E081A4600C92850 /* Core */,
 				080E96DDFE201D6D7F000001 /* Classes */,
-				29B97315FDCFA39411CA2CEA /* Other Sources */,
-				34F73FA11E08300E00AC1FD6 /* Images.xcassets */,
-				34F73F5E1E082FF700AC1FD6 /* LocalizedStrings */,
-				29B97317FDCFA39411CA2CEA /* Resources */,
+				340475141E081A4600C92850 /* Common */,
+				347526FA1DC0B00F00918CF5 /* common-debug.xcconfig */,
+				347526FB1DC0B00F00918CF5 /* common-release.xcconfig */,
+				340475281E081A4600C92850 /* Core */,
 				FA065FC61286143F00FEA989 /* External Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
-				19C28FACFE9D520D11CA2CBB /* Products */,
-				F6E2FBFB1E097B9F0083EBEC /* UI */,
+				34F73FA11E08300E00AC1FD6 /* Images.xcassets */,
+				34F73F5E1E082FF700AC1FD6 /* LocalizedStrings */,
 				8D1107310486CEB800E47090 /* MAPSME.plist */,
+				29B97315FDCFA39411CA2CEA /* Other Sources */,
+				19C28FACFE9D520D11CA2CBB /* Products */,
+				29B97317FDCFA39411CA2CEA /* Resources */,
+				F6E2FBFB1E097B9F0083EBEC /* UI */,
 			);
 			indentWidth = 2;
 			name = Maps;
@@ -6703,6 +6703,8 @@
 					"-lsdf_image",
 					"-licu",
 					"-llocal_ads",
+					"-lbsdiff",
+					"-lmwm_diff",
 				);
 				PRODUCT_NAME = "cm dbg";
 			};
@@ -6753,6 +6755,8 @@
 					"-lsdf_image",
 					"-licu",
 					"-llocal_ads",
+					"-lbsdiff",
+					"-lmwm_diff",
 				);
 				PRODUCT_NAME = "cm rel";
 			};
@@ -6803,6 +6807,8 @@
 					"-lsdf_image",
 					"-licu",
 					"-llocal_ads",
+					"-lbsdiff",
+					"-lmwm_diff",
 				);
 				PRODUCT_NAME = "cm dbg";
 			};
@@ -6853,6 +6859,8 @@
 					"-lsdf_image",
 					"-licu",
 					"-llocal_ads",
+					"-lbsdiff",
+					"-lmwm_diff",
 				);
 				PRODUCT_NAME = "cm beta";
 			};
@@ -6903,6 +6911,8 @@
 					"-lsdf_image",
 					"-licu",
 					"-llocal_ads",
+					"-lbsdiff",
+					"-lmwm_diff",
 				);
 				PRODUCT_NAME = "cm rel";
 			};
@@ -6953,6 +6963,8 @@
 					"-lsdf_image",
 					"-licu",
 					"-llocal_ads",
+					"-lbsdiff",
+					"-lmwm_diff",
 				);
 				PRODUCT_NAME = "cm pf";
 			};
