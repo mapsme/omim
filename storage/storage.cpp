@@ -349,6 +349,26 @@ TLocalAndRemoteSize Storage::CountrySizeInBytes(TCountryId const & countryId, Ma
   return sizes;
 }
 
+TMwmSize Storage::GetRemoteSize(CountryFile const & file, MapOptions opt, int64_t version) const
+{
+  if (version::IsSingleMwm(version))
+  {
+    if (opt == MapOptions::Nothing)
+      return 0;
+    if (m_diffManager.HasDiffFor(file.GetName()))
+      return m_diffManager.InfoFor(file.GetName()).m_size;
+    return file.GetRemoteSize(MapOptions::Map);
+  }
+
+  TMwmSize size = 0;
+  for (MapOptions bit : {MapOptions::Map, MapOptions::CarRouting})
+  {
+    if (HasOptions(opt, bit))
+      size += file.GetRemoteSize(bit);
+  }
+  return size;
+}
+
 CountryFile const & Storage::GetCountryFile(TCountryId const & countryId) const
 {
   return CountryLeafByCountryId(countryId).GetFile();
@@ -1687,8 +1707,7 @@ bool Storage::GetUpdateInfo(TCountryId const & countryId, UpdateInfo & updateInf
         GetNodeStatus(descendantNode).status != NodeStatus::OnDiskOutOfDate)
       return;
     updateInfo.m_numberOfMwmFilesToUpdate += 1;  // It's not a group mwm.
-    if (m_diffManager.GetStatus() == diffs::Status::Available &&
-        m_diffManager.HasDiffFor(descendantNode.Value().Name()))
+    if (m_diffManager.HasDiffFor(descendantNode.Value().Name()))
     {
       updateInfo.m_totalUpdateSizeInBytes +=
         m_diffManager.InfoFor(descendantNode.Value().Name()).m_size;
@@ -1795,30 +1814,5 @@ void Storage::GetTopmostNodesFor(TCountryId const & countryId, TCountriesVec & n
     if (!path.empty() && level < path.size())
       nodes[i] = path[path.size() - 1 - level];
   }
-}
-
-TMwmSize Storage::GetRemoteSize(CountryFile const & file, MapOptions opt,
-                                int64_t version) const
-{
-  if (version::IsSingleMwm(version))
-  {
-    if (opt == MapOptions::Nothing)
-      return 0;
-
-    if (m_diffManager.GetStatus() == diffs::Status::Available &&
-        m_diffManager.HasDiffFor(file.GetName()))
-    {
-      return m_diffManager.InfoFor(file.GetName()).m_size;
-    }
-    return file.GetRemoteSize(MapOptions::Map);
-  }
-
-  TMwmSize size = 0;
-  for (MapOptions bit : {MapOptions::Map, MapOptions::CarRouting})
-  {
-    if (HasOptions(opt, bit))
-      size += file.GetRemoteSize(bit);
-  }
-  return size;
 }
 }  // namespace storage
