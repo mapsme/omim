@@ -4,7 +4,7 @@ package com.mapswithme.maps.search;
  * Class instances are created from native code.
  */
 @SuppressWarnings("unused")
-public class SearchResult
+public class SearchResult implements SearchData
 {
   public static final int TYPE_SUGGEST = 0;
   public static final int TYPE_RESULT = 1;
