@@ -55,7 +55,7 @@ public:
     m2::PointD const m_direction;
   };
 
-  IndexRouter(VehicleType vehicleType, TCountryFileFn const & countryFileFn, CourntryRectFn const & countryRectFn,
+  IndexRouter(VehicleType vehicleType, bool loadAltitudes, TCountryFileFn const & countryFileFn, CourntryRectFn const & countryRectFn,
               shared_ptr<NumMwmIds> numMwmIds, unique_ptr<m4::Tree<NumMwmId>> numMwmTree, traffic::TrafficCache const & trafficCache, Index & index);
 
   // IRouter overrides:
@@ -103,6 +103,7 @@ private:
   bool AreMwmsNear(NumMwmId startId, NumMwmId finishId) const;
 
   VehicleType m_vehicleType;
+  bool m_loadAltitudes;
   std::string const m_name;
   Index & m_index;
   std::shared_ptr<VehicleModelFactory> m_vehicleModelFactory;
