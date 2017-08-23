@@ -19,4 +19,10 @@ public class GoogleAdsBanner implements SearchData
   {
     return mAdView;
   }
+
+  @Override
+  public int getItemViewType()
+  {
+    return SearchResultTypes.TYPE_GOOGLE_ADS;
+  }
 }

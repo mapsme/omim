@@ -118,6 +118,7 @@ public class SearchFragment extends BaseMwmFragment
       if (!isAdded())
         return;
 
+      UiThread.cancelDelayedTasks(mSearchEndTask);
       UiThread.cancelDelayedTasks(mResultsShowingTask);
 
       if (mAdsLoader != null)
@@ -706,7 +707,9 @@ public class SearchFragment extends BaseMwmFragment
         result.add(r);
     }
 
-    return (SearchData[])result.toArray();
+    SearchData[] resultArray = new SearchData[result.size()];
+    result.toArray(resultArray);
+    return resultArray;
   }
 
   private void updateFilterButton(boolean isHotel)

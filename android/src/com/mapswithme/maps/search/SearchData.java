@@ -1,3 +1,6 @@
 package com.mapswithme.maps.search;
 
-public interface SearchData {}
+interface SearchData
+{
+  int getItemViewType();
+}
