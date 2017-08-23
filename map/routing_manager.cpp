@@ -360,6 +360,8 @@ void RoutingManager::SetRouterImpl(RouterType type)
 
   VehicleType const vehicleType = GetVehicleType(type);
 
+  m_loadAltitudes = vehicleType != VehicleType::Car;
+
   auto const countryFileGetter = [this](m2::PointD const & p) -> string {
     // TODO (@gorshenin): fix CountryInfoGetter to return CountryFile
     // instances instead of plain strings.
@@ -385,8 +387,10 @@ void RoutingManager::SetRouterImpl(RouterType type)
   };
 
   auto fetcher = make_unique<OnlineAbsentCountriesFetcher>(countryFileGetter, localFileChecker);
-  auto router = make_unique<IndexRouter>(vehicleType, countryFileGetter, getMwmRectByName, numMwmIds,
-    MakeNumMwmTree(*numMwmIds, m_callbacks.m_countryInfoGetter()), m_routingSession, index);
+  auto router = make_unique<IndexRouter>(vehicleType, m_loadAltitudes, countryFileGetter,
+                                         getMwmRectByName, numMwmIds,
+                                         MakeNumMwmTree(*numMwmIds, m_callbacks.m_countryInfoGetter()),
+                                         m_routingSession, index);
 
   m_routingSession.SetRoutingSettings(GetRoutingSettings(vehicleType));
   m_routingSession.SetRouter(move(router), move(fetcher));
@@ -911,7 +915,10 @@ void RoutingManager::SetDrapeEngine(ref_ptr<df::DrapeEngine> engine, bool is3dAl
   }
 }
 
-bool RoutingManager::HasRouteAltitude() const { return m_routingSession.HasRouteAltitude(); }
+bool RoutingManager::HasRouteAltitude() const
+{
+  return m_loadAltitudes && m_routingSession.HasRouteAltitude();
+}
 
 bool RoutingManager::GenerateRouteAltitudeChart(uint32_t width, uint32_t height,
                                                 vector<uint8_t> & imageRGBAData,
