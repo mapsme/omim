@@ -61194,30 +61194,17 @@ cont {
       name: "cian-l"
       priority: 16696
     }
+    caption {
+      primary {
+        height: 10
+        color: 5592405
+        offset_y: 1
+      }
+      priority: 15696
+    }
   }
   element {
     scale: 15
-    symbol {
-      name: "cian-l"
-      priority: 16696
-    }
-  }
-  element {
-    scale: 16
-    symbol {
-      name: "cian-l"
-      priority: 16696
-    }
-  }
-  element {
-    scale: 17
-    symbol {
-      name: "cian-l"
-      priority: 16696
-    }
-  }
-  element {
-    scale: 18
     symbol {
       name: "cian-l"
       priority: 16696
@@ -61232,7 +61219,7 @@ cont {
     }
   }
   element {
-    scale: 19
+    scale: 16
     symbol {
       name: "cian-l"
       priority: 16696
@@ -61240,6 +61227,51 @@ cont {
     caption {
       primary {
         height: 10
+        color: 5592405
+        offset_y: 1
+      }
+      priority: 15696
+    }
+  }
+  element {
+    scale: 17
+    symbol {
+      name: "cian-l"
+      priority: 16696
+    }
+    caption {
+      primary {
+        height: 10
+        color: 5592405
+        offset_y: 1
+      }
+      priority: 15696
+    }
+  }
+  element {
+    scale: 18
+    symbol {
+      name: "cian-l"
+      priority: 16696
+    }
+    caption {
+      primary {
+        height: 11
+        color: 5592405
+        offset_y: 1
+      }
+      priority: 15696
+    }
+  }
+  element {
+    scale: 19
+    symbol {
+      name: "cian-l"
+      priority: 16696
+    }
+    caption {
+      primary {
+        height: 11
         color: 5592405
         offset_y: 1
       }
