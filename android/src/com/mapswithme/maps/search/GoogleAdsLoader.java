@@ -1,13 +1,19 @@
 package com.mapswithme.maps.search;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.search.DynamicHeightSearchAdRequest;
+import com.google.android.gms.ads.search.SearchAdRequest;
 import com.google.android.gms.ads.search.SearchAdView;
+import com.mapswithme.maps.R;
 import com.mapswithme.maps.ads.GoogleSearchAd;
+import com.mapswithme.util.ThemeUtils;
 import com.mapswithme.util.concurrency.UiThread;
 
 class GoogleAdsLoader
@@ -18,20 +24,26 @@ class GoogleAdsLoader
   }
 
   private long mLoadingDelay;
+  @NonNull
+  private Bundle mStyleParams = new Bundle();
   @Nullable
   private GoogleSearchAd mGoogleSearchAd;
   @Nullable
   private Runnable mLoadingTask;
+  @NonNull
+  private String mQuery = "";
 
-  GoogleAdsLoader(long loadingDelay)
+  GoogleAdsLoader(@NonNull Context context, long loadingDelay)
   {
     this.mLoadingDelay = loadingDelay;
+    initStyle(context);
   }
 
-  void scheduleAdsLoading(final Context context, final String query,
-                          final AdvertLoadingListener loadingListener)
+  void scheduleAdsLoading(@NonNull final Context context, @NonNull final String query,
+                          @NonNull final AdvertLoadingListener loadingListener)
   {
     cancelAdsLoading();
+    mQuery = query;
 
     mGoogleSearchAd = new GoogleSearchAd();
     if (mGoogleSearchAd.getAdUnitId().isEmpty())
@@ -42,7 +54,7 @@ class GoogleAdsLoader
       @Override
       public void run()
       {
-        performLoading(context, query, loadingListener);
+        performLoading(context, loadingListener);
       }
     };
     UiThread.runLater(mLoadingTask, mLoadingDelay);
@@ -57,34 +69,56 @@ class GoogleAdsLoader
     }
   }
 
-  private void performLoading(Context context, String query,
-                              final AdvertLoadingListener loadingListener)
+  void updateAdView(SearchAdView searchAdView)
+  {
+    SearchAdRequest.Builder builder = new SearchAdRequest.Builder()
+      .setQuery(mQuery)
+      .addNetworkExtrasBundle(AdMobAdapter.class, mStyleParams);
+
+    searchAdView.loadAd(builder.build());
+  }
+
+  private void initStyle(@NonNull Context context)
+  {
+    TypedArray attrs = context.obtainStyledAttributes(ThemeUtils.isNightTheme() ?
+      R.style.GoogleAdsDark : R.style.GoogleAdsLight, R.styleable.GoogleAds);
+
+    mStyleParams = new Bundle();
+    mStyleParams.putString("csa_width", "auto");
+    mStyleParams.putString("csa_colorLocation", attrs.getString(R.styleable.GoogleAds_colorLocation));
+    mStyleParams.putString("csa_fontSizeLocation", attrs.getString(R.styleable.GoogleAds_fontSizeLocation));
+    mStyleParams.putString("csa_clickToCall", attrs.getString(R.styleable.GoogleAds_clickToCall));
+    mStyleParams.putString("csa_location", attrs.getString(R.styleable.GoogleAds_location));
+    mStyleParams.putString("csa_sellerRatings", attrs.getString(R.styleable.GoogleAds_sellerRatings));
+    mStyleParams.putString("csa_siteLinks", attrs.getString(R.styleable.GoogleAds_siteLinks));
+    mStyleParams.putString("csa_number", attrs.getString(R.styleable.GoogleAds_number));
+    mStyleParams.putString("csa_fontSizeAnnotation", attrs.getString(R.styleable.GoogleAds_fontSizeAnnotation));
+    mStyleParams.putString("csa_fontSizeAttribution", attrs.getString(R.styleable.GoogleAds_fontSizeAttribution));
+    mStyleParams.putString("csa_fontSizeDescription", attrs.getString(R.styleable.GoogleAds_fontSizeDescription));
+    mStyleParams.putString("csa_fontSizeDomainLink", attrs.getString(R.styleable.GoogleAds_fontSizeDomainLink));
+    mStyleParams.putString("csa_fontSizeTitle", attrs.getString(R.styleable.GoogleAds_fontSizeTitle));
+    mStyleParams.putString("csa_colorAdBorder", attrs.getString(R.styleable.GoogleAds_colorAdBorder));
+    mStyleParams.putString("csa_colorAnnotation", attrs.getString(R.styleable.GoogleAds_colorAnnotation));
+    mStyleParams.putString("csa_colorAttribution", attrs.getString(R.styleable.GoogleAds_colorAttribution));
+    mStyleParams.putString("csa_colorBackground", attrs.getString(R.styleable.GoogleAds_colorBackground));
+    mStyleParams.putString("csa_colorDomainLink", attrs.getString(R.styleable.GoogleAds_colorDomainLink));
+    mStyleParams.putString("csa_colorText", attrs.getString(R.styleable.GoogleAds_colorText));
+    mStyleParams.putString("csa_colorTitleLink", attrs.getString(R.styleable.GoogleAds_colorTitleLink));
+    mStyleParams.putString("csa_attributionSpacingBelow", attrs.getString(R.styleable.GoogleAds_attributionSpacingBelow));
+    mStyleParams.putString("csa_noTitleUnderline", attrs.getString(R.styleable.GoogleAds_noTitleUnderline));
+    mStyleParams.putString("csa_titleBold", attrs.getString(R.styleable.GoogleAds_titleBold));
+    attrs.recycle();
+  }
+
+  private void performLoading(@NonNull Context context, final AdvertLoadingListener loadingListener)
   {
     if (mGoogleSearchAd == null)
       throw new AssertionError("mGoogleSearchAd can't be null here");
 
-    //TODO: Now temporal code (from Google Ads sample) is here. It will be replaced soon.
-
-    // Create a search ad. The ad size and ad unit ID must be set before calling loadAd.
     final SearchAdView view = new SearchAdView(context);
     view.setAdSize(AdSize.SEARCH);
     view.setAdUnitId(mGoogleSearchAd.getAdUnitId());
-
-    // Create an ad request.
-    DynamicHeightSearchAdRequest.Builder builder =
-      new DynamicHeightSearchAdRequest.Builder();
-
-    // Set the query.
-    builder.setQuery(query);
-
-    // Optionally populate the ad request builder.
-    builder.setAdTest(true);
-    builder.setNumber(1);
-    builder.setCssWidth(300); // Equivalent to "width" CSA parameter.
-
-    // Start loading the ad.
-    view.loadAd(builder.build());
-
+    updateAdView(view);
     view.setAdListener(new AdListener()
     {
       @Override

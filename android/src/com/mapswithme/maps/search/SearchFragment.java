@@ -1,6 +1,7 @@
 package com.mapswithme.maps.search;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,6 +37,8 @@ import com.mapswithme.maps.routing.RoutingController;
 import com.mapswithme.maps.widget.PlaceholderView;
 import com.mapswithme.maps.widget.SearchToolbarController;
 import com.mapswithme.maps.widget.placepage.Sponsored;
+import com.mapswithme.util.ConnectionState;
+import com.mapswithme.util.SharedPropertiesUtils;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.Utils;
 import com.mapswithme.util.concurrency.UiThread;
@@ -55,6 +58,7 @@ public class SearchFragment extends BaseMwmFragment
                                     HotelsFilterHolder
 {
   public static final String PREFS_SHOW_ENABLE_LOGGING_SETTING = "ShowEnableLoggingSetting";
+  private static final int MIN_QUERY_LENGTH = 3;
   private static final long ADS_DELAY_MS = 200;
   private static final long RESULTS_DELAY_MS = 400;
   private static final int GOOGLE_AD_POSITION = 3;
@@ -64,6 +68,7 @@ public class SearchFragment extends BaseMwmFragment
   @Nullable
   private GoogleAdsLoader mAdsLoader;
   private boolean mAdsRequested = false;
+  private int mAdsOrientation = -1;
   @Nullable
   private SearchAdView mGoogleAdView;
   @NonNull
@@ -120,12 +125,8 @@ public class SearchFragment extends BaseMwmFragment
 
       UiThread.cancelDelayedTasks(mSearchEndTask);
       UiThread.cancelDelayedTasks(mResultsShowingTask);
-
-      if (mAdsLoader != null)
-      {
-        mAdsLoader.cancelAdsLoading();
-        mAdsRequested = false;
-      }
+      stopAdsLoading();
+      mGoogleAdView = null;
 
       if (TextUtils.isEmpty(query))
       {
@@ -142,7 +143,7 @@ public class SearchFragment extends BaseMwmFragment
         return;
       }
 
-      if (mAdsLoader != null && !isInteractiveSearch())
+      if (mAdsLoader != null && !isInteractiveSearch() && query.length() >= MIN_QUERY_LENGTH)
       {
         mAdsRequested = true;
         mAdsLoader.scheduleAdsLoading(getContext(), query,
@@ -152,8 +153,13 @@ public class SearchFragment extends BaseMwmFragment
           public void onLoadingFinished(SearchAdView searchAdView)
           {
             mGoogleAdView = searchAdView;
+            mAdsRequested = false;
           }
         });
+      }
+      else
+      {
+        mAdsRequested = false;
       }
       runSearch();
     }
@@ -352,7 +358,8 @@ public class SearchFragment extends BaseMwmFragment
     super.onViewCreated(view, savedInstanceState);
     readArguments();
 
-    mAdsLoader = new GoogleAdsLoader(ADS_DELAY_MS);
+    if (ConnectionState.isWifiConnected() && SharedPropertiesUtils.isShowcaseSwitchedOnLocal())
+      mAdsLoader = new GoogleAdsLoader(getContext(), ADS_DELAY_MS);
 
     ViewGroup root = (ViewGroup) view;
     mAppBarLayout = (AppBarLayout) root.findViewById(R.id.app_bar);
@@ -453,6 +460,16 @@ public class SearchFragment extends BaseMwmFragment
       mFilterController.onSaveState(outState);
   }
 
+  @Override
+  public void onConfigurationChanged(Configuration newConfig)
+  {
+    if (mAdsOrientation == newConfig.orientation)
+      return;
+
+    mAdsOrientation = newConfig.orientation;
+    if (mGoogleAdView != null && mAdsLoader != null)
+      mAdsLoader.updateAdView(mGoogleAdView);
+  }
 
   public void onResume()
   {
@@ -680,11 +697,7 @@ public class SearchFragment extends BaseMwmFragment
   private void refreshSearchResults()
   {
     // Search is running hence results updated.
-    if (mAdsLoader != null)
-    {
-      mAdsLoader.cancelAdsLoading();
-      mAdsRequested = false;
-    }
+    stopAdsLoading();
     mSearchRunning = true;
     updateFrames();
     mSearchAdapter.refreshData(combineResultsWithAds());
@@ -771,5 +784,14 @@ public class SearchFragment extends BaseMwmFragment
   public SearchToolbarController getController()
   {
     return mToolbarController;
+  }
+
+  private void stopAdsLoading()
+  {
+    if (mAdsLoader == null)
+      return;
+
+    mAdsLoader.cancelAdsLoading();
+    mAdsRequested = false;
   }
 }
