@@ -16,9 +16,11 @@ import com.mapswithme.maps.routing.RoutingController;
 import com.mapswithme.util.Config;
 import com.mapswithme.util.Listeners;
 import com.mapswithme.util.LocationUtils;
+import com.mapswithme.util.PermissionsUtils;
 import com.mapswithme.util.Utils;
 import com.mapswithme.util.log.Logger;
 import com.mapswithme.util.log.LoggerFactory;
+import com.mapswithme.util.permissions.PermissionsResult;
 
 public enum LocationHelper
 {
@@ -158,12 +160,6 @@ public enum LocationHelper
     }
   };
 
-
-  LocationHelper()
-  {
-    mLogger.d(LocationHelper.class.getSimpleName(), "ctor()");
-  }
-
   @UiThread
   public void initialize()
   {
@@ -219,7 +215,7 @@ public enum LocationHelper
 
     if (mMyPosition == null)
       mMyPosition = new MapObject(MapObject.MY_POSITION, "", "", "", "", mSavedLocation.getLatitude(),
-          mSavedLocation.getLongitude(), "", null, false, "");
+          mSavedLocation.getLongitude(), "", null, false, "", null);
 
     return mMyPosition;
   }
@@ -482,6 +478,12 @@ public enum LocationHelper
     mLogger.d(TAG, "startInternal(), current provider is '" + mLocationProvider
                    + "' , my position mode = " + LocationState.nameOf(getMyPositionMode())
                    + ", mInFirstRun = " + mInFirstRun);
+    if (!PermissionsUtils.isLocationGranted())
+    {
+      mLogger.w(TAG, "Dynamic permission ACCESS_COARSE_LOCATION/ACCESS_FINE_LOCATION is not granted",
+                new Throwable());
+      return;
+    }
     checkProviderInitialization();
     //noinspection ConstantConditions
     mLocationProvider.start();

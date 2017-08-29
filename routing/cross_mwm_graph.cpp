@@ -5,6 +5,7 @@
 
 #include "geometry/mercator.hpp"
 
+#include "base/assert.hpp"
 #include "base/math.hpp"
 #include "base/stl_helpers.hpp"
 
@@ -145,7 +146,11 @@ void CrossMwmGraph::GetTwins(Segment const & s, bool isOutgoing, vector<Segment>
   vector<NumMwmId> neighbors;
   bool allNeighborsHaveCrossMwmSection = false;
   GetAllLoadedNeighbors(s.GetMwmId(), neighbors, allNeighborsHaveCrossMwmSection);
-  if (allNeighborsHaveCrossMwmSection)
+  MwmStatus const currentMwmStatus = GetMwmStatus(s.GetMwmId());
+  CHECK_NOT_EQUAL(currentMwmStatus, MwmStatus::NotLoaded,
+                  ("Current mwm is not loaded. Mwm:", m_numMwmIds->GetFile(s.GetMwmId()),
+                   "currentMwmStatus:", currentMwmStatus));
+  if (allNeighborsHaveCrossMwmSection && currentMwmStatus == MwmStatus::CrossMwmSectionExists)
   {
     DeserializeTransitions(neighbors);
     m_crossMwmIndexGraph.GetTwinsByOsmId(s, isOutgoing, neighbors, twins);
@@ -256,5 +261,17 @@ void CrossMwmGraph::GetTwinCandidates(FeatureType const & ft, bool isOutgoing,
     if (IsTransition(segBackward, isOutgoing))
       twinCandidates.push_back(segBackward);
   }
+}
+
+string DebugPrint(CrossMwmGraph::MwmStatus status)
+{
+  switch (status)
+  {
+  case CrossMwmGraph::MwmStatus::NotLoaded: return "CrossMwmGraph::NotLoaded";
+  case CrossMwmGraph::MwmStatus::CrossMwmSectionExists:
+    return "CrossMwmGraph::CrossMwmSectionExists";
+  case CrossMwmGraph::MwmStatus::NoCrossMwmSection: return "CrossMwmGraph::NoCrossMwmSection";
+  }
+  return string("Unknown CrossMwmGraph::MwmStatus.");
 }
 }  // namespace routing

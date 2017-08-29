@@ -3,7 +3,6 @@
 #include "drape/drape_global.hpp"
 
 #include "base/string_utils.hpp"
-#include "base/mutex.hpp"
 
 #include "std/shared_ptr.hpp"
 #include "std/vector.hpp"
@@ -61,8 +60,6 @@ private:
 
   shared_ptr<GlyphCacheImpl> m_impl;
 
-  static threads::Mutex s_fribidiMutex;
-
 public:
 
   struct Params
@@ -94,8 +91,6 @@ public:
   GlyphMetrics const getGlyphMetrics(GlyphKey const & key);
 
   double getTextLength(double fontSize, string const & text);
-
-  static strings::UniString log2vis(strings::UniString const & str);
 };
 
 }

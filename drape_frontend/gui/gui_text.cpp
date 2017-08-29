@@ -5,7 +5,7 @@
 #include "base/string_utils.hpp"
 #include "base/stl_add.hpp"
 
-#include "drape/fribidi.hpp"
+#include "drape/bidi.hpp"
 #include "drape/glsl_func.hpp"
 #include "drape/shader_def.hpp"
 
@@ -118,7 +118,7 @@ void StaticLabel::CacheStaticText(string const & text, char const * delim,
   dp::TextureManager::TMultilineText textParts;
   strings::Tokenize(text, delim, [&textParts](string const & part)
   {
-    textParts.push_back(fribidi::log2vis(strings::MakeUniString(part)));
+    textParts.push_back(bidi::log2vis(strings::MakeUniString(part)));
   });
 
   ASSERT(!textParts.empty(), ());
@@ -370,7 +370,7 @@ void MutableLabel::SetText(LabelResult & result, string text) const
   if (text.size() > m_maxLength)
     text = text.erase(m_maxLength - 3) + "...";
 
-  strings::UniString uniText = fribidi::log2vis(strings::MakeUniString(text));
+  strings::UniString uniText = bidi::log2vis(strings::MakeUniString(text));
 
   float maxHeight = 0.0f;
   float length = 0.0f;

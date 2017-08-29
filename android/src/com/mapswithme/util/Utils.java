@@ -14,8 +14,10 @@ import android.support.annotation.DimenRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -204,7 +206,11 @@ public class Utils
 
   public static void openUrl(@NonNull Context activity, @NonNull String url)
   {
-    activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+    final Intent intent = new Intent(Intent.ACTION_VIEW);
+    if (!url.startsWith("http://") && !url.startsWith("https://"))
+      url = "http://" + url;
+    intent.setData(Uri.parse(url));
+    activity.startActivity(intent);
   }
 
   public static void sendSupportMail(@NonNull Activity activity, @NonNull String subject)
@@ -396,12 +402,25 @@ public class Utils
           try
           {
             activity.startActivity(intent);
-          } catch (ActivityNotFoundException e)
+          }
+          catch (ActivityNotFoundException e)
           {
             AlohaHelper.logException(e);
           }
         }
       });
+    }
+  }
+
+  public static void detachFragmentIfCoreNotInitialized(@NonNull Context context,
+                                                        @NonNull Fragment fragment)
+  {
+    if (context instanceof AppCompatActivity && !MwmApplication.get().isPlatformInitialized())
+    {
+      ((AppCompatActivity)context).getSupportFragmentManager()
+                                  .beginTransaction()
+                                  .detach(fragment)
+                                  .commit();
     }
   }
 }

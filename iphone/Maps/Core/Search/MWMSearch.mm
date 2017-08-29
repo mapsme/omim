@@ -52,6 +52,7 @@ using TObservers = NSHashTable<__kindof TObserver>;
   search::EverywhereSearchParams m_everywhereParams;
   search::ViewportSearchParams m_viewportParams;
   search::Results m_everywhereResults;
+  vector<bool> m_isLocalAdsCustomer;
   string m_filterQuery;
 }
 
@@ -80,7 +81,8 @@ using TObservers = NSHashTable<__kindof TObserver>;
   NSUInteger const timestamp = ++self.lastSearchStamp;
   {
     __weak auto weakSelf = self;
-    m_everywhereParams.m_onResults = [weakSelf, timestamp](search::Results const & results) {
+    m_everywhereParams.m_onResults = [weakSelf, timestamp](
+        search::Results const & results, vector<bool> const & isLocalAdsCustomer) {
       __strong auto self = weakSelf;
       if (!self)
         return;
@@ -104,6 +106,7 @@ using TObservers = NSHashTable<__kindof TObserver>;
       else
       {
         self->m_everywhereResults = results;
+        self->m_isLocalAdsCustomer = isLocalAdsCustomer;
         self.suggestionsCount = results.GetSuggestsCount();
         [self updateItemsIndex];
         [self onSearchResultsUpdated];
@@ -146,15 +149,7 @@ using TObservers = NSHashTable<__kindof TObserver>;
 
 - (void)updateFilters
 {
-  shared_ptr<search::hotels_filter::Rule> hotelsRules;
-
-  if (self.filter)
-  {
-    hotelsRules = [self.filter rules];
-    if (!hotelsRules)
-      self.filter = nil;
-  }
-
+  shared_ptr<search::hotels_filter::Rule> const hotelsRules = self.filter ? [self.filter rules] : nullptr;
   m_viewportParams.m_hotelsFilter = hotelsRules;
   m_everywhereParams.m_hotelsFilter = hotelsRules;
 }
@@ -220,6 +215,11 @@ using TObservers = NSHashTable<__kindof TObserver>;
 + (search::Result const &)resultWithContainerIndex:(NSUInteger)index
 {
   return [MWMSearch manager]->m_everywhereResults[index];
+}
+
++ (BOOL)isLocalAdsWithContainerIndex:(NSUInteger)index
+{
+  return [MWMSearch manager]->m_isLocalAdsCustomer[index];
 }
 
 + (id<MWMBanner>)adWithContainerIndex:(NSUInteger)index
@@ -293,7 +293,7 @@ using TObservers = NSHashTable<__kindof TObserver>;
 + (void)clearFilter
 {
   MWMSearch * manager = [MWMSearch manager];
-  manager.filter = nil;
+  [manager.filter reset];
   [manager update];
   [manager onSearchCompleted];
 }

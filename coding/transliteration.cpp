@@ -2,6 +2,7 @@
 #include "coding/multilang_utf8_string.hpp"
 
 #include "base/logging.hpp"
+#include "base/string_utils.hpp"
 
 #include "3party/icu/common/unicode/uclean.h"
 #include "3party/icu/common/unicode/unistr.h"
@@ -60,10 +61,10 @@ void Transliteration::Init(std::string const & icuDataDir)
 
 bool Transliteration::Transliterate(std::string const & str, int8_t langCode, std::string & out) const
 {
-  if (str.empty())
+  if (str.empty() || strings::IsASCIIString(str))
     return false;
 
-  std::string const transliteratorId(StringUtf8Multilang::GetTransliteratorIdByCode(langCode));
+  std::string transliteratorId(StringUtf8Multilang::GetTransliteratorIdByCode(langCode));
 
   if (transliteratorId.empty())
     return false;
@@ -81,12 +82,16 @@ bool Transliteration::Transliterate(std::string const & str, int8_t langCode, st
     if (!it->second->m_initialized)
     {
       UErrorCode status = U_ZERO_ERROR;
-      UnicodeString translitId(it->first.c_str());
+
+      std::string const removeDiacriticRule = ";NFD;[\u02B9-\u02D3\u0301-\u0358]Remove;NFC";
+      transliteratorId.append(removeDiacriticRule);
+
+      UnicodeString translitId(transliteratorId.c_str());
 
       it->second->m_transliterator.reset(Transliterator::createInstance(translitId, UTRANS_FORWARD, status));
 
       if (it->second->m_transliterator == nullptr)
-        LOG(LWARNING, ("Cannot create transliterator \"", it->first, "\", icu error =", status));
+        LOG(LWARNING, ("Cannot create transliterator \"", transliteratorId, "\", icu error =", status));
 
       it->second->m_initialized = true;
     }
