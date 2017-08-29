@@ -43,7 +43,7 @@ public:
 
   void OnFramebufferFallback();
 
-  void BeginFrame();
+  void BeginFrame(bool isActiveFrame);
   void EndFrame(ref_ptr<dp::GpuProgramManager> gpuProgramManager);
 
   void EnableWritingToStencil() const;

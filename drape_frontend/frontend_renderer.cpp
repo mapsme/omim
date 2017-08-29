@@ -1119,13 +1119,13 @@ void FrontendRenderer::EndUpdateOverlayTree()
   }
 }
 
-void FrontendRenderer::RenderScene(ScreenBase const & modelView)
+void FrontendRenderer::RenderScene(ScreenBase const & modelView, bool lastFrameActive)
 {
 #if defined(DRAPE_MEASURER) && (defined(RENDER_STATISTIC) || defined(TRACK_GPU_MEM))
   DrapeMeasurer::Instance().BeforeRenderFrame();
 #endif
 
-  m_postprocessRenderer->BeginFrame();
+  m_postprocessRenderer->BeginFrame(lastFrameActive);
 
   GLFunctions::glEnable(gl_const::GLDepthTest);
   m_viewport.Apply();
@@ -1820,6 +1820,7 @@ void FrontendRenderer::Routine::Do()
 
   dp::OGLContext * context = m_renderer.m_contextFactory->getDrawContext();
 
+  bool lastFrameActive = true;
   while (!IsCancelled())
   {
     ScreenBase modelView = m_renderer.ProcessEvents(modelViewChanged, viewportChanged);
@@ -1836,7 +1837,7 @@ void FrontendRenderer::Routine::Do()
     isActiveFrame |= m_renderer.m_texMng->UpdateDynamicTextures();
     m_renderer.m_routeRenderer->UpdatePreview(modelView);
 
-    m_renderer.RenderScene(modelView);
+    m_renderer.RenderScene(modelView, lastFrameActive);
 
     if (modelViewChanged || m_renderer.m_forceUpdateScene || m_renderer.m_forceUpdateUserMarks)
       m_renderer.UpdateScene(modelView);
@@ -1848,6 +1849,8 @@ void FrontendRenderer::Routine::Do()
 
     if (isActiveFrame)
       activityTimer.Reset();
+
+    lastFrameActive = isActiveFrame;
 
     bool isValidFrameTime = true;
     if (activityTimer.ElapsedSeconds() > kMaxInactiveSeconds)
