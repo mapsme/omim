@@ -602,7 +602,7 @@ private:
   void DeleteCountryFiles(TCountryId const & countryId, MapOptions opt, bool deferredDelete);
 
   // Removes country files from downloader.
-  bool DeleteCountryFilesFromDownloader(TCountryId const & countryId, MapOptions opt);
+  bool DeleteCountryFilesFromDownloader(TCountryId const & countryId);
 
   // Returns download size of the currently downloading file for the
   // queued country.
