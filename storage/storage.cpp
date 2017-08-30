@@ -531,7 +531,7 @@ void Storage::DeleteCountry(TCountryId const & countryId, MapOptions opt)
   opt = NormalizeDeleteFileSet(opt);
   bool const deferredDelete = m_willDelete(countryId, localFile);
   DeleteCountryFiles(countryId, opt, deferredDelete);
-  DeleteCountryFilesFromDownloader(countryId, opt);
+  DeleteCountryFilesFromDownloader(countryId);
   NotifyStatusChangedForHierarchy(countryId);
 }
 
@@ -652,7 +652,7 @@ void Storage::DeleteFromDownloader(TCountryId const & countryId)
 {
   ASSERT_THREAD_CHECKER(m_threadChecker, ());
 
-  DeleteCountryFilesFromDownloader(countryId, MapOptions::MapWithCarRouting);
+  DeleteCountryFilesFromDownloader(countryId);
   NotifyStatusChangedForHierarchy(countryId);
 }
 
@@ -1154,7 +1154,7 @@ void Storage::DeleteCountryFiles(TCountryId const & countryId, MapOptions opt, b
     m_localFiles.erase(countryId);
 }
 
-bool Storage::DeleteCountryFilesFromDownloader(TCountryId const & countryId, MapOptions opt)
+bool Storage::DeleteCountryFilesFromDownloader(TCountryId const & countryId)
 {
   ASSERT_THREAD_CHECKER(m_threadChecker, ());
 
@@ -1162,7 +1162,7 @@ bool Storage::DeleteCountryFilesFromDownloader(TCountryId const & countryId, Map
   if (!queuedCountry)
     return false;
 
-  opt = IntersectOptions(opt, queuedCountry->GetInitOptions());
+  MapOptions const opt = queuedCountry->GetInitOptions();
 
   if (IsCountryFirstInQueue(countryId))
   {
