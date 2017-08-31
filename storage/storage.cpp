@@ -652,8 +652,8 @@ void Storage::DeleteFromDownloader(TCountryId const & countryId)
 {
   ASSERT_THREAD_CHECKER(m_threadChecker, ());
 
-  DeleteCountryFilesFromDownloader(countryId);
-  NotifyStatusChangedForHierarchy(countryId);
+  if (DeleteCountryFilesFromDownloader(countryId))
+    NotifyStatusChangedForHierarchy(countryId);
 }
 
 bool Storage::IsDownloadInProgress() const
@@ -854,6 +854,7 @@ void Storage::RegisterDownloadedFiles(TCountryId const & countryId, MapOptions o
     DeleteCountryIndexes(*localFile);
     m_didDownload(countryId, localFile);
 
+    ASSERT(!m_queue.empty(), ());
     CorrectJustDownloadedAndQueue(m_queue.begin());
     SaveDownloadQueue();
 
@@ -1163,6 +1164,16 @@ bool Storage::DeleteCountryFilesFromDownloader(TCountryId const & countryId)
     return false;
 
   MapOptions const opt = queuedCountry->GetInitOptions();
+  if (opt == MapOptions::Diff)
+  {
+    /// If there is a file with a .diff extension then it means
+    /// we've already downloaded the diff file.
+    /// At this point we assume a diff applying proccess have started
+    /// and we can't stop the proccess.
+    auto const fileName = GetFileName(countryId, opt, GetCurrentDataVersion());
+    if (Platform::IsFileExistsByFullPath(fileName)
+      return false;
+  }
 
   if (IsCountryFirstInQueue(countryId))
   {
@@ -1785,6 +1796,7 @@ bool Storage::GetUpdateInfo(TCountryId const & countryId, UpdateInfo & updateInf
 void Storage::CorrectJustDownloadedAndQueue(TQueue::iterator justDownloadedItem)
 {
   m_justDownloaded.insert(justDownloadedItem->GetCountryId());
+  ASSERT(!m_queue.empty(), ());
   m_queue.erase(justDownloadedItem);
   if (m_queue.empty())
     m_justDownloaded.clear();
