@@ -37,6 +37,16 @@ final class RoutePreviewStatus: SolidTouchView {
   private var hiddenConstraint: NSLayoutConstraint!
   weak var ownerView: UIView!
 
+  weak var navigationInfo: MWMNavigationDashboardEntity?
+
+  var elevation: NSAttributedString? {
+    didSet {
+      guard let elevation = elevation else { return }
+      alternative(iPhone: { self.updateResultsLabel() },
+                  iPad: { self.heightProfileElevationHeight?.attributedText = elevation })()
+    }
+  }
+
   var isVisible = false {
     didSet {
       alternative(iPhone: {
@@ -145,7 +155,11 @@ final class RoutePreviewStatus: SolidTouchView {
         MWMRouter.routeAltitudeImage(for: heightProfileImage.frame.size,
                                      completion: { (image, elevation) in
                                       self.heightProfileImage.image = image
-                                      self.heightProfileElevationHeight?.text = elevation
+                                      if let elevation = elevation {
+                                        let attributes: [String : Any] = [NSForegroundColorAttributeName : UIColor.linkBlue(),
+                                                                          NSFontAttributeName : UIFont.medium14()]
+                                        self.elevation = NSAttributedString(string: "▲▼ \(elevation)", attributes: attributes)
+                                      }
         })
       } else {
         heightBox.isHidden = true
@@ -159,8 +173,23 @@ final class RoutePreviewStatus: SolidTouchView {
     isVisible = false
   }
 
+  private func updateResultsLabel() {
+    guard let info = navigationInfo else { return }
+
+    resultLabel.attributedText = alternative(iPhone: {
+      let result = info.estimate.mutableCopy() as! NSMutableAttributedString
+      if let elevation = self.elevation {
+        result.append(info.estimateDot)
+        result.append(elevation)
+      }
+      return result.copy() as? NSAttributedString
+    },
+                                             iPad: { info.estimate })()
+  }
+
   func onNavigationInfoUpdated(_ info: MWMNavigationDashboardEntity) {
-    resultLabel.attributedText = info.estimate
+    navigationInfo = info
+    updateResultsLabel()
     arriveLabel?.text = String(coreFormat: L("routing_arrive"), arguments: [info.arrival])
   }
 
