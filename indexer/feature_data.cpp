@@ -100,6 +100,7 @@ public:
       { "amenity", "atm" },
       { "amenity", "bench" },
       { "amenity", "shelter" },
+      { "amenity", "toilets" },
       { "building", "address" },
       { "building", "has_parts" },
     };
