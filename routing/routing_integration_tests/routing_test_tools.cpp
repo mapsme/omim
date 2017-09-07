@@ -178,8 +178,7 @@ namespace integration
     unique_ptr<IRouter> m_router;
   };
 
-  template <typename TRouterComponents>
-  shared_ptr<TRouterComponents> CreateAllMapsComponents()
+  void GetAllLocalFiles(vector<LocalCountryFile> & localFiles)
   {
     // Setting stored paths from testingmain.cpp
     Platform & pl = GetPlatform();
@@ -190,12 +189,17 @@ namespace integration
       pl.SetResourceDir(options.m_resourcePath);
 
     platform::migrate::SetMigrationFlag();
-
-    vector<LocalCountryFile> localFiles;
     platform::FindAllLocalMapsAndCleanup(numeric_limits<int64_t>::max() /* latestVersion */,
                                          localFiles);
     for (auto & file : localFiles)
       file.SyncWithDisk();
+  }
+
+  template <typename TRouterComponents>
+  shared_ptr<TRouterComponents> CreateAllMapsComponents()
+  {
+    vector<LocalCountryFile> localFiles;
+    GetAllLocalFiles(localFiles);
     ASSERT(!localFiles.empty(), ());
     return shared_ptr<TRouterComponents>(new TRouterComponents(localFiles));
   }

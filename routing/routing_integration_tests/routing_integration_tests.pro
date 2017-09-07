@@ -33,6 +33,7 @@ SOURCES += \
   osrm_street_names_test.cpp \
   osrm_turn_test.cpp \
   pedestrian_route_test.cpp \
+  road_graph_tests.cpp \
   routing_test_tools.cpp \
 
 HEADERS += \
