@@ -195,6 +195,7 @@ void Storage::Migrate(TCountriesVec const & existedCountries)
   {
     string prefetchedFilename =
         m_prefetchStorage->GetLatestLocalFile(countryId)->GetPath(MapOptions::Map);
+    LOG(LWARNING, ("1"));
     CountryFile const countryFile = GetCountryFile(countryId);
     auto localFile = PreparePlaceForCountryFiles(GetCurrentDataVersion(), m_dataDir, countryFile);
     string localFilename = localFile->GetPath(MapOptions::Map);
@@ -335,6 +336,7 @@ TLocalAndRemoteSize Storage::CountrySizeInBytes(TCountryId const & countryId, Ma
 {
   QueuedCountry const * queuedCountry = FindCountryInQueue(countryId);
   TLocalFilePtr localFile = GetLatestLocalFile(countryId);
+  LOG(LWARNING, ("2"));
   CountryFile const & countryFile = GetCountryFile(countryId);
   if (queuedCountry == nullptr)
   {
@@ -374,6 +376,7 @@ TMwmSize Storage::GetRemoteSize(CountryFile const & file, MapOptions opt, int64_
 
 CountryFile const & Storage::GetCountryFile(TCountryId const & countryId) const
 {
+  LOG(LWARNING, ("3"));
   return CountryLeafByCountryId(countryId).GetFile();
 }
 
@@ -493,7 +496,10 @@ void Storage::RestoreDownloadQueue()
                                   });
 
       if (diffIt == m_notAppliedDiffs.end())
+      {
+        LOG(LWARNING, ("x1"));
         DownloadNode(*iter, isUpdate);
+      }
     }
   };
 
@@ -505,6 +511,7 @@ void Storage::DownloadCountry(TCountryId const & countryId, MapOptions opt)
 {
   ASSERT_THREAD_CHECKER(m_threadChecker, ());
 
+  LOG(LWARNING, ("XX1 Try download", countryId));
   if (opt == MapOptions::Nothing)
     return;
 
@@ -515,11 +522,17 @@ void Storage::DownloadCountry(TCountryId const & countryId, MapOptions opt)
   }
 
   m_failedCountries.erase(countryId);
+  LOG(LWARNING, ("XX1 m_queue.push_back", countryId));
   m_queue.push_back(QueuedCountry(countryId, opt));
+  for (auto const & item : m_queue)
+      LOG(LWARNING, (item.GetCountryId(), ", is frozen:", item.IsFrozen()));
   if (m_queue.size() == 1)
     DownloadNextCountryFromQueue();
   else
+  {
+    LOG(LWARNING, ("XX1 NotifyStatusChangedForHierarchy", countryId));
     NotifyStatusChangedForHierarchy(countryId);
+  }
   SaveDownloadQueue();
 }
 
@@ -581,6 +594,7 @@ void Storage::NotifyStatusChangedForHierarchy(TCountryId const & countryId)
 
 void Storage::DownloadNextCountryFromQueue()
 {
+  LOG(LWARNING, ("XX1 next country"));
   ASSERT_THREAD_CHECKER(m_threadChecker, ());
 
   bool const stopDownload = !m_downloadingPolicy->IsDownloadingAllowed();
@@ -610,6 +624,7 @@ void Storage::DownloadNextCountryFromQueue()
   // It's not even possible to prepare directory for files before
   // downloading.  Mark this country as failed and switch to next
   // country.
+  LOG(LWARNING, ("XX1 4"));
   if (stopDownload ||
       !PreparePlaceForCountryFiles(GetCurrentDataVersion(), m_dataDir, GetCountryFile(countryId)))
   {
@@ -629,6 +644,7 @@ void Storage::DownloadNextCountryFromQueue()
 void Storage::DownloadNextFile(QueuedCountry const & country)
 {
   TCountryId const & countryId = country.GetCountryId();
+  LOG(LWARNING, ("XX1 5"));
   CountryFile const & countryFile = GetCountryFile(countryId);
 
   string const filePath = GetFileDownloadPath(countryId, country.GetCurrentFileOptions());
@@ -817,7 +833,10 @@ void Storage::OnServerListDownloaded(vector<string> const & urls)
   vector<string> fileUrls;
   fileUrls.reserve(downloadingUrls.size());
   for (string const & url : downloadingUrls)
+  {
+    LOG(LWARNING, ("GetFileDownloadUrl", url, queuedCountry.GetCountryId()));
     fileUrls.push_back(GetFileDownloadUrl(url, queuedCountry));
+  }
 
   string const filePath =
       GetFileDownloadPath(queuedCountry.GetCountryId(), queuedCountry.GetCurrentFileOptions());
@@ -844,11 +863,13 @@ void Storage::RegisterDownloadedFiles(TCountryId const & countryId, MapOptions o
 {
   ASSERT_THREAD_CHECKER(m_threadChecker, ());
 
+  LOG(LWARNING, ("XX1 RegisterDownloadedFiles", countryId));
   auto const fn = [this, countryId](bool isSuccess)
   {
     ASSERT_THREAD_CHECKER(m_threadChecker, ());
     if (!isSuccess)
     {
+      LOG(LWARNING, ("XX1 OnDownloadFailed", countryId));
       OnDownloadFailed(countryId);
       return;
     }
@@ -864,6 +885,7 @@ void Storage::RegisterDownloadedFiles(TCountryId const & countryId, MapOptions o
 
     m_downloader->Reset();
     NotifyStatusChangedForHierarchy(countryId);
+    LOG(LWARNING, ("XX1 DownloadNextCountryFromQueue", countryId));
     DownloadNextCountryFromQueue();
   };
 
@@ -877,6 +899,7 @@ void Storage::RegisterDownloadedFiles(TCountryId const & countryId, MapOptions o
     return;
   }
 
+  LOG(LWARNING, ("XX1 6"));
   CountryFile const countryFile = GetCountryFile(countryId);
   TLocalFilePtr localFile = GetLocalFile(countryId, GetCurrentDataVersion());
   if (!localFile)
@@ -952,6 +975,7 @@ string Storage::GetFileDownloadUrl(string const & baseUrl,
 string Storage::GetFileDownloadUrl(string const & baseUrl, TCountryId const & countryId,
                                    MapOptions options) const
 {
+  LOG(LWARNING, ("7"));
   CountryFile const & countryFile = GetCountryFile(countryId);
 
   string const fileName =
@@ -989,12 +1013,15 @@ void Storage::GetOutdatedCountries(vector<Country const *> & countries) const
 {
   for (auto const & p : m_localFiles)
   {
+
     TCountryId const & countryId = p.first;
+    LOG(LWARNING, ("8"));
     string const name = GetCountryFile(countryId).GetName();
     TLocalFilePtr file = GetLatestLocalFile(countryId);
     if (file && file->GetVersion() != GetCurrentDataVersion() && name != WORLD_COASTS_FILE_NAME &&
         name != WORLD_COASTS_OBSOLETE_FILE_NAME && name != WORLD_FILE_NAME)
     {
+      LOG(LDEBUG, ("XX1 Countries push back countryId:", countryId, " name:", name));
       countries.push_back(&CountryLeafByCountryId(countryId));
     }
   }
@@ -1017,6 +1044,7 @@ Status Storage::CountryStatusFull(TCountryId const & countryId, Status const sta
   if (!localFile || !localFile->OnDisk(MapOptions::Map))
     return Status::ENotDownloaded;
 
+  LOG(LWARNING, ("9"));
   CountryFile const & countryFile = GetCountryFile(countryId);
   if (GetRemoteSize(countryFile, MapOptions::Map, GetCurrentDataVersion()) == 0)
     return Status::EUnknown;
@@ -1121,6 +1149,7 @@ void Storage::RegisterCountryFiles(TCountryId const & countryId, string const & 
   if (localFile)
     return;
 
+  LOG(LWARNING, ("10"));
   CountryFile const & countryFile = GetCountryFile(countryId);
   localFile = make_shared<LocalCountryFile>(directory, countryFile, version);
   RegisterCountryFiles(localFile);
@@ -1167,6 +1196,7 @@ bool Storage::DeleteCountryFilesFromDownloader(TCountryId const & countryId)
 {
   ASSERT_THREAD_CHECKER(m_threadChecker, ());
 
+  LOG(LWARNING, ("XX1 DeleteCountryFilesFromDownloader", countryId));
   QueuedCountry * queuedCountry = FindCountryInQueue(countryId);
   if (!queuedCountry)
     return false;
@@ -1181,6 +1211,7 @@ bool Storage::DeleteCountryFilesFromDownloader(TCountryId const & countryId)
     if (HasOptions(opt, queuedCountry->GetCurrentFileOptions()))
       m_downloader->Reset();
 
+    LOG(LWARNING, ("XX1 11", countryId));
     // Remove all files downloader had been created for a country.
     DeleteDownloaderFilesForCountry(GetCurrentDataVersion(), m_dataDir, GetCountryFile(countryId));
   }
@@ -1206,11 +1237,18 @@ bool Storage::DeleteCountryFilesFromDownloader(TCountryId const & countryId)
 
   if (!m_queue.empty() && m_downloader->IsIdle())
   {
+    LOG(LWARNING, ("XX1 if (!m_queue.empty() && m_downloader->IsIdle())"));
     // Kick possibly interrupted downloader.
     if (IsCountryFirstInQueue(countryId))
+    {
+      LOG(LWARNING, ("XX1 DownloadNextFile(m_queue.front());"));
       DownloadNextFile(m_queue.front());
+    }
     else
+    {
+      LOG(LWARNING, ("XX1 DownloadNextCountryFromQueue"));
       DownloadNextCountryFromQueue();
+    }
   }
   return true;
 }
@@ -1221,12 +1259,14 @@ uint64_t Storage::GetDownloadSize(QueuedCountry const & queuedCountry) const
   if (queuedCountry.GetInitOptions() == MapOptions::Diff)
     return m_diffManager.InfoFor(countryId).m_size;
 
+  LOG(LWARNING, ("12"));
   CountryFile const & file = GetCountryFile(countryId);
   return GetRemoteSize(file, queuedCountry.GetCurrentFileOptions(), GetCurrentDataVersion());
 }
 
 string Storage::GetFileDownloadPath(TCountryId const & countryId, MapOptions options) const
 {
+  LOG(LWARNING, ("13"));
   return platform::GetFileDownloadPath(GetCurrentDataVersion(), m_dataDir,
                                        GetCountryFile(countryId), options);
 }
@@ -1236,7 +1276,10 @@ bool Storage::CheckFailedCountries(TCountriesVec const & countries) const
   for (auto const & country : countries)
   {
     if (m_failedCountries.count(country))
+    {
+      LOG(LWARNING, ("XX1 Find in m_failedCountries", country));
       return true;
+    }
   }
   return false;
 }
@@ -1442,6 +1485,7 @@ void Storage::LoadDiffScheme()
 
 void Storage::ApplyDiff(TCountryId const & countryId, function<void(bool isSuccess)> const & fn)
 {
+  LOG(LWARNING, ("14"));
   diffs::Manager::ApplyDiffParams params;
   params.m_diffFile =
       PreparePlaceForCountryFiles(GetCurrentDataVersion(), m_dataDir, GetCountryFile(countryId));
@@ -1502,7 +1546,10 @@ void Storage::OnDiffStatusReceived(diffs::Status const status)
   }
 
   for (auto const & urls : m_deferredDownloads)
+  {
+    LOG(LWARNING, ("xxxx1"));
     OnServerListDownloaded(urls);
+  }
 
   m_deferredDownloads.clear();
 }
@@ -1702,17 +1749,20 @@ MapFilesDownloader::TProgress Storage::CalculateProgress(
   {
     if (downloadingMwm == d && downloadingMwm != kInvalidCountryId)
     {
+      LOG(LWARNING, ("XX1 15"));
       localAndRemoteBytes.first += downloadingMwmProgress.first;
       localAndRemoteBytes.second += GetRemoteSize(GetCountryFile(d), MapOptions::Map,
                                                   GetCurrentDataVersion());
     }
     else if (mwmsInQueue.count(d) != 0)
     {
+      LOG(LWARNING, ("XX1 16"));
       localAndRemoteBytes.second += GetRemoteSize(GetCountryFile(d), MapOptions::Map,
                                                   GetCurrentDataVersion());
     }
     else if (m_justDownloaded.count(d) != 0)
     {
+      LOG(LWARNING, ("XX1 17"));
       TMwmSize const localCountryFileSz = GetRemoteSize(GetCountryFile(d), MapOptions::Map,
                                                         GetCurrentDataVersion());
       localAndRemoteBytes.first += localCountryFileSz;
@@ -1727,7 +1777,10 @@ void Storage::UpdateNode(TCountryId const & countryId)
 {
   ForEachInSubtree(countryId, [this](TCountryId const & descendantId, bool groupNode) {
     if (!groupNode && m_localFiles.find(descendantId) != m_localFiles.end())
+    {
+      LOG(LWARNING, ("XX1 x2"));
       this->DownloadNode(descendantId, true /* isUpdate */);
+    }
   });
 }
 
@@ -1741,6 +1794,7 @@ void Storage::CancelDownloadNode(TCountryId const & countryId)
       DeleteFromDownloader(descendantId);
     if (m_failedCountries.count(descendantId) != 0)
     {
+      LOG(LWARNING, ("XX1 Cancel download", descendantId, countryId));
       m_failedCountries.erase(descendantId);
       NotifyStatusChangedForHierarchy(countryId);
     }
@@ -1749,10 +1803,11 @@ void Storage::CancelDownloadNode(TCountryId const & countryId)
 
 void Storage::RetryDownloadNode(TCountryId const & countryId)
 {
-  ForEachInSubtree(countryId, [this](TCountryId const & descendantId, bool groupNode) {
+  ForEachInSubtree(countryId, [this, countryId](TCountryId const & descendantId, bool groupNode) {
     if (!groupNode && m_failedCountries.count(descendantId) != 0)
     {
       bool const isUpdateRequest = m_diffManager.HasDiffFor(descendantId);
+      LOG(LWARNING, ("XX1 Retry download", descendantId, countryId, ", isUpdateRequest:", isUpdateRequest));
       DownloadNode(descendantId, isUpdateRequest);
     }
   });
@@ -1877,6 +1932,7 @@ void Storage::GetTopmostNodesFor(TCountryId const & countryId, TCountriesVec & n
 
 void Storage::OnDownloadFailed(TCountryId const & countryId)
 {
+  LOG(LWARNING, ("m_failedCountries.insert(countryId)", countryId));
   m_failedCountries.insert(countryId);
   auto it = find(m_queue.cbegin(), m_queue.cend(), countryId);
   if (it != m_queue.cend())

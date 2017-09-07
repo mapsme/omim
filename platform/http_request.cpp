@@ -205,6 +205,7 @@ class FileHttpRequest : public HttpRequest, public IHttpThreadCallback
 
     try
     {
+      LOG(LWARNING, ("XX1 Try writer", (void*)(m_writer.get())));
       m_writer->Seek(offset);
       m_writer->Write(buffer, size);
       return true;
@@ -218,9 +219,6 @@ class FileHttpRequest : public HttpRequest, public IHttpThreadCallback
 
   void SaveResumeChunks()
   {
-    if (m_writer == nullptr)
-      return;
-
     try
     {
       // Flush writer before saving downloaded chunks.
@@ -278,11 +276,6 @@ class FileHttpRequest : public HttpRequest, public IHttpThreadCallback
       if (m_status != ECompleted && m_goodChunksCount % 10 == 0)
         SaveResumeChunks();
     }
-    else if (result == ChunksDownloadStrategy::ENoFreeServers)
-    {
-      // There is no server which is able to re-download chunk.
-      m_status = EFailed;
-    }
 
     if (m_status != EInProgress)
     {
@@ -290,6 +283,7 @@ class FileHttpRequest : public HttpRequest, public IHttpThreadCallback
       if (m_status != ECompleted)
         SaveResumeChunks();
 
+      LOG(LWARNING, ("XX1 Close writer", (void*)(m_writer.get())));
       // 2. Free file handle.
       CloseWriter();
 
@@ -356,6 +350,7 @@ public:
     // Reserving disk space is very slow on a device.
     //writer->Reserve(fileSize);
 
+    LOG(LWARNING, ("XX1 Create writer", this, (void*)(writer.get())));
     // Assign here, because previous functions can throw an exception.
     m_writer.swap(writer);
 
@@ -368,6 +363,7 @@ public:
 
   virtual ~FileHttpRequest()
   {
+    LOG(LWARNING, ("XX1 Destructor", this));
     // Do safe delete with removing from list in case if DeleteNativeHttpThread
     // can produce final notifications to this->OnFinish().
     while (!m_threads.empty())

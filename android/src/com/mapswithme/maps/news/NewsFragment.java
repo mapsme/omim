@@ -75,8 +75,8 @@ public class NewsFragment extends BaseNewsFragment
   public static boolean showOn(@NonNull FragmentActivity activity,
                                final @Nullable NewsDialogListener listener)
   {
-    if (Counters.getFirstInstallVersion() >= BuildConfig.VERSION_CODE)
-      return false;
+/*    if (Counters.getFirstInstallVersion() >= BuildConfig.VERSION_CODE)
+    return false;*/
 
     FragmentManager fm = activity.getSupportFragmentManager();
     if (fm.isDestroyed())
@@ -86,9 +86,9 @@ public class NewsFragment extends BaseNewsFragment
     if (f != null)
       return UpdaterDialogFragment.showOn(activity, listener);
 
-    if (Counters.getLastWhatsNewVersion() / 10 >= BuildConfig.VERSION_CODE / 10 &&
+/*    if (Counters.getLastWhatsNewVersion() / 10 >= BuildConfig.VERSION_CODE / 10 &&
         !recreate(activity, NewsFragment.class))
-      return false;
+      return false;*/
 
     create(activity, NewsFragment.class, listener);
 

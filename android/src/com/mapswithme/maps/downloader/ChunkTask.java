@@ -57,6 +57,7 @@ class ChunkTask extends AsyncTask<Void, byte[], Boolean>
     mExpectedFileSize = expectedFileSize;
     mPostBody = postBody;
     mUserAgent = userAgent;
+    LOGGER.d("XX1", "Constructor task success this = " + this + "callbackId = " + httpCallbackID);
   }
 
   @Override
@@ -70,6 +71,7 @@ class ChunkTask extends AsyncTask<Void, byte[], Boolean>
   @Override
   protected void onPostExecute(Boolean success)
   {
+    LOGGER.d("XX1", "onPostExecute success = " + success + " cancelled = " + isCancelled() + "this = " + this + " callbaciId = " + mHttpCallbackID);
     //Log.i(TAG, "Writing chunk " + getChunkID());
 
     // It seems like onPostExecute can be called (from GUI thread queue)
@@ -84,13 +86,16 @@ class ChunkTask extends AsyncTask<Void, byte[], Boolean>
   @Override
   protected void onProgressUpdate(byte[]... data)
   {
+    LOGGER.d("XX1", "onProgressUpdate cancelled = " + isCancelled() + "this = " + this + " callbaciId = " + mHttpCallbackID);
     if (!isCancelled())
     {
+      LOGGER.d("XX1", "onProgressUpdate nativeOnWrite " + this + " callbaciId = " + mHttpCallbackID);
       // Use progress event to save downloaded bytes.
       if (nativeOnWrite(mHttpCallbackID, mBeg + mDownloadedBytes, data[0], data[0].length))
         mDownloadedBytes += data[0].length;
       else
       {
+        LOGGER.d("XX1", "onProgressUpdate nativeOnWrite cancel(false) nativeONFinish " + this + " callbaciId = " + mHttpCallbackID);
         // Cancel downloading and notify about error.
         cancel(false);
         nativeOnFinish(mHttpCallbackID, WRITE_ERROR, mBeg, mEnd);
@@ -100,6 +105,7 @@ class ChunkTask extends AsyncTask<Void, byte[], Boolean>
 
   void start()
   {
+    LOGGER.d("XX1", "start this = " + this);
     executeOnExecutor(sExecutors, (Void[]) null);
   }
 
@@ -125,6 +131,7 @@ class ChunkTask extends AsyncTask<Void, byte[], Boolean>
   @Override
   protected Boolean doInBackground(Void... p)
   {
+    LOGGER.d("XX1", "Start downloading this = " + this + " thread = " + Thread.currentThread());
     //Log.i(TAG, "Start downloading chunk " + getChunkID());
 
     HttpURLConnection urlConnection = null;

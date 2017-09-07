@@ -341,6 +341,7 @@ TCountryId Framework::PreMigrate(ms::LatLon const & position,
     return kInvalidCountryId;
 
   GetStorage().GetPrefetchStorage()->Subscribe(change, progress);
+  LOG(LWARNING, ("qqq4"));
   GetStorage().GetPrefetchStorage()->DownloadNode(currentCountryId);
   return currentCountryId;
 }
