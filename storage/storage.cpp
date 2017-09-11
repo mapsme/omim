@@ -605,7 +605,7 @@ void Storage::DownloadNextCountryFromQueue()
   }
 
   QueuedCountry & queuedCountry = m_queue.front();
-  TCountryId const & countryId = queuedCountry.GetCountryId();
+  TCountryId const countryId = queuedCountry.GetCountryId();
 
   // It's not even possible to prepare directory for files before
   // downloading.  Mark this country as failed and switch to next
