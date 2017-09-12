@@ -615,8 +615,11 @@ void Storage::DownloadNextCountryFromQueue()
   {
     OnMapDownloadFinished(countryId, false /* success */, queuedCountry.GetInitOptions());
     NotifyStatusChangedForHierarchy(countryId);
-    CorrectJustDownloadedAndQueue(m_queue.begin());
-    DownloadNextCountryFromQueue();
+    if (!m_queue.empty())
+    {
+      CorrectJustDownloadedAndQueue(m_queue.begin());
+      DownloadNextCountryFromQueue();
+    }
     return;
   }
 
@@ -807,7 +810,10 @@ void Storage::OnServerListDownloaded(vector<string> const & urls)
       break;
     case Status::Available:
       if (!m_diffManager.HasDiffFor(queuedCountry.GetCountryId()))
+      {
+        LOG(LINFO, ("No diff for the country:", queuedCountry.GetCountryId()));
         queuedCountry.ResetToDefaultOptions();
+      }
       break;
     }
   }
@@ -844,9 +850,10 @@ void Storage::RegisterDownloadedFiles(TCountryId const & countryId, MapOptions o
 {
   ASSERT_THREAD_CHECKER(m_threadChecker, ());
 
-  auto const fn = [this, countryId](bool isSuccess)
+  auto const fn = [this, countryId, options](bool isSuccess)
   {
     ASSERT_THREAD_CHECKER(m_threadChecker, ());
+    LOG(LINFO, ("Process downloaded file:", countryId, "with option:", options));
     if (!isSuccess)
     {
       OnDownloadFailed(countryId);
@@ -1470,6 +1477,7 @@ bool Storage::IsPossibleToAutoupdate() const
 
 void Storage::OnDiffStatusReceived(diffs::Status const status)
 {
+  LOG(LINFO, ("Received diff status:", status));
   if (status != diffs::Status::NotAvailable)
   {
     for (auto const & localDiff : m_notAppliedDiffs)

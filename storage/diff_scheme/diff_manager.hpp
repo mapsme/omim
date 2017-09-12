@@ -56,5 +56,7 @@ private:
   base::ObserverListUnsafe<Observer> m_observers;
   base::WorkerThread m_workerThread;
 };
+
+std::string DebugPrint(Status status);
 }  // namespace diffs
 }  // namespace storage
