@@ -51,8 +51,8 @@ void Manager::ApplyDiff(ApplyDiffParams && p, std::function<void(bool const resu
 {
   m_workerThread.Push([this, p, task]
   {
-    CHECK(p.m_diffFile, ());
-    CHECK(p.m_oldMwmFile, ());
+    CHECK(p.m_diffFile, ("No diff at path:", p.m_diffFile->GetPath(MapOptions::Diff)));
+    CHECK(p.m_oldMwmFile, ("No old mwm at path:", p.m_oldMwmFile->GetPath(MapOptions::Map)));
 
     auto & diffReadyPath = p.m_diffReadyPath;
     auto & diffFile = p.m_diffFile;
@@ -146,6 +146,19 @@ bool Manager::IsPossibleToAutoupdate() const
       return false;
   }
   return true;
+}
+  
+std::string DebugPrint(Status status)
+{
+  switch (status)
+  {
+  case Status::Undefined:
+    return "Undefined";
+  case Status::Available:
+    return "Available";
+  case Status::NotAvailable:
+    return "NotAvailable";
+  }
 }
 }  // namespace diffs
 }  // namespace storage
