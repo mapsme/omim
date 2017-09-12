@@ -740,7 +740,7 @@
 	<string name="learn_more">En savoir plus</string>
 	<string name="exit">Quitter</string>
 	<string name="routing_add_start_point">Ajouter un point de départ pour planifier un itinéraire</string>
-	<string name="routing_add_finish_point">Ajouter un point d\'arriver pour planifier un itinéraire</string>
+	<string name="routing_add_finish_point">Ajouter un point d\'arrivée pour planifier un itinéraire</string>
 	<string name="onboarding_storage_permissions_title">Autoriser l\'accès</string>
 	<string name="onboarding_storage_permissions_message">Modifiez les paramètres d’autorisation dans votre appareil. Il est nécessaire d’accéder à un stockage pour utiliser MAPS.ME.</string>
 	<string name="onboarding_detail_permissions_title">MAPS.ME doit avoir accès à</string>
