@@ -8,7 +8,7 @@
 
 using namespace std;
 using namespace routing;
-// Some added string.
+
 namespace
 {
 // See model specifics in different countries here:
