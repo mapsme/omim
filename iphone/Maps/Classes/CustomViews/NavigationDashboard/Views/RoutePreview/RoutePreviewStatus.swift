@@ -10,6 +10,7 @@ final class RoutePreviewStatus: SolidTouchView {
       }
     }
   }
+
   @IBOutlet private weak var taxiBox: UIView!
   @IBOutlet private weak var errorLabel: UILabel!
   @IBOutlet private weak var resultLabel: UILabel!
@@ -21,6 +22,7 @@ final class RoutePreviewStatus: SolidTouchView {
       configManageRouteButton(manageRouteButtonRegular)
     }
   }
+
   @IBOutlet private weak var manageRouteButtonCompact: UIButton? {
     didSet {
       configManageRouteButton(manageRouteButtonCompact!)
@@ -61,13 +63,13 @@ final class RoutePreviewStatus: SolidTouchView {
           UIView.animate(withDuration: kDefaultAnimationDuration,
                          animations: { sv.layoutIfNeeded() },
                          completion: { _ in
-                          if (!self.isVisible) {
-                            self.removeFromSuperview()
-                          }
+                           if !self.isVisible {
+                             self.removeFromSuperview()
+                           }
           })
         }
       },
-                  iPad: { self.isHidden = !self.isVisible })()
+      iPad: { self.isHidden = !self.isVisible })()
     }
   }
 
@@ -150,16 +152,19 @@ final class RoutePreviewStatus: SolidTouchView {
     } else {
       taxiBox.isHidden = true
       resultsBox.isHidden = false
+      self.elevation = nil
       if MWMRouter.hasRouteAltitude() {
         heightBox.isHidden = false
         MWMRouter.routeAltitudeImage(for: heightProfileImage.frame.size,
-                                     completion: { (image, elevation) in
-                                      self.heightProfileImage.image = image
-                                      if let elevation = elevation {
-                                        let attributes: [String : Any] = [NSForegroundColorAttributeName : UIColor.linkBlue(),
-                                                                          NSFontAttributeName : UIFont.medium14()]
-                                        self.elevation = NSAttributedString(string: "▲▼ \(elevation)", attributes: attributes)
-                                      }
+                                     completion: { image, elevation in
+                                       self.heightProfileImage.image = image
+                                       if let elevation = elevation {
+                                         let attributes: [String: Any] = [
+                                           NSForegroundColorAttributeName: UIColor.linkBlue(),
+                                           NSFontAttributeName: UIFont.medium14(),
+                                         ]
+                                         self.elevation = NSAttributedString(string: "▲▼ \(elevation)", attributes: attributes)
+                                       }
         })
       } else {
         heightBox.isHidden = true
@@ -184,7 +189,7 @@ final class RoutePreviewStatus: SolidTouchView {
       }
       return result.copy() as? NSAttributedString
     },
-                                             iPad: { info.estimate })()
+    iPad: { info.estimate })()
   }
 
   func onNavigationInfoUpdated(_ info: MWMNavigationDashboardEntity) {
