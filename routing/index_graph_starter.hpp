@@ -80,7 +80,7 @@ public:
 
   // Checks |result| meets nontransit crossing restrictions according to placement of
   // |result.path| start and finish in transit/nontransit area and number of nontransit crosses
-  bool CheckRoutingResultMeetsRestrictions(
+  bool DoesRouteCrossNontransit(
       RoutingResult<Segment, RouteWeight> const & result) const;
 
   void GetEdgesList(Segment const & segment, bool isOutgoing,
@@ -100,7 +100,7 @@ public:
   {
     return RouteWeight(m_graph.GetEstimator().CalcHeuristic(GetPoint(from, true /* front */),
                                                             GetPoint(to, true /* front */)),
-                       0);
+                       0 /* nontransitCross */);
   }
 
   RouteWeight CalcSegmentWeight(Segment const & segment) const;
