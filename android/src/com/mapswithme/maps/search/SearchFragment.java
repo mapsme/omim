@@ -58,10 +58,10 @@ public class SearchFragment extends BaseMwmFragment
                                     HotelsFilterHolder
 {
   public static final String PREFS_SHOW_ENABLE_LOGGING_SETTING = "ShowEnableLoggingSetting";
-  private static final int MIN_QUERY_LENGTH = 3;
+  private static final int MIN_QUERY_LENGTH_FOR_AD = 3;
   private static final long ADS_DELAY_MS = 200;
   private static final long RESULTS_DELAY_MS = 400;
-  private static final int GOOGLE_AD_POSITION = 3;
+  private static final int AD_POSITION = 3;
 
   private long mLastQueryTimestamp;
 
@@ -72,7 +72,7 @@ public class SearchFragment extends BaseMwmFragment
   @Nullable
   private SearchAdView mGoogleAdView;
   @NonNull
-  private Runnable mResultsShowingTask = new Runnable()
+  private final Runnable mResultsShowingTask = new Runnable()
   {
     @Override
     public void run()
@@ -81,7 +81,7 @@ public class SearchFragment extends BaseMwmFragment
     }
   };
   @NonNull
-  private Runnable mSearchEndTask = new Runnable()
+  private final Runnable mSearchEndTask = new Runnable()
   {
     @Override
     public void run()
@@ -126,7 +126,6 @@ public class SearchFragment extends BaseMwmFragment
       UiThread.cancelDelayedTasks(mSearchEndTask);
       UiThread.cancelDelayedTasks(mResultsShowingTask);
       stopAdsLoading();
-      mGoogleAdView = null;
 
       if (TextUtils.isEmpty(query))
       {
@@ -143,24 +142,12 @@ public class SearchFragment extends BaseMwmFragment
         return;
       }
 
-      if (mAdsLoader != null && !isInteractiveSearch() && query.length() >= MIN_QUERY_LENGTH)
+      if (mAdsLoader != null && !isInteractiveSearch() && query.length() >= MIN_QUERY_LENGTH_FOR_AD)
       {
         mAdsRequested = true;
-        mAdsLoader.scheduleAdsLoading(getContext(), query,
-            new GoogleAdsLoader.AdvertLoadingListener()
-        {
-          @Override
-          public void onLoadingFinished(SearchAdView searchAdView)
-          {
-            mGoogleAdView = searchAdView;
-            mAdsRequested = false;
-          }
-        });
+        mAdsLoader.scheduleAdsLoading(getActivity().getApplicationContext(), query);
       }
-      else
-      {
-        mAdsRequested = false;
-      }
+
       runSearch();
     }
 
@@ -359,7 +346,18 @@ public class SearchFragment extends BaseMwmFragment
     readArguments();
 
     if (ConnectionState.isWifiConnected() && SharedPropertiesUtils.isShowcaseSwitchedOnLocal())
+    {
       mAdsLoader = new GoogleAdsLoader(getContext(), ADS_DELAY_MS);
+      mAdsLoader.attachAdLoadingListener(new GoogleAdsLoader.AdvertLoadingListener()
+      {
+        @Override
+        public void onLoadingFinished(SearchAdView searchAdView)
+        {
+          mGoogleAdView = searchAdView;
+          mAdsRequested = false;
+        }
+      });
+    }
 
     ViewGroup root = (ViewGroup) view;
     mAppBarLayout = (AppBarLayout) root.findViewById(R.id.app_bar);
@@ -495,6 +493,14 @@ public class SearchFragment extends BaseMwmFragment
     mAttachedRecyclers.clear();
     SearchEngine.INSTANCE.removeListener(this);
     super.onDestroy();
+  }
+
+  @Override
+  public void onDestroyView()
+  {
+    if (mAdsLoader != null)
+      mAdsLoader.detachAdLoadingListener();
+    super.onDestroyView();
   }
 
   private String getQuery()
@@ -654,6 +660,7 @@ public class SearchFragment extends BaseMwmFragment
   {
     if (!isAdded() || !mToolbarController.hasQuery())
       return;
+
     mSearchResults = results;
     mIsHotel = isHotel;
 
@@ -705,16 +712,17 @@ public class SearchFragment extends BaseMwmFragment
     updateFilterButton(mIsHotel);
   }
 
+  @NonNull
   private SearchData[] combineResultsWithAds()
   {
-    if (mSearchResults.length < GOOGLE_AD_POSITION || mGoogleAdView == null)
+    if (mSearchResults.length < AD_POSITION || mGoogleAdView == null)
       return mSearchResults;
 
     List<SearchData> result = new LinkedList<>();
     int counter = 0;
     for (SearchResult r : mSearchResults)
     {
-      if (r.type != SearchResultTypes.TYPE_SUGGEST && counter++ == GOOGLE_AD_POSITION)
+      if (r.type != SearchResultTypes.TYPE_SUGGEST && counter++ == AD_POSITION)
         result.add(new GoogleAdsBanner(mGoogleAdView));
       else
         result.add(r);
@@ -793,5 +801,6 @@ public class SearchFragment extends BaseMwmFragment
 
     mAdsLoader.cancelAdsLoading();
     mAdsRequested = false;
+    mGoogleAdView = null;
   }
 }

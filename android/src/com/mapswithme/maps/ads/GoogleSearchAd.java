@@ -25,5 +25,6 @@ public class GoogleSearchAd
     }
   }
 
+  @NonNull
   public String getAdUnitId() { return mAdUnitId; }
 }

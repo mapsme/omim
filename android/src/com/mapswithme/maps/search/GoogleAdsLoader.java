@@ -18,20 +18,17 @@ import com.mapswithme.util.concurrency.UiThread;
 
 class GoogleAdsLoader
 {
-  interface AdvertLoadingListener
-  {
-    void onLoadingFinished(SearchAdView searchAdView);
-  }
-
   private long mLoadingDelay;
   @NonNull
-  private Bundle mStyleParams = new Bundle();
+  private final Bundle mStyleParams = new Bundle();
   @Nullable
   private GoogleSearchAd mGoogleSearchAd;
   @Nullable
   private Runnable mLoadingTask;
   @NonNull
   private String mQuery = "";
+  @Nullable
+  private AdvertLoadingListener mLoadingListener;
 
   GoogleAdsLoader(@NonNull Context context, long loadingDelay)
   {
@@ -39,8 +36,7 @@ class GoogleAdsLoader
     initStyle(context);
   }
 
-  void scheduleAdsLoading(@NonNull final Context context, @NonNull final String query,
-                          @NonNull final AdvertLoadingListener loadingListener)
+  void scheduleAdsLoading(@NonNull final Context context, @NonNull final String query)
   {
     cancelAdsLoading();
     mQuery = query;
@@ -54,7 +50,7 @@ class GoogleAdsLoader
       @Override
       public void run()
       {
-        performLoading(context, loadingListener);
+        performLoading(context);
       }
     };
     UiThread.runLater(mLoadingTask, mLoadingDelay);
@@ -78,12 +74,21 @@ class GoogleAdsLoader
     searchAdView.loadAd(builder.build());
   }
 
+  void attachAdLoadingListener(AdvertLoadingListener listener)
+  {
+    mLoadingListener = listener;
+  }
+
+  void detachAdLoadingListener()
+  {
+    mLoadingListener = null;
+  }
+
   private void initStyle(@NonNull Context context)
   {
     TypedArray attrs = context.obtainStyledAttributes(ThemeUtils.isNightTheme() ?
       R.style.GoogleAdsDark : R.style.GoogleAdsLight, R.styleable.GoogleAds);
 
-    mStyleParams = new Bundle();
     mStyleParams.putString("csa_width", "auto");
     mStyleParams.putString("csa_colorLocation", attrs.getString(R.styleable.GoogleAds_colorLocation));
     mStyleParams.putString("csa_fontSizeLocation", attrs.getString(R.styleable.GoogleAds_fontSizeLocation));
@@ -110,7 +115,7 @@ class GoogleAdsLoader
     attrs.recycle();
   }
 
-  private void performLoading(@NonNull Context context, final AdvertLoadingListener loadingListener)
+  private void performLoading(@NonNull Context context)
   {
     if (mGoogleSearchAd == null)
       throw new AssertionError("mGoogleSearchAd can't be null here");
@@ -125,7 +130,10 @@ class GoogleAdsLoader
       public void onAdLoaded()
       {
         mLoadingTask = null;
-        loadingListener.onLoadingFinished(view);
+        if (mLoadingListener != null)
+        {
+          mLoadingListener.onLoadingFinished(view);
+        }
       }
 
       @Override
@@ -134,5 +142,10 @@ class GoogleAdsLoader
         mLoadingTask = null;
       }
     });
+  }
+
+  interface AdvertLoadingListener
+  {
+    void onLoadingFinished(SearchAdView searchAdView);
   }
 }

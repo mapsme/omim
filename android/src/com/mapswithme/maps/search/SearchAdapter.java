@@ -118,9 +118,10 @@ class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchDataViewHol
     }
   }
 
-  private class GoogleAdsViewHolder extends SearchDataViewHolder
+  private static class GoogleAdsViewHolder extends SearchDataViewHolder
   {
-    private FrameLayout container;
+    @NonNull
+    private ViewGroup container;
 
     GoogleAdsViewHolder(@NonNull View view)
     {
@@ -264,20 +265,20 @@ class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchDataViewHol
 
     switch (viewType)
     {
-    case SearchResultTypes.TYPE_SUGGEST:
-      return new SuggestViewHolder(inflater.inflate(R.layout.item_search_suggest, parent, false));
+      case SearchResultTypes.TYPE_SUGGEST:
+        return new SuggestViewHolder(inflater.inflate(R.layout.item_search_suggest, parent, false));
 
-    case SearchResultTypes.TYPE_RESULT:
-      return new ResultViewHolder(inflater.inflate(R.layout.item_search_result, parent, false));
+      case SearchResultTypes.TYPE_RESULT:
+        return new ResultViewHolder(inflater.inflate(R.layout.item_search_result, parent, false));
 
-    case SearchResultTypes.TYPE_LOCAL_ADS_CUSTOMER:
-      return new LocalAdsCustomerViewHolder(inflater.inflate(R.layout.item_search_result, parent, false));
+      case SearchResultTypes.TYPE_LOCAL_ADS_CUSTOMER:
+        return new LocalAdsCustomerViewHolder(inflater.inflate(R.layout.item_search_result, parent, false));
 
-    case SearchResultTypes.TYPE_GOOGLE_ADS:
-      return new GoogleAdsViewHolder(new FrameLayout(parent.getContext()));
+      case SearchResultTypes.TYPE_GOOGLE_ADS:
+        return new GoogleAdsViewHolder(new FrameLayout(parent.getContext()));
 
-    default:
-      throw new IllegalArgumentException("Unhandled view type given");
+      default:
+        throw new IllegalArgumentException("Unhandled view type given");
     }
   }
 
