@@ -1,13 +1,13 @@
 @objc(MWMViatorItemModel)
 final class ViatorItemModel: NSObject {
-  let imageURL: URL
-  let pageURL: URL
-  let title: String
-  let rating: Double
-  let duration: String
-  let price: String
+  @objc let imageURL: URL
+  @objc let pageURL: URL
+  @objc let title: String
+  @objc let rating: Double
+  @objc let duration: String
+  @objc let price: String
 
-  init(imageURL: URL, pageURL: URL, title: String, rating: Double, duration: String, price: String) {
+  @objc init(imageURL: URL, pageURL: URL, title: String, rating: Double, duration: String, price: String) {
     self.imageURL = imageURL
     self.pageURL = pageURL
     self.title = title

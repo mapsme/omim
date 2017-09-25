@@ -1,18 +1,18 @@
 final class RouteManagerTransitioning: NSObject, UIViewControllerAnimatedTransitioning {
   private let isPresentation: Bool
 
-  init(isPresentation: Bool) {
+  @objc init(isPresentation: Bool) {
     self.isPresentation = isPresentation
     super.init()
   }
 
-  func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+  func transitionDuration(using _: UIViewControllerContextTransitioning?) -> TimeInterval {
     return kDefaultAnimationDuration
   }
 
   func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
     guard let fromVC = transitionContext.viewController(forKey: .from),
-          let toVC = transitionContext.viewController(forKey: .to) else { return }
+      let toVC = transitionContext.viewController(forKey: .to) else { return }
 
     let animatingVC = isPresentation ? toVC : fromVC
     guard let animatingView = animatingVC.view else { return }
@@ -29,7 +29,7 @@ final class RouteManagerTransitioning: NSObject, UIViewControllerAnimatedTransit
     UIView.animate(withDuration: transitionDuration(using: transitionContext),
                    animations: { animatingView.frame = finalFrame },
                    completion: { _ in
-                    transitionContext.completeTransition(true)
+                     transitionContext.completeTransition(true)
     })
   }
 }

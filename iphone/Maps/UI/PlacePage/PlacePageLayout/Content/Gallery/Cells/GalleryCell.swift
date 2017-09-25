@@ -5,7 +5,7 @@ final class GalleryCell: UICollectionViewCell {
 
   @IBOutlet weak var imageView: UIImageView!
 
-  var model: Model! {
+  @objc var model: Model! {
     didSet {
       imageView.af_setImage(withURL: model.imageURL, imageTransition: .crossDissolve(kDefaultAnimationDuration))
     }

@@ -1,8 +1,8 @@
-final class CarouselElement : UICollectionViewCell {
+final class CarouselElement: UICollectionViewCell {
   @IBOutlet private weak var image: UIImageView!
   @IBOutlet private var dimMask: [UIView]!
 
-  func config(with url: URL, isLastCell: Bool) {
+  @objc func config(with url: URL, isLastCell: Bool) {
     image.af_setImage(withURL: url, imageTransition: .crossDissolve(kDefaultAnimationDuration))
     dimMask.forEach { $0.isHidden = !isLastCell }
   }
@@ -16,7 +16,7 @@ final class PPHotelCarouselCell: MWMTableViewCell {
   fileprivate let kMaximumNumberOfPhotos = 5
   fileprivate weak var delegate: MWMPlacePageButtonsProtocol?
 
-  func config(with ds: [GalleryItemModel], delegate d: MWMPlacePageButtonsProtocol?) {
+  @objc func config(with ds: [GalleryItemModel], delegate d: MWMPlacePageButtonsProtocol?) {
     dataSource = ds
     delegate = d
     collectionView.contentOffset = .zero
@@ -44,7 +44,7 @@ extension PPHotelCarouselCell: UICollectionViewDelegate, UICollectionViewDataSou
     return cell
   }
 
-  func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+  func collectionView(_: UICollectionView, numberOfItemsInSection _: Int) -> Int {
     return isFullPhotosCarousel ? dataSource.count : kMaximumNumberOfPhotos
   }
 

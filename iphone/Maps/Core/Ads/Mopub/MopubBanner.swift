@@ -22,11 +22,11 @@ final class MopubBanner: NSObject, Banner {
     requestDate = Date()
   }
 
-  func unregister() {
+  @objc func unregister() {
     nativeAd?.unregister()
   }
 
-  var isBannerOnScreen = false {
+  @objc var isBannerOnScreen = false {
     didSet {
       if isBannerOnScreen {
         startCountTimeOnScreen()
@@ -36,8 +36,8 @@ final class MopubBanner: NSObject, Banner {
     }
   }
 
-  private(set) var isNeedToRetain = false
-  var isPossibleToReload: Bool {
+  @objc private(set) var isNeedToRetain = false
+  @objc var isPossibleToReload: Bool {
     if let date = requestDate {
       return Date().timeIntervalSince(date) > Limits.minTimeSinceLastRequest
     }
@@ -48,11 +48,11 @@ final class MopubBanner: NSObject, Banner {
   var mwmType: MWMBannerType { return type.mwmType }
   var bannerID: String! { return placementID }
 
-  var statisticsDescription: [String: String] {
+  @objc var statisticsDescription: [String: String] {
     return [kStatBanner: bannerID, kStatProvider: kStatMopub]
   }
 
-  init(bannerID: String) {
+  @objc init(bannerID: String) {
     placementID = bannerID
     super.init()
 
@@ -78,7 +78,7 @@ final class MopubBanner: NSObject, Banner {
   }
 
   @objc private func enterBackground() {
-    if (isBannerOnScreen) {
+    if isBannerOnScreen {
       stopCountTimeOnScreen()
     }
   }
@@ -88,7 +88,7 @@ final class MopubBanner: NSObject, Banner {
       showDate = Date()
     }
 
-    if (remainingTime > 0) {
+    if remainingTime > 0 {
       perform(#selector(setEnoughTimeOnScreen), with: nil, afterDelay: remainingTime)
     }
   }
@@ -100,7 +100,7 @@ final class MopubBanner: NSObject, Banner {
     }
 
     let timePassed = Date().timeIntervalSince(date)
-    if (timePassed < Limits.minTimeOnScreen) {
+    if timePassed < Limits.minTimeOnScreen {
       remainingTime = Limits.minTimeOnScreen - timePassed
       NSObject.cancelPreviousPerformRequests(withTarget: self)
     } else {
@@ -112,30 +112,30 @@ final class MopubBanner: NSObject, Banner {
     isNeedToRetain = false
   }
 
-  //MARK: - Content
-  private(set) var nativeAd: MPNativeAd?
+  // MARK: - Content
+  @objc private(set) var nativeAd: MPNativeAd?
 
-  var title: String {
+  @objc var title: String {
     return nativeAd?.properties[kAdTitleKey] as? String ?? ""
   }
 
-  var text: String {
+  @objc var text: String {
     return nativeAd?.properties[kAdTextKey] as? String ?? ""
   }
 
-  var iconURL: String {
+  @objc var iconURL: String {
     return nativeAd?.properties[kAdIconImageKey] as? String ?? ""
   }
 
-  var ctaText: String {
+  @objc var ctaText: String {
     return nativeAd?.properties[kAdCTATextKey] as? String ?? ""
   }
 
-  var privacyInfoURL: String? {
+  @objc var privacyInfoURL: String? {
     return nativeAd?.properties[kDAAIconTapDestinationURL] as? String
   }
 
-  //MARK: - Helpers
+  // MARK: - Helpers
   private var request: MPNativeAdRequest!
 
   private func load() {
@@ -149,11 +149,13 @@ final class MopubBanner: NSObject, Banner {
     }
     request.targeting = targeting
 
-    request.start { [weak self] request, nativeAd, error in
+    request.start { [weak self] _, nativeAd, error in
       guard let s = self else { return }
       if let error = error as NSError? {
-        let params: [String : Any] = [kStatBanner : s.bannerID,
-                                     kStatProvider : kStatMopub]
+        let params: [String: Any] = [
+          kStatBanner: s.bannerID,
+          kStatProvider: kStatMopub,
+        ]
         let event = kStatPlacePageBannerError
         s.failure(s.type, event, params, error)
       } else {

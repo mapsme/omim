@@ -1,4 +1,4 @@
-final class ViatorElement : UICollectionViewCell {
+final class ViatorElement: UICollectionViewCell {
   @IBOutlet private weak var more: UIButton!
 
   @IBOutlet private weak var image: UIImageView!
@@ -8,18 +8,21 @@ final class ViatorElement : UICollectionViewCell {
       title.textColor = UIColor.blackPrimaryText()
     }
   }
+
   @IBOutlet private weak var duration: UILabel! {
     didSet {
       duration.font = UIFont.regular12()
       duration.textColor = UIColor.blackSecondaryText()
     }
   }
+
   @IBOutlet private weak var price: UILabel! {
     didSet {
       price.font = UIFont.medium14()
       price.textColor = UIColor.linkBlue()
     }
   }
+
   @IBOutlet private var rating: [UIImageView]!
 
   private var isLastCell = false {
@@ -49,7 +52,7 @@ final class ViatorElement : UICollectionViewCell {
     onMoreAction?()
   }
 
-  var model: ViatorItemModel? {
+  @objc var model: ViatorItemModel? {
     didSet {
       if let model = model {
         image.af_setImage(withURL: model.imageURL, imageTransition: .crossDissolve(kDefaultAnimationDuration))
@@ -81,5 +84,5 @@ final class ViatorElement : UICollectionViewCell {
     }
   }
 
-  var onMoreAction: (() -> Void)?
+  @objc var onMoreAction: (() -> Void)?
 }

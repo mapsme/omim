@@ -13,12 +13,12 @@ final class SearchIndex: NSObject {
   private var positionItems: [PositionItem] = []
   private var items: [Item] = []
 
-  var count: Int {
+  @objc var count: Int {
     return items.count
   }
 
-  init(suggestionsCount: Int, resultsCount: Int) {
-    for index in 0..<resultsCount {
+  @objc init(suggestionsCount: Int, resultsCount: Int) {
+    for index in 0 ..< resultsCount {
       let type: MWMSearchItemType = index < suggestionsCount ? .suggestion : .regular
       let item = Item(type: type, containerIndex: index)
       positionItems.append(PositionItem(item: item, position: index))
@@ -26,13 +26,13 @@ final class SearchIndex: NSObject {
     super.init()
   }
 
-  func addItem(type: MWMSearchItemType, prefferedPosition: Int, containerIndex: Int) {
+  @objc func addItem(type: MWMSearchItemType, prefferedPosition: Int, containerIndex: Int) {
     assert(type != .suggestion && type != .regular)
     let item = Item(type: type, containerIndex: containerIndex)
     positionItems.append(PositionItem(item: item, position: prefferedPosition))
   }
 
-  func build() {
+  @objc func build() {
     positionItems.sort(by: >)
     var itemsDict: [Int: Item] = [:]
     positionItems.forEach { item in
@@ -45,7 +45,7 @@ final class SearchIndex: NSObject {
 
     items.removeAll()
     let keys = itemsDict.keys.sorted()
-    for index in 0..<keys.count {
+    for index in 0 ..< keys.count {
       let key = keys[index]
       if index == key {
         items.append(itemsDict[key]!)
@@ -53,11 +53,11 @@ final class SearchIndex: NSObject {
     }
   }
 
-  func resultType(row: Int) -> MWMSearchItemType {
+  @objc func resultType(row: Int) -> MWMSearchItemType {
     return items[row].type
   }
 
-  func resultContainerIndex(row: Int) -> Int {
+  @objc func resultContainerIndex(row: Int) -> Int {
     return items[row].containerIndex
   }
 }
@@ -67,8 +67,8 @@ extension SearchIndex.PositionItem: Equatable {
     let lhsCache = lhs.item
     let rhsCache = rhs.item
     return lhsCache.type == rhsCache.type &&
-           lhs.position == rhs.position &&
-           lhsCache.containerIndex == rhsCache.containerIndex
+      lhs.position == rhs.position &&
+      lhsCache.containerIndex == rhsCache.containerIndex
   }
 }
 

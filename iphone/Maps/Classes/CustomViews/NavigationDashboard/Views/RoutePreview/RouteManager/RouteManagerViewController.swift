@@ -1,6 +1,6 @@
 @objc(MWMRouteManagerViewController)
 final class RouteManagerViewController: MWMViewController, UITableViewDataSource, UITableViewDelegate {
-  let viewModel: RouteManagerViewModelProtocol
+  @objc let viewModel: RouteManagerViewModelProtocol
 
   @IBOutlet private var dimView: RouteManagerDimView!
   @IBOutlet private weak var footerViewHeight: NSLayoutConstraint!
@@ -12,13 +12,13 @@ final class RouteManagerViewController: MWMViewController, UITableViewDataSource
   @IBOutlet private weak var minManagerTopOffset: NSLayoutConstraint!
   @IBOutlet private weak var tableView: RouteManagerTableView!
 
-  lazy var chromeView: UIView = {
+  @objc lazy var chromeView: UIView = {
     let view = UIView()
     view.backgroundColor = UIColor.blackStatusBarBackground()
     return view
   }()
 
-  weak var containerView: UIView!
+  @objc weak var containerView: UIView!
 
   private var canDeleteRow: Bool { return viewModel.routePoints.count > 2 }
 
@@ -45,10 +45,10 @@ final class RouteManagerViewController: MWMViewController, UITableViewDataSource
       cell.isHidden = true
       UIView.animate(withDuration: kDefaultAnimationDuration,
                      animations: { [snapshot] in
-                      snapshot.center = dragPoint
-                      let scaleFactor: CGFloat = 1.05
-                      snapshot.transform = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
-        })
+                       snapshot.center = dragPoint
+                       let scaleFactor: CGFloat = 1.05
+                       snapshot.transform = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
+      })
     }
 
     func move(dragPoint: CGPoint, indexPath: IndexPath?, inManagerView: Bool) {
@@ -63,7 +63,7 @@ final class RouteManagerViewController: MWMViewController, UITableViewDataSource
       if let cell = cell {
         let (centerX, centerY) = (snapshot.width / 2, snapshot.height / 2)
         canMoveCell = cell.point(inside: cell.convert(CGPoint(x: centerX, y: 1.5 * centerY), from: snapshot), with: nil) &&
-                      cell.point(inside: cell.convert(CGPoint(x: centerX, y: 0.5 * centerY), from: snapshot), with: nil)
+          cell.point(inside: cell.convert(CGPoint(x: centerX, y: 0.5 * centerY), from: snapshot), with: nil)
       } else {
         canMoveCell = true
       }
@@ -74,7 +74,7 @@ final class RouteManagerViewController: MWMViewController, UITableViewDataSource
         controller.viewModel.movePoint(at: currentRow, to: newRow)
 
         tv.moveRow(at: currentIP, to: newIP)
-        let reloadRows = (min(currentRow, newRow)...max(currentRow, newRow)).map { IndexPath(row: $0, section: 0) }
+        let reloadRows = (min(currentRow, newRow) ... max(currentRow, newRow)).map { IndexPath(row: $0, section: 0) }
         tv.reloadRows(at: reloadRows, with: .fade)
         tv.cellForRow(at: newIP)?.isHidden = true
 
@@ -95,12 +95,12 @@ final class RouteManagerViewController: MWMViewController, UITableViewDataSource
         let dropCenter = tv.cellForRow(at: indexPath)?.center ?? snapshot.center
         UIView.animate(withDuration: kDefaultAnimationDuration,
                        animations: { [snapshot] in
-                        snapshot.center = containerView.convert(dropCenter, from: tv)
-                        snapshot.transform = CGAffineTransform.identity
-          },
+                         snapshot.center = containerView.convert(dropCenter, from: tv)
+                         snapshot.transform = CGAffineTransform.identity
+                       },
                        completion: { [indexPath] _ in
-                        tv.reloadRows(at: [indexPath], with: .none)
-                        removeSnapshot()
+                         tv.reloadRows(at: [indexPath], with: .none)
+                         removeSnapshot()
         })
       } else {
         tv.heightUpdateStyle = .animated
@@ -111,12 +111,12 @@ final class RouteManagerViewController: MWMViewController, UITableViewDataSource
         let dimView = controller.dimView!
         UIView.animate(withDuration: kDefaultAnimationDuration,
                        animations: { [snapshot] in
-                        snapshot.center = containerView.convert(dimView.binDropPoint, from: dimView)
-                        let scaleFactor: CGFloat = 0.2
-                        snapshot.transform = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
-          },
+                         snapshot.center = containerView.convert(dimView.binDropPoint, from: dimView)
+                         let scaleFactor: CGFloat = 0.2
+                         snapshot.transform = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
+                       },
                        completion: { _ in
-                        removeSnapshot()
+                         removeSnapshot()
         })
       }
     }
@@ -128,12 +128,12 @@ final class RouteManagerViewController: MWMViewController, UITableViewDataSource
 
   var dragCell: DragCell?
 
-  init(viewModel: RouteManagerViewModelProtocol) {
+  @objc init(viewModel: RouteManagerViewModelProtocol) {
     self.viewModel = viewModel
     super.init(nibName: toString(type(of: self)), bundle: nil)
   }
 
-  required init?(coder aDecoder: NSCoder) {
+  required init?(coder _: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
 
@@ -218,7 +218,7 @@ final class RouteManagerViewController: MWMViewController, UITableViewDataSource
     switch longPress.state {
     case .began:
       guard let indexPath = tableView.indexPathForRow(at: locationInTableView),
-            let cell = tableView.cellForRow(at: indexPath) else { return }
+        let cell = tableView.cellForRow(at: indexPath) else { return }
       dragCell = DragCell(controller: self, cell: cell, dragPoint: locationInView, indexPath: indexPath)
     case .changed:
       guard let dragCell = dragCell else { return }
@@ -239,8 +239,8 @@ final class RouteManagerViewController: MWMViewController, UITableViewDataSource
     return location
   }
 
-// MARK: - UITableViewDataSource
-  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+  // MARK: - UITableViewDataSource
+  func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
     return viewModel.routePoints.count
   }
 
@@ -251,12 +251,12 @@ final class RouteManagerViewController: MWMViewController, UITableViewDataSource
     return cell
   }
 
-  func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+  func tableView(_: UITableView, commit _: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
     viewModel.deletePoint(at: indexPath.row)
   }
 
-// MARK: - UITableViewDelegate
-  func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
+  // MARK: - UITableViewDelegate
+  func tableView(_: UITableView, editingStyleForRowAt _: IndexPath) -> UITableViewCellEditingStyle {
     return canDeleteRow ? .delete : .none
   }
 }

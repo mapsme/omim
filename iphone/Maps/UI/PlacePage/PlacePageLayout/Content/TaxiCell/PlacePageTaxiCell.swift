@@ -24,7 +24,7 @@ final class PlacePageTaxiCell: MWMTableViewCell {
   private weak var delegate: MWMPlacePageButtonsProtocol!
   private var type: MWMPlacePageTaxiProvider!
 
-  func config(type: MWMPlacePageTaxiProvider, delegate: MWMPlacePageButtonsProtocol) {
+  @objc func config(type: MWMPlacePageTaxiProvider, delegate: MWMPlacePageButtonsProtocol) {
     self.delegate = delegate
     self.type = type
     switch type {

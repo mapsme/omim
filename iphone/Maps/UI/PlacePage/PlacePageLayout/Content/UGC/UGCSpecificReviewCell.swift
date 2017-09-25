@@ -10,7 +10,7 @@ final class UGCSpecificReviewCell: MWMTableViewCell {
   private var indexPath: NSIndexPath = NSIndexPath()
   private var delegate: UGCSpecificReviewDelegate?
 
-  func configWith(specification: String, rate: Int, atIndexPath: NSIndexPath, delegate: UGCSpecificReviewDelegate?) {
+  @objc func configWith(specification: String, rate: Int, atIndexPath: NSIndexPath, delegate: UGCSpecificReviewDelegate?) {
     self.specification.text = specification
     self.delegate = delegate
     indexPath = atIndexPath
@@ -22,11 +22,11 @@ final class UGCSpecificReviewCell: MWMTableViewCell {
     delegate?.changeReviewRate(on.tag, atIndexPath: indexPath)
   }
 
-  //TODO: Make highlighting and dragging.
+  // TODO: Make highlighting and dragging.
 
-  @IBAction private func highlight(on: UIButton) { }
+  @IBAction private func highlight(on _: UIButton) {}
 
-  @IBAction private func touchingCanceled(on: UIButton) { }
+  @IBAction private func touchingCanceled(on _: UIButton) {}
 
-  @IBAction private func drag(inside: UIButton) { }
+  @IBAction private func drag(inside _: UIButton) {}
 }

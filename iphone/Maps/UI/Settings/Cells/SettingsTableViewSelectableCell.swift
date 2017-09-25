@@ -2,7 +2,7 @@
 
   @IBOutlet fileprivate weak var title: UILabel!
 
-  func config(title: String) {
+  @objc func config(title: String) {
     backgroundColor = UIColor.white()
 
     self.title.text = title

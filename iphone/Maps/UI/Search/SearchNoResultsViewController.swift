@@ -2,7 +2,7 @@ import UIKit
 
 final class SearchNoResultsViewController: MWMViewController {
 
-  static var controller: SearchNoResultsViewController {
+  @objc static var controller: SearchNoResultsViewController {
     let storyboard = UIStoryboard.instance(.main)
     return storyboard.instantiateViewController(withIdentifier: toString(self)) as! SearchNoResultsViewController
   }

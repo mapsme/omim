@@ -12,9 +12,9 @@
     }
   }
 
-  weak var delegate: SettingsTableViewSwitchCellDelegate?
+  @objc weak var delegate: SettingsTableViewSwitchCellDelegate?
 
-  func config(delegate: SettingsTableViewSwitchCellDelegate, title: String, isOn: Bool) {
+  @objc func config(delegate: SettingsTableViewSwitchCellDelegate, title: String, isOn: Bool) {
     backgroundColor = UIColor.white()
 
     self.delegate = delegate
@@ -22,7 +22,7 @@
     self.title.text = title
     styleTitle()
 
-    self.switchButton.isOn = isOn
+    switchButton.isOn = isOn
     styleSwitchButton()
   }
 

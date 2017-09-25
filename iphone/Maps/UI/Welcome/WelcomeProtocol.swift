@@ -39,7 +39,7 @@ extension WelcomeProtocolBase {
     let size = pageController.view!.size
     let (width, height) = (size.width, size.height)
     let hideImage = (imageHeight.multiplier * height <= imageMinHeight.constant)
-    titleImageOffset.priority = hideImage ? UILayoutPriorityDefaultLow : UILayoutPriorityDefaultHigh
+    titleImageOffset.priority = hideImage ? UILayoutPriority.defaultLow : UILayoutPriority.defaultHigh
     image.isHidden = hideImage
     containerWidth.constant = width
     containerHeight.constant = height
@@ -67,11 +67,11 @@ extension WelcomeProtocol {
   static func configBlock(pageIndex: Int) -> ConfigBlock {
     let welcomeConfig = welcomeConfigs[pageIndex]
     return {
-      $0.setup(image:welcomeConfig.image,
-               title:L(welcomeConfig.title),
-               text:L(welcomeConfig.text),
-               buttonTitle:L(welcomeConfig.buttonTitle),
-               buttonAction:welcomeConfig.buttonAction)
+      $0.setup(image: welcomeConfig.image,
+               title: L(welcomeConfig.title),
+               text: L(welcomeConfig.text),
+               buttonTitle: L(welcomeConfig.buttonTitle),
+               buttonAction: welcomeConfig.buttonAction)
     }
   }
   static var pagesCount: Int { return welcomeConfigs.count }

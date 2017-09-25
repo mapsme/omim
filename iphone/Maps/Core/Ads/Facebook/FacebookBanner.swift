@@ -11,7 +11,7 @@ final class FacebookBanner: NSObject, Banner {
   fileprivate var failure: Banner.Failure!
   fileprivate var click: Banner.Click!
 
-  let nativeAd: FBNativeAd
+  @objc let nativeAd: FBNativeAd
 
   func reload(success: @escaping Banner.Success, failure: @escaping Banner.Failure, click: @escaping Click) {
     FBAdSettings.clearTestDevices()
@@ -23,22 +23,22 @@ final class FacebookBanner: NSObject, Banner {
     requestDate = Date()
   }
 
-  func unregister() {
+  @objc func unregister() {
     nativeAd.unregisterView()
   }
 
-  var isPossibleToReload: Bool {
+  @objc var isPossibleToReload: Bool {
     if let date = requestDate {
       return Date().timeIntervalSince(date) > Limits.minTimeSinceLastRequest
     }
     return true
   }
 
-  private(set) var isNeedToRetain: Bool = true
+  @objc private(set) var isNeedToRetain: Bool = true
   var type: BannerType { return .facebook(bannerID) }
   var mwmType: MWMBannerType { return type.mwmType }
   var bannerID: String! { return nativeAd.placementID }
-  var isBannerOnScreen = false {
+  @objc var isBannerOnScreen = false {
     didSet {
       if isBannerOnScreen {
         startCountTimeOnScreen()
@@ -48,7 +48,7 @@ final class FacebookBanner: NSObject, Banner {
     }
   }
 
-  var statisticsDescription: [String: String] {
+  @objc var statisticsDescription: [String: String] {
     return [kStatBanner: bannerID, kStatProvider: kStatFacebook]
   }
 
@@ -62,7 +62,7 @@ final class FacebookBanner: NSObject, Banner {
       loadBannerDate = Date()
     }
 
-    if (remainingTime > 0) {
+    if remainingTime > 0 {
       perform(#selector(setEnoughTimeOnScreen), with: nil, afterDelay: remainingTime)
     }
   }
@@ -74,7 +74,7 @@ final class FacebookBanner: NSObject, Banner {
     }
 
     let timePassed = Date().timeIntervalSince(date)
-    if (timePassed < Limits.minTimeOnScreen) {
+    if timePassed < Limits.minTimeOnScreen {
       remainingTime = Limits.minTimeOnScreen - timePassed
       NSObject.cancelPreviousPerformRequests(withTarget: self)
     } else {
@@ -86,7 +86,7 @@ final class FacebookBanner: NSObject, Banner {
     isNeedToRetain = false
   }
 
-  init(bannerID: String) {
+  @objc init(bannerID: String) {
     nativeAd = FBNativeAd(placementID: bannerID)
     nativeAd.mediaCachePolicy = .all
     super.init()
@@ -109,7 +109,7 @@ final class FacebookBanner: NSObject, Banner {
   }
 
   @objc private func enterBackground() {
-    if (isBannerOnScreen) {
+    if isBannerOnScreen {
       stopCountTimeOnScreen()
     }
   }
@@ -131,7 +131,7 @@ extension FacebookBanner: FBNativeAdDelegate {
     guard nativeAd === self.nativeAd else { return }
 
     // https://developers.facebook.com/docs/audience-network/testing
-    var params: [String: Any] = [kStatBanner : nativeAd.placementID, kStatProvider : kStatFacebook]
+    var params: [String: Any] = [kStatBanner: nativeAd.placementID, kStatProvider: kStatFacebook]
 
     let e = error as NSError
     let event: String
@@ -141,8 +141,8 @@ extension FacebookBanner: FBNativeAdDelegate {
       event = kStatPlacePageBannerError
       params[kStatErrorCode] = e.code
     }
-    
-    failure(self.type, event, params, e)
+
+    failure(type, event, params, e)
   }
 
   func nativeAdDidClick(_ nativeAd: FBNativeAd) {
@@ -150,4 +150,3 @@ extension FacebookBanner: FBNativeAdDelegate {
     click(self)
   }
 }
-

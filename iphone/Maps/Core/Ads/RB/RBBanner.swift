@@ -15,7 +15,7 @@ final class RBBanner: MTRGNativeAd, Banner {
   private var showDate: Date?
   private var remainingTime = Limits.minTimeOnScreen
 
-  init!(bannerID: String) {
+  @objc init!(bannerID: String) {
     super.init(slotId: UInt(MY_TARGET_RB_KEY))
     delegate = self
     self.bannerID = bannerID
@@ -42,7 +42,7 @@ final class RBBanner: MTRGNativeAd, Banner {
   }
 
   @objc private func enterBackground() {
-    if (isBannerOnScreen) {
+    if isBannerOnScreen {
       stopCountTimeOnScreen()
     }
   }
@@ -52,7 +52,7 @@ final class RBBanner: MTRGNativeAd, Banner {
       showDate = Date()
     }
 
-    if (remainingTime > 0) {
+    if remainingTime > 0 {
       perform(#selector(setEnoughTimeOnScreen), with: nil, afterDelay: remainingTime)
     }
   }
@@ -64,7 +64,7 @@ final class RBBanner: MTRGNativeAd, Banner {
     }
 
     let timePassed = Date().timeIntervalSince(date)
-    if (timePassed < Limits.minTimeOnScreen) {
+    if timePassed < Limits.minTimeOnScreen {
       remainingTime = Limits.minTimeOnScreen - timePassed
       NSObject.cancelPreviousPerformRequests(withTarget: self)
     } else {
@@ -76,7 +76,7 @@ final class RBBanner: MTRGNativeAd, Banner {
     isNeedToRetain = false
   }
 
-  //MARK: - Banner
+  // MARK: - Banner
   func reload(success: @escaping Banner.Success, failure: @escaping Banner.Failure, click: @escaping Click) {
     self.success = success
     self.failure = failure
@@ -86,11 +86,11 @@ final class RBBanner: MTRGNativeAd, Banner {
     requestDate = Date()
   }
 
-  func unregister() {
+  @objc func unregister() {
     unregisterView()
   }
 
-  var isBannerOnScreen = false {
+  @objc var isBannerOnScreen = false {
     didSet {
       if isBannerOnScreen {
         startCountTimeOnScreen()
@@ -100,9 +100,9 @@ final class RBBanner: MTRGNativeAd, Banner {
     }
   }
 
-  private(set) var isNeedToRetain = false
+  @objc private(set) var isNeedToRetain = false
 
-  var isPossibleToReload: Bool {
+  @objc var isPossibleToReload: Bool {
     if let date = requestDate {
       return Date().timeIntervalSince(date) > Limits.minTimeSinceLastRequest
     }
@@ -120,22 +120,24 @@ final class RBBanner: MTRGNativeAd, Banner {
     }
   }
 
-  var statisticsDescription: [String: String] {
+  @objc var statisticsDescription: [String: String] {
     return [kStatBanner: bannerID, kStatProvider: kStatRB]
   }
 }
 
 extension RBBanner: MTRGNativeAdDelegate {
-  func onLoad(with promoBanner: MTRGNativePromoBanner!, nativeAd: MTRGNativeAd!) {
+  func onLoad(with _: MTRGNativePromoBanner!, nativeAd: MTRGNativeAd!) {
     guard nativeAd === self else { return }
     success(self)
   }
 
   func onNoAd(withReason reason: String!, nativeAd: MTRGNativeAd!) {
     guard nativeAd === self else { return }
-    let params: [String: Any] = [kStatBanner : bannerID,
-                                 kStatProvider : kStatRB,
-                                 kStatReason : reason]
+    let params: [String: Any] = [
+      kStatBanner: bannerID,
+      kStatProvider: kStatRB,
+      kStatReason: reason,
+    ]
     let event = kStatPlacePageBannerError
     let error = NSError(domain: kMapsmeErrorDomain, code: 1001, userInfo: params)
     failure(self.type, event, params, error)
