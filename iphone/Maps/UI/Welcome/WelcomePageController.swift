@@ -33,7 +33,7 @@ final class WelcomePageController: UIPageViewController {
     }
   }
 
-  static func controller(parent: WelcomePageControllerProtocol) -> WelcomePageController? {
+  @objc static func controller(parent: WelcomePageControllerProtocol) -> WelcomePageController? {
     let isFirstSession = Alohalytics.isFirstSession()
     let welcomeKey = isFirstSession ? FirstLaunchController.key : WhatsNewController.key
     guard UserDefaults.standard.bool(forKey: welcomeKey) == false else { return nil }
@@ -67,7 +67,7 @@ final class WelcomePageController: UIPageViewController {
     let isFirstSession = Alohalytics.isFirstSession()
     let pagesCount = isFirstSession ? FirstLaunchController.pagesCount : WhatsNewController.pagesCount
     let welcomeClass: WelcomeProtocolBase.Type = isFirstSession ? FirstLaunchController.self : WhatsNewController.self
-    (0..<pagesCount).forEach {
+    (0 ..< pagesCount).forEach {
       let vc = welcomeClass.controller($0)
       (vc as! WelcomeProtocolBase).pageController = self
       controllers.append(vc)
@@ -75,14 +75,14 @@ final class WelcomePageController: UIPageViewController {
     dataSource = self
   }
 
-  func nextPage() {
+  @objc func nextPage() {
     let welcomeKey = Alohalytics.isFirstSession() ? FirstLaunchController.key : WhatsNewController.key
     Statistics.logEvent(kStatEventName(kStatWhatsNew, welcomeKey),
                         withParameters: [kStatAction: kStatNext])
     currentController = pageViewController(self, viewControllerAfter: currentController)
   }
 
-  func close() {
+  @objc func close() {
     UserDefaults.standard.set(true, forKey: FirstLaunchController.key)
     UserDefaults.standard.set(true, forKey: WhatsNewController.key)
     let welcomeKey = Alohalytics.isFirstSession() ? FirstLaunchController.key : WhatsNewController.key
@@ -94,7 +94,7 @@ final class WelcomePageController: UIPageViewController {
     parentController.closePageController(self)
   }
 
-  func show() {
+  @objc func show() {
     let welcomeKey = Alohalytics.isFirstSession() ? FirstLaunchController.key : WhatsNewController.key
     Statistics.logEvent(kStatEventName(kStatWhatsNew, welcomeKey),
                         withParameters: [kStatAction: kStatOpen])
@@ -118,23 +118,23 @@ final class WelcomePageController: UIPageViewController {
 
 extension WelcomePageController: UIPageViewControllerDataSource {
 
-  func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
+  func pageViewController(_: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
     guard viewController != controllers.first else { return nil }
     let index = controllers.index(before: controllers.index(of: viewController)!)
     return controllers[index]
   }
 
-  func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
+  func pageViewController(_: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
     guard viewController != controllers.last else { return nil }
     let index = controllers.index(after: controllers.index(of: viewController)!)
     return controllers[index]
   }
 
-  func presentationCount(for pageViewController: UIPageViewController) -> Int {
+  func presentationCount(for _: UIPageViewController) -> Int {
     return controllers.count
   }
 
-  func presentationIndex(for pageViewController: UIPageViewController) -> Int {
+  func presentationIndex(for _: UIPageViewController) -> Int {
     guard let vc = currentController else { return 0 }
     return controllers.index(of: vc)!
   }

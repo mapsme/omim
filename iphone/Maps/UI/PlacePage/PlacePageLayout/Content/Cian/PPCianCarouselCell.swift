@@ -9,6 +9,7 @@ final class PPCianCarouselCell: MWMTableViewCell {
       title.textColor = UIColor.blackSecondaryText()
     }
   }
+
   @IBOutlet private weak var more: UIButton! {
     didSet {
       more.setImage(#imageLiteral(resourceName: "logo_cian"), for: .normal)
@@ -18,19 +19,20 @@ final class PPCianCarouselCell: MWMTableViewCell {
   }
 
   @IBOutlet private weak var collectionView: UICollectionView!
-  var data: [CianItemModel]? {
+  @objc var data: [CianItemModel]? {
     didSet {
       updateCollectionView { [weak self] in
         self?.collectionView.reloadSections(IndexSet(integer: 0))
       }
     }
   }
+
   fileprivate let kMaximumNumberOfElements = 5
   fileprivate var delegate: MWMPlacePageButtonsProtocol?
 
-  fileprivate var statisticsParameters: [AnyHashable: Any] { return [kStatProvider : kStatCian] }
+  fileprivate var statisticsParameters: [AnyHashable: Any] { return [kStatProvider: kStatCian] }
 
-  func config(delegate d: MWMPlacePageButtonsProtocol?) {
+  @objc func config(delegate d: MWMPlacePageButtonsProtocol?) {
     delegate = d
     collectionView.contentOffset = .zero
     collectionView.delegate = self
@@ -110,7 +112,7 @@ extension PPCianCarouselCell: UICollectionViewDelegate, UICollectionViewDataSour
     return cell
   }
 
-  func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+  func collectionView(_: UICollectionView, numberOfItemsInSection _: Int) -> Int {
     if let data = data {
       if data.isEmpty {
         return 1

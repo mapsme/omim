@@ -4,9 +4,9 @@ final class PhotosOverlayView: UIView {
   private var navigationBar: UINavigationBar!
   private var navigationItem: UINavigationItem!
 
-  weak var photosViewController: PhotosViewController?
+  @objc weak var photosViewController: PhotosViewController?
 
-  var photo: GalleryItemModel? {
+  @objc var photo: GalleryItemModel? {
     didSet {
       guard let photo = photo else {
         navigationItem.title = nil
@@ -24,17 +24,17 @@ final class PhotosOverlayView: UIView {
     setupNavigationBar()
   }
 
-  required init?(coder aDecoder: NSCoder) {
+  required init?(coder _: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
 
   @objc
-  private func closeButtonTapped(_ sender: UIBarButtonItem) {
+  private func closeButtonTapped(_: UIBarButtonItem) {
     photosViewController?.dismiss(animated: true, completion: nil)
   }
 
   override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-    if let hitView = super.hitTest(point, with: event) , hitView != self {
+    if let hitView = super.hitTest(point, with: event), hitView != self {
       return hitView
     }
     return nil
@@ -56,12 +56,12 @@ final class PhotosOverlayView: UIView {
     let topConstraint = NSLayoutConstraint(item: navigationBar, attribute: .top, relatedBy: .equal, toItem: self, attribute: .top, multiplier: 1.0, constant: statusBarHeight())
     let widthConstraint = NSLayoutConstraint(item: navigationBar, attribute: .width, relatedBy: .equal, toItem: self, attribute: .width, multiplier: 1.0, constant: 0.0)
     let horizontalPositionConstraint = NSLayoutConstraint(item: navigationBar, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0.0)
-    addConstraints([topConstraint,widthConstraint,horizontalPositionConstraint])
+    addConstraints([topConstraint, widthConstraint, horizontalPositionConstraint])
 
     navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "ic_nav_bar_back"), style: .plain, target: self, action: #selector(closeButtonTapped(_:)))
   }
 
-  func setHidden(_ hidden: Bool, animated: Bool, animation: @escaping (() -> Void)) {
+  @objc func setHidden(_ hidden: Bool, animated: Bool, animation: @escaping (() -> Void)) {
     guard isHidden != hidden else { return }
     guard animated else {
       isHidden = hidden
@@ -81,6 +81,6 @@ final class PhotosOverlayView: UIView {
                    completion: { [weak self] _ in
                      self?.alpha = 1.0
                      self?.isHidden = hidden
-                   })
+    })
   }
 }

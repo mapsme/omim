@@ -2,13 +2,13 @@ import AlamofireImage
 import UIKit
 
 final class PhotoScalingView: UIScrollView {
-  private(set) lazy var imageView: UIImageView = {
+  @objc private(set) lazy var imageView: UIImageView = {
     let imageView = UIImageView(frame: self.bounds)
     self.addSubview(imageView)
     return imageView
   }()
 
-  var photo: GalleryItemModel? {
+  @objc var photo: GalleryItemModel? {
     didSet {
       updateImage(photo)
     }
@@ -64,7 +64,7 @@ final class PhotoScalingView: UIScrollView {
                             s.imageView.frame = CGRect(origin: CGPoint.zero, size: s.contentSize)
                             s.updateZoomScale()
                             s.centerScrollViewContents()
-                          })
+    })
   }
 
   private func updateZoomScale() {

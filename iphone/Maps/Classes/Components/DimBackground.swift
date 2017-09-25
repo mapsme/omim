@@ -3,15 +3,15 @@ final class DimBackground: SolidTouchView {
   private let mainView: UIView
   private var tapAction: (() -> Void)!
 
-  init(mainView: UIView) {
+  @objc init(mainView: UIView) {
     self.mainView = mainView
     super.init(frame: mainView.superview!.bounds)
     backgroundColor = UIColor.fadeBackground()
-    autoresizingMask = [.flexibleWidth, .flexibleHeight];
+    autoresizingMask = [.flexibleWidth, .flexibleHeight]
     addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onTap)))
   }
-  
-  required init?(coder aDecoder: NSCoder) {
+
+  required init?(coder _: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
 
@@ -30,9 +30,9 @@ final class DimBackground: SolidTouchView {
     UIView.animate(withDuration: kDefaultAnimationDuration,
                    animations: { self.alpha = visible ? 0.8 : 0 },
                    completion: { _ in
-                    if !visible {
-                      self.removeFromSuperview()
-                    }
+                     if !visible {
+                       self.removeFromSuperview()
+                     }
     })
   }
 

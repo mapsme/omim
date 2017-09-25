@@ -4,7 +4,7 @@ import AlamofireImage
 final class GalleryItemViewController: MWMViewController {
   typealias Model = GalleryItemModel
 
-  static func instance(model: Model) -> GalleryItemViewController {
+  @objc static func instance(model: Model) -> GalleryItemViewController {
     let vc = GalleryItemViewController(nibName: toString(self), bundle: nil)
     vc.model = model
     return vc
@@ -49,7 +49,7 @@ final class GalleryItemViewController: MWMViewController {
 }
 
 extension GalleryItemViewController: UIScrollViewDelegate {
-  func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+  func viewForZooming(in _: UIScrollView) -> UIView? {
     return imageView
   }
 }

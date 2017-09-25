@@ -14,7 +14,7 @@ final class UGCTextReviewCell: MWMTableViewCell, UITextViewDelegate {
   private weak var delegate: UGCTextReviewDelegate?
   private var indexPath: NSIndexPath = NSIndexPath()
 
-  func configWith(delegate: UGCTextReviewDelegate?) {
+  @objc func configWith(delegate: UGCTextReviewDelegate?) {
     self.delegate = delegate
     setCount(textView.text.characters.count)
   }
@@ -23,8 +23,8 @@ final class UGCTextReviewCell: MWMTableViewCell, UITextViewDelegate {
     countLabel.text = "\(count)/\(Consts.kMaxNumberOfSymbols)"
   }
 
-  //MARK: UITextViewDelegate
-  func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+  // MARK: UITextViewDelegate
+  func textView(_ textView: UITextView, shouldChangeTextIn _: NSRange, replacementText _: String) -> Bool {
     return textView.text.characters.count <= Consts.kMaxNumberOfSymbols
   }
 
