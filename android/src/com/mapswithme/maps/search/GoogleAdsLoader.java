@@ -65,7 +65,7 @@ class GoogleAdsLoader
     }
   }
 
-  void updateAdView(SearchAdView searchAdView)
+  private void updateAdView(SearchAdView searchAdView)
   {
     SearchAdRequest.Builder builder = new SearchAdRequest.Builder()
       .setQuery(mQuery)
@@ -74,12 +74,12 @@ class GoogleAdsLoader
     searchAdView.loadAd(builder.build());
   }
 
-  void attachAdLoadingListener(AdvertLoadingListener listener)
+  void attach(@NonNull AdvertLoadingListener listener)
   {
     mLoadingListener = listener;
   }
 
-  void detachAdLoadingListener()
+  void detach()
   {
     mLoadingListener = null;
   }
@@ -146,6 +146,6 @@ class GoogleAdsLoader
 
   interface AdvertLoadingListener
   {
-    void onLoadingFinished(SearchAdView searchAdView);
+    void onLoadingFinished(@NonNull SearchAdView searchAdView);
   }
 }

@@ -1,7 +1,6 @@
 package com.mapswithme.maps.search;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -125,6 +124,7 @@ public class SearchFragment extends BaseMwmFragment
 
       UiThread.cancelDelayedTasks(mSearchEndTask);
       UiThread.cancelDelayedTasks(mResultsShowingTask);
+      mGoogleAdView = null;
       stopAdsLoading();
 
       if (TextUtils.isEmpty(query))
@@ -348,10 +348,10 @@ public class SearchFragment extends BaseMwmFragment
     if (ConnectionState.isWifiConnected() && SharedPropertiesUtils.isShowcaseSwitchedOnLocal())
     {
       mAdsLoader = new GoogleAdsLoader(getContext(), ADS_DELAY_MS);
-      mAdsLoader.attachAdLoadingListener(new GoogleAdsLoader.AdvertLoadingListener()
+      mAdsLoader.attach(new GoogleAdsLoader.AdvertLoadingListener()
       {
         @Override
-        public void onLoadingFinished(SearchAdView searchAdView)
+        public void onLoadingFinished(@NonNull SearchAdView searchAdView)
         {
           mGoogleAdView = searchAdView;
           mAdsRequested = false;
@@ -458,17 +458,6 @@ public class SearchFragment extends BaseMwmFragment
       mFilterController.onSaveState(outState);
   }
 
-  @Override
-  public void onConfigurationChanged(Configuration newConfig)
-  {
-    if (mAdsOrientation == newConfig.orientation)
-      return;
-
-    mAdsOrientation = newConfig.orientation;
-    if (mGoogleAdView != null && mAdsLoader != null)
-      mAdsLoader.updateAdView(mGoogleAdView);
-  }
-
   public void onResume()
   {
     super.onResume();
@@ -499,7 +488,7 @@ public class SearchFragment extends BaseMwmFragment
   public void onDestroyView()
   {
     if (mAdsLoader != null)
-      mAdsLoader.detachAdLoadingListener();
+      mAdsLoader.detach();
     super.onDestroyView();
   }
 
@@ -801,6 +790,5 @@ public class SearchFragment extends BaseMwmFragment
 
     mAdsLoader.cancelAdsLoading();
     mAdsRequested = false;
-    mGoogleAdView = null;
   }
 }
