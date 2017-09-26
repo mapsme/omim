@@ -92,6 +92,8 @@ HEADERS += \
     directions_engine.hpp \
     edge_estimator.hpp \
     fake_edges_container.hpp \
+    fake_graph.hpp \
+    fake_vertex.hpp \
     features_road_graph.hpp \
     geometry.hpp \
     index_graph.hpp \
