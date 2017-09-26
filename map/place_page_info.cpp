@@ -11,6 +11,8 @@
 #include "platform/preferred_languages.hpp"
 #include "platform/settings.hpp"
 
+#include <sstream>
+
 namespace place_page
 {
 namespace
@@ -286,7 +288,9 @@ std::string GetRatingFormatted(float const rawRating)
   if (rawRating == kIncorrectRating)
     return kEmptyRatingSymbol;
 
-  return std::to_string(rawRating);
+  std::ostringstream oss;
+  oss << std::setprecision(1) << rawRating;
+  return oss.str();
 }
 }  // namespace rating
 }  // namespace place_page
