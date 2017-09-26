@@ -692,11 +692,15 @@ void Framework::RegisterAllMaps()
 
     MwmSet::MwmId const & id = p.first;
     ASSERT(id.IsAlive(), ());
-    minFormat = min(minFormat, static_cast<int>(id.GetInfo()->m_version.GetFormat()));
+    auto const format = id.GetInfo()->m_version.GetFormat();
+    minFormat = min(minFormat, static_cast<int>(format));
     if (needStatisticsUpdate)
     {
       listRegisteredMaps << localFile->GetCountryName() << ":" << id.GetInfo()->GetVersion() << ";";
     }
+
+    version::MwmTraits mwmTraits(format);
+    alohalytics::LogEvent("SearchIndexFormat", DebugPrint(mwmTraits.GetSearchIndexFormat()));
   }
 
   if (needStatisticsUpdate)
@@ -709,7 +713,10 @@ void Framework::RegisterAllMaps()
                                           system_clock::now().time_since_epoch()).count()));
   }
 
-  m_searchEngine->SetSupportOldFormat(minFormat < static_cast<int>(version::Format::v3));
+  bool const supportOldFormat = minFormat < static_cast<int>(version::Format::v3);
+  m_searchEngine->SetSupportOldFormat(supportOldFormat);
+
+  alohalytics::LogEvent("SearchSupportOldFormat", supportOldFormat ? "1" : "0");
 }
 
 void Framework::DeregisterAllMaps()
