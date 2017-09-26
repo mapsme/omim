@@ -4913,10 +4913,10 @@ sk:4^Kúpalisko|3bazén|aquapark|4kúpele
 sw:^Bwawa la kuogelea
 
 sport-equestrian
-en:^Equestrianism
+en:^Equestrianism|Riding|Horseback Riding
 ru:^Верховая езда
-uk:^Equestrianism
-de:3^Reitsport
+uk:^Equestrianism|Riding|Horse Riding
+de:3^Reitsport|Reiten
 fr:^Équitation
 it:^Equitazione
 es:^Hípica
