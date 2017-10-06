@@ -2,6 +2,8 @@
 
 #include "routing_common/transit_types.hpp"
 
+#include "indexer/geometry_coding.hpp"
+
 #include "geometry/point2d.hpp"
 
 #include "coding/point_to_integer.hpp"
@@ -59,9 +61,20 @@ public:
 
   void operator()(m2::PointD const & p, char const * /* name */ = nullptr)
   {
-    m2::PointU const pointU = PointD2PointU(p, POINT_COORD_BITS);
-    WriteVarUint(m_sink, pointU.x);
-    WriteVarUint(m_sink, pointU.y);
+    WriteVarInt(m_sink, PointToInt64(p, POINT_COORD_BITS));
+  }
+
+  void operator()(std::vector<m2::PointD> const & vs, char const * /* name */ = nullptr)
+  {
+    CHECK_LESS_OR_EQUAL(vs.size(), std::numeric_limits<uint64_t>::max(), ());
+    WriteVarUint(m_sink, static_cast<uint64_t>(vs.size()));
+    m2::PointU lastEncodedPoint;
+    for (auto const & p : vs)
+    {
+      m2::PointU const pointU = PointD2PointU(p, POINT_COORD_BITS);
+      WriteVarUint(m_sink, EncodeDelta(pointU, lastEncodedPoint));
+      lastEncodedPoint = pointU;
+    }
   }
 
   template <typename T>
@@ -110,10 +123,20 @@ public:
 
   void operator()(m2::PointD & p, char const * /* name */ = nullptr)
   {
-    m2::PointU pointU;
-    pointU.x = ReadVarUint<uint32_t, Source>(m_source);
-    pointU.y = ReadVarUint<uint32_t, Source>(m_source);
-    p = PointU2PointD(pointU, POINT_COORD_BITS);
+    p = Int64ToPoint(ReadVarInt<int64_t, Source>(m_source), POINT_COORD_BITS);
+  }
+
+  void operator()(vector<m2::PointD> & vs, char const * /* name */ = nullptr)
+  {
+    auto const size = ReadVarUint<uint64_t, Source>(m_source);
+    m2::PointU lastDecodedPoint;
+    vs.resize(size);
+    for (auto & p : vs)
+    {
+      m2::PointU const pointU = DecodeDelta(ReadVarUint<uint64_t, Source>(m_source), lastDecodedPoint);
+      p = PointU2PointD(pointU, POINT_COORD_BITS);
+      lastDecodedPoint = pointU;
+    }
   }
 
   template <typename T>
