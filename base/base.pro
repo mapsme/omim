@@ -49,6 +49,7 @@ HEADERS += \
     cache.hpp \
     cancellable.hpp \
     checked_cast.hpp \
+    clustering_map.hpp \
     collection_cast.hpp \
     condition.hpp \
     deferred_task.hpp \
@@ -99,5 +100,6 @@ HEADERS += \
     timegm.hpp \
     timer.hpp \
     uni_string_dfa.hpp \
+    visitor.hpp \
     waiter.hpp \
     worker_thread.hpp \

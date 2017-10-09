@@ -1,6 +1,8 @@
 #pragma once
 
-#include "indexer/feature.hpp"
+#include "openlr/openlr_match_quality/openlr_assessment_tool/points_controller_delegate_base.hpp"
+#include "openlr/openlr_match_quality/openlr_assessment_tool/segment_correspondence.hpp"
+#include "openlr/openlr_match_quality/openlr_assessment_tool/traffic_drawer_delegate_base.hpp"
 
 #include "openlr/decoded_path.hpp"
 #include "openlr/openlr_model.hpp"
@@ -15,8 +17,6 @@
 #include <unordered_map>
 #include <utility>
 
-#include <boost/optional.hpp>
-
 #include <QAbstractTableModel>
 #include <Qt>
 
@@ -25,8 +25,6 @@ class QItemSelection;
 class Selection;
 
 DECLARE_EXCEPTION(TrafficModeError, RootException);
-
-using FeaturePoint = std::pair<FeatureID, size_t>;
 
 namespace impl
 {
@@ -37,11 +35,11 @@ namespace impl
 class RoadPointCandidate
 {
 public:
-  RoadPointCandidate(std::vector<FeaturePoint> const & points,
+  RoadPointCandidate(std::vector<openlr::FeaturePoint> const & points,
                      m2::PointD const & coord);
 
   void ActivateCommonPoint(RoadPointCandidate const & rpc);
-  FeaturePoint const & GetPoint() const;
+  openlr::FeaturePoint const & GetPoint() const;
   m2::PointD const & GetCoordinate() const;
 
 private:
@@ -50,112 +48,16 @@ private:
   void SetActivePoint(FeatureID const & fid);
 
   m2::PointD m_coord = m2::PointD::Zero();
-  std::vector<FeaturePoint> m_points;
+  std::vector<openlr::FeaturePoint> m_points;
 
   size_t m_activePointIndex = kInvalidId;
 };
 }  // namespace impl
 
-class SegmentCorrespondence
-{
-public:
-  SegmentCorrespondence() = default;
-
-  SegmentCorrespondence(SegmentCorrespondence const & sc)
-  {
-    m_partnerSegment = sc.m_partnerSegment;
-
-    m_matchedPath = sc.m_matchedPath;
-    m_fakePath = sc.m_fakePath;
-    m_goldenPath = sc.m_goldenPath;
-
-    m_partnerXMLDoc.reset(sc.m_partnerXMLDoc);
-    m_partnerXMLSegment = m_partnerXMLDoc.child("reportSegments");
-  }
-
-  boost::optional<openlr::Path> const & GetMatchedPath() const { return m_matchedPath; }
-  boost::optional<openlr::Path> & GetMatchedPath() { return m_matchedPath; }
-
-  boost::optional<openlr::Path> const & GetFakePath() const { return m_fakePath; }
-  boost::optional<openlr::Path> & GetFakePath() { return m_fakePath; }
-
-  boost::optional<openlr::Path> const & GetGoldenPath() const { return m_goldenPath; }
-  boost::optional<openlr::Path> & GetGoldenPath() { return m_goldenPath; }
-
-  openlr::LinearSegment const & GetPartnerSegment() const { return m_partnerSegment; }
-  openlr::LinearSegment & GetPartnerSegment() { return m_partnerSegment; }
-
-  uint32_t GetPartnerSegmentId() const { return m_partnerSegment.m_segmentId; }
-
-  pugi::xml_document const & GetPartnerXML() const { return m_partnerXMLDoc; }
-  pugi::xml_node const & GetPartnerXMLSegment() const { return m_partnerXMLSegment; }
-  void SetPartnerXML(pugi::xml_node const & n)
-  {
-    m_partnerXMLDoc.append_copy(n);
-    m_partnerXMLSegment = m_partnerXMLDoc.child("reportSegments");
-    CHECK(m_partnerXMLSegment, ("Node should contain <reportSegments> part"));
-  }
-
-private:
-  openlr::LinearSegment m_partnerSegment;
-  // TODO(mgsergio): Maybe get rid of boost::optional and rely on emptiness of the path instead?
-  boost::optional<openlr::Path> m_matchedPath;
-  boost::optional<openlr::Path> m_fakePath;
-  boost::optional<openlr::Path> m_goldenPath;
-
-  // A dirty hack to save back SegmentCorrespondence.
-  // TODO(mgsergio): Consider unifying xml serialization with one used in openlr_stat.
-  pugi::xml_document m_partnerXMLDoc;
-  // This is used by GetPartnerXMLSegment shortcut to return const ref. pugi::xml_node is
-  // just a wrapper so returning by value won't guarantee constness.
-  pugi::xml_node m_partnerXMLSegment;
-};
-
-/// This class is used to delegate segments drawing to the DrapeEngine.
-class TrafficDrawerDelegateBase
-{
-public:
-  virtual ~TrafficDrawerDelegateBase() = default;
-
-  virtual void SetViewportCenter(m2::PointD const & center) = 0;
-
-  virtual void DrawDecodedSegments(std::vector<m2::PointD> const & points) = 0;
-  virtual void DrawEncodedSegment(std::vector<m2::PointD> const & points) = 0;
-  virtual void DrawGoldenPath(std::vector<m2::PointD> const & points) = 0;
-
-  virtual void ClearGoldenPath() = 0;
-  virtual void ClearAllPaths() = 0;
-
-  virtual void VisualizePoints(std::vector<m2::PointD> const & points) = 0;
-  virtual void ClearAllVisualizedPoints() = 0;
-};
-
 class BookmarkManager;
 
-/// This class is responsible for collecting junction points and
-/// checking user's clicks.
-class PointsControllerDelegateBase
+namespace openlr
 {
-public:
-  enum class ClickType
-  {
-    Miss,
-    Add,
-    Remove
-  };
-
-  virtual std::vector<m2::PointD> GetAllJunctionPointsInViewport() const = 0;
-  /// Returns all junction points at a given location in the form of feature id and
-  /// point index in the feature.
-  virtual std::pair<std::vector<FeaturePoint>, m2::PointD> GetCandidatePoints(
-      m2::PointD const & p) const = 0;
-  virtual std::vector<m2::PointD> GetReachablePoints(m2::PointD const & p) const = 0;
-
-  virtual ClickType CheckClick(m2::PointD const & clickPoint,
-                       m2::PointD const & lastClickedPoint,
-                       std::vector<m2::PointD> const & reachablePoints) const = 0;
-};
-
 /// This class is used to map sample ids to real data
 /// and change sample evaluations.
 class TrafficMode : public QAbstractTableModel
@@ -188,6 +90,7 @@ public:
   void PopPoint();
   void CommitPath();
   void RollBackPath();
+  void IgnorePath();
 
   size_t GetPointsCount() const;
   m2::PointD const & GetPoint(size_t const index) const;
@@ -203,6 +106,7 @@ public slots:
 
 signals:
   void EditingStopped();
+  void SegmentSelected(int segmentId);
 
 private:
   void HandlePoint(m2::PointD clickPoint, Qt::MouseButton const button);
@@ -218,3 +122,4 @@ private:
   bool m_buildingPath = false;
   std::vector<impl::RoadPointCandidate> m_goldenPath;
 };
+}  // namespace openlr

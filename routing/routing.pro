@@ -61,6 +61,7 @@ SOURCES += \
     routing_session.cpp \
     routing_settings.cpp \
     segmented_route.cpp \
+    single_vehicle_world_graph.cpp \
     speed_camera.cpp \
     traffic_stash.cpp \
     turns.cpp \
@@ -92,6 +93,8 @@ HEADERS += \
     directions_engine.hpp \
     edge_estimator.hpp \
     fake_edges_container.hpp \
+    fake_graph.hpp \
+    fake_vertex.hpp \
     features_road_graph.hpp \
     geometry.hpp \
     index_graph.hpp \
@@ -133,6 +136,7 @@ HEADERS += \
     routing_settings.hpp \
     segment.hpp \
     segmented_route.hpp \
+    single_vehicle_world_graph.hpp \
     speed_camera.hpp \
     traffic_stash.hpp \
     transition_points.hpp \

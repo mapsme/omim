@@ -5,8 +5,8 @@
 #include "geometry/distance.hpp"
 
 #include "base/math.hpp"
-#include "base/stl_helpers.hpp"
-#include "base/stl_iterator.hpp"
+
+#include <map>
 
 namespace
 {
@@ -27,78 +27,22 @@ Junction CalcProjectionToSegment(Segment const & segment, m2::PointD const & poi
   m2::ProjectionToSection<m2::PointD> projection;
   projection.SetBounds(begin.GetPoint(), end.GetPoint());
   auto projectedPoint = projection(point);
-  auto const distBeginToEnd = graph.GetEstimator().CalcLeapWeight(begin.GetPoint(), end.GetPoint());
+  auto const distBeginToEnd = graph.CalcLeapWeight(begin.GetPoint(), end.GetPoint()).GetWeight();
 
   double constexpr kEpsMeters = 2.0;
   if (my::AlmostEqualAbs(distBeginToEnd, 0.0, kEpsMeters))
     return Junction(projectedPoint, begin.GetAltitude());
 
   auto const distBeginToProjection =
-      graph.GetEstimator().CalcLeapWeight(begin.GetPoint(), projectedPoint);
+      graph.CalcLeapWeight(begin.GetPoint(), projectedPoint).GetWeight();
   auto const altitude = begin.GetAltitude() + (end.GetAltitude() - begin.GetAltitude()) *
                                                   distBeginToProjection / distBeginToEnd;
   return Junction(projectedPoint, altitude);
-}
-
-template<typename K, typename V>
-bool IsIntersectionEmpty(map<K, V> const & lhs, map<K, V> const & rhs)
-{
-  auto const counter = set_intersection(lhs.begin(), lhs.end(), rhs.begin(), rhs.end(),
-                                        CounterIterator(), my::LessBy(&pair<K, V>::first));
-  return counter.GetCount() == 0;
 }
 }  // namespace
 
 namespace routing
 {
-// FakeGraph -------------------------------------------------------------------
-void IndexGraphStarter::FakeGraph::AddFakeVertex(Segment const & existentSegment,
-                                                 Segment const & newSegment,
-                                                 FakeVertex const & newVertex, bool isOutgoing,
-                                                 bool isPartOfReal, Segment const & realSegment)
-{
-  auto const & segmentFrom = isOutgoing ? existentSegment : newSegment;
-  auto const & segmentTo = isOutgoing ? newSegment : existentSegment;
-  m_outgoing[segmentFrom].insert(segmentTo);
-  m_ingoing[segmentTo].insert(segmentFrom);
-  m_segmentToVertex[newSegment] = newVertex;
-  if (isPartOfReal)
-  {
-    m_realToFake[realSegment].insert(newSegment);
-    m_fakeToReal[newSegment] = realSegment;
-  }
-}
-
-Segment IndexGraphStarter::FakeGraph::GetSegment(FakeVertex const & vertex,
-                                                 uint32_t & newNumber) const
-{
-  for (auto const & kv : m_segmentToVertex)
-  {
-    if (kv.second == vertex)
-      return kv.first;
-  }
-
-  return GetFakeSegmentAndIncr(newNumber);
-}
-
-void IndexGraphStarter::FakeGraph::Append(FakeGraph const & rhs)
-{
-  CHECK(IsIntersectionEmpty(m_segmentToVertex, rhs.m_segmentToVertex), ("Fake segment ids are not unique"));
-  m_segmentToVertex.insert(rhs.m_segmentToVertex.begin(), rhs.m_segmentToVertex.end());
-
-  for (auto const & kv : rhs.m_outgoing)
-    m_outgoing[kv.first].insert(kv.second.begin(), kv.second.end());
-
-  for (auto const & kv : rhs.m_ingoing)
-    m_ingoing[kv.first].insert(kv.second.begin(), kv.second.end());
-
-  for (auto const & kv : rhs.m_realToFake)
-    m_realToFake[kv.first].insert(kv.second.begin(), kv.second.end());
-
-  m_fakeToReal.insert(rhs.m_fakeToReal.begin(), rhs.m_fakeToReal.end());
-}
-
-// IndexGraphStarter -----------------------------------------------------------
 // static
 IndexGraphStarter::FakeEnding IndexGraphStarter::MakeFakeEnding(Segment const & segment,
                                                                 m2::PointD const & point,
@@ -147,20 +91,14 @@ void IndexGraphStarter::Append(FakeEdgesContainer const & container)
 
 Junction const & IndexGraphStarter::GetStartJunction() const
 {
-  auto const & startSegment = GetFakeSegment(m_startId);
-  auto const it = m_fake.m_segmentToVertex.find(startSegment);
-
-  CHECK(it != m_fake.m_segmentToVertex.end(), ("Requested junction for invalid fake segment."));
-  return it->second.GetJunctionFrom();
+  auto const & startSegment = GetStartSegment();
+  return m_fake.GetVertex(startSegment).GetJunctionFrom();
 }
 
 Junction const & IndexGraphStarter::GetFinishJunction() const
 {
-  auto const & finishSegment = GetFakeSegment(m_finishId);
-  auto const it = m_fake.m_segmentToVertex.find(finishSegment);
-
-  CHECK(it != m_fake.m_segmentToVertex.end(), ("Requested junction for invalid fake segment."));
-  return it->second.GetJunctionTo();
+  auto const & finishSegment = GetFinishSegment();
+  return m_fake.GetVertex(finishSegment).GetJunctionTo();
 }
 
 bool IndexGraphStarter::ConvertToReal(Segment & segment) const
@@ -168,12 +106,7 @@ bool IndexGraphStarter::ConvertToReal(Segment & segment) const
   if (!IsFakeSegment(segment))
     return true;
 
-  auto const it = m_fake.m_fakeToReal.find(segment);
-  if (it == m_fake.m_fakeToReal.end())
-    return false;
-
-  segment = it->second;
-  return true;
+  return m_fake.FindReal(Segment(segment), segment);
 }
 
 Junction const & IndexGraphStarter::GetJunction(Segment const & segment, bool front) const
@@ -181,11 +114,8 @@ Junction const & IndexGraphStarter::GetJunction(Segment const & segment, bool fr
   if (!IsFakeSegment(segment))
     return m_graph.GetJunction(segment, front);
 
-  auto const fakeVertexIt = m_fake.m_segmentToVertex.find(segment);
-
-  CHECK(fakeVertexIt != m_fake.m_segmentToVertex.end(),
-        ("Requested junction for invalid fake segment."));
-  return front ? fakeVertexIt->second.GetJunctionTo() : fakeVertexIt->second.GetJunctionFrom();
+  auto const & vertex = m_fake.GetVertex(segment);
+  return front ? vertex.GetJunctionTo() : vertex.GetJunctionFrom();
 }
 
 Junction const & IndexGraphStarter::GetRouteJunction(vector<Segment> const & segments,
@@ -208,7 +138,7 @@ m2::PointD const & IndexGraphStarter::GetPoint(Segment const & segment, bool fro
 set<NumMwmId> IndexGraphStarter::GetMwms() const
 {
   set<NumMwmId> mwms;
-  for (auto const & kv : m_fake.m_fakeToReal)
+  for (auto const & kv : m_fake.GetFakeToReal())
     mwms.insert(kv.second.GetMwmId());
 
   return mwms;
@@ -221,7 +151,8 @@ bool IndexGraphStarter::DoesRouteCrossNontransit(
   auto isRealOrPart = [this](Segment const & segment) {
     if (!IsFakeSegment(segment))
       return true;
-    return m_fake.m_fakeToReal.find(segment) != m_fake.m_fakeToReal.end();
+    Segment dummy;
+    return m_fake.FindReal(segment, dummy);
   };
   auto isTransitAllowed = [this](Segment const & segment) {
     auto real = segment;
@@ -252,26 +183,17 @@ void IndexGraphStarter::GetEdgesList(Segment const & segment, bool isOutgoing,
   edges.clear();
   if (IsFakeSegment(segment))
   {
-    auto const vertexIt = m_fake.m_segmentToVertex.find(segment);
-    CHECK(vertexIt != m_fake.m_segmentToVertex.end(),
-          ("Can not map fake segment", segment, "to fake vertex."));
-
-    if (vertexIt->second.GetType() == FakeVertex::Type::PartOfReal)
+    Segment real;
+    if (m_fake.FindReal(segment, real))
     {
-      auto const realIt = m_fake.m_fakeToReal.find(segment);
-      CHECK(realIt != m_fake.m_fakeToReal.end(),
-            ("Can not map fake segment", segment, "to real segment."));
-      AddRealEdges(realIt->second, isOutgoing, edges);
+      bool const haveSameFront = GetJunction(segment, true /* front */) == GetJunction(real, true);
+      bool const haveSameBack = GetJunction(segment, false /* front */) == GetJunction(real, false);
+      if ((isOutgoing && haveSameFront) || (!isOutgoing && haveSameBack))
+        AddRealEdges(real, isOutgoing, edges);
     }
 
-    auto const & adjacentEdges = isOutgoing ? m_fake.m_outgoing : m_fake.m_ingoing;
-
-    auto const it = adjacentEdges.find(segment);
-    if (it != adjacentEdges.end())
-    {
-      for (auto const & s : it->second)
-        edges.emplace_back(s, CalcSegmentWeight(isOutgoing ? s : segment));
-    }
+    for (auto const & s : m_fake.GetEdges(segment, isOutgoing))
+      edges.emplace_back(s, CalcSegmentWeight(isOutgoing ? s : segment));
   }
   else
   {
@@ -285,19 +207,11 @@ RouteWeight IndexGraphStarter::CalcSegmentWeight(Segment const & segment) const
 {
   if (!IsFakeSegment(segment))
   {
-    return RouteWeight(
-        m_graph.GetEstimator().CalcSegmentWeight(
-            segment, m_graph.GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId())),
-        0 /* nontransitCross */);
+    return m_graph.CalcSegmentWeight(segment);
   }
 
-  auto const fakeVertexIt = m_fake.m_segmentToVertex.find(segment);
-
-  CHECK(fakeVertexIt != m_fake.m_segmentToVertex.end(),
-        ("Requested junction for invalid fake segment."));
-  return RouteWeight(m_graph.GetEstimator().CalcLeapWeight(fakeVertexIt->second.GetPointFrom(),
-                                                           fakeVertexIt->second.GetPointTo()),
-                     0 /* nontransitCross */);
+  auto const & vertex = m_fake.GetVertex(segment);
+  return m_graph.CalcLeapWeight(vertex.GetPointFrom(), vertex.GetPointTo());
 }
 
 RouteWeight IndexGraphStarter::CalcRouteSegmentWeight(vector<Segment> const & route,
@@ -314,13 +228,13 @@ bool IndexGraphStarter::IsLeap(NumMwmId mwmId) const
   if (mwmId == kFakeNumMwmId)
     return false;
 
-  for (auto const & kv : m_fake.m_fakeToReal)
+  for (auto const & kv : m_fake.GetFakeToReal())
   {
     if (kv.second.GetMwmId() == mwmId)
       return false;
   }
 
-  return m_graph.GetEstimator().LeapIsAllowed(mwmId);
+  return m_graph.LeapIsAllowed(mwmId);
 }
 
 void IndexGraphStarter::AddEnding(FakeEnding const & thisEnding, FakeEnding const & otherEnding,
@@ -330,13 +244,18 @@ void IndexGraphStarter::AddEnding(FakeEnding const & thisEnding, FakeEnding cons
 
   map<Segment, Junction> otherSegments;
   for (auto const & p : otherEnding.m_projections)
+  {
     otherSegments[p.m_segment] = p.m_junction;
+    // We use |otherEnding| to generate proper fake edges in case both endings have projections
+    // to the same segment. Direction of p.m_segment does not matter.
+    otherSegments[GetReverseSegment(p.m_segment)] = p.m_junction;
+  }
 
   // Add pure fake vertex
   auto const fakeSegment = GetFakeSegmentAndIncr(fakeNumerationStart);
   FakeVertex fakeVertex(thisEnding.m_originJunction, thisEnding.m_originJunction,
                         FakeVertex::Type::PureFake);
-  m_fake.m_segmentToVertex[fakeSegment] = fakeVertex;
+  m_fake.AddStandaloneVertex(fakeSegment, fakeVertex);
   for (auto const & projection : thisEnding.m_projections)
   {
     // Add projection edges
@@ -344,8 +263,8 @@ void IndexGraphStarter::AddEnding(FakeEnding const & thisEnding, FakeEnding cons
     FakeVertex projectionVertex(isStart ? thisEnding.m_originJunction : projection.m_junction,
                                 isStart ? projection.m_junction : thisEnding.m_originJunction,
                                 FakeVertex::Type::PureFake);
-    m_fake.AddFakeVertex(fakeSegment, projectionSegment, projectionVertex, isStart /* isOutgoing */,
-                         false /* isPartOfReal */, dummy /* realSegment */);
+    m_fake.AddVertex(fakeSegment, projectionSegment, projectionVertex, isStart /* isOutgoing */,
+                     false /* isPartOfReal */, dummy /* realSegment */);
 
     // Add fake parts of real
     auto frontJunction = m_graph.GetJunction(projection.m_segment, true /* front */);
@@ -356,10 +275,10 @@ void IndexGraphStarter::AddEnding(FakeEnding const & thisEnding, FakeEnding cons
     if (it != otherSegments.end())
     {
       auto const & otherJunction = it->second;
-      auto const distBackToThis = m_graph.GetEstimator().CalcLeapWeight(
-          backJunction.GetPoint(), projection.m_junction.GetPoint());
-      auto const distBackToOther =
-          m_graph.GetEstimator().CalcLeapWeight(backJunction.GetPoint(), otherJunction.GetPoint());
+      auto const distBackToThis = m_graph.CalcLeapWeight(backJunction.GetPoint(),
+                                                         projection.m_junction.GetPoint());
+      auto const distBackToOther = m_graph.CalcLeapWeight(backJunction.GetPoint(),
+                                                          otherJunction.GetPoint());
       if (distBackToThis < distBackToOther)
         frontJunction = otherJunction;
       else
@@ -369,9 +288,11 @@ void IndexGraphStarter::AddEnding(FakeEnding const & thisEnding, FakeEnding cons
     FakeVertex forwardPartOfReal(isStart ? projection.m_junction : backJunction,
                                  isStart ? frontJunction : projection.m_junction,
                                  FakeVertex::Type::PartOfReal);
-    auto const fakeForwardSegment = m_fake.GetSegment(forwardPartOfReal, fakeNumerationStart);
-    m_fake.AddFakeVertex(projectionSegment, fakeForwardSegment, forwardPartOfReal,
-                         isStart /* isOutgoing */, true /* isPartOfReal */, projection.m_segment);
+    Segment fakeForwardSegment;
+    if (!m_fake.FindSegment(forwardPartOfReal, fakeForwardSegment))
+      fakeForwardSegment = GetFakeSegmentAndIncr(fakeNumerationStart);
+    m_fake.AddVertex(projectionSegment, fakeForwardSegment, forwardPartOfReal,
+                     isStart /* isOutgoing */, true /* isPartOfReal */, projection.m_segment);
 
     bool const oneWay =
         m_graph
@@ -383,9 +304,11 @@ void IndexGraphStarter::AddEnding(FakeEnding const & thisEnding, FakeEnding cons
       FakeVertex backwardPartOfReal(isStart ? projection.m_junction : frontJunction,
                                     isStart ? backJunction : projection.m_junction,
                                     FakeVertex::Type::PartOfReal);
-      auto const fakeBackwardSegment = m_fake.GetSegment(backwardPartOfReal, fakeNumerationStart);
-      m_fake.AddFakeVertex(projectionSegment, fakeBackwardSegment, backwardPartOfReal,
-                           isStart /* isOutgoing */, true /* isPartOfReal */, backwardSegment);
+      Segment fakeBackwardSegment;
+      if (!m_fake.FindSegment(backwardPartOfReal, fakeBackwardSegment))
+        fakeBackwardSegment = GetFakeSegmentAndIncr(fakeNumerationStart);
+      m_fake.AddVertex(projectionSegment, fakeBackwardSegment, backwardPartOfReal,
+                       isStart /* isOutgoing */, true /* isPartOfReal */, backwardSegment);
     }
   }
 }
@@ -408,10 +331,7 @@ void IndexGraphStarter::AddStart(FakeEnding const & startEnding, FakeEnding cons
     vector<SegmentEdge> fakeEdges;
     for (auto const & edge : edges)
     {
-      auto const it = m_fake.m_realToFake.find(edge.GetTarget());
-      if (it == m_fake.m_realToFake.end())
-        continue;
-      for (auto const & s : it->second)
+      for (auto const & s : m_fake.GetFake(edge.GetTarget()))
       {
         // Check fake segment is connected to source segment.
         if (GetJunction(s, false /* front */) == GetJunction(segment, true) ||
@@ -427,33 +347,7 @@ void IndexGraphStarter::AddStart(FakeEnding const & startEnding, FakeEnding cons
 void IndexGraphStarter::AddRealEdges(Segment const & segment, bool isOutgoing,
                                      std::vector<SegmentEdge> & edges) const
 {
-  if (m_graph.GetMode() == WorldGraph::Mode::LeapsOnly &&
-      m_fake.m_realToFake.find(segment) != m_fake.m_realToFake.end())
-  {
-    ConnectLeapToTransitions(segment, isOutgoing, edges);
-    return;
-  }
-
-  m_graph.GetEdgeList(segment, isOutgoing, IsLeap(segment.GetMwmId()), edges);
+  bool const isEnding = !m_fake.GetFake(segment).empty();
+  m_graph.GetEdgeList(segment, isOutgoing, IsLeap(segment.GetMwmId()), isEnding, edges);
 }
-
-void IndexGraphStarter::ConnectLeapToTransitions(Segment const & segment, bool isOutgoing,
-                                                 vector<SegmentEdge> & edges) const
-{
-  edges.clear();
-  m2::PointD const & segmentPoint = GetPoint(segment, true /* front */);
-
-  // Note. If |isOutgoing| == true it's necessary to add edges which connect the start with all
-  // exits of its mwm. So |isEnter| below should be set to false.
-  // If |isOutgoing| == false all enters of the finish mwm should be connected with the finish
-  // point. So |isEnter| below should be set to true.
-  m_graph.ForEachTransition(
-      segment.GetMwmId(), !isOutgoing /* isEnter */, [&](Segment const & transition) {
-        edges.emplace_back(transition,
-                           RouteWeight(m_graph.GetEstimator().CalcLeapWeight(
-                                           segmentPoint, GetPoint(transition, isOutgoing)),
-                                       0 /* nontransitCross */));
-      });
-}
-
 }  // namespace routing

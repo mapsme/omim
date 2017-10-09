@@ -252,6 +252,8 @@ void logSponsoredEvent(MWMPlacePageData * data, NSString * eventName)
     parameters[kStatProvider] = kStatBooking;
   else if (data.isCian)
     parameters[kStatProvider] = kStatCian;
+  else if (data.isThor)
+    parameters[kStatProvider] = kStatThor;
   switch (Platform::ConnectionStatus())
   {
   case Platform::EConnectionType::CONNECTION_NONE:
@@ -600,13 +602,7 @@ void logSponsoredEvent(MWMPlacePageData * data, NSString * eventName)
 
 - (void)reviewOn:(NSInteger)starNumber
 {
-  GetFramework().GetUGCApi().GetUGCUpdate(
-      [self.data featureId], [self, starNumber](ugc::UGCUpdate const & ugc) {
-        auto viewModel = self.data.reviewViewModel;
-        [viewModel setDefaultStarCount:starNumber];
-        auto controller = [MWMUGCReviewController instanceFromViewModel:viewModel];
-        [self.ownerViewController.navigationController pushViewController:controller animated:YES];
-      });
+  // TODO: Prepare ugc update.
 }
 
 #pragma mark - AvailableArea / PlacePageArea

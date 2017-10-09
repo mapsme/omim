@@ -11,6 +11,8 @@ DEPENDENCIES = generator_tests_support platform_tests_support generator drape_fr
 
 include($$ROOT_DIR/common.pri)
 
+INCLUDEPATH *= $$ROOT_DIR/3party/jansson/src
+
 LIBS *= -lsqlite3
 
 QT *= core
@@ -22,6 +24,8 @@ macx-* {
 win32*|linux* {
   QT *= network
 }
+
+INCLUDEPATH += $$ROOT_DIR/3party/jansson/src
 
 HEADERS += \
     source_data.hpp \
@@ -47,5 +51,6 @@ SOURCES += \
     srtm_parser_test.cpp \
     tag_admixer_test.cpp \
     tesselator_test.cpp \
+    transit_test.cpp \
     triangles_tree_coding_test.cpp \
     ugc_test.cpp \

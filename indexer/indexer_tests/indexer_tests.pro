@@ -33,6 +33,7 @@ SOURCES += \
     cell_id_test.cpp \
     centers_table_test.cpp \
     checker_test.cpp \
+    cities_boundaries_serdes_tests.cpp \
     drules_selector_parser_test.cpp \
     editable_map_object_test.cpp \
     feature_metadata_test.cpp \

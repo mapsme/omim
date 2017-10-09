@@ -861,7 +861,6 @@ void Framework::FillInfoFromFeatureType(FeatureType const & ft, place_page::Info
   buildingHolder.Assign(classif().GetTypeByPath({"building"}));
 
   info.SetLocalizedWifiString(m_stringsBundle.GetString("wifi"));
-  info.SetLocalizedRatingString(m_stringsBundle.GetString("place_page_booking_rating"));
 
   if (ftypes::IsAddressObjectChecker::Instance()(ft))
     info.SetAddress(GetAddressInfoAtPoint(feature::GetCenter(ft)).FormatHouseAndStreet());
@@ -906,6 +905,15 @@ void Framework::FillInfoFromFeatureType(FeatureType const & ft, place_page::Info
     info.SetSponsoredType(SponsoredType::Cian);
     info.SetSponsoredUrl(cian::Api::GetMainPageUrl());
     info.SetPreviewIsExtended();
+  }
+  else if (ftypes::IsThorChecker::Instance()(ft) &&
+           !info.GetMetadata().Get(feature::Metadata::FMD_RATING).empty())
+  {
+    info.SetSponsoredType(place_page::SponsoredType::Thor);
+    auto const & url = info.GetMetadata().Get(feature::Metadata::FMD_WEBSITE);
+    info.SetSponsoredUrl(url);
+    info.SetSponsoredDescriptionUrl(url);
+    GetPlatform().GetMarketingService().SendPushWooshTag(marketing::kSponsoredThorDiscovered);
   }
 
   FillLocalExperts(ft, info);
@@ -2494,6 +2502,7 @@ df::SelectionShape::ESelectedObject Framework::OnTapEventImpl(TapEvent const & t
   }
 
   outInfo.SetAdsEngine(m_adsEngine.get());
+  outInfo.SetUGCApi(m_ugcApi.get());
 
   UserMark const * mark = FindUserMarkInTapPosition(tapInfo);
   if (mark != nullptr)

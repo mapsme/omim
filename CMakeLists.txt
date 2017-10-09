@@ -53,6 +53,7 @@ endif()
 
 # Options
 option(USE_ASAN "Enable Address Sanitizer" OFF)
+option(USE_TSAN "Enable Thread Sanitizer" OFF)
 option(PYBINDINGS "Create makefiles for building python bindings" OFF)
 if (PLATFORM_LINUX)
   option(USE_PPROF "Enable Google Profiler" OFF)
@@ -60,6 +61,10 @@ endif()
 
 if (USE_ASAN)
   message("Address Sanitizer is enabled")
+endif()
+
+if (USE_TSAN)
+  message("Thread Sanitizer is enabled")
 endif()
 
 if (USE_PPROF)
@@ -140,6 +145,7 @@ if (NOT PLATFORM_IPHONE AND NOT PLATFORM_ANDROID)
     find_package(Qt5Widgets REQUIRED)
     find_package(Qt5Xml REQUIRED)
     find_package(Qt5Svg REQUIRED)
+    find_package(Qt5WebEngineWidgets REQUIRED)
   endif()
 endif()
 
@@ -173,6 +179,9 @@ function(omim_add_executable executable)
   add_executable(${executable} ${ARGN})
   if (USE_ASAN)
     target_link_libraries(${executable} "-fsanitize=address" "-fno-omit-frame-pointer")
+  endif()
+  if (USE_TSAN)
+    target_link_libraries(${executable} "-fsanitize=thread" "-fno-omit-frame-pointer")
   endif()
   if (USE_PPROF)
     target_link_libraries(${executable} "-lprofiler")
@@ -265,6 +274,13 @@ function(link_qt5_network target)
   )
 endfunction()
 
+function(link_qt5_webengine target)
+  omim_link_libraries(
+    ${target}
+    ${Qt5WebEngineWidgets_LIBRARIES}
+  )
+endfunction()
+
 function(add_clang_compile_options)
   if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_compile_options(${ARGV})
@@ -302,6 +318,13 @@ if (USE_ASAN)
   )
 endif()
 
+if (USE_TSAN)
+  add_compile_options(
+    "-fsanitize=thread"
+    "-fno-omit-frame-pointer"
+  )
+endif()
+
 add_subdirectory(3party/stb_image)
 add_subdirectory(3party/sdf_image)
 add_subdirectory(3party/protobuf)
@@ -313,6 +336,7 @@ add_subdirectory(3party/gflags)
 add_subdirectory(3party/bsdiff-courgette)
 add_subdirectory(base)
 add_subdirectory(coding)
+add_subdirectory(generator/mwm_diff)
 add_subdirectory(geometry)
 add_subdirectory(platform)
 add_subdirectory(3party/opening_hours)

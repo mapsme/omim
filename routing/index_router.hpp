@@ -76,13 +76,13 @@ private:
   IRouter::ResultCode CalculateSubroute(Checkpoints const & checkpoints, size_t subrouteIdx,
                                         Segment const & startSegment,
                                         RouterDelegate const & delegate, IndexGraphStarter & graph,
-                                        std::vector<Segment> & subroute, Junction & startJunction);
+                                        std::vector<Segment> & subroute);
 
   IRouter::ResultCode AdjustRoute(Checkpoints const & checkpoints,
                                   m2::PointD const & startDirection,
                                   RouterDelegate const & delegate, Route & route);
 
-  WorldGraph MakeWorldGraph();
+  std::unique_ptr<WorldGraph> MakeWorldGraph();
 
   /// \brief Finds the best segment (edge) which may be considered as the start of the finish of the route.
   /// According to current implementation if a segment is near |point| and is almost codirectional

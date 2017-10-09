@@ -69,6 +69,8 @@ HEADERS += \
     cell_coverer.hpp \
     cell_id.hpp \
     centers_table.hpp \
+    cities_boundaries_serdes.hpp \
+    city_boundary.hpp \
     classificator.hpp \
     classificator_loader.hpp \
     coding_params.hpp \

@@ -1,8 +1,11 @@
 #include "openlr/openlr_match_quality/openlr_assessment_tool/mainwindow.hpp"
 
+#include "openlr/openlr_match_quality/openlr_assessment_tool/map_widget.hpp"
+#include "openlr/openlr_match_quality/openlr_assessment_tool/points_controller_delegate_base.hpp"
+#include "openlr/openlr_match_quality/openlr_assessment_tool/traffic_drawer_delegate_base.hpp"
 #include "openlr/openlr_match_quality/openlr_assessment_tool/traffic_panel.hpp"
 #include "openlr/openlr_match_quality/openlr_assessment_tool/trafficmodeinitdlg.h"
-#include "openlr/openlr_match_quality/openlr_assessment_tool/map_widget.hpp"
+#include "openlr/openlr_match_quality/openlr_assessment_tool/web_view.hpp"
 
 #include "map/framework.hpp"
 
@@ -20,6 +23,8 @@
 
 #include <QDockWidget>
 #include <QFileDialog>
+#include <QHBoxLayout>
+#include <QKeySequence>
 #include <QLayout>
 #include <QMenu>
 #include <QMenuBar>
@@ -29,6 +34,8 @@
 #include <cerrno>
 #include <cstring>
 #include <vector>
+
+using namespace openlr;
 
 namespace
 {
@@ -228,14 +235,27 @@ private:
 };
 }  // namespace
 
-
-MainWindow::MainWindow(Framework & framework)
+namespace openlr
+{
+MainWindow::MainWindow(Framework & framework, std::string const & url, std::string const & login,
+                       std::string const & password)
   : m_framework(framework)
 {
   m_mapWidget = new MapWidget(
       m_framework, false /* apiOpenGLES3 */, this /* parent */
   );
-  setCentralWidget(m_mapWidget);
+
+  m_webView = new WebView(url, login, password);
+
+  m_layout = new QHBoxLayout();
+  m_layout->addWidget(m_webView);
+  m_layout->addWidget(m_mapWidget);
+
+  auto * window = new QWidget();
+  window->setLayout(m_layout);
+  window->setGraphicsEffect(nullptr);
+
+  setCentralWidget(window);
 
   // setWindowTitle(tr("MAPS.ME"));
   // setWindowIcon(QIcon(":/ui/logo.png"));
@@ -243,34 +263,49 @@ MainWindow::MainWindow(Framework & framework)
   QMenu * fileMenu = new QMenu("File", this);
   menuBar()->addMenu(fileMenu);
 
-  fileMenu->addAction("Open sample", this, &MainWindow::OnOpenTrafficSample);
+  fileMenu->addAction("Open sample", this, &MainWindow::OnOpenTrafficSample,
+                      QKeySequence("Ctrl+O"));
 
   m_closeTrafficSampleAction = fileMenu->addAction(
-      "Close sample", this, &MainWindow::OnCloseTrafficSample
-  );
+      "Close sample", this, &MainWindow::OnCloseTrafficSample, QKeySequence("Ctrl+W"));
   m_saveTrafficSampleAction = fileMenu->addAction(
-      "Save sample", this, &MainWindow::OnSaveTrafficSample
-  );
-  m_startEditingAction = fileMenu->addAction("Start editing", [this] {
-      m_trafficMode->StartBuildingPath();
-      m_mapWidget->SetMode(MapWidget::Mode::TrafficMarkup);
-      m_commitPathAction->setEnabled(true /* enabled */);
-      m_cancelPathAction->setEnabled(true /* enabled */);
-  });
-  m_commitPathAction = fileMenu->addAction("Commit path", [this] {
-      m_trafficMode->CommitPath();
-      m_mapWidget->SetMode(MapWidget::Mode::Normal);
-  });
-  m_cancelPathAction = fileMenu->addAction("Cancel path", [this] {
-      m_trafficMode->RollBackPath();
-      m_mapWidget->SetMode(MapWidget::Mode::Normal);
-  });
+      "Save sample", this, &MainWindow::OnSaveTrafficSample, QKeySequence("Ctrl+S"));
+
+  fileMenu->addSeparator();
+
+  m_startEditingAction = fileMenu->addAction("Edit",
+                                             [this] {
+                                               m_trafficMode->StartBuildingPath();
+                                               m_mapWidget->SetMode(MapWidget::Mode::TrafficMarkup);
+                                               m_commitPathAction->setEnabled(true /* enabled */);
+                                               m_cancelPathAction->setEnabled(true /* enabled */);
+                                             },
+                                             QKeySequence("Ctrl+E"));
+  m_commitPathAction = fileMenu->addAction("Accept path",
+                                           [this] {
+                                             m_trafficMode->CommitPath();
+                                             m_mapWidget->SetMode(MapWidget::Mode::Normal);
+                                           },
+                                           QKeySequence("Ctrl+A"));
+  m_cancelPathAction = fileMenu->addAction("Revert path",
+                                           [this] {
+                                             m_trafficMode->RollBackPath();
+                                             m_mapWidget->SetMode(MapWidget::Mode::Normal);
+                                           },
+                                           QKeySequence("Ctrl+R"));
+  m_ignorePathAction = fileMenu->addAction("Ignore path",
+                                           [this] {
+                                             m_trafficMode->IgnorePath();
+                                             m_mapWidget->SetMode(MapWidget::Mode::Normal);
+                                           },
+                                           QKeySequence("Ctrl+I"));
 
   m_closeTrafficSampleAction->setEnabled(false /* enabled */);
   m_saveTrafficSampleAction->setEnabled(false /* enabled */);
   m_startEditingAction->setEnabled(false /* enabled */);
   m_commitPathAction->setEnabled(false /* enabled */);
   m_cancelPathAction->setEnabled(false /* enabled */);
+  m_ignorePathAction->setEnabled(false /* enabled */);
 }
 
 void MainWindow::CreateTrafficPanel(string const & dataFilePath)
@@ -284,6 +319,8 @@ void MainWindow::CreateTrafficPanel(string const & dataFilePath)
           m_trafficMode, &TrafficMode::OnClick);
   connect(m_trafficMode, &TrafficMode::EditingStopped,
           this, &MainWindow::OnPathEditingStop);
+  connect(m_trafficMode, &TrafficMode::SegmentSelected,
+          m_webView, &WebView::SetCurrentSegment);
 
   m_docWidget = new QDockWidget(tr("Routes"), this);
   addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, m_docWidget);
@@ -327,6 +364,7 @@ void MainWindow::OnOpenTrafficSample()
   m_closeTrafficSampleAction->setEnabled(true /* enabled */);
   m_saveTrafficSampleAction->setEnabled(true /* enabled */);
   m_startEditingAction->setEnabled(true /* enabled */);
+  m_ignorePathAction->setEnabled(true /* enabled */);
 }
 
 void MainWindow::OnCloseTrafficSample()
@@ -340,6 +378,7 @@ void MainWindow::OnCloseTrafficSample()
   m_startEditingAction->setEnabled(false /* enabled */);
   m_commitPathAction->setEnabled(false /* enabled */);
   m_cancelPathAction->setEnabled(false /* enabled */);
+  m_ignorePathAction->setEnabled(false /* enabled */);
 
   DestroyTrafficPanel();
 }
@@ -363,4 +402,6 @@ void MainWindow::OnPathEditingStop()
 {
   m_commitPathAction->setEnabled(false /* enabled */);
   m_cancelPathAction->setEnabled(false /* enabled */);
+  m_cancelPathAction->setEnabled(false /* enabled */);
 }
+}  // namespace openlr

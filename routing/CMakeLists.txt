@@ -44,6 +44,8 @@ set(
   edge_estimator.cpp
   edge_estimator.hpp
   fake_edges_container.hpp
+  fake_graph.hpp
+  fake_vertex.hpp
   features_road_graph.cpp
   features_road_graph.hpp
   geometry.cpp
@@ -118,6 +120,8 @@ set(
   segment.hpp
   segmented_route.cpp
   segmented_route.hpp
+  single_vehicle_world_graph.cpp
+  single_vehicle_world_graph.hpp
   speed_camera.cpp
   speed_camera.hpp
   traffic_stash.cpp

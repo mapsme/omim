@@ -19,6 +19,7 @@ SOURCES += \
   buffer_vector_test.cpp \
   bwt_tests.cpp \
   cache_test.cpp \
+  clustering_map_tests.cpp \
   collection_cast_test.cpp \
   condition_test.cpp \
   containers_test.cpp \
@@ -48,6 +49,7 @@ SOURCES += \
   timegm_test.cpp \
   timer_test.cpp \
   uni_string_dfa_test.cpp \
+  visitor_tests.cpp \
   worker_thread_tests.cpp \
 
 HEADERS +=

@@ -71,11 +71,7 @@ import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.review.Review;
 import com.mapswithme.maps.routing.RoutingController;
 import com.mapswithme.maps.taxi.TaxiManager;
-import com.mapswithme.maps.ugc.UGC;
-import com.mapswithme.maps.ugc.UGCEditorActivity;
-import com.mapswithme.maps.ugc.UGCRatingRecordsAdapter;
-import com.mapswithme.maps.ugc.UGCReviewAdapter;
-import com.mapswithme.maps.ugc.UgcAverageRatingController;
+import com.mapswithme.maps.ugc.UGCController;
 import com.mapswithme.maps.viator.Viator;
 import com.mapswithme.maps.viator.ViatorAdapter;
 import com.mapswithme.maps.viator.ViatorProduct;
@@ -128,8 +124,6 @@ public class PlacePageView extends RelativeLayout
                EditBookmarkFragment.EditBookmarkListener,
                BannerController.BannerListener,
                Viator.ViatorListener,
-               UGC.UGCListener,
-               UgcAverageRatingController.OnUgcRatingChangedListener,
                BaseSponsoredAdapter.ItemSelectedListener,
                Cian.CianListener
 {
@@ -149,9 +143,8 @@ public class PlacePageView extends RelativeLayout
   private ArrowView mAvDirection;
   private TextView mTvDistance;
   private TextView mTvAddress;
-  private View mSponsoredInfo;
+  private View mPreviewRatingInfo;
   private RatingView mRatingView;
-  private TextView mReviewCount;
   private TextView mTvSponsoredPrice;
   // Details.
   private NestedScrollView mDetails;
@@ -208,12 +201,9 @@ public class PlacePageView extends RelativeLayout
   private BaseSponsoredAdapter mSponsoredAdapter;
   private TextView mTvSponsoredTitle;
   private ImageView mIvSponsoredLogo;
-  private View mUgcView;
-  private View mUgcRating;
-  private View mUgcMoreReviews;
 
   @Nullable
-  UgcAverageRatingController mUgcController;
+  UGCController mUgcController;
 
   @Nullable
   BannerController mBannerController;
@@ -231,8 +221,6 @@ public class PlacePageView extends RelativeLayout
   @Nullable
   private Sponsored mSponsored;
   private String mSponsoredPrice;
-  @Nullable
-  private UGC mUgc;
   private boolean mIsLatLonDms;
   @NonNull
   private final FacilitiesAdapter mFacilitiesAdapter = new FacilitiesAdapter();
@@ -242,12 +230,6 @@ public class PlacePageView extends RelativeLayout
   private final NearbyAdapter mNearbyAdapter = new NearbyAdapter(this);
   @NonNull
   private final ReviewAdapter mReviewAdapter = new ReviewAdapter();
-  @NonNull
-  private final UGCReviewAdapter mUGCReviewAdapter = new UGCReviewAdapter();
-  @NonNull
-  private final UGCRatingRecordsAdapter mUGCRatingRecordsAdapter = new UGCRatingRecordsAdapter();
-  @NonNull
-  private final UGCRatingRecordsAdapter mUGCUserRatingRecordsAdapter = new UGCRatingRecordsAdapter();
 
   // Downloader`s stuff
   private DownloaderStatusIcon mDownloaderIcon;
@@ -289,28 +271,6 @@ public class PlacePageView extends RelativeLayout
       detachCountry();
     }
   };
-
-  @Override
-  public void onRatingChanged(@UGC.UGCRating int rating)
-  {
-    if (mMapObject == null || mUgc == null)
-      return;
-
-    UGCEditorActivity.start(getActivity(), mMapObject.getTitle(),
-                            mMapObject.getFeatureId().getFeatureIndex(),
-                            mUgc, rating);
-  }
-
-  @Override
-  public void onUGCReceived(@NonNull UGC ugc)
-  {
-    mUgc = ugc;
-    if (ugc.getReviews() != null)
-      mUGCReviewAdapter.setItems(ugc.getReviews());
-    mUGCRatingRecordsAdapter.setItems(ugc.getRatings());
-    mUGCUserRatingRecordsAdapter.setItems(ugc.getUserRatings());
-    UiUtils.show(mUgcView);
-  }
 
   public enum State
   {
@@ -394,10 +354,9 @@ public class PlacePageView extends RelativeLayout
 
     mTvAddress = (TextView) mPreview.findViewById(R.id.tv__address);
 
-    mSponsoredInfo = mPreview.findViewById(R.id.hotel_info_frame);
-    mRatingView = (RatingView) mSponsoredInfo.findViewById(R.id.rating_view);
-    mReviewCount = (TextView) mSponsoredInfo.findViewById(R.id.tv__review_count);
-    mTvSponsoredPrice = (TextView) mSponsoredInfo.findViewById(R.id.tv__hotel_price);
+    mPreviewRatingInfo = mPreview.findViewById(R.id.preview_rating_info);
+    mRatingView = (RatingView) mPreviewRatingInfo.findViewById(R.id.rating_view);
+    mTvSponsoredPrice = (TextView) mPreviewRatingInfo.findViewById(R.id.tv__hotel_price);
 
     mDetails = (NestedScrollView) findViewById(R.id.pp__details);
     RelativeLayout address = (RelativeLayout) mDetails.findViewById(R.id.ll__place_name);
@@ -467,9 +426,10 @@ public class PlacePageView extends RelativeLayout
     initHotelGalleryView();
     initHotelNearbyView();
     initHotelRatingView();
+
     initSponsoredGalleryView();
 
-    initUgcView();
+    mUgcController = new UGCController(this);
 
     View bannerView = findViewById(R.id.banner);
     if (bannerView != null)
@@ -673,57 +633,6 @@ public class PlacePageView extends RelativeLayout
     Cian.setCianListener(this);
   }
 
-  private void initUgcView()
-  {
-    mUgcView = findViewById(R.id.ll__pp_ugc);
-    mUgcRating = findViewById(R.id.ll__pp_ugc_rating);
-    mUgcController = new UgcAverageRatingController(mUgcRating, this);
-    mUgcMoreReviews = findViewById(R.id.tv__pp_ugc_reviews_more);
-
-    RecyclerView rvHotelReview = (RecyclerView) findViewById(R.id.rv__pp_ugc_reviews);
-    rvHotelReview.setLayoutManager(new LinearLayoutManager(getContext()));
-    rvHotelReview.getLayoutManager().setAutoMeasureEnabled(true);
-    rvHotelReview.addItemDecoration(ItemDecoratorFactory.createDefaultDecorator(getContext(),
-                                                                                LinearLayoutManager.VERTICAL));
-    rvHotelReview.setNestedScrollingEnabled(false);
-    rvHotelReview.setHasFixedSize(false);
-    rvHotelReview.setAdapter(mUGCReviewAdapter);
-
-    View summaryRatingContainer = findViewById(R.id.summary_rating_records);
-    RecyclerView rvRatingRecords = (RecyclerView) summaryRatingContainer.findViewById(R.id.rv__summary_rating_records);
-    rvRatingRecords.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-    rvRatingRecords.getLayoutManager().setAutoMeasureEnabled(true);
-    rvRatingRecords.setNestedScrollingEnabled(false);
-    rvRatingRecords.setHasFixedSize(false);
-    rvRatingRecords.addItemDecoration(
-        ItemDecoratorFactory.createRatingRecordDecorator(getContext(), LinearLayoutManager.HORIZONTAL));
-    rvRatingRecords.setAdapter(mUGCRatingRecordsAdapter);
-
-    View userReviewContainer = findViewById(R.id.user_rating_records);
-    RecyclerView rvUserRatingRecords = (RecyclerView) userReviewContainer.findViewById(R.id.rv__summary_rating_records);
-    rvUserRatingRecords.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-    rvUserRatingRecords.getLayoutManager().setAutoMeasureEnabled(true);
-    rvUserRatingRecords.setNestedScrollingEnabled(false);
-    rvUserRatingRecords.setHasFixedSize(false);
-    rvUserRatingRecords.addItemDecoration(
-        ItemDecoratorFactory.createRatingRecordDecorator(getContext(), LinearLayoutManager.HORIZONTAL));
-    rvUserRatingRecords.setAdapter(mUGCUserRatingRecordsAdapter);
-
-    View userComment = findViewById(R.id.rl_user_review);
-    TextView name = (TextView) userComment.findViewById(R.id.name);
-    TextView date = (TextView) userComment.findViewById(R.id.date);
-    TextView review = (TextView) userComment.findViewById(R.id.review);
-    //TODO: remove it after core is ready.
-    name.setText("Your review");
-    date.setText("10 May 2017");
-    review.setText("Go first thing in the morning when they open...You will get in right" +
-                   "away if you do..." +
-                   "" +
-                   "Amazing food...");
-    userComment.findViewById(R.id.rating).setVisibility(GONE);
-
-  }
-
   private void initHotelRatingView()
   {
     mHotelReview = findViewById(R.id.ll__place_hotel_rating);
@@ -891,6 +800,12 @@ public class PlacePageView extends RelativeLayout
     mReviewAdapter.setItems(new ArrayList<Review>());
     mHotelRating.setText("");
     mHotelRatingBase.setText("");
+  }
+
+  private void clearUGCViews()
+  {
+    if (mUgcController != null)
+      mUgcController.clear();
   }
 
   @Override
@@ -1351,18 +1266,12 @@ public class PlacePageView extends RelativeLayout
     detachCountry();
     if (mMapObject != null)
     {
-      // TODO: Be careful, shouldShowUgc can return true only when all ui work about UGC is done.
-      // Now (01.08.2017) UI is not ready for UGC yet.
-      if (mMapObject.shouldShowUGC())
-      {
-        UGC.setListener(this);
-        UGC.requestUGC(mMapObject.getFeatureId());
-        refreshViews(policy);
-        return;
-      }
       clearHotelViews();
       clearSponsoredGalleryViews();
+      clearUGCViews();
       processSponsored(policy);
+      if (mUgcController != null)
+        mUgcController.getUGC(mMapObject);
 
       String country = MapManager.nativeGetSelectedCountry();
       if (country != null && !RoutingController.get().isNavigating())
@@ -1542,18 +1451,18 @@ public class PlacePageView extends RelativeLayout
     UiUtils.setTextAndHideIfEmpty(mTvAddress, mapObject.getAddress());
     //TODO: rating will be shown not only for sponsored objects now, change it when core is ready.
     boolean sponsored = isSponsored();
-    UiUtils.showIf(sponsored, mSponsoredInfo);
+    UiUtils.showIf(sponsored, mPreviewRatingInfo);
     if (sponsored)
     {
       boolean isPriceEmpty = TextUtils.isEmpty(mSponsoredPrice);
       boolean isRatingEmpty = TextUtils.isEmpty(mSponsored.getRating());
       //TODO: remove this code when place_page_info.cpp is ready and use rating parameter.
-      mRatingView.setRating(null, mSponsored.getRating().substring(mSponsored.getRating().indexOf(" ") + 1, mSponsored.getRating().length()));
+      mRatingView.setRating(null, mSponsored.getRating());
       UiUtils.showIf(!isRatingEmpty, mRatingView);
       mTvSponsoredPrice.setText(mSponsoredPrice);
       UiUtils.showIf(!isPriceEmpty, mTvSponsoredPrice);
       //TODO: set review count to mTvReviewCount when core is ready.
-      UiUtils.showIf(!isRatingEmpty || !isPriceEmpty, mSponsoredInfo);
+      UiUtils.showIf(!isRatingEmpty || !isPriceEmpty, mPreviewRatingInfo);
     }
   }
 
@@ -2292,6 +2201,11 @@ public class PlacePageView extends RelativeLayout
   public boolean isBannerTouched(@NonNull MotionEvent event)
   {
     return mBannerController != null && mBannerController.isActionButtonTouched(event);
+  }
+
+  public boolean isLeaveReviewButtonTouched(@NonNull MotionEvent event)
+  {
+    return mUgcController != null && mUgcController.isLeaveReviewButtonTouched(event);
   }
 
   @Override

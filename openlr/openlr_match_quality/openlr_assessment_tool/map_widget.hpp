@@ -9,6 +9,8 @@ class PointsController;
 
 class Framework;
 
+namespace openlr
+{
 class MapWidget : public qt::common::MapWidget
 {
   Q_OBJECT
@@ -27,6 +29,11 @@ public:
 
   void SetMode(Mode const mode) { m_mode = mode; }
 
+  QSize sizeHint() const override
+  {
+    return QSize(800, 600);
+  }
+
 signals:
   void TrafficMarkupClick(m2::PointD const & p, Qt::MouseButton const b);
 
@@ -36,3 +43,4 @@ protected:
 private:
   Mode m_mode = Mode::Normal;
 };
+}  // namespace openlr

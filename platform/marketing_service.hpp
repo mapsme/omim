@@ -18,13 +18,16 @@ extern char const * const kRoutingP2PVehicleDiscovered;
 extern char const * const kRoutingP2PPedestrianDiscovered;
 extern char const * const kRoutingP2PBicycleDiscovered;
 extern char const * const kRoutingP2PTaxiDiscovered;
+extern char const * const kRoutingP2PTransitDiscovered;
 extern char const * const kRoutingVehicleDiscovered;
 extern char const * const kRoutingPedestrianDiscovered;
 extern char const * const kRoutingBicycleDiscovered;
 extern char const * const kRoutingTaxiDiscovered;
+extern char const * const kRoutingTransitDiscovered;
 extern char const * const kEditorAddDiscovered;
 extern char const * const kEditorEditDiscovered;
 extern char const * const kTrafficDiscovered;
+extern char const * const kSponsoredThorDiscovered;
 
 // Events.
 extern char const * const kDownloaderMapActionFinished;
