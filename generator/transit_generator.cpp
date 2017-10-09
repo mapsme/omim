@@ -43,8 +43,8 @@ string GetFileName(string const & filePath)
 
 /// \brief Reads from |root| (json) and serializes an array to |serializer|.
 // @TODO(bykoianko) It's necessary to implement
-// template <Gate>
-// void SerializeObject(my::Json const & root, string const & key, Serializer<FileWriter> & serializer).
+// template<>
+// void SerializeObject<Gate>(my::Json const & root, string const & key, Serializer<FileWriter> & serializer).
 // At this method |Gate::m_pedestrianFeatureIds| should be calculated based on |m_point|.
 // It should be filled after "gates" are deserialized from json to vector of Gate but before serialization to mwm.
 template <class Item>
