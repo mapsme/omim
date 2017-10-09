@@ -10,6 +10,7 @@ import com.mapswithme.maps.bookmarks.data.MapObject;
 import com.mapswithme.maps.bookmarks.data.Metadata;
 import com.mapswithme.maps.gallery.Image;
 import com.mapswithme.maps.review.Review;
+import com.mapswithme.maps.ugc.UGC;
 import com.mapswithme.util.NetworkPolicy;
 
 import java.lang.annotation.Retention;
@@ -193,6 +194,8 @@ public final class Sponsored
 
   @NonNull
   private final String mRating;
+  @UGC.Impress
+  private final int mImpress;
   @NonNull
   private final String mPrice;
   @NonNull
@@ -204,11 +207,12 @@ public final class Sponsored
   @SponsoredType
   private final int mType;
 
-  public Sponsored(@NonNull String rating, @NonNull String price, @NonNull String url,
+  public Sponsored(@NonNull String rating, @UGC.Impress int impress, @NonNull String price, @NonNull String url,
                    @NonNull String descriptionUrl, @NonNull String reviewUrl,
                    @SponsoredType int type)
   {
     mRating = rating;
+    mImpress = impress;
     mPrice = price;
     mUrl = url;
     mDescriptionUrl = descriptionUrl;
@@ -231,6 +235,12 @@ public final class Sponsored
   String getRating()
   {
     return mRating;
+  }
+
+  @UGC.Impress
+  int getImpress()
+  {
+    return mImpress;
   }
 
   @NonNull
