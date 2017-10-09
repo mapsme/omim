@@ -31,17 +31,20 @@ private:
 };
 }  // namespace base
 
-#define DECLARE_VISITOR(...)          \
-  template <typename Visitor>         \
-  void Visit(Visitor & visitor)       \
-  {                                   \
-    __VA_ARGS__;                      \
-  }                                   \
-  template <typename Visitor>         \
-  void Visit(Visitor & visitor) const \
-  {                                   \
-    __VA_ARGS__;                      \
+#define DECLARE_VISITOR_WITH_SUFFIX(suffix, ...)     \
+  template <typename Visitor>                        \
+  void Visit##suffix(Visitor & visitor)              \
+  {                                                  \
+    __VA_ARGS__;                                     \
+  }                                                  \
+  template <typename Visitor>                        \
+  void Visit##suffix(Visitor & visitor) const        \
+  {                                                  \
+    __VA_ARGS__;                                     \
   }
+
+#define DECLARE_VISITOR(...)                         \
+  DECLARE_VISITOR_WITH_SUFFIX(, __VA_ARGS__)
 
 #define DECLARE_DEBUG_PRINT(className)               \
   friend std::string DebugPrint(className const & c) \
