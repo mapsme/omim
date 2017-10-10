@@ -53,11 +53,11 @@ SOURCES += \
     traffic_generator.cpp \
     transit_generator.cpp \
     ugc_db.cpp \
+    ugc_section_builder.cpp \
     ugc_translator.cpp \
     unpack_mwm.cpp \
     utils.cpp \
     viator_dataset.cpp \
-    ugc_section_builder.cpp
 
 HEADERS += \
     altitude_generator.hpp \
@@ -108,10 +108,10 @@ HEADERS += \
     traffic_generator.hpp \
     transit_generator.hpp \
     ugc_db.hpp \
+    ugc_section_builder.hpp \
     ugc_translator.hpp \
     unpack_mwm.hpp \
     utils.hpp \
     viator_dataset.hpp \
     ways_merger.hpp \
     world_map_generator.hpp \
-    ugc_section_builder.hpp
