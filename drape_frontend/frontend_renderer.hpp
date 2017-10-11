@@ -140,7 +140,7 @@ protected:
 
 private:
   void OnResize(ScreenBase const & screen);
-  void RenderScene(ScreenBase const & modelView);
+  void RenderScene(ScreenBase const & modelView, bool lastFrameActive);
   void PrepareBucket(dp::GLState const & state, drape_ptr<dp::RenderBucket> & bucket);
   void MergeBuckets();
   void RenderSingleGroup(ScreenBase const & modelView, ref_ptr<BaseRenderGroup> group);

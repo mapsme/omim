@@ -252,9 +252,10 @@ bool PostprocessRenderer::IsEffectEnabled(Effect effect) const
   return (m_effects & static_cast<uint32_t>(effect)) > 0;
 }
 
-void PostprocessRenderer::BeginFrame()
+void PostprocessRenderer::BeginFrame(bool isActiveFrame)
 {
-  if (!IsEnabled())
+  // Now we do not render posteffects on active frame by energy-saving issues.
+  if (isActiveFrame || !IsEnabled())
   {
     m_framebufferFallback();
     return;
@@ -278,7 +279,7 @@ void PostprocessRenderer::BeginFrame()
 
 void PostprocessRenderer::EndFrame(ref_ptr<dp::GpuProgramManager> gpuProgramManager)
 {
-  if (!IsEnabled() && !m_frameStarted)
+  if (!IsEnabled() || !m_frameStarted)
     return;
 
   bool wasPostEffect = false;
