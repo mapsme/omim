@@ -97,7 +97,7 @@ public:
 
   void ClearCaches();
 
-  inline void SetLocalityFinderLanguage(int8_t code) { m_localities.SetLanguage(code); }
+  inline void SetLocalityLanguage(int8_t code) { m_localityLang = code; }
 
   inline void SetLanguage(pair<int, int> const & ind, int8_t lang)
   {
@@ -132,6 +132,7 @@ private:
   KeywordLangMatcher m_keywordsScorer;
 
   mutable LocalityFinder m_localities;
+  int8_t m_localityLang = StringUtf8Multilang::kDefaultCode;
 
   Index const & m_index;
   storage::CountryInfoGetter const & m_infoGetter;
