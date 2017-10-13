@@ -14,6 +14,7 @@ auto const kFinancialPlacementId = "8";
 auto const kEntertainmentPlacementId = "9";
 auto const kBuildingPlacementId = "11";
 auto const kBannerIdForOtherTypes = "14";
+auto const kHalloweenPlacementId = "15";
 
 std::initializer_list<storage::TCountryId> const kSupportedCountries =
 {
@@ -103,6 +104,8 @@ Rb::Rb()
               kEntertainmentPlacementId);
 
   AppendEntry({{"building"}}, kBuildingPlacementId);
+
+  AppendEntry({{"sponsored", "halloween"}}, kHalloweenPlacementId);
 
   AppendSupportedCountries(kSupportedCountries);
   AppendSupportedUserLanguages(kSupportedLanguages);
