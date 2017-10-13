@@ -1810,17 +1810,30 @@ sw:^Reli ya chini
 railway-level_crossing
 en:^Level Crossing
 ru:^Железнодорожный переезд
+uk:^Level Crossing
+de:5^Bahnübergang
 fr:^Passage à niveau
-de:^Bahnübergang
 it:^Passaggio a livello
 es:^Paso a nivel
-pt:^Passagem de nível
-pl:^Przejazd kolejowy
+ko:^건널목
+ja:^踏切
 cs:^Železniční přejezd
 nl:^Overweg
-da:^Jernbaneoverskæring
-fi:^Tasoristeys
+zh-Hant:^平交道
+pl:^Przejazd kolejowy
+pt:^Passagem de nível
 hu:^Útátjáró
+th:^ทางรถไฟผ่านถนนเสมอระดับ
+zh-Hans:^平交道
+ar:^مزلقان
+da:^Jernbaneoverskæring
+tr:^Hemzemin geçit
+sk:^Železničné priecestie
+sv:^Järnvägskorsning
+ro:^Trecere de nivel
+nb:^Planovergang
+fi:^Tasoristeys
+el:^Ισόπεδη διάβαση
 
 amenity-ferry_terminal|@transport
 en:3^Ferry|terminal|U+1F6A2|U+1F6A4|U+2693
@@ -4900,34 +4913,96 @@ sk:4^Kúpalisko|3bazén|aquapark|4kúpele
 sw:^Bwawa la kuogelea
 
 sport-equestrian
-en:Equestrian Sports
-ru:Конный спорт
-de:Pferdesport
-es:Deportes ecuestres
-fr:Sport équestre
-hu:Lovassportok
-nl:Paardensport
+en:^Equestrianism|Riding|Horseback Riding
+ru:^Верховая езда
+uk:^Equestrianism|Riding|Horse Riding
+de:3^Reitsport|Reiten
+fr:^Équitation
+it:^Equitazione
+es:^Hípica
+ko:^말 타기
+ja:^馬術
+cs:^Jezdectví
+nl:^Paardensport
+zh-Hant:^马术
+pl:^Jeździectwo
+pt:^Hipismo
+hu:^Lovaglás
+zh-Hans:^马术
+ar:^فروسية
+da:^Ridning
+tr:^Binicilik
+sk:^Konjeništvo
+sv:^Hästsport
+ro:^Călărie
+nb:^Ridning
+fi:^Ratsastus
+el:^Ιππασία
+he:^רכיבה
 
 sport-basketball
 en:^Basketball
 ru:^Баскетбол
-de:^Basketball
-es:^Baloncesto
+uk:^Basketball
+de:3^Basketball
 fr:^Basket-ball
 it:^Pallacanestro
-hu:^Kosárlabda
+es:^Baloncesto
+ko:^농구
+ja:^バスケットボール
+cs:^Basketbal
 nl:^Basketbal
+zh-Hant:^篮球
+pl:^Koszykówka
+pt:^Basquetebol
+hu:^Kosárlabda
+th:^บาสเกตบอล
+zh-Hans:^篮球
+ar:^كرة السلة
 da:^Basketball
+tr:^Basketbol
+sk:^Basketbal
+sv:^Basket
+vi:^Bóng rổ
+id:^Bola basket
+ro:^Baschet
+nb:^Basketball
+fi:^Koripallo
+el:^Καλαθοσφαίριση
+he:^כדורסל
+sw:^Mpira wa kikapu
 
 sport-athletics
 en:^Athletics
 ru:^Лёгкая атлетика
-de:^Leichtathletik
-es:^Atletismo
+uk:^Athletics
+de:3^Leichtathletik
 fr:^Athlétisme
 it:^Atletica leggera
-hu:^Atlétika
+es:^Atletismo
+ko:^육상 경기
+ja:^陸上競技
+cs:^Lehká atletika
 nl:^Atletiek
+zh-Hant:^田径
+pl:^Lekkoatletyka
+pt:^Atletismo
+hu:^Atlétika
+th:^กรีฑา
+zh-Hans:^田径
+ar:^ألعاب قوى
+da:^Atletik
+tr:^Atletizm
+sk:^Atletika
+sv:^Friidrott
+vi:^Điền kinh
+id:^Atletik
+ro:^Atletism
+nb:^Friidrett
+fi:^Yleisurheilu
+el:^Στίβος
+he:^אתלטיקה
+sw:^Riadha
 
 building|building-address
 en:^Building|U+1F3E0|U+1F3E1|U+1F3E2|cian
