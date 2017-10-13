@@ -69,6 +69,8 @@ Mopub::Mopub()
                {"amenity", "atm"},
                {"amenity", "bureau_de_change"}},
               kNonTourismPlacementId);
+
+  AppendExcludedTypes({{"sponsored", "halloween"}});
 }
 
 std::string Mopub::GetBannerIdForOtherTypes() const
