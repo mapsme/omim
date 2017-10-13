@@ -144,5 +144,13 @@ UNIT_TEST(AdsEngine_Smoke)
     TEST_EQUAL(result[0].m_type, ads::Banner::Type::Google, ());
     TEST_EQUAL(result[0].m_bannerId, google.GetSearchBannerId(), ());
   }
+  {
+    feature::TypesHolder holder;
+    holder.Assign(c.GetTypeByPath({"sponsored", "halloween"}));
+    TEST(engine.HasBanner(holder, {"Russian Federation"}, "ru"), ());
+    auto result = engine.GetBanners(holder, {"Russian Federation"}, "ru");
+    TEST(!result.empty(), ());
+    CheckIds(result, {"15"});
+  }
 }
 }
