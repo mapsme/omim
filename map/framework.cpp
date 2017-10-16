@@ -1436,6 +1436,8 @@ void Framework::EnterBackground()
 
   SaveViewport();
 
+  m_ugcApi->SaveUGCOnDisk();
+
   m_trafficManager.OnEnterBackground();
   m_routingManager.SetAllowSendingPoints(false);
 
@@ -3477,13 +3479,18 @@ void Framework::UploadUGC(User::CompleteUploadingHandler const & onCompleteUploa
   if (!m_user.IsAuthenticated())
     return;
 
-  m_ugcApi->GetUGCToSend([this, onCompleteUploading](string && json) {
+  m_ugcApi->GetUGCToSend([this, onCompleteUploading](string && json)
+  {
     if (!json.empty())
-      m_user.UploadUserReviews(move(json), [this, onCompleteUploading]
+    {
+      m_user.UploadUserReviews(std::move(json), [this, onCompleteUploading](bool isSuccessful)
       {
-        if (onCompleteUploading)
-          onCompleteUploading();
-        m_ugcApi->SendingCompleted();
+        if (onCompleteUploading != nullptr)
+          onCompleteUploading(isSuccessful);
+
+        if (isSuccessful)
+          m_ugcApi->SendingCompleted();
       });
+    }
   });
 }
