@@ -9,6 +9,7 @@
 
 #include "base/assert.hpp"
 #include "base/logging.hpp"
+#include "base/macros.hpp"
 
 #include <array>
 #include <cstdint>
@@ -76,6 +77,7 @@ class UGC : public TraitsBase<UGC, UGCItem, true>
       size_t constexpr kCategoriesPos = 4;
 
       ASSERT_EQUAL(row.size(), kItemsCount, ());
+      UNUSED_VALUE(kItemsCount);
 
       UGCItem item(ReadMasks(row), ParseByWhitespaces(row[kCategoriesPos]));
       m_matcher.AppendType(ParseByWhitespaces(row[kTypePos]), std::move(item));
