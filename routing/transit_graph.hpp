@@ -39,6 +39,10 @@ public:
             std::vector<transit::Edge> const & edges, EdgeEstimator const & estimator,
             NumMwmId numMwmId, IndexGraph & indexGraph);
 
+  bool IsGate(Segment const & segment) const;
+  bool IsEdge(Segment const & segment) const;
+  transit::Edge const & GetEdge(Segment const & segment) const;
+
 private:
   Segment GetTransitSegment(uint32_t segmentIdx) const;
   Segment GetNewTransitSegment() const;
@@ -49,9 +53,6 @@ private:
   void AddConnections(map<transit::StopId, std::set<transit::Edge>> const & connections,
                       bool isOutgoing);
 
-  bool IsGate(Segment const & segment) const;
-  bool IsEdge(Segment const & segment) const;
-  transit::Edge const & GetEdge(Segment const & segment) const;
   transit::Gate const & GetGate(Segment const & segment) const;
 
   static uint32_t constexpr kTransitFeatureId = FakeFeatureIds::kTransitGraphId;
