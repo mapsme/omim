@@ -115,6 +115,13 @@ bool TransitGraph::IsEdge(Segment const & segment) const
   return m_segmentToEdge.count(segment) > 0;
 }
 
+transit::Gate const & TransitGraph::GetGate(Segment const & segment) const
+{
+  auto const it = m_segmentToGate.find(segment);
+  CHECK(it != m_segmentToGate.cend(), ("Unknown transit segment."));
+  return it->second;
+}
+
 transit::Edge const & TransitGraph::GetEdge(Segment const & segment) const
 {
   auto const it = m_segmentToEdge.find(segment);
@@ -223,12 +230,5 @@ void TransitGraph::AddConnections(map<transit::StopId, set<transit::Edge>> const
       }
     }
   }
-}
-
-transit::Gate const & TransitGraph::GetGate(Segment const & segment) const
-{
-  auto const it = m_segmentToGate.find(segment);
-  CHECK(it != m_segmentToGate.cend(), ("Unknown transit segment."));
-  return it->second;
 }
 }  // namespace routing

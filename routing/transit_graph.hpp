@@ -41,6 +41,7 @@ public:
 
   bool IsGate(Segment const & segment) const;
   bool IsEdge(Segment const & segment) const;
+  transit::Gate const & GetGate(Segment const & segment) const;
   transit::Edge const & GetEdge(Segment const & segment) const;
 
 private:
@@ -52,8 +53,6 @@ private:
   void AddEdge(transit::Edge const & edge, std::map<transit::StopId, Junction> const & stopCoords);
   void AddConnections(map<transit::StopId, std::set<transit::Edge>> const & connections,
                       bool isOutgoing);
-
-  transit::Gate const & GetGate(Segment const & segment) const;
 
   static uint32_t constexpr kTransitFeatureId = FakeFeatureIds::kTransitGraphId;
   NumMwmId m_mwmId = kFakeNumMwmId;
