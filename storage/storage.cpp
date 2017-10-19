@@ -1436,8 +1436,10 @@ void Storage::ApplyDiff(TCountryId const & countryId, function<void(bool isSucce
     GetPlatform().RunOnGuiThread([this, fn, diffFile, result]
     {
       if (result)
+      {
         RegisterCountryFiles(diffFile);
-
+        Platform::DisableBackupForFile(diffFile->GetPath(MapOptions::Map));
+      }
       fn(result);
     });
   });
