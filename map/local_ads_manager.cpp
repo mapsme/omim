@@ -39,8 +39,8 @@
 
 namespace
 {
-std::array<char const * const, 5> const kMarketingParameters = {marketing::kFrom, marketing::kType, marketing::kName,
-                                                                marketing::kContent, marketing::kKeyword};
+std::array<char const * const, 5> const kMarketingParameters = {{marketing::kFrom, marketing::kType, marketing::kName,
+                                                                 marketing::kContent, marketing::kKeyword}};
 std::string const kServerUrl = LOCAL_ADS_SERVER_URL;
 std::string const kCampaignPageUrl = LOCAL_ADS_COMPANY_PAGE_URL;
 
