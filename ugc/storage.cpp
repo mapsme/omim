@@ -122,8 +122,8 @@ void Storage::SetUGCUpdate(FeatureID const & id, UGCUpdate const & ugc)
   auto const mercator = feature::GetCenter(*feature);
   feature::TypesHolder th(*feature);
   th.SortBySpec();
-  uint32_t matchingType = 0;
-  CHECK(ftraits::UGC::GetType(th, matchingType), ());
+  auto const optMatchingType = ftraits::UGC::GetType(th);
+  CHECK(optMatchingType, ());
   auto const type = th.GetBestType();
   for (auto & index : m_UGCIndexes)
   {
@@ -143,7 +143,7 @@ void Storage::SetUGCUpdate(FeatureID const & id, UGCUpdate const & ugc)
 
   index.m_mercator = mercator;
   index.m_type = type;
-  index.m_matchingType = matchingType;
+  index.m_matchingType = *optMatchingType;
   index.m_mwmName = id.GetMwmName();
   index.m_dataVersion = id.GetMwmVersion();
   index.m_featureId = id.m_index;
