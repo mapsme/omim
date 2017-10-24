@@ -26749,7 +26749,7 @@
     hu = Az Ön felülvizsgálata
     fr = Votre revue
     da = Din anmeldelse
-    ro = Recenzia dvs.
+    ro = Recenzia dvs
     nl = Uw beoordeling
     it = La tua recensione
     uk = Ваш відгук
@@ -27054,7 +27054,7 @@
     sk = Viac recenzií na Booking.com
     fi = Lisää arvosteluja Booking.comissa
     ko = Booking.com의 추가 리뷰
-    sv = `Fler omdömen på Booking.com `
+    sv = Fler omdömen på Booking.com
     nb = Flere anmeldelser på Booking.com
     hu = További vélemények a Booking.com-on
     fr = Plus d'avis sur Booking.com
@@ -27084,10 +27084,10 @@
     th = ลงชื่อเข้าใช้ด้วย
     sk = Prihlásiť sa pomocou
     fi = Kirjaudu sisään käyttämällä palvelua
-    ko = 로그인:
+    ko = 로그인
     sv = Logga in med
     nb = Logg inn med
-    hu = Bejelentkezés ezzel:
+    hu = Bejelentkezés ezzel
     fr = Se connecter avec
     da = Log ind med
     ro = Conectare cu
@@ -27098,7 +27098,7 @@
     tr = Oturum aç
     pt = Iniciar sessao com
     el = Συνδεθείτε με
-    pl = Zaloguj się za pomocą:
+    pl = Zaloguj się za pomocą
     zh-Hans = 登录方式
     id = Masuk dengan
     de = Anmelden mit
