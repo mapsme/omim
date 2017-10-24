@@ -26887,37 +26887,6 @@
     de = Was ist hier gut oder schlecht?
     ar = ما الجيد أو السيء هنا؟
 
-  [placepage_reviews_error]
-    en = Write something to help travellers. Minimum number of characters: 40
-    ru = Напишите что-нибудь ещё, чтобы помочь путешественникам. Минимальное количество символов: 40
-    cs = Napište něco, co pomůže cestovatelům. Minimální počet znaků: 40
-    ja = 旅行者のために何か書いてください。最小文字数: 40
-    sw = Andika jambo ili kuwasaidia wasafiri. Angalau herufi: 40
-    vi = Viết điều gì đó để giúp các du khách khác. Số ký tự tối thiểu: 40
-    zh-Hant = 寫一些東西協助旅行者。字元數下限：40
-    th = เขียนสิ่งที่จะช่วยเหลือนักเดินทาง จำนวนตัวอักษรขั้นต่ำ: 40
-    sk = Napíšte niečo, čo pomôže cestujúcim. Minimálny počet znakov: 40
-    fi = Kirjoita jotakin, josta on apua matkailijoille. Merkkien vähimmäismäärä: 40
-    ko = 여행자에게 도움이 될 내용을 기입하세요. 최소 문자 수: 40
-    sv = Skriv något för att hjälpa resenärer. Minst antal tecken: 40
-    nb = Skriv noe for å hjelpe reisende. Minste antall tegn: 40
-    hu = Írjon valamit segítségül az utazóknak. Karakterszám: legalább 40
-    fr = Écrivez quelque chose pour aider les voyageurs. Nombre minimum de caractères : 40
-    da = Skrive noget som kan hjælpe rejsende. Minimalt antal tegn: 40
-    ro = Scrieți ceva pentru a ajuta călătorii. Număr minim de caractere: 40
-    nl = Schrijf wat hulp voor reizigers. Minimum aantal karakters: 40
-    it = Scrivi qualcosa per aiutare i viaggiatori. Numero minimo di caratteri: 40
-    uk = Напишіть щось, що б допомогло мандрівникам. Мінімальна кількість символів: 40
-    es = Escriba algo para ayudar a los viajeros. Número mínimo de caracteres: 40
-    tr = Gezginlere yardımcı olacak birkaç şey yazın. Minimum karakter sayısı: 40
-    pt = Escreva qualquer coisa para ajudar os viajantes. Número mínimo de caracteres: 40
-    el = Γράψτε κάτι για να βοηθήσετε τους ταξιδιώτες. Ελάχιστος αριθμός χαρακτήρων: 40
-    pl = Napisz coś, aby pomóc podróżującym. Minimalna liczba znaków: 40
-    zh-Hans = 写一点东西来帮助旅客。最少字符数：40
-    id = Tulis sesuatu untuk membantu musafir. Jumlah karakter minimum: 40
-    de = Schreiben Sie etwas, das Reisenden hilft. Mindestanzahl an Zeichen: 40
-    ar = اكتب شيئًا لمساعدة المسافرين. الحد الأدنى لعدد الحروف: 40
-
   [placepage_reviews_edit_your_review]
     en = Edit your review
     ru = Редактировать ваш отзыв
