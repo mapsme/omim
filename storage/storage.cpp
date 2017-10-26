@@ -839,7 +839,7 @@ void Storage::RegisterDownloadedFiles(TCountryId const & countryId, MapOptions o
 
     CHECK(!m_queue.empty(), ());
     PushToJustDownloaded(m_queue.begin());
-    PeekFromQueue(m_queue.begin());
+    PopFromQueue(m_queue.begin());
     SaveDownloadQueue();
 
     m_downloader->Reset();
@@ -1172,7 +1172,7 @@ bool Storage::DeleteCountryFilesFromDownloader(TCountryId const & countryId)
   {
     auto it = find(m_queue.begin(), m_queue.end(), countryId);
     ASSERT(it != m_queue.end(), ());
-    PeekFromQueue(it);
+    PopFromQueue(it);
     SaveDownloadQueue();
   }
 
@@ -1772,7 +1772,7 @@ void Storage::PushToJustDownloaded(TQueue::iterator justDownloadedItem)
   m_justDownloaded.insert(justDownloadedItem->GetCountryId());
 }
 
-void Storage::PeekFromQueue(TQueue::iterator it)
+void Storage::PopFromQueue(TQueue::iterator it)
 {
   CHECK(!m_queue.empty(), ());
   m_queue.erase(it);
@@ -1897,7 +1897,7 @@ void Storage::OnDownloadFailed(TCountryId const & countryId)
   m_failedCountries.insert(countryId);
   auto it = find(m_queue.begin(), m_queue.end(), countryId);
   if (it != m_queue.end())
-    PeekFromQueue(it);
+    PopFromQueue(it);
   NotifyStatusChangedForHierarchy(countryId);
 }
 }  // namespace storage
