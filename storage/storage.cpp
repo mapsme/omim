@@ -594,8 +594,6 @@ void Storage::DownloadNextCountryFromQueue()
       !PreparePlaceForCountryFiles(GetCurrentDataVersion(), m_dataDir, GetCountryFile(countryId)))
   {
     OnMapDownloadFinished(countryId, false /* success */, queuedCountry.GetInitOptions());
-    NotifyStatusChangedForHierarchy(countryId);
-    CorrectJustDownloadedAndQueue(m_queue.begin());
     DownloadNextCountryFromQueue();
     return;
   }
