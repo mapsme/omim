@@ -367,6 +367,10 @@ Framework::Framework(FrameworkParams const & params)
                                                [this]() -> storage::CountryInfoGetter & { return GetCountryInfoGetter(); },
                                                [this](string const & id) -> string {
                                                  return m_storage.GetParentIdFor(id);
+                                               },
+                                               [this](RoutingManager::Callbacks::FeatureCallback const & fn,
+                                                      std::vector<FeatureID> const & features) {
+                                                 return m_model.ReadFeatures(fn, features);
                                                }),
                      static_cast<RoutingManager::Delegate &>(*this))
   , m_trafficManager(bind(&Framework::GetMwmsByRect, this, _1, false /* rough */),
@@ -389,6 +393,7 @@ Framework::Framework(FrameworkParams const & params)
   if (settings::Get(kMapStyleKey, mapStyleStr))
     mapStyle = MapStyleFromSettings(mapStyleStr);
   GetStyleReader().SetCurrentStyle(mapStyle);
+  df::LoadTransitColors();
 
   m_connectToGpsTrack = GpsTracker::Instance().IsEnabled();
 
