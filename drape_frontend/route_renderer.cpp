@@ -396,12 +396,16 @@ void RouteRenderer::RenderSubroute(SubrouteInfo const & subrouteInfo, size_t sub
   if (m_hiddenSubroutes.find(subrouteInfo.m_subrouteId) != m_hiddenSubroutes.end())
     return;
 
+  auto const & subrouteData = subrouteInfo.m_subrouteData[subrouteDataIndex];
+
   auto const screenHalfWidth = static_cast<float>(subrouteInfo.m_currentHalfWidth * screen.GetScale());
   auto dist = static_cast<float>(kInvalidDistance);
   if (m_followingEnabled)
-    dist = static_cast<float>(m_distanceFromBegin - subrouteInfo.m_subroute->m_baseDistance);
+  {
+    auto const distanceOffset = subrouteInfo.m_subroute->m_baseDistance + subrouteData->m_distanceOffset;
+    dist = static_cast<float>(m_distanceFromBegin - distanceOffset);
+  }
 
-  auto const & subrouteData = subrouteInfo.m_subrouteData[subrouteDataIndex];
   dp::GLState const & state = subrouteData->m_renderProperty.m_state;
   size_t const styleIndex = subrouteData->m_startPointIndex;
   ASSERT_LESS(styleIndex, subrouteInfo.m_subroute->m_style.size(), ());

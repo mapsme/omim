@@ -386,6 +386,12 @@ void RouteShape::PrepareMarkersGeometry(std::vector<SubrouteMarker> const & mark
   float const innerDepth = baseDepth + 0.5f;
   for (SubrouteMarker const & marker : markers)
   {
+    if (marker.m_colors.empty())
+    {
+      LOG(LWARNING, ("Colors have not been specified."));
+      continue;
+    }
+
     float const innerRadius = kInnerRadius * marker.m_scale;
     float const outerRadius = kOuterRadius * marker.m_scale;
 
@@ -402,19 +408,8 @@ void RouteShape::PrepareMarkersGeometry(std::vector<SubrouteMarker> const & mark
       geometry.emplace_back(outerPos, MV::TNormal(-kSqrt3, -1.0f, outerRadius), c);
       geometry.emplace_back(outerPos, MV::TNormal(kSqrt3, -1.0f, outerRadius), c);
       geometry.emplace_back(outerPos, MV::TNormal(0.0f, 2.0f, outerRadius), c);
-
-      if (marker.m_colors.front() != marker.m_innerColor)
-      {
-        dp::Color const innerColor = df::GetColorConstant(marker.m_innerColor);
-        MV::TColor const ic(innerColor.GetRedF(), innerColor.GetGreenF(),
-                            innerColor.GetBlueF(), innerColor.GetAlphaF());
-
-        geometry.emplace_back(innerPos, MV::TNormal(-kSqrt3, -1.0f, innerRadius), ic);
-        geometry.emplace_back(innerPos, MV::TNormal(kSqrt3, -1.0f, innerRadius), ic);
-        geometry.emplace_back(innerPos, MV::TNormal(0.0f, 2.0f, innerRadius), ic);
-      }
     }
-    else if (marker.m_colors.size() == 2)
+    else if (marker.m_colors.size() >= 2)
     {
       dp::Color const color1 = df::GetColorConstant(marker.m_colors[0]);
       dp::Color const color2 = df::GetColorConstant(marker.m_colors[1]);
@@ -435,6 +430,13 @@ void RouteShape::PrepareMarkersGeometry(std::vector<SubrouteMarker> const & mark
       geometry.emplace_back(outerPos, MarkerNormal(kSqrt2, 0.0f, outerRadius, cosAngle, sinAngle), c2);
       geometry.emplace_back(outerPos, MarkerNormal(0.0f, kSqrt2, outerRadius, cosAngle, sinAngle), c2);
       geometry.emplace_back(outerPos, MarkerNormal(0.0f, -kSqrt2, outerRadius, cosAngle, sinAngle), c2);
+    }
+
+    if (marker.m_colors.size() > 1 || marker.m_colors.front() != marker.m_innerColor)
+    {
+      dp::Color const innerColor = df::GetColorConstant(marker.m_innerColor);
+      MV::TColor const ic(innerColor.GetRedF(), innerColor.GetGreenF(),
+                          innerColor.GetBlueF(), innerColor.GetAlphaF());
 
       geometry.emplace_back(innerPos, MV::TNormal(-kSqrt3, -1.0f, innerRadius), ic);
       geometry.emplace_back(innerPos, MV::TNormal(kSqrt3, -1.0f, innerRadius), ic);
@@ -504,6 +506,7 @@ drape_ptr<df::SubrouteData> RouteShape::CacheRoute(dp::DrapeID subrouteId, Subro
   subrouteData->m_endPointIndex = endIndex;
   subrouteData->m_pivot = subroute->m_polyline.GetLimitRect().Center();
   subrouteData->m_recacheId = recacheId;
+  subrouteData->m_distanceOffset = subroute->m_polyline.GetLength(startIndex);
 
   TGeometryBuffer geometry;
   TGeometryBuffer joinsGeometry;
@@ -537,12 +540,11 @@ drape_ptr<df::SubrouteMarkersData> RouteShape::CacheMarkers(dp::DrapeID subroute
   TMarkersGeometryBuffer geometry;
   auto const depth = static_cast<float>(subroute->m_baseDepthIndex * kDepthPerSubroute + kMarkersDepth);
   PrepareMarkersGeometry(subroute->m_markers, markersData->m_pivot, depth, geometry);
+  if (geometry.empty())
+    return nullptr;
 
   auto state = CreateGLState(gpu::ROUTE_MARKER_PROGRAM, RenderState::GeometryLayer);
   state.SetColorTexture(textures->GetSymbolsTexture());
-
-  if (geometry.empty())
-    return nullptr;
 
   // Batching.
   {

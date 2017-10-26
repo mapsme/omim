@@ -168,6 +168,7 @@ struct SubrouteData : public BaseSubrouteData
   SubrouteConstPtr m_subroute;
   size_t m_startPointIndex = 0;
   size_t m_endPointIndex = 0;
+  double m_distanceOffset = 0.0;
 };
 
 struct SubrouteArrowsData : public BaseSubrouteData {};
