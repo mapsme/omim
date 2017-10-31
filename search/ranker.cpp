@@ -491,10 +491,9 @@ Result Ranker::GenerateFinalResult(RankerResult const & rankerResult, bool needA
 
 void Ranker::GetBestMatchName(FeatureType const & f, string & name) const
 {
-  KeywordLangMatcher::ScoreT bestScore;
-  auto bestNameFinder = [&](int8_t lang, string const & s) -> bool
-  {
-    auto const score = m_keywordsScorer.Score(lang, s);
+  KeywordLangMatcher::Score bestScore;
+  auto bestNameFinder = [&](int8_t lang, string const & s) -> bool {
+    auto const score = m_keywordsScorer.CalcScore(lang, s);
     if (bestScore < score)
     {
       bestScore = score;
