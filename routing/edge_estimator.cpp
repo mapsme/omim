@@ -77,18 +77,19 @@ double CalcClimbSegmentWeight(Segment const & segment, RoadGeometry const & road
 
 namespace routing
 {
-// EdgeEstimator -----------------------------------------------------------------------------------
-EdgeEstimator::EdgeEstimator(double maxSpeedKMpH) : m_maxSpeedMPS(maxSpeedKMpH * kKMPH2MPS)
+// TimedEdgeEstimator ------------------------------------------------------------------------------
+TimedEdgeEstimator::TimedEdgeEstimator(double maxSpeedKMpH)
+  : m_maxSpeedMPS(maxSpeedKMpH * kKMPH2MPS)
 {
   CHECK_GREATER(m_maxSpeedMPS, 0.0, ());
 }
 
-double EdgeEstimator::CalcHeuristic(m2::PointD const & from, m2::PointD const & to) const
+double TimedEdgeEstimator::CalcHeuristic(m2::PointD const & from, m2::PointD const & to) const
 {
   return TimeBetweenSec(from, to, m_maxSpeedMPS);
 }
 
-double EdgeEstimator::CalcLeapWeight(m2::PointD const & from, m2::PointD const & to) const
+double TimedEdgeEstimator::CalcLeapWeight(m2::PointD const & from, m2::PointD const & to) const
 {
   // Let us assume for the time being that
   // leap edges will be added with a half of max speed.
@@ -98,10 +99,10 @@ double EdgeEstimator::CalcLeapWeight(m2::PointD const & from, m2::PointD const &
 }
 
 // PedestrianEstimator -----------------------------------------------------------------------------
-class PedestrianEstimator final : public EdgeEstimator
+class PedestrianEstimator final : public TimedEdgeEstimator
 {
 public:
-  explicit PedestrianEstimator(double maxSpeedKMpH) : EdgeEstimator(maxSpeedKMpH) {}
+  explicit PedestrianEstimator(double maxSpeedKMpH) : TimedEdgeEstimator(maxSpeedKMpH) {}
 
   // EdgeEstimator overrides:
   double GetUTurnPenalty() const override { return 0.0 /* seconds */; }
@@ -114,10 +115,10 @@ public:
 };
 
 // BicycleEstimator --------------------------------------------------------------------------------
-class BicycleEstimator final : public EdgeEstimator
+class BicycleEstimator final : public TimedEdgeEstimator
 {
 public:
-  explicit BicycleEstimator(double maxSpeedKMpH) : EdgeEstimator(maxSpeedKMpH) {}
+  explicit BicycleEstimator(double maxSpeedKMpH) : TimedEdgeEstimator(maxSpeedKMpH) {}
 
   // EdgeEstimator overrides:
   double GetUTurnPenalty() const override { return 20.0 /* seconds */; }
@@ -130,7 +131,7 @@ public:
 };
 
 // CarEstimator ------------------------------------------------------------------------------------
-class CarEstimator final : public EdgeEstimator
+class CarEstimator final : public TimedEdgeEstimator
 {
 public:
   CarEstimator(shared_ptr<TrafficStash> trafficStash, double maxSpeedKMpH);
@@ -145,7 +146,7 @@ private:
 };
 
 CarEstimator::CarEstimator(shared_ptr<TrafficStash> trafficStash, double maxSpeedKMpH)
-  : EdgeEstimator(maxSpeedKMpH)
+  : TimedEdgeEstimator(maxSpeedKMpH)
   , m_trafficStash(move(trafficStash))
 {
 }
