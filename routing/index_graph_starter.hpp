@@ -115,7 +115,7 @@ private:
     return GetFakeSegment(segmentIdx++);
   }
 
-  // Creates fake edges for fake ending and adds it to  fake graph. |otherEnding| used to generate
+  // Creates fake edges for fake ending and adds it to a fake graph. |otherEnding| used to generate
   // propper fake edges in case both endings have projections to the same segment.
   void AddEnding(FakeEnding const & thisEnding, FakeEnding const & otherEnding, bool isStart,
                  bool strictForward, uint32_t & fakeNumerationStart);

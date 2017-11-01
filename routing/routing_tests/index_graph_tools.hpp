@@ -91,12 +91,12 @@ private:
 // and completely ignores road geometry. The underlying graph is assumed
 // to be directed, i.e. it is not guaranteed that each segment has its reverse
 // in the map.
-class WeightedEdgeEstimator final : public EdgeEstimator
+class WeightedEdgeEstimator final : public TimedEdgeEstimator
 {
 public:
   // maxSpeedKMpH doesn't matter, but should be greater then any road speed in all tests.
   explicit WeightedEdgeEstimator(map<Segment, double> const & segmentWeights)
-    : EdgeEstimator(1e10 /* maxSpeedKMpH */), m_segmentWeights(segmentWeights)
+    : TimedEdgeEstimator(1e10 /* maxSpeedKMpH */), m_segmentWeights(segmentWeights)
   {
   }
 
