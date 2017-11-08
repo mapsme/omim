@@ -64,6 +64,7 @@ zh-Hant:飲食
 el:Φαγητό
 he:אוכל
 sk:Jedlo
+fa:غذا
 
 @transport
 en:Transport
