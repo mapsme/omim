@@ -119,6 +119,21 @@ if (PLATFORM_MAC)
     "-framework CFNetwork"
   )
 
+  set(BUNDLE_EXECUTABLE ${PROJECT_NAME})
+  set(BUNDLE_VERSION "0.1")
+
+  if (BUILD_DESIGNER)
+    set(BUNDLE_NAME "MAPS.ME desktop designer")
+    set(BUNDLE_DISPLAY_NAME "MAPS.ME desktop designer")
+    set(BUNDLE_ICON designer.icns)
+  else()
+    set(BUNDLE_NAME "MAPS.ME desktop")
+    set(BUNDLE_DISPLAY_NAME "MAPS.ME desktop")
+    set(BUNDLE_ICON mac.icns)
+  endif()
+
+  configure_file(${PROJECT_SOURCE_DIR}/res/Info.plist.in ${PROJECT_SOURCE_DIR}/res/Info.plist)
+
   set_target_properties(
     ${PROJECT_NAME}
     PROPERTIES

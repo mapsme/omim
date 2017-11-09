@@ -3,16 +3,16 @@
 <plist version="0.9">
   <dict>
     <key>CFBundleName</key>
-    <string>MAPS.ME desktop designer</string>
+    <string>@BUNDLE_NAME@</string>
 
     <key>CFBundleDisplayName</key>
-    <string>MAPS.ME desktop designer</string>
+    <string>@BUNDLE_DISPLAY_NAME@</string>
 
     <key>CFBundleVersion</key>
-    <string>0.1</string>
+    <string>@BUNDLE_VERSION@</string>
 
     <key>CFBundleIconFile</key>
-    <string>designer.icns</string>
+    <string>@BUNDLE_ICON@</string>
 
     <key>CFBundlePackageType</key>
     <string>APPL</string>
@@ -21,7 +21,7 @@
     <string>MWME</string>
 
     <key>CFBundleExecutable</key>
-    <string>desktop</string>
+    <string>@BUNDLE_EXECUTABLE@</string>
 
     <key>CFBundleIdentifier</key>
     <string>com.mapswithme.mactestapp</string>
