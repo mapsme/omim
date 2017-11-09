@@ -136,18 +136,12 @@ android {
 
     externalNativeBuild {
       cmake {
-<<<<<<< HEAD
-        abiFilters 'armeabi-v7a', 'x86'
-=======
->>>>>>> 3d32b5c395c6219e0b11f5e02734e20b7d15fa6a
         cppFlags '-fexceptions', '-frtti', '-m32'
         cFlags '-ffunction-sections', '-fdata-sections', '-Wno-extern-c-compat', '-m32'
         arguments '-DANDROID_TOOLCHAIN=clang', '-DANDROID_STL=c++_static', "-DOS=$osName"
       }
     }
 
-<<<<<<< HEAD
-=======
     ndk {
       abiFilters = new HashSet<>()
       if (project.hasProperty('arm')) {
@@ -162,7 +156,6 @@ android {
         abiFilters.add("x86")
       }
     }
->>>>>>> 3d32b5c395c6219e0b11f5e02734e20b7d15fa6a
   }
 
   sourceSets.main {
