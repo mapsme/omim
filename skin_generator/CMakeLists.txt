@@ -34,3 +34,4 @@ omim_link_libraries(
   ${Qt5Svg_LIBRARIES}
   ${LIBZ}
 )
+

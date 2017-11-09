@@ -9,7 +9,7 @@
     <string>MAPS.ME desktop designer</string>
 
     <key>CFBundleVersion</key>
-    <string>0.1</string>
+    <string>0.3</string>
 
     <key>CFBundleIconFile</key>
     <string>designer.icns</string>

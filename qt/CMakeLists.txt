@@ -109,38 +109,6 @@ omim_link_libraries(
 link_opengl(${PROJECT_NAME})
 link_qt5_core(${PROJECT_NAME})
 
-if (PLATFORM_MAC)
-  target_link_libraries(
-    ${PROJECT_NAME}
-    "-framework Foundation"
-    "-framework CoreLocation"
-    "-framework CoreWLAN"
-    "-framework SystemConfiguration"
-    "-framework CFNetwork"
-  )
-
-  set(BUNDLE_EXECUTABLE ${PROJECT_NAME})
-  set(BUNDLE_VERSION "0.1")
-
-  if (BUILD_DESIGNER)
-    set(BUNDLE_NAME "MAPS.ME desktop designer")
-    set(BUNDLE_DISPLAY_NAME "MAPS.ME desktop designer")
-    set(BUNDLE_ICON designer.icns)
-  else()
-    set(BUNDLE_NAME "MAPS.ME desktop")
-    set(BUNDLE_DISPLAY_NAME "MAPS.ME desktop")
-    set(BUNDLE_ICON mac.icns)
-  endif()
-
-  configure_file(${PROJECT_SOURCE_DIR}/res/Info.plist.in ${PROJECT_SOURCE_DIR}/res/Info.plist)
-
-  set_target_properties(
-    ${PROJECT_NAME}
-    PROPERTIES
-    MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/res/Info.plist
-  )
-endif()
-
 function(copy_resources)
   foreach(file ${ARGN})
     execute_process(
@@ -199,6 +167,43 @@ elseif(PLATFORM_LINUX)
   )
 endif()
 
+if (PLATFORM_MAC)
+  target_link_libraries(
+    ${PROJECT_NAME}
+    "-framework Foundation"
+    "-framework CoreLocation"
+    "-framework CoreWLAN"
+    "-framework SystemConfiguration"
+    "-framework CFNetwork"
+  )
+
+  set(BUNDLE_EXECUTABLE ${PROJECT_NAME})
+
+  if (NOT APP_VERSION)
+    set(BUNDLE_VERSION "UNKNOWN")
+  else()
+    set(BUNDLE_VERSION ${APP_VERSION})
+  endif()
+
+  if (BUILD_DESIGNER)
+    set(BUNDLE_NAME "MAPS.ME desktop designer")
+    set(BUNDLE_DISPLAY_NAME "MAPS.ME desktop designer")
+    set(BUNDLE_ICON designer.icns)
+  else()
+    set(BUNDLE_NAME "MAPS.ME desktop")
+    set(BUNDLE_DISPLAY_NAME "MAPS.ME desktop")
+    set(BUNDLE_ICON mac.icns)
+  endif()
+
+  configure_file(${PROJECT_SOURCE_DIR}/res/Info.plist.in ${PROJECT_SOURCE_DIR}/res/Info.plist)
+
+  set_target_properties(
+    ${PROJECT_NAME}
+    PROPERTIES
+    MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/res/Info.plist
+  )
+endif()
+
 function(omim_append_builded_tools)
   foreach(tool ${ARGN})
     add_custom_command(
@@ -220,12 +225,6 @@ if (BUILD_DESIGNER)
     COMMAND cp -f ${OMIM_ROOT}/data/drules_proto_clear.bin ${OMIM_ROOT}/data/drules_proto_design.bin
     COMMAND cp -f ${OMIM_ROOT}/data/colors.txt ${OMIM_ROOT}/data/colors_design.txt
     COMMAND cp -f ${OMIM_ROOT}/data/patterns.txt ${OMIM_ROOT}/data/patterns_design.txt
-  )
-
-  set_target_properties(
-    ${PROJECT_NAME}
-    PROPERTIES
-    MACOSX_FRAMEWORK_ICON_FILE ${PROJECT_SOURCE_DIR}/res/designer.icns
   )
 
   copy_resources(
@@ -260,12 +259,10 @@ if (BUILD_DESIGNER)
   )
 
   # Generate DMG
-
   install(DIRECTORY ${DATA_DIR}/styles DESTINATION .)
   install(CODE "
     execute_process(
       COMMAND macdeployqt \"${BUNDLE_FOLDER}\"
-      COMMAND chmod -R 0777 \"${BUNDLE_FOLDER}/Contents/Frameworks\"
     )
     file(WRITE \"${RESOURCES_FOLDER}/qt.conf\" \"\")
     file(GLOB_RECURSE QTPLUGINS
@@ -279,8 +276,8 @@ if (BUILD_DESIGNER)
   set(CPACK_GENERATOR DragNDrop)
   set(CPACK_DMG_FORMAT UDZO)
   set(CPACK_DMG_VOLUME_NAME ${PROJECT_NAME})
+  set(CPACK_PACKAGE_ICON ${PROJECT_SOURCE_DIR}/res/designer.icns)
   include(CPack)
-
 endif()
 
 add_subdirectory(qt_common)
