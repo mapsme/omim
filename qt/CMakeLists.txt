@@ -11,6 +11,8 @@ set(DATA_DIR ${OMIM_ROOT}/data)
 
 execute_process(
   COMMAND mkdir -p ${RESOURCES_FOLDER}/shaders_compiler
+  COMMAND cp ${PROJECT_SOURCE_DIR}/res/mac.icns ${RESOURCES_FOLDER}
+  COMMAND cp ${PROJECT_SOURCE_DIR}/res/designer.icns ${RESOURCES_FOLDER}
 )
 
 include_directories(
@@ -252,10 +254,10 @@ if (BUILD_DESIGNER)
   execute_process(
     COMMAND cp ${OMIM_ROOT}/tools/python/recalculate_geom_index.py ${RESOURCES_FOLDER}
     COMMAND cp ${OMIM_ROOT}/tools/python/generate_styles_override.py ${RESOURCES_FOLDER}
-    COMMAND cp -rf ${OMIM_ROOT}/tools/kothic ${RESOURCES_FOLDER}
-    COMMAND cp -f ${OMIM_ROOT}/tools/python/stylesheet/drules_info.py ${RESOURCES_FOLDER}/kothic/src
-    COMMAND cp -rf ${OMIM_ROOT}/tools/python/stylesheet/ ${RESOURCES_FOLDER}/kothic/src
-    COMMAND cp -r ${OMIM_ROOT}/3party/protobuf/protobuf-3.3.0-py2.7.egg ${RESOURCES_FOLDER}/kothic
+    COMMAND cp -rf ${OMIM_ROOT}/tools/kothic ${RESOURCES_FOLDER}/kothic/
+    COMMAND cp -f ${OMIM_ROOT}/tools/python/stylesheet/drules_info.py ${RESOURCES_FOLDER}/kothic/src/
+    COMMAND cp -rf ${OMIM_ROOT}/tools/python/stylesheet/ ${RESOURCES_FOLDER}/kothic/src/
+    COMMAND cp -f ${OMIM_ROOT}/3party/protobuf/protobuf-3.3.0-py2.7.egg ${RESOURCES_FOLDER}/kothic/
   )
 
   # Generate DMG
