@@ -13,11 +13,13 @@ include($$ROOT_DIR/common.pri)
 HEADERS += \
     api_mark_point.hpp \
     benchmark_tools.hpp \
+    booking_filter_availability_params.hpp \
     bookmark.hpp \
     bookmark_manager.hpp \
     chart_generator.hpp \
     displacement_mode_manager.hpp \
     displayed_categories_modifiers.hpp \
+    everywhere_search_params.hpp \
     feature_vec_model.hpp \
     framework.hpp \
     ge0_parser.hpp \
@@ -42,6 +44,7 @@ HEADERS += \
     user.hpp \
     user_mark.hpp \
     user_mark_container.hpp \
+    viewport_search_params.hpp \
 
 SOURCES += \
     ../api/src/c/api-client.c \

@@ -2,11 +2,13 @@
 #include "map/benchmark_tools.hpp"
 #include "map/chart_generator.hpp"
 #include "map/displayed_categories_modifiers.hpp"
+#include "map/everywhere_search_params.hpp"
 #include "map/ge0_parser.hpp"
 #include "map/geourl_process.hpp"
 #include "map/gps_tracker.hpp"
 #include "map/taxi_delegate.hpp"
 #include "map/user_mark.hpp"
+#include "map/viewport_search_params.hpp"
 
 #include "defines.hpp"
 #include "private.h"
@@ -23,12 +25,10 @@
 #include "search/downloader_search_callback.hpp"
 #include "search/editor_delegate.hpp"
 #include "search/engine.hpp"
-#include "search/everywhere_search_params.hpp"
 #include "search/geometry_utils.hpp"
 #include "search/intermediate_result.hpp"
 #include "search/locality_finder.hpp"
 #include "search/reverse_geocoder.hpp"
-#include "search/viewport_search_params.hpp"
 
 #include "storage/downloader_search_params.hpp"
 #include "storage/routing_helpers.hpp"
@@ -360,6 +360,7 @@ void Framework::Migrate(bool keepDownloaded)
 Framework::Framework(FrameworkParams const & params)
   : m_startForegroundTime(0.0)
   , m_storage(platform::migrate::NeedMigrate() ? COUNTRIES_OBSOLETE_FILE : COUNTRIES_FILE)
+  , m_enabledDiffs(params.m_enableDiffs)
   , m_bmManager([this]() -> StringsBundle const & { return m_stringsBundle; })
   , m_isRenderingEnabled(true)
   , m_routingManager(RoutingManager::Callbacks([this]() -> Index & { return m_model.GetIndex(); },
@@ -379,7 +380,6 @@ Framework::Framework(FrameworkParams const & params)
       m_drapeEngine->SetDisplacementMode(mode);
   })
   , m_lastReportedCountry(kInvalidCountryId)
-  , m_enabledDiffs(params.m_enableDiffs)
 {
   m_startBackgroundTime = my::Timer::LocalTime();
 
@@ -831,6 +831,7 @@ void Framework::FillInfoFromFeatureType(FeatureType const & ft, place_page::Info
   auto const featureStatus = osm::Editor::Instance().GetFeatureStatus(ft.GetID());
   ASSERT_NOT_EQUAL(featureStatus, osm::Editor::FeatureStatus::Deleted,
                    ("Deleted features cannot be selected from UI."));
+  info.SetFeatureStatus(featureStatus);
 
   ASSERT(m_cityFinder, ());
   auto const city =

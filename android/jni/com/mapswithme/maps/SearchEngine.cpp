@@ -1,16 +1,16 @@
 #include "Framework.hpp"
 
-#include "search/everywhere_search_params.hpp"
+#include "map/everywhere_search_params.hpp"
+#include "map/viewport_search_params.hpp"
+
 #include "search/hotels_filter.hpp"
 #include "search/mode.hpp"
 #include "search/result.hpp"
-#include "search/viewport_search_params.hpp"
 
 #include "base/assert.hpp"
 #include "base/logging.hpp"
 
 #include "com/mapswithme/core/jni_helper.hpp"
-#include "com/mapswithme/platform/Language.hpp"
 #include "com/mapswithme/platform/Platform.hpp"
 
 #include <cstdint>
@@ -430,7 +430,7 @@ extern "C"
   {
     search::EverywhereSearchParams params;
     params.m_query = jni::ToNativeString(env, bytes);
-    params.m_inputLocale = ReplaceDeprecatedLanguageCode(jni::ToNativeString(env, lang));
+    params.m_inputLocale = jni::ToNativeString(env, lang);
     params.m_onResults = bind(&OnResults, _1, _2, timestamp, false, hasPosition, lat, lon);
     params.m_hotelsFilter = g_hotelsFilterBuilder.Build(env, hotelsFilter);
 
@@ -446,7 +446,7 @@ extern "C"
   {
     search::ViewportSearchParams vparams;
     vparams.m_query = jni::ToNativeString(env, bytes);
-    vparams.m_inputLocale = ReplaceDeprecatedLanguageCode(jni::ToNativeString(env, lang));
+    vparams.m_inputLocale = jni::ToNativeString(env, lang);
     vparams.m_hotelsFilter = g_hotelsFilterBuilder.Build(env, hotelsFilter);
 
     // TODO (@alexzatsepin): set up vparams.m_onCompleted here and use
@@ -471,7 +471,7 @@ extern "C"
   {
     storage::DownloaderSearchParams params;
     params.m_query = jni::ToNativeString(env, bytes);
-    params.m_inputLocale = ReplaceDeprecatedLanguageCode(jni::ToNativeString(env, lang));
+    params.m_inputLocale = jni::ToNativeString(env, lang);
     params.m_onResults = bind(&OnMapSearchResults, _1, timestamp);
 
     if (g_framework->NativeFramework()->SearchInDownloader(params))
