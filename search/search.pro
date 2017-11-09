@@ -61,7 +61,6 @@ HEADERS += \
     pre_ranker.hpp \
     pre_ranking_info.hpp \
     processor.hpp \
-    processor_factory.hpp \
     projection_on_street.hpp \
     query_params.hpp \
     query_saver.hpp \
@@ -82,6 +81,7 @@ HEADERS += \
     suggest.hpp \
     token_range.hpp \
     token_slice.hpp \
+    tracer.hpp \
     types_skipper.hpp \
     utils.hpp \
     viewport_search_callback.hpp \
@@ -146,6 +146,7 @@ SOURCES += \
     streets_matcher.cpp \
     suggest.cpp \
     token_slice.cpp \
+    tracer.cpp \
     types_skipper.cpp \
     utils.cpp \
     viewport_search_callback.cpp \

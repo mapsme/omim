@@ -38,6 +38,13 @@
 using namespace generator::tests_support;
 using namespace search::tests_support;
 
+class Index;
+
+namespace storage
+{
+class CountryInfoGetter;
+}
+
 namespace search
 {
 namespace
@@ -45,12 +52,12 @@ namespace
 class TestRanker : public Ranker
 {
 public:
-  TestRanker(TestSearchEngine & engine, CitiesBoundariesTable const & boundariesTable,
-             KeywordLangMatcher & keywordsScorer, Emitter & emitter,
-             vector<Suggest> const & suggests, VillagesCache & villagesCache,
+  TestRanker(Index & index, storage::CountryInfoGetter & infoGetter,
+             CitiesBoundariesTable const & boundariesTable, KeywordLangMatcher & keywordsScorer,
+             Emitter & emitter, vector<Suggest> const & suggests, VillagesCache & villagesCache,
              my::Cancellable const & cancellable, vector<PreRankerResult> & results)
-    : Ranker(static_cast<Index const &>(engine), boundariesTable, engine.GetCountryInfoGetter(),
-             keywordsScorer, emitter, GetDefaultCategories(), suggests, villagesCache, cancellable)
+    : Ranker(index, boundariesTable, infoGetter, keywordsScorer, emitter,
+             GetDefaultCategories(), suggests, villagesCache, cancellable)
     , m_results(results)
   {
   }
@@ -115,20 +122,21 @@ UNIT_CLASS_TEST(PreRankerTest, Smoke)
 
   vector<PreRankerResult> results;
   Emitter emitter;
-  CitiesBoundariesTable boundariesTable(m_engine);
+  CitiesBoundariesTable boundariesTable(m_index);
   VillagesCache villagesCache(m_cancellable);
   KeywordLangMatcher keywordsScorer(0 /* maxLanguageTiers */);
-  TestRanker ranker(m_engine, boundariesTable, keywordsScorer, emitter, m_suggests, villagesCache,
-                    m_cancellable, results);
+  TestRanker ranker(m_index, m_engine.GetCountryInfoGetter(), boundariesTable, keywordsScorer,
+                    emitter, m_suggests, villagesCache, m_cancellable, results);
 
-  PreRanker preRanker(m_engine, ranker, pois.size());
+  PreRanker preRanker(m_index, ranker);
   PreRanker::Params params;
   params.m_viewport = kViewport;
   params.m_accuratePivotCenter = kPivot;
   params.m_scale = scales::GetUpperScale();
   params.m_batchSize = kBatchSize;
+  params.m_limit = pois.size();
+  params.m_viewportSearch = true;
   preRanker.Init(params);
-  preRanker.SetViewportSearch(true);
 
   vector<double> distances(pois.size());
   vector<bool> emit(pois.size());

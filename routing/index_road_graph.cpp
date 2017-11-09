@@ -80,6 +80,8 @@ bool IndexRoadGraph::IsRouteEdgesImplemented() const
   return true;
 }
 
+bool IndexRoadGraph::IsRouteSegmentsImplemented() const { return true; }
+
 void IndexRoadGraph::GetRouteEdges(TEdgeVector & edges) const
 {
   edges.clear();
@@ -99,6 +101,11 @@ void IndexRoadGraph::GetRouteEdges(TEdgeVector & edges) const
                        m_starter.GetJunction(segment, false /* front */),
                        m_starter.GetJunction(segment, true /* front */));
   }
+}
+
+void IndexRoadGraph::GetRouteSegments(std::vector<Segment> & segments) const
+{
+  segments = m_segments;
 }
 
 void IndexRoadGraph::GetEdges(Junction const & junction, bool isOutgoing, TEdgeVector & edges) const

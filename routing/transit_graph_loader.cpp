@@ -1,5 +1,6 @@
 #include "routing/transit_graph_loader.hpp"
 
+#include "routing/fake_ending.hpp"
 #include "routing/routing_exceptions.hpp"
 
 #include "routing_common/transit_serdes.hpp"
@@ -49,7 +50,7 @@ unique_ptr<TransitGraph> TransitGraphLoader::CreateTransitGraph(NumMwmId numMwmI
     MYTHROW(RoutingException, ("Can't get mwm handle for", file));
 
   my::Timer timer;
-  auto graphPtr = make_unique<TransitGraph>();
+  auto graphPtr = make_unique<TransitGraph>(numMwmId);
   MwmValue const & mwmValue = *handle.GetValue<MwmValue>();
   if (!mwmValue.m_cont.IsExist(TRANSIT_FILE_TAG))
     return graphPtr;
@@ -59,22 +60,42 @@ unique_ptr<TransitGraph> TransitGraphLoader::CreateTransitGraph(NumMwmId numMwmI
     FilesContainerR::TReader reader(mwmValue.m_cont.GetReader(TRANSIT_FILE_TAG));
     ReaderSource<FilesContainerR::TReader> src(reader);
     transit::Deserializer<ReaderSource<FilesContainerR::TReader>> deserializer(src);
+    transit::FixedSizeDeserializer<ReaderSource<FilesContainerR::TReader>> numberDeserializer(src);
 
     transit::TransitHeader header;
-    header.Visit(deserializer);
+    numberDeserializer(header);
 
+    CHECK_EQUAL(src.Pos(), header.m_stopsOffset, ("Wrong section format."));
     vector<transit::Stop> stops;
     deserializer(stops);
 
-    CHECK_EQUAL(src.Pos(), header.m_gatesOffset,("Wrong section format."));
+    CHECK_EQUAL(src.Pos(), header.m_gatesOffset, ("Wrong section format."));
     vector<transit::Gate> gates;
     deserializer(gates);
 
-    CHECK_EQUAL(src.Pos(), header.m_edgesOffset,("Wrong section format."));
+    CHECK_EQUAL(src.Pos(), header.m_edgesOffset, ("Wrong section format."));
     vector<transit::Edge> edges;
     deserializer(edges);
 
-    graphPtr->Fill(stops, gates, edges, *m_estimator, numMwmId, indexGraph);
+    src.Skip(header.m_linesOffset - src.Pos());
+    CHECK_EQUAL(src.Pos(), header.m_linesOffset, ("Wrong section format."));
+    vector<transit::Line> lines;
+    deserializer(lines);
+
+    map<transit::OsmId, FakeEnding> gateEndings;
+    for (auto const & gate : gates)
+    {
+      auto const & gateSegment = gate.GetBestPedestrianSegment();
+      if (gateSegment.IsValid())
+      {
+        Segment const real(numMwmId, gateSegment.GetFeatureId(), gateSegment.GetSegmentIdx(),
+                           gateSegment.GetForward());
+        gateEndings.emplace(gate.GetOsmId(),
+                            MakeFakeEnding(real, gate.GetPoint(), *m_estimator, indexGraph));
+      }
+    }
+
+    graphPtr->Fill(stops, edges, lines, gates, gateEndings);
   }
   catch (Reader::OpenException const & e)
   {

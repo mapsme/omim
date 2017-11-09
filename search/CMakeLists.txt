@@ -96,7 +96,6 @@ set(
   pre_ranking_info.hpp
   processor.cpp
   processor.hpp
-  processor_factory.hpp
   projection_on_street.cpp
   projection_on_street.hpp
   query_params.cpp
@@ -133,6 +132,8 @@ set(
   token_range.hpp
   token_slice.cpp
   token_slice.hpp
+  tracer.cpp
+  tracer.hpp
   types_skipper.cpp
   types_skipper.hpp
   utils.cpp

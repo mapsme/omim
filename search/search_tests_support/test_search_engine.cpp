@@ -4,28 +4,25 @@
 
 #include "platform/platform.hpp"
 
+#include <utility>
+
+using namespace std;
+
 namespace search
 {
 namespace tests_support
 {
-TestSearchEngine::TestSearchEngine(unique_ptr<storage::CountryInfoGetter> infoGetter,
-                                   unique_ptr<::search::ProcessorFactory> factory,
+TestSearchEngine::TestSearchEngine(Index & index, unique_ptr<storage::CountryInfoGetter> infoGetter,
                                    Engine::Params const & params)
-  : m_platform(GetPlatform())
-  , m_infoGetter(move(infoGetter))
-  , m_engine(*this, GetDefaultCategories(), *m_infoGetter, move(factory), params)
+  : m_infoGetter(move(infoGetter)), m_engine(index, GetDefaultCategories(), *m_infoGetter, params)
 {
 }
 
-TestSearchEngine::TestSearchEngine(unique_ptr<::search::ProcessorFactory> factory,
-                                   Engine::Params const & params)
-  : m_platform(GetPlatform())
-  , m_infoGetter(storage::CountryInfoReader::CreateCountryInfoReader(m_platform))
-  , m_engine(*this, GetDefaultCategories(), *m_infoGetter, move(factory), params)
+TestSearchEngine::TestSearchEngine(Index & index, Engine::Params const & params)
+  : m_infoGetter(storage::CountryInfoReader::CreateCountryInfoReader(GetPlatform()))
+  , m_engine(index, GetDefaultCategories(), *m_infoGetter, params)
 {
 }
-
-TestSearchEngine::~TestSearchEngine() {}
 
 weak_ptr<::search::ProcessorHandle> TestSearchEngine::Search(::search::SearchParams const & params)
 {

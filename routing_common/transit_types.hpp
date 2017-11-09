@@ -12,7 +12,6 @@
 
 namespace routing
 {
-class TransitGraphLoader;
 namespace transit
 {
 using Anchor = uint8_t;
@@ -37,21 +36,19 @@ TransferId constexpr kInvalidTransferId = std::numeric_limits<TransferId>::max()
 // To convert double to uint32_t at better accuracy |kInvalidWeight| should be close to real weight.
 Weight constexpr kInvalidWeight = -1.0;
 
-#define DECLARE_TRANSIT_TYPE_FRIENDS                                                           \
-    template<class Sink> friend class Serializer;                                              \
-    template<class Source> friend class Deserializer;                                          \
-    friend class DeserializerFromJson;                                                         \
-    friend class routing::TransitGraphLoader;                                                  \
-    friend void BuildTransit(std::string const & mwmDir,                                       \
-                             std::string const & countryId,                                    \
-                             std::string const & osmIdsToFeatureIdPath,                        \
-                             std::string const & transitDir);                                  \
-    template<class Obj> friend void TestSerialization(Obj const & obj);                        \
+#define DECLARE_TRANSIT_TYPE_FRIENDS                                                  \
+  template <class Sink> friend class Serializer;                                      \
+  template <class Source> friend class Deserializer;                                  \
+  friend class DeserializerFromJson;                                                  \
+  template <class Ser, class Deser, class Obj>                                        \
+  friend void TestCommonSerialization(Obj const & obj);                               \
+  template <typename Sink> friend class FixedSizeSerializer;                          \
+  template <typename Sink> friend class FixedSizeDeserializer;                        \
 
 struct TransitHeader
 {
   TransitHeader() { Reset(); }
-  TransitHeader(uint16_t version, uint32_t gatesOffset, uint32_t edgesOffset,
+  TransitHeader(uint16_t version, uint32_t stopsOffset, uint32_t gatesOffset, uint32_t edgesOffset,
                 uint32_t transfersOffset, uint32_t linesOffset, uint32_t shapesOffset,
                 uint32_t networksOffset, uint32_t endOffset);
 
@@ -63,14 +60,15 @@ private:
   DECLARE_TRANSIT_TYPE_FRIENDS
   DECLARE_VISITOR_AND_DEBUG_PRINT(
       TransitHeader, visitor(m_version, "version"), visitor(m_reserve, "reserve"),
-      visitor(m_gatesOffset, "gatesOffset"), visitor(m_edgesOffset, "edgesOffset"),
-      visitor(m_transfersOffset, "transfersOffset"), visitor(m_linesOffset, "linesOffset"),
-      visitor(m_shapesOffset, "shapesOffset"), visitor(m_networksOffset, "networksOffset"),
-      visitor(m_endOffset, "endOffset"))
+      visitor(m_stopsOffset, "stops"), visitor(m_gatesOffset, "gatesOffset"),
+      visitor(m_edgesOffset, "edgesOffset"), visitor(m_transfersOffset, "transfersOffset"),
+      visitor(m_linesOffset, "linesOffset"), visitor(m_shapesOffset, "shapesOffset"),
+      visitor(m_networksOffset, "networksOffset"), visitor(m_endOffset, "endOffset"))
 
 public:
   uint16_t m_version;
   uint16_t m_reserve;
+  uint32_t m_stopsOffset;
   uint32_t m_gatesOffset;
   uint32_t m_edgesOffset;
   uint32_t m_transfersOffset;
@@ -80,7 +78,7 @@ public:
   uint32_t m_endOffset;
 };
 
-static_assert(sizeof(TransitHeader) == 32, "Wrong header size of transit section.");
+static_assert(sizeof(TransitHeader) == 36, "Wrong header size of transit section.");
 
 /// \brief This class represents osm id and feature id of the same feature.
 class FeatureIdentifiers
@@ -89,8 +87,10 @@ public:
   explicit FeatureIdentifiers(bool serializeFeatureIdOnly);
   FeatureIdentifiers(OsmId osmId, FeatureId const & featureId, bool serializeFeatureIdOnly);
 
-  bool IsEqualForTesting(FeatureIdentifiers const & rhs) const { return m_featureId == rhs.m_featureId; }
-  bool IsValid() const { return m_featureId != kInvalidFeatureId; }
+  bool operator<(FeatureIdentifiers const & rhs) const;
+  bool operator==(FeatureIdentifiers const & rhs) const;
+  bool operator!=(FeatureIdentifiers const & rhs) const { return !(*this == rhs); }
+  bool IsValid() const;
   void SetOsmId(OsmId osmId) { m_osmId = osmId; }
   void SetFeatureId(FeatureId featureId) { m_featureId = featureId; }
 
@@ -138,6 +138,8 @@ public:
        std::vector<LineId> const & lineIds, m2::PointD const & point,
        std::vector<TitleAnchor> const & titleAnchors);
 
+  bool operator<(Stop const & rhs) const { return m_id < rhs.m_id; }
+  bool operator==(Stop const & rhs) const { return m_id == rhs.m_id; }
   bool IsEqualForTesting(Stop const & stop) const;
   bool IsValid() const;
 
@@ -193,11 +195,14 @@ public:
   Gate(OsmId osmId, FeatureId featureId, bool entrance, bool exit, double weight,
        std::vector<StopId> const & stopIds, m2::PointD const & point);
 
+  bool operator<(Gate const & rhs) const;
+  bool operator==(Gate const & rhs) const;
   bool IsEqualForTesting(Gate const & gate) const;
   bool IsValid() const;
   void SetBestPedestrianSegment(SingleMwmSegment const & s) { m_bestPedestrianSegment = s; };
 
   FeatureId GetFeatureId() const { return m_featureIdentifiers.GetFeatureId(); }
+  OsmId GetOsmId() const { return m_featureIdentifiers.GetOsmId(); }
   SingleMwmSegment const & GetBestPedestrianSegment() const { return m_bestPedestrianSegment; }
   bool GetEntrance() const { return m_entrance; }
   bool GetExit() const { return m_exit; }
@@ -232,6 +237,7 @@ public:
   ShapeId() = default;
   ShapeId(StopId stop1Id, StopId stop2Id) : m_stop1Id(stop1Id), m_stop2Id(stop2Id) {}
 
+  bool operator<(ShapeId const & rhs) const;
   bool operator==(ShapeId const & rhs) const;
   bool IsEqualForTesting(ShapeId const & rhs) const { return *this == rhs; }
 
@@ -255,6 +261,8 @@ public:
   Edge(StopId stop1Id, StopId stop2Id, double weight, LineId lineId, bool transfer,
        std::vector<ShapeId> const & shapeIds);
 
+  bool operator<(Edge const & rhs) const;
+  bool operator==(Edge const & rhs) const;
   bool IsEqualForTesting(Edge const & edge) const;
   bool IsValid() const;
   void SetWeight(double weight) { m_weight = weight; }
@@ -288,6 +296,8 @@ public:
   Transfer(StopId id, m2::PointD const & point, std::vector<StopId> const & stopIds,
            std::vector<TitleAnchor> const & titleAnchors);
 
+  bool operator<(Transfer const & rhs) const { return m_id < rhs.m_id; }
+  bool operator==(Transfer const & rhs) const { return m_id == rhs.m_id; }
   bool IsEqualForTesting(Transfer const & transfer) const;
   bool IsValid() const;
 
@@ -331,8 +341,10 @@ class Line
 public:
   Line() = default;
   Line(LineId id, std::string const & number, std::string const & title, std::string const & type,
-       std::string const & color, NetworkId networkId, Ranges const & stopIds);
+       std::string const & color, NetworkId networkId, Ranges const & stopIds, Weight interval);
 
+  bool operator<(Line const & rhs) const { return m_id < rhs.m_id; }
+  bool operator==(Line const & rhs) const { return m_id == rhs.m_id; }
   bool IsEqualForTesting(Line const & line) const;
   bool IsValid() const;
 
@@ -343,13 +355,14 @@ public:
   std::string const & GetColor() const { return m_color; }
   NetworkId GetNetworkId() const { return m_networkId; }
   Ranges const & GetStopIds() const { return m_stopIds.GetIds(); }
+  Weight GetInterval() const { return m_interval; }
 
 private:
   DECLARE_TRANSIT_TYPE_FRIENDS
   DECLARE_VISITOR_AND_DEBUG_PRINT(Line, visitor(m_id, "id"), visitor(m_number, "number"),
                                   visitor(m_title, "title"), visitor(m_type, "type"),
                                   visitor(m_color, "color"), visitor(m_networkId, "network_id"),
-                                  visitor(m_stopIds, "stop_ids"))
+                                  visitor(m_stopIds, "stop_ids"), visitor(m_interval, "interval"))
 
   LineId m_id = kInvalidLineId;
   std::string m_number;
@@ -358,6 +371,7 @@ private:
   std::string m_color = kInvalidColor;
   NetworkId m_networkId = kInvalidNetworkId;
   StopIdRanges m_stopIds;
+  Weight m_interval = kInvalidWeight;
 };
 
 class Shape
@@ -366,6 +380,8 @@ public:
   Shape() = default;
   Shape(ShapeId const & id, std::vector<m2::PointD> const & polyline) : m_id(id), m_polyline(polyline) {}
 
+  bool operator<(Shape const & rhs) const { return m_id < rhs.m_id; }
+  bool operator==(Shape const & rhs) const { return m_id == rhs.m_id; }
   bool IsEqualForTesting(Shape const & shape) const;
   bool IsValid() const { return m_id.IsValid() && m_polyline.size() > 1; }
 
@@ -386,6 +402,8 @@ public:
   Network() = default;
   Network(NetworkId id, std::string const & title);
 
+  bool operator<(Network const & rhs) const { return m_id < rhs.m_id; }
+  bool operator==(Network const & rhs) const { return m_id == rhs.m_id; }
   bool IsEqualForTesting(Network const & shape) const;
   bool IsValid() const;
 

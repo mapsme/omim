@@ -28,9 +28,10 @@ class DeserializerFromJson
 public:
   DeserializerFromJson(json_struct_t* node, OsmIdToFeatureIdsMap const & osmIdToFeatureIds);
 
-  template<typename T>
-  typename std::enable_if<std::is_integral<T>::value || std::is_enum<T>::value || std::is_same<T, double>::value>::type
-      operator()(T & t, char const * name = nullptr)
+  template <typename T>
+  typename std::enable_if<std::is_integral<T>::value || std::is_enum<T>::value ||
+                          std::is_same<T, double>::value>::type
+  operator()(T & t, char const * name = nullptr)
   {
     GetField(t, name);
     return;
@@ -59,8 +60,9 @@ public:
     }
   }
 
-  template<typename T>
-  typename std::enable_if<std::is_class<T>::value>::type operator()(T & t, char const * name = nullptr)
+  template <typename T>
+  typename std::enable_if<std::is_class<T>::value>::type operator()(T & t,
+                                                                    char const * name = nullptr)
   {
     if (name != nullptr && json_is_object(m_node))
     {
@@ -102,15 +104,74 @@ private:
   OsmIdToFeatureIdsMap const & m_osmIdToFeatureIds;
 };
 
-/// \brief Builds the transit section in the mwm.
+/// \brief The class contains all the information to make TRANSIT_FILE_TAG section.
+class GraphData
+{
+public:
+  void DeserializeFromJson(my::Json const & root, OsmIdToFeatureIdsMap const & mapping);
+  void SerializeToMwm(std::string const & mwmPath) const;
+  void AppendTo(GraphData const & rhs);
+  void Clear();
+  bool IsValid() const;
+
+  /// \brief Sorts all class fields except for |m_edges| by their ids.
+  void Sort();
+  /// \brief Calculates and updates |m_edges| by adding valid value for Edge::m_weight
+  /// if it's not valid.
+  /// \note |m_stops|, Edge::m_stop1Id and Edge::m_stop2Id in |m_edges| must be valid before call.
+  void CalculateEdgeWeights();
+  /// \brief Calculates best pedestrian segment for every gate in |m_gates|.
+  /// \note All gates in |m_gates| must have a valid |m_point| field before the call.
+  void CalculateBestPedestrianSegments(std::string const & mwmPath, std::string const & countryId);
+
+  std::vector<Stop> const & GetStops() const { return m_stops; }
+  std::vector<Gate> const & GetGates() const { return m_gates; }
+  std::vector<Edge> const & GetEdges() const { return m_edges; }
+  std::vector<Transfer> const & GetTransfers() const { return m_transfers; }
+  std::vector<Line> const & GetLines() const { return m_lines; }
+  std::vector<Shape> const & GetShapes() const { return m_shapes; }
+  std::vector<Network> const & GetNetworks() const { return m_networks; }
+
+private:
+  DECLARE_VISITOR_AND_DEBUG_PRINT(GraphData, visitor(m_stops, "stops"), visitor(m_gates, "gates"),
+                                  visitor(m_edges, "edges"), visitor(m_transfers, "transfers"),
+                                  visitor(m_lines, "lines"), visitor(m_shapes, "shapes"),
+                                  visitor(m_networks, "networks"))
+
+  bool IsUnique() const;
+  bool IsSorted() const;
+
+  std::vector<Stop> m_stops;
+  std::vector<Gate> m_gates;
+  std::vector<Edge> m_edges;
+  std::vector<Transfer> m_transfers;
+  std::vector<Line> m_lines;
+  std::vector<Shape> m_shapes;
+  std::vector<Network> m_networks;
+};
+
+/// \brief Fills |data| according to a transit graph (|transitJsonPath|).
+/// \note Some fields of |data| contain feature ids of a certain mwm. These fields are filled
+/// iff the mapping (|osmIdToFeatureIdsPath|) contains them. Otherwise the fields have default value.
+void DeserializeFromJson(OsmIdToFeatureIdsMap const & mapping, std::string const & transitJsonPath,
+                         GraphData & data);
+
+/// \brief Calculates and adds some information to transit graph (|data|) after deserializing
+/// from json.
+void ProcessGraph(std::string const & mwmPath, std::string const & countryId,
+                  OsmIdToFeatureIdsMap const & osmIdToFeatureIdsMap, GraphData & data);
+
+/// \brief Builds the transit section in the mwm based on transit graph in json which represents
+/// trasit graph clipped by the mwm borders.
 /// \param mwmDir relative or full path to a directory where mwm is located.
 /// \param countryId is an mwm name without extension of the processed mwm.
 /// \param osmIdToFeatureIdsPath is a path to a file with osm id to feature ids mapping.
-/// \param transitDir a path to directory with json files with transit graphs.
+/// \param transitDir relative or full path to a directory with json files of transit graphs.
+/// It's assumed that the files have the same name with country ids and extension TRANSIT_FILE_EXTENSION.
 /// \note An mwm pointed by |mwmPath| should contain:
 /// * feature geometry
 /// * index graph (ROUTING_FILE_TAG)
-void BuildTransit(string const & mwmDir, string const & countryId,
-                  string const & osmIdToFeatureIdsPath, string const & transitDir);
+void BuildTransit(std::string const & mwmDir, std::string const & countryId,
+                  std::string const & osmIdToFeatureIdsPath, std::string const & transitDir);
 }  // namespace transit
 }  // namespace routing
