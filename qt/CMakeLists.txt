@@ -16,7 +16,6 @@ execute_process(
 include_directories(
   ${OMIM_ROOT}/3party/glm
   ${OMIM_ROOT}/3party/gflags/src
-  ${OMIM_ROOT}/tools/python
 )
 
 set(
@@ -128,7 +127,6 @@ if (PLATFORM_MAC)
 endif()
 
 function(copy_resources)
-  set(files "")
   foreach(file ${ARGN})
     execute_process(
       COMMAND cp -r ${DATA_DIR}/${file} ${RESOURCES_FOLDER}
@@ -241,7 +239,7 @@ if (BUILD_DESIGNER)
     COMMAND cp ${OMIM_ROOT}/tools/python/recalculate_geom_index.py ${RESOURCES_FOLDER}
     COMMAND cp ${OMIM_ROOT}/tools/python/generate_styles_override.py ${RESOURCES_FOLDER}
     COMMAND cp -rf ${OMIM_ROOT}/tools/kothic ${RESOURCES_FOLDER}
-    COMMAND cp ${OMIM_ROOT}/tools/python/stylesheet/drules_info.py ${RESOURCES_FOLDER}/kothic/src
+    COMMAND cp -f ${OMIM_ROOT}/tools/python/stylesheet/drules_info.py ${RESOURCES_FOLDER}/kothic/src
     COMMAND cp -rf ${OMIM_ROOT}/tools/python/stylesheet/ ${RESOURCES_FOLDER}/kothic/src
     COMMAND cp -r ${OMIM_ROOT}/3party/protobuf/protobuf-3.3.0-py2.7.egg ${RESOURCES_FOLDER}/kothic
   )
