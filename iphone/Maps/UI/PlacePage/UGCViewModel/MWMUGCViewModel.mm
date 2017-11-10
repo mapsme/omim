@@ -2,6 +2,8 @@
 #import "MWMPlacePageData.h"
 #import "SwiftBridge.h"
 
+#include "Framework.h"
+
 #include "ugc/types.hpp"
 
 #include <chrono>
@@ -46,6 +48,7 @@ MWMUGCRatingValueType * ratingValueType(float rating)
   if (self)
   {
     m_ugc = ugc;
+    m_ugc.m_reviews = GetFramework().FilterUGCReviews(m_ugc.m_reviews);
     m_ugcUpdate = update;
     [self fillReviewRows];
   }
