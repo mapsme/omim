@@ -61152,7 +61152,7 @@ cont {
 cont {
   name: "sponsored-booking"
   element {
-    scale: 14
+    scale: 13
     symbol {
       name: "hotel-s"
       priority: 16805
@@ -61171,12 +61171,58 @@ cont {
     apply_if: "rating>=8"
   }
   element {
-    scale: 14
+    scale: 13
     symbol {
       name: "zero-icon"
       priority: 16597
     }
     apply_if: "rating<8"
+  }
+  element {
+    scale: 14
+    symbol {
+      name: "alpine_hut-m"
+      priority: 16813
+      min_distance: 24
+    }
+    caption {
+      primary {
+        height: 10
+        color: 4473924
+        stroke_color: 872415231
+        offset_y: 1
+      }
+      priority: 15813
+    }
+    apply_if: "extra_tag=tourism=alpine_hut"
+    apply_if: "rating>=7"
+  }
+  element {
+    scale: 14
+    symbol {
+      name: "hotel-m"
+      priority: 16813
+      min_distance: 24
+    }
+    caption {
+      primary {
+        height: 10
+        color: 4473924
+        stroke_color: 872415231
+        offset_y: 1
+      }
+      priority: 15813
+    }
+    apply_if: "extra_tag=tourism=hotel"
+    apply_if: "rating>=7"
+  }
+  element {
+    scale: 14
+    symbol {
+      name: "zero-icon"
+      priority: 16597
+    }
+    apply_if: "rating<7"
   }
   element {
     scale: 15
@@ -61607,6 +61653,14 @@ cont {
   element {
     scale: 16
     symbol {
+      name: "zero-icon"
+      priority: 16597
+    }
+    apply_if: "rating<7"
+  }
+  element {
+    scale: 16
+    symbol {
       name: "hotel-l"
       priority: 16597
       min_distance: 24
@@ -61735,9 +61789,9 @@ cont {
   element {
     scale: 17
     symbol {
-      name: "hostel-m"
+      name: "hostel-l"
       priority: 16626
-      min_distance: 16
+      min_distance: 24
     }
     caption {
       primary {
@@ -61811,9 +61865,9 @@ cont {
   element {
     scale: 17
     symbol {
-      name: "hostel-m"
+      name: "hostel-l"
       priority: 16679
-      min_distance: 16
+      min_distance: 24
     }
     caption {
       primary {
@@ -61887,9 +61941,9 @@ cont {
   element {
     scale: 17
     symbol {
-      name: "hostel-m"
+      name: "hostel-l"
       priority: 16813
-      min_distance: 16
+      min_distance: 24
     }
     caption {
       primary {
@@ -61963,9 +62017,9 @@ cont {
   element {
     scale: 17
     symbol {
-      name: "hostel-m"
+      name: "hostel-l"
       priority: 16783
-      min_distance: 16
+      min_distance: 24
     }
     caption {
       primary {
@@ -62039,9 +62093,9 @@ cont {
   element {
     scale: 17
     symbol {
-      name: "hostel-m"
+      name: "hostel-l"
       priority: 16835
-      min_distance: 16
+      min_distance: 24
     }
     caption {
       primary {
@@ -62073,6 +62127,15 @@ cont {
     }
     apply_if: "extra_tag=tourism=hotel"
     apply_if: "rating>=9"
+  }
+  element {
+    scale: 17
+    symbol {
+      name: "zero-icon"
+      priority: 16597
+      min_distance: 16
+    }
+    apply_if: "rating<7"
   }
   element {
     scale: 17
@@ -62113,9 +62176,9 @@ cont {
   element {
     scale: 17
     symbol {
-      name: "hostel-m"
+      name: "hostel-l"
       priority: 16597
-      min_distance: 16
+      min_distance: 24
     }
     caption {
       primary {
@@ -62547,6 +62610,15 @@ cont {
   element {
     scale: 18
     symbol {
+      name: "zero-icon"
+      priority: 16597
+      min_distance: 16
+    }
+    apply_if: "rating<7"
+  }
+  element {
+    scale: 18
+    symbol {
       name: "hotel-l"
       priority: 16597
       min_distance: 16
@@ -63013,6 +63085,15 @@ cont {
     }
     apply_if: "extra_tag=tourism=hotel"
     apply_if: "rating>=9"
+  }
+  element {
+    scale: 19
+    symbol {
+      name: "zero-icon"
+      priority: 16597
+      min_distance: 16
+    }
+    apply_if: "rating<7"
   }
   element {
     scale: 19
