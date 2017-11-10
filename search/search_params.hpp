@@ -16,6 +16,7 @@
 namespace search
 {
 class Results;
+class Tracer;
 
 struct SearchParams
 {
@@ -46,9 +47,6 @@ struct SearchParams
 
   Mode m_mode = Mode::Everywhere;
 
-  // When true, search request can't be skipped.
-  bool m_forceSearch = false;
-
   // Needed to generate search suggests.
   bool m_suggestsEnabled = false;
 
@@ -59,7 +57,10 @@ struct SearchParams
   bool m_needHighlighting = false;
 
   std::shared_ptr<hotels_filter::Rule> m_hotelsFilter;
+
   bool m_cianMode = false;
+
+  std::shared_ptr<Tracer> m_tracer;
 };
 
 std::string DebugPrint(SearchParams const & params);

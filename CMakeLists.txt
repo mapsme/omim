@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.2)
 
 project(omim C CXX)
 
+set(CMAKE_CXX_STANDARD 11)
+
 # Options
 option(BUILD_DESIGNER "Build application as design tool" OFF)
 if (BUILD_DESIGNER)
@@ -31,17 +33,22 @@ function(omim_set_platform_var PLATFORM_VAR pattern)
   endif()
 endfunction()
 
-omim_set_platform_var(PLATFORM_IPHONE "iphone-.*")
-omim_set_platform_var(PLATFORM_ANDROID "android-.*")
-omim_set_platform_var(PLATFORM_MAC "macx-.*" ${APPLE})
-omim_set_platform_var(PLATFORM_WIN "win32-.*" ${WIN32})
-
-if (UNIX AND (NOT PLATFORM_MAC))
+if (CMAKE_SYSTEM_NAME MATCHES "Linux")
   set(LINUX_DETECTED TRUE)
-else()
-  set(LINUX_DETECTED FALSE)
 endif()
 
+if (CMAKE_SYSTEM_NAME MATCHES "Android")
+  set(ANDROID_DETECTED TRUE)
+endif()
+
+if (ANDROID_DETECTED AND (${OS} MATCHES "mac"))
+  set(DARWIN TRUE)
+endif()
+
+omim_set_platform_var(PLATFORM_IPHONE "iphone-.*")
+omim_set_platform_var(PLATFORM_ANDROID "android-.*" ${ANDROID_DETECTED})
+omim_set_platform_var(PLATFORM_MAC "macx-.*" ${APPLE})
+omim_set_platform_var(PLATFORM_WIN "win32-.*" ${WIN32})
 omim_set_platform_var(PLATFORM_LINUX "linux-.*" ${LINUX_DETECTED})
 
 if (PLATFORM_LINUX OR PLATFORM_MAC OR PLATFORM_WIN)
@@ -112,6 +119,8 @@ endif()
 
 # Find installed packages
 
+get_filename_component(OMIM_ROOT . ABSOLUTE)
+
 find_package(Threads)
 
 set(Boost_USE_MULTITHREADED ON)
@@ -122,6 +131,22 @@ if (PLATFORM_MAC)
 endif()
 
 find_package(Boost 1.54)
+
+if (NOT Boost_FOUND)
+  if (DEFINED ENV{BOOST_ROOT})
+    if (DARWIN)
+      set(Boost_INCLUDE_DIR "$ENV{BOOST_ROOT}/include")
+      set(Boost_LIBRARY_DIR "$ENV{BOOST_ROOT}/lib")
+    else()
+      set(Boost_INCLUDE_DIR "$ENV{BOOST_ROOT}")
+      set(Boost_LIBRARY_DIR "$ENV{BOOST_ROOT}/libs")
+    endif()
+  else()
+    set(Boost_INCLUDE_DIR "${OMIM_ROOT}/3party/boost")
+    set(Boost_LIBRARY_DIR "${OMIM_ROOT}/3party/boost/libs")
+  endif()
+  find_package(Boost 1.54)
+endif()
 
 if (PYBINDINGS)
   if (PYTHON_VERSION VERSION_GREATER 3.0)
@@ -172,8 +197,6 @@ if (NOT DEVELOPER_FRAMEWORKS_DIR)
 else()
   include_directories(${DEVELOPER_FRAMEWORKS_DIR})
 endif()
-
-get_filename_component(OMIM_ROOT . ABSOLUTE)
 
 include_directories(
   ${CMAKE_HOME_DIRECTORY}
@@ -314,7 +337,6 @@ endif()
 
 add_compile_options(
   "-Wall"
-  "-std=c++11"
 )
 
 add_clang_compile_options("-Wshorten-64-to-32")
@@ -382,4 +404,8 @@ omim_add_test_subdirectory(3party/gmock)
 
 if (NOT PLATFORM_IPHONE AND NOT PLATFORM_ANDROID AND NOT SKIP_DESKTOP)
     add_subdirectory(qt)
+endif()
+
+if (PLATFORM_ANDROID)
+  add_subdirectory(android/jni)
 endif()

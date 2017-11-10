@@ -28,7 +28,6 @@ set(
   engine.hpp
   everywhere_search_callback.cpp
   everywhere_search_callback.hpp
-  everywhere_search_params.hpp
   feature_loader.cpp
   feature_loader.hpp
   feature_offset_match.hpp
@@ -96,7 +95,6 @@ set(
   pre_ranking_info.hpp
   processor.cpp
   processor.hpp
-  processor_factory.hpp
   projection_on_street.cpp
   projection_on_street.hpp
   query_params.cpp
@@ -133,13 +131,14 @@ set(
   token_range.hpp
   token_slice.cpp
   token_slice.hpp
+  tracer.cpp
+  tracer.hpp
   types_skipper.cpp
   types_skipper.hpp
   utils.cpp
   utils.hpp
   viewport_search_callback.cpp
   viewport_search_callback.hpp
-  viewport_search_params.hpp
 )
 
 add_library(${PROJECT_NAME} ${SRC})

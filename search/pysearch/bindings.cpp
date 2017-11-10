@@ -1,5 +1,4 @@
 #include "search/engine.hpp"
-#include "search/processor_factory.hpp"
 #include "search/search_tests_support/test_search_engine.hpp"
 #include "search/search_tests_support/test_search_request.hpp"
 
@@ -138,44 +137,53 @@ struct Result
   Mercator m_center;
 };
 
+unique_ptr<storage::CountryInfoGetter> CreateCountryInfoGetter()
+{
+  CHECK(g_affiliations.get(), ("init() was not called."));
+  auto & platform = GetPlatform();
+  auto infoGetter = storage::CountryInfoReader::CreateCountryInfoReader(platform);
+  infoGetter->InitAffiliationsInfo(&*g_affiliations);
+  return infoGetter;
+}
+
+struct Context
+{
+  Context() : m_engine(m_index, CreateCountryInfoGetter(), search::Engine::Params{}) {}
+
+  Index m_index;
+  search::tests_support::TestSearchEngine m_engine;
+};
+
 struct SearchEngineProxy
 {
-  SearchEngineProxy()
+  SearchEngineProxy() : m_context(make_shared<Context>())
   {
-    CHECK(g_affiliations.get(), ("init() was not called."));
-    auto & platform = GetPlatform();
-    auto infoGetter = storage::CountryInfoReader::CreateCountryInfoReader(platform);
-    infoGetter->InitAffiliationsInfo(&*g_affiliations);
-
-    m_engine = make_shared<search::tests_support::TestSearchEngine>(
-        move(infoGetter), my::make_unique<search::ProcessorFactory>(), search::Engine::Params{});
-
     vector<platform::LocalCountryFile> mwms;
     platform::FindAllLocalMapsAndCleanup(numeric_limits<int64_t>::max() /* the latest version */,
                                          mwms);
     for (auto & mwm : mwms)
     {
       mwm.SyncWithDisk();
-      m_engine->RegisterMap(mwm);
+      m_context->m_index.RegisterMap(mwm);
     }
   }
 
   boost::python::list Query(Params const & params) const
   {
-    m_engine->SetLocale(params.m_locale);
+    m_context->m_engine.SetLocale(params.m_locale);
 
     search::SearchParams sp;
     sp.m_query = params.m_query;
     sp.m_inputLocale = params.m_locale;
     sp.m_mode = search::Mode::Everywhere;
-    sp.SetPosition(MercatorBounds::YToLat(params.m_position.m_y),
-                   MercatorBounds::XToLon(params.m_position.m_x));
-    sp.m_suggestsEnabled = false;
+    sp.m_position = m2::PointD(params.m_position.m_x, params.m_position.m_y);
+    sp.m_needAddress = true;
 
     auto const & bottomLeft = params.m_viewport.m_min;
     auto const & topRight = params.m_viewport.m_max;
-    m2::RectD const viewport(bottomLeft.m_x, bottomLeft.m_y, topRight.m_x, topRight.m_y);
-    search::tests_support::TestSearchRequest request(*m_engine, sp, viewport);
+    sp.m_viewport = m2::RectD(bottomLeft.m_x, bottomLeft.m_y, topRight.m_x, topRight.m_y);
+
+    search::tests_support::TestSearchRequest request(m_context->m_engine, sp);
     request.Run();
 
     boost::python::list results;
@@ -184,7 +192,7 @@ struct SearchEngineProxy
     return results;
   }
 
-  shared_ptr<search::tests_support::TestSearchEngine> m_engine;
+  shared_ptr<Context> m_context;
 };
 }  // namespace
 

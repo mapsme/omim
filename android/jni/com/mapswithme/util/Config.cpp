@@ -1,5 +1,5 @@
-#include "../core/jni_helper.hpp"
-#include "../maps/Framework.hpp"
+#include "com/mapswithme/core/jni_helper.hpp"
+#include "com/mapswithme/maps/Framework.hpp"
 #include "platform/settings.hpp"
 
 namespace

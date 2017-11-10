@@ -77,6 +77,30 @@ FeatureIdentifiers::FeatureIdentifiers(OsmId osmId, FeatureId const & featureId,
 {
 }
 
+bool FeatureIdentifiers::operator<(FeatureIdentifiers const & rhs) const
+{
+  CHECK_EQUAL(m_serializeFeatureIdOnly, rhs.m_serializeFeatureIdOnly, ());
+  if (m_serializeFeatureIdOnly)
+    return m_featureId < rhs.m_featureId;
+
+  if (m_featureId != rhs.m_featureId)
+    return m_featureId < rhs.m_featureId;
+  return m_osmId < rhs.m_osmId;
+}
+
+bool FeatureIdentifiers::operator==(FeatureIdentifiers const & rhs) const
+{
+  CHECK_EQUAL(m_serializeFeatureIdOnly, rhs.m_serializeFeatureIdOnly, ());
+  return m_serializeFeatureIdOnly ? m_featureId == rhs.m_featureId
+                                  : m_osmId == rhs.m_osmId && m_featureId == rhs.m_featureId;
+}
+
+bool FeatureIdentifiers::IsValid() const
+{
+  return m_serializeFeatureIdOnly ? m_featureId != kInvalidFeatureId
+                                  : m_osmId != kInvalidOsmId && m_featureId != kInvalidFeatureId;
+}
+
 // TitleAnchor ------------------------------------------------------------------------------------
 TitleAnchor::TitleAnchor(uint8_t minZoom, Anchor anchor) : m_minZoom(minZoom), m_anchor(anchor) {}
 
@@ -111,7 +135,7 @@ Stop::Stop(StopId id, OsmId osmId, FeatureId featureId, TransferId transferId,
 bool Stop::IsEqualForTesting(Stop const & stop) const
 {
   double constexpr kPointsEqualEpsilon = 1e-6;
-  return m_id == stop.m_id && m_featureIdentifiers.IsEqualForTesting(stop.m_featureIdentifiers) &&
+  return m_id == stop.m_id && m_featureIdentifiers == stop.m_featureIdentifiers &&
          m_transferId == stop.m_transferId && m_lineIds == stop.m_lineIds &&
          my::AlmostEqualAbs(m_point, stop.m_point, kPointsEqualEpsilon) &&
          m_titleAnchors == stop.m_titleAnchors;
@@ -150,9 +174,29 @@ Gate::Gate(OsmId osmId, FeatureId featureId, bool entrance, bool exit, double we
 {
 }
 
+bool Gate::operator<(Gate const & rhs) const
+{
+  if (m_featureIdentifiers != rhs.m_featureIdentifiers)
+    return m_featureIdentifiers < rhs.m_featureIdentifiers;
+
+  if (m_entrance != rhs.m_entrance)
+    return m_entrance < rhs.m_entrance;
+
+  if (m_exit != rhs.m_exit)
+    return m_exit < rhs.m_exit;
+
+  return m_stopIds < rhs.m_stopIds;
+}
+
+bool Gate::operator==(Gate const & rhs) const
+{
+  return m_featureIdentifiers == rhs.m_featureIdentifiers && m_entrance == rhs.m_entrance &&
+         m_exit == rhs.m_exit && m_stopIds == rhs.m_stopIds;
+}
+
 bool Gate::IsEqualForTesting(Gate const & gate) const
 {
-  return m_featureIdentifiers.IsEqualForTesting(gate.m_featureIdentifiers) &&
+  return m_featureIdentifiers == gate.m_featureIdentifiers &&
          m_entrance == gate.m_entrance && m_exit == gate.m_exit &&
          my::AlmostEqualAbs(m_weight, gate.m_weight, kWeightEqualEpsilon) &&
          m_stopIds == gate.m_stopIds &&
@@ -161,10 +205,18 @@ bool Gate::IsEqualForTesting(Gate const & gate) const
 
 bool Gate::IsValid() const
 {
-  return m_weight != kInvalidWeight && (m_entrance || m_exit) && !m_stopIds.empty();
+  return m_featureIdentifiers.GetOsmId() != kInvalidOsmId && m_weight != kInvalidWeight &&
+         (m_entrance || m_exit) && !m_stopIds.empty();
 }
 
 // ShapeId ----------------------------------------------------------------------------------------
+bool ShapeId::operator<(ShapeId const & rhs) const
+{
+  if (m_stop1Id != rhs.m_stop1Id)
+    return m_stop1Id < rhs.m_stop1Id;
+  return m_stop2Id < rhs.m_stop2Id;
+}
+
 bool ShapeId::operator==(ShapeId const & rhs) const
 {
   return m_stop1Id == rhs.m_stop1Id && m_stop2Id == rhs.m_stop2Id;
@@ -187,6 +239,20 @@ Edge::Edge(StopId stop1Id, StopId stop2Id, double weight, LineId lineId, bool tr
 {
 }
 
+bool Edge::operator<(Edge const & rhs) const
+{
+  if (m_stop1Id != rhs.m_stop1Id)
+    return m_stop1Id < rhs.m_stop1Id;
+  if (m_stop2Id != rhs.m_stop2Id)
+    return m_stop2Id < rhs.m_stop2Id;
+  return m_lineId < rhs.m_lineId;
+}
+
+bool Edge::operator==(Edge const & rhs) const
+{
+  return m_stop1Id == rhs.m_stop1Id && m_stop2Id == rhs.m_stop2Id && m_lineId == rhs.m_lineId;
+}
+
 bool Edge::IsEqualForTesting(Edge const & edge) const
 {
   return m_stop1Id == edge.m_stop1Id && m_stop2Id == edge.m_stop2Id &&
@@ -203,8 +269,7 @@ bool Edge::IsValid() const
   if (!m_transfer && m_lineId == kInvalidLineId)
     return false;
 
-  return m_stop1Id != kInvalidStopId && m_stop2Id != kInvalidStopId && m_weight != kInvalidWeight &&
-         m_lineId != kInvalidLineId;
+  return m_stop1Id != kInvalidStopId && m_stop2Id != kInvalidStopId && m_weight != kInvalidWeight;
 }
 
 // Transfer ---------------------------------------------------------------------------------------
@@ -229,7 +294,7 @@ bool Transfer::IsValid() const
 // Line -------------------------------------------------------------------------------------------
 Line::Line(LineId id, std::string const & number, std::string const & title,
            std::string const & type, std::string const & color, NetworkId networkId,
-           Ranges const & stopIds)
+           Ranges const & stopIds, Weight interval)
   : m_id(id)
   , m_number(number)
   , m_title(title)
@@ -237,6 +302,7 @@ Line::Line(LineId id, std::string const & number, std::string const & title,
   , m_color(color)
   , m_networkId(networkId)
   , m_stopIds(stopIds)
+  , m_interval(interval)
 {
 }
 
@@ -244,13 +310,13 @@ bool Line::IsEqualForTesting(Line const & line) const
 {
   return m_id == line.m_id && m_number == line.m_number && m_title == line.m_title &&
          m_type == line.m_type && m_color == line.m_color && m_networkId == line.m_networkId &&
-         m_stopIds == line.m_stopIds;
+         m_stopIds == line.m_stopIds && my::AlmostEqualAbs(m_interval, line.m_interval, kWeightEqualEpsilon);
 }
 
 bool Line::IsValid() const
 {
   return m_id != kInvalidLineId && m_color != kInvalidColor && m_networkId != kInvalidNetworkId &&
-         m_stopIds.IsValid();
+         m_stopIds.IsValid(), m_interval != kInvalidWeight;
 }
 
 // Shape ------------------------------------------------------------------------------------------

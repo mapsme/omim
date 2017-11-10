@@ -1,9 +1,10 @@
 #include "Framework.hpp"
 
-#include "../core/jni_helper.hpp"
+#include "com/mapswithme/core/jni_helper.hpp"
 
 #include "coding/internal/file_data.hpp"
 
+#include "storage/country_info_getter.hpp"
 #include "storage/storage.hpp"
 #include "storage/storage_helpers.hpp"
 

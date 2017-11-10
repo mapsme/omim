@@ -7,8 +7,6 @@ include_directories(
   ${OMIM_ROOT}/3party/glm
 )
 
-append(CMAKE_CXX_FLAGS "-std=c++11")
-
 set(
   SRC
   ../api/src/c/api-client.c
@@ -17,6 +15,7 @@ set(
   api_mark_point.hpp
   benchmark_tools.hpp
   benchmark_tools.cpp
+  booking_filter_availability_params.hpp
   bookmark_manager.cpp
   bookmark_manager.hpp
   bookmark.cpp
@@ -27,6 +26,7 @@ set(
   displacement_mode_manager.hpp
   displayed_categories_modifiers.cpp
   displayed_categories_modifiers.hpp
+  everywhere_search_params.hpp
   feature_vec_model.cpp
   feature_vec_model.hpp
   framework.cpp
@@ -60,6 +60,8 @@ set(
   routing_manager.hpp
   routing_mark.cpp
   routing_mark.hpp
+  search_api.cpp
+  search_api.hpp
   search_mark.cpp
   search_mark.hpp
   taxi_delegate.cpp
@@ -74,6 +76,7 @@ set(
   user_mark_container.hpp
   user_mark.cpp
   user_mark.hpp
+  viewport_search_params.hpp
 )
 
 add_library(${PROJECT_NAME} ${SRC})

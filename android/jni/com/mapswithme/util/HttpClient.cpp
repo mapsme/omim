@@ -23,9 +23,9 @@ SOFTWARE.
 *******************************************************************************/
 #include <jni.h>
 
-#include "../core/jni_helper.hpp"
-#include "../core/ScopedEnv.hpp"
-#include "../core/ScopedLocalRef.hpp"
+#include "com/mapswithme/core/jni_helper.hpp"
+#include "com/mapswithme/core/ScopedEnv.hpp"
+#include "com/mapswithme/core/ScopedLocalRef.hpp"
 
 #include "platform/http_client.hpp"
 

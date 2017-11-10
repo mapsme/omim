@@ -25,7 +25,6 @@ HEADERS += \
     emitter.hpp \
     engine.hpp \
     everywhere_search_callback.hpp \
-    everywhere_search_params.hpp \
     feature_loader.hpp \
     feature_offset_match.hpp \
     features_filter.hpp \
@@ -61,7 +60,6 @@ HEADERS += \
     pre_ranker.hpp \
     pre_ranking_info.hpp \
     processor.hpp \
-    processor_factory.hpp \
     projection_on_street.hpp \
     query_params.hpp \
     query_saver.hpp \
@@ -82,10 +80,10 @@ HEADERS += \
     suggest.hpp \
     token_range.hpp \
     token_slice.hpp \
+    tracer.hpp \
     types_skipper.hpp \
     utils.hpp \
     viewport_search_callback.hpp \
-    viewport_search_params.hpp \
 
 SOURCES += \
     approximate_string_match.cpp \
@@ -146,6 +144,7 @@ SOURCES += \
     streets_matcher.cpp \
     suggest.cpp \
     token_slice.cpp \
+    tracer.cpp \
     types_skipper.cpp \
     utils.cpp \
     viewport_search_callback.cpp \

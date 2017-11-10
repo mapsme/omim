@@ -1,8 +1,8 @@
 #include "Framework.hpp"
 
-#include "../core/jni_helper.hpp"
+#include "com/mapswithme/core/jni_helper.hpp"
 
-#include "../platform/Platform.hpp"
+#include "com/mapswithme/platform/Platform.hpp"
 
 #include "storage/index.hpp"
 

@@ -1,6 +1,6 @@
-#include "../Framework.hpp"
+#include "com/mapswithme/maps/Framework.hpp"
 
-#include "../../core/jni_helper.hpp"
+#include "com/mapswithme/core/jni_helper.hpp"
 
 
 namespace
