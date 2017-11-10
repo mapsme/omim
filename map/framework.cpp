@@ -3338,3 +3338,16 @@ void Framework::UploadUGC(User::CompleteUploadingHandler const & onCompleteUploa
     }
   });
 }
+
+ugc::Reviews Framework::FilterUGCReviews(ugc::Reviews const & reviews)
+{
+  ugc::Reviews result;
+  auto const details = m_user.GetDetails();
+  ASSERT(std::is_sorted(details.m_reviewIds.begin(), details.m_reviewIds.end()), ());
+  for (auto const & review : reviews)
+  {
+    if (!std::binary_search(details.m_reviewIds.begin(), details.m_reviewIds.end(), review.m_id))
+      result.push_back(review);
+  }
+  return result;
+}

@@ -205,6 +205,7 @@ namespace android
     void RequestUGC(FeatureID const & fid, ugc::Api::UGCCallback const & ugcCallback);
     void SetUGCUpdate(FeatureID const & fid, ugc::UGCUpdate const & ugc);
     void UploadUGC();
+    ugc::Reviews FilterUGCReviews(ugc::Reviews const & reviews);
 
     uint64_t GetRentNearby(JNIEnv * env, jobject policy, ms::LatLon const & latlon,
                        cian::Api::RentNearbyCallback const & onSuccess,

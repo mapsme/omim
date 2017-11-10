@@ -167,11 +167,12 @@ private:
 
   jobjectArray ToJavaReviews(JNIEnv * env, std::vector<ugc::Review> const & reviews)
   {
-    size_t const n = reviews.size();
+    auto const filteredReviews = g_framework->FilterUGCReviews(reviews);
+    size_t const n = filteredReviews.size();
     jobjectArray result = env->NewObjectArray(n, m_reviewClass, nullptr);
     for (size_t i = 0; i < n; ++i)
     {
-      jni::TScopedLocalRef review(env, ToJavaReview(env, reviews[i]));
+      jni::TScopedLocalRef review(env, ToJavaReview(env, filteredReviews[i]));
       env->SetObjectArrayElement(result, i, review.get());
     }
     return result;

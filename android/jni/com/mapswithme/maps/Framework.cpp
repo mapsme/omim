@@ -597,6 +597,11 @@ void Framework::UploadUGC()
   m_work.UploadUGC(nullptr /* onCompleteUploading */);
 }
 
+ugc::Reviews Framework::FilterUGCReviews(ugc::Reviews const & reviews)
+{
+  return m_work.FilterUGCReviews(reviews);
+}
+
 uint64_t Framework::GetRentNearby(JNIEnv * env, jobject policy, ms::LatLon const & latlon,
                               cian::Api::RentNearbyCallback const & onSuccess,
                               cian::Api::ErrorCallback const & onError)
