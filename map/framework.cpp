@@ -394,6 +394,7 @@ Framework::Framework(FrameworkParams const & params)
   if (settings::Get(kMapStyleKey, mapStyleStr))
     mapStyle = MapStyleFromSettings(mapStyleStr);
   GetStyleReader().SetCurrentStyle(mapStyle);
+  df::LoadTransitColors();
 
   m_connectToGpsTrack = GpsTracker::Instance().IsEnabled();
 
