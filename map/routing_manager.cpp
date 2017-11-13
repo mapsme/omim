@@ -2,6 +2,7 @@
 
 #include "map/chart_generator.hpp"
 #include "map/routing_mark.hpp"
+#include "map/transit_reader.hpp"
 
 #include "private.h"
 
@@ -17,6 +18,7 @@
 
 #include "routing_common/num_mwm_id.hpp"
 
+#include "drape_frontend/color_constants.hpp"
 #include "drape_frontend/drape_engine.hpp"
 
 #include "indexer/map_style_reader.hpp"
@@ -40,7 +42,10 @@
 #include "3party/Alohalytics/src/alohalytics.h"
 #include "3party/jansson/myjansson.hpp"
 
+#include <iomanip>
+#include <ios>
 #include <map>
+#include <sstream>
 
 using namespace routing;
 using namespace std;
@@ -52,6 +57,8 @@ namespace
 char const kRouterTypeKey[] = "router";
 
 double const kRouteScaleMultiplier = 1.5;
+float const kStopMarkerScale = 2.0f;
+float const kTransferMarkerScale = 4.0f;
 
 string const kRoutePointsFile = "route_points.dat";
 
@@ -87,16 +94,341 @@ void FillTrafficForRendering(vector<RouteSegment> const & segments,
     traffic.push_back(s.GetTraffic());
 }
 
-void FillTransitStyleForRendering(vector<RouteSegment> const & segments,
-                                  vector<df::SubrouteStyle> & subrouteStyles)
+struct TransitTitle
 {
-  subrouteStyles.clear();
-  subrouteStyles.reserve(segments.size());
+  TransitTitle() = default;
+  TransitTitle(string const & text, df::ColorConstant const & color) : m_text(text), m_color(color) {}
+
+  string m_text;
+  df::ColorConstant m_color;
+};
+
+struct TransitMarkInfo
+{
+  m2::PointD m_point;
+  vector<TransitTitle> m_titles;
+};
+
+using GetMwmIdFn = std::function<MwmSet::MwmId (routing::NumMwmId numMwmId)>;
+void CollectTransitDisplayInfo(vector<RouteSegment> const & segments, GetMwmIdFn const & getMwmIdFn,
+                               TransitDisplayInfos & transitDisplayInfos)
+{
   for (auto const & s : segments)
   {
-    // TODO: AddTransitType.
-    // TODO: Use transit type to determine color and pattern.
-    subrouteStyles.emplace_back(df::kRoutePedestrian);
+    if (!s.HasTransitInfo())
+      continue;
+
+    auto const mwmId = getMwmIdFn(s.GetSegment().GetMwmId());
+
+    auto & mwmTransit = transitDisplayInfos[mwmId];
+    if (mwmTransit == nullptr)
+      mwmTransit = my::make_unique<TransitDisplayInfo>();
+
+    TransitInfo const & transitInfo = s.GetTransitInfo();
+    switch (transitInfo.GetType())
+    {
+      case TransitInfo::Type::Edge:
+      {
+        auto const & edge = transitInfo.GetEdge();
+
+        mwmTransit->m_stops[edge.m_stop1Id] = {};
+        mwmTransit->m_stops[edge.m_stop2Id] ={};
+        mwmTransit->m_lines[edge.m_lineId] = {};
+        for (auto const & shapeId : edge.m_shapeIds)
+          mwmTransit->m_shapes[shapeId] = {};
+      }
+        break;
+      case TransitInfo::Type::Transfer:
+      {
+        auto const & transfer = transitInfo.GetTransfer();
+        mwmTransit->m_stops[transfer.m_stop1Id] = {};
+        mwmTransit->m_stops[transfer.m_stop2Id] = {};
+      }
+        break;
+      case TransitInfo::Type::Gate:
+      {
+        auto const & gate = transitInfo.GetGate();
+        auto const featureId = FeatureID(mwmId, gate.m_featureId);
+        mwmTransit->m_features[featureId] = {};
+      }
+        break;
+    }
+  }
+}
+
+void AddTransitGateSegment(m2::PointD const & destPoint, df::Subroute & subroute)
+{
+  df::SubrouteStyle style(df::kGateColor, df::RoutePattern(1.0, 1.0));
+  style.m_startIndex = subroute.m_polyline.GetSize() - 1;
+  auto const vec = destPoint - subroute.m_polyline.Back();
+  subroute.m_polyline.Add(destPoint);
+  style.m_endIndex = subroute.m_polyline.GetSize() - 1;
+  subroute.m_style.push_back(style);
+}
+
+void AddTransitPedestrianSegment(m2::PointD const & destPoint, df::Subroute & subroute)
+{
+  df::SubrouteStyle style(df::kRoutePedestrian, df::RoutePattern(4.0, 2.0));
+  style.m_startIndex = subroute.m_polyline.GetSize() - 1;
+  subroute.m_polyline.Add(destPoint);
+  style.m_endIndex = subroute.m_polyline.GetSize() - 1;
+  subroute.m_style.push_back(style);
+}
+
+void AddTransitShapes(std::vector<transit::ShapeId> const & shapeIds, TransitShapesInfo const & shapes,
+                      df::ColorConstant const & color, bool isInverted, df::Subroute & subroute)
+{
+  df::SubrouteStyle style(color);
+  style.m_startIndex = subroute.m_polyline.GetSize() - 1;
+
+  for (auto it = shapeIds.crbegin(); it != shapeIds.crend(); ++it)
+  {
+    auto const & shapePolyline = shapes.at(*it).GetPolyline();
+    if (isInverted)
+      subroute.m_polyline.Append(shapePolyline.crbegin(), shapePolyline.crend());
+    else
+      subroute.m_polyline.Append(shapePolyline.cbegin(), shapePolyline.cend());
+  }
+
+  style.m_endIndex = subroute.m_polyline.GetSize() - 1;
+  subroute.m_style.emplace_back(move(style));
+}
+
+string ColorToHexStr(dp::Color const & color)
+{
+  stringstream ss;
+  ss << nouppercase << hex << setfill('0');
+  ss << setw(2) << static_cast<int>(color.GetRed())
+     << setw(2) << static_cast<int>(color.GetGreen())
+     << setw(2) << static_cast<int>(color.GetBlue());
+  return ss.str();
+}
+
+void FillTransitStyleForRendering(vector<RouteSegment> const & segments, TransitReadManager & transitReadManager,
+                                  GetMwmIdFn const & getMwmIdFn, df::Subroute & subroute,
+                                  vector<TransitMarkInfo> & transitMarks, TransitRouteInfo & routeInfo)
+{
+  TransitDisplayInfos transitDisplayInfos;
+  CollectTransitDisplayInfo(segments, getMwmIdFn, transitDisplayInfos);
+
+  // Read transit display info.
+  transitReadManager.GetTransitDisplayInfo(transitDisplayInfos);
+
+  subroute.m_styleType = df::SubrouteStyleType::Multiple;
+  subroute.m_style.clear();
+  subroute.m_style.reserve(segments.size());
+
+  df::ColorConstant lastColor;
+  m2::PointD lastDir;
+
+  df::SubrouteMarker marker;
+  TransitMarkInfo transitMarkInfo;
+
+  double prevDistance = routeInfo.m_totalDistance;
+  double prevTime = routeInfo.m_totalDistance;
+
+  bool pendingEntrance = false;
+
+  for (auto const & s : segments)
+  {
+    auto const time = s.GetTimeFromBeginningSec() - prevTime;
+    auto const distance = s.GetDistFromBeginningMeters() - prevDistance;
+
+    if (!s.HasTransitInfo())
+    {
+      routeInfo.AddStep(TransitStepInfo(true /* isPedestrian */, distance, time));
+
+      AddTransitPedestrianSegment(s.GetJunction().GetPoint(), subroute);
+      lastColor = "";
+      continue;
+    }
+
+    auto const mwmId = getMwmIdFn(s.GetSegment().GetMwmId());
+
+    auto const & transitInfo = s.GetTransitInfo();
+    auto const & displayInfo = *transitDisplayInfos.at(mwmId).get();
+
+    if (transitInfo.GetType() == TransitInfo::Type::Edge)
+    {
+      auto const & edge = transitInfo.GetEdge();
+
+      auto const & line = displayInfo.m_lines.at(edge.m_lineId);
+      auto const currentColor = df::GetTransitColorName(line.GetColor());
+
+      string const hexColor = ColorToHexStr(df::GetColorConstant(currentColor));
+      routeInfo.AddStep(TransitStepInfo(false /* isPedestrian */, distance, time,
+                                        line.GetType(), line.GetNumber(), hexColor));
+
+      auto const & stop1 = displayInfo.m_stops.at(edge.m_stop1Id);
+      auto const & stop2 = displayInfo.m_stops.at(edge.m_stop2Id);
+      bool const isTransfer1 = stop1.GetTransferId() != transit::kInvalidTransferId;
+      bool const isTransfer2 = stop2.GetTransferId() != transit::kInvalidTransferId;
+
+      marker.m_distance = prevDistance;
+      marker.m_scale = kStopMarkerScale;
+      marker.m_innerColor = currentColor;
+      if (isTransfer1)
+      {
+        auto const & transferData = displayInfo.m_transfers.at(stop1.GetTransferId());
+        marker.m_position = transferData.GetPoint();
+      }
+      else
+      {
+        marker.m_position = stop1.GetPoint();
+      }
+      transitMarkInfo.m_point = marker.m_position;
+
+      if (pendingEntrance)
+      {
+        AddTransitGateSegment(marker.m_position, subroute);
+        pendingEntrance = false;
+      }
+
+      auto const id1 = isTransfer1 ? stop1.GetTransferId() : stop1.GetId();
+      auto const id2 = isTransfer2 ? stop2.GetTransferId() : stop2.GetId();
+      bool const isInverted = id1 > id2;
+
+      AddTransitShapes(edge.m_shapeIds, displayInfo.m_shapes, currentColor, isInverted, subroute);
+
+      auto const & p1 = *(subroute.m_polyline.End() - 2);
+      auto const & p2 = *(subroute.m_polyline.End() - 1);
+      m2::PointD currentDir = (p2 - p1).Normalize();
+
+      if (lastColor != currentColor)
+      {
+        if (!lastColor.empty())
+          marker.m_scale = kTransferMarkerScale;
+        marker.m_colors.push_back(currentColor);
+
+        auto const fid = FeatureID(mwmId, stop1.GetFeatureId());
+        transitMarkInfo.m_titles.push_back(TransitTitle(displayInfo.m_features.at(fid).m_title,
+                                                        df::GetTransitTextColorName(line.GetColor())));
+      }
+      lastColor = currentColor;
+
+      if (marker.m_colors.size() > 1)
+      {
+        marker.m_innerColor = df::kTransitOutlineColor;
+        marker.m_up = (currentDir - lastDir).Normalize();
+        if (m2::CrossProduct(marker.m_up, -lastDir) < 0)
+          marker.m_up = -marker.m_up;
+      }
+
+      subroute.m_markers.push_back(marker);
+      marker = df::SubrouteMarker();
+
+      transitMarks.push_back(transitMarkInfo);
+      transitMarkInfo = TransitMarkInfo();
+
+      lastDir = currentDir;
+
+      marker.m_distance = s.GetDistFromBeginningMeters();
+      marker.m_scale = kStopMarkerScale;
+      marker.m_innerColor = currentColor;
+      marker.m_colors.push_back(currentColor);
+
+      if (isTransfer2)
+      {
+        auto const & transferData = displayInfo.m_transfers.at(stop2.GetTransferId());
+        marker.m_position = transferData.GetPoint();
+      }
+      else
+      {
+        marker.m_position = stop2.GetPoint();
+      }
+
+      transitMarkInfo.m_point = marker.m_position;
+      auto const fid = FeatureID(mwmId, stop2.GetFeatureId());
+      transitMarkInfo.m_titles.push_back(TransitTitle(displayInfo.m_features.at(fid).m_title,
+                                               df::GetTransitTextColorName(line.GetColor())));
+    }
+    else if (transitInfo.GetType() == TransitInfo::Type::Gate)
+    {
+      auto const & gate = transitInfo.GetGate();
+      if (!lastColor.empty())
+      {
+        routeInfo.AddStep(TransitStepInfo(true /* isPedestrian */, distance, time));
+
+        AddTransitGateSegment(s.GetJunction().GetPoint(), subroute);
+
+        subroute.m_markers.push_back(marker);
+        marker = df::SubrouteMarker();
+
+        transitMarks.push_back(transitMarkInfo);
+        transitMarkInfo = TransitMarkInfo();
+      }
+      else
+      {
+        pendingEntrance = true;
+      }
+    }
+
+    prevDistance = s.GetDistFromBeginningMeters();
+    prevTime = s.GetTimeFromBeginningSec();
+  }
+
+  routeInfo.m_totalDistance = prevDistance;
+  routeInfo.m_totalTime = prevTime;
+
+  if (subroute.m_markers.size() > 1)
+  {
+    subroute.m_markers.front().m_innerColor = df::kTransitOutlineColor;
+    subroute.m_markers.back().m_innerColor = df::kTransitOutlineColor;
+  }
+}
+
+vector<m2::PointF> GetTransitMarkerSizes(float markerScale)
+{
+  vector<m2::PointF> markerSizes;
+  markerSizes.reserve(df::kRouteHalfWidthInPixelOthers.size());
+  for (auto const halfWidth : df::kRouteHalfWidthInPixelOthers)
+  {
+    float const d = 2 * halfWidth * markerScale;
+    markerSizes.push_back(m2::PointF(d, d));
+  }
+  return markerSizes;
+}
+
+void CreateTransitMarks(vector<TransitMarkInfo> const & transitMarks, UserMarksController & marksController)
+{
+  static vector<m2::PointF> const kTrasferMarkerSizes = GetTransitMarkerSizes(kTransferMarkerScale);
+  static vector<m2::PointF> const kStopMarkerSizes = GetTransitMarkerSizes(kStopMarkerScale);
+
+  for (size_t i = 0; i < transitMarks.size(); ++i)
+  {
+    auto const & mark = transitMarks[i];
+    if (!mark.m_titles.empty())
+    {
+      auto userMark = marksController.CreateUserMark(mark.m_point);
+      ASSERT(dynamic_cast<TransitMark *>(userMark) != nullptr, ());
+      auto transitMark = static_cast<TransitMark *>(userMark);
+
+      transitMark->SetPrimaryText(mark.m_titles.front().m_text);
+      transitMark->SetPrimaryTextColor(df::GetColorConstant(mark.m_titles.front().m_color));
+
+      if (mark.m_titles.size() > 1)
+      {
+        transitMark->SetTextPosition(dp::Bottom);
+        transitMark->SetSymbolSizes(kTrasferMarkerSizes);
+
+        userMark = marksController.CreateUserMark(mark.m_point);
+        ASSERT(dynamic_cast<TransitMark *>(userMark) != nullptr, ());
+        auto transitMark2 = static_cast<TransitMark *>(userMark);
+
+        transitMark2->SetPrimaryText(mark.m_titles.back().m_text);
+        transitMark2->SetPrimaryTextColor(df::GetColorConstant(mark.m_titles.back().m_color));
+        transitMark2->SetTextPosition(dp::Top);
+        transitMark2->SetSymbolSizes(kTrasferMarkerSizes);
+      }
+      else
+      {
+        transitMark->SetTextPosition(dp::Left);
+        transitMark->SetSymbolSizes(kStopMarkerSizes);
+        int const kMinZoomSimpleStopLabel = 16;
+        if (i > 0 && i + 1 < transitMarks.size())
+          transitMark->SetMinZoom(kMinZoomSimpleStopLabel);
+      }
+    }
   }
 }
 
@@ -233,11 +565,50 @@ namespace marketing
 char const * const kRoutingCalculatingRoute = "Routing_CalculatingRoute";
 }  // namespace marketing
 
+TransitStepInfo::TransitStepInfo(bool isPedestrian, double distance, double time,
+                std::string const & type, std::string const & number, std::string const & color)
+    : m_isPedestrian(isPedestrian)
+    , m_distance(distance)
+    , m_time(time)
+    , m_type(type)
+    , m_number(number)
+    , m_color(color)
+{}
+
+bool TransitStepInfo::IsEqualType(TransitStepInfo const & ts) const
+{
+  if (m_isPedestrian)
+    return ts.m_isPedestrian;
+
+  return m_isPedestrian == ts.m_isPedestrian &&
+      (m_isPedestrian || (m_type == ts.m_type && m_number == ts.m_number && m_color == ts.m_color));
+}
+
+void TransitRouteInfo::AddStep(TransitStepInfo const & step)
+{
+  if (!m_steps.empty() && m_steps.back().IsEqualType(step))
+  {
+    m_steps.back().m_distance += step.m_distance;
+    m_steps.back().m_time += step.m_time;
+  }
+  else
+  {
+    m_steps.push_back(step);
+  }
+
+  if (step.m_isPedestrian)
+  {
+    m_totalPedestrianDistance += step.m_distance;
+    m_totalPedestrianTime += step.m_time;
+  }
+}
+
 RoutingManager::RoutingManager(Callbacks && callbacks, Delegate & delegate)
   : m_callbacks(move(callbacks))
   , m_delegate(delegate)
   , m_trackingReporter(platform::CreateSocket(), TRACKING_REALTIME_HOST, TRACKING_REALTIME_PORT,
                        tracking::Reporter::kPushDelayMs)
+  , m_transitReadManager(m_callbacks.m_indexGetter(), m_callbacks.m_readFeaturesFn)
 {
   auto const routingStatisticsFn = [](map<string, string> const & statistics) {
     alohalytics::LogEvent("Routing_CalculatingRoute", statistics);
@@ -414,6 +785,10 @@ void RoutingManager::SetRouterImpl(RouterType type)
 
 void RoutingManager::RemoveRoute(bool deactivateFollowing)
 {
+  auto & marksController = m_bmManager->GetUserMarksController(UserMark::Type::TRANSIT);
+  marksController.Clear();
+  marksController.NotifyChanges();
+
   if (deactivateFollowing)
     SetPointsFollowingMode(false /* enabled */);
 
@@ -437,6 +812,7 @@ void RoutingManager::RemoveRoute(bool deactivateFollowing)
   {
     lock_guard<mutex> lock(m_drapeSubroutesMutex);
     m_drapeSubroutes.clear();
+    m_transitRouteInfo = TransitRouteInfo();
   }
 }
 
@@ -451,6 +827,7 @@ void RoutingManager::InsertRoute(Route const & route)
   vector<RouteSegment> segments;
   vector<m2::PointD> points;
   double distance = 0.0;
+  TransitRouteInfo transitRouteInfo;
   auto const subroutesCount = route.GetSubrouteCount();
   for (size_t subrouteIndex = route.GetCurrentSubrouteIdx(); subrouteIndex < subroutesCount; ++subrouteIndex)
   {
@@ -458,22 +835,30 @@ void RoutingManager::InsertRoute(Route const & route)
 
     // Fill points.
     double const currentBaseDistance = distance;
-    points.clear();
-    points.reserve(segments.size() + 1);
-    points.push_back(route.GetSubrouteAttrs(subrouteIndex).GetStart().GetPoint());
-    for (auto const & s : segments)
-      points.push_back(s.GetJunction().GetPoint());
-    if (points.size() < 2)
+    auto subroute = make_unique_dp<df::Subroute>();
+    subroute->m_baseDistance = currentBaseDistance;
+    subroute->m_baseDepthIndex = static_cast<double>(subroutesCount - subrouteIndex - 1);
+    auto const startPt = route.GetSubrouteAttrs(subrouteIndex).GetStart().GetPoint();
+    if (m_currentRouterType != RouterType::Transit)
     {
-      LOG(LWARNING, ("Invalid subroute. Points number =", points.size()));
-      continue;
+      points.clear();
+      points.reserve(segments.size() + 1);
+      points.push_back(startPt);
+      for (auto const &s : segments)
+        points.push_back(s.GetJunction().GetPoint());
+      if (points.size() < 2)
+      {
+        LOG(LWARNING, ("Invalid subroute. Points number =", points.size()));
+        continue;
+      }
+      subroute->m_polyline = m2::PolylineD(points);
+    }
+    else
+    {
+      subroute->m_polyline.Add(startPt);
     }
     distance = segments.back().GetDistFromBeginningMerc();
 
-    auto subroute = make_unique_dp<df::Subroute>();
-    subroute->m_polyline = m2::PolylineD(points);
-    subroute->m_baseDistance = currentBaseDistance;
-    subroute->m_baseDepthIndex = static_cast<double>(subroutesCount - subrouteIndex - 1);
     switch (m_currentRouterType)
     {
       case RouterType::Vehicle:
@@ -486,9 +871,24 @@ void RoutingManager::InsertRoute(Route const & route)
                                        subroute->m_turns);
         break;
       case RouterType::Transit:
-        subroute->m_routeType = df::RouteType::Transit;
-        subroute->m_styleType = df::SubrouteStyleType::Multiple;
-        FillTransitStyleForRendering(segments, subroute->m_style);
+        {
+          subroute->m_routeType = df::RouteType::Transit;
+
+          auto numMwmIds = make_shared<NumMwmIds>();
+          m_delegate.RegisterCountryFilesOnRoute(numMwmIds);
+          auto getMwmIdFn = [this, &numMwmIds](routing::NumMwmId numMwmId)
+          {
+            return m_callbacks.m_indexGetter().GetMwmIdByCountryFile(numMwmIds->GetFile(numMwmId));
+          };
+
+          vector<TransitMarkInfo> transitMarks;
+          FillTransitStyleForRendering(segments, m_transitReadManager, getMwmIdFn, *subroute.get(),
+                                       transitMarks, transitRouteInfo);
+
+          auto & marksController = m_bmManager->GetUserMarksController(UserMark::Type::TRANSIT);
+          CreateTransitMarks(transitMarks, marksController);
+          marksController.NotifyChanges();
+        }
         break;
       case RouterType::Pedestrian:
         subroute->m_routeType = df::RouteType::Pedestrian;
@@ -511,6 +911,7 @@ void RoutingManager::InsertRoute(Route const & route)
 
     lock_guard<mutex> lock(m_drapeSubroutesMutex);
     m_drapeSubroutes.push_back(subrouteId);
+    m_transitRouteInfo = transitRouteInfo;
   }
 }
 
@@ -745,6 +1146,10 @@ void RoutingManager::GenerateTurnNotifications(vector<string> & turnNotification
 void RoutingManager::BuildRoute(uint32_t timeoutSec)
 {
   ASSERT_THREAD_CHECKER(m_threadChecker, ("BuildRoute"));
+
+  auto & marksController = m_bmManager->GetUserMarksController(UserMark::Type::TRANSIT);
+  marksController.Clear();
+  marksController.NotifyChanges();
 
   auto routePoints = GetRoutePoints();
   if (routePoints.size() < 2)
@@ -1199,6 +1604,12 @@ void RoutingManager::CancelRecommendation(Recommendation recommendation)
 {
   if (recommendation == Recommendation::RebuildAfterPointsLoading)
     m_loadRoutePointsTimestamp = chrono::steady_clock::time_point();
+}
+
+TransitRouteInfo RoutingManager::GetTransitRouteInfo() const
+{
+  lock_guard<mutex> lock(m_drapeSubroutesMutex);
+  return m_transitRouteInfo;
 }
 
 std::vector<dp::DrapeID> RoutingManager::GetSubrouteIds() const

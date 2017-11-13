@@ -2,6 +2,7 @@
 
 #include "map/bookmark_manager.hpp"
 #include "map/routing_mark.hpp"
+#include "map/transit_reader.hpp"
 
 #include "routing/route.hpp"
 #include "routing/routing_session.hpp"
@@ -49,6 +50,32 @@ struct RoutePointInfo
   m2::PointD m_position;
 };
 
+struct TransitStepInfo
+{
+  TransitStepInfo(bool isPedestrian, double distance, double time,
+                  std::string const & type = "", std::string const & number = "", std::string const & color = "");
+
+  bool IsEqualType(TransitStepInfo const & ts) const;
+
+  bool m_isPedestrian = false;
+  double m_distance = 0.0;
+  double m_time = 0.0;
+  std::string m_type;
+  std::string m_number;
+  std::string m_color;
+};
+
+struct TransitRouteInfo
+{
+  double m_totalDistance = 0.0;
+  double m_totalTime = 0.0;
+  double m_totalPedestrianDistance = 0.0;
+  double m_totalPedestrianTime = 0.0;
+  std::vector<TransitStepInfo> m_steps;
+
+  void AddStep(TransitStepInfo const & step);
+};
+
 class RoutingManager final
 {
 public:
@@ -66,18 +93,23 @@ public:
     using IndexGetterFn = std::function<Index &()>;
     using CountryInfoGetterFn = std::function<storage::CountryInfoGetter &()>;
     using CountryParentNameGetterFn = std::function<std::string(std::string const &)>;
+    using FeatureCallback = std::function<void (FeatureType const &)>;
+    using ReadFeaturesFn = std::function<void (FeatureCallback const &, std::vector<FeatureID> const &)>;
 
-    template <typename IndexGetter, typename CountryInfoGetter, typename CountryParentNameGetter>
+
+    template <typename IndexGetter, typename CountryInfoGetter, typename CountryParentNameGetter, typename FeatureReader>
     Callbacks(IndexGetter && featureIndexGetter, CountryInfoGetter && countryInfoGetter,
-              CountryParentNameGetter && countryParentNameGetter)
+              CountryParentNameGetter && countryParentNameGetter, FeatureReader && readFeatures)
       : m_indexGetter(std::forward<IndexGetter>(featureIndexGetter))
       , m_countryInfoGetter(std::forward<CountryInfoGetter>(countryInfoGetter))
       , m_countryParentNameGetterFn(std::forward<CountryParentNameGetter>(countryParentNameGetter))
+      , m_readFeaturesFn(std::forward<FeatureReader>(readFeatures))
     {}
 
     IndexGetterFn m_indexGetter;
     CountryInfoGetterFn m_countryInfoGetter;
     CountryParentNameGetterFn m_countryParentNameGetterFn;
+    TReadFeaturesFn m_readFeaturesFn;
   };
 
   using RouteBuildingCallback =
@@ -146,6 +178,9 @@ public:
   {
     m_routingSession.GetRouteFollowingInfo(info);
   }
+
+  TransitRouteInfo GetTransitRouteInfo() const;
+
   m2::PointD GetRouteEndPoint() const { return m_routingSession.GetEndPoint(); }
   /// Returns the most situable router engine type.
   routing::RouterType GetBestRouter(m2::PointD const & startPoint,
@@ -290,12 +325,16 @@ private:
 
   std::unique_ptr<location::GpsInfo> m_gpsInfoCache;
 
+  TransitRouteInfo m_transitRouteInfo;
+
   struct RoutePointsTransaction
   {
     std::vector<RouteMarkData> m_routeMarks;
   };
   std::map<uint32_t, RoutePointsTransaction> m_routePointsTransactions;
   std::chrono::steady_clock::time_point m_loadRoutePointsTimestamp;
+
+  TransitReadManager m_transitReadManager;
 
   DECLARE_THREAD_CHECKER(m_threadChecker);
 };
