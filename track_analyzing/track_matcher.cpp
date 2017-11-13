@@ -67,7 +67,7 @@ TrackMatcher::TrackMatcher(storage::Storage const & storage, NumMwmId mwmId,
       EdgeEstimator::Create(VehicleType::Car, m_vehicleModel->GetMaxSpeed(),
                             nullptr /* trafficStash */));
 
-  DeserializeIndexGraph(*handle.GetValue<MwmValue>(), kCarMask, *m_graph);
+  DeserializeIndexGraph(*handle.GetValue<MwmValue>(), VehicleType::Car, *m_graph);
 }
 
 void TrackMatcher::MatchTrack(vector<DataPoint> const & track, vector<MatchedTrack> & matchedTracks)
