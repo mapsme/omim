@@ -60750,7 +60750,26 @@ cont {
 cont {
   name: "sponsored-booking"
   element {
-    scale: 13
+    scale: 14
+    symbol {
+      name: "alpine_hut-s"
+      priority: 16776
+      min_distance: 24
+    }
+    caption {
+      primary {
+        height: 10
+        color: 5592405
+        stroke_color: 856756497
+        offset_y: 1
+      }
+      priority: 15776
+    }
+    apply_if: "extra_tag=tourism=alpine_hut"
+    apply_if: "rating>=8"
+  }
+  element {
+    scale: 14
     symbol {
       name: "hotel-s"
       priority: 16805
@@ -60769,7 +60788,7 @@ cont {
     apply_if: "rating>=8"
   }
   element {
-    scale: 13
+    scale: 14
     symbol {
       name: "zero-icon"
       priority: 16597
@@ -60777,56 +60796,10 @@ cont {
     apply_if: "rating<8"
   }
   element {
-    scale: 14
-    symbol {
-      name: "alpine_hut-m"
-      priority: 16813
-      min_distance: 24
-    }
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-        stroke_color: 856756497
-        offset_y: 1
-      }
-      priority: 15813
-    }
-    apply_if: "extra_tag=tourism=alpine_hut"
-    apply_if: "rating>=7"
-  }
-  element {
-    scale: 14
-    symbol {
-      name: "hotel-m"
-      priority: 16813
-      min_distance: 24
-    }
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-        stroke_color: 856756497
-        offset_y: 1
-      }
-      priority: 15813
-    }
-    apply_if: "extra_tag=tourism=hotel"
-    apply_if: "rating>=7"
-  }
-  element {
-    scale: 14
-    symbol {
-      name: "zero-icon"
-      priority: 16597
-    }
-    apply_if: "rating<7"
-  }
-  element {
     scale: 15
     symbol {
       name: "alpine_hut-m"
-      priority: 16813
+      priority: 16776
       min_distance: 24
     }
     caption {
@@ -60836,16 +60809,16 @@ cont {
         stroke_color: 856756497
         offset_y: 1
       }
-      priority: 15813
+      priority: 15776
     }
     apply_if: "extra_tag=tourism=alpine_hut"
-    apply_if: "rating>=7"
+    apply_if: "rating>=8"
   }
   element {
     scale: 15
     symbol {
       name: "hotel-m"
-      priority: 16813
+      priority: 16805
       min_distance: 24
     }
     caption {
@@ -60855,10 +60828,10 @@ cont {
         stroke_color: 856756497
         offset_y: 1
       }
-      priority: 15813
+      priority: 15805
     }
     apply_if: "extra_tag=tourism=hotel"
-    apply_if: "rating>=7"
+    apply_if: "rating>=8"
   }
   element {
     scale: 15
@@ -60866,13 +60839,13 @@ cont {
       name: "zero-icon"
       priority: 16597
     }
-    apply_if: "rating<7"
+    apply_if: "rating<8"
   }
   element {
-    scale: 16
+    scale: 15
     symbol {
       name: "apartment-m"
-      priority: 16611
+      priority: 16597
       min_distance: 24
     }
     caption {
@@ -60882,10 +60855,10 @@ cont {
         stroke_color: 856756497
         offset_y: 1
       }
-      priority: 15611
+      priority: 15597
     }
     apply_if: "extra_tag=tourism=apartment"
-    apply_if: "rating>=5"
+    apply_if: "rating>=9.5"
   }
   element {
     scale: 16
@@ -60909,63 +60882,6 @@ cont {
   element {
     scale: 16
     symbol {
-      name: "hostel-m"
-      priority: 16626
-      min_distance: 24
-    }
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-        stroke_color: 856756497
-        offset_y: 1
-      }
-      priority: 15626
-    }
-    apply_if: "extra_tag=tourism=hostel"
-    apply_if: "rating>=5"
-  }
-  element {
-    scale: 16
-    symbol {
-      name: "hotel-l"
-      priority: 16649
-      min_distance: 24
-    }
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-        stroke_color: 856756497
-        offset_y: 1
-      }
-      priority: 15649
-    }
-    apply_if: "extra_tag=tourism=hotel"
-    apply_if: "rating>=5"
-  }
-  element {
-    scale: 16
-    symbol {
-      name: "apartment-m"
-      priority: 16664
-      min_distance: 24
-    }
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-        stroke_color: 856756497
-        offset_y: 1
-      }
-      priority: 15664
-    }
-    apply_if: "extra_tag=tourism=apartment"
-    apply_if: "rating>=6"
-  }
-  element {
-    scale: 16
-    symbol {
       name: "alpine_hut-l"
       priority: 16671
       min_distance: 24
@@ -60985,63 +60901,6 @@ cont {
   element {
     scale: 16
     symbol {
-      name: "hostel-m"
-      priority: 16679
-      min_distance: 24
-    }
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-        stroke_color: 856756497
-        offset_y: 1
-      }
-      priority: 15679
-    }
-    apply_if: "extra_tag=tourism=hostel"
-    apply_if: "rating>=6"
-  }
-  element {
-    scale: 16
-    symbol {
-      name: "hotel-l"
-      priority: 16701
-      min_distance: 24
-    }
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-        stroke_color: 856756497
-        offset_y: 1
-      }
-      priority: 15701
-    }
-    apply_if: "extra_tag=tourism=hotel"
-    apply_if: "rating>=6"
-  }
-  element {
-    scale: 16
-    symbol {
-      name: "apartment-m"
-      priority: 16813
-      min_distance: 24
-    }
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-        stroke_color: 856756497
-        offset_y: 1
-      }
-      priority: 15813
-    }
-    apply_if: "extra_tag=tourism=apartment"
-    apply_if: "rating>=7"
-  }
-  element {
-    scale: 16
-    symbol {
       name: "alpine_hut-l"
       priority: 16813
       min_distance: 24
@@ -61095,25 +60954,6 @@ cont {
     }
     apply_if: "extra_tag=tourism=hotel"
     apply_if: "rating>=7"
-  }
-  element {
-    scale: 16
-    symbol {
-      name: "apartment-m"
-      priority: 16768
-      min_distance: 24
-    }
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-        stroke_color: 856756497
-        offset_y: 1
-      }
-      priority: 15768
-    }
-    apply_if: "extra_tag=tourism=apartment"
-    apply_if: "rating>=8"
   }
   element {
     scale: 16
@@ -61137,26 +60977,7 @@ cont {
   element {
     scale: 16
     symbol {
-      name: "hostel-m"
-      priority: 16783
-      min_distance: 24
-    }
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-        stroke_color: 856756497
-        offset_y: 1
-      }
-      priority: 15783
-    }
-    apply_if: "extra_tag=tourism=hostel"
-    apply_if: "rating>=8"
-  }
-  element {
-    scale: 16
-    symbol {
-      name: "hotel-l"
+      name: "hotel-m"
       priority: 16805
       min_distance: 24
     }
@@ -61171,25 +60992,6 @@ cont {
     }
     apply_if: "extra_tag=tourism=hotel"
     apply_if: "rating>=8"
-  }
-  element {
-    scale: 16
-    symbol {
-      name: "apartment-m"
-      priority: 16820
-      min_distance: 24
-    }
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-        stroke_color: 856756497
-        offset_y: 1
-      }
-      priority: 15820
-    }
-    apply_if: "extra_tag=tourism=apartment"
-    apply_if: "rating>=9"
   }
   element {
     scale: 16
@@ -61213,53 +61015,15 @@ cont {
   element {
     scale: 16
     symbol {
-      name: "hostel-m"
-      priority: 16835
-      min_distance: 24
-    }
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-        stroke_color: 856756497
-        offset_y: 1
-      }
-      priority: 15835
-    }
-    apply_if: "extra_tag=tourism=hostel"
-    apply_if: "rating>=9"
-  }
-  element {
-    scale: 16
-    symbol {
-      name: "hotel-l"
-      priority: 16858
-      min_distance: 24
-    }
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-        stroke_color: 856756497
-        offset_y: 1
-      }
-      priority: 15858
-    }
-    apply_if: "extra_tag=tourism=hotel"
-    apply_if: "rating>=9"
-  }
-  element {
-    scale: 16
-    symbol {
       name: "zero-icon"
       priority: 16597
     }
-    apply_if: "rating<7"
+    apply_if: "rating<8"
   }
   element {
     scale: 16
     symbol {
-      name: "hotel-l"
+      name: "apartment-m"
       priority: 16597
       min_distance: 24
     }
@@ -61272,7 +61036,8 @@ cont {
       }
       priority: 15597
     }
-    apply_if: "extra_tag=tourism=hotel"
+    apply_if: "extra_tag=tourism=apartment"
+    apply_if: "rating>=9.5"
   }
   element {
     scale: 16
@@ -61291,24 +61056,6 @@ cont {
       priority: 15597
     }
     apply_if: "extra_tag=tourism=alpine_hut"
-  }
-  element {
-    scale: 16
-    symbol {
-      name: "hostel-m"
-      priority: 16597
-      min_distance: 24
-    }
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-        stroke_color: 856756497
-        offset_y: 1
-      }
-      priority: 15597
-    }
-    apply_if: "extra_tag=tourism=hostel"
   }
   element {
     scale: 16
@@ -61345,25 +61092,7 @@ cont {
       priority: 15597
     }
     apply_if: "extra_tag=tourism=apartment"
-  }
-  element {
-    scale: 17
-    symbol {
-      name: "apartment-m"
-      priority: 16611
-      min_distance: 16
-    }
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-        stroke_color: 856756497
-        offset_y: 1
-      }
-      priority: 15611
-    }
-    apply_if: "extra_tag=tourism=apartment"
-    apply_if: "rating>=5"
+    apply_if: "rating>=8.5"
   }
   element {
     scale: 17
@@ -61408,7 +61137,7 @@ cont {
     symbol {
       name: "hotel-l"
       priority: 16649
-      min_distance: 16
+      min_distance: 24
     }
     caption {
       primary {
@@ -61421,25 +61150,6 @@ cont {
     }
     apply_if: "extra_tag=tourism=hotel"
     apply_if: "rating>=5"
-  }
-  element {
-    scale: 17
-    symbol {
-      name: "apartment-m"
-      priority: 16664
-      min_distance: 16
-    }
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-        stroke_color: 856756497
-        offset_y: 1
-      }
-      priority: 15664
-    }
-    apply_if: "extra_tag=tourism=apartment"
-    apply_if: "rating>=6"
   }
   element {
     scale: 17
@@ -61484,7 +61194,7 @@ cont {
     symbol {
       name: "hotel-l"
       priority: 16701
-      min_distance: 16
+      min_distance: 24
     }
     caption {
       primary {
@@ -61497,25 +61207,6 @@ cont {
     }
     apply_if: "extra_tag=tourism=hotel"
     apply_if: "rating>=6"
-  }
-  element {
-    scale: 17
-    symbol {
-      name: "apartment-m"
-      priority: 16813
-      min_distance: 16
-    }
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-        stroke_color: 856756497
-        offset_y: 1
-      }
-      priority: 15813
-    }
-    apply_if: "extra_tag=tourism=apartment"
-    apply_if: "rating>=7"
   }
   element {
     scale: 17
@@ -61560,7 +61251,7 @@ cont {
     symbol {
       name: "hotel-l"
       priority: 16813
-      min_distance: 16
+      min_distance: 24
     }
     caption {
       primary {
@@ -61573,25 +61264,6 @@ cont {
     }
     apply_if: "extra_tag=tourism=hotel"
     apply_if: "rating>=7"
-  }
-  element {
-    scale: 17
-    symbol {
-      name: "apartment-m"
-      priority: 16768
-      min_distance: 16
-    }
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-        stroke_color: 856756497
-        offset_y: 1
-      }
-      priority: 15768
-    }
-    apply_if: "extra_tag=tourism=apartment"
-    apply_if: "rating>=8"
   }
   element {
     scale: 17
@@ -61636,7 +61308,7 @@ cont {
     symbol {
       name: "hotel-l"
       priority: 16805
-      min_distance: 16
+      min_distance: 24
     }
     caption {
       primary {
@@ -61649,25 +61321,6 @@ cont {
     }
     apply_if: "extra_tag=tourism=hotel"
     apply_if: "rating>=8"
-  }
-  element {
-    scale: 17
-    symbol {
-      name: "apartment-m"
-      priority: 16820
-      min_distance: 16
-    }
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-        stroke_color: 856756497
-        offset_y: 1
-      }
-      priority: 15820
-    }
-    apply_if: "extra_tag=tourism=apartment"
-    apply_if: "rating>=9"
   }
   element {
     scale: 17
@@ -61712,7 +61365,7 @@ cont {
     symbol {
       name: "hotel-l"
       priority: 16858
-      min_distance: 16
+      min_distance: 24
     }
     caption {
       primary {
@@ -61733,12 +61386,12 @@ cont {
       priority: 16597
       min_distance: 16
     }
-    apply_if: "rating<7"
+    apply_if: "rating<8"
   }
   element {
     scale: 17
     symbol {
-      name: "hotel-l"
+      name: "apartment-m"
       priority: 16597
       min_distance: 16
     }
@@ -61751,7 +61404,8 @@ cont {
       }
       priority: 15597
     }
-    apply_if: "extra_tag=tourism=hotel"
+    apply_if: "extra_tag=tourism=apartment"
+    apply_if: "rating>=9.5"
   }
   element {
     scale: 17
@@ -61770,24 +61424,6 @@ cont {
       priority: 15597
     }
     apply_if: "extra_tag=tourism=alpine_hut"
-  }
-  element {
-    scale: 17
-    symbol {
-      name: "hostel-l"
-      priority: 16597
-      min_distance: 24
-    }
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-        stroke_color: 856756497
-        offset_y: 1
-      }
-      priority: 15597
-    }
-    apply_if: "extra_tag=tourism=hostel"
   }
   element {
     scale: 17
@@ -61824,6 +61460,43 @@ cont {
       priority: 15597
     }
     apply_if: "extra_tag=tourism=apartment"
+    apply_if: "rating>=8.5"
+  }
+  element {
+    scale: 17
+    symbol {
+      name: "hotel-l"
+      priority: 16597
+      min_distance: 24
+    }
+    caption {
+      primary {
+        height: 10
+        color: 5592405
+        stroke_color: 856756497
+        offset_y: 1
+      }
+      priority: 15597
+    }
+    apply_if: "extra_tag=tourism=hotel"
+  }
+  element {
+    scale: 17
+    symbol {
+      name: "hostel-l"
+      priority: 16597
+      min_distance: 24
+    }
+    caption {
+      primary {
+        height: 10
+        color: 5592405
+        stroke_color: 856756497
+        offset_y: 1
+      }
+      priority: 15597
+    }
+    apply_if: "extra_tag=tourism=hostel"
   }
   element {
     scale: 18
@@ -61887,7 +61560,7 @@ cont {
     symbol {
       name: "hotel-l"
       priority: 16649
-      min_distance: 16
+      min_distance: 24
     }
     caption {
       primary {
@@ -61963,7 +61636,7 @@ cont {
     symbol {
       name: "hotel-l"
       priority: 16701
-      min_distance: 16
+      min_distance: 24
     }
     caption {
       primary {
@@ -62039,7 +61712,7 @@ cont {
     symbol {
       name: "hotel-l"
       priority: 16813
-      min_distance: 16
+      min_distance: 24
     }
     caption {
       primary {
@@ -62115,7 +61788,7 @@ cont {
     symbol {
       name: "hotel-l"
       priority: 16805
-      min_distance: 16
+      min_distance: 24
     }
     caption {
       primary {
@@ -62191,7 +61864,7 @@ cont {
     symbol {
       name: "hotel-l"
       priority: 16858
-      min_distance: 16
+      min_distance: 24
     }
     caption {
       primary {
@@ -62212,14 +61885,14 @@ cont {
       priority: 16597
       min_distance: 16
     }
-    apply_if: "rating<7"
+    apply_if: "rating<8"
   }
   element {
     scale: 18
     symbol {
-      name: "hotel-l"
+      name: "apartment-l"
       priority: 16597
-      min_distance: 16
+      min_distance: 24
     }
     caption {
       primary {
@@ -62230,7 +61903,8 @@ cont {
       }
       priority: 15597
     }
-    apply_if: "extra_tag=tourism=hotel"
+    apply_if: "extra_tag=tourism=apartment"
+    apply_if: "rating>=9.5"
   }
   element {
     scale: 18
@@ -62253,24 +61927,6 @@ cont {
   element {
     scale: 18
     symbol {
-      name: "hostel-l"
-      priority: 16597
-      min_distance: 24
-    }
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-        stroke_color: 856756497
-        offset_y: 1
-      }
-      priority: 15597
-    }
-    apply_if: "extra_tag=tourism=hostel"
-  }
-  element {
-    scale: 18
-    symbol {
       name: "alpine_hut-l"
       priority: 16597
       min_distance: 24
@@ -62285,6 +61941,61 @@ cont {
       priority: 15597
     }
     apply_if: "extra_tag=tourism=chalet"
+  }
+  element {
+    scale: 18
+    symbol {
+      name: "apartment-l"
+      priority: 16597
+      min_distance: 24
+    }
+    caption {
+      primary {
+        height: 10
+        color: 5592405
+        stroke_color: 856756497
+        offset_y: 1
+      }
+      priority: 15597
+    }
+    apply_if: "extra_tag=tourism=apartment"
+    apply_if: "rating>=8.5"
+  }
+  element {
+    scale: 18
+    symbol {
+      name: "hotel-l"
+      priority: 16597
+      min_distance: 24
+    }
+    caption {
+      primary {
+        height: 10
+        color: 5592405
+        stroke_color: 856756497
+        offset_y: 1
+      }
+      priority: 15597
+    }
+    apply_if: "extra_tag=tourism=hotel"
+  }
+  element {
+    scale: 18
+    symbol {
+      name: "hostel-l"
+      priority: 16597
+      min_distance: 24
+    }
+    caption {
+      primary {
+        height: 10
+        color: 5592405
+        stroke_color: 856756497
+        offset_y: 1
+      }
+      priority: 15597
+    }
+    apply_if: "extra_tag=tourism=hostel"
   }
   element {
     scale: 18
@@ -62366,7 +62077,7 @@ cont {
     symbol {
       name: "hotel-l"
       priority: 16649
-      min_distance: 16
+      min_distance: 24
     }
     caption {
       primary {
@@ -62442,7 +62153,7 @@ cont {
     symbol {
       name: "hotel-l"
       priority: 16701
-      min_distance: 16
+      min_distance: 24
     }
     caption {
       primary {
@@ -62518,7 +62229,7 @@ cont {
     symbol {
       name: "hotel-l"
       priority: 16813
-      min_distance: 16
+      min_distance: 24
     }
     caption {
       primary {
@@ -62594,7 +62305,7 @@ cont {
     symbol {
       name: "hotel-l"
       priority: 16805
-      min_distance: 16
+      min_distance: 24
     }
     caption {
       primary {
@@ -62670,7 +62381,7 @@ cont {
     symbol {
       name: "hotel-l"
       priority: 16858
-      min_distance: 16
+      min_distance: 24
     }
     caption {
       primary {
@@ -62691,14 +62402,14 @@ cont {
       priority: 16597
       min_distance: 16
     }
-    apply_if: "rating<7"
+    apply_if: "rating<8"
   }
   element {
     scale: 19
     symbol {
-      name: "hotel-l"
+      name: "apartment-l"
       priority: 16597
-      min_distance: 16
+      min_distance: 24
     }
     caption {
       primary {
@@ -62709,7 +62420,8 @@ cont {
       }
       priority: 15597
     }
-    apply_if: "extra_tag=tourism=hotel"
+    apply_if: "extra_tag=tourism=apartment"
+    apply_if: "rating>=9.5"
   }
   element {
     scale: 19
@@ -62732,24 +62444,6 @@ cont {
   element {
     scale: 19
     symbol {
-      name: "hostel-l"
-      priority: 16597
-      min_distance: 24
-    }
-    caption {
-      primary {
-        height: 10
-        color: 5592405
-        stroke_color: 856756497
-        offset_y: 1
-      }
-      priority: 15597
-    }
-    apply_if: "extra_tag=tourism=hostel"
-  }
-  element {
-    scale: 19
-    symbol {
       name: "alpine_hut-l"
       priority: 16597
       min_distance: 24
@@ -62764,6 +62458,61 @@ cont {
       priority: 15597
     }
     apply_if: "extra_tag=tourism=chalet"
+  }
+  element {
+    scale: 19
+    symbol {
+      name: "apartment-l"
+      priority: 16597
+      min_distance: 24
+    }
+    caption {
+      primary {
+        height: 10
+        color: 5592405
+        stroke_color: 856756497
+        offset_y: 1
+      }
+      priority: 15597
+    }
+    apply_if: "extra_tag=tourism=apartment"
+    apply_if: "rating>=8.5"
+  }
+  element {
+    scale: 19
+    symbol {
+      name: "hotel-l"
+      priority: 16597
+      min_distance: 24
+    }
+    caption {
+      primary {
+        height: 10
+        color: 5592405
+        stroke_color: 856756497
+        offset_y: 1
+      }
+      priority: 15597
+    }
+    apply_if: "extra_tag=tourism=hotel"
+  }
+  element {
+    scale: 19
+    symbol {
+      name: "hostel-l"
+      priority: 16597
+      min_distance: 24
+    }
+    caption {
+      primary {
+        height: 10
+        color: 5592405
+        stroke_color: 856756497
+        offset_y: 1
+      }
+      priority: 15597
+    }
+    apply_if: "extra_tag=tourism=hostel"
   }
   element {
     scale: 19
