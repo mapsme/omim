@@ -39,6 +39,16 @@ uint32_t Bearing(m2::PointD const & a, m2::PointD const & b)
   return my::clamp(angle / kAnglesInBucket, 0.0, 255.0);
 }
 
+m2::PointD PointAtSegmentM(m2::PointD const & p1, m2::PointD const & p2, double distanceM)
+{
+  auto const v = p2 - p1;
+  auto const l = v.Length();
+  auto const L = MercatorBounds::DistanceOnEarth(p1, p2);
+  auto const delta = distanceM * l / L;
+  ASSERT(delta <= l || distanceM > L, ());
+  return PointAtSegment(p1, p2, delta);
+}
+
 class Score final
 {
 public:
@@ -367,8 +377,8 @@ bool Router::FindPath(std::vector<routing::Edge> & path)
         CHECK(!NeedToCheckBearing(u, ud), ());
 
         double const delta = vd - v.m_stageStartDistance - kBearingDist;
-        auto const p = PointAtSegment(edge.GetStartJunction().GetPoint(),
-                                      edge.GetEndJunction().GetPoint(), delta);
+        auto const p = PointAtSegmentM(edge.GetStartJunction().GetPoint(),
+                                       edge.GetEndJunction().GetPoint(), delta);
         if (v.m_stageStart.GetPoint() != p)
         {
           int const expected = m_points[stage].m_bearing;
@@ -462,8 +472,8 @@ uint32_t Router::GetReverseBearing(Vertex const & u, Links const & links) const
     if (passed + weight >= kBearingDist)
     {
       double const delta = kBearingDist - passed;
-      b = PointAtSegment(edge.GetEndJunction().GetPoint(), edge.GetStartJunction().GetPoint(),
-                         delta);
+      b = PointAtSegmentM(edge.GetEndJunction().GetPoint(), edge.GetStartJunction().GetPoint(),
+                          delta);
       found = true;
       break;
     }
