@@ -1,6 +1,7 @@
 #pragma once
 
 #include "indexer/feature_decl.hpp"
+#include "indexer/feature_meta.hpp"
 #include "indexer/mwm_set.hpp"
 
 #include "geometry/point2d.hpp"
@@ -31,6 +32,7 @@ public:
   inline void SetPostcode(std::string const & postcode) { m_postcode = postcode; }
   inline uint64_t GetId() const { return m_id; }
   inline std::string const & GetName() const { return m_name; }
+  inline feature::Metadata & GetMetadata() { return m_metadata; }
 
   virtual void Serialize(FeatureBuilder1 & fb) const;
   virtual std::string ToString() const = 0;
@@ -55,6 +57,10 @@ protected:
   std::string const m_name;
   std::string const m_lang;
   std::string m_postcode;
+  feature::Metadata m_metadata;
+
+private:
+  void Init();
 };
 
 class TestCountry : public TestFeature

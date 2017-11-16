@@ -30,11 +30,30 @@ class Storage;
 struct DownloaderSearchParams;
 }
 
+namespace booking
+{
+namespace filter
+{
+namespace availability
+{
+struct Params;
+}
+}
+}
+
 class SearchAPI : public search::DownloaderSearchCallback::Delegate,
                   public search::EverywhereSearchCallback::Delegate,
                   public search::ViewportSearchCallback::Delegate
 {
 public:
+  enum class SponsoredMode
+  {
+    None,
+    // TODO (@y, @m): delete me after Cian project is finished.
+    Cian,
+    Booking
+  };
+
   struct Delegate
   {
     virtual ~Delegate() = default;
@@ -57,6 +76,11 @@ public:
     virtual double GetMinDistanceBetweenResults() const { return 0.0; };
 
     virtual bool IsLocalAdsCustomer(search::Result const & /* result */) const { return false; }
+
+    virtual void FilterSearchResultsOnBooking(booking::filter::availability::Params const & params,
+                                              search::Results const & results, bool inViewport)
+    {
+    }
   };
 
   SearchAPI(Index & index, storage::Storage const & storage,
@@ -67,7 +91,7 @@ public:
 
   void LoadCitiesBoundaries() { m_engine.LoadCitiesBoundaries(); }
 
-  bool IsCianSearchMode() const { return m_cianSearchMode; }
+  SponsoredMode GetSponsoredMode() const { return m_sponsoredMode; }
 
   // Search everywhere.
   bool SearchEverywhere(search::EverywhereSearchParams const & params);
@@ -130,6 +154,5 @@ private:
   m2::RectD m_viewport;
   bool m_isViewportInitialized = false;
 
-  // TODO (@y, @m): delete me after Cian project is finished.
-  bool m_cianSearchMode = false;
+  SponsoredMode m_sponsoredMode = SponsoredMode::None;
 };

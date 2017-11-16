@@ -76,6 +76,13 @@ void SearchAPI::OnViewportChanged(m2::RectD const & viewport)
 
 bool SearchAPI::SearchEverywhere(EverywhereSearchParams const & params)
 {
+  // TODO: delete me after Cian project is finished.
+  if (IsCianMode(params.m_query))
+    m_sponsoredMode = SponsoredMode::Cian;
+
+  if (!params.m_bookingFilterParams.IsEmpty())
+    m_sponsoredMode = SponsoredMode::Booking;
+
   SearchParams p;
   p.m_query = params.m_query;
   p.m_inputLocale = params.m_inputLocale;
@@ -87,7 +94,7 @@ bool SearchAPI::SearchEverywhere(EverywhereSearchParams const & params)
   p.m_needAddress = true;
   p.m_needHighlighting = true;
   p.m_hotelsFilter = params.m_hotelsFilter;
-  p.m_cianMode = IsCianMode(params.m_query);
+  p.m_cianMode = m_sponsoredMode == SponsoredMode::Cian;
 
   p.m_onResults = EverywhereSearchCallback(
       static_cast<EverywhereSearchCallback::Delegate &>(*this),
@@ -96,6 +103,11 @@ bool SearchAPI::SearchEverywhere(EverywhereSearchParams const & params)
           RunUITask([params, results, isLocalAdsCustomer] {
             params.m_onResults(results, isLocalAdsCustomer);
           });
+        if (results.IsEndedNormal() && !params.m_bookingFilterParams.IsEmpty())
+        {
+          m_delegate.FilterSearchResultsOnBooking(params.m_bookingFilterParams, results,
+                                                  false /* inViewport */);
+        }
       });
 
   return Search(p, true /* forceSearch */);
@@ -104,7 +116,11 @@ bool SearchAPI::SearchEverywhere(EverywhereSearchParams const & params)
 bool SearchAPI::SearchInViewport(ViewportSearchParams const & params)
 {
   // TODO: delete me after Cian project is finished.
-  m_cianSearchMode = IsCianMode(params.m_query);
+  if (IsCianMode(params.m_query))
+    m_sponsoredMode = SponsoredMode::Cian;
+
+  if (!params.m_bookingFilterParams.IsEmpty())
+    m_sponsoredMode = SponsoredMode::Booking;
 
   SearchParams p;
   p.m_query = params.m_query;
@@ -117,7 +133,7 @@ bool SearchAPI::SearchInViewport(ViewportSearchParams const & params)
   p.m_needAddress = false;
   p.m_needHighlighting = false;
   p.m_hotelsFilter = params.m_hotelsFilter;
-  p.m_cianMode = m_cianSearchMode;
+  p.m_cianMode = m_sponsoredMode == SponsoredMode::Cian;
 
   p.m_onStarted = [this, params] {
     if (params.m_onStarted)
@@ -129,6 +145,11 @@ bool SearchAPI::SearchInViewport(ViewportSearchParams const & params)
       [this, params](Results const & results) {
         if (results.IsEndMarker() && params.m_onCompleted)
           RunUITask([params, results] { params.m_onCompleted(results); });
+        if (results.IsEndedNormal() && !params.m_bookingFilterParams.IsEmpty())
+        {
+          m_delegate.FilterSearchResultsOnBooking(params.m_bookingFilterParams, results,
+                                                  true /* inViewport */);
+        }
       });
 
   return Search(p, false /* forceSearch */);
@@ -171,8 +192,7 @@ void SearchAPI::CancelSearch(Mode mode)
 
   if (mode == Mode::Viewport)
   {
-    // TODO: delete me after Cian project is finished.
-    m_cianSearchMode = false;
+    m_sponsoredMode = SponsoredMode::None;
 
     m_delegate.ClearViewportSearchResults();
     m_delegate.SetSearchDisplacementModeEnabled(false /* enabled */);
