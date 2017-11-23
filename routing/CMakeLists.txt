@@ -46,8 +46,6 @@ set(
   fake_edges_container.hpp
   fake_ending.cpp
   fake_ending.hpp
-  fake_feature_ids.cpp
-  fake_feature_ids.hpp
   fake_graph.hpp
   fake_vertex.hpp
   features_road_graph.cpp
