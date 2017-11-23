@@ -2,7 +2,6 @@
 
 #include "routing/edge_estimator.hpp"
 #include "routing/fake_ending.hpp"
-#include "routing/fake_feature_ids.hpp"
 #include "routing/fake_graph.hpp"
 #include "routing/fake_vertex.hpp"
 #include "routing/road_graph.hpp"
@@ -10,6 +9,8 @@
 #include "routing/segment.hpp"
 
 #include "routing_common/transit_types.hpp"
+
+#include "indexer/fake_feature_ids.hpp"
 
 #include <cstdint>
 #include <map>
@@ -74,7 +75,7 @@ private:
   void AddConnections(StopToSegmentsMap const & connections, StopToSegmentsMap const & stopToBack,
                       StopToSegmentsMap const & stopToFront, bool isOutgoing);
 
-  static uint32_t constexpr kTransitFeatureId = FakeFeatureIds::kTransitGraphId;
+  static uint32_t constexpr kTransitFeatureId = feature::FakeFeatureIds::kTransitGraphId;
   NumMwmId const m_mwmId = kFakeNumMwmId;
   std::shared_ptr<EdgeEstimator> m_estimator;
   FakeGraph<Segment, FakeVertex, Segment> m_fake;

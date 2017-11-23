@@ -2,7 +2,6 @@
 
 #include "routing/base/routing_result.hpp"
 #include "routing/fake_ending.hpp"
-#include "routing/fake_feature_ids.hpp"
 #include "routing/fake_graph.hpp"
 #include "routing/fake_vertex.hpp"
 #include "routing/index_graph.hpp"
@@ -13,6 +12,8 @@
 #include "routing/world_graph.hpp"
 
 #include "routing_common/num_mwm_id.hpp"
+
+#include "indexer/fake_feature_ids.hpp"
 
 #include <cstddef>
 #include <cstdint>
@@ -131,7 +132,7 @@ private:
   void AddRealEdges(Segment const & segment, bool isOutgoing,
                     std::vector<SegmentEdge> & edges) const;
 
-  static uint32_t constexpr kFakeFeatureId = FakeFeatureIds::kIndexGraphStarterId;
+  static uint32_t constexpr kFakeFeatureId = feature::FakeFeatureIds::kIndexGraphStarterId;
   WorldGraph & m_graph;
   // Start segment id
   uint32_t m_startId;
