@@ -27545,14 +27545,59 @@
     en = Data is loading
     ru = Данные загружаются
 
+  [discovery_button_404_error_title]
+    en = Not found
+    ru = Ничего не найдено
+
+  [discovery_button_404_error_message]
+    en = Oops, we did not find anything interesting around.
+    ru = Ого, мы ничего не нашли интересного вокруг.
+
+  [booking_filters_check_in]
+    en = Check in
+    ru = Заезд
+
+  [booking_filters_check_out]
+    en = Check Out
+    ru = Отъезд
+
+  [booking_filters_offline]
+    en = Don't available offline.
+    ru = Не доступно без интернет.
+
+  [directions_finish]
+    en = Destination
+    ru = Место назначения
+
+  [directions_on_foot]
+    en = Walk %s
+    ru = Walk %s
+
   [entrance]
     en = Entrance
     ru = Вход
 
-  [discovery_button_404_error_title]
-    en = Not found
+  [exit]
+    en = Exit
+    ru = Выход
 
-  [discovery_button_404_error_message]
-    en = Translation is needed!!!!
-    ru = Ого, мы ничего не нашли интересного вокруг. Добавьте новые места если знаете.     
+  [coffee]
+    en = Coffee
+    ru = Кофе
+
+  [cleanness]
+    en = Cleanness
+    ru = Чистота
+
+  [crowded]
+    en = Crowded
+    ru = Многолюдность
+
+  [error_enter_correct_name]
+    en = Enter correct name
+    ru = Введите правильно название
+
+  [available]
+    en = Available
+    ru = Есть места
 
