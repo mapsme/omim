@@ -27551,7 +27551,7 @@
 
   [discovery_button_404_error_message]
     en = Oops, we did not find anything interesting around.
-    ru = Ого, мы ничего не нашли интересного вокруг.
+    ru = Ого, мы не нашли ничего интересного вокруг.
 
   [booking_filters_check_in]
     en = Check in
@@ -27562,8 +27562,8 @@
     ru = Отъезд
 
   [booking_filters_offline]
-    en = Don't available offline.
-    ru = Не доступно без интернет.
+    en = Not available online.
+    ru = Не доступно без интернета.
 
   [directions_finish]
     en = Destination
@@ -27571,7 +27571,7 @@
 
   [directions_on_foot]
     en = Walk %s
-    ru = Walk %s
+    ru = Пешком %s
 
   [entrance]
     en = Entrance
@@ -27590,14 +27590,14 @@
     ru = Чистота
 
   [crowded]
-    en = Crowded
+    en = Crowdedness
     ru = Многолюдность
 
   [error_enter_correct_name]
-    en = Enter correct name
+    en = Please, enter a correct name
     ru = Введите правильно название
 
-  [available]
+  [hotel_available]
     en = Available
     ru = Есть места
 
