@@ -16,6 +16,7 @@
     3.2.9 Berlin Subway Station
     3.2.10 Roma Subway Station
     3.2.11 New York Subway Station
+    3.2.12 Brussels Subway Station
  3.3 Tram Station
  3.4 Bus Station
  3.5 Ferry terminal
@@ -486,6 +487,12 @@ node|z15[railway=station][transport=subway][city=newyork] {icon-image: subway-ne
 node|z17-[railway=station][transport=subway][city=newyork] {icon-image: subway-newyork-l.svg;}
 node|z17-[railway=subway_entrance][city=newyork] {icon-image: subway-newyork-l.svg;}
 
+/* 3.2.12 Brussels Subway Station */
+node|z13[railway=station][transport=subway][city=brussel] {icon-image: subway-brussel-m.svg;icon-min-distance: 1;}
+node|z14[railway=station][transport=subway][city=brussel] {icon-image: subway-brussel-m.svg;}
+node|z15[railway=station][transport=subway][city=brussel] {icon-image: subway-brussel-m.svg;}
+node|z17-[railway=station][transport=subway][city=brussel] {icon-image: subway-brussel-l.svg;}
+node|z17-[railway=subway_entrance][city=brussel] {icon-image: subway-brussel-l.svg;}
 
 
 /* 3.3 Tram Station */
