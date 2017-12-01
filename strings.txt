@@ -27586,7 +27586,7 @@
     ru = Кофе
 
   [cleanness]
-    en = Cleanness
+    en = Cleanliness
     ru = Чистота
 
   [crowded]
@@ -27595,7 +27595,7 @@
 
   [error_enter_correct_name]
     en = Please, enter a correct name
-    ru = Введите правильно название
+    ru = Пожалуйста, введите правильно название
 
   [hotel_available]
     en = Available
