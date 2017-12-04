@@ -4,6 +4,7 @@
 #include "indexer/osm_editor.hpp"
 #include "indexer/postcodes_matcher.hpp"
 
+#include "base/control_flow.hpp"
 #include "base/macros.hpp"
 #include "base/string_utils.hpp"
 
@@ -134,10 +135,10 @@ void TryToFillDefaultNameFromAnyLanguage(StringUtf8Multilang & names)
   names.ForEach([&names](int8_t langCode, string const & name)
   {
     if (name.empty() || langCode == StringUtf8Multilang::kDefaultCode)
-      return true;
+      return base::ControlFlow::Continue;
 
     names.AddString(StringUtf8Multilang::kDefaultCode, name);
-    return false;
+    return base::ControlFlow::Break;
   });
 }
 
@@ -169,8 +170,6 @@ void RemoveFakesFromName(osm::FakeNames const & fakeNames, StringUtf8Multilang &
     auto const it = find(codesToExclude.begin(), codesToExclude.end(), langCode);
     if (it == codesToExclude.end())
       nameWithoutFakes.AddString(langCode, value);
-
-    return true;
   });
 
   name = nameWithoutFakes;
@@ -265,10 +264,10 @@ NamesDataSource EditableMapObject::GetNamesDataSource(StringUtf8Multilang const 
     ++mandatoryCount;
 
   // Push other languages.
-  source.ForEach([&names, mandatoryCount](int8_t const code, string const & name) -> bool {
+  source.ForEach([&names, mandatoryCount](int8_t const code, string const & name) {
     // Exclude default name.
     if (StringUtf8Multilang::kDefaultCode == code)
-      return true;
+      return;
 
     auto const mandatoryNamesEnd = names.begin() + mandatoryCount;
     // Exclude languages which are already in container (languages with top priority).
@@ -278,8 +277,6 @@ NamesDataSource EditableMapObject::GetNamesDataSource(StringUtf8Multilang const 
 
     if (mandatoryNamesEnd == it)
       names.emplace_back(code, name);
-
-    return true;
   });
 
   return result;
@@ -547,8 +544,6 @@ void EditableMapObject::RemoveBlankAndDuplicationsForDefault()
     auto const duplicate = langCode != StringUtf8Multilang::kDefaultCode && defaultName == name;
     if (!name.empty() && !duplicate)
       editedName.AddString(langCode, name);
-
-    return true;
   });
 
   m_name = editedName;

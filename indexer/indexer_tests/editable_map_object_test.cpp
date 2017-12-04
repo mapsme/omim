@@ -38,7 +38,6 @@ void CheckExpectations(StringUtf8Multilang const & s, vector<ExpectedName> const
 
     TEST_EQUAL(name, it->m_value, ());
     ++counter;
-    return true;
   });
 
   TEST_EQUAL(counter, expectations.size(), ("Unexpected count of names, expected ", expectations.size(),
@@ -579,10 +578,7 @@ UNIT_TEST(EditableMapObject_RemoveBlankNames)
 {
   auto const getCountOfNames = [](StringUtf8Multilang const & names) {
     size_t counter = 0;
-    names.ForEach([&counter](int8_t const, string const &) {
-      ++counter;
-      return true;
-    });
+    names.ForEach([&counter](int8_t const, string const &) { ++counter; });
 
     return counter;
   };

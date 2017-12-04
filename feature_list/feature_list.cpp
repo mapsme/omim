@@ -120,11 +120,7 @@ string BuildUniqueId(ms::LatLon const & coords, string const & name)
 void AppendNames(FeatureType const & f, vector<string> & columns)
 {
   vector<string> names(kLangCount);
-  f.GetNames().ForEach([&names](int8_t code, string const & name) -> bool
-  {
-    names[code] = string(name);
-    return true;
-  });
+  f.GetNames().ForEach([&names](int8_t code, string const & name) { names[code] = name; });
   columns.insert(columns.end(), next(names.begin()), names.end());
 }
 

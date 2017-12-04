@@ -514,14 +514,13 @@ void Ranker::MakeRankerResults(Geocoder::Params const & geocoderParams,
 void Ranker::GetBestMatchName(FeatureType const & f, string & name) const
 {
   KeywordLangMatcher::Score bestScore;
-  auto bestNameFinder = [&](int8_t lang, string const & s) -> bool {
+  auto bestNameFinder = [&](int8_t lang, string const & s) {
     auto const score = m_keywordsScorer.CalcScore(lang, s);
     if (bestScore < score)
     {
       bestScore = score;
       name = s;
     }
-    return true;
   };
   UNUSED_VALUE(f.ForEachName(bestNameFinder));
 }

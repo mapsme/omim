@@ -161,7 +161,7 @@ struct FeatureNameInserter
     m_keyValuePairs.emplace_back(key, m_val);
   }
 
-  bool operator()(signed char lang, string const & name) const
+  void operator()(signed char lang, string const & name) const
   {
     strings::UniString const uniName = search::NormalizeAndSimplifyString(name);
 
@@ -200,8 +200,6 @@ struct FeatureNameInserter
       for (auto const & token : tokens)
         AddToken(lang, token);
     }
-
-    return true;
   }
 };
 

@@ -127,7 +127,6 @@ editor::XMLFeature FeatureType::ToXML(bool serializeType) const
   ForEachName([&feature](uint8_t const & lang, string const & name)
               {
                 feature.SetName(lang, name);
-                return true;
               });
 
   string const house = GetHouseNumber();
@@ -377,11 +376,9 @@ void FeatureType::SetNames(StringUtf8Multilang const & newNames)
 {
   m_params.name.Clear();
   // Validate passed string to clean up empty names (if any).
-  newNames.ForEach([this](int8_t langCode, string const & name) -> bool
-  {
+  newNames.ForEach([this](int8_t langCode, string const & name) {
     if (!name.empty())
       m_params.name.AddString(langCode, name);
-    return true;
   });
 
   if (m_params.name.IsEmpty())
