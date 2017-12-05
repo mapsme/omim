@@ -23,8 +23,8 @@ public:
     virtual void RunUITask(std::function<void()> fn) = 0;
     virtual void SetHotelDisplacementMode() = 0;
     virtual bool IsViewportSearchActive() const = 0;
-    virtual void ShowViewportSearchResults(Results const & results) = 0;
-    virtual void ClearViewportSearchResults() = 0;
+    virtual void ShowViewportSearchResults(bool clear, Results::ConstIter begin,
+                                           Results::ConstIter end) = 0;
   };
 
   using OnResults = SearchParams::OnResults;
@@ -38,9 +38,10 @@ private:
   OnResults m_onResults;
 
   bool m_hotelsModeSet;
-  bool m_firstCall;
 
   HotelsClassifier m_hotelsClassif;
+
+  bool m_firstCall;
   size_t m_lastResultsSize;
 };
 }  // namespace search
