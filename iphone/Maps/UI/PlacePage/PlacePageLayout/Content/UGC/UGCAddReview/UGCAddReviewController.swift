@@ -28,10 +28,20 @@ final class UGCAddReviewController: MWMTableViewController {
   private var onSave: ((Model) -> Void)!
   private var sections: [Sections] = []
 
+  private var isReviewValid: Bool {
+    for ratingStars in model.ratings {
+      if ratingStars.value.isZero {
+        return false
+      }
+    }
+    return true
+  }
+
   override func viewDidLoad() {
     super.viewDidLoad()
     configNavBar()
     configTableView()
+    checkReviewIsValid()
   }
 
   override func backTap() {
@@ -72,6 +82,10 @@ final class UGCAddReviewController: MWMTableViewController {
     }
   }
 
+  private func checkReviewIsValid() {
+    navigationItem.rightBarButtonItem?.isEnabled = isReviewValid
+  }
+
   override func numberOfSections(in _: UITableView) -> Int {
     return sections.count
   }
@@ -87,7 +101,7 @@ final class UGCAddReviewController: MWMTableViewController {
     switch sections[indexPath.section] {
     case .ratings:
       let cell = tableView.dequeueReusableCell(withCellClass: UGCAddReviewRatingCell.self, indexPath: indexPath) as! UGCAddReviewRatingCell
-      cell.model = model.ratings[indexPath.row]
+      cell.config(model: model.ratings[indexPath.row], delegate: self)
       return cell
     case .text:
       let cell = tableView.dequeueReusableCell(withCellClass: UGCAddReviewTextCell.self, indexPath: indexPath) as! UGCAddReviewTextCell
@@ -95,5 +109,11 @@ final class UGCAddReviewController: MWMTableViewController {
       textCell = cell
       return cell
     }
+  }
+}
+
+extension UGCAddReviewController: UGCAddReviewRatingCellDelegate {
+  func onFinishedTouchingRatingView() {
+    checkReviewIsValid()
   }
 }
