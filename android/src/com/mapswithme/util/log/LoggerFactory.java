@@ -54,9 +54,10 @@ public class LoggerFactory
 
   public boolean isFileLoggingEnabled()
   {
-    SharedPreferences prefs = MwmApplication.prefs();
-    String enableLoggingKey = MwmApplication.get().getString(R.string.pref_enable_logging);
-    return prefs.getBoolean(enableLoggingKey, BuildConfig.BUILD_TYPE.equals("beta"));
+    // SharedPreferences prefs = MwmApplication.prefs();
+    // String enableLoggingKey = MwmApplication.get().getString(R.string.pref_enable_logging);
+    // return prefs.getBoolean(enableLoggingKey, BuildConfig.BUILD_TYPE.equals("beta"));
+    return false;
   }
 
   public void setFileLoggingEnabled(boolean enabled)

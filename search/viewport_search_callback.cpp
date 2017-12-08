@@ -17,9 +17,10 @@ ViewportSearchCallback::ViewportSearchCallback(Delegate & delegate, OnResults co
 
 void ViewportSearchCallback::operator()(Results const & results)
 {
+  LOG(LINFO, ("ViewportSearchCallback::operator()"));
+
   ASSERT_LESS_OR_EQUAL(m_lastResultsSize, results.GetCount(), ());
   m_hotelsClassif.Add(results.begin() + m_lastResultsSize, results.end());
-  m_lastResultsSize = results.GetCount();
 
   if (!m_hotelsModeSet && m_hotelsClassif.IsHotelResults())
   {
@@ -49,20 +50,21 @@ void ViewportSearchCallback::operator()(Results const & results)
     auto & delegate = m_delegate;
     bool const firstCall = m_firstCall;
 
-    m_delegate.RunUITask([&delegate, firstCall, results]() {
+    auto const lastResultsSize = m_lastResultsSize;
+    m_delegate.RunUITask([&delegate, firstCall, results, lastResultsSize]() {
       if (!delegate.IsViewportSearchActive())
         return;
 
-      if (firstCall)
-        delegate.ClearViewportSearchResults();
-
-      delegate.ShowViewportSearchResults(results);
+      LOG(LINFO, ("Showing:", distance(results.begin() + lastResultsSize, results.end())));
+      delegate.ShowViewportSearchResults(firstCall, results.begin() + lastResultsSize,
+                                         results.end());
     });
   }
 
+  m_lastResultsSize = results.GetCount();
+  m_firstCall = false;
+
   if (m_onResults)
     m_onResults(results);
-
-  m_firstCall = false;
 }
 }  // namespace search
