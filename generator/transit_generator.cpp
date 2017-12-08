@@ -416,7 +416,7 @@ void GraphData::CalculateBestPedestrianSegments(string const & mwmPath, TCountry
   // Creating IndexRouter.
   SingleMwmIndex index(mwmPath);
 
-  auto infoGetter = storage::CountryInfoReader::CreateCountryInfoReader(GetPlatform());
+  auto infoGetter = storage::CountryInfoReader::CreateCountryInfoReaderOneComponentMwms(GetPlatform());
   CHECK(infoGetter, ());
 
   auto const countryFileGetter = [&infoGetter](m2::PointD const & pt) {
