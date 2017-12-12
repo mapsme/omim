@@ -882,7 +882,6 @@ void Framework::FillInfoFromFeatureType(FeatureType const & ft, place_page::Info
     info.SetSponsoredType(place_page::SponsoredType::Viator);
     auto const & sponsoredId = info.GetMetadata().Get(feature::Metadata::FMD_SPONSORED_ID);
     info.SetSponsoredUrl(viator::Api::GetCityUrl(sponsoredId));
-    info.SetPreviewIsExtended();
   }
   else if (ftypes::IsHotelChecker::Instance()(ft))
   {
@@ -896,7 +895,6 @@ void Framework::FillInfoFromFeatureType(FeatureType const & ft, place_page::Info
   {
     info.SetSponsoredType(SponsoredType::Cian);
     info.SetSponsoredUrl(cian::Api::GetMainPageUrl());
-    info.SetPreviewIsExtended();
   }
   else if (ftypes::IsThorChecker::Instance()(ft) &&
            !info.GetMetadata().Get(feature::Metadata::FMD_RATING).empty())
