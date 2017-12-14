@@ -15,12 +15,19 @@ final class UGCAddReviewRatingCell: MWMTableViewCell {
     }
   }
 
-  var model: UGCRatingStars! {
+  private weak var delegate: UGCAddReviewRatingCellDelegate?
+
+  private var model: UGCRatingStars! {
     didSet {
       titleLabel.text = L(model.title)
       ratingView.value = model.value
       ratingView.starsCount = 5
     }
+  }
+
+  func config(model: UGCRatingStars, delegate: UGCAddReviewRatingCellDelegate) {
+    self.model = model
+    self.delegate = delegate
   }
 }
 
@@ -29,5 +36,7 @@ extension UGCAddReviewRatingCell: RatingViewDelegate {
     model.value = view.value
   }
 
-  func didFinishTouchingRatingView(_: RatingView) {}
+  func didFinishTouchingRatingView(_: RatingView) {
+    delegate?.onFinishedTouchingRatingView()
+  }
 }
