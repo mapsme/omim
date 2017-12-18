@@ -1021,6 +1021,7 @@ railway|station|subway|paris
 railway|station|subway|madrid
 railway|station|subway|roma
 railway|station|subway|spb
+railway|station|subway|brussel
 railway|subway_entrance|london
 railway|subway_entrance|newyork
 railway|subway_entrance|moscow
@@ -1032,6 +1033,7 @@ railway|subway_entrance|paris
 railway|subway_entrance|madrid
 railway|subway_entrance|roma
 railway|subway_entrance|spb
+railway|subway_entrance|brussel
 aerialway|drag_lift
 amenity|dentist
 amenity|clinic
