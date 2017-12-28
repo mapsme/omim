@@ -1,3 +1,4 @@
+#include "indexer/cities.hpp"
 #include "indexer/classificator.hpp"
 #include "indexer/drules_selector.hpp"
 #include "indexer/drules_selector_parser.hpp"
@@ -167,6 +168,14 @@ bool GetRating(FeatureType const & ft, double & rating)
   return true;
 }
 
+// Feature tag value evaluator for tag 'rating'
+bool GetCity(FeatureType const & ft, string & city)
+{
+  string cityMeta = ft.GetMetadata().Get(feature::Metadata::FMD_CITY);
+  city = feature::GetCityName(static_cast<feature::ECity>(cityMeta[0]));
+  return true;
+}
+
 // Add new tag value evaluator here
 
 }  // namespace
@@ -228,6 +237,10 @@ unique_ptr<ISelector> ParseSelector(string const & str)
       return unique_ptr<ISelector>();
     }
     return make_unique<TypeSelector>(type, e.m_operator);
+  }
+  else if (e.m_tag == "city")
+  {
+    return make_unique<Selector<string>>(&GetCity, e.m_operator, e.m_value);
   }
 
   // Add new tag here

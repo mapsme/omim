@@ -15,6 +15,8 @@ set(
   cell_id.hpp
   centers_table.cpp
   centers_table.hpp
+  cities.hpp
+  cities.cpp
   cities_boundaries_serdes.hpp
   city_boundary.hpp
   classificator.cpp

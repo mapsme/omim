@@ -233,6 +233,13 @@ string MetadataTagProcessorImpl::ValidateAndFormat_denomination(string const & v
   return v;
 }
 
+string MetadataTagProcessorImpl::ValidateAndFormat_city(string const & v) const
+{
+  if (v.length() == 1)
+    return v;
+  return string();
+}
+
 string MetadataTagProcessorImpl::ValidateAndFormat_cuisine(string v) const
 {
   strings::MakeLowerCaseInplace(v);

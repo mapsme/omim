@@ -128,6 +128,7 @@ public:
     FMD_RATING = 26,
     FMD_BANNER_URL = 27,
     FMD_LEVEL = 28,
+    FMD_CITY = 29,
     FMD_COUNT
   };
 
