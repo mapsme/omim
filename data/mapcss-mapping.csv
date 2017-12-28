@@ -310,7 +310,7 @@ highway|primary|tunnel;[highway=primary][tunnel?];;name;int_name;309;
 highway|primary_link|bridge;[highway=primary_link][bridge?];;name;int_name;310;
 landuse|conservation|private;[landuse=conservation][access=private];x;name;int_name;311;
 sport|equestrian;312;
-tourism|information|office;[tourism=information][office];;name;int_name;313;
+tourism|information|office;[tourism=information][information=office];;name;int_name;313;
 highway|footway|hiking;[highway=footway][sac_scale=hiking];;name;int_name;314;
 aeroway|gate;315;
 railway|preserved;316;
@@ -1098,7 +1098,7 @@ shop|wine;1097;
 tourism|chalet;1098;
 tourism|information|board;[tourism=information][information=board];;name;int_name;1099;
 tourism|information|map;[tourism=information][information=map];;name;int_name;1100;
-tourism|information|office;[tourism=information][information=office];x;name;int_name;1101;tourism|information|office
+tourism|information|office_old;[tourism=information][office];x;name;int_name;1101;tourism|information|office
 traffic_calming|bump;1102;
 traffic_calming|hump;1103;
 shop|car_parts;1104;
