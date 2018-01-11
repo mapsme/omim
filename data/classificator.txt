@@ -708,28 +708,17 @@ world  +
             light_rail  -
             monorail  -
             subway  +
-                barcelona  -
-                berlin  -
                 blue  -
                 brown  -
                 darkgreen  -
                 gray  -
                 green  -
                 grey  -
-                kiev  -
                 lightblue  -
                 lightgreen  -
-                london  -
-                madrid  -
-                minsk  -
-                moscow  -
-                newyork  -
                 orange  -
-                paris  -
                 purple  -
                 red  -
-                roma  -
-                spb  -
                 violet  -
                 yellow  -
                 {}
@@ -751,19 +740,7 @@ world  +
             violet  -
             yellow  -
             {}
-        subway_entrance  +
-            barcelona  -
-            berlin  -
-            kiev  -
-            london  -
-            madrid  -
-            minsk  -
-            moscow  -
-            newyork  -
-            paris  -
-            roma  -
-            spb  -
-            {}
+        subway_entrance  -
         tram  +
             bridge  -
             tunnel  -
