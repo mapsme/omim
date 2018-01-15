@@ -47333,28 +47333,88 @@ cont {
     scale: 16
     area {
       color: 2499106
-      priority: -15903
+      priority: -15053
     }
   }
   element {
     scale: 17
     area {
       color: 2499106
-      priority: -15903
+      priority: -15053
+    }
+    symbol {
+      name: "bus-l"
+      priority: 16947
+    }
+    caption {
+      primary {
+        height: 11
+        color: 8947848
+        stroke_color: 437326080
+        offset_y: 1
+      }
+      secondary {
+        height: 10
+        color: 8947848
+        stroke_color: 437326080
+        offset_y: 1
+        text: "int_name"
+      }
+      priority: 15947
     }
   }
   element {
     scale: 18
     area {
       color: 2499106
-      priority: -15903
+      priority: -15053
+    }
+    symbol {
+      name: "bus-l"
+      priority: 16947
+    }
+    caption {
+      primary {
+        height: 11
+        color: 8947848
+        stroke_color: 437326080
+        offset_y: 1
+      }
+      secondary {
+        height: 9
+        color: 8947848
+        stroke_color: 437326080
+        offset_y: 1
+        text: "int_name"
+      }
+      priority: 15947
     }
   }
   element {
     scale: 19
     area {
       color: 2499106
-      priority: -15903
+      priority: -15053
+    }
+    symbol {
+      name: "bus-l"
+      priority: 16947
+    }
+    caption {
+      primary {
+        height: 11
+        color: 8947848
+        stroke_color: 437326080
+        offset_y: 1
+      }
+      secondary {
+        height: 9
+        color: 8947848
+        stroke_color: 437326080
+        offset_y: 1
+        text: "int_name"
+      }
+      priority: 15947
     }
   }
 }
