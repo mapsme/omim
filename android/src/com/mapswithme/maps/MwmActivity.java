@@ -65,9 +65,9 @@ import com.mapswithme.maps.routing.RoutingBottomMenuListener;
 import com.mapswithme.maps.routing.RoutingController;
 import com.mapswithme.maps.routing.RoutingPlanFragment;
 import com.mapswithme.maps.routing.RoutingPlanInplaceController;
+import com.mapswithme.maps.search.FilterActivity;
 import com.mapswithme.maps.search.FloatingSearchToolbarController;
 import com.mapswithme.maps.search.HotelsFilter;
-import com.mapswithme.maps.search.HotelsFilterView;
 import com.mapswithme.maps.search.NativeSearchListener;
 import com.mapswithme.maps.search.SearchActivity;
 import com.mapswithme.maps.search.SearchEngine;
@@ -559,27 +559,28 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   private void initFilterViews()
   {
-    HotelsFilterView hotelsFilterView = (HotelsFilterView) findViewById(R.id.hotels_filter);
     View frame = findViewById(R.id.filter_frame);
-    if (frame != null && hotelsFilterView != null)
+    if (frame != null)
     {
-      mFilterController = new SearchFilterController(
-          frame, hotelsFilterView, new SearchFilterController.DefaultFilterListener()
+      mFilterController = new SearchFilterController(frame, new SearchFilterController
+          .DefaultFilterListener()
       {
         @Override
-        public void onViewClick()
+        public void onShowOnMapClick()
         {
           showSearch(mSearchController.getQuery());
         }
 
         @Override
-        public void onFilterClear()
+        public void onFilterClick()
         {
-          runSearch();
+          HotelsFilter filter = mFilterController != null ? mFilterController.getFilter() : null;
+          FilterActivity.startForResult(MwmActivity.this, filter,
+                                        FilterActivity.REQ_CODE_FILTER);
         }
 
         @Override
-        public void onFilterDone()
+        public void onFilterClear()
         {
           runSearch();
         }
@@ -605,27 +606,17 @@ public class MwmActivity extends BaseMwmFragmentActivity
     final Toolbar toolbar = (Toolbar) mPositionChooser.findViewById(R.id.toolbar_position_chooser);
     UiUtils.extendViewWithStatusBar(toolbar);
     UiUtils.showHomeUpButton(toolbar);
-    toolbar.setNavigationOnClickListener(new OnClickListener()
-    {
-      @Override
-      public void onClick(View v)
-      {
-        hidePositionChooser();
-      }
-    });
-    mPositionChooser.findViewById(R.id.done).setOnClickListener(new OnClickListener()
-    {
-      @Override
-      public void onClick(View v)
-      {
-        Statistics.INSTANCE.trackEditorLaunch(true);
-        hidePositionChooser();
-        if (Framework.nativeIsDownloadedMapAtScreenCenter())
-          startActivity(new Intent(MwmActivity.this, FeatureCategoryActivity.class));
-        else
-          UiUtils.showAlertDialog(MwmActivity.this, R.string.message_invalid_feature_position);
-      }
-    });
+    toolbar.setNavigationOnClickListener(v -> hidePositionChooser());
+    mPositionChooser.findViewById(R.id.done).setOnClickListener(
+        v ->
+        {
+          Statistics.INSTANCE.trackEditorLaunch(true);
+          hidePositionChooser();
+          if (Framework.nativeIsDownloadedMapAtScreenCenter())
+            startActivity(new Intent(MwmActivity.this, FeatureCategoryActivity.class));
+          else
+            UiUtils.showAlertDialog(MwmActivity.this, R.string.message_invalid_feature_position);
+        });
     UiUtils.hide(mPositionChooser);
   }
 
@@ -1059,6 +1050,9 @@ public class MwmActivity extends BaseMwmFragmentActivity
       case REQ_CODE_DISCOVERY:
         handleDiscoveryResult(data);
         break;
+      case FilterActivity.REQ_CODE_FILTER:
+        handleFilterResult(data);
+        break;
     }
   }
 
@@ -1077,6 +1071,15 @@ public class MwmActivity extends BaseMwmFragmentActivity
       onRouteToDiscoveredObject(destination);
     else
       onShowDiscoveredObject(destination);
+  }
+
+  private void handleFilterResult(@Nullable Intent data)
+  {
+    if (data == null || mFilterController == null)
+      return;
+
+    mFilterController.setFilter(data.getParcelableExtra(FilterActivity.EXTRA_FILTER));
+    runSearch();
   }
 
   @Override
@@ -1292,9 +1295,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
   @Override
   public void onBackPressed()
   {
-    if (mFilterController != null && mFilterController.onBackPressed())
-      return;
-
     if (getCurrentMenu().close(true))
     {
       mFadeView.fadeOut();
