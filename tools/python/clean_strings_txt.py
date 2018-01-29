@@ -22,6 +22,7 @@ run this script with the -h option.
 OMIM_ROOT = ""
 
 MACRO_RE =  re.compile('L\(.*?@\"(.*?)\"\)')
+SWIFT_RE = re.compile("\"(.*)\"")
 XML_RE = re.compile("value=\"(.*?)\"")
 ANDROID_JAVA_RE = re.compile("R\.string\.([\w_]*)")
 ANDROID_XML_RE = re.compile("@string/(.*?)\W")
@@ -35,7 +36,7 @@ HARDCODED_COLORS = [
 
 
 def exec_shell(test, *flags):
-    spell = ["{0} {1}".format(test, list(*flags))]
+    spell = ["{0} {1}".format(test, " ".join(flags))]
 
     process = subprocess.Popen(
         spell,
@@ -48,11 +49,29 @@ def exec_shell(test, *flags):
     return filter(None, out.splitlines())
 
 
+def grep_fn(pattern, folder):
+    return exec_shell("grep -r -I '{pat}' {omim}/{folder}".format(
+        pat=pattern, folder=folder, omim=OMIM_ROOT
+    ))
+
+
 def grep_ios():
     logging.info("Grepping ios")
+    # ret = grep_fn("L(\|localizedText\|localizedPlaceholder", "iphone")
+
     grep = "grep -r -I 'L(\|localizedText\|localizedPlaceholder' {0}/iphone/*".format(OMIM_ROOT)
     ret = exec_shell(grep)
-    return filter_ios_grep(ret)
+
+    filtered = filter_ios_grep(ret)
+    filtered.update(grep_swift())
+    return filtered
+
+
+def grep_swift():
+    logging.info("Grepping swift files")
+    grep = "grep -r -I '\stitle:\|\stext:\|\sbuttonTitle:' -r {0}/iphone/*'".format(OMIM_ROOT)
+    ret = exec_shell(grep)
+    return filter_swift(ret)
 
 
 def grep_android():
@@ -88,6 +107,10 @@ def filter_ios_grep(strings):
     filtered.update(parenthesize(HARDCODED_CATEGORIES))
     filtered.update(parenthesize(HARDCODED_COLORS))
     return filtered
+
+
+def filter_swift(strings):
+    return parenthesize(strings_from_grepped(strings, SWIFT_RE))
 
 
 def process_ternary_operators(filtered):
