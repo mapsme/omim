@@ -57,10 +57,7 @@ def grep_fn(pattern, folder):
 
 def grep_ios():
     logging.info("Grepping ios")
-    # ret = grep_fn("L(\|localizedText\|localizedPlaceholder", "iphone")
-
-    grep = "grep -r -I 'L(\|localizedText\|localizedPlaceholder' {0}/iphone/*".format(OMIM_ROOT)
-    ret = exec_shell(grep)
+    ret = grep_fn("L(\|localizedText\|localizedPlaceholder", "iphone")
 
     filtered = filter_ios_grep(ret)
     filtered.update(grep_swift())
@@ -69,19 +66,18 @@ def grep_ios():
 
 def grep_swift():
     logging.info("Grepping swift files")
-    grep = "grep -r -I '\stitle:\|\stext:\|\sbuttonTitle:' -r {0}/iphone/*'".format(OMIM_ROOT)
-    ret = exec_shell(grep)
+    ret = grep_fn("\stitle:\|\stext:\|\sbuttonTitle:", "iphone")
     return filter_swift(ret)
 
 
 def grep_android():
     logging.info("Grepping android")
-    grep = "grep -r -I 'R.string.' {0}/android/src".format(OMIM_ROOT)
-    ret = android_grep_wrapper(grep, ANDROID_JAVA_RE)
-    grep = "grep -r -I '@string/' {0}/android/res".format(OMIM_ROOT)
-    ret.update(android_grep_wrapper(grep, ANDROID_XML_RE))
-    grep = "grep -r -I '@string/' {0}/android/AndroidManifest.xml".format(OMIM_ROOT)
-    ret.update(android_grep_wrapper(grep, ANDROID_XML_RE))
+    grep = grep_fn("R.string.", "android/src")
+    ret = strings_from_grepped(grep, ANDROID_JAVA_RE)
+    grep = grep_fn("@string/", "android/res")
+    ret.update(strings_from_grepped(grep, ANDROID_XML_RE))
+    grep = grep_fn("@string/", "android/AndroidManifest.xml")
+    ret.update(strings_from_grepped(grep, ANDROID_XML_RE))
 
     return parenthesize(ret)
 
@@ -93,11 +89,6 @@ def grep_ios_candidates():
 
     strs = strings_from_grepped(ret, IOS_CANDIDATES_RE)
     return strs
-
-
-def android_grep_wrapper(grep, regex):
-    grepped = exec_shell(grep)
-    return strings_from_grepped(grepped, regex)
 
 
 def filter_ios_grep(strings):
@@ -274,8 +265,9 @@ def do_single(args):
             args.output, args.output
         )
 
+
 def do_missing(args):
-    ios = set(grep_ios())
+    ios = grep_ios()
     strings_txt_keys = set(StringsTxt().translations.keys())
     missing = ios - strings_txt_keys
 
