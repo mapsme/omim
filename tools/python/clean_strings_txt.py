@@ -35,6 +35,10 @@ HARDCODED_COLORS = [
     "red", "yellow", "blue", "green", "purple", "orange", "brown", "pink"
 ]
 
+SACRED_PREFIXES = [  # Strings whose keys begin with this should be left in
+    "search_hotel_filter_",
+]
+
 UGC_CRITERIA = None
 
 
@@ -133,10 +137,26 @@ def parenthesize(strings):
     return set(map(lambda s: "[{0}]".format(s), strings))
 
 
+def has_sacred_prefix(string):
+    for prefix in SACRED_PREFIXES:
+        if string.strip("[]").startswith(prefix):
+            return True
+    return False
+
+
+def with_sacred_prefixes(strings_txt):
+    # translations = strings_txt.translations
+    keys = filter(has_sacred_prefix, strings_txt.keys_in_order)
+    logging.info("Sacred prefixes: {}".format(SACRED_PREFIXES))
+    logging.info("Strings with sacred prefixes: {}".format(list(keys)))
+    return keys
+
+
 def write_filtered_strings_txt(filtered, filepath, languages=None):
     logging.info("Writing strings to file {0}".format(filepath))
     strings_txt = StringsTxt()
-    strings_dict = {key : dict(strings_txt.translations[key]) for key in filtered}
+    strings_dict = {key: dict(strings_txt.translations[key]) for key in filtered}
+    # strings_dict.update(with_sacred_prefixes(strings_txt))
     strings_txt.translations = strings_dict
     strings_txt.comments_and_tags = {}
     strings_txt.write_formatted(filepath, languages=languages)
@@ -226,12 +246,21 @@ def get_args():
 
 
 def do_multiple(args):
+    strings_txt = StringsTxt()
+    sacred_prefixes = with_sacred_prefixes(strings_txt)
+
+    ios = grep_ios()
+    ios.update(sacred_prefixes)
     write_filtered_strings_txt(
-        grep_ios(), "{0}/ios_strings.txt".format(OMIM_ROOT), args.langs
+        ios, "{0}/ios_strings.txt".format(OMIM_ROOT), args.langs
     )
+
+    android = grep_android()
+    android.update(sacred_prefixes)
     write_filtered_strings_txt(
-        grep_android(), "{0}/android_strings.txt".format(OMIM_ROOT), args.langs
+        android, "{0}/android_strings.txt".format(OMIM_ROOT), args.langs
     )
+
     if args.generate:
         print("Going to generate locs")
         exec_shell(
@@ -271,12 +300,12 @@ def do_single(args):
     filtered.update(android)
 
     strings_txt = StringsTxt()
-    strings_txt.translations = {key: dict(strings_txt.translations[key]) for key in filtered}
+    filtered.update(with_sacred_prefixes(strings_txt))
 
     strings_txt.comments_and_tags = new_comments_and_tags(strings_txt, filtered, new_tags)
 
     path = args.output if isabs(args.output) else "{0}/{1}".format(OMIM_ROOT, args.output)
-    strings_txt.write_formatted(languages=args.langs, target_file=path)
+    write_filtered_strings_txt(filtered, path, languages=args.langs)
 
     if args.generate:
         exec_shell(
