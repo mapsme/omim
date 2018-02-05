@@ -22,7 +22,7 @@ run this script with the -h option.
 
 OMIM_ROOT = ""
 
-MACRO_RE = re.compile('L\(.*?@\"(.*?)\"\)')
+MACRO_RE = re.compile('L\(.*?@?\"(.*?)\"\)')
 SWIFT_RE = re.compile("\"(.*)\"")
 XML_RE = re.compile("value=\"(.*?)\"")
 ANDROID_JAVA_RE = re.compile("R\.string\.([\w_]*)")
