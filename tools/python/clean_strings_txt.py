@@ -2,6 +2,7 @@
 
 from __future__ import print_function
 
+import csv
 import logging
 import re
 import subprocess
@@ -21,7 +22,8 @@ run this script with the -h option.
 
 OMIM_ROOT = ""
 
-MACRO_RE =  re.compile('L\(.*?@\"(.*?)\"\)')
+MACRO_RE = re.compile('L\(.*?@?\"(.*?)\"\)')
+SWIFT_RE = re.compile("\"(.*)\"")
 XML_RE = re.compile("value=\"(.*?)\"")
 ANDROID_JAVA_RE = re.compile("R\.string\.([\w_]*)")
 ANDROID_XML_RE = re.compile("@string/(.*?)\W")
@@ -33,9 +35,15 @@ HARDCODED_COLORS = [
     "red", "yellow", "blue", "green", "purple", "orange", "brown", "pink"
 ]
 
+SACRED_PREFIXES = [  # Strings whose keys begin with this should be left in
+    "search_hotel_filter_",
+]
+
+UGC_CRITERIA = None
+
 
 def exec_shell(test, *flags):
-    spell = ["{0} {1}".format(test, list(*flags))]
+    spell = ["{0} {1}".format(test, " ".join(flags))]
 
     process = subprocess.Popen(
         spell,
@@ -48,21 +56,44 @@ def exec_shell(test, *flags):
     return filter(None, out.splitlines())
 
 
+def grep_fn(pattern, folder):
+    return exec_shell("grep -r -I '{pat}' {omim}/{folder}".format(
+        pat=pattern, folder=folder, omim=OMIM_ROOT
+    ))
+
+
 def grep_ios():
     logging.info("Grepping ios")
-    grep = "grep -r -I 'L(\|localizedText\|localizedPlaceholder' {0}/iphone/*".format(OMIM_ROOT)
-    ret = exec_shell(grep)
-    return filter_ios_grep(ret)
+    ret = grep_fn("L(\|localizedText\|localizedPlaceholder", "iphone")
+
+    filtered = filter_ios_grep(ret)
+    filtered.update(grep_swift())
+    return filtered
+
+
+def grep_swift():
+    logging.info("Grepping swift files")
+    ret = grep_fn("\stitle:\|\stext:\|\sbuttonTitle:", "iphone")
+    return filter_swift(ret)
+
+
+def update_with_hardcoded(dic):
+    dic.update(parenthesize(HARDCODED_CATEGORIES))
+    dic.update(parenthesize(UGC_CRITERIA))
+    dic.update(parenthesize(HARDCODED_COLORS))
+
+    return dic
 
 
 def grep_android():
     logging.info("Grepping android")
-    grep = "grep -r -I 'R.string.' {0}/android/src".format(OMIM_ROOT)
-    ret = android_grep_wrapper(grep, ANDROID_JAVA_RE)
-    grep = "grep -r -I '@string/' {0}/android/res".format(OMIM_ROOT)
-    ret.update(android_grep_wrapper(grep, ANDROID_XML_RE))
-    grep = "grep -r -I '@string/' {0}/android/AndroidManifest.xml".format(OMIM_ROOT)
-    ret.update(android_grep_wrapper(grep, ANDROID_XML_RE))
+    grep = grep_fn("R.string.", "android/src")
+    ret = strings_from_grepped(grep, ANDROID_JAVA_RE)
+    grep = grep_fn("@string/", "android/res")
+    ret.update(strings_from_grepped(grep, ANDROID_XML_RE))
+    grep = grep_fn("@string/", "android/AndroidManifest.xml")
+    ret.update(strings_from_grepped(grep, ANDROID_XML_RE))
+    ret = update_with_hardcoded(ret)
 
     return parenthesize(ret)
 
@@ -76,18 +107,16 @@ def grep_ios_candidates():
     return strs
 
 
-def android_grep_wrapper(grep, regex):
-    grepped = exec_shell(grep)
-    return strings_from_grepped(grepped, regex)
-
-
 def filter_ios_grep(strings):
     filtered = strings_from_grepped(strings, MACRO_RE)
     filtered = parenthesize(process_ternary_operators(filtered))
     filtered.update(parenthesize(strings_from_grepped(strings, XML_RE)))
-    filtered.update(parenthesize(HARDCODED_CATEGORIES))
-    filtered.update(parenthesize(HARDCODED_COLORS))
+    filtered = update_with_hardcoded(filtered)
     return filtered
+
+
+def filter_swift(strings):
+    return parenthesize(strings_from_grepped(strings, SWIFT_RE))
 
 
 def process_ternary_operators(filtered):
@@ -108,10 +137,26 @@ def parenthesize(strings):
     return set(map(lambda s: "[{0}]".format(s), strings))
 
 
+def has_sacred_prefix(string):
+    for prefix in SACRED_PREFIXES:
+        if string.strip("[]").startswith(prefix):
+            return True
+    return False
+
+
+def with_sacred_prefixes(strings_txt):
+    # translations = strings_txt.translations
+    keys = filter(has_sacred_prefix, strings_txt.keys_in_order)
+    logging.info("Sacred prefixes: {}".format(SACRED_PREFIXES))
+    logging.info("Strings with sacred prefixes: {}".format(list(keys)))
+    return keys
+
+
 def write_filtered_strings_txt(filtered, filepath, languages=None):
     logging.info("Writing strings to file {0}".format(filepath))
     strings_txt = StringsTxt()
-    strings_dict = {key : dict(strings_txt.translations[key]) for key in filtered}
+    strings_dict = {key: dict(strings_txt.translations[key]) for key in filtered}
+    # strings_dict.update(with_sacred_prefixes(strings_txt))
     strings_txt.translations = strings_dict
     strings_txt.comments_and_tags = {}
     strings_txt.write_formatted(filepath, languages=languages)
@@ -181,24 +226,41 @@ def get_args():
         help="Path to the root of the OMIM project"
     )
 
+    omim_root = find_omim()
     parser.add_argument(
         "-ct", "--categories",
         dest="hardcoded_cagegories",
-        default="{0}/data/hardcoded_categories.txt".format(find_omim()),
+        default="{0}/data/hardcoded_categories.txt".format(omim_root),
         help="""Path to the list of the categories that are displayed in the
         interface, but are not taken from strings.txt"""
+    )
+
+    parser.add_argument(
+        "-uc" "--ugc-criteria",
+        dest="ugc_criteria",
+        default="{0}/data/ugc_types.csv".format(omim_root),
+        help="""Path to the ugc criteria file"""
     )
 
     return parser.parse_args()
 
 
 def do_multiple(args):
+    strings_txt = StringsTxt()
+    sacred_prefixes = with_sacred_prefixes(strings_txt)
+
+    ios = grep_ios()
+    ios.update(sacred_prefixes)
     write_filtered_strings_txt(
-        grep_ios(), "{0}/ios_strings.txt".format(OMIM_ROOT), args.langs
+        ios, "{0}/ios_strings.txt".format(OMIM_ROOT), args.langs
     )
+
+    android = grep_android()
+    android.update(sacred_prefixes)
     write_filtered_strings_txt(
-        grep_android(), "{0}/android_strings.txt".format(OMIM_ROOT), args.langs
+        android, "{0}/android_strings.txt".format(OMIM_ROOT), args.langs
     )
+
     if args.generate:
         print("Going to generate locs")
         exec_shell(
@@ -238,12 +300,12 @@ def do_single(args):
     filtered.update(android)
 
     strings_txt = StringsTxt()
-    strings_txt.translations = {key: dict(strings_txt.translations[key]) for key in filtered}
+    filtered.update(with_sacred_prefixes(strings_txt))
 
     strings_txt.comments_and_tags = new_comments_and_tags(strings_txt, filtered, new_tags)
 
     path = args.output if isabs(args.output) else "{0}/{1}".format(OMIM_ROOT, args.output)
-    strings_txt.write_formatted(languages=args.langs, target_file=path)
+    write_filtered_strings_txt(filtered, path, languages=args.langs)
 
     if args.generate:
         exec_shell(
@@ -251,8 +313,9 @@ def do_single(args):
             args.output, args.output
         )
 
+
 def do_missing(args):
-    ios = set(grep_ios())
+    ios = grep_ios()
     strings_txt_keys = set(StringsTxt().translations.keys())
     missing = ios - strings_txt_keys
 
@@ -294,8 +357,20 @@ def read_hardcoded_categories(a_path):
         return filter(None, [s.strip() for s in infile])
 
 
+def read_ugc_criteria(a_path):
+    all_criteria = set()
+    with open(a_path) as infile:
+        reader = csv.reader(infile)
+        next(reader)  # skip the header line
+        for line in reader:
+            criteria = filter(None, line[4].split(" "))
+            all_criteria.update(set(criteria))
+
+        return all_criteria
+
+    
 if __name__ == "__main__":
-    global OMIM_ROOT, HARDCODED_CATEGORIES
+    global OMIM_ROOT, HARDCODED_CATEGORIES, UGC_CRITERIA
 
     logging.basicConfig(level=logging.DEBUG)
     args = get_args()
@@ -305,6 +380,8 @@ if __name__ == "__main__":
     HARDCODED_CATEGORIES = read_hardcoded_categories(
         args.hardcoded_cagegories
     )
+
+    UGC_CRITERIA = read_ugc_criteria(args.ugc_criteria)
 
     args.langs = set(args.langs) if args.langs else None
 
