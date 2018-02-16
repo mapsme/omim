@@ -1153,8 +1153,6 @@ bool BookmarkManager::SaveToKMLFile(df::MarkGroupID groupId)
       if (!oldFile.empty())
         VERIFY(my::DeleteFileX(oldFile), (oldFile, file));
 
-      m_bookmarkCloud.MarkModified(file);
-
       return true;
     }
   }
