@@ -5,7 +5,7 @@
 <resources>
 	<!-- SECTION: Strings -->
 	<!-- About button text (should be short) -->
-	<string name="about">A programról</string>
+	<string name="about">Az alkalmazásról</string>
 	<!-- Button text (should be short) -->
 	<string name="back">Vissza</string>
 	<!-- Button text (should be short) -->
@@ -24,7 +24,7 @@
 	<!-- Settings/Downloader - Download confirmation button -->
 	<string name="download_x_mb">%qu MB letöltése</string>
 	<!-- Settings/Downloader - info for country when download fails -->
-	<string name="download_has_failed">Letöltés sikertelen. Kérjük próbálja újra!</string>
+	<string name="download_has_failed">A letöltés sikertelen. Érintse meg a képernyőt egy újabb kísérlethez.</string>
 	<!-- Settings/Downloader - info for downloaded country -->
 	<string name="downloaded_x_y_touch_to_delete">Letöltve (%1$qu %2$s), érintse meg a törléshez</string>
 	<!-- Settings/Downloader - country info current download progress -->
@@ -33,23 +33,24 @@
 	<string name="downloading">Letöltés…</string>
 	<string name="get_it_now">Telepítés most</string>
 	<!-- Text to show occasionaly with a proposal to Like our program on Facebook -->
-	<string name="share_on_facebook_text">Köszönjük, hogy a MAPS.ME-t használja! Kedveli az appot? Akkor számoljon be a barátainak róla. Ez lenne a legnagyobb hála, amit adhat nekünk.</string>
+	<string name="share_on_facebook_text">Köszönjük, hogy a MAPS.ME-t használja! Kedveli az alkalmazást? Akkor mesélje el barátainak is. Ez a legnagyobb köszönet, amit adhat.</string>
 	<!-- Choose measurement on first launch alert - choose metric system button -->
 	<string name="kilometres">Kilométer</string>
 	<!-- Leave Review dialog - Review button -->
-	<string name="leave_a_review">Ajánlás írása</string>
+	<string name="leave_a_review">Vélemény írása</string>
 	<!-- View and button titles for accessibility -->
 	<string name="maps">Térképek</string>
 	<!-- View and button titles for accessibility -->
 	<string name="downloader_maps">Térképek:</string>
 	<!-- Settings/Downloader - info for country in the download queue -->
 	<string name="marked_for_downloading">Letöltésre kijelölve, elvetéshez érintse meg</string>
+	<string name="gb">GB</string>
 	<!-- Choose measurement on first launch alert - choose imperial system button -->
 	<string name="miles">Mérföld</string>
 	<!-- View and button titles for accessibility -->
-	<string name="my_position">Saját helyzet</string>
+	<string name="my_position">Pozícióm</string>
 	<!-- Settings/Downloader - No free space dialog message -->
-	<string name="free_disk_space_for_country_x">Kérjük szabadítson fel helyet az eszközön, hogy le tudja tölteni %s-t</string>
+	<string name="free_disk_space_for_country_x">Kérjük, szabadítson fel helyet az eszközön, hogy le tudja tölteni %s-t</string>
 	<!-- Leave Review dialog - Not now button (remind me later) -->
 	<string name="remind_me_later">Emlékeztessen később</string>
 	<!-- Update maps later/Buy pro version later button text -->
@@ -71,13 +72,13 @@
 	<!-- Choose measurement on first launch alert - title -->
 	<string name="which_measurement_system">Milyen mértékegységet használjunk?</string>
 	<!-- Location services are disabled by user alert - message -->
-	<string name="location_is_disabled_long_text">Ezen az eszközön jelenleg minden helyzetmeghatározó szolgáltatás ki van kapcsolva. Kérjük kapcsolja be ezeket a Beállítások között.</string>
+	<string name="location_is_disabled_long_text">Ezen az eszközön jelenleg minden helyzetmeghatározó szolgáltatás ki van kapcsolva. Kérjük, kapcsolja be ezeket a Beállítások között.</string>
 	<!-- Location Services are not available on the device alert - message -->
 	<string name="device_doesnot_support_location_services">Az eszköz nem támogatja a helyzetmeghatározó szolgáltatásokat</string>
 	<!-- View and button titles for accessibility -->
 	<string name="zoom_to_country">Megjelenítés a térképen</string>
 	<!-- Message to display at the center of the screen when the country is added to the downloading queue -->
-	<string name="country_status_added_to_queue">^\n-t hozzáadtuk a letöltési sorhoz</string>
+	<string name="country_status_added_to_queue">^\n hozzáadva a letöltési sorhoz</string>
 	<!-- Message to display at the center of the screen when the country is downloading -->
 	<string name="country_status_downloading">^\n^\nletöltése folyamatban</string>
 	<!-- Button text for the button at the center of the screen when the country is not downloaded -->
@@ -93,22 +94,22 @@
 	<string name="about_menu_title">A MAPS.ME programról</string>
 	<string name="downloading_touch_to_cancel">%d%% letöltése, elvetéshez érintse meg</string>
 	<string name="downloaded_touch_to_delete">Letöltve (%s), érintse meg törléshez</string>
-	<string name="connection_settings">Kapcsolat beállítások</string>
+	<string name="connection_settings">Kapcsolatbeállítások</string>
 	<string name="download_mb_or_kb">Letöltés %s</string>
 	<string name="close">Bezár</string>
 	<string name="unsupported_phone">Hardware-s gyorsítású OpenGL szükséges. Sajnos az Ön eszköze nem támogatott.</string>
 	<string name="download">Letöltés</string>
 	<string name="external_storage_is_not_available">Nem található téképeket tartalmazó SD kártya / USB tároló</string>
-	<string name="disconnect_usb_cable">Kérjük bontsa az USB kapcsolatot vagy helyezzen be memóriakártyát a MAPS.ME használatához</string>
-	<string name="not_enough_free_space_on_sdcard">Kérjük szabadítson fel helyet az SD kártyán / USB tárolón az alkalmazás használatához!</string>
+	<string name="disconnect_usb_cable">Kérjük, bontsa az USB kapcsolatot vagy helyezzen be egy memóriakártyát a MAPS.ME használatához</string>
+	<string name="not_enough_free_space_on_sdcard">Kérjük, szabadítson fel helyet az SD kártyán / USB tárolón az alkalmazás használatához!</string>
 	<string name="not_enough_memory">Nincs elegendő memória az alkalmazás futtatásához</string>
-	<string name="free_space_for_country">Kérjük szabadítson fel %1$s-t az eszközön %2$s letöltéséhez!</string>
+	<string name="free_space_for_country">Kérjük, szabadítson fel %1$s-t az eszközön %2$s letöltéséhez!</string>
 	<string name="download_resources">Első használat előtt letöltjük a világtérképet.\n%s tárolóhely szükséges.</string>
 	<string name="getting_position">Aktuális pozíció meghatározása…</string>
 	<string name="download_resources_continue">Térképhez ugrás</string>
-	<string name="downloading_country_can_proceed">%s letöltése. Mos továbbléphet\na térképhez.</string>
-	<string name="download_country_ask">Letöltsem %s-t?</string>
-	<string name="update_country_ask">Frissítsem %s-t?</string>
+	<string name="downloading_country_can_proceed">%s letöltése. Most már továbbléphet\na térképhez.</string>
+	<string name="download_country_ask">Letöltsük-e ezt: %s?</string>
+	<string name="update_country_ask">Frissítsük-e ezt: %s?</string>
 	<!-- REMOVE THIS STRING AFTER REFACTORING -->
 	<string name="download_location_map_proposal">Letöltheti az aktuális\npozícióhoz tartozó térképet.</string>
 	<!-- REMOVE THIS_STRING AFTER REFACTORING -->
@@ -156,7 +157,7 @@
 	<!-- Add bookmark dialog - bookmark set, Bookmarks dialog - Bookmark set cell -->
 	<string name="set">Csoport</string>
 	<!-- Text hint in Bookmarks dialog when no any bookmarks are added -->
-	<string name="bookmarks_usage_hint">Nincsenek megjelölt helyeid.\nHely megjelöléséhez koppints a térkép bármelyik pontjára.\nSzintén más forrásokból származó könyvjelzőket is beolvashat a MAPS.ME programba. Nyisson meg KML/KMZ fájlt egy levélből, Dropbox-ból vagy internetről.</string>
+	<string name="bookmarks_usage_hint">Nincsenek megjelölt helyei.\nHely megjelöléséhez koppintson a térkép bármelyik pontjára.\nA MAPS.ME programba más forrásokból származó könyvjelzőket is beolvashat. Nyisson meg egy KML/KMZ fájlt egy e-mailből, a Dropboxból vagy internetről.</string>
 	<!-- Text hint in Bookmarks dialog when at least one bookmark is added -->
 	<string name="bookmarks_usage_hint_import_only">Más forrásokból származó könyvjelzőket is beolvashat a MAPS.ME programba. Nyisson meg KML/KMZ fájlt egy levélből, Dropbox-ból vagy internetről.</string>
 	<!-- Settings button in system menu -->
@@ -168,11 +169,11 @@
 	<!-- Question dialog for transferring maps from one storage to another -->
 	<string name="move_maps">Áthelyezzük a térképeket?</string>
 	<!-- Ask to wait user several minutes (some long process in modal dialog). -->
-	<string name="wait_several_minutes">Ez több percig is eltarthat.\nKérjük várjon…</string>
+	<string name="wait_several_minutes">Ez percekig is eltarthat.\nKérjük, várjon türelemmel…</string>
 	<!-- Show bookmarks from this category on a map or not -->
-	<string name="visible">látható</string>
+	<string name="visible">Látható</string>
 	<!-- Toast which is displayed when GPS has been deactivated -->
-	<string name="gps_is_disabled_long_text">GPS kikapcsolva. Kérjük kapcsolja be a Beállítások között.</string>
+	<string name="gps_is_disabled_long_text">GPS kikapcsolva. Kérjük, kapcsolja be a Beállítások között.</string>
 	<!-- Measurement units title in settings activity -->
 	<string name="measurement_units">Mértékegységek</string>
 	<!-- Detailed description of Measurement Units settings button -->
@@ -184,7 +185,7 @@
 	<!-- Do search in current viewport only -->
 	<string name="search_mode_viewport">A képernyőn</string>
 	<!-- Search Suggestion -->
-	<string name="food">Élelmiszer</string>
+	<string name="food">Étkezés</string>
 	<!-- Search Suggestion -->
 	<string name="transport">Közlekedés</string>
 	<!-- Search Suggestion -->
@@ -200,7 +201,7 @@
 	<!-- Search Suggestion -->
 	<string name="entertainment">Szórakozás</string>
 	<!-- Search Suggestion -->
-	<string name="atm">Pénzautomata</string>
+	<string name="atm">Bankautomata</string>
 	<!-- Search Suggestion -->
 	<string name="bank">Bank</string>
 	<!-- Search Suggestion -->
@@ -208,7 +209,7 @@
 	<!-- Search Suggestion -->
 	<string name="hospital">Kórház</string>
 	<!-- Search Suggestion -->
-	<string name="toilet">Mosdó</string>
+	<string name="toilet">WC</string>
 	<!-- Search Suggestion -->
 	<string name="post">Posta</string>
 	<!-- Search Suggestion -->
@@ -216,21 +217,21 @@
 	<!-- String in search result list, when nothing found -->
 	<string name="no_search_results_found">Nincs keresési találat</string>
 	<!-- Notes field in Bookmarks view -->
-	<string name="description">Jegyzetek</string>
+	<string name="description">Megjegyzések</string>
 	<!-- Button text -->
 	<string name="share_by_email">Megosztás email-en</string>
 	<!-- Email Subject when sharing bookmarks category -->
-	<string name="share_bookmarks_email_subject">Egy MAPS.ME könyvjelzőt osztottak meg Önnel</string>
+	<string name="share_bookmarks_email_subject">Megosztottak Önnel egy MAPS.ME könyvjelzőt</string>
 	<!-- Email text when sharing bookmarks category -->
-	<string name="share_bookmarks_email_body">Üdvözlöm!\n\nA mellékelt \"%s.kmz\" fájl tartalmazza a MAPS.ME könyvjelzőimet. Kérem nyissa meg, ha a MAPS.ME már telepítve van. Ha még nincs, akkor innen töltheti le: http://maps.me/get?kmz\n\nSok sikert a program használatához!</string>
+	<string name="share_bookmarks_email_body">Üdvözlöm!\n\nA mellékelt „%s.kmz” fájl tartalmazza a MAPS.ME könyvjelzőimet. Kérjük, nyissa meg, ha a MAPS.ME már telepítve van. Ha még nincs, akkor innen töltheti le: http://maps.me/get?kmz\n\nSok sikert a program használatához!</string>
 	<!-- message title of loading file -->
-	<string name="load_kmz_title">Könyvjelzők letöltése</string>
+	<string name="load_kmz_title">Könyvjelzők betöltése</string>
 	<!-- Kmz file successful loading -->
-	<string name="load_kmz_successful">Könyvjelzők letöltése sikeres! Megtalálja őket a térképen vagy a Könyvjelzők kezelése menüben.</string>
+	<string name="load_kmz_successful">Könyvjelzők betöltése sikeres! Megtalálja őket a térképen vagy a Könyvjelzők kezelése menüben.</string>
 	<!-- Kml file loading failed -->
 	<string name="load_kmz_failed">Könyvjelzők feltöltése sikertelen. A fájl sérült lehet.</string>
 	<!-- resource for context menu -->
-	<string name="edit">Szerkeszt</string>
+	<string name="edit">Szerkesztés</string>
 	<!-- Warning message when doing search around current position -->
 	<string name="unknown_current_position">Még nem határoztuk meg az aktuális helyzetét</string>
 	<!-- Warning message when location country isn't downloaded during search (see also download_location_map_proposal). -->
@@ -242,15 +243,15 @@
 	<!-- Alert message that downloading is in progress. -->
 	<string name="downloading_is_active">Országletöltés folyamatban.</string>
 	<!-- Message that will be shown in alert view, when we ask user to leave review on App Store -->
-	<string name="appStore_message">Reméljük élvezi a MAPS.ME használatát. Ha igen, kérjük írjon ajánlást az App Store-ban! Kevesebb mint egy perc, és valóban segít nekünk. Köszönjük!</string>
+	<string name="appStore_message">Reméljük élvezi a MAPS.ME használatát. Ha igen, kérjük, írjon ajánlást az App Store-ban! Kevesebb mint egy perc, és valóban segít nekünk. Köszönjük!</string>
 	<!-- No, thanks -->
 	<string name="no_thanks">Köszönöm, nem</string>
 	<!-- Share one specific bookmark using SMS, %1$@ contains ge0:// and %2$@ http://ge0.me link. @NOTE non-ascii symbols in the link will make 70 bytes sms instead of 140 -->
-	<string name="bookmark_share_sms">Nézd meg a MAPS.ME jelzőt! %1$s vagy %2$s A program letöltése: http://maps.me/get</string>
+	<string name="bookmark_share_sms">Nézd meg a MAPS.ME helyjelzőmet! %1$s vagy %2$s A program letöltése: http://maps.me/get</string>
 	<!-- Share my position using SMS, %1$@ contains ge0:// and %2$@ http://ge0.me link WITHOUT NAME. @NOTE non-ascii symbols in the link will make 70 bytes sms instead of 140 -->
 	<string name="my_position_share_sms">Nézd meg a MAPS.ME helyzetemet! %1$s vagy %2$s A program letöltése: http://maps.me/get</string>
 	<!-- Subject for emailed bookmark -->
-	<string name="bookmark_share_email_subject">Nézze meg a MAPS.ME jelzőmet</string>
+	<string name="bookmark_share_email_subject">Nézd meg a MAPS.ME helyjelzőmet</string>
 	<!-- Share one specific bookmark using EMail, %1$@ is bookmark's name, %2$@ is ge0:// link and %3$@ http://ge0.me -->
 	<string name="bookmark_share_email">Üdvözlöm,\n\nleszúrtam egy MAPS.ME jelzőt: %1$s. Kattintson erre a hivatkozásra %2$s vagy erre %3$s hogy lássa a helyet a térképen.\n\nKöszönöm.</string>
 	<!-- Subject for emailed position -->
@@ -264,7 +265,7 @@
 	<!-- iOS share by Message button text (including SMS) -->
 	<string name="message">Üzenet</string>
 	<!-- Share by email button text, also used in editor. -->
-	<string name="email">Email</string>
+	<string name="email">E-mail</string>
 	<!-- Copy Link -->
 	<string name="copy_link">Hivatkozás másolása</string>
 	<!-- Text for the button that returns to caller application -->
@@ -274,7 +275,7 @@
 	<!-- Setting label for statistics turn on/off -->
 	<string name="allow_statistics">Statisztika küldése</string>
 	<!-- place preview title -->
-	<string name="info">Info</string>
+	<string name="info">Információk</string>
 	<!-- Used for bookmark editing -->
 	<string name="done">Kész</string>
 	<!-- Summary for preferences in MWM -->
@@ -285,12 +286,14 @@
 	<string name="show_on_backscreen">Mutassa a vissza képernyőn</string>
 	<!-- Prints version number in About dialog -->
 	<string name="version">Verzió: %s</string>
+	<!-- Data version in «About» screen -->
+	<string name="data_version">Adatok verziója: %d</string>
 	<!-- Confirmation in downloading countries dialog -->
 	<string name="are_you_sure">Valóban folytatni akarja?</string>
 	<!-- Title for tracks category in bookmarks manager -->
 	<string name="tracks">Csoportok</string>
 	<!-- Length of track in cell that describes route -->
-	<string name="length">Hossz</string>
+	<string name="length">Hosszúság</string>
 	<string name="share_my_location">Helyzetem megosztása</string>
 	<string name="menu_search">Keresés</string>
 	<!-- Settings screen: "Map" category title -->
@@ -299,7 +302,7 @@
 	<string name="prefs_group_misc">Egyéb</string>
 	<string name="prefs_group_route">Navigáció</string>
 	<string name="pref_zoom_title">Nagyítás/kicsinyítés gombok</string>
-	<string name="pref_zoom_summary">Mutassa a kijelzőn</string>
+	<string name="pref_zoom_summary">Megjelenítés a térképen</string>
 	<!-- Settings «Map» category: «Night style» title -->
 	<string name="pref_map_style_title">Éjszakai üzemmód</string>
 	<!-- «Map style» entry value -->
@@ -317,15 +320,15 @@
 	<!-- Settings «Route» category: «Tts enabled» title -->
 	<string name="pref_tts_enable_title">Hangutasítások</string>
 	<!-- Settings «Route» category: «Tts language» title -->
-	<string name="pref_tts_language_title">A hang nyelve</string>
+	<string name="pref_tts_language_title">Hang nyelve</string>
 	<!-- Settings «Route» category: «Tts unavailable» subtitle -->
 	<string name="pref_tts_unavailable">Nem áll rendelkezésre</string>
 	<!-- Title for "Other" section in TTS settings. -->
 	<string name="pref_tts_other_section_title">Egyéb</string>
-	<string name="pref_tts_how_to_set_up_voice">Így állítsd be a hangot</string>
+	<string name="pref_tts_how_to_set_up_voice">Hang beállítása</string>
 	<!-- Settings «Map» category: «Record track» title -->
 	<string name="pref_track_record_title">Legutolsó útvonal</string>
-	<string name="pref_map_auto_zoom">Auto-zoom</string>
+	<string name="pref_map_auto_zoom">Automatikus nagyítás</string>
 	<string name="duration_disabled">Kikapcsolva</string>
 	<string name="duration_1_hour">1 óra</string>
 	<string name="duration_2_hours">2 óra</string>
@@ -360,7 +363,7 @@
 	<!-- category title -->
 	<string name="routes">Útvonalak</string>
 	<!-- text of notification -->
-	<string name="download_map_notification">Töltsd le annak a helynek a térképét, ahol most vagy</string>
+	<string name="download_map_notification">Töltse le annak a helynek a térképét, ahol most vagy</string>
 	<!-- text of notification -->
 	<string name="pro_version_is_free_today">A teljes verzió MAPS.ME ma ingyenes! Töltsd le most és meséld el barátaidnak.</string>
 	<!-- Dialog for transferring maps from lite to pro. -->
@@ -376,7 +379,7 @@
 	<!-- Text in menu -->
 	<string name="maps_me_community">MAPS.ME közösség</string>
 	<!-- Text in menu -->
-	<string name="like_on_facebook">Lájkolj minket Facebookon</string>
+	<string name="like_on_facebook">Lájkoljon minket Facebookon</string>
 	<!-- Text in menu -->
 	<string name="follow_on_twitter">Kövess minket Twitteren</string>
 	<!-- Text in menu -->
@@ -518,7 +521,7 @@
 	<!-- map is not downloaded -->
 	<string name="not_found_map">A helyszínéhez tartozó térképet letöltöttük</string>
 	<!-- location service disabled -->
-	<string name="enable_location_services">Kérjük kapcsolja be a helyzetmeghatározó szolgáltatást</string>
+	<string name="enable_location_services">Kérjük, kapcsolja be a helyzetmeghatározó szolgáltatást</string>
 	<!-- download map -->
 	<string name="download_map">Töltse le a térképet a helyszínéhez</string>
 	<!-- download map on iPhone -->
@@ -645,25 +648,25 @@
 	<string name="p2p_only_from_current">A navigáció csak a jelenlegi helyzetéből érhető el.</string>
 	<string name="p2p_reroute_from_current">Szeretne útvonaltervet készíttetni a jelenlegi pozíciójától?</string>
 	<string name="whats_new_next_button">Következő</string>
-	<string name="editor_time_add">Időrend felvitele</string>
+	<string name="editor_time_add">Időrend hozzáadása</string>
 	<string name="editor_time_delete">Időrend törlése</string>
 	<!-- Text for allday switch. -->
 	<string name="editor_time_allday">Egész nap (24 óra)</string>
 	<string name="editor_time_open">Nyitva</string>
 	<string name="editor_time_close">Zárva</string>
-	<string name="editor_time_add_closed">Zárvatartási idők felvitele</string>
-	<string name="editor_time_title">Nyitvatartási idő</string>
+	<string name="editor_time_add_closed">Zárva tartás felvitele</string>
+	<string name="editor_time_title">Nyitva tartás</string>
 	<string name="editor_time_advanced">Haladó mód</string>
 	<string name="editor_time_simple">Egyszerű mód</string>
-	<string name="editor_hours_closed">Zárvatartási órák</string>
+	<string name="editor_hours_closed">Zárva tartás</string>
 	<string name="editor_example_values">Példa értékek</string>
 	<string name="editor_correct_mistake">Hiba javítása</string>
 	<string name="editor_correct_mistake_message">Szerkesztési hibát vétett. Javítsa ki vagy váltson egyszerű módba.</string>
 	<string name="editor_add_select_location">Elhelyezkedés</string>
 	<string name="editor_done_dialog_1">Megváltoztattad a világ térképét. Ne titkold el mások elől! Mondd el a barátaidnak, és szerkesszétek közösen!</string>
-	<string name="editor_done_dialog_2">Ez a második térképjavításod. Most már te is rajta vagy a térképszerkesztők listáján, az %d. helyen. Mesélj erről a barátaidnak is.</string>
-	<string name="editor_done_dialog_3">Javítottál a térképen! Mondd el a barátaidnak is és szerkesszétek közösen!</string>
-	<string name="share_with_friends">Oszd meg az ismerőseiddel</string>
+	<string name="editor_done_dialog_2">Ez a második térképjavítása. Most már Ön is rajta van a térképszerkesztők listáján, a(z) %d. helyen. Meséljen róla a barátainak is.</string>
+	<string name="editor_done_dialog_3">Javította a térképet! Mondja el barátainak is, és szerkesszék közösen!</string>
+	<string name="share_with_friends">Megosztás ismerősökkel</string>
 	<string name="editor_report_problem_desription_1">Kérjük, írd le részletesen a problémát, hogy az OpenStreeMap csapata kijavíthassa.</string>
 	<string name="editor_report_problem_desription_2">Vagy végezd el te magad a javítást itt: http://www.openstreetmap.org/</string>
 	<string name="editor_report_problem_send_button">Küldés</string>
@@ -813,7 +816,7 @@
 	<string name="error_enter_correct_zip_code">Írja be a helyes irányítószámot</string>
 	<!-- Place Page title for long tap -->
 	<string name="placepage_unknown_place">Ismeretlen hely</string>
-	<string name="editor_other_info">Megjegyzést küldött az OSM-moderátornak</string>
+	<string name="editor_other_info">Megjegyzés küldése az OSM-moderátornak</string>
 	<string name="editor_detailed_description_hint">Részletes megjegyzés</string>
 	<string name="editor_detailed_description">Javasolt változtatásait elküldjük az OpenStreetMap közösségnek. Írja le a további információkat, amelyek nem szerkeszthetők a MAPS.ME-ben.</string>
 	<string name="editor_more_about_osm">További részletek az OpenStreetMap-ról</string>
@@ -1090,7 +1093,7 @@
 	<string name="search_hotel_filter_resort">Resort hotel</string>
 	<string name="search_hotel_filter_hotel">Szálloda</string>
 	<string name="search_hotel_filter_motel">Motel</string>
-	<string name="create_campaign_button">Igényelje ezt az üzletet</string>
+	<string name="create_campaign_button">Ez az Ön vállalkozása? Ha igen, igényelje meg!</string>
 	<string name="view_campaign_button">Hirdetett üzlet</string>
 	<string name="search_hotel_filters_type">Típus</string>
 	<!-- Settings: "Send general feedback" button -->
@@ -1100,21 +1103,22 @@
 	<string name="prefs_languages_information">TTS rendszert használunk a hangnavigációhoz. Sok Android-os készülék használja a Google TTS-t; töltse le vagy frissítse a Google Play áruházból (https://play.google.com/store/apps/details?id=com.google.android.tts)</string>
 	<string name="prefs_languages_information_off">Egyes nyelveknél másik beszédszintetizátort vagy további nyelvi csomagot kell telepítenie az alkalmazás-áruházból (Google Play Market, Samsung Apps). Nyissa meg a készülék beállításait → Nyelv és bevitel → Beszéd → Szöveg-beszéd átalakító kimenet. Itt kezelheti a beszédszintézis beállításokat (például nyelvi csomag letöltése kapcsolat nélküli használatra) és másik szövegfelolvasót jelölhe tki.</string>
 	<string name="prefs_languages_information_off_link">További tájékoztatást találhat még ebben az útmutatóban.</string>
-	<string name="whatsnew_transliteration_title">Átírás latin nyelvre</string>
-	<string name="whatsnew_transliteration_message">Ha egy utcának vagy egy objektumnak nincs neve az Ön nyelvén, latin ábécével kerül átírásra.</string>
-	<string name="learn_more">Tudjon meg többet</string>
+	<string name="whatsnew_transliteration_title">Latin betűs átírás</string>
+	<string name="whatsnew_transliteration_message">Ha egy utcának vagy egy objektumnak nincs neve az Ön nyelvén, latin betűkkel kerül átírásra.</string>
+	<string name="yandex_taxi_title">Yandex.Taxi</string>
+	<string name="learn_more">További információk</string>
 	<string name="exit">Kilépés</string>
 	<string name="routing_add_start_point">Adjon hozzá kiindulási pontot az útvonal megtervezéséhez</string>
 	<string name="routing_add_finish_point">Adjon hozzá végpontot az útvonal tervezéséhez</string>
 	<string name="onboarding_welcome_message">Ingyenes, gyors, részletes és teljes egészében offline térképek navigációval lépésről lépésre.</string>
 	<!-- нужно как-то выделять документы, чтобы привязать позже ссылки. -->
 	<string name="onboarding_welcome_agree">Az alkalmazás indításával Ön elfogadja a felhasználási és adatvédelmi feltételeket.</string>
-	<string name="button_accept_and_continue">Fogadja el, és folytassa</string>
-	<string name="button_learn_more">Tudjon meg többet</string>
+	<string name="button_accept_and_continue">Elfogadás és folytatás</string>
+	<string name="button_learn_more">További információk</string>
 	<string name="onboarding_storage_permissions_title">Hozzáférés biztosítása</string>
 	<string name="onboarding_storage_permissions_message">Engedélyek módosításának engedélyezése az Ön készüléken. Hozzáférésre van szükség a tárolóhoz, hogy használja a MAPS.ME alkalmazást.</string>
 	<string name="button_exit">Kilépés</string>
-	<string name="onboarding_detail_permissions_title">A MAPS.ME.-nek hozzáférésre van szüksége a következőhöz:\u0020</string>
+	<string name="onboarding_detail_permissions_title">A MAPS.ME hozzáférést igényel a következőhöz:</string>
 	<!-- Default permission's name from Android settings. -->
 	<string name="onboarding_detail_permissions_storage_title">Tárolás</string>
 	<string name="onboarding_detail_permissions_storage_message">A letöltött térképek offline használatához és könyvjelzők mentéséhez.</string>
@@ -1129,21 +1133,21 @@
 	<string name="place_page_viator_title">Látványosságok és kirándulások</string>
 	<string name="button_use">Használat</string>
 	<string name="planning_route_manage_route">Útvonal kezelése</string>
-	<string name="button_plan">Terv</string>
-	<string name="button_add">Hozzáad</string>
-	<string name="placepage_remove_stop">Eltávolítja</string>
+	<string name="button_plan">Tervezés</string>
+	<string name="button_add">Hozzáadás</string>
+	<string name="placepage_remove_stop">Eltávolítás</string>
 	<string name="planning_route_remove_title">Húzza ide az eltávolításhoz</string>
 	<string name="dialog_change_start_point_message">Kicseréli a kiindulási pontot az aktuális pozícióval?</string>
 	<string name="button_replace">Csere</string>
-	<string name="placepage_add_stop">Hozzáad megállót</string>
+	<string name="placepage_add_stop">Megálló hozzáadása</string>
 	<string name="whatsnew_intermediate_point_title">További megálló</string>
 	<string name="whatsnew_intermediate_point_message">Útvonaltervezés egy közbenső ponttal.</string>
-	<string name="add_my_position">Add hozzá saját pozíciómat</string>
-	<string name="choose_start_point">Válasszon egy kiindulási pontot</string>
-	<string name="choose_destination">Válassza ki a célt</string>
+	<string name="add_my_position">Saját pozíció hozzáadása</string>
+	<string name="choose_start_point">Kiindulási pont kiválasztása</string>
+	<string name="choose_destination">Cél kiválasztása</string>
 	<string name="preloader_viator_title">Fedezze fel a túrákat és a szokatlan tevékenységeket</string>
-	<string name="preloader_viator_message">Túrák, tevékenységek, városnézés, és sok egyéb</string>
-	<string name="preloader_viator_button">Tudjon meg többet</string>
+	<string name="preloader_viator_message">Túrák, tevékenységek, városnézés és sok minden más</string>
+	<string name="preloader_viator_button">További információk</string>
 	<string name="whats_new_title_route">A kerékpáros és gyalogos útvonalakat is tovább javítottuk</string>
 	<string name="whats_new_message_route">Kijavítottuk a hibákat, töredékére csökkentettük az útvonalak felépítéséhez szükséges időt, közbülső megállókat építettünk be</string>
 	<string name="whats_new_message_title_update">A térkép frissítéseinek terjedelmét a tizedére csökkentettük</string>

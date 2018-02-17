@@ -7,7 +7,7 @@
 /********** Strings **********/
 
 /* About button text (should be short) */
-"about" = "A programról";
+"about" = "Az alkalmazásról";
 
 /* Button text (should be short) */
 "back" = "Vissza";
@@ -36,7 +36,7 @@
 "download_x_mb" = "%qu MB letöltése";
 
 /* Settings/Downloader - info for country when download fails */
-"download_has_failed" = "Letöltés sikertelen. Kérjük próbálja újra!";
+"download_has_failed" = "A letöltés sikertelen. Érintse meg a képernyőt egy újabb kísérlethez.";
 
 /* Settings/Downloader - info for downloaded country */
 "downloaded_x_y_touch_to_delete" = "Letöltve (%1$qu %2$@), érintse meg a törléshez";
@@ -50,7 +50,7 @@
 "get_it_now" = "Telepítés most";
 
 /* Text to show occasionaly with a proposal to Like our program on Facebook */
-"share_on_facebook_text" = "Köszönjük, hogy a MAPS.ME-t használja! Kedveli az appot? Akkor számoljon be a barátainak róla. Ez lenne a legnagyobb hála, amit adhat nekünk.";
+"share_on_facebook_text" = "Köszönjük, hogy a MAPS.ME-t használja! Kedveli az alkalmazást? Akkor mesélje el barátainak is. Ez a legnagyobb köszönet, amit adhat.";
 
 /* Settings/Downloader - size string, only strings different from English should be translated */
 "kb" = "kB";
@@ -59,7 +59,7 @@
 "kilometres" = "Kilométer";
 
 /* Leave Review dialog - Review button */
-"leave_a_review" = "Ajánlás írása";
+"leave_a_review" = "Vélemény írása";
 
 /* View and button titles for accessibility */
 "maps" = "Térképek";
@@ -79,12 +79,12 @@
 "miles" = "Mérföld";
 
 /* View and button titles for accessibility */
-"my_position" = "Saját helyzet";
+"my_position" = "Pozícióm";
 
 "ok" = "OK";
 
 /* Settings/Downloader - No free space dialog message */
-"free_disk_space_for_country_x" = "Kérjük szabadítson fel helyet az eszközön, hogy le tudja tölteni %@-t";
+"free_disk_space_for_country_x" = "Kérjük, szabadítson fel helyet az eszközön, hogy le tudja tölteni %@-t";
 
 /* Leave Review dialog - Not now button (remind me later) */
 "remind_me_later" = "Emlékeztessen később";
@@ -117,7 +117,7 @@
 "which_measurement_system" = "Milyen mértékegységet használjunk?";
 
 /* Location services are disabled by user alert - message */
-"location_is_disabled_long_text" = "Ezen az eszközön jelenleg minden helyzetmeghatározó szolgáltatás ki van kapcsolva. Kérjük kapcsolja be ezeket a Beállítások között.";
+"location_is_disabled_long_text" = "Ezen az eszközön jelenleg minden helyzetmeghatározó szolgáltatás ki van kapcsolva. Kérjük, kapcsolja be ezeket a Beállítások között.";
 
 /* Location Services are not available on the device alert - message */
 "device_doesnot_support_location_services" = "Az eszköz nem támogatja a helyzetmeghatározó szolgáltatásokat";
@@ -126,7 +126,7 @@
 "zoom_to_country" = "Megjelenítés a térképen";
 
 /* Message to display at the center of the screen when the country is added to the downloading queue */
-"country_status_added_to_queue" = "^\n-t hozzáadtuk a letöltési sorhoz";
+"country_status_added_to_queue" = "^\n hozzáadva a letöltési sorhoz";
 
 /* Message to display at the center of the screen when the country is downloading */
 "country_status_downloading" = "^\n^\nletöltése folyamatban";
@@ -154,7 +154,7 @@
 
 "downloaded_touch_to_delete" = "Letöltve (%@), érintse meg törléshez";
 
-"connection_settings" = "Kapcsolat beállítások";
+"connection_settings" = "Kapcsolatbeállítások";
 
 "download_mb_or_kb" = "Letöltés %@";
 
@@ -166,13 +166,13 @@
 
 "external_storage_is_not_available" = "Nem található téképeket tartalmazó SD kártya / USB tároló";
 
-"disconnect_usb_cable" = "Kérjük bontsa az USB kapcsolatot vagy helyezzen be memóriakártyát a MAPS.ME használatához";
+"disconnect_usb_cable" = "Kérjük, bontsa az USB kapcsolatot vagy helyezzen be egy memóriakártyát a MAPS.ME használatához";
 
-"not_enough_free_space_on_sdcard" = "Kérjük szabadítson fel helyet az SD kártyán / USB tárolón az alkalmazás használatához!";
+"not_enough_free_space_on_sdcard" = "Kérjük, szabadítson fel helyet az SD kártyán / USB tárolón az alkalmazás használatához!";
 
 "not_enough_memory" = "Nincs elegendő memória az alkalmazás futtatásához";
 
-"free_space_for_country" = "Kérjük szabadítson fel %1$@-t az eszközön %2$@ letöltéséhez!";
+"free_space_for_country" = "Kérjük, szabadítson fel %1$@-t az eszközön %2$@ letöltéséhez!";
 
 "download_resources" = "Első használat előtt letöltjük a világtérképet.\n%@ tárolóhely szükséges.";
 
@@ -180,11 +180,11 @@
 
 "download_resources_continue" = "Térképhez ugrás";
 
-"downloading_country_can_proceed" = "%@ letöltése. Mos továbbléphet\na térképhez.";
+"downloading_country_can_proceed" = "%@ letöltése. Most már továbbléphet\na térképhez.";
 
-"download_country_ask" = "Letöltsem %@-t?";
+"download_country_ask" = "Letöltsük-e ezt: %@?";
 
-"update_country_ask" = "Frissítsem %@-t?";
+"update_country_ask" = "Frissítsük-e ezt: %@?";
 
 /* REMOVE THIS STRING AFTER REFACTORING */
 "download_location_map_proposal" = "Letöltheti az aktuális\npozícióhoz tartozó térképet.";
@@ -257,7 +257,7 @@
 "set" = "Csoport";
 
 /* Text hint in Bookmarks dialog when no any bookmarks are added */
-"bookmarks_usage_hint" = "Nincsenek megjelölt helyeid.\nHely megjelöléséhez koppints a térkép bármelyik pontjára.\nSzintén más forrásokból származó könyvjelzőket is beolvashat a MAPS.ME programba. Nyisson meg KML/KMZ fájlt egy levélből, Dropbox-ból vagy internetről.";
+"bookmarks_usage_hint" = "Nincsenek megjelölt helyei.\nHely megjelöléséhez koppintson a térkép bármelyik pontjára.\nA MAPS.ME programba más forrásokból származó könyvjelzőket is beolvashat. Nyisson meg egy KML/KMZ fájlt egy e-mailből, a Dropboxból vagy internetről.";
 
 /* Text hint in Bookmarks dialog when at least one bookmark is added */
 "bookmarks_usage_hint_import_only" = "Más forrásokból származó könyvjelzőket is beolvashat a MAPS.ME programba. Nyisson meg KML/KMZ fájlt egy levélből, Dropbox-ból vagy internetről.";
@@ -275,13 +275,13 @@
 "move_maps" = "Áthelyezzük a térképeket?";
 
 /* Ask to wait user several minutes (some long process in modal dialog). */
-"wait_several_minutes" = "Ez több percig is eltarthat.\nKérjük várjon…";
+"wait_several_minutes" = "Ez percekig is eltarthat.\nKérjük, várjon türelemmel…";
 
 /* Show bookmarks from this category on a map or not */
-"visible" = "látható";
+"visible" = "Látható";
 
 /* Toast which is displayed when GPS has been deactivated */
-"gps_is_disabled_long_text" = "GPS kikapcsolva. Kérjük kapcsolja be a Beállítások között.";
+"gps_is_disabled_long_text" = "GPS kikapcsolva. Kérjük, kapcsolja be a Beállítások között.";
 
 /* Measurement units title in settings activity */
 "measurement_units" = "Mértékegységek";
@@ -299,7 +299,7 @@
 "search_mode_viewport" = "A képernyőn";
 
 /* Search Suggestion */
-"food" = "Élelmiszer";
+"food" = "Étkezés";
 
 /* Search Suggestion */
 "transport" = "Közlekedés";
@@ -323,7 +323,7 @@
 "entertainment" = "Szórakozás";
 
 /* Search Suggestion */
-"atm" = "Pénzautomata";
+"atm" = "Bankautomata";
 
 /* Search Suggestion */
 "bank" = "Bank";
@@ -335,7 +335,7 @@
 "hospital" = "Kórház";
 
 /* Search Suggestion */
-"toilet" = "Mosdó";
+"toilet" = "WC";
 
 /* Search Suggestion */
 "post" = "Posta";
@@ -347,28 +347,28 @@
 "no_search_results_found" = "Nincs keresési találat";
 
 /* Notes field in Bookmarks view */
-"description" = "Jegyzetek";
+"description" = "Megjegyzések";
 
 /* Button text */
 "share_by_email" = "Megosztás email-en";
 
 /* Email Subject when sharing bookmarks category */
-"share_bookmarks_email_subject" = "Egy MAPS.ME könyvjelzőt osztottak meg Önnel";
+"share_bookmarks_email_subject" = "Megosztottak Önnel egy MAPS.ME könyvjelzőt";
 
 /* Email text when sharing bookmarks category */
-"share_bookmarks_email_body" = "Üdvözlöm!\n\nA mellékelt \"%@.kmz\" fájl tartalmazza a MAPS.ME könyvjelzőimet. Kérem nyissa meg, ha a MAPS.ME már telepítve van. Ha még nincs, akkor innen töltheti le: http://maps.me/get?kmz\n\nSok sikert a program használatához!";
+"share_bookmarks_email_body" = "Üdvözlöm!\n\nA mellékelt „%@.kmz” fájl tartalmazza a MAPS.ME könyvjelzőimet. Kérjük, nyissa meg, ha a MAPS.ME már telepítve van. Ha még nincs, akkor innen töltheti le: http://maps.me/get?kmz\n\nSok sikert a program használatához!";
 
 /* message title of loading file */
-"load_kmz_title" = "Könyvjelzők letöltése";
+"load_kmz_title" = "Könyvjelzők betöltése";
 
 /* Kmz file successful loading */
-"load_kmz_successful" = "Könyvjelzők letöltése sikeres! Megtalálja őket a térképen vagy a Könyvjelzők kezelése menüben.";
+"load_kmz_successful" = "Könyvjelzők betöltése sikeres! Megtalálja őket a térképen vagy a Könyvjelzők kezelése menüben.";
 
 /* Kml file loading failed */
 "load_kmz_failed" = "Könyvjelzők feltöltése sikertelen. A fájl sérült lehet.";
 
 /* resource for context menu */
-"edit" = "Szerkeszt";
+"edit" = "Szerkesztés";
 
 /* Warning message when doing search around current position */
 "unknown_current_position" = "Még nem határoztuk meg az aktuális helyzetét";
@@ -386,19 +386,19 @@
 "downloading_is_active" = "Országletöltés folyamatban.";
 
 /* Message that will be shown in alert view, when we ask user to leave review on App Store */
-"appStore_message" = "Reméljük élvezi a MAPS.ME használatát. Ha igen, kérjük írjon ajánlást az App Store-ban! Kevesebb mint egy perc, és valóban segít nekünk. Köszönjük!";
+"appStore_message" = "Reméljük élvezi a MAPS.ME használatát. Ha igen, kérjük, írjon ajánlást az App Store-ban! Kevesebb mint egy perc, és valóban segít nekünk. Köszönjük!";
 
 /* No, thanks */
 "no_thanks" = "Köszönöm, nem";
 
 /* Share one specific bookmark using SMS, %1$@ contains ge0:// and %2$@ http://ge0.me link. @NOTE non-ascii symbols in the link will make 70 bytes sms instead of 140 */
-"bookmark_share_sms" = "Nézd meg a MAPS.ME jelzőt! %1$@ vagy %2$@ A program letöltése: http://maps.me/get";
+"bookmark_share_sms" = "Nézd meg a MAPS.ME helyjelzőmet! %1$@ vagy %2$@ A program letöltése: http://maps.me/get";
 
 /* Share my position using SMS, %1$@ contains ge0:// and %2$@ http://ge0.me link WITHOUT NAME. @NOTE non-ascii symbols in the link will make 70 bytes sms instead of 140 */
 "my_position_share_sms" = "Nézd meg a MAPS.ME helyzetemet! %1$@ vagy %2$@ A program letöltése: http://maps.me/get";
 
 /* Subject for emailed bookmark */
-"bookmark_share_email_subject" = "Nézze meg a MAPS.ME jelzőmet";
+"bookmark_share_email_subject" = "Nézd meg a MAPS.ME helyjelzőmet";
 
 /* Share one specific bookmark using EMail, %1$@ is bookmark's name, %2$@ is ge0:// link and %3$@ http://ge0.me */
 "bookmark_share_email" = "Üdvözlöm,\n\nleszúrtam egy MAPS.ME jelzőt: %1$@. Kattintson erre a hivatkozásra %2$@ vagy erre %3$@ hogy lássa a helyet a térképen.\n\nKöszönöm.";
@@ -419,7 +419,7 @@
 "message" = "Üzenet";
 
 /* Share by email button text, also used in editor. */
-"email" = "Email";
+"email" = "E-mail";
 
 /* Copy Link */
 "copy_link" = "Hivatkozás másolása";
@@ -434,7 +434,7 @@
 "allow_statistics" = "Statisztika küldése";
 
 /* place preview title */
-"info" = "Info";
+"info" = "Információk";
 
 /* Used for bookmark editing */
 "done" = "Kész";
@@ -452,7 +452,7 @@
 "version" = "Verzió: %@";
 
 /* Data version in «About» screen */
-"data_version" = "Data version: %d";
+"data_version" = "Adatok verziója: %d";
 
 /* Confirmation in downloading countries dialog */
 "are_you_sure" = "Valóban folytatni akarja?";
@@ -461,7 +461,7 @@
 "tracks" = "Csoportok";
 
 /* Length of track in cell that describes route */
-"length" = "Hossz";
+"length" = "Hosszúság";
 
 "share_my_location" = "Helyzetem megosztása";
 
@@ -483,7 +483,7 @@
 
 "pref_zoom_title" = "Nagyítás/kicsinyítés gombok";
 
-"pref_zoom_summary" = "Mutassa a kijelzőn";
+"pref_zoom_summary" = "Megjelenítés a térképen";
 
 /* Settings «Map» category: «Night style» title */
 "pref_map_style_title" = "Éjszakai üzemmód";
@@ -510,7 +510,7 @@
 "pref_tts_enable_title" = "Hangutasítások";
 
 /* Settings «Route» category: «Tts language» title */
-"pref_tts_language_title" = "A hang nyelve";
+"pref_tts_language_title" = "Hang nyelve";
 
 /* Settings «Route» category: «Tts unavailable» subtitle */
 "pref_tts_unavailable" = "Nem áll rendelkezésre";
@@ -518,12 +518,12 @@
 /* Title for "Other" section in TTS settings. */
 "pref_tts_other_section_title" = "Egyéb";
 
-"pref_tts_how_to_set_up_voice" = "Így állítsd be a hangot";
+"pref_tts_how_to_set_up_voice" = "Hang beállítása";
 
 /* Settings «Map» category: «Record track» title */
 "pref_track_record_title" = "Legutolsó útvonal";
 
-"pref_map_auto_zoom" = "Auto-zoom";
+"pref_map_auto_zoom" = "Automatikus nagyítás";
 
 "duration_disabled" = "Kikapcsolva";
 
@@ -591,7 +591,7 @@
 "disagree" = "I disagree";
 
 /* text of notification */
-"download_map_notification" = "Töltsd le annak a helynek a térképét, ahol most vagy";
+"download_map_notification" = "Töltse le annak a helynek a térképét, ahol most vagy";
 
 /* text of notification */
 "pro_version_is_free_today" = "A teljes verzió MAPS.ME ma ingyenes! Töltsd le most és meséld el barátaidnak.";
@@ -615,7 +615,7 @@
 "maps_me_community" = "MAPS.ME közösség";
 
 /* Text in menu */
-"like_on_facebook" = "Lájkolj minket Facebookon";
+"like_on_facebook" = "Lájkoljon minket Facebookon";
 
 /* Text in menu */
 "follow_on_twitter" = "Kövess minket Twitteren";
@@ -831,7 +831,7 @@
 "not_found_map" = "A helyszínéhez tartozó térképet letöltöttük";
 
 /* location service disabled */
-"enable_location_services" = "Kérjük kapcsolja be a helyzetmeghatározó szolgáltatást";
+"enable_location_services" = "Kérjük, kapcsolja be a helyzetmeghatározó szolgáltatást";
 
 /* download map */
 "download_map" = "Töltse le a térképet a helyszínéhez";
@@ -1061,7 +1061,7 @@
 
 "whats_new_next_button" = "Következő";
 
-"editor_time_add" = "Időrend felvitele";
+"editor_time_add" = "Időrend hozzáadása";
 
 "editor_time_delete" = "Időrend törlése";
 
@@ -1072,15 +1072,15 @@
 
 "editor_time_close" = "Zárva";
 
-"editor_time_add_closed" = "Zárvatartási idők felvitele";
+"editor_time_add_closed" = "Zárva tartás felvitele";
 
-"editor_time_title" = "Nyitvatartási idő";
+"editor_time_title" = "Nyitva tartás";
 
 "editor_time_advanced" = "Haladó mód";
 
 "editor_time_simple" = "Egyszerű mód";
 
-"editor_hours_closed" = "Zárvatartási órák";
+"editor_hours_closed" = "Zárva tartás";
 
 "editor_example_values" = "Példa értékek";
 
@@ -1092,11 +1092,11 @@
 
 "editor_done_dialog_1" = "Megváltoztattad a világ térképét. Ne titkold el mások elől! Mondd el a barátaidnak, és szerkesszétek közösen!";
 
-"editor_done_dialog_2" = "Ez a második térképjavításod. Most már te is rajta vagy a térképszerkesztők listáján, az %d. helyen. Mesélj erről a barátaidnak is.";
+"editor_done_dialog_2" = "Ez a második térképjavítása. Most már Ön is rajta van a térképszerkesztők listáján, a(z) %d. helyen. Meséljen róla a barátainak is.";
 
-"editor_done_dialog_3" = "Javítottál a térképen! Mondd el a barátaidnak is és szerkesszétek közösen!";
+"editor_done_dialog_3" = "Javította a térképet! Mondja el barátainak is, és szerkesszék közösen!";
 
-"share_with_friends" = "Oszd meg az ismerőseiddel";
+"share_with_friends" = "Megosztás ismerősökkel";
 
 "editor_report_problem_desription_1" = "Kérjük, írd le részletesen a problémát, hogy az OpenStreeMap csapata kijavíthassa.";
 
@@ -1380,7 +1380,7 @@
 /* Place Page title for long tap */
 "placepage_unknown_place" = "Ismeretlen hely";
 
-"editor_other_info" = "Megjegyzést küldött az OSM-moderátornak";
+"editor_other_info" = "Megjegyzés küldése az OSM-moderátornak";
 
 "editor_detailed_description_hint" = "Részletes megjegyzés";
 
@@ -1903,7 +1903,7 @@
 
 "search_hotel_filter_motel" = "Motel";
 
-"create_campaign_button" = "Igényelje ezt az üzletet";
+"create_campaign_button" = "Ez az Ön vállalkozása? Ha igen, igényelje meg!";
 
 "view_campaign_button" = "Hirdetett üzlet";
 
@@ -1922,13 +1922,13 @@
 
 "prefs_languages_information_off_link" = "További tájékoztatást találhat még ebben az útmutatóban.";
 
-"whatsnew_transliteration_title" = "Átírás latin nyelvre";
+"whatsnew_transliteration_title" = "Latin betűs átírás";
 
-"whatsnew_transliteration_message" = "Ha egy utcának vagy egy objektumnak nincs neve az Ön nyelvén, latin ábécével kerül átírásra.";
+"whatsnew_transliteration_message" = "Ha egy utcának vagy egy objektumnak nincs neve az Ön nyelvén, latin betűkkel kerül átírásra.";
 
 "yandex_taxi_title" = "Yandex.Taxi";
 
-"learn_more" = "Tudjon meg többet";
+"learn_more" = "További információk";
 
 "exit" = "Kilépés";
 
@@ -1941,9 +1941,9 @@
 /* нужно как-то выделять документы, чтобы привязать позже ссылки. */
 "onboarding_welcome_agree" = "Az alkalmazás indításával Ön elfogadja a felhasználási és adatvédelmi feltételeket.";
 
-"button_accept_and_continue" = "Fogadja el, és folytassa";
+"button_accept_and_continue" = "Elfogadás és folytatás";
 
-"button_learn_more" = "Tudjon meg többet";
+"button_learn_more" = "További információk";
 
 "onboarding_storage_permissions_title" = "Hozzáférés biztosítása";
 
@@ -1951,7 +1951,7 @@
 
 "button_exit" = "Kilépés";
 
-"onboarding_detail_permissions_title" = "A MAPS.ME.-nek hozzáférésre van szüksége a következőhöz: ";
+"onboarding_detail_permissions_title" = "A MAPS.ME hozzáférést igényel a következőhöz:";
 
 /* Default permission's name from Android settings. */
 "onboarding_detail_permissions_storage_title" = "Tárolás";
@@ -1979,11 +1979,11 @@
 
 "planning_route_manage_route" = "Útvonal kezelése";
 
-"button_plan" = "Terv";
+"button_plan" = "Tervezés";
 
-"button_add" = "Hozzáad";
+"button_add" = "Hozzáadás";
 
-"placepage_remove_stop" = "Eltávolítja";
+"placepage_remove_stop" = "Eltávolítás";
 
 "planning_route_remove_title" = "Húzza ide az eltávolításhoz";
 
@@ -1991,7 +1991,7 @@
 
 "button_replace" = "Csere";
 
-"placepage_add_stop" = "Hozzáad megállót";
+"placepage_add_stop" = "Megálló hozzáadása";
 
 "whatsnew_intermediate_point_title" = "További megálló";
 
@@ -2009,17 +2009,17 @@
 /* Only ru/en are needed */
 "real_estate" = "Real estate";
 
-"add_my_position" = "Add hozzá saját pozíciómat";
+"add_my_position" = "Saját pozíció hozzáadása";
 
-"choose_start_point" = "Válasszon egy kiindulási pontot";
+"choose_start_point" = "Kiindulási pont kiválasztása";
 
-"choose_destination" = "Válassza ki a célt";
+"choose_destination" = "Cél kiválasztása";
 
 "preloader_viator_title" = "Fedezze fel a túrákat és a szokatlan tevékenységeket";
 
-"preloader_viator_message" = "Túrák, tevékenységek, városnézés, és sok egyéb";
+"preloader_viator_message" = "Túrák, tevékenységek, városnézés és sok minden más";
 
-"preloader_viator_button" = "Tudjon meg többet";
+"preloader_viator_button" = "További információk";
 
 "whats_new_title_route" = "A kerékpáros és gyalogos útvonalakat is tovább javítottuk";
 
